@@ -6,35 +6,35 @@ import type { PlayerState } from './types';
 
 // Fonction pour mélanger un tableau (Algorithme de Fisher-Yates)
 const shuffle = (array: any[]) => {
-  for (let i = array.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [array[i], array[j]] = [array[j], array[i]];
-  }
-  return array;
+    for (let i = array.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [array[i], array[j]] = [array[j], array[i]];
+    }
+    return array;
 };
 
 const createRealLotrDeck = (): CardType[] => {
-  const fullPool: CardType[] = [];
-  
-  // On prend par exemple 15 cartes de chaque côté pour faire un deck de 30 cartes
-  for (let i = 0; i < 15; i++) {
-    const fpCard = FREE_PEOPLES_DATABASE[i % FREE_PEOPLES_DATABASE.length];
-    const shCard = SHADOW_DATABASE[i % SHADOW_DATABASE.length];
-    
-    fullPool.push({ ...fpCard, id: `${fpCard.id}-${i}` });
-    fullPool.push({ ...shCard, id: `${shCard.id}-${i}` });
-  }
+    const fullPool: CardType[] = [];
 
-  // ON MÉLANGE ! (Le Peuple Libre et l'Ombre sont désormais complètement imbriqués)
-  return shuffle(fullPool);
+    // On prend par exemple 15 cartes de chaque côté pour faire un deck de 30 cartes
+    for (let i = 0; i < 15; i++) {
+        const fpCard = FREE_PEOPLES_DATABASE[i % FREE_PEOPLES_DATABASE.length];
+        const shCard = SHADOW_DATABASE[i % SHADOW_DATABASE.length];
+
+        fullPool.push({ ...fpCard, id: `${fpCard.id}-${i}` });
+        fullPool.push({ ...shCard, id: `${shCard.id}-${i}` });
+    }
+
+    // ON MÉLANGE ! (Le Peuple Libre et l'Ombre sont désormais complètement imbriqués)
+    return shuffle(fullPool);
 };
 
 const createInitialPlayer = (): PlayerState => ({
-  deck: createRealLotrDeck(), // Génère le deck mixte de 30 cartes (15 FP / 15 Shadow) mélangé
-  hand: [],
-  discard: [],
-  freePeoplesArea: [],
-  supportArea: [],
+    deck: createRealLotrDeck(), // Génère le deck mixte de 30 cartes (15 FP / 15 Shadow) mélangé
+    hand: [],
+    discard: [],
+    freePeoplesArea: [],
+    supportArea: [],
 });
 
 export const LotrGame: Game<GameState> = {
@@ -91,6 +91,18 @@ export const LotrGame: Game<GameState> = {
                     const card = player.hand?.[cardIndex];
                     if (!card) return;
 
+                    // --- NOUVELLE VÉRIFICATION : COÛT EN CRÉPUSCULE ---
+                    // Si c'est une carte Ombre, on refuse le coup si la réserve est insuffisante
+                    if (
+                        card.kind === 'SHADOW' &&
+                        G.twilightPool < card.twilightCost
+                    ) {
+                        console.log(
+                            `Pas assez de Crépuscule ! Requis: ${card.twilightCost}, Disponible: ${G.twilightPool}`
+                        );
+                        return;
+                    }
+
                     // On s'assure à 100% que les zones existent avant de faire un push
                     if (!player.freePeoplesArea) player.freePeoplesArea = [];
                     if (!player.supportArea) player.supportArea = [];
@@ -101,12 +113,20 @@ export const LotrGame: Game<GameState> = {
 
                     // 2. On l'aiguille selon sa nature
                     if (card.kind === 'FREE_PEOPLES') {
-                        // Les gentils vont dans l'aire de jeu Peuple Libre du joueur
-                        player.freePeoplesArea.push(card);
+                        // Les gentils vont dans la bonne zone selon leur type
+                        if (card.subType === 'COMPANION') {
+                            player.freePeoplesArea.push(card);
+                        } else {
+                            player.supportArea.push(card);
+                        }
+
+                        // Jouer un gentil génère de la menace (ajoute du Crépuscule)
                         G.twilightPool += card.twilightCost;
                     } else {
                         // Les méchants (Sbires) sont balancés au centre sur le Battlefield !
                         G.battlefield.push(card);
+
+                        // Et ils dépensent la réserve accumulée
                         G.twilightPool = Math.max(
                             0,
                             G.twilightPool - card.twilightCost

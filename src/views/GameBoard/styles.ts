@@ -2,8 +2,9 @@ import styled from 'styled-components';
 
 export const BoardContainer = styled.div`
   padding: 20px;
-  font-family: sans-serif;
-  background-color: #1a252f;
+  background-image : url('interface/map_big.webp');
+  background-size: cover;
+  background-repeat: no-repeat;
   color: #fff;
   min-height: 100vh;
   padding-bottom: 180px; /* Évite que la main fixe ne cache le plateau */
@@ -112,38 +113,6 @@ export const GameCard = styled.div<{ $borderColor?: string; isShadow?: boolean }
   cursor: ${props => (props.onClick ? 'pointer' : 'default')};
 `;
 
-export const FixedHandContainer = styled.div`
-  position: fixed;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  height: 140px;
-  background-color: #2c3e50;
-  border-top: 3px solid #34495e;
-  padding: 10px 20px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  box-shadow: 0 -5px 15px rgba(0, 0, 0, 0.5);
-  z-index: 1000;
-`;
-
-export const ControlGroup = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: 5px;
-`;
-
-export const GameButton = styled.button<{ $bgColor?: string }>`
-  padding: 6px 12px;
-  color: #fff;
-  background-color: ${props => props.$bgColor || '#7f8c8d'};
-  border: none;
-  border-radius: 4px;
-  font-weight: bold;
-  cursor: pointer;
-  font-size: 11px;
-`;
 
 export const InfoText = styled.p`
   color: #7f8c8d;

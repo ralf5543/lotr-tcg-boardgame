@@ -1,0 +1,50 @@
+
+These fonts were extracted from the official Decipher rulebooks, which had to use the fonts as an embedded resource to be able to show cards (without getting blurry).  
+
+These a set of standard fonts (regular, italic, bold, and bold italic) and can be installed into your OS and used in any document editor just like normal fonts. On Windows 10, double-click each *.ttf file and click the "Install" button at the top.  
+
+The fonts are used as follows:
+
+- LOTR_TCG-Regular: standard game text
+- LOTR_TCG-Regular (bolded): keywords
+- LOTR_TCG-Regular (italicized): helper text
+- LOTR_TCG-Lore: lore text
+- LOTR_TCG_Icons: twilight and stat numbers on the left hand side of most cards
+- LOTR_TCG_Title: title, subtitle, and card type plate
+
+The symbols work as follows (only on the standard font):
+
+On your keyboard, all the number symbols on a standard US layout have been replaced with twilight symbols. This means ! is [1], @ is [2], etc, while _ (underscore) is [9] and = is [X] (I didn't want to remove the ability use parenthesis, so 9 had to move).
+
+` (tick) is [Tower Block] and ~ (tilde) is [King Block].
+
+The original font placed all the culture icons in various Greek letter positions (sigma is [Gandalf], for instance), but I copy-pasted those glyphs to more convenient positions as well. The intent was that on Windows one could use alt+numpad entry codes to enter each culture. For those unfamiliar, in most windows programs you can hold down Alt and type up to four numbers ON THE NUMPAD to get a variety of symbols; alt+1 is a smiley face, while alt+5 would be the Clubs symbol (as in "ace of clubs" face card symbols).
+
+So to get each of the cultures, you may copy-paste these symbols or if on Windows you can use the Alt + numpad keys noted:
+
+☺ - Dwarven (Alt + 1) (BLACK SMILING FACE U+263B)
+☻ - Elven (Alt + 2) (WHITE SMILING FACE U+263A)
+♥ - Gandalf (Alt + 3) (BLACK HEART SUIT U+2665)
+♦ - Shire (Alt + 4) (BLACK DIAMOND SUIT U+2666)
+♣ - Rohan (Alt + 5) (BLACK CLUB SUIT U+2663)
+♠ - Gondor (Alt + 6) (BLACK SPADE SUIT U+2660)
+• - Unique Dot (Alt + 7) (BULLET U+2022)
+◘ - Gollum (Alt + 8) (INVERSE BULLET U+25D8)
+○ - Ring Symbol  (Alt + 9) (WHITE CIRCLE U+25CB)
+
+(alt + 7 is the dot used for uniqueness, which is convenient, so I decided to skip it and leave it in.)
+
+♂ - Dunland (Alt + 11) (MALE SIGN U+2642)
+♀ - Raider (Alt + 12) (FEMALE SIGN U+2640)
+♪ - Isengard (Alt + 13) (EIGHTH NOTE U+266A)
+♫ - Uruk (Alt + 14) (BEAMED EIGHTH NOTES U+266B)
+☼ - Moria (Alt + 15) (WHITE SUN WITH RAYS U+263C)
+► - Orc (Alt + 16) (BLACK RIGHT-POINTING POINTER U+25BA)
+◄ - Sauron (Alt + 17) (BLACK LEFT-POINTING POINTER U+25C4)
+↕ - Ring/wraith (Alt + 18) (UP DOWN ARROW U+2195)
+‼ - Men (Alt + 19) (DOUBLE EXCLAMATION MARK U+203C)
+
+
+(apologies for the seemingly random order. I'm not quite sure what exactly possessed me to not put them in the standard alphabetical + release order.)
+
+For questions please post to TLHH and ping TelTura, or email hyperlink.teltura@gmail.com.

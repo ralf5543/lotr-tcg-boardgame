@@ -4,7 +4,7 @@ import type { CardType } from '../../game/types';
 import { Battlefield } from './components/Battlefield';
 import { SitePath } from './components/SitePath';
 import { PlayerArea } from './components/PlayerArea';
-import { Card } from './components/Card';
+import { Hand } from './components/Hand'; // Nouveau composant !
 import * as S from './styles';
 
 interface GameBoardProps {
@@ -78,48 +78,14 @@ export const GameBoard: React.FC<GameBoardProps> = ({ G, ctx, moves }) => {
                 supportArea={me.supportArea || []}
             />
 
-            {/* ==================== 4. TA MAIN FLOTTANTE (FIXED) ==================== */}
-            <S.FixedHandContainer>
-                <S.ControlGroup>
-                    <S.GameButton
-                        $bgColor="#3498db"
-                        onClick={() => moves.drawCard()}
-                    >
-                        🃏 Piocher ({me.deck?.length || 0})
-                    </S.GameButton>
-                    <S.GameButton
-                        $bgColor="#2ecc71"
-                        onClick={() => moves.nextSite()}
-                    >
-                        🗺️ Avancer Site
-                    </S.GameButton>
-                </S.ControlGroup>
-
-                <S.CardRow
-                    style={{
-                        flex: 1,
-                        justifyContent: 'center',
-                        margin: '0 20px',
-                        overflowX: 'auto',
-                    }}
-                >
-                    {(me.hand || []).length === 0 ? (
-                        <S.InfoText>Ta main est vide.</S.InfoText>
-                    ) : (
-                        (me.hand || []).map((card, idx) => (
-                            <Card
-                                key={card.id}
-                                card={card}
-                                onClick={() => moves.playCard(idx)}
-                            />
-                        ))
-                    )}
-                </S.CardRow>
-
-                <S.InfoText style={{ width: '120px', textAlign: 'right' }}>
-                    ℹ️ Clic carte = Jouer
-                </S.InfoText>
-            </S.FixedHandContainer>
+            {/* ==================== 4. LA MAIN FLOTTANTE (COMPOSANT UNIQUE) ==================== */}
+            <Hand 
+                hand={me.hand || []}
+                deckCount={me.deck?.length || 0}
+                onDrawCard={() => moves.drawCard()}
+                onNextSite={() => moves.nextSite()}
+                onPlayCard={(idx) => moves.playCard(idx)}
+            />
         </S.BoardContainer>
     );
 };
