@@ -57,7 +57,7 @@ export const CardContainer = styled.div<{
     ${props => {
         if (props.$size === 'sm') {
             return `
-                width: 70px;
+                width: 100px;
                 font-size: 5.5px;
             `;
         }
@@ -87,7 +87,18 @@ export const CardContainer = styled.div<{
     overflow: hidden;
     box-sizing: border-box;
 
-    opacity: ${(props) => ((props.$isPlayable ?? true) ? 1 : 0.6)};
+    /* On gère le filtre visuel selon si la carte est jouable ou non */
+    filter: ${(props) => 
+        props.$isPlayable === false 
+            ? 'brightness(0.55) contrast(0.9) grayscale(0.15)' 
+            : 'brightness(1) contrast(1)'};
+            
+    transition: filter 0.3s ease, transform 0.2s ease, box-shadow 0.2s ease;
+
+    /* Optionnel : si on survole une carte inactive dans sa main, on peut la rallumer légèrement */
+    &:hover {
+        filter: ${(props) => props.$isPlayable === false ? 'brightness(0.8) contrast(1)' : 'none'};
+    }
     cursor: ${(props) =>
         props.onClick && (props.$isPlayable ?? true) ? 'pointer' : 'default'};
     transition:
@@ -115,12 +126,21 @@ export const CardTitles = styled.div`
     font-family: 'DecipherTitle', serif;
     font-variant: small-caps;
 `;
-export const CardTitle = styled.p`
+export const CardTitle = styled.p<{
+    $size?: 'sm' | 'md' | 'lg';
+}>`
     font-size: 1em;
     color: #fff;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+    ${props => {
+        if (props.$size === 'sm') {
+            return `
+                font-size: 2.4em;
+            `;
+        }
+    }}
 `;
 export const CardSubtitle = styled.p`
     font-size: 0.75em;

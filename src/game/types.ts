@@ -40,6 +40,7 @@ export type CardCulture =
     | 'THE-ONE-RING';
 
 export interface CardType {
+    card: boolean;
     id: string;
     title: string;
     subtitle?: string;

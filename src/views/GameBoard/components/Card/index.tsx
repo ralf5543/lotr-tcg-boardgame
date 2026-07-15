@@ -83,7 +83,7 @@ export const Card: React.FC<CardProps> = ({
                     {card.twilightCost}
                 </S.TwilightBadge>
                 <S.CardTitles>
-                    <S.CardTitle>
+                    <S.CardTitle $size={size}>
                         {card.isUnique && '• '}
                         {card.title}
                     </S.CardTitle>
@@ -98,11 +98,13 @@ export const Card: React.FC<CardProps> = ({
             </S.VisualContainer>
 
             <S.Type>{typeLine}</S.Type>
-
-            <S.GameText $culture={card.culture}>
-              {card.keyword && <p><strong>{translatedKeyword}</strong></p>}            
-              <p>{card.gameText}</p>
-            </S.GameText>
+            {size !== 'sm' && (
+              <S.GameText $culture={card.culture}>
+                {card.keyword && <p><strong>{translatedKeyword}</strong></p>}            
+                <p>{card.gameText}</p>
+              </S.GameText>
+            )}
+            
 
             {/* N'affiche la force et la vitalité que s'ils sont définis */}
             {(card.strength !== undefined || card.vitality !== undefined) && (

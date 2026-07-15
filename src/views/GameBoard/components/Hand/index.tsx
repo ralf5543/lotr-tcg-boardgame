@@ -85,7 +85,14 @@ export const Hand: React.FC<HandProps> = ({
                                         'all 0.3s cubic-bezier(0.2, 0.8, 0.2, 1)',
                                 }}
                                 onPointerDown={(e) => {
+                                    // 1. On ne dragge QUE si c'est un clic gauche ou un contact tactile principal
+                                    if (e.button !== 0) return;
+
+                                    // 2. LA SÉCURITÉ ABSOLUE : On empêche l'événement de déborder sur les cartes voisines
+                                    e.stopPropagation();
                                     e.preventDefault();
+
+                                    // 3. On lance le drag proprement
                                     startDrag(card, idx, e);
                                 }}
                             >
@@ -94,6 +101,7 @@ export const Hand: React.FC<HandProps> = ({
                                     isPlayable={isPlayable}
                                     index={idx} // 👈 On passe l'index à la carte
                                     isDraggable={true} // 👈 On dit à la carte qu'elle peut être draggée
+                                    size="md"
                                 />
                             </S.CardWrapper>
                         );
