@@ -2,6 +2,7 @@ import React from 'react';
 import type { CardType } from '../../../../game/types';
 import { Card } from '../Card';
 import * as S from './styles';
+import { useDrag } from '../../../../contexts/DragContext';
 
 interface HandProps {
     hand: CardType[];
@@ -16,10 +17,7 @@ export const Hand: React.FC<HandProps> = ({
     deckCount,
     onDrawCard,
     onNextSite,
-    onPlayCard,
 }) => {
-    const [hoveredCard, setHoveredCard] = React.useState<CardType | null>(null);
-
     // Fonction pour calculer l'inclinaison de chaque carte dans la main
     const getFanStyles = (index: number, total: number) => {
         // --- LE BOUTON DE RÉGLAGE : BASE_Y ---
@@ -44,6 +42,8 @@ export const Hand: React.FC<HandProps> = ({
         return { angle, translateY, zIndex };
     };
 
+    const { startDrag, dragged } = useDrag();
+
     return (
         <S.FixedHandContainer>
             <S.ControlGroup>
@@ -55,7 +55,7 @@ export const Hand: React.FC<HandProps> = ({
                 </S.GameButton>
             </S.ControlGroup>
 
-            <S.CardRow style={{ alignItems: 'flex-end' }}>
+            <S.CardRow>
                 {hand.length === 0 ? (
                     <S.InfoText>Ta main est vide.</S.InfoText>
                 ) : (
@@ -67,21 +67,33 @@ export const Hand: React.FC<HandProps> = ({
                             hand.length
                         );
 
+                        const isBeingDragged = dragged?.card.id === card.id;
+
                         return (
                             <S.CardWrapper
                                 key={card.id}
                                 $angle={angle}
                                 $translateY={translateY}
                                 $zIndex={zIndex}
-                                // Au survol, on enregistre la carte comme "active" pour le clone
-                                onMouseEnter={() => setHoveredCard(card)}
-                                // Quand la souris sort, on nettoie l'état
-                                onMouseLeave={() => setHoveredCard(null)}
+                                style={{
+                                    width: isBeingDragged ? '0px' : 'auto',
+                                    opacity: isBeingDragged ? 0 : 1,
+                                    pointerEvents: isBeingDragged
+                                        ? 'none'
+                                        : 'auto',
+                                    transition:
+                                        'all 0.3s cubic-bezier(0.2, 0.8, 0.2, 1)',
+                                }}
+                                onPointerDown={(e) => {
+                                    e.preventDefault();
+                                    startDrag(card, idx, e);
+                                }}
                             >
                                 <Card
                                     card={card}
                                     isPlayable={isPlayable}
-                                    onClick={() => onPlayCard(idx)}
+                                    index={idx} // 👈 On passe l'index à la carte
+                                    isDraggable={true} // 👈 On dit à la carte qu'elle peut être draggée
                                 />
                             </S.CardWrapper>
                         );
@@ -92,20 +104,6 @@ export const Hand: React.FC<HandProps> = ({
             <S.InfoText style={{ width: '120px', textAlign: 'right' }}>
                 ℹ️ Clic carte = Jouer
             </S.InfoText>
-            {hoveredCard && (
-                <div
-                    style={{
-                        position: 'absolute',
-                        bottom: '240px',
-                        left: '50%',
-                        transform: 'translateX(-50%)',
-                        zIndex: 1000,
-                        pointerEvents: 'none',
-                    }}
-                >
-                    <Card card={hoveredCard} size="lg" />
-                </div>
-            )}
         </S.FixedHandContainer>
     );
 };

@@ -5,7 +5,6 @@ export const FixedHandContainer = styled.div`
   bottom: 0;
   left: 0;
   right: 0;
-  height: 240px;
   border-top: 2px solid #2d3748;
   display: flex;
   justify-content: space-between;
@@ -57,6 +56,10 @@ export const CardRow = styled.div`
   justify-content: center;
   margin: 0 20px;
   padding: 10px 0;
+  position: fixed;
+  inset-block-end: 0;
+  inset-inline-start: 50%;
+  transform: translateX(-50%);
 `;
 
 export const InfoText = styled.span`

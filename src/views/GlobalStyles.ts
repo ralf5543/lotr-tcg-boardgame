@@ -42,9 +42,9 @@ export const GlobalStyles = createGlobalStyle`
 
   body {
     font-family: 'DecipherRegular', serif;
+    line-height: 1.2;
   }
 
-  /* 3. Optionnel : un petit reset sur les boutons et inputs pour t'éviter des surprises */
   button {
     font-family: inherit;
     border: none;

@@ -93,6 +93,13 @@ export const CardContainer = styled.div<{
     transition:
         transform 0.2s ease,
         opacity 0.2s ease;
+        user-select: none;
+    -webkit-user-drag: ${(props) => (props.draggable ? 'element' : 'none')};
+    cursor: ${(props) => (props.draggable ? 'grab' : 'default')};
+
+    &:active {
+        cursor: ${(props) => (props.draggable ? 'grabbing' : 'default')};
+    }
 `;
 
 export const CardHeader = styled.div`
@@ -133,8 +140,8 @@ export const Type = styled.p`
     margin-block-start: 0.6em;
 `;
 
-export const TwilightBadge = styled.span`
-    background-image: url('interface/twilight_freeps.webp');
+export const TwilightBadge = styled.span<{$isShadow?: boolean;}>`
+    background-image: ${(props) => ((props.$isShadow ?? true) ? 'url(interface/twilight_shadow.webp)' : 'url(interface/twilight_freeps.webp)')};
     background-size: contain;
     background-repeat: no-repeat;
     background-position: 0.1em 0.1em;
@@ -161,6 +168,8 @@ export const Visual = styled.img`
     width: 100%;
     height: 100%;
     object-fit: cover;
+    user-select: none;
+    -webkit-user-drag: none;
 `;
 
 export const GameText = styled.div<{
@@ -175,9 +184,7 @@ export const GameText = styled.div<{
     box-sizing: border-box;
     
     & p {
-        font-family: 'EB Garamond', serif;
-        font-size: 0.65em; /* Remplace les 4px figés. À 0.75em, c'est nickel */
-        line-height: 1.2;
+        font-size: 0.65em;
         margin: 0;
     }
 `;

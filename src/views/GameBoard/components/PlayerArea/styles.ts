@@ -56,3 +56,26 @@ export const EmptyText = styled.p`
   font-size: 12px;
   margin: 0;
 `;
+
+export const CharacterStack = styled.div`
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    /* On donne une marge en bas pour accueillir les cartes qui dépassent */
+    margin-bottom: 60px; 
+    align-items: center;
+`;
+
+export const AttachmentWrapper = styled.div<{ $index: number }>`
+    position: absolute;
+    /* On décale chaque carte attachée vers le bas */
+    top: ${(props) => 45 + props.$index * 35}px;
+    z-index: ${(props) => props.$index + 1};
+    transform: scale(0.9); /* Légèrement plus petite */
+    transition: transform 0.2s, z-index 0.2s;
+
+    &:hover {
+        transform: scale(1) translateY(5px);
+        z-index: 999; /* Passe au-dessus au survol pour pouvoir la lire ! */
+    }
+`;

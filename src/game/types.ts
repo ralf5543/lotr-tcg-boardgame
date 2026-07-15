@@ -55,6 +55,7 @@ export interface CardType {
     isUnique: boolean;
     gameText: string;
     loreText?: string;
+    attachments?: CardType[];
 }
 
 // L'état propre à chaque joueur (sa main, sa pioche, sa défausse)

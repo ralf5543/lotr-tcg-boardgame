@@ -133,6 +133,75 @@ export const LotrGame: Game<GameState> = {
                         );
                     }
                 },
+                attachCard: (
+                    { G, ctx },
+                    cardIndex: number,
+                    targetCardId: string
+                ) => {
+                    const playerId = ctx.currentPlayer;
+                    const player = G.players[playerId];
+                    if (!player) return;
+
+                    const attachmentCard = player.hand?.[cardIndex];
+                    // Sécurité : la carte doit exister et être une Possession ou une Condition
+                    if (
+                        !attachmentCard ||
+                        (attachmentCard.subType !== 'POSSESSION' &&
+                            attachmentCard.subType !== 'CONDITION')
+                    ) {
+                        console.log('Cette carte ne peut pas être attachée.');
+                        return;
+                    }
+
+                    // On cherche le personnage cible (compagnon ou allié) dans les zones du joueur actif
+                    let targetCard: CardType | undefined;
+                    let foundInZone: 'freePeoplesArea' | 'supportArea' | null =
+                        null;
+
+                    // Chercher d'abord dans la zone des Compagnons (Ligne de front)
+                    targetCard = player.freePeoplesArea?.find(
+                        (c) => c.id === targetCardId
+                    );
+                    if (targetCard) {
+                        foundInZone = 'freePeoplesArea';
+                    } else {
+                        // Chercher sinon dans la zone de support (pour les alliés)
+                        targetCard = player.supportArea?.find(
+                            (c) => c.id === targetCardId
+                        );
+                        if (targetCard) {
+                            foundInZone = 'supportArea';
+                        }
+                    }
+
+                    if (!targetCard) {
+                        console.log(
+                            `Personnage cible avec l'ID ${targetCardId} introuvable sur la table.`
+                        );
+                        return;
+                    }
+
+                    // --- VALIDATION DU COÛT EN CRÉPUSCULE ---
+                    // S'il s'agit d'une carte Peuple Libre, elle génère du crépuscule pour l'Ombre
+                    if (attachmentCard.kind === 'FREE_PEOPLES') {
+                        G.twilightPool += attachmentCard.twilightCost;
+                    }
+
+                    // Initialiser le tableau d'attachement de la cible si nécessaire
+                    if (!targetCard.attachments) {
+                        targetCard.attachments = [];
+                    }
+
+                    // 1. On retire la carte de la main
+                    player.hand.splice(cardIndex, 1);
+
+                    // 2. On l'attache sous la carte cible !
+                    targetCard.attachments.push(attachmentCard);
+
+                    console.log(
+                        `Attaché ${attachmentCard.title} à ${targetCard.title}`
+                    );
+                },
             },
         },
         shadow: {

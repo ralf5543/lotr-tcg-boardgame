@@ -1,6 +1,7 @@
 import { Client } from 'boardgame.io/react';
 import { LotrGame } from './game/Game';
 import { GameBoard } from './views/GameBoard';
+import { HoverCardProvider } from './contexts/HoverCardContext';
 
 // On configure le client boardgame.io
 const LotrClient = Client({
@@ -12,7 +13,9 @@ const LotrClient = Client({
 function App() {
     return (
         <div className="App">
-            <LotrClient />
+            <HoverCardProvider>
+                <LotrClient />
+            </HoverCardProvider>
         </div>
     );
 }
