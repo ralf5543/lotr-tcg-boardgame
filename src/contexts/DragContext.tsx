@@ -17,7 +17,7 @@ interface DraggedCardData {
 interface DragContextType {
     dragged: DraggedCardData | null;
     position: { x: number; y: number };
-    activeTargetId: string | null; // L'ID du compagnon survolé
+    activeTargetId: string | null;
     startDrag: (card: CardType, index: number, e: React.PointerEvent) => void;
     stopDrag: () => void;
     registerTarget: (id: string, element: HTMLDivElement | null) => void;
@@ -26,6 +26,19 @@ interface DragContextType {
 
 const DragContext = createContext<DragContextType | undefined>(undefined);
 
+// Configuration des icônes de drag selon la faction
+const GRABBING_ICONS = {
+  FREE_PEOPLES: '/interface/cursor_grab.png',
+  SHADOW: '/cursors/sauron_default.png',
+};
+
+const getXScale = () => {
+    const scaledBoard = document.querySelector('[class*="ScaledView"]');
+    if (!scaledBoard) return 1;
+    const rect = scaledBoard.getBoundingClientRect();
+    return rect.width / 1920; 
+};
+
 export const DragProvider: React.FC<{ children: React.ReactNode }> = ({
     children,
 }) => {
@@ -33,14 +46,24 @@ export const DragProvider: React.FC<{ children: React.ReactNode }> = ({
     const [position, setPosition] = useState({ x: 0, y: 0 });
     const [activeTargetId, setActiveTargetId] = useState<string | null>(null);
     const [rotation, setRotation] = useState(0);
-    const lastX = useRef(0); // Pour stocker la position précédente de la souris
+    const lastX = useRef(0);
 
-    // Références vers les éléments DOM des compagnons cibles pour calculer les collisions
     const targetsRef = useRef<Map<string, HTMLDivElement>>(new Map());
     const activeTargetIdRef = useRef<string | null>(null);
-
-    // Offset pour que le curseur reste pile là où on a cliqué sur la carte
+    const currentScale = useRef(1);
     const dragOffset = useRef({ x: 0, y: 0 });
+
+    // --- EFFET POUR MASQUER LE CURSEUR SYSTÈME PENDANT LE DRAG ---
+    useEffect(() => {
+    if (dragged) {
+        document.body.classList.add('is-dragging');
+    } else {
+        document.body.classList.remove('is-dragging');
+    }
+    return () => {
+        document.body.classList.remove('is-dragging');
+    };
+}, [dragged]);
 
     const registerTarget = (id: string, element: HTMLDivElement | null) => {
         if (element) {
@@ -56,20 +79,29 @@ export const DragProvider: React.FC<{ children: React.ReactNode }> = ({
         e: React.PointerEvent
     ) => {
         e.preventDefault();
-        // On récupère la position du clic par rapport au coin supérieur gauche de la carte
+        
+        const scale = getXScale();
+        currentScale.current = scale;
+
         const rect = (e.currentTarget as HTMLElement).getBoundingClientRect();
+        const board = document.querySelector('[class*="ScaledView"]')?.getBoundingClientRect();
+        const boardLeft = board ? board.left : 0;
+        const boardTop = board ? board.top : 0;
+
         dragOffset.current = {
-            x: e.clientX - rect.left,
-            y: e.clientY - rect.top,
+            x: (e.clientX - rect.left) / scale,
+            y: (e.clientY - rect.top) / scale,
         };
 
         (e.currentTarget as HTMLElement).setPointerCapture(e.pointerId);
-
-        // Initialisation de la position de la souris pour éviter un saut angulaire au départ
         lastX.current = e.clientX;
 
         setDragged({ card, index, origin: 'HAND' });
-        setPosition({ x: e.clientX, y: e.clientY });
+        
+        setPosition({ 
+            x: (e.clientX - boardLeft) / scale, 
+            y: (e.clientY - boardTop) / scale 
+        });
     };
 
     const stopDrag = () => {
@@ -78,29 +110,32 @@ export const DragProvider: React.FC<{ children: React.ReactNode }> = ({
         setRotation(0);
     };
 
-    // Suivi de la souris et calcul de collision
     useEffect(() => {
         if (!dragged) return;
 
         const handlePointerMove = (e: PointerEvent) => {
-            const newX = e.clientX;
-            const newY = e.clientY;
-            setPosition({ x: newX, y: newY });
+            const board = document.querySelector('[class*="ScaledView"]')?.getBoundingClientRect();
+            const boardLeft = board ? board.left : 0;
+            const boardTop = board ? board.top : 0;
+            const scale = currentScale.current;
 
-            // --- CALCUL DE L'INCLINAISON PHYSIQUE ---
-            const deltaX = newX - lastX.current;
-            lastX.current = newX;
+            const virtualX = (e.clientX - boardLeft) / scale;
+            const virtualY = (e.clientY - boardTop) / scale;
+            
+            setPosition({ x: virtualX, y: virtualY });
 
+            const deltaX = e.clientX - lastX.current;
+            lastX.current = e.clientX;
             const targetRotation = Math.max(-8, Math.min(8, deltaX * 0.4));
             setRotation((prev) => prev + (targetRotation - prev) * 0.15);
 
-            // --- CALCUL DE COLLISION ---
-            const cardWidth = 140; 
-            const cardHeight = 200;
-            const cardLeft = newX - dragOffset.current.x;
-            const cardTop = newY - dragOffset.current.y;
-            const cardRight = cardLeft + cardWidth;
-            const cardBottom = cardTop + cardHeight;
+            const cardWidthPhys = 140 * scale; 
+            const cardHeightPhys = 200 * scale;
+            const cardLeftPhys = e.clientX - (dragOffset.current.x * scale);
+            const cardTopPhys = e.clientY - (dragOffset.current.y * scale);
+            
+            const cardRightPhys = cardLeftPhys + cardWidthPhys;
+            const cardBottomPhys = cardTopPhys + cardHeightPhys;
 
             let hitCompanionId: string | null = null;
             let hitZoneId: string | null = null;
@@ -108,24 +143,14 @@ export const DragProvider: React.FC<{ children: React.ReactNode }> = ({
             targetsRef.current.forEach((targetEl, id) => {
                 const targetRect = targetEl.getBoundingClientRect();
 
-                // Formule de collision AABB
-                const xOverlap = Math.max(
-                    0,
-                    Math.min(cardRight, targetRect.right) -
-                        Math.max(cardLeft, targetRect.left)
-                );
-                const yOverlap = Math.max(
-                    0,
-                    Math.min(cardBottom, targetRect.bottom) -
-                        Math.max(cardTop, targetRect.top)
-                );
+                const xOverlap = Math.max(0, Math.min(cardRightPhys, targetRect.right) - Math.max(cardLeftPhys, targetRect.left));
+                const yOverlap = Math.max(0, Math.min(cardBottomPhys, targetRect.bottom) - Math.max(cardTopPhys, targetRect.top));
                 const overlapArea = xOverlap * yOverlap;
 
                 if (overlapArea > 0) {
                     if (id === 'freePeoplesArea') {
                         hitZoneId = id;
                     } else {
-                        // Pour un compagnon individuel, on baisse le seuil à 10% pour maximiser la réactivité
                         const targetArea = targetRect.width * targetRect.height;
                         if (overlapArea > targetArea * 0.1) {
                             hitCompanionId = id;
@@ -134,30 +159,28 @@ export const DragProvider: React.FC<{ children: React.ReactNode }> = ({
                 }
             });
 
-            // PRIORITÉ HIERARCHIQUE : On choisit le compagnon ciblé en priorité absolue sur la zone globale
             const detectedTargetId = hitCompanionId || hitZoneId || null;
-
             setActiveTargetId(detectedTargetId);
             activeTargetIdRef.current = detectedTargetId;
         };
 
         const handlePointerUp = (e: PointerEvent) => {
             if (dragged) {
-                // CALCUL DE COLLISION FLASH AU RELÂCHEMENT (Avec système de priorité)
-                const cardWidth = 140;
-                const cardHeight = 200;
-                const cardLeft = e.clientX - dragOffset.current.x;
-                const cardTop = e.clientY - dragOffset.current.y;
-                const cardRight = cardLeft + cardWidth;
-                const cardBottom = cardTop + cardHeight;
+                const scale = currentScale.current;
+                const cardWidthPhys = 140 * scale;
+                const cardHeightPhys = 200 * scale;
+                const cardLeftPhys = e.clientX - (dragOffset.current.x * scale);
+                const cardTopPhys = e.clientY - (dragOffset.current.y * scale);
+                const cardRightPhys = cardLeftPhys + cardWidthPhys;
+                const cardBottomPhys = cardTopPhys + cardHeightPhys;
 
                 let hitCompanionId: string | null = null;
                 let hitZoneId: string | null = null;
 
                 targetsRef.current.forEach((targetEl, id) => {
                     const targetRect = targetEl.getBoundingClientRect();
-                    const xOverlap = Math.max(0, Math.min(cardRight, targetRect.right) - Math.max(cardLeft, targetRect.left));
-                    const yOverlap = Math.max(0, Math.min(cardBottom, targetRect.bottom) - Math.max(cardTop, targetRect.top));
+                    const xOverlap = Math.max(0, Math.min(cardRightPhys, targetRect.right) - Math.max(cardLeftPhys, targetRect.left));
+                    const yOverlap = Math.max(0, Math.min(cardBottomPhys, targetRect.bottom) - Math.max(cardTopPhys, targetRect.top));
                     const overlapArea = xOverlap * yOverlap;
 
                     if (overlapArea > 0) {
@@ -175,17 +198,11 @@ export const DragProvider: React.FC<{ children: React.ReactNode }> = ({
                 const finalTargetId = hitCompanionId || hitZoneId || null;
                 const targetToUse = finalTargetId || activeTargetIdRef.current;
 
-                console.log("DROP DÉTECTÉ sur la cible finale :", targetToUse);
-
                 const dropEvent = new CustomEvent('card-dropped', {
-                    detail: {
-                        draggedCard: dragged,
-                        targetId: targetToUse
-                    }
+                    detail: { draggedCard: dragged, targetId: targetToUse }
                 });
                 window.dispatchEvent(dropEvent);
             }
-            
             activeTargetIdRef.current = null;
             stopDrag();
         };
@@ -219,30 +236,53 @@ export const DragProvider: React.FC<{ children: React.ReactNode }> = ({
 
 export const useDrag = () => {
     const context = useContext(DragContext);
-    if (!context)
-        throw new Error('useDrag doit être utilisé dans un DragProvider');
+    if (!context) throw new Error('useDrag doit être utilisé dans un DragProvider');
     return context;
 };
 
-// --- LE COMPOSANT PORTAIL VISUEL ---
+// --- LE COMPOSANT PORTAIL VISUEL MIS À JOUR ---
 const DragPortal: React.FC = () => {
     const { dragged, position, rotation } = useDrag();
     if (!dragged) return null;
 
+    // Faction temporaire fixe pour tes tests (à lier à ton state plus tard)
+    const currentFaction: 'FREE_PEOPLES' | 'SHADOW' = 'FREE_PEOPLES';
+
     return (
         <div
             style={{
-                position: 'fixed',
+                position: 'absolute',
                 left: position.x,
                 top: position.y,
-                transform: `translate(-50%, -50%) scale(1.1) rotate(${rotation}deg)`,
+                // Au lieu de -50% -50%, la carte reste calée naturellement, 
+                // et la rotation pivote autour du curseur
+                transform: `rotate(${rotation}deg)`, 
                 pointerEvents: 'none',
                 zIndex: 9999,
-                opacity: 1,
-                filter: 'drop-shadow(0 15px 25px rgba(0,0,0,0.4))',
+                opacity: 0.95,
+                filter: 'drop-shadow(4px 4px 4px rgba(0, 0, 0, 0.5)) drop-shadow(0 15px 25px rgba(0, 0, 0, 0.3))',
             }}
         >
-            <Card card={dragged.card} size="md" />
+            {/* LA MAIN FERMÉE : Ancrée pile au point (0,0) du conteneur, là où est la souris */}
+            <img 
+              src={GRABBING_ICONS[currentFaction]} 
+              alt="Grabbing"
+              style={{
+                position: 'absolute',
+                width: '50px',
+                height: '50px',
+                top: '-25px', 
+                left: '-25px',
+                zIndex: 10,
+              }}
+            />
+
+            {/* Ta carte de jeu */}
+            <div style={{
+                transform: `translate(${-dragged.cardOffset?.x || -70}px, ${-dragged.cardOffset?.y || -100}px)`
+            }}>
+                <Card card={dragged.card} size="md" />
+            </div>
         </div>
     );
 };

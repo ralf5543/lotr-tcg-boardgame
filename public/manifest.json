@@ -1,0 +1,9 @@
+{
+  "short_name": "LOTR TCG",
+  "name": "Lord of the Rings - TCG Boardgame",
+  "start_url": "/",
+  "background_color": "#0d0e12",
+  "theme_color": "#0d0e12",
+  "display": "fullscreen",
+  "orientation": "landscape"
+}

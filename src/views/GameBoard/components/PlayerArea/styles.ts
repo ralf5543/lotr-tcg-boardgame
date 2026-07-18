@@ -32,9 +32,9 @@ export const ZoneTitle = styled.span<{ color?: string }>`
 
 export const CardRow = styled.div`
   display: flex;
-  gap: 10px;
+  container-type: inline-size;
+  gap: clamp(24px, 4cqw, 60px);
   min-height: 80px;
-  align-items: center;
 `;
 
 
@@ -61,17 +61,20 @@ export const CharacterStack = styled.div`
     display: flex;
     flex-direction: column;
     position: relative;
-    /* On donne une marge en bas pour accueillir les cartes qui dépassent */
-    margin-bottom: 60px; 
     align-items: center;
+    width: 130px;
+    flex: 1 1 120px;
+    max-width: 150px;
+    min-width: 70px;
 `;
 
 export const AttachmentWrapper = styled.div<{ $index: number }>`
     position: absolute;
     /* On décale chaque carte attachée vers le bas */
     top: ${(props) => 45 + props.$index * 35}px;
+    transform: translateX(${(props) => -1 * (props.$index + 1)}em);
+
     z-index: ${(props) => props.$index + 1};
-    transform: scale(0.9); /* Légèrement plus petite */
     transition: transform 0.2s, z-index 0.2s;
 
     &:hover {

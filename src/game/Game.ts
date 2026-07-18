@@ -154,25 +154,12 @@ export const LotrGame: Game<GameState> = {
                     }
 
                     // On cherche le personnage cible (compagnon ou allié) dans les zones du joueur actif
-                    let targetCard: CardType | undefined;
-                    let foundInZone: 'freePeoplesArea' | 'supportArea' | null =
-                        null;
-
-                    // Chercher d'abord dans la zone des Compagnons (Ligne de front)
-                    targetCard = player.freePeoplesArea?.find(
-                        (c) => c.id === targetCardId
-                    );
-                    if (targetCard) {
-                        foundInZone = 'freePeoplesArea';
-                    } else {
-                        // Chercher sinon dans la zone de support (pour les alliés)
-                        targetCard = player.supportArea?.find(
+                    // Chercher d'abord dans la zone des Compagnons, sinon dans la zone de support
+                    const targetCard =
+                        player.freePeoplesArea?.find(
                             (c) => c.id === targetCardId
-                        );
-                        if (targetCard) {
-                            foundInZone = 'supportArea';
-                        }
-                    }
+                        ) ||
+                        player.supportArea?.find((c) => c.id === targetCardId);
 
                     if (!targetCard) {
                         console.log(

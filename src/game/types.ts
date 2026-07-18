@@ -1,5 +1,6 @@
 export type CardKind = 'FREE_PEOPLES' | 'SHADOW';
-export type CardKeyword = 'RANGER' | 'KNIGHT';
+export type CardKeyword = 'ARCHER' | 'RANGER' | 'KNIGHT' | 'DAMAGE';
+export type CardSignet = 'ARAGORN' | 'FRODO' | 'GANDALF' | 'THEODEN';
 export type CardSubtype =
     | 'COMPANION'
     | 'MINION'
@@ -40,7 +41,6 @@ export type CardCulture =
     | 'THE-ONE-RING';
 
 export interface CardType {
-    card: boolean;
     id: string;
     title: string;
     subtitle?: string;
@@ -51,6 +51,8 @@ export interface CardType {
     twilightCost: number;
     strength?: number;
     vitality?: number;
+    roaming?: number;
+    signet?: string;
     culture: CardCulture;
     subType: CardSubtype;
     isUnique: boolean;

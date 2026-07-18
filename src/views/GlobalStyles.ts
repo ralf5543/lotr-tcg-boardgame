@@ -2,6 +2,8 @@ import { createGlobalStyle } from 'styled-components';
 
 export const GlobalStyles = createGlobalStyle`
 
+/* ==================----------------- FONTS -----------------================== */
+
 @font-face {
     font-family: 'DecipherRegular';
     src: url('/fonts/LOTR_TCG-Regular.ttf') format('truetype');
@@ -18,6 +20,11 @@ export const GlobalStyles = createGlobalStyle`
     font-family: 'DecipherLore';
     src: url('/fonts/LOTR_TCG-Lore.ttf') format('truetype');
     font-display: swap; 
+}
+
+@font-face {
+    font-family: 'LOTRSymbols';
+    src: url('/fonts/LOTRSymbols.ttf') format('truetype');
 }
 
 
@@ -52,4 +59,11 @@ export const GlobalStyles = createGlobalStyle`
     cursor: pointer;
     outline: none;
   }
+
+  body.is-dragging, 
+  body.is-dragging *, 
+  body.is-dragging button, 
+  body.is-dragging [draggable="true"] {
+    cursor: none !important;
+}
 `;

@@ -2,13 +2,10 @@ import styled from 'styled-components';
 
 export const Container = styled.div`
   flex: 0 0 80%;
-  background-color: #2c3e50;
   border-radius: 8px;
   border: 2px solid #7f8c8d;
   padding: 15px;
-  position: relative; /* Pour caler la coupelle de jetons */
   display: flex;
-  flex-direction: column;
 `;
 
 export const Title = styled.span`
@@ -23,6 +20,7 @@ export const Title = styled.span`
 
 export const CardRow = styled.div`
   display: flex;
+  flex: 1;
   gap: 10px;
   min-height: 80px;
   align-items: center;

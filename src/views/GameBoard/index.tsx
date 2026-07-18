@@ -10,6 +10,7 @@ import { useHoverCard } from '../../contexts/HoverCardContext';
 import { Card } from './components/Card';
 import { DragProvider } from '../../contexts/DragContext';
 
+
 interface GameBoardProps {
     G: {
         twilightPool: number;
@@ -58,9 +59,11 @@ export const GameBoard: React.FC<GameBoardProps> = ({ G, ctx, moves }) => {
 
     const { hoveredCard } = useHoverCard();
 
+    const currentFaction = ctx.currentPlayer === '1' ? 'SHADOW' : 'FREE_PEOPLES';
+
     return (
         <DragProvider>
-            <S.BoardContainer>
+            <S.BoardContainer $faction={currentFaction}>
                 {/* 2. L'inspecteur de carte global (fixé à l'écran, par exemple à droite ou centré) */}
                 {hoveredCard && (
                     <S.HoveredCardsZone>
@@ -79,7 +82,7 @@ export const GameBoard: React.FC<GameBoardProps> = ({ G, ctx, moves }) => {
 
                 {/* ==================== 2. LE BLOC CENTRAL MUTUALISÉ ==================== */}
                 <S.CentralBlock>
-                    <Battlefield cards={G.battlefield || []} />
+                    <Battlefield twilightPoolValue={G.twilightPool} cards={G.battlefield || []} />
                     <SitePath currentSite={G.currentSite} />
                 </S.CentralBlock>
 

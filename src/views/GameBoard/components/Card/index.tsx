@@ -3,12 +3,15 @@ import type { CardType } from '../../../../game/types';
 import * as S from './styles';
 import { TRANSLATIONS } from '../../../../game/translations';
 import { useHoverCard } from '../../../../contexts/HoverCardContext';
+import type { CardSignet } from '../../../../game/types';
 
 interface CardProps {
     card: CardType;
     isPlayable?: boolean;
     isDraggable?: boolean;
     index?: number;
+    roaming?: number,
+    signet?: CardSignet
     size?: 'sm' | 'md' | 'lg'; // Ajout de la prop size
 }
 
@@ -43,7 +46,7 @@ export const Card: React.FC<CardProps> = ({
             kind: card.kind,
             subType: card.subType,
             race: card.race,
-            gameText: card.gameText
+            gameText: card.gameText,
         };
 
         // On injecte les données
@@ -57,7 +60,9 @@ export const Card: React.FC<CardProps> = ({
     // --- INTERPRÉTEUR DE TRADUCTION ---
     const translatedSubType = TRANSLATIONS.subType[card.subType];
     const translatedRace = card.race ? TRANSLATIONS.race[card.race] : null;
-    const translatedKeyword = card.keyword ? TRANSLATIONS.keyword[card.keyword] : null;
+    const translatedKeyword = card.keyword
+        ? TRANSLATIONS.keyword[card.keyword]
+        : null;
 
     // Construction de la ligne de type (Ex: "Compagnon • Homme • Rôdeur")
     const typeLineElements = [translatedSubType, translatedRace].filter(
@@ -83,39 +88,43 @@ export const Card: React.FC<CardProps> = ({
                     {card.twilightCost}
                 </S.TwilightBadge>
                 <S.CardTitles>
-                    <S.CardTitle $size={size}>
+                    <S.CardTitle>
                         {card.isUnique && '• '}
                         {card.title}
                     </S.CardTitle>
-                    {card.subtitle && size === 'lg' && (
+                    {card.subtitle && size !== 'sm' && (
                         <S.CardSubtitle>{card.subtitle}</S.CardSubtitle>
                     )}
                 </S.CardTitles>
             </S.CardHeader>
 
             <S.VisualContainer>
-                <S.Visual src={card.imageUrl} alt={card.title} draggable={false} />
+                <S.Visual
+                    src={card.imageUrl}
+                    alt={card.title}
+                    draggable={false}
+                />
             </S.VisualContainer>
+            {size !== 'sm' && <S.CardType>{typeLine}</S.CardType>}
 
-            <S.Type>{typeLine}</S.Type>
-            {size !== 'sm' && (
-              <S.GameText $culture={card.culture}>
-                {card.keyword && <p><strong>{translatedKeyword}</strong></p>}            
-                <p>{card.gameText}</p>
-              </S.GameText>
-            )}
-            
+            <S.TextContainer>
+                <S.KeywordText>{translatedKeyword}</S.KeywordText>
+
+                {size !== 'sm' && <S.GameText>{card.gameText}</S.GameText>}
+            </S.TextContainer>
 
             {/* N'affiche la force et la vitalité que s'ils sont définis */}
-            {(card.strength !== undefined || card.vitality !== undefined) && (
-                <S.StatsRow>
-                    {card.strength !== undefined && (
-                        <S.StrengthBadge>{card.strength}</S.StrengthBadge>
-                    )}
-                    {card.vitality !== undefined && (
-                        <S.VitalityBadge>{card.vitality}</S.VitalityBadge>
-                    )}
-                </S.StatsRow>
+            {card.strength !== undefined && (
+                <S.StrengthBadge>{card.strength}</S.StrengthBadge>
+            )}
+            {card.vitality !== undefined && (
+                <S.VitalityBadge>{card.vitality}</S.VitalityBadge>
+            )}
+            {card.roaming !== undefined && (
+                <S.RoamingNumber>{card.roaming}</S.RoamingNumber>
+            )}
+            {card.signet !== undefined && (
+                <S.CardSignet $signet={card.signet}></S.CardSignet>
             )}
         </S.CardContainer>
     );

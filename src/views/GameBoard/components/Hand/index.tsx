@@ -76,7 +76,7 @@ export const Hand: React.FC<HandProps> = ({
                                 $translateY={translateY}
                                 $zIndex={zIndex}
                                 style={{
-                                    width: isBeingDragged ? '0px' : 'auto',
+                                    width: isBeingDragged ? '0px' : '',
                                     opacity: isBeingDragged ? 0 : 1,
                                     pointerEvents: isBeingDragged
                                         ? 'none'

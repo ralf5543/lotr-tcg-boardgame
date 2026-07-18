@@ -1,14 +1,42 @@
 import styled from 'styled-components';
 
-export const BoardContainer = styled.div`
+
+
+const CURSOR_THEMES = {
+  FREE_PEOPLES: {
+    default: "url('/interface/cursor_default.png') 10 10",
+    pointer: "url('/interface/cursor_hand.png') 15 5",
+  },
+  SHADOW: {
+    default: "url('/cursors/sauron_default_2x.png') 0 0, url('/cursors/sauron_default.png') 0 0",
+    pointer: "url('/cursors/sauron_default_2x.png') 0 0, url('/cursors/sauron_default.png') 0 0",
+  }
+};
+
+export const BoardContainer = styled.div<{ $faction: 'FREE_PEOPLES' | 'SHADOW' }>`
+    width: 1920px;
+    height: 1080px;  
+    display: flex;
+    flex-direction: column;
     position: relative;
     padding: 20px;
-    background-image: url('interface/map_big.webp');
     background-size: cover;
     background-repeat: no-repeat;
+    background-image: url('interface/map_big.webp');
     color: #fff;
-    min-height: 100vh;
     padding-bottom: 180px; /* Évite que la main fixe ne cache le plateau */
+    background-attachment: fixed;
+    cursor: ${props => CURSOR_THEMES[props.$faction].default}, auto;
+
+    button, 
+    a {
+    cursor: ${props => CURSOR_THEMES[props.$faction].default}, pointer;
+  }
+
+  [draggable="true"],
+  [class*="CardContainer"] {
+    cursor: ${props => CURSOR_THEMES[props.$faction].pointer}, pointer;
+  }
 `;
 
 export const OpponentSection = styled.div`
@@ -109,9 +137,13 @@ export const InfoText = styled.p`
 
 export const HoveredCardsZone = styled.div`
   position: fixed;
-  inset-block-end: 40px;
-  inset-inline-end: 5vw;
+  width: clamp(250px, 30vw, 400px); /* Taille idéale pour un gros zoom ! */
+  aspect-ratio: 1/1.39;
+  inset-block-start: 50%;
+  transform: translateY(-50%);
+  inset-inline-end: 24px;
   z-index: 9999;
   pointerEvents: none;
-  animation: fadeIn 0.15s ease-out
+  animation: fadeIn 0.15s ease-out;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
 `;

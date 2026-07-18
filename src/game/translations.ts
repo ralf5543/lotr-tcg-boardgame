@@ -53,5 +53,7 @@ export const TRANSLATIONS = {
   keyword: {
     RANGER: 'Rôdeur',
     KNIGHT: 'Chevalier',
+    ARCHER: 'Archer',
+    DAMAGE: 'Dégâts + 1',
   } as Record<CardKeyword, string>
 };

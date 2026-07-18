@@ -32,7 +32,7 @@ export const List = styled.div`
 `;
 
 export const SiteCard = styled.div<{ $active?: boolean }>`
-  width: 120px;
+  width: 130px;
   height: 75px;
   background-color: #8e44ad;
   color: #fff;
