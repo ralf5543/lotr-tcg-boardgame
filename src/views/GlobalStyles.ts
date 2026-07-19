@@ -50,6 +50,7 @@ export const GlobalStyles = createGlobalStyle`
   body {
     font-family: 'DecipherRegular', serif;
     line-height: 1.2;
+    cursor: none;
   }
 
   button {
@@ -60,10 +61,7 @@ export const GlobalStyles = createGlobalStyle`
     outline: none;
   }
 
-  body.is-dragging, 
-  body.is-dragging *, 
-  body.is-dragging button, 
-  body.is-dragging [draggable="true"] {
+  html, body, button, a, [draggable="true"], *, *::before, *::after {
     cursor: none !important;
 }
 `;

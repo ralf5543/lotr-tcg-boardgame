@@ -3,6 +3,7 @@ import type { CardType } from '../../../../game/types';
 import * as S from './styles';
 import { TRANSLATIONS } from '../../../../game/translations';
 import { useHoverCard } from '../../../../contexts/HoverCardContext';
+import { useDrag } from '../../../../contexts/DragContext';
 import type { CardSignet } from '../../../../game/types';
 
 interface CardProps {
@@ -10,8 +11,8 @@ interface CardProps {
     isPlayable?: boolean;
     isDraggable?: boolean;
     index?: number;
-    roaming?: number,
-    signet?: CardSignet
+    roaming?: number;
+    signet?: CardSignet;
     size?: 'sm' | 'md' | 'lg'; // Ajout de la prop size
 }
 
@@ -24,6 +25,8 @@ export const Card: React.FC<CardProps> = ({
 }) => {
     const isShadow = card.kind === 'SHADOW';
     const { setHoveredCard } = useHoverCard();
+
+    const { playerFaction, startDrag } = useDrag();
 
     const handleMouseEnter = () => {
         if (size !== 'lg') {
@@ -71,22 +74,47 @@ export const Card: React.FC<CardProps> = ({
 
     const typeLine = typeLineElements.join(' • ');
 
+    const handlePointerDown = (e: React.PointerEvent) => {
+        // Si la carte n'est pas draggable ou que l'index est aux fraises, on fait rien
+        if (!isDraggable || index === undefined) return;
+        
+        // Empêche le navigateur de tenter ses comportements par défaut (sélection de texte, etc.)
+        e.preventDefault(); 
+
+        // C'est ici qu'on lance ton action personnalisée du DragContext !
+        // (Tu as normalement une fonction dans ton DragProvider qui initialise le mouvement)
+        startDrag(card, index, e); 
+        
+        // On coupe l'inspecteur géant pour pas gêner
+        setHoveredCard(null);
+    };
+
     return (
         <S.CardContainer
             $culture={card.culture}
             $imageUrl={card.imageUrl}
             $isShadow={isShadow}
             $isPlayable={isPlayable}
+            $playerFaction={playerFaction}
             $size={size} // Transmis au style pour recalculer l'échelle !
             onMouseEnter={handleMouseEnter} // Détection du survol
             onMouseLeave={handleMouseLeave} // Fin du survol
-            draggable={isDraggable}
             onDragStart={isDraggable ? handleDragStart : undefined}
+            // 🧙‍♂️ ON COUPE LE DRAG NATIF ICI :
+            draggable={false} 
+            
+            // 🚀 ON PASSE PAR TON SYSTÈME DE POINTER :
+            onPointerDown={handlePointerDown} 
+            
+            // Attribut custom pour que ton CustomAssetCursor détecte toujours la carte au survol !
+            data-draggable={isDraggable}
         >
             <S.CardHeader>
-                <S.TwilightBadge $isShadow={isShadow}>
-                    {card.twilightCost}
-                </S.TwilightBadge>
+                {size !== 'sm' && (
+                    <S.TwilightBadge $isShadow={isShadow}>
+                        {card.twilightCost}
+                    </S.TwilightBadge>
+                )}
                 <S.CardTitles>
                     <S.CardTitle>
                         {card.isUnique && '• '}

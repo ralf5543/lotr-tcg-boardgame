@@ -26,7 +26,6 @@ export const BoardContainer = styled.div<{ $faction: 'FREE_PEOPLES' | 'SHADOW' }
     color: #fff;
     padding-bottom: 180px; /* Évite que la main fixe ne cache le plateau */
     background-attachment: fixed;
-    cursor: ${props => CURSOR_THEMES[props.$faction].default}, auto;
 
     button, 
     a {
@@ -145,5 +144,5 @@ export const HoveredCardsZone = styled.div`
   z-index: 9999;
   pointerEvents: none;
   animation: fadeIn 0.15s ease-out;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+  box-shadow: 5px 5px 15px 5px #000000;
 `;

@@ -19,6 +19,7 @@ export const CardWrapper = styled.div<{ $angle: number; $translateY: number; $zI
   transform: rotate(${props => props.$angle}deg) translateY(${props => props.$translateY}px);
   transform-origin: bottom center;
   z-index: ${props => props.$zIndex};
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 1);
 
   &:hover {
     transform: rotate(${props => props.$angle}deg) translateY(${props => props.$translateY}px) scale(1.1);

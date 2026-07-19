@@ -18,6 +18,7 @@ interface DragContextType {
     dragged: DraggedCardData | null;
     position: { x: number; y: number };
     activeTargetId: string | null;
+    playerFaction: 'FREE_PEOPLES' | 'SHADOW';
     startDrag: (card: CardType, index: number, e: React.PointerEvent) => void;
     stopDrag: () => void;
     registerTarget: (id: string, element: HTMLDivElement | null) => void;
@@ -28,8 +29,8 @@ const DragContext = createContext<DragContextType | undefined>(undefined);
 
 // Configuration des icônes de drag selon la faction
 const GRABBING_ICONS = {
-  FREE_PEOPLES: '/interface/cursor_grab.png',
-  SHADOW: '/cursors/sauron_default.png',
+  FREE_PEOPLES: '/interface/cursor_grab_FP.webp',
+  SHADOW: '/cursors/cursor_grab_shadow.webp',
 };
 
 const getXScale = () => {
@@ -39,8 +40,8 @@ const getXScale = () => {
     return rect.width / 1920; 
 };
 
-export const DragProvider: React.FC<{ children: React.ReactNode }> = ({
-    children,
+export const DragProvider: React.FC<{ children: React.ReactNode; playerFaction: 'FREE_PEOPLES' | 'SHADOW' }> = ({
+    children, playerFaction
 }) => {
     const [dragged, setDragged] = useState<DraggedCardData | null>(null);
     const [position, setPosition] = useState({ x: 0, y: 0 });
@@ -223,6 +224,7 @@ export const DragProvider: React.FC<{ children: React.ReactNode }> = ({
                 position,
                 rotation,
                 activeTargetId,
+                playerFaction,
                 startDrag,
                 stopDrag,
                 registerTarget,
@@ -254,28 +256,13 @@ const DragPortal: React.FC = () => {
                 position: 'absolute',
                 left: position.x,
                 top: position.y,
-                // Au lieu de -50% -50%, la carte reste calée naturellement, 
-                // et la rotation pivote autour du curseur
-                transform: `rotate(${rotation}deg)`, 
+                transform: `rotate(${rotation}deg) scale(1.1)`,
                 pointerEvents: 'none',
                 zIndex: 9999,
                 opacity: 0.95,
                 filter: 'drop-shadow(4px 4px 4px rgba(0, 0, 0, 0.5)) drop-shadow(0 15px 25px rgba(0, 0, 0, 0.3))',
             }}
         >
-            {/* LA MAIN FERMÉE : Ancrée pile au point (0,0) du conteneur, là où est la souris */}
-            <img 
-              src={GRABBING_ICONS[currentFaction]} 
-              alt="Grabbing"
-              style={{
-                position: 'absolute',
-                width: '50px',
-                height: '50px',
-                top: '-25px', 
-                left: '-25px',
-                zIndex: 10,
-              }}
-            />
 
             {/* Ta carte de jeu */}
             <div style={{

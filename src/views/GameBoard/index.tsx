@@ -62,8 +62,8 @@ export const GameBoard: React.FC<GameBoardProps> = ({ G, ctx, moves }) => {
     const currentFaction = ctx.currentPlayer === '1' ? 'SHADOW' : 'FREE_PEOPLES';
 
     return (
-        <DragProvider>
-            <S.BoardContainer $faction={currentFaction}>
+        <DragProvider playerFaction={currentFaction}>
+            <S.BoardContainer $faction={currentFaction} $faction={currentFaction}>
                 {/* 2. L'inspecteur de carte global (fixé à l'écran, par exemple à droite ou centré) */}
                 {hoveredCard && (
                     <S.HoveredCardsZone>

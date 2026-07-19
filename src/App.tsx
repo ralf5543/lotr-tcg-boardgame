@@ -4,6 +4,8 @@ import { Client } from 'boardgame.io/react';
 import { LotrGame } from './game/Game';
 import { GameBoard } from './views/GameBoard';
 import { HoverCardProvider } from './contexts/HoverCardContext';
+import { CustomAssetCursor } from './views/GameBoard/components/CustomCursor';
+import { DragProvider } from './contexts/DragContext';
 
 const LotrClient = Client({
     game: LotrGame,
@@ -51,16 +53,19 @@ function App() {
     return (
         <ScreenViewport>
             <HoverCardProvider>
-                {/* Le ScaledView englobe toute ton UI et applique le zoom JPEG */}
-                <ScaledView ref={containerRef} $scale={scale}>
-                    <LotrClient />
-                    <FullscreenButton
-                        onClick={toggleFullScreen}
-                        title="Plein écran"
-                    >
-                        [ ⛶ ]
-                    </FullscreenButton>
-                </ScaledView>
+                <DragProvider>
+                    {/* Le ScaledView englobe toute ton UI et applique le zoom JPEG */}
+                    <ScaledView ref={containerRef} $scale={scale}>
+                        <LotrClient />
+                        <FullscreenButton
+                            onClick={toggleFullScreen}
+                            title="Plein écran"
+                        >
+                            [ ⛶ ]
+                        </FullscreenButton>
+                    </ScaledView>
+                    <CustomAssetCursor />
+                </DragProvider>
             </HoverCardProvider>
         </ScreenViewport>
     );

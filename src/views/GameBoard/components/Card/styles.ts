@@ -36,6 +36,28 @@ const getCultureBackground = (culture: string): string => {
             return '';
     }
 };
+const getCultureSmallBackground = (culture: string): string => {
+    switch (culture) {
+        case 'GONDOR':
+            return 'url(interface/background_gondor.webp)';
+        case 'SHIRE':
+            return 'url(interface/background_shire.webp)';
+        case 'ISENGARD':
+            return 'url(interface/background_isengard.webp)';
+        case 'WRAITH':
+            return 'url(interface/background_wraith.webp)';
+        case 'ELVEN':
+            return 'url(interface/background_elf.webp)';
+        case 'DWARVEN':
+            return 'url(interface/background_dwarf.webp)';
+        case 'MORIA':
+            return 'url(interface/background_moria.webp)';
+        case 'SAURON':
+            return 'url(interface/background_sauron.webp)';
+        default:
+            return '';
+    }
+};
 
 const getCultureColorGradient = (culture: string): string => {
     switch (culture) {
@@ -88,6 +110,7 @@ export const CardContainer = styled.div<{
     $imageUrl?: string;
     $isShadow?: boolean;
     $isPlayable?: boolean;
+    $playerFaction: 'FREE_PEOPLES' | 'SHADOW';
     $size?: 'sm' | 'md' | 'lg'; // Ajout du prop de taille
 }>`
     aspect-ratio: 1/1.39;
@@ -114,51 +137,98 @@ export const CardContainer = styled.div<{
         transform 0.2s ease,
         box-shadow 0.2s ease;
 
-    /* Optionnel : si on survole une carte inactive dans sa main, on peut la rallumer légèrement */
-    &:hover {
-        filter: ${(props) =>
-            props.$isPlayable === false
-                ? 'brightness(0.8) contrast(1)'
-                : 'none'};
-    }
-    cursor: ${(props) =>
-        props.onClick && (props.$isPlayable ?? true) ? 'pointer' : 'default'};
     transition:
         transform 0.2s ease,
         opacity 0.2s ease;
     user-select: none;
     -webkit-user-drag: ${(props) => (props.draggable ? 'element' : 'none')};
-    cursor: ${(props) => (props.draggable ? 'grab' : 'default')};
-
-    &:active {
-        cursor: ${(props) => (props.draggable ? 'grabbing' : 'default')};
-    }
 
     /* ======------ Small cards ------====== */
     ${(props) =>
         props.$size === 'sm' &&
         `
         width: 150px;
-        border-radius: .5em;
-        border: .5em solid black;
-        background-image: ${getCultureColorGradient(props.$culture)};
+        border-radius: 12px 12px 70px 70px;
+        border: 8px solid black;
+        background-image: ${getCultureSmallBackground(props.$culture)};
+        background-size: auto;
+        background-repeat: repeat;
+        filter: drop-shadow(0 4px 6px rgba(0, 0, 0, 1));
+
+
+        ${CardHeader} {
+            min-height: 0;
+            padding-block-start: 0;
+            padding-inline: 0;
+            line-height: 1;
+        }
 
         ${CardTitle} {
-            font-size: 2.4em;
+            font-size: 14px;
+            margin-block-end: 1px
+        }
+
+        ${CardSubtitle} {
+            font-size: 18px;
+        }
+
+        ${CardType} {
+            font-size: 20px;
+            line-height: 1;
+        }
+
+        ${VisualContainer} {
+            height: 100px;
+            padding-inline: 0;
+        }
+
+        ${TextContainer} {
+            inset: 116px 6px 32px;
         }
 
         ${KeywordText} {
-            font-size: 2.4em;
+            font-size: 18px;
+        }
+
+        ${GameText} {
+            font-size: 18px;
+        }
+
+        ${TwilightBadge} {
+            font-size: 28px;
+            width: 50px;
+            margin-inline-end: 20px;
         }
 
         ${StrengthBadge} {
-            font-size: 4em;
-            width: 3em;
+            font-size: 28px;
+    width: 100px;
+    inset-block-start: 126px;
+    inset-inline-start: -48px;
+    background-position: 18px 4px;
         }
 
         ${VitalityBadge} {
-            font-size: 4em;
-            width: 2em;
+                font-size: 28px;
+    width: 63px;
+    inset-block-start: 143px;
+    inset-inline-start: 96px;
+    background-position: 4px 4px;
+        }
+
+        ${CardSignet} {
+               width: 56px;
+    inset-block-start: 166px;
+    inset-inline-start: 50%;
+    transform: translateX(-50%);
+}
+        }
+
+        ${RoamingNumber} {
+            font-size: 28px;
+            width: 56px;
+            inset-block-start: 474px;
+            inset-inline-start: 20px;
         }
     `}
     /* ======------ Large cards ------====== */
