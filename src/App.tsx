@@ -6,6 +6,7 @@ import { GameBoard } from './views/GameBoard';
 import { HoverCardProvider } from './contexts/HoverCardContext';
 import { CustomAssetCursor } from './views/GameBoard/components/CustomCursor';
 import { DragProvider } from './contexts/DragContext';
+import { FactionProvider } from './contexts/FactionContext';
 
 const LotrClient = Client({
     game: LotrGame,
@@ -52,21 +53,23 @@ function App() {
 
     return (
         <ScreenViewport>
-            <HoverCardProvider>
-                <DragProvider>
-                    {/* Le ScaledView englobe toute ton UI et applique le zoom JPEG */}
-                    <ScaledView ref={containerRef} $scale={scale}>
-                        <LotrClient />
-                        <FullscreenButton
-                            onClick={toggleFullScreen}
-                            title="Plein écran"
-                        >
-                            [ ⛶ ]
-                        </FullscreenButton>
-                    </ScaledView>
-                    <CustomAssetCursor />
-                </DragProvider>
-            </HoverCardProvider>
+            <FactionProvider currentPlayer="0" myPlayerId="0">
+                <HoverCardProvider>
+                    <DragProvider>
+                        {/* Le ScaledView englobe toute ton UI et applique le zoom JPEG */}
+                        <ScaledView ref={containerRef} $scale={scale}>
+                            <LotrClient />
+                            <FullscreenButton
+                                onClick={toggleFullScreen}
+                                title="Plein écran"
+                            >
+                                [ ⛶ ]
+                            </FullscreenButton>
+                        </ScaledView>
+                        <CustomAssetCursor />
+                    </DragProvider>
+                </HoverCardProvider>
+            </FactionProvider>
         </ScreenViewport>
     );
 }

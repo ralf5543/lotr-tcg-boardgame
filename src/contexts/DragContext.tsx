@@ -18,7 +18,6 @@ interface DragContextType {
     dragged: DraggedCardData | null;
     position: { x: number; y: number };
     activeTargetId: string | null;
-    playerFaction: 'FREE_PEOPLES' | 'SHADOW';
     startDrag: (card: CardType, index: number, e: React.PointerEvent) => void;
     stopDrag: () => void;
     registerTarget: (id: string, element: HTMLDivElement | null) => void;
@@ -27,12 +26,6 @@ interface DragContextType {
 
 const DragContext = createContext<DragContextType | undefined>(undefined);
 
-// Configuration des icônes de drag selon la faction
-const GRABBING_ICONS = {
-  FREE_PEOPLES: '/interface/cursor_grab_FP.webp',
-  SHADOW: '/cursors/cursor_grab_shadow.webp',
-};
-
 const getXScale = () => {
     const scaledBoard = document.querySelector('[class*="ScaledView"]');
     if (!scaledBoard) return 1;
@@ -40,8 +33,8 @@ const getXScale = () => {
     return rect.width / 1920; 
 };
 
-export const DragProvider: React.FC<{ children: React.ReactNode; playerFaction: 'FREE_PEOPLES' | 'SHADOW' }> = ({
-    children, playerFaction
+export const DragProvider: React.FC<{ children: React.ReactNode; }> = ({
+    children
 }) => {
     const [dragged, setDragged] = useState<DraggedCardData | null>(null);
     const [position, setPosition] = useState({ x: 0, y: 0 });
@@ -224,7 +217,6 @@ export const DragProvider: React.FC<{ children: React.ReactNode; playerFaction: 
                 position,
                 rotation,
                 activeTargetId,
-                playerFaction,
                 startDrag,
                 stopDrag,
                 registerTarget,
@@ -246,9 +238,6 @@ export const useDrag = () => {
 const DragPortal: React.FC = () => {
     const { dragged, position, rotation } = useDrag();
     if (!dragged) return null;
-
-    // Faction temporaire fixe pour tes tests (à lier à ton state plus tard)
-    const currentFaction: 'FREE_PEOPLES' | 'SHADOW' = 'FREE_PEOPLES';
 
     return (
         <div

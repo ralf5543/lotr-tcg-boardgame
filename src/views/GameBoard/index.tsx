@@ -10,7 +10,6 @@ import { useHoverCard } from '../../contexts/HoverCardContext';
 import { Card } from './components/Card';
 import { DragProvider } from '../../contexts/DragContext';
 
-
 interface GameBoardProps {
     G: {
         twilightPool: number;
@@ -39,6 +38,10 @@ interface GameBoardProps {
 }
 
 export const GameBoard: React.FC<GameBoardProps> = ({ G, ctx, moves }) => {
+    // boardgame.io fournit généralement une prop 'playerID' au composant pour savoir
+    // quel joueur regarde cet écran. Si elle n'existe pas encore, on prend currentPlayer.
+    const myPlayerId = ctx.currentPlayer;
+
     const myId = ctx.currentPlayer;
     const oppId = myId === '0' ? '1' : '0';
 
@@ -56,21 +59,20 @@ export const GameBoard: React.FC<GameBoardProps> = ({ G, ctx, moves }) => {
         freePeoplesArea: [],
         supportArea: [],
     };
-
     const { hoveredCard } = useHoverCard();
 
-    const currentFaction = ctx.currentPlayer === '1' ? 'SHADOW' : 'FREE_PEOPLES';
+    // Calcul temporaire pour le container de style
+    const currentFaction = myPlayerId === '1' ? 'SHADOW' : 'FREE_PEOPLES';
 
     return (
-        <DragProvider playerFaction={currentFaction}>
-            <S.BoardContainer $faction={currentFaction} $faction={currentFaction}>
-                {/* 2. L'inspecteur de carte global (fixé à l'écran, par exemple à droite ou centré) */}
+        <DragProvider>
+            <S.BoardContainer $faction={currentFaction}>
                 {hoveredCard && (
                     <S.HoveredCardsZone>
                         <Card card={hoveredCard} size="lg" />
                     </S.HoveredCardsZone>
                 )}
-                {/* ==================== 1. CÔTÉ ADVERSAIRE (HAUT) ==================== */}
+
                 <PlayerArea
                     playerId={oppId}
                     deckCount={opponent.deck?.length || 0}
@@ -80,13 +82,14 @@ export const GameBoard: React.FC<GameBoardProps> = ({ G, ctx, moves }) => {
                     moves={moves}
                 />
 
-                {/* ==================== 2. LE BLOC CENTRAL MUTUALISÉ ==================== */}
                 <S.CentralBlock>
-                    <Battlefield twilightPoolValue={G.twilightPool} cards={G.battlefield || []} />
+                    <Battlefield
+                        twilightPoolValue={G.twilightPool}
+                        cards={G.battlefield || []}
+                    />
                     <SitePath currentSite={G.currentSite} />
                 </S.CentralBlock>
 
-                {/* ==================== 3. CÔTÉ JOUEUR (BAS) ==================== */}
                 <PlayerArea
                     playerId={myId}
                     deckCount={me.deck?.length || 0}
@@ -95,7 +98,6 @@ export const GameBoard: React.FC<GameBoardProps> = ({ G, ctx, moves }) => {
                     moves={moves}
                 />
 
-                {/* ==================== 4. LA MAIN FLOTTANTE (COMPOSANT UNIQUE) ==================== */}
                 <Hand
                     hand={me.hand || []}
                     deckCount={me.deck?.length || 0}
