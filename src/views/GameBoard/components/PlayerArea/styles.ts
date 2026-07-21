@@ -2,7 +2,6 @@ import styled from 'styled-components';
 
 export const AreaContainer = styled.div<{ $isOpponent?: boolean }>`
   margin-bottom: 20px;
-  opacity: ${props => (props.$isOpponent ? 0.7 : 1)};
 `;
 
 export const MetaInfo = styled.span<{ $isOpponent?: boolean }>`

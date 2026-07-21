@@ -143,7 +143,7 @@ export const DragProvider: React.FC<{ children: React.ReactNode; }> = ({
                 const overlapArea = xOverlap * yOverlap;
 
                 if (overlapArea > 0) {
-                    if (id === 'freePeoplesArea') {
+                    if (id === 'fellowshipArea') {
                         hitZoneId = id;
                     } else {
                         const targetArea = targetRect.width * targetRect.height;
@@ -179,7 +179,7 @@ export const DragProvider: React.FC<{ children: React.ReactNode; }> = ({
                     const overlapArea = xOverlap * yOverlap;
 
                     if (overlapArea > 0) {
-                        if (id === 'freePeoplesArea') {
+                        if (id === 'fellowshipArea') {
                             hitZoneId = id;
                         } else {
                             const targetArea = targetRect.width * targetRect.height;

@@ -66,7 +66,7 @@ export interface PlayerState {
     deck: CardType[];
     hand: CardType[];
     discard: CardType[];
-    freePeoplesArea: CardType[]; // Zone exclusive des Compagnons (les gentils)
+    fellowshipArea: CardType[]; // Zone exclusive des Compagnons (les gentils)
     supportArea: CardType[]; // Aire de soutien (Allies, Conditions... mixte)
 }
 

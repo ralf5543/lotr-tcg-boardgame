@@ -6,6 +6,7 @@ const server = Server({
     origins: [Origins.LOCALHOST],
 });
 
-server.run(8000, () => {
-    console.log('🟢 Serveur boardgame.io actif sur http://localhost:8000');
+server.run({
+    port: 8000,
+    host: '0.0.0.0',
 });

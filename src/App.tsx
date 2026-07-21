@@ -15,7 +15,7 @@ const LotrClient = Client({
     numPlayers: 2,
     // En dev : WebSocket via le serveur local. En prod : mode Local (ou ton serveur distant)
     multiplayer: import.meta.env.DEV
-        ? SocketIO({ server: 'http://localhost:8000' })
+        ? SocketIO({ server: `http://${window.location.hostname}:8000` })
         : Local(),
     debug: false,
 });
@@ -29,9 +29,13 @@ function App() {
     const [scale, setScale] = useState(1);
     const containerRef = useRef<HTMLDivElement>(null);
 
-    const searchParams = new URLSearchParams(window.location.search);
-    const myPlayerId = searchParams.get('player') || '0';
-    const currentMatchId = searchParams.get('match') || 'default';
+    const [{ myPlayerId, currentMatchId }] = useState(() => {
+        const searchParams = new URLSearchParams(window.location.search);
+        return {
+            myPlayerId: searchParams.get('player') || '0',
+            currentMatchId: searchParams.get('match') || 'default',
+        };
+    });
     
     
 

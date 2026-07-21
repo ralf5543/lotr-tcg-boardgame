@@ -7,7 +7,7 @@ import { useDrag } from '../../../../contexts/DragContext';
 interface PlayerAreaProps {
     playerId: string; // "0" (FP) ou "1" (Ombre)
     deckCount: number;
-    freePeoplesArea: CardType[];
+    fellowshipArea: CardType[];
     supportArea: CardType[];
     isOpponent?: boolean;
     moves: any;
@@ -18,7 +18,7 @@ let isProcessingDrop = false;
 export const PlayerArea: React.FC<PlayerAreaProps> = ({
     playerId,
     deckCount,
-    freePeoplesArea,
+    fellowshipArea,
     supportArea,
     isOpponent = false,
     moves,
@@ -26,100 +26,97 @@ export const PlayerArea: React.FC<PlayerAreaProps> = ({
     const isFreePeoplesPlayer = playerId === '0';
     const { activeTargetId, registerTarget, startDrag, dragged } = useDrag();
 
-    const companionsRef = React.useRef<CardType[]>(freePeoplesArea);
+     // 💡 1. DECLARATION DE movesRef
+    const movesRef = React.useRef(moves);
     React.useEffect(() => {
-        companionsRef.current = freePeoplesArea;
-    }, [freePeoplesArea]);
+        movesRef.current = moves;
+    }, [moves]);
+
+    // 💡 2. DECLARATION DE companionsRef
+    const companionsRef = React.useRef<CardType[]>(fellowshipArea);
+    React.useEffect(() => {
+        companionsRef.current = fellowshipArea;
+    }, [fellowshipArea]);
 
     React.useEffect(() => {
-        const handlePhysicalDrop = (e: Event) => {
-            if (isOpponent) return;
-            if (isProcessingDrop) return;
+        companionsRef.current = fellowshipArea;
+    }, [fellowshipArea]);
 
-            const customEvent = e as CustomEvent;
-            const { draggedCard, targetId } = customEvent.detail;
-            if (!targetId) return;
+    React.useEffect(() => {
+    const handlePhysicalDrop = (e: Event) => {
+    if (isOpponent) return;
 
-            const { index, card, origin } = draggedCard;
+    const customEvent = e as CustomEvent;
+    const { draggedCard, targetId } = customEvent.detail || {};
+    
+    console.log('📦 [DROP EVENT DETAIL]:', { draggedCard, targetId });
 
-            isProcessingDrop = true;
-            setTimeout(() => {
-                isProcessingDrop = false;
-            }, 100);
+    if (!targetId || !draggedCard) return;
+    const { index, card, origin } = draggedCard;
 
-            // -------------------------------------------------------------
-            // 1. DROPS VENANT DU PLATEAU (origin === 'BOARD')
-            // -------------------------------------------------------------
-            if (origin === 'BOARD') {
-                // A. Déplacer sur la zone Fellowship elle-même (ex: mettre en fin de ligne)
-                if (targetId === 'freePeoplesArea') {
-                    const targetIndex = (freePeoplesArea || []).length - 1;
-                    moves.reorderFellowship({
-                        fromIndex: index,
-                        toIndex: targetIndex,
-                    });
-                    return;
-                }
+    // --- CASE A : DROP SUR UN COMPAGNON (ATTACHEMENT) ---
+    // Si targetId n'est pas la zone globale 'fellowshipArea' mais l'ID d'une carte spécifique
+    if (origin === 'HAND' && targetId !== 'fellowshipArea' && targetId !== 'supportArea') {
+        console.log('📎 [TRY ATTACH]:', { cardIndex: index, targetCardId: targetId });
+        moves.attachCard(index, targetId);
+        return;
+    }
 
-                // B. Déplacer / Swapper sur un compagnon spécifique
-                const currentCompanions = companionsRef.current || [];
-                const targetCompanionIndex = currentCompanions.findIndex(
-                    (c) => c && (c.id === targetId || c.card?.id === targetId)
-                );
+    // --- CASE B : DROP DEPUIS LA MAIN (JOUER UNE CARTE) ---
+    if (origin === 'HAND' && targetId === 'fellowshipArea') {
+        console.log('🃏 [TRY PLAY CARD]:', { cardIndex: index });
+        moves.playCard(index);
+        return;
+    }
 
-                if (targetCompanionIndex !== -1) {
-                    moves.reorderFellowship({
-                        fromIndex: index,
-                        toIndex: targetCompanionIndex,
-                    });
-                    return;
-                }
+    // --- CASE C : REORDER SUR LE PLATEAU ---
+    if (origin === 'BOARD') {
+    const currentList = fellowshipArea || [];
+    
+    // 1. Déterminer l'index cible
+    let toIndex = -1;
 
-                // (Futurs cas 'BOARD' : déplacer une possession vers un autre compagnon, etc.)
-                return;
-            }
+    // Si on a lâché sur une carte spécifique
+    if (targetId !== 'fellowshipArea') {
+        toIndex = currentList.findIndex(
+            (c) => c && (c.id === targetId || (c as any).card?.id === targetId)
+        );
+    } else {
+        // Si on lâche dans le vide de la zone, on envoie à la fin
+        toIndex = currentList.length - 1;
+    }
 
-            // -------------------------------------------------------------
-            // 2. DROPS VENANT DE LA MAIN (origin === 'HAND')
-            // -------------------------------------------------------------
-            if (targetId === 'freePeoplesArea') {
-                if (
-                    card.kind === 'FREE_PEOPLES' &&
-                    card.subType === 'COMPANION'
-                ) {
-                    moves.playCard(index);
-                }
-                return;
-            }
+    console.log('🔄 [REORDER CHECK]', {
+        fromIndex: index,
+        toIndexCalculated: toIndex,
+        targetIdReceived: targetId,
+        currentListLength: currentList.length,
+        currentIds: currentList.map(c => c?.id)
+    });
 
-            // Attachement d'une possession depuis la main sur un compagnon
-            const currentCompanions = companionsRef.current || [];
-            const targetCompanion = currentCompanions.find(
-                (c) => c && (c.id === targetId || c.card?.id === targetId)
-            );
-            if (!targetCompanion || card.subType !== 'POSSESSION') return;
+    if (index === undefined || toIndex === -1) {
+        console.warn('⚠️ [REORDER ABORTED] Index source ou cible invalide');
+        return;
+    }
 
-            const targetCompanionId =
-                targetCompanion.id || targetCompanion.card?.id;
-            moves.attachCard(index, targetCompanionId);
-        };
+    moves.reorderFellowship({ fromIndex: index, toIndex });
+}
+};
 
-        window.addEventListener('card-dropped', handlePhysicalDrop);
-        return () =>
-            window.removeEventListener('card-dropped', handlePhysicalDrop);
-    }, [isOpponent, moves, freePeoplesArea?.length]);
-
-    const isFrontLineHovered = activeTargetId === 'freePeoplesArea';
+    window.addEventListener('card-dropped', handlePhysicalDrop);
+    return () => window.removeEventListener('card-dropped', handlePhysicalDrop);
+}, [isOpponent, moves, fellowshipArea]);
 
     // 1. Rendu du composant Zone Communauté (Fellowship)
     const renderFellowship = () => {
+
         if (isFreePeoplesPlayer) {
             return (
                 <S.Fellowship
                     className="fellowship-active"
                     $borderColor="#3498db"
                     ref={(el) =>
-                        !isOpponent && registerTarget('freePeoplesArea', el)
+                        !isOpponent && registerTarget('fellowshipArea', el)
                     }
                 >
                     <S.ZoneTitle color="#3498db">
@@ -127,10 +124,10 @@ export const PlayerArea: React.FC<PlayerAreaProps> = ({
                         {isOpponent ? "(Cibles de l'Ombre)" : '(Ta Compagnie)'}
                     </S.ZoneTitle>
                     <S.CardRow>
-                        {(freePeoplesArea || []).length === 0 && (
+                        {(fellowshipArea || []).length === 0 && (
                             <S.EmptyText>Aucun compagnon déployé.</S.EmptyText>
                         )}
-                        {(freePeoplesArea || []).map(
+                        {(fellowshipArea || []).map(
                             (companion, companionIdx) => {
                                 const isBeingDragged =
                                     dragged?.card.id === companion.id;

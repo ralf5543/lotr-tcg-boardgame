@@ -37,7 +37,6 @@ export const BoardContainer = styled.div<{ $faction: 'FREE_PEOPLES' | 'SHADOW' }
 `;
 
 export const OpponentSection = styled.div`
-    opacity: 0.7;
     margin-bottom: 20px;
 `;
 

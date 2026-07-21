@@ -23,7 +23,7 @@ interface GameBoardProps {
                 deck: CardType[];
                 hand: CardType[];
                 discard: CardType[];
-                freePeoplesArea: CardType[];
+                fellowshipArea: CardType[];
                 supportArea: CardType[];
             }
         >;
@@ -48,14 +48,14 @@ export const GameBoard: React.FC<GameBoardProps> = ({
         deck: [],
         hand: [],
         discard: [],
-        freePeoplesArea: [],
+        fellowshipArea: [],
         supportArea: [],
     };
     const opponent = G.players[oppId] || {
         deck: [],
         hand: [],
         discard: [],
-        freePeoplesArea: [],
+        fellowshipArea: [],
         supportArea: [],
     };
 
@@ -75,7 +75,7 @@ export const GameBoard: React.FC<GameBoardProps> = ({
                 <PlayerArea
                     playerId={oppId}
                     deckCount={opponent.deck?.length || 0}
-                    freePeoplesArea={opponent.freePeoplesArea || []}
+                    fellowshipArea={opponent.fellowshipArea || []}
                     supportArea={opponent.supportArea || []}
                     isOpponent={true}
                     moves={moves}
@@ -135,7 +135,7 @@ export const GameBoard: React.FC<GameBoardProps> = ({
                 <PlayerArea
                     playerId={myId}
                     deckCount={me.deck?.length || 0}
-                    freePeoplesArea={me.freePeoplesArea || []}
+                    fellowshipArea={me.fellowshipArea || []}
                     supportArea={me.supportArea || []}
                     isOpponent={false}
                     moves={moves}
