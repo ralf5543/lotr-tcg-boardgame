@@ -1,4 +1,3 @@
-// src/views/GameBoard/components/PlayerArea/index.tsx
 import React from 'react';
 import type { CardType } from '../../../../game/types';
 import * as S from './styles';
@@ -6,7 +5,7 @@ import { Card } from '../Card';
 import { useDrag } from '../../../../contexts/DragContext';
 
 interface PlayerAreaProps {
-    playerId: string;// "0" (FP) ou "1" (Ombre)
+    playerId: string; // "0" (FP) ou "1" (Ombre)
     deckCount: number;
     freePeoplesArea: CardType[];
     supportArea: CardType[];
@@ -25,7 +24,7 @@ export const PlayerArea: React.FC<PlayerAreaProps> = ({
     moves,
 }) => {
     const isFreePeoplesPlayer = playerId === '0';
-    const { activeTargetId, registerTarget } = useDrag();
+    const { activeTargetId, registerTarget, startDrag, dragged } = useDrag();
 
     const companionsRef = React.useRef<CardType[]>(freePeoplesArea);
     React.useEffect(() => {
@@ -41,17 +40,48 @@ export const PlayerArea: React.FC<PlayerAreaProps> = ({
             const { draggedCard, targetId } = customEvent.detail;
             if (!targetId) return;
 
-            const { index, card } = draggedCard;
-
-            if (targetId === 'freePeoplesArea' && card.kind !== 'FREE_PEOPLES')
-                return;
+            const { index, card, origin } = draggedCard;
 
             isProcessingDrop = true;
             setTimeout(() => {
                 isProcessingDrop = false;
             }, 100);
 
-            // Pose d'un compagnon dans la Zone Communauté
+            // -------------------------------------------------------------
+            // 1. DROPS VENANT DU PLATEAU (origin === 'BOARD')
+            // -------------------------------------------------------------
+            if (origin === 'BOARD') {
+                // A. Déplacer sur la zone Fellowship elle-même (ex: mettre en fin de ligne)
+                if (targetId === 'freePeoplesArea') {
+                    const targetIndex = (freePeoplesArea || []).length - 1;
+                    moves.reorderFellowship({
+                        fromIndex: index,
+                        toIndex: targetIndex,
+                    });
+                    return;
+                }
+
+                // B. Déplacer / Swapper sur un compagnon spécifique
+                const currentCompanions = companionsRef.current || [];
+                const targetCompanionIndex = currentCompanions.findIndex(
+                    (c) => c && (c.id === targetId || c.card?.id === targetId)
+                );
+
+                if (targetCompanionIndex !== -1) {
+                    moves.reorderFellowship({
+                        fromIndex: index,
+                        toIndex: targetCompanionIndex,
+                    });
+                    return;
+                }
+
+                // (Futurs cas 'BOARD' : déplacer une possession vers un autre compagnon, etc.)
+                return;
+            }
+
+            // -------------------------------------------------------------
+            // 2. DROPS VENANT DE LA MAIN (origin === 'HAND')
+            // -------------------------------------------------------------
             if (targetId === 'freePeoplesArea') {
                 if (
                     card.kind === 'FREE_PEOPLES' &&
@@ -62,8 +92,8 @@ export const PlayerArea: React.FC<PlayerAreaProps> = ({
                 return;
             }
 
-            // Attachement sur un compagnon
-            const currentCompanions = companionsRef.current;
+            // Attachement d'une possession depuis la main sur un compagnon
+            const currentCompanions = companionsRef.current || [];
             const targetCompanion = currentCompanions.find(
                 (c) => c && (c.id === targetId || c.card?.id === targetId)
             );
@@ -77,45 +107,89 @@ export const PlayerArea: React.FC<PlayerAreaProps> = ({
         window.addEventListener('card-dropped', handlePhysicalDrop);
         return () =>
             window.removeEventListener('card-dropped', handlePhysicalDrop);
-    }, [isOpponent, moves]);
+    }, [isOpponent, moves, freePeoplesArea?.length]);
 
     const isFrontLineHovered = activeTargetId === 'freePeoplesArea';
 
     // 1. Rendu du composant Zone Communauté (Fellowship)
     const renderFellowship = () => {
-        // 🛡️ Si ce sont les Peuples Libres : affichage COMPLET et CLAIR !
         if (isFreePeoplesPlayer) {
             return (
                 <S.Fellowship
                     className="fellowship-active"
                     $borderColor="#3498db"
-                    ref={(el) => !isOpponent && registerTarget('freePeoplesArea', el)}
+                    ref={(el) =>
+                        !isOpponent && registerTarget('freePeoplesArea', el)
+                    }
                 >
                     <S.ZoneTitle color="#3498db">
-                        🛡️ Compagnons des Peuples Libres {isOpponent ? '(Cibles de l\'Ombre)' : '(Ta Compagnie)'}
+                        🛡️ Compagnons des Peuples Libres{' '}
+                        {isOpponent ? "(Cibles de l'Ombre)" : '(Ta Compagnie)'}
                     </S.ZoneTitle>
                     <S.CardRow>
                         {(freePeoplesArea || []).length === 0 && (
                             <S.EmptyText>Aucun compagnon déployé.</S.EmptyText>
                         )}
-                        {(freePeoplesArea || []).map((companion) => (
-                            <S.CharacterStack key={companion.id}>
-                                <div ref={(el) => !isOpponent && registerTarget(companion.id, el)}>
-                                    <Card card={companion} size="sm" />
-                                </div>
-                                {companion.attachments?.map((attachment, idx) => (
-                                    <S.AttachmentWrapper key={attachment.id} $index={idx}>
-                                        <Card card={attachment} size="sm" />
-                                    </S.AttachmentWrapper>
-                                ))}
-                            </S.CharacterStack>
-                        ))}
+                        {(freePeoplesArea || []).map(
+                            (companion, companionIdx) => {
+                                const isBeingDragged =
+                                    dragged?.card.id === companion.id;
+
+                                return (
+                                    <S.CharacterStack
+                                        key={companion.id}
+                                        style={{
+                                            opacity: isBeingDragged ? 0.3 : 1,
+                                        }}
+                                    >
+                                        <div
+                                            ref={(el) =>
+                                                !isOpponent &&
+                                                registerTarget(companion.id, el)
+                                            }
+                                            onPointerDown={(e) => {
+                                                if (isOpponent) return;
+                                                if (e.button !== 0) return;
+                                                e.stopPropagation();
+
+                                                // Launch drag avec origin = 'BOARD'
+                                                startDrag(
+                                                    companion,
+                                                    companionIdx,
+                                                    e,
+                                                    'BOARD'
+                                                );
+                                            }}
+                                            style={{
+                                                cursor: isOpponent
+                                                    ? 'default'
+                                                    : 'grab',
+                                            }}
+                                        >
+                                            <Card card={companion} size="sm" />
+                                        </div>
+                                        {companion.attachments?.map(
+                                            (attachment, idx) => (
+                                                <S.AttachmentWrapper
+                                                    key={attachment.id}
+                                                    $index={idx}
+                                                >
+                                                    <Card
+                                                        card={attachment}
+                                                        size="sm"
+                                                    />
+                                                </S.AttachmentWrapper>
+                                            )
+                                        )}
+                                    </S.CharacterStack>
+                                );
+                            }
+                        )}
                     </S.CardRow>
                 </S.Fellowship>
             );
         }
 
-        // 👁️ Si c'est l'Ombre : la zone Fellowship est inutile (L'Ombre n'a pas de Compagnons)
         return (
             <S.FellowshipCollapsed>
                 {/* Zone masquée/réduite car l'Ombre n'a pas de compagnons */}
@@ -158,21 +232,13 @@ export const PlayerArea: React.FC<PlayerAreaProps> = ({
                     : `🧙‍♂️ TOI (Joueur ${playerId})`}
             </S.MetaInfo>
 
-            {/* 
-            🎯 SYMÉTRIE PARFAITE :
-            Que ce soit chez l'adversaire (en haut) ou chez toi (en bas), 
-            la Fellowship est TOUJOURS placée du côté du Battlefield (au centre),
-            et la SupportArea est placée du côté extérieur (vers la main).
-        */}
             {isOpponent ? (
                 <>
-                    {/* En haut : SupportArea en haut, Fellowship en bas (contre le Battlefield) */}
                     {renderSupportArea()}
                     {renderFellowship()}
                 </>
             ) : (
                 <>
-                    {/* En bas : Fellowship en haut (contre le Battlefield), SupportArea en bas */}
                     {renderFellowship()}
                     {renderSupportArea()}
                 </>

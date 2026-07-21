@@ -32,6 +32,8 @@ function App() {
     const searchParams = new URLSearchParams(window.location.search);
     const myPlayerId = searchParams.get('player') || '0';
     const currentMatchId = searchParams.get('match') || 'default';
+    
+    
 
     useEffect(() => {
         const handleSync = (event: MessageEvent) => {
@@ -84,6 +86,11 @@ function App() {
             document.exitFullscreen();
         }
     };
+    if (!myPlayerId) {
+        return <div>Chargement de la session du joueur...</div>;
+    }
+
+    console.log('--- APP RENDER CLIENT ---', { currentMatchId, myPlayerId, type: typeof myPlayerId });
 
     return (
         <ScreenViewport>
@@ -93,7 +100,7 @@ function App() {
                         <ScaledView ref={containerRef} $scale={scale}>
                             <LotrClient
                                 matchID={currentMatchId}
-                                playerID={myPlayerId}
+                                playerID={myPlayerId}// Force le type string ("0" ou "1")
                             />
 
                             <FullscreenButton

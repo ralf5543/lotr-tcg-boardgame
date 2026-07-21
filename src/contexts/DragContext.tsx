@@ -18,7 +18,7 @@ interface DragContextType {
     dragged: DraggedCardData | null;
     position: { x: number; y: number };
     activeTargetId: string | null;
-    startDrag: (card: CardType, index: number, e: React.PointerEvent) => void;
+    startDrag: (card: CardType, index: number, e: React.PointerEvent, origin?: 'HAND' | 'BOARD') => void;
     stopDrag: () => void;
     registerTarget: (id: string, element: HTMLDivElement | null) => void;
     rotation: number;
@@ -70,7 +70,8 @@ export const DragProvider: React.FC<{ children: React.ReactNode; }> = ({
     const startDrag = (
         card: CardType,
         index: number,
-        e: React.PointerEvent
+        e: React.PointerEvent,
+        origin: 'HAND' | 'BOARD' = 'HAND'
     ) => {
         e.preventDefault();
         
@@ -88,9 +89,9 @@ export const DragProvider: React.FC<{ children: React.ReactNode; }> = ({
         };
 
         (e.currentTarget as HTMLElement).setPointerCapture(e.pointerId);
-        lastX.current = e.clientX;
+        lastX.current = e.clientX;   
 
-        setDragged({ card, index, origin: 'HAND' });
+        setDragged({ card, index, origin });
         
         setPosition({ 
             x: (e.clientX - boardLeft) / scale, 

@@ -31,6 +31,49 @@ const createInitialPlayer = (): PlayerState => ({
     supportArea: [],
 });
 
+// 🛠️ MOVES COMMUNS / GLOBAUX DISPONIBLES EN TOUT TEMPS
+const commonMoves = {
+    drawCard: ({ G, ctx, playerID }: any) => {
+    console.log('--- TRY DRAW CARD ---');
+    console.log('playerID qui clique:', playerID);
+    console.log('ctx.currentPlayer:', ctx.currentPlayer);
+    console.log('ctx.activePlayers:', ctx.activePlayers);
+
+    const targetId = playerID || ctx.currentPlayer;
+    const player = G.players[targetId];
+    if (player?.deck && player.deck.length > 0) {
+        const card = player.deck.shift();
+        if (card) player.hand.push(card);
+    }
+},
+
+    reorderFellowship: (
+        { G }: any,
+        {
+            fromIndex,
+            toIndex,
+        }: { fromIndex: number; toIndex: number }
+    ) => {
+        const player = G.players['0'];
+        if (!player || !player.freePeoplesArea) return;
+
+        // Sécurité sur les bornes
+        if (
+            fromIndex < 0 ||
+            fromIndex >= player.freePeoplesArea.length ||
+            toIndex < 0 ||
+            toIndex >= player.freePeoplesArea.length ||
+            fromIndex === toIndex
+        ) {
+            return;
+        }
+
+        // Réordonnancement dans le tableau
+        const [movedCard] = player.freePeoplesArea.splice(fromIndex, 1);
+        player.freePeoplesArea.splice(toIndex, 0, movedCard);
+    },
+};
+
 export const LotrGame: Game<GameState> = {
     setup: (): GameState => ({
         twilightPool: 0,
@@ -42,64 +85,23 @@ export const LotrGame: Game<GameState> = {
         },
     }),
 
-    turn: {
-        activePlayers: { currentPlayer: '0' },
-    },
+    // 💡 On retire le bloc turn global qui entrait en conflit avec les phases !
 
     phases: {
-        // 1. FELLOWSHIP PHASE (Le joueur FP a la main)
+        // 1. FELLOWSHIP PHASE (Joueur FP '0')
         fellowship: {
             start: true,
             next: 'shadow',
             turn: {
-                activePlayers: { currentPlayer: '0' },
+                activePlayers: { value: { '0': 'play' } }, // 👈 Syntaxe officielle boardgame.io
             },
             moves: {
-                drawCard: ({ G, ctx }) => {
-                    const player = G.players[ctx.currentPlayer];
-                    if (player?.deck && player.deck.length > 0) {
-                        const card = player.deck.shift();
-                        if (card) player.hand.push(card);
-                    }
-                },
+                ...commonMoves,
                 playCard: ({ G, ctx }, cardIndex: number) => {
-                    const player = G.players[ctx.currentPlayer];
-                    const card = player?.hand?.[cardIndex];
-                    if (!card) return;
-
-                    if (card.kind !== 'FREE_PEOPLES') {
-                        console.log("Impossible de jouer des cartes Ombre en phase de Communauté.");
-                        return;
-                    }
-
-                    player.hand.splice(cardIndex, 1);
-
-                    if (card.subType === 'COMPANION') {
-                        player.freePeoplesArea.push(card);
-                    } else {
-                        player.supportArea.push(card);
-                    }
-
-                    G.twilightPool += card.twilightCost;
+                    // ... ton code playCard ...
                 },
                 attachCard: ({ G, ctx }, cardIndex: number, targetCardId: string) => {
-                    const player = G.players[ctx.currentPlayer];
-                    const attachmentCard = player?.hand?.[cardIndex];
-                    if (!attachmentCard) return;
-
-                    const targetCard =
-                        player.freePeoplesArea?.find((c) => c.id === targetCardId) ||
-                        player.supportArea?.find((c) => c.id === targetCardId);
-
-                    if (!targetCard) return;
-
-                    player.hand.splice(cardIndex, 1);
-                    if (!targetCard.attachments) targetCard.attachments = [];
-                    targetCard.attachments.push(attachmentCard);
-
-                    if (attachmentCard.kind === 'FREE_PEOPLES') {
-                        G.twilightPool += attachmentCard.twilightCost;
-                    }
+                    // ... ton code attachCard ...
                 },
                 endFellowshipPhase: ({ events }) => {
                     events.endPhase();
@@ -107,7 +109,7 @@ export const LotrGame: Game<GameState> = {
             },
         },
 
-        // 2. SHADOW PHASE (On donne automatiquement la main au joueur Ombre '1')
+        // 2. SHADOW PHASE (Joueur Ombre '1')
         shadow: {
             turn: {
                 activePlayers: { value: { '1': 'play' } },
@@ -117,19 +119,9 @@ export const LotrGame: Game<GameState> = {
                 return hasMinions ? 'maneuver' : 'regroup';
             },
             moves: {
+                ...commonMoves,
                 playShadowCard: ({ G, ctx }, cardIndex: number) => {
-                    const player = G.players[ctx.currentPlayer];
-                    const card = player?.hand?.[cardIndex];
-                    if (!card || card.kind !== 'SHADOW') return;
-
-                    if (G.twilightPool < card.twilightCost) {
-                        console.log("Pas assez de Crépuscule dans le bassin !");
-                        return;
-                    }
-
-                    player.hand.splice(cardIndex, 1);
-                    G.battlefield.push(card);
-                    G.twilightPool = Math.max(0, G.twilightPool - card.twilightCost);
+                    // ... ton code playShadowCard ...
                 },
                 endShadowPhase: ({ events }) => {
                     events.endPhase();
@@ -140,7 +132,11 @@ export const LotrGame: Game<GameState> = {
         // 3. MANEUVER PHASE
         maneuver: {
             next: 'archery',
+            turn: {
+                activePlayers: { value: { '0': 'play', '1': 'play' } },
+            },
             moves: {
+                ...commonMoves,
                 endManeuverPhase: ({ events }) => events.endPhase(),
             },
         },
@@ -148,18 +144,23 @@ export const LotrGame: Game<GameState> = {
         // 4. ARCHERY PHASE
         archery: {
             next: 'assignment',
+            turn: {
+                activePlayers: { value: { '0': 'play', '1': 'play' } },
+            },
             moves: {
+                ...commonMoves,
                 endArcheryPhase: ({ events }) => events.endPhase(),
             },
         },
 
-        // 5. ASSIGNMENT PHASE (Retour de la main au FP '0')
+        // 5. ASSIGNMENT PHASE (Retour FP '0')
         assignment: {
             turn: {
                 activePlayers: { value: { '0': 'play' } },
             },
             next: 'skirmish',
             moves: {
+                ...commonMoves,
                 endAssignmentPhase: ({ events }) => events.endPhase(),
             },
         },
@@ -167,17 +168,22 @@ export const LotrGame: Game<GameState> = {
         // 6. SKIRMISH PHASE
         skirmish: {
             next: 'regroup',
+            turn: {
+                activePlayers: { value: { '0': 'play', '1': 'play' } },
+            },
             moves: {
+                ...commonMoves,
                 endSkirmishPhase: ({ events }) => events.endPhase(),
             },
         },
 
-        // 7. REGROUP PHASE (Main au FP '0')
+        // 7. REGROUP PHASE (FP '0')
         regroup: {
             turn: {
                 activePlayers: { value: { '0': 'play' } },
             },
             moves: {
+                ...commonMoves,
                 moveNextSite: ({ G, events }) => {
                     if (G.currentSite < 9) G.currentSite += 1;
                     events.setPhase('shadow');
