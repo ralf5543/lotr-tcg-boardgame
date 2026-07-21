@@ -12,7 +12,23 @@ export const MetaInfo = styled.span<{ $isOpponent?: boolean }>`
   margin-bottom: 8px;
 `;
 
-export const Zone = styled.div<{ $borderColor: string }>`
+export const Fellowship = styled.div<{ $borderColor: string }>`
+  border: 2px solid ${props => props.$borderColor};
+  background-color: #1a252f;
+  border-radius: 6px;
+  padding: 10px;
+  margin-bottom: 10px;
+`;
+
+export const FellowshipCollapsed = styled.div<{ $borderColor: string }>`
+  border: 2px solid ${props => props.$borderColor};
+  background-color: #1a252f;
+  border-radius: 6px;
+  padding: 10px;
+  margin-bottom: 10px;
+`;
+
+export const SupportArea = styled.div<{ $borderColor: string }>`
   border: 2px solid ${props => props.$borderColor};
   background-color: #1a252f;
   border-radius: 6px;

@@ -62,8 +62,3 @@ export const CardRow = styled.div`
   inset-inline-start: 50%;
   transform: translateX(-50%);
 `;
-
-export const InfoText = styled.span`
-  color: #a0aec0;
-  font-size: 12px;
-`;

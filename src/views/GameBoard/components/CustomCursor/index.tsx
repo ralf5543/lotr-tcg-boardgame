@@ -45,7 +45,6 @@ export function CustomAssetCursor() {
         window.addEventListener('pointermove', moveCursor);
         return () => window.removeEventListener('pointermove', moveCursor);
     }, []);
-    console.log("Faction actuelle dans le curseur :", playerFaction);
     const factionSuffix = playerFaction === 'SHADOW' ? 'shadow' : 'FP';
 
     return (

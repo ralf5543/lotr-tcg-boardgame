@@ -8,7 +8,6 @@ interface HandProps {
     hand: CardType[];
     deckCount: number;
     onDrawCard: () => void;
-    onNextSite: () => void;
     onPlayCard: (index: number) => void;
 }
 
@@ -16,7 +15,6 @@ export const Hand: React.FC<HandProps> = ({
     hand,
     deckCount,
     onDrawCard,
-    onNextSite,
 }) => {
     // Fonction pour calculer l'inclinaison de chaque carte dans la main
     const getFanStyles = (index: number, total: number) => {
@@ -50,14 +48,12 @@ export const Hand: React.FC<HandProps> = ({
                 <S.GameButton $bgColor="#3498db" onClick={onDrawCard}>
                     🃏 Piocher ({deckCount})
                 </S.GameButton>
-                <S.GameButton $bgColor="#2ecc71" onClick={onNextSite}>
-                    🗺️ Avancer Site
-                </S.GameButton>
+
             </S.ControlGroup>
 
             <S.CardRow>
                 {hand.length === 0 ? (
-                    <S.InfoText>Ta main est vide.</S.InfoText>
+                    true
                 ) : (
                     hand.map((card, idx) => {
                         // RÈGLE : Seul le Peuple Libre est jouable activement pour l'instant
@@ -109,9 +105,6 @@ export const Hand: React.FC<HandProps> = ({
                 )}
             </S.CardRow>
 
-            <S.InfoText style={{ width: '120px', textAlign: 'right' }}>
-                ℹ️ Clic carte = Jouer
-            </S.InfoText>
         </S.FixedHandContainer>
     );
 };

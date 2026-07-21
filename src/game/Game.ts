@@ -1,10 +1,8 @@
+// src/game/Game.ts
 import type { Game } from 'boardgame.io';
-import type { GameState } from './types';
+import type { GameState, CardType, PlayerState } from './types';
 import { FREE_PEOPLES_DATABASE, SHADOW_DATABASE } from './cardsData';
-import type { CardType } from './types';
-import type { PlayerState } from './types';
 
-// Fonction pour mélanger un tableau (Algorithme de Fisher-Yates)
 const shuffle = (array: any[]) => {
     for (let i = array.length - 1; i > 0; i--) {
         const j = Math.floor(Math.random() * (i + 1));
@@ -15,8 +13,6 @@ const shuffle = (array: any[]) => {
 
 const createRealLotrDeck = (): CardType[] => {
     const fullPool: CardType[] = [];
-
-    // On prend par exemple 15 cartes de chaque côté pour faire un deck de 30 cartes
     for (let i = 0; i < 15; i++) {
         const fpCard = FREE_PEOPLES_DATABASE[i % FREE_PEOPLES_DATABASE.length];
         const shCard = SHADOW_DATABASE[i % SHADOW_DATABASE.length];
@@ -24,13 +20,11 @@ const createRealLotrDeck = (): CardType[] => {
         fullPool.push({ ...fpCard, id: `${fpCard.id}-${i}` });
         fullPool.push({ ...shCard, id: `${shCard.id}-${i}` });
     }
-
-    // ON MÉLANGE ! (Le Peuple Libre et l'Ombre sont désormais complètement imbriqués)
     return shuffle(fullPool);
 };
 
 const createInitialPlayer = (): PlayerState => ({
-    deck: createRealLotrDeck(), // Génère le deck mixte de 30 cartes (15 FP / 15 Shadow) mélangé
+    deck: createRealLotrDeck(),
     hand: [],
     discard: [],
     freePeoplesArea: [],
@@ -38,161 +32,160 @@ const createInitialPlayer = (): PlayerState => ({
 });
 
 export const LotrGame: Game<GameState> = {
-    // 1. On définit l'état initial du jeu au tout début de la partie
     setup: (): GameState => ({
         twilightPool: 0,
         currentSite: 1,
-        battlefield: [], // La zone centrale commence vide
+        battlefield: [],
         players: {
             '0': createInitialPlayer(),
             '1': createInitialPlayer(),
         },
     }),
 
-    // 2. On déclare nos phases. Pour l'instant, mettons les deux premières !
+    turn: {
+        activePlayers: { currentPlayer: '0' },
+    },
+
     phases: {
+        // 1. FELLOWSHIP PHASE (Le joueur FP a la main)
         fellowship: {
             start: true,
-
-            // On déclare les actions possibles uniquement pendant la phase de Communauté
+            next: 'shadow',
+            turn: {
+                activePlayers: { currentPlayer: '0' },
+            },
             moves: {
-                // Une action toute simple pour ajouter des jetons au bassin
-                addTwilight: ({ G, ctx }, amount: number) => {
-                    G.twilightPool += amount;
-                },
-
-                // Une action pour faire avancer le site actuel
-                nextSite: ({ G }) => {
-                    if (G.currentSite < 9) {
-                        G.currentSite += 1;
-                    }
-                }, // Notre nouveau move pour piocher !
                 drawCard: ({ G, ctx }) => {
-                    const playerId = ctx.currentPlayer; // "0" ou "1" selon le joueur actif
-                    const player = G.players[playerId];
-
-                    // Sécurité au cas où
-                    if (!player.hand) player.hand = [];
-
-                    if (player.deck && player.deck.length > 0) {
-                        // On retire la première carte du deck
+                    const player = G.players[ctx.currentPlayer];
+                    if (player?.deck && player.deck.length > 0) {
                         const card = player.deck.shift();
-                        if (card) {
-                            // On l'ajoute à la main du joueur
-                            player.hand.push(card);
-                        }
+                        if (card) player.hand.push(card);
                     }
                 },
                 playCard: ({ G, ctx }, cardIndex: number) => {
-                    const playerId = ctx.currentPlayer;
-                    const player = G.players[playerId];
-                    if (!player) return;
-
-                    const card = player.hand?.[cardIndex];
+                    const player = G.players[ctx.currentPlayer];
+                    const card = player?.hand?.[cardIndex];
                     if (!card) return;
 
-                    // --- NOUVELLE VÉRIFICATION : COÛT EN CRÉPUSCULE ---
-                    // Si c'est une carte Ombre, on refuse le coup si la réserve est insuffisante
-                    if (
-                        card.kind === 'SHADOW' &&
-                        G.twilightPool < card.twilightCost
-                    ) {
-                        console.log(
-                            `Pas assez de Crépuscule ! Requis: ${card.twilightCost}, Disponible: ${G.twilightPool}`
-                        );
+                    if (card.kind !== 'FREE_PEOPLES') {
+                        console.log("Impossible de jouer des cartes Ombre en phase de Communauté.");
                         return;
                     }
 
-                    // On s'assure à 100% que les zones existent avant de faire un push
-                    if (!player.freePeoplesArea) player.freePeoplesArea = [];
-                    if (!player.supportArea) player.supportArea = [];
-                    if (!G.battlefield) G.battlefield = [];
-
-                    // 1. On retire la carte de la main
                     player.hand.splice(cardIndex, 1);
 
-                    // 2. On l'aiguille selon sa nature
-                    if (card.kind === 'FREE_PEOPLES') {
-                        // Les gentils vont dans la bonne zone selon leur type
-                        if (card.subType === 'COMPANION') {
-                            player.freePeoplesArea.push(card);
-                        } else {
-                            player.supportArea.push(card);
-                        }
-
-                        // Jouer un gentil génère de la menace (ajoute du Crépuscule)
-                        G.twilightPool += card.twilightCost;
+                    if (card.subType === 'COMPANION') {
+                        player.freePeoplesArea.push(card);
                     } else {
-                        // Les méchants (Sbires) sont balancés au centre sur le Battlefield !
-                        G.battlefield.push(card);
-
-                        // Et ils dépensent la réserve accumulée
-                        G.twilightPool = Math.max(
-                            0,
-                            G.twilightPool - card.twilightCost
-                        );
+                        player.supportArea.push(card);
                     }
+
+                    G.twilightPool += card.twilightCost;
                 },
-                attachCard: (
-                    { G, ctx },
-                    cardIndex: number,
-                    targetCardId: string
-                ) => {
-                    const playerId = ctx.currentPlayer;
-                    const player = G.players[playerId];
-                    if (!player) return;
+                attachCard: ({ G, ctx }, cardIndex: number, targetCardId: string) => {
+                    const player = G.players[ctx.currentPlayer];
+                    const attachmentCard = player?.hand?.[cardIndex];
+                    if (!attachmentCard) return;
 
-                    const attachmentCard = player.hand?.[cardIndex];
-                    // Sécurité : la carte doit exister et être une Possession ou une Condition
-                    if (
-                        !attachmentCard ||
-                        (attachmentCard.subType !== 'POSSESSION' &&
-                            attachmentCard.subType !== 'CONDITION')
-                    ) {
-                        console.log('Cette carte ne peut pas être attachée.');
-                        return;
-                    }
-
-                    // On cherche le personnage cible (compagnon ou allié) dans les zones du joueur actif
-                    // Chercher d'abord dans la zone des Compagnons, sinon dans la zone de support
                     const targetCard =
-                        player.freePeoplesArea?.find(
-                            (c) => c.id === targetCardId
-                        ) ||
+                        player.freePeoplesArea?.find((c) => c.id === targetCardId) ||
                         player.supportArea?.find((c) => c.id === targetCardId);
 
-                    if (!targetCard) {
-                        console.log(
-                            `Personnage cible avec l'ID ${targetCardId} introuvable sur la table.`
-                        );
-                        return;
-                    }
+                    if (!targetCard) return;
 
-                    // --- VALIDATION DU COÛT EN CRÉPUSCULE ---
-                    // S'il s'agit d'une carte Peuple Libre, elle génère du crépuscule pour l'Ombre
+                    player.hand.splice(cardIndex, 1);
+                    if (!targetCard.attachments) targetCard.attachments = [];
+                    targetCard.attachments.push(attachmentCard);
+
                     if (attachmentCard.kind === 'FREE_PEOPLES') {
                         G.twilightPool += attachmentCard.twilightCost;
                     }
-
-                    // Initialiser le tableau d'attachement de la cible si nécessaire
-                    if (!targetCard.attachments) {
-                        targetCard.attachments = [];
-                    }
-
-                    // 1. On retire la carte de la main
-                    player.hand.splice(cardIndex, 1);
-
-                    // 2. On l'attache sous la carte cible !
-                    targetCard.attachments.push(attachmentCard);
-
-                    console.log(
-                        `Attaché ${attachmentCard.title} à ${targetCard.title}`
-                    );
+                },
+                endFellowshipPhase: ({ events }) => {
+                    events.endPhase();
                 },
             },
         },
+
+        // 2. SHADOW PHASE (On donne automatiquement la main au joueur Ombre '1')
         shadow: {
-            // Les sbires auront leurs propres actions ici plus tard !
+            turn: {
+                activePlayers: { value: { '1': 'play' } },
+            },
+            next: ({ G }) => {
+                const hasMinions = G.battlefield.some((c) => c.kind === 'SHADOW');
+                return hasMinions ? 'maneuver' : 'regroup';
+            },
+            moves: {
+                playShadowCard: ({ G, ctx }, cardIndex: number) => {
+                    const player = G.players[ctx.currentPlayer];
+                    const card = player?.hand?.[cardIndex];
+                    if (!card || card.kind !== 'SHADOW') return;
+
+                    if (G.twilightPool < card.twilightCost) {
+                        console.log("Pas assez de Crépuscule dans le bassin !");
+                        return;
+                    }
+
+                    player.hand.splice(cardIndex, 1);
+                    G.battlefield.push(card);
+                    G.twilightPool = Math.max(0, G.twilightPool - card.twilightCost);
+                },
+                endShadowPhase: ({ events }) => {
+                    events.endPhase();
+                },
+            },
+        },
+
+        // 3. MANEUVER PHASE
+        maneuver: {
+            next: 'archery',
+            moves: {
+                endManeuverPhase: ({ events }) => events.endPhase(),
+            },
+        },
+
+        // 4. ARCHERY PHASE
+        archery: {
+            next: 'assignment',
+            moves: {
+                endArcheryPhase: ({ events }) => events.endPhase(),
+            },
+        },
+
+        // 5. ASSIGNMENT PHASE (Retour de la main au FP '0')
+        assignment: {
+            turn: {
+                activePlayers: { value: { '0': 'play' } },
+            },
+            next: 'skirmish',
+            moves: {
+                endAssignmentPhase: ({ events }) => events.endPhase(),
+            },
+        },
+
+        // 6. SKIRMISH PHASE
+        skirmish: {
+            next: 'regroup',
+            moves: {
+                endSkirmishPhase: ({ events }) => events.endPhase(),
+            },
+        },
+
+        // 7. REGROUP PHASE (Main au FP '0')
+        regroup: {
+            turn: {
+                activePlayers: { value: { '0': 'play' } },
+            },
+            moves: {
+                moveNextSite: ({ G, events }) => {
+                    if (G.currentSite < 9) G.currentSite += 1;
+                    events.setPhase('shadow');
+                },
+                endTurn: ({ events }) => {
+                    events.endTurn();
+                },
+            },
         },
     },
 };

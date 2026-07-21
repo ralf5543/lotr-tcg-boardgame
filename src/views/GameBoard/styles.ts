@@ -14,9 +14,8 @@ const CURSOR_THEMES = {
 };
 
 export const BoardContainer = styled.div<{ $faction: 'FREE_PEOPLES' | 'SHADOW' }>`
-    width: 1920px;
-    height: 1080px;  
     display: flex;
+    height: 100%;
     flex-direction: column;
     position: relative;
     padding: 20px;
@@ -24,7 +23,6 @@ export const BoardContainer = styled.div<{ $faction: 'FREE_PEOPLES' | 'SHADOW' }
     background-repeat: no-repeat;
     background-image: url('interface/map_big.webp');
     color: #fff;
-    padding-bottom: 180px; /* Évite que la main fixe ne cache le plateau */
     background-attachment: fixed;
 
     button, 
@@ -50,9 +48,59 @@ export const OpponentMeta = styled.span`
 
 export const CentralBlock = styled.div`
     display: flex;
+    flex-direction: column;
     gap: 20px;
     margin-bottom: 20px;
-    height: 280px;
+    height: 100%;
+`;
+export const MainZone = styled.div`
+    display: grid;
+    grid-template-columns: 20% 1fr 20%;
+    height: 100%;
+`;
+export const PhaseBanner = styled.div`
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+    border: 1px solid #334155;
+    border-radius: 8px;
+    padding: 10px 16px;
+    margin-bottom: 12px;
+    color: #f8fafc;
+    font-size: 0.9rem;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.3);
+
+    span {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        
+        strong {
+            color: #38bdf8;
+            font-weight: 600;
+        }
+    }
+
+    button {
+        background: #2563eb;
+        color: #ffffff;
+        border: none;
+        border-radius: 6px;
+        padding: 6px 14px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.2s ease;
+
+        &:hover {
+            background: #1d4ed8;
+            transform: translateY(-1px);
+        }
+
+        &:active {
+            transform: translateY(0);
+        }
+    }
 `;
 
 export const BattlefieldContainer = styled.div`

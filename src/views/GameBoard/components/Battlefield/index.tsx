@@ -6,10 +6,9 @@ import { TwilightPool } from '../TwilightPool';
 
 interface BattlefieldProps {
     cards: CardType[];
-    twilightPoolValue: number;
 }
 
-export const Battlefield: React.FC<BattlefieldProps> = ({ cards, twilightPoolValue }) => {
+export const Battlefield: React.FC<BattlefieldProps> = ({ cards }) => {
     return (
         <S.Container>
             <S.CardRow>
@@ -21,7 +20,7 @@ export const Battlefield: React.FC<BattlefieldProps> = ({ cards, twilightPoolVal
                 ))}
             </S.CardRow>
 
-            <TwilightPool value={twilightPoolValue} />
+            
         </S.Container>
     );
 };
