@@ -1,4 +1,5 @@
 import type { CardType } from './types';
+import type { SiteCard } from './types';
 
 const DEFAULT_IMAGE = '/cards_visuals/lotr_default.jpg';
 const DEFAULT_GAMETEXT =
@@ -18,18 +19,31 @@ export const FREE_PEOPLES_DATABASE: CardType[] = [
         vitality: 4,
         culture: 'SHIRE',
         isUnique: true,
-        gameText: DEFAULT_GAMETEXT
+        gameText: DEFAULT_GAMETEXT,
+    },
+    {
+        id: '1c10',
+        title: 'Courage Nain',
+        imageUrl: '/cards_visuals/lotr01010.webp',
+        kind: 'FREE_PEOPLES',
+        subType: 'CONDITION_CHARACTER',
+        twilightCost: 0,
+        culture: 'DWARVEN',
+        isUnique: false,
+        gameText:
+            "Le détenteur doit être un Nain.&nbsp;Quand vous jouez cette situation, guérissez le détenteur jusqu'à 2 fois. Au début de chacun de vos tours, affaiblissez le détenteur.",
+        loreText: '...un Nain va toujours, le fardeau fut-il deux fois plus lourd que lui...',
     },
     {
         id: '1c299',
         title: 'Épée Hobbite',
         imageUrl: '/cards_visuals/lotr01299.jpg',
         kind: 'FREE_PEOPLES',
-        subType: 'POSSESSION',
+        subType: 'POSSESSION_CHARACTER',
         twilightCost: 1,
         culture: 'SHIRE',
         isUnique: false,
-        gameText: 'Le détenteur doit être un Hobbit.'
+        gameText: 'Le détenteur doit être un Hobbit.',
     },
     {
         id: '1r89',
@@ -46,8 +60,10 @@ export const FREE_PEOPLES_DATABASE: CardType[] = [
         vitality: 4,
         culture: 'GONDOR',
         isUnique: true,
-        gameText: 'Manoeuvre: Affaiblissez Aragorn pour le rendre défenseur +1 jusqu\'à la phase de ralliement',
-        loreText: 'Nous sommes des hommes solitaires, Rôdeurs des Terres Sauvages, chasseurs - mais toujours chasseurs des serviteurs de l\'Ennemi...'
+        gameText:
+            "Manoeuvre: Affaiblissez Aragorn pour le rendre défenseur +1 jusqu'à la phase de ralliement",
+        loreText:
+            "Nous sommes des hommes solitaires, Rôdeurs des Terres Sauvages, chasseurs - mais toujours chasseurs des serviteurs de l'Ennemi...",
     },
     {
         id: '1r50',
@@ -64,7 +80,7 @@ export const FREE_PEOPLES_DATABASE: CardType[] = [
         vitality: 3,
         culture: 'ELVEN',
         isUnique: true,
-        gameText: DEFAULT_GAMETEXT
+        gameText: DEFAULT_GAMETEXT,
     },
     {
         id: '1r13',
@@ -97,7 +113,7 @@ export const FREE_PEOPLES_DATABASE: CardType[] = [
         vitality: 3,
         culture: 'GONDOR',
         isUnique: true,
-        gameText: DEFAULT_GAMETEXT
+        gameText: DEFAULT_GAMETEXT,
     },
 ];
 
@@ -105,7 +121,7 @@ export const SHADOW_DATABASE: CardType[] = [
     {
         id: '1r237',
         title: 'Le Roi-Sorcier',
-        subtitle: 'Seigneur d\'Angmar',
+        subtitle: "Seigneur d'Angmar",
         imageUrl: '/cards_visuals/lotr01237.jpg',
         kind: 'SHADOW',
         race: 'NAZGUL',
@@ -114,14 +130,14 @@ export const SHADOW_DATABASE: CardType[] = [
         twilightCost: 8,
         strength: 14,
         vitality: 4,
-        culture: 'WRAITH',
+        culture: 'RINGWRAITH',
         isUnique: true,
-        gameText: DEFAULT_GAMETEXT
+        gameText: DEFAULT_GAMETEXT,
     },
     {
         id: '3c69"',
         title: 'Saroumane',
-        subtitle: 'Serviteur de l\'Oeil',
+        subtitle: "Serviteur de l'Oeil",
         imageUrl: '/cards_visuals/lotr03069.jpg',
         kind: 'SHADOW',
         race: 'WIZARD',
@@ -132,7 +148,7 @@ export const SHADOW_DATABASE: CardType[] = [
         vitality: 4,
         culture: 'ISENGARD',
         isUnique: true,
-        gameText: DEFAULT_GAMETEXT
+        gameText: DEFAULT_GAMETEXT,
     },
     {
         id: '1c191',
@@ -147,7 +163,7 @@ export const SHADOW_DATABASE: CardType[] = [
         vitality: 1,
         culture: 'MORIA',
         isUnique: false,
-        gameText: DEFAULT_GAMETEXT
+        gameText: DEFAULT_GAMETEXT,
     },
     {
         id: '1c271',
@@ -162,6 +178,23 @@ export const SHADOW_DATABASE: CardType[] = [
         vitality: 2,
         culture: 'SAURON',
         isUnique: false,
-        gameText: DEFAULT_GAMETEXT
+        gameText: DEFAULT_GAMETEXT,
     },
+];
+
+export const DUMMY_SITES_PLAYER_0: SiteCard[] = [
+    {
+        id: 'site-p0-1',
+        name: 'The Prancing Pony',
+        twilightCost: 1,
+        ownerId: '0',
+    },
+    { id: 'site-p0-2', name: 'Weathertop', twilightCost: 2, ownerId: '0' },
+    { id: 'site-p0-3', name: 'Ford of Bruinen', twilightCost: 0, ownerId: '0' },
+    { id: 'site-p0-4', name: 'Moria Gate', twilightCost: 3, ownerId: '0' },
+    { id: 'site-p0-5', name: 'Lothlórien', twilightCost: 1, ownerId: '0' },
+    { id: 'site-p0-6', name: 'Falls of Rauros', twilightCost: 2, ownerId: '0' },
+    { id: 'site-p0-7', name: "Helm's Deep", twilightCost: 3, ownerId: '0' },
+    { id: 'site-p0-8', name: 'Minas Tirith', twilightCost: 2, ownerId: '0' },
+    { id: 'site-p0-9', name: 'Mount Doom', twilightCost: 3, ownerId: '0' },
 ];

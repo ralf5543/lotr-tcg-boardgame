@@ -92,10 +92,10 @@ export const Card: React.FC<CardProps> = ({
     return (
         <S.CardContainer
             $culture={card.culture}
-            $imageUrl={card.imageUrl}
+            $subType={card.subType}
+            $kind={card.kind}
             $isShadow={isShadow}
             $isPlayable={isPlayable}
-            $playerFaction={playerFaction}
             $size={size} // Transmis au style pour recalculer l'échelle !
             onMouseEnter={handleMouseEnter} // Détection du survol
             onMouseLeave={handleMouseLeave} // Fin du survol
@@ -109,6 +109,7 @@ export const Card: React.FC<CardProps> = ({
             // Attribut custom pour que ton CustomAssetCursor détecte toujours la carte au survol !
             data-draggable={isDraggable}
         >
+
             <S.CardHeader>
                 {size !== 'sm' && (
                     <S.TwilightBadge $isShadow={isShadow}>

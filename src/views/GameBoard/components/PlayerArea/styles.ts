@@ -47,9 +47,10 @@ export const ZoneTitle = styled.span<{ color?: string }>`
 
 export const CardRow = styled.div`
   display: flex;
-  container-type: inline-size;
-  gap: clamp(24px, 4cqw, 60px);
-  min-height: 80px;
+    container-type: inline-size;
+    gap: 60px;
+    min-height: 60px;
+    padding-inline-start: 40px;
 `;
 
 
@@ -77,10 +78,6 @@ export const CharacterStack = styled.div`
     flex-direction: column;
     position: relative;
     align-items: center;
-    width: 130px;
-    flex: 1 1 120px;
-    max-width: 150px;
-    min-width: 70px;
 `;
 
 export const AttachmentWrapper = styled.div<{ $index: number }>`

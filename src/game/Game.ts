@@ -55,7 +55,12 @@ const commonMoves = {
 
     reorderFellowship: (
         { G, ctx, playerID }: any,
-        payload: { fromIndex?: number; toIndex?: number; oldIndex?: number; newIndex?: number }
+        payload: {
+            fromIndex?: number;
+            toIndex?: number;
+            oldIndex?: number;
+            newIndex?: number;
+        }
     ) => {
         const targetId = getTargetPlayerId(playerID, ctx);
         const fromIndex = payload?.fromIndex ?? payload?.oldIndex;
@@ -86,7 +91,24 @@ const commonMoves = {
 export const LotrGame: Game<GameState> = {
     setup: (): GameState => ({
         twilightPool: 0,
-        currentSite: 1,
+        currentSiteIndex: 0, // Pion sur le site 1 (index 0)
+        movesThisTurn: 0,
+        path: [
+            {
+                id: 'site-start',
+                name: 'The Prancing Pony',
+                twilightCost: 1,
+                ownerId: '0',
+            },
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+        ],
         battlefield: [],
         players: {
             '0': createInitialPlayer(),
@@ -141,8 +163,12 @@ export const LotrGame: Game<GameState> = {
                     if (!attachmentCard) return;
 
                     const targetCard =
-                        player.fellowshipArea.find((c: any) => c.id === targetCardId) ||
-                        player.supportArea.find((c: any) => c.id === targetCardId);
+                        player.fellowshipArea.find(
+                            (c: any) => c.id === targetCardId
+                        ) ||
+                        player.supportArea.find(
+                            (c: any) => c.id === targetCardId
+                        );
 
                     if (!targetCard) return;
 
@@ -169,7 +195,9 @@ export const LotrGame: Game<GameState> = {
                 activePlayers: { value: { '1': 'play' } },
             },
             next: ({ G }: any) => {
-                const hasMinions = G.battlefield.some((c: any) => c.kind === 'SHADOW');
+                const hasMinions = G.battlefield.some(
+                    (c: any) => c.kind === 'SHADOW'
+                );
                 return hasMinions ? 'maneuver' : 'regroup';
             },
             moves: {

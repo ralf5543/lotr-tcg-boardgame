@@ -61,7 +61,7 @@ export const TwilightPool: React.FC<TwilightPoolProps> = ({ value }) => {
                         $left={token.left}
                         $top={token.top}
                         $rotate={token.rotate}
-                        src="/interface/twilight_token.webp"
+                        src="/interface/tokens/twilight_token.webp"
                         alt=""
                     />
                 ))}

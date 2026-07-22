@@ -206,15 +206,7 @@ export const PlayerArea: React.FC<PlayerAreaProps> = ({
                 )}
                 {(supportArea || []).map((card) => (
                     <S.CharacterStack key={card.id}>
-                        <Card card={card} />
-                        {card.attachments?.map((attachment, idx) => (
-                            <S.AttachmentWrapper
-                                key={attachment.id}
-                                $index={idx}
-                            >
-                                <Card card={attachment} size="sm" />
-                            </S.AttachmentWrapper>
-                        ))}
+                        <Card size="sm" card={card} />
                     </S.CharacterStack>
                 ))}
             </S.CardRow>

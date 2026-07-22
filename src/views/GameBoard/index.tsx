@@ -127,7 +127,6 @@ export const GameBoard: React.FC<GameBoardProps> = ({
                     <S.MainZone>
                         <TwilightPool value={G.twilightPool} />
                         <Battlefield cards={G.battlefield || []} />
-                        <SitePath currentSite={G.currentSite} />
                     </S.MainZone>
                 </S.CentralBlock>
 
@@ -148,6 +147,9 @@ export const GameBoard: React.FC<GameBoardProps> = ({
                     onDrawCard={() => moves.drawCard()}
                     onPlayCard={(idx) => moves.playCard(idx)}
                 />
+
+                {/* ==================== SITE PATH ==================== */}
+                <SitePath currentSiteIndex="{G.currentSiteIndex}" path="{G.path}"/>
             </S.BoardContainer>
         </DragProvider>
     );

@@ -246,7 +246,7 @@ const DragPortal: React.FC = () => {
                 position: 'absolute',
                 left: position.x,
                 top: position.y,
-                transform: `rotate(${rotation}deg) scale(1.1)`,
+                transform: `rotate(${rotation}deg) scale(1)`,
                 pointerEvents: 'none',
                 zIndex: 9999,
                 opacity: 0.95,

@@ -6,9 +6,12 @@ export type CardSubtype =
     | 'MINION'
     | 'EVENT'
     | 'CONDITION'
-    | 'POSSESSION'
-    | 'SITE'
-    | 'ARTIFACT';
+    | 'POSSESSION_CHARACTER'
+    | 'POSSESSION_SUPORT'
+    | 'ARTIFACT_CHARACTER'
+    | 'ARTIFACT_SUPPORT'
+    | 'CONDITION_CHARACTER'
+    | 'CONDITION_SUPPORT';
 export type CardRace =
     | 'MAN'
     | 'DWARF'
@@ -29,7 +32,7 @@ export type CardCulture =
     | 'SHIRE'
     | 'GANDALF'
     | 'MORIA'
-    | 'WRAITH'
+    | 'RINGWRAITH'
     | 'SAURON'
     | 'ISENGARD'
     | 'ROHAN'
@@ -70,10 +73,20 @@ export interface PlayerState {
     supportArea: CardType[]; // Aire de soutien (Allies, Conditions... mixte)
 }
 
+export interface SiteCard {
+    id: string;
+    name: string;
+    twilightCost: number; // Valeur crépusculaire du site (0 à 3)
+    text?: string;
+    ownerId: string;     // '0' ou '1' (pour se rappeler qui l'a posé)
+    imageUrl?: string;   // Si tu as des visuels
+}
+
 export interface GameState {
     twilightPool: number;
-    currentSite: number;
-    battlefield: CardType[]; // La zone centrale partagée (Sbires en bazar / Événements)
-    // Un dictionnaire où la clé "0" ou "1" correspond à l'état du joueur
+    currentSiteIndex: number; // Position actuelle du pion sur le chemin (0 à 8, soit site 1 à 9)
+    movesThisTurn: number;    // Compteur pour limiter à 2 déplacements max par tour
+    path: (SiteCard | null)[]; // Le chemin de 9 cases horizontales
+    battlefield: CardType[];
     players: Record<string, PlayerState>;
 }

@@ -20,10 +20,11 @@ export const Title = styled.span`
 
 export const CardRow = styled.div`
   display: flex;
-  flex: 1;
+  width: 100%;
   gap: 10px;
   min-height: 80px;
   align-items: center;
+  background-color: red;
 `;
 
 export const GameCard = styled.div`

@@ -1,38 +1,17 @@
 import styled from 'styled-components';
 
-
-
-const CURSOR_THEMES = {
-  FREE_PEOPLES: {
-    default: "url('/interface/cursor_default.png') 10 10",
-    pointer: "url('/interface/cursor_hand.png') 15 5",
-  },
-  SHADOW: {
-    default: "url('/cursors/sauron_default_2x.png') 0 0, url('/cursors/sauron_default.png') 0 0",
-    pointer: "url('/cursors/sauron_default_2x.png') 0 0, url('/cursors/sauron_default.png') 0 0",
-  }
-};
-
 export const BoardContainer = styled.div<{ $faction: 'FREE_PEOPLES' | 'SHADOW' }>`
     display: flex;
     height: 100%;
     flex-direction: column;
     position: relative;
     padding: 20px;
+    padding-inline-start: 400px;
     background-size: cover;
     background-repeat: no-repeat;
     background-image: url('interface/map_big.webp');
     color: #fff;
     background-attachment: fixed;
-
-    button, 
-    a {
-    cursor: ${props => CURSOR_THEMES[props.$faction].default}, pointer;
-  }
-
-  [draggable="true"],
-  [class*="CardContainer"] {
-    cursor: ${props => CURSOR_THEMES[props.$faction].pointer}, pointer;
   }
 `;
 
@@ -54,7 +33,7 @@ export const CentralBlock = styled.div`
 `;
 export const MainZone = styled.div`
     display: grid;
-    grid-template-columns: 20% 1fr 20%;
+    grid-template-columns: 20% 1fr;
     height: 100%;
 `;
 export const PhaseBanner = styled.div`

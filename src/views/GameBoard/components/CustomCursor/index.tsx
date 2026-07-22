@@ -51,9 +51,9 @@ export function CustomAssetCursor() {
         <>
             {/* Le gros curseur avec les trois images dedans, pilotées par le CSS */}
             <CursorImageWrapper ref={roundedRef} $displaySize={40} $state={cursorState} $playerFaction={playerFaction}>
-                <img className="cursor-arrow" src={`/interface/cursor_default_${factionSuffix}.webp`} alt="Cursor Arrow" />
-                <img className="cursor-open" src={`/interface/cursor_pointer_${factionSuffix}.webp`} alt="Cursor Open" />
-                <img className="cursor-closed" src={`/interface/cursor_grab_${factionSuffix}.webp`} alt="Cursor Closed" />
+                <img className="cursor-arrow" src={`/interface/cursors/cursor_default_${factionSuffix}.webp`} alt="Cursor Arrow" />
+                <img className="cursor-open" src={`/interface/cursors/cursor_pointer_${factionSuffix}.webp`} alt="Cursor Open" />
+                <img className="cursor-closed" src={`/interface/cursors/cursor_grab_${factionSuffix}.webp`} alt="Cursor Closed" />
             </CursorImageWrapper>
 
             {/* Le point central de précision ultra-net */}

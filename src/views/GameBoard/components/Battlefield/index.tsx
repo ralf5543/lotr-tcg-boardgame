@@ -2,7 +2,6 @@ import React from 'react';
 import type { CardType } from '../../../../game/types';
 import { Card } from '../Card';
 import * as S from './styles';
-import { TwilightPool } from '../TwilightPool';
 
 interface BattlefieldProps {
     cards: CardType[];
