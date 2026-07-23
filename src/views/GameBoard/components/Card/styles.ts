@@ -84,6 +84,11 @@ const getCultureBackground = (culture: string, subType: string, kind: string) =>
             return 'url(interface/cards_backgrounds/orc_character.webp)';
         } else return 'url(interface/cards_backgrounds/orc_modifier.webp)';
     }
+    if (culture === 'URUK-HAI') {
+        if (subType === 'MINION') {
+            return 'url(interface/cards_backgrounds/uruk_character.webp)';
+        } else return 'url(interface/cards_backgrounds/uruk_modifier.webp)';
+    }
     if (culture === 'MEN') {
         if (subType === 'MINION') {
             return 'url(interface/cards_backgrounds/men_character.webp)';
@@ -398,7 +403,7 @@ export const CardContainer = styled.div<{
 export const CardHeader = styled.div`
     display: flex;
     min-height: 15px;
-    padding-block-start: 6px;
+    padding-block-start: 5px;
     padding-inline: 6px;
     line-height: 1;
 `;
@@ -456,6 +461,7 @@ export const TwilightBadge = styled.span<{ $isShadow?: boolean }>`
     flex-shrink: 0;
     margin-inline-end: 5px;
     text-align: center;
+    font-family: LOTRIcons;
 `;
 
 export const VisualContainer = styled.figure`
@@ -508,12 +514,13 @@ export const StrengthBadge = styled.span`
     position: absolute;
     inset-block-start: 113px;
     inset-inline-start: 3px;
+    font-family: LOTRIcons;
 `;
 export const VitalityBadge = styled.span`
     background-image: url('interface/icons/icon_vitality.png');
     background-size: contain;
     background-repeat: no-repeat;
-    background-position: center;
+    background-position: 1px center;
     color: #fff;
     font-weight: bold;
     font-size: 9px;
@@ -524,7 +531,8 @@ export const VitalityBadge = styled.span`
     justify-content: center;
     position: absolute;
     inset-block-start: 139px;
-    inset-inline-start: 9px;
+    inset-inline-start: 8px;
+    font-family: LOTRIcons;
 `;
 export const RoamingNumber = styled.span`
     background-image: url('interface/icons/minion_site_number.webp');
@@ -542,6 +550,7 @@ export const RoamingNumber = styled.span`
     align-items: center;
     justify-content: center;
     font-size: 9px;
+    font-family: LOTRIcons;
 `;
 export const CardSignet = styled.span<{ $signet: string }>`
     background-image: ${(props) => getSignet(props.$signet)};

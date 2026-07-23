@@ -13,7 +13,7 @@ interface CardProps {
     index?: number;
     roaming?: number;
     signet?: CardSignet;
-    size?: 'sm' | 'md' | 'lg'; // Ajout de la prop size
+    size?: 'sm' | 'md' | 'lg';
 }
 
 export const Card: React.FC<CardProps> = ({

@@ -2,13 +2,11 @@ import styled from 'styled-components';
 
 export const FixedHandContainer = styled.div`
   position: fixed;
-  bottom: 0;
+  inset-block-end: 100px;
   left: 0;
   right: 0;
-  border-top: 2px solid #2d3748;
   display: flex;
   justify-content: space-between;
-  padding: 0 20px 15px 20px;
 `;
 
 // Le conteneur individuel de chaque carte pour gérer son inclinaison physique
@@ -54,11 +52,8 @@ export const GameButton = styled.button<{ $bgColor: string }>`
 export const CardRow = styled.div`
   flex: 1;
   display: flex;
-  justify-content: center;
-  margin: 0 20px;
-  padding: 10px 0;
   position: fixed;
-  inset-block-end: 0;
+  justify-content: center;
   inset-inline-start: 50%;
   transform: translateX(-50%);
 `;

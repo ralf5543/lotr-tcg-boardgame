@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 
 export const SitespathContainer = styled.section`
-        position: absolute;
+    position: absolute;
     inset-block-start: 75px;
     inset-block-end: 50px;
     inset-inline-start: 20px;
@@ -18,7 +18,7 @@ export const SitesGrid = styled.div`
     padding: 24px;
 `;
 
-export const SiteCard = styled.div<{ $isCurrent: boolean, $site: boolean }>`
+export const SiteCardContainer = styled.div<{ $isCurrent: boolean, $site: boolean }>`
   position: relative;
   width: 100%;
   aspect-ratio: 4 / 1;
@@ -38,18 +38,18 @@ export const SiteCard = styled.div<{ $isCurrent: boolean, $site: boolean }>`
       (props.$isCurrent ?? true) ? '0 0 10px rgba(226, 192, 68, 0.4)' : 'none'};
 `;
 
-export const SiteToken = styled.span`
-    position: absolute,
-    top: -10px,
-    left: 50%,
-    transform: translateX(-50%),
-    width: 20px,
-    height: 20px,
-    borderRadius: 50%,
-    background: #e2c044,
-    border: 2px solid #fff,
-    boxShadow: 0 2px 4px rgba(0,0,0,0.5),
-    zIndex: 2,
+export const SiteToken = styled.span<{ $playerId?: string }>`
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: ${(props) => (props.$playerId === '0' ? '#388bfd' : '#a371f7')};
+  border: 2px solid #fff;
+  font-size: 10px;
+  font-weight: bold;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 `;
 
 

@@ -1,6 +1,6 @@
 // src/views/GameBoard/index.tsx
 import React from 'react';
-import type { CardType } from '../../game/types';
+import type { CardType, SiteCardState } from '../../game/types';
 import { Battlefield } from './components/Battlefield';
 import { SitePath } from './components/SitePath';
 import { PlayerArea } from './components/PlayerArea';
@@ -8,8 +8,12 @@ import { Hand } from './components/Hand';
 import * as S from './styles';
 import { useHoverCard } from '../../contexts/HoverCardContext';
 import { Card } from './components/Card';
+import { SiteCard } from './components/SiteCard';
 import { DragProvider } from '../../contexts/DragContext';
 import { TwilightPool } from './components/TwilightPool';
+import { Dock } from './components/Dock';
+import { SitesPicker } from './components/SitePicker';
+import { GameNotifications } from './components/GameNotifications';
 
 interface GameBoardProps {
     playerID: string | null; // 🧙‍♂️ Injecté par boardgame.io ("0" ou "1")
@@ -20,6 +24,7 @@ interface GameBoardProps {
         players: Record<
             string,
             {
+                sitesDeck: SiteCardState[];
                 deck: CardType[];
                 hand: CardType[];
                 discard: CardType[];
@@ -44,6 +49,9 @@ export const GameBoard: React.FC<GameBoardProps> = ({
     const myId = playerID || ctx.currentPlayer;
     const oppId = myId === '0' ? '1' : '0';
 
+    // 1. On vérifie si c'est actuellement au tour du joueur local d'agir
+    const isMyTurn = ctx.activePlayers?.[playerID] === 'play';
+
     const me = G.players[myId] || {
         deck: [],
         hand: [],
@@ -59,17 +67,36 @@ export const GameBoard: React.FC<GameBoardProps> = ({
         supportArea: [],
     };
 
-    const { hoveredCard } = useHoverCard();
+    const { hoveredData } = useHoverCard();
     const currentFaction = myId === '1' ? 'SHADOW' : 'FREE_PEOPLES';
+
+    // 1. Récupération du joueur dont c'est le tour
+    const activePlayerId = ctx.currentPlayer;
+    const currentPlayer = G.players[activePlayerId];
+
+    // 2. Sécurisation des tableaux (au cas où ils ne soient pas encore initialisés)
+    const handCards = currentPlayer?.handCards || [];
+    const sitesDeck = currentPlayer?.sitesDeck || [];
+    const discardPile = currentPlayer?.discardPile || [];
 
     return (
         <DragProvider>
             <S.BoardContainer $faction={currentFaction}>
-                {hoveredCard && (
-                    <S.HoveredCardsZone>
-                        <Card card={hoveredCard} size="lg" />
+                {hoveredData && (
+                    <S.HoveredCardsZone $orientation={hoveredData.orientation}>
+                        {hoveredData.orientation === 'landscape' ? (
+                            <SiteCard site={hoveredData.card} size="lg" />
+                        ) : (
+                            <Card card={hoveredData.card} size="lg" />
+                        )}
                     </S.HoveredCardsZone>
                 )}
+                <GameNotifications
+                    statusMessage={G.statusMessage ?? "En attente d'action..."}
+                    activePlayerId={ctx.currentPlayer}
+                    isMyTurn={isMyTurn}
+                    awaitingSite={G.awaitingSiteSelection ?? false}
+                />
 
                 {/* ==================== 1. CÔTÉ ADVERSAIRE (HAUT) ==================== */}
                 <PlayerArea
@@ -140,16 +167,31 @@ export const GameBoard: React.FC<GameBoardProps> = ({
                     moves={moves}
                 />
 
-                {/* ==================== 4. TA MAIN ==================== */}
-                <Hand
-                    hand={me.hand || []}
-                    deckCount={me.deck?.length || 0}
-                    onDrawCard={() => moves.drawCard()}
-                    onPlayCard={(idx) => moves.playCard(idx)}
-                />
-
                 {/* ==================== SITE PATH ==================== */}
-                <SitePath currentSiteIndex="{G.currentSiteIndex}" path="{G.path}"/>
+                <SitePath
+                    path={G.path}
+                    players={G.players}
+                    onPlaySite={(siteId, targetIndex) => {
+                        // Appelle ton move game engine ici !
+                        moves.playSite(siteId, targetIndex);
+                        // ou client.moves.playSite(siteId, targetIndex) selon ta config
+                    }}
+                />
+                {console.log('me : ', me)}
+                <Dock
+                    handCount={me.hand?.length || 0}
+                    sitesCount={me.sitesDeck?.length || 0}
+                    discardCount={me.discard?.length || 0}
+                    handView={
+                        <Hand
+                            hand={me.hand || []}
+                            deckCount={me.deck?.length || 0}
+                            onDrawCard={() => moves.drawCard()}
+                            onPlayCard={(idx) => moves.playCard(idx)}
+                        />
+                    }
+                    sitesView={<SitesPicker sites={me.sitesDeck || []} />}
+                />
             </S.BoardContainer>
         </DragProvider>
     );

@@ -5,20 +5,30 @@ import React, {
     useEffect,
     useRef,
 } from 'react';
-import type { CardType } from '../game/types';
+import type { CardType, SiteCardState } from '../game/types';
 import { Card } from '../views/GameBoard/components/Card';
+import { SiteCard } from '../views/GameBoard/components/SiteCard';
+
+export type CardOrientation = 'portrait' | 'landscape';
 
 interface DraggedCardData {
-    card: CardType;
+    card: CardType | SiteCardState;
     index: number;
     origin: 'HAND' | 'BOARD';
+    orientation: CardOrientation; // <-- Ajout de l'orientation
 }
 
 interface DragContextType {
     dragged: DraggedCardData | null;
     position: { x: number; y: number };
     activeTargetId: string | null;
-    startDrag: (card: CardType, index: number, e: React.PointerEvent, origin?: 'HAND' | 'BOARD') => void;
+    startDrag: (
+        card: any, 
+        index: number, 
+        e: React.PointerEvent, 
+        origin?: 'HAND' | 'BOARD',
+        orientation?: CardOrientation // <-- Support de l'orientation
+    ) => void;
     stopDrag: () => void;
     registerTarget: (id: string, element: HTMLDivElement | null) => void;
     rotation: number;
@@ -49,15 +59,15 @@ export const DragProvider: React.FC<{ children: React.ReactNode; }> = ({
 
     // --- EFFET POUR MASQUER LE CURSEUR SYSTÈME PENDANT LE DRAG ---
     useEffect(() => {
-    if (dragged) {
-        document.body.classList.add('is-dragging');
-    } else {
-        document.body.classList.remove('is-dragging');
-    }
-    return () => {
-        document.body.classList.remove('is-dragging');
-    };
-}, [dragged]);
+        if (dragged) {
+            document.body.classList.add('is-dragging');
+        } else {
+            document.body.classList.remove('is-dragging');
+        }
+        return () => {
+            document.body.classList.remove('is-dragging');
+        };
+    }, [dragged]);
 
     const registerTarget = (id: string, element: HTMLDivElement | null) => {
         if (element) {
@@ -68,10 +78,11 @@ export const DragProvider: React.FC<{ children: React.ReactNode; }> = ({
     };
 
     const startDrag = (
-        card: CardType,
+        card: CardType | SiteCardType,
         index: number,
         e: React.PointerEvent,
-        origin: 'HAND' | 'BOARD' = 'HAND'
+        origin: 'HAND' | 'BOARD' = 'HAND',
+        orientation: CardOrientation = 'portrait'
     ) => {
         e.preventDefault();
         
@@ -91,7 +102,7 @@ export const DragProvider: React.FC<{ children: React.ReactNode; }> = ({
         (e.currentTarget as HTMLElement).setPointerCapture(e.pointerId);
         lastX.current = e.clientX;   
 
-        setDragged({ card, index, origin });
+        setDragged({ card, index, origin, orientation });
         
         setPosition({ 
             x: (e.clientX - boardLeft) / scale, 
@@ -107,6 +118,11 @@ export const DragProvider: React.FC<{ children: React.ReactNode; }> = ({
 
     useEffect(() => {
         if (!dragged) return;
+
+        // Adaptation dynamique des dimensions de collision selon le format
+        const isLandscape = dragged.orientation === 'landscape';
+        const cardWidthPhysBase = isLandscape ? 180 : 140;
+        const cardHeightPhysBase = isLandscape ? 110 : 200;
 
         const handlePointerMove = (e: PointerEvent) => {
             const board = document.querySelector('[class*="ScaledView"]')?.getBoundingClientRect();
@@ -124,8 +140,8 @@ export const DragProvider: React.FC<{ children: React.ReactNode; }> = ({
             const targetRotation = Math.max(-8, Math.min(8, deltaX * 0.4));
             setRotation((prev) => prev + (targetRotation - prev) * 0.15);
 
-            const cardWidthPhys = 140 * scale; 
-            const cardHeightPhys = 200 * scale;
+            const cardWidthPhys = cardWidthPhysBase * scale; 
+            const cardHeightPhys = cardHeightPhysBase * scale;
             const cardLeftPhys = e.clientX - (dragOffset.current.x * scale);
             const cardTopPhys = e.clientY - (dragOffset.current.y * scale);
             
@@ -143,7 +159,7 @@ export const DragProvider: React.FC<{ children: React.ReactNode; }> = ({
                 const overlapArea = xOverlap * yOverlap;
 
                 if (overlapArea > 0) {
-                    if (id === 'fellowshipArea') {
+                    if (id === 'fellowshipArea' || id === 'sitePath') {
                         hitZoneId = id;
                     } else {
                         const targetArea = targetRect.width * targetRect.height;
@@ -162,8 +178,8 @@ export const DragProvider: React.FC<{ children: React.ReactNode; }> = ({
         const handlePointerUp = (e: PointerEvent) => {
             if (dragged) {
                 const scale = currentScale.current;
-                const cardWidthPhys = 140 * scale;
-                const cardHeightPhys = 200 * scale;
+                const cardWidthPhys = cardWidthPhysBase * scale;
+                const cardHeightPhys = cardHeightPhysBase * scale;
                 const cardLeftPhys = e.clientX - (dragOffset.current.x * scale);
                 const cardTopPhys = e.clientY - (dragOffset.current.y * scale);
                 const cardRightPhys = cardLeftPhys + cardWidthPhys;
@@ -179,7 +195,7 @@ export const DragProvider: React.FC<{ children: React.ReactNode; }> = ({
                     const overlapArea = xOverlap * yOverlap;
 
                     if (overlapArea > 0) {
-                        if (id === 'fellowshipArea') {
+                        if (id === 'fellowshipArea' || id === 'sitePath') {
                             hitZoneId = id;
                         } else {
                             const targetArea = targetRect.width * targetRect.height;
@@ -240,6 +256,8 @@ const DragPortal: React.FC = () => {
     const { dragged, position, rotation } = useDrag();
     if (!dragged) return null;
 
+    const isLandscape = dragged.orientation === 'landscape';
+
     return (
         <div
             style={{
@@ -253,12 +271,17 @@ const DragPortal: React.FC = () => {
                 filter: 'drop-shadow(4px 4px 4px rgba(0, 0, 0, 0.5)) drop-shadow(0 15px 25px rgba(0, 0, 0, 0.3))',
             }}
         >
-
-            {/* Ta carte de jeu */}
             <div style={{
-                transform: `translate(${-dragged.cardOffset?.x || -70}px, ${-dragged.cardOffset?.y || -100}px)`
+                // Ajustement du centrage sous le curseur selon le format
+                transform: isLandscape 
+                    ? 'translate(-90px, -55px)' 
+                    : 'translate(-70px, -100px)'
             }}>
-                <Card card={dragged.card} size="md" />
+                {isLandscape ? (
+                    <SiteCard site={dragged.card as SiteCardType} size="md" />
+                ) : (
+                    <Card card={dragged.card as CardType} size="md" />
+                )}
             </div>
         </div>
     );

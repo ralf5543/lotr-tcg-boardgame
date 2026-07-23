@@ -12,6 +12,7 @@ export type CardSubtype =
     | 'ARTIFACT_SUPPORT'
     | 'CONDITION_CHARACTER'
     | 'CONDITION_SUPPORT';
+
 export type CardRace =
     | 'MAN'
     | 'DWARF'
@@ -25,6 +26,7 @@ export type CardRace =
     | 'ORC'
     | 'URUK-HAI'
     | 'NAZGUL';
+    
 export type CardCulture =
     | 'GONDOR'
     | 'DWARVEN'
@@ -42,6 +44,10 @@ export type CardCulture =
     | 'MEN'
     | 'URUK-HAI'
     | 'THE-ONE-RING';
+
+export type SiteKeyword =
+    | 'RIVER'
+    | 'FOREST';
 
 export interface CardType {
     id: string;
@@ -71,22 +77,25 @@ export interface PlayerState {
     discard: CardType[];
     fellowshipArea: CardType[]; // Zone exclusive des Compagnons (les gentils)
     supportArea: CardType[]; // Aire de soutien (Allies, Conditions... mixte)
+    currentSiteIndex: number;
+    sitesDeck: SiteCardState[];
 }
 
-export interface SiteCard {
+export interface SiteCardState {
     id: string;
     name: string;
-    twilightCost: number; // Valeur crépusculaire du site (0 à 3)
-    text?: string;
+    twilightCost: number;
+    text: string;
     ownerId: string;     // '0' ou '1' (pour se rappeler qui l'a posé)
-    imageUrl?: string;   // Si tu as des visuels
+    imageUrl?: string;
+    keyword: SiteKeyword;
 }
 
 export interface GameState {
     twilightPool: number;
     currentSiteIndex: number; // Position actuelle du pion sur le chemin (0 à 8, soit site 1 à 9)
     movesThisTurn: number;    // Compteur pour limiter à 2 déplacements max par tour
-    path: (SiteCard | null)[]; // Le chemin de 9 cases horizontales
+    path: (SiteCardState | null)[]; // Le chemin de 9 cases horizontales
     battlefield: CardType[];
     players: Record<string, PlayerState>;
 }

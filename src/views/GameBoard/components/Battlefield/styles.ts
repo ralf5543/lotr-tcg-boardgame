@@ -24,7 +24,6 @@ export const CardRow = styled.div`
   gap: 10px;
   min-height: 80px;
   align-items: center;
-  background-color: red;
 `;
 
 export const GameCard = styled.div`

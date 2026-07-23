@@ -23,6 +23,12 @@ export const GlobalStyles = createGlobalStyle`
 }
 
 @font-face {
+    font-family: 'LOTRIcons';
+    src: url('/fonts/LOTR_TCG_Icons-Bold.ttf';) format('truetype');
+    font-display: swap; 
+}
+
+@font-face {
     font-family: 'LOTRSymbols';
     src: url('/fonts/LOTRSymbols.ttf') format('truetype');
 }

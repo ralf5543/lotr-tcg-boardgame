@@ -32,7 +32,8 @@ export const FREE_PEOPLES_DATABASE: CardType[] = [
         isUnique: false,
         gameText:
             "Le détenteur doit être un Nain.&nbsp;Quand vous jouez cette situation, guérissez le détenteur jusqu'à 2 fois. Au début de chacun de vos tours, affaiblissez le détenteur.",
-        loreText: '...un Nain va toujours, le fardeau fut-il deux fois plus lourd que lui...',
+        loreText:
+            '...un Nain va toujours, le fardeau fut-il deux fois plus lourd que lui...',
     },
     {
         id: '1c299',
@@ -184,17 +185,85 @@ export const SHADOW_DATABASE: CardType[] = [
 
 export const DUMMY_SITES_PLAYER_0: SiteCard[] = [
     {
-        id: 'site-p0-1',
-        name: 'The Prancing Pony',
-        twilightCost: 1,
+        id: '11u227',
+        name: "Berges de l'Anduin",
+        twilightCost: 0,
+        text: "River. Le total d'archerie des séides est de +2 pour chaque compagnon au delà de 4.",
+        keyword: 'RIVER',
         ownerId: '0',
+        imageUrl: '/cards_visuals/sites/lotr11227.jpg'
     },
-    { id: 'site-p0-2', name: 'Weathertop', twilightCost: 2, ownerId: '0' },
-    { id: 'site-p0-3', name: 'Ford of Bruinen', twilightCost: 0, ownerId: '0' },
-    { id: 'site-p0-4', name: 'Moria Gate', twilightCost: 3, ownerId: '0' },
-    { id: 'site-p0-5', name: 'Lothlórien', twilightCost: 1, ownerId: '0' },
-    { id: 'site-p0-6', name: 'Falls of Rauros', twilightCost: 2, ownerId: '0' },
-    { id: 'site-p0-7', name: "Helm's Deep", twilightCost: 3, ownerId: '0' },
-    { id: 'site-p0-8', name: 'Minas Tirith', twilightCost: 2, ownerId: '0' },
-    { id: 'site-p0-9', name: 'Mount Doom', twilightCost: 3, ownerId: '0' },
+    {
+        id: 'fsdfsdfsfsd',
+        name: "Berges de l'Anduin",
+        twilightCost: 0,
+        text: "River. Le total d'archerie des séides est de +2 pour chaque compagnon au delà de 4.",
+        keyword: 'RIVER',
+        ownerId: '0',
+        imageUrl: '/cards_visuals/sites/lotr11227.jpg'
+    },
+    {
+        id: 'a',
+        name: "Berges de l'Anduin",
+        twilightCost: 0,
+        text: "River. Le total d'archerie des séides est de +2 pour chaque compagnon au delà de 4.",
+        keyword: 'RIVER',
+        ownerId: '0',
+        imageUrl: '/cards_visuals/sites/lotr11227.jpg'
+    },
+    {
+        id: 'b',
+        name: "Berges de l'Anduin",
+        twilightCost: 0,
+        text: "River. Le total d'archerie des séides est de +2 pour chaque compagnon au delà de 4.",
+        keyword: 'RIVER',
+        ownerId: '0',
+        imageUrl: '/cards_visuals/sites/lotr11227.jpg'
+    },
+    {
+        id: 'c',
+        name: "Berges de l'Anduin",
+        twilightCost: 0,
+        text: "River. Le total d'archerie des séides est de +2 pour chaque compagnon au delà de 4.",
+        keyword: 'RIVER',
+        ownerId: '0',
+        imageUrl: '/cards_visuals/sites/lotr11227.jpg'
+    },
+    {
+        id: 'd',
+        name: "Berges de l'Anduin",
+        twilightCost: 0,
+        text: "River. Le total d'archerie des séides est de +2 pour chaque compagnon au delà de 4.",
+        keyword: 'RIVER',
+        ownerId: '0',
+        imageUrl: '/cards_visuals/sites/lotr11227.jpg'
+    },
+    {
+        id: 'e',
+        name: "Berges de l'Anduin",
+        twilightCost: 0,
+        text: "River. Le total d'archerie des séides est de +2 pour chaque compagnon au delà de 4.",
+        keyword: 'RIVER',
+        ownerId: '0',
+        imageUrl: '/cards_visuals/sites/lotr11227.jpg'
+    },
+    {
+        id: 'f',
+        name: "Berges de l'Anduin",
+        twilightCost: 0,
+        text: "River. Le total d'archerie des séides est de +2 pour chaque compagnon au delà de 4.",
+        keyword: 'RIVER',
+        ownerId: '0',
+        imageUrl: '/cards_visuals/sites/lotr11227.jpg'
+    },
+    {
+        id: 'g',
+        name: "Berges de l'Anduin",
+        twilightCost: 0,
+        text: "River. Le total d'archerie des séides est de +2 pour chaque compagnon au delà de 4.",
+        keyword: 'RIVER',
+        ownerId: '0',
+        imageUrl: '/cards_visuals/sites/lotr11227.jpg'
+    },
+
 ];

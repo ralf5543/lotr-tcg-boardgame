@@ -160,15 +160,19 @@ export const InfoText = styled.p`
     margin: 0;
 `;
 
-export const HoveredCardsZone = styled.div`
-  position: fixed;
-  width: clamp(250px, 30vw, 400px); /* Taille idéale pour un gros zoom ! */
-  aspect-ratio: 1/1.39;
-  inset-block-start: 50%;
-  transform: translateY(-50%);
-  inset-inline-end: 24px;
-  z-index: 9999;
-  pointerEvents: none;
-  animation: fadeIn 0.15s ease-out;
-  box-shadow: 5px 5px 15px 5px #000000;
+export const HoveredCardsZone = styled.div<{ $orientation?: 'portrait' | 'landscape' }>`
+    position: fixed;
+    inset-block-start: 50%;
+    transform: translateY(-50%);
+    inset-inline-end: 24px;
+    z-index: 9999;
+    pointer-events: none;
+    
+    /* Si paysage, on élargit le conteneur de zoom */
+    width: ${props => (props.$orientation === 'landscape' ? '420px' : 'auto')};
+    aspect-ratio: ${props => (props.$orientation === 'landscape' ? '1.39 / 1' : '1 / 1.39')};
+
+    animation: fadeIn 0.15s ease-out;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.8);
+    border-radius: 8px;
 `;
