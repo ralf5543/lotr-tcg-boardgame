@@ -5,6 +5,7 @@ import { TRANSLATIONS } from '../../../../game/translations';
 import { useHoverCard } from '../../../../contexts/HoverCardContext';
 import { useDrag } from '../../../../contexts/DragContext';
 import type { CardSignet } from '../../../../game/types';
+import { FormattedText } from '../../../../utils/FormattedText';
 
 interface CardProps {
     card: CardType;
@@ -50,6 +51,7 @@ export const Card: React.FC<CardProps> = ({
             subType: card.subType,
             race: card.race,
             gameText: card.gameText,
+            loreText: card.loreText,
         };
 
         // On injecte les données
@@ -139,7 +141,8 @@ export const Card: React.FC<CardProps> = ({
             <S.TextContainer>
                 <S.KeywordText>{translatedKeyword}</S.KeywordText>
 
-                {size !== 'sm' && <S.GameText>{card.gameText}</S.GameText>}
+                {size !== 'sm' && <S.GameText><FormattedText text={card.gameText} /></S.GameText>}
+                {size === 'lg' && <S.LoreText>{card.loreText}</S.LoreText>}
             </S.TextContainer>
 
             {/* N'affiche la force et la vitalité que s'ils sont définis */}

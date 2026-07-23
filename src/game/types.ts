@@ -4,10 +4,10 @@ export type CardSignet = 'ARAGORN' | 'FRODO' | 'GANDALF' | 'THEODEN';
 export type CardSubtype =
     | 'COMPANION'
     | 'MINION'
+    | 'ALLY'
     | 'EVENT'
-    | 'CONDITION'
     | 'POSSESSION_CHARACTER'
-    | 'POSSESSION_SUPORT'
+    | 'POSSESSION_SUPPORT'
     | 'ARTIFACT_CHARACTER'
     | 'ARTIFACT_SUPPORT'
     | 'CONDITION_CHARACTER'

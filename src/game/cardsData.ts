@@ -4,13 +4,18 @@ import type { SiteCard } from './types';
 const DEFAULT_IMAGE = '/cards_visuals/lotr_default.jpg';
 const DEFAULT_GAMETEXT =
     'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco.';
+/*
+Formatted Text :
+    \n => Return
+    ** my text ** => bold
+*/
 
 export const FREE_PEOPLES_DATABASE: CardType[] = [
     {
         id: '2c102',
         title: 'Frodon',
         subtitle: 'Aventurier Malgré Lui',
-        imageUrl: '/cards_visuals/lotr02102.jpg',
+        imageUrl: '/cards_visuals/lotr2c102.jpg',
         kind: 'FREE_PEOPLES',
         subType: 'COMPANION',
         signet: 'ARAGORN',
@@ -23,22 +28,35 @@ export const FREE_PEOPLES_DATABASE: CardType[] = [
     },
     {
         id: '1c10',
-        title: 'Courage Nain',
-        imageUrl: '/cards_visuals/lotr01010.webp',
+        title: 'Courage Nààààààain',
+        imageUrl: '/cards_visuals/lotr1c10.webp',
         kind: 'FREE_PEOPLES',
         subType: 'CONDITION_CHARACTER',
         twilightCost: 0,
         culture: 'DWARVEN',
         isUnique: false,
         gameText:
-            "Le détenteur doit être un Nain.&nbsp;Quand vous jouez cette situation, guérissez le détenteur jusqu'à 2 fois. Au début de chacun de vos tours, affaiblissez le détenteur.",
+            "Le détenteur doit être un Nain.\nQuand vous jouez cette situation, guérissez le détenteur jusqu'à 2 fois. Au début de chacun de vos tours, affaiblissez le détenteur.",
         loreText:
             '...un Nain va toujours, le fardeau fut-il deux fois plus lourd que lui...',
     },
     {
+        id: '1c61',
+        title: 'Chants du Royaume Béni',
+        imageUrl: '/cards_visuals/lotr1c61.webp',
+        kind: 'FREE_PEOPLES',
+        subType: 'CONDITION_SUPPORT',
+        twilightCost: 1,
+        culture: 'ELVEN',
+        isUnique: false,
+        gameText: "Jouable dans votre aire de soutien.\nChaque fois que vous jouez un récit {CULTURE_ELVEN}, vous pouvez retirer un point-fardeau.",
+        loreText:
+            'Les Elfes semblent aimer la musique et la poésie autant que les Hobbits aiment la nourriture.',
+    },
+    {
         id: '1c299',
         title: 'Épée Hobbite',
-        imageUrl: '/cards_visuals/lotr01299.jpg',
+        imageUrl: '/cards_visuals/lotr1c299.jpg',
         kind: 'FREE_PEOPLES',
         subType: 'POSSESSION_CHARACTER',
         twilightCost: 1,
@@ -52,7 +70,7 @@ export const FREE_PEOPLES_DATABASE: CardType[] = [
         subtitle: 'Rôdeur du Nord',
         keyword: 'RANGER',
         race: 'MAN',
-        imageUrl: '/cards_visuals/lotr01089.jpg',
+        imageUrl: '/cards_visuals/lotr1r89.jpg',
         kind: 'FREE_PEOPLES',
         subType: 'COMPANION',
         signet: 'GANDALF',
@@ -71,7 +89,7 @@ export const FREE_PEOPLES_DATABASE: CardType[] = [
         title: 'Legolas',
         subtitle: 'Vertefeuille',
         keyword: 'ARCHER',
-        imageUrl: '/cards_visuals/lotr01050.jpg',
+        imageUrl: '/cards_visuals/lotr1r50.jpg',
         kind: 'FREE_PEOPLES',
         signet: 'FRODO',
         race: 'ELF',
@@ -87,7 +105,7 @@ export const FREE_PEOPLES_DATABASE: CardType[] = [
         id: '1r13',
         title: 'Gimli',
         subtitle: 'Fils de Glóin',
-        imageUrl: '/cards_visuals/lotr01013.jpg',
+        imageUrl: '/cards_visuals/lotr1r13.jpg',
         kind: 'FREE_PEOPLES',
         keyword: 'DAMAGE',
         signet: 'GANDALF',
@@ -98,13 +116,13 @@ export const FREE_PEOPLES_DATABASE: CardType[] = [
         vitality: 3,
         culture: 'DWARVEN',
         isUnique: true,
-        gameText: 'Skirmish: Exert Gimli to make him strength +2',
+        gameText: '**Skirmish:** Exert Gimli to make him strength +2',
     },
     {
         id: '1r96',
         title: 'Boromir',
         subtitle: 'Seigneur du Gondor',
-        imageUrl: '/cards_visuals/lotr01096.jpg',
+        imageUrl: '/cards_visuals/lotr1r96.jpg',
         kind: 'FREE_PEOPLES',
         signet: 'ARAGORN',
         race: 'MAN',
@@ -123,7 +141,7 @@ export const SHADOW_DATABASE: CardType[] = [
         id: '1r237',
         title: 'Le Roi-Sorcier',
         subtitle: "Seigneur d'Angmar",
-        imageUrl: '/cards_visuals/lotr01237.jpg',
+        imageUrl: '/cards_visuals/lotr1r237.jpg',
         kind: 'SHADOW',
         race: 'NAZGUL',
         subType: 'MINION',
@@ -139,7 +157,7 @@ export const SHADOW_DATABASE: CardType[] = [
         id: '3c69"',
         title: 'Saroumane',
         subtitle: "Serviteur de l'Oeil",
-        imageUrl: '/cards_visuals/lotr03069.jpg',
+        imageUrl: '/cards_visuals/lotr3c69.jpg',
         kind: 'SHADOW',
         race: 'WIZARD',
         subType: 'MINION',
@@ -154,7 +172,7 @@ export const SHADOW_DATABASE: CardType[] = [
     {
         id: '1c191',
         title: 'Éclaireur de la Moria',
-        imageUrl: '/cards_visuals/lotr01191.jpg',
+        imageUrl: '/cards_visuals/lotr1c191.jpg',
         kind: 'SHADOW',
         race: 'ORC',
         roaming: 4,
@@ -169,7 +187,7 @@ export const SHADOW_DATABASE: CardType[] = [
     {
         id: '1c271',
         title: 'Soldat Orque',
-        imageUrl: '/cards_visuals/lotr01271.jpg',
+        imageUrl: '/cards_visuals/lotr1c271.jpg',
         kind: 'SHADOW',
         race: 'ORC',
         roaming: 6,
@@ -191,7 +209,7 @@ export const DUMMY_SITES_PLAYER_0: SiteCard[] = [
         text: "River. Le total d'archerie des séides est de +2 pour chaque compagnon au delà de 4.",
         keyword: 'RIVER',
         ownerId: '0',
-        imageUrl: '/cards_visuals/sites/lotr11227.jpg'
+        imageUrl: '/cards_visuals/sites/lotr11u227.jpg'
     },
     {
         id: 'fsdfsdfsfsd',

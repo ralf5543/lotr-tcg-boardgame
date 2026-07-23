@@ -359,7 +359,11 @@ export const CardContainer = styled.div<{
         }
 
         ${GameText} {
-            font-size: 18px;
+            font-size: 16px;
+        }
+
+        ${LoreText} {
+            font-size: 16px;
         }
 
         ${TwilightBadge} {
@@ -496,6 +500,14 @@ export const GameText = styled.p`
     overflow: hidden;
     margin-block-start: 2px;
     line-height: 1;
+`;
+export const LoreText = styled.p`
+    font-size: 6px;
+    color: black;
+    overflow: hidden;
+    margin-block-start: 2px;
+    line-height: 1;
+    font-family: DecipherLore;
 `;
 
 export const StrengthBadge = styled.span`

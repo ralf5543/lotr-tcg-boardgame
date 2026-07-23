@@ -1,4 +1,4 @@
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 
 export const SitespathContainer = styled.section`
     position: absolute;
@@ -11,6 +11,13 @@ export const SitespathContainer = styled.section`
     width: 360px;
 `;
 
+export const Title = styled.h3`
+    margin: 0 0 8px 0;
+    color: #e2c044;
+    font-size: 14px;
+    text-transform: uppercase;
+`;
+
 export const SitesGrid = styled.div`
     display: flex;
     flex-direction: column;
@@ -18,39 +25,69 @@ export const SitesGrid = styled.div`
     padding: 24px;
 `;
 
-export const SiteCardContainer = styled.div<{ $isCurrent: boolean, $site: boolean }>`
-  position: relative;
-  width: 100%;
-  aspect-ratio: 4 / 1;
-  borderRadius: 6px;
-  border: ${(props) =>
-      (props.$isCurrent ?? true) ? '2px solid #e2c044' : '1px dashed #444'};
-  background: ${(props) =>
-        (props.$site ?? true)
-            ? '2px solid #e2c044'
-            : '1px dashed #444'};
-  display: flex;
-  flexDirection: column;
-  justifyContent: space-between;
-  padding: 6px;
-  boxShadow: isCurrent ? '0 0 10px rgba(226, 192, 68, 0.4)' : 'none';
-  background-image: ${(props) =>
-      (props.$isCurrent ?? true) ? '0 0 10px rgba(226, 192, 68, 0.4)' : 'none'};
+export const SiteCardContainer = styled.div<{ 
+    $isCurrent: boolean; 
+    $hasSite: boolean;
+    $isHovered?: boolean;
+}>`
+    position: relative;
+    width: 100%;
+    aspect-ratio: 4 / 1;
+    border-radius: 6px;
+    border: ${({ $isCurrent }) => $isCurrent ? '2px solid #e2c044' : '1px dashed #444'};
+    background: ${({ $hasSite }) => $hasSite ? '#111' : 'rgba(0, 0, 0, 0.2)'};
+    box-shadow: ${({ $isCurrent }) => $isCurrent ? '0 0 10px rgba(226, 192, 68, 0.4)' : 'none'};
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 6px;
+    transition: all 0.15s ease-in-out;
+
+    /* Surbrillance lors du drag d'un site sur la zone valide */
+    ${({ $isHovered }) => $isHovered && css`
+        border: 2px solid #e2c044;
+        box-shadow: 0 0 16px rgba(226, 192, 68, 0.8), inset 0 0 8px rgba(226, 192, 68, 0.3);
+        transform: scale(1.04);
+    `}
+`;
+
+export const EmptySlotContent = styled.div<{ $isNextEmpty: boolean }>`
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    opacity: ${({ $isNextEmpty }) => ($isNextEmpty ? 1 : 0.4)};
+    pointer-events: none;
+`;
+
+export const SlotTitle = styled.span`
+    font-size: 12px;
+    font-weight: bold;
+`;
+
+export const SlotStatus = styled.small<{ $isNextEmpty: boolean; $isHovered?: boolean }>`
+    font-size: 10px;
+    color: ${({ $isNextEmpty }) => ($isNextEmpty ? '#e2c044' : '#888')};
+    font-weight: ${({ $isHovered }) => ($isHovered ? 'bold' : 'normal')};
+`;
+
+export const RegionBonus = styled.span`
+    font-size: 9px;
+    color: #aaa;
+    margin-top: 2px;
 `;
 
 export const SiteToken = styled.span<{ $playerId?: string }>`
-  width: 18px;
-  height: 18px;
-  border-radius: 50%;
-  background: ${(props) => (props.$playerId === '0' ? '#388bfd' : '#a371f7')};
-  border: 2px solid #fff;
-  font-size: 10px;
-  font-weight: bold;
-  color: #fff;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    background: ${({ $playerId }) => ($playerId === '0' ? '#388bfd' : '#a371f7')};
+    border: 2px solid #fff;
+    font-size: 10px;
+    font-weight: bold;
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 `;
-
-
-

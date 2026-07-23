@@ -23,12 +23,12 @@ export const CounterBadge = styled.span`
     color: #fff;
     border: 1px solid #9b59b6;
     border-radius: 50%;
-    width: 26px;
-    height: 26px;
+    width: 50px;
+    height: 50px;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 0.9rem;
+    font-size: 40px;
     box-shadow: 0 0 8px #9b59b6;
 `;
 

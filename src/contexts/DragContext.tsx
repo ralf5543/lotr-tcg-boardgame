@@ -15,7 +15,7 @@ interface DraggedCardData {
     card: CardType | SiteCardState;
     index: number;
     origin: 'HAND' | 'BOARD';
-    orientation: CardOrientation; // <-- Ajout de l'orientation
+    orientation: CardOrientation;
 }
 
 interface DragContextType {
@@ -23,11 +23,11 @@ interface DragContextType {
     position: { x: number; y: number };
     activeTargetId: string | null;
     startDrag: (
-        card: any, 
-        index: number, 
-        e: React.PointerEvent, 
+        card: any,
+        index: number,
+        e: React.PointerEvent,
         origin?: 'HAND' | 'BOARD',
-        orientation?: CardOrientation // <-- Support de l'orientation
+        orientation?: CardOrientation
     ) => void;
     stopDrag: () => void;
     registerTarget: (id: string, element: HTMLDivElement | null) => void;
@@ -40,11 +40,11 @@ const getXScale = () => {
     const scaledBoard = document.querySelector('[class*="ScaledView"]');
     if (!scaledBoard) return 1;
     const rect = scaledBoard.getBoundingClientRect();
-    return rect.width / 1920; 
+    return rect.width / 1920;
 };
 
-export const DragProvider: React.FC<{ children: React.ReactNode; }> = ({
-    children
+export const DragProvider: React.FC<{ children: React.ReactNode }> = ({
+    children,
 }) => {
     const [dragged, setDragged] = useState<DraggedCardData | null>(null);
     const [position, setPosition] = useState({ x: 0, y: 0 });
@@ -57,7 +57,6 @@ export const DragProvider: React.FC<{ children: React.ReactNode; }> = ({
     const currentScale = useRef(1);
     const dragOffset = useRef({ x: 0, y: 0 });
 
-    // --- EFFET POUR MASQUER LE CURSEUR SYSTÈME PENDANT LE DRAG ---
     useEffect(() => {
         if (dragged) {
             document.body.classList.add('is-dragging');
@@ -77,20 +76,80 @@ export const DragProvider: React.FC<{ children: React.ReactNode; }> = ({
         }
     };
 
+    // --- FONCTION DE CALCUL DE COLLISION FACTORISÉE ---
+    const getHitTargetId = (
+    clientX: number,
+    clientY: number,
+    cardWidthPhysBase: number,
+    cardHeightPhysBase: number
+): string | null => {
+    const scale = currentScale.current;
+    const cardWidthPhys = cardWidthPhysBase * scale;
+    const cardHeightPhys = cardHeightPhysBase * scale;
+    const cardLeftPhys = clientX - dragOffset.current.x * scale;
+    const cardTopPhys = clientY - dragOffset.current.y * scale;
+    const cardRightPhys = cardLeftPhys + cardWidthPhys;
+    const cardBottomPhys = cardTopPhys + cardHeightPhys;
+
+    // Surface totale de la carte traînée (en px virtuels/physiques)
+    const cardArea = cardWidthPhys * cardHeightPhys;
+
+    let hitCompanionId: string | null = null;
+    let hitZoneId: string | null = null;
+
+    targetsRef.current.forEach((targetEl, id) => {
+        const targetRect = targetEl.getBoundingClientRect();
+
+        const xOverlap = Math.max(
+            0,
+            Math.min(cardRightPhys, targetRect.right) -
+                Math.max(cardLeftPhys, targetRect.left)
+        );
+        const yOverlap = Math.max(
+            0,
+            Math.min(cardBottomPhys, targetRect.bottom) -
+                Math.max(cardTopPhys, targetRect.top)
+        );
+        const overlapArea = xOverlap * yOverlap;
+
+        if (overlapArea > 0) {
+            // Ratio de la carte qui chevauche la zone (ex: 0.25 = 25% de la carte)
+            const cardOverlapRatio = overlapArea / cardArea;
+
+            if (id === 'fellowshipArea' || id === 'sitePath' || id === 'supportArea') {
+                // On exige qu me au moins 20% à 25% de la carte soit entrée dans la zone
+                if (cardOverlapRatio > 0.2) {
+                    hitZoneId = id;
+                }
+            } else {
+                // Pour un compagnon individuel
+                const targetArea = targetRect.width * targetRect.height;
+                if (overlapArea > targetArea * 0.1) {
+                    hitCompanionId = id;
+                }
+            }
+        }
+    });
+
+    return hitCompanionId || hitZoneId || null;
+};
+
     const startDrag = (
-        card: CardType | SiteCardType,
+        card: CardType | SiteCardState,
         index: number,
         e: React.PointerEvent,
         origin: 'HAND' | 'BOARD' = 'HAND',
         orientation: CardOrientation = 'portrait'
     ) => {
         e.preventDefault();
-        
+
         const scale = getXScale();
         currentScale.current = scale;
 
         const rect = (e.currentTarget as HTMLElement).getBoundingClientRect();
-        const board = document.querySelector('[class*="ScaledView"]')?.getBoundingClientRect();
+        const board = document
+            .querySelector('[class*="ScaledView"]')
+            ?.getBoundingClientRect();
         const boardLeft = board ? board.left : 0;
         const boardTop = board ? board.top : 0;
 
@@ -100,13 +159,13 @@ export const DragProvider: React.FC<{ children: React.ReactNode; }> = ({
         };
 
         (e.currentTarget as HTMLElement).setPointerCapture(e.pointerId);
-        lastX.current = e.clientX;   
+        lastX.current = e.clientX;
 
         setDragged({ card, index, origin, orientation });
-        
-        setPosition({ 
-            x: (e.clientX - boardLeft) / scale, 
-            y: (e.clientY - boardTop) / scale 
+
+        setPosition({
+            x: (e.clientX - boardLeft) / scale,
+            y: (e.clientY - boardTop) / scale,
         });
     };
 
@@ -119,20 +178,21 @@ export const DragProvider: React.FC<{ children: React.ReactNode; }> = ({
     useEffect(() => {
         if (!dragged) return;
 
-        // Adaptation dynamique des dimensions de collision selon le format
         const isLandscape = dragged.orientation === 'landscape';
         const cardWidthPhysBase = isLandscape ? 180 : 140;
         const cardHeightPhysBase = isLandscape ? 110 : 200;
 
         const handlePointerMove = (e: PointerEvent) => {
-            const board = document.querySelector('[class*="ScaledView"]')?.getBoundingClientRect();
+            const board = document
+                .querySelector('[class*="ScaledView"]')
+                ?.getBoundingClientRect();
             const boardLeft = board ? board.left : 0;
             const boardTop = board ? board.top : 0;
             const scale = currentScale.current;
 
             const virtualX = (e.clientX - boardLeft) / scale;
             const virtualY = (e.clientY - boardTop) / scale;
-            
+
             setPosition({ x: virtualX, y: virtualY });
 
             const deltaX = e.clientX - lastX.current;
@@ -140,77 +200,29 @@ export const DragProvider: React.FC<{ children: React.ReactNode; }> = ({
             const targetRotation = Math.max(-8, Math.min(8, deltaX * 0.4));
             setRotation((prev) => prev + (targetRotation - prev) * 0.15);
 
-            const cardWidthPhys = cardWidthPhysBase * scale; 
-            const cardHeightPhys = cardHeightPhysBase * scale;
-            const cardLeftPhys = e.clientX - (dragOffset.current.x * scale);
-            const cardTopPhys = e.clientY - (dragOffset.current.y * scale);
-            
-            const cardRightPhys = cardLeftPhys + cardWidthPhys;
-            const cardBottomPhys = cardTopPhys + cardHeightPhys;
+            const detectedTargetId = getHitTargetId(
+                e.clientX,
+                e.clientY,
+                cardWidthPhysBase,
+                cardHeightPhysBase
+            );
 
-            let hitCompanionId: string | null = null;
-            let hitZoneId: string | null = null;
-
-            targetsRef.current.forEach((targetEl, id) => {
-                const targetRect = targetEl.getBoundingClientRect();
-
-                const xOverlap = Math.max(0, Math.min(cardRightPhys, targetRect.right) - Math.max(cardLeftPhys, targetRect.left));
-                const yOverlap = Math.max(0, Math.min(cardBottomPhys, targetRect.bottom) - Math.max(cardTopPhys, targetRect.top));
-                const overlapArea = xOverlap * yOverlap;
-
-                if (overlapArea > 0) {
-                    if (id === 'fellowshipArea' || id === 'sitePath') {
-                        hitZoneId = id;
-                    } else {
-                        const targetArea = targetRect.width * targetRect.height;
-                        if (overlapArea > targetArea * 0.1) {
-                            hitCompanionId = id;
-                        }
-                    }
-                }
-            });
-
-            const detectedTargetId = hitCompanionId || hitZoneId || null;
             setActiveTargetId(detectedTargetId);
             activeTargetIdRef.current = detectedTargetId;
         };
 
         const handlePointerUp = (e: PointerEvent) => {
             if (dragged) {
-                const scale = currentScale.current;
-                const cardWidthPhys = cardWidthPhysBase * scale;
-                const cardHeightPhys = cardHeightPhysBase * scale;
-                const cardLeftPhys = e.clientX - (dragOffset.current.x * scale);
-                const cardTopPhys = e.clientY - (dragOffset.current.y * scale);
-                const cardRightPhys = cardLeftPhys + cardWidthPhys;
-                const cardBottomPhys = cardTopPhys + cardHeightPhys;
-
-                let hitCompanionId: string | null = null;
-                let hitZoneId: string | null = null;
-
-                targetsRef.current.forEach((targetEl, id) => {
-                    const targetRect = targetEl.getBoundingClientRect();
-                    const xOverlap = Math.max(0, Math.min(cardRightPhys, targetRect.right) - Math.max(cardLeftPhys, targetRect.left));
-                    const yOverlap = Math.max(0, Math.min(cardBottomPhys, targetRect.bottom) - Math.max(cardTopPhys, targetRect.top));
-                    const overlapArea = xOverlap * yOverlap;
-
-                    if (overlapArea > 0) {
-                        if (id === 'fellowshipArea' || id === 'sitePath') {
-                            hitZoneId = id;
-                        } else {
-                            const targetArea = targetRect.width * targetRect.height;
-                            if (overlapArea > targetArea * 0.1) {
-                                hitCompanionId = id;
-                            }
-                        }
-                    }
-                });
-
-                const finalTargetId = hitCompanionId || hitZoneId || null;
+                const finalTargetId = getHitTargetId(
+                    e.clientX,
+                    e.clientY,
+                    cardWidthPhysBase,
+                    cardHeightPhysBase
+                );
                 const targetToUse = finalTargetId || activeTargetIdRef.current;
 
                 const dropEvent = new CustomEvent('card-dropped', {
-                    detail: { draggedCard: dragged, targetId: targetToUse }
+                    detail: { draggedCard: dragged, targetId: targetToUse },
                 });
                 window.dispatchEvent(dropEvent);
             }
@@ -247,11 +259,11 @@ export const DragProvider: React.FC<{ children: React.ReactNode; }> = ({
 
 export const useDrag = () => {
     const context = useContext(DragContext);
-    if (!context) throw new Error('useDrag doit être utilisé dans un DragProvider');
+    if (!context)
+        throw new Error('useDrag doit être utilisé dans un DragProvider');
     return context;
 };
 
-// --- LE COMPOSANT PORTAIL VISUEL MIS À JOUR ---
 const DragPortal: React.FC = () => {
     const { dragged, position, rotation } = useDrag();
     if (!dragged) return null;
@@ -271,14 +283,15 @@ const DragPortal: React.FC = () => {
                 filter: 'drop-shadow(4px 4px 4px rgba(0, 0, 0, 0.5)) drop-shadow(0 15px 25px rgba(0, 0, 0, 0.3))',
             }}
         >
-            <div style={{
-                // Ajustement du centrage sous le curseur selon le format
-                transform: isLandscape 
-                    ? 'translate(-90px, -55px)' 
-                    : 'translate(-70px, -100px)'
-            }}>
+            <div
+                style={{
+                    transform: isLandscape
+                        ? 'translate(-90px, -55px)'
+                        : 'translate(-70px, -100px)',
+                }}
+            >
                 {isLandscape ? (
-                    <SiteCard site={dragged.card as SiteCardType} size="md" />
+                    <SiteCard site={dragged.card as SiteCardState} size="md" />
                 ) : (
                     <Card card={dragged.card as CardType} size="md" />
                 )}

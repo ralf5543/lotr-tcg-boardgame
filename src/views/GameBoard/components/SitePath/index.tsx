@@ -23,7 +23,7 @@ export const SitePath: React.FC<SitePathProps> = ({
     players = {},
     onPlaySite,
 }) => {
-    const { registerTarget, activeTargetId } = useDrag();
+    const { registerTarget, activeTargetId, dragged } = useDrag();
     const slots = Array.from({ length: 9 }, (_, i) => path?.[i] ?? null);
     const nextEmptyIndex = slots.findIndex((slot) => slot === null);
 
@@ -109,8 +109,13 @@ export const SitePath: React.FC<SitePathProps> = ({
             <S.SitesGrid>
                 {slots.map((site, index) => {
                     const isNextEmpty = index === nextEmptyIndex;
+                    
+                    // Un slot est en survol actif SI c'est le slot valide ET que la carte attrapée est un site paysage
                     const isHovered =
-                        isNextEmpty && activeTargetId === 'sitePath';
+                        isNextEmpty &&
+                        activeTargetId === 'sitePath' &&
+                        dragged?.orientation === 'landscape';
+
                     const p0Here = players?.['0']?.currentSiteIndex === index;
                     const p1Here = players?.['1']?.currentSiteIndex === index;
                     const regionBonus = getRegionBonus(index);
@@ -125,13 +130,16 @@ export const SitePath: React.FC<SitePathProps> = ({
                                     ? '2px solid #e2c044'
                                     : undefined,
                                 boxShadow: isHovered
-                                    ? '0 0 12px rgba(226, 192, 68, 0.6)'
+                                    ? '0 0 16px rgba(226, 192, 68, 0.8), inset 0 0 8px rgba(226, 192, 68, 0.3)'
                                     : undefined,
-                                transition: 'all 0.2s ease',
+                                transform: isHovered ? 'scale(1.04)' : 'scale(1)',
+                                transition: 'all 0.15s ease-in-out',
                             }}
-                            onMouseEnter={() =>
-                                setHoveredCard(site, 'landscape')
-                            }
+                            onMouseEnter={() => {
+                                if (site) {
+                                    setHoveredCard(site, 'landscape');
+                                }
+                            }}
                             onMouseLeave={() => setHoveredCard(null)}
                         >
                             {site ? (
@@ -149,6 +157,7 @@ export const SitePath: React.FC<SitePathProps> = ({
                                         justifyContent: 'center',
                                         height: '100%',
                                         opacity: isNextEmpty ? 1 : 0.4,
+                                        pointerEvents: 'none',
                                     }}
                                 >
                                     <span
@@ -165,6 +174,7 @@ export const SitePath: React.FC<SitePathProps> = ({
                                             color: isNextEmpty
                                                 ? '#e2c044'
                                                 : '#888',
+                                            fontWeight: isHovered ? 'bold' : 'normal',
                                         }}
                                     >
                                         {isNextEmpty

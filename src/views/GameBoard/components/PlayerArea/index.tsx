@@ -1,19 +1,22 @@
-import React from 'react';
-import type { CardType } from '../../../../game/types';
+import React, { useRef, useEffect } from 'react';
+import type { CardType, CardSubtype } from '../../../../game/types';
 import * as S from './styles';
 import { Card } from '../Card';
 import { useDrag } from '../../../../contexts/DragContext';
+import {
+    canDropInSupportArea,
+    canDropInFellowship,
+    canAttachToCharacter,
+} from '../../../../utils/routingDragNDrop';
 
 interface PlayerAreaProps {
-    playerId: string; // "0" (FP) ou "1" (Ombre)
+    playerId: string;
     deckCount: number;
     fellowshipArea: CardType[];
     supportArea: CardType[];
     isOpponent?: boolean;
     moves: any;
 }
-
-let isProcessingDrop = false;
 
 export const PlayerArea: React.FC<PlayerAreaProps> = ({
     playerId,
@@ -26,98 +29,100 @@ export const PlayerArea: React.FC<PlayerAreaProps> = ({
     const isFreePeoplesPlayer = playerId === '0';
     const { activeTargetId, registerTarget, startDrag, dragged } = useDrag();
 
-     // 💡 1. DECLARATION DE movesRef
-    const movesRef = React.useRef(moves);
-    React.useEffect(() => {
+    const movesRef = useRef(moves);
+    useEffect(() => {
         movesRef.current = moves;
     }, [moves]);
 
-    // 💡 2. DECLARATION DE companionsRef
-    const companionsRef = React.useRef<CardType[]>(fellowshipArea);
-    React.useEffect(() => {
+    const companionsRef = useRef<CardType[]>(fellowshipArea);
+    useEffect(() => {
         companionsRef.current = fellowshipArea;
     }, [fellowshipArea]);
 
-    React.useEffect(() => {
-        companionsRef.current = fellowshipArea;
-    }, [fellowshipArea]);
+    const cardSubtype = (dragged?.card as CardType)?.subType as CardSubtype | undefined;
 
-    React.useEffect(() => {
-    const handlePhysicalDrop = (e: Event) => {
-    if (isOpponent) return;
+    useEffect(() => {
+        const handlePhysicalDrop = (e: Event) => {
+            if (isOpponent) return;
 
-    const customEvent = e as CustomEvent;
-    const { draggedCard, targetId } = customEvent.detail || {};
-    
-    console.log('📦 [DROP EVENT DETAIL]:', { draggedCard, targetId });
+            const customEvent = e as CustomEvent;
+            const { draggedCard, targetId } = customEvent.detail || {};
 
-    if (!targetId || !draggedCard) return;
-    const { index, card, origin } = draggedCard;
+            if (!targetId || !draggedCard) return;
+            const { index, origin } = draggedCard;
+            const droppedSubtype = (draggedCard.card as CardType)?.subType as CardSubtype | undefined;
 
-    // --- CASE A : DROP SUR UN COMPAGNON (ATTACHEMENT) ---
-    // Si targetId n'est pas la zone globale 'fellowshipArea' mais l'ID d'une carte spécifique
-    if (origin === 'HAND' && targetId !== 'fellowshipArea' && targetId !== 'supportArea') {
-        console.log('📎 [TRY ATTACH]:', { cardIndex: index, targetCardId: targetId });
-        moves.attachCard(index, targetId);
-        return;
-    }
+            // --- CASE A : ATTACHEMENT SUR UN PERSONNAGE ---
+            if (
+                origin === 'HAND' &&
+                targetId !== 'fellowshipArea' &&
+                targetId !== 'supportArea'
+            ) {
+                if (canAttachToCharacter(droppedSubtype)) {
+                    console.log('📎 [TRY ATTACH]:', { cardIndex: index, targetCardId: targetId });
+                    moves.attachCard(index, targetId);
+                }
+                return;
+            }
 
-    // --- CASE B : DROP DEPUIS LA MAIN (JOUER UNE CARTE) ---
-    if (origin === 'HAND' && targetId === 'fellowshipArea') {
-        console.log('🃏 [TRY PLAY CARD]:', { cardIndex: index });
-        moves.playCard(index);
-        return;
-    }
+            // --- CASE B : POSE SUR LA FELLOWSHIP AREA ---
+            if (origin === 'HAND' && targetId === 'fellowshipArea') {
+                if (canDropInFellowship(droppedSubtype)) {
+                    console.log('🃏 [PLAY COMPANION]:', { cardIndex: index });
+                    moves.playCard(index);
+                }
+                return;
+            }
 
-    // --- CASE C : REORDER SUR LE PLATEAU ---
-    if (origin === 'BOARD') {
-    const currentList = fellowshipArea || [];
-    
-    // 1. Déterminer l'index cible
-    let toIndex = -1;
+            // --- CASE C : POSE SUR LA SUPPORT AREA ---
+            if (origin === 'HAND' && targetId === 'supportArea') {
+                if (canDropInSupportArea(droppedSubtype)) {
+                    console.log('🎒 [PLAY SUPPORT]:', { cardIndex: index });
+                    moves.playCard(index);
+                }
+                return;
+            }
 
-    // Si on a lâché sur une carte spécifique
-    if (targetId !== 'fellowshipArea') {
-        toIndex = currentList.findIndex(
-            (c) => c && (c.id === targetId || (c as any).card?.id === targetId)
-        );
-    } else {
-        // Si on lâche dans le vide de la zone, on envoie à la fin
-        toIndex = currentList.length - 1;
-    }
+            // --- CASE D : REORDER SUR LE PLATEAU ---
+            if (origin === 'BOARD') {
+                const currentList = fellowshipArea || [];
+                let toIndex = -1;
 
-    console.log('🔄 [REORDER CHECK]', {
-        fromIndex: index,
-        toIndexCalculated: toIndex,
-        targetIdReceived: targetId,
-        currentListLength: currentList.length,
-        currentIds: currentList.map(c => c?.id)
-    });
+                if (targetId !== 'fellowshipArea') {
+                    toIndex = currentList.findIndex(
+                        (c) => c && (c.id === targetId || (c as any).card?.id === targetId)
+                    );
+                } else {
+                    toIndex = currentList.length - 1;
+                }
 
-    if (index === undefined || toIndex === -1) {
-        console.warn('⚠️ [REORDER ABORTED] Index source ou cible invalide');
-        return;
-    }
+                if (index === undefined || toIndex === -1) {
+                    return;
+                }
 
-    moves.reorderFellowship({ fromIndex: index, toIndex });
-}
-};
+                moves.reorderFellowship({ fromIndex: index, toIndex });
+            }
+        };
 
-    window.addEventListener('card-dropped', handlePhysicalDrop);
-    return () => window.removeEventListener('card-dropped', handlePhysicalDrop);
-}, [isOpponent, moves, fellowshipArea]);
+        window.addEventListener('card-dropped', handlePhysicalDrop);
+        return () => window.removeEventListener('card-dropped', handlePhysicalDrop);
+    }, [isOpponent, moves, fellowshipArea]);
 
     // 1. Rendu du composant Zone Communauté (Fellowship)
     const renderFellowship = () => {
-
         if (isFreePeoplesPlayer) {
+            const isFellowshipTargeted =
+                !isOpponent &&
+                activeTargetId === 'fellowshipArea' &&
+                dragged?.orientation === 'portrait' &&
+                canDropInFellowship(cardSubtype);
+
             return (
                 <S.Fellowship
                     className="fellowship-active"
                     $borderColor="#3498db"
-                    ref={(el) =>
-                        !isOpponent && registerTarget('fellowshipArea', el)
-                    }
+                    $isTargeted={isFellowshipTargeted}
+                    ref={(el) => !isOpponent && registerTarget('fellowshipArea', el)}
                 >
                     <S.ZoneTitle color="#3498db">
                         🛡️ Compagnons des Peuples Libres{' '}
@@ -127,91 +132,92 @@ export const PlayerArea: React.FC<PlayerAreaProps> = ({
                         {(fellowshipArea || []).length === 0 && (
                             <S.EmptyText>Aucun compagnon déployé.</S.EmptyText>
                         )}
-                        {(fellowshipArea || []).map(
-                            (companion, companionIdx) => {
-                                const isBeingDragged =
-                                    dragged?.card.id === companion.id;
+                        {(fellowshipArea || []).map((companion, companionIdx) => {
+                            const isBeingDragged = dragged?.card?.id === companion.id;
+                            const isCompanionTargeted =
+                                !isOpponent &&
+                                activeTargetId === companion.id &&
+                                dragged?.orientation === 'portrait' &&
+                                canAttachToCharacter(cardSubtype);
 
-                                return (
-                                    <S.CharacterStack
-                                        key={companion.id}
-                                        style={{
-                                            opacity: isBeingDragged ? 0.3 : 1,
+                            return (
+                                <S.CharacterStack
+                                    key={companion.id}
+                                    $isBeingDragged={isBeingDragged}
+                                >
+                                    <S.CardDragTarget
+                                        $isOpponent={isOpponent}
+                                        $isTargeted={isCompanionTargeted}
+                                        ref={(el) =>
+                                            !isOpponent && registerTarget(companion.id, el)
+                                        }
+                                        onPointerDown={(e) => {
+                                            if (isOpponent) return;
+                                            if (e.button !== 0) return;
+                                            e.stopPropagation();
+
+                                            startDrag(
+                                                companion,
+                                                companionIdx,
+                                                e,
+                                                'BOARD',
+                                                'portrait'
+                                            );
                                         }}
                                     >
-                                        <div
-                                            ref={(el) =>
-                                                !isOpponent &&
-                                                registerTarget(companion.id, el)
-                                            }
-                                            onPointerDown={(e) => {
-                                                if (isOpponent) return;
-                                                if (e.button !== 0) return;
-                                                e.stopPropagation();
+                                        <Card card={companion} size="sm" />
+                                    </S.CardDragTarget>
 
-                                                // Launch drag avec origin = 'BOARD'
-                                                startDrag(
-                                                    companion,
-                                                    companionIdx,
-                                                    e,
-                                                    'BOARD'
-                                                );
-                                            }}
-                                            style={{
-                                                cursor: isOpponent
-                                                    ? 'default'
-                                                    : 'grab',
-                                            }}
+                                    {companion.attachments?.map((attachment, idx) => (
+                                        <S.AttachmentWrapper
+                                            key={attachment.id}
+                                            $index={idx}
                                         >
-                                            <Card card={companion} size="sm" />
-                                        </div>
-                                        {companion.attachments?.map(
-                                            (attachment, idx) => (
-                                                <S.AttachmentWrapper
-                                                    key={attachment.id}
-                                                    $index={idx}
-                                                >
-                                                    <Card
-                                                        card={attachment}
-                                                        size="sm"
-                                                    />
-                                                </S.AttachmentWrapper>
-                                            )
-                                        )}
-                                    </S.CharacterStack>
-                                );
-                            }
-                        )}
+                                            <Card card={attachment} size="sm" />
+                                        </S.AttachmentWrapper>
+                                    ))}
+                                </S.CharacterStack>
+                            );
+                        })}
                     </S.CardRow>
                 </S.Fellowship>
             );
         }
 
-        return (
-            <S.FellowshipCollapsed>
-                {/* Zone masquée/réduite car l'Ombre n'a pas de compagnons */}
-            </S.FellowshipCollapsed>
-        );
+        return <S.FellowshipCollapsed />;
     };
 
     // 2. Rendu du composant Aire de Soutien (SupportArea)
-    const renderSupportArea = () => (
-        <S.SupportArea $borderColor="#f39c12" $isOpponent={isOpponent}>
-            <S.ZoneTitle color="#f39c12">
-                🎒 Aire de Soutien (Support Area)
-            </S.ZoneTitle>
-            <S.CardRow>
-                {(supportArea || []).length === 0 && (
-                    <S.EmptyText>Aire de soutien vide.</S.EmptyText>
-                )}
-                {(supportArea || []).map((card) => (
-                    <S.CharacterStack key={card.id}>
-                        <Card size="sm" card={card} />
-                    </S.CharacterStack>
-                ))}
-            </S.CardRow>
-        </S.SupportArea>
-    );
+    const renderSupportArea = () => {
+        const isSupportTargeted =
+            !isOpponent &&
+            activeTargetId === 'supportArea' &&
+            dragged?.orientation === 'portrait' &&
+            canDropInSupportArea(cardSubtype);
+
+        return (
+            <S.SupportArea
+                $borderColor="#f39c12"
+                $isOpponent={isOpponent}
+                $isTargeted={isSupportTargeted}
+                ref={(el) => !isOpponent && registerTarget('supportArea', el)}
+            >
+                <S.ZoneTitle color="#f39c12">
+                    🎒 Aire de Soutien (Support Area)
+                </S.ZoneTitle>
+                <S.CardRow>
+                    {(supportArea || []).length === 0 && (
+                        <S.EmptyText>Aire de soutien vide.</S.EmptyText>
+                    )}
+                    {(supportArea || []).map((card) => (
+                        <S.CharacterStack key={card.id}>
+                            <Card size="sm" card={card} />
+                        </S.CharacterStack>
+                    ))}
+                </S.CardRow>
+            </S.SupportArea>
+        );
+    };
 
     return (
         <S.AreaContainer $isOpponent={isOpponent}>
