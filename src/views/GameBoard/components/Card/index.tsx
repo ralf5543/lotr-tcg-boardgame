@@ -118,25 +118,25 @@ export const Card: React.FC<CardProps> = ({
                         {card.twilightCost}
                     </S.TwilightBadge>
                 )}
-                <S.CardTitles>
-                    <S.CardTitle>
+                <S.CardTitles $subType={card.subType}>
+                    <S.CardTitle $subType={card.subType}>
                         {card.isUnique && '• '}
                         {card.title}
                     </S.CardTitle>
                     {card.subtitle && size !== 'sm' && (
-                        <S.CardSubtitle>{card.subtitle}</S.CardSubtitle>
+                        <S.CardSubtitle $subType={card.subType}>{card.subtitle}</S.CardSubtitle>
                     )}
                 </S.CardTitles>
             </S.CardHeader>
 
-            <S.VisualContainer>
+            <S.VisualContainer $subType={card.subType}>
                 <S.Visual
                     src={card.imageUrl}
                     alt={card.title}
                     draggable={false}
                 />
             </S.VisualContainer>
-            {size !== 'sm' && <S.CardType>{typeLine}</S.CardType>}
+            {size !== 'sm' && <S.CardType $subType={card.subType}>{typeLine}</S.CardType>}
 
             <S.TextContainer>
                 <S.KeywordText>{translatedKeyword}</S.KeywordText>

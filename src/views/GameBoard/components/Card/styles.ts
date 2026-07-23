@@ -1,4 +1,4 @@
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 
 const getSignet = (signet: string): string => {
     switch (signet) {
@@ -117,74 +117,9 @@ const getCultureSmallBackground = (culture: string): string => {
             return '';
     }
 };
-const getCultureWatermark = (culture: string): string => {
-    switch (culture) {
-        case 'GONDOR':
-            return 'url(interface/watermark_gondor.png)';
-        case 'SHIRE':
-            return 'url(interface/watermark_gondor.png)';
-        case 'ISENGARD':
-            return 'url(interface/watermark_gondor.png)';
-        case 'RINGWRAITH':
-            return 'url(interface/watermark_gondor.png)';
-        case 'ELVEN':
-            return 'url(interface/watermark_gondor.png)';
-        case 'DWARVEN':
-            return 'url(interface/watermark_gondor.png)';
-        case 'MORIA':
-            return 'url(interface/watermark_gondor.png)';
-        case 'SAURON':
-            return 'url(interface/watermark_gondor.png)';
-        default:
-            return '';
-    }
-};
 
-const getCultureColorGradient = (culture: string): string => {
-    switch (culture) {
-        case 'GONDOR':
-            return 'linear-gradient(to top right, #685d9f 0%, #e4dcd9 18%, #685d9f 83%)';
-        case 'SHIRE':
-            return 'linear-gradient(to top right, #211f13 0%, #6c7148 18%, #211f13 83%)';
-        case 'ISENGARD':
-            return 'linear-gradient(to top right, #0b0b0b 0%, #3d3e42 18%, #0b0b0b 83%)';
-        case 'RINGWRAITH':
-            return 'linear-gradient(to top right, #121116 0%, #6c8fa3 18%, #121116 83%)';
-        case 'ELVEN':
-            return 'linear-gradient(to top right, #1d4368 0%, #78a1c1 18%, #1d4368 83%)';
-        case 'DWARVEN':
-            return 'linear-gradient(to top right, #602517 0%, #7d6155 18%, #602517 83%)';
-        case 'MORIA':
-            return 'linear-gradient(to top right, #313332 0%, #b55723 18%, #313332 83%)';
-        case 'SAURON':
-            return 'linear-gradient(to top right, #1a1c1b 0%, #8b1a20 18%, #1a1c1b 83%)';
-        default:
-            return '#718096';
-    }
-};
-
-const getSecondaryCultureColor = (culture: string): string => {
-    switch (culture) {
-        case 'GONDOR':
-            return '#e4dcd9';
-        case 'SHIRE':
-            return '#cdcda7';
-        case 'ISENGARD':
-            return '#bfcdb3';
-        case 'RINGWRAITH':
-            return '#cecac9';
-        case 'ELVEN':
-            return '#dad8d9';
-        case 'DWARVEN':
-            return '#e6decb';
-        case 'MORIA':
-            return '#e9d8bc';
-        case 'SAURON':
-            return '#c2bba9';
-        default:
-            return '#718096';
-    }
-};
+const isNotCharacter = (subType?: string) => 
+    Boolean(subType) && subType !== 'COMPANION' && subType !== 'MINION';
 
 export const CardContainer = styled.div<{
     $culture: string;
@@ -221,8 +156,8 @@ export const CardContainer = styled.div<{
     transition:
         transform 0.2s ease,
         opacity 0.2s ease;
-    user-select: none;
-    -webkit-user-drag: ${(props) => (props.draggable ? 'element' : 'none')};
+        user-select: none;
+        -webkit-user-drag: ${(props) => (props.draggable ? 'element' : 'none')};
 
     /* ======------ Small cards ------====== */
     ${(props) =>
@@ -268,7 +203,6 @@ export const CardContainer = styled.div<{
 
         ${TextContainer} {
             inset: 81px 4px 22px;
-            background-image: ${getCultureWatermark(props.$culture)};
         }
 
         ${KeywordText} {
@@ -319,7 +253,7 @@ export const CardContainer = styled.div<{
     /* ======------ Large cards ------====== */
     ${(props) =>
         props.$size === 'lg' &&
-        `
+        css `
         width: 400px;
         border-radius: 12px;
 
@@ -330,9 +264,20 @@ export const CardContainer = styled.div<{
             line-height: 1;
         }
 
+        ${CardTitles} {
+
+            ${isNotCharacter(props.$subType) && css`
+                    inset: 80px 325px 260px 25px;
+                `}
+        }
+
         ${CardTitle} {
             font-size: 26px;
-            margin-block-end: 1px
+            margin-block-end: 1px;
+
+            ${isNotCharacter(props.$subType) && css`
+                    min-height: 75px;
+                `}
         }
 
         ${CardSubtitle} {
@@ -340,13 +285,24 @@ export const CardContainer = styled.div<{
         }
 
         ${CardType} {
+            margin-block-start: 11px;
             font-size: 20px;
             line-height: 1;
+
+            ${isNotCharacter(props.$subType) && css`
+                    inset: 315px 40px 205px 100px;
+                `}
         }
 
         ${VisualContainer} {
             height: 240px;
             padding-inline: 42px;
+
+            ${isNotCharacter(props.$subType) && css`
+                    padding-inline: 0;
+                    height: auto;
+                    inset: 65px 36px 287px 83px;
+                `}
         }
 
         ${TextContainer} {
@@ -407,33 +363,51 @@ export const CardContainer = styled.div<{
 export const CardHeader = styled.div`
     display: flex;
     min-height: 15px;
-    padding-block-start: 5px;
-    padding-inline: 6px;
+    padding-block-start: 6px;
+    padding-inline: 4px;
     line-height: 1;
 `;
 
-export const CardTitles = styled.div`
+export const CardTitles = styled.div<{ $subType?: string }>`
     display: flex;
     flex-direction: column;
     font-family: 'DecipherTitle', serif;
     font-variant: small-caps;
+    ${(props) =>
+        isNotCharacter(props.$subType) &&
+        css`
+            position: absolute; 
+            inset: 22px 108px 89px 7px;
+            writing-mode: sideways-lr;
+            line-height: 0.8;
+            text-align: center;
+        `}
 `;
-export const CardTitle = styled.p`
+export const CardTitle = styled.p<{ $subType?: string }>`
     font-size: 9px;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
     margin-block-start: 0.5px;
-}
+    ${(props) =>
+        isNotCharacter(props.$subType) &&
+        css`
+            font-size: 8px;
+        `}
 `;
-export const CardSubtitle = styled.p`
+export const CardSubtitle = styled.p<{ $subType?: string }>`
     font-size: 7px;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
     margin-block-start: 0.5px;
+    ${(props) =>
+        isNotCharacter(props.$subType) &&
+        css`
+            font-size: 6px;
+        `}
 `;
-export const CardType = styled.p`
+export const CardType = styled.p<{ $subType?: string }>`
     font-family: DecipherTitle, serif;
     font-size: 7px;
     white-space: nowrap;
@@ -442,14 +416,16 @@ export const CardType = styled.p`
     display: flex;
     justify-content: center;
     align-items: center;
-    margin-block-start: 0.6em;
+    margin-block-start: 3.5px;
+    ${(props) =>
+        isNotCharacter(props.$subType) &&
+        css`
+            position: absolute;
+            inset: 101px 15px 66px 34px;
+        `}
 `;
 
 export const TwilightBadge = styled.span<{ $isShadow?: boolean }>`
-    /*background-image: ${(props) =>
-        (props.$isShadow ?? true)
-            ? 'url(interface/icons/twilight_shadow.webp)'
-            : 'url(interface/icons/twilight_freeps.webp)'};*/
     background-size: contain;
     background-repeat: no-repeat;
     background-position: center;
@@ -463,16 +439,25 @@ export const TwilightBadge = styled.span<{ $isShadow?: boolean }>`
     align-items: center;
     justify-content: center;
     flex-shrink: 0;
-    margin-inline-end: 5px;
+    margin-inline-end: 0px;
     text-align: center;
     font-family: LOTRIcons;
 `;
 
-export const VisualContainer = styled.figure`
+export const VisualContainer = styled.figure<{ $subType?: string }>`
     height: 76px;
     margin: 0px;
     padding-inline: 13px;
-}
+    ${(props) =>
+        isNotCharacter(props.$subType) &&
+        css`
+            height: 68px;
+            margin: 0px;
+            padding-inline: 0;
+            position: absolute;
+            inset: 20px 10px 7px 27px;
+            inset-block-start: 20px;
+        `}
 `;
 
 export const Visual = styled.img`

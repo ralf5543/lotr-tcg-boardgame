@@ -28,7 +28,7 @@ export const FREE_PEOPLES_DATABASE: CardType[] = [
     },
     {
         id: '1c10',
-        title: 'Courage Nààààààain',
+        title: 'Courage Nain',
         imageUrl: '/cards_visuals/lotr1c10.webp',
         kind: 'FREE_PEOPLES',
         subType: 'CONDITION_CHARACTER',
