@@ -1,8 +1,18 @@
 import type { CardKind, CardSubtype, CardRace, CardCulture, CardKeyword } from './types';
 
 export const TRANSLATIONS = {
+  phase: {
+    FELLOWSHIP: 'Compagnie',
+    SHADOW: 'Ombre',
+    MANEUVER: 'Maneouvre',
+    ARCHERY: 'Archerie',
+    ASSIGNMENT: 'Affectation',
+    SKIRMISH: 'Combat',
+    REGROUP: 'Ralliement',
+  },
+
   kind: {
-    FREE_PEOPLES: 'Peuple Libre',
+    FREE_PEOPLES: 'Peuples Libres',
     SHADOW: 'Ombre',
   } as Record<CardKind, string>,
 
@@ -57,5 +67,13 @@ export const TRANSLATIONS = {
     KNIGHT: 'Chevalier',
     ARCHER: 'Archer',
     DAMAGE: 'Dégâts + 1',
+    RIVER: 'Rivière',
+    FOREST: 'Forêt',
+    MOUNTAIN: 'Montagne',
+    UNDERGROUND: 'Souterrain',
+    DWELLING: 'Résidence',
+    PLAINS: 'Plaines',
+    SWAMP: 'Marais',
+    BATTLEGROUND: 'Champ de Bataille',
   } as Record<CardKeyword, string>
 };

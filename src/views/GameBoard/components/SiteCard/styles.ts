@@ -4,22 +4,23 @@ export type SiteCardSize = 'sm' | 'md' | 'lg';
 
 const sizeStyles = {
     sm: css`
-        width: 120px;
-        height: 70px;
+        width: 100%;
+        height: 100%;
         padding: 4px 6px;
         font-size: 10px;
         border-radius: 4px;
+        background-image: none;
     `,
     md: css`
         width: 180px;
-        height: 110px;
+        aspect-ratio: 1.39/1;
         padding: 6px 8px;
         font-size: 12px;
         border-radius: 6px;
     `,
     lg: css`
-        width: 380px;
-        height: 240px;
+        width: 100%;
+        aspect-ratio: 1.39/1;
         padding: 12px 16px;
         font-size: 14px;
         border-radius: 10px;
@@ -32,45 +33,88 @@ export const Container = styled.div<{ $size: SiteCardSize }>`
     flex-direction: column;
     justify-content: space-between;
     background: #1a1a2e;
-    border: 1px solid #e2c044;
-    color: #fff;
-    box-sizing: border-box;
+    color: black;
     overflow: hidden;
     user-select: none;
-    aspect-ratio: 1.39 / 1;
+    background-image: url('interface/cards_backgrounds/site_standard.webp');
+    background-size: cover;
+    background-repeat: no-repeat;
 
     ${({ $size }) => sizeStyles[$size]}
 `;
 
-export const Header = styled.div`
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    font-weight: bold;
-    gap: 4px;
-`;
-
-export const Title = styled.span`
+export const Title = styled.p<{
+    $size?: 'sm' | 'md' | 'lg';
+}>`
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
-`;
-
-export const TwilightBadge = styled.span`
-    color: #e2c044;
+    text-align: center;
+    position: absolute;
+    inset: 8px 19px 108px 20px;
+    color: black;
+    font-size: 8px;
     font-weight: bold;
-    flex-shrink: 0;
+    font-variant: small-caps;
+
+    ${(props) =>
+        props.$size === 'lg' &&
+        `
+        inset: 23px 110px 260px 110px;
+        font-size: 12px;
+    `}
 `;
 
-export const VisualContainer = styled.div`
-    flex: 1;
-    margin: 4px 0;
-    overflow: hidden;
-    border-radius: 4px;
-    background: #000;
+export const TwilightBadge = styled.span<{
+    $size?: 'sm' | 'md' | 'lg';
+}>`
+    position: absolute;
+    inset-block-start: 10px;
+    inset-inline-end: 7px;
+    width: 26px;
+    aspect-ratio: 1 / 1;
+    background-image: url(interface/icons/site_value.webp);
+    background-repeat: no-repeat;
+    background-size: contain;
+    color: white;
+    font-family: LOTRIcons;
+    font-size: 14px;
+    z-index: 1;
     display: flex;
     align-items: center;
     justify-content: center;
+    background-position: 1px;
+
+    ${(props) =>
+        props.$size === 'lg' &&
+        `
+        inset-block-start: 18px;
+        inset-inline-end: 14px;
+        width: 45px;
+        font-size: 22px;
+        background-position: 4px 3px;
+    `}
+`;
+
+export const VisualContainer = styled.div<{
+    $size?: 'sm' | 'md' | 'lg';
+}>`
+    position: absolute;
+    overflow: hidden;
+    inset: 17px 19px 31px 20px;
+    object-fit: cover; 
+
+    ${(props) =>
+        props.$size === 'sm' &&
+        `
+        inset: 0;
+    `}
+
+    ${(props) =>
+        props.$size === 'lg' &&
+        `
+        inset: 41px 47px 78px 49px;
+    `}
 `;
 
 export const Visual = styled.img`
@@ -79,15 +123,20 @@ export const Visual = styled.img`
     object-fit: cover;
 `;
 
-export const Text = styled.p`
-    margin: 0;
-    font-size: 0.85em;
-    line-height: 1.2;
-    opacity: 0.9;
-    display: -webkit-box;
-    -webkit-line-clamp: 2;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
+export const Text = styled.p<{
+    $size?: 'sm' | 'md' | 'lg';
+}>`
+    position: absolute;
+    inset: 100px 22px 15px 23px;
+    line-height: 0.9;
+    font-size: 6px;
+
+    ${(props) =>
+        props.$size === 'lg' &&
+        `
+        inset: 235px 52px 40px 52px;
+        font-size: 12px;
+    `}
 `;
 
 export const Footer = styled.div`
@@ -95,5 +144,4 @@ export const Footer = styled.div`
     justify-content: space-between;
     align-items: center;
     font-size: 0.8em;
-    opacity: 0.8;
 `;

@@ -1,5 +1,17 @@
 export type CardKind = 'FREE_PEOPLES' | 'SHADOW';
-export type CardKeyword = 'ARCHER' | 'RANGER' | 'KNIGHT' | 'DAMAGE';
+export type CardKeyword =
+    | 'ARCHER'
+    | 'RANGER'
+    | 'KNIGHT'
+    | 'DAMAGE'
+    | 'RIVER'
+    | 'FOREST'
+    | 'MOUNTAIN'
+    | 'UNDERGROUND'
+    | 'DWELLING'
+    | 'PLAINS'
+    | 'SWAMP'
+    | 'BATTLEGROUND';
 export type CardSignet = 'ARAGORN' | 'FRODO' | 'GANDALF' | 'THEODEN';
 export type CardSubtype =
     | 'COMPANION'
@@ -26,7 +38,7 @@ export type CardRace =
     | 'ORC'
     | 'URUK-HAI'
     | 'NAZGUL';
-    
+
 export type CardCulture =
     | 'GONDOR'
     | 'DWARVEN'
@@ -45,23 +57,19 @@ export type CardCulture =
     | 'URUK-HAI'
     | 'THE-ONE-RING';
 
-export type SiteKeyword =
-    | 'RIVER'
-    | 'FOREST';
-
 export interface CardType {
     id: string;
     title: string;
     subtitle?: string;
     imageUrl?: string;
     kind: CardKind;
-    keyword?: CardKeyword;
+    keywords?: CardKeyword[]
     race?: CardRace;
     twilightCost: number;
     strength?: number;
     vitality?: number;
     roaming?: number;
-    signet?: string;
+    signet?: CardSignet;
     culture: CardCulture;
     subType: CardSubtype;
     isUnique: boolean;
@@ -86,15 +94,15 @@ export interface SiteCardState {
     name: string;
     twilightCost: number;
     text: string;
-    ownerId: string;     // '0' ou '1' (pour se rappeler qui l'a posé)
+    ownerId: string; // '0' ou '1' (pour se rappeler qui l'a posé)
     imageUrl?: string;
-    keyword: SiteKeyword;
+    keywords?: CardKeyword[];
 }
 
 export interface GameState {
     twilightPool: number;
     currentSiteIndex: number; // Position actuelle du pion sur le chemin (0 à 8, soit site 1 à 9)
-    movesThisTurn: number;    // Compteur pour limiter à 2 déplacements max par tour
+    movesThisTurn: number; // Compteur pour limiter à 2 déplacements max par tour
     path: (SiteCardState | null)[]; // Le chemin de 9 cases horizontales
     battlefield: CardType[];
     players: Record<string, PlayerState>;

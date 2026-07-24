@@ -68,7 +68,7 @@ export const FREE_PEOPLES_DATABASE: CardType[] = [
         id: '1r89',
         title: 'Aragorn',
         subtitle: 'Rôdeur du Nord',
-        keyword: 'RANGER',
+        keywords: ['RANGER'],
         race: 'MAN',
         imageUrl: '/cards_visuals/lotr1r89.jpg',
         kind: 'FREE_PEOPLES',
@@ -88,7 +88,7 @@ export const FREE_PEOPLES_DATABASE: CardType[] = [
         id: '1r50',
         title: 'Legolas',
         subtitle: 'Vertefeuille',
-        keyword: 'ARCHER',
+        keywords: ['ARCHER'],
         imageUrl: '/cards_visuals/lotr1r50.jpg',
         kind: 'FREE_PEOPLES',
         signet: 'FRODO',
@@ -107,7 +107,7 @@ export const FREE_PEOPLES_DATABASE: CardType[] = [
         subtitle: 'Fils de Glóin',
         imageUrl: '/cards_visuals/lotr1r13.jpg',
         kind: 'FREE_PEOPLES',
-        keyword: 'DAMAGE',
+        keywords: ['DAMAGE'],
         signet: 'GANDALF',
         race: 'DWARF',
         subType: 'COMPANION',
@@ -206,8 +206,8 @@ export const DUMMY_SITES_PLAYER_0: SiteCard[] = [
         id: '11u227',
         name: "Berges de l'Anduin",
         twilightCost: 0,
-        text: "River. Le total d'archerie des séides est de +2 pour chaque compagnon au delà de 4.",
-        keyword: 'RIVER',
+        text: "Le total d'archerie des séides est de +2 pour chaque compagnon au delà de 4.",
+        keywords: ['RIVER', 'MOUNTAIN'],
         ownerId: '0',
         imageUrl: '/cards_visuals/sites/lotr11u227.jpg'
     },
@@ -215,73 +215,73 @@ export const DUMMY_SITES_PLAYER_0: SiteCard[] = [
         id: 'fsdfsdfsfsd',
         name: "Berges de l'Anduin",
         twilightCost: 0,
-        text: "River. Le total d'archerie des séides est de +2 pour chaque compagnon au delà de 4.",
-        keyword: 'RIVER',
+        text: "Le total d'archerie des séides est de +2 pour chaque compagnon au delà de 4.",
+        keywords: ['RIVER', 'MOUNTAIN'],
         ownerId: '0',
-        imageUrl: '/cards_visuals/sites/lotr11227.jpg'
+        imageUrl: '/cards_visuals/sites/lotr11u227.jpg'
     },
     {
         id: 'a',
         name: "Berges de l'Anduin",
         twilightCost: 0,
-        text: "River. Le total d'archerie des séides est de +2 pour chaque compagnon au delà de 4.",
-        keyword: 'RIVER',
+        text: "Le total d'archerie des séides est de +2 pour chaque compagnon au delà de 4.",
+        keywords: ['RIVER', 'MOUNTAIN'],
         ownerId: '0',
-        imageUrl: '/cards_visuals/sites/lotr11227.jpg'
+        imageUrl: '/cards_visuals/sites/lotr11u227.jpg'
     },
     {
         id: 'b',
         name: "Berges de l'Anduin",
         twilightCost: 0,
-        text: "River. Le total d'archerie des séides est de +2 pour chaque compagnon au delà de 4.",
-        keyword: 'RIVER',
+        text: "Le total d'archerie des séides est de +2 pour chaque compagnon au delà de 4.",
+        keywords: ['RIVER', 'MOUNTAIN'],
         ownerId: '0',
-        imageUrl: '/cards_visuals/sites/lotr11227.jpg'
+        imageUrl: '/cards_visuals/sites/lotr11u227.jpg'
     },
     {
         id: 'c',
         name: "Berges de l'Anduin",
         twilightCost: 0,
-        text: "River. Le total d'archerie des séides est de +2 pour chaque compagnon au delà de 4.",
-        keyword: 'RIVER',
+        text: "Le total d'archerie des séides est de +2 pour chaque compagnon au delà de 4.",
+        keywords: ['RIVER'],
         ownerId: '0',
-        imageUrl: '/cards_visuals/sites/lotr11227.jpg'
+        imageUrl: '/cards_visuals/sites/lotr11u227.jpg'
     },
     {
         id: 'd',
         name: "Berges de l'Anduin",
         twilightCost: 0,
-        text: "River. Le total d'archerie des séides est de +2 pour chaque compagnon au delà de 4.",
-        keyword: 'RIVER',
+        text: "Le total d'archerie des séides est de +2 pour chaque compagnon au delà de 4.",
+        keywords: ['RIVER'],
         ownerId: '0',
-        imageUrl: '/cards_visuals/sites/lotr11227.jpg'
+        imageUrl: '/cards_visuals/sites/lotr11u227.jpg'
     },
     {
         id: 'e',
         name: "Berges de l'Anduin",
         twilightCost: 0,
-        text: "River. Le total d'archerie des séides est de +2 pour chaque compagnon au delà de 4.",
-        keyword: 'RIVER',
+        text: "Le total d'archerie des séides est de +2 pour chaque compagnon au delà de 4.",
+        keywords: ['RIVER'],
         ownerId: '0',
-        imageUrl: '/cards_visuals/sites/lotr11227.jpg'
+        imageUrl: '/cards_visuals/sites/lotr11u227.jpg'
     },
     {
         id: 'f',
         name: "Berges de l'Anduin",
         twilightCost: 0,
-        text: "River. Le total d'archerie des séides est de +2 pour chaque compagnon au delà de 4.",
-        keyword: 'RIVER',
+        text: "Le total d'archerie des séides est de +2 pour chaque compagnon au delà de 4.",
+        keywords: ['RIVER'],
         ownerId: '0',
-        imageUrl: '/cards_visuals/sites/lotr11227.jpg'
+        imageUrl: '/cards_visuals/sites/lotr11u227.jpg'
     },
     {
         id: 'g',
         name: "Berges de l'Anduin",
         twilightCost: 0,
-        text: "River. Le total d'archerie des séides est de +2 pour chaque compagnon au delà de 4.",
-        keyword: 'RIVER',
+        text: "Le total d'archerie des séides est de +2 pour chaque compagnon au delà de 4.",
+        keywords: ['RIVER'],
         ownerId: '0',
-        imageUrl: '/cards_visuals/sites/lotr11227.jpg'
+        imageUrl: '/cards_visuals/sites/lotr11u227.jpg'
     },
 
 ];

@@ -377,7 +377,7 @@ export const CardTitles = styled.div<{ $subType?: string }>`
         isNotCharacter(props.$subType) &&
         css`
             position: absolute; 
-            inset: 22px 108px 89px 7px;
+            inset: 26px 109px 83px 7px;
             writing-mode: sideways-lr;
             line-height: 0.8;
             text-align: center;

@@ -1,6 +1,8 @@
 import React from 'react';
 import type { SiteCardState } from '../../../../game/types';
 import * as S from './styles';
+import { TRANSLATIONS } from '../../../../game/translations';
+import { TokenPlayer } from '../TokenPlayer';
 
 export interface SiteCardProps {
     site: SiteCardState;
@@ -17,34 +19,43 @@ export const SiteCard: React.FC<SiteCardProps> = ({
     className,
     style,
 }) => {
+    // --- INTERPRÉTEUR DE TRADUCTION ---
+    // On mappe chaque mot-clé brut vers sa version traduite.
+    // Si la traduction n'existe pas, on conserve la clé brute par sécurité.
+    const translatedKeywords = site.keywords
+        ?.map((kw) => TRANSLATIONS.keyword[kw] || kw)
+        .join(', ');
+
     return (
         <S.Container $size={size} className={className} style={style}>
-            {/* Entête présent pour tous les formats */}
-            <S.Header>
-                <S.Title>{site.name}</S.Title>
-                <S.TwilightBadge>🌙 {site.twilightCost}</S.TwilightBadge>
-            </S.Header>
+            <S.Title $size={size}>{site.name}</S.Title>
+            <S.TwilightBadge $size={size}>{site.twilightCost}</S.TwilightBadge>
 
-            {/* Visuel affiché en md et lg */}
-            {size !== 'sm' && site.imageUrl && (
-                <S.VisualContainer>
+            {site.imageUrl && (
+                <S.VisualContainer $size={size}>
                     <S.Visual src={site.imageUrl} alt={site.name} />
                 </S.VisualContainer>
             )}
 
-            {/* Texte de règles affiché uniquement sur le format lg (Zoom) */}
-            {size === 'lg' && site.text && <S.Text>{site.text}</S.Text>}
-
-            {/* Pied de carte (joueur/proprio ou présence) */}
-            <S.Footer>
-                <span>{site.ownerId !== undefined ? `P${site.ownerId}` : ''}</span>
-                {playersHere && (playersHere.p0 || playersHere.p1) && (
-                    <span style={{ background: '#e2c044', color: '#000', padding: '1px 4px', borderRadius: '3px', fontWeight: 'bold' }}>
-                        {playersHere.p0 && '🚶 P0 '}
-                        {playersHere.p1 && '🚶 P1'}
-                    </span>
-                )}
-            </S.Footer>
+            {size !== 'sm' && (
+                <S.Text $size={size}>
+                    {translatedKeywords && (
+                        <strong>{translatedKeywords}.&nbsp;</strong>
+                    )}
+                    {site.text}
+                </S.Text>
+            )}
+            {size === 'sm' && (
+                <S.Footer>
+                    <span>{site.ownerId !== undefined ? `P${site.ownerId}` : ''}</span>
+                    {playersHere && (
+                        <>
+                            {playersHere.p0 && <TokenPlayer value='1'/>}
+                            {playersHere.p1 && <TokenPlayer value='2'/>}
+                        </>
+                    )}
+                </S.Footer>
+            )}
         </S.Container>
     );
 };

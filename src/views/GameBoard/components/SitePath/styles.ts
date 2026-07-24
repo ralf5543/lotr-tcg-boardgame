@@ -8,7 +8,7 @@ export const SitespathContainer = styled.section`
     padding: 12px;
     background: rgb(26, 29, 36);
     border-radius: 8px;
-    width: 360px;
+    width: 300px;
 `;
 
 export const Title = styled.h3`
@@ -32,7 +32,7 @@ export const SiteCardContainer = styled.div<{
 }>`
     position: relative;
     width: 100%;
-    aspect-ratio: 4 / 1;
+    aspect-ratio: 3 / 1;
     border-radius: 6px;
     border: ${({ $isCurrent }) => $isCurrent ? '2px solid #e2c044' : '1px dashed #444'};
     background: ${({ $hasSite }) => $hasSite ? '#111' : 'rgba(0, 0, 0, 0.2)'};

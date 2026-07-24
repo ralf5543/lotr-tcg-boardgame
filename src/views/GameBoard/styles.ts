@@ -6,13 +6,12 @@ export const BoardContainer = styled.div<{ $faction: 'FREE_PEOPLES' | 'SHADOW' }
     flex-direction: column;
     position: relative;
     padding: 20px;
-    padding-inline-start: 400px;
+    padding-inline-start: 340px;
     background-size: cover;
     background-repeat: no-repeat;
     background-image: url('interface/map_big.webp');
     color: #fff;
     background-attachment: fixed;
-  }
 `;
 
 export const OpponentSection = styled.div`
