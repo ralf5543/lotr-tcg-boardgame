@@ -18,13 +18,17 @@ export const FREE_PEOPLES_DATABASE: CardType[] = [
         imageUrl: '/cards_visuals/lotr2c102.jpg',
         kind: 'FREE_PEOPLES',
         subType: 'COMPANION',
+        keywords: ['RING-BEARER'],
         signet: 'ARAGORN',
         twilightCost: 0,
         strength: 3,
         vitality: 4,
         culture: 'SHIRE',
         isUnique: true,
-        gameText: DEFAULT_GAMETEXT,
+        gameText:
+            'Le coût de chaque artefact, possession et récit {CULTURE_SHIRE} joué sur Frodon est de -1.',
+        loreText:
+            "‟Je ne suis pas fait pour les quâtes périlleuses. Je voudrais bien n'avoir jamais vu l'Anneau! Pourquoi m'est-il venu? Pourquoi ai-je été choisi?”",
     },
     {
         id: '1c10',
@@ -49,7 +53,8 @@ export const FREE_PEOPLES_DATABASE: CardType[] = [
         twilightCost: 1,
         culture: 'ELVEN',
         isUnique: false,
-        gameText: "Jouable dans votre aire de soutien.\nChaque fois que vous jouez un récit {CULTURE_ELVEN}, vous pouvez retirer un point-fardeau.",
+        gameText:
+            'Jouable dans votre aire de soutien.\nChaque fois que vous jouez un récit {CULTURE_ELVEN}, vous pouvez retirer un point-fardeau.',
         loreText:
             'Les Elfes semblent aimer la musique et la poésie autant que les Hobbits aiment la nourriture.',
     },
@@ -80,7 +85,7 @@ export const FREE_PEOPLES_DATABASE: CardType[] = [
         culture: 'GONDOR',
         isUnique: true,
         gameText:
-            "Manoeuvre: Affaiblissez Aragorn pour le rendre défenseur +1 jusqu'à la phase de ralliement",
+            "**Manoeuvre:** Affaiblissez Aragorn pour le rendre **défenseur +1** jusqu'à la phase de ralliement",
         loreText:
             "Nous sommes des hommes solitaires, Rôdeurs des Terres Sauvages, chasseurs - mais toujours chasseurs des serviteurs de l'Ennemi...",
     },
@@ -209,7 +214,7 @@ export const DUMMY_SITES_PLAYER_0: SiteCard[] = [
         text: "Le total d'archerie des séides est de +2 pour chaque compagnon au delà de 4.",
         keywords: ['RIVER', 'MOUNTAIN'],
         ownerId: '0',
-        imageUrl: '/cards_visuals/sites/lotr11u227.jpg'
+        imageUrl: '/cards_visuals/sites/lotr11u227.jpg',
     },
     {
         id: 'fsdfsdfsfsd',
@@ -218,7 +223,7 @@ export const DUMMY_SITES_PLAYER_0: SiteCard[] = [
         text: "Le total d'archerie des séides est de +2 pour chaque compagnon au delà de 4.",
         keywords: ['RIVER', 'MOUNTAIN'],
         ownerId: '0',
-        imageUrl: '/cards_visuals/sites/lotr11u227.jpg'
+        imageUrl: '/cards_visuals/sites/lotr11u227.jpg',
     },
     {
         id: 'a',
@@ -227,7 +232,7 @@ export const DUMMY_SITES_PLAYER_0: SiteCard[] = [
         text: "Le total d'archerie des séides est de +2 pour chaque compagnon au delà de 4.",
         keywords: ['RIVER', 'MOUNTAIN'],
         ownerId: '0',
-        imageUrl: '/cards_visuals/sites/lotr11u227.jpg'
+        imageUrl: '/cards_visuals/sites/lotr11u227.jpg',
     },
     {
         id: 'b',
@@ -236,7 +241,7 @@ export const DUMMY_SITES_PLAYER_0: SiteCard[] = [
         text: "Le total d'archerie des séides est de +2 pour chaque compagnon au delà de 4.",
         keywords: ['RIVER', 'MOUNTAIN'],
         ownerId: '0',
-        imageUrl: '/cards_visuals/sites/lotr11u227.jpg'
+        imageUrl: '/cards_visuals/sites/lotr11u227.jpg',
     },
     {
         id: 'c',
@@ -245,7 +250,7 @@ export const DUMMY_SITES_PLAYER_0: SiteCard[] = [
         text: "Le total d'archerie des séides est de +2 pour chaque compagnon au delà de 4.",
         keywords: ['RIVER'],
         ownerId: '0',
-        imageUrl: '/cards_visuals/sites/lotr11u227.jpg'
+        imageUrl: '/cards_visuals/sites/lotr11u227.jpg',
     },
     {
         id: 'd',
@@ -254,7 +259,7 @@ export const DUMMY_SITES_PLAYER_0: SiteCard[] = [
         text: "Le total d'archerie des séides est de +2 pour chaque compagnon au delà de 4.",
         keywords: ['RIVER'],
         ownerId: '0',
-        imageUrl: '/cards_visuals/sites/lotr11u227.jpg'
+        imageUrl: '/cards_visuals/sites/lotr11u227.jpg',
     },
     {
         id: 'e',
@@ -263,7 +268,7 @@ export const DUMMY_SITES_PLAYER_0: SiteCard[] = [
         text: "Le total d'archerie des séides est de +2 pour chaque compagnon au delà de 4.",
         keywords: ['RIVER'],
         ownerId: '0',
-        imageUrl: '/cards_visuals/sites/lotr11u227.jpg'
+        imageUrl: '/cards_visuals/sites/lotr11u227.jpg',
     },
     {
         id: 'f',
@@ -272,7 +277,7 @@ export const DUMMY_SITES_PLAYER_0: SiteCard[] = [
         text: "Le total d'archerie des séides est de +2 pour chaque compagnon au delà de 4.",
         keywords: ['RIVER'],
         ownerId: '0',
-        imageUrl: '/cards_visuals/sites/lotr11u227.jpg'
+        imageUrl: '/cards_visuals/sites/lotr11u227.jpg',
     },
     {
         id: 'g',
@@ -281,7 +286,6 @@ export const DUMMY_SITES_PLAYER_0: SiteCard[] = [
         text: "Le total d'archerie des séides est de +2 pour chaque compagnon au delà de 4.",
         keywords: ['RIVER'],
         ownerId: '0',
-        imageUrl: '/cards_visuals/sites/lotr11u227.jpg'
+        imageUrl: '/cards_visuals/sites/lotr11u227.jpg',
     },
-
 ];

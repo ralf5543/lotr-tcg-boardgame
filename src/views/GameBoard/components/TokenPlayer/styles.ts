@@ -2,8 +2,15 @@ import styled from 'styled-components';
 
 export const Token = styled.div<{ $value: string }>`
     position: absolute;
-    inset-block-start: 0;
-    inset-inline-start: 0;
+    z-index: 2;
+    inset-block-start: ${(props) =>
+        props.$value === "1"
+            ? '-10px'
+            : '30px'};
+    inset-inline-start: ${(props) =>
+        props.$value === "1"
+            ? '-10px'
+            : '30px'};
     width: 45px;
     aspect-ratio: 1;
     border-radius: 50%;

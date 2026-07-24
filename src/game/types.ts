@@ -1,5 +1,6 @@
 export type CardKind = 'FREE_PEOPLES' | 'SHADOW';
 export type CardKeyword =
+    | 'RING-BEARER'
     | 'ARCHER'
     | 'RANGER'
     | 'KNIGHT'
@@ -68,6 +69,7 @@ export interface CardType {
     twilightCost: number;
     strength?: number;
     vitality?: number;
+    resistance?: number;
     roaming?: number;
     signet?: CardSignet;
     culture: CardCulture;

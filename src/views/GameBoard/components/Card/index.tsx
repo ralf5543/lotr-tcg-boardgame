@@ -65,9 +65,10 @@ export const Card: React.FC<CardProps> = ({
     // --- INTERPRÉTEUR DE TRADUCTION ---
     const translatedSubType = TRANSLATIONS.subType[card.subType];
     const translatedRace = card.race ? TRANSLATIONS.race[card.race] : null;
-    const translatedKeyword = card.keyword
-        ? TRANSLATIONS.keyword[card.keyword]
-        : null;
+
+    const translatedKeywords = card.keywords
+        ?.map((kw) => TRANSLATIONS.keyword[kw] || kw)
+        .join(', ');
 
     // Construction de la ligne de type (Ex: "Compagnon • Homme • Rôdeur")
     const typeLineElements = [translatedSubType, translatedRace].filter(
@@ -79,14 +80,14 @@ export const Card: React.FC<CardProps> = ({
     const handlePointerDown = (e: React.PointerEvent) => {
         // Si la carte n'est pas draggable ou que l'index est aux fraises, on fait rien
         if (!isDraggable || index === undefined) return;
-        
+
         // Empêche le navigateur de tenter ses comportements par défaut (sélection de texte, etc.)
-        e.preventDefault(); 
+        e.preventDefault();
 
         // C'est ici qu'on lance ton action personnalisée du DragContext !
         // (Tu as normalement une fonction dans ton DragProvider qui initialise le mouvement)
-        startDrag(card, index, e); 
-        
+        startDrag(card, index, e);
+
         // On coupe l'inspecteur géant pour pas gêner
         setHoveredCard(null);
     };
@@ -103,15 +104,12 @@ export const Card: React.FC<CardProps> = ({
             onMouseLeave={handleMouseLeave} // Fin du survol
             onDragStart={isDraggable ? handleDragStart : undefined}
             // 🧙‍♂️ ON COUPE LE DRAG NATIF ICI :
-            draggable={false} 
-            
+            draggable={false}
             // 🚀 ON PASSE PAR TON SYSTÈME DE POINTER :
-            onPointerDown={handlePointerDown} 
-            
+            onPointerDown={handlePointerDown}
             // Attribut custom pour que ton CustomAssetCursor détecte toujours la carte au survol !
             data-draggable={isDraggable}
         >
-
             <S.CardHeader>
                 {size !== 'sm' && (
                     <S.TwilightBadge $isShadow={isShadow}>
@@ -124,7 +122,9 @@ export const Card: React.FC<CardProps> = ({
                         {card.title}
                     </S.CardTitle>
                     {card.subtitle && size !== 'sm' && (
-                        <S.CardSubtitle $subType={card.subType}>{card.subtitle}</S.CardSubtitle>
+                        <S.CardSubtitle $subType={card.subType}>
+                            {card.subtitle}
+                        </S.CardSubtitle>
                     )}
                 </S.CardTitles>
             </S.CardHeader>
@@ -136,12 +136,20 @@ export const Card: React.FC<CardProps> = ({
                     draggable={false}
                 />
             </S.VisualContainer>
-            {size !== 'sm' && <S.CardType $subType={card.subType}>{typeLine}</S.CardType>}
+            {size !== 'sm' && (
+                <S.CardType $subType={card.subType}>{typeLine}</S.CardType>
+            )}
 
             <S.TextContainer>
-                <S.KeywordText>{translatedKeyword}</S.KeywordText>
+                {translatedKeywords && (
+                    <S.KeywordText>{translatedKeywords}.</S.KeywordText>
+                )}
 
-                {size !== 'sm' && <S.GameText><FormattedText text={card.gameText} /></S.GameText>}
+                {size !== 'sm' && (
+                    <S.GameText>
+                        <FormattedText text={card.gameText} />
+                    </S.GameText>
+                )}
                 {size === 'lg' && <S.LoreText>{card.loreText}</S.LoreText>}
             </S.TextContainer>
 

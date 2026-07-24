@@ -417,6 +417,8 @@ export const CardType = styled.p<{ $subType?: string }>`
     justify-content: center;
     align-items: center;
     margin-block-start: 3.5px;
+    font-variant: small-caps;
+    text-transform: capitalize;
     ${(props) =>
         isNotCharacter(props.$subType) &&
         css`

@@ -34,7 +34,6 @@ export const Container = styled.div<{ $size: SiteCardSize }>`
     justify-content: space-between;
     background: #1a1a2e;
     color: black;
-    overflow: hidden;
     user-select: none;
     background-image: url('interface/cards_backgrounds/site_standard.webp');
     background-size: cover;
@@ -56,6 +55,16 @@ export const Title = styled.p<{
     font-size: 8px;
     font-weight: bold;
     font-variant: small-caps;
+
+    ${(props) =>
+        props.$size === 'sm' &&
+        `
+        inset: 0px 0px 49px;
+        font-size: 9px;
+        color: white;
+        background-color: rgba(0, 0, 0, 0.5);
+        z-index: 1;
+    `}
 
     ${(props) =>
         props.$size === 'lg' &&
