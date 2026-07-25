@@ -2,7 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 import { CultureIcon } from './styles';
 
-const TextWrapper = styled.p`
+const TextWrapper = styled.span`
     white-space: pre-line; /* Rend les \n fonctionnels automatiquement */
 `;
 

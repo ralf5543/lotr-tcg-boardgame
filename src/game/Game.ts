@@ -2,8 +2,7 @@
 import type { Game } from 'boardgame.io';
 import type { GameState, CardType, PlayerState } from './types';
 import {
-    FREE_PEOPLES_DATABASE,
-    SHADOW_DATABASE,
+    CARDS_DATABASE,
     DUMMY_SITES_PLAYER_0,
 } from './cardsData';
 
@@ -19,11 +18,9 @@ const shuffle = <T>(array: T[]): T[] => {
 const createRealLotrDeck = (): CardType[] => {
     const fullPool: CardType[] = [];
     for (let i = 0; i < 15; i++) {
-        const fpCard = FREE_PEOPLES_DATABASE[i % FREE_PEOPLES_DATABASE.length];
-        const shCard = SHADOW_DATABASE[i % SHADOW_DATABASE.length];
+        const Card = CARDS_DATABASE[i % CARDS_DATABASE.length];
 
-        fullPool.push({ ...fpCard, id: `${fpCard.id}-${i}` });
-        fullPool.push({ ...shCard, id: `${shCard.id}-${i}` });
+        fullPool.push({ ...Card, id: `${Card.id}-${i}` });
     }
     return shuffle(fullPool);
 };

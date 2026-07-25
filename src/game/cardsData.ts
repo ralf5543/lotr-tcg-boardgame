@@ -10,7 +10,7 @@ Formatted Text :
     ** my text ** => bold
 */
 
-export const FREE_PEOPLES_DATABASE: CardType[] = [
+export const CARDS_DATABASE: CardType[] = [
     {
         id: '2c102',
         title: 'Frodon',
@@ -19,6 +19,7 @@ export const FREE_PEOPLES_DATABASE: CardType[] = [
         kind: 'FREE_PEOPLES',
         subType: 'COMPANION',
         keywords: ['RING-BEARER'],
+        resistance: 10,
         signet: 'ARAGORN',
         twilightCost: 0,
         strength: 3,
@@ -28,7 +29,7 @@ export const FREE_PEOPLES_DATABASE: CardType[] = [
         gameText:
             'Le coût de chaque artefact, possession et récit {CULTURE_SHIRE} joué sur Frodon est de -1.',
         loreText:
-            "‟Je ne suis pas fait pour les quâtes périlleuses. Je voudrais bien n'avoir jamais vu l'Anneau! Pourquoi m'est-il venu? Pourquoi ai-je été choisi?”",
+            "Je ne suis pas fait pour les quâtes périlleuses. Je voudrais bien n'avoir jamais vu l'Anneau! Pourquoi m'est-il venu? Pourquoi ai-je été choisi?",
     },
     {
         id: '1c10',
@@ -70,6 +71,25 @@ export const FREE_PEOPLES_DATABASE: CardType[] = [
         gameText: 'Le détenteur doit être un Hobbit.',
     },
     {
+        id: '1r45',
+        title: 'Galadriel',
+        subtitle: 'La Dame Blanche',
+        race: 'ELF',
+        imageUrl: '/cards_visuals/lotr1r45.jpg',
+        kind: 'FREE_PEOPLES',
+        subType: 'ALLY',
+        resistance: 6,
+        twilightCost: 3,
+        strength: 3,
+        vitality: 3,
+        culture: 'ELVEN',
+        isUnique: true,
+        gameText:
+            'Au début de chacun de vos tours, guérissez chaque allié dont la demeure est un site 6.\n**Compagnie:** Affaiblissez Galadriel pour jouer un elfe gratuitement.',
+        loreText:
+            "Il étaient très grands, la Dame non moins que le Seigneur; et ils étaient graves et beaux... et les cheveux de la Dame étaient d'or foncé...",
+    },
+    {
         id: '1r89',
         title: 'Aragorn',
         subtitle: 'Rôdeur du Nord',
@@ -78,6 +98,7 @@ export const FREE_PEOPLES_DATABASE: CardType[] = [
         imageUrl: '/cards_visuals/lotr1r89.jpg',
         kind: 'FREE_PEOPLES',
         subType: 'COMPANION',
+        resistance: 6,
         signet: 'GANDALF',
         twilightCost: 4,
         strength: 8,
@@ -97,6 +118,7 @@ export const FREE_PEOPLES_DATABASE: CardType[] = [
         imageUrl: '/cards_visuals/lotr1r50.jpg',
         kind: 'FREE_PEOPLES',
         signet: 'FRODO',
+        resistance: 6,
         race: 'ELF',
         subType: 'COMPANION',
         twilightCost: 2,
@@ -114,6 +136,7 @@ export const FREE_PEOPLES_DATABASE: CardType[] = [
         kind: 'FREE_PEOPLES',
         keywords: ['DAMAGE'],
         signet: 'GANDALF',
+        resistance: 6,
         race: 'DWARF',
         subType: 'COMPANION',
         twilightCost: 2,
@@ -130,6 +153,7 @@ export const FREE_PEOPLES_DATABASE: CardType[] = [
         imageUrl: '/cards_visuals/lotr1r96.jpg',
         kind: 'FREE_PEOPLES',
         signet: 'ARAGORN',
+        resistance: 6,
         race: 'MAN',
         subType: 'COMPANION',
         twilightCost: 3,
@@ -139,9 +163,6 @@ export const FREE_PEOPLES_DATABASE: CardType[] = [
         isUnique: true,
         gameText: DEFAULT_GAMETEXT,
     },
-];
-
-export const SHADOW_DATABASE: CardType[] = [
     {
         id: '1r237',
         title: 'Le Roi-Sorcier',

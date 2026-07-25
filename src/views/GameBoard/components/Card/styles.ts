@@ -14,45 +14,50 @@ const getSignet = (signet: string): string => {
             return '';
     }
 };
-const getCultureBackground = (culture: string, subType: string, kind: string) => {
+const getCultureBackground = (
+    culture: string,
+    subType: string,
+    kind: string
+) => {
     if (culture === 'GONDOR') {
-        if (subType === 'COMPANION') {
+        if (subType === 'COMPANION' || subType === 'ALLY') {
             return 'url(interface/cards_backgrounds/gondor_character.webp)';
         } else return 'url(interface/cards_backgrounds/gondor_modifier.webp)';
     }
     if (culture === 'SHIRE') {
-        if (subType === 'COMPANION') {
+        if (subType === 'COMPANION' || subType === 'ALLY') {
             return 'url(interface/cards_backgrounds/shire_character.webp)';
         } else return 'url(interface/cards_backgrounds/shire_modifier.webp)';
     }
     if (culture === 'ELVEN') {
-        if (subType === 'COMPANION') {
+        if (subType === 'COMPANION' || subType === 'ALLY') {
             return 'url(interface/cards_backgrounds/elven_character.webp)';
         } else return 'url(interface/cards_backgrounds/elven_modifier.webp)';
     }
     if (culture === 'DWARVEN') {
-        if (subType === 'COMPANION') {
+        if (subType === 'COMPANION' || subType === 'ALLY') {
             return 'url(interface/cards_backgrounds/dwarven_character.webp)';
         } else return 'url(interface/cards_backgrounds/dwarven_modifier.webp)';
     }
     if (culture === 'GANDALF') {
-        if (subType === 'COMPANION') {
+        if (subType === 'COMPANION' || subType === 'ALLY') {
             return 'url(interface/cards_backgrounds/gandalf_character.webp)';
         } else return 'url(interface/cards_backgrounds/gandalf_modifier.webp)';
     }
     if (culture === 'ROHAN') {
-        if (subType === 'COMPANION') {
+        if (subType === 'COMPANION' || subType === 'ALLY') {
             return 'url(interface/cards_backgrounds/rohan_character.webp)';
         } else return 'url(interface/cards_backgrounds/rohan_modifier.webp)';
     }
     if (culture === 'GOLLUM') {
-        if (subType === 'COMPANION') {
+        if (subType === 'COMPANION' || subType === 'ALLY') {
             return 'url(interface/cards_backgrounds/gollum_freeps_character.webp)';
         } else if (subType === 'MINION') {
             return 'url(interface/cards_backgrounds/gollum_shadow_character.webp)';
         } else if (kind === 'FREE_PEOPLES') {
             return 'url(interface/cards_backgrounds/gollum_freeps_modifier.webp)';
-        } else return 'url(interface/cards_backgrounds/gollum_shadow_modifier.webp)';
+        } else
+            return 'url(interface/cards_backgrounds/gollum_shadow_modifier.webp)';
     }
     if (culture === 'MORIA') {
         if (subType === 'MINION') {
@@ -72,7 +77,8 @@ const getCultureBackground = (culture: string, subType: string, kind: string) =>
     if (culture === 'RINGWRAITH') {
         if (subType === 'MINION') {
             return 'url(interface/cards_backgrounds/ringwraith_character.webp)';
-        } else return 'url(interface/cards_backgrounds/ringwraith_modifier.webp)';
+        } else
+            return 'url(interface/cards_backgrounds/ringwraith_modifier.webp)';
     }
     if (culture === 'DUNLAND') {
         if (subType === 'MINION') {
@@ -118,8 +124,21 @@ const getCultureSmallBackground = (culture: string): string => {
     }
 };
 
-const isNotCharacter = (subType?: string) => 
-    Boolean(subType) && subType !== 'COMPANION' && subType !== 'MINION';
+const isNotCharacter = (subType?: string) =>
+    Boolean(subType) &&
+    subType !== 'COMPANION' &&
+    subType !== 'MINION' &&
+    subType !== 'ALLY';
+
+const isForSupportArea = (subType?: string) => {
+    if (!subType || subType === 'ALLY') return false;
+
+    return (
+        subType === 'POSSESSION_SUPPORT' ||
+        subType === 'CONDITION_SUPPORT' ||
+        subType === 'ARTIFACT_SUPPORT'
+    );
+};
 
 export const CardContainer = styled.div<{
     $culture: string;
@@ -131,7 +150,8 @@ export const CardContainer = styled.div<{
 }>`
     aspect-ratio: 1/1.39;
     width: 130px;
-    background-image: ${(props) => getCultureBackground(props.$culture, props.$subType, props.$kind)};
+    background-image: ${(props) =>
+        getCultureBackground(props.$culture, props.$subType, props.$kind)};
     background-size: cover;
     background-repeat: no-repeat;
     background-position: center;
@@ -149,215 +169,263 @@ export const CardContainer = styled.div<{
             : 'brightness(1) contrast(1)'};
 
     transition:
-        filter 0.3s ease,
-        transform 0.2s ease,
-        box-shadow 0.2s ease;
-
-    transition:
         transform 0.2s ease,
         opacity 0.2s ease;
-        user-select: none;
-        -webkit-user-drag: ${(props) => (props.draggable ? 'element' : 'none')};
+    user-select: none;
+    -webkit-user-drag: ${(props) => (props.draggable ? 'element' : 'none')};
 
     /* ======------ Small cards ------====== */
     ${(props) =>
         props.$size === 'sm' &&
-        `
-        width: 105px;
-        border-radius: 8px 8px 49px 49px;
-        border: 6px solid black;
-        background-image: ${getCultureSmallBackground(props.$culture)};
-        background-size: auto;
-        background-repeat: repeat;
-        filter: drop-shadow(0 3px 4px rgba(0, 0, 0, 1));
+        css`
+            width: 105px;
+            border-radius: 8px 8px 49px 49px;
+            border: 6px solid black;
+            background-image: ${getCultureSmallBackground(props.$culture)};
+            background-size: auto;
+            background-repeat: repeat;
+            filter: drop-shadow(0 3px 4px rgba(0, 0, 0, 1));
 
+            ${isForSupportArea(props.$subType) &&
+            css`
+                border-radius: 8px;
+            `}
 
-        ${CardHeader} {
-            min-height: 18px;
-            padding-block-start: 0;
-            padding-inline: 0;
-            line-height: 1;
-            background-color: rgba(0, 0, 0, 0.5);
-            position: absolute;
-            width: 100%;
-            display: flex;
-            align-items: center;
-            padding-inline: 7px;
-        }
+            ${CardHeader} {
+                min-height: 18px;
+                padding-block-start: 0;
+                padding-inline: 0;
+                line-height: 1;
+                background-color: rgba(0, 0, 0, 0.5);
+                position: absolute;
+                width: 100%;
+                display: flex;
+                align-items: center;
+                padding-inline: 7px;
+                z-index: 1;
 
-        ${CardTitle} {
-            font-size: 13px;
-            margin-block-end: 1px;
-            color: white;
-        }
+                ${isForSupportArea(props.$subType) &&
+                css`
+                    inset: 0 70px 0 0;
+                    width: auto;
+                `}
+            }
 
-        ${CardType} {
-            font-size: 14px;
-            line-height: 1;
-        }
+            ${CardTitles} {
+                ${isForSupportArea(props.$subType) &&
+                css`
+                    inset: 0px 0px 0px 2px;
+                `}
+            }
 
-        ${VisualContainer} {
-            height: 70px;
-            padding-inline: 0;
-        }
+            ${CardTitle} {
+                font-size: 13px;
+                margin-block-end: 1px;
+                color: white;
+                ${isForSupportArea(props.$subType) &&
+                css`
+                    font-size: 10px;
+                `}
+            }
 
-        ${TextContainer} {
-            inset: 81px 4px 22px;
-        }
+            ${CardType} {
+                font-size: 14px;
+                line-height: 1;
+            }
 
-        ${KeywordText} {
-            font-size: 13px;
-        }
+            ${VisualContainer} {
+                /*height: 70px;;*/
+                padding-inline: 0;
+                position: absolute;
+                border-radius: 8px 8px 49px 49px;
+                overflow: hidden;
+                inset: 0;
+                height: auto;
 
-        ${GameText} {
-            font-size: 13px;
-        }
+                ${isForSupportArea(props.$subType) &&
+                css`
+                    inset: 0;
+                    height: auto;
+                    border-radius: 0;
+                `}
+            }
 
-        ${TwilightBadge} {
-            font-size: 20px;
-            width: 35px;
-            margin-inline-end: 14px;
-        }
+            ${TextContainer} {
+                inset: 81px 4px 22px;
+            }
 
-        ${StrengthBadge} {
-            font-size: 20px;
-            width: 70px;
-            inset-block-start: 88px;
-            inset-inline-start: -34px;
-            background-position: 13px 3px;
-        }
+            ${KeywordText} {
+                font-size: 13px;
+            }
 
-        ${VitalityBadge} {
-            font-size: 20px;
-            width: 44px;
-            inset-block-start: 100px;
-            inset-inline-start: 67px;
-            background-position: 3px 3px;
-        }
+            ${GameText} {
+                font-size: 13px;
+            }
 
-        ${CardSignet} {
-            width: 39px;
-            inset-block-start: 116px;
-            inset-inline-start: 50%;
-            transform: translateX(-50%);
-        }
+            ${TwilightBadge} {
+                font-size: 20px;
+                width: 35px;
+                margin-inline-end: 14px;
+            }
 
-        ${RoamingNumber} {
-            font-size: 20px;
-            width: 39px;
-            inset-block-start: 332px;
-            inset-inline-start: 14px;
-        }
-    `}
+            ${StrengthBadge} {
+                font-size: 20px;
+                width: 70px;
+                inset-block-start: 88px;
+                inset-inline-start: -34px;
+                background-position: 13px 3px;
+            }
+
+            ${VitalityBadge} {
+                font-size: 20px;
+                width: 44px;
+                inset-block-start: 100px;
+                inset-inline-start: 67px;
+                background-position: 3px 3px;
+            }
+
+            ${CardSignet} {
+                transform: translateX(-50%);
+                inset-block-start: -10px;
+                inset-inline-start: 94px;
+                width: 25px;
+            }
+
+            ${CardResistance} {
+                width: 39px;
+                inset-block-start: 116px;
+                inset-inline-start: 50%;
+                transform: translateX(-50%);
+                font-size: 20px;
+                background-position: 3px 2px;
+            }
+
+            ${RoamingNumber} {
+                font-size: 20px;
+                width: 39px;
+                inset-block-start: 332px;
+                inset-inline-start: 14px;
+            }
+        `}
 
     /* ======------ Large cards ------====== */
     ${(props) =>
         props.$size === 'lg' &&
-        css `
-        width: 400px;
-        border-radius: 12px;
+        css`
+            width: 400px;
+            border-radius: 12px;
 
-        ${CardHeader} {
-            min-height: 75px;
-            padding-block-start: 22px;
-            padding-inline: 20px;
-            line-height: 1;
-        }
+            ${CardHeader} {
+                min-height: 75px;
+                padding-block-start: 22px;
+                padding-inline: 20px;
+                line-height: 1;
+            }
 
-        ${CardTitles} {
-
-            ${isNotCharacter(props.$subType) && css`
+            ${CardTitles} {
+                ${isNotCharacter(props.$subType) &&
+                css`
                     inset: 80px 325px 260px 25px;
                 `}
-        }
+            }
 
-        ${CardTitle} {
-            font-size: 26px;
-            margin-block-end: 1px;
+            ${CardTitle} {
+                font-size: 26px;
+                margin-block-end: 1px;
 
-            ${isNotCharacter(props.$subType) && css`
+                ${isNotCharacter(props.$subType) &&
+                css`
                     min-height: 75px;
                 `}
-        }
+            }
 
-        ${CardSubtitle} {
-            font-size: 18px;
-        }
+            ${CardSubtitle} {
+                font-size: 18px;
+            }
 
-        ${CardType} {
-            margin-block-start: 11px;
-            font-size: 20px;
-            line-height: 1;
+            ${CardType} {
+                margin-block-start: 11px;
+                font-size: 20px;
+                line-height: 1;
 
-            ${isNotCharacter(props.$subType) && css`
+                ${isNotCharacter(props.$subType) &&
+                css`
                     inset: 315px 40px 205px 100px;
                 `}
-        }
+            }
 
-        ${VisualContainer} {
-            height: 240px;
-            padding-inline: 42px;
+            ${VisualContainer} {
+                height: 240px;
+                padding-inline: 43px 45px;
 
-            ${isNotCharacter(props.$subType) && css`
+                ${isNotCharacter(props.$subType) &&
+                css`
                     padding-inline: 0;
                     height: auto;
                     inset: 65px 36px 287px 83px;
                 `}
-        }
+            }
 
-        ${TextContainer} {
-            padding: 18px 12px;
-            inset: 352px 20px 32px 86px;
-        }
+            ${TextContainer} {
+                padding: 18px 12px;
+                inset: 352px 20px 32px 86px;
+            }
 
-        ${KeywordText} {
-            font-size: 18px;
-        }
+            ${KeywordText} {
+                font-size: 18px;
+            }
 
-        ${GameText} {
-            font-size: 16px;
-        }
+            ${GameText} {
+                font-size: 16px;
+            }
 
-        ${LoreText} {
-            font-size: 16px;
-        }
+            ${LoreText} {
+                font-size: 16px;
+            }
 
-        ${TwilightBadge} {
-            font-size: 28px;
-            width: 50px;
-            margin-inline-end: 20px;
-        }
+            ${TwilightBadge} {
+                font-size: 28px;
+                width: 50px;
+                margin-inline-end: 20px;
+            }
 
-        ${StrengthBadge} {
-            font-size: 28px;
-            width: 86px;
-            inset-block-start: 336px;
-            inset-inline-start: 2px;
-            background-position: 18px 4px;
-        }
+            ${StrengthBadge} {
+                font-size: 28px;
+                width: 86px;
+                inset-block-start: 336px;
+                inset-inline-start: 2px;
+                background-position: 18px 4px;
+            }
 
-        ${VitalityBadge} {
-            font-size: 28px;
-            width: 56px;
-            inset-block-start: 416px;
-            inset-inline-start: 20px;
-            background-position: 4px 4px;
-        }
+            ${VitalityBadge} {
+                font-size: 28px;
+                width: 56px;
+                inset-block-start: 416px;
+                inset-inline-start: 20px;
+                background-position: 4px 4px;
+            }
 
-        ${CardSignet} {
-            width: 56px;
-            inset-block-start: 474px;
-            inset-inline-start: 24px;
-        }
+            ${CardSignet} {
+                width: 56px;
+                inset-block-start: 474px;
+                inset-inline-start: 24px;
+            }
 
-        ${RoamingNumber} {
-            font-size: 28px;
-            width: 56px;
-            inset-block-start: 474px;
-            inset-inline-start: 20px;
-        }
-            
-    `}
+            ${CardResistance} {
+                width: 56px;
+                inset-block-start: 474px;
+                inset-inline-start: 21px;
+                font-size: 28px;
+                background-position: 4px 4px;
+            }
+
+            ${RoamingNumber} {
+                font-size: 28px;
+                width: 56px;
+                inset-block-start: 474px;
+                inset-inline-start: 20px;
+            }
+        `}
 `;
 
 export const CardHeader = styled.div`
@@ -376,7 +444,7 @@ export const CardTitles = styled.div<{ $subType?: string }>`
     ${(props) =>
         isNotCharacter(props.$subType) &&
         css`
-            position: absolute; 
+            position: absolute;
             inset: 26px 109px 83px 7px;
             writing-mode: sideways-lr;
             line-height: 0.8;
@@ -444,6 +512,7 @@ export const TwilightBadge = styled.span<{ $isShadow?: boolean }>`
     margin-inline-end: 0px;
     text-align: center;
     font-family: LOTRIcons;
+    z-index: 1;
 `;
 
 export const VisualContainer = styled.figure<{ $subType?: string }>`
@@ -514,6 +583,7 @@ export const StrengthBadge = styled.span`
     inset-block-start: 113px;
     inset-inline-start: 3px;
     font-family: LOTRIcons;
+    z-index: 1;
 `;
 export const VitalityBadge = styled.span`
     background-image: url('interface/icons/icon_vitality.png');
@@ -532,6 +602,7 @@ export const VitalityBadge = styled.span`
     inset-block-start: 139px;
     inset-inline-start: 8px;
     font-family: LOTRIcons;
+    z-index: 1;
 `;
 export const RoamingNumber = styled.span`
     background-image: url('interface/icons/minion_site_number.webp');
@@ -549,6 +620,7 @@ export const RoamingNumber = styled.span`
     align-items: center;
     justify-content: center;
     font-size: 9px;
+    z-index: 1;
     font-family: LOTRIcons;
 `;
 export const CardSignet = styled.span<{ $signet: string }>`
@@ -561,4 +633,27 @@ export const CardSignet = styled.span<{ $signet: string }>`
     position: absolute;
     inset-block-start: 156px;
     inset-inline-start: 9px;
+    z-index: 1;
+`;
+export const CardResistance = styled.span<{ $isRingBearer: boolean }>`
+    background-image: ${(props) =>
+        props.$isRingBearer
+            ? `url(interface/icons/resistance_ring.webp)`
+            : `url(interface/icons/resistance.webp)`};
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: 1px center;
+    width: 17px;
+    aspect-ratio: 1;
+    position: absolute;
+    inset-block-start: 155px;
+    inset-inline-start: 8px;
+    text-align: center;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 9px;
+    font-family: LOTRIcons;
+    z-index: 1;
 `;

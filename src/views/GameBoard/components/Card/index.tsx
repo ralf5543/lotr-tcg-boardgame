@@ -15,6 +15,7 @@ interface CardProps {
     roaming?: number;
     signet?: CardSignet;
     size?: 'sm' | 'md' | 'lg';
+    isRingBearer?: boolean;
 }
 
 export const Card: React.FC<CardProps> = ({
@@ -23,11 +24,14 @@ export const Card: React.FC<CardProps> = ({
     size = 'md',
     isDraggable = false,
     index,
+    isRingBearer: isRingBearerProp,
 }) => {
     const isShadow = card.kind === 'SHADOW';
     const { setHoveredCard } = useHoverCard();
 
-    const { playerFaction, startDrag } = useDrag();
+    // 🟢 Détection automatique via les keywords OU via la prop explicite
+    const isRingBearer =
+        isRingBearerProp ?? card.keywords?.includes('RING-BEARER' as any);
 
     const handleMouseEnter = () => {
         if (size !== 'lg') {
@@ -54,11 +58,8 @@ export const Card: React.FC<CardProps> = ({
             loreText: card.loreText,
         };
 
-        // On injecte les données
         e.dataTransfer.setData('text/plain', JSON.stringify(dragPayload));
         e.dataTransfer.effectAllowed = 'move';
-
-        // Optionnel : on coupe l'inspecteur géant au survol pour pas qu'il gêne la vue pendant le déplacement
         setHoveredCard(null);
     };
 
@@ -73,22 +74,14 @@ export const Card: React.FC<CardProps> = ({
     // Construction de la ligne de type (Ex: "Compagnon • Homme • Rôdeur")
     const typeLineElements = [translatedSubType, translatedRace].filter(
         Boolean
-    ); // Retire les éléments undefined ou null
+    );
 
     const typeLine = typeLineElements.join(' • ');
 
     const handlePointerDown = (e: React.PointerEvent) => {
-        // Si la carte n'est pas draggable ou que l'index est aux fraises, on fait rien
         if (!isDraggable || index === undefined) return;
-
-        // Empêche le navigateur de tenter ses comportements par défaut (sélection de texte, etc.)
         e.preventDefault();
-
-        // C'est ici qu'on lance ton action personnalisée du DragContext !
-        // (Tu as normalement une fonction dans ton DragProvider qui initialise le mouvement)
         startDrag(card, index, e);
-
-        // On coupe l'inspecteur géant pour pas gêner
         setHoveredCard(null);
     };
 
@@ -133,6 +126,7 @@ export const Card: React.FC<CardProps> = ({
                     draggable={false}
                 />
             </S.VisualContainer>
+
             {size !== 'sm' && (
                 <S.CardType $subType={card.subType}>{typeLine}</S.CardType>
             )}
@@ -147,10 +141,9 @@ export const Card: React.FC<CardProps> = ({
                         <FormattedText text={card.gameText} />
                     </S.GameText>
                 )}
-                {size === 'lg' && <S.LoreText>{card.loreText}</S.LoreText>}
+                {size === 'lg' && <S.LoreText>‟{card.loreText}”</S.LoreText>}
             </S.TextContainer>
 
-            {/* N'affiche la force et la vitalité que s'ils sont définis */}
             {card.strength !== undefined && (
                 <S.StrengthBadge>{card.strength}</S.StrengthBadge>
             )}
@@ -160,8 +153,11 @@ export const Card: React.FC<CardProps> = ({
             {card.roaming !== undefined && (
                 <S.RoamingNumber>{card.roaming}</S.RoamingNumber>
             )}
+            {card.resistance !== undefined && (
+                <S.CardResistance $isRingBearer={isRingBearer}>{card.resistance}</S.CardResistance>
+            )}
             {card.signet !== undefined && (
-                <S.CardSignet $signet={card.signet}></S.CardSignet>
+                <S.CardSignet $signet={card.signet} />
             )}
         </S.CardContainer>
     );
