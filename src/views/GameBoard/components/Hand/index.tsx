@@ -71,6 +71,7 @@ export const Hand: React.FC<HandProps> = ({
                                 $angle={angle}
                                 $translateY={translateY}
                                 $zIndex={zIndex}
+                                data-draggable="true"
                                 style={{
                                     width: isBeingDragged ? '0px' : '',
                                     opacity: isBeingDragged ? 0 : 1,

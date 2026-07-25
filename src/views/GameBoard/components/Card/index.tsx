@@ -99,16 +99,13 @@ export const Card: React.FC<CardProps> = ({
             $kind={card.kind}
             $isShadow={isShadow}
             $isPlayable={isPlayable}
-            $size={size} // Transmis au style pour recalculer l'échelle !
-            onMouseEnter={handleMouseEnter} // Détection du survol
-            onMouseLeave={handleMouseLeave} // Fin du survol
+            $size={size}
+            onMouseEnter={handleMouseEnter}
+            onMouseLeave={handleMouseLeave}
             onDragStart={isDraggable ? handleDragStart : undefined}
-            // 🧙‍♂️ ON COUPE LE DRAG NATIF ICI :
             draggable={false}
-            // 🚀 ON PASSE PAR TON SYSTÈME DE POINTER :
             onPointerDown={handlePointerDown}
-            // Attribut custom pour que ton CustomAssetCursor détecte toujours la carte au survol !
-            data-draggable={isDraggable}
+            data-draggable={isDraggable ? 'true' : undefined}
         >
             <S.CardHeader>
                 {size !== 'sm' && (

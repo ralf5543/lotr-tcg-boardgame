@@ -124,10 +124,6 @@ export const PlayerArea: React.FC<PlayerAreaProps> = ({
                     $isTargeted={isFellowshipTargeted}
                     ref={(el) => !isOpponent && registerTarget('fellowshipArea', el)}
                 >
-                    <S.ZoneTitle color="#3498db">
-                        🛡️ Compagnons des Peuples Libres{' '}
-                        {isOpponent ? "(Cibles de l'Ombre)" : '(Ta Compagnie)'}
-                    </S.ZoneTitle>
                     <S.CardRow>
                         {(fellowshipArea || []).length === 0 && (
                             <S.EmptyText>Aucun compagnon déployé.</S.EmptyText>
@@ -148,6 +144,8 @@ export const PlayerArea: React.FC<PlayerAreaProps> = ({
                                     <S.CardDragTarget
                                         $isOpponent={isOpponent}
                                         $isTargeted={isCompanionTargeted}
+                                        /* 🟢 Indique au curseur que l'élément est grabbable s'il n'appartient pas à l'adversaire */
+                                        data-draggable={!isOpponent ? "true" : undefined}
                                         ref={(el) =>
                                             !isOpponent && registerTarget(companion.id, el)
                                         }
@@ -165,7 +163,12 @@ export const PlayerArea: React.FC<PlayerAreaProps> = ({
                                             );
                                         }}
                                     >
-                                        <Card card={companion} size="sm" />
+                                        <Card 
+                                            card={companion} 
+                                            size="sm" 
+                                            isDraggable={!isOpponent} 
+                                            index={companionIdx}
+                                        />
                                     </S.CardDragTarget>
 
                                     {companion.attachments?.map((attachment, idx) => (
@@ -209,9 +212,18 @@ export const PlayerArea: React.FC<PlayerAreaProps> = ({
                     {(supportArea || []).length === 0 && (
                         <S.EmptyText>Aire de soutien vide.</S.EmptyText>
                     )}
-                    {(supportArea || []).map((card) => (
-                        <S.CharacterStack key={card.id}>
-                            <Card size="sm" card={card} />
+                    {(supportArea || []).map((card, cardIdx) => (
+                        <S.CharacterStack 
+                            key={card.id}
+                            /* 🟢 Si les cartes de support sont déplaçables */
+                            data-draggable={!isOpponent ? "true" : undefined}
+                        >
+                            <Card 
+                                size="sm" 
+                                card={card} 
+                                isDraggable={!isOpponent} 
+                                index={cardIdx}
+                            />
                         </S.CharacterStack>
                     ))}
                 </S.CardRow>
