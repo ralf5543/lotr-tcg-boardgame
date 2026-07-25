@@ -1,10 +1,10 @@
 import React from 'react';
-import type { CardType } from '../../../../game/types';
+import type { CardState } from '../../../../game/types';
 import { Card } from '../Card';
 import * as S from './styles';
 
 interface BattlefieldProps {
-    cards: CardType[];
+    cards: CardState[];
 }
 
 export const Battlefield: React.FC<BattlefieldProps> = ({ cards }) => {

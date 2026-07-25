@@ -1,11 +1,11 @@
 import React from 'react';
-import type { CardType } from '../../../../game/types';
+import type { CardState } from '../../../../game/types';
 import { Card } from '../Card';
 import * as S from './styles';
 import { useDrag } from '../../../../contexts/DragContext';
 
 interface HandProps {
-    hand: CardType[];
+    hand: CardState[];
     deckCount: number;
     onDrawCard: () => void;
     onPlayCard: (index: number) => void;

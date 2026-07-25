@@ -5,14 +5,14 @@ import React, {
     useEffect,
     useRef,
 } from 'react';
-import type { CardType, SiteCardState } from '../game/types';
+import type { CardState, SiteCardState } from '../game/types';
 import { Card } from '../views/GameBoard/components/Card';
 import { SiteCard } from '../views/GameBoard/components/SiteCard';
 
 export type CardOrientation = 'portrait' | 'landscape';
 
 interface DraggedCardData {
-    card: CardType | SiteCardState;
+    card: CardState | SiteCardState;
     index: number;
     origin: 'HAND' | 'BOARD';
     orientation: CardOrientation;
@@ -135,7 +135,7 @@ export const DragProvider: React.FC<{ children: React.ReactNode }> = ({
 };
 
     const startDrag = (
-        card: CardType | SiteCardState,
+        card: CardState | SiteCardState,
         index: number,
         e: React.PointerEvent,
         origin: 'HAND' | 'BOARD' = 'HAND',
@@ -293,7 +293,7 @@ const DragPortal: React.FC = () => {
                 {isLandscape ? (
                     <SiteCard site={dragged.card as SiteCardState} size="md" />
                 ) : (
-                    <Card card={dragged.card as CardType} size="md" />
+                    <Card card={dragged.card as CardState} size="md" />
                 )}
             </div>
         </div>

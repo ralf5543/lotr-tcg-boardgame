@@ -1,6 +1,6 @@
 // src/views/GameBoard/index.tsx
 import React from 'react';
-import type { CardType, SiteCardState } from '../../game/types';
+import type { CardState, SiteCardState } from '../../game/types';
 import { Battlefield } from './components/Battlefield';
 import { SitePath } from './components/SitePath';
 import { PlayerArea } from './components/PlayerArea';
@@ -20,16 +20,16 @@ interface GameBoardProps {
     G: {
         twilightPool: number;
         currentSite: number;
-        battlefield: CardType[];
+        battlefield: CardState[];
         players: Record<
             string,
             {
                 sitesDeck: SiteCardState[];
-                deck: CardType[];
-                hand: CardType[];
-                discard: CardType[];
-                fellowshipArea: CardType[];
-                supportArea: CardType[];
+                deck: CardState[];
+                hand: CardState[];
+                discard: CardState[];
+                fellowshipArea: CardState[];
+                supportArea: CardState[];
             }
         >;
     };

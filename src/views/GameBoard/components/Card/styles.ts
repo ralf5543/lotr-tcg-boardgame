@@ -16,43 +16,43 @@ const getSignet = (signet: string): string => {
 };
 const getCultureBackground = (
     culture: string,
-    subType: string,
+    type: string,
     kind: string
 ) => {
     if (culture === 'GONDOR') {
-        if (subType === 'COMPANION' || subType === 'ALLY') {
+        if (type === 'COMPANION' || type === 'ALLY') {
             return 'url(interface/cards_backgrounds/gondor_character.webp)';
         } else return 'url(interface/cards_backgrounds/gondor_modifier.webp)';
     }
     if (culture === 'SHIRE') {
-        if (subType === 'COMPANION' || subType === 'ALLY') {
+        if (type === 'COMPANION' || type === 'ALLY') {
             return 'url(interface/cards_backgrounds/shire_character.webp)';
         } else return 'url(interface/cards_backgrounds/shire_modifier.webp)';
     }
     if (culture === 'ELVEN') {
-        if (subType === 'COMPANION' || subType === 'ALLY') {
+        if (type === 'COMPANION' || type === 'ALLY') {
             return 'url(interface/cards_backgrounds/elven_character.webp)';
         } else return 'url(interface/cards_backgrounds/elven_modifier.webp)';
     }
     if (culture === 'DWARVEN') {
-        if (subType === 'COMPANION' || subType === 'ALLY') {
+        if (type === 'COMPANION' || type === 'ALLY') {
             return 'url(interface/cards_backgrounds/dwarven_character.webp)';
         } else return 'url(interface/cards_backgrounds/dwarven_modifier.webp)';
     }
     if (culture === 'GANDALF') {
-        if (subType === 'COMPANION' || subType === 'ALLY') {
+        if (type === 'COMPANION' || type === 'ALLY') {
             return 'url(interface/cards_backgrounds/gandalf_character.webp)';
         } else return 'url(interface/cards_backgrounds/gandalf_modifier.webp)';
     }
     if (culture === 'ROHAN') {
-        if (subType === 'COMPANION' || subType === 'ALLY') {
+        if (type === 'COMPANION' || type === 'ALLY') {
             return 'url(interface/cards_backgrounds/rohan_character.webp)';
         } else return 'url(interface/cards_backgrounds/rohan_modifier.webp)';
     }
     if (culture === 'GOLLUM') {
-        if (subType === 'COMPANION' || subType === 'ALLY') {
+        if (type === 'COMPANION' || type === 'ALLY') {
             return 'url(interface/cards_backgrounds/gollum_freeps_character.webp)';
-        } else if (subType === 'MINION') {
+        } else if (type === 'MINION') {
             return 'url(interface/cards_backgrounds/gollum_shadow_character.webp)';
         } else if (kind === 'FREE_PEOPLES') {
             return 'url(interface/cards_backgrounds/gollum_freeps_modifier.webp)';
@@ -60,43 +60,43 @@ const getCultureBackground = (
             return 'url(interface/cards_backgrounds/gollum_shadow_modifier.webp)';
     }
     if (culture === 'MORIA') {
-        if (subType === 'MINION') {
+        if (type === 'MINION') {
             return 'url(interface/cards_backgrounds/moria_character.webp)';
         } else return 'url(interface/cards_backgrounds/moria_modifier.webp)';
     }
     if (culture === 'ISENGARD') {
-        if (subType === 'MINION') {
+        if (type === 'MINION') {
             return 'url(interface/cards_backgrounds/isengard_character.webp)';
         } else return 'url(interface/cards_backgrounds/isengard_modifier.webp)';
     }
     if (culture === 'SAURON') {
-        if (subType === 'MINION') {
+        if (type === 'MINION') {
             return 'url(interface/cards_backgrounds/sauron_character.webp)';
         } else return 'url(interface/cards_backgrounds/sauron_modifier.webp)';
     }
     if (culture === 'RINGWRAITH') {
-        if (subType === 'MINION') {
+        if (type === 'MINION') {
             return 'url(interface/cards_backgrounds/ringwraith_character.webp)';
         } else
             return 'url(interface/cards_backgrounds/ringwraith_modifier.webp)';
     }
     if (culture === 'DUNLAND') {
-        if (subType === 'MINION') {
+        if (type === 'MINION') {
             return 'url(interface/cards_backgrounds/dunland_character.webp)';
         } else return 'url(interface/cards_backgrounds/dunland_modifier.webp)';
     }
     if (culture === 'ORC') {
-        if (subType === 'MINION') {
+        if (type === 'MINION') {
             return 'url(interface/cards_backgrounds/orc_character.webp)';
         } else return 'url(interface/cards_backgrounds/orc_modifier.webp)';
     }
     if (culture === 'URUK-HAI') {
-        if (subType === 'MINION') {
+        if (type === 'MINION') {
             return 'url(interface/cards_backgrounds/uruk_character.webp)';
         } else return 'url(interface/cards_backgrounds/uruk_modifier.webp)';
     }
     if (culture === 'MEN') {
-        if (subType === 'MINION') {
+        if (type === 'MINION') {
             return 'url(interface/cards_backgrounds/men_character.webp)';
         } else return 'url(interface/cards_backgrounds/men_modifier.webp)';
     }
@@ -124,25 +124,26 @@ const getCultureSmallBackground = (culture: string): string => {
     }
 };
 
-const isNotCharacter = (subType?: string) =>
-    Boolean(subType) &&
-    subType !== 'COMPANION' &&
-    subType !== 'MINION' &&
-    subType !== 'ALLY';
+const isNotCharacter = (type?: string) =>
+    Boolean(type) &&
+    type !== 'COMPANION' &&
+    type !== 'MINION' &&
+    type !== 'ALLY';
 
-const isForSupportArea = (subType?: string) => {
-    if (!subType || subType === 'ALLY') return false;
+const isForSupportArea = (type?: string) => {
+    if (!type || type === 'ALLY') return false;
 
     return (
-        subType === 'POSSESSION_SUPPORT' ||
-        subType === 'CONDITION_SUPPORT' ||
-        subType === 'ARTIFACT_SUPPORT'
+        type === 'POSSESSION_SUPPORT' ||
+        type === 'CONDITION_SUPPORT' ||
+        type === 'ARTIFACT_SUPPORT'
     );
 };
 
 export const CardContainer = styled.div<{
     $culture: string;
-    $subType: string;
+    $type: string;
+    $signet: string;
     $isShadow?: boolean;
     $isPlayable?: boolean;
     $kind: string;
@@ -151,7 +152,7 @@ export const CardContainer = styled.div<{
     aspect-ratio: 1/1.39;
     width: 130px;
     background-image: ${(props) =>
-        getCultureBackground(props.$culture, props.$subType, props.$kind)};
+        getCultureBackground(props.$culture, props.$type, props.$kind)};
     background-size: cover;
     background-repeat: no-repeat;
     background-position: center;
@@ -186,7 +187,7 @@ export const CardContainer = styled.div<{
             background-repeat: repeat;
             filter: drop-shadow(0 3px 4px rgba(0, 0, 0, 1));
 
-            ${isForSupportArea(props.$subType) &&
+            ${isForSupportArea(props.$type) &&
             css`
                 border-radius: 8px;
             `}
@@ -204,7 +205,7 @@ export const CardContainer = styled.div<{
                 padding-inline: 7px;
                 z-index: 1;
 
-                ${isForSupportArea(props.$subType) &&
+                ${isForSupportArea(props.$type) &&
                 css`
                     inset: 0 70px 0 0;
                     width: auto;
@@ -212,7 +213,7 @@ export const CardContainer = styled.div<{
             }
 
             ${CardTitles} {
-                ${isForSupportArea(props.$subType) &&
+                ${isForSupportArea(props.$type) &&
                 css`
                     inset: 0px 0px 0px 2px;
                 `}
@@ -222,7 +223,7 @@ export const CardContainer = styled.div<{
                 font-size: 13px;
                 margin-block-end: 1px;
                 color: white;
-                ${isForSupportArea(props.$subType) &&
+                ${isForSupportArea(props.$type) &&
                 css`
                     font-size: 10px;
                 `}
@@ -234,7 +235,6 @@ export const CardContainer = styled.div<{
             }
 
             ${VisualContainer} {
-                /*height: 70px;;*/
                 padding-inline: 0;
                 position: absolute;
                 border-radius: 8px 8px 49px 49px;
@@ -242,7 +242,7 @@ export const CardContainer = styled.div<{
                 inset: 0;
                 height: auto;
 
-                ${isForSupportArea(props.$subType) &&
+                ${isForSupportArea(props.$type) &&
                 css`
                     inset: 0;
                     height: auto;
@@ -317,13 +317,13 @@ export const CardContainer = styled.div<{
 
             ${CardHeader} {
                 min-height: 75px;
-                padding-block-start: 22px;
+                padding-block-start: 20px;
                 padding-inline: 20px;
                 line-height: 1;
             }
 
             ${CardTitles} {
-                ${isNotCharacter(props.$subType) &&
+                ${isNotCharacter(props.$type) &&
                 css`
                     inset: 80px 325px 260px 25px;
                 `}
@@ -333,7 +333,7 @@ export const CardContainer = styled.div<{
                 font-size: 26px;
                 margin-block-end: 1px;
 
-                ${isNotCharacter(props.$subType) &&
+                ${isNotCharacter(props.$type) &&
                 css`
                     min-height: 75px;
                 `}
@@ -343,22 +343,32 @@ export const CardContainer = styled.div<{
                 font-size: 18px;
             }
 
-            ${CardType} {
-                margin-block-start: 11px;
-                font-size: 20px;
-                line-height: 1;
-
-                ${isNotCharacter(props.$subType) &&
+            ${CardTypes} {
+                inset: 326px 60px 208px 60px;
+                ${isNotCharacter(props.$type) &&
                 css`
                     inset: 315px 40px 205px 100px;
                 `}
+            }
+
+            ${CardType} {
+                font-size: 20px;
+
+                ${isNotCharacter(props.$type) &&
+                css`
+                    inset: 315px 40px 205px 100px;
+                `}
+            }
+
+            ${Separator} {
+                width: 20px;
             }
 
             ${VisualContainer} {
                 height: 240px;
                 padding-inline: 43px 45px;
 
-                ${isNotCharacter(props.$subType) &&
+                ${isNotCharacter(props.$type) &&
                 css`
                     padding-inline: 0;
                     height: auto;
@@ -419,6 +429,7 @@ export const CardContainer = styled.div<{
                 background-position: 4px 4px;
             }
 
+
             ${RoamingNumber} {
                 font-size: 28px;
                 width: 56px;
@@ -431,18 +442,18 @@ export const CardContainer = styled.div<{
 export const CardHeader = styled.div`
     display: flex;
     min-height: 15px;
-    padding-block-start: 6px;
+    padding-block-start: 5px;
     padding-inline: 4px;
     line-height: 1;
 `;
 
-export const CardTitles = styled.div<{ $subType?: string }>`
+export const CardTitles = styled.div<{ $type?: string }>`
     display: flex;
     flex-direction: column;
     font-family: 'DecipherTitle', serif;
     font-variant: small-caps;
     ${(props) =>
-        isNotCharacter(props.$subType) &&
+        isNotCharacter(props.$type) &&
         css`
             position: absolute;
             inset: 26px 109px 83px 7px;
@@ -451,31 +462,49 @@ export const CardTitles = styled.div<{ $subType?: string }>`
             text-align: center;
         `}
 `;
-export const CardTitle = styled.p<{ $subType?: string }>`
+export const CardTitle = styled.p<{ $type?: string }>`
     font-size: 9px;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
     margin-block-start: 0.5px;
+    margin-block-start: 2px;
     ${(props) =>
-        isNotCharacter(props.$subType) &&
+        isNotCharacter(props.$type) &&
         css`
             font-size: 8px;
         `}
 `;
-export const CardSubtitle = styled.p<{ $subType?: string }>`
+export const CardSubtitle = styled.p<{ $type?: string }>`
     font-size: 7px;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
     margin-block-start: 0.5px;
     ${(props) =>
-        isNotCharacter(props.$subType) &&
+        isNotCharacter(props.$type) &&
         css`
             font-size: 6px;
         `}
 `;
-export const CardType = styled.p<{ $subType?: string }>`
+export const CardTypes = styled.div<{ $type?: string }>`
+    position: absolute;
+    inset: 104px 15px 66px 16px;
+    display: flex;
+    justify-content: center;
+    ${(props) =>
+        isNotCharacter(props.$type) &&
+        css`
+            inset: 104px 15px 66px 34px;
+        `}
+`;
+export const Separator = styled.span`
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 10px;
+`;
+export const CardType = styled.p<{ $type?: string }>`
     font-family: DecipherTitle, serif;
     font-size: 7px;
     white-space: nowrap;
@@ -484,14 +513,11 @@ export const CardType = styled.p<{ $subType?: string }>`
     display: flex;
     justify-content: center;
     align-items: center;
-    margin-block-start: 3.5px;
     font-variant: small-caps;
     text-transform: capitalize;
     ${(props) =>
-        isNotCharacter(props.$subType) &&
+        isNotCharacter(props.$type) &&
         css`
-            position: absolute;
-            inset: 101px 15px 66px 34px;
         `}
 `;
 
@@ -509,18 +535,18 @@ export const TwilightBadge = styled.span<{ $isShadow?: boolean }>`
     align-items: center;
     justify-content: center;
     flex-shrink: 0;
-    margin-inline-end: 0px;
+    margin-inline-end: 4px;
     text-align: center;
     font-family: LOTRIcons;
     z-index: 1;
 `;
 
-export const VisualContainer = styled.figure<{ $subType?: string }>`
+export const VisualContainer = styled.figure<{ $type?: string }>`
     height: 76px;
     margin: 0px;
     padding-inline: 13px;
     ${(props) =>
-        isNotCharacter(props.$subType) &&
+        isNotCharacter(props.$type) &&
         css`
             height: 68px;
             margin: 0px;
@@ -561,7 +587,7 @@ export const LoreText = styled.p`
     font-size: 6px;
     color: black;
     overflow: hidden;
-    margin-block-start: 2px;
+    margin-block-start: 8px;
     line-height: 1;
     font-family: DecipherLore;
 `;
@@ -570,7 +596,7 @@ export const StrengthBadge = styled.span`
     background-image: url('interface/icons/icon_strength.png');
     background-size: contain;
     background-repeat: no-repeat;
-    background-position: center;
+    background-position: 5px 1px;
     color: #fff;
     font-weight: bold;
     font-size: 9px;

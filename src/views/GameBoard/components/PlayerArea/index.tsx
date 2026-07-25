@@ -1,5 +1,5 @@
 import React, { useRef, useEffect } from 'react';
-import type { CardType, CardSubtype } from '../../../../game/types';
+import type { CardState, CardType } from '../../../../game/types';
 import * as S from './styles';
 import { Card } from '../Card';
 import { useDrag } from '../../../../contexts/DragContext';
@@ -12,8 +12,8 @@ import {
 interface PlayerAreaProps {
     playerId: string;
     deckCount: number;
-    fellowshipArea: CardType[];
-    supportArea: CardType[];
+    fellowshipArea: CardState[];
+    supportArea: CardState[];
     isOpponent?: boolean;
     moves: any;
 }
@@ -34,12 +34,12 @@ export const PlayerArea: React.FC<PlayerAreaProps> = ({
         movesRef.current = moves;
     }, [moves]);
 
-    const companionsRef = useRef<CardType[]>(fellowshipArea);
+    const companionsRef = useRef<CardState[]>(fellowshipArea);
     useEffect(() => {
         companionsRef.current = fellowshipArea;
     }, [fellowshipArea]);
 
-    const cardSubtype = (dragged?.card as CardType)?.subType as CardSubtype | undefined;
+    const cardSubtype = (dragged?.card as CardState)?.type as CardType | undefined;
 
     useEffect(() => {
         const handlePhysicalDrop = (e: Event) => {
@@ -50,7 +50,7 @@ export const PlayerArea: React.FC<PlayerAreaProps> = ({
 
             if (!targetId || !draggedCard) return;
             const { index, origin } = draggedCard;
-            const droppedSubtype = (draggedCard.card as CardType)?.subType as CardSubtype | undefined;
+            const droppedSubtype = (draggedCard.card as CardState)?.type as CardType | undefined;
 
             // --- CASE A : ATTACHEMENT SUR UN PERSONNAGE ---
             if (

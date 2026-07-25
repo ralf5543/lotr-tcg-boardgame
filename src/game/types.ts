@@ -1,103 +1,125 @@
 export type CardKind = 'FREE_PEOPLES' | 'SHADOW';
+
 export type CardKeyword =
-    | 'RING-BEARER'
-    | 'ARCHER'
-    | 'RANGER'
-    | 'KNIGHT'
-    | 'MUSTER'
-    | 'UNHASTY'
     | 'AID'
-    | 'DAMAGE'
-    | 'DEFENDER'
     | 'AMBUSH'
-    | 'HUNTER'
+    | 'ARCHER'
+    | 'BATTLEGROUND'
     | 'BESIEGER'
     | 'CORSAIR'
+    | 'DAMAGE'
+    | 'DEFENDER'
+    | 'DWELLING'
+    | 'EASTERLING'
+    | 'ENDURING'
+    | 'ENGINE'
+    | 'FIERCE'
+    | 'FOREST'
+    | 'FORTIFICATION'
+    | 'HUNTER'
+    | 'KNIGHT'
+    | 'LURKER'
+    | 'MACHINE'
+    | 'MARSH'
+    | 'MOUNTAIN'
+    | 'MUSTER'
+    | 'PIPEWEED'
+    | 'PLAINS'
+    | 'RANGER'
+    | 'RING-BEARER'
+    | 'RING-BOUND'
+    | 'RIVER'
+    | 'SEARCH'
     | 'SOUTHRON'
     | 'SPELL'
     | 'STEALTH'
     | 'TALE'
     | 'TENTACLE'
+    | 'TOIL'
     | 'TRACKER'
     | 'TWILIGHT'
+    | 'UNDERGROUND'
+    | 'UNHASTY'
     | 'VALIANT'
     | 'VILLAGER'
-    | 'WEATHER'
     | 'WARG-RIDER'
-    | 'EASTERLING'
-    | 'ENGINE'
-    | 'PIPEWEED'
-    | 'SEARCH'
-    | 'FORTIFICATION'
-    | 'MACHINE'
-    | 'LURKER'
-    | 'TOIL'
-    | 'RING-BOUND'
-    | 'FIERCE'
-    | 'ENDURING'
-    | 'RIVER'
-    | 'FOREST'
-    | 'MOUNTAIN'
-    | 'UNDERGROUND'
-    | 'DWELLING'
-    | 'PLAINS'
-    | 'MARSH'
-    | 'BATTLEGROUND';
+    | 'WEATHER';
+
 export type CardSignet = 'ARAGORN' | 'FRODO' | 'GANDALF' | 'THEODEN';
-export type CardSubtype =
-    | 'COMPANION'
-    | 'MINION'
+
+export type CardType =
     | 'ALLY'
-    | 'EVENT'
-    | 'POSSESSION_CHARACTER'
-    | 'POSSESSION_SUPPORT'
     | 'ARTIFACT_CHARACTER'
     | 'ARTIFACT_SUPPORT'
+    | 'COMPANION'
     | 'CONDITION_CHARACTER'
-    | 'CONDITION_SUPPORT';
+    | 'CONDITION_SUPPORT'
+    | 'EVENT'
+    | 'MINION'
+    | 'POSSESSION_CHARACTER'
+    | 'POSSESSION_SUPPORT';
+
+export type CardSubtype =
+    | 'ARMOR'
+    | 'BOX'
+    | 'BROOCH'
+    | 'BRACERS'
+    | 'CLOAK'
+    | 'EVENT'
+    | 'GAUNTLETS'
+    | 'HAND-WEAPON'
+    | 'HELM'
+    | 'MOUNT'
+    | 'PALANTIR'
+    | 'PHIAL'
+    | 'PIPE'
+    | 'RANGED-WEAPON'
+    | 'RING'
+    | 'SHIELD'
+    | 'STAFF';
 
 export type CardRace =
-    | 'MAN'
+    | 'BALROG'
+    | 'CREATURE'
     | 'DWARF'
     | 'ELF'
-    | 'HOBBIT'
     | 'ENT'
-    | 'WIZARD'
-    | 'CREATURE'
-    | 'BALROG'
+    | 'HOBBIT'
     | 'MAIA'
-    | 'SPIDER'
-    | 'WRAITH'
-    | 'TROLL'
+    | 'MAN'
+    | 'NAZGUL'
     | 'ORC'
+    | 'SPIDER'
+    | 'TROLL'
     | 'URUK-HAI'
-    | 'NAZGUL';
+    | 'WIZARD'
+    | 'WRAITH';
 
 export type CardCulture =
-    | 'GONDOR'
+    | 'DUNLAND'
     | 'DWARVEN'
     | 'ELVEN'
-    | 'SHIRE'
     | 'GANDALF'
-    | 'MORIA'
-    | 'RINGWRAITH'
-    | 'SAURON'
-    | 'ISENGARD'
-    | 'ROHAN'
-    | 'DUNLAND'
-    | 'ORC'
     | 'GOLLUM'
+    | 'GONDOR'
+    | 'ISENGARD'
     | 'MEN'
-    | 'URUK-HAI'
-    | 'THE-ONE-RING';
+    | 'MORIA'
+    | 'ORC'
+    | 'RINGWRAITH'
+    | 'ROHAN'
+    | 'SAURON'
+    | 'SHIRE'
+    | 'THE-ONE-RING'
+    | 'URUK-HAI';
 
-export interface CardType {
+export interface CardState {
     id: string;
     title: string;
     subtitle?: string;
     imageUrl?: string;
     kind: CardKind;
-    keywords?: CardKeyword[]
+    keywords?: CardKeyword[];
     race?: CardRace;
     twilightCost: number;
     strength?: number;
@@ -106,20 +128,20 @@ export interface CardType {
     roaming?: number;
     signet?: CardSignet;
     culture: CardCulture;
-    subType: CardSubtype;
+    type: CardType;
+    subtype?: CardSubtype;
     isUnique: boolean;
     gameText: string;
     loreText?: string;
-    attachments?: CardType[];
+    attachments?: CardState[];
 }
 
-// L'état propre à chaque joueur (sa main, sa pioche, sa défausse)
 export interface PlayerState {
-    deck: CardType[];
-    hand: CardType[];
-    discard: CardType[];
-    fellowshipArea: CardType[]; // Zone exclusive des Compagnons (les gentils)
-    supportArea: CardType[]; // Aire de soutien (Allies, Conditions... mixte)
+    deck: CardState[];
+    hand: CardState[];
+    discard: CardState[];
+    fellowshipArea: CardState[];
+    supportArea: CardState[];
     currentSiteIndex: number;
     sitesDeck: SiteCardState[];
 }
@@ -129,16 +151,16 @@ export interface SiteCardState {
     name: string;
     twilightCost: number;
     text: string;
-    ownerId: string; // '0' ou '1' (pour se rappeler qui l'a posé)
+    ownerId: string;
     imageUrl?: string;
     keywords?: CardKeyword[];
 }
 
 export interface GameState {
     twilightPool: number;
-    currentSiteIndex: number; // Position actuelle du pion sur le chemin (0 à 8, soit site 1 à 9)
-    movesThisTurn: number; // Compteur pour limiter à 2 déplacements max par tour
-    path: (SiteCardState | null)[]; // Le chemin de 9 cases horizontales
-    battlefield: CardType[];
+    currentSiteIndex: number;
+    movesThisTurn: number;
+    path: (SiteCardState | null)[];
+    battlefield: CardState[];
     players: Record<string, PlayerState>;
 }

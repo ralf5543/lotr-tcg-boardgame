@@ -1,6 +1,6 @@
 // src/game/Game.ts
 import type { Game } from 'boardgame.io';
-import type { GameState, CardType, PlayerState } from './types';
+import type { GameState, CardState, PlayerState } from './types';
 import {
     CARDS_DATABASE,
     DUMMY_SITES_PLAYER_0,
@@ -15,8 +15,8 @@ const shuffle = <T>(array: T[]): T[] => {
     return arr;
 };
 
-const createRealLotrDeck = (): CardType[] => {
-    const fullPool: CardType[] = [];
+const createRealLotrDeck = (): CardState[] => {
+    const fullPool: CardState[] = [];
     for (let i = 0; i < 15; i++) {
         const Card = CARDS_DATABASE[i % CARDS_DATABASE.length];
 
@@ -207,7 +207,7 @@ export const LotrGame: Game<GameState> = {
 
                     player.hand.splice(cardIndex, 1);
 
-                    if (card.subType === 'COMPANION') {
+                    if (card.type === 'COMPANION') {
                         player.fellowshipArea.push(card);
                     } else {
                         player.supportArea.push(card);

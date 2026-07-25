@@ -1,5 +1,5 @@
 import React from 'react';
-import type { CardType } from '../../../../game/types';
+import type { CardState } from '../../../../game/types';
 import * as S from './styles';
 import { TRANSLATIONS } from '../../../../game/translations';
 import { useHoverCard } from '../../../../contexts/HoverCardContext';
@@ -8,7 +8,7 @@ import type { CardSignet } from '../../../../game/types';
 import { FormattedText } from '../../../../utils/FormattedText';
 
 interface CardProps {
-    card: CardType;
+    card: CardState;
     isPlayable?: boolean;
     isDraggable?: boolean;
     index?: number;
@@ -52,7 +52,7 @@ export const Card: React.FC<CardProps> = ({
             cardIndex: index,
             cardId: card.id,
             kind: card.kind,
-            subType: card.subType,
+            type: card.type,
             race: card.race,
             gameText: card.gameText,
             loreText: card.loreText,
@@ -64,7 +64,8 @@ export const Card: React.FC<CardProps> = ({
     };
 
     // --- INTERPRÉTEUR DE TRADUCTION ---
-    const translatedSubType = TRANSLATIONS.subType[card.subType];
+    const translatedType = TRANSLATIONS.type[card.type];
+    const translatedSubtype = TRANSLATIONS.subtype[card.subtype];
     const translatedRace = card.race ? TRANSLATIONS.race[card.race] : null;
 
     const translatedKeywords = card.keywords
@@ -72,9 +73,7 @@ export const Card: React.FC<CardProps> = ({
         .join(', ');
 
     // Construction de la ligne de type (Ex: "Compagnon • Homme • Rôdeur")
-    const typeLineElements = [translatedSubType, translatedRace].filter(
-        Boolean
-    );
+    const typeLineElements = [translatedType, translatedRace].filter(Boolean);
 
     const typeLine = typeLineElements.join(' • ');
 
@@ -88,7 +87,7 @@ export const Card: React.FC<CardProps> = ({
     return (
         <S.CardContainer
             $culture={card.culture}
-            $subType={card.subType}
+            $type={card.type}
             $kind={card.kind}
             $isShadow={isShadow}
             $isPlayable={isPlayable}
@@ -106,20 +105,20 @@ export const Card: React.FC<CardProps> = ({
                         {card.twilightCost}
                     </S.TwilightBadge>
                 )}
-                <S.CardTitles $subType={card.subType}>
-                    <S.CardTitle $subType={card.subType}>
+                <S.CardTitles $type={card.type}>
+                    <S.CardTitle $type={card.type}>
                         {card.isUnique && '• '}
                         {card.title}
                     </S.CardTitle>
                     {card.subtitle && size !== 'sm' && (
-                        <S.CardSubtitle $subType={card.subType}>
+                        <S.CardSubtitle $type={card.type}>
                             {card.subtitle}
                         </S.CardSubtitle>
                     )}
                 </S.CardTitles>
             </S.CardHeader>
 
-            <S.VisualContainer $subType={card.subType}>
+            <S.VisualContainer $type={card.type}>
                 <S.Visual
                     src={card.imageUrl}
                     alt={card.title}
@@ -128,7 +127,21 @@ export const Card: React.FC<CardProps> = ({
             </S.VisualContainer>
 
             {size !== 'sm' && (
-                <S.CardType $subType={card.subType}>{typeLine}</S.CardType>
+                <S.CardTypes $type={card.type}>
+                    <S.CardType $type={card.type}>{translatedType}</S.CardType>
+                    {card.subtype && (
+                        <S.CardType $type={card.subtype}>
+                            <S.Separator>•</S.Separator>
+                            {translatedSubtype}
+                        </S.CardType>
+                    )}
+                    {card.race && (
+                        <S.CardType $type={card.subtype}>
+                            <S.Separator>•</S.Separator>
+                            {translatedRace}
+                        </S.CardType>
+                    )}
+                </S.CardTypes>
             )}
 
             <S.TextContainer>
@@ -141,7 +154,9 @@ export const Card: React.FC<CardProps> = ({
                         <FormattedText text={card.gameText} />
                     </S.GameText>
                 )}
-                {size === 'lg' && <S.LoreText>‟{card.loreText}”</S.LoreText>}
+                {size === 'lg' && card.loreText && (
+                    <S.LoreText>‟{card.loreText}”</S.LoreText>
+                )}
             </S.TextContainer>
 
             {card.strength !== undefined && (
@@ -153,9 +168,12 @@ export const Card: React.FC<CardProps> = ({
             {card.roaming !== undefined && (
                 <S.RoamingNumber>{card.roaming}</S.RoamingNumber>
             )}
-            {card.resistance !== undefined && (
-                <S.CardResistance $isRingBearer={isRingBearer}>{card.resistance}</S.CardResistance>
-            )}
+            {card.resistance !== undefined &&
+                !(card.signet && size === 'lg') && (
+                    <S.CardResistance $isRingBearer={isRingBearer}>
+                        {card.resistance}
+                    </S.CardResistance>
+                )}
             {card.signet !== undefined && (
                 <S.CardSignet $signet={card.signet} />
             )}
