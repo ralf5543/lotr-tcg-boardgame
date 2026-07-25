@@ -29,14 +29,13 @@ export const SiteCardContainer = styled.div<{
     $isCurrent: boolean; 
     $hasSite: boolean;
     $isHovered?: boolean;
+    $index: number;
 }>`
     position: relative;
     width: 100%;
     aspect-ratio: 3 / 1;
     border-radius: 6px;
-    border: ${({ $isCurrent }) => $isCurrent ? '2px solid #e2c044' : '1px dashed #444'};
-    background: ${({ $hasSite }) => $hasSite ? '#111' : 'rgba(0, 0, 0, 0.2)'};
-    box-shadow: ${({ $isCurrent }) => $isCurrent ? '0 0 10px rgba(226, 192, 68, 0.4)' : 'none'};
+    background: ${({ $index }) => $index === 2 || $index === 5 ? 'white' : 'black'};
     display: flex;
     flex-direction: column;
     justify-content: space-between;

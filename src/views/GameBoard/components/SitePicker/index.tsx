@@ -19,7 +19,6 @@ export const SitesPicker: React.FC<SitesPickerProps> = ({ sites = [] }) => {
 
     return (
         <S.PickerContainer>
-            <S.Title>Réserve de Sites ({sites.length})</S.Title>
             <S.Grid>
                 {sites.map((site, idx) => {
                     const isBeingDragged = dragged?.card.id === site.id;
@@ -27,6 +26,7 @@ export const SitesPicker: React.FC<SitesPickerProps> = ({ sites = [] }) => {
                     return (
                         <div
                             key={site.id}
+                            data-draggable="true"
                             style={{
                                 opacity: isBeingDragged ? 0 : 1,
                                 pointerEvents: isBeingDragged ? 'none' : 'auto',

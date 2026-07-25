@@ -32,7 +32,7 @@ export const Container = styled.div<{ $size: SiteCardSize }>`
     display: flex;
     flex-direction: column;
     justify-content: space-between;
-    background: #1a1a2e;
+    background: black;
     color: black;
     user-select: none;
     background-image: url('interface/cards_backgrounds/site_standard.webp');

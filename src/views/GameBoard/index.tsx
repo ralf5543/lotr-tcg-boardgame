@@ -177,7 +177,6 @@ export const GameBoard: React.FC<GameBoardProps> = ({
                         // ou client.moves.playSite(siteId, targetIndex) selon ta config
                     }}
                 />
-                {console.log('me : ', me)}
                 <Dock
                     handCount={me.hand?.length || 0}
                     sitesCount={me.sitesDeck?.length || 0}

@@ -103,7 +103,7 @@ export const SitePath: React.FC<SitePathProps> = ({
                     textTransform: 'uppercase',
                 }}
             >
-                Chemin d'Aventure (Path)
+                Chemin d'Aventure
             </h3>
 
             <S.SitesGrid>
@@ -125,16 +125,8 @@ export const SitePath: React.FC<SitePathProps> = ({
                             key={index}
                             ref={isNextEmpty ? nextSlotRef : null}
                             $isCurrent={p0Here || p1Here}
-                            style={{
-                                border: isHovered
-                                    ? '2px solid #e2c044'
-                                    : undefined,
-                                boxShadow: isHovered
-                                    ? '0 0 16px rgba(226, 192, 68, 0.8), inset 0 0 8px rgba(226, 192, 68, 0.3)'
-                                    : undefined,
-                                transform: isHovered ? 'scale(1.04)' : 'scale(1)',
-                                transition: 'all 0.15s ease-in-out',
-                            }}
+                            $index={index}
+                            $isHovered={isHovered}
                             onMouseEnter={() => {
                                 if (site) {
                                     setHoveredCard(site, 'landscape');
@@ -156,8 +148,8 @@ export const SitePath: React.FC<SitePathProps> = ({
                                         alignItems: 'center',
                                         justifyContent: 'center',
                                         height: '100%',
-                                        opacity: isNextEmpty ? 1 : 0.4,
                                         pointerEvents: 'none',
+                                        backgroundColor: 'rgb(26, 37, 47)'
                                     }}
                                 >
                                     <span
