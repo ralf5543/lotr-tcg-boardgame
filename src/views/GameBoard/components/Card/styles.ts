@@ -695,3 +695,9 @@ export const CardResistance = styled.span<{ $isRingBearer: boolean }>`
     font-family: LOTRIcons;
     z-index: 1;
 `;
+export const KeywordsContainer = styled.div`
+    position: absolute;
+    z-index: 2;
+    inset-block-start: 20px;
+    inset-inline-end: -11px;
+`;

@@ -6,6 +6,7 @@ export const canDropInSupportArea = (type?: CardType): boolean => {
         type === 'ALLY' ||
         type === 'POSSESSION_SUPPORT' ||
         type === 'ARTIFACT_SUPPORT' ||
+        type === 'FOLLOWER' ||
         type === 'CONDITION_SUPPORT'
     );
 };

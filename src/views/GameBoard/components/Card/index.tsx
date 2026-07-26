@@ -3,9 +3,9 @@ import type { CardState } from '../../../../game/types';
 import * as S from './styles';
 import { TRANSLATIONS } from '../../../../game/translations';
 import { useHoverCard } from '../../../../contexts/HoverCardContext';
-import { useDrag } from '../../../../contexts/DragContext';
 import type { CardSignet } from '../../../../game/types';
 import { FormattedText } from '../../../../utils/FormattedText';
+import { KeywordBadge } from '../KeywordBadge';
 
 interface CardProps {
     card: CardState;
@@ -69,7 +69,7 @@ export const Card: React.FC<CardProps> = ({
     const translatedRace = card.race ? TRANSLATIONS.race[card.race] : null;
 
     const translatedKeywords = card.keywords
-        ?.map((kw) => TRANSLATIONS.keyword[kw] || kw)
+        ?.map((kw) => TRANSLATIONS.keyword[kw].label || kw)
         .join(', ');
 
     // Construction de la ligne de type (Ex: "Compagnon • Homme • Rôdeur")
@@ -83,6 +83,8 @@ export const Card: React.FC<CardProps> = ({
         startDrag(card, index, e);
         setHoveredCard(null);
     };
+
+    const isCharacter = ['COMPANION', 'ALLY', 'MINION'].includes(card.type);
 
     return (
         <S.CardContainer
@@ -99,6 +101,13 @@ export const Card: React.FC<CardProps> = ({
             onPointerDown={handlePointerDown}
             data-draggable={isDraggable ? 'true' : undefined}
         >
+            {isCharacter && size === 'sm' && card.keywords && card.keywords.length > 0 && (
+            <S.KeywordsContainer>
+                {card.keywords.map((kw) => (
+                    <KeywordBadge key={kw} keyword={kw} size={18} />
+                ))}
+            </S.KeywordsContainer>
+        )}
             <S.CardHeader>
                 {size !== 'sm' && (
                     <S.TwilightBadge $isShadow={isShadow}>

@@ -154,3 +154,12 @@ export const Footer = styled.div`
     align-items: center;
     font-size: 0.8em;
 `;
+
+export const SiteKeywordsContainer = styled.div`
+    position: absolute;
+    z-index: 1;
+    inset-block-end: 2px;
+    inset-inline-end: 2px;
+    display: flex;
+    gap: 5px;
+`;

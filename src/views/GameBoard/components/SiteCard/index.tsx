@@ -3,6 +3,7 @@ import type { SiteCardState } from '../../../../game/types';
 import * as S from './styles';
 import { TRANSLATIONS } from '../../../../game/translations';
 import { TokenPlayer } from '../TokenPlayer';
+import { KeywordBadge } from '../KeywordBadge';
 
 export interface SiteCardProps {
     site: SiteCardState;
@@ -28,6 +29,13 @@ export const SiteCard: React.FC<SiteCardProps> = ({
 
     return (
         <S.Container $size={size} className={className} style={style}>
+            {site.keywords && site.keywords.length > 0 && size ==="sm" && (
+                <S.SiteKeywordsContainer>
+                    {site.keywords.map((kw) => (
+                        <KeywordBadge key={kw} keyword={kw} size={20} />
+                    ))}
+                </S.SiteKeywordsContainer>
+            )}
             <S.Title $size={size}>{site.name}</S.Title>
             <S.TwilightBadge $size={size}>{site.twilightCost}</S.TwilightBadge>
 
@@ -47,11 +55,13 @@ export const SiteCard: React.FC<SiteCardProps> = ({
             )}
             {size === 'sm' && (
                 <S.Footer>
-                    <span>{site.ownerId !== undefined ? `P${site.ownerId}` : ''}</span>
+                    <span>
+                        {site.ownerId !== undefined ? `P${site.ownerId}` : ''}
+                    </span>
                     {playersHere && (
                         <>
-                            {playersHere.p0 && <TokenPlayer value='1'/>}
-                            {playersHere.p1 && <TokenPlayer value='2'/>}
+                            {playersHere.p0 && <TokenPlayer value="1" />}
+                            {playersHere.p1 && <TokenPlayer value="2" />}
                         </>
                     )}
                 </S.Footer>
