@@ -14,11 +14,7 @@ const getSignet = (signet: string): string => {
             return '';
     }
 };
-const getCultureBackground = (
-    culture: string,
-    type: string,
-    kind: string
-) => {
+const getCultureBackground = (culture: string, type: string, kind: string) => {
     if (culture === 'GONDOR') {
         if (type === 'COMPANION' || type === 'ALLY') {
             return 'url(interface/cards_backgrounds/gondor_character.webp)';
@@ -135,6 +131,7 @@ const isForSupportArea = (type?: string) => {
 
     return (
         type === 'POSSESSION_SUPPORT' ||
+        type === 'FOLLOWER' ||
         type === 'CONDITION_SUPPORT' ||
         type === 'ARTIFACT_SUPPORT'
     );
@@ -181,15 +178,34 @@ export const CardContainer = styled.div<{
         css`
             width: 105px;
             border-radius: 8px 8px 49px 49px;
-            border: 6px solid black;
+            border: 6px solid transparent;
+            outline: 1px solid black;
             background-image: ${getCultureSmallBackground(props.$culture)};
             background-size: auto;
             background-repeat: repeat;
             filter: drop-shadow(0 3px 4px rgba(0, 0, 0, 1));
 
+            &::after {
+                content: '';
+                position: absolute;
+                inset: -6px;
+                z-index: -1;
+                border-radius: 8px 8px 49px 49px;
+                background: linear-gradient(
+                    to top right,
+                    rgba(0, 0, 0, 0) 0%,
+                    #000000 50%,
+                    rgba(0, 0, 0, 0) 100%
+                );
+            }
+
             ${isForSupportArea(props.$type) &&
             css`
                 border-radius: 8px;
+
+                &::after {
+                    border-radius: 8px;
+                }
             `}
 
             ${CardHeader} {
@@ -344,10 +360,10 @@ export const CardContainer = styled.div<{
             }
 
             ${CardTypes} {
-                inset: 326px 60px 208px 60px;
+                inset: 325px 60px 209px 60px;
                 ${isNotCharacter(props.$type) &&
                 css`
-                    inset: 315px 40px 205px 100px;
+                    inset: 317px 40px 203px 100px;
                 `}
             }
 
@@ -428,7 +444,6 @@ export const CardContainer = styled.div<{
                 font-size: 28px;
                 background-position: 4px 4px;
             }
-
 
             ${RoamingNumber} {
                 font-size: 28px;
@@ -515,10 +530,7 @@ export const CardType = styled.p<{ $type?: string }>`
     align-items: center;
     font-variant: small-caps;
     text-transform: capitalize;
-    ${(props) =>
-        isNotCharacter(props.$type) &&
-        css`
-        `}
+    ${(props) => isNotCharacter(props.$type) && css``}
 `;
 
 export const TwilightBadge = styled.span<{ $isShadow?: boolean }>`

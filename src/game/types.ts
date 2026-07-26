@@ -55,6 +55,7 @@ export type CardType =
     | 'CONDITION_CHARACTER'
     | 'CONDITION_SUPPORT'
     | 'EVENT'
+    | 'FOLLOWER'
     | 'MINION'
     | 'POSSESSION_CHARACTER'
     | 'POSSESSION_SUPPORT';
