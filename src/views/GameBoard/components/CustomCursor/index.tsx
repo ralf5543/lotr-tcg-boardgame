@@ -60,7 +60,7 @@ export function CustomAssetCursor() {
         return () => window.removeEventListener('pointermove', moveCursor);
     }, []);
 
-    const factionSuffix = playerFaction === 'SHADOW' ? 'shadow' : 'FP';
+    const factionSuffix = playerFaction === 'SHADOW' ? 'shadow' : 'FREE_PEOPLES';
 
     return (
         <>

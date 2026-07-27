@@ -31,12 +31,6 @@ export const SitePath: React.FC<SitePathProps> = ({
 
     // 1. Enregistrement de la cible
     useEffect(() => {
-        console.log(
-            '📌 [SITEPATH] Target registration for index:',
-            nextEmptyIndex,
-            'Element:',
-            nextSlotRef.current
-        );
         if (nextSlotRef.current) {
             registerTarget('sitePath', nextSlotRef.current);
         } else {
@@ -49,13 +43,6 @@ export const SitePath: React.FC<SitePathProps> = ({
     useEffect(() => {
         const handleCardDropped = (e: CustomEvent) => {
             const { draggedCard, targetId } = e.detail;
-
-            console.log('💥 [SITEPATH DROP HEARD]:', {
-                draggedCard,
-                targetId,
-                nextEmptyIndex,
-                hasOnPlaySite: !!onPlaySite,
-            });
 
             // On ne réagit QUE si la cible est bien sitePath
             if (targetId === 'sitePath') {

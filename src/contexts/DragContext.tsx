@@ -14,6 +14,7 @@ export type CardOrientation = 'portrait' | 'landscape';
 interface DraggedCardData {
     card: CardState | SiteCardState;
     index: number;
+    kind: 'FREE_PEOPLES' | 'SHADOW';
     origin: 'HAND' | 'BOARD';
     orientation: CardOrientation;
 }
@@ -116,7 +117,7 @@ export const DragProvider: React.FC<{ children: React.ReactNode }> = ({
             // Ratio de la carte qui chevauche la zone (ex: 0.25 = 25% de la carte)
             const cardOverlapRatio = overlapArea / cardArea;
 
-            if (id === 'fellowshipArea' || id === 'sitePath' || id === 'supportArea') {
+            if (id === 'fellowshipArea' || id === 'sitePath' || id === 'supportArea' || id === 'battlefield') {
                 // On exige qu me au moins 20% à 25% de la carte soit entrée dans la zone
                 if (cardOverlapRatio > 0.2) {
                     hitZoneId = id;

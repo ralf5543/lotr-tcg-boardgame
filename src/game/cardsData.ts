@@ -232,7 +232,7 @@ export const DUMMY_SITES_PLAYER_0: SiteCard[] = [
     {
         id: '11u227',
         name: "Berges de l'Anduin",
-        twilightCost: 0,
+        twilightCost: 5,
         text: "Le total d'archerie des séides est de +2 pour chaque compagnon au delà de 4.",
         keywords: ['RIVER', 'MOUNTAIN'],
         ownerId: '0',
@@ -241,7 +241,7 @@ export const DUMMY_SITES_PLAYER_0: SiteCard[] = [
     {
         id: 'fsdfsdfsfsd',
         name: "Berges de l'Anduin",
-        twilightCost: 0,
+        twilightCost: 5,
         text: "Le total d'archerie des séides est de +2 pour chaque compagnon au delà de 4.",
         keywords: ['RIVER', 'MOUNTAIN'],
         ownerId: '0',
@@ -250,7 +250,7 @@ export const DUMMY_SITES_PLAYER_0: SiteCard[] = [
     {
         id: 'a',
         name: "Berges de l'Anduin",
-        twilightCost: 0,
+        twilightCost: 5,
         text: "Le total d'archerie des séides est de +2 pour chaque compagnon au delà de 4.",
         keywords: ['RIVER', 'MOUNTAIN'],
         ownerId: '0',
@@ -259,7 +259,7 @@ export const DUMMY_SITES_PLAYER_0: SiteCard[] = [
     {
         id: 'b',
         name: "Berges de l'Anduin",
-        twilightCost: 0,
+        twilightCost: 5,
         text: "Le total d'archerie des séides est de +2 pour chaque compagnon au delà de 4.",
         keywords: ['RIVER', 'MOUNTAIN'],
         ownerId: '0',
@@ -268,7 +268,7 @@ export const DUMMY_SITES_PLAYER_0: SiteCard[] = [
     {
         id: 'c',
         name: "Berges de l'Anduin",
-        twilightCost: 0,
+        twilightCost: 5,
         text: "Le total d'archerie des séides est de +2 pour chaque compagnon au delà de 4.",
         keywords: ['RIVER'],
         ownerId: '0',
@@ -277,7 +277,7 @@ export const DUMMY_SITES_PLAYER_0: SiteCard[] = [
     {
         id: 'd',
         name: "Berges de l'Anduin",
-        twilightCost: 0,
+        twilightCost: 5,
         text: "Le total d'archerie des séides est de +2 pour chaque compagnon au delà de 4.",
         keywords: ['RIVER'],
         ownerId: '0',
@@ -286,7 +286,7 @@ export const DUMMY_SITES_PLAYER_0: SiteCard[] = [
     {
         id: 'e',
         name: "Berges de l'Anduin",
-        twilightCost: 0,
+        twilightCost: 5,
         text: "Le total d'archerie des séides est de +2 pour chaque compagnon au delà de 4.",
         keywords: ['RIVER'],
         ownerId: '0',
@@ -295,7 +295,7 @@ export const DUMMY_SITES_PLAYER_0: SiteCard[] = [
     {
         id: 'f',
         name: "Berges de l'Anduin",
-        twilightCost: 0,
+        twilightCost: 5,
         text: "Le total d'archerie des séides est de +2 pour chaque compagnon au delà de 4.",
         keywords: ['RIVER'],
         ownerId: '0',
@@ -304,7 +304,7 @@ export const DUMMY_SITES_PLAYER_0: SiteCard[] = [
     {
         id: 'g',
         name: "Berges de l'Anduin",
-        twilightCost: 0,
+        twilightCost: 5,
         text: "Le total d'archerie des séides est de +2 pour chaque compagnon au delà de 4.",
         keywords: ['RIVER'],
         ownerId: '0',

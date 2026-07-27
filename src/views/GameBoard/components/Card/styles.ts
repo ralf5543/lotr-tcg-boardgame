@@ -229,6 +229,8 @@ export const CardContainer = styled.div<{
             }
 
             ${CardTitles} {
+                max-width: 86px;
+                
                 ${isForSupportArea(props.$type) &&
                 css`
                     inset: 0px 0px 0px 2px;

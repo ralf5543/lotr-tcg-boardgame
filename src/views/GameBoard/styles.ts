@@ -80,17 +80,6 @@ export const PhaseBanner = styled.div`
     }
 `;
 
-export const BattlefieldContainer = styled.div`
-    flex: 0 0 80%;
-    background-color: #2c3e50;
-    border-radius: 8px;
-    border: 2px solid #7f8c8d;
-    padding: 15px;
-    position: relative; /* Requis pour la réserve de jetons absolue */
-    display: flex;
-    flex-direction: column;
-`;
-
 export const TokenReserve = styled.div`
     position: absolute;
     top: 15px;

@@ -153,7 +153,13 @@ export const GameBoard: React.FC<GameBoardProps> = ({
 
                     <S.MainZone>
                         <TwilightPool value={G.twilightPool} />
-                        <Battlefield cards={G.battlefield || []} />
+                        <Battlefield
+                            cards={G.battlefield}
+                            playerRole={playerID as '0' | '1'}
+                            onPlayShadowCard={(cardIndex) => {
+                                moves.playShadowCard(cardIndex);
+                            }}
+                        />
                     </S.MainZone>
                 </S.CentralBlock>
 
@@ -183,9 +189,16 @@ export const GameBoard: React.FC<GameBoardProps> = ({
                     discardCount={me.discard?.length || 0}
                     handView={
                         <Hand
+                            playerRole={myId}
                             hand={me.hand || []}
                             deckCount={me.deck?.length || 0}
-                            onDrawCard={() => moves.drawCard()}
+                            onDrawCard={() => {
+                                console.log(
+                                    '[UI] Clicking Draw Card button. My playerID prop is:',
+                                    playerID
+                                );
+                                moves.drawCard(); // ou moves.drawCard({ playerID }) selon comment est wrappé ton client
+                            }}
                             onPlayCard={(idx) => moves.playCard(idx)}
                         />
                     }

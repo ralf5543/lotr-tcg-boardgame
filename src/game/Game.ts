@@ -1,10 +1,17 @@
-// src/game/Game.ts
-import type { Game } from 'boardgame.io';
+import type { Game, Ctx } from 'boardgame.io';
 import type { GameState, CardState, PlayerState } from './types';
-import {
-    CARDS_DATABASE,
-    DUMMY_SITES_PLAYER_0,
-} from './cardsData';
+import { CARDS_DATABASE, DUMMY_SITES_PLAYER_0 } from './cardsData';
+
+interface MoveContext {
+    G: GameState;
+    ctx: Ctx;
+    playerID: string;
+    events: {
+        endPhase: () => void;
+        setActivePlayers: (config: { value: Record<string, string> }) => void;
+        endTurn: () => void;
+    };
+}
 
 const shuffle = <T>(array: T[]): T[] => {
     const arr = [...array];
@@ -19,7 +26,6 @@ const createRealLotrDeck = (): CardState[] => {
     const fullPool: CardState[] = [];
     for (let i = 0; i < 15; i++) {
         const Card = CARDS_DATABASE[i % CARDS_DATABASE.length];
-
         fullPool.push({ ...Card, id: `${Card.id}-${i}` });
     }
     return shuffle(fullPool);
@@ -35,45 +41,76 @@ const createInitialPlayer = (): PlayerState => ({
     currentSiteIndex: 0,
 });
 
-const getTargetPlayerId = (playerID: any, ctx: any): string => {
+const getTargetPlayerId = (playerID: string | undefined, ctx: Ctx): string => {
     if (playerID !== undefined && playerID !== null && playerID !== '') {
         return String(playerID);
     }
     return String(ctx.currentPlayer ?? '0');
 };
 
-// Logique centralisée de déplacement
 export const advanceCompany = (
     G: GameState,
-    ctx: any,
-    playerID: any,
-    events: any
+    ctx: Ctx,
+    playerID: string,
+    events: MoveContext['events']
 ) => {
     const p0 = G.players['0'];
     const nextIndex = p0.currentSiteIndex + 1;
 
-    if (nextIndex >= 9) return; // Fin du chemin atteint
+    if (nextIndex >= 9) return; // Limite du chemin atteinte
 
-    // CAS A : Le site existe déjà ! On avance directement.
+    // Helper pour calculer et ajouter le Crépuscule du nouveau site
+    const applyTwilightForSite = (siteIndex: number) => {
+        const targetSite = G.path[siteIndex];
+        if (!targetSite) return;
+
+        // 1. Coût du site (supporte twilightCost ou twilight)
+        const siteCost =
+            Number(targetSite.twilightCost ?? (targetSite as any).twilight) ||
+            0;
+
+        // 2. Nombre de compagnons sur le plateau
+        const companionsCount = p0.fellowshipArea
+            ? p0.fellowshipArea.length
+            : 0;
+
+        const totalAdded = siteCost + companionsCount;
+
+        // 3. Ajout au Twilight Pool
+        G.twilightPool += totalAdded;
+
+        console.log(
+            `[Twilight Calculation] Site cost: ${siteCost} + Companions: ${companionsCount} = +${totalAdded} Crépuscule (Total: ${G.twilightPool})`
+        );
+    };
+
+    // CAS A : Le site existe déjà sur le chemin ! On avance directement.
     if (G.path[nextIndex] !== null) {
         p0.currentSiteIndex = nextIndex;
-        G.statusMessage = `La compagnie avance au site ${nextIndex + 1} : ${G.path[nextIndex].name}`;
+        applyTwilightForSite(nextIndex); // 🟢 Calcul automatique du Crépuscule
+
+        G.statusMessage = `La compagnie avance au site ${nextIndex + 1} : ${G.path[nextIndex]?.name}`;
         events.endPhase(); // Passe à la Shadow phase
     }
-    // CAS B : Case vide ! On donne la main au joueur Ombre ('1') pour poser le site.
+    // CAS B : Case vide ! On demande au joueur Ombre de poser son site.
     else {
         G.awaitingSiteSelection = true;
         G.statusMessage =
             "En attente du joueur de l'Ombre pour poser le prochain site...";
 
-        // 🔑 ON DONNE LE CONTRÔLE AU JOUEUR OMBRE '1'
         events.setActivePlayers({ value: { '1': 'play' } });
     }
 };
 
-// 🛠️ MOVES COMMUNS DISPONIBLES EN TOUT TEMPS
+// 🛠️ MOVES COMMUNS
 const commonMoves = {
-    drawCard: ({ G, ctx, playerID }: any) => {
+    // 🟢 La pioche s'adresse au joueur qui clique (playerID)
+    drawCard: ({ G, ctx, playerID }: MoveContext) => {
+        console.log('[drawCard] Called by playerID:', playerID);
+        console.log('[drawCard] Current player in ctx:', ctx.currentPlayer);
+        console.log('[drawCard] Active players in ctx:', ctx.activePlayers);
+        console.log('[drawCard] Current phase:', ctx.phase);
+
         const targetId = getTargetPlayerId(playerID, ctx);
         const player = G.players[targetId];
 
@@ -86,7 +123,7 @@ const commonMoves = {
     },
 
     reorderFellowship: (
-        { G, ctx, playerID }: any,
+        { G, ctx, playerID }: MoveContext,
         payload: {
             fromIndex?: number;
             toIndex?: number;
@@ -119,35 +156,40 @@ const commonMoves = {
         list.splice(toIndex, 0, movedCard);
     },
 
-    // 🔑 PLAY SITE DISPONIBLE EN MOVE COMMUN
     playSite: (
-        { G, ctx, playerID, events }: any,
+        { G, playerID, events }: MoveContext,
         siteId: string,
         targetIndex: number
     ) => {
         const player = G.players[playerID];
         if (!player || !player.sitesDeck) return 'INVALID_MOVE';
 
-        const siteIndex = player.sitesDeck.findIndex(
-            (s: any) => s.id === siteId
-        );
+        const siteIndex = player.sitesDeck.findIndex((s) => s.id === siteId);
         if (siteIndex === -1) return 'INVALID_MOVE';
 
-        const nextEmptyIndex = G.path.findIndex((slot: any) => slot === null);
+        const nextEmptyIndex = G.path.findIndex((slot) => slot === null);
         if (targetIndex !== nextEmptyIndex) return 'INVALID_MOVE';
 
-        // 1. Placer le site sur le chemin
         const [playedSite] = player.sitesDeck.splice(siteIndex, 1);
         playedSite.ownerId = playerID;
         G.path[targetIndex] = playedSite;
 
-        // 2. Si on était en attente d'un déplacement
         if (G.awaitingSiteSelection) {
             G.awaitingSiteSelection = false;
-            G.players['0'].currentSiteIndex = targetIndex;
-            G.statusMessage = `Nouveau site révélé ! La compagnie avance en ${playedSite.name}.`;
+            const p0 = G.players['0'];
+            p0.currentSiteIndex = targetIndex;
 
-            // On ferme la phase Fellowship et on démarre la Shadow Phase
+            // 🟢 Calcul du Crépuscule au moment où le site est posé & révélé !
+            const siteCost =
+                Number(
+                    playedSite.twilightCost ?? (playedSite as any).twilight
+                ) || 0;
+            const companionsCount = p0.fellowshipArea
+                ? p0.fellowshipArea.length
+                : 0;
+            G.twilightPool += siteCost + companionsCount;
+
+            G.statusMessage = `Nouveau site révélé ! La compagnie avance en ${playedSite.name}. (+${siteCost + companionsCount} Crépuscule)`;
             events.endPhase();
         }
     },
@@ -161,7 +203,7 @@ export const LotrGame: Game<GameState> = {
         statusMessage: 'Phase de Communauté : préparez vos compagnons.',
         awaitingSiteSelection: false,
         path: [
-            DUMMY_SITES_PLAYER_0[0], // Site 1
+            DUMMY_SITES_PLAYER_0[0],
             null,
             null,
             null,
@@ -187,16 +229,20 @@ export const LotrGame: Game<GameState> = {
     }),
 
     phases: {
-        // 1. FELLOWSHIP PHASE (Joueur FP '0')
+        // 1. FELLOWSHIP PHASE
         fellowship: {
             start: true,
             next: 'shadow',
             turn: {
-                activePlayers: { value: { '0': 'play' } },
+                // 🟢 On autorise les 2 joueurs à agir pour permettre la pioche/mouvements de test
+                activePlayers: { value: { '0': 'play', '1': 'play' } },
             },
             moves: {
                 ...commonMoves,
-                playCard: ({ G, ctx, playerID }: any, cardIndex: number) => {
+                playCard: (
+                    { G, ctx, playerID }: MoveContext,
+                    cardIndex: number
+                ) => {
                     const targetId = getTargetPlayerId(playerID, ctx);
                     const player = G.players?.[targetId];
 
@@ -218,7 +264,7 @@ export const LotrGame: Game<GameState> = {
                 },
 
                 attachCard: (
-                    { G, ctx, playerID }: any,
+                    { G, ctx, playerID }: MoveContext,
                     cardIndex: number,
                     targetCardId: string
                 ) => {
@@ -231,11 +277,9 @@ export const LotrGame: Game<GameState> = {
 
                     const targetCard =
                         player.fellowshipArea.find(
-                            (c: any) => c.id === targetCardId
+                            (c) => c.id === targetCardId
                         ) ||
-                        player.supportArea.find(
-                            (c: any) => c.id === targetCardId
-                        );
+                        player.supportArea.find((c) => c.id === targetCardId);
 
                     if (!targetCard) return;
 
@@ -250,39 +294,105 @@ export const LotrGame: Game<GameState> = {
                     G.twilightPool += cost;
                 },
 
-                endFellowshipPhase: ({ G, ctx, playerID, events }: any) => {
+                endFellowshipPhase: ({
+                    G,
+                    ctx,
+                    playerID,
+                    events,
+                }: MoveContext) => {
                     advanceCompany(G, ctx, playerID, events);
                 },
             },
         },
 
-        // 2. SHADOW PHASE (Joueur Ombre '1')
+        // 2. SHADOW PHASE
         shadow: {
             turn: {
-                activePlayers: { value: { '1': 'play' } },
+                // 🟢 Même chose ici : les deux joueurs sont autorisés
+                activePlayers: { value: { '0': 'play', '1': 'play' } },
             },
-            next: ({ G }: any) => {
+            next: ({ G }: { G: GameState }) => {
                 const hasMinions = G.battlefield.some(
-                    (c: any) => c.kind === 'SHADOW'
+                    (c) => c.kind === 'SHADOW'
                 );
                 return hasMinions ? 'maneuver' : 'regroup';
             },
             moves: {
                 ...commonMoves,
-                playShadowCard: ({ G, ctx }: any, cardIndex: number) => {},
-                endShadowPhase: ({ events }: any) => {
+
+                playShadowCard: (
+                    { G, ctx, playerID }: MoveContext,
+                    cardIndex: number
+                ) => {
+                    const targetId = getTargetPlayerId(playerID, ctx);
+                    const player = G.players?.[targetId];
+
+                    if (!player || !player.hand) return;
+
+                    const card = player.hand[cardIndex];
+                    if (!card || card.kind !== 'SHADOW') return;
+
+                    const cost = Number(card.twilightCost) || 0;
+
+                    if (G.twilightPool < cost) return 'INVALID_MOVE';
+
+                    player.hand.splice(cardIndex, 1);
+                    G.twilightPool -= cost;
+
+                    if (card.type === 'MINION') {
+                        G.battlefield.push(card);
+                    } else {
+                        player.supportArea.push(card);
+                    }
+
+                    G.statusMessage = `L'Ombre joue ${card.name} (${cost} Crépuscule).`;
+                },
+
+                attachShadowCard: (
+                    { G, ctx, playerID }: MoveContext,
+                    cardIndex: number,
+                    targetMinionId: string
+                ) => {
+                    const targetId = getTargetPlayerId(playerID, ctx);
+                    const player = G.players?.[targetId];
+                    if (!player || !player.hand) return;
+
+                    const attachmentCard = player.hand[cardIndex];
+                    if (!attachmentCard || attachmentCard.kind !== 'SHADOW')
+                        return;
+
+                    const targetMinion = G.battlefield.find(
+                        (c) => c.id === targetMinionId
+                    );
+                    if (!targetMinion) return;
+
+                    const cost = Number(attachmentCard.twilightCost) || 0;
+                    if (G.twilightPool < cost) return 'INVALID_MOVE';
+
+                    player.hand.splice(cardIndex, 1);
+                    G.twilightPool -= cost;
+
+                    if (!targetMinion.attachments) {
+                        targetMinion.attachments = [];
+                    }
+                    targetMinion.attachments.push(attachmentCard);
+
+                    G.statusMessage = `L'Ombre attache ${attachmentCard.name} à ${targetMinion.name}.`;
+                },
+
+                endShadowPhase: ({ events }: MoveContext) => {
                     events.endPhase();
                 },
             },
         },
 
-        // Autres phases...
         maneuver: {
             next: 'archery',
             turn: { activePlayers: { value: { '0': 'play', '1': 'play' } } },
             moves: {
                 ...commonMoves,
-                endManeuverPhase: ({ events }: any) => events.endPhase(),
+                endManeuverPhase: ({ events }: MoveContext) =>
+                    events.endPhase(),
             },
         },
         archery: {
@@ -290,7 +400,7 @@ export const LotrGame: Game<GameState> = {
             turn: { activePlayers: { value: { '0': 'play', '1': 'play' } } },
             moves: {
                 ...commonMoves,
-                endArcheryPhase: ({ events }: any) => events.endPhase(),
+                endArcheryPhase: ({ events }: MoveContext) => events.endPhase(),
             },
         },
         assignment: {
@@ -298,7 +408,8 @@ export const LotrGame: Game<GameState> = {
             turn: { activePlayers: { value: { '0': 'play' } } },
             moves: {
                 ...commonMoves,
-                endAssignmentPhase: ({ events }: any) => events.endPhase(),
+                endAssignmentPhase: ({ events }: MoveContext) =>
+                    events.endPhase(),
             },
         },
         skirmish: {
@@ -306,17 +417,18 @@ export const LotrGame: Game<GameState> = {
             turn: { activePlayers: { value: { '0': 'play', '1': 'play' } } },
             moves: {
                 ...commonMoves,
-                endSkirmishPhase: ({ events }: any) => events.endPhase(),
+                endSkirmishPhase: ({ events }: MoveContext) =>
+                    events.endPhase(),
             },
         },
         regroup: {
-            turn: { activePlayers: { value: { '0': 'play' } } },
+            turn: { activePlayers: { value: { '0': 'play', '1': 'play' } } },
             moves: {
                 ...commonMoves,
-                moveNextSite: ({ G, ctx, playerID, events }: any) => {
+                moveNextSite: ({ G, ctx, playerID, events }: MoveContext) => {
                     advanceCompany(G, ctx, playerID, events);
                 },
-                endTurn: ({ events }: any) => {
+                endTurn: ({ events }: MoveContext) => {
                     events.endTurn();
                 },
             },

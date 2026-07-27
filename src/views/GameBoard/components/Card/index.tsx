@@ -6,6 +6,7 @@ import { useHoverCard } from '../../../../contexts/HoverCardContext';
 import type { CardSignet } from '../../../../game/types';
 import { FormattedText } from '../../../../utils/FormattedText';
 import { KeywordBadge } from '../KeywordBadge';
+import { useDrag } from '../../../../contexts/DragContext';
 
 interface CardProps {
     card: CardState;
@@ -44,6 +45,8 @@ export const Card: React.FC<CardProps> = ({
             setHoveredCard(null);
         }
     };
+
+    const { startDrag } = useDrag();
 
     const handleDragStart = (e: React.DragEvent) => {
         if (index === undefined) return;
