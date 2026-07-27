@@ -20,6 +20,9 @@ interface GameBoardProps {
     G: {
         twilightPool: number;
         currentSite: number;
+        statusMessage?: string;
+        awaitingSiteSelection?: boolean;
+        path: (SiteCardState | null)[];
         battlefield: CardState[];
         players: Record<
             string,
@@ -30,11 +33,14 @@ interface GameBoardProps {
                 discard: CardState[];
                 fellowshipArea: CardState[];
                 supportArea: CardState[];
+                currentSiteIndex: number; // 🟢 1. Ajout dans le type G
             }
         >;
     };
     ctx: {
         currentPlayer: string;
+        activePlayers?: Record<string, string>;
+        phase?: string;
     };
     moves: any;
 }
@@ -45,12 +51,12 @@ export const GameBoard: React.FC<GameBoardProps> = ({
     ctx,
     moves,
 }) => {
-    // ID du joueur connecté à cet écran (ex: "0" dans l'onglet FP, "1" dans l'onglet Ombre)
+    // ID du joueur connecté à cet écran ("0" ou "1")
     const myId = playerID || ctx.currentPlayer;
     const oppId = myId === '0' ? '1' : '0';
 
-    // 1. On vérifie si c'est actuellement au tour du joueur local d'agir
-    const isMyTurn = ctx.activePlayers?.[playerID] === 'play';
+    // Vérification de la main active
+    const isMyTurn = ctx.activePlayers?.[playerID || ''] === 'play';
 
     const me = G.players[myId] || {
         deck: [],
@@ -58,6 +64,8 @@ export const GameBoard: React.FC<GameBoardProps> = ({
         discard: [],
         fellowshipArea: [],
         supportArea: [],
+        sitesDeck: [],
+        currentSiteIndex: 0,
     };
     const opponent = G.players[oppId] || {
         deck: [],
@@ -65,19 +73,15 @@ export const GameBoard: React.FC<GameBoardProps> = ({
         discard: [],
         fellowshipArea: [],
         supportArea: [],
+        sitesDeck: [],
+        currentSiteIndex: 0,
     };
 
     const { hoveredData } = useHoverCard();
     const currentFaction = myId === '1' ? 'SHADOW' : 'FREE_PEOPLES';
 
-    // 1. Récupération du joueur dont c'est le tour
-    const activePlayerId = ctx.currentPlayer;
-    const currentPlayer = G.players[activePlayerId];
-
-    // 2. Sécurisation des tableaux (au cas où ils ne soient pas encore initialisés)
-    const handCards = currentPlayer?.handCards || [];
-    const sitesDeck = currentPlayer?.sitesDeck || [];
-    const discardPile = currentPlayer?.discardPile || [];
+    // 🟢 Extracteur de l'index de site FP (toujours sur le Joueur 0)
+    const currentSiteIndex = G.players['0']?.currentSiteIndex ?? 0;
 
     return (
         <DragProvider>
@@ -87,7 +91,11 @@ export const GameBoard: React.FC<GameBoardProps> = ({
                         {hoveredData.orientation === 'landscape' ? (
                             <SiteCard site={hoveredData.card} size="lg" />
                         ) : (
-                            <Card card={hoveredData.card} size="lg" />
+                            <Card 
+                                card={hoveredData.card} 
+                                size="lg" 
+                                currentSiteIndex={currentSiteIndex} 
+                            />
                         )}
                     </S.HoveredCardsZone>
                 )}
@@ -156,6 +164,7 @@ export const GameBoard: React.FC<GameBoardProps> = ({
                         <Battlefield
                             cards={G.battlefield}
                             playerRole={playerID as '0' | '1'}
+                            currentSiteIndex={currentSiteIndex} // 🟢 2. Transmis au Battlefield
                             onPlayShadowCard={(cardIndex) => {
                                 moves.playShadowCard(cardIndex);
                             }}
@@ -178,9 +187,7 @@ export const GameBoard: React.FC<GameBoardProps> = ({
                     path={G.path}
                     players={G.players}
                     onPlaySite={(siteId, targetIndex) => {
-                        // Appelle ton move game engine ici !
                         moves.playSite(siteId, targetIndex);
-                        // ou client.moves.playSite(siteId, targetIndex) selon ta config
                     }}
                 />
                 <Dock
@@ -189,15 +196,12 @@ export const GameBoard: React.FC<GameBoardProps> = ({
                     discardCount={me.discard?.length || 0}
                     handView={
                         <Hand
-                            playerRole={myId}
+                            playerRole={myId as '0' | '1'}
                             hand={me.hand || []}
                             deckCount={me.deck?.length || 0}
+                            currentSiteIndex={currentSiteIndex}
                             onDrawCard={() => {
-                                console.log(
-                                    '[UI] Clicking Draw Card button. My playerID prop is:',
-                                    playerID
-                                );
-                                moves.drawCard(); // ou moves.drawCard({ playerID }) selon comment est wrappé ton client
+                                moves.drawCard();
                             }}
                             onPlayCard={(idx) => moves.playCard(idx)}
                         />

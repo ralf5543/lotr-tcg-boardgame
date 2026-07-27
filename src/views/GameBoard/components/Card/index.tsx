@@ -13,6 +13,7 @@ interface CardProps {
     isPlayable?: boolean;
     isDraggable?: boolean;
     index?: number;
+    currentSiteIndex?: number;
     roaming?: number;
     signet?: CardSignet;
     size?: 'sm' | 'md' | 'lg';
@@ -26,31 +27,26 @@ export const Card: React.FC<CardProps> = ({
     isDraggable = false,
     index,
     isRingBearer: isRingBearerProp,
+    currentSiteIndex,
 }) => {
     const isShadow = card.kind === 'SHADOW';
     const { setHoveredCard } = useHoverCard();
 
-    // 🟢 Détection automatique via les keywords OU via la prop explicite
     const isRingBearer =
         isRingBearerProp ?? card.keywords?.includes('RING-BEARER' as any);
 
     const handleMouseEnter = () => {
-        if (size !== 'lg') {
-            setHoveredCard(card);
-        }
+        if (size !== 'lg') setHoveredCard(card);
     };
 
     const handleMouseLeave = () => {
-        if (size !== 'lg') {
-            setHoveredCard(null);
-        }
+        if (size !== 'lg') setHoveredCard(null);
     };
 
     const { startDrag } = useDrag();
 
     const handleDragStart = (e: React.DragEvent) => {
         if (index === undefined) return;
-
         const dragPayload = {
             cardIndex: index,
             cardId: card.id,
@@ -60,13 +56,11 @@ export const Card: React.FC<CardProps> = ({
             gameText: card.gameText,
             loreText: card.loreText,
         };
-
         e.dataTransfer.setData('text/plain', JSON.stringify(dragPayload));
         e.dataTransfer.effectAllowed = 'move';
         setHoveredCard(null);
     };
 
-    // --- INTERPRÉTEUR DE TRADUCTION ---
     const translatedType = TRANSLATIONS.type[card.type];
     const translatedSubtype = TRANSLATIONS.subtype[card.subtype];
     const translatedRace = card.race ? TRANSLATIONS.race[card.race] : null;
@@ -74,11 +68,6 @@ export const Card: React.FC<CardProps> = ({
     const translatedKeywords = card.keywords
         ?.map((kw) => TRANSLATIONS.keyword[kw].label || kw)
         .join(', ');
-
-    // Construction de la ligne de type (Ex: "Compagnon • Homme • Rôdeur")
-    const typeLineElements = [translatedType, translatedRace].filter(Boolean);
-
-    const typeLine = typeLineElements.join(' • ');
 
     const handlePointerDown = (e: React.PointerEvent) => {
         if (!isDraggable || index === undefined) return;
@@ -89,6 +78,29 @@ export const Card: React.FC<CardProps> = ({
 
     const isCharacter = ['COMPANION', 'ALLY', 'MINION'].includes(card.type);
 
+    // 🔴 Décomposition du test d'errance
+    const isRoaming =
+        typeof currentSiteIndex === 'number' &&
+        card.kind === 'SHADOW' &&
+        card.type === 'MINION' &&
+        typeof card.roaming === 'number' &&
+        card.roaming > currentSiteIndex + 1;
+
+    // 🔍 Log de contrôle si la carte possède la propriété roaming
+    if (card.roaming !== undefined) {
+        console.log(`[Card Check: ${card.title}]`, {
+            currentSiteIndex,
+            computedSiteNumber:
+                typeof currentSiteIndex === 'number'
+                    ? currentSiteIndex + 1
+                    : 'N/A',
+            kind: card.kind,
+            type: card.type,
+            roamingVal: card.roaming,
+            isRoamingResult: isRoaming,
+        });
+    }
+
     return (
         <S.CardContainer
             $culture={card.culture}
@@ -97,6 +109,7 @@ export const Card: React.FC<CardProps> = ({
             $isShadow={isShadow}
             $isPlayable={isPlayable}
             $size={size}
+            $isRoaming={isRoaming}
             onMouseEnter={handleMouseEnter}
             onMouseLeave={handleMouseLeave}
             onDragStart={isDraggable ? handleDragStart : undefined}
@@ -104,13 +117,17 @@ export const Card: React.FC<CardProps> = ({
             onPointerDown={handlePointerDown}
             data-draggable={isDraggable ? 'true' : undefined}
         >
-            {isCharacter && size === 'sm' && card.keywords && card.keywords.length > 0 && (
-            <S.KeywordsContainer>
-                {card.keywords.map((kw) => (
-                    <KeywordBadge key={kw} keyword={kw} size={18} />
-                ))}
-            </S.KeywordsContainer>
-        )}
+            {isCharacter &&
+                size === 'sm' &&
+                card.keywords &&
+                card.keywords.length > 0 && (
+                    <S.KeywordsContainer>
+                        {card.keywords.map((kw) => (
+                            <KeywordBadge key={kw} keyword={kw} size={18} />
+                        ))}
+                    </S.KeywordsContainer>
+                )}
+
             <S.CardHeader>
                 {size !== 'sm' && (
                     <S.TwilightBadge $isShadow={isShadow}>
@@ -178,7 +195,15 @@ export const Card: React.FC<CardProps> = ({
                 <S.VitalityBadge>{card.vitality}</S.VitalityBadge>
             )}
             {card.roaming !== undefined && (
-                <S.RoamingNumber>{card.roaming}</S.RoamingNumber>
+                <S.RoamingNumber $isRoaming={isRoaming}>
+                    {card.roaming}
+
+                    {isRoaming && size ==='md' && (
+                        <S.RoamingBadge title="Pénalité d'errance (+2 Crépuscule)">
+                            +2
+                        </S.RoamingBadge>
+                    )}
+                </S.RoamingNumber>
             )}
             {card.resistance !== undefined &&
                 !(card.signet && size === 'lg') && (

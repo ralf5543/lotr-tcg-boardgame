@@ -646,7 +646,7 @@ export const VitalityBadge = styled.span`
     font-family: LOTRIcons;
     z-index: 1;
 `;
-export const RoamingNumber = styled.span`
+export const RoamingNumber = styled.span<{ $isRoaming?: boolean }>`
     background-image: url('interface/icons/minion_site_number.webp');
     background-size: contain;
     background-repeat: no-repeat;
@@ -664,7 +664,29 @@ export const RoamingNumber = styled.span`
     font-size: 9px;
     z-index: 1;
     font-family: LOTRIcons;
+    ${({ $isRoaming }) =>
+        $isRoaming &&
+        `
+    filter: drop-shadow(0px 0px 5px red)
+                        drop-shadow(0px 0px 5px red)
+                        brightness(1.2);
+}
+  `}
 `;
+
+export const RoamingBadge = styled.span`
+    position: absolute;
+    top: 1px;
+    right: -25px;
+    background-color: darkred;
+    color: white;
+    font-weight: bold;
+    font-size: 9px;
+    padding: 2px 6px;
+    border-radius: 9999px;
+    z-index: 10;
+`;
+
 export const CardSignet = styled.span<{ $signet: string }>`
     background-image: ${(props) => getSignet(props.$signet)};
     background-size: contain;

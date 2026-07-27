@@ -10,7 +10,7 @@ export const FixedHandContainer = styled.div`
 `;
 
 // Le conteneur individuel de chaque carte pour gérer son inclinaison physique
-export const CardWrapper = styled.div<{ $angle: number; $translateY: number; $zIndex: number }>`
+export const CardWrapper = styled.div<{ $angle: number; $translateY: number; $zIndex: number; $isRoaming?: boolean }>`
   position: relative;
   margin: 0 -15px; /* Marge négative pour forcer le chevauchement d'éventail */
   transition: transform 0.25s cubic-bezier(0.25, 0.8, 0.25, 1), z-index 0.1s ease;

@@ -6,11 +6,14 @@ import { useDrag } from '../../../../contexts/DragContext';
 
 interface BattlefieldProps {
     cards: CardState[];
+    playerRole?: '0' | '1';
+    currentSiteIndex?: number; // 🟢 1. Ajout dans l'interface
     onPlayShadowCard?: (cardIndex: number) => void;
 }
 
 export const Battlefield: React.FC<BattlefieldProps> = ({
     cards,
+    currentSiteIndex, // 🟢 2. Récupération dans les props
     onPlayShadowCard,
 }) => {
     const { registerTarget, activeTargetId, dragged } = useDrag();
@@ -65,7 +68,13 @@ export const Battlefield: React.FC<BattlefieldProps> = ({
                     </S.InfoText>
                 )}
                 {cards.map((card, idx) => (
-                    <Card size="sm" key={card.id} card={card} index={idx} />
+                    <Card
+                        key={card.id}
+                        card={card}
+                        index={idx}
+                        size="sm"
+                        currentSiteIndex={currentSiteIndex} // 🟢 3. Transmis à la carte !
+                    />
                 ))}
             </S.CardRow>
         </S.Battlefield>

@@ -1,6 +1,7 @@
 import type { Game, Ctx } from 'boardgame.io';
 import type { GameState, CardState, PlayerState } from './types';
 import { CARDS_DATABASE, DUMMY_SITES_PLAYER_0 } from './cardsData';
+import { isMinionRoaming, getEffectiveTwilightCost } from '../utils/roamingDetection';
 
 interface MoveContext {
     G: GameState;
@@ -26,7 +27,10 @@ const createRealLotrDeck = (playerId: string): CardState[] => {
     const fullPool: CardState[] = [];
     for (let i = 0; i < 15; i++) {
         const Card = CARDS_DATABASE[i % CARDS_DATABASE.length];
-        fullPool.push({ ...Card, id: `p${playerId}-${Card.id}-${i}-${Math.random().toString(36).substring(2, 7)}` });
+        fullPool.push({
+            ...Card,
+            id: `p${playerId}-${Card.id}-${i}-${Math.random().toString(36).substring(2, 7)}`,
+        });
     }
     return shuffle(fullPool);
 };
@@ -326,18 +330,22 @@ export const LotrGame: Game<GameState> = {
                 ) => {
                     const targetId = getTargetPlayerId(playerID, ctx);
                     const player = G.players?.[targetId];
-
                     if (!player || !player.hand) return;
 
                     const card = player.hand[cardIndex];
                     if (!card || card.kind !== 'SHADOW') return;
 
-                    const cost = Number(card.twilightCost) || 0;
+                    // 🔴 Calcul du coût avec la pénalité d'errance
+                    const p0SiteIndex = G.players['0'].currentSiteIndex;
+                    const effectiveCost = getEffectiveTwilightCost(
+                        card,
+                        p0SiteIndex
+                    );
 
-                    if (G.twilightPool < cost) return 'INVALID_MOVE';
+                    if (G.twilightPool < effectiveCost) return 'INVALID_MOVE';
 
                     player.hand.splice(cardIndex, 1);
-                    G.twilightPool -= cost;
+                    G.twilightPool -= effectiveCost;
 
                     if (card.type === 'MINION') {
                         G.battlefield.push(card);
@@ -345,7 +353,8 @@ export const LotrGame: Game<GameState> = {
                         player.supportArea.push(card);
                     }
 
-                    G.statusMessage = `L'Ombre joue ${card.name} (${cost} Crépuscule).`;
+                    const wasRoaming = isMinionRoaming(card, p0SiteIndex);
+                    G.statusMessage = `L'Ombre joue ${card.name} (${effectiveCost} Crépuscule${wasRoaming ? ' dont +2 Errance' : ''}).`;
                 },
 
                 attachShadowCard: (

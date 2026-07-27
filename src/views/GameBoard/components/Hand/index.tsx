@@ -7,7 +7,8 @@ import { useDrag } from '../../../../contexts/DragContext';
 interface HandProps {
     hand: CardState[];
     deckCount: number;
-    playerRole: '0' | '1'; // 🟢 '0' = Free Peoples, '1' = Shadow
+    playerRole: '0' | '1'; // '0' = Free Peoples, '1' = Shadow
+    currentSiteIndex?: number; // 🟢 Reçu du GameBoard / Board principal
     onDrawCard: () => void;
     onPlayCard?: (index: number) => void;
 }
@@ -16,6 +17,7 @@ export const Hand: React.FC<HandProps> = ({
     hand,
     deckCount,
     playerRole,
+    currentSiteIndex, // 🟢 Récupération de la prop
     onDrawCard,
 }) => {
     const getFanStyles = (index: number, total: number) => {
@@ -39,7 +41,6 @@ export const Hand: React.FC<HandProps> = ({
     return (
         <S.FixedHandContainer>
             <S.ControlGroup>
-                {/* 🟢 La pioche est maintenant accessible librement sans restriction de phase */}
                 <S.GameButton $bgColor="#3498db" onClick={onDrawCard}>
                     🃏 Piocher ({deckCount})
                 </S.GameButton>
@@ -50,9 +51,6 @@ export const Hand: React.FC<HandProps> = ({
                     true
                 ) : (
                     hand.map((card, idx) => {
-                        // 🟢 RÈGLE DES COULEURS :
-                        // Si je joue FP ('0'), mes cartes FP sont en couleur.
-                        // Si je joue Shadow ('1'), mes cartes Shadow sont en couleur.
                         const isMatchingPlayerRole =
                             (playerRole === '0' && card.kind === 'FREE_PEOPLES') ||
                             (playerRole === '1' && card.kind === 'SHADOW');
@@ -90,10 +88,11 @@ export const Hand: React.FC<HandProps> = ({
                             >
                                 <Card
                                     card={card}
-                                    isPlayable={isMatchingPlayerRole} // 🟢 Filtre CSS basé sur l'allégeance du joueur
+                                    isPlayable={isMatchingPlayerRole}
                                     index={idx}
                                     isDraggable={true}
                                     size="md"
+                                    currentSiteIndex={currentSiteIndex} // 🟢 Transmis à Card !
                                 />
                             </S.CardWrapper>
                         );
