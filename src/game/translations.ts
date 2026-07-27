@@ -5,7 +5,10 @@ import type {
     CardRace,
     CardCulture,
     CardKeyword,
+    KeywordData
 } from './types';
+
+const unloadKeyword = 'Mot-clé générique, sans effet particulier. Il peut être désigné par d\'autres cartes pour déclencher des effets.';
 
 export const TRANSLATIONS = {
     phase: {
@@ -109,167 +112,163 @@ export const TRANSLATIONS = {
         },
         BATTLEGROUND: {
             label: 'Champ de Bataille',
-            description:
-                "Texte d'explication pour le mot-clé Champ de Bataille.",
+            description:  unloadKeyword,
         },
         BESIEGER: {
             label: 'Assiégeant',
-            description: "Texte d'explication pour le mot-clé Assiégeant.",
+            description:  unloadKeyword,
         },
         CORSAIR: {
             label: 'Pirate',
-            description: "Texte d'explication pour le mot-clé Pirate.",
+            description:  unloadKeyword,
         },
         DAMAGE: {
-            label: 'Dégâts + 1',
-            description: "Texte d'explication pour le mot-clé Dégâts + 1.",
+            label: 'Dégâts + X',
+            description: "Le personnage inflige X blessures supplémentaires en combat",
         },
         DEFENDER: {
-            label: 'Défenseur + 1',
-            description: "Texte d'explication pour le mot-clé Défenseur + 1.",
+            label: 'Défenseur + X',
+            description: "Le personnage peut être affecté à X séide supplémentaires pendant la phase d'affectation.",
         },
         DWELLING: {
             label: 'Résidence',
-            description: "Texte d'explication pour le mot-clé Résidence.",
+            description:  unloadKeyword,
         },
         EASTERLING: {
             label: 'Oriental',
-            description: "Texte d'explication pour le mot-clé Oriental.",
+            description:  unloadKeyword,
         },
         ENDURING: {
             label: 'Pugnace',
-            description: "Texte d'explication pour le mot-clé Pugnace.",
+            description: "Pour chaque blessure sur ce personnage, il a + 2 en Force.",
         },
         ENGINE: {
             label: 'Engin',
-            description: "Texte d'explication pour le mot-clé Engin.",
+            description:  unloadKeyword,
         },
         FIERCE: {
             label: 'Acharné',
-            description: "Texte d'explication pour le mot-clé Acharné.",
+            description: "Après la résolution de tous les combats, ce séide doit être affecté de nouveau à un personnage pour participer à un nouveau combat.",
         },
         FOREST: {
             label: 'Forêt',
-            description: "Texte d'explication pour le mot-clé Forêt.",
+            description:  unloadKeyword,
         },
         FORTIFICATION: {
             label: 'Fortification',
-            description: "Texte d'explication pour le mot-clé Fortification.",
+            description:  unloadKeyword,
         },
         HUNTER: {
-            label: 'Chasseur',
-            description: "Texte d'explication pour le mot-clé Chasseur.",
+            label: 'Chasseur X',
+            description: "Ce personnage a + X en Force s'il combat un adversaire sans le mot-clé Chasseur.",
         },
         KNIGHT: {
             label: 'Chevalier',
-            description: "Texte d'explication pour le mot-clé Chevalier.",
+            description:  unloadKeyword,
         },
         LURKER: {
             label: 'Embusqué',
-            description: "Texte d'explication pour le mot-clé Embusqué.",
+            description: "Les combats impliquant des séides avec ce mot-clé doivent être résolus en dernier.",
         },
         MACHINE: {
             label: 'Machine',
-            description: "Texte d'explication pour le mot-clé Machine.",
+            description:  unloadKeyword,
         },
         MARSH: {
             label: 'Marais',
-            description: "Texte d'explication pour le mot-clé Marais.",
+            description:  unloadKeyword,
         },
         MOUNTAIN: {
             label: 'Montagne',
-            description: "Texte d'explication pour le mot-clé Montagne.",
+            description: unloadKeyword,
         },
         MUSTER: {
             label: 'Rassembleur',
-            description: "Texte d'explication pour le mot-clé Rassembleur.",
+            description: "Au début de la phase de Ralliement, chaque joueur peut défaisser un nombre de cartes égal au nombre de personnages Rassembleurs qu'ils possèdent, puis piocher le même nombre de cartes.",
         },
         PIPEWEED: {
             label: 'Herbe à pipe',
-            description: "Texte d'explication pour le mot-clé Herbe à pipe.",
+            description: unloadKeyword,
         },
         PLAINS: {
             label: 'Plaines',
-            description: "Texte d'explication pour le mot-clé Plaines.",
+            description: unloadKeyword,
         },
         RANGER: {
             label: 'Rôdeur',
-            description: "Texte d'explication pour le mot-clé Rôdeur.",
+            description: unloadKeyword,
         },
         'RING-BEARER': {
             label: "Porteur de l'Anneau",
-            description:
-                "Texte d'explication pour le mot-clé Porteur de l'Anneau.",
+            description: "Ce personnage peut porter l'Anneau Unique.",
         },
         'RING-BOUND': {
             label: "Associé à l'Anneau",
-            description:
-                "Texte d'explication pour le mot-clé Associé à l'Anneau.",
+            description: unloadKeyword,
         },
         RIVER: {
             label: 'Rivière',
-            description: "Texte d'explication pour le mot-clé Rivière.",
+            description: unloadKeyword,
         },
         SEARCH: {
             label: 'Recherche',
-            description: "Texte d'explication pour le mot-clé Recherche.",
+            description: unloadKeyword,
         },
         SOUTHRON: {
             label: 'Suderon',
-            description: "Texte d'explication pour le mot-clé Suderon.",
+            description: unloadKeyword,
         },
         SPELL: {
             label: 'Sort',
-            description: "Texte d'explication pour le mot-clé Sort.",
+            description: unloadKeyword,
         },
         STEALTH: {
             label: 'Dissimulation',
-            description: "Texte d'explication pour le mot-clé Dissimulation.",
+            description: unloadKeyword,
         },
         TALE: {
             label: 'Récit',
-            description: "Texte d'explication pour le mot-clé Récit.",
+            description: unloadKeyword,
         },
         TENTACLE: {
             label: 'Tentacule',
-            description: "Texte d'explication pour le mot-clé Tentacule.",
+            description: unloadKeyword,
         },
         TOIL: {
-            label: 'Éreintement',
-            description: "Texte d'explication pour le mot-clé Éreintement.",
+            label: 'Éreintement X',
+            description: "Pour chaque personnage différent (de la même culture que la carte avec Éreintement) affaibli, le coût de la carte est réduit de X.",
         },
         TRACKER: {
             label: 'Traqueur',
-            description: "Texte d'explication pour le mot-clé Traqueur.",
+            description: unloadKeyword,
         },
         TWILIGHT: {
             label: 'Crépusculaire',
-            description: "Texte d'explication pour le mot-clé Crépusculaire.",
+            description: unloadKeyword,
         },
         UNDERGROUND: {
             label: 'Souterrain',
-            description: "Texte d'explication pour le mot-clé Souterrain.",
+            description: unloadKeyword,
         },
         UNHASTY: {
             label: 'Peu hâtif',
-            description: "Texte d'explication pour le mot-clé Peu hâtif.",
+            description: "Les Ents avec ce mot-clé ne peuvent pas participer au combat, sauf si le combat a lieu sur leur site natif, ou si un effet les autorise expressément.",
         },
         VALIANT: {
             label: 'Vaillant',
-            description: "Texte d'explication pour le mot-clé Vaillant.",
+            description: unloadKeyword,
         },
         VILLAGER: {
             label: 'Villageois',
-            description: "Texte d'explication pour le mot-clé Villageois.",
+            description: unloadKeyword,
         },
         'WARG-RIDER': {
             label: 'Chevaucheur de ouague',
-            description:
-                "Texte d'explication pour le mot-clé Chevaucheur de ouague.",
+            description: unloadKeyword,
         },
         WEATHER: {
             label: 'Climat',
-            description: "Texte d'explication pour le mot-clé Climat.",
+           description: unloadKeyword,
         },
     } as Record<CardKeyword, KeywordData>,
 };

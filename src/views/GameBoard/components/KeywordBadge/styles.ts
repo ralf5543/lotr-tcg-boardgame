@@ -20,6 +20,11 @@ export const BadgeContainer = styled.span`
 
 export const BadgeImage = styled.img`
     object-fit: contain;
+    transition: filter .3s;
+
+    &:hover {
+        filter: invert(1);
+    }
 `;
 
 export const TooltipPortalContainer = styled.div<{ $top: number; $left: number }>`

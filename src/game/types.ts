@@ -165,3 +165,8 @@ export interface GameState {
     battlefield: CardState[];
     players: Record<string, PlayerState>;
 }
+
+export interface KeywordData {
+    label: string;
+    description: string;
+}
