@@ -230,7 +230,7 @@ export const CardContainer = styled.div<{
 
             ${CardTitles} {
                 max-width: 86px;
-                
+
                 ${isForSupportArea(props.$type) &&
                 css`
                     inset: 0px 0px 0px 2px;
@@ -319,10 +319,12 @@ export const CardContainer = styled.div<{
             }
 
             ${RoamingNumber} {
-                font-size: 20px;
                 width: 39px;
-                inset-block-start: 332px;
-                inset-inline-start: 14px;
+                inset-block-start: 116px;
+                inset-inline-start: 50%;
+                transform: translateX(-50%);
+                font-size: 20px;
+                background-position: 1px 0px;
             }
         `}
 

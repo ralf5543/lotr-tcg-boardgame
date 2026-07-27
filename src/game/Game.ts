@@ -22,17 +22,17 @@ const shuffle = <T>(array: T[]): T[] => {
     return arr;
 };
 
-const createRealLotrDeck = (): CardState[] => {
+const createRealLotrDeck = (playerId: string): CardState[] => {
     const fullPool: CardState[] = [];
     for (let i = 0; i < 15; i++) {
         const Card = CARDS_DATABASE[i % CARDS_DATABASE.length];
-        fullPool.push({ ...Card, id: `${Card.id}-${i}` });
+        fullPool.push({ ...Card, id: `p${playerId}-${Card.id}-${i}-${Math.random().toString(36).substring(2, 7)}` });
     }
     return shuffle(fullPool);
 };
 
-const createInitialPlayer = (): PlayerState => ({
-    deck: createRealLotrDeck(),
+const createInitialPlayer = (playerId: string): PlayerState => ({
+    deck: createRealLotrDeck(playerId),
     hand: [],
     discard: [],
     fellowshipArea: [],
@@ -216,12 +216,12 @@ export const LotrGame: Game<GameState> = {
         battlefield: [],
         players: {
             '0': {
-                ...createInitialPlayer(),
+                ...createInitialPlayer('0'),
                 sitesDeck: DUMMY_SITES_PLAYER_0.slice(1),
                 currentSiteIndex: 0,
             },
             '1': {
-                ...createInitialPlayer(),
+                ...createInitialPlayer('1'),
                 sitesDeck: DUMMY_SITES_PLAYER_0.slice(1),
                 currentSiteIndex: 0,
             },
