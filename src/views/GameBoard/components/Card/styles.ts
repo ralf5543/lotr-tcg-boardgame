@@ -1,125 +1,5 @@
 import styled, { css } from 'styled-components';
 
-const getSignet = (signet: string): string => {
-    switch (signet) {
-        case 'ARAGORN':
-            return 'url(interface/icons/signet_aragorn.webp)';
-        case 'FRODO':
-            return 'url(interface/icons/signet_frodo.webp)';
-        case 'GANDALF':
-            return 'url(interface/icons/signet_gandalf.webp)';
-        case 'THEODEN':
-            return 'url(interface/icons/signet_theoden.webp)';
-        default:
-            return '';
-    }
-};
-const getCultureBackground = (culture: string, type: string, kind: string) => {
-    if (culture === 'GONDOR') {
-        if (type === 'COMPANION' || type === 'ALLY') {
-            return 'url(interface/cards_backgrounds/gondor_character.webp)';
-        } else return 'url(interface/cards_backgrounds/gondor_modifier.webp)';
-    }
-    if (culture === 'SHIRE') {
-        if (type === 'COMPANION' || type === 'ALLY') {
-            return 'url(interface/cards_backgrounds/shire_character.webp)';
-        } else return 'url(interface/cards_backgrounds/shire_modifier.webp)';
-    }
-    if (culture === 'ELVEN') {
-        if (type === 'COMPANION' || type === 'ALLY') {
-            return 'url(interface/cards_backgrounds/elven_character.webp)';
-        } else return 'url(interface/cards_backgrounds/elven_modifier.webp)';
-    }
-    if (culture === 'DWARVEN') {
-        if (type === 'COMPANION' || type === 'ALLY') {
-            return 'url(interface/cards_backgrounds/dwarven_character.webp)';
-        } else return 'url(interface/cards_backgrounds/dwarven_modifier.webp)';
-    }
-    if (culture === 'GANDALF') {
-        if (type === 'COMPANION' || type === 'ALLY') {
-            return 'url(interface/cards_backgrounds/gandalf_character.webp)';
-        } else return 'url(interface/cards_backgrounds/gandalf_modifier.webp)';
-    }
-    if (culture === 'ROHAN') {
-        if (type === 'COMPANION' || type === 'ALLY') {
-            return 'url(interface/cards_backgrounds/rohan_character.webp)';
-        } else return 'url(interface/cards_backgrounds/rohan_modifier.webp)';
-    }
-    if (culture === 'GOLLUM') {
-        if (type === 'COMPANION' || type === 'ALLY') {
-            return 'url(interface/cards_backgrounds/gollum_freeps_character.webp)';
-        } else if (type === 'MINION') {
-            return 'url(interface/cards_backgrounds/gollum_shadow_character.webp)';
-        } else if (kind === 'FREE_PEOPLES') {
-            return 'url(interface/cards_backgrounds/gollum_freeps_modifier.webp)';
-        } else
-            return 'url(interface/cards_backgrounds/gollum_shadow_modifier.webp)';
-    }
-    if (culture === 'MORIA') {
-        if (type === 'MINION') {
-            return 'url(interface/cards_backgrounds/moria_character.webp)';
-        } else return 'url(interface/cards_backgrounds/moria_modifier.webp)';
-    }
-    if (culture === 'ISENGARD') {
-        if (type === 'MINION') {
-            return 'url(interface/cards_backgrounds/isengard_character.webp)';
-        } else return 'url(interface/cards_backgrounds/isengard_modifier.webp)';
-    }
-    if (culture === 'SAURON') {
-        if (type === 'MINION') {
-            return 'url(interface/cards_backgrounds/sauron_character.webp)';
-        } else return 'url(interface/cards_backgrounds/sauron_modifier.webp)';
-    }
-    if (culture === 'RINGWRAITH') {
-        if (type === 'MINION') {
-            return 'url(interface/cards_backgrounds/ringwraith_character.webp)';
-        } else
-            return 'url(interface/cards_backgrounds/ringwraith_modifier.webp)';
-    }
-    if (culture === 'DUNLAND') {
-        if (type === 'MINION') {
-            return 'url(interface/cards_backgrounds/dunland_character.webp)';
-        } else return 'url(interface/cards_backgrounds/dunland_modifier.webp)';
-    }
-    if (culture === 'ORC') {
-        if (type === 'MINION') {
-            return 'url(interface/cards_backgrounds/orc_character.webp)';
-        } else return 'url(interface/cards_backgrounds/orc_modifier.webp)';
-    }
-    if (culture === 'URUK-HAI') {
-        if (type === 'MINION') {
-            return 'url(interface/cards_backgrounds/uruk_character.webp)';
-        } else return 'url(interface/cards_backgrounds/uruk_modifier.webp)';
-    }
-    if (culture === 'MEN') {
-        if (type === 'MINION') {
-            return 'url(interface/cards_backgrounds/men_character.webp)';
-        } else return 'url(interface/cards_backgrounds/men_modifier.webp)';
-    }
-};
-const getCultureSmallBackground = (culture: string): string => {
-    switch (culture) {
-        case 'GONDOR':
-            return 'url(interface/cultures_backgrounds/background_gondor.webp)';
-        case 'SHIRE':
-            return 'url(interface/cultures_backgrounds/background_shire.webp)';
-        case 'ISENGARD':
-            return 'url(interface/cultures_backgrounds/background_isengard.webp)';
-        case 'RINGWRAITH':
-            return 'url(interface/cultures_backgrounds/background_wraith.webp)';
-        case 'ELVEN':
-            return 'url(interface/cultures_backgrounds/background_elf.webp)';
-        case 'DWARVEN':
-            return 'url(interface/cultures_backgrounds/background_dwarf.webp)';
-        case 'MORIA':
-            return 'url(interface/cultures_backgrounds/background_moria.webp)';
-        case 'SAURON':
-            return 'url(interface/cultures_backgrounds/background_sauron.webp)';
-        default:
-            return '';
-    }
-};
-
 const isNotCharacter = (type?: string) =>
     Boolean(type) &&
     type !== 'COMPANION' &&
@@ -148,8 +28,26 @@ export const CardContainer = styled.div<{
 }>`
     aspect-ratio: 1/1.39;
     width: 130px;
-    background-image: ${(props) =>
-        getCultureBackground(props.$culture, props.$type, props.$kind)};
+    background-image: ${(props) => {
+        if (props.$culture === 'GOLLUM') {
+            if (props.$type === 'COMPANION' || props.$type === 'ALLY') {
+                return `url(interface/cards_backgrounds/${props.$culture}_freeps_character.webp)`;
+            } else if (props.$type === 'MINION') {
+                return `url(interface/cards_backgrounds/${props.$culture}_shadow_character.webp)`;
+            } else if (props.$kind === 'FREE_PEOPLES') {
+                return `url(interface/cards_backgrounds/${props.$culture}_freeps_modifier.webp)`;
+            } else {
+                return `url(interface/cards_backgrounds/${props.$culture}_shadow_modifier.webp)`;
+            }
+        } else {
+            if (props.$type === 'COMPANION' || props.$type === 'ALLY') {
+                return `url(interface/cards_backgrounds/${props.$culture}_character.webp)`;
+            } else {
+                return `url(interface/cards_backgrounds/${props.$culture}_modifier.webp)`;
+            }
+        }
+    }};
+
     background-size: cover;
     background-repeat: no-repeat;
     background-position: center;
@@ -180,7 +78,7 @@ export const CardContainer = styled.div<{
             border-radius: 8px 8px 49px 49px;
             border: 6px solid transparent;
             outline: 1px solid black;
-            background-image: ${getCultureSmallBackground(props.$culture)};
+            background-image: ${`url(interface/cultures_backgrounds/background_${props.$culture}.webp)`};
             background-size: auto;
             background-repeat: repeat;
             filter: drop-shadow(0 3px 4px rgba(0, 0, 0, 1));
@@ -688,7 +586,7 @@ export const RoamingBadge = styled.span`
 `;
 
 export const CardSignet = styled.span<{ $signet: string }>`
-    background-image: ${(props) => getSignet(props.$signet)};
+    background-image: ${(props) => `url(interface/icons/signet_${props.$signet}.webp)`}; 
     background-size: contain;
     background-repeat: no-repeat;
     background-position: center;

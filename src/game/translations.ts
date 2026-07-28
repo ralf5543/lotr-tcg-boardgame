@@ -89,6 +89,7 @@ export const TRANSLATIONS = {
         MEN: 'Hommes',
         MORIA: 'Moria',
         ORC: 'Orque',
+        RAIDER: 'RAIDER',
         RINGWRAITH: 'Spectre',
         ROHAN: 'Rohan',
         SAURON: 'Sauron',

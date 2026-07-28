@@ -107,6 +107,7 @@ export type CardCulture =
     | 'MEN'
     | 'MORIA'
     | 'ORC'
+    | 'RAIDER'
     | 'RINGWRAITH'
     | 'ROHAN'
     | 'SAURON'

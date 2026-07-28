@@ -110,10 +110,6 @@ export const advanceCompany = (
 const commonMoves = {
     // 🟢 La pioche s'adresse au joueur qui clique (playerID)
     drawCard: ({ G, ctx, playerID }: MoveContext) => {
-        console.log('[drawCard] Called by playerID:', playerID);
-        console.log('[drawCard] Current player in ctx:', ctx.currentPlayer);
-        console.log('[drawCard] Active players in ctx:', ctx.activePlayers);
-        console.log('[drawCard] Current phase:', ctx.phase);
 
         const targetId = getTargetPlayerId(playerID, ctx);
         const player = G.players[targetId];
