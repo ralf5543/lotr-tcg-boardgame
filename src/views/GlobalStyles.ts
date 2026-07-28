@@ -71,7 +71,7 @@ img {
   display: inline-block;
 }
 
-html, body, button, a, [draggable="true"], *, *::before, *::after {
+html, body, button, a, [data-draggable="true"], *, *::before, *::after {
   cursor: none !important;
 }
 `;

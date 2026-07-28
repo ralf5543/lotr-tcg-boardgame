@@ -113,7 +113,6 @@ export const Card: React.FC<CardProps> = ({
             onMouseEnter={handleMouseEnter}
             onMouseLeave={handleMouseLeave}
             onDragStart={isDraggable ? handleDragStart : undefined}
-            draggable={false}
             onPointerDown={handlePointerDown}
             data-draggable={isDraggable ? 'true' : undefined}
         >
@@ -151,7 +150,6 @@ export const Card: React.FC<CardProps> = ({
                 <S.Visual
                     src={card.imageUrl}
                     alt={card.title}
-                    draggable={false}
                 />
             </S.VisualContainer>
 
@@ -174,7 +172,7 @@ export const Card: React.FC<CardProps> = ({
             )}
 
             <S.TextContainer>
-                {translatedKeywords && (
+                {size !== 'sm' && translatedKeywords && (
                     <S.KeywordText>{translatedKeywords}.</S.KeywordText>
                 )}
 
@@ -198,7 +196,7 @@ export const Card: React.FC<CardProps> = ({
                 <S.RoamingNumber $isRoaming={isRoaming}>
                     {card.roaming}
 
-                    {isRoaming && size ==='md' && (
+                    {isRoaming && size === 'md' && (
                         <S.RoamingBadge title="Pénalité d'errance (+2 Crépuscule)">
                             +2
                         </S.RoamingBadge>
@@ -213,6 +211,14 @@ export const Card: React.FC<CardProps> = ({
                 )}
             {card.signet !== undefined && (
                 <S.CardSignet $signet={card.signet} />
+            )}
+            {card.subtype !== undefined && size === 'sm' && (
+                <S.AttachmentSubtype
+                    src={`/interface/pictos/${card.subtype}.webp`}
+                    alt={card.subtype}
+                    draggable={false}
+                    width="16px"
+                />
             )}
         </S.CardContainer>
     );

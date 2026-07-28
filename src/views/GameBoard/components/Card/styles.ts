@@ -1,4 +1,5 @@
 import styled, { css } from 'styled-components';
+import type { CardType } from '../../../../game/types';
 
 const isNotCharacter = (type?: string) =>
     Boolean(type) &&
@@ -14,6 +15,15 @@ const isForSupportArea = (type?: string) => {
         type === 'FOLLOWER' ||
         type === 'CONDITION_SUPPORT' ||
         type === 'ARTIFACT_SUPPORT'
+    );
+};
+
+const isAttachedToCharacter = (type?: string) => {
+    if (!type) return false;
+    return (
+        type === 'POSSESSION_CHARACTER' ||
+        type === 'ARTIFACT_CHARACTER' ||
+        type === 'CONDITION_CHARACTER'
     );
 };
 
@@ -224,6 +234,38 @@ export const CardContainer = styled.div<{
                 font-size: 20px;
                 background-position: 1px 0px;
             }
+
+            /* ======------ Attachment cards (Possessions, Artifacts, Conditions attachées) ------====== */
+            ${isAttachedToCharacter(props.$type) &&
+            css`
+                aspect-ratio: initial;
+                border: 0;
+                height: 100%;
+                border-radius: 0;
+                outline: none;
+
+                &::after {
+                    content: none;
+                }
+
+                /* Masquage de tout le superflu pour ne garder que le visuel/fond d'attachement */
+                ${CardHeader},
+                ${TextContainer},
+                ${CardTypes},
+                ${CardSignet},
+                ${CardResistance},
+                ${RoamingNumber},
+                ${KeywordsContainer},
+                ${VisualContainer} {
+                    display: none;
+                }
+
+                ${VisualContainer} {
+                    inset: 0;
+                    height: 100%;
+                    border-radius: 6px;
+                }
+            `}
         `}
 
     /* ======------ Large cards ------====== */
@@ -524,6 +566,7 @@ export const StrengthBadge = styled.span`
     inset-inline-start: 3px;
     font-family: LOTRIcons;
     z-index: 1;
+    pointer-events: none
 `;
 export const VitalityBadge = styled.span`
     background-image: url('interface/icons/icon_vitality.png');
@@ -543,6 +586,7 @@ export const VitalityBadge = styled.span`
     inset-inline-start: 8px;
     font-family: LOTRIcons;
     z-index: 1;
+    pointer-events: none
 `;
 export const RoamingNumber = styled.span<{ $isRoaming?: boolean }>`
     background-image: url('interface/icons/minion_site_number.webp');
@@ -568,7 +612,6 @@ export const RoamingNumber = styled.span<{ $isRoaming?: boolean }>`
     filter: drop-shadow(0px 0px 5px red)
                         drop-shadow(0px 0px 5px red)
                         brightness(1.2);
-}
   `}
 `;
 
@@ -586,7 +629,8 @@ export const RoamingBadge = styled.span`
 `;
 
 export const CardSignet = styled.span<{ $signet: string }>`
-    background-image: ${(props) => `url(interface/icons/signet_${props.$signet}.webp)`}; 
+    background-image: ${(props) =>
+        `url(interface/icons/signet_${props.$signet}.webp)`};
     background-size: contain;
     background-repeat: no-repeat;
     background-position: center;
@@ -624,4 +668,16 @@ export const KeywordsContainer = styled.div`
     z-index: 2;
     inset-block-start: 20px;
     inset-inline-end: -11px;
+`;
+export const AttachmentSubtype = styled.img`
+    position: absolute;
+    z-index: 2;
+    inset-block-start: 5px;
+    inset-inline-start: 3px;
+    background-color: white;
+    border-radius: 50%;
+    padding: 2px;
+    width: 20px;
+    border: 1px solid black;
+    filter: invert(1);
 `;

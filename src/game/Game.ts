@@ -1,20 +1,44 @@
-import type { Game, Ctx } from 'boardgame.io';
+import type { Game, Ctx, EventsAPI } from 'boardgame.io';
 import type { GameState, CardState, PlayerState } from './types';
 import { CARDS_DATABASE, DUMMY_SITES_PLAYER_0 } from './cardsData';
-import { isMinionRoaming, getEffectiveTwilightCost } from '../utils/roamingDetection';
+import {
+    isMinionRoaming,
+    getEffectiveTwilightCost,
+} from '../utils/roamingDetection';
 
-interface MoveContext {
+// Typage strict de l'API Events étendue pour boardgame.io
+export interface LotrEventsAPI extends EventsAPI {
+    setPhase?: (phase: string) => void;
+    endPhase?: () => void;
+    setActivePlayers?: (config: { value: Record<string, string> }) => void;
+    endTurn?: () => void;
+}
+
+// Typage complet du contexte injecté dans chaque move
+export interface LotrMoveContext {
     G: GameState;
     ctx: Ctx;
     playerID: string;
-    events: {
-        endPhase: () => void;
-        setActivePlayers: (config: { value: Record<string, string> }) => void;
-        endTurn: () => void;
-    };
+    events?: LotrEventsAPI;
 }
 
-const shuffle = <T>(array: T[]): T[] => {
+// Interfaces pour les payloads de moves complexes
+interface ReorderPayload {
+    fromIndex?: number;
+    toIndex?: number;
+    oldIndex?: number;
+    newIndex?: number;
+}
+
+interface TransferPayload {
+    attachmentId: string;
+    fromCharacterId?: string;
+    toCharacterId: string;
+}
+
+type DevPresetType = 'ARCHERY_TEST' | 'SKIRMISH_TEST';
+
+const shuffle = <T,>(array: T[]): T[] => {
     const arr = [...array];
     for (let i = arr.length - 1; i > 0; i--) {
         const j = Math.floor(Math.random() * (i + 1));
@@ -54,33 +78,26 @@ const getTargetPlayerId = (playerID: string | undefined, ctx: Ctx): string => {
 
 export const advanceCompany = (
     G: GameState,
-    ctx: Ctx,
-    playerID: string,
-    events: MoveContext['events']
+    _ctx: Ctx,
+    _playerID: string,
+    events?: LotrEventsAPI
 ) => {
     const p0 = G.players['0'];
     const nextIndex = p0.currentSiteIndex + 1;
 
-    if (nextIndex >= 9) return; // Limite du chemin atteinte
+    if (nextIndex >= 9) return;
 
-    // Helper pour calculer et ajouter le Crépuscule du nouveau site
     const applyTwilightForSite = (siteIndex: number) => {
         const targetSite = G.path[siteIndex];
         if (!targetSite) return;
 
-        // 1. Coût du site (supporte twilightCost ou twilight)
-        const siteCost =
-            Number(targetSite.twilightCost ?? (targetSite as any).twilight) ||
-            0;
+        const siteCost = Number(targetSite.twilightCost) || 0;
 
-        // 2. Nombre de compagnons sur le plateau
         const companionsCount = p0.fellowshipArea
             ? p0.fellowshipArea.length
             : 0;
 
         const totalAdded = siteCost + companionsCount;
-
-        // 3. Ajout au Twilight Pool
         G.twilightPool += totalAdded;
 
         console.log(
@@ -88,29 +105,83 @@ export const advanceCompany = (
         );
     };
 
-    // CAS A : Le site existe déjà sur le chemin ! On avance directement.
     if (G.path[nextIndex] !== null) {
         p0.currentSiteIndex = nextIndex;
-        applyTwilightForSite(nextIndex); // 🟢 Calcul automatique du Crépuscule
+        applyTwilightForSite(nextIndex);
 
         G.statusMessage = `La compagnie avance au site ${nextIndex + 1} : ${G.path[nextIndex]?.name}`;
-        events.endPhase(); // Passe à la Shadow phase
-    }
-    // CAS B : Case vide ! On demande au joueur Ombre de poser son site.
-    else {
+        events?.endPhase?.();
+    } else {
         G.awaitingSiteSelection = true;
         G.statusMessage =
             "En attente du joueur de l'Ombre pour poser le prochain site...";
 
-        events.setActivePlayers({ value: { '1': 'play' } });
+        events?.setActivePlayers?.({ value: { '1': 'play' } });
     }
 };
 
-// 🛠️ MOVES COMMUNS
+// 🛠️ MOVES COMMUNS STRICTEMENT TYPÉS
 const commonMoves = {
-    // 🟢 La pioche s'adresse au joueur qui clique (playerID)
-    drawCard: ({ G, ctx, playerID }: MoveContext) => {
+    // 🛠️ MOVES DEV
+    devSetTwilight: ({ G }: LotrMoveContext, amount: number) => {
+        G.twilightPool = Math.max(0, amount);
+    },
 
+    devSetPhase: ({ events }: LotrMoveContext, targetPhase: string) => {
+        if (events) {
+            events.setActivePlayers?.({ value: { '0': 'play', '1': 'play' } });
+            events.setPhase?.(targetPhase);
+        }
+    },
+
+    devForceEndPhase: ({ events }: LotrMoveContext) => {
+        if (events) {
+            events.setActivePlayers?.({ value: { '0': 'play', '1': 'play' } });
+            events.endPhase?.();
+        }
+    },
+
+    devLoadPreset: (
+        { G }: LotrMoveContext,
+        presetType: DevPresetType
+    ) => {
+        if (presetType === 'ARCHERY_TEST') {
+            G.twilightPool = 8;
+            G.players['0'].fellowshipArea = [
+                {
+                    id: 'dev-legolas',
+                    name: 'Legolas',
+                    kind: 'FREE_PEOPLES',
+                    type: 'COMPANION',
+                    twilightCost: 2,
+                    strength: 6,
+                    vitality: 3,
+                    culture: 'ELVEN',
+                    gameText: 'Archerie test card',
+                    title: 'efsfsdf',
+                    isUnique: false
+                },
+            ];
+            G.battlefield = [
+                {
+                    id: 'dev-nazgul',
+                    name: 'Ukursh, Archor',
+                    kind: 'SHADOW',
+                    type: 'MINION',
+                    twilightCost: 4,
+                    strength: 9,
+                    vitality: 2,
+                    culture: 'RINGWRAITH',
+                    gameText: 'Archerie test card',
+                    title: 'efsfsdf',
+                    isUnique: false
+                },
+            ];
+            G.statusMessage = '[DEV] Preset Archerie chargé !';
+        }
+    },
+
+    drawCard: ({ G, ctx, playerID }: LotrMoveContext) => {
         const targetId = getTargetPlayerId(playerID, ctx);
         const player = G.players[targetId];
 
@@ -123,13 +194,8 @@ const commonMoves = {
     },
 
     reorderFellowship: (
-        { G, ctx, playerID }: MoveContext,
-        payload: {
-            fromIndex?: number;
-            toIndex?: number;
-            oldIndex?: number;
-            newIndex?: number;
-        }
+        { G, ctx, playerID }: LotrMoveContext,
+        payload: ReorderPayload
     ) => {
         const targetId = getTargetPlayerId(playerID, ctx);
         const fromIndex = payload?.fromIndex ?? payload?.oldIndex;
@@ -157,7 +223,7 @@ const commonMoves = {
     },
 
     playSite: (
-        { G, playerID, events }: MoveContext,
+        { G, playerID, events }: LotrMoveContext,
         siteId: string,
         targetIndex: number
     ) => {
@@ -179,19 +245,57 @@ const commonMoves = {
             const p0 = G.players['0'];
             p0.currentSiteIndex = targetIndex;
 
-            // 🟢 Calcul du Crépuscule au moment où le site est posé & révélé !
-            const siteCost =
-                Number(
-                    playedSite.twilightCost ?? (playedSite as any).twilight
-                ) || 0;
+            const siteCost = Number(playedSite.twilightCost) || 0;
             const companionsCount = p0.fellowshipArea
                 ? p0.fellowshipArea.length
                 : 0;
             G.twilightPool += siteCost + companionsCount;
 
             G.statusMessage = `Nouveau site révélé ! La compagnie avance en ${playedSite.name}. (+${siteCost + companionsCount} Crépuscule)`;
-            events.endPhase();
+            events?.endPhase?.();
         }
+    },
+
+    transferAttachment: (
+        { G, ctx, playerID }: LotrMoveContext,
+        payload: TransferPayload
+    ) => {
+        const { attachmentId, fromCharacterId, toCharacterId } = payload;
+        const targetId = getTargetPlayerId(playerID, ctx);
+        const player = G.players?.[targetId];
+        if (!player) return;
+
+        const allPossibleHosts: CardState[] = [
+            ...(player.fellowshipArea || []),
+            ...(player.supportArea || []),
+            ...(G.battlefield || []),
+        ];
+
+        const sourceHost = fromCharacterId
+            ? allPossibleHosts.find((c) => c.id === fromCharacterId)
+            : allPossibleHosts.find((c) =>
+                  c.attachments?.some((a) => a.id === attachmentId)
+              );
+
+        if (!sourceHost || !sourceHost.attachments) return 'INVALID_MOVE';
+
+        const targetHost = allPossibleHosts.find((c) => c.id === toCharacterId);
+        if (!targetHost || sourceHost.id === targetHost.id)
+            return 'INVALID_MOVE';
+
+        const attachIndex = sourceHost.attachments.findIndex(
+            (a) => a.id === attachmentId
+        );
+        if (attachIndex === -1) return 'INVALID_MOVE';
+
+        const [movedAttachment] = sourceHost.attachments.splice(attachIndex, 1);
+
+        if (!targetHost.attachments) {
+            targetHost.attachments = [];
+        }
+        targetHost.attachments.push(movedAttachment);
+
+        G.statusMessage = `${movedAttachment.name || 'Attachement'} est transféré de ${sourceHost.name || 'son hôte'} vers ${targetHost.name || 'sa cible'}.`;
     },
 };
 
@@ -228,19 +332,24 @@ export const LotrGame: Game<GameState> = {
         },
     }),
 
+    events: {
+        endPhase: true,
+        setPhase: true,
+        endTurn: true,
+        setActivePlayers: true,
+    },
+
     phases: {
-        // 1. FELLOWSHIP PHASE
         fellowship: {
             start: true,
             next: 'shadow',
             turn: {
-                // 🟢 On autorise les 2 joueurs à agir pour permettre la pioche/mouvements de test
                 activePlayers: { value: { '0': 'play', '1': 'play' } },
             },
             moves: {
                 ...commonMoves,
                 playCard: (
-                    { G, ctx, playerID }: MoveContext,
+                    { G, ctx, playerID }: LotrMoveContext,
                     cardIndex: number
                 ) => {
                     const targetId = getTargetPlayerId(playerID, ctx);
@@ -264,7 +373,7 @@ export const LotrGame: Game<GameState> = {
                 },
 
                 attachCard: (
-                    { G, ctx, playerID }: MoveContext,
+                    { G, ctx, playerID }: LotrMoveContext,
                     cardIndex: number,
                     targetCardId: string
                 ) => {
@@ -299,16 +408,14 @@ export const LotrGame: Game<GameState> = {
                     ctx,
                     playerID,
                     events,
-                }: MoveContext) => {
+                }: LotrMoveContext) => {
                     advanceCompany(G, ctx, playerID, events);
                 },
             },
         },
 
-        // 2. SHADOW PHASE
         shadow: {
             turn: {
-                // 🟢 Même chose ici : les deux joueurs sont autorisés
                 activePlayers: { value: { '0': 'play', '1': 'play' } },
             },
             next: ({ G }: { G: GameState }) => {
@@ -321,7 +428,7 @@ export const LotrGame: Game<GameState> = {
                 ...commonMoves,
 
                 playShadowCard: (
-                    { G, ctx, playerID }: MoveContext,
+                    { G, ctx, playerID }: LotrMoveContext,
                     cardIndex: number
                 ) => {
                     const targetId = getTargetPlayerId(playerID, ctx);
@@ -331,7 +438,6 @@ export const LotrGame: Game<GameState> = {
                     const card = player.hand[cardIndex];
                     if (!card || card.kind !== 'SHADOW') return;
 
-                    // 🔴 Calcul du coût avec la pénalité d'errance
                     const p0SiteIndex = G.players['0'].currentSiteIndex;
                     const effectiveCost = getEffectiveTwilightCost(
                         card,
@@ -354,7 +460,7 @@ export const LotrGame: Game<GameState> = {
                 },
 
                 attachShadowCard: (
-                    { G, ctx, playerID }: MoveContext,
+                    { G, ctx, playerID }: LotrMoveContext,
                     cardIndex: number,
                     targetMinionId: string
                 ) => {
@@ -385,8 +491,8 @@ export const LotrGame: Game<GameState> = {
                     G.statusMessage = `L'Ombre attache ${attachmentCard.name} à ${targetMinion.name}.`;
                 },
 
-                endShadowPhase: ({ events }: MoveContext) => {
-                    events.endPhase();
+                endShadowPhase: ({ events }: LotrMoveContext) => {
+                    events?.endPhase?.();
                 },
             },
         },
@@ -396,8 +502,8 @@ export const LotrGame: Game<GameState> = {
             turn: { activePlayers: { value: { '0': 'play', '1': 'play' } } },
             moves: {
                 ...commonMoves,
-                endManeuverPhase: ({ events }: MoveContext) =>
-                    events.endPhase(),
+                endManeuverPhase: ({ events }: LotrMoveContext) =>
+                    events?.endPhase?.(),
             },
         },
         archery: {
@@ -405,7 +511,7 @@ export const LotrGame: Game<GameState> = {
             turn: { activePlayers: { value: { '0': 'play', '1': 'play' } } },
             moves: {
                 ...commonMoves,
-                endArcheryPhase: ({ events }: MoveContext) => events.endPhase(),
+                endArcheryPhase: ({ events }: LotrMoveContext) => events?.endPhase?.(),
             },
         },
         assignment: {
@@ -413,8 +519,8 @@ export const LotrGame: Game<GameState> = {
             turn: { activePlayers: { value: { '0': 'play' } } },
             moves: {
                 ...commonMoves,
-                endAssignmentPhase: ({ events }: MoveContext) =>
-                    events.endPhase(),
+                endAssignmentPhase: ({ events }: LotrMoveContext) =>
+                    events?.endPhase?.(),
             },
         },
         skirmish: {
@@ -422,19 +528,19 @@ export const LotrGame: Game<GameState> = {
             turn: { activePlayers: { value: { '0': 'play', '1': 'play' } } },
             moves: {
                 ...commonMoves,
-                endSkirmishPhase: ({ events }: MoveContext) =>
-                    events.endPhase(),
+                endSkirmishPhase: ({ events }: LotrMoveContext) =>
+                    events?.endPhase?.(),
             },
         },
         regroup: {
             turn: { activePlayers: { value: { '0': 'play', '1': 'play' } } },
             moves: {
                 ...commonMoves,
-                moveNextSite: ({ G, ctx, playerID, events }: MoveContext) => {
+                moveNextSite: ({ G, ctx, playerID, events }: LotrMoveContext) => {
                     advanceCompany(G, ctx, playerID, events);
                 },
-                endTurn: ({ events }: MoveContext) => {
-                    events.endTurn();
+                endTurn: ({ events }: LotrMoveContext) => {
+                    events?.endTurn?.();
                 },
             },
         },

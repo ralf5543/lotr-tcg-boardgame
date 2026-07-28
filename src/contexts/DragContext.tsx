@@ -10,13 +10,15 @@ import { Card } from '../views/GameBoard/components/Card';
 import { SiteCard } from '../views/GameBoard/components/SiteCard';
 
 export type CardOrientation = 'portrait' | 'landscape';
+export type CardOrigin = 'HAND' | 'BOARD' | 'ATTACHMENT'; // 🟢 Ajout de ATTACHMENT
 
 interface DraggedCardData {
     card: CardState | SiteCardState;
     index: number;
-    kind: 'FREE_PEOPLES' | 'SHADOW';
-    origin: 'HAND' | 'BOARD';
+    kind?: 'FREE_PEOPLES' | 'SHADOW';
+    origin: CardOrigin;
     orientation: CardOrientation;
+    parentId?: string; // 🟢 Optionnel : ID du personnage hôte si la carte était attachée
 }
 
 interface DragContextType {
@@ -24,11 +26,12 @@ interface DragContextType {
     position: { x: number; y: number };
     activeTargetId: string | null;
     startDrag: (
-        card: any,
+        card: CardState | SiteCardState,
         index: number,
         e: React.PointerEvent,
-        origin?: 'HAND' | 'BOARD',
-        orientation?: CardOrientation
+        origin?: CardOrigin,
+        orientation?: CardOrientation,
+        parentId?: string
     ) => void;
     stopDrag: () => void;
     registerTarget: (id: string, element: HTMLDivElement | null) => void;
@@ -79,68 +82,71 @@ export const DragProvider: React.FC<{ children: React.ReactNode }> = ({
 
     // --- FONCTION DE CALCUL DE COLLISION FACTORISÉE ---
     const getHitTargetId = (
-    clientX: number,
-    clientY: number,
-    cardWidthPhysBase: number,
-    cardHeightPhysBase: number
-): string | null => {
-    const scale = currentScale.current;
-    const cardWidthPhys = cardWidthPhysBase * scale;
-    const cardHeightPhys = cardHeightPhysBase * scale;
-    const cardLeftPhys = clientX - dragOffset.current.x * scale;
-    const cardTopPhys = clientY - dragOffset.current.y * scale;
-    const cardRightPhys = cardLeftPhys + cardWidthPhys;
-    const cardBottomPhys = cardTopPhys + cardHeightPhys;
+        clientX: number,
+        clientY: number,
+        cardWidthPhysBase: number,
+        cardHeightPhysBase: number
+    ): string | null => {
+        const scale = currentScale.current;
+        const cardWidthPhys = cardWidthPhysBase * scale;
+        const cardHeightPhys = cardHeightPhysBase * scale;
+        const cardLeftPhys = clientX - dragOffset.current.x * scale;
+        const cardTopPhys = clientY - dragOffset.current.y * scale;
+        const cardRightPhys = cardLeftPhys + cardWidthPhys;
+        const cardBottomPhys = cardTopPhys + cardHeightPhys;
 
-    // Surface totale de la carte traînée (en px virtuels/physiques)
-    const cardArea = cardWidthPhys * cardHeightPhys;
+        // Surface totale de la carte traînée
+        const cardArea = cardWidthPhys * cardHeightPhys;
 
-    let hitCompanionId: string | null = null;
-    let hitZoneId: string | null = null;
+        let hitCompanionId: string | null = null;
+        let hitZoneId: string | null = null;
 
-    targetsRef.current.forEach((targetEl, id) => {
-        const targetRect = targetEl.getBoundingClientRect();
+        targetsRef.current.forEach((targetEl, id) => {
+            const targetRect = targetEl.getBoundingClientRect();
 
-        const xOverlap = Math.max(
-            0,
-            Math.min(cardRightPhys, targetRect.right) -
-                Math.max(cardLeftPhys, targetRect.left)
-        );
-        const yOverlap = Math.max(
-            0,
-            Math.min(cardBottomPhys, targetRect.bottom) -
-                Math.max(cardTopPhys, targetRect.top)
-        );
-        const overlapArea = xOverlap * yOverlap;
+            const xOverlap = Math.max(
+                0,
+                Math.min(cardRightPhys, targetRect.right) -
+                    Math.max(cardLeftPhys, targetRect.left)
+            );
+            const yOverlap = Math.max(
+                0,
+                Math.min(cardBottomPhys, targetRect.bottom) -
+                    Math.max(cardTopPhys, targetRect.top)
+            );
+            const overlapArea = xOverlap * yOverlap;
 
-        if (overlapArea > 0) {
-            // Ratio de la carte qui chevauche la zone (ex: 0.25 = 25% de la carte)
-            const cardOverlapRatio = overlapArea / cardArea;
+            if (overlapArea > 0) {
+                const cardOverlapRatio = overlapArea / cardArea;
 
-            if (id === 'fellowshipArea' || id === 'sitePath' || id === 'supportArea' || id === 'battlefield') {
-                // On exige qu me au moins 20% à 25% de la carte soit entrée dans la zone
-                if (cardOverlapRatio > 0.2) {
-                    hitZoneId = id;
-                }
-            } else {
-                // Pour un compagnon individuel
-                const targetArea = targetRect.width * targetRect.height;
-                if (overlapArea > targetArea * 0.1) {
-                    hitCompanionId = id;
+                if (
+                    id === 'fellowshipArea' ||
+                    id === 'sitePath' ||
+                    id === 'supportArea' ||
+                    id === 'battlefield'
+                ) {
+                    if (cardOverlapRatio > 0.2) {
+                        hitZoneId = id;
+                    }
+                } else {
+                    const targetArea = targetRect.width * targetRect.height;
+                    if (overlapArea > targetArea * 0.1) {
+                        hitCompanionId = id;
+                    }
                 }
             }
-        }
-    });
+        });
 
-    return hitCompanionId || hitZoneId || null;
-};
+        return hitCompanionId || hitZoneId || null;
+    };
 
     const startDrag = (
         card: CardState | SiteCardState,
         index: number,
         e: React.PointerEvent,
-        origin: 'HAND' | 'BOARD' = 'HAND',
-        orientation: CardOrientation = 'portrait'
+        origin: CardOrigin = 'HAND',
+        orientation: CardOrientation = 'portrait',
+        parentId?: string
     ) => {
         e.preventDefault();
 
@@ -162,7 +168,7 @@ export const DragProvider: React.FC<{ children: React.ReactNode }> = ({
         (e.currentTarget as HTMLElement).setPointerCapture(e.pointerId);
         lastX.current = e.clientX;
 
-        setDragged({ card, index, origin, orientation });
+        setDragged({ card, index, origin, orientation, parentId });
 
         setPosition({
             x: (e.clientX - boardLeft) / scale,
@@ -221,6 +227,14 @@ export const DragProvider: React.FC<{ children: React.ReactNode }> = ({
                     cardHeightPhysBase
                 );
                 const targetToUse = finalTargetId || activeTargetIdRef.current;
+
+                // 🟢 LOG 1 : Détails du drop déclenché
+        console.log('🚀 [DragContext] Drop déclenché :', {
+            card: dragged.card.title || dragged.card.name,
+            origin: dragged.origin,
+            parentId: dragged.parentId,
+            targetId: targetToUse,
+        });
 
                 const dropEvent = new CustomEvent('card-dropped', {
                     detail: { draggedCard: dragged, targetId: targetToUse },

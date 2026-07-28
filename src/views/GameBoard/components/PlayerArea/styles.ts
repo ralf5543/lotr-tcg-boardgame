@@ -16,7 +16,7 @@ export const Fellowship = styled.div<{
     $isTargeted?: boolean;
 }>`
     border: 2px solid ${({ $borderColor }) => $borderColor};
-    background-color: #1a252f;
+    background-color: rgba(26, 37, 47, 0.5);
     border-radius: 6px;
     padding: 10px;
     margin-bottom: 10px;
@@ -28,7 +28,7 @@ export const Fellowship = styled.div<{
         css`
             border-color: #3498db;
             box-shadow: 0 0 16px rgba(52, 152, 219, 0.7), inset 0 0 10px rgba(52, 152, 219, 0.2);
-            background-color: #203140;
+                background-color: rgba(26, 37, 47, 0.7);
         `}
 `;
 
@@ -46,7 +46,7 @@ export const SupportArea = styled.div<{
     $isTargeted?: boolean;
 }>`
     border: 2px solid ${({ $borderColor }) => $borderColor};
-    background-color: #1a252f;
+        background-color: rgba(26, 37, 47, 0.5);
     border-radius: 6px;
     padding: 10px;
     margin-bottom: 10px;
@@ -57,7 +57,7 @@ export const SupportArea = styled.div<{
         css`
             border-color: #f39c12;
             box-shadow: 0 0 16px rgba(243, 156, 18, 0.7), inset 0 0 10px rgba(243, 156, 18, 0.2);
-            background-color: #2a2218;
+            background-color: rgba(26, 37, 47, 0.7);
         `}
 `;
 
@@ -95,6 +95,7 @@ export const CardDragTarget = styled.div<{
     cursor: ${({ $isOpponent }) => ($isOpponent ? 'default' : 'grab')};
     border-radius: 6px;
     transition: all 0.15s ease-in-out;
+    z-index: 1;
 
     /* Surbrillance spécifique quand on frôle ce compagnon précis (ex: attachement d'une possession) */
     ${({ $isTargeted }) =>

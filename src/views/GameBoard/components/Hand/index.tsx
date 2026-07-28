@@ -37,9 +37,10 @@ export const Hand: React.FC<HandProps> = ({
     };
 
     const { startDrag, dragged } = useDrag();
+    const isDragging = !!dragged;
 
     return (
-        <S.FixedHandContainer>
+        <S.FixedHandContainer $isDragging={isDragging}>
             <S.ControlGroup>
                 <S.GameButton $bgColor="#3498db" onClick={onDrawCard}>
                     🃏 Piocher ({deckCount})

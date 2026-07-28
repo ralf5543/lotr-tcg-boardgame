@@ -1,4 +1,4 @@
-import type { CardState } from './types';
+import type { CardState, SiteCardState } from './types';
 
 const DEFAULT_IMAGE = '/cards_visuals/lotr_default.jpg';
 const DEFAULT_GAMETEXT =
@@ -228,7 +228,7 @@ export const CARDS_DATABASE: CardState[] = [
     },
 ];
 
-export const DUMMY_SITES_PLAYER_0: SiteCard[] = [
+export const DUMMY_SITES_PLAYER_0: SiteCardState[] = [
     {
         id: '11u227',
         name: "Berges de l'Anduin",

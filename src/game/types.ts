@@ -136,6 +136,7 @@ export interface CardState {
     gameText: string;
     loreText?: string;
     attachments?: CardState[];
+    name?: string;
 }
 
 export interface PlayerState {
@@ -165,6 +166,8 @@ export interface GameState {
     path: (SiteCardState | null)[];
     battlefield: CardState[];
     players: Record<string, PlayerState>;
+    awaitingSiteSelection: boolean;
+    statusMessage: string;
 }
 
 export interface KeywordData {

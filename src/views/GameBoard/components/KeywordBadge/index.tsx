@@ -48,7 +48,6 @@ export const KeywordBadge: React.FC<KeywordBadgeProps> = ({ keyword, size = 18 }
                     alt={keyword}
                     width={size}
                     height={size}
-                    draggable={false}
                     onError={() => setHasError(true)}
                 />
             </S.BadgeContainer>

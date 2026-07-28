@@ -1,6 +1,6 @@
 // src/views/GameBoard/index.tsx
-import React from 'react';
-import type { CardState, SiteCardState } from '../../game/types';
+import React, { useEffect } from 'react';
+import type { CardState, CardType, SiteCardState } from '../../game/types';
 import { Battlefield } from './components/Battlefield';
 import { SitePath } from './components/SitePath';
 import { PlayerArea } from './components/PlayerArea';
@@ -14,9 +14,16 @@ import { TwilightPool } from './components/TwilightPool';
 import { Dock } from './components/Dock';
 import { SitesPicker } from './components/SitePicker';
 import { GameNotifications } from './components/GameNotifications';
+import {
+    canDropInSupportArea,
+    canDropInFellowship,
+    canAttachToCharacter,
+} from '../../utils/routingDragNDrop';
+import { PhaseBanner } from './components/PhaseBanner';
+import { DevPanel } from '../../utils/DevPanel';
 
 interface GameBoardProps {
-    playerID: string | null; // 🧙‍♂️ Injecté par boardgame.io ("0" ou "1")
+    playerID: string | null;
     G: {
         twilightPool: number;
         currentSite: number;
@@ -33,7 +40,7 @@ interface GameBoardProps {
                 discard: CardState[];
                 fellowshipArea: CardState[];
                 supportArea: CardState[];
-                currentSiteIndex: number; // 🟢 1. Ajout dans le type G
+                currentSiteIndex: number;
             }
         >;
     };
@@ -51,11 +58,9 @@ export const GameBoard: React.FC<GameBoardProps> = ({
     ctx,
     moves,
 }) => {
-    // ID du joueur connecté à cet écran ("0" ou "1")
     const myId = playerID || ctx.currentPlayer;
     const oppId = myId === '0' ? '1' : '0';
 
-    // Vérification de la main active
     const isMyTurn = ctx.activePlayers?.[playerID || ''] === 'play';
 
     const me = G.players[myId] || {
@@ -79,9 +84,114 @@ export const GameBoard: React.FC<GameBoardProps> = ({
 
     const { hoveredData } = useHoverCard();
     const currentFaction = myId === '1' ? 'SHADOW' : 'FREE_PEOPLES';
-
-    // 🟢 Extracteur de l'index de site FP (toujours sur le Joueur 0)
     const currentSiteIndex = G.players['0']?.currentSiteIndex ?? 0;
+
+    // 🟢 centralisation du ROUTER DE DRAG & DROP
+    useEffect(() => {
+        const handleGlobalCardDrop = (e: Event) => {
+            const customEvent = e as CustomEvent;
+            const { draggedCard, targetId } = customEvent.detail || {};
+
+            if (!targetId || !draggedCard) return;
+
+            const { index, origin, card, parentId } = draggedCard;
+            const cardSubtype = card?.type as CardType | undefined;
+
+            // ==========================================
+            // 1. CARTES JOUÉES DEPUIS LA MAIN (origin === 'HAND')
+            // ==========================================
+            if (origin === 'HAND') {
+                if (
+                    targetId === 'fellowshipArea' &&
+                    canDropInFellowship(cardSubtype)
+                ) {
+                    console.log('🃏 [GLOBAL DROP] Jouer Compagnon:', { index });
+                    moves.playCard(index);
+                    return;
+                }
+
+                if (
+                    targetId === 'supportArea' &&
+                    canDropInSupportArea(cardSubtype)
+                ) {
+                    console.log('🎒 [GLOBAL DROP] Jouer Support:', { index });
+                    moves.playCard(index);
+                    return;
+                }
+
+                if (targetId === 'battlefield' && card.kind === 'SHADOW') {
+                    console.log(
+                        '⚔️ [GLOBAL DROP] Jouer Séide sur Battlefield:',
+                        { index }
+                    );
+                    moves.playShadowCard(index);
+                    return;
+                }
+
+                // Attachement depuis la main sur un personnage
+                if (
+                    targetId !== 'fellowshipArea' &&
+                    targetId !== 'supportArea' &&
+                    targetId !== 'battlefield' &&
+                    canAttachToCharacter(cardSubtype)
+                ) {
+                    console.log(
+                        '📎 [GLOBAL DROP] Attachement depuis la main:',
+                        {
+                            cardIndex: index,
+                            targetCardId: targetId,
+                        }
+                    );
+                    moves.attachCard(index, targetId);
+                    return;
+                }
+            }
+
+            // ==========================================
+            // 2. TRANSFERT D'ATTACHEMENT (origin === 'ATTACHMENT')
+            // ==========================================
+            if (origin === 'ATTACHMENT') {
+                // Empêche de transférer sur le même personnage
+                if (targetId === parentId) {
+                    console.log(
+                        'ℹ️ Attachement déposé sur le même hôte. Annulation.'
+                    );
+                    return;
+                }
+
+                // Si la cible est un personnage valide pour recevoir l'attachement
+                if (
+                    targetId !== 'fellowshipArea' &&
+                    targetId !== 'supportArea' &&
+                    targetId !== 'battlefield' &&
+                    canAttachToCharacter(cardSubtype)
+                ) {
+                    console.log("🔄 [GLOBAL DROP] Transfert d'attachement:", {
+                        attachmentId: card.id,
+                        fromCharacterId: parentId,
+                        toCharacterId: targetId,
+                    });
+
+                    // 🟢 Appelle ton action de jeu (ex: moves.transferAttachment)
+                    if (moves.transferAttachment) {
+                        moves.transferAttachment({
+                            attachmentId: card.id,
+                            fromCharacterId: parentId,
+                            toCharacterId: targetId,
+                        });
+                    } else {
+                        console.warn(
+                            "⚠️ La fonction moves.transferAttachment n'est pas encore définie dans vos moves."
+                        );
+                    }
+                }
+            }
+        };
+
+        window.addEventListener('card-dropped', handleGlobalCardDrop);
+        return () =>
+            window.removeEventListener('card-dropped', handleGlobalCardDrop);
+    }, [moves]);
 
     return (
         <DragProvider>
@@ -91,14 +201,16 @@ export const GameBoard: React.FC<GameBoardProps> = ({
                         {hoveredData.orientation === 'landscape' ? (
                             <SiteCard site={hoveredData.card} size="lg" />
                         ) : (
-                            <Card 
-                                card={hoveredData.card} 
-                                size="lg" 
-                                currentSiteIndex={currentSiteIndex} 
+                            <Card
+                                card={hoveredData.card}
+                                size="lg"
+                                currentSiteIndex={currentSiteIndex}
                             />
                         )}
                     </S.HoveredCardsZone>
                 )}
+                <PhaseBanner key={ctx.phase} phaseName={ctx.phase} />
+                <DevPanel G={G} ctx={ctx} moves={moves} />
                 <GameNotifications
                     statusMessage={G.statusMessage ?? "En attente d'action..."}
                     activePlayerId={ctx.currentPlayer}
@@ -106,7 +218,7 @@ export const GameBoard: React.FC<GameBoardProps> = ({
                     awaitingSite={G.awaitingSiteSelection ?? false}
                 />
 
-                {/* ==================== 1. CÔTÉ ADVERSAIRE (HAUT) ==================== */}
+                {/* ==================== 1. ADVERSAIRE ==================== */}
                 <PlayerArea
                     playerId={oppId}
                     deckCount={opponent.deck?.length || 0}
@@ -116,9 +228,8 @@ export const GameBoard: React.FC<GameBoardProps> = ({
                     moves={moves}
                 />
 
-                {/* ==================== 2. BLOC CENTRAL MUTUALISÉ ==================== */}
+                {/* ==================== 2. CENTRAL ==================== */}
                 <S.CentralBlock>
-                    {/* Bandeau d'état de Phase */}
                     <S.PhaseBanner>
                         <span>
                             Phase : <strong>{ctx.phase?.toUpperCase()}</strong>
@@ -132,21 +243,18 @@ export const GameBoard: React.FC<GameBoardProps> = ({
                             </strong>
                         </span>
 
-                        {/* 1. Bouton pour le joueur FP (0) en Phase Fellowship */}
                         {ctx.phase === 'fellowship' && playerID === '0' && (
                             <button onClick={() => moves.endFellowshipPhase()}>
                                 Fin de Communauté ➔
                             </button>
                         )}
 
-                        {/* 2. Bouton pour le joueur Ombre (1) en Phase Shadow */}
                         {ctx.phase === 'shadow' && playerID === '1' && (
                             <button onClick={() => moves.endShadowPhase()}>
                                 Fin de l'Ombre ➔
                             </button>
                         )}
 
-                        {/* 3. Boutons pour le joueur FP (0) en Phase Regroup */}
                         {ctx.phase === 'regroup' && playerID === '0' && (
                             <>
                                 <button onClick={() => moves.moveNextSite()}>
@@ -164,15 +272,12 @@ export const GameBoard: React.FC<GameBoardProps> = ({
                         <Battlefield
                             cards={G.battlefield}
                             playerRole={playerID as '0' | '1'}
-                            currentSiteIndex={currentSiteIndex} // 🟢 2. Transmis au Battlefield
-                            onPlayShadowCard={(cardIndex) => {
-                                moves.playShadowCard(cardIndex);
-                            }}
+                            currentSiteIndex={currentSiteIndex}
                         />
                     </S.MainZone>
                 </S.CentralBlock>
 
-                {/* ==================== 3. TON CÔTÉ (BAS) ==================== */}
+                {/* ==================== 3. TE ==================== */}
                 <PlayerArea
                     playerId={myId}
                     deckCount={me.deck?.length || 0}
