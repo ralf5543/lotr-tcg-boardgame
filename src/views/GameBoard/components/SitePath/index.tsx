@@ -1,4 +1,3 @@
-// src/components/SitePath.tsx
 import React, { useEffect, useRef } from 'react';
 import type { SiteCardState, PlayerState } from '../../../../game/types';
 import { SiteCard } from '../SiteCard';

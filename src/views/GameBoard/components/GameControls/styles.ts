@@ -30,6 +30,7 @@ export const PhaseBanner = styled.div`
     gap: 20px;
     box-shadow: 0 8px 24px rgba(0, 0, 0, 0.6);
     backdrop-filter: blur(8px);
+    font-size: 18px;
 `;
 
 export const InfoGroup = styled.div`
@@ -46,13 +47,11 @@ export const PhaseBadge = styled.span`
     border: 1px solid rgba(193, 160, 84, 0.4);
     padding: 4px 10px;
     border-radius: 6px;
-    font-size: 18px;
     font-weight: 700;
 `;
 
 export const PlayerBadge = styled.span<{ $isCurrentPlayer: boolean }>`
     color: ${(props) => (props.$isCurrentPlayer ? '#4ade80' : '#cbd5e1')};
-    font-size: 12px;
     strong {
         color: #fff;
     }
@@ -60,7 +59,6 @@ export const PlayerBadge = styled.span<{ $isCurrentPlayer: boolean }>`
 
 export const MessageText = styled.div`
     color: #f8fafc;
-    font-size: 13px;
     font-weight: 500;
     display: flex;
     align-items: center;

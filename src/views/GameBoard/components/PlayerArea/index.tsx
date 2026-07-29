@@ -16,6 +16,8 @@ interface PlayerAreaProps {
     supportArea: CardState[];
     isOpponent?: boolean;
     moves: any;
+    skirmishes?: Array<{ companionId?: string; minionIds?: string[] }>;
+    battlefield?: CardState[];
 }
 
 export const PlayerArea: React.FC<PlayerAreaProps> = ({
@@ -25,13 +27,14 @@ export const PlayerArea: React.FC<PlayerAreaProps> = ({
     supportArea,
     isOpponent = false,
     moves,
+    skirmishes = [],
+    battlefield = [],
 }) => {
     const isFreePeoplesPlayer = playerId === '0';
     const { activeTargetId, registerTarget, startDrag, dragged } = useDrag();
 
     const cardSubtype = (dragged?.card as CardState)?.type as CardType | undefined;
 
-    // Gestion ciblée du réordonnancement des compagnons (origin === 'BOARD')
     useEffect(() => {
         const handleReorderDrop = (e: Event) => {
             if (isOpponent) return;
@@ -66,7 +69,6 @@ export const PlayerArea: React.FC<PlayerAreaProps> = ({
         return () => window.removeEventListener('card-dropped', handleReorderDrop);
     }, [isOpponent, moves, fellowshipArea]);
 
-    // 1. Rendu de la Zone Communauté (Fellowship)
     const renderFellowship = () => {
         if (isFreePeoplesPlayer) {
             const isFellowshipTargeted =
@@ -86,25 +88,35 @@ export const PlayerArea: React.FC<PlayerAreaProps> = ({
                         {(fellowshipArea || []).length === 0 && (
                             <S.EmptyText>Aucun compagnon déployé.</S.EmptyText>
                         )}
-                        {(fellowshipArea || []).map((companion, companionIdx) => (
-                            <BoardCharacterStack
-                                key={companion.id}
-                                character={companion}
-                                index={companionIdx}
-                                isOpponent={isOpponent}
-                                onStartDrag={(e) => {
-                                    if (isOpponent || e.button !== 0) return;
-                                    e.stopPropagation();
-                                    startDrag(
-                                        companion,
-                                        companionIdx,
-                                        e,
-                                        'BOARD',
-                                        'portrait'
-                                    );
-                                }}
-                            />
-                        ))}
+                        {(fellowshipArea || []).map((companion, companionIdx) => {
+                            const skirmish = skirmishes.find(
+                                (s) => s.companionId === companion.id
+                            );
+                            const assignedMinions = battlefield.filter(
+                                (m) => skirmish?.minionIds?.includes(m.id)
+                            );
+
+                            return (
+                                <BoardCharacterStack
+                                    key={companion.id}
+                                    character={companion}
+                                    index={companionIdx}
+                                    isOpponent={isOpponent}
+                                    assignedMinions={assignedMinions}
+                                    onStartDrag={(e) => {
+                                        if (isOpponent || e.button !== 0) return;
+                                        e.stopPropagation();
+                                        startDrag(
+                                            companion,
+                                            companionIdx,
+                                            e,
+                                            'BOARD',
+                                            'portrait'
+                                        );
+                                    }}
+                                />
+                            );
+                        })}
                     </S.CardRow>
                 </S.Fellowship>
             );
@@ -113,7 +125,6 @@ export const PlayerArea: React.FC<PlayerAreaProps> = ({
         return <S.FellowshipCollapsed />;
     };
 
-    // 2. Rendu de l'Aire de Soutien (SupportArea)
     const renderSupportArea = () => {
         const isSupportTargeted =
             !isOpponent &&
@@ -155,11 +166,6 @@ export const PlayerArea: React.FC<PlayerAreaProps> = ({
 
     return (
         <S.AreaContainer $isOpponent={isOpponent}>
-            <S.MetaInfo $isOpponent={isOpponent}>
-                {isOpponent
-                    ? `🔴 ADVERSAIRE (Joueur ${playerId}) — Deck : ${deckCount} cartes`
-                    : `🧙‍♂️ TOI (Joueur ${playerId})`}
-            </S.MetaInfo>
 
             {isOpponent ? (
                 <>

@@ -12,7 +12,10 @@ const PanelContainer = styled.div`
     bottom: 16px;
     right: 16px;
     z-index: 10000;
-    font-family: system-ui, -apple-system, sans-serif;
+    font-family:
+        system-ui,
+        -apple-system,
+        sans-serif;
     font-size: 12px;
 `;
 
@@ -82,7 +85,8 @@ const PhaseButton = styled.button<{ $isActive: boolean }>`
     font-weight: ${(props) => (props.$isActive ? 'bold' : 'normal')};
 
     &:hover {
-        background-color: ${(props) => (props.$isActive ? '#d97706' : '#334155')};
+        background-color: ${(props) =>
+            props.$isActive ? '#d97706' : '#334155'};
     }
 `;
 
@@ -152,14 +156,7 @@ export const DevPanel: React.FC<DevPanelProps> = ({ moves, G, ctx }) => {
                                 <PhaseButton
                                     key={phase}
                                     $isActive={ctx.phase === phase}
-                                    onClick={() => {
-        console.log("--> Dispatch devSetPhase:", phase, moves);
-        if (moves && moves.devSetPhase) {
-            moves.devSetPhase(phase);
-        } else {
-            console.error("❌ L'objet 'moves' n'est pas connecté à boardgame.io !");
-        }
-    }}
+                                    onClick={() => moves.devSetPhase(phase)}
                                 >
                                     {phase}
                                 </PhaseButton>
@@ -170,13 +167,32 @@ export const DevPanel: React.FC<DevPanelProps> = ({ moves, G, ctx }) => {
                     {/* Twilight Pool */}
                     <Section>
                         <Label>
-                            Twilight Pool : <strong style={{ color: '#fbbf24' }}>{G.twilightPool}</strong>
+                            Twilight Pool :{' '}
+                            <strong style={{ color: '#fbbf24' }}>
+                                {G.twilightPool}
+                            </strong>
                         </Label>
                         <ButtonGroup>
-                            <ActionButton onClick={() => moves.devSetTwilight(G.twilightPool - 1)}>-1</ActionButton>
-                            <ActionButton onClick={() => moves.devSetTwilight(G.twilightPool + 1)}>+1</ActionButton>
                             <ActionButton
-                                style={{ backgroundColor: '#451a03', color: '#fcd34d', borderColor: '#78350f' }}
+                                onClick={() =>
+                                    moves.devSetTwilight(G.twilightPool - 1)
+                                }
+                            >
+                                -1
+                            </ActionButton>
+                            <ActionButton
+                                onClick={() =>
+                                    moves.devSetTwilight(G.twilightPool + 1)
+                                }
+                            >
+                                +1
+                            </ActionButton>
+                            <ActionButton
+                                style={{
+                                    backgroundColor: '#451a03',
+                                    color: '#fcd34d',
+                                    borderColor: '#78350f',
+                                }}
                                 onClick={() => moves.devSetTwilight(10)}
                             >
                                 Force 10
@@ -187,11 +203,17 @@ export const DevPanel: React.FC<DevPanelProps> = ({ moves, G, ctx }) => {
                     {/* Preset de cartes */}
                     <Section>
                         <Label>Presets cartes & Déblocage :</Label>
-                        <PresetButton onClick={() => moves.devLoadPreset('ARCHERY_TEST')}>
+                        <PresetButton
+                            onClick={() => moves.devLoadPreset('ARCHERY_TEST')}
+                        >
                             🏹 Charger Legolas vs Nazgûl
                         </PresetButton>
                         <ActionButton
-                            style={{ marginTop: '4px', backgroundColor: '#3b0764', borderColor: '#6b21a8' }}
+                            style={{
+                                marginTop: '4px',
+                                backgroundColor: '#3b0764',
+                                borderColor: '#6b21a8',
+                            }}
                             onClick={() => moves.devForceEndPhase()}
                         >
                             ⏩ Force End Phase

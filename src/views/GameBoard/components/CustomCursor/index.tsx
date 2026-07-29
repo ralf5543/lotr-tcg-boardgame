@@ -19,7 +19,7 @@ export function CustomAssetCursor() {
             if (!target) return;
 
             // Détection de carte draggable (main ouverte)
-            const isDraggableCard = target.closest('[data-draggable="true"], [data-draggable="data-draggable"]');
+            const isDraggableCard = target.closest('[data-draggable="true"]');
 
             // Détection de tout élément interactif (boutons, liens, sélecteurs, etc.)
             const isClickable = target.closest(

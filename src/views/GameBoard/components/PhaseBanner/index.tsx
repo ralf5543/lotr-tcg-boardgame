@@ -33,7 +33,10 @@ export const PhaseBanner: React.FC<PhaseBannerProps> = ({ phaseName }) => {
 
     return (
         <S.Overlay>
-            <S.BannerTitle>{label}</S.BannerTitle>
+            <S.BannerContent>
+                <S.BannerTitle>{label}</S.BannerTitle>
+                <S.BannerImage src={`interface/icons/phase_${phaseName}.webp`} />
+            </S.BannerContent>
         </S.Overlay>
     );
 };

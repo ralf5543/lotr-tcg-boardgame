@@ -10,7 +10,7 @@ import { Card } from '../views/GameBoard/components/Card';
 import { SiteCard } from '../views/GameBoard/components/SiteCard';
 
 export type CardOrientation = 'portrait' | 'landscape';
-export type CardOrigin = 'HAND' | 'BOARD' | 'ATTACHMENT'; // 🟢 Ajout de ATTACHMENT
+export type CardOrigin = 'HAND' | 'BOARD' | 'ATTACHMENT'| 'BATTLEFIELD';
 
 interface DraggedCardData {
     card: CardState | SiteCardState;

@@ -31,6 +31,8 @@ interface GameBoardProps {
         awaitingSiteSelection?: boolean;
         path: (SiteCardState | null)[];
         battlefield: CardState[];
+        // 🟢 Ajout du tableau des escarmouches dans le type de G
+        skirmishes?: Array<{ companionId?: string; minionIds?: string[] }>;
         players: Record<
             string,
             {
@@ -186,12 +188,38 @@ export const GameBoard: React.FC<GameBoardProps> = ({
                     }
                 }
             }
+            // ==========================================
+            // 3. ASSIGNATION DE SÉIDE (origin === 'BATTLEFIELD')
+            // ==========================================
+            if (origin === 'BATTLEFIELD') {
+                const isAssignmentPhase = ctx.phase === 'assignment';
+                const isMinion = card?.type === 'MINION';
+
+                // Si on est en phase d'assignment, qu'on lâche un Séide et que la cible n'est pas une zone générique
+                if (
+                    isAssignmentPhase &&
+                    isMinion &&
+                    targetId !== 'fellowshipArea' &&
+                    targetId !== 'supportArea' &&
+                    targetId !== 'battlefield' &&
+                    targetId !== 'sitePath'
+                ) {
+                    console.log('⚔️ [GLOBAL DROP] Assignation Séide -> Compagnon:', {
+                        minionId: card.id,
+                        companionId: targetId,
+                    });
+
+                    // 🚀 Appel du move boardgame.io
+                    moves.assignMinion(card.id, targetId);
+                    return;
+                }
+            }
         };
 
         window.addEventListener('card-dropped', handleGlobalCardDrop);
         return () =>
             window.removeEventListener('card-dropped', handleGlobalCardDrop);
-    }, [moves]);
+    }, [moves, ctx.phase]);
 
     return (
         <DragProvider>
@@ -229,6 +257,8 @@ export const GameBoard: React.FC<GameBoardProps> = ({
                     supportArea={opponent.supportArea || []}
                     isOpponent={true}
                     moves={moves}
+                    skirmishes={G.skirmishes}
+                    battlefield={G.battlefield}
                 />
 
                 {/* ==================== 2. CENTRAL ==================== */}
@@ -239,6 +269,8 @@ export const GameBoard: React.FC<GameBoardProps> = ({
                             cards={G.battlefield}
                             playerRole={playerID as '0' | '1'}
                             currentSiteIndex={currentSiteIndex}
+                            isAssignmentPhase={ctx.phase === 'assignment'}
+                            skirmishes={G.skirmishes}
                         />
                     </S.MainZone>
                 </S.CentralBlock>
@@ -251,6 +283,8 @@ export const GameBoard: React.FC<GameBoardProps> = ({
                     supportArea={me.supportArea || []}
                     isOpponent={false}
                     moves={moves}
+                    skirmishes={G.skirmishes}
+                    battlefield={G.battlefield}
                 />
 
                 {/* ==================== SITE PATH ==================== */}

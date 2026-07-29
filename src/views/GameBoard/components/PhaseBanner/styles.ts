@@ -31,6 +31,14 @@ export const Overlay = styled.div`
     pointer-events: none;
 `;
 
+export const BannerContent = styled.div`
+    display: flex;
+    gap: 40px;
+    align-items: center;
+    justify-content: center;
+    animation: ${slideBanner} 3.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+`;
+
 export const BannerTitle = styled.h1`
     color: #ffffff;
     font-size: 80px;
@@ -39,5 +47,9 @@ export const BannerTitle = styled.h1`
     font-variant: small-caps;
     text-shadow: 0 4px 12px rgba(0, 0, 0, 0.9);
     margin: 0;
-    animation: ${slideBanner} 3.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+`;
+
+
+export const BannerImage = styled.img`
+    width: 80px;
 `;

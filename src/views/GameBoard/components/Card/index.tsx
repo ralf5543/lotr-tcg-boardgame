@@ -86,21 +86,6 @@ export const Card: React.FC<CardProps> = ({
         typeof card.roaming === 'number' &&
         card.roaming > currentSiteIndex + 1;
 
-    // 🔍 Log de contrôle si la carte possède la propriété roaming
-    if (card.roaming !== undefined) {
-        console.log(`[Card Check: ${card.title}]`, {
-            currentSiteIndex,
-            computedSiteNumber:
-                typeof currentSiteIndex === 'number'
-                    ? currentSiteIndex + 1
-                    : 'N/A',
-            kind: card.kind,
-            type: card.type,
-            roamingVal: card.roaming,
-            isRoamingResult: isRoaming,
-        });
-    }
-
     return (
         <S.CardContainer
             $culture={card.culture}

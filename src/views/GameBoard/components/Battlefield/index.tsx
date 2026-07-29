@@ -8,17 +8,20 @@ interface BattlefieldProps {
     cards: CardState[];
     playerRole?: '0' | '1';
     currentSiteIndex?: number;
+    isAssignmentPhase?: boolean;
+    skirmishes?: Array<{ companionId?: string; minionIds?: string[] }>;
 }
 
 export const Battlefield: React.FC<BattlefieldProps> = ({
     cards,
     playerRole,
     currentSiteIndex,
+    isAssignmentPhase = false,
+    skirmishes = [],
 }) => {
     const { registerTarget, activeTargetId, dragged } = useDrag();
     const containerRef = useRef<HTMLDivElement | null>(null);
 
-    // 1. Enregistrement de la zone Battlefield
     useEffect(() => {
         registerTarget('battlefield', containerRef.current);
         return () => {
@@ -26,30 +29,34 @@ export const Battlefield: React.FC<BattlefieldProps> = ({
         };
     }, [registerTarget]);
 
-    // 2. Surbrillance au survol lors du drag d'un Séide
     const isValidCard = dragged?.card?.type === 'MINION' && dragged?.card?.kind === 'SHADOW';
     const isHovered = activeTargetId === 'battlefield' && isValidCard;
 
-    // Si le joueur est l'Ombre ('1'), les séides ne sont pas perçus comme "adversaires"
     const isOpponent = playerRole === '0';
+
+    // Filtrer les séides non assignés
+    const unassignedMinions = cards.filter(
+        (minion) => !skirmishes.some((s) => s.minionIds?.includes(minion.id))
+    );
 
     return (
         <S.Battlefield ref={containerRef} $isHovered={isHovered}>
             <S.CardRow>
-                {cards.length === 0 && (
+                {unassignedMinions.length === 0 && (
                     <S.InfoText>
                         {isHovered
                             ? 'Déposez le serviteur ici !'
                             : 'Le champ de bataille est vide...'}
                     </S.InfoText>
                 )}
-                {cards.map((minion, idx) => (
+                {unassignedMinions.map((minion, idx) => (
                     <BoardCharacterStack
                         key={minion.id}
                         character={minion}
                         index={idx}
                         isOpponent={isOpponent}
                         currentSiteIndex={currentSiteIndex}
+                        isAssignmentPhase={isAssignmentPhase}
                     />
                 ))}
             </S.CardRow>

@@ -6,7 +6,7 @@ export const SitespathContainer = styled.section`
     inset-block-end: 50px;
     inset-inline-start: 20px;
     padding: 12px;
-    background: rgb(26, 29, 36);
+    background: rgba(26, 37, 47, 0.5);
     border-radius: 8px;
     width: 300px;
 `;

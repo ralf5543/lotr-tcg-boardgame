@@ -1,3 +1,5 @@
+import type { FnContext } from 'boardgame.io';
+
 export type CardKind = 'FREE_PEOPLES' | 'SHADOW';
 
 export type CardKeyword =
@@ -176,6 +178,8 @@ export interface GameState {
     awaitingSiteSelection: boolean;
     statusMessage: string;
     actionWindow?: ActionWindow;
+    skirmishes: SkirmishState[];
+    assignmentStep?: 'FP_ASSIGN' | 'SHADOW_ASSIGN' | 'COMPLETED';
 }
 
 export interface KeywordData {
@@ -190,4 +194,19 @@ export interface ActionWindow {
     activePlayerId: string; // Ex: '0' ou '1'
     passedPlayers: string[]; // Tableau pour suivre qui a fait "Passer" (ex: ['0'])
     canPass?: boolean;       // Permet de choisir si le bouton "Passer" est affiché
+}
+
+export interface SkirmishState {
+    id: string;             // Ex: 'skirmish_comp_01'
+    companionId: string;    // ID de la carte du compagnon ciblée
+    minionIds: string[];    // Liste des IDs des cartes de séides affectés
+    resolved?: boolean;     // Utile pour la phase de combat suivante
+}
+
+/** Context fourni aux hooks de Phase (onBegin, onEnd, etc.) */
+export type LotrPhaseContext = FnContext<GameState>;
+
+/** Context fourni aux Moves du jeu (contient playerID) */
+export interface LotrMoveContext extends FnContext<GameState> {
+    playerID: string;
 }

@@ -11,6 +11,12 @@ interface BoardCharacterStackProps {
     isOpponent?: boolean;
     currentSiteIndex?: number;
     onStartDrag?: (e: React.PointerEvent) => void;
+    isAssignmentPhase?: boolean;
+    isSkirmishPhase?: boolean;
+    skirmishId?: string; // 🟢 ID du couple / combat
+    assignedMinions?: CardState[];
+    onSelectSkirmish?: (skirmishId: string) => void; // 🟢 Callback pour sélectionner ce combat
+    isSelectedSkirmish?: boolean;
 }
 
 export const BoardCharacterStack: React.FC<BoardCharacterStackProps> = ({
@@ -19,6 +25,12 @@ export const BoardCharacterStack: React.FC<BoardCharacterStackProps> = ({
     isOpponent = false,
     currentSiteIndex,
     onStartDrag,
+    isAssignmentPhase = false,
+    isSkirmishPhase = false,
+    skirmishId,
+    assignedMinions = [],
+    onSelectSkirmish,
+    isSelectedSkirmish = false,
 }) => {
     const { registerTarget, activeTargetId, dragged, startDrag } = useDrag();
 
@@ -27,69 +39,116 @@ export const BoardCharacterStack: React.FC<BoardCharacterStackProps> = ({
         | undefined;
     const isBeingDragged = dragged?.card?.id === character.id;
 
-    // Survol valide pour attachement (Possession, Arme, Condition, etc.)
+    const canDragCharacter =
+        !isOpponent || (isAssignmentPhase && character.type === 'MINION');
+
+    const isMinionAssignment =
+        dragged?.origin === 'BATTLEFIELD' && draggedSubtype === 'MINION';
+
     const isTargeted =
         !isOpponent &&
         activeTargetId === character.id &&
-        canAttachToCharacter(draggedSubtype);
+        (canAttachToCharacter(draggedSubtype) || isMinionAssignment);
+
+    const handleStackClick = () => {
+        if (isSkirmishPhase && skirmishId && onSelectSkirmish) {
+            onSelectSkirmish(skirmishId);
+        }
+    };
 
     return (
-        <S.CharacterStack $isBeingDragged={isBeingDragged}>
-            <S.CardDragTarget
-                $isOpponent={isOpponent}
-                $isTargeted={isTargeted}
-                data-draggable={!isOpponent ? 'true' : undefined}
-                ref={(el) => !isOpponent && registerTarget(character.id, el)}
-                onPointerDown={onStartDrag}
-            >
-                <Card
-                    card={character}
-                    size="sm"
-                    isDraggable={!isOpponent}
-                    index={index}
-                    currentSiteIndex={currentSiteIndex}
-                />
-            </S.CardDragTarget>
-
-            {character.attachments && character.attachments.length > 0 && (
-                <S.AttachmentsContainer>
-                    {character.attachments.map((attachment, attachIdx) => {
-                        const isAttachmentBeingDragged =
-                            dragged?.card?.id === attachment.id;
-
-                        return (
-                            <S.AttachmentWrapper
-                                key={attachment.id}
-                                $index={attachIdx}
-                                $isBeingDragged={isAttachmentBeingDragged}
-                                data-draggable={
-                                    !isOpponent ? 'true' : undefined
-                                }
-                                onPointerDown={(e) => {
-                                    if (isOpponent || e.button !== 0) return;
-                                    e.stopPropagation();
-
-                                    // 🟢 Appel propre avec l'objet de configuration du DragContext
-                                    startDrag(
-                                        attachment, // 1. card
-                                        attachIdx, // 2. index
-                                        e, // 3. event
-                                        'ATTACHMENT', // 4. origin (optionnel)
-                                        'portrait', // 5. orientation (optionnel)
-                                        character.id // 6. parentId / host character ID (si ta méthode le supporte)
-                                    );
-                                }}
-                            >
+        <S.SkirmishGroup
+            $isSkirmishPhase={isSkirmishPhase && assignedMinions.length > 0}
+            $isSelected={isSelectedSkirmish}
+            onClick={handleStackClick}
+        >
+            <S.CharacterStack $isBeingDragged={isBeingDragged}>
+                {/* 🟢 SÉIDES ASSIGNÉS (Affichés dans leur propre conteneur distinct des possessions) */}
+                {assignedMinions.length > 0 && (
+                    <S.AssignedMinionsContainer $isOpponent={isOpponent} className="assigned-minions-group">
+                        {assignedMinions.map((minion, mIdx) => (
+                            <S.MinionWrapper key={minion.id} $index={mIdx}>
                                 <Card
-                                    card={attachment}
+                                    card={minion}
                                     size="sm"
-                                    isDraggable={!isOpponent}
+                                    isDraggable={false}
                                 />
-                            </S.AttachmentWrapper>
-                        );
-                    })}
-                </S.AttachmentsContainer>
-            )}
-        </S.CharacterStack>
+                            </S.MinionWrapper>
+                        ))}
+                    </S.AssignedMinionsContainer>
+                )}
+
+                {/* CARTE PRINCIPALE (Compagnon ou Séide solo) */}
+                <S.CardDragTarget
+                    $isOpponent={isOpponent}
+                    $isTargeted={isTargeted}
+                    data-draggable={canDragCharacter ? 'true' : undefined}
+                    ref={(el) => registerTarget(character.id, el)}
+                    onPointerDown={(e) => {
+                        if (!canDragCharacter || e.button !== 0) return;
+
+                        if (onStartDrag) {
+                            onStartDrag(e);
+                        } else {
+                            startDrag(
+                                character,
+                                index,
+                                e,
+                                'BATTLEFIELD',
+                                'portrait'
+                            );
+                        }
+                    }}
+                >
+                    <Card
+                        card={character}
+                        size="sm"
+                        isDraggable={canDragCharacter}
+                        index={index}
+                        currentSiteIndex={currentSiteIndex}
+                    />
+                </S.CardDragTarget>
+
+                {/* ATTACHEMENTS CLASSIQUES (Possessions, Objets sous la carte) */}
+                {character.attachments && character.attachments.length > 0 && (
+                    <S.AttachmentsContainer className="attachments-group">
+                        {character.attachments.map((attachment, attachIdx) => {
+                            const isAttachmentBeingDragged =
+                                dragged?.card?.id === attachment.id;
+
+                            return (
+                                <S.AttachmentWrapper
+                                    key={attachment.id}
+                                    $index={attachIdx}
+                                    $isBeingDragged={isAttachmentBeingDragged}
+                                    data-draggable={
+                                        !isOpponent ? 'true' : undefined
+                                    }
+                                    onPointerDown={(e) => {
+                                        if (isOpponent || e.button !== 0) return;
+                                        e.stopPropagation();
+
+                                        startDrag(
+                                            attachment,
+                                            attachIdx,
+                                            e,
+                                            'ATTACHMENT',
+                                            'portrait',
+                                            character.id
+                                        );
+                                    }}
+                                >
+                                    <Card
+                                        card={attachment}
+                                        size="sm"
+                                        isDraggable={!isOpponent}
+                                    />
+                                </S.AttachmentWrapper>
+                            );
+                        })}
+                    </S.AttachmentsContainer>
+                )}
+            </S.CharacterStack>
+        </S.SkirmishGroup>
     );
 };
