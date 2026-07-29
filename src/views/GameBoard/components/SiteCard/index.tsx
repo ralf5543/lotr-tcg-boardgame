@@ -8,7 +8,11 @@ import { KeywordBadge } from '../KeywordBadge';
 export interface SiteCardProps {
     site: SiteCardState;
     size?: S.SiteCardSize;
-    playersHere?: { p0?: boolean; p1?: boolean };
+    // 🟢 On passe les URLs des avatars pour p0 et p1 (ou boolean si pas d'avatar)
+    playersHere?: {
+        p0?: { avatarUrl?: string; name?: string } | boolean;
+        p1?: { avatarUrl?: string; name?: string } | boolean;
+    };
     className?: string;
     style?: React.CSSProperties;
 }
@@ -20,16 +24,20 @@ export const SiteCard: React.FC<SiteCardProps> = ({
     className,
     style,
 }) => {
-    // --- INTERPRÉTEUR DE TRADUCTION ---
-    // On mappe chaque mot-clé brut vers sa version traduite.
-    // Si la traduction n'existe pas, on conserve la clé brute par sécurité.
     const translatedKeywords = site.keywords
         ?.map((kw) => TRANSLATIONS.keyword[kw] || kw)
         .join(', ');
 
+    // Helpers pour extraire facilement les infos p0 / p1
+    const p0Data = typeof playersHere?.p0 === 'object' ? playersHere.p0 : null;
+    const p1Data = typeof playersHere?.p1 === 'object' ? playersHere.p1 : null;
+
+    const hasP0 = Boolean(playersHere?.p0);
+    const hasP1 = Boolean(playersHere?.p1);
+
     return (
         <S.Container $size={size} className={className} style={style}>
-            {site.keywords && site.keywords.length > 0 && size ==="sm" && (
+            {site.keywords && site.keywords.length > 0 && size === 'sm' && (
                 <S.SiteKeywordsContainer>
                     {site.keywords.map((kw) => (
                         <KeywordBadge key={kw} keyword={kw} size={20} />
@@ -60,8 +68,20 @@ export const SiteCard: React.FC<SiteCardProps> = ({
                     </span>
                     {playersHere && (
                         <>
-                            {playersHere.p0 && <TokenPlayer value="1" />}
-                            {playersHere.p1 && <TokenPlayer value="2" />}
+                            {hasP0 && (
+                                <TokenPlayer
+                                    value="0"
+                                    avatarUrl={p0Data?.avatarUrl}
+                                    playerName={p0Data?.name}
+                                />
+                            )}
+                            {hasP1 && (
+                                <TokenPlayer
+                                    value="1"
+                                    avatarUrl={p1Data?.avatarUrl}
+                                    playerName={p1Data?.name}
+                                />
+                            )}
                         </>
                     )}
                 </S.Footer>

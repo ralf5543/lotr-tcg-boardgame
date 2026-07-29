@@ -139,7 +139,14 @@ export interface CardState {
     name?: string;
 }
 
+export interface PlayerProfile {
+    name: string;
+    avatar: string;
+    faction: 'freePeoples' | 'shadow';
+}
+
 export interface PlayerState {
+    profile: PlayerProfile;
     deck: CardState[];
     hand: CardState[];
     discard: CardState[];
@@ -168,9 +175,19 @@ export interface GameState {
     players: Record<string, PlayerState>;
     awaitingSiteSelection: boolean;
     statusMessage: string;
+    actionWindow?: ActionWindow;
 }
 
 export interface KeywordData {
     label: string;
     description: string;
+}
+
+export interface ActionWindow {
+    isOpen: boolean;
+    title?: string;
+    message?: string;
+    activePlayerId: string; // Ex: '0' ou '1'
+    passedPlayers: string[]; // Tableau pour suivre qui a fait "Passer" (ex: ['0'])
+    canPass?: boolean;       // Permet de choisir si le bouton "Passer" est affiché
 }

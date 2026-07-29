@@ -44,7 +44,6 @@ export const SitePath: React.FC<SitePathProps> = ({
         const handleCardDropped = (e: CustomEvent) => {
             const { draggedCard, targetId } = e.detail;
 
-            // On ne réagit QUE si la cible est bien sitePath
             if (targetId === 'sitePath') {
                 const siteId = draggedCard?.card?.id;
                 console.log(
@@ -80,6 +79,10 @@ export const SitePath: React.FC<SitePathProps> = ({
 
     const { setHoveredCard } = useHoverCard();
 
+    // 🟢 Récupération des deux joueurs pour extraire facilement leurs profils
+    const p0 = players?.['0'];
+    const p1 = players?.['1'];
+
     return (
         <S.SitespathContainer>
             <h3
@@ -96,22 +99,38 @@ export const SitePath: React.FC<SitePathProps> = ({
             <S.SitesGrid>
                 {slots.map((site, index) => {
                     const isNextEmpty = index === nextEmptyIndex;
-                    
-                    // Un slot est en survol actif SI c'est le slot valide ET que la carte attrapée est un site paysage
+
                     const isHovered =
                         isNextEmpty &&
                         activeTargetId === 'sitePath' &&
                         dragged?.orientation === 'landscape';
 
-                    const p0Here = players?.['0']?.currentSiteIndex === index;
-                    const p1Here = players?.['1']?.currentSiteIndex === index;
+                    // Vérification de la présence des joueurs sur l'index courant
+                    const isP0Here = p0?.currentSiteIndex === index;
+                    const isP1Here = p1?.currentSiteIndex === index;
                     const regionBonus = getRegionBonus(index);
+
+                    // 🟢 Préparation des données complètes pour playersHere
+                    const playersHere = {
+                        p0: isP0Here
+                            ? {
+                                  avatarUrl: p0?.profile?.avatar,
+                                  name: p0?.profile?.name,
+                              }
+                            : false,
+                        p1: isP1Here
+                            ? {
+                                  avatarUrl: p1?.profile?.avatar,
+                                  name: p1?.profile?.name,
+                              }
+                            : false,
+                    };
 
                     return (
                         <S.SiteCardContainer
                             key={index}
                             ref={isNextEmpty ? nextSlotRef : null}
-                            $isCurrent={p0Here || p1Here}
+                            $isCurrent={isP0Here || isP1Here}
                             $index={index}
                             $isHovered={isHovered}
                             onMouseEnter={() => {
@@ -125,7 +144,7 @@ export const SitePath: React.FC<SitePathProps> = ({
                                 <SiteCard
                                     site={site}
                                     size="sm"
-                                    playersHere={{ p0: p0Here, p1: p1Here }}
+                                    playersHere={playersHere}
                                 />
                             ) : (
                                 <div
@@ -136,7 +155,7 @@ export const SitePath: React.FC<SitePathProps> = ({
                                         justifyContent: 'center',
                                         height: '100%',
                                         pointerEvents: 'none',
-                                        backgroundColor: 'rgb(26, 37, 47)'
+                                        backgroundColor: 'rgb(26, 37, 47)',
                                     }}
                                 >
                                     <span
@@ -153,7 +172,9 @@ export const SitePath: React.FC<SitePathProps> = ({
                                             color: isNextEmpty
                                                 ? '#e2c044'
                                                 : '#888',
-                                            fontWeight: isHovered ? 'bold' : 'normal',
+                                            fontWeight: isHovered
+                                                ? 'bold'
+                                                : 'normal',
                                         }}
                                     >
                                         {isNextEmpty

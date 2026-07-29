@@ -60,6 +60,18 @@ const createRealLotrDeck = (playerId: string): CardState[] => {
 };
 
 const createInitialPlayer = (playerId: string): PlayerState => ({
+    profile:
+        playerId === '0'
+            ? {
+                  name: 'Raphaël',
+                  avatar: 'avatars/avatar_p0.webp',
+                  faction: 'freePeoples',
+              }
+            : {
+                  name: "Tom",
+                  avatar: 'avatars/avatar_p1.webp',
+                  faction: 'shadow',
+              },
     deck: createRealLotrDeck(playerId),
     hand: [],
     discard: [],
@@ -120,6 +132,33 @@ export const advanceCompany = (
     }
 };
 
+export const passActionWindow = ({ G, ctx }: { G: GameState; ctx: Ctx }) => {
+    if (!G.actionWindow) return;
+
+    const currentPlayer = ctx.currentPlayer; // ou le joueur courant
+    const otherPlayer = currentPlayer === '0' ? '1' : '0';
+
+    // Ajouter le joueur courant aux "passés"
+    const updatedPassed = [...(G.actionWindow.passedPlayers || []), currentPlayer];
+
+    // Si les DEUX joueurs ont passé consécutivement -> On ferme la fenêtre d'action !
+    if (updatedPassed.includes('0') && updatedPassed.includes('1')) {
+        G.actionWindow = {
+            ...G.actionWindow,
+            isOpen: false,
+            passedPlayers: [],
+        };
+        // 💡 Ici tu peux aussi exécuter la résolution du combat / changement de phase
+    } else {
+        // Sinon, on passe la main à l'autre joueur
+        G.actionWindow = {
+            ...G.actionWindow,
+            activePlayerId: otherPlayer,
+            passedPlayers: updatedPassed,
+        };
+    }
+};
+
 // 🛠️ MOVES COMMUNS STRICTEMENT TYPÉS
 const commonMoves = {
     // 🛠️ MOVES DEV
@@ -159,7 +198,7 @@ const commonMoves = {
                     culture: 'ELVEN',
                     gameText: 'Archerie test card',
                     title: 'efsfsdf',
-                    isUnique: false
+                    isUnique: true
                 },
             ];
             G.battlefield = [

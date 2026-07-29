@@ -13,7 +13,7 @@ import { DragProvider } from '../../contexts/DragContext';
 import { TwilightPool } from './components/TwilightPool';
 import { Dock } from './components/Dock';
 import { SitesPicker } from './components/SitePicker';
-import { GameNotifications } from './components/GameNotifications';
+import { GameControls } from './components/GameControls';
 import {
     canDropInSupportArea,
     canDropInFellowship,
@@ -211,11 +211,14 @@ export const GameBoard: React.FC<GameBoardProps> = ({
                 )}
                 <PhaseBanner key={ctx.phase} phaseName={ctx.phase} />
                 <DevPanel G={G} ctx={ctx} moves={moves} />
-                <GameNotifications
-                    statusMessage={G.statusMessage ?? "En attente d'action..."}
-                    activePlayerId={ctx.currentPlayer}
-                    isMyTurn={isMyTurn}
+                <GameControls
+                    G={G}
+                    statusMessage={G.statusMessage}
+                    ctx={ctx}
+                    playerID={playerID}
+                    isMyTurn={ctx.currentPlayer === playerID}
                     awaitingSite={G.awaitingSiteSelection ?? false}
+                    moves={moves}
                 />
 
                 {/* ==================== 1. ADVERSAIRE ==================== */}
@@ -230,43 +233,6 @@ export const GameBoard: React.FC<GameBoardProps> = ({
 
                 {/* ==================== 2. CENTRAL ==================== */}
                 <S.CentralBlock>
-                    <S.PhaseBanner>
-                        <span>
-                            Phase : <strong>{ctx.phase?.toUpperCase()}</strong>
-                        </span>
-                        <span>
-                            Joueur actif :{' '}
-                            <strong>
-                                {ctx.currentPlayer === '0'
-                                    ? 'Peuples Libres'
-                                    : 'Ombre'}
-                            </strong>
-                        </span>
-
-                        {ctx.phase === 'fellowship' && playerID === '0' && (
-                            <button onClick={() => moves.endFellowshipPhase()}>
-                                Fin de Communauté ➔
-                            </button>
-                        )}
-
-                        {ctx.phase === 'shadow' && playerID === '1' && (
-                            <button onClick={() => moves.endShadowPhase()}>
-                                Fin de l'Ombre ➔
-                            </button>
-                        )}
-
-                        {ctx.phase === 'regroup' && playerID === '0' && (
-                            <>
-                                <button onClick={() => moves.moveNextSite()}>
-                                    Avancer au site suivant 🏕️
-                                </button>
-                                <button onClick={() => moves.endTurn()}>
-                                    Terminer le tour 🏁
-                                </button>
-                            </>
-                        )}
-                    </S.PhaseBanner>
-
                     <S.MainZone>
                         <TwilightPool value={G.twilightPool} />
                         <Battlefield
