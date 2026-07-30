@@ -17,6 +17,7 @@ interface BoardCharacterStackProps {
     assignedMinions?: CardState[];
     onSelectSkirmish?: (skirmishId: string) => void; // 🟢 Callback pour sélectionner ce combat
     isSelectedSkirmish?: boolean;
+    isSelectionAllowed?: boolean;
 }
 
 export const BoardCharacterStack: React.FC<BoardCharacterStackProps> = ({
@@ -31,6 +32,7 @@ export const BoardCharacterStack: React.FC<BoardCharacterStackProps> = ({
     assignedMinions = [],
     onSelectSkirmish,
     isSelectedSkirmish = false,
+    isSelectionAllowed = true,
 }) => {
     const { registerTarget, activeTargetId, dragged, startDrag } = useDrag();
 
@@ -50,9 +52,43 @@ export const BoardCharacterStack: React.FC<BoardCharacterStackProps> = ({
         activeTargetId === character.id &&
         (canAttachToCharacter(draggedSubtype) || isMinionAssignment);
 
-    const handleStackClick = () => {
+    // Règle de sélection : Uniquement en phase skirmish, avec un ID, si des minions sont assignés et si la sélection est permise
+    const canSelectThisSkirmish =
+        isSkirmishPhase &&
+        Boolean(skirmishId) &&
+        assignedMinions.length > 0 &&
+        isSelectionAllowed;
+
+    const handleStackClick = (e: React.MouseEvent) => {
+        // 1. On stoppe immédiatement la propagation pour que le DragContext
+        // ou le parent ne déclenche pas un faux "Drop"
+        e.stopPropagation();
+
+        console.log('1. [CLICK] Clic intercepté sur BoardCharacterStack !', {
+            isSkirmishPhase,
+            skirmishId,
+            hasOnSelectSkirmish: Boolean(onSelectSkirmish),
+            assignedMinionsCount: assignedMinions.length,
+        });
+
+        // 2. On vérifie les conditions pour déclencher le combat
         if (isSkirmishPhase && skirmishId && onSelectSkirmish) {
+            console.log(
+                '2. [CLICK] Condition OK -> Appel de onSelectSkirmish pour',
+                skirmishId
+            );
             onSelectSkirmish(skirmishId);
+        } else {
+            console.warn(
+                '⚠️ [CLICK] Clic ignoré car les conditions ne sont pas réunies.',
+                {
+                    reason: !isSkirmishPhase
+                        ? "Ce n'est pas la phase de Skirmish"
+                        : !skirmishId
+                          ? 'skirmishId est manquant'
+                          : 'onSelectSkirmish est manquant',
+                }
+            );
         }
     };
 
@@ -60,12 +96,17 @@ export const BoardCharacterStack: React.FC<BoardCharacterStackProps> = ({
         <S.SkirmishGroup
             $isSkirmishPhase={isSkirmishPhase && assignedMinions.length > 0}
             $isSelected={isSelectedSkirmish}
+            $isOpponent={isOpponent}
+            $isSelectable={canSelectThisSkirmish}
             onClick={handleStackClick}
         >
             <S.CharacterStack $isBeingDragged={isBeingDragged}>
                 {/* 🟢 SÉIDES ASSIGNÉS (Affichés dans leur propre conteneur distinct des possessions) */}
                 {assignedMinions.length > 0 && (
-                    <S.AssignedMinionsContainer $isOpponent={isOpponent} className="assigned-minions-group">
+                    <S.AssignedMinionsContainer
+                        $isOpponent={isOpponent}
+                        className="assigned-minions-group"
+                    >
                         {assignedMinions.map((minion, mIdx) => (
                             <S.MinionWrapper key={minion.id} $index={mIdx}>
                                 <Card
@@ -125,7 +166,8 @@ export const BoardCharacterStack: React.FC<BoardCharacterStackProps> = ({
                                         !isOpponent ? 'true' : undefined
                                     }
                                     onPointerDown={(e) => {
-                                        if (isOpponent || e.button !== 0) return;
+                                        if (isOpponent || e.button !== 0)
+                                            return;
                                         e.stopPropagation();
 
                                         startDrag(

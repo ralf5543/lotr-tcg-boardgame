@@ -122,12 +122,6 @@ export const AssignedMinionsContainer = styled.div<{ $isOpponent?: boolean }>`
 export const MinionWrapper = styled.div`
     /* S'assure que chaque carte garde sa taille naturelle */
     flex: 0 0 auto;
-    transition: transform 0.2s ease-in-out;
-
-    &:hover {
-        transform: scale(1.08);
-        z-index: 4;
-    }
 `;
 
 /* =========================================================
@@ -136,25 +130,61 @@ export const MinionWrapper = styled.div`
 export const SkirmishGroup = styled.div<{
     $isSkirmishPhase?: boolean;
     $isSelected?: boolean;
+    $isSelectable?: boolean;
+    $isOpponent?: boolean;
 }>`
     position: relative;
     border-radius: 8px;
     transition: all 0.2s ease-in-out;
+
+    /* PONT INVISIBLE : Donne de la texture entre le personnage et ses séides */
+    &::before {
+        content: '';
+        position: absolute;
+        top: -60px;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        background: transparent;
+        pointer-events: auto;
+        z-index: 0;
+    }
 
     ${({ $isSkirmishPhase }) =>
         $isSkirmishPhase &&
         css`
             cursor: pointer;
             &:hover {
-                box-shadow: 0 0 12px rgba(231, 76, 60, 0.8);
+                filter: drop-shadow(red 0px 0px 25px)
+                    drop-shadow(red 0px 0px 25px);
             }
         `}
 
     ${({ $isSelected }) =>
         $isSelected &&
         css`
-            outline: 3px solid #e74c3c;
-            outline-offset: 4px;
-            box-shadow: 0 0 16px rgba(231, 76, 60, 0.9);
+            &::after {
+                content: 'X';
+                width: 50px;
+                height: 50px;
+                border: 2px solid green;
+                position: absolute;
+                inset-block-end: 100%;
+                inset-inline-start: 50%;
+                z-index: 9;
+                background-color: red;
+                transform: translateX(-50%);
+                margin-block-end: -17px;
+            }
+            
+        `}
+    ${({ $isOpponent }) =>
+        $isOpponent &&
+        css`
+            &::after {
+                inset-block-end: auto;
+                inset-block-start: 100%;
+            }
+            
         `}
 `;

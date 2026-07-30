@@ -170,13 +170,15 @@ export interface SiteCardState {
 
 export interface GameState {
     twilightPool: number;
-    currentSiteIndex: number;
-    movesThisTurn: number;
+    currentSiteIndex?: number;
+    currentSite?: number;
+    movesThisTurn?: number;
     path: (SiteCardState | null)[];
     battlefield: CardState[];
     players: Record<string, PlayerState>;
     awaitingSiteSelection: boolean;
     statusMessage: string;
+    activeSkirmishId?: string;
     actionWindow?: ActionWindow;
     skirmishes: SkirmishState[];
     assignmentStep?: 'FP_ASSIGN' | 'SHADOW_ASSIGN' | 'COMPLETED';
@@ -194,6 +196,7 @@ export interface ActionWindow {
     activePlayerId: string; // Ex: '0' ou '1'
     passedPlayers: string[]; // Tableau pour suivre qui a fait "Passer" (ex: ['0'])
     canPass?: boolean;       // Permet de choisir si le bouton "Passer" est affiché
+    passesCount?: number;
 }
 
 export interface SkirmishState {

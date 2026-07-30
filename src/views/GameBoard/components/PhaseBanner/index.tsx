@@ -10,7 +10,7 @@ const PHASE_LABELS: Record<string, string> = {
     shadow: "Phase de l'Ombre",
     maneuver: 'Phase de manoeuvre',
     archery: "Phase d'archerie",
-    assignment: "Phase d'affectation'",
+    assignment: "Phase d'affectation",
     skirmish: "Phase de combat",
     regroup: 'Phase de ralliement',
 };

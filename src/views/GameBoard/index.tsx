@@ -1,6 +1,11 @@
 // src/views/GameBoard/index.tsx
 import React, { useEffect } from 'react';
-import type { CardState, CardType, SiteCardState } from '../../game/types';
+import type {
+    CardState,
+    CardType,
+    SiteCardState,
+    GameState,
+} from '../../game/types';
 import { Battlefield } from './components/Battlefield';
 import { SitePath } from './components/SitePath';
 import { PlayerArea } from './components/PlayerArea';
@@ -62,8 +67,6 @@ export const GameBoard: React.FC<GameBoardProps> = ({
 }) => {
     const myId = playerID || ctx.currentPlayer;
     const oppId = myId === '0' ? '1' : '0';
-
-    const isMyTurn = ctx.activePlayers?.[playerID || ''] === 'play';
 
     const me = G.players[myId] || {
         deck: [],
@@ -204,10 +207,13 @@ export const GameBoard: React.FC<GameBoardProps> = ({
                     targetId !== 'battlefield' &&
                     targetId !== 'sitePath'
                 ) {
-                    console.log('⚔️ [GLOBAL DROP] Assignation Séide -> Compagnon:', {
-                        minionId: card.id,
-                        companionId: targetId,
-                    });
+                    console.log(
+                        '⚔️ [GLOBAL DROP] Assignation Séide -> Compagnon:',
+                        {
+                            minionId: card.id,
+                            companionId: targetId,
+                        }
+                    );
 
                     // 🚀 Appel du move boardgame.io
                     moves.assignMinion(card.id, targetId);
@@ -259,6 +265,8 @@ export const GameBoard: React.FC<GameBoardProps> = ({
                     moves={moves}
                     skirmishes={G.skirmishes}
                     battlefield={G.battlefield}
+                    isSkirmishPhase={ctx.phase === 'skirmish'}
+                    activeSkirmishId={(G as GameState).activeSkirmishId}
                 />
 
                 {/* ==================== 2. CENTRAL ==================== */}
@@ -275,7 +283,7 @@ export const GameBoard: React.FC<GameBoardProps> = ({
                     </S.MainZone>
                 </S.CentralBlock>
 
-                {/* ==================== 3. TE ==================== */}
+                {/* ==================== 3. MOI ==================== */}
                 <PlayerArea
                     playerId={myId}
                     deckCount={me.deck?.length || 0}
@@ -285,6 +293,8 @@ export const GameBoard: React.FC<GameBoardProps> = ({
                     moves={moves}
                     skirmishes={G.skirmishes}
                     battlefield={G.battlefield}
+                    isSkirmishPhase={ctx.phase === 'skirmish'}
+                    activeSkirmishId={(G as GameState).activeSkirmishId}
                 />
 
                 {/* ==================== SITE PATH ==================== */}

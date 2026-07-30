@@ -10,7 +10,7 @@ import { Card } from '../views/GameBoard/components/Card';
 import { SiteCard } from '../views/GameBoard/components/SiteCard';
 
 export type CardOrientation = 'portrait' | 'landscape';
-export type CardOrigin = 'HAND' | 'BOARD' | 'ATTACHMENT'| 'BATTLEFIELD';
+export type CardOrigin = 'HAND' | 'BOARD' | 'ATTACHMENT' | 'BATTLEFIELD';
 
 interface DraggedCardData {
     card: CardState | SiteCardState;
@@ -98,12 +98,20 @@ export const DragProvider: React.FC<{ children: React.ReactNode }> = ({
         // Surface totale de la carte traînée
         const cardArea = cardWidthPhys * cardHeightPhys;
 
-        let hitCompanionId: string | null = null;
-        let hitZoneId: string | null = null;
+        // 1. On cherche d'abord si on chevauche un compagnon/carte spécifique (Priorité Attachement)
+        let bestCompanionId: string | null = null;
+        let maxCompanionOverlap = 0;
+
+        // 2. En parallèle, on cherche la meilleure zone globale de plateau
+        let bestZoneId: string | null = null;
+        let maxZoneOverlapRatio = 0;
 
         targetsRef.current.forEach((targetEl, id) => {
+            if (!targetEl) return;
+
             const targetRect = targetEl.getBoundingClientRect();
 
+            // Calcul de l'intersection entre la carte glissée et la cible
             const xOverlap = Math.max(
                 0,
                 Math.min(cardRightPhys, targetRect.right) -
@@ -116,28 +124,45 @@ export const DragProvider: React.FC<{ children: React.ReactNode }> = ({
             );
             const overlapArea = xOverlap * yOverlap;
 
-            if (overlapArea > 0) {
-                const cardOverlapRatio = overlapArea / cardArea;
+            if (overlapArea <= 0) return;
+
+            const cardOverlapRatio = overlapArea / cardArea;
+
+            // A) S'il s'agit d'une Zone du Plateau
+            if (
+                id === 'fellowshipArea' ||
+                id === 'sitePath' ||
+                id === 'supportArea' ||
+                id === 'battlefield'
+            ) {
+                // 💡 CONFORT : Passe 0.2 à 0.35 ou 0.4 si tu veux qu'il faille entrer plus franchement dans la zone
+                const ZONE_THRESHOLD = 0.2;
 
                 if (
-                    id === 'fellowshipArea' ||
-                    id === 'sitePath' ||
-                    id === 'supportArea' ||
-                    id === 'battlefield'
+                    cardOverlapRatio > ZONE_THRESHOLD &&
+                    cardOverlapRatio > maxZoneOverlapRatio
                 ) {
-                    if (cardOverlapRatio > 0.2) {
-                        hitZoneId = id;
-                    }
-                } else {
-                    const targetArea = targetRect.width * targetRect.height;
-                    if (overlapArea > targetArea * 0.1) {
-                        hitCompanionId = id;
-                    }
+                    maxZoneOverlapRatio = cardOverlapRatio;
+                    bestZoneId = id;
+                }
+            }
+            // B) S'il s'agit d'un Compagnon / Carte cible pour attachement
+            else {
+                const targetArea = targetRect.width * targetRect.height;
+                const targetOverlapRatio = overlapArea / targetArea;
+
+                // On retient le compagnon avec lequel le chevauchement est le plus important
+                if (
+                    targetOverlapRatio > 0.15 &&
+                    targetOverlapRatio > maxCompanionOverlap
+                ) {
+                    maxCompanionOverlap = targetOverlapRatio;
+                    bestCompanionId = id;
                 }
             }
         });
 
-        return hitCompanionId || hitZoneId || null;
+        return bestCompanionId || bestZoneId || null;
     };
 
     const startDrag = (
@@ -227,14 +252,6 @@ export const DragProvider: React.FC<{ children: React.ReactNode }> = ({
                     cardHeightPhysBase
                 );
                 const targetToUse = finalTargetId || activeTargetIdRef.current;
-
-                // 🟢 LOG 1 : Détails du drop déclenché
-        console.log('🚀 [DragContext] Drop déclenché :', {
-            card: dragged.card.title || dragged.card.name,
-            origin: dragged.origin,
-            parentId: dragged.parentId,
-            targetId: targetToUse,
-        });
 
                 const dropEvent = new CustomEvent('card-dropped', {
                     detail: { draggedCard: dragged, targetId: targetToUse },

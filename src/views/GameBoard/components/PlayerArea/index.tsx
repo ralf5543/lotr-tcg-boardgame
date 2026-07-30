@@ -18,6 +18,8 @@ interface PlayerAreaProps {
     moves: any;
     skirmishes?: Array<{ companionId?: string; minionIds?: string[] }>;
     battlefield?: CardState[];
+    isSkirmishPhase?: boolean;
+    activeSkirmishId?: string;
 }
 
 export const PlayerArea: React.FC<PlayerAreaProps> = ({
@@ -29,11 +31,15 @@ export const PlayerArea: React.FC<PlayerAreaProps> = ({
     moves,
     skirmishes = [],
     battlefield = [],
+    isSkirmishPhase = false,
+    activeSkirmishId,
 }) => {
     const isFreePeoplesPlayer = playerId === '0';
     const { activeTargetId, registerTarget, startDrag, dragged } = useDrag();
 
-    const cardSubtype = (dragged?.card as CardState)?.type as CardType | undefined;
+    const cardSubtype = (dragged?.card as CardState)?.type as
+        | CardType
+        | undefined;
 
     useEffect(() => {
         const handleReorderDrop = (e: Event) => {
@@ -51,7 +57,10 @@ export const PlayerArea: React.FC<PlayerAreaProps> = ({
 
                 if (targetId !== 'fellowshipArea') {
                     toIndex = currentList.findIndex(
-                        (c) => c && (c.id === targetId || (c as any).card?.id === targetId)
+                        (c) =>
+                            c &&
+                            (c.id === targetId ||
+                                (c as any).card?.id === targetId)
                     );
                 } else {
                     toIndex = currentList.length - 1;
@@ -66,7 +75,8 @@ export const PlayerArea: React.FC<PlayerAreaProps> = ({
         };
 
         window.addEventListener('card-dropped', handleReorderDrop);
-        return () => window.removeEventListener('card-dropped', handleReorderDrop);
+        return () =>
+            window.removeEventListener('card-dropped', handleReorderDrop);
     }, [isOpponent, moves, fellowshipArea]);
 
     const renderFellowship = () => {
@@ -82,41 +92,58 @@ export const PlayerArea: React.FC<PlayerAreaProps> = ({
                     className="fellowship-active"
                     $borderColor="#3498db"
                     $isTargeted={isFellowshipTargeted}
-                    ref={(el) => !isOpponent && registerTarget('fellowshipArea', el)}
+                    ref={(el) =>
+                        !isOpponent && registerTarget('fellowshipArea', el)
+                    }
                 >
                     <S.CardRow>
                         {(fellowshipArea || []).length === 0 && (
                             <S.EmptyText>Aucun compagnon déployé.</S.EmptyText>
                         )}
-                        {(fellowshipArea || []).map((companion, companionIdx) => {
-                            const skirmish = skirmishes.find(
-                                (s) => s.companionId === companion.id
-                            );
-                            const assignedMinions = battlefield.filter(
-                                (m) => skirmish?.minionIds?.includes(m.id)
-                            );
+                        {(fellowshipArea || []).map(
+                            (companion, companionIdx) => {
+                                const skirmish = skirmishes.find(
+                                    (s) => s.companionId === companion.id
+                                );
+                                const assignedMinions = battlefield.filter(
+                                    (m) => skirmish?.minionIds?.includes(m.id)
+                                );
 
-                            return (
-                                <BoardCharacterStack
-                                    key={companion.id}
-                                    character={companion}
-                                    index={companionIdx}
-                                    isOpponent={isOpponent}
-                                    assignedMinions={assignedMinions}
-                                    onStartDrag={(e) => {
-                                        if (isOpponent || e.button !== 0) return;
-                                        e.stopPropagation();
-                                        startDrag(
-                                            companion,
-                                            companionIdx,
-                                            e,
-                                            'BOARD',
-                                            'portrait'
-                                        );
-                                    }}
-                                />
-                            );
-                        })}
+                                // ID du combat (si non présent sur skirmish, fallback sur l'ID généré)
+                                const skirmishId =
+                                    skirmish?.id || `skirmish_${companion.id}`;
+
+                                return (
+                                    <BoardCharacterStack
+                                        key={companion.id}
+                                        character={companion}
+                                        index={companionIdx}
+                                        isOpponent={isOpponent}
+                                        assignedMinions={assignedMinions}
+                                        isSkirmishPhase={isSkirmishPhase}
+                                        skirmishId={skirmishId}
+                                        isSelectedSkirmish={
+                                            activeSkirmishId === skirmishId
+                                        }
+                                        onSelectSkirmish={(id) =>
+                                            moves.selectSkirmish?.(id)
+                                        }
+                                        onStartDrag={(e) => {
+                                            if (isOpponent || e.button !== 0)
+                                                return;
+                                            e.stopPropagation();
+                                            startDrag(
+                                                companion,
+                                                companionIdx,
+                                                e,
+                                                'BOARD',
+                                                'portrait'
+                                            );
+                                        }}
+                                    />
+                                );
+                            }
+                        )}
                     </S.CardRow>
                 </S.Fellowship>
             );
@@ -166,7 +193,6 @@ export const PlayerArea: React.FC<PlayerAreaProps> = ({
 
     return (
         <S.AreaContainer $isOpponent={isOpponent}>
-
             {isOpponent ? (
                 <>
                     {renderSupportArea()}

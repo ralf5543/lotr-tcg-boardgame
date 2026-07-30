@@ -38,6 +38,7 @@ export const Battlefield: React.FC<BattlefieldProps> = ({
     const unassignedMinions = cards.filter(
         (minion) => !skirmishes.some((s) => s.minionIds?.includes(minion.id))
     );
+    
 
     return (
         <S.Battlefield ref={containerRef} $isHovered={isHovered}>

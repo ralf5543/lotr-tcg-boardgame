@@ -21,7 +21,6 @@ export const FactionProvider: React.FC<{
     
     // Est-ce que l'écran actuel correspond au joueur qui doit jouer ?
     const isMyTurn = currentPlayer === myPlayerId;
-    console.log('currentPlayer : ', currentPlayer);
 
     return (
         <FactionContext.Provider value={{ playerFaction, isMyTurn }}>

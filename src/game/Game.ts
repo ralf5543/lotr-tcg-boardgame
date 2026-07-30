@@ -3,7 +3,6 @@ import type {
     GameState,
     CardState,
     PlayerState,
-    SkirmishState,
     LotrPhaseContext,
     LotrMoveContext,
 } from './types';
@@ -87,6 +86,150 @@ const getTargetPlayerId = (playerID: string | undefined, ctx: Ctx): string => {
     return String(ctx.currentPlayer ?? '0');
 };
 
+// --- CALCULS DU COMBAT ET BLESSURES ---
+
+const getCardTotalStrength = (card: CardState): number => {
+    const baseStrength = card.strength ?? 0;
+    const attachmentStrength = (card.attachments || []).reduce(
+        (acc, att) => acc + (att.strength ?? 0),
+        0
+    );
+    return baseStrength + attachmentStrength;
+};
+
+export const applyWoundToCard = (
+    G: GameState,
+    cardId: string,
+    woundCount = 1
+): boolean => {
+    // Recherche de la carte chez le joueur FP (fellowshipArea) ou dans le battlefield (séides)
+    let cardOwner: '0' | '1' | undefined;
+    let card = G.players['0'].fellowshipArea.find((c) => c.id === cardId);
+
+    if (card) {
+        cardOwner = '0';
+    } else {
+        card = G.battlefield.find((c) => c.id === cardId);
+        if (card) {
+            cardOwner = '1';
+        }
+    }
+
+    if (!card || !cardOwner) return false;
+
+    card.wounds = (card.wounds || 0) + woundCount;
+    const vitality = card.vitality ?? 1;
+
+    // Mort de la carte
+    if (card.wounds >= vitality) {
+        if (cardOwner === '0') {
+            G.players['0'].fellowshipArea = G.players['0'].fellowshipArea.filter(
+                (c) => c.id !== cardId
+            );
+            G.players['0'].discard.push(card);
+        } else {
+            G.battlefield = G.battlefield.filter((c) => c.id !== cardId);
+            G.players['1'].discard.push(card);
+        }
+
+        // Nettoyage des attachements vers la défausse du propriétaire
+        if (card.attachments && card.attachments.length > 0) {
+            card.attachments.forEach((attachment) => {
+                const owner = attachment.kind === 'SHADOW' ? '1' : '0';
+                G.players[owner].discard.push(attachment);
+            });
+            card.attachments = [];
+        }
+        return true; // La carte a été éliminée
+    }
+
+    return false; // La carte est blessée mais a survécu
+};
+
+export const resolveSkirmish = (
+    G: GameState,
+    _ctx: Ctx,
+    events?: LotrEventsAPI
+) => {
+    if (!G.activeSkirmishId) return;
+
+    const skirmishIndex = G.skirmishes.findIndex(
+        (s) => s.id === G.activeSkirmishId
+    );
+    if (skirmishIndex === -1) {
+        G.activeSkirmishId = undefined;
+        return;
+    }
+
+    const skirmish = G.skirmishes[skirmishIndex];
+    const companion = G.players['0'].fellowshipArea.find(
+        (c) => c.id === skirmish.companionId
+    );
+    const minions = G.battlefield.filter((c) =>
+        skirmish.minionIds.includes(c.id)
+    );
+
+    if (!companion) {
+        // Le compagnon n'existe plus, on annule l'escarmouche
+        G.skirmishes.splice(skirmishIndex, 1);
+        G.activeSkirmishId = undefined;
+        G.actionWindow = undefined;
+        return;
+    }
+
+    const companionStrength = getCardTotalStrength(companion);
+    const minionsStrength = minions.reduce(
+        (sum, m) => sum + getCardTotalStrength(m),
+        0
+    );
+
+    let resultMsg = `Résolution : ${companion.name} (${companionStrength}) vs `;
+    resultMsg += minions.map((m) => `${m.name} (${getCardTotalStrength(m)})`).join(', ');
+    resultMsg += ` [Total Ombre: ${minionsStrength}]. `;
+
+    if (companionStrength > minionsStrength) {
+        // 🟢 Victoire des Peuples Libres
+        resultMsg += `Victoire de ${companion.name} ! `;
+        minions.forEach((minion) => {
+            const killed = applyWoundToCard(G, minion.id, 1);
+            resultMsg += `${minion.name} subit 1 blessure${killed ? ' et meurt' : ''}. `;
+        });
+    } else {
+        // 🔴 Victoire de l'Ombre (l'égalité profite à l'Ombre)
+        resultMsg += `Victoire de l'Ombre ! `;
+
+        // Règle d'écrasement (Overwhelm) : Force de l'Ombre >= 2x Force du Compagnon
+        const isOverwhelmed =
+            companionStrength > 0
+                ? minionsStrength >= 2 * companionStrength
+                : minionsStrength > 0;
+
+        if (isOverwhelmed) {
+            const remainingVitality = (companion.vitality ?? 1) - (companion.wounds || 0);
+            applyWoundToCard(G, companion.id, remainingVitality);
+            resultMsg += `${companion.name} est écrasé (Overwhelmed) et tué sur le coup !`;
+        } else {
+            const killed = applyWoundToCard(G, companion.id, 1);
+            resultMsg += `${companion.name} subit 1 blessure${killed ? ' et meurt' : ''}.`;
+        }
+    }
+
+    G.statusMessage = resultMsg;
+
+    // Retrait de l'escarmouche résolue
+    G.skirmishes.splice(skirmishIndex, 1);
+    G.activeSkirmishId = undefined;
+
+    // Fermeture de la fenêtre d'action
+    G.actionWindow = undefined;
+
+    // Si plus aucune escarmouche ne reste, on termine la phase de combat
+    if (G.skirmishes.length === 0) {
+        G.statusMessage += ' Tous les combats sont terminés.';
+        events?.endPhase?.();
+    }
+};
+
 // --- FONCTIONS UTILITAIRES POUR L'AFFECTATION ---
 
 const getUnassignedMinions = (G: GameState): CardState[] => {
@@ -104,7 +247,6 @@ const checkAssignmentProgress = (
     const unassignedMinions = getUnassignedMinions(G);
     const companions = G.players['0']?.fellowshipArea || [];
 
-    // 1. Si TOUS les séides sont affectés, on termine la phase d'affectation
     if (unassignedMinions.length === 0) {
         G.assignmentStep = 'COMPLETED';
         G.statusMessage =
@@ -113,7 +255,6 @@ const checkAssignmentProgress = (
         return;
     }
 
-    // 2. Si on est à l'étape FP et que tous les compagnons ont au moins 1 séide
     if (G.assignmentStep === 'FP_ASSIGN') {
         const allCompanionsHaveMinion = companions.every((comp) =>
             G.skirmishes.some(
@@ -121,7 +262,6 @@ const checkAssignmentProgress = (
             )
         );
 
-        // Tous les compagnons sont déjà engagés et il reste des séides libres -> L'Ombre surcharge !
         if (allCompanionsHaveMinion) {
             G.assignmentStep = 'SHADOW_ASSIGN';
             G.statusMessage =
@@ -147,12 +287,9 @@ export const advanceCompany = (
         if (!targetSite) return;
 
         const siteCost = Number(targetSite.twilightCost) || 0;
-
-        const companionsCount = p0.fellowshipArea
-            ? p0.fellowshipArea.length
-            : 0;
-
+        const companionsCount = p0.fellowshipArea ? p0.fellowshipArea.length : 0;
         const totalAdded = siteCost + companionsCount;
+
         G.twilightPool += totalAdded;
 
         console.log(
@@ -175,28 +312,35 @@ export const advanceCompany = (
     }
 };
 
-export const passActionWindow = ({ G, ctx }: { G: GameState; ctx: Ctx }) => {
-    if (!G.actionWindow) return;
+export const passActionWindow = ({
+    G,
+    ctx,
+    playerID,
+    events,
+}: LotrMoveContext) => {
+    if (!G.actionWindow || !G.actionWindow.isOpen) return;
 
-    const currentPlayer = ctx.currentPlayer;
-    const otherPlayer = currentPlayer === '0' ? '1' : '0';
+    if (playerID !== G.actionWindow.activePlayerId) return;
 
-    const updatedPassed = [
-        ...(G.actionWindow.passedPlayers || []),
-        currentPlayer,
-    ];
+    const otherPlayer = playerID === '0' ? '1' : '0';
+    const currentPasses = (G.actionWindow.passesCount || 0) + 1;
 
-    if (updatedPassed.includes('0') && updatedPassed.includes('1')) {
+    if (currentPasses >= 2) {
         G.actionWindow = {
             ...G.actionWindow,
             isOpen: false,
-            passedPlayers: [],
+            passesCount: 0,
         };
+
+        if (ctx.phase === 'skirmish' && G.activeSkirmishId) {
+            resolveSkirmish(G, ctx, events);
+        }
     } else {
         G.actionWindow = {
             ...G.actionWindow,
             activePlayerId: otherPlayer,
-            passedPlayers: updatedPassed,
+            passesCount: currentPasses,
+            message: `En attente de la réaction du joueur ${otherPlayer === '0' ? 'FP' : 'Ombre'}...`,
         };
     }
 };
@@ -204,6 +348,10 @@ export const passActionWindow = ({ G, ctx }: { G: GameState; ctx: Ctx }) => {
 // 🛠️ MOVES COMMUNS STRICTEMENT TYPÉS
 const commonMoves = {
     passActionWindow,
+
+    applyWound: ({ G }: LotrMoveContext, targetCardId: string) => {
+        applyWoundToCard(G, targetCardId, 1);
+    },
 
     // 🛠️ MOVES DEV
     devSetTwilight: ({ G }: LotrMoveContext, amount: number) => {
@@ -257,58 +405,6 @@ const commonMoves = {
                 },
                 {
                     id: 'dev-nazgul-2',
-                    name: 'Ukursh, Archor',
-                    kind: 'SHADOW',
-                    type: 'MINION',
-                    twilightCost: 4,
-                    strength: 9,
-                    vitality: 2,
-                    culture: 'RINGWRAITH',
-                    gameText: 'Archerie test card',
-                    title: 'efsfsdf',
-                    isUnique: false,
-                },
-                {
-                    id: 'dev-nazgul-3',
-                    name: 'Ukursh, Archor',
-                    kind: 'SHADOW',
-                    type: 'MINION',
-                    twilightCost: 4,
-                    strength: 9,
-                    vitality: 2,
-                    culture: 'RINGWRAITH',
-                    gameText: 'Archerie test card',
-                    title: 'efsfsdf',
-                    isUnique: false,
-                },
-                {
-                    id: 'dev-nazgul-4',
-                    name: 'Ukursh, Archor',
-                    kind: 'SHADOW',
-                    type: 'MINION',
-                    twilightCost: 4,
-                    strength: 9,
-                    vitality: 2,
-                    culture: 'RINGWRAITH',
-                    gameText: 'Archerie test card',
-                    title: 'efsfsdf',
-                    isUnique: false,
-                },
-                {
-                    id: 'dev-nazgul-5',
-                    name: 'Ukursh, Archor',
-                    kind: 'SHADOW',
-                    type: 'MINION',
-                    twilightCost: 4,
-                    strength: 9,
-                    vitality: 2,
-                    culture: 'RINGWRAITH',
-                    gameText: 'Archerie test card',
-                    title: 'efsfsdf',
-                    isUnique: false,
-                },
-                {
-                    id: 'dev-nazgul-6',
                     name: 'Ukursh, Archor',
                     kind: 'SHADOW',
                     type: 'MINION',
@@ -451,6 +547,8 @@ export const LotrGame: Game<GameState> = {
         statusMessage: 'Phase de Communauté : préparez vos compagnons.',
         awaitingSiteSelection: false,
         skirmishes: [],
+        activeSkirmishId: undefined,
+        actionWindow: undefined,
         assignmentStep: 'FP_ASSIGN',
         path: [
             DUMMY_SITES_PLAYER_0[0],
@@ -666,7 +764,6 @@ export const LotrGame: Game<GameState> = {
         assignment: {
             next: 'skirmish',
             turn: {
-                // boardgame.io active automatiquement le joueur FP ('0') à l'entrée de la phase
                 activePlayers: { value: { '0': 'play' } },
             },
             onBegin: ({ G }: LotrPhaseContext) => {
@@ -679,7 +776,6 @@ export const LotrGame: Game<GameState> = {
                     unassignedMinions.length
                 );
 
-                // 💡 On change juste le message ou le statut d'étape
                 if (unassignedMinions.length === 0) {
                     G.assignmentStep = 'COMPLETED';
                     G.statusMessage =
@@ -689,89 +785,133 @@ export const LotrGame: Game<GameState> = {
                     G.statusMessage =
                         'Phase d’Affectation : Le joueur des Peuples Libres attribue les séides aux compagnons.';
                 }
-                // ⚠️ PLUS AUCUN appel à events.setActivePlayers ou events.endPhase ici !
             },
             moves: {
                 ...commonMoves,
 
                 assignMinion: (
-    { G, ctx, playerID, events }: LotrMoveContext,
-    minionId: string,
-    companionId: string
-) => {
-    const isFP = playerID === '0';
-    const isShadow = playerID === '1';
+                    { G, ctx, playerID, events }: LotrMoveContext,
+                    minionId: string,
+                    companionId: string
+                ) => {
+                    const isFP = playerID === '0';
+                    const isShadow = playerID === '1';
 
-    console.log('🔍 Debug assignMinion :', {
-        playerID,
-        isFP,
-        isShadow,
-        assignmentStep: G.assignmentStep,
-        minionId,
-        companionId
-    });
+                    if (G.assignmentStep === 'FP_ASSIGN' && !isFP)
+                        return 'INVALID_MOVE';
+                    if (G.assignmentStep === 'SHADOW_ASSIGN' && !isShadow)
+                        return 'INVALID_MOVE';
 
-    if (G.assignmentStep === 'FP_ASSIGN' && !isFP) {
-        console.warn('❌ Bloqué: FP_ASSIGN alors que playerID != 0');
-        return 'INVALID_MOVE';
-    }
-    if (G.assignmentStep === 'SHADOW_ASSIGN' && !isShadow) {
-        console.warn('❌ Bloqué: SHADOW_ASSIGN alors que playerID != 1');
-        return 'INVALID_MOVE';
-    }
+                    G.skirmishes.forEach((s) => {
+                        s.minionIds = s.minionIds.filter((id) => id !== minionId);
+                    });
 
-    // Retirer le séide d'une autre escarmouche si nécessaire
-    G.skirmishes.forEach((s) => {
-        s.minionIds = s.minionIds.filter((id) => id !== minionId);
-    });
+                    let skirmish = G.skirmishes.find(
+                        (s) => s.companionId === companionId
+                    );
 
-    let skirmish = G.skirmishes.find(
-        (s) => s.companionId === companionId
-    );
+                    if (skirmish) {
+                        if (
+                            G.assignmentStep === 'FP_ASSIGN' &&
+                            skirmish.minionIds.length >= 1
+                        ) {
+                            return 'INVALID_MOVE';
+                        }
+                        if (!skirmish.minionIds.includes(minionId)) {
+                            skirmish.minionIds.push(minionId);
+                        }
+                    } else {
+                        G.skirmishes.push({
+                            id: `skirmish_${companionId}`,
+                            companionId,
+                            minionIds: [minionId],
+                        });
+                    }
 
-    if (skirmish) {
-        // Condition temporairement désactivée pour tests
-        /*
-        if (
-            G.assignmentStep === 'FP_ASSIGN' &&
-            skirmish.minionIds.length >= 1
-        ) {
-            return 'INVALID_MOVE';
-        }
-        */
-        if (!skirmish.minionIds.includes(minionId)) {
-            skirmish.minionIds.push(minionId);
-        }
-    } else {
-        G.skirmishes.push({
-            id: `skirmish_${companionId}`,
-            companionId,
-            minionIds: [minionId],
-        });
-    }
+                    G.skirmishes = G.skirmishes.filter(
+                        (s) => s.minionIds.length > 0
+                    );
 
-    // Nettoyage des escarmouches vides
-    G.skirmishes = G.skirmishes.filter((s) => s.minionIds.length > 0);
+                    const minionCard = G.battlefield.find((c) => c.id === minionId);
+                    const compCard = G.players['0']?.fellowshipArea.find(
+                        (c) => c.id === companionId
+                    );
 
-    const minionCard = G.battlefield.find((c) => c.id === minionId);
-    const compCard = G.players['0']?.fellowshipArea.find(
-        (c) => c.id === companionId
-    );
+                    G.statusMessage = `${minionCard?.name || 'Le séide'} est affecté à ${compCard?.name || 'son compagnon'}.`;
 
-    G.statusMessage = `${minionCard?.name || 'Le séide'} est affecté à ${compCard?.name || 'son compagnon'}.`;
-
-    checkAssignmentProgress(G, ctx, events);
-},
+                    checkAssignmentProgress(G, ctx, events);
+                },
 
                 endAssignmentPhase: ({ events }: LotrMoveContext) =>
                     events?.endPhase?.(),
             },
         },
+
         skirmish: {
             next: 'regroup',
             turn: { activePlayers: { value: { '0': 'play', '1': 'play' } } },
             moves: {
                 ...commonMoves,
+
+                selectSkirmish: (
+                    { G, ctx, playerID }: LotrMoveContext,
+                    skirmishId: string
+                ) => {
+                    console.log('3. [MOVE] selectSkirmish appelé avec :', {
+                        skirmishId,
+                        phase: ctx.phase,
+                        playerID,
+                    });
+
+                    if (ctx.phase !== 'skirmish') {
+                        console.warn(
+                            '❌ [MOVE] Refusé : Pas en phase skirmish (actuellement:',
+                            ctx.phase,
+                            ')'
+                        );
+                        return 'INVALID_MOVE';
+                    }
+                    if (playerID !== '0') {
+                        console.warn(
+                            '❌ [MOVE] Refusé : Seul le FP (0) peut choisir (actuellement:',
+                            playerID,
+                            ')'
+                        );
+                        return 'INVALID_MOVE';
+                    }
+
+                    const skirmish = G.skirmishes.find(
+                        (s) => s.id === skirmishId
+                    );
+                    if (!skirmish) {
+                        console.warn(
+                            '❌ [MOVE] Escarmouche non trouvée dans G.skirmishes :',
+                            G.skirmishes
+                        );
+                        return 'INVALID_MOVE';
+                    }
+
+                    G.activeSkirmishId = skirmishId;
+                    G.actionWindow = {
+                        isOpen: true,
+                        activePlayerId: '0',
+                        title: 'ESCARMOUCHE',
+                        message:
+                            'Phase d’actions de Skirmish : Jouez des cartes/effets ou PASSER.',
+                        canPass: true,
+                        passesCount: 0,
+                    };
+                    console.log(
+                        '✅ [MOVE] Escarmouche activée avec succès !',
+                        G.actionWindow
+                    );
+                },
+
+                resolveActiveSkirmish: ({ G, ctx, events }: LotrMoveContext) => {
+                    if (!G.activeSkirmishId) return 'INVALID_MOVE';
+                    resolveSkirmish(G, ctx, events);
+                },
+
                 endSkirmishPhase: ({ events }: LotrMoveContext) =>
                     events?.endPhase?.(),
             },
