@@ -50,7 +50,7 @@ export const CardContainer = styled.div<{
                 return `url(interface/cards_backgrounds/${props.$culture}_shadow_modifier.webp)`;
             }
         } else {
-            if (props.$type === 'COMPANION' || props.$type === 'ALLY') {
+            if (props.$type === 'COMPANION' || props.$type === 'ALLY' || props.$type === 'MINION') {
                 return `url(interface/cards_backgrounds/${props.$culture}_character.webp)`;
             } else {
                 return `url(interface/cards_backgrounds/${props.$culture}_modifier.webp)`;

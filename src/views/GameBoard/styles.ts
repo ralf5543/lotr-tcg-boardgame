@@ -9,7 +9,7 @@ export const BoardContainer = styled.div<{ $faction: 'FREE_PEOPLES' | 'SHADOW' }
     padding-inline-start: 340px;
     background-size: cover;
     background-repeat: no-repeat;
-    background-image: url('interface/map_big.webp');
+    background-image: url(${(props) => `interface/map_big_${props.$faction}.webp`});
     color: #fff;
     background-attachment: fixed;
 `;
@@ -96,15 +96,6 @@ export const TokenGrid = styled.div`
     display: flex;
     gap: 10px;
     margin-top: 5px;
-`;
-
-export const TokenPile = styled.div<{ color?: string }>`
-    background-color: ${(props) => props.color || '#c0392b'};
-    padding: 4px 8px;
-    border-radius: 12px;
-    font-weight: bold;
-    font-size: 10px;
-    cursor: pointer;
 `;
 
 export const PlayerSection = styled.div`

@@ -5,10 +5,11 @@ import type {
     CardRace,
     CardCulture,
     CardKeyword,
-    KeywordData
+    KeywordData,
 } from './types';
 
-const unloadKeyword = 'Mot-clé générique, sans effet particulier. Il peut être désigné par d\'autres cartes pour déclencher des effets.';
+const unloadKeyword =
+    "Mot-clé générique, sans effet particulier. Il peut être désigné par d'autres cartes pour déclencher des effets.";
 
 export const TRANSLATIONS = {
     phase: {
@@ -101,83 +102,91 @@ export const TRANSLATIONS = {
     keyword: {
         AID: {
             label: 'Aide',
-            description: "Texte d'explication pour le mot-clé Aide.",
+            description:
+                "Au début de la phase de manoeuvre, vous pouvez payer le coût indiqué sur la carte pour attacher le suivant à un compagnon ou un séide jusqu'à la phase de ralliement, et bénéficier de ses effets.",
         },
         AMBUSH: {
-            label: 'Embuscade',
-            description: "Texte d'explication pour le mot-clé Embuscade.",
+            label: 'Embuscade X',
+            description:
+                "X est ajouté à la réserve crépusculaire si le joueur des Peuples Libres affecte le séide avec ce mot-clé lors de la phase d'affectation.",
         },
         ARCHER: {
             label: 'Archer',
-            description: "Texte d'explication pour le mot-clé Archer.",
+            description: "Ce personnage augmente de 1 le total d'archerie.",
         },
         BATTLEGROUND: {
             label: 'Champ de Bataille',
-            description:  unloadKeyword,
+            description: unloadKeyword,
         },
         BESIEGER: {
             label: 'Assiégeant',
-            description:  unloadKeyword,
+            description: unloadKeyword,
         },
         CORSAIR: {
             label: 'Pirate',
-            description:  unloadKeyword,
+            description: unloadKeyword,
         },
         DAMAGE: {
             label: 'Dégâts + X',
-            description: "Le personnage inflige X blessures supplémentaires en combat",
+            description:
+                'Le personnage inflige X blessures supplémentaires en combat',
         },
         DEFENDER: {
             label: 'Défenseur + X',
-            description: "Le personnage peut être affecté à X séide supplémentaires pendant la phase d'affectation.",
+            description:
+                "Le personnage peut être affecté à X séide supplémentaires pendant la phase d'affectation.",
         },
         DWELLING: {
             label: 'Résidence',
-            description:  unloadKeyword,
+            description: unloadKeyword,
         },
         EASTERLING: {
             label: 'Oriental',
-            description:  unloadKeyword,
+            description: unloadKeyword,
         },
         ENDURING: {
             label: 'Pugnace',
-            description: "Pour chaque blessure sur ce personnage, il a + 2 en Force.",
+            description:
+                'Pour chaque blessure sur ce personnage, il a + 2 en Force.',
         },
         ENGINE: {
             label: 'Engin',
-            description:  unloadKeyword,
+            description: unloadKeyword,
         },
         FIERCE: {
             label: 'Acharné',
-            description: "Après la résolution de tous les combats, ce séide doit être affecté de nouveau à un personnage pour participer à un nouveau combat.",
+            description:
+                'Après la résolution de tous les combats, ce séide doit être affecté de nouveau à un personnage pour participer à un nouveau combat.',
         },
         FOREST: {
             label: 'Forêt',
-            description:  unloadKeyword,
+            description: unloadKeyword,
         },
         FORTIFICATION: {
             label: 'Fortification',
-            description:  unloadKeyword,
+            description: unloadKeyword,
         },
         HUNTER: {
             label: 'Chasseur X',
-            description: "Ce personnage a + X en Force s'il combat un adversaire sans le mot-clé Chasseur.",
+            description:
+                "Ce personnage a + X en Force s'il combat un adversaire sans le mot-clé Chasseur.",
         },
         KNIGHT: {
             label: 'Chevalier',
-            description:  unloadKeyword,
+            description: unloadKeyword,
         },
         LURKER: {
             label: 'Embusqué',
-            description: "Les combats impliquant des séides avec ce mot-clé doivent être résolus en dernier.",
+            description:
+                'Les combats impliquant des séides avec ce mot-clé doivent être résolus en dernier.',
         },
         MACHINE: {
             label: 'Machine',
-            description:  unloadKeyword,
+            description: unloadKeyword,
         },
         MARSH: {
             label: 'Marais',
-            description:  unloadKeyword,
+            description: unloadKeyword,
         },
         MOUNTAIN: {
             label: 'Montagne',
@@ -185,7 +194,8 @@ export const TRANSLATIONS = {
         },
         MUSTER: {
             label: 'Rassembleur',
-            description: "Au début de la phase de Ralliement, chaque joueur peut défaisser un nombre de cartes égal au nombre de personnages Rassembleurs qu'ils possèdent, puis piocher le même nombre de cartes.",
+            description:
+                "Au début de la phase de Ralliement, chaque joueur peut défaisser un nombre de cartes égal au nombre de personnages Rassembleurs qu'ils possèdent, puis piocher le même nombre de cartes.",
         },
         PIPEWEED: {
             label: 'Herbe à pipe',
@@ -237,7 +247,8 @@ export const TRANSLATIONS = {
         },
         TOIL: {
             label: 'Éreintement X',
-            description: "Pour chaque personnage différent (de la même culture que la carte avec Éreintement) affaibli, le coût de la carte est réduit de X.",
+            description:
+                'Pour chaque personnage différent (de la même culture que la carte avec Éreintement) affaibli, le coût de la carte est réduit de X.',
         },
         TRACKER: {
             label: 'Traqueur',
@@ -253,7 +264,8 @@ export const TRANSLATIONS = {
         },
         UNHASTY: {
             label: 'Peu hâtif',
-            description: "Les Ents avec ce mot-clé ne peuvent pas participer au combat, sauf si le combat a lieu sur leur site natif, ou si un effet les autorise expressément.",
+            description:
+                'Les Ents avec ce mot-clé ne peuvent pas participer au combat, sauf si le combat a lieu sur leur site natif, ou si un effet les autorise expressément.',
         },
         VALIANT: {
             label: 'Vaillant',
@@ -269,7 +281,7 @@ export const TRANSLATIONS = {
         },
         WEATHER: {
             label: 'Climat',
-           description: unloadKeyword,
+            description: unloadKeyword,
         },
     } as Record<CardKeyword, KeywordData>,
 };
