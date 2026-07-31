@@ -30,8 +30,7 @@ export const getTargetPlayerId = (
 export const advanceCompany = (
     G: GameState,
     _ctx: Ctx,
-    _playerID: string,
-    events?: any
+    _playerID: string
 ) => {
     const p0 = G.players['0'];
     const nextIndex = p0.currentSiteIndex + 1;
@@ -56,12 +55,13 @@ export const advanceCompany = (
         applyTwilightForSite(nextIndex);
 
         G.statusMessage = `La compagnie avance au site ${nextIndex + 1} : ${G.path[nextIndex]?.name}`;
-        events?.endPhase?.();
+        
+        // 🟢 Temporisation globale : signale la fin de phase sans l'exécuter immédiatement
+        G.pendingPhaseEnd = true;
     } else {
         G.awaitingSiteSelection = true;
         G.statusMessage =
             "En attente du joueur de l'Ombre pour poser le prochain site...";
-        events?.setActivePlayers?.({ value: { '1': 'play' } });
     }
 };
 
@@ -99,12 +99,26 @@ export const passActionWindow = ({
 export const commonMoves = {
     passActionWindow,
 
+    // 🟢 Move universel appelé par React après la temporisation globale de fin de phase
+    confirmEndPhase: ({ G, events }: LotrMoveContext) => {
+        if (G.pendingPhaseEnd) {
+            G.pendingPhaseEnd = false;
+            events?.endPhase?.();
+        }
+    },
+
     finishSkirmishResolution: ({ G, ctx, events }: LotrMoveContext) => {
         finishSkirmishResolution(G, ctx, events);
     },
 
     applyWound: ({ G }: LotrMoveContext, targetCardId: string) => {
-        applyWoundToCard(G, targetCardId, 1);
+        const companion = G.players['0'].fellowshipArea.find((c) => c.id === targetCardId);
+        const minion = G.battlefield.find((c) => c.id === targetCardId);
+        const targetCard = companion || minion;
+
+        if (targetCard) {
+            applyWoundToCard(G, targetCard, 1);
+        }
     },
 
     devSetTwilight: ({ G }: LotrMoveContext, amount: number) => {
@@ -224,7 +238,7 @@ export const commonMoves = {
     },
 
     playSite: (
-        { G, playerID, events }: LotrMoveContext,
+        { G, playerID }: LotrMoveContext,
         siteId: string,
         targetIndex: number
     ) => {
@@ -253,7 +267,9 @@ export const commonMoves = {
             G.twilightPool += siteCost + companionsCount;
 
             G.statusMessage = `Nouveau site révélé ! La compagnie avance en ${playedSite.name}. (+${siteCost + companionsCount} Crépuscule)`;
-            events?.endPhase?.();
+            
+            // 🟢 Temporisation globale
+            G.pendingPhaseEnd = true;
         }
     },
 

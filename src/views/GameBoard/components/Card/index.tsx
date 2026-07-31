@@ -35,9 +35,6 @@ export const Card: React.FC<CardProps> = ({
     currentSiteIndex,
     isWounded = false, // Animation flash/shake
 }) => {
-    if (isWounded) {
-        console.log('🔴 BOOM! Shake déclenché sur :', card.title, card.id);
-    }
     const isShadow = card.kind === 'SHADOW';
     const { setHoveredCard } = useHoverCard();
 

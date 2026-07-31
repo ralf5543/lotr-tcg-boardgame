@@ -33,12 +33,13 @@ interface GameBoardProps {
         currentSite: number;
         statusMessage?: string;
         awaitingSiteSelection?: boolean;
+        pendingPhaseEnd?: boolean; // 🟢 Ajout du drapeau de fin de phase globale
         path: (SiteCardState | null)[];
         activeSkirmishId?: string;
         pendingDeadCardIds?: string[];
         battlefield: CardState[];
         skirmishes?: Array<{ companionId?: string; minionIds?: string[] }>;
-        lastWoundedCardIds?: string[]; // 🟢 Ajout pour TypeScript
+        lastWoundedCardIds?: string[];
         players: Record<
             string,
             {
@@ -92,26 +93,40 @@ export const GameBoard: React.FC<GameBoardProps> = ({
     const currentFaction = myId === '1' ? 'SHADOW' : 'FREE_PEOPLES';
     const currentSiteIndex = G.players['0']?.currentSiteIndex ?? 0;
 
-    // 🟢 GESTION DE LA TEMPORISATION DU FINISH SKIRMISH
+    // 🟢 1. GESTION GLOBALE DE LA TEMPORISATION DE FIN DE PHASE
+    useEffect(() => {
+        if (G.pendingPhaseEnd) {
+            const GLOBAL_PHASE_DELAY = 1500; // Délai avant d'enchaîner sur la phase suivante
+
+            const timer = setTimeout(() => {
+                if (moves.confirmEndPhase) {
+                    moves.confirmEndPhase();
+                }
+            }, GLOBAL_PHASE_DELAY);
+
+            return () => clearTimeout(timer);
+        }
+    }, [G.pendingPhaseEnd, moves]);
+
+    // 🟢 2. TEMPORISATION DE FIN DE COMBAT (SHAKE & SOUFFRANCE)
     useEffect(() => {
         const hasWounded =
             G.lastWoundedCardIds && G.lastWoundedCardIds.length > 0;
         const hasPendingDead =
             G.pendingDeadCardIds && G.pendingDeadCardIds.length > 0;
 
-        // Si on a du feedback visuel (blessure ou mort imminente) suite à la résolution d'un combat
         if ((hasWounded || hasPendingDead) && G.activeSkirmishId) {
             const timer = setTimeout(() => {
                 if (moves.finishSkirmishResolution) {
                     moves.finishSkirmishResolution();
                 }
-            }, 1500);
+            }, 2000); // 2s pour bien voir le shake/blessure
 
             return () => clearTimeout(timer);
         }
     }, [G.lastWoundedCardIds, G.pendingDeadCardIds, G.activeSkirmishId, moves]);
 
-    // 🟢 ROUTER DE DRAG & DROP GLOBAL
+    // 🟢 3. ROUTER DE DRAG & DROP GLOBAL
     useEffect(() => {
         const handleGlobalCardDrop = (e: Event) => {
             const customEvent = e as CustomEvent;
@@ -276,7 +291,7 @@ export const GameBoard: React.FC<GameBoardProps> = ({
                     battlefield={G.battlefield}
                     isSkirmishPhase={ctx.phase === 'skirmish'}
                     activeSkirmishId={(G as GameState).activeSkirmishId}
-                    G={G} // 🟢 Transmis ici aussi !
+                    G={G}
                 />
 
                 {/* ==================== SITE PATH ==================== */}
