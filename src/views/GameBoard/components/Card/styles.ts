@@ -1,5 +1,17 @@
-import styled, { css } from 'styled-components';
+import styled, { css, keyframes } from 'styled-components';
 import type { CardType } from '../../../../game/types';
+
+export interface CardContainerProps {
+    $culture: string;
+    $type: string;
+    $signet?: string;
+    $isShadow?: boolean;
+    $isPlayable?: boolean;
+    $isWounded?: boolean;
+    $kind: string;
+    $size?: 'sm' | 'md' | 'lg';
+    $isRoaming?: boolean;
+}
 
 const isNotCharacter = (type?: string) =>
     Boolean(type) &&
@@ -27,15 +39,16 @@ const isAttachedToCharacter = (type?: string) => {
     );
 };
 
-export const CardContainer = styled.div<{
-    $culture: string;
-    $type: string;
-    $signet: string;
-    $isShadow?: boolean;
-    $isPlayable?: boolean;
-    $kind: string;
-    $size?: 'sm' | 'md' | 'lg';
-}>`
+const shakeAnimation = keyframes`
+  0% { transform: translate(0, 0) rotate(0deg); }
+  20% { transform: translate(-6px, 2px) rotate(-4deg); }
+  40% { transform: translate(6px, -2px) rotate(4deg); }
+  60% { transform: translate(-4px, 1px) rotate(-2deg); }
+  80% { transform: translate(4px, -1px) rotate(2deg); }
+  100% { transform: translate(0, 0) rotate(0deg); }
+`;
+
+export const CardContainer = styled.div<CardContainerProps>`
     aspect-ratio: 1/1.39;
     width: 130px;
     background-image: ${(props) => {
@@ -50,7 +63,11 @@ export const CardContainer = styled.div<{
                 return `url(interface/cards_backgrounds/${props.$culture}_shadow_modifier.webp)`;
             }
         } else {
-            if (props.$type === 'COMPANION' || props.$type === 'ALLY' || props.$type === 'MINION') {
+            if (
+                props.$type === 'COMPANION' ||
+                props.$type === 'ALLY' ||
+                props.$type === 'MINION'
+            ) {
                 return `url(interface/cards_backgrounds/${props.$culture}_character.webp)`;
             } else {
                 return `url(interface/cards_backgrounds/${props.$culture}_modifier.webp)`;
@@ -92,6 +109,12 @@ export const CardContainer = styled.div<{
             background-size: auto;
             background-repeat: repeat;
             filter: drop-shadow(0 3px 4px rgba(0, 0, 0, 1));
+
+            /* 🟢 L'animation s'applique uniquement aux cartes réduites ! */
+            ${props.$isWounded &&
+            css`
+                animation: ${shakeAnimation} 0.4s ease-in-out;
+            `}
 
             &::after {
                 content: '';
@@ -421,6 +444,7 @@ export const CardTitles = styled.div<{ $type?: string }>`
             text-align: center;
         `}
 `;
+
 export const CardTitle = styled.p<{ $type?: string }>`
     font-size: 9px;
     white-space: nowrap;
@@ -434,6 +458,7 @@ export const CardTitle = styled.p<{ $type?: string }>`
             font-size: 8px;
         `}
 `;
+
 export const CardSubtitle = styled.p<{ $type?: string }>`
     font-size: 7px;
     white-space: nowrap;
@@ -446,6 +471,7 @@ export const CardSubtitle = styled.p<{ $type?: string }>`
             font-size: 6px;
         `}
 `;
+
 export const CardTypes = styled.div<{ $type?: string }>`
     position: absolute;
     inset: 104px 15px 66px 16px;
@@ -457,12 +483,14 @@ export const CardTypes = styled.div<{ $type?: string }>`
             inset: 104px 15px 66px 34px;
         `}
 `;
+
 export const Separator = styled.span`
     display: flex;
     align-items: center;
     justify-content: center;
     width: 10px;
 `;
+
 export const CardType = styled.p<{ $type?: string }>`
     font-family: DecipherTitle, serif;
     font-size: 7px;
@@ -532,6 +560,7 @@ export const KeywordText = styled.p`
     margin: 0;
     font-weight: bold;
 `;
+
 export const GameText = styled.p`
     font-size: 6px;
     color: black;
@@ -539,6 +568,7 @@ export const GameText = styled.p`
     margin-block-start: 2px;
     line-height: 1;
 `;
+
 export const LoreText = styled.p`
     font-size: 6px;
     color: black;
@@ -566,8 +596,9 @@ export const StrengthBadge = styled.span`
     inset-inline-start: 3px;
     font-family: LOTRIcons;
     z-index: 1;
-    pointer-events: none
+    pointer-events: none;
 `;
+
 export const VitalityBadge = styled.span`
     background-image: url('interface/icons/icon_vitality.png');
     background-size: contain;
@@ -586,8 +617,9 @@ export const VitalityBadge = styled.span`
     inset-inline-start: 8px;
     font-family: LOTRIcons;
     z-index: 1;
-    pointer-events: none
+    pointer-events: none;
 `;
+
 export const RoamingNumber = styled.span<{ $isRoaming?: boolean }>`
     background-image: url('interface/icons/minion_site_number.webp');
     background-size: contain;
@@ -641,6 +673,7 @@ export const CardSignet = styled.span<{ $signet: string }>`
     inset-inline-start: 9px;
     z-index: 1;
 `;
+
 export const CardResistance = styled.span<{ $isRingBearer: boolean }>`
     background-image: ${(props) =>
         props.$isRingBearer
@@ -663,12 +696,14 @@ export const CardResistance = styled.span<{ $isRingBearer: boolean }>`
     font-family: LOTRIcons;
     z-index: 1;
 `;
+
 export const KeywordsContainer = styled.div`
     position: absolute;
     z-index: 2;
     inset-block-start: 20px;
     inset-inline-end: -11px;
 `;
+
 export const AttachmentSubtype = styled.img`
     position: absolute;
     z-index: 2;
@@ -680,4 +715,16 @@ export const AttachmentSubtype = styled.img`
     width: 20px;
     border: 1px solid black;
     filter: invert(1);
+`;
+
+// 🔴 Tokens de blessure posés sur la carte
+export const WoundsOverlay = styled.div`
+    position: absolute;
+    inset: 30px 32px 33px -11px;
+    z-index: 10;
+`;
+
+export const WoundToken = styled.img`
+    height: fit-content;
+    margin-inline-end: 4px;
 `;

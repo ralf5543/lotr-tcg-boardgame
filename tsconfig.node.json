@@ -5,9 +5,12 @@
     "lib": ["ES2023"],
     "types": ["node"],
     "skipLibCheck": true,
+    "composite": true,
 
     /* Bundler mode */
-    "module": "nodenext",
+    "module": "ESNext",
+    "moduleResolution": "bundler",
+    "allowSyntheticDefaultImports": true,
     "allowImportingTsExtensions": true,
     "verbatimModuleSyntax": true,
     "moduleDetection": "force",
@@ -19,5 +22,10 @@
     "erasableSyntaxOnly": true,
     "noFallthroughCasesInSwitch": true
   },
-  "include": ["vite.config.ts"]
+  "include": [
+    "vite.config.ts",
+    "server.ts",
+    "src/**/*.ts",
+    "src/**/*.d.ts"
+  ]
 }

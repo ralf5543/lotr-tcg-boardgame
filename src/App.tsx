@@ -2,7 +2,7 @@ import { useState, useEffect, useRef } from 'react';
 import styled from 'styled-components';
 import { Client } from 'boardgame.io/react';
 import { Local, SocketIO } from 'boardgame.io/multiplayer';
-import { LotrGame } from './game/Game';
+import { LotrGame } from './game';
 import { GameBoard } from './views/GameBoard';
 import { HoverCardProvider } from './contexts/HoverCardContext';
 import { CustomAssetCursor } from './views/GameBoard/components/CustomCursor';

@@ -1,4 +1,3 @@
-// src/views/GameBoard/index.tsx
 import React, { useEffect } from 'react';
 import type {
     CardState,
@@ -35,9 +34,11 @@ interface GameBoardProps {
         statusMessage?: string;
         awaitingSiteSelection?: boolean;
         path: (SiteCardState | null)[];
+        activeSkirmishId?: string;
+        pendingDeadCardIds?: string[];
         battlefield: CardState[];
-        // 🟢 Ajout du tableau des escarmouches dans le type de G
         skirmishes?: Array<{ companionId?: string; minionIds?: string[] }>;
+        lastWoundedCardIds?: string[]; // 🟢 Ajout pour TypeScript
         players: Record<
             string,
             {
@@ -91,7 +92,26 @@ export const GameBoard: React.FC<GameBoardProps> = ({
     const currentFaction = myId === '1' ? 'SHADOW' : 'FREE_PEOPLES';
     const currentSiteIndex = G.players['0']?.currentSiteIndex ?? 0;
 
-    // 🟢 centralisation du ROUTER DE DRAG & DROP
+    // 🟢 GESTION DE LA TEMPORISATION DU FINISH SKIRMISH
+    useEffect(() => {
+        const hasWounded =
+            G.lastWoundedCardIds && G.lastWoundedCardIds.length > 0;
+        const hasPendingDead =
+            G.pendingDeadCardIds && G.pendingDeadCardIds.length > 0;
+
+        // Si on a du feedback visuel (blessure ou mort imminente) suite à la résolution d'un combat
+        if ((hasWounded || hasPendingDead) && G.activeSkirmishId) {
+            const timer = setTimeout(() => {
+                if (moves.finishSkirmishResolution) {
+                    moves.finishSkirmishResolution();
+                }
+            }, 1500);
+
+            return () => clearTimeout(timer);
+        }
+    }, [G.lastWoundedCardIds, G.pendingDeadCardIds, G.activeSkirmishId, moves]);
+
+    // 🟢 ROUTER DE DRAG & DROP GLOBAL
     useEffect(() => {
         const handleGlobalCardDrop = (e: Event) => {
             const customEvent = e as CustomEvent;
@@ -103,14 +123,13 @@ export const GameBoard: React.FC<GameBoardProps> = ({
             const cardSubtype = card?.type as CardType | undefined;
 
             // ==========================================
-            // 1. CARTES JOUÉES DEPUIS LA MAIN (origin === 'HAND')
+            // 1. CARTES JOUÉES DEPUIS LA MAIN
             // ==========================================
             if (origin === 'HAND') {
                 if (
                     targetId === 'fellowshipArea' &&
                     canDropInFellowship(cardSubtype)
                 ) {
-                    console.log('🃏 [GLOBAL DROP] Jouer Compagnon:', { index });
                     moves.playCard(index);
                     return;
                 }
@@ -119,86 +138,55 @@ export const GameBoard: React.FC<GameBoardProps> = ({
                     targetId === 'supportArea' &&
                     canDropInSupportArea(cardSubtype)
                 ) {
-                    console.log('🎒 [GLOBAL DROP] Jouer Support:', { index });
                     moves.playCard(index);
                     return;
                 }
 
                 if (targetId === 'battlefield' && card.kind === 'SHADOW') {
-                    console.log(
-                        '⚔️ [GLOBAL DROP] Jouer Séide sur Battlefield:',
-                        { index }
-                    );
                     moves.playShadowCard(index);
                     return;
                 }
 
-                // Attachement depuis la main sur un personnage
                 if (
                     targetId !== 'fellowshipArea' &&
                     targetId !== 'supportArea' &&
                     targetId !== 'battlefield' &&
                     canAttachToCharacter(cardSubtype)
                 ) {
-                    console.log(
-                        '📎 [GLOBAL DROP] Attachement depuis la main:',
-                        {
-                            cardIndex: index,
-                            targetCardId: targetId,
-                        }
-                    );
                     moves.attachCard(index, targetId);
                     return;
                 }
             }
 
             // ==========================================
-            // 2. TRANSFERT D'ATTACHEMENT (origin === 'ATTACHMENT')
+            // 2. TRANSFERT D'ATTACHEMENT
             // ==========================================
             if (origin === 'ATTACHMENT') {
-                // Empêche de transférer sur le même personnage
-                if (targetId === parentId) {
-                    console.log(
-                        'ℹ️ Attachement déposé sur le même hôte. Annulation.'
-                    );
-                    return;
-                }
+                if (targetId === parentId) return;
 
-                // Si la cible est un personnage valide pour recevoir l'attachement
                 if (
                     targetId !== 'fellowshipArea' &&
                     targetId !== 'supportArea' &&
                     targetId !== 'battlefield' &&
                     canAttachToCharacter(cardSubtype)
                 ) {
-                    console.log("🔄 [GLOBAL DROP] Transfert d'attachement:", {
-                        attachmentId: card.id,
-                        fromCharacterId: parentId,
-                        toCharacterId: targetId,
-                    });
-
-                    // 🟢 Appelle ton action de jeu (ex: moves.transferAttachment)
                     if (moves.transferAttachment) {
                         moves.transferAttachment({
                             attachmentId: card.id,
                             fromCharacterId: parentId,
                             toCharacterId: targetId,
                         });
-                    } else {
-                        console.warn(
-                            "⚠️ La fonction moves.transferAttachment n'est pas encore définie dans vos moves."
-                        );
                     }
                 }
             }
+
             // ==========================================
-            // 3. ASSIGNATION DE SÉIDE (origin === 'BATTLEFIELD')
+            // 3. ASSIGNATION DE SÉIDE
             // ==========================================
             if (origin === 'BATTLEFIELD') {
                 const isAssignmentPhase = ctx.phase === 'assignment';
                 const isMinion = card?.type === 'MINION';
 
-                // Si on est en phase d'assignment, qu'on lâche un Séide et que la cible n'est pas une zone générique
                 if (
                     isAssignmentPhase &&
                     isMinion &&
@@ -207,15 +195,6 @@ export const GameBoard: React.FC<GameBoardProps> = ({
                     targetId !== 'battlefield' &&
                     targetId !== 'sitePath'
                 ) {
-                    console.log(
-                        '⚔️ [GLOBAL DROP] Assignation Séide -> Compagnon:',
-                        {
-                            minionId: card.id,
-                            companionId: targetId,
-                        }
-                    );
-
-                    // 🚀 Appel du move boardgame.io
                     moves.assignMinion(card.id, targetId);
                     return;
                 }
@@ -267,6 +246,7 @@ export const GameBoard: React.FC<GameBoardProps> = ({
                     battlefield={G.battlefield}
                     isSkirmishPhase={ctx.phase === 'skirmish'}
                     activeSkirmishId={(G as GameState).activeSkirmishId}
+                    G={G}
                 />
 
                 {/* ==================== 2. CENTRAL ==================== */}
@@ -279,6 +259,7 @@ export const GameBoard: React.FC<GameBoardProps> = ({
                             currentSiteIndex={currentSiteIndex}
                             isAssignmentPhase={ctx.phase === 'assignment'}
                             skirmishes={G.skirmishes}
+                            lastWoundedCardIds={G.lastWoundedCardIds}
                         />
                     </S.MainZone>
                 </S.CentralBlock>
@@ -295,6 +276,7 @@ export const GameBoard: React.FC<GameBoardProps> = ({
                     battlefield={G.battlefield}
                     isSkirmishPhase={ctx.phase === 'skirmish'}
                     activeSkirmishId={(G as GameState).activeSkirmishId}
+                    G={G} // 🟢 Transmis ici aussi !
                 />
 
                 {/* ==================== SITE PATH ==================== */}

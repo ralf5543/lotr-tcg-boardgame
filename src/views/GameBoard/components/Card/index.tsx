@@ -7,6 +7,10 @@ import type { CardSignet } from '../../../../game/types';
 import { FormattedText } from '../../../../utils/FormattedText';
 import { KeywordBadge } from '../KeywordBadge';
 import { useDrag } from '../../../../contexts/DragContext';
+import {
+    getEffectiveVitality,
+    getEffectiveStrength,
+} from '../../../../utils/cardStats';
 
 interface CardProps {
     card: CardState;
@@ -18,6 +22,7 @@ interface CardProps {
     signet?: CardSignet;
     size?: 'sm' | 'md' | 'lg';
     isRingBearer?: boolean;
+    isWounded?: boolean; // 🟢 Prop pour déclencher l'animation de secousse (shake)
 }
 
 export const Card: React.FC<CardProps> = ({
@@ -28,7 +33,11 @@ export const Card: React.FC<CardProps> = ({
     index,
     isRingBearer: isRingBearerProp,
     currentSiteIndex,
+    isWounded = false, // Animation flash/shake
 }) => {
+    if (isWounded) {
+        console.log('🔴 BOOM! Shake déclenché sur :', card.title, card.id);
+    }
     const isShadow = card.kind === 'SHADOW';
     const { setHoveredCard } = useHoverCard();
 
@@ -78,13 +87,18 @@ export const Card: React.FC<CardProps> = ({
 
     const isCharacter = ['COMPANION', 'ALLY', 'MINION'].includes(card.type);
 
-    // 🔴 Décomposition du test d'errance
     const isRoaming =
         typeof currentSiteIndex === 'number' &&
         card.kind === 'SHADOW' &&
         card.type === 'MINION' &&
         typeof card.roaming === 'number' &&
         card.roaming > currentSiteIndex + 1;
+
+    const effectiveVitality = getEffectiveVitality(card);
+    const effectiveStrength = getEffectiveStrength(card);
+
+    // 🟢 État permanent : est-ce que la carte a des blessures ?
+    const hasWounds = (card.wounds || 0) > 0;
 
     return (
         <S.CardContainer
@@ -95,6 +109,8 @@ export const Card: React.FC<CardProps> = ({
             $isPlayable={isPlayable}
             $size={size}
             $isRoaming={isRoaming}
+            $isWounded={isWounded} // 🟢 On passe la prop d'animation au styled component
+            key={`${card.id}-wounds-${card.wounds || 0}`}
             onMouseEnter={handleMouseEnter}
             onMouseLeave={handleMouseLeave}
             onDragStart={isDraggable ? handleDragStart : undefined}
@@ -111,6 +127,18 @@ export const Card: React.FC<CardProps> = ({
                         ))}
                     </S.KeywordsContainer>
                 )}
+
+            {hasWounds && (
+                <S.WoundsOverlay>
+                    {Array.from({ length: card.wounds! }).map((_, i) => (
+                        <S.WoundToken
+                            key={i}
+                            width="20px"
+                            src="interface/tokens/token_blood.webp"
+                        />
+                    ))}
+                </S.WoundsOverlay>
+            )}
 
             <S.CardHeader>
                 {size !== 'sm' && (
@@ -132,10 +160,7 @@ export const Card: React.FC<CardProps> = ({
             </S.CardHeader>
 
             <S.VisualContainer $type={card.type}>
-                <S.Visual
-                    src={card.imageUrl}
-                    alt={card.title}
-                />
+                <S.Visual src={card.imageUrl} alt={card.title} />
             </S.VisualContainer>
 
             {size !== 'sm' && (
@@ -171,12 +196,18 @@ export const Card: React.FC<CardProps> = ({
                 )}
             </S.TextContainer>
 
-            {card.strength !== undefined && (
-                <S.StrengthBadge>{card.strength}</S.StrengthBadge>
-            )}
-            {card.vitality !== undefined && (
-                <S.VitalityBadge>{card.vitality}</S.VitalityBadge>
-            )}
+            {card.strength !== undefined &&
+                (size !== 'sm' ? (
+                    <S.StrengthBadge>{card.strength}</S.StrengthBadge>
+                ) : (
+                    <S.StrengthBadge>{effectiveStrength}</S.StrengthBadge>
+                ))}
+            {card.vitality !== undefined &&
+                (size !== 'sm' ? (
+                    <S.VitalityBadge>{card.vitality}</S.VitalityBadge>
+                ) : (
+                    <S.VitalityBadge>{effectiveVitality}</S.VitalityBadge>
+                ))}
             {card.roaming !== undefined && (
                 <S.RoamingNumber $isRoaming={isRoaming}>
                     {card.roaming}

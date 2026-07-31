@@ -52,6 +52,7 @@ const createInitialPlayer = (playerId: string): PlayerState => ({
     deck: createRealLotrDeck(playerId),
     hand: [],
     discard: [],
+    deadPile: [],
     fellowshipArea: [],
     supportArea: [],
     sitesDeck: [],
@@ -86,11 +87,13 @@ export const LotrGame: Game<GameState> = {
                 ...createInitialPlayer('0'),
                 sitesDeck: DUMMY_SITES_PLAYER_0.slice(1),
                 currentSiteIndex: 0,
+                deadPile: [],
             },
             '1': {
                 ...createInitialPlayer('1'),
                 sitesDeck: DUMMY_SITES_PLAYER_0.slice(1),
                 currentSiteIndex: 0,
+                deadPile: [],
             },
         },
     }),
@@ -300,30 +303,45 @@ export const LotrGame: Game<GameState> = {
                     const isFP = playerID === '0';
                     const isShadow = playerID === '1';
 
+                    // 1. Vérifications de tour/rôle
                     if (G.assignmentStep === 'FP_ASSIGN' && !isFP)
                         return 'INVALID_MOVE';
                     if (G.assignmentStep === 'SHADOW_ASSIGN' && !isShadow)
                         return 'INVALID_MOVE';
 
+                    // 2. Vérification de validité de la cible AVANT toute mutation
+                    const compCard = G.players['0']?.fellowshipArea.find(
+                        (c) => c.id === companionId
+                    );
+                    if (!compCard) return 'INVALID_MOVE'; // Si la cible n'existe pas, on stoppe net !
+
+                    const existingSkirmish = G.skirmishes.find(
+                        (s) => s.companionId === companionId
+                    );
+
+                    // 3. Vérification de la règle de surcharge FP AVANT de retirer le séide
+                    if (
+                        G.assignmentStep === 'FP_ASSIGN' &&
+                        existingSkirmish &&
+                        existingSkirmish.minionIds.length >= 1 &&
+                        !existingSkirmish.minionIds.includes(minionId) // Si le séide n'était pas déjà sur ce compagnon
+                    ) {
+                        return 'INVALID_MOVE'; // 🛑 On stoppe SANS avoir modifié G.skirmishes !
+                    }
+
+                    // 🟢 4. Une fois toutes les vérifications validées, ON PEUT MUTATIONNER :
+
+                    // Retirer le séide de son ancienne escarmouche s'il en avait une
                     G.skirmishes.forEach((s) => {
                         s.minionIds = s.minionIds.filter(
                             (id) => id !== minionId
                         );
                     });
 
-                    let skirmish = G.skirmishes.find(
-                        (s) => s.companionId === companionId
-                    );
-
-                    if (skirmish) {
-                        if (
-                            G.assignmentStep === 'FP_ASSIGN' &&
-                            skirmish.minionIds.length >= 1
-                        ) {
-                            return 'INVALID_MOVE';
-                        }
-                        if (!skirmish.minionIds.includes(minionId)) {
-                            skirmish.minionIds.push(minionId);
+                    // Ajouter au compagnon cible
+                    if (existingSkirmish) {
+                        if (!existingSkirmish.minionIds.includes(minionId)) {
+                            existingSkirmish.minionIds.push(minionId);
                         }
                     } else {
                         G.skirmishes.push({
@@ -333,6 +351,7 @@ export const LotrGame: Game<GameState> = {
                         });
                     }
 
+                    // Nettoyer les escarmouches vides
                     G.skirmishes = G.skirmishes.filter(
                         (s) => s.minionIds.length > 0
                     );
@@ -340,11 +359,7 @@ export const LotrGame: Game<GameState> = {
                     const minionCard = G.battlefield.find(
                         (c) => c.id === minionId
                     );
-                    const compCard = G.players['0']?.fellowshipArea.find(
-                        (c) => c.id === companionId
-                    );
-
-                    G.statusMessage = `${minionCard?.name || 'Le séide'} est affecté à ${compCard?.name || 'son compagnon'}.`;
+                    G.statusMessage = `${minionCard?.name || 'Le séide'} est affecté à ${compCard.name}.`;
 
                     checkAssignmentProgress(G, ctx, events);
                 },

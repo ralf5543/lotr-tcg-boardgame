@@ -18,6 +18,7 @@ interface BoardCharacterStackProps {
     onSelectSkirmish?: (skirmishId: string) => void; // 🟢 Callback pour sélectionner ce combat
     isSelectedSkirmish?: boolean;
     isSelectionAllowed?: boolean;
+    lastWoundedCardIds?: string[]
 }
 
 export const BoardCharacterStack: React.FC<BoardCharacterStackProps> = ({
@@ -33,6 +34,7 @@ export const BoardCharacterStack: React.FC<BoardCharacterStackProps> = ({
     onSelectSkirmish,
     isSelectedSkirmish = false,
     isSelectionAllowed = true,
+    lastWoundedCardIds = [],
 }) => {
     const { registerTarget, activeTargetId, dragged, startDrag } = useDrag();
 
@@ -48,9 +50,8 @@ export const BoardCharacterStack: React.FC<BoardCharacterStackProps> = ({
         dragged?.origin === 'BATTLEFIELD' && draggedSubtype === 'MINION';
 
     const isTargeted =
-        !isOpponent &&
-        activeTargetId === character.id &&
-        (canAttachToCharacter(draggedSubtype) || isMinionAssignment);
+    activeTargetId === character.id &&
+    ((!isOpponent && canAttachToCharacter(draggedSubtype)) || isMinionAssignment);
 
     // Règle de sélection : Uniquement en phase skirmish, avec un ID, si des minions sont assignés et si la sélection est permise
     const canSelectThisSkirmish =
@@ -113,6 +114,7 @@ export const BoardCharacterStack: React.FC<BoardCharacterStackProps> = ({
                                     card={minion}
                                     size="sm"
                                     isDraggable={false}
+                                    isWounded={lastWoundedCardIds.includes(minion.id)}
                                 />
                             </S.MinionWrapper>
                         ))}
@@ -147,6 +149,7 @@ export const BoardCharacterStack: React.FC<BoardCharacterStackProps> = ({
                         isDraggable={canDragCharacter}
                         index={index}
                         currentSiteIndex={currentSiteIndex}
+                        isWounded={lastWoundedCardIds.includes(character.id)}
                     />
                 </S.CardDragTarget>
 

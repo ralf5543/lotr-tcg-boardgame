@@ -8,7 +8,10 @@ interface AssignedMinionsProps {
     G: GameState;
 }
 
-export const AssignedMinions: React.FC<AssignedMinionsProps> = ({ companionId, G }) => {
+export const AssignedMinions: React.FC<AssignedMinionsProps> = ({
+    companionId,
+    G,
+}) => {
     // 1. Récupérer l'escarmouche liée à ce compagnon
     const skirmish = G.skirmishes?.find((s) => s.companionId === companionId);
     if (!skirmish || skirmish.minionIds.length === 0) return null;
@@ -22,7 +25,10 @@ export const AssignedMinions: React.FC<AssignedMinionsProps> = ({ companionId, G
         <S.MinionStackOverlay>
             {assignedMinions.map((minionCard, index) => (
                 <S.StackedMinionCard key={minionCard.id} $index={index}>
-                    <Card card={minionCard} />
+                    <Card
+                        card={minionCard}
+                        isWounded={(minionCard.wounds || 0) > 0}
+                    />
                 </S.StackedMinionCard>
             ))}
         </S.MinionStackOverlay>

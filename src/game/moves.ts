@@ -1,10 +1,6 @@
 import type { Ctx } from 'boardgame.io';
-import type {
-    GameState,
-    LotrMoveContext,
-    LotrPhaseContext,
-} from './types';
-import { resolveSkirmish, applyWoundToCard } from './skirmish';
+import type { GameState, LotrMoveContext, LotrPhaseContext } from './types';
+import { resolveSkirmish, finishSkirmishResolution, applyWoundToCard } from './skirmish';
 
 export interface ReorderPayload {
     fromIndex?: number;
@@ -21,7 +17,10 @@ export interface TransferPayload {
 
 export type DevPresetType = 'ARCHERY_TEST' | 'SKIRMISH_TEST';
 
-export const getTargetPlayerId = (playerID: string | undefined, ctx: Ctx): string => {
+export const getTargetPlayerId = (
+    playerID: string | undefined,
+    ctx: Ctx
+): string => {
     if (playerID !== undefined && playerID !== null && playerID !== '') {
         return String(playerID);
     }
@@ -44,7 +43,9 @@ export const advanceCompany = (
         if (!targetSite) return;
 
         const siteCost = Number(targetSite.twilightCost) || 0;
-        const companionsCount = p0.fellowshipArea ? p0.fellowshipArea.length : 0;
+        const companionsCount = p0.fellowshipArea
+            ? p0.fellowshipArea.length
+            : 0;
         const totalAdded = siteCost + companionsCount;
 
         G.twilightPool += totalAdded;
@@ -68,7 +69,6 @@ export const passActionWindow = ({
     G,
     ctx,
     playerID,
-    events,
 }: LotrMoveContext) => {
     if (!G.actionWindow || !G.actionWindow.isOpen) return;
     if (playerID !== G.actionWindow.activePlayerId) return;
@@ -84,7 +84,7 @@ export const passActionWindow = ({
         };
 
         if (ctx.phase === 'skirmish' && G.activeSkirmishId) {
-            resolveSkirmish(G, ctx, events);
+            resolveSkirmish(G, ctx);
         }
     } else {
         G.actionWindow = {
@@ -98,6 +98,10 @@ export const passActionWindow = ({
 
 export const commonMoves = {
     passActionWindow,
+
+    finishSkirmishResolution: ({ G, ctx, events }: LotrMoveContext) => {
+        finishSkirmishResolution(G, ctx, events);
+    },
 
     applyWound: ({ G }: LotrMoveContext, targetCardId: string) => {
         applyWoundToCard(G, targetCardId, 1);
@@ -135,6 +139,19 @@ export const commonMoves = {
                     title: 'efsfsdf',
                     isUnique: true,
                 },
+                {
+                    id: 'dev-legolas2',
+                    name: 'Legolas',
+                    kind: 'FREE_PEOPLES',
+                    type: 'COMPANION',
+                    twilightCost: 2,
+                    strength: 6,
+                    vitality: 3,
+                    culture: 'ELVEN',
+                    gameText: 'Archerie test card',
+                    title: 'efsfsdf',
+                    isUnique: true,
+                },
             ];
             G.battlefield = [
                 {
@@ -142,10 +159,23 @@ export const commonMoves = {
                     name: 'Ukursh, Archor',
                     kind: 'SHADOW',
                     type: 'MINION',
-                    twilightCost: 4,
-                    strength: 9,
+                    twilightCost: 3,
+                    strength: 6,
                     vitality: 2,
-                    culture: 'RINGWRAITH',
+                    culture: 'ORC',
+                    gameText: 'Archerie test card',
+                    title: 'efsfsdf',
+                    isUnique: false,
+                },
+                {
+                    id: 'dev-nazgul2',
+                    name: 'Ukursh, Archor',
+                    kind: 'SHADOW',
+                    type: 'MINION',
+                    twilightCost: 3,
+                    strength: 5,
+                    vitality: 2,
+                    culture: 'RAIDER',
                     gameText: 'Archerie test card',
                     title: 'efsfsdf',
                     isUnique: false,
@@ -251,7 +281,8 @@ export const commonMoves = {
         if (!sourceHost || !sourceHost.attachments) return 'INVALID_MOVE';
 
         const targetHost = allPossibleHosts.find((c) => c.id === toCharacterId);
-        if (!targetHost || sourceHost.id === targetHost.id) return 'INVALID_MOVE';
+        if (!targetHost || sourceHost.id === targetHost.id)
+            return 'INVALID_MOVE';
 
         const attachIndex = sourceHost.attachments.findIndex(
             (a) => a.id === attachmentId

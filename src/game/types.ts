@@ -139,6 +139,7 @@ export interface CardState {
     loreText?: string;
     attachments?: CardState[];
     name?: string;
+    wounds?: number;
 }
 
 export interface PlayerProfile {
@@ -152,6 +153,7 @@ export interface PlayerState {
     deck: CardState[];
     hand: CardState[];
     discard: CardState[];
+    deadPile: CardState[];
     fellowshipArea: CardState[];
     supportArea: CardState[];
     currentSiteIndex: number;
@@ -182,6 +184,7 @@ export interface GameState {
     actionWindow?: ActionWindow;
     skirmishes: SkirmishState[];
     assignmentStep?: 'FP_ASSIGN' | 'SHADOW_ASSIGN' | 'COMPLETED';
+    lastWoundedCardIds?: string[];
 }
 
 export interface KeywordData {
@@ -194,7 +197,7 @@ export interface ActionWindow {
     title?: string;
     message?: string;
     activePlayerId: string; // Ex: '0' ou '1'
-    passedPlayers: string[]; // Tableau pour suivre qui a fait "Passer" (ex: ['0'])
+    passedPlayers2?: string[]; // Tableau pour suivre qui a fait "Passer" (ex: ['0'])
     canPass?: boolean;       // Permet de choisir si le bouton "Passer" est affiché
     passesCount?: number;
 }

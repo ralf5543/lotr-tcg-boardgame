@@ -1,6 +1,5 @@
 import type { Ctx } from 'boardgame.io';
 import type { GameState, CardState } from './types';
-import type { LotrEventsAPI } from './types';
 
 export const getUnassignedMinions = (G: GameState): CardState[] => {
     const assignedMinionIds = (G.skirmishes || []).flatMap((s) => s.minionIds);
@@ -12,7 +11,7 @@ export const getUnassignedMinions = (G: GameState): CardState[] => {
 export const checkAssignmentProgress = (
     G: GameState,
     _ctx: Ctx,
-    events?: LotrEventsAPI
+    events?: { endPhase?: () => void; endTurn?: () => void }
 ) => {
     const unassignedMinions = getUnassignedMinions(G);
     const companions = G.players['0']?.fellowshipArea || [];

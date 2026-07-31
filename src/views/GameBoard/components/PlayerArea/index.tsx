@@ -20,6 +20,7 @@ interface PlayerAreaProps {
     battlefield?: CardState[];
     isSkirmishPhase?: boolean;
     activeSkirmishId?: string;
+    G: any;
 }
 
 export const PlayerArea: React.FC<PlayerAreaProps> = ({
@@ -33,6 +34,7 @@ export const PlayerArea: React.FC<PlayerAreaProps> = ({
     battlefield = [],
     isSkirmishPhase = false,
     activeSkirmishId,
+    G,
 }) => {
     const isFreePeoplesPlayer = playerId === '0';
     const { activeTargetId, registerTarget, startDrag, dragged } = useDrag();
@@ -122,6 +124,7 @@ export const PlayerArea: React.FC<PlayerAreaProps> = ({
                                         assignedMinions={assignedMinions}
                                         isSkirmishPhase={isSkirmishPhase}
                                         skirmishId={skirmishId}
+                                        lastWoundedCardIds={G?.lastWoundedCardIds}
                                         isSelectedSkirmish={
                                             activeSkirmishId === skirmishId
                                         }
@@ -183,6 +186,7 @@ export const PlayerArea: React.FC<PlayerAreaProps> = ({
                                 card={card}
                                 isDraggable={!isOpponent}
                                 index={cardIdx}
+                                isWounded={G.lastWoundedCardIds?.includes(card.id)}
                             />
                         </S.CharacterStack>
                     ))}

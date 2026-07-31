@@ -134,6 +134,7 @@ export const SkirmishGroup = styled.div<{
     $isOpponent?: boolean;
 }>`
     position: relative;
+    z-index: 1;
     border-radius: 8px;
     transition: all 0.2s ease-in-out;
 

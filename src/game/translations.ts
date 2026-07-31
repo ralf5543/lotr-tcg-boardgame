@@ -80,7 +80,7 @@ export const TRANSLATIONS = {
     } as Record<CardRace, string>,
 
     culture: {
-        DUNLAND: 'Dunland',
+        DUNLAND: 'Pays de Dun',
         DWARVEN: 'Nain',
         ELVEN: 'Elfe',
         GANDALF: 'Gandalf',
@@ -90,7 +90,7 @@ export const TRANSLATIONS = {
         MEN: 'Hommes',
         MORIA: 'Moria',
         ORC: 'Orque',
-        RAIDER: 'RAIDER',
+        RAIDER: 'Pillards',
         RINGWRAITH: 'Spectre',
         ROHAN: 'Rohan',
         SAURON: 'Sauron',

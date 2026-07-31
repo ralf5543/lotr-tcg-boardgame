@@ -10,6 +10,7 @@ interface BattlefieldProps {
     currentSiteIndex?: number;
     isAssignmentPhase?: boolean;
     skirmishes?: Array<{ companionId?: string; minionIds?: string[] }>;
+    lastWoundedCardIds?: string[];
 }
 
 export const Battlefield: React.FC<BattlefieldProps> = ({
@@ -18,6 +19,7 @@ export const Battlefield: React.FC<BattlefieldProps> = ({
     currentSiteIndex,
     isAssignmentPhase = false,
     skirmishes = [],
+    lastWoundedCardIds = [],
 }) => {
     const { registerTarget, activeTargetId, dragged } = useDrag();
     const containerRef = useRef<HTMLDivElement | null>(null);
@@ -58,6 +60,7 @@ export const Battlefield: React.FC<BattlefieldProps> = ({
                         isOpponent={isOpponent}
                         currentSiteIndex={currentSiteIndex}
                         isAssignmentPhase={isAssignmentPhase}
+                        lastWoundedCardIds={lastWoundedCardIds}
                     />
                 ))}
             </S.CardRow>

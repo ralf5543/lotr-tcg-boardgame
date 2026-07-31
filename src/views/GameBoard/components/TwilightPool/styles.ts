@@ -19,7 +19,7 @@ export const PoolHeader = styled.div`
 `;
 
 export const CounterBadge = styled.span`
-    background: radial-gradient(circle, #8e44ad, #2c3e50);
+    background: radial-gradient(circle, grey, black);
     color: #fff;
     border: 1px solid #9b59b6;
     border-radius: 50%;
