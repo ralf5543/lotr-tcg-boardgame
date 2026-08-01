@@ -31,7 +31,7 @@ export const getTargetPlayerId = (
     return String(ctx.currentPlayer ?? '0');
 };
 
-export const advanceCompany = (G: GameState, _ctx: Ctx, _playerID: string) => {
+export const advanceCompany = (G: GameState) => {
     const p0 = G.players['0'];
     const nextIndex = p0.currentSiteIndex + 1;
 

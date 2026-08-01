@@ -162,13 +162,8 @@ export const LotrGame: Game<GameState> = {
                     G.twilightPool += Number(attachmentCard.twilightCost) || 0;
                 },
 
-                endFellowshipPhase: ({
-                    G,
-                    ctx,
-                    playerID,
-                    events,
-                }: LotrMoveContext) => {
-                    advanceCompany(G, ctx, playerID, events);
+                endFellowshipPhase: ({ G, ctx, playerID }: LotrMoveContext) => {
+                    advanceCompany(G, ctx, playerID);
                 },
             },
         },
@@ -402,10 +397,9 @@ export const LotrGame: Game<GameState> = {
                 resolveActiveSkirmish: ({
                     G,
                     ctx,
-                    events,
                 }: LotrMoveContext) => {
                     if (!G.activeSkirmishId) return 'INVALID_MOVE';
-                    resolveSkirmish(G, ctx, events);
+                    resolveSkirmish(G, ctx);
                 },
 
                 endSkirmishPhase: ({ events }: LotrMoveContext) =>
@@ -417,13 +411,8 @@ export const LotrGame: Game<GameState> = {
             turn: { activePlayers: { value: { '0': 'play', '1': 'play' } } },
             moves: {
                 ...commonMoves,
-                moveNextSite: ({
-                    G,
-                    ctx,
-                    playerID,
-                    events,
-                }: LotrMoveContext) => {
-                    advanceCompany(G, ctx, playerID, events);
+                moveNextSite: ({ G, ctx, playerID }: LotrMoveContext) => {
+                    advanceCompany(G, ctx, playerID);
                 },
                 endTurn: ({ events }: LotrMoveContext) => {
                     events?.endTurn?.();

@@ -1,10 +1,21 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
+import type { BoardProps } from 'boardgame.io/react';
+import type { GameState } from '../../game/types';
 
-interface DevPanelProps {
-    moves: any;
-    G: any;
-    ctx: any;
+// Definition des signatures de tes moves de dev
+export interface DevMoves {
+    devSetPhase: (phase: string) => void;
+    devSetTwilight: (amount: number) => void;
+    devLoadPreset: (presetName: string) => void;
+    devForceEndPhase: () => void;
+}
+
+// On restreint l'objet moves aux dev moves tout en réutilisant G et ctx de boardgame.io
+export interface DevPanelProps {
+    moves: BoardProps<GameState>['moves'] & DevMoves;
+    G: GameState;
+    ctx: BoardProps<GameState>['ctx'];
 }
 
 const PanelContainer = styled.div`

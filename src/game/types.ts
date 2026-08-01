@@ -185,6 +185,8 @@ export interface GameState {
     skirmishes: SkirmishState[];
     assignmentStep?: 'FP_ASSIGN' | 'SHADOW_ASSIGN' | 'COMPLETED';
     lastWoundedCardIds?: string[];
+    pendingPhaseEnd: boolean;
+    pendingDeadCardIds: string[];
 }
 
 export interface KeywordData {

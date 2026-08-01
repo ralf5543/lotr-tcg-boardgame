@@ -1,8 +1,12 @@
 import type { Ctx } from 'boardgame.io';
 import type { GameState, CardState } from './types';
+import { getEffectiveStrength } from '../utils/cardStats';
 
+/**
+ * Calcule la force totale effective d'une carte (base + attachements)
+ */
 export const getCardTotalStrength = (card: CardState): number => {
-    return card.strength ?? 0;
+    return getEffectiveStrength(card);
 };
 
 /**
@@ -67,8 +71,7 @@ export const applyWoundToCard = (
 };
 
 export const resolveSkirmish = (
-    G: GameState,
-    _ctx: Ctx
+    G: GameState
 ) => {
     if (!G.activeSkirmishId) return;
 
@@ -115,23 +118,23 @@ export const resolveSkirmish = (
     // ⚔️ CAS 1 : VICTOIRE DU COMPAGNON
     // -------------------------------------------------------------
     if (companionStrength > minionsStrength) {
-    resultMsg += `Victoire de ${companion.title} ! `;
+        resultMsg += `Victoire de ${companion.title} ! `;
 
-    const isMinionsOverwhelmed =
-        minionsStrength > 0
-            ? companionStrength >= 2 * minionsStrength
-            : companionStrength > 0;
+        const isMinionsOverwhelmed =
+            minionsStrength > 0
+                ? companionStrength >= 2 * minionsStrength
+                : companionStrength > 0;
 
-    if (isMinionsOverwhelmed) {
-        minions.forEach((minion) => {
-            if (!G.pendingDeadCardIds) G.pendingDeadCardIds = [];
-            G.pendingDeadCardIds.push(minion.id);
+        if (isMinionsOverwhelmed) {
+            minions.forEach((minion) => {
+                if (!G.pendingDeadCardIds) G.pendingDeadCardIds = [];
+                G.pendingDeadCardIds.push(minion.id);
 
-            if (!G.lastWoundedCardIds) G.lastWoundedCardIds = [];
-            G.lastWoundedCardIds.push(minion.id);
-        });
-        resultMsg += `Les séides sont SUBMERGÉS !`;
-    } else {
+                if (!G.lastWoundedCardIds) G.lastWoundedCardIds = [];
+                G.lastWoundedCardIds.push(minion.id);
+            });
+            resultMsg += `Les séides sont SUBMERGÉS !`;
+        } else {
             minions.forEach((minion) => {
                 const shouldDie = applyWoundToCard(G, minion, 1);
                 
@@ -150,23 +153,22 @@ export const resolveSkirmish = (
     // ⚔️ CAS 2 : VICTOIRE DE L'OMBRE (ou Égalité)
     // -------------------------------------------------------------
     else {
-    resultMsg += `Victoire de l'Ombre ! `;
+        resultMsg += `Victoire de l'Ombre ! `;
 
-    const isCompanionOverwhelmed =
-        companionStrength > 0
-            ? minionsStrength >= 2 * companionStrength
-            : minionsStrength > 0;
+        const isCompanionOverwhelmed =
+            companionStrength > 0
+                ? minionsStrength >= 2 * companionStrength
+                : minionsStrength > 0;
 
-    if (isCompanionOverwhelmed) {
-        if (!G.pendingDeadCardIds) G.pendingDeadCardIds = [];
-        G.pendingDeadCardIds.push(companion.id);
+        if (isCompanionOverwhelmed) {
+            if (!G.pendingDeadCardIds) G.pendingDeadCardIds = [];
+            G.pendingDeadCardIds.push(companion.id);
 
-        // 🟢 Idem pour le Compagnon submergé !
-        if (!G.lastWoundedCardIds) G.lastWoundedCardIds = [];
-        G.lastWoundedCardIds.push(companion.id);
+            if (!G.lastWoundedCardIds) G.lastWoundedCardIds = [];
+            G.lastWoundedCardIds.push(companion.id);
 
-        resultMsg += `${companion.name} est SUBMERGÉ et tué sur le coup !`;
-    } else {
+            resultMsg += `${companion.title} est SUBMERGÉ et tué sur le coup !`;
+        } else {
             const shouldDie = applyWoundToCard(G, companion, 1);
 
             if (shouldDie) {

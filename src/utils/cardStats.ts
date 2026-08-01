@@ -21,8 +21,8 @@ export const getEffectiveStrength = (card: CardState): number => {
     // Ajoute les bonus des objets/possessions attachés s'il y en a
     if (card.attachments) {
         card.attachments.forEach((att) => {
-            if (att.strengthBonus) {
-                strength += Number(att.strengthBonus);
+            if (att.strength) {
+                strength += Number(att.strength);
             }
         });
     }

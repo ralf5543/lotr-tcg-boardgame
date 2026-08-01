@@ -11,7 +11,11 @@ export const getUnassignedMinions = (G: GameState): CardState[] => {
 export const checkAssignmentProgress = (
     G: GameState,
     _ctx: Ctx,
-    events?: { endPhase?: () => void; endTurn?: () => void }
+    events?: { 
+        endPhase?: () => void; 
+        endTurn?: () => void;
+        setActivePlayers?: (arg: { value: Record<string, string> }) => void;
+    }
 ) => {
     const unassignedMinions = getUnassignedMinions(G);
     const companions = G.players['0']?.fellowshipArea || [];
