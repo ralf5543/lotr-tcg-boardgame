@@ -198,6 +198,7 @@ export const PlayerArea: React.FC<PlayerAreaProps> = ({
                                 isWounded={G.lastWoundedCardIds?.includes(
                                     card.id
                                 )}
+                                isOpponent={isOpponent}
                             />
                         </S.CharacterStack>
                     ))}

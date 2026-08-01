@@ -11,6 +11,7 @@ interface BattlefieldProps {
     isAssignmentPhase?: boolean;
     skirmishes?: Array<{ companionId?: string; minionIds?: string[] }>;
     lastWoundedCardIds?: string[];
+    isOpponent?: boolean;
 }
 
 export const Battlefield: React.FC<BattlefieldProps> = ({
@@ -20,6 +21,7 @@ export const Battlefield: React.FC<BattlefieldProps> = ({
     isAssignmentPhase = false,
     skirmishes = [],
     lastWoundedCardIds = [],
+    isOpponent = false,
 }) => {
     const { registerTarget, activeTargetId, dragged } = useDrag();
     const containerRef = useRef<HTMLDivElement | null>(null);
@@ -33,8 +35,6 @@ export const Battlefield: React.FC<BattlefieldProps> = ({
 
     const isValidCard = dragged?.card?.type === 'MINION' && dragged?.card?.kind === 'SHADOW';
     const isHovered = activeTargetId === 'battlefield' && isValidCard;
-
-    const isOpponent = playerRole === '0';
 
     // Filtrer les séides non assignés
     const unassignedMinions = cards.filter(

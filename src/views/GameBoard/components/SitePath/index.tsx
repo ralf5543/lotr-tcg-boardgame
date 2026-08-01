@@ -45,10 +45,7 @@ export const SitePath: React.FC<SitePathProps> = ({
 
             if (targetId === 'sitePath') {
                 const siteId = draggedCard?.card?.id;
-                console.log(
-                    '🎯 [SITEPATH] Valid drop target detected! Card ID:',
-                    siteId
-                );
+
 
                 if (siteId && onPlaySite) {
                     console.log(

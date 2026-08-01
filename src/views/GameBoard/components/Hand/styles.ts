@@ -40,15 +40,14 @@ export const CardWrapper = styled.div<{
     }
 `;
 
-export const ControlGroup = styled.div`
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-    width: 150px;
-`;
 
 export const GameButton = styled.button<{ $bgColor: string }>`
     background-color: ${(props) => props.$bgColor};
+    position: absolute;
+    inset-block-end: -150px;
+    inset-inline-start: 50%;
+    transform: translateX(-50%);
+    z-index: 1;
     color: white;
     border: none;
     padding: 10px 14px;
@@ -57,12 +56,10 @@ export const GameButton = styled.button<{ $bgColor: string }>`
     cursor: pointer;
     font-size: 13px;
     transition:
-        transform 0.1s,
         filter 0.1s;
 
     &:hover {
         filter: brightness(1.1);
-        transform: translateY(-2px);
     }
 `;
 

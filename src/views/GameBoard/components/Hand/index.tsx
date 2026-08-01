@@ -41,11 +41,9 @@ export const Hand: React.FC<HandProps> = ({
 
     return (
         <S.FixedHandContainer $isDragging={isDragging}>
-            <S.ControlGroup>
-                <S.GameButton $bgColor="#3498db" onClick={onDrawCard}>
-                    🃏 Piocher ({deckCount})
-                </S.GameButton>
-            </S.ControlGroup>
+            <S.GameButton $bgColor="#3498db" onClick={onDrawCard}>
+                🃏 Piocher ({deckCount})
+            </S.GameButton>
 
             <S.CardRow>
                 {hand.length === 0 ? (

@@ -22,7 +22,8 @@ interface CardProps {
     signet?: CardSignet;
     size?: 'sm' | 'md' | 'lg';
     isRingBearer?: boolean;
-    isWounded?: boolean; // 🟢 Prop pour déclencher l'animation de secousse (shake)
+    isWounded?: boolean;
+    isOpponent?: boolean;
 }
 
 export const Card: React.FC<CardProps> = ({
@@ -33,7 +34,8 @@ export const Card: React.FC<CardProps> = ({
     index,
     isRingBearer: isRingBearerProp,
     currentSiteIndex,
-    isWounded = false, // Animation flash/shake
+    isWounded = false,
+    isOpponent = false,
 }) => {
     const isShadow = card.kind === 'SHADOW';
     const { setHoveredCard } = useHoverCard();
@@ -106,7 +108,8 @@ export const Card: React.FC<CardProps> = ({
             $isPlayable={isPlayable}
             $size={size}
             $isRoaming={isRoaming}
-            $isWounded={isWounded} // 🟢 On passe la prop d'animation au styled component
+            $isWounded={isWounded}
+            $isOpponent={isOpponent}
             key={`${card.id}-wounds-${card.wounds || 0}`}
             onMouseEnter={handleMouseEnter}
             onMouseLeave={handleMouseLeave}

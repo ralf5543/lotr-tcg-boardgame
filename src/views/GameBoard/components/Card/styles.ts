@@ -1,5 +1,4 @@
 import styled, { css, keyframes } from 'styled-components';
-import type { CardType } from '../../../../game/types';
 
 export interface CardContainerProps {
     $culture: string;
@@ -8,6 +7,7 @@ export interface CardContainerProps {
     $isShadow?: boolean;
     $isPlayable?: boolean;
     $isWounded?: boolean;
+    $isOpponent?: boolean; // 🟢 Position globale de la carte (HAUT = true, BAS = false)
     $kind: string;
     $size?: 'sm' | 'md' | 'lg';
     $isRoaming?: boolean;
@@ -39,13 +39,21 @@ const isAttachedToCharacter = (type?: string) => {
     );
 };
 
-const shakeAnimation = keyframes`
-  0% { transform: translate(0, 0) rotate(0deg); }
-  20% { transform: translate(-6px, 2px) rotate(-4deg); }
-  40% { transform: translate(6px, -2px) rotate(4deg); }
-  60% { transform: translate(-4px, 1px) rotate(-2deg); }
-  80% { transform: translate(4px, -1px) rotate(2deg); }
-  100% { transform: translate(0, 0) rotate(0deg); }
+// 💥 ANIMATION D'IMPACT DYNAMIQUE (RECUL PHYSIQUE)
+const woundImpactAnimation = (recoilY: number) => keyframes`
+  0% {
+    transform: translate(0, 0) rotate(0deg) scale(1);
+  }
+  18% {
+    /* Recul vertical exact selon la direction calculée */
+    transform: translate(var(--strike-x, 0%), ${recoilY}px) rotate(var(--strike-rot, 4deg)) scale(0.91);
+  }
+  40% {
+    transform: translate(calc(var(--strike-x, 0%) * 0.35), ${recoilY * 0.35}px) rotate(calc(var(--strike-rot, 4deg) * -0.25)) scale(0.97);
+  }
+  100% {
+    transform: translate(0, 0) rotate(0deg) scale(1);
+  }
 `;
 
 export const CardContainer = styled.div<CardContainerProps>`
@@ -110,10 +118,31 @@ export const CardContainer = styled.div<CardContainerProps>`
             background-repeat: repeat;
             filter: drop-shadow(0 3px 4px rgba(0, 0, 0, 1));
 
-            /* 🟢 L'animation s'applique uniquement aux cartes réduites ! */
+            &::before {
+                position: absolute;
+                top: -18px;
+                left: 50%;
+                transform: translateX(-50%);
+                color: black;
+                font-size: 9px;
+                font-weight: bold;
+                padding: 1px 4px;
+                border-radius: 3px;
+                z-index: 999;
+                white-space: nowrap;
+                pointer-events: none;
+            }
+
+            /* 🟢 CALCUL DU RECUL D'ANIMATION */
             ${props.$isWounded &&
             css`
-                animation: ${shakeAnimation} 0.4s ease-in-out;
+                will-change: transform;
+                animation: ${() => {
+                    // Si en HAUT ($isOpponent = true) -> Recule vers le haut (-35px)
+                    // Si en BAS ($isOpponent = false) -> Recule vers le bas (+35px)
+                    const recoilY = props.$isOpponent ? -35 : 35;
+                    return woundImpactAnimation(recoilY);
+                }} 0.7s cubic-bezier(0.12, 0.85, 0.2, 1);
             `}
 
             &::after {
@@ -258,7 +287,7 @@ export const CardContainer = styled.div<CardContainerProps>`
                 background-position: 1px 0px;
             }
 
-            /* ======------ Attachment cards (Possessions, Artifacts, Conditions attachées) ------====== */
+            /* ======------ Attachment cards ------====== */
             ${isAttachedToCharacter(props.$type) &&
             css`
                 aspect-ratio: initial;
@@ -271,7 +300,6 @@ export const CardContainer = styled.div<CardContainerProps>`
                     content: none;
                 }
 
-                /* Masquage de tout le superflu pour ne garder que le visuel/fond d'attachement */
                 ${CardHeader},
                 ${TextContainer},
                 ${CardTypes},
@@ -717,7 +745,6 @@ export const AttachmentSubtype = styled.img`
     filter: invert(1);
 `;
 
-// 🔴 Tokens de blessure posés sur la carte
 export const WoundsOverlay = styled.div`
     position: absolute;
     inset: 30px 32px 33px -11px;

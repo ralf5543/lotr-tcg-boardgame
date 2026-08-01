@@ -67,21 +67,10 @@ export const BoardCharacterStack: React.FC<BoardCharacterStackProps> = ({
         // ou le parent ne déclenche pas un faux "Drop"
         e.stopPropagation();
 
-        console.log('1. [CLICK] Clic intercepté sur BoardCharacterStack !', {
-            isSkirmishPhase,
-            skirmishId,
-            hasOnSelectSkirmish: Boolean(onSelectSkirmish),
-            assignedMinionsCount: assignedMinions.length,
-        });
-
         if (!canSelectThisSkirmish || isSelectedSkirmish) return;
 
         // 2. On vérifie les conditions pour déclencher le combat
         if (isSkirmishPhase && skirmishId && onSelectSkirmish) {
-            console.log(
-                '2. [CLICK] Condition OK -> Appel de onSelectSkirmish pour',
-                skirmishId
-            );
             onSelectSkirmish(skirmishId);
         } else {
             console.warn(
@@ -97,12 +86,6 @@ export const BoardCharacterStack: React.FC<BoardCharacterStackProps> = ({
         }
     };
 
-    console.log(`[Stack Render] ID: ${character.name} (${skirmishId})`, {
-    isSelectedSkirmish,
-    isSelectionAllowed,
-    isOpponent
-});
-
     return (
         <S.SkirmishGroup
             $isSkirmishPhase={isSkirmishPhase && assignedMinions.length > 0}
@@ -111,12 +94,7 @@ export const BoardCharacterStack: React.FC<BoardCharacterStackProps> = ({
             $isSelectable={canSelectThisSkirmish}
             onClick={handleStackClick}
         >
-            {isSelectedSkirmish && (
-    <React.Fragment key={skirmishId}>
-        {console.log(`💥 [Clash MOUNT] rendu du clash pour : ${skirmishId}`)}
-        <SkirmishClash $isOpponent={isOpponent} />
-    </React.Fragment>
-)}
+            {isSelectedSkirmish && <SkirmishClash $isOpponent={isOpponent} />}
             <S.CharacterStack $isBeingDragged={isBeingDragged}>
                 {/* 🟢 SÉIDES ASSIGNÉS (Affichés dans leur propre conteneur distinct des possessions) */}
                 {assignedMinions.length > 0 && (
@@ -133,6 +111,7 @@ export const BoardCharacterStack: React.FC<BoardCharacterStackProps> = ({
                                     isWounded={lastWoundedCardIds.includes(
                                         minion.id
                                     )}
+                                    isOpponent={!isOpponent}
                                 />
                             </S.MinionWrapper>
                         ))}
@@ -168,6 +147,7 @@ export const BoardCharacterStack: React.FC<BoardCharacterStackProps> = ({
                         index={index}
                         currentSiteIndex={currentSiteIndex}
                         isWounded={lastWoundedCardIds.includes(character.id)}
+                        isOpponent={isOpponent}
                     />
                 </S.CardDragTarget>
 
