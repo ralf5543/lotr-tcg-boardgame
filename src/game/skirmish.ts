@@ -103,11 +103,11 @@ export const resolveSkirmish = (
 
     G.lastWoundedCardIds = [];
     // Stocke les cartes destinées à mourir à la fin du timer visuel
-    G.pendingDeadCardIds = []; 
+    G.pendingDeadCardIds = [];
 
-    let resultMsg = `Résolution : ${companion.name} (${companionStrength}) vs `;
+    let resultMsg = `Résolution : ${companion.title} (${companionStrength}) vs `;
     resultMsg += minions
-        .map((m) => `${m.name} (${getCardTotalStrength(m)})`)
+        .map((m) => `${m.title} (${getCardTotalStrength(m)})`)
         .join(', ');
     resultMsg += ` [Total Ombre: ${minionsStrength}]. `;
 
@@ -115,7 +115,7 @@ export const resolveSkirmish = (
     // ⚔️ CAS 1 : VICTOIRE DU COMPAGNON
     // -------------------------------------------------------------
     if (companionStrength > minionsStrength) {
-    resultMsg += `Victoire de ${companion.name} ! `;
+    resultMsg += `Victoire de ${companion.title} ! `;
 
     const isMinionsOverwhelmed =
         minionsStrength > 0
@@ -142,7 +142,7 @@ export const resolveSkirmish = (
                     if (!G.lastWoundedCardIds) G.lastWoundedCardIds = [];
                     G.lastWoundedCardIds.push(minion.id);
                 }
-                resultMsg += `${minion.name} subit 1 blessure${shouldDie ? ' et meurt' : ''}. `;
+                resultMsg += `${minion.title} subit 1 blessure${shouldDie ? ' et meurt' : ''}. `;
             });
         }
     }
@@ -176,7 +176,7 @@ export const resolveSkirmish = (
                 if (!G.lastWoundedCardIds) G.lastWoundedCardIds = [];
                 G.lastWoundedCardIds.push(companion.id);
             }
-            resultMsg += `${companion.name} subit 1 blessure${shouldDie ? ' et meurt (Cimetière)' : ''}.`;
+            resultMsg += `${companion.title} subit 1 blessure${shouldDie ? ' et meurt (Cimetière)' : ''}.`;
         }
     }
 

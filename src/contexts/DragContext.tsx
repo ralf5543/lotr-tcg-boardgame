@@ -135,7 +135,6 @@ export const DragProvider: React.FC<{ children: React.ReactNode }> = ({
                 id === 'supportArea' ||
                 id === 'battlefield'
             ) {
-                // 💡 CONFORT : Passe 0.2 à 0.35 ou 0.4 si tu veux qu'il faille entrer plus franchement dans la zone
                 const ZONE_THRESHOLD = 0.2;
 
                 if (
@@ -151,9 +150,11 @@ export const DragProvider: React.FC<{ children: React.ReactNode }> = ({
                 const targetArea = targetRect.width * targetRect.height;
                 const targetOverlapRatio = overlapArea / targetArea;
 
-                // On retient le compagnon avec lequel le chevauchement est le plus important
+                // 🔍 LOGS DE DÉBOGAGE POUR COMPAGNON SURVOLÉ
+                // console.log(`[DRAG OVERLAP] Cible: ${id} | Overlap Ratio: ${(targetOverlapRatio * 100).toFixed(1)}%`);
+
                 if (
-                    targetOverlapRatio > 0.15 &&
+                    targetOverlapRatio > 0.05 && // 🟢 Réduit de 0.15 à 0.05 pour détecter le survol dès le bord de la carte
                     targetOverlapRatio > maxCompanionOverlap
                 ) {
                     maxCompanionOverlap = targetOverlapRatio;
@@ -162,11 +163,12 @@ export const DragProvider: React.FC<{ children: React.ReactNode }> = ({
             }
         });
 
-        if (bestZoneId && maxZoneOverlapRatio > maxCompanionOverlap) {
-            return bestZoneId;
+        // 🟢 PRIORITÉ AU COMPAGNON : Si on survole un compagnon (même un peu), on le privilégie sur la zone globale
+        if (bestCompanionId) {
+            return bestCompanionId;
         }
 
-        return bestCompanionId || bestZoneId || null;
+        return bestZoneId || null;
     };
 
     const startDrag = (
@@ -203,6 +205,8 @@ export const DragProvider: React.FC<{ children: React.ReactNode }> = ({
             x: (e.clientX - boardLeft) / scale,
             y: (e.clientY - boardTop) / scale,
         });
+
+        console.log(`[DRAG START] Carte: ${(card as CardState).name || card.id} (Origin: ${origin})`);
     };
 
     const stopDrag = () => {
@@ -215,8 +219,9 @@ export const DragProvider: React.FC<{ children: React.ReactNode }> = ({
         if (!dragged) return;
 
         const isLandscape = dragged.orientation === 'landscape';
-        const cardWidthPhysBase = isLandscape ? 180 : 140;
-        const cardHeightPhysBase = isLandscape ? 110 : 200;
+        // 🟢 Dimensions plus proches de la taille réelle (size="md" = 130x180)
+        const cardWidthPhysBase = isLandscape ? 180 : 130;
+        const cardHeightPhysBase = isLandscape ? 110 : 180;
 
         const handlePointerMove = (e: PointerEvent) => {
             const board = document
@@ -243,6 +248,10 @@ export const DragProvider: React.FC<{ children: React.ReactNode }> = ({
                 cardHeightPhysBase
             );
 
+            if (detectedTargetId !== activeTargetIdRef.current) {
+                console.log(`[DRAG HOVER TARGET] Cible active : ${detectedTargetId ?? 'Aucune'}`);
+            }
+
             setActiveTargetId(detectedTargetId);
             activeTargetIdRef.current = detectedTargetId;
         };
@@ -256,6 +265,8 @@ export const DragProvider: React.FC<{ children: React.ReactNode }> = ({
                     cardHeightPhysBase
                 );
                 const targetToUse = finalTargetId || activeTargetIdRef.current;
+
+                console.log(`[DRAG DROP] Carte déposée sur : ${targetToUse}`);
 
                 const dropEvent = new CustomEvent('card-dropped', {
                     detail: { draggedCard: dragged, targetId: targetToUse },
@@ -323,7 +334,7 @@ const DragPortal: React.FC = () => {
                 style={{
                     transform: isLandscape
                         ? 'translate(-90px, -55px)'
-                        : 'translate(-70px, -100px)',
+                        : 'translate(-65px, -90px)',
                 }}
             >
                 {isLandscape ? (

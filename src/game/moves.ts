@@ -1,6 +1,10 @@
 import type { Ctx } from 'boardgame.io';
 import type { GameState, LotrMoveContext, LotrPhaseContext } from './types';
-import { resolveSkirmish, finishSkirmishResolution, applyWoundToCard } from './skirmish';
+import {
+    resolveSkirmish,
+    finishSkirmishResolution,
+    applyWoundToCard,
+} from './skirmish';
 
 export interface ReorderPayload {
     fromIndex?: number;
@@ -27,11 +31,7 @@ export const getTargetPlayerId = (
     return String(ctx.currentPlayer ?? '0');
 };
 
-export const advanceCompany = (
-    G: GameState,
-    _ctx: Ctx,
-    _playerID: string
-) => {
+export const advanceCompany = (G: GameState, _ctx: Ctx, _playerID: string) => {
     const p0 = G.players['0'];
     const nextIndex = p0.currentSiteIndex + 1;
 
@@ -55,7 +55,7 @@ export const advanceCompany = (
         applyTwilightForSite(nextIndex);
 
         G.statusMessage = `La compagnie avance au site ${nextIndex + 1} : ${G.path[nextIndex]?.name}`;
-        
+
         // 🟢 Temporisation globale : signale la fin de phase sans l'exécuter immédiatement
         G.pendingPhaseEnd = true;
     } else {
@@ -65,11 +65,7 @@ export const advanceCompany = (
     }
 };
 
-export const passActionWindow = ({
-    G,
-    ctx,
-    playerID,
-}: LotrMoveContext) => {
+export const passActionWindow = ({ G, ctx, playerID }: LotrMoveContext) => {
     if (!G.actionWindow || !G.actionWindow.isOpen) return;
     if (playerID !== G.actionWindow.activePlayerId) return;
 
@@ -112,7 +108,9 @@ export const commonMoves = {
     },
 
     applyWound: ({ G }: LotrMoveContext, targetCardId: string) => {
-        const companion = G.players['0'].fellowshipArea.find((c) => c.id === targetCardId);
+        const companion = G.players['0'].fellowshipArea.find(
+            (c) => c.id === targetCardId
+        );
         const minion = G.battlefield.find((c) => c.id === targetCardId);
         const targetCard = companion || minion;
 
@@ -141,58 +139,73 @@ export const commonMoves = {
             G.twilightPool = 8;
             G.players['0'].fellowshipArea = [
                 {
-                    id: 'dev-legolas',
-                    name: 'Legolas',
+                    id: '1r50',
+                    title: 'Legolas',
+                    subtitle: 'Vertefeuille',
+                    keywords: ['ARCHER'],
+                    imageUrl: '/cards_visuals/lotr1r50.jpg',
                     kind: 'FREE_PEOPLES',
+                    signet: 'FRODO',
+                    resistance: 6,
+                    race: 'ELF',
                     type: 'COMPANION',
                     twilightCost: 2,
                     strength: 6,
                     vitality: 3,
                     culture: 'ELVEN',
-                    gameText: 'Archerie test card',
-                    title: 'efsfsdf',
                     isUnique: true,
+                    gameText: 'sfdxfdsfsdfsd',
                 },
                 {
-                    id: 'dev-legolas2',
-                    name: 'Legolas',
+                    id: '1r13',
+                    title: 'Gimli',
+                    subtitle: 'Fils de Glóin',
+                    imageUrl: '/cards_visuals/lotr1r13.jpg',
                     kind: 'FREE_PEOPLES',
+                    keywords: ['DAMAGE'],
+                    signet: 'GANDALF',
+                    resistance: 6,
+                    race: 'DWARF',
                     type: 'COMPANION',
                     twilightCost: 2,
                     strength: 6,
                     vitality: 3,
-                    culture: 'ELVEN',
-                    gameText: 'Archerie test card',
-                    title: 'efsfsdf',
+                    culture: 'DWARVEN',
                     isUnique: true,
+                    gameText:
+                        '**Skirmish:** Exert Gimli to make him strength +2',
                 },
             ];
             G.battlefield = [
                 {
-                    id: 'dev-nazgul',
-                    name: 'Ukursh, Archor',
+                    id: '1c191',
+                    title: 'Éclaireur de la Moria',
+                    imageUrl: '/cards_visuals/lotr1c191.jpg',
                     kind: 'SHADOW',
+                    race: 'ORC',
+                    roaming: 4,
                     type: 'MINION',
-                    twilightCost: 3,
-                    strength: 6,
-                    vitality: 2,
-                    culture: 'ORC',
-                    gameText: 'Archerie test card',
-                    title: 'efsfsdf',
+                    twilightCost: 1,
+                    strength: 5,
+                    vitality: 1,
+                    culture: 'MORIA',
                     isUnique: false,
+                    gameText: 'wlmdfdxlmfkdlsmfksmdlf',
                 },
                 {
-                    id: 'dev-nazgul2',
-                    name: 'Ukursh, Archor',
+                    id: '1c271',
+                    title: 'Soldat Orque',
+                    imageUrl: '/cards_visuals/lotr1c271.jpg',
                     kind: 'SHADOW',
+                    race: 'ORC',
+                    roaming: 6,
                     type: 'MINION',
-                    twilightCost: 3,
-                    strength: 5,
+                    twilightCost: 2,
+                    strength: 7,
                     vitality: 2,
-                    culture: 'RAIDER',
-                    gameText: 'Archerie test card',
-                    title: 'efsfsdf',
+                    culture: 'SAURON',
                     isUnique: false,
+                    gameText: 'wdfjdsklwfjklsdfjkldsflksd',
                 },
             ];
             G.statusMessage = '[DEV] Preset Archerie chargé !';
@@ -267,51 +280,81 @@ export const commonMoves = {
             G.twilightPool += siteCost + companionsCount;
 
             G.statusMessage = `Nouveau site révélé ! La compagnie avance en ${playedSite.name}. (+${siteCost + companionsCount} Crépuscule)`;
-            
+
             // 🟢 Temporisation globale
             G.pendingPhaseEnd = true;
         }
     },
 
     transferAttachment: (
-        { G, ctx, playerID }: LotrMoveContext,
-        payload: TransferPayload
-    ) => {
-        const { attachmentId, fromCharacterId, toCharacterId } = payload;
-        const targetId = getTargetPlayerId(playerID, ctx);
-        const player = G.players?.[targetId];
-        if (!player) return;
+    { G, ctx, playerID }: LotrMoveContext,
+    payload: TransferPayload
+) => {
+    const { attachmentId, fromCharacterId, toCharacterId } = payload;
+    const targetId = getTargetPlayerId(playerID, ctx);
+    const player = G.players?.[targetId];
+    if (!player) return 'INVALID_MOVE';
 
-        const allPossibleHosts = [
-            ...(player.fellowshipArea || []),
-            ...(player.supportArea || []),
-            ...(G.battlefield || []),
-        ];
+    const allPossibleHosts = [
+        ...(player.fellowshipArea || []),
+        ...(player.supportArea || []),
+        ...(G.battlefield || []),
+    ];
 
-        const sourceHost = fromCharacterId
-            ? allPossibleHosts.find((c) => c.id === fromCharacterId)
-            : allPossibleHosts.find((c) =>
-                  c.attachments?.some((a) => a.id === attachmentId)
-              );
+    const sourceHost = fromCharacterId
+        ? allPossibleHosts.find((c) => c.id === fromCharacterId)
+        : allPossibleHosts.find((c) =>
+              c.attachments?.some((a) => a.id === attachmentId)
+          );
 
-        if (!sourceHost || !sourceHost.attachments) return 'INVALID_MOVE';
+    if (!sourceHost || !sourceHost.attachments) return 'INVALID_MOVE';
 
-        const targetHost = allPossibleHosts.find((c) => c.id === toCharacterId);
-        if (!targetHost || sourceHost.id === targetHost.id)
+    const attachIndex = sourceHost.attachments.findIndex(
+        (a) => a.id === attachmentId
+    );
+    if (attachIndex === -1) return 'INVALID_MOVE';
+
+    const movedAttachment = sourceHost.attachments[attachIndex];
+
+    // 🔒 RESTRICTION DES PHASES
+    if (movedAttachment.kind === 'SHADOW') {
+        // L'Ombre ne peut transférer qu'en phase Shadow
+        if (ctx.phase !== 'shadow' || playerID !== '1') {
             return 'INVALID_MOVE';
-
-        const attachIndex = sourceHost.attachments.findIndex(
-            (a) => a.id === attachmentId
-        );
-        if (attachIndex === -1) return 'INVALID_MOVE';
-
-        const [movedAttachment] = sourceHost.attachments.splice(attachIndex, 1);
-
-        if (!targetHost.attachments) {
-            targetHost.attachments = [];
         }
-        targetHost.attachments.push(movedAttachment);
+    } else {
+        // Les Peuples Libres ne peuvent transférer qu'en phase Fellowship
+        if (ctx.phase !== 'fellowship' || playerID !== '0') {
+            return 'INVALID_MOVE';
+        }
+    }
 
-        G.statusMessage = `${movedAttachment.name || 'Attachement'} est transféré de ${sourceHost.name || 'son hôte'} vers ${targetHost.name || 'sa cible'}.`;
-    },
+    const targetHost = allPossibleHosts.find((c) => c.id === toCharacterId);
+    if (!targetHost || sourceHost.id === targetHost.id)
+        return 'INVALID_MOVE';
+
+    const cost = Number(movedAttachment.twilightCost) || 0;
+
+    // 🟢 GESTION DU CRÉPUSCULE SELON LA FACTION
+    if (movedAttachment.kind === 'SHADOW') {
+        if (G.twilightPool < cost) return 'INVALID_MOVE';
+        G.twilightPool -= cost;
+    } else {
+        G.twilightPool += cost;
+    }
+
+    // Transfert effectif
+    sourceHost.attachments.splice(attachIndex, 1);
+
+    if (!targetHost.attachments) {
+        targetHost.attachments = [];
+    }
+    targetHost.attachments.push(movedAttachment);
+
+    const attachmentTitle = movedAttachment.title || movedAttachment.name || 'Attachement';
+    const sourceTitle = sourceHost.title || sourceHost.name || 'son hôte';
+    const targetTitle = targetHost.title || targetHost.name || 'sa cible';
+
+    G.statusMessage = `${attachmentTitle} est transféré de ${sourceTitle} vers ${targetTitle} (Coût : ${cost} Crépuscule).`;
+},
 };
