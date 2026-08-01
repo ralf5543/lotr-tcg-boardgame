@@ -1,6 +1,4 @@
 import React, {
-    createContext,
-    useContext,
     useState,
     useEffect,
     useRef,
@@ -8,39 +6,15 @@ import React, {
 import type { CardState, SiteCardState } from '../game/types';
 import { Card } from '../views/GameBoard/components/Card';
 import { SiteCard } from '../views/GameBoard/components/SiteCard';
+import {
+    DragContext,
+    useDrag,
+    type CardOrientation,
+    type CardOrigin,
+    type DraggedCardData,
+} from './DragContext'; // Ajustez le chemin d'import selon votre arborescence
 
-export type CardOrientation = 'portrait' | 'landscape';
-export type CardOrigin = 'HAND' | 'BOARD' | 'ATTACHMENT' | 'BATTLEFIELD';
-
-interface DraggedCardData {
-    card: CardState | SiteCardState;
-    index: number;
-    kind?: 'FREE_PEOPLES' | 'SHADOW';
-    origin: CardOrigin;
-    orientation: CardOrientation;
-    parentId?: string; // 🟢 Optionnel : ID du personnage hôte si la carte était attachée
-}
-
-interface DragContextType {
-    dragged: DraggedCardData | null;
-    position: { x: number; y: number };
-    activeTargetId: string | null;
-    startDrag: (
-        card: CardState | SiteCardState,
-        index: number,
-        e: React.PointerEvent,
-        origin?: CardOrigin,
-        orientation?: CardOrientation,
-        parentId?: string
-    ) => void;
-    stopDrag: () => void;
-    registerTarget: (id: string, element: HTMLDivElement | null) => void;
-    rotation: number;
-}
-
-const DragContext = createContext<DragContextType | undefined>(undefined);
-
-const getXScale = () => {
+const getXScale = (): number => {
     const scaledBoard = document.querySelector('[class*="ScaledView"]');
     if (!scaledBoard) return 1;
     const rect = scaledBoard.getBoundingClientRect();
@@ -80,7 +54,6 @@ export const DragProvider: React.FC<{ children: React.ReactNode }> = ({
         }
     };
 
-    // --- FONCTION DE CALCUL DE COLLISION FACTORISÉE ---
     const getHitTargetId = (
         clientX: number,
         clientY: number,
@@ -95,14 +68,11 @@ export const DragProvider: React.FC<{ children: React.ReactNode }> = ({
         const cardRightPhys = cardLeftPhys + cardWidthPhys;
         const cardBottomPhys = cardTopPhys + cardHeightPhys;
 
-        // Surface totale de la carte traînée
         const cardArea = cardWidthPhys * cardHeightPhys;
 
-        // 1. On cherche d'abord si on chevauche un compagnon/carte spécifique (Priorité Attachement)
         let bestCompanionId: string | null = null;
         let maxCompanionOverlap = 0;
 
-        // 2. En parallèle, on cherche la meilleure zone globale de plateau
         let bestZoneId: string | null = null;
         let maxZoneOverlapRatio = 0;
 
@@ -111,7 +81,6 @@ export const DragProvider: React.FC<{ children: React.ReactNode }> = ({
 
             const targetRect = targetEl.getBoundingClientRect();
 
-            // Calcul de l'intersection entre la carte glissée et la cible
             const xOverlap = Math.max(
                 0,
                 Math.min(cardRightPhys, targetRect.right) -
@@ -128,7 +97,6 @@ export const DragProvider: React.FC<{ children: React.ReactNode }> = ({
 
             const cardOverlapRatio = overlapArea / cardArea;
 
-            // A) S'il s'agit d'une Zone du Plateau
             if (
                 id === 'fellowshipArea' ||
                 id === 'sitePath' ||
@@ -144,17 +112,12 @@ export const DragProvider: React.FC<{ children: React.ReactNode }> = ({
                     maxZoneOverlapRatio = cardOverlapRatio;
                     bestZoneId = id;
                 }
-            }
-            // B) S'il s'agit d'un Compagnon / Carte cible pour attachement
-            else {
+            } else {
                 const targetArea = targetRect.width * targetRect.height;
                 const targetOverlapRatio = overlapArea / targetArea;
 
-                // 🔍 LOGS DE DÉBOGAGE POUR COMPAGNON SURVOLÉ
-                // console.log(`[DRAG OVERLAP] Cible: ${id} | Overlap Ratio: ${(targetOverlapRatio * 100).toFixed(1)}%`);
-
                 if (
-                    targetOverlapRatio > 0.05 && // 🟢 Réduit de 0.15 à 0.05 pour détecter le survol dès le bord de la carte
+                    targetOverlapRatio > 0.05 &&
                     targetOverlapRatio > maxCompanionOverlap
                 ) {
                     maxCompanionOverlap = targetOverlapRatio;
@@ -163,7 +126,6 @@ export const DragProvider: React.FC<{ children: React.ReactNode }> = ({
             }
         });
 
-        // 🟢 PRIORITÉ AU COMPAGNON : Si on survole un compagnon (même un peu), on le privilégie sur la zone globale
         if (bestCompanionId) {
             return bestCompanionId;
         }
@@ -205,8 +167,6 @@ export const DragProvider: React.FC<{ children: React.ReactNode }> = ({
             x: (e.clientX - boardLeft) / scale,
             y: (e.clientY - boardTop) / scale,
         });
-
-        console.log(`[DRAG START] Carte: ${(card as CardState).name || card.id} (Origin: ${origin})`);
     };
 
     const stopDrag = () => {
@@ -219,7 +179,6 @@ export const DragProvider: React.FC<{ children: React.ReactNode }> = ({
         if (!dragged) return;
 
         const isLandscape = dragged.orientation === 'landscape';
-        // 🟢 Dimensions plus proches de la taille réelle (size="md" = 130x180)
         const cardWidthPhysBase = isLandscape ? 180 : 130;
         const cardHeightPhysBase = isLandscape ? 110 : 180;
 
@@ -248,10 +207,6 @@ export const DragProvider: React.FC<{ children: React.ReactNode }> = ({
                 cardHeightPhysBase
             );
 
-            if (detectedTargetId !== activeTargetIdRef.current) {
-                console.log(`[DRAG HOVER TARGET] Cible active : ${detectedTargetId ?? 'Aucune'}`);
-            }
-
             setActiveTargetId(detectedTargetId);
             activeTargetIdRef.current = detectedTargetId;
         };
@@ -265,8 +220,6 @@ export const DragProvider: React.FC<{ children: React.ReactNode }> = ({
                     cardHeightPhysBase
                 );
                 const targetToUse = finalTargetId || activeTargetIdRef.current;
-
-                console.log(`[DRAG DROP] Carte déposée sur : ${targetToUse}`);
 
                 const dropEvent = new CustomEvent('card-dropped', {
                     detail: { draggedCard: dragged, targetId: targetToUse },
@@ -302,13 +255,6 @@ export const DragProvider: React.FC<{ children: React.ReactNode }> = ({
             {dragged && <DragPortal />}
         </DragContext.Provider>
     );
-};
-
-export const useDrag = () => {
-    const context = useContext(DragContext);
-    if (!context)
-        throw new Error('useDrag doit être utilisé dans un DragProvider');
-    return context;
 };
 
 const DragPortal: React.FC = () => {

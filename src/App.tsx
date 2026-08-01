@@ -4,10 +4,10 @@ import { Client } from 'boardgame.io/react';
 import { Local, SocketIO } from 'boardgame.io/multiplayer';
 import { LotrGame } from './game';
 import { GameBoard } from './views/GameBoard';
-import { HoverCardProvider } from './contexts/HoverCardContext';
+import { HoverCardProvider } from './contexts/HoverCardProvider';
 import { CustomAssetCursor } from './views/GameBoard/components/CustomCursor';
-import { DragProvider } from './contexts/DragContext';
-import { FactionProvider } from './contexts/FactionContext';
+import { DragProvider } from './contexts/DragProvider';
+import { FactionProvider } from './contexts/FactionProvider';
 
 const LotrClient = Client({
     game: LotrGame,

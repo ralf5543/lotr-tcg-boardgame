@@ -1,4 +1,5 @@
 import React, { useEffect } from 'react';
+import type { BoardProps } from 'boardgame.io/react';
 import type {
     CardState,
     CardType,
@@ -13,7 +14,7 @@ import * as S from './styles';
 import { useHoverCard } from '../../contexts/HoverCardContext';
 import { Card } from './components/Card';
 import { SiteCard } from './components/SiteCard';
-import { DragProvider } from '../../contexts/DragContext';
+import { DragProvider } from '../../contexts/DragProvider';
 import { TwilightPool } from './components/TwilightPool';
 import { Dock } from './components/Dock';
 import { SitesPicker } from './components/SitePicker';
@@ -61,7 +62,7 @@ interface GameBoardProps {
     moves: any;
 }
 
-export const GameBoard: React.FC<GameBoardProps> = ({
+export const GameBoard: React.FC<BoardProps<GameState>> = ({
     playerID,
     G,
     ctx,
