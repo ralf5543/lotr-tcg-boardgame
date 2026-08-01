@@ -162,6 +162,10 @@ export const DragProvider: React.FC<{ children: React.ReactNode }> = ({
             }
         });
 
+        if (bestZoneId && maxZoneOverlapRatio > maxCompanionOverlap) {
+            return bestZoneId;
+        }
+
         return bestCompanionId || bestZoneId || null;
     };
 

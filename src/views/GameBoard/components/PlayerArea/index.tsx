@@ -89,6 +89,10 @@ export const PlayerArea: React.FC<PlayerAreaProps> = ({
                 dragged?.orientation === 'portrait' &&
                 canDropInFellowship(cardSubtype);
 
+            const isCombatLocked = Boolean(
+                G?.actionWindow?.isOpen && G?.activeSkirmishId
+            );
+
             return (
                 <S.Fellowship
                     className="fellowship-active"
@@ -124,13 +128,18 @@ export const PlayerArea: React.FC<PlayerAreaProps> = ({
                                         assignedMinions={assignedMinions}
                                         isSkirmishPhase={isSkirmishPhase}
                                         skirmishId={skirmishId}
-                                        lastWoundedCardIds={G?.lastWoundedCardIds}
+                                        lastWoundedCardIds={
+                                            G?.lastWoundedCardIds
+                                        }
                                         isSelectedSkirmish={
                                             activeSkirmishId === skirmishId
                                         }
-                                        onSelectSkirmish={(id) =>
-                                            moves.selectSkirmish?.(id)
-                                        }
+                                        onSelectSkirmish={(id) => {
+                                            // 🛑 Bloque la bascule de sélection si un combat est verrouillé
+                                            if (isCombatLocked) return;
+
+                                            moves.selectSkirmish?.(id);
+                                        }}
                                         onStartDrag={(e) => {
                                             if (isOpponent || e.button !== 0)
                                                 return;
@@ -186,7 +195,9 @@ export const PlayerArea: React.FC<PlayerAreaProps> = ({
                                 card={card}
                                 isDraggable={!isOpponent}
                                 index={cardIdx}
-                                isWounded={G.lastWoundedCardIds?.includes(card.id)}
+                                isWounded={G.lastWoundedCardIds?.includes(
+                                    card.id
+                                )}
                             />
                         </S.CharacterStack>
                     ))}

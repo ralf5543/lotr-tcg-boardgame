@@ -161,7 +161,7 @@ export const SkirmishGroup = styled.div<{
             }
         `}
 
-    ${({ $isSelected }) =>
+    /*${({ $isSelected }) =>
         $isSelected &&
         css`
             &::after {
@@ -187,5 +187,5 @@ export const SkirmishGroup = styled.div<{
                 inset-block-start: 100%;
             }
             
-        `}
+        `}*/
 `;

@@ -4,6 +4,7 @@ import { Card } from '../Card';
 import * as S from './styles';
 import { useDrag } from '../../../../contexts/DragContext';
 import { canAttachToCharacter } from '../../../../utils/routingDragNDrop';
+import { SkirmishClash } from './SkirmishClash';
 
 interface BoardCharacterStackProps {
     character: CardState;
@@ -18,7 +19,7 @@ interface BoardCharacterStackProps {
     onSelectSkirmish?: (skirmishId: string) => void; // 🟢 Callback pour sélectionner ce combat
     isSelectedSkirmish?: boolean;
     isSelectionAllowed?: boolean;
-    lastWoundedCardIds?: string[]
+    lastWoundedCardIds?: string[];
 }
 
 export const BoardCharacterStack: React.FC<BoardCharacterStackProps> = ({
@@ -50,8 +51,9 @@ export const BoardCharacterStack: React.FC<BoardCharacterStackProps> = ({
         dragged?.origin === 'BATTLEFIELD' && draggedSubtype === 'MINION';
 
     const isTargeted =
-    activeTargetId === character.id &&
-    ((!isOpponent && canAttachToCharacter(draggedSubtype)) || isMinionAssignment);
+        activeTargetId === character.id &&
+        ((!isOpponent && canAttachToCharacter(draggedSubtype)) ||
+            isMinionAssignment);
 
     // Règle de sélection : Uniquement en phase skirmish, avec un ID, si des minions sont assignés et si la sélection est permise
     const canSelectThisSkirmish =
@@ -71,6 +73,8 @@ export const BoardCharacterStack: React.FC<BoardCharacterStackProps> = ({
             hasOnSelectSkirmish: Boolean(onSelectSkirmish),
             assignedMinionsCount: assignedMinions.length,
         });
+
+        if (!canSelectThisSkirmish || isSelectedSkirmish) return;
 
         // 2. On vérifie les conditions pour déclencher le combat
         if (isSkirmishPhase && skirmishId && onSelectSkirmish) {
@@ -93,6 +97,12 @@ export const BoardCharacterStack: React.FC<BoardCharacterStackProps> = ({
         }
     };
 
+    console.log(`[Stack Render] ID: ${character.name} (${skirmishId})`, {
+    isSelectedSkirmish,
+    isSelectionAllowed,
+    isOpponent
+});
+
     return (
         <S.SkirmishGroup
             $isSkirmishPhase={isSkirmishPhase && assignedMinions.length > 0}
@@ -101,6 +111,12 @@ export const BoardCharacterStack: React.FC<BoardCharacterStackProps> = ({
             $isSelectable={canSelectThisSkirmish}
             onClick={handleStackClick}
         >
+            {isSelectedSkirmish && (
+    <React.Fragment key={skirmishId}>
+        {console.log(`💥 [Clash MOUNT] rendu du clash pour : ${skirmishId}`)}
+        <SkirmishClash $isOpponent={isOpponent} />
+    </React.Fragment>
+)}
             <S.CharacterStack $isBeingDragged={isBeingDragged}>
                 {/* 🟢 SÉIDES ASSIGNÉS (Affichés dans leur propre conteneur distinct des possessions) */}
                 {assignedMinions.length > 0 && (
@@ -114,7 +130,9 @@ export const BoardCharacterStack: React.FC<BoardCharacterStackProps> = ({
                                     card={minion}
                                     size="sm"
                                     isDraggable={false}
-                                    isWounded={lastWoundedCardIds.includes(minion.id)}
+                                    isWounded={lastWoundedCardIds.includes(
+                                        minion.id
+                                    )}
                                 />
                             </S.MinionWrapper>
                         ))}
