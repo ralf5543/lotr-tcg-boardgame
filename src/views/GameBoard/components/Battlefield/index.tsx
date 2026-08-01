@@ -1,8 +1,15 @@
 import React, { useEffect, useRef } from 'react';
-import type { CardState } from '../../../../game/types';
+import type { CardState, SiteCardState } from '../../../../game/types';
 import * as S from './styles';
 import { useDrag } from '../../../../contexts/DragContext';
 import { BoardCharacterStack } from '../BoardCharacterStack';
+
+// Helper pour déterminer si une carte est une carte standard (CardState)
+const isStandardCard = (
+    card: CardState | SiteCardState
+): card is CardState => {
+    return 'kind' in card && 'type' in card;
+};
 
 interface BattlefieldProps {
     cards: CardState[];
@@ -16,7 +23,6 @@ interface BattlefieldProps {
 
 export const Battlefield: React.FC<BattlefieldProps> = ({
     cards,
-    playerRole,
     currentSiteIndex,
     isAssignmentPhase = false,
     skirmishes = [],
@@ -33,14 +39,19 @@ export const Battlefield: React.FC<BattlefieldProps> = ({
         };
     }, [registerTarget]);
 
-    const isValidCard = dragged?.card?.type === 'MINION' && dragged?.card?.kind === 'SHADOW';
+    // Validation type-safe : on vérifie d'abord que c'est une carte standard
+    const isValidCard =
+        !!dragged?.card &&
+        isStandardCard(dragged.card) &&
+        dragged.card.type === 'MINION' &&
+        dragged.card.kind === 'SHADOW';
+
     const isHovered = activeTargetId === 'battlefield' && isValidCard;
 
     // Filtrer les séides non assignés
     const unassignedMinions = cards.filter(
         (minion) => !skirmishes.some((s) => s.minionIds?.includes(minion.id))
     );
-    
 
     return (
         <S.Battlefield ref={containerRef} $isHovered={isHovered}>

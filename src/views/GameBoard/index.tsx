@@ -25,44 +25,27 @@ import {
     canAttachToCharacter,
 } from '../../utils/routingDragNDrop';
 import { PhaseBanner } from './components/PhaseBanner';
-import { DevPanel } from '../../utils/DevPanel';
+import { DevPanel, type DevMoves } from '../../utils/DevPanel';
 
-interface GameBoardProps {
-    playerID: string | null;
-    G: {
-        twilightPool: number;
-        currentSite: number;
-        statusMessage?: string;
-        awaitingSiteSelection?: boolean;
-        pendingPhaseEnd?: boolean; // 🟢 Ajout du drapeau de fin de phase globale
-        path: (SiteCardState | null)[];
-        activeSkirmishId?: string;
-        pendingDeadCardIds?: string[];
-        battlefield: CardState[];
-        skirmishes?: Array<{ companionId?: string; minionIds?: string[] }>;
-        lastWoundedCardIds?: string[];
-        players: Record<
-            string,
-            {
-                sitesDeck: SiteCardState[];
-                deck: CardState[];
-                hand: CardState[];
-                discard: CardState[];
-                fellowshipArea: CardState[];
-                supportArea: CardState[];
-                currentSiteIndex: number;
-            }
-        >;
+export interface GameBoardProps extends BoardProps<GameState> {
+    moves: BoardProps<GameState>['moves'] & DevMoves & {
+        confirmEndPhase?: () => void;
+        finishSkirmishResolution?: () => void;
+        playCard: (index: number) => void;
+        playShadowCard: (index: number) => void;
+        attachCard: (index: number, targetId: string) => void;
+        transferAttachment?: (data: {
+            attachmentId: string;
+            fromCharacterId: string;
+            toCharacterId: string;
+        }) => void;
+        assignMinion: (minionId: string, targetId: string) => void;
+        playSite: (siteId: string, targetIndex: number) => void;
+        drawCard: () => void;
     };
-    ctx: {
-        currentPlayer: string;
-        activePlayers?: Record<string, string>;
-        phase?: string;
-    };
-    moves: any;
 }
 
-export const GameBoard: React.FC<BoardProps<GameState>> = ({
+export const GameBoard: React.FC<GameBoardProps> = ({
     playerID,
     G,
     ctx,
@@ -228,10 +211,13 @@ export const GameBoard: React.FC<BoardProps<GameState>> = ({
                 {hoveredData && (
                     <S.HoveredCardsZone $orientation={hoveredData.orientation}>
                         {hoveredData.orientation === 'landscape' ? (
-                            <SiteCard site={hoveredData.card} size="lg" />
+                            <SiteCard
+                                site={hoveredData.card as SiteCardState}
+                                size="lg"
+                            />
                         ) : (
                             <Card
-                                card={hoveredData.card}
+                                card={hoveredData.card as CardState}
                                 size="lg"
                                 currentSiteIndex={currentSiteIndex}
                             />
@@ -239,7 +225,11 @@ export const GameBoard: React.FC<BoardProps<GameState>> = ({
                     </S.HoveredCardsZone>
                 )}
                 <PhaseBanner key={ctx.phase} phaseName={ctx.phase} />
-                <DevPanel G={G} ctx={ctx} moves={moves} />
+                <DevPanel
+                    G={G}
+                    ctx={ctx}
+                    moves={moves as React.ComponentProps<typeof DevPanel>['moves']}
+                />
                 <GameControls
                     G={G}
                     statusMessage={G.statusMessage}
@@ -261,7 +251,7 @@ export const GameBoard: React.FC<BoardProps<GameState>> = ({
                     skirmishes={G.skirmishes}
                     battlefield={G.battlefield}
                     isSkirmishPhase={ctx.phase === 'skirmish'}
-                    activeSkirmishId={(G as GameState).activeSkirmishId}
+                    activeSkirmishId={G.activeSkirmishId}
                     G={G}
                 />
 
@@ -291,7 +281,7 @@ export const GameBoard: React.FC<BoardProps<GameState>> = ({
                     skirmishes={G.skirmishes}
                     battlefield={G.battlefield}
                     isSkirmishPhase={ctx.phase === 'skirmish'}
-                    activeSkirmishId={(G as GameState).activeSkirmishId}
+                    activeSkirmishId={G.activeSkirmishId}
                     G={G}
                 />
 

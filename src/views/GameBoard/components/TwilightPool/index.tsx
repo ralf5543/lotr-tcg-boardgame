@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import * as S from './styles';
 
 interface TwilightPoolProps {
@@ -12,39 +12,40 @@ interface PhysicalToken {
     rotate: number; // Angle aléatoire (degrés)
 }
 
+const generateToken = (): PhysicalToken => ({
+    id: `twilight-${Date.now()}-${Math.random()}`,
+    left: Math.floor(Math.random() * 80) + 5,
+    top: Math.floor(Math.random() * 60) + 15,
+    rotate: Math.floor(Math.random() * 360),
+});
+
 export const TwilightPool: React.FC<TwilightPoolProps> = ({ value }) => {
-    const [tokens, setTokens] = useState<PhysicalToken[]>([]);
+    // 🟢 On gère à la fois les tokens et la valeur précédente dans le state
+    const [{ tokens, prevValue }, setTokensState] = useState<{
+        tokens: PhysicalToken[];
+        prevValue: number;
+    }>({
+        tokens: [],
+        prevValue: 0,
+    });
 
-    useEffect(() => {
-        setTokens((prevTokens) => {
-            const currentCount = prevTokens.length;
+    // 🟢 Si la prop "value" a changé pendant le rendu, on ajuste les tokens synchroniquement
+    if (value !== prevValue) {
+        let newTokens = tokens;
 
-            // CAS A : On doit ajouter des pions
-            if (value > currentCount) {
-                const newTokens = [...prevTokens];
-                const toAdd = value - currentCount;
+        if (value > tokens.length) {
+            const toAdd = value - tokens.length;
+            const addedTokens = Array.from({ length: toAdd }, generateToken);
+            newTokens = [...tokens, ...addedTokens];
+        } else if (value < tokens.length) {
+            newTokens = tokens.slice(0, value);
+        }
 
-                for (let i = 0; i < toAdd; i++) {
-                    newTokens.push({
-                        // ID basé sur un timestamp + index pour éviter tout conflit
-                        id: `twilight-${Date.now()}-${Math.random()}`,
-                        // On garde une marge de sécurité (ex: 5% à 85%) pour ne pas déborder du cadre
-                        left: Math.floor(Math.random() * 80) + 5,
-                        top: Math.floor(Math.random() * 60) + 15,
-                        rotate: Math.floor(Math.random() * 360),
-                    });
-                }
-                return newTokens;
-            }
-
-            // CAS B : On dépense des pions (on retire les derniers arrivés)
-            if (value < currentCount) {
-                return prevTokens.slice(0, value);
-            }
-
-            return prevTokens;
+        setTokensState({
+            tokens: newTokens,
+            prevValue: value,
         });
-    }, [value]);
+    }
 
     return (
         <S.PoolContainer>

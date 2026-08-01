@@ -1,12 +1,12 @@
 import React from 'react';
-import type { SiteCard as SiteCardType } from '../../../../game/types';
+import type { SiteCardState } from '../../../../game/types';
 import * as S from './styles';
 import { useDrag } from '../../../../contexts/DragContext';
 import { useHoverCard } from '../../../../contexts/HoverCardContext';
 import { SiteCard } from '../SiteCard';
 
 interface SitesPickerProps {
-    sites: SiteCardType[];
+    sites: SiteCardState[];
 }
 
 export const SitesPicker: React.FC<SitesPickerProps> = ({ sites = [] }) => {
@@ -14,7 +14,9 @@ export const SitesPicker: React.FC<SitesPickerProps> = ({ sites = [] }) => {
     const { setHoveredCard } = useHoverCard();
 
     if (sites.length === 0) {
-        return <S.EmptyText>Aucun site restant dans votre réserve.</S.EmptyText>;
+        return (
+            <S.EmptyText>Aucun site restant dans votre réserve.</S.EmptyText>
+        );
     }
 
     return (
@@ -32,14 +34,16 @@ export const SitesPicker: React.FC<SitesPickerProps> = ({ sites = [] }) => {
                                 pointerEvents: isBeingDragged ? 'none' : 'auto',
                                 cursor: 'grab',
                             }}
-                            onMouseEnter={() => setHoveredCard(site, 'landscape')}
+                            onMouseEnter={() =>
+                                setHoveredCard(site, 'landscape')
+                            }
                             onMouseLeave={() => setHoveredCard(null)}
                             onPointerDown={(e) => {
                                 if (e.button !== 0) return;
                                 e.stopPropagation();
                                 e.preventDefault();
                                 setHoveredCard(null);
-                                startDrag(site as any, idx, e, 'BOARD', 'landscape');
+                                startDrag(site, idx, e, 'BOARD', 'landscape');
                             }}
                         >
                             <SiteCard site={site} size="md" />

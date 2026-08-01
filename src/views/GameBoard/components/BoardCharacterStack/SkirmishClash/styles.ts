@@ -108,3 +108,7 @@ export const SwordRight = styled(BaseElement)`
     filter: drop-shadow(2px 4px 6px rgba(0, 0, 0, 0.5));
     animation: ${swordRightSlash} 0.35s cubic-bezier(0.12, 0, 0.39, 0) forwards;
 `;
+
+export const MinionWrapper = styled.div<{ $index: number }>`
+    margin-left: ${(props) => props.$index * 20}px;
+`;

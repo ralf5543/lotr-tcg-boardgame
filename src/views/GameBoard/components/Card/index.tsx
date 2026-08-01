@@ -1,5 +1,5 @@
 import React from 'react';
-import type { CardState } from '../../../../game/types';
+import type { CardState, CardKeyword } from '../../../../game/types';
 import * as S from './styles';
 import { TRANSLATIONS } from '../../../../game/translations';
 import { useHoverCard } from '../../../../contexts/HoverCardContext';
@@ -40,8 +40,10 @@ export const Card: React.FC<CardProps> = ({
     const isShadow = card.kind === 'SHADOW';
     const { setHoveredCard } = useHoverCard();
 
+    // 🟢 Utilisation de CardKeyword au lieu de any
     const isRingBearer =
-        isRingBearerProp ?? card.keywords?.includes('RING-BEARER' as any);
+        isRingBearerProp ??
+        card.keywords?.includes('RING-BEARER' as CardKeyword);
 
     const handleMouseEnter = () => {
         if (size !== 'lg') setHoveredCard(card);
@@ -70,11 +72,14 @@ export const Card: React.FC<CardProps> = ({
     };
 
     const translatedType = TRANSLATIONS.type[card.type];
-    const translatedSubtype = TRANSLATIONS.subtype[card.subtype];
+    // 🟢 Vérification que card.subtype est défini avant d'accéder aux traductions
+    const translatedSubtype = card.subtype
+        ? TRANSLATIONS.subtype[card.subtype]
+        : null;
     const translatedRace = card.race ? TRANSLATIONS.race[card.race] : null;
 
     const translatedKeywords = card.keywords
-        ?.map((kw) => TRANSLATIONS.keyword[kw].label || kw)
+        ?.map((kw) => TRANSLATIONS.keyword[kw]?.label || kw)
         .join(', ');
 
     const handlePointerDown = (e: React.PointerEvent) => {
@@ -166,7 +171,7 @@ export const Card: React.FC<CardProps> = ({
             {size !== 'sm' && (
                 <S.CardTypes $type={card.type}>
                     <S.CardType $type={card.type}>{translatedType}</S.CardType>
-                    {card.subtype && (
+                    {card.subtype && translatedSubtype && (
                         <S.CardType $type={card.subtype}>
                             <S.Separator>•</S.Separator>
                             {translatedSubtype}
@@ -221,7 +226,8 @@ export const Card: React.FC<CardProps> = ({
             )}
             {card.resistance !== undefined &&
                 !(card.signet && size === 'lg') && (
-                    <S.CardResistance $isRingBearer={isRingBearer}>
+                    /* 🟢 Conversion explicite en booléen strict avec Boolean() */
+                    <S.CardResistance $isRingBearer={Boolean(isRingBearer)}>
                         {card.resistance}
                     </S.CardResistance>
                 )}

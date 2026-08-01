@@ -129,6 +129,7 @@ export const SitePath: React.FC<SitePathProps> = ({
                             $isCurrent={isP0Here || isP1Here}
                             $index={index}
                             $isHovered={isHovered}
+                            $hasSite={Boolean(site)}
                             onMouseEnter={() => {
                                 if (site) {
                                     setHoveredCard(site, 'landscape');

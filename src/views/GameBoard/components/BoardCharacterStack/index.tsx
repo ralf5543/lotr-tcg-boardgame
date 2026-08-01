@@ -102,8 +102,8 @@ export const BoardCharacterStack: React.FC<BoardCharacterStackProps> = ({
                         $isOpponent={isOpponent}
                         className="assigned-minions-group"
                     >
-                        {assignedMinions.map((minion, mIdx) => (
-                            <S.MinionWrapper key={minion.id} $index={mIdx}>
+                        {assignedMinions.map((minion,) => (
+                            <S.MinionWrapper key={minion.id}>
                                 <Card
                                     card={minion}
                                     size="sm"
@@ -155,14 +155,11 @@ export const BoardCharacterStack: React.FC<BoardCharacterStackProps> = ({
                 {character.attachments && character.attachments.length > 0 && (
                     <S.AttachmentsContainer className="attachments-group">
                         {character.attachments.map((attachment, attachIdx) => {
-                            const isAttachmentBeingDragged =
-                                dragged?.card?.id === attachment.id;
 
                             return (
                                 <S.AttachmentWrapper
                                     key={attachment.id}
                                     $index={attachIdx}
-                                    $isBeingDragged={isAttachmentBeingDragged}
                                     data-draggable={
                                         !isOpponent ? 'true' : undefined
                                     }

@@ -1,5 +1,6 @@
 import React, { useEffect } from 'react';
-import type { CardState, CardType } from '../../../../game/types';
+import type { CardState, CardType, GameState } from '../../../../game/types';
+import type { BoardProps } from 'boardgame.io/react';
 import * as S from './styles';
 import { Card } from '../Card';
 import { useDrag } from '../../../../contexts/DragContext';
@@ -9,23 +10,32 @@ import {
     canDropInFellowship,
 } from '../../../../utils/routingDragNDrop';
 
+interface SkirmishEntry {
+    id?: string;
+    companionId?: string;
+    minionIds?: string[];
+}
+
 interface PlayerAreaProps {
     playerId: string;
     deckCount: number;
     fellowshipArea: CardState[];
     supportArea: CardState[];
     isOpponent?: boolean;
-    moves: any;
-    skirmishes?: Array<{ companionId?: string; minionIds?: string[] }>;
+    moves: BoardProps<GameState>['moves'] & {
+        reorderFellowship?: (data: { fromIndex: number; toIndex: number }) => void;
+        selectSkirmish?: (id: string) => void;
+    };
+    skirmishes?: SkirmishEntry[];
     battlefield?: CardState[];
     isSkirmishPhase?: boolean;
     activeSkirmishId?: string;
-    G: any;
+    G: GameState;
 }
 
 export const PlayerArea: React.FC<PlayerAreaProps> = ({
     playerId,
-    deckCount,
+    deckCount: _deckCount, // 🟢 Préfixé par _ pour indiquer l'intention de le garder pour plus tard
     fellowshipArea,
     supportArea,
     isOpponent = false,
@@ -44,42 +54,44 @@ export const PlayerArea: React.FC<PlayerAreaProps> = ({
         | undefined;
 
     useEffect(() => {
-        const handleReorderDrop = (e: Event) => {
-            if (isOpponent) return;
+    const handleReorderDrop = (e: Event) => {
+        if (isOpponent) return;
 
-            const customEvent = e as CustomEvent;
-            const { draggedCard, targetId } = customEvent.detail || {};
+        const customEvent = e as CustomEvent;
+        const { draggedCard, targetId } = customEvent.detail || {};
 
-            if (!targetId || !draggedCard) return;
-            const { index, origin } = draggedCard;
+        if (!targetId || !draggedCard) return;
+        const { index, origin } = draggedCard;
 
-            if (origin === 'BOARD') {
-                const currentList = fellowshipArea || [];
-                let toIndex = -1;
+        if (origin === 'BOARD') {
+            const currentList = fellowshipArea || [];
+            
+            // 🟢 Déclaration sans valeur initiale non consommée
+            let targetIndex: number;
 
-                if (targetId !== 'fellowshipArea') {
-                    toIndex = currentList.findIndex(
-                        (c) =>
-                            c &&
-                            (c.id === targetId ||
-                                (c as any).card?.id === targetId)
-                    );
-                } else {
-                    toIndex = currentList.length - 1;
-                }
-
-                if (index === undefined || toIndex === -1) {
-                    return;
-                }
-
-                moves.reorderFellowship({ fromIndex: index, toIndex });
+            if (targetId !== 'fellowshipArea') {
+                targetIndex = currentList.findIndex(
+                    (c) =>
+                        c &&
+                        (c.id === targetId ||
+                            (c as { card?: { id: string } }).card?.id === targetId)
+                );
+            } else {
+                targetIndex = currentList.length - 1;
             }
-        };
 
-        window.addEventListener('card-dropped', handleReorderDrop);
-        return () =>
-            window.removeEventListener('card-dropped', handleReorderDrop);
-    }, [isOpponent, moves, fellowshipArea]);
+            if (index === undefined || targetIndex === -1) {
+                return;
+            }
+
+            moves.reorderFellowship?.({ fromIndex: index, toIndex: targetIndex });
+        }
+    };
+
+    window.addEventListener('card-dropped', handleReorderDrop);
+    return () =>
+        window.removeEventListener('card-dropped', handleReorderDrop);
+}, [isOpponent, moves, fellowshipArea]);
 
     const renderFellowship = () => {
         if (isFreePeoplesPlayer) {
@@ -98,9 +110,12 @@ export const PlayerArea: React.FC<PlayerAreaProps> = ({
                     className="fellowship-active"
                     $borderColor="#3498db"
                     $isTargeted={isFellowshipTargeted}
-                    ref={(el) =>
-                        !isOpponent && registerTarget('fellowshipArea', el)
-                    }
+                    ref={(el) => {
+                        // 🟢 Callback de ref safe sans retour de valeur
+                        if (!isOpponent) {
+                            registerTarget('fellowshipArea', el);
+                        }
+                    }}
                 >
                     <S.CardRow>
                         {(fellowshipArea || []).length === 0 && (
@@ -176,7 +191,12 @@ export const PlayerArea: React.FC<PlayerAreaProps> = ({
                 $borderColor="#f39c12"
                 $isOpponent={isOpponent}
                 $isTargeted={isSupportTargeted}
-                ref={(el) => !isOpponent && registerTarget('supportArea', el)}
+                ref={(el) => {
+                    // 🟢 Callback de ref safe sans retour de valeur
+                    if (!isOpponent) {
+                        registerTarget('supportArea', el);
+                    }
+                }}
             >
                 <S.ZoneTitle color="#f39c12">
                     🎒 Aire de Soutien (Support Area)

@@ -31,7 +31,7 @@ export const Dock: React.FC<DockProps> = React.memo(
         return (
             <S.DockWrapper>
                 {/* 1. LE TIROIR : Reste ouvert si un onglet est actif */}
-                <S.DrawerContainer $isOpen={activeTab !== 'none'}>
+                <S.DrawerContainer>
                     {/* 2. LE CONTENU : La prop 'key' force le re-déclenchement de l'animation CSS à chaque changement d'onglet */}
                     <S.TabContentWrapper key={activeTab}>
                         {activeTab === 'hand' && handView}
