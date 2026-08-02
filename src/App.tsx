@@ -13,7 +13,6 @@ const LotrClient = Client({
     game: LotrGame,
     board: GameBoard,
     numPlayers: 2,
-    // En dev : WebSocket via le serveur local. En prod : mode Local (ou ton serveur distant)
     multiplayer: import.meta.env.DEV
         ? SocketIO({ server: `http://${window.location.hostname}:8000` })
         : Local(),
@@ -36,15 +35,12 @@ function App() {
             currentMatchId: searchParams.get('match') || 'default',
         };
     });
-    
-    
 
     useEffect(() => {
         const handleSync = (event: MessageEvent) => {
             if (event.data?.type === 'NEW_MATCH') {
                 const url = new URL(window.location.href);
                 url.searchParams.set('match', event.data.matchId);
-                // On force la redirection immédiate du second onglet sur le nouveau match
                 window.location.href = url.toString();
             }
         };
@@ -53,14 +49,9 @@ function App() {
         return () => syncChannel.removeEventListener('message', handleSync);
     }, []);
 
-    // Fonction de hard-reset : crée une nouvelle partie unique sur le serveur
     const handleHardReset = () => {
         const newMatchId = 'match_' + Date.now();
-
-        // 1. Prévenir l'autre onglet de se recharger sur la NOUVELLE URL complète
         syncChannel.postMessage({ type: 'NEW_MATCH', matchId: newMatchId });
-
-        // 2. Rediriger l'onglet courant
         const url = new URL(window.location.href);
         url.searchParams.set('match', newMatchId);
         window.location.href = url.toString();
@@ -90,21 +81,20 @@ function App() {
             document.exitFullscreen();
         }
     };
+
     if (!myPlayerId) {
         return <div>Chargement de la session du joueur...</div>;
     }
 
-    console.log('--- APP RENDER CLIENT ---', { currentMatchId, myPlayerId, type: typeof myPlayerId });
-
     return (
         <ScreenViewport>
-            <FactionProvider currentPlayer={myPlayerId} myPlayerId={myPlayerId}>
+            <FactionProvider currentPlayer="0" myPlayerId={myPlayerId}>
                 <HoverCardProvider>
                     <DragProvider>
                         <ScaledView ref={containerRef} $scale={scale}>
                             <LotrClient
                                 matchID={currentMatchId}
-                                playerID={myPlayerId}// Force le type string ("0" ou "1")
+                                playerID={myPlayerId}
                             />
 
                             <FullscreenButton
@@ -138,13 +128,13 @@ function App() {
                                     Onglet Ombre
                                 </a>
 
-                                {/* Bouton de Hard Reset */}
                                 <button onClick={handleHardReset}>
                                     Reset Partie 🔄
                                 </button>
                             </PlayerSwitcher>
                         </ScaledView>
 
+                        {/* Le curseur reste ici en dehors de ScaledView pour garder un positioning 1:1 avec l'écran */}
                         <CustomAssetCursor />
                     </DragProvider>
                 </HoverCardProvider>

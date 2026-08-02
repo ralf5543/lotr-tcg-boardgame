@@ -1,25 +1,30 @@
-import React from 'react';
-import { FactionContext, type FactionType } from './FactionContext';
+import React, { useState } from 'react';
+import { FactionContext } from './FactionContext';
 
 interface FactionProviderProps {
     children: React.ReactNode;
     currentPlayer: string;
-    myPlayerId: string; // "0", "1", "2" etc.
+    myPlayerId: string;
+    initialFpPlayerId?: string;
 }
 
 export const FactionProvider: React.FC<FactionProviderProps> = ({
     children,
     currentPlayer,
     myPlayerId,
+    initialFpPlayerId = '0',
 }) => {
-    // Joueur '1' = Ombre, '0' = Peuples Libres (ajustable plus tard via salon/lobby)
-    const playerFaction: FactionType = myPlayerId === '1' ? 'SHADOW' : 'FREE_PEOPLES';
-    
-    // Est-ce le tour du joueur connecté ?
-    const isMyTurn = currentPlayer === myPlayerId;
+    const [fpPlayerId, setFpPlayerId] = useState(initialFpPlayerId);
 
     return (
-        <FactionContext.Provider value={{ playerFaction, isMyTurn }}>
+        <FactionContext.Provider
+            value={{
+                currentPlayer,
+                myPlayerId,
+                fpPlayerId,
+                setFpPlayerId,
+            }}
+        >
             {children}
         </FactionContext.Provider>
     );

@@ -1,11 +1,15 @@
 import { useEffect, useRef, useState } from 'react';
 import styled, { css } from 'styled-components';
-import { useFaction } from '../../../../contexts/FactionContext';
+import { useFaction, Faction } from '../../../../contexts/FactionContext';
 
 type CursorState = 'DEFAULT' | 'HOVER';
 
 export function CustomAssetCursor() {
-    const { playerFaction } = useFaction();
+    const { myPlayerId, fpPlayerId } = useFaction();
+    
+    // 🟢 DÉDUCTION DU RÔLE DE FACTION
+    const playerFaction: Faction = myPlayerId === fpPlayerId ? 'FREE_PEOPLES' : 'SHADOW';
+
     const [cursorState, setCursorState] = useState<CursorState>('DEFAULT');
     const [isInteractive, setIsInteractive] = useState(false);
     
@@ -18,23 +22,20 @@ export function CustomAssetCursor() {
             const target = e.target as HTMLElement;
             if (!target) return;
 
-            // Détection de carte draggable (main ouverte)
             const isDraggableCard = target.closest('[data-draggable="true"]');
-
-            // Détection de tout élément interactif (boutons, liens, sélecteurs, etc.)
             const isClickable = target.closest(
                 'button, a, input, select, textarea, [role="button"], [data-interactive="true"]'
             );
 
             if (isDraggableCard) {
-                setCursorState('HOVER'); // Main ouverte
-                setIsInteractive(true);   // Activer la lumière
+                setCursorState('HOVER');
+                setIsInteractive(true);
             } else if (isClickable) {
-                setCursorState('DEFAULT'); // Garder la flèche
-                setIsInteractive(true);   // Activer la lumière
+                setCursorState('DEFAULT');
+                setIsInteractive(true);
             } else {
                 setCursorState('DEFAULT');
-                setIsInteractive(false);  // Pas de lumière
+                setIsInteractive(false);
             }
         };
 
@@ -60,6 +61,7 @@ export function CustomAssetCursor() {
         return () => window.removeEventListener('pointermove', moveCursor);
     }, []);
 
+    // 🟢 Nom exact de la faction pour les assets d'images
     const factionSuffix = playerFaction === 'SHADOW' ? 'shadow' : 'FREE_PEOPLES';
 
     return (
@@ -71,9 +73,21 @@ export function CustomAssetCursor() {
                 $playerFaction={playerFaction}
                 $isInteractive={isInteractive}
             >
-                <img className="cursor-arrow" src={`/interface/cursors/cursor_default_${factionSuffix}.webp`} alt="Cursor Arrow" />
-                <img className="cursor-open" src={`/interface/cursors/cursor_pointer_${factionSuffix}.webp`} alt="Cursor Open" />
-                <img className="cursor-closed" src={`/interface/cursors/cursor_grab_${factionSuffix}.webp`} alt="Cursor Closed" />
+                <img
+                    className="cursor-arrow"
+                    src={`/interface/cursors/cursor_default_${factionSuffix}.webp`}
+                    alt="Cursor Arrow"
+                />
+                <img
+                    className="cursor-open"
+                    src={`/interface/cursors/cursor_pointer_${factionSuffix}.webp`}
+                    alt="Cursor Open"
+                />
+                <img
+                    className="cursor-closed"
+                    src={`/interface/cursors/cursor_grab_${factionSuffix}.webp`}
+                    alt="Cursor Closed"
+                />
             </CursorImageWrapper>
 
             {/* Point de test/précision */}
@@ -87,7 +101,7 @@ export function CustomAssetCursor() {
 interface WrapperProps {
     $displaySize: number;
     $state: CursorState;
-    $playerFaction: 'FREE_PEOPLES' | 'SHADOW';
+    $playerFaction: Faction;
     $isInteractive: boolean;
 }
 
@@ -121,7 +135,7 @@ const CursorImageWrapper = styled.div<WrapperProps>`
                         brightness(1.15);
               `
             : css`
-                filter: drop-shadow(0px 0px 2px red)
+                filter: drop-shadow(0px 0px 4px rgba(255, 0, 0, 0.8))
                         drop-shadow(-2px 4px 2px rgba(0, 0, 0, 1))
                         brightness(1.2);
               `)}

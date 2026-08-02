@@ -15,6 +15,7 @@ import { useHoverCard } from '../../contexts/HoverCardContext';
 import { Card } from './components/Card';
 import { SiteCard } from './components/SiteCard';
 import { DragProvider } from '../../contexts/DragProvider';
+import { useFaction } from '../../contexts/FactionContext';
 import { TwilightPool } from './components/TwilightPool';
 import { Dock } from './components/Dock';
 import { SitesPicker } from './components/SitePicker';
@@ -54,6 +55,18 @@ export const GameBoard: React.FC<GameBoardProps> = ({
     const myId = playerID || ctx.currentPlayer;
     const oppId = myId === '0' ? '1' : '0';
 
+    const fpPlayerId = G.fpPlayerId || '0';
+    const isLocalFP = myId === fpPlayerId;
+    const currentFaction = isLocalFP ? 'FREE_PEOPLES' : 'SHADOW';
+
+    // 🟢 Synchroniser le FactionContext global avec le fpPlayerId dynamique du jeu
+    const { setFpPlayerId } = useFaction();
+    useEffect(() => {
+        if (setFpPlayerId && G.fpPlayerId) {
+            setFpPlayerId(G.fpPlayerId);
+        }
+    }, [G.fpPlayerId, setFpPlayerId]);
+
     const me = G.players[myId] || {
         deck: [],
         hand: [],
@@ -74,13 +87,12 @@ export const GameBoard: React.FC<GameBoardProps> = ({
     };
 
     const { hoveredData } = useHoverCard();
-    const currentFaction = myId === '1' ? 'SHADOW' : 'FREE_PEOPLES';
     const currentSiteIndex = G.players['0']?.currentSiteIndex ?? 0;
 
     // 🟢 1. GESTION GLOBALE DE LA TEMPORISATION DE FIN DE PHASE
     useEffect(() => {
         if (G.pendingPhaseEnd) {
-            const GLOBAL_PHASE_DELAY = 1500; // Délai avant d'enchaîner sur la phase suivante
+            const GLOBAL_PHASE_DELAY = 1500;
 
             const timer = setTimeout(() => {
                 if (moves.confirmEndPhase) {
@@ -92,7 +104,7 @@ export const GameBoard: React.FC<GameBoardProps> = ({
         }
     }, [G.pendingPhaseEnd, moves]);
 
-    // 🟢 2. TEMPORISATION DE FIN DE COMBAT (SHAKE & SOUFFRANCE)
+    // 🟢 2. TEMPORISATION DE FIN DE COMBAT
     useEffect(() => {
         const hasWounded =
             G.lastWoundedCardIds && G.lastWoundedCardIds.length > 0;
@@ -104,7 +116,7 @@ export const GameBoard: React.FC<GameBoardProps> = ({
                 if (moves.finishSkirmishResolution) {
                     moves.finishSkirmishResolution();
                 }
-            }, 2000); // 2s pour bien voir le shake/blessure
+            }, 2000);
 
             return () => clearTimeout(timer);
         }
@@ -121,15 +133,14 @@ export const GameBoard: React.FC<GameBoardProps> = ({
             const { index, origin, card, parentId } = draggedCard;
             const cardSubtype = card?.type as CardType | undefined;
 
-            // ==========================================
-            // 1. CARTES JOUÉES DEPUIS LA MAIN
-            // ==========================================
             if (origin === 'HAND') {
                 if (
                     targetId === 'fellowshipArea' &&
                     canDropInFellowship(cardSubtype)
                 ) {
-                    moves.playCard(index);
+                    if (typeof moves.playCard === 'function') {
+                        moves.playCard(index);
+                    }
                     return;
                 }
 
@@ -137,12 +148,16 @@ export const GameBoard: React.FC<GameBoardProps> = ({
                     targetId === 'supportArea' &&
                     canDropInSupportArea(cardSubtype)
                 ) {
-                    moves.playCard(index);
+                    if (typeof moves.playCard === 'function') {
+                        moves.playCard(index);
+                    }
                     return;
                 }
 
                 if (targetId === 'battlefield' && card.kind === 'SHADOW') {
-                    moves.playShadowCard(index);
+                    if (typeof moves.playShadowCard === 'function') {
+                        moves.playShadowCard(index);
+                    }
                     return;
                 }
 
@@ -152,14 +167,13 @@ export const GameBoard: React.FC<GameBoardProps> = ({
                     targetId !== 'battlefield' &&
                     canAttachToCharacter(cardSubtype)
                 ) {
-                    moves.attachCard(index, targetId);
+                    if (typeof moves.attachCard === 'function') {
+                        moves.attachCard(index, targetId);
+                    }
                     return;
                 }
             }
 
-            // ==========================================
-            // 2. TRANSFERT D'ATTACHEMENT
-            // ==========================================
             if (origin === 'ATTACHMENT') {
                 if (targetId === parentId) return;
 
@@ -179,9 +193,6 @@ export const GameBoard: React.FC<GameBoardProps> = ({
                 }
             }
 
-            // ==========================================
-            // 3. ASSIGNATION DE SÉIDE
-            // ==========================================
             if (origin === 'BATTLEFIELD') {
                 const isAssignmentPhase = ctx.phase === 'assignment';
                 const isMinion = card?.type === 'MINION';
@@ -194,7 +205,9 @@ export const GameBoard: React.FC<GameBoardProps> = ({
                     targetId !== 'battlefield' &&
                     targetId !== 'sitePath'
                 ) {
-                    moves.assignMinion(card.id, targetId);
+                    if (moves.assignMinion) {
+                        moves.assignMinion(card.id, targetId);
+                    }
                     return;
                 }
             }
@@ -261,7 +274,7 @@ export const GameBoard: React.FC<GameBoardProps> = ({
                         <TwilightPool value={G.twilightPool} />
                         <Battlefield
                             cards={G.battlefield}
-                            playerRole={playerID as '0' | '1'}
+                            playerRole={myId as '0' | '1'}
                             currentSiteIndex={currentSiteIndex}
                             isAssignmentPhase={ctx.phase === 'assignment'}
                             skirmishes={G.skirmishes}
@@ -290,7 +303,7 @@ export const GameBoard: React.FC<GameBoardProps> = ({
                     path={G.path}
                     players={G.players}
                     onPlaySite={(siteId, targetIndex) => {
-                        moves.playSite(siteId, targetIndex);
+                        if (moves.playSite) moves.playSite(siteId, targetIndex);
                     }}
                 />
                 <Dock
@@ -304,9 +317,11 @@ export const GameBoard: React.FC<GameBoardProps> = ({
                             deckCount={me.deck?.length || 0}
                             currentSiteIndex={currentSiteIndex}
                             onDrawCard={() => {
-                                moves.drawCard();
+                                if (moves.drawCard) moves.drawCard();
                             }}
-                            onPlayCard={(idx) => moves.playCard(idx)}
+                            onPlayCard={(idx) => {
+                                if (moves.playCard) moves.playCard(idx);
+                            }}
                         />
                     }
                     sitesView={<SitesPicker sites={me.sitesDeck || []} />}

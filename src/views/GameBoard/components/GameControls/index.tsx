@@ -9,14 +9,14 @@ interface GameControlsProps {
     ctx: Ctx;
     playerID: string | null;
     statusMessage?: string;
-    isMyTurn: boolean;
     awaitingSite: boolean;
     moves: {
         endFellowshipPhase?: () => void;
         endShadowPhase?: () => void;
         moveNextSite?: () => void;
-        endTurn?: () => void;
-        passActionWindow?: () => void; // 🟢 Nouveau move pour passer
+        endTurnChoice?: () => void;
+        confirmHandRefill?: () => void;
+        passActionWindow?: () => void;
         [key: string]: ((...args: unknown[]) => void) | undefined;
     };
 }
@@ -31,22 +31,65 @@ export const GameControls: React.FC<GameControlsProps> = ({
 }) => {
     if (!G || !ctx) return null;
 
+    console.log('--- [DEBUG GameControls RENDER] ---');
+    console.log('Phase actuelle (ctx.phase):', ctx.phase);
+    console.log('Joueur actif (ctx.currentPlayer):', ctx.currentPlayer);
+    console.log('Mon playerID local:', playerID);
+    console.log('G.movesThisTurn:', G.movesThisTurn);
+    console.log('G.regroupStep:', G.regroupStep);
+    console.log('G.fpPlayerId:', G.fpPlayerId);
+
     const currentPlayerId = playerID ?? '0';
 
+    // 🟢 RÔLES DYNAMIQUES
+    const fpPlayerId = G.fpPlayerId || '0';
+    const shadowPlayerId = fpPlayerId === '0' ? '1' : '0';
+
     // 🟢 1. DÉTERMINATION DU JOUEUR QUI DOIT AGIR
-    // Si une fenêtre d'action interactive est ouverte dans G, elle prime sur tout le reste !
     const isActionWindowActive = G.actionWindow?.isOpen ?? false;
 
     const actingPlayerId = isActionWindowActive
         ? G.actionWindow!.activePlayerId
-        : awaitingSite || ctx.phase === 'shadow'
-          ? '1'
-          : '0';
+        : awaitingSite ||
+            ctx.phase === 'shadow' ||
+            G.regroupStep === 'SHADOW_REFILL'
+          ? shadowPlayerId
+          : fpPlayerId;
 
     const actingPlayer = G.players?.[actingPlayerId];
     const isMyTurnToAct = currentPlayerId === actingPlayerId;
 
-    // 🟢 2. CONFIGURATION DYNAMIQUE DU TOASTER
+    // 🟢 2. ÉTAPE DE REGROUPEMENT SPÉCIFIQUE (DYNAMIQUE)
+    const isRegroupDecision =
+        !isActionWindowActive &&
+        ctx.phase === 'regroup' &&
+        G.regroupStep === 'FP_DECISION' &&
+        currentPlayerId === fpPlayerId;
+
+    const isShadowRefill =
+        !isActionWindowActive &&
+        ctx.phase === 'regroup' &&
+        G.regroupStep === 'SHADOW_REFILL' &&
+        currentPlayerId === shadowPlayerId;
+
+    const isFpRefill =
+        !isActionWindowActive &&
+        ctx.phase === 'regroup' &&
+        G.regroupStep === 'FP_REFILL' &&
+        currentPlayerId === fpPlayerId;
+
+    // 🟢 3. AUTRES ACTIONS STANDARD DE PHASE (DYNAMIQUE)
+    const isFellowshipAction =
+        !isActionWindowActive &&
+        ctx.phase === 'fellowship' &&
+        currentPlayerId === fpPlayerId;
+
+    const isShadowAction =
+        !isActionWindowActive &&
+        ctx.phase === 'shadow' &&
+        currentPlayerId === shadowPlayerId;
+
+    // 🟢 4. CONFIGURATION DYNAMIQUE DU TOASTER
     let toastConfig: {
         show: boolean;
         title: string;
@@ -60,7 +103,6 @@ export const GameControls: React.FC<GameControlsProps> = ({
     };
 
     if (isActionWindowActive && isMyTurnToAct) {
-        // CAS A : Fenêtre d'action/réaction générique (ex: Combat, Événements)
         toastConfig = {
             show: true,
             title: G.actionWindow?.title || 'À VOTRE TOUR DE RÉAGIR',
@@ -69,17 +111,16 @@ export const GameControls: React.FC<GameControlsProps> = ({
                 'Voulez-vous jouer une carte / un effet ou passer ?',
             showPassButton: G.actionWindow?.canPass ?? true,
         };
-    } else if (awaitingSite && currentPlayerId === '1') {
-        // CAS B : Pose de site obligatoire pour l'Ombre
+    } else if (awaitingSite && currentPlayerId === shadowPlayerId) {
         toastConfig = {
             show: true,
             title: 'ACTION REQUISE',
             body: 'Choisissez et posez un site sur la case inexplorée.',
-            showPassButton: false, // On ne peut pas "passer" la pose de site obligatoire
+            showPassButton: false,
         };
     }
 
-    // Message supérieur du bandeau
+    // 🟢 5. BANDEAU DE STATUS TEXTUEL DYNAMIQUE
     const getDynamicStatusMessage = (): string => {
         if (isActionWindowActive) {
             return isMyTurnToAct
@@ -88,44 +129,41 @@ export const GameControls: React.FC<GameControlsProps> = ({
         }
 
         if (awaitingSite) {
-            return currentPlayerId === '1'
+            return currentPlayerId === shadowPlayerId
                 ? 'Choix du prochain site à poser.'
                 : "En attente du joueur de l'Ombre pour poser le prochain site...";
         }
 
         if (ctx.phase === 'fellowship') {
-            return currentPlayerId === '0'
+            return currentPlayerId === fpPlayerId
                 ? 'Jouez vos compagnons ou soutiens, puis terminez la phase.'
                 : 'Le joueur des Peuples Libres prépare sa compagnie...';
         }
 
         if (ctx.phase === 'shadow') {
-            return currentPlayerId === '1'
-                ? 'Jouez vos séides et traqueurs et soutiens.'
+            return currentPlayerId === shadowPlayerId
+                ? 'Jouez vos séides, traqueurs et soutiens.'
                 : "Le joueur de l'Ombre prépare ses forces...";
         }
 
         if (ctx.phase === 'regroup') {
-            return currentPlayerId === '0'
+            if (G.regroupStep === 'SHADOW_REFILL') {
+                return currentPlayerId === shadowPlayerId
+                    ? 'Ombre : Ajustez votre main (max 8 cartes) et validez.'
+                    : "L'Ombre réorganise sa main...";
+            }
+            if (G.regroupStep === 'FP_REFILL') {
+                return currentPlayerId === fpPlayerId
+                    ? 'Peuples Libres : Ajustez votre main à 8 cartes et terminez le tour.'
+                    : 'Les Peuples Libres préparent leur main pour le tour suivant...';
+            }
+            return currentPlayerId === fpPlayerId
                 ? 'Choisissez de voyager vers le site suivant ou de terminer le tour.'
                 : 'Les Peuples Libres décident de la suite du voyage...';
         }
 
         return statusMessage || 'Partie en cours';
     };
-
-    const isFellowshipAction =
-        !isActionWindowActive &&
-        ctx.phase === 'fellowship' &&
-        currentPlayerId === '0';
-    const isShadowAction =
-        !isActionWindowActive &&
-        ctx.phase === 'shadow' &&
-        currentPlayerId === '1';
-    const isRegroupAction =
-        !isActionWindowActive &&
-        ctx.phase === 'regroup' &&
-        currentPlayerId === '0';
 
     return (
         <>
@@ -166,11 +204,10 @@ export const GameControls: React.FC<GameControlsProps> = ({
                         </S.PlayerBadge>
                     </S.InfoGroup>
 
-                    <S.MessageText>
-                        {getDynamicStatusMessage()}
-                    </S.MessageText>
+                    <S.MessageText>{getDynamicStatusMessage()}</S.MessageText>
 
                     <S.ActionGroup>
+                        {/* Phase Fellowship */}
                         {isFellowshipAction && (
                             <S.ActionButton
                                 onClick={() => moves.endFellowshipPhase?.()}
@@ -179,6 +216,7 @@ export const GameControls: React.FC<GameControlsProps> = ({
                             </S.ActionButton>
                         )}
 
+                        {/* Phase Shadow */}
                         {isShadowAction && (
                             <S.ActionButton
                                 onClick={() => moves.endShadowPhase?.()}
@@ -187,20 +225,41 @@ export const GameControls: React.FC<GameControlsProps> = ({
                             </S.ActionButton>
                         )}
 
-                        {isRegroupAction && (
+                        {/* Regroup Step 1: Ombre Reconstitution */}
+                        {isShadowRefill && (
+                            <S.ActionButton
+                                onClick={() => moves.confirmHandRefill?.()}
+                            >
+                                Valider la main (Ombre) 🃏
+                            </S.ActionButton>
+                        )}
+
+                        {/* Regroup Step 2: FP Choix Ré-avancer / Fin */}
+                        {isRegroupDecision && (
                             <>
-                                <S.ActionButton
-                                    onClick={() => moves.moveNextSite?.()}
-                                >
-                                    Avancer au site 🏕️
-                                </S.ActionButton>
+                                {(G.movesThisTurn || 0) < 2 && (
+                                    <S.ActionButton
+                                        onClick={() => moves.moveNextSite?.()}
+                                    >
+                                        Avancer au site 🏕️
+                                    </S.ActionButton>
+                                )}
                                 <S.ActionButton
                                     $variant="secondary"
-                                    onClick={() => moves.endTurn?.()}
+                                    onClick={() => moves.endTurnChoice?.()}
                                 >
                                     Terminer le tour 🏁
                                 </S.ActionButton>
                             </>
+                        )}
+
+                        {/* Regroup Step 3: FP Reconstitution & Fin de tour */}
+                        {isFpRefill && (
+                            <S.ActionButton
+                                onClick={() => moves.confirmHandRefill?.()}
+                            >
+                                Valider la main & Fin de tour 🏁
+                            </S.ActionButton>
                         )}
                     </S.ActionGroup>
                 </S.PhaseBanner>
@@ -221,7 +280,7 @@ export const GameControls: React.FC<GameControlsProps> = ({
                                 style={{ marginTop: '8px', width: '100%' }}
                                 onClick={() => moves.passActionWindow?.()}
                             >
-                                🛑 PASSER (Ne rien jouer)
+                                PASSER (Ne rien jouer)
                             </S.ActionButton>
                         )}
                     </S.ToastBody>

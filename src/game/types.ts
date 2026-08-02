@@ -171,6 +171,7 @@ export interface SiteCardState {
 }
 
 export interface GameState {
+    fpPlayerId: string;
     twilightPool: number;
     currentSiteIndex?: number;
     currentSite?: number;
@@ -185,8 +186,9 @@ export interface GameState {
     skirmishes: SkirmishState[];
     assignmentStep?: 'FP_ASSIGN' | 'SHADOW_ASSIGN' | 'COMPLETED';
     lastWoundedCardIds?: string[];
-    pendingPhaseEnd: boolean;
-    pendingDeadCardIds: string[];
+    pendingPhaseEnd?: boolean;
+    pendingDeadCardIds?: string[];
+    regroupStep?: 'ACTION_WINDOW' | 'SHADOW_REFILL' | 'FP_DECISION' | 'FP_REFILL';
 }
 
 export interface KeywordData {

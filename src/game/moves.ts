@@ -31,19 +31,31 @@ export const getTargetPlayerId = (
     return String(ctx.currentPlayer ?? '0');
 };
 
-export const advanceCompany = (G: GameState) => {
-    const p0 = G.players['0'];
-    const nextIndex = p0.currentSiteIndex + 1;
+export const advanceCompany = (G: GameState, ctx: Ctx, playerID?: string) => {
+    const fpId = G.fpPlayerId || '0';
+    const fpPlayer = G.players[fpId];
+    if (!fpPlayer) return;
+
+    const nextIndex = fpPlayer.currentSiteIndex + 1;
 
     if (nextIndex >= 9) return;
+
+    console.log('--- [DEBUG advanceCompany] ---');
+    console.log('Ancien movesThisTurn:', G.movesThisTurn);
+    console.log('nextIndex visé:', nextIndex);
+    console.log('Site existant sur la case ?', G.path[nextIndex] !== null);
+
+    // Incrémente le compteur de déplacements pour ce tour
+    G.movesThisTurn = (G.movesThisTurn || 0) + 1;
+    console.log('Nouveau movesThisTurn:', G.movesThisTurn);
 
     const applyTwilightForSite = (siteIndex: number) => {
         const targetSite = G.path[siteIndex];
         if (!targetSite) return;
 
         const siteCost = Number(targetSite.twilightCost) || 0;
-        const companionsCount = p0.fellowshipArea
-            ? p0.fellowshipArea.length
+        const companionsCount = fpPlayer.fellowshipArea
+            ? fpPlayer.fellowshipArea.length
             : 0;
         const totalAdded = siteCost + companionsCount;
 
@@ -51,12 +63,12 @@ export const advanceCompany = (G: GameState) => {
     };
 
     if (G.path[nextIndex] !== null) {
-        p0.currentSiteIndex = nextIndex;
+        fpPlayer.currentSiteIndex = nextIndex;
         applyTwilightForSite(nextIndex);
 
-        G.statusMessage = `La compagnie avance au site ${nextIndex + 1} : ${G.path[nextIndex]?.name}`;
+        G.statusMessage = `La compagnie avance au site ${nextIndex + 1} : ${G.path[nextIndex]?.name} (Déplacement ${G.movesThisTurn}/2)`;
 
-        // 🟢 Temporisation globale : signale la fin de phase sans l'exécuter immédiatement
+        // 🟢 Temporisation globale
         G.pendingPhaseEnd = true;
     } else {
         G.awaitingSiteSelection = true;
@@ -65,7 +77,12 @@ export const advanceCompany = (G: GameState) => {
     }
 };
 
-export const passActionWindow = ({ G, ctx, playerID }: LotrMoveContext) => {
+export const passActionWindow = ({
+    G,
+    ctx,
+    playerID,
+    events,
+}: LotrMoveContext) => {
     if (!G.actionWindow || !G.actionWindow.isOpen) return;
     if (playerID !== G.actionWindow.activePlayerId) return;
 
@@ -79,15 +96,28 @@ export const passActionWindow = ({ G, ctx, playerID }: LotrMoveContext) => {
             passesCount: 0,
         };
 
-        if (ctx.phase === 'skirmish' && G.activeSkirmishId) {
+        if (ctx.phase === 'maneuver') {
+            G.statusMessage =
+                'Manœuvre terminée. Passage à la phase d’Archerie.';
+            events?.endPhase?.();
+        } else if (ctx.phase === 'archery') {
+            G.statusMessage =
+                'Archerie terminée. Passage à la phase d’Affectation.';
+            events?.endPhase?.();
+        } else if (ctx.phase === 'skirmish' && G.activeSkirmishId) {
             resolveSkirmish(G, ctx);
+        } else if (ctx.phase === 'regroup') {
+            G.regroupStep = 'SHADOW_REFILL';
+            G.statusMessage =
+                'Ombre : Vous pouvez défausser 1 carte, puis validez votre main à 8 cartes.';
         }
     } else {
+        const fpId = G.fpPlayerId || '0';
         G.actionWindow = {
             ...G.actionWindow,
             activePlayerId: otherPlayer,
             passesCount: currentPasses,
-            message: `En attente de la réaction du joueur ${otherPlayer === '0' ? 'FP' : 'Ombre'}...`,
+            message: `Au tour du joueur ${otherPlayer === fpId ? 'FP' : 'Ombre'} d’agir ou de passer.`,
         };
     }
 };
@@ -95,7 +125,126 @@ export const passActionWindow = ({ G, ctx, playerID }: LotrMoveContext) => {
 export const commonMoves = {
     passActionWindow,
 
-    // 🟢 Move universel appelé par React après la temporisation globale de fin de phase
+    endTurnChoice: ({ G }: LotrMoveContext) => {
+    console.log("🏁 [endTurnChoice] Le joueur FP choisit de ne pas ré-avancer.");
+    G.regroupStep = 'FP_REFILL';
+    G.statusMessage = 'Peuples Libres : Ajustez votre main à 8 cartes et validez pour terminer le tour.';
+},
+
+    // 🟢 Moves de reconstitution de main (Regroup Phase)
+    discardCardFromHand: (
+        { G, playerID }: LotrMoveContext,
+        cardIndex: number
+    ) => {
+        const actingPlayerId = playerID ?? '0';
+        const player = G.players?.[actingPlayerId];
+        if (!player || !player.hand[cardIndex]) return 'INVALID_MOVE';
+
+        const shadowPlayerId = G.fpPlayerId === '0' ? '1' : '0';
+        const fpPlayerId = G.fpPlayerId || '0';
+
+        // Sécurité dynamique selon qui est l'Ombre et qui est FP ce tour-ci
+        if (
+            G.regroupStep === 'SHADOW_REFILL' &&
+            actingPlayerId !== shadowPlayerId
+        )
+            return 'INVALID_MOVE';
+        if (G.regroupStep === 'FP_REFILL' && actingPlayerId !== fpPlayerId)
+            return 'INVALID_MOVE';
+
+        const [discarded] = player.hand.splice(cardIndex, 1);
+        if (!player.discard) player.discard = [];
+        player.discard.push(discarded);
+
+        G.statusMessage = `${player.profile?.name || `Joueur ${actingPlayerId}`} a défaussé ${discarded.title || discarded.name}.`;
+    },
+
+    // moves.ts
+
+    confirmHandRefill: ({ G, ctx, events, playerID }: LotrMoveContext) => {
+        const actingPlayerId = playerID ?? '0';
+        const player = G.players?.[actingPlayerId];
+        if (!player) return 'INVALID_MOVE';
+
+        if (!player.discard) player.discard = [];
+
+        // 1. Défausse du surplus (> 8 cartes)
+        while (player.hand.length > 8) {
+            const discarded = player.hand.pop();
+            if (discarded) player.discard.push(discarded);
+        }
+
+        // 2. Pioche des cartes manquantes (< 8 cartes)
+        while (
+            player.hand.length < 8 &&
+            player.deck &&
+            player.deck.length > 0
+        ) {
+            const drawnCard = player.deck.pop();
+            if (drawnCard) player.hand.push(drawnCard);
+        }
+
+        // --- GESTION DES ÉTAPES DE REGROUPEMENT ---
+
+        // Étape A : L'Ombre vient de valider sa main
+        if (G.regroupStep === 'SHADOW_REFILL') {
+            if ((G.movesThisTurn || 0) >= 2) {
+                // Si 2 mouvements faits, on passe directement à la validation FP
+                G.regroupStep = 'FP_REFILL';
+                G.statusMessage =
+                    'Limite de déplacement atteinte (2/2). Reconstitution de la main des Peuples Libres.';
+            } else {
+                // Si 1 mouvement fait, on donne la main aux FP pour décider s'ils ré-avancent
+                G.regroupStep = 'FP_DECISION';
+                G.statusMessage =
+                    "Peuples Libres : Choisissez d'avancer au site suivant ou de terminer le tour.";
+            }
+            return;
+        }
+
+        // Étape B : Les Peuples Libres valident en FP_DECISION (ils choisissent de FINIR le tour)
+        if (G.regroupStep === 'FP_DECISION') {
+            // Le joueur FP décide de ne pas refaire un mouvement et valide sa fin de tour
+            G.regroupStep = 'FP_REFILL';
+            // On continue directement vers le traitement de fin de tour ci-dessous
+        }
+
+        // Étape C : Fin de tour et Switch de rôle (Quand FP_REFILL est atteint)
+        if (G.regroupStep === 'FP_REFILL' || !G.regroupStep) {
+            console.log('🚀 [FIN DE TOUR] Switch de rôle FP / Ombre');
+
+            // Nettoyage de fin de tour : défausse des séides en jeu
+            const shadowId = G.fpPlayerId === '0' ? '1' : '0';
+            const shadowPlayer = G.players[shadowId];
+
+            if (shadowPlayer) {
+                if (!shadowPlayer.discard) shadowPlayer.discard = [];
+                G.battlefield.forEach((minion) => {
+                    shadowPlayer.discard.push(minion);
+                });
+            }
+
+            G.battlefield = [];
+            G.twilightPool = 0;
+            G.movesThisTurn = 0;
+            G.skirmishes = [];
+            G.activeSkirmishId = undefined;
+            G.regroupStep = undefined;
+
+            // 🔄 SWITCH DE RÔLE FP
+            const nextFpPlayerId = G.fpPlayerId === '0' ? '1' : '0';
+            G.fpPlayerId = nextFpPlayerId;
+
+            G.statusMessage = `Nouveau tour ! Le joueur ${nextFpPlayerId} devient les Peuples Libres.`;
+
+            // 🟢 Séquence d'événements boardgame.io sans conflit :
+            // 1. Terminer le tour en désignant le nouveau joueur
+            // 2. Basculer la phase vers fellowship
+            events?.endTurn?.({ next: nextFpPlayerId });
+            events?.setPhase?.('fellowship');
+        }
+    },
+
     confirmEndPhase: ({ G, events }: LotrMoveContext) => {
         if (G.pendingPhaseEnd) {
             G.pendingPhaseEnd = false;
@@ -108,7 +257,10 @@ export const commonMoves = {
     },
 
     applyWound: ({ G }: LotrMoveContext, targetCardId: string) => {
-        const companion = G.players['0'].fellowshipArea.find(
+        const fpId = G.fpPlayerId || '0';
+        const fpPlayer = G.players[fpId];
+
+        const companion = fpPlayer?.fellowshipArea?.find(
             (c) => c.id === targetCardId
         );
         const minion = G.battlefield.find((c) => c.id === targetCardId);
@@ -123,7 +275,20 @@ export const commonMoves = {
         G.twilightPool = Math.max(0, amount);
     },
 
-    devSetPhase: ({ events }: LotrPhaseContext, targetPhase: string) => {
+    devSetPhase: ({ G, events }: LotrPhaseContext, targetPhase: string) => {
+        G.actionWindow = undefined;
+        G.skirmishes = [];
+        G.activeSkirmishId = undefined;
+
+        if (targetPhase === 'regroup') {
+            G.regroupStep = 'SHADOW_REFILL';
+            if (!G.movesThisTurn) {
+                G.movesThisTurn = 1; // Simule au moins 1 déplacement fait si on saute en Regroup
+            }
+        } else {
+            G.regroupStep = undefined;
+        }
+
         events?.setPhase?.(targetPhase);
     },
 
@@ -135,9 +300,12 @@ export const commonMoves = {
     },
 
     devLoadPreset: ({ G }: LotrMoveContext, presetType: DevPresetType) => {
-        if (presetType === 'ARCHERY_TEST') {
+        const fpId = G.fpPlayerId || '0';
+        const fpPlayer = G.players[fpId];
+
+        if (presetType === 'ARCHERY_TEST' && fpPlayer) {
             G.twilightPool = 8;
-            G.players['0'].fellowshipArea = [
+            fpPlayer.fellowshipArea = [
                 {
                     id: '1r50',
                     title: 'Legolas',
@@ -251,7 +419,7 @@ export const commonMoves = {
     },
 
     playSite: (
-        { G, playerID }: LotrMoveContext,
+        { G, ctx, events, playerID }: LotrMoveContext,
         siteId: string,
         targetIndex: number
     ) => {
@@ -270,91 +438,101 @@ export const commonMoves = {
 
         if (G.awaitingSiteSelection) {
             G.awaitingSiteSelection = false;
-            const p0 = G.players['0'];
-            p0.currentSiteIndex = targetIndex;
+
+            const fpId = G.fpPlayerId || '0';
+            const fpPlayer = G.players[fpId];
+
+            if (fpPlayer) {
+                fpPlayer.currentSiteIndex = targetIndex;
+            }
 
             const siteCost = Number(playedSite.twilightCost) || 0;
-            const companionsCount = p0.fellowshipArea
-                ? p0.fellowshipArea.length
+            const companionsCount = fpPlayer?.fellowshipArea
+                ? fpPlayer.fellowshipArea.length
                 : 0;
             G.twilightPool += siteCost + companionsCount;
 
             G.statusMessage = `Nouveau site révélé ! La compagnie avance en ${playedSite.name}. (+${siteCost + companionsCount} Crépuscule)`;
 
-            // 🟢 Temporisation globale
-            G.pendingPhaseEnd = true;
+            if (ctx.phase === 'regroup') {
+                G.skirmishes = [];
+                G.activeSkirmishId = undefined;
+                events?.setPhase?.('shadow');
+            } else {
+                G.pendingPhaseEnd = true;
+            }
         }
     },
 
     transferAttachment: (
-    { G, ctx, playerID }: LotrMoveContext,
-    payload: TransferPayload
-) => {
-    const { attachmentId, fromCharacterId, toCharacterId } = payload;
-    const targetId = getTargetPlayerId(playerID, ctx);
-    const player = G.players?.[targetId];
-    if (!player) return 'INVALID_MOVE';
+        { G, ctx, playerID }: LotrMoveContext,
+        payload: TransferPayload
+    ) => {
+        const { attachmentId, fromCharacterId, toCharacterId } = payload;
+        const targetId = getTargetPlayerId(playerID, ctx);
+        const player = G.players?.[targetId];
+        if (!player) return 'INVALID_MOVE';
 
-    const allPossibleHosts = [
-        ...(player.fellowshipArea || []),
-        ...(player.supportArea || []),
-        ...(G.battlefield || []),
-    ];
+        const allPossibleHosts = [
+            ...(player.fellowshipArea || []),
+            ...(player.supportArea || []),
+            ...(G.battlefield || []),
+        ];
 
-    const sourceHost = fromCharacterId
-        ? allPossibleHosts.find((c) => c.id === fromCharacterId)
-        : allPossibleHosts.find((c) =>
-              c.attachments?.some((a) => a.id === attachmentId)
-          );
+        const sourceHost = fromCharacterId
+            ? allPossibleHosts.find((c) => c.id === fromCharacterId)
+            : allPossibleHosts.find((c) =>
+                  c.attachments?.some((a) => a.id === attachmentId)
+              );
 
-    if (!sourceHost || !sourceHost.attachments) return 'INVALID_MOVE';
+        if (!sourceHost || !sourceHost.attachments) return 'INVALID_MOVE';
 
-    const attachIndex = sourceHost.attachments.findIndex(
-        (a) => a.id === attachmentId
-    );
-    if (attachIndex === -1) return 'INVALID_MOVE';
+        const attachIndex = sourceHost.attachments.findIndex(
+            (a) => a.id === attachmentId
+        );
+        if (attachIndex === -1) return 'INVALID_MOVE';
 
-    const movedAttachment = sourceHost.attachments[attachIndex];
+        const movedAttachment = sourceHost.attachments[attachIndex];
 
-    // 🔒 RESTRICTION DES PHASES
-    if (movedAttachment.kind === 'SHADOW') {
-        // L'Ombre ne peut transférer qu'en phase Shadow
-        if (ctx.phase !== 'shadow' || playerID !== '1') {
-            return 'INVALID_MOVE';
+        const fpId = G.fpPlayerId || '0';
+        const shadowId = fpId === '0' ? '1' : '0';
+
+        // 🔒 RESTRICTION DES PHASES ET DES JOUEURS
+        if (movedAttachment.kind === 'SHADOW') {
+            if (ctx.phase !== 'shadow' || playerID !== shadowId) {
+                return 'INVALID_MOVE';
+            }
+        } else {
+            if (ctx.phase !== 'fellowship' || playerID !== fpId) {
+                return 'INVALID_MOVE';
+            }
         }
-    } else {
-        // Les Peuples Libres ne peuvent transférer qu'en phase Fellowship
-        if (ctx.phase !== 'fellowship' || playerID !== '0') {
+
+        const targetHost = allPossibleHosts.find((c) => c.id === toCharacterId);
+        if (!targetHost || sourceHost.id === targetHost.id)
             return 'INVALID_MOVE';
+
+        const cost = Number(movedAttachment.twilightCost) || 0;
+
+        if (movedAttachment.kind === 'SHADOW') {
+            if (G.twilightPool < cost) return 'INVALID_MOVE';
+            G.twilightPool -= cost;
+        } else {
+            G.twilightPool += cost;
         }
-    }
 
-    const targetHost = allPossibleHosts.find((c) => c.id === toCharacterId);
-    if (!targetHost || sourceHost.id === targetHost.id)
-        return 'INVALID_MOVE';
+        sourceHost.attachments.splice(attachIndex, 1);
 
-    const cost = Number(movedAttachment.twilightCost) || 0;
+        if (!targetHost.attachments) {
+            targetHost.attachments = [];
+        }
+        targetHost.attachments.push(movedAttachment);
 
-    // 🟢 GESTION DU CRÉPUSCULE SELON LA FACTION
-    if (movedAttachment.kind === 'SHADOW') {
-        if (G.twilightPool < cost) return 'INVALID_MOVE';
-        G.twilightPool -= cost;
-    } else {
-        G.twilightPool += cost;
-    }
+        const attachmentTitle =
+            movedAttachment.title || movedAttachment.name || 'Attachement';
+        const sourceTitle = sourceHost.title || sourceHost.name || 'son hôte';
+        const targetTitle = targetHost.title || targetHost.name || 'sa cible';
 
-    // Transfert effectif
-    sourceHost.attachments.splice(attachIndex, 1);
-
-    if (!targetHost.attachments) {
-        targetHost.attachments = [];
-    }
-    targetHost.attachments.push(movedAttachment);
-
-    const attachmentTitle = movedAttachment.title || movedAttachment.name || 'Attachement';
-    const sourceTitle = sourceHost.title || sourceHost.name || 'son hôte';
-    const targetTitle = targetHost.title || targetHost.name || 'sa cible';
-
-    G.statusMessage = `${attachmentTitle} est transféré de ${sourceTitle} vers ${targetTitle} (Coût : ${cost} Crépuscule).`;
-},
+        G.statusMessage = `${attachmentTitle} est transféré de ${sourceTitle} vers ${targetTitle} (Coût : ${cost} Crépuscule).`;
+    },
 };
