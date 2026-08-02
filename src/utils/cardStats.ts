@@ -5,11 +5,19 @@ import type { CardState } from '../game/types';
  * Si la carte a des tokens de blessure (wounds), on les soustrait de la vitalité de base.
  */
 export const getEffectiveVitality = (card: CardState): number => {
-    const baseVitality = Number(card.vitality) || 0;
+    let vitality = Number(card.vitality) || 0;
     const wounds = card.wounds || 0;
 
+    if (card.attachments) {
+        card.attachments.forEach((att) => {
+            if (att.vitality) {
+                vitality += Number(att.vitality);
+            }
+        });
+    }
+
     // La vitalité ne descend pas en dessous de 0
-    return Math.max(0, baseVitality - wounds);
+    return Math.max(0, vitality - wounds);
 };
 
 /**

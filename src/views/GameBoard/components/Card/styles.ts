@@ -138,11 +138,12 @@ export const CardContainer = styled.div<CardContainerProps>`
             css`
                 will-change: transform;
                 animation: ${() => {
-                    // Si en HAUT ($isOpponent = true) -> Recule vers le haut (-35px)
-                    // Si en BAS ($isOpponent = false) -> Recule vers le bas (+35px)
-                    const recoilY = props.$isOpponent ? -35 : 35;
-                    return woundImpactAnimation(recoilY);
-                }} 0.7s cubic-bezier(0.12, 0.85, 0.2, 1);
+                        // Si en HAUT ($isOpponent = true) -> Recule vers le haut (-35px)
+                        // Si en BAS ($isOpponent = false) -> Recule vers le bas (+35px)
+                        const recoilY = props.$isOpponent ? -35 : 35;
+                        return woundImpactAnimation(recoilY);
+                    }}
+                    0.7s cubic-bezier(0.12, 0.85, 0.2, 1);
             `}
 
             &::after {
@@ -315,6 +316,24 @@ export const CardContainer = styled.div<CardContainerProps>`
                     inset: 0;
                     height: 100%;
                     border-radius: 6px;
+                }
+                ${StrengthBadge} {
+                    width: 25px;
+                    inset-block-start: 28px;
+                    inset-inline-start: 0px;
+                    background-position: center;
+                    background-size: 27px;
+                    height: 30px;
+                    font-size: 16px;
+                }
+                ${VitalityBadge} {
+                    width: 25px;
+                    inset-block-start: 57px;
+                    inset-inline-start: 0px;
+                    background-position: 1px center;
+                    background-size: 27px;
+                    height: 30px;
+                    font-size: 16px;
                 }
             `}
         `}

@@ -201,18 +201,38 @@ export const Card: React.FC<CardProps> = ({
                 )}
             </S.TextContainer>
 
-            {card.strength !== undefined &&
-                (size !== 'sm' ? (
-                    <S.StrengthBadge>{card.strength}</S.StrengthBadge>
-                ) : (
-                    <S.StrengthBadge>{effectiveStrength}</S.StrengthBadge>
-                ))}
-            {card.vitality !== undefined &&
-                (size !== 'sm' ? (
-                    <S.VitalityBadge>{card.vitality}</S.VitalityBadge>
-                ) : (
-                    <S.VitalityBadge>{effectiveVitality}</S.VitalityBadge>
-                ))}
+            {card.strength !== undefined && (
+                <S.StrengthBadge>
+                    {size !== 'sm' ? (
+                        card.strength
+                    ) : (
+                        <>
+                            {card.type === 'POSSESSION_CHARACTER' ||
+                            card.type === 'ARTIFACT_CHARACTER' ||
+                            card.type === 'CONDITION_CHARACTER'
+                                ? `${card.strength > 0 ? '+' : ''}${card.strength}`
+                                : effectiveStrength}
+                        </>
+                    )}
+                </S.StrengthBadge>
+            )}
+
+            {card.vitality !== undefined && (
+                <S.VitalityBadge>
+                    {size !== 'sm' ? (
+                        card.strength
+                    ) : (
+                        <>
+                            {card.type === 'POSSESSION_CHARACTER' ||
+                            card.type === 'ARTIFACT_CHARACTER' ||
+                            card.type === 'CONDITION_CHARACTER'
+                                ? `${card.vitality > 0 ? '+' : ''}${card.vitality}`
+                                : effectiveVitality}
+                        </>
+                    )}
+                </S.VitalityBadge>
+            )}
+
             {card.roaming !== undefined && (
                 <S.RoamingNumber $isRoaming={isRoaming}>
                     {card.roaming}

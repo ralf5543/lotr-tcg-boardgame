@@ -71,6 +71,7 @@ export const CARDS_DATABASE: CardState[] = [
         culture: 'SHIRE',
         isUnique: false,
         gameText: 'Le détenteur doit être un Hobbit.',
+        loreText: 'Prenez ceci...',
     },
     {
         id: '1r45',
