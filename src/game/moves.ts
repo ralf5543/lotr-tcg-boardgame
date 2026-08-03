@@ -32,42 +32,36 @@ export const getTargetPlayerId = (
 };
 
 export const advanceCompany = (G: GameState, ctx: Ctx) => {
+
     const fpId = G.fpPlayerId || '0';
     const fpPlayer = G.players[fpId];
-    if (!fpPlayer) return;
+    if (!fpPlayer) {
+        console.warn('❌ [LOG] Joueur FP introuvable !');
+        return;
+    }
 
     const nextIndex = fpPlayer.currentSiteIndex + 1;
 
-    if (nextIndex >= 9) return;
+    if (nextIndex >= 9) {
+        console.warn('⚠️ [LOG] Index >= 9, impossible d\'avancer.');
+        return;
+    }
 
-    // Incrémente le compteur de déplacements pour ce tour
     G.movesThisTurn = (G.movesThisTurn || 0) + 1;
+    fpPlayer.currentSiteIndex = nextIndex;
 
-    const applyTwilightForSite = (siteIndex: number) => {
-        const targetSite = G.path[siteIndex];
-        if (!targetSite) return;
+    const targetSite = G.path[nextIndex];
 
+    if (targetSite !== null) {
         const siteCost = Number(targetSite.twilightCost) || 0;
-        const companionsCount = fpPlayer.fellowshipArea
-            ? fpPlayer.fellowshipArea.length
-            : 0;
+        const companionsCount = fpPlayer.fellowshipArea ? fpPlayer.fellowshipArea.length : 0;
         const totalAdded = siteCost + companionsCount;
-
         G.twilightPool += totalAdded;
-    };
 
-    if (G.path[nextIndex] !== null) {
-        fpPlayer.currentSiteIndex = nextIndex;
-        applyTwilightForSite(nextIndex);
-
-        G.statusMessage = `La compagnie avance au site ${nextIndex + 1} : ${G.path[nextIndex]?.name} (Déplacement ${G.movesThisTurn}/2)`;
-
-        // 🟢 Temporisation globale
-        G.pendingPhaseEnd = true;
+        G.statusMessage = `La compagnie avance au site ${nextIndex + 1} : ${targetSite.name}`;
     } else {
         G.awaitingSiteSelection = true;
-        G.statusMessage =
-            "En attente du joueur de l'Ombre pour poser le prochain site...";
+        G.statusMessage = "En attente du joueur de l'Ombre pour poser le prochain site...";
     }
 };
 
@@ -139,7 +133,7 @@ export const commonMoves = {
         const fpId = G.fpPlayerId || '0';
         const isFP = actingPlayerId === fpId;
 
-        // 1. Recherche de la cible (Compagnon, Allié dans FellowshipArea, ou Minion dans Battlefield/SupportArea)
+        // 1. Recherche de la cible (Compagnon, Allié dans FellowshipArea/SupportArea, ou Minion dans Battlefield/SupportArea)
         const fpPlayer = G.players[fpId];
         const allPossibleTargets = [
             ...(fpPlayer?.fellowshipArea || []),
@@ -191,7 +185,7 @@ export const commonMoves = {
         G.statusMessage = `${cardName} a été attaché à ${targetName}.`;
     },
 
-    // 🟢 JOUILLER UNE CARTE (DYNAMIQUE)
+    // 🟢 JOUER UNE CARTE (ROUTAGE BASÉ SUR CARDTYPE)
     playCard: ({ G, ctx, playerID }: LotrMoveContext, cardIndex: number) => {
         const actingPlayerId = playerID ?? ctx.currentPlayer ?? '0';
         const player = G.players[actingPlayerId];
@@ -208,27 +202,41 @@ export const commonMoves = {
         const fpId = G.fpPlayerId || '0';
         const isFP = actingPlayerId === fpId;
 
-        // 1. Joueur Peuples Libres (FP)
+        // 1. JOUER UNE CARTE PEUPLES LIBRES
         if (isFP) {
             if (card.kind !== 'FREE_PEOPLES') return 'INVALID_MOVE';
 
+            const cost = Number(card.twilightCost) || 0;
             const [playedCard] = player.hand.splice(cardIndex, 1);
-            const cost = Number(playedCard.twilightCost) || 0;
             G.twilightPool += cost;
 
-            if (playedCard.type === 'COMPANION' || playedCard.type === 'ALLY') {
+            // Routage selon le CardType
+            if (playedCard.type === 'COMPANION') {
                 if (!player.fellowshipArea) player.fellowshipArea = [];
                 player.fellowshipArea.push(playedCard);
-            } else {
+                G.statusMessage = `${playedCard.title} rejoint la Communauté (+${cost} Crépuscule).`;
+            } else if (
+                playedCard.type === 'ALLY' ||
+                playedCard.type === 'FOLLOWER' ||
+                playedCard.type.endsWith('_SUPPORT')
+            ) {
                 if (!player.supportArea) player.supportArea = [];
                 player.supportArea.push(playedCard);
+                G.statusMessage = `${playedCard.title} rejoint l'aire de soutien (+${cost} Crépuscule).`;
+            } else if (playedCard.type === 'EVENT') {
+                if (!player.discard) player.discard = [];
+                player.discard.push(playedCard);
+                G.statusMessage = `${playedCard.title} est joué (+${cost} Crépuscule).`;
+            } else {
+                // Les attachements _CHARACTER sont joués via attachCard
+                player.hand.splice(cardIndex, 0, playedCard);
+                G.twilightPool -= cost;
+                return 'INVALID_MOVE';
             }
-
-            G.statusMessage = `${card.title || card.name} a été joué dans la zone FP (+${cost} Crépuscule).`;
             return;
         }
 
-        // 2. Joueur Ombre (SHADOW)
+        // 2. JOUER UNE CARTE OMBRE
         if (!isFP) {
             if (card.kind !== 'SHADOW') return 'INVALID_MOVE';
 
@@ -241,38 +249,47 @@ export const commonMoves = {
             G.twilightPool -= cost;
             const [playedCard] = player.hand.splice(cardIndex, 1);
 
+            // Routage selon le CardType pour l'Ombre
             if (playedCard.type === 'MINION') {
                 if (!G.battlefield) G.battlefield = [];
                 G.battlefield.push(playedCard);
-            } else {
+                G.statusMessage = `${playedCard.title} entre sur le champ de bataille (-${cost} Crépuscule).`;
+            } else if (
+                playedCard.type === 'ALLY' ||
+                playedCard.type === 'FOLLOWER' ||
+                playedCard.type.endsWith('_SUPPORT')
+            ) {
                 if (!player.supportArea) player.supportArea = [];
                 player.supportArea.push(playedCard);
+                G.statusMessage = `${playedCard.title} rejoint l'aire de soutien de l'Ombre (-${cost} Crépuscule).`;
+            } else if (playedCard.type === 'EVENT') {
+                if (!player.discard) player.discard = [];
+                player.discard.push(playedCard);
+                G.statusMessage = `${playedCard.title} est joué (-${cost} Crépuscule).`;
+            } else {
+                player.hand.splice(cardIndex, 0, playedCard);
+                G.twilightPool += cost;
+                return 'INVALID_MOVE';
             }
-
-            G.statusMessage = `${card.title || card.name} a été joué par l'Ombre (-${cost} Crépuscule).`;
         }
     },
 
-    // 🟢 FIN DE LA PHASE FELLOWSHIP
     endFellowshipPhase: ({ G, ctx, events, playerID }: LotrMoveContext) => {
-        const fpId = G.fpPlayerId || '0';
-        const actingPlayerId = playerID ?? ctx.currentPlayer ?? '0';
+    
+    const fpId = G.fpPlayerId || '0';
+    const actingPlayerId = playerID ?? ctx.currentPlayer ?? '0';
 
-        if (actingPlayerId !== fpId) {
-            console.warn(
-                '❌ Seul le joueur FP peut terminer la phase Fellowship'
-            );
-            return 'INVALID_MOVE';
-        }
+    if (actingPlayerId !== fpId) {
+        console.warn('❌ [LOG] Reject: Seul le joueur FP peut terminer Fellowship');
+        return 'INVALID_MOVE';
+    }
 
-        // Avance la compagnie (Calcul Twilight etc.)
-        advanceCompany(G, ctx, actingPlayerId);
+    advanceCompany(G, ctx);
 
-        // Si la sélection de site n'est pas bloquée, passage en phase Ombre
-        if (!G.awaitingSiteSelection) {
-            events?.setPhase?.('shadow');
-        }
-    },
+    if (!G.awaitingSiteSelection) {
+        events?.setPhase?.('shadow');
+    }
+},
 
     endTurnChoice: ({ G }: LotrMoveContext) => {
         G.regroupStep = 'FP_REFILL';
@@ -345,8 +362,6 @@ export const commonMoves = {
         }
 
         if (G.regroupStep === 'FP_REFILL' || !G.regroupStep) {
-            console.log('🚀 [FIN DE TOUR] Switch de rôle FP / Ombre');
-
             const shadowId = G.fpPlayerId === '0' ? '1' : '0';
             const shadowPlayer = G.players[shadowId];
 

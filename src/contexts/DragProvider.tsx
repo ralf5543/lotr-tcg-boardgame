@@ -170,7 +170,6 @@ export const DragProvider: React.FC<{ children: React.ReactNode }> = ({
     };
 
     const stopDrag = () => {
-        console.log('🔴 [DragContext] Drop relâché ! Cible actuelle :', activeTargetId, '| Carte :', dragged?.card?.title ?? dragged?.card?.id);
         setDragged(null);
         setActiveTargetId(null);
         setRotation(0);

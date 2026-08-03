@@ -73,7 +73,7 @@ export const LotrGame: Game<GameState> = {
         assignmentStep: 'FP_ASSIGN',
         path: [
             DUMMY_SITES_PLAYER_0[0],
-            null,
+            DUMMY_SITES_PLAYER_0[1],
             null,
             null,
             null,
@@ -108,38 +108,51 @@ export const LotrGame: Game<GameState> = {
 
     phases: {
         fellowship: {
-        start: true,
-        next: 'shadow',
-        turn: {
-            // FORCE boardgame.io à définir currentPlayer = G.fpPlayerId au début du tour
-            order: {
-                first: ({ G }) => Number(G.fpPlayerId || '0'),
-                next: ({ G }) => Number(G.fpPlayerId || '0'),
+            start: true,
+            next: 'shadow',
+            turn: {
+                // FORCE boardgame.io à définir currentPlayer = G.fpPlayerId au début du tour
+                order: {
+                    first: ({ G }) => Number(G.fpPlayerId || '0'),
+                    next: ({ G }) => Number(G.fpPlayerId || '0'),
+                },
+                activePlayers: { value: { '0': 'play', '1': 'play' } },
             },
-            activePlayers: { value: { '0': 'play', '1': 'play' } },
+            onBegin: ({ G, ctx }: LotrPhaseContext) => {
+                G.movesThisTurn = 0; // Réinitialisation du compteur
+                G.regroupStep = undefined;
+                G.statusMessage =
+                    'Phase de Communauté : Jouez vos compagnons et soutiens.';
+            },
+            moves: {
+                ...commonMoves,
+            },
         },
-        onBegin: ({ G }: LotrPhaseContext) => {
-            G.movesThisTurn = 0; // Réinitialisation du compteur
-            G.regroupStep = undefined;
-            G.statusMessage =
-                'Phase de Communauté : Jouez vos compagnons et soutiens.';
-        },
-        moves: {
-            ...commonMoves,
-            // ... (reste de vos moves fellowship)
-        },
-    },
 
         shadow: {
             turn: {
+                order: {
+                    first: ({ G }) => Number(G.fpPlayerId === '0' ? '1' : '0'),
+                    next: ({ G }) => Number(G.fpPlayerId === '0' ? '1' : '0'),
+                },
                 activePlayers: { value: { '0': 'play', '1': 'play' } },
             },
-            next: ({ G }: { G: GameState }) => {
-                const hasMinions = G.battlefield.some(
-                    (c) => c.kind === 'SHADOW'
-                );
-                return hasMinions ? 'maneuver' : 'regroup';
+
+            next: 'maneuver',
+
+            onBegin: ({ G, ctx }: LotrPhaseContext) => {
+                console.log('🟢 [LOG PHASE] SHADOW: onBegin - CurrentPlayer:', ctx.currentPlayer);
+                const shadowId = G.fpPlayerId === '0' ? '1' : '0';
+                
+                // 🟢 On réinitialise l'actionWindow pour éviter qu'un toaster/modal ne bloque l'UI
+                G.actionWindow = undefined;
+
+                G.statusMessage = `Phase d'Ombre : Joueur Ombre (${shadowId}), jouez vos Séides/Soutiens. Crépuscule disponible : ${G.twilightPool}`;
             },
+            onEnd: ({ G, ctx }: LotrPhaseContext) => {
+                console.log('🛑 [LOG PHASE] SHADOW: onEnd');
+            },
+
             moves: {
                 ...commonMoves,
 
@@ -213,8 +226,20 @@ export const LotrGame: Game<GameState> = {
                     G.statusMessage = `L'Ombre attache ${attachmentCard.name} à ${targetMinion.name}.`;
                 },
 
-                endShadowPhase: ({ events }: LotrMoveContext) => {
-                    events?.endPhase?.();
+                endShadowPhase: ({ G, events, playerID }: LotrMoveContext) => {
+                    console.log('🚀 [LOG MOVE] endShadowPhase appelé par playerID:', playerID);
+                    const shadowId = G.fpPlayerId === '0' ? '1' : '0';
+                    if (playerID !== shadowId) return 'INVALID_MOVE';
+
+                    const hasMinions = G.battlefield.some(
+                        (c) => c.kind === 'SHADOW' && c.type === 'MINION'
+                    );
+
+                    if (hasMinions) {
+                        events?.setPhase?.('maneuver');
+                    } else {
+                        events?.setPhase?.('regroup');
+                    }
                 },
             },
         },
@@ -222,11 +247,11 @@ export const LotrGame: Game<GameState> = {
         maneuver: {
             next: 'archery',
             turn: { activePlayers: { value: { '0': 'play', '1': 'play' } } },
-            onBegin: ({ G }: LotrPhaseContext) => {
+            onBegin: ({ G, ctx }: LotrPhaseContext) => {
                 const fpId = G.fpPlayerId || '0';
                 G.actionWindow = {
                     isOpen: true,
-                    activePlayerId: fpId, // Le joueur FP actif commence
+                    activePlayerId: fpId,
                     title: 'PHASE DE MANŒUVRE',
                     message:
                         'Voulez-vous jouer une carte / un effet de Manœuvre ou PASSER ?',
@@ -244,11 +269,12 @@ export const LotrGame: Game<GameState> = {
         archery: {
             next: 'assignment',
             turn: { activePlayers: { value: { '0': 'play', '1': 'play' } } },
-            onBegin: ({ G }: LotrPhaseContext) => {
+            onBegin: ({ G, ctx }: LotrPhaseContext) => {
+                
                 const fpId = G.fpPlayerId || '0';
                 G.actionWindow = {
                     isOpen: true,
-                    activePlayerId: fpId, // Le joueur FP actif commence
+                    activePlayerId: fpId,
                     title: 'PHASE D’ARCHERIE',
                     message:
                         'Voulez-vous jouer une carte / un effet d’Archerie ou PASSER ?',
@@ -266,7 +292,7 @@ export const LotrGame: Game<GameState> = {
         assignment: {
             next: 'skirmish',
             turn: { activePlayers: { value: { '0': 'play', '1': 'play' } } },
-            onBegin: ({ G }: LotrPhaseContext) => {
+            onBegin: ({ G, ctx }: LotrPhaseContext) => {
                 G.skirmishes = [];
                 const unassignedMinions = getUnassignedMinions(G);
 
@@ -292,13 +318,11 @@ export const LotrGame: Game<GameState> = {
                     const isFP = playerID === fpId;
                     const isShadow = playerID !== fpId;
 
-                    // 1. Vérifications de tour/rôle
                     if (G.assignmentStep === 'FP_ASSIGN' && !isFP)
                         return 'INVALID_MOVE';
                     if (G.assignmentStep === 'SHADOW_ASSIGN' && !isShadow)
                         return 'INVALID_MOVE';
 
-                    // 2. Vérification de la cible sur la fellowshipArea du joueur FP
                     const compCard = G.players[fpId]?.fellowshipArea.find(
                         (c) => c.id === companionId
                     );
@@ -308,7 +332,6 @@ export const LotrGame: Game<GameState> = {
                         (s) => s.companionId === companionId
                     );
 
-                    // 3. Règle de surcharge FP
                     if (
                         G.assignmentStep === 'FP_ASSIGN' &&
                         existingSkirmish &&
@@ -318,7 +341,6 @@ export const LotrGame: Game<GameState> = {
                         return 'INVALID_MOVE';
                     }
 
-                    // 4. Mutation
                     G.skirmishes.forEach((s) => {
                         s.minionIds = s.minionIds.filter(
                             (id) => id !== minionId
@@ -357,6 +379,7 @@ export const LotrGame: Game<GameState> = {
         skirmish: {
             next: 'regroup',
             turn: { activePlayers: { value: { '0': 'play', '1': 'play' } } },
+
             moves: {
                 ...commonMoves,
 
@@ -431,10 +454,8 @@ export const LotrGame: Game<GameState> = {
                     events,
                     playerID,
                 }: LotrMoveContext) => {
-
                     const fpId = G.fpPlayerId || '0';
 
-                    // 🛡️ SÉCURITÉ : Ne peut avancer QUE si on est le joueur FP, en FP_DECISION et < 2 moves
                     if (
                         playerID !== fpId ||
                         (G.movesThisTurn || 0) >= 2 ||
@@ -443,7 +464,7 @@ export const LotrGame: Game<GameState> = {
                         return 'INVALID_MOVE';
                     }
 
-                    advanceCompany(G, ctx, playerID);
+                    advanceCompany(G, ctx);
 
                     if (!G.awaitingSiteSelection) {
                         G.skirmishes = [];

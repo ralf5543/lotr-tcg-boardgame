@@ -122,11 +122,6 @@ export const PlayerArea: React.FC<PlayerAreaProps> = ({
                     $isTargeted={isFellowshipTargeted}
                     ref={(el) => {
                         if (!isOpponent && el) {
-                            console.log(
-                                '🎯 [PlayerArea] Ref enregistré pour :',
-                                'fellowshipArea',
-                                el
-                            );
                             registerTarget('fellowshipArea', el);
                         }
                     }}

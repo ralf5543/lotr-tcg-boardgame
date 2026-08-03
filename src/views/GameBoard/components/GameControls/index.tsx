@@ -107,9 +107,9 @@ export const GameControls: React.FC<GameControlsProps> = ({
     } else if (awaitingSite && currentPlayerId === shadowPlayerId) {
         toastConfig = {
             show: true,
-            title: 'ACTION REQUISE',
-            body: 'Choisissez et posez un site sur la case inexplorée.',
-            showPassButton: false,
+        title: 'CHOIX DU SITE',
+        body: 'Choisissez et posez un site sur la case inexplorée.',
+        showPassButton: false,
         };
     }
 
