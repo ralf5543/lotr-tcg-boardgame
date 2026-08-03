@@ -206,17 +206,11 @@ export const Card: React.FC<CardProps> = ({
 
             {card.strength !== undefined && (
                 <S.StrengthBadge>
-                    {size !== 'sm' ? (
-                        card.strength
-                    ) : (
-                        <>
-                            {card.type === 'POSSESSION_CHARACTER' ||
-                            card.type === 'ARTIFACT_CHARACTER' ||
-                            card.type === 'CONDITION_CHARACTER'
-                                ? `${card.strength > 0 ? '+' : ''}${card.strength}`
-                                : effectiveStrength}
-                        </>
-                    )}
+                    {card.type === 'POSSESSION_CHARACTER' ||
+                    card.type === 'ARTIFACT_CHARACTER' ||
+                    card.type === 'CONDITION_CHARACTER'
+                        ? `${card.strength > 0 ? '+' : ''}${card.strength}`
+                        : effectiveStrength}
                 </S.StrengthBadge>
             )}
 

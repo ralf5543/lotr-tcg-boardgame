@@ -119,6 +119,77 @@ export const passActionWindow = ({
 export const commonMoves = {
     passActionWindow,
     advanceCompany,
+    attachCard: (
+        { G, ctx, playerID }: LotrMoveContext,
+        cardIndex: number,
+        targetId: string
+    ) => {
+        const actingPlayerId = playerID ?? ctx.currentPlayer ?? '0';
+        const player = G.players[actingPlayerId];
+
+        if (!player || !player.hand || !player.hand[cardIndex]) {
+            console.warn(
+                '❌ [moves.attachCard] Carte ou joueur introuvable !',
+                { actingPlayerId, cardIndex }
+            );
+            return 'INVALID_MOVE';
+        }
+
+        const card = player.hand[cardIndex];
+        const fpId = G.fpPlayerId || '0';
+        const isFP = actingPlayerId === fpId;
+
+        // 1. Recherche de la cible (Compagnon, Allié dans FellowshipArea, ou Minion dans Battlefield/SupportArea)
+        const fpPlayer = G.players[fpId];
+        const allPossibleTargets = [
+            ...(fpPlayer?.fellowshipArea || []),
+            ...(fpPlayer?.supportArea || []),
+            ...(player.supportArea || []),
+            ...(G.battlefield || []),
+        ];
+
+        const targetCharacter = allPossibleTargets.find(
+            (c) => c.id === targetId
+        );
+
+        if (!targetCharacter) {
+            console.warn(
+                `❌ [moves.attachCard] Personnage cible ${targetId} introuvable.`
+            );
+            return 'INVALID_MOVE';
+        }
+
+        // 2. Vérification des coûts et de la faction
+        const cost = Number(card.twilightCost) || 0;
+
+        if (isFP) {
+            if (card.kind !== 'FREE_PEOPLES') return 'INVALID_MOVE';
+            // Jouer une carte FP ajoute du twilight pool
+            G.twilightPool += cost;
+        } else {
+            if (card.kind !== 'SHADOW') return 'INVALID_MOVE';
+            // L'Ombre doit payer du twilight pool
+            if (G.twilightPool < cost) {
+                G.statusMessage = `Crépuscule insuffisant pour attacher ${card.title} (Requis: ${cost}, Dispo: ${G.twilightPool})`;
+                return 'INVALID_MOVE';
+            }
+            G.twilightPool -= cost;
+        }
+
+        // 3. Retirer la carte de la main
+        const [attachedCard] = player.hand.splice(cardIndex, 1);
+
+        // 4. Attacher la carte au personnage
+        if (!targetCharacter.attachments) {
+            targetCharacter.attachments = [];
+        }
+        targetCharacter.attachments.push(attachedCard);
+
+        const cardName = attachedCard.title || attachedCard.name || 'Une carte';
+        const targetName =
+            targetCharacter.title || targetCharacter.name || 'le personnage';
+        G.statusMessage = `${cardName} a été attaché à ${targetName}.`;
+    },
 
     // 🟢 JOUILLER UNE CARTE (DYNAMIQUE)
     playCard: ({ G, ctx, playerID }: LotrMoveContext, cardIndex: number) => {
@@ -184,12 +255,13 @@ export const commonMoves = {
 
     // 🟢 FIN DE LA PHASE FELLOWSHIP
     endFellowshipPhase: ({ G, ctx, events, playerID }: LotrMoveContext) => {
-
         const fpId = G.fpPlayerId || '0';
         const actingPlayerId = playerID ?? ctx.currentPlayer ?? '0';
 
         if (actingPlayerId !== fpId) {
-            console.warn('❌ Seul le joueur FP peut terminer la phase Fellowship');
+            console.warn(
+                '❌ Seul le joueur FP peut terminer la phase Fellowship'
+            );
             return 'INVALID_MOVE';
         }
 

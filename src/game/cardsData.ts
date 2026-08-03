@@ -66,7 +66,7 @@ export const CARDS_DATABASE: CardState[] = [
         kind: 'FREE_PEOPLES',
         type: 'POSSESSION_CHARACTER',
         subtype: 'HAND-WEAPON',
-        strength: 1,
+        strength: 2,
         twilightCost: 1,
         culture: 'SHIRE',
         isUnique: false,
