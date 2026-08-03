@@ -10,43 +10,57 @@ export const getCardTotalStrength = (card: CardState): number => {
 };
 
 /**
- * Tue une carte instantanément (ex: Submersion / Overwhelm) sans passer par l'ajout de blessures
+ * Tue une carte instantanément sans passer par l'ajout de blessures
  */
 export const killCardDirectly = (
     G: GameState,
     cardId: string
-): { cardOwner?: '0' | '1'; killedCard?: CardState } => {
-    let cardOwner: '0' | '1' | undefined;
-    let card = G.players['0'].fellowshipArea.find((c) => c.id === cardId);
+): { cardOwner?: string; killedCard?: CardState } => {
+    const fpId = G.fpPlayerId || '0';
+    const shadowId = fpId === '0' ? '1' : '0';
 
-    if (card) {
-        cardOwner = '0';
-    } else {
+    const fpPlayer = G.players[fpId];
+    const shadowPlayer = G.players[shadowId];
+
+    let cardOwner: string | undefined;
+    let card: CardState | undefined;
+
+    // 🔍 1. Recherche du compagnon dans le camp FP actuel
+    if (fpPlayer && Array.isArray(fpPlayer.fellowshipArea)) {
+        card = fpPlayer.fellowshipArea.find((c) => c.id === cardId);
+        if (card) cardOwner = fpId;
+    }
+
+    // 🔍 2. Recherche du minion dans le champ de bataille
+    if (!card && Array.isArray(G.battlefield)) {
         card = G.battlefield.find((c) => c.id === cardId);
-        if (card) {
-            cardOwner = '1';
-        }
+        if (card) cardOwner = shadowId;
     }
 
     if (!card || !cardOwner) return {};
 
-    // 1. Déplacement de la carte vers la bonne zone de mort
-    if (cardOwner === '0') {
-        G.players['0'].fellowshipArea = G.players['0'].fellowshipArea.filter(
+    // 1. Déplacement de la carte vers la bonne zone de mort/défausse
+    if (cardOwner === fpId && fpPlayer) {
+        fpPlayer.fellowshipArea = fpPlayer.fellowshipArea.filter(
             (c) => c.id !== cardId
         );
-        if (!G.players['0'].deadPile) G.players['0'].deadPile = [];
-        G.players['0'].deadPile.push(card);
-    } else {
-        G.battlefield = G.battlefield.filter((c) => c.id !== cardId);
-        G.players['1'].discard.push(card);
+        if (!fpPlayer.deadPile) fpPlayer.deadPile = [];
+        fpPlayer.deadPile.push(card);
+    } else if (shadowPlayer) {
+        G.battlefield = (G.battlefield || []).filter((c) => c.id !== cardId);
+        if (!shadowPlayer.discard) shadowPlayer.discard = [];
+        shadowPlayer.discard.push(card);
     }
 
     // 2. Nettoyage des attachements vers la défausse respective de leur proprio
     if (card.attachments && card.attachments.length > 0) {
         card.attachments.forEach((attachment) => {
-            const owner = attachment.kind === 'SHADOW' ? '1' : '0';
-            G.players[owner].discard.push(attachment);
+            const ownerId = attachment.kind === 'SHADOW' ? shadowId : fpId;
+            const ownerPlayer = G.players[ownerId];
+            if (ownerPlayer) {
+                if (!ownerPlayer.discard) ownerPlayer.discard = [];
+                ownerPlayer.discard.push(attachment);
+            }
         });
         card.attachments = [];
     }
@@ -55,8 +69,7 @@ export const killCardDirectly = (
 };
 
 /**
- * Calcule les blessures sans tuer la carte immédiatement 
- * (pour laisser le temps aux animations visuelles d'exécuter le shake)
+ * Calcule les blessures sans tuer la carte immédiatement
  */
 export const applyWoundToCard = (
     _G: GameState,
@@ -66,12 +79,12 @@ export const applyWoundToCard = (
     card.wounds = (card.wounds || 0) + woundCount;
     const vitality = card.vitality ?? 1;
 
-    // Retourne true si la carte DOIT mourir (blessures >= vitalité)
     return card.wounds >= vitality;
 };
 
 export const resolveSkirmish = (
-    G: GameState
+    G: GameState,
+    _ctx?: Ctx
 ) => {
     if (!G.activeSkirmishId) return;
 
@@ -83,11 +96,16 @@ export const resolveSkirmish = (
         return;
     }
 
+    const fpId = G.fpPlayerId || '0';
+    const fpPlayer = G.players[fpId];
+
     const skirmish = G.skirmishes[skirmishIndex];
-    const companion = G.players['0'].fellowshipArea.find(
-        (c) => c.id === skirmish.companionId
-    );
-    const minions = G.battlefield.filter((c) =>
+    
+    const fellowshipList = fpPlayer?.fellowshipArea || [];
+    const companion = fellowshipList.find((c) => c.id === skirmish.companionId);
+    
+    const battlefieldList = G.battlefield || [];
+    const minions = battlefieldList.filter((c) =>
         skirmish.minionIds.includes(c.id)
     );
 
@@ -105,7 +123,6 @@ export const resolveSkirmish = (
     );
 
     G.lastWoundedCardIds = [];
-    // Stocke les cartes destinées à mourir à la fin du timer visuel
     G.pendingDeadCardIds = [];
 
     let resultMsg = `Résolution : ${companion.title} (${companionStrength}) vs `;
@@ -114,9 +131,7 @@ export const resolveSkirmish = (
         .join(', ');
     resultMsg += ` [Total Ombre: ${minionsStrength}]. `;
 
-    // -------------------------------------------------------------
     // ⚔️ CAS 1 : VICTOIRE DU COMPAGNON
-    // -------------------------------------------------------------
     if (companionStrength > minionsStrength) {
         resultMsg += `Victoire de ${companion.title} ! `;
 
@@ -149,9 +164,7 @@ export const resolveSkirmish = (
             });
         }
     }
-    // -------------------------------------------------------------
     // ⚔️ CAS 2 : VICTOIRE DE L'OMBRE (ou Égalité)
-    // -------------------------------------------------------------
     else {
         resultMsg += `Victoire de l'Ombre ! `;
 
@@ -186,7 +199,7 @@ export const resolveSkirmish = (
 };
 
 /**
- * 🟢 Nettoie l'escarmouche et applique les morts après le délai d'1.5s
+ * Nettoie l'escarmouche et applique les morts après le délai visuel
  */
 export const finishSkirmishResolution = (
     G: GameState,
@@ -201,7 +214,7 @@ export const finishSkirmishResolution = (
         G.pendingDeadCardIds = [];
     }
 
-    // 2. Retrait de l'escarmouche du state (libère visuellement les séides survivants)
+    // 2. Retrait de l'escarmouche du state
     if (G.activeSkirmishId) {
         const skirmishIndex = G.skirmishes.findIndex(
             (s) => s.id === G.activeSkirmishId

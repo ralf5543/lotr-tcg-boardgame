@@ -484,7 +484,7 @@ export const commonMoves = {
                     type: 'MINION',
                     twilightCost: 1,
                     strength: 5,
-                    vitality: 1,
+                    vitality: 3,
                     culture: 'MORIA',
                     isUnique: false,
                     gameText: 'wlmdfdxlmfkdlsmfksmdlf',
