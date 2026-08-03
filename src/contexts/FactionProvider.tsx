@@ -3,23 +3,20 @@ import { FactionContext } from './FactionContext';
 
 interface FactionProviderProps {
     children: React.ReactNode;
-    currentPlayer: string;
     myPlayerId: string;
-    initialFpPlayerId?: string;
 }
 
 export const FactionProvider: React.FC<FactionProviderProps> = ({
     children,
-    currentPlayer,
     myPlayerId,
-    initialFpPlayerId = '0',
 }) => {
-    const [fpPlayerId, setFpPlayerId] = useState(initialFpPlayerId);
+    // 🟢 On gère uniquement le fpPlayerId dynamique
+    const [fpPlayerId, setFpPlayerId] = useState<string>('0');
 
     return (
         <FactionContext.Provider
             value={{
-                currentPlayer,
+                currentPlayer: '0', // Valeur fallback si requis par l'interface
                 myPlayerId,
                 fpPlayerId,
                 setFpPlayerId,

@@ -88,7 +88,7 @@ function App() {
 
     return (
         <ScreenViewport>
-            <FactionProvider currentPlayer="0" myPlayerId={myPlayerId}>
+            <FactionProvider myPlayerId={myPlayerId}>
                 <HoverCardProvider>
                     <DragProvider>
                         <ScaledView ref={containerRef} $scale={scale}>
@@ -134,7 +134,7 @@ function App() {
                             </PlayerSwitcher>
                         </ScaledView>
 
-                        {/* Le curseur reste ici en dehors de ScaledView pour garder un positioning 1:1 avec l'écran */}
+                        {/* Le curseur reste ici en dehors de ScaledView */}
                         <CustomAssetCursor />
                     </DragProvider>
                 </HoverCardProvider>

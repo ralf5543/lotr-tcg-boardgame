@@ -31,14 +31,6 @@ export const GameControls: React.FC<GameControlsProps> = ({
 }) => {
     if (!G || !ctx) return null;
 
-    console.log('--- [DEBUG GameControls RENDER] ---');
-    console.log('Phase actuelle (ctx.phase):', ctx.phase);
-    console.log('Joueur actif (ctx.currentPlayer):', ctx.currentPlayer);
-    console.log('Mon playerID local:', playerID);
-    console.log('G.movesThisTurn:', G.movesThisTurn);
-    console.log('G.regroupStep:', G.regroupStep);
-    console.log('G.fpPlayerId:', G.fpPlayerId);
-
     const currentPlayerId = playerID ?? '0';
 
     // 🟢 RÔLES DYNAMIQUES
@@ -81,6 +73,7 @@ export const GameControls: React.FC<GameControlsProps> = ({
     // 🟢 3. AUTRES ACTIONS STANDARD DE PHASE (DYNAMIQUE)
     const isFellowshipAction =
         !isActionWindowActive &&
+        !awaitingSite &&
         ctx.phase === 'fellowship' &&
         currentPlayerId === fpPlayerId;
 

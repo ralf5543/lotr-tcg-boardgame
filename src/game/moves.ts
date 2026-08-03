@@ -31,7 +31,7 @@ export const getTargetPlayerId = (
     return String(ctx.currentPlayer ?? '0');
 };
 
-export const advanceCompany = (G: GameState, ctx: Ctx, playerID?: string) => {
+export const advanceCompany = (G: GameState, ctx: Ctx) => {
     const fpId = G.fpPlayerId || '0';
     const fpPlayer = G.players[fpId];
     if (!fpPlayer) return;
@@ -40,14 +40,8 @@ export const advanceCompany = (G: GameState, ctx: Ctx, playerID?: string) => {
 
     if (nextIndex >= 9) return;
 
-    console.log('--- [DEBUG advanceCompany] ---');
-    console.log('Ancien movesThisTurn:', G.movesThisTurn);
-    console.log('nextIndex visé:', nextIndex);
-    console.log('Site existant sur la case ?', G.path[nextIndex] !== null);
-
     // Incrémente le compteur de déplacements pour ce tour
     G.movesThisTurn = (G.movesThisTurn || 0) + 1;
-    console.log('Nouveau movesThisTurn:', G.movesThisTurn);
 
     const applyTwilightForSite = (siteIndex: number) => {
         const targetSite = G.path[siteIndex];
@@ -124,14 +118,96 @@ export const passActionWindow = ({
 
 export const commonMoves = {
     passActionWindow,
+    advanceCompany,
+
+    // 🟢 JOUILLER UNE CARTE (DYNAMIQUE)
+    playCard: ({ G, ctx, playerID }: LotrMoveContext, cardIndex: number) => {
+        const actingPlayerId = playerID ?? ctx.currentPlayer ?? '0';
+        const player = G.players[actingPlayerId];
+
+        if (!player || !player.hand || !player.hand[cardIndex]) {
+            console.warn('❌ [moves.playCard] Carte ou joueur introuvable !', {
+                actingPlayerId,
+                cardIndex,
+            });
+            return 'INVALID_MOVE';
+        }
+
+        const card = player.hand[cardIndex];
+        const fpId = G.fpPlayerId || '0';
+        const isFP = actingPlayerId === fpId;
+
+        // 1. Joueur Peuples Libres (FP)
+        if (isFP) {
+            if (card.kind !== 'FREE_PEOPLES') return 'INVALID_MOVE';
+
+            const [playedCard] = player.hand.splice(cardIndex, 1);
+            const cost = Number(playedCard.twilightCost) || 0;
+            G.twilightPool += cost;
+
+            if (playedCard.type === 'COMPANION' || playedCard.type === 'ALLY') {
+                if (!player.fellowshipArea) player.fellowshipArea = [];
+                player.fellowshipArea.push(playedCard);
+            } else {
+                if (!player.supportArea) player.supportArea = [];
+                player.supportArea.push(playedCard);
+            }
+
+            G.statusMessage = `${card.title || card.name} a été joué dans la zone FP (+${cost} Crépuscule).`;
+            return;
+        }
+
+        // 2. Joueur Ombre (SHADOW)
+        if (!isFP) {
+            if (card.kind !== 'SHADOW') return 'INVALID_MOVE';
+
+            const cost = Number(card.twilightCost) || 0;
+            if (G.twilightPool < cost) {
+                G.statusMessage = `Crépuscule insuffisant pour jouer ${card.title} (Requis: ${cost}, Dispo: ${G.twilightPool})`;
+                return 'INVALID_MOVE';
+            }
+
+            G.twilightPool -= cost;
+            const [playedCard] = player.hand.splice(cardIndex, 1);
+
+            if (playedCard.type === 'MINION') {
+                if (!G.battlefield) G.battlefield = [];
+                G.battlefield.push(playedCard);
+            } else {
+                if (!player.supportArea) player.supportArea = [];
+                player.supportArea.push(playedCard);
+            }
+
+            G.statusMessage = `${card.title || card.name} a été joué par l'Ombre (-${cost} Crépuscule).`;
+        }
+    },
+
+    // 🟢 FIN DE LA PHASE FELLOWSHIP
+    endFellowshipPhase: ({ G, ctx, events, playerID }: LotrMoveContext) => {
+
+        const fpId = G.fpPlayerId || '0';
+        const actingPlayerId = playerID ?? ctx.currentPlayer ?? '0';
+
+        if (actingPlayerId !== fpId) {
+            console.warn('❌ Seul le joueur FP peut terminer la phase Fellowship');
+            return 'INVALID_MOVE';
+        }
+
+        // Avance la compagnie (Calcul Twilight etc.)
+        advanceCompany(G, ctx, actingPlayerId);
+
+        // Si la sélection de site n'est pas bloquée, passage en phase Ombre
+        if (!G.awaitingSiteSelection) {
+            events?.setPhase?.('shadow');
+        }
+    },
 
     endTurnChoice: ({ G }: LotrMoveContext) => {
-    console.log("🏁 [endTurnChoice] Le joueur FP choisit de ne pas ré-avancer.");
-    G.regroupStep = 'FP_REFILL';
-    G.statusMessage = 'Peuples Libres : Ajustez votre main à 8 cartes et validez pour terminer le tour.';
-},
+        G.regroupStep = 'FP_REFILL';
+        G.statusMessage =
+            'Peuples Libres : Ajustez votre main à 8 cartes et validez pour terminer le tour.';
+    },
 
-    // 🟢 Moves de reconstitution de main (Regroup Phase)
     discardCardFromHand: (
         { G, playerID }: LotrMoveContext,
         cardIndex: number
@@ -143,7 +219,6 @@ export const commonMoves = {
         const shadowPlayerId = G.fpPlayerId === '0' ? '1' : '0';
         const fpPlayerId = G.fpPlayerId || '0';
 
-        // Sécurité dynamique selon qui est l'Ombre et qui est FP ce tour-ci
         if (
             G.regroupStep === 'SHADOW_REFILL' &&
             actingPlayerId !== shadowPlayerId
@@ -159,8 +234,6 @@ export const commonMoves = {
         G.statusMessage = `${player.profile?.name || `Joueur ${actingPlayerId}`} a défaussé ${discarded.title || discarded.name}.`;
     },
 
-    // moves.ts
-
     confirmHandRefill: ({ G, ctx, events, playerID }: LotrMoveContext) => {
         const actingPlayerId = playerID ?? '0';
         const player = G.players?.[actingPlayerId];
@@ -168,13 +241,11 @@ export const commonMoves = {
 
         if (!player.discard) player.discard = [];
 
-        // 1. Défausse du surplus (> 8 cartes)
         while (player.hand.length > 8) {
             const discarded = player.hand.pop();
             if (discarded) player.discard.push(discarded);
         }
 
-        // 2. Pioche des cartes manquantes (< 8 cartes)
         while (
             player.hand.length < 8 &&
             player.deck &&
@@ -184,17 +255,12 @@ export const commonMoves = {
             if (drawnCard) player.hand.push(drawnCard);
         }
 
-        // --- GESTION DES ÉTAPES DE REGROUPEMENT ---
-
-        // Étape A : L'Ombre vient de valider sa main
         if (G.regroupStep === 'SHADOW_REFILL') {
             if ((G.movesThisTurn || 0) >= 2) {
-                // Si 2 mouvements faits, on passe directement à la validation FP
                 G.regroupStep = 'FP_REFILL';
                 G.statusMessage =
                     'Limite de déplacement atteinte (2/2). Reconstitution de la main des Peuples Libres.';
             } else {
-                // Si 1 mouvement fait, on donne la main aux FP pour décider s'ils ré-avancent
                 G.regroupStep = 'FP_DECISION';
                 G.statusMessage =
                     "Peuples Libres : Choisissez d'avancer au site suivant ou de terminer le tour.";
@@ -202,18 +268,13 @@ export const commonMoves = {
             return;
         }
 
-        // Étape B : Les Peuples Libres valident en FP_DECISION (ils choisissent de FINIR le tour)
         if (G.regroupStep === 'FP_DECISION') {
-            // Le joueur FP décide de ne pas refaire un mouvement et valide sa fin de tour
             G.regroupStep = 'FP_REFILL';
-            // On continue directement vers le traitement de fin de tour ci-dessous
         }
 
-        // Étape C : Fin de tour et Switch de rôle (Quand FP_REFILL est atteint)
         if (G.regroupStep === 'FP_REFILL' || !G.regroupStep) {
             console.log('🚀 [FIN DE TOUR] Switch de rôle FP / Ombre');
 
-            // Nettoyage de fin de tour : défausse des séides en jeu
             const shadowId = G.fpPlayerId === '0' ? '1' : '0';
             const shadowPlayer = G.players[shadowId];
 
@@ -231,15 +292,11 @@ export const commonMoves = {
             G.activeSkirmishId = undefined;
             G.regroupStep = undefined;
 
-            // 🔄 SWITCH DE RÔLE FP
             const nextFpPlayerId = G.fpPlayerId === '0' ? '1' : '0';
             G.fpPlayerId = nextFpPlayerId;
 
             G.statusMessage = `Nouveau tour ! Le joueur ${nextFpPlayerId} devient les Peuples Libres.`;
 
-            // 🟢 Séquence d'événements boardgame.io sans conflit :
-            // 1. Terminer le tour en désignant le nouveau joueur
-            // 2. Basculer la phase vers fellowship
             events?.endTurn?.({ next: nextFpPlayerId });
             events?.setPhase?.('fellowship');
         }
@@ -283,7 +340,7 @@ export const commonMoves = {
         if (targetPhase === 'regroup') {
             G.regroupStep = 'SHADOW_REFILL';
             if (!G.movesThisTurn) {
-                G.movesThisTurn = 1; // Simule au moins 1 déplacement fait si on saute en Regroup
+                G.movesThisTurn = 1;
             }
         } else {
             G.regroupStep = undefined;
@@ -497,7 +554,6 @@ export const commonMoves = {
         const fpId = G.fpPlayerId || '0';
         const shadowId = fpId === '0' ? '1' : '0';
 
-        // 🔒 RESTRICTION DES PHASES ET DES JOUEURS
         if (movedAttachment.kind === 'SHADOW') {
             if (ctx.phase !== 'shadow' || playerID !== shadowId) {
                 return 'INVALID_MOVE';

@@ -4,6 +4,7 @@ import type { BoardProps } from 'boardgame.io/react';
 import * as S from './styles';
 import { Card } from '../Card';
 import { useDrag } from '../../../../contexts/DragContext';
+import { useFaction } from '../../../../contexts/FactionContext'; // 🟢 Import du contexte
 import { BoardCharacterStack } from '../BoardCharacterStack';
 import {
     canDropInSupportArea,
@@ -23,7 +24,10 @@ interface PlayerAreaProps {
     supportArea: CardState[];
     isOpponent?: boolean;
     moves: BoardProps<GameState>['moves'] & {
-        reorderFellowship?: (data: { fromIndex: number; toIndex: number }) => void;
+        reorderFellowship?: (data: {
+            fromIndex: number;
+            toIndex: number;
+        }) => void;
         selectSkirmish?: (id: string) => void;
     };
     skirmishes?: SkirmishEntry[];
@@ -35,7 +39,7 @@ interface PlayerAreaProps {
 
 export const PlayerArea: React.FC<PlayerAreaProps> = ({
     playerId,
-    deckCount: _deckCount, // 🟢 Préfixé par _ pour indiquer l'intention de le garder pour plus tard
+    deckCount: _deckCount,
     fellowshipArea,
     supportArea,
     isOpponent = false,
@@ -46,7 +50,10 @@ export const PlayerArea: React.FC<PlayerAreaProps> = ({
     activeSkirmishId,
     G,
 }) => {
-    const isFreePeoplesPlayer = playerId === '0';
+    // 🟢 Vraie détection de rôle dynamique
+    const { fpPlayerId } = useFaction();
+    const isFreePeoplesPlayer = playerId === (fpPlayerId ?? '0');
+
     const { activeTargetId, registerTarget, startDrag, dragged } = useDrag();
 
     const cardSubtype = (dragged?.card as CardState)?.type as
@@ -54,46 +61,49 @@ export const PlayerArea: React.FC<PlayerAreaProps> = ({
         | undefined;
 
     useEffect(() => {
-    const handleReorderDrop = (e: Event) => {
-        if (isOpponent) return;
+        const handleReorderDrop = (e: Event) => {
+            if (isOpponent) return;
 
-        const customEvent = e as CustomEvent;
-        const { draggedCard, targetId } = customEvent.detail || {};
+            const customEvent = e as CustomEvent;
+            const { draggedCard, targetId } = customEvent.detail || {};
 
-        if (!targetId || !draggedCard) return;
-        const { index, origin } = draggedCard;
+            if (!targetId || !draggedCard) return;
+            const { index, origin } = draggedCard;
 
-        if (origin === 'BOARD') {
-            const currentList = fellowshipArea || [];
-            
-            // 🟢 Déclaration sans valeur initiale non consommée
-            let targetIndex: number;
+            if (origin === 'BOARD') {
+                const currentList = fellowshipArea || [];
+                let targetIndex: number;
 
-            if (targetId !== 'fellowshipArea') {
-                targetIndex = currentList.findIndex(
-                    (c) =>
-                        c &&
-                        (c.id === targetId ||
-                            (c as { card?: { id: string } }).card?.id === targetId)
-                );
-            } else {
-                targetIndex = currentList.length - 1;
+                if (targetId !== 'fellowshipArea') {
+                    targetIndex = currentList.findIndex(
+                        (c) =>
+                            c &&
+                            (c.id === targetId ||
+                                (c as { card?: { id: string } }).card?.id ===
+                                    targetId)
+                    );
+                } else {
+                    targetIndex = currentList.length - 1;
+                }
+
+                if (index === undefined || targetIndex === -1) {
+                    return;
+                }
+
+                moves.reorderFellowship?.({
+                    fromIndex: index,
+                    toIndex: targetIndex,
+                });
             }
+        };
 
-            if (index === undefined || targetIndex === -1) {
-                return;
-            }
-
-            moves.reorderFellowship?.({ fromIndex: index, toIndex: targetIndex });
-        }
-    };
-
-    window.addEventListener('card-dropped', handleReorderDrop);
-    return () =>
-        window.removeEventListener('card-dropped', handleReorderDrop);
-}, [isOpponent, moves, fellowshipArea]);
+        window.addEventListener('card-dropped', handleReorderDrop);
+        return () =>
+            window.removeEventListener('card-dropped', handleReorderDrop);
+    }, [isOpponent, moves, fellowshipArea]);
 
     const renderFellowship = () => {
+        // 🟢 C'est le Joueur Peuples Libres (isFreePeoplesPlayer) qui possède et affiche la Fellowship active !
         if (isFreePeoplesPlayer) {
             const isFellowshipTargeted =
                 !isOpponent &&
@@ -111,8 +121,12 @@ export const PlayerArea: React.FC<PlayerAreaProps> = ({
                     $borderColor="#3498db"
                     $isTargeted={isFellowshipTargeted}
                     ref={(el) => {
-                        // 🟢 Callback de ref safe sans retour de valeur
-                        if (!isOpponent) {
+                        if (!isOpponent && el) {
+                            console.log(
+                                '🎯 [PlayerArea] Ref enregistré pour :',
+                                'fellowshipArea',
+                                el
+                            );
                             registerTarget('fellowshipArea', el);
                         }
                     }}
@@ -130,7 +144,6 @@ export const PlayerArea: React.FC<PlayerAreaProps> = ({
                                     (m) => skirmish?.minionIds?.includes(m.id)
                                 );
 
-                                // ID du combat (si non présent sur skirmish, fallback sur l'ID généré)
                                 const skirmishId =
                                     skirmish?.id || `skirmish_${companion.id}`;
 
@@ -150,9 +163,7 @@ export const PlayerArea: React.FC<PlayerAreaProps> = ({
                                             activeSkirmishId === skirmishId
                                         }
                                         onSelectSkirmish={(id) => {
-                                            // 🛑 Bloque la bascule de sélection si un combat est verrouillé
                                             if (isCombatLocked) return;
-
                                             moves.selectSkirmish?.(id);
                                         }}
                                         onStartDrag={(e) => {
@@ -176,6 +187,7 @@ export const PlayerArea: React.FC<PlayerAreaProps> = ({
             );
         }
 
+        // Pour le joueur Ombre (!isFreePeoplesPlayer), la Fellowship est masquée / réduite
         return <S.FellowshipCollapsed />;
     };
 
@@ -192,11 +204,11 @@ export const PlayerArea: React.FC<PlayerAreaProps> = ({
                 $isOpponent={isOpponent}
                 $isTargeted={isSupportTargeted}
                 ref={(el) => {
-                    // 🟢 Callback de ref safe sans retour de valeur
-                    if (!isOpponent) {
+                    if (!isOpponent && el) {
                         registerTarget('supportArea', el);
                     }
                 }}
+                
             >
                 <S.ZoneTitle color="#f39c12">
                     🎒 Aire de Soutien (Support Area)

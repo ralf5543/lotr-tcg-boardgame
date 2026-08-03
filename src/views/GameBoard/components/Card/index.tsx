@@ -56,7 +56,10 @@ export const Card: React.FC<CardProps> = ({
     const { startDrag } = useDrag();
 
     const handleDragStart = (e: React.DragEvent) => {
-        if (index === undefined) return;
+        if (!isDraggable || isPlayable === false || index === undefined) {
+            e.preventDefault();
+            return;
+        }
         const dragPayload = {
             cardIndex: index,
             cardId: card.id,
@@ -83,7 +86,7 @@ export const Card: React.FC<CardProps> = ({
         .join(', ');
 
     const handlePointerDown = (e: React.PointerEvent) => {
-        if (!isDraggable || index === undefined) return;
+        if (!isDraggable || isPlayable === false || index === undefined) return;
         e.preventDefault();
         startDrag(card, index, e);
         setHoveredCard(null);

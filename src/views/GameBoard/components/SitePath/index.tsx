@@ -48,9 +48,6 @@ export const SitePath: React.FC<SitePathProps> = ({
 
 
                 if (siteId && onPlaySite) {
-                    console.log(
-                        `🚀 [SITEPATH] Executing onPlaySite(${siteId}, ${nextEmptyIndex})`
-                    );
                     onPlaySite(siteId, nextEmptyIndex);
                 } else {
                     console.warn(

@@ -73,9 +73,8 @@ export const ZoneTitle = styled.span<{ color?: string }>`
 
 export const CardRow = styled.div`
     display: flex;
-    container-type: inline-size;
     gap: 60px;
-    min-height: 60px;
+    min-height: 120px;
     padding-inline-start: 40px;
 `;
 

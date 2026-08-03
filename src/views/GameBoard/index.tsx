@@ -15,7 +15,6 @@ import { useHoverCard } from '../../contexts/HoverCardContext';
 import { Card } from './components/Card';
 import { SiteCard } from './components/SiteCard';
 import { DragProvider } from '../../contexts/DragProvider';
-import { useFaction } from '../../contexts/FactionContext';
 import { TwilightPool } from './components/TwilightPool';
 import { Dock } from './components/Dock';
 import { SitesPicker } from './components/SitePicker';
@@ -27,23 +26,25 @@ import {
 } from '../../utils/routingDragNDrop';
 import { PhaseBanner } from './components/PhaseBanner';
 import { DevPanel, type DevMoves } from '../../utils/DevPanel';
+import { useFaction } from '../../contexts/FactionContext';
 
 export interface GameBoardProps extends BoardProps<GameState> {
-    moves: BoardProps<GameState>['moves'] & DevMoves & {
-        confirmEndPhase?: () => void;
-        finishSkirmishResolution?: () => void;
-        playCard: (index: number) => void;
-        playShadowCard: (index: number) => void;
-        attachCard: (index: number, targetId: string) => void;
-        transferAttachment?: (data: {
-            attachmentId: string;
-            fromCharacterId: string;
-            toCharacterId: string;
-        }) => void;
-        assignMinion: (minionId: string, targetId: string) => void;
-        playSite: (siteId: string, targetIndex: number) => void;
-        drawCard: () => void;
-    };
+    moves: BoardProps<GameState>['moves'] &
+        DevMoves & {
+            confirmEndPhase?: () => void;
+            finishSkirmishResolution?: () => void;
+            playCard: (index: number) => void;
+            playShadowCard: (index: number) => void;
+            attachCard: (index: number, targetId: string) => void;
+            transferAttachment?: (data: {
+                attachmentId: string;
+                fromCharacterId: string;
+                toCharacterId: string;
+            }) => void;
+            assignMinion: (minionId: string, targetId: string) => void;
+            playSite: (siteId: string, targetIndex: number) => void;
+            drawCard: () => void;
+        };
 }
 
 export const GameBoard: React.FC<GameBoardProps> = ({
@@ -58,14 +59,6 @@ export const GameBoard: React.FC<GameBoardProps> = ({
     const fpPlayerId = G.fpPlayerId || '0';
     const isLocalFP = myId === fpPlayerId;
     const currentFaction = isLocalFP ? 'FREE_PEOPLES' : 'SHADOW';
-
-    // 🟢 Synchroniser le FactionContext global avec le fpPlayerId dynamique du jeu
-    const { setFpPlayerId } = useFaction();
-    useEffect(() => {
-        if (setFpPlayerId && G.fpPlayerId) {
-            setFpPlayerId(G.fpPlayerId);
-        }
-    }, [G.fpPlayerId, setFpPlayerId]);
 
     const me = G.players[myId] || {
         deck: [],
@@ -126,6 +119,7 @@ export const GameBoard: React.FC<GameBoardProps> = ({
     useEffect(() => {
         const handleGlobalCardDrop = (e: Event) => {
             const customEvent = e as CustomEvent;
+
             const { draggedCard, targetId } = customEvent.detail || {};
 
             if (!targetId || !draggedCard) return;
@@ -218,6 +212,13 @@ export const GameBoard: React.FC<GameBoardProps> = ({
             window.removeEventListener('card-dropped', handleGlobalCardDrop);
     }, [moves, ctx.phase]);
 
+    const { setFpPlayerId } = useFaction();
+    useEffect(() => {
+        if (setFpPlayerId && G.fpPlayerId !== undefined) {
+            setFpPlayerId(G.fpPlayerId);
+        }
+    }, [G.fpPlayerId, setFpPlayerId]);
+
     return (
         <DragProvider>
             <S.BoardContainer $faction={currentFaction}>
@@ -241,7 +242,9 @@ export const GameBoard: React.FC<GameBoardProps> = ({
                 <DevPanel
                     G={G}
                     ctx={ctx}
-                    moves={moves as React.ComponentProps<typeof DevPanel>['moves']}
+                    moves={
+                        moves as React.ComponentProps<typeof DevPanel>['moves']
+                    }
                 />
                 <GameControls
                     G={G}
@@ -316,6 +319,7 @@ export const GameBoard: React.FC<GameBoardProps> = ({
                             hand={me.hand || []}
                             deckCount={me.deck?.length || 0}
                             currentSiteIndex={currentSiteIndex}
+                            phase={ctx.phase}
                             onDrawCard={() => {
                                 if (moves.drawCard) moves.drawCard();
                             }}

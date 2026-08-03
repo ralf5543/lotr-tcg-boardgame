@@ -401,14 +401,6 @@ export const LotrGame: Game<GameState> = {
 
             onBegin: ({ G, ctx }: LotrPhaseContext) => {
                 const fpId = G.fpPlayerId || '0';
-                console.log('--- [DEBUG regroup.onBegin] ---');
-                console.log(
-                    'movesThisTurn à l’entrée en regroup:',
-                    G.movesThisTurn
-                );
-                console.log('regroupStep actuel:', G.regroupStep);
-                console.log('currentPlayer:', ctx.currentPlayer);
-
                 if ((G.movesThisTurn || 0) >= 2) {
                     G.regroupStep = 'SHADOW_REFILL';
                     G.statusMessage =
@@ -439,7 +431,6 @@ export const LotrGame: Game<GameState> = {
                     events,
                     playerID,
                 }: LotrMoveContext) => {
-                    console.log('--- [DEBUG moveNextSite EXECUTION] ---');
 
                     const fpId = G.fpPlayerId || '0';
 
@@ -449,9 +440,6 @@ export const LotrGame: Game<GameState> = {
                         (G.movesThisTurn || 0) >= 2 ||
                         G.regroupStep !== 'FP_DECISION'
                     ) {
-                        console.log(
-                            '❌ moveNextSite REJETÉ ! Conditions non remplies.'
-                        );
                         return 'INVALID_MOVE';
                     }
 
