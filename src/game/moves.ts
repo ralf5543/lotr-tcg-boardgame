@@ -32,7 +32,6 @@ export const getTargetPlayerId = (
 };
 
 export const advanceCompany = (G: GameState, ctx: Ctx) => {
-
     const fpId = G.fpPlayerId || '0';
     const fpPlayer = G.players[fpId];
     if (!fpPlayer) {
@@ -43,7 +42,7 @@ export const advanceCompany = (G: GameState, ctx: Ctx) => {
     const nextIndex = fpPlayer.currentSiteIndex + 1;
 
     if (nextIndex >= 9) {
-        console.warn('⚠️ [LOG] Index >= 9, impossible d\'avancer.');
+        console.warn("⚠️ [LOG] Index >= 9, impossible d'avancer.");
         return;
     }
 
@@ -54,14 +53,17 @@ export const advanceCompany = (G: GameState, ctx: Ctx) => {
 
     if (targetSite !== null) {
         const siteCost = Number(targetSite.twilightCost) || 0;
-        const companionsCount = fpPlayer.fellowshipArea ? fpPlayer.fellowshipArea.length : 0;
+        const companionsCount = fpPlayer.fellowshipArea
+            ? fpPlayer.fellowshipArea.length
+            : 0;
         const totalAdded = siteCost + companionsCount;
         G.twilightPool += totalAdded;
 
         G.statusMessage = `La compagnie avance au site ${nextIndex + 1} : ${targetSite.name}`;
     } else {
         G.awaitingSiteSelection = true;
-        G.statusMessage = "En attente du joueur de l'Ombre pour poser le prochain site...";
+        G.statusMessage =
+            "En attente du joueur de l'Ombre pour poser le prochain site...";
     }
 };
 
@@ -275,21 +277,22 @@ export const commonMoves = {
     },
 
     endFellowshipPhase: ({ G, ctx, events, playerID }: LotrMoveContext) => {
-    
-    const fpId = G.fpPlayerId || '0';
-    const actingPlayerId = playerID ?? ctx.currentPlayer ?? '0';
+        const fpId = G.fpPlayerId || '0';
+        const actingPlayerId = playerID ?? ctx.currentPlayer ?? '0';
 
-    if (actingPlayerId !== fpId) {
-        console.warn('❌ [LOG] Reject: Seul le joueur FP peut terminer Fellowship');
-        return 'INVALID_MOVE';
-    }
+        if (actingPlayerId !== fpId) {
+            console.warn(
+                '❌ [LOG] Reject: Seul le joueur FP peut terminer Fellowship'
+            );
+            return 'INVALID_MOVE';
+        }
 
-    advanceCompany(G, ctx);
+        advanceCompany(G, ctx);
 
-    if (!G.awaitingSiteSelection) {
-        events?.setPhase?.('shadow');
-    }
-},
+        if (!G.awaitingSiteSelection) {
+            events?.setPhase?.('shadow');
+        }
+    },
 
     endTurnChoice: ({ G }: LotrMoveContext) => {
         G.regroupStep = 'FP_REFILL';
@@ -567,44 +570,76 @@ export const commonMoves = {
         siteId: string,
         targetIndex: number
     ) => {
+        const fpId = G.fpPlayerId || '0';
+        const shadowId = fpId === '0' ? '1' : '0';
+
+        // 🔒 1. SÉCURITÉ STRICTE : On ne peut poser un site QUE si la compagnie attend un site
+        if (!G.awaitingSiteSelection) {
+            console.warn(
+                `❌ [playSite] Rejet : Impossible de poser un site hors de l'avancée de la compagnie.`
+            );
+            return 'INVALID_MOVE';
+        }
+
+        // 🔒 2. SEUL LE JOUEUR DE L'OMBRE pose le site sur le chemin
+        if (playerID !== shadowId) {
+            console.warn(
+                `❌ [playSite] Rejet : Seul le joueur de l'Ombre (${shadowId}) peut poser le prochain site.`
+            );
+            return 'INVALID_MOVE';
+        }
+
         const player = G.players[playerID];
         if (!player || !player.sitesDeck) return 'INVALID_MOVE';
 
+        // 🔒 3. VÉRIFICATION QUE LE SITE EST DANS LE DECK DE SITES DU JOUEUR
         const siteIndex = player.sitesDeck.findIndex((s) => s.id === siteId);
         if (siteIndex === -1) return 'INVALID_MOVE';
 
+        // 🔒 4. VÉRIFICATION DE L'EMPLACEMENT (Doit être le premier slot vide)
         const nextEmptyIndex = G.path.findIndex((slot) => slot === null);
         if (targetIndex !== nextEmptyIndex) return 'INVALID_MOVE';
 
-        const [playedSite] = player.sitesDeck.splice(siteIndex, 1);
+        const playedSite = player.sitesDeck[siteIndex];
+
+        // 🔒 5. VÉRIFICATION DU NUMÉRO DE SITE (Site 1 sur case 1, Site 2 sur case 2...)
+        if (
+            playedSite.siteNumber !== undefined &&
+            playedSite.siteNumber !== targetIndex + 1
+        ) {
+            console.warn(
+                `❌ [playSite] Le site ${playedSite.name} (numéro ${playedSite.siteNumber}) ne correspond pas à l'emplacement ${targetIndex + 1}.`
+            );
+            return 'INVALID_MOVE';
+        }
+
+        // --- APPLICATION DU MOVE ---
+        player.sitesDeck.splice(siteIndex, 1);
         playedSite.ownerId = playerID;
         G.path[targetIndex] = playedSite;
 
-        if (G.awaitingSiteSelection) {
-            G.awaitingSiteSelection = false;
+        // Résolution de l'avancée
+        G.awaitingSiteSelection = false;
+        const fpPlayer = G.players[fpId];
 
-            const fpId = G.fpPlayerId || '0';
-            const fpPlayer = G.players[fpId];
+        if (fpPlayer) {
+            fpPlayer.currentSiteIndex = targetIndex;
+        }
 
-            if (fpPlayer) {
-                fpPlayer.currentSiteIndex = targetIndex;
-            }
+        const siteCost = Number(playedSite.twilightCost) || 0;
+        const companionsCount = fpPlayer?.fellowshipArea
+            ? fpPlayer.fellowshipArea.length
+            : 0;
+        G.twilightPool += siteCost + companionsCount;
 
-            const siteCost = Number(playedSite.twilightCost) || 0;
-            const companionsCount = fpPlayer?.fellowshipArea
-                ? fpPlayer.fellowshipArea.length
-                : 0;
-            G.twilightPool += siteCost + companionsCount;
+        G.statusMessage = `Nouveau site révélé par l'Ombre ! La compagnie avance en ${playedSite.name} (+${siteCost + companionsCount} Crépuscule).`;
 
-            G.statusMessage = `Nouveau site révélé ! La compagnie avance en ${playedSite.name}. (+${siteCost + companionsCount} Crépuscule)`;
-
-            if (ctx.phase === 'regroup') {
-                G.skirmishes = [];
-                G.activeSkirmishId = undefined;
-                events?.setPhase?.('shadow');
-            } else {
-                G.pendingPhaseEnd = true;
-            }
+        if (ctx.phase === 'regroup') {
+            G.skirmishes = [];
+            G.activeSkirmishId = undefined;
+            events?.setPhase?.('shadow');
+        } else {
+            G.pendingPhaseEnd = true;
         }
     },
 

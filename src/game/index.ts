@@ -73,7 +73,7 @@ export const LotrGame: Game<GameState> = {
         assignmentStep: 'FP_ASSIGN',
         path: [
             DUMMY_SITES_PLAYER_0[0],
-            DUMMY_SITES_PLAYER_0[1],
+            null,
             null,
             null,
             null,

@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import { CultureIcon } from './styles';
+import { CultureIcon, TwilightIcon } from './styles';
 
 const TextWrapper = styled.span`
     white-space: pre-line; /* Rend les \n fonctionnels automatiquement */
@@ -15,9 +15,8 @@ interface FormattedTextProps {
 }
 
 export const FormattedText: React.FC<FormattedTextProps> = ({ text }) => {
-    // 1. On découpe la chaîne globale selon les tokens {CULTURE_...} et le **gras**
-    // La Regex capture à la fois {CULTURE_XXX} et les blocs **chaine**
-    const tokens = text.split(/(\{CULTURE_[A-Z_]+\}|\*\*[^*]+\*\*)/g);
+    // La Regex capture {CULTURE_...}, {TWILIGHT_...} (y compris {TWILIGHT_x}) et le **gras**
+    const tokens = text.split(/(\{CULTURE_[^}]+\}|\{TWILIGHT_[^}]+\}|\*\*[^*]+\*\*)/g);
 
     return (
         <TextWrapper>
@@ -28,13 +27,19 @@ export const FormattedText: React.FC<FormattedTextProps> = ({ text }) => {
                     return <CultureIcon key={index} $culture={cultureKey} title={cultureKey} />;
                 }
 
-                // B. CAS : TEXTE EN GRAS (**mot**)
+                // B. CAS : TOKEN DE CRÉPUSCULE / TWILIGHT
+                if (token.startsWith('{TWILIGHT_') && token.endsWith('}')) {
+                    const twilightKey = token.replace('{TWILIGHT_', '').replace('}', '');
+                    return <TwilightIcon key={index} $amount={twilightKey} title={twilightKey} />;
+                }
+
+                // C. CAS : TEXTE EN GRAS (**mot**)
                 if (token.startsWith('**') && token.endsWith('**')) {
                     const cleanText = token.slice(2, -2);
                     return <BoldText key={index}>{cleanText}</BoldText>;
                 }
 
-                // C. CAS : TEXTE NORMAL (avec \n géré par white-space: pre-line)
+                // D. CAS : TEXTE NORMAL
                 return <span key={index}>{token}</span>;
             })}
         </TextWrapper>

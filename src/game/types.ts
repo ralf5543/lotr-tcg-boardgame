@@ -161,6 +161,7 @@ export interface PlayerState {
 }
 
 export interface SiteCardState {
+    siteNumber?: number;
     id: string;
     name: string;
     twilightCost: number;
