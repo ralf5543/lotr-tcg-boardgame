@@ -36,9 +36,6 @@ export const SiteCard: React.FC<SiteCardProps> = ({
     const hasP0 = Boolean(playersHere?.p0);
     const hasP1 = Boolean(playersHere?.p1);
 
-    console.log('site.keywords : ', site.keywords);
-    console.log('translatedKeywords : ', translatedKeywords);
-
     return (
         <S.Container $size={size} className={className} style={style}>
             {site.keywords && site.keywords.length > 0 && size === 'sm' && (

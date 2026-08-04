@@ -10,6 +10,7 @@ import { useDrag } from '../../../../contexts/DragContext';
 import {
     getEffectiveVitality,
     getEffectiveStrength,
+    getEffectiveResistance,
 } from '../../../../utils/cardStats';
 
 interface CardProps {
@@ -24,6 +25,7 @@ interface CardProps {
     isRingBearer?: boolean;
     isWounded?: boolean;
     isOpponent?: boolean;
+    burdens?: number;
 }
 
 export const Card: React.FC<CardProps> = ({
@@ -36,6 +38,7 @@ export const Card: React.FC<CardProps> = ({
     currentSiteIndex,
     isWounded = false,
     isOpponent = false,
+    burdens = 0,
 }) => {
     const isShadow = card.kind === 'SHADOW';
     const { setHoveredCard } = useHoverCard();
@@ -103,6 +106,7 @@ export const Card: React.FC<CardProps> = ({
 
     const effectiveVitality = getEffectiveVitality(card);
     const effectiveStrength = getEffectiveStrength(card);
+    const effectiveResistance = getEffectiveResistance(card, burdens);
 
     // 🟢 État permanent : est-ce que la carte a des blessures ?
     const hasWounds = (card.wounds || 0) > 0;
@@ -136,7 +140,7 @@ export const Card: React.FC<CardProps> = ({
                     </S.KeywordsContainer>
                 )}
 
-            {hasWounds && (
+            {hasWounds && size === 'sm' && (
                 <S.WoundsOverlay>
                     {Array.from({ length: card.wounds! }).map((_, i) => (
                         <S.WoundToken
@@ -206,18 +210,24 @@ export const Card: React.FC<CardProps> = ({
 
             {card.strength !== undefined && (
                 <S.StrengthBadge>
-                    {card.type === 'POSSESSION_CHARACTER' ||
-                    card.type === 'ARTIFACT_CHARACTER' ||
-                    card.type === 'CONDITION_CHARACTER'
-                        ? `${card.strength > 0 ? '+' : ''}${card.strength}`
-                        : effectiveStrength}
+                    {size !== 'sm' ? (
+                        card.strength
+                    ) : (
+                        <>
+                            {card.type === 'POSSESSION_CHARACTER' ||
+                            card.type === 'ARTIFACT_CHARACTER' ||
+                            card.type === 'CONDITION_CHARACTER'
+                                ? `${card.strength > 0 ? '+' : ''}${card.strength}`
+                                : effectiveStrength}
+                        </>
+                    )}
                 </S.StrengthBadge>
             )}
 
             {card.vitality !== undefined && (
                 <S.VitalityBadge>
                     {size !== 'sm' ? (
-                        card.strength
+                        card.vitality
                     ) : (
                         <>
                             {card.type === 'POSSESSION_CHARACTER' ||
@@ -241,16 +251,51 @@ export const Card: React.FC<CardProps> = ({
                     )}
                 </S.RoamingNumber>
             )}
-            {card.resistance !== undefined &&
-                !(card.signet && size === 'lg') && (
-                    /* 🟢 Conversion explicite en booléen strict avec Boolean() */
+
+            {card.resistance !== undefined && !card.signet && size !== 'sm' && (
+                /* Conversion explicite en booléen strict avec Boolean() */
+                <S.CardResistance $isRingBearer={Boolean(isRingBearer)}>
+                    {card.resistance}
+                </S.CardResistance>
+            )}
+
+            {card.resistance !== undefined && size === 'sm' && (
+                <S.ResistanceWrapper>
                     <S.CardResistance $isRingBearer={Boolean(isRingBearer)}>
-                        {card.resistance}
+                        {card.type === 'POSSESSION_CHARACTER' ||
+                        card.type === 'ARTIFACT_CHARACTER' ||
+                        card.type === 'CONDITION_CHARACTER'
+                            ? `${card.resistance > 0 ? '+' : ''}${card.resistance}`
+                            : effectiveResistance}
                     </S.CardResistance>
-                )}
+
+                    {/* 🟢 Affichage orbital des jetons de Fardeau sur le Porteur de l'Anneau */}
+                    {isRingBearer && burdens > 0 && (
+                        <S.BurdensOrbitalContainer>
+                            {Array.from({ length: burdens }).map((_, i) => {
+                                const angle = (360 / burdens) * i;
+                                return (
+                                    <S.OrbitalBurdenToken
+                                        key={i}
+                                        $angle={angle}
+                                        $radius={22}
+                                        $size={32}
+                                        src="/interface/tokens/twilight_token.webp"
+                                        alt="Fardeau"
+                                        title={`${burdens} Fardeau(x)`}
+                                    />
+                                    
+                                );
+                            })}
+                        </S.BurdensOrbitalContainer>
+                    )}
+                </S.ResistanceWrapper>
+            )}
+
             {card.signet !== undefined && (
                 <S.CardSignet $signet={card.signet} />
             )}
+
             {card.subtype !== undefined && size === 'sm' && (
                 <S.AttachmentSubtype
                     src={`/interface/pictos/${card.subtype}.webp`}

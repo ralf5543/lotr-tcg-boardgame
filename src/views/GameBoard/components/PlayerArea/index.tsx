@@ -151,6 +151,7 @@ export const PlayerArea: React.FC<PlayerAreaProps> = ({
                                         assignedMinions={assignedMinions}
                                         isSkirmishPhase={isSkirmishPhase}
                                         skirmishId={skirmishId}
+                                        burdens={G?.burdens || 0}
                                         lastWoundedCardIds={
                                             G?.lastWoundedCardIds
                                         }
@@ -226,6 +227,7 @@ export const PlayerArea: React.FC<PlayerAreaProps> = ({
                                     card.id
                                 )}
                                 isOpponent={isOpponent}
+                                burdens={G.burdens}
                             />
                         </S.CharacterStack>
                     ))}

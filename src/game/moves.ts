@@ -452,7 +452,29 @@ export const commonMoves = {
 
         if (presetType === 'ARCHERY_TEST' && fpPlayer) {
             G.twilightPool = 8;
+            G.burdens = 3;
             fpPlayer.fellowshipArea = [
+                {
+                    id: '2c102',
+                    title: 'Frodon',
+                    subtitle: 'Aventurier Malgré Lui',
+                    imageUrl: '/cards_visuals/lotr2c102.jpg',
+                    kind: 'FREE_PEOPLES',
+                    type: 'COMPANION',
+                    race: 'HOBBIT',
+                    keywords: ['RING-BEARER'],
+                    resistance: 10,
+                    signet: 'ARAGORN',
+                    twilightCost: 0,
+                    strength: 3,
+                    vitality: 4,
+                    culture: 'SHIRE',
+                    isUnique: true,
+                    gameText:
+                        'Le coût de chaque artefact, possession et récit {CULTURE_SHIRE} joué sur Frodon est de -1.',
+                    loreText:
+                        "Je ne suis pas fait pour les quâtes périlleuses. Je voudrais bien n'avoir jamais vu l'Anneau! Pourquoi m'est-il venu? Pourquoi ai-je été choisi?",
+                },
                 {
                     id: '1r50',
                     title: 'Legolas',

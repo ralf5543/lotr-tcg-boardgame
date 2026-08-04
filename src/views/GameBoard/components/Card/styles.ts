@@ -272,9 +272,8 @@ export const CardContainer = styled.div<CardContainerProps>`
 
             ${CardResistance} {
                 width: 39px;
-                inset-block-start: 116px;
-                inset-inline-start: 50%;
-                transform: translateX(-50%);
+                position: static;
+                transform: none;
                 font-size: 20px;
                 background-position: 3px 2px;
             }
@@ -305,6 +304,7 @@ export const CardContainer = styled.div<CardContainerProps>`
                 ${TextContainer},
                 ${CardTypes},
                 ${CardSignet},
+                ${ResistanceWrapper},
                 ${CardResistance},
                 ${RoamingNumber},
                 ${KeywordsContainer},
@@ -721,6 +721,16 @@ export const CardSignet = styled.span<{ $signet: string }>`
     z-index: 1;
 `;
 
+export const ResistanceWrapper = styled.div`
+    position: absolute;
+    z-index: 1;
+    inset-block-start: 116px;
+    inset-inline-start: 50%;
+    transform: translateX(-50%);
+    font-size: 20px;
+    background-position: 3px 2px;
+`;
+
 export const CardResistance = styled.span<{ $isRingBearer: boolean }>`
     background-image: ${(props) =>
         props.$isRingBearer
@@ -742,6 +752,41 @@ export const CardResistance = styled.span<{ $isRingBearer: boolean }>`
     font-size: 9px;
     font-family: LOTRIcons;
     z-index: 1;
+`;
+
+export const BurdensOrbitalContainer = styled.div`
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 0;
+    height: 0;
+    pointer-events: none;
+    z-index: 2;
+    margin-inline-start: 1px;
+`;
+
+interface OrbitalTokenProps {
+    $angle: number;
+    $radius: number;
+    $size?: number;
+}
+
+export const OrbitalBurdenToken = styled.img<OrbitalTokenProps>`
+    position: absolute;
+    /* 🟢 Utilisation de la prop $size avec 14px par défaut */
+    width: ${({ $size = 14 }) => $size}px;
+    height: ${({ $size = 14 }) => $size}px;
+
+    /* 🟢 Décalage automatique du centre exact du jeton */
+    margin-top: calc(-${({ $size = 14 }) => $size}px / 2);
+    margin-left: calc(-${({ $size = 14 }) => $size}px / 2);
+
+    transform: rotate(${({ $angle }) => $angle}deg)
+        translateY(-${({ $radius }) => $radius}px)
+        rotate(-${({ $angle }) => $angle}deg);
+
+    transition: transform 0.3s ease-out;
+    filter: drop-shadow(0px 0px 4px rgba(255, 0, 0, 0.8));
 `;
 
 export const KeywordsContainer = styled.div`

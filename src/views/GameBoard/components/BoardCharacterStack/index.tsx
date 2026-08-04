@@ -20,6 +20,7 @@ interface BoardCharacterStackProps {
     isSelectedSkirmish?: boolean;
     isSelectionAllowed?: boolean;
     lastWoundedCardIds?: string[];
+    burdens: number;
 }
 
 export const BoardCharacterStack: React.FC<BoardCharacterStackProps> = ({
@@ -36,6 +37,7 @@ export const BoardCharacterStack: React.FC<BoardCharacterStackProps> = ({
     isSelectedSkirmish = false,
     isSelectionAllowed = true,
     lastWoundedCardIds = [],
+    burdens = 0,
 }) => {
     const { registerTarget, activeTargetId, dragged, startDrag } = useDrag();
 
@@ -148,6 +150,7 @@ export const BoardCharacterStack: React.FC<BoardCharacterStackProps> = ({
                         currentSiteIndex={currentSiteIndex}
                         isWounded={lastWoundedCardIds.includes(character.id)}
                         isOpponent={isOpponent}
+                        burdens={burdens}
                     />
                 </S.CardDragTarget>
 

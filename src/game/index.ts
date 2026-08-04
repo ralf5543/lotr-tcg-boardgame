@@ -97,6 +97,7 @@ export const LotrGame: Game<GameState> = {
                 deadPile: [],
             },
         },
+        burdens: 0,
     }),
 
     events: {

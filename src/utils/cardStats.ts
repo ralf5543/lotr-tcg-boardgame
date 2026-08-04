@@ -37,3 +37,27 @@ export const getEffectiveStrength = (card: CardState): number => {
 
     return strength;
 };
+
+/**
+ * Calcule la résistance restante
+ */
+export const getEffectiveResistance = (card: CardState, burdens: number = 0): number => {
+    let resistance = Number(card.resistance) || 0;
+
+    // 1. Ajout des bonus des attachements (ex: Anneau, objets, etc.)
+    if (card.attachments) {
+        card.attachments.forEach((att) => {
+            if (att.resistance) {
+                resistance += Number(att.resistance);
+            }
+        });
+    }
+
+    // 2. Soustraction des fardeaux globaux pour les cartes FP
+    if (card.kind === 'FREE_PEOPLES') {
+        resistance -= burdens;
+    }
+
+    // La résistance ne descend pas en dessous de 0
+    return Math.max(0, resistance);
+};
