@@ -164,7 +164,7 @@ export interface SiteCardState {
     id: string;
     name: string;
     twilightCost: number;
-    text: string;
+    gameText: string;
     ownerId: string;
     imageUrl?: string;
     keywords?: CardKeyword[];

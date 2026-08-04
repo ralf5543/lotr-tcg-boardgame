@@ -4,6 +4,7 @@ import * as S from './styles';
 import { TRANSLATIONS } from '../../../../game/translations';
 import { TokenPlayer } from '../TokenPlayer';
 import { KeywordBadge } from '../KeywordBadge';
+import { FormattedText } from '../../../../utils/FormattedText';
 
 export interface SiteCardProps {
     site: SiteCardState;
@@ -25,7 +26,7 @@ export const SiteCard: React.FC<SiteCardProps> = ({
     style,
 }) => {
     const translatedKeywords = site.keywords
-        ?.map((kw) => TRANSLATIONS.keyword[kw] || kw)
+        ?.map((kw) => TRANSLATIONS.keyword[kw].label || kw)
         .join(', ');
 
     // Helpers pour extraire facilement les infos p0 / p1
@@ -34,6 +35,9 @@ export const SiteCard: React.FC<SiteCardProps> = ({
 
     const hasP0 = Boolean(playersHere?.p0);
     const hasP1 = Boolean(playersHere?.p1);
+
+    console.log('site.keywords : ', site.keywords);
+    console.log('translatedKeywords : ', translatedKeywords);
 
     return (
         <S.Container $size={size} className={className} style={style}>
@@ -58,7 +62,7 @@ export const SiteCard: React.FC<SiteCardProps> = ({
                     {translatedKeywords && (
                         <strong>{translatedKeywords}.&nbsp;</strong>
                     )}
-                    {site.text}
+                    <FormattedText text={site.gameText} />
                 </S.Text>
             )}
             {size === 'sm' && (
