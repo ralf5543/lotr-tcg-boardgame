@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import type { CardState } from '../../../../game/types';
 import { Card } from '../Card';
 import * as S from './styles';
@@ -33,10 +33,8 @@ export const Hand: React.FC<HandProps> = ({
     const isFreePeoplesPlayer = effectivePlayerId === (fpPlayerId ?? '0');
     const shadowPlayerId = (fpPlayerId ?? '0') === '0' ? '1' : '0';
 
-    // 🟢 Condition de défausse basée exactement sur ton moves.ts
     const isShadowRefill =
         regroupStep === 'SHADOW_REFILL' && effectivePlayerId === shadowPlayerId;
-
     const isFpRefill = regroupStep === 'FP_REFILL' && isFreePeoplesPlayer;
 
     const isDiscardPhase =
@@ -61,17 +59,20 @@ export const Hand: React.FC<HandProps> = ({
     const { startDrag, dragged } = useDrag();
     const isDragging = !!dragged;
 
-    console.log('--- DEBUG HAND DISCARD ---', {
-    phase,
-    regroupStep,
-    myPlayerId,
-    effectivePlayerId,
-    shadowPlayerId,
-    fpPlayerId,
-    isShadowRefill,
-    isFpRefill,
-    isDiscardPhase
-});
+    // 🟢 État pour suivre l'animation de défausse
+    const [discardingIndex, setDiscardingIndex] = useState<number | null>(null);
+
+    const handleDiscardClick = (idx: number) => {
+        if (discardingIndex !== null || !isDiscardPhase) return;
+
+        setDiscardingIndex(idx);
+
+        // ⏱️ 450ms pour laisser le temps à l'animation CSS de jouer
+        setTimeout(() => {
+            onDiscardCard?.(idx);
+            setDiscardingIndex(null);
+        }, 450);
+    };
 
     return (
         <S.FixedHandContainer $isDragging={isDragging}>
@@ -93,6 +94,7 @@ export const Hand: React.FC<HandProps> = ({
                           );
 
                           const isBeingDragged = dragged?.card.id === card.id;
+                          const isDiscarding = discardingIndex === idx;
 
                           return (
                               <S.CardWrapper
@@ -101,6 +103,7 @@ export const Hand: React.FC<HandProps> = ({
                                   $translateY={translateY}
                                   $zIndex={zIndex}
                                   $isDiscardPhase={isDiscardPhase}
+                                  $isDiscarding={isDiscarding}
                                   data-draggable={
                                       !isDiscardPhase && isMatchingPlayerRole
                                           ? 'true'
@@ -108,37 +111,33 @@ export const Hand: React.FC<HandProps> = ({
                                   }
                                   style={{
                                       width: isBeingDragged ? '0px' : '',
-                                      opacity: isBeingDragged ? 0 : 1,
-                                      pointerEvents: isBeingDragged
-                                          ? 'none'
-                                          : 'auto',
-                                      transition:
-                                          'all 0.3s cubic-bezier(0.2, 0.8, 0.2, 1)',
+                                      opacity: isBeingDragged ? 0 : undefined,
+                                      pointerEvents:
+                                          isBeingDragged || discardingIndex !== null
+                                              ? 'none'
+                                              : 'auto',
                                   }}
                                   onClick={(e) => {
-        console.log('👉 CLIC DETECTE SUR CARTE', idx, { isDiscardPhase });
-        if (isDiscardPhase) {
-            e.stopPropagation();
-            if (onDiscardCard) {
-                console.log('🚀 APPEL DE ON DISCARD CARD', idx);
-                onDiscardCard(idx);
-            } else {
-                console.error('❌ prop onDiscardCard est UNDEFINED !');
-            }
-        }
-    }}
+                                      if (isDiscardPhase) {
+                                          e.stopPropagation();
+                                          handleDiscardClick(idx);
+                                      }
+                                  }}
                                   onPointerDown={(e) => {
-        // En phase de défausse, on bloque net le PointerDown pour empêcher le Drag
-        if (isDiscardPhase) {
-            e.stopPropagation();
-            return;
-        }
+                                      if (isDiscardPhase) {
+                                          e.stopPropagation();
+                                          return;
+                                      }
 
-        if (!isMatchingPlayerRole || e.button !== 0) return;
-        e.stopPropagation();
-        e.preventDefault();
-        startDrag(card, idx, e);
-    }}
+                                      if (
+                                          !isMatchingPlayerRole ||
+                                          e.button !== 0
+                                      )
+                                          return;
+                                      e.stopPropagation();
+                                      e.preventDefault();
+                                      startDrag(card, idx, e);
+                                  }}
                               >
                                   <Card
                                       card={card}
