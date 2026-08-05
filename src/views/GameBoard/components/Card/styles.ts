@@ -11,6 +11,7 @@ export interface CardContainerProps {
     $kind: string;
     $size?: 'sm' | 'md' | 'lg';
     $isRoaming?: boolean;
+    $isDiscardPhase?: boolean;
 }
 
 const isNotCharacter = (type?: string) =>

@@ -320,12 +320,14 @@ export const GameBoard: React.FC<GameBoardProps> = ({
                             deckCount={me.deck?.length || 0}
                             currentSiteIndex={currentSiteIndex}
                             phase={ctx.phase}
+                            regroupStep={G.regroupStep}
                             onDrawCard={() => {
                                 if (moves.drawCard) moves.drawCard();
                             }}
                             onPlayCard={(idx) => {
                                 if (moves.playCard) moves.playCard(idx);
                             }}
+                            onDiscardCard={(index) => moves.discardCardFromHand(index)}
                         />
                     }
                     sitesView={<SitesPicker sites={me.sitesDeck || []} />}

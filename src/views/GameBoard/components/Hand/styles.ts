@@ -1,4 +1,4 @@
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 
 export const FixedHandContainer = styled.div<{ $isDragging?: boolean }>`
     position: fixed;
@@ -21,25 +21,34 @@ export const CardWrapper = styled.div<{
     $translateY: number;
     $zIndex: number;
     $isRoaming?: boolean;
+    $isDiscardPhase?: boolean; // 🟢 Nouvelle prop
 }>`
     position: relative;
-    margin: 0 -15px; /* Marge négative pour forcer le chevauchement d'éventail */
+    margin: 0 -15px;
     transition:
         transform 0.25s cubic-bezier(0.25, 0.8, 0.25, 1),
-        z-index 0.1s ease;
+        z-index 0.1s ease,
+        box-shadow 0.2s ease;
     transform: rotate(${(props) => props.$angle}deg)
         translateY(${(props) => props.$translateY}px);
     transform-origin: bottom center;
     z-index: ${(props) => props.$zIndex};
     box-shadow: 0 4px 6px rgba(0, 0, 0, 1);
+    cursor: ${(props) => (props.$isDiscardPhase ? 'pointer' : 'grab')};
 
     &:hover {
         transform: rotate(${(props) => props.$angle}deg)
             translateY(${(props) => props.$translateY}px) scale(1.1);
-        z-index: 100 !important; /* Passe au-dessus de TOUTES les autres cartes */
+        z-index: 100 !important;
+
+        /* 🟢 Halo lumineux au survol en phase de défausse */
+        ${(props) =>
+            props.$isDiscardPhase &&
+            css`
+                box-shadow: 0 0 15px 4px rgba(231, 76, 60, 0.85);
+            `}
     }
 `;
-
 
 export const GameButton = styled.button<{ $bgColor: string }>`
     background-color: ${(props) => props.$bgColor};
@@ -55,8 +64,7 @@ export const GameButton = styled.button<{ $bgColor: string }>`
     font-weight: bold;
     cursor: pointer;
     font-size: 13px;
-    transition:
-        filter 0.1s;
+    transition: filter 0.1s;
 
     &:hover {
         filter: brightness(1.1);

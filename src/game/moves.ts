@@ -332,7 +332,7 @@ export const commonMoves = {
     },
 
     discardCardFromHand: (
-        { G, playerID }: LotrMoveContext,
+        { G, events, playerID }: LotrMoveContext,
         cardIndex: number
     ) => {
         const actingPlayerId = playerID ?? '0';
@@ -342,6 +342,7 @@ export const commonMoves = {
         const shadowPlayerId = G.fpPlayerId === '0' ? '1' : '0';
         const fpPlayerId = G.fpPlayerId || '0';
 
+        // 🔒 1. Vérification du rôle actif
         if (
             G.regroupStep === 'SHADOW_REFILL' &&
             actingPlayerId !== shadowPlayerId
@@ -350,11 +351,30 @@ export const commonMoves = {
         if (G.regroupStep === 'FP_REFILL' && actingPlayerId !== fpPlayerId)
             return 'INVALID_MOVE';
 
+        // 🔒 2. RÈGLE STRICTE PAR JOUEUR :
+        // Si la main a déjà <= 8 cartes ET que CE joueur a déjà défaussé une carte
+        if (player.hand.length <= 8 && player.hasDiscardedInRegroup) {
+            G.statusMessage =
+                'Vous avez déjà défaussé votre carte optionnelle pour ce tour.';
+            return 'INVALID_MOVE';
+        }
+
+        // 🃏 Défausse de la carte
         const [discarded] = player.hand.splice(cardIndex, 1);
         if (!player.discard) player.discard = [];
         player.discard.push(discarded);
 
+        // 🟢 On marque la défausse sur CE JOUEUR spécifiquement
+        player.hasDiscardedInRegroup = true;
+
         G.statusMessage = `${player.profile?.name || `Joueur ${actingPlayerId}`} a défaussé ${discarded.title || discarded.name}.`;
+
+        // 🟢 AUTOMATISATION : Si le joueur est désormais à <= 8 cartes,
+        // on valide automatiquement sa reconstitution !
+        if (player.hand.length <= 8) {
+            // Appel direct de la logique de confirmation
+            commonMoves.confirmHandRefill({ G, events, playerID });
+        }
     },
 
     confirmHandRefill: ({ G, events, playerID }: LotrMoveContext) => {
@@ -364,16 +384,22 @@ export const commonMoves = {
 
         if (!player.discard) player.discard = [];
 
+        // Défausse automatique des cartes en trop si > 8 (cas où le joueur avait > 9 cartes)
         while (player.hand.length > 8) {
             const discarded = player.hand.pop();
             if (discarded) player.discard.push(discarded);
         }
 
+        // Pioche automatique si < 8
         if (player.hand.length < 8) {
             const needed = 8 - player.hand.length;
-            drawCardsForPlayer(G, player, needed, false); // false car pas de limite Fellowship au Regroupement
+            drawCardsForPlayer(G, player, needed, false);
         }
 
+        // 🟢 Réinitialisation du flag de défausse pour ce joueur
+        player.hasDiscardedInRegroup = false;
+
+        // --- TRANSITION DES ÉTAPES DE REGROUPEMENT ---
         if (G.regroupStep === 'SHADOW_REFILL') {
             if ((G.movesThisTurn || 0) >= 2) {
                 G.regroupStep = 'FP_REFILL';
@@ -475,11 +501,22 @@ export const commonMoves = {
 
     devLoadPreset: ({ G }: LotrMoveContext, presetType: DevPresetType) => {
         const fpId = G.fpPlayerId || '0';
+        const shadowId = fpId === '0' ? '1' : '0';
         const fpPlayer = G.players[fpId];
 
         if (presetType === 'ARCHERY_TEST' && fpPlayer) {
             G.twilightPool = 8;
             G.burdens = 3;
+
+            // 🟢 Ajustement des mains à 4 cartes par défaut pour chaque joueur
+            Object.keys(G.players).forEach((pId) => {
+                const player = G.players[pId];
+                if (player) {
+                    player.hand = [];
+                    drawCardsForPlayer(G, player, 4, false);
+                }
+            });
+
             fpPlayer.fellowshipArea = [
                 {
                     id: '2c102',
@@ -500,7 +537,7 @@ export const commonMoves = {
                     gameText:
                         'Le coût de chaque artefact, possession et récit {CULTURE_SHIRE} joué sur Frodon est de -1.',
                     loreText:
-                        "Je ne suis pas fait pour les quâtes périlleuses. Je voudrais bien n'avoir jamais vu l'Anneau! Pourquoi m'est-il venu? Pourquoi ai-je été choisi?",
+                        "Je ne suis pas fait pour les quêtes périlleuses. Je voudrais bien n'avoir jamais vu l'Anneau! Pourquoi m'est-il venu? Pourquoi ai-je été choisi?",
                 },
                 {
                     id: '1r50',
@@ -572,7 +609,8 @@ export const commonMoves = {
                     gameText: 'wdfjdsklwfjklsdfjkldsflksd',
                 },
             ];
-            G.statusMessage = '[DEV] Preset Archerie chargé !';
+            G.statusMessage =
+                '[DEV] Preset Archerie chargé (mains de 4 cartes) !';
         }
     },
 

@@ -82,7 +82,7 @@ export const GameControls: React.FC<GameControlsProps> = ({
         ctx.phase === 'shadow' &&
         currentPlayerId === shadowPlayerId;
 
-    // 🟢 4. CONFIGURATION DYNAMIQUE DU TOASTER
+    // 🟢 4. CONFIGURATION DYNAMIQUE DU TOASTER (Mise à jour)
     let toastConfig: {
         show: boolean;
         title: string;
@@ -107,9 +107,24 @@ export const GameControls: React.FC<GameControlsProps> = ({
     } else if (awaitingSite && currentPlayerId === shadowPlayerId) {
         toastConfig = {
             show: true,
-        title: 'CHOIX DU SITE',
-        body: 'Choisissez et posez un site sur la case inexplorée.',
-        showPassButton: false,
+            title: 'CHOIX DU SITE',
+            body: 'Choisissez et posez un site sur la case inexplorée.',
+            showPassButton: false,
+        };
+        /* 🟢 AJOUT DES TOASTS POUR LA DÉFAUSSE / RECONSTITUTION */
+    } else if (isShadowRefill) {
+        toastConfig = {
+            show: true,
+            title: 'RECONSTITUTION DE L’OMBRE',
+            body: 'Cliquez sur les cartes de votre main pour les défausser si nécessaire, puis validez.',
+            showPassButton: false,
+        };
+    } else if (isFpRefill) {
+        toastConfig = {
+            show: true,
+            title: 'RECONSTITUTION DES PEUPLES LIBRES',
+            body: 'Cliquez sur les cartes de votre main pour ajuster à 8 cartes maximum et terminer le tour.',
+            showPassButton: false,
         };
     }
 
