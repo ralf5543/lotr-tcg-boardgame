@@ -98,6 +98,7 @@ export const LotrGame: Game<GameState> = {
             },
         },
         burdens: 0,
+        fellowshipCardsDrawn: 0,
     }),
 
     events: {
@@ -120,7 +121,8 @@ export const LotrGame: Game<GameState> = {
                 activePlayers: { value: { '0': 'play', '1': 'play' } },
             },
             onBegin: ({ G, ctx }: LotrPhaseContext) => {
-                G.movesThisTurn = 0; // Réinitialisation du compteur
+                G.movesThisTurn = 0;
+                G.fellowshipCardsDrawn = 0;
                 G.regroupStep = undefined;
                 G.statusMessage =
                     'Phase de Communauté : Jouez vos compagnons et soutiens.';

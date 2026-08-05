@@ -5,6 +5,7 @@ import {
     finishSkirmishResolution,
     applyWoundToCard,
 } from './skirmish';
+import { drawCardsForPlayer } from '../utils/drawCards';
 
 export interface ReorderPayload {
     fromIndex?: number;
@@ -31,7 +32,7 @@ export const getTargetPlayerId = (
     return String(ctx.currentPlayer ?? '0');
 };
 
-export const advanceCompany = (G: GameState, ctx: Ctx) => {
+export const advanceCompany = (G: GameState) => {
     const fpId = G.fpPlayerId || '0';
     const fpPlayer = G.players[fpId];
     if (!fpPlayer) {
@@ -287,7 +288,7 @@ export const commonMoves = {
             return 'INVALID_MOVE';
         }
 
-        advanceCompany(G, ctx);
+        advanceCompany(G);
 
         if (!G.awaitingSiteSelection) {
             events?.setPhase?.('shadow');
@@ -326,7 +327,7 @@ export const commonMoves = {
         G.statusMessage = `${player.profile?.name || `Joueur ${actingPlayerId}`} a défaussé ${discarded.title || discarded.name}.`;
     },
 
-    confirmHandRefill: ({ G, ctx, events, playerID }: LotrMoveContext) => {
+    confirmHandRefill: ({ G, events, playerID }: LotrMoveContext) => {
         const actingPlayerId = playerID ?? '0';
         const player = G.players?.[actingPlayerId];
         if (!player) return 'INVALID_MOVE';
@@ -338,13 +339,9 @@ export const commonMoves = {
             if (discarded) player.discard.push(discarded);
         }
 
-        while (
-            player.hand.length < 8 &&
-            player.deck &&
-            player.deck.length > 0
-        ) {
-            const drawnCard = player.deck.pop();
-            if (drawnCard) player.hand.push(drawnCard);
+        if (player.hand.length < 8) {
+            const needed = 8 - player.hand.length;
+            drawCardsForPlayer(G, player, needed, false); // false car pas de limite Fellowship au Regroupement
         }
 
         if (G.regroupStep === 'SHADOW_REFILL') {
@@ -549,13 +546,17 @@ export const commonMoves = {
         }
     },
 
-    drawCard: ({ G, ctx, playerID }: LotrMoveContext) => {
+    drawCard: ({ G, ctx, playerID }: LotrMoveContext, count: number = 1) => {
         const targetId = getTargetPlayerId(playerID, ctx);
         const player = G.players[targetId];
+        if (!player) return 'INVALID_MOVE';
 
-        if (player?.deck && player.deck.length > 0) {
-            const card = player.deck.shift();
-            if (card) player.hand.push(card);
+        const isFellowship = ctx.phase === 'fellowship';
+        const drawn = drawCardsForPlayer(G, player, count, isFellowship);
+
+        if (drawn === 0 && isFellowship && G.fellowshipCardsDrawn >= 4) {
+            G.statusMessage =
+                'Limite de 4 cartes obtenues pendant la phase de Communauté atteinte.';
         }
     },
 

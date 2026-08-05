@@ -191,6 +191,7 @@ export interface GameState {
     pendingDeadCardIds?: string[];
     regroupStep?: 'ACTION_WINDOW' | 'SHADOW_REFILL' | 'FP_DECISION' | 'FP_REFILL';
     burdens: number;
+    fellowshipCardsDrawn: number;
 }
 
 export interface KeywordData {
