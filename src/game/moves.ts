@@ -116,6 +116,8 @@ export const passActionWindow = ({
 export const commonMoves = {
     passActionWindow,
     advanceCompany,
+
+    // 🟢 1. JOUER UN ATTACHEMENT (SÉCURISÉ)
     attachCard: (
         { G, ctx, playerID }: LotrMoveContext,
         cardIndex: number,
@@ -135,6 +137,20 @@ export const commonMoves = {
         const card = player.hand[cardIndex];
         const fpId = G.fpPlayerId || '0';
         const isFP = actingPlayerId === fpId;
+
+        // 🔒 VERROU DE PHASE : Les cartes FP ne se jouent qu'en 'fellowship', les cartes Ombre qu'en 'shadow'
+        if (isFP && ctx.phase !== 'fellowship') {
+            console.warn(
+                `❌ [moves.attachCard] Rejet : Le joueur FP ne peut pas attacher de carte en phase ${ctx.phase}.`
+            );
+            return 'INVALID_MOVE';
+        }
+        if (!isFP && ctx.phase !== 'shadow') {
+            console.warn(
+                `❌ [moves.attachCard] Rejet : Le joueur Ombre ne peut pas attacher de carte en phase ${ctx.phase}.`
+            );
+            return 'INVALID_MOVE';
+        }
 
         // 1. Recherche de la cible (Compagnon, Allié dans FellowshipArea/SupportArea, ou Minion dans Battlefield/SupportArea)
         const fpPlayer = G.players[fpId];
@@ -188,7 +204,7 @@ export const commonMoves = {
         G.statusMessage = `${cardName} a été attaché à ${targetName}.`;
     },
 
-    // 🟢 JOUER UNE CARTE (ROUTAGE BASÉ SUR CARDTYPE)
+    // 🟢 2. JOUER UNE CARTE (SÉCURISÉ)
     playCard: ({ G, ctx, playerID }: LotrMoveContext, cardIndex: number) => {
         const actingPlayerId = playerID ?? ctx.currentPlayer ?? '0';
         const player = G.players[actingPlayerId];
@@ -204,6 +220,20 @@ export const commonMoves = {
         const card = player.hand[cardIndex];
         const fpId = G.fpPlayerId || '0';
         const isFP = actingPlayerId === fpId;
+
+        // 🔒 VERROU DE PHASE : Les cartes FP ne se jouent qu'en 'fellowship', les cartes Ombre qu'en 'shadow'
+        if (isFP && ctx.phase !== 'fellowship') {
+            console.warn(
+                `❌ [moves.playCard] Rejet : Le joueur FP ne peut pas jouer de carte en phase ${ctx.phase}.`
+            );
+            return 'INVALID_MOVE';
+        }
+        if (!isFP && ctx.phase !== 'shadow') {
+            console.warn(
+                `❌ [moves.playCard] Rejet : Le joueur Ombre ne peut pas jouer de carte en phase ${ctx.phase}.`
+            );
+            return 'INVALID_MOVE';
+        }
 
         // 1. JOUER UNE CARTE PEUPLES LIBRES
         if (isFP) {
