@@ -162,6 +162,7 @@ export interface PlayerState {
     supportArea: CardState[];
     currentSiteIndex: number;
     sitesDeck: SiteCardState[];
+    burdens: number;
 }
 
 export interface SiteCardState {
@@ -194,7 +195,6 @@ export interface GameState {
     pendingPhaseEnd?: boolean;
     pendingDeadCardIds?: string[];
     regroupStep?: 'ACTION_WINDOW' | 'SHADOW_REFILL' | 'FP_DECISION' | 'FP_REFILL';
-    burdens: number;
     fellowshipCardsDrawn: number;
     setupState?: {
         bids: Record<string, number | null>;

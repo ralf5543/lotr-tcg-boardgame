@@ -56,6 +56,10 @@ export const PlayerArea: React.FC<PlayerAreaProps> = ({
         | CardType
         | undefined;
 
+    // 🟢 FARDEAUX : Récupération dynamique spécifique au joueur
+    const isFP = _playerId === G?.fpPlayerId;
+    const playerBurdens = isFP ? (G?.players?.[_playerId]?.burdens ?? 0) : 0;
+
     // Gestion du Drag & Drop pour réordonner sa propre compagnie
     useEffect(() => {
         if (isOpponent) return;
@@ -110,14 +114,14 @@ export const PlayerArea: React.FC<PlayerAreaProps> = ({
             G?.actionWindow?.isOpen && G?.activeSkirmishId
         );
 
-        const isSetupPhase = G?.phase === 'setup';
+        const playerBurdens = G?.players?.[_playerId]?.burdens ?? 0;
 
         return (
             <S.Fellowship
                 className="fellowship-active"
                 $borderColor="#3498db"
                 $isTargeted={isFellowshipTargeted}
-                $isOpponent={isOpponent} // Permet au style de réduire visuellement si besoin
+                $isOpponent={isOpponent}
                 ref={(el) => {
                     if (!isOpponent && el) {
                         registerTarget('fellowshipArea', el);
@@ -142,8 +146,6 @@ export const PlayerArea: React.FC<PlayerAreaProps> = ({
                         const skirmishId =
                             skirmish?.id || `skirmish_${companion.id}`;
 
-                        // 🟢 REGLE CLÉ : Une carte n'est masquée QUE si elle appartient à l'adversaire ET qu'elle est en faceDown.
-                        // Sur son propre écran (!isOpponent), on la voit TOUJOURS.
                         const shouldBeFaceDown = isOpponent
                             ? (companion.isFaceDown ?? false)
                             : false;
@@ -158,7 +160,7 @@ export const PlayerArea: React.FC<PlayerAreaProps> = ({
                                 isSkirmishPhase={isSkirmishPhase}
                                 skirmishId={skirmishId}
                                 isFaceDown={shouldBeFaceDown}
-                                burdens={G?.burdens || 0}
+                                burdens={playerBurdens} // 🟢 Utilise les fardeaux du joueur concerné
                                 lastWoundedCardIds={G?.lastWoundedCardIds}
                                 isSelectedSkirmish={
                                     activeSkirmishId === skirmishId
@@ -212,7 +214,6 @@ export const PlayerArea: React.FC<PlayerAreaProps> = ({
                         <S.EmptyText>Aire de soutien vide.</S.EmptyText>
                     )}
                     {supportArea.map((card, cardIdx) => {
-                        // 🟢 Même logique : mes cartes de soutien sont toujours visibles pour moi
                         const shouldBeFaceDown = isOpponent
                             ? (card.isFaceDown ?? false)
                             : false;
@@ -234,7 +235,7 @@ export const PlayerArea: React.FC<PlayerAreaProps> = ({
                                     )}
                                     isOpponent={isOpponent}
                                     isFaceDown={shouldBeFaceDown}
-                                    burdens={G.burdens}
+                                    burdens={playerBurdens} // 🟢 Utilise les fardeaux du joueur concerné
                                 />
                             </S.CharacterStack>
                         );

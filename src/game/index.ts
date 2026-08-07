@@ -58,6 +58,7 @@ const createInitialPlayer = (playerId: string): PlayerState => ({
     supportArea: [],
     sitesDeck: [],
     currentSiteIndex: 0,
+    burdens: 0,
 });
 
 export const setupGame = (): GameState => {
@@ -67,16 +68,18 @@ export const setupGame = (): GameState => {
             sitesDeck: DUMMY_SITES_PLAYER_0.slice(1),
             currentSiteIndex: 0,
             deadPile: [],
+            burdens: 0,
         },
         '1': {
             ...createInitialPlayer('1'),
             sitesDeck: DUMMY_SITES_PLAYER_0.slice(1),
             currentSiteIndex: 0,
             deadPile: [],
+            burdens: 0,
         },
     };
 
-    // 🟢 PRÉPARATION AUTOMATIQUE DU DÉBUT DE PARTIE POUR CHAQUE JOUEUR
+    // Préparation automatique du début de partie pour chaque joueur
     Object.keys(players).forEach((pId) => {
         const player = players[pId];
         if (!player || !player.deck) return;
@@ -116,17 +119,13 @@ export const setupGame = (): GameState => {
         const startingMembers: CardState[] = [];
         player.deck = player.deck.filter((card) => {
             if (card.isStartingMember && card.type === 'COMPANION') {
-                // Si tu veux qu'ils soient masqués pendant le bidding :
                 startingMembers.push({ ...card, isFaceDown: true });
                 return false;
             }
             return true;
         });
 
-        // Ajout des compagnons cachés à la compagnie
         player.fellowshipArea.push(...startingMembers);
-
-        // Mélange du deck restant
         player.deck = shuffle(player.deck);
     });
 
@@ -141,27 +140,18 @@ export const setupGame = (): GameState => {
         activeSkirmishId: undefined,
         actionWindow: undefined,
         assignmentStep: 'FP_ASSIGN',
-        path: [
-            null, // Le premier site sera posé par le joueur FP pendant le setup
-            null,
-            null,
-            null,
-            null,
-            null,
-            null,
-            null,
-            null,
-        ],
+        path: [null, null, null, null, null, null, null, null, null],
         battlefield: [],
         players,
         burdens: 0,
         fellowshipCardsDrawn: 0,
 
-        // 🟢 ÉTAT DE SETUP AUTOMATIQUE ET SIMULTANÉ
+        // État de la mise en place
         setupState: {
             bids: { '0': null, '1': null },
             mulligans: { '0': null, '1': null },
             step: 'BIDDING',
+            auctionWinnerId: undefined,
         },
     };
 };
@@ -177,7 +167,7 @@ export const LotrGame: Game<GameState> = {
     },
 
     phases: {
-        // 🟢 PHASE 0 : MISE EN PLACE ET ENCHÈRES
+        // PHASE SETUP : ENCHÈRES & MULLIGAN
         setup: {
             start: true,
             next: 'fellowship',
@@ -187,27 +177,42 @@ export const LotrGame: Game<GameState> = {
             moves: {
                 ...commonMoves,
                 reorderFellowship: commonMoves.reorderFellowship,
-                // 1. Soumettre sa mise de fardeaux (0-10)
+
+                // 1. Soumettre sa mise via le BiddingWidget
                 submitBid: (
-                    { G, ctx, playerID }: LotrMoveContext,
+                    { G, playerID }: LotrMoveContext,
                     bidAmount: number
                 ) => {
                     if (!G.setupState || G.setupState.step !== 'BIDDING')
                         return 'INVALID_MOVE';
-                    const pId = playerID ?? '0';
+
+                    // 🟢 S'assurer que playerID est bien défini et convertir en string
+                    const pId = String(playerID ?? '0');
 
                     const validBid = Math.max(
                         0,
                         Math.min(10, Math.floor(bidAmount))
                     );
+
+                    // 🟢 On enregistre bien la mise dans setupState
+                    if (!G.setupState.bids) G.setupState.bids = {};
                     G.setupState.bids[pId] = validBid;
+
+                    // 🟢 Affectation directe des fardeaux au PlayerState du joueur concerné
+                    if (G.players && G.players[pId]) {
+                        G.players[pId].burdens = validBid;
+                    }
 
                     const bid0 = G.setupState.bids['0'];
                     const bid1 = G.setupState.bids['1'];
 
-                    if (bid0 !== null && bid1 !== null) {
-                        G.burdens = (G.burdens || 0) + bid0 + bid1;
-
+                    // Quand les deux joueurs ont soumis leur mise
+                    if (
+                        bid0 !== null &&
+                        bid0 !== undefined &&
+                        bid1 !== null &&
+                        bid1 !== undefined
+                    ) {
                         if (bid0 > bid1) {
                             G.setupState.auctionWinnerId = '0';
                         } else if (bid1 > bid0) {
@@ -220,28 +225,32 @@ export const LotrGame: Game<GameState> = {
                         G.setupState.step = 'CHOOSING_FIRST';
                         G.statusMessage = `Mises : Joueur 0 (${bid0}) - Joueur 1 (${bid1}). Le Joueur ${G.setupState.auctionWinnerId} gagne l'enchère.`;
                     } else {
-                        G.statusMessage = `Joueur ${pId} a misé. En attente de l'adversaire...`;
+                        G.statusMessage = `Joueur ${pId} a misé ${validBid} fardeau(x). En attente de l'adversaire...`;
                     }
                 },
 
-                // 2. Le gagnant choisit s'il joue les Peuples Libres en premier
+                // 2. Choix du premier joueur par le gagnant
                 chooseFirstPlayer: (
                     { G }: LotrMoveContext,
                     wantToBeFirst: boolean
-                ) => {
-                    if (!G.setupState || G.setupState.step !== 'CHOOSING_FIRST')
+                ) => {               if (!G.setupState || G.setupState.step !== 'CHOOSING_FIRST')
                         return 'INVALID_MOVE';
 
                     const winnerId = G.setupState.auctionWinnerId || '0';
                     const otherId = winnerId === '0' ? '1' : '0';
 
+                    // Le joueur qui choisit d'être premier devient les Peuples Libres (FP)
                     G.fpPlayerId = wantToBeFirst ? winnerId : otherId;
+
+                    // 🟢 Chantiers / fardeaux : Chaque joueur conserve sa propre mise déjà enregistrée dans `G.players[id].burdens`.
+                    const fpBurdens = G.players[G.fpPlayerId]?.burdens ?? 0;
+
                     G.setupState.step = 'AWAITING_SITE';
                     G.awaitingSiteSelection = true;
-                    G.statusMessage = `Le Joueur ${G.fpPlayerId} sera les Peuples Libres ! Posez le site 1.`;
+                    G.statusMessage = `Le Joueur ${G.fpPlayerId} est les Peuples Libres et commence avec ${fpBurdens} fardeau(x) ! Posez le site 1.`;
                 },
 
-                // Pose du premier site (après quoi les cartes cachées se révèlent et on piochera 8 cartes)
+                // 3. Choix du site de départ
                 selectStartingSite: (
                     { G }: LotrMoveContext,
                     siteCard: CardState
@@ -249,17 +258,15 @@ export const LotrGame: Game<GameState> = {
                     if (!G.setupState || G.setupState.step !== 'AWAITING_SITE')
                         return 'INVALID_MOVE';
 
-                    // Pose du site 1 sur le path
                     G.path[0] = siteCard;
                     G.awaitingSiteSelection = false;
 
-                    // Révélation de toutes les cartes de la compagnie de départ
+                    // Révélation des compagnons et pioche de 8 cartes
                     Object.values(G.players).forEach((p) => {
                         p.fellowshipArea.forEach((c) => {
                             c.isFaceDown = false;
                         });
 
-                        // Pioche initiale de 8 cartes pour chaque joueur
                         const cardsToDraw = p.deck.splice(0, 8);
                         p.hand.push(...cardsToDraw);
                     });
@@ -269,7 +276,7 @@ export const LotrGame: Game<GameState> = {
                         'Site 1 posé et Compagnies révélées ! Choisissez de garder votre main ou de faire un Mulligan.';
                 },
 
-                // 3. Soumettre le choix du Mulligan
+                // 4. Validation du Mulligan
                 submitMulliganChoice: (
                     { G, events, playerID }: LotrMoveContext,
                     doMulligan: boolean
@@ -305,7 +312,6 @@ export const LotrGame: Game<GameState> = {
         fellowship: {
             next: 'shadow',
             turn: {
-                // FORCE boardgame.io à définir currentPlayer = G.fpPlayerId au début du tour
                 order: {
                     first: ({ G }) => Number(G.fpPlayerId || '0'),
                     next: ({ G }) => Number(G.fpPlayerId || '0'),
@@ -336,15 +342,10 @@ export const LotrGame: Game<GameState> = {
             next: 'maneuver',
 
             onBegin: ({ G, ctx }: LotrPhaseContext) => {
-                console.log(
-                    '🟢 [LOG PHASE] SHADOW: onBegin - CurrentPlayer:',
-                    ctx.currentPlayer
-                );
-                const shadowId = G.fpPlayerId === '0' ? '1' : '0';
 
-                // 🟢 On réinitialise l'actionWindow pour éviter qu'un toaster/modal ne bloque l'UI
                 G.actionWindow = undefined;
 
+                const shadowId = G.fpPlayerId === '0' ? '1' : '0';
                 G.statusMessage = `Phase d'Ombre : Joueur Ombre (${shadowId}), jouez vos Séides/Soutiens. Crépuscule disponible : ${G.twilightPool}`;
             },
             onEnd: () => {
@@ -425,10 +426,7 @@ export const LotrGame: Game<GameState> = {
                 },
 
                 endShadowPhase: ({ G, events, playerID }: LotrMoveContext) => {
-                    console.log(
-                        '🚀 [LOG MOVE] endShadowPhase appelé par playerID:',
-                        playerID
-                    );
+
                     const shadowId = G.fpPlayerId === '0' ? '1' : '0';
                     if (playerID !== shadowId) return 'INVALID_MOVE';
 

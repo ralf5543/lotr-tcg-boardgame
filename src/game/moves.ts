@@ -60,15 +60,10 @@ export const advanceCompany = (G: GameState) => {
         const totalAdded = siteCost + companionsCount;
         G.twilightPool += totalAdded;
 
-        console.log(
-            `🌐 [moves.advanceCompany] Avancée au site ${nextIndex + 1} (${targetSite.name}). +${totalAdded} Crépuscule.`
-        );
         G.statusMessage = `La compagnie avance au site ${nextIndex + 1} : ${targetSite.name}`;
     } else {
         G.awaitingSiteSelection = true;
-        console.log(
-            `🌐 [moves.advanceCompany] Emplacement site ${nextIndex + 1} vide. En attente du choix de l'Ombre.`
-        );
+
         G.statusMessage =
             "En attente du joueur de l'Ombre pour poser le prochain site...";
     }
@@ -93,12 +88,9 @@ export const passActionWindow = ({
 
     const otherPlayer = playerID === '0' ? '1' : '0';
     const currentPasses = (G.actionWindow.passesCount || 0) + 1;
-    console.log(
-        `➡️ [moves.passActionWindow] Joueur ${playerID} PASSE. Total passes consecutive(s) : ${currentPasses}`
-    );
+
 
     if (currentPasses >= 2) {
-        console.log('🏁 [moves.passActionWindow] 2 passes consécutifs -> Clôture fenêtre action.');
         G.actionWindow = {
             ...G.actionWindow,
             isOpen: false,
@@ -217,7 +209,6 @@ export const commonMoves = {
         const targetName =
             targetCharacter.title || targetCharacter.name || 'le personnage';
 
-        console.log(`📎 [moves.attachCard] ${cardName} attaché à ${targetName} par le joueur ${actingPlayerId}`);
         G.statusMessage = `${cardName} a été attaché à ${targetName}.`;
     },
 
@@ -281,7 +272,7 @@ export const commonMoves = {
                 G.twilightPool -= cost;
                 return 'INVALID_MOVE';
             }
-            console.log(`🎴 [moves.playCard] FP joue ${playedCard.title} (type: ${playedCard.type}).`);
+
             return;
         }
 
@@ -320,7 +311,6 @@ export const commonMoves = {
                 G.twilightPool += cost;
                 return 'INVALID_MOVE';
             }
-            console.log(`🎴 [moves.playCard] Ombre joue ${playedCard.title} (type: ${playedCard.type}).`);
         }
     },
 
@@ -334,8 +324,6 @@ export const commonMoves = {
             );
             return 'INVALID_MOVE';
         }
-
-        console.log('🚪 [moves.endFellowshipPhase] FP termine la phase Fellowship.');
         advanceCompany(G);
 
         if (!G.awaitingSiteSelection) {
@@ -344,7 +332,6 @@ export const commonMoves = {
     },
 
     endTurnChoice: ({ G }: LotrMoveContext) => {
-        console.log('⏹️ [moves.endTurnChoice] Reconstitution de main FP demandée.');
         G.regroupStep = 'FP_REFILL';
         G.statusMessage =
             'Peuples Libres : Ajustez votre main à 8 cartes et validez pour terminer le tour.';
@@ -388,7 +375,6 @@ export const commonMoves = {
 
         player.hasDiscardedInRegroup = true;
 
-        console.log(`🗑️ [moves.discardCardFromHand] Joueur ${actingPlayerId} défausse ${discarded.title || discarded.name}.`);
         G.statusMessage = `${player.profile?.name || `Joueur ${actingPlayerId}`} a défaussé ${discarded.title || discarded.name}.`;
 
         if (player.hand.length <= 8) {
@@ -415,7 +401,6 @@ export const commonMoves = {
         }
 
         player.hasDiscardedInRegroup = false;
-        console.log(`✅ [moves.confirmHandRefill] Main confirmée pour le joueur ${actingPlayerId} (8 cartes). Etape actuelle : ${G.regroupStep}`);
 
         // --- TRANSITIONS DE REGROUPEMENT ---
         if (G.regroupStep === 'SHADOW_REFILL') {

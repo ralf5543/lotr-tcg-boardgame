@@ -3,6 +3,7 @@ import * as S from './styles';
 import type { Ctx } from 'boardgame.io';
 import type { GameState } from '../../../../game/types';
 import { TRANSLATIONS } from '../../../../game/translations';
+import { BiddingWidget } from '../BiddingWidget'; // 🟢 IMPORT DU BIDDINGWIDGET
 
 interface GameControlsProps {
     G: GameState;
@@ -11,6 +12,8 @@ interface GameControlsProps {
     statusMessage?: string;
     awaitingSite: boolean;
     moves: {
+        submitBid?: (amount: number) => void;
+        chooseFirstPlayer?: (wantToBeFirst: boolean) => void;
         endFellowshipPhase?: () => void;
         endShadowPhase?: () => void;
         moveNextSite?: () => void;
@@ -36,6 +39,16 @@ export const GameControls: React.FC<GameControlsProps> = ({
     // 🟢 RÔLES DYNAMIQUES
     const fpPlayerId = G.fpPlayerId || '0';
     const shadowPlayerId = fpPlayerId === '0' ? '1' : '0';
+
+    // 🟢 PHASE D'ENCHÈRE / SETUP
+    const isSetupPhase = ctx.phase === 'setup';
+    const setupStep = G.setupState?.step;
+    const isBiddingStep = isSetupPhase && setupStep === 'BIDDING';
+    const isChoosingFirstStep = isSetupPhase && setupStep === 'CHOOSING_FIRST';
+
+    const currentBid = G.setupState?.bids?.[currentPlayerId];
+    const hasAlreadyBid = currentBid !== null && currentBid !== undefined;
+    const isAuctionWinner = G.setupState?.auctionWinnerId === currentPlayerId;
 
     // 🟢 1. DÉTERMINATION DU JOUEUR QUI DOIT AGIR
     const isActionWindowActive = G.actionWindow?.isOpen ?? false;
@@ -88,14 +101,34 @@ export const GameControls: React.FC<GameControlsProps> = ({
         title: string;
         body: string;
         showPassButton: boolean;
+        type?: 'BIDDING' | 'CHOOSING_FIRST' | 'STANDARD';
     } = {
         show: false,
         title: 'ACTION REQUISE',
         body: '',
         showPassButton: false,
+        type: 'STANDARD',
     };
 
-    if (isActionWindowActive && isMyTurnToAct) {
+    if (isBiddingStep) {
+        toastConfig = {
+            show: true,
+            title: 'ENCHÈRE DE FARDEAUX',
+            body: 'Misez des fardeaux pour déterminer qui choisira le premier joueur.',
+            showPassButton: false,
+            type: 'BIDDING',
+        };
+    } else if (isChoosingFirstStep) {
+        toastConfig = {
+            show: true,
+            title: "CHOIX DU PREMIER JOUEUR",
+            body: isAuctionWinner
+                ? "Vous avez gagné l'enchère ! Choisissez votre camp."
+                : "L'adversaire choisit qui prend les Peuples Libres...",
+            showPassButton: false,
+            type: 'CHOOSING_FIRST',
+        };
+    } else if (isActionWindowActive && isMyTurnToAct) {
         toastConfig = {
             show: true,
             title: G.actionWindow?.title || 'À VOTRE TOUR DE RÉAGIR',
@@ -103,6 +136,7 @@ export const GameControls: React.FC<GameControlsProps> = ({
                 G.actionWindow?.message ||
                 'Voulez-vous jouer une carte / un effet ou passer ?',
             showPassButton: G.actionWindow?.canPass ?? true,
+            type: 'STANDARD',
         };
     } else if (awaitingSite && currentPlayerId === shadowPlayerId) {
         toastConfig = {
@@ -110,14 +144,15 @@ export const GameControls: React.FC<GameControlsProps> = ({
             title: 'CHOIX DU SITE',
             body: 'Choisissez et posez un site sur la case inexplorée.',
             showPassButton: false,
+            type: 'STANDARD',
         };
-        /* 🟢 AJOUT DES TOASTS POUR LA DÉFAUSSE / RECONSTITUTION */
     } else if (isShadowRefill) {
         toastConfig = {
             show: true,
             title: 'RECONSTITUTION DE L’OMBRE',
             body: 'Cliquez sur les cartes de votre main pour les défausser si nécessaire, puis validez.',
             showPassButton: false,
+            type: 'STANDARD',
         };
     } else if (isFpRefill) {
         toastConfig = {
@@ -125,11 +160,24 @@ export const GameControls: React.FC<GameControlsProps> = ({
             title: 'RECONSTITUTION DES PEUPLES LIBRES',
             body: 'Cliquez sur les cartes de votre main pour ajuster à 8 cartes maximum et terminer le tour.',
             showPassButton: false,
+            type: 'STANDARD',
         };
     }
 
     // 🟢 5. BANDEAU DE STATUS TEXTUEL DYNAMIQUE
     const getDynamicStatusMessage = (): string => {
+        if (isBiddingStep) {
+            return hasAlreadyBid
+                ? `Votre mise (${currentBid} fardeau${currentBid! > 1 ? 'x' : ''}) est enregistrée. En attente de l'adversaire...`
+                : 'Choisissez le nombre de fardeaux que vous êtes prêt à miser.';
+        }
+
+        if (isChoosingFirstStep) {
+            return isAuctionWinner
+                ? "Vous avez remporté l'enchère ! Souhaitez-vous jouer les Peuples Libres ?"
+                : "L'adversaire détermine l'ordre des joueurs...";
+        }
+
         if (isActionWindowActive) {
             return isMyTurnToAct
                 ? 'Une fenêtre d’action est ouverte : Jouez une carte/effet ou passez.'
@@ -282,6 +330,33 @@ export const GameControls: React.FC<GameControlsProps> = ({
                     <S.ToastBody>
                         <p>{toastConfig.body}</p>
 
+                        {/* 🟢 RENDU DU WIDGET D'ENCHÈRE AU SEIN DU TOASTER */}
+                        {toastConfig.type === 'BIDDING' && (
+                            <BiddingWidget
+                                currentBid={currentBid ?? null}
+                                onSubmitBid={(amount) => moves.submitBid?.(amount)}
+                                isWaitingForOpponent={hasAlreadyBid}
+                            />
+                        )}
+
+                        {/* 🟢 CHOIX DU PREMIER JOUEUR DANS LE TOASTER */}
+                        {toastConfig.type === 'CHOOSING_FIRST' && isAuctionWinner && (
+                            <div style={{ display: 'flex', gap: '8px', marginTop: '12px' }}>
+                                <S.ActionButton
+                                    onClick={() => moves.chooseFirstPlayer?.(true)}
+                                >
+                                    Jouer Premier (Peuples Libres)
+                                </S.ActionButton>
+                                <S.ActionButton
+                                    $variant="secondary"
+                                    onClick={() => moves.chooseFirstPlayer?.(false)}
+                                >
+                                    Jouer Second (Ombre)
+                                </S.ActionButton>
+                            </div>
+                        )}
+
+                        {/* ACTION PASSER STANDARD */}
                         {toastConfig.showPassButton && (
                             <S.ActionButton
                                 $variant="secondary"
