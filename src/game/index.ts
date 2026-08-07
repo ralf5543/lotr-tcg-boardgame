@@ -31,6 +31,7 @@ const createRealLotrDeck = (playerId: string): CardState[] => {
         fullPool.push({
             ...Card,
             id: `p${playerId}-${Card.id}-${i}-${Math.random().toString(36).substring(2, 7)}`,
+            isFaceDown: false,
         });
     }
     return shuffle(fullPool);
@@ -59,20 +60,89 @@ const createInitialPlayer = (playerId: string): PlayerState => ({
     currentSiteIndex: 0,
 });
 
-export const LotrGame: Game<GameState> = {
-    setup: (): GameState => ({
+export const setupGame = (): GameState => {
+    const players: Record<string, PlayerState> = {
+        '0': {
+            ...createInitialPlayer('0'),
+            sitesDeck: DUMMY_SITES_PLAYER_0.slice(1),
+            currentSiteIndex: 0,
+            deadPile: [],
+        },
+        '1': {
+            ...createInitialPlayer('1'),
+            sitesDeck: DUMMY_SITES_PLAYER_0.slice(1),
+            currentSiteIndex: 0,
+            deadPile: [],
+        },
+    };
+
+    // 🟢 PRÉPARATION AUTOMATIQUE DU DÉBUT DE PARTIE POUR CHAQUE JOUEUR
+    Object.keys(players).forEach((pId) => {
+        const player = players[pId];
+        if (!player || !player.deck) return;
+
+        // 1. Recherche du Porteur de l'Anneau (Keyword: RING-BEARER)
+        const ringBearerIndex = player.deck.findIndex((c) =>
+            c.keywords?.includes('RING-BEARER')
+        );
+
+        let ringBearer: CardState | undefined;
+        if (ringBearerIndex !== -1) {
+            [ringBearer] = player.deck.splice(ringBearerIndex, 1);
+        }
+
+        // 2. Recherche de L'Anneau Unique (Keyword: THE-ONE-RING)
+        const theOneRingIndex = player.deck.findIndex((c) =>
+            c.keywords?.includes('THE-ONE-RING')
+        );
+
+        let theOneRing: CardState | undefined;
+        if (theOneRingIndex !== -1) {
+            [theOneRing] = player.deck.splice(theOneRingIndex, 1);
+        }
+
+        // Attachement de l'Anneau au Porteur s'ils existent
+        if (ringBearer) {
+            if (theOneRing) {
+                ringBearer.attachments = [theOneRing];
+            }
+            ringBearer.isFaceDown = false;
+            player.fellowshipArea = [ringBearer];
+        } else {
+            player.fellowshipArea = [];
+        }
+
+        // 3. Extraction des Compagnons de départ (isStartingMember = true)
+        const startingMembers: CardState[] = [];
+        player.deck = player.deck.filter((card) => {
+            if (card.isStartingMember && card.type === 'COMPANION') {
+                // Si tu veux qu'ils soient masqués pendant le bidding :
+                startingMembers.push({ ...card, isFaceDown: true });
+                return false;
+            }
+            return true;
+        });
+
+        // Ajout des compagnons cachés à la compagnie
+        player.fellowshipArea.push(...startingMembers);
+
+        // Mélange du deck restant
+        player.deck = shuffle(player.deck);
+    });
+
+    return {
         fpPlayerId: '0',
         twilightPool: 0,
         currentSiteIndex: 0,
         movesThisTurn: 0,
-        statusMessage: 'Phase de Communauté : préparez vos compagnons.',
+        statusMessage: 'Phase de mise en place : Misez vos fardeaux.',
         awaitingSiteSelection: false,
         skirmishes: [],
         activeSkirmishId: undefined,
         actionWindow: undefined,
         assignmentStep: 'FP_ASSIGN',
         path: [
-            DUMMY_SITES_PLAYER_0[0],
+            null, // Le premier site sera posé par le joueur FP pendant le setup
             null,
             null,
             null,
@@ -83,23 +153,21 @@ export const LotrGame: Game<GameState> = {
             null,
         ],
         battlefield: [],
-        players: {
-            '0': {
-                ...createInitialPlayer('0'),
-                sitesDeck: DUMMY_SITES_PLAYER_0.slice(1),
-                currentSiteIndex: 0,
-                deadPile: [],
-            },
-            '1': {
-                ...createInitialPlayer('1'),
-                sitesDeck: DUMMY_SITES_PLAYER_0.slice(1),
-                currentSiteIndex: 0,
-                deadPile: [],
-            },
-        },
+        players,
         burdens: 0,
         fellowshipCardsDrawn: 0,
-    }),
+
+        // 🟢 ÉTAT DE SETUP AUTOMATIQUE ET SIMULTANÉ
+        setupState: {
+            bids: { '0': null, '1': null },
+            mulligans: { '0': null, '1': null },
+            step: 'BIDDING',
+        },
+    };
+};
+
+export const LotrGame: Game<GameState> = {
+    setup: setupGame,
 
     events: {
         endPhase: true,
@@ -109,8 +177,132 @@ export const LotrGame: Game<GameState> = {
     },
 
     phases: {
-        fellowship: {
+        // 🟢 PHASE 0 : MISE EN PLACE ET ENCHÈRES
+        setup: {
             start: true,
+            next: 'fellowship',
+            turn: {
+                activePlayers: { value: { '0': 'play', '1': 'play' } },
+            },
+            moves: {
+                ...commonMoves,
+                reorderFellowship: commonMoves.reorderFellowship,
+                // 1. Soumettre sa mise de fardeaux (0-10)
+                submitBid: (
+                    { G, ctx, playerID }: LotrMoveContext,
+                    bidAmount: number
+                ) => {
+                    if (!G.setupState || G.setupState.step !== 'BIDDING')
+                        return 'INVALID_MOVE';
+                    const pId = playerID ?? '0';
+
+                    const validBid = Math.max(
+                        0,
+                        Math.min(10, Math.floor(bidAmount))
+                    );
+                    G.setupState.bids[pId] = validBid;
+
+                    const bid0 = G.setupState.bids['0'];
+                    const bid1 = G.setupState.bids['1'];
+
+                    if (bid0 !== null && bid1 !== null) {
+                        G.burdens = (G.burdens || 0) + bid0 + bid1;
+
+                        if (bid0 > bid1) {
+                            G.setupState.auctionWinnerId = '0';
+                        } else if (bid1 > bid0) {
+                            G.setupState.auctionWinnerId = '1';
+                        } else {
+                            G.setupState.auctionWinnerId =
+                                Math.random() < 0.5 ? '0' : '1';
+                        }
+
+                        G.setupState.step = 'CHOOSING_FIRST';
+                        G.statusMessage = `Mises : Joueur 0 (${bid0}) - Joueur 1 (${bid1}). Le Joueur ${G.setupState.auctionWinnerId} gagne l'enchère.`;
+                    } else {
+                        G.statusMessage = `Joueur ${pId} a misé. En attente de l'adversaire...`;
+                    }
+                },
+
+                // 2. Le gagnant choisit s'il joue les Peuples Libres en premier
+                chooseFirstPlayer: (
+                    { G }: LotrMoveContext,
+                    wantToBeFirst: boolean
+                ) => {
+                    if (!G.setupState || G.setupState.step !== 'CHOOSING_FIRST')
+                        return 'INVALID_MOVE';
+
+                    const winnerId = G.setupState.auctionWinnerId || '0';
+                    const otherId = winnerId === '0' ? '1' : '0';
+
+                    G.fpPlayerId = wantToBeFirst ? winnerId : otherId;
+                    G.setupState.step = 'AWAITING_SITE';
+                    G.awaitingSiteSelection = true;
+                    G.statusMessage = `Le Joueur ${G.fpPlayerId} sera les Peuples Libres ! Posez le site 1.`;
+                },
+
+                // Pose du premier site (après quoi les cartes cachées se révèlent et on piochera 8 cartes)
+                selectStartingSite: (
+                    { G }: LotrMoveContext,
+                    siteCard: CardState
+                ) => {
+                    if (!G.setupState || G.setupState.step !== 'AWAITING_SITE')
+                        return 'INVALID_MOVE';
+
+                    // Pose du site 1 sur le path
+                    G.path[0] = siteCard;
+                    G.awaitingSiteSelection = false;
+
+                    // Révélation de toutes les cartes de la compagnie de départ
+                    Object.values(G.players).forEach((p) => {
+                        p.fellowshipArea.forEach((c) => {
+                            c.isFaceDown = false;
+                        });
+
+                        // Pioche initiale de 8 cartes pour chaque joueur
+                        const cardsToDraw = p.deck.splice(0, 8);
+                        p.hand.push(...cardsToDraw);
+                    });
+
+                    G.setupState.step = 'MULLIGAN';
+                    G.statusMessage =
+                        'Site 1 posé et Compagnies révélées ! Choisissez de garder votre main ou de faire un Mulligan.';
+                },
+
+                // 3. Soumettre le choix du Mulligan
+                submitMulliganChoice: (
+                    { G, events, playerID }: LotrMoveContext,
+                    doMulligan: boolean
+                ) => {
+                    if (!G.setupState || G.setupState.step !== 'MULLIGAN')
+                        return 'INVALID_MOVE';
+                    const pId = playerID ?? '0';
+                    const player = G.players[pId];
+                    if (!player) return 'INVALID_MOVE';
+
+                    G.setupState.mulligans[pId] = doMulligan;
+
+                    if (doMulligan) {
+                        player.deck.push(...player.hand);
+                        player.hand = [];
+                        player.deck = shuffle(player.deck);
+                        player.hand = player.deck.splice(0, 8);
+                    }
+
+                    const m0 = G.setupState.mulligans['0'];
+                    const m1 = G.setupState.mulligans['1'];
+
+                    if (m0 !== null && m1 !== null) {
+                        G.setupState.step = 'COMPLETE';
+                        G.statusMessage =
+                            'Mise en place terminée ! Début de la partie.';
+                        events?.setPhase?.('fellowship');
+                    }
+                },
+            },
+        },
+
+        fellowship: {
             next: 'shadow',
             turn: {
                 // FORCE boardgame.io à définir currentPlayer = G.fpPlayerId au début du tour
@@ -120,7 +312,7 @@ export const LotrGame: Game<GameState> = {
                 },
                 activePlayers: { value: { '0': 'play', '1': 'play' } },
             },
-            onBegin: ({ G, ctx }: LotrPhaseContext) => {
+            onBegin: ({ G }: LotrPhaseContext) => {
                 G.movesThisTurn = 0;
                 G.fellowshipCardsDrawn = 0;
                 G.regroupStep = undefined;
@@ -144,15 +336,18 @@ export const LotrGame: Game<GameState> = {
             next: 'maneuver',
 
             onBegin: ({ G, ctx }: LotrPhaseContext) => {
-                console.log('🟢 [LOG PHASE] SHADOW: onBegin - CurrentPlayer:', ctx.currentPlayer);
+                console.log(
+                    '🟢 [LOG PHASE] SHADOW: onBegin - CurrentPlayer:',
+                    ctx.currentPlayer
+                );
                 const shadowId = G.fpPlayerId === '0' ? '1' : '0';
-                
+
                 // 🟢 On réinitialise l'actionWindow pour éviter qu'un toaster/modal ne bloque l'UI
                 G.actionWindow = undefined;
 
                 G.statusMessage = `Phase d'Ombre : Joueur Ombre (${shadowId}), jouez vos Séides/Soutiens. Crépuscule disponible : ${G.twilightPool}`;
             },
-            onEnd: ({ G, ctx }: LotrPhaseContext) => {
+            onEnd: () => {
                 console.log('🛑 [LOG PHASE] SHADOW: onEnd');
             },
 
@@ -230,7 +425,10 @@ export const LotrGame: Game<GameState> = {
                 },
 
                 endShadowPhase: ({ G, events, playerID }: LotrMoveContext) => {
-                    console.log('🚀 [LOG MOVE] endShadowPhase appelé par playerID:', playerID);
+                    console.log(
+                        '🚀 [LOG MOVE] endShadowPhase appelé par playerID:',
+                        playerID
+                    );
                     const shadowId = G.fpPlayerId === '0' ? '1' : '0';
                     if (playerID !== shadowId) return 'INVALID_MOVE';
 
@@ -250,7 +448,7 @@ export const LotrGame: Game<GameState> = {
         maneuver: {
             next: 'archery',
             turn: { activePlayers: { value: { '0': 'play', '1': 'play' } } },
-            onBegin: ({ G, ctx }: LotrPhaseContext) => {
+            onBegin: ({ G }: LotrPhaseContext) => {
                 const fpId = G.fpPlayerId || '0';
                 G.actionWindow = {
                     isOpen: true,
@@ -272,8 +470,7 @@ export const LotrGame: Game<GameState> = {
         archery: {
             next: 'assignment',
             turn: { activePlayers: { value: { '0': 'play', '1': 'play' } } },
-            onBegin: ({ G, ctx }: LotrPhaseContext) => {
-                
+            onBegin: ({ G }: LotrPhaseContext) => {
                 const fpId = G.fpPlayerId || '0';
                 G.actionWindow = {
                     isOpen: true,
@@ -295,7 +492,7 @@ export const LotrGame: Game<GameState> = {
         assignment: {
             next: 'skirmish',
             turn: { activePlayers: { value: { '0': 'play', '1': 'play' } } },
-            onBegin: ({ G, ctx }: LotrPhaseContext) => {
+            onBegin: ({ G }: LotrPhaseContext) => {
                 G.skirmishes = [];
                 const unassignedMinions = getUnassignedMinions(G);
 
@@ -425,7 +622,7 @@ export const LotrGame: Game<GameState> = {
             next: 'fellowship',
             turn: { activePlayers: { value: { '0': 'play', '1': 'play' } } },
 
-            onBegin: ({ G, ctx }: LotrPhaseContext) => {
+            onBegin: ({ G }: LotrPhaseContext) => {
                 const fpId = G.fpPlayerId || '0';
                 if ((G.movesThisTurn || 0) >= 2) {
                     G.regroupStep = 'SHADOW_REFILL';

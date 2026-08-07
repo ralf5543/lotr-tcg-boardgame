@@ -262,6 +262,7 @@ const DragPortal: React.FC = () => {
     if (!dragged) return null;
 
     const isLandscape = dragged.orientation === 'landscape';
+    const cardData = dragged.card as CardState;
 
     return (
         <div
@@ -286,7 +287,7 @@ const DragPortal: React.FC = () => {
                 {isLandscape ? (
                     <SiteCard site={dragged.card as SiteCardState} size="md" />
                 ) : (
-                    <Card card={dragged.card as CardState} size="md" />
+                    <Card card={dragged.card as CardState} size="md" isFaceDown={false} />
                 )}
             </div>
         </div>

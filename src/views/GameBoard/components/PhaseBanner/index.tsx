@@ -6,6 +6,7 @@ interface PhaseBannerProps {
 }
 
 const PHASE_LABELS: Record<string, string> = {
+    setup: 'Mise en place',
     fellowship: 'Phase de compagnie',
     shadow: "Phase de l'Ombre",
     maneuver: 'Phase de manoeuvre',

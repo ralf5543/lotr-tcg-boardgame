@@ -4,7 +4,6 @@ import type { BoardProps } from 'boardgame.io/react';
 import * as S from './styles';
 import { Card } from '../Card';
 import { useDrag } from '../../../../contexts/DragContext';
-import { useFaction } from '../../../../contexts/FactionContext'; // 🟢 Import du contexte
 import { BoardCharacterStack } from '../BoardCharacterStack';
 import {
     canDropInSupportArea,
@@ -35,13 +34,14 @@ interface PlayerAreaProps {
     isSkirmishPhase?: boolean;
     activeSkirmishId?: string;
     G: GameState;
+    isFaceDown?: boolean;
 }
 
 export const PlayerArea: React.FC<PlayerAreaProps> = ({
-    playerId,
+    playerId: _playerId,
     deckCount: _deckCount,
-    fellowshipArea,
-    supportArea,
+    fellowshipArea = [],
+    supportArea = [],
     isOpponent = false,
     moves,
     skirmishes = [],
@@ -50,20 +50,17 @@ export const PlayerArea: React.FC<PlayerAreaProps> = ({
     activeSkirmishId,
     G,
 }) => {
-    // 🟢 Vraie détection de rôle dynamique
-    const { fpPlayerId } = useFaction();
-    const isFreePeoplesPlayer = playerId === (fpPlayerId ?? '0');
-
     const { activeTargetId, registerTarget, startDrag, dragged } = useDrag();
 
     const cardSubtype = (dragged?.card as CardState)?.type as
         | CardType
         | undefined;
 
+    // Gestion du Drag & Drop pour réordonner sa propre compagnie
     useEffect(() => {
-        const handleReorderDrop = (e: Event) => {
-            if (isOpponent) return;
+        if (isOpponent) return;
 
+        const handleReorderDrop = (e: Event) => {
             const customEvent = e as CustomEvent;
             const { draggedCard, targetId } = customEvent.detail || {};
 
@@ -103,88 +100,90 @@ export const PlayerArea: React.FC<PlayerAreaProps> = ({
     }, [isOpponent, moves, fellowshipArea]);
 
     const renderFellowship = () => {
-        // 🟢 C'est le Joueur Peuples Libres (isFreePeoplesPlayer) qui possède et affiche la Fellowship active !
-        if (isFreePeoplesPlayer) {
-            const isFellowshipTargeted =
-                !isOpponent &&
-                activeTargetId === 'fellowshipArea' &&
-                dragged?.orientation === 'portrait' &&
-                canDropInFellowship(cardSubtype);
+        const isFellowshipTargeted =
+            !isOpponent &&
+            activeTargetId === 'fellowshipArea' &&
+            dragged?.orientation === 'portrait' &&
+            canDropInFellowship(cardSubtype);
 
-            const isCombatLocked = Boolean(
-                G?.actionWindow?.isOpen && G?.activeSkirmishId
-            );
+        const isCombatLocked = Boolean(
+            G?.actionWindow?.isOpen && G?.activeSkirmishId
+        );
 
-            return (
-                <S.Fellowship
-                    className="fellowship-active"
-                    $borderColor="#3498db"
-                    $isTargeted={isFellowshipTargeted}
-                    ref={(el) => {
-                        if (!isOpponent && el) {
-                            registerTarget('fellowshipArea', el);
-                        }
-                    }}
-                >
-                    <S.CardRow>
-                        {(fellowshipArea || []).length === 0 && (
-                            <S.EmptyText>Aucun compagnon déployé.</S.EmptyText>
-                        )}
-                        {(fellowshipArea || []).map(
-                            (companion, companionIdx) => {
-                                const skirmish = skirmishes.find(
-                                    (s) => s.companionId === companion.id
-                                );
-                                const assignedMinions = battlefield.filter(
-                                    (m) => skirmish?.minionIds?.includes(m.id)
-                                );
+        const isSetupPhase = G?.phase === 'setup';
 
-                                const skirmishId =
-                                    skirmish?.id || `skirmish_${companion.id}`;
+        return (
+            <S.Fellowship
+                className="fellowship-active"
+                $borderColor="#3498db"
+                $isTargeted={isFellowshipTargeted}
+                $isOpponent={isOpponent} // Permet au style de réduire visuellement si besoin
+                ref={(el) => {
+                    if (!isOpponent && el) {
+                        registerTarget('fellowshipArea', el);
+                    }
+                }}
+            >
+                <S.ZoneTitle color="#3498db">
+                    🛡️ Compagnie (Fellowship) {isOpponent ? '(Adverse)' : ''}
+                </S.ZoneTitle>
+                <S.CardRow>
+                    {fellowshipArea.length === 0 && (
+                        <S.EmptyText>Aucun compagnon déployé.</S.EmptyText>
+                    )}
+                    {fellowshipArea.map((companion, companionIdx) => {
+                        const skirmish = skirmishes.find(
+                            (s) => s.companionId === companion.id
+                        );
+                        const assignedMinions = battlefield.filter((m) =>
+                            skirmish?.minionIds?.includes(m.id)
+                        );
 
-                                return (
-                                    <BoardCharacterStack
-                                        key={companion.id}
-                                        character={companion}
-                                        index={companionIdx}
-                                        isOpponent={isOpponent}
-                                        assignedMinions={assignedMinions}
-                                        isSkirmishPhase={isSkirmishPhase}
-                                        skirmishId={skirmishId}
-                                        burdens={G?.burdens || 0}
-                                        lastWoundedCardIds={
-                                            G?.lastWoundedCardIds
-                                        }
-                                        isSelectedSkirmish={
-                                            activeSkirmishId === skirmishId
-                                        }
-                                        onSelectSkirmish={(id) => {
-                                            if (isCombatLocked) return;
-                                            moves.selectSkirmish?.(id);
-                                        }}
-                                        onStartDrag={(e) => {
-                                            if (isOpponent || e.button !== 0)
-                                                return;
-                                            e.stopPropagation();
-                                            startDrag(
-                                                companion,
-                                                companionIdx,
-                                                e,
-                                                'BOARD',
-                                                'portrait'
-                                            );
-                                        }}
-                                    />
-                                );
-                            }
-                        )}
-                    </S.CardRow>
-                </S.Fellowship>
-            );
-        }
+                        const skirmishId =
+                            skirmish?.id || `skirmish_${companion.id}`;
 
-        // Pour le joueur Ombre (!isFreePeoplesPlayer), la Fellowship est masquée / réduite
-        return <S.FellowshipCollapsed />;
+                        // 🟢 REGLE CLÉ : Une carte n'est masquée QUE si elle appartient à l'adversaire ET qu'elle est en faceDown.
+                        // Sur son propre écran (!isOpponent), on la voit TOUJOURS.
+                        const shouldBeFaceDown = isOpponent
+                            ? (companion.isFaceDown ?? false)
+                            : false;
+
+                        return (
+                            <BoardCharacterStack
+                                key={companion.id}
+                                character={companion}
+                                index={companionIdx}
+                                isOpponent={isOpponent}
+                                assignedMinions={assignedMinions}
+                                isSkirmishPhase={isSkirmishPhase}
+                                skirmishId={skirmishId}
+                                isFaceDown={shouldBeFaceDown}
+                                burdens={G?.burdens || 0}
+                                lastWoundedCardIds={G?.lastWoundedCardIds}
+                                isSelectedSkirmish={
+                                    activeSkirmishId === skirmishId
+                                }
+                                onSelectSkirmish={(id) => {
+                                    if (isCombatLocked) return;
+                                    moves.selectSkirmish?.(id);
+                                }}
+                                onStartDrag={(e) => {
+                                    if (isOpponent || e.button !== 0) return;
+                                    e.stopPropagation();
+                                    startDrag(
+                                        companion,
+                                        companionIdx,
+                                        e,
+                                        'BOARD',
+                                        'portrait'
+                                    );
+                                }}
+                            />
+                        );
+                    })}
+                </S.CardRow>
+            </S.Fellowship>
+        );
     };
 
     const renderSupportArea = () => {
@@ -204,33 +203,42 @@ export const PlayerArea: React.FC<PlayerAreaProps> = ({
                         registerTarget('supportArea', el);
                     }
                 }}
-                
             >
                 <S.ZoneTitle color="#f39c12">
                     🎒 Aire de Soutien (Support Area)
                 </S.ZoneTitle>
                 <S.CardRow>
-                    {(supportArea || []).length === 0 && (
+                    {supportArea.length === 0 && (
                         <S.EmptyText>Aire de soutien vide.</S.EmptyText>
                     )}
-                    {(supportArea || []).map((card, cardIdx) => (
-                        <S.CharacterStack
-                            key={card.id}
-                            data-draggable={!isOpponent ? 'true' : undefined}
-                        >
-                            <Card
-                                size="sm"
-                                card={card}
-                                isDraggable={!isOpponent}
-                                index={cardIdx}
-                                isWounded={G.lastWoundedCardIds?.includes(
-                                    card.id
-                                )}
-                                isOpponent={isOpponent}
-                                burdens={G.burdens}
-                            />
-                        </S.CharacterStack>
-                    ))}
+                    {supportArea.map((card, cardIdx) => {
+                        // 🟢 Même logique : mes cartes de soutien sont toujours visibles pour moi
+                        const shouldBeFaceDown = isOpponent
+                            ? (card.isFaceDown ?? false)
+                            : false;
+
+                        return (
+                            <S.CharacterStack
+                                key={card.id}
+                                data-draggable={
+                                    !isOpponent ? 'true' : undefined
+                                }
+                            >
+                                <Card
+                                    size="sm"
+                                    card={card}
+                                    isDraggable={!isOpponent}
+                                    index={cardIdx}
+                                    isWounded={G.lastWoundedCardIds?.includes(
+                                        card.id
+                                    )}
+                                    isOpponent={isOpponent}
+                                    isFaceDown={shouldBeFaceDown}
+                                    burdens={G.burdens}
+                                />
+                            </S.CharacterStack>
+                        );
+                    })}
                 </S.CardRow>
             </S.SupportArea>
         );

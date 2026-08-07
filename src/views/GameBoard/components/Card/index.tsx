@@ -26,6 +26,7 @@ interface CardProps {
     isWounded?: boolean;
     isOpponent?: boolean;
     burdens?: number;
+    isFaceDown?: boolean;
 }
 
 export const Card: React.FC<CardProps> = ({
@@ -39,9 +40,33 @@ export const Card: React.FC<CardProps> = ({
     isWounded = false,
     isOpponent = false,
     burdens = 0,
+    isFaceDown = card?.isFaceDown ?? false,
 }) => {
-    const isShadow = card.kind === 'SHADOW';
+    // 🟢 APPELS DE HOOKS OBLIGATOIREMENT EN HAUT DU COMPOSANT
     const { setHoveredCard } = useHoverCard();
+    const { startDrag } = useDrag();
+
+    // 🂠 CAS DE LA CARTE FACE CACHÉE : Rendu ultra léger / Placeholder uniquement
+    if (isFaceDown) {
+        return (
+            <S.CardContainer
+                $size={size}
+                $isOpponent={isOpponent}
+                style={{ cursor: 'default', userSelect: 'none' }}
+                onDragStart={(e) => e.preventDefault()}
+            >
+                <S.VisualContainer $type={card?.type}>
+                    <S.Visual
+                        src="interface/lotr_cardback.webp"
+                        alt="Carte masquée"
+                        draggable={false}
+                    />
+                </S.VisualContainer>
+            </S.CardContainer>
+        );
+    }
+
+    const isShadow = card.kind === 'SHADOW';
 
     // 🟢 Utilisation de CardKeyword au lieu de any
     const isRingBearer =
@@ -55,8 +80,6 @@ export const Card: React.FC<CardProps> = ({
     const handleMouseLeave = () => {
         if (size !== 'lg') setHoveredCard(null);
     };
-
-    const { startDrag } = useDrag();
 
     const handleDragStart = (e: React.DragEvent) => {
         if (!isDraggable || isPlayable === false || index === undefined) {
@@ -170,10 +193,11 @@ export const Card: React.FC<CardProps> = ({
                     )}
                 </S.CardTitles>
             </S.CardHeader>
-
-            <S.VisualContainer $type={card.type}>
-                <S.Visual src={card.imageUrl} alt={card.title} />
-            </S.VisualContainer>
+            {card.imageUrl && (
+                <S.VisualContainer $type={card.type}>
+                    <S.Visual src={card.imageUrl} alt={card.title} />
+                </S.VisualContainer>
+            )}
 
             {size !== 'sm' && (
                 <S.CardTypes $type={card.type}>
@@ -210,33 +234,23 @@ export const Card: React.FC<CardProps> = ({
 
             {card.strength !== undefined && (
                 <S.StrengthBadge>
-                    {size !== 'sm' ? (
-                        card.strength
-                    ) : (
-                        <>
-                            {card.type === 'POSSESSION_CHARACTER' ||
-                            card.type === 'ARTIFACT_CHARACTER' ||
-                            card.type === 'CONDITION_CHARACTER'
-                                ? `${card.strength > 0 ? '+' : ''}${card.strength}`
-                                : effectiveStrength}
-                        </>
-                    )}
+                    {card.type === 'POSSESSION_CHARACTER' ||
+                    card.type === 'ARTIFACT_CHARACTER' ||
+                    card.type === 'CONDITION_CHARACTER' ||
+                    card.type === 'THE-ONE-RING'
+                        ? `${card.strength > 0 ? '+' : ''}${card.strength}`
+                        : effectiveStrength}
                 </S.StrengthBadge>
             )}
 
             {card.vitality !== undefined && (
                 <S.VitalityBadge>
-                    {size !== 'sm' ? (
-                        card.vitality
-                    ) : (
-                        <>
-                            {card.type === 'POSSESSION_CHARACTER' ||
-                            card.type === 'ARTIFACT_CHARACTER' ||
-                            card.type === 'CONDITION_CHARACTER'
-                                ? `${card.vitality > 0 ? '+' : ''}${card.vitality}`
-                                : effectiveVitality}
-                        </>
-                    )}
+                    {card.type === 'POSSESSION_CHARACTER' ||
+                    card.type === 'ARTIFACT_CHARACTER' ||
+                    card.type === 'CONDITION_CHARACTER' ||
+                    card.type === 'THE-ONE-RING'
+                        ? `${card.vitality > 0 ? '+' : ''}${card.vitality}`
+                        : effectiveVitality}
                 </S.VitalityBadge>
             )}
 
@@ -264,7 +278,8 @@ export const Card: React.FC<CardProps> = ({
                     <S.CardResistance $isRingBearer={Boolean(isRingBearer)}>
                         {card.type === 'POSSESSION_CHARACTER' ||
                         card.type === 'ARTIFACT_CHARACTER' ||
-                        card.type === 'CONDITION_CHARACTER'
+                        card.type === 'CONDITION_CHARACTER' ||
+                        card.type === 'THE-ONE-RING'
                             ? `${card.resistance > 0 ? '+' : ''}${card.resistance}`
                             : effectiveResistance}
                     </S.CardResistance>
@@ -284,7 +299,6 @@ export const Card: React.FC<CardProps> = ({
                                         alt="Fardeau"
                                         title={`${burdens} Fardeau(x)`}
                                     />
-                                    
                                 );
                             })}
                         </S.BurdensOrbitalContainer>

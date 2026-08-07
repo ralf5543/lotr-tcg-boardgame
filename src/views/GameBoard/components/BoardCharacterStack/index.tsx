@@ -21,6 +21,7 @@ interface BoardCharacterStackProps {
     isSelectionAllowed?: boolean;
     lastWoundedCardIds?: string[];
     burdens: number;
+    isFaceDown: boolean;
 }
 
 export const BoardCharacterStack: React.FC<BoardCharacterStackProps> = ({
@@ -38,6 +39,7 @@ export const BoardCharacterStack: React.FC<BoardCharacterStackProps> = ({
     isSelectionAllowed = true,
     lastWoundedCardIds = [],
     burdens = 0,
+    isFaceDown = false,
 }) => {
     const { registerTarget, activeTargetId, dragged, startDrag } = useDrag();
 
@@ -151,6 +153,7 @@ export const BoardCharacterStack: React.FC<BoardCharacterStackProps> = ({
                         isWounded={lastWoundedCardIds.includes(character.id)}
                         isOpponent={isOpponent}
                         burdens={burdens}
+                        isFaceDown={isFaceDown}
                     />
                 </S.CardDragTarget>
 

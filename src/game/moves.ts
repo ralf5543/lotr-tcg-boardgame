@@ -36,14 +36,14 @@ export const advanceCompany = (G: GameState) => {
     const fpId = G.fpPlayerId || '0';
     const fpPlayer = G.players[fpId];
     if (!fpPlayer) {
-        console.warn('❌ [LOG] Joueur FP introuvable !');
+        console.warn('❌ [moves.advanceCompany] Joueur FP introuvable !');
         return;
     }
 
     const nextIndex = fpPlayer.currentSiteIndex + 1;
 
     if (nextIndex >= 9) {
-        console.warn("⚠️ [LOG] Index >= 9, impossible d'avancer.");
+        console.warn("⚠️ [moves.advanceCompany] Index >= 9, impossible d'avancer.");
         return;
     }
 
@@ -60,9 +60,15 @@ export const advanceCompany = (G: GameState) => {
         const totalAdded = siteCost + companionsCount;
         G.twilightPool += totalAdded;
 
+        console.log(
+            `🌐 [moves.advanceCompany] Avancée au site ${nextIndex + 1} (${targetSite.name}). +${totalAdded} Crépuscule.`
+        );
         G.statusMessage = `La compagnie avance au site ${nextIndex + 1} : ${targetSite.name}`;
     } else {
         G.awaitingSiteSelection = true;
+        console.log(
+            `🌐 [moves.advanceCompany] Emplacement site ${nextIndex + 1} vide. En attente du choix de l'Ombre.`
+        );
         G.statusMessage =
             "En attente du joueur de l'Ombre pour poser le prochain site...";
     }
@@ -74,13 +80,25 @@ export const passActionWindow = ({
     playerID,
     events,
 }: LotrMoveContext) => {
-    if (!G.actionWindow || !G.actionWindow.isOpen) return;
-    if (playerID !== G.actionWindow.activePlayerId) return;
+    if (!G.actionWindow || !G.actionWindow.isOpen) {
+        console.warn('⚠️ [moves.passActionWindow] Aucune fenêtre d’action ouverte.');
+        return;
+    }
+    if (playerID !== G.actionWindow.activePlayerId) {
+        console.warn(
+            `❌ [moves.passActionWindow] Tentative de passer hors tour. Actif: ${G.actionWindow.activePlayerId}, Reçu: ${playerID}`
+        );
+        return;
+    }
 
     const otherPlayer = playerID === '0' ? '1' : '0';
     const currentPasses = (G.actionWindow.passesCount || 0) + 1;
+    console.log(
+        `➡️ [moves.passActionWindow] Joueur ${playerID} PASSE. Total passes consecutive(s) : ${currentPasses}`
+    );
 
     if (currentPasses >= 2) {
+        console.log('🏁 [moves.passActionWindow] 2 passes consécutifs -> Clôture fenêtre action.');
         G.actionWindow = {
             ...G.actionWindow,
             isOpen: false,
@@ -141,18 +159,18 @@ export const commonMoves = {
         // 🔒 VERROU DE PHASE : Les cartes FP ne se jouent qu'en 'fellowship', les cartes Ombre qu'en 'shadow'
         if (isFP && ctx.phase !== 'fellowship') {
             console.warn(
-                `❌ [moves.attachCard] Rejet : Le joueur FP ne peut pas attacher de carte en phase ${ctx.phase}.`
+                `❌ [moves.attachCard] Rejet : FP ne peut pas attacher en phase ${ctx.phase}.`
             );
             return 'INVALID_MOVE';
         }
         if (!isFP && ctx.phase !== 'shadow') {
             console.warn(
-                `❌ [moves.attachCard] Rejet : Le joueur Ombre ne peut pas attacher de carte en phase ${ctx.phase}.`
+                `❌ [moves.attachCard] Rejet : Ombre ne peut pas attacher en phase ${ctx.phase}.`
             );
             return 'INVALID_MOVE';
         }
 
-        // 1. Recherche de la cible (Compagnon, Allié dans FellowshipArea/SupportArea, ou Minion dans Battlefield/SupportArea)
+        // 1. Recherche de la cible
         const fpPlayer = G.players[fpId];
         const allPossibleTargets = [
             ...(fpPlayer?.fellowshipArea || []),
@@ -167,32 +185,29 @@ export const commonMoves = {
 
         if (!targetCharacter) {
             console.warn(
-                `❌ [moves.attachCard] Personnage cible ${targetId} introuvable.`
+                `❌ [moves.attachCard] Cible ${targetId} introuvable.`
             );
             return 'INVALID_MOVE';
         }
 
-        // 2. Vérification des coûts et de la faction
+        // 2. Coûts & Faction
         const cost = Number(card.twilightCost) || 0;
 
         if (isFP) {
             if (card.kind !== 'FREE_PEOPLES') return 'INVALID_MOVE';
-            // Jouer une carte FP ajoute du twilight pool
             G.twilightPool += cost;
         } else {
             if (card.kind !== 'SHADOW') return 'INVALID_MOVE';
-            // L'Ombre doit payer du twilight pool
             if (G.twilightPool < cost) {
+                console.warn(`❌ [moves.attachCard] Crépuscule insuffisant (${G.twilightPool}/${cost}).`);
                 G.statusMessage = `Crépuscule insuffisant pour attacher ${card.title} (Requis: ${cost}, Dispo: ${G.twilightPool})`;
                 return 'INVALID_MOVE';
             }
             G.twilightPool -= cost;
         }
 
-        // 3. Retirer la carte de la main
+        // 3. Application
         const [attachedCard] = player.hand.splice(cardIndex, 1);
-
-        // 4. Attacher la carte au personnage
         if (!targetCharacter.attachments) {
             targetCharacter.attachments = [];
         }
@@ -201,6 +216,8 @@ export const commonMoves = {
         const cardName = attachedCard.title || attachedCard.name || 'Une carte';
         const targetName =
             targetCharacter.title || targetCharacter.name || 'le personnage';
+
+        console.log(`📎 [moves.attachCard] ${cardName} attaché à ${targetName} par le joueur ${actingPlayerId}`);
         G.statusMessage = `${cardName} a été attaché à ${targetName}.`;
     },
 
@@ -221,7 +238,7 @@ export const commonMoves = {
         const fpId = G.fpPlayerId || '0';
         const isFP = actingPlayerId === fpId;
 
-        // 🔒 VERROU DE PHASE : Les cartes FP ne se jouent qu'en 'fellowship', les cartes Ombre qu'en 'shadow'
+        // 🔒 VERROU DE PHASE
         if (isFP && ctx.phase !== 'fellowship') {
             console.warn(
                 `❌ [moves.playCard] Rejet : Le joueur FP ne peut pas jouer de carte en phase ${ctx.phase}.`
@@ -243,7 +260,6 @@ export const commonMoves = {
             const [playedCard] = player.hand.splice(cardIndex, 1);
             G.twilightPool += cost;
 
-            // Routage selon le CardType
             if (playedCard.type === 'COMPANION') {
                 if (!player.fellowshipArea) player.fellowshipArea = [];
                 player.fellowshipArea.push(playedCard);
@@ -261,11 +277,11 @@ export const commonMoves = {
                 player.discard.push(playedCard);
                 G.statusMessage = `${playedCard.title} est joué (+${cost} Crépuscule).`;
             } else {
-                // Les attachements _CHARACTER sont joués via attachCard
                 player.hand.splice(cardIndex, 0, playedCard);
                 G.twilightPool -= cost;
                 return 'INVALID_MOVE';
             }
+            console.log(`🎴 [moves.playCard] FP joue ${playedCard.title} (type: ${playedCard.type}).`);
             return;
         }
 
@@ -275,6 +291,7 @@ export const commonMoves = {
 
             const cost = Number(card.twilightCost) || 0;
             if (G.twilightPool < cost) {
+                console.warn(`❌ [moves.playCard] Crépuscule insuffisant pour Ombre (${G.twilightPool}/${cost})`);
                 G.statusMessage = `Crépuscule insuffisant pour jouer ${card.title} (Requis: ${cost}, Dispo: ${G.twilightPool})`;
                 return 'INVALID_MOVE';
             }
@@ -282,7 +299,6 @@ export const commonMoves = {
             G.twilightPool -= cost;
             const [playedCard] = player.hand.splice(cardIndex, 1);
 
-            // Routage selon le CardType pour l'Ombre
             if (playedCard.type === 'MINION') {
                 if (!G.battlefield) G.battlefield = [];
                 G.battlefield.push(playedCard);
@@ -304,6 +320,7 @@ export const commonMoves = {
                 G.twilightPool += cost;
                 return 'INVALID_MOVE';
             }
+            console.log(`🎴 [moves.playCard] Ombre joue ${playedCard.title} (type: ${playedCard.type}).`);
         }
     },
 
@@ -313,11 +330,12 @@ export const commonMoves = {
 
         if (actingPlayerId !== fpId) {
             console.warn(
-                '❌ [LOG] Reject: Seul le joueur FP peut terminer Fellowship'
+                '❌ [moves.endFellowshipPhase] Rejet: Seul FP peut terminer Fellowship.'
             );
             return 'INVALID_MOVE';
         }
 
+        console.log('🚪 [moves.endFellowshipPhase] FP termine la phase Fellowship.');
         advanceCompany(G);
 
         if (!G.awaitingSiteSelection) {
@@ -326,6 +344,7 @@ export const commonMoves = {
     },
 
     endTurnChoice: ({ G }: LotrMoveContext) => {
+        console.log('⏹️ [moves.endTurnChoice] Reconstitution de main FP demandée.');
         G.regroupStep = 'FP_REFILL';
         G.statusMessage =
             'Peuples Libres : Ajustez votre main à 8 cartes et validez pour terminer le tour.';
@@ -346,33 +365,33 @@ export const commonMoves = {
         if (
             G.regroupStep === 'SHADOW_REFILL' &&
             actingPlayerId !== shadowPlayerId
-        )
+        ) {
+            console.warn('❌ [moves.discardCardFromHand] Ce n’est pas au tour de l’Ombre de défausser.');
             return 'INVALID_MOVE';
-        if (G.regroupStep === 'FP_REFILL' && actingPlayerId !== fpPlayerId)
+        }
+        if (G.regroupStep === 'FP_REFILL' && actingPlayerId !== fpPlayerId) {
+            console.warn('❌ [moves.discardCardFromHand] Ce n’est pas au tour de FP de défausser.');
             return 'INVALID_MOVE';
+        }
 
-        // 🔒 2. RÈGLE STRICTE PAR JOUEUR :
-        // Si la main a déjà <= 8 cartes ET que CE joueur a déjà défaussé une carte
+        // 🔒 2. RÈGLE STRICTE PAR JOUEUR
         if (player.hand.length <= 8 && player.hasDiscardedInRegroup) {
+            console.warn(`⚠️ [moves.discardCardFromHand] Le Joueur ${actingPlayerId} a déjà défaussé sa carte optionnelle.`);
             G.statusMessage =
                 'Vous avez déjà défaussé votre carte optionnelle pour ce tour.';
             return 'INVALID_MOVE';
         }
 
-        // 🃏 Défausse de la carte
         const [discarded] = player.hand.splice(cardIndex, 1);
         if (!player.discard) player.discard = [];
         player.discard.push(discarded);
 
-        // 🟢 On marque la défausse sur CE JOUEUR spécifiquement
         player.hasDiscardedInRegroup = true;
 
+        console.log(`🗑️ [moves.discardCardFromHand] Joueur ${actingPlayerId} défausse ${discarded.title || discarded.name}.`);
         G.statusMessage = `${player.profile?.name || `Joueur ${actingPlayerId}`} a défaussé ${discarded.title || discarded.name}.`;
 
-        // 🟢 AUTOMATISATION : Si le joueur est désormais à <= 8 cartes,
-        // on valide automatiquement sa reconstitution !
         if (player.hand.length <= 8) {
-            // Appel direct de la logique de confirmation
             commonMoves.confirmHandRefill({ G, events, playerID });
         }
     },
@@ -384,22 +403,21 @@ export const commonMoves = {
 
         if (!player.discard) player.discard = [];
 
-        // Défausse automatique des cartes en trop si > 8 (cas où le joueur avait > 9 cartes)
+        // Reconstitution / Élagage à 8 cartes
         while (player.hand.length > 8) {
             const discarded = player.hand.pop();
             if (discarded) player.discard.push(discarded);
         }
 
-        // Pioche automatique si < 8
         if (player.hand.length < 8) {
             const needed = 8 - player.hand.length;
             drawCardsForPlayer(G, player, needed, false);
         }
 
-        // 🟢 Réinitialisation du flag de défausse pour ce joueur
         player.hasDiscardedInRegroup = false;
+        console.log(`✅ [moves.confirmHandRefill] Main confirmée pour le joueur ${actingPlayerId} (8 cartes). Etape actuelle : ${G.regroupStep}`);
 
-        // --- TRANSITION DES ÉTAPES DE REGROUPEMENT ---
+        // --- TRANSITIONS DE REGROUPEMENT ---
         if (G.regroupStep === 'SHADOW_REFILL') {
             if ((G.movesThisTurn || 0) >= 2) {
                 G.regroupStep = 'FP_REFILL';
@@ -418,6 +436,7 @@ export const commonMoves = {
         }
 
         if (G.regroupStep === 'FP_REFILL' || !G.regroupStep) {
+            console.log('🔄 [moves.confirmHandRefill] Fin du tour complet. Nettoyage du champ de bataille et passage de rôle.');
             const shadowId = G.fpPlayerId === '0' ? '1' : '0';
             const shadowPlayer = G.players[shadowId];
 
@@ -447,12 +466,14 @@ export const commonMoves = {
 
     confirmEndPhase: ({ G, events }: LotrMoveContext) => {
         if (G.pendingPhaseEnd) {
+            console.log('✅ [moves.confirmEndPhase] Phase terminée confirmée.');
             G.pendingPhaseEnd = false;
             events?.endPhase?.();
         }
     },
 
     finishSkirmishResolution: ({ G, ctx, events }: LotrMoveContext) => {
+        console.log('⚔️ [moves.finishSkirmishResolution] Clôture escarmouche.');
         finishSkirmishResolution(G, ctx, events);
     },
 
@@ -467,15 +488,18 @@ export const commonMoves = {
         const targetCard = companion || minion;
 
         if (targetCard) {
+            console.log(`💥 [moves.applyWound] Blessure appliquée à ${targetCard.title || targetCard.name}`);
             applyWoundToCard(G, targetCard, 1);
         }
     },
 
     devSetTwilight: ({ G }: LotrMoveContext, amount: number) => {
+        console.log(`🔧 [DEV] Twilight ajusté à ${amount}`);
         G.twilightPool = Math.max(0, amount);
     },
 
     devSetPhase: ({ G, events }: LotrPhaseContext, targetPhase: string) => {
+        console.log(`🔧 [DEV] Forçage de la phase vers : ${targetPhase}`);
         G.actionWindow = undefined;
         G.skirmishes = [];
         G.activeSkirmishId = undefined;
@@ -493,6 +517,7 @@ export const commonMoves = {
     },
 
     devForceEndPhase: ({ events }: LotrMoveContext) => {
+        console.log('🔧 [DEV] Forçage fin de phase.');
         if (events) {
             events.setActivePlayers?.({ value: { '0': 'play', '1': 'play' } });
             events.endPhase?.();
@@ -500,15 +525,14 @@ export const commonMoves = {
     },
 
     devLoadPreset: ({ G }: LotrMoveContext, presetType: DevPresetType) => {
+        console.log(`🔧 [DEV] Chargement du preset : ${presetType}`);
         const fpId = G.fpPlayerId || '0';
-        const shadowId = fpId === '0' ? '1' : '0';
         const fpPlayer = G.players[fpId];
 
         if (presetType === 'ARCHERY_TEST' && fpPlayer) {
             G.twilightPool = 8;
             G.burdens = 3;
 
-            // 🟢 Ajustement des mains à 4 cartes par défaut pour chaque joueur
             Object.keys(G.players).forEach((pId) => {
                 const player = G.players[pId];
                 if (player) {
@@ -622,6 +646,8 @@ export const commonMoves = {
         const isFellowship = ctx.phase === 'fellowship';
         const drawn = drawCardsForPlayer(G, player, count, isFellowship);
 
+        console.log(`🎴 [moves.drawCard] Joueur ${targetId} a pioché ${drawn} carte(s).`);
+
         if (drawn === 0 && isFellowship && G.fellowshipCardsDrawn >= 4) {
             G.statusMessage =
                 'Limite de 4 cartes obtenues pendant la phase de Communauté atteinte.';
@@ -654,6 +680,7 @@ export const commonMoves = {
 
         const [movedCard] = list.splice(fromIndex, 1);
         list.splice(toIndex, 0, movedCard);
+        console.log(`🔄 [moves.reorderFellowship] Carte réordonnée dans la compagnie de ${fromIndex} vers ${toIndex}.`);
     },
 
     playSite: (
@@ -664,18 +691,16 @@ export const commonMoves = {
         const fpId = G.fpPlayerId || '0';
         const shadowId = fpId === '0' ? '1' : '0';
 
-        // 🔒 1. SÉCURITÉ STRICTE : On ne peut poser un site QUE si la compagnie attend un site
         if (!G.awaitingSiteSelection) {
             console.warn(
-                `❌ [playSite] Rejet : Impossible de poser un site hors de l'avancée de la compagnie.`
+                `❌ [moves.playSite] Rejet : Impossible de poser un site hors de l'avancée de la compagnie.`
             );
             return 'INVALID_MOVE';
         }
 
-        // 🔒 2. SEUL LE JOUEUR DE L'OMBRE pose le site sur le chemin
         if (playerID !== shadowId) {
             console.warn(
-                `❌ [playSite] Rejet : Seul le joueur de l'Ombre (${shadowId}) peut poser le prochain site.`
+                `❌ [moves.playSite] Rejet : Seul le joueur de l'Ombre (${shadowId}) peut poser le prochain site.`
             );
             return 'INVALID_MOVE';
         }
@@ -683,33 +708,34 @@ export const commonMoves = {
         const player = G.players[playerID];
         if (!player || !player.sitesDeck) return 'INVALID_MOVE';
 
-        // 🔒 3. VÉRIFICATION QUE LE SITE EST DANS LE DECK DE SITES DU JOUEUR
         const siteIndex = player.sitesDeck.findIndex((s) => s.id === siteId);
-        if (siteIndex === -1) return 'INVALID_MOVE';
+        if (siteIndex === -1) {
+            console.warn(`❌ [moves.playSite] Site ${siteId} introuvable dans le deck de sites de l'Ombre.`);
+            return 'INVALID_MOVE';
+        }
 
-        // 🔒 4. VÉRIFICATION DE L'EMPLACEMENT (Doit être le premier slot vide)
         const nextEmptyIndex = G.path.findIndex((slot) => slot === null);
-        if (targetIndex !== nextEmptyIndex) return 'INVALID_MOVE';
+        if (targetIndex !== nextEmptyIndex) {
+            console.warn(`❌ [moves.playSite] Index cible ${targetIndex} ne correspond pas au prochain emplacement vide ${nextEmptyIndex}.`);
+            return 'INVALID_MOVE';
+        }
 
         const playedSite = player.sitesDeck[siteIndex];
 
-        // 🔒 5. VÉRIFICATION DU NUMÉRO DE SITE (Site 1 sur case 1, Site 2 sur case 2...)
         if (
             playedSite.siteNumber !== undefined &&
             playedSite.siteNumber !== targetIndex + 1
         ) {
             console.warn(
-                `❌ [playSite] Le site ${playedSite.name} (numéro ${playedSite.siteNumber}) ne correspond pas à l'emplacement ${targetIndex + 1}.`
+                `❌ [moves.playSite] Le site ${playedSite.name} (#${playedSite.siteNumber}) ne match pas l'emplacement ${targetIndex + 1}.`
             );
             return 'INVALID_MOVE';
         }
 
-        // --- APPLICATION DU MOVE ---
         player.sitesDeck.splice(siteIndex, 1);
         playedSite.ownerId = playerID;
         G.path[targetIndex] = playedSite;
 
-        // Résolution de l'avancée
         G.awaitingSiteSelection = false;
         const fpPlayer = G.players[fpId];
 
@@ -721,9 +747,11 @@ export const commonMoves = {
         const companionsCount = fpPlayer?.fellowshipArea
             ? fpPlayer.fellowshipArea.length
             : 0;
-        G.twilightPool += siteCost + companionsCount;
+        const addedTwilight = siteCost + companionsCount;
+        G.twilightPool += addedTwilight;
 
-        G.statusMessage = `Nouveau site révélé par l'Ombre ! La compagnie avance en ${playedSite.name} (+${siteCost + companionsCount} Crépuscule).`;
+        console.log(`🗺️ [moves.playSite] Site ${playedSite.name} placé sur la case ${targetIndex + 1}. +${addedTwilight} Crépuscule ajouté.`);
+        G.statusMessage = `Nouveau site révélé par l'Ombre ! La compagnie avance en ${playedSite.name} (+${addedTwilight} Crépuscule).`;
 
         if (ctx.phase === 'regroup') {
             G.skirmishes = [];
@@ -802,6 +830,7 @@ export const commonMoves = {
         const sourceTitle = sourceHost.title || sourceHost.name || 'son hôte';
         const targetTitle = targetHost.title || targetHost.name || 'sa cible';
 
+        console.log(`🔀 [moves.transferAttachment] ${attachmentTitle} transféré de ${sourceTitle} à ${targetTitle}.`);
         G.statusMessage = `${attachmentTitle} est transféré de ${sourceTitle} vers ${targetTitle} (Coût : ${cost} Crépuscule).`;
     },
 };

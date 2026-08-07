@@ -1,6 +1,6 @@
 import type { FnContext } from 'boardgame.io';
 
-export type CardKind = 'FREE_PEOPLES' | 'SHADOW';
+export type CardKind = 'FREE_PEOPLES' | 'SHADOW' | 'NONE';
 
 export type CardKeyword =
     | 'AID'
@@ -60,7 +60,8 @@ export type CardType =
     | 'FOLLOWER'
     | 'MINION'
     | 'POSSESSION_CHARACTER'
-    | 'POSSESSION_SUPPORT';
+    | 'POSSESSION_SUPPORT'
+    | 'THE-ONE-RING';
 
 export type CardSubtype =
     | 'ARMOR'
@@ -79,7 +80,8 @@ export type CardSubtype =
     | 'RANGED-WEAPON'
     | 'RING'
     | 'SHIELD'
-    | 'STAFF';
+    | 'STAFF'
+    | 'THE-ONE-RING';
 
 export type CardRace =
     | 'BALROG'
@@ -125,7 +127,7 @@ export interface CardState {
     kind: CardKind;
     keywords?: CardKeyword[];
     race?: CardRace;
-    twilightCost: number;
+    twilightCost?: number;
     strength?: number;
     vitality?: number;
     resistance?: number;
@@ -140,6 +142,8 @@ export interface CardState {
     attachments?: CardState[];
     name?: string;
     wounds?: number;
+    isStartingMember?: boolean;
+    isFaceDown?: boolean;
 }
 
 export interface PlayerProfile {
@@ -192,6 +196,12 @@ export interface GameState {
     regroupStep?: 'ACTION_WINDOW' | 'SHADOW_REFILL' | 'FP_DECISION' | 'FP_REFILL';
     burdens: number;
     fellowshipCardsDrawn: number;
+    setupState?: {
+        bids: Record<string, number | null>;
+        auctionWinnerId?: string;
+        mulligans: Record<string, boolean | null>;
+        step: 'BIDDING' | 'CHOOSING_FIRST' | 'AWAITING_SITE' | 'MULLIGAN' | 'COMPLETE';
+    };
 }
 
 export interface KeywordData {

@@ -21,6 +21,7 @@ export const canAttachToCharacter = (type?: CardType): boolean => {
     return (
         type === 'POSSESSION_CHARACTER' ||
         type === 'ARTIFACT_CHARACTER' ||
-        type === 'CONDITION_CHARACTER'
+        type === 'CONDITION_CHARACTER' ||
+        type === 'THE-ONE-RING'
     );
 };

@@ -36,7 +36,8 @@ const isAttachedToCharacter = (type?: string) => {
     return (
         type === 'POSSESSION_CHARACTER' ||
         type === 'ARTIFACT_CHARACTER' ||
-        type === 'CONDITION_CHARACTER'
+        type === 'CONDITION_CHARACTER' ||
+        type === 'THE-ONE-RING'
     );
 };
 

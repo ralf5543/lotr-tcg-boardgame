@@ -234,6 +234,12 @@ export const GameBoard: React.FC<GameBoardProps> = ({
                                 card={hoveredData.card as CardState}
                                 size="lg"
                                 currentSiteIndex={currentSiteIndex}
+                                isFaceDown={
+                                    hoveredData.card.isOpponent
+                                        ? (hoveredData.card as CardState)
+                                              ?.isFaceDown
+                                        : false
+                                }
                             />
                         )}
                     </S.HoveredCardsZone>
@@ -327,7 +333,9 @@ export const GameBoard: React.FC<GameBoardProps> = ({
                             onPlayCard={(idx) => {
                                 if (moves.playCard) moves.playCard(idx);
                             }}
-                            onDiscardCard={(index) => moves.discardCardFromHand(index)}
+                            onDiscardCard={(index) =>
+                                moves.discardCardFromHand(index)
+                            }
                         />
                     }
                     sitesView={<SitesPicker sites={me.sitesDeck || []} />}
