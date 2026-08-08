@@ -1,6 +1,6 @@
 import { createContext, useContext } from 'react';
 
-export type Faction = 'FREE_PEOPLES' | 'SHADOW';
+export type Faction = 'FREE_PEOPLE' | 'SHADOW';
 
 interface FactionContextType {
     currentPlayer: string;

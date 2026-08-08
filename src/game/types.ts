@@ -1,6 +1,6 @@
 import type { FnContext } from 'boardgame.io';
 
-export type CardKind = 'FREE_PEOPLES' | 'SHADOW' | 'NONE';
+export type CardKind = 'FREE_PEOPLE' | 'SHADOW' | 'NONE';
 
 export type CardKeyword =
     | 'AID'

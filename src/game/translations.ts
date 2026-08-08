@@ -23,7 +23,7 @@ export const TRANSLATIONS = {
     },
 
     kind: {
-        FREE_PEOPLES: 'Peuples Libres',
+        FREE_PEOPLE: 'Peuples Libres',
         SHADOW: 'Ombre',
     } as Record<CardKind, string>,
 

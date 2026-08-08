@@ -58,7 +58,7 @@ export const GameBoard: React.FC<GameBoardProps> = ({
 
     const fpPlayerId = G.fpPlayerId || '0';
     const isLocalFP = myId === fpPlayerId;
-    const currentFaction = isLocalFP ? 'FREE_PEOPLES' : 'SHADOW';
+    const currentFaction = isLocalFP ? 'FREE_PEOPLE' : 'SHADOW';
 
     const me = G.players[myId] || {
         deck: [],

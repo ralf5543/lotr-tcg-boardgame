@@ -8,7 +8,7 @@ export function CustomAssetCursor() {
     const { myPlayerId, fpPlayerId } = useFaction();
     
     // 🟢 DÉDUCTION DU RÔLE DE FACTION
-    const playerFaction: Faction = myPlayerId === fpPlayerId ? 'FREE_PEOPLES' : 'SHADOW';
+    const playerFaction: Faction = myPlayerId === fpPlayerId ? 'FREE_PEOPLE' : 'SHADOW';
 
     const [cursorState, setCursorState] = useState<CursorState>('DEFAULT');
     const [isInteractive, setIsInteractive] = useState(false);
@@ -62,7 +62,7 @@ export function CustomAssetCursor() {
     }, []);
 
     // 🟢 Nom exact de la faction pour les assets d'images
-    const factionSuffix = playerFaction === 'SHADOW' ? 'shadow' : 'FREE_PEOPLES';
+    const factionSuffix = playerFaction === 'SHADOW' ? 'SHADOW' : 'FREE_PEOPLE';
 
     return (
         <>
@@ -117,7 +117,7 @@ const CursorImageWrapper = styled.div<WrapperProps>`
 
     /* OMBRE DE BASE (selon faction) */
     ${(props) =>
-        props.$playerFaction === 'FREE_PEOPLES'
+        props.$playerFaction === 'FREE_PEOPLE'
             ? css`
                 filter: drop-shadow(-2px 4px 2px rgba(0, 0, 0, 1));
               `
@@ -128,7 +128,7 @@ const CursorImageWrapper = styled.div<WrapperProps>`
     /* 🟢 EFFET DE LUMIÈRE / SURBRILLANCE AU SURVOL INTERACTIF */
     ${(props) =>
         props.$isInteractive &&
-        (props.$playerFaction === 'FREE_PEOPLES'
+        (props.$playerFaction === 'FREE_PEOPLE'
             ? css`
                 filter: drop-shadow(0px 0px 6px rgba(226, 192, 68, 0.9))
                         drop-shadow(-2px 4px 2px rgba(0, 0, 0, 1))

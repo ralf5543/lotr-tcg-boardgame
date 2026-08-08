@@ -85,7 +85,7 @@ export const Hand: React.FC<HandProps> = ({
                     ? null
                     : hand.map((card, idx) => {
                           const isMatchingPlayerRole = isFreePeoplesPlayer
-                              ? card.kind === 'FREE_PEOPLES'
+                              ? card.kind === 'FREE_PEOPLE'
                               : card.kind === 'SHADOW';
 
                           const { angle, translateY, zIndex } = getFanStyles(

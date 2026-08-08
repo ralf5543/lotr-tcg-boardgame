@@ -67,7 +67,7 @@ export const CardContainer = styled.div<CardContainerProps>`
                 return `url(interface/cards_backgrounds/${props.$culture}_freeps_character.webp)`;
             } else if (props.$type === 'MINION') {
                 return `url(interface/cards_backgrounds/${props.$culture}_shadow_character.webp)`;
-            } else if (props.$kind === 'FREE_PEOPLES') {
+            } else if (props.$kind === 'FREE_PEOPLE') {
                 return `url(interface/cards_backgrounds/${props.$culture}_freeps_modifier.webp)`;
             } else {
                 return `url(interface/cards_backgrounds/${props.$culture}_shadow_modifier.webp)`;

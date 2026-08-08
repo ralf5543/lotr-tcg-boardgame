@@ -7,7 +7,7 @@ export type CardOrigin = 'HAND' | 'BOARD' | 'ATTACHMENT' | 'BATTLEFIELD';
 export interface DraggedCardData {
     card: CardState | SiteCardState;
     index: number;
-    kind?: 'FREE_PEOPLES' | 'SHADOW';
+    kind?: 'FREE_PEOPLE' | 'SHADOW';
     origin: CardOrigin;
     orientation: CardOrientation;
     parentId?: string;

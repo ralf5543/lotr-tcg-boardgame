@@ -186,7 +186,7 @@ export const commonMoves = {
         const cost = Number(card.twilightCost) || 0;
 
         if (isFP) {
-            if (card.kind !== 'FREE_PEOPLES') return 'INVALID_MOVE';
+            if (card.kind !== 'FREE_PEOPLE') return 'INVALID_MOVE';
             G.twilightPool += cost;
         } else {
             if (card.kind !== 'SHADOW') return 'INVALID_MOVE';
@@ -245,7 +245,7 @@ export const commonMoves = {
 
         // 1. JOUER UNE CARTE PEUPLES LIBRES
         if (isFP) {
-            if (card.kind !== 'FREE_PEOPLES') return 'INVALID_MOVE';
+            if (card.kind !== 'FREE_PEOPLE') return 'INVALID_MOVE';
 
             const cost = Number(card.twilightCost) || 0;
             const [playedCard] = player.hand.splice(cardIndex, 1);
@@ -421,8 +421,7 @@ export const commonMoves = {
         }
 
         if (G.regroupStep === 'FP_REFILL' || !G.regroupStep) {
-            console.log('🔄 [moves.confirmHandRefill] Fin du tour complet. Nettoyage du champ de bataille et passage de rôle.');
-            const shadowId = G.fpPlayerId === '0' ? '1' : '0';
+          const shadowId = G.fpPlayerId === '0' ? '1' : '0';
             const shadowPlayer = G.players[shadowId];
 
             if (shadowPlayer) {
@@ -451,14 +450,12 @@ export const commonMoves = {
 
     confirmEndPhase: ({ G, events }: LotrMoveContext) => {
         if (G.pendingPhaseEnd) {
-            console.log('✅ [moves.confirmEndPhase] Phase terminée confirmée.');
             G.pendingPhaseEnd = false;
             events?.endPhase?.();
         }
     },
 
     finishSkirmishResolution: ({ G, ctx, events }: LotrMoveContext) => {
-        console.log('⚔️ [moves.finishSkirmishResolution] Clôture escarmouche.');
         finishSkirmishResolution(G, ctx, events);
     },
 
@@ -473,18 +470,15 @@ export const commonMoves = {
         const targetCard = companion || minion;
 
         if (targetCard) {
-            console.log(`💥 [moves.applyWound] Blessure appliquée à ${targetCard.title || targetCard.name}`);
             applyWoundToCard(G, targetCard, 1);
         }
     },
 
     devSetTwilight: ({ G }: LotrMoveContext, amount: number) => {
-        console.log(`🔧 [DEV] Twilight ajusté à ${amount}`);
         G.twilightPool = Math.max(0, amount);
     },
 
     devSetPhase: ({ G, events }: LotrPhaseContext, targetPhase: string) => {
-        console.log(`🔧 [DEV] Forçage de la phase vers : ${targetPhase}`);
         G.actionWindow = undefined;
         G.skirmishes = [];
         G.activeSkirmishId = undefined;
@@ -502,7 +496,6 @@ export const commonMoves = {
     },
 
     devForceEndPhase: ({ events }: LotrMoveContext) => {
-        console.log('🔧 [DEV] Forçage fin de phase.');
         if (events) {
             events.setActivePlayers?.({ value: { '0': 'play', '1': 'play' } });
             events.endPhase?.();
@@ -510,7 +503,6 @@ export const commonMoves = {
     },
 
     devLoadPreset: ({ G }: LotrMoveContext, presetType: DevPresetType) => {
-        console.log(`🔧 [DEV] Chargement du preset : ${presetType}`);
         const fpId = G.fpPlayerId || '0';
         const fpPlayer = G.players[fpId];
 
@@ -532,7 +524,7 @@ export const commonMoves = {
                     title: 'Frodon',
                     subtitle: 'Aventurier Malgré Lui',
                     imageUrl: '/cards_visuals/lotr2c102.jpg',
-                    kind: 'FREE_PEOPLES',
+                    kind: 'FREE_PEOPLE',
                     type: 'COMPANION',
                     race: 'HOBBIT',
                     keywords: ['RING-BEARER'],
@@ -554,7 +546,7 @@ export const commonMoves = {
                     subtitle: 'Vertefeuille',
                     keywords: ['ARCHER'],
                     imageUrl: '/cards_visuals/lotr1r50.jpg',
-                    kind: 'FREE_PEOPLES',
+                    kind: 'FREE_PEOPLE',
                     signet: 'FRODO',
                     resistance: 6,
                     race: 'ELF',
@@ -571,7 +563,7 @@ export const commonMoves = {
                     title: 'Gimli',
                     subtitle: 'Fils de Glóin',
                     imageUrl: '/cards_visuals/lotr1r13.jpg',
-                    kind: 'FREE_PEOPLES',
+                    kind: 'FREE_PEOPLE',
                     keywords: ['DAMAGE'],
                     signet: 'GANDALF',
                     resistance: 6,
@@ -631,7 +623,6 @@ export const commonMoves = {
         const isFellowship = ctx.phase === 'fellowship';
         const drawn = drawCardsForPlayer(G, player, count, isFellowship);
 
-        console.log(`🎴 [moves.drawCard] Joueur ${targetId} a pioché ${drawn} carte(s).`);
 
         if (drawn === 0 && isFellowship && G.fellowshipCardsDrawn >= 4) {
             G.statusMessage =
@@ -665,7 +656,6 @@ export const commonMoves = {
 
         const [movedCard] = list.splice(fromIndex, 1);
         list.splice(toIndex, 0, movedCard);
-        console.log(`🔄 [moves.reorderFellowship] Carte réordonnée dans la compagnie de ${fromIndex} vers ${toIndex}.`);
     },
 
     playSite: (
@@ -735,7 +725,6 @@ export const commonMoves = {
         const addedTwilight = siteCost + companionsCount;
         G.twilightPool += addedTwilight;
 
-        console.log(`🗺️ [moves.playSite] Site ${playedSite.name} placé sur la case ${targetIndex + 1}. +${addedTwilight} Crépuscule ajouté.`);
         G.statusMessage = `Nouveau site révélé par l'Ombre ! La compagnie avance en ${playedSite.name} (+${addedTwilight} Crépuscule).`;
 
         if (ctx.phase === 'regroup') {

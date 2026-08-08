@@ -1,163 +1,214 @@
 import fs from 'fs';
-import readline from 'readline';
 import path from 'path';
 
-// Encodage 'latin1' pour réparer automatiquement les caractères accentués cassés (ISO-8859-1)
 const CSV_PATH = path.join(process.cwd(), 'cards.csv'); 
-const OUTPUT_JSON_PATH = path.join(process.cwd(), 'src/data/cards.json');
+const OUTPUT_CARDS_PATH = path.join(process.cwd(), 'data/cards.json');
+const OUTPUT_SITES_PATH = path.join(process.cwd(), 'data/sites.json');
 
-// Helper pour nettoyer les guillemets et espaces du CSV
-function cleanValue(val) {
-    if (!val) return '';
-    let cleaned = val.trim();
-    if (cleaned.startsWith('"') && cleaned.endsWith('"')) {
-        cleaned = cleaned.slice(1, -1);
-    }
-    return cleaned.replace(/""/g, '"').trim();
-}
-
-// Analyse d'une ligne CSV en tenant compte des virgules entre guillemets
-function parseCsvLine(line) {
-    const result = [];
-    let cur = '';
+// Parser CSV RFC-4180
+function parseCsvContent(content) {
+    const rows = [];
+    let currentRow = [];
+    let currentCell = '';
     let inQuotes = false;
 
-    for (let i = 0; i < line.length; i++) {
-        const char = line[i];
+    for (let i = 0; i < content.length; i++) {
+        const char = content[i];
+        const nextChar = content[i + 1];
+
         if (char === '"') {
-            inQuotes = !inQuotes;
-            cur += char;
+            if (inQuotes && nextChar === '"') {
+                currentCell += '"';
+                i++;
+            } else {
+                inQuotes = !inQuotes;
+            }
         } else if (char === ',' && !inQuotes) {
-            result.push(cleanValue(cur));
-            cur = '';
+            currentRow.push(currentCell.trim());
+            currentCell = '';
+        } else if ((char === '\r' || char === '\n') && !inQuotes) {
+            if (char === '\r' && nextChar === '\n') i++;
+            currentRow.push(currentCell.trim());
+            if (currentRow.some(cell => cell.length > 0)) rows.push(currentRow);
+            currentRow = [];
+            currentCell = '';
         } else {
-            cur += char;
+            currentCell += char;
         }
     }
-    result.push(cleanValue(cur));
-    return result;
+
+    if (currentCell || currentRow.length > 0) {
+        currentRow.push(currentCell.trim());
+        rows.push(currentRow);
+    }
+
+    return rows;
 }
 
-// Mapping de culture CSV vers ton enum interne
+function cleanLoreText(text) {
+    if (!text) return undefined;
+    let cleaned = text.trim().replace(/^["'«»“”‘’\s]+|["'«»“”‘’\s]+$/g, '').trim();
+    return cleaned.length > 0 ? cleaned : undefined;
+}
+
+function parseSignet(bottomIcon) {
+    if (!bottomIcon || !bottomIcon.startsWith('Signet_')) return undefined;
+    return bottomIcon.replace('Signet_', '').toUpperCase();
+}
+
 function mapCulture(cultureStr) {
-    if (!cultureStr) return undefined;
-    const c = cultureStr.toUpperCase();
-    if (c === 'DWARVEN') return 'DWARVEN';
-    if (c === 'ELVEN') return 'ELVEN';
-    if (c === 'GANDALF') return 'GANDALF';
-    if (c === 'GONDOR') return 'GONDOR';
-    if (c === 'SHIRE') return 'SHIRE';
-    if (c === 'ISENGARD') return 'ISENGARD';
-    if (c === 'MORIA') return 'MORIA';
-    if (c === 'SAURON') return 'SAURON';
-    if (c === 'RINGWRAITH') return 'RINGWRAITH';
-    if (c === 'GOLLUM') return 'GOLLUM';
-    return c;
-}
-
-// Mapping de type CSV vers ton type interne
-function mapType(typeStr) {
-    if (!typeStr) return 'COMPANION';
-    const t = typeStr.toUpperCase();
-    if (t === 'SITE') return 'SITE';
-    if (t === 'POSSESSION') return 'POSSESSION';
-    if (t === 'EVENT') return 'EVENT';
-    if (t === 'COMPANION') return 'COMPANION';
-    if (t === 'MINION') return 'MINION';
-    if (t === 'ALLY') return 'ALLY';
-    if (t === 'CONDITION') return 'CONDITION';
-    return t;
+    return cultureStr ? cultureStr.toUpperCase() : undefined;
 }
 
 async function convert() {
-    console.log('🔄 Lecture et conversion du CSV en cours...');
+    console.log('🔄 Lecture et séparation des cartes...');
 
-    // Utilisation de l'encodage 'latin1' pour réparer les accents (é, è, à, œ, etc.)
-    const fileStream = fs.createReadStream(CSV_PATH, { encoding: 'latin1' });
-    const rl = readline.createInterface({
-        input: fileStream,
-        crlfDelay: Infinity,
-    });
+    const fileBuffer = fs.readFileSync(CSV_PATH);
+    const decoder = new TextDecoder('windows-1252');
+    const fileContent = decoder.decode(fileBuffer);
 
-    let headers = [];
-    const cards = [];
-    let isFirstLine = true;
+    const allRows = parseCsvContent(fileContent);
 
-    for await (const line of rl) {
-        if (!line.trim()) continue;
+    if (allRows.length === 0) {
+        console.error('❌ Le fichier CSV est vide !');
+        return;
+    }
 
-        const row = parseCsvLine(line);
+    const headers = allRows[0].map(h => h.trim());
+    const cardMap = new Map();
+    const siteMap = new Map();
 
-        if (isFirstLine) {
-            headers = row;
-            isFirstLine = false;
-            continue;
-        }
+    for (let i = 1; i < allRows.length; i++) {
+        const row = allRows[i];
+        if (row.length < 2) continue;
 
-        // Création d'un objet map par nom de colonne
         const data = {};
         headers.forEach((h, index) => {
             data[h] = row[index] || '';
         });
 
-        // Détermination de la faction / Kind (FREE_PEOPLE vs SHADOW vs SITE)
-        const rawType = mapType(data['Type']);
+        const cardId = data['Collectors Info'];
+        if (!cardId) continue;
+
+        const type = (data['Type'] || '').toUpperCase();
+        const isSite = type === 'SITE';
+
+        const frenchText = data['French Text'] || '';
+        const englishText = data['Text'] || '';
+
+        // Sélection de la map cible (sites ou cartes standard)
+        const targetMap = isSite ? siteMap : cardMap;
+
+        // Dédoublonnage : on conserve la version la plus complète
+        if (targetMap.has(cardId)) {
+            const existing = targetMap.get(cardId);
+            const existingTextLen = (existing.gameText || '').length;
+            const newTextLen = (frenchText || englishText).length;
+            if (newTextLen <= existingTextLen) continue;
+        }
+
+        // Faction / Kind
         let kind = 'FREE_PEOPLE';
-        if (['ISENGARD', 'MORIA', 'SAURON', 'RINGWRAITH', 'GOLLUM'].includes(data['Culture']?.toUpperCase())) {
+        const shadowCultures = ['ISENGARD', 'MORIA', 'SAURON', 'RINGWRAITH', 'GOLLUM', 'DUNLAND', 'RAIDER'];
+        if (shadowCultures.includes((data['Culture'] || '').toUpperCase())) {
             kind = 'SHADOW';
         }
-        if (rawType === 'SITE') {
+        if (isSite) {
             kind = 'SITE';
         }
 
-        // On privilégie les textes français s'ils existent, sinon anglais
         const title = data['French Title'] || data['Title'];
         const subtitle = data['French Subtitle'] || data['Subtitle'] || undefined;
-        const gameText = data['French Text'] || data['Text'];
-        const loreText = data['French Lore'] || data['Lore'] || undefined;
+        const gameText = frenchText || englishText;
+        const loreText = cleanLoreText(data['French Lore'] || data['Lore']);
 
-        // Construction de l'objet carte compatible TypeScript / React
+        const rawImageCode = (data['Image'] || '').trim();
+        const imageUrl = rawImageCode ? `/cards_visuals/o_${rawImageCode}.jpg` : undefined;
+
         const cardObj = {
-            id: `card_${data['Id']}`,
-            code: data['Collectors Info'],
+            id: cardId,
             set: parseInt(data['Set'], 10) || 0,
+            rarity: data['Rarity'] || undefined,
+            isUnique: data['Unique'] === '1',
+            
             title: title,
             subtitle: subtitle,
             kind: kind,
-            type: rawType,
+            type: type,
             culture: mapCulture(data['Culture']),
             race: data['Race'] ? data['Race'].toUpperCase() : undefined,
-            isUnique: data['Unique'] === '1',
+            signet: parseSignet(data['Bottom Icon']),
+            
             twilightCost: data['Twilight Cost'] !== '' ? parseInt(data['Twilight Cost'], 10) : 0,
             strength: data['Strength'] !== '' ? parseInt(data['Strength'], 10) : undefined,
             vitality: data['Vitality'] !== '' ? parseInt(data['Vitality'], 10) : undefined,
             resistance: data['Resistance'] !== '' ? parseInt(data['Resistance'], 10) : undefined,
+            
+            minionSiteNumber: data['Minion Site Number'] !== '' ? parseInt(data['Minion Site Number'], 10) : undefined,
+            allyHomeSites: data['Ally Home Sites'] || undefined,
             siteNumber: data['Site Number'] !== '' ? parseInt(data['Site Number'], 10) : undefined,
-            imageUrl: data['Image'] ? `/cards/${data['Image']}.webp` : undefined,
-            gameText: gameText,
+            siteArrow: data['Site Arrow'] || undefined,
+
+            imageUrl: imageUrl,                          
+            gameText: gameText || undefined,
             loreText: loreText,
-            // Version originale anglaise stockée si besoin plus tard
-            englishTitle: data['Title'],
+
+            i18n: {
+                en: {
+                    title: data['Title'],
+                    subtitle: data['Subtitle'] || undefined,
+                    gameText: data['Text'] || undefined,
+                    loreText: cleanLoreText(data['Lore']),
+                },
+                fr: {
+                    title: data['French Title'] || undefined,
+                    subtitle: data['French Subtitle'] || undefined,
+                    gameText: data['French Text'] || undefined,
+                    loreText: cleanLoreText(data['French Lore']),
+                },
+                de: {
+                    title: data['German Title'] || undefined,
+                    subtitle: data['German Subtitle'] || undefined,
+                    gameText: data['German Text'] || undefined,
+                    loreText: cleanLoreText(data['German Lore']),
+                },
+                it: {
+                    title: data['Italian Title'] || undefined,
+                    subtitle: data['Italian Subtitle'] || undefined,
+                    gameText: data['Italian Text'] || undefined,
+                    loreText: cleanLoreText(data['Italian Lore']),
+                },
+                es: {
+                    title: data['Spanish Title'] || undefined,
+                    subtitle: data['Spanish Subtitle'] || undefined,
+                    gameText: data['Spanish Text'] || undefined,
+                    loreText: cleanLoreText(data['Spanish Lore']),
+                },
+            }
         };
 
-        // Nettoyage des clés undefined pour avoir un JSON super propre
+        // Supprime les clés undefined
         Object.keys(cardObj).forEach((key) => {
-            if (cardObj[key] === undefined) {
-                delete cardObj[key];
-            }
+            if (cardObj[key] === undefined) delete cardObj[key];
         });
 
-        cards.push(cardObj);
+        targetMap.set(cardId, cardObj);
     }
 
-    // Sauvegarde du fichier JSON
-    const outputDir = path.dirname(OUTPUT_JSON_PATH);
+    const cardsArray = Array.from(cardMap.values());
+    const sitesArray = Array.from(siteMap.values());
+
+    const outputDir = path.dirname(OUTPUT_CARDS_PATH);
     if (!fs.existsSync(outputDir)) {
         fs.mkdirSync(outputDir, { recursive: true });
     }
 
-    fs.writeFileSync(OUTPUT_JSON_PATH, JSON.stringify(cards, null, 2), 'utf-8');
-    console.log(`✅ Conversion réussie ! ${cards.length} cartes générées dans ${OUTPUT_JSON_PATH}`);
+    fs.writeFileSync(OUTPUT_CARDS_PATH, JSON.stringify(cardsArray, null, 2), 'utf-8');
+    fs.writeFileSync(OUTPUT_SITES_PATH, JSON.stringify(sitesArray, null, 2), 'utf-8');
+
+    console.log(`✅ Conversion réussie !`);
+    console.log(`🃏 Cartes de jeu (Free & Shadow) : ${cardsArray.length} -> ${OUTPUT_CARDS_PATH}`);
+    console.log(`🏞️ Cartes de Sites : ${sitesArray.length} -> ${OUTPUT_SITES_PATH}`);
 }
 
 convert().catch(console.error);

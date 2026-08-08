@@ -54,7 +54,7 @@ export const getEffectiveResistance = (card: CardState, burdens: number = 0): nu
     }
 
     // 2. Soustraction des fardeaux globaux pour les cartes FP
-    if (card.kind === 'FREE_PEOPLES') {
+    if (card.kind === 'FREE_PEOPLE') {
         resistance -= burdens;
     }
 

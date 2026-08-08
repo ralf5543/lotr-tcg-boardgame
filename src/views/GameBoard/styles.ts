@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 
-export const BoardContainer = styled.div<{ $faction: 'FREE_PEOPLES' | 'SHADOW' }>`
+export const BoardContainer = styled.div<{ $faction: 'FREE_PEOPLE' | 'SHADOW' }>`
     display: flex;
     height: 100%;
     flex-direction: column;
