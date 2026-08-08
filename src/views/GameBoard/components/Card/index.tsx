@@ -269,11 +269,11 @@ export const Card: React.FC<CardProps> = ({
             {card.resistance !== undefined && !card.signet && size !== 'sm' && (
                 /* Conversion explicite en booléen strict avec Boolean() */
                 <S.CardResistance $isRingBearer={Boolean(isRingBearer)}>
-                    {card.resistance}
+                    {card.resistance }
                 </S.CardResistance>
             )}
 
-            {card.resistance !== undefined && size === 'sm' && (
+            {effectiveResistance !== undefined && size === 'sm' && (
                 <S.ResistanceWrapper>
                     <S.CardResistance $isRingBearer={Boolean(isRingBearer)}>
                         {card.type === 'POSSESSION_CHARACTER' ||

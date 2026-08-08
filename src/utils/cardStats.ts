@@ -42,7 +42,7 @@ export const getEffectiveStrength = (card: CardState): number => {
  * Calcule la résistance restante
  */
 export const getEffectiveResistance = (card: CardState, burdens: number = 0): number => {
-    let resistance = Number(card.resistance) || 0;
+    let resistance = Number(card.resistance) || 6;
 
     // 1. Ajout des bonus des attachements (ex: Anneau, objets, etc.)
     if (card.attachments) {

@@ -1,4 +1,4 @@
-import rawCards from '../data/cards.json'; // Ajuste le chemin selon la structure exacte de tes dossiers
+import rawCards from '../data/cards.json';
 import type { CardState, SiteCardState } from './types';
 
 // Exportation de la base complète issue du CSV

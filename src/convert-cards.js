@@ -107,12 +107,31 @@ async function convert() {
             if (newTextLen <= existingTextLen) continue;
         }
 
-        // Faction / Kind
+        // --- Détermination de Faction / Kind ---
+        const culture = (data['Culture'] || '').toUpperCase();
+        const background = (data['Background'] || '').trim();
+
+        // Cultures Shadow standard
+        const shadowCultures = [
+            'ISENGARD', 'MORIA', 'SAURON', 'RINGWRAITH', 
+            'DUNLAND', 'RAIDER', 'MEN', 'ORC', 'URUK-HAI'
+        ];
+
         let kind = 'FREE_PEOPLE';
-        const shadowCultures = ['ISENGARD', 'MORIA', 'SAURON', 'RINGWRAITH', 'GOLLUM', 'DUNLAND', 'RAIDER'];
-        if (shadowCultures.includes((data['Culture'] || '').toUpperCase())) {
+
+        if (shadowCultures.includes(culture)) {
             kind = 'SHADOW';
+        } else if (culture === 'GOLLUM') {
+            // Cas particulier Gollum/Sméagol :
+            // Si le background commence par "Gollum_", c'est une carte Shadow.
+            // Sinon (ex: "Smeagol_"), elle appartient aux Peuples Libres (FREE_PEOPLE).
+            if (background.toLowerCase().startsWith('gollum_')) {
+                kind = 'SHADOW';
+            } else {
+                kind = 'FREE_PEOPLE';
+            }
         }
+
         if (isSite) {
             kind = 'SITE';
         }
