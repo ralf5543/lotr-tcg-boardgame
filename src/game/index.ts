@@ -240,7 +240,6 @@ export const setupGame = ({ random }: { random: any }): GameState => {
         path: [null, null, null, null, null, null, null, null, null],
         battlefield: [],
         players,
-        burdens: 0,
         fellowshipCardsDrawn: 0,
 
         // État de la mise en place

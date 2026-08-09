@@ -526,7 +526,6 @@ export const commonMoves = {
         if (presetType === 'ARCHERY_TEST' && fpPlayer) {
             G.twilightPool = 8;
 
-            // 🟢 Application des fardeaux directement au joueur FP
             fpPlayer.burdens = 3;
 
             Object.keys(G.players).forEach((pId) => {

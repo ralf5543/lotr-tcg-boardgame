@@ -195,10 +195,6 @@ export const Card: React.FC<CardProps> = ({
     // 🟢 État permanent : est-ce que la carte a des blessures ?
     const hasWounds = (card.wounds || 0) > 0;
 
-    // Picto de sous-type principal pour les cartes en petite taille
-    const mainSubtype =
-        card.subtype && card.subtype.length > 0 ? card.subtype[0] : null;
-
     return (
         <S.CardContainer
             $culture={card.culture}
@@ -349,7 +345,7 @@ export const Card: React.FC<CardProps> = ({
                 </S.CardResistance>
             )}
 
-            {effectiveResistance !== undefined && size === 'sm' && (
+            {effectiveResistance !== undefined && card.resistance !== undefined && size === 'sm' && (
                 <S.ResistanceWrapper>
                     <S.CardResistance $isRingBearer={Boolean(isRingBearer)}>
                         {card.type === 'POSSESSION' ||
@@ -389,10 +385,10 @@ export const Card: React.FC<CardProps> = ({
                 <S.CardSignet $signet={card.signet} />
             )}
 
-            {mainSubtype && size === 'sm' && (
+            {card.subtype && card.subtype !== 'SUPPORT-AREA' && size === 'sm' && (
                 <S.AttachmentSubtype
-                    src={`/interface/pictos/${mainSubtype}.webp`}
-                    alt={mainSubtype}
+                    src={`/interface/pictos/${card.subtype}.webp`}
+                    alt={card.subtype}
                     draggable={false}
                     width="16px"
                 />

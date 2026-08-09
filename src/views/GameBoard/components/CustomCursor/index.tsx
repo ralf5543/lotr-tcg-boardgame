@@ -189,7 +189,6 @@ const CursorPointed = styled.div`
     left: 0;
     width: 4px;
     height: 4px;
-    background-color: red;
     border-radius: 50%;
     pointer-events: none;
     z-index: 100001;
