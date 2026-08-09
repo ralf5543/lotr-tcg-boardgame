@@ -130,9 +130,6 @@ const PLAYER_0_SHADOW: string[] = [
     '1R143',
 ];
 
-console.log('PLAYER_0_FREE_PEOPLE.length : ', PLAYER_0_FREE_PEOPLE.length);
-console.log('PLAYER_0_SHADOW.length : ', PLAYER_0_SHADOW.length);
-
 const PLAYER_0_FULL_DECK = [...PLAYER_0_FREE_PEOPLE, ...PLAYER_0_SHADOW];
 
 const PLAYER_1_FREE_PEOPLE: string[] = ['0P25'];

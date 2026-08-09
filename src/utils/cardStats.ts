@@ -56,7 +56,14 @@ export const getEffectiveResistance = (
                 resistance += Number(att.resistance);
             }
         });
-        // La résistance ne descend pas en dessous de 0
-        return Math.max(0, resistance);
     }
+
+    // 2. Soustraction des fardeaux (burdens) du joueur
+    // Seuls les compagnons subissent l'impact des fardeaux sur leur résistance
+    if (card.type === 'COMPANION' || card.type === 'ALLY') {
+        resistance -= burdens;
+    }
+
+    // 3. La résistance finale ne descend jamais en dessous de 0
+    return Math.max(0, resistance);
 };

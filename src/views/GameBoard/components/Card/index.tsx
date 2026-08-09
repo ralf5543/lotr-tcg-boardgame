@@ -349,7 +349,7 @@ export const Card: React.FC<CardProps> = ({
                 </S.CardResistance>
             )}
 
-            {card.resistance !== undefined && size === 'sm' && (
+            {effectiveResistance !== undefined && size === 'sm' && (
                 <S.ResistanceWrapper>
                     <S.CardResistance $isRingBearer={Boolean(isRingBearer)}>
                         {card.type === 'POSSESSION' ||
