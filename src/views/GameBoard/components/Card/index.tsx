@@ -199,10 +199,12 @@ export const Card: React.FC<CardProps> = ({
         <S.CardContainer
             $culture={card.culture}
             $type={card.type}
+            $subtype={card.subtype}
             $kind={card.kind}
             $isShadow={isShadow}
             $isPlayable={isPlayable}
             $size={size}
+            $title={card.title}
             $isRoaming={isRoaming}
             $isWounded={isWounded}
             $isOpponent={isOpponent}
@@ -345,7 +347,7 @@ export const Card: React.FC<CardProps> = ({
                 </S.CardResistance>
             )}
 
-            {effectiveResistance !== undefined && card.resistance !== undefined && size === 'sm' && (
+            {effectiveResistance !== undefined && size === 'sm' && (
                 <S.ResistanceWrapper>
                     <S.CardResistance $isRingBearer={Boolean(isRingBearer)}>
                         {card.type === 'POSSESSION' ||

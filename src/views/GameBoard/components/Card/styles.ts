@@ -3,6 +3,8 @@ import styled, { css, keyframes } from 'styled-components';
 export interface CardContainerProps {
     $culture: string;
     $type: string;
+    $subtype?: string;
+    $title?: string;
     $signet?: string;
     $isShadow?: boolean;
     $isPlayable?: boolean;
@@ -28,17 +30,18 @@ const isForSupportArea = (type?: string, subtype?: string) => {
     );
 };
 
-const isAttachedToCharacter = (type?: string, title?: string, subtype?: string) => {
+const isAttachedToCharacter = (type?: string, subtype?: string, title?: string) => {
     if (!type) return false;
+
+    if (subtype === 'SUPPORT-AREA') return false;
+
     return (
-        (type === 'POSSESSION' ||
-            type === 'ARTIFACT' ||
-            type === 'CONDITION' ||
-        title === 'The One Ring') &&
-        subtype !== 'SUPPORT-AREA'
+        type === 'POSSESSION' ||
+        type === 'ARTIFACT' ||
+        type === 'CONDITION' ||
+        title === 'The One Ring'
     );
 };
-
 // 💥 ANIMATION D'IMPACT DYNAMIQUE (RECUL PHYSIQUE)
 const woundImpactAnimation = (recoilY: number) => keyframes`
   0% {
@@ -160,7 +163,7 @@ export const CardContainer = styled.div<CardContainerProps>`
                 );
             }
 
-            ${isForSupportArea(props.$type) &&
+            ${isForSupportArea(props.$type, props.$subtype) &&
             css`
                 border-radius: 8px;
 
@@ -182,7 +185,7 @@ export const CardContainer = styled.div<CardContainerProps>`
                 padding-inline: 7px;
                 z-index: 1;
 
-                ${isForSupportArea(props.$type) &&
+                ${isForSupportArea(props.$type, props.$subtype) &&
                 css`
                     inset: 0 70px 0 0;
                     width: auto;
@@ -192,7 +195,7 @@ export const CardContainer = styled.div<CardContainerProps>`
             ${CardTitles} {
                 max-width: 86px;
 
-                ${isForSupportArea(props.$type) &&
+                ${isForSupportArea(props.$type, props.$subtype) &&
                 css`
                     inset: 0px 0px 0px 2px;
                 `}
@@ -202,7 +205,7 @@ export const CardContainer = styled.div<CardContainerProps>`
                 font-size: 13px;
                 margin-block-end: 1px;
                 color: white;
-                ${isForSupportArea(props.$type) &&
+                ${isForSupportArea(props.$type, props.$subtype) &&
                 css`
                     font-size: 10px;
                 `}
@@ -221,7 +224,7 @@ export const CardContainer = styled.div<CardContainerProps>`
                 inset: 0;
                 height: auto;
 
-                ${isForSupportArea(props.$type) &&
+                ${isForSupportArea(props.$type, props.$subtype) &&
                 css`
                     inset: 0;
                     height: auto;
@@ -288,7 +291,7 @@ export const CardContainer = styled.div<CardContainerProps>`
             }
 
             /* ======------ Attachment cards ------====== */
-            ${isAttachedToCharacter(props.$type) &&
+            ${isAttachedToCharacter(props.$type, props.$subtype, props.$title) &&
             css`
                 aspect-ratio: initial;
                 border: 0;
