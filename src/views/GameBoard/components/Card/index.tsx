@@ -151,10 +151,9 @@ export const Card: React.FC<CardProps> = ({
 
     const translatedType = card.type ? TRANSLATIONS.type[card.type] || card.type : null;
     
-    // 🟢 GESTION DE SUBTYPE SOUS FORME DE TABLEAU
-    const translatedSubtypes = card.subtype
-        ?.map((sub) => TRANSLATIONS.subtype[sub] || sub)
-        .join(', ');
+   const translatedSubtype = card.subtype 
+    ? (TRANSLATIONS.subtype[card.subtype] || card.subtype)
+    : undefined;
 
     const translatedRace = card.race ? TRANSLATIONS.race[card.race] || card.race : null;
 
@@ -257,10 +256,10 @@ export const Card: React.FC<CardProps> = ({
             {size !== 'sm' && (
                 <S.CardTypes $type={card.type}>
                     {translatedType && <S.CardType $type={card.type}>{translatedType}</S.CardType>}
-                    {translatedSubtypes && (
+                    {translatedSubtype && (
                         <S.CardType>
                             <S.Separator>•</S.Separator>
-                            {translatedSubtypes}
+                            {translatedSubtype}
                         </S.CardType>
                     )}
                     {card.race && (

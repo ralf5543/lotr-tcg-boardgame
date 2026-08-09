@@ -5,6 +5,18 @@ const CSV_PATH = path.join(process.cwd(), 'cards.csv');
 const OUTPUT_CARDS_PATH = path.join(process.cwd(), 'data/cards.json');
 const OUTPUT_SITES_PATH = path.join(process.cwd(), 'data/sites.json');
 
+// Liste canonique des 8 phases / déclencheurs du jeu LotR TCG
+const GAME_PHASES = new Set([
+    'FELLOWSHIP',
+    'SHADOW',
+    'MANEUVER',
+    'ARCHERY',
+    'ASSIGNMENT',
+    'SKIRMISH',
+    'REGROUP',
+    'RESPONSE'
+]);
+
 /**
  * Parser CSV conforme RFC-4180 avec support des guillemets et retours à la ligne
  */
@@ -53,6 +65,18 @@ function cleanLoreText(text) {
     return cleaned.length > 0 ? cleaned : undefined;
 }
 
+/**
+ * Nettoie et formate le texte de jeu pour toutes les langues :
+ * 1. Remplace <br>, <br/>, <br /> par des retours à la ligne (\n)
+ * 2. Remplace <keyword>Texte</keyword> par **Texte** pour le rendu en gras
+ */
+function formatGameText(text) {
+    if (!text) return undefined;
+    return text
+        .replace(/<br\s*\/?>/gi, '\n')
+        .replace(/<keyword>([^<]+)<\/keyword>/gi, '**$1**');
+}
+
 function parseSignet(bottomIcon) {
     if (!bottomIcon || !bottomIcon.startsWith('Signet_')) return undefined;
     return bottomIcon.replace('Signet_', '').toUpperCase();
@@ -63,31 +87,61 @@ function mapCulture(cultureStr) {
 }
 
 /**
- * Extrait et formate la colonne "Class" sous forme de tableau de sous-types.
+ * Analyse la colonne "Class" et le texte anglais pour séparer :
+ * 1. Le sous-type métier (ex: "HAND-WEAPON", "RING") -> string
+ * 2. Les phases de jeu (ex: ["ARCHERY", "RESPONSE"]) -> string[]
  */
-function parseSubtype(classStr) {
-    if (!classStr || !classStr.trim()) return undefined;
+function parseClassAndPhases(classStr, englishText) {
+    const phasesSet = new Set();
+    const subTypeParts = [];
 
-    const subtypes = new Set();
-    const parts = classStr.split(/[,;/]/);
+    // 1. Analyse de la colonne "Class"
+    if (classStr && classStr.trim()) {
+        const parts = classStr.split(/[,;/]/);
+        parts.forEach(part => {
+            const cleanPart = part.trim().toUpperCase().replace(/\s+/g, '-');
+            if (!cleanPart) return;
 
-    parts.forEach(part => {
-        const cleanPart = part.trim().toUpperCase().replace(/\s+/g, '-');
-        if (cleanPart) subtypes.add(cleanPart);
-    });
+            if (GAME_PHASES.has(cleanPart)) {
+                phasesSet.add(cleanPart);
+            } else {
+                subTypeParts.push(cleanPart);
+            }
+        });
+    }
 
-    const resultArray = Array.from(subtypes);
-    return resultArray.length > 0 ? resultArray : undefined;
+    // 2. Extraction des phases depuis le texte anglais (<keyword>Phase:</keyword>)
+    if (englishText) {
+        const keywordRegex = /<keyword>([^<]+)<\/keyword>/gi;
+        let match;
+
+        while ((match = keywordRegex.exec(englishText)) !== null) {
+            // Supprime la ponctuation (ex: "Archery:" -> "ARCHERY")
+            const rawKeyword = match[1].replace(/[:.,]/g, '').trim().toUpperCase();
+
+            if (GAME_PHASES.has(rawKeyword)) {
+                phasesSet.add(rawKeyword);
+            }
+        }
+    }
+
+    const phases = Array.from(phasesSet);
+    const subtype = subTypeParts.length > 0 ? subTypeParts.join('-') : undefined;
+
+    return {
+        subtype,
+        phases: phases.length > 0 ? phases : undefined
+    };
 }
 
 /**
- * Construit un bloc i18n nettoyé d'une langue donnée (omets les clés undefined).
+ * Construit un bloc i18n nettoyé d'une langue donnée.
  */
 function buildLangBlock(title, subtitle, gameText, lore) {
     const block = {
         title: title || undefined,
         subtitle: subtitle || undefined,
-        gameText: gameText || undefined,
+        gameText: formatGameText(gameText),
         loreText: cleanLoreText(lore),
     };
 
@@ -180,6 +234,9 @@ async function convert() {
         const rawImageCode = (data['Image'] || '').trim();
         const imageUrl = rawImageCode ? `/cards_visuals/o_${rawImageCode}.jpg` : undefined;
 
+        // Extraction distincte du sous-type et des phases
+        const { subtype, phases } = parseClassAndPhases(data['Class'], englishText);
+
         // Structure finale de la carte
         const cardObj = {
             id: cardId,
@@ -190,7 +247,8 @@ async function convert() {
             
             kind: kind,
             type: type,
-            subtype: parseSubtype(data['Class']),
+            subtype: subtype,
+            phases: phases,
             culture: mapCulture(data['Culture']),
             race: data['Race'] ? data['Race'].toUpperCase() : undefined,
             signet: parseSignet(bottomIcon),
