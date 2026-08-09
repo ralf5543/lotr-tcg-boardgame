@@ -83,7 +83,9 @@ function parseSignet(bottomIcon) {
 }
 
 function mapCulture(cultureStr) {
-    return cultureStr ? cultureStr.toUpperCase() : undefined;
+    if (!cultureStr) return undefined;
+    const cleanCulture = cultureStr.trim().toUpperCase();
+    return cleanCulture === 'MAN' ? 'MEN' : cleanCulture;
 }
 
 /**
@@ -116,7 +118,6 @@ function parseClassAndPhases(classStr, englishText) {
         let match;
 
         while ((match = keywordRegex.exec(englishText)) !== null) {
-            // Supprime la ponctuation (ex: "Archery:" -> "ARCHERY")
             const rawKeyword = match[1].replace(/[:.,]/g, '').trim().toUpperCase();
 
             if (GAME_PHASES.has(rawKeyword)) {
@@ -132,6 +133,23 @@ function parseClassAndPhases(classStr, englishText) {
         subtype,
         phases: phases.length > 0 ? phases : undefined
     };
+}
+
+/**
+ * Extrait une statistique numérique (valeur absolue de personnage OU modificateur d'attachement via Xxx Text)
+ */
+function parseStat(primaryValue, fallbackText) {
+    if (primaryValue !== '' && primaryValue !== undefined) {
+        const parsed = parseInt(primaryValue, 10);
+        if (!isNaN(parsed)) return parsed;
+    }
+
+    if (fallbackText && fallbackText.trim() !== '') {
+        const parsedFallback = parseInt(fallbackText.trim(), 10);
+        if (!isNaN(parsedFallback)) return parsedFallback;
+    }
+
+    return undefined;
 }
 
 /**
@@ -237,6 +255,11 @@ async function convert() {
         // Extraction distincte du sous-type et des phases
         const { subtype, phases } = parseClassAndPhases(data['Class'], englishText);
 
+        // Resolution des statistiques (Valeurs propres OU Top/Middle/Bottom Text pour attachements)
+        const computedStrength = parseStat(data['Strength'], data['Top Text']);
+        const computedVitality = parseStat(data['Vitality'], data['Middle Text']);
+        const computedResistance = parseStat(data['Resistance'], data['Bottom Text']);
+
         // Structure finale de la carte
         const cardObj = {
             id: cardId,
@@ -254,9 +277,9 @@ async function convert() {
             signet: parseSignet(bottomIcon),
             
             twilightCost: data['Twilight Cost'] !== '' ? parseInt(data['Twilight Cost'], 10) : 0,
-            strength: data['Strength'] !== '' ? parseInt(data['Strength'], 10) : undefined,
-            vitality: data['Vitality'] !== '' ? parseInt(data['Vitality'], 10) : undefined,
-            resistance: data['Resistance'] !== '' ? parseInt(data['Resistance'], 10) : undefined,
+            strength: computedStrength,
+            vitality: computedVitality,
+            resistance: computedResistance,
             
             minionSiteNumber: data['Minion Site Number'] !== '' ? parseInt(data['Minion Site Number'], 10) : undefined,
             allyHomeSites: data['Ally Home Sites'] || undefined,

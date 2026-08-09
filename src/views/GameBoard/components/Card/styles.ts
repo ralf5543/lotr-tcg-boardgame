@@ -20,24 +20,22 @@ const isNotCharacter = (type?: string) =>
     type !== 'MINION' &&
     type !== 'ALLY';
 
-const isForSupportArea = (type?: string) => {
+const isForSupportArea = (type?: string, subtype?: string) => {
     if (!type || type === 'ALLY') return false;
 
     return (
-        type === 'POSSESSION_SUPPORT' ||
-        type === 'FOLLOWER' ||
-        type === 'CONDITION_SUPPORT' ||
-        type === 'ARTIFACT_SUPPORT'
+        subtype === 'SUPPORT-AREA'
     );
 };
 
-const isAttachedToCharacter = (type?: string) => {
+const isAttachedToCharacter = (type?: string, title?: string) => {
     if (!type) return false;
     return (
-        type === 'POSSESSION_CHARACTER' ||
-        type === 'ARTIFACT_CHARACTER' ||
-        type === 'CONDITION_CHARACTER' ||
-        type === 'THE-ONE-RING'
+        type === 'POSSESSION' ||
+        type === 'ARTIFACT' ||
+        type === 'CONDITION' ||
+        title === 'The One Ring' && 
+        subtype !== 'SUPPORT-AREA'
     );
 };
 
@@ -297,22 +295,13 @@ export const CardContainer = styled.div<CardContainerProps>`
                 height: 100%;
                 border-radius: 0;
                 outline: none;
+                background-color: red;
 
                 &::after {
                     content: none;
                 }
 
-                ${CardHeader},
-                ${TextContainer},
-                ${CardTypes},
-                ${CardSignet},
-                ${ResistanceWrapper},
-                ${CardResistance},
-                ${RoamingNumber},
-                ${KeywordsContainer},
-                ${VisualContainer} {
-                    display: none;
-                }
+
 
                 ${VisualContainer} {
                     inset: 0;

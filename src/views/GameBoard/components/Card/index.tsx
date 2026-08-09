@@ -21,7 +21,11 @@ interface CardImageProps {
     draggable?: boolean;
 }
 
-const CardImage: React.FC<CardImageProps> = ({ imageUrl, alt, draggable = false }) => {
+const CardImage: React.FC<CardImageProps> = ({
+    imageUrl,
+    alt,
+    draggable = false,
+}) => {
     // Ordre de priorité des formats à tester
     const extensions = ['.webp', '.jpg', '.png'];
     const [extIndex, setExtIndex] = useState(0);
@@ -93,7 +97,10 @@ export const Card: React.FC<CardProps> = ({
     const { startDrag } = useDrag();
 
     // 🟢 EXTRACTION DES TEXTES TRADUITS DE LA CARTE (avec fallback)
-    const { title, subtitle, gameText, loreText } = getCardText(card, currentLang);
+    const { title, subtitle, gameText, loreText } = getCardText(
+        card,
+        currentLang
+    );
 
     // 🂠 CAS DE LA CARTE FACE CACHÉE : Rendu ultra léger / Placeholder uniquement
     if (isFaceDown) {
@@ -149,13 +156,17 @@ export const Card: React.FC<CardProps> = ({
         setHoveredCard(null);
     };
 
-    const translatedType = card.type ? TRANSLATIONS.type[card.type] || card.type : null;
-    
-   const translatedSubtype = card.subtype 
-    ? (TRANSLATIONS.subtype[card.subtype] || card.subtype)
-    : undefined;
+    const translatedType = card.type
+        ? TRANSLATIONS.type[card.type] || card.type
+        : null;
 
-    const translatedRace = card.race ? TRANSLATIONS.race[card.race] || card.race : null;
+    const translatedSubtype = card.subtype
+        ? TRANSLATIONS.subtype[card.subtype] || card.subtype
+        : undefined;
+
+    const translatedRace = card.race
+        ? TRANSLATIONS.race[card.race] || card.race
+        : null;
 
     const translatedKeywords = card.keywords
         ?.map((kw) => TRANSLATIONS.keyword[kw]?.label || kw)
@@ -185,7 +196,8 @@ export const Card: React.FC<CardProps> = ({
     const hasWounds = (card.wounds || 0) > 0;
 
     // Picto de sous-type principal pour les cartes en petite taille
-    const mainSubtype = card.subtype && card.subtype.length > 0 ? card.subtype[0] : null;
+    const mainSubtype =
+        card.subtype && card.subtype.length > 0 ? card.subtype[0] : null;
 
     return (
         <S.CardContainer
@@ -246,7 +258,7 @@ export const Card: React.FC<CardProps> = ({
                     )}
                 </S.CardTitles>
             </S.CardHeader>
-            
+
             {card.imageUrl && (
                 <S.VisualContainer $type={card.type}>
                     <CardImage imageUrl={card.imageUrl} alt={title ?? ''} />
@@ -255,7 +267,11 @@ export const Card: React.FC<CardProps> = ({
 
             {size !== 'sm' && (
                 <S.CardTypes $type={card.type}>
-                    {translatedType && <S.CardType $type={card.type}>{translatedType}</S.CardType>}
+                    {translatedType && (
+                        <S.CardType $type={card.type}>
+                            {translatedType}
+                        </S.CardType>
+                    )}
                     {translatedSubtype && (
                         <S.CardType>
                             <S.Separator>•</S.Separator>
@@ -288,22 +304,28 @@ export const Card: React.FC<CardProps> = ({
 
             {card.strength !== undefined && (
                 <S.StrengthBadge>
-                    {card.type === 'POSSESSION_CHARACTER' ||
-                    card.type === 'ARTIFACT_CHARACTER' ||
-                    card.type === 'CONDITION_CHARACTER' ||
-                    card.type === 'THE-ONE-RING'
-                        ? `${card.strength > 0 ? '+' : ''}${card.strength}`
+                    {card.type === 'POSSESSION' ||
+                    card.type === 'ARTIFACT' ||
+                    card.type === 'CONDITION' ||
+                    (card.title === 'The One Ring' &&
+                        card.subtype !== 'SUPPORT-AREA')
+                        ? card.strength > 0
+                            ? `+${card.strength}`
+                            : `${card.strength}`
                         : effectiveStrength}
                 </S.StrengthBadge>
             )}
 
             {card.vitality !== undefined && (
                 <S.VitalityBadge>
-                    {card.type === 'POSSESSION_CHARACTER' ||
-                    card.type === 'ARTIFACT_CHARACTER' ||
-                    card.type === 'CONDITION_CHARACTER' ||
-                    card.type === 'THE-ONE-RING'
-                        ? `${card.vitality > 0 ? '+' : ''}${card.vitality}`
+                    {card.type === 'POSSESSION' ||
+                    card.type === 'ARTIFACT' ||
+                    card.type === 'CONDITION' ||
+                    (card.title === 'The One Ring' &&
+                        card.subtype !== 'SUPPORT-AREA')
+                        ? card.vitality > 0
+                            ? `+${card.vitality}`
+                            : `${card.vitality}`
                         : effectiveVitality}
                 </S.VitalityBadge>
             )}
@@ -327,14 +349,17 @@ export const Card: React.FC<CardProps> = ({
                 </S.CardResistance>
             )}
 
-            {effectiveResistance !== undefined && size === 'sm' && (
+            {card.resistance !== undefined && size === 'sm' && (
                 <S.ResistanceWrapper>
                     <S.CardResistance $isRingBearer={Boolean(isRingBearer)}>
-                        {card.type === 'POSSESSION_CHARACTER' ||
-                        card.type === 'ARTIFACT_CHARACTER' ||
-                        card.type === 'CONDITION_CHARACTER' ||
-                        card.type === 'THE-ONE-RING'
-                            ? `${card.resistance > 0 ? '+' : ''}${card.resistance}`
+                        {card.type === 'POSSESSION' ||
+                        card.type === 'ARTIFACT' ||
+                        card.type === 'CONDITION' ||
+                        (card.title === 'The One Ring' &&
+                            card.subtype !== 'SUPPORT-AREA')
+                            ? card.resistance > 0
+                                ? `+${card.resistance}`
+                                : `${card.resistance}`
                             : effectiveResistance}
                     </S.CardResistance>
 

@@ -22,6 +22,8 @@ export const getEffectiveVitality = (card: CardState): number => {
 
 /**
  * OPTIONNEL : Calcule la force effective (base + bonus d'attachements)
+ * Extrait une statistique numérique (valeur absolue de personnage OU modificateur d'attachement via Xxx Text)
+ * Renvoie TOUJOURS un number (ex: 8, 2, -1).
  */
 export const getEffectiveStrength = (card: CardState): number => {
     let strength = Number(card.strength) || 0;
@@ -41,7 +43,10 @@ export const getEffectiveStrength = (card: CardState): number => {
 /**
  * Calcule la résistance restante
  */
-export const getEffectiveResistance = (card: CardState, burdens: number = 0): number => {
+export const getEffectiveResistance = (
+    card: CardState,
+    burdens: number = 0
+): number => {
     let resistance = Number(card.resistance) || 6;
 
     // 1. Ajout des bonus des attachements (ex: Anneau, objets, etc.)
@@ -51,13 +56,7 @@ export const getEffectiveResistance = (card: CardState, burdens: number = 0): nu
                 resistance += Number(att.resistance);
             }
         });
+        // La résistance ne descend pas en dessous de 0
+        return Math.max(0, resistance);
     }
-
-    // 2. Soustraction des fardeaux globaux pour les cartes FP
-    if (card.kind === 'FREE_PEOPLE') {
-        resistance -= burdens;
-    }
-
-    // La résistance ne descend pas en dessous de 0
-    return Math.max(0, resistance);
 };

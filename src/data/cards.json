@@ -773,6 +773,7 @@
     "subtype": "MOUNT",
     "culture": "WRAITH",
     "twilightCost": 0,
+    "strength": 2,
     "imageUrl": "/cards_visuals/o_00_022.jpg",
     "i18n": {
       "en": {
@@ -1182,6 +1183,7 @@
     ],
     "culture": "WRAITH",
     "twilightCost": 2,
+    "strength": 3,
     "i18n": {
       "en": {
         "title": "The Pale Blade",
@@ -1394,6 +1396,7 @@
     ],
     "culture": "MORIA",
     "twilightCost": 1,
+    "strength": 1,
     "i18n": {
       "en": {
         "title": "Whip of Many Thongs",
@@ -1478,6 +1481,7 @@
     "subtype": "STAFF",
     "culture": "GANDALF",
     "twilightCost": 2,
+    "vitality": 1,
     "i18n": {
       "en": {
         "title": "Gandalf's Staff",
@@ -1573,6 +1577,7 @@
     ],
     "culture": "DWARVEN",
     "twilightCost": 2,
+    "strength": 2,
     "i18n": {
       "en": {
         "title": "Axe of Erebor",
@@ -1652,6 +1657,7 @@
     "subtype": "HAND-WEAPON",
     "culture": "MORIA",
     "twilightCost": 1,
+    "strength": 3,
     "i18n": {
       "en": {
         "title": "The Balrog's Sword",
@@ -1736,6 +1742,7 @@
     "subtype": "HAND-WEAPON",
     "culture": "GANDALF",
     "twilightCost": 2,
+    "strength": 2,
     "i18n": {
       "en": {
         "title": "Glamdring",
@@ -2329,6 +2336,8 @@
     "subtype": "STAFF",
     "culture": "GANDALF",
     "twilightCost": 1,
+    "strength": 1,
+    "vitality": 1,
     "imageUrl": "/cards_visuals/o_00_057.jpg",
     "i18n": {
       "en": {
@@ -2620,6 +2629,7 @@
     "subtype": "RANGED-WEAPON",
     "culture": "GONDOR",
     "twilightCost": 1,
+    "strength": 1,
     "imageUrl": "/cards_visuals/o_11_058.jpg",
     "i18n": {
       "en": {
@@ -2659,7 +2669,7 @@
     "phases": [
       "SKIRMISH"
     ],
-    "culture": "MAN",
+    "culture": "MEN",
     "race": "MAN",
     "twilightCost": 4,
     "strength": 10,
@@ -2967,6 +2977,7 @@
     "subtype": "MOUNT",
     "culture": "WRAITH",
     "twilightCost": 2,
+    "strength": 2,
     "i18n": {
       "en": {
         "title": "The Witch-king’s Beast",
@@ -3060,6 +3071,7 @@
     ],
     "culture": "SHIRE",
     "twilightCost": 1,
+    "strength": 2,
     "imageUrl": "/cards_visuals/o_11_173.jpg",
     "i18n": {
       "en": {
@@ -4068,6 +4080,8 @@
       "RESPONSE"
     ],
     "twilightCost": 0,
+    "strength": 1,
+    "vitality": 1,
     "imageUrl": "/cards_visuals/o_01_001.jpg",
     "i18n": {
       "en": {
@@ -4162,6 +4176,7 @@
     "subtype": "HAND-WEAPON",
     "culture": "DWARVEN",
     "twilightCost": 2,
+    "strength": 2,
     "imageUrl": "/cards_visuals/o_01_014.jpg",
     "i18n": {
       "en": {
@@ -4485,6 +4500,7 @@
     ],
     "culture": "GONDOR",
     "twilightCost": 1,
+    "vitality": 1,
     "imageUrl": "/cards_visuals/o_01_114.jpg",
     "i18n": {
       "en": {
@@ -4897,6 +4913,7 @@
       "SKIRMISH"
     ],
     "twilightCost": 0,
+    "vitality": 2,
     "imageUrl": "/cards_visuals/o_04_001.jpg",
     "i18n": {
       "en": {
@@ -5422,6 +5439,7 @@
     "subtype": "MOUNT",
     "culture": "GANDALF",
     "twilightCost": 2,
+    "strength": 2,
     "imageUrl": "/cards_visuals/o_04_100.jpg",
     "i18n": {
       "en": {
@@ -5720,6 +5738,7 @@
     ],
     "culture": "SHIRE",
     "twilightCost": 1,
+    "strength": 2,
     "imageUrl": "/cards_visuals/o_05_116.jpg",
     "i18n": {
       "en": {
@@ -5765,6 +5784,7 @@
       "MANEUVER"
     ],
     "twilightCost": 0,
+    "strength": 2,
     "imageUrl": "/cards_visuals/o_07_002.jpg",
     "i18n": {
       "en": {
@@ -6559,6 +6579,8 @@
     ],
     "culture": "GONDOR",
     "twilightCost": 3,
+    "strength": 2,
+    "vitality": 1,
     "imageUrl": "/cards_visuals/o_07_079.jpg",
     "i18n": {
       "en": {
@@ -6599,6 +6621,7 @@
       "RESPONSE"
     ],
     "twilightCost": 0,
+    "resistance": 2,
     "imageUrl": "/cards_visuals/o_11_001.jpg",
     "i18n": {
       "en": {
@@ -7004,7 +7027,7 @@
     "phases": [
       "MANEUVER"
     ],
-    "culture": "MAN",
+    "culture": "MEN",
     "race": "MAN",
     "twilightCost": 3,
     "strength": 9,
@@ -7202,6 +7225,7 @@
     ],
     "culture": "GOLLUM",
     "twilightCost": 0,
+    "resistance": 1,
     "imageUrl": "/cards_visuals/o_13_046.jpg",
     "i18n": {
       "en": {
@@ -9208,6 +9232,7 @@
       "RESPONSE"
     ],
     "twilightCost": 0,
+    "strength": 1,
     "imageUrl": "/cards_visuals/o_01_002.jpg",
     "i18n": {
       "en": {
@@ -9496,6 +9521,7 @@
     "subtype": "HAND-WEAPON",
     "culture": "DWARVEN",
     "twilightCost": 0,
+    "strength": 2,
     "imageUrl": "/cards_visuals/o_01_009.jpg",
     "i18n": {
       "en": {
@@ -10294,6 +10320,7 @@
     "subtype": "MOUNT",
     "culture": "ELVEN",
     "twilightCost": 2,
+    "strength": 2,
     "imageUrl": "/cards_visuals/o_01_031.jpg",
     "i18n": {
       "en": {
@@ -10374,6 +10401,7 @@
     "subtype": "RANGED-WEAPON",
     "culture": "ELVEN",
     "twilightCost": 1,
+    "strength": 1,
     "imageUrl": "/cards_visuals/o_01_033.jpg",
     "i18n": {
       "en": {
@@ -10968,6 +10996,7 @@
     ],
     "culture": "ELVEN",
     "twilightCost": 2,
+    "strength": 2,
     "imageUrl": "/cards_visuals/o_01_047.jpg",
     "i18n": {
       "en": {
@@ -11732,6 +11761,7 @@
     ],
     "culture": "ELVEN",
     "twilightCost": 1,
+    "vitality": 1,
     "imageUrl": "/cards_visuals/o_01_066.jpg",
     "i18n": {
       "en": {
@@ -12087,6 +12117,7 @@
     ],
     "culture": "GANDALF",
     "twilightCost": 2,
+    "strength": 2,
     "imageUrl": "/cards_visuals/o_01_075.jpg",
     "i18n": {
       "en": {
@@ -12833,6 +12864,7 @@
     ],
     "culture": "GONDOR",
     "twilightCost": 1,
+    "strength": 2,
     "imageUrl": "/cards_visuals/o_01_095.jpg",
     "i18n": {
       "en": {
@@ -13493,6 +13525,7 @@
     "subtype": "HAND-WEAPON",
     "culture": "GONDOR",
     "twilightCost": 1,
+    "strength": 2,
     "imageUrl": "/cards_visuals/o_01_112.jpg",
     "i18n": {
       "en": {
@@ -15395,6 +15428,7 @@
     "subtype": "HAND-WEAPON",
     "culture": "ISENGARD",
     "twilightCost": 1,
+    "strength": 2,
     "imageUrl": "/cards_visuals/o_01_160.jpg",
     "i18n": {
       "en": {
@@ -15597,6 +15631,7 @@
     "subtype": "HAND-WEAPON",
     "culture": "MORIA",
     "twilightCost": 1,
+    "strength": 3,
     "imageUrl": "/cards_visuals/o_01_166.jpg",
     "i18n": {
       "en": {
@@ -16169,6 +16204,7 @@
     "subtype": "HAND-WEAPON",
     "culture": "MORIA",
     "twilightCost": 0,
+    "strength": 2,
     "imageUrl": "/cards_visuals/o_01_180.jpg",
     "i18n": {
       "en": {
@@ -16250,6 +16286,7 @@
     "subtype": "HAND-WEAPON",
     "culture": "MORIA",
     "twilightCost": 1,
+    "strength": 2,
     "imageUrl": "/cards_visuals/o_01_182.jpg",
     "i18n": {
       "en": {
@@ -16588,6 +16625,7 @@
     ],
     "culture": "MORIA",
     "twilightCost": 1,
+    "strength": 2,
     "imageUrl": "/cards_visuals/o_01_190.jpg",
     "i18n": {
       "en": {
@@ -17323,6 +17361,7 @@
     "subtype": "MOUNT",
     "culture": "WRAITH",
     "twilightCost": 1,
+    "strength": 2,
     "imageUrl": "/cards_visuals/o_01_208.jpg",
     "i18n": {
       "en": {
@@ -17646,6 +17685,7 @@
     ],
     "culture": "WRAITH",
     "twilightCost": 1,
+    "strength": 1,
     "imageUrl": "/cards_visuals/o_01_216.jpg",
     "i18n": {
       "en": {
@@ -17721,6 +17761,7 @@
     "subtype": "HAND-WEAPON",
     "culture": "WRAITH",
     "twilightCost": 1,
+    "strength": 2,
     "imageUrl": "/cards_visuals/o_01_218.jpg",
     "i18n": {
       "en": {
@@ -17845,6 +17886,7 @@
     ],
     "culture": "WRAITH",
     "twilightCost": 2,
+    "strength": 3,
     "imageUrl": "/cards_visuals/o_01_221.jpg",
     "i18n": {
       "en": {
@@ -18011,6 +18053,7 @@
     ],
     "culture": "WRAITH",
     "twilightCost": 2,
+    "strength": 2,
     "imageUrl": "/cards_visuals/o_01_225.jpg",
     "i18n": {
       "en": {
@@ -19756,6 +19799,7 @@
     ],
     "culture": "SAURON",
     "twilightCost": 1,
+    "strength": 2,
     "imageUrl": "/cards_visuals/o_01_269.jpg",
     "i18n": {
       "en": {
@@ -20295,6 +20339,7 @@
     "type": "CONDITION",
     "culture": "SAURON",
     "twilightCost": 0,
+    "strength": -1,
     "imageUrl": "/cards_visuals/o_01_282.jpg",
     "i18n": {
       "en": {
@@ -21047,6 +21092,7 @@
     "subtype": "HAND-WEAPON",
     "culture": "SHIRE",
     "twilightCost": 1,
+    "strength": 2,
     "imageUrl": "/cards_visuals/o_01_299.jpg",
     "i18n": {
       "en": {
@@ -21683,6 +21729,7 @@
     ],
     "culture": "SHIRE",
     "twilightCost": 1,
+    "strength": 2,
     "imageUrl": "/cards_visuals/o_01_313.jpg",
     "i18n": {
       "en": {
@@ -22108,6 +22155,7 @@
     ],
     "culture": "DWARVEN",
     "twilightCost": 1,
+    "strength": 1,
     "imageUrl": "/cards_visuals/o_02_003.jpg",
     "i18n": {
       "en": {
@@ -22149,6 +22197,7 @@
     ],
     "culture": "DWARVEN",
     "twilightCost": 1,
+    "vitality": 1,
     "imageUrl": "/cards_visuals/o_02_004.jpg",
     "i18n": {
       "en": {
@@ -22405,6 +22454,7 @@
     ],
     "culture": "DWARVEN",
     "twilightCost": 0,
+    "strength": 1,
     "imageUrl": "/cards_visuals/o_02_010.jpg",
     "i18n": {
       "en": {
@@ -22903,6 +22953,7 @@
     ],
     "culture": "GANDALF",
     "twilightCost": 2,
+    "vitality": 1,
     "imageUrl": "/cards_visuals/o_02_022.jpg",
     "i18n": {
       "en": {
@@ -23206,6 +23257,7 @@
     ],
     "culture": "GANDALF",
     "twilightCost": 2,
+    "strength": 1,
     "imageUrl": "/cards_visuals/o_02_029.jpg",
     "i18n": {
       "en": {
@@ -23329,6 +23381,7 @@
     "subtype": "HAND-WEAPON",
     "culture": "GONDOR",
     "twilightCost": 0,
+    "strength": 1,
     "imageUrl": "/cards_visuals/o_02_032.jpg",
     "i18n": {
       "en": {
@@ -23776,6 +23829,7 @@
     "subtype": "HAND-WEAPON",
     "culture": "ISENGARD",
     "twilightCost": 1,
+    "strength": 2,
     "imageUrl": "/cards_visuals/o_02_043.jpg",
     "i18n": {
       "en": {
@@ -24065,6 +24119,7 @@
     "subtype": "HAND-WEAPON",
     "culture": "MORIA",
     "twilightCost": 1,
+    "strength": 3,
     "imageUrl": "/cards_visuals/o_02_050.jpg",
     "i18n": {
       "en": {
@@ -24149,6 +24204,7 @@
     "type": "POSSESSION",
     "culture": "MORIA",
     "twilightCost": 1,
+    "strength": 2,
     "imageUrl": "/cards_visuals/o_02_053.jpg",
     "i18n": {
       "en": {
@@ -24187,6 +24243,7 @@
     "type": "CONDITION",
     "culture": "MORIA",
     "twilightCost": 1,
+    "strength": -2,
     "imageUrl": "/cards_visuals/o_02_054.jpg",
     "i18n": {
       "en": {
@@ -25022,6 +25079,7 @@
     ],
     "culture": "MORIA",
     "twilightCost": 1,
+    "strength": 1,
     "imageUrl": "/cards_visuals/o_02_074.jpg",
     "i18n": {
       "en": {
@@ -25916,6 +25974,7 @@
     "subtype": "HAND-WEAPON",
     "culture": "SAURON",
     "twilightCost": 1,
+    "strength": 2,
     "imageUrl": "/cards_visuals/o_02_095.jpg",
     "i18n": {
       "en": {
@@ -26392,6 +26451,7 @@
     ],
     "culture": "SHIRE",
     "twilightCost": 1,
+    "strength": 1,
     "imageUrl": "/cards_visuals/o_02_108.jpg",
     "i18n": {
       "en": {
@@ -27681,6 +27741,7 @@
     "subtype": "HAND-WEAPON",
     "culture": "ELVEN",
     "twilightCost": 1,
+    "strength": 1,
     "imageUrl": "/cards_visuals/o_03_021.jpg",
     "i18n": {
       "en": {
@@ -27762,6 +27823,7 @@
     "subtype": "RING",
     "culture": "ELVEN",
     "twilightCost": 0,
+    "vitality": 1,
     "imageUrl": "/cards_visuals/o_03_023.jpg",
     "i18n": {
       "en": {
@@ -27934,6 +27996,7 @@
     ],
     "culture": "ELVEN",
     "twilightCost": 0,
+    "vitality": 1,
     "imageUrl": "/cards_visuals/o_03_027.jpg",
     "i18n": {
       "en": {
@@ -28220,6 +28283,7 @@
     "subtype": "RING",
     "culture": "GANDALF",
     "twilightCost": 0,
+    "vitality": 1,
     "imageUrl": "/cards_visuals/o_03_034.jpg",
     "i18n": {
       "en": {
@@ -29089,6 +29153,7 @@
     "subtype": "HAND-WEAPON",
     "culture": "ISENGARD",
     "twilightCost": 0,
+    "strength": 2,
     "imageUrl": "/cards_visuals/o_03_055.jpg",
     "i18n": {
       "en": {
@@ -31328,6 +31393,7 @@
     ],
     "culture": "SHIRE",
     "twilightCost": 0,
+    "strength": 1,
     "imageUrl": "/cards_visuals/o_03_108.jpg",
     "i18n": {
       "en": {
@@ -31725,6 +31791,7 @@
       "RESPONSE"
     ],
     "twilightCost": 0,
+    "strength": 1,
     "imageUrl": "/cards_visuals/o_04_002.jpg",
     "i18n": {
       "en": {
@@ -32694,6 +32761,7 @@
     "subtype": "HAND-WEAPON",
     "culture": "DUNLAND",
     "twilightCost": 1,
+    "strength": 3,
     "imageUrl": "/cards_visuals/o_04_026.jpg",
     "i18n": {
       "en": {
@@ -33096,6 +33164,7 @@
     "subtype": "HAND-WEAPON",
     "culture": "DUNLAND",
     "twilightCost": 0,
+    "strength": 2,
     "imageUrl": "/cards_visuals/o_04_036.jpg",
     "i18n": {
       "en": {
@@ -33312,6 +33381,7 @@
     ],
     "culture": "DWARVEN",
     "twilightCost": 2,
+    "strength": 2,
     "imageUrl": "/cards_visuals/o_04_041.jpg",
     "i18n": {
       "en": {
@@ -34261,6 +34331,7 @@
     ],
     "culture": "ELVEN",
     "twilightCost": 1,
+    "strength": 1,
     "imageUrl": "/cards_visuals/o_04_064.jpg",
     "i18n": {
       "en": {
@@ -35349,6 +35420,7 @@
     "subtype": "STAFF",
     "culture": "GANDALF",
     "twilightCost": 2,
+    "vitality": 1,
     "imageUrl": "/cards_visuals/o_04_091.jpg",
     "i18n": {
       "en": {
@@ -35474,6 +35546,8 @@
     "type": "CONDITION",
     "culture": "GANDALF",
     "twilightCost": 0,
+    "strength": 2,
+    "vitality": 1,
     "imageUrl": "/cards_visuals/o_04_094.jpg",
     "i18n": {
       "en": {
@@ -36101,6 +36175,7 @@
     ],
     "culture": "GONDOR",
     "twilightCost": 0,
+    "vitality": 1,
     "imageUrl": "/cards_visuals/o_04_111.jpg",
     "i18n": {
       "en": {
@@ -36996,6 +37071,7 @@
     "subtype": "HAND-WEAPON",
     "culture": "GONDOR",
     "twilightCost": 1,
+    "strength": 2,
     "imageUrl": "/cards_visuals/o_04_132.jpg",
     "i18n": {
       "en": {
@@ -37082,6 +37158,7 @@
     "subtype": "HAND-WEAPON",
     "culture": "GONDOR",
     "twilightCost": 1,
+    "strength": 2,
     "imageUrl": "/cards_visuals/o_04_134.jpg",
     "i18n": {
       "en": {
@@ -37409,6 +37486,7 @@
     "subtype": "HAND-WEAPON",
     "culture": "ISENGARD",
     "twilightCost": 1,
+    "strength": 2,
     "imageUrl": "/cards_visuals/o_04_142.jpg",
     "i18n": {
       "en": {
@@ -37991,6 +38069,7 @@
     "type": "CONDITION",
     "culture": "ISENGARD",
     "twilightCost": 0,
+    "strength": -1,
     "imageUrl": "/cards_visuals/o_04_157.jpg",
     "i18n": {
       "en": {
@@ -38077,6 +38156,7 @@
     ],
     "culture": "ISENGARD",
     "twilightCost": 1,
+    "strength": -1,
     "imageUrl": "/cards_visuals/o_04_159.jpg",
     "i18n": {
       "en": {
@@ -38660,6 +38740,7 @@
     ],
     "culture": "ISENGARD",
     "twilightCost": 2,
+    "strength": 2,
     "imageUrl": "/cards_visuals/o_04_174.jpg",
     "i18n": {
       "en": {
@@ -38748,6 +38829,7 @@
     ],
     "culture": "ISENGARD",
     "twilightCost": 1,
+    "strength": 3,
     "imageUrl": "/cards_visuals/o_04_177.jpg",
     "i18n": {
       "en": {
@@ -39571,6 +39653,7 @@
     ],
     "culture": "ISENGARD",
     "twilightCost": 1,
+    "strength": 2,
     "imageUrl": "/cards_visuals/o_04_196.jpg",
     "i18n": {
       "en": {
@@ -41961,6 +42044,7 @@
     ],
     "culture": "RAIDER",
     "twilightCost": 1,
+    "strength": 2,
     "imageUrl": "/cards_visuals/o_04_255.jpg",
     "i18n": {
       "en": {
@@ -42526,6 +42610,7 @@
     "subtype": "HAND-WEAPON",
     "culture": "ROHAN",
     "twilightCost": 1,
+    "strength": 2,
     "imageUrl": "/cards_visuals/o_04_268.jpg",
     "i18n": {
       "en": {
@@ -42711,6 +42796,7 @@
     "subtype": "HAND-WEAPON",
     "culture": "ROHAN",
     "twilightCost": 1,
+    "strength": 3,
     "imageUrl": "/cards_visuals/o_04_272.jpg",
     "i18n": {
       "en": {
@@ -43043,6 +43129,8 @@
     "subtype": "HAND-WEAPON",
     "culture": "ROHAN",
     "twilightCost": 2,
+    "strength": 2,
+    "vitality": 1,
     "imageUrl": "/cards_visuals/o_04_280.jpg",
     "i18n": {
       "en": {
@@ -43384,6 +43472,7 @@
     "subtype": "HAND-WEAPON",
     "culture": "ROHAN",
     "twilightCost": 1,
+    "strength": 2,
     "imageUrl": "/cards_visuals/o_04_288.jpg",
     "i18n": {
       "en": {
@@ -43465,6 +43554,7 @@
     "subtype": "HAND-WEAPON",
     "culture": "ROHAN",
     "twilightCost": 1,
+    "strength": 2,
     "imageUrl": "/cards_visuals/o_04_291.jpg",
     "i18n": {
       "en": {
@@ -43850,6 +43940,7 @@
     ],
     "culture": "SHIRE",
     "twilightCost": 0,
+    "vitality": 1,
     "imageUrl": "/cards_visuals/o_04_300.jpg",
     "i18n": {
       "en": {
@@ -44064,6 +44155,7 @@
     "subtype": "HAND-WEAPON",
     "culture": "SHIRE",
     "twilightCost": 1,
+    "strength": 2,
     "imageUrl": "/cards_visuals/o_04_306.jpg",
     "i18n": {
       "en": {
@@ -45330,6 +45422,7 @@
     "subtype": "HAND-WEAPON",
     "culture": "ELVEN",
     "twilightCost": 1,
+    "strength": 1,
     "imageUrl": "/cards_visuals/o_05_012.jpg",
     "i18n": {
       "en": {
@@ -45939,6 +46032,7 @@
     ],
     "culture": "GOLLUM",
     "twilightCost": 1,
+    "strength": 1,
     "imageUrl": "/cards_visuals/o_05_027.jpg",
     "i18n": {
       "en": {
@@ -46120,6 +46214,8 @@
     ],
     "culture": "GONDOR",
     "twilightCost": 1,
+    "strength": -2,
+    "vitality": -1,
     "imageUrl": "/cards_visuals/o_05_032.jpg",
     "i18n": {
       "en": {
@@ -46162,6 +46258,7 @@
     ],
     "culture": "GONDOR",
     "twilightCost": 1,
+    "strength": -3,
     "imageUrl": "/cards_visuals/o_05_033.jpg",
     "i18n": {
       "en": {
@@ -46413,6 +46510,7 @@
     ],
     "culture": "GONDOR",
     "twilightCost": 1,
+    "vitality": -2,
     "imageUrl": "/cards_visuals/o_05_039.jpg",
     "i18n": {
       "en": {
@@ -47056,6 +47154,7 @@
     "subtype": "HAND-WEAPON",
     "culture": "ISENGARD",
     "twilightCost": 0,
+    "strength": 2,
     "imageUrl": "/cards_visuals/o_05_054.jpg",
     "i18n": {
       "en": {
@@ -47275,6 +47374,8 @@
     ],
     "culture": "ISENGARD",
     "twilightCost": 5,
+    "strength": 5,
+    "vitality": 3,
     "imageUrl": "/cards_visuals/o_05_059.jpg",
     "i18n": {
       "en": {
@@ -47485,6 +47586,8 @@
     ],
     "culture": "ISENGARD",
     "twilightCost": 4,
+    "strength": 4,
+    "vitality": 2,
     "imageUrl": "/cards_visuals/o_05_064.jpg",
     "i18n": {
       "en": {
@@ -47527,6 +47630,8 @@
     ],
     "culture": "ISENGARD",
     "twilightCost": 3,
+    "strength": 3,
+    "vitality": 1,
     "imageUrl": "/cards_visuals/o_05_065.jpg",
     "i18n": {
       "en": {
@@ -47868,6 +47973,7 @@
     "subtype": "MOUNT",
     "culture": "RAIDER",
     "twilightCost": 2,
+    "strength": 3,
     "imageUrl": "/cards_visuals/o_05_073.jpg",
     "i18n": {
       "en": {
@@ -48078,6 +48184,7 @@
     "subtype": "MOUNT",
     "culture": "RAIDER",
     "twilightCost": 3,
+    "strength": 4,
     "imageUrl": "/cards_visuals/o_05_078.jpg",
     "i18n": {
       "en": {
@@ -48509,6 +48616,7 @@
     ],
     "culture": "ROHAN",
     "twilightCost": 1,
+    "strength": 1,
     "imageUrl": "/cards_visuals/o_05_088.jpg",
     "i18n": {
       "en": {
@@ -49589,6 +49697,7 @@
     ],
     "culture": "SHIRE",
     "twilightCost": 1,
+    "vitality": 1,
     "imageUrl": "/cards_visuals/o_05_114.jpg",
     "i18n": {
       "en": {
@@ -50916,6 +51025,7 @@
     ],
     "culture": "ELVEN",
     "twilightCost": 1,
+    "strength": 1,
     "imageUrl": "/cards_visuals/o_06_021.jpg",
     "i18n": {
       "en": {
@@ -51121,6 +51231,7 @@
     "type": "CONDITION",
     "culture": "GANDALF",
     "twilightCost": 2,
+    "strength": 4,
     "imageUrl": "/cards_visuals/o_06_026.jpg",
     "i18n": {
       "en": {
@@ -51241,6 +51352,7 @@
     "type": "CONDITION",
     "culture": "GANDALF",
     "twilightCost": 1,
+    "strength": 2,
     "imageUrl": "/cards_visuals/o_06_029.jpg",
     "i18n": {
       "en": {
@@ -51327,6 +51439,7 @@
     "subtype": "HAND-WEAPON",
     "culture": "GANDALF",
     "twilightCost": 2,
+    "strength": 2,
     "imageUrl": "/cards_visuals/o_06_031.jpg",
     "i18n": {
       "en": {
@@ -52533,6 +52646,7 @@
     "subtype": "HAND-WEAPON",
     "culture": "ISENGARD",
     "twilightCost": 0,
+    "strength": 1,
     "imageUrl": "/cards_visuals/o_06_059.jpg",
     "i18n": {
       "en": {
@@ -52614,6 +52728,7 @@
     ],
     "culture": "ISENGARD",
     "twilightCost": 1,
+    "strength": -1,
     "imageUrl": "/cards_visuals/o_06_061.jpg",
     "i18n": {
       "en": {
@@ -53390,6 +53505,7 @@
     "subtype": "HAND-WEAPON",
     "culture": "RAIDER",
     "twilightCost": 0,
+    "strength": 2,
     "imageUrl": "/cards_visuals/o_06_079.jpg",
     "i18n": {
       "en": {
@@ -53557,6 +53673,7 @@
     "subtype": "MOUNT",
     "culture": "WRAITH",
     "twilightCost": 0,
+    "strength": 2,
     "imageUrl": "/cards_visuals/o_06_083.jpg",
     "i18n": {
       "en": {
@@ -53638,6 +53755,7 @@
     "subtype": "HAND-WEAPON",
     "culture": "WRAITH",
     "twilightCost": 2,
+    "strength": 2,
     "imageUrl": "/cards_visuals/o_06_085.jpg",
     "i18n": {
       "en": {
@@ -54169,6 +54287,7 @@
     "subtype": "HAND-WEAPON",
     "culture": "SAURON",
     "twilightCost": 0,
+    "strength": 1,
     "imageUrl": "/cards_visuals/o_06_098.jpg",
     "i18n": {
       "en": {
@@ -54559,6 +54678,7 @@
     "subtype": "HAND-WEAPON",
     "culture": "SAURON",
     "twilightCost": 1,
+    "strength": 2,
     "imageUrl": "/cards_visuals/o_06_107.jpg",
     "i18n": {
       "en": {
@@ -54994,6 +55114,7 @@
     "type": "CONDITION",
     "culture": "GANDALF",
     "twilightCost": 2,
+    "strength": 4,
     "imageUrl": "/cards_visuals/o_06_123.jpg",
     "i18n": {
       "en": {
@@ -55247,6 +55368,7 @@
       "RESPONSE"
     ],
     "twilightCost": 0,
+    "strength": 1,
     "imageUrl": "/cards_visuals/o_07_001.jpg",
     "i18n": {
       "en": {
@@ -55537,6 +55659,7 @@
     "subtype": "HAND-WEAPON",
     "culture": "DWARVEN",
     "twilightCost": 2,
+    "strength": 2,
     "imageUrl": "/cards_visuals/o_07_009.jpg",
     "i18n": {
       "en": {
@@ -55857,6 +55980,7 @@
     ],
     "culture": "ELVEN",
     "twilightCost": 2,
+    "strength": 2,
     "imageUrl": "/cards_visuals/o_07_017.jpg",
     "i18n": {
       "en": {
@@ -55896,6 +56020,7 @@
     "subtype": "RANGED-WEAPON",
     "culture": "ELVEN",
     "twilightCost": 1,
+    "strength": 1,
     "imageUrl": "/cards_visuals/o_07_018.jpg",
     "i18n": {
       "en": {
@@ -56713,6 +56838,7 @@
     "subtype": "STAFF",
     "culture": "GANDALF",
     "twilightCost": 2,
+    "vitality": 1,
     "imageUrl": "/cards_visuals/o_07_038.jpg",
     "i18n": {
       "en": {
@@ -56756,6 +56882,7 @@
     ],
     "culture": "GANDALF",
     "twilightCost": 2,
+    "strength": 2,
     "imageUrl": "/cards_visuals/o_07_039.jpg",
     "i18n": {
       "en": {
@@ -57260,6 +57387,7 @@
     ],
     "culture": "GANDALF",
     "twilightCost": 2,
+    "strength": 1,
     "imageUrl": "/cards_visuals/o_07_052.jpg",
     "i18n": {
       "en": {
@@ -58333,6 +58461,7 @@
     "subtype": "HAND-WEAPON",
     "culture": "GONDOR",
     "twilightCost": 3,
+    "strength": 2,
     "imageUrl": "/cards_visuals/o_07_080.jpg",
     "i18n": {
       "en": {
@@ -58845,6 +58974,7 @@
     ],
     "culture": "GONDOR",
     "twilightCost": 1,
+    "strength": -1,
     "imageUrl": "/cards_visuals/o_07_092.jpg",
     "i18n": {
       "en": {
@@ -59080,6 +59210,7 @@
     ],
     "culture": "GONDOR",
     "twilightCost": 1,
+    "strength": 2,
     "imageUrl": "/cards_visuals/o_07_098.jpg",
     "i18n": {
       "en": {
@@ -59462,6 +59593,7 @@
     ],
     "culture": "GONDOR",
     "twilightCost": 1,
+    "strength": 2,
     "imageUrl": "/cards_visuals/o_07_108.jpg",
     "i18n": {
       "en": {
@@ -59655,6 +59787,8 @@
     "subtype": "ARMOR",
     "culture": "GONDOR",
     "twilightCost": 0,
+    "strength": 2,
+    "vitality": -1,
     "imageUrl": "/cards_visuals/o_07_113.jpg",
     "i18n": {
       "en": {
@@ -59693,6 +59827,7 @@
     ],
     "culture": "GONDOR",
     "twilightCost": 1,
+    "strength": 2,
     "imageUrl": "/cards_visuals/o_07_114.jpg",
     "i18n": {
       "en": {
@@ -59888,6 +60023,8 @@
     ],
     "culture": "GONDOR",
     "twilightCost": 5,
+    "strength": -2,
+    "vitality": -2,
     "imageUrl": "/cards_visuals/o_07_119.jpg",
     "i18n": {
       "en": {
@@ -61335,6 +61472,7 @@
     ],
     "culture": "RAIDER",
     "twilightCost": 0,
+    "strength": 2,
     "imageUrl": "/cards_visuals/o_07_156.jpg",
     "i18n": {
       "en": {
@@ -62513,6 +62651,7 @@
     "subtype": "HAND-WEAPON",
     "culture": "WRAITH",
     "twilightCost": 1,
+    "strength": 2,
     "imageUrl": "/cards_visuals/o_07_186.jpg",
     "i18n": {
       "en": {
@@ -63210,6 +63349,7 @@
     "subtype": "HAND-WEAPON",
     "culture": "WRAITH",
     "twilightCost": 1,
+    "strength": 1,
     "imageUrl": "/cards_visuals/o_07_203.jpg",
     "i18n": {
       "en": {
@@ -64226,6 +64366,7 @@
     "subtype": "HAND-WEAPON",
     "culture": "ROHAN",
     "twilightCost": 1,
+    "strength": 3,
     "imageUrl": "/cards_visuals/o_07_230.jpg",
     "i18n": {
       "en": {
@@ -64487,6 +64628,8 @@
     ],
     "culture": "ROHAN",
     "twilightCost": 3,
+    "strength": 2,
+    "vitality": 1,
     "imageUrl": "/cards_visuals/o_07_236.jpg",
     "i18n": {
       "en": {
@@ -64654,6 +64797,7 @@
     "subtype": "HAND-WEAPON",
     "culture": "ROHAN",
     "twilightCost": 1,
+    "strength": 2,
     "imageUrl": "/cards_visuals/o_07_240.jpg",
     "i18n": {
       "en": {
@@ -64689,6 +64833,8 @@
     "subtype": "ARMOR",
     "culture": "ROHAN",
     "twilightCost": 0,
+    "strength": 2,
+    "vitality": -1,
     "imageUrl": "/cards_visuals/o_07_241.jpg",
     "i18n": {
       "en": {
@@ -64727,6 +64873,7 @@
     ],
     "culture": "ROHAN",
     "twilightCost": 1,
+    "strength": 2,
     "imageUrl": "/cards_visuals/o_07_242.jpg",
     "i18n": {
       "en": {
@@ -64966,6 +65113,7 @@
     ],
     "culture": "ROHAN",
     "twilightCost": 1,
+    "strength": 1,
     "imageUrl": "/cards_visuals/o_07_248.jpg",
     "i18n": {
       "en": {
@@ -65631,6 +65779,7 @@
     "subtype": "HAND-WEAPON",
     "culture": "SAURON",
     "twilightCost": 0,
+    "strength": 2,
     "imageUrl": "/cards_visuals/o_07_265.jpg",
     "i18n": {
       "en": {
@@ -67828,6 +67977,7 @@
     "subtype": "HAND-WEAPON",
     "culture": "SHIRE",
     "twilightCost": 1,
+    "strength": 2,
     "imageUrl": "/cards_visuals/o_07_319.jpg",
     "i18n": {
       "en": {
@@ -69603,6 +69753,7 @@
     ],
     "culture": "GONDOR",
     "twilightCost": 2,
+    "strength": -1,
     "imageUrl": "/cards_visuals/o_08_035.jpg",
     "i18n": {
       "en": {
@@ -69770,6 +69921,7 @@
     "subtype": "MOUNT",
     "culture": "GONDOR",
     "twilightCost": 1,
+    "strength": 1,
     "imageUrl": "/cards_visuals/o_08_040.jpg",
     "i18n": {
       "en": {
@@ -70026,6 +70178,7 @@
     ],
     "culture": "GONDOR",
     "twilightCost": 0,
+    "strength": 1,
     "imageUrl": "/cards_visuals/o_08_046.jpg",
     "i18n": {
       "en": {
@@ -70225,6 +70378,7 @@
     "subtype": "RANGED-WEAPON",
     "culture": "RAIDER",
     "twilightCost": 0,
+    "strength": 2,
     "imageUrl": "/cards_visuals/o_08_052.jpg",
     "i18n": {
       "en": {
@@ -70674,6 +70828,7 @@
     "subtype": "MOUNT",
     "culture": "RAIDER",
     "twilightCost": 3,
+    "strength": 3,
     "imageUrl": "/cards_visuals/o_08_064.jpg",
     "i18n": {
       "en": {
@@ -70914,6 +71069,7 @@
     ],
     "culture": "WRAITH",
     "twilightCost": 2,
+    "strength": 3,
     "imageUrl": "/cards_visuals/o_08_070.jpg",
     "i18n": {
       "en": {
@@ -71462,6 +71618,7 @@
     ],
     "culture": "WRAITH",
     "twilightCost": 1,
+    "strength": 2,
     "imageUrl": "/cards_visuals/o_08_083.jpg",
     "i18n": {
       "en": {
@@ -72700,6 +72857,7 @@
     ],
     "culture": "SHIRE",
     "twilightCost": 1,
+    "strength": 2,
     "imageUrl": "/cards_visuals/o_08_113.jpg",
     "i18n": {
       "en": {
@@ -72961,6 +73119,8 @@
       "MANEUVER"
     ],
     "twilightCost": 0,
+    "strength": 1,
+    "vitality": 1,
     "imageUrl": "/cards_visuals/o_09_001.jpg",
     "i18n": {
       "en": {
@@ -73198,6 +73358,7 @@
     ],
     "culture": "DWARVEN",
     "twilightCost": 0,
+    "strength": 1,
     "imageUrl": "/cards_visuals/o_09_006.jpg",
     "i18n": {
       "en": {
@@ -73235,6 +73396,7 @@
     ],
     "culture": "DWARVEN",
     "twilightCost": 0,
+    "strength": 1,
     "imageUrl": "/cards_visuals/o_09_007.jpg",
     "i18n": {
       "en": {
@@ -73277,6 +73439,7 @@
     ],
     "culture": "DWARVEN",
     "twilightCost": 0,
+    "strength": 1,
     "imageUrl": "/cards_visuals/o_09_008.jpg",
     "i18n": {
       "en": {
@@ -73319,6 +73482,8 @@
     ],
     "culture": "DWARVEN",
     "twilightCost": 0,
+    "strength": 1,
+    "vitality": 1,
     "imageUrl": "/cards_visuals/o_09_009.jpg",
     "i18n": {
       "en": {
@@ -73456,6 +73621,7 @@
     ],
     "culture": "ELVEN",
     "twilightCost": 2,
+    "vitality": 1,
     "imageUrl": "/cards_visuals/o_09_012.jpg",
     "i18n": {
       "en": {
@@ -73681,6 +73847,7 @@
     ],
     "culture": "ELVEN",
     "twilightCost": 1,
+    "strength": 1,
     "imageUrl": "/cards_visuals/o_09_017.jpg",
     "i18n": {
       "en": {
@@ -73723,6 +73890,7 @@
     ],
     "culture": "ELVEN",
     "twilightCost": 1,
+    "strength": 2,
     "imageUrl": "/cards_visuals/o_09_018.jpg",
     "i18n": {
       "en": {
@@ -73765,6 +73933,7 @@
     ],
     "culture": "ELVEN",
     "twilightCost": 0,
+    "vitality": 1,
     "imageUrl": "/cards_visuals/o_09_019.jpg",
     "i18n": {
       "en": {
@@ -73812,6 +73981,7 @@
     ],
     "culture": "ELVEN",
     "twilightCost": 0,
+    "vitality": 1,
     "imageUrl": "/cards_visuals/o_09_020.jpg",
     "i18n": {
       "en": {
@@ -73859,6 +74029,7 @@
     ],
     "culture": "ELVEN",
     "twilightCost": 1,
+    "strength": 2,
     "imageUrl": "/cards_visuals/o_09_021.jpg",
     "i18n": {
       "en": {
@@ -73938,6 +74109,7 @@
     ],
     "culture": "ELVEN",
     "twilightCost": 0,
+    "vitality": 1,
     "imageUrl": "/cards_visuals/o_09_023.jpg",
     "i18n": {
       "en": {
@@ -73984,6 +74156,7 @@
     ],
     "culture": "GANDALF",
     "twilightCost": 1,
+    "vitality": 1,
     "imageUrl": "/cards_visuals/o_09_024.jpg",
     "i18n": {
       "en": {
@@ -74444,6 +74617,7 @@
     ],
     "culture": "GONDOR",
     "twilightCost": 2,
+    "vitality": 1,
     "imageUrl": "/cards_visuals/o_09_034.jpg",
     "i18n": {
       "en": {
@@ -74786,6 +74960,7 @@
     ],
     "culture": "WRAITH",
     "twilightCost": 0,
+    "strength": 1,
     "imageUrl": "/cards_visuals/o_09_042.jpg",
     "i18n": {
       "en": {
@@ -74829,6 +75004,7 @@
     ],
     "culture": "WRAITH",
     "twilightCost": 0,
+    "strength": 1,
     "imageUrl": "/cards_visuals/o_09_043.jpg",
     "i18n": {
       "en": {
@@ -74872,6 +75048,7 @@
     ],
     "culture": "WRAITH",
     "twilightCost": 0,
+    "vitality": 1,
     "imageUrl": "/cards_visuals/o_09_044.jpg",
     "i18n": {
       "en": {
@@ -74914,6 +75091,7 @@
     "culture": "ROHAN",
     "signet": "THEODEN",
     "twilightCost": 1,
+    "strength": 1,
     "imageUrl": "/cards_visuals/o_09_045.jpg",
     "i18n": {
       "en": {
@@ -77157,6 +77335,7 @@
     ],
     "culture": "RAIDER",
     "twilightCost": 1,
+    "vitality": 1,
     "imageUrl": "/cards_visuals/o_10_048.jpg",
     "i18n": {
       "en": {
@@ -77668,6 +77847,7 @@
     "subtype": "HAND-WEAPON",
     "culture": "WRAITH",
     "twilightCost": 2,
+    "strength": 2,
     "imageUrl": "/cards_visuals/o_10_060.jpg",
     "i18n": {
       "en": {
@@ -78894,6 +79074,8 @@
     "subtype": "MOUNT",
     "culture": "SAURON",
     "twilightCost": 1,
+    "strength": 1,
+    "vitality": 1,
     "imageUrl": "/cards_visuals/o_10_089.jpg",
     "i18n": {
       "en": {
@@ -79446,6 +79628,7 @@
     "subtype": "HAND-WEAPON",
     "culture": "SAURON",
     "twilightCost": 1,
+    "strength": 1,
     "imageUrl": "/cards_visuals/o_10_102.jpg",
     "i18n": {
       "en": {
@@ -79647,6 +79830,7 @@
     "type": "CONDITION",
     "culture": "SHIRE",
     "twilightCost": 1,
+    "vitality": -1,
     "imageUrl": "/cards_visuals/o_10_107.jpg",
     "i18n": {
       "en": {
@@ -80100,6 +80284,7 @@
       "RESPONSE"
     ],
     "twilightCost": 0,
+    "strength": 1,
     "imageUrl": "/cards_visuals/o_11_002.jpg",
     "i18n": {
       "en": {
@@ -80144,6 +80329,7 @@
     "subtype": "HAND-WEAPON",
     "culture": "DWARVEN",
     "twilightCost": 1,
+    "strength": 2,
     "imageUrl": "/cards_visuals/o_11_003.jpg",
     "i18n": {
       "en": {
@@ -80401,6 +80587,7 @@
     ],
     "culture": "DWARVEN",
     "twilightCost": 2,
+    "strength": 2,
     "imageUrl": "/cards_visuals/o_11_009.jpg",
     "i18n": {
       "en": {
@@ -80697,6 +80884,7 @@
     "subtype": "HAND-WEAPON",
     "culture": "ELVEN",
     "twilightCost": 1,
+    "strength": 1,
     "imageUrl": "/cards_visuals/o_11_016.jpg",
     "i18n": {
       "en": {
@@ -81414,6 +81602,7 @@
     "subtype": "STAFF",
     "culture": "GANDALF",
     "twilightCost": 2,
+    "vitality": 1,
     "imageUrl": "/cards_visuals/o_11_034.jpg",
     "i18n": {
       "en": {
@@ -81453,6 +81642,7 @@
     "subtype": "HAND-WEAPON",
     "culture": "GANDALF",
     "twilightCost": 2,
+    "strength": 2,
     "imageUrl": "/cards_visuals/o_11_035.jpg",
     "i18n": {
       "en": {
@@ -81661,6 +81851,7 @@
     "subtype": "MOUNT",
     "culture": "GANDALF",
     "twilightCost": 2,
+    "resistance": 2,
     "imageUrl": "/cards_visuals/o_11_040.jpg",
     "i18n": {
       "en": {
@@ -82331,6 +82522,7 @@
     "subtype": "RANGED-WEAPON",
     "culture": "GONDOR",
     "twilightCost": 1,
+    "strength": 1,
     "imageUrl": "/cards_visuals/o_11_058.jpg",
     "i18n": {
       "en": {
@@ -82370,6 +82562,7 @@
     "subtype": "HAND-WEAPON",
     "culture": "GONDOR",
     "twilightCost": 1,
+    "strength": 2,
     "imageUrl": "/cards_visuals/o_11_059.jpg",
     "i18n": {
       "en": {
@@ -82702,7 +82895,7 @@
     "isUnique": false,
     "kind": "FREE_PEOPLE",
     "type": "MINION",
-    "culture": "MAN",
+    "culture": "MEN",
     "race": "MAN",
     "twilightCost": 3,
     "strength": 7,
@@ -82747,7 +82940,7 @@
     "phases": [
       "SKIRMISH"
     ],
-    "culture": "MAN",
+    "culture": "MEN",
     "race": "MAN",
     "twilightCost": 4,
     "strength": 10,
@@ -82788,7 +82981,7 @@
     "isUnique": false,
     "kind": "FREE_PEOPLE",
     "type": "MINION",
-    "culture": "MAN",
+    "culture": "MEN",
     "race": "MAN",
     "twilightCost": 4,
     "strength": 11,
@@ -82833,7 +83026,7 @@
     "phases": [
       "REGROUP"
     ],
-    "culture": "MAN",
+    "culture": "MEN",
     "twilightCost": 1,
     "imageUrl": "/cards_visuals/o_11_070.jpg",
     "i18n": {
@@ -82874,7 +83067,7 @@
     "phases": [
       "SKIRMISH"
     ],
-    "culture": "MAN",
+    "culture": "MEN",
     "twilightCost": 5,
     "imageUrl": "/cards_visuals/o_11_071.jpg",
     "i18n": {
@@ -82915,7 +83108,7 @@
     "phases": [
       "SKIRMISH"
     ],
-    "culture": "MAN",
+    "culture": "MEN",
     "race": "MAN",
     "twilightCost": 3,
     "strength": 8,
@@ -82957,7 +83150,7 @@
     "isUnique": false,
     "kind": "FREE_PEOPLE",
     "type": "MINION",
-    "culture": "MAN",
+    "culture": "MEN",
     "race": "MAN",
     "twilightCost": 4,
     "strength": 10,
@@ -83002,7 +83195,7 @@
     "phases": [
       "MANEUVER"
     ],
-    "culture": "MAN",
+    "culture": "MEN",
     "race": "MAN",
     "twilightCost": 5,
     "strength": 12,
@@ -83047,7 +83240,7 @@
     "phases": [
       "SKIRMISH"
     ],
-    "culture": "MAN",
+    "culture": "MEN",
     "race": "MAN",
     "twilightCost": 5,
     "strength": 13,
@@ -83092,7 +83285,7 @@
     "phases": [
       "RESPONSE"
     ],
-    "culture": "MAN",
+    "culture": "MEN",
     "race": "MAN",
     "twilightCost": 4,
     "strength": 9,
@@ -83134,7 +83327,7 @@
     "isUnique": false,
     "kind": "FREE_PEOPLE",
     "type": "MINION",
-    "culture": "MAN",
+    "culture": "MEN",
     "race": "MAN",
     "twilightCost": 4,
     "strength": 10,
@@ -83179,7 +83372,7 @@
     "phases": [
       "ARCHERY"
     ],
-    "culture": "MAN",
+    "culture": "MEN",
     "twilightCost": 7,
     "imageUrl": "/cards_visuals/o_11_078.jpg",
     "i18n": {
@@ -83217,7 +83410,7 @@
     "isUnique": false,
     "kind": "FREE_PEOPLE",
     "type": "MINION",
-    "culture": "MAN",
+    "culture": "MEN",
     "race": "MAN",
     "twilightCost": 3,
     "strength": 9,
@@ -83259,7 +83452,7 @@
     "isUnique": false,
     "kind": "FREE_PEOPLE",
     "type": "MINION",
-    "culture": "MAN",
+    "culture": "MEN",
     "race": "MAN",
     "twilightCost": 6,
     "strength": 12,
@@ -83301,7 +83494,7 @@
     "isUnique": false,
     "kind": "FREE_PEOPLE",
     "type": "MINION",
-    "culture": "MAN",
+    "culture": "MEN",
     "race": "MAN",
     "twilightCost": 3,
     "strength": 9,
@@ -83343,7 +83536,7 @@
     "isUnique": false,
     "kind": "FREE_PEOPLE",
     "type": "MINION",
-    "culture": "MAN",
+    "culture": "MEN",
     "race": "MAN",
     "twilightCost": 3,
     "strength": 7,
@@ -83385,7 +83578,7 @@
     "isUnique": false,
     "kind": "FREE_PEOPLE",
     "type": "MINION",
-    "culture": "MAN",
+    "culture": "MEN",
     "race": "MAN",
     "twilightCost": 4,
     "strength": 11,
@@ -83430,7 +83623,7 @@
     "phases": [
       "SKIRMISH"
     ],
-    "culture": "MAN",
+    "culture": "MEN",
     "race": "MAN",
     "twilightCost": 4,
     "strength": 10,
@@ -83472,7 +83665,7 @@
     "isUnique": false,
     "kind": "FREE_PEOPLE",
     "type": "MINION",
-    "culture": "MAN",
+    "culture": "MEN",
     "race": "MAN",
     "twilightCost": 5,
     "strength": 13,
@@ -83514,7 +83707,7 @@
     "isUnique": false,
     "kind": "FREE_PEOPLE",
     "type": "MINION",
-    "culture": "MAN",
+    "culture": "MEN",
     "race": "MAN",
     "twilightCost": 3,
     "strength": 8,
@@ -83556,7 +83749,7 @@
     "isUnique": false,
     "kind": "FREE_PEOPLE",
     "type": "CONDITION",
-    "culture": "MAN",
+    "culture": "MEN",
     "twilightCost": 3,
     "imageUrl": "/cards_visuals/o_11_087.jpg",
     "i18n": {
@@ -83594,7 +83787,7 @@
     "isUnique": false,
     "kind": "FREE_PEOPLE",
     "type": "MINION",
-    "culture": "MAN",
+    "culture": "MEN",
     "race": "MAN",
     "twilightCost": 6,
     "strength": 14,
@@ -83637,8 +83830,9 @@
     "kind": "FREE_PEOPLE",
     "type": "POSSESSION",
     "subtype": "RANGED-WEAPON",
-    "culture": "MAN",
+    "culture": "MEN",
     "twilightCost": 2,
+    "strength": 1,
     "imageUrl": "/cards_visuals/o_11_089.jpg",
     "i18n": {
       "en": {
@@ -83675,7 +83869,7 @@
     "isUnique": false,
     "kind": "FREE_PEOPLE",
     "type": "MINION",
-    "culture": "MAN",
+    "culture": "MEN",
     "race": "MAN",
     "twilightCost": 2,
     "strength": 4,
@@ -83718,7 +83912,7 @@
     "kind": "FREE_PEOPLE",
     "type": "CONDITION",
     "subtype": "SUPPORT-AREA",
-    "culture": "MAN",
+    "culture": "MEN",
     "twilightCost": 4,
     "imageUrl": "/cards_visuals/o_11_091.jpg",
     "i18n": {
@@ -83759,7 +83953,7 @@
     "phases": [
       "SKIRMISH"
     ],
-    "culture": "MAN",
+    "culture": "MEN",
     "twilightCost": 1,
     "imageUrl": "/cards_visuals/o_11_092.jpg",
     "i18n": {
@@ -83797,7 +83991,7 @@
     "isUnique": false,
     "kind": "FREE_PEOPLE",
     "type": "MINION",
-    "culture": "MAN",
+    "culture": "MEN",
     "race": "MAN",
     "twilightCost": 3,
     "strength": 9,
@@ -83840,8 +84034,9 @@
     "kind": "FREE_PEOPLE",
     "type": "POSSESSION",
     "subtype": "SHIELD",
-    "culture": "MAN",
+    "culture": "MEN",
     "twilightCost": 3,
+    "vitality": 2,
     "imageUrl": "/cards_visuals/o_11_094.jpg",
     "i18n": {
       "en": {
@@ -83882,8 +84077,9 @@
     "phases": [
       "SKIRMISH"
     ],
-    "culture": "MAN",
+    "culture": "MEN",
     "twilightCost": 1,
+    "strength": 2,
     "imageUrl": "/cards_visuals/o_11_095.jpg",
     "i18n": {
       "en": {
@@ -83923,7 +84119,7 @@
     "phases": [
       "ARCHERY"
     ],
-    "culture": "MAN",
+    "culture": "MEN",
     "twilightCost": 1,
     "imageUrl": "/cards_visuals/o_11_096.jpg",
     "i18n": {
@@ -83961,7 +84157,7 @@
     "isUnique": false,
     "kind": "FREE_PEOPLE",
     "type": "MINION",
-    "culture": "MAN",
+    "culture": "MEN",
     "race": "MAN",
     "twilightCost": 4,
     "strength": 10,
@@ -84003,7 +84199,7 @@
     "isUnique": false,
     "kind": "FREE_PEOPLE",
     "type": "MINION",
-    "culture": "MAN",
+    "culture": "MEN",
     "race": "MAN",
     "twilightCost": 2,
     "strength": 6,
@@ -84048,7 +84244,7 @@
     "phases": [
       "REGROUP"
     ],
-    "culture": "MAN",
+    "culture": "MEN",
     "race": "MAN",
     "twilightCost": 3,
     "strength": 9,
@@ -84093,7 +84289,7 @@
     "phases": [
       "MANEUVER"
     ],
-    "culture": "MAN",
+    "culture": "MEN",
     "race": "MAN",
     "twilightCost": 4,
     "strength": 10,
@@ -84135,7 +84331,7 @@
     "isUnique": false,
     "kind": "FREE_PEOPLE",
     "type": "MINION",
-    "culture": "MAN",
+    "culture": "MEN",
     "race": "MAN",
     "twilightCost": 3,
     "strength": 8,
@@ -84177,7 +84373,7 @@
     "isUnique": false,
     "kind": "FREE_PEOPLE",
     "type": "MINION",
-    "culture": "MAN",
+    "culture": "MEN",
     "race": "MAN",
     "twilightCost": 4,
     "strength": 11,
@@ -84219,7 +84415,7 @@
     "isUnique": false,
     "kind": "FREE_PEOPLE",
     "type": "MINION",
-    "culture": "MAN",
+    "culture": "MEN",
     "race": "MAN",
     "twilightCost": 2,
     "strength": 8,
@@ -84264,7 +84460,7 @@
     "phases": [
       "SKIRMISH"
     ],
-    "culture": "MAN",
+    "culture": "MEN",
     "twilightCost": 3,
     "imageUrl": "/cards_visuals/o_11_104.jpg",
     "i18n": {
@@ -84302,8 +84498,9 @@
     "isUnique": false,
     "kind": "FREE_PEOPLE",
     "type": "CONDITION",
-    "culture": "MAN",
+    "culture": "MEN",
     "twilightCost": 1,
+    "resistance": -2,
     "imageUrl": "/cards_visuals/o_11_105.jpg",
     "i18n": {
       "en": {
@@ -85226,6 +85423,7 @@
     "subtype": "HAND-WEAPON",
     "culture": "ORC",
     "twilightCost": 2,
+    "strength": 3,
     "imageUrl": "/cards_visuals/o_11_128.jpg",
     "i18n": {
       "en": {
@@ -85307,6 +85505,7 @@
     "subtype": "HAND-WEAPON",
     "culture": "ORC",
     "twilightCost": 2,
+    "strength": 1,
     "imageUrl": "/cards_visuals/o_11_130.jpg",
     "i18n": {
       "en": {
@@ -86213,6 +86412,7 @@
     ],
     "culture": "ROHAN",
     "twilightCost": 1,
+    "strength": 1,
     "imageUrl": "/cards_visuals/o_11_151.jpg",
     "i18n": {
       "en": {
@@ -86294,6 +86494,7 @@
     "subtype": "HAND-WEAPON",
     "culture": "ROHAN",
     "twilightCost": 1,
+    "strength": 2,
     "imageUrl": "/cards_visuals/o_11_153.jpg",
     "i18n": {
       "en": {
@@ -86840,6 +87041,7 @@
     "subtype": "HAND-WEAPON",
     "culture": "SHIRE",
     "twilightCost": 1,
+    "strength": 2,
     "imageUrl": "/cards_visuals/o_11_166.jpg",
     "i18n": {
       "en": {
@@ -87062,6 +87264,7 @@
     ],
     "culture": "SHIRE",
     "twilightCost": 1,
+    "resistance": 2,
     "imageUrl": "/cards_visuals/o_11_171.jpg",
     "i18n": {
       "en": {
@@ -87146,6 +87349,7 @@
     ],
     "culture": "SHIRE",
     "twilightCost": 1,
+    "strength": 2,
     "imageUrl": "/cards_visuals/o_11_173.jpg",
     "i18n": {
       "en": {
@@ -87900,6 +88104,7 @@
     "subtype": "RANGED-WEAPON",
     "culture": "URUK-HAI",
     "twilightCost": 1,
+    "vitality": 1,
     "imageUrl": "/cards_visuals/o_11_191.jpg",
     "i18n": {
       "en": {
@@ -88108,6 +88313,8 @@
     "type": "CONDITION",
     "culture": "URUK-HAI",
     "twilightCost": 2,
+    "strength": -1,
+    "resistance": -3,
     "imageUrl": "/cards_visuals/o_11_196.jpg",
     "i18n": {
       "en": {
@@ -88848,6 +89055,7 @@
     "subtype": "HAND-WEAPON",
     "culture": "WRAITH",
     "twilightCost": 2,
+    "strength": 3,
     "imageUrl": "/cards_visuals/o_11_214.jpg",
     "i18n": {
       "en": {
@@ -89544,6 +89752,7 @@
     ],
     "culture": "DWARVEN",
     "twilightCost": 1,
+    "strength": 1,
     "imageUrl": "/cards_visuals/o_12_005.jpg",
     "i18n": {
       "en": {
@@ -90042,6 +90251,7 @@
     "subtype": "HAND-WEAPON",
     "culture": "ELVEN",
     "twilightCost": 1,
+    "strength": 2,
     "imageUrl": "/cards_visuals/o_12_018.jpg",
     "i18n": {
       "en": {
@@ -90081,6 +90291,7 @@
     "subtype": "HAND-WEAPON",
     "culture": "ELVEN",
     "twilightCost": 1,
+    "strength": 1,
     "imageUrl": "/cards_visuals/o_12_019.jpg",
     "i18n": {
       "en": {
@@ -91000,6 +91211,7 @@
     ],
     "culture": "GONDOR",
     "twilightCost": 1,
+    "strength": 2,
     "imageUrl": "/cards_visuals/o_12_042.jpg",
     "i18n": {
       "en": {
@@ -91262,6 +91474,7 @@
     "subtype": "HAND-WEAPON",
     "culture": "GONDOR",
     "twilightCost": 2,
+    "strength": 2,
     "imageUrl": "/cards_visuals/o_12_048.jpg",
     "i18n": {
       "en": {
@@ -91301,6 +91514,8 @@
     "subtype": "MOUNT",
     "culture": "GONDOR",
     "twilightCost": 1,
+    "strength": 1,
+    "resistance": 1,
     "imageUrl": "/cards_visuals/o_12_049.jpg",
     "i18n": {
       "en": {
@@ -91503,7 +91718,7 @@
     "isUnique": false,
     "kind": "FREE_PEOPLE",
     "type": "MINION",
-    "culture": "MAN",
+    "culture": "MEN",
     "race": "MAN",
     "twilightCost": 4,
     "strength": 11,
@@ -91545,7 +91760,7 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "MINION",
-    "culture": "MAN",
+    "culture": "MEN",
     "race": "MAN",
     "twilightCost": 7,
     "strength": 14,
@@ -91592,7 +91807,7 @@
     "isUnique": false,
     "kind": "FREE_PEOPLE",
     "type": "MINION",
-    "culture": "MAN",
+    "culture": "MEN",
     "race": "MAN",
     "twilightCost": 4,
     "strength": 6,
@@ -91634,7 +91849,7 @@
       "RESPONSE",
       "SHADOW"
     ],
-    "culture": "MAN",
+    "culture": "MEN",
     "twilightCost": 0,
     "imageUrl": "/cards_visuals/o_12_058.jpg",
     "i18n": {
@@ -91672,7 +91887,7 @@
     "isUnique": false,
     "kind": "FREE_PEOPLE",
     "type": "MINION",
-    "culture": "MAN",
+    "culture": "MEN",
     "race": "MAN",
     "twilightCost": 4,
     "strength": 10,
@@ -91714,7 +91929,7 @@
     "isUnique": false,
     "kind": "FREE_PEOPLE",
     "type": "MINION",
-    "culture": "MAN",
+    "culture": "MEN",
     "race": "MAN",
     "twilightCost": 2,
     "strength": 7,
@@ -91756,7 +91971,7 @@
     "isUnique": false,
     "kind": "FREE_PEOPLE",
     "type": "MINION",
-    "culture": "MAN",
+    "culture": "MEN",
     "race": "MAN",
     "twilightCost": 3,
     "strength": 4,
@@ -91798,7 +92013,7 @@
     "isUnique": false,
     "kind": "FREE_PEOPLE",
     "type": "MINION",
-    "culture": "MAN",
+    "culture": "MEN",
     "race": "MAN",
     "twilightCost": 3,
     "strength": 8,
@@ -91840,7 +92055,7 @@
     "isUnique": false,
     "kind": "FREE_PEOPLE",
     "type": "MINION",
-    "culture": "MAN",
+    "culture": "MEN",
     "race": "MAN",
     "twilightCost": 3,
     "strength": 9,
@@ -91882,7 +92097,7 @@
     "isUnique": false,
     "kind": "FREE_PEOPLE",
     "type": "MINION",
-    "culture": "MAN",
+    "culture": "MEN",
     "race": "MAN",
     "twilightCost": 4,
     "strength": 12,
@@ -91924,7 +92139,7 @@
     "isUnique": false,
     "kind": "FREE_PEOPLE",
     "type": "MINION",
-    "culture": "MAN",
+    "culture": "MEN",
     "race": "MAN",
     "twilightCost": 4,
     "strength": 12,
@@ -91969,7 +92184,7 @@
     "phases": [
       "SKIRMISH"
     ],
-    "culture": "MAN",
+    "culture": "MEN",
     "twilightCost": 6,
     "imageUrl": "/cards_visuals/o_12_066.jpg",
     "i18n": {
@@ -92008,7 +92223,7 @@
     "kind": "FREE_PEOPLE",
     "type": "CONDITION",
     "subtype": "SUPPORT-AREA",
-    "culture": "MAN",
+    "culture": "MEN",
     "twilightCost": 1,
     "imageUrl": "/cards_visuals/o_12_067.jpg",
     "i18n": {
@@ -92046,7 +92261,7 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "MINION",
-    "culture": "MAN",
+    "culture": "MEN",
     "race": "MAN",
     "twilightCost": 2,
     "strength": 4,
@@ -92092,7 +92307,7 @@
     "isUnique": false,
     "kind": "FREE_PEOPLE",
     "type": "MINION",
-    "culture": "MAN",
+    "culture": "MEN",
     "race": "MAN",
     "twilightCost": 3,
     "strength": 9,
@@ -92138,7 +92353,7 @@
     "phases": [
       "MANEUVER"
     ],
-    "culture": "MAN",
+    "culture": "MEN",
     "twilightCost": 1,
     "imageUrl": "/cards_visuals/o_12_070.jpg",
     "i18n": {
@@ -92172,7 +92387,7 @@
     "kind": "FREE_PEOPLE",
     "type": "CONDITION",
     "subtype": "SUPPORT-AREA",
-    "culture": "MAN",
+    "culture": "MEN",
     "twilightCost": 0,
     "imageUrl": "/cards_visuals/o_12_071.jpg",
     "i18n": {
@@ -92214,8 +92429,9 @@
     "phases": [
       "RESPONSE"
     ],
-    "culture": "MAN",
+    "culture": "MEN",
     "twilightCost": 2,
+    "strength": 3,
     "imageUrl": "/cards_visuals/o_12_072.jpg",
     "i18n": {
       "en": {
@@ -92252,7 +92468,7 @@
     "isUnique": false,
     "kind": "FREE_PEOPLE",
     "type": "MINION",
-    "culture": "MAN",
+    "culture": "MEN",
     "race": "MAN",
     "twilightCost": 4,
     "strength": 8,
@@ -92295,7 +92511,7 @@
     "kind": "FREE_PEOPLE",
     "type": "EVENT",
     "subtype": "MANEUVER-OR-REGROUP",
-    "culture": "MAN",
+    "culture": "MEN",
     "twilightCost": 4,
     "imageUrl": "/cards_visuals/o_12_075.jpg",
     "i18n": {
@@ -92334,7 +92550,7 @@
     "kind": "FREE_PEOPLE",
     "type": "CONDITION",
     "subtype": "SUPPORT-AREA",
-    "culture": "MAN",
+    "culture": "MEN",
     "twilightCost": 0,
     "imageUrl": "/cards_visuals/o_12_076.jpg",
     "i18n": {
@@ -92373,8 +92589,9 @@
     "kind": "FREE_PEOPLE",
     "type": "POSSESSION",
     "subtype": "HAND-WEAPON",
-    "culture": "MAN",
+    "culture": "MEN",
     "twilightCost": 1,
+    "strength": 2,
     "imageUrl": "/cards_visuals/o_12_077.jpg",
     "i18n": {
       "en": {
@@ -92406,7 +92623,7 @@
     "isUnique": false,
     "kind": "FREE_PEOPLE",
     "type": "MINION",
-    "culture": "MAN",
+    "culture": "MEN",
     "race": "MAN",
     "twilightCost": 3,
     "strength": 12,
@@ -92451,6 +92668,7 @@
     "subtype": "HAND-WEAPON",
     "culture": "MORIA",
     "twilightCost": 1,
+    "strength": 1,
     "imageUrl": "/cards_visuals/o_12_080.jpg",
     "i18n": {
       "en": {
@@ -92704,6 +92922,7 @@
     "subtype": "HAND-WEAPON",
     "culture": "ORC",
     "twilightCost": 2,
+    "strength": 3,
     "imageUrl": "/cards_visuals/o_12_086.jpg",
     "i18n": {
       "en": {
@@ -93121,6 +93340,7 @@
     "subtype": "HAND-WEAPON",
     "culture": "ORC",
     "twilightCost": 1,
+    "strength": 2,
     "imageUrl": "/cards_visuals/o_12_096.jpg",
     "i18n": {
       "en": {
@@ -93755,6 +93975,7 @@
     "subtype": "ARMOR",
     "culture": "ROHAN",
     "twilightCost": 0,
+    "vitality": 1,
     "imageUrl": "/cards_visuals/o_12_111.jpg",
     "i18n": {
       "en": {
@@ -95803,6 +96024,7 @@
     "subtype": "HAND-WEAPON",
     "culture": "URUK-HAI",
     "twilightCost": 1,
+    "strength": 2,
     "imageUrl": "/cards_visuals/o_12_159.jpg",
     "i18n": {
       "en": {
@@ -96168,6 +96390,7 @@
     "subtype": "HAND-WEAPON",
     "culture": "WRAITH",
     "twilightCost": 1,
+    "strength": 1,
     "imageUrl": "/cards_visuals/o_12_168.jpg",
     "i18n": {
       "en": {
@@ -96282,6 +96505,7 @@
     "subtype": "MOUNT",
     "culture": "WRAITH",
     "twilightCost": 2,
+    "vitality": 1,
     "imageUrl": "/cards_visuals/o_12_171.jpg",
     "i18n": {
       "en": {
@@ -96320,6 +96544,7 @@
     "subtype": "MOUNT",
     "culture": "WRAITH",
     "twilightCost": 2,
+    "strength": 1,
     "imageUrl": "/cards_visuals/o_12_172.jpg",
     "i18n": {
       "en": {
@@ -96825,6 +97050,7 @@
     "subtype": "MOUNT",
     "culture": "WRAITH",
     "twilightCost": 2,
+    "strength": 2,
     "i18n": {
       "en": {
         "title": "The Witch-king’s Beast",
@@ -96963,6 +97189,7 @@
     "subtype": "HAND-WEAPON",
     "culture": "GONDOR",
     "twilightCost": 2,
+    "strength": 2,
     "i18n": {
       "en": {
         "title": "Faramir's Sword",
@@ -97280,6 +97507,7 @@
     ],
     "culture": "DWARVEN",
     "twilightCost": 1,
+    "resistance": 1,
     "imageUrl": "/cards_visuals/o_13_001.jpg",
     "i18n": {
       "en": {
@@ -97619,6 +97847,7 @@
     ],
     "culture": "ELVEN",
     "twilightCost": 2,
+    "resistance": 1,
     "imageUrl": "/cards_visuals/o_13_010.jpg",
     "i18n": {
       "en": {
@@ -98712,6 +98941,7 @@
     "subtype": "PALANTÍR",
     "culture": "GANDALF",
     "twilightCost": 0,
+    "resistance": -2,
     "imageUrl": "/cards_visuals/o_13_036.jpg",
     "i18n": {
       "en": {
@@ -98754,6 +98984,7 @@
     "type": "FOLLOWER",
     "culture": "GANDALF",
     "twilightCost": 2,
+    "strength": 1,
     "imageUrl": "/cards_visuals/o_13_037.jpg",
     "i18n": {
       "en": {
@@ -98797,6 +99028,7 @@
     "type": "FOLLOWER",
     "culture": "GANDALF",
     "twilightCost": 2,
+    "resistance": 2,
     "imageUrl": "/cards_visuals/o_13_038.jpg",
     "i18n": {
       "en": {
@@ -98885,6 +99117,7 @@
     ],
     "culture": "GANDALF",
     "twilightCost": 2,
+    "strength": 1,
     "imageUrl": "/cards_visuals/o_13_040.jpg",
     "i18n": {
       "en": {
@@ -99172,6 +99405,7 @@
     "type": "POSSESSION",
     "culture": "GOLLUM",
     "twilightCost": 2,
+    "vitality": 1,
     "imageUrl": "/cards_visuals/o_13_048.jpg",
     "i18n": {
       "en": {
@@ -100555,6 +100789,8 @@
     ],
     "culture": "ISENGARD",
     "twilightCost": 2,
+    "strength": 2,
+    "vitality": 1,
     "imageUrl": "/cards_visuals/o_13_081.jpg",
     "i18n": {
       "en": {
@@ -100599,7 +100835,7 @@
     "phases": [
       "SKIRMISH"
     ],
-    "culture": "MAN",
+    "culture": "MEN",
     "twilightCost": 1,
     "imageUrl": "/cards_visuals/o_13_082.jpg",
     "i18n": {
@@ -100638,7 +100874,7 @@
     "kind": "FREE_PEOPLE",
     "type": "CONDITION",
     "subtype": "SUPPORT-AREA",
-    "culture": "MAN",
+    "culture": "MEN",
     "twilightCost": 1,
     "imageUrl": "/cards_visuals/o_13_083.jpg",
     "i18n": {
@@ -100671,7 +100907,7 @@
     "isUnique": false,
     "kind": "FREE_PEOPLE",
     "type": "MINION",
-    "culture": "MAN",
+    "culture": "MEN",
     "race": "MAN",
     "twilightCost": 5,
     "strength": 11,
@@ -100715,7 +100951,7 @@
     "phases": [
       "SKIRMISH"
     ],
-    "culture": "MAN",
+    "culture": "MEN",
     "race": "MAN",
     "twilightCost": 3,
     "strength": 8,
@@ -100757,7 +100993,7 @@
     "isUnique": false,
     "kind": "FREE_PEOPLE",
     "type": "MINION",
-    "culture": "MAN",
+    "culture": "MEN",
     "race": "MAN",
     "twilightCost": 5,
     "strength": 12,
@@ -100803,7 +101039,7 @@
     "phases": [
       "SKIRMISH"
     ],
-    "culture": "MAN",
+    "culture": "MEN",
     "twilightCost": 2,
     "imageUrl": "/cards_visuals/o_13_087.jpg",
     "i18n": {
@@ -100841,7 +101077,7 @@
     "isUnique": false,
     "kind": "FREE_PEOPLE",
     "type": "MINION",
-    "culture": "MAN",
+    "culture": "MEN",
     "race": "MAN",
     "twilightCost": 6,
     "strength": 13,
@@ -100885,7 +101121,7 @@
     "phases": [
       "ASSIGNMENT"
     ],
-    "culture": "MAN",
+    "culture": "MEN",
     "race": "MAN",
     "twilightCost": 3,
     "strength": 7,
@@ -100930,7 +101166,7 @@
     "phases": [
       "SHADOW"
     ],
-    "culture": "MAN",
+    "culture": "MEN",
     "race": "MAN",
     "twilightCost": 3,
     "strength": 8,
@@ -100975,7 +101211,7 @@
     "phases": [
       "SKIRMISH"
     ],
-    "culture": "MAN",
+    "culture": "MEN",
     "twilightCost": 2,
     "imageUrl": "/cards_visuals/o_13_091.jpg",
     "i18n": {
@@ -101013,7 +101249,7 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "MINION",
-    "culture": "MAN",
+    "culture": "MEN",
     "race": "MAN",
     "twilightCost": 2,
     "strength": 4,
@@ -101064,8 +101300,9 @@
     "phases": [
       "RESPONSE"
     ],
-    "culture": "MAN",
+    "culture": "MEN",
     "twilightCost": 2,
+    "resistance": -1,
     "imageUrl": "/cards_visuals/o_13_093.jpg",
     "i18n": {
       "en": {
@@ -101102,7 +101339,7 @@
     "kind": "FREE_PEOPLE",
     "type": "CONDITION",
     "subtype": "SUPPORT-AREA",
-    "culture": "MAN",
+    "culture": "MEN",
     "twilightCost": 0,
     "imageUrl": "/cards_visuals/o_13_094.jpg",
     "i18n": {
@@ -101144,7 +101381,7 @@
     "phases": [
       "SKIRMISH"
     ],
-    "culture": "MAN",
+    "culture": "MEN",
     "twilightCost": 0,
     "imageUrl": "/cards_visuals/o_13_095.jpg",
     "i18n": {
@@ -101177,7 +101414,7 @@
     "isUnique": false,
     "kind": "FREE_PEOPLE",
     "type": "MINION",
-    "culture": "MAN",
+    "culture": "MEN",
     "race": "MAN",
     "twilightCost": 3,
     "strength": 8,
@@ -101222,7 +101459,7 @@
     "phases": [
       "SHADOW"
     ],
-    "culture": "MAN",
+    "culture": "MEN",
     "race": "MAN",
     "twilightCost": 4,
     "strength": 12,
@@ -101264,7 +101501,7 @@
     "isUnique": false,
     "kind": "FREE_PEOPLE",
     "type": "MINION",
-    "culture": "MAN",
+    "culture": "MEN",
     "race": "MAN",
     "twilightCost": 3,
     "strength": 8,
@@ -101310,7 +101547,7 @@
     "phases": [
       "SKIRMISH"
     ],
-    "culture": "MAN",
+    "culture": "MEN",
     "twilightCost": 1,
     "imageUrl": "/cards_visuals/o_13_099.jpg",
     "i18n": {
@@ -101351,7 +101588,7 @@
     "phases": [
       "SKIRMISH"
     ],
-    "culture": "MAN",
+    "culture": "MEN",
     "race": "MAN",
     "twilightCost": 3,
     "strength": 8,
@@ -101393,7 +101630,7 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "MINION",
-    "culture": "MAN",
+    "culture": "MEN",
     "race": "MAN",
     "twilightCost": 4,
     "strength": 11,
@@ -101436,8 +101673,9 @@
     "kind": "FREE_PEOPLE",
     "type": "POSSESSION",
     "subtype": "HAND-WEAPON",
-    "culture": "MAN",
+    "culture": "MEN",
     "twilightCost": 1,
+    "strength": 2,
     "imageUrl": "/cards_visuals/o_13_102.jpg",
     "i18n": {
       "en": {
@@ -102402,6 +102640,7 @@
     "subtype": "MOUNT",
     "culture": "ROHAN",
     "twilightCost": 2,
+    "strength": 1,
     "imageUrl": "/cards_visuals/o_13_126.jpg",
     "i18n": {
       "en": {
@@ -102816,6 +103055,8 @@
     ],
     "culture": "ROHAN",
     "twilightCost": 2,
+    "strength": 1,
+    "resistance": 1,
     "imageUrl": "/cards_visuals/o_13_136.jpg",
     "i18n": {
       "en": {
@@ -102988,6 +103229,8 @@
     "subtype": "HAND-WEAPON",
     "culture": "SAURON",
     "twilightCost": 0,
+    "strength": 2,
+    "vitality": 1,
     "imageUrl": "/cards_visuals/o_13_141.jpg",
     "i18n": {
       "en": {
@@ -103114,6 +103357,7 @@
     "type": "FOLLOWER",
     "culture": "SHIRE",
     "twilightCost": 1,
+    "resistance": 1,
     "imageUrl": "/cards_visuals/o_13_144.jpg",
     "i18n": {
       "en": {
@@ -103363,6 +103607,7 @@
     "type": "FOLLOWER",
     "culture": "SHIRE",
     "twilightCost": 1,
+    "vitality": 1,
     "imageUrl": "/cards_visuals/o_13_150.jpg",
     "i18n": {
       "en": {
@@ -103406,6 +103651,7 @@
     "type": "FOLLOWER",
     "culture": "SHIRE",
     "twilightCost": 1,
+    "strength": 1,
     "imageUrl": "/cards_visuals/o_13_151.jpg",
     "i18n": {
       "en": {
@@ -103572,6 +103818,7 @@
     "subtype": "PHIAL",
     "culture": "SHIRE",
     "twilightCost": 0,
+    "resistance": 1,
     "imageUrl": "/cards_visuals/o_13_155.jpg",
     "i18n": {
       "en": {
@@ -104907,6 +105154,7 @@
     "type": "FOLLOWER",
     "culture": "GANDALF",
     "twilightCost": 2,
+    "strength": 1,
     "i18n": {
       "en": {
         "title": "Pallando",
@@ -105560,7 +105808,7 @@
     "phases": [
       "RESPONSE"
     ],
-    "culture": "MAN",
+    "culture": "MEN",
     "race": "MAN",
     "twilightCost": 3,
     "strength": 8,
@@ -105602,7 +105850,7 @@
     "isUnique": false,
     "kind": "FREE_PEOPLE",
     "type": "MINION",
-    "culture": "MAN",
+    "culture": "MEN",
     "race": "MAN",
     "twilightCost": 3,
     "strength": 8,
@@ -105816,6 +106064,7 @@
       "SKIRMISH"
     ],
     "twilightCost": 2,
+    "vitality": 2,
     "imageUrl": "/cards_visuals/o_15_001.jpg",
     "i18n": {
       "en": {
@@ -105861,6 +106110,7 @@
       "RESPONSE"
     ],
     "twilightCost": 1,
+    "strength": 1,
     "imageUrl": "/cards_visuals/o_15_002.jpg",
     "i18n": {
       "en": {
@@ -106078,6 +106328,7 @@
     ],
     "culture": "DWARVEN",
     "twilightCost": 4,
+    "strength": 3,
     "imageUrl": "/cards_visuals/o_15_007.jpg",
     "i18n": {
       "en": {
@@ -106849,6 +107100,7 @@
     ],
     "culture": "ELVEN",
     "twilightCost": 2,
+    "strength": 1,
     "imageUrl": "/cards_visuals/o_15_025.jpg",
     "i18n": {
       "en": {
@@ -106887,6 +107139,7 @@
     "type": "FOLLOWER",
     "culture": "ELVEN",
     "twilightCost": 2,
+    "resistance": 1,
     "imageUrl": "/cards_visuals/o_15_026.jpg",
     "i18n": {
       "en": {
@@ -108277,6 +108530,8 @@
     ],
     "culture": "GONDOR",
     "twilightCost": 4,
+    "strength": -1,
+    "vitality": -2,
     "imageUrl": "/cards_visuals/o_15_058.jpg",
     "i18n": {
       "en": {
@@ -108445,6 +108700,7 @@
     ],
     "culture": "GONDOR",
     "twilightCost": 1,
+    "strength": 2,
     "imageUrl": "/cards_visuals/o_15_062.jpg",
     "i18n": {
       "en": {
@@ -108667,6 +108923,8 @@
     ],
     "culture": "GONDOR",
     "twilightCost": 3,
+    "strength": -2,
+    "resistance": 2,
     "imageUrl": "/cards_visuals/o_15_067.jpg",
     "i18n": {
       "en": {
@@ -108709,6 +108967,8 @@
     ],
     "culture": "GONDOR",
     "twilightCost": 1,
+    "vitality": 1,
+    "resistance": 1,
     "imageUrl": "/cards_visuals/o_15_068.jpg",
     "i18n": {
       "en": {
@@ -108864,7 +109124,7 @@
     "phases": [
       "SHADOW"
     ],
-    "culture": "MAN",
+    "culture": "MEN",
     "race": "MAN",
     "twilightCost": 2,
     "strength": 4,
@@ -108914,7 +109174,7 @@
     "phases": [
       "SKIRMISH"
     ],
-    "culture": "MAN",
+    "culture": "MEN",
     "race": "MAN",
     "twilightCost": 2,
     "strength": 8,
@@ -108959,7 +109219,7 @@
     "phases": [
       "SKIRMISH"
     ],
-    "culture": "MAN",
+    "culture": "MEN",
     "race": "MAN",
     "twilightCost": 5,
     "strength": 11,
@@ -108999,7 +109259,7 @@
     "phases": [
       "SKIRMISH"
     ],
-    "culture": "MAN",
+    "culture": "MEN",
     "race": "MAN",
     "twilightCost": 1,
     "strength": 5,
@@ -109042,7 +109302,7 @@
     "kind": "FREE_PEOPLE",
     "type": "CONDITION",
     "subtype": "SUPPORT-AREA",
-    "culture": "MAN",
+    "culture": "MEN",
     "twilightCost": 3,
     "imageUrl": "/cards_visuals/o_15_076.jpg",
     "i18n": {
@@ -109083,7 +109343,7 @@
     "phases": [
       "SKIRMISH"
     ],
-    "culture": "MAN",
+    "culture": "MEN",
     "race": "MAN",
     "twilightCost": 3,
     "strength": 9,
@@ -109125,7 +109385,7 @@
     "isUnique": false,
     "kind": "FREE_PEOPLE",
     "type": "MINION",
-    "culture": "MAN",
+    "culture": "MEN",
     "race": "MAN",
     "twilightCost": 4,
     "strength": 10,
@@ -109167,7 +109427,7 @@
     "isUnique": false,
     "kind": "FREE_PEOPLE",
     "type": "MINION",
-    "culture": "MAN",
+    "culture": "MEN",
     "race": "MAN",
     "twilightCost": 5,
     "strength": 12,
@@ -109210,8 +109470,9 @@
     "kind": "FREE_PEOPLE",
     "type": "POSSESSION",
     "subtype": "HAND-WEAPON",
-    "culture": "MAN",
+    "culture": "MEN",
     "twilightCost": 1,
+    "strength": 2,
     "imageUrl": "/cards_visuals/o_15_080.jpg",
     "i18n": {
       "en": {
@@ -109248,8 +109509,9 @@
     "isUnique": false,
     "kind": "FREE_PEOPLE",
     "type": "CONDITION",
-    "culture": "MAN",
+    "culture": "MEN",
     "twilightCost": 1,
+    "strength": -1,
     "imageUrl": "/cards_visuals/o_15_081.jpg",
     "i18n": {
       "en": {
@@ -109286,7 +109548,7 @@
     "isUnique": false,
     "kind": "FREE_PEOPLE",
     "type": "MINION",
-    "culture": "MAN",
+    "culture": "MEN",
     "race": "MAN",
     "twilightCost": 4,
     "strength": 9,
@@ -109328,7 +109590,7 @@
     "isUnique": false,
     "kind": "FREE_PEOPLE",
     "type": "MINION",
-    "culture": "MAN",
+    "culture": "MEN",
     "race": "MAN",
     "twilightCost": 3,
     "strength": 8,
@@ -109373,7 +109635,7 @@
     "phases": [
       "ARCHERY"
     ],
-    "culture": "MAN",
+    "culture": "MEN",
     "twilightCost": 3,
     "imageUrl": "/cards_visuals/o_15_084.jpg",
     "i18n": {
@@ -109414,7 +109676,7 @@
     "phases": [
       "MANEUVER"
     ],
-    "culture": "MAN",
+    "culture": "MEN",
     "twilightCost": 1,
     "imageUrl": "/cards_visuals/o_15_085.jpg",
     "i18n": {
@@ -109455,7 +109717,7 @@
     "phases": [
       "MANEUVER"
     ],
-    "culture": "MAN",
+    "culture": "MEN",
     "race": "MAN",
     "twilightCost": 6,
     "strength": 14,
@@ -109502,7 +109764,7 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "MINION",
-    "culture": "MAN",
+    "culture": "MEN",
     "race": "MAN",
     "twilightCost": 5,
     "strength": 13,
@@ -109544,8 +109806,9 @@
     "isUnique": false,
     "kind": "FREE_PEOPLE",
     "type": "CONDITION",
-    "culture": "MAN",
+    "culture": "MEN",
     "twilightCost": 0,
+    "resistance": -1,
     "imageUrl": "/cards_visuals/o_15_088.jpg",
     "i18n": {
       "en": {
@@ -109586,7 +109849,7 @@
     "phases": [
       "ARCHERY"
     ],
-    "culture": "MAN",
+    "culture": "MEN",
     "twilightCost": 1,
     "imageUrl": "/cards_visuals/o_15_089.jpg",
     "i18n": {
@@ -109627,7 +109890,7 @@
     "phases": [
       "MANEUVER"
     ],
-    "culture": "MAN",
+    "culture": "MEN",
     "race": "MAN",
     "twilightCost": 3,
     "strength": 9,
@@ -109669,7 +109932,7 @@
     "isUnique": false,
     "kind": "FREE_PEOPLE",
     "type": "MINION",
-    "culture": "MAN",
+    "culture": "MEN",
     "race": "MAN",
     "twilightCost": 4,
     "strength": 10,
@@ -109714,7 +109977,7 @@
     "phases": [
       "MANEUVER"
     ],
-    "culture": "MAN",
+    "culture": "MEN",
     "race": "MAN",
     "twilightCost": 3,
     "strength": 8,
@@ -109756,7 +110019,7 @@
     "isUnique": false,
     "kind": "FREE_PEOPLE",
     "type": "MINION",
-    "culture": "MAN",
+    "culture": "MEN",
     "race": "MAN",
     "twilightCost": 2,
     "strength": 7,
@@ -109801,7 +110064,7 @@
     "phases": [
       "MANEUVER"
     ],
-    "culture": "MAN",
+    "culture": "MEN",
     "race": "MAN",
     "twilightCost": 3,
     "strength": 8,
@@ -110656,6 +110919,7 @@
     "subtype": "HAND-WEAPON",
     "culture": "ORC",
     "twilightCost": 1,
+    "strength": 1,
     "imageUrl": "/cards_visuals/o_15_114.jpg",
     "i18n": {
       "en": {
@@ -111072,6 +111336,7 @@
     ],
     "culture": "ROHAN",
     "twilightCost": 1,
+    "strength": 2,
     "imageUrl": "/cards_visuals/o_15_124.jpg",
     "i18n": {
       "en": {
@@ -111497,6 +111762,7 @@
     "type": "FOLLOWER",
     "culture": "ROHAN",
     "twilightCost": 2,
+    "strength": 1,
     "imageUrl": "/cards_visuals/o_15_134.jpg",
     "i18n": {
       "en": {
@@ -111574,6 +111840,7 @@
     "subtype": "HAND-WEAPON",
     "culture": "ROHAN",
     "twilightCost": 1,
+    "strength": 2,
     "imageUrl": "/cards_visuals/o_15_136.jpg",
     "i18n": {
       "en": {
@@ -111735,6 +112002,8 @@
     "subtype": "HAND-WEAPON",
     "culture": "ROHAN",
     "twilightCost": 1,
+    "strength": 1,
+    "resistance": 1,
     "imageUrl": "/cards_visuals/o_15_140.jpg",
     "i18n": {
       "en": {
@@ -111946,6 +112215,7 @@
     "subtype": "HAND-WEAPON",
     "culture": "SHIRE",
     "twilightCost": 1,
+    "strength": 2,
     "imageUrl": "/cards_visuals/o_15_145.jpg",
     "i18n": {
       "en": {
@@ -111987,6 +112257,7 @@
     ],
     "culture": "SHIRE",
     "twilightCost": 2,
+    "strength": 2,
     "imageUrl": "/cards_visuals/o_15_146.jpg",
     "i18n": {
       "en": {
@@ -112025,6 +112296,8 @@
     "type": "FOLLOWER",
     "culture": "SHIRE",
     "twilightCost": 2,
+    "strength": 1,
+    "resistance": 1,
     "imageUrl": "/cards_visuals/o_15_147.jpg",
     "i18n": {
       "en": {
@@ -112716,6 +112989,7 @@
     "subtype": "HAND-WEAPON",
     "culture": "URUK-HAI",
     "twilightCost": 3,
+    "strength": 2,
     "imageUrl": "/cards_visuals/o_15_163.jpg",
     "i18n": {
       "en": {
@@ -113144,6 +113418,7 @@
     "subtype": "HAND-WEAPON",
     "culture": "URUK-HAI",
     "twilightCost": 2,
+    "strength": 1,
     "imageUrl": "/cards_visuals/o_15_173.jpg",
     "i18n": {
       "en": {
@@ -115217,6 +115492,7 @@
     "subtype": "HAND-WEAPON",
     "culture": "GANDALF",
     "twilightCost": 2,
+    "strength": 2,
     "imageUrl": "/cards_visuals/o_17_018.jpg",
     "i18n": {
       "en": {
@@ -115297,6 +115573,8 @@
     "type": "FOLLOWER",
     "culture": "GANDALF",
     "twilightCost": 1,
+    "strength": 1,
+    "resistance": 1,
     "imageUrl": "/cards_visuals/o_17_020.jpg",
     "i18n": {
       "en": {
@@ -115458,6 +115736,9 @@
     ],
     "culture": "GANDALF",
     "twilightCost": 2,
+    "strength": 1,
+    "vitality": 1,
+    "resistance": 1,
     "imageUrl": "/cards_visuals/o_17_024.jpg",
     "i18n": {
       "en": {
@@ -115584,6 +115865,8 @@
     "subtype": "HAND-WEAPON",
     "culture": "GONDOR",
     "twilightCost": 3,
+    "strength": 2,
+    "vitality": 1,
     "imageUrl": "/cards_visuals/o_17_027.jpg",
     "i18n": {
       "en": {
@@ -115749,6 +116032,7 @@
     "subtype": "HAND-WEAPON",
     "culture": "GONDOR",
     "twilightCost": 3,
+    "strength": 3,
     "imageUrl": "/cards_visuals/o_17_031.jpg",
     "i18n": {
       "en": {
@@ -116020,6 +116304,7 @@
     "type": "FOLLOWER",
     "culture": "ISENGARD",
     "twilightCost": 1,
+    "strength": 2,
     "imageUrl": "/cards_visuals/o_17_038.jpg",
     "i18n": {
       "en": {
@@ -116097,8 +116382,9 @@
     "kind": "FREE_PEOPLE",
     "type": "POSSESSION",
     "subtype": "MOUNT",
-    "culture": "MAN",
+    "culture": "MEN",
     "twilightCost": 3,
+    "strength": 3,
     "imageUrl": "/cards_visuals/o_17_040.jpg",
     "i18n": {
       "en": {
@@ -116139,7 +116425,7 @@
     "phases": [
       "RESPONSE"
     ],
-    "culture": "MAN",
+    "culture": "MEN",
     "twilightCost": 2,
     "imageUrl": "/cards_visuals/o_17_041.jpg",
     "i18n": {
@@ -116177,7 +116463,7 @@
     "isUnique": false,
     "kind": "FREE_PEOPLE",
     "type": "MINION",
-    "culture": "MAN",
+    "culture": "MEN",
     "race": "MAN",
     "twilightCost": 3,
     "strength": 8,
@@ -116219,7 +116505,7 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "MINION",
-    "culture": "MAN",
+    "culture": "MEN",
     "race": "MAN",
     "twilightCost": 6,
     "strength": 15,
@@ -116265,8 +116551,9 @@
     "phases": [
       "RESPONSE"
     ],
-    "culture": "MAN",
+    "culture": "MEN",
     "twilightCost": 1,
+    "strength": 1,
     "imageUrl": "/cards_visuals/o_17_044.jpg",
     "i18n": {
       "en": {
@@ -116306,7 +116593,7 @@
     "phases": [
       "SKIRMISH"
     ],
-    "culture": "MAN",
+    "culture": "MEN",
     "twilightCost": 1,
     "imageUrl": "/cards_visuals/o_17_045.jpg",
     "i18n": {
@@ -116347,7 +116634,7 @@
     "phases": [
       "SHADOW"
     ],
-    "culture": "MAN",
+    "culture": "MEN",
     "twilightCost": 0,
     "imageUrl": "/cards_visuals/o_17_046.jpg",
     "i18n": {
@@ -116386,8 +116673,9 @@
     "kind": "FREE_PEOPLE",
     "type": "POSSESSION",
     "subtype": "HAND-WEAPON",
-    "culture": "MAN",
+    "culture": "MEN",
     "twilightCost": 1,
+    "strength": 2,
     "imageUrl": "/cards_visuals/o_17_047.jpg",
     "i18n": {
       "en": {
@@ -116427,7 +116715,7 @@
     "phases": [
       "SKIRMISH"
     ],
-    "culture": "MAN",
+    "culture": "MEN",
     "race": "WIZARD",
     "twilightCost": 4,
     "strength": 8,
@@ -116470,7 +116758,7 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "MINION",
-    "culture": "MAN",
+    "culture": "MEN",
     "race": "MAN",
     "twilightCost": 8,
     "strength": 17,
@@ -116515,7 +116803,7 @@
     "phases": [
       "REGROUP"
     ],
-    "culture": "MAN",
+    "culture": "MEN",
     "race": "MAN",
     "twilightCost": 2,
     "strength": 7,
@@ -116557,7 +116845,7 @@
     "isUnique": false,
     "kind": "FREE_PEOPLE",
     "type": "MINION",
-    "culture": "MAN",
+    "culture": "MEN",
     "race": "MAN",
     "twilightCost": 6,
     "strength": 13,
@@ -116599,7 +116887,7 @@
     "isUnique": false,
     "kind": "FREE_PEOPLE",
     "type": "MINION",
-    "culture": "MAN",
+    "culture": "MEN",
     "race": "MAN",
     "twilightCost": 6,
     "strength": 13,
@@ -116644,7 +116932,7 @@
     "phases": [
       "MANEUVER"
     ],
-    "culture": "MAN",
+    "culture": "MEN",
     "race": "MAN",
     "twilightCost": 3,
     "strength": 8,
@@ -116689,7 +116977,7 @@
     "phases": [
       "MANEUVER"
     ],
-    "culture": "MAN",
+    "culture": "MEN",
     "race": "MAN",
     "twilightCost": 5,
     "strength": 11,
@@ -116734,7 +117022,7 @@
     "phases": [
       "MANEUVER"
     ],
-    "culture": "MAN",
+    "culture": "MEN",
     "race": "MAN",
     "twilightCost": 3,
     "strength": 8,
@@ -116779,7 +117067,7 @@
     "phases": [
       "MANEUVER"
     ],
-    "culture": "MAN",
+    "culture": "MEN",
     "race": "MAN",
     "twilightCost": 4,
     "strength": 10,
@@ -116821,7 +117109,7 @@
     "isUnique": false,
     "kind": "FREE_PEOPLE",
     "type": "MINION",
-    "culture": "MAN",
+    "culture": "MEN",
     "race": "MAN",
     "twilightCost": 2,
     "strength": 6,
@@ -116863,7 +117151,7 @@
     "isUnique": false,
     "kind": "FREE_PEOPLE",
     "type": "MINION",
-    "culture": "MAN",
+    "culture": "MEN",
     "race": "MAN",
     "twilightCost": 6,
     "strength": 14,
@@ -116908,7 +117196,7 @@
     "phases": [
       "MANEUVER"
     ],
-    "culture": "MAN",
+    "culture": "MEN",
     "race": "MAN",
     "twilightCost": 3,
     "strength": 9,
@@ -116953,7 +117241,7 @@
     "phases": [
       "MANEUVER"
     ],
-    "culture": "MAN",
+    "culture": "MEN",
     "race": "MAN",
     "twilightCost": 3,
     "strength": 8,
@@ -116995,7 +117283,7 @@
     "isUnique": false,
     "kind": "FREE_PEOPLE",
     "type": "MINION",
-    "culture": "MAN",
+    "culture": "MEN",
     "race": "MAN",
     "twilightCost": 6,
     "strength": 13,
@@ -117037,7 +117325,7 @@
     "isUnique": false,
     "kind": "FREE_PEOPLE",
     "type": "MINION",
-    "culture": "MAN",
+    "culture": "MEN",
     "race": "MAN",
     "twilightCost": 4,
     "strength": 10,
@@ -117079,7 +117367,7 @@
     "isUnique": false,
     "kind": "FREE_PEOPLE",
     "type": "MINION",
-    "culture": "MAN",
+    "culture": "MEN",
     "race": "MAN",
     "twilightCost": 2,
     "strength": 6,
@@ -117121,7 +117409,7 @@
     "isUnique": false,
     "kind": "FREE_PEOPLE",
     "type": "MINION",
-    "culture": "MAN",
+    "culture": "MEN",
     "race": "MAN",
     "twilightCost": 7,
     "strength": 15,
@@ -117163,7 +117451,7 @@
     "isUnique": false,
     "kind": "FREE_PEOPLE",
     "type": "MINION",
-    "culture": "MAN",
+    "culture": "MEN",
     "race": "MAN",
     "twilightCost": 6,
     "strength": 15,
@@ -117209,7 +117497,7 @@
     "phases": [
       "SKIRMISH"
     ],
-    "culture": "MAN",
+    "culture": "MEN",
     "twilightCost": 2,
     "imageUrl": "/cards_visuals/o_17_066.jpg",
     "i18n": {
@@ -118190,6 +118478,8 @@
     "subtype": "MOUNT",
     "culture": "ORC",
     "twilightCost": 3,
+    "strength": 2,
+    "vitality": 2,
     "imageUrl": "/cards_visuals/o_17_089.jpg",
     "i18n": {
       "en": {
@@ -118229,6 +118519,7 @@
     "subtype": "ARMOR",
     "culture": "ORC",
     "twilightCost": 1,
+    "strength": 2,
     "imageUrl": "/cards_visuals/o_17_090.jpg",
     "i18n": {
       "en": {
@@ -118268,6 +118559,8 @@
     "subtype": "MOUNT",
     "culture": "ORC",
     "twilightCost": 2,
+    "strength": 2,
+    "vitality": 1,
     "imageUrl": "/cards_visuals/o_17_091.jpg",
     "i18n": {
       "en": {
@@ -118307,6 +118600,8 @@
     "subtype": "MOUNT",
     "culture": "ORC",
     "twilightCost": 3,
+    "strength": 4,
+    "vitality": 2,
     "imageUrl": "/cards_visuals/o_17_092.jpg",
     "i18n": {
       "en": {
@@ -119146,6 +119441,7 @@
     "subtype": "HAND-WEAPON",
     "culture": "URUK-HAI",
     "twilightCost": 1,
+    "strength": 1,
     "imageUrl": "/cards_visuals/o_17_112.jpg",
     "i18n": {
       "en": {
@@ -119357,6 +119653,8 @@
     "subtype": "HAND-WEAPON",
     "culture": "URUK-HAI",
     "twilightCost": 0,
+    "strength": 1,
+    "vitality": 1,
     "imageUrl": "/cards_visuals/o_17_117.jpg",
     "i18n": {
       "en": {
@@ -120421,6 +120719,7 @@
     ],
     "culture": "WRAITH",
     "twilightCost": 0,
+    "strength": 1,
     "imageUrl": "/cards_visuals/o_17_142.jpg",
     "i18n": {
       "en": {
@@ -120654,6 +120953,7 @@
     ],
     "culture": "ELVEN",
     "twilightCost": 2,
+    "strength": 1,
     "imageUrl": "/cards_visuals/o_18_004.jpg",
     "i18n": {
       "en": {
@@ -120696,6 +120996,7 @@
     ],
     "culture": "ELVEN",
     "twilightCost": 2,
+    "strength": 1,
     "imageUrl": "/cards_visuals/o_18_005.jpg",
     "i18n": {
       "en": {
@@ -120770,6 +121071,7 @@
     "type": "FOLLOWER",
     "culture": "ELVEN",
     "twilightCost": 3,
+    "strength": 2,
     "imageUrl": "/cards_visuals/o_18_007.jpg",
     "i18n": {
       "en": {
@@ -120814,6 +121116,8 @@
     "subtype": "HAND-WEAPON-SHIELD",
     "culture": "ELVEN",
     "twilightCost": 2,
+    "strength": 2,
+    "vitality": 1,
     "imageUrl": "/cards_visuals/o_18_008.jpg",
     "i18n": {
       "en": {
@@ -121155,6 +121459,7 @@
     "type": "FOLLOWER",
     "culture": "ELVEN",
     "twilightCost": 1,
+    "strength": 1,
     "imageUrl": "/cards_visuals/o_18_016.jpg",
     "i18n": {
       "en": {
@@ -121250,6 +121555,8 @@
     "subtype": "HAND-WEAPON",
     "culture": "GANDALF",
     "twilightCost": 2,
+    "strength": 2,
+    "vitality": 1,
     "imageUrl": "/cards_visuals/o_18_018.jpg",
     "i18n": {
       "en": {
@@ -121585,6 +121892,8 @@
     "type": "POSSESSION",
     "culture": "GANDALF",
     "twilightCost": 1,
+    "vitality": 1,
+    "resistance": 2,
     "imageUrl": "/cards_visuals/o_18_026.jpg",
     "i18n": {
       "en": {
@@ -122119,6 +122428,7 @@
     "subtype": "ARMOR",
     "culture": "GONDOR",
     "twilightCost": 1,
+    "strength": 1,
     "imageUrl": "/cards_visuals/o_18_039.jpg",
     "i18n": {
       "en": {
@@ -122297,6 +122607,7 @@
     "subtype": "HAND-WEAPON",
     "culture": "GONDOR",
     "twilightCost": 1,
+    "strength": 2,
     "imageUrl": "/cards_visuals/o_18_043.jpg",
     "i18n": {
       "en": {
@@ -122380,6 +122691,7 @@
     ],
     "culture": "GONDOR",
     "twilightCost": 2,
+    "strength": 1,
     "imageUrl": "/cards_visuals/o_18_045.jpg",
     "i18n": {
       "en": {
@@ -122422,6 +122734,7 @@
     ],
     "culture": "GONDOR",
     "twilightCost": 2,
+    "strength": -1,
     "imageUrl": "/cards_visuals/o_18_046.jpg",
     "i18n": {
       "en": {
@@ -122460,6 +122773,7 @@
     "type": "FOLLOWER",
     "culture": "GONDOR",
     "twilightCost": 0,
+    "strength": 2,
     "imageUrl": "/cards_visuals/o_18_047.jpg",
     "i18n": {
       "en": {
@@ -122669,6 +122983,7 @@
     "type": "FOLLOWER",
     "culture": "GONDOR",
     "twilightCost": 0,
+    "resistance": 3,
     "imageUrl": "/cards_visuals/o_18_052.jpg",
     "i18n": {
       "en": {
@@ -122715,6 +123030,7 @@
     ],
     "culture": "GONDOR",
     "twilightCost": 0,
+    "resistance": 1,
     "imageUrl": "/cards_visuals/o_18_053.jpg",
     "i18n": {
       "en": {
@@ -123016,8 +123332,9 @@
     "phases": [
       "SKIRMISH"
     ],
-    "culture": "MAN",
+    "culture": "MEN",
     "twilightCost": 1,
+    "strength": 2,
     "imageUrl": "/cards_visuals/o_18_060.jpg",
     "i18n": {
       "en": {
@@ -123055,8 +123372,9 @@
     "kind": "FREE_PEOPLE",
     "type": "POSSESSION",
     "subtype": "RANGED-WEAPON",
-    "culture": "MAN",
+    "culture": "MEN",
     "twilightCost": 2,
+    "strength": 1,
     "imageUrl": "/cards_visuals/o_18_061.jpg",
     "i18n": {
       "en": {
@@ -123094,8 +123412,9 @@
     "kind": "FREE_PEOPLE",
     "type": "POSSESSION",
     "subtype": "HAND-WEAPON",
-    "culture": "MAN",
+    "culture": "MEN",
     "twilightCost": 2,
+    "strength": 1,
     "imageUrl": "/cards_visuals/o_18_062.jpg",
     "i18n": {
       "en": {
@@ -123136,8 +123455,9 @@
     "phases": [
       "SHADOW"
     ],
-    "culture": "MAN",
+    "culture": "MEN",
     "twilightCost": 3,
+    "strength": 2,
     "imageUrl": "/cards_visuals/o_18_063.jpg",
     "i18n": {
       "en": {
@@ -123175,7 +123495,7 @@
     "kind": "FREE_PEOPLE",
     "type": "POSSESSION",
     "subtype": "HAND-WEAPON",
-    "culture": "MAN",
+    "culture": "MEN",
     "twilightCost": 2,
     "imageUrl": "/cards_visuals/o_18_064.jpg",
     "i18n": {
@@ -123216,7 +123536,7 @@
     "phases": [
       "RESPONSE"
     ],
-    "culture": "MAN",
+    "culture": "MEN",
     "twilightCost": 0,
     "imageUrl": "/cards_visuals/o_18_065.jpg",
     "i18n": {
@@ -123258,7 +123578,7 @@
     "phases": [
       "REGROUP"
     ],
-    "culture": "MAN",
+    "culture": "MEN",
     "twilightCost": 3,
     "imageUrl": "/cards_visuals/o_18_066.jpg",
     "i18n": {
@@ -123299,7 +123619,7 @@
     "phases": [
       "REGROUP"
     ],
-    "culture": "MAN",
+    "culture": "MEN",
     "race": "MAN",
     "twilightCost": 2,
     "strength": 4,
@@ -123346,7 +123666,7 @@
     "isUnique": false,
     "kind": "FREE_PEOPLE",
     "type": "MINION",
-    "culture": "MAN",
+    "culture": "MEN",
     "race": "MAN",
     "twilightCost": 3,
     "strength": 6,
@@ -123389,8 +123709,9 @@
     "kind": "FREE_PEOPLE",
     "type": "POSSESSION",
     "subtype": "HAND-WEAPON",
-    "culture": "MAN",
+    "culture": "MEN",
     "twilightCost": 0,
+    "strength": 1,
     "imageUrl": "/cards_visuals/o_18_069.jpg",
     "i18n": {
       "en": {
@@ -123430,7 +123751,7 @@
     "phases": [
       "SHADOW"
     ],
-    "culture": "MAN",
+    "culture": "MEN",
     "twilightCost": 2,
     "imageUrl": "/cards_visuals/o_18_070.jpg",
     "i18n": {
@@ -123471,7 +123792,7 @@
     "phases": [
       "REGROUP"
     ],
-    "culture": "MAN",
+    "culture": "MEN",
     "race": "MAN",
     "twilightCost": 5,
     "strength": 11,
@@ -123518,7 +123839,7 @@
     "isUnique": false,
     "kind": "FREE_PEOPLE",
     "type": "MINION",
-    "culture": "MAN",
+    "culture": "MEN",
     "race": "MAN",
     "twilightCost": 3,
     "strength": 8,
@@ -123604,7 +123925,7 @@
     "isUnique": false,
     "kind": "FREE_PEOPLE",
     "type": "MINION",
-    "culture": "MAN",
+    "culture": "MEN",
     "race": "MAN",
     "twilightCost": 5,
     "strength": 10,
@@ -123687,7 +124008,7 @@
     "isUnique": false,
     "kind": "FREE_PEOPLE",
     "type": "MINION",
-    "culture": "MAN",
+    "culture": "MEN",
     "race": "MAN",
     "twilightCost": 4,
     "strength": 9,
@@ -123732,6 +124053,7 @@
     "subtype": "HAND-WEAPON",
     "culture": "ORC",
     "twilightCost": 1,
+    "strength": 2,
     "imageUrl": "/cards_visuals/o_18_077.jpg",
     "i18n": {
       "en": {
@@ -123772,7 +124094,7 @@
       "MANEUVER",
       "REGROUP"
     ],
-    "culture": "MAN",
+    "culture": "MEN",
     "race": "HOBBIT",
     "twilightCost": 1,
     "strength": 3,
@@ -123864,7 +124186,7 @@
     "phases": [
       "SHADOW"
     ],
-    "culture": "MAN",
+    "culture": "MEN",
     "twilightCost": 3,
     "imageUrl": "/cards_visuals/o_18_080.jpg",
     "i18n": {
@@ -123944,7 +124266,7 @@
     "isUnique": false,
     "kind": "FREE_PEOPLE",
     "type": "CONDITION",
-    "culture": "MAN",
+    "culture": "MEN",
     "twilightCost": 0,
     "imageUrl": "/cards_visuals/o_18_082.jpg",
     "i18n": {
@@ -124118,6 +124440,8 @@
     "subtype": "MOUNT",
     "culture": "ORC",
     "twilightCost": 1,
+    "strength": 1,
+    "vitality": 1,
     "imageUrl": "/cards_visuals/o_18_086.jpg",
     "i18n": {
       "en": {
@@ -125174,6 +125498,7 @@
     "type": "FOLLOWER",
     "culture": "SHIRE",
     "twilightCost": 2,
+    "strength": 1,
     "imageUrl": "/cards_visuals/o_18_111.jpg",
     "i18n": {
       "en": {
@@ -125253,6 +125578,9 @@
     ],
     "culture": "SHIRE",
     "twilightCost": 2,
+    "strength": 1,
+    "vitality": 1,
+    "resistance": 1,
     "imageUrl": "/cards_visuals/o_18_113.jpg",
     "i18n": {
       "en": {
@@ -125301,6 +125629,7 @@
     ],
     "culture": "URUK-HAI",
     "twilightCost": 2,
+    "vitality": -1,
     "imageUrl": "/cards_visuals/o_18_114.jpg",
     "i18n": {
       "en": {
@@ -125375,6 +125704,7 @@
     "type": "CONDITION",
     "culture": "URUK-HAI",
     "twilightCost": 0,
+    "strength": 1,
     "imageUrl": "/cards_visuals/o_18_116.jpg",
     "i18n": {
       "en": {
@@ -125504,6 +125834,8 @@
     ],
     "culture": "URUK-HAI",
     "twilightCost": 1,
+    "strength": 1,
+    "vitality": 1,
     "imageUrl": "/cards_visuals/o_18_119.jpg",
     "i18n": {
       "en": {
@@ -126297,6 +126629,7 @@
     "type": "CONDITION",
     "culture": "ELVEN",
     "twilightCost": 0,
+    "strength": 1,
     "imageUrl": "/cards_visuals/o_19_005.jpg",
     "i18n": {
       "en": {
@@ -126481,6 +126814,7 @@
     "type": "CONDITION",
     "culture": "GANDALF",
     "twilightCost": 2,
+    "strength": 2,
     "imageUrl": "/cards_visuals/o_19_009.jpg",
     "i18n": {
       "en": {
@@ -126703,6 +127037,7 @@
     "type": "CONDITION",
     "culture": "GONDOR",
     "twilightCost": 2,
+    "strength": 1,
     "imageUrl": "/cards_visuals/o_19_014.jpg",
     "i18n": {
       "en": {
@@ -126741,6 +127076,7 @@
     "type": "CONDITION",
     "culture": "GONDOR",
     "twilightCost": 1,
+    "strength": 1,
     "imageUrl": "/cards_visuals/o_19_015.jpg",
     "i18n": {
       "en": {
@@ -127137,6 +127473,7 @@
     "type": "CONDITION",
     "culture": "ROHAN",
     "twilightCost": 2,
+    "strength": 1,
     "imageUrl": "/cards_visuals/o_19_024.jpg",
     "i18n": {
       "en": {
@@ -127590,6 +127927,7 @@
     "type": "CONDITION",
     "culture": "WRAITH",
     "twilightCost": 2,
+    "strength": 2,
     "imageUrl": "/cards_visuals/o_19_034.jpg",
     "i18n": {
       "en": {

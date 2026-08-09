@@ -168,7 +168,7 @@ const createInitialPlayer = (playerId: string): PlayerState => ({
     burdens: 0,
 });
 
-export const setupGame = (): GameState => {
+export const setupGame = ({ random }: { random: any }): GameState => {
     const players: Record<string, PlayerState> = {
         '0': {
             ...createInitialPlayer('0'),
@@ -226,7 +226,7 @@ export const setupGame = (): GameState => {
         player.fellowshipArea.push(...startingMembers);
 
         // 3. Mélange du deck de pioche
-        player.deck = shuffle(player.deck);
+        player.deck = random.Shuffle(player.deck);
     });
 
     return {

@@ -23,7 +23,7 @@ export const CultureIcon = styled.span<{ $culture: string }>`
                 case 'DUNLAND': return '"~"';
                 case 'RAIDER': return '"}"';
                 case 'ORC': return '"`"';
-                case 'men': return '"&"';
+                case 'MEN': return '"&"';
                 case 'ONE-RING': return '"="';
                 default: return '""';
             }

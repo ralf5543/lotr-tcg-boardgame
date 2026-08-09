@@ -77,8 +77,8 @@ export type CardSubtype =
     | 'RANGED-WEAPON'
     | 'RING'
     | 'SHIELD'
-    | 'STAFF'
-    | 'THE-ONE-RING';
+    | 'SUPPORT-AREA'
+    | 'STAFF';
 
 export type CardRace =
     | 'BALROG'
@@ -145,7 +145,7 @@ export interface CardState {
     type: CardType;
     
     // 🟢 subtype est désormais un tableau
-    subtype?: CardSubtype[];
+    subtype?: CardSubtype;
     race?: CardRace;
     keywords?: CardKeyword[];
     isUnique: boolean;
