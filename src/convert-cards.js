@@ -5,7 +5,9 @@ const CSV_PATH = path.join(process.cwd(), 'cards.csv');
 const OUTPUT_CARDS_PATH = path.join(process.cwd(), 'data/cards.json');
 const OUTPUT_SITES_PATH = path.join(process.cwd(), 'data/sites.json');
 
-// Parser CSV RFC-4180
+/**
+ * Parser CSV conforme RFC-4180 avec support des guillemets et retours à la ligne
+ */
 function parseCsvContent(content) {
     const rows = [];
     let currentRow = [];
@@ -47,7 +49,7 @@ function parseCsvContent(content) {
 
 function cleanLoreText(text) {
     if (!text) return undefined;
-    let cleaned = text.trim().replace(/^["'«»“”‘’\s]+|["'«»“”‘’\s]+$/g, '').trim();
+    const cleaned = text.trim().replace(/^["'«»“”‘’\s]+|["'«»“”‘’\s]+$/g, '').trim();
     return cleaned.length > 0 ? cleaned : undefined;
 }
 
@@ -64,18 +66,14 @@ function mapCulture(cultureStr) {
  * Extrait et formate la colonne "Class" sous forme de tableau de sous-types.
  */
 function parseSubtype(classStr) {
-    if (!classStr || !classStr.trim()) {
-        return undefined;
-    }
+    if (!classStr || !classStr.trim()) return undefined;
 
     const subtypes = new Set();
     const parts = classStr.split(/[,;/]/);
 
     parts.forEach(part => {
         const cleanPart = part.trim().toUpperCase().replace(/\s+/g, '-');
-        if (cleanPart) {
-            subtypes.add(cleanPart);
-        }
+        if (cleanPart) subtypes.add(cleanPart);
     });
 
     const resultArray = Array.from(subtypes);
@@ -83,7 +81,7 @@ function parseSubtype(classStr) {
 }
 
 /**
- * Nettoie un bloc i18n pour une langue donnée (supprime les clés undefined)
+ * Construit un bloc i18n nettoyé d'une langue donnée (omets les clés undefined).
  */
 function buildLangBlock(title, subtitle, gameText, lore) {
     const block = {
@@ -101,7 +99,12 @@ function buildLangBlock(title, subtitle, gameText, lore) {
 }
 
 async function convert() {
-    console.log('🔄 Lecture et séparation des cartes...');
+    console.log('🔄 Lecture et traitement du CSV des cartes...');
+
+    if (!fs.existsSync(CSV_PATH)) {
+        console.error(`❌ Fichier introuvable : ${CSV_PATH}`);
+        return;
+    }
 
     const fileBuffer = fs.readFileSync(CSV_PATH);
     const decoder = new TextDecoder('windows-1252');
@@ -117,6 +120,11 @@ async function convert() {
     const headers = allRows[0].map(h => h.trim());
     const cardMap = new Map();
     const siteMap = new Map();
+
+    const shadowCultures = [
+        'ISENGARD', 'MORIA', 'SAURON', 'WRAITH', 
+        'DUNLAND', 'RAIDER', 'MEN', 'ORC', 'URUK-HAI'
+    ];
 
     for (let i = 1; i < allRows.length; i++) {
         const row = allRows[i];
@@ -138,7 +146,7 @@ async function convert() {
 
         const targetMap = isSite ? siteMap : cardMap;
 
-        // Dédoublonnage : on conserve la version la plus complète
+        // Dédoublonnage : conservation de la version avec le texte de jeu le plus long
         if (targetMap.has(cardId)) {
             const existing = targetMap.get(cardId);
             const existingTextLen = (existing.i18n?.fr?.gameText || existing.i18n?.en?.gameText || '').length;
@@ -150,43 +158,42 @@ async function convert() {
         const culture = (data['Culture'] || '').toUpperCase();
         const background = (data['Background'] || '').trim();
 
-        const shadowCultures = [
-            'ISENGARD', 'MORIA', 'SAURON', 'RINGWRAITH', 
-            'DUNLAND', 'RAIDER', 'MEN', 'ORC', 'URUK-HAI'
-        ];
-
         let kind = 'FREE_PEOPLE';
 
         if (shadowCultures.includes(culture)) {
             kind = 'SHADOW';
         } else if (culture === 'GOLLUM') {
-            if (background.toLowerCase().startsWith('gollum_')) {
-                kind = 'SHADOW';
-            } else {
-                kind = 'FREE_PEOPLE';
-            }
+            kind = background.toLowerCase().startsWith('gollum_') ? 'SHADOW' : 'FREE_PEOPLE';
         }
 
         if (isSite) {
             kind = 'SITE';
         }
 
+        // --- Détection du Porteur potentiel de l'Anneau ---
+        const titleVO = (data['Title'] || '').trim();
+        const bottomIcon = (data['Bottom Icon'] || '').trim();
+
+        const isRingbearer = bottomIcon === 'Icon_ringbearer' || titleVO.toLowerCase() === 'frodo';
+        const canBeRingbearer = isRingbearer ? true : undefined;
+
         const rawImageCode = (data['Image'] || '').trim();
         const imageUrl = rawImageCode ? `/cards_visuals/o_${rawImageCode}.jpg` : undefined;
 
-        // Objet carte : UNIQUEMENT les données techniques à la racine
+        // Structure finale de la carte
         const cardObj = {
             id: cardId,
             set: parseInt(data['Set'], 10) || 0,
             rarity: data['Rarity'] || undefined,
             isUnique: data['Unique'] === '1',
+            canBeRingbearer: canBeRingbearer,
             
             kind: kind,
             type: type,
             subtype: parseSubtype(data['Class']),
             culture: mapCulture(data['Culture']),
             race: data['Race'] ? data['Race'].toUpperCase() : undefined,
-            signet: parseSignet(data['Bottom Icon']),
+            signet: parseSignet(bottomIcon),
             
             twilightCost: data['Twilight Cost'] !== '' ? parseInt(data['Twilight Cost'], 10) : 0,
             strength: data['Strength'] !== '' ? parseInt(data['Strength'], 10) : undefined,
@@ -209,12 +216,12 @@ async function convert() {
             }
         };
 
-        // Supprime les langues qui n'ont aucun contenu
+        // Nettoyage des langues sans contenu
         Object.keys(cardObj.i18n).forEach(lang => {
             if (!cardObj.i18n[lang]) delete cardObj.i18n[lang];
         });
 
-        // Supprime les clés undefined à la racine
+        // Nettoyage des propriétés undefined à la racine
         Object.keys(cardObj).forEach((key) => {
             if (cardObj[key] === undefined) delete cardObj[key];
         });
@@ -233,9 +240,9 @@ async function convert() {
     fs.writeFileSync(OUTPUT_CARDS_PATH, JSON.stringify(cardsArray, null, 2), 'utf-8');
     fs.writeFileSync(OUTPUT_SITES_PATH, JSON.stringify(sitesArray, null, 2), 'utf-8');
 
-    console.log(`✅ Conversion réussie avec structure i18n unifiée !`);
+    console.log(`✅ Conversion réussie !`);
     console.log(`🃏 Cartes : ${cardsArray.length} -> ${OUTPUT_CARDS_PATH}`);
-    console.log(`🏞️ Sites : ${sitesArray.length} -> ${OUTPUT_SITES_PATH}`);
+    console.log(`🏞️ Sites  : ${sitesArray.length} -> ${OUTPUT_SITES_PATH}`);
 }
 
 convert().catch(console.error);

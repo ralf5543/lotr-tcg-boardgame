@@ -15,31 +15,48 @@ interface FormattedTextProps {
 }
 
 export const FormattedText: React.FC<FormattedTextProps> = ({ text }) => {
-    // La Regex capture {CULTURE_...}, {TWILIGHT_...} (y compris {TWILIGHT_x}) et le **gras**
-    const tokens = text.split(/(\{CULTURE_[^}]+\}|\{TWILIGHT_[^}]+\}|\*\*[^*]+\*\*)/g);
+    // La Regex capture :
+    // 1. Les balises <symbol>...</symbol>
+    // 2. Le texte en gras **mot**
+    const tokens = text.split(/(<symbol>[^<]+<\/symbol>|\*\*[^*]+\*\*)/gi);
 
     return (
         <TextWrapper>
             {tokens.map((token, index) => {
-                // A. CAS : TOKEN DE CULTURE / PICTO
-                if (token.startsWith('{CULTURE_') && token.endsWith('}')) {
-                    const cultureKey = token.replace('{CULTURE_', '').replace('}', '');
-                    return <CultureIcon key={index} $culture={cultureKey} title={cultureKey} />;
+                // A. CAS : BALISE <symbol>...</symbol>
+                if (/^<symbol>[^<]+<\/symbol>$/i.test(token)) {
+                    const rawSymbol = token.replace(/<\/?symbol>/gi, '').trim();
+
+                    // A.1 Symbole de Crépuscule : ex. "twilight1", "twilight2", "twilightX"
+                    if (rawSymbol.toLowerCase().startsWith('twilight')) {
+                        const amount = rawSymbol.slice(8); // Extrait "1", "2", "X", etc.
+                        return (
+                            <TwilightIcon
+                                key={index}
+                                $amount={amount}
+                                title={`Twilight ${amount}`}
+                            />
+                        );
+                    }
+
+                    // A.2 Symbole de Culture : ex. "gondor", "rohan", "orc"
+                    const cultureKey = rawSymbol.toUpperCase();
+                    return (
+                        <CultureIcon
+                            key={index}
+                            $culture={cultureKey}
+                            title={cultureKey}
+                        />
+                    );
                 }
 
-                // B. CAS : TOKEN DE CRÉPUSCULE / TWILIGHT
-                if (token.startsWith('{TWILIGHT_') && token.endsWith('}')) {
-                    const twilightKey = token.replace('{TWILIGHT_', '').replace('}', '');
-                    return <TwilightIcon key={index} $amount={twilightKey} title={twilightKey} />;
-                }
-
-                // C. CAS : TEXTE EN GRAS (**mot**)
+                // B. CAS : TEXTE EN GRAS (**mot**)
                 if (token.startsWith('**') && token.endsWith('**')) {
                     const cleanText = token.slice(2, -2);
                     return <BoldText key={index}>{cleanText}</BoldText>;
                 }
 
-                // D. CAS : TEXTE NORMAL
+                // C. CAS : TEXTE NORMAL
                 return <span key={index}>{token}</span>;
             })}
         </TextWrapper>

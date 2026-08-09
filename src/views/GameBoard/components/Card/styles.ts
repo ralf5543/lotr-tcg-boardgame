@@ -368,6 +368,7 @@ export const CardContainer = styled.div<CardContainerProps>`
                 ${isNotCharacter(props.$type) &&
                 css`
                     min-height: 75px;
+                    font-size: 24px;
                 `}
             }
 

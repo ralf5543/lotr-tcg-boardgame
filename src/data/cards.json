@@ -657,7 +657,7 @@
     "set": 0,
     "rarity": "P",
     "isUnique": false,
-    "kind": "FREE_PEOPLE",
+    "kind": "SHADOW",
     "type": "MINION",
     "culture": "WRAITH",
     "race": "NAZGÛL",
@@ -740,7 +740,7 @@
     "set": 0,
     "rarity": "P",
     "isUnique": false,
-    "kind": "FREE_PEOPLE",
+    "kind": "SHADOW",
     "type": "POSSESSION",
     "subtype": [
       "MOUNT"
@@ -964,6 +964,7 @@
     "set": 0,
     "rarity": "P",
     "isUnique": true,
+    "canBeRingbearer": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
     "culture": "SHIRE",
@@ -1147,7 +1148,7 @@
     "set": 0,
     "rarity": "P",
     "isUnique": true,
-    "kind": "FREE_PEOPLE",
+    "kind": "SHADOW",
     "type": "POSSESSION",
     "subtype": [
       "HAND-WEAPON"
@@ -1399,7 +1400,7 @@
     "set": 0,
     "rarity": "P",
     "isUnique": true,
-    "kind": "FREE_PEOPLE",
+    "kind": "SHADOW",
     "type": "MINION",
     "culture": "WRAITH",
     "race": "NAZGÛL",
@@ -1656,7 +1657,7 @@
     "set": 0,
     "rarity": "P",
     "isUnique": true,
-    "kind": "FREE_PEOPLE",
+    "kind": "SHADOW",
     "type": "MINION",
     "culture": "WRAITH",
     "race": "NAZGÛL",
@@ -2432,7 +2433,7 @@
     "set": 0,
     "rarity": "P",
     "isUnique": true,
-    "kind": "FREE_PEOPLE",
+    "kind": "SHADOW",
     "type": "MINION",
     "culture": "WRAITH",
     "race": "NAZGÛL",
@@ -2874,7 +2875,7 @@
     "set": 0,
     "rarity": "P",
     "isUnique": true,
-    "kind": "FREE_PEOPLE",
+    "kind": "SHADOW",
     "type": "MINION",
     "culture": "WRAITH",
     "race": "NAZGÛL",
@@ -2921,7 +2922,7 @@
     "set": 0,
     "rarity": "P",
     "isUnique": true,
-    "kind": "FREE_PEOPLE",
+    "kind": "SHADOW",
     "type": "POSSESSION",
     "subtype": [
       "MOUNT"
@@ -2966,7 +2967,7 @@
     "set": 0,
     "rarity": "P",
     "isUnique": true,
-    "kind": "FREE_PEOPLE",
+    "kind": "SHADOW",
     "type": "MINION",
     "culture": "WRAITH",
     "race": "NAZGÛL",
@@ -3369,7 +3370,7 @@
     "set": 0,
     "rarity": "P",
     "isUnique": false,
-    "kind": "FREE_PEOPLE",
+    "kind": "SHADOW",
     "type": "EVENT",
     "subtype": [
       "MANEUVER"
@@ -3410,7 +3411,7 @@
     "set": 0,
     "rarity": "P",
     "isUnique": true,
-    "kind": "FREE_PEOPLE",
+    "kind": "SHADOW",
     "type": "MINION",
     "culture": "WRAITH",
     "race": "NAZGÛL",
@@ -3499,7 +3500,7 @@
     "set": 0,
     "rarity": "P",
     "isUnique": true,
-    "kind": "FREE_PEOPLE",
+    "kind": "SHADOW",
     "type": "MINION",
     "culture": "WRAITH",
     "race": "NAZGÛL",
@@ -3546,7 +3547,7 @@
     "set": 0,
     "rarity": "P",
     "isUnique": true,
-    "kind": "FREE_PEOPLE",
+    "kind": "SHADOW",
     "type": "MINION",
     "culture": "WRAITH",
     "race": "NAZGÛL",
@@ -3593,7 +3594,7 @@
     "set": 0,
     "rarity": "P",
     "isUnique": true,
-    "kind": "FREE_PEOPLE",
+    "kind": "SHADOW",
     "type": "MINION",
     "culture": "WRAITH",
     "race": "NAZGÛL",
@@ -3640,7 +3641,7 @@
     "set": 0,
     "rarity": "P",
     "isUnique": true,
-    "kind": "FREE_PEOPLE",
+    "kind": "SHADOW",
     "type": "MINION",
     "culture": "WRAITH",
     "race": "NAZGÛL",
@@ -3687,7 +3688,7 @@
     "set": 0,
     "rarity": "P",
     "isUnique": true,
-    "kind": "FREE_PEOPLE",
+    "kind": "SHADOW",
     "type": "MINION",
     "culture": "WRAITH",
     "race": "NAZGÛL",
@@ -3734,7 +3735,7 @@
     "set": 0,
     "rarity": "P",
     "isUnique": true,
-    "kind": "FREE_PEOPLE",
+    "kind": "SHADOW",
     "type": "MINION",
     "culture": "WRAITH",
     "race": "NAZGÛL",
@@ -3781,7 +3782,7 @@
     "set": 0,
     "rarity": "P",
     "isUnique": true,
-    "kind": "FREE_PEOPLE",
+    "kind": "SHADOW",
     "type": "MINION",
     "culture": "WRAITH",
     "race": "NAZGÛL",
@@ -3828,7 +3829,7 @@
     "set": 0,
     "rarity": "P",
     "isUnique": true,
-    "kind": "FREE_PEOPLE",
+    "kind": "SHADOW",
     "type": "MINION",
     "culture": "WRAITH",
     "race": "NAZGÛL",
@@ -3875,7 +3876,7 @@
     "set": 0,
     "rarity": "P",
     "isUnique": true,
-    "kind": "FREE_PEOPLE",
+    "kind": "SHADOW",
     "type": "MINION",
     "culture": "WRAITH",
     "race": "NAZGÛL",
@@ -4549,7 +4550,7 @@
     "set": 1,
     "rarity": "U",
     "isUnique": true,
-    "kind": "FREE_PEOPLE",
+    "kind": "SHADOW",
     "type": "MINION",
     "culture": "WRAITH",
     "race": "NAZGÛL",
@@ -4595,7 +4596,7 @@
     "set": 1,
     "rarity": "R",
     "isUnique": true,
-    "kind": "FREE_PEOPLE",
+    "kind": "SHADOW",
     "type": "MINION",
     "culture": "WRAITH",
     "race": "NAZGÛL",
@@ -4730,6 +4731,7 @@
     "set": 2,
     "rarity": "C",
     "isUnique": true,
+    "canBeRingbearer": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
     "culture": "SHIRE",
@@ -5136,6 +5138,7 @@
     "set": 4,
     "rarity": "R",
     "isUnique": true,
+    "canBeRingbearer": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
     "culture": "SHIRE",
@@ -5366,7 +5369,7 @@
     "set": 6,
     "rarity": "R",
     "isUnique": true,
-    "kind": "FREE_PEOPLE",
+    "kind": "SHADOW",
     "type": "MINION",
     "culture": "WRAITH",
     "race": "NAZGÛL",
@@ -5697,7 +5700,7 @@
     "set": 7,
     "rarity": "R",
     "isUnique": true,
-    "kind": "FREE_PEOPLE",
+    "kind": "SHADOW",
     "type": "MINION",
     "culture": "WRAITH",
     "race": "NAZGÛL",
@@ -5740,7 +5743,7 @@
     "set": 7,
     "rarity": "R",
     "isUnique": true,
-    "kind": "FREE_PEOPLE",
+    "kind": "SHADOW",
     "type": "MINION",
     "culture": "WRAITH",
     "race": "NAZGÛL",
@@ -6689,7 +6692,7 @@
     "set": 11,
     "rarity": "R",
     "isUnique": true,
-    "kind": "FREE_PEOPLE",
+    "kind": "SHADOW",
     "type": "MINION",
     "culture": "WRAITH",
     "race": "NAZGÛL",
@@ -6960,7 +6963,7 @@
     "set": 12,
     "rarity": "R",
     "isUnique": true,
-    "kind": "FREE_PEOPLE",
+    "kind": "SHADOW",
     "type": "MINION",
     "culture": "WRAITH",
     "race": "NAZGÛL",
@@ -7671,7 +7674,7 @@
     "set": 0,
     "rarity": "W",
     "isUnique": false,
-    "kind": "FREE_PEOPLE",
+    "kind": "SHADOW",
     "type": "MINION",
     "culture": "WRAITH",
     "race": "NAZGÛL",
@@ -8273,6 +8276,7 @@
     "set": 0,
     "rarity": "W",
     "isUnique": true,
+    "canBeRingbearer": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
     "culture": "SHIRE",
@@ -8319,7 +8323,7 @@
     "set": 0,
     "rarity": "W",
     "isUnique": true,
-    "kind": "FREE_PEOPLE",
+    "kind": "SHADOW",
     "type": "MINION",
     "culture": "WRAITH",
     "race": "NAZGÛL",
@@ -8486,7 +8490,7 @@
     "set": 0,
     "rarity": "W",
     "isUnique": false,
-    "kind": "FREE_PEOPLE",
+    "kind": "SHADOW",
     "type": "CONDITION",
     "subtype": [
       "SUPPORT-AREA"
@@ -8527,7 +8531,7 @@
     "set": 0,
     "rarity": "W",
     "isUnique": true,
-    "kind": "FREE_PEOPLE",
+    "kind": "SHADOW",
     "type": "MINION",
     "culture": "WRAITH",
     "race": "NAZGÛL",
@@ -8809,7 +8813,7 @@
     "set": 0,
     "rarity": "W",
     "isUnique": true,
-    "kind": "FREE_PEOPLE",
+    "kind": "SHADOW",
     "type": "MINION",
     "culture": "WRAITH",
     "race": "NAZGÛL",
@@ -16910,7 +16914,7 @@
     "set": 1,
     "rarity": "U",
     "isUnique": false,
-    "kind": "FREE_PEOPLE",
+    "kind": "SHADOW",
     "type": "EVENT",
     "subtype": [
       "RESPONSE"
@@ -16951,7 +16955,7 @@
     "set": 1,
     "rarity": "R",
     "isUnique": false,
-    "kind": "FREE_PEOPLE",
+    "kind": "SHADOW",
     "type": "EVENT",
     "subtype": [
       "SKIRMISH"
@@ -16992,7 +16996,7 @@
     "set": 1,
     "rarity": "R",
     "isUnique": false,
-    "kind": "FREE_PEOPLE",
+    "kind": "SHADOW",
     "type": "EVENT",
     "subtype": [
       "MANEUVER"
@@ -17033,7 +17037,7 @@
     "set": 1,
     "rarity": "R",
     "isUnique": false,
-    "kind": "FREE_PEOPLE",
+    "kind": "SHADOW",
     "type": "CONDITION",
     "subtype": [
       "SUPPORT-AREA"
@@ -17074,7 +17078,7 @@
     "set": 1,
     "rarity": "U",
     "isUnique": false,
-    "kind": "FREE_PEOPLE",
+    "kind": "SHADOW",
     "type": "CONDITION",
     "subtype": [
       "SUPPORT-AREA"
@@ -17115,7 +17119,7 @@
     "set": 1,
     "rarity": "R",
     "isUnique": false,
-    "kind": "FREE_PEOPLE",
+    "kind": "SHADOW",
     "type": "POSSESSION",
     "subtype": [
       "MOUNT"
@@ -17156,7 +17160,7 @@
     "set": 1,
     "rarity": "U",
     "isUnique": false,
-    "kind": "FREE_PEOPLE",
+    "kind": "SHADOW",
     "type": "CONDITION",
     "subtype": [
       "SUPPORT-AREA"
@@ -17192,7 +17196,7 @@
     "set": 1,
     "rarity": "R",
     "isUnique": false,
-    "kind": "FREE_PEOPLE",
+    "kind": "SHADOW",
     "type": "EVENT",
     "subtype": [
       "SKIRMISH"
@@ -17233,7 +17237,7 @@
     "set": 1,
     "rarity": "U",
     "isUnique": false,
-    "kind": "FREE_PEOPLE",
+    "kind": "SHADOW",
     "type": "CONDITION",
     "subtype": [
       "SUPPORT-AREA"
@@ -17274,7 +17278,7 @@
     "set": 1,
     "rarity": "R",
     "isUnique": false,
-    "kind": "FREE_PEOPLE",
+    "kind": "SHADOW",
     "type": "EVENT",
     "subtype": [
       "MANEUVER"
@@ -17315,7 +17319,7 @@
     "set": 1,
     "rarity": "U",
     "isUnique": false,
-    "kind": "FREE_PEOPLE",
+    "kind": "SHADOW",
     "type": "EVENT",
     "subtype": [
       "SKIRMISH"
@@ -17356,7 +17360,7 @@
     "set": 1,
     "rarity": "R",
     "isUnique": false,
-    "kind": "FREE_PEOPLE",
+    "kind": "SHADOW",
     "type": "EVENT",
     "subtype": [
       "RESPONSE"
@@ -17397,7 +17401,7 @@
     "set": 1,
     "rarity": "U",
     "isUnique": false,
-    "kind": "FREE_PEOPLE",
+    "kind": "SHADOW",
     "type": "EVENT",
     "subtype": [
       "SHADOW"
@@ -17438,7 +17442,7 @@
     "set": 1,
     "rarity": "R",
     "isUnique": false,
-    "kind": "FREE_PEOPLE",
+    "kind": "SHADOW",
     "type": "POSSESSION",
     "subtype": [
       "HAND-WEAPON"
@@ -17474,7 +17478,7 @@
     "set": 1,
     "rarity": "R",
     "isUnique": false,
-    "kind": "FREE_PEOPLE",
+    "kind": "SHADOW",
     "type": "EVENT",
     "subtype": [
       "SHADOW"
@@ -17515,7 +17519,7 @@
     "set": 1,
     "rarity": "U",
     "isUnique": false,
-    "kind": "FREE_PEOPLE",
+    "kind": "SHADOW",
     "type": "POSSESSION",
     "subtype": [
       "HAND-WEAPON"
@@ -17556,7 +17560,7 @@
     "set": 1,
     "rarity": "U",
     "isUnique": false,
-    "kind": "FREE_PEOPLE",
+    "kind": "SHADOW",
     "type": "CONDITION",
     "subtype": [
       "SUPPORT-AREA"
@@ -17597,7 +17601,7 @@
     "set": 1,
     "rarity": "U",
     "isUnique": false,
-    "kind": "FREE_PEOPLE",
+    "kind": "SHADOW",
     "type": "CONDITION",
     "subtype": [
       "SUPPORT-AREA"
@@ -17638,7 +17642,7 @@
     "set": 1,
     "rarity": "R",
     "isUnique": true,
-    "kind": "FREE_PEOPLE",
+    "kind": "SHADOW",
     "type": "POSSESSION",
     "subtype": [
       "HAND-WEAPON"
@@ -17679,7 +17683,7 @@
     "set": 1,
     "rarity": "U",
     "isUnique": false,
-    "kind": "FREE_PEOPLE",
+    "kind": "SHADOW",
     "type": "CONDITION",
     "subtype": [
       "SUPPORT-AREA"
@@ -17720,7 +17724,7 @@
     "set": 1,
     "rarity": "U",
     "isUnique": false,
-    "kind": "FREE_PEOPLE",
+    "kind": "SHADOW",
     "type": "EVENT",
     "subtype": [
       "MANEUVER"
@@ -17761,7 +17765,7 @@
     "set": 1,
     "rarity": "R",
     "isUnique": false,
-    "kind": "FREE_PEOPLE",
+    "kind": "SHADOW",
     "type": "EVENT",
     "subtype": [
       "RESPONSE"
@@ -17802,7 +17806,7 @@
     "set": 1,
     "rarity": "U",
     "isUnique": true,
-    "kind": "FREE_PEOPLE",
+    "kind": "SHADOW",
     "type": "POSSESSION",
     "subtype": [
       "HAND-WEAPON"
@@ -17843,7 +17847,7 @@
     "set": 1,
     "rarity": "U",
     "isUnique": false,
-    "kind": "FREE_PEOPLE",
+    "kind": "SHADOW",
     "type": "EVENT",
     "subtype": [
       "MANEUVER"
@@ -17884,7 +17888,7 @@
     "set": 1,
     "rarity": "U",
     "isUnique": false,
-    "kind": "FREE_PEOPLE",
+    "kind": "SHADOW",
     "type": "EVENT",
     "subtype": [
       "SKIRMISH"
@@ -17925,7 +17929,7 @@
     "set": 1,
     "rarity": "R",
     "isUnique": false,
-    "kind": "FREE_PEOPLE",
+    "kind": "SHADOW",
     "type": "EVENT",
     "subtype": [
       "RESPONSE"
@@ -17966,7 +17970,7 @@
     "set": 1,
     "rarity": "R",
     "isUnique": true,
-    "kind": "FREE_PEOPLE",
+    "kind": "SHADOW",
     "type": "MINION",
     "culture": "WRAITH",
     "race": "NAZGÛL",
@@ -18013,7 +18017,7 @@
     "set": 1,
     "rarity": "R",
     "isUnique": true,
-    "kind": "FREE_PEOPLE",
+    "kind": "SHADOW",
     "type": "MINION",
     "culture": "WRAITH",
     "race": "NAZGÛL",
@@ -18060,7 +18064,7 @@
     "set": 1,
     "rarity": "U",
     "isUnique": true,
-    "kind": "FREE_PEOPLE",
+    "kind": "SHADOW",
     "type": "MINION",
     "culture": "WRAITH",
     "race": "NAZGÛL",
@@ -18107,7 +18111,7 @@
     "set": 1,
     "rarity": "U",
     "isUnique": true,
-    "kind": "FREE_PEOPLE",
+    "kind": "SHADOW",
     "type": "MINION",
     "culture": "WRAITH",
     "race": "NAZGÛL",
@@ -18153,7 +18157,7 @@
     "set": 1,
     "rarity": "U",
     "isUnique": true,
-    "kind": "FREE_PEOPLE",
+    "kind": "SHADOW",
     "type": "MINION",
     "culture": "WRAITH",
     "race": "NAZGÛL",
@@ -18200,7 +18204,7 @@
     "set": 1,
     "rarity": "U",
     "isUnique": true,
-    "kind": "FREE_PEOPLE",
+    "kind": "SHADOW",
     "type": "MINION",
     "culture": "WRAITH",
     "race": "NAZGÛL",
@@ -18247,7 +18251,7 @@
     "set": 1,
     "rarity": "R",
     "isUnique": true,
-    "kind": "FREE_PEOPLE",
+    "kind": "SHADOW",
     "type": "MINION",
     "culture": "WRAITH",
     "race": "NAZGÛL",
@@ -18294,7 +18298,7 @@
     "set": 1,
     "rarity": "U",
     "isUnique": false,
-    "kind": "FREE_PEOPLE",
+    "kind": "SHADOW",
     "type": "CONDITION",
     "subtype": [
       "SUPPORT-AREA"
@@ -20351,6 +20355,7 @@
     "set": 1,
     "rarity": "R",
     "isUnique": true,
+    "canBeRingbearer": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
     "culture": "SHIRE",
@@ -20399,6 +20404,7 @@
     "set": 1,
     "rarity": "C",
     "isUnique": true,
+    "canBeRingbearer": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
     "culture": "SHIRE",
@@ -24763,7 +24769,7 @@
     "set": 2,
     "rarity": "R",
     "isUnique": true,
-    "kind": "FREE_PEOPLE",
+    "kind": "SHADOW",
     "type": "MINION",
     "culture": "WRAITH",
     "race": "MAN",
@@ -24810,7 +24816,7 @@
     "set": 2,
     "rarity": "U",
     "isUnique": false,
-    "kind": "FREE_PEOPLE",
+    "kind": "SHADOW",
     "type": "CONDITION",
     "culture": "WRAITH",
     "twilightCost": 0,
@@ -24848,7 +24854,7 @@
     "set": 2,
     "rarity": "R",
     "isUnique": false,
-    "kind": "FREE_PEOPLE",
+    "kind": "SHADOW",
     "type": "CONDITION",
     "culture": "WRAITH",
     "twilightCost": 2,
@@ -24886,7 +24892,7 @@
     "set": 2,
     "rarity": "U",
     "isUnique": false,
-    "kind": "FREE_PEOPLE",
+    "kind": "SHADOW",
     "type": "EVENT",
     "subtype": [
       "MANEUVER"
@@ -24927,7 +24933,7 @@
     "set": 2,
     "rarity": "U",
     "isUnique": false,
-    "kind": "FREE_PEOPLE",
+    "kind": "SHADOW",
     "type": "EVENT",
     "subtype": [
       "MANEUVER"
@@ -24968,7 +24974,7 @@
     "set": 2,
     "rarity": "R",
     "isUnique": false,
-    "kind": "FREE_PEOPLE",
+    "kind": "SHADOW",
     "type": "EVENT",
     "subtype": [
       "MANEUVER"
@@ -25009,7 +25015,7 @@
     "set": 2,
     "rarity": "U",
     "isUnique": false,
-    "kind": "FREE_PEOPLE",
+    "kind": "SHADOW",
     "type": "EVENT",
     "subtype": [
       "MANEUVER"
@@ -25050,7 +25056,7 @@
     "set": 2,
     "rarity": "U",
     "isUnique": true,
-    "kind": "FREE_PEOPLE",
+    "kind": "SHADOW",
     "type": "MINION",
     "culture": "WRAITH",
     "race": "NAZGÛL",
@@ -25097,7 +25103,7 @@
     "set": 2,
     "rarity": "U",
     "isUnique": true,
-    "kind": "FREE_PEOPLE",
+    "kind": "SHADOW",
     "type": "MINION",
     "culture": "WRAITH",
     "race": "NAZGÛL",
@@ -25144,7 +25150,7 @@
     "set": 2,
     "rarity": "R",
     "isUnique": true,
-    "kind": "FREE_PEOPLE",
+    "kind": "SHADOW",
     "type": "MINION",
     "culture": "WRAITH",
     "race": "NAZGÛL",
@@ -25191,7 +25197,7 @@
     "set": 2,
     "rarity": "R",
     "isUnique": true,
-    "kind": "FREE_PEOPLE",
+    "kind": "SHADOW",
     "type": "MINION",
     "culture": "WRAITH",
     "race": "NAZGÛL",
@@ -25238,7 +25244,7 @@
     "set": 2,
     "rarity": "R",
     "isUnique": false,
-    "kind": "FREE_PEOPLE",
+    "kind": "SHADOW",
     "type": "EVENT",
     "subtype": [
       "SKIRMISH"
@@ -29801,7 +29807,7 @@
     "set": 3,
     "rarity": "R",
     "isUnique": false,
-    "kind": "FREE_PEOPLE",
+    "kind": "SHADOW",
     "type": "CONDITION",
     "subtype": [
       "SUPPORT-AREA"
@@ -29842,7 +29848,7 @@
     "set": 3,
     "rarity": "U",
     "isUnique": false,
-    "kind": "FREE_PEOPLE",
+    "kind": "SHADOW",
     "type": "EVENT",
     "subtype": [
       "SKIRMISH"
@@ -29883,7 +29889,7 @@
     "set": 3,
     "rarity": "U",
     "isUnique": true,
-    "kind": "FREE_PEOPLE",
+    "kind": "SHADOW",
     "type": "CONDITION",
     "subtype": [
       "SUPPORT-AREA"
@@ -29924,7 +29930,7 @@
     "set": 3,
     "rarity": "C",
     "isUnique": false,
-    "kind": "FREE_PEOPLE",
+    "kind": "SHADOW",
     "type": "EVENT",
     "subtype": [
       "MANEUVER"
@@ -29965,7 +29971,7 @@
     "set": 3,
     "rarity": "R",
     "isUnique": false,
-    "kind": "FREE_PEOPLE",
+    "kind": "SHADOW",
     "type": "EVENT",
     "subtype": [
       "MANEUVER"
@@ -30006,7 +30012,7 @@
     "set": 3,
     "rarity": "U",
     "isUnique": true,
-    "kind": "FREE_PEOPLE",
+    "kind": "SHADOW",
     "type": "MINION",
     "culture": "WRAITH",
     "race": "NAZGÛL",
@@ -43304,6 +43310,7 @@
     "set": 4,
     "rarity": "C",
     "isUnique": true,
+    "canBeRingbearer": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
     "culture": "SHIRE",
@@ -48732,6 +48739,7 @@
     "set": 5,
     "rarity": "U",
     "isUnique": true,
+    "canBeRingbearer": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
     "culture": "SHIRE",
@@ -52746,7 +52754,7 @@
     "set": 6,
     "rarity": "U",
     "isUnique": false,
-    "kind": "FREE_PEOPLE",
+    "kind": "SHADOW",
     "type": "POSSESSION",
     "subtype": [
       "MOUNT"
@@ -52787,7 +52795,7 @@
     "set": 6,
     "rarity": "U",
     "isUnique": false,
-    "kind": "FREE_PEOPLE",
+    "kind": "SHADOW",
     "type": "CONDITION",
     "subtype": [
       "SUPPORT-AREA"
@@ -52828,7 +52836,7 @@
     "set": 6,
     "rarity": "R",
     "isUnique": true,
-    "kind": "FREE_PEOPLE",
+    "kind": "SHADOW",
     "type": "POSSESSION",
     "subtype": [
       "HAND-WEAPON"
@@ -52869,7 +52877,7 @@
     "set": 6,
     "rarity": "U",
     "isUnique": true,
-    "kind": "FREE_PEOPLE",
+    "kind": "SHADOW",
     "type": "MINION",
     "culture": "WRAITH",
     "race": "NAZGÛL",
@@ -52916,7 +52924,7 @@
     "set": 6,
     "rarity": "U",
     "isUnique": true,
-    "kind": "FREE_PEOPLE",
+    "kind": "SHADOW",
     "type": "MINION",
     "culture": "WRAITH",
     "race": "NAZGÛL",
@@ -52963,7 +52971,7 @@
     "set": 6,
     "rarity": "R",
     "isUnique": false,
-    "kind": "FREE_PEOPLE",
+    "kind": "SHADOW",
     "type": "CONDITION",
     "subtype": [
       "SUPPORT-AREA"
@@ -54095,7 +54103,7 @@
     "set": 6,
     "rarity": "P",
     "isUnique": true,
-    "kind": "FREE_PEOPLE",
+    "kind": "SHADOW",
     "type": "MINION",
     "culture": "WRAITH",
     "race": "NAZGÛL",
@@ -61051,7 +61059,7 @@
     "set": 7,
     "rarity": "U",
     "isUnique": false,
-    "kind": "FREE_PEOPLE",
+    "kind": "SHADOW",
     "type": "CONDITION",
     "subtype": [
       "SUPPORT-AREA"
@@ -61092,7 +61100,7 @@
     "set": 7,
     "rarity": "U",
     "isUnique": false,
-    "kind": "FREE_PEOPLE",
+    "kind": "SHADOW",
     "type": "EVENT",
     "subtype": [
       "SKIRMISH"
@@ -61133,7 +61141,7 @@
     "set": 7,
     "rarity": "U",
     "isUnique": false,
-    "kind": "FREE_PEOPLE",
+    "kind": "SHADOW",
     "type": "EVENT",
     "subtype": [
       "REGROUP"
@@ -61169,7 +61177,7 @@
     "set": 7,
     "rarity": "R",
     "isUnique": false,
-    "kind": "FREE_PEOPLE",
+    "kind": "SHADOW",
     "type": "CONDITION",
     "subtype": [
       "SUPPORT-AREA"
@@ -61205,7 +61213,7 @@
     "set": 7,
     "rarity": "U",
     "isUnique": false,
-    "kind": "FREE_PEOPLE",
+    "kind": "SHADOW",
     "type": "EVENT",
     "subtype": [
       "SKIRMISH"
@@ -61246,7 +61254,7 @@
     "set": 7,
     "rarity": "R",
     "isUnique": false,
-    "kind": "FREE_PEOPLE",
+    "kind": "SHADOW",
     "type": "CONDITION",
     "subtype": [
       "SUPPORT-AREA"
@@ -61287,7 +61295,7 @@
     "set": 7,
     "rarity": "R",
     "isUnique": true,
-    "kind": "FREE_PEOPLE",
+    "kind": "SHADOW",
     "type": "MINION",
     "culture": "WRAITH",
     "race": "ORC",
@@ -61334,7 +61342,7 @@
     "set": 7,
     "rarity": "R",
     "isUnique": true,
-    "kind": "FREE_PEOPLE",
+    "kind": "SHADOW",
     "type": "CONDITION",
     "subtype": [
       "SUPPORT-AREA"
@@ -61370,7 +61378,7 @@
     "set": 7,
     "rarity": "R",
     "isUnique": false,
-    "kind": "FREE_PEOPLE",
+    "kind": "SHADOW",
     "type": "EVENT",
     "subtype": [
       "RESPONSE"
@@ -61411,7 +61419,7 @@
     "set": 7,
     "rarity": "R",
     "isUnique": false,
-    "kind": "FREE_PEOPLE",
+    "kind": "SHADOW",
     "type": "EVENT",
     "subtype": [
       "RESPONSE"
@@ -61452,7 +61460,7 @@
     "set": 7,
     "rarity": "C",
     "isUnique": false,
-    "kind": "FREE_PEOPLE",
+    "kind": "SHADOW",
     "type": "CONDITION",
     "subtype": [
       "SUPPORT-AREA"
@@ -61488,7 +61496,7 @@
     "set": 7,
     "rarity": "U",
     "isUnique": false,
-    "kind": "FREE_PEOPLE",
+    "kind": "SHADOW",
     "type": "CONDITION",
     "subtype": [
       "SUPPORT-AREA"
@@ -61525,7 +61533,7 @@
     "set": 7,
     "rarity": "C",
     "isUnique": false,
-    "kind": "FREE_PEOPLE",
+    "kind": "SHADOW",
     "type": "POSSESSION",
     "subtype": [
       "HAND-WEAPON"
@@ -61562,7 +61570,7 @@
     "set": 7,
     "rarity": "U",
     "isUnique": false,
-    "kind": "FREE_PEOPLE",
+    "kind": "SHADOW",
     "type": "MINION",
     "culture": "WRAITH",
     "race": "ORC",
@@ -61599,7 +61607,7 @@
     "set": 7,
     "rarity": "R",
     "isUnique": false,
-    "kind": "FREE_PEOPLE",
+    "kind": "SHADOW",
     "type": "MINION",
     "culture": "WRAITH",
     "race": "ORC",
@@ -61636,7 +61644,7 @@
     "set": 7,
     "rarity": "C",
     "isUnique": false,
-    "kind": "FREE_PEOPLE",
+    "kind": "SHADOW",
     "type": "MINION",
     "culture": "WRAITH",
     "race": "ORC",
@@ -61678,7 +61686,7 @@
     "set": 7,
     "rarity": "U",
     "isUnique": false,
-    "kind": "FREE_PEOPLE",
+    "kind": "SHADOW",
     "type": "MINION",
     "culture": "WRAITH",
     "race": "ORC",
@@ -61715,7 +61723,7 @@
     "set": 7,
     "rarity": "R",
     "isUnique": false,
-    "kind": "FREE_PEOPLE",
+    "kind": "SHADOW",
     "type": "MINION",
     "culture": "WRAITH",
     "race": "ORC",
@@ -61757,7 +61765,7 @@
     "set": 7,
     "rarity": "C",
     "isUnique": false,
-    "kind": "FREE_PEOPLE",
+    "kind": "SHADOW",
     "type": "MINION",
     "culture": "WRAITH",
     "race": "ORC",
@@ -61799,7 +61807,7 @@
     "set": 7,
     "rarity": "C",
     "isUnique": false,
-    "kind": "FREE_PEOPLE",
+    "kind": "SHADOW",
     "type": "MINION",
     "culture": "WRAITH",
     "race": "ORC",
@@ -61841,7 +61849,7 @@
     "set": 7,
     "rarity": "C",
     "isUnique": false,
-    "kind": "FREE_PEOPLE",
+    "kind": "SHADOW",
     "type": "MINION",
     "culture": "WRAITH",
     "race": "ORC",
@@ -61883,7 +61891,7 @@
     "set": 7,
     "rarity": "U",
     "isUnique": true,
-    "kind": "FREE_PEOPLE",
+    "kind": "SHADOW",
     "type": "CONDITION",
     "subtype": [
       "SUPPORT-AREA"
@@ -61919,7 +61927,7 @@
     "set": 7,
     "rarity": "C",
     "isUnique": false,
-    "kind": "FREE_PEOPLE",
+    "kind": "SHADOW",
     "type": "MINION",
     "culture": "WRAITH",
     "race": "ORC",
@@ -61961,7 +61969,7 @@
     "set": 7,
     "rarity": "R",
     "isUnique": false,
-    "kind": "FREE_PEOPLE",
+    "kind": "SHADOW",
     "type": "MINION",
     "culture": "WRAITH",
     "race": "ORC",
@@ -62003,7 +62011,7 @@
     "set": 7,
     "rarity": "C",
     "isUnique": false,
-    "kind": "FREE_PEOPLE",
+    "kind": "SHADOW",
     "type": "MINION",
     "culture": "WRAITH",
     "race": "ORC",
@@ -62045,7 +62053,7 @@
     "set": 7,
     "rarity": "C",
     "isUnique": false,
-    "kind": "FREE_PEOPLE",
+    "kind": "SHADOW",
     "type": "MINION",
     "culture": "WRAITH",
     "race": "ORC",
@@ -62087,7 +62095,7 @@
     "set": 7,
     "rarity": "C",
     "isUnique": false,
-    "kind": "FREE_PEOPLE",
+    "kind": "SHADOW",
     "type": "MINION",
     "culture": "WRAITH",
     "race": "ORC",
@@ -62129,7 +62137,7 @@
     "set": 7,
     "rarity": "C",
     "isUnique": false,
-    "kind": "FREE_PEOPLE",
+    "kind": "SHADOW",
     "type": "MINION",
     "culture": "WRAITH",
     "race": "ORC",
@@ -62171,7 +62179,7 @@
     "set": 7,
     "rarity": "U",
     "isUnique": false,
-    "kind": "FREE_PEOPLE",
+    "kind": "SHADOW",
     "type": "MINION",
     "culture": "WRAITH",
     "race": "ORC",
@@ -62208,7 +62216,7 @@
     "set": 7,
     "rarity": "U",
     "isUnique": false,
-    "kind": "FREE_PEOPLE",
+    "kind": "SHADOW",
     "type": "POSSESSION",
     "subtype": [
       "HAND-WEAPON"
@@ -62245,7 +62253,7 @@
     "set": 7,
     "rarity": "R",
     "isUnique": true,
-    "kind": "FREE_PEOPLE",
+    "kind": "SHADOW",
     "type": "CONDITION",
     "subtype": [
       "SUPPORT-AREA"
@@ -62281,7 +62289,7 @@
     "set": 7,
     "rarity": "R",
     "isUnique": false,
-    "kind": "FREE_PEOPLE",
+    "kind": "SHADOW",
     "type": "CONDITION",
     "subtype": [
       "SUPPORT-AREA"
@@ -62318,7 +62326,7 @@
     "set": 7,
     "rarity": "R",
     "isUnique": true,
-    "kind": "FREE_PEOPLE",
+    "kind": "SHADOW",
     "type": "CONDITION",
     "subtype": [
       "SUPPORT-AREA"
@@ -62354,7 +62362,7 @@
     "set": 7,
     "rarity": "U",
     "isUnique": false,
-    "kind": "FREE_PEOPLE",
+    "kind": "SHADOW",
     "type": "EVENT",
     "subtype": [
       "MANEUVER"
@@ -62390,7 +62398,7 @@
     "set": 7,
     "rarity": "C",
     "isUnique": false,
-    "kind": "FREE_PEOPLE",
+    "kind": "SHADOW",
     "type": "EVENT",
     "subtype": [
       "SHADOW"
@@ -62431,7 +62439,7 @@
     "set": 7,
     "rarity": "C",
     "isUnique": false,
-    "kind": "FREE_PEOPLE",
+    "kind": "SHADOW",
     "type": "CONDITION",
     "subtype": [
       "SUPPORT-AREA"
@@ -62468,7 +62476,7 @@
     "set": 7,
     "rarity": "R",
     "isUnique": true,
-    "kind": "FREE_PEOPLE",
+    "kind": "SHADOW",
     "type": "MINION",
     "culture": "WRAITH",
     "race": "NAZGÛL",
@@ -62511,7 +62519,7 @@
     "set": 7,
     "rarity": "U",
     "isUnique": true,
-    "kind": "FREE_PEOPLE",
+    "kind": "SHADOW",
     "type": "MINION",
     "culture": "WRAITH",
     "race": "NAZGÛL",
@@ -62553,7 +62561,7 @@
     "set": 7,
     "rarity": "R",
     "isUnique": true,
-    "kind": "FREE_PEOPLE",
+    "kind": "SHADOW",
     "type": "MINION",
     "culture": "WRAITH",
     "race": "NAZGÛL",
@@ -62595,7 +62603,7 @@
     "set": 7,
     "rarity": "U",
     "isUnique": true,
-    "kind": "FREE_PEOPLE",
+    "kind": "SHADOW",
     "type": "MINION",
     "culture": "WRAITH",
     "race": "NAZGÛL",
@@ -62642,7 +62650,7 @@
     "set": 7,
     "rarity": "R",
     "isUnique": true,
-    "kind": "FREE_PEOPLE",
+    "kind": "SHADOW",
     "type": "MINION",
     "culture": "WRAITH",
     "race": "NAZGÛL",
@@ -62685,7 +62693,7 @@
     "set": 7,
     "rarity": "U",
     "isUnique": true,
-    "kind": "FREE_PEOPLE",
+    "kind": "SHADOW",
     "type": "MINION",
     "culture": "WRAITH",
     "race": "NAZGÛL",
@@ -62728,7 +62736,7 @@
     "set": 7,
     "rarity": "U",
     "isUnique": true,
-    "kind": "FREE_PEOPLE",
+    "kind": "SHADOW",
     "type": "MINION",
     "culture": "WRAITH",
     "race": "NAZGÛL",
@@ -62775,7 +62783,7 @@
     "set": 7,
     "rarity": "U",
     "isUnique": true,
-    "kind": "FREE_PEOPLE",
+    "kind": "SHADOW",
     "type": "MINION",
     "culture": "WRAITH",
     "race": "NAZGÛL",
@@ -62822,7 +62830,7 @@
     "set": 7,
     "rarity": "R",
     "isUnique": true,
-    "kind": "FREE_PEOPLE",
+    "kind": "SHADOW",
     "type": "MINION",
     "culture": "WRAITH",
     "race": "NAZGÛL",
@@ -62865,7 +62873,7 @@
     "set": 7,
     "rarity": "C",
     "isUnique": false,
-    "kind": "FREE_PEOPLE",
+    "kind": "SHADOW",
     "type": "EVENT",
     "subtype": [
       "SKIRMISH"
@@ -66605,6 +66613,7 @@
     "set": 7,
     "rarity": "C",
     "isUnique": true,
+    "canBeRingbearer": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
     "culture": "SHIRE",
@@ -66649,6 +66658,7 @@
     "set": 7,
     "rarity": "R",
     "isUnique": true,
+    "canBeRingbearer": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
     "culture": "SHIRE",
@@ -69613,7 +69623,7 @@
     "set": 8,
     "rarity": "R",
     "isUnique": false,
-    "kind": "FREE_PEOPLE",
+    "kind": "SHADOW",
     "type": "EVENT",
     "subtype": [
       "ASSIGNMENT"
@@ -69654,7 +69664,7 @@
     "set": 8,
     "rarity": "R",
     "isUnique": false,
-    "kind": "FREE_PEOPLE",
+    "kind": "SHADOW",
     "type": "EVENT",
     "subtype": [
       "SKIRMISH"
@@ -69695,7 +69705,7 @@
     "set": 8,
     "rarity": "U",
     "isUnique": false,
-    "kind": "FREE_PEOPLE",
+    "kind": "SHADOW",
     "type": "CONDITION",
     "subtype": [
       "SUPPORT-AREA"
@@ -69731,7 +69741,7 @@
     "set": 8,
     "rarity": "R",
     "isUnique": true,
-    "kind": "FREE_PEOPLE",
+    "kind": "SHADOW",
     "type": "POSSESSION",
     "subtype": [
       "HAND-WEAPON"
@@ -69768,7 +69778,7 @@
     "set": 8,
     "rarity": "U",
     "isUnique": true,
-    "kind": "FREE_PEOPLE",
+    "kind": "SHADOW",
     "type": "CONDITION",
     "subtype": [
       "SUPPORT-AREA"
@@ -69808,7 +69818,7 @@
     "set": 8,
     "rarity": "R",
     "isUnique": true,
-    "kind": "FREE_PEOPLE",
+    "kind": "SHADOW",
     "type": "MINION",
     "culture": "WRAITH",
     "race": "ORC",
@@ -69851,7 +69861,7 @@
     "set": 8,
     "rarity": "U",
     "isUnique": false,
-    "kind": "FREE_PEOPLE",
+    "kind": "SHADOW",
     "type": "EVENT",
     "subtype": [
       "SKIRMISH"
@@ -69892,7 +69902,7 @@
     "set": 8,
     "rarity": "C",
     "isUnique": false,
-    "kind": "FREE_PEOPLE",
+    "kind": "SHADOW",
     "type": "MINION",
     "culture": "WRAITH",
     "race": "ORC",
@@ -69934,7 +69944,7 @@
     "set": 8,
     "rarity": "C",
     "isUnique": false,
-    "kind": "FREE_PEOPLE",
+    "kind": "SHADOW",
     "type": "MINION",
     "culture": "WRAITH",
     "race": "ORC",
@@ -69972,7 +69982,7 @@
     "set": 8,
     "rarity": "C",
     "isUnique": false,
-    "kind": "FREE_PEOPLE",
+    "kind": "SHADOW",
     "type": "MINION",
     "culture": "WRAITH",
     "race": "ORC",
@@ -70014,7 +70024,7 @@
     "set": 8,
     "rarity": "R",
     "isUnique": false,
-    "kind": "FREE_PEOPLE",
+    "kind": "SHADOW",
     "type": "MINION",
     "culture": "WRAITH",
     "race": "ORC",
@@ -70055,7 +70065,7 @@
     "set": 8,
     "rarity": "U",
     "isUnique": true,
-    "kind": "FREE_PEOPLE",
+    "kind": "SHADOW",
     "type": "CONDITION",
     "subtype": [
       "SUPPORT-AREA"
@@ -70092,7 +70102,7 @@
     "set": 8,
     "rarity": "U",
     "isUnique": true,
-    "kind": "FREE_PEOPLE",
+    "kind": "SHADOW",
     "type": "MINION",
     "culture": "WRAITH",
     "race": "NAZGÛL",
@@ -70135,7 +70145,7 @@
     "set": 8,
     "rarity": "U",
     "isUnique": true,
-    "kind": "FREE_PEOPLE",
+    "kind": "SHADOW",
     "type": "MINION",
     "culture": "WRAITH",
     "race": "NAZGÛL",
@@ -70182,7 +70192,7 @@
     "set": 8,
     "rarity": "R",
     "isUnique": true,
-    "kind": "FREE_PEOPLE",
+    "kind": "SHADOW",
     "type": "MINION",
     "culture": "WRAITH",
     "race": "NAZGÛL",
@@ -70229,7 +70239,7 @@
     "set": 8,
     "rarity": "U",
     "isUnique": false,
-    "kind": "FREE_PEOPLE",
+    "kind": "SHADOW",
     "type": "EVENT",
     "subtype": [
       "SKIRMISH"
@@ -70266,7 +70276,7 @@
     "set": 8,
     "rarity": "U",
     "isUnique": false,
-    "kind": "FREE_PEOPLE",
+    "kind": "SHADOW",
     "type": "POSSESSION",
     "subtype": [
       "MOUNT"
@@ -70307,7 +70317,7 @@
     "set": 8,
     "rarity": "R",
     "isUnique": true,
-    "kind": "FREE_PEOPLE",
+    "kind": "SHADOW",
     "type": "MINION",
     "culture": "WRAITH",
     "race": "NAZGÛL",
@@ -71855,6 +71865,7 @@
     "set": 9,
     "rarity": "R+",
     "isUnique": true,
+    "canBeRingbearer": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
     "culture": "DWARVEN",
@@ -72281,6 +72292,7 @@
     "set": 9,
     "rarity": "R+",
     "isUnique": true,
+    "canBeRingbearer": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
     "culture": "ELVEN",
@@ -72960,6 +72972,7 @@
     "set": 9,
     "rarity": "R+",
     "isUnique": true,
+    "canBeRingbearer": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
     "culture": "GOLLUM",
@@ -73006,6 +73019,7 @@
     "set": 9,
     "rarity": "R+",
     "isUnique": true,
+    "canBeRingbearer": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
     "culture": "GONDOR",
@@ -73099,6 +73113,7 @@
     "set": 9,
     "rarity": "R+",
     "isUnique": true,
+    "canBeRingbearer": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
     "culture": "GONDOR",
@@ -73480,7 +73495,7 @@
     "set": 9,
     "rarity": "R",
     "isUnique": true,
-    "kind": "FREE_PEOPLE",
+    "kind": "SHADOW",
     "type": "ARTIFACT",
     "subtype": [
       "RING"
@@ -73521,7 +73536,7 @@
     "set": 9,
     "rarity": "R+",
     "isUnique": true,
-    "kind": "FREE_PEOPLE",
+    "kind": "SHADOW",
     "type": "ARTIFACT",
     "subtype": [
       "RING"
@@ -73562,7 +73577,7 @@
     "set": 9,
     "rarity": "R",
     "isUnique": true,
-    "kind": "FREE_PEOPLE",
+    "kind": "SHADOW",
     "type": "ARTIFACT",
     "subtype": [
       "RING"
@@ -73771,6 +73786,7 @@
     "set": 9,
     "rarity": "R+",
     "isUnique": true,
+    "canBeRingbearer": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
     "culture": "SHIRE",
@@ -76008,7 +76024,7 @@
     "set": 10,
     "rarity": "U",
     "isUnique": false,
-    "kind": "FREE_PEOPLE",
+    "kind": "SHADOW",
     "type": "CONDITION",
     "subtype": [
       "SUPPORT-AREA"
@@ -76049,7 +76065,7 @@
     "set": 10,
     "rarity": "U",
     "isUnique": false,
-    "kind": "FREE_PEOPLE",
+    "kind": "SHADOW",
     "type": "MINION",
     "culture": "WRAITH",
     "race": "ORC",
@@ -76091,7 +76107,7 @@
     "set": 10,
     "rarity": "C",
     "isUnique": false,
-    "kind": "FREE_PEOPLE",
+    "kind": "SHADOW",
     "type": "MINION",
     "culture": "WRAITH",
     "race": "ORC",
@@ -76133,7 +76149,7 @@
     "set": 10,
     "rarity": "C",
     "isUnique": false,
-    "kind": "FREE_PEOPLE",
+    "kind": "SHADOW",
     "type": "MINION",
     "culture": "WRAITH",
     "race": "ORC",
@@ -76175,7 +76191,7 @@
     "set": 10,
     "rarity": "U",
     "isUnique": false,
-    "kind": "FREE_PEOPLE",
+    "kind": "SHADOW",
     "type": "MINION",
     "culture": "WRAITH",
     "race": "ORC",
@@ -76217,7 +76233,7 @@
     "set": 10,
     "rarity": "R",
     "isUnique": false,
-    "kind": "FREE_PEOPLE",
+    "kind": "SHADOW",
     "type": "EVENT",
     "subtype": [
       "SKIRMISH"
@@ -76258,7 +76274,7 @@
     "set": 10,
     "rarity": "R",
     "isUnique": true,
-    "kind": "FREE_PEOPLE",
+    "kind": "SHADOW",
     "type": "MINION",
     "culture": "WRAITH",
     "race": "ORC",
@@ -76305,7 +76321,7 @@
     "set": 10,
     "rarity": "R",
     "isUnique": true,
-    "kind": "FREE_PEOPLE",
+    "kind": "SHADOW",
     "type": "POSSESSION",
     "subtype": [
       "HAND-WEAPON"
@@ -76346,7 +76362,7 @@
     "set": 10,
     "rarity": "C",
     "isUnique": false,
-    "kind": "FREE_PEOPLE",
+    "kind": "SHADOW",
     "type": "EVENT",
     "subtype": [
       "SKIRMISH"
@@ -76387,7 +76403,7 @@
     "set": 10,
     "rarity": "C",
     "isUnique": false,
-    "kind": "FREE_PEOPLE",
+    "kind": "SHADOW",
     "type": "MINION",
     "culture": "WRAITH",
     "race": "ORC",
@@ -76429,7 +76445,7 @@
     "set": 10,
     "rarity": "R",
     "isUnique": true,
-    "kind": "FREE_PEOPLE",
+    "kind": "SHADOW",
     "type": "MINION",
     "culture": "WRAITH",
     "race": "ORC",
@@ -76471,7 +76487,7 @@
     "set": 10,
     "rarity": "C",
     "isUnique": true,
-    "kind": "FREE_PEOPLE",
+    "kind": "SHADOW",
     "type": "CONDITION",
     "subtype": [
       "SUPPORT-AREA"
@@ -76512,7 +76528,7 @@
     "set": 10,
     "rarity": "C",
     "isUnique": false,
-    "kind": "FREE_PEOPLE",
+    "kind": "SHADOW",
     "type": "CONDITION",
     "subtype": [
       "SUPPORT-AREA"
@@ -76553,7 +76569,7 @@
     "set": 10,
     "rarity": "C",
     "isUnique": false,
-    "kind": "FREE_PEOPLE",
+    "kind": "SHADOW",
     "type": "EVENT",
     "subtype": [
       "SKIRMISH"
@@ -76594,7 +76610,7 @@
     "set": 10,
     "rarity": "R",
     "isUnique": true,
-    "kind": "FREE_PEOPLE",
+    "kind": "SHADOW",
     "type": "MINION",
     "culture": "WRAITH",
     "race": "NAZGÛL",
@@ -76641,7 +76657,7 @@
     "set": 10,
     "rarity": "R",
     "isUnique": true,
-    "kind": "FREE_PEOPLE",
+    "kind": "SHADOW",
     "type": "MINION",
     "culture": "WRAITH",
     "race": "NAZGÛL",
@@ -76688,7 +76704,7 @@
     "set": 10,
     "rarity": "U",
     "isUnique": true,
-    "kind": "FREE_PEOPLE",
+    "kind": "SHADOW",
     "type": "MINION",
     "culture": "WRAITH",
     "race": "NAZGÛL",
@@ -76735,7 +76751,7 @@
     "set": 10,
     "rarity": "U",
     "isUnique": true,
-    "kind": "FREE_PEOPLE",
+    "kind": "SHADOW",
     "type": "MINION",
     "culture": "WRAITH",
     "race": "NAZGÛL",
@@ -76782,7 +76798,7 @@
     "set": 10,
     "rarity": "R",
     "isUnique": true,
-    "kind": "FREE_PEOPLE",
+    "kind": "SHADOW",
     "type": "MINION",
     "culture": "WRAITH",
     "race": "NAZGÛL",
@@ -78653,6 +78669,7 @@
     "set": 10,
     "rarity": "P",
     "isUnique": true,
+    "canBeRingbearer": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
     "culture": "SHIRE",
@@ -85332,6 +85349,7 @@
     "set": 11,
     "rarity": "S",
     "isUnique": true,
+    "canBeRingbearer": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
     "culture": "SHIRE",
@@ -87140,7 +87158,7 @@
     "set": 11,
     "rarity": "R",
     "isUnique": false,
-    "kind": "FREE_PEOPLE",
+    "kind": "SHADOW",
     "type": "EVENT",
     "subtype": [
       "SHADOW"
@@ -87181,7 +87199,7 @@
     "set": 11,
     "rarity": "U",
     "isUnique": false,
-    "kind": "FREE_PEOPLE",
+    "kind": "SHADOW",
     "type": "CONDITION",
     "subtype": [
       "SUPPORT-AREA"
@@ -87222,7 +87240,7 @@
     "set": 11,
     "rarity": "S",
     "isUnique": false,
-    "kind": "FREE_PEOPLE",
+    "kind": "SHADOW",
     "type": "CONDITION",
     "subtype": [
       "SUPPORT-AREA"
@@ -87263,7 +87281,7 @@
     "set": 11,
     "rarity": "U",
     "isUnique": true,
-    "kind": "FREE_PEOPLE",
+    "kind": "SHADOW",
     "type": "CONDITION",
     "subtype": [
       "SUPPORT-AREA"
@@ -87304,7 +87322,7 @@
     "set": 11,
     "rarity": "R",
     "isUnique": false,
-    "kind": "FREE_PEOPLE",
+    "kind": "SHADOW",
     "type": "EVENT",
     "subtype": [
       "MANEUVER"
@@ -87345,7 +87363,7 @@
     "set": 11,
     "rarity": "U",
     "isUnique": false,
-    "kind": "FREE_PEOPLE",
+    "kind": "SHADOW",
     "type": "CONDITION",
     "subtype": [
       "SUPPORT-AREA"
@@ -87381,7 +87399,7 @@
     "set": 11,
     "rarity": "S",
     "isUnique": false,
-    "kind": "FREE_PEOPLE",
+    "kind": "SHADOW",
     "type": "CONDITION",
     "subtype": [
       "SUPPORT-AREA"
@@ -87422,7 +87440,7 @@
     "set": 11,
     "rarity": "R",
     "isUnique": true,
-    "kind": "FREE_PEOPLE",
+    "kind": "SHADOW",
     "type": "POSSESSION",
     "subtype": [
       "HAND-WEAPON"
@@ -87468,7 +87486,7 @@
     "set": 11,
     "rarity": "S",
     "isUnique": false,
-    "kind": "FREE_PEOPLE",
+    "kind": "SHADOW",
     "type": "EVENT",
     "subtype": [
       "SKIRMISH"
@@ -87509,7 +87527,7 @@
     "set": 11,
     "rarity": "R",
     "isUnique": false,
-    "kind": "FREE_PEOPLE",
+    "kind": "SHADOW",
     "type": "CONDITION",
     "subtype": [
       "SUPPORT-AREA"
@@ -87545,7 +87563,7 @@
     "set": 11,
     "rarity": "R",
     "isUnique": false,
-    "kind": "FREE_PEOPLE",
+    "kind": "SHADOW",
     "type": "CONDITION",
     "subtype": [
       "SUPPORT-AREA"
@@ -87581,7 +87599,7 @@
     "set": 11,
     "rarity": "U",
     "isUnique": true,
-    "kind": "FREE_PEOPLE",
+    "kind": "SHADOW",
     "type": "CONDITION",
     "subtype": [
       "SUPPORT-AREA"
@@ -87622,7 +87640,7 @@
     "set": 11,
     "rarity": "R",
     "isUnique": true,
-    "kind": "FREE_PEOPLE",
+    "kind": "SHADOW",
     "type": "MINION",
     "culture": "WRAITH",
     "race": "NAZGÛL",
@@ -87669,7 +87687,7 @@
     "set": 11,
     "rarity": "S",
     "isUnique": true,
-    "kind": "FREE_PEOPLE",
+    "kind": "SHADOW",
     "type": "MINION",
     "culture": "WRAITH",
     "race": "NAZGÛL",
@@ -87716,7 +87734,7 @@
     "set": 11,
     "rarity": "S",
     "isUnique": true,
-    "kind": "FREE_PEOPLE",
+    "kind": "SHADOW",
     "type": "MINION",
     "culture": "WRAITH",
     "race": "NAZGÛL",
@@ -87763,7 +87781,7 @@
     "set": 11,
     "rarity": "S",
     "isUnique": true,
-    "kind": "FREE_PEOPLE",
+    "kind": "SHADOW",
     "type": "MINION",
     "culture": "WRAITH",
     "race": "NAZGÛL",
@@ -87810,7 +87828,7 @@
     "set": 11,
     "rarity": "S",
     "isUnique": true,
-    "kind": "FREE_PEOPLE",
+    "kind": "SHADOW",
     "type": "MINION",
     "culture": "WRAITH",
     "race": "NAZGÛL",
@@ -87857,7 +87875,7 @@
     "set": 11,
     "rarity": "R",
     "isUnique": true,
-    "kind": "FREE_PEOPLE",
+    "kind": "SHADOW",
     "type": "MINION",
     "culture": "WRAITH",
     "race": "NAZGÛL",
@@ -87904,7 +87922,7 @@
     "set": 11,
     "rarity": "S",
     "isUnique": true,
-    "kind": "FREE_PEOPLE",
+    "kind": "SHADOW",
     "type": "MINION",
     "culture": "WRAITH",
     "race": "NAZGÛL",
@@ -94436,7 +94454,7 @@
     "set": 12,
     "rarity": "U",
     "isUnique": false,
-    "kind": "FREE_PEOPLE",
+    "kind": "SHADOW",
     "type": "MINION",
     "culture": "WRAITH",
     "race": "NAZGÛL",
@@ -94478,7 +94496,7 @@
     "set": 12,
     "rarity": "R",
     "isUnique": false,
-    "kind": "FREE_PEOPLE",
+    "kind": "SHADOW",
     "type": "EVENT",
     "subtype": [
       "SHADOW"
@@ -94519,7 +94537,7 @@
     "set": 12,
     "rarity": "R",
     "isUnique": false,
-    "kind": "FREE_PEOPLE",
+    "kind": "SHADOW",
     "type": "CONDITION",
     "subtype": [
       "SUPPORT-AREA"
@@ -94560,7 +94578,7 @@
     "set": 12,
     "rarity": "C",
     "isUnique": false,
-    "kind": "FREE_PEOPLE",
+    "kind": "SHADOW",
     "type": "EVENT",
     "subtype": [
       "SHADOW"
@@ -94601,7 +94619,7 @@
     "set": 12,
     "rarity": "U",
     "isUnique": false,
-    "kind": "FREE_PEOPLE",
+    "kind": "SHADOW",
     "type": "EVENT",
     "subtype": [
       "RESPONSE"
@@ -94642,7 +94660,7 @@
     "set": 12,
     "rarity": "U",
     "isUnique": false,
-    "kind": "FREE_PEOPLE",
+    "kind": "SHADOW",
     "type": "CONDITION",
     "subtype": [
       "SUPPORT-AREA"
@@ -94683,7 +94701,7 @@
     "set": 12,
     "rarity": "U",
     "isUnique": false,
-    "kind": "FREE_PEOPLE",
+    "kind": "SHADOW",
     "type": "EVENT",
     "subtype": [
       "SHADOW"
@@ -94724,7 +94742,7 @@
     "set": 12,
     "rarity": "C",
     "isUnique": false,
-    "kind": "FREE_PEOPLE",
+    "kind": "SHADOW",
     "type": "POSSESSION",
     "subtype": [
       "HAND-WEAPON"
@@ -94765,7 +94783,7 @@
     "set": 12,
     "rarity": "R",
     "isUnique": false,
-    "kind": "FREE_PEOPLE",
+    "kind": "SHADOW",
     "type": "CONDITION",
     "subtype": [
       "SUPPORT-AREA"
@@ -94806,7 +94824,7 @@
     "set": 12,
     "rarity": "U",
     "isUnique": false,
-    "kind": "FREE_PEOPLE",
+    "kind": "SHADOW",
     "type": "CONDITION",
     "culture": "WRAITH",
     "twilightCost": 2,
@@ -94839,7 +94857,7 @@
     "set": 12,
     "rarity": "R",
     "isUnique": false,
-    "kind": "FREE_PEOPLE",
+    "kind": "SHADOW",
     "type": "POSSESSION",
     "subtype": [
       "MOUNT"
@@ -94879,7 +94897,7 @@
     "set": 12,
     "rarity": "C",
     "isUnique": false,
-    "kind": "FREE_PEOPLE",
+    "kind": "SHADOW",
     "type": "POSSESSION",
     "subtype": [
       "MOUNT"
@@ -94920,7 +94938,7 @@
     "set": 12,
     "rarity": "R",
     "isUnique": true,
-    "kind": "FREE_PEOPLE",
+    "kind": "SHADOW",
     "type": "MINION",
     "culture": "WRAITH",
     "race": "NAZGÛL",
@@ -94967,7 +94985,7 @@
     "set": 12,
     "rarity": "R",
     "isUnique": true,
-    "kind": "FREE_PEOPLE",
+    "kind": "SHADOW",
     "type": "MINION",
     "culture": "WRAITH",
     "race": "NAZGÛL",
@@ -95014,7 +95032,7 @@
     "set": 12,
     "rarity": "U",
     "isUnique": true,
-    "kind": "FREE_PEOPLE",
+    "kind": "SHADOW",
     "type": "MINION",
     "culture": "WRAITH",
     "race": "NAZGÛL",
@@ -95061,7 +95079,7 @@
     "set": 12,
     "rarity": "C",
     "isUnique": true,
-    "kind": "FREE_PEOPLE",
+    "kind": "SHADOW",
     "type": "MINION",
     "culture": "WRAITH",
     "race": "NAZGÛL",
@@ -95108,7 +95126,7 @@
     "set": 12,
     "rarity": "C",
     "isUnique": true,
-    "kind": "FREE_PEOPLE",
+    "kind": "SHADOW",
     "type": "MINION",
     "culture": "WRAITH",
     "race": "NAZGÛL",
@@ -95155,7 +95173,7 @@
     "set": 12,
     "rarity": "R",
     "isUnique": true,
-    "kind": "FREE_PEOPLE",
+    "kind": "SHADOW",
     "type": "MINION",
     "culture": "WRAITH",
     "race": "NAZGÛL",
@@ -95202,7 +95220,7 @@
     "set": 12,
     "rarity": "U",
     "isUnique": true,
-    "kind": "FREE_PEOPLE",
+    "kind": "SHADOW",
     "type": "MINION",
     "culture": "WRAITH",
     "race": "NAZGÛL",
@@ -95249,7 +95267,7 @@
     "set": 12,
     "rarity": "C",
     "isUnique": false,
-    "kind": "FREE_PEOPLE",
+    "kind": "SHADOW",
     "type": "CONDITION",
     "subtype": [
       "SUPPORT-AREA"
@@ -95290,7 +95308,7 @@
     "set": 12,
     "rarity": "C",
     "isUnique": false,
-    "kind": "FREE_PEOPLE",
+    "kind": "SHADOW",
     "type": "CONDITION",
     "subtype": [
       "SUPPORT-AREA"
@@ -95331,7 +95349,7 @@
     "set": 12,
     "rarity": "R",
     "isUnique": true,
-    "kind": "FREE_PEOPLE",
+    "kind": "SHADOW",
     "type": "MINION",
     "culture": "WRAITH",
     "race": "NAZGÛL",
@@ -95378,7 +95396,7 @@
     "set": 12,
     "rarity": "U",
     "isUnique": true,
-    "kind": "FREE_PEOPLE",
+    "kind": "SHADOW",
     "type": "POSSESSION",
     "subtype": [
       "MOUNT"
@@ -95601,7 +95619,7 @@
     "set": 12,
     "rarity": "O",
     "isUnique": false,
-    "kind": "FREE_PEOPLE",
+    "kind": "SHADOW",
     "type": "EVENT",
     "subtype": [
       "SHADOW"
@@ -95641,7 +95659,7 @@
     "set": 12,
     "rarity": "O",
     "isUnique": true,
-    "kind": "FREE_PEOPLE",
+    "kind": "SHADOW",
     "type": "MINION",
     "culture": "WRAITH",
     "race": "NAZGÛL",
@@ -95687,7 +95705,7 @@
     "set": 12,
     "rarity": "O",
     "isUnique": true,
-    "kind": "FREE_PEOPLE",
+    "kind": "SHADOW",
     "type": "MINION",
     "culture": "WRAITH",
     "race": "NAZGÛL",
@@ -95733,7 +95751,7 @@
     "set": 12,
     "rarity": "O",
     "isUnique": true,
-    "kind": "FREE_PEOPLE",
+    "kind": "SHADOW",
     "type": "MINION",
     "culture": "WRAITH",
     "race": "NAZGÛL",
@@ -95779,7 +95797,7 @@
     "set": 12,
     "rarity": "O",
     "isUnique": true,
-    "kind": "FREE_PEOPLE",
+    "kind": "SHADOW",
     "type": "MINION",
     "culture": "WRAITH",
     "race": "NAZGÛL",
@@ -101824,6 +101842,7 @@
     "set": 13,
     "rarity": "R",
     "isUnique": true,
+    "canBeRingbearer": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
     "culture": "SHIRE",
@@ -102923,7 +102942,7 @@
     "set": 13,
     "rarity": "R",
     "isUnique": false,
-    "kind": "FREE_PEOPLE",
+    "kind": "SHADOW",
     "type": "EVENT",
     "subtype": [
       "REGROUP"
@@ -102963,7 +102982,7 @@
     "set": 13,
     "rarity": "U",
     "isUnique": false,
-    "kind": "FREE_PEOPLE",
+    "kind": "SHADOW",
     "type": "EVENT",
     "subtype": [
       "SKIRMISH"
@@ -103004,7 +103023,7 @@
     "set": 13,
     "rarity": "R",
     "isUnique": false,
-    "kind": "FREE_PEOPLE",
+    "kind": "SHADOW",
     "type": "EVENT",
     "subtype": [
       "SHADOW"
@@ -103045,7 +103064,7 @@
     "set": 13,
     "rarity": "U",
     "isUnique": false,
-    "kind": "FREE_PEOPLE",
+    "kind": "SHADOW",
     "type": "CONDITION",
     "subtype": [
       "SUPPORT-AREA"
@@ -103086,7 +103105,7 @@
     "set": 13,
     "rarity": "R",
     "isUnique": true,
-    "kind": "FREE_PEOPLE",
+    "kind": "SHADOW",
     "type": "MINION",
     "culture": "WRAITH",
     "race": "NAZGÛL",
@@ -103133,7 +103152,7 @@
     "set": 13,
     "rarity": "U",
     "isUnique": true,
-    "kind": "FREE_PEOPLE",
+    "kind": "SHADOW",
     "type": "MINION",
     "culture": "WRAITH",
     "race": "NAZGÛL",
@@ -103180,7 +103199,7 @@
     "set": 13,
     "rarity": "C",
     "isUnique": true,
-    "kind": "FREE_PEOPLE",
+    "kind": "SHADOW",
     "type": "MINION",
     "culture": "WRAITH",
     "race": "NAZGÛL",
@@ -110292,6 +110311,7 @@
     "set": 15,
     "rarity": "C",
     "isUnique": true,
+    "canBeRingbearer": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
     "culture": "SHIRE",
@@ -111862,7 +111882,7 @@
     "set": 15,
     "rarity": "U",
     "isUnique": false,
-    "kind": "FREE_PEOPLE",
+    "kind": "SHADOW",
     "type": "EVENT",
     "subtype": [
       "SHADOW"
@@ -111903,7 +111923,7 @@
     "set": 15,
     "rarity": "R",
     "isUnique": false,
-    "kind": "FREE_PEOPLE",
+    "kind": "SHADOW",
     "type": "CONDITION",
     "subtype": [
       "SUPPORT-AREA"
@@ -111944,7 +111964,7 @@
     "set": 15,
     "rarity": "U",
     "isUnique": false,
-    "kind": "FREE_PEOPLE",
+    "kind": "SHADOW",
     "type": "CONDITION",
     "subtype": [
       "SUPPORT-AREA"
@@ -111985,7 +112005,7 @@
     "set": 15,
     "rarity": "R",
     "isUnique": true,
-    "kind": "FREE_PEOPLE",
+    "kind": "SHADOW",
     "type": "MINION",
     "culture": "WRAITH",
     "race": "NAZGÛL",
@@ -112032,7 +112052,7 @@
     "set": 15,
     "rarity": "R",
     "isUnique": true,
-    "kind": "FREE_PEOPLE",
+    "kind": "SHADOW",
     "type": "MINION",
     "culture": "WRAITH",
     "race": "NAZGÛL",
@@ -112079,7 +112099,7 @@
     "set": 15,
     "rarity": "R",
     "isUnique": true,
-    "kind": "FREE_PEOPLE",
+    "kind": "SHADOW",
     "type": "MINION",
     "culture": "WRAITH",
     "race": "NAZGÛL",
@@ -112398,7 +112418,7 @@
     "set": 15,
     "rarity": "O",
     "isUnique": true,
-    "kind": "FREE_PEOPLE",
+    "kind": "SHADOW",
     "type": "MINION",
     "culture": "WRAITH",
     "race": "NAZGÛL",
@@ -112445,7 +112465,7 @@
     "set": 15,
     "rarity": "O",
     "isUnique": true,
-    "kind": "FREE_PEOPLE",
+    "kind": "SHADOW",
     "type": "MINION",
     "culture": "WRAITH",
     "race": "NAZGÛL",
@@ -112492,7 +112512,7 @@
     "set": 15,
     "rarity": "O",
     "isUnique": true,
-    "kind": "FREE_PEOPLE",
+    "kind": "SHADOW",
     "type": "MINION",
     "culture": "WRAITH",
     "race": "NAZGÛL",
@@ -112606,7 +112626,7 @@
     "set": 16,
     "rarity": "R",
     "isUnique": true,
-    "kind": "FREE_PEOPLE",
+    "kind": "SHADOW",
     "type": "MINION",
     "culture": "WRAITH",
     "race": "WRAITH",
@@ -112648,7 +112668,7 @@
     "set": 16,
     "rarity": "R",
     "isUnique": false,
-    "kind": "FREE_PEOPLE",
+    "kind": "SHADOW",
     "type": "MINION",
     "culture": "WRAITH",
     "race": "WRAITH",
@@ -112690,7 +112710,7 @@
     "set": 16,
     "rarity": "R",
     "isUnique": true,
-    "kind": "FREE_PEOPLE",
+    "kind": "SHADOW",
     "type": "MINION",
     "culture": "WRAITH",
     "race": "WRAITH",
@@ -112732,7 +112752,7 @@
     "set": 16,
     "rarity": "R",
     "isUnique": false,
-    "kind": "FREE_PEOPLE",
+    "kind": "SHADOW",
     "type": "MINION",
     "culture": "WRAITH",
     "race": "WRAITH",
@@ -112774,7 +112794,7 @@
     "set": 16,
     "rarity": "R",
     "isUnique": true,
-    "kind": "FREE_PEOPLE",
+    "kind": "SHADOW",
     "type": "MINION",
     "culture": "WRAITH",
     "race": "WRAITH",
@@ -112816,7 +112836,7 @@
     "set": 16,
     "rarity": "R",
     "isUnique": true,
-    "kind": "FREE_PEOPLE",
+    "kind": "SHADOW",
     "type": "MINION",
     "culture": "WRAITH",
     "race": "WRAITH",
@@ -118529,7 +118549,7 @@
     "set": 17,
     "rarity": "R",
     "isUnique": true,
-    "kind": "FREE_PEOPLE",
+    "kind": "SHADOW",
     "type": "MINION",
     "culture": "WRAITH",
     "race": "NAZGÛL",
@@ -118572,7 +118592,7 @@
     "set": 17,
     "rarity": "R",
     "isUnique": true,
-    "kind": "FREE_PEOPLE",
+    "kind": "SHADOW",
     "type": "MINION",
     "culture": "WRAITH",
     "race": "NAZGÛL",
@@ -118615,7 +118635,7 @@
     "set": 17,
     "rarity": "R",
     "isUnique": true,
-    "kind": "FREE_PEOPLE",
+    "kind": "SHADOW",
     "type": "MINION",
     "culture": "WRAITH",
     "race": "NAZGÛL",
@@ -118658,7 +118678,7 @@
     "set": 17,
     "rarity": "R",
     "isUnique": true,
-    "kind": "FREE_PEOPLE",
+    "kind": "SHADOW",
     "type": "ARTIFACT",
     "subtype": [
       "RING"
@@ -118694,7 +118714,7 @@
     "set": 17,
     "rarity": "R",
     "isUnique": true,
-    "kind": "FREE_PEOPLE",
+    "kind": "SHADOW",
     "type": "ARTIFACT",
     "subtype": [
       "RING"
@@ -118730,7 +118750,7 @@
     "set": 17,
     "rarity": "R",
     "isUnique": true,
-    "kind": "FREE_PEOPLE",
+    "kind": "SHADOW",
     "type": "MINION",
     "culture": "WRAITH",
     "race": "NAZGÛL",
@@ -124218,7 +124238,7 @@
     "set": 18,
     "rarity": "U",
     "isUnique": false,
-    "kind": "FREE_PEOPLE",
+    "kind": "SHADOW",
     "type": "EVENT",
     "subtype": [
       "SHADOW"
@@ -124259,7 +124279,7 @@
     "set": 18,
     "rarity": "R",
     "isUnique": false,
-    "kind": "FREE_PEOPLE",
+    "kind": "SHADOW",
     "type": "EVENT",
     "subtype": [
       "ASSIGNMENT"
@@ -125446,6 +125466,7 @@
     "set": 19,
     "rarity": "P",
     "isUnique": true,
+    "canBeRingbearer": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
     "culture": "SHIRE",
@@ -125709,7 +125730,7 @@
     "set": 19,
     "rarity": "P",
     "isUnique": false,
-    "kind": "FREE_PEOPLE",
+    "kind": "SHADOW",
     "type": "CONDITION",
     "culture": "WRAITH",
     "twilightCost": 2,
@@ -125747,7 +125768,7 @@
     "set": 19,
     "rarity": "P",
     "isUnique": true,
-    "kind": "FREE_PEOPLE",
+    "kind": "SHADOW",
     "type": "MINION",
     "culture": "WRAITH",
     "race": "NAZGÛL",
@@ -125794,7 +125815,7 @@
     "set": 19,
     "rarity": "P",
     "isUnique": true,
-    "kind": "FREE_PEOPLE",
+    "kind": "SHADOW",
     "type": "MINION",
     "culture": "WRAITH",
     "race": "NAZGÛL",
@@ -125841,7 +125862,7 @@
     "set": 19,
     "rarity": "P",
     "isUnique": true,
-    "kind": "FREE_PEOPLE",
+    "kind": "SHADOW",
     "type": "MINION",
     "culture": "WRAITH",
     "race": "NAZGÛL",
@@ -125888,7 +125909,7 @@
     "set": 19,
     "rarity": "P",
     "isUnique": true,
-    "kind": "FREE_PEOPLE",
+    "kind": "SHADOW",
     "type": "MINION",
     "culture": "WRAITH",
     "race": "NAZGÛL",
@@ -125935,7 +125956,7 @@
     "set": 19,
     "rarity": "P",
     "isUnique": true,
-    "kind": "FREE_PEOPLE",
+    "kind": "SHADOW",
     "type": "MINION",
     "culture": "WRAITH",
     "race": "NAZGÛL",
@@ -125982,7 +126003,7 @@
     "set": 19,
     "rarity": "P",
     "isUnique": true,
-    "kind": "FREE_PEOPLE",
+    "kind": "SHADOW",
     "type": "MINION",
     "culture": "WRAITH",
     "race": "NAZGÛL",

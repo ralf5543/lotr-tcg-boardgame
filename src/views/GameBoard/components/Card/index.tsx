@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import type { CardState, CardKeyword } from '../../../../game/types';
 import * as S from './styles';
 import { TRANSLATIONS } from '../../../../game/translations';
@@ -13,6 +13,49 @@ import {
     getEffectiveResistance,
 } from '../../../../utils/cardStats';
 import { getCardText, SupportedLanguage } from '../../../../utils/i18n';
+
+// 🟢 COMPOSANT HELPER POUR BASCULER D'EXTENSION SI FICHIER INTROUVABLE
+interface CardImageProps {
+    imageUrl?: string;
+    alt: string;
+    draggable?: boolean;
+}
+
+const CardImage: React.FC<CardImageProps> = ({ imageUrl, alt, draggable = false }) => {
+    // Ordre de priorité des formats à tester
+    const extensions = ['.webp', '.jpg', '.png'];
+    const [extIndex, setExtIndex] = useState(0);
+
+    if (!imageUrl) {
+        return (
+            <S.Visual
+                src="interface/lotr_cardback.webp"
+                alt={alt}
+                draggable={false}
+            />
+        );
+    }
+
+    // On isole le chemin sans l'extension
+    const basePath = imageUrl.replace(/\.(jpg|jpeg|png|webp)$/i, '');
+    const currentSrc = `${basePath}${extensions[extIndex]}`;
+
+    const handleError = () => {
+        // En cas d'erreur 404, on passe à l'extension suivante
+        if (extIndex < extensions.length - 1) {
+            setExtIndex((prev) => prev + 1);
+        }
+    };
+
+    return (
+        <S.Visual
+            src={currentSrc}
+            alt={alt}
+            draggable={draggable}
+            onError={handleError}
+        />
+    );
+};
 
 interface CardProps {
     card: CardState;
@@ -43,7 +86,7 @@ export const Card: React.FC<CardProps> = ({
     isOpponent = false,
     burdens = 0,
     isFaceDown = card?.isFaceDown ?? false,
-    currentLang = 'es',
+    currentLang = 'fr',
 }) => {
     // 🟢 APPELS DE HOOKS OBLIGATOIREMENT EN HAUT DU COMPOSANT
     const { setHoveredCard } = useHoverCard();
@@ -204,9 +247,10 @@ export const Card: React.FC<CardProps> = ({
                     )}
                 </S.CardTitles>
             </S.CardHeader>
+            
             {card.imageUrl && (
                 <S.VisualContainer $type={card.type}>
-                    <S.Visual src={card.imageUrl} alt={title} />
+                    <CardImage imageUrl={card.imageUrl} alt={title ?? ''} />
                 </S.VisualContainer>
             )}
 

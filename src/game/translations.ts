@@ -100,7 +100,7 @@ export const TRANSLATIONS = {
         MORIA: 'Moria',
         ORC: 'Orque',
         RAIDER: 'Pillards',
-        RINGWRAITH: 'Spectre',
+        RAITH: 'Spectre',
         ROHAN: 'Rohan',
         SAURON: 'Sauron',
         SHIRE: 'Comté',

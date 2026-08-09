@@ -15,6 +15,8 @@ import { resolveSkirmish } from './skirmish';
 import { checkAssignmentProgress, getUnassignedMinions } from './assignment';
 import { commonMoves, advanceCompany, getTargetPlayerId } from './moves';
 
+import { buildDeckFromIds } from '../utils/deckBuilder';
+
 const shuffle = <T>(array: T[]): T[] => {
     const arr = [...array];
     for (let i = arr.length - 1; i > 0; i--) {
@@ -24,18 +26,120 @@ const shuffle = <T>(array: T[]): T[] => {
     return arr;
 };
 
-const createRealLotrDeck = (playerId: string): CardState[] => {
-    const fullPool: CardState[] = [];
-    for (let i = 0; i < 15; i++) {
-        const Card = CARDS_DATABASE[i % CARDS_DATABASE.length];
-        fullPool.push({
-            ...Card,
-            id: `p${playerId}-${Card.id}-${i}-${Math.random().toString(36).substring(2, 7)}`,
-            isFaceDown: false,
-        });
+const createCardInstance = (
+    cardId: string,
+    playerId: string,
+    suffix: string
+): CardState => {
+    const baseCard = CARDS_DATABASE.find((c) => c.id === cardId);
+    if (!baseCard) {
+        throw new Error(
+            `Carte introuvable dans CARDS_DATABASE pour l'ID : ${cardId}`
+        );
     }
-    return shuffle(fullPool);
+    return {
+        ...baseCard,
+        id: `p${playerId}-${baseCard.id}-${suffix}`,
+        isFaceDown: false,
+    };
 };
+
+const PLAYER_0_RING_BEARER_ID = '9R+31';
+const PLAYER_0_ONE_RING_ID = '4R1';
+
+// 🏞️ Deck de Sites (9 sites ordonnés ou triés, hors pioche)
+const PLAYER_0_SITES_IDS = [
+    '11S234',
+    '11S258',
+    '11S249',
+    '11S254',
+    '11S265',
+    '11S233',
+    '11S248',
+    '11S260',
+    '11S250',
+];
+
+const PLAYER_0_FREE_PEOPLE: string[] = [
+    '0P25',
+    '1C84',
+    '7R112',
+    '7R112',
+    '1R95',
+    '3R44',
+    '3R44',
+    '7P364',
+    '7P364',
+    '15U94',
+    '3U46',
+    '3U46',
+    '3U46',
+    '11S33',
+    '11S33',
+    '11S33',
+    '9R38',
+    '11R35',
+    '17R17',
+    '8R21',
+    '9R27',
+    '7R43',
+    '7R43',
+    '7R113',
+    '7C108',
+    '7C108',
+    '7C86',
+    '7C323',
+    '7R91',
+    '7R104',
+    '9R+32',
+    '7R114',
+];
+
+const PLAYER_0_SHADOW: string[] = [
+    '11R194',
+    '11R194',
+    '4R158',
+    '3C69',
+    '3C69',
+    '1U153',
+    '1U162',
+    '1U162',
+    '1U162',
+    '1U162',
+    '1C133',
+    '1C133',
+    '1C133',
+    '4R164',
+    '1R120',
+    '1R148',
+    '1R148',
+    '1R148',
+    '1R155',
+    '3U75',
+    '1R124',
+    '1U142',
+    '1R140',
+    '2R46',
+    '4C165',
+    '3R50',
+    '11C202',
+    '11C198',
+    '2R43',
+    '11R179',
+    '3R66',
+    '1R143',
+];
+
+console.log('PLAYER_0_FREE_PEOPLE.length : ', PLAYER_0_FREE_PEOPLE.length);
+console.log('PLAYER_0_SHADOW.length : ', PLAYER_0_SHADOW.length);
+
+const PLAYER_0_FULL_DECK = [...PLAYER_0_FREE_PEOPLE, ...PLAYER_0_SHADOW];
+
+const PLAYER_1_FREE_PEOPLE: string[] = ['0P25'];
+
+const PLAYER_1_SHADOW: string[] = ['11R194'];
+
+const PLAYER_1_FULL_DECK = [...PLAYER_1_FREE_PEOPLE, ...PLAYER_1_SHADOW];
 
 const createInitialPlayer = (playerId: string): PlayerState => ({
     profile:
@@ -50,7 +154,10 @@ const createInitialPlayer = (playerId: string): PlayerState => ({
                   avatar: 'avatars/avatar_p1.webp',
                   faction: 'shadow',
               },
-    deck: createRealLotrDeck(playerId),
+    deck: buildDeckFromIds(
+        playerId === '0' ? PLAYER_0_FULL_DECK : PLAYER_1_FULL_DECK,
+        playerId
+    ),
     hand: [],
     discard: [],
     deadPile: [],
@@ -84,38 +191,29 @@ export const setupGame = (): GameState => {
         const player = players[pId];
         if (!player || !player.deck) return;
 
-        // 1. Recherche du Porteur de l'Anneau (Keyword: RING-BEARER)
-        const ringBearerIndex = player.deck.findIndex((c) =>
-            c.keywords?.includes('RING-BEARER')
+        // 1. Instanciation directe du Porteur et de L'Anneau Unique (hors-deck de pioche)
+        const ringBearer = createCardInstance(
+            PLAYER_0_RING_BEARER_ID,
+            pId,
+            'ringbearer'
+        );
+        const oneRing = createCardInstance(
+            PLAYER_0_ONE_RING_ID,
+            pId,
+            'onering'
         );
 
-        let ringBearer: CardState | undefined;
-        if (ringBearerIndex !== -1) {
-            [ringBearer] = player.deck.splice(ringBearerIndex, 1);
+        // Activation explicite du keyword/statut RING-BEARER sur cette carte
+        if (!ringBearer.keywords) ringBearer.keywords = [];
+        if (!ringBearer.keywords.includes('RING-BEARER')) {
+            ringBearer.keywords.push('RING-BEARER');
         }
 
-        // 2. Recherche de L'Anneau Unique (Keyword: THE-ONE-RING)
-        const theOneRingIndex = player.deck.findIndex((c) =>
-            c.keywords?.includes('THE-ONE-RING')
-        );
+        // Attachement de l'Anneau et placement initial dans la Fellowship Area
+        ringBearer.attachments = [oneRing];
+        player.fellowshipArea = [ringBearer];
 
-        let theOneRing: CardState | undefined;
-        if (theOneRingIndex !== -1) {
-            [theOneRing] = player.deck.splice(theOneRingIndex, 1);
-        }
-
-        // Attachement de l'Anneau au Porteur s'ils existent
-        if (ringBearer) {
-            if (theOneRing) {
-                ringBearer.attachments = [theOneRing];
-            }
-            ringBearer.isFaceDown = false;
-            player.fellowshipArea = [ringBearer];
-        } else {
-            player.fellowshipArea = [];
-        }
-
-        // 3. Extraction des Compagnons de départ (isStartingMember = true)
+        // 2. Extraction des éventuels compagnons de départ (isStartingMember = true) depuis le deck
         const startingMembers: CardState[] = [];
         player.deck = player.deck.filter((card) => {
             if (card.isStartingMember && card.type === 'COMPANION') {
@@ -126,6 +224,8 @@ export const setupGame = (): GameState => {
         });
 
         player.fellowshipArea.push(...startingMembers);
+
+        // 3. Mélange du deck de pioche
         player.deck = shuffle(player.deck);
     });
 
@@ -186,7 +286,6 @@ export const LotrGame: Game<GameState> = {
                     if (!G.setupState || G.setupState.step !== 'BIDDING')
                         return 'INVALID_MOVE';
 
-                    // 🟢 S'assurer que playerID est bien défini et convertir en string
                     const pId = String(playerID ?? '0');
 
                     const validBid = Math.max(
@@ -194,11 +293,9 @@ export const LotrGame: Game<GameState> = {
                         Math.min(10, Math.floor(bidAmount))
                     );
 
-                    // 🟢 On enregistre bien la mise dans setupState
                     if (!G.setupState.bids) G.setupState.bids = {};
                     G.setupState.bids[pId] = validBid;
 
-                    // 🟢 Affectation directe des fardeaux au PlayerState du joueur concerné
                     if (G.players && G.players[pId]) {
                         G.players[pId].burdens = validBid;
                     }
@@ -233,7 +330,8 @@ export const LotrGame: Game<GameState> = {
                 chooseFirstPlayer: (
                     { G }: LotrMoveContext,
                     wantToBeFirst: boolean
-                ) => {               if (!G.setupState || G.setupState.step !== 'CHOOSING_FIRST')
+                ) => {
+                    if (!G.setupState || G.setupState.step !== 'CHOOSING_FIRST')
                         return 'INVALID_MOVE';
 
                     const winnerId = G.setupState.auctionWinnerId || '0';
@@ -242,7 +340,6 @@ export const LotrGame: Game<GameState> = {
                     // Le joueur qui choisit d'être premier devient les Peuples Libres (FP)
                     G.fpPlayerId = wantToBeFirst ? winnerId : otherId;
 
-                    // 🟢 Chantiers / fardeaux : Chaque joueur conserve sa propre mise déjà enregistrée dans `G.players[id].burdens`.
                     const fpBurdens = G.players[G.fpPlayerId]?.burdens ?? 0;
 
                     G.setupState.step = 'AWAITING_SITE';
@@ -342,7 +439,6 @@ export const LotrGame: Game<GameState> = {
             next: 'maneuver',
 
             onBegin: ({ G, ctx }: LotrPhaseContext) => {
-
                 G.actionWindow = undefined;
 
                 const shadowId = G.fpPlayerId === '0' ? '1' : '0';
@@ -426,7 +522,6 @@ export const LotrGame: Game<GameState> = {
                 },
 
                 endShadowPhase: ({ G, events, playerID }: LotrMoveContext) => {
-
                     const shadowId = G.fpPlayerId === '0' ? '1' : '0';
                     if (playerID !== shadowId) return 'INVALID_MOVE';
 
