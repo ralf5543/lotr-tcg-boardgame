@@ -43,7 +43,9 @@ export const advanceCompany = (G: GameState) => {
     const nextIndex = fpPlayer.currentSiteIndex + 1;
 
     if (nextIndex >= 9) {
-        console.warn("⚠️ [moves.advanceCompany] Index >= 9, impossible d'avancer.");
+        console.warn(
+            "⚠️ [moves.advanceCompany] Index >= 9, impossible d'avancer."
+        );
         return;
     }
 
@@ -76,7 +78,9 @@ export const passActionWindow = ({
     events,
 }: LotrMoveContext) => {
     if (!G.actionWindow || !G.actionWindow.isOpen) {
-        console.warn('⚠️ [moves.passActionWindow] Aucune fenêtre d’action ouverte.');
+        console.warn(
+            '⚠️ [moves.passActionWindow] Aucune fenêtre d’action ouverte.'
+        );
         return;
     }
     if (playerID !== G.actionWindow.activePlayerId) {
@@ -88,7 +92,6 @@ export const passActionWindow = ({
 
     const otherPlayer = playerID === '0' ? '1' : '0';
     const currentPasses = (G.actionWindow.passesCount || 0) + 1;
-
 
     if (currentPasses >= 2) {
         G.actionWindow = {
@@ -191,7 +194,9 @@ export const commonMoves = {
         } else {
             if (card.kind !== 'SHADOW') return 'INVALID_MOVE';
             if (G.twilightPool < cost) {
-                console.warn(`❌ [moves.attachCard] Crépuscule insuffisant (${G.twilightPool}/${cost}).`);
+                console.warn(
+                    `❌ [moves.attachCard] Crépuscule insuffisant (${G.twilightPool}/${cost}).`
+                );
                 G.statusMessage = `Crépuscule insuffisant pour attacher ${card.title} (Requis: ${cost}, Dispo: ${G.twilightPool})`;
                 return 'INVALID_MOVE';
             }
@@ -258,7 +263,9 @@ export const commonMoves = {
             } else if (
                 playedCard.type === 'ALLY' ||
                 playedCard.type === 'FOLLOWER' ||
-                playedCard.type.endsWith('_SUPPORT')
+                playedCard.type === 'ARTIFACT' ||
+                playedCard.type === 'CONDITION' ||
+                playedCard.type === 'POSSESSION'
             ) {
                 if (!player.supportArea) player.supportArea = [];
                 player.supportArea.push(playedCard);
@@ -282,7 +289,9 @@ export const commonMoves = {
 
             const cost = Number(card.twilightCost) || 0;
             if (G.twilightPool < cost) {
-                console.warn(`❌ [moves.playCard] Crépuscule insuffisant pour Ombre (${G.twilightPool}/${cost})`);
+                console.warn(
+                    `❌ [moves.playCard] Crépuscule insuffisant pour Ombre (${G.twilightPool}/${cost})`
+                );
                 G.statusMessage = `Crépuscule insuffisant pour jouer ${card.title} (Requis: ${cost}, Dispo: ${G.twilightPool})`;
                 return 'INVALID_MOVE';
             }
@@ -297,7 +306,9 @@ export const commonMoves = {
             } else if (
                 playedCard.type === 'ALLY' ||
                 playedCard.type === 'FOLLOWER' ||
-                playedCard.type.endsWith('_SUPPORT')
+                playedCard.type === 'ARTIFACT' ||
+                playedCard.type === 'CONDITION' ||
+                playedCard.type === 'POSSESSION'
             ) {
                 if (!player.supportArea) player.supportArea = [];
                 player.supportArea.push(playedCard);
@@ -353,17 +364,23 @@ export const commonMoves = {
             G.regroupStep === 'SHADOW_REFILL' &&
             actingPlayerId !== shadowPlayerId
         ) {
-            console.warn('❌ [moves.discardCardFromHand] Ce n’est pas au tour de l’Ombre de défausser.');
+            console.warn(
+                '❌ [moves.discardCardFromHand] Ce n’est pas au tour de l’Ombre de défausser.'
+            );
             return 'INVALID_MOVE';
         }
         if (G.regroupStep === 'FP_REFILL' && actingPlayerId !== fpPlayerId) {
-            console.warn('❌ [moves.discardCardFromHand] Ce n’est pas au tour de FP de défausser.');
+            console.warn(
+                '❌ [moves.discardCardFromHand] Ce n’est pas au tour de FP de défausser.'
+            );
             return 'INVALID_MOVE';
         }
 
         // 🔒 2. RÈGLE STRICTE PAR JOUEUR
         if (player.hand.length <= 8 && player.hasDiscardedInRegroup) {
-            console.warn(`⚠️ [moves.discardCardFromHand] Le Joueur ${actingPlayerId} a déjà défaussé sa carte optionnelle.`);
+            console.warn(
+                `⚠️ [moves.discardCardFromHand] Le Joueur ${actingPlayerId} a déjà défaussé sa carte optionnelle.`
+            );
             G.statusMessage =
                 'Vous avez déjà défaussé votre carte optionnelle pour ce tour.';
             return 'INVALID_MOVE';
@@ -421,7 +438,7 @@ export const commonMoves = {
         }
 
         if (G.regroupStep === 'FP_REFILL' || !G.regroupStep) {
-          const shadowId = G.fpPlayerId === '0' ? '1' : '0';
+            const shadowId = G.fpPlayerId === '0' ? '1' : '0';
             const shadowPlayer = G.players[shadowId];
 
             if (shadowPlayer) {
@@ -623,7 +640,6 @@ export const commonMoves = {
         const isFellowship = ctx.phase === 'fellowship';
         const drawn = drawCardsForPlayer(G, player, count, isFellowship);
 
-
         if (drawn === 0 && isFellowship && G.fellowshipCardsDrawn >= 4) {
             G.statusMessage =
                 'Limite de 4 cartes obtenues pendant la phase de Communauté atteinte.';
@@ -685,13 +701,17 @@ export const commonMoves = {
 
         const siteIndex = player.sitesDeck.findIndex((s) => s.id === siteId);
         if (siteIndex === -1) {
-            console.warn(`❌ [moves.playSite] Site ${siteId} introuvable dans le deck de sites de l'Ombre.`);
+            console.warn(
+                `❌ [moves.playSite] Site ${siteId} introuvable dans le deck de sites de l'Ombre.`
+            );
             return 'INVALID_MOVE';
         }
 
         const nextEmptyIndex = G.path.findIndex((slot) => slot === null);
         if (targetIndex !== nextEmptyIndex) {
-            console.warn(`❌ [moves.playSite] Index cible ${targetIndex} ne correspond pas au prochain emplacement vide ${nextEmptyIndex}.`);
+            console.warn(
+                `❌ [moves.playSite] Index cible ${targetIndex} ne correspond pas au prochain emplacement vide ${nextEmptyIndex}.`
+            );
             return 'INVALID_MOVE';
         }
 
@@ -804,7 +824,9 @@ export const commonMoves = {
         const sourceTitle = sourceHost.title || sourceHost.name || 'son hôte';
         const targetTitle = targetHost.title || targetHost.name || 'sa cible';
 
-        console.log(`🔀 [moves.transferAttachment] ${attachmentTitle} transféré de ${sourceTitle} à ${targetTitle}.`);
+        console.log(
+            `🔀 [moves.transferAttachment] ${attachmentTitle} transféré de ${sourceTitle} à ${targetTitle}.`
+        );
         G.statusMessage = `${attachmentTitle} est transféré de ${sourceTitle} vers ${targetTitle} (Coût : ${cost} Crépuscule).`;
     },
 };

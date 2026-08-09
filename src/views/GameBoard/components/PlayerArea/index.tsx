@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import type { CardState, CardType, GameState } from '../../../../game/types';
+import type { CardState, CardType, CardSubtype, GameState } from '../../../../game/types';
 import type { BoardProps } from 'boardgame.io/react';
 import * as S from './styles';
 import { Card } from '../Card';
@@ -52,9 +52,10 @@ export const PlayerArea: React.FC<PlayerAreaProps> = ({
 }) => {
     const { activeTargetId, registerTarget, startDrag, dragged } = useDrag();
 
-    const cardSubtype = (dragged?.card as CardState)?.type as
-        | CardType
-        | undefined;
+
+    // 🟢 Extraire correctement le type ET le subtype pour le router de Drag
+    const cardType = (dragged?.card as CardState)?.type as CardType | undefined;
+    const cardSubtype = (dragged?.card as CardState)?.subtype as CardSubtype | undefined;
 
     // 🟢 FARDEAUX : Récupération dynamique spécifique au joueur
     const isFP = _playerId === G?.fpPlayerId;
@@ -108,7 +109,7 @@ export const PlayerArea: React.FC<PlayerAreaProps> = ({
             !isOpponent &&
             activeTargetId === 'fellowshipArea' &&
             dragged?.orientation === 'portrait' &&
-            canDropInFellowship(cardSubtype);
+            canDropInFellowship(cardType);
 
         const isCombatLocked = Boolean(
             G?.actionWindow?.isOpen && G?.activeSkirmishId
@@ -193,7 +194,7 @@ export const PlayerArea: React.FC<PlayerAreaProps> = ({
             !isOpponent &&
             activeTargetId === 'supportArea' &&
             dragged?.orientation === 'portrait' &&
-            canDropInSupportArea(cardSubtype);
+            canDropInSupportArea(cardType, cardSubtype);
 
         return (
             <S.SupportArea

@@ -1,5 +1,5 @@
 import React from 'react';
-import type { CardState, CardType } from '../../../../game/types';
+import type { CardState, CardType, CardSubtype } from '../../../../game/types';
 import { Card } from '../Card';
 import * as S from './styles';
 import { useDrag } from '../../../../contexts/DragContext';
@@ -43,20 +43,26 @@ export const BoardCharacterStack: React.FC<BoardCharacterStackProps> = ({
 }) => {
     const { registerTarget, activeTargetId, dragged, startDrag } = useDrag();
 
-    const draggedSubtype = (dragged?.card as CardState)?.type as
+    // 🟢 Extraction distincte du TYPE et du SUBTYPE
+    const draggedType = (dragged?.card as CardState)?.type as
         | CardType
         | undefined;
+    const draggedSubtype = (dragged?.card as CardState)?.subtype as
+        | CardSubtype
+        | undefined;
+
     const isBeingDragged = dragged?.card?.id === character.id;
 
     const canDragCharacter =
         !isOpponent || (isAssignmentPhase && character.type === 'MINION');
 
     const isMinionAssignment =
-        dragged?.origin === 'BATTLEFIELD' && draggedSubtype === 'MINION';
+        dragged?.origin === 'BATTLEFIELD' && draggedType === 'MINION';
 
+    // 🟢 canAttachToCharacter reçoit maintenant type ET subtype !
     const isTargeted =
         activeTargetId === character.id &&
-        ((!isOpponent && canAttachToCharacter(draggedSubtype)) ||
+        ((!isOpponent && canAttachToCharacter(draggedType, draggedSubtype)) ||
             isMinionAssignment);
 
     // Règle de sélection : Uniquement en phase skirmish, avec un ID, si des minions sont assignés et si la sélection est permise
@@ -106,7 +112,7 @@ export const BoardCharacterStack: React.FC<BoardCharacterStackProps> = ({
                         $isOpponent={isOpponent}
                         className="assigned-minions-group"
                     >
-                        {assignedMinions.map((minion,) => (
+                        {assignedMinions.map((minion) => (
                             <S.MinionWrapper key={minion.id}>
                                 <Card
                                     card={minion}

@@ -206,6 +206,9 @@ export const DragProvider: React.FC<{ children: React.ReactNode }> = ({
                 cardWidthPhysBase,
                 cardHeightPhysBase
             );
+           if (dragged) {
+    console.log('🔍 [DragProvider] Cible détectée:', detectedTargetId, 'Card:', dragged.card);
+}
 
             setActiveTargetId(detectedTargetId);
             activeTargetIdRef.current = detectedTargetId;

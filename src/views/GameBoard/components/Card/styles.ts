@@ -28,13 +28,13 @@ const isForSupportArea = (type?: string, subtype?: string) => {
     );
 };
 
-const isAttachedToCharacter = (type?: string, title?: string) => {
+const isAttachedToCharacter = (type?: string, title?: string, subtype?: string) => {
     if (!type) return false;
     return (
-        type === 'POSSESSION' ||
-        type === 'ARTIFACT' ||
-        type === 'CONDITION' ||
-        title === 'The One Ring' && 
+        (type === 'POSSESSION' ||
+            type === 'ARTIFACT' ||
+            type === 'CONDITION' ||
+        title === 'The One Ring') &&
         subtype !== 'SUPPORT-AREA'
     );
 };

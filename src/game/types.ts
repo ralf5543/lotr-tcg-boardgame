@@ -144,7 +144,6 @@ export interface CardState {
     culture: CardCulture;
     type: CardType;
     
-    // 🟢 subtype est désormais un tableau
     subtype?: CardSubtype;
     race?: CardRace;
     keywords?: CardKeyword[];

@@ -125,12 +125,15 @@ export const GameBoard: React.FC<GameBoardProps> = ({
             if (!targetId || !draggedCard) return;
 
             const { index, origin, card, parentId } = draggedCard;
-            const cardSubtype = card?.type as CardType | undefined;
+
+            // 🛠️ CORRECTION : Récupérer correctement le type ET le subtype !
+            const cardType = card?.type;
+            const cardSubtype = card?.subtype;
 
             if (origin === 'HAND') {
                 if (
                     targetId === 'fellowshipArea' &&
-                    canDropInFellowship(cardSubtype)
+                    canDropInFellowship(cardType)
                 ) {
                     if (typeof moves.playCard === 'function') {
                         moves.playCard(index);
@@ -140,7 +143,7 @@ export const GameBoard: React.FC<GameBoardProps> = ({
 
                 if (
                     targetId === 'supportArea' &&
-                    canDropInSupportArea(cardSubtype)
+                    canDropInSupportArea(cardType, cardSubtype) // 🛠️ CORRECTION : Passer type ET subtype
                 ) {
                     if (typeof moves.playCard === 'function') {
                         moves.playCard(index);
@@ -159,7 +162,7 @@ export const GameBoard: React.FC<GameBoardProps> = ({
                     targetId !== 'fellowshipArea' &&
                     targetId !== 'supportArea' &&
                     targetId !== 'battlefield' &&
-                    canAttachToCharacter(cardSubtype)
+                    canAttachToCharacter(cardType, cardSubtype) // 🛠️ CORRECTION
                 ) {
                     if (typeof moves.attachCard === 'function') {
                         moves.attachCard(index, targetId);
@@ -175,7 +178,7 @@ export const GameBoard: React.FC<GameBoardProps> = ({
                     targetId !== 'fellowshipArea' &&
                     targetId !== 'supportArea' &&
                     targetId !== 'battlefield' &&
-                    canAttachToCharacter(cardSubtype)
+                    canAttachToCharacter(cardType, cardSubtype) // 🛠️ CORRECTION
                 ) {
                     if (moves.transferAttachment) {
                         moves.transferAttachment({
