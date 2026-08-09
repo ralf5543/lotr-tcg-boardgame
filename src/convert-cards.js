@@ -60,6 +60,46 @@ function mapCulture(cultureStr) {
     return cultureStr ? cultureStr.toUpperCase() : undefined;
 }
 
+/**
+ * Extrait et formate la colonne "Class" sous forme de tableau de sous-types.
+ */
+function parseSubtype(classStr) {
+    if (!classStr || !classStr.trim()) {
+        return undefined;
+    }
+
+    const subtypes = new Set();
+    const parts = classStr.split(/[,;/]/);
+
+    parts.forEach(part => {
+        const cleanPart = part.trim().toUpperCase().replace(/\s+/g, '-');
+        if (cleanPart) {
+            subtypes.add(cleanPart);
+        }
+    });
+
+    const resultArray = Array.from(subtypes);
+    return resultArray.length > 0 ? resultArray : undefined;
+}
+
+/**
+ * Nettoie un bloc i18n pour une langue donnée (supprime les clés undefined)
+ */
+function buildLangBlock(title, subtitle, gameText, lore) {
+    const block = {
+        title: title || undefined,
+        subtitle: subtitle || undefined,
+        gameText: gameText || undefined,
+        loreText: cleanLoreText(lore),
+    };
+
+    Object.keys(block).forEach(key => {
+        if (block[key] === undefined) delete block[key];
+    });
+
+    return Object.keys(block).length > 0 ? block : undefined;
+}
+
 async function convert() {
     console.log('🔄 Lecture et séparation des cartes...');
 
@@ -96,13 +136,12 @@ async function convert() {
         const frenchText = data['French Text'] || '';
         const englishText = data['Text'] || '';
 
-        // Sélection de la map cible (sites ou cartes standard)
         const targetMap = isSite ? siteMap : cardMap;
 
         // Dédoublonnage : on conserve la version la plus complète
         if (targetMap.has(cardId)) {
             const existing = targetMap.get(cardId);
-            const existingTextLen = (existing.gameText || '').length;
+            const existingTextLen = (existing.i18n?.fr?.gameText || existing.i18n?.en?.gameText || '').length;
             const newTextLen = (frenchText || englishText).length;
             if (newTextLen <= existingTextLen) continue;
         }
@@ -111,7 +150,6 @@ async function convert() {
         const culture = (data['Culture'] || '').toUpperCase();
         const background = (data['Background'] || '').trim();
 
-        // Cultures Shadow standard
         const shadowCultures = [
             'ISENGARD', 'MORIA', 'SAURON', 'RINGWRAITH', 
             'DUNLAND', 'RAIDER', 'MEN', 'ORC', 'URUK-HAI'
@@ -122,9 +160,6 @@ async function convert() {
         if (shadowCultures.includes(culture)) {
             kind = 'SHADOW';
         } else if (culture === 'GOLLUM') {
-            // Cas particulier Gollum/Sméagol :
-            // Si le background commence par "Gollum_", c'est une carte Shadow.
-            // Sinon (ex: "Smeagol_"), elle appartient aux Peuples Libres (FREE_PEOPLE).
             if (background.toLowerCase().startsWith('gollum_')) {
                 kind = 'SHADOW';
             } else {
@@ -136,24 +171,19 @@ async function convert() {
             kind = 'SITE';
         }
 
-        const title = data['French Title'] || data['Title'];
-        const subtitle = data['French Subtitle'] || data['Subtitle'] || undefined;
-        const gameText = frenchText || englishText;
-        const loreText = cleanLoreText(data['French Lore'] || data['Lore']);
-
         const rawImageCode = (data['Image'] || '').trim();
         const imageUrl = rawImageCode ? `/cards_visuals/o_${rawImageCode}.jpg` : undefined;
 
+        // Objet carte : UNIQUEMENT les données techniques à la racine
         const cardObj = {
             id: cardId,
             set: parseInt(data['Set'], 10) || 0,
             rarity: data['Rarity'] || undefined,
             isUnique: data['Unique'] === '1',
             
-            title: title,
-            subtitle: subtitle,
             kind: kind,
             type: type,
+            subtype: parseSubtype(data['Class']),
             culture: mapCulture(data['Culture']),
             race: data['Race'] ? data['Race'].toUpperCase() : undefined,
             signet: parseSignet(data['Bottom Icon']),
@@ -169,44 +199,22 @@ async function convert() {
             siteArrow: data['Site Arrow'] || undefined,
 
             imageUrl: imageUrl,                          
-            gameText: gameText || undefined,
-            loreText: loreText,
 
             i18n: {
-                en: {
-                    title: data['Title'],
-                    subtitle: data['Subtitle'] || undefined,
-                    gameText: data['Text'] || undefined,
-                    loreText: cleanLoreText(data['Lore']),
-                },
-                fr: {
-                    title: data['French Title'] || undefined,
-                    subtitle: data['French Subtitle'] || undefined,
-                    gameText: data['French Text'] || undefined,
-                    loreText: cleanLoreText(data['French Lore']),
-                },
-                de: {
-                    title: data['German Title'] || undefined,
-                    subtitle: data['German Subtitle'] || undefined,
-                    gameText: data['German Text'] || undefined,
-                    loreText: cleanLoreText(data['German Lore']),
-                },
-                it: {
-                    title: data['Italian Title'] || undefined,
-                    subtitle: data['Italian Subtitle'] || undefined,
-                    gameText: data['Italian Text'] || undefined,
-                    loreText: cleanLoreText(data['Italian Lore']),
-                },
-                es: {
-                    title: data['Spanish Title'] || undefined,
-                    subtitle: data['Spanish Subtitle'] || undefined,
-                    gameText: data['Spanish Text'] || undefined,
-                    loreText: cleanLoreText(data['Spanish Lore']),
-                },
+                en: buildLangBlock(data['Title'], data['Subtitle'], data['Text'], data['Lore']),
+                fr: buildLangBlock(data['French Title'], data['French Subtitle'], data['French Text'], data['French Lore']),
+                de: buildLangBlock(data['German Title'], data['German Subtitle'], data['German Text'], data['German Lore']),
+                it: buildLangBlock(data['Italian Title'], data['Italian Subtitle'], data['Italian Text'], data['Italian Lore']),
+                es: buildLangBlock(data['Spanish Title'], data['Spanish Subtitle'], data['Spanish Text'], data['Spanish Lore']),
             }
         };
 
-        // Supprime les clés undefined
+        // Supprime les langues qui n'ont aucun contenu
+        Object.keys(cardObj.i18n).forEach(lang => {
+            if (!cardObj.i18n[lang]) delete cardObj.i18n[lang];
+        });
+
+        // Supprime les clés undefined à la racine
         Object.keys(cardObj).forEach((key) => {
             if (cardObj[key] === undefined) delete cardObj[key];
         });
@@ -225,9 +233,9 @@ async function convert() {
     fs.writeFileSync(OUTPUT_CARDS_PATH, JSON.stringify(cardsArray, null, 2), 'utf-8');
     fs.writeFileSync(OUTPUT_SITES_PATH, JSON.stringify(sitesArray, null, 2), 'utf-8');
 
-    console.log(`✅ Conversion réussie !`);
-    console.log(`🃏 Cartes de jeu (Free & Shadow) : ${cardsArray.length} -> ${OUTPUT_CARDS_PATH}`);
-    console.log(`🏞️ Cartes de Sites : ${sitesArray.length} -> ${OUTPUT_SITES_PATH}`);
+    console.log(`✅ Conversion réussie avec structure i18n unifiée !`);
+    console.log(`🃏 Cartes : ${cardsArray.length} -> ${OUTPUT_CARDS_PATH}`);
+    console.log(`🏞️ Sites : ${sitesArray.length} -> ${OUTPUT_SITES_PATH}`);
 }
 
 convert().catch(console.error);

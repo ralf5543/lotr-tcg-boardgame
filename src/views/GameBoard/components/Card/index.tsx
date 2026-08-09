@@ -12,6 +12,7 @@ import {
     getEffectiveStrength,
     getEffectiveResistance,
 } from '../../../../utils/cardStats';
+import { getCardText, SupportedLanguage } from '../../../../utils/i18n';
 
 interface CardProps {
     card: CardState;
@@ -27,6 +28,7 @@ interface CardProps {
     isOpponent?: boolean;
     burdens?: number;
     isFaceDown?: boolean;
+    currentLang?: SupportedLanguage;
 }
 
 export const Card: React.FC<CardProps> = ({
@@ -41,10 +43,14 @@ export const Card: React.FC<CardProps> = ({
     isOpponent = false,
     burdens = 0,
     isFaceDown = card?.isFaceDown ?? false,
+    currentLang = 'es',
 }) => {
     // 🟢 APPELS DE HOOKS OBLIGATOIREMENT EN HAUT DU COMPOSANT
     const { setHoveredCard } = useHoverCard();
     const { startDrag } = useDrag();
+
+    // 🟢 EXTRACTION DES TEXTES TRADUITS DE LA CARTE (avec fallback)
+    const { title, subtitle, gameText, loreText } = getCardText(card, currentLang);
 
     // 🂠 CAS DE LA CARTE FACE CACHÉE : Rendu ultra léger / Placeholder uniquement
     if (isFaceDown) {
@@ -92,20 +98,22 @@ export const Card: React.FC<CardProps> = ({
             kind: card.kind,
             type: card.type,
             race: card.race,
-            gameText: card.gameText,
-            loreText: card.loreText,
+            gameText: gameText,
+            loreText: loreText,
         };
         e.dataTransfer.setData('text/plain', JSON.stringify(dragPayload));
         e.dataTransfer.effectAllowed = 'move';
         setHoveredCard(null);
     };
 
-    const translatedType = TRANSLATIONS.type[card.type];
-    // 🟢 Vérification que card.subtype est défini avant d'accéder aux traductions
-    const translatedSubtype = card.subtype
-        ? TRANSLATIONS.subtype[card.subtype]
-        : null;
-    const translatedRace = card.race ? TRANSLATIONS.race[card.race] : null;
+    const translatedType = card.type ? TRANSLATIONS.type[card.type] || card.type : null;
+    
+    // 🟢 GESTION DE SUBTYPE SOUS FORME DE TABLEAU
+    const translatedSubtypes = card.subtype
+        ?.map((sub) => TRANSLATIONS.subtype[sub] || sub)
+        .join(', ');
+
+    const translatedRace = card.race ? TRANSLATIONS.race[card.race] || card.race : null;
 
     const translatedKeywords = card.keywords
         ?.map((kw) => TRANSLATIONS.keyword[kw]?.label || kw)
@@ -133,6 +141,9 @@ export const Card: React.FC<CardProps> = ({
 
     // 🟢 État permanent : est-ce que la carte a des blessures ?
     const hasWounds = (card.wounds || 0) > 0;
+
+    // Picto de sous-type principal pour les cartes en petite taille
+    const mainSubtype = card.subtype && card.subtype.length > 0 ? card.subtype[0] : null;
 
     return (
         <S.CardContainer
@@ -184,32 +195,32 @@ export const Card: React.FC<CardProps> = ({
                 <S.CardTitles $type={card.type}>
                     <S.CardTitle $type={card.type}>
                         {card.isUnique && '• '}
-                        {card.title}
+                        {title}
                     </S.CardTitle>
-                    {card.subtitle && size !== 'sm' && (
+                    {subtitle && size !== 'sm' && (
                         <S.CardSubtitle $type={card.type}>
-                            {card.subtitle}
+                            {subtitle}
                         </S.CardSubtitle>
                     )}
                 </S.CardTitles>
             </S.CardHeader>
             {card.imageUrl && (
                 <S.VisualContainer $type={card.type}>
-                    <S.Visual src={card.imageUrl} alt={card.title} />
+                    <S.Visual src={card.imageUrl} alt={title} />
                 </S.VisualContainer>
             )}
 
             {size !== 'sm' && (
                 <S.CardTypes $type={card.type}>
-                    <S.CardType $type={card.type}>{translatedType}</S.CardType>
-                    {card.subtype && translatedSubtype && (
-                        <S.CardType $type={card.subtype}>
+                    {translatedType && <S.CardType $type={card.type}>{translatedType}</S.CardType>}
+                    {translatedSubtypes && (
+                        <S.CardType>
                             <S.Separator>•</S.Separator>
-                            {translatedSubtype}
+                            {translatedSubtypes}
                         </S.CardType>
                     )}
                     {card.race && (
-                        <S.CardType $type={card.subtype}>
+                        <S.CardType>
                             <S.Separator>•</S.Separator>
                             {translatedRace}
                         </S.CardType>
@@ -222,13 +233,13 @@ export const Card: React.FC<CardProps> = ({
                     <S.KeywordText>{translatedKeywords}.</S.KeywordText>
                 )}
 
-                {size !== 'sm' && (
+                {size !== 'sm' && gameText && (
                     <S.GameText>
-                        <FormattedText text={card.gameText} />
+                        <FormattedText text={gameText} />
                     </S.GameText>
                 )}
-                {size === 'lg' && card.loreText && (
-                    <S.LoreText>‟{card.loreText}”</S.LoreText>
+                {size === 'lg' && loreText && (
+                    <S.LoreText>‟{loreText}”</S.LoreText>
                 )}
             </S.TextContainer>
 
@@ -269,7 +280,7 @@ export const Card: React.FC<CardProps> = ({
             {card.resistance !== undefined && !card.signet && size !== 'sm' && (
                 /* Conversion explicite en booléen strict avec Boolean() */
                 <S.CardResistance $isRingBearer={Boolean(isRingBearer)}>
-                    {card.resistance }
+                    {card.resistance}
                 </S.CardResistance>
             )}
 
@@ -310,10 +321,10 @@ export const Card: React.FC<CardProps> = ({
                 <S.CardSignet $signet={card.signet} />
             )}
 
-            {card.subtype !== undefined && size === 'sm' && (
+            {mainSubtype && size === 'sm' && (
                 <S.AttachmentSubtype
-                    src={`/interface/pictos/${card.subtype}.webp`}
-                    alt={card.subtype}
+                    src={`/interface/pictos/${mainSubtype}.webp`}
+                    alt={mainSubtype}
                     draggable={false}
                     width="16px"
                 />

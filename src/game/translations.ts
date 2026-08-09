@@ -29,25 +29,33 @@ export const TRANSLATIONS = {
 
     type: {
         ALLY: 'Allié',
-        ARTIFACT_CHARACTER: 'Artefact',
-        ARTIFACT_SUPPORT: 'Artefact',
+        ARTIFACT: 'Artefact',
         COMPANION: 'Compagnon',
-        CONDITION_CHARACTER: 'Situation',
-        CONDITION_SUPPORT: 'Situation',
+        CONDITION: 'Situation',
         EVENT: 'Événement',
         FOLLOWER: 'Suivant',
         MINION: 'Séide',
-        POSSESSION_CHARACTER: 'Possession',
-        POSSESSION_SUPPORT: 'Possession',
+        POSSESSION: 'Possession',
     } as Record<CardType, string>,
 
     subtype: {
+        // Phases (Events)
+        ARCHERY: 'Archerie',
+        ASSIGNMENT: 'Affectation',
+        FELLOWSHIP: 'Compagnie',
+        MANEUVER: 'Manœuvre',
+        REGROUP: 'Ralliement',
+        SHADOW: 'Ombre',
+        SKIRMISH: 'Combat',
+        RESPONSE: 'Réponse',
+
+        // Classes / Équipements
         ARMOR: 'Armure',
         BOX: 'Boîte',
         BRACERS: 'Brassards',
         BROOCH: 'Broche',
-        CLOAK: 'Capé',
-        EVENT: 'Évènement',
+        CLOAK: 'Cape',
+        EVENT: 'Événement',
         GAUNTLETS: 'Gantelets',
         'HAND-WEAPON': 'Arme de Mêlée',
         HELM: 'Heaume',
@@ -55,11 +63,12 @@ export const TRANSLATIONS = {
         PALANTIR: 'Palantir',
         PHIAL: 'Fiole',
         PIPE: 'Pipe',
-        'RANGED-WEAPON': 'Arme de Portée',
+        'RANGED-WEAPON': 'Arme à Distance',
         RING: 'Anneau',
         SHIELD: 'Bouclier',
         STAFF: 'Bâton',
-    } as Record<CardSubtype, string>,
+        'THE-ONE-RING': "L'Anneau Unique",
+    } as Record<string, string>,
 
     race: {
         BALROG: 'Balrog',

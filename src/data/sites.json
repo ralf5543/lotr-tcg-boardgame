@@ -4,14 +4,12 @@
     "set": 0,
     "rarity": "P",
     "isUnique": false,
-    "title": "Le Poney Fringant",
     "kind": "SITE",
     "type": "SITE",
     "twilightCost": 0,
     "siteNumber": 1,
     "siteArrow": "Left",
     "imageUrl": "/cards_visuals/o_00_001.jpg",
-    "gameText": "<keyword>Compagnie :</keyword> Ajoutez un point-fardeau pour jouer Aragorn de votre pioche.",
     "i18n": {
       "en": {
         "title": "The Prancing Pony",
@@ -40,14 +38,12 @@
     "set": 0,
     "rarity": "P",
     "isUnique": false,
-    "title": "Place du Conseil",
     "kind": "SITE",
     "type": "SITE",
     "twilightCost": 0,
     "siteNumber": 3,
     "siteArrow": "Right",
     "imageUrl": "/cards_visuals/o_00_004.jpg",
-    "gameText": "<keyword>Sanctuaire.</keyword> Quand la compagnie se déplace de la Place du Conseil, retirez <symbol>twilight2</symbol>.",
     "i18n": {
       "en": {
         "title": "Council Courtyard",
@@ -76,14 +72,12 @@
     "set": 0,
     "rarity": "P",
     "isUnique": false,
-    "title": "Tombe de Balin",
     "kind": "SITE",
     "type": "SITE",
     "twilightCost": 3,
     "siteNumber": 4,
     "siteArrow": "Right",
     "imageUrl": "/cards_visuals/o_00_006.jpg",
-    "gameText": "<keyword>Souterrain.</keyword> <keyword>Manœuvre :</keyword> Défaussez un récit en jeu ou de votre main pour guérir votre compagnon.",
     "i18n": {
       "en": {
         "title": "Balin's Tomb",
@@ -112,14 +106,12 @@
     "set": 0,
     "rarity": "P",
     "isUnique": false,
-    "title": "Clairière de Galadriel",
     "kind": "SITE",
     "type": "SITE",
     "twilightCost": 3,
     "siteNumber": 6,
     "siteArrow": "Left",
     "imageUrl": "/cards_visuals/o_00_008.jpg",
-    "gameText": "<keyword>Sanctuaire.</keyword> <keyword>Compagnie :</keyword> Affaiblissez un Elfe pour regarder la main d’un adversaire.",
     "i18n": {
       "en": {
         "title": "Galadriel's Glade",
@@ -148,14 +140,12 @@
     "set": 1,
     "rarity": "U",
     "isUnique": false,
-    "title": "Cul-de-Sac",
     "kind": "SITE",
     "type": "SITE",
     "twilightCost": 0,
     "siteNumber": 1,
     "siteArrow": "Left",
     "imageUrl": "/cards_visuals/o_01_319.jpg",
-    "gameText": "<keyword>Compagnie :</keyword> Affaiblissez un Hobbit pour jouer l’Ancien de votre pioche.",
     "i18n": {
       "en": {
         "title": "Bag End",
@@ -184,14 +174,12 @@
     "set": 1,
     "rarity": "U",
     "isUnique": false,
-    "title": "Route de l'Est",
     "kind": "SITE",
     "type": "SITE",
     "twilightCost": 0,
     "siteNumber": 1,
     "siteArrow": "Left",
     "imageUrl": "/cards_visuals/o_01_320.jpg",
-    "gameText": "Le coût crépusculaire de chaque compagnon est de +2.",
     "i18n": {
       "en": {
         "title": "East Road",
@@ -220,14 +208,12 @@
     "set": 1,
     "rarity": "U",
     "isUnique": false,
-    "title": "Champs du Père Maggotte",
     "kind": "SITE",
     "type": "SITE",
     "twilightCost": 0,
     "siteNumber": 1,
     "siteArrow": "Left",
     "imageUrl": "/cards_visuals/o_01_321.jpg",
-    "gameText": "<keyword>Compagnie :</keyword> Affaiblissez un Hobbit pour jouer Merry ou Pippin de votre pioche.",
     "i18n": {
       "en": {
         "title": "Farmer Maggot’s Fields",
@@ -256,14 +242,12 @@
     "set": 1,
     "rarity": "U",
     "isUnique": false,
-    "title": "Auberge du Dragon Vert",
     "kind": "SITE",
     "type": "SITE",
     "twilightCost": 0,
     "siteNumber": 1,
     "siteArrow": "Left",
     "imageUrl": "/cards_visuals/o_01_322.jpg",
-    "gameText": "<keyword>Compagnie :</keyword> Affaiblissez un Hobbit pour jouer Sam de votre pioche.",
     "i18n": {
       "en": {
         "title": "Green Dragon Inn",
@@ -292,14 +276,12 @@
     "set": 1,
     "rarity": "U",
     "isUnique": false,
-    "title": "Pays des Collines Vertes",
     "kind": "SITE",
     "type": "SITE",
     "twilightCost": 0,
     "siteNumber": 1,
     "siteArrow": "Left",
     "imageUrl": "/cards_visuals/o_01_323.jpg",
-    "gameText": "Le coût crépusculaire de chaque Hobbit est de -1.",
     "i18n": {
       "en": {
         "title": "Green Hill Country",
@@ -328,14 +310,12 @@
     "set": 1,
     "rarity": "U",
     "isUnique": false,
-    "title": "Le Poney Fringant",
     "kind": "SITE",
     "type": "SITE",
     "twilightCost": 0,
     "siteNumber": 1,
     "siteArrow": "Left",
     "imageUrl": "/cards_visuals/o_01_324.jpg",
-    "gameText": "<keyword>Compagnie :</keyword> Ajoutez un point-fardeau pour jouer Aragorn de votre pioche.",
     "i18n": {
       "en": {
         "title": "The Prancing Pony",
@@ -364,14 +344,12 @@
     "set": 1,
     "rarity": "U",
     "isUnique": false,
-    "title": "Belvédère de la Comté",
     "kind": "SITE",
     "type": "SITE",
     "twilightCost": 0,
     "siteNumber": 1,
     "siteArrow": "Left",
     "imageUrl": "/cards_visuals/o_01_325.jpg",
-    "gameText": "<keyword>Compagnie :</keyword> Désignez Gandalf pour jouer la Charrette de Gandalf de votre pioche.",
     "i18n": {
       "en": {
         "title": "Shire Lookout Point",
@@ -400,14 +378,12 @@
     "set": 1,
     "rarity": "C",
     "isUnique": false,
-    "title": "Quartier de l'Ouest",
     "kind": "SITE",
     "type": "SITE",
     "twilightCost": 0,
     "siteNumber": 1,
     "siteArrow": "Left",
     "imageUrl": "/cards_visuals/o_01_326.jpg",
-    "gameText": "<keyword>Compagnie :</keyword> Affaiblissez un Hobbit pour jouer un compagnon ou un allié ; le coût crépusculaire de ce personnage est de -1.",
     "i18n": {
       "en": {
         "title": "Westfarthing",
@@ -436,14 +412,12 @@
     "set": 1,
     "rarity": "U",
     "isUnique": false,
-    "title": "Porte de Bree",
     "kind": "SITE",
     "type": "SITE",
     "twilightCost": 2,
     "siteNumber": 2,
     "siteArrow": "Left",
     "imageUrl": "/cards_visuals/o_01_327.jpg",
-    "gameText": "Tant que vous pouvez désigner un rôdeur, la limite de déplacement est de +1 pour ce tour.",
     "i18n": {
       "en": {
         "title": "Bree Gate",
@@ -472,14 +446,12 @@
     "set": 1,
     "rarity": "U",
     "isUnique": false,
-    "title": "Rues de Bree",
     "kind": "SITE",
     "type": "SITE",
     "twilightCost": 1,
     "siteNumber": 2,
     "siteArrow": "Left",
     "imageUrl": "/cards_visuals/o_01_328.jpg",
-    "gameText": "La pénalité d’errance pour chaque Nazgûl que vous jouez dans les Rues de Bree est de -2.",
     "i18n": {
       "en": {
         "title": "Bree Streets",
@@ -508,14 +480,12 @@
     "set": 1,
     "rarity": "U",
     "isUnique": false,
-    "title": "Forêt des Environs de Bree",
     "kind": "SITE",
     "type": "SITE",
     "twilightCost": 1,
     "siteNumber": 2,
     "siteArrow": "Left",
     "imageUrl": "/cards_visuals/o_01_329.jpg",
-    "gameText": "<keyword>Forêt.</keyword> Des événements de dissimulation ne peuvent pas être joués.",
     "i18n": {
       "en": {
         "title": "Breeland Forest",
@@ -544,14 +514,12 @@
     "set": 1,
     "rarity": "U",
     "isUnique": false,
-    "title": "Bac de Châteaubouc",
     "kind": "SITE",
     "type": "SITE",
     "twilightCost": 1,
     "siteNumber": 2,
     "siteArrow": "Left",
     "imageUrl": "/cards_visuals/o_01_330.jpg",
-    "gameText": "<keyword>Rivière.</keyword> Tant que la compagnie ne compte que des Hobbits, il n’y a pas de phase d’affectation ni de combats au Bac de Châteaubouc.",
     "i18n": {
       "en": {
         "title": "Bucklebury Ferry",
@@ -580,14 +548,12 @@
     "set": 1,
     "rarity": "C",
     "isUnique": false,
-    "title": "Landes d'Etten",
     "kind": "SITE",
     "type": "SITE",
     "twilightCost": 2,
     "siteNumber": 2,
     "siteArrow": "Left",
     "imageUrl": "/cards_visuals/o_01_331.jpg",
-    "gameText": "<keyword>Plaines.</keyword> <keyword>Combat :</keyword> Affaiblissez un compagnon ou un séide pour donner à ce personnage +2 en force.",
     "i18n": {
       "en": {
         "title": "Ettenmoors",
@@ -616,14 +582,12 @@
     "set": 1,
     "rarity": "U",
     "isUnique": false,
-    "title": "Marais de l'Eau-aux-Cousins",
     "kind": "SITE",
     "type": "SITE",
     "twilightCost": 1,
     "siteNumber": 2,
     "siteArrow": "Left",
     "imageUrl": "/cards_visuals/o_01_332.jpg",
-    "gameText": "<keyword>Marais.</keyword> Chaque fois qu’un Hobbit se déplace vers les Marais de l’Eau-aux-Cousins, ce Hobbit doit être affaibli.",
     "i18n": {
       "en": {
         "title": "Midgewater Marshes",
@@ -652,14 +616,12 @@
     "set": 1,
     "rarity": "U",
     "isUnique": false,
-    "title": "Landes de l'Eau-aux-Cousins",
     "kind": "SITE",
     "type": "SITE",
     "twilightCost": 1,
     "siteNumber": 2,
     "siteArrow": "Left",
     "imageUrl": "/cards_visuals/o_01_333.jpg",
-    "gameText": "<keyword>Plaines.</keyword> Chaque fois qu’un séide est joué, le joueur des Peuples Libres défausse une carte de sa main.",
     "i18n": {
       "en": {
         "title": "Midgewater Moors",
@@ -688,14 +650,12 @@
     "set": 1,
     "rarity": "U",
     "isUnique": false,
-    "title": "Forêt du Bosquet des Trolls",
     "kind": "SITE",
     "type": "SITE",
     "twilightCost": 1,
     "siteNumber": 2,
     "siteArrow": "Left",
     "imageUrl": "/cards_visuals/o_01_334.jpg",
-    "gameText": "<keyword>Forêt.</keyword> Chaque fois que vous jouez une possession ou un artefact sur votre compagnon, piochez une carte.",
     "i18n": {
       "en": {
         "title": "Trollshaw Forest",
@@ -724,14 +684,12 @@
     "set": 1,
     "rarity": "U",
     "isUnique": false,
-    "title": "Collines Venteuses",
     "kind": "SITE",
     "type": "SITE",
     "twilightCost": 3,
     "siteNumber": 2,
     "siteArrow": "Left",
     "imageUrl": "/cards_visuals/o_01_335.jpg",
-    "gameText": "Le coût crépusculaire de chaque Nazgûl est de -1.",
     "i18n": {
       "en": {
         "title": "Weatherhills",
@@ -760,14 +718,12 @@
     "set": 1,
     "rarity": "U",
     "isUnique": false,
-    "title": "Mont Venteux",
     "kind": "SITE",
     "type": "SITE",
     "twilightCost": 3,
     "siteNumber": 2,
     "siteArrow": "Left",
     "imageUrl": "/cards_visuals/o_01_336.jpg",
-    "gameText": "Chaque Nazgûl au Mont Venteux est <keyword>acharné.</keyword>",
     "i18n": {
       "en": {
         "title": "Weathertop",
@@ -796,14 +752,12 @@
     "set": 1,
     "rarity": "C",
     "isUnique": false,
-    "title": "Place du Conseil",
     "kind": "SITE",
     "type": "SITE",
     "twilightCost": 0,
     "siteNumber": 3,
     "siteArrow": "Right",
     "imageUrl": "/cards_visuals/o_01_337.jpg",
-    "gameText": "<keyword>Sanctuaire.</keyword> Quand la compagnie se déplace de la Place du Conseil, retirez <symbol>twilight2</symbol>.",
     "i18n": {
       "en": {
         "title": "Council Courtyard",
@@ -832,14 +786,12 @@
     "set": 1,
     "rarity": "U",
     "isUnique": false,
-    "title": "Gué de Bruinen",
     "kind": "SITE",
     "type": "SITE",
     "twilightCost": 0,
     "siteNumber": 3,
     "siteArrow": "Right",
     "imageUrl": "/cards_visuals/o_01_338.jpg",
-    "gameText": "<keyword>Rivière.</keyword> <keyword>Sanctuaire.</keyword> À chaque tour, le coût crépusculaire du premier Nazgûl joué au Gué de Bruinen est de -5.",
     "i18n": {
       "en": {
         "title": "Ford of Bruinen",
@@ -868,14 +820,12 @@
     "set": 1,
     "rarity": "U",
     "isUnique": false,
-    "title": "Chambre de Frodon",
     "kind": "SITE",
     "type": "SITE",
     "twilightCost": 0,
     "siteNumber": 3,
     "siteArrow": "Right",
     "imageUrl": "/cards_visuals/o_01_339.jpg",
-    "gameText": "<keyword>Sanctuaire.</keyword> <keyword>Compagnie :</keyword> Jouez un Hobbit pour piocher une carte.",
     "i18n": {
       "en": {
         "title": "Frodo's Bedroom",
@@ -904,14 +854,12 @@
     "set": 1,
     "rarity": "U",
     "isUnique": false,
-    "title": "Terrasse de Fondcombe",
     "kind": "SITE",
     "type": "SITE",
     "twilightCost": 0,
     "siteNumber": 3,
     "siteArrow": "Right",
     "imageUrl": "/cards_visuals/o_01_340.jpg",
-    "gameText": "<keyword>Sanctuaire.</keyword> <keyword>Compagnie :</keyword> Jouez un Homme pour piocher une carte.",
     "i18n": {
       "en": {
         "title": "Rivendell Terrace",
@@ -940,14 +888,12 @@
     "set": 1,
     "rarity": "U",
     "isUnique": false,
-    "title": "Vallée de Fondcombe",
     "kind": "SITE",
     "type": "SITE",
     "twilightCost": 0,
     "siteNumber": 3,
     "siteArrow": "Right",
     "imageUrl": "/cards_visuals/o_01_341.jpg",
-    "gameText": "<keyword>Sanctuaire.</keyword> <keyword>Compagnie :</keyword> Jouez un Elfe pour piocher une carte.",
     "i18n": {
       "en": {
         "title": "Rivendell Valley",
@@ -976,14 +922,12 @@
     "set": 1,
     "rarity": "U",
     "isUnique": false,
-    "title": "Chute de Fondcombe",
     "kind": "SITE",
     "type": "SITE",
     "twilightCost": 0,
     "siteNumber": 3,
     "siteArrow": "Right",
     "imageUrl": "/cards_visuals/o_01_342.jpg",
-    "gameText": "<keyword>Forêt.</keyword> <keyword>Sanctuaire.</keyword> Si vous pouvez désigner un rôdeur à la Chute de Fondcombe, la limite de déplacement est de +1 pour ce tour.",
     "i18n": {
       "en": {
         "title": "Rivendell Waterfall",
@@ -1012,14 +956,12 @@
     "set": 1,
     "rarity": "U",
     "isUnique": false,
-    "title": "Tombe de Balin",
     "kind": "SITE",
     "type": "SITE",
     "twilightCost": 3,
     "siteNumber": 4,
     "siteArrow": "Right",
     "imageUrl": "/cards_visuals/o_01_343.jpg",
-    "gameText": "<keyword>Souterrain.</keyword> <keyword>Manœuvre :</keyword> Défaussez un récit en jeu ou de votre main pour guérir votre compagnon.",
     "i18n": {
       "en": {
         "title": "Balin's Tomb",
@@ -1048,14 +990,12 @@
     "set": 1,
     "rarity": "U",
     "isUnique": false,
-    "title": "Chambre de Cavenain",
     "kind": "SITE",
     "type": "SITE",
     "twilightCost": 2,
     "siteNumber": 4,
     "siteArrow": "Right",
     "imageUrl": "/cards_visuals/o_01_344.jpg",
-    "gameText": "<keyword>Souterrain.</keyword> Quand la compagnie se déplace jusqu’à la Chambre de Cavenain, Gimli ou 2 autres compagnons doivent être affaiblis.",
     "i18n": {
       "en": {
         "title": "Dwarrowdelf Chamber",
@@ -1084,14 +1024,12 @@
     "set": 1,
     "rarity": "U",
     "isUnique": false,
-    "title": "Mine de Mithril",
     "kind": "SITE",
     "type": "SITE",
     "twilightCost": 3,
     "siteNumber": 4,
     "siteArrow": "Right",
     "imageUrl": "/cards_visuals/o_01_345.jpg",
-    "gameText": "<keyword>Souterrain.</keyword> Ombre : Retirez <symbol>twilight1</symbol> pour jouer une arme de l’Ombre de votre pile de défausse.",
     "i18n": {
       "en": {
         "title": "Mithril Mine",
@@ -1120,14 +1058,12 @@
     "set": 1,
     "rarity": "C",
     "isUnique": false,
-    "title": "Lac de la Moria",
     "kind": "SITE",
     "type": "SITE",
     "twilightCost": 3,
     "siteNumber": 4,
     "siteArrow": "Right",
     "imageUrl": "/cards_visuals/o_01_346.jpg",
-    "gameText": "<keyword>Marais.</keyword> Quand la compagnie se déplace jusqu’au Lac de la Moria, Frodon ou 2 autres compagnons doivent être affaiblis.",
     "i18n": {
       "en": {
         "title": "Moria Lake",
@@ -1156,14 +1092,12 @@
     "set": 1,
     "rarity": "U",
     "isUnique": false,
-    "title": "Escalier de la Moria",
     "kind": "SITE",
     "type": "SITE",
     "twilightCost": 2,
     "siteNumber": 4,
     "siteArrow": "Right",
     "imageUrl": "/cards_visuals/o_01_347.jpg",
-    "gameText": "<keyword>Souterrain.</keyword> Chaque compagnon et séide portant une arme de mêlée inflige des <keyword>dégâts +1.</keyword>",
     "i18n": {
       "en": {
         "title": "Moria Stairway",
@@ -1192,14 +1126,12 @@
     "set": 1,
     "rarity": "U",
     "isUnique": false,
-    "title": "Col de Caradhras",
     "kind": "SITE",
     "type": "SITE",
     "twilightCost": 2,
     "siteNumber": 4,
     "siteArrow": "Right",
     "imageUrl": "/cards_visuals/o_01_348.jpg",
-    "gameText": "<keyword>Montagne.</keyword> Ombre : Désignez un séide <symbol>isengard</symbol> pour jouer une carte de climat de votre pioche (limité à une par tour).",
     "i18n": {
       "en": {
         "title": "Pass of Caradhras",
@@ -1228,14 +1160,12 @@
     "set": 1,
     "rarity": "C",
     "isUnique": false,
-    "title": "Le Pont de Khazad-dûm",
     "kind": "SITE",
     "type": "SITE",
     "twilightCost": 6,
     "siteNumber": 5,
     "siteArrow": "Left",
     "imageUrl": "/cards_visuals/o_01_349.jpg",
-    "gameText": "<keyword>Souterrain.</keyword> Ombre : Jouez le Balrog de votre pioche ou de votre main ; le coût crépusculaire du Balrog est de -6.",
     "i18n": {
       "en": {
         "title": "The Bridge of Khazad-dûm",
@@ -1264,14 +1194,12 @@
     "set": 1,
     "rarity": "U",
     "isUnique": false,
-    "title": "Vallée des Rigoles Sombres",
     "kind": "SITE",
     "type": "SITE",
     "twilightCost": 3,
     "siteNumber": 6,
     "siteArrow": "Left",
     "imageUrl": "/cards_visuals/o_01_350.jpg",
-    "gameText": "<keyword>Sanctuaire.</keyword> Le coût crépusculaire du premier Orque <symbol>moria</symbol> joué à chaque phase de l’Ombre est de -2.",
     "i18n": {
       "en": {
         "title": "Dimrill Dale",
@@ -1300,14 +1228,12 @@
     "set": 1,
     "rarity": "C",
     "isUnique": false,
-    "title": "Clairière de Galadriel",
     "kind": "SITE",
     "type": "SITE",
     "twilightCost": 3,
     "siteNumber": 6,
     "siteArrow": "Left",
     "imageUrl": "/cards_visuals/o_01_351.jpg",
-    "gameText": "<keyword>Sanctuaire.</keyword> <keyword>Compagnie :</keyword> Affaiblissez un Elfe pour regarder la main d’un adversaire.",
     "i18n": {
       "en": {
         "title": "Galadriel's Glade",
@@ -1336,14 +1262,12 @@
     "set": 1,
     "rarity": "U",
     "isUnique": false,
-    "title": "Les Bois de Lothlórien",
     "kind": "SITE",
     "type": "SITE",
     "twilightCost": 3,
     "siteNumber": 6,
     "siteArrow": "Left",
     "imageUrl": "/cards_visuals/o_01_352.jpg",
-    "gameText": "<keyword>Forêt.</keyword> <keyword>Sanctuaire.</keyword> Chaque allié dont la demeure est un site 6 a +3 en force.",
     "i18n": {
       "en": {
         "title": "Lothlórien Woods",
@@ -1372,14 +1296,12 @@
     "set": 1,
     "rarity": "U",
     "isUnique": false,
-    "title": "Confluent de l'Anduin",
     "kind": "SITE",
     "type": "SITE",
     "twilightCost": 6,
     "siteNumber": 7,
     "siteArrow": "Right",
     "imageUrl": "/cards_visuals/o_01_353.jpg",
-    "gameText": "<keyword>Rivière.</keyword> Quand la compagnie se déplace jusqu’au Confluent de l’Anduin, défaussez tous les alliés.",
     "i18n": {
       "en": {
         "title": "Anduin Confluence",
@@ -1408,14 +1330,12 @@
     "set": 1,
     "rarity": "C",
     "isUnique": false,
-    "title": "Contrée Sauvage de l'Anduin",
     "kind": "SITE",
     "type": "SITE",
     "twilightCost": 6,
     "siteNumber": 7,
     "siteArrow": "Right",
     "imageUrl": "/cards_visuals/o_01_354.jpg",
-    "gameText": "<keyword>Forêt.</keyword> <keyword>Rivière.</keyword> Tant que la compagnie est dans la Contrée Sauvage de l’Anduin, passez la phase d’archerie.",
     "i18n": {
       "en": {
         "title": "Anduin Wilderland",
@@ -1444,14 +1364,12 @@
     "set": 1,
     "rarity": "U",
     "isUnique": false,
-    "title": "Berges du Cours d'Argent",
     "kind": "SITE",
     "type": "SITE",
     "twilightCost": 6,
     "siteNumber": 7,
     "siteArrow": "Right",
     "imageUrl": "/cards_visuals/o_01_355.jpg",
-    "gameText": "<keyword>Rivière.</keyword> Quand la compagnie se déplace jusqu’aux Berges du Cours d’Argent sans un rôdeur, chaque compagnon doit être affaibli.",
     "i18n": {
       "en": {
         "title": "Silverlode Banks",
@@ -1480,14 +1398,12 @@
     "set": 1,
     "rarity": "C",
     "isUnique": false,
-    "title": "Berges de l'Anduin",
     "kind": "SITE",
     "type": "SITE",
     "twilightCost": 6,
     "siteNumber": 8,
     "siteArrow": "Right",
     "imageUrl": "/cards_visuals/o_01_356.jpg",
-    "gameText": "<keyword>Rivière.</keyword> Pour chaque compagnon dans la compagnie au delà de 4, ajoutez 2 au total d’archerie des séides.",
     "i18n": {
       "en": {
         "title": "Anduin Banks",
@@ -1516,14 +1432,12 @@
     "set": 1,
     "rarity": "U",
     "isUnique": false,
-    "title": "Terres Brunes",
     "kind": "SITE",
     "type": "SITE",
     "twilightCost": 6,
     "siteNumber": 8,
     "siteArrow": "Right",
     "imageUrl": "/cards_visuals/o_01_357.jpg",
-    "gameText": "<keyword>Rivière.</keyword> Pour chaque séide archer dans les Terres Brunes, le total d’archerie des séides est de +1 (limité à +4).",
     "i18n": {
       "en": {
         "title": "Brown Lands",
@@ -1552,14 +1466,12 @@
     "set": 1,
     "rarity": "U",
     "isUnique": false,
-    "title": "Piliers des Rois",
     "kind": "SITE",
     "type": "SITE",
     "twilightCost": 6,
     "siteNumber": 8,
     "siteArrow": "Right",
     "imageUrl": "/cards_visuals/o_01_358.jpg",
-    "gameText": "<keyword>Rivière.</keyword> <keyword>Compagnie :</keyword> Défaussez une carte <symbol>gondor</symbol> de votre main pour guérir un compagnon <symbol>gondor</symbol>.",
     "i18n": {
       "en": {
         "title": "Pillars of the Kings",
@@ -1588,14 +1500,12 @@
     "set": 1,
     "rarity": "U",
     "isUnique": false,
-    "title": "Rivages de Nen Hithoel",
     "kind": "SITE",
     "type": "SITE",
     "twilightCost": 9,
     "siteNumber": 8,
     "siteArrow": "Right",
     "imageUrl": "/cards_visuals/o_01_359.jpg",
-    "gameText": "<keyword>Rivière.</keyword> Ombre : Désignez 5 séides Orques pour empêcher la compagnie de se déplacer à nouveau ce tour-ci.",
     "i18n": {
       "en": {
         "title": "Shores of Nen Hithoel",
@@ -1624,14 +1534,12 @@
     "set": 1,
     "rarity": "U",
     "isUnique": false,
-    "title": "Emyn Muil",
     "kind": "SITE",
     "type": "SITE",
     "twilightCost": 9,
     "siteNumber": 9,
     "siteArrow": "Left",
     "imageUrl": "/cards_visuals/o_01_360.jpg",
-    "gameText": "<keyword>Manœuvre :</keyword> Affaiblissez un séide pour rendre ce séide <keyword>acharné</keyword> jusqu’à la phase de ralliement.",
     "i18n": {
       "en": {
         "title": "Emyn Muil",
@@ -1660,14 +1568,12 @@
     "set": 1,
     "rarity": "U",
     "isUnique": false,
-    "title": "Pentes d'Amon Hen",
     "kind": "SITE",
     "type": "SITE",
     "twilightCost": 9,
     "siteNumber": 9,
     "siteArrow": "Left",
     "imageUrl": "/cards_visuals/o_01_361.jpg",
-    "gameText": "Le coût crépusculaire de chaque séide <symbol>isengard</symbol> est de -1.",
     "i18n": {
       "en": {
         "title": "Slopes of Amon Hen",
@@ -1696,14 +1602,12 @@
     "set": 1,
     "rarity": "C",
     "isUnique": false,
-    "title": "Sommet d'Amon Hen",
     "kind": "SITE",
     "type": "SITE",
     "twilightCost": 8,
     "siteNumber": 9,
     "siteArrow": "Left",
     "imageUrl": "/cards_visuals/o_01_362.jpg",
-    "gameText": "Quand la compagnie se déplace jusqu’au Sommet, chaque joueur de l’Ombre peut piocher une carte pour chaque point-fardeau.",
     "i18n": {
       "en": {
         "title": "Summit of Amon Hen",
@@ -1732,14 +1636,12 @@
     "set": 1,
     "rarity": "U",
     "isUnique": false,
-    "title": "Tol Brandir",
     "kind": "SITE",
     "type": "SITE",
     "twilightCost": 9,
     "siteNumber": 9,
     "siteArrow": "Left",
     "imageUrl": "/cards_visuals/o_01_363.jpg",
-    "gameText": "<keyword>Rivière.</keyword> Ombre : Jouez jusqu’à 3 traqueurs de votre pile de défausse ; terminez votre phase de l’<keyword>Ombre.</keyword>",
     "i18n": {
       "en": {
         "title": "Tol Brandir",
@@ -1768,14 +1670,12 @@
     "set": 2,
     "rarity": "U",
     "isUnique": false,
-    "title": "Champ Festif de Hobbitebourg",
     "kind": "SITE",
     "type": "SITE",
     "twilightCost": 0,
     "siteNumber": 1,
     "siteArrow": "Left",
     "imageUrl": "/cards_visuals/o_02_115.jpg",
-    "gameText": "<keyword>Compagnie :</keyword> Affaiblissez un Hobbit pour jouer Bilbon de votre pioche.",
     "i18n": {
       "en": {
         "title": "Hobbiton Party Field",
@@ -1804,14 +1704,12 @@
     "set": 2,
     "rarity": "U",
     "isUnique": false,
-    "title": "Bois de Hobbitebourg",
     "kind": "SITE",
     "type": "SITE",
     "twilightCost": 0,
     "siteNumber": 1,
     "siteArrow": "Left",
     "imageUrl": "/cards_visuals/o_02_116.jpg",
-    "gameText": "<keyword>Forêt.</keyword><keyword>Compagnie :</keyword> Affaiblissez un Hobbit pour jouer votre site 2 (en remplaçant le site d’un adversaire si nécessaire).",
     "i18n": {
       "en": {
         "title": "Hobbiton Woods",
@@ -1840,14 +1738,12 @@
     "set": 2,
     "rarity": "C",
     "isUnique": false,
-    "title": "Place Publique",
     "kind": "SITE",
     "type": "SITE",
     "twilightCost": 0,
     "siteNumber": 1,
     "siteArrow": "Left",
     "imageUrl": "/cards_visuals/o_02_117.jpg",
-    "gameText": "<keyword>Compagnie :</keyword> Jouez un allié <symbol>shire</symbol> pour piocher une carte.",
     "i18n": {
       "en": {
         "title": "Town Center",
@@ -1876,14 +1772,12 @@
     "set": 2,
     "rarity": "U",
     "isUnique": false,
-    "title": "Grand Gouffre",
     "kind": "SITE",
     "type": "SITE",
     "twilightCost": 4,
     "siteNumber": 4,
     "siteArrow": "Right",
     "imageUrl": "/cards_visuals/o_02_118.jpg",
-    "gameText": "<keyword>Souterrain.</keyword>Le coût crépusculaire du premier archer <symbol>moria</symbol> joué à chaque tour est de -2.",
     "i18n": {
       "en": {
         "title": "Great Chasm",
@@ -1912,14 +1806,12 @@
     "set": 2,
     "rarity": "C",
     "isUnique": false,
-    "title": "Houssaye",
     "kind": "SITE",
     "type": "SITE",
     "twilightCost": 3,
     "siteNumber": 4,
     "siteArrow": "Right",
     "imageUrl": "/cards_visuals/o_02_119.jpg",
-    "gameText": "<keyword>Plaines.</keyword> Les Ourouk-Haï ne sont pas errants.",
     "i18n": {
       "en": {
         "title": "Hollin",
@@ -1948,14 +1840,12 @@
     "set": 2,
     "rarity": "U",
     "isUnique": false,
-    "title": "Vallée du Cours d'Argent",
     "kind": "SITE",
     "type": "SITE",
     "twilightCost": 3,
     "siteNumber": 6,
     "siteArrow": "Left",
     "imageUrl": "/cards_visuals/o_02_120.jpg",
-    "gameText": "<keyword>Rivière.</keyword><keyword>Sanctuaire.</keyword>Lorsque la Compagnie se déplace vers la Vallée du Cours d’Argent, chaque compagnon Hobbit peut guérir.",
     "i18n": {
       "en": {
         "title": "Valley of the Silverlode",
@@ -1984,14 +1874,12 @@
     "set": 3,
     "rarity": "U",
     "isUnique": false,
-    "title": "Caras Galadhon",
     "kind": "SITE",
     "type": "SITE",
     "twilightCost": 3,
     "siteNumber": 6,
     "siteArrow": "Left",
     "imageUrl": "/cards_visuals/o_03_115.jpg",
-    "gameText": "<keyword>Forêt.</keyword><keyword>Sanctuaire.</keyword>Tant que la compagnie se trouve à Caras Galadhon, un maximum d’un séide peut être affecté à chaque combat.",
     "i18n": {
       "en": {
         "title": "Caras Galadhon",
@@ -2020,14 +1908,12 @@
     "set": 3,
     "rarity": "U",
     "isUnique": false,
-    "title": "Les Collines d'Eregion",
     "kind": "SITE",
     "type": "SITE",
     "twilightCost": 2,
     "siteNumber": 4,
     "siteArrow": "Right",
     "imageUrl": "/cards_visuals/o_03_116.jpg",
-    "gameText": "Quand la compagnie se déplace jusqu’aux Collines d’Eregion, ajoutez un point-fardeau.",
     "i18n": {
       "en": {
         "title": "Eregion Hills",
@@ -2056,14 +1942,12 @@
     "set": 3,
     "rarity": "C",
     "isUnique": false,
-    "title": "Les Portes d'Argonath",
     "kind": "SITE",
     "type": "SITE",
     "twilightCost": 8,
     "siteNumber": 8,
     "siteArrow": "Right",
     "imageUrl": "/cards_visuals/o_03_117.jpg",
-    "gameText": "<keyword>Rivière.</keyword>Les événements de manœuvre ne peuvent pas être joués.",
     "i18n": {
       "en": {
         "title": "Gates of Argonath",
@@ -2092,14 +1976,12 @@
     "set": 3,
     "rarity": "C",
     "isUnique": false,
-    "title": "Le Grand Fleuve",
     "kind": "SITE",
     "type": "SITE",
     "twilightCost": 6,
     "siteNumber": 7,
     "siteArrow": "Right",
     "imageUrl": "/cards_visuals/o_03_118.jpg",
-    "gameText": "<keyword>Rivière.</keyword>Tant que la compagnie se trouve au Grand Fleuve, il est interdit de jouer des cartes des pioches ou des piles de défausse.",
     "i18n": {
       "en": {
         "title": "The Great River",
@@ -2128,14 +2010,12 @@
     "set": 3,
     "rarity": "U",
     "isUnique": false,
-    "title": "La Maison d'Elrond",
     "kind": "SITE",
     "type": "SITE",
     "twilightCost": 0,
     "siteNumber": 3,
     "siteArrow": "Right",
     "imageUrl": "/cards_visuals/o_03_119.jpg",
-    "gameText": "<keyword>Sanctuaire.</keyword>Quand la compagnie arrive à la Maison, le joueur des Peuples Libres peut désigner 2 Elfes pour retirer un point-fardeau.",
     "i18n": {
       "en": {
         "title": "House of Elrond",
@@ -2164,14 +2044,12 @@
     "set": 3,
     "rarity": "U",
     "isUnique": false,
-    "title": "Les Hamadas de l'Emyn Muil",
     "kind": "SITE",
     "type": "SITE",
     "twilightCost": 9,
     "siteNumber": 9,
     "siteArrow": "Left",
     "imageUrl": "/cards_visuals/o_03_120.jpg",
-    "gameText": "<keyword>Manœuvre :</keyword> Désignez quatre compagnons et affaiblissez votre Orque <symbol>isengard</symbol> pour obliger le joueur des Peuples Libres à blesser un compagnon.",
     "i18n": {
       "en": {
         "title": "Wastes of Emyn Muil",
@@ -2200,14 +2078,12 @@
     "set": 4,
     "rarity": "U",
     "isUnique": false,
-    "title": "Le Mur Est de Rohan",
     "kind": "SITE",
     "type": "SITE",
     "twilightCost": 0,
     "siteNumber": 1,
     "siteArrow": "Left",
     "imageUrl": "/cards_visuals/o_04_323.jpg",
-    "gameText": "Lorsque la compagnie quitte Le Mur Est de Rohan, ajoutez <symbol>twilight2</symbol>.",
     "i18n": {
       "en": {
         "title": "East Wall of Rohan",
@@ -2236,14 +2112,12 @@
     "set": 4,
     "rarity": "U",
     "isUnique": false,
-    "title": "Les Dunes de l'Estemnet",
     "kind": "SITE",
     "type": "SITE",
     "twilightCost": 0,
     "siteNumber": 1,
     "siteArrow": "Left",
     "imageUrl": "/cards_visuals/o_04_324.jpg",
-    "gameText": "Chaque fois que vous jouez un compagnon ici, vous devez défausser 2 cartes de votre main.",
     "i18n": {
       "en": {
         "title": "Eastemnet Downs",
@@ -2272,14 +2146,12 @@
     "set": 4,
     "rarity": "U",
     "isUnique": false,
-    "title": "Ravins de l'Estemnet",
     "kind": "SITE",
     "type": "SITE",
     "twilightCost": 0,
     "siteNumber": 1,
     "siteArrow": "Left",
     "imageUrl": "/cards_visuals/o_04_325.jpg",
-    "gameText": "<keyword>Compagnie :</keyword> Affaiblissez 2 compagnons dissociés pour jouer Legolas de votre pioche.",
     "i18n": {
       "en": {
         "title": "Eastemnet Gullies",
@@ -2308,14 +2180,12 @@
     "set": 4,
     "rarity": "U",
     "isUnique": false,
-    "title": "Le Pays des Chevaux",
     "kind": "SITE",
     "type": "SITE",
     "twilightCost": 0,
     "siteNumber": 1,
     "siteArrow": "Left",
     "imageUrl": "/cards_visuals/o_04_326.jpg",
-    "gameText": "<keyword>Plaine.</keyword> Tant que vous pouvez désigner une monture <symbol>rohan</symbol> au Pays des Chevaux, la limite de déplacement est de +1 pour ce tour.",
     "i18n": {
       "en": {
         "title": "Horse-country",
@@ -2344,14 +2214,12 @@
     "set": 4,
     "rarity": "U",
     "isUnique": false,
-    "title": "Les Plaines de Rohan",
     "kind": "SITE",
     "type": "SITE",
     "twilightCost": 0,
     "siteNumber": 1,
     "siteArrow": "Left",
     "imageUrl": "/cards_visuals/o_04_327.jpg",
-    "gameText": "<keyword>Plaine.</keyword> <keyword>Compagnie :</keyword> Affaiblissez 2 compagnons dissociés pour jouer Gimli de votre pioche.",
     "i18n": {
       "en": {
         "title": "Plains of Rohan",
@@ -2380,14 +2248,12 @@
     "set": 4,
     "rarity": "U",
     "isUnique": false,
-    "title": "La Marche",
     "kind": "SITE",
     "type": "SITE",
     "twilightCost": 0,
     "siteNumber": 1,
     "siteArrow": "Left",
     "imageUrl": "/cards_visuals/o_04_328.jpg",
-    "gameText": "<keyword>Plaine.</keyword> <keyword>Compagnie :</keyword> Affaiblissez 2 compagnons dissociés pour jouer Aragorn de votre pioche.",
     "i18n": {
       "en": {
         "title": "The Riddermark",
@@ -2416,14 +2282,12 @@
     "set": 4,
     "rarity": "U",
     "isUnique": false,
-    "title": "Emyn Muil Occidental",
     "kind": "SITE",
     "type": "SITE",
     "twilightCost": 0,
     "siteNumber": 1,
     "siteArrow": "Left",
     "imageUrl": "/cards_visuals/o_04_329.jpg",
-    "gameText": "Lorsque la compagnie quitte Emyn Muil Occidental, vous devez affaiblir chaque compagnon <keyword>Associé à l’Anneau.</keyword>",
     "i18n": {
       "en": {
         "title": "Western Emyn Muil",
@@ -2452,14 +2316,12 @@
     "set": 4,
     "rarity": "U",
     "isUnique": false,
-    "title": "Derunant",
     "kind": "SITE",
     "type": "SITE",
     "twilightCost": 2,
     "siteNumber": 2,
     "siteArrow": "Left",
     "imageUrl": "/cards_visuals/o_04_330.jpg",
-    "gameText": "<keyword>Forêt.</keyword> Tant que vous pouvez désigner un Hobbit à Derunant, la limite de déplacement est de +1 pour ce tour.",
     "i18n": {
       "en": {
         "title": "Derndingle",
@@ -2488,14 +2350,12 @@
     "set": 4,
     "rarity": "U",
     "isUnique": false,
-    "title": "Estfolde",
     "kind": "SITE",
     "type": "SITE",
     "twilightCost": 2,
     "siteNumber": 2,
     "siteArrow": "Left",
     "imageUrl": "/cards_visuals/o_04_331.jpg",
-    "gameText": "<keyword>Plaine.</keyword> Ombre : Désignez 3 traqueurs <symbol>isengard</symbol> pour empêcher la compagnie de bouger à nouveau durant ce tour.",
     "i18n": {
       "en": {
         "title": "Eastfold",
@@ -2524,14 +2384,12 @@
     "set": 4,
     "rarity": "U",
     "isUnique": false,
-    "title": "La Forêt de Fangorn",
     "kind": "SITE",
     "type": "SITE",
     "twilightCost": 2,
     "siteNumber": 2,
     "siteArrow": "Left",
     "imageUrl": "/cards_visuals/o_04_332.jpg",
-    "gameText": "<keyword>Forêt.</keyword> <keyword>Compagnie :</keyword> Jouez Sylvebarbe de votre pioche.",
     "i18n": {
       "en": {
         "title": "Fangorn Forest",
@@ -2560,14 +2418,12 @@
     "set": 4,
     "rarity": "U",
     "isUnique": false,
-    "title": "Campement des Plaines de Rohan",
     "kind": "SITE",
     "type": "SITE",
     "twilightCost": 1,
     "siteNumber": 2,
     "siteArrow": "Left",
     "imageUrl": "/cards_visuals/o_04_333.jpg",
-    "gameText": "<keyword>Plaine.</keyword> Au début de la phase de compagnie, vous pouvez guérir jusqu’à 3 blessures sur des compagnons.",
     "i18n": {
       "en": {
         "title": "Plains of Rohan Camp",
@@ -2596,15 +2452,12 @@
     "set": 4,
     "rarity": "U",
     "isUnique": false,
-    "title": "Village des Rohirrim",
     "kind": "SITE",
     "type": "SITE",
     "twilightCost": 3,
     "siteNumber": 2,
     "siteArrow": "Left",
     "imageUrl": "/cards_visuals/o_04_334.jpg",
-    "gameText": "Aucun Homme <symbol>dunland</symbol> ne peut être blessé pendant la phase d’archerie.",
-    "loreText": "2",
     "i18n": {
       "en": {
         "title": "Rohirrim Village",
@@ -2634,14 +2487,12 @@
     "set": 4,
     "rarity": "U",
     "isUnique": false,
-    "title": "Campement Ourouk",
     "kind": "SITE",
     "type": "SITE",
     "twilightCost": 1,
     "siteNumber": 2,
     "siteArrow": "Left",
     "imageUrl": "/cards_visuals/o_04_335.jpg",
-    "gameText": "<keyword>Plaine.</keyword> <keyword>Champ de bataille.</keyword> Chaque fois qu’un Ourouk-Haï est joué, il doit être affaibli.",
     "i18n": {
       "en": {
         "title": "Uruk Camp",
@@ -2670,14 +2521,12 @@
     "set": 4,
     "rarity": "U",
     "isUnique": false,
-    "title": "Plateau de Rohan",
     "kind": "SITE",
     "type": "SITE",
     "twilightCost": 3,
     "siteNumber": 2,
     "siteArrow": "Left",
     "imageUrl": "/cards_visuals/o_04_336.jpg",
-    "gameText": "<keyword>Plaine.</keyword> Chaque fois que le joueur des Peuples Libres affecte un compagnon ou un allié au combat, ajoutez <symbol>twilight1</symbol>.",
     "i18n": {
       "en": {
         "title": "Wold of Rohan",
@@ -2706,14 +2555,12 @@
     "set": 4,
     "rarity": "U",
     "isUnique": false,
-    "title": "Le Château d'Or",
     "kind": "SITE",
     "type": "SITE",
     "twilightCost": 0,
     "siteNumber": 3,
     "siteArrow": "Right",
     "imageUrl": "/cards_visuals/o_04_337.jpg",
-    "gameText": "<keyword>Sanctuaire.</keyword> Lorsque la compagnie se déplace vers le Château d’Or, défaussez toutes les armes des Peuples Libres.",
     "i18n": {
       "en": {
         "title": "Barrows of Edoras",
@@ -2742,14 +2589,12 @@
     "set": 4,
     "rarity": "U",
     "isUnique": false,
-    "title": "Les Tombeaux d'Edoras",
     "kind": "SITE",
     "type": "SITE",
     "twilightCost": 1,
     "siteNumber": 3,
     "siteArrow": "Right",
     "imageUrl": "/cards_visuals/o_04_338.jpg",
-    "gameText": "<keyword>Sanctuaire.</keyword> <keyword>Compagnie :</keyword> Placez votre main sous votre pioche et piochez 4 cartes.",
     "i18n": {
       "en": {
         "title": "Golden Hall",
@@ -2778,14 +2623,12 @@
     "set": 4,
     "rarity": "U",
     "isUnique": false,
-    "title": "Écuries",
     "kind": "SITE",
     "type": "SITE",
     "twilightCost": 0,
     "siteNumber": 3,
     "siteArrow": "Right",
     "imageUrl": "/cards_visuals/o_04_339.jpg",
-    "gameText": "<keyword>Sanctuaire.</keyword> <keyword>Compagnie :</keyword> Affaiblissez un Homme <symbol>rohan</symbol> pour jouer une monture <symbol>rohan</symbol> de votre pioche (limite d’une fois par tour).",
     "i18n": {
       "en": {
         "title": "Stables",
@@ -2814,14 +2657,12 @@
     "set": 4,
     "rarity": "U",
     "isUnique": false,
-    "title": "Les Rues d'Edoras",
     "kind": "SITE",
     "type": "SITE",
     "twilightCost": 0,
     "siteNumber": 3,
     "siteArrow": "Right",
     "imageUrl": "/cards_visuals/o_04_340.jpg",
-    "gameText": "<keyword>Sanctuaire.</keyword> Aucun allié <symbol>rohan</symbol> ne peut participer à la phase d’archerie ou au combat dans les Rues d’Edoras.",
     "i18n": {
       "en": {
         "title": "Streets of Edoras",
@@ -2850,14 +2691,12 @@
     "set": 4,
     "rarity": "U",
     "isUnique": false,
-    "title": "La Salle du Trône",
     "kind": "SITE",
     "type": "SITE",
     "twilightCost": 1,
     "siteNumber": 3,
     "siteArrow": "Right",
     "imageUrl": "/cards_visuals/o_04_341.jpg",
-    "gameText": "<keyword>Sanctuaire.</keyword> <keyword>Compagnie :</keyword> Jouez Théoden de votre pioche.",
     "i18n": {
       "en": {
         "title": "Throne Room",
@@ -2886,14 +2725,12 @@
     "set": 4,
     "rarity": "U",
     "isUnique": false,
-    "title": "Les Plaines de l'Ouestemnet",
     "kind": "SITE",
     "type": "SITE",
     "twilightCost": 1,
     "siteNumber": 3,
     "siteArrow": "Right",
     "imageUrl": "/cards_visuals/o_04_342.jpg",
-    "gameText": "<keyword>Plaine.</keyword> <keyword>Sanctuaire.</keyword> Aucun Homme <symbol>dunland</symbol> ne peut être blessé pendant la phase d’archerie.",
     "i18n": {
       "en": {
         "title": "Westemnet Plains",
@@ -2922,14 +2759,12 @@
     "set": 4,
     "rarity": "U",
     "isUnique": false,
-    "title": "Ered Nimraïs",
     "kind": "SITE",
     "type": "SITE",
     "twilightCost": 2,
     "siteNumber": 4,
     "siteArrow": "Right",
     "imageUrl": "/cards_visuals/o_04_343.jpg",
-    "gameText": "<keyword>Montagne.</keyword>Le coût crépusculaire de chaque compagnon et allié est de +3 lorsque joué à Ered Nimraïs.",
     "i18n": {
       "en": {
         "title": "Ered Nimrais",
@@ -2958,14 +2793,12 @@
     "set": 4,
     "rarity": "U",
     "isUnique": false,
-    "title": "Les Collines de l'Ouestemnet",
     "kind": "SITE",
     "type": "SITE",
     "twilightCost": 3,
     "siteNumber": 4,
     "siteArrow": "Right",
     "imageUrl": "/cards_visuals/o_04_344.jpg",
-    "gameText": "<keyword>Plaine.</keyword> Quand la compagnie se déplace vers les Collines de l’Ouest-emnet, guérissez chaque compagnon et allié détenant une monture.",
     "i18n": {
       "en": {
         "title": "Westemnet Hills",
@@ -2994,14 +2827,12 @@
     "set": 4,
     "rarity": "U",
     "isUnique": false,
-    "title": "Les Montagnes Blanches",
     "kind": "SITE",
     "type": "SITE",
     "twilightCost": 3,
     "siteNumber": 4,
     "siteArrow": "Right",
     "imageUrl": "/cards_visuals/o_04_345.jpg",
-    "gameText": "<keyword>Montagne.</keyword> Quand la compagnie se déplace vers les Montagnes Blanches, Théoden ou 2 compagnons doivent être affaiblis",
     "i18n": {
       "en": {
         "title": "White Mountains",
@@ -3030,15 +2861,12 @@
     "set": 4,
     "rarity": "U",
     "isUnique": false,
-    "title": "Les Rochers Blancs",
     "kind": "SITE",
     "type": "SITE",
     "twilightCost": 3,
     "siteNumber": 4,
     "siteArrow": "Right",
     "imageUrl": "/cards_visuals/o_04_346.jpg",
-    "gameText": "<keyword>Champ de bataille.</keyword> La Puissance de l’Ombre de ce site est de +1 pour chaque compagnon détenant une monture.",
-    "loreText": "4",
     "i18n": {
       "en": {
         "title": "White Rocks",
@@ -3068,14 +2896,12 @@
     "set": 4,
     "rarity": "U",
     "isUnique": false,
-    "title": "Les Profondeurs de Helm",
     "kind": "SITE",
     "type": "SITE",
     "twilightCost": 6,
     "siteNumber": 5,
     "siteArrow": "Left",
     "imageUrl": "/cards_visuals/o_04_347.jpg",
-    "gameText": "<keyword>Plaine.</keyword> <keyword>Champ de bataille.</keyword> À chaque tour, le coût crépusculaire du premier Ourouk-Haï joué aux Profondeurs de Helm est de -3.",
     "i18n": {
       "en": {
         "title": "Deep of Helm",
@@ -3104,15 +2930,12 @@
     "set": 4,
     "rarity": "U",
     "isUnique": false,
-    "title": "Mur du Gouffre",
     "kind": "SITE",
     "type": "SITE",
     "twilightCost": 7,
     "siteNumber": 5,
     "siteArrow": "Left",
     "imageUrl": "/cards_visuals/o_04_348.jpg",
-    "gameText": "<keyword>Champ de bataille.</keyword> Ombre : Jouez Saroumane de votre pioche.",
-    "loreText": "5",
     "i18n": {
       "en": {
         "title": "Deeping Wall",
@@ -3142,15 +2965,12 @@
     "set": 4,
     "rarity": "U",
     "isUnique": false,
-    "title": "La Porte de Helm",
     "kind": "SITE",
     "type": "SITE",
     "twilightCost": 6,
     "siteNumber": 5,
     "siteArrow": "Left",
     "imageUrl": "/cards_visuals/o_04_349.jpg",
-    "gameText": "<keyword>Champ de bataille.</keyword> Chaque compagnon et chaque séide possédant une arme de mêlée a +2 en force.",
-    "loreText": "5",
     "i18n": {
       "en": {
         "title": "Helm's Gate",
@@ -3180,15 +3000,12 @@
     "set": 4,
     "rarity": "U",
     "isUnique": false,
-    "title": "La Cour de Fort le Cor",
     "kind": "SITE",
     "type": "SITE",
     "twilightCost": 8,
     "siteNumber": 5,
     "siteArrow": "Left",
     "imageUrl": "/cards_visuals/o_04_350.jpg",
-    "gameText": "<keyword>Champ de bataille.</keyword> Tant que vous pouvez désigner Aragorn, la Puissance de l’Ombre de la Cour de Fort le Cor est de -2.",
-    "loreText": "5",
     "i18n": {
       "en": {
         "title": "Hornburg Courtyard",
@@ -3218,15 +3035,12 @@
     "set": 4,
     "rarity": "U",
     "isUnique": false,
-    "title": "Le Parapet de Fort le Cor",
     "kind": "SITE",
     "type": "SITE",
     "twilightCost": 8,
     "siteNumber": 5,
     "siteArrow": "Left",
     "imageUrl": "/cards_visuals/o_04_351.jpg",
-    "gameText": "<keyword>Champ de bataille.</keyword> Le total d’archerie de la compagnie est de +1. Le total d’archerie des séides est de -1.",
-    "loreText": "5",
     "i18n": {
       "en": {
         "title": "Hornburg Parapet",
@@ -3256,14 +3070,12 @@
     "set": 4,
     "rarity": "U",
     "isUnique": false,
-    "title": "Les Cavernes d'Aglarond",
     "kind": "SITE",
     "type": "SITE",
     "twilightCost": 3,
     "siteNumber": 6,
     "siteArrow": "Left",
     "imageUrl": "/cards_visuals/o_04_352.jpg",
-    "gameText": "<keyword>Souterrain.</keyword> <keyword>Sanctuaire.</keyword> <keyword>Manœuvre :</keyword> Retirez <symbol>twilight2</symbol> pour rendre l’un de vos Ourouk-Haï <keyword>acharné</keyword> jusqu’à la phase de ralliement.",
     "i18n": {
       "en": {
         "title": "Caves of Aglarond",
@@ -3292,14 +3104,12 @@
     "set": 4,
     "rarity": "U",
     "isUnique": false,
-    "title": "La Grande Salle",
     "kind": "SITE",
     "type": "SITE",
     "twilightCost": 3,
     "siteNumber": 6,
     "siteArrow": "Left",
     "imageUrl": "/cards_visuals/o_04_353.jpg",
-    "gameText": "<keyword>Sanctuaire.</keyword> <keyword>Champ de bataille.</keyword> Chaque allié <symbol>rohan</symbol> peut participer à la phase d’archerie et au combat à la Grande Salle.",
     "i18n": {
       "en": {
         "title": "Great Hall",
@@ -3328,14 +3138,12 @@
     "set": 4,
     "rarity": "U",
     "isUnique": false,
-    "title": "Entrée de Caverne",
     "kind": "SITE",
     "type": "SITE",
     "twilightCost": 3,
     "siteNumber": 6,
     "siteArrow": "Left",
     "imageUrl": "/cards_visuals/o_04_354.jpg",
-    "gameText": "<keyword>Sanctuaire.</keyword> <keyword>Compagnie :</keyword> Jouez une possession pour piocher une carte.",
     "i18n": {
       "en": {
         "title": "Hornburg Armory",
@@ -3364,14 +3172,12 @@
     "set": 4,
     "rarity": "U",
     "isUnique": false,
-    "title": "L'Armurerie de Fort le Cor",
     "kind": "SITE",
     "type": "SITE",
     "twilightCost": 7,
     "siteNumber": 7,
     "siteArrow": "Right",
     "imageUrl": "/cards_visuals/o_04_355.jpg",
-    "gameText": "<keyword>Souterrain.</keyword> Les événements de combats ne peuvent pas être joués, et les capacités spéciales de combat ne peuvent pas être utilisées.",
     "i18n": {
       "en": {
         "title": "Cavern Entrance",
@@ -3400,15 +3206,12 @@
     "set": 4,
     "rarity": "U",
     "isUnique": false,
-    "title": "La Chaussée de Fort le Cor",
     "kind": "SITE",
     "type": "SITE",
     "twilightCost": 6,
     "siteNumber": 7,
     "siteArrow": "Right",
     "imageUrl": "/cards_visuals/o_04_356.jpg",
-    "gameText": "<keyword>Champ de bataille.</keyword> Pour chaque compagnon dissocié au delà de 3, le total d’archerie des séides est de +2.",
-    "loreText": "7",
     "i18n": {
       "en": {
         "title": "Hornburg Causeway",
@@ -3438,14 +3241,12 @@
     "set": 4,
     "rarity": "U",
     "isUnique": false,
-    "title": "La Salle du Roi",
     "kind": "SITE",
     "type": "SITE",
     "twilightCost": 6,
     "siteNumber": 7,
     "siteArrow": "Right",
     "imageUrl": "/cards_visuals/o_04_357.jpg",
-    "gameText": "Lorsque la compagnie se déplace vers la Salle du Roi sans un compagnon <symbol>rohan</symbol>, chaque compagnon dissocié doit s’affaiblir.",
     "i18n": {
       "en": {
         "title": "King's Room",
@@ -3474,14 +3275,12 @@
     "set": 4,
     "rarity": "U",
     "isUnique": false,
-    "title": "Le Cercle d'Isengard",
     "kind": "SITE",
     "type": "SITE",
     "twilightCost": 7,
     "siteNumber": 8,
     "siteArrow": "Right",
     "imageUrl": "/cards_visuals/o_04_358.jpg",
-    "gameText": "Ombre : Jouez un séide <symbol>dunland</symbol> pour piochez une carte.",
     "i18n": {
       "en": {
         "title": "Ring of Isengard",
@@ -3510,15 +3309,12 @@
     "set": 4,
     "rarity": "U",
     "isUnique": false,
-    "title": "La Vallée du Magicien",
     "kind": "SITE",
     "type": "SITE",
     "twilightCost": 6,
     "siteNumber": 8,
     "siteArrow": "Right",
     "imageUrl": "/cards_visuals/o_04_359.jpg",
-    "gameText": "Au début de la première phase de l’Ombre, s’il y a moins de · dans la réserve crépusculaire, ajoutez <symbol>twilight4</symbol> (limite d’une fois par tour).",
-    "loreText": "8",
     "i18n": {
       "en": {
         "title": "Wizard's Vale",
@@ -3548,15 +3344,12 @@
     "set": 4,
     "rarity": "U",
     "isUnique": false,
-    "title": "La Forteresse d'Orthanc",
     "kind": "SITE",
     "type": "SITE",
     "twilightCost": 9,
     "siteNumber": 9,
     "siteArrow": "Left",
     "imageUrl": "/cards_visuals/o_04_360.jpg",
-    "gameText": "<keyword>Champ de bataille.</keyword> La Puissance de l’Ombre de la Forteresse d’Orthanc est de +2 pour chaque compagnon au delà de 4.",
-    "loreText": "9",
     "i18n": {
       "en": {
         "title": "Fortress of Orthanc",
@@ -3586,15 +3379,12 @@
     "set": 4,
     "rarity": "U",
     "isUnique": false,
-    "title": "Le Balcon d'Orthanc",
     "kind": "SITE",
     "type": "SITE",
     "twilightCost": 8,
     "siteNumber": 9,
     "siteArrow": "Left",
     "imageUrl": "/cards_visuals/o_04_361.jpg",
-    "gameText": "<keyword>Champ de bataille.</keyword> Ombre : Jouez Saroumane de votre pile de défausse; son coût crépusculaire est de -2.",
-    "loreText": "9",
     "i18n": {
       "en": {
         "title": "Orthanc Balcony",
@@ -3624,14 +3414,12 @@
     "set": 4,
     "rarity": "U",
     "isUnique": false,
-    "title": "La Bibliothèque d'Orthanc",
     "kind": "SITE",
     "type": "SITE",
     "twilightCost": 9,
     "siteNumber": 9,
     "siteArrow": "Left",
     "imageUrl": "/cards_visuals/o_04_362.jpg",
-    "gameText": "Quand la Compagnie arrive à la Bibliothèque, chaque joueur de l’Ombre peut piocher une carte par compagnon au-delà de 4.",
     "i18n": {
       "en": {
         "title": "Orthanc Library",
@@ -3660,14 +3448,12 @@
     "set": 4,
     "rarity": "U",
     "isUnique": false,
-    "title": "La Chambre du Palantír",
     "kind": "SITE",
     "type": "SITE",
     "twilightCost": 9,
     "siteNumber": 9,
     "siteArrow": "Left",
     "imageUrl": "/cards_visuals/o_04_363.jpg",
-    "gameText": "<keyword>Ombre :</keyword> Retirez 2 points-fardeau pour jouer un séide de votre pile de défausse.",
     "i18n": {
       "en": {
         "title": "Palantír Chamber",
@@ -3696,14 +3482,12 @@
     "set": 5,
     "rarity": "U",
     "isUnique": false,
-    "title": "Le Mur du Fort Le Cor",
     "kind": "SITE",
     "type": "SITE",
     "twilightCost": 6,
     "siteNumber": 7,
     "siteArrow": "Left",
     "imageUrl": "/cards_visuals/o_05_118.jpg",
-    "gameText": "<keyword>Ralliement :</keyword> Désignez votre séide et retirez <symbol>twilight9</symbol> pour forcer la compagnie à se déplacer à nouveau ce tour-ci (si la limite de déplacement le permet).",
     "i18n": {
       "en": {
         "title": "Hornburg Wall",
@@ -3732,14 +3516,12 @@
     "set": 5,
     "rarity": "U",
     "isUnique": false,
-    "title": "Nan Curunir",
     "kind": "SITE",
     "type": "SITE",
     "twilightCost": 8,
     "siteNumber": 8,
     "siteArrow": "Right",
     "imageUrl": "/cards_visuals/o_05_119.jpg",
-    "gameText": "<keyword>Plaines.</keyword> <keyword>Réponse :</keyword> Si votre séide détenant une monture est sur le point d’être blessé, retirez <symbol>twilight2</symbol> pour empêcher la blessure.",
     "i18n": {
       "en": {
         "title": "Nan Curunír",
@@ -3768,14 +3550,12 @@
     "set": 5,
     "rarity": "U",
     "isUnique": false,
-    "title": "Les Cavernes de l'Isengard",
     "kind": "SITE",
     "type": "SITE",
     "twilightCost": 9,
     "siteNumber": 9,
     "siteArrow": "Left",
     "imageUrl": "/cards_visuals/o_05_120.jpg",
-    "gameText": "<keyword>Souterrain.</keyword> Le joueur des Peuples Libres ne peut gagner que si le Porteur survit jusqu’à la reconstitution des mains de l’Ombre.",
     "i18n": {
       "en": {
         "title": "Caverns of Isengard",
@@ -3804,14 +3584,12 @@
     "set": 6,
     "rarity": "U",
     "isUnique": false,
-    "title": "Les Rochers d'Emyn Muil",
     "kind": "SITE",
     "type": "SITE",
     "twilightCost": 0,
     "siteNumber": 1,
     "siteArrow": "Left",
     "imageUrl": "/cards_visuals/o_06_115.jpg",
-    "gameText": "<keyword>Compagnie :</keyword> Jouez un compagnon possédant le signet Frodon pour retirer un point-fardeau.",
     "i18n": {
       "en": {
         "title": "Rocks of Emyn Muil",
@@ -3840,14 +3618,12 @@
     "set": 6,
     "rarity": "U",
     "isUnique": false,
-    "title": "L'Ouestfolde",
     "kind": "SITE",
     "type": "SITE",
     "twilightCost": 0,
     "siteNumber": 1,
     "siteArrow": "Left",
     "imageUrl": "/cards_visuals/o_06_116.jpg",
-    "gameText": "<keyword>Compagnie :</keyword> Affaiblissez Aragorn deux fois pour jouer un compagnon possédant le signet Aragorn de votre pioche.",
     "i18n": {
       "en": {
         "title": "Westfold",
@@ -3876,14 +3652,12 @@
     "set": 6,
     "rarity": "U",
     "isUnique": false,
-    "title": "Meduseld",
     "kind": "SITE",
     "type": "SITE",
     "twilightCost": 0,
     "siteNumber": 3,
     "siteArrow": "Left",
     "imageUrl": "/cards_visuals/o_06_117.jpg",
-    "gameText": "<keyword>Sanctuaire.</keyword> <keyword>Compagnie :</keyword> Affaiblissez 3 compagnons possédant le signet Gandalf pour jouer un compagnon dissocié de votre cimetière.",
     "i18n": {
       "en": {
         "title": "Meduseld",
@@ -3912,14 +3686,12 @@
     "set": 6,
     "rarity": "U",
     "isUnique": false,
-    "title": "Le Vestibule du Fort le Cor",
     "kind": "SITE",
     "type": "SITE",
     "twilightCost": 3,
     "siteNumber": 6,
     "siteArrow": "Right",
     "imageUrl": "/cards_visuals/o_06_118.jpg",
-    "gameText": "Sanctuaire. Compagnie : Désignez 3 compagnons possédant le signet Théoden et défaussez votre main pour piocher 4 cartes.",
     "i18n": {
       "en": {
         "title": "Hornburg Hall",
@@ -3948,14 +3720,12 @@
     "set": 6,
     "rarity": "U",
     "isUnique": false,
-    "title": "La Vallée de Saroumane",
     "kind": "SITE",
     "type": "SITE",
     "twilightCost": 8,
     "siteNumber": 8,
     "siteArrow": "Right",
     "imageUrl": "/cards_visuals/o_06_119.jpg",
-    "gameText": "Quand la compagnie se déplace jusqu’à ce site, défaussez tous les alliés.",
     "i18n": {
       "en": {
         "title": "Valley of Saruman",
@@ -3984,14 +3754,12 @@
     "set": 6,
     "rarity": "U",
     "isUnique": false,
-    "title": "Le Laboratoire de Saroumane",
     "kind": "SITE",
     "type": "SITE",
     "twilightCost": 9,
     "siteNumber": 9,
     "siteArrow": "Left",
     "imageUrl": "/cards_visuals/o_06_120.jpg",
-    "gameText": "<keyword>Réponse :</keyword> Si votre séide est sur le point d’être blessé, défaussez 2 cartes de votre main pour prévenir la blessure.",
     "i18n": {
       "en": {
         "title": "Saruman’s Laboratory",
@@ -4020,14 +3788,12 @@
     "set": 7,
     "rarity": "U",
     "isUnique": false,
-    "title": "Dunharrow Plateau",
     "kind": "SITE",
     "type": "SITE",
     "twilightCost": 0,
     "siteNumber": 1,
     "siteArrow": "Left",
     "imageUrl": "/cards_visuals/o_07_329.jpg",
-    "gameText": "<keyword>Fellowship:</keyword> Spot a Dwarf to play a <symbol>dwarven</symbol> condition from your draw deck (limit once per turn).",
     "i18n": {
       "en": {
         "title": "Dunharrow Plateau",
@@ -4056,14 +3822,12 @@
     "set": 7,
     "rarity": "U",
     "isUnique": false,
-    "title": "Edoras Hall",
     "kind": "SITE",
     "type": "SITE",
     "twilightCost": 0,
     "siteNumber": 1,
     "siteArrow": "Left",
     "imageUrl": "/cards_visuals/o_07_330.jpg",
-    "gameText": "The twilight cost of each <symbol>rohan</symbol> possession is –1.",
     "i18n": {
       "en": {
         "title": "Edoras Hall",
@@ -4092,14 +3856,12 @@
     "set": 7,
     "rarity": "U",
     "isUnique": false,
-    "title": "Isengard Ruined",
     "kind": "SITE",
     "type": "SITE",
     "twilightCost": 0,
     "siteNumber": 1,
     "siteArrow": "Left",
     "imageUrl": "/cards_visuals/o_07_331.jpg",
-    "gameText": "<keyword>Fellowship:</keyword> Spot Gandalf to add <symbol>twilight2</symbol>. Each player may draw a card.",
     "i18n": {
       "en": {
         "title": "Isengard Ruined",
@@ -4128,14 +3890,12 @@
     "set": 7,
     "rarity": "U",
     "isUnique": false,
-    "title": "Rohirrim Road",
     "kind": "SITE",
     "type": "SITE",
     "twilightCost": 0,
     "siteNumber": 1,
     "siteArrow": "Left",
     "imageUrl": "/cards_visuals/o_07_332.jpg",
-    "gameText": "<keyword>Fellowship:</keyword> Exert an Elf to make the twilight cost of each condition and possession +2 until the end of the turn.",
     "i18n": {
       "en": {
         "title": "Rohirrim Road",
@@ -4164,14 +3924,12 @@
     "set": 7,
     "rarity": "U",
     "isUnique": false,
-    "title": "Sleeping Quarters",
     "kind": "SITE",
     "type": "SITE",
     "twilightCost": 0,
     "siteNumber": 1,
     "siteArrow": "Left",
     "imageUrl": "/cards_visuals/o_07_333.jpg",
-    "gameText": "When the fellowship moves from this site, the Free Peoples player may spot 3 Hobbits to remove <symbol>twilight2</symbol>.",
     "i18n": {
       "en": {
         "title": "Sleeping Quarters",
@@ -4200,14 +3958,12 @@
     "set": 7,
     "rarity": "U",
     "isUnique": false,
-    "title": "Steps of Edoras",
     "kind": "SITE",
     "type": "SITE",
     "twilightCost": 0,
     "siteNumber": 1,
     "siteArrow": "Left",
     "imageUrl": "/cards_visuals/o_07_334.jpg",
-    "gameText": "Each <symbol>gondor</symbol> companion is defender +1 until the end of the turn.",
     "i18n": {
       "en": {
         "title": "Steps of Edoras",
@@ -4236,14 +3992,12 @@
     "set": 7,
     "rarity": "U",
     "isUnique": false,
-    "title": "King's Tent",
     "kind": "SITE",
     "type": "SITE",
     "twilightCost": 1,
     "siteNumber": 2,
     "siteArrow": "Left",
     "imageUrl": "/cards_visuals/o_07_335.jpg",
-    "gameText": "<keyword>Shadow:</keyword> If the Shadow has initiative, spot your minion to make the move limit for this turn –1.",
     "i18n": {
       "en": {
         "title": "King's Tent",
@@ -4272,14 +4026,12 @@
     "set": 7,
     "rarity": "U",
     "isUnique": false,
-    "title": "Rohirrim Camp",
     "kind": "SITE",
     "type": "SITE",
     "twilightCost": 2,
     "siteNumber": 2,
     "siteArrow": "Left",
     "imageUrl": "/cards_visuals/o_07_336.jpg",
-    "gameText": "<keyword>Plains.</keyword> If the Shadow has initiative, minions are not roaming.",
     "i18n": {
       "en": {
         "title": "Rohirrim Camp",
@@ -4308,14 +4060,12 @@
     "set": 7,
     "rarity": "U",
     "isUnique": false,
-    "title": "West Road",
     "kind": "SITE",
     "type": "SITE",
     "twilightCost": 3,
     "siteNumber": 2,
     "siteArrow": "Left",
     "imageUrl": "/cards_visuals/o_07_337.jpg",
-    "gameText": "<keyword>Plains.</keyword> If the Shadow has initiative, the Shadow number of this site is +3.",
     "i18n": {
       "en": {
         "title": "West Road",
@@ -4344,14 +4094,12 @@
     "set": 7,
     "rarity": "U",
     "isUnique": false,
-    "title": "Beacon of Minas Tirith",
     "kind": "SITE",
     "type": "SITE",
     "twilightCost": 0,
     "siteNumber": 3,
     "siteArrow": "Right",
     "imageUrl": "/cards_visuals/o_07_338.jpg",
-    "gameText": "<keyword>Sanctuary.</keyword> <keyword>Fellowship:</keyword> If you cannot spot 3 threats, add a threat to heal a companion.",
     "i18n": {
       "en": {
         "title": "Beacon of Minas Tirith",
@@ -4380,14 +4128,12 @@
     "set": 7,
     "rarity": "U",
     "isUnique": false,
-    "title": "Hall of the Kings",
     "kind": "SITE",
     "type": "SITE",
     "twilightCost": 1,
     "siteNumber": 3,
     "siteArrow": "Right",
     "imageUrl": "/cards_visuals/o_07_339.jpg",
-    "gameText": "<keyword>Sanctuary.</keyword> <keyword>Fellowship:</keyword> If you cannot spot 3 threats, add a threat to draw a card.",
     "i18n": {
       "en": {
         "title": "Hall of the Kings",
@@ -4416,14 +4162,12 @@
     "set": 7,
     "rarity": "U",
     "isUnique": false,
-    "title": "Tower of Ecthelion",
     "kind": "SITE",
     "type": "SITE",
     "twilightCost": 0,
     "siteNumber": 3,
     "siteArrow": "Right",
     "imageUrl": "/cards_visuals/o_07_340.jpg",
-    "gameText": "<keyword>Sanctuary.</keyword> <keyword>Fellowship:</keyword> If you cannot spot 3 threats, add 3 threats to make the move limit for this turn +1.",
     "i18n": {
       "en": {
         "title": "Tower of Ecthelion",
@@ -4452,14 +4196,12 @@
     "set": 7,
     "rarity": "U",
     "isUnique": false,
-    "title": "Anduin Banks",
     "kind": "SITE",
     "type": "SITE",
     "twilightCost": 3,
     "siteNumber": 4,
     "siteArrow": "Right",
     "imageUrl": "/cards_visuals/o_07_341.jpg",
-    "gameText": "<keyword>River.</keyword> <keyword>Skirmish:</keyword> Spot your minion and remove a burden to make that minion strength +2.",
     "i18n": {
       "en": {
         "title": "Anduin Banks",
@@ -4488,14 +4230,12 @@
     "set": 7,
     "rarity": "U",
     "isUnique": false,
-    "title": "Osgiliath Fallen",
     "kind": "SITE",
     "type": "SITE",
     "twilightCost": 2,
     "siteNumber": 4,
     "siteArrow": "Right",
     "imageUrl": "/cards_visuals/o_07_342.jpg",
-    "gameText": "<keyword>Skirmish:</keyword> Spot your minion and remove 2 burdens to make that minion damage +1.",
     "i18n": {
       "en": {
         "title": "Osgiliath Fallen",
@@ -4524,14 +4264,12 @@
     "set": 7,
     "rarity": "U",
     "isUnique": false,
-    "title": "Pelennor Plain",
     "kind": "SITE",
     "type": "SITE",
     "twilightCost": 4,
     "siteNumber": 4,
     "siteArrow": "Right",
     "imageUrl": "/cards_visuals/o_07_343.jpg",
-    "gameText": "<keyword>Plains.</keyword> <keyword>Archery:</keyword> Spot your minion and remove 3 burdens to make the minion archery total +3.",
     "i18n": {
       "en": {
         "title": "Pelennor Plain",
@@ -4560,14 +4298,12 @@
     "set": 7,
     "rarity": "U",
     "isUnique": false,
-    "title": "City Gates",
     "kind": "SITE",
     "type": "SITE",
     "twilightCost": 6,
     "siteNumber": 5,
     "siteArrow": "Left",
     "imageUrl": "/cards_visuals/o_07_344.jpg",
-    "gameText": "When the fellowship moves to this site, add 3 threats. When the fellowship moves from this site, remove 3 threats.",
     "i18n": {
       "en": {
         "title": "City Gates",
@@ -4596,14 +4332,12 @@
     "set": 7,
     "rarity": "U",
     "isUnique": false,
-    "title": "Pelennor Flat",
     "kind": "SITE",
     "type": "SITE",
     "twilightCost": 6,
     "siteNumber": 5,
     "siteArrow": "Left",
     "imageUrl": "/cards_visuals/o_07_345.jpg",
-    "gameText": "<keyword>Plains.</keyword> At the start of the maneuver phase, the Free Peoples player must discard his or her hand or add 2 burdens.",
     "i18n": {
       "en": {
         "title": "Pelennor Flat",
@@ -4632,14 +4366,12 @@
     "set": 7,
     "rarity": "U",
     "isUnique": false,
-    "title": "Minas Tirith Fifth Circle",
     "kind": "SITE",
     "type": "SITE",
     "twilightCost": 3,
     "siteNumber": 6,
     "siteArrow": "Left",
     "imageUrl": "/cards_visuals/o_07_346.jpg",
-    "gameText": "<keyword>Sanctuary.</keyword> If the fellowship moves from this site during the regroup phase, heal Gandalf three times.",
     "i18n": {
       "en": {
         "title": "Minas Tirith Fifth Circle",
@@ -4668,14 +4400,12 @@
     "set": 7,
     "rarity": "U",
     "isUnique": false,
-    "title": "Minas Tirith First Circle",
     "kind": "SITE",
     "type": "SITE",
     "twilightCost": 3,
     "siteNumber": 6,
     "siteArrow": "Left",
     "imageUrl": "/cards_visuals/o_07_347.jpg",
-    "gameText": "<keyword>Sanctuary.</keyword> If the fellowship moves from this site during the regroup phase, wound each companion.",
     "i18n": {
       "en": {
         "title": "Minas Tirith First Circle",
@@ -4704,14 +4434,12 @@
     "set": 7,
     "rarity": "U",
     "isUnique": false,
-    "title": "Minas Tirith Fourth Circle",
     "kind": "SITE",
     "type": "SITE",
     "twilightCost": 3,
     "siteNumber": 6,
     "siteArrow": "Left",
     "imageUrl": "/cards_visuals/o_07_348.jpg",
-    "gameText": "<keyword>Sanctuary.</keyword> If the fellowship moves from this site during the regroup phase, heal each <symbol>rohan</symbol> companion.",
     "i18n": {
       "en": {
         "title": "Minas Tirith Fourth Circle",
@@ -4740,14 +4468,12 @@
     "set": 7,
     "rarity": "U",
     "isUnique": false,
-    "title": "Minas Tirith Second Circle",
     "kind": "SITE",
     "type": "SITE",
     "twilightCost": 3,
     "siteNumber": 6,
     "siteArrow": "Left",
     "imageUrl": "/cards_visuals/o_07_349.jpg",
-    "gameText": "<keyword>Sanctuary.</keyword> If the fellowship moves from this site during the regroup phase, heal each <symbol>dwarven</symbol> companion.",
     "i18n": {
       "en": {
         "title": "Minas Tirith Second Circle",
@@ -4776,14 +4502,12 @@
     "set": 7,
     "rarity": "U",
     "isUnique": false,
-    "title": "Minas Tirith Seventh Circle",
     "kind": "SITE",
     "type": "SITE",
     "twilightCost": 3,
     "siteNumber": 6,
     "siteArrow": "Left",
     "imageUrl": "/cards_visuals/o_07_350.jpg",
-    "gameText": "<keyword>Sanctuary.</keyword> If the fellowship moves from this site during the regroup phase, heal each <symbol>elven</symbol> companion.",
     "i18n": {
       "en": {
         "title": "Minas Tirith Seventh Circle",
@@ -4812,14 +4536,12 @@
     "set": 7,
     "rarity": "U",
     "isUnique": false,
-    "title": "Minas Tirith Sixth Circle",
     "kind": "SITE",
     "type": "SITE",
     "twilightCost": 3,
     "siteNumber": 6,
     "siteArrow": "Left",
     "imageUrl": "/cards_visuals/o_07_351.jpg",
-    "gameText": "<keyword>Sanctuary.</keyword> If the fellowship moves from this site during the regroup phase, heal each <symbol>gondor</symbol> companion.",
     "i18n": {
       "en": {
         "title": "Minas Tirith Sixth Circle",
@@ -4848,14 +4570,12 @@
     "set": 7,
     "rarity": "U",
     "isUnique": false,
-    "title": "Minas Tirith Third Circle",
     "kind": "SITE",
     "type": "SITE",
     "twilightCost": 3,
     "siteNumber": 6,
     "siteArrow": "Left",
     "imageUrl": "/cards_visuals/o_07_352.jpg",
-    "gameText": "<keyword>Sanctuary.</keyword> If the fellowship moves from this site during the regroup phase, heal each Hobbit companion.",
     "i18n": {
       "en": {
         "title": "Minas Tirith Third Circle",
@@ -4884,14 +4604,12 @@
     "set": 7,
     "rarity": "U",
     "isUnique": false,
-    "title": "Osgiliath Crossing",
     "kind": "SITE",
     "type": "SITE",
     "twilightCost": 6,
     "siteNumber": 7,
     "siteArrow": "Right",
     "imageUrl": "/cards_visuals/o_07_353.jpg",
-    "gameText": "<keyword>River.</keyword> <keyword>Shadow:</keyword> Exert 2 minions and spot 6 companions to draw 2 cards.",
     "i18n": {
       "en": {
         "title": "Osgiliath Crossing",
@@ -4920,14 +4638,12 @@
     "set": 7,
     "rarity": "U",
     "isUnique": false,
-    "title": "Pelennor Grassland",
     "kind": "SITE",
     "type": "SITE",
     "twilightCost": 6,
     "siteNumber": 7,
     "siteArrow": "Right",
     "imageUrl": "/cards_visuals/o_07_354.jpg",
-    "gameText": "<keyword>Plains.</keyword> <keyword>Shadow:</keyword> Exert a minion and spot 6 companions to add <symbol>twilight1</symbol>.",
     "i18n": {
       "en": {
         "title": "Pelennor Grassland",
@@ -4956,14 +4672,12 @@
     "set": 7,
     "rarity": "U",
     "isUnique": false,
-    "title": "Ruined Capitol",
     "kind": "SITE",
     "type": "SITE",
     "twilightCost": 6,
     "siteNumber": 7,
     "siteArrow": "Right",
     "imageUrl": "/cards_visuals/o_07_355.jpg",
-    "gameText": "<keyword>River.</keyword> <keyword>Shadow:</keyword> Spot your minion and 6 companions to make the move limit for this turn –1.",
     "i18n": {
       "en": {
         "title": "Ruined Capitol",
@@ -4992,14 +4706,12 @@
     "set": 7,
     "rarity": "U",
     "isUnique": false,
-    "title": "Cross Roads",
     "kind": "SITE",
     "type": "SITE",
     "twilightCost": 8,
     "siteNumber": 8,
     "siteArrow": "Right",
     "imageUrl": "/cards_visuals/o_07_356.jpg",
-    "gameText": "<keyword>Shadow:</keyword> Spot 2 <symbol>raider</symbol> Men and remove a threat to add <symbol>twilight2</symbol>.",
     "i18n": {
       "en": {
         "title": "Cross Roads",
@@ -5028,14 +4740,12 @@
     "set": 7,
     "rarity": "U",
     "isUnique": false,
-    "title": "Morgul Vale",
     "kind": "SITE",
     "type": "SITE",
     "twilightCost": 8,
     "siteNumber": 8,
     "siteArrow": "Right",
     "imageUrl": "/cards_visuals/o_07_357.jpg",
-    "gameText": "<keyword>Skirmish:</keyword> Spot your <symbol>sauron</symbol> minion and remove 2 threats to make your <symbol>sauron</symbol> minion strength +3.",
     "i18n": {
       "en": {
         "title": "Morgul Vale",
@@ -5064,14 +4774,12 @@
     "set": 7,
     "rarity": "U",
     "isUnique": false,
-    "title": "Morgulduin",
     "kind": "SITE",
     "type": "SITE",
     "twilightCost": 8,
     "siteNumber": 8,
     "siteArrow": "Right",
     "imageUrl": "/cards_visuals/o_07_358.jpg",
-    "gameText": "<keyword>Shadow:</keyword> Remove 2 threats to play a Nazgûl from your discard pile. His twilight cost is -2.",
     "i18n": {
       "en": {
         "title": "Morgulduin",
@@ -5100,14 +4808,12 @@
     "set": 7,
     "rarity": "U",
     "isUnique": false,
-    "title": "Northern Ithilien",
     "kind": "SITE",
     "type": "SITE",
     "twilightCost": 8,
     "siteNumber": 8,
     "siteArrow": "Right",
     "imageUrl": "/cards_visuals/o_07_359.jpg",
-    "gameText": "<keyword>Shadow:</keyword> Remove 2 threats and play Gollum from your discard pile to add 2 burdens.",
     "i18n": {
       "en": {
         "title": "Northern Ithilien",
@@ -5136,14 +4842,12 @@
     "set": 7,
     "rarity": "U",
     "isUnique": false,
-    "title": "Dagorlad",
     "kind": "SITE",
     "type": "SITE",
     "twilightCost": 9,
     "siteNumber": 9,
     "siteArrow": "Left",
     "imageUrl": "/cards_visuals/o_07_360.jpg",
-    "gameText": "<keyword>Plains.</keyword> When the fellowship moves to this site, add 3 threats.",
     "i18n": {
       "en": {
         "title": "Dagorlad",
@@ -5172,14 +4876,12 @@
     "set": 7,
     "rarity": "U",
     "isUnique": false,
-    "title": "Haunted Pass",
     "kind": "SITE",
     "type": "SITE",
     "twilightCost": 9,
     "siteNumber": 9,
     "siteArrow": "Left",
     "imageUrl": "/cards_visuals/o_07_361.jpg",
-    "gameText": "<keyword>Shadow:</keyword> Remove a threat and spot your minion to draw a card.",
     "i18n": {
       "en": {
         "title": "Haunted Pass",
@@ -5208,14 +4910,12 @@
     "set": 7,
     "rarity": "U",
     "isUnique": false,
-    "title": "Narchost",
     "kind": "SITE",
     "type": "SITE",
     "twilightCost": 9,
     "siteNumber": 9,
     "siteArrow": "Left",
     "imageUrl": "/cards_visuals/o_07_362.jpg",
-    "gameText": "<keyword>Shadow:</keyword> Spot 8 burdens to make the Ring-bearer wear The One Ring until the regroup phase.",
     "i18n": {
       "en": {
         "title": "Narchost",
@@ -5244,14 +4944,12 @@
     "set": 7,
     "rarity": "U",
     "isUnique": false,
-    "title": "Slag Mounds",
     "kind": "SITE",
     "type": "SITE",
     "twilightCost": 9,
     "siteNumber": 9,
     "siteArrow": "Left",
     "imageUrl": "/cards_visuals/o_07_363.jpg",
-    "gameText": "Each time a companion is killed, add a burden.",
     "i18n": {
       "en": {
         "title": "Slag Mounds",
@@ -5280,15 +4978,12 @@
     "set": 8,
     "rarity": "U",
     "isUnique": false,
-    "title": "The Dimholt",
     "kind": "SITE",
     "type": "SITE",
     "twilightCost": 1,
     "siteNumber": 3,
     "siteArrow": "Right",
     "imageUrl": "/cards_visuals/o_08_117.jpg",
-    "gameText": "<keyword>Sanctuary.</keyword> <keyword>Underground.</keyword> <keyword>Fellowship:</keyword> Add 3 threats to play an enduring companion from your draw deck.",
-    "loreText": "She should not die.... At least she should not die alone, unaided.",
     "i18n": {
       "en": {
         "title": "The Dimholt",
@@ -5321,15 +5016,12 @@
     "set": 8,
     "rarity": "U",
     "isUnique": false,
-    "title": "City of the Dead",
     "kind": "SITE",
     "type": "SITE",
     "twilightCost": 4,
     "siteNumber": 4,
     "siteArrow": "Right",
     "imageUrl": "/cards_visuals/o_08_118.jpg",
-    "gameText": "<keyword>Underground.</keyword> <keyword>Shadow:</keyword> Remove 2 burdens to play an enduring minion from your draw deck or discard pile.",
-    "loreText": "He said: “Who are you?” I still did not answer, but it hurt me horribly; and he pressed me, so I said: “A hobbit.",
     "i18n": {
       "en": {
         "title": "City of the Dead",
@@ -5362,15 +5054,12 @@
     "set": 8,
     "rarity": "U",
     "isUnique": false,
-    "title": "Crashed Gate",
     "kind": "SITE",
     "type": "SITE",
     "twilightCost": 7,
     "siteNumber": 5,
     "siteArrow": "Left",
     "imageUrl": "/cards_visuals/o_08_119.jpg",
-    "gameText": "At the start of the regroup phase, the Free Peoples player must add 3 threats or choose an opponent who may take control of a site.",
-    "loreText": "You're in the service of the Steward of Gondor now. You'll do as you're told.",
     "i18n": {
       "en": {
         "title": "Crashed Gate",
@@ -5403,15 +5092,12 @@
     "set": 8,
     "rarity": "U",
     "isUnique": false,
-    "title": "Osgiliath Channel",
     "kind": "SITE",
     "type": "SITE",
     "twilightCost": 6,
     "siteNumber": 7,
     "siteArrow": "Right",
     "imageUrl": "/cards_visuals/o_08_120.jpg",
-    "gameText": "<keyword>River.</keyword> <keyword>Regroup:</keyword> Spot your minion and 6 companions to make the Free Peoples player choose to move again this turn.",
-    "loreText": "No such anguish had Shelob ever known, or dreamed of knowing....",
     "i18n": {
       "en": {
         "title": "Osgiliath Channel",
@@ -5444,14 +5130,12 @@
     "set": 10,
     "rarity": "U",
     "isUnique": false,
-    "title": "Base of Mindolluin",
     "kind": "SITE",
     "type": "SITE",
     "twilightCost": 0,
     "siteNumber": 3,
     "siteArrow": "Right",
     "imageUrl": "/cards_visuals/o_10_117.jpg",
-    "gameText": "<keyword>Sanctuary.</keyword> <keyword>Fellowship:</keyword> If you cannot spot 2 threats, add a threat to play a fortification from your draw deck.",
     "i18n": {
       "en": {
         "title": "Base of Mindolluin",
@@ -5480,14 +5164,12 @@
     "set": 10,
     "rarity": "U",
     "isUnique": false,
-    "title": "Pelennor Prairie",
     "kind": "SITE",
     "type": "SITE",
     "twilightCost": 3,
     "siteNumber": 4,
     "siteArrow": "Right",
     "imageUrl": "/cards_visuals/o_10_118.jpg",
-    "gameText": "<keyword>Plains.</keyword> <keyword>Shadow:</keyword> Exert a minion and remove a burden to make the Free Peoples player discard one of his or her conditions.",
     "i18n": {
       "en": {
         "title": "Pelennor Prairie",
@@ -5516,14 +5198,12 @@
     "set": 10,
     "rarity": "U",
     "isUnique": false,
-    "title": "Steward's Tomb",
     "kind": "SITE",
     "type": "SITE",
     "twilightCost": 8,
     "siteNumber": 5,
     "siteArrow": "Left",
     "imageUrl": "/cards_visuals/o_10_119.jpg",
-    "gameText": "Wounds cannot be prevented or healed. Burdens cannot be removed.",
     "i18n": {
       "en": {
         "title": "Steward's Tomb",
@@ -5552,14 +5232,12 @@
     "set": 10,
     "rarity": "U",
     "isUnique": false,
-    "title": "Watchers of Cirith Ungol",
     "kind": "SITE",
     "type": "SITE",
     "twilightCost": 8,
     "siteNumber": 8,
     "siteArrow": "Right",
     "imageUrl": "/cards_visuals/o_10_120.jpg",
-    "gameText": "<keyword>Skirmish:</keyword> Spot your <symbol>wraith</symbol> Orc and remove 2 threats to make that <symbol>wraith</symbol> Orc strength +3.",
     "i18n": {
       "en": {
         "title": "Watchers of Cirith Ungol",
@@ -5588,13 +5266,11 @@
     "set": 11,
     "rarity": "U",
     "isUnique": false,
-    "title": "Anduin Banks",
     "kind": "SITE",
     "type": "SITE",
     "twilightCost": 0,
     "siteArrow": "Left",
     "imageUrl": "/cards_visuals/o_01_356.jpg",
-    "gameText": "<keyword>River.</keyword> The minion archery total is +2 for each companion in the fellowship over 4.",
     "i18n": {
       "en": {
         "title": "Anduin Banks",
@@ -5623,13 +5299,11 @@
     "set": 11,
     "rarity": "S",
     "isUnique": false,
-    "title": "Anduin Confluence",
     "kind": "SITE",
     "type": "SITE",
     "twilightCost": 1,
     "siteArrow": "Left",
     "imageUrl": "/cards_visuals/o_01_353.jpg",
-    "gameText": "<keyword>River.</keyword> When the fellowship moves to this site, discard each ally from play.",
     "i18n": {
       "en": {
         "title": "Anduin Confluence",
@@ -5658,13 +5332,11 @@
     "set": 11,
     "rarity": "S",
     "isUnique": false,
-    "title": "Barazinbar",
     "kind": "SITE",
     "type": "SITE",
     "twilightCost": 2,
     "siteArrow": "Right",
     "imageUrl": "/cards_visuals/o_11_229.jpg",
-    "gameText": "<keyword>Mountain.</keyword> At the start of your fellowship phase, you may exert a Dwarf to play a <symbol>dwarven</symbol> possession from your draw deck.",
     "i18n": {
       "en": {
         "title": "Barazinbar",
@@ -5693,13 +5365,11 @@
     "set": 11,
     "rarity": "S",
     "isUnique": false,
-    "title": "Buckland Homestead",
     "kind": "SITE",
     "type": "SITE",
     "twilightCost": 0,
     "siteArrow": "Left",
     "imageUrl": "/cards_visuals/o_11_230.jpg",
-    "gameText": "<keyword>Dwelling.</keyword> <keyword>Shadow:</keyword> Play a Nazgûl to discard a condition from play.",
     "i18n": {
       "en": {
         "title": "Buckland Homestead",
@@ -5728,13 +5398,11 @@
     "set": 11,
     "rarity": "S",
     "isUnique": false,
-    "title": "Caras Galadhon",
     "kind": "SITE",
     "type": "SITE",
     "twilightCost": 2,
     "siteArrow": "Left",
     "imageUrl": "/cards_visuals/o_03_115.jpg",
-    "gameText": "<keyword>Forest.</keyword> No more than 1 minion can be assigned to each skirmish.",
     "i18n": {
       "en": {
         "title": "Caras Galadhon",
@@ -5763,13 +5431,11 @@
     "set": 11,
     "rarity": "S",
     "isUnique": false,
-    "title": "Cavern Entrance",
     "kind": "SITE",
     "type": "SITE",
     "twilightCost": 1,
     "siteArrow": "Left",
     "imageUrl": "/cards_visuals/o_04_355.jpg",
-    "gameText": "<keyword>Underground.</keyword> Skirmish special abilities cannot be used.",
     "i18n": {
       "en": {
         "title": "Cavern Entrance",
@@ -5798,13 +5464,11 @@
     "set": 11,
     "rarity": "S",
     "isUnique": false,
-    "title": "Chamber of Mazarbul",
     "kind": "SITE",
     "type": "SITE",
     "twilightCost": 2,
     "siteArrow": "Right",
     "imageUrl": "/cards_visuals/o_11_233.jpg",
-    "gameText": "<keyword>Underground.</keyword> The Free Peoples player may transfer Free Peoples artifacts and possessions at no twilight cost.",
     "i18n": {
       "en": {
         "title": "Chamber of Mazarbul",
@@ -5833,13 +5497,11 @@
     "set": 11,
     "rarity": "S",
     "isUnique": false,
-    "title": "Crags of Emyn Muil",
     "kind": "SITE",
     "type": "SITE",
     "twilightCost": 0,
     "siteArrow": "Left",
     "imageUrl": "/cards_visuals/o_11_234.jpg",
-    "gameText": "<keyword>Mountain.</keyword> If this site is in region 2 when the fellowship moves from it during the regroup phase, wound each companion.",
     "i18n": {
       "en": {
         "title": "Crags of Emyn Muil",
@@ -5868,13 +5530,11 @@
     "set": 11,
     "rarity": "U",
     "isUnique": false,
-    "title": "Dammed Gate-stream",
     "kind": "SITE",
     "type": "SITE",
     "twilightCost": 3,
     "siteArrow": "Left",
     "imageUrl": "/cards_visuals/o_11_235.jpg",
-    "gameText": "<keyword>Marsh.</keyword> At the start of your fellowship phase, you may play a <symbol>gollum</symbol> Free Peoples card from your draw deck.",
     "i18n": {
       "en": {
         "title": "Dammed Gate-stream",
@@ -5903,13 +5563,11 @@
     "set": 11,
     "rarity": "S",
     "isUnique": false,
-    "title": "East Road",
     "kind": "SITE",
     "type": "SITE",
     "twilightCost": 0,
     "siteArrow": "Right",
     "imageUrl": "/cards_visuals/o_01_320.jpg",
-    "gameText": "<keyword>Forest.</keyword> Each companion is twilight cost +2.",
     "i18n": {
       "en": {
         "title": "East Road",
@@ -5938,13 +5596,11 @@
     "set": 11,
     "rarity": "S",
     "isUnique": false,
-    "title": "Ettenmoors",
     "kind": "SITE",
     "type": "SITE",
     "twilightCost": 1,
     "siteArrow": "Left",
     "imageUrl": "/cards_visuals/o_01_331.jpg",
-    "gameText": "<keyword>Plains.</keyword> <keyword>Skirmish:</keyword> Exert your character (except an enduring character), to make it strength +2.",
     "i18n": {
       "en": {
         "title": "Ettenmoors",
@@ -5973,13 +5629,11 @@
     "set": 11,
     "rarity": "S",
     "isUnique": false,
-    "title": "Expanding Marshland",
     "kind": "SITE",
     "type": "SITE",
     "twilightCost": 1,
     "siteArrow": "Right",
     "imageUrl": "/cards_visuals/o_11_238.jpg",
-    "gameText": "<keyword>Marsh.</keyword> <keyword>Shadow:</keyword> If the total number of minions and twilight tokens is 3 or fewer, play a minion at twilight cost –3.",
     "i18n": {
       "en": {
         "title": "Expanding Marshland",
@@ -6008,13 +5662,11 @@
     "set": 11,
     "rarity": "S",
     "isUnique": false,
-    "title": "Fangorn Glade",
     "kind": "SITE",
     "type": "SITE",
     "twilightCost": 0,
     "siteArrow": "Right",
     "imageUrl": "/cards_visuals/o_11_239.jpg",
-    "gameText": "<keyword>Forest.</keyword> When the fellowship moves to this site, add <symbol>twilight1</symbol> for each Free Peoples weapon.",
     "i18n": {
       "en": {
         "title": "Fangorn Glade",
@@ -6043,13 +5695,11 @@
     "set": 11,
     "rarity": "S",
     "isUnique": false,
-    "title": "Flats of Rohan",
     "kind": "SITE",
     "type": "SITE",
     "twilightCost": 2,
     "siteArrow": "Left",
     "imageUrl": "/cards_visuals/o_11_240.jpg",
-    "gameText": "<keyword>Plains.</keyword> Each unbound companion skirmishing more than 1 minion is strength +3.",
     "i18n": {
       "en": {
         "title": "Flats of Rohan",
@@ -6078,13 +5728,11 @@
     "set": 11,
     "rarity": "S",
     "isUnique": false,
-    "title": "Fortress of Orthanc",
     "kind": "SITE",
     "type": "SITE",
     "twilightCost": 0,
     "siteArrow": "Left",
     "imageUrl": "/cards_visuals/o_04_360.jpg",
-    "gameText": "<keyword>Battleground.</keyword> When the fellowship moves to the site, add <symbol>twilight2</symbol> for each companion over 5.",
     "i18n": {
       "en": {
         "title": "Fortress of Orthanc",
@@ -6113,13 +5761,11 @@
     "set": 11,
     "rarity": "S",
     "isUnique": false,
-    "title": "Green Dragon Inn",
     "kind": "SITE",
     "type": "SITE",
     "twilightCost": 3,
     "siteArrow": "Left",
     "imageUrl": "/cards_visuals/o_01_322.jpg",
-    "gameText": "<keyword>Dwelling.</keyword> At the start of your fellowship phase, you may exert 2 Hobbits to play a Hobbit from your draw deck.",
     "i18n": {
       "en": {
         "title": "Green Dragon Inn",
@@ -6148,13 +5794,11 @@
     "set": 11,
     "rarity": "S",
     "isUnique": false,
-    "title": "Harrowdale",
     "kind": "SITE",
     "type": "SITE",
     "twilightCost": 3,
     "siteArrow": "Right",
     "imageUrl": "/cards_visuals/o_11_243.jpg",
-    "gameText": "<keyword>Plains.</keyword> Until the regroup phase, each minion skirmishing a <symbol>rohan</symbol> companion loses fierce and cannot gain <keyword>Fierce.</keyword>",
     "i18n": {
       "en": {
         "title": "Harrowdale",
@@ -6183,13 +5827,11 @@
     "set": 11,
     "rarity": "U",
     "isUnique": false,
-    "title": "Heights of Isengard",
     "kind": "SITE",
     "type": "SITE",
     "twilightCost": 3,
     "siteArrow": "Right",
     "imageUrl": "/cards_visuals/o_11_244.jpg",
-    "gameText": "<keyword>Battleground.</keyword> Each time a <symbol>gandalf</symbol> companion wins a skirmish, the Free Peoples player may discard a condition from play.",
     "i18n": {
       "en": {
         "title": "Heights of Isengard",
@@ -6218,13 +5860,11 @@
     "set": 11,
     "rarity": "S",
     "isUnique": false,
-    "title": "Helm's Gate",
     "kind": "SITE",
     "type": "SITE",
     "twilightCost": 2,
     "siteArrow": "Right",
     "imageUrl": "/cards_visuals/o_04_349.jpg",
-    "gameText": "<keyword>Battleground.</keyword> Each character bearing a hand weapon is strength +2.",
     "i18n": {
       "en": {
         "title": "Helm's Gate",
@@ -6253,13 +5893,11 @@
     "set": 11,
     "rarity": "U",
     "isUnique": false,
-    "title": "Mere of Dead Faces",
     "kind": "SITE",
     "type": "SITE",
     "twilightCost": 2,
     "siteArrow": "Left",
     "imageUrl": "/cards_visuals/o_11_246.jpg",
-    "gameText": "<keyword>Marsh.</keyword> <keyword>Regroup:</keyword> Exert your Gollum or your Sméagol to play the fellowship's next site.",
     "i18n": {
       "en": {
         "title": "Mere of Dead Faces",
@@ -6288,13 +5926,11 @@
     "set": 11,
     "rarity": "S",
     "isUnique": false,
-    "title": "Moria Guardroom",
     "kind": "SITE",
     "type": "SITE",
     "twilightCost": 3,
     "siteArrow": "Left",
     "imageUrl": "/cards_visuals/o_11_247.jpg",
-    "gameText": "<keyword>Underground.</keyword> When your fellowship moves from this site, you may spot a Dwarf to draw 2 cards.",
     "i18n": {
       "en": {
         "title": "Moria Guardroom",
@@ -6323,13 +5959,11 @@
     "set": 11,
     "rarity": "S",
     "isUnique": false,
-    "title": "Moria Stairway",
     "kind": "SITE",
     "type": "SITE",
     "twilightCost": 2,
     "siteArrow": "Right",
     "imageUrl": "/cards_visuals/o_01_347.jpg",
-    "gameText": "<keyword>Underground.</keyword> Each character bearing a hand weapon is <keyword>Damage +1.</keyword>",
     "i18n": {
       "en": {
         "title": "Moria Stairway",
@@ -6358,13 +5992,11 @@
     "set": 11,
     "rarity": "S",
     "isUnique": false,
-    "title": "Neekerbreekers' Bog",
     "kind": "SITE",
     "type": "SITE",
     "twilightCost": 1,
     "siteArrow": "Left",
     "imageUrl": "/cards_visuals/o_11_249.jpg",
-    "gameText": "<keyword>Marsh.</keyword> When the fellowship moves to here, heal each character who has resistance 5 or more and exert each other character.",
     "i18n": {
       "en": {
         "title": "Neekerbreekers’ Bog",
@@ -6393,13 +6025,11 @@
     "set": 11,
     "rarity": "S",
     "isUnique": false,
-    "title": "North Undeep",
     "kind": "SITE",
     "type": "SITE",
     "twilightCost": 3,
     "siteArrow": "Right",
     "imageUrl": "/cards_visuals/o_11_250.jpg",
-    "gameText": "<keyword>River.</keyword> The minion archery total is –3.",
     "i18n": {
       "en": {
         "title": "North Undeep",
@@ -6428,13 +6058,11 @@
     "set": 11,
     "rarity": "S",
     "isUnique": false,
-    "title": "Old Forest Road",
     "kind": "SITE",
     "type": "SITE",
     "twilightCost": 3,
     "siteArrow": "Right",
     "imageUrl": "/cards_visuals/o_11_251.jpg",
-    "gameText": "<keyword>Forest.</keyword> At the start of your fellowship phase, you may heal 2 Elves.",
     "i18n": {
       "en": {
         "title": "Old Forest Road",
@@ -6463,13 +6091,11 @@
     "set": 11,
     "rarity": "S",
     "isUnique": false,
-    "title": "Osgiliath Reclaimed",
     "kind": "SITE",
     "type": "SITE",
     "twilightCost": 2,
     "siteArrow": "Right",
     "imageUrl": "/cards_visuals/o_11_252.jpg",
-    "gameText": "<keyword>Battleground.</keyword> When the fellowship moves from this site, the Free Peoples player may spot 3 burdens to remove a burden.",
     "i18n": {
       "en": {
         "title": "Osgiliath Reclaimed",
@@ -6498,13 +6124,11 @@
     "set": 11,
     "rarity": "S",
     "isUnique": false,
-    "title": "Pelennor Fields",
     "kind": "SITE",
     "type": "SITE",
     "twilightCost": 1,
     "siteArrow": "Left",
     "imageUrl": "/cards_visuals/o_11_253.jpg",
-    "gameText": "<keyword>Plains.</keyword> Each <symbol>men</symbol> minion gains ambush <symbol>twilight1</symbol>.",
     "i18n": {
       "en": {
         "title": "Pelennor Fields",
@@ -6533,13 +6157,11 @@
     "set": 11,
     "rarity": "S",
     "isUnique": false,
-    "title": "Pelennor Flat",
     "kind": "SITE",
     "type": "SITE",
     "twilightCost": 1,
     "siteArrow": "Right",
     "imageUrl": "/cards_visuals/o_07_345.jpg",
-    "gameText": "<keyword>Plains.</keyword> At the start of the maneuver phase, the Free Peoples player must add a burden or discard 3 cards from hand.",
     "i18n": {
       "en": {
         "title": "Pelennor Flat",
@@ -6568,13 +6190,11 @@
     "set": 11,
     "rarity": "S",
     "isUnique": false,
-    "title": "Pinnacle of Zirakzigil",
     "kind": "SITE",
     "type": "SITE",
     "twilightCost": 3,
     "siteArrow": "Right",
     "imageUrl": "/cards_visuals/o_11_255.jpg",
-    "gameText": "<keyword>Mountain.</keyword> At the start of your fellowship phase, you may exert 3 companions to play a Wizard from your dead pile.",
     "i18n": {
       "en": {
         "title": "Pinnacle of Zirakzigil",
@@ -6603,13 +6223,11 @@
     "set": 11,
     "rarity": "S",
     "isUnique": false,
-    "title": "The Prancing Pony",
     "kind": "SITE",
     "type": "SITE",
     "twilightCost": 3,
     "siteArrow": "Right",
     "imageUrl": "/cards_visuals/o_01_324.jpg",
-    "gameText": "<keyword>Dwelling.</keyword> At the start of your fellowship phase, you may add a burden to play a ranger from your draw deck.",
     "i18n": {
       "en": {
         "title": "The Prancing Pony",
@@ -6638,13 +6256,11 @@
     "set": 11,
     "rarity": "S",
     "isUnique": false,
-    "title": "Rohan Uplands",
     "kind": "SITE",
     "type": "SITE",
     "twilightCost": 1,
     "siteArrow": "Right",
     "imageUrl": "/cards_visuals/o_11_257.jpg",
-    "gameText": "<keyword>Plains.</keyword> During the archery phase, <symbol>urukhai</symbol> minions cannot take wounds.",
     "i18n": {
       "en": {
         "title": "Rohan Uplands",
@@ -6673,13 +6289,11 @@
     "set": 11,
     "rarity": "S",
     "isUnique": false,
-    "title": "Slag Mounds",
     "kind": "SITE",
     "type": "SITE",
     "twilightCost": 1,
     "siteArrow": "Right",
     "imageUrl": "/cards_visuals/o_07_363.jpg",
-    "gameText": "<keyword>Battleground.</keyword> Each time a companion is killed, add a burden.",
     "i18n": {
       "en": {
         "title": "Slag Mounds",
@@ -6708,13 +6322,11 @@
     "set": 11,
     "rarity": "S",
     "isUnique": false,
-    "title": "Stables",
     "kind": "SITE",
     "type": "SITE",
     "twilightCost": 2,
     "siteArrow": "Right",
     "imageUrl": "/cards_visuals/o_04_339.jpg",
-    "gameText": "At the start of your fellowship phase, you may exert a <symbol>rohan</symbol> Man to play a <symbol>rohan</symbol> mount from your draw deck.",
     "i18n": {
       "en": {
         "title": "Stables",
@@ -6743,13 +6355,11 @@
     "set": 11,
     "rarity": "S",
     "isUnique": false,
-    "title": "Trollshaw Forest",
     "kind": "SITE",
     "type": "SITE",
     "twilightCost": 3,
     "siteArrow": "Left",
     "imageUrl": "/cards_visuals/o_01_334.jpg",
-    "gameText": "<keyword>Forest.</keyword> Each time you play an artifact or possession on your companion, you may draw a card.",
     "i18n": {
       "en": {
         "title": "Trollshaw Forest",
@@ -6778,13 +6388,11 @@
     "set": 11,
     "rarity": "S",
     "isUnique": false,
-    "title": "Valley of the Silverlode",
     "kind": "SITE",
     "type": "SITE",
     "twilightCost": 3,
     "siteArrow": "Right",
     "imageUrl": "/cards_visuals/o_02_120.jpg",
-    "gameText": "<keyword>Dwelling.</keyword> <keyword>River.</keyword> When your fellowship moves to this site, you may heal each Hobbit companion.",
     "i18n": {
       "en": {
         "title": "Valley of the Silverlode",
@@ -6813,13 +6421,11 @@
     "set": 11,
     "rarity": "S",
     "isUnique": false,
-    "title": "Watch-tower of Cirith Ungol",
     "kind": "SITE",
     "type": "SITE",
     "twilightCost": 1,
     "siteArrow": "Right",
     "imageUrl": "/cards_visuals/o_11_262.jpg",
-    "gameText": "<keyword>Mountain.</keyword><keyword>Maneuver:</keyword> Exert your <symbol>orc</symbol> minion to discard a card at random from the Free Peoples player's hand.",
     "i18n": {
       "en": {
         "title": "Watch-tower of Cirith Ungol",
@@ -6848,13 +6454,11 @@
     "set": 11,
     "rarity": "S",
     "isUnique": false,
-    "title": "West Gate of Moria",
     "kind": "SITE",
     "type": "SITE",
     "twilightCost": 2,
     "siteArrow": "Right",
     "imageUrl": "/cards_visuals/o_11_263.jpg",
-    "gameText": "<keyword>Underground.</keyword> When the fellowship moves from this site, remove <symbol>twilight2</symbol>.",
     "i18n": {
       "en": {
         "title": "West Gate of Moria",
@@ -6883,13 +6487,11 @@
     "set": 11,
     "rarity": "S",
     "isUnique": false,
-    "title": "Westemnet Village",
     "kind": "SITE",
     "type": "SITE",
     "twilightCost": 2,
     "siteArrow": "Left",
     "imageUrl": "/cards_visuals/o_11_264.jpg",
-    "gameText": "<keyword>Dwelling.</keyword> When the fellowship moves to this site, the Free Peoples player wounds a companion for each ally.",
     "i18n": {
       "en": {
         "title": "Westemnet Village",
@@ -6918,13 +6520,11 @@
     "set": 11,
     "rarity": "S",
     "isUnique": false,
-    "title": "Window on the West",
     "kind": "SITE",
     "type": "SITE",
     "twilightCost": 2,
     "siteArrow": "Left",
     "imageUrl": "/cards_visuals/o_11_265.jpg",
-    "gameText": "<keyword>Underground.</keyword> Each unwounded <symbol>gondor</symbol> Man is <keyword>defender +1. </keyword>",
     "i18n": {
       "en": {
         "title": "Window on the West",
@@ -6953,13 +6553,11 @@
     "set": 11,
     "rarity": "S",
     "isUnique": false,
-    "title": "Woody-End",
     "kind": "SITE",
     "type": "SITE",
     "twilightCost": 0,
     "siteArrow": "Left",
     "imageUrl": "/cards_visuals/o_11_266.jpg",
-    "gameText": "<keyword>Forest.</keyword><keyword>Shadow:</keyword> Remove a burden to play a Nazgûl from your discard pile.",
     "i18n": {
       "en": {
         "title": "Woody-End",
@@ -6988,13 +6586,11 @@
     "set": 12,
     "rarity": "U",
     "isUnique": false,
-    "title": "The Angle",
     "kind": "SITE",
     "type": "SITE",
     "twilightCost": 0,
     "siteArrow": "Left",
     "imageUrl": "/cards_visuals/o_12_185.jpg",
-    "gameText": "<b>Forest. Shadow:</b> Play a Nazgûl (or spot 6 companions and discard 2 cards from hand) to draw a card.",
     "i18n": {
       "en": {
         "title": "The Angle",
@@ -7023,13 +6619,11 @@
     "set": 12,
     "rarity": "U",
     "isUnique": false,
-    "title": "The Bridge of Khazad-dûm",
     "kind": "SITE",
     "type": "SITE",
     "twilightCost": 0,
     "siteArrow": "Left",
     "imageUrl": "/cards_visuals/o_01_349.jpg",
-    "gameText": "<b>Battleground. Underground.</b> The Balrog is twilight cost –3.",
     "i18n": {
       "en": {
         "title": "The Bridge of Khazad-dûm",
@@ -7058,13 +6652,11 @@
     "set": 12,
     "rarity": "S",
     "isUnique": false,
-    "title": "Emyn Muil",
     "kind": "SITE",
     "type": "SITE",
     "twilightCost": 0,
     "siteArrow": "Left",
     "imageUrl": "/cards_visuals/o_01_360.jpg",
-    "gameText": "<b>Mountain. Maneuver:</b> Remove <symbol>twilight2</symbol> and exert your minion that is not fierce to make that minion <b>fierce</b> until the regroup phase.",
     "i18n": {
       "en": {
         "title": "Emyn Muil",
@@ -7093,13 +6685,11 @@
     "set": 12,
     "rarity": "S",
     "isUnique": false,
-    "title": "Hill of Sight",
     "kind": "SITE",
     "type": "SITE",
     "twilightCost": 1,
     "siteArrow": "Right",
     "imageUrl": "/cards_visuals/o_12_188.jpg",
-    "gameText": "<b>Battleground. Forest.</b> While you can spot 3 minions (or 6 companions), each unbound companion is resistance –2.",
     "i18n": {
       "en": {
         "title": "Hill of Sight",
@@ -7128,13 +6718,11 @@
     "set": 12,
     "rarity": "S",
     "isUnique": false,
-    "title": "Hobbiton Market",
     "kind": "SITE",
     "type": "SITE",
     "twilightCost": 2,
     "siteArrow": "Left",
     "imageUrl": "/cards_visuals/o_12_189.jpg",
-    "gameText": "<b>Dwelling.</b> When the fellowship moves from this site, wound each minion that is not a lurker.",
     "i18n": {
       "en": {
         "title": "Hobbiton Market",
@@ -7163,13 +6751,11 @@
     "set": 12,
     "rarity": "S",
     "isUnique": false,
-    "title": "Northern Pelennor",
     "kind": "SITE",
     "type": "SITE",
     "twilightCost": 1,
     "siteArrow": "Right",
     "imageUrl": "/cards_visuals/o_12_190.jpg",
-    "gameText": "<b>Battleground. Plains. Shadow:</b> Make your lurker minion lose <b>lurker</b> until the regroup phase.",
     "i18n": {
       "en": {
         "title": "Northern Pelennor",
@@ -7198,13 +6784,11 @@
     "set": 12,
     "rarity": "U",
     "isUnique": false,
-    "title": "Shores of Nen Hithoel",
     "kind": "SITE",
     "type": "SITE",
     "twilightCost": 1,
     "siteArrow": "Right",
     "imageUrl": "/cards_visuals/o_01_359.jpg",
-    "gameText": "<b>River. Shadow:</b> Spot 5 <symbol>orc</symbol> Orcs to prevent the fellowship from moving again this turn.",
     "i18n": {
       "en": {
         "title": "Shores of Nen Hithoel",
@@ -7233,13 +6817,11 @@
     "set": 12,
     "rarity": "U",
     "isUnique": false,
-    "title": "Slopes of Orodruin",
     "kind": "SITE",
     "type": "SITE",
     "twilightCost": 1,
     "siteArrow": "Right",
     "imageUrl": "/cards_visuals/o_12_192.jpg",
-    "gameText": "<b>Mountain. Shadow:</b> Remove <symbol>twilight2</symbol> and discard 2 Free Peoples cards from hand to draw a card.",
     "i18n": {
       "en": {
         "title": "Slopes of Orodruin",
@@ -7268,13 +6850,11 @@
     "set": 12,
     "rarity": "U",
     "isUnique": false,
-    "title": "Starkhorn",
     "kind": "SITE",
     "type": "SITE",
     "twilightCost": 3,
     "siteArrow": "Right",
     "imageUrl": "/cards_visuals/o_12_193.jpg",
-    "gameText": "<b>Mountain.</b> Each time your Dwarf wins a skirmish, you may draw a card.",
     "i18n": {
       "en": {
         "title": "Starkhorn",
@@ -7303,13 +6883,11 @@
     "set": 12,
     "rarity": "U",
     "isUnique": false,
-    "title": "Wold Battlefield",
     "kind": "SITE",
     "type": "SITE",
     "twilightCost": 2,
     "siteArrow": "Left",
     "imageUrl": "/cards_visuals/o_12_194.jpg",
-    "gameText": "<b>Plains. Skirmish:</b> Exert your Man (except an enduring Man) to make him or her <b>damage +1.</b>",
     "i18n": {
       "en": {
         "title": "Wold Battlefield",
@@ -7338,13 +6916,11 @@
     "set": 13,
     "rarity": "U",
     "isUnique": false,
-    "title": "Abandoned Mine Shaft",
     "kind": "SITE",
     "type": "SITE",
     "twilightCost": 0,
     "siteArrow": "Left",
     "imageUrl": "/cards_visuals/o_13_185.jpg",
-    "gameText": "<keyword>Underground.</keyword> If this site is not in region 1 when the fellowship moves from here during the regroup phase, add a burden.",
     "i18n": {
       "en": {
         "title": "Abandoned Mine Shaft",
@@ -7373,13 +6949,11 @@
     "set": 13,
     "rarity": "S",
     "isUnique": false,
-    "title": "Caves of Aglarond",
     "kind": "SITE",
     "type": "SITE",
     "twilightCost": 3,
     "siteArrow": "Right",
     "imageUrl": "/cards_visuals/o_13_186.jpg",
-    "gameText": "<keyword>Underground.</keyword> When the fellowship moves to this site during the regroup phase, the Free Peoples player may remove 2 burdens.",
     "i18n": {
       "en": {
         "title": "Caves of Aglarond",
@@ -7408,13 +6982,11 @@
     "set": 13,
     "rarity": "U",
     "isUnique": false,
-    "title": "City of Kings",
     "kind": "SITE",
     "type": "SITE",
     "twilightCost": 3,
     "siteArrow": "Right",
     "imageUrl": "/cards_visuals/o_13_187.jpg",
-    "gameText": "<keyword>Battleground.</keyword> When the fellowship moves to this site during the regroup phase, the Free Peoples player may draw a card.",
     "i18n": {
       "en": {
         "title": "City of Kings",
@@ -7443,13 +7015,11 @@
     "set": 13,
     "rarity": "U",
     "isUnique": false,
-    "title": "Courtyard Parapet",
     "kind": "SITE",
     "type": "SITE",
     "twilightCost": 0,
     "siteArrow": "Left",
     "imageUrl": "/cards_visuals/o_13_188.jpg",
-    "gameText": "<keyword>Dwelling.</keyword> When the fellowship moves to this site, the first Shadow player may discard 2 cards from hand to add a burden.",
     "i18n": {
       "en": {
         "title": "Courtyard Parapet",
@@ -7478,13 +7048,11 @@
     "set": 13,
     "rarity": "S",
     "isUnique": false,
-    "title": "Crossroads of the Fallen Kings",
     "kind": "SITE",
     "type": "SITE",
     "twilightCost": 3,
     "siteArrow": "Right",
     "imageUrl": "/cards_visuals/o_13_189.jpg",
-    "gameText": "<keyword>Forest.</keyword> When the fellowship moves to this site during the regroup phase, the Free Peoples player may heal a companion of each culture.",
     "i18n": {
       "en": {
         "title": "Crossroads of the Fallen Kings",
@@ -7513,13 +7081,11 @@
     "set": 13,
     "rarity": "U",
     "isUnique": false,
-    "title": "Doors of Durin",
     "kind": "SITE",
     "type": "SITE",
     "twilightCost": 0,
     "siteArrow": "Left",
     "imageUrl": "/cards_visuals/o_13_190.jpg",
-    "gameText": "<keyword>Marsh.</keyword> Each companion of a race that has the most companions is strength –1 until the regroup phase.",
     "i18n": {
       "en": {
         "title": "Doors of Durin",
@@ -7548,13 +7114,11 @@
     "set": 13,
     "rarity": "S",
     "isUnique": false,
-    "title": "Fords of Isen",
     "kind": "SITE",
     "type": "SITE",
     "twilightCost": 2,
     "siteArrow": "Left",
     "imageUrl": "/cards_visuals/o_13_191.jpg",
-    "gameText": "<keyword>River.</keyword> Each character is strength +1 for each card borne by that character.",
     "i18n": {
       "en": {
         "title": "Fords of Isen",
@@ -7583,13 +7147,11 @@
     "set": 13,
     "rarity": "S",
     "isUnique": false,
-    "title": "The Great Gates",
     "kind": "SITE",
     "type": "SITE",
     "twilightCost": 0,
     "siteArrow": "Left",
     "imageUrl": "/cards_visuals/o_13_192.jpg",
-    "gameText": "<keyword>Battleground.</keyword> While a player can spot more companions than minions, each minion is strength +1.",
     "i18n": {
       "en": {
         "title": "The Great Gates",
@@ -7618,13 +7180,11 @@
     "set": 13,
     "rarity": "U",
     "isUnique": false,
-    "title": "Isenwash",
     "kind": "SITE",
     "type": "SITE",
     "twilightCost": 0,
     "siteArrow": "Left",
     "imageUrl": "/cards_visuals/o_13_193.jpg",
-    "gameText": "<keyword>Battleground. Plains.</keyword> At the start of the regroup phase, each Shadow player may exert a minion to exert a companion.",
     "i18n": {
       "en": {
         "title": "Isenwash",
@@ -7653,13 +7213,11 @@
     "set": 13,
     "rarity": "U",
     "isUnique": false,
-    "title": "Redhorn Pass",
     "kind": "SITE",
     "type": "SITE",
     "twilightCost": 2,
     "siteArrow": "Left",
     "imageUrl": "/cards_visuals/o_13_194.jpg",
-    "gameText": "<keyword>Mountain.</keyword> Culture tokens cannot be added, removed, or reinforced.",
     "i18n": {
       "en": {
         "title": "Redhorn Pass",
@@ -7688,13 +7246,11 @@
     "set": 15,
     "rarity": "U",
     "isUnique": false,
-    "title": "Anduin River",
     "kind": "SITE",
     "type": "SITE",
     "twilightCost": 0,
     "siteArrow": "Left",
     "imageUrl": "/cards_visuals/o_15_187.jpg",
-    "gameText": "<keyword>River.</keyword> The fellowship archery total is –3.",
     "i18n": {
       "en": {
         "title": "Anduin River",
@@ -7723,13 +7279,11 @@
     "set": 15,
     "rarity": "S",
     "isUnique": false,
-    "title": "Breeding pit of Isengard",
     "kind": "SITE",
     "type": "SITE",
     "twilightCost": 0,
     "siteArrow": "Left",
     "imageUrl": "/cards_visuals/o_15_188.jpg",
-    "gameText": "<keyword>Underground.</keyword> The twilight cost of the first hunter minion played each Shadow phase is –2.",
     "i18n": {
       "en": {
         "title": "Breeding pit of Isengard",
@@ -7758,13 +7312,11 @@
     "set": 15,
     "rarity": "S",
     "isUnique": false,
-    "title": "City Gates",
     "kind": "SITE",
     "type": "SITE",
     "twilightCost": 1,
     "siteArrow": "Right",
     "imageUrl": "/cards_visuals/o_15_189.jpg",
-    "gameText": "When the Fellowship moves to this site, add a threat (or 2 if you can spot a hunter minion) for each companion over 4.",
     "i18n": {
       "en": {
         "title": "City Gates",
@@ -7793,13 +7345,11 @@
     "set": 15,
     "rarity": "S",
     "isUnique": false,
-    "title": "East Wall of Rohan",
     "kind": "SITE",
     "type": "SITE",
     "twilightCost": 3,
     "siteArrow": "Right",
     "imageUrl": "/cards_visuals/o_15_190.jpg",
-    "gameText": "At the start of the fellowship phase, you may exert two hunter companions to play a hunter companion from your draw deck.",
     "i18n": {
       "en": {
         "title": "East Wall of Rohan",
@@ -7828,13 +7378,11 @@
     "set": 15,
     "rarity": "S",
     "isUnique": false,
-    "title": "Gate of Mordor",
     "kind": "SITE",
     "type": "SITE",
     "twilightCost": 0,
     "siteArrow": "Left",
     "imageUrl": "/cards_visuals/o_15_191.jpg",
-    "gameText": "<keyword>Battleground.</keyword> Each time the fellowship moves to this site, add <symbol>twilight1</symbol> for each culture you can spot.",
     "i18n": {
       "en": {
         "title": "Gate of Mordor",
@@ -7863,13 +7411,11 @@
     "set": 15,
     "rarity": "U",
     "isUnique": false,
-    "title": "Isengard Ruined",
     "kind": "SITE",
     "type": "SITE",
     "twilightCost": 1,
     "siteArrow": "Right",
     "imageUrl": "/cards_visuals/o_15_192.jpg",
-    "gameText": "<keyword>Battleground.</keyword> Each time a follower is transfered to a character, the first Shadow player may exert a companion twice.",
     "i18n": {
       "en": {
         "title": "Isengard Ruined",
@@ -7898,13 +7444,11 @@
     "set": 15,
     "rarity": "R",
     "isUnique": false,
-    "title": "Mount Doom",
     "kind": "SITE",
     "type": "SITE",
     "twilightCost": 3,
     "siteArrow": "Left",
     "imageUrl": "/cards_visuals/o_15_193.jpg",
-    "gameText": "<keyword>Battleground. Mountain. Underground.</keyword> Until the end of the game, sites in this region cannot be replaced.",
     "i18n": {
       "en": {
         "title": "Mount Doom",
@@ -7933,13 +7477,11 @@
     "set": 15,
     "rarity": "S",
     "isUnique": false,
-    "title": "Westfold Village",
     "kind": "SITE",
     "type": "SITE",
     "twilightCost": 2,
     "siteArrow": "Left",
     "imageUrl": "/cards_visuals/o_15_194.jpg",
-    "gameText": "<keyword>Plains.</keyword> Each hunter character is strength +1.",
     "i18n": {
       "en": {
         "title": "Westfold Village",
@@ -7968,12 +7510,10 @@
     "set": 17,
     "rarity": "U",
     "isUnique": false,
-    "title": "Dol Guldur",
     "kind": "SITE",
     "type": "SITE",
     "twilightCost": 0,
     "imageUrl": "/cards_visuals/o_17_145.jpg",
-    "gameText": "<keyword>Regroup:</keyword> Exert your minion and remove a threat to make the Free Peoples player discard one of his or her conditions.",
     "i18n": {
       "en": {
         "title": "Dol Guldur",
@@ -8002,12 +7542,10 @@
     "set": 17,
     "rarity": "U",
     "isUnique": false,
-    "title": "Falls of Rauros",
     "kind": "SITE",
     "type": "SITE",
     "twilightCost": 3,
     "imageUrl": "/cards_visuals/o_17_146.jpg",
-    "gameText": "<keyword>River.</keyword> When the Fellowship moves to this site in region 2, the Free Peoples player places a card from the dead pile out of play.",
     "i18n": {
       "en": {
         "title": "Falls of Rauros",
@@ -8036,12 +7574,10 @@
     "set": 17,
     "rarity": "U",
     "isUnique": false,
-    "title": "Imladris",
     "kind": "SITE",
     "type": "SITE",
     "twilightCost": 3,
     "imageUrl": "/cards_visuals/o_17_147.jpg",
-    "gameText": "<keyword>River.</keyword> When the fellowship moves to this site, if it is a sanctuary, remove 2 burdens.",
     "i18n": {
       "en": {
         "title": "Imladris",
@@ -8070,12 +7606,10 @@
     "set": 17,
     "rarity": "U",
     "isUnique": false,
-    "title": "Nurn",
     "kind": "SITE",
     "type": "SITE",
     "twilightCost": 1,
     "imageUrl": "/cards_visuals/o_17_148.jpg",
-    "gameText": "<keyword>Plains.</keyword> While you control this site, each of your hunter minions is strength +1.",
     "i18n": {
       "en": {
         "title": "Nurn",
@@ -8104,12 +7638,10 @@
     "set": 18,
     "rarity": "U",
     "isUnique": false,
-    "title": "Doorway to Doom",
     "kind": "SITE",
     "type": "SITE",
     "twilightCost": 1,
     "imageUrl": "/cards_visuals/o_18_134.jpg",
-    "gameText": "<keyword>Mountain.</keyword> When the fellowship moves to this site, each player wounds two of his or her characters.",
     "i18n": {
       "en": {
         "title": "Doorway to Doom",
@@ -8138,12 +7670,10 @@
     "set": 18,
     "rarity": "U",
     "isUnique": false,
-    "title": "Foot of Mount Doom",
     "kind": "SITE",
     "type": "SITE",
     "twilightCost": 2,
     "imageUrl": "/cards_visuals/o_18_135.jpg",
-    "gameText": "<keyword>Mountain.</keyword> Each card that is about to be placed into the discard pile is removed from the game instead.",
     "i18n": {
       "en": {
         "title": "Foot of Mount Doom",
@@ -8172,12 +7702,10 @@
     "set": 18,
     "rarity": "U",
     "isUnique": false,
-    "title": "Mithlond",
     "kind": "SITE",
     "type": "SITE",
     "twilightCost": 2,
     "imageUrl": "/cards_visuals/o_18_136.jpg",
-    "gameText": "<keyword>River.</keyword> When the fellowship moves to this site, each player heals each of his or her characters.",
     "i18n": {
       "en": {
         "title": "Mithlond",
@@ -8206,12 +7734,10 @@
     "set": 18,
     "rarity": "U",
     "isUnique": false,
-    "title": "Morannon Plains",
     "kind": "SITE",
     "type": "SITE",
     "twilightCost": 1,
     "imageUrl": "/cards_visuals/o_18_137.jpg",
-    "gameText": "<keyword>Battleground. Plains.</keyword> When the fellowship moves to this site, each player may reinforce a culture token.",
     "i18n": {
       "en": {
         "title": "Morannon Plains",
@@ -8240,12 +7766,10 @@
     "set": 18,
     "rarity": "U",
     "isUnique": false,
-    "title": "Sirannon Ruins",
     "kind": "SITE",
     "type": "SITE",
     "twilightCost": 4,
     "imageUrl": "/cards_visuals/o_18_138.jpg",
-    "gameText": "<keyword>River.</keyword>",
     "i18n": {
       "en": {
         "title": "Sirannon Ruins",
@@ -8274,12 +7798,10 @@
     "set": 18,
     "rarity": "U",
     "isUnique": false,
-    "title": "Steward's Tomb",
     "kind": "SITE",
     "type": "SITE",
     "twilightCost": 1,
     "imageUrl": "/cards_visuals/o_18_139.jpg",
-    "gameText": "Wounds cannot be prevented or healed. Burdens cannot be removed.",
     "i18n": {
       "en": {
         "title": "Steward's Tomb",
@@ -8308,12 +7830,10 @@
     "set": 18,
     "rarity": "U",
     "isUnique": false,
-    "title": "Streets of Bree",
     "kind": "SITE",
     "type": "SITE",
     "twilightCost": 0,
     "imageUrl": "/cards_visuals/o_18_140.jpg",
-    "gameText": "<keyword>Dwelling.</keyword> While the fellowship is at this site, followers cannot be transferred to a character.",
     "i18n": {
       "en": {
         "title": "Streets of Bree",

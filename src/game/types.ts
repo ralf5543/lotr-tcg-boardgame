@@ -51,17 +51,14 @@ export type CardSignet = 'ARAGORN' | 'FRODO' | 'GANDALF' | 'THEODEN';
 
 export type CardType =
     | 'ALLY'
-    | 'ARTIFACT_CHARACTER'
-    | 'ARTIFACT_SUPPORT'
+    | 'ARTIFACT'
     | 'COMPANION'
-    | 'CONDITION_CHARACTER'
-    | 'CONDITION_SUPPORT'
+    | 'CONDITION'
     | 'EVENT'
     | 'FOLLOWER'
     | 'MINION'
-    | 'POSSESSION_CHARACTER'
-    | 'POSSESSION_SUPPORT'
-    | 'THE-ONE-RING';
+    | 'POSSESSION'
+    | 'RING';
 
 export type CardSubtype =
     | 'ARMOR'
@@ -119,31 +116,54 @@ export type CardCulture =
     | 'THE-ONE-RING'
     | 'URUK-HAI';
 
-export interface CardState {
-    id: string;
+export interface CardI18nContent {
     title: string;
     subtitle?: string;
+    gameText?: string;
+    loreText?: string;
+}
+
+export type CardI18nMap = Partial<
+    Record<'fr' | 'en' | 'de' | 'it' | 'es', CardI18nContent>
+>;
+export interface CardState {
+    id: string;
+
+    // 🟢 Objet de traductions multi-langues
+    i18n?: CardI18nMap;
+
+    // Champs de texte racine (facultatifs ou servant de valeurs par défaut si i18n est absent)
+    title?: string;
+    subtitle?: string;
+    gameText?: string;
+    loreText?: string;
+
+    // Metadonnées & Média
     imageUrl?: string;
     kind: CardKind;
-    keywords?: CardKeyword[];
+    culture: CardCulture;
+    type: CardType;
+    
+    // 🟢 subtype est désormais un tableau
+    subtype?: CardSubtype[];
     race?: CardRace;
+    keywords?: CardKeyword[];
+    isUnique: boolean;
+
+    // Statistiques & Coûts
     twilightCost?: number;
     strength?: number;
     vitality?: number;
     resistance?: number;
     roaming?: number;
     signet?: CardSignet;
-    culture: CardCulture;
-    type: CardType;
-    subtype?: CardSubtype;
-    isUnique: boolean;
-    gameText: string;
-    loreText?: string;
+
+    // État dynamique en jeu
     attachments?: CardState[];
-    name?: string;
     wounds?: number;
     isStartingMember?: boolean;
     isFaceDown?: boolean;
+    name?: string; // Si conservé pour compatibilité ou identification
 }
 
 export interface PlayerProfile {
@@ -194,13 +214,22 @@ export interface GameState {
     lastWoundedCardIds?: string[];
     pendingPhaseEnd?: boolean;
     pendingDeadCardIds?: string[];
-    regroupStep?: 'ACTION_WINDOW' | 'SHADOW_REFILL' | 'FP_DECISION' | 'FP_REFILL';
+    regroupStep?:
+        | 'ACTION_WINDOW'
+        | 'SHADOW_REFILL'
+        | 'FP_DECISION'
+        | 'FP_REFILL';
     fellowshipCardsDrawn: number;
     setupState?: {
         bids: Record<string, number | null>;
         auctionWinnerId?: string;
         mulligans: Record<string, boolean | null>;
-        step: 'BIDDING' | 'CHOOSING_FIRST' | 'AWAITING_SITE' | 'MULLIGAN' | 'COMPLETE';
+        step:
+            | 'BIDDING'
+            | 'CHOOSING_FIRST'
+            | 'AWAITING_SITE'
+            | 'MULLIGAN'
+            | 'COMPLETE';
     };
 }
 
@@ -215,15 +244,15 @@ export interface ActionWindow {
     message?: string;
     activePlayerId: string; // Ex: '0' ou '1'
     passedPlayers2?: string[]; // Tableau pour suivre qui a fait "Passer" (ex: ['0'])
-    canPass?: boolean;       // Permet de choisir si le bouton "Passer" est affiché
+    canPass?: boolean; // Permet de choisir si le bouton "Passer" est affiché
     passesCount?: number;
 }
 
 export interface SkirmishState {
-    id: string;             // Ex: 'skirmish_comp_01'
-    companionId: string;    // ID de la carte du compagnon ciblée
-    minionIds: string[];    // Liste des IDs des cartes de séides affectés
-    resolved?: boolean;     // Utile pour la phase de combat suivante
+    id: string; // Ex: 'skirmish_comp_01'
+    companionId: string; // ID de la carte du compagnon ciblée
+    minionIds: string[]; // Liste des IDs des cartes de séides affectés
+    resolved?: boolean; // Utile pour la phase de combat suivante
 }
 
 /** Context fourni aux hooks de Phase (onBegin, onEnd, etc.) */
