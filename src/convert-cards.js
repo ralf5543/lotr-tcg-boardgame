@@ -1,11 +1,15 @@
 import fs from 'fs';
 import path from 'path';
 
-const CSV_PATH = path.join(process.cwd(), 'cards.csv'); 
+// ============================================================================
+// 1. CONFIGURATION DES CHEMINS ET CONSTANTES DU JEU
+// ============================================================================
+
+const CSV_PATH = path.join(process.cwd(), 'lotro_card_data.csv'); 
 const OUTPUT_CARDS_PATH = path.join(process.cwd(), 'data/cards.json');
 const OUTPUT_SITES_PATH = path.join(process.cwd(), 'data/sites.json');
 
-// Liste canonique des 8 phases / déclencheurs du jeu LotR TCG
+// Phases de jeu reconnues (pour le champ phases)
 const GAME_PHASES = new Set([
     'FELLOWSHIP',
     'SHADOW',
@@ -17,8 +21,61 @@ const GAME_PHASES = new Set([
     'RESPONSE'
 ]);
 
+// Races de personnages valides (pour l'analyse de l'attachement)
+const VALID_RACES = new Set([
+    'BALROG', 'CREATURE', 'DWARF', 'ELF', 'ENT', 'HOBBIT', 
+    'MAIA', 'MAN', 'NAZGUL', 'ORC', 'SPIDER', 'TROLL', 
+    'URUK-HAI', 'WIZARD', 'WRAITH'
+]);
+
+// Cultures valides (pour l'analyse de l'attachement via la balise <symbol>)
+const VALID_CULTURES = new Set([
+    'DUNLAND', 'DWARVEN', 'ELVEN', 'GANDALF', 'GOLLUM', 
+    'GONDOR', 'ISENGARD', 'MEN', 'MORIA', 'ORC', 
+    'RAIDER', 'RAITH', 'ROHAN', 'SAURON', 'SHIRE', 
+    'THE-ONE-RING', 'URUK-HAI'
+]);
+
+// Mots-clés de rôle/statut valides (pour l'analyse de l'attachement via <keyword>)
+const VALID_KEYWORDS = new Set([
+    'ARCHER', 'BESIEGER', 'CORSAIR', 'EASTERLING', 'HUNTER', 
+    'KNIGHT', 'RANGER', 'RING-BEARER', 'RING-BOUND', 
+    'SOUTHRON', 'VALIANT', 'VILLAGER', 'WARG-RIDER'
+]);
+
+// Types de cartes cibles (pour l'analyse de l'attachement)
+const VALID_TARGET_TYPES = new Set(['MINION', 'COMPANION', 'ALLY']);
+
+// Cultures appartenant du côté Shadow (Ombre)
+const SHADOW_CULTURES = [
+    'ISENGARD', 'MORIA', 'SAURON', 'WRAITH', 
+    'DUNLAND', 'RAIDER', 'MEN', 'ORC', 'URUK-HAI'
+];
+
+// ============================================================================
+// 2. FONCTIONS UTILITAIRES DE PARSING CSV ET NETTOYAGE DE TEXTE
+// ============================================================================
+
 /**
- * Parser CSV conforme RFC-4180 avec support des guillemets et retours à la ligne
+ * Supprime TOUS les guillemets (droits, typographiques, français, doubles, simples)
+ * situés au début, à la fin ou résiduels dans le texte.
+ */
+function stripQuotes(text) {
+    if (!text) return undefined;
+    
+    const cleaned = text
+        .trim()
+        // Supprime tous les guillemets et espaces en tout début/fin de chaîne
+        .replace(/^["'«»“”‘’`\s]+|["'«»“”‘’`\s]+$/g, '')
+        // Nettoie également tout guillemet résiduel à l'intérieur
+        .replace(/["“”«»]/g, '')
+        .trim();
+
+    return cleaned.length > 0 ? cleaned : undefined;
+}
+
+/**
+ * Analyse le contenu brut d'un CSV en gérant correctement les guillemets de champs et retours à la ligne.
  */
 function parseCsvContent(content) {
     const rows = [];
@@ -59,29 +116,28 @@ function parseCsvContent(content) {
     return rows;
 }
 
+/**
+ * Nettoie le texte de lore/flavor (suppression des guillemets).
+ */
 function cleanLoreText(text) {
-    if (!text) return undefined;
-    const cleaned = text.trim().replace(/^["'«»“”‘’\s]+|["'«»“”‘’\s]+$/g, '').trim();
-    return cleaned.length > 0 ? cleaned : undefined;
+    return stripQuotes(text);
 }
 
 /**
- * Nettoie et formate le texte de jeu pour toutes les langues :
- * 1. Remplace <br>, <br/>, <br /> par des retours à la ligne (\n)
- * 2. Remplace <keyword>Texte</keyword> par **Texte** pour le rendu en gras
+ * Formate le texte de jeu : convertit <br> en \n, <keyword> en **bold**, et retire les guillemets.
  */
 function formatGameText(text) {
     if (!text) return undefined;
-    return text
+    const formatted = text
         .replace(/<br\s*\/?>/gi, '\n')
         .replace(/<keyword>([^<]+)<\/keyword>/gi, '**$1**');
+    
+    return stripQuotes(formatted);
 }
 
-function parseSignet(bottomIcon) {
-    if (!bottomIcon || !bottomIcon.startsWith('Signet_')) return undefined;
-    return bottomIcon.replace('Signet_', '').toUpperCase();
-}
-
+/**
+ * Normalise et mappe la culture (ex: convertit MAN en MEN).
+ */
 function mapCulture(cultureStr) {
     if (!cultureStr) return undefined;
     const cleanCulture = cultureStr.trim().toUpperCase();
@@ -89,15 +145,56 @@ function mapCulture(cultureStr) {
 }
 
 /**
- * Analyse la colonne "Class" et le texte anglais pour séparer :
- * 1. Le sous-type métier (ex: "HAND-WEAPON", "RING") -> string
- * 2. Les phases de jeu (ex: ["ARCHERY", "RESPONSE"]) -> string[]
+ * Extrait le marqueur d'alignement (Signet) depuis l'icône du bas.
  */
+function parseSignet(bottomIcon) {
+    if (!bottomIcon || !bottomIcon.startsWith('Signet_')) return undefined;
+    return bottomIcon.replace('Signet_', '').toUpperCase();
+}
+
+/**
+ * Extrait une valeur numérique de statistique (Force, Vitalité, etc.) avec fallback texte.
+ */
+function parseStat(primaryValue, fallbackText) {
+    if (primaryValue !== '' && primaryValue !== undefined) {
+        const parsed = parseInt(primaryValue, 10);
+        if (!isNaN(parsed)) return parsed;
+    }
+
+    if (fallbackText && fallbackText.trim() !== '') {
+        const parsedFallback = parseInt(fallbackText.trim(), 10);
+        if (!isNaN(parsedFallback)) return parsedFallback;
+    }
+
+    return undefined;
+}
+
+/**
+ * Construit un bloc i18n nettoyé (sans guillemets et sans clés undefined).
+ */
+function buildLangBlock(title, subtitle, gameText, lore) {
+    const block = {
+        title: stripQuotes(title),
+        subtitle: stripQuotes(subtitle),
+        gameText: formatGameText(gameText),
+        loreText: cleanLoreText(lore),
+    };
+
+    Object.keys(block).forEach(key => {
+        if (block[key] === undefined) delete block[key];
+    });
+
+    return Object.keys(block).length > 0 ? block : undefined;
+}
+
+// ============================================================================
+// 3. FONCTIONS D'EXTRACTION DE RÈGLES MÉTIER (SUBTYPES, PHASES, ATTACHED_TO)
+// ============================================================================
+
 function parseClassAndPhases(classStr, englishText) {
     const phasesSet = new Set();
     const subTypeParts = [];
 
-    // 1. Analyse de la colonne "Class"
     if (classStr && classStr.trim()) {
         const parts = classStr.split(/[,;/]/);
         parts.forEach(part => {
@@ -112,7 +209,6 @@ function parseClassAndPhases(classStr, englishText) {
         });
     }
 
-    // 2. Extraction des phases depuis le texte anglais (<keyword>Phase:</keyword>)
     if (englishText) {
         const keywordRegex = /<keyword>([^<]+)<\/keyword>/gi;
         let match;
@@ -135,52 +231,90 @@ function parseClassAndPhases(classStr, englishText) {
     };
 }
 
-/**
- * Extrait une statistique numérique (valeur absolue de personnage OU modificateur d'attachement via Xxx Text)
- */
-function parseStat(primaryValue, fallbackText) {
-    if (primaryValue !== '' && primaryValue !== undefined) {
-        const parsed = parseInt(primaryValue, 10);
-        if (!isNaN(parsed)) return parsed;
+function parseAttachedTo(rawText) {
+    if (!rawText) return undefined;
+
+    const cleanText = rawText.replace(/\u00A0/g, ' ');
+
+    if (/plays\s+on\s+a\s+site/i.test(cleanText)) {
+        return ['site'];
     }
 
-    if (fallbackText && fallbackText.trim() !== '') {
-        const parsedFallback = parseInt(fallbackText.trim(), 10);
-        if (!isNaN(parsedFallback)) return parsedFallback;
+    const bearerMatch = cleanText.match(/Bearer\s+must\s+be\s+(.+?)(?=\.|$)/i);
+    if (!bearerMatch) {
+        return undefined;
     }
 
-    return undefined;
+    const targetExpr = bearerMatch[1].trim();
+
+    if (!/^an?\s+/i.test(targetExpr)) {
+        return [targetExpr];
+    }
+
+    const exprWithoutArticle = targetExpr.replace(/^an?\s+/i, '').trim();
+
+    const result = [];
+    const tokenRegex = /(<symbol>[^<]+<\/symbol>|<keyword>[^<]+<\/keyword>|[^\s]+)/g;
+    const tokens = exprWithoutArticle.match(tokenRegex) || [];
+
+    for (let token of tokens) {
+        let cleanToken = token.replace(/[:.,]/g, '').trim();
+        if (!cleanToken) continue;
+
+        const symbolMatch = cleanToken.match(/<symbol>([^<]+)<\/symbol>/i);
+        if (symbolMatch) {
+            const cultureVal = symbolMatch[1].trim().toUpperCase().replace(/\s+/g, '-');
+            if (VALID_CULTURES.has(cultureVal)) {
+                result.push(cultureVal);
+            }
+            continue;
+        }
+
+        const keywordMatch = cleanToken.match(/<keyword>([^<]+)<\/keyword>/i);
+        if (keywordMatch) {
+            const keywordVal = keywordMatch[1].trim().toUpperCase().replace(/\s+/g, '-');
+            if (VALID_KEYWORDS.has(keywordVal)) {
+                result.push(keywordVal);
+            }
+            continue;
+        }
+
+        const upperToken = cleanToken.toUpperCase();
+
+        if (VALID_RACES.has(upperToken) || VALID_TARGET_TYPES.has(upperToken) || VALID_KEYWORDS.has(upperToken)) {
+            result.push(upperToken);
+        }
+    }
+
+    return result.length > 0 ? result : undefined;
 }
 
-/**
- * Construit un bloc i18n nettoyé d'une langue donnée.
- */
-function buildLangBlock(title, subtitle, gameText, lore) {
-    const block = {
-        title: title || undefined,
-        subtitle: subtitle || undefined,
-        gameText: formatGameText(gameText),
-        loreText: cleanLoreText(lore),
-    };
-
-    Object.keys(block).forEach(key => {
-        if (block[key] === undefined) delete block[key];
-    });
-
-    return Object.keys(block).length > 0 ? block : undefined;
-}
+// ============================================================================
+// 4. PROCESSUS PRINCIPAL DE CONVERSION (convert)
+// ============================================================================
 
 async function convert() {
     console.log('🔄 Lecture et traitement du CSV des cartes...');
 
+    // ------------------------------------------------------------------------
+    // 4.1. Chargement et décodage explicite en Windows-1252
+    // ------------------------------------------------------------------------
     if (!fs.existsSync(CSV_PATH)) {
         console.error(`❌ Fichier introuvable : ${CSV_PATH}`);
         return;
     }
 
-    const fileBuffer = fs.readFileSync(CSV_PATH);
+    // Lecture du buffer binaire brut
+    const buffer = fs.readFileSync(CSV_PATH);
+    
+    // Décodage explicite Windows-1252 vers string Unicode
     const decoder = new TextDecoder('windows-1252');
-    const fileContent = decoder.decode(fileBuffer);
+    let fileContent = decoder.decode(buffer);
+
+    // Nettoyage de l'éventuel BOM
+    if (fileContent.charCodeAt(0) === 0xFEFF) {
+        fileContent = fileContent.slice(1);
+    }
 
     const allRows = parseCsvContent(fileContent);
 
@@ -193,11 +327,9 @@ async function convert() {
     const cardMap = new Map();
     const siteMap = new Map();
 
-    const shadowCultures = [
-        'ISENGARD', 'MORIA', 'SAURON', 'WRAITH', 
-        'DUNLAND', 'RAIDER', 'MEN', 'ORC', 'URUK-HAI'
-    ];
-
+    // ------------------------------------------------------------------------
+    // 4.2. Parcours ligne par ligne et extraction des données
+    // ------------------------------------------------------------------------
     for (let i = 1; i < allRows.length; i++) {
         const row = allRows[i];
         if (row.length < 2) continue;
@@ -218,7 +350,7 @@ async function convert() {
 
         const targetMap = isSite ? siteMap : cardMap;
 
-        // Dédoublonnage : conservation de la version avec le texte de jeu le plus long
+        // Déduplication : si la carte existe déjà, on garde la plus complète
         if (targetMap.has(cardId)) {
             const existing = targetMap.get(cardId);
             const existingTextLen = (existing.i18n?.fr?.gameText || existing.i18n?.en?.gameText || '').length;
@@ -226,13 +358,13 @@ async function convert() {
             if (newTextLen <= existingTextLen) continue;
         }
 
-        // --- Détermination de Faction / Kind ---
+        // --- Détermination du camp (kind) ---
         const culture = (data['Culture'] || '').toUpperCase();
         const background = (data['Background'] || '').trim();
 
         let kind = 'FREE_PEOPLE';
 
-        if (shadowCultures.includes(culture)) {
+        if (SHADOW_CULTURES.includes(culture)) {
             kind = 'SHADOW';
         } else if (culture === 'GOLLUM') {
             kind = background.toLowerCase().startsWith('gollum_') ? 'SHADOW' : 'FREE_PEOPLE';
@@ -242,25 +374,29 @@ async function convert() {
             kind = 'SITE';
         }
 
-        // --- Détection du Porteur potentiel de l'Anneau ---
+        // --- Détection Porteur de l'Anneau ---
         const titleVO = (data['Title'] || '').trim();
         const bottomIcon = (data['Bottom Icon'] || '').trim();
 
         const isRingbearer = bottomIcon === 'Icon_ringbearer' || titleVO.toLowerCase() === 'frodo';
         const canBeRingbearer = isRingbearer ? true : undefined;
 
+        // --- Visuels ---
         const rawImageCode = (data['Image'] || '').trim();
         const imageUrl = rawImageCode ? `/cards_visuals/o_${rawImageCode}.jpg` : undefined;
 
-        // Extraction distincte du sous-type et des phases
+        // --- Subtypes, Phases & AttachedTo ---
         const { subtype, phases } = parseClassAndPhases(data['Class'], englishText);
+        const attachedTo = parseAttachedTo(englishText);
 
-        // Resolution des statistiques (Valeurs propres OU Top/Middle/Bottom Text pour attachements)
+        // --- Stats numériques ---
         const computedStrength = parseStat(data['Strength'], data['Top Text']);
         const computedVitality = parseStat(data['Vitality'], data['Middle Text']);
         const computedResistance = parseStat(data['Resistance'], data['Bottom Text']);
 
-        // Structure finale de la carte
+        // ------------------------------------------------------------------------
+        // 4.3. Assemblage de l'objet Carte
+        // ------------------------------------------------------------------------
         const cardObj = {
             id: cardId,
             set: parseInt(data['Set'], 10) || 0,
@@ -271,6 +407,7 @@ async function convert() {
             kind: kind,
             type: type,
             subtype: subtype,
+            attachedTo: attachedTo,
             phases: phases,
             culture: mapCulture(data['Culture']),
             race: data['Race'] ? data['Race'].toUpperCase() : undefined,
@@ -288,6 +425,7 @@ async function convert() {
 
             imageUrl: imageUrl,                          
 
+            // Bloc internationalisation
             i18n: {
                 en: buildLangBlock(data['Title'], data['Subtitle'], data['Text'], data['Lore']),
                 fr: buildLangBlock(data['French Title'], data['French Subtitle'], data['French Text'], data['French Lore']),
@@ -297,7 +435,7 @@ async function convert() {
             }
         };
 
-        // Nettoyage des langues sans contenu
+        // Nettoyage des langues vides
         Object.keys(cardObj.i18n).forEach(lang => {
             if (!cardObj.i18n[lang]) delete cardObj.i18n[lang];
         });
@@ -310,6 +448,9 @@ async function convert() {
         targetMap.set(cardId, cardObj);
     }
 
+    // ------------------------------------------------------------------------
+    // 4.4. Écriture des fichiers JSON finaux (UTF-8)
+    // ------------------------------------------------------------------------
     const cardsArray = Array.from(cardMap.values());
     const sitesArray = Array.from(siteMap.values());
 
@@ -325,5 +466,9 @@ async function convert() {
     console.log(`🃏 Cartes : ${cardsArray.length} -> ${OUTPUT_CARDS_PATH}`);
     console.log(`🏞️ Sites  : ${sitesArray.length} -> ${OUTPUT_SITES_PATH}`);
 }
+
+// ============================================================================
+// 5. EXÉCUTION DU SCRIPT
+// ============================================================================
 
 convert().catch(console.error);
