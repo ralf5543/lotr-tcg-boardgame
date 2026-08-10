@@ -45,7 +45,7 @@ const createCardInstance = (
 };
 
 const PLAYER_0_RING_BEARER_ID = '9R+31';
-const PLAYER_0_ONE_RING_ID = '4R1';
+const PLAYER_0_ONE_RING_ID = '1R1';
 
 // 🏞️ Deck de Sites (9 sites ordonnés ou triés, hors pioche)
 const PLAYER_0_SITES_IDS = [

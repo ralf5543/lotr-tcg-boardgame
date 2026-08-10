@@ -23,8 +23,8 @@
         "gameText": "**Compagnie :** Ajoutez un point-fardeau pour jouer Aragorn de votre pioche."
       },
       "de": {
-        "title": "Zum Tänzelnden Pony",
-        "gameText": "**Gemeinschaft.** Lege eine Lastmarke auf den Ringträger, um Aragorn direkt aus deinem Spieldeck zu spielen."
+        "title": "Zum Tï¿½nzelnden Pony",
+        "gameText": "**Gemeinschaft.** Lege eine Lastmarke auf den Ringtrï¿½ger, um Aragorn direkt aus deinem Spieldeck zu spielen."
       },
       "it": {
         "title": "Il Puledro Impennato",
@@ -32,7 +32,7 @@
       },
       "es": {
         "title": "El Poney Pisador",
-        "gameText": "**Comunidad:** Añade una carga para jugar a Aragorn de tu mazo de robar."
+        "gameText": "**Comunidad:** Aï¿½ade una carga para jugar a Aragorn de tu mazo de robar."
       }
     }
   },
@@ -54,7 +54,7 @@
       },
       "fr": {
         "title": "Place du Conseil",
-        "gameText": "**Sanctuaire.** Quand la compagnie se déplace de la Place du Conseil, retirez <symbol>twilight2</symbol>."
+        "gameText": "**Sanctuaire.** Quand la compagnie se dï¿½place de la Place du Conseil, retirez <symbol>twilight2</symbol>."
       },
       "de": {
         "title": "Der Ratshof",
@@ -91,11 +91,11 @@
       },
       "fr": {
         "title": "Tombe de Balin",
-        "gameText": "**Souterrain.** **Manœuvre :** Défaussez un récit en jeu ou de votre main pour guérir votre compagnon."
+        "gameText": "**Souterrain.** **Manï¿½uvre :** Dï¿½faussez un rï¿½cit en jeu ou de votre main pour guï¿½rir votre compagnon."
       },
       "de": {
         "title": "Balins Grab",
-        "gameText": "**Unterirdisch.** **Manöver:** Lege eine Erzählung aus dem Spiel oder aus deiner Hand ab, um einen deiner Gefährten zu heilen."
+        "gameText": "**Unterirdisch.** **Manï¿½ver:** Lege eine Erzï¿½hlung aus dem Spiel oder aus deiner Hand ab, um einen deiner Gefï¿½hrten zu heilen."
       },
       "it": {
         "title": "Tomba di Balin",
@@ -103,7 +103,7 @@
       },
       "es": {
         "title": "La Tumba de Balin",
-        "gameText": "**Subterráneo.** **Maniobra:** Descarta un cuento del juego o de la mano para curar a un compañero."
+        "gameText": "**Subterrï¿½neo.** **Maniobra:** Descarta un cuento del juego o de la mano para curar a un compaï¿½ero."
       }
     }
   },
@@ -124,11 +124,11 @@
     "i18n": {
       "en": {
         "title": "Galadriel's Glade",
-        "gameText": "**Sanctuary.** **Fellowship:** Exert an Elf to look at an opponent’s hand."
+        "gameText": "**Sanctuary.** **Fellowship:** Exert an Elf to look at an opponentï¿½s hand."
       },
       "fr": {
-        "title": "Clairière de Galadriel",
-        "gameText": "**Sanctuaire.** **Compagnie :** Affaiblissez un Elfe pour regarder la main d’un adversaire."
+        "title": "Clairiï¿½re de Galadriel",
+        "gameText": "**Sanctuaire.** **Compagnie :** Affaiblissez un Elfe pour regarder la main dï¿½un adversaire."
       },
       "de": {
         "title": "Galadriels Lichtung",
@@ -165,7 +165,7 @@
       },
       "fr": {
         "title": "Cul-de-Sac",
-        "gameText": "**Compagnie :** Affaiblissez un Hobbit pour jouer l’Ancien de votre pioche."
+        "gameText": "**Compagnie :** Affaiblissez un Hobbit pour jouer lï¿½Ancien de votre pioche."
       },
       "de": {
         "title": "Beutelsend",
@@ -176,8 +176,8 @@
         "gameText": "**Compagnia:** Sforza un Hobbit per giocare Il Gaffiere dal tuo mazzo di gioco."
       },
       "es": {
-        "title": "Bolsón Cerrado",
-        "gameText": "**Comunidad:** Esfuerza un Hobbit para jugar a El Tío de tu mazo de robar."
+        "title": "Bolsï¿½n Cerrado",
+        "gameText": "**Comunidad:** Esfuerza un Hobbit para jugar a El Tï¿½o de tu mazo de robar."
       }
     }
   },
@@ -195,15 +195,15 @@
     "i18n": {
       "en": {
         "title": "East Road",
-        "gameText": "Each companion’s twilight cost is +2."
+        "gameText": "Each companionï¿½s twilight cost is +2."
       },
       "fr": {
         "title": "Route de l'Est",
-        "gameText": "Le coût crépusculaire de chaque compagnon est de +2."
+        "gameText": "Le coï¿½t crï¿½pusculaire de chaque compagnon est de +2."
       },
       "de": {
         "title": "Die Oststrasse",
-        "gameText": "Die Zwielichtkosten für jeden Gefährten erhöhen sich um 2."
+        "gameText": "Die Zwielichtkosten fï¿½r jeden Gefï¿½hrten erhï¿½hen sich um 2."
       },
       "it": {
         "title": "Via dell'Est",
@@ -211,7 +211,7 @@
       },
       "es": {
         "title": "Carretera del Este",
-        "gameText": "El coste de penumbra de cada compañero es +2."
+        "gameText": "El coste de penumbra de cada compaï¿½ero es +2."
       }
     }
   },
@@ -231,11 +231,11 @@
     "imageUrl": "/cards_visuals/o_01_321.jpg",
     "i18n": {
       "en": {
-        "title": "Farmer Maggot’s Fields",
+        "title": "Farmer Maggotï¿½s Fields",
         "gameText": "**Fellowship:** Exert a Hobbit to play Merry or Pippin from your draw deck."
       },
       "fr": {
-        "title": "Champs du Père Maggotte",
+        "title": "Champs du Pï¿½re Maggotte",
         "gameText": "**Compagnie :** Affaiblissez un Hobbit pour jouer Merry ou Pippin de votre pioche."
       },
       "de": {
@@ -276,7 +276,7 @@
         "gameText": "**Compagnie :** Affaiblissez un Hobbit pour jouer Sam de votre pioche."
       },
       "de": {
-        "title": "Der Grüne Drache",
+        "title": "Der Grï¿½ne Drache",
         "gameText": "**Gemeinschaft.** Strenge einen Hobbit an, um Sam direkt aus deinem Spieldeck zu spielen."
       },
       "it": {
@@ -284,7 +284,7 @@
         "gameText": "**Compagnia:** Sforza un Hobbit per giocare Sam dal tuo mazzo di gioco."
       },
       "es": {
-        "title": "Posada del Dragón Verde",
+        "title": "Posada del Dragï¿½n Verde",
         "gameText": "**Comunidad:** Esfuerza un hobbit para jugar a Sam de tu mazo de robar."
       }
     }
@@ -307,10 +307,10 @@
       },
       "fr": {
         "title": "Pays des Collines Vertes",
-        "gameText": "Le coût crépusculaire de chaque Hobbit est de -1."
+        "gameText": "Le coï¿½t crï¿½pusculaire de chaque Hobbit est de -1."
       },
       "de": {
-        "title": "Grünbergland",
+        "title": "Grï¿½nbergland",
         "gameText": "Die Zwielichtkosten aller Hobbits verringern sich um 1."
       },
       "it": {
@@ -347,8 +347,8 @@
         "gameText": "**Compagnie :** Ajoutez un point-fardeau pour jouer Aragorn de votre pioche."
       },
       "de": {
-        "title": "Zum Tänzelnden Pony",
-        "gameText": "**Gemeinschaft.** Lege eine Lastmarke auf den Ringträger, um Aragorn direkt aus deinem Spieldeck zu spielen."
+        "title": "Zum Tï¿½nzelnden Pony",
+        "gameText": "**Gemeinschaft.** Lege eine Lastmarke auf den Ringtrï¿½ger, um Aragorn direkt aus deinem Spieldeck zu spielen."
       },
       "it": {
         "title": "Il Puledro Impennato",
@@ -356,7 +356,7 @@
       },
       "es": {
         "title": "El Poney Pisador",
-        "gameText": "**Comunidad:** Añade una carga para jugar a Aragorn de tu mazo de robar."
+        "gameText": "**Comunidad:** Aï¿½ade una carga para jugar a Aragorn de tu mazo de robar."
       }
     }
   },
@@ -377,11 +377,11 @@
     "i18n": {
       "en": {
         "title": "Shire Lookout Point",
-        "gameText": "**Fellowship:** Spot Gandalf to play Gandalf’s Cart from your draw deck."
+        "gameText": "**Fellowship:** Spot Gandalf to play Gandalfï¿½s Cart from your draw deck."
       },
       "fr": {
-        "title": "Belvédère de la Comté",
-        "gameText": "**Compagnie :** Désignez Gandalf pour jouer la Charrette de Gandalf de votre pioche."
+        "title": "Belvï¿½dï¿½re de la Comtï¿½",
+        "gameText": "**Compagnie :** Dï¿½signez Gandalf pour jouer la Charrette de Gandalf de votre pioche."
       },
       "de": {
         "title": "Auenland Aussichtspunkt",
@@ -392,7 +392,7 @@
         "gameText": "**Compagnia:** Avvista Gandalf per giocare Il Carro di Gandalf dal tuo mazzo di gioco."
       },
       "es": {
-        "title": "Observatório de la Comarca",
+        "title": "Observatï¿½rio de la Comarca",
         "gameText": "**Comunidad:** Avista a Gandalf para jugar El Carro de Gandalf de tu mazo de robar."
       }
     }
@@ -414,15 +414,15 @@
     "i18n": {
       "en": {
         "title": "Westfarthing",
-        "gameText": "**Fellowship:** Exert a Hobbit to play a companion or ally; that character’s twilight cost is -1."
+        "gameText": "**Fellowship:** Exert a Hobbit to play a companion or ally; that characterï¿½s twilight cost is -1."
       },
       "fr": {
         "title": "Quartier de l'Ouest",
-        "gameText": "**Compagnie :** Affaiblissez un Hobbit pour jouer un compagnon ou un allié ; le coût crépusculaire de ce personnage est de -1."
+        "gameText": "**Compagnie :** Affaiblissez un Hobbit pour jouer un compagnon ou un alliï¿½ ; le coï¿½t crï¿½pusculaire de ce personnage est de -1."
       },
       "de": {
         "title": "Westmark",
-        "gameText": "**Gemeinschaft.** Strenge einen Hobbit an, um einen Gefährten oder Verbündeten mit um 1 reduzierten Zwielichtkosten zu spielen."
+        "gameText": "**Gemeinschaft.** Strenge einen Hobbit an, um einen Gefï¿½hrten oder Verbï¿½ndeten mit um 1 reduzierten Zwielichtkosten zu spielen."
       },
       "it": {
         "title": "Decumano Ovest",
@@ -430,7 +430,7 @@
       },
       "es": {
         "title": "Cuaderna del Oeste",
-        "gameText": "**Comunidad:** Esfuerza un Hobbit para jugar un compañero o aliado, el coste de penumbra de ese personaje es -1."
+        "gameText": "**Comunidad:** Esfuerza un Hobbit para jugar un compaï¿½ero o aliado, el coste de penumbra de ese personaje es -1."
       }
     }
   },
@@ -452,19 +452,19 @@
       },
       "fr": {
         "title": "Porte de Bree",
-        "gameText": "Tant que vous pouvez désigner un rôdeur, la limite de déplacement est de +1 pour ce tour."
+        "gameText": "Tant que vous pouvez dï¿½signer un rï¿½deur, la limite de dï¿½placement est de +1 pour ce tour."
       },
       "de": {
         "title": "Stadttor von Bree",
-        "gameText": "Solange du einen Waldläufer entdecken kannst, erhöht sich deine maximale Bewegungsweite in diesem Zug um 1."
+        "gameText": "Solange du einen Waldlï¿½ufer entdecken kannst, erhï¿½ht sich deine maximale Bewegungsweite in diesem Zug um 1."
       },
       "it": {
         "title": "Cancello di Brea",
-        "gameText": "Finché puoi avvistare un Ramingo, aggiungi +1 al limite dei movimenti per questo turno."
+        "gameText": "Finchï¿½ puoi avvistare un Ramingo, aggiungi +1 al limite dei movimenti per questo turno."
       },
       "es": {
         "title": "Puertas de Bree",
-        "gameText": "Mientras puedas avistar un montaraz, el límite de movimiento para este turno es +1."
+        "gameText": "Mientras puedas avistar un montaraz, el lï¿½mite de movimiento para este turno es +1."
       }
     }
   },
@@ -482,23 +482,23 @@
     "i18n": {
       "en": {
         "title": "Bree Streets",
-        "gameText": "The roaming penalty for each Nazgûl you play to Bree Streets is -2."
+        "gameText": "The roaming penalty for each Nazgï¿½l you play to Bree Streets is -2."
       },
       "fr": {
         "title": "Rues de Bree",
-        "gameText": "La pénalité d’errance pour chaque Nazgûl que vous jouez dans les Rues de Bree est de -2."
+        "gameText": "La pï¿½nalitï¿½ dï¿½errance pour chaque Nazgï¿½l que vous jouez dans les Rues de Bree est de -2."
       },
       "de": {
         "title": "Strassen von Bree",
-        "gameText": "Die Strafkosten für wandernde Nazgûl reduzieren sich in den Strassen von Bree um 2."
+        "gameText": "Die Strafkosten fï¿½r wandernde Nazgï¿½l reduzieren sich in den Strassen von Bree um 2."
       },
       "it": {
         "title": "Strade di Brea",
-        "gameText": "Sottrai -2 alla penalità per vagare di ogni Nazgûl che giochi nelle Strade di Brea."
+        "gameText": "Sottrai -2 alla penalitï¿½ per vagare di ogni Nazgï¿½l che giochi nelle Strade di Brea."
       },
       "es": {
         "title": "Calles de Bree",
-        "gameText": "La penalización por vagar para cada Nazgûl que juegues en las Calles de Bree es -2."
+        "gameText": "La penalizaciï¿½n por vagar para cada Nazgï¿½l que juegues en las Calles de Bree es -2."
       }
     }
   },
@@ -519,12 +519,12 @@
         "gameText": "**Forest.** Stealth events may not be played."
       },
       "fr": {
-        "title": "Forêt des Environs de Bree",
-        "gameText": "**Forêt.** Des événements de dissimulation ne peuvent pas être joués."
+        "title": "Forï¿½t des Environs de Bree",
+        "gameText": "**Forï¿½t.** Des ï¿½vï¿½nements de dissimulation ne peuvent pas ï¿½tre jouï¿½s."
       },
       "de": {
         "title": "Wald des Breelandes",
-        "gameText": "**Wald.**Heimlichkeitsereignisse dürfen hier nicht gespielt werden."
+        "gameText": "**Wald.**Heimlichkeitsereignisse dï¿½rfen hier nicht gespielt werden."
       },
       "it": {
         "title": "Foresta di Brea",
@@ -553,20 +553,20 @@
         "gameText": "**River.** While only Hobbits are in the fellowship, there are no assignment and skirmish phases at Bucklebury Ferry."
       },
       "fr": {
-        "title": "Bac de Châteaubouc",
-        "gameText": "**Rivière.** Tant que la compagnie ne compte que des Hobbits, il n’y a pas de phase d’affectation ni de combats au Bac de Châteaubouc."
+        "title": "Bac de Chï¿½teaubouc",
+        "gameText": "**Riviï¿½re.** Tant que la compagnie ne compte que des Hobbits, il nï¿½y a pas de phase dï¿½affectation ni de combats au Bac de Chï¿½teaubouc."
       },
       "de": {
-        "title": "Bockenburg Fähre",
-        "gameText": "**Fluss.** Solange nur Hobbits in deiner Gemeinschaft sind, finden an der Bockenburg Fähre keine Zuweisungs- und Kampfphasen statt."
+        "title": "Bockenburg Fï¿½hre",
+        "gameText": "**Fluss.** Solange nur Hobbits in deiner Gemeinschaft sind, finden an der Bockenburg Fï¿½hre keine Zuweisungs- und Kampfphasen statt."
       },
       "it": {
         "title": "Traghetto di Buckburgo",
-        "gameText": "**Fiume.** Finché la Compagnia è composta solo da Hobbit, non vi sono assegnazioni e fasi di schermaglia al Traghetto di Buckburgo."
+        "gameText": "**Fiume.** Finchï¿½ la Compagnia ï¿½ composta solo da Hobbit, non vi sono assegnazioni e fasi di schermaglia al Traghetto di Buckburgo."
       },
       "es": {
         "title": "Balsadera de Gamoburgo",
-        "gameText": "**Río.** Mientras en la comunidad sólo haya Hobbits, no hay fase de asignación ni de escaramuza en Balsadera de Gamoburgo."
+        "gameText": "**Rï¿½o.** Mientras en la comunidad sï¿½lo haya Hobbits, no hay fase de asignaciï¿½n ni de escaramuza en Balsadera de Gamoburgo."
       }
     }
   },
@@ -591,11 +591,11 @@
       },
       "fr": {
         "title": "Landes d'Etten",
-        "gameText": "**Plaines.** **Combat :** Affaiblissez un compagnon ou un séide pour donner à ce personnage +2 en force."
+        "gameText": "**Plaines.** **Combat :** Affaiblissez un compagnon ou un sï¿½ide pour donner ï¿½ ce personnage +2 en force."
       },
       "de": {
-        "title": "Ettenöden",
-        "gameText": "**Ebene.** **Kampf** Strenge einen Gefährten oder Diener an, um diesem Charakter Stärke +2 zu geben."
+        "title": "Ettenï¿½den",
+        "gameText": "**Ebene.** **Kampf** Strenge einen Gefï¿½hrten oder Diener an, um diesem Charakter Stï¿½rke +2 zu geben."
       },
       "it": {
         "title": "Erenbrulli",
@@ -603,7 +603,7 @@
       },
       "es": {
         "title": "Landas de Etten",
-        "gameText": "**Llanura.** **Escaramuza:** Esfuerza un compañero o siervo para que ese personaje sea fuerza +2."
+        "gameText": "**Llanura.** **Escaramuza:** Esfuerza un compaï¿½ero o siervo para que ese personaje sea fuerza +2."
       }
     }
   },
@@ -625,15 +625,15 @@
       },
       "fr": {
         "title": "Marais de l'Eau-aux-Cousins",
-        "gameText": "**Marais.** Chaque fois qu’un Hobbit se déplace vers les Marais de l’Eau-aux-Cousins, ce Hobbit doit être affaibli."
+        "gameText": "**Marais.** Chaque fois quï¿½un Hobbit se dï¿½place vers les Marais de lï¿½Eau-aux-Cousins, ce Hobbit doit ï¿½tre affaibli."
       },
       "de": {
-        "title": "Mückenwassermoore",
-        "gameText": "**Sumpf.** Jedesmal, wenn ein Hobbit die Mückenwassermoore betritt, strenge diesen an."
+        "title": "Mï¿½ckenwassermoore",
+        "gameText": "**Sumpf.** Jedesmal, wenn ein Hobbit die Mï¿½ckenwassermoore betritt, strenge diesen an."
       },
       "it": {
         "title": "Paludi Chiane Ditteri",
-        "gameText": "**Palude.** Ogni volta che un Hobbit si muove verso Paludi Chiane Ditteri, quell’Hobbit deve sforzarsi."
+        "gameText": "**Palude.** Ogni volta che un Hobbit si muove verso Paludi Chiane Ditteri, quellï¿½Hobbit deve sforzarsi."
       },
       "es": {
         "title": "Pantanos de Moscagua",
@@ -659,18 +659,18 @@
       },
       "fr": {
         "title": "Landes de l'Eau-aux-Cousins",
-        "gameText": "**Plaines.** Chaque fois qu’un séide est joué, le joueur des Peuples Libres défausse une carte de sa main."
+        "gameText": "**Plaines.** Chaque fois quï¿½un sï¿½ide est jouï¿½, le joueur des Peuples Libres dï¿½fausse une carte de sa main."
       },
       "de": {
-        "title": "Mückenwasserödlande",
-        "gameText": "**Ebene.** Jedesmal, wenn ein Diener gespielt wird, muss der Freie Völker Spieler eine Karte aus seiner Hand ablegen."
+        "title": "Mï¿½ckenwasserï¿½dlande",
+        "gameText": "**Ebene.** Jedesmal, wenn ein Diener gespielt wird, muss der Freie Vï¿½lker Spieler eine Karte aus seiner Hand ablegen."
       },
       "it": {
         "title": "Brughiere delle Chiane Ditteri",
         "gameText": "**Pianure.** Ogni volta che viene giocato un servitore, il giocatore dei Popoli Liberi scarta una carta dalla mano."
       },
       "es": {
-        "title": "Páramos de Moscagua",
+        "title": "Pï¿½ramos de Moscagua",
         "gameText": "**Llanura.** Cada vez que se juega un siervo, el jugador de Gentes Libres descarta una carta de su mano."
       }
     }
@@ -692,12 +692,12 @@
         "gameText": "**Forest.** Each time you play a possession or artifact on your companion, draw a card."
       },
       "fr": {
-        "title": "Forêt du Bosquet des Trolls",
-        "gameText": "**Forêt.** Chaque fois que vous jouez une possession ou un artefact sur votre compagnon, piochez une carte."
+        "title": "Forï¿½t du Bosquet des Trolls",
+        "gameText": "**Forï¿½t.** Chaque fois que vous jouez une possession ou un artefact sur votre compagnon, piochez une carte."
       },
       "de": {
-        "title": "Trollhöhenwälder",
-        "gameText": "**Wald.** Jedesmal, wenn du eine Ausrüstungskarte oder ein Artefakt auf einen deiner Gefährten spielst, ziehe eine Karte."
+        "title": "Trollhï¿½henwï¿½lder",
+        "gameText": "**Wald.** Jedesmal, wenn du eine Ausrï¿½stungskarte oder ein Artefakt auf einen deiner Gefï¿½hrten spielst, ziehe eine Karte."
       },
       "it": {
         "title": "Foresta dei Troll",
@@ -705,7 +705,7 @@
       },
       "es": {
         "title": "Bosque de Los Trolls",
-        "gameText": "**Bosque.** Cada vez que juegas una posesión o un artefacto en tu compañero, roba una carta."
+        "gameText": "**Bosque.** Cada vez que juegas una posesiï¿½n o un artefacto en tu compaï¿½ero, roba una carta."
       }
     }
   },
@@ -723,23 +723,23 @@
     "i18n": {
       "en": {
         "title": "Weatherhills",
-        "gameText": "Each Nazgûl’s twilight cost is -1."
+        "gameText": "Each Nazgï¿½lï¿½s twilight cost is -1."
       },
       "fr": {
         "title": "Collines Venteuses",
-        "gameText": "Le coût crépusculaire de chaque Nazgûl est de -1."
+        "gameText": "Le coï¿½t crï¿½pusculaire de chaque Nazgï¿½l est de -1."
       },
       "de": {
         "title": "Wetterberge",
-        "gameText": "Die Zwielichtkosten für alle Nazgûl reduzieren sich um 1."
+        "gameText": "Die Zwielichtkosten fï¿½r alle Nazgï¿½l reduzieren sich um 1."
       },
       "it": {
         "title": "Colline Vento",
-        "gameText": "Sottrai -1 al costo crepuscolo di ogni Nazgûl."
+        "gameText": "Sottrai -1 al costo crepuscolo di ogni Nazgï¿½l."
       },
       "es": {
         "title": "Colinas del Tiempo",
-        "gameText": "El coste de penumbra de cada Nazgûl es -1."
+        "gameText": "El coste de penumbra de cada Nazgï¿½l es -1."
       }
     }
   },
@@ -757,23 +757,23 @@
     "i18n": {
       "en": {
         "title": "Weathertop",
-        "gameText": "Each Nazgûl at Weathertop is **fierce.**"
+        "gameText": "Each Nazgï¿½l at Weathertop is **fierce.**"
       },
       "fr": {
         "title": "Mont Venteux",
-        "gameText": "Chaque Nazgûl au Mont Venteux est **acharné.**"
+        "gameText": "Chaque Nazgï¿½l au Mont Venteux est **acharnï¿½.**"
       },
       "de": {
         "title": "Wetterspitze",
-        "gameText": "Nazgûl auf der Wetterspitze sind **erbittert.**"
+        "gameText": "Nazgï¿½l auf der Wetterspitze sind **erbittert.**"
       },
       "it": {
         "title": "Colle Vento",
-        "gameText": "Ogni Nazgûl a Colle Vento è **Feroce.**"
+        "gameText": "Ogni Nazgï¿½l a Colle Vento ï¿½ **Feroce.**"
       },
       "es": {
         "title": "Cima de Los Vientos",
-        "gameText": "Cada Nazgûl en la cima de los vientos es **fiero.**"
+        "gameText": "Cada Nazgï¿½l en la cima de los vientos es **fiero.**"
       }
     }
   },
@@ -795,7 +795,7 @@
       },
       "fr": {
         "title": "Place du Conseil",
-        "gameText": "**Sanctuaire.** Quand la compagnie se déplace de la Place du Conseil, retirez <symbol>twilight2</symbol>."
+        "gameText": "**Sanctuaire.** Quand la compagnie se dï¿½place de la Place du Conseil, retirez <symbol>twilight2</symbol>."
       },
       "de": {
         "title": "Der Ratshof",
@@ -825,23 +825,23 @@
     "i18n": {
       "en": {
         "title": "Ford of Bruinen",
-        "gameText": "**River.** **Sanctuary.** The twilight cost of the first Nazgûl played at Ford of Bruinen each turn is -5."
+        "gameText": "**River.** **Sanctuary.** The twilight cost of the first Nazgï¿½l played at Ford of Bruinen each turn is -5."
       },
       "fr": {
-        "title": "Gué de Bruinen",
-        "gameText": "**Rivière.** **Sanctuaire.** À chaque tour, le coût crépusculaire du premier Nazgûl joué au Gué de Bruinen est de -5."
+        "title": "Guï¿½ de Bruinen",
+        "gameText": "**Riviï¿½re.** **Sanctuaire.** ï¿½ chaque tour, le coï¿½t crï¿½pusculaire du premier Nazgï¿½l jouï¿½ au Guï¿½ de Bruinen est de -5."
       },
       "de": {
         "title": "Bruinenfurt",
-        "gameText": "**Fluss.** **Zuflucht.** Die Zwielichtkosten des ersten Nazgûl, der an die Bruinenfurt gespielt wird, verringern sich um 5."
+        "gameText": "**Fluss.** **Zuflucht.** Die Zwielichtkosten des ersten Nazgï¿½l, der an die Bruinenfurt gespielt wird, verringern sich um 5."
       },
       "it": {
         "title": "Guado del Bruinen",
-        "gameText": "**Fiume.** Sottrai -5 al costo crepuscolo del primo Nazgûl giocato al Guado del Bruinen in ciascun turno."
+        "gameText": "**Fiume.** Sottrai -5 al costo crepuscolo del primo Nazgï¿½l giocato al Guado del Bruinen in ciascun turno."
       },
       "es": {
         "title": "Vado del Bruinen",
-        "gameText": "**Río.** Refugio. El coste de penumbra del primer Nazgûl jugado cada turno en el Vado del Bruinen es -5."
+        "gameText": "**Rï¿½o.** Refugio. El coste de penumbra del primer Nazgï¿½l jugado cada turno en el Vado del Bruinen es -5."
       }
     }
   },
@@ -939,7 +939,7 @@
         "gameText": "**Sanctuary.** **Fellowship:** Play an Elf to draw a card."
       },
       "fr": {
-        "title": "Vallée de Fondcombe",
+        "title": "Vallï¿½e de Fondcombe",
         "gameText": "**Sanctuaire.** **Compagnie :** Jouez un Elfe pour piocher une carte."
       },
       "de": {
@@ -974,19 +974,19 @@
       },
       "fr": {
         "title": "Chute de Fondcombe",
-        "gameText": "**Forêt.** **Sanctuaire.** Si vous pouvez désigner un rôdeur à la Chute de Fondcombe, la limite de déplacement est de +1 pour ce tour."
+        "gameText": "**Forï¿½t.** **Sanctuaire.** Si vous pouvez dï¿½signer un rï¿½deur ï¿½ la Chute de Fondcombe, la limite de dï¿½placement est de +1 pour ce tour."
       },
       "de": {
         "title": "Der Wasserfall von Bruchtal",
-        "gameText": "**Wald.** **Zuflucht.** Solange du hier einen Waldläufer entdecken kannst, erhöht sich deine Bewegungsweite für diesen Spielzug um 1."
+        "gameText": "**Wald.** **Zuflucht.** Solange du hier einen Waldlï¿½ufer entdecken kannst, erhï¿½ht sich deine Bewegungsweite fï¿½r diesen Spielzug um 1."
       },
       "it": {
         "title": "Cascate di Gran Burrone",
-        "gameText": "**Foresta.** **Rifugio.** Finché puoi avvistare un Ramingo alle Cascate di Gran Burrone, aggiungi +1 al limite dei movimenti per questo turno."
+        "gameText": "**Foresta.** **Rifugio.** Finchï¿½ puoi avvistare un Ramingo alle Cascate di Gran Burrone, aggiungi +1 al limite dei movimenti per questo turno."
       },
       "es": {
         "title": "Catarata de Rivendel",
-        "gameText": "**Bosque.** Refugio. Mientras puedas avistar un montaraz en la Catarata de Rivendel, el límite de movimiento para este turno es +1."
+        "gameText": "**Bosque.** Refugio. Mientras puedas avistar un montaraz en la Catarata de Rivendel, el lï¿½mite de movimiento para este turno es +1."
       }
     }
   },
@@ -1011,11 +1011,11 @@
       },
       "fr": {
         "title": "Tombe de Balin",
-        "gameText": "**Souterrain.** **Manœuvre :** Défaussez un récit en jeu ou de votre main pour guérir votre compagnon."
+        "gameText": "**Souterrain.** **Manï¿½uvre :** Dï¿½faussez un rï¿½cit en jeu ou de votre main pour guï¿½rir votre compagnon."
       },
       "de": {
         "title": "Balins Grab",
-        "gameText": "**Unterirdisch.** **Manöver:** Lege eine Erzählung aus dem Spiel oder aus deiner Hand ab, um einen deiner Gefährten zu heilen."
+        "gameText": "**Unterirdisch.** **Manï¿½ver:** Lege eine Erzï¿½hlung aus dem Spiel oder aus deiner Hand ab, um einen deiner Gefï¿½hrten zu heilen."
       },
       "it": {
         "title": "Tomba di Balin",
@@ -1023,7 +1023,7 @@
       },
       "es": {
         "title": "La Tumba de Balin",
-        "gameText": "**Subterráneo.** **Maniobra:** Descarta un cuento del juego o de la mano para curar a un compañero."
+        "gameText": "**Subterrï¿½neo.** **Maniobra:** Descarta un cuento del juego o de la mano para curar a un compaï¿½ero."
       }
     }
   },
@@ -1045,19 +1045,19 @@
       },
       "fr": {
         "title": "Chambre de Cavenain",
-        "gameText": "**Souterrain.** Quand la compagnie se déplace jusqu’à la Chambre de Cavenain, Gimli ou 2 autres compagnons doivent être affaiblis."
+        "gameText": "**Souterrain.** Quand la compagnie se dï¿½place jusquï¿½ï¿½ la Chambre de Cavenain, Gimli ou 2 autres compagnons doivent ï¿½tre affaiblis."
       },
       "de": {
         "title": "Kammer in der Zwergenbinge",
-        "gameText": "**Unterirdisch.** Wenn die Gemeinschaft diesen Ort betritt, strenge Gimli oder 2 beliebige andere Gefährten an."
+        "gameText": "**Unterirdisch.** Wenn die Gemeinschaft diesen Ort betritt, strenge Gimli oder 2 beliebige andere Gefï¿½hrten an."
       },
       "it": {
         "title": "Camera del Nanosterro",
         "gameText": "**Sotterraneo.** Quando la Compagnia si muove verso la Camera del Nanosterro, Gimli o altri 2 compagni devono sforzarsi."
       },
       "es": {
-        "title": "Cámara de La Mina del Enano",
-        "gameText": "**Subterráneo.** Cuando la comunidad se mueve a la Cámara de la Mina del Enano, Gimli o otros 2 compañeros deben esforzarse."
+        "title": "Cï¿½mara de La Mina del Enano",
+        "gameText": "**Subterrï¿½neo.** Cuando la comunidad se mueve a la Cï¿½mara de la Mina del Enano, Gimli o otros 2 compaï¿½eros deben esforzarse."
       }
     }
   },
@@ -1082,7 +1082,7 @@
       },
       "fr": {
         "title": "Mine de Mithril",
-        "gameText": "**Souterrain.** Ombre : Retirez <symbol>twilight1</symbol> pour jouer une arme de l’Ombre de votre pile de défausse."
+        "gameText": "**Souterrain.** Ombre : Retirez <symbol>twilight1</symbol> pour jouer une arme de lï¿½Ombre de votre pile de dï¿½fausse."
       },
       "de": {
         "title": "Mithrilmine",
@@ -1090,11 +1090,11 @@
       },
       "it": {
         "title": "Miniera di Mithril",
-        "gameText": "**Sotterraneo.** **Ombra:** Rimuovi <symbol>twilight1</symbol> per giocare un’arma Ombra dalla tua pila degli scarti."
+        "gameText": "**Sotterraneo.** **Ombra:** Rimuovi <symbol>twilight1</symbol> per giocare unï¿½arma Ombra dalla tua pila degli scarti."
       },
       "es": {
         "title": "Mina de Mithril",
-        "gameText": "**Subterráneo.** **Sombra:** Quita <symbol>twilight1</symbol> para jugar un arma de Sombra de tu pila de descartes."
+        "gameText": "**Subterrï¿½neo.** **Sombra:** Quita <symbol>twilight1</symbol> para jugar un arma de Sombra de tu pila de descartes."
       }
     }
   },
@@ -1116,11 +1116,11 @@
       },
       "fr": {
         "title": "Lac de la Moria",
-        "gameText": "**Marais.** Quand la compagnie se déplace jusqu’au Lac de la Moria, Frodon ou 2 autres compagnons doivent être affaiblis."
+        "gameText": "**Marais.** Quand la compagnie se dï¿½place jusquï¿½au Lac de la Moria, Frodon ou 2 autres compagnons doivent ï¿½tre affaiblis."
       },
       "de": {
         "title": "Stausee von Moria",
-        "gameText": "**Sumpf.** Wenn die Gemeinschaft den Stausee von Moria erreicht, strenge Frodo oder 2 beliebige andere Gefährten an."
+        "gameText": "**Sumpf.** Wenn die Gemeinschaft den Stausee von Moria erreicht, strenge Frodo oder 2 beliebige andere Gefï¿½hrten an."
       },
       "it": {
         "title": "Lago di Moria",
@@ -1128,7 +1128,7 @@
       },
       "es": {
         "title": "Lago de Moria",
-        "gameText": "**Pantano.** Cuando la comunidad se mueve al Lago de Moria, Frodo o otros 2 compañeros deben esforzarse."
+        "gameText": "**Pantano.** Cuando la comunidad se mueve al Lago de Moria, Frodo o otros 2 compaï¿½eros deben esforzarse."
       }
     }
   },
@@ -1150,19 +1150,19 @@
       },
       "fr": {
         "title": "Escalier de la Moria",
-        "gameText": "**Souterrain.** Chaque compagnon et séide portant une arme de mêlée inflige des **dégâts +1.**"
+        "gameText": "**Souterrain.** Chaque compagnon et sï¿½ide portant une arme de mï¿½lï¿½e inflige des **dï¿½gï¿½ts +1.**"
       },
       "de": {
         "title": "Die Treppen von Moria",
-        "gameText": "**Unterirdisch.** Alle Gefährten und Diener, die eine Handwaffe haben, erhalten **Schaden +1.**"
+        "gameText": "**Unterirdisch.** Alle Gefï¿½hrten und Diener, die eine Handwaffe haben, erhalten **Schaden +1.**"
       },
       "it": {
         "title": "Le Scale di Moria",
-        "gameText": "Sotteraneo. Ogni compagno e servitore che trasporti un’arma da mischia ha **Danno +1.**"
+        "gameText": "Sotteraneo. Ogni compagno e servitore che trasporti unï¿½arma da mischia ha **Danno +1.**"
       },
       "es": {
         "title": "Escalera de Moria",
-        "gameText": "**Subterráneo.** Cada compañero y siervo que lleve un arma de mano es **Daño +1.**"
+        "gameText": "**Subterrï¿½neo.** Cada compaï¿½ero y siervo que lleve un arma de mano es **Daï¿½o +1.**"
       }
     }
   },
@@ -1187,7 +1187,7 @@
       },
       "fr": {
         "title": "Col de Caradhras",
-        "gameText": "**Montagne.** Ombre : Désignez un séide <symbol>isengard</symbol> pour jouer une carte de climat de votre pioche (limité à une par tour)."
+        "gameText": "**Montagne.** Ombre : Dï¿½signez un sï¿½ide <symbol>isengard</symbol> pour jouer une carte de climat de votre pioche (limitï¿½ ï¿½ une par tour)."
       },
       "de": {
         "title": "Rothornpass",
@@ -1199,7 +1199,7 @@
       },
       "es": {
         "title": "Paso del Caradhras",
-        "gameText": "**Montaña.** **Sombra:** Avista un siervo <symbol>isengard</symbol> para jugar una carta de clima de tu mazo de robar (límite una vez por turno)."
+        "gameText": "**Montaï¿½a.** **Sombra:** Avista un siervo <symbol>isengard</symbol> para jugar una carta de clima de tu mazo de robar (lï¿½mite una vez por turno)."
       }
     }
   },
@@ -1219,24 +1219,24 @@
     "imageUrl": "/cards_visuals/o_01_349.jpg",
     "i18n": {
       "en": {
-        "title": "The Bridge of Khazad-dûm",
-        "gameText": "**Underground.** **Shadow:** Play The Balrog from your draw deck or hand; The Balrog’s twilight cost is -6."
+        "title": "The Bridge of Khazad-dï¿½m",
+        "gameText": "**Underground.** **Shadow:** Play The Balrog from your draw deck or hand; The Balrogï¿½s twilight cost is -6."
       },
       "fr": {
-        "title": "Le Pont de Khazad-dûm",
-        "gameText": "**Souterrain.** Ombre : Jouez le Balrog de votre pioche ou de votre main ; le coût crépusculaire du Balrog est de -6."
+        "title": "Le Pont de Khazad-dï¿½m",
+        "gameText": "**Souterrain.** Ombre : Jouez le Balrog de votre pioche ou de votre main ; le coï¿½t crï¿½pusculaire du Balrog est de -6."
       },
       "de": {
-        "title": "Die Brücke von Khazad-dûm",
+        "title": "Die Brï¿½cke von Khazad-dï¿½m",
         "gameText": "**Unterirdisch.** **Schatten:** Spiele den Balrog direkt aus deinem Spieldeck oder deiner Hand; die Kosten reduzieren sich um 6."
       },
       "it": {
-        "title": "Il Ponte di Khazad-dûm",
+        "title": "Il Ponte di Khazad-dï¿½m",
         "gameText": "Sotteraneo. **Ombra:** Gioca il Balrog dal tuo mazzo di gioco o dalla mano; sottrai -6 al costo crepuscolo del Balrog."
       },
       "es": {
-        "title": "El Puente de Khazad-dûm",
-        "gameText": "**Subterráneo.** **Sombra:** Juega El Balrog de tu mazo de robar o de tu mano; el coste de penumbra de El Balrog es -6."
+        "title": "El Puente de Khazad-dï¿½m",
+        "gameText": "**Subterrï¿½neo.** **Sombra:** Juega El Balrog de tu mazo de robar o de tu mano; el coste de penumbra de El Balrog es -6."
       }
     }
   },
@@ -1257,8 +1257,8 @@
         "gameText": "**Sanctuary.** The twilight cost of the first <symbol>moria</symbol> Orc played each Shadow phase is -2."
       },
       "fr": {
-        "title": "Vallée des Rigoles Sombres",
-        "gameText": "**Sanctuaire.** Le coût crépusculaire du premier Orque <symbol>moria</symbol> joué à chaque phase de l’Ombre est de -2."
+        "title": "Vallï¿½e des Rigoles Sombres",
+        "gameText": "**Sanctuaire.** Le coï¿½t crï¿½pusculaire du premier Orque <symbol>moria</symbol> jouï¿½ ï¿½ chaque phase de lï¿½Ombre est de -2."
       },
       "de": {
         "title": "Schattenbachtal",
@@ -1291,11 +1291,11 @@
     "i18n": {
       "en": {
         "title": "Galadriel's Glade",
-        "gameText": "**Sanctuary.** **Fellowship:** Exert an Elf to look at an opponent’s hand."
+        "gameText": "**Sanctuary.** **Fellowship:** Exert an Elf to look at an opponentï¿½s hand."
       },
       "fr": {
-        "title": "Clairière de Galadriel",
-        "gameText": "**Sanctuaire.** **Compagnie :** Affaiblissez un Elfe pour regarder la main d’un adversaire."
+        "title": "Clairiï¿½re de Galadriel",
+        "gameText": "**Sanctuaire.** **Compagnie :** Affaiblissez un Elfe pour regarder la main dï¿½un adversaire."
       },
       "de": {
         "title": "Galadriels Lichtung",
@@ -1324,23 +1324,23 @@
     "imageUrl": "/cards_visuals/o_01_352.jpg",
     "i18n": {
       "en": {
-        "title": "Lothlórien Woods",
+        "title": "Lothlï¿½rien Woods",
         "gameText": "**Forest.** **Sanctuary.** Each ally whose home is site 6 is strength +3."
       },
       "fr": {
-        "title": "Les Bois de Lothlórien",
-        "gameText": "**Forêt.** **Sanctuaire.** Chaque allié dont la demeure est un site 6 a +3 en force."
+        "title": "Les Bois de Lothlï¿½rien",
+        "gameText": "**Forï¿½t.** **Sanctuaire.** Chaque alliï¿½ dont la demeure est un site 6 a +3 en force."
       },
       "de": {
-        "title": "Der Wald von Lothlórien",
-        "gameText": "**Wald.** **Zuflucht.** Alle Verbündeten mit Heimatort 6 erhalten Stärke +3."
+        "title": "Der Wald von Lothlï¿½rien",
+        "gameText": "**Wald.** **Zuflucht.** Alle Verbï¿½ndeten mit Heimatort 6 erhalten Stï¿½rke +3."
       },
       "it": {
-        "title": "Boschi di Lothlórien",
+        "title": "Boschi di Lothlï¿½rien",
         "gameText": "**Foresta.** **Rifugio.** Ogni alleato la cui casa sia il sito 6 aggiunge +3 alla forza."
       },
       "es": {
-        "title": "Bosques de Lothlórien",
+        "title": "Bosques de Lothlï¿½rien",
         "gameText": "**Bosque.** Refugio. Cada aliado cuyo hogar sea el sitio 6 es fuerza +3."
       }
     }
@@ -1363,19 +1363,19 @@
       },
       "fr": {
         "title": "Confluent de l'Anduin",
-        "gameText": "**Rivière.** Quand la compagnie se déplace jusqu’au Confluent de l’Anduin, défaussez tous les alliés."
+        "gameText": "**Riviï¿½re.** Quand la compagnie se dï¿½place jusquï¿½au Confluent de lï¿½Anduin, dï¿½faussez tous les alliï¿½s."
       },
       "de": {
         "title": "Der Zusammenfluss des Anduin",
-        "gameText": "**Fluss.** Wenn sich die Gemeinschaft zum Zusammenfluss des Anduin bewegt, lege alle Verbündeten ab."
+        "gameText": "**Fluss.** Wenn sich die Gemeinschaft zum Zusammenfluss des Anduin bewegt, lege alle Verbï¿½ndeten ab."
       },
       "it": {
         "title": "Confluenza dell'Anduin",
-        "gameText": "**Fiume.** Quando la Compagnia si muove alla Confluenza dell’Anduin, scarta tutti gli alleati."
+        "gameText": "**Fiume.** Quando la Compagnia si muove alla Confluenza dellï¿½Anduin, scarta tutti gli alleati."
       },
       "es": {
         "title": "Confluencia del Anduin",
-        "gameText": "**Río.** Cuando la comunidad se mueve a la Confluencia del Anduin, descarta cada aliado."
+        "gameText": "**Rï¿½o.** Cuando la comunidad se mueve a la Confluencia del Anduin, descarta cada aliado."
       }
     }
   },
@@ -1396,20 +1396,20 @@
         "gameText": "**Forest.** **River.** While the fellowship is at Anduin Wilderland, skip the archery phase."
       },
       "fr": {
-        "title": "Contrée Sauvage de l'Anduin",
-        "gameText": "**Forêt.** **Rivière.** Tant que la compagnie est dans la Contrée Sauvage de l’Anduin, passez la phase d’archerie."
+        "title": "Contrï¿½e Sauvage de l'Anduin",
+        "gameText": "**Forï¿½t.** **Riviï¿½re.** Tant que la compagnie est dans la Contrï¿½e Sauvage de lï¿½Anduin, passez la phase dï¿½archerie."
       },
       "de": {
         "title": "Das Anduin Wilderland",
-        "gameText": "**Wald.** **Fluss.** Überspringe die Fernkampfphase, solange sich die Gemeinschaft im Anduin Wilderland aufhält."
+        "gameText": "**Wald.** **Fluss.** ï¿½berspringe die Fernkampfphase, solange sich die Gemeinschaft im Anduin Wilderland aufhï¿½lt."
       },
       "it": {
         "title": "Anduin delle Terre Selvagge",
-        "gameText": "**Foresta.** **Fiume.** Finché la Compagnia è ad Anduin delle Terre Selvagge, salta la fase degli arcieri."
+        "gameText": "**Foresta.** **Fiume.** Finchï¿½ la Compagnia ï¿½ ad Anduin delle Terre Selvagge, salta la fase degli arcieri."
       },
       "es": {
         "title": "Tierras Salvajes del Anduin",
-        "gameText": "**Bosque.** **Río.** Mientras la comunidad este en las Tierras Salvajes del Anduin, sáltate la fase de arquería."
+        "gameText": "**Bosque.** **Rï¿½o.** Mientras la comunidad este en las Tierras Salvajes del Anduin, sï¿½ltate la fase de arquerï¿½a."
       }
     }
   },
@@ -1431,19 +1431,19 @@
       },
       "fr": {
         "title": "Berges du Cours d'Argent",
-        "gameText": "**Rivière.** Quand la compagnie se déplace jusqu’aux Berges du Cours d’Argent sans un rôdeur, chaque compagnon doit être affaibli."
+        "gameText": "**Riviï¿½re.** Quand la compagnie se dï¿½place jusquï¿½aux Berges du Cours dï¿½Argent sans un rï¿½deur, chaque compagnon doit ï¿½tre affaibli."
       },
       "de": {
         "title": "Die Ufer des Silberlauf",
-        "gameText": "**Fluss.** Wenn die Gemeinschaft die Ufer des Silberlauf ohne Waldläufer erreicht, muss jeder Gefährte angestrengt werden."
+        "gameText": "**Fluss.** Wenn die Gemeinschaft die Ufer des Silberlauf ohne Waldlï¿½ufer erreicht, muss jeder Gefï¿½hrte angestrengt werden."
       },
       "it": {
         "title": "Argini dell'Argentaroggia",
-        "gameText": "**Fiume.** Quando la Compagnia si muove agli Argini dell’Argenta-roggia senza un Ramingo, ogni compagno deve sforzarsi."
+        "gameText": "**Fiume.** Quando la Compagnia si muove agli Argini dellï¿½Argenta-roggia senza un Ramingo, ogni compagno deve sforzarsi."
       },
       "es": {
         "title": "Orillas del Cauce de Plata",
-        "gameText": "**Río.** Cuando la comunidad se mueve a las Orillas del Cauce de Plata sin un montaraz, cada compañero debe esforzarse."
+        "gameText": "**Rï¿½o.** Cuando la comunidad se mueve a las Orillas del Cauce de Plata sin un montaraz, cada compaï¿½ero debe esforzarse."
       }
     }
   },
@@ -1465,11 +1465,11 @@
       },
       "fr": {
         "title": "Berges de l'Anduin",
-        "gameText": "**Rivière.** Pour chaque compagnon dans la compagnie au delà de 4, ajoutez 2 au total d’archerie des séides."
+        "gameText": "**Riviï¿½re.** Pour chaque compagnon dans la compagnie au delï¿½ de 4, ajoutez 2 au total dï¿½archerie des sï¿½ides."
       },
       "de": {
         "title": "Die Ufer des Anduin",
-        "gameText": "**Fluss.**Bei mehr als 4 Gefährten, erhöhe den Fernkampfwert der Diener um 2 für jeden Gefährten über 4."
+        "gameText": "**Fluss.**Bei mehr als 4 Gefï¿½hrten, erhï¿½he den Fernkampfwert der Diener um 2 fï¿½r jeden Gefï¿½hrten ï¿½ber 4."
       },
       "it": {
         "title": "Argine dell'Anduin",
@@ -1477,7 +1477,7 @@
       },
       "es": {
         "title": "Orillas del Anduin",
-        "gameText": "**Río.** Por cada compañero en la comunidad por encima de 4, añade 2 al total de arquería de los siervos."
+        "gameText": "**Rï¿½o.** Por cada compaï¿½ero en la comunidad por encima de 4, aï¿½ade 2 al total de arquerï¿½a de los siervos."
       }
     }
   },
@@ -1499,11 +1499,11 @@
       },
       "fr": {
         "title": "Terres Brunes",
-        "gameText": "**Rivière.** Pour chaque séide archer dans les Terres Brunes, le total d’archerie des séides est de +1 (limité à +4)."
+        "gameText": "**Riviï¿½re.** Pour chaque sï¿½ide archer dans les Terres Brunes, le total dï¿½archerie des sï¿½ides est de +1 (limitï¿½ ï¿½ +4)."
       },
       "de": {
         "title": "Die Braunen Lande",
-        "gameText": "**Fluss.**Für jeden Bogenschützen der Diener in den Braunen Landen erhöht sich der Fernkampfwert der Diener um 1 (maximal +4)."
+        "gameText": "**Fluss.**Fï¿½r jeden Bogenschï¿½tzen der Diener in den Braunen Landen erhï¿½ht sich der Fernkampfwert der Diener um 1 (maximal +4)."
       },
       "it": {
         "title": "Terre Brune",
@@ -1511,7 +1511,7 @@
       },
       "es": {
         "title": "Tierras Brunas",
-        "gameText": "**Río.** Por cada siervo arquero en las Tierras Brunas, el total de arquería de los siervos es +1 (límite +4)."
+        "gameText": "**Rï¿½o.** Por cada siervo arquero en las Tierras Brunas, el total de arquerï¿½a de los siervos es +1 (lï¿½mite +4)."
       }
     }
   },
@@ -1536,11 +1536,11 @@
       },
       "fr": {
         "title": "Piliers des Rois",
-        "gameText": "**Rivière.** **Compagnie :** Défaussez une carte <symbol>gondor</symbol> de votre main pour guérir un compagnon <symbol>gondor</symbol>."
+        "gameText": "**Riviï¿½re.** **Compagnie :** Dï¿½faussez une carte <symbol>gondor</symbol> de votre main pour guï¿½rir un compagnon <symbol>gondor</symbol>."
       },
       "de": {
-        "title": "Die Säulen der Könige",
-        "gameText": "**Fluss.** **Gemeinschaft.** Lege eine <symbol>gondor</symbol> Karte aus deiner Hand ab, um einen <symbol>gondor</symbol> Gefährten zu heilen."
+        "title": "Die Sï¿½ulen der Kï¿½nige",
+        "gameText": "**Fluss.** **Gemeinschaft.** Lege eine <symbol>gondor</symbol> Karte aus deiner Hand ab, um einen <symbol>gondor</symbol> Gefï¿½hrten zu heilen."
       },
       "it": {
         "title": "Colonne dei Re",
@@ -1548,7 +1548,7 @@
       },
       "es": {
         "title": "Pilares de Los Reyes",
-        "gameText": "**Río.** **Comunidad:** Descarta una carta <symbol>gondor</symbol> de tu mano para curar un compañero <symbol>gondor</symbol>."
+        "gameText": "**Rï¿½o.** **Comunidad:** Descarta una carta <symbol>gondor</symbol> de tu mano para curar un compaï¿½ero <symbol>gondor</symbol>."
       }
     }
   },
@@ -1573,11 +1573,11 @@
       },
       "fr": {
         "title": "Rivages de Nen Hithoel",
-        "gameText": "**Rivière.** Ombre : Désignez 5 séides Orques pour empêcher la compagnie de se déplacer à nouveau ce tour-ci."
+        "gameText": "**Riviï¿½re.** Ombre : Dï¿½signez 5 sï¿½ides Orques pour empï¿½cher la compagnie de se dï¿½placer ï¿½ nouveau ce tour-ci."
       },
       "de": {
         "title": "Die Ufer von Nen Hithoel",
-        "gameText": "**Fluss.** **Schatten:** Entdecke 5 Orkdiener, um die Gemeinschaft für diesen Spielzug am Weiterreisen zu hindern."
+        "gameText": "**Fluss.** **Schatten:** Entdecke 5 Orkdiener, um die Gemeinschaft fï¿½r diesen Spielzug am Weiterreisen zu hindern."
       },
       "it": {
         "title": "Sponde del Nen Hithoel",
@@ -1585,7 +1585,7 @@
       },
       "es": {
         "title": "Orillas de Nen Hithoel",
-        "gameText": "**Río.** **Sombra:** Avista 5 siervos Orcos para impedir que la comunidad se mueva otra vez este turno."
+        "gameText": "**Rï¿½o.** **Sombra:** Avista 5 siervos Orcos para impedir que la comunidad se mueva otra vez este turno."
       }
     }
   },
@@ -1610,11 +1610,11 @@
       },
       "fr": {
         "title": "Emyn Muil",
-        "gameText": "**Manœuvre :** Affaiblissez un séide pour rendre ce séide **acharné** jusqu’à la phase de ralliement."
+        "gameText": "**Manï¿½uvre :** Affaiblissez un sï¿½ide pour rendre ce sï¿½ide **acharnï¿½** jusquï¿½ï¿½ la phase de ralliement."
       },
       "de": {
         "title": "Emyn Muil",
-        "gameText": "**Manöver:** Strenge einen Diener an, um diesen bis zur Sammelphase **erbittert** zu machen."
+        "gameText": "**Manï¿½ver:** Strenge einen Diener an, um diesen bis zur Sammelphase **erbittert** zu machen."
       },
       "it": {
         "title": "Emyn Muil",
@@ -1622,7 +1622,7 @@
       },
       "es": {
         "title": "Emyn Muil",
-        "gameText": "**Maniobra:** Esfuerza un siervo para dar **fiero** a ese siervo hasta la fase de reagrupación."
+        "gameText": "**Maniobra:** Esfuerza un siervo para dar **fiero** a ese siervo hasta la fase de reagrupaciï¿½n."
       }
     }
   },
@@ -1644,10 +1644,10 @@
       },
       "fr": {
         "title": "Pentes d'Amon Hen",
-        "gameText": "Le coût crépusculaire de chaque séide <symbol>isengard</symbol> est de -1."
+        "gameText": "Le coï¿½t crï¿½pusculaire de chaque sï¿½ide <symbol>isengard</symbol> est de -1."
       },
       "de": {
-        "title": "Die Hänge des Amon Hen",
+        "title": "Die Hï¿½nge des Amon Hen",
         "gameText": "Die Zwielichtkosten aller <symbol>isengard</symbol> Diener verringern sich um 1."
       },
       "it": {
@@ -1678,15 +1678,15 @@
       },
       "fr": {
         "title": "Sommet d'Amon Hen",
-        "gameText": "Quand la compagnie se déplace jusqu’au Sommet, chaque joueur de l’Ombre peut piocher une carte pour chaque point-fardeau."
+        "gameText": "Quand la compagnie se dï¿½place jusquï¿½au Sommet, chaque joueur de lï¿½Ombre peut piocher une carte pour chaque point-fardeau."
       },
       "de": {
         "title": "Der Gipfel des Amon Hen",
-        "gameText": "Wenn die Gemeinschaft den Gipfel des Amon Hen erreicht, darf jeder Schattenspieler eine Karte für jede Lastmarke ziehen."
+        "gameText": "Wenn die Gemeinschaft den Gipfel des Amon Hen erreicht, darf jeder Schattenspieler eine Karte fï¿½r jede Lastmarke ziehen."
       },
       "it": {
         "title": "Cima di Amon Hen",
-        "gameText": "Quando la Compagnia si muove sulla Cima di Amon Hen, ogni giocatore Ombra può pescare una carta per ogni segnalino fardello."
+        "gameText": "Quando la Compagnia si muove sulla Cima di Amon Hen, ogni giocatore Ombra puï¿½ pescare una carta per ogni segnalino fardello."
       },
       "es": {
         "title": "Cima de Amon Hen",
@@ -1715,7 +1715,7 @@
       },
       "fr": {
         "title": "Tol Brandir",
-        "gameText": "**Rivière.** Ombre : Jouez jusqu’à 3 traqueurs de votre pile de défausse ; terminez votre phase de l’**Ombre.**"
+        "gameText": "**Riviï¿½re.** Ombre : Jouez jusquï¿½ï¿½ 3 traqueurs de votre pile de dï¿½fausse ; terminez votre phase de lï¿½**Ombre.**"
       },
       "de": {
         "title": "Tol Brandir",
@@ -1727,7 +1727,7 @@
       },
       "es": {
         "title": "Tol Brandir",
-        "gameText": "**Río.** **Sombra:** Juega hasta 3 rastreadores de tu pila de descartes; finaliza tu fase de **Sombra.**"
+        "gameText": "**Rï¿½o.** **Sombra:** Juega hasta 3 rastreadores de tu pila de descartes; finaliza tu fase de **Sombra.**"
       }
     }
   },
@@ -1785,19 +1785,19 @@
     "i18n": {
       "en": {
         "title": "Hobbiton Woods",
-        "gameText": "**Forest.** **Fellowship:** Exert a Hobbit to play your site 2 (replacing opponent’s site if necessary)."
+        "gameText": "**Forest.** **Fellowship:** Exert a Hobbit to play your site 2 (replacing opponentï¿½s site if necessary)."
       },
       "fr": {
         "title": "Bois de Hobbitebourg",
-        "gameText": "**Forêt.****Compagnie :** Affaiblissez un Hobbit pour jouer votre site 2 (en remplaçant le site d’un adversaire si nécessaire)."
+        "gameText": "**Forï¿½t.****Compagnie :** Affaiblissez un Hobbit pour jouer votre site 2 (en remplaï¿½ant le site dï¿½un adversaire si nï¿½cessaire)."
       },
       "de": {
         "title": "Hobbinger Wald",
-        "gameText": "**Wald.****Gemeinschaft.** Strenge einen Hobbit an, um deinen Ort 2 zu spielen (und nötigenfalls eine vorhandene Ortskarte zu ersetzen)."
+        "gameText": "**Wald.****Gemeinschaft.** Strenge einen Hobbit an, um deinen Ort 2 zu spielen (und nï¿½tigenfalls eine vorhandene Ortskarte zu ersetzen)."
       },
       "it": {
         "title": "Boschi di Hobbiville",
-        "gameText": "**Foresta.****Compagnia:** Sforza un Hobbit per giocare il tuo sito 2 (rimpiazzando il sito dell’avversario, se necessario)."
+        "gameText": "**Foresta.****Compagnia:** Sforza un Hobbit per giocare il tuo sito 2 (rimpiazzando il sito dellï¿½avversario, se necessario)."
       },
       "es": {
         "title": "Bosques de Hobbiton",
@@ -1826,14 +1826,14 @@
       },
       "fr": {
         "title": "Place Publique",
-        "gameText": "**Compagnie :** Jouez un allié <symbol>shire</symbol> pour piocher une carte."
+        "gameText": "**Compagnie :** Jouez un alliï¿½ <symbol>shire</symbol> pour piocher une carte."
       },
       "de": {
         "title": "Stadtzentrum",
-        "gameText": "**Gemeinschaft.** Spiele einen <symbol>shire</symbol> Verbündeten, um eine Karte zu ziehen."
+        "gameText": "**Gemeinschaft.** Spiele einen <symbol>shire</symbol> Verbï¿½ndeten, um eine Karte zu ziehen."
       },
       "it": {
-        "title": "Centro della Città",
+        "title": "Centro della Cittï¿½",
         "gameText": "**Compagnia:** Gioca un alleato <symbol>shire</symbol> per pescare una carta."
       },
       "es": {
@@ -1860,11 +1860,11 @@
       },
       "fr": {
         "title": "Grand Gouffre",
-        "gameText": "**Souterrain.**Le coût crépusculaire du premier archer <symbol>moria</symbol> joué à chaque tour est de -2."
+        "gameText": "**Souterrain.**Le coï¿½t crï¿½pusculaire du premier archer <symbol>moria</symbol> jouï¿½ ï¿½ chaque tour est de -2."
       },
       "de": {
-        "title": "Die große Kluft",
-        "gameText": "**Unterirdisch.**Die Zwielichtkosten des ersten <symbol>moria</symbol> Bogenschützen, der in jeder Schattenphase gespielt wird, reduzieren sich um 2."
+        "title": "Die groï¿½e Kluft",
+        "gameText": "**Unterirdisch.**Die Zwielichtkosten des ersten <symbol>moria</symbol> Bogenschï¿½tzen, der in jeder Schattenphase gespielt wird, reduzieren sich um 2."
       },
       "it": {
         "title": "Il Grande Abisso",
@@ -1872,7 +1872,7 @@
       },
       "es": {
         "title": "Gran abismo",
-        "gameText": "**Subterráneo.**El coste de penumbra del primer arquero <symbol>moria</symbol> jugado durante cada fase de sombra es -2."
+        "gameText": "**Subterrï¿½neo.**El coste de penumbra del primer arquero <symbol>moria</symbol> jugado durante cada fase de sombra es -2."
       }
     }
   },
@@ -1894,7 +1894,7 @@
       },
       "fr": {
         "title": "Houssaye",
-        "gameText": "**Plaines.** Les Ourouk-Haï ne sont pas errants."
+        "gameText": "**Plaines.** Les Ourouk-Haï¿½ ne sont pas errants."
       },
       "de": {
         "title": "Hulsten",
@@ -1906,7 +1906,7 @@
       },
       "es": {
         "title": "Hollin",
-        "gameText": "Llanuras. Los Uruk-hai no están vagando."
+        "gameText": "Llanuras. Los Uruk-hai no estï¿½n vagando."
       }
     }
   },
@@ -1927,20 +1927,20 @@
         "gameText": "**River.** **Sanctuary.** When the fellowship moves to Valley of the Silverlode, each Hobbit companion may heal."
       },
       "fr": {
-        "title": "Vallée du Cours d'Argent",
-        "gameText": "**Rivière.****Sanctuaire.**Lorsque la Compagnie se déplace vers la Vallée du Cours d’Argent, chaque compagnon Hobbit peut guérir."
+        "title": "Vallï¿½e du Cours d'Argent",
+        "gameText": "**Riviï¿½re.****Sanctuaire.**Lorsque la Compagnie se dï¿½place vers la Vallï¿½e du Cours dï¿½Argent, chaque compagnon Hobbit peut guï¿½rir."
       },
       "de": {
         "title": "Tal des Silberlauf",
-        "gameText": "**Fluss.** **Zuflucht.**Wenn sich die Gemeinschaft ins Tal des Silberlauf bewegt, darf jeder Hobbitgefährte geheilt werden."
+        "gameText": "**Fluss.** **Zuflucht.**Wenn sich die Gemeinschaft ins Tal des Silberlauf bewegt, darf jeder Hobbitgefï¿½hrte geheilt werden."
       },
       "it": {
         "title": "Valle dell'Argentaroggia",
-        "gameText": "**Fiume.****Rifugio.** Quando la Compagnia si sposta su Valle dell’Argentaroggia, ogni compagno Hobbit può curarsi."
+        "gameText": "**Fiume.****Rifugio.** Quando la Compagnia si sposta su Valle dellï¿½Argentaroggia, ogni compagno Hobbit puï¿½ curarsi."
       },
       "es": {
         "title": "Valle del Cauce de Plata",
-        "gameText": "**Río.****Santuario.** Cuando la comunidad se mueve al Valle del Cauce de Plata, cada compañero Hobbit puede curarse."
+        "gameText": "**Rï¿½o.****Santuario.** Cuando la comunidad se mueve al Valle del Cauce de Plata, cada compaï¿½ero Hobbit puede curarse."
       }
     }
   },
@@ -1962,7 +1962,7 @@
       },
       "fr": {
         "title": "Caras Galadhon",
-        "gameText": "**Forêt.****Sanctuaire.**Tant que la compagnie se trouve à Caras Galadhon, un maximum d’un séide peut être affecté à chaque combat."
+        "gameText": "**Forï¿½t.****Sanctuaire.**Tant que la compagnie se trouve ï¿½ Caras Galadhon, un maximum dï¿½un sï¿½ide peut ï¿½tre affectï¿½ ï¿½ chaque combat."
       },
       "de": {
         "title": "Caras Galadhon",
@@ -1970,11 +1970,11 @@
       },
       "it": {
         "title": "Caras Galadhon",
-        "gameText": "**Foresta.****Rifugio.** Mentre la compagnia è a Caras Galadhon, non più di un servitore può essere assegnato a ogni schermaglia."
+        "gameText": "**Foresta.****Rifugio.** Mentre la compagnia ï¿½ a Caras Galadhon, non piï¿½ di un servitore puï¿½ essere assegnato a ogni schermaglia."
       },
       "es": {
         "title": "Caras Galadon",
-        "gameText": "**Bosque.** **Santuario.** Mientras la comunidad está en Caras Galadon, sólo se puede asignar un siervo a cada escaramuza."
+        "gameText": "**Bosque.** **Santuario.** Mientras la comunidad estï¿½ en Caras Galadon, sï¿½lo se puede asignar un siervo a cada escaramuza."
       }
     }
   },
@@ -1996,19 +1996,19 @@
       },
       "fr": {
         "title": "Les Collines d'Eregion",
-        "gameText": "Quand la compagnie se déplace jusqu’aux Collines d’Eregion, ajoutez un point-fardeau."
+        "gameText": "Quand la compagnie se dï¿½place jusquï¿½aux Collines dï¿½Eregion, ajoutez un point-fardeau."
       },
       "de": {
-        "title": "Die Hügel Eregions",
-        "gameText": "Wenn die Gemeinschaft die Hügel erreicht, lege eine Lastmarke auf den **Ringträger:**"
+        "title": "Die Hï¿½gel Eregions",
+        "gameText": "Wenn die Gemeinschaft die Hï¿½gel erreicht, lege eine Lastmarke auf den **Ringtrï¿½ger:**"
       },
       "it": {
         "title": "Colline dell'Eregion",
-        "gameText": "Quando la compagnia si muove verso Colline dell’Eregion, aggiungi un segnalino fardello."
+        "gameText": "Quando la compagnia si muove verso Colline dellï¿½Eregion, aggiungi un segnalino fardello."
       },
       "es": {
         "title": "Colinas de Eregion",
-        "gameText": "Cuando la comunidad se mueve a las Colinas de Eregion, añade una carga."
+        "gameText": "Cuando la comunidad se mueve a las Colinas de Eregion, aï¿½ade una carga."
       }
     }
   },
@@ -2030,11 +2030,11 @@
       },
       "fr": {
         "title": "Les Portes d'Argonath",
-        "gameText": "**Rivière.**Les événements de manœuvre ne peuvent pas être joués."
+        "gameText": "**Riviï¿½re.**Les ï¿½vï¿½nements de manï¿½uvre ne peuvent pas ï¿½tre jouï¿½s."
       },
       "de": {
         "title": "Argonath",
-        "gameText": "**Fluss.**Manöverereignisse dürfen hier nicht gespielt werden."
+        "gameText": "**Fluss.**Manï¿½verereignisse dï¿½rfen hier nicht gespielt werden."
       },
       "it": {
         "title": "Cancelli degli Argonath",
@@ -2042,7 +2042,7 @@
       },
       "es": {
         "title": "Puertas de las Argonath",
-        "gameText": "**Río.**No se pueden jugar eventos de maniobra."
+        "gameText": "**Rï¿½o.**No se pueden jugar eventos de maniobra."
       }
     }
   },
@@ -2064,19 +2064,19 @@
       },
       "fr": {
         "title": "Le Grand Fleuve",
-        "gameText": "**Rivière.**Tant que la compagnie se trouve au Grand Fleuve, il est interdit de jouer des cartes des pioches ou des piles de défausse."
+        "gameText": "**Riviï¿½re.**Tant que la compagnie se trouve au Grand Fleuve, il est interdit de jouer des cartes des pioches ou des piles de dï¿½fausse."
       },
       "de": {
-        "title": "Der große Strom",
-        "gameText": "**Fluss.**Solange sich die Gemeinschaft hier befindet, dürfen keine Karten aus den Spieldecks oder Ablagestapeln gespielt werden."
+        "title": "Der groï¿½e Strom",
+        "gameText": "**Fluss.**Solange sich die Gemeinschaft hier befindet, dï¿½rfen keine Karten aus den Spieldecks oder Ablagestapeln gespielt werden."
       },
       "it": {
         "title": "Il Grande Fiume",
-        "gameText": "**Fiume.**Mentre la compagnia è a Il Grande Fiume, le carte non possono essere giocate dai mazzi di gioco o dalle pile degli scarti."
+        "gameText": "**Fiume.**Mentre la compagnia ï¿½ a Il Grande Fiume, le carte non possono essere giocate dai mazzi di gioco o dalle pile degli scarti."
       },
       "es": {
-        "title": "El Gran Río",
-        "gameText": "**Río.**Mientras la comunidad está en El Gran Río, no se pueden jugar cartas de los mazos de robar ni de las pilas de descarte."
+        "title": "El Gran Rï¿½o",
+        "gameText": "**Rï¿½o.**Mientras la comunidad estï¿½ en El Gran Rï¿½o, no se pueden jugar cartas de los mazos de robar ni de las pilas de descarte."
       }
     }
   },
@@ -2098,7 +2098,7 @@
       },
       "fr": {
         "title": "La Maison d'Elrond",
-        "gameText": "**Sanctuaire.**Quand la compagnie arrive à la Maison, le joueur des Peuples Libres peut désigner 2 Elfes pour retirer un point-fardeau."
+        "gameText": "**Sanctuaire.**Quand la compagnie arrive ï¿½ la Maison, le joueur des Peuples Libres peut dï¿½signer 2 Elfes pour retirer un point-fardeau."
       },
       "de": {
         "title": "Elronds Haus",
@@ -2106,7 +2106,7 @@
       },
       "it": {
         "title": "Casa di Elrond",
-        "gameText": "**Rifugio.** Quando la compagnia arriva nella Casa, il giocatore dei Popoli Liberi può avvistare 2 Elfi per rimuovere un segnalino fardello."
+        "gameText": "**Rifugio.** Quando la compagnia arriva nella Casa, il giocatore dei Popoli Liberi puï¿½ avvistare 2 Elfi per rimuovere un segnalino fardello."
       },
       "es": {
         "title": "Casa de Elrond",
@@ -2135,11 +2135,11 @@
       },
       "fr": {
         "title": "Les Hamadas de l'Emyn Muil",
-        "gameText": "**Manœuvre :** Désignez quatre compagnons et affaiblissez votre Orque <symbol>isengard</symbol> pour obliger le joueur des Peuples Libres à blesser un compagnon."
+        "gameText": "**Manï¿½uvre :** Dï¿½signez quatre compagnons et affaiblissez votre Orque <symbol>isengard</symbol> pour obliger le joueur des Peuples Libres ï¿½ blesser un compagnon."
       },
       "de": {
-        "title": "Die Ödlande von Emyn Muil",
-        "gameText": "**Manöver:** Entdecke 4 Gefährten und strenge einen <symbol>isengard</symbol> Ork an, um den Freie Völker Spieler zu zwingen, einen Gefährten zu verwunden."
+        "title": "Die ï¿½dlande von Emyn Muil",
+        "gameText": "**Manï¿½ver:** Entdecke 4 Gefï¿½hrten und strenge einen <symbol>isengard</symbol> Ork an, um den Freie Vï¿½lker Spieler zu zwingen, einen Gefï¿½hrten zu verwunden."
       },
       "it": {
         "title": "Distese di Emyn Muil",
@@ -2147,7 +2147,7 @@
       },
       "es": {
         "title": "Yermos de Emyn Muil",
-        "gameText": "**Maniobra:** Avista 4 compañeros y esfuerza tu Orco <symbol>isengard</symbol> para hacer que el jugador de Gentes Libres hiera un compañero."
+        "gameText": "**Maniobra:** Avista 4 compaï¿½eros y esfuerza tu Orco <symbol>isengard</symbol> para hacer que el jugador de Gentes Libres hiera un compaï¿½ero."
       }
     }
   },
@@ -2173,7 +2173,7 @@
       },
       "de": {
         "title": "Der Ostwall von Rohan",
-        "gameText": "Wenn sich die Gemeinschaft vom Ostwall von Rohan fortbewegt, erhöhe den Einfluss um <symbol>twilight2</symbol>."
+        "gameText": "Wenn sich die Gemeinschaft vom Ostwall von Rohan fortbewegt, erhï¿½he den Einfluss um <symbol>twilight2</symbol>."
       },
       "it": {
         "title": "Muro Orientale di Rohan",
@@ -2181,7 +2181,7 @@
       },
       "es": {
         "title": "Muro Este De Rohan",
-        "gameText": "Cuando la comunidad se mueve del Muro Este De Rohan, añade <symbol>twilight2</symbol>."
+        "gameText": "Cuando la comunidad se mueve del Muro Este De Rohan, aï¿½ade <symbol>twilight2</symbol>."
       }
     }
   },
@@ -2203,11 +2203,11 @@
       },
       "fr": {
         "title": "Les Dunes de l'Estemnet",
-        "gameText": "Chaque fois que vous jouez un compagnon ici, vous devez défausser 2 cartes de votre main."
+        "gameText": "Chaque fois que vous jouez un compagnon ici, vous devez dï¿½fausser 2 cartes de votre main."
       },
       "de": {
-        "title": "Die Täler Ostemnets",
-        "gameText": "Jedes Mal, wenn du hier einen Gefährten ausspielt, musst du 2 Karten aus deiner Hand ablegen."
+        "title": "Die Tï¿½ler Ostemnets",
+        "gameText": "Jedes Mal, wenn du hier einen Gefï¿½hrten ausspielt, musst du 2 Karten aus deiner Hand ablegen."
       },
       "it": {
         "title": "Poggi dell'Estemnet",
@@ -2215,7 +2215,7 @@
       },
       "es": {
         "title": "Lomas De Estemnet",
-        "gameText": "Cada vez que juegas un compañero aquí, debes descartar 2 cartas de tu mano."
+        "gameText": "Cada vez que juegas un compaï¿½ero aquï¿½, debes descartar 2 cartas de tu mano."
       }
     }
   },
@@ -2240,11 +2240,11 @@
       },
       "fr": {
         "title": "Ravins de l'Estemnet",
-        "gameText": "**Compagnie :** Affaiblissez 2 compagnons dissociés pour jouer Legolas de votre pioche."
+        "gameText": "**Compagnie :** Affaiblissez 2 compagnons dissociï¿½s pour jouer Legolas de votre pioche."
       },
       "de": {
-        "title": "Gräben Ostemnets",
-        "gameText": "**Gemeinschaft.** Strenge 2 nicht-verbundene Gefährten an, um Legolas direkt aus deinem Spieldeck zu spielen."
+        "title": "Grï¿½ben Ostemnets",
+        "gameText": "**Gemeinschaft.** Strenge 2 nicht-verbundene Gefï¿½hrten an, um Legolas direkt aus deinem Spieldeck zu spielen."
       },
       "it": {
         "title": "Burroni dell'Estemnet",
@@ -2252,7 +2252,7 @@
       },
       "es": {
         "title": "Barrancos De Estemnet",
-        "gameText": "**Comunidad:** Esfuerza 2 compañeros no-vinculados para jugar a Legolas de tu mazo de robar."
+        "gameText": "**Comunidad:** Esfuerza 2 compaï¿½eros no-vinculados para jugar a Legolas de tu mazo de robar."
       }
     }
   },
@@ -2274,19 +2274,19 @@
       },
       "fr": {
         "title": "Le Pays des Chevaux",
-        "gameText": "**Plaine.** Tant que vous pouvez désigner une monture <symbol>rohan</symbol> au Pays des Chevaux, la limite de déplacement est de +1 pour ce tour."
+        "gameText": "**Plaine.** Tant que vous pouvez dï¿½signer une monture <symbol>rohan</symbol> au Pays des Chevaux, la limite de dï¿½placement est de +1 pour ce tour."
       },
       "de": {
         "title": "Pferde-Land",
-        "gameText": "**Ebene.** Solange du hier ein <symbol>rohan</symbol> Reittier entdecken kannst, erhöht sich deine Bewegungsweite für diesen Spielzug um 1."
+        "gameText": "**Ebene.** Solange du hier ein <symbol>rohan</symbol> Reittier entdecken kannst, erhï¿½ht sich deine Bewegungsweite fï¿½r diesen Spielzug um 1."
       },
       "it": {
         "title": "Paese dei Cavalli",
         "gameText": "**Pianura.** Mentre puoi avvistare una cavalcatura <symbol>rohan</symbol> al Paese dei Cavalli, aggiungi +1 al limite dei movimenti per questo turno."
       },
       "es": {
-        "title": "País De Los Caballos",
-        "gameText": "**Llanura.** Mientras puedas avistar una montura <symbol>rohan</symbol> en el País de los Caballos, el límite de movimiento es +1 para este turno."
+        "title": "Paï¿½s De Los Caballos",
+        "gameText": "**Llanura.** Mientras puedas avistar una montura <symbol>rohan</symbol> en el Paï¿½s de los Caballos, el lï¿½mite de movimiento es +1 para este turno."
       }
     }
   },
@@ -2311,11 +2311,11 @@
       },
       "fr": {
         "title": "Les Plaines de Rohan",
-        "gameText": "**Plaine.** **Compagnie :** Affaiblissez 2 compagnons dissociés pour jouer Gimli de votre pioche."
+        "gameText": "**Plaine.** **Compagnie :** Affaiblissez 2 compagnons dissociï¿½s pour jouer Gimli de votre pioche."
       },
       "de": {
         "title": "Die Ebenen von Rohan",
-        "gameText": "**Ebene.** **Gemeinschaft.** Strenge 2 nicht-verbundene Gefährten an, um Gimli direkt aus deinem Spieldeck zu spielen."
+        "gameText": "**Ebene.** **Gemeinschaft.** Strenge 2 nicht-verbundene Gefï¿½hrten an, um Gimli direkt aus deinem Spieldeck zu spielen."
       },
       "it": {
         "title": "Pianure di Rohan",
@@ -2323,7 +2323,7 @@
       },
       "es": {
         "title": "La Marca De Los Jinetes",
-        "gameText": "**Llanura.** **Comunidad:** Esfuerza 2 compañeros no-vinculados para jugar a Aragorn de tu mazo de robar."
+        "gameText": "**Llanura.** **Comunidad:** Esfuerza 2 compaï¿½eros no-vinculados para jugar a Aragorn de tu mazo de robar."
       }
     }
   },
@@ -2348,11 +2348,11 @@
       },
       "fr": {
         "title": "La Marche",
-        "gameText": "**Plaine.** **Compagnie :** Affaiblissez 2 compagnons dissociés pour jouer Aragorn de votre pioche."
+        "gameText": "**Plaine.** **Compagnie :** Affaiblissez 2 compagnons dissociï¿½s pour jouer Aragorn de votre pioche."
       },
       "de": {
         "title": "Die Riddermark",
-        "gameText": "**Ebene.** **Gemeinschaft.** Strenge 2 nicht-verbundene Gefährten an, um Aragorn direkt aus deinem Spieldeck zu spielen."
+        "gameText": "**Ebene.** **Gemeinschaft.** Strenge 2 nicht-verbundene Gefï¿½hrten an, um Aragorn direkt aus deinem Spieldeck zu spielen."
       },
       "it": {
         "title": "Il Riddermark",
@@ -2360,7 +2360,7 @@
       },
       "es": {
         "title": "Llanuras De Rohan",
-        "gameText": "**Llanura.** **Comunidad:** Esfuerza 2 compañeros no-vinculados para jugar a Aragorn de tu mazo de robar."
+        "gameText": "**Llanura.** **Comunidad:** Esfuerza 2 compaï¿½eros no-vinculados para jugar a Aragorn de tu mazo de robar."
       }
     }
   },
@@ -2382,19 +2382,19 @@
       },
       "fr": {
         "title": "Emyn Muil Occidental",
-        "gameText": "Lorsque la compagnie quitte Emyn Muil Occidental, vous devez affaiblir chaque compagnon **Associé à l’Anneau.**"
+        "gameText": "Lorsque la compagnie quitte Emyn Muil Occidental, vous devez affaiblir chaque compagnon **Associï¿½ ï¿½ lï¿½Anneau.**"
       },
       "de": {
         "title": "Westlicher Emyn Muil",
-        "gameText": "Wenn sich die Gemeinschaft aus dem westlichen Emyn Muil fort-bewegt, muss jeder Ring-verbundene Gefährte angestrengt werden."
+        "gameText": "Wenn sich die Gemeinschaft aus dem westlichen Emyn Muil fort-bewegt, muss jeder Ring-verbundene Gefï¿½hrte angestrengt werden."
       },
       "it": {
         "title": "Emyn Muil Occidentale",
-        "gameText": "Quando la Compagnia si muove da Emyn Muil Occidentale, ogni compagno Legato all’Anello deve sforzarsi."
+        "gameText": "Quando la Compagnia si muove da Emyn Muil Occidentale, ogni compagno Legato allï¿½Anello deve sforzarsi."
       },
       "es": {
         "title": "Emyn Muil Occidental",
-        "gameText": "Cuando la comunidad se mueve de Emyn Muil Occidental, cada compañero Vinculado al Anillo debe esforzarse."
+        "gameText": "Cuando la comunidad se mueve de Emyn Muil Occidental, cada compaï¿½ero Vinculado al Anillo debe esforzarse."
       }
     }
   },
@@ -2416,11 +2416,11 @@
       },
       "fr": {
         "title": "Derunant",
-        "gameText": "**Forêt.** Tant que vous pouvez désigner un Hobbit à Derunant, la limite de déplacement est de +1 pour ce tour."
+        "gameText": "**Forï¿½t.** Tant que vous pouvez dï¿½signer un Hobbit ï¿½ Derunant, la limite de dï¿½placement est de +1 pour ce tour."
       },
       "de": {
         "title": "Tarntobel",
-        "gameText": "**Wald.** Solange du hier einen nicht-verbundenen Hobbit entdecken kannst, erhöht sich deine Bewegungsweite für diesen Spielzug um 1."
+        "gameText": "**Wald.** Solange du hier einen nicht-verbundenen Hobbit entdecken kannst, erhï¿½ht sich deine Bewegungsweite fï¿½r diesen Spielzug um 1."
       },
       "it": {
         "title": "Tondovallo",
@@ -2428,7 +2428,7 @@
       },
       "es": {
         "title": "El Valle Emboscado",
-        "gameText": "**Bosque.** Mientas puedas avistar un Hobbit no-vinculado en el Valle Emboscado, el límite de movimiento es +1 para este turno."
+        "gameText": "**Bosque.** Mientas puedas avistar un Hobbit no-vinculado en el Valle Emboscado, el lï¿½mite de movimiento es +1 para este turno."
       }
     }
   },
@@ -2453,11 +2453,11 @@
       },
       "fr": {
         "title": "Estfolde",
-        "gameText": "**Plaine.** Ombre : Désignez 3 traqueurs <symbol>isengard</symbol> pour empêcher la compagnie de bouger à nouveau durant ce tour."
+        "gameText": "**Plaine.** Ombre : Dï¿½signez 3 traqueurs <symbol>isengard</symbol> pour empï¿½cher la compagnie de bouger ï¿½ nouveau durant ce tour."
       },
       "de": {
         "title": "Ostfold",
-        "gameText": "**Ebene.** **Schatten:** Entdecke 3 <symbol>isengard</symbol> Spurenleser, um die Gemeinschaft für diesen Spielzug am Weiterreisen zu hindern."
+        "gameText": "**Ebene.** **Schatten:** Entdecke 3 <symbol>isengard</symbol> Spurenleser, um die Gemeinschaft fï¿½r diesen Spielzug am Weiterreisen zu hindern."
       },
       "it": {
         "title": "Estfalda",
@@ -2489,8 +2489,8 @@
         "gameText": "**Forest.** **Fellowship:** Play Treebeard from your draw deck."
       },
       "fr": {
-        "title": "La Forêt de Fangorn",
-        "gameText": "**Forêt.** **Compagnie :** Jouez Sylvebarbe de votre pioche."
+        "title": "La Forï¿½t de Fangorn",
+        "gameText": "**Forï¿½t.** **Compagnie :** Jouez Sylvebarbe de votre pioche."
       },
       "de": {
         "title": "Wald von Fangorn",
@@ -2502,7 +2502,7 @@
       },
       "es": {
         "title": "Bosque De Fangorn",
-        "gameText": "**Bosque.** **Comunidad:** Juega a Bárbol de tu mazo de robar."
+        "gameText": "**Bosque.** **Comunidad:** Juega a Bï¿½rbol de tu mazo de robar."
       }
     }
   },
@@ -2524,19 +2524,19 @@
       },
       "fr": {
         "title": "Campement des Plaines de Rohan",
-        "gameText": "**Plaine.** Au début de la phase de compagnie, vous pouvez guérir jusqu’à 3 blessures sur des compagnons."
+        "gameText": "**Plaine.** Au dï¿½but de la phase de compagnie, vous pouvez guï¿½rir jusquï¿½ï¿½ 3 blessures sur des compagnons."
       },
       "de": {
         "title": "Lager in den Ebenen von Rohan",
-        "gameText": "**Ebene.** Heile bis zu 3 Wunden von Gefährten zu Beginn jeder Gemeinschaftsphase."
+        "gameText": "**Ebene.** Heile bis zu 3 Wunden von Gefï¿½hrten zu Beginn jeder Gemeinschaftsphase."
       },
       "it": {
         "title": "Pianure del Campo di Rohan",
-        "gameText": "**Pianura.** All’inizio di ogni fase compagnia, cura fino a 3 ferite ai compagni."
+        "gameText": "**Pianura.** Allï¿½inizio di ogni fase compagnia, cura fino a 3 ferite ai compagni."
       },
       "es": {
         "title": "Llanuras Del Campamento Rohan",
-        "gameText": "**Llanura.** Al principio de cada fase de comunidad, cura hasta 3 heridas de los compañeros."
+        "gameText": "**Llanura.** Al principio de cada fase de comunidad, cura hasta 3 heridas de los compaï¿½eros."
       }
     }
   },
@@ -2558,20 +2558,20 @@
       },
       "fr": {
         "title": "Village des Rohirrim",
-        "gameText": "Aucun Homme <symbol>dunland</symbol> ne peut être blessé pendant la phase d’archerie.",
+        "gameText": "Aucun Homme <symbol>dunland</symbol> ne peut ï¿½tre blessï¿½ pendant la phase dï¿½archerie.",
         "loreText": "2"
       },
       "de": {
         "title": "Dorf der Rohirrim",
-        "gameText": "Alle <symbol>dunland</symbol> Menschen dürfen in der Fernkampfphase keine Wunden erleiden."
+        "gameText": "Alle <symbol>dunland</symbol> Menschen dï¿½rfen in der Fernkampfphase keine Wunden erleiden."
       },
       "it": {
         "title": "Villaggio Rohirrim",
-        "gameText": "Ogni Uomo <symbol>dunland</symbol> non può subire ferite durante la fase degli arcieri."
+        "gameText": "Ogni Uomo <symbol>dunland</symbol> non puï¿½ subire ferite durante la fase degli arcieri."
       },
       "es": {
         "title": "Pueblo Rohirrim",
-        "gameText": "Cada Hombre <symbol>dunland</symbol> no puede recibir heridas durante la fase de arquería."
+        "gameText": "Cada Hombre <symbol>dunland</symbol> no puede recibir heridas durante la fase de arquerï¿½a."
       }
     }
   },
@@ -2593,7 +2593,7 @@
       },
       "fr": {
         "title": "Campement Ourouk",
-        "gameText": "**Plaine.** **Champ de bataille.** Chaque fois qu’un Ourouk-Haï est joué, il doit être affaibli."
+        "gameText": "**Plaine.** **Champ de bataille.** Chaque fois quï¿½un Ourouk-Haï¿½ est jouï¿½, il doit ï¿½tre affaibli."
       },
       "de": {
         "title": "Uruklager",
@@ -2627,11 +2627,11 @@
       },
       "fr": {
         "title": "Plateau de Rohan",
-        "gameText": "**Plaine.** Chaque fois que le joueur des Peuples Libres affecte un compagnon ou un allié au combat, ajoutez <symbol>twilight1</symbol>."
+        "gameText": "**Plaine.** Chaque fois que le joueur des Peuples Libres affecte un compagnon ou un alliï¿½ au combat, ajoutez <symbol>twilight1</symbol>."
       },
       "de": {
-        "title": "Die Ödlande von Rohan",
-        "gameText": "**Ebene.** Jedes Mal, wenn der Freie Völker Spieler einen Gefährten oder Verbündeten einem Kampf zuweist, erhöhe den Einfluss um <symbol>twilight1</symbol>."
+        "title": "Die ï¿½dlande von Rohan",
+        "gameText": "**Ebene.** Jedes Mal, wenn der Freie Vï¿½lker Spieler einen Gefï¿½hrten oder Verbï¿½ndeten einem Kampf zuweist, erhï¿½he den Einfluss um <symbol>twilight1</symbol>."
       },
       "it": {
         "title": "Landa di Rohan",
@@ -2639,7 +2639,7 @@
       },
       "es": {
         "title": "Mesetas De Rohan",
-        "gameText": "**Llanura.** Cada vez que el jugador de Gentes Libres asigna un compañero o aliado a una escaramuza, añade <symbol>twilight1</symbol>."
+        "gameText": "**Llanura.** Cada vez que el jugador de Gentes Libres asigna un compaï¿½ero o aliado a una escaramuza, aï¿½ade <symbol>twilight1</symbol>."
       }
     }
   },
@@ -2663,11 +2663,11 @@
         "gameText": "**Sanctuary.** **Fellowship:** Place your hand beneath your draw deck and draw 4 cards."
       },
       "fr": {
-        "title": "Le Château d'Or",
-        "gameText": "**Sanctuaire.** Lorsque la compagnie se déplace vers le Château d’Or, défaussez toutes les armes des Peuples Libres."
+        "title": "Le Chï¿½teau d'Or",
+        "gameText": "**Sanctuaire.** Lorsque la compagnie se dï¿½place vers le Chï¿½teau dï¿½Or, dï¿½faussez toutes les armes des Peuples Libres."
       },
       "de": {
-        "title": "Die Grabhügel von Edoras",
+        "title": "Die Grabhï¿½gel von Edoras",
         "gameText": "**Zuflucht.** **Gemeinschaft.** Lege deine Handkarten unter dein Spieldeck und ziehe 4 Karten."
       },
       "it": {
@@ -2675,7 +2675,7 @@
         "gameText": "**Rifugio.** **Compagnia:** Piazza la tua mano sotto il tuo mazzo di gioco e pesca 4 carte."
       },
       "es": {
-        "title": "Túmulos De Edoras",
+        "title": "Tï¿½mulos De Edoras",
         "gameText": "**Santuario.** **Comunidad:** Pon tu mano bajo tu mazo de robar y roba 4 cartas."
       }
     }
@@ -2702,11 +2702,11 @@
       },
       "de": {
         "title": "Die Goldene Halle",
-        "gameText": "**Zuflucht.** Wenn sich die Gemeinschaft zur Goldenen Halle bewegt, müssen alle Waffen der Freien Völker abgelegt werden."
+        "gameText": "**Zuflucht.** Wenn sich die Gemeinschaft zur Goldenen Halle bewegt, mï¿½ssen alle Waffen der Freien Vï¿½lker abgelegt werden."
       },
       "it": {
         "title": "Palazzo d'Oro",
-        "gameText": "**Rifugio.** Quando la compagnia si muove a Palazzo d’Oro, tutte le armi dei Popoli Liberi devono essere scartate."
+        "gameText": "**Rifugio.** Quando la compagnia si muove a Palazzo dï¿½Oro, tutte le armi dei Popoli Liberi devono essere scartate."
       },
       "es": {
         "title": "Castillo Dorado",
@@ -2734,11 +2734,11 @@
         "gameText": "**Sanctuary.** **Fellowship:** Exert a <symbol>rohan</symbol> Man to play a <symbol>rohan</symbol> mount from your draw deck (limit once per turn)."
       },
       "fr": {
-        "title": "Écuries",
-        "gameText": "**Sanctuaire.** **Compagnie :** Affaiblissez un Homme <symbol>rohan</symbol> pour jouer une monture <symbol>rohan</symbol> de votre pioche (limite d’une fois par tour)."
+        "title": "ï¿½curies",
+        "gameText": "**Sanctuaire.** **Compagnie :** Affaiblissez un Homme <symbol>rohan</symbol> pour jouer une monture <symbol>rohan</symbol> de votre pioche (limite dï¿½une fois par tour)."
       },
       "de": {
-        "title": "Ställe",
+        "title": "Stï¿½lle",
         "gameText": "**Zuflucht.** **Gemeinschaft.** Strenge einen <symbol>rohan</symbol> Menschen an, um einmal pro Zug ein <symbol>rohan</symbol> Reittier direkt aus deinem Spieldeck zu spielen."
       },
       "it": {
@@ -2747,7 +2747,7 @@
       },
       "es": {
         "title": "Establos",
-        "gameText": "**Santuario.** **Comunidad:** Esfuerza un Hombre <symbol>rohan</symbol> para jugar una montura <symbol>rohan</symbol> de tu mazo de robar (límite una vez por turno)."
+        "gameText": "**Santuario.** **Comunidad:** Esfuerza un Hombre <symbol>rohan</symbol> para jugar una montura <symbol>rohan</symbol> de tu mazo de robar (lï¿½mite una vez por turno)."
       }
     }
   },
@@ -2769,19 +2769,19 @@
       },
       "fr": {
         "title": "Les Rues d'Edoras",
-        "gameText": "**Sanctuaire.** Aucun allié <symbol>rohan</symbol> ne peut participer à la phase d’archerie ou au combat dans les Rues d’Edoras."
+        "gameText": "**Sanctuaire.** Aucun alliï¿½ <symbol>rohan</symbol> ne peut participer ï¿½ la phase dï¿½archerie ou au combat dans les Rues dï¿½Edoras."
       },
       "de": {
-        "title": "Die Straßen von Edoras",
-        "gameText": "**Zuflucht.** Alle <symbol>rohan</symbol> Verbündeten dürfen in den Straßen von Edoras nicht am Fernkampf und Kampf teilnehmen."
+        "title": "Die Straï¿½en von Edoras",
+        "gameText": "**Zuflucht.** Alle <symbol>rohan</symbol> Verbï¿½ndeten dï¿½rfen in den Straï¿½en von Edoras nicht am Fernkampf und Kampf teilnehmen."
       },
       "it": {
         "title": "Strade di Edoras",
-        "gameText": "**Rifugio.** Ogni alleato <symbol>rohan</symbol> non può partecipare al fuoco degli arcieri o alle schermaglie presso Strade di Edoras."
+        "gameText": "**Rifugio.** Ogni alleato <symbol>rohan</symbol> non puï¿½ partecipare al fuoco degli arcieri o alle schermaglie presso Strade di Edoras."
       },
       "es": {
         "title": "Calles De Edoras",
-        "gameText": "**Santuario.** Cada aliado <symbol>rohan</symbol> no puede participar en disparos de arquería o en escaramuzas en las Calles De Edoras."
+        "gameText": "**Santuario.** Cada aliado <symbol>rohan</symbol> no puede participar en disparos de arquerï¿½a o en escaramuzas en las Calles De Edoras."
       }
     }
   },
@@ -2802,23 +2802,23 @@
     "i18n": {
       "en": {
         "title": "Throne Room",
-        "gameText": "**Sanctuary.** **Fellowship:** Play Théoden from your draw deck."
+        "gameText": "**Sanctuary.** **Fellowship:** Play Thï¿½oden from your draw deck."
       },
       "fr": {
-        "title": "La Salle du Trône",
-        "gameText": "**Sanctuaire.** **Compagnie :** Jouez Théoden de votre pioche."
+        "title": "La Salle du Trï¿½ne",
+        "gameText": "**Sanctuaire.** **Compagnie :** Jouez Thï¿½oden de votre pioche."
       },
       "de": {
         "title": "Thronsaal",
-        "gameText": "**Zuflucht.** **Gemeinschaft.** Spiele Théoden direkt aus deinem Spieldeck."
+        "gameText": "**Zuflucht.** **Gemeinschaft.** Spiele Thï¿½oden direkt aus deinem Spieldeck."
       },
       "it": {
         "title": "Sala del Trono",
-        "gameText": "**Rifugio.** **Compagnia:** Gioca Théoden dal tuo mazzo di gioco."
+        "gameText": "**Rifugio.** **Compagnia:** Gioca Thï¿½oden dal tuo mazzo di gioco."
       },
       "es": {
-        "title": "Salón Del Trono",
-        "gameText": "**Santuario.** **Comunidad:** Juega a Théoden de tu mazo de Robar."
+        "title": "Salï¿½n Del Trono",
+        "gameText": "**Santuario.** **Comunidad:** Juega a Thï¿½oden de tu mazo de Robar."
       }
     }
   },
@@ -2840,19 +2840,19 @@
       },
       "fr": {
         "title": "Les Plaines de l'Ouestemnet",
-        "gameText": "**Plaine.** **Sanctuaire.** Aucun Homme <symbol>dunland</symbol> ne peut être blessé pendant la phase d’archerie."
+        "gameText": "**Plaine.** **Sanctuaire.** Aucun Homme <symbol>dunland</symbol> ne peut ï¿½tre blessï¿½ pendant la phase dï¿½archerie."
       },
       "de": {
         "title": "Die Ebenen Westemnets",
-        "gameText": "**Ebene.** **Zuflucht.**Alle <symbol>dunland</symbol> Menschen dürfen in der Fernkampf-phase keine Wunden erleiden."
+        "gameText": "**Ebene.** **Zuflucht.**Alle <symbol>dunland</symbol> Menschen dï¿½rfen in der Fernkampf-phase keine Wunden erleiden."
       },
       "it": {
         "title": "Pianure dell'Ovestemnet",
-        "gameText": "**Pianura.** **Rifugio.** Ogni Uomo <symbol>dunland</symbol> non può subire ferite durante la fase degli arcieri."
+        "gameText": "**Pianura.** **Rifugio.** Ogni Uomo <symbol>dunland</symbol> non puï¿½ subire ferite durante la fase degli arcieri."
       },
       "es": {
         "title": "Llanuras De Oestemnet",
-        "gameText": "**Llanura.** **Santuario.** Cada Hombre <symbol>dunland</symbol> no puede recibir heridas durante la fase de arquería."
+        "gameText": "**Llanura.** **Santuario.** Cada Hombre <symbol>dunland</symbol> no puede recibir heridas durante la fase de arquerï¿½a."
       }
     }
   },
@@ -2873,12 +2873,12 @@
         "gameText": "**Mountain.** The twilight cost of each companion and ally played at Ered Nimrais is +3."
       },
       "fr": {
-        "title": "Ered Nimraïs",
-        "gameText": "**Montagne.**Le coût crépusculaire de chaque compagnon et allié est de +3 lorsque joué à Ered Nimraïs."
+        "title": "Ered Nimraï¿½s",
+        "gameText": "**Montagne.**Le coï¿½t crï¿½pusculaire de chaque compagnon et alliï¿½ est de +3 lorsque jouï¿½ ï¿½ Ered Nimraï¿½s."
       },
       "de": {
         "title": "Ered Nimrais",
-        "gameText": "**Gebirge.** Die Zwielichtkosten für alle Gefährten und Verbündeten, die hier gespielt werden, erhöhen sich um 3."
+        "gameText": "**Gebirge.** Die Zwielichtkosten fï¿½r alle Gefï¿½hrten und Verbï¿½ndeten, die hier gespielt werden, erhï¿½hen sich um 3."
       },
       "it": {
         "title": "Ered Nimrais",
@@ -2886,7 +2886,7 @@
       },
       "es": {
         "title": "Ered Nimrais",
-        "gameText": "**Montaña.**El coste de penumbra de cada compañero o aliado jugado en Ered Nimrais es +3."
+        "gameText": "**Montaï¿½a.**El coste de penumbra de cada compaï¿½ero o aliado jugado en Ered Nimrais es +3."
       }
     }
   },
@@ -2908,19 +2908,19 @@
       },
       "fr": {
         "title": "Les Collines de l'Ouestemnet",
-        "gameText": "**Plaine.** Quand la compagnie se déplace vers les Collines de l’Ouest-emnet, guérissez chaque compagnon et allié détenant une monture."
+        "gameText": "**Plaine.** Quand la compagnie se dï¿½place vers les Collines de lï¿½Ouest-emnet, guï¿½rissez chaque compagnon et alliï¿½ dï¿½tenant une monture."
       },
       "de": {
-        "title": "Die Hügel Westemnets",
-        "gameText": "**Ebene.** Wenn sich die Gemeinschaft in die Hügel Westemnets bewegt, heile jeden berittenen Gefährten und berittenen Verbündeten."
+        "title": "Die Hï¿½gel Westemnets",
+        "gameText": "**Ebene.** Wenn sich die Gemeinschaft in die Hï¿½gel Westemnets bewegt, heile jeden berittenen Gefï¿½hrten und berittenen Verbï¿½ndeten."
       },
       "it": {
         "title": "Colline dell'Ovestemnet",
-        "gameText": "**Pianura.** Quando la compagnia si muove verso Colline dell’Ovestemnet, cura ogni compagno a cavallo e alleato a cavallo."
+        "gameText": "**Pianura.** Quando la compagnia si muove verso Colline dellï¿½Ovestemnet, cura ogni compagno a cavallo e alleato a cavallo."
       },
       "es": {
         "title": "Colinas De Oestemnet",
-        "gameText": "**Llanura.** Cuando la comunidad se mueve a las Colinas De Oestemnet, cura cada compañero con montura y cada aliado con montura."
+        "gameText": "**Llanura.** Cuando la comunidad se mueve a las Colinas De Oestemnet, cura cada compaï¿½ero con montura y cada aliado con montura."
       }
     }
   },
@@ -2938,23 +2938,23 @@
     "i18n": {
       "en": {
         "title": "White Mountains",
-        "gameText": "**Mountain.** When the fellowship moves to White Mountains, Théoden or 2 companions must exert."
+        "gameText": "**Mountain.** When the fellowship moves to White Mountains, Thï¿½oden or 2 companions must exert."
       },
       "fr": {
         "title": "Les Montagnes Blanches",
-        "gameText": "**Montagne.** Quand la compagnie se déplace vers les Montagnes Blanches, Théoden ou 2 compagnons doivent être affaiblis"
+        "gameText": "**Montagne.** Quand la compagnie se dï¿½place vers les Montagnes Blanches, Thï¿½oden ou 2 compagnons doivent ï¿½tre affaiblis"
       },
       "de": {
-        "title": "Das Weiße Gebirge",
-        "gameText": "**Gebirge.** Wenn sich die Gemeinschaft ins Weiße Gebirge bewegt, strenge Théoden oder 2 beliebige andere Gefährten an."
+        "title": "Das Weiï¿½e Gebirge",
+        "gameText": "**Gebirge.** Wenn sich die Gemeinschaft ins Weiï¿½e Gebirge bewegt, strenge Thï¿½oden oder 2 beliebige andere Gefï¿½hrten an."
       },
       "it": {
         "title": "Monti Bianchi",
-        "gameText": "**Montagna.** Quando la compagnia si muove verso Monti Bianchi, Théoden o 2 compagni devono sforzarsi."
+        "gameText": "**Montagna.** Quando la compagnia si muove verso Monti Bianchi, Thï¿½oden o 2 compagni devono sforzarsi."
       },
       "es": {
-        "title": "Montañas Blancas",
-        "gameText": "**Montaña.** Cuando la comunidad se mueve a las Montañas Blancas, Théoden o 2 compañeros deben esforzarse."
+        "title": "Montaï¿½as Blancas",
+        "gameText": "**Montaï¿½a.** Cuando la comunidad se mueve a las Montaï¿½as Blancas, Thï¿½oden o 2 compaï¿½eros deben esforzarse."
       }
     }
   },
@@ -2976,12 +2976,12 @@
       },
       "fr": {
         "title": "Les Rochers Blancs",
-        "gameText": "**Champ de bataille.** La Puissance de l’Ombre de ce site est de +1 pour chaque compagnon détenant une monture.",
+        "gameText": "**Champ de bataille.** La Puissance de lï¿½Ombre de ce site est de +1 pour chaque compagnon dï¿½tenant une monture.",
         "loreText": "4"
       },
       "de": {
-        "title": "Weiße Felsen",
-        "gameText": "**Schlachtfeld.** Die Schattenzahl dieses Ortes erhöht sich um 1 für jeden berittenen Gefährten."
+        "title": "Weiï¿½e Felsen",
+        "gameText": "**Schlachtfeld.** Die Schattenzahl dieses Ortes erhï¿½ht sich um 1 fï¿½r jeden berittenen Gefï¿½hrten."
       },
       "it": {
         "title": "Rocce Bianche",
@@ -2989,7 +2989,7 @@
       },
       "es": {
         "title": "Rocas Blancas",
-        "gameText": "**Campo de batalla.** El número de Sombra de este sitio es +1 por cada compañero con una montura."
+        "gameText": "**Campo de batalla.** El nï¿½mero de Sombra de este sitio es +1 por cada compaï¿½ero con una montura."
       }
     }
   },
@@ -3011,11 +3011,11 @@
       },
       "fr": {
         "title": "Les Profondeurs de Helm",
-        "gameText": "**Plaine.** **Champ de bataille.** À chaque tour, le coût crépusculaire du premier Ourouk-Haï joué aux Profondeurs de Helm est de -3."
+        "gameText": "**Plaine.** **Champ de bataille.** ï¿½ chaque tour, le coï¿½t crï¿½pusculaire du premier Ourouk-Haï¿½ jouï¿½ aux Profondeurs de Helm est de -3."
       },
       "de": {
         "title": "Helms Klamm",
-        "gameText": "**Ebene.** **Schlachtfeld.** Die Zwielichtkosten für den ersten Uruk-hai, der in jedem Spielzug hier gespielt wird, reduzieren sich um 3."
+        "gameText": "**Ebene.** **Schlachtfeld.** Die Zwielichtkosten fï¿½r den ersten Uruk-hai, der in jedem Spielzug hier gespielt wird, reduzieren sich um 3."
       },
       "it": {
         "title": "Fosso di Helm",
@@ -3083,20 +3083,20 @@
       },
       "fr": {
         "title": "La Porte de Helm",
-        "gameText": "**Champ de bataille.** Chaque compagnon et chaque séide possédant une arme de mêlée a +2 en force.",
+        "gameText": "**Champ de bataille.** Chaque compagnon et chaque sï¿½ide possï¿½dant une arme de mï¿½lï¿½e a +2 en force.",
         "loreText": "5"
       },
       "de": {
         "title": "Helms Tor",
-        "gameText": "**Schlachtfeld.** Jeder Gefährte und Diener, der mit einer Handwaffe ausgerüstet ist, erhält Stärke +2."
+        "gameText": "**Schlachtfeld.** Jeder Gefï¿½hrte und Diener, der mit einer Handwaffe ausgerï¿½stet ist, erhï¿½lt Stï¿½rke +2."
       },
       "it": {
         "title": "Cancello di Helm",
-        "gameText": "**Campo di Battaglia.** Aggiungi +2 alla forza di ogni compagno e servitore che porta un’arma da mischia."
+        "gameText": "**Campo di Battaglia.** Aggiungi +2 alla forza di ogni compagno e servitore che porta unï¿½arma da mischia."
       },
       "es": {
         "title": "La Puerta De Helm",
-        "gameText": "**Campo de batalla.** Cada compañero llevando un arma de mano y cada siervo llevando un arma de mano es fuerza +2."
+        "gameText": "**Campo de batalla.** Cada compaï¿½ero llevando un arma de mano y cada siervo llevando un arma de mano es fuerza +2."
       }
     }
   },
@@ -3118,7 +3118,7 @@
       },
       "fr": {
         "title": "La Cour de Fort le Cor",
-        "gameText": "**Champ de bataille.** Tant que vous pouvez désigner Aragorn, la Puissance de l’Ombre de la Cour de Fort le Cor est de -2.",
+        "gameText": "**Champ de bataille.** Tant que vous pouvez dï¿½signer Aragorn, la Puissance de lï¿½Ombre de la Cour de Fort le Cor est de -2.",
         "loreText": "5"
       },
       "de": {
@@ -3131,7 +3131,7 @@
       },
       "es": {
         "title": "Patio De Cuernavilla",
-        "gameText": "**Campo de batalla.** Mientras puedas avistar a Aragorn, el número de Sombra del Patio De Cuernavilla es -2."
+        "gameText": "**Campo de batalla.** Mientras puedas avistar a Aragorn, el nï¿½mero de Sombra del Patio De Cuernavilla es -2."
       }
     }
   },
@@ -3153,12 +3153,12 @@
       },
       "fr": {
         "title": "Le Parapet de Fort le Cor",
-        "gameText": "**Champ de bataille.** Le total d’archerie de la compagnie est de +1. Le total d’archerie des séides est de -1.",
+        "gameText": "**Champ de bataille.** Le total dï¿½archerie de la compagnie est de +1. Le total dï¿½archerie des sï¿½ides est de -1.",
         "loreText": "5"
       },
       "de": {
         "title": "Brustwehr der Hornburg",
-        "gameText": "**Schlachtfeld.** Der Fernkampfwert der Gemeinschaft erhöht sich um 1. Der Fernkampfwert der Diener verringert sich um 1."
+        "gameText": "**Schlachtfeld.** Der Fernkampfwert der Gemeinschaft erhï¿½ht sich um 1. Der Fernkampfwert der Diener verringert sich um 1."
       },
       "it": {
         "title": "Parapetto del Trombatorrione",
@@ -3166,7 +3166,7 @@
       },
       "es": {
         "title": "Parapeto De Cuernavilla",
-        "gameText": "**Campo de batalla.** El total de arquería de la comunidad es +1. El total de arquería de los siervos es -1."
+        "gameText": "**Campo de batalla.** El total de arquerï¿½a de la comunidad es +1. El total de arquerï¿½a de los siervos es -1."
       }
     }
   },
@@ -3191,11 +3191,11 @@
       },
       "fr": {
         "title": "Les Cavernes d'Aglarond",
-        "gameText": "**Souterrain.** **Sanctuaire.** **Manœuvre :** Retirez <symbol>twilight2</symbol> pour rendre l’un de vos Ourouk-Haï **acharné** jusqu’à la phase de ralliement."
+        "gameText": "**Souterrain.** **Sanctuaire.** **Manï¿½uvre :** Retirez <symbol>twilight2</symbol> pour rendre lï¿½un de vos Ourouk-Haï¿½ **acharnï¿½** jusquï¿½ï¿½ la phase de ralliement."
       },
       "de": {
-        "title": "Die Höhlen von Aglarond",
-        "gameText": "**Unterirdisch.** **Zuflucht.** **Manöver:** Verringere den Einfluss um <symbol>twilight2</symbol>, um einen deiner Uruk-hai bis zur Sammelphase **Erbittert** zu machen."
+        "title": "Die Hï¿½hlen von Aglarond",
+        "gameText": "**Unterirdisch.** **Zuflucht.** **Manï¿½ver:** Verringere den Einfluss um <symbol>twilight2</symbol>, um einen deiner Uruk-hai bis zur Sammelphase **Erbittert** zu machen."
       },
       "it": {
         "title": "Caverne d'Aglarond",
@@ -3203,7 +3203,7 @@
       },
       "es": {
         "title": "Cuevas De Aglarond",
-        "gameText": "**Subterráneo.** **Santuario.** **Maniobra:** Quita <symbol>twilight2</symbol> para dar a uno de tus Uruk-hai **fiero** hasta la fase de reagrupación."
+        "gameText": "**Subterrï¿½neo.** **Santuario.** **Maniobra:** Quita <symbol>twilight2</symbol> para dar a uno de tus Uruk-hai **fiero** hasta la fase de reagrupaciï¿½n."
       }
     }
   },
@@ -3225,19 +3225,19 @@
       },
       "fr": {
         "title": "La Grande Salle",
-        "gameText": "**Sanctuaire.** **Champ de bataille.** Chaque allié <symbol>rohan</symbol> peut participer à la phase d’archerie et au combat à la Grande Salle."
+        "gameText": "**Sanctuaire.** **Champ de bataille.** Chaque alliï¿½ <symbol>rohan</symbol> peut participer ï¿½ la phase dï¿½archerie et au combat ï¿½ la Grande Salle."
       },
       "de": {
-        "title": "Die große Halle",
-        "gameText": "**Zuflucht.** **Schlachtfeld.**Alle <symbol>rohan</symbol> Verbündeten dürfen in der großen Halle am Fernkampf und Kampf teilnehmen."
+        "title": "Die groï¿½e Halle",
+        "gameText": "**Zuflucht.** **Schlachtfeld.**Alle <symbol>rohan</symbol> Verbï¿½ndeten dï¿½rfen in der groï¿½en Halle am Fernkampf und Kampf teilnehmen."
       },
       "it": {
         "title": "Grande Sala",
-        "gameText": "**Rifugio.** **Campo di Battaglia.** Ogni alleato <symbol>rohan</symbol> può partecipare nel tiro degli arcieri e nelle schermaglie alla Grande Sala."
+        "gameText": "**Rifugio.** **Campo di Battaglia.** Ogni alleato <symbol>rohan</symbol> puï¿½ partecipare nel tiro degli arcieri e nelle schermaglie alla Grande Sala."
       },
       "es": {
-        "title": "Gran Salón",
-        "gameText": "**Santuario.** **Campo de batalla.** Cada aliado <symbol>rohan</symbol> puede participar en disparos de arquería y en escaramuzas en el Gran Salón."
+        "title": "Gran Salï¿½n",
+        "gameText": "**Santuario.** **Campo de batalla.** Cada aliado <symbol>rohan</symbol> puede participar en disparos de arquerï¿½a y en escaramuzas en el Gran Salï¿½n."
       }
     }
   },
@@ -3261,20 +3261,20 @@
         "gameText": "**Sanctuary.** **Fellowship:** Play a possession to draw a card."
       },
       "fr": {
-        "title": "Entrée de Caverne",
+        "title": "Entrï¿½e de Caverne",
         "gameText": "**Sanctuaire.** **Compagnie :** Jouez une possession pour piocher une carte."
       },
       "de": {
         "title": "Waffenkammer der Hornburg",
-        "gameText": "**Zuflucht.** **Gemeinschaft.** Wenn du eine Ausrüstung spielst, ziehe eine Karte."
+        "gameText": "**Zuflucht.** **Gemeinschaft.** Wenn du eine Ausrï¿½stung spielst, ziehe eine Karte."
       },
       "it": {
         "title": "Armeria del Trombatorrione",
         "gameText": "**Rifugio.** **Compagnia:** Gioca un bene per pescare una carta."
       },
       "es": {
-        "title": "Armería De Cuernavilla",
-        "gameText": "**Santuario.** **Comunidad:** Juega una posesión para robar una carta."
+        "title": "Armerï¿½a De Cuernavilla",
+        "gameText": "**Santuario.** **Comunidad:** Juega una posesiï¿½n para robar una carta."
       }
     }
   },
@@ -3296,19 +3296,19 @@
       },
       "fr": {
         "title": "L'Armurerie de Fort le Cor",
-        "gameText": "**Souterrain.** Les événements de combats ne peuvent pas être joués, et les capacités spéciales de combat ne peuvent pas être utilisées."
+        "gameText": "**Souterrain.** Les ï¿½vï¿½nements de combats ne peuvent pas ï¿½tre jouï¿½s, et les capacitï¿½s spï¿½ciales de combat ne peuvent pas ï¿½tre utilisï¿½es."
       },
       "de": {
-        "title": "Höhleneingang",
-        "gameText": "**Unterirdisch.** Kampfereignisse dürfen hier nicht gespielt und besondere Kampffähigkeiten dürfen nicht benutzt werden."
+        "title": "Hï¿½hleneingang",
+        "gameText": "**Unterirdisch.** Kampfereignisse dï¿½rfen hier nicht gespielt und besondere Kampffï¿½higkeiten dï¿½rfen nicht benutzt werden."
       },
       "it": {
         "title": "Entrata della Caverna",
-        "gameText": "**Sotterraneo.** Eventi di schermaglia non possono essere giocati e le abilità speciali di schermaglia non possono essere usate."
+        "gameText": "**Sotterraneo.** Eventi di schermaglia non possono essere giocati e le abilitï¿½ speciali di schermaglia non possono essere usate."
       },
       "es": {
         "title": "Entrada De La Caverna",
-        "gameText": "**Subterráneo.** No se pueden jugar eventos de escaramuza y no se pueden usar habilidades especiales de escaramuza."
+        "gameText": "**Subterrï¿½neo.** No se pueden jugar eventos de escaramuza y no se pueden usar habilidades especiales de escaramuza."
       }
     }
   },
@@ -3329,13 +3329,13 @@
         "gameText": "**Battleground.** The minion archery total is +2 for each unbound companion over 3."
       },
       "fr": {
-        "title": "La Chaussée de Fort le Cor",
-        "gameText": "**Champ de bataille.** Pour chaque compagnon dissocié au delà de 3, le total d’archerie des séides est de +2.",
+        "title": "La Chaussï¿½e de Fort le Cor",
+        "gameText": "**Champ de bataille.** Pour chaque compagnon dissociï¿½ au delï¿½ de 3, le total dï¿½archerie des sï¿½ides est de +2.",
         "loreText": "7"
       },
       "de": {
         "title": "Dammweg zur Hornburg",
-        "gameText": "**Schlachtfeld.** Der Fernkampfwert der Diener erhöht sich um 2 für jeden nicht-verbundenen Gefährten über 3."
+        "gameText": "**Schlachtfeld.** Der Fernkampfwert der Diener erhï¿½ht sich um 2 fï¿½r jeden nicht-verbundenen Gefï¿½hrten ï¿½ber 3."
       },
       "it": {
         "title": "Ponte del Trombatorrione",
@@ -3343,7 +3343,7 @@
       },
       "es": {
         "title": "Camino Elevado De Cuernavilla",
-        "gameText": "**Campo de batalla.** El total de arquería de los siervos es +2 por cada compañero no-vinculado por encima de 3."
+        "gameText": "**Campo de batalla.** El total de arquerï¿½a de los siervos es +2 por cada compaï¿½ero no-vinculado por encima de 3."
       }
     }
   },
@@ -3361,15 +3361,15 @@
     "i18n": {
       "en": {
         "title": "King's Room",
-        "gameText": "When the fellowship moves to King’s Room without a <symbol>rohan</symbol> companion, each unbound companion must exert."
+        "gameText": "When the fellowship moves to Kingï¿½s Room without a <symbol>rohan</symbol> companion, each unbound companion must exert."
       },
       "fr": {
         "title": "La Salle du Roi",
-        "gameText": "Lorsque la compagnie se déplace vers la Salle du Roi sans un compagnon <symbol>rohan</symbol>, chaque compagnon dissocié doit s’affaiblir."
+        "gameText": "Lorsque la compagnie se dï¿½place vers la Salle du Roi sans un compagnon <symbol>rohan</symbol>, chaque compagnon dissociï¿½ doit sï¿½affaiblir."
       },
       "de": {
-        "title": "Königskammer",
-        "gameText": "Wenn die Gemeinschaft die Königskammer ohne einen <symbol>rohan</symbol> Gefährten betritt, muss jeder nicht-verbundene Gefährte angestrengt werden."
+        "title": "Kï¿½nigskammer",
+        "gameText": "Wenn die Gemeinschaft die Kï¿½nigskammer ohne einen <symbol>rohan</symbol> Gefï¿½hrten betritt, muss jeder nicht-verbundene Gefï¿½hrte angestrengt werden."
       },
       "it": {
         "title": "Stanza del Re",
@@ -3377,7 +3377,7 @@
       },
       "es": {
         "title": "Los Aposentos Del Rey",
-        "gameText": "Cuando la comunidad se mueve a Los Aposentos Del Rey sin un compañero <symbol>rohan</symbol>, cada compañero no-vinculado debe esforzarse."
+        "gameText": "Cuando la comunidad se mueve a Los Aposentos Del Rey sin un compaï¿½ero <symbol>rohan</symbol>, cada compaï¿½ero no-vinculado debe esforzarse."
       }
     }
   },
@@ -3402,7 +3402,7 @@
       },
       "fr": {
         "title": "Le Cercle d'Isengard",
-        "gameText": "Ombre : Jouez un séide <symbol>dunland</symbol> pour piochez une carte."
+        "gameText": "Ombre : Jouez un sï¿½ide <symbol>dunland</symbol> pour piochez une carte."
       },
       "de": {
         "title": "Der Ring von Isengart",
@@ -3435,21 +3435,21 @@
         "gameText": "At the start of the first Shadow phase, if the twilight pool has fewer than 9 twilight tokens, add <symbol>twilight4</symbol> (limit once per turn)."
       },
       "fr": {
-        "title": "La Vallée du Magicien",
-        "gameText": "Au début de la première phase de l’Ombre, s’il y a moins de · dans la réserve crépusculaire, ajoutez <symbol>twilight4</symbol> (limite d’une fois par tour).",
+        "title": "La Vallï¿½e du Magicien",
+        "gameText": "Au dï¿½but de la premiï¿½re phase de lï¿½Ombre, sï¿½il y a moins de ï¿½ dans la rï¿½serve crï¿½pusculaire, ajoutez <symbol>twilight4</symbol> (limite dï¿½une fois par tour).",
         "loreText": "8"
       },
       "de": {
         "title": "Das Zauberer-Tal",
-        "gameText": "Erhöhe zu Beginn der ersten Schattenphase den Einfluss um <symbol>twilight4</symbol>, wenn er weniger als 9 beträgt (maximal einmal pro Spielzug)."
+        "gameText": "Erhï¿½he zu Beginn der ersten Schattenphase den Einfluss um <symbol>twilight4</symbol>, wenn er weniger als 9 betrï¿½gt (maximal einmal pro Spielzug)."
       },
       "it": {
         "title": "Valle dello Stregone",
-        "gameText": "All’inizio di ogni fase Ombra, se la zona del crepuscolo ha meno di 9 segnalini crepuscolo, aggiungi <symbol>twilight4</symbol>."
+        "gameText": "Allï¿½inizio di ogni fase Ombra, se la zona del crepuscolo ha meno di 9 segnalini crepuscolo, aggiungi <symbol>twilight4</symbol>."
       },
       "es": {
         "title": "Valle Del Mago",
-        "gameText": "Al principio de la primera fase de Sombra, si el fondo de penumbra tiene menos de 9 contadores, añade <symbol>twilight4</symbol> (límite una vez por turno)."
+        "gameText": "Al principio de la primera fase de Sombra, si el fondo de penumbra tiene menos de 9 contadores, aï¿½ade <symbol>twilight4</symbol> (lï¿½mite una vez por turno)."
       }
     }
   },
@@ -3471,12 +3471,12 @@
       },
       "fr": {
         "title": "La Forteresse d'Orthanc",
-        "gameText": "**Champ de bataille.** La Puissance de l’Ombre de la Forteresse d’Orthanc est de +2 pour chaque compagnon au delà de 4.",
+        "gameText": "**Champ de bataille.** La Puissance de lï¿½Ombre de la Forteresse dï¿½Orthanc est de +2 pour chaque compagnon au delï¿½ de 4.",
         "loreText": "9"
       },
       "de": {
         "title": "Die Festung Orthanc",
-        "gameText": "**Schlachtfeld.** Die Schattenzahl der Festung Orthanc erhöht sich um 2 für jeden Gefährten über 4."
+        "gameText": "**Schlachtfeld.** Die Schattenzahl der Festung Orthanc erhï¿½ht sich um 2 fï¿½r jeden Gefï¿½hrten ï¿½ber 4."
       },
       "it": {
         "title": "Fortezza di Orthanc",
@@ -3484,7 +3484,7 @@
       },
       "es": {
         "title": "Fortaleza De Orthanc",
-        "gameText": "**Campo de batalla.** El número de Sombra de la Fortaleza de Orthanc es +2 por cada compañero por encima de 4."
+        "gameText": "**Campo de batalla.** El nï¿½mero de Sombra de la Fortaleza de Orthanc es +2 por cada compaï¿½ero por encima de 4."
       }
     }
   },
@@ -3509,7 +3509,7 @@
       },
       "fr": {
         "title": "Le Balcon d'Orthanc",
-        "gameText": "**Champ de bataille.** Ombre : Jouez Saroumane de votre pile de défausse; son coût crépusculaire est de -2.",
+        "gameText": "**Champ de bataille.** Ombre : Jouez Saroumane de votre pile de dï¿½fausse; son coï¿½t crï¿½pusculaire est de -2.",
         "loreText": "9"
       },
       "de": {
@@ -3543,20 +3543,20 @@
         "gameText": "When the fellowship moves to Orthanc Library, each Shadow player may draw a card for each companion over 4."
       },
       "fr": {
-        "title": "La Bibliothèque d'Orthanc",
-        "gameText": "Quand la Compagnie arrive à la Bibliothèque, chaque joueur de l’Ombre peut piocher une carte par compagnon au-delà de 4."
+        "title": "La Bibliothï¿½que d'Orthanc",
+        "gameText": "Quand la Compagnie arrive ï¿½ la Bibliothï¿½que, chaque joueur de lï¿½Ombre peut piocher une carte par compagnon au-delï¿½ de 4."
       },
       "de": {
         "title": "Bibliothek von Orthanc",
-        "gameText": "Wenn die Gemeinschaft die Bibliothek von Orthanc erreicht, darf jeder Schattenspieler eine Karte ziehen für jeden Gefährten über 4."
+        "gameText": "Wenn die Gemeinschaft die Bibliothek von Orthanc erreicht, darf jeder Schattenspieler eine Karte ziehen fï¿½r jeden Gefï¿½hrten ï¿½ber 4."
       },
       "it": {
         "title": "Biblioteca di Orthanc",
-        "gameText": "Quando la compagnia si muove alla Biblioteca di Orthanc, ogni giocatore Ombra può pescare una carta per ogni compagno oltre 4."
+        "gameText": "Quando la compagnia si muove alla Biblioteca di Orthanc, ogni giocatore Ombra puï¿½ pescare una carta per ogni compagno oltre 4."
       },
       "es": {
         "title": "Biblioteca De Orthanc",
-        "gameText": "Cuando la comunidad se mueve a la Biblioteca De Orthanc, cada jugador de Sombra puede robar una carta por cada compañero por encima de 4."
+        "gameText": "Cuando la comunidad se mueve a la Biblioteca De Orthanc, cada jugador de Sombra puede robar una carta por cada compaï¿½ero por encima de 4."
       }
     }
   },
@@ -3576,23 +3576,23 @@
     "imageUrl": "/cards_visuals/o_04_363.jpg",
     "i18n": {
       "en": {
-        "title": "Palantír Chamber",
+        "title": "Palantï¿½r Chamber",
         "gameText": "**Shadow:** Remove 2 burdens to play a minion from your discard pile."
       },
       "fr": {
-        "title": "La Chambre du Palantír",
-        "gameText": "**Ombre :** Retirez 2 points-fardeau pour jouer un séide de votre pile de défausse."
+        "title": "La Chambre du Palantï¿½r",
+        "gameText": "**Ombre :** Retirez 2 points-fardeau pour jouer un sï¿½ide de votre pile de dï¿½fausse."
       },
       "de": {
-        "title": "Kammer des Palantír",
+        "title": "Kammer des Palantï¿½r",
         "gameText": "**Schatten:** Entferne 2 Lastmarken, um einen Diener aus deinem Ablagestapel zu spielen."
       },
       "it": {
-        "title": "Stanza del Palantír",
+        "title": "Stanza del Palantï¿½r",
         "gameText": "**Ombra:** Rimuovi 2 segnalini fardello per giocare un servitore dalla tua pila degli scarti."
       },
       "es": {
-        "title": "Cámara Del Palantír",
+        "title": "Cï¿½mara Del Palantï¿½r",
         "gameText": "**Sombra:** Quita 2 cargas para jugar un siervo de tu pila de descartes."
       }
     }
@@ -3618,11 +3618,11 @@
       },
       "fr": {
         "title": "Le Mur du Fort Le Cor",
-        "gameText": "**Ralliement :** Désignez votre séide et retirez <symbol>twilight9</symbol> pour forcer la compagnie à se déplacer à nouveau ce tour-ci (si la limite de déplacement le permet)."
+        "gameText": "**Ralliement :** Dï¿½signez votre sï¿½ide et retirez <symbol>twilight9</symbol> pour forcer la compagnie ï¿½ se dï¿½placer ï¿½ nouveau ce tour-ci (si la limite de dï¿½placement le permet)."
       },
       "de": {
         "title": "Mauer der Hornburg",
-        "gameText": "**Sammeln:** Entdecke einen deiner Diener und verringere den Einfluss um <symbol>twilight9</symbol>, damit sich ein Gegenspieler, wenn möglich, noch einmal bewegt."
+        "gameText": "**Sammeln:** Entdecke einen deiner Diener und verringere den Einfluss um <symbol>twilight9</symbol>, damit sich ein Gegenspieler, wenn mï¿½glich, noch einmal bewegt."
       },
       "it": {
         "title": "Muro del Trombatorrione",
@@ -3630,7 +3630,7 @@
       },
       "es": {
         "title": "Muro de Cuernavilla",
-        "gameText": "**Reagrupación:** Avista tu siervo y quita <symbol>twilight9</symbol> para hacer que la comunidad de un oponente se mueva otra vez (si el límite de movimiento lo permite)."
+        "gameText": "**Reagrupaciï¿½n:** Avista tu siervo y quita <symbol>twilight9</symbol> para hacer que la comunidad de un oponente se mueva otra vez (si el lï¿½mite de movimiento lo permite)."
       }
     }
   },
@@ -3650,23 +3650,23 @@
     "imageUrl": "/cards_visuals/o_05_119.jpg",
     "i18n": {
       "en": {
-        "title": "Nan Curunír",
+        "title": "Nan Curunï¿½r",
         "gameText": "**Plains.** **Response:** If your mounted minion is about to take a wound, remove <symbol>twilight2</symbol> to prevent that wound."
       },
       "fr": {
         "title": "Nan Curunir",
-        "gameText": "**Plaines.** **Réponse :** Si votre séide détenant une monture est sur le point d’être blessé, retirez <symbol>twilight2</symbol> pour empêcher la blessure."
+        "gameText": "**Plaines.** **Rï¿½ponse :** Si votre sï¿½ide dï¿½tenant une monture est sur le point dï¿½ï¿½tre blessï¿½, retirez <symbol>twilight2</symbol> pour empï¿½cher la blessure."
       },
       "de": {
-        "title": "Nan Curunír",
+        "title": "Nan Curunï¿½r",
         "gameText": "**Ebene.** **Reaktion:** Wenn einer deiner berittenen Diener eine Wunde erleidet, verringere den Einfluss um <symbol>twilight2</symbol>, um diese zu verhindern."
       },
       "it": {
-        "title": "Nan Curunír",
+        "title": "Nan Curunï¿½r",
         "gameText": "**Pianura.** **Risposta:** Se un tuo servitore a cavallo sta per subire una ferita, rimuovi <symbol>twilight2</symbol> per prevenire quella ferita."
       },
       "es": {
-        "title": "Nan Curunír",
+        "title": "Nan Curunï¿½r",
         "gameText": "**Llanuras.** **Respuesta:** Si ti siervo con montura va a recibir una herida, quita <symbol>twilight2</symbol> para prevenir esa herida."
       }
     }
@@ -3689,19 +3689,19 @@
       },
       "fr": {
         "title": "Les Cavernes de l'Isengard",
-        "gameText": "**Souterrain.** Le joueur des Peuples Libres ne peut gagner que si le Porteur survit jusqu’à la reconstitution des mains de l’Ombre."
+        "gameText": "**Souterrain.** Le joueur des Peuples Libres ne peut gagner que si le Porteur survit jusquï¿½ï¿½ la reconstitution des mains de lï¿½Ombre."
       },
       "de": {
-        "title": "Die Höhlen unter Isengart",
-        "gameText": "**Unterirdisch.** Der Freie Völker Spieler gewinnt erst, wenn der Ring-träger überlebt, bis die Schattenspieler ihre Handkarten aufziehen."
+        "title": "Die Hï¿½hlen unter Isengart",
+        "gameText": "**Unterirdisch.** Der Freie Vï¿½lker Spieler gewinnt erst, wenn der Ring-trï¿½ger ï¿½berlebt, bis die Schattenspieler ihre Handkarten aufziehen."
       },
       "it": {
         "title": "Caverne di Isengard",
-        "gameText": "**Sotterraneo.** Il giocatore dei Popoli Liberi vince la partita solo se il Portatore dell’ Anello sopravvive fino a quando i giocatori Ombra ricompongono la propria mano."
+        "gameText": "**Sotterraneo.** Il giocatore dei Popoli Liberi vince la partita solo se il Portatore dellï¿½ Anello sopravvive fino a quando i giocatori Ombra ricompongono la propria mano."
       },
       "es": {
         "title": "Cavernas de Isengard",
-        "gameText": "**Subterráneo.** El jugador de Gentes Libres no gana la partida a menos que el Portador del Anillo sobreviva hasta que los jugadores de Sombra reconcilien."
+        "gameText": "**Subterrï¿½neo.** El jugador de Gentes Libres no gana la partida a menos que el Portador del Anillo sobreviva hasta que los jugadores de Sombra reconcilien."
       }
     }
   },
@@ -3726,11 +3726,11 @@
       },
       "fr": {
         "title": "Les Rochers d'Emyn Muil",
-        "gameText": "**Compagnie :** Jouez un compagnon possédant le signet Frodon pour retirer un point-fardeau."
+        "gameText": "**Compagnie :** Jouez un compagnon possï¿½dant le signet Frodon pour retirer un point-fardeau."
       },
       "de": {
         "title": "Felsen des Emyn Muil",
-        "gameText": "Gemeinschaft: Spiele einen Gefährten mit dem Frodosiegel, um eine Lastmarke vom Ringträger zu entfernen."
+        "gameText": "Gemeinschaft: Spiele einen Gefï¿½hrten mit dem Frodosiegel, um eine Lastmarke vom Ringtrï¿½ger zu entfernen."
       },
       "it": {
         "title": "Rocce dell'Emyn Muil",
@@ -3738,7 +3738,7 @@
       },
       "es": {
         "title": "Rocas de Emyn Muil",
-        "gameText": "**Comunidad:** Juega un compañero con el sello de Frodo para quitar una carga."
+        "gameText": "**Comunidad:** Juega un compaï¿½ero con el sello de Frodo para quitar una carga."
       }
     }
   },
@@ -3763,11 +3763,11 @@
       },
       "fr": {
         "title": "L'Ouestfolde",
-        "gameText": "**Compagnie :** Affaiblissez Aragorn deux fois pour jouer un compagnon possédant le signet Aragorn de votre pioche."
+        "gameText": "**Compagnie :** Affaiblissez Aragorn deux fois pour jouer un compagnon possï¿½dant le signet Aragorn de votre pioche."
       },
       "de": {
         "title": "Westfold",
-        "gameText": "Gemeinschaft: Strenge Aragorn zweimal an, um einen Gefährten mit dem Aragornsiegel aus deinem Spieldeck zu spielen."
+        "gameText": "Gemeinschaft: Strenge Aragorn zweimal an, um einen Gefï¿½hrten mit dem Aragornsiegel aus deinem Spieldeck zu spielen."
       },
       "it": {
         "title": "Ovestfalda",
@@ -3775,7 +3775,7 @@
       },
       "es": {
         "title": "Folde Oeste",
-        "gameText": "**Comunidad:** Esfuerza a Aragorn dos veces para jugar un compañero con el sello de Aragorn de tu mazo de robar."
+        "gameText": "**Comunidad:** Esfuerza a Aragorn dos veces para jugar un compaï¿½ero con el sello de Aragorn de tu mazo de robar."
       }
     }
   },
@@ -3800,11 +3800,11 @@
       },
       "fr": {
         "title": "Meduseld",
-        "gameText": "**Sanctuaire.** **Compagnie :** Affaiblissez 3 compagnons possédant le signet Gandalf pour jouer un compagnon dissocié de votre cimetière."
+        "gameText": "**Sanctuaire.** **Compagnie :** Affaiblissez 3 compagnons possï¿½dant le signet Gandalf pour jouer un compagnon dissociï¿½ de votre cimetiï¿½re."
       },
       "de": {
         "title": "Meduseld",
-        "gameText": "Zuflucht. Gemeinschaft: Strenge 3 Gefährten mit dem Gandalfsiegel an, um einen nicht-verbundenen Gefährten aus deinem Friedhof zu spielen."
+        "gameText": "Zuflucht. Gemeinschaft: Strenge 3 Gefï¿½hrten mit dem Gandalfsiegel an, um einen nicht-verbundenen Gefï¿½hrten aus deinem Friedhof zu spielen."
       },
       "it": {
         "title": "Meduseld",
@@ -3812,7 +3812,7 @@
       },
       "es": {
         "title": "Meduseld",
-        "gameText": "Santuario. **Comunidad:** Esfuerza 3 compañeros con el sello de Gandalf para jugar un compañero no-vinculado de tu pila de muertos."
+        "gameText": "Santuario. **Comunidad:** Esfuerza 3 compaï¿½eros con el sello de Gandalf para jugar un compaï¿½ero no-vinculado de tu pila de muertos."
       }
     }
   },
@@ -3833,23 +3833,23 @@
     "i18n": {
       "en": {
         "title": "Hornburg Hall",
-        "gameText": "**Sanctuary.** **Fellowship:** Spot 3 companions with the Théoden signet and discard your hand to draw 4 cards."
+        "gameText": "**Sanctuary.** **Fellowship:** Spot 3 companions with the Thï¿½oden signet and discard your hand to draw 4 cards."
       },
       "fr": {
         "title": "Le Vestibule du Fort le Cor",
-        "gameText": "Sanctuaire. Compagnie : Désignez 3 compagnons possédant le signet Théoden et défaussez votre main pour piocher 4 cartes."
+        "gameText": "Sanctuaire. Compagnie : Dï¿½signez 3 compagnons possï¿½dant le signet Thï¿½oden et dï¿½faussez votre main pour piocher 4 cartes."
       },
       "de": {
-        "title": "Großer Saal der Hornburg",
-        "gameText": "Zuflucht. Gemeinschaft: Entdecke 3 Gefährten mit dem Théodensiegel und lege deine Hand ab, um 4 Karten zu ziehen."
+        "title": "Groï¿½er Saal der Hornburg",
+        "gameText": "Zuflucht. Gemeinschaft: Entdecke 3 Gefï¿½hrten mit dem Thï¿½odensiegel und lege deine Hand ab, um 4 Karten zu ziehen."
       },
       "it": {
         "title": "Sala del Trombatorrione",
-        "gameText": "Rifugio. Compagnia: Avvista 3 compagni con il sigillo di Théoden e scarta la tua mano per pescare 4 carte."
+        "gameText": "Rifugio. Compagnia: Avvista 3 compagni con il sigillo di Thï¿½oden e scarta la tua mano per pescare 4 carte."
       },
       "es": {
-        "title": "Salón de cuernavilla",
-        "gameText": "Santuario. Comunidad: Avista 3 compañeros con el sello de Théoden y descarta tu mano para robar 4 cartas."
+        "title": "Salï¿½n de cuernavilla",
+        "gameText": "Santuario. Comunidad: Avista 3 compaï¿½eros con el sello de Thï¿½oden y descarta tu mano para robar 4 cartas."
       }
     }
   },
@@ -3870,12 +3870,12 @@
         "gameText": "When the fellowship moves to this site, discard all allies."
       },
       "fr": {
-        "title": "La Vallée de Saroumane",
-        "gameText": "Quand la compagnie se déplace jusqu’à ce site, défaussez tous les alliés."
+        "title": "La Vallï¿½e de Saroumane",
+        "gameText": "Quand la compagnie se dï¿½place jusquï¿½ï¿½ ce site, dï¿½faussez tous les alliï¿½s."
       },
       "de": {
         "title": "Sarumans Tal",
-        "gameText": "Lege alle Verbündeten ab, wenn sich die Gemeinschaft hierher bewegt."
+        "gameText": "Lege alle Verbï¿½ndeten ab, wenn sich die Gemeinschaft hierher bewegt."
       },
       "it": {
         "title": "Valle di Saruman",
@@ -3903,12 +3903,12 @@
     "imageUrl": "/cards_visuals/o_06_120.jpg",
     "i18n": {
       "en": {
-        "title": "Saruman’s Laboratory",
+        "title": "Sarumanï¿½s Laboratory",
         "gameText": "**Response:** If your minion is about to take a wound, discard 2 cards from hand to prevent that wound."
       },
       "fr": {
         "title": "Le Laboratoire de Saroumane",
-        "gameText": "**Réponse :** Si votre séide est sur le point d’être blessé, défaussez 2 cartes de votre main pour prévenir la blessure."
+        "gameText": "**Rï¿½ponse :** Si votre sï¿½ide est sur le point dï¿½ï¿½tre blessï¿½, dï¿½faussez 2 cartes de votre main pour prï¿½venir la blessure."
       },
       "de": {
         "title": "Sarumans Laboratorium",
@@ -3975,23 +3975,23 @@
     "i18n": {
       "en": {
         "title": "Edoras Hall",
-        "gameText": "The twilight cost of each <symbol>rohan</symbol> possession is –1."
+        "gameText": "The twilight cost of each <symbol>rohan</symbol> possession is ï¿½1."
       },
       "fr": {
         "title": "Edoras Hall",
-        "gameText": "The twilight cost of each <symbol>rohan</symbol> possession is –1."
+        "gameText": "The twilight cost of each <symbol>rohan</symbol> possession is ï¿½1."
       },
       "de": {
         "title": "Hallen in Edoras",
-        "gameText": "Die Zwielichtkosten für alle <symbol>rohan</symbol> Ausrüstungen reduzieren sich um 1."
+        "gameText": "Die Zwielichtkosten fï¿½r alle <symbol>rohan</symbol> Ausrï¿½stungen reduzieren sich um 1."
       },
       "it": {
         "title": "Edoras Hall",
-        "gameText": "The twilight cost of each <symbol>rohan</symbol> possession is –1."
+        "gameText": "The twilight cost of each <symbol>rohan</symbol> possession is ï¿½1."
       },
       "es": {
         "title": "Edoras Hall",
-        "gameText": "The twilight cost of each <symbol>rohan</symbol> possession is –1."
+        "gameText": "The twilight cost of each <symbol>rohan</symbol> possession is ï¿½1."
       }
     }
   },
@@ -4019,8 +4019,8 @@
         "gameText": "**Fellowship:** Spot Gandalf to add <symbol>twilight2</symbol>. Each player may draw a card."
       },
       "de": {
-        "title": "Zerstörtes Isengart",
-        "gameText": "**Gemeinschaft:** Entdecke Gandalf und erhöhe den Einfluss um <symbol>twilight2</symbol>. Jeder Spieler darf eine Karte ziehen."
+        "title": "Zerstï¿½rtes Isengart",
+        "gameText": "**Gemeinschaft:** Entdecke Gandalf und erhï¿½he den Einfluss um <symbol>twilight2</symbol>. Jeder Spieler darf eine Karte ziehen."
       },
       "it": {
         "title": "Isengard Ruined",
@@ -4056,8 +4056,8 @@
         "gameText": "**Fellowship:** Exert an Elf to make the twilight cost of each condition and possession +2 until the end of the turn."
       },
       "de": {
-        "title": "Eine Straße in Rohan",
-        "gameText": "**Gemeinschaft:** Strenge einen Elben an, um die Kosten für alle Effekte und Ausrüstungen bis zum Ende des Zuges um 2 zu erhöhen."
+        "title": "Eine Straï¿½e in Rohan",
+        "gameText": "**Gemeinschaft:** Strenge einen Elben an, um die Kosten fï¿½r alle Effekte und Ausrï¿½stungen bis zum Ende des Zuges um 2 zu erhï¿½hen."
       },
       "it": {
         "title": "Rohirrim Road",
@@ -4090,8 +4090,8 @@
         "gameText": "When the fellowship moves from this site, the Free Peoples player may spot 3 Hobbits to remove <symbol>twilight2</symbol>."
       },
       "de": {
-        "title": "Schlafräume",
-        "gameText": "Wenn sich die Gemeinschaft von diesem Ort fortbewegt, darf der Freie Völker Spieler 3 Hobbits entdecken, um den Einfluss um <symbol>twilight2</symbol> zu verringern."
+        "title": "Schlafrï¿½ume",
+        "gameText": "Wenn sich die Gemeinschaft von diesem Ort fortbewegt, darf der Freie Vï¿½lker Spieler 3 Hobbits entdecken, um den Einfluss um <symbol>twilight2</symbol> zu verringern."
       },
       "it": {
         "title": "Sleeping Quarters",
@@ -4125,7 +4125,7 @@
       },
       "de": {
         "title": "Treppen in Edoras",
-        "gameText": "Alle <symbol>gondor</symbol> Gefährten sind **Verteidiger +1** bis zum Ende des Zuges."
+        "gameText": "Alle <symbol>gondor</symbol> Gefï¿½hrten sind **Verteidiger +1** bis zum Ende des Zuges."
       },
       "it": {
         "title": "Steps of Edoras",
@@ -4154,23 +4154,23 @@
     "i18n": {
       "en": {
         "title": "King's Tent",
-        "gameText": "**Shadow:** If the Shadow has initiative, spot your minion to make the move limit for this turn –1."
+        "gameText": "**Shadow:** If the Shadow has initiative, spot your minion to make the move limit for this turn ï¿½1."
       },
       "fr": {
         "title": "King's Tent",
-        "gameText": "**Shadow:** If the Shadow has initiative, spot your minion to make the move limit for this turn –1."
+        "gameText": "**Shadow:** If the Shadow has initiative, spot your minion to make the move limit for this turn ï¿½1."
       },
       "de": {
-        "title": "Das Zelt des Königs",
-        "gameText": "**Schatten:** Entdecke einen deiner Diener, um die Bewegungsweite für diesen Zug um 1 zu reduzieren, wenn die Schattenseite die Initiative besitzt."
+        "title": "Das Zelt des Kï¿½nigs",
+        "gameText": "**Schatten:** Entdecke einen deiner Diener, um die Bewegungsweite fï¿½r diesen Zug um 1 zu reduzieren, wenn die Schattenseite die Initiative besitzt."
       },
       "it": {
         "title": "King's Tent",
-        "gameText": "**Shadow:** If the Shadow has initiative, spot your minion to make the move limit for this turn –1."
+        "gameText": "**Shadow:** If the Shadow has initiative, spot your minion to make the move limit for this turn ï¿½1."
       },
       "es": {
         "title": "King's Tent",
-        "gameText": "**Shadow:** If the Shadow has initiative, spot your minion to make the move limit for this turn –1."
+        "gameText": "**Shadow:** If the Shadow has initiative, spot your minion to make the move limit for this turn ï¿½1."
       }
     }
   },
@@ -4229,8 +4229,8 @@
         "gameText": "**Plains.** If the Shadow has initiative, the Shadow number of this site is +3."
       },
       "de": {
-        "title": "Die Weststraße",
-        "gameText": "**Ebene.** Die Schattenzahl dieses Ortes erhöht sich um 3, wenn die Schattenseite die Initiative besitzt."
+        "title": "Die Weststraï¿½e",
+        "gameText": "**Ebene.** Die Schattenzahl dieses Ortes erhï¿½ht sich um 3, wenn die Schattenseite die Initiative besitzt."
       },
       "it": {
         "title": "West Road",
@@ -4267,7 +4267,7 @@
       },
       "de": {
         "title": "Leuchtfeuer von Minas Tirith",
-        "gameText": "**Zuflucht.** **Gemeinschaft:** Lasse eine Bedrohung entstehen, um einen Gefährten zu heilen, wenn du keine 3 Bedrohungen entdecken kannst."
+        "gameText": "**Zuflucht.** **Gemeinschaft:** Lasse eine Bedrohung entstehen, um einen Gefï¿½hrten zu heilen, wenn du keine 3 Bedrohungen entdecken kannst."
       },
       "it": {
         "title": "Beacon of Minas Tirith",
@@ -4303,7 +4303,7 @@
         "gameText": "**Sanctuary.** **Fellowship:** If you cannot spot 3 threats, add a threat to draw a card."
       },
       "de": {
-        "title": "Die Halle der Könige",
+        "title": "Die Halle der Kï¿½nige",
         "gameText": "**Zuflucht.** **Gemeinschaft:** Lasse eine Bedrohung entstehen, um eine Karte zu ziehen, wenn du keine 3 Bedrohungen entdecken kannst."
       },
       "it": {
@@ -4341,7 +4341,7 @@
       },
       "de": {
         "title": "Der Turm von Ecthelion",
-        "gameText": "**Zuflucht.** **Gemeinschaft:** Lasse 3 Bedrohungen entstehen, um die Bewegungsweite für diesen Zug um 1 zu erhöhen, wenn du keine 3 Bedrohungen entdecken kannst."
+        "gameText": "**Zuflucht.** **Gemeinschaft:** Lasse 3 Bedrohungen entstehen, um die Bewegungsweite fï¿½r diesen Zug um 1 zu erhï¿½hen, wenn du keine 3 Bedrohungen entdecken kannst."
       },
       "it": {
         "title": "Tower of Ecthelion",
@@ -4378,7 +4378,7 @@
       },
       "de": {
         "title": "Die Flussufer des Anduin",
-        "gameText": "**Fluss.** **Kampf:** Entdecke einen deiner Diener und entferne eine Lastmarke, um diesem Diener Stärke +2 zu geben."
+        "gameText": "**Fluss.** **Kampf:** Entdecke einen deiner Diener und entferne eine Lastmarke, um diesem Diener Stï¿½rke +2 zu geben."
       },
       "it": {
         "title": "Anduin Banks",
@@ -4452,7 +4452,7 @@
       },
       "de": {
         "title": "Die Pelennor-Ebene",
-        "gameText": "**Ebene.** **Fernkampf:** Entdecke einen deiner Diener und entferne 3 Lastmarken, um den Fernkampfwert der Diener um 3 zu erhöhen."
+        "gameText": "**Ebene.** **Fernkampf:** Entdecke einen deiner Diener und entferne 3 Lastmarken, um den Fernkampfwert der Diener um 3 zu erhï¿½hen."
       },
       "it": {
         "title": "Pelennor Plain",
@@ -4520,7 +4520,7 @@
       },
       "de": {
         "title": "Die Tiefebene des Pelennor",
-        "gameText": "**Ebene.** Zu Beginn der Manöverphase muss der Freie Völker Spieler seine Hand ablegen oder 2 Lastmarken auf den Ringträger legen."
+        "gameText": "**Ebene.** Zu Beginn der Manï¿½verphase muss der Freie Vï¿½lker Spieler seine Hand ablegen oder 2 Lastmarken auf den Ringtrï¿½ger legen."
       },
       "it": {
         "title": "Pelennor Flat",
@@ -4553,7 +4553,7 @@
         "gameText": "**Sanctuary.** If the fellowship moves from this site during the regroup phase, heal Gandalf three times."
       },
       "de": {
-        "title": "Fünfter Ring von Minas Tirith",
+        "title": "Fï¿½nfter Ring von Minas Tirith",
         "gameText": "**Zuflucht.** Heile Gandalf dreimal, wenn sich die Gemeinschaft in der Sammelphase von diesem Ort fortbewegt."
       },
       "it": {
@@ -4588,7 +4588,7 @@
       },
       "de": {
         "title": "Erster Ring von Minas Tirith",
-        "gameText": "**Zuflucht.** Verwunde jeden Gefährten, wenn sich die Gemeinschaft in der Sammelphase von diesem Ort fortbewegt."
+        "gameText": "**Zuflucht.** Verwunde jeden Gefï¿½hrten, wenn sich die Gemeinschaft in der Sammelphase von diesem Ort fortbewegt."
       },
       "it": {
         "title": "Minas Tirith First Circle",
@@ -4622,7 +4622,7 @@
       },
       "de": {
         "title": "Vierter Ring von Minas Tirith",
-        "gameText": "**Zuflucht.** Heile jeden <symbol>rohan</symbol> Gefährten, wenn sich die Gemeinschaft in der Sammelphase von diesem Ort fortbewegt."
+        "gameText": "**Zuflucht.** Heile jeden <symbol>rohan</symbol> Gefï¿½hrten, wenn sich die Gemeinschaft in der Sammelphase von diesem Ort fortbewegt."
       },
       "it": {
         "title": "Minas Tirith Fourth Circle",
@@ -4656,7 +4656,7 @@
       },
       "de": {
         "title": "Zweiter Ring von Minas Tirith",
-        "gameText": "**Zuflucht.** Heile jeden <symbol>dwarven</symbol> Gefährten, wenn sich die Gemeinschaft in der Sammelphase von diesem Ort fortbewegt."
+        "gameText": "**Zuflucht.** Heile jeden <symbol>dwarven</symbol> Gefï¿½hrten, wenn sich die Gemeinschaft in der Sammelphase von diesem Ort fortbewegt."
       },
       "it": {
         "title": "Minas Tirith Second Circle",
@@ -4690,7 +4690,7 @@
       },
       "de": {
         "title": "Siebenter Ring von Minas Tirith",
-        "gameText": "**Zuflucht.** Heile jeden <symbol>elven</symbol> Gefährten, wenn sich die Gemeinschaft in der Sammelphase von diesem Ort fortbewegt."
+        "gameText": "**Zuflucht.** Heile jeden <symbol>elven</symbol> Gefï¿½hrten, wenn sich die Gemeinschaft in der Sammelphase von diesem Ort fortbewegt."
       },
       "it": {
         "title": "Minas Tirith Seventh Circle",
@@ -4724,7 +4724,7 @@
       },
       "de": {
         "title": "Sechster Ring von Minas Tirith",
-        "gameText": "**Zuflucht.** Heile jeden <symbol>gondor</symbol> Gefährten, wenn sich die Gemeinschaft in der Sammelphase von diesem Ort fortbewegt."
+        "gameText": "**Zuflucht.** Heile jeden <symbol>gondor</symbol> Gefï¿½hrten, wenn sich die Gemeinschaft in der Sammelphase von diesem Ort fortbewegt."
       },
       "it": {
         "title": "Minas Tirith Sixth Circle",
@@ -4758,7 +4758,7 @@
       },
       "de": {
         "title": "Dritter Ring von Minas Tirith",
-        "gameText": "**Zuflucht.** Heile jeden Hobbitgefährten, wenn sich die Gemeinschaft in der Sammelphase von diesem Ort fortbewegt."
+        "gameText": "**Zuflucht.** Heile jeden Hobbitgefï¿½hrten, wenn sich die Gemeinschaft in der Sammelphase von diesem Ort fortbewegt."
       },
       "it": {
         "title": "Minas Tirith Third Circle",
@@ -4795,7 +4795,7 @@
       },
       "de": {
         "title": "Furt von Osgiliath",
-        "gameText": "**Fluss.** **Schatten:** Strenge 2 Diener an und entdecke 6 Gefährten, um 2 Karten zu ziehen."
+        "gameText": "**Fluss.** **Schatten:** Strenge 2 Diener an und entdecke 6 Gefï¿½hrten, um 2 Karten zu ziehen."
       },
       "it": {
         "title": "Osgiliath Crossing",
@@ -4832,7 +4832,7 @@
       },
       "de": {
         "title": "Die Pelennor Steppe",
-        "gameText": "**Ebene.** **Schatten:** Strenge einen Diener an und entdecke 6 Gefährten, um den Einfluss um <symbol>twilight1</symbol> zu erhöhen."
+        "gameText": "**Ebene.** **Schatten:** Strenge einen Diener an und entdecke 6 Gefï¿½hrten, um den Einfluss um <symbol>twilight1</symbol> zu erhï¿½hen."
       },
       "it": {
         "title": "Pelennor Grassland",
@@ -4861,23 +4861,23 @@
     "i18n": {
       "en": {
         "title": "Ruined Capitol",
-        "gameText": "**River.** **Shadow:** Spot your minion and 6 companions to make the move limit for this turn –1."
+        "gameText": "**River.** **Shadow:** Spot your minion and 6 companions to make the move limit for this turn ï¿½1."
       },
       "fr": {
         "title": "Ruined Capitol",
-        "gameText": "**River.** **Shadow:** Spot your minion and 6 companions to make the move limit for this turn –1."
+        "gameText": "**River.** **Shadow:** Spot your minion and 6 companions to make the move limit for this turn ï¿½1."
       },
       "de": {
-        "title": "Zerstörte Hauptstadt",
-        "gameText": "**Fluss.** **Schatten:** Entdecke einen deiner Diener und 6 Gefährten, um die Bewegungsweite in diesem Zug um 1 zu reduzieren."
+        "title": "Zerstï¿½rte Hauptstadt",
+        "gameText": "**Fluss.** **Schatten:** Entdecke einen deiner Diener und 6 Gefï¿½hrten, um die Bewegungsweite in diesem Zug um 1 zu reduzieren."
       },
       "it": {
         "title": "Ruined Capitol",
-        "gameText": "**River.** **Shadow:** Spot your minion and 6 companions to make the move limit for this turn –1."
+        "gameText": "**River.** **Shadow:** Spot your minion and 6 companions to make the move limit for this turn ï¿½1."
       },
       "es": {
         "title": "Ruined Capitol",
-        "gameText": "**River.** **Shadow:** Spot your minion and 6 companions to make the move limit for this turn –1."
+        "gameText": "**River.** **Shadow:** Spot your minion and 6 companions to make the move limit for this turn ï¿½1."
       }
     }
   },
@@ -4906,7 +4906,7 @@
       },
       "de": {
         "title": "Der Scheideweg",
-        "gameText": "**Schatten:** Entdecke 2 <symbol>raider</symbol> Menschen und entferne eine Bedrohung, um den Einfluss um <symbol>twilight2</symbol> zu erhöhen."
+        "gameText": "**Schatten:** Entdecke 2 <symbol>raider</symbol> Menschen und entferne eine Bedrohung, um den Einfluss um <symbol>twilight2</symbol> zu erhï¿½hen."
       },
       "it": {
         "title": "Cross Roads",
@@ -4943,7 +4943,7 @@
       },
       "de": {
         "title": "Morgultal",
-        "gameText": "**Kampf:** Entferne 2 Bedrohungen, um einem deiner <symbol>sauron</symbol> Diener Stärke +3 zu geben."
+        "gameText": "**Kampf:** Entferne 2 Bedrohungen, um einem deiner <symbol>sauron</symbol> Diener Stï¿½rke +3 zu geben."
       },
       "it": {
         "title": "Morgul Vale",
@@ -4972,23 +4972,23 @@
     "i18n": {
       "en": {
         "title": "Morgulduin",
-        "gameText": "**Shadow:** Remove 2 threats to play a Nazgûl from your discard pile. His twilight cost is -2."
+        "gameText": "**Shadow:** Remove 2 threats to play a Nazgï¿½l from your discard pile. His twilight cost is -2."
       },
       "fr": {
         "title": "Morgulduin",
-        "gameText": "**Shadow:** Remove 2 threats to play a Nazgûl from your discard pile. His twilight cost is -2."
+        "gameText": "**Shadow:** Remove 2 threats to play a Nazgï¿½l from your discard pile. His twilight cost is -2."
       },
       "de": {
         "title": "Morgulduin",
-        "gameText": "**Schatten:** Entferne 2 Bedrohungen, um einen Nazgûl mit um 2 reduzierten Kosten aus deinem Ablagestapel zu spielen."
+        "gameText": "**Schatten:** Entferne 2 Bedrohungen, um einen Nazgï¿½l mit um 2 reduzierten Kosten aus deinem Ablagestapel zu spielen."
       },
       "it": {
         "title": "Morgulduin",
-        "gameText": "**Shadow:** Remove 2 threats to play a Nazgûl from your discard pile. His twilight cost is -2."
+        "gameText": "**Shadow:** Remove 2 threats to play a Nazgï¿½l from your discard pile. His twilight cost is -2."
       },
       "es": {
         "title": "Morgulduin",
-        "gameText": "**Shadow:** Remove 2 threats to play a Nazgûl from your discard pile. His twilight cost is -2."
+        "gameText": "**Shadow:** Remove 2 threats to play a Nazgï¿½l from your discard pile. His twilight cost is -2."
       }
     }
   },
@@ -5016,8 +5016,8 @@
         "gameText": "**Shadow:** Remove 2 threats and play Gollum from your discard pile to add 2 burdens."
       },
       "de": {
-        "title": "Nördliches Ithilien",
-        "gameText": "**Schatten:** Entferne 2 Bedrohungen und spiele Gollum aus deinem Ablagestapel, um 2 Lastmarken auf den Ringträger zu legen."
+        "title": "Nï¿½rdliches Ithilien",
+        "gameText": "**Schatten:** Entferne 2 Bedrohungen und spiele Gollum aus deinem Ablagestapel, um 2 Lastmarken auf den Ringtrï¿½ger zu legen."
       },
       "it": {
         "title": "Northern Ithilien",
@@ -5125,7 +5125,7 @@
       },
       "de": {
         "title": "Narchost",
-        "gameText": "**Schatten:** Entdecke 8 Lastmarken, um den Ringträger zu zwingen, den Einen Ring bis zur Sammelphase zu benutzen."
+        "gameText": "**Schatten:** Entdecke 8 Lastmarken, um den Ringtrï¿½ger zu zwingen, den Einen Ring bis zur Sammelphase zu benutzen."
       },
       "it": {
         "title": "Narchost",
@@ -5158,8 +5158,8 @@
         "gameText": "Each time a companion is killed, add a burden."
       },
       "de": {
-        "title": "Schlackehügel",
-        "gameText": "Lege, jedes Mal, wenn ein Gefährte stirbt, eine Lastmarke auf den Ringträger."
+        "title": "Schlackehï¿½gel",
+        "gameText": "Lege, jedes Mal, wenn ein Gefï¿½hrte stirbt, eine Lastmarke auf den Ringtrï¿½ger."
       },
       "it": {
         "title": "Slag Mounds",
@@ -5189,26 +5189,26 @@
       "en": {
         "title": "The Dimholt",
         "gameText": "**Sanctuary.** **Underground.** **Fellowship:** Add 3 threats to play an enduring companion from your draw deck.",
-        "loreText": "She should not die.... At least she should not die alone, unaided."
+        "loreText": "ï¿½She should not die.... At least she should not die alone, unaided.ï¿½"
       },
       "fr": {
         "title": "The Dimholt",
         "gameText": "**Sanctuary.** **Underground.** **Fellowship:** Add 3 threats to play an enduring companion from your draw deck.",
-        "loreText": "She should not die.... At least she should not die alone, unaided."
+        "loreText": "ï¿½She should not die.... At least she should not die alone, unaided.ï¿½"
       },
       "de": {
         "title": "Der Dimholt",
-        "gameText": "**Zuflucht.** **Unterirdisch.** **Gemeinschaft:** Lasse 3 Bedrohungen entstehen, um einen zähen Gefährten direkt aus deinem Spieldeck zu spielen."
+        "gameText": "**Zuflucht.** **Unterirdisch.** **Gemeinschaft:** Lasse 3 Bedrohungen entstehen, um einen zï¿½hen Gefï¿½hrten direkt aus deinem Spieldeck zu spielen."
       },
       "it": {
         "title": "The Dimholt",
         "gameText": "**Sanctuary.** **Underground.** **Fellowship:** Add 3 threats to play an enduring companion from your draw deck.",
-        "loreText": "She should not die.... At least she should not die alone, unaided."
+        "loreText": "ï¿½She should not die.... At least she should not die alone, unaided.ï¿½"
       },
       "es": {
         "title": "The Dimholt",
         "gameText": "**Sanctuary.** **Underground.** **Fellowship:** Add 3 threats to play an enduring companion from your draw deck.",
-        "loreText": "She should not die.... At least she should not die alone, unaided."
+        "loreText": "ï¿½She should not die.... At least she should not die alone, unaided.ï¿½"
       }
     }
   },
@@ -5230,26 +5230,26 @@
       "en": {
         "title": "City of the Dead",
         "gameText": "**Underground.** **Shadow:** Remove 2 burdens to play an enduring minion from your draw deck or discard pile.",
-        "loreText": "He said: “Who are you?” I still did not answer, but it hurt me horribly; and he pressed me, so I said: “A hobbit."
+        "loreText": "ï¿½ï¿½He said: ï¿½Who are you?ï¿½ I still did not answer, but it hurt me horribly; and he pressed me, so I said: ï¿½A hobbit.ï¿½'ï¿½"
       },
       "fr": {
         "title": "City of the Dead",
         "gameText": "**Underground.** **Shadow:** Remove 2 burdens to play an enduring minion from your draw deck or discard pile.",
-        "loreText": "He said: “Who are you?” I still did not answer, but it hurt me horribly; and he pressed me, so I said: “A hobbit."
+        "loreText": "ï¿½ï¿½He said: ï¿½Who are you?ï¿½ I still did not answer, but it hurt me horribly; and he pressed me, so I said: ï¿½A hobbit.ï¿½'ï¿½"
       },
       "de": {
         "title": "Die Stadt der Toten",
-        "gameText": "**Unterirdisch.** **Schatten:** Entferne 2 Lastmarken, um einen zähen Diener aus deinem Ablagestapel oder Spieldeck zu spielen."
+        "gameText": "**Unterirdisch.** **Schatten:** Entferne 2 Lastmarken, um einen zï¿½hen Diener aus deinem Ablagestapel oder Spieldeck zu spielen."
       },
       "it": {
         "title": "City of the Dead",
         "gameText": "**Underground.** **Shadow:** Remove 2 burdens to play an enduring minion from your draw deck or discard pile.",
-        "loreText": "He said: “Who are you?” I still did not answer, but it hurt me horribly; and he pressed me, so I said: “A hobbit."
+        "loreText": "ï¿½ï¿½He said: ï¿½Who are you?ï¿½ I still did not answer, but it hurt me horribly; and he pressed me, so I said: ï¿½A hobbit.ï¿½'ï¿½"
       },
       "es": {
         "title": "City of the Dead",
         "gameText": "**Underground.** **Shadow:** Remove 2 burdens to play an enduring minion from your draw deck or discard pile.",
-        "loreText": "He said: “Who are you?” I still did not answer, but it hurt me horribly; and he pressed me, so I said: “A hobbit."
+        "loreText": "ï¿½ï¿½He said: ï¿½Who are you?ï¿½ I still did not answer, but it hurt me horribly; and he pressed me, so I said: ï¿½A hobbit.ï¿½'ï¿½"
       }
     }
   },
@@ -5268,26 +5268,26 @@
       "en": {
         "title": "Crashed Gate",
         "gameText": "At the start of the regroup phase, the Free Peoples player must add 3 threats or choose an opponent who may take control of a site.",
-        "loreText": "You're in the service of the Steward of Gondor now. You'll do as you're told."
+        "loreText": "ï¿½ï¿½You're in the service of the Steward of Gondor now. You'll do as you're told.'ï¿½"
       },
       "fr": {
         "title": "Crashed Gate",
         "gameText": "At the start of the regroup phase, the Free Peoples player must add 3 threats or choose an opponent who may take control of a site.",
-        "loreText": "You're in the service of the Steward of Gondor now. You'll do as you're told."
+        "loreText": "ï¿½ï¿½You're in the service of the Steward of Gondor now. You'll do as you're told.'ï¿½"
       },
       "de": {
-        "title": "Zerstörtes Stadtttor",
-        "gameText": "Zu Beginn der Sammelphase muss der Freie Völker Spieler 3 Bedrohungen entstehen lassen, oder einen Gegner wählen, der einen Ort kontrollieren darf."
+        "title": "Zerstï¿½rtes Stadtttor",
+        "gameText": "Zu Beginn der Sammelphase muss der Freie Vï¿½lker Spieler 3 Bedrohungen entstehen lassen, oder einen Gegner wï¿½hlen, der einen Ort kontrollieren darf."
       },
       "it": {
         "title": "Crashed Gate",
         "gameText": "At the start of the regroup phase, the Free Peoples player must add 3 threats or choose an opponent who may take control of a site.",
-        "loreText": "You're in the service of the Steward of Gondor now. You'll do as you're told."
+        "loreText": "ï¿½ï¿½You're in the service of the Steward of Gondor now. You'll do as you're told.'ï¿½"
       },
       "es": {
         "title": "Crashed Gate",
         "gameText": "At the start of the regroup phase, the Free Peoples player must add 3 threats or choose an opponent who may take control of a site.",
-        "loreText": "You're in the service of the Steward of Gondor now. You'll do as you're told."
+        "loreText": "ï¿½ï¿½You're in the service of the Steward of Gondor now. You'll do as you're told.'ï¿½"
       }
     }
   },
@@ -5309,26 +5309,26 @@
       "en": {
         "title": "Osgiliath Channel",
         "gameText": "**River.** **Regroup:** Spot your minion and 6 companions to make the Free Peoples player choose to move again this turn.",
-        "loreText": "No such anguish had Shelob ever known, or dreamed of knowing...."
+        "loreText": "ï¿½No such anguish had Shelob ever known, or dreamed of knowing....ï¿½"
       },
       "fr": {
         "title": "Osgiliath Channel",
         "gameText": "**River.** **Regroup:** Spot your minion and 6 companions to make the Free Peoples player choose to move again this turn.",
-        "loreText": "No such anguish had Shelob ever known, or dreamed of knowing...."
+        "loreText": "ï¿½No such anguish had Shelob ever known, or dreamed of knowing....ï¿½"
       },
       "de": {
         "title": "Kanal durch Osgiliath",
-        "gameText": "**Fluss.** **Sammeln:** Entdecke einen deiner Diener und 6 Gefährten, um den Freie Völker Spieler zu zwingen, sich für das Weitergehen zu entscheiden."
+        "gameText": "**Fluss.** **Sammeln:** Entdecke einen deiner Diener und 6 Gefï¿½hrten, um den Freie Vï¿½lker Spieler zu zwingen, sich fï¿½r das Weitergehen zu entscheiden."
       },
       "it": {
         "title": "Osgiliath Channel",
         "gameText": "**River.** **Regroup:** Spot your minion and 6 companions to make the Free Peoples player choose to move again this turn.",
-        "loreText": "No such anguish had Shelob ever known, or dreamed of knowing...."
+        "loreText": "ï¿½No such anguish had Shelob ever known, or dreamed of knowing....ï¿½"
       },
       "es": {
         "title": "Osgiliath Channel",
         "gameText": "**River.** **Regroup:** Spot your minion and 6 companions to make the Free Peoples player choose to move again this turn.",
-        "loreText": "No such anguish had Shelob ever known, or dreamed of knowing...."
+        "loreText": "ï¿½No such anguish had Shelob ever known, or dreamed of knowing....ï¿½"
       }
     }
   },
@@ -5356,7 +5356,7 @@
         "gameText": "**Sanctuary.** **Fellowship:** If you cannot spot 2 threats, add a threat to play a fortification from your draw deck."
       },
       "de": {
-        "title": "Fuß des Mindolluin",
+        "title": "Fuï¿½ des Mindolluin",
         "gameText": "**Zuflucht.** \n**Gemeinschaft:** Lasse eine Bedrohung entstehen, um eine Befestigung aus deinem Spieldeck zu spielen, wenn du keine 2 Bedrohungen entdecken kannst."
       },
       "it": {
@@ -5394,7 +5394,7 @@
       },
       "de": {
         "title": "Pelennor Grasland",
-        "gameText": "**Ebene.** **Schatten:** Strenge einen Diener an und entferne eine Lastmarke, um den Freien Völker Spieler zu zwingen, einen seiner Effekte abzulegen."
+        "gameText": "**Ebene.** **Schatten:** Strenge einen Diener an und entferne eine Lastmarke, um den Freien Vï¿½lker Spieler zu zwingen, einen seiner Effekte abzulegen."
       },
       "it": {
         "title": "Pelennor Prairie",
@@ -5428,7 +5428,7 @@
       },
       "de": {
         "title": "Gruft der Truchsesse",
-        "gameText": "Wunden können nicht verhindert oder geheilt werden. Lastmarken können nicht entfernt werden."
+        "gameText": "Wunden kï¿½nnen nicht verhindert oder geheilt werden. Lastmarken kï¿½nnen nicht entfernt werden."
       },
       "it": {
         "title": "Steward's Tomb",
@@ -5464,8 +5464,8 @@
         "gameText": "**Skirmish:** Spot your <symbol>wraith</symbol> Orc and remove 2 threats to make that <symbol>wraith</symbol> Orc strength +3."
       },
       "de": {
-        "title": "Wachtürme von Cirith Ungol",
-        "gameText": "**Kampf:** Entdecke einen deiner <symbol>wraith</symbol> Orks und entferne 2 Bedrohungen, um diesem Ork Stärke +3 zu geben."
+        "title": "Wachtï¿½rme von Cirith Ungol",
+        "gameText": "**Kampf:** Entdecke einen deiner <symbol>wraith</symbol> Orks und entferne 2 Bedrohungen, um diesem Ork Stï¿½rke +3 zu geben."
       },
       "it": {
         "title": "Watchers of Cirith Ungol",
@@ -5498,7 +5498,7 @@
       },
       "de": {
         "title": "Die Ufer des Anduin",
-        "gameText": "**Fluss.** Für jeden Gefährten über 4 erhöht sich der Fernkampfwert der Diener um 2."
+        "gameText": "**Fluss.** Fï¿½r jeden Gefï¿½hrten ï¿½ber 4 erhï¿½ht sich der Fernkampfwert der Diener um 2."
       },
       "it": {
         "title": "Anduin Banks",
@@ -5531,7 +5531,7 @@
       },
       "de": {
         "title": "Der Zusammenfluss des Anduin",
-        "gameText": "**Fluss.** Wenn die Gemeinschaft diesen Ort erreicht, lege sämtliche Verbündeten ab."
+        "gameText": "**Fluss.** Wenn die Gemeinschaft diesen Ort erreicht, lege sï¿½mtliche Verbï¿½ndeten ab."
       },
       "it": {
         "title": "Anduin Confluence",
@@ -5564,7 +5564,7 @@
       },
       "de": {
         "title": "Barazinbar",
-        "gameText": "**Gebirge.** Zu Beginn deiner Gemeinschaftsphase darfst du einen Zwerg anstrengen, um eine <symbol>dwarven</symbol>  Ausrüstung aus deinem Spieldeck zu spielen."
+        "gameText": "**Gebirge.** Zu Beginn deiner Gemeinschaftsphase darfst du einen Zwerg anstrengen, um eine <symbol>dwarven</symbol>  Ausrï¿½stung aus deinem Spieldeck zu spielen."
       },
       "it": {
         "title": "Barazinbar",
@@ -5592,23 +5592,23 @@
     "i18n": {
       "en": {
         "title": "Buckland Homestead",
-        "gameText": "**Dwelling.** **Shadow:** Play a Nazgûl to discard a condition from play."
+        "gameText": "**Dwelling.** **Shadow:** Play a Nazgï¿½l to discard a condition from play."
       },
       "fr": {
         "title": "Buckland Homestead",
-        "gameText": "**Dwelling.** **Shadow:** Play a Nazgûl to discard a condition from play."
+        "gameText": "**Dwelling.** **Shadow:** Play a Nazgï¿½l to discard a condition from play."
       },
       "de": {
-        "title": "Gehöft in Bockland",
-        "gameText": "**Heimstatt. Schatten:** Spiele einen Nazgûl, um einen Effekt aus dem Spiel abzulegen."
+        "title": "Gehï¿½ft in Bockland",
+        "gameText": "**Heimstatt. Schatten:** Spiele einen Nazgï¿½l, um einen Effekt aus dem Spiel abzulegen."
       },
       "it": {
         "title": "Buckland Homestead",
-        "gameText": "**Dwelling.** **Shadow:** Play a Nazgûl to discard a condition from play."
+        "gameText": "**Dwelling.** **Shadow:** Play a Nazgï¿½l to discard a condition from play."
       },
       "es": {
         "title": "Buckland Homestead",
-        "gameText": "**Dwelling.** **Shadow:** Play a Nazgûl to discard a condition from play."
+        "gameText": "**Dwelling.** **Shadow:** Play a Nazgï¿½l to discard a condition from play."
       }
     }
   },
@@ -5665,8 +5665,8 @@
         "gameText": "**Underground.** Skirmish special abilities cannot be used."
       },
       "de": {
-        "title": "Höhleneingang",
-        "gameText": "**Unterirdisch.** Kampffähigkeiten dürfen nicht benutzt werden."
+        "title": "Hï¿½hleneingang",
+        "gameText": "**Unterirdisch.** Kampffï¿½higkeiten dï¿½rfen nicht benutzt werden."
       },
       "it": {
         "title": "Cavern Entrance",
@@ -5699,7 +5699,7 @@
       },
       "de": {
         "title": "Die Kammer von Mazarbul",
-        "gameText": "**Unterirdisch.** Der Freie Völker Spieler darf Artefakte und Aus-rüstungen der Freien Völker ohne Zwielichtkosten verschieben."
+        "gameText": "**Unterirdisch.** Der Freie Vï¿½lker Spieler darf Artefakte und Aus-rï¿½stungen der Freien Vï¿½lker ohne Zwielichtkosten verschieben."
       },
       "it": {
         "title": "Chamber of Mazarbul",
@@ -5732,7 +5732,7 @@
       },
       "de": {
         "title": "Schluchten des Emyn Muil",
-        "gameText": "**Gebirge.** Verwunde jeden Gefährten, wenn dieser Ort in Region 2 liegt, wenn sich die Gemeinschaft in der Sammelphase von hier fortbewegt."
+        "gameText": "**Gebirge.** Verwunde jeden Gefï¿½hrten, wenn dieser Ort in Region 2 liegt, wenn sich die Gemeinschaft in der Sammelphase von hier fortbewegt."
       },
       "it": {
         "title": "Crags of Emyn Muil",
@@ -5765,7 +5765,7 @@
       },
       "de": {
         "title": "Gestauter Torbach",
-        "gameText": "**Sumpf.** Zu Beginn deiner Gemeinschaftsphase darfst du eine <symbol>gollum</symbol> Karte der Freien Völker aus deinem Spieldeck spielen."
+        "gameText": "**Sumpf.** Zu Beginn deiner Gemeinschaftsphase darfst du eine <symbol>gollum</symbol> Karte der Freien Vï¿½lker aus deinem Spieldeck spielen."
       },
       "it": {
         "title": "Dammed Gate-stream",
@@ -5798,7 +5798,7 @@
       },
       "de": {
         "title": "Die Oststrasse",
-        "gameText": "**Wald.** Die Zwielichtkosten jedes Gefährten erhöhen sich um 2."
+        "gameText": "**Wald.** Die Zwielichtkosten jedes Gefï¿½hrten erhï¿½hen sich um 2."
       },
       "it": {
         "title": "East Road",
@@ -5833,8 +5833,8 @@
         "gameText": "**Plains.** **Skirmish:** Exert your character (except an enduring character), to make it strength +2."
       },
       "de": {
-        "title": "Ettenöden",
-        "gameText": "**Ebene. Kampf:** Strenge deinen Charakter (außer einen zähen Charakter) an, um ihm Stärke +2 zu geben."
+        "title": "Ettenï¿½den",
+        "gameText": "**Ebene. Kampf:** Strenge deinen Charakter (auï¿½er einen zï¿½hen Charakter) an, um ihm Stï¿½rke +2 zu geben."
       },
       "it": {
         "title": "Ettenmoors",
@@ -5862,23 +5862,23 @@
     "i18n": {
       "en": {
         "title": "Expanding Marshland",
-        "gameText": "**Marsh.** **Shadow:** If the total number of minions and twilight tokens is 3 or fewer, play a minion at twilight cost –3."
+        "gameText": "**Marsh.** **Shadow:** If the total number of minions and twilight tokens is 3 or fewer, play a minion at twilight cost ï¿½3."
       },
       "fr": {
         "title": "Expanding Marshland",
-        "gameText": "**Marsh.** **Shadow:** If the total number of minions and twilight tokens is 3 or fewer, play a minion at twilight cost –3."
+        "gameText": "**Marsh.** **Shadow:** If the total number of minions and twilight tokens is 3 or fewer, play a minion at twilight cost ï¿½3."
       },
       "de": {
         "title": "Ausgedehnte Moore",
-        "gameText": "**Sumpf. Schatten:**  Wenn der Einfluss und die Zahl der Diener 3 oder weniger beträgt, spiele einen Diener mit um 3 reduzierten Kosten."
+        "gameText": "**Sumpf. Schatten:**  Wenn der Einfluss und die Zahl der Diener 3 oder weniger betrï¿½gt, spiele einen Diener mit um 3 reduzierten Kosten."
       },
       "it": {
         "title": "Expanding Marshland",
-        "gameText": "**Marsh.** **Shadow:** If the total number of minions and twilight tokens is 3 or fewer, play a minion at twilight cost –3."
+        "gameText": "**Marsh.** **Shadow:** If the total number of minions and twilight tokens is 3 or fewer, play a minion at twilight cost ï¿½3."
       },
       "es": {
         "title": "Expanding Marshland",
-        "gameText": "**Marsh.** **Shadow:** If the total number of minions and twilight tokens is 3 or fewer, play a minion at twilight cost –3."
+        "gameText": "**Marsh.** **Shadow:** If the total number of minions and twilight tokens is 3 or fewer, play a minion at twilight cost ï¿½3."
       }
     }
   },
@@ -5903,7 +5903,7 @@
       },
       "de": {
         "title": "Lichtung in Fangorn",
-        "gameText": "**Wald.** Erhöhe den Einfluss um <symbol>twilight1</symbol>  für jede Waffe der Freien Völker, wenn die Gemeinschaft diesen Ort erreicht."
+        "gameText": "**Wald.** Erhï¿½he den Einfluss um <symbol>twilight1</symbol>  fï¿½r jede Waffe der Freien Vï¿½lker, wenn die Gemeinschaft diesen Ort erreicht."
       },
       "it": {
         "title": "Fangorn Glade",
@@ -5935,8 +5935,8 @@
         "gameText": "**Plains.** Each unbound companion skirmishing more than 1 minion is strength +3."
       },
       "de": {
-        "title": "Grasflächen von Rohan",
-        "gameText": "**Ebene.** Jeder nicht-verbundene Gefährte, der gegen mehr als einen Diener kämpft, erhält Stärke +3."
+        "title": "Grasflï¿½chen von Rohan",
+        "gameText": "**Ebene.** Jeder nicht-verbundene Gefï¿½hrte, der gegen mehr als einen Diener kï¿½mpft, erhï¿½lt Stï¿½rke +3."
       },
       "it": {
         "title": "Flats of Rohan",
@@ -5969,7 +5969,7 @@
       },
       "de": {
         "title": "Die Festung von Orthanc",
-        "gameText": "**Schlachtfeld.** Erhöhe den Einfluss um <symbol>twilight2</symbol> für jeden Gefährten über 5, wenn die Gemeinschaft diesen Ort erreicht."
+        "gameText": "**Schlachtfeld.** Erhï¿½he den Einfluss um <symbol>twilight2</symbol> fï¿½r jeden Gefï¿½hrten ï¿½ber 5, wenn die Gemeinschaft diesen Ort erreicht."
       },
       "it": {
         "title": "Fortress of Orthanc",
@@ -6001,7 +6001,7 @@
         "gameText": "**Dwelling.** At the start of your fellowship phase, you may exert 2 Hobbits to play a Hobbit from your draw deck."
       },
       "de": {
-        "title": "Der Grüne Drache",
+        "title": "Der Grï¿½ne Drache",
         "gameText": "**Heimstatt.** Zu Beginn deiner Gemeinschaftsphase darfst du 2 Hob-bits anstrengen, um einen Hobbit aus deinem Spieldeck zu spielen."
       },
       "it": {
@@ -6035,7 +6035,7 @@
       },
       "de": {
         "title": "Hargtal",
-        "gameText": "**Ebene.** Kein Diener, der gegen einen <symbol>rohan</symbol> Gefährten kämpft, kann bis zur Sammelphase erbittert sein oder erbittert werden."
+        "gameText": "**Ebene.** Kein Diener, der gegen einen <symbol>rohan</symbol> Gefï¿½hrten kï¿½mpft, kann bis zur Sammelphase erbittert sein oder erbittert werden."
       },
       "it": {
         "title": "Harrowdale",
@@ -6067,8 +6067,8 @@
         "gameText": "**Battleground.** Each time a <symbol>gandalf</symbol> companion wins a skirmish, the Free Peoples player may discard a condition from play."
       },
       "de": {
-        "title": "Anhöhen von Isengart",
-        "gameText": "**Schlachtfeld.** Jedes Mal, wenn ein <symbol>gandalf</symbol> Gefährte einen Kampf gewinnt, darf der Freie Völker Spieler einen Effekt aus dem Spiel ablegen."
+        "title": "Anhï¿½hen von Isengart",
+        "gameText": "**Schlachtfeld.** Jedes Mal, wenn ein <symbol>gandalf</symbol> Gefï¿½hrte einen Kampf gewinnt, darf der Freie Vï¿½lker Spieler einen Effekt aus dem Spiel ablegen."
       },
       "it": {
         "title": "Heights of Isengard",
@@ -6101,7 +6101,7 @@
       },
       "de": {
         "title": "Helms Tor",
-        "gameText": "**Schlachtfeld.** Jeder Charakter, der eine Handwaffe trägt, erhält Stärke +2."
+        "gameText": "**Schlachtfeld.** Jeder Charakter, der eine Handwaffe trï¿½gt, erhï¿½lt Stï¿½rke +2."
       },
       "it": {
         "title": "Helm's Gate",
@@ -6129,23 +6129,23 @@
     "i18n": {
       "en": {
         "title": "Mere of Dead Faces",
-        "gameText": "**Marsh.** **Regroup:** Exert your Gollum or your Sméagol to play the fellowship's next site."
+        "gameText": "**Marsh.** **Regroup:** Exert your Gollum or your Smï¿½agol to play the fellowship's next site."
       },
       "fr": {
         "title": "Mere of Dead Faces",
-        "gameText": "**Marsh.** **Regroup:** Exert your Gollum or your Sméagol to play the fellowship's next site."
+        "gameText": "**Marsh.** **Regroup:** Exert your Gollum or your Smï¿½agol to play the fellowship's next site."
       },
       "de": {
         "title": "Pfuhl der Toten Gesichter",
-        "gameText": "**Sumpf. Sammeln:** Strenge deinen Gollum oder Sméagol an, um den nächsten Ort der Gemeinschaft zu spielen."
+        "gameText": "**Sumpf. Sammeln:** Strenge deinen Gollum oder Smï¿½agol an, um den nï¿½chsten Ort der Gemeinschaft zu spielen."
       },
       "it": {
         "title": "Mere of Dead Faces",
-        "gameText": "**Marsh.** **Regroup:** Exert your Gollum or your Sméagol to play the fellowship's next site."
+        "gameText": "**Marsh.** **Regroup:** Exert your Gollum or your Smï¿½agol to play the fellowship's next site."
       },
       "es": {
         "title": "Mere of Dead Faces",
-        "gameText": "**Marsh.** **Regroup:** Exert your Gollum or your Sméagol to play the fellowship's next site."
+        "gameText": "**Marsh.** **Regroup:** Exert your Gollum or your Smï¿½agol to play the fellowship's next site."
       }
     }
   },
@@ -6203,7 +6203,7 @@
       },
       "de": {
         "title": "Die Treppen von Moria",
-        "gameText": "**Unterirdisch.** Jeder Charakter, der eine Handwaffe trägt, erhält **Schaden +1**."
+        "gameText": "**Unterirdisch.** Jeder Charakter, der eine Handwaffe trï¿½gt, erhï¿½lt **Schaden +1**."
       },
       "it": {
         "title": "Moria Stairway",
@@ -6227,7 +6227,7 @@
     "imageUrl": "/cards_visuals/o_11_249.jpg",
     "i18n": {
       "en": {
-        "title": "Neekerbreekers’ Bog",
+        "title": "Neekerbreekersï¿½ Bog",
         "gameText": "**Marsh.** When the fellowship moves to here, heal each character who has resistance 5 or more and exert each other character."
       },
       "fr": {
@@ -6261,23 +6261,23 @@
     "i18n": {
       "en": {
         "title": "North Undeep",
-        "gameText": "**River.** The minion archery total is –3."
+        "gameText": "**River.** The minion archery total is ï¿½3."
       },
       "fr": {
         "title": "North Undeep",
-        "gameText": "**River.** The minion archery total is –3."
+        "gameText": "**River.** The minion archery total is ï¿½3."
       },
       "de": {
-        "title": "Nördliche Untiefe",
+        "title": "Nï¿½rdliche Untiefe",
         "gameText": "**Fluss.** Der Fernkampfwert der Diener verringert sich um 3."
       },
       "it": {
         "title": "North Undeep",
-        "gameText": "**River.** The minion archery total is –3."
+        "gameText": "**River.** The minion archery total is ï¿½3."
       },
       "es": {
         "title": "North Undeep",
-        "gameText": "**River.** The minion archery total is –3."
+        "gameText": "**River.** The minion archery total is ï¿½3."
       }
     }
   },
@@ -6301,7 +6301,7 @@
         "gameText": "**Forest.** At the start of your fellowship phase, you may heal 2 Elves."
       },
       "de": {
-        "title": "Alte Waldstraße",
+        "title": "Alte Waldstraï¿½e",
         "gameText": "**Wald.** Zu Beginn deiner Gemeinschaftsphase darfst du 2 Elben heilen."
       },
       "it": {
@@ -6334,8 +6334,8 @@
         "gameText": "**Battleground.** When the fellowship moves from this site, the Free Peoples player may spot 3 burdens to remove a burden."
       },
       "de": {
-        "title": "Das zurückgeforderte Osgiliath",
-        "gameText": "**Schlachtfeld.** Wenn sich die Gemeinschaft hier fortbewegt, darf der Freie Völker Spieler 3 Lastmarken entdecken, um eine Lastmarke zu entfernen."
+        "title": "Das zurï¿½ckgeforderte Osgiliath",
+        "gameText": "**Schlachtfeld.** Wenn sich die Gemeinschaft hier fortbewegt, darf der Freie Vï¿½lker Spieler 3 Lastmarken entdecken, um eine Lastmarke zu entfernen."
       },
       "it": {
         "title": "Osgiliath Reclaimed",
@@ -6368,7 +6368,7 @@
       },
       "de": {
         "title": "Pelennor-Felder",
-        "gameText": "**Ebene.** Jeder <symbol>men</symbol> Diener erhält **Hinterhalt** <symbol>twilight1</symbol>."
+        "gameText": "**Ebene.** Jeder <symbol>men</symbol> Diener erhï¿½lt **Hinterhalt** <symbol>twilight1</symbol>."
       },
       "it": {
         "title": "Pelennor Fields",
@@ -6401,7 +6401,7 @@
       },
       "de": {
         "title": "Ebene des Pelennor",
-        "gameText": "**Ebene.** Zu Beginn der Manöverphase muss der Freie Völker Spieler eine Lastmarke auf den Ringträger legen oder 3 Karten aus der Hand ablegen."
+        "gameText": "**Ebene.** Zu Beginn der Manï¿½verphase muss der Freie Vï¿½lker Spieler eine Lastmarke auf den Ringtrï¿½ger legen oder 3 Karten aus der Hand ablegen."
       },
       "it": {
         "title": "Pelennor Flat",
@@ -6434,7 +6434,7 @@
       },
       "de": {
         "title": "Die Spitze von Zirakzigil",
-        "gameText": "**Gebirge** Zu Beginn deiner Gemeinschaftsphase darfst du 3 Gefähr-ten anstrengen, um einen Zauberer aus deinem Friedhof zu spielen."
+        "gameText": "**Gebirge** Zu Beginn deiner Gemeinschaftsphase darfst du 3 Gefï¿½hr-ten anstrengen, um einen Zauberer aus deinem Friedhof zu spielen."
       },
       "it": {
         "title": "Pinnacle of Zirakzigil",
@@ -6466,8 +6466,8 @@
         "gameText": "**Dwelling.** At the start of your fellowship phase, you may add a burden to play a ranger from your draw deck."
       },
       "de": {
-        "title": "Zum tänzelnden Pony",
-        "gameText": "**Heimstatt.** Zu Beginn der Gemeinschaftsphase darfst du eine Lastmarke auf den Ringträger legen, um einen Waldläufer aus deinem Spieldeck zu spielen."
+        "title": "Zum tï¿½nzelnden Pony",
+        "gameText": "**Heimstatt.** Zu Beginn der Gemeinschaftsphase darfst du eine Lastmarke auf den Ringtrï¿½ger legen, um einen Waldlï¿½ufer aus deinem Spieldeck zu spielen."
       },
       "it": {
         "title": "The Prancing Pony",
@@ -6500,7 +6500,7 @@
       },
       "de": {
         "title": "Hochland von Rohan",
-        "gameText": "**Ebene.** <symbol>urukhai</symbol> Diener können während der Fernkampfphase keine Wunden erleiden."
+        "gameText": "**Ebene.** <symbol>urukhai</symbol> Diener kï¿½nnen wï¿½hrend der Fernkampfphase keine Wunden erleiden."
       },
       "it": {
         "title": "Rohan Uplands",
@@ -6532,8 +6532,8 @@
         "gameText": "**Battleground.** Each time a companion is killed, add a burden."
       },
       "de": {
-        "title": "Schlackenhügel",
-        "gameText": "**Schlachtfeld.** Lege jedes Mal, wenn ein Gefährte getötet wird, eine Lastmarke auf den Ringträger."
+        "title": "Schlackenhï¿½gel",
+        "gameText": "**Schlachtfeld.** Lege jedes Mal, wenn ein Gefï¿½hrte getï¿½tet wird, eine Lastmarke auf den Ringtrï¿½ger."
       },
       "it": {
         "title": "Slag Mounds",
@@ -6565,7 +6565,7 @@
         "gameText": "At the start of your fellowship phase, you may exert a <symbol>rohan</symbol> Man to play a <symbol>rohan</symbol> mount from your draw deck."
       },
       "de": {
-        "title": "Ställe",
+        "title": "Stï¿½lle",
         "gameText": "Zu Beginn deiner Gemeinschaftsphase darfst du einen <symbol>rohan</symbol> Menschen anstrengen, um ein <symbol>rohan</symbol> Reittier aus deinem Spieldeck zu spielen"
       },
       "it": {
@@ -6598,8 +6598,8 @@
         "gameText": "**Forest.** Each time you play an artifact or possession on your companion, you may draw a card."
       },
       "de": {
-        "title": "Trollhöhenwälder",
-        "gameText": "**Wald.** Jedes Mal, wenn du ein Artefakt oder eine Aus-rüstung auf einen deiner Gefährten spielst, ziehe eine Karte."
+        "title": "Trollhï¿½henwï¿½lder",
+        "gameText": "**Wald.** Jedes Mal, wenn du ein Artefakt oder eine Aus-rï¿½stung auf einen deiner Gefï¿½hrten spielst, ziehe eine Karte."
       },
       "it": {
         "title": "Trollshaw Forest",
@@ -6632,7 +6632,7 @@
       },
       "de": {
         "title": "Tal des Silberlauf",
-        "gameText": "**Heimstatt. Fluss.** Wenn sich die Gemeinschaft an diesen Ort bewegt, darfst du jeden Hobbitgefährten heilen."
+        "gameText": "**Heimstatt. Fluss.** Wenn sich die Gemeinschaft an diesen Ort bewegt, darfst du jeden Hobbitgefï¿½hrten heilen."
       },
       "it": {
         "title": "Valley of the Silverlode",
@@ -6668,7 +6668,7 @@
       },
       "de": {
         "title": "Wachtturm von Cirith Ungol",
-        "gameText": "**Gebirge. Manöver:** Strenge deinen <symbol>orc</symbol> Diener an, um eine zufällig bestimmte Karte aus der Hand des Freien Völker Spielers abzulegen."
+        "gameText": "**Gebirge. Manï¿½ver:** Strenge deinen <symbol>orc</symbol> Diener an, um eine zufï¿½llig bestimmte Karte aus der Hand des Freien Vï¿½lker Spielers abzulegen."
       },
       "it": {
         "title": "Watch-tower of Cirith Ungol",
@@ -6734,7 +6734,7 @@
       },
       "de": {
         "title": "Dorf in Westemnet",
-        "gameText": "**Heimstatt.** Wenn sich die Gemeinschaft an diesen Ort bewegt, muss der Freie Völker Spieler für jeden Verbündeten einen Gefährten verwunden."
+        "gameText": "**Heimstatt.** Wenn sich die Gemeinschaft an diesen Ort bewegt, muss der Freie Vï¿½lker Spieler fï¿½r jeden Verbï¿½ndeten einen Gefï¿½hrten verwunden."
       },
       "it": {
         "title": "Westemnet Village",
@@ -6795,23 +6795,23 @@
     "i18n": {
       "en": {
         "title": "Woody-End",
-        "gameText": "**Forest.****Shadow:** Remove a burden to play a Nazgûl from your discard pile."
+        "gameText": "**Forest.****Shadow:** Remove a burden to play a Nazgï¿½l from your discard pile."
       },
       "fr": {
         "title": "Woody-End",
-        "gameText": "**Forest.****Shadow:** Remove a burden to play a Nazgûl from your discard pile."
+        "gameText": "**Forest.****Shadow:** Remove a burden to play a Nazgï¿½l from your discard pile."
       },
       "de": {
         "title": "Waldende",
-        "gameText": "**Wald. Schatten:** Entferne eine Lastmarke, um einen Nazgûl aus deinem Ablagestapel zu spielen."
+        "gameText": "**Wald. Schatten:** Entferne eine Lastmarke, um einen Nazgï¿½l aus deinem Ablagestapel zu spielen."
       },
       "it": {
         "title": "Woody-End",
-        "gameText": "**Forest.****Shadow:** Remove a burden to play a Nazgûl from your discard pile."
+        "gameText": "**Forest.****Shadow:** Remove a burden to play a Nazgï¿½l from your discard pile."
       },
       "es": {
         "title": "Woody-End",
-        "gameText": "**Forest.****Shadow:** Remove a burden to play a Nazgûl from your discard pile."
+        "gameText": "**Forest.****Shadow:** Remove a burden to play a Nazgï¿½l from your discard pile."
       }
     }
   },
@@ -6828,23 +6828,23 @@
     "i18n": {
       "en": {
         "title": "The Angle",
-        "gameText": "**Forest. Shadow:** Play a Nazgûl (or spot 6 companions and discard 2 cards from hand) to draw a card."
+        "gameText": "**Forest. Shadow:** Play a Nazgï¿½l (or spot 6 companions and discard 2 cards from hand) to draw a card."
       },
       "fr": {
         "title": "The Angle",
-        "gameText": "<b>Forest. Shadow:</b> Play a Nazgûl (or spot 6 companions and discard 2 cards from hand) to draw a card."
+        "gameText": "<b>Forest. Shadow:</b> Play a Nazgï¿½l (or spot 6 companions and discard 2 cards from hand) to draw a card."
       },
       "de": {
         "title": "Der Winkel",
-        "gameText": "**Wald. Schatten:** Spiele einen Nazgûl (oder entdecke 6 Gefährten und lege 2 Karten aus der Hand ab), um eine Karte zu ziehen."
+        "gameText": "**Wald. Schatten:** Spiele einen Nazgï¿½l (oder entdecke 6 Gefï¿½hrten und lege 2 Karten aus der Hand ab), um eine Karte zu ziehen."
       },
       "it": {
         "title": "The Angle",
-        "gameText": "<b>Forest. Shadow:</b> Play a Nazgûl (or spot 6 companions and discard 2 cards from hand) to draw a card."
+        "gameText": "<b>Forest. Shadow:</b> Play a Nazgï¿½l (or spot 6 companions and discard 2 cards from hand) to draw a card."
       },
       "es": {
         "title": "The Angle",
-        "gameText": "<b>Forest. Shadow:</b> Play a Nazgûl (or spot 6 companions and discard 2 cards from hand) to draw a card."
+        "gameText": "<b>Forest. Shadow:</b> Play a Nazgï¿½l (or spot 6 companions and discard 2 cards from hand) to draw a card."
       }
     }
   },
@@ -6860,24 +6860,24 @@
     "imageUrl": "/cards_visuals/o_01_349.jpg",
     "i18n": {
       "en": {
-        "title": "The Bridge of Khazad-dûm",
-        "gameText": "**Battleground. Underground.** The Balrog is twilight cost –3."
+        "title": "The Bridge of Khazad-dï¿½m",
+        "gameText": "**Battleground. Underground.** The Balrog is twilight cost ï¿½3."
       },
       "fr": {
-        "title": "The Bridge of Khazad-dûm",
-        "gameText": "<b>Battleground. Underground.</b> The Balrog is twilight cost –3."
+        "title": "The Bridge of Khazad-dï¿½m",
+        "gameText": "<b>Battleground. Underground.</b> The Balrog is twilight cost ï¿½3."
       },
       "de": {
-        "title": "Die Brücke von Khazad-dûm",
+        "title": "Die Brï¿½cke von Khazad-dï¿½m",
         "gameText": "**Schlachtfeld. Unterirdisch.** Die Zwielichtkosten des Balrogs reduzieren sich um 3."
       },
       "it": {
-        "title": "The Bridge of Khazad-dûm",
-        "gameText": "<b>Battleground. Underground.</b> The Balrog is twilight cost –3."
+        "title": "The Bridge of Khazad-dï¿½m",
+        "gameText": "<b>Battleground. Underground.</b> The Balrog is twilight cost ï¿½3."
       },
       "es": {
-        "title": "The Bridge of Khazad-dûm",
-        "gameText": "<b>Battleground. Underground.</b> The Balrog is twilight cost –3."
+        "title": "The Bridge of Khazad-dï¿½m",
+        "gameText": "<b>Battleground. Underground.</b> The Balrog is twilight cost ï¿½3."
       }
     }
   },
@@ -6894,23 +6894,23 @@
     "i18n": {
       "en": {
         "title": "Emyn Muil",
-        "gameText": "**Mountain. Maneuver:** Remove <symbol>twilight2</symbol> and exert your minion that is not fierce to make that minion **fierce** until the regroup phase."
+        "gameText": "**Mountain. Maneuver:** Remove <symbol>twilight2</symbol> and exert your minion that isï¿½not fierce to make that minion **fierce** until the regroup phase."
       },
       "fr": {
         "title": "Emyn Muil",
-        "gameText": "<b>Mountain. Maneuver:</b> Remove <symbol>twilight2</symbol> and exert your minion that is not fierce to make that minion <b>fierce</b> until the regroup phase."
+        "gameText": "<b>Mountain. Maneuver:</b> Remove <symbol>twilight2</symbol> and exert your minion that isï¿½not fierce to make that minion <b>fierce</b> until the regroup phase."
       },
       "de": {
         "title": "Emyn Muil",
-        "gameText": "**Gebirge. Manöver:** Verringere den Einfluss um <symbol>twilight2</symbol> und strenge deinen nicht-erbitterten Diener an, um ihn bis zur Sammelphase **erbittert** zu machen."
+        "gameText": "**Gebirge. Manï¿½ver:** Verringere den Einfluss um <symbol>twilight2</symbol> und strenge deinen nicht-erbitterten Diener an, um ihn bis zur Sammelphase **erbittert** zu machen."
       },
       "it": {
         "title": "Emyn Muil",
-        "gameText": "<b>Mountain. Maneuver:</b> Remove <symbol>twilight2</symbol> and exert your minion that is not fierce to make that minion <b>fierce</b> until the regroup phase."
+        "gameText": "<b>Mountain. Maneuver:</b> Remove <symbol>twilight2</symbol> and exert your minion that isï¿½not fierce to make that minion <b>fierce</b> until the regroup phase."
       },
       "es": {
         "title": "Emyn Muil",
-        "gameText": "<b>Mountain. Maneuver:</b> Remove <symbol>twilight2</symbol> and exert your minion that is not fierce to make that minion <b>fierce</b> until the regroup phase."
+        "gameText": "<b>Mountain. Maneuver:</b> Remove <symbol>twilight2</symbol> and exert your minion that isï¿½not fierce to make that minion <b>fierce</b> until the regroup phase."
       }
     }
   },
@@ -6927,23 +6927,23 @@
     "i18n": {
       "en": {
         "title": "Hill of Sight",
-        "gameText": "**Battleground. Forest.** While you can spot 3 minions (or 6 companions), each unbound companion is resistance –2."
+        "gameText": "**Battleground. Forest.** While you can spot 3 minions (or 6 companions), each unbound companion is resistance ï¿½2."
       },
       "fr": {
         "title": "Hill of Sight",
-        "gameText": "<b>Battleground. Forest.</b> While you can spot 3 minions (or 6 companions), each unbound companion is resistance –2."
+        "gameText": "<b>Battleground. Forest.</b> While you can spot 3 minions (or 6 companions), each unbound companion is resistance ï¿½2."
       },
       "de": {
         "title": "Berg des Auges",
-        "gameText": "**Schlachtfeld. Wald.** Solange du 3 Diener (oder 6 Gefährten) ent-decken kannst, erhält jeder nicht-verbundene Gefährte Resistenz -2."
+        "gameText": "**Schlachtfeld. Wald.** Solange du 3 Diener (oder 6 Gefï¿½hrten) ent-decken kannst, erhï¿½lt jeder nicht-verbundene Gefï¿½hrte Resistenz -2."
       },
       "it": {
         "title": "Hill of Sight",
-        "gameText": "<b>Battleground. Forest.</b> While you can spot 3 minions (or 6 companions), each unbound companion is resistance –2."
+        "gameText": "<b>Battleground. Forest.</b> While you can spot 3 minions (or 6 companions), each unbound companion is resistance ï¿½2."
       },
       "es": {
         "title": "Hill of Sight",
-        "gameText": "<b>Battleground. Forest.</b> While you can spot 3 minions (or 6 companions), each unbound companion is resistance –2."
+        "gameText": "<b>Battleground. Forest.</b> While you can spot 3 minions (or 6 companions), each unbound companion is resistance ï¿½2."
       }
     }
   },
@@ -7000,8 +7000,8 @@
         "gameText": "<b>Battleground. Plains. Shadow:</b> Make your lurker minion lose <b>lurker</b> until the regroup phase."
       },
       "de": {
-        "title": "Nördlicher Pelennor",
-        "gameText": "**Schlachtfeld. Ebene. Schatten:** Einer deiner Schleicher-Diener verliert seine Schleicher-Fähigkeit bis zur Sammelphase."
+        "title": "Nï¿½rdlicher Pelennor",
+        "gameText": "**Schlachtfeld. Ebene. Schatten:** Einer deiner Schleicher-Diener verliert seine Schleicher-Fï¿½higkeit bis zur Sammelphase."
       },
       "it": {
         "title": "Northern Pelennor",
@@ -7066,8 +7066,8 @@
         "gameText": "<b>Mountain. Shadow:</b> Remove <symbol>twilight2</symbol> and discard 2 Free Peoples cards from hand to draw a card."
       },
       "de": {
-        "title": "Die Hänge des Orodruin",
-        "gameText": "**Gebirge. Schatten:** Verringere den Einfluss um <symbol>twilight2</symbol> und lege 2 Freie Völker Karten aus deiner Hand ab, um eine Karte zu ziehen."
+        "title": "Die Hï¿½nge des Orodruin",
+        "gameText": "**Gebirge. Schatten:** Verringere den Einfluss um <symbol>twilight2</symbol> und lege 2 Freie Vï¿½lker Karten aus deiner Hand ab, um eine Karte zu ziehen."
       },
       "it": {
         "title": "Slopes of Orodruin",
@@ -7132,8 +7132,8 @@
         "gameText": "<b>Plains. Skirmish:</b> Exert your Man (except an enduring Man) to make him or her <b>damage +1.</b>"
       },
       "de": {
-        "title": "Schlachtfeld im Ödland",
-        "gameText": "**Ebene. Kampf:** Strenge einen deiner Menschen (außer einen zähen Menschen) an, um ihm Schaden+1 zu geben."
+        "title": "Schlachtfeld im ï¿½dland",
+        "gameText": "**Ebene. Kampf:** Strenge einen deiner Menschen (auï¿½er einen zï¿½hen Menschen) an, um ihm Schaden+1 zu geben."
       },
       "it": {
         "title": "Wold Battlefield",
@@ -7198,8 +7198,8 @@
         "gameText": "**Underground.** When the fellowship moves to this site during the regroup phase, the Free Peoples player may remove 2 burdens."
       },
       "de": {
-        "title": "Die Höhlen von Aglarond",
-        "gameText": "**Unterirdisch.** Der Freie Völker Spieler darf 2 Lastmarken entfernen, wenn die Gemeinschaft diesen Ort in der Sammelphase erreicht."
+        "title": "Die Hï¿½hlen von Aglarond",
+        "gameText": "**Unterirdisch.** Der Freie Vï¿½lker Spieler darf 2 Lastmarken entfernen, wenn die Gemeinschaft diesen Ort in der Sammelphase erreicht."
       },
       "it": {
         "title": "Caves of Aglarond",
@@ -7231,8 +7231,8 @@
         "gameText": "**Battleground.** When the fellowship moves to this site during the regroup phase, the Free Peoples player may draw a card."
       },
       "de": {
-        "title": "Die Stadt der Könige",
-        "gameText": "**Schlachtfeld.** Der Freie Völker Spieler darf 1 Karte ziehen, wenn die Gemeinschaft diesen Ort in der Sammelphase erreicht."
+        "title": "Die Stadt der Kï¿½nige",
+        "gameText": "**Schlachtfeld.** Der Freie Vï¿½lker Spieler darf 1 Karte ziehen, wenn die Gemeinschaft diesen Ort in der Sammelphase erreicht."
       },
       "it": {
         "title": "City of Kings",
@@ -7264,7 +7264,7 @@
         "gameText": "**Dwelling.** When the fellowship moves to this site, the first Shadow player may discard 2 cards from hand to add a burden."
       },
       "de": {
-        "title": "Schloßhofbrüstung",
+        "title": "Schloï¿½hofbrï¿½stung",
         "gameText": "**Heimstatt.** Der erste Schattenspieler darf 2 Karten aus der Hand able-gen, um 1 Lastmarke zu platzieren, wenn die Gemeinschaft ankommt."
       },
       "it": {
@@ -7297,8 +7297,8 @@
         "gameText": "**Forest.** When the fellowship moves to this site during the regroup phase, the Free Peoples player may heal a companion of each culture."
       },
       "de": {
-        "title": "Scheideweg der gefallenen Könige",
-        "gameText": "**Wald.** Der Freie Völker Spieler darf 1 Gefährten jeder Kultur heilen, wenn die Gemeinschaft diesen Ort in der Sammelphase erreicht."
+        "title": "Scheideweg der gefallenen Kï¿½nige",
+        "gameText": "**Wald.** Der Freie Vï¿½lker Spieler darf 1 Gefï¿½hrten jeder Kultur heilen, wenn die Gemeinschaft diesen Ort in der Sammelphase erreicht."
       },
       "it": {
         "title": "Crossroads of the Fallen Kings",
@@ -7323,23 +7323,23 @@
     "i18n": {
       "en": {
         "title": "Doors of Durin",
-        "gameText": "**Marsh.** Each companion of a race that has the most companions is strength –1 until the regroup phase."
+        "gameText": "**Marsh.** Each companion of a race that has the most companions is strength ï¿½1 until the regroup phase."
       },
       "fr": {
         "title": "Doors of Durin",
-        "gameText": "**Marsh.** Each companion of a race that has the most companions is strength –1 until the regroup phase."
+        "gameText": "**Marsh.** Each companion of a race that has the most companions is strength ï¿½1 until the regroup phase."
       },
       "de": {
         "title": "Durins Tor",
-        "gameText": "**Sumpf.** Jeder Gefährte jedes Volkes, das die meisten Gefährten stellt, erhält bis zur Sammelphase Stärke -1."
+        "gameText": "**Sumpf.** Jeder Gefï¿½hrte jedes Volkes, das die meisten Gefï¿½hrten stellt, erhï¿½lt bis zur Sammelphase Stï¿½rke -1."
       },
       "it": {
         "title": "Doors of Durin",
-        "gameText": "**Marsh.** Each companion of a race that has the most companions is strength –1 until the regroup phase."
+        "gameText": "**Marsh.** Each companion of a race that has the most companions is strength ï¿½1 until the regroup phase."
       },
       "es": {
         "title": "Doors of Durin",
-        "gameText": "**Marsh.** Each companion of a race that has the most companions is strength –1 until the regroup phase."
+        "gameText": "**Marsh.** Each companion of a race that has the most companions is strength ï¿½1 until the regroup phase."
       }
     }
   },
@@ -7364,7 +7364,7 @@
       },
       "de": {
         "title": "Die Furten des Isen",
-        "gameText": "**Fluss.** Jeder Charakter erhält Stärke +1 für jede Karte, die auf ihm liegt."
+        "gameText": "**Fluss.** Jeder Charakter erhï¿½lt Stï¿½rke +1 fï¿½r jede Karte, die auf ihm liegt."
       },
       "it": {
         "title": "Fords of Isen",
@@ -7396,8 +7396,8 @@
         "gameText": "**Battleground.** While a player can spot more companions than minions, each minion is strength +1."
       },
       "de": {
-        "title": "Das Große Tor",
-        "gameText": "**Schlachtfeld.** Jeder Diener erhält Stärke +1, solange ein Spieler mehr Gefährten als Diener entdecken kann."
+        "title": "Das Groï¿½e Tor",
+        "gameText": "**Schlachtfeld.** Jeder Diener erhï¿½lt Stï¿½rke +1, solange ein Spieler mehr Gefï¿½hrten als Diener entdecken kann."
       },
       "it": {
         "title": "The Great Gates",
@@ -7430,7 +7430,7 @@
       },
       "de": {
         "title": "Flussbett des Isen",
-        "gameText": "**Schlachtfeld. Ebene**. Zu Beginn der Sammelphase darf jeder Schat-tenspieler einen Diener anstrengen, um einen Gefährten anzustrengen."
+        "gameText": "**Schlachtfeld. Ebene**. Zu Beginn der Sammelphase darf jeder Schat-tenspieler einen Diener anstrengen, um einen Gefï¿½hrten anzustrengen."
       },
       "it": {
         "title": "Isenwash",
@@ -7463,7 +7463,7 @@
       },
       "de": {
         "title": "Rothornpass",
-        "gameText": "**Gebirge.** Kulturmarken können nicht platziert, entfernt oder ergänzt werden."
+        "gameText": "**Gebirge.** Kulturmarken kï¿½nnen nicht platziert, entfernt oder ergï¿½nzt werden."
       },
       "it": {
         "title": "Redhorn Pass",
@@ -7488,23 +7488,23 @@
     "i18n": {
       "en": {
         "title": "Anduin River",
-        "gameText": "**River.** The fellowship archery total is –3."
+        "gameText": "**River.** The fellowship archery total is ï¿½3."
       },
       "fr": {
         "title": "Anduin River",
-        "gameText": "**River.** The fellowship archery total is –3."
+        "gameText": "**River.** The fellowship archery total is ï¿½3."
       },
       "de": {
         "title": "Anduin River",
-        "gameText": "**River.** The fellowship archery total is –3."
+        "gameText": "**River.** The fellowship archery total is ï¿½3."
       },
       "it": {
         "title": "Anduin River",
-        "gameText": "**River.** The fellowship archery total is –3."
+        "gameText": "**River.** The fellowship archery total is ï¿½3."
       },
       "es": {
         "title": "Anduin River",
-        "gameText": "**River.** The fellowship archery total is –3."
+        "gameText": "**River.** The fellowship archery total is ï¿½3."
       }
     }
   },
@@ -7521,23 +7521,23 @@
     "i18n": {
       "en": {
         "title": "Breeding pit of Isengard",
-        "gameText": "**Underground.** The twilight cost of the first hunter minion played each Shadow phase is –2."
+        "gameText": "**Underground.** The twilight cost of the first hunter minion played each Shadow phase is ï¿½2."
       },
       "fr": {
         "title": "Breeding pit of Isengard",
-        "gameText": "**Underground.** The twilight cost of the first hunter minion played each Shadow phase is –2."
+        "gameText": "**Underground.** The twilight cost of the first hunter minion played each Shadow phase is ï¿½2."
       },
       "de": {
         "title": "Breeding pit of Isengard",
-        "gameText": "**Underground.** The twilight cost of the first hunter minion played each Shadow phase is –2."
+        "gameText": "**Underground.** The twilight cost of the first hunter minion played each Shadow phase is ï¿½2."
       },
       "it": {
         "title": "Breeding pit of Isengard",
-        "gameText": "**Underground.** The twilight cost of the first hunter minion played each Shadow phase is –2."
+        "gameText": "**Underground.** The twilight cost of the first hunter minion played each Shadow phase is ï¿½2."
       },
       "es": {
         "title": "Breeding pit of Isengard",
-        "gameText": "**Underground.** The twilight cost of the first hunter minion played each Shadow phase is –2."
+        "gameText": "**Underground.** The twilight cost of the first hunter minion played each Shadow phase is ï¿½2."
       }
     }
   },

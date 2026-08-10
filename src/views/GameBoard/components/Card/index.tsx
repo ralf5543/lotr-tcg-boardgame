@@ -305,7 +305,7 @@ export const Card: React.FC<CardProps> = ({
                     {card.type === 'POSSESSION' ||
                     card.type === 'ARTIFACT' ||
                     card.type === 'CONDITION' ||
-                    (card.title === 'The One Ring' &&
+                    (card.type === 'RING' &&
                         card.subtype !== 'SUPPORT-AREA')
                         ? card.strength > 0
                             ? `+${card.strength}`
@@ -319,7 +319,7 @@ export const Card: React.FC<CardProps> = ({
                     {card.type === 'POSSESSION' ||
                     card.type === 'ARTIFACT' ||
                     card.type === 'CONDITION' ||
-                    (card.title === 'The One Ring' &&
+                    (card.type === 'RING' &&
                         card.subtype !== 'SUPPORT-AREA')
                         ? card.vitality > 0
                             ? `+${card.vitality}`
@@ -353,7 +353,7 @@ export const Card: React.FC<CardProps> = ({
                         {card.type === 'POSSESSION' ||
                         card.type === 'ARTIFACT' ||
                         card.type === 'CONDITION' ||
-                        (card.title === 'The One Ring' &&
+                        (card.type === 'RING' &&
                             card.subtype !== 'SUPPORT-AREA')
                             ? card.resistance > 0
                                 ? `+${card.resistance}`

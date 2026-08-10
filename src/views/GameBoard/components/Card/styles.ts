@@ -25,12 +25,10 @@ const isNotCharacter = (type?: string) =>
 const isForSupportArea = (type?: string, subtype?: string) => {
     if (!type || type === 'ALLY') return false;
 
-    return (
-        subtype === 'SUPPORT-AREA'
-    );
+    return subtype === 'SUPPORT-AREA';
 };
 
-const isAttachedToCharacter = (type?: string, subtype?: string, title?: string) => {
+const isAttachedToCharacter = (type?: string, subtype?: string) => {
     if (!type) return false;
 
     if (subtype === 'SUPPORT-AREA') return false;
@@ -38,8 +36,8 @@ const isAttachedToCharacter = (type?: string, subtype?: string, title?: string) 
     return (
         type === 'POSSESSION' ||
         type === 'ARTIFACT' ||
-        type === 'CONDITION' ||
-        title === 'The One Ring'
+        type === 'RING' ||
+        type === 'CONDITION'
     );
 };
 // 💥 ANIMATION D'IMPACT DYNAMIQUE (RECUL PHYSIQUE)
@@ -291,25 +289,29 @@ export const CardContainer = styled.div<CardContainerProps>`
             }
 
             /* ======------ Attachment cards ------====== */
-            ${isAttachedToCharacter(props.$type, props.$subtype, props.$title) &&
+            ${isAttachedToCharacter(
+                props.$type,
+                props.$subtype
+            ) &&
             css`
                 aspect-ratio: initial;
                 border: 0;
                 height: 100%;
                 border-radius: 0;
                 outline: none;
-                background-color: red;
 
                 &::after {
                     content: none;
                 }
 
-
-
+                ${CardHeader} {
+                    display: none;
+                }
                 ${VisualContainer} {
                     inset: 0;
                     height: 100%;
                     border-radius: 6px;
+                    display: none;
                 }
                 ${StrengthBadge} {
                     width: 25px;
@@ -330,6 +332,21 @@ export const CardContainer = styled.div<CardContainerProps>`
                     font-size: 16px;
                 }
             `}
+        `}
+    /* ======------ Small RING card ------====== */
+        ${(props) =>
+        props.$type === 'RING' &&
+        props.$size === 'sm' &&
+        css`
+           ${VisualContainer} {
+                display: block;
+                inset: 0;
+                border-radius: 6px;
+                overflow: hidden;
+            }
+           ${Visual} {
+                margin-inline-start: -5px;
+            }
         `}
 
     /* ======------ Large cards ------====== */
@@ -428,7 +445,7 @@ export const CardContainer = styled.div<CardContainerProps>`
                 font-size: 28px;
                 width: 86px;
                 inset-block-start: 336px;
-                inset-inline-start: 2px;
+                inset-inline-start: 5px;
                 background-position: 18px 4px;
             }
 
@@ -461,6 +478,36 @@ export const CardContainer = styled.div<CardContainerProps>`
                 inset-inline-start: 20px;
             }
         `}
+        /* ======------ Large RING card ------====== */
+        ${(props) =>
+        props.$type === 'RING' &&
+        props.$size === 'lg' &&
+        css`
+            ${VisualContainer} {
+                inset: 0;
+                border-radius: 6px;
+                overflow: hidden;
+            }
+
+            ${TwilightBadge} {
+                display: none;
+            }
+
+            ${CardTypes} {
+                display: none;
+            }
+
+            ${CardTitle} {
+                font-size: 24px;
+                font-weight: 700;
+            }
+            ${CardSubtitle} {
+                inset: 240px -310px -60px -10px;
+                font-size: 24px;
+                position: absolute;
+                writing-mode: initial;
+            }
+        `}
 `;
 
 export const CardHeader = styled.div`
@@ -476,6 +523,7 @@ export const CardTitles = styled.div<{ $type?: string }>`
     flex-direction: column;
     font-family: 'DecipherTitle', serif;
     font-variant: small-caps;
+    z-index: 2;
     ${(props) =>
         isNotCharacter(props.$type) &&
         css`
@@ -635,7 +683,7 @@ export const StrengthBadge = styled.span`
     justify-content: center;
     position: absolute;
     inset-block-start: 113px;
-    inset-inline-start: 3px;
+    inset-inline-start: 3.5px;
     font-family: LOTRIcons;
     z-index: 1;
     pointer-events: none;
