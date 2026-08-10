@@ -46,6 +46,15 @@ const VALID_KEYWORDS = new Set([
 // Types de cartes cibles (pour l'analyse de l'attachement)
 const VALID_TARGET_TYPES = new Set(['MINION', 'COMPANION', 'ALLY']);
 
+// Dictionnaire global des termes reconnus pour l'extraction automatique de attachedTo
+const KNOWN_ATTACHED_KEYWORDS = Array.from(new Set([
+    ...VALID_RACES,
+    ...VALID_CULTURES,
+    ...VALID_KEYWORDS,
+    ...VALID_TARGET_TYPES,
+    'SITE'
+]));
+
 // Cultures appartenant du côté Shadow (Ombre)
 const SHADOW_CULTURES = [
     'ISENGARD', 'MORIA', 'SAURON', 'WRAITH', 
@@ -231,58 +240,54 @@ function parseClassAndPhases(classStr, englishText) {
     };
 }
 
+/**
+ * Extrait la condition d'attachement d'une carte sous la forme d'un tableau 2D (DNF).
+ * - Le premier niveau représente le "OU" (disjonction / alternatives)
+ * - Le second niveau représente le "ET" (conjonction / critères requis simultanément)
+ * Ex: [["MAN"], ["ELF"], ["WIZARD"]] ou [["ELVEN", "COMPANION"]]
+ */
 function parseAttachedTo(rawText) {
     if (!rawText) return undefined;
 
     const cleanText = rawText.replace(/\u00A0/g, ' ');
 
+    // Cas d'attachement à un site
     if (/plays\s+on\s+a\s+site/i.test(cleanText)) {
-        return ['site'];
+        return [['SITE']];
     }
 
-    const bearerMatch = cleanText.match(/Bearer\s+must\s+be\s+(.+?)(?=\.|$)/i);
-    if (!bearerMatch) {
-        return undefined;
-    }
+    // 1. Isoler la clause de cible
+    const match = cleanText.match(/(?:Bearer must be|Attach to|To play, attach to)\s+([^.\n]+)/i);
+    if (!match) return undefined;
 
-    const targetExpr = bearerMatch[1].trim();
+    // Suppression préalable des balises HTML (<keyword>, <symbol>) pour travailler sur le texte brut
+    const clauseText = match[1]
+        .replace(/<\/?(keyword|symbol)[^>]*>/gi, '')
+        .trim();
 
-    if (!/^an?\s+/i.test(targetExpr)) {
-        return [targetExpr];
-    }
-
-    const exprWithoutArticle = targetExpr.replace(/^an?\s+/i, '').trim();
+    // 2. Découper autour des "OU" (séparateurs "or" et virgules)
+    const rawGroups = clauseText
+        .split(/\bor\b|,/i)
+        .map(g => g.trim())
+        .filter(Boolean);
 
     const result = [];
-    const tokenRegex = /(<symbol>[^<]+<\/symbol>|<keyword>[^<]+<\/keyword>|[^\s]+)/g;
-    const tokens = exprWithoutArticle.match(tokenRegex) || [];
 
-    for (let token of tokens) {
-        let cleanToken = token.replace(/[:.,]/g, '').trim();
-        if (!cleanToken) continue;
+    // 3. Extraire les mots-clés reconnus pour chaque groupe (les critères "ET")
+    for (const groupText of rawGroups) {
+        const uppercaseGroup = groupText.toUpperCase();
+        const foundInGroup = [];
 
-        const symbolMatch = cleanToken.match(/<symbol>([^<]+)<\/symbol>/i);
-        if (symbolMatch) {
-            const cultureVal = symbolMatch[1].trim().toUpperCase().replace(/\s+/g, '-');
-            if (VALID_CULTURES.has(cultureVal)) {
-                result.push(cultureVal);
+        for (const kw of KNOWN_ATTACHED_KEYWORDS) {
+            // Utilisation des bordures de mots (\b) pour éviter d'attraper MAN dans COMMANDER
+            const regex = new RegExp(`\\b${kw}\\b`, 'i');
+            if (regex.test(uppercaseGroup)) {
+                foundInGroup.push(kw);
             }
-            continue;
         }
 
-        const keywordMatch = cleanToken.match(/<keyword>([^<]+)<\/keyword>/i);
-        if (keywordMatch) {
-            const keywordVal = keywordMatch[1].trim().toUpperCase().replace(/\s+/g, '-');
-            if (VALID_KEYWORDS.has(keywordVal)) {
-                result.push(keywordVal);
-            }
-            continue;
-        }
-
-        const upperToken = cleanToken.toUpperCase();
-
-        if (VALID_RACES.has(upperToken) || VALID_TARGET_TYPES.has(upperToken) || VALID_KEYWORDS.has(upperToken)) {
-            result.push(upperToken);
+        if (foundInGroup.length > 0) {
+            result.push(foundInGroup);
         }
     }
 

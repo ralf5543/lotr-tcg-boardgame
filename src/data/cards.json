@@ -7,8 +7,10 @@
     "kind": "FREE_PEOPLE",
     "type": "POSSESSION",
     "attachedTo": [
-      "HOBBIT",
-      "COMPANION"
+      [
+        "HOBBIT",
+        "COMPANION"
+      ]
     ],
     "culture": "SHIRE",
     "twilightCost": 0,
@@ -89,9 +91,6 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "POSSESSION",
-    "attachedTo": [
-      "Boromir"
-    ],
     "phases": [
       "MANEUVER"
     ],
@@ -134,7 +133,9 @@
     "kind": "FREE_PEOPLE",
     "type": "POSSESSION",
     "attachedTo": [
-      "DWARF"
+      [
+        "DWARF"
+      ]
     ],
     "culture": "DWARVEN",
     "twilightCost": 2,
@@ -176,7 +177,9 @@
     "type": "ARTIFACT",
     "subtype": "PHIAL",
     "attachedTo": [
-      "the Ring-bearer"
+      [
+        "RING-BEARER"
+      ]
     ],
     "culture": "ELVEN",
     "twilightCost": 0,
@@ -1192,9 +1195,6 @@
     "kind": "SHADOW",
     "type": "POSSESSION",
     "subtype": "HAND-WEAPON",
-    "attachedTo": [
-      "The Witch-king"
-    ],
     "phases": [
       "RESPONSE"
     ],
@@ -1284,8 +1284,10 @@
     "type": "POSSESSION",
     "subtype": "MOUNT",
     "attachedTo": [
-      "ROHAN",
-      "MAN"
+      [
+        "MAN",
+        "ROHAN"
+      ]
     ],
     "culture": "ROHAN",
     "twilightCost": 2,
@@ -1325,9 +1327,6 @@
     "kind": "FREE_PEOPLE",
     "type": "POSSESSION",
     "subtype": "HELM",
-    "attachedTo": [
-      "Gimli"
-    ],
     "phases": [
       "SKIRMISH"
     ],
@@ -1416,7 +1415,9 @@
     "type": "ARTIFACT",
     "subtype": "HAND-WEAPON",
     "attachedTo": [
-      "The Balrog"
+      [
+        "BALROG"
+      ]
     ],
     "phases": [
       "SKIRMISH"
@@ -1507,7 +1508,9 @@
     "type": "ARTIFACT",
     "subtype": "STAFF",
     "attachedTo": [
-      "Gandalf"
+      [
+        "GANDALF"
+      ]
     ],
     "culture": "GANDALF",
     "twilightCost": 2,
@@ -1602,9 +1605,6 @@
     "kind": "FREE_PEOPLE",
     "type": "POSSESSION",
     "subtype": "HAND-WEAPON",
-    "attachedTo": [
-      "Gimli"
-    ],
     "phases": [
       "SKIRMISH"
     ],
@@ -1647,9 +1647,6 @@
     "kind": "FREE_PEOPLE",
     "type": "POSSESSION",
     "subtype": "RANGED-WEAPON",
-    "attachedTo": [
-      "Aragorn"
-    ],
     "phases": [
       "ARCHERY"
     ],
@@ -1692,7 +1689,9 @@
     "type": "ARTIFACT",
     "subtype": "HAND-WEAPON",
     "attachedTo": [
-      "The Balrog"
+      [
+        "BALROG"
+      ]
     ],
     "culture": "MORIA",
     "twilightCost": 1,
@@ -1780,7 +1779,9 @@
     "type": "POSSESSION",
     "subtype": "HAND-WEAPON",
     "attachedTo": [
-      "Gandalf"
+      [
+        "GANDALF"
+      ]
     ],
     "culture": "GANDALF",
     "twilightCost": 2,
@@ -2376,9 +2377,6 @@
     "kind": "FREE_PEOPLE",
     "type": "ARTIFACT",
     "subtype": "STAFF",
-    "attachedTo": [
-      "Radagast"
-    ],
     "culture": "GANDALF",
     "twilightCost": 1,
     "strength": 1,
@@ -2673,8 +2671,10 @@
     "type": "POSSESSION",
     "subtype": "RANGED-WEAPON",
     "attachedTo": [
-      "GONDOR",
-      "MAN"
+      [
+        "MAN",
+        "GONDOR"
+      ]
     ],
     "culture": "GONDOR",
     "twilightCost": 1,
@@ -3115,9 +3115,6 @@
     "kind": "FREE_PEOPLE",
     "type": "POSSESSION",
     "subtype": "HAND-WEAPON",
-    "attachedTo": [
-      "Bilbo, Frodo, or Sam"
-    ],
     "phases": [
       "MANEUVER"
     ],
@@ -3386,8 +3383,10 @@
     "type": "ARTIFACT",
     "subtype": "ARMOR",
     "attachedTo": [
-      "RING-BOUND",
-      "HOBBIT"
+      [
+        "HOBBIT",
+        "RING-BOUND"
+      ]
     ],
     "phases": [
       "SKIRMISH"
@@ -4230,9 +4229,6 @@
     "kind": "FREE_PEOPLE",
     "type": "POSSESSION",
     "subtype": "HAND-WEAPON",
-    "attachedTo": [
-      "Gimli"
-    ],
     "culture": "DWARVEN",
     "twilightCost": 2,
     "strength": 2,
@@ -4555,8 +4551,10 @@
     "kind": "FREE_PEOPLE",
     "type": "CONDITION",
     "attachedTo": [
-      "GONDOR",
-      "COMPANION"
+      [
+        "GONDOR",
+        "COMPANION"
+      ]
     ],
     "phases": [
       "SKIRMISH"
@@ -4934,9 +4932,6 @@
     "kind": "FREE_PEOPLE",
     "type": "ARTIFACT",
     "subtype": "ARMOR",
-    "attachedTo": [
-      "Frodo"
-    ],
     "culture": "SHIRE",
     "twilightCost": 2,
     "imageUrl": "/cards_visuals/o_02_105.jpg",
@@ -5504,7 +5499,9 @@
     "type": "POSSESSION",
     "subtype": "MOUNT",
     "attachedTo": [
-      "Gandalf"
+      [
+        "GANDALF"
+      ]
     ],
     "culture": "GANDALF",
     "twilightCost": 2,
@@ -5802,9 +5799,6 @@
     "kind": "FREE_PEOPLE",
     "type": "POSSESSION",
     "subtype": "HAND-WEAPON",
-    "attachedTo": [
-      "Frodo"
-    ],
     "phases": [
       "SKIRMISH"
     ],
@@ -6645,9 +6639,6 @@
     "kind": "FREE_PEOPLE",
     "type": "ARTIFACT",
     "subtype": "HAND-WEAPON",
-    "attachedTo": [
-      "Aragorn"
-    ],
     "phases": [
       "FELLOWSHIP",
       "REGROUP"
@@ -7016,7 +7007,10 @@
     "kind": "FREE_PEOPLE",
     "type": "CONDITION",
     "attachedTo": [
-      "COMPANION"
+      [
+        "RING-BEARER",
+        "COMPANION"
+      ]
     ],
     "culture": "GANDALF",
     "twilightCost": 2,
@@ -9211,8 +9205,10 @@
     "kind": "FREE_PEOPLE",
     "type": "POSSESSION",
     "attachedTo": [
-      "GONDOR",
-      "COMPANION"
+      [
+        "GONDOR",
+        "COMPANION"
+      ]
     ],
     "culture": "GONDOR",
     "twilightCost": 1,
@@ -9247,7 +9243,9 @@
     "kind": "FREE_PEOPLE",
     "type": "POSSESSION",
     "attachedTo": [
-      "HOBBIT"
+      [
+        "HOBBIT"
+      ]
     ],
     "culture": "SHIRE",
     "twilightCost": 1,
@@ -9282,8 +9280,10 @@
     "kind": "FREE_PEOPLE",
     "type": "POSSESSION",
     "attachedTo": [
-      "ROHAN",
-      "COMPANION"
+      [
+        "ROHAN",
+        "COMPANION"
+      ]
     ],
     "culture": "ROHAN",
     "twilightCost": 1,
@@ -9570,7 +9570,9 @@
     "type": "POSSESSION",
     "subtype": "ARMOR",
     "attachedTo": [
-      "DWARF"
+      [
+        "DWARF"
+      ]
     ],
     "culture": "DWARVEN",
     "twilightCost": 0,
@@ -9612,7 +9614,9 @@
     "type": "POSSESSION",
     "subtype": "HAND-WEAPON",
     "attachedTo": [
-      "DWARF"
+      [
+        "DWARF"
+      ]
     ],
     "culture": "DWARVEN",
     "twilightCost": 0,
@@ -9654,7 +9658,9 @@
     "kind": "FREE_PEOPLE",
     "type": "CONDITION",
     "attachedTo": [
-      "DWARF"
+      [
+        "DWARF"
+      ]
     ],
     "culture": "DWARVEN",
     "twilightCost": 0,
@@ -9790,9 +9796,6 @@
     "kind": "FREE_PEOPLE",
     "type": "POSSESSION",
     "subtype": "HELM",
-    "attachedTo": [
-      "Gimli"
-    ],
     "phases": [
       "SKIRMISH"
     ],
@@ -10420,7 +10423,9 @@
     "type": "POSSESSION",
     "subtype": "MOUNT",
     "attachedTo": [
-      "ELF"
+      [
+        "ELF"
+      ]
     ],
     "culture": "ELVEN",
     "twilightCost": 2,
@@ -10503,9 +10508,6 @@
     "kind": "FREE_PEOPLE",
     "type": "POSSESSION",
     "subtype": "RANGED-WEAPON",
-    "attachedTo": [
-      "Legolas"
-    ],
     "culture": "ELVEN",
     "twilightCost": 1,
     "strength": 1,
@@ -10852,7 +10854,9 @@
     "type": "POSSESSION",
     "subtype": "RANGED-WEAPON",
     "attachedTo": [
-      "ELF"
+      [
+        "ELF"
+      ]
     ],
     "culture": "ELVEN",
     "twilightCost": 1,
@@ -10894,7 +10898,9 @@
     "type": "POSSESSION",
     "subtype": "CLOAK",
     "attachedTo": [
-      "COMPANION"
+      [
+        "COMPANION"
+      ]
     ],
     "culture": "ELVEN",
     "twilightCost": 1,
@@ -11104,9 +11110,6 @@
     "kind": "FREE_PEOPLE",
     "type": "POSSESSION",
     "subtype": "HAND-WEAPON",
-    "attachedTo": [
-      "Arwen"
-    ],
     "phases": [
       "SKIRMISH"
     ],
@@ -11196,8 +11199,10 @@
     "kind": "FREE_PEOPLE",
     "type": "CONDITION",
     "attachedTo": [
-      "GONDOR",
-      "MAN"
+      [
+        "MAN",
+        "GONDOR"
+      ]
     ],
     "culture": "ELVEN",
     "twilightCost": 1,
@@ -11713,8 +11718,10 @@
     "kind": "FREE_PEOPLE",
     "type": "CONDITION",
     "attachedTo": [
-      "ELF",
-      "COMPANION"
+      [
+        "ELF",
+        "COMPANION"
+      ]
     ],
     "phases": [
       "ARCHERY"
@@ -11881,7 +11888,9 @@
     "kind": "FREE_PEOPLE",
     "type": "CONDITION",
     "attachedTo": [
-      "ELF"
+      [
+        "ELF"
+      ]
     ],
     "phases": [
       "SKIRMISH"
@@ -11973,8 +11982,10 @@
     "kind": "FREE_PEOPLE",
     "type": "CONDITION",
     "attachedTo": [
-      "ELF",
-      "COMPANION"
+      [
+        "ELF",
+        "COMPANION"
+      ]
     ],
     "phases": [
       "ARCHERY"
@@ -12201,7 +12212,9 @@
     "type": "POSSESSION",
     "subtype": "PIPE",
     "attachedTo": [
-      "Gandalf"
+      [
+        "GANDALF"
+      ]
     ],
     "phases": [
       "FELLOWSHIP"
@@ -12246,7 +12259,9 @@
     "type": "POSSESSION",
     "subtype": "HAND-WEAPON",
     "attachedTo": [
-      "Gandalf"
+      [
+        "GANDALF"
+      ]
     ],
     "phases": [
       "FELLOWSHIP",
@@ -12791,9 +12806,6 @@
     "kind": "FREE_PEOPLE",
     "type": "POSSESSION",
     "subtype": "RANGED-WEAPON",
-    "attachedTo": [
-      "Aragorn"
-    ],
     "phases": [
       "ARCHERY"
     ],
@@ -12837,8 +12849,10 @@
     "type": "POSSESSION",
     "subtype": "PIPE",
     "attachedTo": [
-      "GONDOR",
-      "COMPANION"
+      [
+        "GONDOR",
+        "COMPANION"
+      ]
     ],
     "phases": [
       "FELLOWSHIP"
@@ -12883,7 +12897,9 @@
     "type": "POSSESSION",
     "subtype": "ARMOR",
     "attachedTo": [
-      "MAN"
+      [
+        "MAN"
+      ]
     ],
     "culture": "GONDOR",
     "twilightCost": 1,
@@ -12965,8 +12981,10 @@
     "kind": "FREE_PEOPLE",
     "type": "POSSESSION",
     "attachedTo": [
-      "GONDOR",
-      "MAN"
+      [
+        "MAN",
+        "GONDOR"
+      ]
     ],
     "phases": [
       "FELLOWSHIP"
@@ -13010,9 +13028,6 @@
     "kind": "FREE_PEOPLE",
     "type": "POSSESSION",
     "subtype": "HAND-WEAPON",
-    "attachedTo": [
-      "Boromir"
-    ],
     "phases": [
       "SKIRMISH"
     ],
@@ -13106,9 +13121,6 @@
     "kind": "FREE_PEOPLE",
     "type": "POSSESSION",
     "subtype": "CLOAK",
-    "attachedTo": [
-      "Boromir"
-    ],
     "phases": [
       "MANEUVER"
     ],
@@ -13235,7 +13247,9 @@
     "type": "POSSESSION",
     "subtype": "ARMOR",
     "attachedTo": [
-      "MAN"
+      [
+        "MAN"
+      ]
     ],
     "culture": "GONDOR",
     "twilightCost": 1,
@@ -13483,7 +13497,9 @@
     "type": "POSSESSION",
     "subtype": "SHIELD",
     "attachedTo": [
-      "MAN"
+      [
+        "MAN"
+      ]
     ],
     "culture": "GONDOR",
     "twilightCost": 1,
@@ -13524,7 +13540,9 @@
     "kind": "FREE_PEOPLE",
     "type": "CONDITION",
     "attachedTo": [
-      "RANGER"
+      [
+        "RANGER"
+      ]
     ],
     "culture": "GONDOR",
     "twilightCost": 0,
@@ -13689,9 +13707,6 @@
     "kind": "FREE_PEOPLE",
     "type": "POSSESSION",
     "subtype": "HAND-WEAPON",
-    "attachedTo": [
-      "Aragorn"
-    ],
     "culture": "GONDOR",
     "twilightCost": 1,
     "strength": 2,
@@ -14511,7 +14526,9 @@
     "kind": "SHADOW",
     "type": "CONDITION",
     "attachedTo": [
-      "site"
+      [
+        "SITE"
+      ]
     ],
     "culture": "ISENGARD",
     "twilightCost": 1,
@@ -14552,7 +14569,9 @@
     "kind": "SHADOW",
     "type": "CONDITION",
     "attachedTo": [
-      "site"
+      [
+        "SITE"
+      ]
     ],
     "culture": "ISENGARD",
     "twilightCost": 2,
@@ -14675,7 +14694,9 @@
     "kind": "SHADOW",
     "type": "CONDITION",
     "attachedTo": [
-      "site"
+      [
+        "SITE"
+      ]
     ],
     "culture": "ISENGARD",
     "twilightCost": 2,
@@ -14757,7 +14778,9 @@
     "kind": "SHADOW",
     "type": "CONDITION",
     "attachedTo": [
-      "site"
+      [
+        "SITE"
+      ]
     ],
     "culture": "ISENGARD",
     "twilightCost": 2,
@@ -15608,7 +15631,9 @@
     "type": "POSSESSION",
     "subtype": "HAND-WEAPON",
     "attachedTo": [
-      "URUK-HAI"
+      [
+        "URUK-HAI"
+      ]
     ],
     "culture": "ISENGARD",
     "twilightCost": 1,
@@ -15814,7 +15839,10 @@
     "type": "POSSESSION",
     "subtype": "HAND-WEAPON",
     "attachedTo": [
-      "Cave Troll of Moria"
+      [
+        "TROLL",
+        "MORIA"
+      ]
     ],
     "culture": "MORIA",
     "twilightCost": 1,
@@ -16390,8 +16418,10 @@
     "type": "POSSESSION",
     "subtype": "HAND-WEAPON",
     "attachedTo": [
-      "MORIA",
-      "ORC"
+      [
+        "ORC",
+        "MORIA"
+      ]
     ],
     "culture": "MORIA",
     "twilightCost": 0,
@@ -16476,8 +16506,10 @@
     "type": "POSSESSION",
     "subtype": "HAND-WEAPON",
     "attachedTo": [
-      "MORIA",
-      "MINION"
+      [
+        "MORIA",
+        "MINION"
+      ]
     ],
     "culture": "MORIA",
     "twilightCost": 1,
@@ -16816,8 +16848,10 @@
     "type": "POSSESSION",
     "subtype": "HAND-WEAPON",
     "attachedTo": [
-      "MORIA",
-      "ORC"
+      [
+        "ORC",
+        "MORIA"
+      ]
     ],
     "phases": [
       "SKIRMISH"
@@ -18080,9 +18114,6 @@
     "kind": "SHADOW",
     "type": "POSSESSION",
     "subtype": "HAND-WEAPON",
-    "attachedTo": [
-      "The Witch-king"
-    ],
     "phases": [
       "RESPONSE"
     ],
@@ -18250,9 +18281,6 @@
     "kind": "SHADOW",
     "type": "POSSESSION",
     "subtype": "HAND-WEAPON",
-    "attachedTo": [
-      "Úlairë Lemenya"
-    ],
     "phases": [
       "SKIRMISH"
     ],
@@ -20000,8 +20028,10 @@
     "type": "POSSESSION",
     "subtype": "HAND-WEAPON",
     "attachedTo": [
-      "SAURON",
-      "ORC"
+      [
+        "ORC",
+        "SAURON"
+      ]
     ],
     "phases": [
       "SKIRMISH"
@@ -20675,7 +20705,9 @@
     "type": "POSSESSION",
     "subtype": "PIPE",
     "attachedTo": [
-      "HOBBIT"
+      [
+        "HOBBIT"
+      ]
     ],
     "phases": [
       "FELLOWSHIP"
@@ -21007,7 +21039,9 @@
     "type": "POSSESSION",
     "subtype": "PIPE",
     "attachedTo": [
-      "HOBBIT"
+      [
+        "HOBBIT"
+      ]
     ],
     "phases": [
       "FELLOWSHIP"
@@ -21306,7 +21340,9 @@
     "type": "POSSESSION",
     "subtype": "HAND-WEAPON",
     "attachedTo": [
-      "HOBBIT"
+      [
+        "HOBBIT"
+      ]
     ],
     "culture": "SHIRE",
     "twilightCost": 1,
@@ -21941,9 +21977,6 @@
     "kind": "FREE_PEOPLE",
     "type": "POSSESSION",
     "subtype": "HAND-WEAPON",
-    "attachedTo": [
-      "Frodo"
-    ],
     "phases": [
       "FELLOWSHIP",
       "REGROUP"
@@ -22107,8 +22140,10 @@
     "kind": "FREE_PEOPLE",
     "type": "CONDITION",
     "attachedTo": [
-      "HOBBIT",
-      "COMPANION"
+      [
+        "HOBBIT",
+        "COMPANION"
+      ]
     ],
     "phases": [
       "MANEUVER"
@@ -22376,7 +22411,9 @@
     "type": "POSSESSION",
     "subtype": "BRACERS",
     "attachedTo": [
-      "DWARF"
+      [
+        "DWARF"
+      ]
     ],
     "phases": [
       "RESPONSE"
@@ -22421,7 +22458,9 @@
     "kind": "FREE_PEOPLE",
     "type": "CONDITION",
     "attachedTo": [
-      "DWARF"
+      [
+        "DWARF"
+      ]
     ],
     "phases": [
       "SKIRMISH"
@@ -22681,7 +22720,9 @@
     "type": "POSSESSION",
     "subtype": "HAND-WEAPON",
     "attachedTo": [
-      "DWARF"
+      [
+        "DWARF"
+      ]
     ],
     "phases": [
       "ARCHERY"
@@ -23183,7 +23224,9 @@
     "type": "ARTIFACT",
     "subtype": "STAFF",
     "attachedTo": [
-      "Gandalf"
+      [
+        "GANDALF"
+      ]
     ],
     "phases": [
       "SKIRMISH"
@@ -23490,7 +23533,9 @@
     "type": "POSSESSION",
     "subtype": "STAFF",
     "attachedTo": [
-      "WIZARD"
+      [
+        "WIZARD"
+      ]
     ],
     "phases": [
       "SKIRMISH"
@@ -23620,7 +23665,9 @@
     "type": "POSSESSION",
     "subtype": "HAND-WEAPON",
     "attachedTo": [
-      "MAN"
+      [
+        "MAN"
+      ]
     ],
     "culture": "GONDOR",
     "twilightCost": 0,
@@ -23866,8 +23913,10 @@
     "type": "POSSESSION",
     "subtype": "SHIELD",
     "attachedTo": [
-      "GONDOR",
-      "COMPANION"
+      [
+        "GONDOR",
+        "COMPANION"
+      ]
     ],
     "culture": "GONDOR",
     "twilightCost": 1,
@@ -24074,9 +24123,6 @@
     "kind": "SHADOW",
     "type": "POSSESSION",
     "subtype": "HAND-WEAPON",
-    "attachedTo": [
-      "Lurtz"
-    ],
     "culture": "ISENGARD",
     "twilightCost": 1,
     "strength": 2,
@@ -24287,7 +24333,9 @@
     "kind": "SHADOW",
     "type": "CONDITION",
     "attachedTo": [
-      "site"
+      [
+        "SITE"
+      ]
     ],
     "culture": "ISENGARD",
     "twilightCost": 2,
@@ -24371,7 +24419,9 @@
     "type": "ARTIFACT",
     "subtype": "HAND-WEAPON",
     "attachedTo": [
-      "The Balrog"
+      [
+        "BALROG"
+      ]
     ],
     "culture": "MORIA",
     "twilightCost": 1,
@@ -24459,7 +24509,10 @@
     "kind": "SHADOW",
     "type": "POSSESSION",
     "attachedTo": [
-      "Cave Troll of Moria"
+      [
+        "TROLL",
+        "MORIA"
+      ]
     ],
     "culture": "MORIA",
     "twilightCost": 1,
@@ -25334,7 +25387,9 @@
     "type": "ARTIFACT",
     "subtype": "HAND-WEAPON",
     "attachedTo": [
-      "The Balrog"
+      [
+        "BALROG"
+      ]
     ],
     "phases": [
       "SKIRMISH"
@@ -26235,8 +26290,10 @@
     "type": "POSSESSION",
     "subtype": "HAND-WEAPON",
     "attachedTo": [
-      "SAURON",
-      "ORC"
+      [
+        "ORC",
+        "SAURON"
+      ]
     ],
     "culture": "SAURON",
     "twilightCost": 1,
@@ -26327,9 +26384,6 @@
     "isUnique": false,
     "kind": "FREE_PEOPLE",
     "type": "CONDITION",
-    "attachedTo": [
-      "Bilbo"
-    ],
     "phases": [
       "FELLOWSHIP",
       "REGROUP"
@@ -26716,7 +26770,9 @@
     "kind": "FREE_PEOPLE",
     "type": "CONDITION",
     "attachedTo": [
-      "the Ring-bearer"
+      [
+        "RING-BEARER"
+      ]
     ],
     "phases": [
       "SKIRMISH"
@@ -27116,7 +27172,9 @@
     "kind": "FREE_PEOPLE",
     "type": "POSSESSION",
     "attachedTo": [
-      "DWARF"
+      [
+        "DWARF"
+      ]
     ],
     "culture": "DWARVEN",
     "twilightCost": 2,
@@ -27157,9 +27215,6 @@
     "kind": "FREE_PEOPLE",
     "type": "POSSESSION",
     "subtype": "PIPE",
-    "attachedTo": [
-      "Gimli"
-    ],
     "phases": [
       "FELLOWSHIP"
     ],
@@ -27925,9 +27980,6 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "CONDITION",
-    "attachedTo": [
-      "Aragorn"
-    ],
     "phases": [
       "SKIRMISH"
     ],
@@ -28020,9 +28072,6 @@
     "kind": "FREE_PEOPLE",
     "type": "POSSESSION",
     "subtype": "HAND-WEAPON",
-    "attachedTo": [
-      "Legolas"
-    ],
     "culture": "ELVEN",
     "twilightCost": 1,
     "strength": 1,
@@ -28105,9 +28154,6 @@
     "kind": "FREE_PEOPLE",
     "type": "ARTIFACT",
     "subtype": "RING",
-    "attachedTo": [
-      "Galadriel"
-    ],
     "culture": "ELVEN",
     "twilightCost": 0,
     "vitality": 1,
@@ -28149,7 +28195,9 @@
     "type": "ARTIFACT",
     "subtype": "PHIAL",
     "attachedTo": [
-      "the Ring-bearer"
+      [
+        "RING-BEARER"
+      ]
     ],
     "culture": "ELVEN",
     "twilightCost": 0,
@@ -28282,9 +28330,6 @@
     "kind": "FREE_PEOPLE",
     "type": "ARTIFACT",
     "subtype": "RING",
-    "attachedTo": [
-      "Elrond"
-    ],
     "phases": [
       "MANEUVER"
     ],
@@ -28576,7 +28621,9 @@
     "type": "ARTIFACT",
     "subtype": "RING",
     "attachedTo": [
-      "Gandalf"
+      [
+        "GANDALF"
+      ]
     ],
     "culture": "GANDALF",
     "twilightCost": 0,
@@ -28912,9 +28959,6 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "POSSESSION",
-    "attachedTo": [
-      "Boromir"
-    ],
     "phases": [
       "MANEUVER"
     ],
@@ -29453,8 +29497,10 @@
     "type": "POSSESSION",
     "subtype": "HAND-WEAPON",
     "attachedTo": [
-      "ISENGARD",
-      "ORC"
+      [
+        "ORC",
+        "ISENGARD"
+      ]
     ],
     "culture": "ISENGARD",
     "twilightCost": 0,
@@ -31614,8 +31660,10 @@
     "kind": "FREE_PEOPLE",
     "type": "POSSESSION",
     "attachedTo": [
-      "HOBBIT",
-      "COMPANION"
+      [
+        "HOBBIT",
+        "COMPANION"
+      ]
     ],
     "culture": "SHIRE",
     "twilightCost": 0,
@@ -31656,9 +31704,6 @@
     "kind": "FREE_PEOPLE",
     "type": "POSSESSION",
     "subtype": "PIPE",
-    "attachedTo": [
-      "Frodo"
-    ],
     "phases": [
       "FELLOWSHIP"
     ],
@@ -31702,7 +31747,9 @@
     "type": "POSSESSION",
     "subtype": "HAND-WEAPON",
     "attachedTo": [
-      "HOBBIT"
+      [
+        "HOBBIT"
+      ]
     ],
     "phases": [
       "SKIRMISH"
@@ -33076,8 +33123,10 @@
     "type": "POSSESSION",
     "subtype": "HAND-WEAPON",
     "attachedTo": [
-      "DUNLAND",
-      "MAN"
+      [
+        "MAN",
+        "DUNLAND"
+      ]
     ],
     "culture": "DUNLAND",
     "twilightCost": 1,
@@ -33235,7 +33284,9 @@
     "kind": "SHADOW",
     "type": "CONDITION",
     "attachedTo": [
-      "site"
+      [
+        "SITE"
+      ]
     ],
     "phases": [
       "REGROUP"
@@ -33486,8 +33537,10 @@
     "type": "POSSESSION",
     "subtype": "HAND-WEAPON",
     "attachedTo": [
-      "DUNLAND",
-      "MAN"
+      [
+        "MAN",
+        "DUNLAND"
+      ]
     ],
     "culture": "DUNLAND",
     "twilightCost": 0,
@@ -33703,9 +33756,6 @@
     "kind": "FREE_PEOPLE",
     "type": "POSSESSION",
     "subtype": "HAND-WEAPON",
-    "attachedTo": [
-      "Gimli"
-    ],
     "phases": [
       "SKIRMISH"
     ],
@@ -34576,7 +34626,9 @@
     "type": "POSSESSION",
     "subtype": "RANGED-WEAPON",
     "attachedTo": [
-      "ELF"
+      [
+        "ELF"
+      ]
     ],
     "culture": "ELVEN",
     "twilightCost": 1,
@@ -34618,7 +34670,9 @@
     "type": "POSSESSION",
     "subtype": "BROOCH",
     "attachedTo": [
-      "COMPANION"
+      [
+        "COMPANION"
+      ]
     ],
     "phases": [
       "RESPONSE"
@@ -34663,7 +34717,9 @@
     "type": "POSSESSION",
     "subtype": "HAND-WEAPON",
     "attachedTo": [
-      "ELF"
+      [
+        "ELF"
+      ]
     ],
     "phases": [
       "SKIRMISH"
@@ -35106,7 +35162,9 @@
     "kind": "FREE_PEOPLE",
     "type": "POSSESSION",
     "attachedTo": [
-      "COMPANION"
+      [
+        "COMPANION"
+      ]
     ],
     "phases": [
       "REGROUP"
@@ -35761,7 +35819,9 @@
     "type": "ARTIFACT",
     "subtype": "STAFF",
     "attachedTo": [
-      "Gandalf"
+      [
+        "GANDALF"
+      ]
     ],
     "culture": "GANDALF",
     "twilightCost": 2,
@@ -35889,9 +35949,6 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "CONDITION",
-    "attachedTo": [
-      "Théoden"
-    ],
     "culture": "GANDALF",
     "twilightCost": 0,
     "strength": 2,
@@ -36518,9 +36575,6 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "CONDITION",
-    "attachedTo": [
-      "Faramir"
-    ],
     "phases": [
       "SKIRMISH"
     ],
@@ -36565,8 +36619,10 @@
     "type": "POSSESSION",
     "subtype": "GAUNTLETS",
     "attachedTo": [
-      "GONDOR",
-      "MAN"
+      [
+        "MAN",
+        "GONDOR"
+      ]
     ],
     "phases": [
       "SKIRMISH"
@@ -36835,9 +36891,6 @@
     "kind": "FREE_PEOPLE",
     "type": "POSSESSION",
     "subtype": "RANGED-WEAPON",
-    "attachedTo": [
-      "Faramir"
-    ],
     "phases": [
       "SKIRMISH"
     ],
@@ -36880,9 +36933,6 @@
     "kind": "FREE_PEOPLE",
     "type": "POSSESSION",
     "subtype": "CLOAK",
-    "attachedTo": [
-      "Faramir"
-    ],
     "culture": "GONDOR",
     "twilightCost": 0,
     "imageUrl": "/cards_visuals/o_04_119.jpg",
@@ -37389,8 +37439,10 @@
     "type": "POSSESSION",
     "subtype": "RANGED-WEAPON",
     "attachedTo": [
-      "RING-BOUND",
-      "MAN"
+      [
+        "MAN",
+        "RING-BOUND"
+      ]
     ],
     "phases": [
       "SKIRMISH"
@@ -37434,9 +37486,6 @@
     "kind": "FREE_PEOPLE",
     "type": "POSSESSION",
     "subtype": "HAND-WEAPON",
-    "attachedTo": [
-      "Aragorn"
-    ],
     "culture": "GONDOR",
     "twilightCost": 1,
     "strength": 2,
@@ -37525,8 +37574,10 @@
     "type": "POSSESSION",
     "subtype": "HAND-WEAPON",
     "attachedTo": [
-      "GONDOR",
-      "MAN"
+      [
+        "MAN",
+        "GONDOR"
+      ]
     ],
     "culture": "GONDOR",
     "twilightCost": 1,
@@ -37857,7 +37908,9 @@
     "type": "POSSESSION",
     "subtype": "HAND-WEAPON",
     "attachedTo": [
-      "URUK-HAI"
+      [
+        "URUK-HAI"
+      ]
     ],
     "culture": "ISENGARD",
     "twilightCost": 1,
@@ -38876,7 +38929,9 @@
     "kind": "SHADOW",
     "type": "CONDITION",
     "attachedTo": [
-      "site"
+      [
+        "SITE"
+      ]
     ],
     "culture": "ISENGARD",
     "twilightCost": 0,
@@ -39204,7 +39259,9 @@
     "type": "POSSESSION",
     "subtype": "HAND-WEAPON",
     "attachedTo": [
-      "URUK-HAI"
+      [
+        "URUK-HAI"
+      ]
     ],
     "phases": [
       "SHADOW"
@@ -40031,7 +40088,9 @@
     "type": "POSSESSION",
     "subtype": "HAND-WEAPON",
     "attachedTo": [
-      "URUK-HAI"
+      [
+        "URUK-HAI"
+      ]
     ],
     "phases": [
       "MANEUVER"
@@ -42077,8 +42136,10 @@
     "type": "POSSESSION",
     "subtype": "RANGED-WEAPON",
     "attachedTo": [
-      "RAIDER",
-      "MAN"
+      [
+        "MAN",
+        "RAIDER"
+      ]
     ],
     "culture": "RAIDER",
     "twilightCost": 3,
@@ -42429,7 +42490,9 @@
     "type": "POSSESSION",
     "subtype": "HAND-WEAPON",
     "attachedTo": [
-      "SOUTHRON"
+      [
+        "SOUTHRON"
+      ]
     ],
     "phases": [
       "SKIRMISH"
@@ -42778,9 +42841,15 @@
     "type": "POSSESSION",
     "subtype": "MOUNT",
     "attachedTo": [
-      "MAN",
-      "ELF",
-      "WIZARD"
+      [
+        "MAN"
+      ],
+      [
+        "ELF"
+      ],
+      [
+        "WIZARD"
+      ]
     ],
     "culture": "ROHAN",
     "twilightCost": 1,
@@ -43006,8 +43075,10 @@
     "type": "POSSESSION",
     "subtype": "HAND-WEAPON",
     "attachedTo": [
-      "ROHAN",
-      "MAN"
+      [
+        "MAN",
+        "ROHAN"
+      ]
     ],
     "culture": "ROHAN",
     "twilightCost": 1,
@@ -43195,9 +43266,6 @@
     "kind": "FREE_PEOPLE",
     "type": "POSSESSION",
     "subtype": "HAND-WEAPON",
-    "attachedTo": [
-      "Éowyn"
-    ],
     "culture": "ROHAN",
     "twilightCost": 1,
     "strength": 3,
@@ -43280,8 +43348,10 @@
     "type": "POSSESSION",
     "subtype": "MOUNT",
     "attachedTo": [
-      "ROHAN",
-      "MAN"
+      [
+        "MAN",
+        "ROHAN"
+      ]
     ],
     "culture": "ROHAN",
     "twilightCost": 2,
@@ -43456,7 +43526,9 @@
     "type": "POSSESSION",
     "subtype": "ARMOR",
     "attachedTo": [
-      "MAN"
+      [
+        "MAN"
+      ]
     ],
     "culture": "ROHAN",
     "twilightCost": 1,
@@ -43538,9 +43610,6 @@
     "kind": "FREE_PEOPLE",
     "type": "POSSESSION",
     "subtype": "HAND-WEAPON",
-    "attachedTo": [
-      "Théoden"
-    ],
     "culture": "ROHAN",
     "twilightCost": 2,
     "strength": 2,
@@ -43674,9 +43743,15 @@
     "type": "POSSESSION",
     "subtype": "MOUNT",
     "attachedTo": [
-      "MAN",
-      "ELF",
-      "WIZARD"
+      [
+        "MAN"
+      ],
+      [
+        "ELF"
+      ],
+      [
+        "WIZARD"
+      ]
     ],
     "culture": "ROHAN",
     "twilightCost": 2,
@@ -43718,8 +43793,10 @@
     "type": "POSSESSION",
     "subtype": "ARMOR",
     "attachedTo": [
-      "ROHAN",
-      "MAN"
+      [
+        "MAN",
+        "ROHAN"
+      ]
     ],
     "culture": "ROHAN",
     "twilightCost": 2,
@@ -43855,8 +43932,10 @@
     "type": "POSSESSION",
     "subtype": "MOUNT",
     "attachedTo": [
-      "ROHAN",
-      "MAN"
+      [
+        "MAN",
+        "ROHAN"
+      ]
     ],
     "culture": "ROHAN",
     "twilightCost": 1,
@@ -43898,8 +43977,10 @@
     "type": "POSSESSION",
     "subtype": "HAND-WEAPON",
     "attachedTo": [
-      "ROHAN",
-      "MAN"
+      [
+        "MAN",
+        "ROHAN"
+      ]
     ],
     "culture": "ROHAN",
     "twilightCost": 1,
@@ -43984,8 +44065,10 @@
     "type": "POSSESSION",
     "subtype": "HAND-WEAPON",
     "attachedTo": [
-      "ROHAN",
-      "MAN"
+      [
+        "MAN",
+        "ROHAN"
+      ]
     ],
     "culture": "ROHAN",
     "twilightCost": 1,
@@ -44288,8 +44371,10 @@
     "kind": "FREE_PEOPLE",
     "type": "POSSESSION",
     "attachedTo": [
-      "RING-BOUND",
-      "HOBBIT"
+      [
+        "HOBBIT",
+        "RING-BOUND"
+      ]
     ],
     "phases": [
       "FELLOWSHIP"
@@ -44375,7 +44460,9 @@
     "kind": "FREE_PEOPLE",
     "type": "CONDITION",
     "attachedTo": [
-      "HOBBIT"
+      [
+        "HOBBIT"
+      ]
     ],
     "phases": [
       "SKIRMISH"
@@ -44471,9 +44558,6 @@
     "kind": "FREE_PEOPLE",
     "type": "POSSESSION",
     "subtype": "CLOAK",
-    "attachedTo": [
-      "Frodo"
-    ],
     "phases": [
       "SKIRMISH"
     ],
@@ -44599,7 +44683,9 @@
     "type": "POSSESSION",
     "subtype": "HAND-WEAPON",
     "attachedTo": [
-      "HOBBIT"
+      [
+        "HOBBIT"
+      ]
     ],
     "culture": "SHIRE",
     "twilightCost": 1,
@@ -45108,8 +45194,10 @@
     "kind": "FREE_PEOPLE",
     "type": "POSSESSION",
     "attachedTo": [
-      "RING-BOUND",
-      "HOBBIT"
+      [
+        "HOBBIT",
+        "RING-BOUND"
+      ]
     ],
     "culture": "SHIRE",
     "twilightCost": 0,
@@ -45872,9 +45960,6 @@
     "kind": "FREE_PEOPLE",
     "type": "POSSESSION",
     "subtype": "HAND-WEAPON",
-    "attachedTo": [
-      "Legolas"
-    ],
     "culture": "ELVEN",
     "twilightCost": 1,
     "strength": 1,
@@ -47608,8 +47693,10 @@
     "type": "POSSESSION",
     "subtype": "HAND-WEAPON",
     "attachedTo": [
-      "ISENGARD",
-      "ORC"
+      [
+        "ORC",
+        "ISENGARD"
+      ]
     ],
     "culture": "ISENGARD",
     "twilightCost": 0,
@@ -47828,6 +47915,11 @@
     "kind": "SHADOW",
     "type": "POSSESSION",
     "subtype": "MOUNT",
+    "attachedTo": [
+      [
+        "WARG-RIDER"
+      ]
+    ],
     "phases": [
       "RESPONSE"
     ],
@@ -48040,6 +48132,11 @@
     "kind": "SHADOW",
     "type": "POSSESSION",
     "subtype": "MOUNT",
+    "attachedTo": [
+      [
+        "WARG-RIDER"
+      ]
+    ],
     "phases": [
       "RESPONSE"
     ],
@@ -48084,6 +48181,11 @@
     "kind": "SHADOW",
     "type": "POSSESSION",
     "subtype": "MOUNT",
+    "attachedTo": [
+      [
+        "WARG-RIDER"
+      ]
+    ],
     "phases": [
       "RESPONSE"
     ],
@@ -48431,7 +48533,9 @@
     "type": "POSSESSION",
     "subtype": "MOUNT",
     "attachedTo": [
-      "SOUTHRON"
+      [
+        "SOUTHRON"
+      ]
     ],
     "culture": "RAIDER",
     "twilightCost": 2,
@@ -48645,7 +48749,9 @@
     "type": "POSSESSION",
     "subtype": "MOUNT",
     "attachedTo": [
-      "SOUTHRON"
+      [
+        "SOUTHRON"
+      ]
     ],
     "culture": "RAIDER",
     "twilightCost": 3,
@@ -49077,8 +49183,10 @@
     "type": "POSSESSION",
     "subtype": "RANGED-WEAPON",
     "attachedTo": [
-      "ROHAN",
-      "MAN"
+      [
+        "MAN",
+        "ROHAN"
+      ]
     ],
     "phases": [
       "ARCHERY"
@@ -49124,8 +49232,10 @@
     "type": "POSSESSION",
     "subtype": "HELM",
     "attachedTo": [
-      "ROHAN",
-      "MAN"
+      [
+        "MAN",
+        "ROHAN"
+      ]
     ],
     "phases": [
       "SKIRMISH"
@@ -49214,8 +49324,10 @@
     "type": "POSSESSION",
     "subtype": "SHIELD",
     "attachedTo": [
-      "ROHAN",
-      "MAN"
+      [
+        "MAN",
+        "ROHAN"
+      ]
     ],
     "phases": [
       "REGROUP"
@@ -50566,8 +50678,10 @@
     "type": "POSSESSION",
     "subtype": "HELM",
     "attachedTo": [
-      "ROHAN",
-      "MAN"
+      [
+        "MAN",
+        "ROHAN"
+      ]
     ],
     "phases": [
       "SKIRMISH"
@@ -51195,8 +51309,10 @@
     "type": "POSSESSION",
     "subtype": "HAND-WEAPON",
     "attachedTo": [
-      "ELF",
-      "COMPANION"
+      [
+        "ELF",
+        "COMPANION"
+      ]
     ],
     "phases": [
       "RESPONSE"
@@ -51506,8 +51622,10 @@
     "type": "POSSESSION",
     "subtype": "RANGED-WEAPON",
     "attachedTo": [
-      "ELF",
-      "COMPANION"
+      [
+        "ELF",
+        "COMPANION"
+      ]
     ],
     "phases": [
       "ARCHERY"
@@ -51719,7 +51837,9 @@
     "kind": "FREE_PEOPLE",
     "type": "CONDITION",
     "attachedTo": [
-      "ENT"
+      [
+        "ENT"
+      ]
     ],
     "culture": "GANDALF",
     "twilightCost": 2,
@@ -51843,7 +51963,9 @@
     "kind": "FREE_PEOPLE",
     "type": "CONDITION",
     "attachedTo": [
-      "ENT"
+      [
+        "ENT"
+      ]
     ],
     "culture": "GANDALF",
     "twilightCost": 1,
@@ -51933,7 +52055,9 @@
     "type": "POSSESSION",
     "subtype": "HAND-WEAPON",
     "attachedTo": [
-      "Gandalf"
+      [
+        "GANDALF"
+      ]
     ],
     "culture": "GANDALF",
     "twilightCost": 2,
@@ -52812,8 +52936,10 @@
     "type": "POSSESSION",
     "subtype": "HAND-WEAPON",
     "attachedTo": [
-      "GONDOR",
-      "COMPANION"
+      [
+        "GONDOR",
+        "COMPANION"
+      ]
     ],
     "phases": [
       "RESPONSE"
@@ -52981,9 +53107,6 @@
     "kind": "FREE_PEOPLE",
     "type": "ARTIFACT",
     "subtype": "RING",
-    "attachedTo": [
-      "Aragorn"
-    ],
     "culture": "GONDOR",
     "twilightCost": 0,
     "imageUrl": "/cards_visuals/o_06_055.jpg",
@@ -53150,8 +53273,10 @@
     "type": "POSSESSION",
     "subtype": "HAND-WEAPON",
     "attachedTo": [
-      "ISENGARD",
-      "MINION"
+      [
+        "ISENGARD",
+        "MINION"
+      ]
     ],
     "culture": "ISENGARD",
     "twilightCost": 0,
@@ -54013,7 +54138,9 @@
     "type": "POSSESSION",
     "subtype": "HAND-WEAPON",
     "attachedTo": [
-      "EASTERLING"
+      [
+        "EASTERLING"
+      ]
     ],
     "culture": "RAIDER",
     "twilightCost": 0,
@@ -54446,8 +54573,10 @@
     "type": "POSSESSION",
     "subtype": "HAND-WEAPON",
     "attachedTo": [
-      "ROHAN",
-      "COMPANION"
+      [
+        "ROHAN",
+        "COMPANION"
+      ]
     ],
     "phases": [
       "RESPONSE"
@@ -54802,8 +54931,10 @@
     "type": "POSSESSION",
     "subtype": "HAND-WEAPON",
     "attachedTo": [
-      "SAURON",
-      "ORC"
+      [
+        "ORC",
+        "SAURON"
+      ]
     ],
     "culture": "SAURON",
     "twilightCost": 0,
@@ -55197,8 +55328,10 @@
     "type": "POSSESSION",
     "subtype": "HAND-WEAPON",
     "attachedTo": [
-      "SAURON",
-      "TROLL"
+      [
+        "TROLL",
+        "SAURON"
+      ]
     ],
     "culture": "SAURON",
     "twilightCost": 1,
@@ -55284,9 +55417,6 @@
     "isUnique": false,
     "kind": "FREE_PEOPLE",
     "type": "CONDITION",
-    "attachedTo": [
-      "Frodo"
-    ],
     "phases": [
       "REGROUP"
     ],
@@ -55640,7 +55770,9 @@
     "kind": "FREE_PEOPLE",
     "type": "CONDITION",
     "attachedTo": [
-      "ENT"
+      [
+        "ENT"
+      ]
     ],
     "culture": "GANDALF",
     "twilightCost": 2,
@@ -56149,9 +56281,6 @@
     "kind": "FREE_PEOPLE",
     "type": "POSSESSION",
     "subtype": "ARMOR",
-    "attachedTo": [
-      "Gimli"
-    ],
     "phases": [
       "RESPONSE"
     ],
@@ -56191,7 +56320,9 @@
     "type": "POSSESSION",
     "subtype": "HAND-WEAPON",
     "attachedTo": [
-      "DWARF"
+      [
+        "DWARF"
+      ]
     ],
     "culture": "DWARVEN",
     "twilightCost": 2,
@@ -56349,8 +56480,10 @@
     "kind": "FREE_PEOPLE",
     "type": "CONDITION",
     "attachedTo": [
-      "DWARVEN",
-      "COMPANION"
+      [
+        "DWARVEN",
+        "COMPANION"
+      ]
     ],
     "phases": [
       "ASSIGNMENT",
@@ -56431,8 +56564,10 @@
     "kind": "FREE_PEOPLE",
     "type": "CONDITION",
     "attachedTo": [
-      "ELVEN",
-      "COMPANION"
+      [
+        "ELVEN",
+        "COMPANION"
+      ]
     ],
     "phases": [
       "ASSIGNMENT",
@@ -56520,7 +56655,9 @@
     "type": "POSSESSION",
     "subtype": "MOUNT",
     "attachedTo": [
-      "ELF"
+      [
+        "ELF"
+      ]
     ],
     "phases": [
       "SKIRMISH"
@@ -56565,9 +56702,6 @@
     "kind": "FREE_PEOPLE",
     "type": "POSSESSION",
     "subtype": "RANGED-WEAPON",
-    "attachedTo": [
-      "Legolas"
-    ],
     "culture": "ELVEN",
     "twilightCost": 1,
     "strength": 1,
@@ -57387,7 +57521,9 @@
     "type": "ARTIFACT",
     "subtype": "STAFF",
     "attachedTo": [
-      "Gandalf"
+      [
+        "GANDALF"
+      ]
     ],
     "culture": "GANDALF",
     "twilightCost": 2,
@@ -57431,7 +57567,9 @@
     "type": "POSSESSION",
     "subtype": "HAND-WEAPON",
     "attachedTo": [
-      "Gandalf"
+      [
+        "GANDALF"
+      ]
     ],
     "phases": [
       "SKIRMISH"
@@ -57823,7 +57961,9 @@
     "kind": "FREE_PEOPLE",
     "type": "CONDITION",
     "attachedTo": [
-      "Gandalf"
+      [
+        "GANDALF"
+      ]
     ],
     "phases": [
       "ASSIGNMENT",
@@ -57942,7 +58082,9 @@
     "type": "POSSESSION",
     "subtype": "STAFF",
     "attachedTo": [
-      "WIZARD"
+      [
+        "WIZARD"
+      ]
     ],
     "phases": [
       "SKIRMISH"
@@ -58105,9 +58247,6 @@
     "isUnique": false,
     "kind": "FREE_PEOPLE",
     "type": "CONDITION",
-    "attachedTo": [
-      "Sméagol"
-    ],
     "culture": "GOLLUM",
     "twilightCost": 3,
     "imageUrl": "/cards_visuals/o_07_056.jpg",
@@ -58395,7 +58534,9 @@
     "kind": "SHADOW",
     "type": "CONDITION",
     "attachedTo": [
-      "MINION"
+      [
+        "MINION"
+      ]
     ],
     "culture": "GOLLUM",
     "twilightCost": 1,
@@ -58948,9 +59089,6 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "CONDITION",
-    "attachedTo": [
-      "Sméagol"
-    ],
     "phases": [
       "ASSIGNMENT",
       "REGROUP"
@@ -59030,9 +59168,6 @@
     "kind": "FREE_PEOPLE",
     "type": "ARTIFACT",
     "subtype": "HAND-WEAPON",
-    "attachedTo": [
-      "Aragorn"
-    ],
     "culture": "GONDOR",
     "twilightCost": 3,
     "strength": 2,
@@ -59583,8 +59718,10 @@
     "type": "POSSESSION",
     "subtype": "ARMOR",
     "attachedTo": [
-      "GONDOR",
-      "MAN"
+      [
+        "MAN",
+        "GONDOR"
+      ]
     ],
     "phases": [
       "RESPONSE"
@@ -59624,8 +59761,10 @@
     "type": "POSSESSION",
     "subtype": "RANGED-WEAPON",
     "attachedTo": [
-      "GONDOR",
-      "MAN"
+      [
+        "MAN",
+        "GONDOR"
+      ]
     ],
     "phases": [
       "SKIRMISH"
@@ -59788,8 +59927,10 @@
     "type": "POSSESSION",
     "subtype": "HAND-WEAPON",
     "attachedTo": [
-      "GONDOR",
-      "MAN"
+      [
+        "MAN",
+        "GONDOR"
+      ]
     ],
     "phases": [
       "SKIRMISH"
@@ -60061,8 +60202,10 @@
     "kind": "FREE_PEOPLE",
     "type": "CONDITION",
     "attachedTo": [
-      "GONDOR",
-      "MAN"
+      [
+        "MAN",
+        "GONDOR"
+      ]
     ],
     "culture": "GONDOR",
     "twilightCost": 3,
@@ -60179,8 +60322,10 @@
     "type": "POSSESSION",
     "subtype": "HAND-WEAPON",
     "attachedTo": [
-      "GONDOR",
-      "MAN"
+      [
+        "MAN",
+        "GONDOR"
+      ]
     ],
     "phases": [
       "SKIRMISH"
@@ -60379,9 +60524,6 @@
     "kind": "FREE_PEOPLE",
     "type": "POSSESSION",
     "subtype": "ARMOR",
-    "attachedTo": [
-      "Pippin"
-    ],
     "culture": "GONDOR",
     "twilightCost": 0,
     "strength": 2,
@@ -60419,9 +60561,6 @@
     "kind": "FREE_PEOPLE",
     "type": "POSSESSION",
     "subtype": "HAND-WEAPON",
-    "attachedTo": [
-      "Pippin"
-    ],
     "phases": [
       "SKIRMISH"
     ],
@@ -60894,8 +61033,10 @@
     "kind": "FREE_PEOPLE",
     "type": "CONDITION",
     "attachedTo": [
-      "GONDOR",
-      "COMPANION"
+      [
+        "GONDOR",
+        "COMPANION"
+      ]
     ],
     "phases": [
       "ASSIGNMENT",
@@ -62037,8 +62178,10 @@
     "type": "POSSESSION",
     "subtype": "RANGED-WEAPON",
     "attachedTo": [
-      "RAIDER",
-      "MAN"
+      [
+        "MAN",
+        "RAIDER"
+      ]
     ],
     "culture": "RAIDER",
     "twilightCost": 2,
@@ -62076,8 +62219,10 @@
     "type": "POSSESSION",
     "subtype": "HAND-WEAPON",
     "attachedTo": [
-      "RAIDER",
-      "MAN"
+      [
+        "MAN",
+        "RAIDER"
+      ]
     ],
     "phases": [
       "SKIRMISH"
@@ -63262,7 +63407,10 @@
     "type": "POSSESSION",
     "subtype": "HAND-WEAPON",
     "attachedTo": [
-      "ORC"
+      [
+        "ORC",
+        "WRAITH"
+      ]
     ],
     "culture": "WRAITH",
     "twilightCost": 1,
@@ -63963,7 +64111,10 @@
     "type": "POSSESSION",
     "subtype": "HAND-WEAPON",
     "attachedTo": [
-      "MINION"
+      [
+        "WRAITH",
+        "MINION"
+      ]
     ],
     "culture": "WRAITH",
     "twilightCost": 1,
@@ -64982,9 +65133,6 @@
     "kind": "FREE_PEOPLE",
     "type": "POSSESSION",
     "subtype": "HAND-WEAPON",
-    "attachedTo": [
-      "Éowyn"
-    ],
     "culture": "ROHAN",
     "twilightCost": 1,
     "strength": 3,
@@ -65068,8 +65216,10 @@
     "type": "POSSESSION",
     "subtype": "MOUNT",
     "attachedTo": [
-      "ROHAN",
-      "MAN"
+      [
+        "MAN",
+        "ROHAN"
+      ]
     ],
     "phases": [
       "REGROUP"
@@ -65248,9 +65398,6 @@
     "kind": "FREE_PEOPLE",
     "type": "POSSESSION",
     "subtype": "HAND-WEAPON",
-    "attachedTo": [
-      "Théoden"
-    ],
     "phases": [
       "RESPONSE"
     ],
@@ -65424,8 +65571,10 @@
     "type": "POSSESSION",
     "subtype": "HAND-WEAPON",
     "attachedTo": [
-      "ROHAN",
-      "MAN"
+      [
+        "MAN",
+        "ROHAN"
+      ]
     ],
     "culture": "ROHAN",
     "twilightCost": 1,
@@ -65463,9 +65612,6 @@
     "kind": "FREE_PEOPLE",
     "type": "POSSESSION",
     "subtype": "ARMOR",
-    "attachedTo": [
-      "Merry"
-    ],
     "culture": "ROHAN",
     "twilightCost": 0,
     "strength": 2,
@@ -65503,9 +65649,6 @@
     "kind": "FREE_PEOPLE",
     "type": "POSSESSION",
     "subtype": "HAND-WEAPON",
-    "attachedTo": [
-      "Merry"
-    ],
     "phases": [
       "MANEUVER"
     ],
@@ -65625,8 +65768,10 @@
     "type": "POSSESSION",
     "subtype": "ARMOR",
     "attachedTo": [
-      "ROHAN",
-      "MAN"
+      [
+        "MAN",
+        "ROHAN"
+      ]
     ],
     "phases": [
       "RESPONSE"
@@ -65751,8 +65896,10 @@
     "type": "POSSESSION",
     "subtype": "RANGED-WEAPON",
     "attachedTo": [
-      "ROHAN",
-      "MAN"
+      [
+        "MAN",
+        "ROHAN"
+      ]
     ],
     "phases": [
       "ARCHERY"
@@ -65828,8 +65975,10 @@
     "type": "POSSESSION",
     "subtype": "MOUNT",
     "attachedTo": [
-      "ROHAN",
-      "MAN"
+      [
+        "MAN",
+        "ROHAN"
+      ]
     ],
     "phases": [
       "REGROUP"
@@ -65905,7 +66054,9 @@
     "kind": "FREE_PEOPLE",
     "type": "CONDITION",
     "attachedTo": [
-      "site"
+      [
+        "SITE"
+      ]
     ],
     "culture": "ROHAN",
     "twilightCost": 1,
@@ -65943,8 +66094,10 @@
     "type": "POSSESSION",
     "subtype": "MOUNT",
     "attachedTo": [
-      "ROHAN",
-      "MAN"
+      [
+        "MAN",
+        "ROHAN"
+      ]
     ],
     "culture": "ROHAN",
     "twilightCost": 2,
@@ -66236,8 +66389,10 @@
     "type": "POSSESSION",
     "subtype": "MOUNT",
     "attachedTo": [
-      "ROHAN",
-      "MAN"
+      [
+        "MAN",
+        "ROHAN"
+      ]
     ],
     "phases": [
       "SKIRMISH"
@@ -66439,8 +66594,10 @@
     "type": "POSSESSION",
     "subtype": "HAND-WEAPON",
     "attachedTo": [
-      "SAURON",
-      "ORC"
+      [
+        "ORC",
+        "SAURON"
+      ]
     ],
     "culture": "SAURON",
     "twilightCost": 0,
@@ -68641,7 +68798,9 @@
     "type": "POSSESSION",
     "subtype": "HAND-WEAPON",
     "attachedTo": [
-      "HOBBIT"
+      [
+        "HOBBIT"
+      ]
     ],
     "culture": "SHIRE",
     "twilightCost": 1,
@@ -68943,9 +69102,6 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "CONDITION",
-    "attachedTo": [
-      "Merry or Pippin"
-    ],
     "phases": [
       "ASSIGNMENT",
       "REGROUP"
@@ -69869,7 +70025,9 @@
     "type": "POSSESSION",
     "subtype": "MOUNT",
     "attachedTo": [
-      "Gandalf"
+      [
+        "GANDALF"
+      ]
     ],
     "phases": [
       "SKIRMISH"
@@ -70593,6 +70751,11 @@
     "kind": "FREE_PEOPLE",
     "type": "POSSESSION",
     "subtype": "MOUNT",
+    "attachedTo": [
+      [
+        "KNIGHT"
+      ]
+    ],
     "culture": "GONDOR",
     "twilightCost": 1,
     "strength": 1,
@@ -70848,8 +71011,10 @@
     "type": "POSSESSION",
     "subtype": "HAND-WEAPON",
     "attachedTo": [
-      "GONDOR",
-      "WRAITH"
+      [
+        "WRAITH",
+        "GONDOR"
+      ]
     ],
     "phases": [
       "SKIRMISH"
@@ -71055,7 +71220,9 @@
     "type": "POSSESSION",
     "subtype": "RANGED-WEAPON",
     "attachedTo": [
-      "CORSAIR"
+      [
+        "CORSAIR"
+      ]
     ],
     "culture": "RAIDER",
     "twilightCost": 0,
@@ -71507,6 +71674,11 @@
     "kind": "SHADOW",
     "type": "POSSESSION",
     "subtype": "MOUNT",
+    "attachedTo": [
+      [
+        "SOUTHRON"
+      ]
+    ],
     "culture": "RAIDER",
     "twilightCost": 3,
     "strength": 3,
@@ -72515,8 +72687,10 @@
     "type": "POSSESSION",
     "subtype": "SHIELD",
     "attachedTo": [
-      "ROHAN",
-      "MAN"
+      [
+        "MAN",
+        "ROHAN"
+      ]
     ],
     "phases": [
       "SKIRMISH"
@@ -73537,9 +73711,6 @@
     "kind": "FREE_PEOPLE",
     "type": "POSSESSION",
     "subtype": "HAND-WEAPON",
-    "attachedTo": [
-      "Frodo or Sam"
-    ],
     "phases": [
       "RESPONSE"
     ],
@@ -74042,7 +74213,9 @@
     "type": "ARTIFACT",
     "subtype": "RING",
     "attachedTo": [
-      "DWARF"
+      [
+        "DWARF"
+      ]
     ],
     "phases": [
       "MANEUVER"
@@ -74083,7 +74256,9 @@
     "type": "ARTIFACT",
     "subtype": "RING",
     "attachedTo": [
-      "DWARF"
+      [
+        "DWARF"
+      ]
     ],
     "phases": [
       "REGROUP"
@@ -74129,7 +74304,9 @@
     "type": "ARTIFACT",
     "subtype": "RING",
     "attachedTo": [
-      "DWARF"
+      [
+        "DWARF"
+      ]
     ],
     "phases": [
       "MANEUVER"
@@ -74175,7 +74352,9 @@
     "type": "ARTIFACT",
     "subtype": "RING",
     "attachedTo": [
-      "DWARF"
+      [
+        "DWARF"
+      ]
     ],
     "phases": [
       "RESPONSE"
@@ -74317,7 +74496,9 @@
     "type": "ARTIFACT",
     "subtype": "HAND-WEAPON",
     "attachedTo": [
-      "ELF"
+      [
+        "ELF"
+      ]
     ],
     "phases": [
       "REGROUP"
@@ -74363,8 +74544,12 @@
     "type": "POSSESSION",
     "subtype": "ROPE",
     "attachedTo": [
-      "ELF",
-      "HOBBIT"
+      [
+        "ELF"
+      ],
+      [
+        "HOBBIT"
+      ]
     ],
     "phases": [
       "MANEUVER"
@@ -74550,8 +74735,10 @@
     "type": "POSSESSION",
     "subtype": "HAND-WEAPON",
     "attachedTo": [
-      "GONDOR",
-      "MAN"
+      [
+        "MAN",
+        "GONDOR"
+      ]
     ],
     "phases": [
       "SKIRMISH"
@@ -74596,9 +74783,6 @@
     "kind": "FREE_PEOPLE",
     "type": "POSSESSION",
     "subtype": "HAND-WEAPON",
-    "attachedTo": [
-      "Merry"
-    ],
     "phases": [
       "SKIRMISH"
     ],
@@ -74643,7 +74827,9 @@
     "type": "ARTIFACT",
     "subtype": "RING",
     "attachedTo": [
-      "Círdan or Gandalf"
+      [
+        "GANDALF"
+      ]
     ],
     "phases": [
       "FELLOWSHIP"
@@ -74693,9 +74879,6 @@
     "kind": "FREE_PEOPLE",
     "type": "ARTIFACT",
     "subtype": "RING",
-    "attachedTo": [
-      "Galadriel"
-    ],
     "phases": [
       "MANEUVER"
     ],
@@ -74744,9 +74927,6 @@
     "kind": "FREE_PEOPLE",
     "type": "POSSESSION",
     "subtype": "HAND-WEAPON",
-    "attachedTo": [
-      "Pippin"
-    ],
     "phases": [
       "SKIRMISH"
     ],
@@ -74827,9 +75007,6 @@
     "kind": "FREE_PEOPLE",
     "type": "ARTIFACT",
     "subtype": "RING",
-    "attachedTo": [
-      "Elrond or Gil-galad"
-    ],
     "phases": [
       "SKIRMISH"
     ],
@@ -74878,7 +75055,9 @@
     "kind": "FREE_PEOPLE",
     "type": "CONDITION",
     "attachedTo": [
-      "COMPANION"
+      [
+        "COMPANION"
+      ]
     ],
     "phases": [
       "SKIRMISH"
@@ -75342,8 +75521,10 @@
     "type": "ARTIFACT",
     "subtype": "HAND-WEAPON",
     "attachedTo": [
-      "GONDOR",
-      "MAN"
+      [
+        "MAN",
+        "GONDOR"
+      ]
     ],
     "phases": [
       "RESPONSE"
@@ -75731,9 +75912,6 @@
     "kind": "SHADOW",
     "type": "ARTIFACT",
     "subtype": "RING",
-    "attachedTo": [
-      "The Witch-king"
-    ],
     "phases": [
       "SKIRMISH",
       "RESPONSE"
@@ -75821,9 +75999,6 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "POSSESSION",
-    "attachedTo": [
-      "Merry or Pippin"
-    ],
     "phases": [
       "RESPONSE"
     ],
@@ -76636,7 +76811,9 @@
     "type": "ARTIFACT",
     "subtype": "PHIAL",
     "attachedTo": [
-      "HOBBIT"
+      [
+        "HOBBIT"
+      ]
     ],
     "phases": [
       "SKIRMISH"
@@ -78074,7 +78251,9 @@
     "kind": "SHADOW",
     "type": "CONDITION",
     "attachedTo": [
-      "SOUTHRON"
+      [
+        "SOUTHRON"
+      ]
     ],
     "phases": [
       "SKIRMISH"
@@ -78592,7 +78771,10 @@
     "type": "POSSESSION",
     "subtype": "HAND-WEAPON",
     "attachedTo": [
-      "ORC"
+      [
+        "ORC",
+        "WRAITH"
+      ]
     ],
     "culture": "WRAITH",
     "twilightCost": 2,
@@ -79822,8 +80004,10 @@
     "type": "POSSESSION",
     "subtype": "MOUNT",
     "attachedTo": [
-      "SAURON",
-      "ORC"
+      [
+        "ORC",
+        "SAURON"
+      ]
     ],
     "culture": "SAURON",
     "twilightCost": 1,
@@ -80380,8 +80564,10 @@
     "type": "POSSESSION",
     "subtype": "HAND-WEAPON",
     "attachedTo": [
-      "SAURON",
-      "MINION"
+      [
+        "SAURON",
+        "MINION"
+      ]
     ],
     "culture": "SAURON",
     "twilightCost": 1,
@@ -80586,7 +80772,9 @@
     "kind": "FREE_PEOPLE",
     "type": "CONDITION",
     "attachedTo": [
-      "HOBBIT"
+      [
+        "HOBBIT"
+      ]
     ],
     "culture": "SHIRE",
     "twilightCost": 1,
@@ -80832,7 +81020,9 @@
     "type": "POSSESSION",
     "subtype": "ARMOR",
     "attachedTo": [
-      "HOBBIT"
+      [
+        "HOBBIT"
+      ]
     ],
     "culture": "SHIRE",
     "twilightCost": 1,
@@ -81091,7 +81281,9 @@
     "type": "POSSESSION",
     "subtype": "HAND-WEAPON",
     "attachedTo": [
-      "DWARF"
+      [
+        "DWARF"
+      ]
     ],
     "culture": "DWARVEN",
     "twilightCost": 1,
@@ -81349,7 +81541,9 @@
     "type": "POSSESSION",
     "subtype": "HAND-WEAPON",
     "attachedTo": [
-      "DWARF"
+      [
+        "DWARF"
+      ]
     ],
     "phases": [
       "SKIRMISH"
@@ -81652,7 +81846,9 @@
     "type": "POSSESSION",
     "subtype": "HAND-WEAPON",
     "attachedTo": [
-      "ELF"
+      [
+        "ELF"
+      ]
     ],
     "culture": "ELVEN",
     "twilightCost": 1,
@@ -81955,7 +82151,9 @@
     "type": "POSSESSION",
     "subtype": "RANGED-WEAPON",
     "attachedTo": [
-      "ELF"
+      [
+        "ELF"
+      ]
     ],
     "culture": "ELVEN",
     "twilightCost": 2,
@@ -82376,7 +82574,9 @@
     "type": "ARTIFACT",
     "subtype": "STAFF",
     "attachedTo": [
-      "WIZARD"
+      [
+        "WIZARD"
+      ]
     ],
     "culture": "GANDALF",
     "twilightCost": 2,
@@ -82419,7 +82619,9 @@
     "type": "POSSESSION",
     "subtype": "HAND-WEAPON",
     "attachedTo": [
-      "Gandalf"
+      [
+        "GANDALF"
+      ]
     ],
     "culture": "GANDALF",
     "twilightCost": 2,
@@ -82631,7 +82833,9 @@
     "type": "POSSESSION",
     "subtype": "MOUNT",
     "attachedTo": [
-      "Gandalf"
+      [
+        "GANDALF"
+      ]
     ],
     "culture": "GANDALF",
     "twilightCost": 2,
@@ -83225,8 +83429,10 @@
     "type": "POSSESSION",
     "subtype": "ARMOR",
     "attachedTo": [
-      "GONDOR",
-      "MAN"
+      [
+        "MAN",
+        "GONDOR"
+      ]
     ],
     "culture": "GONDOR",
     "twilightCost": 2,
@@ -83309,8 +83515,10 @@
     "type": "POSSESSION",
     "subtype": "RANGED-WEAPON",
     "attachedTo": [
-      "GONDOR",
-      "MAN"
+      [
+        "MAN",
+        "GONDOR"
+      ]
     ],
     "culture": "GONDOR",
     "twilightCost": 1,
@@ -83353,8 +83561,10 @@
     "type": "POSSESSION",
     "subtype": "HAND-WEAPON",
     "attachedTo": [
-      "GONDOR",
-      "MAN"
+      [
+        "MAN",
+        "GONDOR"
+      ]
     ],
     "culture": "GONDOR",
     "twilightCost": 1,
@@ -84546,7 +84756,9 @@
     "kind": "FREE_PEOPLE",
     "type": "CONDITION",
     "attachedTo": [
-      "COMPANION"
+      [
+        "COMPANION"
+      ]
     ],
     "culture": "MEN",
     "twilightCost": 3,
@@ -84630,8 +84842,10 @@
     "type": "POSSESSION",
     "subtype": "RANGED-WEAPON",
     "attachedTo": [
-      "MEN",
-      "MINION"
+      [
+        "MEN",
+        "MINION"
+      ]
     ],
     "culture": "MEN",
     "twilightCost": 2,
@@ -84838,8 +85052,10 @@
     "type": "POSSESSION",
     "subtype": "SHIELD",
     "attachedTo": [
-      "MEN",
-      "MINION"
+      [
+        "MEN",
+        "MINION"
+      ]
     ],
     "culture": "MEN",
     "twilightCost": 3,
@@ -84882,8 +85098,10 @@
     "type": "POSSESSION",
     "subtype": "HAND-WEAPON",
     "attachedTo": [
-      "MEN",
-      "MINION"
+      [
+        "MEN",
+        "MINION"
+      ]
     ],
     "phases": [
       "SKIRMISH"
@@ -85310,7 +85528,10 @@
     "kind": "FREE_PEOPLE",
     "type": "CONDITION",
     "attachedTo": [
-      "COMPANION"
+      [
+        "RING-BEARER",
+        "COMPANION"
+      ]
     ],
     "culture": "MEN",
     "twilightCost": 1,
@@ -85483,8 +85704,10 @@
     "type": "POSSESSION",
     "subtype": "ARMOR",
     "attachedTo": [
-      "ORC",
-      "MINION"
+      [
+        "ORC",
+        "MINION"
+      ]
     ],
     "phases": [
       "SKIRMISH"
@@ -86240,8 +86463,10 @@
     "type": "POSSESSION",
     "subtype": "HAND-WEAPON",
     "attachedTo": [
-      "ORC",
-      "MINION"
+      [
+        "ORC",
+        "MINION"
+      ]
     ],
     "culture": "ORC",
     "twilightCost": 2,
@@ -86326,8 +86551,9 @@
     "type": "POSSESSION",
     "subtype": "HAND-WEAPON",
     "attachedTo": [
-      "ORC",
-      "ORC"
+      [
+        "ORC"
+      ]
     ],
     "culture": "ORC",
     "twilightCost": 2,
@@ -87151,8 +87377,10 @@
     "kind": "FREE_PEOPLE",
     "type": "CONDITION",
     "attachedTo": [
-      "ROHAN",
-      "MAN"
+      [
+        "MAN",
+        "ROHAN"
+      ]
     ],
     "phases": [
       "ASSIGNMENT"
@@ -87238,8 +87466,10 @@
     "type": "POSSESSION",
     "subtype": "RANGED-WEAPON",
     "attachedTo": [
-      "ROHAN",
-      "MAN"
+      [
+        "MAN",
+        "ROHAN"
+      ]
     ],
     "phases": [
       "ARCHERY"
@@ -87327,8 +87557,10 @@
     "type": "POSSESSION",
     "subtype": "HAND-WEAPON",
     "attachedTo": [
-      "ROHAN",
-      "MAN"
+      [
+        "MAN",
+        "ROHAN"
+      ]
     ],
     "culture": "ROHAN",
     "twilightCost": 1,
@@ -87452,8 +87684,10 @@
     "type": "POSSESSION",
     "subtype": "MOUNT",
     "attachedTo": [
-      "ROHAN",
-      "MAN"
+      [
+        "MAN",
+        "ROHAN"
+      ]
     ],
     "culture": "ROHAN",
     "twilightCost": 2,
@@ -87843,7 +88077,9 @@
     "kind": "FREE_PEOPLE",
     "type": "CONDITION",
     "attachedTo": [
-      "HOBBIT"
+      [
+        "HOBBIT"
+      ]
     ],
     "culture": "SHIRE",
     "twilightCost": 4,
@@ -87885,7 +88121,9 @@
     "type": "POSSESSION",
     "subtype": "HAND-WEAPON",
     "attachedTo": [
-      "HOBBIT"
+      [
+        "HOBBIT"
+      ]
     ],
     "culture": "SHIRE",
     "twilightCost": 1,
@@ -88107,7 +88345,9 @@
     "type": "POSSESSION",
     "subtype": "BOX",
     "attachedTo": [
-      "HOBBIT"
+      [
+        "HOBBIT"
+      ]
     ],
     "phases": [
       "FELLOWSHIP",
@@ -88195,9 +88435,6 @@
     "kind": "FREE_PEOPLE",
     "type": "POSSESSION",
     "subtype": "HAND-WEAPON",
-    "attachedTo": [
-      "Bilbo, Frodo, or Sam"
-    ],
     "phases": [
       "MANEUVER"
     ],
@@ -88957,7 +89194,9 @@
     "type": "POSSESSION",
     "subtype": "RANGED-WEAPON",
     "attachedTo": [
-      "MINION"
+      [
+        "MINION"
+      ]
     ],
     "culture": "URUK-HAI",
     "twilightCost": 1,
@@ -89000,7 +89239,9 @@
     "type": "POSSESSION",
     "subtype": "HAND-WEAPON",
     "attachedTo": [
-      "MINION"
+      [
+        "MINION"
+      ]
     ],
     "culture": "URUK-HAI",
     "twilightCost": 1,
@@ -89172,7 +89413,9 @@
     "kind": "SHADOW",
     "type": "CONDITION",
     "attachedTo": [
-      "COMPANION"
+      [
+        "COMPANION"
+      ]
     ],
     "culture": "URUK-HAI",
     "twilightCost": 2,
@@ -90489,7 +90732,9 @@
     "type": "POSSESSION",
     "subtype": "ARMOR",
     "attachedTo": [
-      "DWARF"
+      [
+        "DWARF"
+      ]
     ],
     "phases": [
       "SKIRMISH"
@@ -90614,7 +90859,9 @@
     "type": "POSSESSION",
     "subtype": "BRACERS",
     "attachedTo": [
-      "DWARF"
+      [
+        "DWARF"
+      ]
     ],
     "phases": [
       "RESPONSE"
@@ -91118,9 +91365,6 @@
     "kind": "FREE_PEOPLE",
     "type": "POSSESSION",
     "subtype": "HAND-WEAPON",
-    "attachedTo": [
-      "Arwen or Elrond"
-    ],
     "culture": "ELVEN",
     "twilightCost": 1,
     "strength": 2,
@@ -91161,9 +91405,6 @@
     "kind": "FREE_PEOPLE",
     "type": "POSSESSION",
     "subtype": "HAND-WEAPON",
-    "attachedTo": [
-      "Legolas"
-    ],
     "culture": "ELVEN",
     "twilightCost": 1,
     "strength": 1,
@@ -91554,7 +91795,9 @@
     "kind": "FREE_PEOPLE",
     "type": "POSSESSION",
     "attachedTo": [
-      "Gandalf"
+      [
+        "GANDALF"
+      ]
     ],
     "phases": [
       "REGROUP"
@@ -91727,7 +91970,9 @@
     "kind": "FREE_PEOPLE",
     "type": "CONDITION",
     "attachedTo": [
-      "COMPANION"
+      [
+        "COMPANION"
+      ]
     ],
     "phases": [
       "RESPONSE"
@@ -92050,7 +92295,9 @@
     "kind": "SHADOW",
     "type": "CONDITION",
     "attachedTo": [
-      "COMPANION"
+      [
+        "COMPANION"
+      ]
     ],
     "culture": "GOLLUM",
     "twilightCost": 0,
@@ -92090,9 +92337,6 @@
     "kind": "FREE_PEOPLE",
     "type": "POSSESSION",
     "subtype": "HAND-WEAPON",
-    "attachedTo": [
-      "Boromir"
-    ],
     "phases": [
       "SKIRMISH"
     ],
@@ -92359,9 +92603,6 @@
     "kind": "FREE_PEOPLE",
     "type": "POSSESSION",
     "subtype": "HAND-WEAPON",
-    "attachedTo": [
-      "Faramir"
-    ],
     "culture": "GONDOR",
     "twilightCost": 2,
     "strength": 2,
@@ -92403,7 +92644,9 @@
     "type": "POSSESSION",
     "subtype": "MOUNT",
     "attachedTo": [
-      "KNIGHT"
+      [
+        "KNIGHT"
+      ]
     ],
     "culture": "GONDOR",
     "twilightCost": 1,
@@ -92571,8 +92814,10 @@
     "kind": "FREE_PEOPLE",
     "type": "CONDITION",
     "attachedTo": [
-      "GONDOR",
-      "COMPANION"
+      [
+        "GONDOR",
+        "COMPANION"
+      ]
     ],
     "phases": [
       "SKIRMISH"
@@ -93324,7 +93569,9 @@
     "type": "POSSESSION",
     "subtype": "MOUNT",
     "attachedTo": [
-      "The Mouth of Sauron"
+      [
+        "SAURON"
+      ]
     ],
     "phases": [
       "RESPONSE"
@@ -93490,8 +93737,10 @@
     "type": "POSSESSION",
     "subtype": "HAND-WEAPON",
     "attachedTo": [
-      "MEN",
-      "MINION"
+      [
+        "MEN",
+        "MINION"
+      ]
     ],
     "culture": "MEN",
     "twilightCost": 1,
@@ -93571,7 +93820,9 @@
     "type": "ARTIFACT",
     "subtype": "HAND-WEAPON",
     "attachedTo": [
-      "The Balrog"
+      [
+        "BALROG"
+      ]
     ],
     "culture": "MORIA",
     "twilightCost": 1,
@@ -93828,8 +94079,10 @@
     "type": "POSSESSION",
     "subtype": "HAND-WEAPON",
     "attachedTo": [
-      "ORC",
-      "TROLL"
+      [
+        "ORC",
+        "TROLL"
+      ]
     ],
     "culture": "ORC",
     "twilightCost": 2,
@@ -94250,8 +94503,10 @@
     "type": "POSSESSION",
     "subtype": "HAND-WEAPON",
     "attachedTo": [
-      "ORC",
-      "MINION"
+      [
+        "ORC",
+        "MINION"
+      ]
     ],
     "culture": "ORC",
     "twilightCost": 1,
@@ -94889,8 +95144,10 @@
     "type": "POSSESSION",
     "subtype": "ARMOR",
     "attachedTo": [
-      "ROHAN",
-      "MAN"
+      [
+        "MAN",
+        "ROHAN"
+      ]
     ],
     "culture": "ROHAN",
     "twilightCost": 0,
@@ -95978,7 +96235,9 @@
     "type": "POSSESSION",
     "subtype": "HAND-WEAPON",
     "attachedTo": [
-      "URUK-HAI"
+      [
+        "URUK-HAI"
+      ]
     ],
     "culture": "URUK-HAI",
     "twilightCost": 3,
@@ -96945,7 +97204,9 @@
     "type": "POSSESSION",
     "subtype": "HAND-WEAPON",
     "attachedTo": [
-      "MINION"
+      [
+        "MINION"
+      ]
     ],
     "culture": "URUK-HAI",
     "twilightCost": 1,
@@ -97395,7 +97656,9 @@
     "kind": "SHADOW",
     "type": "CONDITION",
     "attachedTo": [
-      "COMPANION"
+      [
+        "COMPANION"
+      ]
     ],
     "culture": "WRAITH",
     "twilightCost": 2,
@@ -98115,9 +98378,6 @@
     "kind": "FREE_PEOPLE",
     "type": "POSSESSION",
     "subtype": "HAND-WEAPON",
-    "attachedTo": [
-      "Faramir"
-    ],
     "culture": "GONDOR",
     "twilightCost": 2,
     "strength": 2,
@@ -98434,7 +98694,9 @@
     "type": "POSSESSION",
     "subtype": "MOUNT",
     "attachedTo": [
-      "DWARF"
+      [
+        "DWARF"
+      ]
     ],
     "phases": [
       "RESPONSE"
@@ -98777,7 +99039,9 @@
     "type": "POSSESSION",
     "subtype": "MOUNT",
     "attachedTo": [
-      "ELF"
+      [
+        "ELF"
+      ]
     ],
     "phases": [
       "SKIRMISH"
@@ -99877,7 +100141,9 @@
     "type": "ARTIFACT",
     "subtype": "PALANTÍR",
     "attachedTo": [
-      "Gandalf"
+      [
+        "GANDALF"
+      ]
     ],
     "culture": "GANDALF",
     "twilightCost": 0,
@@ -100053,7 +100319,9 @@
     "type": "POSSESSION",
     "subtype": "MOUNT",
     "attachedTo": [
-      "WIZARD"
+      [
+        "WIZARD"
+      ]
     ],
     "phases": [
       "SKIRMISH"
@@ -100346,9 +100614,6 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "POSSESSION",
-    "attachedTo": [
-      "Sméagol"
-    ],
     "culture": "GOLLUM",
     "twilightCost": 2,
     "vitality": 1,
@@ -100976,8 +101241,10 @@
     "type": "POSSESSION",
     "subtype": "MOUNT",
     "attachedTo": [
-      "GONDOR",
-      "COMPANION"
+      [
+        "GONDOR",
+        "COMPANION"
+      ]
     ],
     "phases": [
       "MANEUVER"
@@ -101420,8 +101687,10 @@
     "kind": "FREE_PEOPLE",
     "type": "POSSESSION",
     "attachedTo": [
-      "GONDOR",
-      "MAN"
+      [
+        "MAN",
+        "GONDOR"
+      ]
     ],
     "phases": [
       "FELLOWSHIP"
@@ -101739,7 +102008,9 @@
     "type": "ARTIFACT",
     "subtype": "STAFF",
     "attachedTo": [
-      "WIZARD"
+      [
+        "WIZARD"
+      ]
     ],
     "phases": [
       "REGROUP"
@@ -102631,8 +102902,10 @@
     "type": "POSSESSION",
     "subtype": "HAND-WEAPON",
     "attachedTo": [
-      "MEN",
-      "MINION"
+      [
+        "MEN",
+        "MINION"
+      ]
     ],
     "culture": "MEN",
     "twilightCost": 1,
@@ -103600,8 +103873,10 @@
     "type": "POSSESSION",
     "subtype": "MOUNT",
     "attachedTo": [
-      "ROHAN",
-      "MAN"
+      [
+        "MAN",
+        "ROHAN"
+      ]
     ],
     "culture": "ROHAN",
     "twilightCost": 2,
@@ -103977,8 +104252,10 @@
     "type": "POSSESSION",
     "subtype": "RANGED-WEAPON",
     "attachedTo": [
-      "ROHAN",
-      "MAN"
+      [
+        "MAN",
+        "ROHAN"
+      ]
     ],
     "culture": "ROHAN",
     "twilightCost": 1,
@@ -104020,8 +104297,10 @@
     "type": "POSSESSION",
     "subtype": "MOUNT",
     "attachedTo": [
-      "ROHAN",
-      "MAN"
+      [
+        "MAN",
+        "ROHAN"
+      ]
     ],
     "phases": [
       "SKIRMISH"
@@ -104201,7 +104480,9 @@
     "type": "ARTIFACT",
     "subtype": "HAND-WEAPON",
     "attachedTo": [
-      "Sauron"
+      [
+        "SAURON"
+      ]
     ],
     "culture": "SAURON",
     "twilightCost": 0,
@@ -104286,8 +104567,10 @@
     "type": "POSSESSION",
     "subtype": "MOUNT",
     "attachedTo": [
-      "RING-BOUND",
-      "HOBBIT"
+      [
+        "HOBBIT",
+        "RING-BOUND"
+      ]
     ],
     "phases": [
       "REGROUP"
@@ -104712,8 +104995,10 @@
     "type": "ARTIFACT",
     "subtype": "ARMOR",
     "attachedTo": [
-      "RING-BOUND",
-      "HOBBIT"
+      [
+        "HOBBIT",
+        "RING-BOUND"
+      ]
     ],
     "phases": [
       "SKIRMISH"
@@ -104801,8 +105086,10 @@
     "type": "ARTIFACT",
     "subtype": "PHIAL",
     "attachedTo": [
-      "RING-BOUND",
-      "HOBBIT"
+      [
+        "HOBBIT",
+        "RING-BOUND"
+      ]
     ],
     "culture": "SHIRE",
     "twilightCost": 0,
@@ -107312,7 +107599,9 @@
     "type": "POSSESSION",
     "subtype": "HAND-WEAPON",
     "attachedTo": [
-      "DWARF"
+      [
+        "DWARF"
+      ]
     ],
     "phases": [
       "SKIRMISH"
@@ -107399,7 +107688,9 @@
     "type": "POSSESSION",
     "subtype": "ARMOR",
     "attachedTo": [
-      "DWARF"
+      [
+        "DWARF"
+      ]
     ],
     "phases": [
       "SKIRMISH"
@@ -107579,7 +107870,9 @@
     "type": "POSSESSION",
     "subtype": "RANGED-WEAPON",
     "attachedTo": [
-      "ELF"
+      [
+        "ELF"
+      ]
     ],
     "culture": "ELVEN",
     "twilightCost": 1,
@@ -108093,7 +108386,9 @@
     "type": "POSSESSION",
     "subtype": "HAND-WEAPON",
     "attachedTo": [
-      "ELF"
+      [
+        "ELF"
+      ]
     ],
     "phases": [
       "SKIRMISH"
@@ -108703,9 +108998,6 @@
     "isUnique": false,
     "kind": "FREE_PEOPLE",
     "type": "CONDITION",
-    "attachedTo": [
-      "Sméagol"
-    ],
     "culture": "GOLLUM",
     "twilightCost": 1,
     "imageUrl": "/cards_visuals/o_15_039.jpg",
@@ -108787,7 +109079,9 @@
     "kind": "SHADOW",
     "type": "CONDITION",
     "attachedTo": [
-      "Gollum"
+      [
+        "GOLLUM"
+      ]
     ],
     "phases": [
       "SKIRMISH"
@@ -109437,9 +109731,6 @@
     "kind": "FREE_PEOPLE",
     "type": "POSSESSION",
     "subtype": "RANGED-WEAPON",
-    "attachedTo": [
-      "Aragorn"
-    ],
     "phases": [
       "ARCHERY"
     ],
@@ -109705,8 +109996,10 @@
     "type": "POSSESSION",
     "subtype": "HAND-WEAPON",
     "attachedTo": [
-      "GONDOR",
-      "MAN"
+      [
+        "MAN",
+        "GONDOR"
+      ]
     ],
     "phases": [
       "MANEUVER"
@@ -109976,8 +110269,10 @@
     "type": "POSSESSION",
     "subtype": "CLOAK",
     "attachedTo": [
-      "GONDOR",
-      "MAN"
+      [
+        "MAN",
+        "GONDOR"
+      ]
     ],
     "phases": [
       "SKIRMISH"
@@ -110488,8 +110783,10 @@
     "type": "POSSESSION",
     "subtype": "HAND-WEAPON",
     "attachedTo": [
-      "MEN",
-      "MAN"
+      [
+        "MAN",
+        "MEN"
+      ]
     ],
     "culture": "MEN",
     "twilightCost": 1,
@@ -110531,7 +110828,10 @@
     "kind": "FREE_PEOPLE",
     "type": "CONDITION",
     "attachedTo": [
-      "COMPANION"
+      [
+        "RING-BEARER",
+        "COMPANION"
+      ]
     ],
     "culture": "MEN",
     "twilightCost": 1,
@@ -110831,7 +111131,10 @@
     "kind": "FREE_PEOPLE",
     "type": "CONDITION",
     "attachedTo": [
-      "COMPANION"
+      [
+        "RING-BEARER",
+        "COMPANION"
+      ]
     ],
     "culture": "MEN",
     "twilightCost": 0,
@@ -111945,8 +112248,9 @@
     "type": "POSSESSION",
     "subtype": "HAND-WEAPON",
     "attachedTo": [
-      "ORC",
-      "ORC"
+      [
+        "ORC"
+      ]
     ],
     "culture": "ORC",
     "twilightCost": 1,
@@ -112363,8 +112667,10 @@
     "type": "POSSESSION",
     "subtype": "HAND-WEAPON",
     "attachedTo": [
-      "ROHAN",
-      "MAN"
+      [
+        "MAN",
+        "ROHAN"
+      ]
     ],
     "phases": [
       "SKIRMISH"
@@ -112592,8 +112898,10 @@
     "type": "POSSESSION",
     "subtype": "MOUNT",
     "attachedTo": [
-      "ROHAN",
-      "MAN"
+      [
+        "MAN",
+        "ROHAN"
+      ]
     ],
     "phases": [
       "SKIRMISH"
@@ -112762,8 +113070,10 @@
     "type": "POSSESSION",
     "subtype": "MOUNT",
     "attachedTo": [
-      "ROHAN",
-      "MAN"
+      [
+        "MAN",
+        "ROHAN"
+      ]
     ],
     "culture": "ROHAN",
     "twilightCost": 1,
@@ -112882,8 +113192,10 @@
     "type": "POSSESSION",
     "subtype": "HAND-WEAPON",
     "attachedTo": [
-      "ROHAN",
-      "MAN"
+      [
+        "MAN",
+        "ROHAN"
+      ]
     ],
     "culture": "ROHAN",
     "twilightCost": 1,
@@ -113048,8 +113360,10 @@
     "type": "POSSESSION",
     "subtype": "HAND-WEAPON",
     "attachedTo": [
-      "ROHAN",
-      "MAN"
+      [
+        "MAN",
+        "ROHAN"
+      ]
     ],
     "culture": "ROHAN",
     "twilightCost": 1,
@@ -113093,8 +113407,10 @@
     "type": "POSSESSION",
     "subtype": "SHIELD",
     "attachedTo": [
-      "ROHAN",
-      "MAN"
+      [
+        "MAN",
+        "ROHAN"
+      ]
     ],
     "phases": [
       "REGROUP"
@@ -113269,7 +113585,9 @@
     "type": "POSSESSION",
     "subtype": "HAND-WEAPON",
     "attachedTo": [
-      "HOBBIT"
+      [
+        "HOBBIT"
+      ]
     ],
     "culture": "SHIRE",
     "twilightCost": 1,
@@ -114046,7 +114364,9 @@
     "type": "POSSESSION",
     "subtype": "HAND-WEAPON",
     "attachedTo": [
-      "URUK-HAI"
+      [
+        "URUK-HAI"
+      ]
     ],
     "culture": "URUK-HAI",
     "twilightCost": 3,
@@ -114478,7 +114798,9 @@
     "type": "POSSESSION",
     "subtype": "HAND-WEAPON",
     "attachedTo": [
-      "URUK-HAI"
+      [
+        "URUK-HAI"
+      ]
     ],
     "culture": "URUK-HAI",
     "twilightCost": 2,
@@ -115853,7 +116175,9 @@
     "type": "POSSESSION",
     "subtype": "ARMOR",
     "attachedTo": [
-      "DWARF"
+      [
+        "DWARF"
+      ]
     ],
     "phases": [
       "REGROUP"
@@ -115971,7 +116295,9 @@
     "type": "ARTIFACT",
     "subtype": "RING",
     "attachedTo": [
-      "DWARF"
+      [
+        "DWARF"
+      ]
     ],
     "phases": [
       "REGROUP"
@@ -116561,7 +116887,9 @@
     "type": "POSSESSION",
     "subtype": "HAND-WEAPON",
     "attachedTo": [
-      "Gandalf"
+      [
+        "GANDALF"
+      ]
     ],
     "culture": "GANDALF",
     "twilightCost": 2,
@@ -116805,8 +117133,10 @@
     "type": "POSSESSION",
     "subtype": "MOUNT",
     "attachedTo": [
-      "GANDALF",
-      "WIZARD"
+      [
+        "WIZARD",
+        "GANDALF"
+      ]
     ],
     "phases": [
       "FELLOWSHIP"
@@ -116940,9 +117270,6 @@
     "kind": "FREE_PEOPLE",
     "type": "ARTIFACT",
     "subtype": "HAND-WEAPON",
-    "attachedTo": [
-      "Aragorn"
-    ],
     "culture": "GONDOR",
     "twilightCost": 3,
     "strength": 2,
@@ -117027,8 +117354,10 @@
     "type": "POSSESSION",
     "subtype": "RANGED-WEAPON",
     "attachedTo": [
-      "GONDOR",
-      "RANGER"
+      [
+        "GONDOR",
+        "RANGER"
+      ]
     ],
     "phases": [
       "SKIRMISH"
@@ -117114,9 +117443,6 @@
     "kind": "FREE_PEOPLE",
     "type": "ARTIFACT",
     "subtype": "HAND-WEAPON",
-    "attachedTo": [
-      "Elendil or Isildur"
-    ],
     "culture": "GONDOR",
     "twilightCost": 3,
     "strength": 3,
@@ -117237,8 +117563,10 @@
     "kind": "FREE_PEOPLE",
     "type": "CONDITION",
     "attachedTo": [
-      "GONDOR",
-      "COMPANION"
+      [
+        "GONDOR",
+        "COMPANION"
+      ]
     ],
     "culture": "GONDOR",
     "twilightCost": 1,
@@ -117474,8 +117802,10 @@
     "type": "POSSESSION",
     "subtype": "MOUNT",
     "attachedTo": [
-      "MEN",
-      "MAN"
+      [
+        "MAN",
+        "MEN"
+      ]
     ],
     "culture": "MEN",
     "twilightCost": 3,
@@ -117644,8 +117974,10 @@
     "type": "POSSESSION",
     "subtype": "HAND-WEAPON",
     "attachedTo": [
-      "MEN",
-      "MAN"
+      [
+        "MAN",
+        "MEN"
+      ]
     ],
     "phases": [
       "RESPONSE"
@@ -117773,8 +118105,10 @@
     "type": "POSSESSION",
     "subtype": "HAND-WEAPON",
     "attachedTo": [
-      "MEN",
-      "MINION"
+      [
+        "MEN",
+        "MINION"
+      ]
     ],
     "culture": "MEN",
     "twilightCost": 1,
@@ -119580,8 +119914,9 @@
     "type": "POSSESSION",
     "subtype": "MOUNT",
     "attachedTo": [
-      "ORC",
-      "ORC"
+      [
+        "ORC"
+      ]
     ],
     "culture": "ORC",
     "twilightCost": 3,
@@ -119625,8 +119960,9 @@
     "type": "POSSESSION",
     "subtype": "ARMOR",
     "attachedTo": [
-      "ORC",
-      "ORC"
+      [
+        "ORC"
+      ]
     ],
     "culture": "ORC",
     "twilightCost": 1,
@@ -119669,8 +120005,9 @@
     "type": "POSSESSION",
     "subtype": "MOUNT",
     "attachedTo": [
-      "ORC",
-      "ORC"
+      [
+        "ORC"
+      ]
     ],
     "culture": "ORC",
     "twilightCost": 2,
@@ -119714,8 +120051,9 @@
     "type": "POSSESSION",
     "subtype": "MOUNT",
     "attachedTo": [
-      "ORC",
-      "ORC"
+      [
+        "ORC"
+      ]
     ],
     "culture": "ORC",
     "twilightCost": 3,
@@ -120559,7 +120897,9 @@
     "type": "POSSESSION",
     "subtype": "HAND-WEAPON",
     "attachedTo": [
-      "URUK-HAI"
+      [
+        "URUK-HAI"
+      ]
     ],
     "culture": "URUK-HAI",
     "twilightCost": 1,
@@ -120774,7 +121114,9 @@
     "type": "POSSESSION",
     "subtype": "HAND-WEAPON",
     "attachedTo": [
-      "URUK-HAI"
+      [
+        "URUK-HAI"
+      ]
     ],
     "culture": "URUK-HAI",
     "twilightCost": 0,
@@ -122074,8 +122416,10 @@
     "type": "POSSESSION",
     "subtype": "RANGED-WEAPON",
     "attachedTo": [
-      "ELVEN",
-      "COMPANION"
+      [
+        "ELVEN",
+        "COMPANION"
+      ]
     ],
     "phases": [
       "ARCHERY"
@@ -122121,8 +122465,10 @@
     "type": "POSSESSION",
     "subtype": "HAND-WEAPON",
     "attachedTo": [
-      "ELVEN",
-      "COMPANION"
+      [
+        "ELVEN",
+        "COMPANION"
+      ]
     ],
     "phases": [
       "MANEUVER"
@@ -122248,8 +122594,10 @@
     "type": "POSSESSION",
     "subtype": "HAND-WEAPON-SHIELD",
     "attachedTo": [
-      "ELVEN",
-      "COMPANION"
+      [
+        "ELVEN",
+        "COMPANION"
+      ]
     ],
     "culture": "ELVEN",
     "twilightCost": 2,
@@ -122513,7 +122861,9 @@
     "kind": "FREE_PEOPLE",
     "type": "POSSESSION",
     "attachedTo": [
-      "COMPANION"
+      [
+        "COMPANION"
+      ]
     ],
     "phases": [
       "REGROUP"
@@ -122694,8 +123044,10 @@
     "type": "POSSESSION",
     "subtype": "HAND-WEAPON",
     "attachedTo": [
-      "GANDALF",
-      "MAN"
+      [
+        "MAN",
+        "GANDALF"
+      ]
     ],
     "culture": "GANDALF",
     "twilightCost": 2,
@@ -123035,8 +123387,10 @@
     "kind": "FREE_PEOPLE",
     "type": "POSSESSION",
     "attachedTo": [
-      "GANDALF",
-      "WIZARD"
+      [
+        "WIZARD",
+        "GANDALF"
+      ]
     ],
     "culture": "GANDALF",
     "twilightCost": 1,
@@ -123575,8 +123929,10 @@
     "type": "POSSESSION",
     "subtype": "ARMOR",
     "attachedTo": [
-      "GONDOR",
-      "MAN"
+      [
+        "MAN",
+        "GONDOR"
+      ]
     ],
     "culture": "GONDOR",
     "twilightCost": 1,
@@ -123758,8 +124114,10 @@
     "type": "POSSESSION",
     "subtype": "HAND-WEAPON",
     "attachedTo": [
-      "GONDOR",
-      "MAN"
+      [
+        "MAN",
+        "GONDOR"
+      ]
     ],
     "culture": "GONDOR",
     "twilightCost": 1,
@@ -123843,8 +124201,10 @@
     "type": "POSSESSION",
     "subtype": "RANGED-WEAPON",
     "attachedTo": [
-      "GONDOR",
-      "RANGER"
+      [
+        "GONDOR",
+        "RANGER"
+      ]
     ],
     "phases": [
       "ARCHERY"
@@ -124186,8 +124546,10 @@
     "kind": "FREE_PEOPLE",
     "type": "POSSESSION",
     "attachedTo": [
-      "GONDOR",
-      "MAN"
+      [
+        "MAN",
+        "GONDOR"
+      ]
     ],
     "phases": [
       "MANEUVER"
@@ -124279,8 +124641,10 @@
     "kind": "FREE_PEOPLE",
     "type": "CONDITION",
     "attachedTo": [
-      "GONDOR",
-      "MAN"
+      [
+        "MAN",
+        "GONDOR"
+      ]
     ],
     "phases": [
       "MANEUVER",
@@ -124368,8 +124732,10 @@
     "type": "POSSESSION",
     "subtype": "SHIELD",
     "attachedTo": [
-      "GONDOR",
-      "MAN"
+      [
+        "MAN",
+        "GONDOR"
+      ]
     ],
     "phases": [
       "REGROUP"
@@ -124502,8 +124868,10 @@
     "type": "POSSESSION",
     "subtype": "HAND-WEAPON",
     "attachedTo": [
-      "MEN",
-      "MINION"
+      [
+        "MEN",
+        "MINION"
+      ]
     ],
     "phases": [
       "SKIRMISH"
@@ -124549,8 +124917,10 @@
     "type": "POSSESSION",
     "subtype": "RANGED-WEAPON",
     "attachedTo": [
-      "MEN",
-      "MINION"
+      [
+        "MEN",
+        "MINION"
+      ]
     ],
     "culture": "MEN",
     "twilightCost": 2,
@@ -124593,8 +124963,10 @@
     "type": "POSSESSION",
     "subtype": "HAND-WEAPON",
     "attachedTo": [
-      "MEN",
-      "MINION"
+      [
+        "MEN",
+        "MINION"
+      ]
     ],
     "culture": "MEN",
     "twilightCost": 2,
@@ -124637,8 +125009,10 @@
     "type": "POSSESSION",
     "subtype": "HAND-WEAPON",
     "attachedTo": [
-      "MEN",
-      "MINION"
+      [
+        "MEN",
+        "MINION"
+      ]
     ],
     "phases": [
       "SHADOW"
@@ -124684,8 +125058,10 @@
     "type": "POSSESSION",
     "subtype": "HAND-WEAPON",
     "attachedTo": [
-      "MEN",
-      "MINION"
+      [
+        "MEN",
+        "MINION"
+      ]
     ],
     "culture": "MEN",
     "twilightCost": 2,
@@ -124902,8 +125278,10 @@
     "type": "POSSESSION",
     "subtype": "HAND-WEAPON",
     "attachedTo": [
-      "MEN",
-      "MINION"
+      [
+        "MEN",
+        "MINION"
+      ]
     ],
     "culture": "MEN",
     "twilightCost": 0,
@@ -125248,8 +125626,9 @@
     "type": "POSSESSION",
     "subtype": "HAND-WEAPON",
     "attachedTo": [
-      "ORC",
-      "ORC"
+      [
+        "ORC"
+      ]
     ],
     "culture": "ORC",
     "twilightCost": 1,
@@ -125639,8 +126018,9 @@
     "type": "POSSESSION",
     "subtype": "MOUNT",
     "attachedTo": [
-      "ORC",
-      "ORC"
+      [
+        "ORC"
+      ]
     ],
     "culture": "ORC",
     "twilightCost": 1,
@@ -126025,8 +126405,10 @@
     "type": "POSSESSION",
     "subtype": "RANGED-WEAPON",
     "attachedTo": [
-      "ROHAN",
-      "MAN"
+      [
+        "MAN",
+        "ROHAN"
+      ]
     ],
     "phases": [
       "ARCHERY"
@@ -126070,8 +126452,10 @@
     "kind": "FREE_PEOPLE",
     "type": "POSSESSION",
     "attachedTo": [
-      "ROHAN",
-      "MAN"
+      [
+        "MAN",
+        "ROHAN"
+      ]
     ],
     "phases": [
       "FELLOWSHIP",
@@ -126112,8 +126496,10 @@
     "type": "POSSESSION",
     "subtype": "SHIELD",
     "attachedTo": [
-      "ROHAN",
-      "MAN"
+      [
+        "MAN",
+        "ROHAN"
+      ]
     ],
     "phases": [
       "SKIRMISH",
@@ -126244,8 +126630,10 @@
     "kind": "FREE_PEOPLE",
     "type": "POSSESSION",
     "attachedTo": [
-      "ROHAN",
-      "MAN"
+      [
+        "MAN",
+        "ROHAN"
+      ]
     ],
     "phases": [
       "SKIRMISH"
@@ -126793,9 +127181,6 @@
     "kind": "FREE_PEOPLE",
     "type": "POSSESSION",
     "subtype": "HAND-WEAPON",
-    "attachedTo": [
-      "Bilbo or Frodo"
-    ],
     "phases": [
       "REGROUP"
     ],
@@ -126926,7 +127311,9 @@
     "kind": "SHADOW",
     "type": "CONDITION",
     "attachedTo": [
-      "MINION"
+      [
+        "MINION"
+      ]
     ],
     "culture": "URUK-HAI",
     "twilightCost": 0,
@@ -127056,7 +127443,9 @@
     "type": "POSSESSION",
     "subtype": "RANGED-WEAPON",
     "attachedTo": [
-      "URUK-HAI"
+      [
+        "URUK-HAI"
+      ]
     ],
     "phases": [
       "ARCHERY"
@@ -127783,8 +128172,10 @@
     "kind": "FREE_PEOPLE",
     "type": "CONDITION",
     "attachedTo": [
-      "DWARVEN",
-      "COMPANION"
+      [
+        "DWARVEN",
+        "COMPANION"
+      ]
     ],
     "culture": "DWARVEN",
     "twilightCost": 1,
@@ -127861,8 +128252,10 @@
     "kind": "FREE_PEOPLE",
     "type": "CONDITION",
     "attachedTo": [
-      "ELVEN",
-      "COMPANION"
+      [
+        "ELVEN",
+        "COMPANION"
+      ]
     ],
     "culture": "ELVEN",
     "twilightCost": 0,
@@ -128050,7 +128443,9 @@
     "kind": "FREE_PEOPLE",
     "type": "CONDITION",
     "attachedTo": [
-      "COMPANION"
+      [
+        "COMPANION"
+      ]
     ],
     "culture": "GANDALF",
     "twilightCost": 2,
@@ -128276,8 +128671,10 @@
     "kind": "FREE_PEOPLE",
     "type": "CONDITION",
     "attachedTo": [
-      "GONDOR",
-      "MAN"
+      [
+        "MAN",
+        "GONDOR"
+      ]
     ],
     "culture": "GONDOR",
     "twilightCost": 2,
@@ -128319,7 +128716,9 @@
     "kind": "FREE_PEOPLE",
     "type": "CONDITION",
     "attachedTo": [
-      "COMPANION"
+      [
+        "COMPANION"
+      ]
     ],
     "culture": "GONDOR",
     "twilightCost": 1,
@@ -128719,8 +129118,10 @@
     "kind": "FREE_PEOPLE",
     "type": "CONDITION",
     "attachedTo": [
-      "ROHAN",
-      "MAN"
+      [
+        "MAN",
+        "ROHAN"
+      ]
     ],
     "culture": "ROHAN",
     "twilightCost": 2,
@@ -129049,8 +129450,10 @@
     "kind": "FREE_PEOPLE",
     "type": "CONDITION",
     "attachedTo": [
-      "SHIRE",
-      "COMPANION"
+      [
+        "SHIRE",
+        "COMPANION"
+      ]
     ],
     "culture": "SHIRE",
     "twilightCost": 1,
@@ -129181,7 +129584,10 @@
     "kind": "SHADOW",
     "type": "CONDITION",
     "attachedTo": [
-      "MINION"
+      [
+        "WRAITH",
+        "MINION"
+      ]
     ],
     "culture": "WRAITH",
     "twilightCost": 2,

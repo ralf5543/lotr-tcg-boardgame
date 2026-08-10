@@ -60,7 +60,14 @@ const PLAYER_0_SITES_IDS = [
     '11S250',
 ];
 
-const PLAYER_0_FREE_PEOPLE: string[] = [
+const PLAYER_0_FREE_PEOPLE: string[] = ['12R42', '1C299', '1R302', '10R72', '15U129', '4C283', '1R45'];
+
+const PLAYER_0_SHADOW: string[] = [
+    '11R194',
+    '11R194',
+];
+
+/*const PLAYER_0_FREE_PEOPLE: string[] = [
     '0P25',
     '1C84',
     '7R112',
@@ -129,7 +136,7 @@ const PLAYER_0_SHADOW: string[] = [
     '3R66',
     '1R143',
 ];
-
+*/
 const PLAYER_0_FULL_DECK = [...PLAYER_0_FREE_PEOPLE, ...PLAYER_0_SHADOW];
 
 const PLAYER_1_FREE_PEOPLE: string[] = ['0P25'];

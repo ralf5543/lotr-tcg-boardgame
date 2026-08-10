@@ -175,8 +175,23 @@ export const commonMoves = {
         ];
 
         const targetCharacter = allPossibleTargets.find(
-            (c) => c.id === targetId
+            (c: any) =>
+                c.id === targetId ||
+                c.instanceId === targetId ||
+                c.uuid === targetId
         );
+
+        if (!targetCharacter) {
+            console.warn(
+                `❌ [moves.attachCard] Cible ${targetId} introuvable parmi :`,
+                allPossibleTargets.map((c: any) => ({
+                    id: c.id,
+                    instanceId: c.instanceId,
+                    title: c.title,
+                }))
+            );
+            return 'INVALID_MOVE';
+        }
 
         if (!targetCharacter) {
             console.warn(
@@ -395,7 +410,11 @@ export const commonMoves = {
         G.statusMessage = `${player.profile?.name || `Joueur ${actingPlayerId}`} a défaussé ${discarded.title || discarded.name}.`;
 
         if (player.hand.length <= 8) {
-            commonMoves.confirmHandRefill({ G, events, playerID });
+            commonMoves.confirmHandRefill({
+                G,
+                events,
+                playerID,
+            } as LotrMoveContext);
         }
     },
 
@@ -825,9 +844,6 @@ export const commonMoves = {
         const sourceTitle = sourceHost.title || sourceHost.name || 'son hôte';
         const targetTitle = targetHost.title || targetHost.name || 'sa cible';
 
-        console.log(
-            `🔀 [moves.transferAttachment] ${attachmentTitle} transféré de ${sourceTitle} à ${targetTitle}.`
-        );
         G.statusMessage = `${attachmentTitle} est transféré de ${sourceTitle} vers ${targetTitle} (Coût : ${cost} Crépuscule).`;
     },
 };
