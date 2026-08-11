@@ -77,6 +77,9 @@
     "isUnique": false,
     "kind": "SITE",
     "type": "SITE",
+    "keywords": [
+      "UNDERGROUND"
+    ],
     "phases": [
       "MANEUVER"
     ],
@@ -509,6 +512,9 @@
     "isUnique": false,
     "kind": "SITE",
     "type": "SITE",
+    "keywords": [
+      "FOREST"
+    ],
     "twilightCost": 1,
     "siteNumber": 2,
     "siteArrow": "Left",
@@ -543,6 +549,9 @@
     "isUnique": false,
     "kind": "SITE",
     "type": "SITE",
+    "keywords": [
+      "RIVER"
+    ],
     "twilightCost": 1,
     "siteNumber": 2,
     "siteArrow": "Left",
@@ -577,6 +586,9 @@
     "isUnique": false,
     "kind": "SITE",
     "type": "SITE",
+    "keywords": [
+      "PLAINS"
+    ],
     "phases": [
       "SKIRMISH"
     ],
@@ -614,6 +626,9 @@
     "isUnique": false,
     "kind": "SITE",
     "type": "SITE",
+    "keywords": [
+      "MARSH"
+    ],
     "twilightCost": 1,
     "siteNumber": 2,
     "siteArrow": "Left",
@@ -648,6 +663,9 @@
     "isUnique": false,
     "kind": "SITE",
     "type": "SITE",
+    "keywords": [
+      "PLAINS"
+    ],
     "twilightCost": 1,
     "siteNumber": 2,
     "siteArrow": "Left",
@@ -682,6 +700,9 @@
     "isUnique": false,
     "kind": "SITE",
     "type": "SITE",
+    "keywords": [
+      "FOREST"
+    ],
     "twilightCost": 1,
     "siteNumber": 2,
     "siteArrow": "Left",
@@ -818,6 +839,9 @@
     "isUnique": false,
     "kind": "SITE",
     "type": "SITE",
+    "keywords": [
+      "RIVER"
+    ],
     "twilightCost": 0,
     "siteNumber": 3,
     "siteArrow": "Right",
@@ -963,6 +987,9 @@
     "isUnique": false,
     "kind": "SITE",
     "type": "SITE",
+    "keywords": [
+      "FOREST"
+    ],
     "twilightCost": 0,
     "siteNumber": 3,
     "siteArrow": "Right",
@@ -997,6 +1024,9 @@
     "isUnique": false,
     "kind": "SITE",
     "type": "SITE",
+    "keywords": [
+      "UNDERGROUND"
+    ],
     "phases": [
       "MANEUVER"
     ],
@@ -1034,6 +1064,9 @@
     "isUnique": false,
     "kind": "SITE",
     "type": "SITE",
+    "keywords": [
+      "UNDERGROUND"
+    ],
     "twilightCost": 2,
     "siteNumber": 4,
     "siteArrow": "Right",
@@ -1068,6 +1101,9 @@
     "isUnique": false,
     "kind": "SITE",
     "type": "SITE",
+    "keywords": [
+      "UNDERGROUND"
+    ],
     "phases": [
       "SHADOW"
     ],
@@ -1105,6 +1141,9 @@
     "isUnique": false,
     "kind": "SITE",
     "type": "SITE",
+    "keywords": [
+      "MARSH"
+    ],
     "twilightCost": 3,
     "siteNumber": 4,
     "siteArrow": "Right",
@@ -1139,6 +1178,9 @@
     "isUnique": false,
     "kind": "SITE",
     "type": "SITE",
+    "keywords": [
+      "UNDERGROUND"
+    ],
     "twilightCost": 2,
     "siteNumber": 4,
     "siteArrow": "Right",
@@ -1173,6 +1215,9 @@
     "isUnique": false,
     "kind": "SITE",
     "type": "SITE",
+    "keywords": [
+      "MOUNTAIN"
+    ],
     "phases": [
       "SHADOW"
     ],
@@ -1210,6 +1255,9 @@
     "isUnique": false,
     "kind": "SITE",
     "type": "SITE",
+    "keywords": [
+      "UNDERGROUND"
+    ],
     "phases": [
       "SHADOW"
     ],
@@ -1318,6 +1366,9 @@
     "isUnique": false,
     "kind": "SITE",
     "type": "SITE",
+    "keywords": [
+      "FOREST"
+    ],
     "twilightCost": 3,
     "siteNumber": 6,
     "siteArrow": "Left",
@@ -1352,6 +1403,9 @@
     "isUnique": false,
     "kind": "SITE",
     "type": "SITE",
+    "keywords": [
+      "RIVER"
+    ],
     "twilightCost": 6,
     "siteNumber": 7,
     "siteArrow": "Right",
@@ -1386,6 +1440,10 @@
     "isUnique": false,
     "kind": "SITE",
     "type": "SITE",
+    "keywords": [
+      "FOREST",
+      "RIVER"
+    ],
     "twilightCost": 6,
     "siteNumber": 7,
     "siteArrow": "Right",
@@ -1420,6 +1478,9 @@
     "isUnique": false,
     "kind": "SITE",
     "type": "SITE",
+    "keywords": [
+      "RIVER"
+    ],
     "twilightCost": 6,
     "siteNumber": 7,
     "siteArrow": "Right",
@@ -1454,6 +1515,9 @@
     "isUnique": false,
     "kind": "SITE",
     "type": "SITE",
+    "keywords": [
+      "RIVER"
+    ],
     "twilightCost": 6,
     "siteNumber": 8,
     "siteArrow": "Right",
@@ -1488,6 +1552,9 @@
     "isUnique": false,
     "kind": "SITE",
     "type": "SITE",
+    "keywords": [
+      "RIVER"
+    ],
     "twilightCost": 6,
     "siteNumber": 8,
     "siteArrow": "Right",
@@ -1522,6 +1589,9 @@
     "isUnique": false,
     "kind": "SITE",
     "type": "SITE",
+    "keywords": [
+      "RIVER"
+    ],
     "phases": [
       "FELLOWSHIP"
     ],
@@ -1559,6 +1629,9 @@
     "isUnique": false,
     "kind": "SITE",
     "type": "SITE",
+    "keywords": [
+      "RIVER"
+    ],
     "phases": [
       "SHADOW"
     ],
@@ -1701,6 +1774,9 @@
     "isUnique": false,
     "kind": "SITE",
     "type": "SITE",
+    "keywords": [
+      "RIVER"
+    ],
     "phases": [
       "SHADOW"
     ],
@@ -1775,6 +1851,9 @@
     "isUnique": false,
     "kind": "SITE",
     "type": "SITE",
+    "keywords": [
+      "FOREST"
+    ],
     "phases": [
       "FELLOWSHIP"
     ],
@@ -1849,6 +1928,9 @@
     "isUnique": false,
     "kind": "SITE",
     "type": "SITE",
+    "keywords": [
+      "UNDERGROUND"
+    ],
     "twilightCost": 4,
     "siteNumber": 4,
     "siteArrow": "Right",
@@ -1883,6 +1965,9 @@
     "isUnique": false,
     "kind": "SITE",
     "type": "SITE",
+    "keywords": [
+      "PLAINS"
+    ],
     "twilightCost": 3,
     "siteNumber": 4,
     "siteArrow": "Right",
@@ -1917,6 +2002,9 @@
     "isUnique": false,
     "kind": "SITE",
     "type": "SITE",
+    "keywords": [
+      "RIVER"
+    ],
     "twilightCost": 3,
     "siteNumber": 6,
     "siteArrow": "Left",
@@ -1951,6 +2039,9 @@
     "isUnique": false,
     "kind": "SITE",
     "type": "SITE",
+    "keywords": [
+      "FOREST"
+    ],
     "twilightCost": 3,
     "siteNumber": 6,
     "siteArrow": "Left",
@@ -2019,6 +2110,9 @@
     "isUnique": false,
     "kind": "SITE",
     "type": "SITE",
+    "keywords": [
+      "RIVER"
+    ],
     "twilightCost": 8,
     "siteNumber": 8,
     "siteArrow": "Right",
@@ -2053,6 +2147,9 @@
     "isUnique": false,
     "kind": "SITE",
     "type": "SITE",
+    "keywords": [
+      "RIVER"
+    ],
     "twilightCost": 6,
     "siteNumber": 7,
     "siteArrow": "Right",
@@ -2263,6 +2360,9 @@
     "isUnique": false,
     "kind": "SITE",
     "type": "SITE",
+    "keywords": [
+      "PLAINS"
+    ],
     "twilightCost": 0,
     "siteNumber": 1,
     "siteArrow": "Left",
@@ -2297,6 +2397,9 @@
     "isUnique": false,
     "kind": "SITE",
     "type": "SITE",
+    "keywords": [
+      "PLAINS"
+    ],
     "phases": [
       "FELLOWSHIP"
     ],
@@ -2334,6 +2437,9 @@
     "isUnique": false,
     "kind": "SITE",
     "type": "SITE",
+    "keywords": [
+      "PLAINS"
+    ],
     "phases": [
       "FELLOWSHIP"
     ],
@@ -2405,6 +2511,9 @@
     "isUnique": false,
     "kind": "SITE",
     "type": "SITE",
+    "keywords": [
+      "FOREST"
+    ],
     "twilightCost": 2,
     "siteNumber": 2,
     "siteArrow": "Left",
@@ -2439,6 +2548,9 @@
     "isUnique": false,
     "kind": "SITE",
     "type": "SITE",
+    "keywords": [
+      "PLAINS"
+    ],
     "phases": [
       "SHADOW"
     ],
@@ -2476,6 +2588,9 @@
     "isUnique": false,
     "kind": "SITE",
     "type": "SITE",
+    "keywords": [
+      "FOREST"
+    ],
     "phases": [
       "FELLOWSHIP"
     ],
@@ -2513,6 +2628,9 @@
     "isUnique": false,
     "kind": "SITE",
     "type": "SITE",
+    "keywords": [
+      "PLAINS"
+    ],
     "twilightCost": 1,
     "siteNumber": 2,
     "siteArrow": "Left",
@@ -2582,6 +2700,10 @@
     "isUnique": false,
     "kind": "SITE",
     "type": "SITE",
+    "keywords": [
+      "PLAINS",
+      "BATTLEGROUND"
+    ],
     "twilightCost": 1,
     "siteNumber": 2,
     "siteArrow": "Left",
@@ -2616,6 +2738,9 @@
     "isUnique": false,
     "kind": "SITE",
     "type": "SITE",
+    "keywords": [
+      "PLAINS"
+    ],
     "twilightCost": 3,
     "siteNumber": 2,
     "siteArrow": "Left",
@@ -2829,6 +2954,9 @@
     "isUnique": false,
     "kind": "SITE",
     "type": "SITE",
+    "keywords": [
+      "PLAINS"
+    ],
     "twilightCost": 1,
     "siteNumber": 3,
     "siteArrow": "Right",
@@ -2863,6 +2991,9 @@
     "isUnique": false,
     "kind": "SITE",
     "type": "SITE",
+    "keywords": [
+      "MOUNTAIN"
+    ],
     "twilightCost": 2,
     "siteNumber": 4,
     "siteArrow": "Right",
@@ -2897,6 +3028,9 @@
     "isUnique": false,
     "kind": "SITE",
     "type": "SITE",
+    "keywords": [
+      "PLAINS"
+    ],
     "twilightCost": 3,
     "siteNumber": 4,
     "siteArrow": "Right",
@@ -2931,6 +3065,9 @@
     "isUnique": false,
     "kind": "SITE",
     "type": "SITE",
+    "keywords": [
+      "MOUNTAIN"
+    ],
     "twilightCost": 3,
     "siteNumber": 4,
     "siteArrow": "Right",
@@ -2965,6 +3102,9 @@
     "isUnique": false,
     "kind": "SITE",
     "type": "SITE",
+    "keywords": [
+      "BATTLEGROUND"
+    ],
     "twilightCost": 3,
     "siteNumber": 4,
     "siteArrow": "Right",
@@ -3000,6 +3140,10 @@
     "isUnique": false,
     "kind": "SITE",
     "type": "SITE",
+    "keywords": [
+      "PLAINS",
+      "BATTLEGROUND"
+    ],
     "twilightCost": 6,
     "siteNumber": 5,
     "siteArrow": "Left",
@@ -3034,6 +3178,9 @@
     "isUnique": false,
     "kind": "SITE",
     "type": "SITE",
+    "keywords": [
+      "BATTLEGROUND"
+    ],
     "phases": [
       "SHADOW"
     ],
@@ -3072,6 +3219,9 @@
     "isUnique": false,
     "kind": "SITE",
     "type": "SITE",
+    "keywords": [
+      "BATTLEGROUND"
+    ],
     "twilightCost": 6,
     "siteNumber": 5,
     "siteArrow": "Left",
@@ -3107,6 +3257,9 @@
     "isUnique": false,
     "kind": "SITE",
     "type": "SITE",
+    "keywords": [
+      "BATTLEGROUND"
+    ],
     "twilightCost": 8,
     "siteNumber": 5,
     "siteArrow": "Left",
@@ -3142,6 +3295,9 @@
     "isUnique": false,
     "kind": "SITE",
     "type": "SITE",
+    "keywords": [
+      "BATTLEGROUND"
+    ],
     "twilightCost": 8,
     "siteNumber": 5,
     "siteArrow": "Left",
@@ -3177,6 +3333,9 @@
     "isUnique": false,
     "kind": "SITE",
     "type": "SITE",
+    "keywords": [
+      "UNDERGROUND"
+    ],
     "phases": [
       "MANEUVER"
     ],
@@ -3214,6 +3373,9 @@
     "isUnique": false,
     "kind": "SITE",
     "type": "SITE",
+    "keywords": [
+      "BATTLEGROUND"
+    ],
     "twilightCost": 3,
     "siteNumber": 6,
     "siteArrow": "Left",
@@ -3285,6 +3447,9 @@
     "isUnique": false,
     "kind": "SITE",
     "type": "SITE",
+    "keywords": [
+      "UNDERGROUND"
+    ],
     "twilightCost": 7,
     "siteNumber": 7,
     "siteArrow": "Right",
@@ -3319,6 +3484,9 @@
     "isUnique": false,
     "kind": "SITE",
     "type": "SITE",
+    "keywords": [
+      "BATTLEGROUND"
+    ],
     "twilightCost": 6,
     "siteNumber": 7,
     "siteArrow": "Right",
@@ -3460,6 +3628,9 @@
     "isUnique": false,
     "kind": "SITE",
     "type": "SITE",
+    "keywords": [
+      "BATTLEGROUND"
+    ],
     "twilightCost": 9,
     "siteNumber": 9,
     "siteArrow": "Left",
@@ -3495,6 +3666,9 @@
     "isUnique": false,
     "kind": "SITE",
     "type": "SITE",
+    "keywords": [
+      "BATTLEGROUND"
+    ],
     "phases": [
       "SHADOW"
     ],
@@ -3641,6 +3815,9 @@
     "isUnique": false,
     "kind": "SITE",
     "type": "SITE",
+    "keywords": [
+      "PLAINS"
+    ],
     "phases": [
       "RESPONSE"
     ],
@@ -3678,6 +3855,9 @@
     "isUnique": false,
     "kind": "SITE",
     "type": "SITE",
+    "keywords": [
+      "UNDERGROUND"
+    ],
     "twilightCost": 9,
     "siteNumber": 9,
     "siteArrow": "Left",
@@ -4181,6 +4361,9 @@
     "isUnique": false,
     "kind": "SITE",
     "type": "SITE",
+    "keywords": [
+      "PLAINS"
+    ],
     "twilightCost": 2,
     "siteNumber": 2,
     "siteArrow": "Left",
@@ -4215,6 +4398,9 @@
     "isUnique": false,
     "kind": "SITE",
     "type": "SITE",
+    "keywords": [
+      "PLAINS"
+    ],
     "twilightCost": 3,
     "siteNumber": 2,
     "siteArrow": "Left",
@@ -4360,6 +4546,9 @@
     "isUnique": false,
     "kind": "SITE",
     "type": "SITE",
+    "keywords": [
+      "RIVER"
+    ],
     "phases": [
       "SKIRMISH"
     ],
@@ -4434,6 +4623,9 @@
     "isUnique": false,
     "kind": "SITE",
     "type": "SITE",
+    "keywords": [
+      "PLAINS"
+    ],
     "phases": [
       "ARCHERY"
     ],
@@ -4505,6 +4697,9 @@
     "isUnique": false,
     "kind": "SITE",
     "type": "SITE",
+    "keywords": [
+      "PLAINS"
+    ],
     "twilightCost": 6,
     "siteNumber": 5,
     "siteArrow": "Left",
@@ -4777,6 +4972,9 @@
     "isUnique": false,
     "kind": "SITE",
     "type": "SITE",
+    "keywords": [
+      "RIVER"
+    ],
     "phases": [
       "SHADOW"
     ],
@@ -4814,6 +5012,9 @@
     "isUnique": false,
     "kind": "SITE",
     "type": "SITE",
+    "keywords": [
+      "PLAINS"
+    ],
     "phases": [
       "SHADOW"
     ],
@@ -4851,6 +5052,9 @@
     "isUnique": false,
     "kind": "SITE",
     "type": "SITE",
+    "keywords": [
+      "RIVER"
+    ],
     "phases": [
       "SHADOW"
     ],
@@ -5036,6 +5240,9 @@
     "isUnique": false,
     "kind": "SITE",
     "type": "SITE",
+    "keywords": [
+      "PLAINS"
+    ],
     "twilightCost": 9,
     "siteNumber": 9,
     "siteArrow": "Left",
@@ -5178,6 +5385,9 @@
     "isUnique": false,
     "kind": "SITE",
     "type": "SITE",
+    "keywords": [
+      "UNDERGROUND"
+    ],
     "phases": [
       "FELLOWSHIP"
     ],
@@ -5219,6 +5429,9 @@
     "isUnique": false,
     "kind": "SITE",
     "type": "SITE",
+    "keywords": [
+      "UNDERGROUND"
+    ],
     "phases": [
       "SHADOW"
     ],
@@ -5298,6 +5511,9 @@
     "isUnique": false,
     "kind": "SITE",
     "type": "SITE",
+    "keywords": [
+      "RIVER"
+    ],
     "phases": [
       "REGROUP"
     ],
@@ -5376,6 +5592,9 @@
     "isUnique": false,
     "kind": "SITE",
     "type": "SITE",
+    "keywords": [
+      "PLAINS"
+    ],
     "phases": [
       "SHADOW"
     ],
@@ -5484,6 +5703,9 @@
     "isUnique": false,
     "kind": "SITE",
     "type": "SITE",
+    "keywords": [
+      "RIVER"
+    ],
     "twilightCost": 0,
     "siteArrow": "Left",
     "imageUrl": "/cards_visuals/o_01_356.jpg",
@@ -5517,6 +5739,9 @@
     "isUnique": false,
     "kind": "SITE",
     "type": "SITE",
+    "keywords": [
+      "RIVER"
+    ],
     "twilightCost": 1,
     "siteArrow": "Left",
     "imageUrl": "/cards_visuals/o_01_353.jpg",
@@ -5550,6 +5775,9 @@
     "isUnique": false,
     "kind": "SITE",
     "type": "SITE",
+    "keywords": [
+      "MOUNTAIN"
+    ],
     "twilightCost": 2,
     "siteArrow": "Right",
     "imageUrl": "/cards_visuals/o_11_229.jpg",
@@ -5583,6 +5811,9 @@
     "isUnique": false,
     "kind": "SITE",
     "type": "SITE",
+    "keywords": [
+      "DWELLING"
+    ],
     "phases": [
       "SHADOW"
     ],
@@ -5619,6 +5850,9 @@
     "isUnique": false,
     "kind": "SITE",
     "type": "SITE",
+    "keywords": [
+      "FOREST"
+    ],
     "twilightCost": 2,
     "siteArrow": "Left",
     "imageUrl": "/cards_visuals/o_03_115.jpg",
@@ -5652,6 +5886,9 @@
     "isUnique": false,
     "kind": "SITE",
     "type": "SITE",
+    "keywords": [
+      "UNDERGROUND"
+    ],
     "twilightCost": 1,
     "siteArrow": "Left",
     "imageUrl": "/cards_visuals/o_04_355.jpg",
@@ -5685,6 +5922,9 @@
     "isUnique": false,
     "kind": "SITE",
     "type": "SITE",
+    "keywords": [
+      "UNDERGROUND"
+    ],
     "twilightCost": 2,
     "siteArrow": "Right",
     "imageUrl": "/cards_visuals/o_11_233.jpg",
@@ -5718,6 +5958,9 @@
     "isUnique": false,
     "kind": "SITE",
     "type": "SITE",
+    "keywords": [
+      "MOUNTAIN"
+    ],
     "twilightCost": 0,
     "siteArrow": "Left",
     "imageUrl": "/cards_visuals/o_11_234.jpg",
@@ -5751,6 +5994,9 @@
     "isUnique": false,
     "kind": "SITE",
     "type": "SITE",
+    "keywords": [
+      "MARSH"
+    ],
     "twilightCost": 3,
     "siteArrow": "Left",
     "imageUrl": "/cards_visuals/o_11_235.jpg",
@@ -5784,6 +6030,9 @@
     "isUnique": false,
     "kind": "SITE",
     "type": "SITE",
+    "keywords": [
+      "FOREST"
+    ],
     "twilightCost": 0,
     "siteArrow": "Right",
     "imageUrl": "/cards_visuals/o_01_320.jpg",
@@ -5817,6 +6066,9 @@
     "isUnique": false,
     "kind": "SITE",
     "type": "SITE",
+    "keywords": [
+      "PLAINS"
+    ],
     "phases": [
       "SKIRMISH"
     ],
@@ -5853,6 +6105,9 @@
     "isUnique": false,
     "kind": "SITE",
     "type": "SITE",
+    "keywords": [
+      "MARSH"
+    ],
     "phases": [
       "SHADOW"
     ],
@@ -5889,6 +6144,9 @@
     "isUnique": false,
     "kind": "SITE",
     "type": "SITE",
+    "keywords": [
+      "FOREST"
+    ],
     "twilightCost": 0,
     "siteArrow": "Right",
     "imageUrl": "/cards_visuals/o_11_239.jpg",
@@ -5922,6 +6180,9 @@
     "isUnique": false,
     "kind": "SITE",
     "type": "SITE",
+    "keywords": [
+      "PLAINS"
+    ],
     "twilightCost": 2,
     "siteArrow": "Left",
     "imageUrl": "/cards_visuals/o_11_240.jpg",
@@ -5955,6 +6216,9 @@
     "isUnique": false,
     "kind": "SITE",
     "type": "SITE",
+    "keywords": [
+      "BATTLEGROUND"
+    ],
     "twilightCost": 0,
     "siteArrow": "Left",
     "imageUrl": "/cards_visuals/o_04_360.jpg",
@@ -5988,6 +6252,9 @@
     "isUnique": false,
     "kind": "SITE",
     "type": "SITE",
+    "keywords": [
+      "DWELLING"
+    ],
     "twilightCost": 3,
     "siteArrow": "Left",
     "imageUrl": "/cards_visuals/o_01_322.jpg",
@@ -6021,6 +6288,10 @@
     "isUnique": false,
     "kind": "SITE",
     "type": "SITE",
+    "keywords": [
+      "PLAINS",
+      "FIERCE"
+    ],
     "twilightCost": 3,
     "siteArrow": "Right",
     "imageUrl": "/cards_visuals/o_11_243.jpg",
@@ -6054,6 +6325,9 @@
     "isUnique": false,
     "kind": "SITE",
     "type": "SITE",
+    "keywords": [
+      "BATTLEGROUND"
+    ],
     "twilightCost": 3,
     "siteArrow": "Right",
     "imageUrl": "/cards_visuals/o_11_244.jpg",
@@ -6087,6 +6361,9 @@
     "isUnique": false,
     "kind": "SITE",
     "type": "SITE",
+    "keywords": [
+      "BATTLEGROUND"
+    ],
     "twilightCost": 2,
     "siteArrow": "Right",
     "imageUrl": "/cards_visuals/o_04_349.jpg",
@@ -6120,6 +6397,9 @@
     "isUnique": false,
     "kind": "SITE",
     "type": "SITE",
+    "keywords": [
+      "MARSH"
+    ],
     "phases": [
       "REGROUP"
     ],
@@ -6156,6 +6436,9 @@
     "isUnique": false,
     "kind": "SITE",
     "type": "SITE",
+    "keywords": [
+      "UNDERGROUND"
+    ],
     "twilightCost": 3,
     "siteArrow": "Left",
     "imageUrl": "/cards_visuals/o_11_247.jpg",
@@ -6189,6 +6472,10 @@
     "isUnique": false,
     "kind": "SITE",
     "type": "SITE",
+    "keywords": [
+      "UNDERGROUND",
+      "DAMAGE +1"
+    ],
     "twilightCost": 2,
     "siteArrow": "Right",
     "imageUrl": "/cards_visuals/o_01_347.jpg",
@@ -6222,6 +6509,9 @@
     "isUnique": false,
     "kind": "SITE",
     "type": "SITE",
+    "keywords": [
+      "MARSH"
+    ],
     "twilightCost": 1,
     "siteArrow": "Left",
     "imageUrl": "/cards_visuals/o_11_249.jpg",
@@ -6255,6 +6545,9 @@
     "isUnique": false,
     "kind": "SITE",
     "type": "SITE",
+    "keywords": [
+      "RIVER"
+    ],
     "twilightCost": 3,
     "siteArrow": "Right",
     "imageUrl": "/cards_visuals/o_11_250.jpg",
@@ -6288,6 +6581,9 @@
     "isUnique": false,
     "kind": "SITE",
     "type": "SITE",
+    "keywords": [
+      "FOREST"
+    ],
     "twilightCost": 3,
     "siteArrow": "Right",
     "imageUrl": "/cards_visuals/o_11_251.jpg",
@@ -6321,6 +6617,9 @@
     "isUnique": false,
     "kind": "SITE",
     "type": "SITE",
+    "keywords": [
+      "BATTLEGROUND"
+    ],
     "twilightCost": 2,
     "siteArrow": "Right",
     "imageUrl": "/cards_visuals/o_11_252.jpg",
@@ -6354,6 +6653,9 @@
     "isUnique": false,
     "kind": "SITE",
     "type": "SITE",
+    "keywords": [
+      "PLAINS"
+    ],
     "twilightCost": 1,
     "siteArrow": "Left",
     "imageUrl": "/cards_visuals/o_11_253.jpg",
@@ -6387,6 +6689,9 @@
     "isUnique": false,
     "kind": "SITE",
     "type": "SITE",
+    "keywords": [
+      "PLAINS"
+    ],
     "twilightCost": 1,
     "siteArrow": "Right",
     "imageUrl": "/cards_visuals/o_07_345.jpg",
@@ -6420,6 +6725,9 @@
     "isUnique": false,
     "kind": "SITE",
     "type": "SITE",
+    "keywords": [
+      "MOUNTAIN"
+    ],
     "twilightCost": 3,
     "siteArrow": "Right",
     "imageUrl": "/cards_visuals/o_11_255.jpg",
@@ -6453,6 +6761,9 @@
     "isUnique": false,
     "kind": "SITE",
     "type": "SITE",
+    "keywords": [
+      "DWELLING"
+    ],
     "twilightCost": 3,
     "siteArrow": "Right",
     "imageUrl": "/cards_visuals/o_01_324.jpg",
@@ -6486,6 +6797,9 @@
     "isUnique": false,
     "kind": "SITE",
     "type": "SITE",
+    "keywords": [
+      "PLAINS"
+    ],
     "twilightCost": 1,
     "siteArrow": "Right",
     "imageUrl": "/cards_visuals/o_11_257.jpg",
@@ -6519,6 +6833,9 @@
     "isUnique": false,
     "kind": "SITE",
     "type": "SITE",
+    "keywords": [
+      "BATTLEGROUND"
+    ],
     "twilightCost": 1,
     "siteArrow": "Right",
     "imageUrl": "/cards_visuals/o_07_363.jpg",
@@ -6585,6 +6902,9 @@
     "isUnique": false,
     "kind": "SITE",
     "type": "SITE",
+    "keywords": [
+      "FOREST"
+    ],
     "twilightCost": 3,
     "siteArrow": "Left",
     "imageUrl": "/cards_visuals/o_01_334.jpg",
@@ -6618,6 +6938,10 @@
     "isUnique": false,
     "kind": "SITE",
     "type": "SITE",
+    "keywords": [
+      "DWELLING",
+      "RIVER"
+    ],
     "twilightCost": 3,
     "siteArrow": "Right",
     "imageUrl": "/cards_visuals/o_02_120.jpg",
@@ -6651,6 +6975,9 @@
     "isUnique": false,
     "kind": "SITE",
     "type": "SITE",
+    "keywords": [
+      "MOUNTAIN"
+    ],
     "phases": [
       "MANEUVER"
     ],
@@ -6687,6 +7014,9 @@
     "isUnique": false,
     "kind": "SITE",
     "type": "SITE",
+    "keywords": [
+      "UNDERGROUND"
+    ],
     "twilightCost": 2,
     "siteArrow": "Right",
     "imageUrl": "/cards_visuals/o_11_263.jpg",
@@ -6720,6 +7050,9 @@
     "isUnique": false,
     "kind": "SITE",
     "type": "SITE",
+    "keywords": [
+      "DWELLING"
+    ],
     "twilightCost": 2,
     "siteArrow": "Left",
     "imageUrl": "/cards_visuals/o_11_264.jpg",
@@ -6753,6 +7086,9 @@
     "isUnique": false,
     "kind": "SITE",
     "type": "SITE",
+    "keywords": [
+      "UNDERGROUND"
+    ],
     "twilightCost": 2,
     "siteArrow": "Left",
     "imageUrl": "/cards_visuals/o_11_265.jpg",
@@ -6786,6 +7122,9 @@
     "isUnique": false,
     "kind": "SITE",
     "type": "SITE",
+    "keywords": [
+      "FOREST"
+    ],
     "phases": [
       "SHADOW"
     ],
@@ -6954,6 +7293,9 @@
     "isUnique": false,
     "kind": "SITE",
     "type": "SITE",
+    "keywords": [
+      "DWELLING"
+    ],
     "twilightCost": 2,
     "siteArrow": "Left",
     "imageUrl": "/cards_visuals/o_12_189.jpg",
@@ -7086,6 +7428,9 @@
     "isUnique": false,
     "kind": "SITE",
     "type": "SITE",
+    "keywords": [
+      "MOUNTAIN"
+    ],
     "twilightCost": 3,
     "siteArrow": "Right",
     "imageUrl": "/cards_visuals/o_12_193.jpg",
@@ -7152,6 +7497,9 @@
     "isUnique": false,
     "kind": "SITE",
     "type": "SITE",
+    "keywords": [
+      "UNDERGROUND"
+    ],
     "twilightCost": 0,
     "siteArrow": "Left",
     "imageUrl": "/cards_visuals/o_13_185.jpg",
@@ -7185,6 +7533,9 @@
     "isUnique": false,
     "kind": "SITE",
     "type": "SITE",
+    "keywords": [
+      "UNDERGROUND"
+    ],
     "twilightCost": 3,
     "siteArrow": "Right",
     "imageUrl": "/cards_visuals/o_13_186.jpg",
@@ -7218,6 +7569,9 @@
     "isUnique": false,
     "kind": "SITE",
     "type": "SITE",
+    "keywords": [
+      "BATTLEGROUND"
+    ],
     "twilightCost": 3,
     "siteArrow": "Right",
     "imageUrl": "/cards_visuals/o_13_187.jpg",
@@ -7251,6 +7605,9 @@
     "isUnique": false,
     "kind": "SITE",
     "type": "SITE",
+    "keywords": [
+      "DWELLING"
+    ],
     "twilightCost": 0,
     "siteArrow": "Left",
     "imageUrl": "/cards_visuals/o_13_188.jpg",
@@ -7284,6 +7641,9 @@
     "isUnique": false,
     "kind": "SITE",
     "type": "SITE",
+    "keywords": [
+      "FOREST"
+    ],
     "twilightCost": 3,
     "siteArrow": "Right",
     "imageUrl": "/cards_visuals/o_13_189.jpg",
@@ -7317,6 +7677,9 @@
     "isUnique": false,
     "kind": "SITE",
     "type": "SITE",
+    "keywords": [
+      "MARSH"
+    ],
     "twilightCost": 0,
     "siteArrow": "Left",
     "imageUrl": "/cards_visuals/o_13_190.jpg",
@@ -7350,6 +7713,9 @@
     "isUnique": false,
     "kind": "SITE",
     "type": "SITE",
+    "keywords": [
+      "RIVER"
+    ],
     "twilightCost": 2,
     "siteArrow": "Left",
     "imageUrl": "/cards_visuals/o_13_191.jpg",
@@ -7383,6 +7749,9 @@
     "isUnique": false,
     "kind": "SITE",
     "type": "SITE",
+    "keywords": [
+      "BATTLEGROUND"
+    ],
     "twilightCost": 0,
     "siteArrow": "Left",
     "imageUrl": "/cards_visuals/o_13_192.jpg",
@@ -7449,6 +7818,9 @@
     "isUnique": false,
     "kind": "SITE",
     "type": "SITE",
+    "keywords": [
+      "MOUNTAIN"
+    ],
     "twilightCost": 2,
     "siteArrow": "Left",
     "imageUrl": "/cards_visuals/o_13_194.jpg",
@@ -7482,6 +7854,9 @@
     "isUnique": false,
     "kind": "SITE",
     "type": "SITE",
+    "keywords": [
+      "RIVER"
+    ],
     "twilightCost": 0,
     "siteArrow": "Left",
     "imageUrl": "/cards_visuals/o_15_187.jpg",
@@ -7515,6 +7890,9 @@
     "isUnique": false,
     "kind": "SITE",
     "type": "SITE",
+    "keywords": [
+      "UNDERGROUND"
+    ],
     "twilightCost": 0,
     "siteArrow": "Left",
     "imageUrl": "/cards_visuals/o_15_188.jpg",
@@ -7614,6 +7992,9 @@
     "isUnique": false,
     "kind": "SITE",
     "type": "SITE",
+    "keywords": [
+      "BATTLEGROUND"
+    ],
     "twilightCost": 0,
     "siteArrow": "Left",
     "imageUrl": "/cards_visuals/o_15_191.jpg",
@@ -7647,6 +8028,9 @@
     "isUnique": false,
     "kind": "SITE",
     "type": "SITE",
+    "keywords": [
+      "BATTLEGROUND"
+    ],
     "twilightCost": 1,
     "siteArrow": "Right",
     "imageUrl": "/cards_visuals/o_15_192.jpg",
@@ -7713,6 +8097,9 @@
     "isUnique": false,
     "kind": "SITE",
     "type": "SITE",
+    "keywords": [
+      "PLAINS"
+    ],
     "twilightCost": 2,
     "siteArrow": "Left",
     "imageUrl": "/cards_visuals/o_15_194.jpg",
@@ -7781,6 +8168,9 @@
     "isUnique": false,
     "kind": "SITE",
     "type": "SITE",
+    "keywords": [
+      "RIVER"
+    ],
     "twilightCost": 3,
     "imageUrl": "/cards_visuals/o_17_146.jpg",
     "i18n": {
@@ -7813,6 +8203,9 @@
     "isUnique": false,
     "kind": "SITE",
     "type": "SITE",
+    "keywords": [
+      "RIVER"
+    ],
     "twilightCost": 3,
     "imageUrl": "/cards_visuals/o_17_147.jpg",
     "i18n": {
@@ -7845,6 +8238,9 @@
     "isUnique": false,
     "kind": "SITE",
     "type": "SITE",
+    "keywords": [
+      "PLAINS"
+    ],
     "twilightCost": 1,
     "imageUrl": "/cards_visuals/o_17_148.jpg",
     "i18n": {
@@ -7877,6 +8273,9 @@
     "isUnique": false,
     "kind": "SITE",
     "type": "SITE",
+    "keywords": [
+      "MOUNTAIN"
+    ],
     "twilightCost": 1,
     "imageUrl": "/cards_visuals/o_18_134.jpg",
     "i18n": {
@@ -7909,6 +8308,9 @@
     "isUnique": false,
     "kind": "SITE",
     "type": "SITE",
+    "keywords": [
+      "MOUNTAIN"
+    ],
     "twilightCost": 2,
     "imageUrl": "/cards_visuals/o_18_135.jpg",
     "i18n": {
@@ -7941,6 +8343,9 @@
     "isUnique": false,
     "kind": "SITE",
     "type": "SITE",
+    "keywords": [
+      "RIVER"
+    ],
     "twilightCost": 2,
     "imageUrl": "/cards_visuals/o_18_136.jpg",
     "i18n": {
@@ -8005,6 +8410,9 @@
     "isUnique": false,
     "kind": "SITE",
     "type": "SITE",
+    "keywords": [
+      "RIVER"
+    ],
     "twilightCost": 4,
     "imageUrl": "/cards_visuals/o_18_138.jpg",
     "i18n": {
@@ -8069,6 +8477,9 @@
     "isUnique": false,
     "kind": "SITE",
     "type": "SITE",
+    "keywords": [
+      "DWELLING"
+    ],
     "twilightCost": 0,
     "imageUrl": "/cards_visuals/o_18_140.jpg",
     "i18n": {

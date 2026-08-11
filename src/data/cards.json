@@ -50,6 +50,9 @@
     "isUnique": false,
     "kind": "FREE_PEOPLE",
     "type": "EVENT",
+    "keywords": [
+      "SPELL"
+    ],
     "phases": [
       "FELLOWSHIP"
     ],
@@ -137,6 +140,9 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "POSSESSION",
+    "keywords": [
+      "TALE"
+    ],
     "attachedTo": [
       [
         "DWARF"
@@ -239,6 +245,10 @@
     "isUnique": true,
     "kind": "SHADOW",
     "type": "MINION",
+    "keywords": [
+      "DAMAGE +1",
+      "FIERCE"
+    ],
     "culture": "MORIA",
     "race": "BALROG",
     "twilightCost": 12,
@@ -380,6 +390,9 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
+    "keywords": [
+      "ARCHER"
+    ],
     "phases": [
       "ARCHERY"
     ],
@@ -430,6 +443,9 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
+    "keywords": [
+      "RANGER"
+    ],
     "phases": [
       "MANEUVER"
     ],
@@ -480,6 +496,9 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
+    "keywords": [
+      "ARCHER"
+    ],
     "culture": "ELVEN",
     "race": "ELF",
     "signet": "ARAGORN",
@@ -573,6 +592,9 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
+    "keywords": [
+      "VALIANT"
+    ],
     "phases": [
       "RESPONSE"
     ],
@@ -623,6 +645,9 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
+    "keywords": [
+      "RING-BOUND"
+    ],
     "toPlay": [
       {
         "addBurdens": 1
@@ -676,6 +701,9 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
+    "keywords": [
+      "VALIANT"
+    ],
     "phases": [
       "MANEUVER"
     ],
@@ -725,6 +753,9 @@
     "isUnique": false,
     "kind": "SHADOW",
     "type": "MINION",
+    "keywords": [
+      "FIERCE"
+    ],
     "culture": "WRAITH",
     "race": "NAZGÛL",
     "twilightCost": 5,
@@ -767,6 +798,9 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
+    "keywords": [
+      "UNHASTY"
+    ],
     "phases": [
       "ASSIGNMENT",
       "SKIRMISH"
@@ -862,6 +896,9 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
+    "keywords": [
+      "KNIGHT"
+    ],
     "culture": "GONDOR",
     "race": "MAN",
     "signet": "ARAGORN",
@@ -909,6 +946,9 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
+    "keywords": [
+      "ARCHER"
+    ],
     "culture": "ELVEN",
     "race": "ELF",
     "signet": "ARAGORN",
@@ -1046,6 +1086,9 @@
     "canBeRingbearer": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
+    "keywords": [
+      "RING-BOUND"
+    ],
     "culture": "SHIRE",
     "race": "HOBBIT",
     "signet": "FRODO",
@@ -1136,6 +1179,9 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
+    "keywords": [
+      "VALIANT"
+    ],
     "culture": "ROHAN",
     "race": "MAN",
     "signet": "THEODEN",
@@ -1183,6 +1229,9 @@
     "isUnique": true,
     "kind": "SHADOW",
     "type": "MINION",
+    "keywords": [
+      "DAMAGE +2"
+    ],
     "culture": "MORIA",
     "race": "BALROG",
     "twilightCost": 14,
@@ -1276,6 +1325,9 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
+    "keywords": [
+      "DAMAGE +1"
+    ],
     "culture": "GANDALF",
     "race": "WIZARD",
     "signet": "ARAGORN",
@@ -1412,6 +1464,10 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
+    "keywords": [
+      "RING-BOUND",
+      "RANGER"
+    ],
     "culture": "GONDOR",
     "race": "MAN",
     "signet": "ARAGORN",
@@ -1505,6 +1561,9 @@
     "isUnique": true,
     "kind": "SHADOW",
     "type": "MINION",
+    "keywords": [
+      "TWILIGHT"
+    ],
     "culture": "WRAITH",
     "race": "NAZGÛL",
     "twilightCost": 8,
@@ -1600,6 +1659,9 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
+    "keywords": [
+      "VALIANT"
+    ],
     "phases": [
       "RESPONSE"
     ],
@@ -1786,6 +1848,9 @@
     "isUnique": true,
     "kind": "SHADOW",
     "type": "MINION",
+    "keywords": [
+      "TWILIGHT"
+    ],
     "culture": "WRAITH",
     "race": "NAZGÛL",
     "twilightCost": 5,
@@ -1927,6 +1992,9 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
+    "keywords": [
+      "DAMAGE +1"
+    ],
     "culture": "DWARVEN",
     "race": "DWARF",
     "signet": "THEODEN",
@@ -2023,6 +2091,10 @@
     "isUnique": true,
     "kind": "SHADOW",
     "type": "MINION",
+    "keywords": [
+      "ENDURING",
+      "FIERCE"
+    ],
     "culture": "GOLLUM",
     "race": "SPIDER",
     "twilightCost": 6,
@@ -2070,6 +2142,9 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
+    "keywords": [
+      "VALIANT"
+    ],
     "culture": "ROHAN",
     "race": "MAN",
     "signet": "GANDALF",
@@ -2312,6 +2387,11 @@
     "isUnique": true,
     "kind": "SHADOW",
     "type": "MINION",
+    "keywords": [
+      "DAMAGE +2",
+      "ENDURING",
+      "FIERCE"
+    ],
     "culture": "SAURON",
     "race": "MAIA",
     "twilightCost": 18,
@@ -2359,6 +2439,9 @@
     "isUnique": false,
     "kind": "SHADOW",
     "type": "MINION",
+    "keywords": [
+      "BESIEGER"
+    ],
     "culture": "SAURON",
     "race": "ORC",
     "twilightCost": 5,
@@ -2610,6 +2693,9 @@
     "isUnique": true,
     "kind": "SHADOW",
     "type": "MINION",
+    "keywords": [
+      "ENDURING"
+    ],
     "culture": "WRAITH",
     "race": "NAZGÛL",
     "twilightCost": 8,
@@ -2704,6 +2790,9 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
+    "keywords": [
+      "KNIGHT"
+    ],
     "culture": "GONDOR",
     "race": "MAN",
     "twilightCost": 3,
@@ -2797,6 +2886,9 @@
     "isUnique": false,
     "kind": "FREE_PEOPLE",
     "type": "MINION",
+    "keywords": [
+      "DAMAGE +1"
+    ],
     "phases": [
       "SKIRMISH"
     ],
@@ -2841,6 +2933,9 @@
     "isUnique": false,
     "kind": "SHADOW",
     "type": "MINION",
+    "keywords": [
+      "TOIL 2"
+    ],
     "culture": "ORC",
     "race": "ORC",
     "twilightCost": 5,
@@ -2992,6 +3087,9 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
+    "keywords": [
+      "RING-BOUND"
+    ],
     "culture": "SHIRE",
     "race": "HOBBIT",
     "twilightCost": 2,
@@ -3086,6 +3184,9 @@
     "isUnique": true,
     "kind": "SHADOW",
     "type": "MINION",
+    "keywords": [
+      "FIERCE"
+    ],
     "culture": "WRAITH",
     "race": "NAZGÛL",
     "twilightCost": 6,
@@ -3182,6 +3283,9 @@
     "isUnique": true,
     "kind": "SHADOW",
     "type": "MINION",
+    "keywords": [
+      "FIERCE"
+    ],
     "culture": "WRAITH",
     "race": "NAZGÛL",
     "twilightCost": 6,
@@ -3553,6 +3657,9 @@
     "isUnique": true,
     "kind": "SHADOW",
     "type": "MINION",
+    "keywords": [
+      "LURKER"
+    ],
     "phases": [
       "SKIRMISH"
     ],
@@ -3603,6 +3710,9 @@
     "isUnique": false,
     "kind": "SHADOW",
     "type": "EVENT",
+    "keywords": [
+      "TOIL 2"
+    ],
     "phases": [
       "MANEUVER"
     ],
@@ -3644,6 +3754,9 @@
     "isUnique": true,
     "kind": "SHADOW",
     "type": "MINION",
+    "keywords": [
+      "FIERCE"
+    ],
     "phases": [
       "SHADOW"
     ],
@@ -3736,6 +3849,11 @@
     "isUnique": true,
     "kind": "SHADOW",
     "type": "MINION",
+    "keywords": [
+      "FIERCE",
+      "TOIL 2",
+      "MUSTER"
+    ],
     "culture": "WRAITH",
     "race": "NAZGÛL",
     "twilightCost": 8,
@@ -3783,6 +3901,9 @@
     "isUnique": true,
     "kind": "SHADOW",
     "type": "MINION",
+    "keywords": [
+      "FIERCE"
+    ],
     "culture": "WRAITH",
     "race": "NAZGÛL",
     "twilightCost": 6,
@@ -3830,6 +3951,9 @@
     "isUnique": true,
     "kind": "SHADOW",
     "type": "MINION",
+    "keywords": [
+      "FIERCE"
+    ],
     "phases": [
       "SHADOW"
     ],
@@ -3880,6 +4004,9 @@
     "isUnique": true,
     "kind": "SHADOW",
     "type": "MINION",
+    "keywords": [
+      "FIERCE"
+    ],
     "culture": "WRAITH",
     "race": "NAZGÛL",
     "twilightCost": 5,
@@ -3974,6 +4101,9 @@
     "isUnique": true,
     "kind": "SHADOW",
     "type": "MINION",
+    "keywords": [
+      "FIERCE"
+    ],
     "culture": "WRAITH",
     "race": "NAZGÛL",
     "twilightCost": 6,
@@ -4068,6 +4198,9 @@
     "isUnique": true,
     "kind": "SHADOW",
     "type": "MINION",
+    "keywords": [
+      "FIERCE"
+    ],
     "culture": "WRAITH",
     "race": "NAZGÛL",
     "twilightCost": 6,
@@ -4115,6 +4248,9 @@
     "isUnique": true,
     "kind": "SHADOW",
     "type": "MINION",
+    "keywords": [
+      "LURKER"
+    ],
     "culture": "WRAITH",
     "race": "NAZGÛL",
     "twilightCost": 4,
@@ -4413,6 +4549,9 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
+    "keywords": [
+      "RANGER"
+    ],
     "culture": "ELVEN",
     "race": "ELF",
     "signet": "ARAGORN",
@@ -4460,6 +4599,9 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
+    "keywords": [
+      "ARCHER"
+    ],
     "phases": [
       "ARCHERY"
     ],
@@ -4557,6 +4699,9 @@
     "isUnique": false,
     "kind": "FREE_PEOPLE",
     "type": "EVENT",
+    "keywords": [
+      "SPELL"
+    ],
     "phases": [
       "SKIRMISH"
     ],
@@ -4598,6 +4743,9 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
+    "keywords": [
+      "RANGER"
+    ],
     "phases": [
       "MANEUVER"
     ],
@@ -4648,6 +4796,9 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
+    "keywords": [
+      "RANGER"
+    ],
     "culture": "GONDOR",
     "race": "MAN",
     "signet": "ARAGORN",
@@ -4695,6 +4846,9 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "CONDITION",
+    "keywords": [
+      "TALE"
+    ],
     "attachedTo": [
       [
         "GONDOR",
@@ -4743,6 +4897,9 @@
     "isUnique": true,
     "kind": "SHADOW",
     "type": "MINION",
+    "keywords": [
+      "ARCHER"
+    ],
     "phases": [
       "MANEUVER"
     ],
@@ -4793,6 +4950,10 @@
     "isUnique": true,
     "kind": "SHADOW",
     "type": "MINION",
+    "keywords": [
+      "DAMAGE +1",
+      "FIERCE"
+    ],
     "toPlay": [
       {
         "spot": [
@@ -4854,6 +5015,9 @@
     "isUnique": true,
     "kind": "SHADOW",
     "type": "MINION",
+    "keywords": [
+      "FIERCE"
+    ],
     "phases": [
       "MANEUVER"
     ],
@@ -4903,6 +5067,9 @@
     "isUnique": true,
     "kind": "SHADOW",
     "type": "MINION",
+    "keywords": [
+      "FIERCE"
+    ],
     "culture": "WRAITH",
     "race": "NAZGÛL",
     "twilightCost": 8,
@@ -4992,6 +5159,10 @@
     "isUnique": true,
     "kind": "SHADOW",
     "type": "MINION",
+    "keywords": [
+      "DAMAGE +1",
+      "FIERCE"
+    ],
     "toPlay": [
       {
         "spot": [
@@ -5056,6 +5227,9 @@
     "canBeRingbearer": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
+    "keywords": [
+      "RING-BOUND"
+    ],
     "culture": "SHIRE",
     "race": "HOBBIT",
     "signet": "ARAGORN",
@@ -5194,6 +5368,9 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
+    "keywords": [
+      "ARCHER"
+    ],
     "culture": "ELVEN",
     "race": "ELF",
     "signet": "ARAGORN",
@@ -5241,6 +5418,9 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
+    "keywords": [
+      "RANGER"
+    ],
     "culture": "GONDOR",
     "race": "MAN",
     "signet": "ARAGORN",
@@ -5288,6 +5468,9 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
+    "keywords": [
+      "RING-BOUND"
+    ],
     "toPlay": [
       {
         "addBurdens": 1
@@ -5532,6 +5715,9 @@
     "isUnique": true,
     "kind": "SHADOW",
     "type": "MINION",
+    "keywords": [
+      "TRACKER"
+    ],
     "phases": [
       "SHADOW"
     ],
@@ -5582,6 +5768,9 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "ALLY",
+    "keywords": [
+      "UNHASTY"
+    ],
     "phases": [
       "RESPONSE",
       "FELLOWSHIP"
@@ -5725,6 +5914,9 @@
     "isUnique": true,
     "kind": "SHADOW",
     "type": "MINION",
+    "keywords": [
+      "FIERCE"
+    ],
     "culture": "WRAITH",
     "race": "NAZGÛL",
     "twilightCost": 6,
@@ -5772,6 +5964,10 @@
     "isUnique": true,
     "kind": "SHADOW",
     "type": "MINION",
+    "keywords": [
+      "SOUTHRON",
+      "ARCHER"
+    ],
     "phases": [
       "ARCHERY"
     ],
@@ -5817,6 +6013,10 @@
     "isUnique": true,
     "kind": "SHADOW",
     "type": "MINION",
+    "keywords": [
+      "TRACKER",
+      "FIERCE"
+    ],
     "culture": "ISENGARD",
     "race": "URUK-HAI",
     "twilightCost": 4,
@@ -5859,6 +6059,10 @@
     "isUnique": true,
     "kind": "SHADOW",
     "type": "MINION",
+    "keywords": [
+      "EASTERLING",
+      "FIERCE"
+    ],
     "phases": [
       "SKIRMISH"
     ],
@@ -6076,6 +6280,9 @@
     "isUnique": true,
     "kind": "SHADOW",
     "type": "MINION",
+    "keywords": [
+      "FIERCE"
+    ],
     "phases": [
       "MANEUVER"
     ],
@@ -6122,6 +6329,9 @@
     "isUnique": true,
     "kind": "SHADOW",
     "type": "MINION",
+    "keywords": [
+      "FIERCE"
+    ],
     "culture": "WRAITH",
     "race": "NAZGÛL",
     "twilightCost": 8,
@@ -6164,6 +6374,9 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
+    "keywords": [
+      "VALIANT"
+    ],
     "phases": [
       "FELLOWSHIP"
     ],
@@ -6357,6 +6570,9 @@
     "isUnique": true,
     "kind": "SHADOW",
     "type": "MINION",
+    "keywords": [
+      "FIERCE"
+    ],
     "culture": "GOLLUM",
     "race": "SPIDER",
     "twilightCost": 6,
@@ -6404,6 +6620,9 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
+    "keywords": [
+      "ENDURING"
+    ],
     "toPlay": [
       {
         "spot": [
@@ -6468,6 +6687,11 @@
     "isUnique": true,
     "kind": "SHADOW",
     "type": "MINION",
+    "keywords": [
+      "CORSAIR",
+      "ENDURING",
+      "FIERCE"
+    ],
     "phases": [
       "SHADOW"
     ],
@@ -6513,6 +6737,9 @@
     "isUnique": false,
     "kind": "SHADOW",
     "type": "MINION",
+    "keywords": [
+      "CORSAIR"
+    ],
     "culture": "RAIDER",
     "race": "MAN",
     "twilightCost": 4,
@@ -6556,6 +6783,9 @@
     "kind": "SHADOW",
     "type": "POSSESSION",
     "subtype": "SUPPORT-AREA",
+    "keywords": [
+      "ENGINE"
+    ],
     "phases": [
       "SHADOW",
       "REGROUP"
@@ -6757,6 +6987,9 @@
     "isUnique": true,
     "kind": "SHADOW",
     "type": "MINION",
+    "keywords": [
+      "BESIEGER"
+    ],
     "culture": "SAURON",
     "race": "ORC",
     "twilightCost": 6,
@@ -6804,6 +7037,9 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
+    "keywords": [
+      "RING-BOUND"
+    ],
     "phases": [
       "RESPONSE"
     ],
@@ -6998,6 +7234,9 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
+    "keywords": [
+      "RANGER"
+    ],
     "culture": "GONDOR",
     "race": "MAN",
     "twilightCost": 1,
@@ -7045,6 +7284,9 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
+    "keywords": [
+      "KNIGHT"
+    ],
     "culture": "GONDOR",
     "race": "MAN",
     "twilightCost": 3,
@@ -7145,6 +7387,11 @@
     "isUnique": true,
     "kind": "SHADOW",
     "type": "MINION",
+    "keywords": [
+      "FIERCE",
+      "TOIL 2",
+      "MUSTER"
+    ],
     "culture": "WRAITH",
     "race": "NAZGÛL",
     "twilightCost": 8,
@@ -7413,6 +7660,9 @@
     "isUnique": true,
     "kind": "SHADOW",
     "type": "MINION",
+    "keywords": [
+      "DAMAGE +1"
+    ],
     "culture": "MORIA",
     "race": "BALROG",
     "twilightCost": 12,
@@ -7509,6 +7759,9 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
+    "keywords": [
+      "DAMAGE +1"
+    ],
     "phases": [
       "ASSIGNMENT"
     ],
@@ -7722,6 +7975,9 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
+    "keywords": [
+      "RING-BOUND"
+    ],
     "phases": [
       "REGROUP"
     ],
@@ -7870,6 +8126,9 @@
     "isUnique": false,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
+    "keywords": [
+      "DAMAGE +1"
+    ],
     "culture": "DWARVEN",
     "race": "DWARF",
     "twilightCost": 2,
@@ -7911,6 +8170,9 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
+    "keywords": [
+      "ARCHER"
+    ],
     "culture": "ELVEN",
     "race": "ELF",
     "twilightCost": 2,
@@ -7957,6 +8219,9 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
+    "keywords": [
+      "UNHASTY"
+    ],
     "phases": [
       "ASSIGNMENT"
     ],
@@ -8066,6 +8331,9 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
+    "keywords": [
+      "RANGER"
+    ],
     "culture": "GONDOR",
     "race": "MAN",
     "twilightCost": 4,
@@ -8169,6 +8437,10 @@
     "isUnique": true,
     "kind": "SHADOW",
     "type": "MINION",
+    "keywords": [
+      "DAMAGE +1",
+      "FIERCE"
+    ],
     "toPlay": [
       {
         "spot": [
@@ -8230,6 +8502,10 @@
     "isUnique": false,
     "kind": "SHADOW",
     "type": "MINION",
+    "keywords": [
+      "SOUTHRON",
+      "ARCHER"
+    ],
     "toPlay": [
       {
         "spot": [
@@ -8286,6 +8562,9 @@
     "isUnique": false,
     "kind": "SHADOW",
     "type": "MINION",
+    "keywords": [
+      "FIERCE"
+    ],
     "toPlay": [
       {
         "spot": [
@@ -8921,6 +9200,9 @@
     "canBeRingbearer": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
+    "keywords": [
+      "RING-BEARER"
+    ],
     "culture": "SHIRE",
     "race": "HOBBIT",
     "twilightCost": 0,
@@ -9008,6 +9290,9 @@
     "isUnique": false,
     "kind": "SHADOW",
     "type": "MINION",
+    "keywords": [
+      "SOUTHRON"
+    ],
     "culture": "RAIDER",
     "race": "MAN",
     "twilightCost": 5,
@@ -9050,6 +9335,9 @@
     "isUnique": false,
     "kind": "SHADOW",
     "type": "MINION",
+    "keywords": [
+      "BESIEGER"
+    ],
     "culture": "SAURON",
     "race": "ORC",
     "twilightCost": 5,
@@ -9092,6 +9380,10 @@
     "isUnique": true,
     "kind": "SHADOW",
     "type": "MINION",
+    "keywords": [
+      "EASTERLING",
+      "FIERCE"
+    ],
     "culture": "RAIDER",
     "race": "MAN",
     "twilightCost": 5,
@@ -9270,6 +9562,9 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
+    "keywords": [
+      "HUNTER 2"
+    ],
     "culture": "GONDOR",
     "race": "MAN",
     "twilightCost": 4,
@@ -9364,6 +9659,10 @@
     "isUnique": true,
     "kind": "SHADOW",
     "type": "MINION",
+    "keywords": [
+      "ARCHER",
+      "DAMAGE +1"
+    ],
     "phases": [
       "MANEUVER",
       "ASSIGNMENT"
@@ -9465,6 +9764,9 @@
     "isUnique": true,
     "kind": "SHADOW",
     "type": "MINION",
+    "keywords": [
+      "FIERCE"
+    ],
     "culture": "WRAITH",
     "race": "NAZGÛL",
     "twilightCost": 8,
@@ -10284,6 +10586,9 @@
     "kind": "FREE_PEOPLE",
     "type": "CONDITION",
     "subtype": "SUPPORT-AREA",
+    "keywords": [
+      "TALE"
+    ],
     "culture": "DWARVEN",
     "twilightCost": 0,
     "imageUrl": "/cards_visuals/o_01_016.jpg",
@@ -10615,6 +10920,9 @@
     "kind": "FREE_PEOPLE",
     "type": "CONDITION",
     "subtype": "SUPPORT-AREA",
+    "keywords": [
+      "TALE"
+    ],
     "culture": "DWARVEN",
     "twilightCost": 0,
     "imageUrl": "/cards_visuals/o_01_024.jpg",
@@ -11727,6 +12035,9 @@
     "isUnique": false,
     "kind": "FREE_PEOPLE",
     "type": "CONDITION",
+    "keywords": [
+      "TALE"
+    ],
     "attachedTo": [
       [
         "GONDOR",
@@ -11771,6 +12082,9 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
+    "keywords": [
+      "ARCHER"
+    ],
     "culture": "ELVEN",
     "race": "ELF",
     "signet": "GANDALF",
@@ -11994,6 +12308,9 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "ALLY",
+    "keywords": [
+      "ARCHER"
+    ],
     "phases": [
       "ARCHERY"
     ],
@@ -12043,6 +12360,9 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "ALLY",
+    "keywords": [
+      "ARCHER"
+    ],
     "phases": [
       "ARCHERY"
     ],
@@ -12261,6 +12581,9 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "CONDITION",
+    "keywords": [
+      "TALE"
+    ],
     "attachedTo": [
       [
         "ELF",
@@ -12431,6 +12754,9 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "CONDITION",
+    "keywords": [
+      "TALE"
+    ],
     "attachedTo": [
       [
         "ELF"
@@ -12525,6 +12851,9 @@
     "isUnique": false,
     "kind": "FREE_PEOPLE",
     "type": "CONDITION",
+    "keywords": [
+      "TALE"
+    ],
     "attachedTo": [
       [
         "ELF",
@@ -12865,6 +13194,9 @@
     "isUnique": false,
     "kind": "FREE_PEOPLE",
     "type": "EVENT",
+    "keywords": [
+      "SPELL"
+    ],
     "phases": [
       "RESPONSE"
     ],
@@ -12947,6 +13279,9 @@
     "isUnique": false,
     "kind": "FREE_PEOPLE",
     "type": "EVENT",
+    "keywords": [
+      "SPELL"
+    ],
     "phases": [
       "SKIRMISH"
     ],
@@ -13107,6 +13442,9 @@
     "isUnique": false,
     "kind": "FREE_PEOPLE",
     "type": "EVENT",
+    "keywords": [
+      "SPELL"
+    ],
     "phases": [
       "FELLOWSHIP"
     ],
@@ -13148,6 +13486,9 @@
     "isUnique": false,
     "kind": "FREE_PEOPLE",
     "type": "EVENT",
+    "keywords": [
+      "SPELL"
+    ],
     "phases": [
       "FELLOWSHIP"
     ],
@@ -13189,6 +13530,9 @@
     "isUnique": false,
     "kind": "FREE_PEOPLE",
     "type": "EVENT",
+    "keywords": [
+      "SPELL"
+    ],
     "phases": [
       "FELLOWSHIP"
     ],
@@ -13230,6 +13574,9 @@
     "isUnique": false,
     "kind": "FREE_PEOPLE",
     "type": "EVENT",
+    "keywords": [
+      "SPELL"
+    ],
     "phases": [
       "RESPONSE"
     ],
@@ -13271,6 +13618,9 @@
     "isUnique": false,
     "kind": "FREE_PEOPLE",
     "type": "EVENT",
+    "keywords": [
+      "SPELL"
+    ],
     "phases": [
       "FELLOWSHIP"
     ],
@@ -13808,6 +14158,9 @@
     "kind": "FREE_PEOPLE",
     "type": "CONDITION",
     "subtype": "SUPPORT-AREA",
+    "keywords": [
+      "TALE"
+    ],
     "phases": [
       "MANEUVER"
     ],
@@ -14741,6 +15094,10 @@
     "isUnique": false,
     "kind": "SHADOW",
     "type": "EVENT",
+    "keywords": [
+      "SPELL",
+      "WEATHER"
+    ],
     "phases": [
       "MANEUVER"
     ],
@@ -14782,6 +15139,10 @@
     "isUnique": false,
     "kind": "SHADOW",
     "type": "EVENT",
+    "keywords": [
+      "SPELL",
+      "WEATHER"
+    ],
     "phases": [
       "MANEUVER"
     ],
@@ -15055,6 +15416,9 @@
     "isUnique": true,
     "kind": "SHADOW",
     "type": "MINION",
+    "keywords": [
+      "ARCHER"
+    ],
     "culture": "ISENGARD",
     "race": "URUK-HAI",
     "twilightCost": 5,
@@ -15179,6 +15543,10 @@
     "isUnique": false,
     "kind": "SHADOW",
     "type": "CONDITION",
+    "keywords": [
+      "SPELL",
+      "WEATHER"
+    ],
     "attachedTo": [
       [
         "SITE"
@@ -15236,6 +15604,10 @@
     "isUnique": false,
     "kind": "SHADOW",
     "type": "CONDITION",
+    "keywords": [
+      "SPELL",
+      "WEATHER"
+    ],
     "attachedTo": [
       [
         "SITE"
@@ -15293,6 +15665,9 @@
     "isUnique": false,
     "kind": "SHADOW",
     "type": "EVENT",
+    "keywords": [
+      "SPELL"
+    ],
     "phases": [
       "SHADOW"
     ],
@@ -15334,6 +15709,9 @@
     "isUnique": false,
     "kind": "SHADOW",
     "type": "EVENT",
+    "keywords": [
+      "SEARCH"
+    ],
     "phases": [
       "MANEUVER"
     ],
@@ -15375,6 +15753,10 @@
     "isUnique": false,
     "kind": "SHADOW",
     "type": "CONDITION",
+    "keywords": [
+      "SPELL",
+      "WEATHER"
+    ],
     "attachedTo": [
       [
         "SITE"
@@ -15597,6 +15979,9 @@
     "kind": "SHADOW",
     "type": "CONDITION",
     "subtype": "SUPPORT-AREA",
+    "keywords": [
+      "SEARCH"
+    ],
     "toPlay": [
       {
         "spot": [
@@ -16441,6 +16826,9 @@
     "isUnique": false,
     "kind": "SHADOW",
     "type": "EVENT",
+    "keywords": [
+      "SEARCH"
+    ],
     "phases": [
       "RESPONSE"
     ],
@@ -16869,6 +17257,9 @@
     "isUnique": false,
     "kind": "SHADOW",
     "type": "MINION",
+    "keywords": [
+      "ARCHER"
+    ],
     "culture": "MORIA",
     "race": "ORC",
     "twilightCost": 5,
@@ -16996,6 +17387,9 @@
     "kind": "SHADOW",
     "type": "CONDITION",
     "subtype": "SUPPORT-AREA",
+    "keywords": [
+      "SEARCH"
+    ],
     "toPlay": [
       {
         "spot": [
@@ -17048,6 +17442,9 @@
     "isUnique": false,
     "kind": "SHADOW",
     "type": "MINION",
+    "keywords": [
+      "ARCHER"
+    ],
     "culture": "MORIA",
     "race": "ORC",
     "twilightCost": 3,
@@ -17813,6 +18210,9 @@
     "isUnique": false,
     "kind": "SHADOW",
     "type": "EVENT",
+    "keywords": [
+      "SEARCH"
+    ],
     "phases": [
       "RESPONSE"
     ],
@@ -17980,6 +18380,9 @@
     "kind": "SHADOW",
     "type": "CONDITION",
     "subtype": "SUPPORT-AREA",
+    "keywords": [
+      "SEARCH"
+    ],
     "toPlay": [
       {
         "exert": [
@@ -18158,6 +18561,9 @@
     "kind": "SHADOW",
     "type": "CONDITION",
     "subtype": "SUPPORT-AREA",
+    "keywords": [
+      "SEARCH"
+    ],
     "toPlay": [
       {
         "exert": [
@@ -18334,6 +18740,9 @@
     "kind": "SHADOW",
     "type": "CONDITION",
     "subtype": "SUPPORT-AREA",
+    "keywords": [
+      "SEARCH"
+    ],
     "culture": "WRAITH",
     "twilightCost": 1,
     "imageUrl": "/cards_visuals/o_01_206.jpg",
@@ -18576,6 +18985,9 @@
     "isUnique": false,
     "kind": "SHADOW",
     "type": "EVENT",
+    "keywords": [
+      "SEARCH"
+    ],
     "phases": [
       "MANEUVER"
     ],
@@ -18699,6 +19111,9 @@
     "isUnique": false,
     "kind": "SHADOW",
     "type": "EVENT",
+    "keywords": [
+      "SEARCH"
+    ],
     "phases": [
       "SHADOW"
     ],
@@ -18870,6 +19285,9 @@
     "kind": "SHADOW",
     "type": "CONDITION",
     "subtype": "SUPPORT-AREA",
+    "keywords": [
+      "SEARCH"
+    ],
     "culture": "WRAITH",
     "twilightCost": 1,
     "imageUrl": "/cards_visuals/o_01_219.jpg",
@@ -19000,6 +19418,9 @@
     "kind": "SHADOW",
     "type": "CONDITION",
     "subtype": "SUPPORT-AREA",
+    "keywords": [
+      "SEARCH"
+    ],
     "toPlay": [
       {
         "spot": [
@@ -19309,6 +19730,9 @@
     "isUnique": true,
     "kind": "SHADOW",
     "type": "MINION",
+    "keywords": [
+      "FIERCE"
+    ],
     "phases": [
       "SKIRMISH"
     ],
@@ -19359,6 +19783,9 @@
     "isUnique": true,
     "kind": "SHADOW",
     "type": "MINION",
+    "keywords": [
+      "FIERCE"
+    ],
     "phases": [
       "SKIRMISH"
     ],
@@ -19456,6 +19883,9 @@
     "isUnique": true,
     "kind": "SHADOW",
     "type": "MINION",
+    "keywords": [
+      "FIERCE"
+    ],
     "phases": [
       "SHADOW"
     ],
@@ -19602,6 +20032,9 @@
     "isUnique": true,
     "kind": "SHADOW",
     "type": "MINION",
+    "keywords": [
+      "FIERCE"
+    ],
     "phases": [
       "ASSIGNMENT"
     ],
@@ -19709,6 +20142,9 @@
     "isUnique": false,
     "kind": "SHADOW",
     "type": "EVENT",
+    "keywords": [
+      "SEARCH"
+    ],
     "phases": [
       "MANEUVER"
     ],
@@ -19837,6 +20273,9 @@
     "kind": "SHADOW",
     "type": "CONDITION",
     "subtype": "SUPPORT-AREA",
+    "keywords": [
+      "SEARCH"
+    ],
     "toPlay": [
       {
         "spot": [
@@ -20229,6 +20668,9 @@
     "isUnique": false,
     "kind": "SHADOW",
     "type": "EVENT",
+    "keywords": [
+      "SEARCH"
+    ],
     "phases": [
       "MANEUVER"
     ],
@@ -20324,6 +20766,9 @@
     "kind": "SHADOW",
     "type": "CONDITION",
     "subtype": "SUPPORT-AREA",
+    "keywords": [
+      "SEARCH"
+    ],
     "toPlay": [
       {
         "exert": [
@@ -20589,6 +21034,9 @@
     "kind": "SHADOW",
     "type": "CONDITION",
     "subtype": "SUPPORT-AREA",
+    "keywords": [
+      "SEARCH"
+    ],
     "culture": "SAURON",
     "twilightCost": 2,
     "imageUrl": "/cards_visuals/o_01_260.jpg",
@@ -20627,6 +21075,9 @@
     "isUnique": false,
     "kind": "SHADOW",
     "type": "MINION",
+    "keywords": [
+      "TRACKER"
+    ],
     "phases": [
       "RESPONSE"
     ],
@@ -20672,6 +21123,9 @@
     "isUnique": false,
     "kind": "SHADOW",
     "type": "MINION",
+    "keywords": [
+      "TRACKER"
+    ],
     "phases": [
       "ASSIGNMENT"
     ],
@@ -21009,6 +21463,9 @@
     "isUnique": false,
     "kind": "SHADOW",
     "type": "MINION",
+    "keywords": [
+      "TRACKER"
+    ],
     "phases": [
       "SKIRMISH"
     ],
@@ -21238,6 +21695,9 @@
     "kind": "SHADOW",
     "type": "CONDITION",
     "subtype": "SUPPORT-AREA",
+    "keywords": [
+      "SEARCH"
+    ],
     "phases": [
       "RESPONSE"
     ],
@@ -21500,6 +21960,9 @@
     "kind": "SHADOW",
     "type": "CONDITION",
     "subtype": "SUPPORT-AREA",
+    "keywords": [
+      "SEARCH"
+    ],
     "toPlay": [
       {
         "exert": [
@@ -22215,6 +22678,9 @@
     "isUnique": false,
     "kind": "FREE_PEOPLE",
     "type": "EVENT",
+    "keywords": [
+      "STEALTH"
+    ],
     "phases": [
       "SKIRMISH"
     ],
@@ -22301,6 +22767,9 @@
     "isUnique": false,
     "kind": "FREE_PEOPLE",
     "type": "EVENT",
+    "keywords": [
+      "STEALTH"
+    ],
     "phases": [
       "SKIRMISH"
     ],
@@ -22387,6 +22856,9 @@
     "isUnique": false,
     "kind": "FREE_PEOPLE",
     "type": "POSSESSION",
+    "keywords": [
+      "PIPEWEED"
+    ],
     "culture": "SHIRE",
     "twilightCost": 1,
     "imageUrl": "/cards_visuals/o_01_300.jpg",
@@ -22613,6 +23085,9 @@
     "isUnique": false,
     "kind": "FREE_PEOPLE",
     "type": "POSSESSION",
+    "keywords": [
+      "PIPEWEED"
+    ],
     "culture": "SHIRE",
     "twilightCost": 1,
     "imageUrl": "/cards_visuals/o_01_305.jpg",
@@ -23029,6 +23504,9 @@
     "isUnique": false,
     "kind": "FREE_PEOPLE",
     "type": "CONDITION",
+    "keywords": [
+      "TALE"
+    ],
     "toPlay": [
       {
         "spot": [
@@ -23125,6 +23603,9 @@
     "kind": "FREE_PEOPLE",
     "type": "CONDITION",
     "subtype": "SUPPORT-AREA",
+    "keywords": [
+      "STEALTH"
+    ],
     "toPlay": [
       {
         "exert": [
@@ -23178,6 +23659,9 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "CONDITION",
+    "keywords": [
+      "TALE"
+    ],
     "attachedTo": [
       [
         "HOBBIT",
@@ -23317,6 +23801,9 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
+    "keywords": [
+      "RANGER"
+    ],
     "culture": "GONDOR",
     "race": "MAN",
     "signet": "ARAGORN",
@@ -23365,6 +23852,9 @@
     "kind": "FREE_PEOPLE",
     "type": "CONDITION",
     "subtype": "SUPPORT-AREA",
+    "keywords": [
+      "TALE"
+    ],
     "phases": [
       "FELLOWSHIP"
     ],
@@ -23749,6 +24239,9 @@
     "kind": "FREE_PEOPLE",
     "type": "CONDITION",
     "subtype": "SUPPORT-AREA",
+    "keywords": [
+      "TALE"
+    ],
     "culture": "DWARVEN",
     "twilightCost": 1,
     "imageUrl": "/cards_visuals/o_02_009.jpg",
@@ -23961,6 +24454,9 @@
     "kind": "FREE_PEOPLE",
     "type": "CONDITION",
     "subtype": "SUPPORT-AREA",
+    "keywords": [
+      "TALE"
+    ],
     "culture": "DWARVEN",
     "twilightCost": 0,
     "imageUrl": "/cards_visuals/o_02_014.jpg",
@@ -24136,6 +24632,9 @@
     "kind": "FREE_PEOPLE",
     "type": "CONDITION",
     "subtype": "SUPPORT-AREA",
+    "keywords": [
+      "TALE"
+    ],
     "phases": [
       "RESPONSE"
     ],
@@ -24577,6 +25076,9 @@
     "isUnique": false,
     "kind": "FREE_PEOPLE",
     "type": "EVENT",
+    "keywords": [
+      "SPELL"
+    ],
     "phases": [
       "SKIRMISH"
     ],
@@ -24618,6 +25120,9 @@
     "isUnique": false,
     "kind": "FREE_PEOPLE",
     "type": "EVENT",
+    "keywords": [
+      "SPELL"
+    ],
     "phases": [
       "MANEUVER",
       "REGROUP"
@@ -24708,6 +25213,9 @@
     "isUnique": false,
     "kind": "FREE_PEOPLE",
     "type": "EVENT",
+    "keywords": [
+      "SPELL"
+    ],
     "phases": [
       "MANEUVER",
       "REGROUP"
@@ -25433,6 +25941,9 @@
     "isUnique": true,
     "kind": "SHADOW",
     "type": "MINION",
+    "keywords": [
+      "DAMAGE +1"
+    ],
     "phases": [
       "SHADOW"
     ],
@@ -25478,6 +25989,10 @@
     "isUnique": false,
     "kind": "SHADOW",
     "type": "MINION",
+    "keywords": [
+      "TRACKER",
+      "DAMAGE +1"
+    ],
     "phases": [
       "RESPONSE"
     ],
@@ -25523,6 +26038,10 @@
     "isUnique": false,
     "kind": "SHADOW",
     "type": "CONDITION",
+    "keywords": [
+      "SPELL",
+      "WEATHER"
+    ],
     "attachedTo": [
       [
         "SITE"
@@ -25580,6 +26099,9 @@
     "isUnique": true,
     "kind": "SHADOW",
     "type": "MINION",
+    "keywords": [
+      "ARCHER"
+    ],
     "culture": "MORIA",
     "race": "ORC",
     "twilightCost": 4,
@@ -25667,6 +26189,10 @@
     "isUnique": true,
     "kind": "SHADOW",
     "type": "MINION",
+    "keywords": [
+      "DAMAGE +1",
+      "FIERCE"
+    ],
     "culture": "MORIA",
     "race": "BALROG",
     "twilightCost": 12,
@@ -25937,6 +26463,9 @@
     "isUnique": false,
     "kind": "SHADOW",
     "type": "MINION",
+    "keywords": [
+      "TENTACLE"
+    ],
     "culture": "MORIA",
     "race": "CREATURE",
     "twilightCost": 2,
@@ -26020,6 +26549,9 @@
     "isUnique": false,
     "kind": "SHADOW",
     "type": "MINION",
+    "keywords": [
+      "ARCHER"
+    ],
     "culture": "MORIA",
     "race": "ORC",
     "twilightCost": 2,
@@ -26272,6 +26804,10 @@
     "isUnique": false,
     "kind": "SHADOW",
     "type": "MINION",
+    "keywords": [
+      "TENTACLE",
+      "DAMAGE +1"
+    ],
     "culture": "MORIA",
     "race": "CREATURE",
     "twilightCost": 2,
@@ -26314,6 +26850,9 @@
     "isUnique": false,
     "kind": "SHADOW",
     "type": "MINION",
+    "keywords": [
+      "ARCHER"
+    ],
     "culture": "MORIA",
     "race": "ORC",
     "twilightCost": 6,
@@ -26572,6 +27111,9 @@
     "isUnique": true,
     "kind": "SHADOW",
     "type": "MINION",
+    "keywords": [
+      "DAMAGE +1"
+    ],
     "culture": "MORIA",
     "race": "CREATURE",
     "twilightCost": 4,
@@ -26975,6 +27517,9 @@
     "isUnique": true,
     "kind": "SHADOW",
     "type": "MINION",
+    "keywords": [
+      "TWILIGHT"
+    ],
     "culture": "WRAITH",
     "race": "NAZGÛL",
     "twilightCost": 6,
@@ -27022,6 +27567,9 @@
     "isUnique": true,
     "kind": "SHADOW",
     "type": "MINION",
+    "keywords": [
+      "TWILIGHT"
+    ],
     "culture": "WRAITH",
     "race": "NAZGÛL",
     "twilightCost": 6,
@@ -27069,6 +27617,9 @@
     "isUnique": true,
     "kind": "SHADOW",
     "type": "MINION",
+    "keywords": [
+      "TWILIGHT"
+    ],
     "culture": "WRAITH",
     "race": "NAZGÛL",
     "twilightCost": 5,
@@ -27116,6 +27667,9 @@
     "isUnique": true,
     "kind": "SHADOW",
     "type": "MINION",
+    "keywords": [
+      "TWILIGHT"
+    ],
     "culture": "WRAITH",
     "race": "NAZGÛL",
     "twilightCost": 8,
@@ -27286,6 +27840,9 @@
     "isUnique": false,
     "kind": "SHADOW",
     "type": "MINION",
+    "keywords": [
+      "TRACKER"
+    ],
     "phases": [
       "RESPONSE"
     ],
@@ -27418,6 +27975,9 @@
     "kind": "SHADOW",
     "type": "CONDITION",
     "subtype": "SUPPORT-AREA",
+    "keywords": [
+      "SEARCH"
+    ],
     "toPlay": [
       {
         "spot": [
@@ -27663,6 +28223,9 @@
     "isUnique": false,
     "kind": "FREE_PEOPLE",
     "type": "CONDITION",
+    "keywords": [
+      "TALE"
+    ],
     "attachedTo": [
       [
         "Bilbo"
@@ -27751,6 +28314,9 @@
     "isUnique": false,
     "kind": "FREE_PEOPLE",
     "type": "EVENT",
+    "keywords": [
+      "STEALTH"
+    ],
     "phases": [
       "REGROUP"
     ],
@@ -27793,6 +28359,9 @@
     "kind": "FREE_PEOPLE",
     "type": "CONDITION",
     "subtype": "SUPPORT-AREA",
+    "keywords": [
+      "STEALTH"
+    ],
     "toPlay": [
       {
         "exert": [
@@ -27988,6 +28557,9 @@
     "kind": "FREE_PEOPLE",
     "type": "CONDITION",
     "subtype": "SUPPORT-AREA",
+    "keywords": [
+      "STEALTH"
+    ],
     "phases": [
       "RESPONSE"
     ],
@@ -28083,6 +28655,9 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "CONDITION",
+    "keywords": [
+      "TALE"
+    ],
     "attachedTo": [
       [
         "the Ring-bearer"
@@ -28301,6 +28876,9 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "POSSESSION",
+    "keywords": [
+      "TALE"
+    ],
     "culture": "SHIRE",
     "twilightCost": 2,
     "imageUrl": "/cards_visuals/o_02_113.jpg",
@@ -28391,6 +28969,9 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
+    "keywords": [
+      "DAMAGE +1"
+    ],
     "culture": "DWARVEN",
     "race": "DWARF",
     "signet": "FRODO",
@@ -28485,6 +29066,9 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "POSSESSION",
+    "keywords": [
+      "TALE"
+    ],
     "attachedTo": [
       [
         "DWARF"
@@ -28657,6 +29241,9 @@
     "kind": "FREE_PEOPLE",
     "type": "CONDITION",
     "subtype": "SUPPORT-AREA",
+    "keywords": [
+      "TALE"
+    ],
     "toPlay": [
       {
         "exert": [
@@ -28754,6 +29341,9 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
+    "keywords": [
+      "RANGER"
+    ],
     "phases": [
       "RESPONSE"
     ],
@@ -28852,6 +29442,9 @@
     "kind": "FREE_PEOPLE",
     "type": "CONDITION",
     "subtype": "SUPPORT-AREA",
+    "keywords": [
+      "TALE"
+    ],
     "phases": [
       "SKIRMISH"
     ],
@@ -28893,6 +29486,9 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "ALLY",
+    "keywords": [
+      "ARCHER"
+    ],
     "phases": [
       "REGROUP"
     ],
@@ -28984,6 +29580,9 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "ALLY",
+    "keywords": [
+      "ARCHER"
+    ],
     "phases": [
       "REGROUP"
     ],
@@ -29816,6 +30415,9 @@
     "isUnique": false,
     "kind": "FREE_PEOPLE",
     "type": "EVENT",
+    "keywords": [
+      "TALE"
+    ],
     "phases": [
       "SKIRMISH"
     ],
@@ -29899,6 +30501,9 @@
     "isUnique": false,
     "kind": "FREE_PEOPLE",
     "type": "EVENT",
+    "keywords": [
+      "SPELL"
+    ],
     "phases": [
       "MANEUVER"
     ],
@@ -29940,6 +30545,9 @@
     "isUnique": false,
     "kind": "FREE_PEOPLE",
     "type": "EVENT",
+    "keywords": [
+      "STEALTH"
+    ],
     "phases": [
       "MANEUVER"
     ],
@@ -29981,6 +30589,9 @@
     "isUnique": false,
     "kind": "FREE_PEOPLE",
     "type": "EVENT",
+    "keywords": [
+      "SPELL"
+    ],
     "phases": [
       "FELLOWSHIP"
     ],
@@ -30234,6 +30845,9 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
+    "keywords": [
+      "RANGER"
+    ],
     "culture": "GONDOR",
     "race": "MAN",
     "signet": "FRODO",
@@ -30281,6 +30895,9 @@
     "isUnique": false,
     "kind": "FREE_PEOPLE",
     "type": "EVENT",
+    "keywords": [
+      "TALE"
+    ],
     "phases": [
       "MANEUVER"
     ],
@@ -30362,6 +30979,9 @@
     "kind": "FREE_PEOPLE",
     "type": "CONDITION",
     "subtype": "SUPPORT-AREA",
+    "keywords": [
+      "TALE"
+    ],
     "phases": [
       "ARCHERY"
     ],
@@ -30449,6 +31069,9 @@
     "isUnique": false,
     "kind": "FREE_PEOPLE",
     "type": "EVENT",
+    "keywords": [
+      "TALE"
+    ],
     "phases": [
       "MANEUVER"
     ],
@@ -30532,6 +31155,9 @@
     "isUnique": false,
     "kind": "FREE_PEOPLE",
     "type": "EVENT",
+    "keywords": [
+      "TALE"
+    ],
     "phases": [
       "MANEUVER"
     ],
@@ -31450,6 +32076,9 @@
     "isUnique": true,
     "kind": "SHADOW",
     "type": "MINION",
+    "keywords": [
+      "DAMAGE +1"
+    ],
     "phases": [
       "MANEUVER"
     ],
@@ -31815,6 +32444,9 @@
     "isUnique": false,
     "kind": "SHADOW",
     "type": "MINION",
+    "keywords": [
+      "DAMAGE +1"
+    ],
     "culture": "ISENGARD",
     "race": "URUK-HAI",
     "twilightCost": 2,
@@ -31857,6 +32489,9 @@
     "isUnique": false,
     "kind": "SHADOW",
     "type": "MINION",
+    "keywords": [
+      "DAMAGE +1"
+    ],
     "culture": "ISENGARD",
     "race": "URUK-HAI",
     "twilightCost": 4,
@@ -31993,6 +32628,9 @@
     "isUnique": false,
     "kind": "SHADOW",
     "type": "EVENT",
+    "keywords": [
+      "SEARCH"
+    ],
     "phases": [
       "SKIRMISH"
     ],
@@ -32332,6 +32970,9 @@
     "isUnique": true,
     "kind": "SHADOW",
     "type": "MINION",
+    "keywords": [
+      "TWILIGHT"
+    ],
     "culture": "WRAITH",
     "race": "NAZGÛL",
     "twilightCost": 4,
@@ -32420,6 +33061,9 @@
     "isUnique": false,
     "kind": "SHADOW",
     "type": "EVENT",
+    "keywords": [
+      "SEARCH"
+    ],
     "phases": [
       "SHADOW"
     ],
@@ -33484,6 +34128,9 @@
     "isUnique": false,
     "kind": "FREE_PEOPLE",
     "type": "EVENT",
+    "keywords": [
+      "STEALTH"
+    ],
     "phases": [
       "SKIRMISH"
     ],
@@ -33579,6 +34226,9 @@
     "kind": "FREE_PEOPLE",
     "type": "CONDITION",
     "subtype": "SUPPORT-AREA",
+    "keywords": [
+      "TALE"
+    ],
     "phases": [
       "RESPONSE"
     ],
@@ -33620,6 +34270,9 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
+    "keywords": [
+      "ARCHER"
+    ],
     "culture": "ELVEN",
     "race": "ELF",
     "signet": "ARAGORN",
@@ -33667,6 +34320,9 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
+    "keywords": [
+      "RANGER"
+    ],
     "phases": [
       "FELLOWSHIP"
     ],
@@ -35272,6 +35928,9 @@
     "isUnique": true,
     "kind": "SHADOW",
     "type": "MINION",
+    "keywords": [
+      "FIERCE"
+    ],
     "phases": [
       "RESPONSE"
     ],
@@ -35536,6 +36195,9 @@
     "kind": "FREE_PEOPLE",
     "type": "CONDITION",
     "subtype": "SUPPORT-AREA",
+    "keywords": [
+      "TALE"
+    ],
     "phases": [
       "FELLOWSHIP"
     ],
@@ -35614,6 +36276,9 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
+    "keywords": [
+      "DAMAGE +1"
+    ],
     "culture": "DWARVEN",
     "race": "DWARF",
     "signet": "ARAGORN",
@@ -35661,6 +36326,9 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
+    "keywords": [
+      "DAMAGE +1"
+    ],
     "phases": [
       "SKIRMISH"
     ],
@@ -35712,6 +36380,9 @@
     "kind": "FREE_PEOPLE",
     "type": "CONDITION",
     "subtype": "SUPPORT-AREA",
+    "keywords": [
+      "TALE"
+    ],
     "phases": [
       "SKIRMISH"
     ],
@@ -36034,6 +36705,9 @@
     "isUnique": false,
     "kind": "FREE_PEOPLE",
     "type": "EVENT",
+    "keywords": [
+      "TALE"
+    ],
     "phases": [
       "FELLOWSHIP"
     ],
@@ -36773,6 +37447,9 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
+    "keywords": [
+      "ARCHER"
+    ],
     "phases": [
       "SKIRMISH"
     ],
@@ -37619,6 +38296,9 @@
     "isUnique": false,
     "kind": "FREE_PEOPLE",
     "type": "EVENT",
+    "keywords": [
+      "SPELL"
+    ],
     "phases": [
       "FELLOWSHIP"
     ],
@@ -37701,6 +38381,9 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "CONDITION",
+    "keywords": [
+      "SPELL"
+    ],
     "attachedTo": [
       [
         "Théoden"
@@ -37761,6 +38444,9 @@
     "isUnique": false,
     "kind": "FREE_PEOPLE",
     "type": "EVENT",
+    "keywords": [
+      "SPELL"
+    ],
     "phases": [
       "RESPONSE"
     ],
@@ -37843,6 +38529,9 @@
     "isUnique": false,
     "kind": "FREE_PEOPLE",
     "type": "EVENT",
+    "keywords": [
+      "SPELL"
+    ],
     "phases": [
       "SKIRMISH"
     ],
@@ -37884,6 +38573,9 @@
     "isUnique": false,
     "kind": "FREE_PEOPLE",
     "type": "EVENT",
+    "keywords": [
+      "SPELL"
+    ],
     "phases": [
       "MANEUVER"
     ],
@@ -38008,6 +38700,9 @@
     "isUnique": false,
     "kind": "FREE_PEOPLE",
     "type": "EVENT",
+    "keywords": [
+      "SPELL"
+    ],
     "phases": [
       "REGROUP"
     ],
@@ -38049,6 +38744,9 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "ALLY",
+    "keywords": [
+      "UNHASTY"
+    ],
     "phases": [
       "FELLOWSHIP"
     ],
@@ -38273,6 +38971,9 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
+    "keywords": [
+      "DEFENDER +1"
+    ],
     "culture": "GONDOR",
     "race": "MAN",
     "signet": "GANDALF",
@@ -38498,6 +39199,10 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
+    "keywords": [
+      "RING-BOUND",
+      "RANGER"
+    ],
     "toPlay": [
       {
         "spot": [
@@ -38604,6 +39309,10 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
+    "keywords": [
+      "RING-BOUND",
+      "RANGER"
+    ],
     "culture": "GONDOR",
     "race": "MAN",
     "signet": "ARAGORN",
@@ -38873,6 +39582,9 @@
     "isUnique": false,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
+    "keywords": [
+      "RANGER"
+    ],
     "culture": "GONDOR",
     "race": "MAN",
     "twilightCost": 2,
@@ -39082,6 +39794,10 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
+    "keywords": [
+      "RING-BOUND",
+      "RANGER"
+    ],
     "toPlay": [
       {
         "spot": [
@@ -39230,6 +39946,10 @@
     "isUnique": false,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
+    "keywords": [
+      "RING-BOUND",
+      "RANGER"
+    ],
     "culture": "GONDOR",
     "race": "MAN",
     "twilightCost": 3,
@@ -39498,6 +40218,9 @@
     "isUnique": false,
     "kind": "SHADOW",
     "type": "MINION",
+    "keywords": [
+      "DAMAGE +1"
+    ],
     "culture": "ISENGARD",
     "race": "URUK-HAI",
     "twilightCost": 5,
@@ -39583,6 +40306,10 @@
     "isUnique": false,
     "kind": "SHADOW",
     "type": "MINION",
+    "keywords": [
+      "ARCHER",
+      "DAMAGE +1"
+    ],
     "culture": "ISENGARD",
     "race": "URUK-HAI",
     "twilightCost": 5,
@@ -39805,6 +40532,9 @@
     "isUnique": false,
     "kind": "SHADOW",
     "type": "EVENT",
+    "keywords": [
+      "SEARCH"
+    ],
     "phases": [
       "ASSIGNMENT"
     ],
@@ -40107,6 +40837,10 @@
     "isUnique": true,
     "kind": "SHADOW",
     "type": "MINION",
+    "keywords": [
+      "ARCHER",
+      "DAMAGE +1"
+    ],
     "phases": [
       "ARCHERY"
     ],
@@ -40417,6 +41151,9 @@
     "isUnique": true,
     "kind": "SHADOW",
     "type": "MINION",
+    "keywords": [
+      "DAMAGE +1"
+    ],
     "phases": [
       "MANEUVER"
     ],
@@ -40462,6 +41199,9 @@
     "isUnique": false,
     "kind": "SHADOW",
     "type": "CONDITION",
+    "keywords": [
+      "SEARCH"
+    ],
     "toPlay": [
       {
         "exert": [
@@ -40518,6 +41258,10 @@
     "isUnique": true,
     "kind": "SHADOW",
     "type": "MINION",
+    "keywords": [
+      "TRACKER",
+      "FIERCE"
+    ],
     "phases": [
       "SKIRMISH"
     ],
@@ -40691,6 +41435,9 @@
     "isUnique": true,
     "kind": "SHADOW",
     "type": "MINION",
+    "keywords": [
+      "DAMAGE +1"
+    ],
     "phases": [
       "ASSIGNMENT"
     ],
@@ -40924,6 +41671,9 @@
     "isUnique": true,
     "kind": "SHADOW",
     "type": "MINION",
+    "keywords": [
+      "ARCHER"
+    ],
     "phases": [
       "ARCHERY"
     ],
@@ -41008,6 +41758,9 @@
     "isUnique": false,
     "kind": "SHADOW",
     "type": "CONDITION",
+    "keywords": [
+      "SEARCH"
+    ],
     "toPlay": [
       {
         "spot": [
@@ -41292,6 +42045,9 @@
     "isUnique": false,
     "kind": "SHADOW",
     "type": "MINION",
+    "keywords": [
+      "DAMAGE +1"
+    ],
     "toPlay": [
       {
         "spot": [
@@ -41344,6 +42100,9 @@
     "isUnique": false,
     "kind": "SHADOW",
     "type": "MINION",
+    "keywords": [
+      "DAMAGE +1"
+    ],
     "phases": [
       "REGROUP",
       "SHADOW"
@@ -41390,6 +42149,10 @@
     "isUnique": false,
     "kind": "SHADOW",
     "type": "MINION",
+    "keywords": [
+      "TRACKER",
+      "FIERCE"
+    ],
     "culture": "ISENGARD",
     "race": "URUK-HAI",
     "twilightCost": 4,
@@ -41432,6 +42195,9 @@
     "isUnique": false,
     "kind": "SHADOW",
     "type": "MINION",
+    "keywords": [
+      "ARCHER"
+    ],
     "culture": "ISENGARD",
     "race": "URUK-HAI",
     "twilightCost": 4,
@@ -41474,6 +42240,9 @@
     "isUnique": false,
     "kind": "SHADOW",
     "type": "MINION",
+    "keywords": [
+      "ARCHER"
+    ],
     "phases": [
       "ARCHERY"
     ],
@@ -41519,6 +42288,9 @@
     "isUnique": false,
     "kind": "SHADOW",
     "type": "MINION",
+    "keywords": [
+      "DAMAGE +1"
+    ],
     "phases": [
       "SKIRMISH"
     ],
@@ -41564,6 +42336,9 @@
     "isUnique": false,
     "kind": "SHADOW",
     "type": "MINION",
+    "keywords": [
+      "DAMAGE +1"
+    ],
     "culture": "ISENGARD",
     "race": "URUK-HAI",
     "twilightCost": 4,
@@ -41606,6 +42381,10 @@
     "isUnique": false,
     "kind": "SHADOW",
     "type": "MINION",
+    "keywords": [
+      "TRACKER",
+      "FIERCE"
+    ],
     "phases": [
       "RESPONSE"
     ],
@@ -41651,6 +42430,10 @@
     "isUnique": false,
     "kind": "SHADOW",
     "type": "MINION",
+    "keywords": [
+      "TRACKER",
+      "FIERCE"
+    ],
     "culture": "ISENGARD",
     "race": "URUK-HAI",
     "twilightCost": 1,
@@ -41693,6 +42476,10 @@
     "isUnique": false,
     "kind": "SHADOW",
     "type": "MINION",
+    "keywords": [
+      "TRACKER",
+      "FIERCE"
+    ],
     "phases": [
       "RESPONSE"
     ],
@@ -41738,6 +42525,10 @@
     "isUnique": false,
     "kind": "SHADOW",
     "type": "MINION",
+    "keywords": [
+      "TRACKER",
+      "FIERCE"
+    ],
     "culture": "ISENGARD",
     "race": "URUK-HAI",
     "twilightCost": 2,
@@ -41780,6 +42571,10 @@
     "isUnique": false,
     "kind": "SHADOW",
     "type": "MINION",
+    "keywords": [
+      "TRACKER",
+      "FIERCE"
+    ],
     "phases": [
       "RESPONSE"
     ],
@@ -41825,6 +42620,9 @@
     "isUnique": false,
     "kind": "SHADOW",
     "type": "MINION",
+    "keywords": [
+      "DAMAGE +1"
+    ],
     "phases": [
       "SKIRMISH"
     ],
@@ -41870,6 +42668,9 @@
     "isUnique": false,
     "kind": "SHADOW",
     "type": "MINION",
+    "keywords": [
+      "DAMAGE +1"
+    ],
     "phases": [
       "SHADOW"
     ],
@@ -41915,6 +42716,10 @@
     "isUnique": false,
     "kind": "SHADOW",
     "type": "MINION",
+    "keywords": [
+      "TRACKER",
+      "FIERCE"
+    ],
     "culture": "ISENGARD",
     "race": "URUK-HAI",
     "twilightCost": 3,
@@ -41957,6 +42762,10 @@
     "isUnique": false,
     "kind": "SHADOW",
     "type": "MINION",
+    "keywords": [
+      "TRACKER",
+      "FIERCE"
+    ],
     "culture": "ISENGARD",
     "race": "URUK-HAI",
     "twilightCost": 4,
@@ -41999,6 +42808,10 @@
     "isUnique": false,
     "kind": "SHADOW",
     "type": "MINION",
+    "keywords": [
+      "TRACKER",
+      "FIERCE"
+    ],
     "culture": "ISENGARD",
     "race": "URUK-HAI",
     "twilightCost": 2,
@@ -42089,6 +42902,9 @@
     "isUnique": false,
     "kind": "SHADOW",
     "type": "MINION",
+    "keywords": [
+      "DAMAGE +1"
+    ],
     "culture": "ISENGARD",
     "race": "URUK-HAI",
     "twilightCost": 3,
@@ -42131,6 +42947,9 @@
     "isUnique": false,
     "kind": "SHADOW",
     "type": "MINION",
+    "keywords": [
+      "DAMAGE +1"
+    ],
     "culture": "ISENGARD",
     "race": "URUK-HAI",
     "twilightCost": 3,
@@ -42173,6 +42992,9 @@
     "isUnique": false,
     "kind": "SHADOW",
     "type": "MINION",
+    "keywords": [
+      "DAMAGE +1"
+    ],
     "phases": [
       "REGROUP",
       "SHADOW"
@@ -42219,6 +43041,9 @@
     "isUnique": false,
     "kind": "SHADOW",
     "type": "MINION",
+    "keywords": [
+      "DAMAGE +1"
+    ],
     "toPlay": [
       {
         "spot": [
@@ -42276,6 +43101,9 @@
     "isUnique": false,
     "kind": "SHADOW",
     "type": "MINION",
+    "keywords": [
+      "DAMAGE +1"
+    ],
     "phases": [
       "REGROUP",
       "SHADOW"
@@ -42322,6 +43150,9 @@
     "isUnique": false,
     "kind": "SHADOW",
     "type": "MINION",
+    "keywords": [
+      "DAMAGE +1"
+    ],
     "culture": "ISENGARD",
     "race": "URUK-HAI",
     "twilightCost": 5,
@@ -42364,6 +43195,9 @@
     "isUnique": false,
     "kind": "SHADOW",
     "type": "MINION",
+    "keywords": [
+      "DAMAGE +1"
+    ],
     "culture": "ISENGARD",
     "race": "URUK-HAI",
     "twilightCost": 6,
@@ -42406,6 +43240,9 @@
     "isUnique": false,
     "kind": "SHADOW",
     "type": "MINION",
+    "keywords": [
+      "DAMAGE +1"
+    ],
     "culture": "ISENGARD",
     "race": "URUK-HAI",
     "twilightCost": 3,
@@ -42490,6 +43327,9 @@
     "isUnique": false,
     "kind": "SHADOW",
     "type": "MINION",
+    "keywords": [
+      "DAMAGE +1"
+    ],
     "culture": "ISENGARD",
     "race": "URUK-HAI",
     "twilightCost": 4,
@@ -42698,6 +43538,9 @@
     "kind": "SHADOW",
     "type": "CONDITION",
     "subtype": "SUPPORT-AREA",
+    "keywords": [
+      "MACHINE"
+    ],
     "phases": [
       "SHADOW",
       "ARCHERY"
@@ -42740,6 +43583,9 @@
     "isUnique": false,
     "kind": "SHADOW",
     "type": "CONDITION",
+    "keywords": [
+      "SEARCH"
+    ],
     "culture": "ISENGARD",
     "twilightCost": 1,
     "imageUrl": "/cards_visuals/o_04_212.jpg",
@@ -42779,6 +43625,9 @@
     "kind": "SHADOW",
     "type": "CONDITION",
     "subtype": "SUPPORT-AREA",
+    "keywords": [
+      "SEARCH"
+    ],
     "culture": "ISENGARD",
     "twilightCost": 1,
     "imageUrl": "/cards_visuals/o_04_213.jpg",
@@ -42952,6 +43801,9 @@
     "isUnique": true,
     "kind": "SHADOW",
     "type": "MINION",
+    "keywords": [
+      "SOUTHRON"
+    ],
     "toPlay": [
       {
         "spot": [
@@ -43011,6 +43863,10 @@
     "isUnique": true,
     "kind": "SHADOW",
     "type": "MINION",
+    "keywords": [
+      "SOUTHRON",
+      "AMBUSH"
+    ],
     "culture": "RAIDER",
     "race": "MAN",
     "twilightCost": 6,
@@ -43048,6 +43904,9 @@
     "isUnique": false,
     "kind": "SHADOW",
     "type": "MINION",
+    "keywords": [
+      "SOUTHRON"
+    ],
     "culture": "RAIDER",
     "race": "MAN",
     "twilightCost": 4,
@@ -43090,6 +43949,9 @@
     "isUnique": false,
     "kind": "SHADOW",
     "type": "MINION",
+    "keywords": [
+      "SOUTHRON"
+    ],
     "culture": "RAIDER",
     "race": "MAN",
     "twilightCost": 3,
@@ -43132,6 +43994,9 @@
     "isUnique": false,
     "kind": "SHADOW",
     "type": "MINION",
+    "keywords": [
+      "SOUTHRON"
+    ],
     "culture": "RAIDER",
     "race": "MAN",
     "twilightCost": 2,
@@ -43215,6 +44080,9 @@
     "isUnique": false,
     "kind": "SHADOW",
     "type": "MINION",
+    "keywords": [
+      "EASTERLING"
+    ],
     "culture": "RAIDER",
     "race": "MAN",
     "twilightCost": 2,
@@ -43257,6 +44125,9 @@
     "isUnique": false,
     "kind": "SHADOW",
     "type": "MINION",
+    "keywords": [
+      "EASTERLING"
+    ],
     "culture": "RAIDER",
     "race": "MAN",
     "twilightCost": 4,
@@ -43299,6 +44170,9 @@
     "isUnique": false,
     "kind": "SHADOW",
     "type": "MINION",
+    "keywords": [
+      "EASTERLING"
+    ],
     "culture": "RAIDER",
     "race": "MAN",
     "twilightCost": 3,
@@ -43341,6 +44215,9 @@
     "isUnique": false,
     "kind": "SHADOW",
     "type": "MINION",
+    "keywords": [
+      "EASTERLING"
+    ],
     "culture": "RAIDER",
     "race": "MAN",
     "twilightCost": 3,
@@ -43383,6 +44260,9 @@
     "isUnique": false,
     "kind": "SHADOW",
     "type": "MINION",
+    "keywords": [
+      "EASTERLING"
+    ],
     "culture": "RAIDER",
     "race": "MAN",
     "twilightCost": 1,
@@ -43425,6 +44305,9 @@
     "isUnique": false,
     "kind": "SHADOW",
     "type": "MINION",
+    "keywords": [
+      "EASTERLING"
+    ],
     "culture": "RAIDER",
     "race": "MAN",
     "twilightCost": 4,
@@ -43509,6 +44392,10 @@
     "isUnique": false,
     "kind": "SHADOW",
     "type": "MINION",
+    "keywords": [
+      "SOUTHRON",
+      "ARCHER"
+    ],
     "phases": [
       "ARCHERY"
     ],
@@ -44003,6 +44890,9 @@
     "isUnique": true,
     "kind": "SHADOW",
     "type": "MINION",
+    "keywords": [
+      "SOUTHRON"
+    ],
     "toPlay": [
       {
         "spot": [
@@ -44062,6 +44952,10 @@
     "isUnique": false,
     "kind": "SHADOW",
     "type": "MINION",
+    "keywords": [
+      "SOUTHRON",
+      "ARCHER"
+    ],
     "culture": "RAIDER",
     "race": "MAN",
     "twilightCost": 3,
@@ -44104,6 +44998,9 @@
     "isUnique": false,
     "kind": "SHADOW",
     "type": "MINION",
+    "keywords": [
+      "SOUTHRON"
+    ],
     "culture": "RAIDER",
     "race": "MAN",
     "twilightCost": 4,
@@ -44191,6 +45088,10 @@
     "isUnique": false,
     "kind": "SHADOW",
     "type": "MINION",
+    "keywords": [
+      "SOUTHRON",
+      "ARCHER"
+    ],
     "phases": [
       "ARCHERY"
     ],
@@ -44236,6 +45137,9 @@
     "isUnique": false,
     "kind": "SHADOW",
     "type": "MINION",
+    "keywords": [
+      "SOUTHRON"
+    ],
     "phases": [
       "ASSIGNMENT"
     ],
@@ -44281,6 +45185,9 @@
     "isUnique": false,
     "kind": "SHADOW",
     "type": "MINION",
+    "keywords": [
+      "SOUTHRON"
+    ],
     "phases": [
       "REGROUP"
     ],
@@ -44326,6 +45233,9 @@
     "isUnique": false,
     "kind": "SHADOW",
     "type": "MINION",
+    "keywords": [
+      "SOUTHRON"
+    ],
     "phases": [
       "MANEUVER"
     ],
@@ -44371,6 +45281,9 @@
     "isUnique": false,
     "kind": "SHADOW",
     "type": "MINION",
+    "keywords": [
+      "SOUTHRON"
+    ],
     "culture": "RAIDER",
     "race": "MAN",
     "twilightCost": 1,
@@ -44413,6 +45326,9 @@
     "isUnique": false,
     "kind": "SHADOW",
     "type": "MINION",
+    "keywords": [
+      "SOUTHRON"
+    ],
     "phases": [
       "MANEUVER"
     ],
@@ -44458,6 +45374,9 @@
     "isUnique": false,
     "kind": "SHADOW",
     "type": "MINION",
+    "keywords": [
+      "SOUTHRON"
+    ],
     "culture": "RAIDER",
     "race": "MAN",
     "twilightCost": 2,
@@ -44548,6 +45467,10 @@
     "isUnique": false,
     "kind": "SHADOW",
     "type": "MINION",
+    "keywords": [
+      "SOUTHRON",
+      "ARCHER"
+    ],
     "toPlay": [
       {
         "spot": [
@@ -44603,6 +45526,9 @@
     "isUnique": false,
     "kind": "SHADOW",
     "type": "MINION",
+    "keywords": [
+      "SOUTHRON"
+    ],
     "phases": [
       "MANEUVER"
     ],
@@ -44648,6 +45574,9 @@
     "isUnique": false,
     "kind": "SHADOW",
     "type": "MINION",
+    "keywords": [
+      "SOUTHRON"
+    ],
     "phases": [
       "ASSIGNMENT"
     ],
@@ -45206,6 +46135,9 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
+    "keywords": [
+      "VALIANT"
+    ],
     "phases": [
       "RESPONSE"
     ],
@@ -45256,6 +46188,9 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
+    "keywords": [
+      "VALIANT"
+    ],
     "phases": [
       "RESPONSE"
     ],
@@ -45520,6 +46455,9 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "ALLY",
+    "keywords": [
+      "VILLAGER"
+    ],
     "phases": [
       "FELLOWSHIP"
     ],
@@ -45701,6 +46639,9 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "ALLY",
+    "keywords": [
+      "VILLAGER"
+    ],
     "phases": [
       "SKIRMISH"
     ],
@@ -45901,6 +46842,9 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "ALLY",
+    "keywords": [
+      "VILLAGER"
+    ],
     "phases": [
       "SKIRMISH"
     ],
@@ -46305,6 +47249,9 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "ALLY",
+    "keywords": [
+      "VILLAGER"
+    ],
     "phases": [
       "FELLOWSHIP"
     ],
@@ -46524,6 +47471,9 @@
     "isUnique": false,
     "kind": "FREE_PEOPLE",
     "type": "CONDITION",
+    "keywords": [
+      "STEALTH"
+    ],
     "attachedTo": [
       [
         "UNBOUND",
@@ -47161,6 +48111,9 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
+    "keywords": [
+      "RING-BOUND"
+    ],
     "phases": [
       "FELLOWSHIP",
       "RESPONSE"
@@ -47213,6 +48166,9 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
+    "keywords": [
+      "RING-BOUND"
+    ],
     "phases": [
       "RESPONSE"
     ],
@@ -47349,6 +48305,9 @@
     "isUnique": false,
     "kind": "FREE_PEOPLE",
     "type": "EVENT",
+    "keywords": [
+      "STEALTH"
+    ],
     "phases": [
       "SKIRMISH"
     ],
@@ -47431,6 +48390,9 @@
     "isUnique": false,
     "kind": "FREE_PEOPLE",
     "type": "EVENT",
+    "keywords": [
+      "STEALTH"
+    ],
     "phases": [
       "SKIRMISH"
     ],
@@ -47472,6 +48434,9 @@
     "isUnique": false,
     "kind": "FREE_PEOPLE",
     "type": "EVENT",
+    "keywords": [
+      "STEALTH"
+    ],
     "phases": [
       "SKIRMISH"
     ],
@@ -47812,6 +48777,9 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
+    "keywords": [
+      "DAMAGE +1"
+    ],
     "culture": "DWARVEN",
     "race": "DWARF",
     "signet": "THEODEN",
@@ -48192,6 +49160,9 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
+    "keywords": [
+      "UNHASTY"
+    ],
     "phases": [
       "ASSIGNMENT",
       "FELLOWSHIP"
@@ -48242,6 +49213,9 @@
     "isUnique": false,
     "kind": "FREE_PEOPLE",
     "type": "EVENT",
+    "keywords": [
+      "SPELL"
+    ],
     "phases": [
       "MANEUVER"
     ],
@@ -48283,6 +49257,9 @@
     "isUnique": false,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
+    "keywords": [
+      "UNHASTY"
+    ],
     "phases": [
       "ASSIGNMENT"
     ],
@@ -48327,6 +49304,9 @@
     "isUnique": false,
     "kind": "FREE_PEOPLE",
     "type": "EVENT",
+    "keywords": [
+      "SPELL"
+    ],
     "phases": [
       "MANEUVER"
     ],
@@ -48368,6 +49348,9 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
+    "keywords": [
+      "UNHASTY"
+    ],
     "phases": [
       "ASSIGNMENT",
       "SKIRMISH"
@@ -48418,6 +49401,9 @@
     "isUnique": false,
     "kind": "FREE_PEOPLE",
     "type": "EVENT",
+    "keywords": [
+      "SPELL"
+    ],
     "phases": [
       "MANEUVER"
     ],
@@ -48715,6 +49701,9 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
+    "keywords": [
+      "RING-BOUND"
+    ],
     "toPlay": [
       {
         "addBurdens": 1
@@ -48810,6 +49799,9 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
+    "keywords": [
+      "KNIGHT"
+    ],
     "phases": [
       "ASSIGNMENT"
     ],
@@ -48860,6 +49852,9 @@
     "kind": "FREE_PEOPLE",
     "type": "CONDITION",
     "subtype": "SUPPORT-AREA",
+    "keywords": [
+      "FORTIFICATION"
+    ],
     "phases": [
       "SKIRMISH"
     ],
@@ -48904,6 +49899,9 @@
     "kind": "FREE_PEOPLE",
     "type": "CONDITION",
     "subtype": "SUPPORT-AREA",
+    "keywords": [
+      "FORTIFICATION"
+    ],
     "phases": [
       "SKIRMISH"
     ],
@@ -48987,6 +49985,9 @@
     "isUnique": false,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
+    "keywords": [
+      "KNIGHT"
+    ],
     "culture": "GONDOR",
     "race": "MAN",
     "twilightCost": 2,
@@ -49028,6 +50029,9 @@
     "isUnique": false,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
+    "keywords": [
+      "KNIGHT"
+    ],
     "phases": [
       "FELLOWSHIP"
     ],
@@ -49156,6 +50160,9 @@
     "kind": "FREE_PEOPLE",
     "type": "CONDITION",
     "subtype": "SUPPORT-AREA",
+    "keywords": [
+      "FORTIFICATION"
+    ],
     "phases": [
       "SKIRMISH"
     ],
@@ -49280,6 +50287,9 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
+    "keywords": [
+      "KNIGHT"
+    ],
     "toPlay": [
       {
         "spot": [
@@ -49386,6 +50396,9 @@
     "kind": "SHADOW",
     "type": "CONDITION",
     "subtype": "SUPPORT-AREA",
+    "keywords": [
+      "MACHINE"
+    ],
     "phases": [
       "SHADOW",
       "SKIRMISH"
@@ -49428,6 +50441,9 @@
     "isUnique": true,
     "kind": "SHADOW",
     "type": "MINION",
+    "keywords": [
+      "DAMAGE +1"
+    ],
     "phases": [
       "SKIRMISH"
     ],
@@ -49472,6 +50488,9 @@
     "isUnique": true,
     "kind": "SHADOW",
     "type": "MINION",
+    "keywords": [
+      "DAMAGE +1"
+    ],
     "phases": [
       "SKIRMISH"
     ],
@@ -49517,6 +50536,9 @@
     "isUnique": true,
     "kind": "SHADOW",
     "type": "MINION",
+    "keywords": [
+      "DAMAGE +1"
+    ],
     "phases": [
       "SKIRMISH"
     ],
@@ -49604,6 +50626,9 @@
     "kind": "SHADOW",
     "type": "CONDITION",
     "subtype": "SUPPORT-AREA",
+    "keywords": [
+      "MACHINE"
+    ],
     "phases": [
       "SHADOW",
       "MANEUVER"
@@ -49646,6 +50671,9 @@
     "isUnique": true,
     "kind": "SHADOW",
     "type": "MINION",
+    "keywords": [
+      "WARG-RIDER"
+    ],
     "culture": "ISENGARD",
     "race": "ORC",
     "twilightCost": 4,
@@ -49733,6 +50761,9 @@
     "isUnique": false,
     "kind": "SHADOW",
     "type": "MINION",
+    "keywords": [
+      "WARG-RIDER"
+    ],
     "culture": "ISENGARD",
     "race": "ORC",
     "twilightCost": 2,
@@ -49775,6 +50806,9 @@
     "isUnique": false,
     "kind": "SHADOW",
     "type": "MINION",
+    "keywords": [
+      "WARG-RIDER"
+    ],
     "culture": "ISENGARD",
     "race": "ORC",
     "twilightCost": 3,
@@ -49863,6 +50897,9 @@
     "isUnique": false,
     "kind": "SHADOW",
     "type": "MINION",
+    "keywords": [
+      "WARG-RIDER"
+    ],
     "culture": "ISENGARD",
     "race": "ORC",
     "twilightCost": 2,
@@ -49951,6 +50988,9 @@
     "kind": "SHADOW",
     "type": "CONDITION",
     "subtype": "SUPPORT-AREA",
+    "keywords": [
+      "MACHINE"
+    ],
     "phases": [
       "SHADOW",
       "SKIRMISH"
@@ -49993,6 +51033,9 @@
     "isUnique": true,
     "kind": "SHADOW",
     "type": "MINION",
+    "keywords": [
+      "WARG-RIDER"
+    ],
     "culture": "ISENGARD",
     "race": "ORC",
     "twilightCost": 2,
@@ -50090,6 +51133,9 @@
     "kind": "SHADOW",
     "type": "CONDITION",
     "subtype": "SUPPORT-AREA",
+    "keywords": [
+      "MACHINE"
+    ],
     "phases": [
       "SHADOW",
       "RESPONSE"
@@ -50131,6 +51177,9 @@
     "isUnique": false,
     "kind": "SHADOW",
     "type": "MINION",
+    "keywords": [
+      "DAMAGE +1"
+    ],
     "culture": "ISENGARD",
     "race": "URUK-HAI",
     "twilightCost": 3,
@@ -50173,6 +51222,9 @@
     "isUnique": false,
     "kind": "SHADOW",
     "type": "MINION",
+    "keywords": [
+      "DAMAGE +1"
+    ],
     "culture": "ISENGARD",
     "race": "URUK-HAI",
     "twilightCost": 2,
@@ -50215,6 +51267,9 @@
     "isUnique": false,
     "kind": "SHADOW",
     "type": "MINION",
+    "keywords": [
+      "DAMAGE +1"
+    ],
     "culture": "ISENGARD",
     "race": "URUK-HAI",
     "twilightCost": 4,
@@ -50356,6 +51411,9 @@
     "isUnique": false,
     "kind": "SHADOW",
     "type": "MINION",
+    "keywords": [
+      "WARG-RIDER"
+    ],
     "culture": "ISENGARD",
     "race": "ORC",
     "twilightCost": 2,
@@ -50398,6 +51456,9 @@
     "isUnique": false,
     "kind": "SHADOW",
     "type": "MINION",
+    "keywords": [
+      "WARG-RIDER"
+    ],
     "culture": "ISENGARD",
     "race": "ORC",
     "twilightCost": 1,
@@ -50522,6 +51583,9 @@
     "isUnique": true,
     "kind": "SHADOW",
     "type": "MINION",
+    "keywords": [
+      "SOUTHRON"
+    ],
     "phases": [
       "SKIRMISH"
     ],
@@ -50567,6 +51631,9 @@
     "isUnique": false,
     "kind": "SHADOW",
     "type": "MINION",
+    "keywords": [
+      "SOUTHRON"
+    ],
     "phases": [
       "REGROUP"
     ],
@@ -50612,6 +51679,9 @@
     "isUnique": false,
     "kind": "SHADOW",
     "type": "MINION",
+    "keywords": [
+      "SOUTHRON"
+    ],
     "phases": [
       "MANEUVER"
     ],
@@ -50702,6 +51772,9 @@
     "isUnique": false,
     "kind": "SHADOW",
     "type": "MINION",
+    "keywords": [
+      "SOUTHRON"
+    ],
     "culture": "RAIDER",
     "race": "MAN",
     "twilightCost": 4,
@@ -50744,6 +51817,9 @@
     "isUnique": false,
     "kind": "SHADOW",
     "type": "MINION",
+    "keywords": [
+      "SOUTHRON"
+    ],
     "culture": "RAIDER",
     "race": "MAN",
     "twilightCost": 3,
@@ -50786,6 +51862,9 @@
     "isUnique": false,
     "kind": "SHADOW",
     "type": "MINION",
+    "keywords": [
+      "SOUTHRON"
+    ],
     "phases": [
       "RESPONSE"
     ],
@@ -50934,6 +52013,9 @@
     "kind": "FREE_PEOPLE",
     "type": "CONDITION",
     "subtype": "SUPPORT-AREA",
+    "keywords": [
+      "FORTIFICATION"
+    ],
     "phases": [
       "MANEUVER"
     ],
@@ -50976,6 +52058,9 @@
     "kind": "FREE_PEOPLE",
     "type": "CONDITION",
     "subtype": "SUPPORT-AREA",
+    "keywords": [
+      "FORTIFICATION"
+    ],
     "phases": [
       "MANEUVER"
     ],
@@ -51017,6 +52102,9 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "ALLY",
+    "keywords": [
+      "VILLAGER"
+    ],
     "phases": [
       "FELLOWSHIP"
     ],
@@ -51067,6 +52155,9 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
+    "keywords": [
+      "VALIANT"
+    ],
     "toPlay": [
       {
         "spot": [
@@ -51130,6 +52221,9 @@
     "isUnique": false,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
+    "keywords": [
+      "VALIANT"
+    ],
     "culture": "ROHAN",
     "race": "MAN",
     "twilightCost": 2,
@@ -51295,6 +52389,9 @@
     "kind": "FREE_PEOPLE",
     "type": "CONDITION",
     "subtype": "SUPPORT-AREA",
+    "keywords": [
+      "FORTIFICATION"
+    ],
     "phases": [
       "ARCHERY"
     ],
@@ -51433,6 +52530,9 @@
     "isUnique": false,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
+    "keywords": [
+      "VALIANT"
+    ],
     "phases": [
       "REGROUP"
     ],
@@ -51525,6 +52625,9 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "ALLY",
+    "keywords": [
+      "VILLAGER"
+    ],
     "phases": [
       "REGROUP"
     ],
@@ -51575,6 +52678,9 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
+    "keywords": [
+      "VALIANT"
+    ],
     "phases": [
       "MANEUVER"
     ],
@@ -52009,6 +53115,9 @@
     "isUnique": true,
     "kind": "SHADOW",
     "type": "MINION",
+    "keywords": [
+      "TRACKER"
+    ],
     "phases": [
       "SKIRMISH"
     ],
@@ -52144,6 +53253,9 @@
     "isUnique": true,
     "kind": "SHADOW",
     "type": "MINION",
+    "keywords": [
+      "TRACKER"
+    ],
     "phases": [
       "MANEUVER"
     ],
@@ -52189,6 +53301,9 @@
     "isUnique": false,
     "kind": "SHADOW",
     "type": "MINION",
+    "keywords": [
+      "TRACKER"
+    ],
     "culture": "SAURON",
     "race": "ORC",
     "twilightCost": 2,
@@ -52231,6 +53346,9 @@
     "isUnique": false,
     "kind": "SHADOW",
     "type": "MINION",
+    "keywords": [
+      "TRACKER"
+    ],
     "culture": "SAURON",
     "race": "ORC",
     "twilightCost": 2,
@@ -52492,6 +53610,9 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
+    "keywords": [
+      "RING-BOUND"
+    ],
     "phases": [
       "RESPONSE"
     ],
@@ -52584,6 +53705,9 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
+    "keywords": [
+      "ARCHER"
+    ],
     "culture": "ELVEN",
     "race": "ELF",
     "signet": "THEODEN",
@@ -52631,6 +53755,9 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
+    "keywords": [
+      "VALIANT"
+    ],
     "phases": [
       "MANEUVER"
     ],
@@ -52763,6 +53890,9 @@
     "isUnique": true,
     "kind": "SHADOW",
     "type": "MINION",
+    "keywords": [
+      "WARG-RIDER"
+    ],
     "culture": "ISENGARD",
     "race": "ORC",
     "twilightCost": 4,
@@ -52800,6 +53930,9 @@
     "isUnique": true,
     "kind": "SHADOW",
     "type": "MINION",
+    "keywords": [
+      "SOUTHRON"
+    ],
     "phases": [
       "SKIRMISH"
     ],
@@ -54254,6 +55387,9 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
+    "keywords": [
+      "DAMAGE +1"
+    ],
     "culture": "GANDALF",
     "race": "WIZARD",
     "signet": "ARAGORN",
@@ -54544,6 +55680,9 @@
     "isUnique": false,
     "kind": "FREE_PEOPLE",
     "type": "EVENT",
+    "keywords": [
+      "SPELL"
+    ],
     "phases": [
       "SKIRMISH"
     ],
@@ -54585,6 +55724,9 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
+    "keywords": [
+      "UNHASTY"
+    ],
     "phases": [
       "ASSIGNMENT",
       "SKIRMISH"
@@ -54931,6 +56073,9 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
+    "keywords": [
+      "RING-BOUND"
+    ],
     "toPlay": [
       {
         "addBurdens": 1
@@ -55068,6 +56213,10 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
+    "keywords": [
+      "RING-BOUND",
+      "RANGER"
+    ],
     "culture": "GONDOR",
     "race": "MAN",
     "twilightCost": 2,
@@ -55252,6 +56401,9 @@
     "kind": "FREE_PEOPLE",
     "type": "CONDITION",
     "subtype": "SUPPORT-AREA",
+    "keywords": [
+      "FORTIFICATION"
+    ],
     "phases": [
       "SKIRMISH"
     ],
@@ -55503,6 +56655,9 @@
     "kind": "SHADOW",
     "type": "CONDITION",
     "subtype": "SUPPORT-AREA",
+    "keywords": [
+      "MACHINE"
+    ],
     "phases": [
       "SHADOW",
       "SKIRMISH"
@@ -55591,6 +56746,9 @@
     "isUnique": true,
     "kind": "SHADOW",
     "type": "MINION",
+    "keywords": [
+      "DAMAGE +1"
+    ],
     "phases": [
       "MANEUVER"
     ],
@@ -56295,6 +57453,9 @@
     "isUnique": true,
     "kind": "SHADOW",
     "type": "MINION",
+    "keywords": [
+      "DAMAGE +2"
+    ],
     "culture": "MORIA",
     "race": "BALROG",
     "twilightCost": 14,
@@ -56383,6 +57544,10 @@
     "isUnique": false,
     "kind": "SHADOW",
     "type": "MINION",
+    "keywords": [
+      "EASTERLING",
+      "FIERCE"
+    ],
     "phases": [
       "SKIRMISH"
     ],
@@ -56469,6 +57634,10 @@
     "isUnique": false,
     "kind": "SHADOW",
     "type": "MINION",
+    "keywords": [
+      "SOUTHRON",
+      "ARCHER"
+    ],
     "phases": [
       "ARCHERY"
     ],
@@ -56514,6 +57683,9 @@
     "isUnique": false,
     "kind": "SHADOW",
     "type": "MINION",
+    "keywords": [
+      "SOUTHRON"
+    ],
     "culture": "RAIDER",
     "race": "MAN",
     "twilightCost": 5,
@@ -56964,6 +58136,9 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
+    "keywords": [
+      "VALIANT"
+    ],
     "phases": [
       "SKIRMISH"
     ],
@@ -57306,6 +58481,9 @@
     "isUnique": false,
     "kind": "SHADOW",
     "type": "MINION",
+    "keywords": [
+      "TWILIGHT"
+    ],
     "phases": [
       "SKIRMISH"
     ],
@@ -57351,6 +58529,9 @@
     "isUnique": false,
     "kind": "SHADOW",
     "type": "MINION",
+    "keywords": [
+      "TWILIGHT"
+    ],
     "culture": "SAURON",
     "race": "WRAITH",
     "twilightCost": 1,
@@ -57483,6 +58664,9 @@
     "isUnique": true,
     "kind": "SHADOW",
     "type": "MINION",
+    "keywords": [
+      "FIERCE"
+    ],
     "culture": "SAURON",
     "race": "TROLL",
     "twilightCost": 8,
@@ -57612,6 +58796,9 @@
     "isUnique": false,
     "kind": "SHADOW",
     "type": "MINION",
+    "keywords": [
+      "FIERCE"
+    ],
     "phases": [
       "SKIRMISH"
     ],
@@ -57703,6 +58890,9 @@
     "isUnique": false,
     "kind": "SHADOW",
     "type": "MINION",
+    "keywords": [
+      "TWILIGHT"
+    ],
     "phases": [
       "REGROUP"
     ],
@@ -58008,6 +59198,10 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
+    "keywords": [
+      "RING-BOUND",
+      "RANGER"
+    ],
     "phases": [
       "FELLOWSHIP"
     ],
@@ -58058,6 +59252,9 @@
     "isUnique": true,
     "kind": "SHADOW",
     "type": "MINION",
+    "keywords": [
+      "FIERCE"
+    ],
     "culture": "WRAITH",
     "race": "NAZGÛL",
     "twilightCost": 8,
@@ -58320,6 +59517,9 @@
     "isUnique": true,
     "kind": "SHADOW",
     "type": "MINION",
+    "keywords": [
+      "FIERCE"
+    ],
     "culture": "SAURON",
     "race": "TROLL",
     "twilightCost": 8,
@@ -58542,6 +59742,9 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
+    "keywords": [
+      "DAMAGE +1"
+    ],
     "culture": "DWARVEN",
     "race": "DWARF",
     "signet": "THEODEN",
@@ -58585,6 +59788,9 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
+    "keywords": [
+      "DAMAGE +1"
+    ],
     "phases": [
       "RESPONSE"
     ],
@@ -59396,6 +60602,9 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
+    "keywords": [
+      "ARCHER"
+    ],
     "phases": [
       "ARCHERY"
     ],
@@ -59442,6 +60651,9 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
+    "keywords": [
+      "ARCHER"
+    ],
     "phases": [
       "ARCHERY"
     ],
@@ -59702,6 +60914,9 @@
     "isUnique": false,
     "kind": "FREE_PEOPLE",
     "type": "EVENT",
+    "keywords": [
+      "SPELL"
+    ],
     "phases": [
       "RESPONSE"
     ],
@@ -59999,6 +61214,9 @@
     "kind": "FREE_PEOPLE",
     "type": "POSSESSION",
     "subtype": "HAND-WEAPON",
+    "keywords": [
+      "DAMAGE +1"
+    ],
     "attachedTo": [
       [
         "Gandalf"
@@ -60082,6 +61300,9 @@
     "isUnique": false,
     "kind": "FREE_PEOPLE",
     "type": "EVENT",
+    "keywords": [
+      "SPELL"
+    ],
     "phases": [
       "RESPONSE"
     ],
@@ -60455,6 +61676,9 @@
     "isUnique": false,
     "kind": "FREE_PEOPLE",
     "type": "EVENT",
+    "keywords": [
+      "SPELL"
+    ],
     "phases": [
       "MANEUVER"
     ],
@@ -60700,6 +61924,9 @@
     "isUnique": false,
     "kind": "FREE_PEOPLE",
     "type": "CONDITION",
+    "keywords": [
+      "STEALTH"
+    ],
     "attachedTo": [
       [
         "Sméagol"
@@ -60991,6 +62218,9 @@
     "isUnique": false,
     "kind": "SHADOW",
     "type": "CONDITION",
+    "keywords": [
+      "DAMAGE +1"
+    ],
     "attachedTo": [
       [
         "MINION"
@@ -61364,6 +62594,9 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
+    "keywords": [
+      "RING-BOUND"
+    ],
     "toPlay": [
       {
         "addBurdens": 1
@@ -61414,6 +62647,9 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
+    "keywords": [
+      "RING-BOUND"
+    ],
     "toPlay": [
       {
         "addBurdens": 1
@@ -61464,6 +62700,9 @@
     "isUnique": false,
     "kind": "FREE_PEOPLE",
     "type": "EVENT",
+    "keywords": [
+      "STEALTH"
+    ],
     "phases": [
       "SKIRMISH"
     ],
@@ -61753,6 +62992,9 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
+    "keywords": [
+      "KNIGHT"
+    ],
     "culture": "GONDOR",
     "race": "MAN",
     "signet": "ARAGORN",
@@ -62133,6 +63375,9 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
+    "keywords": [
+      "RANGER"
+    ],
     "toPlay": [
       {
         "spot": [
@@ -62190,6 +63435,9 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
+    "keywords": [
+      "RANGER"
+    ],
     "phases": [
       "FELLOWSHIP",
       "SKIRMISH"
@@ -62237,6 +63485,9 @@
     "kind": "FREE_PEOPLE",
     "type": "CONDITION",
     "subtype": "SUPPORT-AREA",
+    "keywords": [
+      "FORTIFICATION"
+    ],
     "phases": [
       "MANEUVER"
     ],
@@ -62319,6 +63570,9 @@
     "kind": "FREE_PEOPLE",
     "type": "POSSESSION",
     "subtype": "RANGED-WEAPON",
+    "keywords": [
+      "FORTIFICATION"
+    ],
     "attachedTo": [
       [
         "GONDOR",
@@ -62413,6 +63667,9 @@
     "isUnique": false,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
+    "keywords": [
+      "KNIGHT"
+    ],
     "phases": [
       "FELLOWSHIP"
     ],
@@ -62842,6 +64099,9 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
+    "keywords": [
+      "KNIGHT"
+    ],
     "phases": [
       "FELLOWSHIP"
     ],
@@ -63008,6 +64268,9 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
+    "keywords": [
+      "RANGER"
+    ],
     "phases": [
       "SKIRMISH"
     ],
@@ -63215,6 +64478,9 @@
     "isUnique": false,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
+    "keywords": [
+      "RANGER"
+    ],
     "culture": "GONDOR",
     "race": "MAN",
     "twilightCost": 2,
@@ -63252,6 +64518,9 @@
     "isUnique": false,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
+    "keywords": [
+      "RANGER"
+    ],
     "phases": [
       "REGROUP"
     ],
@@ -63334,6 +64603,9 @@
     "kind": "FREE_PEOPLE",
     "type": "CONDITION",
     "subtype": "SUPPORT-AREA",
+    "keywords": [
+      "FORTIFICATION"
+    ],
     "phases": [
       "MANEUVER"
     ],
@@ -63373,6 +64645,9 @@
     "kind": "FREE_PEOPLE",
     "type": "CONDITION",
     "subtype": "SUPPORT-AREA",
+    "keywords": [
+      "FORTIFICATION"
+    ],
     "phases": [
       "SKIRMISH"
     ],
@@ -63583,6 +64858,9 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
+    "keywords": [
+      "RANGER"
+    ],
     "phases": [
       "SKIRMISH"
     ],
@@ -63624,6 +64902,9 @@
     "kind": "FREE_PEOPLE",
     "type": "CONDITION",
     "subtype": "SUPPORT-AREA",
+    "keywords": [
+      "FORTIFICATION"
+    ],
     "phases": [
       "SKIRMISH"
     ],
@@ -63876,6 +65157,9 @@
     "isUnique": false,
     "kind": "SHADOW",
     "type": "MINION",
+    "keywords": [
+      "SOUTHRON"
+    ],
     "culture": "RAIDER",
     "race": "MAN",
     "twilightCost": 3,
@@ -63914,6 +65198,9 @@
     "isUnique": false,
     "kind": "SHADOW",
     "type": "MINION",
+    "keywords": [
+      "SOUTHRON"
+    ],
     "culture": "RAIDER",
     "race": "MAN",
     "twilightCost": 4,
@@ -63952,6 +65239,9 @@
     "isUnique": false,
     "kind": "SHADOW",
     "type": "MINION",
+    "keywords": [
+      "SOUTHRON"
+    ],
     "culture": "RAIDER",
     "race": "MAN",
     "twilightCost": 2,
@@ -63990,6 +65280,9 @@
     "isUnique": false,
     "kind": "SHADOW",
     "type": "MINION",
+    "keywords": [
+      "SOUTHRON"
+    ],
     "culture": "RAIDER",
     "race": "MAN",
     "twilightCost": 3,
@@ -64028,6 +65321,9 @@
     "isUnique": false,
     "kind": "SHADOW",
     "type": "MINION",
+    "keywords": [
+      "SOUTHRON"
+    ],
     "culture": "RAIDER",
     "race": "MAN",
     "twilightCost": 1,
@@ -64066,6 +65362,9 @@
     "isUnique": false,
     "kind": "SHADOW",
     "type": "MINION",
+    "keywords": [
+      "SOUTHRON"
+    ],
     "culture": "RAIDER",
     "race": "MAN",
     "twilightCost": 4,
@@ -64103,6 +65402,9 @@
     "isUnique": false,
     "kind": "SHADOW",
     "type": "MINION",
+    "keywords": [
+      "SOUTHRON"
+    ],
     "culture": "RAIDER",
     "race": "MAN",
     "twilightCost": 3,
@@ -64140,6 +65442,9 @@
     "isUnique": false,
     "kind": "SHADOW",
     "type": "MINION",
+    "keywords": [
+      "SOUTHRON"
+    ],
     "culture": "RAIDER",
     "race": "MAN",
     "twilightCost": 4,
@@ -64178,6 +65483,9 @@
     "isUnique": false,
     "kind": "SHADOW",
     "type": "MINION",
+    "keywords": [
+      "EASTERLING"
+    ],
     "phases": [
       "SKIRMISH"
     ],
@@ -64219,6 +65527,9 @@
     "isUnique": false,
     "kind": "SHADOW",
     "type": "MINION",
+    "keywords": [
+      "EASTERLING"
+    ],
     "phases": [
       "SKIRMISH"
     ],
@@ -64260,6 +65571,9 @@
     "isUnique": false,
     "kind": "SHADOW",
     "type": "MINION",
+    "keywords": [
+      "EASTERLING"
+    ],
     "phases": [
       "SKIRMISH"
     ],
@@ -64301,6 +65615,9 @@
     "isUnique": false,
     "kind": "SHADOW",
     "type": "MINION",
+    "keywords": [
+      "EASTERLING"
+    ],
     "phases": [
       "SKIRMISH"
     ],
@@ -64342,6 +65659,9 @@
     "isUnique": false,
     "kind": "SHADOW",
     "type": "MINION",
+    "keywords": [
+      "EASTERLING"
+    ],
     "phases": [
       "MANEUVER"
     ],
@@ -64383,6 +65703,9 @@
     "isUnique": false,
     "kind": "SHADOW",
     "type": "MINION",
+    "keywords": [
+      "EASTERLING"
+    ],
     "phases": [
       "SKIRMISH"
     ],
@@ -64424,6 +65747,10 @@
     "isUnique": true,
     "kind": "SHADOW",
     "type": "MINION",
+    "keywords": [
+      "EASTERLING",
+      "FIERCE"
+    ],
     "culture": "RAIDER",
     "race": "MAN",
     "twilightCost": 5,
@@ -64462,6 +65789,9 @@
     "isUnique": false,
     "kind": "SHADOW",
     "type": "MINION",
+    "keywords": [
+      "EASTERLING"
+    ],
     "phases": [
       "MANEUVER"
     ],
@@ -64503,6 +65833,9 @@
     "isUnique": false,
     "kind": "SHADOW",
     "type": "MINION",
+    "keywords": [
+      "EASTERLING"
+    ],
     "phases": [
       "SKIRMISH"
     ],
@@ -64742,6 +66075,9 @@
     "isUnique": false,
     "kind": "SHADOW",
     "type": "MINION",
+    "keywords": [
+      "SOUTHRON"
+    ],
     "toPlay": [
       {
         "spot": [
@@ -65091,6 +66427,9 @@
     "isUnique": false,
     "kind": "SHADOW",
     "type": "MINION",
+    "keywords": [
+      "SOUTHRON"
+    ],
     "phases": [
       "MANEUVER"
     ],
@@ -65132,6 +66471,9 @@
     "isUnique": false,
     "kind": "SHADOW",
     "type": "MINION",
+    "keywords": [
+      "SOUTHRON"
+    ],
     "phases": [
       "SHADOW"
     ],
@@ -65173,6 +66515,9 @@
     "isUnique": false,
     "kind": "SHADOW",
     "type": "MINION",
+    "keywords": [
+      "SOUTHRON"
+    ],
     "culture": "RAIDER",
     "race": "MAN",
     "twilightCost": 6,
@@ -65211,6 +66556,9 @@
     "isUnique": false,
     "kind": "SHADOW",
     "type": "MINION",
+    "keywords": [
+      "SOUTHRON"
+    ],
     "toPlay": [
       {
         "spot": [
@@ -65263,6 +66611,10 @@
     "isUnique": false,
     "kind": "SHADOW",
     "type": "MINION",
+    "keywords": [
+      "SOUTHRON",
+      "ARCHER"
+    ],
     "culture": "RAIDER",
     "race": "MAN",
     "twilightCost": 5,
@@ -65301,6 +66653,10 @@
     "isUnique": false,
     "kind": "SHADOW",
     "type": "MINION",
+    "keywords": [
+      "SOUTHRON",
+      "ARCHER"
+    ],
     "culture": "RAIDER",
     "race": "MAN",
     "twilightCost": 6,
@@ -65338,6 +66694,9 @@
     "isUnique": false,
     "kind": "SHADOW",
     "type": "MINION",
+    "keywords": [
+      "SOUTHRON"
+    ],
     "phases": [
       "ARCHERY"
     ],
@@ -65379,6 +66738,11 @@
     "isUnique": false,
     "kind": "SHADOW",
     "type": "MINION",
+    "keywords": [
+      "SOUTHRON",
+      "ARCHER",
+      "FIERCE"
+    ],
     "toPlay": [
       {
         "spot": [
@@ -65434,6 +66798,9 @@
     "isUnique": false,
     "kind": "SHADOW",
     "type": "MINION",
+    "keywords": [
+      "SOUTHRON"
+    ],
     "phases": [
       "ARCHERY"
     ],
@@ -65513,6 +66880,10 @@
     "isUnique": true,
     "kind": "SHADOW",
     "type": "MINION",
+    "keywords": [
+      "SOUTHRON",
+      "ARCHER"
+    ],
     "culture": "RAIDER",
     "race": "MAN",
     "twilightCost": 6,
@@ -65592,6 +66963,9 @@
     "isUnique": false,
     "kind": "SHADOW",
     "type": "MINION",
+    "keywords": [
+      "SOUTHRON"
+    ],
     "culture": "RAIDER",
     "race": "MAN",
     "twilightCost": 5,
@@ -67186,6 +68560,9 @@
     "isUnique": true,
     "kind": "SHADOW",
     "type": "MINION",
+    "keywords": [
+      "FIERCE"
+    ],
     "phases": [
       "SHADOW"
     ],
@@ -67232,6 +68609,10 @@
     "isUnique": true,
     "kind": "SHADOW",
     "type": "MINION",
+    "keywords": [
+      "FIERCE",
+      "DAMAGE +1"
+    ],
     "culture": "WRAITH",
     "race": "NAZGÛL",
     "twilightCost": 6,
@@ -67366,6 +68747,9 @@
     "isUnique": true,
     "kind": "SHADOW",
     "type": "MINION",
+    "keywords": [
+      "FIERCE"
+    ],
     "phases": [
       "SKIRMISH"
     ],
@@ -67412,6 +68796,9 @@
     "isUnique": true,
     "kind": "SHADOW",
     "type": "MINION",
+    "keywords": [
+      "FIERCE"
+    ],
     "phases": [
       "REGROUP"
     ],
@@ -67558,6 +68945,9 @@
     "isUnique": true,
     "kind": "SHADOW",
     "type": "MINION",
+    "keywords": [
+      "FIERCE"
+    ],
     "culture": "WRAITH",
     "race": "NAZGÛL",
     "twilightCost": 6,
@@ -67642,6 +69032,9 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "ALLY",
+    "keywords": [
+      "VILLAGER"
+    ],
     "phases": [
       "SKIRMISH"
     ],
@@ -67724,6 +69117,9 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
+    "keywords": [
+      "VALIANT"
+    ],
     "phases": [
       "SKIRMISH"
     ],
@@ -67805,6 +69201,9 @@
     "isUnique": false,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
+    "keywords": [
+      "DAMAGE +1"
+    ],
     "culture": "ROHAN",
     "race": "MAN",
     "twilightCost": 2,
@@ -67846,6 +69245,9 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
+    "keywords": [
+      "VALIANT"
+    ],
     "culture": "ROHAN",
     "race": "MAN",
     "signet": "THEODEN",
@@ -68074,6 +69476,9 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
+    "keywords": [
+      "VALIANT"
+    ],
     "phases": [
       "SKIRMISH"
     ],
@@ -68210,6 +69615,9 @@
     "kind": "FREE_PEOPLE",
     "type": "POSSESSION",
     "subtype": "HAND-WEAPON",
+    "keywords": [
+      "DAMAGE +1"
+    ],
     "attachedTo": [
       [
         "Théoden"
@@ -68341,6 +69749,9 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "ALLY",
+    "keywords": [
+      "VILLAGER"
+    ],
     "phases": [
       "FELLOWSHIP"
     ],
@@ -68694,6 +70105,9 @@
     "isUnique": false,
     "kind": "FREE_PEOPLE",
     "type": "ALLY",
+    "keywords": [
+      "VILLAGER"
+    ],
     "toPlay": [
       {
         "spot": [
@@ -68922,6 +70336,9 @@
     "isUnique": false,
     "kind": "FREE_PEOPLE",
     "type": "CONDITION",
+    "keywords": [
+      "PLAINS"
+    ],
     "attachedTo": [
       [
         "SITE"
@@ -69015,6 +70432,9 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
+    "keywords": [
+      "VALIANT"
+    ],
     "culture": "ROHAN",
     "race": "MAN",
     "signet": "THEODEN",
@@ -69680,6 +71100,9 @@
     "isUnique": false,
     "kind": "SHADOW",
     "type": "MINION",
+    "keywords": [
+      "BESIEGER"
+    ],
     "culture": "SAURON",
     "race": "ORC",
     "twilightCost": 3,
@@ -69718,6 +71141,9 @@
     "isUnique": false,
     "kind": "SHADOW",
     "type": "MINION",
+    "keywords": [
+      "BESIEGER"
+    ],
     "phases": [
       "SKIRMISH"
     ],
@@ -69759,6 +71185,9 @@
     "isUnique": false,
     "kind": "SHADOW",
     "type": "MINION",
+    "keywords": [
+      "BESIEGER"
+    ],
     "culture": "SAURON",
     "race": "ORC",
     "twilightCost": 3,
@@ -69797,6 +71226,9 @@
     "isUnique": false,
     "kind": "SHADOW",
     "type": "MINION",
+    "keywords": [
+      "BESIEGER"
+    ],
     "phases": [
       "REGROUP"
     ],
@@ -69838,6 +71270,9 @@
     "isUnique": false,
     "kind": "SHADOW",
     "type": "MINION",
+    "keywords": [
+      "BESIEGER"
+    ],
     "phases": [
       "SKIRMISH"
     ],
@@ -69879,6 +71314,9 @@
     "isUnique": false,
     "kind": "SHADOW",
     "type": "MINION",
+    "keywords": [
+      "BESIEGER"
+    ],
     "culture": "SAURON",
     "race": "ORC",
     "twilightCost": 4,
@@ -69917,6 +71355,9 @@
     "isUnique": false,
     "kind": "SHADOW",
     "type": "MINION",
+    "keywords": [
+      "BESIEGER"
+    ],
     "phases": [
       "SKIRMISH"
     ],
@@ -69958,6 +71399,9 @@
     "isUnique": false,
     "kind": "SHADOW",
     "type": "MINION",
+    "keywords": [
+      "BESIEGER"
+    ],
     "phases": [
       "SHADOW"
     ],
@@ -69999,6 +71443,9 @@
     "isUnique": false,
     "kind": "SHADOW",
     "type": "MINION",
+    "keywords": [
+      "BESIEGER"
+    ],
     "phases": [
       "RESPONSE"
     ],
@@ -70040,6 +71487,9 @@
     "isUnique": true,
     "kind": "SHADOW",
     "type": "MINION",
+    "keywords": [
+      "BESIEGER"
+    ],
     "phases": [
       "SKIRMISH"
     ],
@@ -70149,6 +71599,9 @@
     "kind": "SHADOW",
     "type": "CONDITION",
     "subtype": "SUPPORT-AREA",
+    "keywords": [
+      "ENGINE"
+    ],
     "phases": [
       "SHADOW",
       "SKIRMISH"
@@ -70715,6 +72168,9 @@
     "isUnique": true,
     "kind": "SHADOW",
     "type": "MINION",
+    "keywords": [
+      "ARCHER"
+    ],
     "culture": "SAURON",
     "race": "ORC",
     "twilightCost": 6,
@@ -70884,6 +72340,9 @@
     "isUnique": false,
     "kind": "SHADOW",
     "type": "MINION",
+    "keywords": [
+      "TRACKER"
+    ],
     "culture": "SAURON",
     "race": "ORC",
     "twilightCost": 2,
@@ -71096,6 +72555,9 @@
     "isUnique": false,
     "kind": "SHADOW",
     "type": "MINION",
+    "keywords": [
+      "TRACKER"
+    ],
     "culture": "SAURON",
     "race": "ORC",
     "twilightCost": 1,
@@ -71221,6 +72683,9 @@
     "isUnique": true,
     "kind": "SHADOW",
     "type": "MINION",
+    "keywords": [
+      "TRACKER"
+    ],
     "culture": "SAURON",
     "race": "ORC",
     "twilightCost": 4,
@@ -71259,6 +72724,9 @@
     "isUnique": false,
     "kind": "SHADOW",
     "type": "MINION",
+    "keywords": [
+      "TRACKER"
+    ],
     "culture": "SAURON",
     "race": "ORC",
     "twilightCost": 3,
@@ -71451,6 +72919,9 @@
     "isUnique": true,
     "kind": "SHADOW",
     "type": "MINION",
+    "keywords": [
+      "BESIEGER"
+    ],
     "phases": [
       "SKIRMISH"
     ],
@@ -71624,6 +73095,9 @@
     "kind": "SHADOW",
     "type": "CONDITION",
     "subtype": "SUPPORT-AREA",
+    "keywords": [
+      "ENGINE"
+    ],
     "toPlay": [
       {
         "spot": [
@@ -71676,6 +73150,9 @@
     "kind": "SHADOW",
     "type": "CONDITION",
     "subtype": "SUPPORT-AREA",
+    "keywords": [
+      "ENGINE"
+    ],
     "toPlay": [
       {
         "spot": [
@@ -71728,6 +73205,9 @@
     "canBeRingbearer": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
+    "keywords": [
+      "RING-BOUND"
+    ],
     "culture": "SHIRE",
     "race": "HOBBIT",
     "signet": "ARAGORN",
@@ -71773,6 +73253,9 @@
     "canBeRingbearer": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
+    "keywords": [
+      "RING-BOUND"
+    ],
     "phases": [
       "SKIRMISH"
     ],
@@ -72045,6 +73528,9 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
+    "keywords": [
+      "RING-BOUND"
+    ],
     "phases": [
       "FELLOWSHIP",
       "RESPONSE"
@@ -72093,6 +73579,9 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
+    "keywords": [
+      "RING-BOUND"
+    ],
     "phases": [
       "FELLOWSHIP",
       "RESPONSE"
@@ -72229,6 +73718,9 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
+    "keywords": [
+      "VALIANT"
+    ],
     "phases": [
       "SKIRMISH"
     ],
@@ -72652,6 +74144,9 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
+    "keywords": [
+      "ARCHER"
+    ],
     "culture": "ELVEN",
     "race": "ELF",
     "signet": "ARAGORN",
@@ -73267,6 +74762,10 @@
     "isUnique": true,
     "kind": "SHADOW",
     "type": "MINION",
+    "keywords": [
+      "ENDURING",
+      "FIERCE"
+    ],
     "culture": "GOLLUM",
     "race": "SPIDER",
     "twilightCost": 6,
@@ -73314,6 +74813,9 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
+    "keywords": [
+      "RING-BOUND"
+    ],
     "toPlay": [
       {
         "addBurdens": 1
@@ -73624,6 +75126,9 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
+    "keywords": [
+      "KNIGHT"
+    ],
     "culture": "GONDOR",
     "race": "MAN",
     "signet": "GANDALF",
@@ -73672,6 +75177,9 @@
     "kind": "FREE_PEOPLE",
     "type": "CONDITION",
     "subtype": "SUPPORT-AREA",
+    "keywords": [
+      "FORTIFICATION"
+    ],
     "phases": [
       "SKIRMISH"
     ],
@@ -73714,6 +75222,10 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
+    "keywords": [
+      "ARCHER",
+      "KNIGHT"
+    ],
     "toPlay": [
       {
         "spot": [
@@ -73769,6 +75281,9 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
+    "keywords": [
+      "KNIGHT"
+    ],
     "toPlay": [
       {
         "spot": [
@@ -73830,6 +75345,9 @@
     "isUnique": false,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
+    "keywords": [
+      "KNIGHT"
+    ],
     "culture": "GONDOR",
     "race": "MAN",
     "twilightCost": 2,
@@ -73916,6 +75434,9 @@
     "isUnique": false,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
+    "keywords": [
+      "ENDURING"
+    ],
     "toPlay": [
       {
         "addThreats": 1
@@ -74009,6 +75530,9 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
+    "keywords": [
+      "ENDURING"
+    ],
     "toPlay": [
       {
         "spot": [
@@ -74067,6 +75591,9 @@
     "kind": "FREE_PEOPLE",
     "type": "CONDITION",
     "subtype": "SUPPORT-AREA",
+    "keywords": [
+      "FORTIFICATION"
+    ],
     "phases": [
       "REGROUP"
     ],
@@ -74108,6 +75635,9 @@
     "isUnique": false,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
+    "keywords": [
+      "ENDURING"
+    ],
     "toPlay": [
       {
         "addThreats": 1
@@ -74287,6 +75817,10 @@
     "isUnique": false,
     "kind": "SHADOW",
     "type": "MINION",
+    "keywords": [
+      "CORSAIR",
+      "FIERCE"
+    ],
     "phases": [
       "SKIRMISH"
     ],
@@ -74414,6 +75948,9 @@
     "isUnique": false,
     "kind": "SHADOW",
     "type": "MINION",
+    "keywords": [
+      "CORSAIR"
+    ],
     "culture": "RAIDER",
     "race": "MAN",
     "twilightCost": 3,
@@ -74456,6 +75993,9 @@
     "isUnique": false,
     "kind": "SHADOW",
     "type": "MINION",
+    "keywords": [
+      "CORSAIR"
+    ],
     "culture": "RAIDER",
     "race": "MAN",
     "twilightCost": 3,
@@ -74498,6 +76038,9 @@
     "isUnique": false,
     "kind": "SHADOW",
     "type": "MINION",
+    "keywords": [
+      "CORSAIR"
+    ],
     "phases": [
       "SKIRMISH"
     ],
@@ -74543,6 +76086,9 @@
     "isUnique": false,
     "kind": "SHADOW",
     "type": "MINION",
+    "keywords": [
+      "CORSAIR"
+    ],
     "culture": "RAIDER",
     "race": "MAN",
     "twilightCost": 1,
@@ -74585,6 +76131,9 @@
     "isUnique": false,
     "kind": "SHADOW",
     "type": "MINION",
+    "keywords": [
+      "CORSAIR"
+    ],
     "culture": "RAIDER",
     "race": "MAN",
     "twilightCost": 2,
@@ -74664,6 +76213,10 @@
     "isUnique": true,
     "kind": "SHADOW",
     "type": "MINION",
+    "keywords": [
+      "SOUTHRON",
+      "ARCHER"
+    ],
     "culture": "RAIDER",
     "race": "MAN",
     "twilightCost": 5,
@@ -74743,6 +76296,9 @@
     "isUnique": true,
     "kind": "SHADOW",
     "type": "MINION",
+    "keywords": [
+      "EASTERLING"
+    ],
     "culture": "RAIDER",
     "race": "MAN",
     "twilightCost": 5,
@@ -74825,6 +76381,9 @@
     "kind": "SHADOW",
     "type": "POSSESSION",
     "subtype": "MOUNT",
+    "keywords": [
+      "SOUTHRON"
+    ],
     "attachedTo": [
       [
         "SOUTHRON"
@@ -75441,6 +77000,9 @@
     "isUnique": true,
     "kind": "SHADOW",
     "type": "MINION",
+    "keywords": [
+      "ENDURING"
+    ],
     "phases": [
       "REGROUP"
     ],
@@ -75487,6 +77049,10 @@
     "isUnique": true,
     "kind": "SHADOW",
     "type": "MINION",
+    "keywords": [
+      "ENDURING",
+      "FIERCE"
+    ],
     "culture": "WRAITH",
     "race": "NAZGÛL",
     "twilightCost": 4,
@@ -75534,6 +77100,10 @@
     "isUnique": true,
     "kind": "SHADOW",
     "type": "MINION",
+    "keywords": [
+      "ENDURING",
+      "FIERCE"
+    ],
     "phases": [
       "REGROUP"
     ],
@@ -75674,6 +77244,9 @@
     "isUnique": true,
     "kind": "SHADOW",
     "type": "MINION",
+    "keywords": [
+      "ENDURING"
+    ],
     "culture": "WRAITH",
     "race": "NAZGÛL",
     "twilightCost": 8,
@@ -75804,6 +77377,9 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
+    "keywords": [
+      "VALIANT"
+    ],
     "culture": "ROHAN",
     "race": "MAN",
     "signet": "GANDALF",
@@ -76036,6 +77612,9 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
+    "keywords": [
+      "VALIANT"
+    ],
     "culture": "ROHAN",
     "race": "MAN",
     "signet": "ARAGORN",
@@ -76125,6 +77704,9 @@
     "isUnique": false,
     "kind": "SHADOW",
     "type": "MINION",
+    "keywords": [
+      "BESIEGER"
+    ],
     "toPlay": [
       {
         "spot": [
@@ -76179,6 +77761,9 @@
     "isUnique": false,
     "kind": "SHADOW",
     "type": "MINION",
+    "keywords": [
+      "BESIEGER"
+    ],
     "phases": [
       "ASSIGNMENT"
     ],
@@ -76224,6 +77809,10 @@
     "isUnique": false,
     "kind": "SHADOW",
     "type": "MINION",
+    "keywords": [
+      "BESIEGER",
+      "ENDURING"
+    ],
     "toPlay": [
       {
         "spot": [
@@ -76282,6 +77871,9 @@
     "isUnique": false,
     "kind": "SHADOW",
     "type": "MINION",
+    "keywords": [
+      "BESIEGER"
+    ],
     "phases": [
       "ARCHERY"
     ],
@@ -76327,6 +77919,9 @@
     "isUnique": false,
     "kind": "SHADOW",
     "type": "MINION",
+    "keywords": [
+      "BESIEGER"
+    ],
     "culture": "SAURON",
     "race": "ORC",
     "twilightCost": 3,
@@ -76369,6 +77964,9 @@
     "isUnique": false,
     "kind": "SHADOW",
     "type": "MINION",
+    "keywords": [
+      "BESIEGER"
+    ],
     "phases": [
       "REGROUP"
     ],
@@ -76414,6 +78012,9 @@
     "isUnique": false,
     "kind": "SHADOW",
     "type": "MINION",
+    "keywords": [
+      "BESIEGER"
+    ],
     "phases": [
       "ARCHERY"
     ],
@@ -76455,6 +78056,9 @@
     "isUnique": false,
     "kind": "SHADOW",
     "type": "MINION",
+    "keywords": [
+      "BESIEGER"
+    ],
     "phases": [
       "SHADOW"
     ],
@@ -76500,6 +78104,10 @@
     "isUnique": false,
     "kind": "SHADOW",
     "type": "MINION",
+    "keywords": [
+      "BESIEGER",
+      "FIERCE"
+    ],
     "culture": "SAURON",
     "race": "TROLL",
     "twilightCost": 9,
@@ -76583,6 +78191,10 @@
     "isUnique": false,
     "kind": "SHADOW",
     "type": "MINION",
+    "keywords": [
+      "BESIEGER",
+      "FIERCE"
+    ],
     "culture": "SAURON",
     "race": "TROLL",
     "twilightCost": 10,
@@ -76620,6 +78232,9 @@
     "isUnique": false,
     "kind": "SHADOW",
     "type": "MINION",
+    "keywords": [
+      "BESIEGER"
+    ],
     "phases": [
       "REGROUP"
     ],
@@ -76662,6 +78277,9 @@
     "kind": "SHADOW",
     "type": "CONDITION",
     "subtype": "SUPPORT-AREA",
+    "keywords": [
+      "ENGINE"
+    ],
     "toPlay": [
       {
         "spot": [
@@ -76717,6 +78335,10 @@
     "isUnique": true,
     "kind": "SHADOW",
     "type": "MINION",
+    "keywords": [
+      "BESIEGER",
+      "FIERCE"
+    ],
     "toPlay": [
       {
         "spot": [
@@ -77337,6 +78959,9 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
+    "keywords": [
+      "DAMAGE +1"
+    ],
     "culture": "DWARVEN",
     "race": "DWARF",
     "twilightCost": 4,
@@ -77384,6 +79009,9 @@
     "canBeRingbearer": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
+    "keywords": [
+      "DAMAGE +1"
+    ],
     "culture": "DWARVEN",
     "race": "DWARF",
     "twilightCost": 2,
@@ -78449,6 +80077,9 @@
     "isUnique": false,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
+    "keywords": [
+      "DAMAGE +1"
+    ],
     "phases": [
       "RESPONSE"
     ],
@@ -78672,6 +80303,9 @@
     "canBeRingbearer": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
+    "keywords": [
+      "RING-BOUND"
+    ],
     "toPlay": [
       {
         "addBurdens": 1
@@ -78998,6 +80632,9 @@
     "kind": "FREE_PEOPLE",
     "type": "ARTIFACT",
     "subtype": "SUPPORT-AREA",
+    "keywords": [
+      "TALE"
+    ],
     "toPlay": [
       {
         "spot": [
@@ -79584,6 +81221,11 @@
     "isUnique": true,
     "kind": "SHADOW",
     "type": "MINION",
+    "keywords": [
+      "DAMAGE +2",
+      "ENDURING",
+      "FIERCE"
+    ],
     "culture": "SAURON",
     "race": "MAIA",
     "twilightCost": 18,
@@ -79632,6 +81274,9 @@
     "canBeRingbearer": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
+    "keywords": [
+      "RING-BOUND"
+    ],
     "phases": [
       "REGROUP"
     ],
@@ -79683,6 +81328,9 @@
     "kind": "FREE_PEOPLE",
     "type": "CONDITION",
     "subtype": "SUPPORT-AREA",
+    "keywords": [
+      "TALE"
+    ],
     "phases": [
       "SKIRMISH"
     ],
@@ -80768,6 +82416,10 @@
     "isUnique": true,
     "kind": "SHADOW",
     "type": "MINION",
+    "keywords": [
+      "ENDURING",
+      "FIERCE"
+    ],
     "culture": "GOLLUM",
     "race": "SPIDER",
     "twilightCost": 6,
@@ -80857,6 +82509,9 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
+    "keywords": [
+      "ENDURING"
+    ],
     "toPlay": [
       {
         "addThreats": 1
@@ -80903,6 +82558,9 @@
     "isUnique": false,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
+    "keywords": [
+      "ENDURING"
+    ],
     "toPlay": [
       {
         "addThreats": 1
@@ -81136,6 +82794,9 @@
     "kind": "FREE_PEOPLE",
     "type": "CONDITION",
     "subtype": "SUPPORT-AREA",
+    "keywords": [
+      "FORTIFICATION"
+    ],
     "phases": [
       "MANEUVER"
     ],
@@ -81352,6 +83013,9 @@
     "isUnique": false,
     "kind": "SHADOW",
     "type": "MINION",
+    "keywords": [
+      "CORSAIR"
+    ],
     "toPlay": [
       {
         "spot": [
@@ -81411,6 +83075,9 @@
     "isUnique": false,
     "kind": "SHADOW",
     "type": "MINION",
+    "keywords": [
+      "CORSAIR"
+    ],
     "culture": "RAIDER",
     "race": "MAN",
     "twilightCost": 5,
@@ -81453,6 +83120,9 @@
     "isUnique": false,
     "kind": "SHADOW",
     "type": "MINION",
+    "keywords": [
+      "CORSAIR"
+    ],
     "culture": "RAIDER",
     "race": "MAN",
     "twilightCost": 4,
@@ -81495,6 +83165,9 @@
     "isUnique": false,
     "kind": "SHADOW",
     "type": "MINION",
+    "keywords": [
+      "EASTERLING"
+    ],
     "toPlay": [
       {
         "spot": [
@@ -81555,6 +83228,10 @@
     "isUnique": true,
     "kind": "SHADOW",
     "type": "MINION",
+    "keywords": [
+      "EASTERLING",
+      "FIERCE"
+    ],
     "culture": "RAIDER",
     "race": "MAN",
     "twilightCost": 5,
@@ -81597,6 +83274,9 @@
     "isUnique": false,
     "kind": "SHADOW",
     "type": "MINION",
+    "keywords": [
+      "SOUTHRON"
+    ],
     "culture": "RAIDER",
     "race": "MAN",
     "twilightCost": 5,
@@ -81731,6 +83411,9 @@
     "isUnique": false,
     "kind": "SHADOW",
     "type": "MINION",
+    "keywords": [
+      "SOUTHRON"
+    ],
     "culture": "RAIDER",
     "race": "MAN",
     "twilightCost": 5,
@@ -81870,6 +83553,9 @@
     "isUnique": false,
     "kind": "SHADOW",
     "type": "CONDITION",
+    "keywords": [
+      "ENDURING"
+    ],
     "attachedTo": [
       [
         "SOUTHRON"
@@ -81917,6 +83603,9 @@
     "isUnique": false,
     "kind": "SHADOW",
     "type": "MINION",
+    "keywords": [
+      "SOUTHRON"
+    ],
     "culture": "RAIDER",
     "race": "MAN",
     "twilightCost": 3,
@@ -81959,6 +83648,9 @@
     "isUnique": false,
     "kind": "SHADOW",
     "type": "MINION",
+    "keywords": [
+      "SOUTHRON"
+    ],
     "culture": "RAIDER",
     "race": "MAN",
     "twilightCost": 3,
@@ -82688,6 +84380,10 @@
     "isUnique": true,
     "kind": "SHADOW",
     "type": "MINION",
+    "keywords": [
+      "ENDURING",
+      "FIERCE"
+    ],
     "phases": [
       "SKIRMISH"
     ],
@@ -82738,6 +84434,9 @@
     "isUnique": true,
     "kind": "SHADOW",
     "type": "MINION",
+    "keywords": [
+      "ENDURING"
+    ],
     "phases": [
       "SKIRMISH"
     ],
@@ -82788,6 +84487,10 @@
     "isUnique": true,
     "kind": "SHADOW",
     "type": "MINION",
+    "keywords": [
+      "ENDURING",
+      "FIERCE"
+    ],
     "phases": [
       "SKIRMISH"
     ],
@@ -82838,6 +84541,10 @@
     "isUnique": true,
     "kind": "SHADOW",
     "type": "MINION",
+    "keywords": [
+      "ENDURING",
+      "FIERCE"
+    ],
     "phases": [
       "SKIRMISH"
     ],
@@ -82888,6 +84595,9 @@
     "isUnique": true,
     "kind": "SHADOW",
     "type": "MINION",
+    "keywords": [
+      "ENDURING"
+    ],
     "phases": [
       "SKIRMISH"
     ],
@@ -83353,6 +85063,9 @@
     "isUnique": false,
     "kind": "SHADOW",
     "type": "MINION",
+    "keywords": [
+      "DAMAGE +1"
+    ],
     "culture": "SAURON",
     "race": "URUK-HAI",
     "twilightCost": 3,
@@ -83395,6 +85108,9 @@
     "isUnique": false,
     "kind": "SHADOW",
     "type": "MINION",
+    "keywords": [
+      "DAMAGE +1"
+    ],
     "culture": "SAURON",
     "race": "URUK-HAI",
     "twilightCost": 3,
@@ -83437,6 +85153,9 @@
     "isUnique": false,
     "kind": "SHADOW",
     "type": "MINION",
+    "keywords": [
+      "DAMAGE +1"
+    ],
     "culture": "SAURON",
     "race": "URUK-HAI",
     "twilightCost": 2,
@@ -83479,6 +85198,9 @@
     "isUnique": false,
     "kind": "SHADOW",
     "type": "MINION",
+    "keywords": [
+      "DAMAGE +1"
+    ],
     "culture": "SAURON",
     "race": "URUK-HAI",
     "twilightCost": 2,
@@ -83563,6 +85285,9 @@
     "isUnique": false,
     "kind": "SHADOW",
     "type": "MINION",
+    "keywords": [
+      "BESIEGER"
+    ],
     "phases": [
       "REGROUP"
     ],
@@ -83608,6 +85333,9 @@
     "isUnique": false,
     "kind": "SHADOW",
     "type": "MINION",
+    "keywords": [
+      "BESIEGER"
+    ],
     "culture": "SAURON",
     "race": "ORC",
     "twilightCost": 5,
@@ -83784,6 +85512,10 @@
     "isUnique": false,
     "kind": "SHADOW",
     "type": "MINION",
+    "keywords": [
+      "BESIEGER",
+      "FIERCE"
+    ],
     "phases": [
       "SHADOW"
     ],
@@ -83928,6 +85660,9 @@
     "isUnique": false,
     "kind": "SHADOW",
     "type": "MINION",
+    "keywords": [
+      "ENDURING"
+    ],
     "culture": "SAURON",
     "race": "ORC",
     "twilightCost": 4,
@@ -84094,6 +85829,9 @@
     "isUnique": true,
     "kind": "SHADOW",
     "type": "MINION",
+    "keywords": [
+      "DAMAGE +1"
+    ],
     "culture": "SAURON",
     "race": "URUK-HAI",
     "twilightCost": 5,
@@ -84182,6 +85920,10 @@
     "isUnique": false,
     "kind": "SHADOW",
     "type": "MINION",
+    "keywords": [
+      "DAMAGE +1",
+      "FIERCE"
+    ],
     "toPlay": [
       {
         "spot": [
@@ -84544,6 +86286,9 @@
     "isUnique": false,
     "kind": "FREE_PEOPLE",
     "type": "EVENT",
+    "keywords": [
+      "STEALTH"
+    ],
     "phases": [
       "MANEUVER"
     ],
@@ -84667,6 +86412,9 @@
     "isUnique": false,
     "kind": "FREE_PEOPLE",
     "type": "EVENT",
+    "keywords": [
+      "TALE"
+    ],
     "phases": [
       "SKIRMISH"
     ],
@@ -84805,6 +86553,9 @@
     "isUnique": false,
     "kind": "FREE_PEOPLE",
     "type": "EVENT",
+    "keywords": [
+      "STEALTH"
+    ],
     "phases": [
       "SKIRMISH"
     ],
@@ -84847,6 +86598,9 @@
     "kind": "FREE_PEOPLE",
     "type": "CONDITION",
     "subtype": "SUPPORT-AREA",
+    "keywords": [
+      "TALE"
+    ],
     "phases": [
       "SKIRMISH"
     ],
@@ -84984,6 +86738,9 @@
     "kind": "FREE_PEOPLE",
     "type": "POSSESSION",
     "subtype": "HAND-WEAPON",
+    "keywords": [
+      "DAMAGE +1"
+    ],
     "attachedTo": [
       [
         "DWARF"
@@ -85028,6 +86785,9 @@
     "isUnique": false,
     "kind": "FREE_PEOPLE",
     "type": "EVENT",
+    "keywords": [
+      "DAMAGE +1"
+    ],
     "phases": [
       "SKIRMISH"
     ],
@@ -85070,6 +86830,9 @@
     "kind": "FREE_PEOPLE",
     "type": "CONDITION",
     "subtype": "SUPPORT-AREA",
+    "keywords": [
+      "DAMAGE +1"
+    ],
     "toPlay": [
       {
         "spot": [
@@ -85211,6 +86974,9 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
+    "keywords": [
+      "DAMAGE +1"
+    ],
     "culture": "DWARVEN",
     "race": "DWARF",
     "twilightCost": 2,
@@ -85625,6 +87391,9 @@
     "kind": "FREE_PEOPLE",
     "type": "CONDITION",
     "subtype": "SUPPORT-AREA",
+    "keywords": [
+      "TOIL 2"
+    ],
     "toPlay": [
       {
         "spot": [
@@ -85900,6 +87669,9 @@
     "kind": "FREE_PEOPLE",
     "type": "POSSESSION",
     "subtype": "RANGED-WEAPON",
+    "keywords": [
+      "ARCHER"
+    ],
     "attachedTo": [
       [
         "ELF"
@@ -86555,6 +88327,10 @@
     "isUnique": false,
     "kind": "FREE_PEOPLE",
     "type": "EVENT",
+    "keywords": [
+      "SPELL",
+      "TOIL 2"
+    ],
     "phases": [
       "FELLOWSHIP"
     ],
@@ -86728,6 +88504,9 @@
     "isUnique": true,
     "kind": "SHADOW",
     "type": "MINION",
+    "keywords": [
+      "LURKER"
+    ],
     "phases": [
       "SKIRMISH"
     ],
@@ -87097,6 +88876,9 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
+    "keywords": [
+      "RING-BOUND"
+    ],
     "toPlay": [
       {
         "addBurdens": 1
@@ -87191,6 +88973,9 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
+    "keywords": [
+      "RANGER"
+    ],
     "culture": "GONDOR",
     "race": "MAN",
     "twilightCost": 4,
@@ -87371,6 +89156,9 @@
     "kind": "FREE_PEOPLE",
     "type": "POSSESSION",
     "subtype": "HAND-WEAPON",
+    "keywords": [
+      "DAMAGE +1"
+    ],
     "attachedTo": [
       [
         "GONDOR",
@@ -87499,6 +89287,9 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
+    "keywords": [
+      "RANGER"
+    ],
     "phases": [
       "FELLOWSHIP"
     ],
@@ -87631,6 +89422,9 @@
     "isUnique": false,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
+    "keywords": [
+      "RANGER"
+    ],
     "culture": "GONDOR",
     "race": "MAN",
     "twilightCost": 2,
@@ -87674,6 +89468,9 @@
     "kind": "FREE_PEOPLE",
     "type": "EVENT",
     "subtype": "FELLOWSHIP-OR-REGROUP",
+    "keywords": [
+      "RANGER"
+    ],
     "toPlay": [
       {
         "exert": [
@@ -87726,6 +89523,9 @@
     "isUnique": false,
     "kind": "FREE_PEOPLE",
     "type": "MINION",
+    "keywords": [
+      "ARCHER"
+    ],
     "culture": "MEN",
     "race": "MAN",
     "twilightCost": 3,
@@ -87768,6 +89568,9 @@
     "isUnique": false,
     "kind": "FREE_PEOPLE",
     "type": "MINION",
+    "keywords": [
+      "DAMAGE +1"
+    ],
     "phases": [
       "SKIRMISH"
     ],
@@ -87895,6 +89698,9 @@
     "isUnique": false,
     "kind": "FREE_PEOPLE",
     "type": "EVENT",
+    "keywords": [
+      "TOIL 2"
+    ],
     "phases": [
       "SKIRMISH"
     ],
@@ -87936,6 +89742,9 @@
     "isUnique": false,
     "kind": "FREE_PEOPLE",
     "type": "MINION",
+    "keywords": [
+      "LURKER"
+    ],
     "phases": [
       "SKIRMISH"
     ],
@@ -87981,6 +89790,9 @@
     "isUnique": false,
     "kind": "FREE_PEOPLE",
     "type": "MINION",
+    "keywords": [
+      "FIERCE"
+    ],
     "culture": "MEN",
     "race": "MAN",
     "twilightCost": 4,
@@ -88068,6 +89880,9 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "MINION",
+    "keywords": [
+      "LURKER"
+    ],
     "phases": [
       "SKIRMISH"
     ],
@@ -88113,6 +89928,9 @@
     "isUnique": false,
     "kind": "FREE_PEOPLE",
     "type": "MINION",
+    "keywords": [
+      "LURKER"
+    ],
     "phases": [
       "RESPONSE"
     ],
@@ -88158,6 +89976,9 @@
     "isUnique": false,
     "kind": "FREE_PEOPLE",
     "type": "MINION",
+    "keywords": [
+      "DAMAGE +1"
+    ],
     "culture": "MEN",
     "race": "MAN",
     "twilightCost": 4,
@@ -88200,6 +90021,9 @@
     "isUnique": false,
     "kind": "FREE_PEOPLE",
     "type": "EVENT",
+    "keywords": [
+      "TOIL 2"
+    ],
     "phases": [
       "ARCHERY"
     ],
@@ -88283,6 +90107,9 @@
     "isUnique": false,
     "kind": "FREE_PEOPLE",
     "type": "MINION",
+    "keywords": [
+      "ARCHER"
+    ],
     "culture": "MEN",
     "race": "MAN",
     "twilightCost": 6,
@@ -88325,6 +90152,9 @@
     "isUnique": false,
     "kind": "FREE_PEOPLE",
     "type": "MINION",
+    "keywords": [
+      "ARCHER"
+    ],
     "culture": "MEN",
     "race": "MAN",
     "twilightCost": 3,
@@ -88451,6 +90281,9 @@
     "isUnique": false,
     "kind": "FREE_PEOPLE",
     "type": "MINION",
+    "keywords": [
+      "DAMAGE +1"
+    ],
     "phases": [
       "SKIRMISH"
     ],
@@ -88496,6 +90329,9 @@
     "isUnique": false,
     "kind": "FREE_PEOPLE",
     "type": "MINION",
+    "keywords": [
+      "FIERCE"
+    ],
     "culture": "MEN",
     "race": "MAN",
     "twilightCost": 5,
@@ -88637,6 +90473,9 @@
     "isUnique": false,
     "kind": "FREE_PEOPLE",
     "type": "MINION",
+    "keywords": [
+      "TOIL 2"
+    ],
     "culture": "MEN",
     "race": "MAN",
     "twilightCost": 6,
@@ -88680,6 +90519,9 @@
     "kind": "FREE_PEOPLE",
     "type": "POSSESSION",
     "subtype": "RANGED-WEAPON",
+    "keywords": [
+      "ARCHER"
+    ],
     "attachedTo": [
       [
         "MEN",
@@ -89025,6 +90867,9 @@
     "isUnique": false,
     "kind": "FREE_PEOPLE",
     "type": "MINION",
+    "keywords": [
+      "FIERCE"
+    ],
     "culture": "MEN",
     "race": "MAN",
     "twilightCost": 4,
@@ -89067,6 +90912,9 @@
     "isUnique": false,
     "kind": "FREE_PEOPLE",
     "type": "MINION",
+    "keywords": [
+      "LURKER"
+    ],
     "culture": "MEN",
     "race": "MAN",
     "twilightCost": 2,
@@ -89513,6 +91361,10 @@
     "isUnique": false,
     "kind": "SHADOW",
     "type": "MINION",
+    "keywords": [
+      "DAMAGE +1",
+      "FIERCE"
+    ],
     "toPlay": [
       {
         "spot": [
@@ -89572,6 +91424,9 @@
     "kind": "SHADOW",
     "type": "POSSESSION",
     "subtype": "ARMOR",
+    "keywords": [
+      "LURKER"
+    ],
     "attachedTo": [
       [
         "ORC",
@@ -89660,6 +91515,9 @@
     "isUnique": false,
     "kind": "SHADOW",
     "type": "MINION",
+    "keywords": [
+      "TOIL 2"
+    ],
     "culture": "ORC",
     "race": "ORC",
     "twilightCost": 5,
@@ -90005,6 +91863,9 @@
     "isUnique": false,
     "kind": "SHADOW",
     "type": "MINION",
+    "keywords": [
+      "LURKER"
+    ],
     "culture": "ORC",
     "race": "ORC",
     "twilightCost": 4,
@@ -90662,6 +92523,10 @@
     "isUnique": false,
     "kind": "SHADOW",
     "type": "MINION",
+    "keywords": [
+      "DAMAGE +1",
+      "FIERCE"
+    ],
     "toPlay": [
       {
         "spot": [
@@ -90718,6 +92583,9 @@
     "isUnique": false,
     "kind": "SHADOW",
     "type": "MINION",
+    "keywords": [
+      "LURKER"
+    ],
     "phases": [
       "SKIRMISH"
     ],
@@ -90941,6 +92809,9 @@
     "isUnique": false,
     "kind": "SHADOW",
     "type": "EVENT",
+    "keywords": [
+      "TOIL 3"
+    ],
     "phases": [
       "ASSIGNMENT"
     ],
@@ -91302,6 +93173,9 @@
     "isUnique": false,
     "kind": "FREE_PEOPLE",
     "type": "CONDITION",
+    "keywords": [
+      "TOIL 2"
+    ],
     "attachedTo": [
       [
         "ROHAN",
@@ -91482,6 +93356,9 @@
     "kind": "FREE_PEOPLE",
     "type": "POSSESSION",
     "subtype": "HAND-WEAPON",
+    "keywords": [
+      "DAMAGE +1"
+    ],
     "attachedTo": [
       [
         "ROHAN",
@@ -91908,6 +93785,9 @@
     "isUnique": false,
     "kind": "FREE_PEOPLE",
     "type": "EVENT",
+    "keywords": [
+      "STEALTH"
+    ],
     "phases": [
       "SKIRMISH"
     ],
@@ -91997,6 +93877,9 @@
     "canBeRingbearer": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
+    "keywords": [
+      "RING-BOUND"
+    ],
     "culture": "SHIRE",
     "race": "HOBBIT",
     "twilightCost": 0,
@@ -92044,6 +93927,9 @@
     "isUnique": false,
     "kind": "FREE_PEOPLE",
     "type": "CONDITION",
+    "keywords": [
+      "TOIL 2"
+    ],
     "attachedTo": [
       [
         "HOBBIT"
@@ -92132,6 +94018,9 @@
     "isUnique": false,
     "kind": "FREE_PEOPLE",
     "type": "EVENT",
+    "keywords": [
+      "STEALTH"
+    ],
     "phases": [
       "SKIRMISH"
     ],
@@ -92220,6 +94109,9 @@
     "isUnique": false,
     "kind": "FREE_PEOPLE",
     "type": "EVENT",
+    "keywords": [
+      "TOIL 2"
+    ],
     "phases": [
       "FELLOWSHIP"
     ],
@@ -92355,6 +94247,9 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
+    "keywords": [
+      "RING-BOUND"
+    ],
     "culture": "SHIRE",
     "race": "HOBBIT",
     "twilightCost": 2,
@@ -92577,6 +94472,9 @@
     "isUnique": false,
     "kind": "SHADOW",
     "type": "MINION",
+    "keywords": [
+      "DAMAGE +1"
+    ],
     "culture": "URUK-HAI",
     "race": "URUK-HAI",
     "twilightCost": 5,
@@ -92619,6 +94517,9 @@
     "isUnique": false,
     "kind": "SHADOW",
     "type": "MINION",
+    "keywords": [
+      "DAMAGE +1"
+    ],
     "culture": "URUK-HAI",
     "race": "URUK-HAI",
     "twilightCost": 3,
@@ -92661,6 +94562,9 @@
     "isUnique": false,
     "kind": "SHADOW",
     "type": "MINION",
+    "keywords": [
+      "DAMAGE +1"
+    ],
     "phases": [
       "RESPONSE"
     ],
@@ -92844,6 +94748,9 @@
     "isUnique": false,
     "kind": "SHADOW",
     "type": "MINION",
+    "keywords": [
+      "DAMAGE +1"
+    ],
     "culture": "URUK-HAI",
     "race": "URUK-HAI",
     "twilightCost": 3,
@@ -92886,6 +94793,9 @@
     "isUnique": false,
     "kind": "SHADOW",
     "type": "MINION",
+    "keywords": [
+      "DAMAGE +1"
+    ],
     "culture": "URUK-HAI",
     "race": "URUK-HAI",
     "twilightCost": 5,
@@ -92970,6 +94880,9 @@
     "isUnique": false,
     "kind": "SHADOW",
     "type": "MINION",
+    "keywords": [
+      "DAMAGE +1"
+    ],
     "culture": "URUK-HAI",
     "race": "URUK-HAI",
     "twilightCost": 3,
@@ -93053,6 +94966,9 @@
     "isUnique": false,
     "kind": "SHADOW",
     "type": "MINION",
+    "keywords": [
+      "DAMAGE +1"
+    ],
     "culture": "URUK-HAI",
     "race": "URUK-HAI",
     "twilightCost": 2,
@@ -93095,6 +95011,9 @@
     "isUnique": false,
     "kind": "SHADOW",
     "type": "MINION",
+    "keywords": [
+      "DAMAGE +1"
+    ],
     "culture": "URUK-HAI",
     "race": "URUK-HAI",
     "twilightCost": 4,
@@ -93137,6 +95056,9 @@
     "isUnique": false,
     "kind": "SHADOW",
     "type": "MINION",
+    "keywords": [
+      "DAMAGE +1"
+    ],
     "culture": "URUK-HAI",
     "race": "URUK-HAI",
     "twilightCost": 4,
@@ -93180,6 +95102,9 @@
     "kind": "SHADOW",
     "type": "POSSESSION",
     "subtype": "RANGED-WEAPON",
+    "keywords": [
+      "ARCHER"
+    ],
     "attachedTo": [
       [
         "URUKHAI",
@@ -93270,6 +95195,9 @@
     "isUnique": false,
     "kind": "SHADOW",
     "type": "MINION",
+    "keywords": [
+      "DAMAGE +1"
+    ],
     "culture": "URUK-HAI",
     "race": "URUK-HAI",
     "twilightCost": 3,
@@ -93312,6 +95240,11 @@
     "isUnique": true,
     "kind": "SHADOW",
     "type": "MINION",
+    "keywords": [
+      "ARCHER",
+      "DAMAGE +1",
+      "MUSTER"
+    ],
     "culture": "URUK-HAI",
     "race": "URUK-HAI",
     "twilightCost": 7,
@@ -93359,6 +95292,10 @@
     "isUnique": false,
     "kind": "SHADOW",
     "type": "MINION",
+    "keywords": [
+      "DAMAGE +1",
+      "MUSTER"
+    ],
     "culture": "URUK-HAI",
     "race": "URUK-HAI",
     "twilightCost": 3,
@@ -93461,6 +95398,10 @@
     "isUnique": false,
     "kind": "SHADOW",
     "type": "MINION",
+    "keywords": [
+      "DAMAGE +1",
+      "MUSTER"
+    ],
     "culture": "URUK-HAI",
     "race": "URUK-HAI",
     "twilightCost": 3,
@@ -93503,6 +95444,9 @@
     "isUnique": false,
     "kind": "SHADOW",
     "type": "MINION",
+    "keywords": [
+      "DAMAGE +1"
+    ],
     "culture": "URUK-HAI",
     "race": "URUK-HAI",
     "twilightCost": 4,
@@ -93545,6 +95489,9 @@
     "isUnique": false,
     "kind": "SHADOW",
     "type": "MINION",
+    "keywords": [
+      "DAMAGE +1"
+    ],
     "culture": "URUK-HAI",
     "race": "URUK-HAI",
     "twilightCost": 5,
@@ -93629,6 +95576,10 @@
     "isUnique": false,
     "kind": "SHADOW",
     "type": "MINION",
+    "keywords": [
+      "DAMAGE +1",
+      "LURKER"
+    ],
     "phases": [
       "RESPONSE"
     ],
@@ -93674,6 +95625,9 @@
     "isUnique": false,
     "kind": "SHADOW",
     "type": "MINION",
+    "keywords": [
+      "DAMAGE +1"
+    ],
     "culture": "URUK-HAI",
     "race": "URUK-HAI",
     "twilightCost": 4,
@@ -93716,6 +95670,9 @@
     "isUnique": false,
     "kind": "SHADOW",
     "type": "MINION",
+    "keywords": [
+      "DAMAGE +1"
+    ],
     "culture": "URUK-HAI",
     "race": "URUK-HAI",
     "twilightCost": 3,
@@ -93758,6 +95715,10 @@
     "isUnique": false,
     "kind": "SHADOW",
     "type": "MINION",
+    "keywords": [
+      "DAMAGE +1",
+      "TOIL 1"
+    ],
     "culture": "URUK-HAI",
     "race": "URUK-HAI",
     "twilightCost": 6,
@@ -93800,6 +95761,10 @@
     "isUnique": false,
     "kind": "SHADOW",
     "type": "MINION",
+    "keywords": [
+      "DAMAGE +1",
+      "LURKER"
+    ],
     "culture": "URUK-HAI",
     "race": "URUK-HAI",
     "twilightCost": 2,
@@ -93842,6 +95807,9 @@
     "isUnique": false,
     "kind": "SHADOW",
     "type": "MINION",
+    "keywords": [
+      "DAMAGE +1"
+    ],
     "culture": "URUK-HAI",
     "race": "URUK-HAI",
     "twilightCost": 3,
@@ -93884,6 +95852,9 @@
     "isUnique": false,
     "kind": "SHADOW",
     "type": "EVENT",
+    "keywords": [
+      "TOIL 2"
+    ],
     "phases": [
       "SHADOW"
     ],
@@ -94042,6 +96013,9 @@
     "isUnique": false,
     "kind": "SHADOW",
     "type": "EVENT",
+    "keywords": [
+      "TOIL 2"
+    ],
     "phases": [
       "MANEUVER"
     ],
@@ -94381,6 +96355,9 @@
     "isUnique": true,
     "kind": "SHADOW",
     "type": "MINION",
+    "keywords": [
+      "FIERCE"
+    ],
     "culture": "WRAITH",
     "race": "NAZGÛL",
     "twilightCost": 6,
@@ -94428,6 +96405,9 @@
     "isUnique": true,
     "kind": "SHADOW",
     "type": "MINION",
+    "keywords": [
+      "FIERCE"
+    ],
     "culture": "WRAITH",
     "race": "NAZGÛL",
     "twilightCost": 5,
@@ -94522,6 +96502,9 @@
     "isUnique": true,
     "kind": "SHADOW",
     "type": "MINION",
+    "keywords": [
+      "FIERCE"
+    ],
     "phases": [
       "SHADOW"
     ],
@@ -94572,6 +96555,9 @@
     "isUnique": true,
     "kind": "SHADOW",
     "type": "MINION",
+    "keywords": [
+      "LURKER"
+    ],
     "culture": "WRAITH",
     "race": "NAZGÛL",
     "twilightCost": 4,
@@ -94666,6 +96652,9 @@
     "isUnique": true,
     "kind": "SHADOW",
     "type": "MINION",
+    "keywords": [
+      "FIERCE"
+    ],
     "culture": "WRAITH",
     "race": "NAZGÛL",
     "twilightCost": 6,
@@ -94930,6 +96919,9 @@
     "kind": "FREE_PEOPLE",
     "type": "CONDITION",
     "subtype": "SUPPORT-AREA",
+    "keywords": [
+      "TOIL 2"
+    ],
     "phases": [
       "SKIRMISH"
     ],
@@ -95096,6 +97088,9 @@
     "isUnique": false,
     "kind": "FREE_PEOPLE",
     "type": "EVENT",
+    "keywords": [
+      "TOIL 2"
+    ],
     "phases": [
       "FELLOWSHIP"
     ],
@@ -95632,6 +97627,9 @@
     "isUnique": false,
     "kind": "FREE_PEOPLE",
     "type": "EVENT",
+    "keywords": [
+      "TOIL 2"
+    ],
     "phases": [
       "MANEUVER"
     ],
@@ -95674,6 +97672,9 @@
     "kind": "FREE_PEOPLE",
     "type": "CONDITION",
     "subtype": "SUPPORT-AREA",
+    "keywords": [
+      "TOIL 1"
+    ],
     "phases": [
       "ARCHERY"
     ],
@@ -95889,6 +97890,9 @@
     "isUnique": false,
     "kind": "FREE_PEOPLE",
     "type": "EVENT",
+    "keywords": [
+      "SPELL"
+    ],
     "phases": [
       "FELLOWSHIP"
     ],
@@ -95977,6 +97981,9 @@
     "isUnique": false,
     "kind": "FREE_PEOPLE",
     "type": "EVENT",
+    "keywords": [
+      "SPELL"
+    ],
     "phases": [
       "SKIRMISH"
     ],
@@ -96018,6 +98025,9 @@
     "isUnique": false,
     "kind": "FREE_PEOPLE",
     "type": "CONDITION",
+    "keywords": [
+      "SPELL"
+    ],
     "attachedTo": [
       [
         "COMPANION"
@@ -96792,6 +98802,9 @@
     "kind": "FREE_PEOPLE",
     "type": "CONDITION",
     "subtype": "SUPPORT-AREA",
+    "keywords": [
+      "TOIL 2"
+    ],
     "phases": [
       "SKIRMISH"
     ],
@@ -97174,6 +99187,9 @@
     "isUnique": false,
     "kind": "FREE_PEOPLE",
     "type": "MINION",
+    "keywords": [
+      "FIERCE"
+    ],
     "culture": "MEN",
     "race": "MAN",
     "twilightCost": 2,
@@ -97426,6 +99442,9 @@
     "isUnique": false,
     "kind": "FREE_PEOPLE",
     "type": "EVENT",
+    "keywords": [
+      "TOIL 2"
+    ],
     "phases": [
       "SKIRMISH"
     ],
@@ -97520,6 +99539,9 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "MINION",
+    "keywords": [
+      "LURKER"
+    ],
     "culture": "MEN",
     "race": "MAN",
     "twilightCost": 2,
@@ -97566,6 +99588,9 @@
     "isUnique": false,
     "kind": "FREE_PEOPLE",
     "type": "MINION",
+    "keywords": [
+      "LURKER"
+    ],
     "culture": "MEN",
     "race": "MAN",
     "twilightCost": 3,
@@ -97732,6 +99757,9 @@
     "isUnique": false,
     "kind": "FREE_PEOPLE",
     "type": "MINION",
+    "keywords": [
+      "ARCHER"
+    ],
     "culture": "MEN",
     "race": "MAN",
     "twilightCost": 4,
@@ -97775,6 +99803,9 @@
     "kind": "FREE_PEOPLE",
     "type": "EVENT",
     "subtype": "MANEUVER-OR-REGROUP",
+    "keywords": [
+      "TOIL 2"
+    ],
     "culture": "MEN",
     "twilightCost": 4,
     "imageUrl": "/cards_visuals/o_12_075.jpg",
@@ -98026,6 +100057,9 @@
     "isUnique": false,
     "kind": "SHADOW",
     "type": "EVENT",
+    "keywords": [
+      "TOIL 2"
+    ],
     "phases": [
       "SKIRMISH"
     ],
@@ -98590,6 +100624,9 @@
     "isUnique": false,
     "kind": "SHADOW",
     "type": "MINION",
+    "keywords": [
+      "LURKER"
+    ],
     "culture": "ORC",
     "race": "ORC",
     "twilightCost": 2,
@@ -98678,6 +100715,9 @@
     "isUnique": false,
     "kind": "SHADOW",
     "type": "MINION",
+    "keywords": [
+      "LURKER"
+    ],
     "phases": [
       "MANEUVER"
     ],
@@ -98807,6 +100847,9 @@
     "isUnique": true,
     "kind": "SHADOW",
     "type": "MINION",
+    "keywords": [
+      "LURKER"
+    ],
     "culture": "ORC",
     "race": "ORC",
     "twilightCost": 3,
@@ -98932,6 +100975,9 @@
     "isUnique": false,
     "kind": "SHADOW",
     "type": "EVENT",
+    "keywords": [
+      "TOIL 2"
+    ],
     "phases": [
       "MANEUVER"
     ],
@@ -99014,6 +101060,9 @@
     "isUnique": true,
     "kind": "SHADOW",
     "type": "MINION",
+    "keywords": [
+      "LURKER"
+    ],
     "phases": [
       "SHADOW"
     ],
@@ -99154,6 +101203,9 @@
     "kind": "FREE_PEOPLE",
     "type": "CONDITION",
     "subtype": "SUPPORT-AREA",
+    "keywords": [
+      "TOIL 2"
+    ],
     "phases": [
       "MANEUVER"
     ],
@@ -99643,6 +101695,9 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
+    "keywords": [
+      "RING-BOUND"
+    ],
     "culture": "SHIRE",
     "race": "HOBBIT",
     "twilightCost": 2,
@@ -100380,6 +102435,9 @@
     "kind": "SHADOW",
     "type": "POSSESSION",
     "subtype": "HAND-WEAPON",
+    "keywords": [
+      "TOIL 1"
+    ],
     "attachedTo": [
       [
         "URUKHAI",
@@ -100466,6 +102524,9 @@
     "isUnique": false,
     "kind": "SHADOW",
     "type": "EVENT",
+    "keywords": [
+      "TOIL 2"
+    ],
     "phases": [
       "MANEUVER"
     ],
@@ -100548,6 +102609,9 @@
     "isUnique": false,
     "kind": "SHADOW",
     "type": "MINION",
+    "keywords": [
+      "LURKER"
+    ],
     "phases": [
       "RESPONSE"
     ],
@@ -100635,6 +102699,9 @@
     "isUnique": false,
     "kind": "SHADOW",
     "type": "MINION",
+    "keywords": [
+      "DAMAGE +1"
+    ],
     "culture": "URUK-HAI",
     "race": "URUK-HAI",
     "twilightCost": 4,
@@ -100718,6 +102785,9 @@
     "isUnique": true,
     "kind": "SHADOW",
     "type": "MINION",
+    "keywords": [
+      "LURKER"
+    ],
     "phases": [
       "SKIRMISH"
     ],
@@ -100851,6 +102921,9 @@
     "isUnique": true,
     "kind": "SHADOW",
     "type": "MINION",
+    "keywords": [
+      "DAMAGE +1"
+    ],
     "culture": "URUK-HAI",
     "race": "URUK-HAI",
     "twilightCost": 4,
@@ -100930,6 +103003,9 @@
     "isUnique": false,
     "kind": "SHADOW",
     "type": "MINION",
+    "keywords": [
+      "DAMAGE +1"
+    ],
     "culture": "URUK-HAI",
     "race": "URUK-HAI",
     "twilightCost": 4,
@@ -101014,6 +103090,9 @@
     "isUnique": false,
     "kind": "SHADOW",
     "type": "MINION",
+    "keywords": [
+      "DAMAGE +1"
+    ],
     "culture": "URUK-HAI",
     "race": "URUK-HAI",
     "twilightCost": 4,
@@ -101098,6 +103177,9 @@
     "isUnique": false,
     "kind": "SHADOW",
     "type": "MINION",
+    "keywords": [
+      "DAMAGE +1"
+    ],
     "culture": "URUK-HAI",
     "race": "URUK-HAI",
     "twilightCost": 3,
@@ -101140,6 +103222,9 @@
     "isUnique": false,
     "kind": "SHADOW",
     "type": "MINION",
+    "keywords": [
+      "DAMAGE +1"
+    ],
     "culture": "URUK-HAI",
     "race": "URUK-HAI",
     "twilightCost": 4,
@@ -101182,6 +103267,9 @@
     "isUnique": true,
     "kind": "SHADOW",
     "type": "MINION",
+    "keywords": [
+      "DAMAGE +1"
+    ],
     "toPlay": [
       {
         "spot": [
@@ -101279,6 +103367,9 @@
     "isUnique": false,
     "kind": "SHADOW",
     "type": "MINION",
+    "keywords": [
+      "DAMAGE +1"
+    ],
     "culture": "URUK-HAI",
     "race": "URUK-HAI",
     "twilightCost": 5,
@@ -101321,6 +103412,9 @@
     "isUnique": false,
     "kind": "SHADOW",
     "type": "MINION",
+    "keywords": [
+      "DAMAGE +1"
+    ],
     "culture": "URUK-HAI",
     "race": "URUK-HAI",
     "twilightCost": 3,
@@ -101448,6 +103542,9 @@
     "isUnique": false,
     "kind": "SHADOW",
     "type": "MINION",
+    "keywords": [
+      "FIERCE"
+    ],
     "culture": "WRAITH",
     "race": "NAZGÛL",
     "twilightCost": 5,
@@ -101570,6 +103667,9 @@
     "isUnique": false,
     "kind": "SHADOW",
     "type": "EVENT",
+    "keywords": [
+      "TOIL 2"
+    ],
     "phases": [
       "SHADOW"
     ],
@@ -101694,6 +103794,9 @@
     "isUnique": false,
     "kind": "SHADOW",
     "type": "EVENT",
+    "keywords": [
+      "TOIL 2"
+    ],
     "phases": [
       "SHADOW"
     ],
@@ -102108,6 +104211,9 @@
     "isUnique": true,
     "kind": "SHADOW",
     "type": "MINION",
+    "keywords": [
+      "FIERCE"
+    ],
     "culture": "WRAITH",
     "race": "NAZGÛL",
     "twilightCost": 5,
@@ -102252,6 +104358,9 @@
     "isUnique": true,
     "kind": "SHADOW",
     "type": "MINION",
+    "keywords": [
+      "FIERCE"
+    ],
     "culture": "WRAITH",
     "race": "NAZGÛL",
     "twilightCost": 6,
@@ -102383,6 +104492,9 @@
     "isUnique": true,
     "kind": "SHADOW",
     "type": "MINION",
+    "keywords": [
+      "FIERCE"
+    ],
     "culture": "WRAITH",
     "race": "NAZGÛL",
     "twilightCost": 8,
@@ -102618,6 +104730,9 @@
     "isUnique": true,
     "kind": "SHADOW",
     "type": "MINION",
+    "keywords": [
+      "DAMAGE +1"
+    ],
     "culture": "MORIA",
     "race": "BALROG",
     "twilightCost": 12,
@@ -102848,6 +104963,9 @@
     "isUnique": true,
     "kind": "SHADOW",
     "type": "MINION",
+    "keywords": [
+      "FIERCE"
+    ],
     "culture": "WRAITH",
     "race": "NAZGÛL",
     "twilightCost": 8,
@@ -103618,6 +105736,9 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
+    "keywords": [
+      "ARCHER"
+    ],
     "culture": "ELVEN",
     "race": "ELF",
     "twilightCost": 2,
@@ -103969,6 +106090,9 @@
     "kind": "FREE_PEOPLE",
     "type": "CONDITION",
     "subtype": "SUPPORT-AREA",
+    "keywords": [
+      "TOIL 2"
+    ],
     "phases": [
       "ARCHERY"
     ],
@@ -104175,6 +106299,9 @@
     "isUnique": false,
     "kind": "FREE_PEOPLE",
     "type": "EVENT",
+    "keywords": [
+      "SPELL"
+    ],
     "phases": [
       "SKIRMISH"
     ],
@@ -104216,6 +106343,9 @@
     "isUnique": false,
     "kind": "FREE_PEOPLE",
     "type": "EVENT",
+    "keywords": [
+      "SPELL"
+    ],
     "phases": [
       "SKIRMISH"
     ],
@@ -105173,6 +107303,9 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
+    "keywords": [
+      "RING-BOUND"
+    ],
     "toPlay": [
       {
         "addBurdens": 1
@@ -105644,6 +107777,9 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
+    "keywords": [
+      "KNIGHT"
+    ],
     "toPlay": [
       {
         "spot": [
@@ -105921,6 +108057,9 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
+    "keywords": [
+      "KNIGHT"
+    ],
     "culture": "GONDOR",
     "race": "MAN",
     "twilightCost": 3,
@@ -106690,6 +108829,9 @@
     "isUnique": false,
     "kind": "FREE_PEOPLE",
     "type": "MINION",
+    "keywords": [
+      "LURKER"
+    ],
     "toPlay": [
       {
         "spot": [
@@ -106835,6 +108977,9 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "MINION",
+    "keywords": [
+      "LURKER"
+    ],
     "culture": "MEN",
     "race": "MAN",
     "twilightCost": 2,
@@ -107101,6 +109246,9 @@
     "isUnique": false,
     "kind": "FREE_PEOPLE",
     "type": "MINION",
+    "keywords": [
+      "ARCHER"
+    ],
     "culture": "MEN",
     "race": "MAN",
     "twilightCost": 3,
@@ -107600,6 +109748,9 @@
     "isUnique": false,
     "kind": "SHADOW",
     "type": "MINION",
+    "keywords": [
+      "LURKER"
+    ],
     "culture": "ORC",
     "race": "ORC",
     "twilightCost": 3,
@@ -107972,6 +110123,9 @@
     "isUnique": false,
     "kind": "SHADOW",
     "type": "MINION",
+    "keywords": [
+      "LURKER"
+    ],
     "phases": [
       "RESPONSE"
     ],
@@ -108989,6 +111143,9 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
+    "keywords": [
+      "RING-BOUND"
+    ],
     "culture": "SHIRE",
     "race": "HOBBIT",
     "twilightCost": 2,
@@ -109293,6 +111450,9 @@
     "canBeRingbearer": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
+    "keywords": [
+      "RING-BOUND"
+    ],
     "phases": [
       "SKIRMISH"
     ],
@@ -109730,6 +111890,9 @@
     "isUnique": false,
     "kind": "SHADOW",
     "type": "MINION",
+    "keywords": [
+      "DAMAGE +1"
+    ],
     "culture": "URUK-HAI",
     "race": "URUK-HAI",
     "twilightCost": 4,
@@ -109772,6 +111935,9 @@
     "isUnique": false,
     "kind": "SHADOW",
     "type": "MINION",
+    "keywords": [
+      "DAMAGE +1"
+    ],
     "culture": "URUK-HAI",
     "race": "URUK-HAI",
     "twilightCost": 2,
@@ -109998,6 +112164,9 @@
     "isUnique": false,
     "kind": "SHADOW",
     "type": "MINION",
+    "keywords": [
+      "DAMAGE +1"
+    ],
     "culture": "URUK-HAI",
     "race": "URUK-HAI",
     "twilightCost": 3,
@@ -110120,6 +112289,9 @@
     "isUnique": false,
     "kind": "SHADOW",
     "type": "MINION",
+    "keywords": [
+      "DAMAGE +1"
+    ],
     "culture": "URUK-HAI",
     "race": "URUK-HAI",
     "twilightCost": 3,
@@ -110255,6 +112427,9 @@
     "isUnique": false,
     "kind": "SHADOW",
     "type": "MINION",
+    "keywords": [
+      "DAMAGE +1"
+    ],
     "culture": "URUK-HAI",
     "race": "URUK-HAI",
     "twilightCost": 4,
@@ -110597,6 +112772,9 @@
     "isUnique": false,
     "kind": "SHADOW",
     "type": "EVENT",
+    "keywords": [
+      "TOIL 1"
+    ],
     "toPlay": [
       {
         "spot": [
@@ -110694,6 +112872,9 @@
     "isUnique": true,
     "kind": "SHADOW",
     "type": "MINION",
+    "keywords": [
+      "FIERCE"
+    ],
     "culture": "WRAITH",
     "race": "NAZGÛL",
     "twilightCost": 6,
@@ -110788,6 +112969,9 @@
     "isUnique": true,
     "kind": "SHADOW",
     "type": "MINION",
+    "keywords": [
+      "FIERCE"
+    ],
     "culture": "WRAITH",
     "race": "NAZGÛL",
     "twilightCost": 4,
@@ -110942,6 +113126,9 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
+    "keywords": [
+      "ARCHER"
+    ],
     "culture": "ELVEN",
     "race": "ELF",
     "twilightCost": 2,
@@ -111546,6 +113733,9 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
+    "keywords": [
+      "RANGER"
+    ],
     "culture": "GONDOR",
     "race": "MAN",
     "twilightCost": 2,
@@ -111640,6 +113830,9 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
+    "keywords": [
+      "RANGER"
+    ],
     "culture": "GONDOR",
     "race": "MAN",
     "twilightCost": 3,
@@ -111858,6 +114051,9 @@
     "isUnique": false,
     "kind": "SHADOW",
     "type": "MINION",
+    "keywords": [
+      "DAMAGE +1"
+    ],
     "culture": "URUK-HAI",
     "race": "URUK-HAI",
     "twilightCost": 3,
@@ -111900,6 +114096,9 @@
     "isUnique": false,
     "kind": "SHADOW",
     "type": "MINION",
+    "keywords": [
+      "DAMAGE +1"
+    ],
     "culture": "URUK-HAI",
     "race": "URUK-HAI",
     "twilightCost": 3,
@@ -112707,6 +114906,9 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
+    "keywords": [
+      "HUNTER 1"
+    ],
     "phases": [
       "REGROUP"
     ],
@@ -115655,6 +117857,9 @@
     "isUnique": false,
     "kind": "FREE_PEOPLE",
     "type": "MINION",
+    "keywords": [
+      "HUNTER 1"
+    ],
     "culture": "MEN",
     "race": "MAN",
     "twilightCost": 3,
@@ -116903,6 +119108,9 @@
     "isUnique": true,
     "kind": "SHADOW",
     "type": "MINION",
+    "keywords": [
+      "HUNTER 3"
+    ],
     "culture": "ORC",
     "race": "ORC",
     "twilightCost": 6,
@@ -118206,6 +120414,9 @@
     "isUnique": false,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
+    "keywords": [
+      "VALIANT"
+    ],
     "culture": "ROHAN",
     "race": "MAN",
     "twilightCost": 3,
@@ -118248,6 +120459,9 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
+    "keywords": [
+      "VALIANT"
+    ],
     "culture": "ROHAN",
     "race": "MAN",
     "twilightCost": 3,
@@ -118899,6 +121113,9 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
+    "keywords": [
+      "RING-BOUND"
+    ],
     "phases": [
       "MANEUVER",
       "RESPONSE"
@@ -119507,6 +121724,9 @@
     "isUnique": false,
     "kind": "SHADOW",
     "type": "MINION",
+    "keywords": [
+      "FIERCE"
+    ],
     "culture": "URUK-HAI",
     "race": "URUK-HAI",
     "twilightCost": 2,
@@ -119684,6 +121904,9 @@
     "isUnique": false,
     "kind": "SHADOW",
     "type": "MINION",
+    "keywords": [
+      "HUNTER 1"
+    ],
     "culture": "URUK-HAI",
     "race": "URUK-HAI",
     "twilightCost": 5,
@@ -120248,6 +122471,9 @@
     "isUnique": true,
     "kind": "SHADOW",
     "type": "MINION",
+    "keywords": [
+      "FIERCE"
+    ],
     "culture": "WRAITH",
     "race": "NAZGÛL",
     "twilightCost": 6,
@@ -120295,6 +122521,9 @@
     "isUnique": true,
     "kind": "SHADOW",
     "type": "MINION",
+    "keywords": [
+      "FIERCE"
+    ],
     "culture": "WRAITH",
     "race": "NAZGÛL",
     "twilightCost": 4,
@@ -120342,6 +122571,9 @@
     "isUnique": true,
     "kind": "SHADOW",
     "type": "MINION",
+    "keywords": [
+      "FIERCE"
+    ],
     "phases": [
       "SKIRMISH"
     ],
@@ -120691,6 +122923,9 @@
     "isUnique": true,
     "kind": "SHADOW",
     "type": "MINION",
+    "keywords": [
+      "FIERCE"
+    ],
     "culture": "WRAITH",
     "race": "NAZGÛL",
     "twilightCost": 6,
@@ -120738,6 +122973,9 @@
     "isUnique": true,
     "kind": "SHADOW",
     "type": "MINION",
+    "keywords": [
+      "FIERCE"
+    ],
     "culture": "WRAITH",
     "race": "NAZGÛL",
     "twilightCost": 4,
@@ -120785,6 +123023,9 @@
     "isUnique": true,
     "kind": "SHADOW",
     "type": "MINION",
+    "keywords": [
+      "FIERCE"
+    ],
     "phases": [
       "SKIRMISH"
     ],
@@ -120908,6 +123149,9 @@
     "isUnique": true,
     "kind": "SHADOW",
     "type": "MINION",
+    "keywords": [
+      "ENDURING"
+    ],
     "phases": [
       "SHADOW"
     ],
@@ -120953,6 +123197,9 @@
     "isUnique": false,
     "kind": "SHADOW",
     "type": "MINION",
+    "keywords": [
+      "ENDURING"
+    ],
     "culture": "WRAITH",
     "race": "WRAITH",
     "twilightCost": 3,
@@ -120995,6 +123242,9 @@
     "isUnique": true,
     "kind": "SHADOW",
     "type": "MINION",
+    "keywords": [
+      "ENDURING"
+    ],
     "culture": "WRAITH",
     "race": "WRAITH",
     "twilightCost": 2,
@@ -121037,6 +123287,9 @@
     "isUnique": false,
     "kind": "SHADOW",
     "type": "MINION",
+    "keywords": [
+      "ENDURING"
+    ],
     "culture": "WRAITH",
     "race": "WRAITH",
     "twilightCost": 2,
@@ -121079,6 +123332,9 @@
     "isUnique": true,
     "kind": "SHADOW",
     "type": "MINION",
+    "keywords": [
+      "ENDURING"
+    ],
     "culture": "WRAITH",
     "race": "WRAITH",
     "twilightCost": 7,
@@ -121121,6 +123377,9 @@
     "isUnique": true,
     "kind": "SHADOW",
     "type": "MINION",
+    "keywords": [
+      "ENDURING"
+    ],
     "phases": [
       "SHADOW"
     ],
@@ -121388,6 +123647,9 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
+    "keywords": [
+      "DAMAGE +1"
+    ],
     "culture": "DWARVEN",
     "race": "DWARF",
     "twilightCost": 2,
@@ -121431,6 +123693,9 @@
     "isUnique": false,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
+    "keywords": [
+      "HUNTER 1"
+    ],
     "phases": [
       "MANEUVER"
     ],
@@ -121600,6 +123865,9 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
+    "keywords": [
+      "HUNTER 1"
+    ],
     "phases": [
       "ARCHERY"
     ],
@@ -121646,6 +123914,9 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
+    "keywords": [
+      "HUNTER 1"
+    ],
     "phases": [
       "ARCHERY"
     ],
@@ -121782,6 +124053,9 @@
     "isUnique": false,
     "kind": "FREE_PEOPLE",
     "type": "EVENT",
+    "keywords": [
+      "SPELL"
+    ],
     "phases": [
       "FELLOWSHIP"
     ],
@@ -122036,6 +124310,9 @@
     "kind": "FREE_PEOPLE",
     "type": "CONDITION",
     "subtype": "SUPPORT-AREA",
+    "keywords": [
+      "PIPEWEED"
+    ],
     "phases": [
       "REGROUP"
     ],
@@ -122131,6 +124408,9 @@
     "kind": "FREE_PEOPLE",
     "type": "CONDITION",
     "subtype": "SUPPORT-AREA",
+    "keywords": [
+      "SPELL"
+    ],
     "phases": [
       "FELLOWSHIP"
     ],
@@ -122653,6 +124933,9 @@
     "kind": "FREE_PEOPLE",
     "type": "CONDITION",
     "subtype": "SUPPORT-AREA",
+    "keywords": [
+      "FORTIFICATION"
+    ],
     "phases": [
       "REGROUP"
     ],
@@ -123500,6 +125783,9 @@
     "isUnique": false,
     "kind": "FREE_PEOPLE",
     "type": "MINION",
+    "keywords": [
+      "FIERCE"
+    ],
     "phases": [
       "MANEUVER"
     ],
@@ -124264,6 +126550,9 @@
     "isUnique": true,
     "kind": "SHADOW",
     "type": "MINION",
+    "keywords": [
+      "HUNTER 2"
+    ],
     "phases": [
       "SHADOW"
     ],
@@ -125262,6 +127551,9 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
+    "keywords": [
+      "VALIANT"
+    ],
     "culture": "ROHAN",
     "race": "MAN",
     "twilightCost": 4,
@@ -125347,6 +127639,9 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
+    "keywords": [
+      "DAMAGE +1"
+    ],
     "phases": [
       "MANEUVER"
     ],
@@ -125851,6 +128146,9 @@
     "kind": "FREE_PEOPLE",
     "type": "CONDITION",
     "subtype": "SUPPORT-AREA",
+    "keywords": [
+      "PIPEWEED"
+    ],
     "toPlay": [
       {
         "spot": [
@@ -125954,6 +128252,9 @@
     "kind": "FREE_PEOPLE",
     "type": "CONDITION",
     "subtype": "SUPPORT-AREA",
+    "keywords": [
+      "PIPEWEED"
+    ],
     "toPlay": [
       {
         "spot": [
@@ -126058,6 +128359,9 @@
     "kind": "FREE_PEOPLE",
     "type": "CONDITION",
     "subtype": "SUPPORT-AREA",
+    "keywords": [
+      "PIPEWEED"
+    ],
     "toPlay": [
       {
         "spot": [
@@ -126112,6 +128416,9 @@
     "kind": "FREE_PEOPLE",
     "type": "CONDITION",
     "subtype": "SUPPORT-AREA",
+    "keywords": [
+      "PIPEWEED"
+    ],
     "toPlay": [
       {
         "spot": [
@@ -126489,6 +128796,9 @@
     "isUnique": false,
     "kind": "SHADOW",
     "type": "MINION",
+    "keywords": [
+      "DAMAGE +1"
+    ],
     "culture": "URUK-HAI",
     "race": "URUK-HAI",
     "twilightCost": 5,
@@ -126531,6 +128841,9 @@
     "isUnique": false,
     "kind": "SHADOW",
     "type": "MINION",
+    "keywords": [
+      "DAMAGE +1"
+    ],
     "culture": "URUK-HAI",
     "race": "URUK-HAI",
     "twilightCost": 3,
@@ -126573,6 +128886,9 @@
     "isUnique": false,
     "kind": "SHADOW",
     "type": "MINION",
+    "keywords": [
+      "DAMAGE +1"
+    ],
     "culture": "URUK-HAI",
     "race": "URUK-HAI",
     "twilightCost": 4,
@@ -126657,6 +128973,9 @@
     "isUnique": false,
     "kind": "SHADOW",
     "type": "MINION",
+    "keywords": [
+      "FIERCE"
+    ],
     "culture": "URUK-HAI",
     "race": "URUK-HAI",
     "twilightCost": 5,
@@ -126699,6 +129018,9 @@
     "isUnique": true,
     "kind": "SHADOW",
     "type": "MINION",
+    "keywords": [
+      "FIERCE"
+    ],
     "culture": "URUK-HAI",
     "race": "URUK-HAI",
     "twilightCost": 5,
@@ -126741,6 +129063,9 @@
     "isUnique": false,
     "kind": "SHADOW",
     "type": "MINION",
+    "keywords": [
+      "DAMAGE +1"
+    ],
     "culture": "URUK-HAI",
     "race": "URUK-HAI",
     "twilightCost": 3,
@@ -126828,6 +129153,9 @@
     "isUnique": false,
     "kind": "SHADOW",
     "type": "MINION",
+    "keywords": [
+      "DAMAGE +1"
+    ],
     "culture": "URUK-HAI",
     "race": "URUK-HAI",
     "twilightCost": 4,
@@ -126870,6 +129198,9 @@
     "isUnique": false,
     "kind": "SHADOW",
     "type": "MINION",
+    "keywords": [
+      "DAMAGE +1"
+    ],
     "culture": "URUK-HAI",
     "race": "URUK-HAI",
     "twilightCost": 3,
@@ -126912,6 +129243,9 @@
     "isUnique": false,
     "kind": "SHADOW",
     "type": "MINION",
+    "keywords": [
+      "DAMAGE +1"
+    ],
     "toPlay": [
       {
         "removeThreats": 2
@@ -127001,6 +129335,9 @@
     "isUnique": false,
     "kind": "SHADOW",
     "type": "MINION",
+    "keywords": [
+      "FIERCE"
+    ],
     "culture": "URUK-HAI",
     "race": "URUK-HAI",
     "twilightCost": 3,
@@ -127085,6 +129422,9 @@
     "isUnique": false,
     "kind": "SHADOW",
     "type": "MINION",
+    "keywords": [
+      "FIERCE"
+    ],
     "culture": "URUK-HAI",
     "race": "URUK-HAI",
     "twilightCost": 3,
@@ -127127,6 +129467,9 @@
     "isUnique": true,
     "kind": "SHADOW",
     "type": "MINION",
+    "keywords": [
+      "FIERCE"
+    ],
     "culture": "URUK-HAI",
     "race": "URUK-HAI",
     "twilightCost": 4,
@@ -127169,6 +129512,9 @@
     "isUnique": false,
     "kind": "SHADOW",
     "type": "MINION",
+    "keywords": [
+      "DAMAGE +1"
+    ],
     "culture": "URUK-HAI",
     "race": "URUK-HAI",
     "twilightCost": 3,
@@ -127336,6 +129682,9 @@
     "isUnique": true,
     "kind": "SHADOW",
     "type": "MINION",
+    "keywords": [
+      "FIERCE"
+    ],
     "phases": [
       "SKIRMISH"
     ],
@@ -127382,6 +129731,9 @@
     "isUnique": true,
     "kind": "SHADOW",
     "type": "MINION",
+    "keywords": [
+      "FIERCE"
+    ],
     "phases": [
       "MANEUVER"
     ],
@@ -127428,6 +129780,9 @@
     "isUnique": true,
     "kind": "SHADOW",
     "type": "MINION",
+    "keywords": [
+      "FIERCE"
+    ],
     "phases": [
       "REGROUP"
     ],
@@ -127559,6 +129914,9 @@
     "isUnique": true,
     "kind": "SHADOW",
     "type": "MINION",
+    "keywords": [
+      "FIERCE"
+    ],
     "culture": "WRAITH",
     "race": "NAZGÛL",
     "twilightCost": 8,
@@ -127682,6 +130040,9 @@
     "kind": "FREE_PEOPLE",
     "type": "CONDITION",
     "subtype": "SUPPORT-AREA",
+    "keywords": [
+      "TALE"
+    ],
     "phases": [
       "MANEUVER"
     ],
@@ -128142,6 +130503,9 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
+    "keywords": [
+      "RANGER"
+    ],
     "toPlay": [
       {
         "spot": [
@@ -128510,6 +130874,9 @@
     "isUnique": false,
     "kind": "FREE_PEOPLE",
     "type": "EVENT",
+    "keywords": [
+      "SPELL"
+    ],
     "phases": [
       "SKIRMISH"
     ],
@@ -128685,6 +131052,9 @@
     "isUnique": false,
     "kind": "FREE_PEOPLE",
     "type": "EVENT",
+    "keywords": [
+      "SPELL"
+    ],
     "phases": [
       "MANEUVER"
     ],
@@ -128727,6 +131097,9 @@
     "kind": "FREE_PEOPLE",
     "type": "CONDITION",
     "subtype": "SUPPORT-AREA",
+    "keywords": [
+      "SPELL"
+    ],
     "toPlay": [
       {
         "exert": [
@@ -128869,6 +131242,9 @@
     "kind": "FREE_PEOPLE",
     "type": "CONDITION",
     "subtype": "SUPPORT-AREA",
+    "keywords": [
+      "PIPEWEED"
+    ],
     "culture": "GANDALF",
     "twilightCost": 0,
     "imageUrl": "/cards_visuals/o_18_027.jpg",
@@ -129156,6 +131532,9 @@
     "isUnique": true,
     "kind": "SHADOW",
     "type": "MINION",
+    "keywords": [
+      "FIERCE"
+    ],
     "culture": "GOLLUM",
     "race": "SPIDER",
     "twilightCost": 6,
@@ -129336,6 +131715,9 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
+    "keywords": [
+      "HUNTER 2"
+    ],
     "culture": "GONDOR",
     "race": "MAN",
     "twilightCost": 4,
@@ -129424,6 +131806,9 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
+    "keywords": [
+      "RANGER"
+    ],
     "culture": "GONDOR",
     "race": "MAN",
     "twilightCost": 3,
@@ -129898,6 +132283,9 @@
     "kind": "FREE_PEOPLE",
     "type": "CONDITION",
     "subtype": "SUPPORT-AREA",
+    "keywords": [
+      "TALE"
+    ],
     "phases": [
       "MANEUVER"
     ],
@@ -130072,6 +132460,9 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
+    "keywords": [
+      "KNIGHT"
+    ],
     "culture": "GONDOR",
     "race": "MAN",
     "twilightCost": 2,
@@ -130167,6 +132558,9 @@
     "isUnique": false,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
+    "keywords": [
+      "RANGER"
+    ],
     "culture": "GONDOR",
     "race": "MAN",
     "twilightCost": 2,
@@ -130258,6 +132652,9 @@
     "kind": "FREE_PEOPLE",
     "type": "CONDITION",
     "subtype": "SUPPORT-AREA",
+    "keywords": [
+      "FORTIFICATION"
+    ],
     "phases": [
       "REGROUP"
     ],
@@ -130295,6 +132692,9 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
+    "keywords": [
+      "RANGER"
+    ],
     "phases": [
       "SKIRMISH"
     ],
@@ -131585,6 +133985,9 @@
     "isUnique": false,
     "kind": "SHADOW",
     "type": "MINION",
+    "keywords": [
+      "HUNTER 1"
+    ],
     "phases": [
       "SHADOW"
     ],
@@ -131672,6 +134075,9 @@
     "isUnique": false,
     "kind": "SHADOW",
     "type": "MINION",
+    "keywords": [
+      "HUNTER 1"
+    ],
     "culture": "ORC",
     "race": "ORC",
     "twilightCost": 5,
@@ -132102,6 +134508,9 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
+    "keywords": [
+      "VALIANT"
+    ],
     "phases": [
       "SKIRMISH"
     ],
@@ -132300,6 +134709,9 @@
     "isUnique": false,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
+    "keywords": [
+      "VALIANT"
+    ],
     "culture": "ROHAN",
     "race": "MAN",
     "twilightCost": 2,
@@ -132432,6 +134844,9 @@
     "kind": "FREE_PEOPLE",
     "type": "CONDITION",
     "subtype": "SUPPORT-AREA",
+    "keywords": [
+      "TALE"
+    ],
     "toPlay": [
       {
         "spot": [
@@ -132700,6 +135115,9 @@
     "kind": "FREE_PEOPLE",
     "type": "CONDITION",
     "subtype": "SUPPORT-AREA",
+    "keywords": [
+      "TALE"
+    ],
     "phases": [
       "RESPONSE"
     ],
@@ -133226,6 +135644,9 @@
     "isUnique": false,
     "kind": "SHADOW",
     "type": "MINION",
+    "keywords": [
+      "DAMAGE +1"
+    ],
     "culture": "URUK-HAI",
     "race": "URUK-HAI",
     "twilightCost": 3,
@@ -133268,6 +135689,9 @@
     "isUnique": false,
     "kind": "SHADOW",
     "type": "MINION",
+    "keywords": [
+      "DAMAGE +1"
+    ],
     "culture": "URUK-HAI",
     "race": "URUK-HAI",
     "twilightCost": 2,
@@ -133310,6 +135734,9 @@
     "isUnique": true,
     "kind": "SHADOW",
     "type": "MINION",
+    "keywords": [
+      "DAMAGE +1"
+    ],
     "culture": "URUK-HAI",
     "race": "URUK-HAI",
     "twilightCost": 4,
@@ -133352,6 +135779,9 @@
     "isUnique": true,
     "kind": "SHADOW",
     "type": "MINION",
+    "keywords": [
+      "DAMAGE +1"
+    ],
     "culture": "URUK-HAI",
     "race": "URUK-HAI",
     "twilightCost": 5,
@@ -133394,6 +135824,9 @@
     "isUnique": false,
     "kind": "SHADOW",
     "type": "MINION",
+    "keywords": [
+      "DAMAGE +1"
+    ],
     "phases": [
       "RESPONSE"
     ],
@@ -133439,6 +135872,9 @@
     "isUnique": false,
     "kind": "SHADOW",
     "type": "MINION",
+    "keywords": [
+      "DAMAGE +1"
+    ],
     "toPlay": [
       {
         "spot": [
@@ -133495,6 +135931,9 @@
     "isUnique": false,
     "kind": "SHADOW",
     "type": "MINION",
+    "keywords": [
+      "DAMAGE +1"
+    ],
     "phases": [
       "SKIRMISH"
     ],
@@ -133540,6 +135979,9 @@
     "isUnique": false,
     "kind": "SHADOW",
     "type": "MINION",
+    "keywords": [
+      "DAMAGE +1"
+    ],
     "toPlay": [
       {
         "spot": [
@@ -133896,6 +136338,9 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
+    "keywords": [
+      "RANGER"
+    ],
     "phases": [
       "MANEUVER"
     ],
@@ -134146,6 +136591,9 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
+    "keywords": [
+      "RING-BOUND"
+    ],
     "toPlay": [
       {
         "addBurdens": 1
@@ -134429,6 +136877,9 @@
     "isUnique": false,
     "kind": "SHADOW",
     "type": "CONDITION",
+    "keywords": [
+      "WEATHER"
+    ],
     "phases": [
       "SKIRMISH"
     ],
@@ -134516,6 +136967,9 @@
     "isUnique": false,
     "kind": "SHADOW",
     "type": "MINION",
+    "keywords": [
+      "TENTACLE"
+    ],
     "culture": "MORIA",
     "race": "CREATURE",
     "twilightCost": 2,
@@ -134558,6 +137012,9 @@
     "isUnique": false,
     "kind": "SHADOW",
     "type": "MINION",
+    "keywords": [
+      "TENTACLE"
+    ],
     "culture": "MORIA",
     "race": "CREATURE",
     "twilightCost": 3,
@@ -134815,6 +137272,9 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
+    "keywords": [
+      "VALIANT"
+    ],
     "culture": "ROHAN",
     "race": "MAN",
     "twilightCost": 3,
@@ -134862,6 +137322,9 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
+    "keywords": [
+      "VALIANT"
+    ],
     "phases": [
       "FELLOWSHIP"
     ],
@@ -135281,6 +137744,9 @@
     "isUnique": true,
     "kind": "SHADOW",
     "type": "MINION",
+    "keywords": [
+      "FIERCE"
+    ],
     "culture": "WRAITH",
     "race": "NAZGÛL",
     "twilightCost": 6,
@@ -135328,6 +137794,9 @@
     "isUnique": true,
     "kind": "SHADOW",
     "type": "MINION",
+    "keywords": [
+      "FIERCE"
+    ],
     "phases": [
       "MANEUVER"
     ],
@@ -135378,6 +137847,9 @@
     "isUnique": true,
     "kind": "SHADOW",
     "type": "MINION",
+    "keywords": [
+      "FIERCE"
+    ],
     "culture": "WRAITH",
     "race": "NAZGÛL",
     "twilightCost": 4,
@@ -135425,6 +137897,9 @@
     "isUnique": true,
     "kind": "SHADOW",
     "type": "MINION",
+    "keywords": [
+      "FIERCE"
+    ],
     "culture": "WRAITH",
     "race": "NAZGÛL",
     "twilightCost": 4,
@@ -135472,6 +137947,9 @@
     "isUnique": true,
     "kind": "SHADOW",
     "type": "MINION",
+    "keywords": [
+      "FIERCE"
+    ],
     "culture": "WRAITH",
     "race": "NAZGÛL",
     "twilightCost": 6,
@@ -135519,6 +137997,9 @@
     "isUnique": true,
     "kind": "SHADOW",
     "type": "MINION",
+    "keywords": [
+      "FIERCE"
+    ],
     "phases": [
       "SKIRMISH"
     ],

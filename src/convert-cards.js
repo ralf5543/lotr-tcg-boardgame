@@ -36,11 +36,18 @@ const VALID_CULTURES = new Set([
     'THE-ONE-RING', 'URUK-HAI'
 ]);
 
-// Mots-clés de rôle/statut valides (pour l'analyse de l'attachement via <keyword>)
+// Mots-clés officiels et exhaustifs du jeu (pour la clé "keywords")
 const VALID_KEYWORDS = new Set([
-    'ARCHER', 'BESIEGER', 'CORSAIR', 'EASTERLING', 'HUNTER', 
-    'KNIGHT', 'RANGER', 'RING-BEARER', 'RING-BOUND', 
-    'SOUTHRON', 'VALIANT', 'VILLAGER', 'WARG-RIDER'
+    'AID', 'AMBUSH', 'ARCHER', 'BATTLEGROUND', 'BESIEGER', 'CORSAIR',
+    'DAMAGE +1', 'DAMAGE +2', 'DAMAGE +3', 'DAMAGE +4',
+    'DEFENDER +1', 'DEFENDER +2', 'DEFENDER +3', 'DEFENDER +4',
+    'DWELLING', 'EASTERLING', 'ENDURING', 'ENGINE', 'FIERCE', 'FOREST',
+    'FORTIFICATION', 'HUNTER 1', 'HUNTER 2', 'HUNTER 3', 'HUNTER 4',
+    'KNIGHT', 'LURKER', 'MACHINE', 'MARSH', 'MOUNTAIN', 'MUSTER',
+    'PIPEWEED', 'PLAINS', 'RANGER', 'RING-BEARER', 'RING-BOUND', 'RIVER',
+    'SEARCH', 'SOUTHRON', 'SPELL', 'STEALTH', 'TALE', 'TENTACLE',
+    'TOIL 1', 'TOIL 2', 'TOIL 3', 'TRACKER', 'TWILIGHT', 'UNDERGROUND',
+    'UNHASTY', 'VALIANT', 'VILLAGER', 'WARG-RIDER', 'WEATHER'
 ]);
 
 // Types de cartes cibles (pour l'analyse de l'attachement)
@@ -197,8 +204,38 @@ function buildLangBlock(title, subtitle, gameText, lore) {
 }
 
 // ============================================================================
-// 3. FONCTIONS D'EXTRACTION DE RÈGLES MÉTIER (SUBTYPES, PHASES, ATTACHED_TO)
+// 3. FONCTIONS D'EXTRACTION DE RÈGLES MÉTIER (SUBTYPES, PHASES, MOTS-CLÉS, ATTACHED_TO)
 // ============================================================================
+
+/**
+ * Extrait les mots-clés autonomes d'une carte depuis son texte anglais.
+ * Cible uniquement les balises <keyword>Mot-clé.</keyword> commençant par une Majuscule
+ * et finissant directement par un point.
+ */
+function parseKeywords(text) {
+    if (!text) return undefined;
+
+    const keywords = [];
+    // Regex : capture uniquement les <keyword> dont le contenu commence par une majuscule
+    // et se termine immédiatement par un point avant </keyword>
+    const regex = /<keyword>([A-Z][^<]*\.)<\/keyword>/g;
+
+    let match;
+    while ((match = regex.exec(text)) !== null) {
+        // Extraire le texte, retirer le point final et nettoyer les espaces
+        const rawKw = match[1].slice(0, -1).trim();
+        const upperKw = rawKw.toUpperCase();
+
+        // Contrôle de sécurité contre notre liste exhaustive
+        if (VALID_KEYWORDS.has(upperKw)) {
+            if (!keywords.includes(upperKw)) {
+                keywords.push(upperKw);
+            }
+        }
+    }
+
+    return keywords.length > 0 ? keywords : undefined;
+}
 
 function parseClassAndPhases(classStr, englishText) {
     const phasesSet = new Set();
@@ -334,187 +371,6 @@ function parseAttachedTo(text) {
     return combinedKeywords.length > 0 ? [combinedKeywords] : null; // ➔ [["ROHAN", "MAN"]]
 }
 
-// ============================================================================
-// 4. PROCESSUS PRINCIPAL DE CONVERSION (convert)
-// ============================================================================
-
-async function convert() {
-    console.log('🔄 Lecture et traitement du CSV des cartes...');
-
-    // ------------------------------------------------------------------------
-    // 4.1. Chargement et décodage explicite en Windows-1252
-    // ------------------------------------------------------------------------
-    if (!fs.existsSync(CSV_PATH)) {
-        console.error(`❌ Fichier introuvable : ${CSV_PATH}`);
-        return;
-    }
-
-    // Lecture du buffer binaire brut
-    const buffer = fs.readFileSync(CSV_PATH);
-    
-    // Décodage explicite Windows-1252 vers string Unicode
-    const decoder = new TextDecoder('windows-1252');
-    let fileContent = decoder.decode(buffer);
-
-    // Nettoyage de l'éventuel BOM
-    if (fileContent.charCodeAt(0) === 0xFEFF) {
-        fileContent = fileContent.slice(1);
-    }
-
-    const allRows = parseCsvContent(fileContent);
-
-    if (allRows.length === 0) {
-        console.error('❌ Le fichier CSV est vide !');
-        return;
-    }
-
-    const headers = allRows[0].map(h => h.trim());
-    const cardMap = new Map();
-    const siteMap = new Map();
-
-    // ------------------------------------------------------------------------
-    // 4.2. Parcours ligne par ligne et extraction des données
-    // ------------------------------------------------------------------------
-    for (let i = 1; i < allRows.length; i++) {
-        const row = allRows[i];
-        if (row.length < 2) continue;
-
-        const data = {};
-        headers.forEach((h, index) => {
-            data[h] = row[index] || '';
-        });
-
-        const cardId = data['Collectors Info'];
-        if (!cardId) continue;
-
-        const type = (data['Type'] || '').toUpperCase();
-        const isSite = type === 'SITE';
-
-        const frenchText = data['French Text'] || '';
-        const englishText = data['Text'] || '';
-
-        const targetMap = isSite ? siteMap : cardMap;
-
-        // Déduplication : si la carte existe déjà, on garde la plus complète
-        if (targetMap.has(cardId)) {
-            const existing = targetMap.get(cardId);
-            const existingTextLen = (existing.i18n?.fr?.gameText || existing.i18n?.en?.gameText || '').length;
-            const newTextLen = (frenchText || englishText).length;
-            if (newTextLen <= existingTextLen) continue;
-        }
-
-        // --- Détermination du camp (kind) ---
-        const culture = (data['Culture'] || '').toUpperCase();
-        const background = (data['Background'] || '').trim();
-
-        let kind = 'FREE_PEOPLE';
-
-        if (SHADOW_CULTURES.includes(culture)) {
-            kind = 'SHADOW';
-        } else if (culture === 'GOLLUM') {
-            kind = background.toLowerCase().startsWith('gollum_') ? 'SHADOW' : 'FREE_PEOPLE';
-        }
-
-        if (isSite) {
-            kind = 'SITE';
-        }
-
-        // --- Détection Porteur de l'Anneau ---
-        const titleVO = (data['Title'] || '').trim();
-        const bottomIcon = (data['Bottom Icon'] || '').trim();
-
-        const isRingbearer = bottomIcon === 'Icon_ringbearer' || titleVO.toLowerCase() === 'frodo';
-        const canBeRingbearer = isRingbearer ? true : undefined;
-
-        // --- Visuels ---
-        const rawImageCode = (data['Image'] || '').trim();
-        const imageUrl = rawImageCode ? `/cards_visuals/o_${rawImageCode}.jpg` : undefined;
-
-        // --- Subtypes, Phases & AttachedTo ---
-        const { subtype, phases } = parseClassAndPhases(data['Class'], englishText);
-        const attachmentData = parseAttachedTo(englishText);
-
-        // --- Stats numériques ---
-        const computedStrength = parseStat(data['Strength'], data['Top Text']);
-        const computedVitality = parseStat(data['Vitality'], data['Middle Text']);
-        const computedResistance = parseStat(data['Resistance'], data['Bottom Text']);
-
-        // ------------------------------------------------------------------------
-        // 4.3. Assemblage de l'objet Carte
-        // ------------------------------------------------------------------------
-        const toPlayData = parseToPlayConditions(englishText);
-        const cardObj = {
-            id: cardId,
-            set: parseInt(data['Set'], 10) || 0,
-            rarity: data['Rarity'] || undefined,
-            isUnique: data['Unique'] === '1',
-            canBeRingbearer: canBeRingbearer,
-            
-            kind: kind,
-            type: type,
-            subtype: subtype,
-            attachedTo: attachmentData || undefined,
-            toPlay: toPlayData,
-            isControlled: attachmentData?.isControlled,
-            phases: phases,
-            culture: mapCulture(data['Culture']),
-            race: data['Race'] ? data['Race'].toUpperCase() : undefined,
-            signet: parseSignet(bottomIcon),
-            
-            twilightCost: data['Twilight Cost'] !== '' ? parseInt(data['Twilight Cost'], 10) : 0,
-            strength: computedStrength,
-            vitality: computedVitality,
-            resistance: computedResistance,
-            
-            minionSiteNumber: data['Minion Site Number'] !== '' ? parseInt(data['Minion Site Number'], 10) : undefined,
-            allyHomeSites: data['Ally Home Sites'] || undefined,
-            siteNumber: data['Site Number'] !== '' ? parseInt(data['Site Number'], 10) : undefined,
-            siteArrow: data['Site Arrow'] || undefined,
-
-            imageUrl: imageUrl,                          
-
-            // Bloc internationalisation
-            i18n: {
-                en: buildLangBlock(data['Title'], data['Subtitle'], data['Text'], data['Lore']),
-                fr: buildLangBlock(data['French Title'], data['French Subtitle'], data['French Text'], data['French Lore']),
-                de: buildLangBlock(data['German Title'], data['German Subtitle'], data['German Text'], data['German Lore']),
-                it: buildLangBlock(data['Italian Title'], data['Italian Subtitle'], data['Italian Text'], data['Italian Lore']),
-                es: buildLangBlock(data['Spanish Title'], data['Spanish Subtitle'], data['Spanish Text'], data['Spanish Lore']),
-            }
-        };
-
-        // Nettoyage des langues vides
-        Object.keys(cardObj.i18n).forEach(lang => {
-            if (!cardObj.i18n[lang]) delete cardObj.i18n[lang];
-        });
-
-        // Nettoyage des propriétés undefined à la racine
-        Object.keys(cardObj).forEach((key) => {
-            if (cardObj[key] === undefined) delete cardObj[key];
-        });
-
-        targetMap.set(cardId, cardObj);
-    }
-
-    // ------------------------------------------------------------------------
-    // 4.4. Écriture des fichiers JSON finaux (UTF-8)
-    // ------------------------------------------------------------------------
-    const cardsArray = Array.from(cardMap.values());
-    const sitesArray = Array.from(siteMap.values());
-
-    const outputDir = path.dirname(OUTPUT_CARDS_PATH);
-    if (!fs.existsSync(outputDir)) {
-        fs.mkdirSync(outputDir, { recursive: true });
-    }
-
-    fs.writeFileSync(OUTPUT_CARDS_PATH, JSON.stringify(cardsArray, null, 2), 'utf-8');
-    fs.writeFileSync(OUTPUT_SITES_PATH, JSON.stringify(sitesArray, null, 2), 'utf-8');
-
-    console.log(`✅ Conversion réussie !`);
-    console.log(`🃏 Cartes : ${cardsArray.length} -> ${OUTPUT_CARDS_PATH}`);
-    console.log(`🏞️ Sites  : ${sitesArray.length} -> ${OUTPUT_SITES_PATH}`);
-}
-
 function parseToPlayConditions(text) {
     if (!text) return undefined;
 
@@ -626,6 +482,189 @@ function parseToPlayConditions(text) {
     }
 
     return parsedOptions.length > 0 ? parsedOptions : undefined;
+}
+
+// ============================================================================
+// 4. PROCESSUS PRINCIPAL DE CONVERSION (convert)
+// ============================================================================
+
+async function convert() {
+    console.log('🔄 Lecture et traitement du CSV des cartes...');
+
+    // ------------------------------------------------------------------------
+    // 4.1. Chargement et décodage explicite en Windows-1252
+    // ------------------------------------------------------------------------
+    if (!fs.existsSync(CSV_PATH)) {
+        console.error(`❌ Fichier introuvable : ${CSV_PATH}`);
+        return;
+    }
+
+    // Lecture du buffer binaire brut
+    const buffer = fs.readFileSync(CSV_PATH);
+    
+    // Décodage explicite Windows-1252 vers string Unicode
+    const decoder = new TextDecoder('windows-1252');
+    let fileContent = decoder.decode(buffer);
+
+    // Nettoyage de l'éventuel BOM
+    if (fileContent.charCodeAt(0) === 0xFEFF) {
+        fileContent = fileContent.slice(1);
+    }
+
+    const allRows = parseCsvContent(fileContent);
+
+    if (allRows.length === 0) {
+        console.error('❌ Le fichier CSV est vide !');
+        return;
+    }
+
+    const headers = allRows[0].map(h => h.trim());
+    const cardMap = new Map();
+    const siteMap = new Map();
+
+    // ------------------------------------------------------------------------
+    // 4.2. Parcours ligne par ligne et extraction des données
+    // ------------------------------------------------------------------------
+    for (let i = 1; i < allRows.length; i++) {
+        const row = allRows[i];
+        if (row.length < 2) continue;
+
+        const data = {};
+        headers.forEach((h, index) => {
+            data[h] = row[index] || '';
+        });
+
+        const cardId = data['Collectors Info'];
+        if (!cardId) continue;
+
+        const type = (data['Type'] || '').toUpperCase();
+        const isSite = type === 'SITE';
+
+        const frenchText = data['French Text'] || '';
+        const englishText = data['Text'] || '';
+
+        const targetMap = isSite ? siteMap : cardMap;
+
+        // Déduplication : si la carte existe déjà, on garde la plus complète
+        if (targetMap.has(cardId)) {
+            const existing = targetMap.get(cardId);
+            const existingTextLen = (existing.i18n?.fr?.gameText || existing.i18n?.en?.gameText || '').length;
+            const newTextLen = (frenchText || englishText).length;
+            if (newTextLen <= existingTextLen) continue;
+        }
+
+        // --- Détermination du camp (kind) ---
+        const culture = (data['Culture'] || '').toUpperCase();
+        const background = (data['Background'] || '').trim();
+
+        let kind = 'FREE_PEOPLE';
+
+        if (SHADOW_CULTURES.includes(culture)) {
+            kind = 'SHADOW';
+        } else if (culture === 'GOLLUM') {
+            kind = background.toLowerCase().startsWith('gollum_') ? 'SHADOW' : 'FREE_PEOPLE';
+        }
+
+        if (isSite) {
+            kind = 'SITE';
+        }
+
+        // --- Détection Porteur de l'Anneau ---
+        const titleVO = (data['Title'] || '').trim();
+        const bottomIcon = (data['Bottom Icon'] || '').trim();
+
+        const isRingbearer = bottomIcon === 'Icon_ringbearer' || titleVO.toLowerCase() === 'frodo';
+        const canBeRingbearer = isRingbearer ? true : undefined;
+
+        // --- Visuels ---
+        const rawImageCode = (data['Image'] || '').trim();
+        const imageUrl = rawImageCode ? `/cards_visuals/o_${rawImageCode}.jpg` : undefined;
+
+        // --- Subtypes, Phases, Mots-clés & AttachedTo ---
+        const { subtype, phases } = parseClassAndPhases(data['Class'], englishText);
+        const keywords = parseKeywords(englishText);
+        const attachmentData = parseAttachedTo(englishText);
+
+        // --- Stats numériques ---
+        const computedStrength = parseStat(data['Strength'], data['Top Text']);
+        const computedVitality = parseStat(data['Vitality'], data['Middle Text']);
+        const computedResistance = parseStat(data['Resistance'], data['Bottom Text']);
+
+        // ------------------------------------------------------------------------
+        // 4.3. Assemblage de l'objet Carte
+        // ------------------------------------------------------------------------
+        const toPlayData = parseToPlayConditions(englishText);
+        const cardObj = {
+            id: cardId,
+            set: parseInt(data['Set'], 10) || 0,
+            rarity: data['Rarity'] || undefined,
+            isUnique: data['Unique'] === '1',
+            canBeRingbearer: canBeRingbearer,
+            
+            kind: kind,
+            type: type,
+            subtype: subtype,
+            keywords: keywords,
+            attachedTo: attachmentData || undefined,
+            toPlay: toPlayData,
+            isControlled: attachmentData?.isControlled,
+            phases: phases,
+            culture: mapCulture(data['Culture']),
+            race: data['Race'] ? data['Race'].toUpperCase() : undefined,
+            signet: parseSignet(bottomIcon),
+            
+            twilightCost: data['Twilight Cost'] !== '' ? parseInt(data['Twilight Cost'], 10) : 0,
+            strength: computedStrength,
+            vitality: computedVitality,
+            resistance: computedResistance,
+            
+            minionSiteNumber: data['Minion Site Number'] !== '' ? parseInt(data['Minion Site Number'], 10) : undefined,
+            allyHomeSites: data['Ally Home Sites'] || undefined,
+            siteNumber: data['Site Number'] !== '' ? parseInt(data['Site Number'], 10) : undefined,
+            siteArrow: data['Site Arrow'] || undefined,
+
+            imageUrl: imageUrl,                          
+
+            // Bloc internationalisation
+            i18n: {
+                en: buildLangBlock(data['Title'], data['Subtitle'], data['Text'], data['Lore']),
+                fr: buildLangBlock(data['French Title'], data['French Subtitle'], data['French Text'], data['French Lore']),
+                de: buildLangBlock(data['German Title'], data['German Subtitle'], data['German Text'], data['German Lore']),
+                it: buildLangBlock(data['Italian Title'], data['Italian Subtitle'], data['Italian Text'], data['Italian Lore']),
+                es: buildLangBlock(data['Spanish Title'], data['Spanish Subtitle'], data['Spanish Text'], data['Spanish Lore']),
+            }
+        };
+
+        // Nettoyage des langues vides
+        Object.keys(cardObj.i18n).forEach(lang => {
+            if (!cardObj.i18n[lang]) delete cardObj.i18n[lang];
+        });
+
+        // Nettoyage des propriétés undefined à la racine
+        Object.keys(cardObj).forEach((key) => {
+            if (cardObj[key] === undefined) delete cardObj[key];
+        });
+
+        targetMap.set(cardId, cardObj);
+    }
+
+    // ------------------------------------------------------------------------
+    // 4.4. Écriture des fichiers JSON finaux (UTF-8)
+    // ------------------------------------------------------------------------
+    const cardsArray = Array.from(cardMap.values());
+    const sitesArray = Array.from(siteMap.values());
+
+    const outputDir = path.dirname(OUTPUT_CARDS_PATH);
+    if (!fs.existsSync(outputDir)) {
+        fs.mkdirSync(outputDir, { recursive: true });
+    }
+
+    fs.writeFileSync(OUTPUT_CARDS_PATH, JSON.stringify(cardsArray, null, 2), 'utf-8');
+    fs.writeFileSync(OUTPUT_SITES_PATH, JSON.stringify(sitesArray, null, 2), 'utf-8');
+
+    console.log(`✅ Conversion réussie !`);
+    console.log(`🃏 Cartes : ${cardsArray.length} -> ${OUTPUT_CARDS_PATH}`);
+    console.log(`🏞️ Sites  : ${sitesArray.length} -> ${OUTPUT_SITES_PATH}`);
 }
 
 // ============================================================================
