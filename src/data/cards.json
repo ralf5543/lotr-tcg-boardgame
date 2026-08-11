@@ -183,7 +183,7 @@
     "subtype": "PHIAL",
     "attachedTo": [
       [
-        "RING-BEARER"
+        "the Ring-bearer"
       ]
     ],
     "culture": "ELVEN",
@@ -793,6 +793,11 @@
     "kind": "SHADOW",
     "type": "POSSESSION",
     "subtype": "MOUNT",
+    "attachedTo": [
+      [
+        "NAZGL"
+      ]
+    ],
     "culture": "WRAITH",
     "twilightCost": 0,
     "strength": 2,
@@ -1295,8 +1300,8 @@
     "subtype": "MOUNT",
     "attachedTo": [
       [
-        "MAN",
-        "ROHAN"
+        "ROHAN",
+        "MAN"
       ]
     ],
     "culture": "ROHAN",
@@ -1431,7 +1436,7 @@
     "subtype": "HAND-WEAPON",
     "attachedTo": [
       [
-        "BALROG"
+        "The Balrog"
       ]
     ],
     "phases": [
@@ -1524,7 +1529,7 @@
     "subtype": "STAFF",
     "attachedTo": [
       [
-        "GANDALF"
+        "Gandalf"
       ]
     ],
     "culture": "GANDALF",
@@ -1715,7 +1720,7 @@
     "subtype": "HAND-WEAPON",
     "attachedTo": [
       [
-        "BALROG"
+        "The Balrog"
       ]
     ],
     "culture": "MORIA",
@@ -1805,7 +1810,7 @@
     "subtype": "HAND-WEAPON",
     "attachedTo": [
       [
-        "GANDALF"
+        "Gandalf"
       ]
     ],
     "culture": "GANDALF",
@@ -2702,8 +2707,8 @@
     "subtype": "RANGED-WEAPON",
     "attachedTo": [
       [
-        "MAN",
-        "GONDOR"
+        "GONDOR",
+        "MAN"
       ]
     ],
     "culture": "GONDOR",
@@ -3054,6 +3059,11 @@
     "kind": "SHADOW",
     "type": "POSSESSION",
     "subtype": "MOUNT",
+    "attachedTo": [
+      [
+        "NAZGL"
+      ]
+    ],
     "culture": "WRAITH",
     "twilightCost": 2,
     "strength": 2,
@@ -3419,8 +3429,8 @@
     "subtype": "ARMOR",
     "attachedTo": [
       [
-        "HOBBIT",
-        "RING-BOUND"
+        "RING-BOUND",
+        "HOBBIT"
       ]
     ],
     "phases": [
@@ -5545,7 +5555,7 @@
     "subtype": "MOUNT",
     "attachedTo": [
       [
-        "GANDALF"
+        "Gandalf"
       ]
     ],
     "culture": "GANDALF",
@@ -7063,8 +7073,10 @@
     "type": "CONDITION",
     "attachedTo": [
       [
-        "RING-BEARER",
-        "COMPANION"
+        "COMPANION",
+        "EXCEPT",
+        "THE",
+        "RING-BEARER"
       ]
     ],
     "culture": "GANDALF",
@@ -11270,8 +11282,8 @@
     "type": "CONDITION",
     "attachedTo": [
       [
-        "MAN",
-        "GONDOR"
+        "GONDOR",
+        "MAN"
       ]
     ],
     "culture": "ELVEN",
@@ -12283,7 +12295,7 @@
     "subtype": "PIPE",
     "attachedTo": [
       [
-        "GANDALF"
+        "Gandalf"
       ]
     ],
     "phases": [
@@ -12330,7 +12342,7 @@
     "subtype": "HAND-WEAPON",
     "attachedTo": [
       [
-        "GANDALF"
+        "Gandalf"
       ]
     ],
     "phases": [
@@ -13057,8 +13069,8 @@
     "type": "POSSESSION",
     "attachedTo": [
       [
-        "MAN",
-        "GONDOR"
+        "GONDOR",
+        "MAN"
       ]
     ],
     "phases": [
@@ -15930,8 +15942,7 @@
     "subtype": "HAND-WEAPON",
     "attachedTo": [
       [
-        "TROLL",
-        "MORIA"
+        "Cave Troll of Moria"
       ]
     ],
     "culture": "MORIA",
@@ -16509,8 +16520,8 @@
     "subtype": "HAND-WEAPON",
     "attachedTo": [
       [
-        "ORC",
-        "MORIA"
+        "MORIA",
+        "ORC"
       ]
     ],
     "culture": "MORIA",
@@ -16939,8 +16950,8 @@
     "subtype": "HAND-WEAPON",
     "attachedTo": [
       [
-        "ORC",
-        "MORIA"
+        "MORIA",
+        "ORC"
       ]
     ],
     "phases": [
@@ -17682,6 +17693,11 @@
     "kind": "SHADOW",
     "type": "POSSESSION",
     "subtype": "MOUNT",
+    "attachedTo": [
+      [
+        "NAZGL"
+      ]
+    ],
     "culture": "WRAITH",
     "twilightCost": 1,
     "strength": 2,
@@ -18003,6 +18019,11 @@
     "kind": "SHADOW",
     "type": "POSSESSION",
     "subtype": "HAND-WEAPON",
+    "attachedTo": [
+      [
+        "NAZGL"
+      ]
+    ],
     "phases": [
       "SKIRMISH"
     ],
@@ -18082,6 +18103,11 @@
     "kind": "SHADOW",
     "type": "POSSESSION",
     "subtype": "HAND-WEAPON",
+    "attachedTo": [
+      [
+        "NAZGL"
+      ]
+    ],
     "culture": "WRAITH",
     "twilightCost": 1,
     "strength": 2,
@@ -20129,8 +20155,8 @@
     "subtype": "HAND-WEAPON",
     "attachedTo": [
       [
-        "ORC",
-        "SAURON"
+        "SAURON",
+        "ORC"
       ]
     ],
     "phases": [
@@ -23330,7 +23356,7 @@
     "subtype": "STAFF",
     "attachedTo": [
       [
-        "GANDALF"
+        "Gandalf"
       ]
     ],
     "phases": [
@@ -24530,7 +24556,7 @@
     "subtype": "HAND-WEAPON",
     "attachedTo": [
       [
-        "BALROG"
+        "The Balrog"
       ]
     ],
     "culture": "MORIA",
@@ -24620,8 +24646,7 @@
     "type": "POSSESSION",
     "attachedTo": [
       [
-        "TROLL",
-        "MORIA"
+        "Cave Troll of Moria"
       ]
     ],
     "culture": "MORIA",
@@ -25498,7 +25523,7 @@
     "subtype": "HAND-WEAPON",
     "attachedTo": [
       [
-        "BALROG"
+        "The Balrog"
       ]
     ],
     "phases": [
@@ -26401,8 +26426,8 @@
     "subtype": "HAND-WEAPON",
     "attachedTo": [
       [
-        "ORC",
-        "SAURON"
+        "SAURON",
+        "ORC"
       ]
     ],
     "culture": "SAURON",
@@ -26886,7 +26911,7 @@
     "type": "CONDITION",
     "attachedTo": [
       [
-        "RING-BEARER"
+        "the Ring-bearer"
       ]
     ],
     "phases": [
@@ -28331,7 +28356,7 @@
     "subtype": "PHIAL",
     "attachedTo": [
       [
-        "RING-BEARER"
+        "the Ring-bearer"
       ]
     ],
     "culture": "ELVEN",
@@ -28762,7 +28787,7 @@
     "subtype": "RING",
     "attachedTo": [
       [
-        "GANDALF"
+        "Gandalf"
       ]
     ],
     "culture": "GANDALF",
@@ -29643,8 +29668,8 @@
     "subtype": "HAND-WEAPON",
     "attachedTo": [
       [
-        "ORC",
-        "ISENGARD"
+        "ISENGARD",
+        "ORC"
       ]
     ],
     "culture": "ISENGARD",
@@ -33274,8 +33299,8 @@
     "subtype": "HAND-WEAPON",
     "attachedTo": [
       [
-        "MAN",
-        "DUNLAND"
+        "DUNLAND",
+        "MAN"
       ]
     ],
     "culture": "DUNLAND",
@@ -33438,7 +33463,6 @@
         "SITE"
       ]
     ],
-    "isControlled": true,
     "phases": [
       "REGROUP"
     ],
@@ -33689,8 +33713,8 @@
     "subtype": "HAND-WEAPON",
     "attachedTo": [
       [
-        "MAN",
-        "DUNLAND"
+        "DUNLAND",
+        "MAN"
       ]
     ],
     "culture": "DUNLAND",
@@ -35976,7 +36000,7 @@
     "subtype": "STAFF",
     "attachedTo": [
       [
-        "GANDALF"
+        "Gandalf"
       ]
     ],
     "culture": "GANDALF",
@@ -36786,8 +36810,8 @@
     "subtype": "GAUNTLETS",
     "attachedTo": [
       [
-        "MAN",
-        "GONDOR"
+        "GONDOR",
+        "MAN"
       ]
     ],
     "phases": [
@@ -37616,8 +37640,8 @@
     "subtype": "RANGED-WEAPON",
     "attachedTo": [
       [
-        "MAN",
-        "RING-BOUND"
+        "RING-BOUND",
+        "MAN"
       ]
     ],
     "phases": [
@@ -37756,8 +37780,8 @@
     "subtype": "HAND-WEAPON",
     "attachedTo": [
       [
-        "MAN",
-        "GONDOR"
+        "GONDOR",
+        "MAN"
       ]
     ],
     "culture": "GONDOR",
@@ -39114,7 +39138,6 @@
         "SITE"
       ]
     ],
-    "isControlled": true,
     "culture": "ISENGARD",
     "twilightCost": 0,
     "imageUrl": "/cards_visuals/o_04_167.jpg",
@@ -42319,8 +42342,8 @@
     "subtype": "RANGED-WEAPON",
     "attachedTo": [
       [
-        "MAN",
-        "RAIDER"
+        "RAIDER",
+        "MAN"
       ]
     ],
     "culture": "RAIDER",
@@ -43258,8 +43281,8 @@
     "subtype": "HAND-WEAPON",
     "attachedTo": [
       [
-        "MAN",
-        "ROHAN"
+        "ROHAN",
+        "MAN"
       ]
     ],
     "culture": "ROHAN",
@@ -43536,8 +43559,8 @@
     "subtype": "MOUNT",
     "attachedTo": [
       [
-        "MAN",
-        "ROHAN"
+        "ROHAN",
+        "MAN"
       ]
     ],
     "culture": "ROHAN",
@@ -43986,8 +44009,8 @@
     "subtype": "ARMOR",
     "attachedTo": [
       [
-        "MAN",
-        "ROHAN"
+        "ROHAN",
+        "MAN"
       ]
     ],
     "culture": "ROHAN",
@@ -44125,8 +44148,8 @@
     "subtype": "MOUNT",
     "attachedTo": [
       [
-        "MAN",
-        "ROHAN"
+        "ROHAN",
+        "MAN"
       ]
     ],
     "culture": "ROHAN",
@@ -44170,8 +44193,8 @@
     "subtype": "HAND-WEAPON",
     "attachedTo": [
       [
-        "MAN",
-        "ROHAN"
+        "ROHAN",
+        "MAN"
       ]
     ],
     "culture": "ROHAN",
@@ -44258,8 +44281,8 @@
     "subtype": "HAND-WEAPON",
     "attachedTo": [
       [
-        "MAN",
-        "ROHAN"
+        "ROHAN",
+        "MAN"
       ]
     ],
     "culture": "ROHAN",
@@ -44564,8 +44587,8 @@
     "type": "POSSESSION",
     "attachedTo": [
       [
-        "HOBBIT",
-        "RING-BOUND"
+        "RING-BOUND",
+        "HOBBIT"
       ]
     ],
     "phases": [
@@ -44653,6 +44676,7 @@
     "type": "CONDITION",
     "attachedTo": [
       [
+        "UNBOUND",
         "HOBBIT"
       ]
     ],
@@ -45392,8 +45416,8 @@
     "type": "POSSESSION",
     "attachedTo": [
       [
-        "HOBBIT",
-        "RING-BOUND"
+        "RING-BOUND",
+        "HOBBIT"
       ]
     ],
     "culture": "SHIRE",
@@ -47896,8 +47920,8 @@
     "subtype": "HAND-WEAPON",
     "attachedTo": [
       [
-        "ORC",
-        "ISENGARD"
+        "ISENGARD",
+        "ORC"
       ]
     ],
     "culture": "ISENGARD",
@@ -49386,8 +49410,8 @@
     "subtype": "RANGED-WEAPON",
     "attachedTo": [
       [
-        "MAN",
-        "ROHAN"
+        "ROHAN",
+        "MAN"
       ]
     ],
     "phases": [
@@ -49435,8 +49459,8 @@
     "subtype": "HELM",
     "attachedTo": [
       [
-        "MAN",
-        "ROHAN"
+        "ROHAN",
+        "MAN"
       ]
     ],
     "phases": [
@@ -49527,8 +49551,8 @@
     "subtype": "SHIELD",
     "attachedTo": [
       [
-        "MAN",
-        "ROHAN"
+        "ROHAN",
+        "MAN"
       ]
     ],
     "phases": [
@@ -50881,8 +50905,8 @@
     "subtype": "HELM",
     "attachedTo": [
       [
-        "MAN",
-        "ROHAN"
+        "ROHAN",
+        "MAN"
       ]
     ],
     "phases": [
@@ -52258,7 +52282,7 @@
     "subtype": "HAND-WEAPON",
     "attachedTo": [
       [
-        "GANDALF"
+        "Gandalf"
       ]
     ],
     "culture": "GANDALF",
@@ -54517,6 +54541,11 @@
     "kind": "SHADOW",
     "type": "POSSESSION",
     "subtype": "MOUNT",
+    "attachedTo": [
+      [
+        "NAZGL"
+      ]
+    ],
     "culture": "WRAITH",
     "twilightCost": 0,
     "strength": 2,
@@ -54599,6 +54628,11 @@
     "kind": "SHADOW",
     "type": "POSSESSION",
     "subtype": "HAND-WEAPON",
+    "attachedTo": [
+      [
+        "NAZGL"
+      ]
+    ],
     "culture": "WRAITH",
     "twilightCost": 2,
     "strength": 2,
@@ -55139,8 +55173,8 @@
     "subtype": "HAND-WEAPON",
     "attachedTo": [
       [
-        "ORC",
-        "SAURON"
+        "SAURON",
+        "ORC"
       ]
     ],
     "culture": "SAURON",
@@ -55536,8 +55570,8 @@
     "subtype": "HAND-WEAPON",
     "attachedTo": [
       [
-        "TROLL",
-        "SAURON"
+        "SAURON",
+        "TROLL"
       ]
     ],
     "culture": "SAURON",
@@ -57744,7 +57778,7 @@
     "subtype": "STAFF",
     "attachedTo": [
       [
-        "GANDALF"
+        "Gandalf"
       ]
     ],
     "culture": "GANDALF",
@@ -57790,7 +57824,7 @@
     "subtype": "HAND-WEAPON",
     "attachedTo": [
       [
-        "GANDALF"
+        "Gandalf"
       ]
     ],
     "phases": [
@@ -58184,7 +58218,7 @@
     "type": "CONDITION",
     "attachedTo": [
       [
-        "GANDALF"
+        "Gandalf"
       ]
     ],
     "phases": [
@@ -59956,8 +59990,8 @@
     "subtype": "ARMOR",
     "attachedTo": [
       [
-        "MAN",
-        "GONDOR"
+        "GONDOR",
+        "MAN"
       ]
     ],
     "phases": [
@@ -59999,8 +60033,8 @@
     "subtype": "RANGED-WEAPON",
     "attachedTo": [
       [
-        "MAN",
-        "GONDOR"
+        "GONDOR",
+        "MAN"
       ]
     ],
     "phases": [
@@ -60165,8 +60199,8 @@
     "subtype": "HAND-WEAPON",
     "attachedTo": [
       [
-        "MAN",
-        "GONDOR"
+        "GONDOR",
+        "MAN"
       ]
     ],
     "phases": [
@@ -60440,8 +60474,8 @@
     "type": "CONDITION",
     "attachedTo": [
       [
-        "MAN",
-        "GONDOR"
+        "GONDOR",
+        "MAN"
       ]
     ],
     "culture": "GONDOR",
@@ -60560,8 +60594,8 @@
     "subtype": "HAND-WEAPON",
     "attachedTo": [
       [
-        "MAN",
-        "GONDOR"
+        "GONDOR",
+        "MAN"
       ]
     ],
     "phases": [
@@ -62426,8 +62460,8 @@
     "subtype": "RANGED-WEAPON",
     "attachedTo": [
       [
-        "MAN",
-        "RAIDER"
+        "RAIDER",
+        "MAN"
       ]
     ],
     "culture": "RAIDER",
@@ -62467,8 +62501,8 @@
     "subtype": "HAND-WEAPON",
     "attachedTo": [
       [
-        "MAN",
-        "RAIDER"
+        "RAIDER",
+        "MAN"
       ]
     ],
     "phases": [
@@ -63655,8 +63689,8 @@
     "subtype": "HAND-WEAPON",
     "attachedTo": [
       [
-        "ORC",
-        "WRAITH"
+        "WRAITH",
+        "ORC"
       ]
     ],
     "culture": "WRAITH",
@@ -65469,8 +65503,8 @@
     "subtype": "MOUNT",
     "attachedTo": [
       [
-        "MAN",
-        "ROHAN"
+        "ROHAN",
+        "MAN"
       ]
     ],
     "phases": [
@@ -65829,8 +65863,8 @@
     "subtype": "HAND-WEAPON",
     "attachedTo": [
       [
-        "MAN",
-        "ROHAN"
+        "ROHAN",
+        "MAN"
       ]
     ],
     "culture": "ROHAN",
@@ -66036,8 +66070,8 @@
     "subtype": "ARMOR",
     "attachedTo": [
       [
-        "MAN",
-        "ROHAN"
+        "ROHAN",
+        "MAN"
       ]
     ],
     "phases": [
@@ -66164,8 +66198,8 @@
     "subtype": "RANGED-WEAPON",
     "attachedTo": [
       [
-        "MAN",
-        "ROHAN"
+        "ROHAN",
+        "MAN"
       ]
     ],
     "phases": [
@@ -66243,8 +66277,8 @@
     "subtype": "MOUNT",
     "attachedTo": [
       [
-        "MAN",
-        "ROHAN"
+        "ROHAN",
+        "MAN"
       ]
     ],
     "phases": [
@@ -66362,8 +66396,8 @@
     "subtype": "MOUNT",
     "attachedTo": [
       [
-        "MAN",
-        "ROHAN"
+        "ROHAN",
+        "MAN"
       ]
     ],
     "culture": "ROHAN",
@@ -66657,8 +66691,8 @@
     "subtype": "MOUNT",
     "attachedTo": [
       [
-        "MAN",
-        "ROHAN"
+        "ROHAN",
+        "MAN"
       ]
     ],
     "phases": [
@@ -66862,8 +66896,8 @@
     "subtype": "HAND-WEAPON",
     "attachedTo": [
       [
-        "ORC",
-        "SAURON"
+        "SAURON",
+        "ORC"
       ]
     ],
     "culture": "SAURON",
@@ -70298,7 +70332,7 @@
     "subtype": "MOUNT",
     "attachedTo": [
       [
-        "GANDALF"
+        "Gandalf"
       ]
     ],
     "phases": [
@@ -71284,8 +71318,8 @@
     "subtype": "HAND-WEAPON",
     "attachedTo": [
       [
-        "WRAITH",
-        "GONDOR"
+        "GONDOR",
+        "WRAITH"
       ]
     ],
     "phases": [
@@ -72189,6 +72223,11 @@
     "kind": "SHADOW",
     "type": "POSSESSION",
     "subtype": "HAND-WEAPON",
+    "attachedTo": [
+      [
+        "NAZGL"
+      ]
+    ],
     "phases": [
       "SKIRMISH"
     ],
@@ -72738,6 +72777,11 @@
     "kind": "SHADOW",
     "type": "POSSESSION",
     "subtype": "MOUNT",
+    "attachedTo": [
+      [
+        "NAZGL"
+      ]
+    ],
     "phases": [
       "RESPONSE"
     ],
@@ -72960,8 +73004,8 @@
     "subtype": "SHIELD",
     "attachedTo": [
       [
-        "MAN",
-        "ROHAN"
+        "ROHAN",
+        "MAN"
       ]
     ],
     "phases": [
@@ -75013,8 +75057,8 @@
     "subtype": "HAND-WEAPON",
     "attachedTo": [
       [
-        "MAN",
-        "GONDOR"
+        "GONDOR",
+        "MAN"
       ]
     ],
     "phases": [
@@ -75110,7 +75154,7 @@
     "subtype": "RING",
     "attachedTo": [
       [
-        "GANDALF"
+        "Círdan or Gandalf"
       ]
     ],
     "phases": [
@@ -75819,8 +75863,8 @@
     "subtype": "HAND-WEAPON",
     "attachedTo": [
       [
-        "MAN",
-        "GONDOR"
+        "GONDOR",
+        "MAN"
       ]
     ],
     "phases": [
@@ -76166,6 +76210,11 @@
     "kind": "SHADOW",
     "type": "ARTIFACT",
     "subtype": "RING",
+    "attachedTo": [
+      [
+        "NAZGL"
+      ]
+    ],
     "phases": [
       "RESPONSE"
     ],
@@ -76258,6 +76307,11 @@
     "kind": "SHADOW",
     "type": "ARTIFACT",
     "subtype": "RING",
+    "attachedTo": [
+      [
+        "NAZGL"
+      ]
+    ],
     "phases": [
       "MANEUVER",
       "RESPONSE"
@@ -79079,8 +79133,8 @@
     "subtype": "HAND-WEAPON",
     "attachedTo": [
       [
-        "ORC",
-        "WRAITH"
+        "WRAITH",
+        "ORC"
       ]
     ],
     "culture": "WRAITH",
@@ -80312,8 +80366,8 @@
     "subtype": "MOUNT",
     "attachedTo": [
       [
-        "ORC",
-        "SAURON"
+        "SAURON",
+        "ORC"
       ]
     ],
     "culture": "SAURON",
@@ -82927,7 +82981,7 @@
     "subtype": "HAND-WEAPON",
     "attachedTo": [
       [
-        "GANDALF"
+        "Gandalf"
       ]
     ],
     "culture": "GANDALF",
@@ -83141,7 +83195,7 @@
     "subtype": "MOUNT",
     "attachedTo": [
       [
-        "GANDALF"
+        "Gandalf"
       ]
     ],
     "culture": "GANDALF",
@@ -83737,8 +83791,8 @@
     "subtype": "ARMOR",
     "attachedTo": [
       [
-        "MAN",
-        "GONDOR"
+        "GONDOR",
+        "MAN"
       ]
     ],
     "culture": "GONDOR",
@@ -83823,8 +83877,8 @@
     "subtype": "RANGED-WEAPON",
     "attachedTo": [
       [
-        "MAN",
-        "GONDOR"
+        "GONDOR",
+        "MAN"
       ]
     ],
     "culture": "GONDOR",
@@ -83869,8 +83923,8 @@
     "subtype": "HAND-WEAPON",
     "attachedTo": [
       [
-        "MAN",
-        "GONDOR"
+        "GONDOR",
+        "MAN"
       ]
     ],
     "culture": "GONDOR",
@@ -85836,8 +85890,10 @@
     "type": "CONDITION",
     "attachedTo": [
       [
-        "RING-BEARER",
-        "COMPANION"
+        "COMPANION",
+        "EXCEPT",
+        "THE",
+        "RING-BEARER"
       ]
     ],
     "culture": "MEN",
@@ -86859,6 +86915,7 @@
     "subtype": "HAND-WEAPON",
     "attachedTo": [
       [
+        "ORC",
         "ORC"
       ]
     ],
@@ -87685,8 +87742,8 @@
     "type": "CONDITION",
     "attachedTo": [
       [
-        "MAN",
-        "ROHAN"
+        "ROHAN",
+        "MAN"
       ]
     ],
     "phases": [
@@ -87774,8 +87831,8 @@
     "subtype": "RANGED-WEAPON",
     "attachedTo": [
       [
-        "MAN",
-        "ROHAN"
+        "ROHAN",
+        "MAN"
       ]
     ],
     "phases": [
@@ -87865,8 +87922,8 @@
     "subtype": "HAND-WEAPON",
     "attachedTo": [
       [
-        "MAN",
-        "ROHAN"
+        "ROHAN",
+        "MAN"
       ]
     ],
     "culture": "ROHAN",
@@ -87992,8 +88049,8 @@
     "subtype": "MOUNT",
     "attachedTo": [
       [
-        "MAN",
-        "ROHAN"
+        "ROHAN",
+        "MAN"
       ]
     ],
     "culture": "ROHAN",
@@ -89507,6 +89564,7 @@
     "subtype": "RANGED-WEAPON",
     "attachedTo": [
       [
+        "URUKHAI",
         "MINION"
       ]
     ],
@@ -89552,6 +89610,7 @@
     "subtype": "HAND-WEAPON",
     "attachedTo": [
       [
+        "URUKHAI",
         "MINION"
       ]
     ],
@@ -89726,6 +89785,7 @@
     "type": "CONDITION",
     "attachedTo": [
       [
+        "UNBOUND",
         "COMPANION"
       ]
     ],
@@ -90471,6 +90531,11 @@
     "kind": "SHADOW",
     "type": "POSSESSION",
     "subtype": "HAND-WEAPON",
+    "attachedTo": [
+      [
+        "NAZGL"
+      ]
+    ],
     "culture": "WRAITH",
     "twilightCost": 2,
     "strength": 3,
@@ -92118,7 +92183,7 @@
     "type": "POSSESSION",
     "attachedTo": [
       [
-        "GANDALF"
+        "Gandalf"
       ]
     ],
     "phases": [
@@ -92618,6 +92683,7 @@
     "type": "CONDITION",
     "attachedTo": [
       [
+        "WOUNDED",
         "COMPANION"
       ]
     ],
@@ -93902,7 +93968,7 @@
     "subtype": "MOUNT",
     "attachedTo": [
       [
-        "SAURON"
+        "The Mouth of Sauron"
       ]
     ],
     "phases": [
@@ -94153,7 +94219,7 @@
     "subtype": "HAND-WEAPON",
     "attachedTo": [
       [
-        "BALROG"
+        "The Balrog"
       ]
     ],
     "culture": "MORIA",
@@ -95477,8 +95543,8 @@
     "subtype": "ARMOR",
     "attachedTo": [
       [
-        "MAN",
-        "ROHAN"
+        "ROHAN",
+        "MAN"
       ]
     ],
     "culture": "ROHAN",
@@ -96568,6 +96634,7 @@
     "subtype": "HAND-WEAPON",
     "attachedTo": [
       [
+        "URUKHAI",
         "URUK-HAI"
       ]
     ],
@@ -97537,6 +97604,7 @@
     "subtype": "HAND-WEAPON",
     "attachedTo": [
       [
+        "URUKHAI",
         "MINION"
       ]
     ],
@@ -97906,6 +97974,11 @@
     "kind": "SHADOW",
     "type": "POSSESSION",
     "subtype": "HAND-WEAPON",
+    "attachedTo": [
+      [
+        "NAZGL"
+      ]
+    ],
     "culture": "WRAITH",
     "twilightCost": 1,
     "strength": 1,
@@ -97989,6 +98062,7 @@
     "type": "CONDITION",
     "attachedTo": [
       [
+        "UNBOUND",
         "COMPANION"
       ]
     ],
@@ -98026,6 +98100,11 @@
     "kind": "SHADOW",
     "type": "POSSESSION",
     "subtype": "MOUNT",
+    "attachedTo": [
+      [
+        "NAZGL"
+      ]
+    ],
     "culture": "WRAITH",
     "twilightCost": 2,
     "vitality": 1,
@@ -98065,6 +98144,11 @@
     "kind": "SHADOW",
     "type": "POSSESSION",
     "subtype": "MOUNT",
+    "attachedTo": [
+      [
+        "NAZGL"
+      ]
+    ],
     "culture": "WRAITH",
     "twilightCost": 2,
     "strength": 1,
@@ -98571,6 +98655,11 @@
     "kind": "SHADOW",
     "type": "POSSESSION",
     "subtype": "MOUNT",
+    "attachedTo": [
+      [
+        "NAZGL"
+      ]
+    ],
     "culture": "WRAITH",
     "twilightCost": 2,
     "strength": 2,
@@ -100479,7 +100568,7 @@
     "subtype": "PALANTÍR",
     "attachedTo": [
       [
-        "GANDALF"
+        "Gandalf"
       ]
     ],
     "culture": "GANDALF",
@@ -102030,8 +102119,8 @@
     "type": "POSSESSION",
     "attachedTo": [
       [
-        "MAN",
-        "GONDOR"
+        "GONDOR",
+        "MAN"
       ]
     ],
     "phases": [
@@ -104216,8 +104305,8 @@
     "subtype": "MOUNT",
     "attachedTo": [
       [
-        "MAN",
-        "ROHAN"
+        "ROHAN",
+        "MAN"
       ]
     ],
     "culture": "ROHAN",
@@ -104595,8 +104684,8 @@
     "subtype": "RANGED-WEAPON",
     "attachedTo": [
       [
-        "MAN",
-        "ROHAN"
+        "ROHAN",
+        "MAN"
       ]
     ],
     "culture": "ROHAN",
@@ -104640,8 +104729,8 @@
     "subtype": "MOUNT",
     "attachedTo": [
       [
-        "MAN",
-        "ROHAN"
+        "ROHAN",
+        "MAN"
       ]
     ],
     "phases": [
@@ -104823,7 +104912,7 @@
     "subtype": "HAND-WEAPON",
     "attachedTo": [
       [
-        "SAURON"
+        "Sauron"
       ]
     ],
     "culture": "SAURON",
@@ -104910,8 +104999,8 @@
     "subtype": "MOUNT",
     "attachedTo": [
       [
-        "HOBBIT",
-        "RING-BOUND"
+        "RING-BOUND",
+        "HOBBIT"
       ]
     ],
     "phases": [
@@ -105338,8 +105427,8 @@
     "subtype": "ARMOR",
     "attachedTo": [
       [
-        "HOBBIT",
-        "RING-BOUND"
+        "RING-BOUND",
+        "HOBBIT"
       ]
     ],
     "phases": [
@@ -105429,8 +105518,8 @@
     "subtype": "PHIAL",
     "attachedTo": [
       [
-        "HOBBIT",
-        "RING-BOUND"
+        "RING-BOUND",
+        "HOBBIT"
       ]
     ],
     "culture": "SHIRE",
@@ -109427,7 +109516,7 @@
     "type": "CONDITION",
     "attachedTo": [
       [
-        "GOLLUM"
+        "Gollum"
       ]
     ],
     "phases": [
@@ -110349,8 +110438,8 @@
     "subtype": "HAND-WEAPON",
     "attachedTo": [
       [
-        "MAN",
-        "GONDOR"
+        "GONDOR",
+        "MAN"
       ]
     ],
     "phases": [
@@ -110622,8 +110711,8 @@
     "subtype": "CLOAK",
     "attachedTo": [
       [
-        "MAN",
-        "GONDOR"
+        "GONDOR",
+        "MAN"
       ]
     ],
     "phases": [
@@ -111136,8 +111225,8 @@
     "subtype": "HAND-WEAPON",
     "attachedTo": [
       [
-        "MAN",
-        "MEN"
+        "MEN",
+        "MAN"
       ]
     ],
     "culture": "MEN",
@@ -111181,8 +111270,10 @@
     "type": "CONDITION",
     "attachedTo": [
       [
-        "RING-BEARER",
-        "COMPANION"
+        "COMPANION",
+        "EXCEPT",
+        "THE",
+        "RING-BEARER"
       ]
     ],
     "culture": "MEN",
@@ -111484,8 +111575,10 @@
     "type": "CONDITION",
     "attachedTo": [
       [
-        "RING-BEARER",
-        "COMPANION"
+        "COMPANION",
+        "EXCEPT",
+        "THE",
+        "RING-BEARER"
       ]
     ],
     "culture": "MEN",
@@ -112601,6 +112694,7 @@
     "subtype": "HAND-WEAPON",
     "attachedTo": [
       [
+        "ORC",
         "ORC"
       ]
     ],
@@ -113020,8 +113114,8 @@
     "subtype": "HAND-WEAPON",
     "attachedTo": [
       [
-        "MAN",
-        "ROHAN"
+        "ROHAN",
+        "MAN"
       ]
     ],
     "phases": [
@@ -113251,8 +113345,8 @@
     "subtype": "MOUNT",
     "attachedTo": [
       [
-        "MAN",
-        "ROHAN"
+        "ROHAN",
+        "MAN"
       ]
     ],
     "phases": [
@@ -113423,8 +113517,8 @@
     "subtype": "MOUNT",
     "attachedTo": [
       [
-        "MAN",
-        "ROHAN"
+        "ROHAN",
+        "MAN"
       ]
     ],
     "culture": "ROHAN",
@@ -113545,8 +113639,8 @@
     "subtype": "HAND-WEAPON",
     "attachedTo": [
       [
-        "MAN",
-        "ROHAN"
+        "ROHAN",
+        "MAN"
       ]
     ],
     "culture": "ROHAN",
@@ -113713,8 +113807,8 @@
     "subtype": "HAND-WEAPON",
     "attachedTo": [
       [
-        "MAN",
-        "ROHAN"
+        "ROHAN",
+        "MAN"
       ]
     ],
     "culture": "ROHAN",
@@ -113760,8 +113854,8 @@
     "subtype": "SHIELD",
     "attachedTo": [
       [
-        "MAN",
-        "ROHAN"
+        "ROHAN",
+        "MAN"
       ]
     ],
     "phases": [
@@ -114717,6 +114811,7 @@
     "subtype": "HAND-WEAPON",
     "attachedTo": [
       [
+        "URUKHAI",
         "URUK-HAI"
       ]
     ],
@@ -115151,6 +115246,7 @@
     "subtype": "HAND-WEAPON",
     "attachedTo": [
       [
+        "URUKHAI",
         "URUK-HAI"
       ]
     ],
@@ -117240,7 +117336,7 @@
     "subtype": "HAND-WEAPON",
     "attachedTo": [
       [
-        "GANDALF"
+        "Gandalf"
       ]
     ],
     "culture": "GANDALF",
@@ -117486,8 +117582,8 @@
     "subtype": "MOUNT",
     "attachedTo": [
       [
-        "WIZARD",
-        "GANDALF"
+        "GANDALF",
+        "WIZARD"
       ]
     ],
     "phases": [
@@ -118165,8 +118261,8 @@
     "subtype": "MOUNT",
     "attachedTo": [
       [
-        "MAN",
-        "MEN"
+        "MEN",
+        "MAN"
       ]
     ],
     "culture": "MEN",
@@ -118337,8 +118433,8 @@
     "subtype": "HAND-WEAPON",
     "attachedTo": [
       [
-        "MAN",
-        "MEN"
+        "MEN",
+        "MAN"
       ]
     ],
     "phases": [
@@ -120277,7 +120373,13 @@
     "subtype": "MOUNT",
     "attachedTo": [
       [
-        "ORC"
+        "ORC",
+        "ORC",
+        "WITH",
+        "STRENGTH"
+      ],
+      [
+        "LESS"
       ]
     ],
     "culture": "ORC",
@@ -120323,6 +120425,7 @@
     "subtype": "ARMOR",
     "attachedTo": [
       [
+        "ORC",
         "ORC"
       ]
     ],
@@ -120368,7 +120471,13 @@
     "subtype": "MOUNT",
     "attachedTo": [
       [
-        "ORC"
+        "ORC",
+        "ORC",
+        "WITH",
+        "STRENGTH"
+      ],
+      [
+        "LESS"
       ]
     ],
     "culture": "ORC",
@@ -120414,7 +120523,13 @@
     "subtype": "MOUNT",
     "attachedTo": [
       [
-        "ORC"
+        "ORC",
+        "ORC",
+        "WITH",
+        "STRENGTH"
+      ],
+      [
+        "LESS"
       ]
     ],
     "culture": "ORC",
@@ -121260,6 +121375,7 @@
     "subtype": "HAND-WEAPON",
     "attachedTo": [
       [
+        "URUKHAI",
         "URUK-HAI"
       ]
     ],
@@ -121477,6 +121593,7 @@
     "subtype": "HAND-WEAPON",
     "attachedTo": [
       [
+        "URUKHAI",
         "URUK-HAI"
       ]
     ],
@@ -122543,6 +122660,11 @@
     "kind": "SHADOW",
     "type": "ARTIFACT",
     "subtype": "RING",
+    "attachedTo": [
+      [
+        "NAZGL"
+      ]
+    ],
     "phases": [
       "RESPONSE"
     ],
@@ -122581,6 +122703,11 @@
     "kind": "SHADOW",
     "type": "ARTIFACT",
     "subtype": "RING",
+    "attachedTo": [
+      [
+        "NAZGL"
+      ]
+    ],
     "phases": [
       "RESPONSE"
     ],
@@ -123407,8 +123534,8 @@
     "subtype": "HAND-WEAPON",
     "attachedTo": [
       [
-        "MAN",
-        "GANDALF"
+        "GANDALF",
+        "MAN"
       ]
     ],
     "culture": "GANDALF",
@@ -123750,8 +123877,8 @@
     "type": "POSSESSION",
     "attachedTo": [
       [
-        "WIZARD",
-        "GANDALF"
+        "GANDALF",
+        "WIZARD"
       ]
     ],
     "culture": "GANDALF",
@@ -124292,8 +124419,8 @@
     "subtype": "ARMOR",
     "attachedTo": [
       [
-        "MAN",
-        "GONDOR"
+        "GONDOR",
+        "MAN"
       ]
     ],
     "culture": "GONDOR",
@@ -124477,8 +124604,8 @@
     "subtype": "HAND-WEAPON",
     "attachedTo": [
       [
-        "MAN",
-        "GONDOR"
+        "GONDOR",
+        "MAN"
       ]
     ],
     "culture": "GONDOR",
@@ -124909,8 +125036,8 @@
     "type": "POSSESSION",
     "attachedTo": [
       [
-        "MAN",
-        "GONDOR"
+        "GONDOR",
+        "MAN"
       ]
     ],
     "phases": [
@@ -125004,8 +125131,8 @@
     "type": "CONDITION",
     "attachedTo": [
       [
-        "MAN",
-        "GONDOR"
+        "GONDOR",
+        "MAN"
       ]
     ],
     "phases": [
@@ -125095,8 +125222,8 @@
     "subtype": "SHIELD",
     "attachedTo": [
       [
-        "MAN",
-        "GONDOR"
+        "GONDOR",
+        "MAN"
       ]
     ],
     "phases": [
@@ -125989,6 +126116,7 @@
     "subtype": "HAND-WEAPON",
     "attachedTo": [
       [
+        "ORC",
         "ORC"
       ]
     ],
@@ -126207,6 +126335,11 @@
     "isUnique": false,
     "kind": "FREE_PEOPLE",
     "type": "CONDITION",
+    "attachedTo": [
+      [
+        "FOLLOWER"
+      ]
+    ],
     "culture": "MEN",
     "twilightCost": 0,
     "imageUrl": "/cards_visuals/o_18_082.jpg",
@@ -126381,7 +126514,17 @@
     "subtype": "MOUNT",
     "attachedTo": [
       [
-        "ORC"
+        "ORC",
+        "ORC",
+        "WITH",
+        "STRENGTH"
+      ],
+      [
+        "LESS",
+        "BEARER",
+        "MUST",
+        "BE",
+        "GOTHMOG"
       ]
     ],
     "culture": "ORC",
@@ -126768,8 +126911,8 @@
     "subtype": "RANGED-WEAPON",
     "attachedTo": [
       [
-        "MAN",
-        "ROHAN"
+        "ROHAN",
+        "MAN"
       ]
     ],
     "phases": [
@@ -126815,8 +126958,8 @@
     "type": "POSSESSION",
     "attachedTo": [
       [
-        "MAN",
-        "ROHAN"
+        "ROHAN",
+        "MAN"
       ]
     ],
     "phases": [
@@ -126859,8 +127002,8 @@
     "subtype": "SHIELD",
     "attachedTo": [
       [
-        "MAN",
-        "ROHAN"
+        "ROHAN",
+        "MAN"
       ]
     ],
     "phases": [
@@ -126993,8 +127136,11 @@
     "type": "POSSESSION",
     "attachedTo": [
       [
-        "MAN",
-        "ROHAN"
+        "ROHAN",
+        "MAN"
+      ],
+      [
+        "MERRY"
       ]
     ],
     "phases": [
@@ -127679,6 +127825,7 @@
     "type": "CONDITION",
     "attachedTo": [
       [
+        "URUKHAI",
         "MINION"
       ]
     ],
@@ -129039,8 +129186,8 @@
     "type": "CONDITION",
     "attachedTo": [
       [
-        "MAN",
-        "GONDOR"
+        "GONDOR",
+        "MAN"
       ]
     ],
     "culture": "GONDOR",
@@ -129084,6 +129231,7 @@
     "type": "CONDITION",
     "attachedTo": [
       [
+        "FELLOWSHIP",
         "COMPANION"
       ]
     ],
@@ -129486,8 +129634,8 @@
     "type": "CONDITION",
     "attachedTo": [
       [
-        "MAN",
-        "ROHAN"
+        "ROHAN",
+        "MAN"
       ]
     ],
     "culture": "ROHAN",

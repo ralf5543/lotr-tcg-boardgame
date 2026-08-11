@@ -120,8 +120,6 @@ export const GameBoard: React.FC<GameBoardProps> = ({
     const handleGlobalCardDrop = (e: Event) => {
         const customEvent = e as CustomEvent;
 
-        console.log('🟢 EVENT CAPTURÉ :', customEvent.detail);
-
         const { draggedCard, targetId } = customEvent.detail || {};
 
         if (!targetId || !draggedCard) {
@@ -133,13 +131,6 @@ export const GameBoard: React.FC<GameBoardProps> = ({
         }
 
         const { index, origin, card, parentId } = draggedCard;
-
-        console.log('🃏 DETAILS CARTE LÂCHÉE :', {
-            title: card?.i18n?.en?.title || card?.title,
-            attachedTo: card?.attachedTo,
-            origin,
-            targetId,
-        });
 
         // Helper pour trouver la carte cible dans toutes les zones du jeu
         const findTargetCard = (

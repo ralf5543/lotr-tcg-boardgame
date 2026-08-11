@@ -246,87 +246,92 @@ function parseClassAndPhases(classStr, englishText) {
  * - Le second niveau représente le "ET" (conjonction / critères requis simultanément)
  * Ex: [["MAN"], ["ELF"], ["WIZARD"]] ou [["ELVEN", "COMPANION"]]
  */
-function parseAttachedTo(rawText) {
-    if (!rawText) return undefined;
+function parseAttachedTo(text) {
+    if (!text) return null;
 
-    const cleanText = rawText.replace(/\u00A0/g, ' ');
-    let isControlled = undefined;
-
-    // --- CAS SPECIAL : SITES ---
-    if (/plays\s+on\s+a\s+site/i.test(cleanText)) {
-        if (/plays\s+on\s+a\s+site\s+you\s+control/i.test(cleanText)) {
-            isControlled = true;
-        }
-        return {
-            attachedTo: [['SITE']],
-            ...(isControlled !== undefined && { isControlled })
-        };
+    // -------------------------------------------------------------
+    // CAS 1 : Sites ("Plays on a site...")
+    // -------------------------------------------------------------
+    if (/plays on a site/i.test(text)) {
+        return [["SITE"]];
     }
 
-    // --- 1. ISOLER LA CLAUSE D'ATTACHEMENT ---
-    // Matcher : "Bearer must be ...", "Attach to ...", "To play, attach to ..."
-    const match = cleanText.match(/(?:Bearer must be|Attach to|To play, attach to)\s+([^.\n]+)/i);
-    if (!match) return undefined;
+    // -------------------------------------------------------------
+    // ISOLATION : Tout ce qui se trouve entre "Bearer must be " et le premier point "."
+    // -------------------------------------------------------------
+    const match = text.match(/Bearer must be\s+([^.]+)\./i);
+    if (!match) return null;
 
-    const fullClause = match[1].trim();
+    const rawClause = match[1].trim(); // ex: "a <symbol>rohan</symbol> Man", "a Man, Elf, or Wizard", "The Mouth of Sauron"
 
-    // Suppression des balises HTML pour l'analyse
-    const cleanClause = fullClause
-        .replace(/<\/?(keyword|symbol)[^>]*>/gi, '')
-        .trim();
+    // Texte sans aucune balise HTML/XML pour vérifier si c'est un nom propre
+    const textWithoutTags = rawClause.replace(/<[^>]+>/g, '').trim();
 
-    // --- 2. DÉTECTION DU NOM PROPRE (PAR ÉLIMINATION) ---
-    // On regarde si la clause commence par "a " ou "an " (ex: "a Dwarf", "an Elf")
-    const hasArticle = /^(a|an)\s+/i.test(cleanClause);
+    // -------------------------------------------------------------
+    // CAS 2 : NOM PROPRE (Ne commence ni par "a " ni par "an ")
+    // Exemple : "The Mouth of Sauron", "Boromir"
+    // -------------------------------------------------------------
+    const isGeneric = /^(a|an)\s+/i.test(textWithoutTags);
 
-    // Si pas d'article "a/an", on vérifie d'abord si ce n'est pas un groupe générique
-    // (ex: "Bearer must be an Elf or Dwarf" - le 2e mot n'a pas d'article mais est générique)
-    const upperClause = cleanClause.toUpperCase();
-    const containsGenericKeyword = KNOWN_ATTACHED_KEYWORDS.some(kw => 
-        new RegExp(`\\b${kw}\\b`, 'i').test(upperClause)
-    );
-
-    // Si PAS d'article "a/an" ET PAS de mot-clé générique (Race, Culture, Keyword, Type)
-    // -> C'est un NOM PROPRE !
-    if (!hasArticle && !containsGenericKeyword) {
-        // On nettoie d'éventuels préfixes résiduels et on garde la casse originale
-        const properName = cleanClause.trim();
-        if (properName.length > 0) {
-            return {
-                attachedTo: [[properName]]
-            };
+    if (!isGeneric) {
+        if (textWithoutTags.length > 0) {
+            return [[textWithoutTags]]; // ➔ [["The Mouth of Sauron"]]
         }
     }
 
-    // --- 3. DÉCOUPAGE DNF POUR LES MOTS-CLÉS GÉNÉRIQUES ---
-    const rawGroups = cleanClause
-        .split(/\bor\b|,/i)
-        .map(g => g.trim())
-        .filter(Boolean);
+    // Helper interne pour extraire les mots-clés d'un segment de texte
+    function extractKeywords(segment) {
+        const keywords = [];
 
-    const attachedToResult = [];
+        // 1. Extraire les contenus des balises <symbol> et <keyword>
+        segment = segment.replace(/<(symbol|keyword)>(.*?)<\/\1>/gi, (_, tag, content) => {
+            if (content) {
+                const clean = content.replace(/[^a-zA-Z-]/g, '').toUpperCase();
+                if (clean) keywords.push(clean);
+            }
+            return ' '; // Remplace la balise par un espace pour ne pas coller les mots autour
+        });
 
-    for (const groupText of rawGroups) {
-        const uppercaseGroup = groupText.toUpperCase();
-        const foundInGroup = [];
+        // 2. Nettoyer les balises restantes éventuelles
+        const cleanSegment = segment.replace(/<[^>]+>/g, ' ');
 
-        for (const kw of KNOWN_ATTACHED_KEYWORDS) {
-            const regex = new RegExp(`\\b${kw}\\b`, 'i');
-            if (regex.test(uppercaseGroup)) {
-                foundInGroup.push(kw);
+        // 3. Extraire les mots simples en ignorant "A", "AN", "OR"
+        const words = cleanSegment.split(/\s+/);
+        for (const word of words) {
+            const cleanWord = word.replace(/[^a-zA-Z-]/g, '').toUpperCase();
+            if (cleanWord && !['A', 'AN', 'OR'].includes(cleanWord)) {
+                keywords.push(cleanWord);
             }
         }
 
-        if (foundInGroup.length > 0) {
-            attachedToResult.push(foundInGroup);
-        }
+        return keywords;
     }
 
-    if (attachedToResult.length === 0) return undefined;
+    // -------------------------------------------------------------
+    // CAS 3A : Liste d'alternatives séparées par "OR" ou des virgules
+    // Exemple : "a Man, Elf, or Wizard" / "a Gandalf, Elven, or Shire companion"
+    // -------------------------------------------------------------
+    if (rawClause.includes(',') || /\bor\b/i.test(rawClause)) {
+        // Découpage propre par virgule ou par le mot "or" (entouré d'espaces)
+        const parts = rawClause.split(/,|\s+or\s+/i);
+        const results = [];
 
-    return {
-        attachedTo: attachedToResult
-    };
+        for (const part of parts) {
+            const kw = extractKeywords(part);
+            if (kw.length > 0) {
+                results.push(kw);
+            }
+        }
+
+        return results.length > 0 ? results : null; // ➔ [["MAN"], ["ELF"], ["WIZARD"]]
+    }
+
+    // -------------------------------------------------------------
+    // CAS 3B : Condition combinée
+    // Exemple : "a <symbol>rohan</symbol> Man" / "an Elf companion"
+    // -------------------------------------------------------------
+    const combinedKeywords = extractKeywords(rawClause);
+    return combinedKeywords.length > 0 ? [combinedKeywords] : null; // ➔ [["ROHAN", "MAN"]]
 }
 
 // ============================================================================
@@ -447,7 +452,7 @@ async function convert() {
             kind: kind,
             type: type,
             subtype: subtype,
-            attachedTo: attachmentData?.attachedTo,
+            attachedTo: attachmentData || undefined,
             isControlled: attachmentData?.isControlled,
             phases: phases,
             culture: mapCulture(data['Culture']),
