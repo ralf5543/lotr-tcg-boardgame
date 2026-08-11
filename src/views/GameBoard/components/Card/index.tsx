@@ -196,6 +196,19 @@ export const Card: React.FC<CardProps> = ({
     // 🟢 État permanent : est-ce que la carte a des blessures ?
     const hasWounds = (card.wounds || 0) > 0;
 
+    // 🟢 LOGIQUE DE GESTION DE LA RÉSISTANCE ET DU SIGNET
+    const isAttachment = ['POSSESSION', 'ARTIFACT', 'CONDITION', 'RING'].includes(card.type);
+
+    const displayResistance = isAttachment
+        ? (card.resistance > 0 ? `+${card.resistance}` : `${card.resistance}`)
+        : effectiveResistance;
+
+    const shouldShowResistance = size === 'sm'
+        ? (isAttachment ? card.resistance !== undefined : true)
+        : (isAttachment ? card.resistance !== undefined : !card.signet);
+
+    const shouldShowSignet = Boolean(card.signet);
+
     return (
         <S.CardContainer
             $culture={card.culture}
@@ -341,25 +354,11 @@ export const Card: React.FC<CardProps> = ({
                 </S.RoamingNumber>
             )}
 
-            {card.resistance !== undefined && !card.signet && size !== 'sm' && (
-                /* Conversion explicite en booléen strict avec Boolean() */
-                <S.CardResistance $isRingBearer={Boolean(isRingBearer)}>
-                    {card.resistance}
-                </S.CardResistance>
-            )}
-
-            {effectiveResistance !== undefined && size === 'sm' && (
+            {/* 🟢 AFFICHAGE DE LA RÉSISTANCE */}
+            {shouldShowResistance && (
                 <S.ResistanceWrapper>
                     <S.CardResistance $isRingBearer={Boolean(isRingBearer)}>
-                        {card.type === 'POSSESSION' ||
-                        card.type === 'ARTIFACT' ||
-                        card.type === 'CONDITION' ||
-                        (card.type === 'RING' &&
-                            card.subtype !== 'SUPPORT-AREA')
-                            ? card.resistance > 0
-                                ? `+${card.resistance}`
-                                : `${card.resistance}`
-                            : effectiveResistance}
+                        {displayResistance}
                     </S.CardResistance>
 
                     {/* 🟢 Affichage orbital des jetons de Fardeau sur le Porteur de l'Anneau */}
@@ -384,8 +383,9 @@ export const Card: React.FC<CardProps> = ({
                 </S.ResistanceWrapper>
             )}
 
-            {card.signet !== undefined && (
-                <S.CardSignet $signet={card.signet} />
+            {/* 🟢 AFFICHAGE DU SIGNET */}
+            {shouldShowSignet && (
+                <S.CardSignet $signet={card.signet!} />
             )}
             
             {card.subtype && card.subtype !== 'SUPPORT-AREA' && size === 'sm' && (

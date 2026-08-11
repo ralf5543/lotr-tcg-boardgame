@@ -271,10 +271,13 @@ export const CardContainer = styled.div<CardContainerProps>`
                 width: 25px;
             }
 
-            ${CardResistance} {
+            ${ResistanceWrapper} {
                 width: 39px;
-                position: static;
-                transform: none;
+                inset-block-start: 121px;
+                inset-inline-start: 26px;
+            }
+
+            ${CardResistance} {
                 font-size: 20px;
                 background-position: 3px 2px;
             }
@@ -463,10 +466,12 @@ export const CardContainer = styled.div<CardContainerProps>`
                 inset-inline-start: 24px;
             }
 
-            ${CardResistance} {
+            ${ResistanceWrapper} {
                 width: 56px;
                 inset-block-start: 474px;
                 inset-inline-start: 21px;
+            }
+            ${CardResistance} {
                 font-size: 28px;
                 background-position: 4px 4px;
             }
@@ -767,11 +772,11 @@ export const CardSignet = styled.span<{ $signet: string }>`
 export const ResistanceWrapper = styled.div`
     position: absolute;
     z-index: 1;
-    inset-block-start: 116px;
-    inset-inline-start: 50%;
-    transform: translateX(-50%);
-    font-size: 20px;
-    background-position: 3px 2px;
+    inset-block-start: 156px;
+    inset-inline-start: 8px;
+    width: 17px;
+    aspect-ratio: 1;
+    width: 16px;
 `;
 
 export const CardResistance = styled.span<{ $isRingBearer: boolean }>`
@@ -782,11 +787,12 @@ export const CardResistance = styled.span<{ $isRingBearer: boolean }>`
     background-size: contain;
     background-repeat: no-repeat;
     background-position: 1px center;
-    width: 17px;
-    aspect-ratio: 1;
+    width: 100%;
+    height: 100%;
     position: absolute;
-    inset-block-start: 155px;
-    inset-inline-start: 8px;
+    inset-block-start: 50%;
+    inset-inline-start: 50%;
+    translate: -50% -50%;
     text-align: center;
     color: white;
     display: flex;
