@@ -62,10 +62,13 @@ export const BoardCharacterStack: React.FC<BoardCharacterStackProps> = ({
     // On récupère la carte complète en cours de drag
 const draggedCard = dragged?.card as CardState | undefined;
 
+const canAttach = draggedCard 
+    ? canAttachToCharacter(draggedCard.type, draggedCard.subtype) 
+    : false;
+
 const isTargeted =
     activeTargetId === character.id &&
-    ((!isOpponent && canAttachToCharacter(draggedCard, character)) ||
-        isMinionAssignment);
+    ((!isOpponent && canAttach) || isMinionAssignment);
 
     // Règle de sélection : Uniquement en phase skirmish, avec un ID, si des minions sont assignés et si la sélection est permise
     const canSelectThisSkirmish =

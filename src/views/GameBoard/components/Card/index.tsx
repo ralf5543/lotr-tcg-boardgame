@@ -12,7 +12,8 @@ import {
     getEffectiveStrength,
     getEffectiveResistance,
 } from '../../../../utils/cardStats';
-import { getCardText, SupportedLanguage } from '../../../../utils/i18n';
+import { getCardText } from '../../../../utils/i18n';
+import type { SupportedLanguage } from '../../../../utils/i18n';
 
 // 🟢 COMPOSANT HELPER POUR BASCULER D'EXTENSION SI FICHIER INTROUVABLE
 interface CardImageProps {
@@ -386,7 +387,7 @@ export const Card: React.FC<CardProps> = ({
             {card.signet !== undefined && (
                 <S.CardSignet $signet={card.signet} />
             )}
-
+            
             {card.subtype && card.subtype !== 'SUPPORT-AREA' && size === 'sm' && (
                 <S.AttachmentSubtype
                     src={`/interface/pictos/${card.subtype}.webp`}

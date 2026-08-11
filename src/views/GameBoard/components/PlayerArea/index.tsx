@@ -161,7 +161,7 @@ export const PlayerArea: React.FC<PlayerAreaProps> = ({
                                 isSkirmishPhase={isSkirmishPhase}
                                 skirmishId={skirmishId}
                                 isFaceDown={shouldBeFaceDown}
-                                burdens={playerBurdens} // 🟢 Utilise les fardeaux du joueur concerné
+                                burdens={playerBurdens}
                                 lastWoundedCardIds={G?.lastWoundedCardIds}
                                 isSelectedSkirmish={
                                     activeSkirmishId === skirmishId
@@ -236,7 +236,7 @@ export const PlayerArea: React.FC<PlayerAreaProps> = ({
                                     )}
                                     isOpponent={isOpponent}
                                     isFaceDown={shouldBeFaceDown}
-                                    burdens={playerBurdens} // 🟢 Utilise les fardeaux du joueur concerné
+                                    burdens={playerBurdens}
                                 />
                             </S.CharacterStack>
                         );

@@ -15,10 +15,10 @@ export const CardDragTarget = styled.div<{
     $isTargeted?: boolean;
 }>`
     position: relative;
-    z-index: 2; /* 🟢 Priorité visuelle et d'interaction sur les attachements */
+    z-index: 2;
     transition: all 0.2s ease-in-out;
 
-    /* 🟢 EFFET VISUEL QUAND LA CARTE EST CIBLÉE */
+    /* EFFET VISUEL QUAND LA CARTE EST CIBLÉE */
     ${({ $isTargeted }) =>
         $isTargeted &&
         css`
