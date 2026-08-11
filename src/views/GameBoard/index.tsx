@@ -117,69 +117,121 @@ export const GameBoard: React.FC<GameBoardProps> = ({
 
     // 🟢 3. ROUTER DE DRAG & DROP GLOBAL
     useEffect(() => {
-        const handleGlobalCardDrop = (e: Event) => {
-            const customEvent = e as CustomEvent;
+    const handleGlobalCardDrop = (e: Event) => {
+        const customEvent = e as CustomEvent;
 
-            const { draggedCard, targetId } = customEvent.detail || {};
+        console.log('🟢 EVENT CAPTURÉ :', customEvent.detail);
 
-            if (!targetId || !draggedCard) return;
+        const { draggedCard, targetId } = customEvent.detail || {};
 
-            const { index, origin, card, parentId } = draggedCard;
+        if (!targetId || !draggedCard) {
+            console.warn(
+                '⚠️ DROP IGNORÉ : targetId ou draggedCard manquant',
+                { targetId, draggedCard }
+            );
+            return;
+        }
 
-            // 🛠️ CORRECTION : Récupérer correctement le type ET le subtype !
-            const cardType = card?.type;
-            const cardSubtype = card?.subtype;
+        const { index, origin, card, parentId } = draggedCard;
 
-            if (origin === 'HAND') {
-                if (
-                    targetId === 'fellowshipArea' &&
-                    canDropInFellowship(cardType)
-                ) {
-                    if (typeof moves.playCard === 'function') {
-                        moves.playCard(index);
-                    }
-                    return;
+        console.log('🃏 DETAILS CARTE LÂCHÉE :', {
+            title: card?.i18n?.en?.title || card?.title,
+            attachedTo: card?.attachedTo,
+            origin,
+            targetId,
+        });
+
+        // Helper pour trouver la carte cible dans toutes les zones du jeu
+        const findTargetCard = (
+            id: string
+        ): CardState | SiteCardState | null => {
+            if (!G || !G.players) return null;
+
+            // 1. Recherche dans les joueurs (Fellowship & Support)
+            for (const pId of ['0', '1']) {
+                const player = G.players[pId];
+                if (!player) continue;
+
+                const foundInFellowship = player.fellowshipArea?.find(
+                    (c) => c?.id === id
+                );
+                if (foundInFellowship) return foundInFellowship;
+
+                const foundInSupport = player.supportArea?.find(
+                    (c) => c?.id === id
+                );
+                if (foundInSupport) return foundInSupport;
+            }
+
+            // 2. Recherche sur le Champ de Bataille
+            const foundInBattlefield = G.battlefield?.find(
+                (c) => c?.id === id
+            );
+            if (foundInBattlefield) return foundInBattlefield;
+
+            // 3. Recherche dans le Path (Sites)
+            const foundInPath = G.path?.find((s) => s?.id === id);
+            if (foundInPath) return foundInPath;
+
+            return null;
+        };
+
+        const cardType = card?.type;
+        const cardSubtype = card?.subtype;
+
+        if (origin === 'HAND') {
+            if (
+                targetId === 'fellowshipArea' &&
+                canDropInFellowship(cardType)
+            ) {
+                if (typeof moves.playCard === 'function') {
+                    moves.playCard(index);
                 }
+                return;
+            }
 
-                if (
-                    targetId === 'supportArea' &&
-                    canDropInSupportArea(cardType, cardSubtype) // 🛠️ CORRECTION : Passer type ET subtype
-                ) {
-                    if (typeof moves.playCard === 'function') {
-                        moves.playCard(index);
-                    }
-                    return;
+            if (
+                targetId === 'supportArea' &&
+                canDropInSupportArea(cardType, cardSubtype)
+            ) {
+                if (typeof moves.playCard === 'function') {
+                    moves.playCard(index);
                 }
+                return;
+            }
 
-                if (targetId === 'battlefield' && card.kind === 'SHADOW') {
-                    if (typeof moves.playShadowCard === 'function') {
-                        moves.playShadowCard(index);
-                    }
-                    return;
+            if (targetId === 'battlefield' && card?.kind === 'SHADOW') {
+                if (typeof moves.playShadowCard === 'function') {
+                    moves.playShadowCard(index);
                 }
+                return;
+            }
 
-                if (
-                    targetId !== 'fellowshipArea' &&
-                    targetId !== 'supportArea' &&
-                    targetId !== 'battlefield' &&
-                    canAttachToCharacter(cardType, cardSubtype) // 🛠️ CORRECTION
-                ) {
+            if (
+                targetId !== 'fellowshipArea' &&
+                targetId !== 'supportArea' &&
+                targetId !== 'battlefield'
+            ) {
+                const targetCard = findTargetCard(targetId);
+                if (canAttachToCharacter(card, targetCard)) {
                     if (typeof moves.attachCard === 'function') {
                         moves.attachCard(index, targetId);
                     }
                     return;
                 }
             }
+        }
 
-            if (origin === 'ATTACHMENT') {
-                if (targetId === parentId) return;
+        if (origin === 'ATTACHMENT') {
+            if (targetId === parentId) return;
 
-                if (
-                    targetId !== 'fellowshipArea' &&
-                    targetId !== 'supportArea' &&
-                    targetId !== 'battlefield' &&
-                    canAttachToCharacter(cardType, cardSubtype) // 🛠️ CORRECTION
-                ) {
+            if (
+                targetId !== 'fellowshipArea' &&
+                targetId !== 'supportArea' &&
+                targetId !== 'battlefield'
+            ) {
+                const targetCard = findTargetCard(targetId);
+                if (canAttachToCharacter(card, targetCard)) {
                     if (moves.transferAttachment) {
                         moves.transferAttachment({
                             attachmentId: card.id,
@@ -189,31 +241,32 @@ export const GameBoard: React.FC<GameBoardProps> = ({
                     }
                 }
             }
+        }
 
-            if (origin === 'BATTLEFIELD') {
-                const isAssignmentPhase = ctx.phase === 'assignment';
-                const isMinion = card?.type === 'MINION';
+        if (origin === 'BATTLEFIELD') {
+            const isAssignmentPhase = ctx.phase === 'assignment';
+            const isMinion = card?.type === 'MINION';
 
-                if (
-                    isAssignmentPhase &&
-                    isMinion &&
-                    targetId !== 'fellowshipArea' &&
-                    targetId !== 'supportArea' &&
-                    targetId !== 'battlefield' &&
-                    targetId !== 'sitePath'
-                ) {
-                    if (moves.assignMinion) {
-                        moves.assignMinion(card.id, targetId);
-                    }
-                    return;
+            if (
+                isAssignmentPhase &&
+                isMinion &&
+                targetId !== 'fellowshipArea' &&
+                targetId !== 'supportArea' &&
+                targetId !== 'battlefield' &&
+                targetId !== 'sitePath'
+            ) {
+                if (moves.assignMinion) {
+                    moves.assignMinion(card.id, targetId);
                 }
+                return;
             }
-        };
+        }
+    };
 
-        window.addEventListener('card-dropped', handleGlobalCardDrop);
-        return () =>
-            window.removeEventListener('card-dropped', handleGlobalCardDrop);
-    }, [moves, ctx.phase]);
+    window.addEventListener('card-dropped', handleGlobalCardDrop);
+    return () =>
+        window.removeEventListener('card-dropped', handleGlobalCardDrop);
+}, [moves, ctx.phase, G]);
 
     const { setFpPlayerId } = useFaction();
     useEffect(() => {

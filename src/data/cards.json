@@ -91,6 +91,11 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "POSSESSION",
+    "attachedTo": [
+      [
+        "Boromir"
+      ]
+    ],
     "phases": [
       "MANEUVER"
     ],
@@ -1195,6 +1200,11 @@
     "kind": "SHADOW",
     "type": "POSSESSION",
     "subtype": "HAND-WEAPON",
+    "attachedTo": [
+      [
+        "The Witch-king"
+      ]
+    ],
     "phases": [
       "RESPONSE"
     ],
@@ -1327,6 +1337,11 @@
     "kind": "FREE_PEOPLE",
     "type": "POSSESSION",
     "subtype": "HELM",
+    "attachedTo": [
+      [
+        "Gimli"
+      ]
+    ],
     "phases": [
       "SKIRMISH"
     ],
@@ -1605,6 +1620,11 @@
     "kind": "FREE_PEOPLE",
     "type": "POSSESSION",
     "subtype": "HAND-WEAPON",
+    "attachedTo": [
+      [
+        "Gimli"
+      ]
+    ],
     "phases": [
       "SKIRMISH"
     ],
@@ -1647,6 +1667,11 @@
     "kind": "FREE_PEOPLE",
     "type": "POSSESSION",
     "subtype": "RANGED-WEAPON",
+    "attachedTo": [
+      [
+        "Aragorn"
+      ]
+    ],
     "phases": [
       "ARCHERY"
     ],
@@ -2377,6 +2402,11 @@
     "kind": "FREE_PEOPLE",
     "type": "ARTIFACT",
     "subtype": "STAFF",
+    "attachedTo": [
+      [
+        "Radagast"
+      ]
+    ],
     "culture": "GANDALF",
     "twilightCost": 1,
     "strength": 1,
@@ -3115,6 +3145,11 @@
     "kind": "FREE_PEOPLE",
     "type": "POSSESSION",
     "subtype": "HAND-WEAPON",
+    "attachedTo": [
+      [
+        "Bilbo, Frodo, or Sam"
+      ]
+    ],
     "phases": [
       "MANEUVER"
     ],
@@ -4229,6 +4264,11 @@
     "kind": "FREE_PEOPLE",
     "type": "POSSESSION",
     "subtype": "HAND-WEAPON",
+    "attachedTo": [
+      [
+        "Gimli"
+      ]
+    ],
     "culture": "DWARVEN",
     "twilightCost": 2,
     "strength": 2,
@@ -4932,6 +4972,11 @@
     "kind": "FREE_PEOPLE",
     "type": "ARTIFACT",
     "subtype": "ARMOR",
+    "attachedTo": [
+      [
+        "Frodo"
+      ]
+    ],
     "culture": "SHIRE",
     "twilightCost": 2,
     "imageUrl": "/cards_visuals/o_02_105.jpg",
@@ -5799,6 +5844,11 @@
     "kind": "FREE_PEOPLE",
     "type": "POSSESSION",
     "subtype": "HAND-WEAPON",
+    "attachedTo": [
+      [
+        "Frodo"
+      ]
+    ],
     "phases": [
       "SKIRMISH"
     ],
@@ -6639,6 +6689,11 @@
     "kind": "FREE_PEOPLE",
     "type": "ARTIFACT",
     "subtype": "HAND-WEAPON",
+    "attachedTo": [
+      [
+        "Aragorn"
+      ]
+    ],
     "phases": [
       "FELLOWSHIP",
       "REGROUP"
@@ -9796,6 +9851,11 @@
     "kind": "FREE_PEOPLE",
     "type": "POSSESSION",
     "subtype": "HELM",
+    "attachedTo": [
+      [
+        "Gimli"
+      ]
+    ],
     "phases": [
       "SKIRMISH"
     ],
@@ -10508,6 +10568,11 @@
     "kind": "FREE_PEOPLE",
     "type": "POSSESSION",
     "subtype": "RANGED-WEAPON",
+    "attachedTo": [
+      [
+        "Legolas"
+      ]
+    ],
     "culture": "ELVEN",
     "twilightCost": 1,
     "strength": 1,
@@ -11110,6 +11175,11 @@
     "kind": "FREE_PEOPLE",
     "type": "POSSESSION",
     "subtype": "HAND-WEAPON",
+    "attachedTo": [
+      [
+        "Arwen"
+      ]
+    ],
     "phases": [
       "SKIRMISH"
     ],
@@ -12806,6 +12876,11 @@
     "kind": "FREE_PEOPLE",
     "type": "POSSESSION",
     "subtype": "RANGED-WEAPON",
+    "attachedTo": [
+      [
+        "Aragorn"
+      ]
+    ],
     "phases": [
       "ARCHERY"
     ],
@@ -13028,6 +13103,11 @@
     "kind": "FREE_PEOPLE",
     "type": "POSSESSION",
     "subtype": "HAND-WEAPON",
+    "attachedTo": [
+      [
+        "Boromir"
+      ]
+    ],
     "phases": [
       "SKIRMISH"
     ],
@@ -13121,6 +13201,11 @@
     "kind": "FREE_PEOPLE",
     "type": "POSSESSION",
     "subtype": "CLOAK",
+    "attachedTo": [
+      [
+        "Boromir"
+      ]
+    ],
     "phases": [
       "MANEUVER"
     ],
@@ -13707,6 +13792,11 @@
     "kind": "FREE_PEOPLE",
     "type": "POSSESSION",
     "subtype": "HAND-WEAPON",
+    "attachedTo": [
+      [
+        "Aragorn"
+      ]
+    ],
     "culture": "GONDOR",
     "twilightCost": 1,
     "strength": 2,
@@ -18114,6 +18204,11 @@
     "kind": "SHADOW",
     "type": "POSSESSION",
     "subtype": "HAND-WEAPON",
+    "attachedTo": [
+      [
+        "The Witch-king"
+      ]
+    ],
     "phases": [
       "RESPONSE"
     ],
@@ -18281,6 +18376,11 @@
     "kind": "SHADOW",
     "type": "POSSESSION",
     "subtype": "HAND-WEAPON",
+    "attachedTo": [
+      [
+        "Úlairë Lemenya"
+      ]
+    ],
     "phases": [
       "SKIRMISH"
     ],
@@ -21977,6 +22077,11 @@
     "kind": "FREE_PEOPLE",
     "type": "POSSESSION",
     "subtype": "HAND-WEAPON",
+    "attachedTo": [
+      [
+        "Frodo"
+      ]
+    ],
     "phases": [
       "FELLOWSHIP",
       "REGROUP"
@@ -24123,6 +24228,11 @@
     "kind": "SHADOW",
     "type": "POSSESSION",
     "subtype": "HAND-WEAPON",
+    "attachedTo": [
+      [
+        "Lurtz"
+      ]
+    ],
     "culture": "ISENGARD",
     "twilightCost": 1,
     "strength": 2,
@@ -26384,6 +26494,11 @@
     "isUnique": false,
     "kind": "FREE_PEOPLE",
     "type": "CONDITION",
+    "attachedTo": [
+      [
+        "Bilbo"
+      ]
+    ],
     "phases": [
       "FELLOWSHIP",
       "REGROUP"
@@ -27215,6 +27330,11 @@
     "kind": "FREE_PEOPLE",
     "type": "POSSESSION",
     "subtype": "PIPE",
+    "attachedTo": [
+      [
+        "Gimli"
+      ]
+    ],
     "phases": [
       "FELLOWSHIP"
     ],
@@ -27980,6 +28100,11 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "CONDITION",
+    "attachedTo": [
+      [
+        "Aragorn"
+      ]
+    ],
     "phases": [
       "SKIRMISH"
     ],
@@ -28072,6 +28197,11 @@
     "kind": "FREE_PEOPLE",
     "type": "POSSESSION",
     "subtype": "HAND-WEAPON",
+    "attachedTo": [
+      [
+        "Legolas"
+      ]
+    ],
     "culture": "ELVEN",
     "twilightCost": 1,
     "strength": 1,
@@ -28154,6 +28284,11 @@
     "kind": "FREE_PEOPLE",
     "type": "ARTIFACT",
     "subtype": "RING",
+    "attachedTo": [
+      [
+        "Galadriel"
+      ]
+    ],
     "culture": "ELVEN",
     "twilightCost": 0,
     "vitality": 1,
@@ -28330,6 +28465,11 @@
     "kind": "FREE_PEOPLE",
     "type": "ARTIFACT",
     "subtype": "RING",
+    "attachedTo": [
+      [
+        "Elrond"
+      ]
+    ],
     "phases": [
       "MANEUVER"
     ],
@@ -28959,6 +29099,11 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "POSSESSION",
+    "attachedTo": [
+      [
+        "Boromir"
+      ]
+    ],
     "phases": [
       "MANEUVER"
     ],
@@ -31704,6 +31849,11 @@
     "kind": "FREE_PEOPLE",
     "type": "POSSESSION",
     "subtype": "PIPE",
+    "attachedTo": [
+      [
+        "Frodo"
+      ]
+    ],
     "phases": [
       "FELLOWSHIP"
     ],
@@ -33288,6 +33438,7 @@
         "SITE"
       ]
     ],
+    "isControlled": true,
     "phases": [
       "REGROUP"
     ],
@@ -33756,6 +33907,11 @@
     "kind": "FREE_PEOPLE",
     "type": "POSSESSION",
     "subtype": "HAND-WEAPON",
+    "attachedTo": [
+      [
+        "Gimli"
+      ]
+    ],
     "phases": [
       "SKIRMISH"
     ],
@@ -35949,6 +36105,11 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "CONDITION",
+    "attachedTo": [
+      [
+        "Théoden"
+      ]
+    ],
     "culture": "GANDALF",
     "twilightCost": 0,
     "strength": 2,
@@ -36575,6 +36736,11 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "CONDITION",
+    "attachedTo": [
+      [
+        "Faramir"
+      ]
+    ],
     "phases": [
       "SKIRMISH"
     ],
@@ -36891,6 +37057,11 @@
     "kind": "FREE_PEOPLE",
     "type": "POSSESSION",
     "subtype": "RANGED-WEAPON",
+    "attachedTo": [
+      [
+        "Faramir"
+      ]
+    ],
     "phases": [
       "SKIRMISH"
     ],
@@ -36933,6 +37104,11 @@
     "kind": "FREE_PEOPLE",
     "type": "POSSESSION",
     "subtype": "CLOAK",
+    "attachedTo": [
+      [
+        "Faramir"
+      ]
+    ],
     "culture": "GONDOR",
     "twilightCost": 0,
     "imageUrl": "/cards_visuals/o_04_119.jpg",
@@ -37486,6 +37662,11 @@
     "kind": "FREE_PEOPLE",
     "type": "POSSESSION",
     "subtype": "HAND-WEAPON",
+    "attachedTo": [
+      [
+        "Aragorn"
+      ]
+    ],
     "culture": "GONDOR",
     "twilightCost": 1,
     "strength": 2,
@@ -38933,6 +39114,7 @@
         "SITE"
       ]
     ],
+    "isControlled": true,
     "culture": "ISENGARD",
     "twilightCost": 0,
     "imageUrl": "/cards_visuals/o_04_167.jpg",
@@ -43266,6 +43448,11 @@
     "kind": "FREE_PEOPLE",
     "type": "POSSESSION",
     "subtype": "HAND-WEAPON",
+    "attachedTo": [
+      [
+        "Éowyn"
+      ]
+    ],
     "culture": "ROHAN",
     "twilightCost": 1,
     "strength": 3,
@@ -43610,6 +43797,11 @@
     "kind": "FREE_PEOPLE",
     "type": "POSSESSION",
     "subtype": "HAND-WEAPON",
+    "attachedTo": [
+      [
+        "Théoden"
+      ]
+    ],
     "culture": "ROHAN",
     "twilightCost": 2,
     "strength": 2,
@@ -44558,6 +44750,11 @@
     "kind": "FREE_PEOPLE",
     "type": "POSSESSION",
     "subtype": "CLOAK",
+    "attachedTo": [
+      [
+        "Frodo"
+      ]
+    ],
     "phases": [
       "SKIRMISH"
     ],
@@ -45960,6 +46157,11 @@
     "kind": "FREE_PEOPLE",
     "type": "POSSESSION",
     "subtype": "HAND-WEAPON",
+    "attachedTo": [
+      [
+        "Legolas"
+      ]
+    ],
     "culture": "ELVEN",
     "twilightCost": 1,
     "strength": 1,
@@ -53107,6 +53309,11 @@
     "kind": "FREE_PEOPLE",
     "type": "ARTIFACT",
     "subtype": "RING",
+    "attachedTo": [
+      [
+        "Aragorn"
+      ]
+    ],
     "culture": "GONDOR",
     "twilightCost": 0,
     "imageUrl": "/cards_visuals/o_06_055.jpg",
@@ -55417,6 +55624,11 @@
     "isUnique": false,
     "kind": "FREE_PEOPLE",
     "type": "CONDITION",
+    "attachedTo": [
+      [
+        "Frodo"
+      ]
+    ],
     "phases": [
       "REGROUP"
     ],
@@ -56281,6 +56493,11 @@
     "kind": "FREE_PEOPLE",
     "type": "POSSESSION",
     "subtype": "ARMOR",
+    "attachedTo": [
+      [
+        "Gimli"
+      ]
+    ],
     "phases": [
       "RESPONSE"
     ],
@@ -56702,6 +56919,11 @@
     "kind": "FREE_PEOPLE",
     "type": "POSSESSION",
     "subtype": "RANGED-WEAPON",
+    "attachedTo": [
+      [
+        "Legolas"
+      ]
+    ],
     "culture": "ELVEN",
     "twilightCost": 1,
     "strength": 1,
@@ -58247,6 +58469,11 @@
     "isUnique": false,
     "kind": "FREE_PEOPLE",
     "type": "CONDITION",
+    "attachedTo": [
+      [
+        "Sméagol"
+      ]
+    ],
     "culture": "GOLLUM",
     "twilightCost": 3,
     "imageUrl": "/cards_visuals/o_07_056.jpg",
@@ -59089,6 +59316,11 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "CONDITION",
+    "attachedTo": [
+      [
+        "Sméagol"
+      ]
+    ],
     "phases": [
       "ASSIGNMENT",
       "REGROUP"
@@ -59168,6 +59400,11 @@
     "kind": "FREE_PEOPLE",
     "type": "ARTIFACT",
     "subtype": "HAND-WEAPON",
+    "attachedTo": [
+      [
+        "Aragorn"
+      ]
+    ],
     "culture": "GONDOR",
     "twilightCost": 3,
     "strength": 2,
@@ -60524,6 +60761,11 @@
     "kind": "FREE_PEOPLE",
     "type": "POSSESSION",
     "subtype": "ARMOR",
+    "attachedTo": [
+      [
+        "Pippin"
+      ]
+    ],
     "culture": "GONDOR",
     "twilightCost": 0,
     "strength": 2,
@@ -60561,6 +60803,11 @@
     "kind": "FREE_PEOPLE",
     "type": "POSSESSION",
     "subtype": "HAND-WEAPON",
+    "attachedTo": [
+      [
+        "Pippin"
+      ]
+    ],
     "phases": [
       "SKIRMISH"
     ],
@@ -65133,6 +65380,11 @@
     "kind": "FREE_PEOPLE",
     "type": "POSSESSION",
     "subtype": "HAND-WEAPON",
+    "attachedTo": [
+      [
+        "Éowyn"
+      ]
+    ],
     "culture": "ROHAN",
     "twilightCost": 1,
     "strength": 3,
@@ -65398,6 +65650,11 @@
     "kind": "FREE_PEOPLE",
     "type": "POSSESSION",
     "subtype": "HAND-WEAPON",
+    "attachedTo": [
+      [
+        "Théoden"
+      ]
+    ],
     "phases": [
       "RESPONSE"
     ],
@@ -65612,6 +65869,11 @@
     "kind": "FREE_PEOPLE",
     "type": "POSSESSION",
     "subtype": "ARMOR",
+    "attachedTo": [
+      [
+        "Merry"
+      ]
+    ],
     "culture": "ROHAN",
     "twilightCost": 0,
     "strength": 2,
@@ -65649,6 +65911,11 @@
     "kind": "FREE_PEOPLE",
     "type": "POSSESSION",
     "subtype": "HAND-WEAPON",
+    "attachedTo": [
+      [
+        "Merry"
+      ]
+    ],
     "phases": [
       "MANEUVER"
     ],
@@ -69102,6 +69369,11 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "CONDITION",
+    "attachedTo": [
+      [
+        "Merry or Pippin"
+      ]
+    ],
     "phases": [
       "ASSIGNMENT",
       "REGROUP"
@@ -73711,6 +73983,11 @@
     "kind": "FREE_PEOPLE",
     "type": "POSSESSION",
     "subtype": "HAND-WEAPON",
+    "attachedTo": [
+      [
+        "Frodo or Sam"
+      ]
+    ],
     "phases": [
       "RESPONSE"
     ],
@@ -74783,6 +75060,11 @@
     "kind": "FREE_PEOPLE",
     "type": "POSSESSION",
     "subtype": "HAND-WEAPON",
+    "attachedTo": [
+      [
+        "Merry"
+      ]
+    ],
     "phases": [
       "SKIRMISH"
     ],
@@ -74879,6 +75161,11 @@
     "kind": "FREE_PEOPLE",
     "type": "ARTIFACT",
     "subtype": "RING",
+    "attachedTo": [
+      [
+        "Galadriel"
+      ]
+    ],
     "phases": [
       "MANEUVER"
     ],
@@ -74927,6 +75214,11 @@
     "kind": "FREE_PEOPLE",
     "type": "POSSESSION",
     "subtype": "HAND-WEAPON",
+    "attachedTo": [
+      [
+        "Pippin"
+      ]
+    ],
     "phases": [
       "SKIRMISH"
     ],
@@ -75007,6 +75299,11 @@
     "kind": "FREE_PEOPLE",
     "type": "ARTIFACT",
     "subtype": "RING",
+    "attachedTo": [
+      [
+        "Elrond or Gil-galad"
+      ]
+    ],
     "phases": [
       "SKIRMISH"
     ],
@@ -75912,6 +76209,11 @@
     "kind": "SHADOW",
     "type": "ARTIFACT",
     "subtype": "RING",
+    "attachedTo": [
+      [
+        "The Witch-king"
+      ]
+    ],
     "phases": [
       "SKIRMISH",
       "RESPONSE"
@@ -75999,6 +76301,11 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "POSSESSION",
+    "attachedTo": [
+      [
+        "Merry or Pippin"
+      ]
+    ],
     "phases": [
       "RESPONSE"
     ],
@@ -88435,6 +88742,11 @@
     "kind": "FREE_PEOPLE",
     "type": "POSSESSION",
     "subtype": "HAND-WEAPON",
+    "attachedTo": [
+      [
+        "Bilbo, Frodo, or Sam"
+      ]
+    ],
     "phases": [
       "MANEUVER"
     ],
@@ -91365,6 +91677,11 @@
     "kind": "FREE_PEOPLE",
     "type": "POSSESSION",
     "subtype": "HAND-WEAPON",
+    "attachedTo": [
+      [
+        "Arwen or Elrond"
+      ]
+    ],
     "culture": "ELVEN",
     "twilightCost": 1,
     "strength": 2,
@@ -91405,6 +91722,11 @@
     "kind": "FREE_PEOPLE",
     "type": "POSSESSION",
     "subtype": "HAND-WEAPON",
+    "attachedTo": [
+      [
+        "Legolas"
+      ]
+    ],
     "culture": "ELVEN",
     "twilightCost": 1,
     "strength": 1,
@@ -92337,6 +92659,11 @@
     "kind": "FREE_PEOPLE",
     "type": "POSSESSION",
     "subtype": "HAND-WEAPON",
+    "attachedTo": [
+      [
+        "Boromir"
+      ]
+    ],
     "phases": [
       "SKIRMISH"
     ],
@@ -92603,6 +92930,11 @@
     "kind": "FREE_PEOPLE",
     "type": "POSSESSION",
     "subtype": "HAND-WEAPON",
+    "attachedTo": [
+      [
+        "Faramir"
+      ]
+    ],
     "culture": "GONDOR",
     "twilightCost": 2,
     "strength": 2,
@@ -98378,6 +98710,11 @@
     "kind": "FREE_PEOPLE",
     "type": "POSSESSION",
     "subtype": "HAND-WEAPON",
+    "attachedTo": [
+      [
+        "Faramir"
+      ]
+    ],
     "culture": "GONDOR",
     "twilightCost": 2,
     "strength": 2,
@@ -100614,6 +100951,11 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "POSSESSION",
+    "attachedTo": [
+      [
+        "Sméagol"
+      ]
+    ],
     "culture": "GOLLUM",
     "twilightCost": 2,
     "vitality": 1,
@@ -108998,6 +109340,11 @@
     "isUnique": false,
     "kind": "FREE_PEOPLE",
     "type": "CONDITION",
+    "attachedTo": [
+      [
+        "Sméagol"
+      ]
+    ],
     "culture": "GOLLUM",
     "twilightCost": 1,
     "imageUrl": "/cards_visuals/o_15_039.jpg",
@@ -109731,6 +110078,11 @@
     "kind": "FREE_PEOPLE",
     "type": "POSSESSION",
     "subtype": "RANGED-WEAPON",
+    "attachedTo": [
+      [
+        "Aragorn"
+      ]
+    ],
     "phases": [
       "ARCHERY"
     ],
@@ -117270,6 +117622,11 @@
     "kind": "FREE_PEOPLE",
     "type": "ARTIFACT",
     "subtype": "HAND-WEAPON",
+    "attachedTo": [
+      [
+        "Aragorn"
+      ]
+    ],
     "culture": "GONDOR",
     "twilightCost": 3,
     "strength": 2,
@@ -117443,6 +117800,11 @@
     "kind": "FREE_PEOPLE",
     "type": "ARTIFACT",
     "subtype": "HAND-WEAPON",
+    "attachedTo": [
+      [
+        "Elendil or Isildur"
+      ]
+    ],
     "culture": "GONDOR",
     "twilightCost": 3,
     "strength": 3,
@@ -127181,6 +127543,11 @@
     "kind": "FREE_PEOPLE",
     "type": "POSSESSION",
     "subtype": "HAND-WEAPON",
+    "attachedTo": [
+      [
+        "Bilbo or Frodo"
+      ]
+    ],
     "phases": [
       "REGROUP"
     ],

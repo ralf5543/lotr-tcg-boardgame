@@ -250,36 +250,67 @@ function parseAttachedTo(rawText) {
     if (!rawText) return undefined;
 
     const cleanText = rawText.replace(/\u00A0/g, ' ');
+    let isControlled = undefined;
 
-    // Cas d'attachement à un site
+    // --- CAS SPECIAL : SITES ---
     if (/plays\s+on\s+a\s+site/i.test(cleanText)) {
-        return [['SITE']];
+        if (/plays\s+on\s+a\s+site\s+you\s+control/i.test(cleanText)) {
+            isControlled = true;
+        }
+        return {
+            attachedTo: [['SITE']],
+            ...(isControlled !== undefined && { isControlled })
+        };
     }
 
-    // 1. Isoler la clause de cible
+    // --- 1. ISOLER LA CLAUSE D'ATTACHEMENT ---
+    // Matcher : "Bearer must be ...", "Attach to ...", "To play, attach to ..."
     const match = cleanText.match(/(?:Bearer must be|Attach to|To play, attach to)\s+([^.\n]+)/i);
     if (!match) return undefined;
 
-    // Suppression préalable des balises HTML (<keyword>, <symbol>) pour travailler sur le texte brut
-    const clauseText = match[1]
+    const fullClause = match[1].trim();
+
+    // Suppression des balises HTML pour l'analyse
+    const cleanClause = fullClause
         .replace(/<\/?(keyword|symbol)[^>]*>/gi, '')
         .trim();
 
-    // 2. Découper autour des "OU" (séparateurs "or" et virgules)
-    const rawGroups = clauseText
+    // --- 2. DÉTECTION DU NOM PROPRE (PAR ÉLIMINATION) ---
+    // On regarde si la clause commence par "a " ou "an " (ex: "a Dwarf", "an Elf")
+    const hasArticle = /^(a|an)\s+/i.test(cleanClause);
+
+    // Si pas d'article "a/an", on vérifie d'abord si ce n'est pas un groupe générique
+    // (ex: "Bearer must be an Elf or Dwarf" - le 2e mot n'a pas d'article mais est générique)
+    const upperClause = cleanClause.toUpperCase();
+    const containsGenericKeyword = KNOWN_ATTACHED_KEYWORDS.some(kw => 
+        new RegExp(`\\b${kw}\\b`, 'i').test(upperClause)
+    );
+
+    // Si PAS d'article "a/an" ET PAS de mot-clé générique (Race, Culture, Keyword, Type)
+    // -> C'est un NOM PROPRE !
+    if (!hasArticle && !containsGenericKeyword) {
+        // On nettoie d'éventuels préfixes résiduels et on garde la casse originale
+        const properName = cleanClause.trim();
+        if (properName.length > 0) {
+            return {
+                attachedTo: [[properName]]
+            };
+        }
+    }
+
+    // --- 3. DÉCOUPAGE DNF POUR LES MOTS-CLÉS GÉNÉRIQUES ---
+    const rawGroups = cleanClause
         .split(/\bor\b|,/i)
         .map(g => g.trim())
         .filter(Boolean);
 
-    const result = [];
+    const attachedToResult = [];
 
-    // 3. Extraire les mots-clés reconnus pour chaque groupe (les critères "ET")
     for (const groupText of rawGroups) {
         const uppercaseGroup = groupText.toUpperCase();
         const foundInGroup = [];
 
         for (const kw of KNOWN_ATTACHED_KEYWORDS) {
-            // Utilisation des bordures de mots (\b) pour éviter d'attraper MAN dans COMMANDER
             const regex = new RegExp(`\\b${kw}\\b`, 'i');
             if (regex.test(uppercaseGroup)) {
                 foundInGroup.push(kw);
@@ -287,11 +318,15 @@ function parseAttachedTo(rawText) {
         }
 
         if (foundInGroup.length > 0) {
-            result.push(foundInGroup);
+            attachedToResult.push(foundInGroup);
         }
     }
 
-    return result.length > 0 ? result : undefined;
+    if (attachedToResult.length === 0) return undefined;
+
+    return {
+        attachedTo: attachedToResult
+    };
 }
 
 // ============================================================================
@@ -392,7 +427,7 @@ async function convert() {
 
         // --- Subtypes, Phases & AttachedTo ---
         const { subtype, phases } = parseClassAndPhases(data['Class'], englishText);
-        const attachedTo = parseAttachedTo(englishText);
+        const attachmentData = parseAttachedTo(englishText);
 
         // --- Stats numériques ---
         const computedStrength = parseStat(data['Strength'], data['Top Text']);
@@ -412,7 +447,8 @@ async function convert() {
             kind: kind,
             type: type,
             subtype: subtype,
-            attachedTo: attachedTo,
+            attachedTo: attachmentData?.attachedTo,
+            isControlled: attachmentData?.isControlled,
             phases: phases,
             culture: mapCulture(data['Culture']),
             race: data['Race'] ? data['Race'].toUpperCase() : undefined,

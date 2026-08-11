@@ -60,15 +60,16 @@ export const BoardCharacterStack: React.FC<BoardCharacterStackProps> = ({
         dragged?.origin === 'BATTLEFIELD' && draggedType === 'MINION';
 
     // On récupère la carte complète en cours de drag
-const draggedCard = dragged?.card as CardState | undefined;
+    const draggedCard = dragged?.card as CardState | undefined;
 
-const canAttach = draggedCard 
-    ? canAttachToCharacter(draggedCard.type, draggedCard.subtype) 
-    : false;
+    // Validation d'attachement via la fonction DNF
+    const canAttach = draggedCard 
+        ? canAttachToCharacter(draggedCard, character) 
+        : false;
 
-const isTargeted =
-    activeTargetId === character.id &&
-    ((!isOpponent && canAttach) || isMinionAssignment);
+    const isTargeted =
+        activeTargetId === character.id &&
+        ((!isOpponent && canAttach) || isMinionAssignment);
 
     // Règle de sélection : Uniquement en phase skirmish, avec un ID, si des minions sont assignés et si la sélection est permise
     const canSelectThisSkirmish =

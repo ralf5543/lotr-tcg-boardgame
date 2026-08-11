@@ -60,12 +60,9 @@ const PLAYER_0_SITES_IDS = [
     '11S250',
 ];
 
-const PLAYER_0_FREE_PEOPLE: string[] = ['12R42', '1C299', '1R302', '10R72', '15U129', '4C283', '1R45'];
+const PLAYER_0_FREE_PEOPLE: string[] = ['12R42', '1C299', '1R302', '10R72', '15U129', '4C283', '1R45', '6R125', '3R23'];
 
-const PLAYER_0_SHADOW: string[] = [
-    '11R194',
-    '11R194',
-];
+const PLAYER_0_SHADOW: string[] = [];
 
 /*const PLAYER_0_FREE_PEOPLE: string[] = [
     '0P25',
