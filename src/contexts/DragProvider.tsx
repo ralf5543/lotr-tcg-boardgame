@@ -56,81 +56,43 @@ export const DragProvider: React.FC<{ children: React.ReactNode }> = ({
 
     const getHitTargetId = (
         clientX: number,
-        clientY: number,
-        cardWidthPhysBase: number,
-        cardHeightPhysBase: number
+        clientY: number
     ): string | null => {
-        const scale = currentScale.current;
-        const cardWidthPhys = cardWidthPhysBase * scale;
-        const cardHeightPhys = cardHeightPhysBase * scale;
-        const cardLeftPhys = clientX - dragOffset.current.x * scale;
-        const cardTopPhys = clientY - dragOffset.current.y * scale;
-        const cardRightPhys = cardLeftPhys + cardWidthPhys;
-        const cardBottomPhys = cardTopPhys + cardHeightPhys;
+        let detectedCompanionId: string | null = null;
+        let detectedZoneId: string | null = null;
 
-        const cardArea = cardWidthPhys * cardHeightPhys;
-
-        let bestCompanionId: string | null = null;
-        let maxCompanionOverlap = 0;
-
-        let bestZoneId: string | null = null;
-        let maxZoneOverlapRatio = 0;
-
+        // On parcourt toutes les zones et cartes enregistrées
         targetsRef.current.forEach((targetEl, id) => {
             if (!targetEl) return;
 
-            const targetRect = targetEl.getBoundingClientRect();
+            const rect = targetEl.getBoundingClientRect();
 
-            const xOverlap = Math.max(
-                0,
-                Math.min(cardRightPhys, targetRect.right) -
-                    Math.max(cardLeftPhys, targetRect.left)
-            );
-            const yOverlap = Math.max(
-                0,
-                Math.min(cardBottomPhys, targetRect.bottom) -
-                    Math.max(cardTopPhys, targetRect.top)
-            );
-            const overlapArea = xOverlap * yOverlap;
+            // 🟢 POINT-IN-RECTANGLE : Le curseur est-il à l'intérieur de la cible ?
+            const isCursorInside =
+                clientX >= rect.left &&
+                clientX <= rect.right &&
+                clientY >= rect.top &&
+                clientY <= rect.bottom;
 
-            if (overlapArea <= 0) return;
+            if (!isCursorInside) return;
 
-            const cardOverlapRatio = overlapArea / cardArea;
-
-            if (
+            // Distinguer si c'est une zone globale ou un personnage spécifique
+            const isGlobalZone =
                 id === 'fellowshipArea' ||
                 id === 'sitePath' ||
                 id === 'supportArea' ||
-                id === 'battlefield'
-            ) {
-                const ZONE_THRESHOLD = 0.2;
+                id === 'battlefield';
 
-                if (
-                    cardOverlapRatio > ZONE_THRESHOLD &&
-                    cardOverlapRatio > maxZoneOverlapRatio
-                ) {
-                    maxZoneOverlapRatio = cardOverlapRatio;
-                    bestZoneId = id;
-                }
+            if (isGlobalZone) {
+                detectedZoneId = id;
             } else {
-                const targetArea = targetRect.width * targetRect.height;
-                const targetOverlapRatio = overlapArea / targetArea;
-
-                if (
-                    targetOverlapRatio > 0.05 &&
-                    targetOverlapRatio > maxCompanionOverlap
-                ) {
-                    maxCompanionOverlap = targetOverlapRatio;
-                    bestCompanionId = id;
-                }
+                // Si c'est un personnage/carte, c'est une cible plus prioritaire
+                detectedCompanionId = id;
             }
         });
 
-        if (bestCompanionId) {
-            return bestCompanionId;
-        }
-
-        return bestZoneId || null;
+        // Les cibles précises (ex: Boromir) l'emportent sur les zones conteneurs (ex: fellowshipArea)
+        return detectedCompanionId || detectedZoneId || null;
     };
 
     const startDrag = (
@@ -200,12 +162,7 @@ export const DragProvider: React.FC<{ children: React.ReactNode }> = ({
             const targetRotation = Math.max(-8, Math.min(8, deltaX * 0.4));
             setRotation((prev) => prev + (targetRotation - prev) * 0.15);
 
-            const detectedTargetId = getHitTargetId(
-                e.clientX,
-                e.clientY,
-                cardWidthPhysBase,
-                cardHeightPhysBase
-            );
+            const detectedTargetId = getHitTargetId(e.clientX, e.clientY);
 
             setActiveTargetId(detectedTargetId);
             activeTargetIdRef.current = detectedTargetId;
@@ -213,12 +170,7 @@ export const DragProvider: React.FC<{ children: React.ReactNode }> = ({
 
         const handlePointerUp = (e: PointerEvent) => {
             if (dragged) {
-                const finalTargetId = getHitTargetId(
-                    e.clientX,
-                    e.clientY,
-                    cardWidthPhysBase,
-                    cardHeightPhysBase
-                );
+                const finalTargetId = getHitTargetId(e.clientX, e.clientY);
                 const targetToUse = finalTargetId || activeTargetIdRef.current;
 
                 const dropEvent = new CustomEvent('card-dropped', {
