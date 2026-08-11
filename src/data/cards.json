@@ -186,6 +186,21 @@
         "the Ring-bearer"
       ]
     ],
+    "toPlay": [
+      {
+        "exert": [
+          {
+            "count": 1,
+            "target": [
+              [
+                "EXERT",
+                "Elf"
+              ]
+            ]
+          }
+        ]
+      }
+    ],
     "culture": "ELVEN",
     "twilightCost": 0,
     "imageUrl": "/cards_visuals/o_03_024.jpg",
@@ -608,6 +623,11 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
+    "toPlay": [
+      {
+        "addBurdens": 1
+      }
+    ],
     "phases": [
       "REGROUP"
     ],
@@ -797,6 +817,11 @@
       [
         "NAZGL"
       ]
+    ],
+    "toPlay": [
+      {
+        "discardFromHand": 2
+      }
     ],
     "culture": "WRAITH",
     "twilightCost": 0,
@@ -1872,7 +1897,7 @@
       "fr": {
         "title": "Éomer",
         "subtitle": "Troisième Maréchal de la Marche",
-        "gameText": "Tant que vous pouvez désignez un Homme <symbol>rohan</symbol>, le coût crépusculaire d’Eomer est de -1. Éomer a +2 en force pour chaque blessure que vous pouvez désigner sur les séides qu’il combat.",
+        "gameText": "Tant que vous pouvez désigner un Homme <symbol>rohan</symbol>, le coût crépusculaire d’Eomer est de -1. Éomer a +2 en force pour chaque blessure que vous pouvez désigner sur les séides qu’il combat.",
         "loreText": "We shall not forsake our old alliance with Gondor, and while they fight we shall aid them: so say I and all who hold with me."
       },
       "de": {
@@ -2092,6 +2117,14 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "ALLY",
+    "toPlay": [
+      {
+        "removeBurdens": 2
+      },
+      {
+        "removeThreats": 2
+      }
+    ],
     "phases": [
       "SKIRMISH"
     ],
@@ -2527,6 +2560,20 @@
     "kind": "FREE_PEOPLE",
     "type": "POSSESSION",
     "subtype": "SUPPORT-AREA",
+    "toPlay": [
+      {
+        "spot": [
+          {
+            "count": 2,
+            "target": [
+              [
+                "SPOT"
+              ]
+            ]
+          }
+        ]
+      }
+    ],
     "phases": [
       "FELLOWSHIP"
     ],
@@ -2837,6 +2884,20 @@
     "kind": "SHADOW",
     "type": "CONDITION",
     "subtype": "SUPPORT-AREA",
+    "toPlay": [
+      {
+        "exert": [
+          {
+            "count": 1,
+            "target": [
+              [
+                "EXERT"
+              ]
+            ]
+          }
+        ]
+      }
+    ],
     "culture": "ORC",
     "twilightCost": 1,
     "imageUrl": "/cards_visuals/o_11_139.jpg",
@@ -2875,6 +2936,20 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
+    "toPlay": [
+      {
+        "spot": [
+          {
+            "count": 2,
+            "target": [
+              [
+                "SPOT"
+              ]
+            ]
+          }
+        ]
+      }
+    ],
     "culture": "ROHAN",
     "race": "MAN",
     "twilightCost": 5,
@@ -4087,6 +4162,11 @@
     "isUnique": false,
     "kind": "SHADOW",
     "type": "MINION",
+    "toPlay": [
+      {
+        "discardFromHand": 3
+      }
+    ],
     "culture": "ORC",
     "race": "ORC",
     "twilightCost": 2,
@@ -4129,6 +4209,21 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
+    "toPlay": [
+      {
+        "spot": [
+          {
+            "count": 1,
+            "target": [
+              [
+                "SPOT",
+                "Elf"
+              ]
+            ]
+          }
+        ]
+      }
+    ],
     "culture": "ELVEN",
     "race": "ELF",
     "twilightCost": 2,
@@ -4698,6 +4793,20 @@
     "isUnique": true,
     "kind": "SHADOW",
     "type": "MINION",
+    "toPlay": [
+      {
+        "spot": [
+          {
+            "count": 1,
+            "target": [
+              [
+                "SPOT"
+              ]
+            ]
+          }
+        ]
+      }
+    ],
     "culture": "MORIA",
     "race": "TROLL",
     "twilightCost": 10,
@@ -4883,6 +4992,20 @@
     "isUnique": true,
     "kind": "SHADOW",
     "type": "MINION",
+    "toPlay": [
+      {
+        "spot": [
+          {
+            "count": 1,
+            "target": [
+              [
+                "SPOT"
+              ]
+            ]
+          }
+        ]
+      }
+    ],
     "phases": [
       "SHADOW"
     ],
@@ -5165,6 +5288,11 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
+    "toPlay": [
+      {
+        "addBurdens": 1
+      }
+    ],
     "phases": [
       "SKIRMISH"
     ],
@@ -6276,6 +6404,20 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
+    "toPlay": [
+      {
+        "spot": [
+          {
+            "count": 1,
+            "target": [
+              [
+                "SPOT"
+              ]
+            ]
+          }
+        ]
+      }
+    ],
     "phases": [
       "RESPONSE"
     ],
@@ -6507,6 +6649,21 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
+    "toPlay": [
+      {
+        "spot": [
+          {
+            "count": 1,
+            "target": [
+              [
+                "SPOT",
+                "Elf"
+              ]
+            ]
+          }
+        ]
+      }
+    ],
     "culture": "ELVEN",
     "race": "ELF",
     "twilightCost": 4,
@@ -6936,6 +7093,20 @@
     "kind": "SHADOW",
     "type": "CONDITION",
     "subtype": "SUPPORT-AREA",
+    "toPlay": [
+      {
+        "spot": [
+          {
+            "count": 1,
+            "target": [
+              [
+                "SPOT"
+              ]
+            ]
+          }
+        ]
+      }
+    ],
     "culture": "ORC",
     "twilightCost": 2,
     "imageUrl": "/cards_visuals/o_11_123.jpg",
@@ -7021,6 +7192,21 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
+    "toPlay": [
+      {
+        "spot": [
+          {
+            "count": 1,
+            "target": [
+              [
+                "SPOT",
+                "Elf"
+              ]
+            ]
+          }
+        ]
+      }
+    ],
     "phases": [
       "SKIRMISH"
     ],
@@ -7078,6 +7264,20 @@
         "THE",
         "RING-BEARER"
       ]
+    ],
+    "toPlay": [
+      {
+        "spot": [
+          {
+            "count": 1,
+            "target": [
+              [
+                "SPOT"
+              ]
+            ]
+          }
+        ]
+      }
     ],
     "culture": "GANDALF",
     "twilightCost": 2,
@@ -7359,6 +7559,21 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "FOLLOWER",
+    "toPlay": [
+      {
+        "spot": [
+          {
+            "count": 1,
+            "target": [
+              [
+                "SPOT",
+                "Sméagol"
+              ]
+            ]
+          }
+        ]
+      }
+    ],
     "phases": [
       "SKIRMISH"
     ],
@@ -7405,6 +7620,20 @@
     "isUnique": true,
     "kind": "SHADOW",
     "type": "MINION",
+    "toPlay": [
+      {
+        "spot": [
+          {
+            "count": 1,
+            "target": [
+              [
+                "SPOT"
+              ]
+            ]
+          }
+        ]
+      }
+    ],
     "culture": "ORC",
     "race": "ORC",
     "twilightCost": 5,
@@ -7585,6 +7814,20 @@
     "isUnique": false,
     "kind": "SHADOW",
     "type": "MINION",
+    "toPlay": [
+      {
+        "spot": [
+          {
+            "count": 1,
+            "target": [
+              [
+                "SPOT"
+              ]
+            ]
+          }
+        ]
+      }
+    ],
     "culture": "DUNLAND",
     "race": "MAN",
     "twilightCost": 11,
@@ -7763,6 +8006,20 @@
     "isUnique": true,
     "kind": "SHADOW",
     "type": "MINION",
+    "toPlay": [
+      {
+        "spot": [
+          {
+            "count": 1,
+            "target": [
+              [
+                "SPOT"
+              ]
+            ]
+          }
+        ]
+      }
+    ],
     "culture": "GOLLUM",
     "twilightCost": 2,
     "strength": 5,
@@ -7855,6 +8112,21 @@
     "isUnique": false,
     "kind": "SHADOW",
     "type": "MINION",
+    "toPlay": [
+      {
+        "spot": [
+          {
+            "count": 1,
+            "target": [
+              [
+                "SPOT",
+                "Uruk–Hai"
+              ]
+            ]
+          }
+        ]
+      }
+    ],
     "culture": "ISENGARD",
     "race": "URUK-HAI",
     "twilightCost": 9,
@@ -7897,6 +8169,20 @@
     "isUnique": true,
     "kind": "SHADOW",
     "type": "MINION",
+    "toPlay": [
+      {
+        "spot": [
+          {
+            "count": 1,
+            "target": [
+              [
+                "SPOT"
+              ]
+            ]
+          }
+        ]
+      }
+    ],
     "culture": "MORIA",
     "race": "TROLL",
     "twilightCost": 10,
@@ -7944,6 +8230,20 @@
     "isUnique": false,
     "kind": "SHADOW",
     "type": "MINION",
+    "toPlay": [
+      {
+        "spot": [
+          {
+            "count": 1,
+            "target": [
+              [
+                "SPOT"
+              ]
+            ]
+          }
+        ]
+      }
+    ],
     "culture": "RAIDER",
     "race": "MAN",
     "twilightCost": 11,
@@ -7986,6 +8286,21 @@
     "isUnique": false,
     "kind": "SHADOW",
     "type": "MINION",
+    "toPlay": [
+      {
+        "spot": [
+          {
+            "count": 1,
+            "target": [
+              [
+                "SPOT",
+                "Nazgûl"
+              ]
+            ]
+          }
+        ]
+      }
+    ],
     "culture": "WRAITH",
     "race": "NAZGÛL",
     "twilightCost": 14,
@@ -8074,6 +8389,20 @@
     "isUnique": false,
     "kind": "SHADOW",
     "type": "MINION",
+    "toPlay": [
+      {
+        "spot": [
+          {
+            "count": 1,
+            "target": [
+              [
+                "SPOT"
+              ]
+            ]
+          }
+        ]
+      }
+    ],
     "culture": "SAURON",
     "race": "ORC",
     "twilightCost": 9,
@@ -9183,6 +9512,21 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
+    "toPlay": [
+      {
+        "spot": [
+          {
+            "count": 2,
+            "target": [
+              [
+                "SPOT",
+                "Hobbits"
+              ]
+            ]
+          }
+        ]
+      }
+    ],
     "culture": "GANDALF",
     "race": "WIZARD",
     "twilightCost": 4,
@@ -9594,6 +9938,21 @@
     "isUnique": false,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
+    "toPlay": [
+      {
+        "spot": [
+          {
+            "count": 1,
+            "target": [
+              [
+                "SPOT",
+                "Dwarf"
+              ]
+            ]
+          }
+        ]
+      }
+    ],
     "culture": "DWARVEN",
     "race": "DWARF",
     "twilightCost": 1,
@@ -9767,6 +10126,21 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
+    "toPlay": [
+      {
+        "spot": [
+          {
+            "count": 1,
+            "target": [
+              [
+                "SPOT",
+                "Dwarf"
+              ]
+            ]
+          }
+        ]
+      }
+    ],
     "culture": "DWARVEN",
     "race": "DWARF",
     "twilightCost": 2,
@@ -9833,7 +10207,7 @@
       "fr": {
         "title": "Gimli",
         "subtitle": "Nain d'Erebor",
-        "gameText": "**Dégâts +1.**\n**Compagnie :** Si la réserve crépusculaire a moins se ¥ points crépusculaires, ajoutez <symbol>twilight2</symbol> pour placer une carte de votre main sous votre pioche.",
+        "gameText": "**Dégâts +1.**\n**Compagnie :** Si la réserve crépusculaire a moins se <symbol>orc</symbol> points crépusculaires, ajoutez <symbol>twilight2</symbol> pour placer une carte de votre main sous votre pioche.",
         "loreText": "Gimli marchait à présent en tête à côté du magicien, tant il était impatient d'arriver dans la Moria."
       },
       "de": {
@@ -9845,7 +10219,7 @@
       "it": {
         "title": "Gimli",
         "subtitle": "Nano di Erebor",
-        "gameText": "**Danno +1.**\n**Compagnia:** Se la zona del crepuscolo, aggiungi . ¥ per mettere una carta dalla tua mano in fondo al mazzo."
+        "gameText": "**Danno +1.**\n**Compagnia:** Se la zona del crepuscolo, aggiungi . <symbol>orc</symbol> per mettere una carta dalla tua mano in fondo al mazzo."
       },
       "es": {
         "title": "Gimli",
@@ -10879,6 +11253,33 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "ALLY",
+    "toPlay": [
+      {
+        "spot": [
+          {
+            "count": 1,
+            "target": [
+              [
+                "SPOT",
+                "Gandalf"
+              ]
+            ]
+          }
+        ]
+      },
+      {
+        "spot": [
+          {
+            "count": 1,
+            "target": [
+              [
+                "Elf"
+              ]
+            ]
+          }
+        ]
+      }
+    ],
     "phases": [
       "FELLOWSHIP"
     ],
@@ -10978,6 +11379,21 @@
       [
         "COMPANION"
       ]
+    ],
+    "toPlay": [
+      {
+        "spot": [
+          {
+            "count": 1,
+            "target": [
+              [
+                "SPOT",
+                "Elf"
+              ]
+            ]
+          }
+        ]
+      }
     ],
     "culture": "ELVEN",
     "twilightCost": 1,
@@ -11148,6 +11564,22 @@
     "kind": "FREE_PEOPLE",
     "type": "CONDITION",
     "subtype": "SUPPORT-AREA",
+    "toPlay": [
+      {
+        "exert": [
+          {
+            "count": 1,
+            "target": [
+              [
+                "EXERT",
+                "Elf",
+                "ALLY"
+              ]
+            ]
+          }
+        ]
+      }
+    ],
     "culture": "ELVEN",
     "twilightCost": 1,
     "imageUrl": "/cards_visuals/o_01_046.jpg",
@@ -11234,6 +11666,21 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
+    "toPlay": [
+      {
+        "spot": [
+          {
+            "count": 1,
+            "target": [
+              [
+                "SPOT",
+                "Elf"
+              ]
+            ]
+          }
+        ]
+      }
+    ],
     "culture": "ELVEN",
     "race": "ELF",
     "twilightCost": 2,
@@ -11411,6 +11858,21 @@
     "isUnique": false,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
+    "toPlay": [
+      {
+        "spot": [
+          {
+            "count": 1,
+            "target": [
+              [
+                "SPOT",
+                "Elf"
+              ]
+            ]
+          }
+        ]
+      }
+    ],
     "culture": "ELVEN",
     "race": "ELF",
     "twilightCost": 1,
@@ -12110,6 +12572,21 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "ALLY",
+    "toPlay": [
+      {
+        "spot": [
+          {
+            "count": 1,
+            "target": [
+              [
+                "SPOT",
+                "Gandalf"
+              ]
+            ]
+          }
+        ]
+      }
+    ],
     "phases": [
       "MANEUVER"
     ],
@@ -12512,6 +12989,21 @@
     "kind": "FREE_PEOPLE",
     "type": "CONDITION",
     "subtype": "SUPPORT-AREA",
+    "toPlay": [
+      {
+        "spot": [
+          {
+            "count": 1,
+            "target": [
+              [
+                "SPOT",
+                "Gandalf"
+              ]
+            ]
+          }
+        ]
+      }
+    ],
     "culture": "GANDALF",
     "twilightCost": 1,
     "imageUrl": "/cards_visuals/o_01_079.jpg",
@@ -12550,6 +13042,21 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "ALLY",
+    "toPlay": [
+      {
+        "spot": [
+          {
+            "count": 1,
+            "target": [
+              [
+                "SPOT",
+                "Gandalf"
+              ]
+            ]
+          }
+        ]
+      }
+    ],
     "phases": [
       "FELLOWSHIP"
     ],
@@ -14096,6 +14603,21 @@
     "kind": "SHADOW",
     "type": "CONDITION",
     "subtype": "SUPPORT-AREA",
+    "toPlay": [
+      {
+        "exert": [
+          {
+            "count": 1,
+            "target": [
+              [
+                "EXERT",
+                "Uruk-hai"
+              ]
+            ]
+          }
+        ]
+      }
+    ],
     "phases": [
       "SHADOW"
     ],
@@ -14302,6 +14824,21 @@
     "kind": "SHADOW",
     "type": "CONDITION",
     "subtype": "SUPPORT-AREA",
+    "toPlay": [
+      {
+        "spot": [
+          {
+            "count": 1,
+            "target": [
+              [
+                "SPOT",
+                "Uruk-hai"
+              ]
+            ]
+          }
+        ]
+      }
+    ],
     "phases": [
       "MANEUVER"
     ],
@@ -14426,6 +14963,21 @@
     "kind": "SHADOW",
     "type": "CONDITION",
     "subtype": "SUPPORT-AREA",
+    "toPlay": [
+      {
+        "exert": [
+          {
+            "count": 1,
+            "target": [
+              [
+                "EXERT",
+                "Uruk-hai"
+              ]
+            ]
+          }
+        ]
+      }
+    ],
     "culture": "ISENGARD",
     "twilightCost": 2,
     "imageUrl": "/cards_visuals/o_01_129.jpg",
@@ -14632,6 +15184,20 @@
         "SITE"
       ]
     ],
+    "toPlay": [
+      {
+        "exert": [
+          {
+            "count": 1,
+            "target": [
+              [
+                "EXERT"
+              ]
+            ]
+          }
+        ]
+      }
+    ],
     "culture": "ISENGARD",
     "twilightCost": 1,
     "imageUrl": "/cards_visuals/o_01_134.jpg",
@@ -14674,6 +15240,20 @@
       [
         "SITE"
       ]
+    ],
+    "toPlay": [
+      {
+        "exert": [
+          {
+            "count": 1,
+            "target": [
+              [
+                "EXERT"
+              ]
+            ]
+          }
+        ]
+      }
     ],
     "culture": "ISENGARD",
     "twilightCost": 2,
@@ -14800,6 +15380,20 @@
         "SITE"
       ]
     ],
+    "toPlay": [
+      {
+        "exert": [
+          {
+            "count": 1,
+            "target": [
+              [
+                "EXERT"
+              ]
+            ]
+          }
+        ]
+      }
+    ],
     "culture": "ISENGARD",
     "twilightCost": 2,
     "imageUrl": "/cards_visuals/o_01_138.jpg",
@@ -14884,6 +15478,20 @@
         "SITE"
       ]
     ],
+    "toPlay": [
+      {
+        "exert": [
+          {
+            "count": 1,
+            "target": [
+              [
+                "EXERT"
+              ]
+            ]
+          }
+        ]
+      }
+    ],
     "culture": "ISENGARD",
     "twilightCost": 2,
     "imageUrl": "/cards_visuals/o_01_140.jpg",
@@ -14923,6 +15531,33 @@
     "kind": "SHADOW",
     "type": "CONDITION",
     "subtype": "SUPPORT-AREA",
+    "toPlay": [
+      {
+        "spot": [
+          {
+            "count": 1,
+            "target": [
+              [
+                "SPOT",
+                "Saruman"
+              ]
+            ]
+          }
+        ]
+      },
+      {
+        "spot": [
+          {
+            "count": 1,
+            "target": [
+              [
+                "Uruk-hai"
+              ]
+            ]
+          }
+        ]
+      }
+    ],
     "culture": "ISENGARD",
     "twilightCost": 1,
     "imageUrl": "/cards_visuals/o_01_141.jpg",
@@ -14962,6 +15597,21 @@
     "kind": "SHADOW",
     "type": "CONDITION",
     "subtype": "SUPPORT-AREA",
+    "toPlay": [
+      {
+        "spot": [
+          {
+            "count": 1,
+            "target": [
+              [
+                "SPOT",
+                "Uruk-hai"
+              ]
+            ]
+          }
+        ]
+      }
+    ],
     "culture": "ISENGARD",
     "twilightCost": 2,
     "imageUrl": "/cards_visuals/o_01_142.jpg",
@@ -15690,6 +16340,21 @@
     "kind": "SHADOW",
     "type": "CONDITION",
     "subtype": "SUPPORT-AREA",
+    "toPlay": [
+      {
+        "spot": [
+          {
+            "count": 1,
+            "target": [
+              [
+                "SPOT",
+                "Uruk-hai"
+              ]
+            ]
+          }
+        ]
+      }
+    ],
     "phases": [
       "RESPONSE"
     ],
@@ -15818,6 +16483,21 @@
     "kind": "SHADOW",
     "type": "CONDITION",
     "subtype": "SUPPORT-AREA",
+    "toPlay": [
+      {
+        "exert": [
+          {
+            "count": 1,
+            "target": [
+              [
+                "EXERT",
+                "Uruk-hai"
+              ]
+            ]
+          }
+        ]
+      }
+    ],
     "culture": "ISENGARD",
     "twilightCost": 2,
     "imageUrl": "/cards_visuals/o_01_162.jpg",
@@ -16316,6 +16996,20 @@
     "kind": "SHADOW",
     "type": "CONDITION",
     "subtype": "SUPPORT-AREA",
+    "toPlay": [
+      {
+        "spot": [
+          {
+            "count": 1,
+            "target": [
+              [
+                "SPOT"
+              ]
+            ]
+          }
+        ]
+      }
+    ],
     "culture": "MORIA",
     "twilightCost": 1,
     "imageUrl": "/cards_visuals/o_01_175.jpg",
@@ -17286,6 +17980,20 @@
     "kind": "SHADOW",
     "type": "CONDITION",
     "subtype": "SUPPORT-AREA",
+    "toPlay": [
+      {
+        "exert": [
+          {
+            "count": 1,
+            "target": [
+              [
+                "EXERT"
+              ]
+            ]
+          }
+        ]
+      }
+    ],
     "culture": "MORIA",
     "twilightCost": 1,
     "imageUrl": "/cards_visuals/o_01_198.jpg",
@@ -17450,6 +18158,20 @@
     "kind": "SHADOW",
     "type": "CONDITION",
     "subtype": "SUPPORT-AREA",
+    "toPlay": [
+      {
+        "exert": [
+          {
+            "count": 1,
+            "target": [
+              [
+                "EXERT"
+              ]
+            ]
+          }
+        ]
+      }
+    ],
     "culture": "MORIA",
     "twilightCost": 2,
     "imageUrl": "/cards_visuals/o_01_202.jpg",
@@ -18278,6 +19000,21 @@
     "kind": "SHADOW",
     "type": "CONDITION",
     "subtype": "SUPPORT-AREA",
+    "toPlay": [
+      {
+        "spot": [
+          {
+            "count": 1,
+            "target": [
+              [
+                "SPOT",
+                "Nazgûl"
+              ]
+            ]
+          }
+        ]
+      }
+    ],
     "phases": [
       "SHADOW"
     ],
@@ -18916,6 +19653,21 @@
     "kind": "SHADOW",
     "type": "CONDITION",
     "subtype": "SUPPORT-AREA",
+    "toPlay": [
+      {
+        "spot": [
+          {
+            "count": 1,
+            "target": [
+              [
+                "SPOT",
+                "Nazgûl"
+              ]
+            ]
+          }
+        ]
+      }
+    ],
     "phases": [
       "ARCHERY"
     ],
@@ -19085,6 +19837,20 @@
     "kind": "SHADOW",
     "type": "CONDITION",
     "subtype": "SUPPORT-AREA",
+    "toPlay": [
+      {
+        "spot": [
+          {
+            "count": 1,
+            "target": [
+              [
+                "SPOT"
+              ]
+            ]
+          }
+        ]
+      }
+    ],
     "phases": [
       "SHADOW"
     ],
@@ -19167,6 +19933,20 @@
     "isUnique": false,
     "kind": "SHADOW",
     "type": "CONDITION",
+    "toPlay": [
+      {
+        "exert": [
+          {
+            "count": 1,
+            "target": [
+              [
+                "EXERT"
+              ]
+            ]
+          }
+        ]
+      }
+    ],
     "culture": "SAURON",
     "twilightCost": 1,
     "imageUrl": "/cards_visuals/o_01_244.jpg",
@@ -19491,6 +20271,20 @@
     "kind": "SHADOW",
     "type": "CONDITION",
     "subtype": "SUPPORT-AREA",
+    "toPlay": [
+      {
+        "exert": [
+          {
+            "count": 1,
+            "target": [
+              [
+                "EXERT"
+              ]
+            ]
+          }
+        ]
+      }
+    ],
     "culture": "SAURON",
     "twilightCost": 0,
     "imageUrl": "/cards_visuals/o_01_252.jpg",
@@ -19530,6 +20324,20 @@
     "kind": "SHADOW",
     "type": "CONDITION",
     "subtype": "SUPPORT-AREA",
+    "toPlay": [
+      {
+        "exert": [
+          {
+            "count": 1,
+            "target": [
+              [
+                "EXERT"
+              ]
+            ]
+          }
+        ]
+      }
+    ],
     "culture": "SAURON",
     "twilightCost": 0,
     "imageUrl": "/cards_visuals/o_01_253.jpg",
@@ -20377,6 +21185,20 @@
     "kind": "SHADOW",
     "type": "CONDITION",
     "subtype": "SUPPORT-AREA",
+    "toPlay": [
+      {
+        "exert": [
+          {
+            "count": 1,
+            "target": [
+              [
+                "EXERT"
+              ]
+            ]
+          }
+        ]
+      }
+    ],
     "culture": "SAURON",
     "twilightCost": 1,
     "imageUrl": "/cards_visuals/o_01_274.jpg",
@@ -20582,6 +21404,20 @@
     "isUnique": true,
     "kind": "SHADOW",
     "type": "CONDITION",
+    "toPlay": [
+      {
+        "exert": [
+          {
+            "count": 1,
+            "target": [
+              [
+                "EXERT"
+              ]
+            ]
+          }
+        ]
+      }
+    ],
     "culture": "SAURON",
     "twilightCost": 0,
     "imageUrl": "/cards_visuals/o_01_279.jpg",
@@ -20664,6 +21500,20 @@
     "kind": "SHADOW",
     "type": "CONDITION",
     "subtype": "SUPPORT-AREA",
+    "toPlay": [
+      {
+        "exert": [
+          {
+            "count": 1,
+            "target": [
+              [
+                "EXERT"
+              ]
+            ]
+          }
+        ]
+      }
+    ],
     "culture": "SAURON",
     "twilightCost": 0,
     "imageUrl": "/cards_visuals/o_01_281.jpg",
@@ -20702,6 +21552,20 @@
     "isUnique": false,
     "kind": "SHADOW",
     "type": "CONDITION",
+    "toPlay": [
+      {
+        "exert": [
+          {
+            "count": 1,
+            "target": [
+              [
+                "EXERT"
+              ]
+            ]
+          }
+        ]
+      }
+    ],
     "culture": "SAURON",
     "twilightCost": 0,
     "strength": -1,
@@ -20741,6 +21605,20 @@
     "isUnique": false,
     "kind": "SHADOW",
     "type": "CONDITION",
+    "toPlay": [
+      {
+        "spot": [
+          {
+            "count": 1,
+            "target": [
+              [
+                "SPOT"
+              ]
+            ]
+          }
+        ]
+      }
+    ],
     "culture": "SAURON",
     "twilightCost": 1,
     "imageUrl": "/cards_visuals/o_01_283.jpg",
@@ -22151,6 +23029,21 @@
     "isUnique": false,
     "kind": "FREE_PEOPLE",
     "type": "CONDITION",
+    "toPlay": [
+      {
+        "spot": [
+          {
+            "count": 1,
+            "target": [
+              [
+                "SPOT",
+                "Bilbo"
+              ]
+            ]
+          }
+        ]
+      }
+    ],
     "culture": "SHIRE",
     "twilightCost": 2,
     "imageUrl": "/cards_visuals/o_01_314.jpg",
@@ -22232,6 +23125,21 @@
     "kind": "FREE_PEOPLE",
     "type": "CONDITION",
     "subtype": "SUPPORT-AREA",
+    "toPlay": [
+      {
+        "exert": [
+          {
+            "count": 1,
+            "target": [
+              [
+                "EXERT",
+                "Hobbit"
+              ]
+            ]
+          }
+        ]
+      }
+    ],
     "culture": "SHIRE",
     "twilightCost": 0,
     "imageUrl": "/cards_visuals/o_01_316.jpg",
@@ -22676,6 +23584,21 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
+    "toPlay": [
+      {
+        "spot": [
+          {
+            "count": 1,
+            "target": [
+              [
+                "SPOT",
+                "Dwarf"
+              ]
+            ]
+          }
+        ]
+      }
+    ],
     "culture": "DWARVEN",
     "race": "DWARF",
     "twilightCost": 2,
@@ -22769,6 +23692,21 @@
     "kind": "FREE_PEOPLE",
     "type": "CONDITION",
     "subtype": "SUPPORT-AREA",
+    "toPlay": [
+      {
+        "spot": [
+          {
+            "count": 1,
+            "target": [
+              [
+                "SPOT",
+                "Dwarf"
+              ]
+            ]
+          }
+        ]
+      }
+    ],
     "phases": [
       "REGROUP"
     ],
@@ -23103,6 +24041,21 @@
     "kind": "FREE_PEOPLE",
     "type": "CONDITION",
     "subtype": "SUPPORT-AREA",
+    "toPlay": [
+      {
+        "spot": [
+          {
+            "count": 1,
+            "target": [
+              [
+                "SPOT",
+                "Elf"
+              ]
+            ]
+          }
+        ]
+      }
+    ],
     "culture": "ELVEN",
     "twilightCost": 1,
     "imageUrl": "/cards_visuals/o_02_016.jpg",
@@ -23306,6 +24259,21 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "ALLY",
+    "toPlay": [
+      {
+        "spot": [
+          {
+            "count": 1,
+            "target": [
+              [
+                "SPOT",
+                "Gandalf"
+              ]
+            ]
+          }
+        ]
+      }
+    ],
     "culture": "GANDALF",
     "race": "MAN",
     "twilightCost": 2,
@@ -23440,6 +24408,21 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "ALLY",
+    "toPlay": [
+      {
+        "spot": [
+          {
+            "count": 1,
+            "target": [
+              [
+                "SPOT",
+                "Gandalf"
+              ]
+            ]
+          }
+        ]
+      }
+    ],
     "phases": [
       "FELLOWSHIP"
     ],
@@ -23490,6 +24473,21 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "ALLY",
+    "toPlay": [
+      {
+        "spot": [
+          {
+            "count": 1,
+            "target": [
+              [
+                "SPOT",
+                "Gandalf"
+              ]
+            ]
+          }
+        ]
+      }
+    ],
     "culture": "GANDALF",
     "race": "MAN",
     "twilightCost": 1,
@@ -23753,6 +24751,20 @@
     "kind": "FREE_PEOPLE",
     "type": "CONDITION",
     "subtype": "SUPPORT-AREA",
+    "toPlay": [
+      {
+        "exert": [
+          {
+            "count": 1,
+            "target": [
+              [
+                "EXERT"
+              ]
+            ]
+          }
+        ]
+      }
+    ],
     "phases": [
       "REGROUP"
     ],
@@ -23922,6 +24934,21 @@
     "kind": "FREE_PEOPLE",
     "type": "CONDITION",
     "subtype": "SUPPORT-AREA",
+    "toPlay": [
+      {
+        "spot": [
+          {
+            "count": 1,
+            "target": [
+              [
+                "SPOT",
+                "RANGER"
+              ]
+            ]
+          }
+        ]
+      }
+    ],
     "culture": "GONDOR",
     "twilightCost": 1,
     "imageUrl": "/cards_visuals/o_02_035.jpg",
@@ -24129,6 +25156,20 @@
     "kind": "SHADOW",
     "type": "CONDITION",
     "subtype": "SUPPORT-AREA",
+    "toPlay": [
+      {
+        "spot": [
+          {
+            "count": 1,
+            "target": [
+              [
+                "SPOT"
+              ]
+            ]
+          }
+        ]
+      }
+    ],
     "culture": "ISENGARD",
     "twilightCost": 1,
     "imageUrl": "/cards_visuals/o_02_040.jpg",
@@ -24299,6 +25340,20 @@
     "kind": "SHADOW",
     "type": "CONDITION",
     "subtype": "SUPPORT-AREA",
+    "toPlay": [
+      {
+        "spot": [
+          {
+            "count": 1,
+            "target": [
+              [
+                "SPOT"
+              ]
+            ]
+          }
+        ]
+      }
+    ],
     "culture": "ISENGARD",
     "twilightCost": 0,
     "imageUrl": "/cards_visuals/o_02_044.jpg",
@@ -24472,6 +25527,20 @@
       [
         "SITE"
       ]
+    ],
+    "toPlay": [
+      {
+        "exert": [
+          {
+            "count": 1,
+            "target": [
+              [
+                "EXERT"
+              ]
+            ]
+          }
+        ]
+      }
     ],
     "culture": "ISENGARD",
     "twilightCost": 2,
@@ -24688,6 +25757,22 @@
     "isUnique": false,
     "kind": "SHADOW",
     "type": "CONDITION",
+    "toPlay": [
+      {
+        "spot": [
+          {
+            "count": 1,
+            "target": [
+              [
+                "SPOT",
+                "The",
+                "Balrog"
+              ]
+            ]
+          }
+        ]
+      }
+    ],
     "culture": "MORIA",
     "twilightCost": 1,
     "strength": -2,
@@ -25394,6 +26479,20 @@
     "isUnique": false,
     "kind": "SHADOW",
     "type": "CONDITION",
+    "toPlay": [
+      {
+        "spot": [
+          {
+            "count": 1,
+            "target": [
+              [
+                "SPOT"
+              ]
+            ]
+          }
+        ]
+      }
+    ],
     "culture": "MORIA",
     "twilightCost": 0,
     "imageUrl": "/cards_visuals/o_02_071.jpg",
@@ -25615,6 +26714,23 @@
     "isUnique": false,
     "kind": "SHADOW",
     "type": "CONDITION",
+    "toPlay": [
+      {
+        "spot": [
+          {
+            "count": 1,
+            "target": [
+              [
+                "SPOT",
+                "Frodo",
+                "AND",
+                "Nazgûl"
+              ]
+            ]
+          }
+        ]
+      }
+    ],
     "culture": "WRAITH",
     "twilightCost": 0,
     "imageUrl": "/cards_visuals/o_02_076.jpg",
@@ -26302,6 +27418,20 @@
     "kind": "SHADOW",
     "type": "CONDITION",
     "subtype": "SUPPORT-AREA",
+    "toPlay": [
+      {
+        "spot": [
+          {
+            "count": 1,
+            "target": [
+              [
+                "SPOT"
+              ]
+            ]
+          }
+        ]
+      }
+    ],
     "culture": "SAURON",
     "twilightCost": 1,
     "imageUrl": "/cards_visuals/o_02_092.jpg",
@@ -26385,6 +27515,20 @@
     "isUnique": false,
     "kind": "SHADOW",
     "type": "CONDITION",
+    "toPlay": [
+      {
+        "exert": [
+          {
+            "count": 1,
+            "target": [
+              [
+                "EXERT"
+              ]
+            ]
+          }
+        ]
+      }
+    ],
     "culture": "SAURON",
     "twilightCost": 0,
     "imageUrl": "/cards_visuals/o_02_094.jpg",
@@ -26649,6 +27793,21 @@
     "kind": "FREE_PEOPLE",
     "type": "CONDITION",
     "subtype": "SUPPORT-AREA",
+    "toPlay": [
+      {
+        "exert": [
+          {
+            "count": 2,
+            "target": [
+              [
+                "EXERT",
+                "Hobbits"
+              ]
+            ]
+          }
+        ]
+      }
+    ],
     "culture": "SHIRE",
     "twilightCost": 0,
     "imageUrl": "/cards_visuals/o_02_100.jpg",
@@ -26871,6 +28030,21 @@
     "kind": "FREE_PEOPLE",
     "type": "CONDITION",
     "subtype": "SUPPORT-AREA",
+    "toPlay": [
+      {
+        "spot": [
+          {
+            "count": 2,
+            "target": [
+              [
+                "SPOT",
+                "Hobbits"
+              ]
+            ]
+          }
+        ]
+      }
+    ],
     "culture": "SHIRE",
     "twilightCost": 1,
     "imageUrl": "/cards_visuals/o_02_107.jpg",
@@ -27483,6 +28657,21 @@
     "kind": "FREE_PEOPLE",
     "type": "CONDITION",
     "subtype": "SUPPORT-AREA",
+    "toPlay": [
+      {
+        "exert": [
+          {
+            "count": 1,
+            "target": [
+              [
+                "EXERT",
+                "Dwarf"
+              ]
+            ]
+          }
+        ]
+      }
+    ],
     "phases": [
       "FELLOWSHIP"
     ],
@@ -27895,6 +29084,21 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "ALLY",
+    "toPlay": [
+      {
+        "spot": [
+          {
+            "count": 1,
+            "target": [
+              [
+                "SPOT",
+                "Elf"
+              ]
+            ]
+          }
+        ]
+      }
+    ],
     "phases": [
       "RESPONSE"
     ],
@@ -28075,6 +29279,21 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "ALLY",
+    "toPlay": [
+      {
+        "spot": [
+          {
+            "count": 1,
+            "target": [
+              [
+                "SPOT",
+                "Elf"
+              ]
+            ]
+          }
+        ]
+      }
+    ],
     "phases": [
       "REGROUP"
     ],
@@ -28130,6 +29349,21 @@
         "Aragorn"
       ]
     ],
+    "toPlay": [
+      {
+        "spot": [
+          {
+            "count": 1,
+            "target": [
+              [
+                "SPOT",
+                "Arwen"
+              ]
+            ]
+          }
+        ]
+      }
+    ],
     "phases": [
       "SKIRMISH"
     ],
@@ -28171,6 +29405,21 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "ALLY",
+    "toPlay": [
+      {
+        "spot": [
+          {
+            "count": 1,
+            "target": [
+              [
+                "SPOT",
+                "Elf"
+              ]
+            ]
+          }
+        ]
+      }
+    ],
     "phases": [
       "SKIRMISH"
     ],
@@ -28359,6 +29608,21 @@
         "the Ring-bearer"
       ]
     ],
+    "toPlay": [
+      {
+        "exert": [
+          {
+            "count": 1,
+            "target": [
+              [
+                "EXERT",
+                "Elf"
+              ]
+            ]
+          }
+        ]
+      }
+    ],
     "culture": "ELVEN",
     "twilightCost": 0,
     "imageUrl": "/cards_visuals/o_03_024.jpg",
@@ -28397,6 +29661,21 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "ALLY",
+    "toPlay": [
+      {
+        "spot": [
+          {
+            "count": 1,
+            "target": [
+              [
+                "SPOT",
+                "Elf"
+              ]
+            ]
+          }
+        ]
+      }
+    ],
     "phases": [
       "SKIRMISH"
     ],
@@ -29624,6 +30903,20 @@
     "kind": "SHADOW",
     "type": "CONDITION",
     "subtype": "SUPPORT-AREA",
+    "toPlay": [
+      {
+        "spot": [
+          {
+            "count": 1,
+            "target": [
+              [
+                "SPOT"
+              ]
+            ]
+          }
+        ]
+      }
+    ],
     "phases": [
       "SHADOW"
     ],
@@ -29954,7 +31247,7 @@
       },
       "fr": {
         "title": "Guerrier de l'Isengard",
-        "gameText": "Tant que vous pouvez désignez un autre Orque <symbol>isengard</symbol>, aucun joueur ne peut utiliser de capacités spéciales d’archerie. **Ralliement :** Affaiblissez ce séide et désignez 3 blessures sur le Porteur de l’Anneau pour affaiblir tous les compagnons.",
+        "gameText": "Tant que vous pouvez désigner un autre Orque <symbol>isengard</symbol>, aucun joueur ne peut utiliser de capacités spéciales d’archerie. **Ralliement :** Affaiblissez ce séide et désignez 3 blessures sur le Porteur de l’Anneau pour affaiblir tous les compagnons.",
         "loreText": "Il se trame du mal en Isengard, et l'Ouest n'est plus en sécurité."
       },
       "de": {
@@ -30203,6 +31496,20 @@
     "kind": "SHADOW",
     "type": "ARTIFACT",
     "subtype": "SUPPORT-AREA",
+    "toPlay": [
+      {
+        "spot": [
+          {
+            "count": 1,
+            "target": [
+              [
+                "SPOT"
+              ]
+            ]
+          }
+        ]
+      }
+    ],
     "phases": [
       "SHADOW"
     ],
@@ -30376,6 +31683,20 @@
     "kind": "SHADOW",
     "type": "CONDITION",
     "subtype": "SUPPORT-AREA",
+    "toPlay": [
+      {
+        "spot": [
+          {
+            "count": 1,
+            "target": [
+              [
+                "SPOT"
+              ]
+            ]
+          }
+        ]
+      }
+    ],
     "culture": "ISENGARD",
     "twilightCost": 1,
     "imageUrl": "/cards_visuals/o_03_071.jpg",
@@ -30620,6 +31941,20 @@
     "kind": "SHADOW",
     "type": "CONDITION",
     "subtype": "SUPPORT-AREA",
+    "toPlay": [
+      {
+        "spot": [
+          {
+            "count": 1,
+            "target": [
+              [
+                "SPOT"
+              ]
+            ]
+          }
+        ]
+      }
+    ],
     "culture": "MORIA",
     "twilightCost": 1,
     "imageUrl": "/cards_visuals/o_03_077.jpg",
@@ -30782,6 +32117,21 @@
     "kind": "SHADOW",
     "type": "CONDITION",
     "subtype": "SUPPORT-AREA",
+    "toPlay": [
+      {
+        "spot": [
+          {
+            "count": 1,
+            "target": [
+              [
+                "SPOT",
+                "Nazgûl"
+              ]
+            ]
+          }
+        ]
+      }
+    ],
     "culture": "WRAITH",
     "twilightCost": 1,
     "imageUrl": "/cards_visuals/o_03_081.jpg",
@@ -31670,6 +33020,20 @@
     "kind": "SHADOW",
     "type": "CONDITION",
     "subtype": "SUPPORT-AREA",
+    "toPlay": [
+      {
+        "exert": [
+          {
+            "count": 1,
+            "target": [
+              [
+                "EXERT"
+              ]
+            ]
+          }
+        ]
+      }
+    ],
     "culture": "SAURON",
     "twilightCost": 1,
     "imageUrl": "/cards_visuals/o_03_102.jpg",
@@ -31750,6 +33114,20 @@
     "kind": "SHADOW",
     "type": "CONDITION",
     "subtype": "SUPPORT-AREA",
+    "toPlay": [
+      {
+        "exert": [
+          {
+            "count": 1,
+            "target": [
+              [
+                "EXERT"
+              ]
+            ]
+          }
+        ]
+      }
+    ],
     "culture": "SAURON",
     "twilightCost": 1,
     "imageUrl": "/cards_visuals/o_03_104.jpg",
@@ -32148,6 +33526,20 @@
     "kind": "FREE_PEOPLE",
     "type": "CONDITION",
     "subtype": "SUPPORT-AREA",
+    "toPlay": [
+      {
+        "spot": [
+          {
+            "count": 2,
+            "target": [
+              [
+                "SPOT"
+              ]
+            ]
+          }
+        ]
+      }
+    ],
     "culture": "SHIRE",
     "twilightCost": 1,
     "imageUrl": "/cards_visuals/o_03_113.jpg",
@@ -34725,6 +36117,21 @@
     "kind": "FREE_PEOPLE",
     "type": "CONDITION",
     "subtype": "SUPPORT-AREA",
+    "toPlay": [
+      {
+        "spot": [
+          {
+            "count": 3,
+            "target": [
+              [
+                "SPOT",
+                "Elves"
+              ]
+            ]
+          }
+        ]
+      }
+    ],
     "culture": "ELVEN",
     "twilightCost": 1,
     "imageUrl": "/cards_visuals/o_04_060.jpg",
@@ -34854,6 +36261,21 @@
         "COMPANION"
       ]
     ],
+    "toPlay": [
+      {
+        "spot": [
+          {
+            "count": 1,
+            "target": [
+              [
+                "SPOT",
+                "Elf"
+              ]
+            ]
+          }
+        ]
+      }
+    ],
     "phases": [
       "RESPONSE"
     ],
@@ -34943,6 +36365,21 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
+    "toPlay": [
+      {
+        "spot": [
+          {
+            "count": 1,
+            "target": [
+              [
+                "SPOT",
+                "Elf"
+              ]
+            ]
+          }
+        ]
+      }
+    ],
     "culture": "ELVEN",
     "race": "ELF",
     "twilightCost": 2,
@@ -35030,6 +36467,21 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
+    "toPlay": [
+      {
+        "spot": [
+          {
+            "count": 1,
+            "target": [
+              [
+                "SPOT",
+                "Elf"
+              ]
+            ]
+          }
+        ]
+      }
+    ],
     "phases": [
       "SKIRMISH"
     ],
@@ -35079,6 +36531,21 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
+    "toPlay": [
+      {
+        "spot": [
+          {
+            "count": 1,
+            "target": [
+              [
+                "SPOT",
+                "Elf"
+              ]
+            ]
+          }
+        ]
+      }
+    ],
     "phases": [
       "SKIRMISH"
     ],
@@ -35253,6 +36720,21 @@
     "kind": "FREE_PEOPLE",
     "type": "CONDITION",
     "subtype": "SUPPORT-AREA",
+    "toPlay": [
+      {
+        "spot": [
+          {
+            "count": 3,
+            "target": [
+              [
+                "SPOT",
+                "Elves"
+              ]
+            ]
+          }
+        ]
+      }
+    ],
     "culture": "ELVEN",
     "twilightCost": 1,
     "imageUrl": "/cards_visuals/o_04_072.jpg",
@@ -35346,6 +36828,21 @@
         "COMPANION"
       ]
     ],
+    "toPlay": [
+      {
+        "spot": [
+          {
+            "count": 3,
+            "target": [
+              [
+                "SPOT",
+                "Elves"
+              ]
+            ]
+          }
+        ]
+      }
+    ],
     "phases": [
       "REGROUP"
     ],
@@ -35432,6 +36929,21 @@
     "kind": "FREE_PEOPLE",
     "type": "CONDITION",
     "subtype": "SUPPORT-AREA",
+    "toPlay": [
+      {
+        "spot": [
+          {
+            "count": 3,
+            "target": [
+              [
+                "SPOT",
+                "Elves"
+              ]
+            ]
+          }
+        ]
+      }
+    ],
     "culture": "ELVEN",
     "twilightCost": 1,
     "imageUrl": "/cards_visuals/o_04_077.jpg",
@@ -35552,6 +37064,21 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
+    "toPlay": [
+      {
+        "spot": [
+          {
+            "count": 1,
+            "target": [
+              [
+                "SPOT",
+                "Elf"
+              ]
+            ]
+          }
+        ]
+      }
+    ],
     "culture": "ELVEN",
     "race": "ELF",
     "twilightCost": 1,
@@ -35598,6 +37125,21 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
+    "toPlay": [
+      {
+        "spot": [
+          {
+            "count": 1,
+            "target": [
+              [
+                "SPOT",
+                "Elf"
+              ]
+            ]
+          }
+        ]
+      }
+    ],
     "culture": "ELVEN",
     "race": "ELF",
     "twilightCost": 2,
@@ -35769,6 +37311,21 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
+    "toPlay": [
+      {
+        "spot": [
+          {
+            "count": 1,
+            "target": [
+              [
+                "SPOT",
+                "Elf"
+              ]
+            ]
+          }
+        ]
+      }
+    ],
     "phases": [
       "REGROUP"
     ],
@@ -35818,6 +37375,21 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
+    "toPlay": [
+      {
+        "spot": [
+          {
+            "count": 1,
+            "target": [
+              [
+                "SPOT",
+                "Elf"
+              ]
+            ]
+          }
+        ]
+      }
+    ],
     "culture": "ELVEN",
     "race": "ELF",
     "twilightCost": 2,
@@ -36133,6 +37705,21 @@
       [
         "Théoden"
       ]
+    ],
+    "toPlay": [
+      {
+        "spot": [
+          {
+            "count": 1,
+            "target": [
+              [
+                "SPOT",
+                "Gandalf"
+              ]
+            ]
+          }
+        ]
+      }
     ],
     "culture": "GANDALF",
     "twilightCost": 0,
@@ -36594,6 +38181,21 @@
     "isUnique": false,
     "kind": "FREE_PEOPLE",
     "type": "CONDITION",
+    "toPlay": [
+      {
+        "exert": [
+          {
+            "count": 1,
+            "target": [
+              [
+                "EXERT",
+                "Ent"
+              ]
+            ]
+          }
+        ]
+      }
+    ],
     "phases": [
       "RESPONSE"
     ],
@@ -36896,6 +38498,22 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
+    "toPlay": [
+      {
+        "spot": [
+          {
+            "count": 1,
+            "target": [
+              [
+                "SPOT",
+                "Ring-bound",
+                "Man"
+              ]
+            ]
+          }
+        ]
+      }
+    ],
     "phases": [
       "SKIRMISH"
     ],
@@ -37464,6 +39082,22 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
+    "toPlay": [
+      {
+        "spot": [
+          {
+            "count": 1,
+            "target": [
+              [
+                "SPOT",
+                "Ring-bound",
+                "Man"
+              ]
+            ]
+          }
+        ]
+      }
+    ],
     "phases": [
       "SKIRMISH"
     ],
@@ -37991,6 +39625,21 @@
     "isUnique": false,
     "kind": "SHADOW",
     "type": "CONDITION",
+    "toPlay": [
+      {
+        "exert": [
+          {
+            "count": 1,
+            "target": [
+              [
+                "EXERT",
+                "Saruman"
+              ]
+            ]
+          }
+        ]
+      }
+    ],
     "culture": "ISENGARD",
     "twilightCost": 0,
     "imageUrl": "/cards_visuals/o_04_139.jpg",
@@ -38323,6 +39972,20 @@
     "kind": "SHADOW",
     "type": "CONDITION",
     "subtype": "SUPPORT-AREA",
+    "toPlay": [
+      {
+        "spot": [
+          {
+            "count": 2,
+            "target": [
+              [
+                "SPOT"
+              ]
+            ]
+          }
+        ]
+      }
+    ],
     "culture": "ISENGARD",
     "twilightCost": 0,
     "imageUrl": "/cards_visuals/o_04_147.jpg",
@@ -38700,6 +40363,21 @@
     "isUnique": false,
     "kind": "SHADOW",
     "type": "CONDITION",
+    "toPlay": [
+      {
+        "exert": [
+          {
+            "count": 1,
+            "target": [
+              [
+                "EXERT",
+                "Saruman"
+              ]
+            ]
+          }
+        ]
+      }
+    ],
     "culture": "ISENGARD",
     "twilightCost": 0,
     "strength": -1,
@@ -38784,6 +40462,20 @@
     "isUnique": false,
     "kind": "SHADOW",
     "type": "CONDITION",
+    "toPlay": [
+      {
+        "exert": [
+          {
+            "count": 1,
+            "target": [
+              [
+                "EXERT"
+              ]
+            ]
+          }
+        ]
+      }
+    ],
     "phases": [
       "ASSIGNMENT"
     ],
@@ -39087,6 +40779,20 @@
     "kind": "SHADOW",
     "type": "ARTIFACT",
     "subtype": "SUPPORT-AREA",
+    "toPlay": [
+      {
+        "spot": [
+          {
+            "count": 1,
+            "target": [
+              [
+                "SPOT"
+              ]
+            ]
+          }
+        ]
+      }
+    ],
     "phases": [
       "SHADOW"
     ],
@@ -39302,6 +41008,20 @@
     "isUnique": false,
     "kind": "SHADOW",
     "type": "CONDITION",
+    "toPlay": [
+      {
+        "spot": [
+          {
+            "count": 1,
+            "target": [
+              [
+                "SPOT"
+              ]
+            ]
+          }
+        ]
+      }
+    ],
     "culture": "ISENGARD",
     "twilightCost": 1,
     "imageUrl": "/cards_visuals/o_04_171.jpg",
@@ -39335,6 +41055,21 @@
     "isUnique": false,
     "kind": "SHADOW",
     "type": "CONDITION",
+    "toPlay": [
+      {
+        "spot": [
+          {
+            "count": 1,
+            "target": [
+              [
+                "SPOT",
+                "Saruman"
+              ]
+            ]
+          }
+        ]
+      }
+    ],
     "culture": "ISENGARD",
     "twilightCost": 0,
     "imageUrl": "/cards_visuals/o_04_172.jpg",
@@ -39557,6 +41292,21 @@
     "isUnique": false,
     "kind": "SHADOW",
     "type": "MINION",
+    "toPlay": [
+      {
+        "spot": [
+          {
+            "count": 1,
+            "target": [
+              [
+                "SPOT",
+                "Uruk-hai"
+              ]
+            ]
+          }
+        ]
+      }
+    ],
     "culture": "ISENGARD",
     "race": "URUK-HAI",
     "twilightCost": 7,
@@ -40469,6 +42219,21 @@
     "isUnique": false,
     "kind": "SHADOW",
     "type": "MINION",
+    "toPlay": [
+      {
+        "spot": [
+          {
+            "count": 1,
+            "target": [
+              [
+                "SPOT",
+                "Uruk-hai"
+              ]
+            ]
+          }
+        ]
+      }
+    ],
     "culture": "ISENGARD",
     "race": "URUK-HAI",
     "twilightCost": 10,
@@ -41093,6 +42858,20 @@
     "isUnique": false,
     "kind": "SHADOW",
     "type": "CONDITION",
+    "toPlay": [
+      {
+        "exert": [
+          {
+            "count": 1,
+            "target": [
+              [
+                "EXERT"
+              ]
+            ]
+          }
+        ]
+      }
+    ],
     "culture": "ISENGARD",
     "twilightCost": 0,
     "imageUrl": "/cards_visuals/o_04_215.jpg",
@@ -41173,6 +42952,20 @@
     "isUnique": true,
     "kind": "SHADOW",
     "type": "MINION",
+    "toPlay": [
+      {
+        "spot": [
+          {
+            "count": 1,
+            "target": [
+              [
+                "SPOT"
+              ]
+            ]
+          }
+        ]
+      }
+    ],
     "phases": [
       "REGROUP"
     ],
@@ -42210,6 +44003,20 @@
     "isUnique": true,
     "kind": "SHADOW",
     "type": "MINION",
+    "toPlay": [
+      {
+        "spot": [
+          {
+            "count": 1,
+            "target": [
+              [
+                "SPOT"
+              ]
+            ]
+          }
+        ]
+      }
+    ],
     "phases": [
       "REGROUP"
     ],
@@ -42741,6 +44548,21 @@
     "isUnique": false,
     "kind": "SHADOW",
     "type": "MINION",
+    "toPlay": [
+      {
+        "spot": [
+          {
+            "count": 1,
+            "target": [
+              [
+                "SPOT",
+                "Southron"
+              ]
+            ]
+          }
+        ]
+      }
+    ],
     "phases": [
       "ASSIGNMENT"
     ],
@@ -43056,6 +44878,20 @@
         "WIZARD"
       ]
     ],
+    "toPlay": [
+      {
+        "spot": [
+          {
+            "count": 1,
+            "target": [
+              [
+                "SPOT"
+              ]
+            ]
+          }
+        ]
+      }
+    ],
     "culture": "ROHAN",
     "twilightCost": 1,
     "imageUrl": "/cards_visuals/o_04_263.jpg",
@@ -43248,7 +45084,7 @@
       "fr": {
         "title": "Éomer",
         "subtitle": "Troisième Maréchal de la Marche",
-        "gameText": "Tant que vous pouvez désignez un Homme <symbol>rohan</symbol>, le coût crépusculaire d’Eomer est de -1. Éomer a +2 en force pour chaque blessure que vous pouvez désigner sur les séides qu’il combat.",
+        "gameText": "Tant que vous pouvez désigner un Homme <symbol>rohan</symbol>, le coût crépusculaire d’Eomer est de -1. Éomer a +2 en force pour chaque blessure que vous pouvez désigner sur les séides qu’il combat.",
         "loreText": "L'un d'eux s'approcha alors – un homme de haute taille, plus grand que tous les autres, de son casque, comme un cimier, pendait une queue de cheval blanche."
       },
       "de": {
@@ -43967,6 +45803,20 @@
       [
         "WIZARD"
       ]
+    ],
+    "toPlay": [
+      {
+        "spot": [
+          {
+            "count": 1,
+            "target": [
+              [
+                "SPOT"
+              ]
+            ]
+          }
+        ]
+      }
     ],
     "culture": "ROHAN",
     "twilightCost": 2,
@@ -46093,6 +47943,21 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
+    "toPlay": [
+      {
+        "spot": [
+          {
+            "count": 1,
+            "target": [
+              [
+                "SPOT",
+                "Elf"
+              ]
+            ]
+          }
+        ]
+      }
+    ],
     "culture": "ELVEN",
     "race": "ELF",
     "twilightCost": 2,
@@ -46225,6 +48090,21 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
+    "toPlay": [
+      {
+        "spot": [
+          {
+            "count": 1,
+            "target": [
+              [
+                "SPOT",
+                "Elf"
+              ]
+            ]
+          }
+        ]
+      }
+    ],
     "culture": "ELVEN",
     "race": "ELF",
     "twilightCost": 2,
@@ -46835,6 +48715,11 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
+    "toPlay": [
+      {
+        "addBurdens": 1
+      }
+    ],
     "phases": [
       "REGROUP"
     ],
@@ -47395,6 +49280,21 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
+    "toPlay": [
+      {
+        "spot": [
+          {
+            "count": 1,
+            "target": [
+              [
+                "SPOT",
+                "KNIGHT"
+              ]
+            ]
+          }
+        ]
+      }
+    ],
     "phases": [
       "MANEUVER"
     ],
@@ -48775,7 +50675,7 @@
       },
       "fr": {
         "title": "Mûmak",
-        "gameText": "Le détenteur doit être un Suderon. Le détenteur est **acharné**. \nChaque fois que le détenteur gagne un combat, vous pouvez ajouter <symbol>¥</symbol.",
+        "gameText": "Le détenteur doit être un Suderon. Le détenteur est **acharné**. \nChaque fois que le détenteur gagne un combat, vous pouvez ajouter <symbol><symbol>orc</symbol></symbol.",
         "loreText": "... Sam vit une vaste forme sortir des arbres fracassés et se précipiter sur la pente."
       },
       "de": {
@@ -48932,6 +50832,21 @@
     "kind": "SHADOW",
     "type": "CONDITION",
     "subtype": "SUPPORT-AREA",
+    "toPlay": [
+      {
+        "spot": [
+          {
+            "count": 1,
+            "target": [
+              [
+                "SPOT",
+                "Southron"
+              ]
+            ]
+          }
+        ]
+      }
+    ],
     "phases": [
       "MANEUVER"
     ],
@@ -49152,6 +51067,20 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
+    "toPlay": [
+      {
+        "spot": [
+          {
+            "count": 1,
+            "target": [
+              [
+                "SPOT"
+              ]
+            ]
+          }
+        ]
+      }
+    ],
     "phases": [
       "SKIRMISH"
     ],
@@ -49944,6 +51873,20 @@
     "kind": "SHADOW",
     "type": "CONDITION",
     "subtype": "SUPPORT-AREA",
+    "toPlay": [
+      {
+        "exert": [
+          {
+            "count": 2,
+            "target": [
+              [
+                "EXERT"
+              ]
+            ]
+          }
+        ]
+      }
+    ],
     "culture": "SAURON",
     "twilightCost": 0,
     "imageUrl": "/cards_visuals/o_05_101.jpg",
@@ -51673,6 +53616,21 @@
     "kind": "FREE_PEOPLE",
     "type": "CONDITION",
     "subtype": "SUPPORT-AREA",
+    "toPlay": [
+      {
+        "spot": [
+          {
+            "count": 2,
+            "target": [
+              [
+                "SPOT",
+                "Elves"
+              ]
+            ]
+          }
+        ]
+      }
+    ],
     "phases": [
       "FELLOWSHIP"
     ],
@@ -51895,6 +53853,22 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
+    "toPlay": [
+      {
+        "spot": [
+          {
+            "count": 3,
+            "target": [
+              [
+                "SPOT",
+                "Elf",
+                "COMPANION"
+              ]
+            ]
+          }
+        ]
+      }
+    ],
     "phases": [
       "SKIRMISH"
     ],
@@ -51939,6 +53913,22 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
+    "toPlay": [
+      {
+        "spot": [
+          {
+            "count": 3,
+            "target": [
+              [
+                "SPOT",
+                "Elf",
+                "COMPANION"
+              ]
+            ]
+          }
+        ]
+      }
+    ],
     "culture": "ELVEN",
     "race": "ELF",
     "twilightCost": 4,
@@ -52147,6 +54137,22 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
+    "toPlay": [
+      {
+        "spot": [
+          {
+            "count": 2,
+            "target": [
+              [
+                "SPOT",
+                "Ent",
+                "COMPANION"
+              ]
+            ]
+          }
+        ]
+      }
+    ],
     "culture": "GANDALF",
     "race": "ENT",
     "twilightCost": 15,
@@ -52192,6 +54198,22 @@
       [
         "ENT"
       ]
+    ],
+    "toPlay": [
+      {
+        "exert": [
+          {
+            "count": 1,
+            "target": [
+              [
+                "EXERT",
+                "UNBOUND",
+                "Hobbit"
+              ]
+            ]
+          }
+        ]
+      }
     ],
     "culture": "GANDALF",
     "twilightCost": 1,
@@ -52329,6 +54351,22 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
+    "toPlay": [
+      {
+        "spot": [
+          {
+            "count": 2,
+            "target": [
+              [
+                "SPOT",
+                "Ent",
+                "COMPANION"
+              ]
+            ]
+          }
+        ]
+      }
+    ],
     "culture": "GANDALF",
     "race": "ENT",
     "twilightCost": 13,
@@ -52893,6 +54931,11 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
+    "toPlay": [
+      {
+        "addBurdens": 1
+      }
+    ],
     "phases": [
       "SKIRMISH"
     ],
@@ -53588,6 +55631,20 @@
     "isUnique": false,
     "kind": "SHADOW",
     "type": "CONDITION",
+    "toPlay": [
+      {
+        "spot": [
+          {
+            "count": 1,
+            "target": [
+              [
+                "SPOT"
+              ]
+            ]
+          }
+        ]
+      }
+    ],
     "phases": [
       "ASSIGNMENT"
     ],
@@ -54385,7 +56442,7 @@
       },
       "fr": {
         "title": "Hallebarde Orientale",
-        "gameText": "Le détenteur doit être un **Oriental.** Tant que vous pouvez désigner 2 points-fardeau, le détenteur ne peut pas être blessé. Tant que vous pouvez désignez 5 points-fardeau, le détenteur inflige des **dégâts +1**.",
+        "gameText": "Le détenteur doit être un **Oriental.** Tant que vous pouvez désigner 2 points-fardeau, le détenteur ne peut pas être blessé. Tant que vous pouvez désigner 5 points-fardeau, le détenteur inflige des **dégâts +1**.",
         "loreText": "... la pointe de leurs lances...."
       },
       "de": {
@@ -54545,6 +56602,11 @@
       [
         "NAZGL"
       ]
+    ],
+    "toPlay": [
+      {
+        "discardFromHand": 2
+      }
     ],
     "culture": "WRAITH",
     "twilightCost": 0,
@@ -54993,6 +57055,20 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
+    "toPlay": [
+      {
+        "spot": [
+          {
+            "count": 1,
+            "target": [
+              [
+                "SPOT"
+              ]
+            ]
+          }
+        ]
+      }
+    ],
     "phases": [
       "SKIRMISH"
     ],
@@ -55042,6 +57118,20 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
+    "toPlay": [
+      {
+        "spot": [
+          {
+            "count": 1,
+            "target": [
+              [
+                "SPOT"
+              ]
+            ]
+          }
+        ]
+      }
+    ],
     "phases": [
       "SKIRMISH"
     ],
@@ -56401,6 +58491,21 @@
     "kind": "FREE_PEOPLE",
     "type": "CONDITION",
     "subtype": "SUPPORT-AREA",
+    "toPlay": [
+      {
+        "spot": [
+          {
+            "count": 1,
+            "target": [
+              [
+                "SPOT",
+                "Dwarf"
+              ]
+            ]
+          }
+        ]
+      }
+    ],
     "phases": [
       "REGROUP"
     ],
@@ -57074,6 +59179,33 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
+    "toPlay": [
+      {
+        "spot": [
+          {
+            "count": 1,
+            "target": [
+              [
+                "SPOT",
+                "Aragorn"
+              ]
+            ]
+          }
+        ]
+      },
+      {
+        "spot": [
+          {
+            "count": 1,
+            "target": [
+              [
+                "Elf"
+              ]
+            ]
+          }
+        ]
+      }
+    ],
     "culture": "ELVEN",
     "race": "ELF",
     "twilightCost": 4,
@@ -57117,6 +59249,21 @@
     "kind": "FREE_PEOPLE",
     "type": "CONDITION",
     "subtype": "SUPPORT-AREA",
+    "toPlay": [
+      {
+        "spot": [
+          {
+            "count": 2,
+            "target": [
+              [
+                "SPOT",
+                "Elves"
+              ]
+            ]
+          }
+        ]
+      }
+    ],
     "phases": [
       "RESPONSE"
     ],
@@ -57197,6 +59344,21 @@
     "kind": "FREE_PEOPLE",
     "type": "CONDITION",
     "subtype": "SUPPORT-AREA",
+    "toPlay": [
+      {
+        "spot": [
+          {
+            "count": 3,
+            "target": [
+              [
+                "SPOT",
+                "Elves"
+              ]
+            ]
+          }
+        ]
+      }
+    ],
     "phases": [
       "REGROUP"
     ],
@@ -57368,6 +59530,21 @@
     "kind": "FREE_PEOPLE",
     "type": "CONDITION",
     "subtype": "SUPPORT-AREA",
+    "toPlay": [
+      {
+        "spot": [
+          {
+            "count": 1,
+            "target": [
+              [
+                "SPOT",
+                "Elf"
+              ]
+            ]
+          }
+        ]
+      }
+    ],
     "culture": "ELVEN",
     "twilightCost": 2,
     "imageUrl": "/cards_visuals/o_07_028.jpg",
@@ -58063,6 +60240,11 @@
     "kind": "FREE_PEOPLE",
     "type": "CONDITION",
     "subtype": "SUPPORT-AREA",
+    "toPlay": [
+      {
+        "spotThreats": 3
+      }
+    ],
     "culture": "GANDALF",
     "twilightCost": 1,
     "imageUrl": "/cards_visuals/o_07_045.jpg",
@@ -58179,6 +60361,21 @@
     "kind": "FREE_PEOPLE",
     "type": "CONDITION",
     "subtype": "SUPPORT-AREA",
+    "toPlay": [
+      {
+        "spot": [
+          {
+            "count": 1,
+            "target": [
+              [
+                "SPOT",
+                "Gandalf"
+              ]
+            ]
+          }
+        ]
+      }
+    ],
     "phases": [
       "REGROUP"
     ],
@@ -58799,6 +60996,33 @@
         "MINION"
       ]
     ],
+    "toPlay": [
+      {
+        "spot": [
+          {
+            "count": 1,
+            "target": [
+              [
+                "SPOT",
+                "Gollum"
+              ]
+            ]
+          }
+        ]
+      },
+      {
+        "spot": [
+          {
+            "count": 1,
+            "target": [
+              [
+                "Sméagol"
+              ]
+            ]
+          }
+        ]
+      }
+    ],
     "culture": "GOLLUM",
     "twilightCost": 1,
     "imageUrl": "/cards_visuals/o_07_063.jpg",
@@ -58874,6 +61098,21 @@
     "kind": "FREE_PEOPLE",
     "type": "CONDITION",
     "subtype": "SUPPORT-AREA",
+    "toPlay": [
+      {
+        "spot": [
+          {
+            "count": 1,
+            "target": [
+              [
+                "SPOT",
+                "Sméagol"
+              ]
+            ]
+          }
+        ]
+      }
+    ],
     "phases": [
       "REGROUP"
     ],
@@ -58953,6 +61192,11 @@
     "kind": "SHADOW",
     "type": "CONDITION",
     "subtype": "SUPPORT-AREA",
+    "toPlay": [
+      {
+        "spotThreats": 9
+      }
+    ],
     "culture": "GOLLUM",
     "twilightCost": 5,
     "imageUrl": "/cards_visuals/o_07_067.jpg",
@@ -58988,6 +61232,21 @@
     "kind": "FREE_PEOPLE",
     "type": "CONDITION",
     "subtype": "SUPPORT-AREA",
+    "toPlay": [
+      {
+        "spot": [
+          {
+            "count": 1,
+            "target": [
+              [
+                "SPOT",
+                "Sméagol"
+              ]
+            ]
+          }
+        ]
+      }
+    ],
     "phases": [
       "MANEUVER"
     ],
@@ -59025,6 +61284,11 @@
     "kind": "FREE_PEOPLE",
     "type": "CONDITION",
     "subtype": "SUPPORT-AREA",
+    "toPlay": [
+      {
+        "spotThreats": 2
+      }
+    ],
     "culture": "GOLLUM",
     "twilightCost": 2,
     "imageUrl": "/cards_visuals/o_07_069.jpg",
@@ -59100,6 +61364,11 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
+    "toPlay": [
+      {
+        "addBurdens": 1
+      }
+    ],
     "phases": [
       "ASSIGNMENT"
     ],
@@ -59145,6 +61414,11 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
+    "toPlay": [
+      {
+        "addBurdens": 1
+      }
+    ],
     "phases": [
       "SKIRMISH"
     ],
@@ -59859,6 +62133,20 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
+    "toPlay": [
+      {
+        "spot": [
+          {
+            "count": 1,
+            "target": [
+              [
+                "SPOT"
+              ]
+            ]
+          }
+        ]
+      }
+    ],
     "culture": "GONDOR",
     "race": "MAN",
     "signet": "THEODEN",
@@ -60075,6 +62363,20 @@
     "kind": "FREE_PEOPLE",
     "type": "CONDITION",
     "subtype": "SUPPORT-AREA",
+    "toPlay": [
+      {
+        "spot": [
+          {
+            "count": 3,
+            "target": [
+              [
+                "SPOT"
+              ]
+            ]
+          }
+        ]
+      }
+    ],
     "phases": [
       "REGROUP"
     ],
@@ -60323,6 +62625,20 @@
     "kind": "FREE_PEOPLE",
     "type": "CONDITION",
     "subtype": "SUPPORT-AREA",
+    "toPlay": [
+      {
+        "spot": [
+          {
+            "count": 3,
+            "target": [
+              [
+                "SPOT"
+              ]
+            ]
+          }
+        ]
+      }
+    ],
     "phases": [
       "REGROUP"
     ],
@@ -60360,6 +62676,20 @@
     "kind": "FREE_PEOPLE",
     "type": "CONDITION",
     "subtype": "SUPPORT-AREA",
+    "toPlay": [
+      {
+        "spot": [
+          {
+            "count": 3,
+            "target": [
+              [
+                "SPOT"
+              ]
+            ]
+          }
+        ]
+      }
+    ],
     "phases": [
       "REGROUP"
     ],
@@ -60636,6 +62966,11 @@
     "kind": "FREE_PEOPLE",
     "type": "CONDITION",
     "subtype": "SUPPORT-AREA",
+    "toPlay": [
+      {
+        "addThreats": 2
+      }
+    ],
     "phases": [
       "SKIRMISH"
     ],
@@ -61160,6 +63495,20 @@
     "kind": "FREE_PEOPLE",
     "type": "CONDITION",
     "subtype": "SUPPORT-AREA",
+    "toPlay": [
+      {
+        "spot": [
+          {
+            "count": 2,
+            "target": [
+              [
+                "SPOT"
+              ]
+            ]
+          }
+        ]
+      }
+    ],
     "phases": [
       "RESPONSE"
     ],
@@ -61438,6 +63787,20 @@
     "kind": "SHADOW",
     "type": "CONDITION",
     "subtype": "SUPPORT-AREA",
+    "toPlay": [
+      {
+        "spot": [
+          {
+            "count": 2,
+            "target": [
+              [
+                "SPOT"
+              ]
+            ]
+          }
+        ]
+      }
+    ],
     "culture": "RAIDER",
     "twilightCost": 1,
     "imageUrl": "/cards_visuals/o_07_129.jpg",
@@ -62227,6 +64590,20 @@
     "kind": "SHADOW",
     "type": "CONDITION",
     "subtype": "SUPPORT-AREA",
+    "toPlay": [
+      {
+        "spot": [
+          {
+            "count": 1,
+            "target": [
+              [
+                "SPOT"
+              ]
+            ]
+          }
+        ]
+      }
+    ],
     "phases": [
       "REGROUP"
     ],
@@ -62265,6 +64642,20 @@
     "kind": "SHADOW",
     "type": "CONDITION",
     "subtype": "SUPPORT-AREA",
+    "toPlay": [
+      {
+        "spot": [
+          {
+            "count": 1,
+            "target": [
+              [
+                "SPOT"
+              ]
+            ]
+          }
+        ]
+      }
+    ],
     "phases": [
       "REGROUP"
     ],
@@ -62301,6 +64692,20 @@
     "isUnique": false,
     "kind": "SHADOW",
     "type": "EVENT",
+    "toPlay": [
+      {
+        "spot": [
+          {
+            "count": 2,
+            "target": [
+              [
+                "SPOT"
+              ]
+            ]
+          }
+        ]
+      }
+    ],
     "phases": [
       "MANEUVER"
     ],
@@ -62337,6 +64742,20 @@
     "isUnique": false,
     "kind": "SHADOW",
     "type": "MINION",
+    "toPlay": [
+      {
+        "spot": [
+          {
+            "count": 1,
+            "target": [
+              [
+                "SPOT"
+              ]
+            ]
+          }
+        ]
+      }
+    ],
     "culture": "RAIDER",
     "race": "MAN",
     "twilightCost": 8,
@@ -62585,6 +65004,20 @@
     "kind": "SHADOW",
     "type": "CONDITION",
     "subtype": "SUPPORT-AREA",
+    "toPlay": [
+      {
+        "spot": [
+          {
+            "count": 1,
+            "target": [
+              [
+                "SPOT"
+              ]
+            ]
+          }
+        ]
+      }
+    ],
     "culture": "RAIDER",
     "twilightCost": 1,
     "imageUrl": "/cards_visuals/o_07_158.jpg",
@@ -62778,6 +65211,20 @@
     "isUnique": false,
     "kind": "SHADOW",
     "type": "MINION",
+    "toPlay": [
+      {
+        "spot": [
+          {
+            "count": 1,
+            "target": [
+              [
+                "SPOT"
+              ]
+            ]
+          }
+        ]
+      }
+    ],
     "culture": "RAIDER",
     "race": "MAN",
     "twilightCost": 4,
@@ -62932,6 +65379,20 @@
     "isUnique": false,
     "kind": "SHADOW",
     "type": "MINION",
+    "toPlay": [
+      {
+        "spot": [
+          {
+            "count": 1,
+            "target": [
+              [
+                "SPOT"
+              ]
+            ]
+          }
+        ]
+      }
+    ],
     "phases": [
       "ARCHERY"
     ],
@@ -63496,6 +65957,11 @@
     "kind": "SHADOW",
     "type": "CONDITION",
     "subtype": "SUPPORT-AREA",
+    "toPlay": [
+      {
+        "spotThreats": 2
+      }
+    ],
     "culture": "WRAITH",
     "twilightCost": 1,
     "imageUrl": "/cards_visuals/o_07_181.jpg",
@@ -63612,6 +66078,21 @@
     "kind": "SHADOW",
     "type": "CONDITION",
     "subtype": "SUPPORT-AREA",
+    "toPlay": [
+      {
+        "spot": [
+          {
+            "count": 1,
+            "target": [
+              [
+                "SPOT",
+                "Nazgûl"
+              ]
+            ]
+          }
+        ]
+      }
+    ],
     "phases": [
       "REGROUP"
     ],
@@ -63649,6 +66130,21 @@
     "kind": "SHADOW",
     "type": "CONDITION",
     "subtype": "SUPPORT-AREA",
+    "toPlay": [
+      {
+        "spot": [
+          {
+            "count": 1,
+            "target": [
+              [
+                "SPOT",
+                "Nazgûl"
+              ]
+            ]
+          }
+        ]
+      }
+    ],
     "phases": [
       "SKIRMISH"
     ],
@@ -64059,6 +66555,21 @@
     "kind": "SHADOW",
     "type": "CONDITION",
     "subtype": "SUPPORT-AREA",
+    "toPlay": [
+      {
+        "spot": [
+          {
+            "count": 1,
+            "target": [
+              [
+                "SPOT",
+                "Nazgûl"
+              ]
+            ]
+          }
+        ]
+      }
+    ],
     "phases": [
       "REGROUP"
     ],
@@ -64433,6 +66944,21 @@
     "kind": "SHADOW",
     "type": "CONDITION",
     "subtype": "SUPPORT-AREA",
+    "toPlay": [
+      {
+        "spot": [
+          {
+            "count": 1,
+            "target": [
+              [
+                "SPOT",
+                "Nazgûl"
+              ]
+            ]
+          }
+        ]
+      }
+    ],
     "phases": [
       "SHADOW"
     ],
@@ -66030,6 +68556,20 @@
     "kind": "FREE_PEOPLE",
     "type": "CONDITION",
     "subtype": "SUPPORT-AREA",
+    "toPlay": [
+      {
+        "spot": [
+          {
+            "count": 3,
+            "target": [
+              [
+                "SPOT"
+              ]
+            ]
+          }
+        ]
+      }
+    ],
     "phases": [
       "MANEUVER"
     ],
@@ -66154,6 +68694,20 @@
     "isUnique": false,
     "kind": "FREE_PEOPLE",
     "type": "ALLY",
+    "toPlay": [
+      {
+        "spot": [
+          {
+            "count": 2,
+            "target": [
+              [
+                "SPOT"
+              ]
+            ]
+          }
+        ]
+      }
+    ],
     "phases": [
       "REGROUP"
     ],
@@ -66318,6 +68872,20 @@
     "kind": "FREE_PEOPLE",
     "type": "CONDITION",
     "subtype": "SUPPORT-AREA",
+    "toPlay": [
+      {
+        "spot": [
+          {
+            "count": 2,
+            "target": [
+              [
+                "SPOT"
+              ]
+            ]
+          }
+        ]
+      }
+    ],
     "phases": [
       "REGROUP"
     ],
@@ -66358,6 +68926,20 @@
       [
         "SITE"
       ]
+    ],
+    "toPlay": [
+      {
+        "spot": [
+          {
+            "count": 1,
+            "target": [
+              [
+                "SPOT"
+              ]
+            ]
+          }
+        ]
+      }
     ],
     "culture": "ROHAN",
     "twilightCost": 1,
@@ -66732,6 +69314,20 @@
     "kind": "FREE_PEOPLE",
     "type": "CONDITION",
     "subtype": "SUPPORT-AREA",
+    "toPlay": [
+      {
+        "spot": [
+          {
+            "count": 1,
+            "target": [
+              [
+                "SPOT"
+              ]
+            ]
+          }
+        ]
+      }
+    ],
     "phases": [
       "REGROUP"
     ],
@@ -67486,6 +70082,35 @@
     "kind": "SHADOW",
     "type": "CONDITION",
     "subtype": "SUPPORT-AREA",
+    "toPlay": [
+      {
+        "spot": [
+          {
+            "count": 1,
+            "target": [
+              [
+                "SPOT",
+                "BESIEGER"
+              ]
+            ]
+          }
+        ]
+      },
+      {
+        "spot": [
+          {
+            "count": 1,
+            "target": [
+              [
+                "SITE",
+                "YOU",
+                "CONTROL"
+              ]
+            ]
+          }
+        ]
+      }
+    ],
     "phases": [
       "MANEUVER"
     ],
@@ -67600,6 +70225,20 @@
     "kind": "SHADOW",
     "type": "CONDITION",
     "subtype": "SUPPORT-AREA",
+    "toPlay": [
+      {
+        "spot": [
+          {
+            "count": 2,
+            "target": [
+              [
+                "SPOT"
+              ]
+            ]
+          }
+        ]
+      }
+    ],
     "culture": "SAURON",
     "twilightCost": 3,
     "imageUrl": "/cards_visuals/o_07_283.jpg",
@@ -68659,6 +71298,20 @@
     "kind": "SHADOW",
     "type": "CONDITION",
     "subtype": "SUPPORT-AREA",
+    "toPlay": [
+      {
+        "spot": [
+          {
+            "count": 2,
+            "target": [
+              [
+                "SPOT"
+              ]
+            ]
+          }
+        ]
+      }
+    ],
     "phases": [
       "REGROUP"
     ],
@@ -68696,6 +71349,20 @@
     "isUnique": false,
     "kind": "SHADOW",
     "type": "EVENT",
+    "toPlay": [
+      {
+        "spot": [
+          {
+            "count": 2,
+            "target": [
+              [
+                "SPOT"
+              ]
+            ]
+          }
+        ]
+      }
+    ],
     "phases": [
       "SKIRMISH"
     ],
@@ -68733,6 +71400,20 @@
     "kind": "SHADOW",
     "type": "CONDITION",
     "subtype": "SUPPORT-AREA",
+    "toPlay": [
+      {
+        "spot": [
+          {
+            "count": 1,
+            "target": [
+              [
+                "SPOT"
+              ]
+            ]
+          }
+        ]
+      }
+    ],
     "phases": [
       "SHADOW",
       "REGROUP"
@@ -68853,6 +71534,20 @@
     "kind": "SHADOW",
     "type": "CONDITION",
     "subtype": "SUPPORT-AREA",
+    "toPlay": [
+      {
+        "spot": [
+          {
+            "count": 1,
+            "target": [
+              [
+                "SPOT"
+              ]
+            ]
+          }
+        ]
+      }
+    ],
     "phases": [
       "REGROUP"
     ],
@@ -68929,6 +71624,20 @@
     "kind": "SHADOW",
     "type": "CONDITION",
     "subtype": "SUPPORT-AREA",
+    "toPlay": [
+      {
+        "spot": [
+          {
+            "count": 1,
+            "target": [
+              [
+                "SPOT"
+              ]
+            ]
+          }
+        ]
+      }
+    ],
     "phases": [
       "REGROUP"
     ],
@@ -68967,6 +71676,20 @@
     "kind": "SHADOW",
     "type": "CONDITION",
     "subtype": "SUPPORT-AREA",
+    "toPlay": [
+      {
+        "spot": [
+          {
+            "count": 1,
+            "target": [
+              [
+                "SPOT"
+              ]
+            ]
+          }
+        ]
+      }
+    ],
     "phases": [
       "REGROUP"
     ],
@@ -69271,6 +71994,21 @@
     "kind": "FREE_PEOPLE",
     "type": "CONDITION",
     "subtype": "SUPPORT-AREA",
+    "toPlay": [
+      {
+        "spot": [
+          {
+            "count": 2,
+            "target": [
+              [
+                "SPOT",
+                "Hobbits"
+              ]
+            ]
+          }
+        ]
+      }
+    ],
     "phases": [
       "REGROUP"
     ],
@@ -69961,6 +72699,21 @@
     "isUnique": false,
     "kind": "FREE_PEOPLE",
     "type": "EVENT",
+    "toPlay": [
+      {
+        "spot": [
+          {
+            "count": 2,
+            "target": [
+              [
+                "SPOT",
+                "Elves"
+              ]
+            ]
+          }
+        ]
+      }
+    ],
     "phases": [
       "REGROUP"
     ],
@@ -70419,6 +73172,20 @@
     "kind": "SHADOW",
     "type": "POSSESSION",
     "subtype": "SUPPORT-AREA",
+    "toPlay": [
+      {
+        "spot": [
+          {
+            "count": 1,
+            "target": [
+              [
+                "SPOT"
+              ]
+            ]
+          }
+        ]
+      }
+    ],
     "phases": [
       "REGROUP",
       "SKIRMISH"
@@ -70547,6 +73314,11 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
+    "toPlay": [
+      {
+        "addBurdens": 1
+      }
+    ],
     "phases": [
       "SKIRMISH",
       "REGROUP"
@@ -70761,6 +73533,20 @@
     "kind": "FREE_PEOPLE",
     "type": "POSSESSION",
     "subtype": "SUPPORT-AREA",
+    "toPlay": [
+      {
+        "spot": [
+          {
+            "count": 2,
+            "target": [
+              [
+                "SPOT"
+              ]
+            ]
+          }
+        ]
+      }
+    ],
     "phases": [
       "MANEUVER"
     ],
@@ -70928,6 +73714,20 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
+    "toPlay": [
+      {
+        "spot": [
+          {
+            "count": 3,
+            "target": [
+              [
+                "SPOT"
+              ]
+            ]
+          }
+        ]
+      }
+    ],
     "culture": "GONDOR",
     "race": "MAN",
     "twilightCost": 3,
@@ -70969,6 +73769,21 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
+    "toPlay": [
+      {
+        "spot": [
+          {
+            "count": 1,
+            "target": [
+              [
+                "SPOT",
+                "KNIGHT"
+              ]
+            ]
+          }
+        ]
+      }
+    ],
     "culture": "GONDOR",
     "race": "MAN",
     "twilightCost": 3,
@@ -71101,6 +73916,11 @@
     "isUnique": false,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
+    "toPlay": [
+      {
+        "addThreats": 1
+      }
+    ],
     "phases": [
       "SKIRMISH"
     ],
@@ -71189,6 +74009,21 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
+    "toPlay": [
+      {
+        "spot": [
+          {
+            "count": 2,
+            "target": [
+              [
+                "SPOT",
+                "EXHAUSTED"
+              ]
+            ]
+          }
+        ]
+      }
+    ],
     "culture": "GONDOR",
     "race": "WRAITH",
     "signet": "ARAGORN",
@@ -71273,6 +74108,11 @@
     "isUnique": false,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
+    "toPlay": [
+      {
+        "addThreats": 1
+      }
+    ],
     "culture": "GONDOR",
     "race": "WRAITH",
     "signet": "ARAGORN",
@@ -71365,6 +74205,11 @@
     "kind": "FREE_PEOPLE",
     "type": "CONDITION",
     "subtype": "SUPPORT-AREA",
+    "toPlay": [
+      {
+        "addThreats": 1
+      }
+    ],
     "culture": "GONDOR",
     "twilightCost": 1,
     "imageUrl": "/cards_visuals/o_08_047.jpg",
@@ -72782,6 +75627,11 @@
         "NAZGL"
       ]
     ],
+    "toPlay": [
+      {
+        "discardFromHand": 2
+      }
+    ],
     "phases": [
       "RESPONSE"
     ],
@@ -73131,6 +75981,20 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
+    "toPlay": [
+      {
+        "spot": [
+          {
+            "count": 3,
+            "target": [
+              [
+                "SPOT"
+              ]
+            ]
+          }
+        ]
+      }
+    ],
     "culture": "ROHAN",
     "race": "MAN",
     "twilightCost": 5,
@@ -73261,6 +76125,20 @@
     "isUnique": false,
     "kind": "SHADOW",
     "type": "MINION",
+    "toPlay": [
+      {
+        "spot": [
+          {
+            "count": 1,
+            "target": [
+              [
+                "SPOT"
+              ]
+            ]
+          }
+        ]
+      }
+    ],
     "phases": [
       "SHADOW"
     ],
@@ -73346,6 +76224,20 @@
     "isUnique": false,
     "kind": "SHADOW",
     "type": "MINION",
+    "toPlay": [
+      {
+        "spot": [
+          {
+            "count": 1,
+            "target": [
+              [
+                "SPOT"
+              ]
+            ]
+          }
+        ]
+      }
+    ],
     "phases": [
       "MANEUVER"
     ],
@@ -73770,6 +76662,20 @@
     "kind": "SHADOW",
     "type": "CONDITION",
     "subtype": "SUPPORT-AREA",
+    "toPlay": [
+      {
+        "spot": [
+          {
+            "count": 1,
+            "target": [
+              [
+                "SPOT"
+              ]
+            ]
+          }
+        ]
+      }
+    ],
     "phases": [
       "REGROUP",
       "SHADOW"
@@ -73811,6 +76717,20 @@
     "isUnique": true,
     "kind": "SHADOW",
     "type": "MINION",
+    "toPlay": [
+      {
+        "spot": [
+          {
+            "count": 1,
+            "target": [
+              [
+                "SPOT"
+              ]
+            ]
+          }
+        ]
+      }
+    ],
     "phases": [
       "REGROUP"
     ],
@@ -74198,6 +77118,20 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
+    "toPlay": [
+      {
+        "spot": [
+          {
+            "count": 1,
+            "target": [
+              [
+                "SPOT"
+              ]
+            ]
+          }
+        ]
+      }
+    ],
     "phases": [
       "SKIRMISH"
     ],
@@ -74244,6 +77178,20 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
+    "toPlay": [
+      {
+        "spot": [
+          {
+            "count": 1,
+            "target": [
+              [
+                "SPOT"
+              ]
+            ]
+          }
+        ]
+      }
+    ],
     "phases": [
       "SKIRMISH"
     ],
@@ -74872,6 +77820,21 @@
         "HOBBIT"
       ]
     ],
+    "toPlay": [
+      {
+        "spot": [
+          {
+            "count": 1,
+            "target": [
+              [
+                "SPOT",
+                "Elf"
+              ]
+            ]
+          }
+        ]
+      }
+    ],
     "phases": [
       "MANEUVER"
     ],
@@ -74961,6 +77924,20 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
+    "toPlay": [
+      {
+        "spot": [
+          {
+            "count": 2,
+            "target": [
+              [
+                "SPOT"
+              ]
+            ]
+          }
+        ]
+      }
+    ],
     "phases": [
       "REGROUP"
     ],
@@ -75306,6 +78283,21 @@
     "kind": "FREE_PEOPLE",
     "type": "POSSESSION",
     "subtype": "SUPPORT-AREA",
+    "toPlay": [
+      {
+        "spot": [
+          {
+            "count": 1,
+            "target": [
+              [
+                "SPOT",
+                "Dwarf"
+              ]
+            ]
+          }
+        ]
+      }
+    ],
     "phases": [
       "FELLOWSHIP"
     ],
@@ -75399,6 +78391,21 @@
       [
         "COMPANION"
       ]
+    ],
+    "toPlay": [
+      {
+        "spot": [
+          {
+            "count": 1,
+            "target": [
+              [
+                "SPOT",
+                "Ent"
+              ]
+            ]
+          }
+        ]
+      }
     ],
     "phases": [
       "SKIRMISH"
@@ -75665,6 +78672,11 @@
     "canBeRingbearer": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
+    "toPlay": [
+      {
+        "addBurdens": 1
+      }
+    ],
     "phases": [
       "REGROUP"
     ],
@@ -75762,6 +78774,20 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
+    "toPlay": [
+      {
+        "spot": [
+          {
+            "count": 2,
+            "target": [
+              [
+                "SPOT"
+              ]
+            ]
+          }
+        ]
+      }
+    ],
     "phases": [
       "FELLOWSHIP",
       "REGROUP"
@@ -75915,6 +78941,21 @@
     "kind": "FREE_PEOPLE",
     "type": "ARTIFACT",
     "subtype": "SUPPORT-AREA",
+    "toPlay": [
+      {
+        "spot": [
+          {
+            "count": 1,
+            "target": [
+              [
+                "SPOT",
+                "UNBOUND"
+              ]
+            ]
+          }
+        ]
+      }
+    ],
     "phases": [
       "RESPONSE"
     ],
@@ -75957,6 +78998,20 @@
     "kind": "FREE_PEOPLE",
     "type": "ARTIFACT",
     "subtype": "SUPPORT-AREA",
+    "toPlay": [
+      {
+        "spot": [
+          {
+            "count": 1,
+            "target": [
+              [
+                "SPOT"
+              ]
+            ]
+          }
+        ]
+      }
+    ],
     "phases": [
       "FELLOWSHIP"
     ],
@@ -75999,6 +79054,20 @@
     "kind": "FREE_PEOPLE",
     "type": "ARTIFACT",
     "subtype": "SUPPORT-AREA",
+    "toPlay": [
+      {
+        "spot": [
+          {
+            "count": 1,
+            "target": [
+              [
+                "SPOT"
+              ]
+            ]
+          }
+        ]
+      }
+    ],
     "phases": [
       "REGROUP"
     ],
@@ -76041,6 +79110,20 @@
     "kind": "FREE_PEOPLE",
     "type": "ARTIFACT",
     "subtype": "SUPPORT-AREA",
+    "toPlay": [
+      {
+        "spot": [
+          {
+            "count": 1,
+            "target": [
+              [
+                "SPOT"
+              ]
+            ]
+          }
+        ]
+      }
+    ],
     "phases": [
       "REGROUP"
     ],
@@ -76446,6 +79529,20 @@
     "kind": "SHADOW",
     "type": "ARTIFACT",
     "subtype": "SUPPORT-AREA",
+    "toPlay": [
+      {
+        "exert": [
+          {
+            "count": 1,
+            "target": [
+              [
+                "EXERT"
+              ]
+            ]
+          }
+        ]
+      }
+    ],
     "phases": [
       "SHADOW"
     ],
@@ -76676,6 +79773,14 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "ALLY",
+    "toPlay": [
+      {
+        "removeBurdens": 2
+      },
+      {
+        "removeThreats": 2
+      }
+    ],
     "phases": [
       "SKIRMISH"
     ],
@@ -76767,6 +79872,21 @@
     "kind": "FREE_PEOPLE",
     "type": "CONDITION",
     "subtype": "SUPPORT-AREA",
+    "toPlay": [
+      {
+        "spot": [
+          {
+            "count": 1,
+            "target": [
+              [
+                "SPOT",
+                "Dwarf"
+              ]
+            ]
+          }
+        ]
+      }
+    ],
     "culture": "DWARVEN",
     "twilightCost": 1,
     "imageUrl": "/cards_visuals/o_10_002.jpg",
@@ -76991,6 +80111,21 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
+    "toPlay": [
+      {
+        "spot": [
+          {
+            "count": 2,
+            "target": [
+              [
+                "SPOT",
+                "Elves"
+              ]
+            ]
+          }
+        ]
+      }
+    ],
     "phases": [
       "SKIRMISH"
     ],
@@ -77132,6 +80267,21 @@
     "kind": "FREE_PEOPLE",
     "type": "CONDITION",
     "subtype": "SUPPORT-AREA",
+    "toPlay": [
+      {
+        "spot": [
+          {
+            "count": 2,
+            "target": [
+              [
+                "SPOT",
+                "Elves"
+              ]
+            ]
+          }
+        ]
+      }
+    ],
     "culture": "ELVEN",
     "twilightCost": 0,
     "imageUrl": "/cards_visuals/o_10_012.jpg",
@@ -77384,6 +80534,20 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
+    "toPlay": [
+      {
+        "spot": [
+          {
+            "count": 3,
+            "target": [
+              [
+                "SPOT"
+              ]
+            ]
+          }
+        ]
+      }
+    ],
     "phases": [
       "REGROUP"
     ],
@@ -77693,6 +80857,11 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
+    "toPlay": [
+      {
+        "addThreats": 1
+      }
+    ],
     "culture": "GONDOR",
     "race": "WRAITH",
     "twilightCost": 3,
@@ -77734,6 +80903,11 @@
     "isUnique": false,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
+    "toPlay": [
+      {
+        "addThreats": 1
+      }
+    ],
     "culture": "GONDOR",
     "race": "WRAITH",
     "twilightCost": 2,
@@ -77775,6 +80949,20 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
+    "toPlay": [
+      {
+        "spot": [
+          {
+            "count": 2,
+            "target": [
+              [
+                "SPOT"
+              ]
+            ]
+          }
+        ]
+      }
+    ],
     "phases": [
       "FELLOWSHIP"
     ],
@@ -77990,6 +81178,20 @@
     "kind": "FREE_PEOPLE",
     "type": "CONDITION",
     "subtype": "SUPPORT-AREA",
+    "toPlay": [
+      {
+        "spot": [
+          {
+            "count": 2,
+            "target": [
+              [
+                "SPOT"
+              ]
+            ]
+          }
+        ]
+      }
+    ],
     "culture": "GONDOR",
     "twilightCost": 2,
     "imageUrl": "/cards_visuals/o_10_033.jpg",
@@ -78150,6 +81352,20 @@
     "isUnique": false,
     "kind": "SHADOW",
     "type": "MINION",
+    "toPlay": [
+      {
+        "spot": [
+          {
+            "count": 1,
+            "target": [
+              [
+                "SPOT"
+              ]
+            ]
+          }
+        ]
+      }
+    ],
     "phases": [
       "SHADOW"
     ],
@@ -78279,6 +81495,21 @@
     "isUnique": false,
     "kind": "SHADOW",
     "type": "MINION",
+    "toPlay": [
+      {
+        "spot": [
+          {
+            "count": 1,
+            "target": [
+              [
+                "SPOT",
+                "Easterling"
+              ]
+            ]
+          }
+        ]
+      }
+    ],
     "phases": [
       "SKIRMISH"
     ],
@@ -78409,6 +81640,20 @@
     "kind": "SHADOW",
     "type": "CONDITION",
     "subtype": "SUPPORT-AREA",
+    "toPlay": [
+      {
+        "spot": [
+          {
+            "count": 1,
+            "target": [
+              [
+                "SPOT"
+              ]
+            ]
+          }
+        ]
+      }
+    ],
     "phases": [
       "SKIRMISH"
     ],
@@ -78570,6 +81815,20 @@
     "kind": "SHADOW",
     "type": "CONDITION",
     "subtype": "SUPPORT-AREA",
+    "toPlay": [
+      {
+        "spot": [
+          {
+            "count": 1,
+            "target": [
+              [
+                "SPOT"
+              ]
+            ]
+          }
+        ]
+      }
+    ],
     "phases": [
       "SHADOW"
     ],
@@ -79730,6 +82989,20 @@
     "kind": "FREE_PEOPLE",
     "type": "CONDITION",
     "subtype": "SUPPORT-AREA",
+    "toPlay": [
+      {
+        "spot": [
+          {
+            "count": 1,
+            "target": [
+              [
+                "SPOT"
+              ]
+            ]
+          }
+        ]
+      }
+    ],
     "culture": "ROHAN",
     "twilightCost": 1,
     "imageUrl": "/cards_visuals/o_10_073.jpg",
@@ -79984,6 +83257,20 @@
     "kind": "SHADOW",
     "type": "CONDITION",
     "subtype": "SUPPORT-AREA",
+    "toPlay": [
+      {
+        "spot": [
+          {
+            "count": 1,
+            "target": [
+              [
+                "SPOT"
+              ]
+            ]
+          }
+        ]
+      }
+    ],
     "phases": [
       "SHADOW"
     ],
@@ -80582,6 +83869,20 @@
     "isUnique": false,
     "kind": "SHADOW",
     "type": "MINION",
+    "toPlay": [
+      {
+        "spot": [
+          {
+            "count": 1,
+            "target": [
+              [
+                "SPOT"
+              ]
+            ]
+          }
+        ]
+      }
+    ],
     "phases": [
       "SHADOW"
     ],
@@ -80881,6 +84182,20 @@
     "isUnique": false,
     "kind": "SHADOW",
     "type": "MINION",
+    "toPlay": [
+      {
+        "spot": [
+          {
+            "count": 1,
+            "target": [
+              [
+                "SPOT"
+              ]
+            ]
+          }
+        ]
+      }
+    ],
     "culture": "SAURON",
     "race": "TROLL",
     "twilightCost": 7,
@@ -80970,6 +84285,20 @@
     "kind": "SHADOW",
     "type": "CONDITION",
     "subtype": "SUPPORT-AREA",
+    "toPlay": [
+      {
+        "spot": [
+          {
+            "count": 1,
+            "target": [
+              [
+                "SPOT"
+              ]
+            ]
+          }
+        ]
+      }
+    ],
     "culture": "SAURON",
     "twilightCost": 1,
     "imageUrl": "/cards_visuals/o_10_103.jpg",
@@ -81424,6 +84753,20 @@
     "kind": "FREE_PEOPLE",
     "type": "CONDITION",
     "subtype": "SUPPORT-AREA",
+    "toPlay": [
+      {
+        "spot": [
+          {
+            "count": 2,
+            "target": [
+              [
+                "SPOT"
+              ]
+            ]
+          }
+        ]
+      }
+    ],
     "culture": "SHIRE",
     "twilightCost": 1,
     "imageUrl": "/cards_visuals/o_10_114.jpg",
@@ -81727,6 +85070,21 @@
     "kind": "FREE_PEOPLE",
     "type": "CONDITION",
     "subtype": "SUPPORT-AREA",
+    "toPlay": [
+      {
+        "spot": [
+          {
+            "count": 1,
+            "target": [
+              [
+                "SPOT",
+                "Dwarf"
+              ]
+            ]
+          }
+        ]
+      }
+    ],
     "culture": "DWARVEN",
     "twilightCost": 0,
     "imageUrl": "/cards_visuals/o_11_005.jpg",
@@ -82038,6 +85396,22 @@
     "kind": "FREE_PEOPLE",
     "type": "CONDITION",
     "subtype": "SUPPORT-AREA",
+    "toPlay": [
+      {
+        "spot": [
+          {
+            "count": 2,
+            "target": [
+              [
+                "SPOT",
+                "Dwarf",
+                "COMPANION"
+              ]
+            ]
+          }
+        ]
+      }
+    ],
     "culture": "DWARVEN",
     "twilightCost": 3,
     "imageUrl": "/cards_visuals/o_11_012.jpg",
@@ -82251,6 +85625,21 @@
     "kind": "FREE_PEOPLE",
     "type": "CONDITION",
     "subtype": "SUPPORT-AREA",
+    "toPlay": [
+      {
+        "spot": [
+          {
+            "count": 1,
+            "target": [
+              [
+                "SPOT",
+                "Elf"
+              ]
+            ]
+          }
+        ]
+      }
+    ],
     "phases": [
       "ARCHERY"
     ],
@@ -82721,6 +86110,20 @@
     "kind": "FREE_PEOPLE",
     "type": "POSSESSION",
     "subtype": "SUPPORT-AREA",
+    "toPlay": [
+      {
+        "spot": [
+          {
+            "count": 1,
+            "target": [
+              [
+                "SPOT"
+              ]
+            ]
+          }
+        ]
+      }
+    ],
     "phases": [
       "REGROUP",
       "FELLOWSHIP"
@@ -82804,6 +86207,20 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
+    "toPlay": [
+      {
+        "spot": [
+          {
+            "count": 1,
+            "target": [
+              [
+                "SPOT"
+              ]
+            ]
+          }
+        ]
+      }
+    ],
     "phases": [
       "SKIRMISH"
     ],
@@ -82853,6 +86270,20 @@
     "isUnique": false,
     "kind": "FREE_PEOPLE",
     "type": "EVENT",
+    "toPlay": [
+      {
+        "exert": [
+          {
+            "count": 1,
+            "target": [
+              [
+                "EXERT"
+              ]
+            ]
+          }
+        ]
+      }
+    ],
     "phases": [
       "FELLOWSHIP"
     ],
@@ -83070,6 +86501,20 @@
     "kind": "FREE_PEOPLE",
     "type": "CONDITION",
     "subtype": "SUPPORT-AREA",
+    "toPlay": [
+      {
+        "spot": [
+          {
+            "count": 1,
+            "target": [
+              [
+                "SPOT"
+              ]
+            ]
+          }
+        ]
+      }
+    ],
     "phases": [
       "RESPONSE"
     ],
@@ -83652,6 +87097,11 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
+    "toPlay": [
+      {
+        "addBurdens": 1
+      }
+    ],
     "phases": [
       "SKIRMISH"
     ],
@@ -84224,6 +87674,20 @@
     "kind": "FREE_PEOPLE",
     "type": "EVENT",
     "subtype": "FELLOWSHIP-OR-REGROUP",
+    "toPlay": [
+      {
+        "exert": [
+          {
+            "count": 1,
+            "target": [
+              [
+                "EXERT"
+              ]
+            ]
+          }
+        ]
+      }
+    ],
     "culture": "GONDOR",
     "twilightCost": 0,
     "imageUrl": "/cards_visuals/o_11_066.jpg",
@@ -85121,6 +88585,20 @@
         "COMPANION"
       ]
     ],
+    "toPlay": [
+      {
+        "spot": [
+          {
+            "count": 1,
+            "target": [
+              [
+                "SPOT"
+              ]
+            ]
+          }
+        ]
+      }
+    ],
     "culture": "MEN",
     "twilightCost": 3,
     "imageUrl": "/cards_visuals/o_11_087.jpg",
@@ -85896,6 +89374,20 @@
         "RING-BEARER"
       ]
     ],
+    "toPlay": [
+      {
+        "spot": [
+          {
+            "count": 1,
+            "target": [
+              [
+                "SPOT"
+              ]
+            ]
+          }
+        ]
+      }
+    ],
     "culture": "MEN",
     "twilightCost": 1,
     "resistance": -2,
@@ -86021,6 +89513,20 @@
     "isUnique": false,
     "kind": "SHADOW",
     "type": "MINION",
+    "toPlay": [
+      {
+        "spot": [
+          {
+            "count": 1,
+            "target": [
+              [
+                "SPOT"
+              ]
+            ]
+          }
+        ]
+      }
+    ],
     "phases": [
       "ASSIGNMENT"
     ],
@@ -86280,6 +89786,20 @@
     "kind": "SHADOW",
     "type": "CONDITION",
     "subtype": "SUPPORT-AREA",
+    "toPlay": [
+      {
+        "spot": [
+          {
+            "count": 1,
+            "target": [
+              [
+                "SPOT"
+              ]
+            ]
+          }
+        ]
+      }
+    ],
     "culture": "ORC",
     "twilightCost": 1,
     "imageUrl": "/cards_visuals/o_11_114.jpg",
@@ -86958,6 +90478,20 @@
     "isUnique": false,
     "kind": "SHADOW",
     "type": "MINION",
+    "toPlay": [
+      {
+        "spot": [
+          {
+            "count": 1,
+            "target": [
+              [
+                "SPOT"
+              ]
+            ]
+          }
+        ]
+      }
+    ],
     "phases": [
       "REGROUP"
     ],
@@ -87128,6 +90662,20 @@
     "isUnique": false,
     "kind": "SHADOW",
     "type": "MINION",
+    "toPlay": [
+      {
+        "spot": [
+          {
+            "count": 1,
+            "target": [
+              [
+                "SPOT"
+              ]
+            ]
+          }
+        ]
+      }
+    ],
     "culture": "ORC",
     "race": "TROLL",
     "twilightCost": 7,
@@ -87300,6 +90848,20 @@
     "kind": "SHADOW",
     "type": "CONDITION",
     "subtype": "SUPPORT-AREA",
+    "toPlay": [
+      {
+        "exert": [
+          {
+            "count": 1,
+            "target": [
+              [
+                "EXERT"
+              ]
+            ]
+          }
+        ]
+      }
+    ],
     "culture": "ORC",
     "twilightCost": 1,
     "imageUrl": "/cards_visuals/o_11_139.jpg",
@@ -87965,6 +91527,20 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
+    "toPlay": [
+      {
+        "spot": [
+          {
+            "count": 2,
+            "target": [
+              [
+                "SPOT"
+              ]
+            ]
+          }
+        ]
+      }
+    ],
     "culture": "ROHAN",
     "race": "MAN",
     "twilightCost": 5,
@@ -88008,6 +91584,20 @@
     "kind": "FREE_PEOPLE",
     "type": "CONDITION",
     "subtype": "SUPPORT-AREA",
+    "toPlay": [
+      {
+        "exert": [
+          {
+            "count": 1,
+            "target": [
+              [
+                "EXERT"
+              ]
+            ]
+          }
+        ]
+      }
+    ],
     "culture": "ROHAN",
     "twilightCost": 1,
     "imageUrl": "/cards_visuals/o_11_155.jpg",
@@ -88092,6 +91682,20 @@
     "kind": "FREE_PEOPLE",
     "type": "CONDITION",
     "subtype": "SUPPORT-AREA",
+    "toPlay": [
+      {
+        "spot": [
+          {
+            "count": 1,
+            "target": [
+              [
+                "SPOT"
+              ]
+            ]
+          }
+        ]
+      }
+    ],
     "phases": [
       "RESPONSE"
     ],
@@ -89143,6 +92747,20 @@
     "isUnique": false,
     "kind": "SHADOW",
     "type": "MINION",
+    "toPlay": [
+      {
+        "spot": [
+          {
+            "count": 1,
+            "target": [
+              [
+                "SPOT"
+              ]
+            ]
+          }
+        ]
+      }
+    ],
     "culture": "URUK-HAI",
     "race": "URUK-HAI",
     "twilightCost": 2,
@@ -89788,6 +93406,20 @@
         "UNBOUND",
         "COMPANION"
       ]
+    ],
+    "toPlay": [
+      {
+        "spot": [
+          {
+            "count": 1,
+            "target": [
+              [
+                "SPOT"
+              ]
+            ]
+          }
+        ]
+      }
     ],
     "culture": "URUK-HAI",
     "twilightCost": 2,
@@ -90696,6 +94328,21 @@
     "kind": "SHADOW",
     "type": "CONDITION",
     "subtype": "SUPPORT-AREA",
+    "toPlay": [
+      {
+        "spot": [
+          {
+            "count": 1,
+            "target": [
+              [
+                "SPOT",
+                "Nazgûl"
+              ]
+            ]
+          }
+        ]
+      }
+    ],
     "culture": "WRAITH",
     "twilightCost": 1,
     "imageUrl": "/cards_visuals/o_11_218.jpg",
@@ -91879,6 +95526,21 @@
     "kind": "FREE_PEOPLE",
     "type": "CONDITION",
     "subtype": "SUPPORT-AREA",
+    "toPlay": [
+      {
+        "spot": [
+          {
+            "count": 1,
+            "target": [
+              [
+                "SPOT",
+                "Elf"
+              ]
+            ]
+          }
+        ]
+      }
+    ],
     "phases": [
       "FELLOWSHIP"
     ],
@@ -92361,6 +96023,20 @@
         "COMPANION"
       ]
     ],
+    "toPlay": [
+      {
+        "spot": [
+          {
+            "count": 1,
+            "target": [
+              [
+                "SPOT"
+              ]
+            ]
+          }
+        ]
+      }
+    ],
     "phases": [
       "RESPONSE"
     ],
@@ -92640,6 +96316,21 @@
     "kind": "FREE_PEOPLE",
     "type": "CONDITION",
     "subtype": "SUPPORT-AREA",
+    "toPlay": [
+      {
+        "spot": [
+          {
+            "count": 1,
+            "target": [
+              [
+                "SPOT",
+                "Sméagol"
+              ]
+            ]
+          }
+        ]
+      }
+    ],
     "phases": [
       "REGROUP"
     ],
@@ -92686,6 +96377,20 @@
         "WOUNDED",
         "COMPANION"
       ]
+    ],
+    "toPlay": [
+      {
+        "spot": [
+          {
+            "count": 1,
+            "target": [
+              [
+                "SPOT"
+              ]
+            ]
+          }
+        ]
+      }
     ],
     "culture": "GOLLUM",
     "twilightCost": 0,
@@ -93763,6 +97468,20 @@
     "kind": "FREE_PEOPLE",
     "type": "CONDITION",
     "subtype": "SUPPORT-AREA",
+    "toPlay": [
+      {
+        "spot": [
+          {
+            "count": 1,
+            "target": [
+              [
+                "SPOT"
+              ]
+            ]
+          }
+        ]
+      }
+    ],
     "culture": "MEN",
     "twilightCost": 1,
     "imageUrl": "/cards_visuals/o_12_067.jpg",
@@ -94349,6 +98068,20 @@
     "kind": "SHADOW",
     "type": "CONDITION",
     "subtype": "SUPPORT-AREA",
+    "toPlay": [
+      {
+        "exert": [
+          {
+            "count": 1,
+            "target": [
+              [
+                "EXERT"
+              ]
+            ]
+          }
+        ]
+      }
+    ],
     "culture": "ORC",
     "twilightCost": 0,
     "imageUrl": "/cards_visuals/o_12_083.jpg",
@@ -96119,6 +99852,21 @@
     "kind": "FREE_PEOPLE",
     "type": "CONDITION",
     "subtype": "SUPPORT-AREA",
+    "toPlay": [
+      {
+        "spot": [
+          {
+            "count": 1,
+            "target": [
+              [
+                "SPOT",
+                "Hobbit"
+              ]
+            ]
+          }
+        ]
+      }
+    ],
     "phases": [
       "SKIRMISH"
     ],
@@ -97434,6 +101182,20 @@
     "isUnique": true,
     "kind": "SHADOW",
     "type": "MINION",
+    "toPlay": [
+      {
+        "spot": [
+          {
+            "count": 1,
+            "target": [
+              [
+                "SPOT"
+              ]
+            ]
+          }
+        ]
+      }
+    ],
     "culture": "URUK-HAI",
     "race": "URUK-HAI",
     "twilightCost": 6,
@@ -98065,6 +101827,20 @@
         "UNBOUND",
         "COMPANION"
       ]
+    ],
+    "toPlay": [
+      {
+        "spot": [
+          {
+            "count": 1,
+            "target": [
+              [
+                "SPOT"
+              ]
+            ]
+          }
+        ]
+      }
     ],
     "culture": "WRAITH",
     "twilightCost": 2,
@@ -99377,6 +103153,21 @@
     "kind": "FREE_PEOPLE",
     "type": "CONDITION",
     "subtype": "SUPPORT-AREA",
+    "toPlay": [
+      {
+        "exert": [
+          {
+            "count": 2,
+            "target": [
+              [
+                "EXERT",
+                "Dwarves"
+              ]
+            ]
+          }
+        ]
+      }
+    ],
     "phases": [
       "SKIRMISH"
     ],
@@ -99684,6 +103475,21 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
+    "toPlay": [
+      {
+        "spot": [
+          {
+            "count": 3,
+            "target": [
+              [
+                "SPOT",
+                "Elves"
+              ]
+            ]
+          }
+        ]
+      }
+    ],
     "culture": "ELVEN",
     "race": "ELF",
     "twilightCost": 0,
@@ -99984,6 +103790,21 @@
     "kind": "FREE_PEOPLE",
     "type": "CONDITION",
     "subtype": "SUPPORT-AREA",
+    "toPlay": [
+      {
+        "spot": [
+          {
+            "count": 2,
+            "target": [
+              [
+                "SPOT",
+                "Elves"
+              ]
+            ]
+          }
+        ]
+      }
+    ],
     "phases": [
       "REGROUP"
     ],
@@ -100836,6 +104657,21 @@
     "kind": "FREE_PEOPLE",
     "type": "CONDITION",
     "subtype": "SUPPORT-AREA",
+    "toPlay": [
+      {
+        "spot": [
+          {
+            "count": 1,
+            "target": [
+              [
+                "SPOT",
+                "Wizard"
+              ]
+            ]
+          }
+        ]
+      }
+    ],
     "phases": [
       "MANEUVER"
     ],
@@ -101080,6 +104916,21 @@
     "kind": "FREE_PEOPLE",
     "type": "CONDITION",
     "subtype": "SUPPORT-AREA",
+    "toPlay": [
+      {
+        "spot": [
+          {
+            "count": 1,
+            "target": [
+              [
+                "SPOT",
+                "Sméagol"
+              ]
+            ]
+          }
+        ]
+      }
+    ],
     "phases": [
       "MANEUVER"
     ],
@@ -101322,6 +105173,11 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
+    "toPlay": [
+      {
+        "addBurdens": 1
+      }
+    ],
     "culture": "GOLLUM",
     "twilightCost": 0,
     "strength": 3,
@@ -101408,6 +105264,21 @@
     "isUnique": false,
     "kind": "SHADOW",
     "type": "EVENT",
+    "toPlay": [
+      {
+        "discardFromPlay": [
+          {
+            "count": 1,
+            "target": [
+              [
+                "DISCARD",
+                "Gollum"
+              ]
+            ]
+          }
+        ]
+      }
+    ],
     "phases": [
       "REGROUP"
     ],
@@ -101773,6 +105644,20 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
+    "toPlay": [
+      {
+        "spot": [
+          {
+            "count": 2,
+            "target": [
+              [
+                "SPOT"
+              ]
+            ]
+          }
+        ]
+      }
+    ],
     "phases": [
       "MANEUVER"
     ],
@@ -102533,6 +106418,20 @@
     "kind": "FREE_PEOPLE",
     "type": "CONDITION",
     "subtype": "SUPPORT-AREA",
+    "toPlay": [
+      {
+        "spot": [
+          {
+            "count": 1,
+            "target": [
+              [
+                "SPOT"
+              ]
+            ]
+          }
+        ]
+      }
+    ],
     "culture": "MEN",
     "twilightCost": 1,
     "imageUrl": "/cards_visuals/o_13_083.jpg",
@@ -102652,6 +106551,20 @@
     "isUnique": false,
     "kind": "FREE_PEOPLE",
     "type": "MINION",
+    "toPlay": [
+      {
+        "spot": [
+          {
+            "count": 1,
+            "target": [
+              [
+                "SPOT"
+              ]
+            ]
+          }
+        ]
+      }
+    ],
     "culture": "MEN",
     "race": "MAN",
     "twilightCost": 5,
@@ -102777,6 +106690,20 @@
     "isUnique": false,
     "kind": "FREE_PEOPLE",
     "type": "MINION",
+    "toPlay": [
+      {
+        "spot": [
+          {
+            "count": 1,
+            "target": [
+              [
+                "SPOT"
+              ]
+            ]
+          }
+        ]
+      }
+    ],
     "phases": [
       "ASSIGNMENT"
     ],
@@ -103115,6 +107042,20 @@
     "isUnique": false,
     "kind": "FREE_PEOPLE",
     "type": "MINION",
+    "toPlay": [
+      {
+        "spot": [
+          {
+            "count": 1,
+            "target": [
+              [
+                "SPOT"
+              ]
+            ]
+          }
+        ]
+      }
+    ],
     "phases": [
       "SHADOW"
     ],
@@ -103289,6 +107230,20 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "MINION",
+    "toPlay": [
+      {
+        "spot": [
+          {
+            "count": 1,
+            "target": [
+              [
+                "SPOT"
+              ]
+            ]
+          }
+        ]
+      }
+    ],
     "culture": "MEN",
     "race": "MAN",
     "twilightCost": 4,
@@ -103414,6 +107369,20 @@
     "isUnique": true,
     "kind": "SHADOW",
     "type": "MINION",
+    "toPlay": [
+      {
+        "spot": [
+          {
+            "count": 1,
+            "target": [
+              [
+                "SPOT"
+              ]
+            ]
+          }
+        ]
+      }
+    ],
     "culture": "ORC",
     "race": "ORC",
     "twilightCost": 4,
@@ -103577,6 +107546,20 @@
     "kind": "SHADOW",
     "type": "CONDITION",
     "subtype": "SUPPORT-AREA",
+    "toPlay": [
+      {
+        "spot": [
+          {
+            "count": 2,
+            "target": [
+              [
+                "SPOT"
+              ]
+            ]
+          }
+        ]
+      }
+    ],
     "phases": [
       "REGROUP"
     ],
@@ -103832,6 +107815,20 @@
     "isUnique": false,
     "kind": "SHADOW",
     "type": "MINION",
+    "toPlay": [
+      {
+        "spot": [
+          {
+            "count": 1,
+            "target": [
+              [
+                "SPOT"
+              ]
+            ]
+          }
+        ]
+      }
+    ],
     "culture": "ORC",
     "race": "ORC",
     "twilightCost": 5,
@@ -103916,6 +107913,20 @@
     "isUnique": false,
     "kind": "SHADOW",
     "type": "MINION",
+    "toPlay": [
+      {
+        "spot": [
+          {
+            "count": 1,
+            "target": [
+              [
+                "SPOT"
+              ]
+            ]
+          }
+        ]
+      }
+    ],
     "phases": [
       "SHADOW"
     ],
@@ -104261,6 +108272,20 @@
     "isUnique": false,
     "kind": "FREE_PEOPLE",
     "type": "EVENT",
+    "toPlay": [
+      {
+        "spot": [
+          {
+            "count": 2,
+            "target": [
+              [
+                "SPOT"
+              ]
+            ]
+          }
+        ]
+      }
+    ],
     "phases": [
       "MANEUVER"
     ],
@@ -104829,6 +108854,20 @@
     "kind": "FREE_PEOPLE",
     "type": "CONDITION",
     "subtype": "SUPPORT-AREA",
+    "toPlay": [
+      {
+        "spot": [
+          {
+            "count": 2,
+            "target": [
+              [
+                "SPOT"
+              ]
+            ]
+          }
+        ]
+      }
+    ],
     "culture": "ROHAN",
     "twilightCost": 2,
     "imageUrl": "/cards_visuals/o_13_139.jpg",
@@ -105299,6 +109338,22 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "FOLLOWER",
+    "toPlay": [
+      {
+        "spot": [
+          {
+            "count": 1,
+            "target": [
+              [
+                "SPOT",
+                "Ring-bound",
+                "Hobbit"
+              ]
+            ]
+          }
+        ]
+      }
+    ],
     "culture": "SHIRE",
     "twilightCost": 1,
     "vitality": 1,
@@ -105388,6 +109443,21 @@
     "kind": "FREE_PEOPLE",
     "type": "CONDITION",
     "subtype": "SUPPORT-AREA",
+    "toPlay": [
+      {
+        "spot": [
+          {
+            "count": 2,
+            "target": [
+              [
+                "SPOT",
+                "Hobbits"
+              ]
+            ]
+          }
+        ]
+      }
+    ],
     "phases": [
       "SKIRMISH"
     ],
@@ -105477,6 +109547,21 @@
     "kind": "FREE_PEOPLE",
     "type": "CONDITION",
     "subtype": "SUPPORT-AREA",
+    "toPlay": [
+      {
+        "spot": [
+          {
+            "count": 2,
+            "target": [
+              [
+                "SPOT",
+                "Hobbits"
+              ]
+            ]
+          }
+        ]
+      }
+    ],
     "culture": "SHIRE",
     "twilightCost": 2,
     "imageUrl": "/cards_visuals/o_13_154.jpg",
@@ -105767,6 +109852,20 @@
     "kind": "SHADOW",
     "type": "CONDITION",
     "subtype": "SUPPORT-AREA",
+    "toPlay": [
+      {
+        "spot": [
+          {
+            "count": 2,
+            "target": [
+              [
+                "SPOT"
+              ]
+            ]
+          }
+        ]
+      }
+    ],
     "phases": [
       "SHADOW",
       "REGROUP"
@@ -105852,6 +109951,20 @@
     "kind": "SHADOW",
     "type": "CONDITION",
     "subtype": "SUPPORT-AREA",
+    "toPlay": [
+      {
+        "spot": [
+          {
+            "count": 1,
+            "target": [
+              [
+                "SPOT"
+              ]
+            ]
+          }
+        ]
+      }
+    ],
     "culture": "URUK-HAI",
     "twilightCost": 1,
     "imageUrl": "/cards_visuals/o_13_164.jpg",
@@ -106049,6 +110162,20 @@
     "isUnique": true,
     "kind": "SHADOW",
     "type": "MINION",
+    "toPlay": [
+      {
+        "spot": [
+          {
+            "count": 1,
+            "target": [
+              [
+                "SPOT"
+              ]
+            ]
+          }
+        ]
+      }
+    ],
     "culture": "URUK-HAI",
     "race": "URUK-HAI",
     "twilightCost": 4,
@@ -106369,6 +110496,26 @@
     "isUnique": false,
     "kind": "SHADOW",
     "type": "EVENT",
+    "toPlay": [
+      {
+        "exert": [
+          {
+            "count": 1,
+            "target": [
+              [
+                "EXERT",
+                "Nazgûl",
+                "TWICE",
+                "AND",
+                "SPOT",
+                "EXHAUSTED",
+                "COMPANION"
+              ]
+            ]
+          }
+        ]
+      }
+    ],
     "phases": [
       "REGROUP"
     ],
@@ -106450,6 +110597,20 @@
     "isUnique": false,
     "kind": "SHADOW",
     "type": "EVENT",
+    "toPlay": [
+      {
+        "spot": [
+          {
+            "count": 1,
+            "target": [
+              [
+                "SPOT"
+              ]
+            ]
+          }
+        ]
+      }
+    ],
     "phases": [
       "SHADOW"
     ],
@@ -106720,6 +110881,21 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
+    "toPlay": [
+      {
+        "spot": [
+          {
+            "count": 3,
+            "target": [
+              [
+                "SPOT",
+                "Elves"
+              ]
+            ]
+          }
+        ]
+      }
+    ],
     "culture": "ELVEN",
     "race": "ELF",
     "twilightCost": 0,
@@ -108469,6 +112645,21 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
+    "toPlay": [
+      {
+        "spot": [
+          {
+            "count": 1,
+            "target": [
+              [
+                "SPOT",
+                "Elf"
+              ]
+            ]
+          }
+        ]
+      }
+    ],
     "culture": "ELVEN",
     "race": "ELF",
     "twilightCost": 2,
@@ -108699,6 +112890,21 @@
     "kind": "FREE_PEOPLE",
     "type": "ARTIFACT",
     "subtype": "SUPPORT-AREA",
+    "toPlay": [
+      {
+        "spot": [
+          {
+            "count": 3,
+            "target": [
+              [
+                "SPOT",
+                "Elves"
+              ]
+            ]
+          }
+        ]
+      }
+    ],
     "culture": "ELVEN",
     "twilightCost": 2,
     "imageUrl": "/cards_visuals/o_15_022.jpg",
@@ -108779,6 +112985,21 @@
     "kind": "FREE_PEOPLE",
     "type": "CONDITION",
     "subtype": "SUPPORT-AREA",
+    "toPlay": [
+      {
+        "spot": [
+          {
+            "count": 3,
+            "target": [
+              [
+                "SPOT",
+                "Elves"
+              ]
+            ]
+          }
+        ]
+      }
+    ],
     "phases": [
       "SKIRMISH"
     ],
@@ -108985,6 +113206,21 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
+    "toPlay": [
+      {
+        "spot": [
+          {
+            "count": 2,
+            "target": [
+              [
+                "SPOT",
+                "Hobbits"
+              ]
+            ]
+          }
+        ]
+      }
+    ],
     "culture": "GANDALF",
     "race": "WIZARD",
     "twilightCost": 4,
@@ -109080,6 +113316,20 @@
     "kind": "FREE_PEOPLE",
     "type": "CONDITION",
     "subtype": "SUPPORT-AREA",
+    "toPlay": [
+      {
+        "spot": [
+          {
+            "count": 2,
+            "target": [
+              [
+                "SPOT"
+              ]
+            ]
+          }
+        ]
+      }
+    ],
     "culture": "GANDALF",
     "twilightCost": 4,
     "imageUrl": "/cards_visuals/o_15_031.jpg",
@@ -109382,6 +113632,20 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
+    "toPlay": [
+      {
+        "spot": [
+          {
+            "count": 3,
+            "target": [
+              [
+                "SPOT"
+              ]
+            ]
+          }
+        ]
+      }
+    ],
     "culture": "GANDALF",
     "race": "ENT",
     "twilightCost": 5,
@@ -109473,6 +113737,21 @@
     "kind": "FREE_PEOPLE",
     "type": "CONDITION",
     "subtype": "SUPPORT-AREA",
+    "toPlay": [
+      {
+        "spot": [
+          {
+            "count": 1,
+            "target": [
+              [
+                "SPOT",
+                "Sméagol"
+              ]
+            ]
+          }
+        ]
+      }
+    ],
     "phases": [
       "SKIRMISH"
     ],
@@ -109853,6 +114132,11 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
+    "toPlay": [
+      {
+        "addBurdens": 1
+      }
+    ],
     "phases": [
       "SKIRMISH"
     ],
@@ -111276,6 +115560,20 @@
         "RING-BEARER"
       ]
     ],
+    "toPlay": [
+      {
+        "spot": [
+          {
+            "count": 1,
+            "target": [
+              [
+                "SPOT"
+              ]
+            ]
+          }
+        ]
+      }
+    ],
     "culture": "MEN",
     "twilightCost": 1,
     "strength": -1,
@@ -111581,6 +115879,20 @@
         "RING-BEARER"
       ]
     ],
+    "toPlay": [
+      {
+        "spot": [
+          {
+            "count": 1,
+            "target": [
+              [
+                "SPOT"
+              ]
+            ]
+          }
+        ]
+      }
+    ],
     "culture": "MEN",
     "twilightCost": 0,
     "resistance": -1,
@@ -111836,6 +116148,20 @@
     "isUnique": false,
     "kind": "FREE_PEOPLE",
     "type": "MINION",
+    "toPlay": [
+      {
+        "spot": [
+          {
+            "count": 1,
+            "target": [
+              [
+                "SPOT"
+              ]
+            ]
+          }
+        ]
+      }
+    ],
     "phases": [
       "MANEUVER"
     ],
@@ -111972,6 +116298,20 @@
     "kind": "SHADOW",
     "type": "CONDITION",
     "subtype": "SUPPORT-AREA",
+    "toPlay": [
+      {
+        "spot": [
+          {
+            "count": 2,
+            "target": [
+              [
+                "SPOT"
+              ]
+            ]
+          }
+        ]
+      }
+    ],
     "culture": "ORC",
     "twilightCost": 0,
     "imageUrl": "/cards_visuals/o_15_097.jpg",
@@ -112055,6 +116395,20 @@
     "isUnique": true,
     "kind": "SHADOW",
     "type": "MINION",
+    "toPlay": [
+      {
+        "spot": [
+          {
+            "count": 1,
+            "target": [
+              [
+                "SPOT"
+              ]
+            ]
+          }
+        ]
+      }
+    ],
     "culture": "ORC",
     "race": "ORC",
     "twilightCost": 5,
@@ -112229,6 +116583,20 @@
     "isUnique": false,
     "kind": "SHADOW",
     "type": "MINION",
+    "toPlay": [
+      {
+        "spot": [
+          {
+            "count": 1,
+            "target": [
+              [
+                "SPOT"
+              ]
+            ]
+          }
+        ]
+      }
+    ],
     "culture": "ORC",
     "race": "ORC",
     "twilightCost": 4,
@@ -112271,6 +116639,20 @@
     "isUnique": true,
     "kind": "SHADOW",
     "type": "MINION",
+    "toPlay": [
+      {
+        "spot": [
+          {
+            "count": 1,
+            "target": [
+              [
+                "SPOT"
+              ]
+            ]
+          }
+        ]
+      }
+    ],
     "culture": "ORC",
     "race": "ORC",
     "twilightCost": 8,
@@ -112356,6 +116738,20 @@
     "kind": "SHADOW",
     "type": "CONDITION",
     "subtype": "SUPPORT-AREA",
+    "toPlay": [
+      {
+        "spot": [
+          {
+            "count": 2,
+            "target": [
+              [
+                "SPOT"
+              ]
+            ]
+          }
+        ]
+      }
+    ],
     "culture": "ORC",
     "twilightCost": 0,
     "imageUrl": "/cards_visuals/o_15_106.jpg",
@@ -112394,6 +116790,35 @@
     "isUnique": false,
     "kind": "SHADOW",
     "type": "MINION",
+    "toPlay": [
+      {
+        "spot": [
+          {
+            "count": 3,
+            "target": [
+              [
+                "SPOT",
+                "Free",
+                "Peoples",
+                "CULTURES"
+              ]
+            ]
+          }
+        ]
+      },
+      {
+        "discardFromPlay": [
+          {
+            "count": 2,
+            "target": [
+              [
+                "DISCARD"
+              ]
+            ]
+          }
+        ]
+      }
+    ],
     "culture": "ORC",
     "race": "ORC",
     "twilightCost": 2,
@@ -112525,6 +116950,11 @@
     "isUnique": false,
     "kind": "SHADOW",
     "type": "MINION",
+    "toPlay": [
+      {
+        "discardFromHand": 3
+      }
+    ],
     "culture": "ORC",
     "race": "ORC",
     "twilightCost": 2,
@@ -112738,6 +117168,20 @@
     "kind": "SHADOW",
     "type": "CONDITION",
     "subtype": "SITE",
+    "toPlay": [
+      {
+        "exert": [
+          {
+            "count": 1,
+            "target": [
+              [
+                "EXERT"
+              ]
+            ]
+          }
+        ]
+      }
+    ],
     "culture": "ORC",
     "twilightCost": 0,
     "imageUrl": "/cards_visuals/o_15_115.jpg",
@@ -113212,6 +117656,20 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
+    "toPlay": [
+      {
+        "spot": [
+          {
+            "count": 1,
+            "target": [
+              [
+                "SPOT"
+              ]
+            ]
+          }
+        ]
+      }
+    ],
     "culture": "ROHAN",
     "race": "MAN",
     "twilightCost": 2,
@@ -113559,6 +118017,20 @@
     "isUnique": false,
     "kind": "FREE_PEOPLE",
     "type": "FOLLOWER",
+    "toPlay": [
+      {
+        "spot": [
+          {
+            "count": 1,
+            "target": [
+              [
+                "SPOT"
+              ]
+            ]
+          }
+        ]
+      }
+    ],
     "culture": "ROHAN",
     "twilightCost": 2,
     "strength": 1,
@@ -113682,6 +118154,20 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "FOLLOWER",
+    "toPlay": [
+      {
+        "spot": [
+          {
+            "count": 1,
+            "target": [
+              [
+                "SPOT"
+              ]
+            ]
+          }
+        ]
+      }
+    ],
     "culture": "ROHAN",
     "twilightCost": 2,
     "imageUrl": "/cards_visuals/o_15_137.jpg",
@@ -114074,6 +118560,21 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "FOLLOWER",
+    "toPlay": [
+      {
+        "spot": [
+          {
+            "count": 1,
+            "target": [
+              [
+                "SPOT",
+                "Hobbit"
+              ]
+            ]
+          }
+        ]
+      }
+    ],
     "phases": [
       "RESPONSE"
     ],
@@ -114116,6 +118617,21 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "FOLLOWER",
+    "toPlay": [
+      {
+        "spot": [
+          {
+            "count": 2,
+            "target": [
+              [
+                "SPOT",
+                "Hobbits"
+              ]
+            ]
+          }
+        ]
+      }
+    ],
     "culture": "SHIRE",
     "twilightCost": 2,
     "strength": 1,
@@ -115117,6 +119633,20 @@
     "isUnique": true,
     "kind": "SHADOW",
     "type": "MINION",
+    "toPlay": [
+      {
+        "spot": [
+          {
+            "count": 1,
+            "target": [
+              [
+                "SPOT"
+              ]
+            ]
+          }
+        ]
+      }
+    ],
     "culture": "URUK-HAI",
     "race": "URUK-HAI",
     "twilightCost": 4,
@@ -115907,6 +120437,21 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
+    "toPlay": [
+      {
+        "spot": [
+          {
+            "count": 2,
+            "target": [
+              [
+                "SPOT",
+                "Hobbits"
+              ]
+            ]
+          }
+        ]
+      }
+    ],
     "culture": "GANDALF",
     "race": "WIZARD",
     "twilightCost": 4,
@@ -116664,6 +121209,20 @@
     "kind": "FREE_PEOPLE",
     "type": "CONDITION",
     "subtype": "SUPPORT-AREA",
+    "toPlay": [
+      {
+        "remove": [
+          {
+            "count": 1,
+            "target": [
+              [
+                "REMOVE"
+              ]
+            ]
+          }
+        ]
+      }
+    ],
     "phases": [
       "SKIRMISH"
     ],
@@ -116673,23 +121232,23 @@
     "i18n": {
       "en": {
         "title": "Balin Avenged",
-        "gameText": "When you play this condition, you may add a <symbol>dwarven</symbol> token here. While you can spot 4 <symbol>dwarven</symbol> tokens and 2 Dwarves, each<symbol>orc</symbol>Orc gains this text To play, remove an ¥ card from your discard pile from the game.\n**Skirmish:** Discard this condition to exert a minion for each Dwarf you can spot."
+        "gameText": "When you play this condition, you may add a <symbol>dwarven</symbol> token here. While you can spot 4 <symbol>dwarven</symbol> tokens and 2 Dwarves, each<symbol>orc</symbol>Orc gains this text To play, remove an <symbol>orc</symbol> card from your discard pile from the game.\n**Skirmish:** Discard this condition to exert a minion for each Dwarf you can spot."
       },
       "fr": {
         "title": "Balin Avenged",
-        "gameText": "When you play this condition, you may add a <symbol>dwarven</symbol> token here. While you can spot 4 <symbol>dwarven</symbol> tokens and 2 Dwarves, each<symbol>orc</symbol>Orc gains this text To play, remove an ¥ card from your discard pile from the game.\n**Skirmish:** Discard this condition to exert a minion for each Dwarf you can spot."
+        "gameText": "When you play this condition, you may add a <symbol>dwarven</symbol> token here. While you can spot 4 <symbol>dwarven</symbol> tokens and 2 Dwarves, each<symbol>orc</symbol>Orc gains this text To play, remove an <symbol>orc</symbol> card from your discard pile from the game.\n**Skirmish:** Discard this condition to exert a minion for each Dwarf you can spot."
       },
       "de": {
         "title": "Balin Avenged",
-        "gameText": "When you play this condition, you may add a <symbol>dwarven</symbol> token here. While you can spot 4 <symbol>dwarven</symbol> tokens and 2 Dwarves, each<symbol>orc</symbol>Orc gains this text To play, remove an ¥ card from your discard pile from the game.\n**Skirmish:** Discard this condition to exert a minion for each Dwarf you can spot."
+        "gameText": "When you play this condition, you may add a <symbol>dwarven</symbol> token here. While you can spot 4 <symbol>dwarven</symbol> tokens and 2 Dwarves, each<symbol>orc</symbol>Orc gains this text To play, remove an <symbol>orc</symbol> card from your discard pile from the game.\n**Skirmish:** Discard this condition to exert a minion for each Dwarf you can spot."
       },
       "it": {
         "title": "Balin Avenged",
-        "gameText": "When you play this condition, you may add a <symbol>dwarven</symbol> token here. While you can spot 4 <symbol>dwarven</symbol> tokens and 2 Dwarves, each<symbol>orc</symbol>Orc gains this text To play, remove an ¥ card from your discard pile from the game.\n**Skirmish:** Discard this condition to exert a minion for each Dwarf you can spot."
+        "gameText": "When you play this condition, you may add a <symbol>dwarven</symbol> token here. While you can spot 4 <symbol>dwarven</symbol> tokens and 2 Dwarves, each<symbol>orc</symbol>Orc gains this text To play, remove an <symbol>orc</symbol> card from your discard pile from the game.\n**Skirmish:** Discard this condition to exert a minion for each Dwarf you can spot."
       },
       "es": {
         "title": "Balin Avenged",
-        "gameText": "When you play this condition, you may add a <symbol>dwarven</symbol> token here. While you can spot 4 <symbol>dwarven</symbol> tokens and 2 Dwarves, each<symbol>orc</symbol>Orc gains this text To play, remove an ¥ card from your discard pile from the game.\n**Skirmish:** Discard this condition to exert a minion for each Dwarf you can spot."
+        "gameText": "When you play this condition, you may add a <symbol>dwarven</symbol> token here. While you can spot 4 <symbol>dwarven</symbol> tokens and 2 Dwarves, each<symbol>orc</symbol>Orc gains this text To play, remove an <symbol>orc</symbol> card from your discard pile from the game.\n**Skirmish:** Discard this condition to exert a minion for each Dwarf you can spot."
       }
     }
   },
@@ -117134,6 +121693,21 @@
     "kind": "FREE_PEOPLE",
     "type": "CONDITION",
     "subtype": "SUPPORT-AREA",
+    "toPlay": [
+      {
+        "spot": [
+          {
+            "count": 1,
+            "target": [
+              [
+                "SPOT",
+                "Elf"
+              ]
+            ]
+          }
+        ]
+      }
+    ],
     "culture": "ELVEN",
     "twilightCost": 5,
     "imageUrl": "/cards_visuals/o_17_013.jpg",
@@ -117503,6 +122077,20 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "FOLLOWER",
+    "toPlay": [
+      {
+        "spot": [
+          {
+            "count": 1,
+            "target": [
+              [
+                "SPOT"
+              ]
+            ]
+          }
+        ]
+      }
+    ],
     "culture": "GANDALF",
     "twilightCost": 3,
     "imageUrl": "/cards_visuals/o_17_022.jpg",
@@ -118102,6 +122690,21 @@
     "kind": "FREE_PEOPLE",
     "type": "ARTIFACT",
     "subtype": "SUPPORT-AREA",
+    "toPlay": [
+      {
+        "spot": [
+          {
+            "count": 2,
+            "target": [
+              [
+                "SPOT",
+                "Denethor"
+              ]
+            ]
+          }
+        ]
+      }
+    ],
     "phases": [
       "SKIRMISH"
     ],
@@ -118740,6 +123343,20 @@
     "isUnique": false,
     "kind": "FREE_PEOPLE",
     "type": "MINION",
+    "toPlay": [
+      {
+        "spot": [
+          {
+            "count": 2,
+            "target": [
+              [
+                "SPOT"
+              ]
+            ]
+          }
+        ]
+      }
+    ],
     "culture": "MEN",
     "race": "MAN",
     "twilightCost": 6,
@@ -118782,6 +123399,20 @@
     "isUnique": false,
     "kind": "FREE_PEOPLE",
     "type": "MINION",
+    "toPlay": [
+      {
+        "spot": [
+          {
+            "count": 2,
+            "target": [
+              [
+                "SPOT"
+              ]
+            ]
+          }
+        ]
+      }
+    ],
     "culture": "MEN",
     "race": "MAN",
     "twilightCost": 6,
@@ -119178,6 +123809,20 @@
     "isUnique": false,
     "kind": "FREE_PEOPLE",
     "type": "MINION",
+    "toPlay": [
+      {
+        "spot": [
+          {
+            "count": 2,
+            "target": [
+              [
+                "SPOT"
+              ]
+            ]
+          }
+        ]
+      }
+    ],
     "culture": "MEN",
     "race": "MAN",
     "twilightCost": 6,
@@ -119431,6 +124076,21 @@
     "kind": "SHADOW",
     "type": "CONDITION",
     "subtype": "SUPPORT-AREA",
+    "toPlay": [
+      {
+        "exert": [
+          {
+            "count": 1,
+            "target": [
+              [
+                "EXERT",
+                "MOUNTED"
+              ]
+            ]
+          }
+        ]
+      }
+    ],
     "culture": "ORC",
     "twilightCost": 2,
     "imageUrl": "/cards_visuals/o_17_067.jpg",
@@ -119470,6 +124130,22 @@
     "kind": "SHADOW",
     "type": "CONDITION",
     "subtype": "SUPPORT-AREA",
+    "toPlay": [
+      {
+        "spot": [
+          {
+            "count": 1,
+            "target": [
+              [
+                "SPOT",
+                "NO",
+                "MINION"
+              ]
+            ]
+          }
+        ]
+      }
+    ],
     "culture": "ORC",
     "twilightCost": 0,
     "imageUrl": "/cards_visuals/o_17_068.jpg",
@@ -119800,6 +124476,20 @@
     "isUnique": false,
     "kind": "SHADOW",
     "type": "MINION",
+    "toPlay": [
+      {
+        "spot": [
+          {
+            "count": 1,
+            "target": [
+              [
+                "SPOT"
+              ]
+            ]
+          }
+        ]
+      }
+    ],
     "culture": "ORC",
     "race": "ORC",
     "twilightCost": 8,
@@ -120782,6 +125472,21 @@
     "kind": "FREE_PEOPLE",
     "type": "ARTIFACT",
     "subtype": "SUPPORT-AREA",
+    "toPlay": [
+      {
+        "spot": [
+          {
+            "count": 2,
+            "target": [
+              [
+                "SPOT",
+                "Théoden"
+              ]
+            ]
+          }
+        ]
+      }
+    ],
     "phases": [
       "RESPONSE"
     ],
@@ -120862,6 +125567,20 @@
     "kind": "FREE_PEOPLE",
     "type": "CONDITION",
     "subtype": "SUPPORT-AREA",
+    "toPlay": [
+      {
+        "spot": [
+          {
+            "count": 3,
+            "target": [
+              [
+                "SPOT"
+              ]
+            ]
+          }
+        ]
+      }
+    ],
     "phases": [
       "ASSIGNMENT"
     ],
@@ -121078,6 +125797,21 @@
     "kind": "SHADOW",
     "type": "ARTIFACT",
     "subtype": "SUPPORT-AREA",
+    "toPlay": [
+      {
+        "spot": [
+          {
+            "count": 2,
+            "target": [
+              [
+                "SPOT",
+                "MINION"
+              ]
+            ]
+          }
+        ]
+      }
+    ],
     "culture": "SAURON",
     "twilightCost": 2,
     "imageUrl": "/cards_visuals/o_17_105.jpg",
@@ -121117,6 +125851,21 @@
     "kind": "FREE_PEOPLE",
     "type": "CONDITION",
     "subtype": "SUPPORT-AREA",
+    "toPlay": [
+      {
+        "spot": [
+          {
+            "count": 1,
+            "target": [
+              [
+                "SPOT",
+                "Hobbit"
+              ]
+            ]
+          }
+        ]
+      }
+    ],
     "phases": [
       "SKIRMISH"
     ],
@@ -121205,6 +125954,22 @@
     "kind": "FREE_PEOPLE",
     "type": "CONDITION",
     "subtype": "SUPPORT-AREA",
+    "toPlay": [
+      {
+        "spot": [
+          {
+            "count": 1,
+            "target": [
+              [
+                "SPOT",
+                "UNBOUND",
+                "Hobbit"
+              ]
+            ]
+          }
+        ]
+      }
+    ],
     "phases": [
       "REGROUP"
     ],
@@ -121293,6 +126058,22 @@
     "kind": "FREE_PEOPLE",
     "type": "CONDITION",
     "subtype": "SUPPORT-AREA",
+    "toPlay": [
+      {
+        "spot": [
+          {
+            "count": 1,
+            "target": [
+              [
+                "SPOT",
+                "UNBOUND",
+                "Hobbit"
+              ]
+            ]
+          }
+        ]
+      }
+    ],
     "phases": [
       "SKIRMISH",
       "REGROUP"
@@ -121331,6 +126112,21 @@
     "kind": "FREE_PEOPLE",
     "type": "CONDITION",
     "subtype": "SUPPORT-AREA",
+    "toPlay": [
+      {
+        "spot": [
+          {
+            "count": 1,
+            "target": [
+              [
+                "SPOT",
+                "Hobbit"
+              ]
+            ]
+          }
+        ]
+      }
+    ],
     "phases": [
       "SKIRMISH"
     ],
@@ -121638,6 +126434,20 @@
     "kind": "SHADOW",
     "type": "POSSESSION",
     "subtype": "SUPPORT-AREA",
+    "toPlay": [
+      {
+        "spot": [
+          {
+            "count": 1,
+            "target": [
+              [
+                "SPOT"
+              ]
+            ]
+          }
+        ]
+      }
+    ],
     "phases": [
       "REGROUP"
     ],
@@ -122102,6 +126912,11 @@
     "isUnique": false,
     "kind": "SHADOW",
     "type": "MINION",
+    "toPlay": [
+      {
+        "removeThreats": 2
+      }
+    ],
     "culture": "URUK-HAI",
     "race": "URUK-HAI",
     "twilightCost": 6,
@@ -123001,6 +127816,20 @@
     "isUnique": false,
     "kind": "FREE_PEOPLE",
     "type": "EVENT",
+    "toPlay": [
+      {
+        "exert": [
+          {
+            "count": 1,
+            "target": [
+              [
+                "EXERT"
+              ]
+            ]
+          }
+        ]
+      }
+    ],
     "phases": [
       "MANEUVER"
     ],
@@ -123037,6 +127866,20 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "FOLLOWER",
+    "toPlay": [
+      {
+        "spot": [
+          {
+            "count": 2,
+            "target": [
+              [
+                "SPOT"
+              ]
+            ]
+          }
+        ]
+      }
+    ],
     "culture": "ELVEN",
     "twilightCost": 3,
     "strength": 2,
@@ -123087,6 +127930,26 @@
         "ELVEN",
         "COMPANION"
       ]
+    ],
+    "toPlay": [
+      {
+        "spot": [
+          {
+            "count": 1,
+            "target": [
+              [
+                "BEARER",
+                "MUST",
+                "NOT",
+                "BE",
+                "BEARING",
+                "ANY",
+                "POSSESSIONS"
+              ]
+            ]
+          }
+        ]
+      }
     ],
     "culture": "ELVEN",
     "twilightCost": 2,
@@ -123214,6 +128077,33 @@
     "kind": "FREE_PEOPLE",
     "type": "ARTIFACT",
     "subtype": "SUPPORT-AREA",
+    "toPlay": [
+      {
+        "spot": [
+          {
+            "count": 1,
+            "target": [
+              [
+                "SPOT",
+                "Galadriel"
+              ]
+            ]
+          }
+        ]
+      },
+      {
+        "spot": [
+          {
+            "count": 1,
+            "target": [
+              [
+                "Celeborn"
+              ]
+            ]
+          }
+        ]
+      }
+    ],
     "culture": "ELVEN",
     "twilightCost": 2,
     "imageUrl": "/cards_visuals/o_18_011.jpg",
@@ -123252,6 +128142,20 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
+    "toPlay": [
+      {
+        "spot": [
+          {
+            "count": 2,
+            "target": [
+              [
+                "SPOT"
+              ]
+            ]
+          }
+        ]
+      }
+    ],
     "culture": "ELVEN",
     "race": "ELF",
     "twilightCost": 4,
@@ -123353,6 +128257,20 @@
       [
         "COMPANION"
       ]
+    ],
+    "toPlay": [
+      {
+        "spot": [
+          {
+            "count": 2,
+            "target": [
+              [
+                "SPOT"
+              ]
+            ]
+          }
+        ]
+      }
     ],
     "phases": [
       "REGROUP"
@@ -123480,6 +128398,20 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
+    "toPlay": [
+      {
+        "spot": [
+          {
+            "count": 2,
+            "target": [
+              [
+                "SPOT"
+              ]
+            ]
+          }
+        ]
+      }
+    ],
     "phases": [
       "MANEUVER",
       "REGROUP"
@@ -123795,6 +128727,21 @@
     "kind": "FREE_PEOPLE",
     "type": "CONDITION",
     "subtype": "SUPPORT-AREA",
+    "toPlay": [
+      {
+        "exert": [
+          {
+            "count": 1,
+            "target": [
+              [
+                "EXERT",
+                "Gandalf"
+              ]
+            ]
+          }
+        ]
+      }
+    ],
     "culture": "GANDALF",
     "twilightCost": 0,
     "imageUrl": "/cards_visuals/o_18_024.jpg",
@@ -124251,6 +129198,21 @@
     "isUnique": false,
     "kind": "SHADOW",
     "type": "EVENT",
+    "toPlay": [
+      {
+        "spot": [
+          {
+            "count": 1,
+            "target": [
+              [
+                "SPOT",
+                "Shelob"
+              ]
+            ]
+          }
+        ]
+      }
+    ],
     "phases": [
       "REGROUP"
     ],
@@ -124510,6 +129472,34 @@
     "kind": "FREE_PEOPLE",
     "type": "ARTIFACT",
     "subtype": "SUPPORT-AREA",
+    "toPlay": [
+      {
+        "spot": [
+          {
+            "count": 1,
+            "target": [
+              [
+                "SPOT",
+                "Aragorn,",
+                "Elendil,"
+              ]
+            ]
+          }
+        ]
+      },
+      {
+        "spot": [
+          {
+            "count": 1,
+            "target": [
+              [
+                "Isildur"
+              ]
+            ]
+          }
+        ]
+      }
+    ],
     "phases": [
       "SKIRMISH"
     ],
@@ -125945,6 +130935,20 @@
     "kind": "SHADOW",
     "type": "POSSESSION",
     "subtype": "SUPPORT-AREA",
+    "toPlay": [
+      {
+        "spot": [
+          {
+            "count": 1,
+            "target": [
+              [
+                "SPOT"
+              ]
+            ]
+          }
+        ]
+      }
+    ],
     "culture": "ORC",
     "twilightCost": 3,
     "imageUrl": "/cards_visuals/o_18_073.jpg",
@@ -126293,6 +131297,20 @@
     "isUnique": false,
     "kind": "SHADOW",
     "type": "MINION",
+    "toPlay": [
+      {
+        "spot": [
+          {
+            "count": 1,
+            "target": [
+              [
+                "SPOT"
+              ]
+            ]
+          }
+        ]
+      }
+    ],
     "culture": "ORC",
     "race": "ORC",
     "twilightCost": 5,
@@ -127226,6 +132244,21 @@
     "kind": "FREE_PEOPLE",
     "type": "CONDITION",
     "subtype": "SUPPORT-AREA",
+    "toPlay": [
+      {
+        "spot": [
+          {
+            "count": 1,
+            "target": [
+              [
+                "SPOT",
+                "Théoden"
+              ]
+            ]
+          }
+        ]
+      }
+    ],
     "phases": [
       "SKIRMISH"
     ],
@@ -127399,6 +132432,21 @@
     "kind": "FREE_PEOPLE",
     "type": "CONDITION",
     "subtype": "SUPPORT-AREA",
+    "toPlay": [
+      {
+        "spot": [
+          {
+            "count": 1,
+            "target": [
+              [
+                "SPOT",
+                "Hobbit"
+              ]
+            ]
+          }
+        ]
+      }
+    ],
     "phases": [
       "MANEUVER"
     ],
@@ -128391,6 +133439,20 @@
     "isUnique": false,
     "kind": "SHADOW",
     "type": "MINION",
+    "toPlay": [
+      {
+        "spot": [
+          {
+            "count": 1,
+            "target": [
+              [
+                "SPOT"
+              ]
+            ]
+          }
+        ]
+      }
+    ],
     "culture": "URUK-HAI",
     "race": "URUK-HAI",
     "twilightCost": 0,
@@ -128478,6 +133540,20 @@
     "isUnique": false,
     "kind": "SHADOW",
     "type": "MINION",
+    "toPlay": [
+      {
+        "spot": [
+          {
+            "count": 1,
+            "target": [
+              [
+                "SPOT"
+              ]
+            ]
+          }
+        ]
+      }
+    ],
     "culture": "URUK-HAI",
     "race": "URUK-HAI",
     "twilightCost": 3,
@@ -128515,6 +133591,21 @@
     "isUnique": false,
     "kind": "SHADOW",
     "type": "EVENT",
+    "toPlay": [
+      {
+        "spot": [
+          {
+            "count": 1,
+            "target": [
+              [
+                "SPOT",
+                "Nazgûl"
+              ]
+            ]
+          }
+        ]
+      }
+    ],
     "phases": [
       "SHADOW"
     ],
@@ -128961,6 +134052,20 @@
         "COMPANION"
       ]
     ],
+    "toPlay": [
+      {
+        "spot": [
+          {
+            "count": 1,
+            "target": [
+              [
+                "SPOT"
+              ]
+            ]
+          }
+        ]
+      }
+    ],
     "culture": "GANDALF",
     "twilightCost": 2,
     "strength": 2,
@@ -129041,6 +134146,11 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
+    "toPlay": [
+      {
+        "addBurdens": 1
+      }
+    ],
     "phases": [
       "SKIRMISH"
     ],
@@ -129540,6 +134650,20 @@
     "isUnique": false,
     "kind": "SHADOW",
     "type": "MINION",
+    "toPlay": [
+      {
+        "spot": [
+          {
+            "count": 1,
+            "target": [
+              [
+                "SPOT"
+              ]
+            ]
+          }
+        ]
+      }
+    ],
     "culture": "ORC",
     "race": "TROLL",
     "twilightCost": 7,
@@ -129582,6 +134706,20 @@
     "isUnique": true,
     "kind": "SHADOW",
     "type": "MINION",
+    "toPlay": [
+      {
+        "spot": [
+          {
+            "count": 1,
+            "target": [
+              [
+                "SPOT"
+              ]
+            ]
+          }
+        ]
+      }
+    ],
     "phases": [
       "SKIRMISH"
     ],

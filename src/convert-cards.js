@@ -442,6 +442,7 @@ async function convert() {
         // ------------------------------------------------------------------------
         // 4.3. Assemblage de l'objet Carte
         // ------------------------------------------------------------------------
+        const toPlayData = parseToPlayConditions(englishText);
         const cardObj = {
             id: cardId,
             set: parseInt(data['Set'], 10) || 0,
@@ -453,6 +454,7 @@ async function convert() {
             type: type,
             subtype: subtype,
             attachedTo: attachmentData || undefined,
+            toPlay: toPlayData,
             isControlled: attachmentData?.isControlled,
             phases: phases,
             culture: mapCulture(data['Culture']),
@@ -511,6 +513,119 @@ async function convert() {
     console.log(`✅ Conversion réussie !`);
     console.log(`🃏 Cartes : ${cardsArray.length} -> ${OUTPUT_CARDS_PATH}`);
     console.log(`🏞️ Sites  : ${sitesArray.length} -> ${OUTPUT_SITES_PATH}`);
+}
+
+function parseToPlayConditions(text) {
+    if (!text) return undefined;
+
+    // 1. Détection de "To play, " peu importe ce qui précède !
+    // Capture tout ce qui suit jusqu'au premier '.', retour à la ligne '\n' ou balise HTML/XML '<'
+    const match = text.match(/To play,\s+([^.\n<]+)/i);
+    if (!match) return undefined;
+
+    const rawClause = match[1].trim(); 
+    // ex: "spot a Ring-bound Man", "discard 2 cards from hand", "remove 2 burdens or 2 threats"
+
+    // Helper pour extraire la quantité (chiffre), ou 1 par défaut
+    function extractCount(str) {
+        const m = str.match(/\b(\d+)\b/);
+        return m ? parseInt(m[1], 10) : 1;
+    }
+
+    // Helper pour normaliser les tokens/mots
+    function normalizeToken(token) {
+        const clean = token.replace(/[^a-zA-Z-áéíóúÁÉÍÓÚàèìòùÀÈÌÒÙäëïöüÄËÏÖÜñÑ]/g, '');
+        const upper = clean.toUpperCase();
+
+        const plurals = {
+            'HOBBITS': 'HOBBIT', 'ENTS': 'ENT', 'RANGERS': 'RANGER',
+            'ELVES': 'ELF', 'DWARVES': 'DWARF', 'MINIONS': 'MINION',
+            'COMPANIONS': 'COMPANION', 'ALLIES': 'ALLY', 'KNIGHTS': 'KNIGHT', 'MEN': 'MAN'
+        };
+
+        return plurals[upper] || upper;
+    }
+
+    // Extraction des cibles (Cultures, Mots-clés, Nom propre ou Types)
+    function parseTarget(bodyText) {
+        const targets = [];
+
+        // Extraction des symboles <symbol>shire</symbol>
+        let cleanBody = bodyText.replace(/<symbol>(.*?)<\/symbol>/gi, (_, culture) => {
+            if (culture) targets.push(culture.toUpperCase());
+            return ' ';
+        });
+
+        // Extraction des keywords <keyword>Ring-bound</keyword>
+        cleanBody = cleanBody.replace(/<keyword>(.*?)<\/keyword>/gi, (_, kw) => {
+            if (kw) targets.push(kw.replace(/[:.,]/g, '').toUpperCase());
+            return ' ';
+        });
+
+        // Nettoyage Markdown / HTML
+        cleanBody = cleanBody.replace(/[*_#<>[\]]/g, ' ').trim();
+
+        const words = cleanBody.split(/\s+/).filter(Boolean);
+        for (const word of words) {
+            const normalized = normalizeToken(word);
+            if (normalized && !['A', 'AN', 'YOUR', 'OR', 'FROM', 'IN', 'PLAY', 'HAND', 'CARD', 'CARDS'].includes(normalized)) {
+                // Conservation de la casse si nom propre
+                const isProperName = /^[A-Z][a-zà-ÿ]+/.test(word);
+                targets.push(isProperName ? word : normalized);
+            }
+        }
+
+        return targets;
+    }
+
+    // Découpage des alternatives séparées par "OR"
+    const rawOptions = rawClause.split(/\s+or\s+/i);
+    const parsedOptions = [];
+
+    // Verbe global par défaut si non répété après "or" (ex: "remove 2 burdens or 2 threats")
+    const globalVerbMatch = rawClause.match(/^(spot|exert|discard|remove|add)\b/i);
+    const defaultVerb = globalVerbMatch ? globalVerbMatch[1].toLowerCase() : 'spot';
+
+    for (let optionText of rawOptions) {
+        optionText = optionText.trim();
+        const optionObj = {};
+
+        const optionVerbMatch = optionText.match(/^(spot|exert|discard|remove|add)\b/i);
+        const currentVerb = optionVerbMatch ? optionVerbMatch[1].toLowerCase() : defaultVerb;
+
+        const count = extractCount(optionText);
+
+        // 1. DISCARD FROM HAND
+        if (/discard.*hand/i.test(optionText) || (currentVerb === 'discard' && /hand/i.test(optionText))) {
+            optionObj.discardFromHand = count;
+        }
+        // 2. BURDENS
+        else if (/burdens?/i.test(optionText)) {
+            if (currentVerb === 'remove') optionObj.removeBurdens = count;
+            else if (currentVerb === 'add') optionObj.addBurdens = count;
+            else optionObj.spotBurdens = count;
+        } 
+        // 3. THREATS
+        else if (/threats?/i.test(optionText)) {
+            if (currentVerb === 'remove') optionObj.removeThreats = count;
+            else if (currentVerb === 'add') optionObj.addThreats = count;
+            else optionObj.spotThreats = count;
+        }
+        // 4. CARTES / EFFETS SUR LE JEU (spot, exert, discardFromPlay)
+        else {
+            const targets = parseTarget(optionText);
+            if (targets.length > 0) {
+                const key = currentVerb === 'discard' ? 'discardFromPlay' : currentVerb;
+                optionObj[key] = [{ count, target: [targets] }];
+            }
+        }
+
+        if (Object.keys(optionObj).length > 0) {
+            parsedOptions.push(optionObj);
+        }
+    }
+
+    return parsedOptions.length > 0 ? parsedOptions : undefined;
 }
 
 // ============================================================================
