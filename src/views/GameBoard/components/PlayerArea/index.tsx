@@ -220,25 +220,26 @@ export const PlayerArea: React.FC<PlayerAreaProps> = ({
                             : false;
 
                         return (
-                            <S.CharacterStack
+                            <BoardCharacterStack
                                 key={card.id}
-                                data-draggable={
-                                    !isOpponent ? 'true' : undefined
-                                }
-                            >
-                                <Card
-                                    size="sm"
-                                    card={card}
-                                    isDraggable={!isOpponent}
-                                    index={cardIdx}
-                                    isWounded={G.lastWoundedCardIds?.includes(
-                                        card.id
-                                    )}
-                                    isOpponent={isOpponent}
-                                    isFaceDown={shouldBeFaceDown}
-                                    burdens={playerBurdens}
-                                />
-                            </S.CharacterStack>
+                                character={card}
+                                index={cardIdx}
+                                isOpponent={isOpponent}
+                                isFaceDown={shouldBeFaceDown}
+                                burdens={playerBurdens}
+                                lastWoundedCardIds={G?.lastWoundedCardIds}
+                                onStartDrag={(e) => {
+                                    if (isOpponent || e.button !== 0) return;
+                                    e.stopPropagation();
+                                    startDrag(
+                                        card,
+                                        cardIdx,
+                                        e,
+                                        'BOARD',
+                                        'portrait'
+                                    );
+                                }}
+                            />
                         );
                     })}
                 </S.CardRow>
