@@ -44,6 +44,7 @@ export interface GameBoardProps extends BoardProps<GameState> {
             assignMinion: (minionId: string, targetId: string) => void;
             playSite: (siteId: string, targetIndex: number) => void;
             drawCard: () => void;
+            selectStartingSite?: (siteCard: CardState) => void;
         };
 }
 
@@ -359,7 +360,28 @@ export const GameBoard: React.FC<GameBoardProps> = ({
                     path={G.path}
                     players={G.players}
                     onPlaySite={(siteId, targetIndex) => {
-                        if (moves.playSite) moves.playSite(siteId, targetIndex);
+                        // 🟢 Si on est en phase de Setup et qu'on attend la sélection du Site 1
+                        if (
+                            G.setupState?.step === 'AWAITING_SITE' ||
+                            G.awaitingSiteSelection
+                        ) {
+                            // On retrouve l'objet carte du site dans le deck du joueur Peuple Libre
+                            const fpPlayer = G.players[G.fpPlayerId || '0'];
+                            const siteCard = fpPlayer?.sitesDeck?.find(
+                                (s) => s.id === siteId
+                            );
+
+                            if (siteCard && moves.selectStartingSite) {
+                                // 1. Appelle LE BON move !
+                                moves.selectStartingSite(siteCard);
+                                return;
+                            }
+                        }
+
+                        // 🔵 Sinon, pour tous les autres sites posés plus tard pendant le jeu
+                        if (moves.playSite) {
+                            moves.playSite(siteId, targetIndex);
+                        }
                     }}
                 />
                 <Dock

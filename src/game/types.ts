@@ -241,6 +241,7 @@ export interface GameState {
             | 'MULLIGAN'
             | 'COMPLETE';
     };
+    mulliganChoices?: Record<string, 'kept' | 'mulliganed' | null>;
 }
 
 export interface KeywordData {

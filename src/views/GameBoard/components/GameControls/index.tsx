@@ -14,6 +14,7 @@ interface GameControlsProps {
     moves: {
         submitBid?: (amount: number) => void;
         chooseFirstPlayer?: (wantToBeFirst: boolean) => void;
+        submitMulliganChoice?: (doMulligan: boolean) => void;
         endFellowshipPhase?: () => void;
         endShadowPhase?: () => void;
         moveNextSite?: () => void;
@@ -40,34 +41,46 @@ export const GameControls: React.FC<GameControlsProps> = ({
     const fpPlayerId = G.fpPlayerId || '0';
     const shadowPlayerId = fpPlayerId === '0' ? '1' : '0';
 
-    // 🟢 PHASE D'ENCHÈRE / SETUP
-    const isSetupPhase = ctx.phase === 'setup';
+    // 🟢 PHASE D'ENCHÈRE / SETUP (Sécurisé)
     const setupStep = G.setupState?.step;
+    const isSetupPhase =
+        ctx.phase === 'setup' ||
+        (Boolean(setupStep) && setupStep !== 'COMPLETE');
+
     const isBiddingStep = isSetupPhase && setupStep === 'BIDDING';
     const isChoosingFirstStep = isSetupPhase && setupStep === 'CHOOSING_FIRST';
+    const isMulliganStep = isSetupPhase && setupStep === 'MULLIGAN';
 
+    // Verification des choix de joueurs (sécurisée contre undefined/null)
     const currentBid = G.setupState?.bids?.[currentPlayerId];
     const hasAlreadyBid = currentBid !== null && currentBid !== undefined;
+
+    const mulliganChoice = G.setupState?.mulligans?.[currentPlayerId];
+    const hasMadeMulliganChoice =
+        mulliganChoice !== null && mulliganChoice !== undefined;
+
     const isAuctionWinner = G.setupState?.auctionWinnerId === currentPlayerId;
 
     // 🟢 CALCUL DU NUMÉRO DE SITE À POSER (CIBLE)
-    // En dehors de la phase setup, targetSiteIdx vaut au minimum 1 (Site 2+)
     const rawSiteIdx = G.currentSiteIndex ?? 0;
     const targetSiteIdx = isSetupPhase ? rawSiteIdx : Math.max(1, rawSiteIdx);
 
     // Site 1 (index 0 / setup) = FP | Sites 2+ (index > 0 / en jeu) = Ombre
-    const siteSelectorPlayerId = targetSiteIdx === 0 ? fpPlayerId : shadowPlayerId;
+    const siteSelectorPlayerId =
+        targetSiteIdx === 0 ? fpPlayerId : shadowPlayerId;
 
     // 🟢 1. DÉTERMINATION DU JOUEUR QUI DOIT AGIR
     const isActionWindowActive = G.actionWindow?.isOpen ?? false;
 
-    const actingPlayerId = isActionWindowActive
-        ? G.actionWindow!.activePlayerId
-        : awaitingSite
-          ? siteSelectorPlayerId
-          : ctx.phase === 'shadow' || G.regroupStep === 'SHADOW_REFILL'
-            ? shadowPlayerId
-            : fpPlayerId;
+    const actingPlayerId = isSetupPhase
+        ? currentPlayerId
+        : isActionWindowActive
+          ? G.actionWindow!.activePlayerId
+          : awaitingSite
+            ? siteSelectorPlayerId
+            : ctx.phase === 'shadow' || G.regroupStep === 'SHADOW_REFILL'
+              ? shadowPlayerId
+              : fpPlayerId;
 
     const actingPlayer = G.players?.[actingPlayerId];
     const isMyTurnToAct = currentPlayerId === actingPlayerId;
@@ -109,7 +122,7 @@ export const GameControls: React.FC<GameControlsProps> = ({
         title: string;
         body: string;
         showPassButton: boolean;
-        type?: 'BIDDING' | 'CHOOSING_FIRST' | 'STANDARD';
+        type?: 'BIDDING' | 'CHOOSING_FIRST' | 'MULLIGAN' | 'STANDARD';
     } = {
         show: false,
         title: 'ACTION REQUISE',
@@ -135,6 +148,16 @@ export const GameControls: React.FC<GameControlsProps> = ({
                 : "L'adversaire choisit qui prend les Peuples Libres...",
             showPassButton: false,
             type: 'CHOOSING_FIRST',
+        };
+    } else if (isMulliganStep) {
+        toastConfig = {
+            show: true,
+            title: 'PHASE DE MULLIGAN',
+            body: hasMadeMulliganChoice
+                ? "En attente du choix de l'adversaire..."
+                : 'Examinez votre main de 8 cartes. Voulez-vous la garder ou faire un Mulligan ?',
+            showPassButton: false,
+            type: 'MULLIGAN',
         };
     } else if (isActionWindowActive && isMyTurnToAct) {
         toastConfig = {
@@ -190,6 +213,12 @@ export const GameControls: React.FC<GameControlsProps> = ({
                 : "L'adversaire détermine l'ordre des joueurs...";
         }
 
+        if (isMulliganStep) {
+            return hasMadeMulliganChoice
+                ? "Votre choix de Mulligan est enregistré. En attente de l'adversaire..."
+                : 'Décidez si vous conservez votre main de départ ou si vous remélangez.';
+        }
+
         if (isActionWindowActive) {
             return isMyTurnToAct
                 ? 'Une fenêtre d’action est ouverte : Jouez une carte/effet ou passez.'
@@ -197,7 +226,8 @@ export const GameControls: React.FC<GameControlsProps> = ({
         }
 
         if (awaitingSite) {
-            const isMyTurnToPlaceSite = currentPlayerId === siteSelectorPlayerId;
+            const isMyTurnToPlaceSite =
+                currentPlayerId === siteSelectorPlayerId;
             const isFirstSite = targetSiteIdx === 0;
 
             if (isMyTurnToPlaceSite) {
@@ -254,7 +284,7 @@ export const GameControls: React.FC<GameControlsProps> = ({
                                 ? TRANSLATIONS.phase[
                                       ctx.phase.toUpperCase() as keyof typeof TRANSLATIONS.phase
                                   ] || ctx.phase.toUpperCase()
-                                : ''}
+                                : 'SETUP'}
                         </S.PhaseBadge>
 
                         {actingPlayer?.profile?.avatar && (
@@ -351,31 +381,72 @@ export const GameControls: React.FC<GameControlsProps> = ({
                     <S.ToastBody>
                         <p>{toastConfig.body}</p>
 
-                        {/* 🟢 RENDU DU WIDGET D'ENCHÈRE AU SEIN DU TOASTER */}
+                        {/* RENDU DU WIDGET D'ENCHÈRE */}
                         {toastConfig.type === 'BIDDING' && (
                             <BiddingWidget
                                 currentBid={currentBid ?? null}
-                                onSubmitBid={(amount) => moves.submitBid?.(amount)}
+                                onSubmitBid={(amount) =>
+                                    moves.submitBid?.(amount)
+                                }
                                 isWaitingForOpponent={hasAlreadyBid}
                             />
                         )}
 
-                        {/* 🟢 CHOIX DU PREMIER JOUEUR DANS LE TOASTER */}
-                        {toastConfig.type === 'CHOOSING_FIRST' && isAuctionWinner && (
-                            <div style={{ display: 'flex', gap: '8px', marginTop: '12px' }}>
-                                <S.ActionButton
-                                    onClick={() => moves.chooseFirstPlayer?.(true)}
+                        {/* CHOIX DU PREMIER JOUEUR */}
+                        {toastConfig.type === 'CHOOSING_FIRST' &&
+                            isAuctionWinner && (
+                                <div
+                                    style={{
+                                        display: 'flex',
+                                        gap: '8px',
+                                        marginTop: '12px',
+                                    }}
                                 >
-                                    Jouer Premier (Peuples Libres)
-                                </S.ActionButton>
-                                <S.ActionButton
-                                    $variant="secondary"
-                                    onClick={() => moves.chooseFirstPlayer?.(false)}
+                                    <S.ActionButton
+                                        onClick={() =>
+                                            moves.chooseFirstPlayer?.(true)
+                                        }
+                                    >
+                                        Jouer Premier (Peuples Libres)
+                                    </S.ActionButton>
+                                    <S.ActionButton
+                                        $variant="secondary"
+                                        onClick={() =>
+                                            moves.chooseFirstPlayer?.(false)
+                                        }
+                                    >
+                                        Jouer Second (Ombre)
+                                    </S.ActionButton>
+                                </div>
+                            )}
+
+                        {/* CHOIX DU MULLIGAN */}
+                        {toastConfig.type === 'MULLIGAN' &&
+                            !hasMadeMulliganChoice && (
+                                <div
+                                    style={{
+                                        display: 'flex',
+                                        gap: '8px',
+                                        marginTop: '12px',
+                                    }}
                                 >
-                                    Jouer Second (Ombre)
-                                </S.ActionButton>
-                            </div>
-                        )}
+                                    <S.ActionButton
+                                        onClick={() =>
+                                            moves.submitMulliganChoice?.(false)
+                                        }
+                                    >
+                                        Garder ma main
+                                    </S.ActionButton>
+                                    <S.ActionButton
+                                        $variant="secondary"
+                                        onClick={() =>
+                                            moves.submitMulliganChoice?.(true)
+                                        }
+                                    >
+                                        Mulligan (8 nouvelles)
+                                    </S.ActionButton>
+                                </div>
+                            )}
 
                         {/* ACTION PASSER STANDARD */}
                         {toastConfig.showPassButton && (

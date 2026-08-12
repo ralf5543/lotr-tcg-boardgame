@@ -1,6 +1,3 @@
-console.log(
-    '🚨🚨🚨 LE FICHIER MOVES.TS EST BIEN CHARGÉ PAR LE NAVIGATEUR ! 🚨🚨🚨'
-);
 import type { Ctx } from 'boardgame.io';
 import type { GameState, LotrMoveContext, LotrPhaseContext } from './types';
 import {
@@ -36,16 +33,6 @@ export const getTargetPlayerId = (
 };
 
 export const advanceCompany = (G: GameState) => {
-    // Helper pour retourner proprement (immutabilité) les compagnons du joueur actif
-    const revealActivePlayerCompanions = (G: GameState, playerId: string) => {
-        const player = G.players[playerId];
-        if (player && player.fellowshipArea) {
-            player.fellowshipArea = player.fellowshipArea.map((card) => ({
-                ...card,
-                isFaceDown: false, // 🔓 Révélation de la carte
-            }));
-        }
-    };
     const fpId = G.fpPlayerId || '0';
     const fpPlayer = G.players[fpId];
     if (!fpPlayer) {
@@ -151,10 +138,6 @@ export const commonMoves = {
         const fpId = G.fpPlayerId || '0';
         const fpPlayer = G.players[fpId];
 
-        console.log(
-            `🔍 [moves.revealCompanion] Tentative de révélation de la carte ${companionId} par Joueur ${playerID}`
-        );
-
         if (!fpPlayer || !fpPlayer.fellowshipArea) {
             console.warn(
                 '❌ [moves.revealCompanion] Zone de communauté introuvable.'
@@ -169,10 +152,6 @@ export const commonMoves = {
                 (card as any).instanceId === companionId;
             if (isTarget) {
                 found = true;
-                console.log(
-                    `🔓 [moves.revealCompanion] Carte trouvée ! passage de isFaceDown de ${card.isFaceDown} à false pour:`,
-                    card.title
-                );
                 return {
                     ...card,
                     isFaceDown: false,
@@ -465,6 +444,64 @@ export const commonMoves = {
         }
     },
 
+    submitMulliganChoice: (
+        { G, events, playerID }: LotrMoveContext,
+        doMulligan: boolean
+    ) => {
+        // Sécurité : uniquement pendant l'étape de Mulligan
+        if (!G.setupState || G.setupState.step !== 'MULLIGAN') {
+            console.warn(
+                '⚠️ [moves.submitMulliganChoice] Action rejetée : Hors phase de mulligan.'
+            );
+            return 'INVALID_MOVE';
+        }
+
+        const pId = String(playerID ?? '0');
+        const player = G.players?.[pId];
+        if (!player) return 'INVALID_MOVE';
+
+        // Empêcher de re-soumettre si le joueur a déjà fait son choix
+        if (G.setupState.mulligans?.[pId] !== null) {
+            console.warn(
+                `⚠️ [moves.submitMulliganChoice] Le joueur ${pId} a déjà choisi.`
+            );
+            return 'INVALID_MOVE';
+        }
+
+        G.setupState.mulligans[pId] = doMulligan;
+
+        if (doMulligan) {
+            // 1. Remettre la main dans le deck
+            player.deck.push(...player.hand);
+            player.hand = [];
+
+            // 2. Mélanger le deck (si tu as un utilitaire shuffle)
+            // player.deck = shuffle(player.deck);
+
+            // 3. Repiocher 8 cartes
+            drawCardsForPlayer(G, player, 8, false);
+        } else {
+            console.log(
+                `✅ [moves.submitMulliganChoice] Le joueur ${pId} conserve sa main.`
+            );
+        }
+
+        const m0 = G.setupState.mulligans['0'];
+        const m1 = G.setupState.mulligans['1'];
+
+        // Si les deux joueurs ont validé leur décision
+        if (m0 !== null && m1 !== null) {
+            G.setupState.step = 'COMPLETE';
+            G.statusMessage = 'Mise en place terminée ! Début de la partie.';
+
+            if (events?.setPhase) {
+                events.setPhase('fellowship');
+            }
+        } else {
+            G.statusMessage = `Le joueur ${pId} a validé sa main. En attente de l'adversaire...`;
+        }
+    },
+
     confirmHandRefill: ({ G, events, playerID }: LotrMoveContext) => {
         const actingPlayerId = playerID ?? '0';
         const player = G.players?.[actingPlayerId];
@@ -525,32 +562,12 @@ export const commonMoves = {
             // 🔓 REVELATION AUTOMATIQUE DES COMPAGNONS DE LA COMMUNAUTE POUR LE NOUVEAU JOUEUR FP
             const nextFpPlayer = G.players[nextFpPlayerId];
 
-            revealActivePlayerCompanions(G, nextFpPlayerId);
             if (nextFpPlayer?.fellowshipArea) {
-                console.log(
-                    `🔓 [confirmHandRefill] Passage au joueur ${nextFpPlayerId} (nouveau FP). Révélation des compagnons...`
-                );
-                console.log(
-                    '   Avant révélation :',
-                    nextFpPlayer.fellowshipArea.map((c) => ({
-                        title: c.title,
-                        isFaceDown: c.isFaceDown,
-                    }))
-                );
-
                 nextFpPlayer.fellowshipArea = nextFpPlayer.fellowshipArea.map(
                     (card) => ({
                         ...card,
                         isFaceDown: false,
                     })
-                );
-
-                console.log(
-                    '   Après révélation :',
-                    nextFpPlayer.fellowshipArea.map((c) => ({
-                        title: c.title,
-                        isFaceDown: c.isFaceDown,
-                    }))
                 );
             }
 
@@ -696,14 +713,6 @@ export const commonMoves = {
                         '**Skirmish:** Exert Gimli to make him strength +2',
                 },
             ];
-
-            console.log(
-                '🧪 [devLoadPreset] Preset ARCHERY_TEST chargé. FellowshipArea:',
-                fpPlayer.fellowshipArea.map((c) => ({
-                    title: c.title,
-                    isFaceDown: c.isFaceDown,
-                }))
-            );
 
             G.battlefield = [
                 {
@@ -860,10 +869,8 @@ export const commonMoves = {
         const addedTwilight = siteCost + companionsCount;
         G.twilightPool += addedTwilight;
 
-        // 3. 🔓 RÉVÉLATION PERMANENTE DES COMPAGNONS DE TOUS LES JOUEURS
-        console.log(
-            '🔓 [moves.playSite] Révélation de toutes les zones de communauté'
-        );
+        // 3. RÉVÉLATION PERMANENTE DES COMPAGNONS DE TOUS LES JOUEURS
+
         Object.keys(G.players).forEach((pId) => {
             const p = G.players[pId];
             if (p && p.fellowshipArea) {
@@ -885,9 +892,6 @@ export const commonMoves = {
 
         // Passage à la phase 'fellowship' pour relancer le tour et propager le nouvel état G
         if (events?.setPhase) {
-            console.log(
-                "🔄 [moves.playSite] Passage de phase vers 'fellowship'"
-            );
             events.setPhase('fellowship');
         }
     },

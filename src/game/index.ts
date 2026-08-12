@@ -15,6 +15,7 @@ import {
 import { resolveSkirmish } from './skirmish';
 import { checkAssignmentProgress, getUnassignedMinions } from './assignment';
 import { commonMoves, advanceCompany, getTargetPlayerId } from './moves';
+import { drawCardsForPlayer } from '../utils/drawCards';
 import { buildDeckFromIds } from '../utils/deckBuilder';
 
 const shuffle = <T>(array: T[]): T[] => {
@@ -133,7 +134,8 @@ export const setupGame = ({ random }: { random: any }): GameState => {
         player.deck = random.Shuffle(player.deck);
     });
 
-    return {
+    // Construction de l'objet d'état initial (G)
+    const G: GameState = {
         fpPlayerId: '0',
         twilightPool: 0,
         currentSiteIndex: 0,
@@ -149,6 +151,12 @@ export const setupGame = ({ random }: { random: any }): GameState => {
         players,
         fellowshipCardsDrawn: 0,
 
+        // Initialisation de la propriété mulliganChoices
+        mulliganChoices: {
+            '0': null,
+            '1': null,
+        },
+
         setupState: {
             bids: { '0': null, '1': null },
             mulligans: { '0': null, '1': null },
@@ -156,6 +164,8 @@ export const setupGame = ({ random }: { random: any }): GameState => {
             auctionWinnerId: undefined,
         },
     };
+
+    return G;
 };
 
 export const LotrGame: Game<GameState> = {
@@ -255,7 +265,6 @@ export const LotrGame: Game<GameState> = {
                     { G, playerID }: LotrMoveContext,
                     siteCard: CardState
                 ) => {
-
                     if (
                         !G.setupState ||
                         G.setupState.step !== 'AWAITING_SITE'
@@ -266,24 +275,22 @@ export const LotrGame: Game<GameState> = {
                     if (playerID !== G.fpPlayerId) {
                         return 'INVALID_MOVE';
                     }
-                    if (!G.setupState || G.setupState.step !== 'AWAITING_SITE')
-                        return 'INVALID_MOVE';
-
-                    // Seul le joueur FP a le droit de poser le premier site
-                    if (playerID !== G.fpPlayerId) return 'INVALID_MOVE';
 
                     G.path[0] = siteCard;
                     G.awaitingSiteSelection = false;
 
-                    // Révélation de TOUS les compagnons chez TOUS les joueurs
+                    // Révélation de TOUS les compagnons (sécurisé avec Optional Chaining)
                     Object.values(G.players).forEach((p) => {
-                        p.fellowshipArea.forEach((card) => {
+                        p?.fellowshipArea?.forEach((card) => {
                             card.isFaceDown = false;
                         });
+                    });
 
-                        // Pioche de la main initiale de 8 cartes
-                        const cardsToDraw = p.deck.splice(0, 8);
-                        p.hand.push(...cardsToDraw);
+                    // 🃏 PIOCHE DES 8 CARTES DE DÉPART
+                    Object.values(G.players).forEach((player) => {
+                        if (player) {
+                            drawCardsForPlayer(G, player, 8, false);
+                        }
                     });
 
                     G.setupState.step = 'MULLIGAN';
@@ -291,34 +298,44 @@ export const LotrGame: Game<GameState> = {
                         'Site 1 posé et Compagnies révélées ! Choisissez de garder votre main ou de faire un Mulligan.';
                 },
 
-                // 4. Validation du Mulligan
                 submitMulliganChoice: (
                     { G, events, playerID }: LotrMoveContext,
                     doMulligan: boolean
                 ) => {
-                    if (!G.setupState || G.setupState.step !== 'MULLIGAN')
+                    if (!G.setupState || G.setupState.step !== 'MULLIGAN') {
                         return 'INVALID_MOVE';
-                    const pId = playerID ?? '0';
+                    }
+
+                    const pId = String(playerID ?? '0');
                     const player = G.players[pId];
                     if (!player) return 'INVALID_MOVE';
+
+                    // Sécurité : Vérifier si le joueur a déjà validé son choix
+                    if (G.setupState.mulligans[pId] !== null) {
+                        return 'INVALID_MOVE';
+                    }
 
                     G.setupState.mulligans[pId] = doMulligan;
 
                     if (doMulligan) {
+                        // Remettre les cartes dans le deck, réinitialiser la main, mélanger et repiocher 8 cartes
                         player.deck.push(...player.hand);
                         player.hand = [];
                         player.deck = shuffle(player.deck);
-                        player.hand = player.deck.splice(0, 8);
+                        drawCardsForPlayer(G, player, 8, false);
                     }
 
                     const m0 = G.setupState.mulligans['0'];
                     const m1 = G.setupState.mulligans['1'];
 
+                    // Quand les deux joueurs ont répondu
                     if (m0 !== null && m1 !== null) {
                         G.setupState.step = 'COMPLETE';
                         G.statusMessage =
                             'Mise en place terminée ! Début de la partie.';
                         events?.setPhase?.('fellowship');
+                    } else {
+                        G.statusMessage = `Le joueur ${pId} a validé son choix. En attente de l'adversaire...`;
                     }
                 },
             },
