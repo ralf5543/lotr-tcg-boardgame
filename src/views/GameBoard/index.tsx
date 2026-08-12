@@ -117,147 +117,147 @@ export const GameBoard: React.FC<GameBoardProps> = ({
 
     // 🟢 3. ROUTER DE DRAG & DROP GLOBAL
     useEffect(() => {
-    const handleGlobalCardDrop = (e: Event) => {
-        const customEvent = e as CustomEvent;
+        const handleGlobalCardDrop = (e: Event) => {
+            const customEvent = e as CustomEvent;
 
-        const { draggedCard, targetId } = customEvent.detail || {};
+            const { draggedCard, targetId } = customEvent.detail || {};
 
-        if (!targetId || !draggedCard) {
-            console.warn(
-                '⚠️ DROP IGNORÉ : targetId ou draggedCard manquant',
-                { targetId, draggedCard }
-            );
-            return;
-        }
+            if (!targetId || !draggedCard) {
+                console.warn(
+                    '⚠️ DROP IGNORÉ : targetId ou draggedCard manquant',
+                    { targetId, draggedCard }
+                );
+                return;
+            }
 
-        const { index, origin, card, parentId } = draggedCard;
+            const { index, origin, card, parentId } = draggedCard;
 
-        // Helper pour trouver la carte cible dans toutes les zones du jeu
-        const findTargetCard = (
-            id: string
-        ): CardState | SiteCardState | null => {
-            if (!G || !G.players) return null;
+            // Helper pour trouver la carte cible dans toutes les zones du jeu
+            const findTargetCard = (
+                id: string
+            ): CardState | SiteCardState | null => {
+                if (!G || !G.players) return null;
 
-            // 1. Recherche dans les joueurs (Fellowship & Support)
-            for (const pId of ['0', '1']) {
-                const player = G.players[pId];
-                if (!player) continue;
+                // 1. Recherche dans les joueurs (Fellowship & Support)
+                for (const pId of ['0', '1']) {
+                    const player = G.players[pId];
+                    if (!player) continue;
 
-                const foundInFellowship = player.fellowshipArea?.find(
+                    const foundInFellowship = player.fellowshipArea?.find(
+                        (c) => c?.id === id
+                    );
+                    if (foundInFellowship) return foundInFellowship;
+
+                    const foundInSupport = player.supportArea?.find(
+                        (c) => c?.id === id
+                    );
+                    if (foundInSupport) return foundInSupport;
+                }
+
+                // 2. Recherche sur le Champ de Bataille
+                const foundInBattlefield = G.battlefield?.find(
                     (c) => c?.id === id
                 );
-                if (foundInFellowship) return foundInFellowship;
+                if (foundInBattlefield) return foundInBattlefield;
 
-                const foundInSupport = player.supportArea?.find(
-                    (c) => c?.id === id
-                );
-                if (foundInSupport) return foundInSupport;
-            }
+                // 3. Recherche dans le Path (Sites)
+                const foundInPath = G.path?.find((s) => s?.id === id);
+                if (foundInPath) return foundInPath;
 
-            // 2. Recherche sur le Champ de Bataille
-            const foundInBattlefield = G.battlefield?.find(
-                (c) => c?.id === id
-            );
-            if (foundInBattlefield) return foundInBattlefield;
+                return null;
+            };
 
-            // 3. Recherche dans le Path (Sites)
-            const foundInPath = G.path?.find((s) => s?.id === id);
-            if (foundInPath) return foundInPath;
+            const cardType = card?.type;
+            const cardSubtype = card?.subtype;
 
-            return null;
-        };
-
-        const cardType = card?.type;
-        const cardSubtype = card?.subtype;
-
-        if (origin === 'HAND') {
-            if (
-                targetId === 'fellowshipArea' &&
-                canDropInFellowship(cardType)
-            ) {
-                if (typeof moves.playCard === 'function') {
-                    moves.playCard(index);
+            if (origin === 'HAND') {
+                if (
+                    targetId === 'fellowshipArea' &&
+                    canDropInFellowship(cardType)
+                ) {
+                    if (typeof moves.playCard === 'function') {
+                        moves.playCard(index);
+                    }
+                    return;
                 }
-                return;
-            }
 
-            if (
-                targetId === 'supportArea' &&
-                canDropInSupportArea(cardType, cardSubtype)
-            ) {
-                if (typeof moves.playCard === 'function') {
-                    moves.playCard(index);
+                if (
+                    targetId === 'supportArea' &&
+                    canDropInSupportArea(cardType, cardSubtype)
+                ) {
+                    if (typeof moves.playCard === 'function') {
+                        moves.playCard(index);
+                    }
+                    return;
                 }
-                return;
-            }
 
-            if (targetId === 'battlefield' && card?.kind === 'SHADOW') {
-                if (typeof moves.playShadowCard === 'function') {
-                    moves.playShadowCard(index);
+                if (targetId === 'battlefield' && card?.kind === 'SHADOW') {
+                    if (typeof moves.playShadowCard === 'function') {
+                        moves.playShadowCard(index);
+                    }
+                    return;
                 }
-                return;
+
+                if (
+                    targetId !== 'fellowshipArea' &&
+                    targetId !== 'supportArea' &&
+                    targetId !== 'battlefield'
+                ) {
+                    const targetCard = findTargetCard(targetId);
+                    if (canAttachToCharacter(card, targetCard)) {
+                        if (typeof moves.attachCard === 'function') {
+                            moves.attachCard(index, targetId);
+                        }
+                        return;
+                    }
+                }
             }
 
-            if (
-                targetId !== 'fellowshipArea' &&
-                targetId !== 'supportArea' &&
-                targetId !== 'battlefield'
-            ) {
-                const targetCard = findTargetCard(targetId);
-                if (canAttachToCharacter(card, targetCard)) {
-                    if (typeof moves.attachCard === 'function') {
-                        moves.attachCard(index, targetId);
+            if (origin === 'ATTACHMENT') {
+                if (targetId === parentId) return;
+
+                if (
+                    targetId !== 'fellowshipArea' &&
+                    targetId !== 'supportArea' &&
+                    targetId !== 'battlefield'
+                ) {
+                    const targetCard = findTargetCard(targetId);
+                    if (canAttachToCharacter(card, targetCard)) {
+                        if (moves.transferAttachment) {
+                            moves.transferAttachment({
+                                attachmentId: card.id,
+                                fromCharacterId: parentId,
+                                toCharacterId: targetId,
+                            });
+                        }
+                    }
+                }
+            }
+
+            if (origin === 'BATTLEFIELD') {
+                const isAssignmentPhase = ctx.phase === 'assignment';
+                const isMinion = card?.type === 'MINION';
+
+                if (
+                    isAssignmentPhase &&
+                    isMinion &&
+                    targetId !== 'fellowshipArea' &&
+                    targetId !== 'supportArea' &&
+                    targetId !== 'battlefield' &&
+                    targetId !== 'sitePath'
+                ) {
+                    if (moves.assignMinion) {
+                        moves.assignMinion(card.id, targetId);
                     }
                     return;
                 }
             }
-        }
+        };
 
-        if (origin === 'ATTACHMENT') {
-            if (targetId === parentId) return;
-
-            if (
-                targetId !== 'fellowshipArea' &&
-                targetId !== 'supportArea' &&
-                targetId !== 'battlefield'
-            ) {
-                const targetCard = findTargetCard(targetId);
-                if (canAttachToCharacter(card, targetCard)) {
-                    if (moves.transferAttachment) {
-                        moves.transferAttachment({
-                            attachmentId: card.id,
-                            fromCharacterId: parentId,
-                            toCharacterId: targetId,
-                        });
-                    }
-                }
-            }
-        }
-
-        if (origin === 'BATTLEFIELD') {
-            const isAssignmentPhase = ctx.phase === 'assignment';
-            const isMinion = card?.type === 'MINION';
-
-            if (
-                isAssignmentPhase &&
-                isMinion &&
-                targetId !== 'fellowshipArea' &&
-                targetId !== 'supportArea' &&
-                targetId !== 'battlefield' &&
-                targetId !== 'sitePath'
-            ) {
-                if (moves.assignMinion) {
-                    moves.assignMinion(card.id, targetId);
-                }
-                return;
-            }
-        }
-    };
-
-    window.addEventListener('card-dropped', handleGlobalCardDrop);
-    return () =>
-        window.removeEventListener('card-dropped', handleGlobalCardDrop);
-}, [moves, ctx.phase, G]);
+        window.addEventListener('card-dropped', handleGlobalCardDrop);
+        return () =>
+            window.removeEventListener('card-dropped', handleGlobalCardDrop);
+    }, [moves, ctx.phase, G]);
 
     const { setFpPlayerId } = useFaction();
     useEffect(() => {

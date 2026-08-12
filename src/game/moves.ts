@@ -1,3 +1,6 @@
+console.log(
+    '🚨🚨🚨 LE FICHIER MOVES.TS EST BIEN CHARGÉ PAR LE NAVIGATEUR ! 🚨🚨🚨'
+);
 import type { Ctx } from 'boardgame.io';
 import type { GameState, LotrMoveContext, LotrPhaseContext } from './types';
 import {
@@ -33,6 +36,16 @@ export const getTargetPlayerId = (
 };
 
 export const advanceCompany = (G: GameState) => {
+    // Helper pour retourner proprement (immutabilité) les compagnons du joueur actif
+    const revealActivePlayerCompanions = (G: GameState, playerId: string) => {
+        const player = G.players[playerId];
+        if (player && player.fellowshipArea) {
+            player.fellowshipArea = player.fellowshipArea.map((card) => ({
+                ...card,
+                isFaceDown: false, // 🔓 Révélation de la carte
+            }));
+        }
+    };
     const fpId = G.fpPlayerId || '0';
     const fpPlayer = G.players[fpId];
     if (!fpPlayer) {
@@ -130,6 +143,54 @@ export const commonMoves = {
     passActionWindow,
     advanceCompany,
 
+    // 🔓 REVELE UN COMPAGNON SPECIFIQUE DANS LA FELLOWSHIP AREA
+    revealCompanion: (
+        { G, playerID }: LotrMoveContext,
+        companionId: string
+    ) => {
+        const fpId = G.fpPlayerId || '0';
+        const fpPlayer = G.players[fpId];
+
+        console.log(
+            `🔍 [moves.revealCompanion] Tentative de révélation de la carte ${companionId} par Joueur ${playerID}`
+        );
+
+        if (!fpPlayer || !fpPlayer.fellowshipArea) {
+            console.warn(
+                '❌ [moves.revealCompanion] Zone de communauté introuvable.'
+            );
+            return 'INVALID_MOVE';
+        }
+
+        let found = false;
+        fpPlayer.fellowshipArea = fpPlayer.fellowshipArea.map((card) => {
+            const isTarget =
+                card.id === companionId ||
+                (card as any).instanceId === companionId;
+            if (isTarget) {
+                found = true;
+                console.log(
+                    `🔓 [moves.revealCompanion] Carte trouvée ! passage de isFaceDown de ${card.isFaceDown} à false pour:`,
+                    card.title
+                );
+                return {
+                    ...card,
+                    isFaceDown: false,
+                };
+            }
+            return card;
+        });
+
+        if (!found) {
+            console.warn(
+                `⚠️ [moves.revealCompanion] Aucune carte ne correspond à l'ID ${companionId}`
+            );
+            return 'INVALID_MOVE';
+        }
+
+        G.statusMessage = `Une carte de la Communauté a été révélée !`;
+    },
+
     // 🟢 1. JOUER UN ATTACHEMENT (SÉCURISÉ)
     attachCard: (
         { G, ctx, playerID }: LotrMoveContext,
@@ -151,7 +212,6 @@ export const commonMoves = {
         const fpId = G.fpPlayerId || '0';
         const isFP = actingPlayerId === fpId;
 
-        // 🔒 VERROU DE PHASE : Les cartes FP ne se jouent qu'en 'fellowship', les cartes Ombre qu'en 'shadow'
         if (isFP && ctx.phase !== 'fellowship') {
             console.warn(
                 `❌ [moves.attachCard] Rejet : FP ne peut pas attacher en phase ${ctx.phase}.`
@@ -165,7 +225,6 @@ export const commonMoves = {
             return 'INVALID_MOVE';
         }
 
-        // 1. Recherche de la cible
         const fpPlayer = G.players[fpId];
         const allPossibleTargets = [
             ...(fpPlayer?.fellowshipArea || []),
@@ -193,14 +252,6 @@ export const commonMoves = {
             return 'INVALID_MOVE';
         }
 
-        if (!targetCharacter) {
-            console.warn(
-                `❌ [moves.attachCard] Cible ${targetId} introuvable.`
-            );
-            return 'INVALID_MOVE';
-        }
-
-        // 2. Coûts & Faction
         const cost = Number(card.twilightCost) || 0;
 
         if (isFP) {
@@ -218,7 +269,6 @@ export const commonMoves = {
             G.twilightPool -= cost;
         }
 
-        // 3. Application
         const [attachedCard] = player.hand.splice(cardIndex, 1);
         if (!targetCharacter.attachments) {
             targetCharacter.attachments = [];
@@ -249,7 +299,6 @@ export const commonMoves = {
         const fpId = G.fpPlayerId || '0';
         const isFP = actingPlayerId === fpId;
 
-        // 🔒 VERROU DE PHASE
         if (isFP && ctx.phase !== 'fellowship') {
             console.warn(
                 `❌ [moves.playCard] Rejet : Le joueur FP ne peut pas jouer de carte en phase ${ctx.phase}.`
@@ -263,7 +312,6 @@ export const commonMoves = {
             return 'INVALID_MOVE';
         }
 
-        // 1. JOUER UNE CARTE PEUPLES LIBRES
         if (isFP) {
             if (card.kind !== 'FREE_PEOPLE') return 'INVALID_MOVE';
 
@@ -273,6 +321,8 @@ export const commonMoves = {
 
             if (playedCard.type === 'COMPANION') {
                 if (!player.fellowshipArea) player.fellowshipArea = [];
+                // Un compagnon joué en cours de partie entre généralement face visible
+                playedCard.isFaceDown = false;
                 player.fellowshipArea.push(playedCard);
                 G.statusMessage = `${playedCard.title} rejoint la Communauté (+${cost} Crépuscule).`;
             } else if (
@@ -298,7 +348,6 @@ export const commonMoves = {
             return;
         }
 
-        // 2. JOUER UNE CARTE OMBRE
         if (!isFP) {
             if (card.kind !== 'SHADOW') return 'INVALID_MOVE';
 
@@ -374,7 +423,6 @@ export const commonMoves = {
         const shadowPlayerId = G.fpPlayerId === '0' ? '1' : '0';
         const fpPlayerId = G.fpPlayerId || '0';
 
-        // 🔒 1. Vérification du rôle actif
         if (
             G.regroupStep === 'SHADOW_REFILL' &&
             actingPlayerId !== shadowPlayerId
@@ -391,7 +439,6 @@ export const commonMoves = {
             return 'INVALID_MOVE';
         }
 
-        // 🔒 2. RÈGLE STRICTE PAR JOUEUR
         if (player.hand.length <= 8 && player.hasDiscardedInRegroup) {
             console.warn(
                 `⚠️ [moves.discardCardFromHand] Le Joueur ${actingPlayerId} a déjà défaussé sa carte optionnelle.`
@@ -425,7 +472,6 @@ export const commonMoves = {
 
         if (!player.discard) player.discard = [];
 
-        // Reconstitution / Élagage à 8 cartes
         while (player.hand.length > 8) {
             const discarded = player.hand.pop();
             if (discarded) player.discard.push(discarded);
@@ -438,7 +484,6 @@ export const commonMoves = {
 
         player.hasDiscardedInRegroup = false;
 
-        // --- TRANSITIONS DE REGROUPEMENT ---
         if (G.regroupStep === 'SHADOW_REFILL') {
             if ((G.movesThisTurn || 0) >= 2) {
                 G.regroupStep = 'FP_REFILL';
@@ -476,6 +521,38 @@ export const commonMoves = {
 
             const nextFpPlayerId = G.fpPlayerId === '0' ? '1' : '0';
             G.fpPlayerId = nextFpPlayerId;
+
+            // 🔓 REVELATION AUTOMATIQUE DES COMPAGNONS DE LA COMMUNAUTE POUR LE NOUVEAU JOUEUR FP
+            const nextFpPlayer = G.players[nextFpPlayerId];
+
+            revealActivePlayerCompanions(G, nextFpPlayerId);
+            if (nextFpPlayer?.fellowshipArea) {
+                console.log(
+                    `🔓 [confirmHandRefill] Passage au joueur ${nextFpPlayerId} (nouveau FP). Révélation des compagnons...`
+                );
+                console.log(
+                    '   Avant révélation :',
+                    nextFpPlayer.fellowshipArea.map((c) => ({
+                        title: c.title,
+                        isFaceDown: c.isFaceDown,
+                    }))
+                );
+
+                nextFpPlayer.fellowshipArea = nextFpPlayer.fellowshipArea.map(
+                    (card) => ({
+                        ...card,
+                        isFaceDown: false,
+                    })
+                );
+
+                console.log(
+                    '   Après révélation :',
+                    nextFpPlayer.fellowshipArea.map((c) => ({
+                        title: c.title,
+                        isFaceDown: c.isFaceDown,
+                    }))
+                );
+            }
 
             G.statusMessage = `Nouveau tour ! Le joueur ${nextFpPlayerId} devient les Peuples Libres.`;
 
@@ -555,6 +632,7 @@ export const commonMoves = {
                 }
             });
 
+            // 🔓 Dans le preset Dev, on s'assure d'expliciter le flag isFaceDown pour les tests
             fpPlayer.fellowshipArea = [
                 {
                     id: '2c102',
@@ -572,6 +650,7 @@ export const commonMoves = {
                     vitality: 4,
                     culture: 'SHIRE',
                     isUnique: true,
+                    isFaceDown: false, // Explicitement visible pour le preset dev
                     gameText:
                         'Le coût de chaque artefact, possession et récit {CULTURE_SHIRE} joué sur Frodon est de -1.',
                     loreText:
@@ -593,6 +672,7 @@ export const commonMoves = {
                     vitality: 3,
                     culture: 'ELVEN',
                     isUnique: true,
+                    isFaceDown: false, // Explicitement visible pour le preset dev
                     gameText: 'sfdxfdsfsdfsd',
                 },
                 {
@@ -611,10 +691,20 @@ export const commonMoves = {
                     vitality: 3,
                     culture: 'DWARVEN',
                     isUnique: true,
+                    isFaceDown: false, // Explicitement visible pour le preset dev
                     gameText:
                         '**Skirmish:** Exert Gimli to make him strength +2',
                 },
             ];
+
+            console.log(
+                '🧪 [devLoadPreset] Preset ARCHERY_TEST chargé. FellowshipArea:',
+                fpPlayer.fellowshipArea.map((c) => ({
+                    title: c.title,
+                    isFaceDown: c.isFaceDown,
+                }))
+            );
+
             G.battlefield = [
                 {
                     id: '1c191',
@@ -750,6 +840,7 @@ export const commonMoves = {
             return 'INVALID_MOVE';
         }
 
+        // 1. Placement du site et mise à jour de la position FP
         player.sitesDeck.splice(siteIndex, 1);
         playedSite.ownerId = playerID;
         G.path[targetIndex] = playedSite;
@@ -761,6 +852,7 @@ export const commonMoves = {
             fpPlayer.currentSiteIndex = targetIndex;
         }
 
+        // 2. Calcul du crépuscule
         const siteCost = Number(playedSite.twilightCost) || 0;
         const companionsCount = fpPlayer?.fellowshipArea
             ? fpPlayer.fellowshipArea.length
@@ -768,14 +860,35 @@ export const commonMoves = {
         const addedTwilight = siteCost + companionsCount;
         G.twilightPool += addedTwilight;
 
-        G.statusMessage = `Nouveau site révélé par l'Ombre ! La compagnie avance en ${playedSite.name} (+${addedTwilight} Crépuscule).`;
+        // 3. 🔓 RÉVÉLATION PERMANENTE DES COMPAGNONS DE TOUS LES JOUEURS
+        console.log(
+            '🔓 [moves.playSite] Révélation de toutes les zones de communauté'
+        );
+        Object.keys(G.players).forEach((pId) => {
+            const p = G.players[pId];
+            if (p && p.fellowshipArea) {
+                p.fellowshipArea = p.fellowshipArea.map((card) => ({
+                    ...card,
+                    isFaceDown: false,
+                }));
+            }
+        });
 
+        G.statusMessage = `Nouveau site révélé ! La compagnie avance en ${playedSite.name} (+${addedTwilight} Crépuscule). Révélation des compagnons.`;
+
+        // 4. TRANSITION DE PHASE
+        // Nettoyage des escarmouches si on sort de regroupement
         if (ctx.phase === 'regroup') {
             G.skirmishes = [];
             G.activeSkirmishId = undefined;
-            events?.setPhase?.('shadow');
-        } else {
-            G.pendingPhaseEnd = true;
+        }
+
+        // Passage à la phase 'fellowship' pour relancer le tour et propager le nouvel état G
+        if (events?.setPhase) {
+            console.log(
+                "🔄 [moves.playSite] Passage de phase vers 'fellowship'"
+            );
+            events.setPhase('fellowship');
         }
     },
 

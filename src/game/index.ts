@@ -7,6 +7,7 @@ import type {
     LotrMoveContext,
 } from './types';
 import { CARDS_DATABASE, DUMMY_SITES_PLAYER_0 } from './cardsData';
+import { loadAndValidateDeck } from '../utils/deckLoader';
 import {
     isMinionRoaming,
     getEffectiveTwilightCost,
@@ -14,7 +15,6 @@ import {
 import { resolveSkirmish } from './skirmish';
 import { checkAssignmentProgress, getUnassignedMinions } from './assignment';
 import { commonMoves, advanceCompany, getTargetPlayerId } from './moves';
-
 import { buildDeckFromIds } from '../utils/deckBuilder';
 
 const shuffle = <T>(array: T[]): T[] => {
@@ -44,107 +44,13 @@ const createCardInstance = (
     };
 };
 
-const PLAYER_0_RING_BEARER_ID = '9R+31';
-const PLAYER_0_ONE_RING_ID = '4R1';
+const createInitialPlayer = (playerId: string): PlayerState => {
+    const isP0 = playerId === '0';
+    const deckConfig = loadAndValidateDeck(playerId);
+    const fullDeckIds = [...deckConfig.freePeople, ...deckConfig.shadow];
 
-// 🏞️ Deck de Sites (9 sites ordonnés ou triés, hors pioche)
-const PLAYER_0_SITES_IDS = [
-    '11S234',
-    '11S258',
-    '11S249',
-    '11S254',
-    '11S265',
-    '11S233',
-    '11S248',
-    '11S260',
-    '11S250',
-];
-
-/*const PLAYER_0_FREE_PEOPLE: string[] = ['12R42', '1C299', '1R302', '10R72', '15U129', '4C283', '1R45', '6R125', '3R23', '17R93'];*/
-
-const PLAYER_0_SHADOW: string[] = [];
-
-const PLAYER_0_FREE_PEOPLE: string[] = [
-    '0P25',
-    '1C84',
-    '7R112',
-    '7R112',
-    '1R95',
-    '3R44',
-    '3R44',
-    '7P364',
-    '7P364',
-    '15U94',
-    '3U46',
-    '3U46',
-    '3U46',
-    '11S33',
-    '11S33',
-    '11S33',
-    '9R38',
-    '11R35',
-    '17R17',
-    '8R21',
-    '9R27',
-    '7R43',
-    '7R43',
-    '7R113',
-    '7C108',
-    '7C108',
-    '7C86',
-    '7C323',
-    '7R91',
-    '7R104',
-    '9R+32',
-    '7R114',
-];
-
-/*const PLAYER_0_SHADOW: string[] = [
-    '11R194',
-    '11R194',
-    '4R158',
-    '3C69',
-    '3C69',
-    '1U153',
-    '1U162',
-    '1U162',
-    '1U162',
-    '1U162',
-    '1C133',
-    '1C133',
-    '1C133',
-    '4R164',
-    '1R120',
-    '1R148',
-    '1R148',
-    '1R148',
-    '1R155',
-    '3U75',
-    '1R124',
-    '1U142',
-    '1R140',
-    '2R46',
-    '4C165',
-    '3R50',
-    '11C202',
-    '11C198',
-    '2R43',
-    '11R179',
-    '3R66',
-    '1R143',
-];
-*/
-const PLAYER_0_FULL_DECK = [...PLAYER_0_FREE_PEOPLE, ...PLAYER_0_SHADOW];
-
-const PLAYER_1_FREE_PEOPLE: string[] = ['0P25'];
-
-const PLAYER_1_SHADOW: string[] = ['11R194'];
-
-const PLAYER_1_FULL_DECK = [...PLAYER_1_FREE_PEOPLE, ...PLAYER_1_SHADOW];
-
-const createInitialPlayer = (playerId: string): PlayerState => ({
-    profile:
-        playerId === '0'
+    return {
+        profile: isP0
             ? {
                   name: 'Raphaël',
                   avatar: 'avatars/avatar_p0.webp',
@@ -155,19 +61,17 @@ const createInitialPlayer = (playerId: string): PlayerState => ({
                   avatar: 'avatars/avatar_p1.webp',
                   faction: 'shadow',
               },
-    deck: buildDeckFromIds(
-        playerId === '0' ? PLAYER_0_FULL_DECK : PLAYER_1_FULL_DECK,
-        playerId
-    ),
-    hand: [],
-    discard: [],
-    deadPile: [],
-    fellowshipArea: [],
-    supportArea: [],
-    sitesDeck: [],
-    currentSiteIndex: 0,
-    burdens: 0,
-});
+        deck: buildDeckFromIds(fullDeckIds, playerId),
+        hand: [],
+        discard: [],
+        deadPile: [],
+        fellowshipArea: [],
+        supportArea: [],
+        sitesDeck: [],
+        currentSiteIndex: 0,
+        burdens: 0,
+    };
+};
 
 export const setupGame = ({ random }: { random: any }): GameState => {
     const players: Record<string, PlayerState> = {
@@ -192,41 +96,40 @@ export const setupGame = ({ random }: { random: any }): GameState => {
         const player = players[pId];
         if (!player || !player.deck) return;
 
-        // 1. Instanciation directe du Porteur et de L'Anneau Unique (hors-deck de pioche)
+        const deckConfig = loadAndValidateDeck(pId);
+
+        // 1. Instanciation du Porteur et de L'Anneau Unique (hors-deck)
         const ringBearer = createCardInstance(
-            PLAYER_0_RING_BEARER_ID,
+            deckConfig.ringBearerId,
             pId,
             'ringbearer'
         );
         const oneRing = createCardInstance(
-            PLAYER_0_ONE_RING_ID,
+            deckConfig.oneRingId,
             pId,
             'onering'
         );
 
-        // Activation explicite du keyword/statut RING-BEARER sur cette carte
         if (!ringBearer.keywords) ringBearer.keywords = [];
         if (!ringBearer.keywords.includes('RING-BEARER')) {
             ringBearer.keywords.push('RING-BEARER');
         }
 
-        // Attachement de l'Anneau et placement initial dans la Fellowship Area
         ringBearer.attachments = [oneRing];
         player.fellowshipArea = [ringBearer];
 
-        // 2. Extraction des éventuels compagnons de départ (isStartingMember = true) depuis le deck
-        const startingMembers: CardState[] = [];
-        player.deck = player.deck.filter((card) => {
-            if (card.isStartingMember && card.type === 'COMPANION') {
-                startingMembers.push({ ...card, isFaceDown: true });
-                return false;
-            }
-            return true;
+        // 2. Instanciation des compagnons de départ (masqués / isFaceDown: true)
+        deckConfig.startingCompanionIds.forEach((cardId, index) => {
+            const companion = createCardInstance(
+                cardId,
+                pId,
+                `starting-comp-${index}`
+            );
+            companion.isFaceDown = true;
+            player.fellowshipArea.push(companion);
         });
 
-        player.fellowshipArea.push(...startingMembers);
-
-        // 3. Mélange du deck de pioche
+        // 3. Mélange de la pioche
         player.deck = random.Shuffle(player.deck);
     });
 
@@ -246,7 +149,6 @@ export const setupGame = ({ random }: { random: any }): GameState => {
         players,
         fellowshipCardsDrawn: 0,
 
-        // État de la mise en place
         setupState: {
             bids: { '0': null, '1': null },
             mulligans: { '0': null, '1': null },
@@ -303,7 +205,6 @@ export const LotrGame: Game<GameState> = {
                     const bid0 = G.setupState.bids['0'];
                     const bid1 = G.setupState.bids['1'];
 
-                    // Quand les deux joueurs ont soumis leur mise
                     if (
                         bid0 !== null &&
                         bid0 !== undefined &&
@@ -336,12 +237,10 @@ export const LotrGame: Game<GameState> = {
 
                     const winnerId = G.setupState.auctionWinnerId || '0';
 
-                    // 🔴 SÉCURITÉ : Seul le gagnant des enchères choisit qui commence !
                     if (playerID !== winnerId) return 'INVALID_MOVE';
 
                     const otherId = winnerId === '0' ? '1' : '0';
 
-                    // Le joueur qui choisit d'être premier devient les Peuples Libres (FP)
                     G.fpPlayerId = wantToBeFirst ? winnerId : otherId;
 
                     const fpBurdens = G.players[G.fpPlayerId]?.burdens ?? 0;
@@ -356,21 +255,33 @@ export const LotrGame: Game<GameState> = {
                     { G, playerID }: LotrMoveContext,
                     siteCard: CardState
                 ) => {
+
+                    if (
+                        !G.setupState ||
+                        G.setupState.step !== 'AWAITING_SITE'
+                    ) {
+                        return 'INVALID_MOVE';
+                    }
+
+                    if (playerID !== G.fpPlayerId) {
+                        return 'INVALID_MOVE';
+                    }
                     if (!G.setupState || G.setupState.step !== 'AWAITING_SITE')
                         return 'INVALID_MOVE';
 
-                    // 🔴 SÉCURITÉ : Seul le joueur FP a le droit de poser le premier site !
+                    // Seul le joueur FP a le droit de poser le premier site
                     if (playerID !== G.fpPlayerId) return 'INVALID_MOVE';
 
                     G.path[0] = siteCard;
                     G.awaitingSiteSelection = false;
 
-                    // Révélation des compagnons et pioche de 8 cartes
+                    // Révélation de TOUS les compagnons chez TOUS les joueurs
                     Object.values(G.players).forEach((p) => {
-                        p.fellowshipArea.forEach((c) => {
-                            c.isFaceDown = false;
+                        p.fellowshipArea.forEach((card) => {
+                            card.isFaceDown = false;
                         });
 
+                        // Pioche de la main initiale de 8 cartes
                         const cardsToDraw = p.deck.splice(0, 8);
                         p.hand.push(...cardsToDraw);
                     });
@@ -445,14 +356,14 @@ export const LotrGame: Game<GameState> = {
 
             next: 'maneuver',
 
-            onBegin: ({ G, ctx }: LotrPhaseContext) => {
+            onBegin: ({ G }: LotrPhaseContext) => {
                 G.actionWindow = undefined;
 
                 const shadowId = G.fpPlayerId === '0' ? '1' : '0';
                 G.statusMessage = `Phase d'Ombre : Joueur Ombre (${shadowId}), jouez vos Séides/Soutiens. Crépuscule disponible : ${G.twilightPool}`;
             },
             onEnd: () => {
-                console.log('🛑 [LOG PHASE] SHADOW: onEnd');
+                console.log('[LOG PHASE] SHADOW: onEnd');
             },
 
             moves: {

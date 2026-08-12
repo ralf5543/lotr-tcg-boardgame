@@ -90,20 +90,25 @@ export const Card: React.FC<CardProps> = ({
     isWounded = false,
     isOpponent = false,
     burdens = 0,
-    isFaceDown = card?.isFaceDown ?? false,
+    isFaceDown: isFaceDownProp,
     currentLang = 'fr',
 }) => {
-    // 🟢 APPELS DE HOOKS OBLIGATOIREMENT EN HAUT DU COMPOSANT
     const { setHoveredCard } = useHoverCard();
     const { startDrag } = useDrag();
 
-    // 🟢 EXTRACTION DES TEXTES TRADUITS DE LA CARTE (avec fallback)
+    // 🟢 RÈGLE D'AFFICHAGE :
+    // Une carte n'est masquée QUE SI elle appartient à l'adversaire (isOpponent)
+    // ET qu'elle est explicitement marquée comme isFaceDown.
+    // Mes propres cartes (isOpponent = false) ne sont JAMAIS masquées.
+    const isFaceDown = isOpponent && (card?.isFaceDown ?? isFaceDownProp ?? false);
+
+    // 🟢 EXTRACTION DES TEXTES TRADUITS
     const { title, subtitle, gameText, loreText } = getCardText(
         card,
         currentLang
     );
 
-    // 🂠 CAS DE LA CARTE FACE CACHÉE : Rendu ultra léger / Placeholder uniquement
+    // 🂠 CAS DE LA CARTE FACE CACHÉE
     if (isFaceDown) {
         return (
             <S.CardContainer
