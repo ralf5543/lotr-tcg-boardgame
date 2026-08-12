@@ -3,7 +3,7 @@ import * as S from './styles';
 import type { Ctx } from 'boardgame.io';
 import type { GameState } from '../../../../game/types';
 import { TRANSLATIONS } from '../../../../game/translations';
-import { BiddingWidget } from '../BiddingWidget'; // 🟢 IMPORT DU BIDDINGWIDGET
+import { BiddingWidget } from '../BiddingWidget';
 
 interface GameControlsProps {
     G: GameState;
@@ -50,16 +50,24 @@ export const GameControls: React.FC<GameControlsProps> = ({
     const hasAlreadyBid = currentBid !== null && currentBid !== undefined;
     const isAuctionWinner = G.setupState?.auctionWinnerId === currentPlayerId;
 
+    // 🟢 CALCUL DU NUMÉRO DE SITE À POSER (CIBLE)
+    // En dehors de la phase setup, targetSiteIdx vaut au minimum 1 (Site 2+)
+    const rawSiteIdx = G.currentSiteIndex ?? 0;
+    const targetSiteIdx = isSetupPhase ? rawSiteIdx : Math.max(1, rawSiteIdx);
+
+    // Site 1 (index 0 / setup) = FP | Sites 2+ (index > 0 / en jeu) = Ombre
+    const siteSelectorPlayerId = targetSiteIdx === 0 ? fpPlayerId : shadowPlayerId;
+
     // 🟢 1. DÉTERMINATION DU JOUEUR QUI DOIT AGIR
     const isActionWindowActive = G.actionWindow?.isOpen ?? false;
 
     const actingPlayerId = isActionWindowActive
         ? G.actionWindow!.activePlayerId
-        : awaitingSite ||
-            ctx.phase === 'shadow' ||
-            G.regroupStep === 'SHADOW_REFILL'
-          ? shadowPlayerId
-          : fpPlayerId;
+        : awaitingSite
+          ? siteSelectorPlayerId
+          : ctx.phase === 'shadow' || G.regroupStep === 'SHADOW_REFILL'
+            ? shadowPlayerId
+            : fpPlayerId;
 
     const actingPlayer = G.players?.[actingPlayerId];
     const isMyTurnToAct = currentPlayerId === actingPlayerId;
@@ -95,7 +103,7 @@ export const GameControls: React.FC<GameControlsProps> = ({
         ctx.phase === 'shadow' &&
         currentPlayerId === shadowPlayerId;
 
-    // 🟢 4. CONFIGURATION DYNAMIQUE DU TOASTER (Mise à jour)
+    // 🟢 4. CONFIGURATION DYNAMIQUE DU TOASTER
     let toastConfig: {
         show: boolean;
         title: string;
@@ -121,7 +129,7 @@ export const GameControls: React.FC<GameControlsProps> = ({
     } else if (isChoosingFirstStep) {
         toastConfig = {
             show: true,
-            title: "CHOIX DU PREMIER JOUEUR",
+            title: 'CHOIX DU PREMIER JOUEUR',
             body: isAuctionWinner
                 ? "Vous avez gagné l'enchère ! Choisissez votre camp."
                 : "L'adversaire choisit qui prend les Peuples Libres...",
@@ -138,11 +146,15 @@ export const GameControls: React.FC<GameControlsProps> = ({
             showPassButton: G.actionWindow?.canPass ?? true,
             type: 'STANDARD',
         };
-    } else if (awaitingSite && currentPlayerId === shadowPlayerId) {
+    } else if (awaitingSite && currentPlayerId === siteSelectorPlayerId) {
+        const siteNumber = targetSiteIdx + 1;
         toastConfig = {
             show: true,
-            title: 'CHOIX DU SITE',
-            body: 'Choisissez et posez un site sur la case inexplorée.',
+            title: `CHOIX DU SITE ${siteNumber}`,
+            body:
+                targetSiteIdx === 0
+                    ? 'Choisissez et posez votre premier site depuis votre deck de sites.'
+                    : 'Choisissez et posez le prochain site sur la case inexplorée.',
             showPassButton: false,
             type: 'STANDARD',
         };
@@ -185,9 +197,18 @@ export const GameControls: React.FC<GameControlsProps> = ({
         }
 
         if (awaitingSite) {
-            return currentPlayerId === shadowPlayerId
-                ? 'Choix du prochain site à poser.'
-                : "En attente du joueur de l'Ombre pour poser le prochain site...";
+            const isMyTurnToPlaceSite = currentPlayerId === siteSelectorPlayerId;
+            const isFirstSite = targetSiteIdx === 0;
+
+            if (isMyTurnToPlaceSite) {
+                return isFirstSite
+                    ? 'Posez votre site 1 pour démarrer l’aventure.'
+                    : 'Choix du prochain site à poser.';
+            }
+
+            return isFirstSite
+                ? 'En attente du joueur des Peuples Libres pour poser le site 1...'
+                : 'En attente du joueur de l’Ombre pour poser le prochain site...';
         }
 
         if (ctx.phase === 'fellowship') {

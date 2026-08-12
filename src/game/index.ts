@@ -45,7 +45,7 @@ const createCardInstance = (
 };
 
 const PLAYER_0_RING_BEARER_ID = '9R+31';
-const PLAYER_0_ONE_RING_ID = '1R1';
+const PLAYER_0_ONE_RING_ID = '4R1';
 
 // 🏞️ Deck de Sites (9 sites ordonnés ou triés, hors pioche)
 const PLAYER_0_SITES_IDS = [
@@ -328,13 +328,17 @@ export const LotrGame: Game<GameState> = {
 
                 // 2. Choix du premier joueur par le gagnant
                 chooseFirstPlayer: (
-                    { G }: LotrMoveContext,
+                    { G, playerID }: LotrMoveContext,
                     wantToBeFirst: boolean
                 ) => {
                     if (!G.setupState || G.setupState.step !== 'CHOOSING_FIRST')
                         return 'INVALID_MOVE';
 
                     const winnerId = G.setupState.auctionWinnerId || '0';
+
+                    // 🔴 SÉCURITÉ : Seul le gagnant des enchères choisit qui commence !
+                    if (playerID !== winnerId) return 'INVALID_MOVE';
+
                     const otherId = winnerId === '0' ? '1' : '0';
 
                     // Le joueur qui choisit d'être premier devient les Peuples Libres (FP)
@@ -347,13 +351,16 @@ export const LotrGame: Game<GameState> = {
                     G.statusMessage = `Le Joueur ${G.fpPlayerId} est les Peuples Libres et commence avec ${fpBurdens} fardeau(x) ! Posez le site 1.`;
                 },
 
-                // 3. Choix du site de départ
+                // 3. Choix du site de départ par le Joueur des Peuples Libres (FP)
                 selectStartingSite: (
-                    { G }: LotrMoveContext,
+                    { G, playerID }: LotrMoveContext,
                     siteCard: CardState
                 ) => {
                     if (!G.setupState || G.setupState.step !== 'AWAITING_SITE')
                         return 'INVALID_MOVE';
+
+                    // 🔴 SÉCURITÉ : Seul le joueur FP a le droit de poser le premier site !
+                    if (playerID !== G.fpPlayerId) return 'INVALID_MOVE';
 
                     G.path[0] = siteCard;
                     G.awaitingSiteSelection = false;

@@ -709,9 +709,12 @@ export const commonMoves = {
             return 'INVALID_MOVE';
         }
 
-        if (playerID !== shadowId) {
+        const isFirstSite = targetIndex === 0;
+        const expectedPlayerId = isFirstSite ? fpId : shadowId;
+
+        if (playerID !== expectedPlayerId) {
             console.warn(
-                `❌ [moves.playSite] Rejet : Seul le joueur de l'Ombre (${shadowId}) peut poser le prochain site.`
+                `❌ [moves.playSite] Rejet : C'est au joueur ${expectedPlayerId} (${isFirstSite ? 'FP' : 'Ombre'}) de poser le site ${targetIndex + 1}.`
             );
             return 'INVALID_MOVE';
         }
