@@ -6,6 +6,7 @@ import {
     applyWoundToCard,
 } from './skirmish';
 import { drawCardsForPlayer } from '../utils/drawCards';
+import { applyDevPreset } from './dev/presets';
 
 export interface ReorderPayload {
     fromIndex?: number;
@@ -608,6 +609,20 @@ export const commonMoves = {
         G.twilightPool = Math.max(0, amount);
     },
 
+    devSetBurdens: ({ G }: LotrMoveContext, deltaOrAmount: number) => {
+        const fpId = G.fpPlayerId || '0';
+        const fpPlayer = G.players[fpId];
+        if (!fpPlayer) return;
+
+        // Si on passe une petite valeur (+1/-1), c'est un delta. Sinon c'est une valeur absolue.
+        if (Math.abs(deltaOrAmount) === 1) {
+            fpPlayer.burdens = Math.max(0, fpPlayer.burdens + deltaOrAmount);
+        } else {
+            fpPlayer.burdens = Math.max(0, deltaOrAmount);
+        }
+        G.statusMessage = `[DEV] Burdens ajustés à ${fpPlayer.burdens}.`;
+    },
+
     devSetPhase: ({ G, events }: LotrPhaseContext, targetPhase: string) => {
         G.actionWindow = undefined;
         G.skirmishes = [];
@@ -633,122 +648,7 @@ export const commonMoves = {
     },
 
     devLoadPreset: ({ G }: LotrMoveContext, presetType: DevPresetType) => {
-        const fpId = G.fpPlayerId || '0';
-        const fpPlayer = G.players[fpId];
-
-        if (presetType === 'ARCHERY_TEST' && fpPlayer) {
-            G.twilightPool = 8;
-
-            fpPlayer.burdens = 3;
-
-            Object.keys(G.players).forEach((pId) => {
-                const player = G.players[pId];
-                if (player) {
-                    player.hand = [];
-                    drawCardsForPlayer(G, player, 4, false);
-                }
-            });
-
-            // 🔓 Dans le preset Dev, on s'assure d'expliciter le flag isFaceDown pour les tests
-            fpPlayer.fellowshipArea = [
-                {
-                    id: '2c102',
-                    title: 'Frodon',
-                    subtitle: 'Aventurier Malgré Lui',
-                    imageUrl: '/cards_visuals/lotr2c102.jpg',
-                    kind: 'FREE_PEOPLE',
-                    type: 'COMPANION',
-                    race: 'HOBBIT',
-                    keywords: ['RING-BEARER'],
-                    resistance: 10,
-                    signet: 'ARAGORN',
-                    twilightCost: 0,
-                    strength: 3,
-                    vitality: 4,
-                    culture: 'SHIRE',
-                    isUnique: true,
-                    isFaceDown: false, // Explicitement visible pour le preset dev
-                    gameText:
-                        'Le coût de chaque artefact, possession et récit {CULTURE_SHIRE} joué sur Frodon est de -1.',
-                    loreText:
-                        "Je ne suis pas fait pour les quêtes périlleuses. Je voudrais bien n'avoir jamais vu l'Anneau! Pourquoi m'est-il venu? Pourquoi ai-je été choisi?",
-                },
-                {
-                    id: '1r50',
-                    title: 'Legolas',
-                    subtitle: 'Vertefeuille',
-                    keywords: ['ARCHER'],
-                    imageUrl: '/cards_visuals/lotr1r50.jpg',
-                    kind: 'FREE_PEOPLE',
-                    signet: 'FRODO',
-                    resistance: 6,
-                    race: 'ELF',
-                    type: 'COMPANION',
-                    twilightCost: 2,
-                    strength: 6,
-                    vitality: 3,
-                    culture: 'ELVEN',
-                    isUnique: true,
-                    isFaceDown: false, // Explicitement visible pour le preset dev
-                    gameText: 'sfdxfdsfsdfsd',
-                },
-                {
-                    id: '1r13',
-                    title: 'Gimli',
-                    subtitle: 'Fils de Glóin',
-                    imageUrl: '/cards_visuals/lotr1r13.jpg',
-                    kind: 'FREE_PEOPLE',
-                    keywords: ['DAMAGE'],
-                    signet: 'GANDALF',
-                    resistance: 6,
-                    race: 'DWARF',
-                    type: 'COMPANION',
-                    twilightCost: 2,
-                    strength: 6,
-                    vitality: 3,
-                    culture: 'DWARVEN',
-                    isUnique: true,
-                    isFaceDown: false, // Explicitement visible pour le preset dev
-                    gameText:
-                        '**Skirmish:** Exert Gimli to make him strength +2',
-                },
-            ];
-
-            G.battlefield = [
-                {
-                    id: '1c191',
-                    title: 'Éclaireur de la Moria',
-                    imageUrl: '/cards_visuals/lotr1c191.jpg',
-                    kind: 'SHADOW',
-                    race: 'ORC',
-                    roaming: 4,
-                    type: 'MINION',
-                    twilightCost: 1,
-                    strength: 5,
-                    vitality: 3,
-                    culture: 'MORIA',
-                    isUnique: false,
-                    gameText: 'wlmdfdxlmfkdlsmfksmdlf',
-                },
-                {
-                    id: '1c271',
-                    title: 'Soldat Orque',
-                    imageUrl: '/cards_visuals/lotr1c271.jpg',
-                    kind: 'SHADOW',
-                    race: 'ORC',
-                    roaming: 6,
-                    type: 'MINION',
-                    twilightCost: 2,
-                    strength: 7,
-                    vitality: 2,
-                    culture: 'SAURON',
-                    isUnique: false,
-                    gameText: 'wdfjdsklwfjklsdfjkldsflksd',
-                },
-            ];
-            G.statusMessage =
-                '[DEV] Preset Archerie chargé (mains de 4 cartes) !';
-        }
+        applyDevPreset(G, presetType);
     },
 
     drawCard: ({ G, ctx, playerID }: LotrMoveContext, count: number = 1) => {

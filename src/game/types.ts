@@ -154,6 +154,8 @@ export interface CardState {
     kind: CardKind;
     culture: CardCulture;
     type: CardType;
+    set: number;
+    rarity: string;
     
     subtype?: CardSubtype;
     race?: CardRace;
@@ -170,6 +172,7 @@ export interface CardState {
 
     // État dynamique en jeu
     attachments?: CardState[];
+    phases?: string[];
     wounds?: number;
     isStartingMember?: boolean;
     isFaceDown?: boolean;

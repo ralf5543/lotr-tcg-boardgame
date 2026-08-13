@@ -18,8 +18,6 @@ export interface DevPanelProps {
     ctx: BoardProps<GameState>['ctx'];
 }
 
-
-
 const ALL_PHASES = [
     'fellowship',
     'shadow',
@@ -93,6 +91,37 @@ export const DevPanel: React.FC<DevPanelProps> = ({ moves, G, ctx }) => {
                                 onClick={() => moves.devSetTwilight(10)}
                             >
                                 Force 10
+                            </S.ActionButton>
+                        </S.ButtonGroup>
+                    </S.Section>
+
+                    {/* Burdens / Charges */}
+                    <S.Section>
+                        <S.Label>
+                            Burdens (FP) :{' '}
+                            <strong style={{ color: '#ef4444' }}>
+                                {G.players[G.fpPlayerId || '0']?.burdens ?? 0}
+                            </strong>
+                        </S.Label>
+                        <S.ButtonGroup>
+                            <S.ActionButton
+                                onClick={() => moves.devSetBurdens?.(-1)}
+                            >
+                                -1
+                            </S.ActionButton>
+                            <S.ActionButton
+                                onClick={() => moves.devSetBurdens?.(1)}
+                            >
+                                +1
+                            </S.ActionButton>
+                            <S.ActionButton
+                                style={{
+                                    backgroundColor: '#7f1d1d',
+                                    borderColor: '#b91c1c',
+                                }}
+                                onClick={() => moves.devSetBurdens?.(9)}
+                            >
+                                Force 9 (Corrupted)
                             </S.ActionButton>
                         </S.ButtonGroup>
                     </S.Section>

@@ -830,6 +830,9 @@ export const KeywordsContainer = styled.div`
     z-index: 2;
     inset-block-start: 20px;
     inset-inline-end: -11px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
 `;
 
 export const AttachmentSubtype = styled.img`

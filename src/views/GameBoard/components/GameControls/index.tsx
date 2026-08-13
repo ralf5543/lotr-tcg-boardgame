@@ -41,17 +41,16 @@ export const GameControls: React.FC<GameControlsProps> = ({
     const fpPlayerId = G.fpPlayerId || '0';
     const shadowPlayerId = fpPlayerId === '0' ? '1' : '0';
 
-    // 🟢 PHASE D'ENCHÈRE / SETUP (Sécurisé)
+    // 🟢 PHASE D'ENCHÈRE / SETUP (Sécurisée : exige IMPÉRATIVEMENT ctx.phase === 'setup')
     const setupStep = G.setupState?.step;
     const isSetupPhase =
-        ctx.phase === 'setup' ||
-        (Boolean(setupStep) && setupStep !== 'COMPLETE');
+        ctx.phase === 'setup' && Boolean(setupStep) && setupStep !== 'COMPLETE';
 
     const isBiddingStep = isSetupPhase && setupStep === 'BIDDING';
     const isChoosingFirstStep = isSetupPhase && setupStep === 'CHOOSING_FIRST';
     const isMulliganStep = isSetupPhase && setupStep === 'MULLIGAN';
 
-    // Verification des choix de joueurs (sécurisée contre undefined/null)
+    // Vérification des choix de joueurs (sécurisée contre undefined/null)
     const currentBid = G.setupState?.bids?.[currentPlayerId];
     const hasAlreadyBid = currentBid !== null && currentBid !== undefined;
 
@@ -72,11 +71,18 @@ export const GameControls: React.FC<GameControlsProps> = ({
     // 🟢 1. DÉTERMINATION DU JOUEUR QUI DOIT AGIR
     const isActionWindowActive = G.actionWindow?.isOpen ?? false;
 
+    // Sécurité : le drapeau awaitingSite n'est pertinent que dans les phases autorisées
+    const isAwaitingSiteActive =
+        awaitingSite &&
+        (ctx.phase === 'setup' ||
+            ctx.phase === 'fellowship' ||
+            ctx.phase === 'regroup');
+
     const actingPlayerId = isSetupPhase
         ? currentPlayerId
         : isActionWindowActive
           ? G.actionWindow!.activePlayerId
-          : awaitingSite
+          : isAwaitingSiteActive
             ? siteSelectorPlayerId
             : ctx.phase === 'shadow' || G.regroupStep === 'SHADOW_REFILL'
               ? shadowPlayerId
@@ -107,7 +113,7 @@ export const GameControls: React.FC<GameControlsProps> = ({
     // 🟢 3. AUTRES ACTIONS STANDARD DE PHASE (DYNAMIQUE)
     const isFellowshipAction =
         !isActionWindowActive &&
-        !awaitingSite &&
+        !isAwaitingSiteActive &&
         ctx.phase === 'fellowship' &&
         currentPlayerId === fpPlayerId;
 
@@ -169,7 +175,10 @@ export const GameControls: React.FC<GameControlsProps> = ({
             showPassButton: G.actionWindow?.canPass ?? true,
             type: 'STANDARD',
         };
-    } else if (awaitingSite && currentPlayerId === siteSelectorPlayerId) {
+    } else if (
+        isAwaitingSiteActive &&
+        currentPlayerId === siteSelectorPlayerId
+    ) {
         const siteNumber = targetSiteIdx + 1;
         toastConfig = {
             show: true,
@@ -225,7 +234,7 @@ export const GameControls: React.FC<GameControlsProps> = ({
                 : `En attente de la réaction de ${actingPlayer?.profile?.name || `Joueur ${actingPlayerId}`}...`;
         }
 
-        if (awaitingSite) {
+        if (isAwaitingSiteActive) {
             const isMyTurnToPlaceSite =
                 currentPlayerId === siteSelectorPlayerId;
             const isFirstSite = targetSiteIdx === 0;

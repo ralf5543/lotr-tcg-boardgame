@@ -185,7 +185,8 @@ export const Card: React.FC<CardProps> = ({
         setHoveredCard(null);
     };
 
-    const isCharacter = ['COMPANION', 'ALLY'].includes(card.type);
+    const isCharacter = ['COMPANION', 'ALLY', 'MINION'].includes(card.type);
+    const isFreepeopleCharacter = ['COMPANION', 'ALLY'].includes(card.type);
 
     const isRoaming =
         typeof currentSiteIndex === 'number' &&
@@ -356,7 +357,7 @@ export const Card: React.FC<CardProps> = ({
                 </S.RoamingNumber>
             )}
 
-            {isCharacter && shouldShowResistance && (
+            {isFreepeopleCharacter && shouldShowResistance && (
                 <S.ResistanceWrapper>
                     <S.CardResistance $isRingBearer={Boolean(isRingBearer)}>
                         {displayResistance}

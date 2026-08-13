@@ -1179,7 +1179,8 @@
     "kind": "SITE",
     "type": "SITE",
     "keywords": [
-      "UNDERGROUND"
+      "UNDERGROUND",
+      "DAMAGE +1"
     ],
     "twilightCost": 2,
     "siteNumber": 4,
@@ -1188,7 +1189,7 @@
     "i18n": {
       "en": {
         "title": "Moria Stairway",
-        "gameText": "**Underground.**  Each companion and minion bearing a hand weapon is **damage +1**."
+        "gameText": "**Underground.**  Each companion and minion bearing a hand weapon is **Damage +1.**."
       },
       "fr": {
         "title": "Escalier de la Moria",
@@ -4586,6 +4587,9 @@
     "isUnique": false,
     "kind": "SITE",
     "type": "SITE",
+    "keywords": [
+      "DAMAGE +1"
+    ],
     "phases": [
       "SKIRMISH"
     ],
@@ -4596,7 +4600,7 @@
     "i18n": {
       "en": {
         "title": "Osgiliath Fallen",
-        "gameText": "**Skirmish:** Spot your minion and remove 2 burdens to make that minion **damage +1**."
+        "gameText": "**Skirmish:** Spot your minion and remove 2 burdens to make that minion **Damage +1.**."
       },
       "fr": {
         "title": "Osgiliath Fallen",
