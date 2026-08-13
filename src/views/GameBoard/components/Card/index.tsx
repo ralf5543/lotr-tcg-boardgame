@@ -250,7 +250,7 @@ export const Card: React.FC<CardProps> = ({
                     {Array.from({ length: card.wounds! }).map((_, i) => (
                         <S.WoundToken
                             key={i}
-                            width="20px"
+                            width="24px"
                             src="interface/tokens/token_blood.webp"
                         />
                     ))}

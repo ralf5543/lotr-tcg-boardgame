@@ -234,10 +234,6 @@ export const CardContainer = styled.div<CardContainerProps>`
                 inset: 81px 4px 22px;
             }
 
-            ${KeywordText} {
-                font-size: 13px;
-            }
-
             ${GameText} {
                 font-size: 13px;
             }
@@ -425,10 +421,6 @@ export const CardContainer = styled.div<CardContainerProps>`
             ${TextContainer} {
                 padding: 18px 12px;
                 inset: 352px 20px 32px 86px;
-            }
-
-            ${KeywordText} {
-                font-size: 18px;
             }
 
             ${GameText} {
@@ -649,12 +641,6 @@ export const TextContainer = styled.div`
     padding: 3px;
     position: absolute;
     inset: 114px 8px 10px 27px;
-`;
-
-export const KeywordText = styled.p`
-    font-size: 6px;
-    margin: 0;
-    font-weight: bold;
 `;
 
 export const GameText = styled.p`

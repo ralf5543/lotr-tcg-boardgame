@@ -879,20 +879,27 @@ export const commonMoves = {
                     isFaceDown: false,
                 }));
             }
+            G.awaitingSiteSelection = false;
         });
 
         G.statusMessage = `Nouveau site révélé ! La compagnie avance en ${playedSite.name} (+${addedTwilight} Crépuscule). Révélation des compagnons.`;
 
         // 4. TRANSITION DE PHASE
-        // Nettoyage des escarmouches si on sort de regroupement
-        if (ctx.phase === 'regroup') {
+        // Si on a posé un site pour avancer...
+        if (ctx.phase === 'fellowship') {
+            // 🟢 Mouvement initial en Fellowship -> On enchaîne sur la phase Shadow
+            if (events?.setPhase) {
+                events.setPhase('shadow');
+            }
+        } else if (ctx.phase === 'regroup') {
+            // 🟢 Mouvement supplémentaire depuis le Regroupement -> On ré-enchaîne aussi sur une phase Shadow !
+            // Nettoyage des combats du mouvement précédent
             G.skirmishes = [];
             G.activeSkirmishId = undefined;
-        }
 
-        // Passage à la phase 'fellowship' pour relancer le tour et propager le nouvel état G
-        if (events?.setPhase) {
-            events.setPhase('fellowship');
+            if (events?.setPhase) {
+                events.setPhase('shadow');
+            }
         }
     },
 
