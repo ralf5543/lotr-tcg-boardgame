@@ -3,6 +3,7 @@ import ReactDOM from 'react-dom';
 import { TRANSLATIONS } from '../../../../game/translations';
 import type { CardKeyword } from '../../../../game/types';
 import * as S from './styles';
+import { getKeywordIconPath } from '../../../../utils/getKeywordIconPath';
 
 interface KeywordBadgeProps {
     keyword: CardKeyword;
@@ -17,13 +18,21 @@ export const KeywordBadge: React.FC<KeywordBadgeProps> = ({ keyword, size = 18 }
 
     if (hasError) return null;
 
-    const keywordInfo = TRANSLATIONS.keyword[keyword];
-    const imagePath = `/interface/pictos/${keyword}.webp`;
+    // 1. Obtenir le chemin de l'image via le helper
+    const imagePath = getKeywordIconPath(keyword);
+
+    // 2. Extraire la clé de traduction générique (ex: "Damage +1" -> "Damage" ou "Damage +")
+    // Nettoie les chiffres, points et symboles pour trouver la clé de base dans TRANSLATIONS.keyword
+    const baseKeywordKey = keyword
+        .replace(/[0-9.,+]/g, '')
+        .trim();
+
+    // Recherche de la traduction (soit le keyword exact, soit la version nettoyée)
+    const keywordInfo = TRANSLATIONS.keyword[keyword] || TRANSLATIONS.keyword[baseKeywordKey];
 
     const handleMouseEnter = () => {
         if (badgeRef.current) {
             const rect = badgeRef.current.getBoundingClientRect();
-            // Positionne le tooltip juste au-dessus du pictogramme
             setCoords({
                 top: rect.top - 8,
                 left: rect.left + rect.width / 2,
@@ -52,12 +61,13 @@ export const KeywordBadge: React.FC<KeywordBadgeProps> = ({ keyword, size = 18 }
                 />
             </S.BadgeContainer>
 
-            {/* 🟢 PORTAL : Injecte le tooltip directement à la racine du DOM (document.body) */}
+            {/* PORTAL : Injecte le tooltip directement à la racine du DOM (document.body) */}
             {isHovered && keywordInfo && ReactDOM.createPortal(
                 <S.TooltipPortalContainer $top={coords.top} $left={coords.left}>
                     <S.TooltipHeader>
                         <img src={imagePath} alt="" width={16} height={16} />
-                        <strong>{keywordInfo.label}</strong>
+                        {/* Affiche le keyword original (ex: "Damage +2") ou le titre traduit */}
+                        <strong>{keywordInfo.label || keyword}</strong>
                     </S.TooltipHeader>
                     <S.TooltipText>{keywordInfo.description}</S.TooltipText>
                 </S.TooltipPortalContainer>,

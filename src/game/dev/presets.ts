@@ -12,7 +12,7 @@ const CARDS_PRESETS: Record<string, CardState> = {
         isUnique: true,
         kind: 'FREE_PEOPLE',
         type: 'COMPANION',
-        keywords: ['RING-BOUND'],
+        keywords: ['RING-BOUND', 'RING-BEARER'],
         culture: 'SHIRE',
         race: 'HOBBIT',
         signet: 'ARAGORN',

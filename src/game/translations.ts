@@ -135,15 +135,45 @@ export const TRANSLATIONS = {
             label: 'Pirate',
             description: unloadKeyword,
         },
-        DAMAGE: {
-            label: 'Dégâts + X',
+        'DAMAGE +1': {
+            label: 'Dégâts + 1',
             description:
-                'Le personnage inflige X blessures supplémentaires en combat',
+                'Le personnage inflige 1 blessure supplémentaires en combat',
         },
-        DEFENDER: {
-            label: 'Défenseur + X',
+        'DAMAGE + 2': {
+            label: 'Dégâts + 2',
             description:
-                "Le personnage peut être affecté à X séide supplémentaires pendant la phase d'affectation.",
+                'Le personnage inflige 2 blessures supplémentaires en combat',
+        },
+        'DAMAGE + 3': {
+            label: 'Dégâts + 3',
+            description:
+                'Le personnage inflige 3 blessures supplémentaires en combat',
+        },
+        'DAMAGE + 4': {
+            label: 'Dégâts + 4',
+            description:
+                'Le personnage inflige 4 blessures supplémentaires en combat',
+        },
+        'DEFENDER + 1': {
+            label: 'Défenseur + 1',
+            description:
+                "Le personnage peut être affecté à 1 séide supplémentaire pendant la phase d'affectation.",
+        },
+        'DEFENDER + 2': {
+            label: 'Défenseur + 1',
+            description:
+                "Le personnage peut être affecté à 2 séides supplémentaires pendant la phase d'affectation.",
+        },
+        'DEFENDER + 3': {
+            label: 'Défenseur + 3',
+            description:
+                "Le personnage peut être affecté à 3 séides supplémentaires pendant la phase d'affectation.",
+        },
+        'DEFENDER + 4': {
+            label: 'Défenseur + 4',
+            description:
+                "Le personnage peut être affecté à 4 séides supplémentaires pendant la phase d'affectation.",
         },
         DWELLING: {
             label: 'Résidence',
@@ -175,10 +205,25 @@ export const TRANSLATIONS = {
             label: 'Fortification',
             description: unloadKeyword,
         },
-        HUNTER: {
-            label: 'Chasseur X',
+        'HUNTER 1': {
+            label: 'Chasseur 1',
             description:
-                "Ce personnage a + X en Force s'il combat un adversaire sans le mot-clé Chasseur.",
+                "Ce personnage a + 1 en Force s'il combat un adversaire sans le mot-clé Chasseur.",
+        },
+        'HUNTER 2': {
+            label: 'Chasseur 2',
+            description:
+                "Ce personnage a + 2 en Force s'il combat un adversaire sans le mot-clé Chasseur.",
+        },
+        'HUNTER 3': {
+            label: 'Chasseur 3',
+            description:
+                "Ce personnage a + 3 en Force s'il combat un adversaire sans le mot-clé Chasseur.",
+        },
+        'HUNTER 4': {
+            label: 'Chasseur 4',
+            description:
+                "Ce personnage a + 4 en Force s'il combat un adversaire sans le mot-clé Chasseur.",
         },
         KNIGHT: {
             label: 'Chevalier',
@@ -254,10 +299,20 @@ export const TRANSLATIONS = {
             label: 'Tentacule',
             description: unloadKeyword,
         },
-        TOIL: {
-            label: 'Éreintement X',
+        'TOIL 1': {
+            label: 'Éreintement 1',
             description:
-                'Pour chaque personnage différent (de la même culture que la carte avec Éreintement) affaibli, le coût de la carte est réduit de X.',
+                'Pour chaque personnage différent (de la même culture que la carte avec Éreintement) affaibli, le coût de la carte est réduit de 1.',
+        },
+        'TOIL 2': {
+            label: 'Éreintement 2',
+            description:
+                'Pour chaque personnage différent (de la même culture que la carte avec Éreintement) affaibli, le coût de la carte est réduit de 2.',
+        },
+        'TOIL 3': {
+            label: 'Éreintement 3',
+            description:
+                'Pour chaque personnage différent (de la même culture que la carte avec Éreintement) affaibli, le coût de la carte est réduit de 3.',
         },
         TRACKER: {
             label: 'Traqueur',
