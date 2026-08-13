@@ -191,8 +191,9 @@ export const Card: React.FC<CardProps> = ({
         typeof currentSiteIndex === 'number' &&
         card.kind === 'SHADOW' &&
         card.type === 'MINION' &&
-        typeof card.roaming === 'number' &&
-        card.roaming > currentSiteIndex + 1;
+        typeof card.minionSiteNumber === 'number' &&
+        card.minionSiteNumber > currentSiteIndex + 1;
+        
 
     const effectiveVitality = getEffectiveVitality(card);
     const effectiveStrength = getEffectiveStrength(card);
@@ -343,9 +344,9 @@ export const Card: React.FC<CardProps> = ({
                 </S.VitalityBadge>
             )}
 
-            {card.roaming !== undefined && (
+            {card.minionSiteNumber !== undefined && (
                 <S.RoamingNumber $isRoaming={isRoaming}>
-                    {card.roaming}
+                    {card.minionSiteNumber}
 
                     {isRoaming && size === 'md' && (
                         <S.RoamingBadge title="Pénalité d'errance (+2 Crépuscule)">

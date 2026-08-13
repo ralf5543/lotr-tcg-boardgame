@@ -165,7 +165,7 @@ export interface CardState {
     strength?: number;
     vitality?: number;
     resistance?: number;
-    roaming?: number;
+    minionSiteNumber?: number;
     signet?: CardSignet;
 
     // État dynamique en jeu
