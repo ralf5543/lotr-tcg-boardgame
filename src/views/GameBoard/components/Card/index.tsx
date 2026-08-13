@@ -305,10 +305,6 @@ export const Card: React.FC<CardProps> = ({
             )}
 
             <S.TextContainer>
-                {size !== 'sm' && translatedKeywords && (
-                    <S.KeywordText>{translatedKeywords}.</S.KeywordText>
-                )}
-
                 {size !== 'sm' && gameText && (
                     <S.GameText>
                         <FormattedText text={gameText} />

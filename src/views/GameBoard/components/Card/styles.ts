@@ -358,6 +358,7 @@ export const CardContainer = styled.div<CardContainerProps>`
         css`
             width: 400px;
             border-radius: 12px;
+            overflow: hidden;
 
             ${CardHeader} {
                 min-height: 75px;
