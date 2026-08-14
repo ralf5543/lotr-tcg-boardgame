@@ -151,6 +151,7 @@ const CARDS_PRESETS: Record<string, CardState> = {
         kind: 'SHADOW',
         type: 'MINION',
         culture: 'MORIA',
+        keywords: ['ARCHER', 'DAMAGE +1'],
         race: 'ORC',
         twilightCost: 2,
         strength: 6,

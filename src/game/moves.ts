@@ -7,6 +7,7 @@ import {
 } from './skirmish';
 import { drawCardsForPlayer } from '../utils/drawCards';
 import { applyDevPreset } from './dev/presets';
+import { advanceArcheryAssignmentStep } from './index';
 
 export interface ReorderPayload {
     fromIndex?: number;
@@ -106,9 +107,7 @@ export const passActionWindow = ({
                 'Manœuvre terminée. Passage à la phase d’Archerie.';
             events?.endPhase?.();
         } else if (ctx.phase === 'archery') {
-            G.statusMessage =
-                'Archerie terminée. Passage à la phase d’Affectation.';
-            events?.endPhase?.();
+            advanceArcheryAssignmentStep(G, events);
         } else if (ctx.phase === 'skirmish' && G.activeSkirmishId) {
             resolveSkirmish(G, ctx);
         } else if (ctx.phase === 'regroup') {
@@ -583,6 +582,89 @@ export const commonMoves = {
         if (G.pendingPhaseEnd) {
             G.pendingPhaseEnd = false;
             events?.endPhase?.();
+        }
+    },
+
+    // 🏹 ASSIGNATION DES BLESSURES D'ARCHERIE (AU CLIC SUR UN PERSONNAGE)
+    assignArcheryWound: (
+        { G, events, playerID }: LotrMoveContext,
+        targetCardId: string
+    ) => {
+        const fpId = G.fpPlayerId || '0';
+        const shadowId = fpId === '0' ? '1' : '0';
+
+        if (!G.archeryAssignStep || (G.archeryWoundsToAssign ?? 0) <= 0) {
+            return 'INVALID_MOVE';
+        }
+
+        // --- 1. Assignation par le joueur FP (subit le tir d'archerie de l'Ombre) ---
+        if (G.archeryAssignStep === 'FP') {
+            if (playerID !== fpId) return 'INVALID_MOVE';
+
+            const fpPlayer = G.players[fpId];
+            const companion = fpPlayer?.fellowshipArea?.find(
+                (c: any) => c.id === targetCardId || c.instanceId === targetCardId
+            );
+
+            if (!companion) return 'INVALID_MOVE';
+
+            applyWoundToCard(G, companion, 1);
+            G.archeryWoundsToAssign = (G.archeryWoundsToAssign || 1) - 1;
+
+            if (G.archeryWoundsToAssign > 0) {
+                G.statusMessage = `FP : Assignez encore ${G.archeryWoundsToAssign} blessure(s).`;
+            } else {
+                // FP a fini d'assigner. C'est au tour de l'Ombre si FP avait du tir d'archerie !
+                const fpArcheryTotal = fpPlayer?.archeryTotal || 0;
+                if (fpArcheryTotal > 0) {
+                    G.archeryAssignStep = 'SHADOW';
+                    G.archeryWoundsToAssign = fpArcheryTotal;
+                    G.statusMessage = `Ombre : Assignez ${fpArcheryTotal} blessure(s) à vos séides.`;
+                } else {
+                    // L'Ombre n'a pas de blessures à subir -> Fin de la phase d'archerie
+                    G.archeryAssignStep = undefined;
+                    G.archeryWoundsToAssign = 0;
+
+                    if (!G.battlefield || G.battlefield.length === 0) {
+                        G.statusMessage = 'Tous les séides ont été éliminés ! Passage au Regroupement.';
+                        events?.setPhase?.('regroup');
+                    } else {
+                        G.statusMessage = 'Phase d’Archerie terminée. Passage à l’Assignment / Maneuver.';
+                        events?.endPhase?.();
+                    }
+                }
+            }
+            return;
+        }
+
+        // --- 2. Assignation par le joueur Ombre (subit le tir d'archerie de FP) ---
+        if (G.archeryAssignStep === 'SHADOW') {
+            if (playerID !== shadowId) return 'INVALID_MOVE';
+
+            const minion = G.battlefield.find(
+                (c: any) => c.id === targetCardId || c.instanceId === targetCardId
+            );
+
+            if (!minion) return 'INVALID_MOVE';
+
+            applyWoundToCard(G, minion, 1);
+            G.archeryWoundsToAssign = (G.archeryWoundsToAssign || 1) - 1;
+
+            if (G.archeryWoundsToAssign > 0) {
+                G.statusMessage = `Ombre : Assignez encore ${G.archeryWoundsToAssign} blessure(s).`;
+            } else {
+                // L'Ombre a fini d'assigner !
+                G.archeryAssignStep = undefined;
+                G.archeryWoundsToAssign = 0;
+
+                if (!G.battlefield || G.battlefield.length === 0) {
+                    G.statusMessage = 'Plus aucun séide en vie ! Passage au Regroupement.';
+                    events?.setPhase?.('regroup');
+                } else {
+                    G.statusMessage = 'Phase d’Archerie terminée. Passage à la suite.';
+                    events?.endPhase?.();
+                }
+            }
         }
     },
 

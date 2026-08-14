@@ -1,10 +1,10 @@
 {
   "id": "deck-p0",
-  "name": "Deck Joueur 0",
+  "name": "Deck Gondor Menaces / Ourouks bourrins",
   "ringBearerId": "9R+31",
   "oneRingId": "4R1",
   "startingCompanionIds": [
-    "0P25",
+    "7R91",
     "7C323"
   ],
   "freePeople": [
@@ -16,6 +16,7 @@
    "3R44",
    "7P364",
    "7P364",
+    "0P25",
    "15U94",
    "3U46",
    "3U46",
@@ -34,7 +35,6 @@
    "7C108",
    "7C108",
    "7C86",
-   "7R91",
    "7R104",
    "9R+32",
    "7R114"

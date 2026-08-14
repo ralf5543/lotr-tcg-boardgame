@@ -200,6 +200,7 @@ export interface PlayerState {
     currentSiteIndex: number;
     sitesDeck: SiteCardState[];
     burdens: number;
+    archeryTotal?: number;
 }
 
 export interface SiteCardState {
@@ -227,6 +228,7 @@ export interface GameState {
     activeSkirmishId?: string;
     actionWindow?: ActionWindow;
     skirmishes: SkirmishState[];
+    archeryState?: ArcheryState;
     assignmentStep?: 'FP_ASSIGN' | 'SHADOW_ASSIGN' | 'COMPLETED';
     lastWoundedCardIds?: string[];
     pendingPhaseEnd?: boolean;
@@ -279,4 +281,12 @@ export type LotrPhaseContext = FnContext<GameState>;
 /** Context fourni aux Moves du jeu (contient playerID) */
 export interface LotrMoveContext extends FnContext<GameState> {
     playerID: string;
+}
+
+export interface ArcheryState {
+    step: 'ACTIONS' | 'FP_ASSIGN' | 'SHADOW_ASSIGN';
+    fpTotal: number;
+    shadowTotal: number;
+    fpRemainingWounds: number;
+    shadowRemainingWounds: number;
 }

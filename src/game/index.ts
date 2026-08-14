@@ -74,6 +74,100 @@ const createInitialPlayer = (playerId: string): PlayerState => {
     };
 };
 
+/**
+ * Compte le nombre d'occurrences du mot-clé 'ARCHER' sur le personnage uniquement.
+ */
+const countCardArcheryKeywords = (card: CardState): number => {
+    if (!card.keywords || !Array.isArray(card.keywords)) return 0;
+    return card.keywords.filter((kw) => kw.toUpperCase() === 'ARCHER').length;
+};
+
+/**
+ * Calcul total de la réserve d'archerie pour les FP et pour l'Ombre
+ */
+export const calculateArcheryTotals = (G: GameState) => {
+    const fpId = G.fpPlayerId || '0';
+    const fpPlayer = G.players[fpId];
+
+    // 1. Archerie des Peuples Libres (Uniquement les compagnons dans la fellowshipArea du joueur FP)
+    let fpTotal = 0;
+    if (fpPlayer && fpPlayer.fellowshipArea) {
+        fpPlayer.fellowshipArea.forEach((companion) => {
+            fpTotal += countCardArcheryKeywords(companion);
+        });
+    }
+
+    // 2. Archerie de l'Ombre (Les séides sur le battlefield)
+    let shadowTotal = 0;
+    if (G.battlefield) {
+        G.battlefield.forEach((minion) => {
+            if (minion.kind === 'SHADOW' && minion.type === 'MINION') {
+                shadowTotal += countCardArcheryKeywords(minion);
+            }
+        });
+    }
+
+    return { fpTotal, shadowTotal };
+};
+
+/**
+ * Avance ou termine la sous-phase d'assignation des blessures d'archerie
+ */
+export const advanceArcheryAssignmentStep = (G: GameState, events: any) => {
+    if (!G.archeryState) return;
+
+    const shadowId = G.fpPlayerId === '0' ? '1' : '0';
+
+    // 1. Passage de la phase d'actions au calcul / FP_ASSIGN
+    if (G.archeryState.step === 'ACTIONS') {
+        const { fpTotal, shadowTotal } = calculateArcheryTotals(G);
+        G.archeryState.fpTotal = fpTotal;
+        G.archeryState.shadowTotal = shadowTotal;
+
+        // Les FP subissent le total Shadow, l'Ombre subit le total FP
+        G.archeryState.fpRemainingWounds = shadowTotal; 
+        G.archeryState.shadowRemainingWounds = fpTotal; 
+
+        // Fermer la fenêtre d'action
+        G.actionWindow = undefined;
+
+        if (G.archeryState.fpRemainingWounds > 0) {
+            G.archeryState.step = 'FP_ASSIGN';
+            G.statusMessage = `Phase d'Archerie : Le joueur des Peuples Libres doit attribuer ${G.archeryState.fpRemainingWounds} blessure(s) d'archerie à ses compagnons.`;
+            return;
+        }
+        // Si les FP n'ont pas de blessures à subir, on passe directement à l'Ombre
+        G.archeryState.step = 'SHADOW_ASSIGN';
+    }
+
+    // 2. Passage aux blessures de l'Ombre
+    if (G.archeryState.step === 'SHADOW_ASSIGN' || G.archeryState.fpRemainingWounds <= 0) {
+        G.archeryState.step = 'SHADOW_ASSIGN';
+
+        if (G.archeryState.shadowRemainingWounds > 0 && G.battlefield.length > 0) {
+            G.statusMessage = `Phase d'Archerie : Le joueur de l'Ombre (${shadowId}) doit attribuer ${G.archeryState.shadowRemainingWounds} blessure(s) d'archerie à ses séides.`;
+            return;
+        }
+    }
+
+    // 3. Fin de la phase d'archerie si toutes les blessures sont attribuées
+    G.archeryState = undefined;
+    G.actionWindow = undefined;
+
+    // Vérification s'il reste des séides vivants sur le battlefield
+    const remainingMinions = G.battlefield.filter(
+        (c) => c.kind === 'SHADOW' && c.type === 'MINION'
+    );
+
+    if (remainingMinions.length === 0) {
+        G.statusMessage = "Plus aucun séide en jeu après l'archerie : passage direct au Regroupement.";
+        events?.setPhase?.('regroup');
+    } else {
+        G.statusMessage = "Phase d'Archerie terminée : Début de la phase de Manœuvre.";
+        events?.setPhase?.('maneuver');
+    }
+};
+
 export const setupGame = ({ random }: { random: any }): GameState => {
     const players: Record<string, PlayerState> = {
         '0': {
@@ -92,14 +186,12 @@ export const setupGame = ({ random }: { random: any }): GameState => {
         },
     };
 
-    // Préparation automatique du début de partie pour chaque joueur
     Object.keys(players).forEach((pId) => {
         const player = players[pId];
         if (!player || !player.deck) return;
 
         const deckConfig = loadAndValidateDeck(pId);
 
-        // 1. Instanciation du Porteur et de L'Anneau Unique (hors-deck)
         const ringBearer = createCardInstance(
             deckConfig.ringBearerId,
             pId,
@@ -119,7 +211,6 @@ export const setupGame = ({ random }: { random: any }): GameState => {
         ringBearer.attachments = [oneRing];
         player.fellowshipArea = [ringBearer];
 
-        // 2. Instanciation des compagnons de départ (masqués / isFaceDown: true)
         deckConfig.startingCompanionIds.forEach((cardId, index) => {
             const companion = createCardInstance(
                 cardId,
@@ -130,11 +221,9 @@ export const setupGame = ({ random }: { random: any }): GameState => {
             player.fellowshipArea.push(companion);
         });
 
-        // 3. Mélange de la pioche
         player.deck = random.Shuffle(player.deck);
     });
 
-    // Construction de l'objet d'état initial (G)
     const G: GameState = {
         fpPlayerId: '0',
         twilightPool: 0,
@@ -151,7 +240,6 @@ export const setupGame = ({ random }: { random: any }): GameState => {
         players,
         fellowshipCardsDrawn: 0,
 
-        // Initialisation de la propriété mulliganChoices
         mulliganChoices: {
             '0': null,
             '1': null,
@@ -179,7 +267,6 @@ export const LotrGame: Game<GameState> = {
     },
 
     phases: {
-        // PHASE SETUP : ENCHÈRES & MULLIGAN
         setup: {
             start: true,
             next: 'fellowship',
@@ -190,7 +277,6 @@ export const LotrGame: Game<GameState> = {
                 ...commonMoves,
                 reorderFellowship: commonMoves.reorderFellowship,
 
-                // 1. Soumettre sa mise via le BiddingWidget
                 submitBid: (
                     { G, playerID }: LotrMoveContext,
                     bidAmount: number
@@ -237,7 +323,6 @@ export const LotrGame: Game<GameState> = {
                     }
                 },
 
-                // 2. Choix du premier joueur par le gagnant
                 chooseFirstPlayer: (
                     { G, playerID }: LotrMoveContext,
                     wantToBeFirst: boolean
@@ -260,7 +345,6 @@ export const LotrGame: Game<GameState> = {
                     G.statusMessage = `Le Joueur ${G.fpPlayerId} est les Peuples Libres et commence avec ${fpBurdens} fardeau(x) ! Posez le site 1.`;
                 },
 
-                // 3. Choix du site de départ par le Joueur des Peuples Libres (FP)
                 selectStartingSite: (
                     { G, playerID }: LotrMoveContext,
                     siteCard: CardState
@@ -279,14 +363,12 @@ export const LotrGame: Game<GameState> = {
                     G.path[0] = siteCard;
                     G.awaitingSiteSelection = false;
 
-                    // Révélation de TOUS les compagnons (sécurisé avec Optional Chaining)
                     Object.values(G.players).forEach((p) => {
                         p?.fellowshipArea?.forEach((card) => {
                             card.isFaceDown = false;
                         });
                     });
 
-                    // 🃏 PIOCHE DES 8 CARTES DE DÉPART
                     Object.values(G.players).forEach((player) => {
                         if (player) {
                             drawCardsForPlayer(G, player, 8, false);
@@ -310,7 +392,6 @@ export const LotrGame: Game<GameState> = {
                     const player = G.players[pId];
                     if (!player) return 'INVALID_MOVE';
 
-                    // Sécurité : Vérifier si le joueur a déjà validé son choix
                     if (G.setupState.mulligans[pId] !== null) {
                         return 'INVALID_MOVE';
                     }
@@ -318,7 +399,6 @@ export const LotrGame: Game<GameState> = {
                     G.setupState.mulligans[pId] = doMulligan;
 
                     if (doMulligan) {
-                        // Remettre les cartes dans le deck, réinitialiser la main, mélanger et repiocher 8 cartes
                         player.deck.push(...player.hand);
                         player.hand = [];
                         player.deck = shuffle(player.deck);
@@ -328,7 +408,6 @@ export const LotrGame: Game<GameState> = {
                     const m0 = G.setupState.mulligans['0'];
                     const m1 = G.setupState.mulligans['1'];
 
-                    // Quand les deux joueurs ont répondu
                     if (m0 !== null && m1 !== null) {
                         G.setupState.step = 'COMPLETE';
                         G.statusMessage =
@@ -378,9 +457,6 @@ export const LotrGame: Game<GameState> = {
 
                 const shadowId = G.fpPlayerId === '0' ? '1' : '0';
                 G.statusMessage = `Phase d'Ombre : Joueur Ombre (${shadowId}), jouez vos Séides/Soutiens. Crépuscule disponible : ${G.twilightPool}`;
-            },
-            onEnd: () => {
-                console.log('[LOG PHASE] SHADOW: onEnd');
             },
 
             moves: {
@@ -465,7 +541,7 @@ export const LotrGame: Game<GameState> = {
                     );
 
                     if (hasMinions) {
-                        events?.setPhase?.('maneuver');
+                        events?.setPhase?.('archery');
                     } else {
                         events?.setPhase?.('regroup');
                     }
@@ -500,6 +576,14 @@ export const LotrGame: Game<GameState> = {
             turn: { activePlayers: { value: { '0': 'play', '1': 'play' } } },
             onBegin: ({ G }: LotrPhaseContext) => {
                 const fpId = G.fpPlayerId || '0';
+                G.archeryState = {
+                    step: 'ACTIONS',
+                    fpTotal: 0,
+                    shadowTotal: 0,
+                    fpRemainingWounds: 0,
+                    shadowRemainingWounds: 0,
+                };
+
                 G.actionWindow = {
                     isOpen: true,
                     activePlayerId: fpId,
@@ -514,6 +598,71 @@ export const LotrGame: Game<GameState> = {
             },
             moves: {
                 ...commonMoves,
+
+                assignArcheryWound: (
+                    { G, events, playerID }: LotrMoveContext,
+                    targetCardId: string
+                ) => {
+                    if (!G.archeryState) return 'INVALID_MOVE';
+
+                    const fpId = G.fpPlayerId || '0';
+                    const shadowId = fpId === '0' ? '1' : '0';
+
+                    // 1. Assignation des blessures par les FP
+                    if (G.archeryState.step === 'FP_ASSIGN') {
+                        if (playerID !== fpId) return 'INVALID_MOVE';
+
+                        const fpPlayer = G.players[fpId];
+                        const targetComp = fpPlayer?.fellowshipArea.find(
+                            (c) => c.id === targetCardId
+                        );
+                        if (!targetComp) return 'INVALID_MOVE';
+
+                        targetComp.wounds = (targetComp.wounds || 0) + 1;
+                        G.archeryState.fpRemainingWounds -= 1;
+
+                        G.statusMessage = `${targetComp.name} subit 1 blessure d'archerie (${G.archeryState.fpRemainingWounds} restante(s)).`;
+
+                        if (G.archeryState.fpRemainingWounds <= 0) {
+                            advanceArcheryAssignmentStep(G, events);
+                        }
+                        return;
+                    }
+
+                    // 2. Assignation des blessures par l'Ombre
+                    if (G.archeryState.step === 'SHADOW_ASSIGN') {
+                        if (playerID !== shadowId) return 'INVALID_MOVE';
+
+                        const targetMinion = G.battlefield.find(
+                            (c) => c.id === targetCardId
+                        );
+                        if (!targetMinion) return 'INVALID_MOVE';
+
+                        targetMinion.wounds = (targetMinion.wounds || 0) + 1;
+                        G.archeryState.shadowRemainingWounds -= 1;
+
+                        G.statusMessage = `${targetMinion.name} subit 1 blessure d'archerie (${G.archeryState.shadowRemainingWounds} restante(s)).`;
+
+                        const vitality = Number(targetMinion.vitality) || 0;
+                        if ((targetMinion.wounds || 0) >= vitality) {
+                            G.battlefield = G.battlefield.filter(
+                                (c) => c.id !== targetCardId
+                            );
+                            const shadowPlayer = G.players[shadowId];
+                            if (shadowPlayer) {
+                                shadowPlayer.discard.push(targetMinion);
+                            }
+                            G.statusMessage = `${targetMinion.name} a été éliminé par l'archerie !`;
+                        }
+
+                        if (
+                            G.archeryState.shadowRemainingWounds <= 0 ||
+                            G.battlefield.length === 0
+                        ) {
+                            advanceArcheryAssignmentStep(G, events);
+                        }
+                    }
+                },
             },
         },
 
