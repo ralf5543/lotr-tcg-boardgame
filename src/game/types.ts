@@ -4,7 +4,11 @@ export type CardKind = 'FREE_PEOPLE' | 'SHADOW' | 'NONE';
 
 export type CardKeyword =
     | 'AID'
-    | 'AMBUSH'
+    | 'AMBUSH 1'
+    | 'AMBUSH 2'
+    | 'AMBUSH 3'
+    | 'AMBUSH 4'
+    | 'AMBUSH 4'
     | 'ARCHER'
     | 'BATTLEGROUND'
     | 'BESIEGER'

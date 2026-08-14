@@ -1,7 +1,6 @@
 import type {
     CardKind,
     CardType,
-    CardSubtype,
     CardRace,
     CardCulture,
     CardKeyword,
@@ -114,10 +113,30 @@ export const TRANSLATIONS = {
             description:
                 "Au début de la phase de manoeuvre, vous pouvez payer le coût indiqué sur la carte pour attacher le suivant à un compagnon ou un séide jusqu'à la phase de ralliement, et bénéficier de ses effets.",
         },
-        AMBUSH: {
-            label: 'Embuscade X',
+        'AMBUSH 1': {
+            label: 'Embuscade 1',
             description:
-                "X est ajouté à la réserve crépusculaire si le joueur des Peuples Libres affecte le séide avec ce mot-clé lors de la phase d'affectation.",
+                "1 est ajouté à la réserve crépusculaire si le joueur des Peuples Libres affecte le séide avec ce mot-clé lors de la phase d'affectation.",
+        },
+        'AMBUSH 2': {
+            label: 'Embuscade 2',
+            description:
+                "2 est ajouté à la réserve crépusculaire si le joueur des Peuples Libres affecte le séide avec ce mot-clé lors de la phase d'affectation.",
+        },
+        'AMBUSH 3': {
+            label: 'Embuscade 3',
+            description:
+                "3 est ajouté à la réserve crépusculaire si le joueur des Peuples Libres affecte le séide avec ce mot-clé lors de la phase d'affectation.",
+        },
+        'AMBUSH 4': {
+            label: 'Embuscade 4',
+            description:
+                "4 est ajouté à la réserve crépusculaire si le joueur des Peuples Libres affecte le séide avec ce mot-clé lors de la phase d'affectation.",
+        },
+        'AMBUSH 5': {
+            label: 'Embuscade 5',
+            description:
+                "5 est ajouté à la réserve crépusculaire si le joueur des Peuples Libres affecte le séide avec ce mot-clé lors de la phase d'affectation.",
         },
         ARCHER: {
             label: 'Archer',

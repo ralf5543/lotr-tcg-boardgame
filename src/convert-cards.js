@@ -140,14 +140,20 @@ function cleanLoreText(text) {
 }
 
 /**
- * Formate le texte de jeu : convertit <br> en \n, <keyword> en **bold**, et retire les guillemets.
+ * Formate le texte de jeu : convertit <br> en \n et <keyword> en **bold**.
+ * Place le symbole twilight d'Ambush juste APRÈS les astérisques de gras : **Ambush** <symbol>twilightX</symbol>
  */
 function formatGameText(text) {
     if (!text) return undefined;
-    return text
-        .trim()
+
+    let formatted = text
         .replace(/<br\s*\/?>/gi, '\n')
+        // CAS PARTICULIER AMBUSH : **Ambush** suivi immédiatement du symbole twilight
+        .replace(/<keyword>Ambush<\/keyword>\s*(<symbol>twilight\d+<\/symbol>)/gi, '**Ambush** $1')
+        // Cas général pour les autres mots-clés
         .replace(/<keyword>([^<]+)<\/keyword>/gi, '**$1**');
+
+    return formatted.trim();
 }
 
 /**
@@ -208,15 +214,27 @@ function buildLangBlock(title, subtitle, gameText, lore) {
 
 /**
  * Extrait les mots-clés autonomes d'une carte depuis son texte anglais.
- * Cible uniquement les balises <keyword>Mot-clé.</keyword> commençant par une Majuscule
- * et finissant directement par un point.
+ * - Cible les balises <keyword>Mot-clé.</keyword> commençant par une Majuscule et finissant par un point.
+ * - Gestion spéciale pour AMBUSH : capture <keyword>Ambush</keyword> <symbol>twilightX</symbol> -> "AMBUSH X"
  */
 function parseKeywords(text) {
     if (!text) return undefined;
 
     const keywords = [];
-    const regex = /<keyword>([A-Z][^<]*\.)<\/keyword>/g;
 
+    // 1. CAS SPÉCIAL : Ambush suivi du symbole twilightX
+    const ambushRegex = /<keyword>Ambush<\/keyword>\s*<symbol>twilight(\d+)<\/symbol>/gi;
+    let ambushMatch;
+    while ((ambushMatch = ambushRegex.exec(text)) !== null) {
+        const cost = ambushMatch[1];
+        const kw = `AMBUSH ${cost}`;
+        if (!keywords.includes(kw)) {
+            keywords.push(kw);
+        }
+    }
+
+    // 2. CAS GÉNÉRAL : Mots-clés standards se terminant par un point dans la balise
+    const regex = /<keyword>([A-Z][^<]*\.)<\/keyword>/g;
     let match;
     while ((match = regex.exec(text)) !== null) {
         const rawKw = match[1].slice(0, -1).trim();

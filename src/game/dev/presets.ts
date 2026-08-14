@@ -207,6 +207,36 @@ const CARDS_PRESETS: Record<string, CardState> = {
             },
         },
     },
+    ENRAGED_SOUTHRON: {
+        "id": "12C64",
+    "set": 12,
+    "rarity": "C",
+    "isUnique": false,
+    "kind": "SHADOW",
+    "type": "MINION",
+    "keywords": [
+      "AMBUSH 3"
+    ],
+    "culture": "MEN",
+    "race": "MAN",
+    "twilightCost": 4,
+    "strength": 12,
+    "vitality": 2,
+    "minionSiteNumber": 4,
+    "imageUrl": "/cards_visuals/o_12_064.jpg",
+   "i18n": {
+      "en": {
+        "title": "Enraged Southron",
+        "gameText": "**Ambush** <symbol>twilight3</symbol>. \nThe move limit for this turn is +1.",
+        "loreText": "As with wild animals, fleeing prey seems only to incite the warriors of Harad."
+      },
+      "fr": {
+        "title": "Enraged Southron",
+        "gameText": "**Ambush** <symbol>twilight3</symbol>. \nThe move limit for this turn is +1.",
+        "loreText": "As with wild animals, fleeing prey seems only to incite the warriors of Harad."
+      },
+    }
+    },
 };
 
 export const applyDevPreset = (
@@ -241,6 +271,7 @@ export const applyDevPreset = (
                 { ...CARDS_PRESETS.LURTZ },
                 { ...CARDS_PRESETS.MORIA_SCOUT },
                 { ...CARDS_PRESETS.ORC_SOLDIER },
+                { ...CARDS_PRESETS.ENRAGED_SOUTHRON },
             ];
 
             G.statusMessage = '[DEV] Preset Archerie chargé';
