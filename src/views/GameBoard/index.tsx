@@ -27,6 +27,7 @@ import {
 import { PhaseBanner } from './components/PhaseBanner';
 import { DevPanel, type DevMoves } from '../../utils/DevPanel';
 import { useFaction } from '../../contexts/FactionContext';
+import { useTargeting } from '../../contexts/TargetingContext';
 
 export interface GameBoardProps extends BoardProps<GameState> {
     moves: BoardProps<GameState>['moves'] &
@@ -267,6 +268,64 @@ export const GameBoard: React.FC<GameBoardProps> = ({
         }
     }, [G.fpPlayerId, setFpPlayerId]);
 
+    const { startTargeting, stopTargeting } = useTargeting();
+
+    // 🟢 4. SYNCHRONISATION DU CIBLAGE D'ARCHERIE
+    useEffect(() => {
+        if (ctx.phase !== 'archery' || !G.archeryState) {
+            stopTargeting();
+            return;
+        }
+
+        const { step } = G.archeryState;
+
+        if (step === 'FP_ASSIGN') {
+            // Cibles valides : Compagnons dans la Fellowship Area du joueur FP
+            const fpPlayer = G.players[G.fpPlayerId || '0'];
+            const validTargets = (fpPlayer?.fellowshipArea || [])
+                .filter((c) => c && c.id)
+                .map((c) => c.id);
+
+            startTargeting({
+                targetableCardIds: validTargets,
+                message:
+                    "Tir d'archerie : Cliquez sur un compagnon pour lui assigner une blessure.",
+                onSelectTarget: (cardId) => {
+                    if (moves.assignArcheryWound) {
+                        moves.assignArcheryWound(cardId);
+                    }
+                },
+            });
+        } else if (step === 'SHADOW_ASSIGN') {
+            // Cibles valides : Séides (MINION) sur le battlefield
+            const validTargets = (G.battlefield || [])
+                .filter((c) => c && c.kind === 'SHADOW' && c.type === 'MINION')
+                .map((c) => c.id);
+
+            startTargeting({
+                targetableCardIds: validTargets,
+                message:
+                    "Tir d'archerie : Cliquez sur un séide pour lui assigner une blessure.",
+                onSelectTarget: (cardId) => {
+                    if (moves.assignArcheryWound) {
+                        moves.assignArcheryWound(cardId);
+                    }
+                },
+            });
+        } else {
+            stopTargeting();
+        }
+    }, [
+        ctx.phase,
+        G.archeryState,
+        G.fpPlayerId,
+        G.players,
+        G.battlefield,
+        moves,
+        startTargeting,
+        stopTargeting,
+    ]);
+
     return (
         <DragProvider>
             <S.BoardContainer $faction={currentFaction}>
@@ -360,7 +419,6 @@ export const GameBoard: React.FC<GameBoardProps> = ({
                     path={G.path}
                     players={G.players}
                     onPlaySite={(siteId, targetIndex) => {
-
                         const isInitialSetupSite =
                             ctx.phase === 'setup' &&
                             G.setupState?.step === 'AWAITING_SITE' &&

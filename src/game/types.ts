@@ -201,6 +201,7 @@ export interface PlayerState {
     sitesDeck: SiteCardState[];
     burdens: number;
     archeryTotal?: number;
+    hasDiscardedInRegroup?: boolean;
 }
 
 export interface SiteCardState {
@@ -230,9 +231,11 @@ export interface GameState {
     skirmishes: SkirmishState[];
     archeryState?: ArcheryState;
     assignmentStep?: 'FP_ASSIGN' | 'SHADOW_ASSIGN' | 'COMPLETED';
+    archeryAssignStep?: 'FP' | 'SHADOW' | undefined;
     lastWoundedCardIds?: string[];
     pendingPhaseEnd?: boolean;
     pendingDeadCardIds?: string[];
+    archeryWoundsToAssign?: number;
     regroupStep?:
         | 'ACTION_WINDOW'
         | 'SHADOW_REFILL'

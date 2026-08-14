@@ -3,6 +3,7 @@ import type { CardState, CardType, CardSubtype } from '../../../../game/types';
 import { Card } from '../Card';
 import * as S from './styles';
 import { useDrag } from '../../../../contexts/DragContext';
+import { useTargeting } from '../../../../contexts/TargetingContext';
 import { canAttachToCharacter } from '../../../../utils/routingDragNDrop';
 import { SkirmishClash } from './SkirmishClash';
 
@@ -42,19 +43,22 @@ export const BoardCharacterStack: React.FC<BoardCharacterStackProps> = ({
     isFaceDown = false,
 }) => {
     const { registerTarget, activeTargetId, dragged, startDrag } = useDrag();
+    const { isCardTargetable, selectCard } = useTargeting();
+
+    // 🎯 Vérifie si le personnage principal est une cible valide pour l'action en cours
+    const isTargetable = isCardTargetable(character.id);
 
     // 🟢 Extraction distincte du TYPE et du SUBTYPE
     const draggedType = (dragged?.card as CardState)?.type as
         | CardType
         | undefined;
-    const draggedSubtype = (dragged?.card as CardState)?.subtype as
-        | CardSubtype
-        | undefined;
 
     const isBeingDragged = dragged?.card?.id === character.id;
 
+    // ⛔ Si la carte est ciblable, ON BLOQUE LE DRAG pour privilégier la sélection par clic
     const canDragCharacter =
-        !isOpponent || (isAssignmentPhase && character.type === 'MINION');
+        !isTargetable &&
+        (!isOpponent || (isAssignmentPhase && character.type === 'MINION'));
 
     const isMinionAssignment =
         dragged?.origin === 'BATTLEFIELD' && draggedType === 'MINION';
@@ -71,7 +75,7 @@ export const BoardCharacterStack: React.FC<BoardCharacterStackProps> = ({
         activeTargetId === character.id &&
         ((!isOpponent && canAttach) || isMinionAssignment);
 
-    // Règle de sélection : Uniquement en phase skirmish, avec un ID, si des minions sont assignés et si la sélection est permise
+    // Règle de sélection d'escarmouche
     const canSelectThisSkirmish =
         isSkirmishPhase &&
         Boolean(skirmishId) &&
@@ -79,26 +83,12 @@ export const BoardCharacterStack: React.FC<BoardCharacterStackProps> = ({
         isSelectionAllowed;
 
     const handleStackClick = (e: React.MouseEvent) => {
-        // 1. On stoppe immédiatement la propagation pour que le DragContext
-        // ou le parent ne déclenche pas un faux "Drop"
         e.stopPropagation();
 
         if (!canSelectThisSkirmish || isSelectedSkirmish) return;
 
-        // 2. On vérifie les conditions pour déclencher le combat
         if (isSkirmishPhase && skirmishId && onSelectSkirmish) {
             onSelectSkirmish(skirmishId);
-        } else {
-            console.warn(
-                '⚠️ [CLICK] Clic ignoré car les conditions ne sont pas réunies.',
-                {
-                    reason: !isSkirmishPhase
-                        ? "Ce n'est pas la phase de Skirmish"
-                        : !skirmishId
-                          ? 'skirmishId est manquant'
-                          : 'onSelectSkirmish est manquant',
-                }
-            );
         }
     };
 
@@ -112,25 +102,38 @@ export const BoardCharacterStack: React.FC<BoardCharacterStackProps> = ({
         >
             {isSelectedSkirmish && <SkirmishClash $isOpponent={isOpponent} />}
             <S.CharacterStack $isBeingDragged={isBeingDragged}>
-                {/* 🟢 SÉIDES ASSIGNÉS (Affichés dans leur propre conteneur distinct des possessions) */}
+                {/* 🟢 SÉIDES ASSIGNÉS */}
                 {assignedMinions.length > 0 && (
                     <S.AssignedMinionsContainer
                         $isOpponent={isOpponent}
                         className="assigned-minions-group"
                     >
-                        {assignedMinions.map((minion) => (
-                            <S.MinionWrapper key={minion.id}>
-                                <Card
-                                    card={minion}
-                                    size="sm"
-                                    isDraggable={false}
-                                    isWounded={lastWoundedCardIds.includes(
-                                        minion.id
-                                    )}
-                                    isOpponent={!isOpponent}
-                                />
-                            </S.MinionWrapper>
-                        ))}
+                        {assignedMinions.map((minion) => {
+                            const isMinionTargetable = isCardTargetable(minion.id);
+
+                            return (
+                                <S.MinionWrapper
+                                    key={minion.id}
+                                    $isTargetable={isMinionTargetable}
+                                    onClick={(e) => {
+                                        if (isMinionTargetable) {
+                                            e.stopPropagation();
+                                            selectCard(minion.id);
+                                        }
+                                    }}
+                                >
+                                    <Card
+                                        card={minion}
+                                        size="sm"
+                                        isDraggable={false}
+                                        isWounded={lastWoundedCardIds.includes(
+                                            minion.id
+                                        )}
+                                        isOpponent={!isOpponent}
+                                    />
+                                </S.MinionWrapper>
+                            );
+                        })}
                     </S.AssignedMinionsContainer>
                 )}
 
@@ -138,10 +141,18 @@ export const BoardCharacterStack: React.FC<BoardCharacterStackProps> = ({
                 <S.CardDragTarget
                     $isOpponent={isOpponent}
                     $isTargeted={isTargeted}
+                    $isTargetable={isTargetable}
                     data-card={JSON.stringify(character)}
                     data-draggable={canDragCharacter ? 'true' : undefined}
                     ref={(el) => registerTarget(character.id, el)}
                     onPointerDown={(e) => {
+                        // 🎯 Si c'est ciblable, on déclenche directement la sélection au clic
+                        if (isTargetable) {
+                            e.stopPropagation();
+                            selectCard(character.id);
+                            return;
+                        }
+
                         if (!canDragCharacter || e.button !== 0) return;
 
                         if (onStartDrag) {
@@ -170,41 +181,38 @@ export const BoardCharacterStack: React.FC<BoardCharacterStackProps> = ({
                     />
                 </S.CardDragTarget>
 
-                {/* ATTACHEMENTS CLASSIQUES (Possessions, Objets sous la carte) */}
+                {/* ATTACHEMENTS CLASSIQUES */}
                 {character.attachments && character.attachments.length > 0 && (
                     <S.AttachmentsContainer className="attachments-group">
-                        {character.attachments.map((attachment, attachIdx) => {
+                        {character.attachments.map((attachment, attachIdx) => (
+                            <S.AttachmentWrapper
+                                key={attachment.id}
+                                $index={attachIdx}
+                                data-draggable={
+                                    !isOpponent && !isTargetable ? 'true' : undefined
+                                }
+                                onPointerDown={(e) => {
+                                    if (isOpponent || isTargetable || e.button !== 0)
+                                        return;
+                                    e.stopPropagation();
 
-                            return (
-                                <S.AttachmentWrapper
-                                    key={attachment.id}
-                                    $index={attachIdx}
-                                    data-draggable={
-                                        !isOpponent ? 'true' : undefined
-                                    }
-                                    onPointerDown={(e) => {
-                                        if (isOpponent || e.button !== 0)
-                                            return;
-                                        e.stopPropagation();
-
-                                        startDrag(
-                                            attachment,
-                                            attachIdx,
-                                            e,
-                                            'ATTACHMENT',
-                                            'portrait',
-                                            character.id
-                                        );
-                                    }}
-                                >
-                                    <Card
-                                        card={attachment}
-                                        size="sm"
-                                        isDraggable={!isOpponent}
-                                    />
-                                </S.AttachmentWrapper>
-                            );
-                        })}
+                                    startDrag(
+                                        attachment,
+                                        attachIdx,
+                                        e,
+                                        'ATTACHMENT',
+                                        'portrait',
+                                        character.id
+                                    );
+                                }}
+                            >
+                                <Card
+                                    card={attachment}
+                                    size="sm"
+                                    isDraggable={!isOpponent && !isTargetable}
+                                />
+                            </S.AttachmentWrapper>
+                        ))}
                     </S.AttachmentsContainer>
                 )}
             </S.CharacterStack>

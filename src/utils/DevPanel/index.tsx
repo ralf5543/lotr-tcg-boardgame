@@ -114,15 +114,7 @@ export const DevPanel: React.FC<DevPanelProps> = ({ moves, G, ctx }) => {
                             >
                                 +1
                             </S.ActionButton>
-                            <S.ActionButton
-                                style={{
-                                    backgroundColor: '#7f1d1d',
-                                    borderColor: '#b91c1c',
-                                }}
-                                onClick={() => moves.devSetBurdens?.(9)}
-                            >
-                                Force 9 (Corrupted)
-                            </S.ActionButton>
+
                         </S.ButtonGroup>
                     </S.Section>
 

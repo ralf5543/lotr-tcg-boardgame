@@ -13,12 +13,25 @@ export const CharacterStack = styled.div<{ $isBeingDragged?: boolean }>`
 export const CardDragTarget = styled.div<{
     $isOpponent?: boolean;
     $isTargeted?: boolean;
+    $isTargetable?: boolean; // 👈 AJOUT ICI
 }>`
     position: relative;
     z-index: 2;
     transition: all 0.2s ease-in-out;
 
-    /* EFFET VISUEL QUAND LA CARTE EST CIBLÉE */
+    /* EFFET VISUEL SI C'EST UNE CIBLE VALIDE (Archerie, Événement, Capacités...) */
+    ${({ $isTargetable }) =>
+        $isTargetable &&
+        css`
+            cursor: pointer !important;
+
+            &:hover {
+                transform: scale(1.05);
+                filter: drop-shadow(0 0 12px #e74c3c) drop-shadow(0 0 20px rgba(231, 76, 60, 0.8));
+            }
+        `}
+
+    /* EFFET VISUEL QUAND LA CARTE EST CIBLÉE PAR UN DRAG */
     ${({ $isTargeted }) =>
         $isTargeted &&
         css`
@@ -119,9 +132,22 @@ export const AssignedMinionsContainer = styled.div<{ $isOpponent?: boolean }>`
     }
 `;
 
-export const MinionWrapper = styled.div`
-    /* S'assure que chaque carte garde sa taille naturelle */
+export const MinionWrapper = styled.div<{ $isTargetable?: boolean }>`
     flex: 0 0 auto;
+    transition: all 0.2s ease-in-out;
+
+    ${({ $isTargetable }) =>
+        $isTargetable &&
+        css`
+            cursor: pointer !important;
+
+            &:hover {
+                transform: scale(1.05);
+                filter: drop-shadow(0 0 12px #e74c3c);
+                outline: 2px solid #e74c3c;
+                border-radius: 8px;
+            }
+        `}
 `;
 
 /* =========================================================

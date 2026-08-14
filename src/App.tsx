@@ -8,6 +8,7 @@ import { HoverCardProvider } from './contexts/HoverCardProvider';
 import { CustomAssetCursor } from './views/GameBoard/components/CustomCursor';
 import { DragProvider } from './contexts/DragProvider';
 import { FactionProvider } from './contexts/FactionProvider';
+import { TargetingProvider } from './contexts/TargetingContext';
 
 const LotrClient = Client({
     game: LotrGame,
@@ -91,49 +92,50 @@ function App() {
             <FactionProvider myPlayerId={myPlayerId}>
                 <HoverCardProvider>
                     <DragProvider>
-                        <ScaledView ref={containerRef} $scale={scale}>
-                            <LotrClient
-                                matchID={currentMatchId}
-                                playerID={myPlayerId}
-                            />
+                        <TargetingProvider>
+                            <ScaledView ref={containerRef} $scale={scale}>
+                                <LotrClient
+                                    matchID={currentMatchId}
+                                    playerID={myPlayerId}
+                                />
 
-                            <FullscreenButton
-                                onClick={toggleFullScreen}
-                                title="Plein écran"
-                            >
-                                [ ⛶ ]
-                            </FullscreenButton>
-
-                            <PlayerSwitcher>
-                                <span>
-                                    Joueur :{' '}
-                                    <strong>
-                                        {myPlayerId === '0'
-                                            ? 'FP (0)'
-                                            : 'Ombre (1)'}
-                                    </strong>
-                                </span>
-                                <a
-                                    href={`?player=0&match=${currentMatchId}`}
-                                    target="_blank"
-                                    rel="noreferrer"
+                                <FullscreenButton
+                                    onClick={toggleFullScreen}
+                                    title="Plein écran"
                                 >
-                                    Onglet FP
-                                </a>
-                                <a
-                                    href={`?player=1&match=${currentMatchId}`}
-                                    target="_blank"
-                                    rel="noreferrer"
-                                >
-                                    Onglet Ombre
-                                </a>
+                                    [ ⛶ ]
+                                </FullscreenButton>
 
-                                <button onClick={handleHardReset}>
-                                    Reset Partie 🔄
-                                </button>
-                            </PlayerSwitcher>
-                        </ScaledView>
+                                <PlayerSwitcher>
+                                    <span>
+                                        Joueur :{' '}
+                                        <strong>
+                                            {myPlayerId === '0'
+                                                ? 'FP (0)'
+                                                : 'Ombre (1)'}
+                                        </strong>
+                                    </span>
+                                    <a
+                                        href={`?player=0&match=${currentMatchId}`}
+                                        target="_blank"
+                                        rel="noreferrer"
+                                    >
+                                        Onglet FP
+                                    </a>
+                                    <a
+                                        href={`?player=1&match=${currentMatchId}`}
+                                        target="_blank"
+                                        rel="noreferrer"
+                                    >
+                                        Onglet Ombre
+                                    </a>
 
+                                    <button onClick={handleHardReset}>
+                                        Reset Partie 🔄
+                                    </button>
+                                </PlayerSwitcher>
+                            </ScaledView>
+                        </TargetingProvider>
                         {/* Le curseur reste ici en dehors de ScaledView */}
                         <CustomAssetCursor />
                     </DragProvider>
