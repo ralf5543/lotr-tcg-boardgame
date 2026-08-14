@@ -100,6 +100,7 @@ export type CardRace =
     | 'DWARF'
     | 'ELF'
     | 'ENT'
+    | 'HALF-TROLL'
     | 'HOBBIT'
     | 'MAIA'
     | 'MAN'

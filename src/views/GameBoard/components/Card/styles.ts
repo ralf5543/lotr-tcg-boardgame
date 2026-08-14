@@ -831,8 +831,10 @@ export const KeywordsContainer = styled.div`
     inset-block-start: 20px;
     inset-inline-end: -11px;
     display: flex;
+    max-height: 50%;
     flex-direction: column;
     gap: 4px;
+    flex-wrap: wrap-reverse;
 `;
 
 export const AttachmentSubtype = styled.img`
