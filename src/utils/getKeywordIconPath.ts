@@ -3,12 +3,16 @@
  * en un chemin d'asset valide et nettoyé.
  */
 const KEYWORD_ICON_ALIAS: Record<string, string> = {
-    // Si tu veux rediriger tous les Damage +X vers le même picto
+    'AMBUSH_1': 'AMBUSH',
+    'AMBUSH_2': 'AMBUSH',
+    'AMBUSH_3': 'AMBUSH',
+    'AMBUSH_5': 'AMBUSH',
     'DAMAGE_PLUS1': 'DAMAGE',
     'DAMAGE_PLUS2': 'DAMAGE',
     'DAMAGE_PLUS3': 'DAMAGE',
-    // Si Toil utilise le même picto quel que soit le chiffre
+    'DAMAGE_PLUS4': 'DAMAGE',
     'TOIL_1': 'TOIL',
+    'TOIL_2': 'TOIL',
     'TOIL_2': 'TOIL',
 };
 

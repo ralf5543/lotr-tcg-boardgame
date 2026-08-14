@@ -128,11 +128,6 @@ export const TRANSLATIONS = {
             description:
                 "3 est ajouté à la réserve crépusculaire si le joueur des Peuples Libres affecte le séide avec ce mot-clé lors de la phase d'affectation.",
         },
-        'AMBUSH 4': {
-            label: 'Embuscade 4',
-            description:
-                "4 est ajouté à la réserve crépusculaire si le joueur des Peuples Libres affecte le séide avec ce mot-clé lors de la phase d'affectation.",
-        },
         'AMBUSH 5': {
             label: 'Embuscade 5',
             description:
@@ -159,37 +154,37 @@ export const TRANSLATIONS = {
             description:
                 'Le personnage inflige 1 blessure supplémentaires en combat',
         },
-        'DAMAGE + 2': {
+        'DAMAGE +2': {
             label: 'Dégâts + 2',
             description:
                 'Le personnage inflige 2 blessures supplémentaires en combat',
         },
-        'DAMAGE + 3': {
+        'DAMAGE +3': {
             label: 'Dégâts + 3',
             description:
                 'Le personnage inflige 3 blessures supplémentaires en combat',
         },
-        'DAMAGE + 4': {
+        'DAMAGE +4': {
             label: 'Dégâts + 4',
             description:
                 'Le personnage inflige 4 blessures supplémentaires en combat',
         },
-        'DEFENDER + 1': {
+        'DEFENDER +1': {
             label: 'Défenseur + 1',
             description:
                 "Le personnage peut être affecté à 1 séide supplémentaire pendant la phase d'affectation.",
         },
-        'DEFENDER + 2': {
+        'DEFENDER +2': {
             label: 'Défenseur + 1',
             description:
                 "Le personnage peut être affecté à 2 séides supplémentaires pendant la phase d'affectation.",
         },
-        'DEFENDER + 3': {
+        'DEFENDER +3': {
             label: 'Défenseur + 3',
             description:
                 "Le personnage peut être affecté à 3 séides supplémentaires pendant la phase d'affectation.",
         },
-        'DEFENDER + 4': {
+        'DEFENDER +4': {
             label: 'Défenseur + 4',
             description:
                 "Le personnage peut être affecté à 4 séides supplémentaires pendant la phase d'affectation.",
