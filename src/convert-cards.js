@@ -144,11 +144,10 @@ function cleanLoreText(text) {
  */
 function formatGameText(text) {
     if (!text) return undefined;
-    const formatted = text
+    return text
+        .trim()
         .replace(/<br\s*\/?>/gi, '\n')
         .replace(/<keyword>([^<]+)<\/keyword>/gi, '**$1**');
-    
-    return stripQuotes(formatted);
 }
 
 /**
@@ -186,7 +185,7 @@ function parseStat(primaryValue, fallbackText) {
 }
 
 /**
- * Construit un bloc i18n nettoyé (sans guillemets et sans clés undefined).
+ * Construit un bloc i18n nettoyé
  */
 function buildLangBlock(title, subtitle, gameText, lore) {
     const block = {
@@ -216,17 +215,13 @@ function parseKeywords(text) {
     if (!text) return undefined;
 
     const keywords = [];
-    // Regex : capture uniquement les <keyword> dont le contenu commence par une majuscule
-    // et se termine immédiatement par un point avant </keyword>
     const regex = /<keyword>([A-Z][^<]*\.)<\/keyword>/g;
 
     let match;
     while ((match = regex.exec(text)) !== null) {
-        // Extraire le texte, retirer le point final et nettoyer les espaces
         const rawKw = match[1].slice(0, -1).trim();
         const upperKw = rawKw.toUpperCase();
 
-        // Contrôle de sécurité contre notre liste exhaustive
         if (VALID_KEYWORDS.has(upperKw)) {
             if (!keywords.includes(upperKw)) {
                 keywords.push(upperKw);
@@ -279,60 +274,41 @@ function parseClassAndPhases(classStr, englishText) {
 
 /**
  * Extrait la condition d'attachement d'une carte sous la forme d'un tableau 2D (DNF).
- * - Le premier niveau représente le "OU" (disjonction / alternatives)
- * - Le second niveau représente le "ET" (conjonction / critères requis simultanément)
- * Ex: [["MAN"], ["ELF"], ["WIZARD"]] ou [["ELVEN", "COMPANION"]]
  */
 function parseAttachedTo(text) {
     if (!text) return null;
 
-    // -------------------------------------------------------------
-    // CAS 1 : Sites ("Plays on a site...")
-    // -------------------------------------------------------------
     if (/plays on a site/i.test(text)) {
         return [["SITE"]];
     }
 
-    // -------------------------------------------------------------
-    // ISOLATION : Tout ce qui se trouve entre "Bearer must be " et le premier point "."
-    // -------------------------------------------------------------
     const match = text.match(/Bearer must be\s+([^.]+)\./i);
     if (!match) return null;
 
-    const rawClause = match[1].trim(); // ex: "a <symbol>rohan</symbol> Man", "a Man, Elf, or Wizard", "The Mouth of Sauron"
-
-    // Texte sans aucune balise HTML/XML pour vérifier si c'est un nom propre
+    const rawClause = match[1].trim();
     const textWithoutTags = rawClause.replace(/<[^>]+>/g, '').trim();
 
-    // -------------------------------------------------------------
-    // CAS 2 : NOM PROPRE (Ne commence ni par "a " ni par "an ")
-    // Exemple : "The Mouth of Sauron", "Boromir"
-    // -------------------------------------------------------------
     const isGeneric = /^(a|an)\s+/i.test(textWithoutTags);
 
     if (!isGeneric) {
         if (textWithoutTags.length > 0) {
-            return [[textWithoutTags]]; // ➔ [["The Mouth of Sauron"]]
+            return [[textWithoutTags]];
         }
     }
 
-    // Helper interne pour extraire les mots-clés d'un segment de texte
     function extractKeywords(segment) {
         const keywords = [];
 
-        // 1. Extraire les contenus des balises <symbol> et <keyword>
         segment = segment.replace(/<(symbol|keyword)>(.*?)<\/\1>/gi, (_, tag, content) => {
             if (content) {
                 const clean = content.replace(/[^a-zA-Z-]/g, '').toUpperCase();
                 if (clean) keywords.push(clean);
             }
-            return ' '; // Remplace la balise par un espace pour ne pas coller les mots autour
+            return ' ';
         });
 
-        // 2. Nettoyer les balises restantes éventuelles
         const cleanSegment = segment.replace(/<[^>]+>/g, ' ');
 
-        // 3. Extraire les mots simples en ignorant "A", "AN", "OR"
         const words = cleanSegment.split(/\s+/);
         for (const word of words) {
             const cleanWord = word.replace(/[^a-zA-Z-]/g, '').toUpperCase();
@@ -344,12 +320,7 @@ function parseAttachedTo(text) {
         return keywords;
     }
 
-    // -------------------------------------------------------------
-    // CAS 3A : Liste d'alternatives séparées par "OR" ou des virgules
-    // Exemple : "a Man, Elf, or Wizard" / "a Gandalf, Elven, or Shire companion"
-    // -------------------------------------------------------------
     if (rawClause.includes(',') || /\bor\b/i.test(rawClause)) {
-        // Découpage propre par virgule ou par le mot "or" (entouré d'espaces)
         const parts = rawClause.split(/,|\s+or\s+/i);
         const results = [];
 
@@ -360,23 +331,20 @@ function parseAttachedTo(text) {
             }
         }
 
-        return results.length > 0 ? results : null; // ➔ [["MAN"], ["ELF"], ["WIZARD"]]
+        return results.length > 0 ? results : null;
     }
 
-    // -------------------------------------------------------------
-    // CAS 3B : Condition combinée
-    // Exemple : "a <symbol>rohan</symbol> Man" / "an Elf companion"
-    // -------------------------------------------------------------
     const combinedKeywords = extractKeywords(rawClause);
-    return combinedKeywords.length > 0 ? [combinedKeywords] : null; // ➔ [["ROHAN", "MAN"]]
+    return combinedKeywords.length > 0 ? [combinedKeywords] : null;
 }
 
 function parseToPlayConditions(text) {
     if (!text) return undefined;
 
-    // 1. Détection de "To play, " peu importe ce qui précède !
-    // Capture tout ce qui suit jusqu'au premier '.', retour à la ligne '\n' ou balise HTML/XML '<'
-    const match = text.match(/To play,\s+([^.\n<]+)/i);
+    // CORRECTION : On retire '<' de la liste d'exclusion pour ne pas s'arrêter avant <symbol> ou <keyword>
+    // SÉCURITÉ : Ne match "To play," que s'il est au tout début du texte ou après un point/retour ligne,
+    // et SANS guillemet d'ouverture (" / “ / ') juste devant (ex: texte conféré à une autre carte).
+    const match = text.match(/(?:^|[\n.])\s*(?<!["'“])To play,\s+([^.\n]+)/i);
     if (!match) return undefined;
 
     const rawClause = match[1].trim(); 
@@ -422,9 +390,16 @@ function parseToPlayConditions(text) {
         cleanBody = cleanBody.replace(/[*_#<>[\]]/g, ' ').trim();
 
         const words = cleanBody.split(/\s+/).filter(Boolean);
+        
+        // Mots/verbes réservés à exclure complètement des cibles
+        const EXCLUDED_WORDS = new Set([
+            'A', 'AN', 'YOUR', 'OR', 'FROM', 'IN', 'PLAY', 'HAND', 'CARD', 'CARDS',
+            'SPOT', 'EXERT', 'DISCARD', 'REMOVE', 'ADD'
+        ]);
+
         for (const word of words) {
             const normalized = normalizeToken(word);
-            if (normalized && !['A', 'AN', 'YOUR', 'OR', 'FROM', 'IN', 'PLAY', 'HAND', 'CARD', 'CARDS'].includes(normalized)) {
+            if (normalized && !EXCLUDED_WORDS.has(normalized)) {
                 // Conservation de la casse si nom propre
                 const isProperName = /^[A-Z][a-zà-ÿ]+/.test(word);
                 targets.push(isProperName ? word : normalized);
@@ -491,22 +466,15 @@ function parseToPlayConditions(text) {
 async function convert() {
     console.log('🔄 Lecture et traitement du CSV des cartes...');
 
-    // ------------------------------------------------------------------------
-    // 4.1. Chargement et décodage explicite en Windows-1252
-    // ------------------------------------------------------------------------
     if (!fs.existsSync(CSV_PATH)) {
         console.error(`❌ Fichier introuvable : ${CSV_PATH}`);
         return;
     }
 
-    // Lecture du buffer binaire brut
     const buffer = fs.readFileSync(CSV_PATH);
-    
-    // Décodage explicite Windows-1252 vers string Unicode
     const decoder = new TextDecoder('windows-1252');
     let fileContent = decoder.decode(buffer);
 
-    // Nettoyage de l'éventuel BOM
     if (fileContent.charCodeAt(0) === 0xFEFF) {
         fileContent = fileContent.slice(1);
     }
@@ -522,9 +490,6 @@ async function convert() {
     const cardMap = new Map();
     const siteMap = new Map();
 
-    // ------------------------------------------------------------------------
-    // 4.2. Parcours ligne par ligne et extraction des données
-    // ------------------------------------------------------------------------
     for (let i = 1; i < allRows.length; i++) {
         const row = allRows[i];
         if (row.length < 2) continue;
@@ -545,7 +510,6 @@ async function convert() {
 
         const targetMap = isSite ? siteMap : cardMap;
 
-        // Déduplication : si la carte existe déjà, on garde la plus complète
         if (targetMap.has(cardId)) {
             const existing = targetMap.get(cardId);
             const existingTextLen = (existing.i18n?.fr?.gameText || existing.i18n?.en?.gameText || '').length;
@@ -553,13 +517,12 @@ async function convert() {
             if (newTextLen <= existingTextLen) continue;
         }
 
-        // --- Détermination du camp (kind) ---
-        const culture = (data['Culture'] || '').toUpperCase();
+        const culture = mapCulture(data['Culture']);
         const background = (data['Background'] || '').trim();
 
         let kind = 'FREE_PEOPLE';
 
-        if (SHADOW_CULTURES.includes(culture)) {
+        if (culture && SHADOW_CULTURES.includes(culture)) {
             kind = 'SHADOW';
         } else if (culture === 'GOLLUM') {
             kind = background.toLowerCase().startsWith('gollum_') ? 'SHADOW' : 'FREE_PEOPLE';
@@ -569,30 +532,23 @@ async function convert() {
             kind = 'SITE';
         }
 
-        // --- Détection Porteur de l'Anneau ---
         const titleVO = (data['Title'] || '').trim();
         const bottomIcon = (data['Bottom Icon'] || '').trim();
 
         const isRingbearer = bottomIcon === 'Icon_ringbearer' || titleVO.toLowerCase() === 'frodo';
         const canBeRingbearer = isRingbearer ? true : undefined;
 
-        // --- Visuels ---
         const rawImageCode = (data['Image'] || '').trim();
         const imageUrl = rawImageCode ? `/cards_visuals/o_${rawImageCode}.jpg` : undefined;
 
-        // --- Subtypes, Phases, Mots-clés & AttachedTo ---
         const { subtype, phases } = parseClassAndPhases(data['Class'], englishText);
         const keywords = parseKeywords(englishText);
         const attachmentData = parseAttachedTo(englishText);
 
-        // --- Stats numériques ---
         const computedStrength = parseStat(data['Strength'], data['Top Text']);
         const computedVitality = parseStat(data['Vitality'], data['Middle Text']);
         const computedResistance = parseStat(data['Resistance'], data['Bottom Text']);
 
-        // ------------------------------------------------------------------------
-        // 4.3. Assemblage de l'objet Carte
-        // ------------------------------------------------------------------------
         const toPlayData = parseToPlayConditions(englishText);
         const cardObj = {
             id: cardId,
@@ -609,7 +565,7 @@ async function convert() {
             toPlay: toPlayData,
             isControlled: attachmentData?.isControlled,
             phases: phases,
-            culture: mapCulture(data['Culture']),
+            culture: culture,
             race: data['Race'] ? data['Race'].toUpperCase() : undefined,
             signet: parseSignet(bottomIcon),
             
@@ -625,7 +581,6 @@ async function convert() {
 
             imageUrl: imageUrl,                          
 
-            // Bloc internationalisation
             i18n: {
                 en: buildLangBlock(data['Title'], data['Subtitle'], data['Text'], data['Lore']),
                 fr: buildLangBlock(data['French Title'], data['French Subtitle'], data['French Text'], data['French Lore']),
@@ -635,12 +590,10 @@ async function convert() {
             }
         };
 
-        // Nettoyage des langues vides
         Object.keys(cardObj.i18n).forEach(lang => {
             if (!cardObj.i18n[lang]) delete cardObj.i18n[lang];
         });
 
-        // Nettoyage des propriétés undefined à la racine
         Object.keys(cardObj).forEach((key) => {
             if (cardObj[key] === undefined) delete cardObj[key];
         });
@@ -648,9 +601,6 @@ async function convert() {
         targetMap.set(cardId, cardObj);
     }
 
-    // ------------------------------------------------------------------------
-    // 4.4. Écriture des fichiers JSON finaux (UTF-8)
-    // ------------------------------------------------------------------------
     const cardsArray = Array.from(cardMap.values());
     const sitesArray = Array.from(siteMap.values());
 
@@ -666,9 +616,5 @@ async function convert() {
     console.log(`🃏 Cartes : ${cardsArray.length} -> ${OUTPUT_CARDS_PATH}`);
     console.log(`🏞️ Sites  : ${sitesArray.length} -> ${OUTPUT_SITES_PATH}`);
 }
-
-// ============================================================================
-// 5. EXÉCUTION DU SCRIPT
-// ============================================================================
 
 convert().catch(console.error);
