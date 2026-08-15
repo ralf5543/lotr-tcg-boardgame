@@ -1,12 +1,12 @@
 import type { Ctx } from 'boardgame.io';
-import type { GameState, LotrMoveContext, LotrPhaseContext } from './types';
+import type { GameState, LotrMoveContext } from './types';
 import { resolveSkirmish, applyWoundToCard } from './skirmish';
 import { drawCardsForPlayer } from '../utils/drawCards';
-import { applyDevPreset } from './dev/presets';
 import { advanceArcheryAssignmentStep } from './index';
 import { applyWoundAndCheckDeath } from '../utils/applyWoundAndCheckDeath';
-import { getEffectiveVitality, getMaxVitality } from '../utils/cardStats';
+import { getEffectiveVitality } from '../utils/cardStats';
 import type { CardState } from './types';
+import { devMoves } from './dev/devMoves';
 
 export interface ReorderPayload {
     fromIndex?: number;
@@ -20,8 +20,6 @@ export interface TransferPayload {
     fromCharacterId?: string;
     toCharacterId: string;
 }
-
-export type DevPresetType = 'ARCHERY_TEST' | 'SKIRMISH_TEST';
 
 export const getTargetPlayerId = (
     playerID: string | undefined,
@@ -782,75 +780,6 @@ export const commonMoves = {
         }
     },
 
-    devSetTwilight: ({ G }: LotrMoveContext, amount: number) => {
-        G.twilightPool = Math.max(0, amount);
-    },
-
-    devSetBurdens: ({ G }: LotrMoveContext, deltaOrAmount: number) => {
-        const fpId = G.fpPlayerId || '0';
-        const fpPlayer = G.players[fpId];
-        if (!fpPlayer) return;
-
-        // Si on passe une petite valeur (+1/-1), c'est un delta. Sinon c'est une valeur absolue.
-        if (Math.abs(deltaOrAmount) === 1) {
-            fpPlayer.burdens = Math.max(0, fpPlayer.burdens + deltaOrAmount);
-        } else {
-            fpPlayer.burdens = Math.max(0, deltaOrAmount);
-        }
-        G.statusMessage = `[DEV] Burdens ajustés à ${fpPlayer.burdens}.`;
-    },
-
-    devSetArchery: ({ G }: LotrMoveContext, amount: number) => {
-        const targetAmount = Math.max(0, amount);
-
-        G.archeryWoundsToAssign = targetAmount;
-
-        if (G.archeryState) {
-            G.archeryState.fpTotal = targetAmount;
-            G.archeryState.shadowTotal = targetAmount;
-
-            if (
-                G.archeryAssignStep === 'FP' ||
-                G.archeryState.step === 'FP_ASSIGN'
-            ) {
-                G.archeryState.fpRemainingWounds = targetAmount;
-            } else if (
-                G.archeryAssignStep === 'SHADOW' ||
-                G.archeryState.step === 'SHADOW_ASSIGN'
-            ) {
-                G.archeryState.shadowRemainingWounds = targetAmount;
-            }
-        }
-    },
-
-    devSetPhase: ({ G, events }: LotrPhaseContext, targetPhase: string) => {
-        G.actionWindow = undefined;
-        G.skirmishes = [];
-        G.activeSkirmishId = undefined;
-
-        if (targetPhase === 'regroup') {
-            G.regroupStep = 'SHADOW_REFILL';
-            if (!G.movesThisTurn) {
-                G.movesThisTurn = 1;
-            }
-        } else {
-            G.regroupStep = undefined;
-        }
-
-        events?.setPhase?.(targetPhase);
-    },
-
-    devForceEndPhase: ({ events }: LotrMoveContext) => {
-        if (events) {
-            events.setActivePlayers?.({ value: { '0': 'play', '1': 'play' } });
-            events.endPhase?.();
-        }
-    },
-
-    devLoadPreset: ({ G }: LotrMoveContext, presetType: DevPresetType) => {
-        applyDevPreset(G, presetType);
-    },
-
     drawCard: ({ G, ctx, playerID }: LotrMoveContext, count: number = 1) => {
         const targetId = getTargetPlayerId(playerID, ctx);
         const player = G.players[targetId];
@@ -1073,4 +1002,5 @@ export const commonMoves = {
 
         G.statusMessage = `${attachmentTitle} est transféré de ${sourceTitle} vers ${targetTitle} (Coût : ${cost} Crépuscule).`;
     },
+    ...(process.env.NODE_ENV !== 'production' ? devMoves : {}),
 };

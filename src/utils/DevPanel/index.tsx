@@ -84,16 +84,6 @@ export const DevPanel: React.FC<DevPanelProps> = ({ moves, G, ctx }) => {
                             >
                                 +1
                             </S.ActionButton>
-                            <S.ActionButton
-                                style={{
-                                    backgroundColor: '#451a03',
-                                    color: '#fcd34d',
-                                    borderColor: '#78350f',
-                                }}
-                                onClick={() => moves.devSetTwilight(10)}
-                            >
-                                Force 10
-                            </S.ActionButton>
                         </S.ButtonGroup>
                     </S.Section>
 
@@ -138,16 +128,7 @@ export const DevPanel: React.FC<DevPanelProps> = ({ moves, G, ctx }) => {
                             >
                                 +1
                             </S.ActionButton>
-                            <S.ActionButton
-                                style={{
-                                    backgroundColor: '#0c4a6e',
-                                    color: '#7dd3fc',
-                                    borderColor: '#0284c7',
-                                }}
-                                onClick={() => moves.devSetArchery?.(5)}
-                            >
-                                Force 5
-                            </S.ActionButton>
+
                         </S.ButtonGroup>
                     </S.Section>
 

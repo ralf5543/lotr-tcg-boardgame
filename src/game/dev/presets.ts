@@ -207,6 +207,31 @@ const CARDS_PRESETS: Record<string, CardState> = {
             },
         },
     },
+    ARMOR: {
+        id: '1C92',
+        set: 1,
+        rarity: 'C',
+        isUnique: false,
+        kind: 'FREE_PEOPLE',
+        type: 'POSSESSION',
+        subtype: 'ARMOR',
+        culture: 'DWARVEN',
+        twilightCost: 2,
+        vitality: 1, // Bonus de +1 en Vitalité lorsqu'elle est attachée
+        imageUrl: '/cards_visuals/o_01_092.jpg',
+        i18n: {
+            en: {
+                title: 'Armor',
+                gameText: 'Bearer gains **vitality +1**.',
+                loreText: 'Dwarf-mail was light and yet stronger than forged steel.',
+            },
+            fr: {
+                title: 'Armure',
+                gameText: 'Le porteur gagne **vitalité +1**.',
+                loreText: 'La cotte de mailles naine était légère et pourtant plus solide que l\'acier forgé.',
+            },
+        },
+    },
 };
 
 export const applyDevPreset = (
@@ -230,11 +255,16 @@ export const applyDevPreset = (
                 }
             });
 
-            // On passe des copies d'objets pour éviter tout problème de référence partagée
+            // Gimli avec l'armure attachée (+1 Vitalité)
+            const gimliWithArmor = {
+                ...CARDS_PRESETS.GIMLI,
+                attachments: [{ ...CARDS_PRESETS.ARMOR }],
+            };
+
             fpPlayer.fellowshipArea = [
                 { ...CARDS_PRESETS.FRODO },
                 { ...CARDS_PRESETS.LEGOLAS },
-                { ...CARDS_PRESETS.GIMLI },
+                gimliWithArmor,
             ];
 
             G.battlefield = [
@@ -243,7 +273,14 @@ export const applyDevPreset = (
                 { ...CARDS_PRESETS.ORC_SOLDIER },
             ];
 
-            G.statusMessage = '[DEV] Preset Archerie chargé';
+            // Initialisation propre de l'état d'archerie
+            G.archeryWoundsToAssign = 0;
+            if (G.archeryState) {
+                G.archeryState.fpTotal = 0;
+                G.archeryState.fpRemainingWounds = 0;
+            }
+
+            G.statusMessage = '[DEV] Preset Archerie chargé (Gimli a +1 Vitalité via Armure)';
             break;
         }
     }

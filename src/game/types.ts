@@ -295,3 +295,5 @@ export interface ArcheryState {
     fpRemainingWounds: number;
     shadowRemainingWounds: number;
 }
+
+export type DevPresetType = 'ARCHERY_TEST' | 'SKIRMISH_TEST';
