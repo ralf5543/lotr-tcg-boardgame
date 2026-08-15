@@ -10,66 +10,7 @@ export const getCardTotalStrength = (card: CardState): number => {
 };
 
 /**
- * Tue une carte instantanément sans passer par l'ajout de blessures
- */
-export const killCardDirectly = (
-    G: GameState,
-    cardId: string
-): { cardOwner?: string; killedCard?: CardState } => {
-    const fpId = G.fpPlayerId || '0';
-    const shadowId = fpId === '0' ? '1' : '0';
-
-    const fpPlayer = G.players[fpId];
-    const shadowPlayer = G.players[shadowId];
-
-    let cardOwner: string | undefined;
-    let card: CardState | undefined;
-
-    // 🔍 1. Recherche du compagnon dans le camp FP actuel
-    if (fpPlayer && Array.isArray(fpPlayer.fellowshipArea)) {
-        card = fpPlayer.fellowshipArea.find((c) => c.id === cardId);
-        if (card) cardOwner = fpId;
-    }
-
-    // 🔍 2. Recherche du minion dans le champ de bataille
-    if (!card && Array.isArray(G.battlefield)) {
-        card = G.battlefield.find((c) => c.id === cardId);
-        if (card) cardOwner = shadowId;
-    }
-
-    if (!card || !cardOwner) return {};
-
-    // 1. Déplacement de la carte vers la bonne zone de mort/défausse
-    if (cardOwner === fpId && fpPlayer) {
-        fpPlayer.fellowshipArea = fpPlayer.fellowshipArea.filter(
-            (c) => c.id !== cardId
-        );
-        if (!fpPlayer.deadPile) fpPlayer.deadPile = [];
-        fpPlayer.deadPile.push(card);
-    } else if (shadowPlayer) {
-        G.battlefield = (G.battlefield || []).filter((c) => c.id !== cardId);
-        if (!shadowPlayer.discard) shadowPlayer.discard = [];
-        shadowPlayer.discard.push(card);
-    }
-
-    // 2. Nettoyage des attachements vers la défausse respective de leur proprio
-    if (card.attachments && card.attachments.length > 0) {
-        card.attachments.forEach((attachment) => {
-            const ownerId = attachment.kind === 'SHADOW' ? shadowId : fpId;
-            const ownerPlayer = G.players[ownerId];
-            if (ownerPlayer) {
-                if (!ownerPlayer.discard) ownerPlayer.discard = [];
-                ownerPlayer.discard.push(attachment);
-            }
-        });
-        card.attachments = [];
-    }
-
-    return { cardOwner, killedCard: card };
-};
-
-/**
- * Calcule les blessures sans tuer la carte immédiatement
+ * Applique une blessure à une carte et retourne `true` si elle succombe à ses blessures.
  */
 export const applyWoundToCard = (
     _G: GameState,
@@ -79,9 +20,18 @@ export const applyWoundToCard = (
     card.wounds = (card.wounds || 0) + woundCount;
     const vitality = card.vitality ?? 1;
 
-    return card.wounds >= vitality;
+    if (card.wounds >= vitality) {
+        card.isDead = true;
+        return true;
+    }
+    return false;
 };
 
+/**
+ * Résout le combat d'escarmouche actif.
+ * Marque les cartes mortes / blessées et alimente `pendingDeadCardIds` & `lastWoundedCardIds` 
+ * pour le rendu visuel.
+ */
 export const resolveSkirmish = (
     G: GameState,
     _ctx?: Ctx
@@ -98,17 +48,16 @@ export const resolveSkirmish = (
 
     const fpId = G.fpPlayerId || '0';
     const fpPlayer = G.players[fpId];
-
     const skirmish = G.skirmishes[skirmishIndex];
-    
-    const fellowshipList = fpPlayer?.fellowshipArea || [];
-    const companion = fellowshipList.find((c) => c.id === skirmish.companionId);
-    
-    const battlefieldList = G.battlefield || [];
-    const minions = battlefieldList.filter((c) =>
-        skirmish.minionIds.includes(c.id)
+
+    const companion = (fpPlayer?.fellowshipArea || []).find(
+        (c) => c.id === skirmish.companionId || c.instanceId === skirmish.companionId
+    );
+    const minions = (G.battlefield || []).filter((c) =>
+        skirmish.minionIds.includes(c.id || c.instanceId)
     );
 
+    // Si le compagnon n'est plus là, on annule cette escarmouche
     if (!companion) {
         G.skirmishes.splice(skirmishIndex, 1);
         G.activeSkirmishId = undefined;
@@ -140,30 +89,28 @@ export const resolveSkirmish = (
                 ? companionStrength >= 2 * minionsStrength
                 : companionStrength > 0;
 
-        if (isMinionsOverwhelmed) {
-            minions.forEach((minion) => {
+        minions.forEach((minion) => {
+            const minionId = minion.id || minion.instanceId;
+            if (isMinionsOverwhelmed) {
+                minion.isDead = true;
                 if (!G.pendingDeadCardIds) G.pendingDeadCardIds = [];
-                G.pendingDeadCardIds.push(minion.id);
-
-                if (!G.lastWoundedCardIds) G.lastWoundedCardIds = [];
-                G.lastWoundedCardIds.push(minion.id);
-            });
-            resultMsg += `Les séides sont SUBMERGÉS !`;
-        } else {
-            minions.forEach((minion) => {
+                G.pendingDeadCardIds.push(minionId);
+            } else {
                 const shouldDie = applyWoundToCard(G, minion, 1);
-                
                 if (shouldDie) {
                     if (!G.pendingDeadCardIds) G.pendingDeadCardIds = [];
-                    G.pendingDeadCardIds.push(minion.id);
+                    G.pendingDeadCardIds.push(minionId);
                 } else {
                     if (!G.lastWoundedCardIds) G.lastWoundedCardIds = [];
-                    G.lastWoundedCardIds.push(minion.id);
+                    G.lastWoundedCardIds.push(minionId);
                 }
-                resultMsg += `${minion.title} subit 1 blessure${shouldDie ? ' et meurt' : ''}. `;
-            });
+            }
+        });
+
+        if (isMinionsOverwhelmed) {
+            resultMsg += `Les séides sont SUBMERGÉS !`;
         }
-    }
+    } 
     // ⚔️ CAS 2 : VICTOIRE DE L'OMBRE (ou Égalité)
     else {
         resultMsg += `Victoire de l'Ombre ! `;
@@ -173,64 +120,29 @@ export const resolveSkirmish = (
                 ? minionsStrength >= 2 * companionStrength
                 : minionsStrength > 0;
 
+        const companionId = companion.id || companion.instanceId;
+
         if (isCompanionOverwhelmed) {
+            companion.isDead = true;
             if (!G.pendingDeadCardIds) G.pendingDeadCardIds = [];
-            G.pendingDeadCardIds.push(companion.id);
-
-            if (!G.lastWoundedCardIds) G.lastWoundedCardIds = [];
-            G.lastWoundedCardIds.push(companion.id);
-
+            G.pendingDeadCardIds.push(companionId);
             resultMsg += `${companion.title} est SUBMERGÉ et tué sur le coup !`;
         } else {
             const shouldDie = applyWoundToCard(G, companion, 1);
-
             if (shouldDie) {
                 if (!G.pendingDeadCardIds) G.pendingDeadCardIds = [];
-                G.pendingDeadCardIds.push(companion.id);
+                G.pendingDeadCardIds.push(companionId);
             } else {
                 if (!G.lastWoundedCardIds) G.lastWoundedCardIds = [];
-                G.lastWoundedCardIds.push(companion.id);
+                G.lastWoundedCardIds.push(companionId);
             }
-            resultMsg += `${companion.title} subit 1 blessure${shouldDie ? ' et meurt (Cimetière)' : ''}.`;
+            resultMsg += `${companion.title} subit 1 blessure${shouldDie ? ' et meurt' : ''}.`;
         }
     }
 
-    G.statusMessage = resultMsg;
-};
-
-/**
- * Nettoie l'escarmouche et applique les morts après le délai visuel
- */
-export const finishSkirmishResolution = (
-    G: GameState,
-    _ctx: Ctx,
-    events?: { endPhase?: () => void }
-) => {
-    // 1. Purge définitive des cartes tuées pendant ce combat
-    if (G.pendingDeadCardIds && G.pendingDeadCardIds.length > 0) {
-        G.pendingDeadCardIds.forEach((cardId) => {
-            killCardDirectly(G, cardId);
-        });
-        G.pendingDeadCardIds = [];
-    }
-
-    // 2. Retrait de l'escarmouche du state
-    if (G.activeSkirmishId) {
-        const skirmishIndex = G.skirmishes.findIndex(
-            (s) => s.id === G.activeSkirmishId
-        );
-        if (skirmishIndex !== -1) {
-            G.skirmishes.splice(skirmishIndex, 1);
-        }
-    }
-
+    // Retrait de l'escarmouche traitée
+    G.skirmishes.splice(skirmishIndex, 1);
     G.activeSkirmishId = undefined;
     G.actionWindow = undefined;
-    G.lastWoundedCardIds = [];
-
-    // 3. Passage de phase si plus aucun combat
-    if (G.skirmishes.length === 0) {
-        G.statusMessage += ' Tous les combats sont terminés.';
-        events?.endPhase?.();
-    }
+    G.statusMessage = resultMsg;
 };

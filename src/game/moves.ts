@@ -1,13 +1,12 @@
 import type { Ctx } from 'boardgame.io';
 import type { GameState, LotrMoveContext, LotrPhaseContext } from './types';
-import {
-    resolveSkirmish,
-    finishSkirmishResolution,
-    applyWoundToCard,
-} from './skirmish';
+import { resolveSkirmish, applyWoundToCard } from './skirmish';
 import { drawCardsForPlayer } from '../utils/drawCards';
 import { applyDevPreset } from './dev/presets';
 import { advanceArcheryAssignmentStep } from './index';
+import { applyWoundAndCheckDeath } from '../utils/applyWoundAndCheckDeath';
+import { getEffectiveVitality, getMaxVitality } from '../utils/cardStats';
+import type { CardState } from './types';
 
 export interface ReorderPayload {
     fromIndex?: number;
@@ -475,10 +474,7 @@ export const commonMoves = {
             player.deck.push(...player.hand);
             player.hand = [];
 
-            // 2. Mélanger le deck (si tu as un utilitaire shuffle)
-            // player.deck = shuffle(player.deck);
-
-            // 3. Repiocher 8 cartes
+            // 2. Repiocher 8 cartes
             drawCardsForPlayer(G, player, 8, false);
         } else {
             console.log(
@@ -544,7 +540,7 @@ export const commonMoves = {
 
             if (shadowPlayer) {
                 if (!shadowPlayer.discard) shadowPlayer.discard = [];
-                G.battlefield.forEach((minion) => {
+                (G.battlefield || []).forEach((minion) => {
                     shadowPlayer.discard.push(minion);
                 });
             }
@@ -585,6 +581,50 @@ export const commonMoves = {
         }
     },
 
+    // Dans les moves de game/index.ts :
+
+    cleanupPendingDeaths: ({ G }: LotrMoveContext) => {
+        const fpId = G.fpPlayerId || '0';
+        const shadowId = fpId === '0' ? '1' : '0';
+
+        // 1. Nettoyage des Compagnons (morts -> deadPile)
+        const fpPlayer = G.players[fpId];
+        if (fpPlayer?.fellowshipArea) {
+            fpPlayer.fellowshipArea = fpPlayer.fellowshipArea.filter(
+                (c: any) => {
+                    const maxVit = Number(c.vitality) || 1;
+                    const dead = c.isDead || (c.wounds || 0) >= maxVit;
+                    if (dead) {
+                        if (!fpPlayer.deadPile) fpPlayer.deadPile = [];
+                        fpPlayer.deadPile.push(c);
+                    }
+                    return !dead;
+                }
+            );
+        }
+
+        // 2. Nettoyage des Séides (morts -> discard)
+        G.battlefield = (G.battlefield || []).filter((c: any) => {
+            const maxVit = Number(c.vitality) || 1;
+            const dead = c.isDead || (c.wounds || 0) >= maxVit;
+            if (dead) {
+                const shadowPlayer = G.players[shadowId];
+                if (shadowPlayer) {
+                    if (!shadowPlayer.discard) shadowPlayer.discard = [];
+                    shadowPlayer.discard.push(c);
+                }
+            }
+            return !dead;
+        });
+
+        // 3. Réinitialisation des états de combat / animations
+        if (G.activeSkirmishId) {
+            G.activeSkirmishId = null;
+        }
+        G.pendingDeadCardIds = [];
+        G.lastWoundedCardIds = [];
+    },
+
     // 🏹 ASSIGNATION DES BLESSURES D'ARCHERIE
     assignArcheryWound: (
         { G, ctx, events, playerID }: LotrMoveContext,
@@ -594,77 +634,19 @@ export const commonMoves = {
         const shadowId = fpId === '0' ? '1' : '0';
 
         const assignStep = G.archeryAssignStep || G.archeryState?.step;
-
         if (!assignStep) return 'INVALID_MOVE';
-
-        // Helper pour nettoyer et tuer les compagnons qui dépassent leur vitalité
-        const checkCompanionDeaths = () => {
-            const fpPlayer = G.players[fpId];
-            if (!fpPlayer || !fpPlayer.fellowshipArea) return;
-
-            fpPlayer.fellowshipArea = fpPlayer.fellowshipArea.filter(
-                (c: any) => {
-                    const vitality =
-                        Number(c.vitality || c.stats?.vitality) || 1;
-                    const wounds = Number(c.wounds) || 0;
-                    const isDead = wounds >= vitality;
-                    if (isDead && fpPlayer.deadPile) {
-                        fpPlayer.deadPile.push(c);
-                    }
-                    return !isDead;
-                }
-            );
-        };
 
         const getLivingCompanions = () => {
             const fpPlayer = G.players[fpId];
             return (fpPlayer?.fellowshipArea || []).filter(
-                (c: any) => c && c.id
+                (c: CardState) => !c.isDead && getEffectiveVitality(c) > 0
             );
         };
 
         const getLivingMinions = () => {
-            return (G.battlefield || []).filter((c: any) => c && c.id);
-        };
-
-        // Récupération ou calcul robuste du total d'archerie de la Communauté
-        const getFpArcheryTotal = (): number => {
-            // Check 1: S'il existe déjà dans G ou archeryState
-            if (typeof G.fpArcheryTotal === 'number' && G.fpArcheryTotal > 0)
-                return G.fpArcheryTotal;
-            if (
-                typeof G.archeryState?.fpTotal === 'number' &&
-                G.archeryState.fpTotal > 0
-            )
-                return G.archeryState.fpTotal;
-
-            // Check 2: Calcul dynamique sur le plateau FP
-            const fpPlayer = G.players[fpId];
-            if (!fpPlayer || !fpPlayer.fellowshipArea) return 0;
-
-            let total = 0;
-            for (const card of fpPlayer.fellowshipArea) {
-                const baseArchery =
-                    Number(
-                        card.archery ||
-                            card.stats?.archery ||
-                            card.keywords?.archery
-                    ) || 0;
-                total += baseArchery;
-
-                if (Array.isArray(card.attachments)) {
-                    for (const att of card.attachments) {
-                        const attArchery =
-                            Number(
-                                att.archery ||
-                                    att.stats?.archery ||
-                                    att.keywords?.archery
-                            ) || 0;
-                        total += attArchery;
-                    }
-                }
-            }
-            return total;
+            return (G.battlefield || []).filter(
+                (c: CardState) => !c.isDead && getEffectiveVitality(c) > 0
+            );
         };
 
         // --- 1. ASSIGNATION PAR LE JOUEUR FP ---
@@ -673,60 +655,61 @@ export const commonMoves = {
 
             const fpPlayer = G.players[fpId];
             const companion = fpPlayer?.fellowshipArea?.find(
-                (c: any) =>
+                (c: CardState) =>
                     c.id === targetCardId || c.instanceId === targetCardId
             );
 
-            if (!companion) return 'INVALID_MOVE';
+            // Anti-double-clic : On rejette si la carte n'existe pas, est déjà morte ou n'a plus de PV
+            if (
+                !companion ||
+                companion.isDead ||
+                getEffectiveVitality(companion) <= 0
+            ) {
+                return 'INVALID_MOVE';
+            }
 
-            applyWoundToCard(G, companion, 1);
+            // Infliger la blessure (applyWoundAndCheckDeath gère isDead et pendingDeadCardIds)
+            applyWoundAndCheckDeath(G, companion, 1);
 
-            // Décrémentation stricte
+            // Décrémenter les compteurs
             if (G.archeryWoundsToAssign !== undefined)
                 G.archeryWoundsToAssign -= 1;
             if (G.archeryState?.fpRemainingWounds !== undefined)
                 G.archeryState.fpRemainingWounds -= 1;
 
-            checkCompanionDeaths();
-
-            // Priorité au compteur spécifique FP s'il existe, sinon au global
             const remainingWounds =
                 G.archeryState?.fpRemainingWounds ??
                 G.archeryWoundsToAssign ??
                 0;
             const remainingCompanions = getLivingCompanions();
 
-            // FP a fini son assignation
             if (remainingWounds <= 0 || remainingCompanions.length === 0) {
-                const fpArcheryTotal = getFpArcheryTotal();
+                const shadowWoundsToAssign = G.archeryState?.fpTotal ?? 0;
                 const livingMinions = getLivingMinions();
 
-                if (fpArcheryTotal > 0 && livingMinions.length > 0) {
-                    // 🟢 TRANSITION VERS L'OMBRE
+                if (shadowWoundsToAssign > 0 && livingMinions.length > 0) {
                     G.archeryAssignStep = 'SHADOW';
-                    G.archeryWoundsToAssign = fpArcheryTotal;
+                    G.archeryWoundsToAssign = shadowWoundsToAssign;
 
                     if (G.archeryState) {
                         G.archeryState.step = 'SHADOW_ASSIGN';
-                        G.archeryState.shadowRemainingWounds = fpArcheryTotal;
+                        G.archeryState.shadowRemainingWounds =
+                            shadowWoundsToAssign;
                         G.archeryState.fpRemainingWounds = 0;
                     }
 
-                    G.statusMessage = `Ombre : Assignez ${fpArcheryTotal} blessure(s) d'archerie à vos séides.`;
+                    G.statusMessage = `Ombre : Assignez ${shadowWoundsToAssign} blessure(s) d'archerie à vos séides.`;
                 } else {
-                    // Fin de phase d'archerie
                     G.archeryAssignStep = undefined;
                     if (G.archeryState) G.archeryState.step = 'COMPLETE';
 
-                    if (livingMinions.length === 0) {
-                        G.statusMessage =
-                            'Plus aucun séide sur le plateau ! Passage au Regroupement.';
-                        events?.setPhase?.('regroup');
-                    } else {
-                        G.statusMessage =
-                            'Phase d’Archerie terminée. Passage à l’Assignation (Assignment).';
-                        events?.setPhase?.('assignment');
-                    }
+                    G.pendingPhaseEnd = true;
+                    G.nextPhase =
+                        livingMinions.length === 0 ? 'regroup' : 'assignment';
+                    G.statusMessage =
+                        livingMinions.length === 0
+                            ? 'Plus aucun séide sur le plateau ! Passage au Regroupement.'
+                            : 'Phase d’Archerie terminée. Passage à l’Assignation.';
                 }
             } else {
                 G.statusMessage = `FP : Assignez encore ${remainingWounds} blessure(s).`;
@@ -738,36 +721,25 @@ export const commonMoves = {
         if (assignStep === 'SHADOW' || assignStep === 'SHADOW_ASSIGN') {
             if (playerID !== shadowId) return 'INVALID_MOVE';
 
-            const minion = G.battlefield.find(
-                (c: any) =>
+            const minion = (G.battlefield || []).find(
+                (c: CardState) =>
                     c.id === targetCardId || c.instanceId === targetCardId
             );
 
-            if (!minion) return 'INVALID_MOVE';
+            // Anti-double-clic : On rejette si le séide n'existe pas, est déjà mort ou n'a plus de PV
+            if (!minion || minion.isDead || getEffectiveVitality(minion) <= 0) {
+                return 'INVALID_MOVE';
+            }
 
-            applyWoundToCard(G, minion, 1);
+            // Infliger la blessure (applyWoundAndCheckDeath gère isDead et pendingDeadCardIds)
+            applyWoundAndCheckDeath(G, minion, 1);
 
+            // Décrémenter les compteurs
             if (G.archeryWoundsToAssign !== undefined)
                 G.archeryWoundsToAssign -= 1;
             if (G.archeryState?.shadowRemainingWounds !== undefined)
                 G.archeryState.shadowRemainingWounds -= 1;
 
-            // Nettoyage des séides morts
-            G.battlefield = G.battlefield.filter((c: any) => {
-                const vitality = Number(c.vitality || c.stats?.vitality) || 1;
-                const wounds = Number(c.wounds) || 0;
-                const isDead = wounds >= vitality;
-                if (isDead) {
-                    const shadowPlayer = G.players[shadowId];
-                    if (shadowPlayer) {
-                        if (!shadowPlayer.discard) shadowPlayer.discard = [];
-                        shadowPlayer.discard.push(c);
-                    }
-                }
-                return !isDead;
-            });
-
-            // Priorité au compteur spécifique Ombre s'il existe
             const remainingWounds =
                 G.archeryState?.shadowRemainingWounds ??
                 G.archeryWoundsToAssign ??
@@ -778,23 +750,17 @@ export const commonMoves = {
                 G.archeryAssignStep = undefined;
                 if (G.archeryState) G.archeryState.step = 'COMPLETE';
 
-                if (remainingMinions.length === 0) {
-                    G.statusMessage =
-                        'Tous les séides ont été éliminés ! Passage au Regroupement.';
-                    events?.setPhase?.('regroup');
-                } else {
-                    G.statusMessage =
-                        'Phase d’Archerie terminée. Passage à l’Assignation (Assignment).';
-                    events?.setPhase?.('assignment');
-                }
+                G.pendingPhaseEnd = true;
+                G.nextPhase =
+                    remainingMinions.length === 0 ? 'regroup' : 'assignment';
+                G.statusMessage =
+                    remainingMinions.length === 0
+                        ? 'Tous les séides ont été éliminés ! Passage au Regroupement.'
+                        : 'Phase d’Archerie terminée. Passage à l’Assignation.';
             } else {
                 G.statusMessage = `Ombre : Assignez encore ${remainingWounds} blessure(s).`;
             }
         }
-    },
-
-    finishSkirmishResolution: ({ G, ctx, events }: LotrMoveContext) => {
-        finishSkirmishResolution(G, ctx, events);
     },
 
     applyWound: ({ G }: LotrMoveContext, targetCardId: string) => {
@@ -804,7 +770,7 @@ export const commonMoves = {
         const companion = fpPlayer?.fellowshipArea?.find(
             (c) => c.id === targetCardId
         );
-        const minion = G.battlefield.find((c) => c.id === targetCardId);
+        const minion = (G.battlefield || []).find((c) => c.id === targetCardId);
         const targetCard = companion || minion;
 
         if (targetCard) {
@@ -828,6 +794,29 @@ export const commonMoves = {
             fpPlayer.burdens = Math.max(0, deltaOrAmount);
         }
         G.statusMessage = `[DEV] Burdens ajustés à ${fpPlayer.burdens}.`;
+    },
+
+    devSetArchery: ({ G }: LotrMoveContext, amount: number) => {
+        const targetAmount = Math.max(0, amount);
+
+        G.archeryWoundsToAssign = targetAmount;
+
+        if (G.archeryState) {
+            G.archeryState.fpTotal = targetAmount;
+            G.archeryState.shadowTotal = targetAmount;
+
+            if (
+                G.archeryAssignStep === 'FP' ||
+                G.archeryState.step === 'FP_ASSIGN'
+            ) {
+                G.archeryState.fpRemainingWounds = targetAmount;
+            } else if (
+                G.archeryAssignStep === 'SHADOW' ||
+                G.archeryState.step === 'SHADOW_ASSIGN'
+            ) {
+                G.archeryState.shadowRemainingWounds = targetAmount;
+            }
+        }
     },
 
     devSetPhase: ({ G, events }: LotrPhaseContext, targetPhase: string) => {

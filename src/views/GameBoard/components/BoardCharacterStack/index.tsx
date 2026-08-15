@@ -1,11 +1,12 @@
 import React from 'react';
-import type { CardState, CardType, CardSubtype } from '../../../../game/types';
+import type { CardState, CardType } from '../../../../game/types';
 import { Card } from '../Card';
 import * as S from './styles';
 import { useDrag } from '../../../../contexts/DragContext';
 import { useTargeting } from '../../../../contexts/TargetingContext';
 import { canAttachToCharacter } from '../../../../utils/routingDragNDrop';
 import { SkirmishClash } from './SkirmishClash';
+import { getEffectiveVitality } from '../../../../utils/cardStats';
 
 interface BoardCharacterStackProps {
     character: CardState;
@@ -20,7 +21,8 @@ interface BoardCharacterStackProps {
     onSelectSkirmish?: (skirmishId: string) => void; // 🟢 Callback pour sélectionner ce combat
     isSelectedSkirmish?: boolean;
     isSelectionAllowed?: boolean;
-    lastWoundedCardIds?: string[];
+    isWounded?: boolean;
+    isDead?: boolean;
     burdens: number;
     isFaceDown: boolean;
 }
@@ -38,7 +40,8 @@ export const BoardCharacterStack: React.FC<BoardCharacterStackProps> = ({
     onSelectSkirmish,
     isSelectedSkirmish = false,
     isSelectionAllowed = true,
-    lastWoundedCardIds = [],
+    isWounded = false,
+    isDead = false,
     burdens = 0,
     isFaceDown = false,
 }) => {
@@ -67,8 +70,8 @@ export const BoardCharacterStack: React.FC<BoardCharacterStackProps> = ({
     const draggedCard = dragged?.card as CardState | undefined;
 
     // Validation d'attachement via la fonction DNF
-    const canAttach = draggedCard 
-        ? canAttachToCharacter(draggedCard, character) 
+    const canAttach = draggedCard
+        ? canAttachToCharacter(draggedCard, character)
         : false;
 
     const isTargeted =
@@ -109,11 +112,20 @@ export const BoardCharacterStack: React.FC<BoardCharacterStackProps> = ({
                         className="assigned-minions-group"
                     >
                         {assignedMinions.map((minion) => {
-                            const isMinionTargetable = isCardTargetable(minion.id);
+                            const isMinionTargetable = isCardTargetable(
+                                minion.id
+                            );
+
+                            // Conversion stricte en boolean pour éviter l'erreur TypeScript
+                            const isMinionWounded = Boolean(
+                                minion.wounds && minion.wounds > 0
+                            );
+                            const isMinionDead =
+                                getEffectiveVitality(minion) <= 0;
 
                             return (
                                 <S.MinionWrapper
-                                    key={minion.id}
+                                    key={minion.instanceId || minion.id}
                                     $isTargetable={isMinionTargetable}
                                     onClick={(e) => {
                                         if (isMinionTargetable) {
@@ -126,9 +138,8 @@ export const BoardCharacterStack: React.FC<BoardCharacterStackProps> = ({
                                         card={minion}
                                         size="sm"
                                         isDraggable={false}
-                                        isWounded={lastWoundedCardIds.includes(
-                                            minion.id
-                                        )}
+                                        isWounded={isMinionWounded}
+                                        isDead={isMinionDead}
                                         isOpponent={!isOpponent}
                                     />
                                 </S.MinionWrapper>
@@ -174,7 +185,8 @@ export const BoardCharacterStack: React.FC<BoardCharacterStackProps> = ({
                         isDraggable={canDragCharacter}
                         index={index}
                         currentSiteIndex={currentSiteIndex}
-                        isWounded={lastWoundedCardIds.includes(character.id)}
+                        isWounded={isWounded}
+                        isDead={isDead}
                         isOpponent={isOpponent}
                         burdens={burdens}
                         isFaceDown={isFaceDown}
@@ -189,10 +201,16 @@ export const BoardCharacterStack: React.FC<BoardCharacterStackProps> = ({
                                 key={attachment.id}
                                 $index={attachIdx}
                                 data-draggable={
-                                    !isOpponent && !isTargetable ? 'true' : undefined
+                                    !isOpponent && !isTargetable
+                                        ? 'true'
+                                        : undefined
                                 }
                                 onPointerDown={(e) => {
-                                    if (isOpponent || isTargetable || e.button !== 0)
+                                    if (
+                                        isOpponent ||
+                                        isTargetable ||
+                                        e.button !== 0
+                                    )
                                         return;
                                     e.stopPropagation();
 

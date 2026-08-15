@@ -143,6 +143,7 @@ export type CardI18nMap = Partial<
 >;
 export interface CardState {
     id: string;
+    instanceId: string;
 
     // 🟢 Objet de traductions multi-langues
     i18n?: CardI18nMap;
@@ -181,6 +182,7 @@ export interface CardState {
     isStartingMember?: boolean;
     isFaceDown?: boolean;
     name?: string; // Si conservé pour compatibilité ou identification
+    isDead?: boolean;
 }
 
 export interface PlayerProfile {
@@ -287,7 +289,7 @@ export interface LotrMoveContext extends FnContext<GameState> {
 }
 
 export interface ArcheryState {
-    step: 'ACTIONS' | 'FP_ASSIGN' | 'SHADOW_ASSIGN';
+    step?: 'ACTIONS' | 'FP_ASSIGN' | 'SHADOW_ASSIGN' | 'COMPLETE';
     fpTotal: number;
     shadowTotal: number;
     fpRemainingWounds: number;

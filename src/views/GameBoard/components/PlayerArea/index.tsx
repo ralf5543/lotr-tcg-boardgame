@@ -137,6 +137,15 @@ export const PlayerArea: React.FC<PlayerAreaProps> = ({
                         <S.EmptyText>Aucun compagnon déployé.</S.EmptyText>
                     )}
                     {fellowshipArea.map((companion, companionIdx) => {
+
+                        const cardId = companion.instanceId || companion.id;
+
+                        const isWounded = Boolean(
+                            G?.lastWoundedCardIds?.includes(cardId) || (companion.wounds && companion.wounds > 0)
+                        );
+                        const isDead = Boolean(
+                            G?.pendingDeadCardIds?.includes(cardId)
+                        );
                         const skirmish = skirmishes.find(
                             (s) => s.companionId === companion.id
                         );
@@ -162,7 +171,8 @@ export const PlayerArea: React.FC<PlayerAreaProps> = ({
                                 skirmishId={skirmishId}
                                 isFaceDown={shouldBeFaceDown}
                                 burdens={playerBurdens}
-                                lastWoundedCardIds={G?.lastWoundedCardIds}
+                                isWounded={isWounded}
+                                isDead={isDead}
                                 isSelectedSkirmish={
                                     activeSkirmishId === skirmishId
                                 }
@@ -215,6 +225,15 @@ export const PlayerArea: React.FC<PlayerAreaProps> = ({
                         <S.EmptyText>Aire de soutien vide.</S.EmptyText>
                     )}
                     {supportArea.map((card, cardIdx) => {
+                        const cardId = card.instanceId || card.id;
+
+                        const isWounded = Boolean(
+                            G?.lastWoundedCardIds?.includes(cardId) || (card.wounds && card.wounds > 0)
+                        );
+                        const isDead = Boolean(
+                            G?.pendingDeadCardIds?.includes(cardId)
+                        );
+
                         const shouldBeFaceDown = isOpponent
                             ? (card.isFaceDown ?? false)
                             : false;
@@ -227,7 +246,8 @@ export const PlayerArea: React.FC<PlayerAreaProps> = ({
                                 isOpponent={isOpponent}
                                 isFaceDown={shouldBeFaceDown}
                                 burdens={playerBurdens}
-                                lastWoundedCardIds={G?.lastWoundedCardIds}
+                                isWounded={isWounded}
+                                isDead={isDead}
                                 onStartDrag={(e) => {
                                     if (isOpponent || e.button !== 0) return;
                                     e.stopPropagation();

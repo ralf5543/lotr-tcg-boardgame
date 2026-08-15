@@ -125,8 +125,8 @@ export const advanceArcheryAssignmentStep = (G: GameState, events: any) => {
         G.archeryState.shadowTotal = shadowTotal;
 
         // Les FP subissent le total Shadow, l'Ombre subit le total FP
-        G.archeryState.fpRemainingWounds = shadowTotal; 
-        G.archeryState.shadowRemainingWounds = fpTotal; 
+        G.archeryState.fpRemainingWounds = shadowTotal;
+        G.archeryState.shadowRemainingWounds = fpTotal;
 
         // Fermer la fenêtre d'action
         G.actionWindow = undefined;
@@ -141,10 +141,16 @@ export const advanceArcheryAssignmentStep = (G: GameState, events: any) => {
     }
 
     // 2. Passage aux blessures de l'Ombre
-    if (G.archeryState.step === 'SHADOW_ASSIGN' || G.archeryState.fpRemainingWounds <= 0) {
+    if (
+        G.archeryState.step === 'SHADOW_ASSIGN' ||
+        G.archeryState.fpRemainingWounds <= 0
+    ) {
         G.archeryState.step = 'SHADOW_ASSIGN';
 
-        if (G.archeryState.shadowRemainingWounds > 0 && G.battlefield.length > 0) {
+        if (
+            G.archeryState.shadowRemainingWounds > 0 &&
+            G.battlefield.length > 0
+        ) {
             G.statusMessage = `Phase d'Archerie : Le joueur de l'Ombre (${shadowId}) doit attribuer ${G.archeryState.shadowRemainingWounds} blessure(s) d'archerie à ses séides.`;
             return;
         }
@@ -160,10 +166,12 @@ export const advanceArcheryAssignmentStep = (G: GameState, events: any) => {
     );
 
     if (remainingMinions.length === 0) {
-        G.statusMessage = "Plus aucun séide en jeu après l'archerie : passage direct au Regroupement.";
+        G.statusMessage =
+            "Plus aucun séide en jeu après l'archerie : passage direct au Regroupement.";
         events?.setPhase?.('regroup');
     } else {
-        G.statusMessage = "Phase d'Archerie terminée : Début de la phase de Manœuvre.";
+        G.statusMessage =
+            "Phase d'Archerie terminée : Début de la phase de Manœuvre.";
         events?.setPhase?.('maneuver');
     }
 };
@@ -595,6 +603,44 @@ export const LotrGame: Game<GameState> = {
                 };
                 G.statusMessage =
                     'Phase d’Archerie : Fenêtre d’action ouverte.';
+            },
+            onEnd: ({ G }) => {
+                // Nettoyage automatique de tous les morts avant d'entrer dans la phase suivante
+                const fpId = G.fpPlayerId || '0';
+                const shadowId = fpId === '0' ? '1' : '0';
+
+                const fpPlayer = G.players[fpId];
+                if (fpPlayer && fpPlayer.fellowshipArea) {
+                    fpPlayer.fellowshipArea = fpPlayer.fellowshipArea.filter(
+                        (c: any) => {
+                            const maxVit = Number(c.vitality) || 1;
+                            const dead = c.isDead || (c.wounds || 0) >= maxVit;
+
+                            if (dead) {
+                                if (!fpPlayer.deadPile) fpPlayer.deadPile = [];
+                                fpPlayer.deadPile.push(c);
+                            }
+                            return !dead;
+                        }
+                    );
+                }
+
+                G.battlefield = (G.battlefield || []).filter((c: any) => {
+                    const maxVit = Number(c.vitality) || 1;
+                    const dead = c.isDead || (c.wounds || 0) >= maxVit;
+
+                    if (dead) {
+                        const shadowPlayer = G.players[shadowId];
+                        if (shadowPlayer) {
+                            if (!shadowPlayer.discard)
+                                shadowPlayer.discard = [];
+                            shadowPlayer.discard.push(c);
+                        }
+                    }
+                    return !dead;
+                });
+
+                G.pendingDeadCardIds = [];
             },
             moves: {
                 ...commonMoves,

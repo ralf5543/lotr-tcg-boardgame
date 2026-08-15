@@ -1,34 +1,35 @@
 import type { CardState } from '../game/types';
 
 /**
- * Calcule la vitalité restante/effective d'une carte.
- * Si la carte a des tokens de blessure (wounds), on les soustrait de la vitalité de base.
+ * 1. Vitalité Maximale (Base + Attachments)
  */
-export const getEffectiveVitality = (card: CardState): number => {
-    let vitality = Number(card.vitality) || 0;
-    const wounds = card.wounds || 0;
-
+export const getMaxVitality = (card: CardState): number => {
+    let max = Number(card.vitality) || 0;
     if (card.attachments) {
         card.attachments.forEach((att) => {
             if (att.vitality) {
-                vitality += Number(att.vitality);
+                max += Number(att.vitality);
             }
         });
     }
-
-    // La vitalité ne descend pas en dessous de 0
-    return Math.max(0, vitality - wounds);
+    return max;
 };
 
 /**
- * OPTIONNEL : Calcule la force effective (base + bonus d'attachements)
- * Extrait une statistique numérique (valeur absolue de personnage OU modificateur d'attachement via Xxx Text)
- * Renvoie TOUJOURS un number (ex: 8, 2, -1).
+ * 2. Vitalité Effective / PV restants (Max - Wounds)
+ */
+export const getEffectiveVitality = (card: CardState): number => {
+    if (!card) return 0;
+    const wounds = Number(card.wounds) || 0;
+    return Math.max(0, getMaxVitality(card) - wounds);
+};
+
+/**
+ * 4. Force Effective (Base + Attachments)
  */
 export const getEffectiveStrength = (card: CardState): number => {
+    if (!card) return 0;
     let strength = Number(card.strength) || 0;
-
-    // Ajoute les bonus des objets/possessions attachés s'il y en a
     if (card.attachments) {
         card.attachments.forEach((att) => {
             if (att.strength) {
@@ -36,20 +37,18 @@ export const getEffectiveStrength = (card: CardState): number => {
             }
         });
     }
-
     return strength;
 };
 
 /**
- * Calcule la résistance restante
+ * 5. Résistance Effective (Base + Attachments - Burdens)
  */
 export const getEffectiveResistance = (
     card: CardState,
     burdens: number = 0
 ): number => {
+    if (!card) return 0;
     let resistance = Number(card.resistance) || 6;
-
-    // 1. Ajout des bonus des attachements (ex: Anneau, objets, etc.)
     if (card.attachments) {
         card.attachments.forEach((att) => {
             if (att.resistance) {
@@ -57,13 +56,8 @@ export const getEffectiveResistance = (
             }
         });
     }
-
-    // 2. Soustraction des fardeaux (burdens) du joueur
-    // Seuls les compagnons subissent l'impact des fardeaux sur leur résistance
     if (card.type === 'COMPANION' || card.type === 'ALLY') {
         resistance -= burdens;
     }
-
-    // 3. La résistance finale ne descend jamais en dessous de 0
     return Math.max(0, resistance);
 };

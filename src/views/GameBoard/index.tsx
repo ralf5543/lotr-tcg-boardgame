@@ -33,7 +33,6 @@ export interface GameBoardProps extends BoardProps<GameState> {
     moves: BoardProps<GameState>['moves'] &
         DevMoves & {
             confirmEndPhase?: () => void;
-            finishSkirmishResolution?: () => void;
             playCard: (index: number) => void;
             playShadowCard: (index: number) => void;
             attachCard: (index: number, targetId: string) => void;
@@ -99,23 +98,21 @@ export const GameBoard: React.FC<GameBoardProps> = ({
         }
     }, [G.pendingPhaseEnd, moves]);
 
-    // 🟢 2. TEMPORISATION DE FIN DE COMBAT
+    // 🟢 NETTOYAGE VISUEL UNIVERSEL (Toutes phases / Tous événements)
     useEffect(() => {
         const hasWounded =
             G.lastWoundedCardIds && G.lastWoundedCardIds.length > 0;
         const hasPendingDead =
             G.pendingDeadCardIds && G.pendingDeadCardIds.length > 0;
 
-        if ((hasWounded || hasPendingDead) && G.activeSkirmishId) {
+        if (hasWounded || hasPendingDead) {
             const timer = setTimeout(() => {
-                if (moves.finishSkirmishResolution) {
-                    moves.finishSkirmishResolution();
-                }
+                moves.cleanupPendingDeaths?.();
             }, 2000);
 
             return () => clearTimeout(timer);
         }
-    }, [G.lastWoundedCardIds, G.pendingDeadCardIds, G.activeSkirmishId, moves]);
+    }, [G.lastWoundedCardIds, G.pendingDeadCardIds, moves]);
 
     // 🟢 3. ROUTER DE DRAG & DROP GLOBAL
     useEffect(() => {

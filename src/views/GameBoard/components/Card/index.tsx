@@ -73,6 +73,7 @@ interface CardProps {
     size?: 'sm' | 'md' | 'lg';
     isRingBearer?: boolean;
     isWounded?: boolean;
+    isDead?: boolean;
     isOpponent?: boolean;
     burdens?: number;
     isFaceDown?: boolean;
@@ -88,6 +89,7 @@ export const Card: React.FC<CardProps> = ({
     isRingBearer: isRingBearerProp,
     currentSiteIndex,
     isWounded = false,
+    isDead = false,
     isOpponent = false,
     burdens = 0,
     isFaceDown: isFaceDownProp,
@@ -228,6 +230,7 @@ export const Card: React.FC<CardProps> = ({
             $title={card.title}
             $isRoaming={isRoaming}
             $isWounded={isWounded}
+            $isDead={isDead}
             $isOpponent={isOpponent}
             key={`${card.id}-wounds-${card.wounds || 0}`}
             onMouseEnter={handleMouseEnter}

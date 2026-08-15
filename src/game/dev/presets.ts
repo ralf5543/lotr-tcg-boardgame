@@ -207,45 +207,6 @@ const CARDS_PRESETS: Record<string, CardState> = {
             },
         },
     },
-    HORROR_HARAD: {
-        id: '14R13',
-        set: 14,
-        rarity: 'R',
-        isUnique: true,
-        kind: 'SHADOW',
-        type: 'MINION',
-        "keywords": [
-            "AMBUSH 1",
-            "DAMAGE +1",
-            "FIERCE",
-            "LURKER",
-            "MUSTER",
-            "TOIL 2"
-        ],
-        culture: 'ORC',
-        race: 'HALF-TROLL',
-        twilightCost: 4,
-        strength: 9,
-        vitality: 3,
-        minionSiteNumber: 4,
-        imageUrl: '/cards_visuals/o_14_013.jpg',
-        i18n: {
-            en: {
-                title: 'Horror of Harad',
-                gameText:
-                    '**Ambush** <symbol>twilight1</symbol>**. Damage +1. Fierce. Lurker. Muster. Toil 2.**',
-                loreText:
-                    'The troll-men sprinted on to the Pelennor to bathe their blades in the blood of the enemy.',
-            },
-            fr: {
-                title: 'Horror of Harad',
-                gameText:
-                    '**Ambush** <symbol>twilight1</symbol>**. Damage +1. Fierce. Lurker. Muster. Toil 2.**',
-                loreText:
-                    'The troll-men sprinted on to the Pelennor to bathe their blades in the blood of the enemy.',
-            }
-        },
-    },
 };
 
 export const applyDevPreset = (
@@ -280,7 +241,6 @@ export const applyDevPreset = (
                 { ...CARDS_PRESETS.LURTZ },
                 { ...CARDS_PRESETS.MORIA_SCOUT },
                 { ...CARDS_PRESETS.ORC_SOLDIER },
-                { ...CARDS_PRESETS.HORROR_HARAD },
             ];
 
             G.statusMessage = '[DEV] Preset Archerie chargé';

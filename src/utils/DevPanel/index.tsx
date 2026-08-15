@@ -3,15 +3,15 @@ import * as S from './styles';
 import type { BoardProps } from 'boardgame.io/react';
 import type { GameState } from '../../game/types';
 
-// Definition des signatures de tes moves de dev
 export interface DevMoves {
     devSetPhase: (phase: string) => void;
     devSetTwilight: (amount: number) => void;
+    devSetBurdens?: (amount: number) => void;
+    devSetArchery?: (amount: number) => void; // 🏹 Nouveau move pour l'archerie
     devLoadPreset: (presetName: string) => void;
     devForceEndPhase: () => void;
 }
 
-// On restreint l'objet moves aux dev moves tout en réutilisant G et ctx de boardgame.io
 export interface DevPanelProps {
     moves: BoardProps<GameState>['moves'] & DevMoves;
     G: GameState;
@@ -32,6 +32,8 @@ export const DevPanel: React.FC<DevPanelProps> = ({ moves, G, ctx }) => {
     const [isOpen, setIsOpen] = useState(false);
 
     if (process.env.NODE_ENV === 'production') return null;
+
+    const currentArchery = G.archeryWoundsToAssign ?? G.archeryState?.fpTotal ?? 0;
 
     return (
         <S.PanelContainer>
@@ -114,7 +116,38 @@ export const DevPanel: React.FC<DevPanelProps> = ({ moves, G, ctx }) => {
                             >
                                 +1
                             </S.ActionButton>
+                        </S.ButtonGroup>
+                    </S.Section>
 
+                    {/* 🏹 Archerie Dev Tool */}
+                    <S.Section>
+                        <S.Label>
+                            Blessures d'Archerie :{' '}
+                            <strong style={{ color: '#38bdf8' }}>
+                                {currentArchery}
+                            </strong>
+                        </S.Label>
+                        <S.ButtonGroup>
+                            <S.ActionButton
+                                onClick={() => moves.devSetArchery?.(currentArchery - 1)}
+                            >
+                                -1
+                            </S.ActionButton>
+                            <S.ActionButton
+                                onClick={() => moves.devSetArchery?.(currentArchery + 1)}
+                            >
+                                +1
+                            </S.ActionButton>
+                            <S.ActionButton
+                                style={{
+                                    backgroundColor: '#0c4a6e',
+                                    color: '#7dd3fc',
+                                    borderColor: '#0284c7',
+                                }}
+                                onClick={() => moves.devSetArchery?.(5)}
+                            >
+                                Force 5
+                            </S.ActionButton>
                         </S.ButtonGroup>
                     </S.Section>
 

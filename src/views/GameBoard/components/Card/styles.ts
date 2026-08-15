@@ -9,7 +9,8 @@ export interface CardContainerProps {
     $isShadow?: boolean;
     $isPlayable?: boolean;
     $isWounded?: boolean;
-    $isOpponent?: boolean; // 🟢 Position globale de la carte (HAUT = true, BAS = false)
+    $isDead?: boolean;
+    $isOpponent?: boolean; // Position globale de la carte (HAUT = true, BAS = false)
     $kind: string;
     $size?: 'sm' | 'md' | 'lg';
     $isRoaming?: boolean;
@@ -44,18 +45,22 @@ const isAttachedToCharacter = (type?: string, subtype?: string) => {
 const woundImpactAnimation = (recoilY: number) => keyframes`
   0% {
     transform: translate(0, 0) rotate(0deg) scale(1);
+    filter: drop-shadow(0 3px 4px rgba(0, 0, 0, 1)) brightness(1);
   }
-  18% {
-    /* Recul vertical exact selon la direction calculée */
-    transform: translate(var(--strike-x, 0%), ${recoilY}px) rotate(var(--strike-rot, 4deg)) scale(0.91);
+  20% {
+    /* Impact & Recul vertical exact selon la direction calculée */
+    transform: translate(var(--strike-x, 0%), ${recoilY}px) rotate(var(--strike-rot, 4deg)) scale(0.92);
+    filter: drop-shadow(0 0 12px red) brightness(1.6) sepia(1) hue-rotate(-50deg) saturate(5);
   }
-  40% {
+  45% {
     transform: translate(calc(var(--strike-x, 0%) * 0.35), ${recoilY * 0.35}px) rotate(calc(var(--strike-rot, 4deg) * -0.25)) scale(0.97);
   }
   100% {
     transform: translate(0, 0) rotate(0deg) scale(1);
+    filter: drop-shadow(0 3px 4px rgba(0, 0, 0, 1)) brightness(1);
   }
 `;
+
 
 export const CardContainer = styled.div<CardContainerProps>`
     aspect-ratio: 1/1.39;
@@ -331,7 +336,30 @@ export const CardContainer = styled.div<CardContainerProps>`
                     font-size: 16px;
                 }
             `}
+            /* ======------ Impact Blessure ($size === 'sm') ------====== */
+            ${props.$isWounded &&
+            css`
+                will-change: transform, filter;
+                animation: ${() => {
+                        // Si en HAUT ($isOpponent = true) -> Recule vers le haut (-35px)
+                        // Si en BAS ($isOpponent = false) -> Recule vers le bas (+35px)
+                        const recoilY = props.$isOpponent ? -35 : 35;
+                        return woundImpactAnimation(recoilY);
+                    }}
+                    0.65s cubic-bezier(0.12, 0.85, 0.2, 1);
+            `}
+
+            /* ======------ État Mort / Agonie ($size === 'sm') ------====== */
+            ${props.$isDead &&
+            css`
+                filter: grayscale(80%) brightness(0.4) !important;
+                opacity: 0.65;
+                transform: scale(0.94);
+                pointer-events: none; /* Empêche les interactions pendant que la carte succombe */
+                transition: filter 0.3s ease, opacity 0.3s ease, transform 0.3s ease;
+            `}
         `}
+        
     /* ======------ Small RING card ------====== */
         ${(props) =>
         props.$type === 'RING' &&
