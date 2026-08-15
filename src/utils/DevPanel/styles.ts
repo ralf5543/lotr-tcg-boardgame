@@ -115,3 +115,19 @@ export const PresetButton = styled.button`
         background-color: #312e81;
     }
 `;
+
+export const GameButton = styled.button<{ $bgColor: string }>`
+    background-color: ${(props) => props.$bgColor};
+    color: white;
+    border: none;
+    padding: 10px 14px;
+    border-radius: 6px;
+    font-weight: bold;
+    cursor: pointer;
+    font-size: 13px;
+    transition: filter 0.1s;
+
+    &:hover {
+        filter: brightness(1.1);
+    }
+`;

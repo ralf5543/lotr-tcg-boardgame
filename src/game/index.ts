@@ -12,11 +12,13 @@ import {
     isMinionRoaming,
     getEffectiveTwilightCost,
 } from '../utils/roamingDetection';
-import { resolveSkirmish } from './skirmish';
-import { checkAssignmentProgress, getUnassignedMinions } from './assignment';
+import { resolveSkirmish } from './logic/skirmish';
+import { getUnassignedMinions } from './logic/assignment';
 import { commonMoves, advanceCompany, getTargetPlayerId } from './moves';
+import { devMoves } from './dev/devMoves';
 import { drawCardsForPlayer } from '../utils/drawCards';
 import { buildDeckFromIds } from '../utils/deckBuilder';
+import { allMoves } from './moves/index';
 
 const shuffle = <T>(array: T[]): T[] => {
     const arr = [...array];
@@ -172,7 +174,7 @@ export const advanceArcheryAssignmentStep = (G: GameState, events: any) => {
     } else {
         G.statusMessage =
             "Phase d'Archerie terminée : Début de la phase de Manœuvre.";
-        events?.setPhase?.('maneuver');
+        events?.setPhase?.('assignment');
     }
 };
 
@@ -274,6 +276,13 @@ export const LotrGame: Game<GameState> = {
         setActivePlayers: true,
     },
 
+    // 1. MOVES GLOBAUX : Disponibles dans TOUTES les phases du jeu
+    moves: {
+        ...devMoves,
+        ...allMoves,
+        ...commonMoves
+    },
+
     phases: {
         setup: {
             start: true,
@@ -283,7 +292,6 @@ export const LotrGame: Game<GameState> = {
             },
             moves: {
                 ...commonMoves,
-                reorderFellowship: commonMoves.reorderFellowship,
 
                 submitBid: (
                     { G, playerID }: LotrMoveContext,
@@ -446,6 +454,7 @@ export const LotrGame: Game<GameState> = {
             },
             moves: {
                 ...commonMoves,
+                ...allMoves,
             },
         },
 
@@ -468,7 +477,7 @@ export const LotrGame: Game<GameState> = {
             },
 
             moves: {
-                ...commonMoves,
+                ...allMoves,
 
                 playShadowCard: (
                     { G, ctx, playerID }: LotrMoveContext,
@@ -549,7 +558,7 @@ export const LotrGame: Game<GameState> = {
                     );
 
                     if (hasMinions) {
-                        events?.setPhase?.('archery');
+                        events?.setPhase?.('maneuver');
                     } else {
                         events?.setPhase?.('regroup');
                     }
@@ -574,9 +583,7 @@ export const LotrGame: Game<GameState> = {
                 G.statusMessage =
                     'Phase de Manœuvre : Fenêtre d’action ouverte.';
             },
-            moves: {
-                ...commonMoves,
-            },
+            moves: allMoves
         },
 
         archery: {
@@ -605,7 +612,6 @@ export const LotrGame: Game<GameState> = {
                     'Phase d’Archerie : Fenêtre d’action ouverte.';
             },
             onEnd: ({ G }) => {
-                // Nettoyage automatique de tous les morts avant d'entrer dans la phase suivante
                 const fpId = G.fpPlayerId || '0';
                 const shadowId = fpId === '0' ? '1' : '0';
 
@@ -642,9 +648,7 @@ export const LotrGame: Game<GameState> = {
 
                 G.pendingDeadCardIds = [];
             },
-            moves: {
-                ...commonMoves,
-            },
+            moves: allMoves
         },
 
         assignment: {
@@ -665,69 +669,7 @@ export const LotrGame: Game<GameState> = {
                 }
             },
             moves: {
-                ...commonMoves,
-
-                assignMinion: (
-                    { G, ctx, playerID, events }: LotrMoveContext,
-                    minionId: string,
-                    companionId: string
-                ) => {
-                    const fpId = G.fpPlayerId || '0';
-                    const isFP = playerID === fpId;
-                    const isShadow = playerID !== fpId;
-
-                    if (G.assignmentStep === 'FP_ASSIGN' && !isFP)
-                        return 'INVALID_MOVE';
-                    if (G.assignmentStep === 'SHADOW_ASSIGN' && !isShadow)
-                        return 'INVALID_MOVE';
-
-                    const compCard = G.players[fpId]?.fellowshipArea.find(
-                        (c) => c.id === companionId
-                    );
-                    if (!compCard) return 'INVALID_MOVE';
-
-                    const existingSkirmish = G.skirmishes.find(
-                        (s) => s.companionId === companionId
-                    );
-
-                    if (
-                        G.assignmentStep === 'FP_ASSIGN' &&
-                        existingSkirmish &&
-                        existingSkirmish.minionIds.length >= 1 &&
-                        !existingSkirmish.minionIds.includes(minionId)
-                    ) {
-                        return 'INVALID_MOVE';
-                    }
-
-                    G.skirmishes.forEach((s) => {
-                        s.minionIds = s.minionIds.filter(
-                            (id) => id !== minionId
-                        );
-                    });
-
-                    if (existingSkirmish) {
-                        if (!existingSkirmish.minionIds.includes(minionId)) {
-                            existingSkirmish.minionIds.push(minionId);
-                        }
-                    } else {
-                        G.skirmishes.push({
-                            id: `skirmish_${companionId}`,
-                            companionId,
-                            minionIds: [minionId],
-                        });
-                    }
-
-                    G.skirmishes = G.skirmishes.filter(
-                        (s) => s.minionIds.length > 0
-                    );
-
-                    const minionCard = G.battlefield.find(
-                        (c) => c.id === minionId
-                    );
-                    G.statusMessage = `${minionCard?.name || 'Le séide'} est affecté à ${compCard.name}.`;
-
-                    checkAssignmentProgress(G, ctx, events);
-                },
+                ...allMoves,
 
                 endAssignmentPhase: ({ events }: LotrMoveContext) =>
                     events?.endPhase?.(),
@@ -736,10 +678,6 @@ export const LotrGame: Game<GameState> = {
 
         skirmish: {
             next: 'regroup',
-            // La phase ne se termine que si :
-            // 1. Il n'y a plus d'escarmouches en attente
-            // 2. Aucune escarmouche n'est activement en cours de résolution
-            // 3. Les animations de blessures / morts sont terminées (tableaux vides)
             endIf: ({ G }) => {
                 const noSkirmishesLeft = G.skirmishes.length === 0;
                 const noActiveSkirmish = !G.activeSkirmishId;
@@ -754,7 +692,7 @@ export const LotrGame: Game<GameState> = {
             turn: { activePlayers: { value: { '0': 'play', '1': 'play' } } },
 
             moves: {
-                ...commonMoves,
+                ...allMoves,
 
                 selectSkirmish: (
                     { G, ctx, playerID }: LotrMoveContext,
@@ -786,9 +724,7 @@ export const LotrGame: Game<GameState> = {
                     resolveSkirmish(G, ctx);
                 },
 
-                // Move de nettoyage appelé par React une fois l'animation de fin de combat terminée
                 clearSkirmishAnimation: ({ G }: LotrMoveContext) => {
-                    // Retirer l'escarmouche traitée de la liste
                     if (G.activeSkirmishId) {
                         const idx = G.skirmishes.findIndex(
                             (s) => s.id === G.activeSkirmishId
@@ -799,7 +735,6 @@ export const LotrGame: Game<GameState> = {
                         G.activeSkirmishId = undefined;
                     }
 
-                    // Vider les états d'animations
                     G.lastWoundedCardIds = [];
                     G.pendingDeadCardIds = [];
                 },
@@ -837,7 +772,7 @@ export const LotrGame: Game<GameState> = {
             },
 
             moves: {
-                ...commonMoves,
+                ...allMoves,
 
                 moveNextSite: ({
                     G,

@@ -1,10 +1,12 @@
 import type { Ctx } from 'boardgame.io';
-import type { GameState, CardState } from './types';
+import type { GameState, CardState } from '../types';
 
 export const getUnassignedMinions = (G: GameState): CardState[] => {
     const assignedMinionIds = (G.skirmishes || []).flatMap((s) => s.minionIds);
     return (G.battlefield || []).filter(
-        (c) => c.kind === 'SHADOW' && !assignedMinionIds.includes(c.id)
+        (c: any) =>
+            c.kind === 'SHADOW' &&
+            !assignedMinionIds.includes(c.instanceId || c.id)
     );
 };
 
@@ -17,8 +19,11 @@ export const checkAssignmentProgress = (
         setActivePlayers?: (arg: { value: Record<string, string> }) => void;
     }
 ) => {
+    const fpId = G.fpPlayerId || '0';
+    const shadowId = fpId === '0' ? '1' : '0';
+
     const unassignedMinions = getUnassignedMinions(G);
-    const companions = G.players['0']?.fellowshipArea || [];
+    const companions = G.players[fpId]?.fellowshipArea || [];
 
     if (unassignedMinions.length === 0) {
         G.assignmentStep = 'COMPLETED';
@@ -29,9 +34,11 @@ export const checkAssignmentProgress = (
     }
 
     if (G.assignmentStep === 'FP_ASSIGN') {
-        const allCompanionsHaveMinion = companions.every((comp) =>
+        const allCompanionsHaveMinion = companions.every((comp: any) =>
             G.skirmishes.some(
-                (s) => s.companionId === comp.id && s.minionIds.length > 0
+                (s) =>
+                    (s.companionId === comp.id || s.companionId === comp.instanceId) &&
+                    s.minionIds.length > 0
             )
         );
 
@@ -39,7 +46,7 @@ export const checkAssignmentProgress = (
             G.assignmentStep = 'SHADOW_ASSIGN';
             G.statusMessage =
                 "Surcharge ! L'Ombre affecte les séides restants à son choix.";
-            events?.setActivePlayers?.({ value: { '1': 'play' } });
+            events?.setActivePlayers?.({ value: { [shadowId]: 'play' } });
         }
     }
 };

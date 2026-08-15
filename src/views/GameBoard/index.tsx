@@ -352,6 +352,7 @@ export const GameBoard: React.FC<GameBoardProps> = ({
                 <DevPanel
                     G={G}
                     ctx={ctx}
+                    deckCount={me.deck?.length || 0}
                     moves={
                         moves as React.ComponentProps<typeof DevPanel>['moves']
                     }
@@ -446,7 +447,6 @@ export const GameBoard: React.FC<GameBoardProps> = ({
                         <Hand
                             playerRole={myId as '0' | '1'}
                             hand={me.hand || []}
-                            deckCount={me.deck?.length || 0}
                             currentSiteIndex={currentSiteIndex}
                             phase={ctx.phase}
                             regroupStep={G.regroupStep}

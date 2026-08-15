@@ -59,7 +59,8 @@ export const PlayerBadge = styled.span<{ $isCurrentPlayer: boolean }>`
 
 export const MessageText = styled.div`
     color: #f8fafc;
-    font-weight: 500;
+    font-family: 'DecipherTitle';
+    font-weight: 100;
     display: flex;
     align-items: center;
     gap: 8px;

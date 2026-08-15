@@ -21,7 +21,7 @@ interface GameControlsProps {
         endTurnChoice?: () => void;
         confirmHandRefill?: () => void;
         passActionWindow?: () => void;
-        [key: string]: ((...args: unknown[]) => void) | undefined;
+        [key: string]: ((...args: any[]) => void) | undefined;
     };
 }
 
@@ -41,7 +41,7 @@ export const GameControls: React.FC<GameControlsProps> = ({
     const fpPlayerId = G.fpPlayerId || '0';
     const shadowPlayerId = fpPlayerId === '0' ? '1' : '0';
 
-    // 🟢 PHASE D'ENCHÈRE / SETUP (Sécurisée : exige IMPÉRATIVEMENT ctx.phase === 'setup')
+    // 🟢 PHASE D'ENCHÈRE / SETUP
     const setupStep = G.setupState?.step;
     const isSetupPhase =
         ctx.phase === 'setup' && Boolean(setupStep) && setupStep !== 'COMPLETE';
@@ -50,7 +50,6 @@ export const GameControls: React.FC<GameControlsProps> = ({
     const isChoosingFirstStep = isSetupPhase && setupStep === 'CHOOSING_FIRST';
     const isMulliganStep = isSetupPhase && setupStep === 'MULLIGAN';
 
-    // Vérification des choix de joueurs (sécurisée contre undefined/null)
     const currentBid = G.setupState?.bids?.[currentPlayerId];
     const hasAlreadyBid = currentBid !== null && currentBid !== undefined;
 
@@ -60,18 +59,16 @@ export const GameControls: React.FC<GameControlsProps> = ({
 
     const isAuctionWinner = G.setupState?.auctionWinnerId === currentPlayerId;
 
-    // 🟢 CALCUL DU NUMÉRO DE SITE À POSER (CIBLE)
+    // 🟢 CALCUL DU NUMÉRO DE SITE À POSER
     const rawSiteIdx = G.currentSiteIndex ?? 0;
     const targetSiteIdx = isSetupPhase ? rawSiteIdx : Math.max(1, rawSiteIdx);
 
-    // Site 1 (index 0 / setup) = FP | Sites 2+ (index > 0 / en jeu) = Ombre
     const siteSelectorPlayerId =
         targetSiteIdx === 0 ? fpPlayerId : shadowPlayerId;
 
     // 🟢 1. DÉTERMINATION DU JOUEUR QUI DOIT AGIR
     const isActionWindowActive = G.actionWindow?.isOpen ?? false;
 
-    // Sécurité : le drapeau awaitingSite n'est pertinent que dans les phases autorisées
     const isAwaitingSiteActive =
         awaitingSite &&
         (ctx.phase === 'setup' ||
@@ -91,7 +88,7 @@ export const GameControls: React.FC<GameControlsProps> = ({
     const actingPlayer = G.players?.[actingPlayerId];
     const isMyTurnToAct = currentPlayerId === actingPlayerId;
 
-    // 🟢 2. ÉTAPE DE REGROUPEMENT SPÉCIFIQUE (DYNAMIQUE)
+    // 🟢 2. ÉTAPE DE REGROUPEMENT SPÉCIFIQUE
     const isRegroupDecision =
         !isActionWindowActive &&
         ctx.phase === 'regroup' &&
@@ -110,7 +107,7 @@ export const GameControls: React.FC<GameControlsProps> = ({
         G.regroupStep === 'FP_REFILL' &&
         currentPlayerId === fpPlayerId;
 
-    // 🟢 3. AUTRES ACTIONS STANDARD DE PHASE (DYNAMIQUE)
+    // 🟢 3. AUTRES ACTIONS STANDARD DE PHASE
     const isFellowshipAction =
         !isActionWindowActive &&
         !isAwaitingSiteActive &&
@@ -208,46 +205,41 @@ export const GameControls: React.FC<GameControlsProps> = ({
         };
     }
 
-    // 🟢 5. BANDEAU DE STATUS TEXTUEL DYNAMIQUE
-    const getDynamicStatusMessage = (): string => {
+    // 🟢 5. OBTENTION DE LA CONSIGNE CONTEXTUELLE DU JOUEUR LOCAL
+    const getInstructionText = (): string => {
         if (isBiddingStep) {
             return hasAlreadyBid
-                ? `Votre mise (${currentBid} fardeau${currentBid! > 1 ? 'x' : ''}) est enregistrée. En attente de l'adversaire...`
+                ? `Votre mise (${currentBid} fardeau${currentBid! > 1 ? 'x' : ''}) est enregistrée.`
                 : 'Choisissez le nombre de fardeaux que vous êtes prêt à miser.';
         }
 
         if (isChoosingFirstStep) {
             return isAuctionWinner
-                ? "Vous avez remporté l'enchère ! Souhaitez-vous jouer les Peuples Libres ?"
+                ? "Vous avez remporté l'enchère ! Choisissez votre camp."
                 : "L'adversaire détermine l'ordre des joueurs...";
         }
 
         if (isMulliganStep) {
             return hasMadeMulliganChoice
-                ? "Votre choix de Mulligan est enregistré. En attente de l'adversaire..."
+                ? "Votre choix de Mulligan est enregistré."
                 : 'Décidez si vous conservez votre main de départ ou si vous remélangez.';
         }
 
         if (isActionWindowActive) {
             return isMyTurnToAct
                 ? 'Une fenêtre d’action est ouverte : Jouez une carte/effet ou passez.'
-                : `En attente de la réaction de ${actingPlayer?.profile?.name || `Joueur ${actingPlayerId}`}...`;
+                : `En attente de la réaction de l'adversaire...`;
         }
 
         if (isAwaitingSiteActive) {
             const isMyTurnToPlaceSite =
                 currentPlayerId === siteSelectorPlayerId;
-            const isFirstSite = targetSiteIdx === 0;
-
             if (isMyTurnToPlaceSite) {
-                return isFirstSite
+                return targetSiteIdx === 0
                     ? 'Posez votre site 1 pour démarrer l’aventure.'
                     : 'Choix du prochain site à poser.';
             }
-
-            return isFirstSite
-                ? 'En attente du joueur des Peuples Libres pour poser le site 1...'
-                : 'En attente du joueur de l’Ombre pour poser le prochain site...';
+            return 'En attente de la sélection du site...';
         }
 
         if (ctx.phase === 'fellowship') {
@@ -262,15 +254,47 @@ export const GameControls: React.FC<GameControlsProps> = ({
                 : "Le joueur de l'Ombre prépare ses forces...";
         }
 
+        if (ctx.phase === 'archery') {
+            const archeryStep = G.archeryState?.step;
+            if (archeryStep === 'FP_ASSIGN') {
+                const remaining = G.archeryState?.fpRemainingWounds ?? 0;
+                return currentPlayerId === fpPlayerId
+                    ? `Assignez vos ${remaining} blessure(s) d'archerie restantes aux compagnons.`
+                    : `Les Peuples Libres attribuent ${remaining} blessure(s) d'archerie...`;
+            }
+            if (archeryStep === 'SHADOW_ASSIGN') {
+                const remaining = G.archeryState?.shadowRemainingWounds ?? 0;
+                return currentPlayerId === shadowPlayerId
+                    ? `Assignez vos ${remaining} blessure(s) d'archerie restantes aux séides.`
+                    : `L'Ombre attribue ${remaining} blessure(s) d'archerie...`;
+            }
+            return 'Phase d’Archerie en cours...';
+        }
+
+        if (ctx.phase === 'assignment') {
+            const step = G.assignmentStep;
+            if (step === 'FP_ASSIGN') {
+                return currentPlayerId === fpPlayerId
+                    ? 'Assignez vos compagnons aux séides de l’Ombre.'
+                    : 'Les Peuples Libres effectuent leurs assignations de défense...';
+            }
+            if (step === 'SHADOW_ASSIGN') {
+                return currentPlayerId === shadowPlayerId
+                    ? 'Assignez vos séides restants aux compagnons de votre choix.'
+                    : 'L’Ombre assigne ses séides restants...';
+            }
+            return 'Phase d’Assignation des combats.';
+        }
+
         if (ctx.phase === 'regroup') {
             if (G.regroupStep === 'SHADOW_REFILL') {
                 return currentPlayerId === shadowPlayerId
-                    ? 'Ombre : Ajustez votre main (max 8 cartes) et validez.'
+                    ? 'Ajustez votre main (max 8 cartes) et validez.'
                     : "L'Ombre réorganise sa main...";
             }
             if (G.regroupStep === 'FP_REFILL') {
                 return currentPlayerId === fpPlayerId
-                    ? 'Peuples Libres : Ajustez votre main à 8 cartes et terminez le tour.'
+                    ? 'Ajustez votre main à 8 cartes et terminez le tour.'
                     : 'Les Peuples Libres préparent leur main pour le tour suivant...';
             }
             return currentPlayerId === fpPlayerId
@@ -278,8 +302,12 @@ export const GameControls: React.FC<GameControlsProps> = ({
                 : 'Les Peuples Libres décident de la suite du voyage...';
         }
 
-        return statusMessage || 'Partie en cours';
+        return '';
     };
+
+    // Le log narratif de la dernière action (ex: "Lurtz est assigné à Aragorn.")
+    const currentNarrativeLog = G.statusMessage || statusMessage || 'Partie en cours';
+    const instructionText = getInstructionText();
 
     return (
         <>
@@ -320,7 +348,17 @@ export const GameControls: React.FC<GameControlsProps> = ({
                         </S.PlayerBadge>
                     </S.InfoGroup>
 
-                    <S.MessageText>{getDynamicStatusMessage()}</S.MessageText>
+                    {/* Zone de Texte : Récit narratif principal + Consigne sous-jacente */}
+                    <div style={{ flex: 1, textAlign: 'center', padding: '0 12px' }}>
+                        <S.MessageText>
+                            {currentNarrativeLog}
+                        </S.MessageText>
+                        {instructionText && (
+                            <div style={{ fontSize: '0.85rem', opacity: 0.8, marginTop: '2px', fontStyle: 'italic' }}>
+                                {instructionText}
+                            </div>
+                        )}
+                    </div>
 
                     <S.ActionGroup>
                         {/* Phase Fellowship */}

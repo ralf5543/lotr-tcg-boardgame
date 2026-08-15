@@ -7,7 +7,6 @@ import { useFaction } from '../../../../contexts/FactionContext';
 
 interface HandProps {
     hand: CardState[];
-    deckCount: number;
     playerRole?: '0' | '1';
     currentSiteIndex?: number;
     phase?: string;
@@ -19,12 +18,10 @@ interface HandProps {
 
 export const Hand: React.FC<HandProps> = ({
     hand,
-    deckCount,
     playerRole: propPlayerRole,
     currentSiteIndex,
     phase,
     regroupStep,
-    onDrawCard,
     onDiscardCard,
 }) => {
     const { myPlayerId, fpPlayerId } = useFaction();
@@ -76,9 +73,6 @@ export const Hand: React.FC<HandProps> = ({
 
     return (
         <S.FixedHandContainer $isDragging={isDragging}>
-            <S.GameButton $bgColor="#3498db" onClick={onDrawCard}>
-                🃏 Piocher ({deckCount})
-            </S.GameButton>
 
             <S.CardRow>
                 {hand.length === 0

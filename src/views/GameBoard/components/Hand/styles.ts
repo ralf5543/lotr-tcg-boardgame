@@ -73,27 +73,6 @@ export const CardWrapper = styled.div<{
         `}
 `;
 
-export const GameButton = styled.button<{ $bgColor: string }>`
-    background-color: ${(props) => props.$bgColor};
-    position: absolute;
-    inset-block-end: -150px;
-    inset-inline-start: 50%;
-    transform: translateX(-50%);
-    z-index: 1;
-    color: white;
-    border: none;
-    padding: 10px 14px;
-    border-radius: 6px;
-    font-weight: bold;
-    cursor: pointer;
-    font-size: 13px;
-    transition: filter 0.1s;
-
-    &:hover {
-        filter: brightness(1.1);
-    }
-`;
-
 export const CardRow = styled.div`
     flex: 1;
     display: flex;

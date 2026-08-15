@@ -1,6 +1,16 @@
 import type { Ctx } from 'boardgame.io';
-import type { GameState, CardState } from './types';
-import { getEffectiveStrength } from '../utils/cardStats';
+import type { GameState, CardState } from '../types';
+import { getEffectiveStrength } from '../../utils/cardStats';
+import { getCardText } from '../../utils/i18n';
+
+/**
+ * Helper interne pour extraire proprement le nom d'une carte dans la langue par défaut (FR).
+ */
+const getCardName = (cardObj: any, fallback: string): string => {
+    if (!cardObj) return fallback;
+    const cardState = cardObj.card || cardObj;
+    return getCardText(cardState, 'fr').title || cardState.title || cardState.name || fallback;
+};
 
 /**
  * Calcule la force totale effective d'une carte (base + attachements)
@@ -103,6 +113,8 @@ export const resolveSkirmish = (
         return;
     }
 
+    const companionName = getCardName(companion, 'Le compagnon');
+
     const companionStrength = getCardTotalStrength(companion);
     const minionsStrength = minions.reduce(
         (sum, m) => sum + getCardTotalStrength(m),
@@ -112,15 +124,16 @@ export const resolveSkirmish = (
     G.lastWoundedCardIds = [];
     G.pendingDeadCardIds = [];
 
-    let resultMsg = `Résolution : ${companion.title} (${companionStrength}) vs `;
-    resultMsg += minions
-        .map((m) => `${m.title} (${getCardTotalStrength(m)})`)
+    const minionsSummary = minions
+        .map((m) => `${getCardName(m, 'Un séide')} (${getCardTotalStrength(m)})`)
         .join(', ');
+
+    let resultMsg = `Résolution : ${companionName} (${companionStrength}) vs ${minionsSummary}`;
     resultMsg += ` [Total Ombre: ${minionsStrength}]. `;
 
     // ⚔️ CAS 1 : VICTOIRE DU COMPAGNON
     if (companionStrength > minionsStrength) {
-        resultMsg += `Victoire de ${companion.title} ! `;
+        resultMsg += `Victoire de ${companionName} ! `;
 
         const isMinionsOverwhelmed =
             minionsStrength > 0
@@ -150,13 +163,12 @@ export const resolveSkirmish = (
 
         if (isCompanionOverwhelmed) {
             applyOverwhelmToCard(G, companion);
-            resultMsg += `${companion.title} est SUBMERGÉ et tué sur le coup !`;
+            resultMsg += `${companionName} est SUBMERGÉ et tué sur le coup !`;
         } else {
             const shouldDie = applyWoundToCard(G, companion, 1);
-            resultMsg += `${companion.title} subit 1 blessure${shouldDie ? ' et meurt' : ''}.`;
+            resultMsg += `${companionName} subit 1 blessure${shouldDie ? ' et meurt' : ''}.`;
         }
     }
 
     G.statusMessage = resultMsg;
-
 };

@@ -16,6 +16,8 @@ export interface DevPanelProps {
     moves: BoardProps<GameState>['moves'] & DevMoves;
     G: GameState;
     ctx: BoardProps<GameState>['ctx'];
+    onDrawCard: () => void;
+    deckCount: number;
 }
 
 const ALL_PHASES = [
@@ -28,7 +30,8 @@ const ALL_PHASES = [
     'regroup',
 ];
 
-export const DevPanel: React.FC<DevPanelProps> = ({ moves, G, ctx }) => {
+export const DevPanel: React.FC<DevPanelProps> = ({ moves, G, ctx, onDrawCard,
+    deckCount, }) => {
     const [isOpen, setIsOpen] = useState(false);
 
     if (process.env.NODE_ENV === 'production') return null;
@@ -140,16 +143,9 @@ export const DevPanel: React.FC<DevPanelProps> = ({ moves, G, ctx }) => {
                         >
                             🏹 Charger Legolas vs Nazgûl
                         </S.PresetButton>
-                        <S.ActionButton
-                            style={{
-                                marginTop: '4px',
-                                backgroundColor: '#3b0764',
-                                borderColor: '#6b21a8',
-                            }}
-                            onClick={() => moves.devForceEndPhase()}
-                        >
-                            ⏩ Force End Phase
-                        </S.ActionButton>
+                        <S.GameButton $bgColor="#3498db" onClick={onDrawCard}>
+                            🃏 Piocher ({deckCount})
+                        </S.GameButton>
                     </S.Section>
                 </S.PanelContent>
             )}
