@@ -736,6 +736,21 @@ export const LotrGame: Game<GameState> = {
 
         skirmish: {
             next: 'regroup',
+            // La phase ne se termine que si :
+            // 1. Il n'y a plus d'escarmouches en attente
+            // 2. Aucune escarmouche n'est activement en cours de résolution
+            // 3. Les animations de blessures / morts sont terminées (tableaux vides)
+            endIf: ({ G }) => {
+                const noSkirmishesLeft = G.skirmishes.length === 0;
+                const noActiveSkirmish = !G.activeSkirmishId;
+                const noPendingAnims =
+                    (!G.lastWoundedCardIds ||
+                        G.lastWoundedCardIds.length === 0) &&
+                    (!G.pendingDeadCardIds ||
+                        G.pendingDeadCardIds.length === 0);
+
+                return noSkirmishesLeft && noActiveSkirmish && noPendingAnims;
+            },
             turn: { activePlayers: { value: { '0': 'play', '1': 'play' } } },
 
             moves: {
@@ -769,6 +784,24 @@ export const LotrGame: Game<GameState> = {
                 resolveActiveSkirmish: ({ G, ctx }: LotrMoveContext) => {
                     if (!G.activeSkirmishId) return 'INVALID_MOVE';
                     resolveSkirmish(G, ctx);
+                },
+
+                // Move de nettoyage appelé par React une fois l'animation de fin de combat terminée
+                clearSkirmishAnimation: ({ G }: LotrMoveContext) => {
+                    // Retirer l'escarmouche traitée de la liste
+                    if (G.activeSkirmishId) {
+                        const idx = G.skirmishes.findIndex(
+                            (s) => s.id === G.activeSkirmishId
+                        );
+                        if (idx !== -1) {
+                            G.skirmishes.splice(idx, 1);
+                        }
+                        G.activeSkirmishId = undefined;
+                    }
+
+                    // Vider les états d'animations
+                    G.lastWoundedCardIds = [];
+                    G.pendingDeadCardIds = [];
                 },
 
                 endSkirmishPhase: ({ events }: LotrMoveContext) =>

@@ -581,8 +581,6 @@ export const commonMoves = {
         }
     },
 
-    // Dans les moves de game/index.ts :
-
     cleanupPendingDeaths: ({ G }: LotrMoveContext) => {
         const fpId = G.fpPlayerId || '0';
         const shadowId = fpId === '0' ? '1' : '0';
@@ -592,8 +590,8 @@ export const commonMoves = {
         if (fpPlayer?.fellowshipArea) {
             fpPlayer.fellowshipArea = fpPlayer.fellowshipArea.filter(
                 (c: any) => {
-                    const maxVit = Number(c.vitality) || 1;
-                    const dead = c.isDead || (c.wounds || 0) >= maxVit;
+                    const remainingVitality = getEffectiveVitality(c);
+                    const dead = c.isDead || remainingVitality <= 0;
                     if (dead) {
                         if (!fpPlayer.deadPile) fpPlayer.deadPile = [];
                         fpPlayer.deadPile.push(c);
@@ -605,8 +603,8 @@ export const commonMoves = {
 
         // 2. Nettoyage des Séides (morts -> discard)
         G.battlefield = (G.battlefield || []).filter((c: any) => {
-            const maxVit = Number(c.vitality) || 1;
-            const dead = c.isDead || (c.wounds || 0) >= maxVit;
+            const remainingVitality = getEffectiveVitality(c);
+            const dead = c.isDead || remainingVitality <= 0;
             if (dead) {
                 const shadowPlayer = G.players[shadowId];
                 if (shadowPlayer) {

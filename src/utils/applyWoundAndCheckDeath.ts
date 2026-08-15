@@ -23,9 +23,17 @@ export const applyWoundAndCheckDeath = (
         G.lastWoundedCardIds.push(cardId);
     }
 
-    // 3. Calculer si le coup est fatal (Vitalité restante <= 0)
+    // 3. Calculer la vitalité
     const effectiveVitality = getEffectiveVitality(card);
+    
+    // LOG DE DÉBOGAGE
+    console.log(`🔍 [WOUND CHECK] Carte: ${card.title} (${cardId})`);
+    console.log(`   ├─ Blessures totales (card.wounds): ${card.wounds}`);
+    console.log(`   ├─ Vitalité retournée (getEffectiveVitality): ${effectiveVitality}`);
+    
+    // Si getEffectiveVitality renvoie la vitalité RESTANTE :
     const isDead = effectiveVitality <= 0;
+    console.log(`   └─ Est mort (isDead) ? ${isDead}`);
 
     // 4. Si la carte meurt, marquer le flag et alimenter pendingDeadCardIds
     if (isDead) {
