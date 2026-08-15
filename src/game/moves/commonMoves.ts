@@ -5,7 +5,6 @@ import { advanceArcheryAssignmentStep } from '../index';
 import { getEffectiveVitality } from '../../utils/cardStats';
 import { devMoves } from '../dev/devMoves';
 import { playSite } from './fellowshipMoves';
-
 export interface ReorderPayload {
     fromIndex?: number;
     toIndex?: number;

@@ -28,6 +28,7 @@ import { PhaseBanner } from './components/PhaseBanner';
 import { DevPanel, type DevMoves } from '../../utils/DevPanel';
 import { useFaction } from '../../contexts/FactionContext';
 import { useTargeting } from '../../contexts/TargetingContext';
+import { audioService } from '../../services/audioService';
 
 export interface GameBoardProps extends BoardProps<GameState> {
     moves: BoardProps<GameState>['moves'] &
@@ -174,6 +175,10 @@ export const GameBoard: React.FC<GameBoardProps> = ({
                     targetId === 'fellowshipArea' &&
                     canDropInFellowship(cardType)
                 ) {
+
+    
+    console.log('Joue une carte');
+    audioService.play('CARD_PLAY');
                     if (typeof moves.playCard === 'function') {
                         moves.playCard(index);
                     }
