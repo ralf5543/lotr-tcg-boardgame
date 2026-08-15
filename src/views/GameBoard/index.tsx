@@ -384,7 +384,6 @@ export const GameBoard: React.FC<GameBoardProps> = ({
                 {/* ==================== 2. CENTRAL ==================== */}
                 <S.CentralBlock>
                     <S.MainZone>
-                        <TwilightPool value={G.twilightPool} />
                         <Battlefield
                             cards={G.battlefield}
                             playerRole={myId as '0' | '1'}
@@ -393,6 +392,7 @@ export const GameBoard: React.FC<GameBoardProps> = ({
                             skirmishes={G.skirmishes}
                             lastWoundedCardIds={G.lastWoundedCardIds}
                         />
+                        <TwilightPool value={G.twilightPool} />
                     </S.MainZone>
                 </S.CentralBlock>
 

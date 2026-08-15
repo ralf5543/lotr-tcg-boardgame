@@ -154,7 +154,7 @@ const CARDS_PRESETS: Record<string, CardState> = {
         keywords: ['ARCHER', 'DAMAGE +1'],
         race: 'ORC',
         twilightCost: 2,
-        strength: 6,
+        strength: 5,
         vitality: 2,
         minionSiteNumber: 4,
         imageUrl: '/cards_visuals/o_01_191.jpg',

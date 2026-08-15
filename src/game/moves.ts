@@ -619,7 +619,13 @@ export const commonMoves = {
 
         // 3. Réinitialisation des états de combat / animations
         if (G.activeSkirmishId) {
-            G.activeSkirmishId = null;
+            const skirmishIndex = G.skirmishes.findIndex(
+                (s) => s.id === G.activeSkirmishId
+            );
+            if (skirmishIndex !== -1) {
+                G.skirmishes.splice(skirmishIndex, 1);
+            }
+            G.activeSkirmishId = undefined;
         }
         G.pendingDeadCardIds = [];
         G.lastWoundedCardIds = [];

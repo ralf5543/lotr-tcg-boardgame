@@ -13,18 +13,56 @@ export const getCardTotalStrength = (card: CardState): number => {
  * Applique une blessure à une carte et retourne `true` si elle succombe à ses blessures.
  */
 export const applyWoundToCard = (
-    _G: GameState,
+    G: GameState,
     card: CardState,
     woundCount = 1
 ): boolean => {
     card.wounds = (card.wounds || 0) + woundCount;
     const vitality = card.vitality ?? 1;
 
+    const cardId = card.id || card.instanceId;
+
+    // Toujours marquer la carte comme blessée pour l'animation
+    if (!G.lastWoundedCardIds) G.lastWoundedCardIds = [];
+    if (!G.lastWoundedCardIds.includes(cardId)) {
+        G.lastWoundedCardIds.push(cardId);
+    }
+
     if (card.wounds >= vitality) {
         card.isDead = true;
+        if (!G.pendingDeadCardIds) G.pendingDeadCardIds = [];
+        if (!G.pendingDeadCardIds.includes(cardId)) {
+            G.pendingDeadCardIds.push(cardId);
+        }
         return true;
     }
     return false;
+};
+
+/**
+ * Inflige une mort directe par submersion (overwhelm) en déclenchant 
+ * correctement les tableaux d'animations (lastWoundedCardIds & pendingDeadCardIds).
+ */
+export const applyOverwhelmToCard = (
+    G: GameState,
+    card: CardState
+) => {
+    const cardId = card.id || card.instanceId;
+
+    // On inflige autant de blessures que nécessaire pour amener à la vitalité
+    const vitality = card.vitality ?? 1;
+    card.wounds = vitality;
+    card.isDead = true;
+
+    if (!G.lastWoundedCardIds) G.lastWoundedCardIds = [];
+    if (!G.lastWoundedCardIds.includes(cardId)) {
+        G.lastWoundedCardIds.push(cardId);
+    }
+
+    if (!G.pendingDeadCardIds) G.pendingDeadCardIds = [];
+    if (!G.pendingDeadCardIds.includes(cardId)) {
+        G.pendingDeadCardIds.push(cardId);
+    }
 };
 
 /**
@@ -90,20 +128,10 @@ export const resolveSkirmish = (
                 : companionStrength > 0;
 
         minions.forEach((minion) => {
-            const minionId = minion.id || minion.instanceId;
             if (isMinionsOverwhelmed) {
-                minion.isDead = true;
-                if (!G.pendingDeadCardIds) G.pendingDeadCardIds = [];
-                G.pendingDeadCardIds.push(minionId);
+                applyOverwhelmToCard(G, minion);
             } else {
-                const shouldDie = applyWoundToCard(G, minion, 1);
-                if (shouldDie) {
-                    if (!G.pendingDeadCardIds) G.pendingDeadCardIds = [];
-                    G.pendingDeadCardIds.push(minionId);
-                } else {
-                    if (!G.lastWoundedCardIds) G.lastWoundedCardIds = [];
-                    G.lastWoundedCardIds.push(minionId);
-                }
+                applyWoundToCard(G, minion, 1);
             }
         });
 
@@ -120,29 +148,15 @@ export const resolveSkirmish = (
                 ? minionsStrength >= 2 * companionStrength
                 : minionsStrength > 0;
 
-        const companionId = companion.id || companion.instanceId;
-
         if (isCompanionOverwhelmed) {
-            companion.isDead = true;
-            if (!G.pendingDeadCardIds) G.pendingDeadCardIds = [];
-            G.pendingDeadCardIds.push(companionId);
+            applyOverwhelmToCard(G, companion);
             resultMsg += `${companion.title} est SUBMERGÉ et tué sur le coup !`;
         } else {
             const shouldDie = applyWoundToCard(G, companion, 1);
-            if (shouldDie) {
-                if (!G.pendingDeadCardIds) G.pendingDeadCardIds = [];
-                G.pendingDeadCardIds.push(companionId);
-            } else {
-                if (!G.lastWoundedCardIds) G.lastWoundedCardIds = [];
-                G.lastWoundedCardIds.push(companionId);
-            }
             resultMsg += `${companion.title} subit 1 blessure${shouldDie ? ' et meurt' : ''}.`;
         }
     }
 
-    // Retrait de l'escarmouche traitée
-    G.skirmishes.splice(skirmishIndex, 1);
-    G.activeSkirmishId = undefined;
-    G.actionWindow = undefined;
     G.statusMessage = resultMsg;
+
 };

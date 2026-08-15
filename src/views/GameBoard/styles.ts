@@ -32,7 +32,7 @@ export const CentralBlock = styled.div`
 `;
 export const MainZone = styled.div`
     display: grid;
-    grid-template-columns: 20% 1fr;
+    grid-template-columns: 1fr 26%;
     height: 100%;
 `;
 export const PhaseBanner = styled.div`

@@ -28,6 +28,7 @@ export const CardRow = styled.div`
     gap: 50px;
     min-height: 80px;
     align-items: center;
+    justify-content: end;
 `;
 
 export const GameCard = styled.div`
