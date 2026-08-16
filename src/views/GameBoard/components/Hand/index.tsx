@@ -17,6 +17,9 @@ interface HandProps {
     onDiscardCard?: (index: number) => void;
 }
 
+// 🟢 CACHE GLOBAL : Persiste même si le composant Hand est démonté / remonté lors d'un changement d'onglet
+const knownCardIdsCache = new Set<string>();
+
 export const Hand: React.FC<HandProps> = ({
     hand,
     playerRole: propPlayerRole,
@@ -59,11 +62,11 @@ export const Hand: React.FC<HandProps> = ({
 
     const [discardingIndex, setDiscardingIndex] = useState<number | null>(null);
 
-    // 🟢 DÉTECTION PAR TAMPON D'IDS (Beaucoup plus robuste)
+    // 🟢 DÉTECTION ROBUSTE : Initialisation avec la mémoire globale du module
     const [animatingCardIds, setAnimatingCardIds] = useState<Set<string>>(
         new Set()
     );
-    const prevIdsRef = useRef<Set<string>>(new Set());
+    const prevIdsRef = useRef<Set<string>>(new Set(knownCardIdsCache));
 
     useEffect(() => {
         const currentIds = new Set(hand.map((c) => c.id));
@@ -93,11 +96,16 @@ export const Hand: React.FC<HandProps> = ({
                 800 + addedIds.length * 100
             );
 
+            // Met à jour la Ref locale ET le cache global du module
             prevIdsRef.current = currentIds;
+            currentIds.forEach((id) => knownCardIdsCache.add(id));
+
             return () => clearTimeout(timer);
         }
 
+        // Met à jour la Ref locale ET le cache global du module
         prevIdsRef.current = currentIds;
+        currentIds.forEach((id) => knownCardIdsCache.add(id));
     }, [hand]);
 
     const handleDiscardClick = (idx: number) => {
