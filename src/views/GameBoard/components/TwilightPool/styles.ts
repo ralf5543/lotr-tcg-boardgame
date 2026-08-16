@@ -21,7 +21,7 @@ export const PoolHeader = styled.div`
 export const CounterBadge = styled.span`
     background: radial-gradient(circle, grey, black);
     color: #fff;
-    border: 1px solid #9b59b6;
+    border: 1px solid #ffbf00;
     border-radius: 50%;
     width: 50px;
     height: 50px;
@@ -29,7 +29,7 @@ export const CounterBadge = styled.span`
     align-items: center;
     justify-content: center;
     font-size: 40px;
-    box-shadow: 0 0 8px #9b59b6;
+    box-shadow: 0 0 8px #ffbf00;
 `;
 
 export const BowlArea = styled.div`

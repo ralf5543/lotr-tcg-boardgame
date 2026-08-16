@@ -109,6 +109,36 @@ const CARDS_PRESETS: Record<string, CardState> = {
             },
         },
     },
+    SMEAGOL: {
+        id: '7R71',
+        set: 7,
+        rarity: 'R',
+        isUnique: true,
+        kind: 'FREE_PEOPLE',
+        type: 'COMPANION',
+        keywords: ['RING-BOUND'],
+        phases: ['ASSIGNMENT'],
+        culture: 'GOLLUM',
+        signet: 'FRODO',
+        twilightCost: 0,
+        strength: 3,
+        vitality: 4,
+        imageUrl: '/cards_visuals/o_07_071.jpg',
+        i18n: {
+            en: {
+                title: 'Sméagol',
+                subtitle: 'Always Helps',
+                gameText:
+                    '**Ring-bound.** To play, add a burden. \n**Assignment:** Assign a minion to Sméagol and add 2 threats to exhaust that minion.',
+            },
+            fr: {
+                title: 'Sméagol',
+                subtitle: 'Always Helps',
+                gameText:
+                    '**Ring-bound.** To play, add a burden. \n**Assignment:**: Assign a minion to Sméagol and add 2 threats to exhaust that minion.',
+            },
+        },
+    },
     LURTZ: {
         id: '11R194',
         set: 11,
@@ -223,12 +253,14 @@ const CARDS_PRESETS: Record<string, CardState> = {
             en: {
                 title: 'Armor',
                 gameText: 'Bearer gains **vitality +1**.',
-                loreText: 'Dwarf-mail was light and yet stronger than forged steel.',
+                loreText:
+                    'Dwarf-mail was light and yet stronger than forged steel.',
             },
             fr: {
                 title: 'Armure',
                 gameText: 'Le porteur gagne **vitalité +1**.',
-                loreText: 'La cotte de mailles naine était légère et pourtant plus solide que l\'acier forgé.',
+                loreText:
+                    "La cotte de mailles naine était légère et pourtant plus solide que l'acier forgé.",
             },
         },
     },
@@ -263,6 +295,7 @@ export const applyDevPreset = (
 
             fpPlayer.fellowshipArea = [
                 { ...CARDS_PRESETS.FRODO },
+                { ...CARDS_PRESETS.SMEAGOL },
                 { ...CARDS_PRESETS.LEGOLAS },
                 gimliWithArmor,
             ];
@@ -280,7 +313,8 @@ export const applyDevPreset = (
                 G.archeryState.fpRemainingWounds = 0;
             }
 
-            G.statusMessage = '[DEV] Preset Archerie chargé (Gimli a +1 Vitalité via Armure)';
+            G.statusMessage =
+                '[DEV] Preset Archerie chargé (Gimli a +1 Vitalité via Armure)';
             break;
         }
     }

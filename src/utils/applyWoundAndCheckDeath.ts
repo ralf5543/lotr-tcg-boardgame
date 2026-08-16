@@ -1,5 +1,6 @@
 import type { GameState, CardState } from '../game/types';
 import { getEffectiveVitality } from './cardStats';
+import { audioService } from '../services/audioService';
 
 /**
  * Inflige N blessures dans G, enregistre les identifiants pour l'animation visuelle
@@ -11,6 +12,34 @@ export const applyWoundAndCheckDeath = (
     woundsCount = 1
 ): boolean => {
     if (!card) return false;
+
+    console.log('card.race : ', card.race);
+    console.log('card.culture : ', card.culture);
+    // delay to give time to the impact sound
+    if (card.race === 'ORC') {
+        audioService.play('WOUND_ORC', { delay: 0.3  });
+    } else if (card.race === 'URUK-HAI') {
+        audioService.play('WOUND_ORC', { delay: 0.3, pitch: 0.75  });
+    } else if (card.race === 'NAZGUL' || card.race === 'WRAITH') {
+        audioService.play('WOUND_WRAITH', { delay: 0.3 });
+    } else if (card.race === 'TROLL' || card.race === 'HALF-TROLL' || card.race === 'CREATURE') {
+        audioService.play('WOUND_TROLL', { delay: 0.3 });
+    } else if (card.race === 'BALROG' || card.race === 'MAIA') {
+        audioService.play('WOUND_TROLL', { delay: 0.3 });
+    } else if (card.race === 'SPIDER') {
+        audioService.play('WOUND_SPIDER', { delay: 0.3 });
+    } else if (card.race === 'ELF') {
+        audioService.play('WOUND_HUMAN_MALE', { delay: 0.3, pitch: 1.2});
+    } else if (card.race === 'HOBBIT') {
+        audioService.play('WOUND_HOBBIT', { delay: 0.3});
+    } else if (card.race === 'WIZARD') {
+        audioService.play('WOUND_WIZARD', { delay: 0.3});
+    } else if (card.culture === 'GOLLUM') {
+        audioService.play('WOUND_GOLLUM', { delay: 0.3});
+    } else {
+        audioService.play('WOUND_HUMAN_MALE', { delay: 0.3});
+    }
+    
 
     // 1. Infliger les blessures sur la carte
     card.wounds = (card.wounds || 0) + woundsCount;

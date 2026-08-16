@@ -124,12 +124,12 @@ export type CardCulture =
     | 'MORIA'
     | 'ORC'
     | 'RAIDER'
-    | 'RAITH'
     | 'ROHAN'
     | 'SAURON'
     | 'SHIRE'
     | 'THE-ONE-RING'
-    | 'URUK-HAI';
+    | 'URUK-HAI'
+    | 'WRAITH';
 
 export interface CardI18nContent {
     title: string;

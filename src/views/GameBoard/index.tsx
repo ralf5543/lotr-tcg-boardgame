@@ -2,7 +2,6 @@ import React, { useEffect } from 'react';
 import type { BoardProps } from 'boardgame.io/react';
 import type {
     CardState,
-    CardType,
     SiteCardState,
     GameState,
 } from '../../game/types';
@@ -175,10 +174,7 @@ export const GameBoard: React.FC<GameBoardProps> = ({
                     targetId === 'fellowshipArea' &&
                     canDropInFellowship(cardType)
                 ) {
-
-    
-    console.log('Joue une carte');
-    audioService.play('CARD_PLAY');
+                    audioService.play('CARD_PLAY');
                     if (typeof moves.playCard === 'function') {
                         moves.playCard(index);
                     }
@@ -189,6 +185,7 @@ export const GameBoard: React.FC<GameBoardProps> = ({
                     targetId === 'supportArea' &&
                     canDropInSupportArea(cardType, cardSubtype)
                 ) {
+                    audioService.play('CARD_PLAY');
                     if (typeof moves.playCard === 'function') {
                         moves.playCard(index);
                     }
@@ -196,6 +193,7 @@ export const GameBoard: React.FC<GameBoardProps> = ({
                 }
 
                 if (targetId === 'battlefield' && card?.kind === 'SHADOW') {
+                    audioService.play('CARD_PLAY');
                     if (typeof moves.playShadowCard === 'function') {
                         moves.playShadowCard(index);
                     }
