@@ -406,6 +406,12 @@ export const GameBoard: React.FC<GameBoardProps> = ({
 
         if (isMulliganStep) return 'hand';
 
+        // 3. Rétablissement automatique de la Main au début des phases actives
+        const isMainGamePhase =
+            ctx.phase === 'fellowship' || ctx.phase === 'shadow';
+
+        if (isMainGamePhase) return 'hand';
+
         return null;
     };
 
