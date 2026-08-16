@@ -15,14 +15,35 @@ export const SOUND_LIBRARY = {
     POSSESSION: [
         '/audio/sfx/cards/possession.opus',
     ],
+    'POSSESSION_ARMOR': [
+        '/audio/sfx/cards/possession_armor.opus',
+    ],
+    'POSSESSION_BRACERS': [
+        '/audio/sfx/cards/possession_armor.opus',
+    ],
+    'POSSESSION_GAUNTLETS': [
+        '/audio/sfx/cards/possession_armor.opus',
+    ],
     'POSSESSION_HAND-WEAPON': [
         '/audio/sfx/cards/possession_sword.opus',
+    ],
+    'POSSESSION_HELM': [
+        '/audio/sfx/cards/possession_armor.opus',
+    ],
+    'POSSESSION_PHIAL': [
+        '/audio/sfx/cards/possession_mount.opus',
     ],
     'POSSESSION_MOUNT': [
         '/audio/sfx/cards/possession_mount.opus',
     ],
     'POSSESSION_RING': [
         '/audio/sfx/cards/possession_ring.opus',
+    ],
+    'POSSESSION_RANGED-WEAPON': [
+        '/audio/sfx/cards/possession_ring.opus',
+    ],
+    'POSSESSION_SHIELD': [
+        '/audio/sfx/cards/possession_armor.opus',
     ],
 
     // Battle
@@ -99,13 +120,6 @@ export const SOUND_LIBRARY = {
         '/audio/sfx/battle/wound_wraith2.opus',
         '/audio/sfx/battle/wound_wraith3.opus',
         '/audio/sfx/battle/wound_wraith4.opus',
-    ],
-    WOUND_GOLLUM: [
-        '/audio/sfx/battle/wound_gollum.opus',
-        '/audio/sfx/battle/wound_gollum2.opus',
-        '/audio/sfx/battle/wound_gollum3.opus',
-        '/audio/sfx/battle/wound_gollum4.opus',
-        '/audio/sfx/battle/wound_gollum5.opus',
     ],
 } as const;
 
