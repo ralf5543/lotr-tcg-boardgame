@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import * as S from './styles';
 
 export type ActiveTab = 'hand' | 'sites' | 'discard' | 'none';
@@ -10,6 +10,7 @@ interface DockProps {
     handView: React.ReactNode;
     sitesView: React.ReactNode;
     discardView?: React.ReactNode;
+    requestedTab?: ActiveTab | null;
 }
 
 export const Dock: React.FC<DockProps> = React.memo(
@@ -20,9 +21,17 @@ export const Dock: React.FC<DockProps> = React.memo(
         handView,
         sitesView,
         discardView,
+        requestedTab,
     }) => {
         // State local pour savoir quel tiroir est ouvert
         const [activeTab, setActiveTab] = useState<ActiveTab>('hand');
+
+        // 🟢 BASCULE AUTOMATIQUE EN FONCTION DU CONTEXTE DE JEU
+        useEffect(() => {
+            if (requestedTab) {
+                setActiveTab(requestedTab);
+            }
+        }, [requestedTab]);
 
         const toggleTab = (tab: ActiveTab) => {
             setActiveTab((prev) => (prev === tab ? 'none' : tab));
@@ -32,7 +41,7 @@ export const Dock: React.FC<DockProps> = React.memo(
             <S.DockWrapper>
                 {/* 1. LE TIROIR : Reste ouvert si un onglet est actif */}
                 <S.DrawerContainer>
-                    {/* 2. LE CONTENU : La prop 'key' force le re-déclenchement de l'animation CSS à chaque changement d'onglet */}
+                    {/* 2. LE CONTENU */}
                     <S.TabContentWrapper key={activeTab}>
                         {activeTab === 'hand' && handView}
                         {activeTab === 'sites' && sitesView}

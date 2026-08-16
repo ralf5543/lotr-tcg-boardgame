@@ -169,8 +169,10 @@ export const GameBoard: React.FC<GameBoardProps> = ({
             if (cardType === 'COMPANION' || cardType === 'ALLY') {
                 soundPath = 'COMPANION';
             } else if (cardType === 'POSSESSION') {
-                soundPath = cardSubtype ? `POSSESSION_${cardSubtype}` : 'POSSESSION';
-            };
+                soundPath = cardSubtype
+                    ? `POSSESSION_${cardSubtype}`
+                    : 'POSSESSION';
+            }
 
             console.log('cardType : ', cardType);
             console.log('cardSubtype : ', cardSubtype);
@@ -184,8 +186,8 @@ export const GameBoard: React.FC<GameBoardProps> = ({
                     audioService.play('CARD_PLAY');
                     if (typeof moves.playCard === 'function') {
                         moves.playCard(index);
-                            audioService.play('CARD_PLAY');
-                            audioService.play(soundPath, { delay: 0.3});
+                        audioService.play('CARD_PLAY');
+                        audioService.play(soundPath, { delay: 0.3 });
                     }
                     return;
                 }
@@ -197,8 +199,8 @@ export const GameBoard: React.FC<GameBoardProps> = ({
                     audioService.play('CARD_PLAY');
                     if (typeof moves.playCard === 'function') {
                         moves.playCard(index);
-                            audioService.play('CARD_PLAY');
-                            audioService.play(soundPath, { delay: 0.3});
+                        audioService.play('CARD_PLAY');
+                        audioService.play(soundPath, { delay: 0.3 });
                     }
                     return;
                 }
@@ -220,7 +222,7 @@ export const GameBoard: React.FC<GameBoardProps> = ({
                         if (typeof moves.attachCard === 'function') {
                             moves.attachCard(index, targetId);
                             audioService.play('CARD_PLAY');
-                            audioService.play(soundPath, { delay: 0.3});
+                            audioService.play(soundPath, { delay: 0.3 });
                         }
                         return;
                     }
@@ -244,7 +246,7 @@ export const GameBoard: React.FC<GameBoardProps> = ({
                                 toCharacterId: targetId,
                             });
                             audioService.play('CARD_PLAY');
-                            audioService.play(soundPath, { delay: 0.3});
+                            audioService.play(soundPath, { delay: 0.3 });
                         }
                     }
                 }
@@ -385,6 +387,26 @@ export const GameBoard: React.FC<GameBoardProps> = ({
         stopTargeting,
     ]);
 
+    // Détermination de l'onglet prioritaire selon le state du jeu
+    const getRequestedTab = (): 'hand' | 'sites' | null => {
+        // 1. Choix du site initial ou pose d'un site en cours de partie
+        const isAwaitingSite =
+            G.awaitingSiteSelection ||
+            (ctx.phase === 'setup' &&
+                G.setupState?.step === 'AWAITING_SITE' &&
+                isLocalFP);
+
+        if (isAwaitingSite) return 'sites';
+
+        // 2. Choix du mulligan durant la phase setup
+        const isMulliganStep =
+            ctx.phase === 'setup' && G.setupState?.step === 'MULLIGAN';
+
+        if (isMulliganStep) return 'hand';
+
+        return null;
+    };
+
     return (
         <DragProvider>
             <S.BoardContainer $faction={currentFaction}>
@@ -505,6 +527,7 @@ export const GameBoard: React.FC<GameBoardProps> = ({
                     handCount={me.hand?.length || 0}
                     sitesCount={me.sitesDeck?.length || 0}
                     discardCount={me.discard?.length || 0}
+                    requestedTab={getRequestedTab()}
                     handView={
                         <Hand
                             playerRole={myId as '0' | '1'}

@@ -7,7 +7,9 @@ export const SOUND_LIBRARY = {
     CARD_PLAY: [
         '/audio/sfx/cards/play_card.opus',
         '/audio/sfx/cards/play_card2.opus',
-        '/audio/sfx/cards/play_card3.opus',
+    ],
+    CARD_DRAW: [
+        '/audio/sfx/cards/draw_card.opus',
     ],
     COMPANION: [
         '/audio/sfx/cards/companion.opus',
