@@ -3,11 +3,26 @@ export const SOUND_LIBRARY = {
     CLICK: [
         '/audio/sfx/ui/click.opus',
     ],
-    // Cardq
+    // Cards
     CARD_PLAY: [
         '/audio/sfx/cards/play_card.opus',
         '/audio/sfx/cards/play_card2.opus',
         '/audio/sfx/cards/play_card3.opus',
+    ],
+    COMPANION: [
+        '/audio/sfx/cards/companion.opus',
+    ],
+    POSSESSION: [
+        '/audio/sfx/cards/possession.opus',
+    ],
+    'POSSESSION_HAND-WEAPON': [
+        '/audio/sfx/cards/possession_sword.opus',
+    ],
+    'POSSESSION_MOUNT': [
+        '/audio/sfx/cards/possession_mount.opus',
+    ],
+    'POSSESSION_RING': [
+        '/audio/sfx/cards/possession_ring.opus',
     ],
 
     // Battle
@@ -17,6 +32,11 @@ export const SOUND_LIBRARY = {
         '/audio/sfx/battle/arrow_impact3.opus',
         '/audio/sfx/battle/arrow_impact4.opus',
         '/audio/sfx/battle/arrow_impact5.opus',
+    ],
+    SMASH: [
+        '/audio/sfx/battle/smash.opus',
+        '/audio/sfx/battle/smash2.opus',
+        '/audio/sfx/battle/smash3.opus',
     ],
     WOUND_BALROG: [
         '/audio/sfx/battle/wound_balrog.opus',

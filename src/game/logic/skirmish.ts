@@ -101,7 +101,7 @@ export const resolveSkirmish = (
                 : companionStrength > 0;
 
         // Son de coup d'épée immédiat avant les cris de douleur
-        audioService.play('SWORD_IMPACT');
+        audioService.play('SMASH');
 
         minions.forEach((minion) => {
             if (isMinionsOverwhelmed) {
@@ -125,7 +125,7 @@ export const resolveSkirmish = (
                 : minionsStrength > 0;
 
         // Son de coup d'épée immédiat
-        audioService.play('SWORD_IMPACT');
+        audioService.play('SMASH');
 
         if (isCompanionOverwhelmed) {
             applyOverwhelmToCard(G, companion);

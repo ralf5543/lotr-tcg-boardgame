@@ -9,6 +9,7 @@ import { CustomAssetCursor } from './views/GameBoard/components/CustomCursor';
 import { DragProvider } from './contexts/DragProvider';
 import { FactionProvider } from './contexts/FactionProvider';
 import { TargetingProvider } from './contexts/TargetingContext';
+import { audioService } from './services/audioService';
 
 const LotrClient = Client({
     game: LotrGame,
@@ -36,6 +37,23 @@ function App() {
             currentMatchId: searchParams.get('match') || 'default',
         };
     });
+
+    // GESTION GLOBALE DES SONS DE CLIC SUR TOUS LES BOUTONS
+    useEffect(() => {
+        const handleGlobalClick = (event: MouseEvent) => {
+            const target = event.target as HTMLElement | null;
+            const buttonElement = target?.closest('button, [role="button"]');
+
+            if (buttonElement && !buttonElement.hasAttribute('disabled')) {
+                audioService.play('CLICK');
+            }
+        };
+
+        document.body.addEventListener('click', handleGlobalClick, true);
+        return () => {
+            document.body.removeEventListener('click', handleGlobalClick, true);
+        };
+    }, []);
 
     useEffect(() => {
         const handleSync = (event: MessageEvent) => {

@@ -165,6 +165,17 @@ export const GameBoard: React.FC<GameBoardProps> = ({
             const cardType = card?.type;
             const cardSubtype = card?.subtype;
 
+            let soundPath;
+            if (cardType === 'COMPANION' || cardType === 'ALLY') {
+                soundPath = 'COMPANION';
+            } else if (cardType === 'POSSESSION') {
+                soundPath = cardSubtype ? `POSSESSION_${cardSubtype}` : 'POSSESSION';
+            };
+
+            console.log('cardType : ', cardType);
+            console.log('cardSubtype : ', cardSubtype);
+            console.log('soundPath : ', soundPath);
+
             if (origin === 'HAND') {
                 if (
                     targetId === 'fellowshipArea' &&
@@ -173,6 +184,8 @@ export const GameBoard: React.FC<GameBoardProps> = ({
                     audioService.play('CARD_PLAY');
                     if (typeof moves.playCard === 'function') {
                         moves.playCard(index);
+                            audioService.play('CARD_PLAY');
+                            audioService.play(soundPath, { delay: 0.3});
                     }
                     return;
                 }
@@ -184,12 +197,13 @@ export const GameBoard: React.FC<GameBoardProps> = ({
                     audioService.play('CARD_PLAY');
                     if (typeof moves.playCard === 'function') {
                         moves.playCard(index);
+                            audioService.play('CARD_PLAY');
+                            audioService.play(soundPath, { delay: 0.3});
                     }
                     return;
                 }
 
                 if (targetId === 'battlefield' && card?.kind === 'SHADOW') {
-                    audioService.play('CARD_PLAY');
                     if (typeof moves.playShadowCard === 'function') {
                         moves.playShadowCard(index);
                     }
@@ -205,6 +219,8 @@ export const GameBoard: React.FC<GameBoardProps> = ({
                     if (canAttachToCharacter(card, targetCard)) {
                         if (typeof moves.attachCard === 'function') {
                             moves.attachCard(index, targetId);
+                            audioService.play('CARD_PLAY');
+                            audioService.play(soundPath, { delay: 0.3});
                         }
                         return;
                     }
@@ -227,6 +243,8 @@ export const GameBoard: React.FC<GameBoardProps> = ({
                                 fromCharacterId: parentId,
                                 toCharacterId: targetId,
                             });
+                            audioService.play('CARD_PLAY');
+                            audioService.play(soundPath, { delay: 0.3});
                         }
                     }
                 }
