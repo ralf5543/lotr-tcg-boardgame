@@ -18,7 +18,7 @@ export const canDropInSupportArea = (
 ): boolean => {
     if (!type) return false;
 
-    // 1. Alliés et Suivants vont toujours en zone de soutien
+    // 1. Alliés et Suivants vont toujours en aire de soutien
     if (type === 'ALLY' || type === 'FOLLOWER') {
         return true;
     }

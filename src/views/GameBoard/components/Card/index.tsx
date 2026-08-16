@@ -294,7 +294,7 @@ export const Card: React.FC<CardProps> = ({
                             {translatedType}
                         </S.CardType>
                     )}
-                    {translatedSubtype && (
+                    {translatedSubtype && card.subtype !== 'SUPPORT-AREA' && (
                         <S.CardType>
                             <S.Separator>•</S.Separator>
                             {translatedSubtype}
