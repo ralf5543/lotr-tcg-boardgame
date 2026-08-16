@@ -437,6 +437,9 @@ export const GameBoard: React.FC<GameBoardProps> = ({
                     G={G}
                     ctx={ctx}
                     deckCount={me.deck?.length || 0}
+                    onDrawCard={() => {
+                        if (moves.drawCard) moves.drawCard();
+                    }}
                     moves={
                         moves as React.ComponentProps<typeof DevPanel>['moves']
                     }

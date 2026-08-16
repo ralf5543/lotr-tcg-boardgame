@@ -61,7 +61,6 @@ const woundImpactAnimation = (recoilY: number) => keyframes`
   }
 `;
 
-
 export const CardContainer = styled.div<CardContainerProps>`
     aspect-ratio: 1/1.39;
     width: 130px;
@@ -159,9 +158,9 @@ export const CardContainer = styled.div<CardContainerProps>`
                 z-index: -1;
                 border-radius: 8px 8px 49px 49px;
                 background: linear-gradient(
-                    to top right,
+                    to right top,
                     rgba(0, 0, 0, 0) 0%,
-                    #000000 50%,
+                    rgba(0, 0, 0, 60%) 50%,
                     rgba(0, 0, 0, 0) 100%
                 );
             }
@@ -293,10 +292,7 @@ export const CardContainer = styled.div<CardContainerProps>`
             }
 
             /* ======------ Attachment cards ------====== */
-            ${isAttachedToCharacter(
-                props.$type,
-                props.$subtype
-            ) &&
+            ${isAttachedToCharacter(props.$type, props.$subtype) &&
             css`
                 aspect-ratio: initial;
                 border: 0;
@@ -356,22 +352,25 @@ export const CardContainer = styled.div<CardContainerProps>`
                 opacity: 0.65;
                 transform: scale(0.94);
                 pointer-events: none; /* Empêche les interactions pendant que la carte succombe */
-                transition: filter 0.3s ease, opacity 0.3s ease, transform 0.3s ease;
+                transition:
+                    filter 0.3s ease,
+                    opacity 0.3s ease,
+                    transform 0.3s ease;
             `}
         `}
-        
+
     /* ======------ Small RING card ------====== */
         ${(props) =>
         props.$type === 'RING' &&
         props.$size === 'sm' &&
         css`
-           ${VisualContainer} {
+            ${VisualContainer} {
                 display: block;
                 inset: 0;
                 border-radius: 6px;
                 overflow: hidden;
             }
-           ${Visual} {
+            ${Visual} {
                 margin-inline-start: -5px;
             }
         `}
