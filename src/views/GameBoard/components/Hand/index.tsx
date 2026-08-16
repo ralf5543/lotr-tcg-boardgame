@@ -1,9 +1,10 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import type { CardState } from '../../../../game/types';
 import { Card } from '../Card';
 import * as S from './styles';
 import { useDrag } from '../../../../contexts/DragContext';
 import { useFaction } from '../../../../contexts/FactionContext';
+import { audioService } from '../../../../services/audioService';
 
 interface HandProps {
     hand: CardState[];
@@ -56,15 +57,54 @@ export const Hand: React.FC<HandProps> = ({
     const { startDrag, dragged } = useDrag();
     const isDragging = !!dragged;
 
-    // 🟢 État pour suivre l'animation de défausse
     const [discardingIndex, setDiscardingIndex] = useState<number | null>(null);
+
+    // 🟢 DÉTECTION PAR TAMPON D'IDS (Beaucoup plus robuste)
+    const [animatingCardIds, setAnimatingCardIds] = useState<Set<string>>(
+        new Set()
+    );
+    const prevIdsRef = useRef<Set<string>>(new Set());
+
+    useEffect(() => {
+        const currentIds = new Set(hand.map((c) => c.id));
+
+        const addedIds = hand
+            .filter((c) => !prevIdsRef.current.has(c.id))
+            .map((c) => c.id);
+
+        if (addedIds.length > 0) {
+            // 🔊 Déclenche un son par carte ajoutée avec un décalage de 100ms
+            addedIds.forEach((_, idx) => {
+                setTimeout(() => {
+                    audioService.play('CARD_DRAW');
+                }, idx * 100);
+            });
+
+            setAnimatingCardIds((prev) => new Set([...prev, ...addedIds]));
+
+            const timer = setTimeout(
+                () => {
+                    setAnimatingCardIds((prev) => {
+                        const next = new Set(prev);
+                        addedIds.forEach((id) => next.delete(id));
+                        return next;
+                    });
+                },
+                800 + addedIds.length * 100
+            );
+
+            prevIdsRef.current = currentIds;
+            return () => clearTimeout(timer);
+        }
+
+        prevIdsRef.current = currentIds;
+    }, [hand]);
 
     const handleDiscardClick = (idx: number) => {
         if (discardingIndex !== null || !isDiscardPhase) return;
 
         setDiscardingIndex(idx);
 
-        // ⏱️ 450ms pour laisser le temps à l'animation CSS de jouer
         setTimeout(() => {
             onDiscardCard?.(idx);
             setDiscardingIndex(null);
@@ -73,7 +113,6 @@ export const Hand: React.FC<HandProps> = ({
 
     return (
         <S.FixedHandContainer $isDragging={isDragging}>
-
             <S.CardRow>
                 {hand.length === 0
                     ? null
@@ -90,12 +129,25 @@ export const Hand: React.FC<HandProps> = ({
                           const isBeingDragged = dragged?.card.id === card.id;
                           const isDiscarding = discardingIndex === idx;
 
+                          const isNewCard = animatingCardIds.has(card.id);
+
+                          const newCardsList = hand.filter((c) =>
+                              animatingCardIds.has(c.id)
+                          );
+                          const staggerIndex = newCardsList.findIndex(
+                              (c) => c.id === card.id
+                          );
+
                           return (
                               <S.CardWrapper
                                   key={card.id}
                                   $angle={angle}
                                   $translateY={translateY}
                                   $zIndex={zIndex}
+                                  $isNew={isNewCard}
+                                  $staggerIndex={
+                                      staggerIndex >= 0 ? staggerIndex : 0
+                                  }
                                   $isDiscardPhase={isDiscardPhase}
                                   $isDiscarding={isDiscarding}
                                   data-draggable={
@@ -104,10 +156,14 @@ export const Hand: React.FC<HandProps> = ({
                                           : undefined
                                   }
                                   style={{
+                                      visibility: isBeingDragged
+                                          ? 'hidden'
+                                          : 'visible',
                                       width: isBeingDragged ? '0px' : '',
                                       opacity: isBeingDragged ? 0 : undefined,
                                       pointerEvents:
-                                          isBeingDragged || discardingIndex !== null
+                                          isBeingDragged ||
+                                          discardingIndex !== null
                                               ? 'none'
                                               : 'auto',
                                   }}

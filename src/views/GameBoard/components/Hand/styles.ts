@@ -15,14 +15,25 @@ export const FixedHandContainer = styled.div<{ $isDragging?: boolean }>`
     `}
 `;
 
-// 💨 Animation PFFFFTT d'envol et d'évanouissement
-const discardFlyUp = (angle: number, translateY: number) => keyframes`
+// 🟢 Keyframes STATIQUES utilisant des variables CSS
+const drawCardIn = keyframes`
     0% {
-        transform: rotate(${angle}deg) translateY(${translateY}px) scale(1);
+        transform: rotate(var(--angle)) translateY(calc(var(--translateY) + 250px));
+        opacity: 0;
+    }
+    100% {
+        transform: rotate(var(--angle)) translateY(var(--translateY));
+        opacity: 1;
+    }
+`;
+
+const discardFlyUp = keyframes`
+    0% {
+        transform: rotate(var(--angle)) translateY(var(--translateY)) scale(1);
         opacity: 1;
     }
     100% {
-        transform: rotate(${angle}deg) translateY(${translateY - 180}px) scale(0.7);
+        transform: rotate(var(--angle)) translateY(calc(var(--translateY) - 180px)) scale(0.7);
         opacity: 0;
     }
 `;
@@ -31,27 +42,40 @@ export const CardWrapper = styled.div<{
     $angle: number;
     $translateY: number;
     $zIndex: number;
+    $isNew?: boolean;
+    $staggerIndex?: number;
     $isRoaming?: boolean;
     $isDiscardPhase?: boolean;
-    $isDiscarding?: boolean; // 🟢 Prop d'animation
+    $isDiscarding?: boolean;
 }>`
     position: relative;
     margin: 0 -15px;
+
+    /* Définition des variables CSS pour alimenter à la fois transform et keyframes */
+    --angle: ${(props) => props.$angle}deg;
+    --translateY: ${(props) => props.$translateY}px;
+
     transition:
         transform 0.25s cubic-bezier(0.25, 0.8, 0.25, 1),
         z-index 0.1s ease,
         box-shadow 0.2s ease,
         opacity 0.3s ease;
-    transform: rotate(${(props) => props.$angle}deg)
-        translateY(${(props) => props.$translateY}px);
+
+    transform: rotate(var(--angle)) translateY(var(--translateY));
     transform-origin: bottom center;
     z-index: ${(props) => props.$zIndex};
     box-shadow: 0 4px 6px rgba(0, 0, 0, 1);
     cursor: ${(props) => (props.$isDiscardPhase ? 'pointer' : 'grab')};
 
+    ${(props) =>
+        props.$isNew &&
+        css`
+            animation: ${drawCardIn} 0.5s cubic-bezier(0.16, 1, 0.3, 1) both;
+            animation-delay: ${(props.$staggerIndex ?? 0) * 0.08}s;
+        `}
+
     &:hover {
-        transform: rotate(${(props) => props.$angle}deg)
-            translateY(${(props) => props.$translateY}px) scale(1.1);
+        transform: rotate(var(--angle)) translateY(var(--translateY)) scale(1.1);
         z-index: 100 !important;
 
         ${(props) =>
@@ -62,12 +86,10 @@ export const CardWrapper = styled.div<{
             `}
     }
 
-    /* 🟢 Application de l'animation d'envol */
     ${(props) =>
         props.$isDiscarding &&
         css`
-            animation: ${discardFlyUp(props.$angle, props.$translateY)} 0.45s
-                cubic-bezier(0.11, 0, 0.5, 0) forwards;
+            animation: ${discardFlyUp} 0.45s cubic-bezier(0.11, 0, 0.5, 0) forwards !important;
             pointer-events: none !important;
             z-index: 150 !important;
         `}

@@ -13,8 +13,6 @@ export const applyWoundAndCheckDeath = (
 ): boolean => {
     if (!card) return false;
 
-    console.log('card.race : ', card.race);
-    console.log('card.culture : ', card.culture);
     // delay to give time to the impact sound
     if (card.race === 'ORC') {
         audioService.play('WOUND_ORC', { delay: 0.3  });

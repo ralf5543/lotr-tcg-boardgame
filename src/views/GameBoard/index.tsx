@@ -168,15 +168,13 @@ export const GameBoard: React.FC<GameBoardProps> = ({
             let soundPath;
             if (cardType === 'COMPANION' || cardType === 'ALLY') {
                 soundPath = 'COMPANION';
+            } else if (cardType === 'MINION') {
+                soundPath = 'MINION';
             } else if (cardType === 'POSSESSION') {
                 soundPath = cardSubtype
                     ? `POSSESSION_${cardSubtype}`
                     : 'POSSESSION';
             }
-
-            console.log('cardType : ', cardType);
-            console.log('cardSubtype : ', cardSubtype);
-            console.log('soundPath : ', soundPath);
 
             if (origin === 'HAND') {
                 if (
@@ -208,6 +206,8 @@ export const GameBoard: React.FC<GameBoardProps> = ({
                 if (targetId === 'battlefield' && card?.kind === 'SHADOW') {
                     if (typeof moves.playShadowCard === 'function') {
                         moves.playShadowCard(index);
+                        audioService.play('CARD_PLAY');
+                        audioService.play(soundPath, { delay: 0.3 });
                     }
                     return;
                 }

@@ -14,6 +14,9 @@ export const SOUND_LIBRARY = {
     COMPANION: [
         '/audio/sfx/cards/companion.opus',
     ],
+    MINION: [
+        '/audio/sfx/cards/minion.opus',
+    ],
     POSSESSION: [
         '/audio/sfx/cards/possession.opus',
     ],

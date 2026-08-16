@@ -283,7 +283,7 @@ export const applyDevPreset = (
                 const player = G.players[pId];
                 if (player) {
                     player.hand = [];
-                    drawCardsForPlayer(G, player, 4, false);
+                    drawCardsForPlayer(G, player, 8, false);
                 }
             });
 
