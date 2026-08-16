@@ -387,11 +387,13 @@ export const GameBoard: React.FC<GameBoardProps> = ({
         stopTargeting,
     ]);
 
+    const isLocalShadow = !isLocalFP;
+
     // Détermination de l'onglet prioritaire selon le state du jeu
     const getRequestedTab = (): 'hand' | 'sites' | null => {
-        // 1. Choix du site initial ou pose d'un site en cours de partie
+        // 1. Pose d'un site en cours de partie (Ombre) OU choix du site initial (Peuples Libres)
         const isAwaitingSite =
-            G.awaitingSiteSelection ||
+            (G.awaitingSiteSelection && isLocalShadow) ||
             (ctx.phase === 'setup' &&
                 G.setupState?.step === 'AWAITING_SITE' &&
                 isLocalFP);
