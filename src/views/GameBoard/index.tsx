@@ -1,10 +1,6 @@
 import React, { useEffect } from 'react';
 import type { BoardProps } from 'boardgame.io/react';
-import type {
-    CardState,
-    SiteCardState,
-    GameState,
-} from '../../game/types';
+import type { CardState, SiteCardState, GameState } from '../../game/types';
 import { Battlefield } from './components/Battlefield';
 import { SitePath } from './components/SitePath';
 import { PlayerArea } from './components/PlayerArea';
@@ -321,6 +317,51 @@ export const GameBoard: React.FC<GameBoardProps> = ({
         G.fpPlayerId,
         G.players,
         G.battlefield,
+        moves,
+        startTargeting,
+        stopTargeting,
+    ]);
+
+    // 🟢 5. SYNCHRONISATION DU CIBLAGE EN PHASE DE SKIRMISH
+    useEffect(() => {
+        if (
+            ctx.phase !== 'skirmish' ||
+            !G.skirmishes ||
+            G.skirmishes.length === 0
+        ) {
+            if (ctx.phase !== 'archery') {
+                stopTargeting();
+            }
+            return;
+        }
+
+        if (G.activeSkirmishId) {
+            stopTargeting();
+            return;
+        }
+
+        const targetableCompanionIds = G.skirmishes
+            .map((s) => s.companionId)
+            .filter(Boolean);
+
+        startTargeting({
+            targetableCardIds: targetableCompanionIds,
+            message:
+                'Escarmouche : Cliquez sur un groupe pour résoudre son combat.',
+            onSelectTarget: (companionCardId) => {
+                const chosenSkirmish = G.skirmishes.find(
+                    (s) => s.companionId === companionCardId
+                );
+
+                if (chosenSkirmish && moves.selectSkirmish) {
+                    moves.selectSkirmish(chosenSkirmish.id);
+                }
+            },
+        });
+    }, [
+        ctx.phase,
+        G.skirmishes,
+        G.activeSkirmishId,
         moves,
         startTargeting,
         stopTargeting,

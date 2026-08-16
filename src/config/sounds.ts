@@ -1,6 +1,8 @@
 export const SOUND_LIBRARY = {
     // ui
-
+    CLICK: [
+        '/audio/sfx/ui/click.opus',
+    ],
     // Cardq
     CARD_PLAY: [
         '/audio/sfx/cards/play_card.opus',
@@ -14,6 +16,7 @@ export const SOUND_LIBRARY = {
         '/audio/sfx/battle/arrow_impact2.opus',
         '/audio/sfx/battle/arrow_impact3.opus',
         '/audio/sfx/battle/arrow_impact4.opus',
+        '/audio/sfx/battle/arrow_impact5.opus',
     ],
     WOUND_BALROG: [
         '/audio/sfx/battle/wound_balrog.opus',
@@ -37,11 +40,19 @@ export const SOUND_LIBRARY = {
         '/audio/sfx/battle/wound_human_male2.opus',
         '/audio/sfx/battle/wound_human_male3.opus',
         '/audio/sfx/battle/wound_human_male4.opus',
+        '/audio/sfx/battle/wound_human_male5.opus',
+        '/audio/sfx/battle/wound_human_male6.opus',
+        '/audio/sfx/battle/wound_human_male7.opus',
+        '/audio/sfx/battle/wound_human_male8.opus',
     ],
     WOUND_HUMAN_FEMALE: [
         '/audio/sfx/battle/wound_human_female.opus',
         '/audio/sfx/battle/wound_human_female2.opus',
         '/audio/sfx/battle/wound_human_female3.opus',
+        '/audio/sfx/battle/wound_human_female4.opus',
+        '/audio/sfx/battle/wound_human_female5.opus',
+        '/audio/sfx/battle/wound_human_female6.opus',
+        '/audio/sfx/battle/wound_human_female7.opus',
     ],
     WOUND_ORC: [
         '/audio/sfx/battle/wound_orc.opus',
