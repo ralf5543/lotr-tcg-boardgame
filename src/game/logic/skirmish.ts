@@ -1,7 +1,9 @@
 import type { Ctx } from 'boardgame.io';
 import type { GameState, CardState } from '../types';
-import { getEffectiveStrength } from '../../utils/cardStats';
+import { getEffectiveStrength, getEffectiveVitality } from '../../utils/cardStats';
 import { getCardText } from '../../utils/i18n';
+import { applyWoundAndCheckDeath } from '../../utils/applyWoundAndCheckDeath';
+import { audioService } from '../../services/audioService';
 
 /**
  * Helper interne pour extraire proprement le nom d'une carte dans la langue par défaut (FR).
@@ -20,65 +22,23 @@ export const getCardTotalStrength = (card: CardState): number => {
 };
 
 /**
- * Applique une blessure à une carte et retourne `true` si elle succombe à ses blessures.
- */
-export const applyWoundToCard = (
-    G: GameState,
-    card: CardState,
-    woundCount = 1
-): boolean => {
-    card.wounds = (card.wounds || 0) + woundCount;
-    const vitality = card.vitality ?? 1;
-
-    const cardId = card.id || card.instanceId;
-
-    // Toujours marquer la carte comme blessée pour l'animation
-    if (!G.lastWoundedCardIds) G.lastWoundedCardIds = [];
-    if (!G.lastWoundedCardIds.includes(cardId)) {
-        G.lastWoundedCardIds.push(cardId);
-    }
-
-    if (card.wounds >= vitality) {
-        card.isDead = true;
-        if (!G.pendingDeadCardIds) G.pendingDeadCardIds = [];
-        if (!G.pendingDeadCardIds.includes(cardId)) {
-            G.pendingDeadCardIds.push(cardId);
-        }
-        return true;
-    }
-    return false;
-};
-
-/**
- * Inflige une mort directe par submersion (overwhelm) en déclenchant 
- * correctement les tableaux d'animations (lastWoundedCardIds & pendingDeadCardIds).
+ * Inflige une mort directe par submersion (overwhelm).
+ * Inflige suffisamment de blessures pour réduire la vitalité restante à 0.
  */
 export const applyOverwhelmToCard = (
     G: GameState,
     card: CardState
 ) => {
-    const cardId = card.id || card.instanceId;
-
-    // On inflige autant de blessures que nécessaire pour amener à la vitalité
-    const vitality = card.vitality ?? 1;
-    card.wounds = vitality;
-    card.isDead = true;
-
-    if (!G.lastWoundedCardIds) G.lastWoundedCardIds = [];
-    if (!G.lastWoundedCardIds.includes(cardId)) {
-        G.lastWoundedCardIds.push(cardId);
-    }
-
-    if (!G.pendingDeadCardIds) G.pendingDeadCardIds = [];
-    if (!G.pendingDeadCardIds.includes(cardId)) {
-        G.pendingDeadCardIds.push(cardId);
-    }
+    const remainingVitality = getEffectiveVitality(card);
+    const woundsNeeded = Math.max(1, remainingVitality);
+    
+    // Inflige les blessures requises et marque la mort + déclenche le cri
+    applyWoundAndCheckDeath(G, card, woundsNeeded);
 };
 
 /**
  * Résout le combat d'escarmouche actif.
- * Marque les cartes mortes / blessées et alimente `pendingDeadCardIds` & `lastWoundedCardIds` 
- * pour le rendu visuel.
+ * Marque les cartes mortes / blessées, déclenche les sons et alimente `pendingDeadCardIds` & `lastWoundedCardIds`.
  */
 export const resolveSkirmish = (
     G: GameState,
@@ -140,11 +100,14 @@ export const resolveSkirmish = (
                 ? companionStrength >= 2 * minionsStrength
                 : companionStrength > 0;
 
+        // Son de coup d'épée immédiat avant les cris de douleur
+        audioService.play('SWORD_IMPACT');
+
         minions.forEach((minion) => {
             if (isMinionsOverwhelmed) {
                 applyOverwhelmToCard(G, minion);
             } else {
-                applyWoundToCard(G, minion, 1);
+                applyWoundAndCheckDeath(G, minion, 1);
             }
         });
 
@@ -161,11 +124,14 @@ export const resolveSkirmish = (
                 ? minionsStrength >= 2 * companionStrength
                 : minionsStrength > 0;
 
+        // Son de coup d'épée immédiat
+        audioService.play('SWORD_IMPACT');
+
         if (isCompanionOverwhelmed) {
             applyOverwhelmToCard(G, companion);
             resultMsg += `${companionName} est SUBMERGÉ et tué sur le coup !`;
         } else {
-            const shouldDie = applyWoundToCard(G, companion, 1);
+            const shouldDie = applyWoundAndCheckDeath(G, companion, 1);
             resultMsg += `${companionName} subit 1 blessure${shouldDie ? ' et meurt' : ''}.`;
         }
     }

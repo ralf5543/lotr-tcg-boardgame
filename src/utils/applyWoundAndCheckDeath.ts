@@ -30,6 +30,8 @@ export const applyWoundAndCheckDeath = (
         audioService.play('WOUND_SPIDER', { delay: 0.3 });
     } else if (card.race === 'ELF') {
         audioService.play('WOUND_HUMAN_MALE', { delay: 0.3, pitch: 1.2});
+    } else if (card.race === 'DWARF') {
+        audioService.play('WOUND_HUMAN_MALE', { delay: 0.3, pitch: 0.8});
     } else if (card.race === 'HOBBIT') {
         audioService.play('WOUND_HOBBIT', { delay: 0.3});
     } else if (card.race === 'WIZARD') {

@@ -1,5 +1,6 @@
 import type { LotrMoveContext } from '../types';
-import { resolveSkirmish, applyWoundToCard } from '../logic/skirmish';
+import { resolveSkirmish } from '../logic/skirmish';
+import { applyWoundAndCheckDeath } from '../../utils/applyWoundAndCheckDeath';
 import { drawCardsForPlayer } from '../../utils/drawCards';
 import { advanceArcheryAssignmentStep } from '../index';
 import { getEffectiveVitality } from '../../utils/cardStats';
@@ -210,14 +211,20 @@ export const playCard = ({ G, ctx, playerID }: LotrMoveContext, cardIndex: numbe
 
 export const applyWound = ({ G }: LotrMoveContext, targetCardId: string) => {
     const fpId = G.fpPlayerId || '0';
-    const fpPlayer = G.players[fpId];
+    const shadowId = fpId === '0' ? '1' : '0';
 
-    const companion = fpPlayer?.fellowshipArea?.find((c) => c.id === targetCardId);
-    const minion = (G.battlefield || []).find((c) => c.id === targetCardId);
-    const targetCard = companion || minion;
+    const fpPlayer = G.players[fpId];
+    const shadowPlayer = G.players[shadowId];
+
+    // Recherche de la carte cible dans toutes les zones possibles
+    const targetCard = 
+        fpPlayer?.fellowshipArea?.find((c) => c.id === targetCardId || c.instanceId === targetCardId) ||
+        fpPlayer?.supportArea?.find((c) => c.id === targetCardId || c.instanceId === targetCardId) ||
+        shadowPlayer?.supportArea?.find((c) => c.id === targetCardId || c.instanceId === targetCardId) ||
+        (G.battlefield || []).find((c) => c.id === targetCardId || c.instanceId === targetCardId);
 
     if (targetCard) {
-        applyWoundToCard(G, targetCard, 1);
+        applyWoundAndCheckDeath(G, targetCard, 1);
     }
 };
 

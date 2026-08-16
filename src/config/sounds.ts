@@ -9,6 +9,29 @@ export const SOUND_LIBRARY = {
     ],
 
     // Battle
+    ARROW_IMPACT: [
+        '/audio/sfx/battle/arrow_impact.opus',
+        '/audio/sfx/battle/arrow_impact2.opus',
+        '/audio/sfx/battle/arrow_impact3.opus',
+        '/audio/sfx/battle/arrow_impact4.opus',
+    ],
+    WOUND_BALROG: [
+        '/audio/sfx/battle/wound_balrog.opus',
+        '/audio/sfx/battle/wound_balrog2.opus',
+    ],
+    WOUND_GOLLUM: [
+        '/audio/sfx/battle/wound_gollum.opus',
+        '/audio/sfx/battle/wound_gollum2.opus',
+        '/audio/sfx/battle/wound_gollum3.opus',
+        '/audio/sfx/battle/wound_gollum4.opus',
+        '/audio/sfx/battle/wound_gollum5.opus',
+    ],
+    WOUND_HOBBIT: [
+        '/audio/sfx/battle/wound_hobbit.opus',
+        '/audio/sfx/battle/wound_hobbit2.opus',
+        '/audio/sfx/battle/wound_hobbit3.opus',
+        '/audio/sfx/battle/wound_hobbit4.opus',
+    ],
     WOUND_HUMAN_MALE: [
         '/audio/sfx/battle/wound_human_male.opus',
         '/audio/sfx/battle/wound_human_male2.opus',
@@ -20,35 +43,25 @@ export const SOUND_LIBRARY = {
         '/audio/sfx/battle/wound_human_female2.opus',
         '/audio/sfx/battle/wound_human_female3.opus',
     ],
-    WOUND_HOBBIT: [
-        '/audio/sfx/battle/wound_hobbit.opus',
-        '/audio/sfx/battle/wound_hobbit2.opus',
-        '/audio/sfx/battle/wound_hobbit3.opus',
-        '/audio/sfx/battle/wound_hobbit4.opus',
-    ],
-    WOUND_WIZARD: [
-        '/audio/sfx/battle/wound_wizard.opus',
-        '/audio/sfx/battle/wound_wizard2.opus',
-        '/audio/sfx/battle/wound_wizard3.opus',
-    ],
     WOUND_ORC: [
         '/audio/sfx/battle/wound_orc.opus',
         '/audio/sfx/battle/wound_orc2.opus',
         '/audio/sfx/battle/wound_orc3.opus',
         '/audio/sfx/battle/wound_orc4.opus',
     ],
-    WOUND_TROLL: [
-        '/audio/sfx/battle/wound_troll.opus',
-        '/audio/sfx/battle/wound_troll2.opus',
-    ],
-    WOUND_BALROG: [
-        '/audio/sfx/battle/wound_balrog.opus',
-        '/audio/sfx/battle/wound_balrog2.opus',
-    ],
     WOUND_SPIDER: [
         '/audio/sfx/battle/wound_spider.opus',
         '/audio/sfx/battle/wound_spider2.opus',
         '/audio/sfx/battle/wound_spider3.opus',
+    ],
+    WOUND_TROLL: [
+        '/audio/sfx/battle/wound_troll.opus',
+        '/audio/sfx/battle/wound_troll2.opus',
+    ],
+    WOUND_WIZARD: [
+        '/audio/sfx/battle/wound_wizard.opus',
+        '/audio/sfx/battle/wound_wizard2.opus',
+        '/audio/sfx/battle/wound_wizard3.opus',
     ],
     WOUND_WRAITH: [
         '/audio/sfx/battle/wound_wraith.opus',
@@ -62,12 +75,6 @@ export const SOUND_LIBRARY = {
         '/audio/sfx/battle/wound_gollum3.opus',
         '/audio/sfx/battle/wound_gollum4.opus',
         '/audio/sfx/battle/wound_gollum5.opus',
-    ],
-    ARROW_IMPACT: [
-        '/audio/sfx/battle/arrow_impact.opus',
-        '/audio/sfx/battle/arrow_impact2.opus',
-        '/audio/sfx/battle/arrow_impact3.opus',
-        '/audio/sfx/battle/arrow_impact4.opus',
     ],
 } as const;
 
