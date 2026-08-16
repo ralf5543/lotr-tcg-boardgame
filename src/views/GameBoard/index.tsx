@@ -375,6 +375,7 @@ export const GameBoard: React.FC<GameBoardProps> = ({
 
                 if (chosenSkirmish && moves.selectSkirmish) {
                     moves.selectSkirmish(chosenSkirmish.id);
+                    audioService.play('SKIRMISH');
                 }
             },
         });

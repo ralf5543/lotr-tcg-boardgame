@@ -59,6 +59,9 @@ export const SOUND_LIBRARY = {
         '/audio/sfx/battle/arrow_impact4.opus',
         '/audio/sfx/battle/arrow_impact5.opus',
     ],
+    SKIRMISH: [
+        '/audio/sfx/battle/skirmish.opus',
+    ],
     SMASH: [
         '/audio/sfx/battle/smash.opus',
         '/audio/sfx/battle/smash2.opus',
