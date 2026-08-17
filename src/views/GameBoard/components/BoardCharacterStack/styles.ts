@@ -13,7 +13,8 @@ export const CharacterStack = styled.div<{ $isBeingDragged?: boolean }>`
 export const CardDragTarget = styled.div<{
     $isOpponent?: boolean;
     $isTargeted?: boolean;
-    $isTargetable?: boolean; // 👈 AJOUT ICI
+    $isTargetable?: boolean;
+    $isDead?: boolean;
 }>`
     position: relative;
     z-index: 2;
@@ -27,7 +28,8 @@ export const CardDragTarget = styled.div<{
 
             &:hover {
                 transform: scale(1.05);
-                filter: drop-shadow(0 0 12px #e74c3c) drop-shadow(0 0 20px rgba(231, 76, 60, 0.8));
+                filter: drop-shadow(0 0 12px #e74c3c)
+                    drop-shadow(0 0 20px rgba(231, 76, 60, 0.8));
             }
         `}
 
@@ -185,9 +187,7 @@ export const SkirmishGroup = styled.div<{
                 filter: drop-shadow(red 0px 0px 25px)
                     drop-shadow(red 0px 0px 25px);
             }
-        `}
-
-    /*${({ $isSelected }) =>
+        `}/*${({ $isSelected }) =>
         $isSelected &&
         css`
             &::after {
@@ -203,7 +203,6 @@ export const SkirmishGroup = styled.div<{
                 transform: translateX(-50%);
                 margin-block-end: -17px;
             }
-            
         `}
     ${({ $isOpponent }) =>
         $isOpponent &&
@@ -212,6 +211,27 @@ export const SkirmishGroup = styled.div<{
                 inset-block-end: auto;
                 inset-block-start: 100%;
             }
-            
         `}*/
+`;
+
+export const DeathPicto = styled.img`
+    position: absolute;
+    z-index: 1;
+    inset-block-start: 50%;
+    inset-inline-start: 50%;
+    translate: -50% -50%;
+    height: 50px;
+
+    /* 1. État final par défaut */
+    opacity: 0.7;
+    scale: 1.2;
+
+    /* 2. Transition classique */
+    transition: opacity 3s ease, scale 3s ease;
+
+    /* 3. État initial au moment où React l'insère dans le DOM */
+    @starting-style {
+        opacity: 0;
+        scale: 0.3;
+    }
 `;

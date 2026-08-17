@@ -1,9 +1,9 @@
 export const SOUND_LIBRARY = {
-    // ui
+    /* ====================-------------------- UI --------------------==================== */
     CLICK: [
         '/audio/sfx/ui/click.opus',
     ],
-    // Cards
+    /* ====================-------------------- Cards --------------------==================== */
     CARD_PLAY: [
         '/audio/sfx/cards/play_card.opus',
         '/audio/sfx/cards/play_card2.opus',
@@ -51,7 +51,7 @@ export const SOUND_LIBRARY = {
         '/audio/sfx/cards/possession_armor.opus',
     ],
 
-    // Battle
+    /* ====================-------------------- Skirmish --------------------==================== */
     ARROW_IMPACT: [
         '/audio/sfx/battle/arrow_impact.opus',
         '/audio/sfx/battle/arrow_impact2.opus',
@@ -61,6 +61,9 @@ export const SOUND_LIBRARY = {
     ],
     SKIRMISH: [
         '/audio/sfx/battle/skirmish.opus',
+    ],
+    ASSIGNMENT: [
+        '/audio/sfx/battle/assignment.opus',
     ],
     SMASH: [
         '/audio/sfx/battle/smash.opus',

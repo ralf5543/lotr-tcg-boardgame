@@ -87,7 +87,6 @@ export const Battlefield: React.FC<BattlefieldProps> = ({
                             isOpponent={isOpponent}
                             currentSiteIndex={currentSiteIndex}
                             isAssignmentPhase={isAssignmentPhase}
-                            // 🟢 Passage des deux props
                             isWounded={isWounded}
                             isDead={isDead}
                             burdens={0}

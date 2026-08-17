@@ -73,6 +73,7 @@ interface CardProps {
     size?: 'sm' | 'md' | 'lg';
     isRingBearer?: boolean;
     isWounded?: boolean;
+    isOverwhelmed?: boolean;
     isDead?: boolean;
     isOpponent?: boolean;
     burdens?: number;
@@ -89,6 +90,7 @@ export const Card: React.FC<CardProps> = ({
     isRingBearer: isRingBearerProp,
     currentSiteIndex,
     isWounded = false,
+    isOverwhelmed = false,
     isDead = false,
     isOpponent = false,
     burdens = 0,
@@ -98,13 +100,8 @@ export const Card: React.FC<CardProps> = ({
     const { setHoveredCard } = useHoverCard();
     const { startDrag } = useDrag();
 
-    // 🟢 RÈGLE D'AFFICHAGE :
-    // Une carte n'est masquée QUE SI elle appartient à l'adversaire (isOpponent)
-    // ET qu'elle est explicitement marquée comme isFaceDown.
-    // Mes propres cartes (isOpponent = false) ne sont JAMAIS masquées.
     const isFaceDown = isOpponent && (card?.isFaceDown ?? isFaceDownProp ?? false);
 
-    // 🟢 EXTRACTION DES TEXTES TRADUITS
     const { title, subtitle, gameText, loreText } = getCardText(
         card,
         currentLang
@@ -230,7 +227,8 @@ export const Card: React.FC<CardProps> = ({
             $title={card.title}
             $isRoaming={isRoaming}
             $isWounded={isWounded}
-            $isDead={isDead}
+            $isOverwhelmed={isOverwhelmed || card.isOverwhelmed}
+            $isDead={isDead || card.isDead}
             $isOpponent={isOpponent}
             key={`${card.id}-wounds-${card.wounds || 0}`}
             onMouseEnter={handleMouseEnter}
@@ -238,7 +236,9 @@ export const Card: React.FC<CardProps> = ({
             onDragStart={isDraggable ? handleDragStart : undefined}
             onPointerDown={handlePointerDown}
             data-draggable={isDraggable ? 'true' : undefined}
+            data-overwhelmed={card.isOverwhelmed ? 'true' : 'false'}
         >
+            
             {isCharacter &&
                 size === 'sm' &&
                 card.keywords &&

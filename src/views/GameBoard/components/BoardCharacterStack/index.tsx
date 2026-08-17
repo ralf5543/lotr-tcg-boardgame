@@ -153,6 +153,7 @@ export const BoardCharacterStack: React.FC<BoardCharacterStackProps> = ({
                     $isOpponent={isOpponent}
                     $isTargeted={isTargeted}
                     $isTargetable={isTargetable}
+                    $isDead={isDead}
                     data-card={JSON.stringify(character)}
                     data-draggable={canDragCharacter ? 'true' : undefined}
                     ref={(el) => registerTarget(character.id, el)}
@@ -179,6 +180,9 @@ export const BoardCharacterStack: React.FC<BoardCharacterStackProps> = ({
                         }
                     }}
                 >
+                    {isDead && (
+                        <S.DeathPicto src='/interface/UI/skull.webp' />
+                    )}
                     <Card
                         card={character}
                         size="sm"

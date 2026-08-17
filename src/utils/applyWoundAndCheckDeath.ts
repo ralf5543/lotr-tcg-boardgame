@@ -2,17 +2,7 @@ import type { GameState, CardState } from '../game/types';
 import { getEffectiveVitality } from './cardStats';
 import { audioService } from '../services/audioService';
 
-/**
- * Inflige N blessures dans G, enregistre les identifiants pour l'animation visuelle
- * et marque la carte si le coup est fatal.
- */
-export const applyWoundAndCheckDeath = (
-    G: GameState,
-    card: CardState,
-    woundsCount = 1
-): boolean => {
-    if (!card) return false;
-
+const playCardWoundAudio = (card: CardState) => {
     // delay to give time to the impact sound
     if (card.race === 'ORC') {
         audioService.play('WOUND_ORC', { delay: 0.3 });
@@ -55,6 +45,44 @@ export const applyWoundAndCheckDeath = (
             audioService.play('WOUND_HUMAN_MALE', { delay: 0.3 });
         }
     }
+};
+
+/**
+ * Applique une mort directe par submersion (overwhelm).
+ * Ne modifie PAS le compteur de blessures (card.wounds).
+ */
+export const applyOverwhelmAndCheckDeath = (
+    G: GameState,
+    card: CardState
+): void => {
+    if (!card) return;
+
+    playCardWoundAudio(card);
+
+    const cardId = card.instanceId || card.id;
+
+    // 2. Marqueurs d'état pour le moteur de jeu et l'UI CSS
+    card.isDead = true;
+    card.isOverwhelmed = true;
+
+    if (!G.pendingDeadCardIds) G.pendingDeadCardIds = [];
+    if (cardId && !G.pendingDeadCardIds.includes(cardId)) {
+        G.pendingDeadCardIds.push(cardId);
+    }
+};
+
+/**
+ * Inflige N blessures dans G, enregistre les identifiants pour l'animation visuelle
+ * et marque la carte si le coup est fatal.
+ */
+export const applyWoundAndCheckDeath = (
+    G: GameState,
+    card: CardState,
+    woundsCount = 1
+): boolean => {
+    if (!card) return false;
+
+    playCardWoundAudio(card);
 
     // 1. Infliger les blessures sur la carte
     card.wounds = (card.wounds || 0) + woundsCount;

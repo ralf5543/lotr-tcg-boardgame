@@ -2,7 +2,7 @@ import type { Ctx } from 'boardgame.io';
 import type { GameState, CardState } from '../types';
 import { getEffectiveStrength, getEffectiveVitality } from '../../utils/cardStats';
 import { getCardText } from '../../utils/i18n';
-import { applyWoundAndCheckDeath } from '../../utils/applyWoundAndCheckDeath';
+import { applyWoundAndCheckDeath, applyOverwhelmAndCheckDeath } from '../../utils/applyWoundAndCheckDeath';
 import { audioService } from '../../services/audioService';
 
 /**
@@ -92,49 +92,47 @@ export const resolveSkirmish = (
     resultMsg += ` [Total Ombre: ${minionsStrength}]. `;
 
     // ⚔️ CAS 1 : VICTOIRE DU COMPAGNON
-    if (companionStrength > minionsStrength) {
-        resultMsg += `Victoire de ${companionName} ! `;
+if (companionStrength > minionsStrength) {
+    resultMsg += `Victoire de ${companionName} ! `;
 
-        const isMinionsOverwhelmed =
-            minionsStrength > 0
-                ? companionStrength >= 2 * minionsStrength
-                : companionStrength > 0;
+    const isMinionsOverwhelmed =
+        minionsStrength > 0
+            ? companionStrength >= 2 * minionsStrength
+            : companionStrength > 0;
 
-        // Son de coup d'épée immédiat avant les cris de douleur
-        audioService.play('SMASH');
+    audioService.play('SMASH');
 
-        minions.forEach((minion) => {
-            if (isMinionsOverwhelmed) {
-                applyOverwhelmToCard(G, minion);
-            } else {
-                applyWoundAndCheckDeath(G, minion, 1);
-            }
-        });
-
+    minions.forEach((minion) => {
         if (isMinionsOverwhelmed) {
-            resultMsg += `Les séides sont SUBMERGÉS !`;
-        }
-    } 
-    // ⚔️ CAS 2 : VICTOIRE DE L'OMBRE (ou Égalité)
-    else {
-        resultMsg += `Victoire de l'Ombre ! `;
-
-        const isCompanionOverwhelmed =
-            companionStrength > 0
-                ? minionsStrength >= 2 * companionStrength
-                : minionsStrength > 0;
-
-        // Son de coup d'épée immédiat
-        audioService.play('SMASH');
-
-        if (isCompanionOverwhelmed) {
-            applyOverwhelmToCard(G, companion);
-            resultMsg += `${companionName} est SUBMERGÉ et tué sur le coup !`;
+            applyOverwhelmAndCheckDeath(G, minion);
         } else {
-            const shouldDie = applyWoundAndCheckDeath(G, companion, 1);
-            resultMsg += `${companionName} subit 1 blessure${shouldDie ? ' et meurt' : ''}.`;
+            applyWoundAndCheckDeath(G, minion, 1);
         }
+    });
+
+    if (isMinionsOverwhelmed) {
+        resultMsg += `Les séides sont SUBMERGÉS !`;
     }
+} 
+// ⚔️ CAS 2 : VICTOIRE DE L'OMBRE (ou Égalité)
+else {
+    resultMsg += `Victoire de l'Ombre ! `;
+
+    const isCompanionOverwhelmed =
+        companionStrength > 0
+            ? minionsStrength >= 2 * companionStrength
+            : minionsStrength > 0;
+
+    audioService.play('SMASH');
+
+    if (isCompanionOverwhelmed) {
+        applyOverwhelmAndCheckDeath(G, companion);
+        resultMsg += `${companionName} est SUBMERGÉ et tué sur le coup !`;
+    } else {
+        const shouldDie = applyWoundAndCheckDeath(G, companion, 1);
+        resultMsg += `${companionName} subit 1 blessure${shouldDie ? ' et meurt' : ''}.`;
+    }
+}
 
     G.statusMessage = resultMsg;
 };

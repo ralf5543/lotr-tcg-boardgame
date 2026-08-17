@@ -20,13 +20,22 @@ const getTargetPlayerId = (playerID: string | undefined, ctx: any): string => {
     return String(ctx.currentPlayer ?? '0');
 };
 
-export const passActionWindow = ({ G, ctx, playerID, events }: LotrMoveContext) => {
+export const passActionWindow = ({
+    G,
+    ctx,
+    playerID,
+    events,
+}: LotrMoveContext) => {
     if (!G.actionWindow || !G.actionWindow.isOpen) {
-        console.warn('⚠️ [moves.passActionWindow] Aucune fenêtre d’action ouverte.');
+        console.warn(
+            '⚠️ [moves.passActionWindow] Aucune fenêtre d’action ouverte.'
+        );
         return;
     }
     if (playerID !== G.actionWindow.activePlayerId) {
-        console.warn(`❌ [moves.passActionWindow] Tentative de passer hors tour. Actif: ${G.actionWindow.activePlayerId}, Reçu: ${playerID}`);
+        console.warn(
+            `❌ [moves.passActionWindow] Tentative de passer hors tour. Actif: ${G.actionWindow.activePlayerId}, Reçu: ${playerID}`
+        );
         return;
     }
 
@@ -37,7 +46,8 @@ export const passActionWindow = ({ G, ctx, playerID, events }: LotrMoveContext) 
         G.actionWindow = { ...G.actionWindow, isOpen: false, passesCount: 0 };
 
         if (ctx.phase === 'maneuver') {
-            G.statusMessage = 'Manœuvre terminée. Passage à la phase d’Archerie.';
+            G.statusMessage =
+                'Manœuvre terminée. Passage à la phase d’Archerie.';
             events?.endPhase?.();
         } else if (ctx.phase === 'archery') {
             advanceArcheryAssignmentStep(G, events);
@@ -45,7 +55,8 @@ export const passActionWindow = ({ G, ctx, playerID, events }: LotrMoveContext) 
             resolveSkirmish(G, ctx);
         } else if (ctx.phase === 'regroup') {
             G.regroupStep = 'SHADOW_REFILL';
-            G.statusMessage = 'Ombre : Vous pouvez défausser 1 carte, puis validez votre main à 8 cartes.';
+            G.statusMessage =
+                'Ombre : Vous pouvez défausser 1 carte, puis validez votre main à 8 cartes.';
         }
     } else {
         const fpId = G.fpPlayerId || '0';
@@ -66,7 +77,8 @@ export const attachCard = (
     const actingPlayerId = playerID ?? ctx.currentPlayer ?? '0';
     const player = G.players[actingPlayerId];
 
-    if (!player || !player.hand || !player.hand[cardIndex]) return 'INVALID_MOVE';
+    if (!player || !player.hand || !player.hand[cardIndex])
+        return 'INVALID_MOVE';
 
     const card = player.hand[cardIndex];
     const fpId = G.fpPlayerId || '0';
@@ -84,7 +96,10 @@ export const attachCard = (
     ];
 
     const targetCharacter = allPossibleTargets.find(
-        (c: any) => c.id === targetId || c.instanceId === targetId || c.uuid === targetId
+        (c: any) =>
+            c.id === targetId ||
+            c.instanceId === targetId ||
+            c.uuid === targetId
     );
 
     if (!targetCharacter) return 'INVALID_MOVE';
@@ -105,26 +120,35 @@ export const attachCard = (
     targetCharacter.attachments.push(attachedCard);
 
     const cardName = attachedCard.title || attachedCard.name || 'Une carte';
-    const targetName = targetCharacter.title || targetCharacter.name || 'le personnage';
+    const targetName =
+        targetCharacter.title || targetCharacter.name || 'le personnage';
 
     G.statusMessage = `${cardName} a été attaché à ${targetName}.`;
 };
 
-export const playCard = ({ G, ctx, playerID }: LotrMoveContext, cardIndex: number) => {
-
+export const playCard = (
+    { G, ctx, playerID }: LotrMoveContext,
+    cardIndex: number
+) => {
     const actingPlayerId = playerID ?? ctx.currentPlayer ?? '0';
     const player = G.players[actingPlayerId];
 
     if (!player) {
-        console.warn(`❌ [playCard] Joueur introuvable pour ID ${actingPlayerId}`);
+        console.warn(
+            `❌ [playCard] Joueur introuvable pour ID ${actingPlayerId}`
+        );
         return 'INVALID_MOVE';
     }
     if (!player.hand) {
-        console.warn(`❌ [playCard] Main introuvable pour joueur ${actingPlayerId}`);
+        console.warn(
+            `❌ [playCard] Main introuvable pour joueur ${actingPlayerId}`
+        );
         return 'INVALID_MOVE';
     }
     if (!player.hand[cardIndex]) {
-        console.warn(`❌ [playCard] Pas de carte à l'index ${cardIndex} (taille main: ${player.hand.length})`);
+        console.warn(
+            `❌ [playCard] Pas de carte à l'index ${cardIndex} (taille main: ${player.hand.length})`
+        );
         return 'INVALID_MOVE';
     }
 
@@ -133,17 +157,23 @@ export const playCard = ({ G, ctx, playerID }: LotrMoveContext, cardIndex: numbe
     const isFP = actingPlayerId === fpId;
 
     if (isFP && ctx.phase !== 'fellowship') {
-        console.warn(`❌ [playCard] Rejet FP hors fellowship (phase actuelle: ${ctx.phase})`);
+        console.warn(
+            `❌ [playCard] Rejet FP hors fellowship (phase actuelle: ${ctx.phase})`
+        );
         return 'INVALID_MOVE';
     }
     if (!isFP && ctx.phase !== 'shadow') {
-        console.warn(`❌ [playCard] Rejet Ombre hors shadow (phase actuelle: ${ctx.phase})`);
+        console.warn(
+            `❌ [playCard] Rejet Ombre hors shadow (phase actuelle: ${ctx.phase})`
+        );
         return 'INVALID_MOVE';
     }
 
     if (isFP) {
         if (card.kind !== 'FREE_PEOPLE') {
-            console.warn(`❌ [playCard] Rejet FP: carte kind !== FREE_PEOPLE (${card.kind})`);
+            console.warn(
+                `❌ [playCard] Rejet FP: carte kind !== FREE_PEOPLE (${card.kind})`
+            );
             return 'INVALID_MOVE';
         }
 
@@ -156,7 +186,15 @@ export const playCard = ({ G, ctx, playerID }: LotrMoveContext, cardIndex: numbe
             playedCard.isFaceDown = false;
             player.fellowshipArea.push(playedCard);
             G.statusMessage = `${playedCard.title} rejoint la Communauté (+${cost} Crépuscule).`;
-        } else if (['ALLY', 'FOLLOWER', 'ARTIFACT', 'CONDITION', 'POSSESSION'].includes(playedCard.type)) {
+        } else if (
+            [
+                'ALLY',
+                'FOLLOWER',
+                'ARTIFACT',
+                'CONDITION',
+                'POSSESSION',
+            ].includes(playedCard.type)
+        ) {
             if (!player.supportArea) player.supportArea = [];
             player.supportArea.push(playedCard);
             G.statusMessage = `${playedCard.title} rejoint l'aire de soutien (+${cost} Crépuscule).`;
@@ -165,7 +203,9 @@ export const playCard = ({ G, ctx, playerID }: LotrMoveContext, cardIndex: numbe
             player.discard.push(playedCard);
             G.statusMessage = `${playedCard.title} est joué (+${cost} Crépuscule).`;
         } else {
-            console.warn(`❌ [playCard] Type de carte inconnu/non géré pour FP: ${playedCard.type}`);
+            console.warn(
+                `❌ [playCard] Type de carte inconnu/non géré pour FP: ${playedCard.type}`
+            );
             player.hand.splice(cardIndex, 0, playedCard);
             G.twilightPool -= cost;
             return 'INVALID_MOVE';
@@ -175,13 +215,17 @@ export const playCard = ({ G, ctx, playerID }: LotrMoveContext, cardIndex: numbe
 
     if (!isFP) {
         if (card.kind !== 'SHADOW') {
-            console.warn(`❌ [playCard] Rejet Ombre: carte kind !== SHADOW (${card.kind})`);
+            console.warn(
+                `❌ [playCard] Rejet Ombre: carte kind !== SHADOW (${card.kind})`
+            );
             return 'INVALID_MOVE';
         }
 
         const cost = Number(card.twilightCost) || 0;
         if (G.twilightPool < cost) {
-            console.warn(`❌ [playCard] Rejet Ombre: pool crépuscule insuffisant (${G.twilightPool} < ${cost})`);
+            console.warn(
+                `❌ [playCard] Rejet Ombre: pool crépuscule insuffisant (${G.twilightPool} < ${cost})`
+            );
             return 'INVALID_MOVE';
         }
 
@@ -192,7 +236,15 @@ export const playCard = ({ G, ctx, playerID }: LotrMoveContext, cardIndex: numbe
             if (!G.battlefield) G.battlefield = [];
             G.battlefield.push(playedCard);
             G.statusMessage = `${playedCard.title} entre sur le champ de bataille (-${cost} Crépuscule).`;
-        } else if (['ALLY', 'FOLLOWER', 'ARTIFACT', 'CONDITION', 'POSSESSION'].includes(playedCard.type)) {
+        } else if (
+            [
+                'ALLY',
+                'FOLLOWER',
+                'ARTIFACT',
+                'CONDITION',
+                'POSSESSION',
+            ].includes(playedCard.type)
+        ) {
             if (!player.supportArea) player.supportArea = [];
             player.supportArea.push(playedCard);
             G.statusMessage = `${playedCard.title} rejoint l'aire de soutien de l'Ombre (-${cost} Crépuscule).`;
@@ -201,7 +253,9 @@ export const playCard = ({ G, ctx, playerID }: LotrMoveContext, cardIndex: numbe
             player.discard.push(playedCard);
             G.statusMessage = `${playedCard.title} est joué (-${cost} Crépuscule).`;
         } else {
-            console.warn(`❌ [playCard] Type de carte inconnu/non géré pour Ombre: ${playedCard.type}`);
+            console.warn(
+                `❌ [playCard] Type de carte inconnu/non géré pour Ombre: ${playedCard.type}`
+            );
             player.hand.splice(cardIndex, 0, playedCard);
             G.twilightPool += cost;
             return 'INVALID_MOVE';
@@ -217,18 +271,29 @@ export const applyWound = ({ G }: LotrMoveContext, targetCardId: string) => {
     const shadowPlayer = G.players[shadowId];
 
     // Recherche de la carte cible dans toutes les zones possibles
-    const targetCard = 
-        fpPlayer?.fellowshipArea?.find((c) => c.id === targetCardId || c.instanceId === targetCardId) ||
-        fpPlayer?.supportArea?.find((c) => c.id === targetCardId || c.instanceId === targetCardId) ||
-        shadowPlayer?.supportArea?.find((c) => c.id === targetCardId || c.instanceId === targetCardId) ||
-        (G.battlefield || []).find((c) => c.id === targetCardId || c.instanceId === targetCardId);
+    const targetCard =
+        fpPlayer?.fellowshipArea?.find(
+            (c) => c.id === targetCardId || c.instanceId === targetCardId
+        ) ||
+        fpPlayer?.supportArea?.find(
+            (c) => c.id === targetCardId || c.instanceId === targetCardId
+        ) ||
+        shadowPlayer?.supportArea?.find(
+            (c) => c.id === targetCardId || c.instanceId === targetCardId
+        ) ||
+        (G.battlefield || []).find(
+            (c) => c.id === targetCardId || c.instanceId === targetCardId
+        );
 
     if (targetCard) {
         applyWoundAndCheckDeath(G, targetCard, 1);
     }
 };
 
-export const drawCard = ({ G, ctx, playerID }: LotrMoveContext, count: number = 1) => {
+export const drawCard = (
+    { G, ctx, playerID }: LotrMoveContext,
+    count: number = 1
+) => {
     const targetId = getTargetPlayerId(playerID, ctx);
     const player = G.players[targetId];
     if (!player) return 'INVALID_MOVE';
@@ -303,7 +368,9 @@ export const cleanupPendingDeaths = ({ G }: LotrMoveContext) => {
     });
 
     if (G.activeSkirmishId) {
-        const skirmishIndex = G.skirmishes.findIndex((s) => s.id === G.activeSkirmishId);
+        const skirmishIndex = G.skirmishes.findIndex(
+            (s) => s.id === G.activeSkirmishId
+        );
         if (skirmishIndex !== -1) {
             G.skirmishes.splice(skirmishIndex, 1);
         }
@@ -311,6 +378,11 @@ export const cleanupPendingDeaths = ({ G }: LotrMoveContext) => {
     }
     G.pendingDeadCardIds = [];
     G.lastWoundedCardIds = [];
+
+    console.log(
+        'Morts dans la deadPile des FP :',
+        JSON.parse(JSON.stringify(fpPlayer.deadPile))
+    );
 };
 
 export const commonMoves = {

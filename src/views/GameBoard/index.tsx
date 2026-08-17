@@ -342,6 +342,12 @@ export const GameBoard: React.FC<GameBoardProps> = ({
         stopTargeting,
     ]);
 
+    useEffect(() => {
+        if (ctx.phase === 'skirmish' && G.activeSkirmishId) {
+            audioService.play('SKIRMISH');
+        }
+    }, [ctx.phase, G.activeSkirmishId]);
+
     // 🟢 5. SYNCHRONISATION DU CIBLAGE EN PHASE DE SKIRMISH
     useEffect(() => {
         if (
@@ -375,7 +381,6 @@ export const GameBoard: React.FC<GameBoardProps> = ({
 
                 if (chosenSkirmish && moves.selectSkirmish) {
                     moves.selectSkirmish(chosenSkirmish.id);
-                    audioService.play('SKIRMISH');
                 }
             },
         });

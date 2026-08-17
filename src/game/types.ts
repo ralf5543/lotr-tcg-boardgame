@@ -184,6 +184,7 @@ export interface CardState {
     isFaceDown?: boolean;
     name?: string; // Si conservé pour compatibilité ou identification
     isDead?: boolean;
+    isOverwhelmed?: boolean;
 }
 
 export interface PlayerProfile {

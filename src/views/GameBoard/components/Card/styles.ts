@@ -9,6 +9,7 @@ export interface CardContainerProps {
     $isShadow?: boolean;
     $isPlayable?: boolean;
     $isWounded?: boolean;
+    $isOverwhelmed?: boolean;
     $isDead?: boolean;
     $isOpponent?: boolean; // Position globale de la carte (HAUT = true, BAS = false)
     $kind: string;
@@ -137,19 +138,6 @@ export const CardContainer = styled.div<CardContainerProps>`
                 white-space: nowrap;
                 pointer-events: none;
             }
-
-            /* 🟢 CALCUL DU RECUL D'ANIMATION */
-            ${props.$isWounded &&
-            css`
-                will-change: transform;
-                animation: ${() => {
-                        // Si en HAUT ($isOpponent = true) -> Recule vers le haut (-35px)
-                        // Si en BAS ($isOpponent = false) -> Recule vers le bas (+35px)
-                        const recoilY = props.$isOpponent ? -35 : 35;
-                        return woundImpactAnimation(recoilY);
-                    }}
-                    0.7s cubic-bezier(0.12, 0.85, 0.2, 1);
-            `}
 
             &::after {
                 content: '';
@@ -344,6 +332,18 @@ export const CardContainer = styled.div<CardContainerProps>`
                     }}
                     0.65s cubic-bezier(0.12, 0.85, 0.2, 1);
             `}
+            /* ======------ OVERWHELMED !) ------====== */
+            ${props.$isOverwhelmed &&
+            css`
+                will-change: transform, filter;
+                animation: ${() => {
+                        // Si en HAUT ($isOpponent = true) -> Recule vers le haut (-35px)
+                        // Si en BAS ($isOpponent = false) -> Recule vers le bas (+35px)
+                        const recoilY = props.$isOpponent ? -35 : 35;
+                        return woundImpactAnimation(recoilY);
+                    }}
+                    0.65s cubic-bezier(0.12, 0.85, 0.2, 1);
+            `}
 
             /* ======------ État Mort / Agonie ($size === 'sm') ------====== */
             ${props.$isDead &&
@@ -355,7 +355,7 @@ export const CardContainer = styled.div<CardContainerProps>`
                 transition:
                     filter 0.3s ease,
                     opacity 0.3s ease,
-                    transform 0.3s ease;
+                    transform 0.3s ease;   
             `}
         `}
 
