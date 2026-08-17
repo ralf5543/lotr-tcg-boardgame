@@ -166,6 +166,7 @@ export interface CardState {
     race?: CardRace;
     keywords?: CardKeyword[];
     isUnique: boolean;
+    isFemale?: boolean;
 
     // Statistiques & Coûts
     twilightCost?: number;

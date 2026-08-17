@@ -592,6 +592,7 @@
     "set": 0,
     "rarity": "P",
     "isUnique": true,
+    "isFemale": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
     "keywords": [
@@ -1128,6 +1129,7 @@
     "set": 0,
     "rarity": "P",
     "isUnique": true,
+    "isFemale": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
     "culture": "ELVEN",
@@ -1175,6 +1177,7 @@
     "set": 0,
     "rarity": "P",
     "isUnique": true,
+    "isFemale": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
     "keywords": [
@@ -1655,6 +1658,7 @@
     "set": 0,
     "rarity": "P",
     "isUnique": true,
+    "isFemale": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
     "keywords": [
@@ -2252,6 +2256,7 @@
     "set": 0,
     "rarity": "P",
     "isUnique": true,
+    "isFemale": true,
     "kind": "FREE_PEOPLE",
     "type": "ALLY",
     "phases": [
@@ -3144,6 +3149,7 @@
     "set": 0,
     "rarity": "P",
     "isUnique": true,
+    "isFemale": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
     "culture": "ELVEN",
@@ -4564,6 +4570,7 @@
     "set": 1,
     "rarity": "R",
     "isUnique": true,
+    "isFemale": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
     "keywords": [
@@ -6801,6 +6808,7 @@
     "set": 10,
     "rarity": "R",
     "isUnique": true,
+    "isFemale": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
     "culture": "ELVEN",
@@ -8544,6 +8552,7 @@
     "set": 0,
     "rarity": "W",
     "isUnique": true,
+    "isFemale": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
     "culture": "ROHAN",
@@ -8773,6 +8782,7 @@
     "set": 0,
     "rarity": "W",
     "isUnique": true,
+    "isFemale": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
     "culture": "ELVEN",
@@ -11745,6 +11755,7 @@
     "set": 1,
     "rarity": "R",
     "isUnique": true,
+    "isFemale": true,
     "kind": "FREE_PEOPLE",
     "type": "ALLY",
     "phases": [
@@ -12728,6 +12739,7 @@
     "set": 1,
     "rarity": "C",
     "isUnique": true,
+    "isFemale": true,
     "kind": "FREE_PEOPLE",
     "type": "ALLY",
     "culture": "ELVEN",
@@ -23072,6 +23084,7 @@
     "set": 1,
     "rarity": "U",
     "isUnique": true,
+    "isFemale": true,
     "kind": "FREE_PEOPLE",
     "type": "ALLY",
     "phases": [
@@ -29075,6 +29088,7 @@
     "set": 3,
     "rarity": "U",
     "isUnique": true,
+    "isFemale": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
     "keywords": [
@@ -29128,6 +29142,7 @@
     "set": 3,
     "rarity": "R",
     "isUnique": true,
+    "isFemale": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
     "culture": "ELVEN",
@@ -29561,6 +29576,7 @@
     "set": 3,
     "rarity": "R",
     "isUnique": true,
+    "isFemale": true,
     "kind": "FREE_PEOPLE",
     "type": "ALLY",
     "phases": [
@@ -45761,6 +45777,7 @@
     "set": 4,
     "rarity": "C",
     "isUnique": true,
+    "isFemale": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
     "keywords": [
@@ -45814,6 +45831,7 @@
     "set": 4,
     "rarity": "R",
     "isUnique": true,
+    "isFemale": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
     "keywords": [
@@ -53351,6 +53369,7 @@
     "set": 5,
     "rarity": "P",
     "isUnique": true,
+    "isFemale": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
     "keywords": [
@@ -54159,6 +54178,7 @@
     "set": 6,
     "rarity": "U",
     "isUnique": true,
+    "isFemale": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
     "phases": [
@@ -54404,6 +54424,7 @@
     "set": 6,
     "rarity": "R",
     "isUnique": true,
+    "isFemale": true,
     "kind": "FREE_PEOPLE",
     "type": "ALLY",
     "phases": [
@@ -59776,6 +59797,7 @@
     "set": 7,
     "rarity": "R",
     "isUnique": true,
+    "isFemale": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
     "culture": "ELVEN",
@@ -68824,6 +68846,7 @@
     "set": 7,
     "rarity": "R",
     "isUnique": true,
+    "isFemale": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
     "keywords": [
@@ -68870,6 +68893,7 @@
     "set": 7,
     "rarity": "C",
     "isUnique": true,
+    "isFemale": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
     "phases": [
@@ -78948,6 +78972,7 @@
     "rarity": "R+",
     "isUnique": true,
     "canBeRingbearer": true,
+    "isFemale": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
     "culture": "ELVEN",
@@ -80820,6 +80845,7 @@
     "set": 9,
     "rarity": "R+",
     "isUnique": true,
+    "isFemale": true,
     "kind": "FREE_PEOPLE",
     "type": "ALLY",
     "phases": [
@@ -81110,6 +81136,7 @@
     "set": 10,
     "rarity": "U",
     "isUnique": true,
+    "isFemale": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
     "phases": [
@@ -81310,6 +81337,7 @@
     "set": 10,
     "rarity": "R",
     "isUnique": true,
+    "isFemale": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
     "phases": [
@@ -84059,6 +84087,7 @@
     "set": 10,
     "rarity": "R",
     "isUnique": true,
+    "isFemale": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
     "phases": [
@@ -86698,6 +86727,7 @@
     "set": 11,
     "rarity": "U",
     "isUnique": true,
+    "isFemale": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
     "culture": "ELVEN",
@@ -92411,6 +92441,7 @@
     "set": 11,
     "rarity": "S",
     "isUnique": true,
+    "isFemale": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
     "culture": "ROHAN",
@@ -101513,6 +101544,7 @@
     "set": 12,
     "rarity": "R",
     "isUnique": true,
+    "isFemale": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
     "culture": "SHIRE",
@@ -104694,6 +104726,7 @@
     "set": 13,
     "rarity": "S",
     "isUnique": true,
+    "isFemale": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
     "phases": [
@@ -104965,6 +104998,7 @@
     "set": 13,
     "rarity": "R",
     "isUnique": true,
+    "isFemale": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
     "toPlay": [
@@ -109720,6 +109754,7 @@
     "set": 13,
     "rarity": "U",
     "isUnique": true,
+    "isFemale": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
     "culture": "ROHAN",
@@ -112389,6 +112424,7 @@
     "set": 13,
     "rarity": "O",
     "isUnique": true,
+    "isFemale": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
     "toPlay": [
@@ -113927,6 +113963,7 @@
     "set": 15,
     "rarity": "R",
     "isUnique": true,
+    "isFemale": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
     "phases": [
@@ -114629,6 +114666,7 @@
     "set": 15,
     "rarity": "U",
     "isUnique": true,
+    "isFemale": true,
     "kind": "FREE_PEOPLE",
     "type": "FOLLOWER",
     "culture": "ELVEN",
@@ -119181,6 +119219,7 @@
     "set": 15,
     "rarity": "C",
     "isUnique": true,
+    "isFemale": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
     "culture": "ROHAN",
@@ -127013,6 +127052,7 @@
     "set": 17,
     "rarity": "R",
     "isUnique": true,
+    "isFemale": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
     "phases": [
@@ -135553,6 +135593,7 @@
     "set": 19,
     "rarity": "P",
     "isUnique": true,
+    "isFemale": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
     "keywords": [
@@ -136520,6 +136561,7 @@
     "set": 19,
     "rarity": "P",
     "isUnique": true,
+    "isFemale": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
     "keywords": [

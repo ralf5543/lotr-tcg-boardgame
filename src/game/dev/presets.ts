@@ -1,5 +1,5 @@
 import type { GameState } from '../types';
-import type { DevPresetType } from '../moves';
+import type { DevPresetType } from '../types';
 import type { CardState } from '../types';
 import { drawCardsForPlayer } from '../../utils/drawCards';
 
@@ -106,6 +106,42 @@ const CARDS_PRESETS: Record<string, CardState> = {
                     '**Dégâts +1.**\n**Combat :** Affaiblissez Gimli pour lui donner +2 en force.',
                 loreText:
                     'À côté de Glóin se trouvait un jeune Nain: son fils Gimli.',
+            },
+        },
+    },
+    EOWYN: {
+        id: '4C270',
+        set: 4,
+        rarity: 'C',
+        isUnique: true,
+        isFemale: true,
+        kind: 'FREE_PEOPLE',
+        type: 'COMPANION',
+        keywords: ['VALIANT'],
+        phases: ['RESPONSE'],
+        culture: 'ROHAN',
+        race: 'MAN',
+        signet: 'THEODEN',
+        twilightCost: 2,
+        strength: 6,
+        vitality: 3,
+        imageUrl: '/cards_visuals/o_04_270.jpg',
+        i18n: {
+            en: {
+                title: 'Éowyn',
+                subtitle: 'Lady of Rohan',
+                gameText:
+                    '**Valiant.**\n**Response:** If an unbound companion is about to take a wound, exert Éowyn and add <symbol>twilight1</symbol> to prevent that wound.',
+                loreText:
+                    'Thus Aragorn... beheld Éowyn... and thought her fair, fair and cold, like a morning of pale spring that is not yet come to womanhood.',
+            },
+            fr: {
+                title: 'Éowyn',
+                subtitle: 'Dame de Rohan',
+                gameText:
+                    '**Vaillant.**\n**Réponse :** Si un compagnon dissocié est sur le point d’être blessé, affaiblissez Éowyn et ajoutez <symbol>twilight1</symbol> pour empêcher cette blessure.',
+                loreText:
+                    "C'est ainsi qu'Aragorn vit pour la première fois... Éowyn, Dame de Rohan, et il la trouva belle, belle et froide, comme un pâle matin de printemps, non encore parvenue à la plénitude de la femme.",
             },
         },
     },
@@ -298,6 +334,7 @@ export const applyDevPreset = (
                 { ...CARDS_PRESETS.SMEAGOL },
                 { ...CARDS_PRESETS.LEGOLAS },
                 gimliWithArmor,
+                { ...CARDS_PRESETS.EOWYN },
             ];
 
             G.battlefield = [

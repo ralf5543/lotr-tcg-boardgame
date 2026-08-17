@@ -1,15 +1,22 @@
-import fs from 'fs';
-import path from 'path';
+// ============================================================================ 
+// 1. CONFIGURATION DES CHEMINS ET CONSTANTES DU JEU 
+// ============================================================================ 
 
-// ============================================================================
-// 1. CONFIGURATION DES CHEMINS ET CONSTANTES DU JEU
-// ============================================================================
-
-const CSV_PATH = path.join(process.cwd(), 'lotro_card_data.csv'); 
+const CSV_PATH = path.join(process.cwd(), 'lotro_card_data.csv');
 const OUTPUT_CARDS_PATH = path.join(process.cwd(), 'data/cards.json');
 const OUTPUT_SITES_PATH = path.join(process.cwd(), 'data/sites.json');
 
-// Phases de jeu reconnues (pour le champ phases)
+// Liste des personnages féminins du jeu (pour le flag SFX)
+const FEMALE_TITLES = new Set([
+    'Galadriel',
+    'Éowyn',
+    'Arwen',
+    'Rosie Cotton',
+    'Uruviel',
+    'Goldberry'
+]);
+
+// Phases de jeu reconnues (pour le champ phases) 
 const GAME_PHASES = new Set([
     'FELLOWSHIP',
     'SHADOW',
@@ -21,22 +28,22 @@ const GAME_PHASES = new Set([
     'RESPONSE'
 ]);
 
-// Races de personnages valides (pour l'analyse de l'attachement)
+// Races de personnages valides (pour l'analyse de l'attachement) 
 const VALID_RACES = new Set([
-    'BALROG', 'CREATURE', 'DWARF', 'ELF', 'ENT', 'HOBBIT', 
-    'MAIA', 'MAN', 'NAZGUL', 'ORC', 'SPIDER', 'TROLL', 
+    'BALROG', 'CREATURE', 'DWARF', 'ELF', 'ENT', 'HOBBIT',
+    'MAIA', 'MAN', 'NAZGUL', 'ORC', 'SPIDER', 'TROLL',
     'URUK-HAI', 'WIZARD', 'WRAITH'
 ]);
 
-// Cultures valides (pour l'analyse de l'attachement via la balise <symbol>)
+// Cultures valides (pour l'analyse de l'attachement via la balise <symbol>) 
 const VALID_CULTURES = new Set([
-    'DUNLAND', 'DWARVEN', 'ELVEN', 'GANDALF', 'GOLLUM', 
-    'GONDOR', 'ISENGARD', 'MEN', 'MORIA', 'ORC', 
-    'RAIDER', 'RAITH', 'ROHAN', 'SAURON', 'SHIRE', 
+    'DUNLAND', 'DWARVEN', 'ELVEN', 'GANDALF', 'GOLLUM',
+    'GONDOR', 'ISENGARD', 'MEN', 'MORIA', 'ORC',
+    'RAIDER', 'RAITH', 'ROHAN', 'SAURON', 'SHIRE',
     'THE-ONE-RING', 'URUK-HAI'
 ]);
 
-// Mots-clés officiels et exhaustifs du jeu (pour la clé "keywords")
+// Mots-clés officiels et exhaustifs du jeu (pour la clé "keywords") 
 const VALID_KEYWORDS = new Set([
     'AID', 'AMBUSH', 'ARCHER', 'BATTLEGROUND', 'BESIEGER', 'CORSAIR',
     'DAMAGE +1', 'DAMAGE +2', 'DAMAGE +3', 'DAMAGE +4',
@@ -50,10 +57,10 @@ const VALID_KEYWORDS = new Set([
     'UNHASTY', 'VALIANT', 'VILLAGER', 'WARG-RIDER', 'WEATHER'
 ]);
 
-// Types de cartes cibles (pour l'analyse de l'attachement)
+// Types de cartes cibles (pour l'analyse de l'attachement) 
 const VALID_TARGET_TYPES = new Set(['MINION', 'COMPANION', 'ALLY']);
 
-// Dictionnaire global des termes reconnus pour l'extraction automatique de attachedTo
+// Dictionnaire global des termes reconnus pour l'extraction automatique de attachedTo 
 const KNOWN_ATTACHED_KEYWORDS = Array.from(new Set([
     ...VALID_RACES,
     ...VALID_CULTURES,
@@ -62,36 +69,36 @@ const KNOWN_ATTACHED_KEYWORDS = Array.from(new Set([
     'SITE'
 ]));
 
-// Cultures appartenant du côté Shadow (Ombre)
+// Cultures appartenant du côté Shadow (Ombre) 
 const SHADOW_CULTURES = [
-    'ISENGARD', 'MORIA', 'SAURON', 'WRAITH', 
+    'ISENGARD', 'MORIA', 'SAURON', 'WRAITH',
     'DUNLAND', 'RAIDER', 'MEN', 'ORC', 'URUK-HAI'
 ];
 
-// ============================================================================
-// 2. FONCTIONS UTILITAIRES DE PARSING CSV ET NETTOYAGE DE TEXTE
-// ============================================================================
+// ============================================================================ 
+// 2. FONCTIONS UTILITAIRES DE PARSING CSV ET NETTOYAGE DE TEXTE 
+// ============================================================================ 
 
-/**
- * Supprime TOUS les guillemets (droits, typographiques, français, doubles, simples)
- * situés au début, à la fin ou résiduels dans le texte.
+/** 
+ * Supprime TOUS les guillemets (droits, typographiques, français, doubles, simples) 
+ * situés au début, à la fin ou résiduels dans le texte. 
  */
 function stripQuotes(text) {
     if (!text) return undefined;
-    
+
     const cleaned = text
         .trim()
-        // Supprime tous les guillemets et espaces en tout début/fin de chaîne
+        // Supprime tous les guillemets et espaces en tout début/fin de chaîne 
         .replace(/^["'«»“”‘’`\s]+|["'«»“”‘’`\s]+$/g, '')
-        // Nettoie également tout guillemet résiduel à l'intérieur
+        // Nettoie également tout guillemet résiduel à l'intérieur 
         .replace(/["“”«»]/g, '')
         .trim();
 
     return cleaned.length > 0 ? cleaned : undefined;
 }
 
-/**
- * Analyse le contenu brut d'un CSV en gérant correctement les guillemets de champs et retours à la ligne.
+/** 
+ * Analyse le contenu brut d'un CSV en gérant correctement les guillemets de champs et retours à la ligne. 
  */
 function parseCsvContent(content) {
     const rows = [];
@@ -132,32 +139,32 @@ function parseCsvContent(content) {
     return rows;
 }
 
-/**
- * Nettoie le texte de lore/flavor (suppression des guillemets).
+/** 
+ * Nettoie le texte de lore/flavor (suppression des guillemets). 
  */
 function cleanLoreText(text) {
     return stripQuotes(text);
 }
 
-/**
- * Formate le texte de jeu : convertit <br> en \n et <keyword> en **bold**.
- * Place le symbole twilight d'Ambush juste APRÈS les astérisques de gras : **Ambush** <symbol>twilightX</symbol>
+/** 
+ * Formate le texte de jeu : convertit <br> en \n et <keyword> en **bold**. 
+ * Place le symbole twilight d'Ambush juste APRÈS les astérisques de gras : **Ambush** <symbol>twilightX</symbol> 
  */
 function formatGameText(text) {
     if (!text) return undefined;
 
     let formatted = text
         .replace(/<br\s*\/?>/gi, '\n')
-        // CAS PARTICULIER AMBUSH : **Ambush** suivi immédiatement du symbole twilight
+        // CAS PARTICULIER AMBUSH : **Ambush** suivi immédiatement du symbole twilight 
         .replace(/<keyword>Ambush<\/keyword>\s*(<symbol>twilight\d+<\/symbol>)/gi, '**Ambush** $1')
-        // Cas général pour les autres mots-clés
+        // Cas général pour les autres mots-clés 
         .replace(/<keyword>([^<]+)<\/keyword>/gi, '**$1**');
 
     return formatted.trim();
 }
 
-/**
- * Normalise et mappe la culture (ex: convertit MAN en MEN).
+/** 
+ * Normalise et mappe la culture (ex: convertit MAN en MEN). 
  */
 function mapCulture(cultureStr) {
     if (!cultureStr) return undefined;
@@ -165,16 +172,16 @@ function mapCulture(cultureStr) {
     return cleanCulture === 'MAN' ? 'MEN' : cleanCulture;
 }
 
-/**
- * Extrait le marqueur d'alignement (Signet) depuis l'icône du bas.
+/** 
+ * Extrait le marqueur d'alignement (Signet) depuis l'icône du bas. 
  */
 function parseSignet(bottomIcon) {
     if (!bottomIcon || !bottomIcon.startsWith('Signet_')) return undefined;
     return bottomIcon.replace('Signet_', '').toUpperCase();
 }
 
-/**
- * Extrait une valeur numérique de statistique (Force, Vitalité, etc.) avec fallback texte.
+/** 
+ * Extrait une valeur numérique de statistique (Force, Vitalité, etc.) avec fallback texte. 
  */
 function parseStat(primaryValue, fallbackText) {
     if (primaryValue !== '' && primaryValue !== undefined) {
@@ -190,8 +197,8 @@ function parseStat(primaryValue, fallbackText) {
     return undefined;
 }
 
-/**
- * Construit un bloc i18n nettoyé
+/** 
+ * Construit un bloc i18n nettoyé 
  */
 function buildLangBlock(title, subtitle, gameText, lore) {
     const block = {
@@ -208,21 +215,24 @@ function buildLangBlock(title, subtitle, gameText, lore) {
     return Object.keys(block).length > 0 ? block : undefined;
 }
 
-// ============================================================================
-// 3. FONCTIONS D'EXTRACTION DE RÈGLES MÉTIER (SUBTYPES, PHASES, MOTS-CLÉS, ATTACHED_TO)
-// ============================================================================
+// ============================================================================ 
+// 3. FONCTIONS D'EXTRACTION DE RÈGLES MÉTIER (SUBTYPES, PHASES, MOTS-CLÉS, ATTACHED_TO) 
+// ============================================================================ 
 
-/**
- * Extrait les mots-clés autonomes d'une carte depuis son texte anglais.
- * - Cible les balises <keyword>Mot-clé.</keyword> commençant par une Majuscule et finissant par un point.
- * - Gestion spéciale pour AMBUSH : capture <keyword>Ambush</keyword> <symbol>twilightX</symbol> -> "AMBUSH X"
- */
+/** 
+  * Extrait les mots-clés autonomes d'une carte depuis son texte anglais. 
+  * - Cible les balises <keyword>Mot-clé.</keyword> commençant par une Majuscule et finissant par un point. 
+
+  * - Gestion spéciale pour AMBUSH : capture 
+<keyword>Ambush</keyword> 
+<symbol>twilightX</symbol> -> "AMBUSH X" 
+  */
 function parseKeywords(text) {
     if (!text) return undefined;
 
     const keywords = [];
 
-    // 1. CAS SPÉCIAL : Ambush suivi du symbole twilightX
+    // 1. CAS SPÉCIAL : Ambush suivi du symbole twilightX 
     const ambushRegex = /<keyword>Ambush<\/keyword>\s*<symbol>twilight(\d+)<\/symbol>/gi;
     let ambushMatch;
     while ((ambushMatch = ambushRegex.exec(text)) !== null) {
@@ -233,7 +243,7 @@ function parseKeywords(text) {
         }
     }
 
-    // 2. CAS GÉNÉRAL : Mots-clés standards se terminant par un point dans la balise
+    // 2. CAS GÉNÉRAL : Mots-clés standards se terminant par un point dans la balise 
     const regex = /<keyword>([A-Z][^<]*\.)<\/keyword>/g;
     let match;
     while ((match = regex.exec(text)) !== null) {
@@ -290,14 +300,16 @@ function parseClassAndPhases(classStr, englishText) {
     };
 }
 
-/**
- * Extrait la condition d'attachement d'une carte sous la forme d'un tableau 2D (DNF).
+/** 
+ * Extrait la condition d'attachement d'une carte sous la forme d'un tableau 2D (DNF). 
  */
 function parseAttachedTo(text) {
     if (!text) return null;
 
     if (/plays on a site/i.test(text)) {
-        return [["SITE"]];
+        return [
+            ["SITE"]
+        ];
     }
 
     const match = text.match(/Bearer must be\s+([^.]+)\./i);
@@ -310,7 +322,9 @@ function parseAttachedTo(text) {
 
     if (!isGeneric) {
         if (textWithoutTags.length > 0) {
-            return [[textWithoutTags]];
+            return [
+                [textWithoutTags]
+            ];
         }
     }
 
@@ -359,57 +373,64 @@ function parseAttachedTo(text) {
 function parseToPlayConditions(text) {
     if (!text) return undefined;
 
-    // CORRECTION : On retire '<' de la liste d'exclusion pour ne pas s'arrêter avant <symbol> ou <keyword>
-    // SÉCURITÉ : Ne match "To play," que s'il est au tout début du texte ou après un point/retour ligne,
-    // et SANS guillemet d'ouverture (" / “ / ') juste devant (ex: texte conféré à une autre carte).
+    // CORRECTION : On retire '<' de la liste d'exclusion pour ne pas s'arrêter avant <symbol> ou <keyword> 
+    // SÉCURITÉ : Ne match "To play," que s'il est au tout début du texte ou après un point/retour ligne, 
+    // et SANS guillemet d'ouverture (" / “ / ') juste devant (ex: texte conféré à une autre carte). 
     const match = text.match(/(?:^|[\n.])\s*(?<!["'“])To play,\s+([^.\n]+)/i);
     if (!match) return undefined;
 
-    const rawClause = match[1].trim(); 
-    // ex: "spot a Ring-bound Man", "discard 2 cards from hand", "remove 2 burdens or 2 threats"
+    const rawClause = match[1].trim();
+    // ex: "spot a Ring-bound Man", "discard 2 cards from hand", "remove 2 burdens or 2 threats" 
 
-    // Helper pour extraire la quantité (chiffre), ou 1 par défaut
+    // Helper pour extraire la quantité (chiffre), ou 1 par défaut 
     function extractCount(str) {
         const m = str.match(/\b(\d+)\b/);
         return m ? parseInt(m[1], 10) : 1;
     }
 
-    // Helper pour normaliser les tokens/mots
+    // Helper pour normaliser les tokens/mots 
     function normalizeToken(token) {
         const clean = token.replace(/[^a-zA-Z-áéíóúÁÉÍÓÚàèìòùÀÈÌÒÙäëïöüÄËÏÖÜñÑ]/g, '');
         const upper = clean.toUpperCase();
 
         const plurals = {
-            'HOBBITS': 'HOBBIT', 'ENTS': 'ENT', 'RANGERS': 'RANGER',
-            'ELVES': 'ELF', 'DWARVES': 'DWARF', 'MINIONS': 'MINION',
-            'COMPANIONS': 'COMPANION', 'ALLIES': 'ALLY', 'KNIGHTS': 'KNIGHT', 'MEN': 'MAN'
+            'HOBBITS': 'HOBBIT',
+            'ENTS': 'ENT',
+            'RANGERS': 'RANGER',
+            'ELVES': 'ELF',
+            'DWARVES': 'DWARF',
+            'MINIONS': 'MINION',
+            'COMPANIONS': 'COMPANION',
+            'ALLIES': 'ALLY',
+            'KNIGHTS': 'KNIGHT',
+            'MEN': 'MAN'
         };
 
         return plurals[upper] || upper;
     }
 
-    // Extraction des cibles (Cultures, Mots-clés, Nom propre ou Types)
+    // Extraction des cibles (Cultures, Mots-clés, Nom propre ou Types) 
     function parseTarget(bodyText) {
         const targets = [];
 
-        // Extraction des symboles <symbol>shire</symbol>
+        // Extraction des symboles <symbol>shire</symbol> 
         let cleanBody = bodyText.replace(/<symbol>(.*?)<\/symbol>/gi, (_, culture) => {
             if (culture) targets.push(culture.toUpperCase());
             return ' ';
         });
 
-        // Extraction des keywords <keyword>Ring-bound</keyword>
+        // Extraction des keywords <keyword>Ring-bound</keyword> 
         cleanBody = cleanBody.replace(/<keyword>(.*?)<\/keyword>/gi, (_, kw) => {
             if (kw) targets.push(kw.replace(/[:.,]/g, '').toUpperCase());
             return ' ';
         });
 
-        // Nettoyage Markdown / HTML
+        // Nettoyage Markdown / HTML 
         cleanBody = cleanBody.replace(/[*_#<>[\]]/g, ' ').trim();
 
         const words = cleanBody.split(/\s+/).filter(Boolean);
-        
-        // Mots/verbes réservés à exclure complètement des cibles
+
+        // Mots/verbes réservés à exclure complètement des cibles 
         const EXCLUDED_WORDS = new Set([
             'A', 'AN', 'YOUR', 'OR', 'FROM', 'IN', 'PLAY', 'HAND', 'CARD', 'CARDS',
             'SPOT', 'EXERT', 'DISCARD', 'REMOVE', 'ADD'
@@ -418,7 +439,7 @@ function parseToPlayConditions(text) {
         for (const word of words) {
             const normalized = normalizeToken(word);
             if (normalized && !EXCLUDED_WORDS.has(normalized)) {
-                // Conservation de la casse si nom propre
+                // Conservation de la casse si nom propre 
                 const isProperName = /^[A-Z][a-zà-ÿ]+/.test(word);
                 targets.push(isProperName ? word : normalized);
             }
@@ -427,11 +448,11 @@ function parseToPlayConditions(text) {
         return targets;
     }
 
-    // Découpage des alternatives séparées par "OR"
+    // Découpage des alternatives séparées par "OR" 
     const rawOptions = rawClause.split(/\s+or\s+/i);
     const parsedOptions = [];
 
-    // Verbe global par défaut si non répété après "or" (ex: "remove 2 burdens or 2 threats")
+    // Verbe global par défaut si non répété après "or" (ex: "remove 2 burdens or 2 threats") 
     const globalVerbMatch = rawClause.match(/^(spot|exert|discard|remove|add)\b/i);
     const defaultVerb = globalVerbMatch ? globalVerbMatch[1].toLowerCase() : 'spot';
 
@@ -444,28 +465,31 @@ function parseToPlayConditions(text) {
 
         const count = extractCount(optionText);
 
-        // 1. DISCARD FROM HAND
+        // 1. DISCARD FROM HAND 
         if (/discard.*hand/i.test(optionText) || (currentVerb === 'discard' && /hand/i.test(optionText))) {
             optionObj.discardFromHand = count;
         }
-        // 2. BURDENS
+        // 2. BURDENS 
         else if (/burdens?/i.test(optionText)) {
             if (currentVerb === 'remove') optionObj.removeBurdens = count;
             else if (currentVerb === 'add') optionObj.addBurdens = count;
             else optionObj.spotBurdens = count;
-        } 
-        // 3. THREATS
+        }
+        // 3. THREATS 
         else if (/threats?/i.test(optionText)) {
             if (currentVerb === 'remove') optionObj.removeThreats = count;
             else if (currentVerb === 'add') optionObj.addThreats = count;
             else optionObj.spotThreats = count;
         }
-        // 4. CARTES / EFFETS SUR LE JEU (spot, exert, discardFromPlay)
+        // 4. CARTES / EFFETS SUR LE JEU (spot, exert, discardFromPlay) 
         else {
             const targets = parseTarget(optionText);
             if (targets.length > 0) {
                 const key = currentVerb === 'discard' ? 'discardFromPlay' : currentVerb;
-                optionObj[key] = [{ count, target: [targets] }];
+                optionObj[key] = [{
+                    count,
+                    target: [targets]
+                }];
             }
         }
 
@@ -477,9 +501,9 @@ function parseToPlayConditions(text) {
     return parsedOptions.length > 0 ? parsedOptions : undefined;
 }
 
-// ============================================================================
-// 4. PROCESSUS PRINCIPAL DE CONVERSION (convert)
-// ============================================================================
+// ============================================================================ 
+// 4. PROCESSUS PRINCIPAL DE CONVERSION (convert) 
+// ============================================================================ 
 
 async function convert() {
     console.log('🔄 Lecture et traitement du CSV des cartes...');
@@ -530,7 +554,7 @@ async function convert() {
 
         if (targetMap.has(cardId)) {
             const existing = targetMap.get(cardId);
-            const existingTextLen = (existing.i18n?.fr?.gameText || existing.i18n?.en?.gameText || '').length;
+            const existingTextLen = (existing.i18n ? .fr ? .gameText || existing.i18n ? .en ? .gameText || '').length;
             const newTextLen = (frenchText || englishText).length;
             if (newTextLen <= existingTextLen) continue;
         }
@@ -556,10 +580,15 @@ async function convert() {
         const isRingbearer = bottomIcon === 'Icon_ringbearer' || titleVO.toLowerCase() === 'frodo';
         const canBeRingbearer = isRingbearer ? true : undefined;
 
+        const isFemale = FEMALE_TITLES.has(titleVO) ? true : undefined;
+
         const rawImageCode = (data['Image'] || '').trim();
         const imageUrl = rawImageCode ? `/cards_visuals/o_${rawImageCode}.jpg` : undefined;
 
-        const { subtype, phases } = parseClassAndPhases(data['Class'], englishText);
+        const {
+            subtype,
+            phases
+        } = parseClassAndPhases(data['Class'], englishText);
         const keywords = parseKeywords(englishText);
         const attachmentData = parseAttachedTo(englishText);
 
@@ -574,36 +603,39 @@ async function convert() {
             rarity: data['Rarity'] || undefined,
             isUnique: data['Unique'] === '1',
             canBeRingbearer: canBeRingbearer,
-            
+            isFemale: isFemale,
+
             kind: kind,
             type: type,
             subtype: subtype,
             keywords: keywords,
             attachedTo: attachmentData || undefined,
             toPlay: toPlayData,
-            isControlled: attachmentData?.isControlled,
+            isControlled: attachmentData ? .isControlled,
             phases: phases,
             culture: culture,
             race: data['Race'] ? data['Race'].toUpperCase() : undefined,
             signet: parseSignet(bottomIcon),
-            
+
             twilightCost: data['Twilight Cost'] !== '' ? parseInt(data['Twilight Cost'], 10) : 0,
             strength: computedStrength,
             vitality: computedVitality,
             resistance: computedResistance,
-            
+
             minionSiteNumber: data['Minion Site Number'] !== '' ? parseInt(data['Minion Site Number'], 10) : undefined,
             allyHomeSites: data['Ally Home Sites'] || undefined,
             siteNumber: data['Site Number'] !== '' ? parseInt(data['Site Number'], 10) : undefined,
             siteArrow: data['Site Arrow'] || undefined,
 
-            imageUrl: imageUrl,                          
+            imageUrl: imageUrl,
 
             i18n: {
                 en: buildLangBlock(data['Title'], data['Subtitle'], data['Text'], data['Lore']),
                 fr: buildLangBlock(data['French Title'], data['French Subtitle'], data['French Text'], data['French Lore']),
                 de: buildLangBlock(data['German Title'], data['German Subtitle'], data['German Text'], data['German Lore']),
+
                 it: buildLangBlock(data['Italian Title'], data['Italian Subtitle'], data['Italian Text'], data['Italian Lore']),
+
                 es: buildLangBlock(data['Spanish Title'], data['Spanish Subtitle'], data['Spanish Text'], data['Spanish Lore']),
             }
         };
@@ -624,7 +656,9 @@ async function convert() {
 
     const outputDir = path.dirname(OUTPUT_CARDS_PATH);
     if (!fs.existsSync(outputDir)) {
-        fs.mkdirSync(outputDir, { recursive: true });
+        fs.mkdirSync(outputDir, {
+            recursive: true
+        });
     }
 
     fs.writeFileSync(OUTPUT_CARDS_PATH, JSON.stringify(cardsArray, null, 2), 'utf-8');
