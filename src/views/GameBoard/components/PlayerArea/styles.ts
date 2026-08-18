@@ -11,8 +11,8 @@ export const MetaInfo = styled.span<{ $isOpponent?: boolean }>`
     margin-bottom: 8px;
 `;
 
-export const Fellowship = styled.div<{ 
-    $borderColor: string; 
+export const Fellowship = styled.div<{
+    $borderColor: string;
     $isTargeted?: boolean;
     $isOpponent?: boolean;
 }>`
@@ -28,7 +28,9 @@ export const Fellowship = styled.div<{
         $isTargeted &&
         css`
             border-color: #3498db;
-            box-shadow: 0 0 16px rgba(52, 152, 219, 0.7), inset 0 0 10px rgba(52, 152, 219, 0.2);
+            box-shadow:
+                0 0 16px rgba(52, 152, 219, 0.7),
+                inset 0 0 10px rgba(52, 152, 219, 0.2);
             background-color: rgba(26, 37, 47, 0.7);
         `}
 `;
@@ -77,8 +79,8 @@ export const DormantOverlay = styled.div`
     backdrop-filter: blur(4px);
 `;
 
-export const SupportArea = styled.div<{ 
-    $borderColor: string; 
+export const SupportArea = styled.div<{
+    $borderColor: string;
     $isOpponent?: boolean;
     $isTargeted?: boolean;
 }>`
@@ -93,7 +95,9 @@ export const SupportArea = styled.div<{
         $isTargeted &&
         css`
             border-color: #f39c12;
-            box-shadow: 0 0 16px rgba(243, 156, 18, 0.7), inset 0 0 10px rgba(243, 156, 18, 0.2);
+            box-shadow:
+                0 0 16px rgba(243, 156, 18, 0.7),
+                inset 0 0 10px rgba(243, 156, 18, 0.2);
             background-color: rgba(26, 37, 47, 0.7);
         `}
 `;
@@ -124,8 +128,8 @@ export const CharacterStack = styled.div<{ $isBeingDragged?: boolean }>`
     transition: opacity 0.2s ease;
 `;
 
-export const CardDragTarget = styled.div<{ 
-    $isOpponent?: boolean; 
+export const CardDragTarget = styled.div<{
+    $isOpponent?: boolean;
     $isTargeted?: boolean;
 }>`
     cursor: ${({ $isOpponent }) => ($isOpponent ? 'default' : 'grab')};
@@ -147,7 +151,9 @@ export const AttachmentWrapper = styled.div<{ $index: number }>`
     top: ${({ $index }) => 45 + $index * 35}px;
     transform: translateX(${({ $index }) => -1 * ($index + 1)}em);
     z-index: ${({ $index }) => $index + 1};
-    transition: transform 0.2s, z-index 0.2s;
+    transition:
+        transform 0.2s,
+        z-index 0.2s;
 
     &:hover {
         transform: scale(1) translateY(5px);
@@ -172,4 +178,40 @@ export const EmptyText = styled.p`
     font-style: italic;
     font-size: 12px;
     margin: 0;
+`;
+
+export const SupportSplitLayout = styled.div`
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    gap: 20px;
+    overflow-x: auto;
+    padding-bottom: 4px;
+
+    &::-webkit-scrollbar {
+        height: 6px;
+    }
+    &::-webkit-scrollbar-track {
+        background: rgba(15, 23, 42, 0.4);
+        border-radius: 4px;
+    }
+    &::-webkit-scrollbar-thumb {
+        background: #f39c12;
+        border-radius: 4px;
+    }
+    &::-webkit-scrollbar-thumb:hover {
+        background: #e67e22;
+    }
+`;
+
+export const SupportSubZone = styled.div<{ $align: 'left' | 'right' }>`
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    min-height: 120px;
+    flex: 1;
+
+    /* Alignement à gauche pour FP, à droite pour Ombre */
+    justify-content: ${({ $align }) =>
+        $align === 'left' ? 'flex-start' : 'flex-end'};
 `;
