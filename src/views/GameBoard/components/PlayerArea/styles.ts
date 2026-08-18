@@ -14,6 +14,7 @@ export const MetaInfo = styled.span<{ $isOpponent?: boolean }>`
 export const Fellowship = styled.div<{ 
     $borderColor: string; 
     $isTargeted?: boolean;
+    $isOpponent?: boolean;
 }>`
     border: 2px solid ${({ $borderColor }) => $borderColor};
     background-color: rgba(26, 37, 47, 0.5);
@@ -28,16 +29,52 @@ export const Fellowship = styled.div<{
         css`
             border-color: #3498db;
             box-shadow: 0 0 16px rgba(52, 152, 219, 0.7), inset 0 0 10px rgba(52, 152, 219, 0.2);
-                background-color: rgba(26, 37, 47, 0.7);
+            background-color: rgba(26, 37, 47, 0.7);
         `}
 `;
 
-export const FellowshipCollapsed = styled.div<{ $borderColor?: string }>`
-    border: 2px solid ${({ $borderColor }) => $borderColor || '#34495e'};
-    background-color: #1a252f;
+/* 💤 BANDEAU COMPAGNIE EN SOMMEIL */
+export const DormantFellowshipBanner = styled.div<{ $isOpponent?: boolean }>`
+    position: relative;
+    height: 36px;
+    border: 1px dashed #3498db;
+    background-color: rgba(52, 152, 219, 0.1);
     border-radius: 6px;
-    padding: 10px;
+    padding: 0 12px;
     margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-size: 12px;
+    font-weight: bold;
+    color: #3498db;
+    cursor: pointer;
+    transition: all 0.2s ease-in-out;
+
+    &:hover {
+        background-color: rgba(52, 152, 219, 0.2);
+        border-style: solid;
+    }
+`;
+
+export const ExpandHint = styled.span`
+    font-size: 11px;
+    font-weight: normal;
+    opacity: 0.8;
+`;
+
+export const DormantOverlay = styled.div`
+    position: absolute;
+    top: 42px;
+    left: 0;
+    right: 0;
+    z-index: 100;
+    background: rgba(15, 23, 42, 0.95);
+    border: 1px solid #3498db;
+    border-radius: 6px;
+    padding: 12px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(4px);
 `;
 
 export const SupportArea = styled.div<{ 
@@ -46,7 +83,7 @@ export const SupportArea = styled.div<{
     $isTargeted?: boolean;
 }>`
     border: 2px solid ${({ $borderColor }) => $borderColor};
-        background-color: rgba(26, 37, 47, 0.5);
+    background-color: rgba(26, 37, 47, 0.5);
     border-radius: 6px;
     padding: 10px;
     margin-bottom: 10px;
@@ -96,7 +133,6 @@ export const CardDragTarget = styled.div<{
     transition: all 0.15s ease-in-out;
     z-index: 1;
 
-    /* Surbrillance spécifique quand on frôle ce compagnon précis (ex: attachement d'une possession) */
     ${({ $isTargeted }) =>
         $isTargeted &&
         css`

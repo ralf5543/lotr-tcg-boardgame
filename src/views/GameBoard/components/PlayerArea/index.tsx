@@ -1,8 +1,7 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import type { CardState, CardType, CardSubtype, GameState } from '../../../../game/types';
 import type { BoardProps } from 'boardgame.io/react';
 import * as S from './styles';
-import { Card } from '../Card';
 import { useDrag } from '../../../../contexts/DragContext';
 import { BoardCharacterStack } from '../BoardCharacterStack';
 import {
@@ -51,15 +50,16 @@ export const PlayerArea: React.FC<PlayerAreaProps> = ({
     G,
 }) => {
     const { activeTargetId, registerTarget, startDrag, dragged } = useDrag();
+    const [isDormantExpanded, setIsDormantExpanded] = useState(false);
 
+    // 🟢 Identification des rôles : Seul le joueur Peuples Libres a sa Compagnie active
+    const isFP = _playerId === G?.fpPlayerId;
+    const isFellowshipDormant = !isFP;
+    const playerBurdens = isFP ? (G?.players?.[_playerId]?.burdens ?? 0) : 0;
 
-    // 🟢 Extraire correctement le type ET le subtype pour le router de Drag
+    // 🟢 Extraire le type et le subtype pour le router de Drag
     const cardType = (dragged?.card as CardState)?.type as CardType | undefined;
     const cardSubtype = (dragged?.card as CardState)?.subtype as CardSubtype | undefined;
-
-    // 🟢 FARDEAUX : Récupération dynamique spécifique au joueur
-    const isFP = _playerId === G?.fpPlayerId;
-    const playerBurdens = isFP ? (G?.players?.[_playerId]?.burdens ?? 0) : 0;
 
     // Gestion du Drag & Drop pour réordonner sa propre compagnie
     useEffect(() => {
@@ -105,6 +105,51 @@ export const PlayerArea: React.FC<PlayerAreaProps> = ({
     }, [isOpponent, moves, fellowshipArea]);
 
     const renderFellowship = () => {
+        // 💤 MODE BANDEAU : Si ce joueur incarne l'Ombre, la Compagnie roupille
+        if (isFellowshipDormant) {
+            return (
+                <S.DormantFellowshipBanner
+                    $isOpponent={isOpponent}
+                    onClick={() => setIsDormantExpanded(!isDormantExpanded)}
+                >
+                    <span>
+                        🛡️ Compagnie en sommeil ({fellowshipArea.length} compagnon
+                        {fellowshipArea.length > 1 ? 's' : ''})
+                    </span>
+                    <S.ExpandHint>
+                        {isDormantExpanded
+                            ? 'Cliquez pour réduire 🔼'
+                            : 'Cliquez pour inspecter 🔽'}
+                    </S.ExpandHint>
+
+                    {isDormantExpanded && (
+                        <S.DormantOverlay onClick={(e) => e.stopPropagation()}>
+                            <S.CardRow>
+                                {fellowshipArea.length === 0 && (
+                                    <S.EmptyText>Aucun compagnon.</S.EmptyText>
+                                )}
+                                {fellowshipArea.map((companion, companionIdx) => (
+                                    <BoardCharacterStack
+                                        key={companion.id}
+                                        character={companion}
+                                        index={companionIdx}
+                                        isOpponent={isOpponent}
+                                        isFaceDown={
+                                            isOpponent
+                                                ? (companion.isFaceDown ?? false)
+                                                : false
+                                        }
+                                        burdens={playerBurdens}
+                                    />
+                                ))}
+                            </S.CardRow>
+                        </S.DormantOverlay>
+                    )}
+                </S.DormantFellowshipBanner>
+            );
+        }
+
+        // ⚔️ MODE NORMAL : Compagnie active (Joueur FP)
         const isFellowshipTargeted =
             !isOpponent &&
             activeTargetId === 'fellowshipArea' &&
@@ -114,8 +159,6 @@ export const PlayerArea: React.FC<PlayerAreaProps> = ({
         const isCombatLocked = Boolean(
             G?.actionWindow?.isOpen && G?.activeSkirmishId
         );
-
-        const playerBurdens = G?.players?.[_playerId]?.burdens ?? 0;
 
         return (
             <S.Fellowship
@@ -137,11 +180,11 @@ export const PlayerArea: React.FC<PlayerAreaProps> = ({
                         <S.EmptyText>Aucun compagnon déployé.</S.EmptyText>
                     )}
                     {fellowshipArea.map((companion, companionIdx) => {
-
                         const cardId = companion.instanceId || companion.id;
 
                         const isWounded = Boolean(
-                            G?.lastWoundedCardIds?.includes(cardId) || (companion.wounds && companion.wounds > 0)
+                            G?.lastWoundedCardIds?.includes(cardId) ||
+                                (companion.wounds && companion.wounds > 0)
                         );
                         const isDead = Boolean(
                             G?.pendingDeadCardIds?.includes(cardId)
@@ -228,7 +271,8 @@ export const PlayerArea: React.FC<PlayerAreaProps> = ({
                         const cardId = card.instanceId || card.id;
 
                         const isWounded = Boolean(
-                            G?.lastWoundedCardIds?.includes(cardId) || (card.wounds && card.wounds > 0)
+                            G?.lastWoundedCardIds?.includes(cardId) ||
+                                (card.wounds && card.wounds > 0)
                         );
                         const isDead = Boolean(
                             G?.pendingDeadCardIds?.includes(cardId)
