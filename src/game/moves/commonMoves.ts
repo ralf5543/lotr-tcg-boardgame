@@ -6,6 +6,7 @@ import { advanceArcheryAssignmentStep } from '../index';
 import { getEffectiveVitality } from '../../utils/cardStats';
 import { devMoves } from '../dev/devMoves';
 import { playSite } from './fellowshipMoves';
+import { canPlayCard } from '../engine/canPlayCard';
 export interface ReorderPayload {
     fromIndex?: number;
     toIndex?: number;
@@ -133,50 +134,24 @@ export const playCard = (
     const actingPlayerId = playerID ?? ctx.currentPlayer ?? '0';
     const player = G.players[actingPlayerId];
 
-    if (!player) {
-        console.warn(
-            `❌ [playCard] Joueur introuvable pour ID ${actingPlayerId}`
-        );
-        return 'INVALID_MOVE';
-    }
-    if (!player.hand) {
-        console.warn(
-            `❌ [playCard] Main introuvable pour joueur ${actingPlayerId}`
-        );
-        return 'INVALID_MOVE';
-    }
-    if (!player.hand[cardIndex]) {
-        console.warn(
-            `❌ [playCard] Pas de carte à l'index ${cardIndex} (taille main: ${player.hand.length})`
-        );
+    if (!player || !player.hand || !player.hand[cardIndex]) {
+        console.warn(`❌ [playCard] Joueur ou carte introuvable à l'index ${cardIndex}`);
         return 'INVALID_MOVE';
     }
 
     const card = player.hand[cardIndex];
+
+    // 🟢 VALIDATION CENTRALISÉE (Unicité, Phase, Kind, Twilight)
+    const validation = canPlayCard(card, { G, ctx, playerID: actingPlayerId });
+    if (!validation.valid) {
+        console.warn(`❌ [playCard] Rejet : ${validation.reason}`);
+        return 'INVALID_MOVE';
+    }
+
     const fpId = G.fpPlayerId || '0';
     const isFP = actingPlayerId === fpId;
 
-    if (isFP && ctx.phase !== 'fellowship') {
-        console.warn(
-            `❌ [playCard] Rejet FP hors fellowship (phase actuelle: ${ctx.phase})`
-        );
-        return 'INVALID_MOVE';
-    }
-    if (!isFP && ctx.phase !== 'shadow') {
-        console.warn(
-            `❌ [playCard] Rejet Ombre hors shadow (phase actuelle: ${ctx.phase})`
-        );
-        return 'INVALID_MOVE';
-    }
-
     if (isFP) {
-        if (card.kind !== 'FREE_PEOPLE') {
-            console.warn(
-                `❌ [playCard] Rejet FP: carte kind !== FREE_PEOPLE (${card.kind})`
-            );
-            return 'INVALID_MOVE';
-        }
-
         const cost = Number(card.twilightCost) || 0;
         const [playedCard] = player.hand.splice(cardIndex, 1);
         G.twilightPool += cost;
@@ -214,21 +189,7 @@ export const playCard = (
     }
 
     if (!isFP) {
-        if (card.kind !== 'SHADOW') {
-            console.warn(
-                `❌ [playCard] Rejet Ombre: carte kind !== SHADOW (${card.kind})`
-            );
-            return 'INVALID_MOVE';
-        }
-
         const cost = Number(card.twilightCost) || 0;
-        if (G.twilightPool < cost) {
-            console.warn(
-                `❌ [playCard] Rejet Ombre: pool crépuscule insuffisant (${G.twilightPool} < ${cost})`
-            );
-            return 'INVALID_MOVE';
-        }
-
         G.twilightPool -= cost;
         const [playedCard] = player.hand.splice(cardIndex, 1);
 

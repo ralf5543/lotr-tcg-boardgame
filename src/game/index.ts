@@ -280,7 +280,7 @@ export const LotrGame: Game<GameState> = {
     moves: {
         ...devMoves,
         ...allMoves,
-        ...commonMoves
+        ...commonMoves,
     },
 
     phases: {
@@ -583,7 +583,7 @@ export const LotrGame: Game<GameState> = {
                 G.statusMessage =
                     'Phase de Manœuvre : Fenêtre d’action ouverte.';
             },
-            moves: allMoves
+            moves: allMoves,
         },
 
         archery: {
@@ -648,7 +648,7 @@ export const LotrGame: Game<GameState> = {
 
                 G.pendingDeadCardIds = [];
             },
-            moves: allMoves
+            moves: allMoves,
         },
 
         assignment: {

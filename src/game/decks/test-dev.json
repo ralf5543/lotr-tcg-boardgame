@@ -1,0 +1,30 @@
+{
+  "id": "deck-p0",
+  "name": "Deck Gondor Menaces / Ourouks bourrins",
+  "ringBearerId": "9R+31",
+  "oneRingId": "4R1",
+  "startingCompanionIds": [
+    "7R91",
+    "7C323"
+  ],
+  "freePeople": [
+    "0P70",
+    "0P70",
+    "1R72"
+  
+  ],
+  "shadow": [
+    "11R194"
+  ],
+  "siteIds": [
+    "11S234",
+    "11S258",
+    "11S249",
+    "11S254",
+    "11S265",
+    "11S233",
+    "11S248",
+    "11S260",
+    "11S250"
+  ]
+}
