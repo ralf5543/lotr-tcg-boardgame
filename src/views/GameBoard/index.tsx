@@ -25,6 +25,7 @@ import { useFaction } from '../../contexts/FactionContext';
 import { useTargeting } from '../../contexts/TargetingContext';
 import { audioService } from '../../services/audioService';
 import { findTargetCard } from '../../utils/cardUtils';
+import { canPlayCard } from '../../game/engine/canPlayCard';
 
 export interface GameBoardProps extends BoardProps<GameState> {
     moves: BoardProps<GameState>['moves'] &
@@ -143,11 +144,20 @@ export const GameBoard: React.FC<GameBoardProps> = ({
             }
 
             if (origin === 'HAND') {
+                // 🟢 GARDE : Si la carte ne peut pas être jouée (Twilight, phase, unicité...), on stoppe immédiatement.
+                const validation = canPlayCard(card, {
+                    G,
+                    ctx,
+                    playerID: myId,
+                });
+                if (!validation.valid) {
+                    return;
+                }
+
                 if (
                     targetId === 'fellowshipArea' &&
                     canDropInFellowship(cardType)
                 ) {
-                    audioService.play('CARD_PLAY');
                     if (typeof moves.playCard === 'function') {
                         moves.playCard(index);
                         audioService.play('CARD_PLAY');
@@ -160,7 +170,6 @@ export const GameBoard: React.FC<GameBoardProps> = ({
                     targetId === 'supportArea' &&
                     canDropInSupportArea(cardType, cardSubtype)
                 ) {
-                    audioService.play('CARD_PLAY');
                     if (typeof moves.playCard === 'function') {
                         moves.playCard(index);
                         audioService.play('CARD_PLAY');
@@ -170,7 +179,7 @@ export const GameBoard: React.FC<GameBoardProps> = ({
                 }
 
                 if (targetId === 'battlefield' && card?.kind === 'SHADOW') {
-                    if (typeof moves.playShadowCard === 'function') {
+                    if (typeof moves.playCard === 'function') {
                         moves.playShadowCard(index);
                         audioService.play('CARD_PLAY');
                         audioService.play(soundPath, { delay: 0.3 });
@@ -183,7 +192,7 @@ export const GameBoard: React.FC<GameBoardProps> = ({
                     targetId !== 'supportArea' &&
                     targetId !== 'battlefield'
                 ) {
-                    const targetCard = findTargetCard(G,targetId);
+                    const targetCard = findTargetCard(G, targetId);
                     if (canAttachToCharacter(card, targetCard)) {
                         if (typeof moves.attachCard === 'function') {
                             moves.attachCard(index, targetId);
@@ -203,7 +212,7 @@ export const GameBoard: React.FC<GameBoardProps> = ({
                     targetId !== 'supportArea' &&
                     targetId !== 'battlefield'
                 ) {
-                    const targetCard = findTargetCard(G,targetId);
+                    const targetCard = findTargetCard(G, targetId);
                     if (canAttachToCharacter(card, targetCard)) {
                         if (moves.transferAttachment) {
                             moves.transferAttachment({
@@ -308,8 +317,16 @@ export const GameBoard: React.FC<GameBoardProps> = ({
         stopTargeting,
     ]);
 
+    const lastPlayedSkirmishIdRef = React.useRef<string | null>(null);
+
     useEffect(() => {
-        if (ctx.phase === 'skirmish' && G.activeSkirmishId) {
+        if (ctx.phase !== 'skirmish' || !G.activeSkirmishId) {
+            lastPlayedSkirmishIdRef.current = null;
+            return;
+        }
+
+        if (G.activeSkirmishId !== lastPlayedSkirmishIdRef.current) {
+            lastPlayedSkirmishIdRef.current = G.activeSkirmishId;
             audioService.play('SKIRMISH');
         }
     }, [ctx.phase, G.activeSkirmishId]);

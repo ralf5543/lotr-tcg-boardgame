@@ -227,11 +227,19 @@ export function canPlayCard(
     context: ValidationContext,
     targetCard?: CardState | SiteCardState | null
 ): ValidationResult {
-    // 1. Validation de l'Unicité
+    // 1. Validation Phase et Alignement
+    const phaseCheck = checkPhaseAndKind(card, context);
+    if (!phaseCheck.valid) return phaseCheck;
+
+    // 2. Validation du Twilight (Ombre)
+    const twilightCheck = checkTwilightCost(card, context);
+    if (!twilightCheck.valid) return twilightCheck;
+
+    // 3. Validation de l'Unicité
     const uniquenessCheck = checkUniqueness(card, context);
     if (!uniquenessCheck.valid) return uniquenessCheck;
 
-    // 2. Validation si la carte est un Attachement
+    // 4. Validation si la carte est un Attachement
     const isAttachment = ['POSSESSION', 'ARTIFACT', 'CONDITION'].includes(card.type);
     if (isAttachment && targetCard) {
         const attachCheck = canAttachToTarget(card, targetCard);
