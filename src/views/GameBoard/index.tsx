@@ -26,6 +26,7 @@ import { useTargeting } from '../../contexts/TargetingContext';
 import { audioService } from '../../services/audioService';
 import { findTargetCard } from '../../utils/cardUtils';
 import { canPlayCard } from '../../game/engine/canPlayCard';
+import { useCardPlayAudio } from '../../utils/useCardPlayAudio';
 
 export interface GameBoardProps extends BoardProps<GameState> {
     moves: BoardProps<GameState>['moves'] &
@@ -52,6 +53,7 @@ export const GameBoard: React.FC<GameBoardProps> = ({
     ctx,
     moves,
 }) => {
+    useCardPlayAudio(G);
     const myId = playerID || ctx.currentPlayer;
     const oppId = myId === '0' ? '1' : '0';
 
@@ -144,15 +146,12 @@ export const GameBoard: React.FC<GameBoardProps> = ({
             }
 
             if (origin === 'HAND') {
-                // 🟢 GARDE : Si la carte ne peut pas être jouée (Twilight, phase, unicité...), on stoppe immédiatement.
                 const validation = canPlayCard(card, {
                     G,
                     ctx,
                     playerID: myId,
                 });
-                if (!validation.valid) {
-                    return;
-                }
+                if (!validation.valid) return;
 
                 if (
                     targetId === 'fellowshipArea' &&
@@ -160,8 +159,6 @@ export const GameBoard: React.FC<GameBoardProps> = ({
                 ) {
                     if (typeof moves.playCard === 'function') {
                         moves.playCard(index);
-                        audioService.play('CARD_PLAY');
-                        audioService.play(soundPath, { delay: 0.3 });
                     }
                     return;
                 }
@@ -172,17 +169,13 @@ export const GameBoard: React.FC<GameBoardProps> = ({
                 ) {
                     if (typeof moves.playCard === 'function') {
                         moves.playCard(index);
-                        audioService.play('CARD_PLAY');
-                        audioService.play(soundPath, { delay: 0.3 });
                     }
                     return;
                 }
 
                 if (targetId === 'battlefield' && card?.kind === 'SHADOW') {
                     if (typeof moves.playCard === 'function') {
-                        moves.playShadowCard(index);
-                        audioService.play('CARD_PLAY');
-                        audioService.play(soundPath, { delay: 0.3 });
+                        moves.playCard(index);
                     }
                     return;
                 }
@@ -196,8 +189,6 @@ export const GameBoard: React.FC<GameBoardProps> = ({
                     if (canAttachToCharacter(card, targetCard)) {
                         if (typeof moves.attachCard === 'function') {
                             moves.attachCard(index, targetId);
-                            audioService.play('CARD_PLAY');
-                            audioService.play(soundPath, { delay: 0.3 });
                         }
                         return;
                     }
