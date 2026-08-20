@@ -1,6 +1,6 @@
 // src/game/engine/canPlayCard.ts
 
-import type { CardState, GameState } from '../types';
+import type { CardState, GameState, SiteCardState } from '../types';
 
 export interface ValidationContext {
     G: GameState;
@@ -148,18 +148,95 @@ export function checkUniqueness(card: CardState, { G, playerID }: ValidationCont
 
     return { valid: true };
 }
+
+/**
+ * Vérifie si un attachement respecte les contraintes 'attachedTo' sur une cible
+ */
+export function canAttachToTarget(
+    attachmentCard: CardState,
+    targetCard: CardState | SiteCardState | null
+): ValidationResult {
+    if (!targetCard) {
+        return { valid: false, reason: 'Aucune cible sélectionnée.' };
+    }
+
+    const requirements = attachmentCard.attachedTo;
+
+    // Si aucune contrainte n'est définie, l'attachement est autorisé par défaut
+    if (!requirements || !Array.isArray(requirements) || requirements.length === 0) {
+        return { valid: true };
+    }
+
+    const target = targetCard as CardState;
+    const targetEnTitle = (
+        target.i18n?.en?.title || 
+        target.title || 
+        (target as any).name || 
+        ''
+    ).trim();
+
+    const targetRace = target.race ? String(target.race).toUpperCase() : undefined;
+    const targetCulture = target.culture ? String(target.culture).toUpperCase() : undefined;
+    const targetType = target.type ? String(target.type).toUpperCase() : undefined;
+    const targetKeywords = Array.isArray(target.keywords)
+        ? target.keywords.map((k) => String(k).toUpperCase())
+        : [];
+
+    const checkSingleRequirement = (req: string): boolean => {
+        const rawReq = String(req ?? '').trim();
+        if (!rawReq) return false;
+
+        const reqUpper = rawReq.toUpperCase();
+
+        // 1. Validation Majuscules (TYPE, RACE, CULTURE, KEYWORD, SITE)
+        if (reqUpper === 'SITE' && targetType === 'SITE') return true;
+        if (targetRace && targetRace === reqUpper) return true;
+        if (targetCulture && targetCulture === reqUpper) return true;
+        if (targetType && targetType === reqUpper) return true;
+        if (targetKeywords.includes(reqUpper)) return true;
+
+        // 2. Validation Nom Propre (ex: "Boromir", "Aragorn")
+        if (targetEnTitle && targetEnTitle.toLowerCase() === rawReq.toLowerCase()) {
+            return true;
+        }
+
+        return false;
+    };
+
+    // Un des sous-tableaux (OU) doit voir TOUTES ses conditions (ET) validées
+    const satisfiesRequirements = requirements.some((group) => {
+        if (!Array.isArray(group) || group.length === 0) return false;
+        return group.every((req) => checkSingleRequirement(req));
+    });
+
+    if (!satisfiesRequirements) {
+        return {
+            valid: false,
+            reason: `'${attachmentCard.i18n?.en?.title || attachmentCard.title}' ne peut pas être attaché à ${targetEnTitle || 'cette cible'}.`,
+        };
+    }
+
+    return { valid: true };
+}
+
 /**
  * POINT D'ENTRÉE DU MOTEUR
  */
-export function canPlayCard(card: CardState, context: ValidationContext): ValidationResult {
-    const phaseCheck = checkPhaseAndKind(card, context);
-    if (!phaseCheck.valid) return phaseCheck;
-
-    const twilightCheck = checkTwilightCost(card, context);
-    if (!twilightCheck.valid) return twilightCheck;
-
+export function canPlayCard(
+    card: CardState,
+    context: ValidationContext,
+    targetCard?: CardState | SiteCardState | null
+): ValidationResult {
+    // 1. Validation de l'Unicité
     const uniquenessCheck = checkUniqueness(card, context);
     if (!uniquenessCheck.valid) return uniquenessCheck;
+
+    // 2. Validation si la carte est un Attachement
+    const isAttachment = ['POSSESSION', 'ARTIFACT', 'CONDITION'].includes(card.type);
+    if (isAttachment && targetCard) {
+        const attachCheck = canAttachToTarget(card, targetCard);
+        if (!attachCheck.valid) return attachCheck;
+    }
 
     return { valid: true };
 }

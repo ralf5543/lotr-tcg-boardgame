@@ -7,6 +7,7 @@ import { getEffectiveVitality } from '../../utils/cardStats';
 import { devMoves } from '../dev/devMoves';
 import { playSite } from './fellowshipMoves';
 import { canPlayCard } from '../engine/canPlayCard';
+import { findTargetCard } from '../../utils/cardUtils';
 export interface ReorderPayload {
     fromIndex?: number;
     toIndex?: number;
@@ -73,58 +74,37 @@ export const passActionWindow = ({
 export const attachCard = (
     { G, ctx, playerID }: LotrMoveContext,
     cardIndex: number,
-    targetId: string
+    targetCharacterId: string
 ) => {
     const actingPlayerId = playerID ?? ctx.currentPlayer ?? '0';
     const player = G.players[actingPlayerId];
 
-    if (!player || !player.hand || !player.hand[cardIndex])
+    if (!player || !player.hand || !player.hand[cardIndex]) {
         return 'INVALID_MOVE';
-
-    const card = player.hand[cardIndex];
-    const fpId = G.fpPlayerId || '0';
-    const isFP = actingPlayerId === fpId;
-
-    if (isFP && ctx.phase !== 'fellowship') return 'INVALID_MOVE';
-    if (!isFP && ctx.phase !== 'shadow') return 'INVALID_MOVE';
-
-    const fpPlayer = G.players[fpId];
-    const allPossibleTargets = [
-        ...(fpPlayer?.fellowshipArea || []),
-        ...(fpPlayer?.supportArea || []),
-        ...(player.supportArea || []),
-        ...(G.battlefield || []),
-    ];
-
-    const targetCharacter = allPossibleTargets.find(
-        (c: any) =>
-            c.id === targetId ||
-            c.instanceId === targetId ||
-            c.uuid === targetId
-    );
-
-    if (!targetCharacter) return 'INVALID_MOVE';
-
-    const cost = Number(card.twilightCost) || 0;
-
-    if (isFP) {
-        if (card.kind !== 'FREE_PEOPLE') return 'INVALID_MOVE';
-        G.twilightPool += cost;
-    } else {
-        if (card.kind !== 'SHADOW') return 'INVALID_MOVE';
-        if (G.twilightPool < cost) return 'INVALID_MOVE';
-        G.twilightPool -= cost;
     }
 
+    const card = player.hand[cardIndex];
+    
+    // Helper pour trouver le personnage cible dans les aires de jeu
+    const targetCard = findTargetCard(G, targetCharacterId);
+
+    // 🟢 VALIDATION CENTRALISÉE (Unicité + Porte-carte "attachedTo")
+    const validation = canPlayCard(card, { G, ctx, playerID: actingPlayerId }, targetCard);
+    if (!validation.valid) {
+        console.warn(`❌ [attachCard] Rejet : ${validation.reason}`);
+        return 'INVALID_MOVE';
+    }
+
+    // Traitement du Move...
+    const cost = Number(card.twilightCost) || 0;
     const [attachedCard] = player.hand.splice(cardIndex, 1);
-    if (!targetCharacter.attachments) targetCharacter.attachments = [];
-    targetCharacter.attachments.push(attachedCard);
+    G.twilightPool += cost;
 
-    const cardName = attachedCard.title || attachedCard.name || 'Une carte';
-    const targetName =
-        targetCharacter.title || targetCharacter.name || 'le personnage';
-
-    G.statusMessage = `${cardName} a été attaché à ${targetName}.`;
+    if (targetCard) {
+        if (!targetCard.attachments) targetCard.attachments = [];
+        targetCard.attachments.push(attachedCard);
+        G.statusMessage = `${attachedCard.title} est attaché à ${targetCard.title} (+${cost} Crépuscule).`;
+    }
 };
 
 export const playCard = (

@@ -24,6 +24,7 @@ import { DevPanel, type DevMoves } from '../../utils/DevPanel';
 import { useFaction } from '../../contexts/FactionContext';
 import { useTargeting } from '../../contexts/TargetingContext';
 import { audioService } from '../../services/audioService';
+import { findTargetCard } from '../../utils/cardUtils';
 
 export interface GameBoardProps extends BoardProps<GameState> {
     moves: BoardProps<GameState>['moves'] &
@@ -127,41 +128,6 @@ export const GameBoard: React.FC<GameBoardProps> = ({
 
             const { index, origin, card, parentId } = draggedCard;
 
-            // Helper pour trouver la carte cible dans toutes les zones du jeu
-            const findTargetCard = (
-                id: string
-            ): CardState | SiteCardState | null => {
-                if (!G || !G.players) return null;
-
-                // 1. Recherche dans les joueurs (Fellowship & Support)
-                for (const pId of ['0', '1']) {
-                    const player = G.players[pId];
-                    if (!player) continue;
-
-                    const foundInFellowship = player.fellowshipArea?.find(
-                        (c) => c?.id === id
-                    );
-                    if (foundInFellowship) return foundInFellowship;
-
-                    const foundInSupport = player.supportArea?.find(
-                        (c) => c?.id === id
-                    );
-                    if (foundInSupport) return foundInSupport;
-                }
-
-                // 2. Recherche sur le Champ de Bataille
-                const foundInBattlefield = G.battlefield?.find(
-                    (c) => c?.id === id
-                );
-                if (foundInBattlefield) return foundInBattlefield;
-
-                // 3. Recherche dans le Path (Sites)
-                const foundInPath = G.path?.find((s) => s?.id === id);
-                if (foundInPath) return foundInPath;
-
-                return null;
-            };
-
             const cardType = card?.type;
             const cardSubtype = card?.subtype;
 
@@ -217,7 +183,7 @@ export const GameBoard: React.FC<GameBoardProps> = ({
                     targetId !== 'supportArea' &&
                     targetId !== 'battlefield'
                 ) {
-                    const targetCard = findTargetCard(targetId);
+                    const targetCard = findTargetCard(G,targetId);
                     if (canAttachToCharacter(card, targetCard)) {
                         if (typeof moves.attachCard === 'function') {
                             moves.attachCard(index, targetId);
@@ -237,7 +203,7 @@ export const GameBoard: React.FC<GameBoardProps> = ({
                     targetId !== 'supportArea' &&
                     targetId !== 'battlefield'
                 ) {
-                    const targetCard = findTargetCard(targetId);
+                    const targetCard = findTargetCard(G,targetId);
                     if (canAttachToCharacter(card, targetCard)) {
                         if (moves.transferAttachment) {
                             moves.transferAttachment({
