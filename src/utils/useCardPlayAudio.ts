@@ -3,9 +3,6 @@ import { useEffect, useRef } from 'react';
 import type { CardState, GameState } from '../game/types';
 import { audioService } from '../services/audioService';
 
-/**
- * Détermine le chemin audio spécifique à un type de carte
- */
 function getCardSoundPath(card: CardState): string | undefined {
     if (!card) return undefined;
     const cardType = card.type;
@@ -21,15 +18,13 @@ function getCardSoundPath(card: CardState): string | undefined {
     return undefined;
 }
 
-// Variable hors-composant pour conserver la mémoire des cartes chargées au premier rendu
-const knownPlayedCardIdsRef = { current: null as Set<string> | null };
-
 export function useCardPlayAudio(G: GameState) {
+    const knownCardIdsRef = useRef<Set<string> | null>(null);
+
     useEffect(() => {
         const p0 = G.players?.['0'];
         const p1 = G.players?.['1'];
 
-        // 1. Rassemblement de toutes les cartes sur le plateau
         const rawBoardCards: CardState[] = [
             ...(p0?.fellowshipArea || []),
             ...(p0?.supportArea || []),
@@ -38,7 +33,6 @@ export function useCardPlayAudio(G: GameState) {
             ...(G.battlefield || []),
         ];
 
-        // Extraction récursive incluant les attachements (armes, objets, etc.)
         const collectWithAttachments = (list: CardState[]): CardState[] => {
             const acc: CardState[] = [];
             const walk = (c: CardState) => {
@@ -57,20 +51,23 @@ export function useCardPlayAudio(G: GameState) {
             currentInPlay.map((c) => c.instanceId || c.id).filter(Boolean)
         );
 
-        // Au chargement initial de la page / partie, on enregistre l'état sans jouer de son
-        if (knownPlayedCardIdsRef.current === null) {
-            knownPlayedCardIdsRef.current = currentIds;
+        if (knownCardIdsRef.current === null) {
+            knownCardIdsRef.current = currentIds;
             return;
         }
 
-        // 2. Recherche d'une nouvelle carte apparue dans le State G
         const newCard = currentInPlay.find(
-            (c) =>
-                c && !knownPlayedCardIdsRef.current?.has(c.instanceId || c.id)
+            (c) => c && !knownCardIdsRef.current?.has(c.instanceId || c.id)
         );
 
         if (newCard) {
-            // Déclenchement audio synchrone pour les deux joueurs !
+            console.log('🎵 [AUDIO DETECTED]', {
+                title: newCard.title || newCard.id,
+                type: newCard.type,
+                id: newCard.id,
+                instanceId: newCard.instanceId,
+            });
+
             audioService.play('CARD_PLAY');
 
             const soundPath = getCardSoundPath(newCard);
@@ -79,7 +76,6 @@ export function useCardPlayAudio(G: GameState) {
             }
         }
 
-        // Mise à jour de la mémoire d'IDs
-        knownPlayedCardIdsRef.current = currentIds;
+        knownCardIdsRef.current = currentIds;
     }, [G.players, G.battlefield]);
 }

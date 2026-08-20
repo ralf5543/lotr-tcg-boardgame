@@ -1,51 +1,5 @@
 import type { GameState, CardState } from '../game/types';
 import { getEffectiveVitality } from './cardStats';
-import { audioService } from '../services/audioService';
-
-const playCardWoundAudio = (card: CardState) => {
-    // delay to give time to the impact sound
-    if (card.race === 'ORC') {
-        audioService.play('WOUND_ORC', { delay: 0.3, enablePitch: true });
-    } else if (card.race === 'URUK-HAI') {
-        audioService.play('WOUND_ORC', { delay: 0.3, pitch: 0.75 });
-    } else if (card.race === 'NAZGUL' || card.race === 'WRAITH') {
-        audioService.play('WOUND_WRAITH', { delay: 0.3, enablePitch: true });
-    } else if (
-        card.race === 'TROLL' ||
-        card.race === 'HALF-TROLL' ||
-        card.race === 'CREATURE'
-    ) {
-        audioService.play('WOUND_TROLL', { delay: 0.3, enablePitch: true });
-    } else if (card.race === 'BALROG' || card.race === 'MAIA') {
-        audioService.play('WOUND_TROLL', { delay: 0.3, enablePitch: true });
-    } else if (card.race === 'SPIDER') {
-        audioService.play('WOUND_SPIDER', { delay: 0.3, enablePitch: true });
-    } else if (card.race === 'ELF') {
-        if (card.isFemale) {
-            audioService.play('WOUND_HUMAN_FEMALE', { delay: 0.3 });
-        } else {
-            audioService.play('WOUND_HUMAN_MALE', { delay: 0.3, pitch: 1.1 });
-        }
-    } else if (card.race === 'DWARF') {
-        audioService.play('WOUND_HUMAN_MALE', { delay: 0.3, pitch: 0.8 });
-    } else if (card.race === 'HOBBIT') {
-        if (card.isFemale) {
-            audioService.play('WOUND_HUMAN_FEMALE', { delay: 0.3, enablePitch: true });
-        } else {
-            audioService.play('WOUND_HOBBIT', { delay: 0.3, enablePitch: true });
-        }
-    } else if (card.race === 'WIZARD') {
-        audioService.play('WOUND_WIZARD', { delay: 0.3, enablePitch: true });
-    } else if (card.culture === 'GOLLUM') {
-        audioService.play('WOUND_GOLLUM', { delay: 0.3, enablePitch: true });
-    } else {
-        if (card.isFemale) {
-            audioService.play('WOUND_HUMAN_FEMALE', { delay: 0.3, enablePitch: true });
-        } else {
-            audioService.play('WOUND_HUMAN_MALE', { delay: 0.3, enablePitch: true });
-        }
-    }
-};
 
 /**
  * Applique une mort directe par submersion (overwhelm).
@@ -57,11 +11,9 @@ export const applyOverwhelmAndCheckDeath = (
 ): void => {
     if (!card) return;
 
-    playCardWoundAudio(card);
-
     const cardId = card.instanceId || card.id;
 
-    // 2. Marqueurs d'état pour le moteur de jeu et l'UI CSS
+    // 1. Marqueurs d'état pour le moteur de jeu et l'UI CSS
     card.isDead = true;
     card.isOverwhelmed = true;
 
@@ -82,8 +34,6 @@ export const applyWoundAndCheckDeath = (
 ): boolean => {
     if (!card) return false;
 
-    playCardWoundAudio(card);
-
     // 1. Infliger les blessures sur la carte
     card.wounds = (card.wounds || 0) + woundsCount;
 
@@ -98,9 +48,6 @@ export const applyWoundAndCheckDeath = (
     // 3. Calculer la vitalité
     const effectiveVitality = getEffectiveVitality(card);
 
-    // LOG DE DÉBOGAGE
-
-    // Si getEffectiveVitality renvoie la vitalité RESTANTE :
     const isDead = effectiveVitality <= 0;
 
     // 4. Si la carte meurt, marquer le flag et alimenter pendingDeadCardIds

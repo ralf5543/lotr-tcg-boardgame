@@ -27,6 +27,8 @@ import { audioService } from '../../services/audioService';
 import { findTargetCard } from '../../utils/cardUtils';
 import { canPlayCard } from '../../game/engine/canPlayCard';
 import { useCardPlayAudio } from '../../utils/useCardPlayAudio';
+import { useArcheryAudio } from '../../utils/useArcheryAudio';
+import { useWoundAudio } from '../../utils/useWoundAudio';
 
 export interface GameBoardProps extends BoardProps<GameState> {
     moves: BoardProps<GameState>['moves'] &
@@ -54,6 +56,8 @@ export const GameBoard: React.FC<GameBoardProps> = ({
     moves,
 }) => {
     useCardPlayAudio(G);
+    useArcheryAudio(G);
+    useWoundAudio(G);
     const myId = playerID || ctx.currentPlayer;
     const oppId = myId === '0' ? '1' : '0';
 

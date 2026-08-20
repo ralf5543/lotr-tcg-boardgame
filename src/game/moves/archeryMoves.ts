@@ -1,7 +1,6 @@
 import type { LotrMoveContext, CardState } from '../types';
 import { applyWoundAndCheckDeath } from '../../utils/applyWoundAndCheckDeath';
 import { getEffectiveVitality } from '../../utils/cardStats';
-import { audioService } from '../../services/audioService';
 
 export const assignArcheryWound = (
     { G, playerID }: LotrMoveContext,
@@ -38,7 +37,6 @@ export const assignArcheryWound = (
         if (!companion || companion.isDead || getEffectiveVitality(companion) <= 0) {
             return 'INVALID_MOVE';
         }
-        audioService.play('ARROW_IMPACT');
         applyWoundAndCheckDeath(G, companion, 1);
 
         if (G.archeryWoundsToAssign !== undefined) G.archeryWoundsToAssign -= 1;
@@ -91,7 +89,6 @@ export const assignArcheryWound = (
         if (!minion || minion.isDead || getEffectiveVitality(minion) <= 0) {
             return 'INVALID_MOVE';
         }
-        audioService.play('ARROW_IMPACT');
         applyWoundAndCheckDeath(G, minion, 1);
 
         if (G.archeryWoundsToAssign !== undefined) G.archeryWoundsToAssign -= 1;
