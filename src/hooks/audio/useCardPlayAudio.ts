@@ -1,7 +1,7 @@
 // src/hooks/useCardPlayAudio.ts
 import { useEffect, useRef } from 'react';
-import type { CardState, GameState } from '../game/types';
-import { audioService } from '../services/audioService';
+import type { CardState, GameState } from '../../game/types';
+import { audioService } from '../../services/audioService';
 
 function getCardSoundPath(card: CardState): string | undefined {
     if (!card) return undefined;

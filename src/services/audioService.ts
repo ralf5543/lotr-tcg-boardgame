@@ -14,6 +14,9 @@ class AudioService {
     private buffers: Map<SoundEffect, AudioBuffer[]> = new Map();
     private isMuted: boolean = false;
     private volume: number = 0.5;
+    
+    // Registre anti-doublon global (horodatage du dernier déclenchement par effet)
+    private lastPlayedMap = new Map<string, number>();
 
     public init() {
         // Protection SSR : N'exécute rien si on est côté serveur (Node.js)
@@ -64,6 +67,30 @@ class AudioService {
     public async play(effect: SoundEffect, options: PlayOptions = {}) {
         if (typeof window === 'undefined' || this.isMuted) return;
 
+        // --- VERROU ANTI-DOUBLON (DEBOUNCE 150MS) ---
+        const now = Date.now();
+        const lastTime = this.lastPlayedMap.get(effect);
+        
+        // Si le son a déjà été joué, on calcule le vrai diff. Sinon, diff = Infini.
+        const diff = lastTime !== undefined ? now - lastTime : Infinity;
+        const callerLigne = new Error().stack?.split('\n')[2]?.trim() || 'inconnu';
+
+        console.log(`🔊 [audioService.play]`, {
+            effect,
+            diffMs: diff === Infinity ? 'Premier appel' : `${diff}ms`,
+            blocked: diff < 150,
+            caller: callerLigne
+        });
+
+        // Si le son a été demandé il y a moins de 150ms, ON BLOQUE
+        if (diff < 150) {
+            return;
+        }
+
+        // On enregistre L'HORODATAGE IMMÉDIATEMENT avant tout code asynchrone
+        this.lastPlayedMap.set(effect, now);
+        // ----------------------------------------------
+
         if (!this.ctx) this.init();
         if (this.ctx && this.ctx.state === 'suspended') {
             await this.ctx.resume();
@@ -113,7 +140,7 @@ class AudioService {
         const startTime = this.ctx.currentTime + delay;
         source.start(startTime);
 
-        return source; // Retourne la source au cas où tu souhaites l'arrêter prématurément (ex: stop)
+        return source;
     }
 
     public toggleMute(): boolean {

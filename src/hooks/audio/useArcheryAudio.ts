@@ -1,6 +1,6 @@
 import { useEffect, useRef } from 'react';
-import type { GameState } from '../game/types';
-import { audioService } from '../services/audioService';
+import type { GameState } from '../../game/types';
+import { audioService } from '../../services/audioService';
 
 export function useArcheryAudio(G: GameState) {
     const prevRemainingWoundsRef = useRef<number | null>(null);

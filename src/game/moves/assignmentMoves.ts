@@ -1,7 +1,6 @@
 import type { LotrMoveContext } from '../types';
 import { checkAssignmentProgress } from '../logic/assignment';
 import { getCardText } from '../../utils/i18n';
-import { audioService } from '../../services/audioService';
 
 export const assignMinion = (
     { G, ctx, playerID, events }: LotrMoveContext,
@@ -50,8 +49,6 @@ export const assignMinion = (
             minionIds: [minionId],
         });
     }
-
-     audioService.play('ASSIGNMENT', { pitch: 0.5 });
 
     G.skirmishes = G.skirmishes.filter((s) => s.minionIds.length > 0);
 

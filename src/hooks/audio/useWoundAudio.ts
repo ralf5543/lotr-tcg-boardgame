@@ -1,7 +1,7 @@
 // src/hooks/useWoundAudio.ts
 import { useEffect, useRef } from 'react';
-import type { GameState, CardState } from '../game/types';
-import { audioService } from '../services/audioService';
+import type { GameState, CardState } from '../../game/types';
+import { audioService } from '../../services/audioService';
 
 export const playCardWoundAudio = (card: CardState) => {
     if (!card) return;

@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
-import { audioService } from '../services/audioService';
-import type { SoundEffect } from '../config/sounds';
+import { audioService } from '../../services/audioService';
+import type { SoundEffect } from '../../config/sounds';
 
 export const useAudio = () => {
     useEffect(() => {
@@ -14,8 +14,11 @@ export const useAudio = () => {
         return () => window.removeEventListener('click', handleFirstInteraction);
     }, []);
 
-    const playSound = (effect: SoundEffect) => {
-        audioService.play(effect);
+    const playSound = (
+        effect: SoundEffect,
+        options?: Parameters<typeof audioService.play>[1]
+    ) => {
+        audioService.play(effect, options);
     };
 
     return { playSound, audioService };
