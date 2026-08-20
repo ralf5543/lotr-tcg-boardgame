@@ -100,7 +100,7 @@ if (companionStrength > minionsStrength) {
             ? companionStrength >= 2 * minionsStrength
             : companionStrength > 0;
 
-    audioService.play('SMASH');
+    audioService.play('SMASH', {enablePitch: true});
 
     minions.forEach((minion) => {
         if (isMinionsOverwhelmed) {
@@ -123,7 +123,7 @@ else {
             ? minionsStrength >= 2 * companionStrength
             : minionsStrength > 0;
 
-    audioService.play('SMASH');
+    audioService.play('SMASH', {enablePitch: true});
 
     if (isCompanionOverwhelmed) {
         applyOverwhelmAndCheckDeath(G, companion);

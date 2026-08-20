@@ -1,4 +1,5 @@
 Launch vite dev : npm run dev
+laternative : npm run dev -- --host (consultation sur le même wifi)
 
 Launch Node serveur (to simulate 2 players) : nom run server
 

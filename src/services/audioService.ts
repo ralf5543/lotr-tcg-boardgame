@@ -81,7 +81,7 @@ class AudioService {
         const {
             volume = 1.0,
             delay = 0,
-            enablePitch = true,
+            enablePitch = false,
             pitch,
             loop = false,
         } = options;
