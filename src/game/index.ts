@@ -5,8 +5,9 @@ import type {
     PlayerState,
     LotrPhaseContext,
     LotrMoveContext,
+    SiteCardState
 } from './types';
-import { CARDS_DATABASE, DUMMY_SITES_PLAYER_0 } from './cardsData';
+import { CARDS_DATABASE } from './cardsData';
 import { loadAndValidateDeck } from '../utils/deckLoader';
 import {
     isMinionRoaming,
@@ -52,6 +53,15 @@ const createInitialPlayer = (playerId: string): PlayerState => {
     const deckConfig = loadAndValidateDeck(playerId);
     const fullDeckIds = [...deckConfig.freePeople, ...deckConfig.shadow];
 
+    // Chargement dynamique des sites depuis siteIds via buildDeckFromIds
+    const siteCards = buildDeckFromIds(deckConfig.siteIds || [], playerId);
+
+    const sitesDeck: SiteCardState[] = siteCards.map((card, index) => ({
+        ...card,
+        ownerId: playerId,
+        siteNumber: index + 1,
+    })) as SiteCardState[];
+
     return {
         profile: isP0
             ? {
@@ -70,7 +80,7 @@ const createInitialPlayer = (playerId: string): PlayerState => {
         deadPile: [],
         fellowshipArea: [],
         supportArea: [],
-        sitesDeck: [],
+        sitesDeck,
         currentSiteIndex: 0,
         burdens: 0,
     };
@@ -180,20 +190,8 @@ export const advanceArcheryAssignmentStep = (G: GameState, events: any) => {
 
 export const setupGame = ({ random }: { random: any }): GameState => {
     const players: Record<string, PlayerState> = {
-        '0': {
-            ...createInitialPlayer('0'),
-            sitesDeck: DUMMY_SITES_PLAYER_0.slice(1),
-            currentSiteIndex: 0,
-            deadPile: [],
-            burdens: 0,
-        },
-        '1': {
-            ...createInitialPlayer('1'),
-            sitesDeck: DUMMY_SITES_PLAYER_0.slice(1),
-            currentSiteIndex: 0,
-            deadPile: [],
-            burdens: 0,
-        },
+        '0': createInitialPlayer('0'),
+        '1': createInitialPlayer('1'),
     };
 
     Object.keys(players).forEach((pId) => {
