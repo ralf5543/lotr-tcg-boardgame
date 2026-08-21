@@ -65,6 +65,7 @@ export const GameBoard: React.FC<GameBoardProps> = ({
 
     const fpPlayerId = G.fpPlayerId || '0';
     const isLocalFP = myId === fpPlayerId;
+    const isLocalShadow = !isLocalFP;
     const currentFaction = isLocalFP ? 'FREE_PEOPLE' : 'SHADOW';
 
     const me = G.players[myId] || {
@@ -373,26 +374,33 @@ export const GameBoard: React.FC<GameBoardProps> = ({
         stopTargeting,
     ]);
 
-    const isLocalShadow = !isLocalFP;
-
     // Détermination de l'onglet prioritaire selon le state du jeu
     const getRequestedTab = (): 'hand' | 'sites' | null => {
-        // 1. Pose d'un site en cours de partie (Ombre) OU choix du site initial (Peuples Libres)
-        const isAwaitingSite =
-            (G.awaitingSiteSelection && isLocalShadow) ||
-            (ctx.phase === 'setup' &&
-                G.setupState?.step === 'AWAITING_SITE' &&
-                isLocalFP);
+        const isSetupPhase = ctx.phase === 'setup';
+        const auctionWinnerId = G.setupState?.auctionWinnerId || fpPlayerId;
 
-        if (isAwaitingSite) return 'sites';
+        // 1. SETUP : Seul le gagnant des enchères (FP) bascule sur 'sites' pour poser le site 1
+        if (isSetupPhase && G.setupState?.step === 'AWAITING_SITE') {
+            if (myId === auctionWinnerId) {
+                return 'sites';
+            }
+            return null; // L'Ombre ne bouge pas
+        }
 
-        // 2. Choix du mulligan durant la phase setup
-        const isMulliganStep =
-            ctx.phase === 'setup' && G.setupState?.step === 'MULLIGAN';
+        // 2. MULLIGAN (Setup) : Reste ou bascule sur la main
+        if (isSetupPhase && G.setupState?.step === 'MULLIGAN') {
+            return 'hand';
+        }
 
-        if (isMulliganStep) return 'hand';
+        // 3. EN PARTIE (Fellowship / Regroup) : Seule l'Ombre bascule sur 'sites'
+        if (G.awaitingSiteSelection) {
+            if (isLocalShadow) {
+                return 'sites';
+            }
+            return null; // Le FP ne bouge pas
+        }
 
-        // 3. Rétablissement automatique de la Main au début des phases actives
+        // 4. Début de phase active : retour sur la main
         const isMainGamePhase =
             ctx.phase === 'fellowship' || ctx.phase === 'shadow';
 
