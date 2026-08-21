@@ -10,8 +10,8 @@ export const isMinionRoaming = (card: CardState, currentSiteIndex: number): bool
 
 export const getEffectiveTwilightCost = (card: CardState, currentSiteIndex: number): number => {
     const baseCost = Number(card.twilightCost) || 0;
-    if (isMinionRoaming(card, currentSiteIndex)) {
-        return baseCost + 2;
-    }
-    return baseCost;
+    const isRoaming = isMinionRoaming(card, currentSiteIndex);
+    const effectiveCost = isRoaming ? baseCost + 2 : baseCost;
+
+    return effectiveCost;
 };

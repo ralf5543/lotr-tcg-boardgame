@@ -181,7 +181,9 @@ export const GameBoard: React.FC<GameBoardProps> = ({
                 }
 
                 if (targetId === 'battlefield' && card?.kind === 'SHADOW') {
-                    if (typeof moves.playCard === 'function') {
+                    if (typeof moves.playShadowCard === 'function') {
+                        moves.playShadowCard(index);
+                    } else if (typeof moves.playCard === 'function') {
                         moves.playCard(index);
                     }
                     return;

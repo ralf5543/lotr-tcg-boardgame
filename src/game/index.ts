@@ -498,7 +498,11 @@ export const LotrGame: Game<GameState> = {
                         fpSiteIndex
                     );
 
-                    if (G.twilightPool < effectiveCost) return 'INVALID_MOVE';
+                    if (G.twilightPool < effectiveCost) {
+    console.warn(`❌ [playMinion] Twilight insuffisant: requis ${effectiveCost}, disponible ${G.twilightPool}`);
+    return 'INVALID_MOVE';
+}
+                    //if (G.twilightPool < effectiveCost) return 'INVALID_MOVE';
 
                     player.hand.splice(cardIndex, 1);
                     G.twilightPool -= effectiveCost;
