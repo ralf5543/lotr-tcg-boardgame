@@ -61,12 +61,6 @@ export function useCardPlayAudio(G: GameState) {
         );
 
         if (newCard) {
-            console.log('🎵 [AUDIO DETECTED]', {
-                title: newCard.title || newCard.id,
-                type: newCard.type,
-                id: newCard.id,
-                instanceId: newCard.instanceId,
-            });
 
             audioService.play('CARD_PLAY');
 

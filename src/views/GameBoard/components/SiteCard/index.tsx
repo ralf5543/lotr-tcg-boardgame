@@ -5,6 +5,8 @@ import { TRANSLATIONS } from '../../../../game/translations';
 import { TokenPlayer } from '../TokenPlayer';
 import { KeywordBadge } from '../KeywordBadge';
 import { FormattedText } from '../../../../utils/FormattedText';
+import { getCardText } from '../../../../utils/i18n';
+import type { SupportedLanguage } from '../../../../utils/i18n';
 
 export interface SiteCardProps {
     site: SiteCardState;
@@ -16,6 +18,7 @@ export interface SiteCardProps {
     };
     className?: string;
     style?: React.CSSProperties;
+    currentLang?: SupportedLanguage;
 }
 
 export const SiteCard: React.FC<SiteCardProps> = ({
@@ -24,10 +27,13 @@ export const SiteCard: React.FC<SiteCardProps> = ({
     playersHere,
     className,
     style,
+    currentLang = 'fr',
 }) => {
-    const translatedKeywords = site.keywords
-        ?.map((kw) => TRANSLATIONS.keyword[kw].label || kw)
-        .join(', ');
+
+    const { title, gameText } = getCardText(
+        site,
+        currentLang
+    );
 
     // Helpers pour extraire facilement les infos p0 / p1
     const p0Data = typeof playersHere?.p0 === 'object' ? playersHere.p0 : null;
@@ -45,21 +51,12 @@ export const SiteCard: React.FC<SiteCardProps> = ({
                     ))}
                 </S.SiteKeywordsContainer>
             )}
-            <S.Title $size={size}>{site.name}</S.Title>
+            <S.Title $size={size}>{title}</S.Title>
             <S.TwilightBadge $size={size}>{site.twilightCost}</S.TwilightBadge>
-
-            {site.imageUrl && (
-                <S.VisualContainer $size={size}>
-                    <S.Visual src={site.imageUrl} alt={site.name} />
-                </S.VisualContainer>
-            )}
 
             {size !== 'sm' && (
                 <S.Text $size={size}>
-                    {translatedKeywords && (
-                        <strong>{translatedKeywords}.&nbsp;</strong>
-                    )}
-                    <FormattedText text={site.gameText} />
+                    <FormattedText text={gameText} />
                 </S.Text>
             )}
             {size === 'sm' && (
@@ -86,6 +83,12 @@ export const SiteCard: React.FC<SiteCardProps> = ({
                         </>
                     )}
                 </S.Footer>
+            )}
+
+            {site.imageUrl && (
+                <S.VisualContainer $size={size}>
+                    <S.Visual src={site.imageUrl} alt={site.name} />
+                </S.VisualContainer>
             )}
         </S.Container>
     );

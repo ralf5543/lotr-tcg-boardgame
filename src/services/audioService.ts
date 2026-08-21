@@ -73,14 +73,6 @@ class AudioService {
         
         // Si le son a déjà été joué, on calcule le vrai diff. Sinon, diff = Infini.
         const diff = lastTime !== undefined ? now - lastTime : Infinity;
-        const callerLigne = new Error().stack?.split('\n')[2]?.trim() || 'inconnu';
-
-        console.log(`🔊 [audioService.play]`, {
-            effect,
-            diffMs: diff === Infinity ? 'Premier appel' : `${diff}ms`,
-            blocked: diff < 150,
-            caller: callerLigne
-        });
 
         // Si le son a été demandé il y a moins de 150ms, ON BLOQUE
         if (diff < 150) {

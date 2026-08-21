@@ -173,10 +173,6 @@ export const Card: React.FC<CardProps> = ({
         ? TRANSLATIONS.race[card.race] || card.race
         : null;
 
-    const translatedKeywords = card.keywords
-        ?.map((kw) => TRANSLATIONS.keyword[kw]?.label || kw)
-        .join(', ');
-
     const handlePointerDown = (e: React.PointerEvent) => {
         if (!isDraggable || isPlayable === false || index === undefined) return;
         e.preventDefault();

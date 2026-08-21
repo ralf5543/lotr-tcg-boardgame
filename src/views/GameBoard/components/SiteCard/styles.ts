@@ -35,11 +35,24 @@ export const Container = styled.div<{ $size: SiteCardSize }>`
     background: black;
     color: black;
     user-select: none;
-    background-image: url('interface/cards_backgrounds/site_standard.webp');
-    background-size: cover;
-    background-repeat: no-repeat;
+
+    &::after {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background-image: url('interface/cards_backgrounds/site_standard.webp');
+        background-size: cover;
+        background-repeat: no-repeat;
+    }
 
     ${({ $size }) => sizeStyles[$size]}
+
+    ${(props) =>
+        props.$size === 'sm' &&
+        `&::after {
+            content: none;
+        }
+    `}
 `;
 
 export const Title = styled.p<{
@@ -55,6 +68,7 @@ export const Title = styled.p<{
     font-size: 8px;
     font-weight: bold;
     font-variant: small-caps;
+    z-index: 1;
 
     ${(props) =>
         props.$size === 'sm' &&
@@ -112,6 +126,7 @@ export const VisualContainer = styled.div<{
     overflow: hidden;
     inset: 17px 19px 31px 20px;
     object-fit: cover; 
+    container-type: size;
 
     ${(props) =>
         props.$size === 'sm' &&
@@ -127,9 +142,16 @@ export const VisualContainer = styled.div<{
 `;
 
 export const Visual = styled.img`
-    width: 100%;
-    height: 100%;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+
+    width: 100cqh; /* Utilise la hauteur du conteneur comme largeur */
+    height: 100cqw; /* Utilise la largeur du conteneur comme hauteur */
+
     object-fit: cover;
+    transform-origin: center center;
+    transform: translate(-50%, -50%) rotate(90deg);
 `;
 
 export const Text = styled.p<{
@@ -139,6 +161,7 @@ export const Text = styled.p<{
     inset: 100px 22px 15px 23px;
     line-height: 0.9;
     font-size: 6px;
+    z-index: 1;
 
     ${(props) =>
         props.$size === 'lg' &&

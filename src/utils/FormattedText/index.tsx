@@ -15,10 +15,11 @@ interface FormattedTextProps {
 }
 
 export const FormattedText: React.FC<FormattedTextProps> = ({ text }) => {
-    // La Regex capture :
-    // 1. Les balises <symbol>...</symbol>
-    // 2. Le texte en gras **mot**
-    const tokens = text.split(/(<symbol>[^<]+<\/symbol>|\*\*[^*]+\*\*)/gi);
+    // Si text est undefined, null ou pas une chaîne, on utilise une chaîne vide
+    const safeText = text || '';
+
+    // La Regex capture les symboles et le gras
+    const tokens = safeText.split(/(<symbol>[^<]+<\/symbol>|\*\*[^*]+\*\*)/gi);
 
     return (
         <TextWrapper>
