@@ -70,13 +70,13 @@ export const CardWrapper = styled.div<{
     ${(props) =>
         props.$isNew &&
         css`
-            animation: ${drawCardIn} 0.5s cubic-bezier(0.16, 1, 0.3, 1) both;
+            animation: ${drawCardIn} 0.5s cubic-bezier(0.16, 1, 0.3, 1) backwards;
             animation-delay: ${(props.$staggerIndex ?? 0) * 0.08}s;
         `}
 
     &:hover {
         transform: rotate(var(--angle)) translateY(var(--translateY)) scale(1.1);
-        z-index: 100 !important;
+        z-index: 100;
 
         ${(props) =>
             props.$isDiscardPhase &&
