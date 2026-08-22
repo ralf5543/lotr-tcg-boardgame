@@ -4,7 +4,7 @@ import { Card } from '../Card';
 import * as S from './styles';
 import { useDrag } from '../../../../contexts/DragContext';
 import { useTargeting } from '../../../../contexts/TargetingContext';
-import { canAttachToCharacter } from '../../../../game/engine/canPlayCard';
+import { canPlayCard } from '../../../../game/engine/canPlayCard';
 import { SkirmishClash } from './SkirmishClash';
 import { getEffectiveVitality } from '../../../../utils/cardStats';
 
@@ -71,7 +71,13 @@ export const BoardCharacterStack: React.FC<BoardCharacterStackProps> = ({
 
     // Validation d'attachement via la fonction DNF
     const canAttach = draggedCard
-        ? canAttachToCharacter(draggedCard, character)
+        ? canPlayCard(
+              draggedCard,
+              { G: {} as any, ctx: {} as any, playerID: '' },
+              character.id,
+              character,
+              { ignorePhase: true }
+          ).valid
         : false;
 
     const isTargeted =
@@ -180,9 +186,7 @@ export const BoardCharacterStack: React.FC<BoardCharacterStackProps> = ({
                         }
                     }}
                 >
-                    {isDead && (
-                        <S.DeathPicto src='/interface/UI/skull.webp' />
-                    )}
+                    {isDead && <S.DeathPicto src="/interface/UI/skull.webp" />}
                     <Card
                         card={character}
                         size="sm"
