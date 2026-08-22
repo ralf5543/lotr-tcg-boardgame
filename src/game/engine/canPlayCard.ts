@@ -8,6 +8,10 @@ import type {
     CardSubtype,
 } from '../types';
 
+/* ==========================================================================
+   TYPES & INTERFACES
+   ========================================================================== */
+
 export interface ValidationContext {
     G: GameState;
     ctx: { phase?: string; currentPlayer?: string };
@@ -19,45 +23,53 @@ export interface ValidationResult {
     reason?: string;
 }
 
+export interface ValidationOptions {
+    ignorePhase?: boolean;
+}
+
 /* ==========================================================================
-   1. HELPERS DE DESTINATION ET DE CIBLAGE
+   1. HELPERS D'ATTACHEMENT ET DE DESTINATION
    ========================================================================== */
 
-const isSupportAreaSubtype = (subtype?: CardSubtype | string): boolean => {
-    if (!subtype) return false;
-    const normalized = subtype.toUpperCase().replace('_', '-');
-    return normalized === 'SUPPORT-AREA';
+/**
+ * Détermine si une carte exige d'être attachée à une cible (porte la clause "Bearer must be...")
+ */
+export const requiresAttachmentTarget = (card: CardState): boolean => {
+    return Boolean(
+        card.attachedTo &&
+        Array.isArray(card.attachedTo) &&
+        card.attachedTo.length > 0
+    );
 };
 
-export const canDropInSupportArea = (
-    type?: CardType,
-    subtype?: CardSubtype | string
-): boolean => {
+/**
+ * Valide si une carte de type Possession/Condition/Artefact sans hôte peut aller en zone de soutien
+ */
+export const canDropInSupportArea = (card: CardState): boolean => {
+    const { type } = card;
     if (!type) return false;
 
-    // 1. Alliés et Suivants
+    // Alliés et Suivants vont en zone de soutien par défaut
     if (type === 'ALLY' || type === 'FOLLOWER') return true;
 
-    // 2. Possessions et Conditions : strictes sur SUPPORT-AREA
-    if (type === 'POSSESSION' || type === 'CONDITION') {
-        return isSupportAreaSubtype(subtype);
-    }
-
-    // 3. Artefacts
-    if (type === 'ARTIFACT') {
-        return !subtype || isSupportAreaSubtype(subtype);
+    // Possessions & Conditions : Se posent en soutien SI ELLES N'ONT PAS d'attachement requis
+    if (type === 'POSSESSION' || type === 'CONDITION' || type === 'ARTIFACT') {
+        return !requiresAttachmentTarget(card);
     }
 
     return false;
 };
 
+/**
+ * Valide si une carte peut être posée directement dans la zone Communauté (Fellowship Area)
+ */
 export const canDropInFellowship = (type?: CardType): boolean => {
-    if (!type) return false;
     return type === 'COMPANION';
 };
 
 /**
- * Vérifie si un attachement peut se fixer sur une cible donnée
+ * Vérifie si une carte d'attachement peut se fixer sur un personnage cible spécifique
+ * en comparant son tableau `attachedTo` aux attributs du personnage cible.
  */
 export const canAttachToCharacter = (
     attachmentCard?: CardState | SiteCardState | null,
@@ -68,12 +80,8 @@ export const canAttachToCharacter = (
     const attachment = attachmentCard as CardState;
     const target = targetCard as CardState;
 
-    // Si la carte n'a aucun prérequis d'attachement défini dans `attachedTo`, elle ne s'attache pas
-    if (
-        !attachment.attachedTo ||
-        !Array.isArray(attachment.attachedTo) ||
-        attachment.attachedTo.length === 0
-    ) {
+    // Sans clause `attachedTo`, la carte ne s'attache à personne (direction supportArea)
+    if (!requiresAttachmentTarget(attachment)) {
         return false;
     }
 
@@ -121,6 +129,7 @@ export const canAttachToCharacter = (
 
     const requirements = attachment.attachedTo as string[][];
 
+    // validation DNF (Disjunctive Normal Form) : AU MOINS UN groupe d'exigences doit être TOUT à fait satisfait
     return requirements.some((group) => {
         if (!Array.isArray(group) || group.length === 0) return false;
         return group.every((req) => checkSingleRequirement(req));
@@ -128,9 +137,12 @@ export const canAttachToCharacter = (
 };
 
 /* ==========================================================================
-   2. RÈGLES DE VALIDATION MOTEUR
+   2. SOUS-RÈGLES DU MOTEUR (CHECKS INTERNES)
    ========================================================================== */
 
+/**
+ * Vérifie que le joueur est autorisé à jouer selon son rôle et la phase en cours
+ */
 function checkPhaseAndKind(
     card: CardState,
     context: ValidationContext
@@ -170,6 +182,9 @@ function checkPhaseAndKind(
     return { valid: true };
 }
 
+/**
+ * Vérifie que le joueur a suffisamment de Crépuscule en réserve (Shadow uniquement)
+ */
 function checkTwilightCost(
     card: CardState,
     context: ValidationContext
@@ -190,6 +205,9 @@ function checkTwilightCost(
     return { valid: true };
 }
 
+/**
+ * Extraction sécurisée du titre d'une carte pour la comparaison d'unicité
+ */
 const getCardTitle = (c?: CardState | SiteCardState | null): string => {
     if (!c) return '';
     const card = c as CardState;
@@ -204,6 +222,11 @@ const getCardTitle = (c?: CardState | SiteCardState | null): string => {
         .toLowerCase();
 };
 
+/**
+ * Vérifie l'unicité des cartes en jeu et dans la deadPile.
+ * - FP : Unicité propre aux zones + deadPile du joueur actif.
+ * - SHADOW : Unicité globale sur le champ de bataille et la table.
+ */
 function checkUniqueness(
     card: CardState,
     context: ValidationContext
@@ -217,7 +240,7 @@ function checkUniqueness(
     const isShadow = card.kind === 'SHADOW';
 
     if (isShadow) {
-        // 🔴 OMBRE : Unicité GLOBALE sur l'ensemble du champ de bataille / cartes en jeu
+        // 🔴 OMBRE : Unicité GLOBALE sur le champ de bataille
         const allShadowInPlay: CardState[] = [];
 
         if (G.battlefield) {
@@ -229,7 +252,6 @@ function checkUniqueness(
             });
         }
 
-        // On vérifie aussi si une carte d'Ombre est posée dans une supportArea
         Object.values(G.players || {}).forEach((p) => {
             if (p.supportArea) {
                 p.supportArea.forEach((c) => {
@@ -288,7 +310,7 @@ function checkUniqueness(
         }
     }
 
-    // 2. Vérification dans la Dead Pile du joueur actif (pour FP)
+    // Check deadPile du joueur actif
     if (playerID && G.players?.[playerID]?.deadPile) {
         const activePlayerDeadPile = G.players[playerID].deadPile;
         const existsInDeadPile = activePlayerDeadPile.some(
@@ -305,18 +327,22 @@ function checkUniqueness(
 
     return { valid: true };
 }
+
 /* ==========================================================================
-   3. POINT D'ENTRÉE DE VALIDATION
+   3. POINT D'ENTRÉE PRINCIPAL (canPlayCard)
    ========================================================================== */
 
+/**
+ * Point de vérité unique validant si une carte peut être jouée/déposée.
+ */
 export function canPlayCard(
     card: CardState,
     context: ValidationContext,
     targetId?: string,
     targetCard?: CardState | SiteCardState | null,
-    options?: { ignorePhase?: boolean } // 🟢 Option pour les survol UI
+    options?: ValidationOptions
 ): ValidationResult {
-    // 1. Phase et Alignement (ignoré si survol UI)
+    // 1. Phase et rôle des joueurs (sauf si survol UI)
     if (!options?.ignorePhase) {
         const phaseCheck = checkPhaseAndKind(card, context);
         if (!phaseCheck.valid) return phaseCheck;
@@ -326,11 +352,11 @@ export function canPlayCard(
     const twilightCheck = checkTwilightCost(card, context);
     if (!twilightCheck.valid) return twilightCheck;
 
-    // 3. Unicité
+    // 3. Unicité (Tableau / DeadPile)
     const uniquenessCheck = checkUniqueness(card, context);
     if (!uniquenessCheck.valid) return uniquenessCheck;
 
-    // 4. Validation de la Zone ou de la Cible
+    // 4. Validation du dépôt en Zone ou sur Cible
     if (targetId) {
         if (targetId === 'fellowshipArea') {
             if (!canDropInFellowship(card.type)) {
@@ -340,10 +366,10 @@ export function canPlayCard(
                 };
             }
         } else if (targetId === 'supportArea') {
-            if (!canDropInSupportArea(card.type, card.subtype)) {
+            if (!canDropInSupportArea(card)) {
                 return {
                     valid: false,
-                    reason: 'Cette carte ne peut pas être posée en zone de soutien.',
+                    reason: 'Cette carte doit être attachée à un personnage et ne peut pas aller en zone de soutien.',
                 };
             }
         } else if (targetId === 'battlefield') {
@@ -354,6 +380,7 @@ export function canPlayCard(
                 };
             }
         } else {
+            // Cible d'attachement sur un personnage
             if (!targetCard) {
                 return {
                     valid: false,
