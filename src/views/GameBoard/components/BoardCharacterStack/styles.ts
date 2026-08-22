@@ -35,14 +35,17 @@ export const CardDragTarget = styled.div<{
 
     /* EFFET VISUEL QUAND LA CARTE EST CIBLÉE PAR UN DRAG */
     ${({ $isTargeted }) =>
-        $isTargeted &&
-        css`
-            border-color: #2ecc71 !important;
-            box-shadow:
-                0 0 12px #2ecc71,
-                0 0 20px rgba(46, 204, 113, 0.6);
-            transform: scale(1.05);
-        `}
+    $isTargeted &&
+    css`
+        border-color: #ffd700 !important;
+        box-shadow:
+            0 0 10px #ffd700,
+            0 0 25px #ffb700,
+            0 0 45px rgba(255, 183, 0, 0.8),
+            0 0 70px rgba(255, 215, 0, 0.4);
+        transform: scale(1.08);
+        z-index: 10;
+    `}
 `;
 
 /* =========================================================

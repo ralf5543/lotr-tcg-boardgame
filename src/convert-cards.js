@@ -1,3 +1,6 @@
+import fs from 'fs';
+import path from 'path';
+
 // ============================================================================ 
 // 1. CONFIGURATION DES CHEMINS ET CONSTANTES DU JEU 
 // ============================================================================ 
@@ -53,7 +56,7 @@ const VALID_KEYWORDS = new Set([
     'KNIGHT', 'LURKER', 'MACHINE', 'MARSH', 'MOUNTAIN', 'MUSTER',
     'PIPEWEED', 'PLAINS', 'RANGER', 'RING-BEARER', 'RING-BOUND', 'RIVER',
     'SEARCH', 'SOUTHRON', 'SPELL', 'STEALTH', 'TALE', 'TENTACLE',
-    'TOIL 1', 'TOIL 2', 'TOIL 3', 'TRACKER', 'TWILIGHT', 'UNDERGROUND',
+    'TOIL 1', 'TOIL 2', 'TOIL 3', 'TRACKER', 'TWILIGHT', 'UNBOUND', 'UNDERGROUND',
     'UNHASTY', 'VALIANT', 'VILLAGER', 'WARG-RIDER', 'WEATHER'
 ]);
 
@@ -220,40 +223,49 @@ function buildLangBlock(title, subtitle, gameText, lore) {
 // ============================================================================ 
 
 /** 
-  * Extrait les mots-clés autonomes d'une carte depuis son texte anglais. 
-  * - Cible les balises <keyword>Mot-clé.</keyword> commençant par une Majuscule et finissant par un point. 
-
-  * - Gestion spéciale pour AMBUSH : capture 
-<keyword>Ambush</keyword> 
-<symbol>twilightX</symbol> -> "AMBUSH X" 
-  */
-function parseKeywords(text) {
-    if (!text) return undefined;
-
+ * Extrait les mots-clés autonomes d'une carte depuis son texte anglais 
+ * et applique les règles logiques natives du jeu (Ring-bound / Unbound). 
+ */
+function parseKeywords(text, titleVO, type, isRingbearer) {
     const keywords = [];
 
-    // 1. CAS SPÉCIAL : Ambush suivi du symbole twilightX 
-    const ambushRegex = /<keyword>Ambush<\/keyword>\s*<symbol>twilight(\d+)<\/symbol>/gi;
-    let ambushMatch;
-    while ((ambushMatch = ambushRegex.exec(text)) !== null) {
-        const cost = ambushMatch[1];
-        const kw = `AMBUSH ${cost}`;
-        if (!keywords.includes(kw)) {
-            keywords.push(kw);
+    // 1. CAS SPÉCIAL AMBUSH : capture <keyword>Ambush</keyword> <symbol>twilightX</symbol>
+    if (text) {
+        const ambushRegex = /<keyword>Ambush<\/keyword>\s*<symbol>twilight(\d+)<\/symbol>/gi;
+        let ambushMatch;
+        while ((ambushMatch = ambushRegex.exec(text)) !== null) {
+            const cost = ambushMatch[1];
+            const kw = `AMBUSH ${cost}`;
+            if (!keywords.includes(kw)) {
+                keywords.push(kw);
+            }
+        }
+
+        // 2. CAS GÉNÉRAL : Mots-clés standards se terminant par un point dans la balise 
+        const regex = /<keyword>([A-Z][^<]*\.)<\/keyword>/g;
+        let match;
+        while ((match = regex.exec(text)) !== null) {
+            const rawKw = match[1].slice(0, -1).trim();
+            const upperKw = rawKw.toUpperCase();
+
+            if (VALID_KEYWORDS.has(upperKw)) {
+                if (!keywords.includes(upperKw)) {
+                    keywords.push(upperKw);
+                }
+            }
         }
     }
 
-    // 2. CAS GÉNÉRAL : Mots-clés standards se terminant par un point dans la balise 
-    const regex = /<keyword>([A-Z][^<]*\.)<\/keyword>/g;
-    let match;
-    while ((match = regex.exec(text)) !== null) {
-        const rawKw = match[1].slice(0, -1).trim();
-        const upperKw = rawKw.toUpperCase();
+    // 3. RÈGLE RÉTROACTIVE : Sam est TOUJOURS Ring-bound
+    if (titleVO && titleVO.toLowerCase().startsWith('sam') && !keywords.includes('RING-BOUND')) {
+        keywords.push('RING-BOUND');
+    }
 
-        if (VALID_KEYWORDS.has(upperKw)) {
-            if (!keywords.includes(upperKw)) {
-                keywords.push(upperKw);
-            }
+    // 4. RÈGLE NATIVE UNBOUND : Tout compagnon non Ring-bound et non Porteur est UNBOUND
+    if (type === 'COMPANION') {
+        const isRingbound = keywords.includes('RING-BOUND');
+        if (!isRingbearer && !isRingbound && !keywords.includes('UNBOUND')) {
+            keywords.push('UNBOUND');
         }
     }
 
@@ -554,7 +566,7 @@ async function convert() {
 
         if (targetMap.has(cardId)) {
             const existing = targetMap.get(cardId);
-            const existingTextLen = (existing.i18n ? .fr ? .gameText || existing.i18n ? .en ? .gameText || '').length;
+            const existingTextLen = (existing.i18n?.fr?.gameText || existing.i18n?.en?.gameText || '').length;
             const newTextLen = (frenchText || englishText).length;
             if (newTextLen <= existingTextLen) continue;
         }
@@ -589,7 +601,9 @@ async function convert() {
             subtype,
             phases
         } = parseClassAndPhases(data['Class'], englishText);
-        const keywords = parseKeywords(englishText);
+        
+        // Mots-clés avec règles logiques natives (UNBOUND / RING-BOUND)
+        const keywords = parseKeywords(englishText, titleVO, type, isRingbearer);
         const attachmentData = parseAttachedTo(englishText);
 
         const computedStrength = parseStat(data['Strength'], data['Top Text']);
@@ -611,7 +625,7 @@ async function convert() {
             keywords: keywords,
             attachedTo: attachmentData || undefined,
             toPlay: toPlayData,
-            isControlled: attachmentData ? .isControlled,
+            isControlled: attachmentData?.isControlled,
             phases: phases,
             culture: culture,
             race: data['Race'] ? data['Race'].toUpperCase() : undefined,
@@ -633,9 +647,7 @@ async function convert() {
                 en: buildLangBlock(data['Title'], data['Subtitle'], data['Text'], data['Lore']),
                 fr: buildLangBlock(data['French Title'], data['French Subtitle'], data['French Text'], data['French Lore']),
                 de: buildLangBlock(data['German Title'], data['German Subtitle'], data['German Text'], data['German Lore']),
-
                 it: buildLangBlock(data['Italian Title'], data['Italian Subtitle'], data['Italian Text'], data['Italian Lore']),
-
                 es: buildLangBlock(data['Spanish Title'], data['Spanish Subtitle'], data['Spanish Text'], data['Spanish Lore']),
             }
         };

@@ -54,6 +54,7 @@ export type CardKeyword =
     | 'TOIL 3'
     | 'TRACKER'
     | 'TWILIGHT'
+    | 'UNBOUND'
     | 'UNDERGROUND'
     | 'UNHASTY'
     | 'VALIANT'

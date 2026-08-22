@@ -140,10 +140,6 @@ export const DragProvider: React.FC<{ children: React.ReactNode }> = ({
     useEffect(() => {
         if (!dragged) return;
 
-        const isLandscape = dragged.orientation === 'landscape';
-        const cardWidthPhysBase = isLandscape ? 180 : 130;
-        const cardHeightPhysBase = isLandscape ? 110 : 180;
-
         const handlePointerMove = (e: PointerEvent) => {
             const board = document
                 .querySelector('[class*="ScaledView"]')
@@ -214,7 +210,6 @@ const DragPortal: React.FC = () => {
     if (!dragged) return null;
 
     const isLandscape = dragged.orientation === 'landscape';
-    const cardData = dragged.card as CardState;
 
     return (
         <div
