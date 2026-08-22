@@ -214,47 +214,81 @@ function checkUniqueness(
     const cardTitle = getCardTitle(card);
     if (!cardTitle) return { valid: true };
 
-    // 1. Recherche dans toutes les zones EN JEU
-    const allInPlay: CardState[] = [];
-    Object.values(G.players || {}).forEach((p) => {
-        if (p.fellowshipArea) {
-            p.fellowshipArea.forEach((c) => {
-                if (c) {
-                    allInPlay.push(c);
-                    if (c.attachments) allInPlay.push(...c.attachments);
-                }
-            });
-        }
-        if (p.supportArea) {
-            p.supportArea.forEach((c) => {
-                if (c) {
-                    allInPlay.push(c);
-                    if (c.attachments) allInPlay.push(...c.attachments);
-                }
-            });
-        }
-    });
+    const isShadow = card.kind === 'SHADOW';
 
-    if (G.battlefield) {
-        G.battlefield.forEach((c) => {
-            if (c) {
-                allInPlay.push(c);
-                if (c.attachments) allInPlay.push(...c.attachments);
+    if (isShadow) {
+        // 🔴 OMBRE : Unicité GLOBALE sur l'ensemble du champ de bataille / cartes en jeu
+        const allShadowInPlay: CardState[] = [];
+
+        if (G.battlefield) {
+            G.battlefield.forEach((c) => {
+                if (c) {
+                    allShadowInPlay.push(c);
+                    if (c.attachments) allShadowInPlay.push(...c.attachments);
+                }
+            });
+        }
+
+        // On vérifie aussi si une carte d'Ombre est posée dans une supportArea
+        Object.values(G.players || {}).forEach((p) => {
+            if (p.supportArea) {
+                p.supportArea.forEach((c) => {
+                    if (c && c.kind === 'SHADOW') {
+                        allShadowInPlay.push(c);
+                        if (c.attachments)
+                            allShadowInPlay.push(...c.attachments);
+                    }
+                });
             }
         });
+
+        const existsInPlay = allShadowInPlay.some(
+            (c) => c && c.isUnique && getCardTitle(c) === cardTitle
+        );
+        if (existsInPlay) {
+            return {
+                valid: false,
+                reason: `La carte d'Ombre unique '${card.title || cardTitle}' est déjà sur le champ de bataille.`,
+            };
+        }
+    } else {
+        // 🟢 PEUPLES LIBRES : Unicité PROPRE AU JOUEUR ACTIF
+        if (playerID && G.players?.[playerID]) {
+            const player = G.players[playerID];
+            const activePlayerInPlay: CardState[] = [];
+
+            if (player.fellowshipArea) {
+                player.fellowshipArea.forEach((c) => {
+                    if (c) {
+                        activePlayerInPlay.push(c);
+                        if (c.attachments)
+                            activePlayerInPlay.push(...c.attachments);
+                    }
+                });
+            }
+            if (player.supportArea) {
+                player.supportArea.forEach((c) => {
+                    if (c) {
+                        activePlayerInPlay.push(c);
+                        if (c.attachments)
+                            activePlayerInPlay.push(...c.attachments);
+                    }
+                });
+            }
+
+            const existsInPlay = activePlayerInPlay.some(
+                (c) => c && c.isUnique && getCardTitle(c) === cardTitle
+            );
+            if (existsInPlay) {
+                return {
+                    valid: false,
+                    reason: `Vous avez déjà la carte unique '${card.title || cardTitle}' en jeu.`,
+                };
+            }
+        }
     }
 
-    const existsInPlay = allInPlay.some(
-        (c) => c && c.isUnique && getCardTitle(c) === cardTitle
-    );
-    if (existsInPlay) {
-        return {
-            valid: false,
-            reason: `La carte unique '${card.title || cardTitle}' est déjà en jeu.`,
-        };
-    }
-
-    // 2. Recherche uniquement dans la deadPile DU JOUEUR ACTIF
+    // 2. Vérification dans la Dead Pile du joueur actif (pour FP)
     if (playerID && G.players?.[playerID]?.deadPile) {
         const activePlayerDeadPile = G.players[playerID].deadPile;
         const existsInDeadPile = activePlayerDeadPile.some(

@@ -115,7 +115,6 @@ export const SOUND_LIBRARY = {
     WOUND_SPIDER: [
         '/audio/sfx/battle/wound_spider.opus',
         '/audio/sfx/battle/wound_spider2.opus',
-        '/audio/sfx/battle/wound_spider3.opus',
     ],
     WOUND_TROLL: [
         '/audio/sfx/battle/wound_troll.opus',

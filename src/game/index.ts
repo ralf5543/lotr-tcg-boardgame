@@ -72,7 +72,7 @@ const createInitialPlayer = (playerId: string): PlayerState => {
             deck: buildDeckFromIds(fullDeckIds, playerId),
             hand: [],
             discard: [],
-            deadPile: [
+            /*deadPile: [
                 {
                     id: 'mock-gandalf-dead',
                     title: 'Gandalf',
@@ -80,7 +80,8 @@ const createInitialPlayer = (playerId: string): PlayerState => {
                     type: 'COMPANION',
                     kind: 'FREE_PEOPLE',
                 } as CardState,
-            ],
+            ],*/
+            deadPile: [],
             fellowshipArea: [],
             supportArea: [],
             sitesDeck,

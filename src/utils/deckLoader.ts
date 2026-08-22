@@ -1,8 +1,8 @@
-// import deckP0 from '../game/decks/fumeurs-gollum-threats.json';
-import deckP0 from '../game/decks/gondor-uruks.json';
-//import deckP0 from '../game/decks/test-dev.json';
-//import deckP1 from '../game/decks/test-dev.json';
-import deckP1 from '../game/decks/gondor-uruks.json';
+//import deckP0 from '../game/decks/fumeurs-gollum-threats.json';
+//import deckP0 from '../game/decks/gondor-uruks.json';
+import deckP0 from '../game/decks/test-dev.json';
+import deckP1 from '../game/decks/test-dev.json';
+//import deckP1 from '../game/decks/gondor-uruks.json';
 import { CARDS_DATABASE } from '../game/cardsData';
 
 export interface DeckConfig {
