@@ -14,6 +14,7 @@ import {
 } from '../../../../utils/cardStats';
 import { getCardText } from '../../../../utils/i18n';
 import type { SupportedLanguage } from '../../../../utils/i18n';
+import { requiresAttachmentTarget } from '../../../../game/engine/canPlayCard';
 
 interface CardImageProps {
     imageUrl?: string;
@@ -216,8 +217,7 @@ export const Card: React.FC<CardProps> = ({
     // 🟢 État permanent : est-ce que la carte a des blessures ?
     const hasWounds = (card.wounds || 0) > 0;
 
-    // 🟢 LOGIQUE DE GESTION DE LA RÉSISTANCE ET DU SIGNET
-    const isAttachment = ['POSSESSION', 'ARTIFACT', 'CONDITION', 'RING'].includes(card.type);
+    const isAttachment = requiresAttachmentTarget(card);
 
     const displayResistance = isAttachment
         ? (card.resistance > 0 ? `+${card.resistance}` : `${card.resistance}`)
@@ -238,7 +238,6 @@ export const Card: React.FC<CardProps> = ({
             $isShadow={isShadow}
             $isPlayable={isPlayable}
             $size={size}
-            $title={card.title}
             $isRoaming={isRoaming}
             $isWounded={isWounded || hasWounds}
             $isTakingDamage={isTakingDamage}
@@ -251,6 +250,7 @@ export const Card: React.FC<CardProps> = ({
             onPointerDown={handlePointerDown}
             data-draggable={isDraggable ? 'true' : undefined}
             data-overwhelmed={card.isOverwhelmed ? 'true' : 'false'}
+            $isAttachment={isAttachment}
         >
             
             {isCharacter &&

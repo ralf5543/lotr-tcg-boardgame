@@ -4,7 +4,6 @@ export interface CardContainerProps {
     $culture: string;
     $type: string;
     $subtype?: string;
-    $title?: string;
     $signet?: string;
     $isShadow?: boolean;
     $isPlayable?: boolean;
@@ -17,6 +16,7 @@ export interface CardContainerProps {
     $size?: 'sm' | 'md' | 'lg';
     $isRoaming?: boolean;
     $isDiscardPhase?: boolean;
+    $isAttachment?: boolean;
 }
 
 const isNotCharacter = (type?: string) =>
@@ -26,23 +26,12 @@ const isNotCharacter = (type?: string) =>
     type !== 'ALLY';
 
 const isForSupportArea = (type?: string, subtype?: string) => {
-    if (!type || type === 'ALLY') return false;
-
+    if (!type || type === 'ALLY' || type === 'COMPANION' || type === 'MINION') {
+        return false;
+    }
     return subtype === 'SUPPORT-AREA';
 };
 
-const isAttachedToCharacter = (type?: string, subtype?: string) => {
-    if (!type) return false;
-
-    if (subtype === 'SUPPORT-AREA') return false;
-
-    return (
-        type === 'POSSESSION' ||
-        type === 'ARTIFACT' ||
-        type === 'RING' ||
-        type === 'CONDITION'
-    );
-};
 // 💥 ANIMATION D'IMPACT DYNAMIQUE (RECUL PHYSIQUE)
 const woundImpactAnimation = (recoilY: number) => keyframes`
   0% {
@@ -280,11 +269,10 @@ export const CardContainer = styled.div<CardContainerProps>`
                 background-position: 1px 0px;
             }
 
-            /* ======------ Attachment cards ------====== */
-            ${isAttachedToCharacter(props.$type, props.$subtype) &&
+            /* ======------ Attachment cards ($isAttachment ou RING) ------====== */
+            ${(props.$isAttachment || props.$type === 'RING') &&
             css`
                 aspect-ratio: initial;
-                border: 0;
                 height: 100%;
                 border-radius: 0;
                 outline: none;
@@ -305,7 +293,7 @@ export const CardContainer = styled.div<CardContainerProps>`
                 ${StrengthBadge} {
                     width: 25px;
                     inset-block-start: 28px;
-                    inset-inline-start: 0px;
+                    inset-inline-start: -5px;
                     background-position: center;
                     background-size: 27px;
                     height: 30px;
@@ -314,13 +302,35 @@ export const CardContainer = styled.div<CardContainerProps>`
                 ${VitalityBadge} {
                     width: 25px;
                     inset-block-start: 57px;
-                    inset-inline-start: 0px;
+                    inset-inline-start: -6px;
                     background-position: 1px center;
                     background-size: 27px;
                     height: 30px;
                     font-size: 16px;
                 }
             `}
+
+            /* ======------ Small RING card override ------====== */
+            ${props.$type === 'RING' &&
+            css`
+                border: 0px;
+                ${VisualContainer} {
+                    display: block;
+                    inset: 0px -6px;
+                    border-radius: 6px;
+                    overflow: hidden;
+                    height: auto;
+                }
+
+                ${VitalityBadge} {
+                    inset-inline-start: -1px;
+                }
+
+                ${StrengthBadge} {
+                    inset-inline-start: -1px;
+                }
+            `}
+
             /* ======------ Impact Blessure ($size === 'sm') ------====== */
             ${props.$isTakingDamage &&
             css`
@@ -356,24 +366,8 @@ export const CardContainer = styled.div<CardContainerProps>`
                 transition:
                     filter 0.3s ease,
                     opacity 0.3s ease,
-                    transform 0.3s ease;   
+                    transform 0.3s ease;
             `}
-        `}
-
-    /* ======------ Small RING card ------====== */
-        ${(props) =>
-        props.$type === 'RING' &&
-        props.$size === 'sm' &&
-        css`
-            ${VisualContainer} {
-                display: block;
-                inset: 0;
-                border-radius: 6px;
-                overflow: hidden;
-            }
-            ${Visual} {
-                margin-inline-start: -5px;
-            }
         `}
 
     /* ======------ Large cards ------====== */
@@ -504,8 +498,9 @@ export const CardContainer = styled.div<CardContainerProps>`
                 inset-inline-start: 20px;
             }
         `}
-        /* ======------ Large RING card ------====== */
-        ${(props) =>
+
+    /* ======------ Large RING card ------====== */
+    ${(props) =>
         props.$type === 'RING' &&
         props.$size === 'lg' &&
         css`
@@ -837,11 +832,9 @@ interface OrbitalTokenProps {
 
 export const OrbitalBurdenToken = styled.img<OrbitalTokenProps>`
     position: absolute;
-    /* 🟢 Utilisation de la prop $size avec 14px par défaut */
     width: ${({ $size = 14 }) => $size}px;
     height: ${({ $size = 14 }) => $size}px;
 
-    /* 🟢 Décalage automatique du centre exact du jeton */
     margin-top: calc(-${({ $size = 14 }) => $size}px / 2);
     margin-left: calc(-${({ $size = 14 }) => $size}px / 2);
 
@@ -869,7 +862,7 @@ export const AttachmentSubtype = styled.img`
     position: absolute;
     z-index: 2;
     inset-block-start: 5px;
-    inset-inline-start: 3px;
+    inset-inline-start: -2px;
     background-color: white;
     border-radius: 50%;
     padding: 2px;
