@@ -4,7 +4,7 @@ import { Card } from '../Card';
 import * as S from './styles';
 import { useDrag } from '../../../../contexts/DragContext';
 import { useTargeting } from '../../../../contexts/TargetingContext';
-import { canAttachToCharacter } from '../../../../utils/routingDragNDrop';
+import { canAttachToCharacter } from '../../../../game/engine/canPlayCard';
 import { SkirmishClash } from './SkirmishClash';
 import { getEffectiveVitality } from '../../../../utils/cardStats';
 

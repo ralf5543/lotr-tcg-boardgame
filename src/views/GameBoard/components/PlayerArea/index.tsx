@@ -1,13 +1,15 @@
 import React, { useEffect, useState } from 'react';
-import type { CardState, CardType, CardSubtype, GameState } from '../../../../game/types';
+import type {
+    CardState,
+    CardType,
+    CardSubtype,
+    GameState,
+} from '../../../../game/types';
 import type { BoardProps } from 'boardgame.io/react';
 import * as S from './styles';
 import { useDrag } from '../../../../contexts/DragContext';
 import { BoardCharacterStack } from '../BoardCharacterStack';
-import {
-    canDropInSupportArea,
-    canDropInFellowship,
-} from '../../../../utils/routingDragNDrop';
+import { canPlayCard } from '../../../../game/engine/canPlayCard';
 
 interface SkirmishEntry {
     id?: string;
@@ -59,7 +61,9 @@ export const PlayerArea: React.FC<PlayerAreaProps> = ({
 
     // 🟢 Extraire le type et le subtype pour le router de Drag
     const cardType = (dragged?.card as CardState)?.type as CardType | undefined;
-    const cardSubtype = (dragged?.card as CardState)?.subtype as CardSubtype | undefined;
+    const cardSubtype = (dragged?.card as CardState)?.subtype as
+        | CardSubtype
+        | undefined;
 
     // Gestion du Drag & Drop pour réordonner sa propre compagnie
     useEffect(() => {
@@ -113,7 +117,8 @@ export const PlayerArea: React.FC<PlayerAreaProps> = ({
                     onClick={() => setIsDormantExpanded(!isDormantExpanded)}
                 >
                     <span>
-                        🛡️ Compagnie en sommeil ({fellowshipArea.length} compagnon
+                        🛡️ Compagnie en sommeil ({fellowshipArea.length}{' '}
+                        compagnon
                         {fellowshipArea.length > 1 ? 's' : ''})
                     </span>
                     <S.ExpandHint>
@@ -128,20 +133,23 @@ export const PlayerArea: React.FC<PlayerAreaProps> = ({
                                 {fellowshipArea.length === 0 && (
                                     <S.EmptyText>Aucun compagnon.</S.EmptyText>
                                 )}
-                                {fellowshipArea.map((companion, companionIdx) => (
-                                    <BoardCharacterStack
-                                        key={companion.id}
-                                        character={companion}
-                                        index={companionIdx}
-                                        isOpponent={isOpponent}
-                                        isFaceDown={
-                                            isOpponent
-                                                ? (companion.isFaceDown ?? false)
-                                                : false
-                                        }
-                                        burdens={playerBurdens}
-                                    />
-                                ))}
+                                {fellowshipArea.map(
+                                    (companion, companionIdx) => (
+                                        <BoardCharacterStack
+                                            key={companion.id}
+                                            character={companion}
+                                            index={companionIdx}
+                                            isOpponent={isOpponent}
+                                            isFaceDown={
+                                                isOpponent
+                                                    ? (companion.isFaceDown ??
+                                                      false)
+                                                    : false
+                                            }
+                                            burdens={playerBurdens}
+                                        />
+                                    )
+                                )}
                             </S.CardRow>
                         </S.DormantOverlay>
                     )}
@@ -150,11 +158,20 @@ export const PlayerArea: React.FC<PlayerAreaProps> = ({
         }
 
         // ⚔️ MODE NORMAL : Compagnie active (Joueur FP)
+        const draggedCard = dragged?.card as CardState | undefined;
         const isFellowshipTargeted =
             !isOpponent &&
             activeTargetId === 'fellowshipArea' &&
             dragged?.orientation === 'portrait' &&
-            canDropInFellowship(cardType);
+            (draggedCard
+                ? canPlayCard(
+                      draggedCard,
+                      { G, ctx: {}, playerID: _playerId },
+                      'fellowshipArea',
+                      null,
+                      { ignorePhase: true }
+                  ).valid
+                : false);
 
         const isCombatLocked = Boolean(
             G?.actionWindow?.isOpen && G?.activeSkirmishId
@@ -162,7 +179,6 @@ export const PlayerArea: React.FC<PlayerAreaProps> = ({
 
         return (
             <S.Fellowship
-                className="fellowship-active"
                 $borderColor="#3498db"
                 $isTargeted={isFellowshipTargeted}
                 $isOpponent={isOpponent}
@@ -184,7 +200,7 @@ export const PlayerArea: React.FC<PlayerAreaProps> = ({
 
                         const isWounded = Boolean(
                             G?.lastWoundedCardIds?.includes(cardId) ||
-                                (companion.wounds && companion.wounds > 0)
+                            (companion.wounds && companion.wounds > 0)
                         );
                         const isDead = Boolean(
                             G?.pendingDeadCardIds?.includes(cardId)
@@ -243,121 +259,133 @@ export const PlayerArea: React.FC<PlayerAreaProps> = ({
     };
 
     const renderSupportArea = () => {
-    const isSupportTargeted =
-        !isOpponent &&
-        activeTargetId === 'supportArea' &&
-        dragged?.orientation === 'portrait' &&
-        canDropInSupportArea(cardType, cardSubtype);
+        const draggedCard = dragged?.card as CardState | undefined;
 
-    // 🟢 Separation automatique FP (gauche) / Ombre (droite)
-    const fpSupportCards = supportArea.filter(
-        (card) => card.kind === 'FREE_PEOPLE'
-    );
-    const shadowSupportCards = supportArea.filter(
-        (card) => card.kind === 'SHADOW'
-    );
+        const isSupportTargeted =
+            !isOpponent &&
+            activeTargetId === 'supportArea' &&
+            dragged?.orientation === 'portrait' &&
+            (draggedCard
+                ? canPlayCard(
+                      draggedCard,
+                      { G, ctx: {}, playerID: _playerId },
+                      'supportArea',
+                      null,
+                      { ignorePhase: true }
+                  ).valid
+                : false);
 
-    return (
-        <S.SupportArea
-            $borderColor="#f39c12"
-            $isOpponent={isOpponent}
-            $isTargeted={isSupportTargeted}
-            ref={(el) => {
-                if (!isOpponent && el) {
-                    registerTarget('supportArea', el);
-                }
-            }}
-        >
-            <S.ZoneTitle color="#f39c12">
-                🎒 Aire de Soutien (Support Area)
-            </S.ZoneTitle>
+        // 🟢 Separation automatique FP (gauche) / Ombre (droite)
+        const fpSupportCards = supportArea.filter(
+            (card) => card.kind === 'FREE_PEOPLE'
+        );
+        const shadowSupportCards = supportArea.filter(
+            (card) => card.kind === 'SHADOW'
+        );
 
-            <S.SupportSplitLayout>
-                {/* Sous-zone GAUCHE : Peuples Libres */}
-                <S.SupportSubZone $align="left">
-                    {fpSupportCards.map((card, cardIdx) => {
-                        const cardId = card.instanceId || card.id;
-                        const isWounded = Boolean(
-                            G?.lastWoundedCardIds?.includes(cardId) ||
+        return (
+            <S.SupportArea
+                $borderColor="#f39c12"
+                $isOpponent={isOpponent}
+                $isTargeted={isSupportTargeted}
+                ref={(el) => {
+                    if (!isOpponent && el) {
+                        registerTarget('supportArea', el);
+                    }
+                }}
+            >
+                <S.ZoneTitle color="#f39c12">
+                    🎒 Aire de Soutien (Support Area)
+                </S.ZoneTitle>
+
+                <S.SupportSplitLayout>
+                    {/* Sous-zone GAUCHE : Peuples Libres */}
+                    <S.SupportSubZone $align="left">
+                        {fpSupportCards.map((card, cardIdx) => {
+                            const cardId = card.instanceId || card.id;
+                            const isWounded = Boolean(
+                                G?.lastWoundedCardIds?.includes(cardId) ||
                                 (card.wounds && card.wounds > 0)
-                        );
-                        const isDead = Boolean(
-                            G?.pendingDeadCardIds?.includes(cardId)
-                        );
-                        const shouldBeFaceDown = isOpponent
-                            ? (card.isFaceDown ?? false)
-                            : false;
+                            );
+                            const isDead = Boolean(
+                                G?.pendingDeadCardIds?.includes(cardId)
+                            );
+                            const shouldBeFaceDown = isOpponent
+                                ? (card.isFaceDown ?? false)
+                                : false;
 
-                        return (
-                            <BoardCharacterStack
-                                key={card.id}
-                                character={card}
-                                index={cardIdx}
-                                isOpponent={isOpponent}
-                                isFaceDown={shouldBeFaceDown}
-                                burdens={playerBurdens}
-                                isWounded={isWounded}
-                                isDead={isDead}
-                                onStartDrag={(e) => {
-                                    if (isOpponent || e.button !== 0) return;
-                                    e.stopPropagation();
-                                    startDrag(
-                                        card,
-                                        cardIdx,
-                                        e,
-                                        'BOARD',
-                                        'portrait'
-                                    );
-                                }}
-                            />
-                        );
-                    })}
-                </S.SupportSubZone>
+                            return (
+                                <BoardCharacterStack
+                                    key={card.id}
+                                    character={card}
+                                    index={cardIdx}
+                                    isOpponent={isOpponent}
+                                    isFaceDown={shouldBeFaceDown}
+                                    burdens={playerBurdens}
+                                    isWounded={isWounded}
+                                    isDead={isDead}
+                                    onStartDrag={(e) => {
+                                        if (isOpponent || e.button !== 0)
+                                            return;
+                                        e.stopPropagation();
+                                        startDrag(
+                                            card,
+                                            cardIdx,
+                                            e,
+                                            'BOARD',
+                                            'portrait'
+                                        );
+                                    }}
+                                />
+                            );
+                        })}
+                    </S.SupportSubZone>
 
-                {/* Sous-zone DROITE : Ombre */}
-                <S.SupportSubZone $align="right">
-                    {shadowSupportCards.map((card, cardIdx) => {
-                        const cardId = card.instanceId || card.id;
-                        const isWounded = Boolean(
-                            G?.lastWoundedCardIds?.includes(cardId) ||
+                    {/* Sous-zone DROITE : Ombre */}
+                    <S.SupportSubZone $align="right">
+                        {shadowSupportCards.map((card, cardIdx) => {
+                            const cardId = card.instanceId || card.id;
+                            const isWounded = Boolean(
+                                G?.lastWoundedCardIds?.includes(cardId) ||
                                 (card.wounds && card.wounds > 0)
-                        );
-                        const isDead = Boolean(
-                            G?.pendingDeadCardIds?.includes(cardId)
-                        );
-                        const shouldBeFaceDown = isOpponent
-                            ? (card.isFaceDown ?? false)
-                            : false;
+                            );
+                            const isDead = Boolean(
+                                G?.pendingDeadCardIds?.includes(cardId)
+                            );
+                            const shouldBeFaceDown = isOpponent
+                                ? (card.isFaceDown ?? false)
+                                : false;
 
-                        return (
-                            <BoardCharacterStack
-                                key={card.id}
-                                character={card}
-                                index={cardIdx}
-                                isOpponent={isOpponent}
-                                isFaceDown={shouldBeFaceDown}
-                                burdens={playerBurdens}
-                                isWounded={isWounded}
-                                isDead={isDead}
-                                onStartDrag={(e) => {
-                                    if (isOpponent || e.button !== 0) return;
-                                    e.stopPropagation();
-                                    startDrag(
-                                        card,
-                                        cardIdx,
-                                        e,
-                                        'BOARD',
-                                        'portrait'
-                                    );
-                                }}
-                            />
-                        );
-                    })}
-                </S.SupportSubZone>
-            </S.SupportSplitLayout>
-        </S.SupportArea>
-    );
-};
+                            return (
+                                <BoardCharacterStack
+                                    key={card.id}
+                                    character={card}
+                                    index={cardIdx}
+                                    isOpponent={isOpponent}
+                                    isFaceDown={shouldBeFaceDown}
+                                    burdens={playerBurdens}
+                                    isWounded={isWounded}
+                                    isDead={isDead}
+                                    onStartDrag={(e) => {
+                                        if (isOpponent || e.button !== 0)
+                                            return;
+                                        e.stopPropagation();
+                                        startDrag(
+                                            card,
+                                            cardIdx,
+                                            e,
+                                            'BOARD',
+                                            'portrait'
+                                        );
+                                    }}
+                                />
+                            );
+                        })}
+                    </S.SupportSubZone>
+                </S.SupportSplitLayout>
+            </S.SupportArea>
+        );
+    };
 
     return (
         <S.AreaContainer $isOpponent={isOpponent}>

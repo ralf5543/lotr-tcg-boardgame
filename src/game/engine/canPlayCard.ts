@@ -1,6 +1,12 @@
 // src/game/engine/canPlayCard.ts
 
-import type { CardState, GameState, SiteCardState } from '../types';
+import type {
+    CardState,
+    SiteCardState,
+    GameState,
+    CardType,
+    CardSubtype,
+} from '../types';
 
 export interface ValidationContext {
     G: GameState;
@@ -13,135 +19,150 @@ export interface ValidationResult {
     reason?: string;
 }
 
-/**
- * Extrait le titre anglais de référence (nettoyé) pour la règle d'unicité
- */
-export function getCardTitle(card: CardState): string {
-    if (!card) return '';
-    // On essaie toutes les clés possibles pour être sûr de choper le nom (i18n, title, name)
-    const rawTitle =
-        card.i18n?.en?.title ||
-        card.title ||
-        card.name ||
-        (card as any).i18nTitle ||
-        '';
-    return String(rawTitle).trim().toLowerCase();
-}
+/* ==========================================================================
+   1. HELPERS DE DESTINATION ET DE CIBLAGE
+   ========================================================================== */
 
-/**
- * Récupère toutes les cartes actuellement en jeu appartenant à UN joueur spécifique
- */
-export function getPlayerCardsInPlay(G: GameState, playerID: string): CardState[] {
-    const cards: CardState[] = [];
-    const player = G.players?.[playerID];
+const isSupportAreaSubtype = (subtype?: CardSubtype | string): boolean => {
+    if (!subtype) return false;
+    const normalized = subtype.toUpperCase().replace('_', '-');
+    return normalized === 'SUPPORT-AREA';
+};
 
-    if (!player) return cards;
+export const canDropInSupportArea = (
+    type?: CardType,
+    subtype?: CardSubtype | string
+): boolean => {
+    if (!type) return false;
 
-    // 1. Zones propres au joueur (Communauté, Soutien)
-    if (Array.isArray(player.fellowshipArea)) cards.push(...player.fellowshipArea);
-    if (Array.isArray(player.supportArea)) cards.push(...player.supportArea);
+    // 1. Alliés et Suivants
+    if (type === 'ALLY' || type === 'FOLLOWER') return true;
 
-    // 2. Si c'est le joueur Ombre, on regarde ses Minions sur le Battlefield
-    const fpId = G.fpPlayerId || '0';
-    const isShadow = playerID !== fpId;
-
-    if (isShadow && Array.isArray(G.battlefield)) {
-        // Enregistre uniquement les Minions/cartes Ombre du champ de bataille
-        cards.push(...G.battlefield);
+    // 2. Possessions et Conditions : strictes sur SUPPORT-AREA
+    if (type === 'POSSESSION' || type === 'CONDITION') {
+        return isSupportAreaSubtype(subtype);
     }
 
-    // 3. Extraction récursive des attachements
-    const allWithAttachments: CardState[] = [];
-    const collect = (c: CardState) => {
-        if (!c) return;
-        allWithAttachments.push(c);
-        if (Array.isArray(c.attachments)) {
-            c.attachments.forEach(collect);
+    // 3. Artefacts
+    if (type === 'ARTIFACT') {
+        return !subtype || isSupportAreaSubtype(subtype);
+    }
+
+    return false;
+};
+
+export const canDropInFellowship = (type?: CardType): boolean => {
+    if (!type) return false;
+    return type === 'COMPANION';
+};
+
+/**
+ * Vérifie si un attachement peut se fixer sur une cible donnée
+ */
+export const canAttachToCharacter = (
+    attachmentCard?: CardState | SiteCardState | null,
+    targetCard?: CardState | SiteCardState | null
+): boolean => {
+    if (!attachmentCard || !targetCard) return false;
+
+    const attachment = attachmentCard as CardState;
+    const target = targetCard as CardState;
+
+    // Si la carte n'a aucun prérequis d'attachement défini dans `attachedTo`, elle ne s'attache pas
+    if (
+        !attachment.attachedTo ||
+        !Array.isArray(attachment.attachedTo) ||
+        attachment.attachedTo.length === 0
+    ) {
+        return false;
+    }
+
+    const targetEnTitle = (
+        target.i18n?.en?.title ||
+        target.title ||
+        (target as any).name ||
+        ''
+    ).trim();
+
+    const targetRace = target.race
+        ? String(target.race).toUpperCase()
+        : undefined;
+    const targetCulture = target.culture
+        ? String(target.culture).toUpperCase()
+        : undefined;
+    const targetType = target.type
+        ? String(target.type).toUpperCase()
+        : undefined;
+    const targetKeywords = Array.isArray(target.keywords)
+        ? target.keywords.map((k) => String(k).toUpperCase())
+        : [];
+
+    const checkSingleRequirement = (req: unknown): boolean => {
+        const rawReq = String(req ?? '').trim();
+        if (!rawReq) return false;
+
+        const reqUpper = rawReq.toUpperCase();
+
+        if (reqUpper === 'SITE' && targetType === 'SITE') return true;
+        if (targetRace && targetRace === reqUpper) return true;
+        if (targetCulture && targetCulture === reqUpper) return true;
+        if (targetType && targetType === reqUpper) return true;
+        if (targetKeywords.includes(reqUpper)) return true;
+
+        if (
+            targetEnTitle &&
+            targetEnTitle.toLowerCase() === rawReq.toLowerCase()
+        ) {
+            return true;
         }
+
+        return false;
     };
 
-    cards.forEach(collect);
-    return allWithAttachments;
-}
+    const requirements = attachment.attachedTo as string[][];
 
-/**
- * 1. Validation de la Phase et de l'Alignement (FP / Ombre)
- */
-export function checkPhaseAndKind(card: CardState, { G, ctx, playerID }: ValidationContext): ValidationResult {
-    const fpId = G.fpPlayerId || '0';
-    const isFP = playerID === fpId;
+    return requirements.some((group) => {
+        if (!Array.isArray(group) || group.length === 0) return false;
+        return group.every((req) => checkSingleRequirement(req));
+    });
+};
+
+/* ==========================================================================
+   2. RÈGLES DE VALIDATION MOTEUR
+   ========================================================================== */
+
+function checkPhaseAndKind(
+    card: CardState,
+    context: ValidationContext
+): ValidationResult {
+    const { ctx, playerID, G } = context;
     const currentPhase = ctx.phase;
+    const fpPlayerId = G.fpPlayerId || '0';
 
-    if (isFP) {
+    if (card.kind === 'FREE_PEOPLE') {
+        if (playerID !== fpPlayerId) {
+            return {
+                valid: false,
+                reason: 'Seul le joueur des Peuples Libres peut jouer cette carte.',
+            };
+        }
         if (currentPhase !== 'fellowship') {
-            return { valid: false, reason: `Joueur FP ne peut jouer qu'en phase Fellowship (actuelle: ${currentPhase})` };
+            return {
+                valid: false,
+                reason: 'Les cartes Peuples Libres se jouent en phase de Communauté.',
+            };
         }
-        if (card.kind !== 'FREE_PEOPLE') {
-            return { valid: false, reason: `Carte Ombre jouée par le joueur FP` };
+    } else if (card.kind === 'SHADOW') {
+        if (playerID === fpPlayerId) {
+            return {
+                valid: false,
+                reason: "Seul le joueur de l'Ombre peut jouer cette carte.",
+            };
         }
-    } else {
         if (currentPhase !== 'shadow') {
-            return { valid: false, reason: `Joueur Ombre ne peut jouer qu'en phase Shadow (actuelle: ${currentPhase})` };
-        }
-        if (card.kind !== 'SHADOW') {
-            return { valid: false, reason: `Carte FP jouée par le joueur Ombre` };
-        }
-    }
-
-    return { valid: true };
-}
-
-/**
- * 2. Validation de la Réserve de Crépuscule (Twilight)
- */
-export function checkTwilightCost(card: CardState, { G, playerID }: ValidationContext): ValidationResult {
-    const fpId = G.fpPlayerId || '0';
-    const isFP = playerID === fpId;
-    const cost = Number(card.twilightCost) || 0;
-
-    // Seul le joueur Ombre doit AVOIR assez de Twilight dans la réserve pour payer
-    if (!isFP && G.twilightPool < cost) {
-        return { valid: false, reason: `Crépuscule insuffisant (${G.twilightPool} < ${cost})` };
-    }
-
-    return { valid: true };
-}
-
-/**
- * Validation de l'Unicité (Jeu + Dead Pile)
- */
-export function checkUniqueness(card: CardState, { G, playerID }: ValidationContext): ValidationResult {
-    if (!card.isUnique) return { valid: true };
-
-    const targetTitle = getCardTitle(card);
-    if (!targetTitle) return { valid: true };
-
-    // A. Cartes en jeu du joueur actif
-    const playerCards = getPlayerCardsInPlay(G, playerID);
-    const duplicateInPlay = playerCards.find((c) => getCardTitle(c) === targetTitle);
-
-    if (duplicateInPlay) {
-        return { 
-            valid: false, 
-            reason: `Vous avez déjà une version de '${card.i18n?.en?.title || card.title}' en jeu.` 
-        };
-    }
-
-    // B. Recherche dans la Dead Pile
-    const activeId = String(playerID ?? '0');
-    const fpId = String(G.fpPlayerId ?? '0');
-
-    if (activeId === fpId) {
-        const fpPlayer = G.players?.[activeId];
-        const deadPile = fpPlayer?.deadPile || [];
-
-        const deadDuplicate = deadPile.find((c) => getCardTitle(c) === targetTitle);
-
-        if (deadDuplicate) {
-            console.warn(`⛔ [DeadPile Check] Rejet : '${targetTitle}' est dans la Dead Pile !`);
-            return { 
-                valid: false, 
-                reason: `'${card.i18n?.en?.title || card.title}' est dans votre Dead Pile.` 
+            return {
+                valid: false,
+                reason: "Les cartes de l'Ombre se jouent en phase d'Ombre.",
             };
         }
     }
@@ -149,101 +170,169 @@ export function checkUniqueness(card: CardState, { G, playerID }: ValidationCont
     return { valid: true };
 }
 
-/**
- * Vérifie si un attachement respecte les contraintes 'attachedTo' sur une cible
- */
-export function canAttachToTarget(
-    attachmentCard: CardState,
-    targetCard: CardState | SiteCardState | null
+function checkTwilightCost(
+    card: CardState,
+    context: ValidationContext
 ): ValidationResult {
-    if (!targetCard) {
-        return { valid: false, reason: 'Aucune cible sélectionnée.' };
-    }
+    const { G, playerID } = context;
+    const fpPlayerId = G.fpPlayerId || '0';
 
-    const requirements = attachmentCard.attachedTo;
-
-    // Si aucune contrainte n'est définie, l'attachement est autorisé par défaut
-    if (!requirements || !Array.isArray(requirements) || requirements.length === 0) {
-        return { valid: true };
-    }
-
-    const target = targetCard as CardState;
-    const targetEnTitle = (
-        target.i18n?.en?.title || 
-        target.title || 
-        (target as any).name || 
-        ''
-    ).trim();
-
-    const targetRace = target.race ? String(target.race).toUpperCase() : undefined;
-    const targetCulture = target.culture ? String(target.culture).toUpperCase() : undefined;
-    const targetType = target.type ? String(target.type).toUpperCase() : undefined;
-    const targetKeywords = Array.isArray(target.keywords)
-        ? target.keywords.map((k) => String(k).toUpperCase())
-        : [];
-
-    const checkSingleRequirement = (req: string): boolean => {
-        const rawReq = String(req ?? '').trim();
-        if (!rawReq) return false;
-
-        const reqUpper = rawReq.toUpperCase();
-
-        // 1. Validation Majuscules (TYPE, RACE, CULTURE, KEYWORD, SITE)
-        if (reqUpper === 'SITE' && targetType === 'SITE') return true;
-        if (targetRace && targetRace === reqUpper) return true;
-        if (targetCulture && targetCulture === reqUpper) return true;
-        if (targetType && targetType === reqUpper) return true;
-        if (targetKeywords.includes(reqUpper)) return true;
-
-        // 2. Validation Nom Propre (ex: "Boromir", "Aragorn")
-        if (targetEnTitle && targetEnTitle.toLowerCase() === rawReq.toLowerCase()) {
-            return true;
+    if (playerID !== fpPlayerId && card.kind === 'SHADOW') {
+        const cost = card.twilightCost || 0;
+        if (G.twilightPool < cost) {
+            return {
+                valid: false,
+                reason: `Pool de Crépuscule insuffisant (${G.twilightPool}/${cost}).`,
+            };
         }
-
-        return false;
-    };
-
-    // Un des sous-tableaux (OU) doit voir TOUTES ses conditions (ET) validées
-    const satisfiesRequirements = requirements.some((group) => {
-        if (!Array.isArray(group) || group.length === 0) return false;
-        return group.every((req) => checkSingleRequirement(req));
-    });
-
-    if (!satisfiesRequirements) {
-        return {
-            valid: false,
-            reason: `'${attachmentCard.i18n?.en?.title || attachmentCard.title}' ne peut pas être attaché à ${targetEnTitle || 'cette cible'}.`,
-        };
     }
 
     return { valid: true };
 }
 
-/**
- * POINT D'ENTRÉE DU MOTEUR
- */
+const getCardTitle = (c?: CardState | SiteCardState | null): string => {
+    if (!c) return '';
+    const card = c as CardState;
+    return (
+        card.title ||
+        card.i18n?.fr?.title ||
+        card.i18n?.en?.title ||
+        (card as any).name ||
+        ''
+    )
+        .trim()
+        .toLowerCase();
+};
+
+function checkUniqueness(
+    card: CardState,
+    context: ValidationContext
+): ValidationResult {
+    if (!card.isUnique) return { valid: true };
+
+    const { G, playerID } = context;
+    const cardTitle = getCardTitle(card);
+    if (!cardTitle) return { valid: true };
+
+    // 1. Recherche dans toutes les zones EN JEU
+    const allInPlay: CardState[] = [];
+    Object.values(G.players || {}).forEach((p) => {
+        if (p.fellowshipArea) {
+            p.fellowshipArea.forEach((c) => {
+                if (c) {
+                    allInPlay.push(c);
+                    if (c.attachments) allInPlay.push(...c.attachments);
+                }
+            });
+        }
+        if (p.supportArea) {
+            p.supportArea.forEach((c) => {
+                if (c) {
+                    allInPlay.push(c);
+                    if (c.attachments) allInPlay.push(...c.attachments);
+                }
+            });
+        }
+    });
+
+    if (G.battlefield) {
+        G.battlefield.forEach((c) => {
+            if (c) {
+                allInPlay.push(c);
+                if (c.attachments) allInPlay.push(...c.attachments);
+            }
+        });
+    }
+
+    const existsInPlay = allInPlay.some(
+        (c) => c && c.isUnique && getCardTitle(c) === cardTitle
+    );
+    if (existsInPlay) {
+        return {
+            valid: false,
+            reason: `La carte unique '${card.title || cardTitle}' est déjà en jeu.`,
+        };
+    }
+
+    // 2. Recherche uniquement dans la deadPile DU JOUEUR ACTIF
+    if (playerID && G.players?.[playerID]?.deadPile) {
+        const activePlayerDeadPile = G.players[playerID].deadPile;
+        const existsInDeadPile = activePlayerDeadPile.some(
+            (c) => c && getCardTitle(c) === cardTitle
+        );
+
+        if (existsInDeadPile) {
+            return {
+                valid: false,
+                reason: `La carte unique '${card.title || cardTitle}' est dans votre pile des morts.`,
+            };
+        }
+    }
+
+    return { valid: true };
+}
+/* ==========================================================================
+   3. POINT D'ENTRÉE DE VALIDATION
+   ========================================================================== */
+
 export function canPlayCard(
     card: CardState,
     context: ValidationContext,
-    targetCard?: CardState | SiteCardState | null
+    targetId?: string,
+    targetCard?: CardState | SiteCardState | null,
+    options?: { ignorePhase?: boolean } // 🟢 Option pour les survol UI
 ): ValidationResult {
-    // 1. Validation Phase et Alignement
-    const phaseCheck = checkPhaseAndKind(card, context);
-    if (!phaseCheck.valid) return phaseCheck;
+    // 1. Phase et Alignement (ignoré si survol UI)
+    if (!options?.ignorePhase) {
+        const phaseCheck = checkPhaseAndKind(card, context);
+        if (!phaseCheck.valid) return phaseCheck;
+    }
 
-    // 2. Validation du Twilight (Ombre)
+    // 2. Coût en crépuscule
     const twilightCheck = checkTwilightCost(card, context);
     if (!twilightCheck.valid) return twilightCheck;
 
-    // 3. Validation de l'Unicité
+    // 3. Unicité
     const uniquenessCheck = checkUniqueness(card, context);
     if (!uniquenessCheck.valid) return uniquenessCheck;
 
-    // 4. Validation si la carte est un Attachement
-    const isAttachment = ['POSSESSION', 'ARTIFACT', 'CONDITION'].includes(card.type);
-    if (isAttachment && targetCard) {
-        const attachCheck = canAttachToTarget(card, targetCard);
-        if (!attachCheck.valid) return attachCheck;
+    // 4. Validation de la Zone ou de la Cible
+    if (targetId) {
+        if (targetId === 'fellowshipArea') {
+            if (!canDropInFellowship(card.type)) {
+                return {
+                    valid: false,
+                    reason: 'Seuls les Compagnons vont dans la zone Communauté.',
+                };
+            }
+        } else if (targetId === 'supportArea') {
+            if (!canDropInSupportArea(card.type, card.subtype)) {
+                return {
+                    valid: false,
+                    reason: 'Cette carte ne peut pas être posée en zone de soutien.',
+                };
+            }
+        } else if (targetId === 'battlefield') {
+            if (card.kind !== 'SHADOW' || card.type !== 'MINION') {
+                return {
+                    valid: false,
+                    reason: "Seuls les Séides de l'Ombre vont sur le champ de bataille.",
+                };
+            }
+        } else {
+            if (!targetCard) {
+                return {
+                    valid: false,
+                    reason: "Cible d'attachement introuvable.",
+                };
+            }
+            if (!canAttachToCharacter(card, targetCard)) {
+                return {
+                    valid: false,
+                    reason: "Cible d'attachement invalide pour cette carte.",
+                };
+            }
+        }
     }
 
     return { valid: true };

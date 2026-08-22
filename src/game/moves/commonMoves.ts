@@ -84,12 +84,18 @@ export const attachCard = (
     }
 
     const card = player.hand[cardIndex];
-    
+
     // Helper pour trouver le personnage cible dans les aires de jeu
     const targetCard = findTargetCard(G, targetCharacterId);
 
-    // 🟢 VALIDATION CENTRALISÉE (Unicité + Porte-carte "attachedTo")
-    const validation = canPlayCard(card, { G, ctx, playerID: actingPlayerId }, targetCard);
+    // 🟢 VALIDATION CENTRALISÉE : Passer targetCharacterId (3e) ET targetCard (4e)
+    const validation = canPlayCard(
+        card,
+        { G, ctx, playerID: actingPlayerId },
+        targetCharacterId,
+        targetCard
+    );
+
     if (!validation.valid) {
         console.warn(`❌ [attachCard] Rejet : ${validation.reason}`);
         return 'INVALID_MOVE';
@@ -103,7 +109,7 @@ export const attachCard = (
     if (targetCard) {
         if (!targetCard.attachments) targetCard.attachments = [];
         targetCard.attachments.push(attachedCard);
-        G.statusMessage = `${attachedCard.title} est attaché à ${targetCard.title} (+${cost} Crépuscule).`;
+        G.statusMessage = `${attachedCard.title || attachedCard.i18n?.fr?.title || 'Carte'} est attaché à ${targetCard.title || targetCard.i18n?.fr?.title || 'Personnage'} (+${cost} Crépuscule).`;
     }
 };
 
@@ -115,7 +121,9 @@ export const playCard = (
     const player = G.players[actingPlayerId];
 
     if (!player || !player.hand || !player.hand[cardIndex]) {
-        console.warn(`❌ [playCard] Joueur ou carte introuvable à l'index ${cardIndex}`);
+        console.warn(
+            `❌ [playCard] Joueur ou carte introuvable à l'index ${cardIndex}`
+        );
         return 'INVALID_MOVE';
     }
 
@@ -319,11 +327,6 @@ export const cleanupPendingDeaths = ({ G }: LotrMoveContext) => {
     }
     G.pendingDeadCardIds = [];
     G.lastWoundedCardIds = [];
-
-    console.log(
-        'Morts dans la deadPile des FP :',
-        JSON.parse(JSON.stringify(fpPlayer.deadPile))
-    );
 };
 
 export const commonMoves = {

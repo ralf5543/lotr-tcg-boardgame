@@ -14,11 +14,7 @@ import { TwilightPool } from './components/TwilightPool';
 import { Dock } from './components/Dock';
 import { SitesPicker } from './components/SitePicker';
 import { GameControls } from './components/GameControls';
-import {
-    canDropInSupportArea,
-    canDropInFellowship,
-    canAttachToCharacter,
-} from '../../utils/routingDragNDrop';
+import { canAttachToCharacter } from '../../game/engine/canPlayCard';
 import { PhaseBanner } from './components/PhaseBanner';
 import { DevPanel, type DevMoves } from '../../utils/DevPanel';
 import { useFaction } from '../../contexts/FactionContext';
@@ -153,55 +149,50 @@ export const GameBoard: React.FC<GameBoardProps> = ({
             }
 
             if (origin === 'HAND') {
-                const validation = canPlayCard(card, {
-                    G,
-                    ctx,
-                    playerID: myId,
-                });
-                if (!validation.valid) return;
+                const isGlobalZone =
+                    targetId === 'fellowshipArea' ||
+                    targetId === 'supportArea' ||
+                    targetId === 'battlefield';
 
-                if (
-                    targetId === 'fellowshipArea' &&
-                    canDropInFellowship(cardType)
-                ) {
-                    if (typeof moves.playCard === 'function') {
-                        moves.playCard(index);
-                    }
+                const targetCard = !isGlobalZone
+                    ? findTargetCard(G, targetId)
+                    : null;
+
+                // L'engine vérifie absolument tout (phase, coût, unicité, validité zone/cible)
+                const validation = canPlayCard(
+                    card,
+                    { G, ctx, playerID: myId },
+                    targetId,
+                    targetCard
+                );
+
+                if (!validation.valid) {
+                    console.warn(
+                        `❌ [canPlayCard] Rejet : ${validation.reason}`
+                    );
                     return;
                 }
 
-                if (
-                    targetId === 'supportArea' &&
-                    canDropInSupportArea(cardType, cardSubtype)
-                ) {
-                    if (typeof moves.playCard === 'function') {
-                        moves.playCard(index);
+                // Exécution du Move approprié
+                if (targetCard) {
+                    if (typeof moves.attachCard === 'function') {
+                        moves.attachCard(index, targetId);
                     }
-                    return;
-                }
-
-                if (targetId === 'battlefield' && card?.kind === 'SHADOW') {
+                } else if (
+                    targetId === 'battlefield' &&
+                    card?.kind === 'SHADOW'
+                ) {
                     if (typeof moves.playShadowCard === 'function') {
                         moves.playShadowCard(index);
                     } else if (typeof moves.playCard === 'function') {
                         moves.playCard(index);
                     }
-                    return;
-                }
-
-                if (
-                    targetId !== 'fellowshipArea' &&
-                    targetId !== 'supportArea' &&
-                    targetId !== 'battlefield'
-                ) {
-                    const targetCard = findTargetCard(G, targetId);
-                    if (canAttachToCharacter(card, targetCard)) {
-                        if (typeof moves.attachCard === 'function') {
-                            moves.attachCard(index, targetId);
-                        }
-                        return;
+                } else {
+                    if (typeof moves.playCard === 'function') {
+                        moves.playCard(index);
                     }
                 }
+                return;
             }
 
             if (origin === 'ATTACHMENT') {

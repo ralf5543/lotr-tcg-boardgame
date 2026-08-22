@@ -5,7 +5,7 @@ import type {
     PlayerState,
     LotrPhaseContext,
     LotrMoveContext,
-    SiteCardState
+    SiteCardState,
 } from './types';
 import { CARDS_DATABASE } from './cardsData';
 import { loadAndValidateDeck } from '../utils/deckLoader';
@@ -62,18 +62,39 @@ const createInitialPlayer = (playerId: string): PlayerState => {
         siteNumber: index + 1,
     })) as SiteCardState[];
 
+    if (isP0) {
+        return {
+            profile: {
+                name: 'Raphaël',
+                avatar: 'avatars/avatar_p0.webp',
+                faction: 'freePeoples',
+            },
+            deck: buildDeckFromIds(fullDeckIds, playerId),
+            hand: [],
+            discard: [],
+            deadPile: [
+                {
+                    id: 'mock-gandalf-dead',
+                    title: 'Gandalf',
+                    isUnique: true,
+                    type: 'COMPANION',
+                    kind: 'FREE_PEOPLE',
+                } as CardState,
+            ],
+            fellowshipArea: [],
+            supportArea: [],
+            sitesDeck,
+            currentSiteIndex: 0,
+            burdens: 0,
+        };
+    }
+
     return {
-        profile: isP0
-            ? {
-                  name: 'Raphaël',
-                  avatar: 'avatars/avatar_p0.webp',
-                  faction: 'freePeoples',
-              }
-            : {
-                  name: 'Tom',
-                  avatar: 'avatars/avatar_p1.webp',
-                  faction: 'shadow',
-              },
+        profile: {
+            name: 'Tom',
+            avatar: 'avatars/avatar_p1.webp',
+            faction: 'shadow',
+        },
         deck: buildDeckFromIds(fullDeckIds, playerId),
         hand: [],
         discard: [],
@@ -499,9 +520,11 @@ export const LotrGame: Game<GameState> = {
                     );
 
                     if (G.twilightPool < effectiveCost) {
-    console.warn(`❌ [playMinion] Twilight insuffisant: requis ${effectiveCost}, disponible ${G.twilightPool}`);
-    return 'INVALID_MOVE';
-}
+                        console.warn(
+                            `❌ [playMinion] Twilight insuffisant: requis ${effectiveCost}, disponible ${G.twilightPool}`
+                        );
+                        return 'INVALID_MOVE';
+                    }
                     //if (G.twilightPool < effectiveCost) return 'INVALID_MOVE';
 
                     player.hand.splice(cardIndex, 1);
