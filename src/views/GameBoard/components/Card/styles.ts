@@ -9,6 +9,7 @@ export interface CardContainerProps {
     $isShadow?: boolean;
     $isPlayable?: boolean;
     $isWounded?: boolean;
+    $isTakingDamage?: boolean;
     $isOverwhelmed?: boolean;
     $isDead?: boolean;
     $isOpponent?: boolean; // Position globale de la carte (HAUT = true, BAS = false)
@@ -321,7 +322,7 @@ export const CardContainer = styled.div<CardContainerProps>`
                 }
             `}
             /* ======------ Impact Blessure ($size === 'sm') ------====== */
-            ${props.$isWounded &&
+            ${props.$isTakingDamage &&
             css`
                 will-change: transform, filter;
                 animation: ${() => {

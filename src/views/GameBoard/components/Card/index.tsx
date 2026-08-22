@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import type { CardState, CardKeyword } from '../../../../game/types';
 import * as S from './styles';
 import { TRANSLATIONS } from '../../../../game/translations';
@@ -15,7 +15,6 @@ import {
 import { getCardText } from '../../../../utils/i18n';
 import type { SupportedLanguage } from '../../../../utils/i18n';
 
-// 🟢 COMPOSANT HELPER POUR BASCULER D'EXTENSION SI FICHIER INTROUVABLE
 interface CardImageProps {
     imageUrl?: string;
     alt: string;
@@ -100,6 +99,26 @@ export const Card: React.FC<CardProps> = ({
     const { setHoveredCard } = useHoverCard();
     const { startDrag } = useDrag();
 
+    // 💥 GESTION TEMPORAIRE DE L'ANIMATION DE BLESSURE (IMPACT)
+    const [isTakingDamage, setIsTakingDamage] = useState(false);
+    const prevWoundsRef = useRef(card.wounds || 0);
+
+    useEffect(() => {
+        const currentWounds = card.wounds || 0;
+
+        if (currentWounds > prevWoundsRef.current) {
+            setIsTakingDamage(true);
+            const timer = setTimeout(() => {
+                setIsTakingDamage(false);
+            }, 650); // 0.65s correspondant à la durée de l'animation CSS
+
+            prevWoundsRef.current = currentWounds;
+            return () => clearTimeout(timer);
+        }
+
+        prevWoundsRef.current = currentWounds;
+    }, [card.wounds]);
+
     const isFaceDown = isOpponent && (card?.isFaceDown ?? isFaceDownProp ?? false);
 
     const { title, subtitle, gameText, loreText } = getCardText(
@@ -129,7 +148,6 @@ export const Card: React.FC<CardProps> = ({
 
     const isShadow = card.kind === 'SHADOW';
 
-    // 🟢 Utilisation de CardKeyword au lieu de any
     const isRingBearer =
         isRingBearerProp ??
         card.keywords?.includes('RING-BEARER' as CardKeyword);
@@ -222,11 +240,11 @@ export const Card: React.FC<CardProps> = ({
             $size={size}
             $title={card.title}
             $isRoaming={isRoaming}
-            $isWounded={isWounded}
+            $isWounded={isWounded || hasWounds}
+            $isTakingDamage={isTakingDamage}
             $isOverwhelmed={isOverwhelmed || card.isOverwhelmed}
             $isDead={isDead || card.isDead}
             $isOpponent={isOpponent}
-            key={`${card.id}-wounds-${card.wounds || 0}`}
             onMouseEnter={handleMouseEnter}
             onMouseLeave={handleMouseLeave}
             onDragStart={isDraggable ? handleDragStart : undefined}
@@ -384,7 +402,6 @@ export const Card: React.FC<CardProps> = ({
                 </S.ResistanceWrapper>
             )}
 
-            {/* 🟢 AFFICHAGE DU SIGNET */}
             {shouldShowSignet && (
                 <S.CardSignet $signet={card.signet!} />
             )}
