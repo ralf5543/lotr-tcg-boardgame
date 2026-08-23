@@ -22,14 +22,19 @@ interface CardImageProps {
     draggable?: boolean;
 }
 
-const CardImage: React.FC<CardImageProps> = ({
+export const CardImage: React.FC<CardImageProps> = ({
     imageUrl,
     alt,
     draggable = false,
 }) => {
-    // Ordre de priorité des formats à tester
-    const extensions = ['.webp', '.jpg', '.png'];
-    const [extIndex, setExtIndex] = useState(0);
+    const [prevImageUrl, setPrevImageUrl] = useState(imageUrl);
+    const [fallbackSrc, setFallbackSrc] = useState<string | null>(null);
+
+    // Si la prop imageUrl change, on réinitialise le fallback directement pendant le rendu
+    if (imageUrl !== prevImageUrl) {
+        setPrevImageUrl(imageUrl);
+        setFallbackSrc(null);
+    }
 
     if (!imageUrl) {
         return (
@@ -41,20 +46,21 @@ const CardImage: React.FC<CardImageProps> = ({
         );
     }
 
-    // On isole le chemin sans l'extension
-    const basePath = imageUrl.replace(/\.(jpg|jpeg|png|webp)$/i, '');
-    const currentSrc = `${basePath}${extensions[extIndex]}`;
-
     const handleError = () => {
-        // En cas d'erreur 404, on passe à l'extension suivante
-        if (extIndex < extensions.length - 1) {
-            setExtIndex((prev) => prev + 1);
+        if (!fallbackSrc) {
+            // Premier fallback si l'URL d'origine échoue (ex: test du .jpg au lieu du .webp)
+            const basePath = imageUrl.replace(/\.(jpg|jpeg|png|webp)$/i, '');
+            const fallbackExt = imageUrl.endsWith('.webp') ? '.jpg' : '.webp';
+            setFallbackSrc(`${basePath}${fallbackExt}`);
+        } else {
+            // Deuxième fallback si le premier échoue aussi : dos de carte
+            setFallbackSrc('interface/lotr_cardback.webp');
         }
     };
 
     return (
         <S.Visual
-            src={currentSrc}
+            src={fallbackSrc ?? imageUrl}
             alt={alt}
             draggable={draggable}
             onError={handleError}
@@ -120,7 +126,8 @@ export const Card: React.FC<CardProps> = ({
         prevWoundsRef.current = currentWounds;
     }, [card.wounds]);
 
-    const isFaceDown = isOpponent && (card?.isFaceDown ?? isFaceDownProp ?? false);
+    const isFaceDown =
+        isOpponent && (card?.isFaceDown ?? isFaceDownProp ?? false);
 
     const { title, subtitle, gameText, loreText } = getCardText(
         card,
@@ -208,7 +215,6 @@ export const Card: React.FC<CardProps> = ({
         card.type === 'MINION' &&
         typeof card.minionSiteNumber === 'number' &&
         card.minionSiteNumber > currentSiteIndex + 1;
-        
 
     const effectiveVitality = getEffectiveVitality(card);
     const effectiveStrength = getEffectiveStrength(card);
@@ -220,12 +226,19 @@ export const Card: React.FC<CardProps> = ({
     const isAttachment = requiresAttachmentTarget(card);
 
     const displayResistance = isAttachment
-        ? (card.resistance > 0 ? `+${card.resistance}` : `${card.resistance}`)
+        ? card.resistance > 0
+            ? `+${card.resistance}`
+            : `${card.resistance}`
         : effectiveResistance;
 
-    const shouldShowResistance = size === 'sm'
-        ? (isAttachment ? card.resistance !== undefined : true)
-        : (isAttachment ? card.resistance !== undefined : !card.signet);
+    const shouldShowResistance =
+        size === 'sm'
+            ? isAttachment
+                ? card.resistance !== undefined
+                : true
+            : isAttachment
+              ? card.resistance !== undefined
+              : !card.signet;
 
     const shouldShowSignet = Boolean(card.signet);
 
@@ -252,7 +265,6 @@ export const Card: React.FC<CardProps> = ({
             data-overwhelmed={card.isOverwhelmed ? 'true' : 'false'}
             $isAttachment={isAttachment}
         >
-            
             {isCharacter &&
                 size === 'sm' &&
                 card.keywords &&
@@ -297,7 +309,11 @@ export const Card: React.FC<CardProps> = ({
 
             {card.imageUrl && (
                 <S.VisualContainer $type={card.type}>
-                    <CardImage imageUrl={card.imageUrl} alt={title ?? ''} />
+                    <CardImage
+                        key={card.id}
+                        imageUrl={card.imageUrl}
+                        alt={title ?? ''}
+                    />
                 </S.VisualContainer>
             )}
 
@@ -339,8 +355,7 @@ export const Card: React.FC<CardProps> = ({
                     {card.type === 'POSSESSION' ||
                     card.type === 'ARTIFACT' ||
                     card.type === 'CONDITION' ||
-                    (card.type === 'RING' &&
-                        card.subtype !== 'SUPPORT-AREA')
+                    (card.type === 'RING' && card.subtype !== 'SUPPORT-AREA')
                         ? card.strength > 0
                             ? `+${card.strength}`
                             : `${card.strength}`
@@ -353,8 +368,7 @@ export const Card: React.FC<CardProps> = ({
                     {card.type === 'POSSESSION' ||
                     card.type === 'ARTIFACT' ||
                     card.type === 'CONDITION' ||
-                    (card.type === 'RING' &&
-                        card.subtype !== 'SUPPORT-AREA')
+                    (card.type === 'RING' && card.subtype !== 'SUPPORT-AREA')
                         ? card.vitality > 0
                             ? `+${card.vitality}`
                             : `${card.vitality}`
@@ -402,10 +416,8 @@ export const Card: React.FC<CardProps> = ({
                 </S.ResistanceWrapper>
             )}
 
-            {shouldShowSignet && (
-                <S.CardSignet $signet={card.signet!} />
-            )}
-            
+            {shouldShowSignet && <S.CardSignet $signet={card.signet!} />}
+
             {card.type && card.type === 'RING' && size === 'sm' && (
                 <S.AttachmentSubtypeRing
                     src={`/interface/pictos/ONE-RING.webp`}
@@ -414,15 +426,17 @@ export const Card: React.FC<CardProps> = ({
                     width="16px"
                 />
             )}
-            
-            {card.subtype && card.subtype !== 'SUPPORT-AREA' && size === 'sm' && (
-                <S.AttachmentSubtype
-                    src={`/interface/pictos/${card.subtype}.webp`}
-                    alt={card.subtype}
-                    draggable={false}
-                    width="16px"
-                />
-            )}
+
+            {card.subtype &&
+                card.subtype !== 'SUPPORT-AREA' &&
+                size === 'sm' && (
+                    <S.AttachmentSubtype
+                        src={`/interface/pictos/${card.subtype}.webp`}
+                        alt={card.subtype}
+                        draggable={false}
+                        width="16px"
+                    />
+                )}
         </S.CardContainer>
     );
 };
