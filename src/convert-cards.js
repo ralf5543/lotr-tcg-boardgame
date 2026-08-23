@@ -38,7 +38,7 @@ const VALID_RACES = new Set([
     'URUK-HAI', 'WIZARD', 'WRAITH'
 ]);
 
-// Cultures valides (pour l'analyse de l'attachement via la balise <symbol>) 
+// Cultures valides 
 const VALID_CULTURES = new Set([
     'DUNLAND', 'DWARVEN', 'ELVEN', 'GANDALF', 'GOLLUM',
     'GONDOR', 'ISENGARD', 'MEN', 'MORIA', 'ORC',
@@ -82,27 +82,18 @@ const SHADOW_CULTURES = [
 // 2. FONCTIONS UTILITAIRES DE PARSING CSV ET NETTOYAGE DE TEXTE 
 // ============================================================================ 
 
-/** 
- * Supprime TOUS les guillemets (droits, typographiques, français, doubles, simples) 
- * situés au début, à la fin ou résiduels dans le texte. 
- */
 function stripQuotes(text) {
     if (!text) return undefined;
 
     const cleaned = text
         .trim()
-        // Supprime tous les guillemets et espaces en tout début/fin de chaîne 
         .replace(/^["'«»“”‘’`\s]+|["'«»“”‘’`\s]+$/g, '')
-        // Nettoie également tout guillemet résiduel à l'intérieur 
         .replace(/["“”«»]/g, '')
         .trim();
 
     return cleaned.length > 0 ? cleaned : undefined;
 }
 
-/** 
- * Analyse le contenu brut d'un CSV en gérant correctement les guillemets de champs et retours à la ligne. 
- */
 function parseCsvContent(content) {
     const rows = [];
     let currentRow = [];
@@ -142,50 +133,32 @@ function parseCsvContent(content) {
     return rows;
 }
 
-/** 
- * Nettoie le texte de lore/flavor (suppression des guillemets). 
- */
 function cleanLoreText(text) {
     return stripQuotes(text);
 }
 
-/** 
- * Formate le texte de jeu : convertit <br> en \n et <keyword> en **bold**. 
- * Place le symbole twilight d'Ambush juste APRÈS les astérisques de gras : **Ambush** <symbol>twilightX</symbol> 
- */
 function formatGameText(text) {
     if (!text) return undefined;
 
     let formatted = text
         .replace(/<br\s*\/?>/gi, '\n')
-        // CAS PARTICULIER AMBUSH : **Ambush** suivi immédiatement du symbole twilight 
         .replace(/<keyword>Ambush<\/keyword>\s*(<symbol>twilight\d+<\/symbol>)/gi, '**Ambush** $1')
-        // Cas général pour les autres mots-clés 
         .replace(/<keyword>([^<]+)<\/keyword>/gi, '**$1**');
 
     return formatted.trim();
 }
 
-/** 
- * Normalise et mappe la culture (ex: convertit MAN en MEN). 
- */
 function mapCulture(cultureStr) {
     if (!cultureStr) return undefined;
     const cleanCulture = cultureStr.trim().toUpperCase();
     return cleanCulture === 'MAN' ? 'MEN' : cleanCulture;
 }
 
-/** 
- * Extrait le marqueur d'alignement (Signet) depuis l'icône du bas. 
- */
 function parseSignet(bottomIcon) {
     if (!bottomIcon || !bottomIcon.startsWith('Signet_')) return undefined;
     return bottomIcon.replace('Signet_', '').toUpperCase();
 }
 
-/** 
- * Extrait une valeur numérique de statistique (Force, Vitalité, etc.) avec fallback texte. 
- */
 function parseStat(primaryValue, fallbackText) {
     if (primaryValue !== '' && primaryValue !== undefined) {
         const parsed = parseInt(primaryValue, 10);
@@ -200,9 +173,6 @@ function parseStat(primaryValue, fallbackText) {
     return undefined;
 }
 
-/** 
- * Construit un bloc i18n nettoyé 
- */
 function buildLangBlock(title, subtitle, gameText, lore) {
     const block = {
         title: stripQuotes(title),
@@ -219,17 +189,12 @@ function buildLangBlock(title, subtitle, gameText, lore) {
 }
 
 // ============================================================================ 
-// 3. FONCTIONS D'EXTRACTION DE RÈGLES MÉTIER (SUBTYPES, PHASES, MOTS-CLÉS, ATTACHED_TO) 
+// 3. FONCTIONS D'EXTRACTION DE RÈGLES MÉTIER 
 // ============================================================================ 
 
-/** 
- * Extrait les mots-clés autonomes d'une carte depuis son texte anglais 
- * et applique les règles logiques natives du jeu (Ring-bound / Unbound). 
- */
 function parseKeywords(text, titleVO, type, isRingbearer) {
     const keywords = [];
 
-    // 1. CAS SPÉCIAL AMBUSH : capture <keyword>Ambush</keyword> <symbol>twilightX</symbol>
     if (text) {
         const ambushRegex = /<keyword>Ambush<\/keyword>\s*<symbol>twilight(\d+)<\/symbol>/gi;
         let ambushMatch;
@@ -241,7 +206,6 @@ function parseKeywords(text, titleVO, type, isRingbearer) {
             }
         }
 
-        // 2. CAS GÉNÉRAL : Mots-clés standards se terminant par un point dans la balise 
         const regex = /<keyword>([A-Z][^<]*\.)<\/keyword>/g;
         let match;
         while ((match = regex.exec(text)) !== null) {
@@ -256,12 +220,10 @@ function parseKeywords(text, titleVO, type, isRingbearer) {
         }
     }
 
-    // 3. RÈGLE RÉTROACTIVE : Sam est TOUJOURS Ring-bound
     if (titleVO && titleVO.toLowerCase().startsWith('sam') && !keywords.includes('RING-BOUND')) {
         keywords.push('RING-BOUND');
     }
 
-    // 4. RÈGLE NATIVE UNBOUND : Tout compagnon non Ring-bound et non Porteur est UNBOUND
     if (type === 'COMPANION') {
         const isRingbound = keywords.includes('RING-BOUND');
         if (!isRingbearer && !isRingbound && !keywords.includes('UNBOUND')) {
@@ -272,16 +234,10 @@ function parseKeywords(text, titleVO, type, isRingbearer) {
     return keywords.length > 0 ? keywords : undefined;
 }
 
-/**
- * Extrait les phases associées à une carte.
- * - Pour un EVENT : c'est la phase où il peut être joué depuis la main (playPhases).
- * - Pour les cartes PERMANENTES : la phase du texte (Skirmish:, Maneuver:) est une phase d'action (actionPhases).
- */
 function parseClassAndPhases(classStr, englishText, type) {
     const textPhasesSet = new Set();
     const subTypeParts = [];
 
-    // Parsing de la colonne Class du CSV
     if (classStr && classStr.trim()) {
         const parts = classStr.split(/[,;/]/);
         parts.forEach(part => {
@@ -296,7 +252,6 @@ function parseClassAndPhases(classStr, englishText, type) {
         });
     }
 
-    // Parsing du texte (ex: "**Skirmish:**", "<keyword>Skirmish</keyword>")
     if (englishText) {
         const keywordRegex = /<keyword>([^<]+)<\/keyword>/gi;
         let match;
@@ -313,10 +268,6 @@ function parseClassAndPhases(classStr, englishText, type) {
     const detectedPhases = Array.from(textPhasesSet);
     const subtype = subTypeParts.length > 0 ? subTypeParts.join('-') : undefined;
 
-    // Règle Métier Decipher :
-    // - Si EVENT : les phases détectées sont les phases de jeu de la carte.
-    // - Si PERMANENT : la carte se joue durant la phase standard (FELLOWSHIP / SHADOW), 
-    //   et les phases détectées sont stockées dans actionPhases pour les déclenchements d'effets.
     const isEvent = type === 'EVENT';
 
     return {
@@ -326,9 +277,6 @@ function parseClassAndPhases(classStr, englishText, type) {
     };
 }
 
-/** 
- * Extrait la condition d'attachement d'une carte sous la forme d'un tableau 2D (DNF). 
- */
 function parseAttachedTo(text) {
     if (!text) return null;
 
@@ -399,64 +347,62 @@ function parseAttachedTo(text) {
 function parseToPlayConditions(text) {
     if (!text) return undefined;
 
-    // CORRECTION : On retire '<' de la liste d'exclusion pour ne pas s'arrêter avant <symbol> ou <keyword> 
-    // SÉCURITÉ : Ne match "To play," que s'il est au tout début du texte ou après un point/retour ligne, 
-    // et SANS guillemet d'ouverture (" / “ / ') juste devant (ex: texte conféré à une autre carte). 
     const match = text.match(/(?:^|[\n.])\s*(?<!["'“])To play,\s+([^.\n]+)/i);
     if (!match) return undefined;
 
     const rawClause = match[1].trim();
-    // ex: "spot a Ring-bound Man", "discard 2 cards from hand", "remove 2 burdens or 2 threats" 
 
-    // Helper pour extraire la quantité (chiffre), ou 1 par défaut 
     function extractCount(str) {
         const m = str.match(/\b(\d+)\b/);
         return m ? parseInt(m[1], 10) : 1;
     }
 
-    // Helper pour normaliser les tokens/mots 
+    // Normalisation au singulier + MAJUSCULES pour toutes les races/types
     function normalizeToken(token) {
         const clean = token.replace(/[^a-zA-Z-áéíóúÁÉÍÓÚàèìòùÀÈÌÒÙäëïöüÄËÏÖÜñÑ]/g, '');
         const upper = clean.toUpperCase();
 
         const plurals = {
-            'HOBBITS': 'HOBBIT',
-            'ENTS': 'ENT',
-            'RANGERS': 'RANGER',
             'ELVES': 'ELF',
             'DWARVES': 'DWARF',
+            'HOBBITS': 'HOBBIT',
+            'ENTS': 'ENT',
+            'ORCS': 'ORC',
+            'RANGERS': 'RANGER',
             'MINIONS': 'MINION',
             'COMPANIONS': 'COMPANION',
             'ALLIES': 'ALLY',
             'KNIGHTS': 'KNIGHT',
-            'MEN': 'MAN'
+            'SPIDERS': 'SPIDER',
+            'TROLLS': 'TROLL',
+            'NAZGUL': 'NAZGUL',
+            'NAZGULS': 'NAZGUL'
         };
 
         return plurals[upper] || upper;
     }
 
-    // Extraction des cibles (Cultures, Mots-clés, Nom propre ou Types) 
     function parseTarget(bodyText) {
         const targets = [];
 
-        // Extraction des symboles <symbol>shire</symbol> 
-        let cleanBody = bodyText.replace(/<symbol>(.*?)<\/symbol>/gi, (_, culture) => {
+        // 🟢 REGLE MAN : Uniquement si précédé spécifiquement de Gondor ou Rohan (symboles ou texte)
+        let processedText = bodyText.replace(/<symbol>(gondor|rohan)<\/symbol>\s+men\b/gi, '<symbol>$1</symbol> MAN');
+        processedText = processedText.replace(/\b(gondor|rohan)\s+men\b/gi, '$1 MAN');
+
+        let cleanBody = processedText.replace(/<symbol>(.*?)<\/symbol>/gi, (_, culture) => {
             if (culture) targets.push(culture.toUpperCase());
             return ' ';
         });
 
-        // Extraction des keywords <keyword>Ring-bound</keyword> 
         cleanBody = cleanBody.replace(/<keyword>(.*?)<\/keyword>/gi, (_, kw) => {
             if (kw) targets.push(kw.replace(/[:.,]/g, '').toUpperCase());
             return ' ';
         });
 
-        // Nettoyage Markdown / HTML 
         cleanBody = cleanBody.replace(/[*_#<>[\]]/g, ' ').trim();
 
         const words = cleanBody.split(/\s+/).filter(Boolean);
 
-        // Mots/verbes réservés à exclure complètement des cibles 
         const EXCLUDED_WORDS = new Set([
             'A', 'AN', 'YOUR', 'OR', 'FROM', 'IN', 'PLAY', 'HAND', 'CARD', 'CARDS',
             'SPOT', 'EXERT', 'DISCARD', 'REMOVE', 'ADD'
@@ -465,20 +411,26 @@ function parseToPlayConditions(text) {
         for (const word of words) {
             const normalized = normalizeToken(word);
             if (normalized && !EXCLUDED_WORDS.has(normalized)) {
-                // Conservation de la casse si nom propre 
+                // Sécurité spécifique pour MAN vs culture MEN
+                let finalToken = normalized;
+                if (finalToken === 'MEN' && targets.some(t => ['GONDOR', 'ROHAN'].includes(t))) {
+                    finalToken = 'MAN';
+                }
+
+                // Si c'est un mot normalisé qui correspond à une race/type connu, on force la majuscule
+                const isKnownTarget = VALID_RACES.has(finalToken) || VALID_TARGET_TYPES.has(finalToken) || VALID_CULTURES.has(finalToken);
                 const isProperName = /^[A-Z][a-zà-ÿ]+/.test(word);
-                targets.push(isProperName ? word : normalized);
+
+                targets.push(isKnownTarget ? finalToken : (isProperName ? word : finalToken));
             }
         }
 
         return targets;
     }
 
-    // Découpage des alternatives séparées par "OR" 
     const rawOptions = rawClause.split(/\s+or\s+/i);
     const parsedOptions = [];
 
-    // Verbe global par défaut si non répété après "or" (ex: "remove 2 burdens or 2 threats") 
     const globalVerbMatch = rawClause.match(/^(spot|exert|discard|remove|add)\b/i);
     const defaultVerb = globalVerbMatch ? globalVerbMatch[1].toLowerCase() : 'spot';
 
@@ -491,23 +443,19 @@ function parseToPlayConditions(text) {
 
         const count = extractCount(optionText);
 
-        // 1. DISCARD FROM HAND 
         if (/discard.*hand/i.test(optionText) || (currentVerb === 'discard' && /hand/i.test(optionText))) {
             optionObj.discardFromHand = count;
         }
-        // 2. BURDENS 
         else if (/burdens?/i.test(optionText)) {
             if (currentVerb === 'remove') optionObj.removeBurdens = count;
             else if (currentVerb === 'add') optionObj.addBurdens = count;
             else optionObj.spotBurdens = count;
         }
-        // 3. THREATS 
         else if (/threats?/i.test(optionText)) {
             if (currentVerb === 'remove') optionObj.removeThreats = count;
             else if (currentVerb === 'add') optionObj.addThreats = count;
             else optionObj.spotThreats = count;
         }
-        // 4. CARTES / EFFETS SUR LE JEU (spot, exert, discardFromPlay) 
         else {
             const targets = parseTarget(optionText);
             if (targets.length > 0) {
@@ -611,10 +559,8 @@ async function convert() {
         const rawImageCode = (data['Image'] || '').trim();
         const imageUrl = rawImageCode ? `/cards_visuals/o_${rawImageCode}.jpg` : undefined;
 
-        const {
-            subtype,
-            phases
-        } = parseClassAndPhases(data['Class'], englishText);
+        // Appel UNIQUE de parseClassAndPhases
+        const { subtype, phases, actionPhases } = parseClassAndPhases(data['Class'], englishText, type);
         
         // Mots-clés avec règles logiques natives (UNBOUND / RING-BOUND)
         const keywords = parseKeywords(englishText, titleVO, type, isRingbearer);
@@ -625,7 +571,6 @@ async function convert() {
         const computedResistance = parseStat(data['Resistance'], data['Bottom Text']);
 
         const toPlayData = parseToPlayConditions(englishText);
-        const { subtype, phases, actionPhases } = parseClassAndPhases(data['Class'], englishText, type);
 
         const cardObj = {
             id: cardId,
@@ -642,9 +587,7 @@ async function convert() {
             attachedTo: attachmentData || undefined,
             toPlay: toPlayData,
             phases: phases,
-            actionPhases: actionPhases
-            isControlled: attachmentData?.isControlled,
-            phases: phases,
+            actionPhases: actionPhases,
             culture: culture,
             race: data['Race'] ? data['Race'].toUpperCase() : undefined,
             signet: parseSignet(bottomIcon),

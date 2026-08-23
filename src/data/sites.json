@@ -6,7 +6,7 @@
     "isUnique": false,
     "kind": "SITE",
     "type": "SITE",
-    "phases": [
+    "actionPhases": [
       "FELLOWSHIP"
     ],
     "twilightCost": 0,
@@ -80,7 +80,7 @@
     "keywords": [
       "UNDERGROUND"
     ],
-    "phases": [
+    "actionPhases": [
       "MANEUVER"
     ],
     "twilightCost": 3,
@@ -117,7 +117,7 @@
     "isUnique": false,
     "kind": "SITE",
     "type": "SITE",
-    "phases": [
+    "actionPhases": [
       "FELLOWSHIP"
     ],
     "twilightCost": 3,
@@ -154,7 +154,7 @@
     "isUnique": false,
     "kind": "SITE",
     "type": "SITE",
-    "phases": [
+    "actionPhases": [
       "FELLOWSHIP"
     ],
     "twilightCost": 0,
@@ -225,7 +225,7 @@
     "isUnique": false,
     "kind": "SITE",
     "type": "SITE",
-    "phases": [
+    "actionPhases": [
       "FELLOWSHIP"
     ],
     "twilightCost": 0,
@@ -262,7 +262,7 @@
     "isUnique": false,
     "kind": "SITE",
     "type": "SITE",
-    "phases": [
+    "actionPhases": [
       "FELLOWSHIP"
     ],
     "twilightCost": 0,
@@ -333,7 +333,7 @@
     "isUnique": false,
     "kind": "SITE",
     "type": "SITE",
-    "phases": [
+    "actionPhases": [
       "FELLOWSHIP"
     ],
     "twilightCost": 0,
@@ -370,7 +370,7 @@
     "isUnique": false,
     "kind": "SITE",
     "type": "SITE",
-    "phases": [
+    "actionPhases": [
       "FELLOWSHIP"
     ],
     "twilightCost": 0,
@@ -407,7 +407,7 @@
     "isUnique": false,
     "kind": "SITE",
     "type": "SITE",
-    "phases": [
+    "actionPhases": [
       "FELLOWSHIP"
     ],
     "twilightCost": 0,
@@ -589,7 +589,7 @@
     "keywords": [
       "PLAINS"
     ],
-    "phases": [
+    "actionPhases": [
       "SKIRMISH"
     ],
     "twilightCost": 2,
@@ -876,7 +876,7 @@
     "isUnique": false,
     "kind": "SITE",
     "type": "SITE",
-    "phases": [
+    "actionPhases": [
       "FELLOWSHIP"
     ],
     "twilightCost": 0,
@@ -913,7 +913,7 @@
     "isUnique": false,
     "kind": "SITE",
     "type": "SITE",
-    "phases": [
+    "actionPhases": [
       "FELLOWSHIP"
     ],
     "twilightCost": 0,
@@ -950,7 +950,7 @@
     "isUnique": false,
     "kind": "SITE",
     "type": "SITE",
-    "phases": [
+    "actionPhases": [
       "FELLOWSHIP"
     ],
     "twilightCost": 0,
@@ -1027,7 +1027,7 @@
     "keywords": [
       "UNDERGROUND"
     ],
-    "phases": [
+    "actionPhases": [
       "MANEUVER"
     ],
     "twilightCost": 3,
@@ -1104,7 +1104,7 @@
     "keywords": [
       "UNDERGROUND"
     ],
-    "phases": [
+    "actionPhases": [
       "SHADOW"
     ],
     "twilightCost": 3,
@@ -1219,7 +1219,7 @@
     "keywords": [
       "MOUNTAIN"
     ],
-    "phases": [
+    "actionPhases": [
       "SHADOW"
     ],
     "twilightCost": 2,
@@ -1259,7 +1259,7 @@
     "keywords": [
       "UNDERGROUND"
     ],
-    "phases": [
+    "actionPhases": [
       "SHADOW"
     ],
     "twilightCost": 6,
@@ -1330,7 +1330,7 @@
     "isUnique": false,
     "kind": "SITE",
     "type": "SITE",
-    "phases": [
+    "actionPhases": [
       "FELLOWSHIP"
     ],
     "twilightCost": 3,
@@ -1593,7 +1593,7 @@
     "keywords": [
       "RIVER"
     ],
-    "phases": [
+    "actionPhases": [
       "FELLOWSHIP"
     ],
     "twilightCost": 6,
@@ -1633,7 +1633,7 @@
     "keywords": [
       "RIVER"
     ],
-    "phases": [
+    "actionPhases": [
       "SHADOW"
     ],
     "twilightCost": 9,
@@ -1670,7 +1670,7 @@
     "isUnique": false,
     "kind": "SITE",
     "type": "SITE",
-    "phases": [
+    "actionPhases": [
       "MANEUVER"
     ],
     "twilightCost": 9,
@@ -1778,7 +1778,7 @@
     "keywords": [
       "RIVER"
     ],
-    "phases": [
+    "actionPhases": [
       "SHADOW"
     ],
     "twilightCost": 9,
@@ -1815,7 +1815,7 @@
     "isUnique": false,
     "kind": "SITE",
     "type": "SITE",
-    "phases": [
+    "actionPhases": [
       "FELLOWSHIP"
     ],
     "twilightCost": 0,
@@ -1855,7 +1855,7 @@
     "keywords": [
       "FOREST"
     ],
-    "phases": [
+    "actionPhases": [
       "FELLOWSHIP"
     ],
     "twilightCost": 0,
@@ -1892,7 +1892,7 @@
     "isUnique": false,
     "kind": "SITE",
     "type": "SITE",
-    "phases": [
+    "actionPhases": [
       "FELLOWSHIP"
     ],
     "twilightCost": 0,
@@ -2219,7 +2219,7 @@
     "isUnique": false,
     "kind": "SITE",
     "type": "SITE",
-    "phases": [
+    "actionPhases": [
       "MANEUVER"
     ],
     "twilightCost": 9,
@@ -2324,7 +2324,7 @@
     "isUnique": false,
     "kind": "SITE",
     "type": "SITE",
-    "phases": [
+    "actionPhases": [
       "FELLOWSHIP"
     ],
     "twilightCost": 0,
@@ -2401,7 +2401,7 @@
     "keywords": [
       "PLAINS"
     ],
-    "phases": [
+    "actionPhases": [
       "FELLOWSHIP"
     ],
     "twilightCost": 0,
@@ -2441,7 +2441,7 @@
     "keywords": [
       "PLAINS"
     ],
-    "phases": [
+    "actionPhases": [
       "FELLOWSHIP"
     ],
     "twilightCost": 0,
@@ -2552,7 +2552,7 @@
     "keywords": [
       "PLAINS"
     ],
-    "phases": [
+    "actionPhases": [
       "SHADOW"
     ],
     "twilightCost": 2,
@@ -2592,7 +2592,7 @@
     "keywords": [
       "FOREST"
     ],
-    "phases": [
+    "actionPhases": [
       "FELLOWSHIP"
     ],
     "twilightCost": 2,
@@ -2776,7 +2776,7 @@
     "isUnique": false,
     "kind": "SITE",
     "type": "SITE",
-    "phases": [
+    "actionPhases": [
       "FELLOWSHIP"
     ],
     "twilightCost": 0,
@@ -2847,7 +2847,7 @@
     "isUnique": false,
     "kind": "SITE",
     "type": "SITE",
-    "phases": [
+    "actionPhases": [
       "FELLOWSHIP"
     ],
     "twilightCost": 0,
@@ -2918,7 +2918,7 @@
     "isUnique": false,
     "kind": "SITE",
     "type": "SITE",
-    "phases": [
+    "actionPhases": [
       "FELLOWSHIP"
     ],
     "twilightCost": 1,
@@ -3182,7 +3182,7 @@
     "keywords": [
       "BATTLEGROUND"
     ],
-    "phases": [
+    "actionPhases": [
       "SHADOW"
     ],
     "twilightCost": 7,
@@ -3337,7 +3337,7 @@
     "keywords": [
       "UNDERGROUND"
     ],
-    "phases": [
+    "actionPhases": [
       "MANEUVER"
     ],
     "twilightCost": 3,
@@ -3411,7 +3411,7 @@
     "isUnique": false,
     "kind": "SITE",
     "type": "SITE",
-    "phases": [
+    "actionPhases": [
       "FELLOWSHIP"
     ],
     "twilightCost": 3,
@@ -3557,7 +3557,7 @@
     "isUnique": false,
     "kind": "SITE",
     "type": "SITE",
-    "phases": [
+    "actionPhases": [
       "SHADOW"
     ],
     "twilightCost": 7,
@@ -3670,7 +3670,7 @@
     "keywords": [
       "BATTLEGROUND"
     ],
-    "phases": [
+    "actionPhases": [
       "SHADOW"
     ],
     "twilightCost": 8,
@@ -3742,7 +3742,7 @@
     "isUnique": false,
     "kind": "SITE",
     "type": "SITE",
-    "phases": [
+    "actionPhases": [
       "SHADOW"
     ],
     "twilightCost": 9,
@@ -3779,7 +3779,7 @@
     "isUnique": false,
     "kind": "SITE",
     "type": "SITE",
-    "phases": [
+    "actionPhases": [
       "REGROUP"
     ],
     "twilightCost": 6,
@@ -3819,7 +3819,7 @@
     "keywords": [
       "PLAINS"
     ],
-    "phases": [
+    "actionPhases": [
       "RESPONSE"
     ],
     "twilightCost": 8,
@@ -3893,7 +3893,7 @@
     "isUnique": false,
     "kind": "SITE",
     "type": "SITE",
-    "phases": [
+    "actionPhases": [
       "FELLOWSHIP"
     ],
     "twilightCost": 0,
@@ -3930,7 +3930,7 @@
     "isUnique": false,
     "kind": "SITE",
     "type": "SITE",
-    "phases": [
+    "actionPhases": [
       "FELLOWSHIP"
     ],
     "twilightCost": 0,
@@ -3967,7 +3967,7 @@
     "isUnique": false,
     "kind": "SITE",
     "type": "SITE",
-    "phases": [
+    "actionPhases": [
       "FELLOWSHIP"
     ],
     "twilightCost": 0,
@@ -4004,7 +4004,7 @@
     "isUnique": false,
     "kind": "SITE",
     "type": "SITE",
-    "phases": [
+    "actionPhases": [
       "FELLOWSHIP"
     ],
     "twilightCost": 3,
@@ -4075,7 +4075,7 @@
     "isUnique": false,
     "kind": "SITE",
     "type": "SITE",
-    "phases": [
+    "actionPhases": [
       "RESPONSE"
     ],
     "twilightCost": 9,
@@ -4112,7 +4112,7 @@
     "isUnique": false,
     "kind": "SITE",
     "type": "SITE",
-    "phases": [
+    "actionPhases": [
       "FELLOWSHIP"
     ],
     "twilightCost": 0,
@@ -4183,7 +4183,7 @@
     "isUnique": false,
     "kind": "SITE",
     "type": "SITE",
-    "phases": [
+    "actionPhases": [
       "FELLOWSHIP"
     ],
     "twilightCost": 0,
@@ -4220,7 +4220,7 @@
     "isUnique": false,
     "kind": "SITE",
     "type": "SITE",
-    "phases": [
+    "actionPhases": [
       "FELLOWSHIP"
     ],
     "twilightCost": 0,
@@ -4325,7 +4325,7 @@
     "isUnique": false,
     "kind": "SITE",
     "type": "SITE",
-    "phases": [
+    "actionPhases": [
       "SHADOW"
     ],
     "twilightCost": 1,
@@ -4436,7 +4436,7 @@
     "isUnique": false,
     "kind": "SITE",
     "type": "SITE",
-    "phases": [
+    "actionPhases": [
       "FELLOWSHIP"
     ],
     "twilightCost": 0,
@@ -4473,7 +4473,7 @@
     "isUnique": false,
     "kind": "SITE",
     "type": "SITE",
-    "phases": [
+    "actionPhases": [
       "FELLOWSHIP"
     ],
     "twilightCost": 1,
@@ -4510,7 +4510,7 @@
     "isUnique": false,
     "kind": "SITE",
     "type": "SITE",
-    "phases": [
+    "actionPhases": [
       "FELLOWSHIP"
     ],
     "twilightCost": 0,
@@ -4550,7 +4550,7 @@
     "keywords": [
       "RIVER"
     ],
-    "phases": [
+    "actionPhases": [
       "SKIRMISH"
     ],
     "twilightCost": 3,
@@ -4590,7 +4590,7 @@
     "keywords": [
       "DAMAGE +1"
     ],
-    "phases": [
+    "actionPhases": [
       "SKIRMISH"
     ],
     "twilightCost": 2,
@@ -4630,7 +4630,7 @@
     "keywords": [
       "PLAINS"
     ],
-    "phases": [
+    "actionPhases": [
       "ARCHERY"
     ],
     "twilightCost": 4,
@@ -4979,7 +4979,7 @@
     "keywords": [
       "RIVER"
     ],
-    "phases": [
+    "actionPhases": [
       "SHADOW"
     ],
     "twilightCost": 6,
@@ -5019,7 +5019,7 @@
     "keywords": [
       "PLAINS"
     ],
-    "phases": [
+    "actionPhases": [
       "SHADOW"
     ],
     "twilightCost": 6,
@@ -5059,7 +5059,7 @@
     "keywords": [
       "RIVER"
     ],
-    "phases": [
+    "actionPhases": [
       "SHADOW"
     ],
     "twilightCost": 6,
@@ -5096,7 +5096,7 @@
     "isUnique": false,
     "kind": "SITE",
     "type": "SITE",
-    "phases": [
+    "actionPhases": [
       "SHADOW"
     ],
     "twilightCost": 8,
@@ -5133,7 +5133,7 @@
     "isUnique": false,
     "kind": "SITE",
     "type": "SITE",
-    "phases": [
+    "actionPhases": [
       "SKIRMISH"
     ],
     "twilightCost": 8,
@@ -5170,7 +5170,7 @@
     "isUnique": false,
     "kind": "SITE",
     "type": "SITE",
-    "phases": [
+    "actionPhases": [
       "SHADOW"
     ],
     "twilightCost": 8,
@@ -5207,7 +5207,7 @@
     "isUnique": false,
     "kind": "SITE",
     "type": "SITE",
-    "phases": [
+    "actionPhases": [
       "SHADOW"
     ],
     "twilightCost": 8,
@@ -5281,7 +5281,7 @@
     "isUnique": false,
     "kind": "SITE",
     "type": "SITE",
-    "phases": [
+    "actionPhases": [
       "SHADOW"
     ],
     "twilightCost": 9,
@@ -5318,7 +5318,7 @@
     "isUnique": false,
     "kind": "SITE",
     "type": "SITE",
-    "phases": [
+    "actionPhases": [
       "SHADOW"
     ],
     "twilightCost": 9,
@@ -5392,7 +5392,7 @@
     "keywords": [
       "UNDERGROUND"
     ],
-    "phases": [
+    "actionPhases": [
       "FELLOWSHIP"
     ],
     "twilightCost": 1,
@@ -5436,7 +5436,7 @@
     "keywords": [
       "UNDERGROUND"
     ],
-    "phases": [
+    "actionPhases": [
       "SHADOW"
     ],
     "twilightCost": 4,
@@ -5518,7 +5518,7 @@
     "keywords": [
       "RIVER"
     ],
-    "phases": [
+    "actionPhases": [
       "REGROUP"
     ],
     "twilightCost": 6,
@@ -5559,7 +5559,7 @@
     "isUnique": false,
     "kind": "SITE",
     "type": "SITE",
-    "phases": [
+    "actionPhases": [
       "FELLOWSHIP"
     ],
     "twilightCost": 0,
@@ -5599,7 +5599,7 @@
     "keywords": [
       "PLAINS"
     ],
-    "phases": [
+    "actionPhases": [
       "SHADOW"
     ],
     "twilightCost": 3,
@@ -5670,7 +5670,7 @@
     "isUnique": false,
     "kind": "SITE",
     "type": "SITE",
-    "phases": [
+    "actionPhases": [
       "SKIRMISH"
     ],
     "twilightCost": 8,
@@ -5818,7 +5818,7 @@
     "keywords": [
       "DWELLING"
     ],
-    "phases": [
+    "actionPhases": [
       "SHADOW"
     ],
     "twilightCost": 0,
@@ -6073,7 +6073,7 @@
     "keywords": [
       "PLAINS"
     ],
-    "phases": [
+    "actionPhases": [
       "SKIRMISH"
     ],
     "twilightCost": 1,
@@ -6112,7 +6112,7 @@
     "keywords": [
       "MARSH"
     ],
-    "phases": [
+    "actionPhases": [
       "SHADOW"
     ],
     "twilightCost": 1,
@@ -6404,7 +6404,7 @@
     "keywords": [
       "MARSH"
     ],
-    "phases": [
+    "actionPhases": [
       "REGROUP"
     ],
     "twilightCost": 2,
@@ -6982,7 +6982,7 @@
     "keywords": [
       "MOUNTAIN"
     ],
-    "phases": [
+    "actionPhases": [
       "MANEUVER"
     ],
     "twilightCost": 1,
@@ -7129,7 +7129,7 @@
     "keywords": [
       "FOREST"
     ],
-    "phases": [
+    "actionPhases": [
       "SHADOW"
     ],
     "twilightCost": 0,
@@ -8137,7 +8137,7 @@
     "isUnique": false,
     "kind": "SITE",
     "type": "SITE",
-    "phases": [
+    "actionPhases": [
       "REGROUP"
     ],
     "twilightCost": 0,
