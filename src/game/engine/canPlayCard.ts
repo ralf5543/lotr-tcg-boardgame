@@ -62,8 +62,26 @@ export const canAttachToCharacter = (
     const attachment = attachmentCard as CardState;
     if (!requiresAttachmentTarget(attachment)) return false;
 
-    // Utilisation de notre matcher modulaire DNF
-    return cardMatchesTarget(targetCard, attachment.attachedTo as string[][]);
+    // 1. Vérification DNF des cibles autorisées
+    const matchesTarget = cardMatchesTarget(targetCard, attachment.attachedTo as string[][]);
+    if (!matchesTarget) return false;
+
+    // 2. Vérification de la limite de subtype (t minuscule)
+    const target = targetCard as CardState;
+    const newSubtype = (attachment as any).subtype || (attachment as any).subType || (attachment as any).itemClass;
+
+    if (newSubtype && target.attachments && target.attachments.length > 0) {
+        const hasSameSubtype = target.attachments.some((existing) => {
+            const existingSubtype = (existing as any).subtype || (existing as any).subType || (existing as any).itemClass;
+            return existingSubtype === newSubtype;
+        });
+
+        if (hasSameSubtype) {
+            return false;
+        }
+    }
+
+    return true;
 };
 
 /* ==========================================================================
