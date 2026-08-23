@@ -406,6 +406,15 @@ export const Card: React.FC<CardProps> = ({
                 <S.CardSignet $signet={card.signet!} />
             )}
             
+            {card.type && card.type === 'RING' && size === 'sm' && (
+                <S.AttachmentSubtypeRing
+                    src={`/interface/pictos/ONE-RING.webp`}
+                    alt={card.type}
+                    draggable={false}
+                    width="16px"
+                />
+            )}
+            
             {card.subtype && card.subtype !== 'SUPPORT-AREA' && size === 'sm' && (
                 <S.AttachmentSubtype
                     src={`/interface/pictos/${card.subtype}.webp`}

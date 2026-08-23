@@ -871,6 +871,19 @@ export const AttachmentSubtype = styled.img`
     filter: invert(1);
 `;
 
+export const AttachmentSubtypeRing = styled.img`
+    position: absolute;
+    z-index: 2;  
+    inset-block-start: 4px;
+    inset-inline-start: 2px;
+    background-color: white;
+    border-radius: 50%;
+    padding: 2px;
+    width: 20px;
+    border: 1px solid black;
+    filter: invert(1);
+`;
+
 export const WoundsOverlay = styled.div`
     position: absolute;
     inset: 30px 32px 33px -11px;
