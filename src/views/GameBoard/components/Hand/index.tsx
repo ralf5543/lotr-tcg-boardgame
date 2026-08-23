@@ -1,13 +1,18 @@
 import React, { useState, useEffect, useRef } from 'react';
-import type { CardState } from '../../../../game/types';
+import type { CardState, GameState } from '../../../../game/types';
 import { Card } from '../Card';
 import * as S from './styles';
 import { useDrag } from '../../../../contexts/DragContext';
 import { useFaction } from '../../../../contexts/FactionContext';
 import { audioService } from '../../../../services/audioService';
+import {
+    hasSpotCondition,
+    isSpotConditionMet,
+} from '../../../../game/engine/validations/checkToPlayConditions';
 
 interface HandProps {
     hand: CardState[];
+    G: GameState; // 👈 1. Ajout de G
     playerRole?: '0' | '1';
     currentSiteIndex?: number;
     phase?: string;
@@ -22,6 +27,7 @@ const knownCardIdsCache = new Set<string>();
 
 export const Hand: React.FC<HandProps> = ({
     hand,
+    G, // 👈 2. Récupération de G
     playerRole: propPlayerRole,
     currentSiteIndex,
     phase,
@@ -62,7 +68,6 @@ export const Hand: React.FC<HandProps> = ({
 
     const [discardingIndex, setDiscardingIndex] = useState<number | null>(null);
 
-    // 🟢 DÉTECTION ROBUSTE : Initialisation avec la mémoire globale du module
     const [animatingCardIds, setAnimatingCardIds] = useState<Set<string>>(
         new Set()
     );
@@ -146,6 +151,16 @@ export const Hand: React.FC<HandProps> = ({
                               (c) => c.id === card.id
                           );
 
+                          // 👈 3. Calculs placés dans la boucle map pour chaque carte
+                          const hasSpot = hasSpotCondition(card);
+                          const isSpotMet = hasSpot
+                              ? isSpotConditionMet(card, {
+                                    G,
+                                    ctx: {} as any,
+                                    playerID: effectivePlayerId,
+                                })
+                              : false;
+
                           return (
                               <S.CardWrapper
                                   key={card.id}
@@ -158,6 +173,8 @@ export const Hand: React.FC<HandProps> = ({
                                   }
                                   $isDiscardPhase={isDiscardPhase}
                                   $isDiscarding={isDiscarding}
+                                  $hasSpot={hasSpot}
+                                  $isSpotMet={isSpotMet}
                                   data-draggable={
                                       !isDiscardPhase && isMatchingPlayerRole
                                           ? 'true'

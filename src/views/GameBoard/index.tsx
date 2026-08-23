@@ -528,6 +528,7 @@ export const GameBoard: React.FC<GameBoardProps> = ({
                     requestedTab={getRequestedTab()}
                     handView={
                         <Hand
+                            G={G}
                             playerRole={myId as '0' | '1'}
                             hand={me.hand || []}
                             currentSiteIndex={currentSiteIndex}

@@ -191,3 +191,48 @@ export function checkToPlayConditions(
 
     return { valid: false, reason: lastReason };
 }
+
+/* ==========================================================================
+   HELPERS UI (Visuels pour les effets "Spot")
+   ========================================================================== */
+
+/**
+ * Indique si une carte possède au moins une condition 'spot' dans son toPlay
+ */
+export function hasSpotCondition(card: CardState): boolean {
+    const toPlay = (card as any).toPlay;
+    if (!toPlay || !Array.isArray(toPlay)) return false;
+
+    return toPlay.some((option: any) => Boolean(option.spot && option.spot.length > 0));
+}
+
+/**
+ * Évalue si TOUTES les conditions 'spot' de la carte sont actuellement remplies
+ */
+export function isSpotConditionMet(card: CardState, context: ValidationContext): boolean {
+    const toPlay = (card as any).toPlay;
+    if (!toPlay || !Array.isArray(toPlay)) return false;
+
+    const { G, playerID } = context;
+    const cardsInPlay = getSpottableCardsInPlay(G, playerID, card);
+
+    // Vérifie chaque option qui contient du spot
+    for (const option of toPlay) {
+        if (option.spot && Array.isArray(option.spot)) {
+            for (const req of option.spot) {
+                const countRequired = req.count || 1;
+                const targetGroups = req.target;
+
+                const matchingCount = cardsInPlay.filter((c) =>
+                    cardMatchesTarget(c, targetGroups)
+                ).length;
+
+                if (matchingCount < countRequired) {
+                    return false;
+                }
+            }
+        }
+    }
+
+    return true;
+}

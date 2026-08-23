@@ -47,6 +47,8 @@ export const CardWrapper = styled.div<{
     $isRoaming?: boolean;
     $isDiscardPhase?: boolean;
     $isDiscarding?: boolean;
+    $hasSpot?: boolean;
+    $isSpotMet?: boolean;
 }>`
     position: relative;
     margin: 0 -15px;
@@ -70,7 +72,8 @@ export const CardWrapper = styled.div<{
     ${(props) =>
         props.$isNew &&
         css`
-            animation: ${drawCardIn} 0.5s cubic-bezier(0.16, 1, 0.3, 1) backwards;
+            animation: ${drawCardIn} 0.5s cubic-bezier(0.16, 1, 0.3, 1)
+                backwards;
             animation-delay: ${(props.$staggerIndex ?? 0) * 0.08}s;
         `}
 
@@ -89,10 +92,30 @@ export const CardWrapper = styled.div<{
     ${(props) =>
         props.$isDiscarding &&
         css`
-            animation: ${discardFlyUp} 0.45s cubic-bezier(0.11, 0, 0.5, 0) forwards !important;
+            animation: ${discardFlyUp} 0.45s cubic-bezier(0.11, 0, 0.5, 0)
+                forwards !important;
             pointer-events: none !important;
             z-index: 150 !important;
         `}
+    /* 1. Carte classique sans condition 'spot' : Style par défaut */
+
+  /* 2. Condition SPOT REQUIS ET VALIDÉE (ex: halo bleu turquoise) */
+  ${(props) =>
+        props.$hasSpot &&
+        props.$isSpotMet &&
+        `
+    border: 1px solid #00f2fe;
+    box-shadow: 0 0 10px rgba(0, 242, 254, 0.6);
+  `}
+
+  /* 3. Condition SPOT REQUIS MAIS NON MET */
+  ${(props) =>
+        props.$hasSpot &&
+        !props.$isSpotMet &&
+        `
+    border: 1px solid #ff4b4b;
+    box-shadow: 0 0 10px rgba(255, 75, 75, 0.6);
+  `}
 `;
 
 export const CardRow = styled.div`
