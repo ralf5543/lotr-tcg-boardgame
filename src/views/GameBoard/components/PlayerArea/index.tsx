@@ -140,6 +140,8 @@ export const PlayerArea: React.FC<PlayerAreaProps> = ({
                                             character={companion}
                                             index={companionIdx}
                                             isOpponent={isOpponent}
+                                            G={G}
+                                            playerID={_playerId}
                                             isFaceDown={
                                                 isOpponent
                                                     ? (companion.isFaceDown ??
@@ -231,6 +233,8 @@ export const PlayerArea: React.FC<PlayerAreaProps> = ({
                                 isFaceDown={shouldBeFaceDown}
                                 burdens={playerBurdens}
                                 isWounded={isWounded}
+                                            G={G}
+                                            playerID={_playerId}
                                 isDead={isDead}
                                 isSelectedSkirmish={
                                     activeSkirmishId === skirmishId
@@ -323,6 +327,8 @@ export const PlayerArea: React.FC<PlayerAreaProps> = ({
                                     isFaceDown={shouldBeFaceDown}
                                     burdens={playerBurdens}
                                     isWounded={isWounded}
+                                    G={G}
+                                    playerID={_playerId}
                                     isDead={isDead}
                                     onStartDrag={(e) => {
                                         if (isOpponent || e.button !== 0)
@@ -365,6 +371,8 @@ export const PlayerArea: React.FC<PlayerAreaProps> = ({
                                     isFaceDown={shouldBeFaceDown}
                                     burdens={playerBurdens}
                                     isWounded={isWounded}
+                                    G={G}
+                                    playerID={_playerId}
                                     isDead={isDead}
                                     onStartDrag={(e) => {
                                         if (isOpponent || e.button !== 0)

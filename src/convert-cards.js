@@ -272,10 +272,16 @@ function parseKeywords(text, titleVO, type, isRingbearer) {
     return keywords.length > 0 ? keywords : undefined;
 }
 
-function parseClassAndPhases(classStr, englishText) {
-    const phasesSet = new Set();
+/**
+ * Extrait les phases associées à une carte.
+ * - Pour un EVENT : c'est la phase où il peut être joué depuis la main (playPhases).
+ * - Pour les cartes PERMANENTES : la phase du texte (Skirmish:, Maneuver:) est une phase d'action (actionPhases).
+ */
+function parseClassAndPhases(classStr, englishText, type) {
+    const textPhasesSet = new Set();
     const subTypeParts = [];
 
+    // Parsing de la colonne Class du CSV
     if (classStr && classStr.trim()) {
         const parts = classStr.split(/[,;/]/);
         parts.forEach(part => {
@@ -283,13 +289,14 @@ function parseClassAndPhases(classStr, englishText) {
             if (!cleanPart) return;
 
             if (GAME_PHASES.has(cleanPart)) {
-                phasesSet.add(cleanPart);
+                textPhasesSet.add(cleanPart);
             } else {
                 subTypeParts.push(cleanPart);
             }
         });
     }
 
+    // Parsing du texte (ex: "**Skirmish:**", "<keyword>Skirmish</keyword>")
     if (englishText) {
         const keywordRegex = /<keyword>([^<]+)<\/keyword>/gi;
         let match;
@@ -298,17 +305,24 @@ function parseClassAndPhases(classStr, englishText) {
             const rawKeyword = match[1].replace(/[:.,]/g, '').trim().toUpperCase();
 
             if (GAME_PHASES.has(rawKeyword)) {
-                phasesSet.add(rawKeyword);
+                textPhasesSet.add(rawKeyword);
             }
         }
     }
 
-    const phases = Array.from(phasesSet);
+    const detectedPhases = Array.from(textPhasesSet);
     const subtype = subTypeParts.length > 0 ? subTypeParts.join('-') : undefined;
+
+    // Règle Métier Decipher :
+    // - Si EVENT : les phases détectées sont les phases de jeu de la carte.
+    // - Si PERMANENT : la carte se joue durant la phase standard (FELLOWSHIP / SHADOW), 
+    //   et les phases détectées sont stockées dans actionPhases pour les déclenchements d'effets.
+    const isEvent = type === 'EVENT';
 
     return {
         subtype,
-        phases: phases.length > 0 ? phases : undefined
+        phases: isEvent && detectedPhases.length > 0 ? detectedPhases : undefined,
+        actionPhases: !isEvent && detectedPhases.length > 0 ? detectedPhases : undefined
     };
 }
 
@@ -611,6 +625,8 @@ async function convert() {
         const computedResistance = parseStat(data['Resistance'], data['Bottom Text']);
 
         const toPlayData = parseToPlayConditions(englishText);
+        const { subtype, phases, actionPhases } = parseClassAndPhases(data['Class'], englishText, type);
+
         const cardObj = {
             id: cardId,
             set: parseInt(data['Set'], 10) || 0,
@@ -625,6 +641,8 @@ async function convert() {
             keywords: keywords,
             attachedTo: attachmentData || undefined,
             toPlay: toPlayData,
+            phases: phases,
+            actionPhases: actionPhases
             isControlled: attachmentData?.isControlled,
             phases: phases,
             culture: culture,

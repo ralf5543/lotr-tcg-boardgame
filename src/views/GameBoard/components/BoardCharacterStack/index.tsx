@@ -1,5 +1,5 @@
 import React from 'react';
-import type { CardState, CardType } from '../../../../game/types';
+import type { CardState, CardType, GameState } from '../../../../game/types';
 import { Card } from '../Card';
 import * as S from './styles';
 import { useDrag } from '../../../../contexts/DragContext';
@@ -16,19 +16,23 @@ interface BoardCharacterStackProps {
     onStartDrag?: (e: React.PointerEvent) => void;
     isAssignmentPhase?: boolean;
     isSkirmishPhase?: boolean;
-    skirmishId?: string; // 🟢 ID du couple / combat
+    skirmishId?: string;
     assignedMinions?: CardState[];
-    onSelectSkirmish?: (skirmishId: string) => void; // 🟢 Callback pour sélectionner ce combat
+    onSelectSkirmish?: (skirmishId: string) => void;
     isSelectedSkirmish?: boolean;
     isSelectionAllowed?: boolean;
     isWounded?: boolean;
     isDead?: boolean;
     burdens: number;
     isFaceDown: boolean;
+    G: GameState;
+    playerID: string;
 }
 
 export const BoardCharacterStack: React.FC<BoardCharacterStackProps> = ({
     character,
+    G,
+    playerID,
     index,
     isOpponent = false,
     currentSiteIndex,
@@ -73,7 +77,7 @@ export const BoardCharacterStack: React.FC<BoardCharacterStackProps> = ({
     const canAttach = draggedCard
         ? canPlayCard(
               draggedCard,
-              { G: {} as any, ctx: {} as any, playerID: '' },
+              { G, ctx: {} as any, playerID },
               character.id,
               character,
               { ignorePhase: true }

@@ -1,5 +1,5 @@
 import React, { useEffect, useRef } from 'react';
-import type { CardState, SiteCardState } from '../../../../game/types';
+import type { CardState, SiteCardState, GameState } from '../../../../game/types';
 import * as S from './styles';
 import { useDrag } from '../../../../contexts/DragContext';
 import { BoardCharacterStack } from '../BoardCharacterStack';
@@ -19,6 +19,8 @@ interface BattlefieldProps {
     lastWoundedCardIds?: string[];
     pendingDeadCardIds?: string[];
     isOpponent?: boolean;
+    playerId: string;
+    G: GameState;
 }
 
 export const Battlefield: React.FC<BattlefieldProps> = ({
@@ -29,6 +31,8 @@ export const Battlefield: React.FC<BattlefieldProps> = ({
     lastWoundedCardIds = [],
     pendingDeadCardIds = [],
     isOpponent = false,
+    G,
+    playerId,
 }) => {
     const { registerTarget, activeTargetId, dragged } = useDrag();
     const containerRef = useRef<HTMLDivElement | null>(null);
@@ -91,6 +95,8 @@ export const Battlefield: React.FC<BattlefieldProps> = ({
                             isDead={isDead}
                             burdens={0}
                             isFaceDown={false}
+                            G={G}
+                            playerID={playerId}
                         />
                     );
                 })}

@@ -860,9 +860,9 @@ export const KeywordsContainer = styled.div`
 
 export const AttachmentSubtype = styled.img`
     position: absolute;
-    z-index: 2;
-    inset-block-start: 5px;
-    inset-inline-start: -2px;
+    z-index: 2;  
+    inset-block-start: -1px;
+    inset-inline-start: -3px;
     background-color: white;
     border-radius: 50%;
     padding: 2px;

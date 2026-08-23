@@ -206,6 +206,7 @@ export interface PlayerState {
     currentSiteIndex: number;
     sitesDeck: SiteCardState[];
     burdens: number;
+    threats: number;
     archeryTotal?: number;
     hasDiscardedInRegroup?: boolean;
 }
