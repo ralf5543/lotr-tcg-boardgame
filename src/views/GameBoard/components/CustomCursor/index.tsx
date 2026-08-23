@@ -5,10 +5,16 @@ import { useFaction, Faction } from '../../../../contexts/FactionContext';
 type CursorState = 'DEFAULT' | 'HOVER';
 
 export function CustomAssetCursor() {
-    const { myPlayerId, fpPlayerId } = useFaction();
+    const { myPlayerId, fpPlayerId, G } = useFaction();
     
     // 🟢 DÉDUCTION DU RÔLE DE FACTION
-    const playerFaction: Faction = myPlayerId === fpPlayerId ? 'FREE_PEOPLE' : 'SHADOW';
+    const isSetupPhase = Boolean(G?.setupState && G.setupState.step !== 'COMPLETED');
+
+    const playerFaction: Faction = isSetupPhase
+        ? 'FREE_PEOPLE'
+        : myPlayerId === fpPlayerId
+        ? 'FREE_PEOPLE'
+        : 'SHADOW';
 
     const [cursorState, setCursorState] = useState<CursorState>('DEFAULT');
     const [isInteractive, setIsInteractive] = useState(false);

@@ -6,14 +6,15 @@ interface FactionContextType {
     currentPlayer: string;
     myPlayerId: string;
     fpPlayerId: string;
+    isSetupPhase: boolean;
     setFpPlayerId?: (id: string) => void;
 }
 
-// Valeur par défaut de secours si le hook est appelé hors d'un Provider
 const defaultContextValue: FactionContextType = {
     currentPlayer: '0',
     myPlayerId: '0',
     fpPlayerId: '0',
+    isSetupPhase: false,
     setFpPlayerId: () => {},
 };
 

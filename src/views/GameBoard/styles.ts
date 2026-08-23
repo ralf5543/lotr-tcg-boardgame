@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 
-export const BoardContainer = styled.div<{ $faction: 'FREE_PEOPLE' | 'SHADOW' }>`
+export const BoardContainer = styled.div<{ $faction: 'FREE_PEOPLE' | 'SHADOW' | 'NEUTRAL' }>`
     display: flex;
     height: 100%;
     flex-direction: column;
@@ -9,7 +9,12 @@ export const BoardContainer = styled.div<{ $faction: 'FREE_PEOPLE' | 'SHADOW' }>
     padding-inline-start: 340px;
     background-size: cover;
     background-repeat: no-repeat;
-    background-image: url(${(props) => `interface/map_big_${props.$faction}.webp`});
+    background-image: ${(props) => {
+        if (props.$faction === 'NEUTRAL') {
+            return `url('interface/map_big_NEUTRAL.webp')`;
+        }
+        return `url('interface/map_big_${props.$faction}.webp')`;
+    }};
     color: #fff;
     background-attachment: fixed;
 `;

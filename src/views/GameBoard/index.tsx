@@ -18,6 +18,7 @@ import { canAttachToCharacter } from '../../game/engine/canPlayCard';
 import { PhaseBanner } from './components/PhaseBanner';
 import { DevPanel, type DevMoves } from '../../utils/DevPanel';
 import { useFaction } from '../../contexts/FactionContext';
+import { FactionProvider } from '../../contexts/FactionProvider';
 import { useTargeting } from '../../contexts/TargetingContext';
 import { audioService } from '../../services/audioService';
 import { findTargetCard } from '../../utils/cardUtils';
@@ -59,10 +60,24 @@ export const GameBoard: React.FC<GameBoardProps> = ({
     const myId = playerID || ctx.currentPlayer;
     const oppId = myId === '0' ? '1' : '0';
 
-    const fpPlayerId = G.fpPlayerId || '0';
-    const isLocalFP = myId === fpPlayerId;
-    const isLocalShadow = !isLocalFP;
-    const currentFaction = isLocalFP ? 'FREE_PEOPLE' : 'SHADOW';
+    // 🟢 1. Détection stricte de la phase de setup
+const isSetupPhase = Boolean(
+    G?.setupState && 
+    G.setupState.step !== 'COMPLETED' && 
+    ctx.phase === 'setup'
+);
+
+// 🟢 2. Identification des rôles (TOUJOURS définie)
+const fpPlayerId = G.fpPlayerId || '0';
+const isLocalFP = myId === fpPlayerId;
+const isLocalShadow = !isLocalFP; // 👈 Rétabli pour G.awaitingSiteSelection et les rôles
+
+// 🟢 3. Thème visuel du plateau uniquement
+const currentFaction: 'FREE_PEOPLE' | 'SHADOW' | 'NEUTRAL' = isSetupPhase
+    ? 'NEUTRAL'
+    : isLocalFP
+    ? 'FREE_PEOPLE'
+    : 'SHADOW';
 
     const me = G.players[myId] || {
         deck: [],
@@ -262,7 +277,6 @@ export const GameBoard: React.FC<GameBoardProps> = ({
         const { step } = G.archeryState;
 
         if (step === 'FP_ASSIGN') {
-            // Cibles valides : Compagnons dans la Fellowship Area du joueur FP
             const fpPlayer = G.players[G.fpPlayerId || '0'];
             const validTargets = (fpPlayer?.fellowshipArea || [])
                 .filter((c) => c && c.id)
@@ -279,7 +293,6 @@ export const GameBoard: React.FC<GameBoardProps> = ({
                 },
             });
         } else if (step === 'SHADOW_ASSIGN') {
-            // Cibles valides : Séides (MINION) sur le battlefield
             const validTargets = (G.battlefield || [])
                 .filter((c) => c && c.kind === 'SHADOW' && c.type === 'MINION')
                 .map((c) => c.id);
@@ -372,28 +385,24 @@ export const GameBoard: React.FC<GameBoardProps> = ({
         const isSetupPhase = ctx.phase === 'setup';
         const auctionWinnerId = G.setupState?.auctionWinnerId || fpPlayerId;
 
-        // 1. SETUP : Seul le gagnant des enchères (FP) bascule sur 'sites' pour poser le site 1
         if (isSetupPhase && G.setupState?.step === 'AWAITING_SITE') {
             if (myId === auctionWinnerId) {
                 return 'sites';
             }
-            return null; // L'Ombre ne bouge pas
+            return null;
         }
 
-        // 2. MULLIGAN (Setup) : Reste ou bascule sur la main
         if (isSetupPhase && G.setupState?.step === 'MULLIGAN') {
             return 'hand';
         }
 
-        // 3. EN PARTIE (Fellowship / Regroup) : Seule l'Ombre bascule sur 'sites'
         if (G.awaitingSiteSelection) {
             if (isLocalShadow) {
                 return 'sites';
             }
-            return null; // Le FP ne bouge pas
+            return null;
         }
 
-        // 4. Début de phase active : retour sur la main
         const isMainGamePhase =
             ctx.phase === 'fellowship' || ctx.phase === 'shadow';
 
@@ -403,151 +412,161 @@ export const GameBoard: React.FC<GameBoardProps> = ({
     };
 
     return (
-        <DragProvider>
-            <S.BoardContainer $faction={currentFaction}>
-                {hoveredData && (
-                    <S.HoveredCardsZone $orientation={hoveredData.orientation}>
-                        {hoveredData.orientation === 'landscape' ? (
-                            <SiteCard
-                                site={hoveredData.card as SiteCardState}
-                                size="lg"
-                            />
-                        ) : (
-                            <Card
-                                card={hoveredData.card as CardState}
-                                size="lg"
+        <FactionProvider
+            myPlayerId={myId}
+            fpPlayerId={fpPlayerId}
+            isSetupPhase={isSetupPhase}
+        >
+            <DragProvider>
+                <S.BoardContainer $faction={currentFaction}>
+                    {hoveredData && (
+                        <S.HoveredCardsZone
+                            $orientation={hoveredData.orientation}
+                        >
+                            {hoveredData.orientation === 'landscape' ? (
+                                <SiteCard
+                                    site={hoveredData.card as SiteCardState}
+                                    size="lg"
+                                />
+                            ) : (
+                                <Card
+                                    card={hoveredData.card as CardState}
+                                    size="lg"
+                                    currentSiteIndex={currentSiteIndex}
+                                    isFaceDown={
+                                        hoveredData.card.isOpponent
+                                            ? (hoveredData.card as CardState)
+                                                  ?.isFaceDown
+                                            : false
+                                    }
+                                />
+                            )}
+                        </S.HoveredCardsZone>
+                    )}
+                    <PhaseBanner key={ctx.phase} phaseName={ctx.phase} />
+                    <DevPanel
+                        G={G}
+                        ctx={ctx}
+                        deckCount={me.deck?.length || 0}
+                        onDrawCard={() => {
+                            if (moves.drawCard) moves.drawCard();
+                        }}
+                        moves={
+                            moves as React.ComponentProps<
+                                typeof DevPanel
+                            >['moves']
+                        }
+                    />
+                    <GameControls
+                        G={G}
+                        statusMessage={G.statusMessage}
+                        ctx={ctx}
+                        playerID={playerID}
+                        isMyTurn={ctx.currentPlayer === playerID}
+                        awaitingSite={G.awaitingSiteSelection ?? false}
+                        moves={moves}
+                    />
+
+                    {/* ==================== 1. ADVERSAIRE ==================== */}
+                    <PlayerArea
+                        playerId={oppId}
+                        deckCount={opponent.deck?.length || 0}
+                        fellowshipArea={opponent.fellowshipArea || []}
+                        supportArea={opponent.supportArea || []}
+                        isOpponent={true}
+                        moves={moves}
+                        skirmishes={G.skirmishes}
+                        battlefield={G.battlefield}
+                        isSkirmishPhase={ctx.phase === 'skirmish'}
+                        activeSkirmishId={G.activeSkirmishId}
+                        G={G}
+                    />
+
+                    {/* ==================== 2. CENTRAL ==================== */}
+                    <S.CentralBlock>
+                        <S.MainZone>
+                            <Battlefield
+                                cards={G.battlefield}
+                                playerRole={myId as '0' | '1'}
                                 currentSiteIndex={currentSiteIndex}
-                                isFaceDown={
-                                    hoveredData.card.isOpponent
-                                        ? (hoveredData.card as CardState)
-                                              ?.isFaceDown
-                                        : false
+                                isAssignmentPhase={ctx.phase === 'assignment'}
+                                skirmishes={G.skirmishes}
+                                lastWoundedCardIds={G.lastWoundedCardIds}
+                            />
+                            <TwilightPool value={G.twilightPool} />
+                        </S.MainZone>
+                    </S.CentralBlock>
+
+                    {/* ==================== 3. MOI ==================== */}
+                    <PlayerArea
+                        playerId={myId}
+                        deckCount={me.deck?.length || 0}
+                        fellowshipArea={me.fellowshipArea || []}
+                        supportArea={me.supportArea || []}
+                        isOpponent={false}
+                        moves={moves}
+                        skirmishes={G.skirmishes}
+                        battlefield={G.battlefield}
+                        isSkirmishPhase={ctx.phase === 'skirmish'}
+                        activeSkirmishId={G.activeSkirmishId}
+                        G={G}
+                    />
+
+                    {/* ==================== SITE PATH ==================== */}
+                    <SitePath
+                        path={G.path}
+                        players={G.players}
+                        onPlaySite={(siteId, targetIndex) => {
+                            const isInitialSetupSite =
+                                ctx.phase === 'setup' &&
+                                G.setupState?.step === 'AWAITING_SITE' &&
+                                targetIndex === 0;
+
+                            if (isInitialSetupSite) {
+                                const fpPlayer = G.players[G.fpPlayerId || '0'];
+                                const siteCard = fpPlayer?.sitesDeck?.find(
+                                    (s) => s.id === siteId
+                                );
+
+                                if (siteCard && moves.selectStartingSite) {
+                                    moves.selectStartingSite(siteCard);
+                                    return;
+                                }
+                            }
+
+                            if (moves.playSite) {
+                                moves.playSite(siteId, targetIndex);
+                            }
+                        }}
+                    />
+                    <Dock
+                        handCount={me.hand?.length || 0}
+                        sitesCount={me.sitesDeck?.length || 0}
+                        discardCount={me.discard?.length || 0}
+                        requestedTab={getRequestedTab()}
+                        handView={
+                            <Hand
+                                G={G}
+                                playerRole={myId as '0' | '1'}
+                                hand={me.hand || []}
+                                currentSiteIndex={currentSiteIndex}
+                                phase={ctx.phase}
+                                regroupStep={G.regroupStep}
+                                onDrawCard={() => {
+                                    if (moves.drawCard) moves.drawCard();
+                                }}
+                                onPlayCard={(idx) => {
+                                    if (moves.playCard) moves.playCard(idx);
+                                }}
+                                onDiscardCard={(index) =>
+                                    moves.discardCardFromHand(index)
                                 }
                             />
-                        )}
-                    </S.HoveredCardsZone>
-                )}
-                <PhaseBanner key={ctx.phase} phaseName={ctx.phase} />
-                <DevPanel
-                    G={G}
-                    ctx={ctx}
-                    deckCount={me.deck?.length || 0}
-                    onDrawCard={() => {
-                        if (moves.drawCard) moves.drawCard();
-                    }}
-                    moves={
-                        moves as React.ComponentProps<typeof DevPanel>['moves']
-                    }
-                />
-                <GameControls
-                    G={G}
-                    statusMessage={G.statusMessage}
-                    ctx={ctx}
-                    playerID={playerID}
-                    isMyTurn={ctx.currentPlayer === playerID}
-                    awaitingSite={G.awaitingSiteSelection ?? false}
-                    moves={moves}
-                />
-
-                {/* ==================== 1. ADVERSAIRE ==================== */}
-                <PlayerArea
-                    playerId={oppId}
-                    deckCount={opponent.deck?.length || 0}
-                    fellowshipArea={opponent.fellowshipArea || []}
-                    supportArea={opponent.supportArea || []}
-                    isOpponent={true}
-                    moves={moves}
-                    skirmishes={G.skirmishes}
-                    battlefield={G.battlefield}
-                    isSkirmishPhase={ctx.phase === 'skirmish'}
-                    activeSkirmishId={G.activeSkirmishId}
-                    G={G}
-                />
-
-                {/* ==================== 2. CENTRAL ==================== */}
-                <S.CentralBlock>
-                    <S.MainZone>
-                        <Battlefield
-                            cards={G.battlefield}
-                            playerRole={myId as '0' | '1'}
-                            currentSiteIndex={currentSiteIndex}
-                            isAssignmentPhase={ctx.phase === 'assignment'}
-                            skirmishes={G.skirmishes}
-                            lastWoundedCardIds={G.lastWoundedCardIds}
-                        />
-                        <TwilightPool value={G.twilightPool} />
-                    </S.MainZone>
-                </S.CentralBlock>
-
-                {/* ==================== 3. MOI ==================== */}
-                <PlayerArea
-                    playerId={myId}
-                    deckCount={me.deck?.length || 0}
-                    fellowshipArea={me.fellowshipArea || []}
-                    supportArea={me.supportArea || []}
-                    isOpponent={false}
-                    moves={moves}
-                    skirmishes={G.skirmishes}
-                    battlefield={G.battlefield}
-                    isSkirmishPhase={ctx.phase === 'skirmish'}
-                    activeSkirmishId={G.activeSkirmishId}
-                    G={G}
-                />
-
-                {/* ==================== SITE PATH ==================== */}
-                <SitePath
-                    path={G.path}
-                    players={G.players}
-                    onPlaySite={(siteId, targetIndex) => {
-                        const isInitialSetupSite =
-                            ctx.phase === 'setup' &&
-                            G.setupState?.step === 'AWAITING_SITE' &&
-                            targetIndex === 0;
-
-                        if (isInitialSetupSite) {
-                            const fpPlayer = G.players[G.fpPlayerId || '0'];
-                            const siteCard = fpPlayer?.sitesDeck?.find(
-                                (s) => s.id === siteId
-                            );
-
-                            if (siteCard && moves.selectStartingSite) {
-                                moves.selectStartingSite(siteCard);
-                                return;
-                            }
                         }
-
-                        if (moves.playSite) {
-                            moves.playSite(siteId, targetIndex);
-                        }
-                    }}
-                />
-                <Dock
-                    handCount={me.hand?.length || 0}
-                    sitesCount={me.sitesDeck?.length || 0}
-                    discardCount={me.discard?.length || 0}
-                    requestedTab={getRequestedTab()}
-                    handView={
-                        <Hand
-                            G={G}
-                            playerRole={myId as '0' | '1'}
-                            hand={me.hand || []}
-                            currentSiteIndex={currentSiteIndex}
-                            phase={ctx.phase}
-                            regroupStep={G.regroupStep}
-                            onDrawCard={() => {
-                                if (moves.drawCard) moves.drawCard();
-                            }}
-                            onPlayCard={(idx) => {
-                                if (moves.playCard) moves.playCard(idx);
-                            }}
-                            onDiscardCard={(index) =>
-                                moves.discardCardFromHand(index)
-                            }
-                        />
-                    }
-                    sitesView={<SitesPicker sites={me.sitesDeck || []} />}
-                />
-            </S.BoardContainer>
-        </DragProvider>
+                        sitesView={<SitesPicker sites={me.sitesDeck || []} />}
+                    />
+                </S.BoardContainer>
+            </DragProvider>
+        </FactionProvider>
     );
 };

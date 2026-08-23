@@ -10,6 +10,7 @@ import * as S from './styles';
 import { useDrag } from '../../../../contexts/DragContext';
 import { BoardCharacterStack } from '../BoardCharacterStack';
 import { canPlayCard } from '../../../../game/engine/canPlayCard';
+import { useFaction } from '../../../../contexts/FactionContext';
 
 interface SkirmishEntry {
     id?: string;
@@ -54,16 +55,13 @@ export const PlayerArea: React.FC<PlayerAreaProps> = ({
     const { activeTargetId, registerTarget, startDrag, dragged } = useDrag();
     const [isDormantExpanded, setIsDormantExpanded] = useState(false);
 
-    // 🟢 Identification des rôles : Seul le joueur Peuples Libres a sa Compagnie active
-    const isFP = _playerId === G?.fpPlayerId;
+    // Identification des rôles : Seul le joueur Peuples Libres a sa Compagnie active
+    const { fpPlayerId, isSetupPhase } = useFaction();
+
+    // En setup, on force isFP à true pour afficher la zone normalement
+    const isFP = isSetupPhase ? true : _playerId === fpPlayerId;
     const isFellowshipDormant = !isFP;
     const playerBurdens = isFP ? (G?.players?.[_playerId]?.burdens ?? 0) : 0;
-
-    // 🟢 Extraire le type et le subtype pour le router de Drag
-    const cardType = (dragged?.card as CardState)?.type as CardType | undefined;
-    const cardSubtype = (dragged?.card as CardState)?.subtype as
-        | CardSubtype
-        | undefined;
 
     // Gestion du Drag & Drop pour réordonner sa propre compagnie
     useEffect(() => {
@@ -102,6 +100,7 @@ export const PlayerArea: React.FC<PlayerAreaProps> = ({
                 });
             }
         };
+        
 
         window.addEventListener('card-dropped', handleReorderDrop);
         return () =>
@@ -394,6 +393,7 @@ export const PlayerArea: React.FC<PlayerAreaProps> = ({
             </S.SupportArea>
         );
     };
+    
 
     return (
         <S.AreaContainer $isOpponent={isOpponent}>

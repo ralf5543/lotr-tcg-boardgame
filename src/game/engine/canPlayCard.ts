@@ -92,6 +92,10 @@ function checkTwilightCost(
     card: CardState,
     context: ValidationContext
 ): ValidationResult {
+    if (!context || !context.G) {
+        return { valid: false, reason: "État du jeu (G) indisponible." };
+    }
+
     const { G, playerID } = context;
     const fpPlayerId = G.fpPlayerId || '0';
 
@@ -227,6 +231,9 @@ export function canPlayCard(
     targetCard?: CardState | SiteCardState | null,
     options?: ValidationOptions
 ): ValidationResult {
+    if (!card || !context || !context.G) {
+        return { valid: false, reason: "Données de validation manquantes." };
+    }
     // 1. Phase et rôle des joueurs
     if (!options?.ignorePhase) {
         const phaseCheck = checkPhases(card, context);
