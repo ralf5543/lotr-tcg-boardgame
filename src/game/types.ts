@@ -105,7 +105,7 @@ export type CardRace =
     | 'HOBBIT'
     | 'MAIA'
     | 'MAN'
-    | 'NAZGUL'
+    | 'NAZGÛL'
     | 'ORC'
     | 'SPIDER'
     | 'TROLL'

@@ -34,7 +34,7 @@ const GAME_PHASES = new Set([
 // Races de personnages valides (pour l'analyse de l'attachement) 
 const VALID_RACES = new Set([
     'BALROG', 'CREATURE', 'DWARF', 'ELF', 'ENT', 'HOBBIT',
-    'MAIA', 'MAN', 'NAZGUL', 'ORC', 'SPIDER', 'TROLL',
+    'MAIA', 'MAN', 'NAZGÛL', 'ORC', 'SPIDER', 'TROLL',
     'URUK-HAI', 'WIZARD', 'WRAITH'
 ]);
 
@@ -42,7 +42,7 @@ const VALID_RACES = new Set([
 const VALID_CULTURES = new Set([
     'DUNLAND', 'DWARVEN', 'ELVEN', 'GANDALF', 'GOLLUM',
     'GONDOR', 'ISENGARD', 'MEN', 'MORIA', 'ORC',
-    'RAIDER', 'RAITH', 'ROHAN', 'SAURON', 'SHIRE',
+    'RAIDER', 'WRAITH', 'ROHAN', 'SAURON', 'SHIRE',
     'THE-ONE-RING', 'URUK-HAI'
 ]);
 
@@ -307,7 +307,8 @@ function parseAttachedTo(text) {
 
         segment = segment.replace(/<(symbol|keyword)>(.*?)<\/\1>/gi, (_, tag, content) => {
             if (content) {
-                const clean = content.replace(/[^a-zA-Z-]/g, '').toUpperCase();
+                // 🟢 Support des lettres accentuées UTF-8 (comme û / Û)
+                const clean = content.replace(/[^a-zA-Z-áéíóúÁÉÍÓÚàèìòùÀÈÌÒÙäëïöüÄËÏÖÜûÛñÑ]/g, '').toUpperCase();
                 if (clean) keywords.push(clean);
             }
             return ' ';
@@ -317,7 +318,8 @@ function parseAttachedTo(text) {
 
         const words = cleanSegment.split(/\s+/);
         for (const word of words) {
-            const cleanWord = word.replace(/[^a-zA-Z-]/g, '').toUpperCase();
+            // 🟢 Support des lettres accentuées UTF-8 pour conserver NAZGÛL
+            const cleanWord = word.replace(/[^a-zA-Z-áéíóúÁÉÍÓÚàèìòùÀÈÌÒÙäëïöüÄËÏÖÜûÛñÑ]/g, '').toUpperCase();
             if (cleanWord && !['A', 'AN', 'OR'].includes(cleanWord)) {
                 keywords.push(cleanWord);
             }
