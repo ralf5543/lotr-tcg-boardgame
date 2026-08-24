@@ -359,7 +359,7 @@ export const Card: React.FC<CardProps> = ({
                         ? card.strength > 0
                             ? `+${card.strength}`
                             : `${card.strength}`
-                        : effectiveStrength}
+                        : size === 'sm' ? effectiveStrength : card.strength}
                 </S.StrengthBadge>
             )}
 
@@ -372,7 +372,7 @@ export const Card: React.FC<CardProps> = ({
                         ? card.vitality > 0
                             ? `+${card.vitality}`
                             : `${card.vitality}`
-                        : effectiveVitality}
+                        : size === 'sm' ? effectiveVitality : card.vitality}
                 </S.VitalityBadge>
             )}
 
