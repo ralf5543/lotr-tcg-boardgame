@@ -659,6 +659,11 @@
     "keywords": [
       "RING-BOUND"
     ],
+    "toPlay": [
+      {
+        "addBurdens": 1
+      }
+    ],
     "actionPhases": [
       "REGROUP"
     ],
@@ -5056,6 +5061,21 @@
       "DAMAGE +1",
       "FIERCE"
     ],
+    "toPlay": [
+      {
+        "spot": [
+          {
+            "count": 1,
+            "target": [
+              [
+                "MORIA",
+                "ORC"
+              ]
+            ]
+          }
+        ]
+      }
+    ],
     "culture": "MORIA",
     "race": "TROLL",
     "twilightCost": 10,
@@ -5250,6 +5270,21 @@
     "keywords": [
       "DAMAGE +1",
       "FIERCE"
+    ],
+    "toPlay": [
+      {
+        "spot": [
+          {
+            "count": 1,
+            "target": [
+              [
+                "MORIA",
+                "ORC"
+              ]
+            ]
+          }
+        ]
+      }
     ],
     "actionPhases": [
       "SHADOW"
@@ -5546,6 +5581,11 @@
     "type": "COMPANION",
     "keywords": [
       "RING-BOUND"
+    ],
+    "toPlay": [
+      {
+        "addBurdens": 1
+      }
     ],
     "actionPhases": [
       "SKIRMISH"
@@ -6707,6 +6747,11 @@
     "keywords": [
       "ENDURING",
       "UNBOUND"
+    ],
+    "toPlay": [
+      {
+        "spotThreats": 2
+      }
     ],
     "actionPhases": [
       "RESPONSE"
@@ -8486,6 +8531,20 @@
     "keywords": [
       "DAMAGE +1"
     ],
+    "toPlay": [
+      {
+        "spot": [
+          {
+            "count": 1,
+            "target": [
+              [
+                "Uruk–Hai"
+              ]
+            ]
+          }
+        ]
+      }
+    ],
     "culture": "ISENGARD",
     "race": "URUK-HAI",
     "twilightCost": 9,
@@ -8531,6 +8590,21 @@
     "keywords": [
       "DAMAGE +1",
       "FIERCE"
+    ],
+    "toPlay": [
+      {
+        "spot": [
+          {
+            "count": 1,
+            "target": [
+              [
+                "MORIA",
+                "ORC"
+              ]
+            ]
+          }
+        ]
+      }
     ],
     "culture": "MORIA",
     "race": "TROLL",
@@ -8583,6 +8657,21 @@
       "SOUTHRON",
       "ARCHER"
     ],
+    "toPlay": [
+      {
+        "spot": [
+          {
+            "count": 1,
+            "target": [
+              [
+                "RAIDER",
+                "MAN"
+              ]
+            ]
+          }
+        ]
+      }
+    ],
     "culture": "RAIDER",
     "race": "MAN",
     "twilightCost": 11,
@@ -8627,6 +8716,20 @@
     "type": "MINION",
     "keywords": [
       "FIERCE"
+    ],
+    "toPlay": [
+      {
+        "spot": [
+          {
+            "count": 1,
+            "target": [
+              [
+                "NAZGÛL"
+              ]
+            ]
+          }
+        ]
+      }
     ],
     "culture": "WRAITH",
     "race": "NAZGÛL",
@@ -15655,6 +15758,21 @@
         "SITE"
       ]
     ],
+    "toPlay": [
+      {
+        "exert": [
+          {
+            "count": 1,
+            "target": [
+              [
+                "ISENGARD",
+                "MINION"
+              ]
+            ]
+          }
+        ]
+      }
+    ],
     "culture": "ISENGARD",
     "twilightCost": 1,
     "imageUrl": "/cards_visuals/o_01_134.jpg",
@@ -15701,6 +15819,21 @@
       [
         "SITE"
       ]
+    ],
+    "toPlay": [
+      {
+        "exert": [
+          {
+            "count": 1,
+            "target": [
+              [
+                "ISENGARD",
+                "MINION"
+              ]
+            ]
+          }
+        ]
+      }
     ],
     "culture": "ISENGARD",
     "twilightCost": 2,
@@ -15836,6 +15969,21 @@
       [
         "SITE"
       ]
+    ],
+    "toPlay": [
+      {
+        "exert": [
+          {
+            "count": 1,
+            "target": [
+              [
+                "ISENGARD",
+                "MINION"
+              ]
+            ]
+          }
+        ]
+      }
     ],
     "culture": "ISENGARD",
     "twilightCost": 2,
@@ -16042,6 +16190,20 @@
     "subtype": "SUPPORT-AREA",
     "keywords": [
       "SEARCH"
+    ],
+    "toPlay": [
+      {
+        "spot": [
+          {
+            "count": 1,
+            "target": [
+              [
+                "URUK-HAI"
+              ]
+            ]
+          }
+        ]
+      }
     ],
     "culture": "ISENGARD",
     "twilightCost": 2,
@@ -17476,6 +17638,21 @@
     "keywords": [
       "SEARCH"
     ],
+    "toPlay": [
+      {
+        "spot": [
+          {
+            "count": 1,
+            "target": [
+              [
+                "MORIA",
+                "MINION"
+              ]
+            ]
+          }
+        ]
+      }
+    ],
     "culture": "MORIA",
     "twilightCost": 1,
     "imageUrl": "/cards_visuals/o_01_175.jpg",
@@ -18455,6 +18632,21 @@
     "keywords": [
       "SEARCH"
     ],
+    "toPlay": [
+      {
+        "exert": [
+          {
+            "count": 1,
+            "target": [
+              [
+                "MORIA",
+                "MINION"
+              ]
+            ]
+          }
+        ]
+      }
+    ],
     "culture": "MORIA",
     "twilightCost": 1,
     "imageUrl": "/cards_visuals/o_01_198.jpg",
@@ -18621,6 +18813,21 @@
     "subtype": "SUPPORT-AREA",
     "keywords": [
       "SEARCH"
+    ],
+    "toPlay": [
+      {
+        "exert": [
+          {
+            "count": 1,
+            "target": [
+              [
+                "MORIA",
+                "ORC"
+              ]
+            ]
+          }
+        ]
+      }
     ],
     "culture": "MORIA",
     "twilightCost": 2,
@@ -19465,6 +19672,20 @@
     "keywords": [
       "SEARCH"
     ],
+    "toPlay": [
+      {
+        "spot": [
+          {
+            "count": 1,
+            "target": [
+              [
+                "NAZGÛL"
+              ]
+            ]
+          }
+        ]
+      }
+    ],
     "actionPhases": [
       "SHADOW"
     ],
@@ -20122,7 +20343,7 @@
             "count": 1,
             "target": [
               [
-                "Nazgûl"
+                "NAZGÛL"
               ]
             ]
           }
@@ -20303,6 +20524,21 @@
     "subtype": "SUPPORT-AREA",
     "keywords": [
       "SEARCH"
+    ],
+    "toPlay": [
+      {
+        "spot": [
+          {
+            "count": 1,
+            "target": [
+              [
+                "SAURON",
+                "ORC"
+              ]
+            ]
+          }
+        ]
+      }
     ],
     "actionPhases": [
       "SHADOW"
@@ -20784,6 +21020,21 @@
     "subtype": "SUPPORT-AREA",
     "keywords": [
       "SEARCH"
+    ],
+    "toPlay": [
+      {
+        "exert": [
+          {
+            "count": 1,
+            "target": [
+              [
+                "SAURON",
+                "ORC"
+              ]
+            ]
+          }
+        ]
+      }
     ],
     "culture": "SAURON",
     "twilightCost": 0,
@@ -21966,6 +22217,21 @@
     "subtype": "SUPPORT-AREA",
     "keywords": [
       "SEARCH"
+    ],
+    "toPlay": [
+      {
+        "exert": [
+          {
+            "count": 1,
+            "target": [
+              [
+                "SAURON",
+                "TRACKER"
+              ]
+            ]
+          }
+        ]
+      }
     ],
     "culture": "SAURON",
     "twilightCost": 0,
@@ -23518,6 +23784,20 @@
     "keywords": [
       "TALE"
     ],
+    "toPlay": [
+      {
+        "spot": [
+          {
+            "count": 1,
+            "target": [
+              [
+                "Bilbo"
+              ]
+            ]
+          }
+        ]
+      }
+    ],
     "culture": "SHIRE",
     "twilightCost": 2,
     "imageUrl": "/cards_visuals/o_01_314.jpg",
@@ -23601,6 +23881,20 @@
     "subtype": "SUPPORT-AREA",
     "keywords": [
       "STEALTH"
+    ],
+    "toPlay": [
+      {
+        "exert": [
+          {
+            "count": 1,
+            "target": [
+              [
+                "HOBBIT"
+              ]
+            ]
+          }
+        ]
+      }
     ],
     "culture": "SHIRE",
     "twilightCost": 0,
@@ -26046,6 +26340,21 @@
         "SITE"
       ]
     ],
+    "toPlay": [
+      {
+        "exert": [
+          {
+            "count": 1,
+            "target": [
+              [
+                "ISENGARD",
+                "MINION"
+              ]
+            ]
+          }
+        ]
+      }
+    ],
     "culture": "ISENGARD",
     "twilightCost": 2,
     "imageUrl": "/cards_visuals/o_02_048.jpg",
@@ -27253,7 +27562,7 @@
               [
                 "Frodo",
                 "AND",
-                "Nazgûl"
+                "NAZGÛL"
               ]
             ]
           }
@@ -27966,6 +28275,21 @@
     "keywords": [
       "SEARCH"
     ],
+    "toPlay": [
+      {
+        "spot": [
+          {
+            "count": 1,
+            "target": [
+              [
+                "SAURON",
+                "ORC"
+              ]
+            ]
+          }
+        ]
+      }
+    ],
     "culture": "SAURON",
     "twilightCost": 1,
     "imageUrl": "/cards_visuals/o_02_092.jpg",
@@ -28336,6 +28660,20 @@
     "subtype": "SUPPORT-AREA",
     "keywords": [
       "STEALTH"
+    ],
+    "toPlay": [
+      {
+        "exert": [
+          {
+            "count": 2,
+            "target": [
+              [
+                "HOBBIT"
+              ]
+            ]
+          }
+        ]
+      }
     ],
     "culture": "SHIRE",
     "twilightCost": 0,
@@ -29215,6 +29553,20 @@
     "subtype": "SUPPORT-AREA",
     "keywords": [
       "TALE"
+    ],
+    "toPlay": [
+      {
+        "exert": [
+          {
+            "count": 1,
+            "target": [
+              [
+                "DWARF"
+              ]
+            ]
+          }
+        ]
+      }
     ],
     "actionPhases": [
       "FELLOWSHIP"
@@ -32728,7 +33080,7 @@
             "count": 1,
             "target": [
               [
-                "Nazgûl"
+                "NAZGÛL"
               ]
             ]
           }
@@ -38392,6 +38744,20 @@
         "Théoden"
       ]
     ],
+    "toPlay": [
+      {
+        "spot": [
+          {
+            "count": 1,
+            "target": [
+              [
+                "GANDALF"
+              ]
+            ]
+          }
+        ]
+      }
+    ],
     "culture": "GANDALF",
     "twilightCost": 0,
     "strength": 2,
@@ -39191,6 +39557,21 @@
       "RING-BOUND",
       "RANGER"
     ],
+    "toPlay": [
+      {
+        "spot": [
+          {
+            "count": 1,
+            "target": [
+              [
+                "Ring-bound",
+                "MAN"
+              ]
+            ]
+          }
+        ]
+      }
+    ],
     "actionPhases": [
       "SKIRMISH"
     ],
@@ -39773,6 +40154,21 @@
     "keywords": [
       "RING-BOUND",
       "RANGER"
+    ],
+    "toPlay": [
+      {
+        "spot": [
+          {
+            "count": 1,
+            "target": [
+              [
+                "Ring-bound",
+                "MAN"
+              ]
+            ]
+          }
+        ]
+      }
     ],
     "actionPhases": [
       "SKIRMISH"
@@ -41073,6 +41469,33 @@
     "isUnique": false,
     "kind": "SHADOW",
     "type": "CONDITION",
+    "toPlay": [
+      {
+        "exert": [
+          {
+            "count": 1,
+            "target": [
+              [
+                "Saruman"
+              ]
+            ]
+          }
+        ]
+      },
+      {
+        "exert": [
+          {
+            "count": 1,
+            "target": [
+              [
+                "ISENGARD",
+                "MAN"
+              ]
+            ]
+          }
+        ]
+      }
+    ],
     "culture": "ISENGARD",
     "twilightCost": 0,
     "strength": -1,
@@ -41162,6 +41585,21 @@
     "type": "CONDITION",
     "keywords": [
       "SEARCH"
+    ],
+    "toPlay": [
+      {
+        "exert": [
+          {
+            "count": 1,
+            "target": [
+              [
+                "ISENGARD",
+                "TRACKER"
+              ]
+            ]
+          }
+        ]
+      }
     ],
     "actionPhases": [
       "ASSIGNMENT"
@@ -41709,6 +42147,21 @@
     "keywords": [
       "SEARCH"
     ],
+    "toPlay": [
+      {
+        "spot": [
+          {
+            "count": 1,
+            "target": [
+              [
+                "ISENGARD",
+                "TRACKER"
+              ]
+            ]
+          }
+        ]
+      }
+    ],
     "culture": "ISENGARD",
     "twilightCost": 1,
     "imageUrl": "/cards_visuals/o_04_171.jpg",
@@ -41993,6 +42446,20 @@
     "type": "MINION",
     "keywords": [
       "DAMAGE +1"
+    ],
+    "toPlay": [
+      {
+        "spot": [
+          {
+            "count": 1,
+            "target": [
+              [
+                "URUK-HAI"
+              ]
+            ]
+          }
+        ]
+      }
     ],
     "culture": "ISENGARD",
     "race": "URUK-HAI",
@@ -43739,6 +44206,21 @@
     "keywords": [
       "SOUTHRON"
     ],
+    "toPlay": [
+      {
+        "spot": [
+          {
+            "count": 1,
+            "target": [
+              [
+                "RAIDER",
+                "MAN"
+              ]
+            ]
+          }
+        ]
+      }
+    ],
     "actionPhases": [
       "REGROUP"
     ],
@@ -44814,6 +45296,21 @@
     "keywords": [
       "SOUTHRON"
     ],
+    "toPlay": [
+      {
+        "spot": [
+          {
+            "count": 1,
+            "target": [
+              [
+                "RAIDER",
+                "MAN"
+              ]
+            ]
+          }
+        ]
+      }
+    ],
     "actionPhases": [
       "REGROUP"
     ],
@@ -45382,6 +45879,20 @@
       "AMBUSH 1",
       "SOUTHRON",
       "ARCHER"
+    ],
+    "toPlay": [
+      {
+        "spot": [
+          {
+            "count": 1,
+            "target": [
+              [
+                "Southron"
+              ]
+            ]
+          }
+        ]
+      }
     ],
     "actionPhases": [
       "ASSIGNMENT"
@@ -49656,6 +50167,11 @@
     "keywords": [
       "RING-BOUND"
     ],
+    "toPlay": [
+      {
+        "addBurdens": 1
+      }
+    ],
     "actionPhases": [
       "REGROUP"
     ],
@@ -50240,6 +50756,20 @@
     "keywords": [
       "KNIGHT",
       "UNBOUND"
+    ],
+    "toPlay": [
+      {
+        "spot": [
+          {
+            "count": 1,
+            "target": [
+              [
+                "KNIGHT"
+              ]
+            ]
+          }
+        ]
+      }
     ],
     "actionPhases": [
       "MANEUVER"
@@ -52098,6 +52628,21 @@
     "keywords": [
       "VALIANT",
       "UNBOUND"
+    ],
+    "toPlay": [
+      {
+        "spot": [
+          {
+            "count": 1,
+            "target": [
+              [
+                "ROHAN",
+                "MAN"
+              ]
+            ]
+          }
+        ]
+      }
     ],
     "actionPhases": [
       "SKIRMISH"
@@ -56039,6 +56584,11 @@
     "type": "COMPANION",
     "keywords": [
       "RING-BOUND"
+    ],
+    "toPlay": [
+      {
+        "addBurdens": 1
+      }
     ],
     "actionPhases": [
       "SKIRMISH"
@@ -62605,6 +63155,11 @@
     "keywords": [
       "RING-BOUND"
     ],
+    "toPlay": [
+      {
+        "addBurdens": 1
+      }
+    ],
     "actionPhases": [
       "ASSIGNMENT"
     ],
@@ -62652,6 +63207,11 @@
     "type": "COMPANION",
     "keywords": [
       "RING-BOUND"
+    ],
+    "toPlay": [
+      {
+        "addBurdens": 1
+      }
     ],
     "actionPhases": [
       "SKIRMISH"
@@ -63395,6 +63955,21 @@
     "keywords": [
       "RANGER",
       "UNBOUND"
+    ],
+    "toPlay": [
+      {
+        "spot": [
+          {
+            "count": 1,
+            "target": [
+              [
+                "GONDOR",
+                "MAN"
+              ]
+            ]
+          }
+        ]
+      }
     ],
     "culture": "GONDOR",
     "race": "MAN",
@@ -66107,6 +66682,21 @@
     "keywords": [
       "SOUTHRON"
     ],
+    "toPlay": [
+      {
+        "spot": [
+          {
+            "count": 1,
+            "target": [
+              [
+                "RAIDER",
+                "MAN"
+              ]
+            ]
+          }
+        ]
+      }
+    ],
     "culture": "RAIDER",
     "race": "MAN",
     "twilightCost": 8,
@@ -66579,6 +67169,21 @@
     "keywords": [
       "SOUTHRON"
     ],
+    "toPlay": [
+      {
+        "spot": [
+          {
+            "count": 1,
+            "target": [
+              [
+                "RAIDER",
+                "MAN"
+              ]
+            ]
+          }
+        ]
+      }
+    ],
     "culture": "RAIDER",
     "race": "MAN",
     "twilightCost": 4,
@@ -66749,6 +67354,21 @@
       "SOUTHRON",
       "ARCHER",
       "FIERCE"
+    ],
+    "toPlay": [
+      {
+        "spot": [
+          {
+            "count": 1,
+            "target": [
+              [
+                "RAIDER",
+                "MAN"
+              ]
+            ]
+          }
+        ]
+      }
     ],
     "actionPhases": [
       "ARCHERY"
@@ -67456,7 +68076,7 @@
             "count": 1,
             "target": [
               [
-                "Nazgûl"
+                "NAZGÛL"
               ]
             ]
           }
@@ -67507,7 +68127,7 @@
             "count": 1,
             "target": [
               [
-                "Nazgûl"
+                "NAZGÛL"
               ]
             ]
           }
@@ -67943,7 +68563,7 @@
             "count": 1,
             "target": [
               [
-                "Nazgûl"
+                "NAZGÛL"
               ]
             ]
           }
@@ -68334,7 +68954,7 @@
             "count": 1,
             "target": [
               [
-                "Nazgûl"
+                "NAZGÛL"
               ]
             ]
           }
@@ -70140,6 +70760,21 @@
     "type": "ALLY",
     "keywords": [
       "VILLAGER"
+    ],
+    "toPlay": [
+      {
+        "spot": [
+          {
+            "count": 2,
+            "target": [
+              [
+                "ROHAN",
+                "MAN"
+              ]
+            ]
+          }
+        ]
+      }
     ],
     "actionPhases": [
       "REGROUP"
@@ -73121,6 +73756,21 @@
     "keywords": [
       "ENGINE"
     ],
+    "toPlay": [
+      {
+        "spot": [
+          {
+            "count": 1,
+            "target": [
+              [
+                "SAURON",
+                "ORC"
+              ]
+            ]
+          }
+        ]
+      }
+    ],
     "actionPhases": [
       "REGROUP"
     ],
@@ -73161,6 +73811,21 @@
     "subtype": "SUPPORT-AREA",
     "keywords": [
       "ENGINE"
+    ],
+    "toPlay": [
+      {
+        "spot": [
+          {
+            "count": 1,
+            "target": [
+              [
+                "SAURON",
+                "ORC"
+              ]
+            ]
+          }
+        ]
+      }
     ],
     "actionPhases": [
       "REGROUP"
@@ -74832,6 +75497,11 @@
     "keywords": [
       "RING-BOUND"
     ],
+    "toPlay": [
+      {
+        "addBurdens": 1
+      }
+    ],
     "actionPhases": [
       "SKIRMISH",
       "REGROUP"
@@ -75240,6 +75910,21 @@
       "KNIGHT",
       "UNBOUND"
     ],
+    "toPlay": [
+      {
+        "spot": [
+          {
+            "count": 3,
+            "target": [
+              [
+                "GONDOR",
+                "COMPANION"
+              ]
+            ]
+          }
+        ]
+      }
+    ],
     "culture": "GONDOR",
     "race": "MAN",
     "twilightCost": 3,
@@ -75284,6 +75969,20 @@
     "keywords": [
       "KNIGHT",
       "UNBOUND"
+    ],
+    "toPlay": [
+      {
+        "spot": [
+          {
+            "count": 1,
+            "target": [
+              [
+                "KNIGHT"
+              ]
+            ]
+          }
+        ]
+      }
     ],
     "culture": "GONDOR",
     "race": "MAN",
@@ -75425,6 +76124,11 @@
       "ENDURING",
       "UNBOUND"
     ],
+    "toPlay": [
+      {
+        "addThreats": 1
+      }
+    ],
     "actionPhases": [
       "SKIRMISH"
     ],
@@ -75517,6 +76221,11 @@
       "ENDURING",
       "UNBOUND"
     ],
+    "toPlay": [
+      {
+        "spotThreats": 2
+      }
+    ],
     "culture": "GONDOR",
     "race": "WRAITH",
     "signet": "ARAGORN",
@@ -75607,6 +76316,11 @@
     "keywords": [
       "ENDURING",
       "UNBOUND"
+    ],
+    "toPlay": [
+      {
+        "addThreats": 1
+      }
     ],
     "culture": "GONDOR",
     "race": "WRAITH",
@@ -77682,6 +78396,21 @@
     "keywords": [
       "BESIEGER"
     ],
+    "toPlay": [
+      {
+        "spot": [
+          {
+            "count": 1,
+            "target": [
+              [
+                "SAURON",
+                "ORC"
+              ]
+            ]
+          }
+        ]
+      }
+    ],
     "actionPhases": [
       "SHADOW"
     ],
@@ -77773,6 +78502,21 @@
     "keywords": [
       "BESIEGER",
       "ENDURING"
+    ],
+    "toPlay": [
+      {
+        "spot": [
+          {
+            "count": 1,
+            "target": [
+              [
+                "SAURON",
+                "ORC"
+              ]
+            ]
+          }
+        ]
+      }
     ],
     "actionPhases": [
       "MANEUVER"
@@ -78228,6 +78972,21 @@
     "keywords": [
       "ENGINE"
     ],
+    "toPlay": [
+      {
+        "spot": [
+          {
+            "count": 1,
+            "target": [
+              [
+                "SAURON",
+                "MINION"
+              ]
+            ]
+          }
+        ]
+      }
+    ],
     "actionPhases": [
       "REGROUP",
       "SHADOW"
@@ -78272,6 +79031,21 @@
     "keywords": [
       "BESIEGER",
       "FIERCE"
+    ],
+    "toPlay": [
+      {
+        "spot": [
+          {
+            "count": 1,
+            "target": [
+              [
+                "SAURON",
+                "ORC"
+              ]
+            ]
+          }
+        ]
+      }
     ],
     "actionPhases": [
       "REGROUP"
@@ -80254,6 +81028,11 @@
     "keywords": [
       "RING-BOUND"
     ],
+    "toPlay": [
+      {
+        "addBurdens": 1
+      }
+    ],
     "actionPhases": [
       "REGROUP"
     ],
@@ -80582,6 +81361,21 @@
     "subtype": "SUPPORT-AREA",
     "keywords": [
       "TALE"
+    ],
+    "toPlay": [
+      {
+        "spot": [
+          {
+            "count": 1,
+            "target": [
+              [
+                "GONDOR",
+                "MAN"
+              ]
+            ]
+          }
+        ]
+      }
     ],
     "actionPhases": [
       "FELLOWSHIP"
@@ -82489,6 +83283,11 @@
       "ENDURING",
       "UNBOUND"
     ],
+    "toPlay": [
+      {
+        "addThreats": 1
+      }
+    ],
     "culture": "GONDOR",
     "race": "WRAITH",
     "twilightCost": 3,
@@ -82533,6 +83332,11 @@
     "keywords": [
       "ENDURING",
       "UNBOUND"
+    ],
+    "toPlay": [
+      {
+        "addThreats": 1
+      }
     ],
     "culture": "GONDOR",
     "race": "WRAITH",
@@ -82989,6 +83793,21 @@
     "keywords": [
       "CORSAIR"
     ],
+    "toPlay": [
+      {
+        "spot": [
+          {
+            "count": 1,
+            "target": [
+              [
+                "RAIDER",
+                "MAN"
+              ]
+            ]
+          }
+        ]
+      }
+    ],
     "actionPhases": [
       "SHADOW"
     ],
@@ -83126,6 +83945,20 @@
     "type": "MINION",
     "keywords": [
       "EASTERLING"
+    ],
+    "toPlay": [
+      {
+        "spot": [
+          {
+            "count": 1,
+            "target": [
+              [
+                "Easterling"
+              ]
+            ]
+          }
+        ]
+      }
     ],
     "actionPhases": [
       "SKIRMISH"
@@ -85876,6 +86709,21 @@
     "keywords": [
       "DAMAGE +1",
       "FIERCE"
+    ],
+    "toPlay": [
+      {
+        "spot": [
+          {
+            "count": 1,
+            "target": [
+              [
+                "SAURON",
+                "MINION"
+              ]
+            ]
+          }
+        ]
+      }
     ],
     "culture": "SAURON",
     "race": "TROLL",
@@ -88847,6 +89695,11 @@
     "keywords": [
       "RING-BOUND"
     ],
+    "toPlay": [
+      {
+        "addBurdens": 1
+      }
+    ],
     "actionPhases": [
       "SKIRMISH"
     ],
@@ -91340,6 +92193,21 @@
       "DAMAGE +1",
       "FIERCE"
     ],
+    "toPlay": [
+      {
+        "spot": [
+          {
+            "count": 1,
+            "target": [
+              [
+                "ORC",
+                "MINION"
+              ]
+            ]
+          }
+        ]
+      }
+    ],
     "actionPhases": [
       "ASSIGNMENT"
     ],
@@ -92489,6 +93357,21 @@
     "keywords": [
       "DAMAGE +1",
       "FIERCE"
+    ],
+    "toPlay": [
+      {
+        "spot": [
+          {
+            "count": 1,
+            "target": [
+              [
+                "ORC",
+                "MINION"
+              ]
+            ]
+          }
+        ]
+      }
     ],
     "culture": "ORC",
     "race": "TROLL",
@@ -96295,7 +97178,7 @@
             "count": 1,
             "target": [
               [
-                "Nazgûl"
+                "NAZGÛL"
               ]
             ]
           }
@@ -98037,6 +98920,21 @@
       [
         "COMPANION"
       ]
+    ],
+    "toPlay": [
+      {
+        "spot": [
+          {
+            "count": 1,
+            "target": [
+              [
+                "GANDALF",
+                "WIZARD"
+              ]
+            ]
+          }
+        ]
+      }
     ],
     "actionPhases": [
       "RESPONSE"
@@ -103301,6 +104199,21 @@
     "keywords": [
       "DAMAGE +1"
     ],
+    "toPlay": [
+      {
+        "spot": [
+          {
+            "count": 1,
+            "target": [
+              [
+                "URUKHAI",
+                "MINION"
+              ]
+            ]
+          }
+        ]
+      }
+    ],
     "culture": "URUK-HAI",
     "race": "URUK-HAI",
     "twilightCost": 6,
@@ -107355,6 +108268,11 @@
     "keywords": [
       "RING-BOUND"
     ],
+    "toPlay": [
+      {
+        "addBurdens": 1
+      }
+    ],
     "culture": "GOLLUM",
     "twilightCost": 0,
     "strength": 3,
@@ -107832,6 +108750,34 @@
     "keywords": [
       "KNIGHT",
       "UNBOUND"
+    ],
+    "toPlay": [
+      {
+        "spot": [
+          {
+            "count": 2,
+            "target": [
+              [
+                "GONDOR",
+                "KNIGHT"
+              ]
+            ]
+          }
+        ]
+      },
+      {
+        "exert": [
+          {
+            "count": 2,
+            "target": [
+              [
+                "GONDOR",
+                "MAN"
+              ]
+            ]
+          }
+        ]
+      }
     ],
     "actionPhases": [
       "MANEUVER"
@@ -108888,6 +109834,21 @@
     "type": "MINION",
     "keywords": [
       "LURKER"
+    ],
+    "toPlay": [
+      {
+        "spot": [
+          {
+            "count": 1,
+            "target": [
+              [
+                "MEN",
+                "MINION"
+              ]
+            ]
+          }
+        ]
+      }
     ],
     "actionPhases": [
       "ASSIGNMENT"
@@ -110117,6 +111078,21 @@
     "isUnique": false,
     "kind": "SHADOW",
     "type": "MINION",
+    "toPlay": [
+      {
+        "spot": [
+          {
+            "count": 1,
+            "target": [
+              [
+                "ORC",
+                "MINION"
+              ]
+            ]
+          }
+        ]
+      }
+    ],
     "actionPhases": [
       "SHADOW"
     ],
@@ -111564,6 +112540,21 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "FOLLOWER",
+    "toPlay": [
+      {
+        "spot": [
+          {
+            "count": 1,
+            "target": [
+              [
+                "Ring-bound",
+                "HOBBIT"
+              ]
+            ]
+          }
+        ]
+      }
+    ],
     "culture": "SHIRE",
     "twilightCost": 1,
     "vitality": 1,
@@ -112738,7 +113729,7 @@
             "count": 1,
             "target": [
               [
-                "Nazgûl",
+                "NAZGÛL",
                 "TWICE",
                 "AND",
                 "EXHAUSTED",
@@ -112832,6 +113823,22 @@
     "type": "EVENT",
     "keywords": [
       "TOIL 1"
+    ],
+    "toPlay": [
+      {
+        "spot": [
+          {
+            "count": 1,
+            "target": [
+              [
+                "WRAITH",
+                "SUPPORT",
+                "AREA"
+              ]
+            ]
+          }
+        ]
+      }
     ],
     "phases": [
       "SHADOW"
@@ -120075,6 +121082,21 @@
     "keywords": [
       "UNBOUND"
     ],
+    "toPlay": [
+      {
+        "spot": [
+          {
+            "count": 1,
+            "target": [
+              [
+                "ROHAN",
+                "MAN"
+              ]
+            ]
+          }
+        ]
+      }
+    ],
     "culture": "ROHAN",
     "race": "MAN",
     "twilightCost": 2,
@@ -120429,6 +121451,21 @@
     "isUnique": false,
     "kind": "FREE_PEOPLE",
     "type": "FOLLOWER",
+    "toPlay": [
+      {
+        "spot": [
+          {
+            "count": 1,
+            "target": [
+              [
+                "ROHAN",
+                "MAN"
+              ]
+            ]
+          }
+        ]
+      }
+    ],
     "culture": "ROHAN",
     "twilightCost": 2,
     "strength": 1,
@@ -120555,6 +121592,21 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "FOLLOWER",
+    "toPlay": [
+      {
+        "spot": [
+          {
+            "count": 1,
+            "target": [
+              [
+                "ROHAN",
+                "MAN"
+              ]
+            ]
+          }
+        ]
+      }
+    ],
     "culture": "ROHAN",
     "twilightCost": 2,
     "imageUrl": "/cards_visuals/o_15_137.jpg",
@@ -120955,6 +122007,20 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "FOLLOWER",
+    "toPlay": [
+      {
+        "spot": [
+          {
+            "count": 1,
+            "target": [
+              [
+                "HOBBIT"
+              ]
+            ]
+          }
+        ]
+      }
+    ],
     "actionPhases": [
       "RESPONSE"
     ],
@@ -120997,6 +122063,20 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "FOLLOWER",
+    "toPlay": [
+      {
+        "spot": [
+          {
+            "count": 2,
+            "target": [
+              [
+                "HOBBIT"
+              ]
+            ]
+          }
+        ]
+      }
+    ],
     "culture": "SHIRE",
     "twilightCost": 2,
     "strength": 1,
@@ -123679,6 +124759,23 @@
     "kind": "FREE_PEOPLE",
     "type": "CONDITION",
     "subtype": "SUPPORT-AREA",
+    "toPlay": [
+      {
+        "remove": [
+          {
+            "count": 1,
+            "target": [
+              [
+                "ORC",
+                "PILE",
+                "THE",
+                "GAME"
+              ]
+            ]
+          }
+        ]
+      }
+    ],
     "actionPhases": [
       "SKIRMISH"
     ],
@@ -124563,6 +125660,21 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "FOLLOWER",
+    "toPlay": [
+      {
+        "spot": [
+          {
+            "count": 1,
+            "target": [
+              [
+                "GANDALF",
+                "FOLLOWER"
+              ]
+            ]
+          }
+        ]
+      }
+    ],
     "culture": "GANDALF",
     "twilightCost": 3,
     "imageUrl": "/cards_visuals/o_17_022.jpg",
@@ -128395,6 +129507,20 @@
     "keywords": [
       "PIPEWEED"
     ],
+    "toPlay": [
+      {
+        "spot": [
+          {
+            "count": 1,
+            "target": [
+              [
+                "HOBBIT"
+              ]
+            ]
+          }
+        ]
+      }
+    ],
     "actionPhases": [
       "SKIRMISH"
     ],
@@ -128488,6 +129614,21 @@
     "subtype": "SUPPORT-AREA",
     "keywords": [
       "PIPEWEED"
+    ],
+    "toPlay": [
+      {
+        "spot": [
+          {
+            "count": 1,
+            "target": [
+              [
+                "UNBOUND",
+                "HOBBIT"
+              ]
+            ]
+          }
+        ]
+      }
     ],
     "actionPhases": [
       "REGROUP"
@@ -128583,6 +129724,21 @@
     "keywords": [
       "PIPEWEED"
     ],
+    "toPlay": [
+      {
+        "spot": [
+          {
+            "count": 1,
+            "target": [
+              [
+                "UNBOUND",
+                "HOBBIT"
+              ]
+            ]
+          }
+        ]
+      }
+    ],
     "actionPhases": [
       "SKIRMISH",
       "REGROUP"
@@ -128623,6 +129779,20 @@
     "subtype": "SUPPORT-AREA",
     "keywords": [
       "PIPEWEED"
+    ],
+    "toPlay": [
+      {
+        "spot": [
+          {
+            "count": 1,
+            "target": [
+              [
+                "HOBBIT"
+              ]
+            ]
+          }
+        ]
+      }
     ],
     "actionPhases": [
       "SKIRMISH"
@@ -129442,6 +130612,11 @@
     "type": "MINION",
     "keywords": [
       "DAMAGE +1"
+    ],
+    "toPlay": [
+      {
+        "removeThreats": 2
+      }
     ],
     "culture": "URUK-HAI",
     "race": "URUK-HAI",
@@ -130441,6 +131616,21 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "FOLLOWER",
+    "toPlay": [
+      {
+        "spot": [
+          {
+            "count": 2,
+            "target": [
+              [
+                "ELVEN",
+                "COMPANION"
+              ]
+            ]
+          }
+        ]
+      }
+    ],
     "culture": "ELVEN",
     "twilightCost": 3,
     "strength": 2,
@@ -130708,6 +131898,21 @@
     "keywords": [
       "RANGER",
       "UNBOUND"
+    ],
+    "toPlay": [
+      {
+        "spot": [
+          {
+            "count": 2,
+            "target": [
+              [
+                "ELVEN",
+                "COMPANION"
+              ]
+            ]
+          }
+        ]
+      }
     ],
     "culture": "ELVEN",
     "race": "ELF",
@@ -131299,6 +132504,20 @@
     "subtype": "SUPPORT-AREA",
     "keywords": [
       "SPELL"
+    ],
+    "toPlay": [
+      {
+        "exert": [
+          {
+            "count": 1,
+            "target": [
+              [
+                "GANDALF"
+              ]
+            ]
+          }
+        ]
+      }
     ],
     "culture": "GANDALF",
     "twilightCost": 0,
@@ -135054,6 +136273,20 @@
     "keywords": [
       "TALE"
     ],
+    "toPlay": [
+      {
+        "spot": [
+          {
+            "count": 1,
+            "target": [
+              [
+                "HOBBIT"
+              ]
+            ]
+          }
+        ]
+      }
+    ],
     "actionPhases": [
       "MANEUVER"
     ],
@@ -136073,6 +137306,26 @@
     "keywords": [
       "DAMAGE +1"
     ],
+    "toPlay": [
+      {
+        "spot": [
+          {
+            "count": 1,
+            "target": [
+              [
+                "URUKHAI",
+                "MINION",
+                "AND",
+                "YOU",
+                "MUST",
+                "CONTROL",
+                "SITE"
+              ]
+            ]
+          }
+        ]
+      }
+    ],
     "culture": "URUK-HAI",
     "race": "URUK-HAI",
     "twilightCost": 0,
@@ -136166,6 +137419,21 @@
     "keywords": [
       "DAMAGE +1"
     ],
+    "toPlay": [
+      {
+        "spot": [
+          {
+            "count": 1,
+            "target": [
+              [
+                "URUKHAI",
+                "MINION"
+              ]
+            ]
+          }
+        ]
+      }
+    ],
     "culture": "URUK-HAI",
     "race": "URUK-HAI",
     "twilightCost": 3,
@@ -136210,7 +137478,7 @@
             "count": 1,
             "target": [
               [
-                "Nazgûl"
+                "NAZGÛL"
               ]
             ]
           }
@@ -136775,6 +138043,11 @@
     "keywords": [
       "RING-BOUND"
     ],
+    "toPlay": [
+      {
+        "addBurdens": 1
+      }
+    ],
     "actionPhases": [
       "SKIRMISH"
     ],
@@ -137289,6 +138562,21 @@
     "isUnique": false,
     "kind": "SHADOW",
     "type": "MINION",
+    "toPlay": [
+      {
+        "spot": [
+          {
+            "count": 1,
+            "target": [
+              [
+                "ORC",
+                "ORC"
+              ]
+            ]
+          }
+        ]
+      }
+    ],
     "culture": "ORC",
     "race": "TROLL",
     "twilightCost": 7,

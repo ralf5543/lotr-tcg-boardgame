@@ -349,7 +349,8 @@ function parseAttachedTo(text) {
 function parseToPlayConditions(text) {
     if (!text) return undefined;
 
-    const match = text.match(/(?:^|[\n.])\s*(?<!["'“])To play,\s+([^.\n]+)/i);
+    // capture "To play," même après des balises markdown (**Stealth.** To play,)
+    const match = text.match(/(?:^|[\n.]).*?To play,\s+([^.\n]+)/i);
     if (!match) return undefined;
 
     const rawClause = match[1].trim();
@@ -359,27 +360,25 @@ function parseToPlayConditions(text) {
         return m ? parseInt(m[1], 10) : 1;
     }
 
-    // Normalisation au singulier + MAJUSCULES pour toutes les races/types
     function normalizeToken(token) {
-        const clean = token.replace(/[^a-zA-Z-áéíóúÁÉÍÓÚàèìòùÀÈÌÒÙäëïöüÄËÏÖÜñÑ]/g, '');
+        const clean = token.replace(/[^a-zA-Z-áéíóúÁÉÍÓÚàèìòùÀÈÌÒÙäëïöüÄËÏÖÜûÛñÑ]/g, '');
         const upper = clean.toUpperCase();
 
         const plurals = {
-            'ELVES': 'ELF',
-            'DWARVES': 'DWARF',
-            'HOBBITS': 'HOBBIT',
-            'ENTS': 'ENT',
-            'ORCS': 'ORC',
-            'RANGERS': 'RANGER',
-            'MINIONS': 'MINION',
-            'COMPANIONS': 'COMPANION',
-            'ALLIES': 'ALLY',
-            'KNIGHTS': 'KNIGHT',
-            'SPIDERS': 'SPIDER',
-            'TROLLS': 'TROLL',
-            'NAZGUL': 'NAZGUL',
-            'NAZGULS': 'NAZGUL'
-        };
+    'ELVES': 'ELF',
+    'DWARVES': 'DWARF',
+    'HOBBITS': 'HOBBIT',
+    'ENTS': 'ENT',
+    'ORCS': 'ORC',
+    'RANGERS': 'RANGER',
+    'MINIONS': 'MINION',
+    'COMPANIONS': 'COMPANION',
+    'ALLIES': 'ALLY',
+    'KNIGHTS': 'KNIGHT',
+    'SPIDERS': 'SPIDER',
+    'TROLLS': 'TROLL',
+    'NAZGÛL': 'NAZGÛL'
+};
 
         return plurals[upper] || upper;
     }
@@ -387,7 +386,7 @@ function parseToPlayConditions(text) {
     function parseTarget(bodyText) {
         const targets = [];
 
-        // 🟢 REGLE MAN : Uniquement si précédé spécifiquement de Gondor ou Rohan (symboles ou texte)
+        // RÈGLE MAN : Uniquement si précédé de Gondor ou Rohan
         let processedText = bodyText.replace(/<symbol>(gondor|rohan)<\/symbol>\s+men\b/gi, '<symbol>$1</symbol> MAN');
         processedText = processedText.replace(/\b(gondor|rohan)\s+men\b/gi, '$1 MAN');
 
@@ -413,13 +412,11 @@ function parseToPlayConditions(text) {
         for (const word of words) {
             const normalized = normalizeToken(word);
             if (normalized && !EXCLUDED_WORDS.has(normalized)) {
-                // Sécurité spécifique pour MAN vs culture MEN
                 let finalToken = normalized;
                 if (finalToken === 'MEN' && targets.some(t => ['GONDOR', 'ROHAN'].includes(t))) {
                     finalToken = 'MAN';
                 }
 
-                // Si c'est un mot normalisé qui correspond à une race/type connu, on force la majuscule
                 const isKnownTarget = VALID_RACES.has(finalToken) || VALID_TARGET_TYPES.has(finalToken) || VALID_CULTURES.has(finalToken);
                 const isProperName = /^[A-Z][a-zà-ÿ]+/.test(word);
 
