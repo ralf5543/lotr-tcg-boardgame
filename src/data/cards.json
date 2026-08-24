@@ -81514,14 +81514,14 @@
       {
         "spot": [
           {
-            "count": 3,
+            "count": 1,
             "target": [
               [
                 "GONDOR",
-                "MAN",
-                "WITH"
+                "MAN"
               ]
-            ]
+            ],
+            "minVitality": 3
           }
         ]
       },
@@ -81532,8 +81532,6 @@
             "target": [
               [
                 "GONDOR",
-                "MORE",
-                "VITALITY",
                 "MAN"
               ]
             ]
@@ -81588,14 +81586,14 @@
       {
         "spot": [
           {
-            "count": 3,
+            "count": 1,
             "target": [
               [
                 "GONDOR",
-                "MAN",
-                "WITH"
+                "MAN"
               ]
-            ]
+            ],
+            "minVitality": 3
           }
         ]
       },
@@ -81606,8 +81604,6 @@
             "target": [
               [
                 "GONDOR",
-                "MORE",
-                "VITALITY",
                 "MAN"
               ]
             ]
@@ -126427,11 +126423,22 @@
       {
         "spot": [
           {
+            "count": 1,
+            "target": [
+              [
+                "Denethor"
+              ]
+            ]
+          }
+        ]
+      },
+      {
+        "spot": [
+          {
             "count": 2,
             "target": [
               [
                 "GONDOR",
-                "Denethor",
                 "COMPANION"
               ]
             ]
@@ -129238,11 +129245,22 @@
       {
         "spot": [
           {
+            "count": 1,
+            "target": [
+              [
+                "Théoden"
+              ]
+            ]
+          }
+        ]
+      },
+      {
+        "spot": [
+          {
             "count": 2,
             "target": [
               [
                 "ROHAN",
-                "Théoden",
                 "COMPANION"
               ]
             ]

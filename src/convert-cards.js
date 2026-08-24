@@ -349,11 +349,19 @@ function parseAttachedTo(text) {
 function parseToPlayConditions(text) {
     if (!text) return undefined;
 
-    // Capture "To play," même après des mots-clés initiaux
+    // Capture la clause "To play,"
     const match = text.match(/(?:^|[\n.]).*?To play,\s+([^.\n]+)/i);
     if (!match) return undefined;
 
-    const rawClause = match[1].trim();
+    let rawClause = match[1].trim();
+
+    // 1. Nettoyage des parenthèses superflues autour des options
+    rawClause = rawClause.replace(/\((or\s+[^)]+)\)/gi, '$1');
+
+    // 2. Protection contre le faux découpage 'or' dans les expressions de comparaison ("3 or more vitality")
+    const protectedClause = rawClause
+        .replace(/\b(\d+)\s+or\s+more\b/gi, '$1_OR_MORE')
+        .replace(/\b(\d+)\s+or\s+less\b/gi, '$1_OR_LESS');
 
     function extractCount(str) {
         const m = str.match(/\b(\d+)\b/);
@@ -383,12 +391,29 @@ function parseToPlayConditions(text) {
         return plurals[upper] || upper;
     }
 
+    function parseStatConditions(segment) {
+        const conds = {};
+        // Détection de "with X_OR_MORE vitality" ou "with X vitality"
+        const vitMatch = segment.match(/with\s+(\d+)(?:_OR_MORE|_OR_LESS)?\s+vitality/i);
+        if (vitMatch) {
+            conds.minVitality = parseInt(vitMatch[1], 10);
+        }
+        const strMatch = segment.match(/with\s+(\d+)(?:_OR_MORE|_OR_LESS)?\s+strength/i);
+        if (strMatch) {
+            conds.minStrength = parseInt(strMatch[1], 10);
+        }
+        return conds;
+    }
+
     function parseTarget(bodyText) {
         const targets = [];
 
-        // RÈGLE MAN : Uniquement si précédé de Gondor ou Rohan
+        // Protection RÈGLE MAN
         let processedText = bodyText.replace(/<symbol>(gondor|rohan)<\/symbol>\s+men\b/gi, '<symbol>$1</symbol> MAN');
         processedText = processedText.replace(/\b(gondor|rohan)\s+men\b/gi, '$1 MAN');
+
+        // Nettoyage des clauses de stats avant extraction des mots cibles
+        processedText = processedText.replace(/with\s+\d+(?:_OR_MORE|_OR_LESS)?\s+(vitality|strength|resistance)/gi, '');
 
         let cleanBody = processedText.replace(/<symbol>(.*?)<\/symbol>/gi, (_, culture) => {
             if (culture) targets.push(culture.toUpperCase());
@@ -400,13 +425,14 @@ function parseToPlayConditions(text) {
             return ' ';
         });
 
-        cleanBody = cleanBody.replace(/[*_#<>[\]]/g, ' ').trim();
+        cleanBody = cleanBody.replace(/[*_#<>[\]()]/g, ' ').trim();
 
         const words = cleanBody.split(/\s+/).filter(Boolean);
 
         const EXCLUDED_WORDS = new Set([
             'A', 'AN', 'YOUR', 'OR', 'FROM', 'IN', 'PLAY', 'HAND', 'CARD', 'CARDS',
-            'SPOT', 'EXERT', 'DISCARD', 'REMOVE', 'ADD', 'AND'
+            'SPOT', 'EXERT', 'DISCARD', 'REMOVE', 'ADD', 'AND', 'WITH', 'MORE', 'LESS',
+            'THAN', 'HAS', 'HAVE', 'VITALITY', 'STRENGTH', 'RESISTANCE'
         ]);
 
         for (const word of words) {
@@ -427,21 +453,20 @@ function parseToPlayConditions(text) {
         return targets;
     }
 
-    // 1. Découpage sur "OR" (choix alternatifs)
-    const rawOptions = rawClause.split(/\s+or\s+/i);
+    // Découpage propre des options 'OR'
+    const rawOptions = protectedClause.split(/\s+or\s+/i);
     const parsedOptions = [];
 
     for (let optionText of rawOptions) {
         optionText = optionText.trim();
         const optionObj = {};
 
-        // 2. Découpage sur "AND" (conditions cumulatives)
+        // Découpage des conditions cumulatives 'AND'
         const segments = optionText.split(/\s+and\s+/i);
 
         for (let segment of segments) {
             segment = segment.trim();
 
-            // Détection du verbe propre à CE segment (défaut sur 'spot')
             const verbMatch = segment.match(/\b(spot|exert|discard|remove|add)\b/i);
             const currentVerb = verbMatch ? verbMatch[1].toLowerCase() : 'spot';
 
@@ -449,25 +474,36 @@ function parseToPlayConditions(text) {
 
             if (/discard.*hand/i.test(segment) || (currentVerb === 'discard' && /hand/i.test(segment))) {
                 optionObj.discardFromHand = count;
-            } else if (/burdens?/i.test(segment)) {
+            }
+            else if (/burdens?/i.test(segment)) {
                 if (currentVerb === 'remove') optionObj.removeBurdens = count;
                 else if (currentVerb === 'add') optionObj.addBurdens = count;
                 else optionObj.spotBurdens = count;
-            } else if (/threats?/i.test(segment)) {
+            }
+            else if (/threats?/i.test(segment)) {
                 if (currentVerb === 'remove') optionObj.removeThreats = count;
                 else if (currentVerb === 'add') optionObj.addThreats = count;
                 else optionObj.spotThreats = count;
-            } else {
+            }
+            else {
                 const targets = parseTarget(segment);
+                const statConds = parseStatConditions(segment);
+
                 if (targets.length > 0) {
                     const key = currentVerb === 'discard' ? 'discardFromPlay' : currentVerb;
-
-                    // Si l'action existe déjà (ex: multiple spot), on append
                     if (!optionObj[key]) optionObj[key] = [];
-                    optionObj[key].push({
+
+                    const targetObj = {
                         count,
                         target: [targets]
-                    });
+                    };
+
+                    // Si une condition de stat minimale a été trouvée, on l'associe proprement au ciblage
+                    if (Object.keys(statConds).length > 0) {
+                        Object.assign(targetObj, statConds);
+                    }
+
+                    optionObj[key].push(targetObj);
                 }
             }
         }
@@ -533,7 +569,7 @@ async function convert() {
 
         if (targetMap.has(cardId)) {
             const existing = targetMap.get(cardId);
-            const existingTextLen = (existing.i18n ? .fr ? .gameText || existing.i18n ? .en ? .gameText || '').length;
+            const existingTextLen = (existing.i18n?.fr?.gameText || existing.i18n?.en?.gameText || '').length;
             const newTextLen = (frenchText || englishText).length;
             if (newTextLen <= existingTextLen) continue;
         }
