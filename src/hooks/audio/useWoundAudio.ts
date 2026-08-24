@@ -9,7 +9,7 @@ export const playCardWoundAudio = (card: CardState) => {
         audioService.play('WOUND_ORC', { delay: 0.3, enablePitch: true });
     } else if (card.race === 'URUK-HAI') {
         audioService.play('WOUND_ORC', { delay: 0.3, pitch: 0.75 });
-    } else if (card.race === 'NAZGUL' || card.race === 'WRAITH') {
+    } else if (card.race === 'NAZGÛL' || card.race === 'WRAITH') {
         audioService.play('WOUND_WRAITH', { delay: 0.3, enablePitch: true });
     } else if (
         card.race === 'TROLL' ||

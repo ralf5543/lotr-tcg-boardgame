@@ -8,7 +8,7 @@ function getCardSoundPath(card: CardState): string | undefined {
     const cardType = card.type;
     const cardSubtype = card.subtype;
 
-    if (cardType === 'COMPANION' || cardType === 'ALLY') {
+    if (cardType === 'COMPANION') {
         return 'COMPANION';
     } else if (cardType === 'MINION') {
         return 'MINION';

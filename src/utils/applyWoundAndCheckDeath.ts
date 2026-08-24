@@ -13,7 +13,13 @@ export const applyOverwhelmAndCheckDeath = (
 
     const cardId = card.instanceId || card.id;
 
-    // 1. Marqueurs d'état pour le moteur de jeu et l'UI CSS
+    // 1. Enregistrer l'ID pour déclencher le son et l'animation de baffe
+    if (!G.lastWoundedCardIds) G.lastWoundedCardIds = [];
+    if (cardId && !G.lastWoundedCardIds.includes(cardId)) {
+        G.lastWoundedCardIds.push(cardId);
+    }
+
+    // 2. Marqueurs d'état pour le moteur de jeu et l'UI CSS
     card.isDead = true;
     card.isOverwhelmed = true;
 
