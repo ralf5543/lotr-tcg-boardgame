@@ -349,7 +349,7 @@ function parseAttachedTo(text) {
 function parseToPlayConditions(text) {
     if (!text) return undefined;
 
-    // capture "To play," même après des balises markdown (**Stealth.** To play,)
+    // Capture "To play," même après des mots-clés initiaux
     const match = text.match(/(?:^|[\n.]).*?To play,\s+([^.\n]+)/i);
     if (!match) return undefined;
 
@@ -365,20 +365,20 @@ function parseToPlayConditions(text) {
         const upper = clean.toUpperCase();
 
         const plurals = {
-    'ELVES': 'ELF',
-    'DWARVES': 'DWARF',
-    'HOBBITS': 'HOBBIT',
-    'ENTS': 'ENT',
-    'ORCS': 'ORC',
-    'RANGERS': 'RANGER',
-    'MINIONS': 'MINION',
-    'COMPANIONS': 'COMPANION',
-    'ALLIES': 'ALLY',
-    'KNIGHTS': 'KNIGHT',
-    'SPIDERS': 'SPIDER',
-    'TROLLS': 'TROLL',
-    'NAZGÛL': 'NAZGÛL'
-};
+            'ELVES': 'ELF',
+            'DWARVES': 'DWARF',
+            'HOBBITS': 'HOBBIT',
+            'ENTS': 'ENT',
+            'ORCS': 'ORC',
+            'RANGERS': 'RANGER',
+            'MINIONS': 'MINION',
+            'COMPANIONS': 'COMPANION',
+            'ALLIES': 'ALLY',
+            'KNIGHTS': 'KNIGHT',
+            'SPIDERS': 'SPIDER',
+            'TROLLS': 'TROLL',
+            'NAZGÛL': 'NAZGÛL'
+        };
 
         return plurals[upper] || upper;
     }
@@ -406,7 +406,7 @@ function parseToPlayConditions(text) {
 
         const EXCLUDED_WORDS = new Set([
             'A', 'AN', 'YOUR', 'OR', 'FROM', 'IN', 'PLAY', 'HAND', 'CARD', 'CARDS',
-            'SPOT', 'EXERT', 'DISCARD', 'REMOVE', 'ADD'
+            'SPOT', 'EXERT', 'DISCARD', 'REMOVE', 'ADD', 'AND'
         ]);
 
         for (const word of words) {
@@ -427,42 +427,48 @@ function parseToPlayConditions(text) {
         return targets;
     }
 
+    // 1. Découpage sur "OR" (choix alternatifs)
     const rawOptions = rawClause.split(/\s+or\s+/i);
     const parsedOptions = [];
-
-    const globalVerbMatch = rawClause.match(/^(spot|exert|discard|remove|add)\b/i);
-    const defaultVerb = globalVerbMatch ? globalVerbMatch[1].toLowerCase() : 'spot';
 
     for (let optionText of rawOptions) {
         optionText = optionText.trim();
         const optionObj = {};
 
-        const optionVerbMatch = optionText.match(/^(spot|exert|discard|remove|add)\b/i);
-        const currentVerb = optionVerbMatch ? optionVerbMatch[1].toLowerCase() : defaultVerb;
+        // 2. Découpage sur "AND" (conditions cumulatives)
+        const segments = optionText.split(/\s+and\s+/i);
 
-        const count = extractCount(optionText);
+        for (let segment of segments) {
+            segment = segment.trim();
 
-        if (/discard.*hand/i.test(optionText) || (currentVerb === 'discard' && /hand/i.test(optionText))) {
-            optionObj.discardFromHand = count;
-        }
-        else if (/burdens?/i.test(optionText)) {
-            if (currentVerb === 'remove') optionObj.removeBurdens = count;
-            else if (currentVerb === 'add') optionObj.addBurdens = count;
-            else optionObj.spotBurdens = count;
-        }
-        else if (/threats?/i.test(optionText)) {
-            if (currentVerb === 'remove') optionObj.removeThreats = count;
-            else if (currentVerb === 'add') optionObj.addThreats = count;
-            else optionObj.spotThreats = count;
-        }
-        else {
-            const targets = parseTarget(optionText);
-            if (targets.length > 0) {
-                const key = currentVerb === 'discard' ? 'discardFromPlay' : currentVerb;
-                optionObj[key] = [{
-                    count,
-                    target: [targets]
-                }];
+            // Détection du verbe propre à CE segment (défaut sur 'spot')
+            const verbMatch = segment.match(/\b(spot|exert|discard|remove|add)\b/i);
+            const currentVerb = verbMatch ? verbMatch[1].toLowerCase() : 'spot';
+
+            const count = extractCount(segment);
+
+            if (/discard.*hand/i.test(segment) || (currentVerb === 'discard' && /hand/i.test(segment))) {
+                optionObj.discardFromHand = count;
+            } else if (/burdens?/i.test(segment)) {
+                if (currentVerb === 'remove') optionObj.removeBurdens = count;
+                else if (currentVerb === 'add') optionObj.addBurdens = count;
+                else optionObj.spotBurdens = count;
+            } else if (/threats?/i.test(segment)) {
+                if (currentVerb === 'remove') optionObj.removeThreats = count;
+                else if (currentVerb === 'add') optionObj.addThreats = count;
+                else optionObj.spotThreats = count;
+            } else {
+                const targets = parseTarget(segment);
+                if (targets.length > 0) {
+                    const key = currentVerb === 'discard' ? 'discardFromPlay' : currentVerb;
+
+                    // Si l'action existe déjà (ex: multiple spot), on append
+                    if (!optionObj[key]) optionObj[key] = [];
+                    optionObj[key].push({
+                        count,
+                        target: [targets]
+                    });
+                }
             }
         }
 
@@ -527,7 +533,7 @@ async function convert() {
 
         if (targetMap.has(cardId)) {
             const existing = targetMap.get(cardId);
-            const existingTextLen = (existing.i18n?.fr?.gameText || existing.i18n?.en?.gameText || '').length;
+            const existingTextLen = (existing.i18n ? .fr ? .gameText || existing.i18n ? .en ? .gameText || '').length;
             const newTextLen = (frenchText || englishText).length;
             if (newTextLen <= existingTextLen) continue;
         }
@@ -559,8 +565,12 @@ async function convert() {
         const imageUrl = rawImageCode ? `/cards_visuals/o_${rawImageCode}.jpg` : undefined;
 
         // Appel UNIQUE de parseClassAndPhases
-        const { subtype, phases, actionPhases } = parseClassAndPhases(data['Class'], englishText, type);
-        
+        const {
+            subtype,
+            phases,
+            actionPhases
+        } = parseClassAndPhases(data['Class'], englishText, type);
+
         // Mots-clés avec règles logiques natives (UNBOUND / RING-BOUND)
         const keywords = parseKeywords(englishText, titleVO, type, isRingbearer);
         const attachmentData = parseAttachedTo(englishText);

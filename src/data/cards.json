@@ -2244,7 +2244,7 @@
         "removeBurdens": 2
       },
       {
-        "removeThreats": 2
+        "spotThreats": 2
       }
     ],
     "actionPhases": [
@@ -6750,7 +6750,18 @@
     ],
     "toPlay": [
       {
-        "spotThreats": 2
+        "spot": [
+          {
+            "count": 1,
+            "target": [
+              [
+                "GONDOR",
+                "WRAITH"
+              ]
+            ]
+          }
+        ],
+        "addThreats": 2
       }
     ],
     "actionPhases": [
@@ -27560,8 +27571,14 @@
             "count": 1,
             "target": [
               [
-                "Frodo",
-                "AND",
+                "Frodo"
+              ]
+            ]
+          },
+          {
+            "count": 1,
+            "target": [
+              [
                 "NAZGÛL"
               ]
             ]
@@ -40725,7 +40742,7 @@
         ]
       },
       {
-        "exert": [
+        "spot": [
           {
             "count": 1,
             "target": [
@@ -41483,7 +41500,7 @@
         ]
       },
       {
-        "exert": [
+        "spot": [
           {
             "count": 1,
             "target": [
@@ -62022,7 +62039,17 @@
     "subtype": "SUPPORT-AREA",
     "toPlay": [
       {
-        "spotThreats": 3
+        "spot": [
+          {
+            "count": 1,
+            "target": [
+              [
+                "GANDALF"
+              ]
+            ]
+          }
+        ],
+        "addThreats": 3
       }
     ],
     "culture": "GANDALF",
@@ -62983,7 +63010,17 @@
     "subtype": "SUPPORT-AREA",
     "toPlay": [
       {
-        "spotThreats": 9
+        "spot": [
+          {
+            "count": 1,
+            "target": [
+              [
+                "GOLLUM"
+              ]
+            ]
+          }
+        ],
+        "addThreats": 9
       }
     ],
     "culture": "GOLLUM",
@@ -63074,7 +63111,17 @@
     "subtype": "SUPPORT-AREA",
     "toPlay": [
       {
-        "spotThreats": 2
+        "spot": [
+          {
+            "count": 1,
+            "target": [
+              [
+                "Sméagol"
+              ]
+            ]
+          }
+        ],
+        "addThreats": 2
       }
     ],
     "culture": "GOLLUM",
@@ -65673,7 +65720,18 @@
     "subtype": "SUPPORT-AREA",
     "toPlay": [
       {
-        "spotThreats": 2
+        "spot": [
+          {
+            "count": 2,
+            "target": [
+              [
+                "RAIDER",
+                "MEN"
+              ]
+            ]
+          }
+        ],
+        "addThreats": 1
       }
     ],
     "culture": "RAIDER",
@@ -67950,7 +68008,17 @@
     "subtype": "SUPPORT-AREA",
     "toPlay": [
       {
-        "spotThreats": 2
+        "spot": [
+          {
+            "count": 2,
+            "target": [
+              [
+                "NAZGÛL"
+              ]
+            ]
+          }
+        ],
+        "addThreats": 3
       }
     ],
     "culture": "WRAITH",
@@ -72343,7 +72411,18 @@
     "subtype": "SUPPORT-AREA",
     "toPlay": [
       {
-        "spotThreats": 2
+        "spot": [
+          {
+            "count": 2,
+            "target": [
+              [
+                "SAURON",
+                "ORC"
+              ]
+            ]
+          }
+        ],
+        "addThreats": 3
       }
     ],
     "culture": "SAURON",
@@ -76223,7 +76302,19 @@
     ],
     "toPlay": [
       {
-        "spotThreats": 2
+        "spot": [
+          {
+            "count": 2,
+            "target": [
+              [
+                "GONDOR",
+                "EXHAUSTED",
+                "Wraiths"
+              ]
+            ]
+          }
+        ],
+        "addThreats": 2
       }
     ],
     "culture": "GONDOR",
@@ -81435,7 +81526,20 @@
         ]
       },
       {
-        "spotThreats": 2
+        "spot": [
+          {
+            "count": 1,
+            "target": [
+              [
+                "GONDOR",
+                "MORE",
+                "VITALITY",
+                "MAN"
+              ]
+            ]
+          }
+        ],
+        "addThreats": 2
       }
     ],
     "actionPhases": [
@@ -81496,7 +81600,20 @@
         ]
       },
       {
-        "spotThreats": 2
+        "spot": [
+          {
+            "count": 1,
+            "target": [
+              [
+                "GONDOR",
+                "MORE",
+                "VITALITY",
+                "MAN"
+              ]
+            ]
+          }
+        ],
+        "addThreats": 2
       }
     ],
     "actionPhases": [
@@ -81918,7 +82035,7 @@
         ]
       },
       {
-        "exert": [
+        "spot": [
           {
             "count": 1,
             "target": [
@@ -82178,7 +82295,7 @@
         "removeBurdens": 2
       },
       {
-        "removeThreats": 2
+        "spotThreats": 2
       }
     ],
     "actionPhases": [
@@ -113730,8 +113847,16 @@
             "target": [
               [
                 "NAZGÛL",
-                "TWICE",
-                "AND",
+                "TWICE"
+              ]
+            ]
+          }
+        ],
+        "spot": [
+          {
+            "count": 1,
+            "target": [
+              [
                 "EXHAUSTED",
                 "COMPANION"
               ]
@@ -137314,8 +137439,14 @@
             "target": [
               [
                 "URUKHAI",
-                "MINION",
-                "AND",
+                "MINION"
+              ]
+            ]
+          },
+          {
+            "count": 1,
+            "target": [
+              [
                 "YOU",
                 "MUST",
                 "CONTROL",
