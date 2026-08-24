@@ -53,11 +53,11 @@ export const CardImage: React.FC<CardImageProps> = ({
             .slice(currentSrc.lastIndexOf('.'))
             .toLowerCase();
 
-        // Typage explicite de la map pour autoriser l'indexation par string
+        // 🟢 Chaîne de fallback modifiée : .jpg passe d'abord par .webp avant .png
         const nextExtMap: Record<string, string | null> = {
-            '.webp': '.jpg',
-            '.jpg': '.png',
-            '.jpeg': '.png',
+            '.jpg': '.webp',
+            '.jpeg': '.webp',
+            '.webp': '.png',
             '.png': null,
         };
 
@@ -118,7 +118,6 @@ export const Card: React.FC<CardProps> = ({
     const { setHoveredCard } = useHoverCard();
     const { startDrag } = useDrag();
 
-    // 💥 GESTION TEMPORAIRE DE L'ANIMATION DE BLESSURE (IMPACT)
     const [isTakingDamage, setIsTakingDamage] = useState(false);
     const prevWoundsRef = useRef(card.wounds || 0);
 
@@ -253,6 +252,8 @@ export const Card: React.FC<CardProps> = ({
               : !card.signet;
 
     const shouldShowSignet = Boolean(card.signet);
+
+    console.log('card : ', card);
 
     return (
         <S.CardContainer

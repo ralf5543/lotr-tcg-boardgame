@@ -25,11 +25,16 @@ const isNotCharacter = (type?: string) =>
     type !== 'MINION' &&
     type !== 'ALLY';
 
-const isForSupportArea = (type?: string, subtype?: string) => {
+const isForSupportArea = (type?: string, subtype?: string, isAttachment?: boolean) => {
     if (!type || type === 'ALLY' || type === 'COMPANION' || type === 'MINION') {
         return false;
     }
-    return subtype === 'SUPPORT-AREA';
+    // Si c'est un attachement (ex: arme attachée à un perso), ce n'est pas pour la support area
+    if (isAttachment) {
+        return false;
+    }
+    // Si le subtype est explicitement SUPPORT-AREA, ou s'il n'y a pas de subtype d'attachement
+    return subtype === 'SUPPORT-AREA' || !subtype;
 };
 
 // 💥 ANIMATION D'IMPACT DYNAMIQUE (RECUL PHYSIQUE)
