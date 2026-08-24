@@ -68,6 +68,9 @@ export const CardWrapper = styled.div<{
     z-index: ${(props) => props.$zIndex};
     box-shadow: 0 4px 6px rgba(0, 0, 0, 1);
     cursor: ${(props) => (props.$isDiscardPhase ? 'pointer' : 'grab')};
+    height: fit-content;
+    overflow: hidden;
+    border-radius: 4px;
 
     ${(props) =>
         props.$isNew &&

@@ -47,13 +47,25 @@ export const CardImage: React.FC<CardImageProps> = ({
     }
 
     const handleError = () => {
-        if (!fallbackSrc) {
-            // Premier fallback si l'URL d'origine échoue (ex: test du .jpg au lieu du .webp)
-            const basePath = imageUrl.replace(/\.(jpg|jpeg|png|webp)$/i, '');
-            const fallbackExt = imageUrl.endsWith('.webp') ? '.jpg' : '.webp';
-            setFallbackSrc(`${basePath}${fallbackExt}`);
+        const currentSrc = fallbackSrc || imageUrl;
+        const basePath = currentSrc.replace(/\.(jpg|jpeg|png|webp)$/i, '');
+        const currentExt = currentSrc
+            .slice(currentSrc.lastIndexOf('.'))
+            .toLowerCase();
+
+        // Typage explicite de la map pour autoriser l'indexation par string
+        const nextExtMap: Record<string, string | null> = {
+            '.webp': '.jpg',
+            '.jpg': '.png',
+            '.jpeg': '.png',
+            '.png': null,
+        };
+
+        const nextExt = nextExtMap[currentExt];
+
+        if (nextExt) {
+            setFallbackSrc(`${basePath}${nextExt}`);
         } else {
-            // Deuxième fallback si le premier échoue aussi : dos de carte
             setFallbackSrc('interface/lotr_cardback.webp');
         }
     };
@@ -359,7 +371,9 @@ export const Card: React.FC<CardProps> = ({
                         ? card.strength > 0
                             ? `+${card.strength}`
                             : `${card.strength}`
-                        : size === 'sm' ? effectiveStrength : card.strength}
+                        : size === 'sm'
+                          ? effectiveStrength
+                          : card.strength}
                 </S.StrengthBadge>
             )}
 
@@ -372,7 +386,9 @@ export const Card: React.FC<CardProps> = ({
                         ? card.vitality > 0
                             ? `+${card.vitality}`
                             : `${card.vitality}`
-                        : size === 'sm' ? effectiveVitality : card.vitality}
+                        : size === 'sm'
+                          ? effectiveVitality
+                          : card.vitality}
                 </S.VitalityBadge>
             )}
 
