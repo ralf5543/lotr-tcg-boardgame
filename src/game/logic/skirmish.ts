@@ -1,9 +1,16 @@
 import type { Ctx } from 'boardgame.io';
 import type { GameState, CardState } from '../types';
-import { getEffectiveStrength, getEffectiveVitality } from '../../utils/cardStats';
+import {
+    getEffectiveStrength,
+    getEffectiveVitality,
+} from '../../utils/cardStats';
 import { getCardText } from '../../utils/i18n';
-import { applyWoundAndCheckDeath, applyOverwhelmAndCheckDeath } from '../../utils/applyWoundAndCheckDeath';
+import {
+    applyWoundAndCheckDeath,
+    applyOverwhelmAndCheckDeath,
+} from '../../utils/applyWoundAndCheckDeath';
 import { audioService } from '../../services/audioService';
+import { getKeywordValue } from '../engine/keywords/keywordUtils';
 
 /**
  * Helper interne pour extraire proprement le nom d'une carte dans la langue par défaut (FR).
@@ -11,7 +18,12 @@ import { audioService } from '../../services/audioService';
 const getCardName = (cardObj: any, fallback: string): string => {
     if (!cardObj) return fallback;
     const cardState = cardObj.card || cardObj;
-    return getCardText(cardState, 'fr').title || cardState.title || cardState.name || fallback;
+    return (
+        getCardText(cardState, 'fr').title ||
+        cardState.title ||
+        cardState.name ||
+        fallback
+    );
 };
 
 /**
@@ -22,16 +34,24 @@ export const getCardTotalStrength = (card: CardState): number => {
 };
 
 /**
+ * Calcule les blessures totalisées par le bonus DAMAGE +X d'une ou plusieurs cartes
+ */
+const getDamageBonus = (cards: CardState | CardState[]): number => {
+    const list = Array.isArray(cards) ? cards : [cards];
+    return list.reduce((sum, c) => {
+        const bonus = getKeywordValue(c, 'DAMAGE');
+        return sum + (bonus > 0 ? bonus : 0);
+    }, 0);
+};
+
+/**
  * Inflige une mort directe par submersion (overwhelm).
  * Inflige suffisamment de blessures pour réduire la vitalité restante à 0.
  */
-export const applyOverwhelmToCard = (
-    G: GameState,
-    card: CardState
-) => {
+export const applyOverwhelmToCard = (G: GameState, card: CardState) => {
     const remainingVitality = getEffectiveVitality(card);
     const woundsNeeded = Math.max(1, remainingVitality);
-    
+
     // Inflige les blessures requises et marque la mort + déclenche le cri
     applyWoundAndCheckDeath(G, card, woundsNeeded);
 };
@@ -40,10 +60,7 @@ export const applyOverwhelmToCard = (
  * Résout le combat d'escarmouche actif.
  * Marque les cartes mortes / blessées, déclenche les sons et alimente `pendingDeadCardIds` & `lastWoundedCardIds`.
  */
-export const resolveSkirmish = (
-    G: GameState,
-    _ctx?: Ctx
-) => {
+export const resolveSkirmish = (G: GameState, _ctx?: Ctx) => {
     if (!G.activeSkirmishId) return;
 
     const skirmishIndex = G.skirmishes.findIndex(
@@ -59,7 +76,9 @@ export const resolveSkirmish = (
     const skirmish = G.skirmishes[skirmishIndex];
 
     const companion = (fpPlayer?.fellowshipArea || []).find(
-        (c) => c.id === skirmish.companionId || c.instanceId === skirmish.companionId
+        (c) =>
+            c.id === skirmish.companionId ||
+            c.instanceId === skirmish.companionId
     );
     const minions = (G.battlefield || []).filter((c) =>
         skirmish.minionIds.includes(c.id || c.instanceId)
@@ -85,54 +104,70 @@ export const resolveSkirmish = (
     G.pendingDeadCardIds = [];
 
     const minionsSummary = minions
-        .map((m) => `${getCardName(m, 'Un séide')} (${getCardTotalStrength(m)})`)
+        .map(
+            (m) => `${getCardName(m, 'Un séide')} (${getCardTotalStrength(m)})`
+        )
         .join(', ');
 
     let resultMsg = `Résolution : ${companionName} (${companionStrength}) vs ${minionsSummary}`;
     resultMsg += ` [Total Ombre: ${minionsStrength}]. `;
 
     // ⚔️ CAS 1 : VICTOIRE DU COMPAGNON
-if (companionStrength > minionsStrength) {
-    resultMsg += `Victoire de ${companionName} ! `;
+    if (companionStrength > minionsStrength) {
+        resultMsg += `Victoire de ${companionName} ! `;
 
-    const isMinionsOverwhelmed =
-        minionsStrength > 0
-            ? companionStrength >= 2 * minionsStrength
-            : companionStrength > 0;
+        const isMinionsOverwhelmed =
+            minionsStrength > 0
+                ? companionStrength >= 2 * minionsStrength
+                : companionStrength > 0;
 
-    audioService.play('SMASH', {enablePitch: true});
+        audioService.play('SMASH', { enablePitch: true });
 
-    minions.forEach((minion) => {
+        const woundsToApply = 1 + getDamageBonus(companion);
+
+        minions.forEach((minion) => {
+            if (isMinionsOverwhelmed) {
+                applyOverwhelmAndCheckDeath(G, minion);
+            } else {
+                applyWoundAndCheckDeath(G, minion, woundsToApply);
+            }
+        });
+
         if (isMinionsOverwhelmed) {
-            applyOverwhelmAndCheckDeath(G, minion);
-        } else {
-            applyWoundAndCheckDeath(G, minion, 1);
+            resultMsg += `Les séides sont SUBMERGÉS !`;
+        } else if (woundsToApply > 1) {
+            resultMsg += `(Chaque séide subit ${woundsToApply} blessures via DAMAGE +${woundsToApply - 1})`;
         }
-    });
-
-    if (isMinionsOverwhelmed) {
-        resultMsg += `Les séides sont SUBMERGÉS !`;
     }
-} 
-// ⚔️ CAS 2 : VICTOIRE DE L'OMBRE (ou Égalité)
-else {
-    resultMsg += `Victoire de l'Ombre ! `;
+    // ⚔️ CAS 2 : VICTOIRE DE L'OMBRE (ou Égalité)
+    else {
+        resultMsg += `Victoire de l'Ombre ! `;
 
-    const isCompanionOverwhelmed =
-        companionStrength > 0
-            ? minionsStrength >= 2 * companionStrength
-            : minionsStrength > 0;
+        const isCompanionOverwhelmed =
+            companionStrength > 0
+                ? minionsStrength >= 2 * companionStrength
+                : minionsStrength > 0;
 
-    audioService.play('SMASH', {enablePitch: true});
+        audioService.play('SMASH', { enablePitch: true });
 
-    if (isCompanionOverwhelmed) {
-        applyOverwhelmAndCheckDeath(G, companion);
-        resultMsg += `${companionName} est SUBMERGÉ et tué sur le coup !`;
-    } else {
-        const shouldDie = applyWoundAndCheckDeath(G, companion, 1);
-        resultMsg += `${companionName} subit 1 blessure${shouldDie ? ' et meurt' : ''}.`;
+        if (isCompanionOverwhelmed) {
+            applyOverwhelmAndCheckDeath(G, companion);
+            resultMsg += `${companionName} est SUBMERGÉ et tué sur le coup !`;
+        } else {
+            const woundsToApply = 1 + getDamageBonus(minions);
+            const shouldDie = applyWoundAndCheckDeath(
+                G,
+                companion,
+                woundsToApply
+            );
+
+            const damageText =
+                woundsToApply > 1
+                    ? ` (${woundsToApply} blessures via DAMAGE)`
+                    : '';
+            resultMsg += `${companionName} subit ${woundsToApply} blessure${woundsToApply > 1 ? 's' : ''}${damageText}${shouldDie ? ' et meurt' : ''}.`;
+        }
     }
-}
 
     G.statusMessage = resultMsg;
 };
