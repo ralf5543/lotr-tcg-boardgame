@@ -253,8 +253,6 @@ export const Card: React.FC<CardProps> = ({
 
     const shouldShowSignet = Boolean(card.signet);
 
-    console.log('card : ', card);
-
     return (
         <S.CardContainer
             $culture={card.culture}

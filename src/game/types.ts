@@ -168,6 +168,11 @@ export interface CardState {
     keywords?: CardKeyword[];
     isUnique: boolean;
     isFemale?: boolean;
+    // Mots-clés temporaires gagnés via une capacité (ex: Aragorn)
+    tempKeywords?: TempKeywordModifier[];
+
+    // Mots-clés qu'une carte confère à son porteur lorsqu'elle est attachée (ex: un Arc qui donne 'ARCHER')
+    grantedKeywords?: CardKeyword[];
 
     // Statistiques & Coûts
     twilightCost?: number;
@@ -302,3 +307,9 @@ export interface ArcheryState {
 }
 
 export type DevPresetType = 'ARCHERY_TEST' | 'SKIRMISH_TEST';
+
+export interface TempKeywordModifier {
+    keyword: CardKeyword;
+    expiresAtPhase?: 'REGROUP' | 'SKIRMISH' | 'TURN_END'; // Phase où l'effet s'annule
+}
+

@@ -175,6 +175,39 @@ const CARDS_PRESETS: Record<string, CardState> = {
             },
         },
     },
+    ARAGORN: {
+    id: "4C109",
+    set: 4,
+    rarity: "C",
+    isUnique: true,
+    kind: "FREE_PEOPLE",
+    type: "COMPANION",
+    keywords: [
+      "DEFENDER +2",
+      "UNBOUND"
+    ],
+    culture: "GONDOR",
+    race: "MAN",
+    signet: "GANDALF",
+    twilightCost: 4,
+    strength: 8,
+    vitality: 4,
+    imageUrl: "/cards_visuals/o_04_109.jpg",
+    i18n: {
+      en: {
+        "title": "Aragorn",
+        "subtitle": "Heir of Elendil",
+        "gameText": "**Defender +1.**",
+        "loreText": "Sauron fears you, Aragorn, he fears what you may become."
+      },
+      "fr": {
+        "title": "Aragorn",
+        "subtitle": "Héritier d'Elendil",
+        "gameText": "**Défenseur +1.**",
+        "loreText": "Sauron te craint, Aragorn, Il craint ce que tu pourrais devenir."
+      },
+    }
+  },
     LURTZ: {
         id: '11R194',
         set: 11,
@@ -331,6 +364,7 @@ export const applyDevPreset = (
 
             fpPlayer.fellowshipArea = [
                 { ...CARDS_PRESETS.FRODO },
+                { ...CARDS_PRESETS.ARAGORN },
                 { ...CARDS_PRESETS.SMEAGOL },
                 { ...CARDS_PRESETS.LEGOLAS },
                 gimliWithArmor,

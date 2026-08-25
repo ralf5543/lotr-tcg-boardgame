@@ -11,9 +11,13 @@ const KEYWORD_ICON_ALIAS: Record<string, string> = {
     'DAMAGE_PLUS2': 'DAMAGE',
     'DAMAGE_PLUS3': 'DAMAGE',
     'DAMAGE_PLUS4': 'DAMAGE',
+    'DEFENDER_PLUS1': 'DEFENDER',
+    'DEFENDER_PLUS2': 'DEFENDER',
+    'DEFENDER_PLUS13': 'DEFENDER',
+    'DEFENDER_PLUS4': 'DEFENDER',
     'TOIL_1': 'TOIL',
     'TOIL_2': 'TOIL',
-    'TOIL_2': 'TOIL',
+    'TOIL_3': 'TOIL',
 };
 
 export const getKeywordIconPath = (keyword: string): string => {

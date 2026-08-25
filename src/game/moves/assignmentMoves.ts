@@ -1,5 +1,5 @@
 import type { LotrMoveContext } from '../types';
-import { checkAssignmentProgress } from '../logic/assignment';
+import { checkAssignmentProgress, getCompanionDefenderCapacity } from '../logic/assignment';
 import { getCardText } from '../../utils/i18n';
 
 export const assignMinion = (
@@ -25,10 +25,13 @@ export const assignMinion = (
 
     const existingSkirmish = G.skirmishes.find((s) => s.companionId === companionId);
 
+    // 🟢 Capacité dynamique : 1 par défaut, ou (1 + X) si DEFENDER +X
+    const maxCapacity = getCompanionDefenderCapacity(compCard, G);
+
     if (
         G.assignmentStep === 'FP_ASSIGN' &&
         existingSkirmish &&
-        existingSkirmish.minionIds.length >= 1 &&
+        existingSkirmish.minionIds.length >= maxCapacity &&
         !existingSkirmish.minionIds.includes(minionId)
     ) {
         return 'INVALID_MOVE';
