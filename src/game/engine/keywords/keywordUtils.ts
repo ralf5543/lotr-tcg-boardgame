@@ -76,13 +76,6 @@ export function getKeywordValue(card: CardState, keywordKey: string): number {
     
     const found = effective.find((k) => k.key === keyToFind);
 
-    // 🔍 LOG DE TEST : reste actif pour contrôler le bon fonctionnement
-    console.log(
-        `[DEBUG KEYWORD] Carte: "${card.title || card.name || card.id}" | Recherche: "${keyToFind}" | Résultat:`, 
-        found ? `Trouvé (${found.value})` : 'Non trouvé (-1)',
-        '| Tous les mots-clés effectifs:', effective
-    );
-
     if (!found) return -1;
     return found.value;
 }

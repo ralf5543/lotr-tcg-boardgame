@@ -75,10 +75,11 @@ export const TRANSLATIONS = {
         DWARF: 'Nain',
         ELF: 'Elfe',
         ENT: 'Ent',
+        'HALF-TROLL': 'Semi-troll',
         HOBBIT: 'Hobbit',
         MAIA: 'Maia',
         MAN: 'Homme',
-        NAZGUL: 'Nazgûl',
+        NAZGÛL: 'Nazgûl',
         ORC: 'Orque',
         SPIDER: 'Araignée',
         TROLL: 'Troll',
@@ -175,7 +176,7 @@ export const TRANSLATIONS = {
                 "Le personnage peut être affecté à 1 séide supplémentaire pendant la phase d'affectation.",
         },
         'DEFENDER +2': {
-            label: 'Défenseur + 1',
+            label: 'Défenseur + 2',
             description:
                 "Le personnage peut être affecté à 2 séides supplémentaires pendant la phase d'affectation.",
         },
