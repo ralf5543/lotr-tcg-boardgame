@@ -36,8 +36,9 @@ export const Fellowship = styled.div<{
 `;
 
 /* 💤 BANDEAU COMPAGNIE EN SOMMEIL */
-export const DormantFellowshipBanner = styled.div<{ $isOpponent?: boolean }>`
+export const DormantFellowshipBanner = styled.button<{ $isOpponent?: boolean }>`
     position: relative;
+    width: 100%;
     height: 36px;
     border: 1px dashed #3498db;
     background-color: rgba(52, 152, 219, 0.1);

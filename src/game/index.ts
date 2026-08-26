@@ -695,10 +695,6 @@ export const LotrGame: Game<GameState> = {
                 G.skirmishes = [];
                 const unassignedMinions = getUnassignedMinions(G);
 
-                console.log(
-                    `[ASSIGNMENT onBegin] isFierceAssignment = ${G.isFierceAssignment}, séides non assignés trouvés = ${unassignedMinions.length}`
-                );
-
                 if (unassignedMinions.length === 0) {
                     G.assignmentStep = 'COMPLETED';
                     G.statusMessage = G.isFierceAssignment
@@ -715,7 +711,6 @@ export const LotrGame: Game<GameState> = {
                 ...allMoves,
 
                 endAssignmentPhase: ({ events }: LotrMoveContext) => {
-                    console.log(`[ASSIGNMENT move] endAssignmentPhase appelé.`);
                     events?.endPhase?.();
                 },
             },
@@ -724,15 +719,9 @@ export const LotrGame: Game<GameState> = {
         skirmish: {
             // 🔀 Calcule dynamiquement la phase suivante
             next: ({ G }) => {
-                console.log(
-                    `[SKIRMISH next()] Évaluation suite. isFierceAssignment = ${G.isFierceAssignment}`
-                );
 
                 // Si on ÉTAIT en passe Acharnée -> Direction Regroupement
                 if (G.isFierceAssignment) {
-                    console.log(
-                        `[SKIRMISH next()] Passe Acharnée terminée. Direction: 'regroup'`
-                    );
                     return 'regroup';
                 }
 
@@ -740,29 +729,16 @@ export const LotrGame: Game<GameState> = {
                 const hasFierce = hasFierceMinionsOnBattlefield(G);
 
                 if (hasFierce) {
-                    console.log(
-                        `[SKIRMISH next()] Séides FIERCE détectés ! Direction: 'assignment' (2nde passe)`
-                    );
                     return 'assignment';
                 }
-
-                console.log(
-                    `[SKIRMISH next()] Aucun séide FIERCE. Direction: 'regroup'`
-                );
                 return 'regroup';
             },
 
             onEnd: ({ G }) => {
-                console.log(
-                    `[SKIRMISH onEnd] Fin de skirmish. isFierceAssignment = ${G.isFierceAssignment}`
-                );
 
                 // Si on termine la 1ère passe et qu'il y a des séides FIERCE, on prépare le flag pour Assignment !
                 if (!G.isFierceAssignment && hasFierceMinionsOnBattlefield(G)) {
                     G.pendingFierceAssignment = true;
-                    console.log(
-                        `[SKIRMISH onEnd] -> Préparation du mode Fierce (G.pendingFierceAssignment = true) pour la phase Assignment.`
-                    );
                 }
             },
 
@@ -778,9 +754,6 @@ export const LotrGame: Game<GameState> = {
                 const canEnd =
                     noSkirmishesLeft && noActiveSkirmish && noPendingAnims;
                 if (canEnd) {
-                    console.log(
-                        `[SKIRMISH endIf] Plus d'escarmouches en cours, fin de phase validée.`
-                    );
                 }
                 return canEnd;
             },
@@ -836,7 +809,6 @@ export const LotrGame: Game<GameState> = {
                 },
 
                 endSkirmishPhase: ({ events }: LotrMoveContext) => {
-                    console.log(`[SKIRMISH move] endSkirmishPhase appelé.`);
                     events?.endPhase?.();
                 },
             },

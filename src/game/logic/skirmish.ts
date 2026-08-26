@@ -34,20 +34,9 @@ export const hasFierceMinionsOnBattlefield = (G: GameState): boolean => {
         (c: any) => c.kind === 'SHADOW' && c.type === 'MINION'
     );
 
-    console.log(`[FIERCE CHECK] Séides sur le battlefield (${minionCards.length}) :`, 
-        minionCards.map((m: any) => ({
-            id: m.id || m.instanceId,
-            title: m.title || m.name,
-            fierceValue: getKeywordValue(m, 'FIERCE'),
-            keywords: m.keywords,
-        }))
-    );
-
     const hasFierce = minionCards.some(
         (card: CardState) => getKeywordValue(card, 'FIERCE') >= 0
     );
-
-    console.log(`[FIERCE CHECK] Résultat global hasFierce = ${hasFierce}`);
     return hasFierce;
 };
 
