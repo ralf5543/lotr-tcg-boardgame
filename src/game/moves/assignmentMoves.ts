@@ -1,5 +1,9 @@
 import type { LotrMoveContext } from '../types';
-import { checkAssignmentProgress, getCompanionDefenderCapacity } from '../logic/assignment';
+import {
+    checkAssignmentProgress,
+    getCompanionDefenderCapacity,
+    getUnassignedMinions,
+} from '../logic/assignment';
 import { getCardText } from '../../utils/i18n';
 
 export const assignMinion = (
@@ -14,6 +18,20 @@ export const assignMinion = (
     if (G.assignmentStep === 'FP_ASSIGN' && !isFP) return 'INVALID_MOVE';
     if (G.assignmentStep === 'SHADOW_ASSIGN' && !isShadow) return 'INVALID_MOVE';
 
+    // ⚔️ Sécurité : Vérifie que le séide est bien éligible pour CETTE passe d'assignation
+    // (En passe Acharnée, seuls les séides FIERCE non encore assignés dans cette passe sont renvoyés)
+    const availableMinions = getUnassignedMinions(G);
+    const isMinionEligible = availableMinions.some(
+        (m) => m.id === minionId || (m as any).instanceId === minionId
+    );
+
+    if (!isMinionEligible) {
+        console.warn(
+            `[ASSIGNMENT MOVE] Assignation refusée : le séide ${minionId} n'est pas disponible ou non-FIERCE en passe Acharnée (isFierceAssignment = ${G.isFierceAssignment}).`
+        );
+        return 'INVALID_MOVE';
+    }
+
     const compCard = G.players[fpId]?.fellowshipArea?.find(
         (c) => c.id === companionId || c.instanceId === companionId
     );
@@ -23,7 +41,9 @@ export const assignMinion = (
 
     if (!compCard) return 'INVALID_MOVE';
 
-    const existingSkirmish = G.skirmishes.find((s) => s.companionId === companionId);
+    const existingSkirmish = G.skirmishes.find(
+        (s) => s.companionId === companionId
+    );
 
     // 🟢 Capacité dynamique : 1 par défaut, ou (1 + X) si DEFENDER +X
     const maxCapacity = getCompanionDefenderCapacity(compCard, G);

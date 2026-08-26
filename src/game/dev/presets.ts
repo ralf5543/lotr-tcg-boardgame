@@ -176,38 +176,37 @@ const CARDS_PRESETS: Record<string, CardState> = {
         },
     },
     ARAGORN: {
-    id: "4C109",
-    set: 4,
-    rarity: "C",
-    isUnique: true,
-    kind: "FREE_PEOPLE",
-    type: "COMPANION",
-    keywords: [
-      "DEFENDER +2",
-      "UNBOUND"
-    ],
-    culture: "GONDOR",
-    race: "MAN",
-    signet: "GANDALF",
-    twilightCost: 4,
-    strength: 8,
-    vitality: 4,
-    imageUrl: "/cards_visuals/o_04_109.jpg",
-    i18n: {
-      en: {
-        "title": "Aragorn",
-        "subtitle": "Heir of Elendil",
-        "gameText": "**Defender +1.**",
-        "loreText": "Sauron fears you, Aragorn, he fears what you may become."
-      },
-      "fr": {
-        "title": "Aragorn",
-        "subtitle": "Héritier d'Elendil",
-        "gameText": "**Défenseur +1.**",
-        "loreText": "Sauron te craint, Aragorn, Il craint ce que tu pourrais devenir."
-      },
-    }
-  },
+        id: '4C109',
+        set: 4,
+        rarity: 'C',
+        isUnique: true,
+        kind: 'FREE_PEOPLE',
+        type: 'COMPANION',
+        keywords: ['DEFENDER +2', 'UNBOUND'],
+        culture: 'GONDOR',
+        race: 'MAN',
+        signet: 'GANDALF',
+        twilightCost: 4,
+        strength: 8,
+        vitality: 4,
+        imageUrl: '/cards_visuals/o_04_109.jpg',
+        i18n: {
+            en: {
+                title: 'Aragorn',
+                subtitle: 'Heir of Elendil',
+                gameText: '**Defender +1.**',
+                loreText:
+                    'Sauron fears you, Aragorn, he fears what you may become.',
+            },
+            fr: {
+                title: 'Aragorn',
+                subtitle: "Héritier d'Elendil",
+                gameText: '**Défenseur +1.**',
+                loreText:
+                    'Sauron te craint, Aragorn, Il craint ce que tu pourrais devenir.',
+            },
+        },
+    },
     LURTZ: {
         id: '11R194',
         set: 11,
@@ -306,6 +305,38 @@ const CARDS_PRESETS: Record<string, CardState> = {
             },
         },
     },
+    NAZGUL: {
+        id: '7R210',
+        set: 7,
+        rarity: 'R',
+        isUnique: true,
+        kind: 'SHADOW',
+        type: 'MINION',
+        keywords: ['FIERCE'],
+        actionPhases: ['SHADOW'],
+        culture: 'WRAITH',
+        race: 'NAZGÛL',
+        twilightCost: 6,
+        strength: 12,
+        vitality: 3,
+        minionSiteNumber: 3,
+        imageUrl: '/cards_visuals/o_07_210.jpg',
+        i18n: {
+            en: {
+                title: 'Úlairë Attëa',
+                subtitle: 'Wraith on Wings',
+                gameText:
+                    '**Fierce.** \n**Shadow:** If you have initiative, exert Úlairë Attëa and spot another <symbol>wraith</symbol> minion to add a burden.',
+            },
+            fr: {
+                title: 'Úlairë Attëa',
+                subtitle: 'Wraith on Wings',
+                gameText:
+                    '**Fierce.** \n**Shadow:** If you have initiative, exert Úlairë Attëa and spot another <symbol>wraith</symbol> minion to add a burden.',
+            },
+            
+        },
+    },
     ARMOR: {
         id: '1C92',
         set: 1,
@@ -375,6 +406,7 @@ export const applyDevPreset = (
                 { ...CARDS_PRESETS.LURTZ },
                 { ...CARDS_PRESETS.MORIA_SCOUT },
                 { ...CARDS_PRESETS.ORC_SOLDIER },
+                { ...CARDS_PRESETS.NAZGUL },
             ];
 
             // Initialisation propre de l'état d'archerie

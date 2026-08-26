@@ -3,12 +3,32 @@ import type { GameState, CardState } from '../types';
 import { getKeywordValue } from '../engine/keywords/keywordUtils';
 
 export const getUnassignedMinions = (G: GameState): CardState[] => {
+    // 1. Liste des séides déjà engagés dans la PASSE ACTUELLE
     const assignedMinionIds = (G.skirmishes || []).flatMap((s) => s.minionIds);
-    return (G.battlefield || []).filter(
-        (c: any) =>
-            c.kind === 'SHADOW' &&
-            !assignedMinionIds.includes(c.instanceId || c.id)
+    
+    // 2. Tous les séides sur le champ de bataille
+    const minionCards = (G.battlefield || []).filter(
+        (c: any) => c.kind === 'SHADOW' && c.type === 'MINION'
     );
+
+    return minionCards.filter((c: CardState) => {
+        const cardId = c.id;
+        
+        // A. Si déjà assigné dans CETTE passe d'assignment en cours -> Exclu
+        const isAssignedInCurrentPass = assignedMinionIds.includes(cardId);
+        if (isAssignedInCurrentPass) return false;
+
+        // B. Si on est en passe Acharnée (Fierce) -> SEULS les FIERCE sont éligibles
+        if (G.isFierceAssignment) {
+            const fierceVal = getKeywordValue(c, 'FIERCE');
+            // getKeywordValue renvoie >= 0 s'il possède le mot-clé FIERCE (ex: 0 ou 1)
+            const isFierce = fierceVal !== undefined && fierceVal >= 0;
+            return isFierce;
+        }
+
+        // C. Passe normale -> Tous les séides sont éligibles
+        return true;
+    });
 };
 
 /**

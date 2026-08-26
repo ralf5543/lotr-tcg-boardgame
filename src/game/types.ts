@@ -237,6 +237,7 @@ export interface GameState {
     battlefield: CardState[];
     players: Record<string, PlayerState>;
     awaitingSiteSelection: boolean;
+    isFierceAssignment?: boolean;
     statusMessage: string;
     activeSkirmishId?: string;
     actionWindow?: ActionWindow;

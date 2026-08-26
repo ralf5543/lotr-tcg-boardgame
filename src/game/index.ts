@@ -13,7 +13,10 @@ import {
     isMinionRoaming,
     getEffectiveTwilightCost,
 } from '../utils/roamingDetection';
-import { resolveSkirmish } from './logic/skirmish';
+import {
+    resolveSkirmish,
+    hasFierceMinionsOnBattlefield,
+} from './logic/skirmish';
 import { getUnassignedMinions } from './logic/assignment';
 import { commonMoves, advanceCompany, getTargetPlayerId } from './moves';
 import { devMoves } from './dev/devMoves';
@@ -264,6 +267,7 @@ export const setupGame = ({ random }: { random: any }): GameState => {
         skirmishes: [],
         activeSkirmishId: undefined,
         actionWindow: undefined,
+        isFierceAssignment: false,
         assignmentStep: 'FP_ASSIGN',
         path: [null, null, null, null, null, null, null, null, null],
         battlefield: [],
@@ -681,31 +685,89 @@ export const LotrGame: Game<GameState> = {
             next: 'skirmish',
             turn: { activePlayers: { value: { '0': 'play', '1': 'play' } } },
             onBegin: ({ G }: LotrPhaseContext) => {
+                G.skirmishes = []
+                // 1. Si on avait préparé le passage en Fierce lors du dernier Skirmish
+                if (G.pendingFierceAssignment) {
+                    G.isFierceAssignment = true;
+                    G.pendingFierceAssignment = false; // On consomme le dindon
+                }
+
                 G.skirmishes = [];
                 const unassignedMinions = getUnassignedMinions(G);
 
+                console.log(
+                    `[ASSIGNMENT onBegin] isFierceAssignment = ${G.isFierceAssignment}, séides non assignés trouvés = ${unassignedMinions.length}`
+                );
+
                 if (unassignedMinions.length === 0) {
                     G.assignmentStep = 'COMPLETED';
-                    G.statusMessage =
-                        'Aucun séide en jeu : pas d’affectation nécessaire.';
+                    G.statusMessage = G.isFierceAssignment
+                        ? 'Aucun séide Acharné (FIERCE) à assigner.'
+                        : 'Aucun séide en jeu : pas d’affectation nécessaire.';
                 } else {
                     G.assignmentStep = 'FP_ASSIGN';
-                    G.statusMessage =
-                        'Phase d’Affectation : Le joueur des Peuples Libres attribue les séides aux compagnons.';
+                    G.statusMessage = G.isFierceAssignment
+                        ? 'Phase d’Affectation Acharnée : Assignez les séides FIERCE.'
+                        : 'Phase d’Affectation : Le joueur des Peuples Libres attribue les séides aux compagnons.';
                 }
             },
             moves: {
                 ...allMoves,
 
-                endAssignmentPhase: ({ events }: LotrMoveContext) =>
-                    events?.endPhase?.(),
+                endAssignmentPhase: ({ events }: LotrMoveContext) => {
+                    console.log(`[ASSIGNMENT move] endAssignmentPhase appelé.`);
+                    events?.endPhase?.();
+                },
             },
         },
 
         skirmish: {
-            next: 'regroup',
+            // 🔀 Calcule dynamiquement la phase suivante
+            next: ({ G }) => {
+                console.log(
+                    `[SKIRMISH next()] Évaluation suite. isFierceAssignment = ${G.isFierceAssignment}`
+                );
+
+                // Si on ÉTAIT en passe Acharnée -> Direction Regroupement
+                if (G.isFierceAssignment) {
+                    console.log(
+                        `[SKIRMISH next()] Passe Acharnée terminée. Direction: 'regroup'`
+                    );
+                    return 'regroup';
+                }
+
+                // Si c'était la 1ère passe : y a-t-il des séides FIERCE ?
+                const hasFierce = hasFierceMinionsOnBattlefield(G);
+
+                if (hasFierce) {
+                    console.log(
+                        `[SKIRMISH next()] Séides FIERCE détectés ! Direction: 'assignment' (2nde passe)`
+                    );
+                    return 'assignment';
+                }
+
+                console.log(
+                    `[SKIRMISH next()] Aucun séide FIERCE. Direction: 'regroup'`
+                );
+                return 'regroup';
+            },
+
+            onEnd: ({ G }) => {
+                console.log(
+                    `[SKIRMISH onEnd] Fin de skirmish. isFierceAssignment = ${G.isFierceAssignment}`
+                );
+
+                // Si on termine la 1ère passe et qu'il y a des séides FIERCE, on prépare le flag pour Assignment !
+                if (!G.isFierceAssignment && hasFierceMinionsOnBattlefield(G)) {
+                    G.pendingFierceAssignment = true;
+                    console.log(
+                        `[SKIRMISH onEnd] -> Préparation du mode Fierce (G.pendingFierceAssignment = true) pour la phase Assignment.`
+                    );
+                }
+            },
+
             endIf: ({ G }) => {
-                const noSkirmishesLeft = G.skirmishes.length === 0;
+                const noSkirmishesLeft = (G.skirmishes || []).length === 0;
                 const noActiveSkirmish = !G.activeSkirmishId;
                 const noPendingAnims =
                     (!G.lastWoundedCardIds ||
@@ -713,8 +775,16 @@ export const LotrGame: Game<GameState> = {
                     (!G.pendingDeadCardIds ||
                         G.pendingDeadCardIds.length === 0);
 
-                return noSkirmishesLeft && noActiveSkirmish && noPendingAnims;
+                const canEnd =
+                    noSkirmishesLeft && noActiveSkirmish && noPendingAnims;
+                if (canEnd) {
+                    console.log(
+                        `[SKIRMISH endIf] Plus d'escarmouches en cours, fin de phase validée.`
+                    );
+                }
+                return canEnd;
             },
+
             turn: { activePlayers: { value: { '0': 'play', '1': 'play' } } },
 
             moves: {
@@ -765,8 +835,10 @@ export const LotrGame: Game<GameState> = {
                     G.pendingDeadCardIds = [];
                 },
 
-                endSkirmishPhase: ({ events }: LotrMoveContext) =>
-                    events?.endPhase?.(),
+                endSkirmishPhase: ({ events }: LotrMoveContext) => {
+                    console.log(`[SKIRMISH move] endSkirmishPhase appelé.`);
+                    events?.endPhase?.();
+                },
             },
         },
 
@@ -775,6 +847,7 @@ export const LotrGame: Game<GameState> = {
             turn: { activePlayers: { value: { '0': 'play', '1': 'play' } } },
 
             onBegin: ({ G }: LotrPhaseContext) => {
+                G.isFierceAssignment = false;
                 const fpId = G.fpPlayerId || '0';
                 if ((G.movesThisTurn || 0) >= 2) {
                     G.regroupStep = 'SHADOW_REFILL';

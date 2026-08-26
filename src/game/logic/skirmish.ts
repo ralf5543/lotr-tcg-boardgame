@@ -27,6 +27,31 @@ const getCardName = (cardObj: any, fallback: string): string => {
 };
 
 /**
+ * Vérifie s'il reste au moins un séide en vie sur le plateau ayant le mot-clé FIERCE.
+ */
+export const hasFierceMinionsOnBattlefield = (G: GameState): boolean => {
+    const minionCards = (G.battlefield || []).filter(
+        (c: any) => c.kind === 'SHADOW' && c.type === 'MINION'
+    );
+
+    console.log(`[FIERCE CHECK] Séides sur le battlefield (${minionCards.length}) :`, 
+        minionCards.map((m: any) => ({
+            id: m.id || m.instanceId,
+            title: m.title || m.name,
+            fierceValue: getKeywordValue(m, 'FIERCE'),
+            keywords: m.keywords,
+        }))
+    );
+
+    const hasFierce = minionCards.some(
+        (card: CardState) => getKeywordValue(card, 'FIERCE') >= 0
+    );
+
+    console.log(`[FIERCE CHECK] Résultat global hasFierce = ${hasFierce}`);
+    return hasFierce;
+};
+
+/**
  * Calcule la force totale effective d'une carte (base + attachements)
  */
 export const getCardTotalStrength = (card: CardState): number => {
