@@ -23,6 +23,7 @@ interface BoardCharacterStackProps {
     isSelectionAllowed?: boolean;
     isWounded?: boolean;
     isDead?: boolean;
+    isDisabled?: boolean;
     burdens: number;
     isFaceDown: boolean;
     G: GameState;
@@ -46,6 +47,7 @@ export const BoardCharacterStack: React.FC<BoardCharacterStackProps> = ({
     isSelectionAllowed = true,
     isWounded = false,
     isDead = false,
+    isDisabled = false,
     burdens = 0,
     isFaceDown = false,
 }) => {
@@ -62,8 +64,9 @@ export const BoardCharacterStack: React.FC<BoardCharacterStackProps> = ({
 
     const isBeingDragged = dragged?.card?.id === character.id;
 
-    // ⛔ Si la carte est ciblable, ON BLOQUE LE DRAG pour privilégier la sélection par clic
+    // ⛔ Si la carte est ciblable ou désactivée, ON BLOQUE LE DRAG
     const canDragCharacter =
+        !isDisabled &&
         !isTargetable &&
         (!isOpponent || (isAssignmentPhase && character.type === 'MINION'));
 
@@ -150,6 +153,7 @@ export const BoardCharacterStack: React.FC<BoardCharacterStackProps> = ({
                                         isDraggable={false}
                                         isWounded={isMinionWounded}
                                         isDead={isMinionDead}
+                                        isDisabled={isDisabled}
                                         isOpponent={!isOpponent}
                                     />
                                 </S.MinionWrapper>
@@ -164,6 +168,7 @@ export const BoardCharacterStack: React.FC<BoardCharacterStackProps> = ({
                     $isTargeted={isTargeted}
                     $isTargetable={isTargetable}
                     $isDead={isDead}
+                    $isDisabled={isDisabled}
                     data-card={JSON.stringify(character)}
                     data-draggable={canDragCharacter ? 'true' : undefined}
                     ref={(el) => registerTarget(character.id, el)}
@@ -199,6 +204,7 @@ export const BoardCharacterStack: React.FC<BoardCharacterStackProps> = ({
                         currentSiteIndex={currentSiteIndex}
                         isWounded={isWounded}
                         isDead={isDead}
+                        isDisabled={isDisabled}
                         isOpponent={isOpponent}
                         burdens={burdens}
                         isFaceDown={isFaceDown}
@@ -213,7 +219,7 @@ export const BoardCharacterStack: React.FC<BoardCharacterStackProps> = ({
                                 key={attachment.id}
                                 $index={attachIdx}
                                 data-draggable={
-                                    !isOpponent && !isTargetable
+                                    !isOpponent && !isTargetable && !isDisabled
                                         ? 'true'
                                         : undefined
                                 }
@@ -221,6 +227,7 @@ export const BoardCharacterStack: React.FC<BoardCharacterStackProps> = ({
                                     if (
                                         isOpponent ||
                                         isTargetable ||
+                                        isDisabled ||
                                         e.button !== 0
                                     )
                                         return;
@@ -239,7 +246,12 @@ export const BoardCharacterStack: React.FC<BoardCharacterStackProps> = ({
                                 <Card
                                     card={attachment}
                                     size="sm"
-                                    isDraggable={!isOpponent && !isTargetable}
+                                    isDisabled={isDisabled}
+                                    isDraggable={
+                                        !isOpponent &&
+                                        !isTargetable &&
+                                        !isDisabled
+                                    }
                                 />
                             </S.AttachmentWrapper>
                         ))}

@@ -11,6 +11,7 @@ export interface CardContainerProps {
     $isTakingDamage?: boolean;
     $isOverwhelmed?: boolean;
     $isDead?: boolean;
+    $isDisabled?: boolean;
     $isOpponent?: boolean; // Position globale de la carte (HAUT = true, BAS = false)
     $kind: string;
     $size?: 'sm' | 'md' | 'lg';
@@ -25,7 +26,11 @@ const isNotCharacter = (type?: string) =>
     type !== 'MINION' &&
     type !== 'ALLY';
 
-const isForSupportArea = (type?: string, subtype?: string, isAttachment?: boolean) => {
+const isForSupportArea = (
+    type?: string,
+    subtype?: string,
+    isAttachment?: boolean
+) => {
     if (!type || type === 'ALLY' || type === 'COMPANION' || type === 'MINION') {
         return false;
     }
@@ -102,7 +107,8 @@ export const CardContainer = styled.div<CardContainerProps>`
 
     transition:
         transform 0.2s ease,
-        opacity 0.2s ease;
+        opacity 0.2s ease,
+        filter 0.2s ease;
     user-select: none;
     -webkit-user-drag: ${(props) => (props.draggable ? 'element' : 'none')};
 
@@ -348,7 +354,7 @@ export const CardContainer = styled.div<CardContainerProps>`
                     }}
                     0.65s cubic-bezier(0.12, 0.85, 0.2, 1);
             `}
-            /* ======------ OVERWHELMED !) ------====== */
+            /* ======------ OVERWHELMED ------====== */
             ${props.$isOverwhelmed &&
             css`
                 will-change: transform, filter;
@@ -372,6 +378,15 @@ export const CardContainer = styled.div<CardContainerProps>`
                     filter 0.3s ease,
                     opacity 0.3s ease,
                     transform 0.3s ease;
+            `}
+
+            /* ======------ État Désactivé / Incapable ($size === 'sm') ------====== */
+            ${props.$isDisabled &&
+            css`
+                filter: grayscale(60%) brightness(0.5) contrast(0.85) !important;
+                opacity: 0.7;
+                pointer-events: none;
+                cursor: not-allowed;
             `}
         `}
 
@@ -865,7 +880,7 @@ export const KeywordsContainer = styled.div`
 
 export const AttachmentSubtype = styled.img`
     position: absolute;
-    z-index: 2;  
+    z-index: 2;
     inset-block-start: -1px;
     inset-inline-start: -3px;
     background-color: white;
@@ -878,7 +893,7 @@ export const AttachmentSubtype = styled.img`
 
 export const AttachmentSubtypeRing = styled.img`
     position: absolute;
-    z-index: 2;  
+    z-index: 2;
     inset-block-start: 4px;
     inset-inline-start: 2px;
     background-color: white;

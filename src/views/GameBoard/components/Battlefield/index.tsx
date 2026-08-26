@@ -1,9 +1,14 @@
 import React, { useEffect, useRef } from 'react';
-import type { CardState, SiteCardState, GameState } from '../../../../game/types';
+import type {
+    CardState,
+    SiteCardState,
+    GameState,
+} from '../../../../game/types';
 import * as S from './styles';
 import { useDrag } from '../../../../contexts/DragContext';
 import { BoardCharacterStack } from '../BoardCharacterStack';
 import { getEffectiveVitality } from '../../../../utils/cardStats';
+import { getKeywordValue } from '../../../../game/engine/keywords/keywordUtils';
 
 // Helper pour déterminer si une carte est une carte standard (CardState)
 const isStandardCard = (card: CardState | SiteCardState): card is CardState => {
@@ -83,6 +88,13 @@ export const Battlefield: React.FC<BattlefieldProps> = ({
                         getEffectiveVitality(minion) <= 0
                     );
 
+                    // CALCUL DE ISDISABLED :
+                    // On vérifie si le jeu est en phase d'affectation féroce ET si la carte n'est pas FIERCE
+                    const isFierce = getKeywordValue(minion, 'FIERCE') >= 0; // ou minion.keywords?.includes('FIERCE')
+                    const isDisabled = Boolean(
+                        G?.isFierceAssignment && !isFierce
+                    );
+
                     return (
                         <BoardCharacterStack
                             key={minion.id}
@@ -93,6 +105,7 @@ export const Battlefield: React.FC<BattlefieldProps> = ({
                             isAssignmentPhase={isAssignmentPhase}
                             isWounded={isWounded}
                             isDead={isDead}
+                            isDisabled={isDisabled}
                             burdens={0}
                             isFaceDown={false}
                             G={G}

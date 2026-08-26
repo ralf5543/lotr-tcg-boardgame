@@ -127,7 +127,8 @@ export const PlayerArea: React.FC<PlayerAreaProps> = ({
                     </S.ExpandHint>
 
                     {isDormantExpanded && (
-                        <S.DormantOverlay onClick={(e) => e.stopPropagation()}>
+                        <S.DormantOverlay
+                    $isOpponent={isOpponent} onClick={(e) => e.stopPropagation()}>
                             <S.CardRow>
                                 {fellowshipArea.length === 0 && (
                                     <S.EmptyText>Aucun compagnon.</S.EmptyText>

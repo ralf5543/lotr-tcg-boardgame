@@ -492,6 +492,8 @@ const currentFaction: 'FREE_PEOPLE' | 'SHADOW' | 'NEUTRAL' = isSetupPhase
                                 isAssignmentPhase={ctx.phase === 'assignment'}
                                 skirmishes={G.skirmishes}
                                 lastWoundedCardIds={G.lastWoundedCardIds}
+                                G={G}
+                                playerId={myId}
                             />
                             <TwilightPool value={G.twilightPool} />
                         </S.MainZone>

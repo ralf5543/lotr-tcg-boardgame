@@ -65,18 +65,27 @@ export const ExpandHint = styled.span`
     opacity: 0.8;
 `;
 
-export const DormantOverlay = styled.div`
+export const DormantOverlay = styled.div<{
+    $isOpponent?: boolean;
+}>`
     position: absolute;
-    top: 42px;
+    inset-block-end: 100%;
     left: 0;
     right: 0;
     z-index: 100;
-    background: rgba(15, 23, 42, 0.95);
+    background: rgba(15, 23, 42, 0.6);
     border: 1px solid #3498db;
     border-radius: 6px;
     padding: 12px;
     box-shadow: 0 8px 24px rgba(0, 0, 0, 0.6);
     backdrop-filter: blur(4px);
+
+    ${({ $isOpponent }) =>
+        $isOpponent &&
+        css`
+            inset-block-start: 100%;
+            inset-block-end: auto;
+        `}
 `;
 
 export const SupportArea = styled.div<{

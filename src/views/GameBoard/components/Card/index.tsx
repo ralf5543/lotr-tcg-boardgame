@@ -53,7 +53,6 @@ export const CardImage: React.FC<CardImageProps> = ({
             .slice(currentSrc.lastIndexOf('.'))
             .toLowerCase();
 
-        // 🟢 Chaîne de fallback modifiée : .jpg passe d'abord par .webp avant .png
         const nextExtMap: Record<string, string | null> = {
             '.jpg': '.webp',
             '.jpeg': '.webp',
@@ -94,6 +93,7 @@ interface CardProps {
     isOverwhelmed?: boolean;
     isDead?: boolean;
     isOpponent?: boolean;
+    isDisabled?: boolean;
     burdens?: number;
     isFaceDown?: boolean;
     currentLang?: SupportedLanguage;
@@ -111,6 +111,7 @@ export const Card: React.FC<CardProps> = ({
     isOverwhelmed = false,
     isDead = false,
     isOpponent = false,
+    isDisabled = false,
     burdens = 0,
     isFaceDown: isFaceDownProp,
     currentLang = 'fr',
@@ -119,9 +120,10 @@ export const Card: React.FC<CardProps> = ({
     const { startDrag } = useDrag();
 
     const [isTakingDamage, setIsTakingDamage] = useState(false);
-    const prevWoundsRef = useRef(card.wounds || 0);
+    const prevWoundsRef = useRef(card?.wounds || 0);
 
     useEffect(() => {
+        if (!card) return;
         const currentWounds = card.wounds || 0;
 
         if (currentWounds > prevWoundsRef.current) {
@@ -135,7 +137,9 @@ export const Card: React.FC<CardProps> = ({
         }
 
         prevWoundsRef.current = currentWounds;
-    }, [card.wounds]);
+    }, [card?.wounds]);
+
+    if (!card) return null;
 
     const isFaceDown =
         isOpponent && (card?.isFaceDown ?? isFaceDownProp ?? false);
@@ -151,6 +155,7 @@ export const Card: React.FC<CardProps> = ({
             <S.CardContainer
                 $size={size}
                 $isOpponent={isOpponent}
+                $isDisabled={isDisabled}
                 style={{ cursor: 'default', userSelect: 'none' }}
                 onDragStart={(e) => e.preventDefault()}
             >
@@ -169,7 +174,8 @@ export const Card: React.FC<CardProps> = ({
 
     const isRingBearer =
         isRingBearerProp ??
-        card.keywords?.includes('RING-BEARER' as CardKeyword);
+        (Array.isArray(card.keywords) &&
+            card.keywords.includes('RING-BEARER' as CardKeyword));
 
     const handleMouseEnter = () => {
         if (size !== 'lg') setHoveredCard(card);
@@ -236,10 +242,11 @@ export const Card: React.FC<CardProps> = ({
 
     const isAttachment = requiresAttachmentTarget(card);
 
+    const attachmentResistance = card.resistance ?? 0;
     const displayResistance = isAttachment
-        ? card.resistance > 0
-            ? `+${card.resistance}`
-            : `${card.resistance}`
+        ? attachmentResistance > 0
+            ? `+${attachmentResistance}`
+            : `${attachmentResistance}`
         : effectiveResistance;
 
     const shouldShowResistance =
@@ -268,6 +275,7 @@ export const Card: React.FC<CardProps> = ({
             $isOverwhelmed={isOverwhelmed || card.isOverwhelmed}
             $isDead={isDead || card.isDead}
             $isOpponent={isOpponent}
+            $isDisabled={isDisabled}
             onMouseEnter={handleMouseEnter}
             onMouseLeave={handleMouseLeave}
             onDragStart={isDraggable ? handleDragStart : undefined}
@@ -278,7 +286,7 @@ export const Card: React.FC<CardProps> = ({
         >
             {isCharacter &&
                 size === 'sm' &&
-                card.keywords &&
+                Array.isArray(card.keywords) &&
                 card.keywords.length > 0 && (
                     <S.KeywordsContainer>
                         {card.keywords.map((kw) => (
@@ -431,7 +439,9 @@ export const Card: React.FC<CardProps> = ({
                 </S.ResistanceWrapper>
             )}
 
-            {shouldShowSignet && <S.CardSignet $signet={card.signet!} />}
+            {shouldShowSignet && card.signet && (
+                <S.CardSignet $signet={card.signet} />
+            )}
 
             {card.type && card.type === 'RING' && size === 'sm' && (
                 <S.AttachmentSubtypeRing
