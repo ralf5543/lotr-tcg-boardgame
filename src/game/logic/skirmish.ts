@@ -48,12 +48,14 @@ export const getCardTotalStrength = (card: CardState): number => {
 };
 
 /**
- * Calcule les blessures totalisées par le bonus DAMAGE +X d'une ou plusieurs cartes
+ * Calcule les blessures supplémentaires apportées par le mot-clé DAMAGE +X.
+ * Si une carte a DAMAGE +1, getKeywordValue doit renvoyer 1. Si elle n'a pas le mot-clé, 0.
  */
 const getDamageBonus = (cards: CardState | CardState[]): number => {
     const list = Array.isArray(cards) ? cards : [cards];
     return list.reduce((sum, c) => {
         const bonus = getKeywordValue(c, 'DAMAGE');
+        // On s'assure de ne prendre en compte que les valeurs stricte positives (> 0)
         return sum + (bonus > 0 ? bonus : 0);
     }, 0);
 };
@@ -168,7 +170,9 @@ export const resolveSkirmish = (G: GameState, _ctx?: Ctx) => {
             applyOverwhelmAndCheckDeath(G, companion);
             resultMsg += `${companionName} est SUBMERGÉ et tué sur le coup !`;
         } else {
-            const woundsToApply = 1 + getDamageBonus(minions);
+            const damageBonus = getDamageBonus(minions);
+            const woundsToApply = 1 + damageBonus;
+
             const shouldDie = applyWoundAndCheckDeath(
                 G,
                 companion,
@@ -176,8 +180,8 @@ export const resolveSkirmish = (G: GameState, _ctx?: Ctx) => {
             );
 
             const damageText =
-                woundsToApply > 1
-                    ? ` (${woundsToApply} blessures via DAMAGE)`
+                damageBonus > 0
+                    ? ` (${woundsToApply} blessures incluant DAMAGE +${damageBonus})`
                     : '';
             resultMsg += `${companionName} subit ${woundsToApply} blessure${woundsToApply > 1 ? 's' : ''}${damageText}${shouldDie ? ' et meurt' : ''}.`;
         }
