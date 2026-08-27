@@ -11,6 +11,7 @@ import {
 } from '../../utils/applyWoundAndCheckDeath';
 import { audioService } from '../../services/audioService';
 import { getKeywordValue } from '../engine/keywords/keywordUtils';
+import { getCalculatedStrength } from './stats/statCalculator';
 
 /**
  * Helper interne pour extraire proprement le nom d'une carte dans la langue par défaut (FR).
@@ -110,9 +111,10 @@ export const resolveSkirmish = (G: GameState, _ctx?: Ctx) => {
 
     const companionName = getCardName(companion, 'Le compagnon');
 
-    const companionStrength = getCardTotalStrength(companion);
+    const companionStrength = getCalculatedStrength(G, companion);
+
     const minionsStrength = minions.reduce(
-        (sum, m) => sum + getCardTotalStrength(m),
+        (sum, m) => sum + getCalculatedStrength(G, m),
         0
     );
 

@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import type { CardState, CardKeyword } from '../../../../game/types';
+import type { CardState, CardKeyword, GameState } from '../../../../game/types';
 import * as S from './styles';
 import { TRANSLATIONS } from '../../../../game/translations';
 import { useHoverCard } from '../../../../contexts/HoverCardContext';
@@ -91,6 +91,7 @@ interface CardProps {
     isRingBearer?: boolean;
     isWounded?: boolean;
     isOverwhelmed?: boolean;
+    G?: GameState;
     isDead?: boolean;
     isOpponent?: boolean;
     isDisabled?: boolean;
@@ -101,6 +102,7 @@ interface CardProps {
 
 export const Card: React.FC<CardProps> = ({
     card,
+    G,
     isPlayable,
     size = 'md',
     isDraggable = false,
@@ -234,7 +236,7 @@ export const Card: React.FC<CardProps> = ({
         card.minionSiteNumber > currentSiteIndex + 1;
 
     const effectiveVitality = getEffectiveVitality(card);
-    const effectiveStrength = getEffectiveStrength(card);
+    const effectiveStrength = getEffectiveStrength(card, G);
     const effectiveResistance = getEffectiveResistance(card, burdens);
 
     // 🟢 État permanent : est-ce que la carte a des blessures ?

@@ -155,6 +155,7 @@ export const BoardCharacterStack: React.FC<BoardCharacterStackProps> = ({
                                         isDead={isMinionDead}
                                         isDisabled={isDisabled}
                                         isOpponent={!isOpponent}
+                                        G={G}
                                     />
                                 </S.MinionWrapper>
                             );
@@ -208,6 +209,7 @@ export const BoardCharacterStack: React.FC<BoardCharacterStackProps> = ({
                         isOpponent={isOpponent}
                         burdens={burdens}
                         isFaceDown={isFaceDown}
+                        G={G}
                     />
                 </S.CardDragTarget>
 

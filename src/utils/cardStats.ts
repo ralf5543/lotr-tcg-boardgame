@@ -1,4 +1,5 @@
-import type { CardState } from '../game/types';
+import type { CardState, GameState } from '../game/types';
+import { getCalculatedStrength } from '../game/logic/stats/statCalculator';
 
 /**
  * 1. Vitalité Maximale (Base + Attachments)
@@ -27,17 +28,13 @@ export const getEffectiveVitality = (card: CardState): number => {
 /**
  * 4. Force Effective (Base + Attachments)
  */
-export const getEffectiveStrength = (card: CardState): number => {
-    if (!card) return 0;
-    let strength = Number(card.strength) || 0;
-    if (card.attachments) {
-        card.attachments.forEach((att) => {
-            if (att.strength) {
-                strength += Number(att.strength);
-            }
-        });
-    }
-    return strength;
+/**
+ * Calcule la force effective d'une carte.
+ * Si G est fourni, prend en compte l'état global du jeu (Escarmouches, Hunter, TempModifiers).
+ * Si G n'est pas fourni, retombe automatiquement sur (Base + Attachments).
+ */
+export const getEffectiveStrength = (card: CardState, G?: GameState): number => {
+    return getCalculatedStrength(G, card);
 };
 
 /**

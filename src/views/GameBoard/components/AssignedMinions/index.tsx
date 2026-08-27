@@ -28,6 +28,7 @@ export const AssignedMinions: React.FC<AssignedMinionsProps> = ({
                     <Card
                         card={minionCard}
                         isWounded={(minionCard.wounds || 0) > 0}
+                        G={G}
                     />
                 </S.StackedMinionCard>
             ))}

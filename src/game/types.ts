@@ -1,4 +1,5 @@
 import type { FnContext } from 'boardgame.io';
+import type { StatModifier } from './logic/stats/types';
 
 export type CardKind = 'FREE_PEOPLE' | 'SHADOW' | 'NONE';
 
@@ -231,6 +232,7 @@ export interface GameState {
     fpPlayerId: string;
     twilightPool: number;
     currentSiteIndex?: number;
+    tempModifiers?: StatModifier[];
     currentSite?: number;
     movesThisTurn?: number;
     path: (SiteCardState | null)[];

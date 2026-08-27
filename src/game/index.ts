@@ -806,6 +806,10 @@ export const LotrGame: Game<GameState> = {
 
                     G.lastWoundedCardIds = [];
                     G.pendingDeadCardIds = [];
+
+                    if (G.tempModifiers) {
+                        G.tempModifiers = G.tempModifiers.filter((m) => m.scope !== 'SKIRMISH');
+                    }
                 },
 
                 endSkirmishPhase: ({ events }: LotrMoveContext) => {
