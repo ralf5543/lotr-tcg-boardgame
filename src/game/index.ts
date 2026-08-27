@@ -23,6 +23,7 @@ import { devMoves } from './dev/devMoves';
 import { drawCardsForPlayer } from '../utils/drawCards';
 import { buildDeckFromIds } from '../utils/deckBuilder';
 import { allMoves } from './moves/index';
+import { calculateArcheryTotals } from './logic/archery';
 
 const shuffle = <T>(array: T[]): T[] => {
     const arr = [...array];
@@ -111,41 +112,9 @@ const createInitialPlayer = (playerId: string): PlayerState => {
     };
 };
 
-/**
- * Compte le nombre d'occurrences du mot-clé 'ARCHER' sur le personnage uniquement.
- */
-const countCardArcheryKeywords = (card: CardState): number => {
-    if (!card.keywords || !Array.isArray(card.keywords)) return 0;
-    return card.keywords.filter((kw) => kw.toUpperCase() === 'ARCHER').length;
-};
 
-/**
- * Calcul total de la réserve d'archerie pour les FP et pour l'Ombre
- */
-export const calculateArcheryTotals = (G: GameState) => {
-    const fpId = G.fpPlayerId || '0';
-    const fpPlayer = G.players[fpId];
 
-    // 1. Archerie des Peuples Libres (Uniquement les compagnons dans la fellowshipArea du joueur FP)
-    let fpTotal = 0;
-    if (fpPlayer && fpPlayer.fellowshipArea) {
-        fpPlayer.fellowshipArea.forEach((companion) => {
-            fpTotal += countCardArcheryKeywords(companion);
-        });
-    }
 
-    // 2. Archerie de l'Ombre (Les séides sur le battlefield)
-    let shadowTotal = 0;
-    if (G.battlefield) {
-        G.battlefield.forEach((minion) => {
-            if (minion.kind === 'SHADOW' && minion.type === 'MINION') {
-                shadowTotal += countCardArcheryKeywords(minion);
-            }
-        });
-    }
-
-    return { fpTotal, shadowTotal };
-};
 
 /**
  * Avance ou termine la sous-phase d'assignation des blessures d'archerie
