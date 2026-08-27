@@ -15,6 +15,7 @@ import {
 import { getCardText } from '../../../../utils/i18n';
 import type { SupportedLanguage } from '../../../../utils/i18n';
 import { requiresAttachmentTarget } from '../../../../game/engine/canPlayCard';
+import { getEffectiveKeywords } from '../../../../game/engine/keywords/keywordUtils';
 
 interface CardImageProps {
     imageUrl?: string;
@@ -262,6 +263,8 @@ export const Card: React.FC<CardProps> = ({
 
     const shouldShowSignet = Boolean(card.signet);
 
+    const effectiveKeywords = getEffectiveKeywords(card);
+
     return (
         <S.CardContainer
             $culture={card.culture}
@@ -286,16 +289,17 @@ export const Card: React.FC<CardProps> = ({
             data-overwhelmed={card.isOverwhelmed ? 'true' : 'false'}
             $isAttachment={isAttachment}
         >
-            {isCharacter &&
-                size === 'sm' &&
-                Array.isArray(card.keywords) &&
-                card.keywords.length > 0 && (
-                    <S.KeywordsContainer>
-                        {card.keywords.map((kw) => (
-                            <KeywordBadge key={kw} keyword={kw} size={18} />
-                        ))}
-                    </S.KeywordsContainer>
-                )}
+            {isCharacter && size === 'sm' && effectiveKeywords.length > 0 && (
+                <S.KeywordsContainer>
+                    {effectiveKeywords.map((kw) => (
+                        <KeywordBadge
+                            key={kw.raw}
+                            keyword={kw.raw as CardKeyword}
+                            size={18}
+                        />
+                    ))}
+                </S.KeywordsContainer>
+            )}
 
             {hasWounds && size === 'sm' && (
                 <S.WoundsOverlay>
