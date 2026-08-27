@@ -1307,6 +1307,9 @@
     "kind": "SHADOW",
     "type": "POSSESSION",
     "subtype": "HAND-WEAPON",
+    "grantsKeywords": [
+      "DAMAGE +1"
+    ],
     "attachedTo": [
       [
         "The Witch-king"
@@ -1743,6 +1746,9 @@
     "kind": "FREE_PEOPLE",
     "type": "POSSESSION",
     "subtype": "HAND-WEAPON",
+    "grantsKeywords": [
+      "DAMAGE +1"
+    ],
     "attachedTo": [
       [
         "Gimli"
@@ -1790,6 +1796,9 @@
     "kind": "FREE_PEOPLE",
     "type": "POSSESSION",
     "subtype": "RANGED-WEAPON",
+    "grantsKeywords": [
+      "ARCHER"
+    ],
     "attachedTo": [
       [
         "Aragorn"
@@ -1837,6 +1846,9 @@
     "type": "ARTIFACT",
     "subtype": "HAND-WEAPON",
     "keywords": [
+      "DAMAGE +1"
+    ],
+    "grantsKeywords": [
       "DAMAGE +1"
     ],
     "attachedTo": [
@@ -1934,6 +1946,9 @@
     "type": "POSSESSION",
     "subtype": "HAND-WEAPON",
     "keywords": [
+      "DAMAGE +1"
+    ],
+    "grantsKeywords": [
       "DAMAGE +1"
     ],
     "attachedTo": [
@@ -4603,6 +4618,9 @@
     "keywords": [
       "DAMAGE +1"
     ],
+    "grantsKeywords": [
+      "DAMAGE +1"
+    ],
     "attachedTo": [
       [
         "Gimli"
@@ -7229,6 +7247,9 @@
     "type": "ARTIFACT",
     "subtype": "HAND-WEAPON",
     "keywords": [
+      "DAMAGE +1"
+    ],
+    "grantsKeywords": [
       "DAMAGE +1"
     ],
     "attachedTo": [
@@ -11844,6 +11865,9 @@
     "kind": "FREE_PEOPLE",
     "type": "POSSESSION",
     "subtype": "RANGED-WEAPON",
+    "grantsKeywords": [
+      "ARCHER"
+    ],
     "attachedTo": [
       [
         "ELF"
@@ -12132,6 +12156,9 @@
     "type": "POSSESSION",
     "subtype": "HAND-WEAPON",
     "keywords": [
+      "DAMAGE +1"
+    ],
+    "grantsKeywords": [
       "DAMAGE +1"
     ],
     "attachedTo": [
@@ -13361,6 +13388,9 @@
     "keywords": [
       "DAMAGE +1"
     ],
+    "grantsKeywords": [
+      "DAMAGE +1"
+    ],
     "attachedTo": [
       [
         "Gandalf"
@@ -13958,6 +13988,9 @@
     "kind": "FREE_PEOPLE",
     "type": "POSSESSION",
     "subtype": "RANGED-WEAPON",
+    "grantsKeywords": [
+      "ARCHER"
+    ],
     "attachedTo": [
       [
         "Aragorn"
@@ -14185,6 +14218,9 @@
     "kind": "FREE_PEOPLE",
     "type": "POSSESSION",
     "subtype": "HAND-WEAPON",
+    "grantsKeywords": [
+      "DAMAGE +1"
+    ],
     "attachedTo": [
       [
         "Boromir"
@@ -14880,6 +14916,9 @@
     "kind": "FREE_PEOPLE",
     "type": "POSSESSION",
     "subtype": "HAND-WEAPON",
+    "grantsKeywords": [
+      "DAMAGE +1"
+    ],
     "attachedTo": [
       [
         "Aragorn"
@@ -18296,6 +18335,9 @@
     "kind": "SHADOW",
     "type": "POSSESSION",
     "subtype": "HAND-WEAPON",
+    "grantsKeywords": [
+      "DAMAGE +1"
+    ],
     "attachedTo": [
       [
         "MORIA",
@@ -19629,6 +19671,9 @@
     "kind": "SHADOW",
     "type": "POSSESSION",
     "subtype": "HAND-WEAPON",
+    "grantsKeywords": [
+      "DAMAGE +1"
+    ],
     "attachedTo": [
       [
         "The Witch-king"
@@ -19818,6 +19863,9 @@
     "kind": "SHADOW",
     "type": "POSSESSION",
     "subtype": "HAND-WEAPON",
+    "grantsKeywords": [
+      "DAMAGE +1"
+    ],
     "attachedTo": [
       [
         "Úlairë Lemenya"
@@ -25643,6 +25691,9 @@
     "keywords": [
       "DAMAGE +1"
     ],
+    "grantsKeywords": [
+      "DAMAGE +1"
+    ],
     "attachedTo": [
       [
         "MAN"
@@ -26134,6 +26185,9 @@
     "keywords": [
       "DAMAGE +1"
     ],
+    "grantsKeywords": [
+      "DAMAGE +1"
+    ],
     "attachedTo": [
       [
         "Lurtz"
@@ -26479,6 +26533,9 @@
     "type": "ARTIFACT",
     "subtype": "HAND-WEAPON",
     "keywords": [
+      "DAMAGE +1"
+    ],
+    "grantsKeywords": [
       "DAMAGE +1"
     ],
     "attachedTo": [
@@ -36379,6 +36436,9 @@
     "kind": "FREE_PEOPLE",
     "type": "POSSESSION",
     "subtype": "HAND-WEAPON",
+    "grantsKeywords": [
+      "DAMAGE +1"
+    ],
     "attachedTo": [
       [
         "Gimli"
@@ -36832,7 +36892,7 @@
     "i18n": {
       "en": {
         "title": "Khazâd Ai-mênu",
-        "gameText": "**Skirmish:** Make a Dwarf strength +2 (or strength +3 and **damage +1 **if you spot Legolas).",
+        "gameText": "**Skirmish:** Make a Dwarf strength +2 (or strength +3 and **damage +1**if you spot Legolas).",
         "loreText": "The Orcs are behind the wall. Ai-oi! Come, Legolas! There are enough for both of us."
       },
       "fr": {
@@ -37284,6 +37344,9 @@
     "kind": "FREE_PEOPLE",
     "type": "POSSESSION",
     "subtype": "RANGED-WEAPON",
+    "grantsKeywords": [
+      "ARCHER"
+    ],
     "attachedTo": [
       [
         "ELF"
@@ -39835,6 +39898,9 @@
     "kind": "FREE_PEOPLE",
     "type": "POSSESSION",
     "subtype": "RANGED-WEAPON",
+    "grantsKeywords": [
+      "ARCHER"
+    ],
     "attachedTo": [
       [
         "Faramir"
@@ -42363,6 +42429,10 @@
     "kind": "SHADOW",
     "type": "ARTIFACT",
     "subtype": "STAFF",
+    "grantsKeywords": [
+      "FIERCE",
+      "DAMAGE +1"
+    ],
     "attachedTo": [
       [
         "Saruman"
@@ -42379,7 +42449,7 @@
       "en": {
         "title": "Saruman's Staff",
         "subtitle": "Wizard's Device",
-        "gameText": "Plays on Saruman. He is **fierce** and **damage +1.** \n**Maneuver:** Make the first sentence of Saruman’s game text not apply until the regroup phase.",
+        "gameText": "Plays on Saruman. He is **fierce.** and **damage +1.** \n**Maneuver:** Make the first sentence of Saruman’s game text not apply until the regroup phase.",
         "loreText": "His hand clutched his heavy black staff like a claw."
       },
       "fr": {
@@ -45570,6 +45640,9 @@
     "kind": "SHADOW",
     "type": "POSSESSION",
     "subtype": "RANGED-WEAPON",
+    "grantsKeywords": [
+      "ARCHER"
+    ],
     "attachedTo": [
       [
         "RAIDER",
@@ -47146,6 +47219,9 @@
     "kind": "FREE_PEOPLE",
     "type": "POSSESSION",
     "subtype": "HAND-WEAPON",
+    "grantsKeywords": [
+      "DAMAGE +1"
+    ],
     "attachedTo": [
       [
         "Théoden"
@@ -52336,6 +52412,9 @@
     "kind": "SHADOW",
     "type": "POSSESSION",
     "subtype": "MOUNT",
+    "grantsKeywords": [
+      "FIERCE"
+    ],
     "attachedTo": [
       [
         "SOUTHRON"
@@ -52578,6 +52657,9 @@
     "kind": "SHADOW",
     "type": "POSSESSION",
     "subtype": "MOUNT",
+    "grantsKeywords": [
+      "FIERCE"
+    ],
     "attachedTo": [
       [
         "SOUTHRON"
@@ -56080,6 +56162,9 @@
     "type": "POSSESSION",
     "subtype": "HAND-WEAPON",
     "keywords": [
+      "DAMAGE +1"
+    ],
+    "grantsKeywords": [
       "DAMAGE +1"
     ],
     "attachedTo": [
@@ -61926,6 +62011,9 @@
     "keywords": [
       "DAMAGE +1"
     ],
+    "grantsKeywords": [
+      "DAMAGE +1"
+    ],
     "attachedTo": [
       [
         "Gandalf"
@@ -62940,6 +63028,9 @@
     "kind": "SHADOW",
     "type": "CONDITION",
     "keywords": [
+      "DAMAGE +1"
+    ],
+    "grantsKeywords": [
       "DAMAGE +1"
     ],
     "attachedTo": [
@@ -67012,6 +67103,10 @@
     "keywords": [
       "AMBUSH 5"
     ],
+    "grantsKeywords": [
+      "ARCHER",
+      "AMBUSH"
+    ],
     "attachedTo": [
       [
         "RAIDER",
@@ -70466,6 +70561,9 @@
     "type": "POSSESSION",
     "subtype": "HAND-WEAPON",
     "keywords": [
+      "DAMAGE +1"
+    ],
+    "grantsKeywords": [
       "DAMAGE +1"
     ],
     "attachedTo": [
@@ -80040,6 +80138,9 @@
     "kind": "FREE_PEOPLE",
     "type": "ARTIFACT",
     "subtype": "RING",
+    "grantsKeywords": [
+      "DAMAGE +1"
+    ],
     "attachedTo": [
       [
         "DWARF"
@@ -80083,6 +80184,9 @@
     "kind": "FREE_PEOPLE",
     "type": "ARTIFACT",
     "subtype": "RING",
+    "grantsKeywords": [
+      "DAMAGE +2"
+    ],
     "attachedTo": [
       [
         "DWARF"
@@ -80131,6 +80235,9 @@
     "kind": "FREE_PEOPLE",
     "type": "ARTIFACT",
     "subtype": "RING",
+    "grantsKeywords": [
+      "DAMAGE +1"
+    ],
     "attachedTo": [
       [
         "DWARF"
@@ -84581,6 +84688,9 @@
     "keywords": [
       "ENDURING"
     ],
+    "grantsKeywords": [
+      "ENDURING"
+    ],
     "attachedTo": [
       [
         "SOUTHRON"
@@ -88724,6 +88834,9 @@
     "keywords": [
       "ARCHER"
     ],
+    "grantsKeywords": [
+      "ARCHER"
+    ],
     "attachedTo": [
       [
         "ELF"
@@ -91592,6 +91705,9 @@
     "keywords": [
       "ARCHER"
     ],
+    "grantsKeywords": [
+      "ARCHER"
+    ],
     "attachedTo": [
       [
         "MEN",
@@ -92497,6 +92613,9 @@
     "type": "POSSESSION",
     "subtype": "ARMOR",
     "keywords": [
+      "LURKER"
+    ],
+    "grantsKeywords": [
       "LURKER"
     ],
     "attachedTo": [
@@ -99571,6 +99690,9 @@
     "kind": "FREE_PEOPLE",
     "type": "POSSESSION",
     "subtype": "HAND-WEAPON",
+    "grantsKeywords": [
+      "DAMAGE +1"
+    ],
     "attachedTo": [
       [
         "Boromir"
@@ -99848,6 +99970,9 @@
     "kind": "FREE_PEOPLE",
     "type": "POSSESSION",
     "subtype": "HAND-WEAPON",
+    "grantsKeywords": [
+      "DAMAGE +1"
+    ],
     "attachedTo": [
       [
         "Faramir"
@@ -99894,6 +100019,9 @@
     "type": "POSSESSION",
     "subtype": "MOUNT",
     "keywords": [
+      "DAMAGE +1"
+    ],
+    "grantsKeywords": [
       "DAMAGE +1"
     ],
     "attachedTo": [
@@ -100857,6 +100985,9 @@
     "kind": "SHADOW",
     "type": "POSSESSION",
     "subtype": "MOUNT",
+    "grantsKeywords": [
+      "FIERCE"
+    ],
     "attachedTo": [
       [
         "The Mouth of Sauron"
@@ -101114,6 +101245,9 @@
     "kind": "SHADOW",
     "type": "ARTIFACT",
     "subtype": "HAND-WEAPON",
+    "grantsKeywords": [
+      "FIERCE"
+    ],
     "attachedTo": [
       [
         "The Balrog"
@@ -105867,6 +106001,9 @@
     "kind": "FREE_PEOPLE",
     "type": "POSSESSION",
     "subtype": "HAND-WEAPON",
+    "grantsKeywords": [
+      "DAMAGE +1"
+    ],
     "attachedTo": [
       [
         "Faramir"
@@ -112388,6 +112525,9 @@
     "keywords": [
       "DAMAGE +1"
     ],
+    "grantsKeywords": [
+      "DAMAGE +1"
+    ],
     "attachedTo": [
       [
         "Sauron"
@@ -116007,6 +116147,9 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "FOLLOWER",
+    "grantsKeywords": [
+      "ARCHER"
+    ],
     "culture": "ELVEN",
     "twilightCost": 2,
     "imageUrl": "/cards_visuals/o_15_012.jpg",
@@ -116051,6 +116194,9 @@
     "kind": "FREE_PEOPLE",
     "type": "POSSESSION",
     "subtype": "RANGED-WEAPON",
+    "grantsKeywords": [
+      "ARCHER"
+    ],
     "attachedTo": [
       [
         "ELF"
@@ -118073,6 +118219,9 @@
     "kind": "FREE_PEOPLE",
     "type": "POSSESSION",
     "subtype": "RANGED-WEAPON",
+    "grantsKeywords": [
+      "ARCHER"
+    ],
     "attachedTo": [
       [
         "Aragorn"
@@ -125738,6 +125887,9 @@
     "keywords": [
       "DAMAGE +1"
     ],
+    "grantsKeywords": [
+      "DAMAGE +1"
+    ],
     "attachedTo": [
       [
         "Gandalf"
@@ -126149,6 +126301,9 @@
     "keywords": [
       "DAMAGE +1"
     ],
+    "grantsKeywords": [
+      "DAMAGE +1"
+    ],
     "attachedTo": [
       [
         "Aragorn"
@@ -126334,6 +126489,9 @@
     "type": "ARTIFACT",
     "subtype": "HAND-WEAPON",
     "keywords": [
+      "DAMAGE +1"
+    ],
+    "grantsKeywords": [
       "DAMAGE +1"
     ],
     "attachedTo": [
@@ -128947,6 +129105,9 @@
     "keywords": [
       "DAMAGE +1"
     ],
+    "grantsKeywords": [
+      "FIERCE"
+    ],
     "attachedTo": [
       [
         "ORC",
@@ -129045,6 +129206,9 @@
     "kind": "SHADOW",
     "type": "POSSESSION",
     "subtype": "MOUNT",
+    "grantsKeywords": [
+      "FIERCE"
+    ],
     "attachedTo": [
       [
         "ORC",
@@ -131518,6 +131682,9 @@
     "keywords": [
       "DAMAGE +1"
     ],
+    "grantsKeywords": [
+      "DAMAGE +1"
+    ],
     "attachedTo": [
       [
         "NAZGÛL"
@@ -133437,6 +133604,9 @@
     "kind": "FREE_PEOPLE",
     "type": "POSSESSION",
     "subtype": "ARMOR",
+    "grantsKeywords": [
+      "KNIGHT"
+    ],
     "attachedTo": [
       [
         "GONDOR",
@@ -134576,6 +134746,9 @@
     "keywords": [
       "DAMAGE +1"
     ],
+    "grantsKeywords": [
+      "DAMAGE +1"
+    ],
     "attachedTo": [
       [
         "MEN",
@@ -135620,6 +135793,9 @@
     "kind": "SHADOW",
     "type": "POSSESSION",
     "subtype": "MOUNT",
+    "grantsKeywords": [
+      "FIERCE"
+    ],
     "attachedTo": [
       [
         "ORC",

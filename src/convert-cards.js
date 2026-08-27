@@ -192,6 +192,49 @@ function buildLangBlock(title, subtitle, gameText, lore) {
 // 3. FONCTIONS D'EXTRACTION DE RÈGLES MÉTIER 
 // ============================================================================ 
 
+// EXTRACTION DES MOTS-CLÉS ACCORDÉS AU PORTEUR (grantsKeywords)
+/**
+ * Recherche les occurrences de "Bearer is", "He is", "She is" (avec Majuscule)
+ * dans le texte de la carte et extrait directement les mots-clés balisés qui suivent.
+ */
+function parseGrantsKeywords(text) {
+    if (!text) return undefined;
+
+    const granted = new Set();
+
+    // Expression régulière :
+    // - \b([A-Z][a-z]*)\s+is : Chope le sujet avec Majuscule ("Bearer is", "He is")
+    // - \s+(.+?)(?=<br|$|\n) : Chope la suite jusqu'au prochain saut de ligne / <br>
+    const pattern = /\b([A-Z][a-z]*)\s+is\s+(.+?)(?=<br|$|\n)/gi;
+    let match;
+
+    while ((match = pattern.exec(text)) !== null) {
+        const subject = match[1];
+
+        // Seuls les sujets désignant le porteur nous intéressent
+        if (!/^(Bearer|He|She|It)$/i.test(subject) || !/^[A-Z]/.test(subject)) {
+            continue;
+        }
+
+        const clauseAfterIs = match[2];
+
+        // Extraction de toutes les balises <keyword> présentes dans la clause
+        const kwRegex = /<keyword>([^<]+)<\/keyword>/gi;
+        let kwMatch;
+
+        while ((kwMatch = kwRegex.exec(clauseAfterIs)) !== null) {
+            // Nettoyage du point final ("damage +1." -> "DAMAGE +1")
+            const rawKw = kwMatch[1].trim().replace(/\.$/, '').toUpperCase();
+
+            if (VALID_KEYWORDS.has(rawKw)) {
+                granted.add(rawKw);
+            }
+        }
+    }
+
+    return granted.size > 0 ? Array.from(granted) : undefined;
+}
+
 function parseKeywords(text, titleVO, type, isRingbearer) {
     const keywords = [];
 
@@ -616,6 +659,8 @@ async function convert() {
 
         const toPlayData = parseToPlayConditions(englishText);
 
+        const grantsKeywords = parseGrantsKeywords(englishText);
+
         const cardObj = {
             id: cardId,
             set: parseInt(data['Set'], 10) || 0,
@@ -628,6 +673,7 @@ async function convert() {
             type: type,
             subtype: subtype,
             keywords: keywords,
+            grantsKeywords: grantsKeywords,
             attachedTo: attachmentData || undefined,
             toPlay: toPlayData,
             phases: phases,
