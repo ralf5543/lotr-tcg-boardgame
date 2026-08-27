@@ -1418,7 +1418,7 @@
     "i18n": {
       "en": {
         "title": "Firefoot",
-        "gameText": "Bearer must be a <symbol>rohan</symbol> Man.\nIf bearer is Éomer, he is **defender +1.**\nAt the start of each skirmish involving bearer, each minion skirmishing bearer must exert.",
+        "gameText": "Bearer must be a <symbol>rohan</symbol> Man.\nHe is **defender +1.**\nAt the start of each skirmish involving bearer, each minion skirmishing bearer must exert.",
         "loreText": "Many riders on swift steeds are coming toward us!"
       },
       "fr": {
@@ -46953,6 +46953,9 @@
     "kind": "FREE_PEOPLE",
     "type": "POSSESSION",
     "subtype": "MOUNT",
+    "grantsKeywords": [
+      "DEFENDER +1"
+    ],
     "attachedTo": [
       [
         "ROHAN",

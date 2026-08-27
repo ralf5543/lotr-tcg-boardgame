@@ -12,7 +12,7 @@ export const getUnassignedMinions = (G: GameState): CardState[] => {
     );
 
     return minionCards.filter((c: CardState) => {
-        const cardId = c.id;
+        const cardId = c.instanceId || c.id;
         
         // A. Si déjà assigné dans CETTE passe d'assignment en cours -> Exclu
         const isAssignedInCurrentPass = assignedMinionIds.includes(cardId);

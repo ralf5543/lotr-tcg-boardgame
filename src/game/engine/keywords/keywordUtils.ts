@@ -32,11 +32,11 @@ export function parseKeyword(raw: CardKeyword | string): ParsedKeyword {
 export function getEffectiveKeywords(card: CardState): ParsedKeyword[] {
     const rawList: (CardKeyword | string)[] = [...(card.keywords || [])];
 
-    // Attachements
+    // Attachements (Mots-clés accordés au porteur)
     if (card.attachments && card.attachments.length > 0) {
         card.attachments.forEach((att) => {
-            if (att.grantedKeywords) {
-                rawList.push(...att.grantedKeywords);
+            if (att.grantsKeywords && att.grantsKeywords.length > 0) {
+                rawList.push(...att.grantsKeywords);
             }
         });
     }

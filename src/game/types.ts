@@ -173,7 +173,7 @@ export interface CardState {
     tempKeywords?: TempKeywordModifier[];
 
     // Mots-clés qu'une carte confère à son porteur lorsqu'elle est attachée (ex: un Arc qui donne 'ARCHER')
-    grantedKeywords?: CardKeyword[];
+    grantsKeywords?: CardKeyword[];
 
     // Statistiques & Coûts
     twilightCost?: number;
