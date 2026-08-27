@@ -65,6 +65,7 @@ const woundImpactAnimation = (recoilY: number) => keyframes`
 export const CardContainer = styled.div<CardContainerProps>`
     aspect-ratio: 1/1.39;
     width: 130px;
+    z-index: 2;
     background-image: ${(props) => {
         if (props.$culture === 'GOLLUM') {
             if (props.$type === 'COMPANION' || props.$type === 'ALLY') {

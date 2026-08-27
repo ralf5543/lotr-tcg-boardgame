@@ -138,6 +138,7 @@ export const AssignedMinionsContainer = styled.div<{ $isOpponent?: boolean }>`
 `;
 
 export const MinionWrapper = styled.div<{ $isTargetable?: boolean }>`
+    position: relative;
     flex: 0 0 auto;
     transition: all 0.2s ease-in-out;
 

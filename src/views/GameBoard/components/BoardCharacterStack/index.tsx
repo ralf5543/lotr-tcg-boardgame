@@ -128,8 +128,6 @@ export const BoardCharacterStack: React.FC<BoardCharacterStackProps> = ({
                             const isMinionTargetable = isCardTargetable(
                                 minion.id
                             );
-
-                            // Conversion stricte en boolean pour éviter l'erreur TypeScript
                             const isMinionWounded = Boolean(
                                 minion.wounds && minion.wounds > 0
                             );
@@ -147,6 +145,7 @@ export const BoardCharacterStack: React.FC<BoardCharacterStackProps> = ({
                                         }
                                     }}
                                 >
+                                    {/* 1. Carte du séide */}
                                     <Card
                                         card={minion}
                                         size="sm"
@@ -157,6 +156,38 @@ export const BoardCharacterStack: React.FC<BoardCharacterStackProps> = ({
                                         isOpponent={!isOpponent}
                                         G={G}
                                     />
+
+                                    {/* 2. Attachements portés par ce séide assigné */}
+                                    {minion.attachments &&
+                                        minion.attachments.length > 0 && (
+                                            <S.AttachmentsContainer className="attachments-group">
+                                                {minion.attachments.map(
+                                                    (attachment, attachIdx) => (
+                                                        <S.AttachmentWrapper
+                                                            key={
+                                                                attachment.instanceId ||
+                                                                attachment.id
+                                                            }
+                                                            $index={attachIdx}
+                                                        >
+                                                            <Card
+                                                                card={
+                                                                    attachment
+                                                                }
+                                                                size="sm"
+                                                                isDisabled={
+                                                                    isDisabled
+                                                                }
+                                                                isDraggable={
+                                                                    false
+                                                                }
+                                                                G={G}
+                                                            />
+                                                        </S.AttachmentWrapper>
+                                                    )
+                                                )}
+                                            </S.AttachmentsContainer>
+                                        )}
                                 </S.MinionWrapper>
                             );
                         })}

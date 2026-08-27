@@ -1,4 +1,5 @@
-import React from 'react';
+/* todo : remove this file if useless */
+/*import React from 'react';
 import type { GameState } from '../../../../game/types';
 import * as S from './styles';
 import { Card } from '../Card';
@@ -34,4 +35,4 @@ export const AssignedMinions: React.FC<AssignedMinionsProps> = ({
             ))}
         </S.MinionStackOverlay>
     );
-};
+};*/
