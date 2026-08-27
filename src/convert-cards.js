@@ -286,20 +286,21 @@ function parseAttachedTo(text) {
         ];
     }
 
-    const match = text.match(/Bearer must be\s+([^.]+)\./i);
+    // Capture "Bearer must be..." OU "Plays on..."
+    const match = text.match(/(?:Bearer must be|Plays on)\s+([^.\n]+)/i);
     if (!match) return null;
 
-    const rawClause = match[1].trim();
-    const textWithoutTags = rawClause.replace(/<[^>]+>/g, '').trim();
+    // Si une parenthèse "(except...)" est présente dans la clause, on la nettoie 
+    // pour ne garder que la cible principale
+    let rawClause = match[1].replace(/\(except[^)]+\)/gi, '').trim();
 
+    const textWithoutTags = rawClause.replace(/<[^>]+>/g, '').trim();
     const isGeneric = /^(a|an)\s+/i.test(textWithoutTags);
 
-    if (!isGeneric) {
-        if (textWithoutTags.length > 0) {
-            return [
-                [textWithoutTags]
-            ];
-        }
+    if (!isGeneric && textWithoutTags.length > 0) {
+        return [
+            [textWithoutTags]
+        ];
     }
 
     function extractKeywords(segment) {
@@ -307,7 +308,6 @@ function parseAttachedTo(text) {
 
         segment = segment.replace(/<(symbol|keyword)>(.*?)<\/\1>/gi, (_, tag, content) => {
             if (content) {
-                // 🟢 Support des lettres accentuées UTF-8 (comme û / Û)
                 const clean = content.replace(/[^a-zA-Z-áéíóúÁÉÍÓÚàèìòùÀÈÌÒÙäëïöüÄËÏÖÜûÛñÑ]/g, '').toUpperCase();
                 if (clean) keywords.push(clean);
             }
@@ -318,7 +318,6 @@ function parseAttachedTo(text) {
 
         const words = cleanSegment.split(/\s+/);
         for (const word of words) {
-            // 🟢 Support des lettres accentuées UTF-8 pour conserver NAZGÛL
             const cleanWord = word.replace(/[^a-zA-Z-áéíóúÁÉÍÓÚàèìòùÀÈÌÒÙäëïöüÄËÏÖÜûÛñÑ]/g, '').toUpperCase();
             if (cleanWord && !['A', 'AN', 'OR'].includes(cleanWord)) {
                 keywords.push(cleanWord);

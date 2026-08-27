@@ -34,13 +34,6 @@ export function getCalculatedStrength(G?: GameState, card?: CardState): number {
             });
     }
 
-    // 🔍 LOG DE VÉRIFICATION
-    console.log(`[getCalculatedStrength] Card: ${card.title || cardId}`, {
-        hasG: Boolean(G),
-        skirmishesCount: G.skirmishes?.length || 0,
-        baseStrength: card.strength,
-    });
-
     // 3. Bonus contextuels d'escarmouche (délégués aux sous-modules dédiés)
     if (G.skirmishes) {
         const activeSkirmish = G.skirmishes.find(

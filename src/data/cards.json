@@ -7653,10 +7653,7 @@
     "type": "CONDITION",
     "attachedTo": [
       [
-        "COMPANION",
-        "EXCEPT",
-        "THE",
-        "RING-BEARER"
+        "COMPANION"
       ]
     ],
     "toPlay": [
@@ -20633,6 +20630,11 @@
     "isUnique": false,
     "kind": "SHADOW",
     "type": "CONDITION",
+    "attachedTo": [
+      [
+        "COMPANION"
+      ]
+    ],
     "toPlay": [
       {
         "exert": [
@@ -21085,6 +21087,12 @@
     "isUnique": false,
     "kind": "SHADOW",
     "type": "CONDITION",
+    "attachedTo": [
+      [
+        "SAURON",
+        "MINION"
+      ]
+    ],
     "actionPhases": [
       "SHADOW"
     ],
@@ -22129,6 +22137,11 @@
     "isUnique": true,
     "kind": "SHADOW",
     "type": "CONDITION",
+    "attachedTo": [
+      [
+        "the Ring-bearer"
+      ]
+    ],
     "toPlay": [
       {
         "exert": [
@@ -22282,6 +22295,11 @@
     "isUnique": false,
     "kind": "SHADOW",
     "type": "CONDITION",
+    "attachedTo": [
+      [
+        "Aragorn"
+      ]
+    ],
     "toPlay": [
       {
         "exert": [
@@ -22336,6 +22354,11 @@
     "isUnique": false,
     "kind": "SHADOW",
     "type": "CONDITION",
+    "attachedTo": [
+      [
+        "COMPANION"
+      ]
+    ],
     "toPlay": [
       {
         "spot": [
@@ -23794,6 +23817,11 @@
     "type": "CONDITION",
     "keywords": [
       "TALE"
+    ],
+    "attachedTo": [
+      [
+        "any character"
+      ]
     ],
     "toPlay": [
       {
@@ -26591,6 +26619,11 @@
     "isUnique": false,
     "kind": "SHADOW",
     "type": "CONDITION",
+    "attachedTo": [
+      [
+        "Gandalf"
+      ]
+    ],
     "toPlay": [
       {
         "spot": [
@@ -27325,6 +27358,12 @@
     "isUnique": false,
     "kind": "SHADOW",
     "type": "CONDITION",
+    "attachedTo": [
+      [
+        "HOBBIT",
+        "COMPANION"
+      ]
+    ],
     "toPlay": [
       {
         "spot": [
@@ -27564,6 +27603,11 @@
     "isUnique": false,
     "kind": "SHADOW",
     "type": "CONDITION",
+    "attachedTo": [
+      [
+        "Sam"
+      ]
+    ],
     "toPlay": [
       {
         "spot": [
@@ -28390,6 +28434,11 @@
     "isUnique": false,
     "kind": "SHADOW",
     "type": "CONDITION",
+    "attachedTo": [
+      [
+        "the Ring-bearer"
+      ]
+    ],
     "toPlay": [
       {
         "exert": [
@@ -39250,6 +39299,11 @@
     "isUnique": false,
     "kind": "FREE_PEOPLE",
     "type": "CONDITION",
+    "attachedTo": [
+      [
+        "that Ent"
+      ]
+    ],
     "toPlay": [
       {
         "exert": [
@@ -40728,6 +40782,13 @@
     "isUnique": false,
     "kind": "SHADOW",
     "type": "CONDITION",
+    "attachedTo": [
+      [
+        "FREE",
+        "PEOPLES",
+        "MAN"
+      ]
+    ],
     "toPlay": [
       {
         "exert": [
@@ -41486,6 +41547,13 @@
     "isUnique": false,
     "kind": "SHADOW",
     "type": "CONDITION",
+    "attachedTo": [
+      [
+        "FREE",
+        "PEOPLES",
+        "MAN"
+      ]
+    ],
     "toPlay": [
       {
         "exert": [
@@ -41602,6 +41670,11 @@
     "type": "CONDITION",
     "keywords": [
       "SEARCH"
+    ],
+    "attachedTo": [
+      [
+        "COMPANION"
+      ]
     ],
     "toPlay": [
       {
@@ -42164,6 +42237,11 @@
     "keywords": [
       "SEARCH"
     ],
+    "attachedTo": [
+      [
+        "COMPANION"
+      ]
+    ],
     "toPlay": [
       {
         "spot": [
@@ -42212,6 +42290,13 @@
     "isUnique": false,
     "kind": "SHADOW",
     "type": "CONDITION",
+    "attachedTo": [
+      [
+        "FREE",
+        "PEOPLES",
+        "MAN"
+      ]
+    ],
     "toPlay": [
       {
         "spot": [
@@ -42278,6 +42363,11 @@
     "kind": "SHADOW",
     "type": "ARTIFACT",
     "subtype": "STAFF",
+    "attachedTo": [
+      [
+        "Saruman"
+      ]
+    ],
     "actionPhases": [
       "MANEUVER"
     ],
@@ -44004,6 +44094,14 @@
     "keywords": [
       "SEARCH"
     ],
+    "attachedTo": [
+      [
+        "COMPANION"
+      ],
+      [
+        "ALLY"
+      ]
+    ],
     "culture": "ISENGARD",
     "twilightCost": 1,
     "imageUrl": "/cards_visuals/o_04_212.jpg",
@@ -44125,6 +44223,13 @@
     "isUnique": false,
     "kind": "SHADOW",
     "type": "CONDITION",
+    "attachedTo": [
+      [
+        "FREE",
+        "PEOPLES",
+        "MAN"
+      ]
+    ],
     "toPlay": [
       {
         "exert": [
@@ -50008,6 +50113,11 @@
     "isUnique": false,
     "kind": "FREE_PEOPLE",
     "type": "CONDITION",
+    "attachedTo": [
+      [
+        "Sméagol"
+      ]
+    ],
     "actionPhases": [
       "REGROUP"
     ],
@@ -50139,6 +50249,11 @@
     "isUnique": false,
     "kind": "FREE_PEOPLE",
     "type": "CONDITION",
+    "attachedTo": [
+      [
+        "Sméagol"
+      ]
+    ],
     "actionPhases": [
       "SKIRMISH"
     ],
@@ -52026,6 +52141,14 @@
     "isUnique": false,
     "kind": "SHADOW",
     "type": "CONDITION",
+    "attachedTo": [
+      [
+        "PLAINS",
+        "SITE",
+        "YOU",
+        "CONTROL"
+      ]
+    ],
     "actionPhases": [
       "REGROUP"
     ],
@@ -54061,6 +54184,11 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "CONDITION",
+    "attachedTo": [
+      [
+        "Sam"
+      ]
+    ],
     "actionPhases": [
       "RESPONSE"
     ],
@@ -57321,6 +57449,11 @@
     "isUnique": false,
     "kind": "SHADOW",
     "type": "CONDITION",
+    "attachedTo": [
+      [
+        "COMPANION"
+      ]
+    ],
     "toPlay": [
       {
         "spot": [
@@ -92156,10 +92289,7 @@
     "type": "CONDITION",
     "attachedTo": [
       [
-        "COMPANION",
-        "EXCEPT",
-        "THE",
-        "RING-BEARER"
+        "COMPANION"
       ]
     ],
     "toPlay": [
@@ -119067,10 +119197,7 @@
     "type": "CONDITION",
     "attachedTo": [
       [
-        "COMPANION",
-        "EXCEPT",
-        "THE",
-        "RING-BEARER"
+        "COMPANION"
       ]
     ],
     "toPlay": [
@@ -119390,10 +119517,7 @@
     "type": "CONDITION",
     "attachedTo": [
       [
-        "COMPANION",
-        "EXCEPT",
-        "THE",
-        "RING-BEARER"
+        "COMPANION"
       ]
     ],
     "toPlay": [
@@ -120695,6 +120819,11 @@
     "kind": "SHADOW",
     "type": "CONDITION",
     "subtype": "SITE",
+    "attachedTo": [
+      [
+        "the fellowship’s current site"
+      ]
+    ],
     "toPlay": [
       {
         "exert": [

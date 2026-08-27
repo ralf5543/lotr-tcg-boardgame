@@ -45,7 +45,7 @@ export const SOUND_LIBRARY = {
         '/audio/sfx/cards/possession_ring.opus',
     ],
     'POSSESSION_RANGED-WEAPON': [
-        '/audio/sfx/cards/possession_ring.opus',
+        '/audio/sfx/cards/possession_ranged-weapon.opus',
     ],
     'POSSESSION_SHIELD': [
         '/audio/sfx/cards/possession_armor.opus',
