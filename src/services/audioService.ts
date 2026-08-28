@@ -4,7 +4,7 @@ import type { SoundEffect } from '../config/sounds';
 export interface PlayOptions {
     volume?: number;         // Multiplicateur (ex: 0.5 pour réduire de moitié, 1.5 pour booster)
     delay?: number;          // Délai en secondes avant le démarrage (ex: 0.2)
-    enablePitch?: boolean;   // Activer ou non la micro-variation aléatoire de pitch (défaut: true)
+    enablePitch?: boolean;   // Activer ou non la micro-variation aléatoire de pitch (défaut: false)
     pitch?: number;          // Vitesse/pitch fixe explicite (ex: 0.8 pour un grognement plus grave)
     loop?: boolean;          // Jouer en boucle (utile pour une ambiance ou un effet continu)
 }
@@ -120,7 +120,7 @@ class AudioService {
         // 🎵 Gestion de la vitesse / hauteur (pitch)
         if (pitch !== undefined) {
             source.playbackRate.value = pitch;
-        } else if (enablePitch) {
+        } else if (enablePitch === true) {
             // Micro-variation aléatoire par défaut
             source.playbackRate.value = 0.96 + Math.random() * 0.08;
         }

@@ -4,6 +4,7 @@ import { SiteCard } from '../SiteCard';
 import * as S from './styles';
 import { useDrag } from '../../../../contexts/DragContext';
 import { useHoverCard } from '../../../../contexts/HoverCardContext';
+import { audioService } from '../../../../services/audioService';
 
 interface SitePathProps {
     path: (SiteCardState | null)[];
@@ -49,6 +50,8 @@ export const SitePath: React.FC<SitePathProps> = ({
 
                 if (siteId && onPlaySite) {
                     onPlaySite(siteId, nextEmptyIndex);
+                    audioService.play('CARD_PLAY');
+                    audioService.play('SITE', { delay: 0.3 });
                 } else {
                     console.warn(
                         '⚠️ [SITEPATH] Missing siteId or onPlaySite prop!',

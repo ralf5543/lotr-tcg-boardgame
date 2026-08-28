@@ -50,7 +50,11 @@ export const SOUND_LIBRARY = {
     'POSSESSION_SHIELD': [
         '/audio/sfx/cards/possession_armor.opus',
     ],
-
+    SITE: [
+        '/audio/sfx/cards/site.opus',
+        '/audio/sfx/cards/site2.opus',
+        '/audio/sfx/cards/site3.opus',
+    ],
     /* ====================-------------------- Skirmish --------------------==================== */
     ARROW_IMPACT: [
         '/audio/sfx/battle/arrow_impact.opus',
