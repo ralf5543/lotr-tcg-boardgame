@@ -249,6 +249,7 @@ export interface GameState {
     archeryAssignStep?: 'FP' | 'SHADOW' | undefined;
     lastWoundedCardIds?: string[];
     pendingPhaseEnd?: boolean;
+    nextPhase?: string;
     pendingDeadCardIds?: string[];
     archeryWoundsToAssign?: number;
     regroupStep?:

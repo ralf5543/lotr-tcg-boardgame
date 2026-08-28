@@ -112,10 +112,6 @@ const createInitialPlayer = (playerId: string): PlayerState => {
     };
 };
 
-
-
-
-
 /**
  * Avance ou termine la sous-phase d'assignation des blessures d'archerie
  */
@@ -586,8 +582,14 @@ export const LotrGame: Game<GameState> = {
         },
 
         archery: {
-            next: 'assignment',
+            // 1. Indique à boardgame.io quand arrêter la phase
+            endIf: ({ G }) => Boolean(G.pendingPhaseEnd),
+
+            // 2. Détermine dynamiquement la phase suivante au moment de la transition
+            next: ({ G }) => G.nextPhase || 'assignment',
+
             turn: { activePlayers: { value: { '0': 'play', '1': 'play' } } },
+
             onBegin: ({ G }: LotrPhaseContext) => {
                 const fpId = G.fpPlayerId || '0';
                 G.archeryState = {
@@ -614,6 +616,7 @@ export const LotrGame: Game<GameState> = {
                 const fpId = G.fpPlayerId || '0';
                 const shadowId = fpId === '0' ? '1' : '0';
 
+                // Nettoyage des Compagnons morts
                 const fpPlayer = G.players[fpId];
                 if (fpPlayer && fpPlayer.fellowshipArea) {
                     fpPlayer.fellowshipArea = fpPlayer.fellowshipArea.filter(
@@ -630,6 +633,7 @@ export const LotrGame: Game<GameState> = {
                     );
                 }
 
+                // Nettoyage des Séides morts
                 G.battlefield = (G.battlefield || []).filter((c: any) => {
                     const maxVit = Number(c.vitality) || 1;
                     const dead = c.isDead || (c.wounds || 0) >= maxVit;
@@ -646,7 +650,12 @@ export const LotrGame: Game<GameState> = {
                 });
 
                 G.pendingDeadCardIds = [];
+
+                // Nettoyage des flags de transition
+                G.pendingPhaseEnd = undefined;
+                G.nextPhase = undefined;
             },
+
             moves: allMoves,
         },
 
@@ -654,7 +663,7 @@ export const LotrGame: Game<GameState> = {
             next: 'skirmish',
             turn: { activePlayers: { value: { '0': 'play', '1': 'play' } } },
             onBegin: ({ G }: LotrPhaseContext) => {
-                G.skirmishes = []
+                G.skirmishes = [];
                 // 1. Si on avait préparé le passage en Fierce lors du dernier Skirmish
                 if (G.pendingFierceAssignment) {
                     G.isFierceAssignment = true;
@@ -688,7 +697,6 @@ export const LotrGame: Game<GameState> = {
         skirmish: {
             // 🔀 Calcule dynamiquement la phase suivante
             next: ({ G }) => {
-
                 // Si on ÉTAIT en passe Acharnée -> Direction Regroupement
                 if (G.isFierceAssignment) {
                     return 'regroup';
@@ -704,7 +712,6 @@ export const LotrGame: Game<GameState> = {
             },
 
             onEnd: ({ G }) => {
-
                 // Si on termine la 1ère passe et qu'il y a des séides FIERCE, on prépare le flag pour Assignment !
                 if (!G.isFierceAssignment && hasFierceMinionsOnBattlefield(G)) {
                     G.pendingFierceAssignment = true;
@@ -777,7 +784,9 @@ export const LotrGame: Game<GameState> = {
                     G.pendingDeadCardIds = [];
 
                     if (G.tempModifiers) {
-                        G.tempModifiers = G.tempModifiers.filter((m) => m.scope !== 'SKIRMISH');
+                        G.tempModifiers = G.tempModifiers.filter(
+                            (m) => m.scope !== 'SKIRMISH'
+                        );
                     }
                 },
 
