@@ -253,7 +253,7 @@
     "twilightCost": 12,
     "strength": 17,
     "vitality": 5,
-    "minionSiteNumber": 4,
+    "minionSiteNumber": null,
     "i18n": {
       "en": {
         "title": "The Balrog",
@@ -302,7 +302,7 @@
     "twilightCost": 4,
     "strength": 8,
     "vitality": 4,
-    "minionSiteNumber": 4,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_03_069.jpg",
     "i18n": {
       "en": {
@@ -773,7 +773,7 @@
     "twilightCost": 5,
     "strength": 8,
     "vitality": 3,
-    "minionSiteNumber": 3,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_00_020.jpg",
     "i18n": {
       "en": {
@@ -1265,7 +1265,7 @@
     "twilightCost": 14,
     "strength": 17,
     "vitality": 5,
-    "minionSiteNumber": 4,
+    "minionSiteNumber": null,
     "i18n": {
       "en": {
         "title": "The Balrog",
@@ -1418,7 +1418,7 @@
     "i18n": {
       "en": {
         "title": "Firefoot",
-        "gameText": "Bearer must be a <symbol>rohan</symbol> Man.\nHe is **defender +1.**\nAt the start of each skirmish involving bearer, each minion skirmishing bearer must exert.",
+        "gameText": "Bearer must be a <symbol>rohan</symbol> Man.\nIf bearer is Éomer, he is **defender +1.**\nAt the start of each skirmish involving bearer, each minion skirmishing bearer must exert.",
         "loreText": "Many riders on swift steeds are coming toward us!"
       },
       "fr": {
@@ -1601,7 +1601,7 @@
     "twilightCost": 8,
     "strength": 14,
     "vitality": 4,
-    "minionSiteNumber": 3,
+    "minionSiteNumber": null,
     "i18n": {
       "en": {
         "title": "The Witch-king",
@@ -1903,7 +1903,7 @@
     "twilightCost": 5,
     "strength": 10,
     "vitality": 3,
-    "minionSiteNumber": 2,
+    "minionSiteNumber": null,
     "i18n": {
       "en": {
         "title": "Úlairë Nelya",
@@ -2161,7 +2161,7 @@
     "twilightCost": 6,
     "strength": 8,
     "vitality": 8,
-    "minionSiteNumber": 8,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_00_048.jpg",
     "i18n": {
       "en": {
@@ -2466,7 +2466,7 @@
     "twilightCost": 18,
     "strength": 24,
     "vitality": 5,
-    "minionSiteNumber": 6,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_00_054.jpg",
     "i18n": {
       "en": {
@@ -2516,7 +2516,7 @@
     "twilightCost": 5,
     "strength": 12,
     "vitality": 3,
-    "minionSiteNumber": 5,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_00_100028.jpg",
     "i18n": {
       "en": {
@@ -2780,7 +2780,7 @@
     "twilightCost": 8,
     "strength": 14,
     "vitality": 4,
-    "minionSiteNumber": 3,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_00_061.jpg",
     "i18n": {
       "en": {
@@ -2980,7 +2980,7 @@
     "twilightCost": 4,
     "strength": 10,
     "vitality": 3,
-    "minionSiteNumber": 4,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_11_068.jpg",
     "i18n": {
       "en": {
@@ -3024,7 +3024,7 @@
     "twilightCost": 5,
     "strength": 13,
     "vitality": 2,
-    "minionSiteNumber": 4,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_11_111.jpg",
     "i18n": {
       "en": {
@@ -3284,7 +3284,7 @@
     "twilightCost": 6,
     "strength": 12,
     "vitality": 3,
-    "minionSiteNumber": 3,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_12_180.jpg",
     "i18n": {
       "en": {
@@ -3383,7 +3383,7 @@
     "twilightCost": 6,
     "strength": 12,
     "vitality": 3,
-    "minionSiteNumber": 3,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_11_219.jpg",
     "i18n": {
       "en": {
@@ -3619,7 +3619,7 @@
     "twilightCost": 3,
     "strength": 9,
     "vitality": 2,
-    "minionSiteNumber": 4,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_12_090.jpg",
     "i18n": {
       "en": {
@@ -3769,7 +3769,7 @@
     "twilightCost": 4,
     "strength": 8,
     "vitality": 4,
-    "minionSiteNumber": 4,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_12_144.jpg",
     "i18n": {
       "en": {
@@ -3866,7 +3866,7 @@
     "twilightCost": 5,
     "strength": 10,
     "vitality": 3,
-    "minionSiteNumber": 2,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_11_222.jpg",
     "i18n": {
       "en": {
@@ -3963,7 +3963,7 @@
     "twilightCost": 8,
     "strength": 14,
     "vitality": 4,
-    "minionSiteNumber": 3,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_11_226.jpg",
     "i18n": {
       "en": {
@@ -4013,7 +4013,7 @@
     "twilightCost": 6,
     "strength": 12,
     "vitality": 3,
-    "minionSiteNumber": 3,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_11_219.jpg",
     "i18n": {
       "en": {
@@ -4066,7 +4066,7 @@
     "twilightCost": 5,
     "strength": 10,
     "vitality": 3,
-    "minionSiteNumber": 2,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_11_222.jpg",
     "i18n": {
       "en": {
@@ -4116,7 +4116,7 @@
     "twilightCost": 5,
     "strength": 10,
     "vitality": 3,
-    "minionSiteNumber": 3,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_11_220.jpg",
     "i18n": {
       "en": {
@@ -4163,7 +4163,7 @@
     "twilightCost": 4,
     "strength": 9,
     "vitality": 2,
-    "minionSiteNumber": 3,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_11_221.jpg",
     "i18n": {
       "en": {
@@ -4213,7 +4213,7 @@
     "twilightCost": 6,
     "strength": 11,
     "vitality": 4,
-    "minionSiteNumber": 3,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_13_182.jpg",
     "i18n": {
       "en": {
@@ -4260,7 +4260,7 @@
     "twilightCost": 4,
     "strength": 9,
     "vitality": 3,
-    "minionSiteNumber": 3,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_11_224.jpg",
     "i18n": {
       "en": {
@@ -4310,7 +4310,7 @@
     "twilightCost": 6,
     "strength": 12,
     "vitality": 3,
-    "minionSiteNumber": 3,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_11_225.jpg",
     "i18n": {
       "en": {
@@ -4360,7 +4360,7 @@
     "twilightCost": 4,
     "strength": 9,
     "vitality": 2,
-    "minionSiteNumber": 3,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_11_223.jpg",
     "i18n": {
       "en": {
@@ -4412,7 +4412,7 @@
     "twilightCost": 2,
     "strength": 12,
     "vitality": 2,
-    "minionSiteNumber": 4,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_15_110.jpg",
     "i18n": {
       "en": {
@@ -5033,7 +5033,7 @@
     "twilightCost": 7,
     "strength": 13,
     "vitality": 3,
-    "minionSiteNumber": 5,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_01_127.jpg",
     "i18n": {
       "en": {
@@ -5099,7 +5099,7 @@
     "twilightCost": 10,
     "strength": 15,
     "vitality": 4,
-    "minionSiteNumber": 4,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_01_165.jpg",
     "i18n": {
       "en": {
@@ -5152,7 +5152,7 @@
     "twilightCost": 6,
     "strength": 11,
     "vitality": 4,
-    "minionSiteNumber": 3,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_01_231.jpg",
     "i18n": {
       "en": {
@@ -5201,7 +5201,7 @@
     "twilightCost": 8,
     "strength": 14,
     "vitality": 4,
-    "minionSiteNumber": 3,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_01_237.jpg",
     "i18n": {
       "en": {
@@ -5248,7 +5248,7 @@
     "twilightCost": 5,
     "strength": 9,
     "vitality": 4,
-    "minionSiteNumber": 6,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_01_256.jpg",
     "i18n": {
       "en": {
@@ -5312,7 +5312,7 @@
     "twilightCost": 14,
     "strength": 17,
     "vitality": 5,
-    "minionSiteNumber": 4,
+    "minionSiteNumber": null,
     "i18n": {
       "en": {
         "title": "The Balrog",
@@ -5658,7 +5658,7 @@
     "twilightCost": 2,
     "strength": 5,
     "vitality": 4,
-    "minionSiteNumber": 3,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_05_025.jpg",
     "i18n": {
       "en": {
@@ -5708,7 +5708,7 @@
     "twilightCost": 2,
     "strength": 4,
     "vitality": 3,
-    "minionSiteNumber": 3,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_04_154.jpg",
     "i18n": {
       "en": {
@@ -5758,7 +5758,7 @@
     "twilightCost": 4,
     "strength": 8,
     "vitality": 4,
-    "minionSiteNumber": 4,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_04_173.jpg",
     "i18n": {
       "en": {
@@ -5855,7 +5855,7 @@
     "twilightCost": 4,
     "strength": 11,
     "vitality": 3,
-    "minionSiteNumber": 6,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_05_100.jpg",
     "i18n": {
       "en": {
@@ -6054,7 +6054,7 @@
     "twilightCost": 6,
     "strength": 12,
     "vitality": 3,
-    "minionSiteNumber": 3,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_06_088.jpg",
     "i18n": {
       "en": {
@@ -6108,7 +6108,7 @@
     "twilightCost": 6,
     "strength": 11,
     "vitality": 3,
-    "minionSiteNumber": 4,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_04_219.jpg",
     "i18n": {
       "en": {
@@ -6154,7 +6154,7 @@
     "twilightCost": 4,
     "strength": 9,
     "vitality": 3,
-    "minionSiteNumber": 5,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_04_176.jpg",
     "i18n": {
       "en": {
@@ -6203,7 +6203,7 @@
     "twilightCost": 5,
     "strength": 11,
     "vitality": 3,
-    "minionSiteNumber": 4,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_04_225.jpg",
     "i18n": {
       "en": {
@@ -6423,7 +6423,7 @@
     "twilightCost": 5,
     "strength": 10,
     "vitality": 3,
-    "minionSiteNumber": 3,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_07_211.jpg",
     "i18n": {
       "en": {
@@ -6469,7 +6469,7 @@
     "twilightCost": 8,
     "strength": 14,
     "vitality": 4,
-    "minionSiteNumber": 3,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_07_221.jpg",
     "i18n": {
       "en": {
@@ -6720,7 +6720,7 @@
     "twilightCost": 6,
     "strength": 8,
     "vitality": 8,
-    "minionSiteNumber": 8,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_08_025.jpg",
     "i18n": {
       "en": {
@@ -6845,7 +6845,7 @@
     "twilightCost": 7,
     "strength": 14,
     "vitality": 4,
-    "minionSiteNumber": 4,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_08_051.jpg",
     "i18n": {
       "en": {
@@ -6890,7 +6890,7 @@
     "twilightCost": 4,
     "strength": 9,
     "vitality": 2,
-    "minionSiteNumber": 4,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_08_057.jpg",
     "i18n": {
       "en": {
@@ -7149,7 +7149,7 @@
     "twilightCost": 6,
     "strength": 13,
     "vitality": 3,
-    "minionSiteNumber": 4,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_10_088.jpg",
     "i18n": {
       "en": {
@@ -7563,7 +7563,7 @@
     "twilightCost": 8,
     "strength": 14,
     "vitality": 4,
-    "minionSiteNumber": 3,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_11_226.jpg",
     "i18n": {
       "en": {
@@ -7734,7 +7734,7 @@
     "twilightCost": 4,
     "strength": 8,
     "vitality": 4,
-    "minionSiteNumber": 4,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_12_054.jpg",
     "i18n": {
       "en": {
@@ -7784,7 +7784,7 @@
     "twilightCost": 3,
     "strength": 9,
     "vitality": 3,
-    "minionSiteNumber": 5,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_12_073.jpg",
     "i18n": {
       "en": {
@@ -7834,7 +7834,7 @@
     "twilightCost": 12,
     "strength": 17,
     "vitality": 5,
-    "minionSiteNumber": 4,
+    "minionSiteNumber": null,
     "i18n": {
       "en": {
         "title": "The Balrog",
@@ -7883,7 +7883,7 @@
     "twilightCost": 5,
     "strength": 10,
     "vitality": 3,
-    "minionSiteNumber": 3,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_12_174.jpg",
     "i18n": {
       "en": {
@@ -8059,7 +8059,7 @@
     "twilightCost": 5,
     "strength": 11,
     "vitality": 3,
-    "minionSiteNumber": 4,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_13_112.jpg",
     "i18n": {
       "en": {
@@ -8204,7 +8204,7 @@
     "twilightCost": 5,
     "strength": 12,
     "vitality": 3,
-    "minionSiteNumber": 5,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_13_174.jpg",
     "i18n": {
       "en": {
@@ -8261,7 +8261,7 @@
     "twilightCost": 11,
     "strength": 20,
     "vitality": 2,
-    "minionSiteNumber": 3,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_00_100001.jpg",
     "i18n": {
       "en": {
@@ -8465,7 +8465,7 @@
     "twilightCost": 2,
     "strength": 5,
     "vitality": 4,
-    "minionSiteNumber": 4,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_00_100005.jpg",
     "i18n": {
       "en": {
@@ -8579,7 +8579,7 @@
     "twilightCost": 9,
     "strength": 16,
     "vitality": 4,
-    "minionSiteNumber": 5,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_00_100007.jpg",
     "i18n": {
       "en": {
@@ -8640,7 +8640,7 @@
     "twilightCost": 10,
     "strength": 15,
     "vitality": 3,
-    "minionSiteNumber": 4,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_00_100008.jpg",
     "i18n": {
       "en": {
@@ -8706,7 +8706,7 @@
     "twilightCost": 11,
     "strength": 17,
     "vitality": 4,
-    "minionSiteNumber": 4,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_00_100009.jpg",
     "i18n": {
       "en": {
@@ -8765,7 +8765,7 @@
     "twilightCost": 14,
     "strength": 20,
     "vitality": 5,
-    "minionSiteNumber": 3,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_00_100010.jpg",
     "i18n": {
       "en": {
@@ -8872,7 +8872,7 @@
     "twilightCost": 9,
     "strength": 17,
     "vitality": 5,
-    "minionSiteNumber": 6,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_00_100012.jpg",
     "i18n": {
       "en": {
@@ -8967,7 +8967,7 @@
     "twilightCost": 3,
     "strength": 9,
     "vitality": 1,
-    "minionSiteNumber": 3,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_00_100014.jpg",
     "i18n": {
       "en": {
@@ -9132,7 +9132,7 @@
     "twilightCost": 2,
     "strength": 5,
     "vitality": 4,
-    "minionSiteNumber": 3,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_00_100018.jpg",
     "i18n": {
       "en": {
@@ -9216,7 +9216,7 @@
     "twilightCost": 4,
     "strength": 8,
     "vitality": 4,
-    "minionSiteNumber": 4,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_00_100020.jpg",
     "i18n": {
       "en": {
@@ -9257,7 +9257,7 @@
     "twilightCost": 3,
     "strength": 8,
     "vitality": 1,
-    "minionSiteNumber": 4,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_00_100021.jpg",
     "i18n": {
       "en": {
@@ -9293,7 +9293,7 @@
     "twilightCost": 3,
     "strength": 8,
     "vitality": 2,
-    "minionSiteNumber": 4,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_00_100022.jpg",
     "i18n": {
       "en": {
@@ -9372,7 +9372,7 @@
     "twilightCost": 3,
     "strength": 9,
     "vitality": 3,
-    "minionSiteNumber": 6,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_00_100024.jpg",
     "i18n": {
       "en": {
@@ -9458,7 +9458,7 @@
     "twilightCost": 6,
     "strength": 12,
     "vitality": 3,
-    "minionSiteNumber": 3,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_00_100026.jpg",
     "i18n": {
       "en": {
@@ -9502,7 +9502,7 @@
     "twilightCost": 5,
     "strength": 11,
     "vitality": 3,
-    "minionSiteNumber": 4,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_00_100027.jpg",
     "i18n": {
       "en": {
@@ -9547,7 +9547,7 @@
     "twilightCost": 5,
     "strength": 12,
     "vitality": 3,
-    "minionSiteNumber": 5,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_00_100028.jpg",
     "i18n": {
       "en": {
@@ -9593,7 +9593,7 @@
     "twilightCost": 5,
     "strength": 11,
     "vitality": 3,
-    "minionSiteNumber": 4,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_00_100029.jpg",
     "i18n": {
       "en": {
@@ -9677,7 +9677,7 @@
     "twilightCost": 4,
     "strength": 9,
     "vitality": 3,
-    "minionSiteNumber": 3,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_11_224.jpg",
     "i18n": {
       "en": {
@@ -9883,7 +9883,7 @@
     "twilightCost": 7,
     "strength": 13,
     "vitality": 3,
-    "minionSiteNumber": 5,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_00_100035.jpg",
     "i18n": {
       "en": {
@@ -9933,7 +9933,7 @@
     "twilightCost": 4,
     "strength": 8,
     "vitality": 4,
-    "minionSiteNumber": 4,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_00_100036.jpg",
     "i18n": {
       "en": {
@@ -9983,7 +9983,7 @@
     "twilightCost": 8,
     "strength": 14,
     "vitality": 4,
-    "minionSiteNumber": 3,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_00_100037.jpg",
     "i18n": {
       "en": {
@@ -15677,7 +15677,7 @@
     "twilightCost": 5,
     "strength": 10,
     "vitality": 3,
-    "minionSiteNumber": 5,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_01_131.jpg",
     "i18n": {
       "en": {
@@ -16298,7 +16298,7 @@
     "twilightCost": 5,
     "strength": 9,
     "vitality": 4,
-    "minionSiteNumber": 5,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_01_143.jpg",
     "i18n": {
       "en": {
@@ -16388,7 +16388,7 @@
     "twilightCost": 4,
     "strength": 9,
     "vitality": 2,
-    "minionSiteNumber": 5,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_01_145.jpg",
     "i18n": {
       "en": {
@@ -16436,7 +16436,7 @@
     "twilightCost": 3,
     "strength": 8,
     "vitality": 2,
-    "minionSiteNumber": 5,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_01_146.jpg",
     "i18n": {
       "en": {
@@ -16484,7 +16484,7 @@
     "twilightCost": 4,
     "strength": 9,
     "vitality": 2,
-    "minionSiteNumber": 5,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_01_147.jpg",
     "i18n": {
       "en": {
@@ -16529,7 +16529,7 @@
     "twilightCost": 3,
     "strength": 8,
     "vitality": 2,
-    "minionSiteNumber": 5,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_01_148.jpg",
     "i18n": {
       "en": {
@@ -16574,7 +16574,7 @@
     "twilightCost": 2,
     "strength": 6,
     "vitality": 1,
-    "minionSiteNumber": 5,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_01_149.jpg",
     "i18n": {
       "en": {
@@ -16619,7 +16619,7 @@
     "twilightCost": 4,
     "strength": 9,
     "vitality": 2,
-    "minionSiteNumber": 5,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_01_150.jpg",
     "i18n": {
       "en": {
@@ -16664,7 +16664,7 @@
     "twilightCost": 2,
     "strength": 5,
     "vitality": 3,
-    "minionSiteNumber": 5,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_01_151.jpg",
     "i18n": {
       "en": {
@@ -16712,7 +16712,7 @@
     "twilightCost": 3,
     "strength": 8,
     "vitality": 2,
-    "minionSiteNumber": 5,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_01_152.jpg",
     "i18n": {
       "en": {
@@ -16760,7 +16760,7 @@
     "twilightCost": 4,
     "strength": 9,
     "vitality": 2,
-    "minionSiteNumber": 5,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_01_153.jpg",
     "i18n": {
       "en": {
@@ -16804,7 +16804,7 @@
     "twilightCost": 2,
     "strength": 7,
     "vitality": 1,
-    "minionSiteNumber": 5,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_01_154.jpg",
     "i18n": {
       "en": {
@@ -16849,7 +16849,7 @@
     "twilightCost": 2,
     "strength": 7,
     "vitality": 2,
-    "minionSiteNumber": 5,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_01_155.jpg",
     "i18n": {
       "en": {
@@ -16897,7 +16897,7 @@
     "twilightCost": 3,
     "strength": 9,
     "vitality": 2,
-    "minionSiteNumber": 5,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_01_156.jpg",
     "i18n": {
       "en": {
@@ -16981,7 +16981,7 @@
     "twilightCost": 4,
     "strength": 9,
     "vitality": 3,
-    "minionSiteNumber": 5,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_01_158.jpg",
     "i18n": {
       "en": {
@@ -17221,7 +17221,7 @@
     "twilightCost": 4,
     "strength": 9,
     "vitality": 2,
-    "minionSiteNumber": 4,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_01_163.jpg",
     "i18n": {
       "en": {
@@ -17560,7 +17560,7 @@
     "twilightCost": 5,
     "strength": 4,
     "vitality": 3,
-    "minionSiteNumber": 4,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_01_172.jpg",
     "i18n": {
       "en": {
@@ -17644,7 +17644,7 @@
     "twilightCost": 1,
     "strength": 5,
     "vitality": 1,
-    "minionSiteNumber": 4,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_01_174.jpg",
     "i18n": {
       "en": {
@@ -17746,7 +17746,7 @@
     "twilightCost": 3,
     "strength": 7,
     "vitality": 1,
-    "minionSiteNumber": 4,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_01_176.jpg",
     "i18n": {
       "en": {
@@ -17788,7 +17788,7 @@
     "twilightCost": 6,
     "strength": 13,
     "vitality": 3,
-    "minionSiteNumber": 4,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_01_177.jpg",
     "i18n": {
       "en": {
@@ -17825,7 +17825,7 @@
     "twilightCost": 1,
     "strength": 5,
     "vitality": 1,
-    "minionSiteNumber": 4,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_01_178.jpg",
     "i18n": {
       "en": {
@@ -17867,7 +17867,7 @@
     "twilightCost": 3,
     "strength": 8,
     "vitality": 1,
-    "minionSiteNumber": 4,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_01_179.jpg",
     "i18n": {
       "en": {
@@ -17955,7 +17955,7 @@
     "twilightCost": 1,
     "strength": 5,
     "vitality": 1,
-    "minionSiteNumber": 4,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_01_181.jpg",
     "i18n": {
       "en": {
@@ -18086,7 +18086,7 @@
     "twilightCost": 2,
     "strength": 6,
     "vitality": 1,
-    "minionSiteNumber": 4,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_01_184.jpg",
     "i18n": {
       "en": {
@@ -18128,7 +18128,7 @@
     "twilightCost": 2,
     "strength": 6,
     "vitality": 1,
-    "minionSiteNumber": 4,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_01_185.jpg",
     "i18n": {
       "en": {
@@ -18173,7 +18173,7 @@
     "twilightCost": 3,
     "strength": 7,
     "vitality": 2,
-    "minionSiteNumber": 4,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_01_186.jpg",
     "i18n": {
       "en": {
@@ -18391,7 +18391,7 @@
     "twilightCost": 2,
     "strength": 6,
     "vitality": 2,
-    "minionSiteNumber": 4,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_01_191.jpg",
     "i18n": {
       "en": {
@@ -18740,7 +18740,7 @@
     "twilightCost": 3,
     "strength": 8,
     "vitality": 3,
-    "minionSiteNumber": 4,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_01_199.jpg",
     "i18n": {
       "en": {
@@ -20047,7 +20047,7 @@
     "twilightCost": 6,
     "strength": 12,
     "vitality": 3,
-    "minionSiteNumber": 3,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_01_229.jpg",
     "i18n": {
       "en": {
@@ -20100,7 +20100,7 @@
     "twilightCost": 5,
     "strength": 10,
     "vitality": 3,
-    "minionSiteNumber": 3,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_01_230.jpg",
     "i18n": {
       "en": {
@@ -20147,7 +20147,7 @@
     "twilightCost": 4,
     "strength": 9,
     "vitality": 2,
-    "minionSiteNumber": 3,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_01_232.jpg",
     "i18n": {
       "en": {
@@ -20200,7 +20200,7 @@
     "twilightCost": 5,
     "strength": 10,
     "vitality": 3,
-    "minionSiteNumber": 2,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_01_233.jpg",
     "i18n": {
       "en": {
@@ -20246,7 +20246,7 @@
     "twilightCost": 4,
     "strength": 9,
     "vitality": 2,
-    "minionSiteNumber": 3,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_01_234.jpg",
     "i18n": {
       "en": {
@@ -20296,7 +20296,7 @@
     "twilightCost": 4,
     "strength": 9,
     "vitality": 3,
-    "minionSiteNumber": 3,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_01_235.jpg",
     "i18n": {
       "en": {
@@ -20349,7 +20349,7 @@
     "twilightCost": 6,
     "strength": 12,
     "vitality": 3,
-    "minionSiteNumber": 3,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_01_236.jpg",
     "i18n": {
       "en": {
@@ -20499,7 +20499,7 @@
     "twilightCost": 4,
     "strength": 12,
     "vitality": 3,
-    "minionSiteNumber": 6,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_01_240.jpg",
     "i18n": {
       "en": {
@@ -21231,7 +21231,7 @@
     "twilightCost": 3,
     "strength": 9,
     "vitality": 3,
-    "minionSiteNumber": 6,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_01_257.jpg",
     "i18n": {
       "en": {
@@ -21273,7 +21273,7 @@
     "twilightCost": 2,
     "strength": 7,
     "vitality": 2,
-    "minionSiteNumber": 6,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_01_258.jpg",
     "i18n": {
       "en": {
@@ -21316,7 +21316,7 @@
     "twilightCost": 3,
     "strength": 9,
     "vitality": 3,
-    "minionSiteNumber": 6,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_01_259.jpg",
     "i18n": {
       "en": {
@@ -21406,7 +21406,7 @@
     "twilightCost": 1,
     "strength": 5,
     "vitality": 2,
-    "minionSiteNumber": 6,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_01_261.jpg",
     "i18n": {
       "en": {
@@ -21454,7 +21454,7 @@
     "twilightCost": 2,
     "strength": 6,
     "vitality": 2,
-    "minionSiteNumber": 6,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_01_262.jpg",
     "i18n": {
       "en": {
@@ -21610,7 +21610,7 @@
     "twilightCost": 2,
     "strength": 7,
     "vitality": 2,
-    "minionSiteNumber": 6,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_01_266.jpg",
     "i18n": {
       "en": {
@@ -21655,7 +21655,7 @@
     "twilightCost": 3,
     "strength": 9,
     "vitality": 2,
-    "minionSiteNumber": 6,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_01_267.jpg",
     "i18n": {
       "en": {
@@ -21697,7 +21697,7 @@
     "twilightCost": 3,
     "strength": 9,
     "vitality": 3,
-    "minionSiteNumber": 6,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_01_268.jpg",
     "i18n": {
       "en": {
@@ -21794,7 +21794,7 @@
     "twilightCost": 3,
     "strength": 8,
     "vitality": 2,
-    "minionSiteNumber": 6,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_01_270.jpg",
     "i18n": {
       "en": {
@@ -21838,7 +21838,7 @@
     "twilightCost": 2,
     "strength": 7,
     "vitality": 2,
-    "minionSiteNumber": 6,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_01_271.jpg",
     "i18n": {
       "en": {
@@ -21883,7 +21883,7 @@
     "twilightCost": 4,
     "strength": 10,
     "vitality": 2,
-    "minionSiteNumber": 6,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_01_272.jpg",
     "i18n": {
       "en": {
@@ -22248,7 +22248,7 @@
     "twilightCost": 4,
     "strength": 10,
     "vitality": 3,
-    "minionSiteNumber": 6,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_01_280.jpg",
     "i18n": {
       "en": {
@@ -26144,7 +26144,7 @@
     "twilightCost": 2,
     "strength": 6,
     "vitality": 2,
-    "minionSiteNumber": 2,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_02_042.jpg",
     "i18n": {
       "en": {
@@ -26338,7 +26338,7 @@
     "twilightCost": 3,
     "strength": 9,
     "vitality": 2,
-    "minionSiteNumber": 5,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_02_046.jpg",
     "i18n": {
       "en": {
@@ -26387,7 +26387,7 @@
     "twilightCost": 3,
     "strength": 7,
     "vitality": 2,
-    "minionSiteNumber": 5,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_02_047.jpg",
     "i18n": {
       "en": {
@@ -26494,7 +26494,7 @@
     "twilightCost": 4,
     "strength": 8,
     "vitality": 2,
-    "minionSiteNumber": 4,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_02_049.jpg",
     "i18n": {
       "en": {
@@ -26591,7 +26591,7 @@
     "twilightCost": 12,
     "strength": 17,
     "vitality": 5,
-    "minionSiteNumber": 4,
+    "minionSiteNumber": null,
     "i18n": {
       "en": {
         "title": "The Balrog",
@@ -26868,7 +26868,7 @@
     "twilightCost": 2,
     "strength": 4,
     "vitality": 1,
-    "minionSiteNumber": 4,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_02_058.jpg",
     "i18n": {
       "en": {
@@ -26954,7 +26954,7 @@
     "twilightCost": 2,
     "strength": 4,
     "vitality": 1,
-    "minionSiteNumber": 4,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_02_060.jpg",
     "i18n": {
       "en": {
@@ -26996,7 +26996,7 @@
     "twilightCost": 5,
     "strength": 11,
     "vitality": 3,
-    "minionSiteNumber": 4,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_02_061.jpg",
     "i18n": {
       "en": {
@@ -27038,7 +27038,7 @@
     "twilightCost": 2,
     "strength": 6,
     "vitality": 1,
-    "minionSiteNumber": 4,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_02_062.jpg",
     "i18n": {
       "en": {
@@ -27080,7 +27080,7 @@
     "twilightCost": 3,
     "strength": 8,
     "vitality": 1,
-    "minionSiteNumber": 4,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_02_063.jpg",
     "i18n": {
       "en": {
@@ -27122,7 +27122,7 @@
     "twilightCost": 1,
     "strength": 4,
     "vitality": 1,
-    "minionSiteNumber": 4,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_02_064.jpg",
     "i18n": {
       "en": {
@@ -27164,7 +27164,7 @@
     "twilightCost": 2,
     "strength": 6,
     "vitality": 1,
-    "minionSiteNumber": 4,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_02_065.jpg",
     "i18n": {
       "en": {
@@ -27210,7 +27210,7 @@
     "twilightCost": 2,
     "strength": 7,
     "vitality": 2,
-    "minionSiteNumber": 4,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_02_066.jpg",
     "i18n": {
       "en": {
@@ -27255,7 +27255,7 @@
     "twilightCost": 6,
     "strength": 8,
     "vitality": 3,
-    "minionSiteNumber": 4,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_02_067.jpg",
     "i18n": {
       "en": {
@@ -27523,7 +27523,7 @@
     "twilightCost": 4,
     "strength": 11,
     "vitality": 4,
-    "minionSiteNumber": 4,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_02_073.jpg",
     "i18n": {
       "en": {
@@ -27618,7 +27618,7 @@
     "twilightCost": 2,
     "strength": 4,
     "vitality": 1,
-    "minionSiteNumber": 2,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_02_075.jpg",
     "i18n": {
       "en": {
@@ -27939,7 +27939,7 @@
     "twilightCost": 6,
     "strength": 12,
     "vitality": 3,
-    "minionSiteNumber": 3,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_02_082.jpg",
     "i18n": {
       "en": {
@@ -27989,7 +27989,7 @@
     "twilightCost": 6,
     "strength": 11,
     "vitality": 4,
-    "minionSiteNumber": 3,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_02_083.jpg",
     "i18n": {
       "en": {
@@ -28040,7 +28040,7 @@
     "twilightCost": 5,
     "strength": 10,
     "vitality": 3,
-    "minionSiteNumber": 2,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_02_084.jpg",
     "i18n": {
       "en": {
@@ -28090,7 +28090,7 @@
     "twilightCost": 8,
     "strength": 14,
     "vitality": 4,
-    "minionSiteNumber": 3,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_02_085.jpg",
     "i18n": {
       "en": {
@@ -28266,7 +28266,7 @@
     "twilightCost": 2,
     "strength": 6,
     "vitality": 2,
-    "minionSiteNumber": 6,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_02_089.jpg",
     "i18n": {
       "en": {
@@ -28311,7 +28311,7 @@
     "twilightCost": 3,
     "strength": 8,
     "vitality": 3,
-    "minionSiteNumber": 6,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_02_090.jpg",
     "i18n": {
       "en": {
@@ -28454,7 +28454,7 @@
     "twilightCost": 4,
     "strength": 11,
     "vitality": 3,
-    "minionSiteNumber": 6,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_02_093.jpg",
     "i18n": {
       "en": {
@@ -32076,7 +32076,7 @@
     "twilightCost": 2,
     "strength": 6,
     "vitality": 2,
-    "minionSiteNumber": 4,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_03_056.jpg",
     "i18n": {
       "en": {
@@ -32121,7 +32121,7 @@
     "twilightCost": 4,
     "strength": 8,
     "vitality": 3,
-    "minionSiteNumber": 4,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_03_057.jpg",
     "i18n": {
       "en": {
@@ -32166,7 +32166,7 @@
     "twilightCost": 3,
     "strength": 7,
     "vitality": 3,
-    "minionSiteNumber": 4,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_03_058.jpg",
     "i18n": {
       "en": {
@@ -32211,7 +32211,7 @@
     "twilightCost": 1,
     "strength": 5,
     "vitality": 2,
-    "minionSiteNumber": 4,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_03_059.jpg",
     "i18n": {
       "en": {
@@ -32256,7 +32256,7 @@
     "twilightCost": 4,
     "strength": 8,
     "vitality": 3,
-    "minionSiteNumber": 4,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_03_060.jpg",
     "i18n": {
       "en": {
@@ -32301,7 +32301,7 @@
     "twilightCost": 3,
     "strength": 7,
     "vitality": 3,
-    "minionSiteNumber": 4,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_03_061.jpg",
     "i18n": {
       "en": {
@@ -32346,7 +32346,7 @@
     "twilightCost": 2,
     "strength": 5,
     "vitality": 3,
-    "minionSiteNumber": 4,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_03_062.jpg",
     "i18n": {
       "en": {
@@ -32432,7 +32432,7 @@
     "twilightCost": 6,
     "strength": 11,
     "vitality": 4,
-    "minionSiteNumber": 4,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_03_064.jpg",
     "i18n": {
       "en": {
@@ -32477,7 +32477,7 @@
     "twilightCost": 5,
     "strength": 10,
     "vitality": 4,
-    "minionSiteNumber": 4,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_03_065.jpg",
     "i18n": {
       "en": {
@@ -32525,7 +32525,7 @@
     "twilightCost": 5,
     "strength": 11,
     "vitality": 3,
-    "minionSiteNumber": 5,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_03_066.jpg",
     "i18n": {
       "en": {
@@ -32627,7 +32627,7 @@
     "twilightCost": 4,
     "strength": 8,
     "vitality": 4,
-    "minionSiteNumber": 4,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_03_068.jpg",
     "i18n": {
       "en": {
@@ -32672,7 +32672,7 @@
     "twilightCost": 4,
     "strength": 8,
     "vitality": 4,
-    "minionSiteNumber": 4,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_03_069.jpg",
     "i18n": {
       "en": {
@@ -32892,7 +32892,7 @@
     "twilightCost": 2,
     "strength": 6,
     "vitality": 2,
-    "minionSiteNumber": 5,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_03_074.jpg",
     "i18n": {
       "en": {
@@ -32937,7 +32937,7 @@
     "twilightCost": 4,
     "strength": 9,
     "vitality": 2,
-    "minionSiteNumber": 5,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_03_075.jpg",
     "i18n": {
       "en": {
@@ -33418,7 +33418,7 @@
     "twilightCost": 4,
     "strength": 9,
     "vitality": 3,
-    "minionSiteNumber": 3,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_03_086.jpg",
     "i18n": {
       "en": {
@@ -33718,7 +33718,7 @@
     "twilightCost": 2,
     "strength": 7,
     "vitality": 2,
-    "minionSiteNumber": 6,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_03_093.jpg",
     "i18n": {
       "en": {
@@ -33760,7 +33760,7 @@
     "twilightCost": 2,
     "strength": 6,
     "vitality": 2,
-    "minionSiteNumber": 6,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_03_094.jpg",
     "i18n": {
       "en": {
@@ -33805,7 +33805,7 @@
     "twilightCost": 1,
     "strength": 5,
     "vitality": 2,
-    "minionSiteNumber": 6,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_03_095.jpg",
     "i18n": {
       "en": {
@@ -33847,7 +33847,7 @@
     "twilightCost": 4,
     "strength": 10,
     "vitality": 3,
-    "minionSiteNumber": 6,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_03_096.jpg",
     "i18n": {
       "en": {
@@ -33892,7 +33892,7 @@
     "twilightCost": 1,
     "strength": 5,
     "vitality": 2,
-    "minionSiteNumber": 6,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_03_097.jpg",
     "i18n": {
       "en": {
@@ -33934,7 +33934,7 @@
     "twilightCost": 3,
     "strength": 9,
     "vitality": 3,
-    "minionSiteNumber": 6,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_03_098.jpg",
     "i18n": {
       "en": {
@@ -33976,7 +33976,7 @@
     "twilightCost": 4,
     "strength": 7,
     "vitality": 3,
-    "minionSiteNumber": 6,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_03_099.jpg",
     "i18n": {
       "en": {
@@ -34021,7 +34021,7 @@
     "twilightCost": 4,
     "strength": 10,
     "vitality": 3,
-    "minionSiteNumber": 6,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_03_100.jpg",
     "i18n": {
       "en": {
@@ -34066,7 +34066,7 @@
     "twilightCost": 3,
     "strength": 9,
     "vitality": 3,
-    "minionSiteNumber": 6,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_03_101.jpg",
     "i18n": {
       "en": {
@@ -34910,7 +34910,7 @@
     "twilightCost": 5,
     "strength": 11,
     "vitality": 2,
-    "minionSiteNumber": 3,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_04_004.jpg",
     "i18n": {
       "en": {
@@ -35120,7 +35120,7 @@
     "twilightCost": 4,
     "strength": 10,
     "vitality": 1,
-    "minionSiteNumber": 3,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_04_009.jpg",
     "i18n": {
       "en": {
@@ -35162,7 +35162,7 @@
     "twilightCost": 2,
     "strength": 8,
     "vitality": 1,
-    "minionSiteNumber": 3,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_04_010.jpg",
     "i18n": {
       "en": {
@@ -35202,7 +35202,7 @@
     "twilightCost": 3,
     "strength": 9,
     "vitality": 1,
-    "minionSiteNumber": 3,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_04_011.jpg",
     "i18n": {
       "en": {
@@ -35244,7 +35244,7 @@
     "twilightCost": 2,
     "strength": 7,
     "vitality": 1,
-    "minionSiteNumber": 3,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_04_012.jpg",
     "i18n": {
       "en": {
@@ -35286,7 +35286,7 @@
     "twilightCost": 3,
     "strength": 9,
     "vitality": 1,
-    "minionSiteNumber": 3,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_04_013.jpg",
     "i18n": {
       "en": {
@@ -35328,7 +35328,7 @@
     "twilightCost": 2,
     "strength": 7,
     "vitality": 1,
-    "minionSiteNumber": 3,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_04_014.jpg",
     "i18n": {
       "en": {
@@ -35373,7 +35373,7 @@
     "twilightCost": 1,
     "strength": 5,
     "vitality": 1,
-    "minionSiteNumber": 3,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_04_015.jpg",
     "i18n": {
       "en": {
@@ -35415,7 +35415,7 @@
     "twilightCost": 3,
     "strength": 9,
     "vitality": 1,
-    "minionSiteNumber": 3,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_04_016.jpg",
     "i18n": {
       "en": {
@@ -35457,7 +35457,7 @@
     "twilightCost": 4,
     "strength": 11,
     "vitality": 1,
-    "minionSiteNumber": 3,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_04_017.jpg",
     "i18n": {
       "en": {
@@ -35497,7 +35497,7 @@
     "twilightCost": 3,
     "strength": 9,
     "vitality": 1,
-    "minionSiteNumber": 3,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_04_018.jpg",
     "i18n": {
       "en": {
@@ -35542,7 +35542,7 @@
     "twilightCost": 4,
     "strength": 10,
     "vitality": 2,
-    "minionSiteNumber": 3,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_04_020.jpg",
     "i18n": {
       "en": {
@@ -35584,7 +35584,7 @@
     "twilightCost": 3,
     "strength": 9,
     "vitality": 1,
-    "minionSiteNumber": 3,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_04_021.jpg",
     "i18n": {
       "en": {
@@ -35626,7 +35626,7 @@
     "twilightCost": 6,
     "strength": 14,
     "vitality": 2,
-    "minionSiteNumber": 3,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_04_022.jpg",
     "i18n": {
       "en": {
@@ -35671,7 +35671,7 @@
     "twilightCost": 5,
     "strength": 12,
     "vitality": 1,
-    "minionSiteNumber": 3,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_04_023.jpg",
     "i18n": {
       "en": {
@@ -35716,7 +35716,7 @@
     "twilightCost": 4,
     "strength": 10,
     "vitality": 1,
-    "minionSiteNumber": 3,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_04_024.jpg",
     "i18n": {
       "en": {
@@ -35758,7 +35758,7 @@
     "twilightCost": 3,
     "strength": 9,
     "vitality": 1,
-    "minionSiteNumber": 3,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_04_025.jpg",
     "i18n": {
       "en": {
@@ -36094,7 +36094,7 @@
     "twilightCost": 4,
     "strength": 8,
     "vitality": 4,
-    "minionSiteNumber": 4,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_04_033.jpg",
     "i18n": {
       "en": {
@@ -36304,7 +36304,7 @@
     "twilightCost": 3,
     "strength": 9,
     "vitality": 1,
-    "minionSiteNumber": 3,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_04_038.jpg",
     "i18n": {
       "en": {
@@ -36393,7 +36393,7 @@
     "twilightCost": 4,
     "strength": 10,
     "vitality": 2,
-    "minionSiteNumber": 3,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_04_040.jpg",
     "i18n": {
       "en": {
@@ -40722,7 +40722,7 @@
     "twilightCost": 5,
     "strength": 10,
     "vitality": 3,
-    "minionSiteNumber": 5,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_04_136.jpg",
     "i18n": {
       "en": {
@@ -40811,7 +40811,7 @@
     "twilightCost": 5,
     "strength": 7,
     "vitality": 3,
-    "minionSiteNumber": 5,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_04_138.jpg",
     "i18n": {
       "en": {
@@ -41365,7 +41365,7 @@
     "twilightCost": 7,
     "strength": 9,
     "vitality": 3,
-    "minionSiteNumber": 5,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_04_150.jpg",
     "i18n": {
       "en": {
@@ -41489,7 +41489,7 @@
     "twilightCost": 2,
     "strength": 4,
     "vitality": 3,
-    "minionSiteNumber": 3,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_04_153.jpg",
     "i18n": {
       "en": {
@@ -41697,7 +41697,7 @@
     "twilightCost": 7,
     "strength": 12,
     "vitality": 3,
-    "minionSiteNumber": 5,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_04_158.jpg",
     "i18n": {
       "en": {
@@ -41811,7 +41811,7 @@
     "twilightCost": 3,
     "strength": 9,
     "vitality": 2,
-    "minionSiteNumber": 5,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_04_160.jpg",
     "i18n": {
       "en": {
@@ -41987,7 +41987,7 @@
     "twilightCost": 5,
     "strength": 12,
     "vitality": 2,
-    "minionSiteNumber": 5,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_04_164.jpg",
     "i18n": {
       "en": {
@@ -42029,7 +42029,7 @@
     "twilightCost": 2,
     "strength": 7,
     "vitality": 2,
-    "minionSiteNumber": 5,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_04_165.jpg",
     "i18n": {
       "en": {
@@ -42224,7 +42224,7 @@
     "twilightCost": 4,
     "strength": 8,
     "vitality": 2,
-    "minionSiteNumber": 5,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_04_169.jpg",
     "i18n": {
       "en": {
@@ -42579,7 +42579,7 @@
     "twilightCost": 2,
     "strength": 6,
     "vitality": 2,
-    "minionSiteNumber": 3,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_04_178.jpg",
     "i18n": {
       "en": {
@@ -42643,7 +42643,7 @@
     "twilightCost": 7,
     "strength": 14,
     "vitality": 3,
-    "minionSiteNumber": 5,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_04_179.jpg",
     "i18n": {
       "en": {
@@ -42687,7 +42687,7 @@
     "twilightCost": 2,
     "strength": 6,
     "vitality": 2,
-    "minionSiteNumber": 5,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_04_180.jpg",
     "i18n": {
       "en": {
@@ -42733,7 +42733,7 @@
     "twilightCost": 4,
     "strength": 9,
     "vitality": 2,
-    "minionSiteNumber": 5,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_04_181.jpg",
     "i18n": {
       "en": {
@@ -42778,7 +42778,7 @@
     "twilightCost": 4,
     "strength": 8,
     "vitality": 2,
-    "minionSiteNumber": 5,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_04_182.jpg",
     "i18n": {
       "en": {
@@ -42826,7 +42826,7 @@
     "twilightCost": 3,
     "strength": 6,
     "vitality": 2,
-    "minionSiteNumber": 5,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_04_183.jpg",
     "i18n": {
       "en": {
@@ -42874,7 +42874,7 @@
     "twilightCost": 4,
     "strength": 9,
     "vitality": 2,
-    "minionSiteNumber": 5,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_04_184.jpg",
     "i18n": {
       "en": {
@@ -42919,7 +42919,7 @@
     "twilightCost": 4,
     "strength": 9,
     "vitality": 2,
-    "minionSiteNumber": 5,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_04_185.jpg",
     "i18n": {
       "en": {
@@ -42968,7 +42968,7 @@
     "twilightCost": 5,
     "strength": 10,
     "vitality": 3,
-    "minionSiteNumber": 5,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_04_186.jpg",
     "i18n": {
       "en": {
@@ -43014,7 +43014,7 @@
     "twilightCost": 1,
     "strength": 5,
     "vitality": 1,
-    "minionSiteNumber": 5,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_04_187.jpg",
     "i18n": {
       "en": {
@@ -43063,7 +43063,7 @@
     "twilightCost": 6,
     "strength": 12,
     "vitality": 3,
-    "minionSiteNumber": 5,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_04_188.jpg",
     "i18n": {
       "en": {
@@ -43109,7 +43109,7 @@
     "twilightCost": 2,
     "strength": 7,
     "vitality": 1,
-    "minionSiteNumber": 5,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_04_189.jpg",
     "i18n": {
       "en": {
@@ -43158,7 +43158,7 @@
     "twilightCost": 2,
     "strength": 5,
     "vitality": 3,
-    "minionSiteNumber": 5,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_04_190.jpg",
     "i18n": {
       "en": {
@@ -43206,7 +43206,7 @@
     "twilightCost": 6,
     "strength": 12,
     "vitality": 4,
-    "minionSiteNumber": 5,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_04_191.jpg",
     "i18n": {
       "en": {
@@ -43254,7 +43254,7 @@
     "twilightCost": 3,
     "strength": 8,
     "vitality": 2,
-    "minionSiteNumber": 5,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_04_192.jpg",
     "i18n": {
       "en": {
@@ -43300,7 +43300,7 @@
     "twilightCost": 3,
     "strength": 8,
     "vitality": 2,
-    "minionSiteNumber": 5,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_04_193.jpg",
     "i18n": {
       "en": {
@@ -43347,7 +43347,7 @@
     "twilightCost": 4,
     "strength": 9,
     "vitality": 2,
-    "minionSiteNumber": 5,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_04_194.jpg",
     "i18n": {
       "en": {
@@ -43393,7 +43393,7 @@
     "twilightCost": 2,
     "strength": 6,
     "vitality": 2,
-    "minionSiteNumber": 5,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_04_195.jpg",
     "i18n": {
       "en": {
@@ -43486,7 +43486,7 @@
     "twilightCost": 3,
     "strength": 8,
     "vitality": 2,
-    "minionSiteNumber": 5,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_04_197.jpg",
     "i18n": {
       "en": {
@@ -43531,7 +43531,7 @@
     "twilightCost": 3,
     "strength": 8,
     "vitality": 2,
-    "minionSiteNumber": 5,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_04_198.jpg",
     "i18n": {
       "en": {
@@ -43580,7 +43580,7 @@
     "twilightCost": 4,
     "strength": 9,
     "vitality": 2,
-    "minionSiteNumber": 5,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_04_199.jpg",
     "i18n": {
       "en": {
@@ -43639,7 +43639,7 @@
     "twilightCost": 10,
     "strength": 17,
     "vitality": 4,
-    "minionSiteNumber": 5,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_04_200.jpg",
     "i18n": {
       "en": {
@@ -43688,7 +43688,7 @@
     "twilightCost": 3,
     "strength": 8,
     "vitality": 2,
-    "minionSiteNumber": 5,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_04_201.jpg",
     "i18n": {
       "en": {
@@ -43733,7 +43733,7 @@
     "twilightCost": 5,
     "strength": 10,
     "vitality": 3,
-    "minionSiteNumber": 5,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_04_202.jpg",
     "i18n": {
       "en": {
@@ -43778,7 +43778,7 @@
     "twilightCost": 6,
     "strength": 12,
     "vitality": 3,
-    "minionSiteNumber": 5,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_04_203.jpg",
     "i18n": {
       "en": {
@@ -43823,7 +43823,7 @@
     "twilightCost": 3,
     "strength": 8,
     "vitality": 2,
-    "minionSiteNumber": 5,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_04_204.jpg",
     "i18n": {
       "en": {
@@ -43865,7 +43865,7 @@
     "twilightCost": 5,
     "strength": 10,
     "vitality": 3,
-    "minionSiteNumber": 5,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_04_205.jpg",
     "i18n": {
       "en": {
@@ -43910,7 +43910,7 @@
     "twilightCost": 4,
     "strength": 9,
     "vitality": 2,
-    "minionSiteNumber": 5,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_04_206.jpg",
     "i18n": {
       "en": {
@@ -43952,7 +43952,7 @@
     "twilightCost": 4,
     "strength": 9,
     "vitality": 3,
-    "minionSiteNumber": 5,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_04_207.jpg",
     "i18n": {
       "en": {
@@ -44421,7 +44421,7 @@
     "twilightCost": 5,
     "strength": 11,
     "vitality": 3,
-    "minionSiteNumber": 4,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_04_217.jpg",
     "i18n": {
       "en": {
@@ -44467,7 +44467,7 @@
     "twilightCost": 6,
     "strength": 13,
     "vitality": 3,
-    "minionSiteNumber": 4,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_04_218.jpg",
     "i18n": {
       "en": {
@@ -44507,7 +44507,7 @@
     "twilightCost": 4,
     "strength": 9,
     "vitality": 2,
-    "minionSiteNumber": 4,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_04_220.jpg",
     "i18n": {
       "en": {
@@ -44552,7 +44552,7 @@
     "twilightCost": 3,
     "strength": 8,
     "vitality": 2,
-    "minionSiteNumber": 4,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_04_221.jpg",
     "i18n": {
       "en": {
@@ -44597,7 +44597,7 @@
     "twilightCost": 2,
     "strength": 6,
     "vitality": 2,
-    "minionSiteNumber": 4,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_04_222.jpg",
     "i18n": {
       "en": {
@@ -44683,7 +44683,7 @@
     "twilightCost": 2,
     "strength": 6,
     "vitality": 2,
-    "minionSiteNumber": 4,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_04_224.jpg",
     "i18n": {
       "en": {
@@ -44728,7 +44728,7 @@
     "twilightCost": 4,
     "strength": 9,
     "vitality": 2,
-    "minionSiteNumber": 4,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_04_226.jpg",
     "i18n": {
       "en": {
@@ -44773,7 +44773,7 @@
     "twilightCost": 3,
     "strength": 8,
     "vitality": 2,
-    "minionSiteNumber": 4,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_04_227.jpg",
     "i18n": {
       "en": {
@@ -44818,7 +44818,7 @@
     "twilightCost": 3,
     "strength": 8,
     "vitality": 2,
-    "minionSiteNumber": 4,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_04_228.jpg",
     "i18n": {
       "en": {
@@ -44863,7 +44863,7 @@
     "twilightCost": 1,
     "strength": 5,
     "vitality": 1,
-    "minionSiteNumber": 4,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_04_229.jpg",
     "i18n": {
       "en": {
@@ -44908,7 +44908,7 @@
     "twilightCost": 4,
     "strength": 9,
     "vitality": 2,
-    "minionSiteNumber": 4,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_04_230.jpg",
     "i18n": {
       "en": {
@@ -44999,7 +44999,7 @@
     "twilightCost": 4,
     "strength": 8,
     "vitality": 2,
-    "minionSiteNumber": 4,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_04_232.jpg",
     "i18n": {
       "en": {
@@ -45511,7 +45511,7 @@
     "twilightCost": 8,
     "strength": 16,
     "vitality": 4,
-    "minionSiteNumber": 4,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_04_244.jpg",
     "i18n": {
       "en": {
@@ -45557,7 +45557,7 @@
     "twilightCost": 3,
     "strength": 6,
     "vitality": 2,
-    "minionSiteNumber": 4,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_04_245.jpg",
     "i18n": {
       "en": {
@@ -45602,7 +45602,7 @@
     "twilightCost": 4,
     "strength": 9,
     "vitality": 2,
-    "minionSiteNumber": 4,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_04_246.jpg",
     "i18n": {
       "en": {
@@ -45699,7 +45699,7 @@
     "twilightCost": 3,
     "strength": 6,
     "vitality": 2,
-    "minionSiteNumber": 4,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_04_248.jpg",
     "i18n": {
       "en": {
@@ -45748,7 +45748,7 @@
     "twilightCost": 5,
     "strength": 10,
     "vitality": 3,
-    "minionSiteNumber": 4,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_04_249.jpg",
     "i18n": {
       "en": {
@@ -45796,7 +45796,7 @@
     "twilightCost": 2,
     "strength": 5,
     "vitality": 3,
-    "minionSiteNumber": 4,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_04_250.jpg",
     "i18n": {
       "en": {
@@ -45845,7 +45845,7 @@
     "twilightCost": 5,
     "strength": 10,
     "vitality": 3,
-    "minionSiteNumber": 4,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_04_251.jpg",
     "i18n": {
       "en": {
@@ -45891,7 +45891,7 @@
     "twilightCost": 1,
     "strength": 3,
     "vitality": 1,
-    "minionSiteNumber": 4,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_04_252.jpg",
     "i18n": {
       "en": {
@@ -45939,7 +45939,7 @@
     "twilightCost": 4,
     "strength": 9,
     "vitality": 2,
-    "minionSiteNumber": 4,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_04_253.jpg",
     "i18n": {
       "en": {
@@ -45985,7 +45985,7 @@
     "twilightCost": 2,
     "strength": 4,
     "vitality": 1,
-    "minionSiteNumber": 4,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_04_254.jpg",
     "i18n": {
       "en": {
@@ -46097,7 +46097,7 @@
     "twilightCost": 7,
     "strength": 14,
     "vitality": 4,
-    "minionSiteNumber": 4,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_04_256.jpg",
     "i18n": {
       "en": {
@@ -46141,7 +46141,7 @@
     "twilightCost": 5,
     "strength": 10,
     "vitality": 3,
-    "minionSiteNumber": 4,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_04_257.jpg",
     "i18n": {
       "en": {
@@ -46190,7 +46190,7 @@
     "twilightCost": 3,
     "strength": 8,
     "vitality": 2,
-    "minionSiteNumber": 4,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_04_258.jpg",
     "i18n": {
       "en": {
@@ -46953,9 +46953,6 @@
     "kind": "FREE_PEOPLE",
     "type": "POSSESSION",
     "subtype": "MOUNT",
-    "grantsKeywords": [
-      "DEFENDER +1"
-    ],
     "attachedTo": [
       [
         "ROHAN",
@@ -49189,7 +49186,7 @@
     "twilightCost": 1,
     "strength": 9,
     "vitality": 1,
-    "minionSiteNumber": 3,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_05_001.jpg",
     "i18n": {
       "en": {
@@ -49231,7 +49228,7 @@
     "twilightCost": 2,
     "strength": 10,
     "vitality": 1,
-    "minionSiteNumber": 3,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_05_002.jpg",
     "i18n": {
       "en": {
@@ -49314,7 +49311,7 @@
     "twilightCost": 6,
     "strength": 18,
     "vitality": 2,
-    "minionSiteNumber": 3,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_05_004.jpg",
     "i18n": {
       "en": {
@@ -50245,7 +50242,7 @@
     "twilightCost": 2,
     "strength": 5,
     "vitality": 4,
-    "minionSiteNumber": 3,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_05_024.jpg",
     "i18n": {
       "en": {
@@ -51129,7 +51126,7 @@
     "twilightCost": 5,
     "strength": 10,
     "vitality": 3,
-    "minionSiteNumber": 5,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_05_045.jpg",
     "i18n": {
       "en": {
@@ -51176,7 +51173,7 @@
     "twilightCost": 6,
     "strength": 12,
     "vitality": 3,
-    "minionSiteNumber": 5,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_05_046.jpg",
     "i18n": {
       "en": {
@@ -51224,7 +51221,7 @@
     "twilightCost": 7,
     "strength": 12,
     "vitality": 3,
-    "minionSiteNumber": 5,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_05_047.jpg",
     "i18n": {
       "en": {
@@ -51357,7 +51354,7 @@
     "twilightCost": 4,
     "strength": 9,
     "vitality": 3,
-    "minionSiteNumber": 4,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_05_050.jpg",
     "i18n": {
       "en": {
@@ -51397,7 +51394,7 @@
     "twilightCost": 2,
     "strength": 4,
     "vitality": 3,
-    "minionSiteNumber": 3,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_05_051.jpg",
     "i18n": {
       "en": {
@@ -51447,7 +51444,7 @@
     "twilightCost": 2,
     "strength": 7,
     "vitality": 2,
-    "minionSiteNumber": 4,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_05_052.jpg",
     "i18n": {
       "en": {
@@ -51492,7 +51489,7 @@
     "twilightCost": 3,
     "strength": 8,
     "vitality": 3,
-    "minionSiteNumber": 4,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_05_053.jpg",
     "i18n": {
       "en": {
@@ -51583,7 +51580,7 @@
     "twilightCost": 2,
     "strength": 5,
     "vitality": 3,
-    "minionSiteNumber": 4,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_05_055.jpg",
     "i18n": {
       "en": {
@@ -51628,7 +51625,7 @@
     "twilightCost": 4,
     "strength": 8,
     "vitality": 4,
-    "minionSiteNumber": 4,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_05_056.jpg",
     "i18n": {
       "en": {
@@ -51719,7 +51716,7 @@
     "twilightCost": 2,
     "strength": 7,
     "vitality": 2,
-    "minionSiteNumber": 4,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_05_058.jpg",
     "i18n": {
       "en": {
@@ -51863,7 +51860,7 @@
     "twilightCost": 3,
     "strength": 8,
     "vitality": 2,
-    "minionSiteNumber": 5,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_05_061.jpg",
     "i18n": {
       "en": {
@@ -51908,7 +51905,7 @@
     "twilightCost": 2,
     "strength": 6,
     "vitality": 2,
-    "minionSiteNumber": 5,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_05_062.jpg",
     "i18n": {
       "en": {
@@ -51953,7 +51950,7 @@
     "twilightCost": 4,
     "strength": 7,
     "vitality": 3,
-    "minionSiteNumber": 5,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_05_063.jpg",
     "i18n": {
       "en": {
@@ -52097,7 +52094,7 @@
     "twilightCost": 2,
     "strength": 6,
     "vitality": 2,
-    "minionSiteNumber": 4,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_05_066.jpg",
     "i18n": {
       "en": {
@@ -52142,7 +52139,7 @@
     "twilightCost": 1,
     "strength": 5,
     "vitality": 2,
-    "minionSiteNumber": 4,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_05_067.jpg",
     "i18n": {
       "en": {
@@ -52280,7 +52277,7 @@
     "twilightCost": 7,
     "strength": 14,
     "vitality": 4,
-    "minionSiteNumber": 4,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_05_070.jpg",
     "i18n": {
       "en": {
@@ -52328,7 +52325,7 @@
     "twilightCost": 6,
     "strength": 13,
     "vitality": 3,
-    "minionSiteNumber": 4,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_05_071.jpg",
     "i18n": {
       "en": {
@@ -52377,7 +52374,7 @@
     "twilightCost": 5,
     "strength": 11,
     "vitality": 2,
-    "minionSiteNumber": 4,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_05_072.jpg",
     "i18n": {
       "en": {
@@ -52471,7 +52468,7 @@
     "twilightCost": 4,
     "strength": 6,
     "vitality": 1,
-    "minionSiteNumber": 4,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_05_074.jpg",
     "i18n": {
       "en": {
@@ -52517,7 +52514,7 @@
     "twilightCost": 3,
     "strength": 4,
     "vitality": 1,
-    "minionSiteNumber": 4,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_05_075.jpg",
     "i18n": {
       "en": {
@@ -52566,7 +52563,7 @@
     "twilightCost": 3,
     "strength": 8,
     "vitality": 1,
-    "minionSiteNumber": 4,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_05_076.jpg",
     "i18n": {
       "en": {
@@ -53557,7 +53554,7 @@
     "twilightCost": 2,
     "strength": 7,
     "vitality": 2,
-    "minionSiteNumber": 6,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_05_097.jpg",
     "i18n": {
       "en": {
@@ -53599,7 +53596,7 @@
     "twilightCost": 1,
     "strength": 5,
     "vitality": 2,
-    "minionSiteNumber": 6,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_05_098.jpg",
     "i18n": {
       "en": {
@@ -53641,7 +53638,7 @@
     "twilightCost": 2,
     "strength": 7,
     "vitality": 2,
-    "minionSiteNumber": 6,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_05_099.jpg",
     "i18n": {
       "en": {
@@ -53779,7 +53776,7 @@
     "twilightCost": 3,
     "strength": 9,
     "vitality": 3,
-    "minionSiteNumber": 6,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_05_103.jpg",
     "i18n": {
       "en": {
@@ -53827,7 +53824,7 @@
     "twilightCost": 3,
     "strength": 9,
     "vitality": 3,
-    "minionSiteNumber": 6,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_05_104.jpg",
     "i18n": {
       "en": {
@@ -53872,7 +53869,7 @@
     "twilightCost": 3,
     "strength": 9,
     "vitality": 3,
-    "minionSiteNumber": 6,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_05_105.jpg",
     "i18n": {
       "en": {
@@ -53917,7 +53914,7 @@
     "twilightCost": 1,
     "strength": 5,
     "vitality": 2,
-    "minionSiteNumber": 6,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_05_106.jpg",
     "i18n": {
       "en": {
@@ -53965,7 +53962,7 @@
     "twilightCost": 4,
     "strength": 11,
     "vitality": 3,
-    "minionSiteNumber": 6,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_05_107.jpg",
     "i18n": {
       "en": {
@@ -54010,7 +54007,7 @@
     "twilightCost": 2,
     "strength": 6,
     "vitality": 2,
-    "minionSiteNumber": 6,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_05_108.jpg",
     "i18n": {
       "en": {
@@ -54055,7 +54052,7 @@
     "twilightCost": 2,
     "strength": 6,
     "vitality": 2,
-    "minionSiteNumber": 6,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_05_109.jpg",
     "i18n": {
       "en": {
@@ -54608,7 +54605,7 @@
     "twilightCost": 4,
     "strength": 9,
     "vitality": 3,
-    "minionSiteNumber": 4,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_05_125.jpg",
     "i18n": {
       "en": {
@@ -54651,7 +54648,7 @@
     "twilightCost": 7,
     "strength": 14,
     "vitality": 4,
-    "minionSiteNumber": 4,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_05_126.jpg",
     "i18n": {
       "en": {
@@ -54823,7 +54820,7 @@
     "twilightCost": 2,
     "strength": 7,
     "vitality": 1,
-    "minionSiteNumber": 3,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_06_002.jpg",
     "i18n": {
       "en": {
@@ -54865,7 +54862,7 @@
     "twilightCost": 5,
     "strength": 11,
     "vitality": 2,
-    "minionSiteNumber": 3,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_06_003.jpg",
     "i18n": {
       "en": {
@@ -54907,7 +54904,7 @@
     "twilightCost": 4,
     "strength": 10,
     "vitality": 1,
-    "minionSiteNumber": 3,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_06_004.jpg",
     "i18n": {
       "en": {
@@ -54949,7 +54946,7 @@
     "twilightCost": 4,
     "strength": 10,
     "vitality": 1,
-    "minionSiteNumber": 3,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_06_005.jpg",
     "i18n": {
       "en": {
@@ -54991,7 +54988,7 @@
     "twilightCost": 8,
     "strength": 17,
     "vitality": 2,
-    "minionSiteNumber": 3,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_06_006.jpg",
     "i18n": {
       "en": {
@@ -56609,7 +56606,7 @@
     "twilightCost": 2,
     "strength": 5,
     "vitality": 4,
-    "minionSiteNumber": 3,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_06_040.jpg",
     "i18n": {
       "en": {
@@ -57365,7 +57362,7 @@
     "twilightCost": 5,
     "strength": 9,
     "vitality": 3,
-    "minionSiteNumber": 3,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_06_057.jpg",
     "i18n": {
       "en": {
@@ -57505,7 +57502,7 @@
     "twilightCost": 6,
     "strength": 12,
     "vitality": 3,
-    "minionSiteNumber": 5,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_06_060.jpg",
     "i18n": {
       "en": {
@@ -57732,7 +57729,7 @@
     "twilightCost": 4,
     "strength": 8,
     "vitality": 3,
-    "minionSiteNumber": 4,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_06_065.jpg",
     "i18n": {
       "en": {
@@ -57777,7 +57774,7 @@
     "twilightCost": 3,
     "strength": 7,
     "vitality": 3,
-    "minionSiteNumber": 4,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_06_066.jpg",
     "i18n": {
       "en": {
@@ -57822,7 +57819,7 @@
     "twilightCost": 2,
     "strength": 5,
     "vitality": 3,
-    "minionSiteNumber": 4,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_06_067.jpg",
     "i18n": {
       "en": {
@@ -57867,7 +57864,7 @@
     "twilightCost": 6,
     "strength": 11,
     "vitality": 4,
-    "minionSiteNumber": 4,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_06_068.jpg",
     "i18n": {
       "en": {
@@ -57908,7 +57905,7 @@
     "twilightCost": 3,
     "strength": 7,
     "vitality": 3,
-    "minionSiteNumber": 4,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_06_069.jpg",
     "i18n": {
       "en": {
@@ -57953,7 +57950,7 @@
     "twilightCost": 1,
     "strength": 5,
     "vitality": 2,
-    "minionSiteNumber": 4,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_06_070.jpg",
     "i18n": {
       "en": {
@@ -57998,7 +57995,7 @@
     "twilightCost": 1,
     "strength": 5,
     "vitality": 2,
-    "minionSiteNumber": 4,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_06_071.jpg",
     "i18n": {
       "en": {
@@ -58040,7 +58037,7 @@
     "twilightCost": 2,
     "strength": 6,
     "vitality": 2,
-    "minionSiteNumber": 3,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_06_072.jpg",
     "i18n": {
       "en": {
@@ -58126,7 +58123,7 @@
     "twilightCost": 2,
     "strength": 7,
     "vitality": 2,
-    "minionSiteNumber": 4,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_06_074.jpg",
     "i18n": {
       "en": {
@@ -58215,7 +58212,7 @@
     "twilightCost": 14,
     "strength": 17,
     "vitality": 5,
-    "minionSiteNumber": 4,
+    "minionSiteNumber": null,
     "i18n": {
       "en": {
         "title": "The Balrog",
@@ -58310,7 +58307,7 @@
     "twilightCost": 6,
     "strength": 13,
     "vitality": 3,
-    "minionSiteNumber": 4,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_06_078.jpg",
     "i18n": {
       "en": {
@@ -58403,7 +58400,7 @@
     "twilightCost": 8,
     "strength": 13,
     "vitality": 4,
-    "minionSiteNumber": 4,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_06_080.jpg",
     "i18n": {
       "en": {
@@ -58449,7 +58446,7 @@
     "twilightCost": 5,
     "strength": 10,
     "vitality": 3,
-    "minionSiteNumber": 4,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_06_081.jpg",
     "i18n": {
       "en": {
@@ -58672,7 +58669,7 @@
     "twilightCost": 4,
     "strength": 9,
     "vitality": 2,
-    "minionSiteNumber": 3,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_06_086.jpg",
     "i18n": {
       "en": {
@@ -58719,7 +58716,7 @@
     "twilightCost": 4,
     "strength": 9,
     "vitality": 2,
-    "minionSiteNumber": 3,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_06_087.jpg",
     "i18n": {
       "en": {
@@ -59259,7 +59256,7 @@
     "twilightCost": 3,
     "strength": 7,
     "vitality": 2,
-    "minionSiteNumber": 4,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_06_099.jpg",
     "i18n": {
       "en": {
@@ -59304,7 +59301,7 @@
     "twilightCost": 1,
     "strength": 5,
     "vitality": 1,
-    "minionSiteNumber": 4,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_06_100.jpg",
     "i18n": {
       "en": {
@@ -59349,7 +59346,7 @@
     "twilightCost": 4,
     "strength": 11,
     "vitality": 3,
-    "minionSiteNumber": 6,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_06_101.jpg",
     "i18n": {
       "en": {
@@ -59394,7 +59391,7 @@
     "twilightCost": 3,
     "strength": 9,
     "vitality": 3,
-    "minionSiteNumber": 6,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_06_102.jpg",
     "i18n": {
       "en": {
@@ -59439,7 +59436,7 @@
     "twilightCost": 8,
     "strength": 13,
     "vitality": 4,
-    "minionSiteNumber": 6,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_06_103.jpg",
     "i18n": {
       "en": {
@@ -59484,7 +59481,7 @@
     "twilightCost": 4,
     "strength": 11,
     "vitality": 3,
-    "minionSiteNumber": 6,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_06_104.jpg",
     "i18n": {
       "en": {
@@ -59574,7 +59571,7 @@
     "twilightCost": 10,
     "strength": 14,
     "vitality": 5,
-    "minionSiteNumber": 6,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_06_106.jpg",
     "i18n": {
       "en": {
@@ -59668,7 +59665,7 @@
     "twilightCost": 3,
     "strength": 8,
     "vitality": 2,
-    "minionSiteNumber": 4,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_06_108.jpg",
     "i18n": {
       "en": {
@@ -60036,7 +60033,7 @@
     "twilightCost": 8,
     "strength": 14,
     "vitality": 4,
-    "minionSiteNumber": 3,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_06_122.jpg",
     "i18n": {
       "en": {
@@ -60263,7 +60260,7 @@
     "twilightCost": 6,
     "strength": 11,
     "vitality": 4,
-    "minionSiteNumber": 4,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_06_127.jpg",
     "i18n": {
       "en": {
@@ -60304,7 +60301,7 @@
     "twilightCost": 8,
     "strength": 13,
     "vitality": 4,
-    "minionSiteNumber": 6,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_06_128.jpg",
     "i18n": {
       "en": {
@@ -62819,7 +62816,7 @@
     "twilightCost": 2,
     "strength": 5,
     "vitality": 4,
-    "minionSiteNumber": 3,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_07_058.jpg",
     "i18n": {
       "en": {
@@ -62868,7 +62865,7 @@
     "twilightCost": 2,
     "strength": 5,
     "vitality": 4,
-    "minionSiteNumber": 3,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_07_059.jpg",
     "i18n": {
       "en": {
@@ -66044,7 +66041,7 @@
     "twilightCost": 3,
     "strength": 8,
     "vitality": 2,
-    "minionSiteNumber": 4,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_07_131.jpg",
     "i18n": {
       "en": {
@@ -66086,7 +66083,7 @@
     "twilightCost": 4,
     "strength": 9,
     "vitality": 2,
-    "minionSiteNumber": 4,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_07_132.jpg",
     "i18n": {
       "en": {
@@ -66128,7 +66125,7 @@
     "twilightCost": 2,
     "strength": 6,
     "vitality": 2,
-    "minionSiteNumber": 4,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_07_133.jpg",
     "i18n": {
       "en": {
@@ -66170,7 +66167,7 @@
     "twilightCost": 3,
     "strength": 8,
     "vitality": 2,
-    "minionSiteNumber": 4,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_07_134.jpg",
     "i18n": {
       "en": {
@@ -66212,7 +66209,7 @@
     "twilightCost": 1,
     "strength": 5,
     "vitality": 2,
-    "minionSiteNumber": 4,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_07_135.jpg",
     "i18n": {
       "en": {
@@ -66253,7 +66250,7 @@
     "twilightCost": 4,
     "strength": 9,
     "vitality": 2,
-    "minionSiteNumber": 4,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_07_136.jpg",
     "i18n": {
       "en": {
@@ -66293,7 +66290,7 @@
     "twilightCost": 3,
     "strength": 8,
     "vitality": 2,
-    "minionSiteNumber": 4,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_07_137.jpg",
     "i18n": {
       "en": {
@@ -66333,7 +66330,7 @@
     "twilightCost": 4,
     "strength": 9,
     "vitality": 2,
-    "minionSiteNumber": 4,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_07_138.jpg",
     "i18n": {
       "en": {
@@ -66377,7 +66374,7 @@
     "twilightCost": 3,
     "strength": 8,
     "vitality": 2,
-    "minionSiteNumber": 4,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_07_139.jpg",
     "i18n": {
       "en": {
@@ -66421,7 +66418,7 @@
     "twilightCost": 4,
     "strength": 9,
     "vitality": 2,
-    "minionSiteNumber": 4,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_07_140.jpg",
     "i18n": {
       "en": {
@@ -66466,7 +66463,7 @@
     "twilightCost": 2,
     "strength": 6,
     "vitality": 2,
-    "minionSiteNumber": 4,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_07_141.jpg",
     "i18n": {
       "en": {
@@ -66511,7 +66508,7 @@
     "twilightCost": 3,
     "strength": 8,
     "vitality": 2,
-    "minionSiteNumber": 4,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_07_142.jpg",
     "i18n": {
       "en": {
@@ -66555,7 +66552,7 @@
     "twilightCost": 4,
     "strength": 9,
     "vitality": 2,
-    "minionSiteNumber": 4,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_07_143.jpg",
     "i18n": {
       "en": {
@@ -66600,7 +66597,7 @@
     "twilightCost": 4,
     "strength": 9,
     "vitality": 2,
-    "minionSiteNumber": 4,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_07_144.jpg",
     "i18n": {
       "en": {
@@ -66642,7 +66639,7 @@
     "twilightCost": 5,
     "strength": 11,
     "vitality": 3,
-    "minionSiteNumber": 4,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_07_145.jpg",
     "i18n": {
       "en": {
@@ -66686,7 +66683,7 @@
     "twilightCost": 3,
     "strength": 8,
     "vitality": 2,
-    "minionSiteNumber": 4,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_07_146.jpg",
     "i18n": {
       "en": {
@@ -66730,7 +66727,7 @@
     "twilightCost": 5,
     "strength": 10,
     "vitality": 3,
-    "minionSiteNumber": 4,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_07_147.jpg",
     "i18n": {
       "en": {
@@ -66987,7 +66984,7 @@
     "twilightCost": 8,
     "strength": 16,
     "vitality": 4,
-    "minionSiteNumber": 4,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_07_152.jpg",
     "i18n": {
       "en": {
@@ -67336,7 +67333,7 @@
     "twilightCost": 3,
     "strength": 8,
     "vitality": 2,
-    "minionSiteNumber": 4,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_07_160.jpg",
     "i18n": {
       "en": {
@@ -67381,7 +67378,7 @@
     "twilightCost": 4,
     "strength": 9,
     "vitality": 2,
-    "minionSiteNumber": 4,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_07_161.jpg",
     "i18n": {
       "en": {
@@ -67422,7 +67419,7 @@
     "twilightCost": 6,
     "strength": 13,
     "vitality": 3,
-    "minionSiteNumber": 4,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_07_162.jpg",
     "i18n": {
       "en": {
@@ -67478,7 +67475,7 @@
     "twilightCost": 4,
     "strength": 9,
     "vitality": 2,
-    "minionSiteNumber": 4,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_07_163.jpg",
     "i18n": {
       "en": {
@@ -67521,7 +67518,7 @@
     "twilightCost": 5,
     "strength": 10,
     "vitality": 3,
-    "minionSiteNumber": 4,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_07_164.jpg",
     "i18n": {
       "en": {
@@ -67563,7 +67560,7 @@
     "twilightCost": 6,
     "strength": 11,
     "vitality": 3,
-    "minionSiteNumber": 4,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_07_165.jpg",
     "i18n": {
       "en": {
@@ -67606,7 +67603,7 @@
     "twilightCost": 5,
     "strength": 10,
     "vitality": 3,
-    "minionSiteNumber": 4,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_07_166.jpg",
     "i18n": {
       "en": {
@@ -67667,7 +67664,7 @@
     "twilightCost": 5,
     "strength": 10,
     "vitality": 3,
-    "minionSiteNumber": 4,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_07_167.jpg",
     "i18n": {
       "en": {
@@ -67711,7 +67708,7 @@
     "twilightCost": 3,
     "strength": 8,
     "vitality": 2,
-    "minionSiteNumber": 4,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_07_168.jpg",
     "i18n": {
       "en": {
@@ -67791,7 +67788,7 @@
     "twilightCost": 6,
     "strength": 11,
     "vitality": 3,
-    "minionSiteNumber": 4,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_07_170.jpg",
     "i18n": {
       "en": {
@@ -67874,7 +67871,7 @@
     "twilightCost": 5,
     "strength": 10,
     "vitality": 3,
-    "minionSiteNumber": 4,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_07_172.jpg",
     "i18n": {
       "en": {
@@ -68194,7 +68191,7 @@
     "twilightCost": 5,
     "strength": 11,
     "vitality": 3,
-    "minionSiteNumber": 4,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_07_180.jpg",
     "i18n": {
       "en": {
@@ -68523,7 +68520,7 @@
     "twilightCost": 4,
     "strength": 10,
     "vitality": 1,
-    "minionSiteNumber": 4,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_07_187.jpg",
     "i18n": {
       "en": {
@@ -68563,7 +68560,7 @@
     "twilightCost": 2,
     "strength": 6,
     "vitality": 2,
-    "minionSiteNumber": 4,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_07_188.jpg",
     "i18n": {
       "en": {
@@ -68600,7 +68597,7 @@
     "twilightCost": 3,
     "strength": 8,
     "vitality": 2,
-    "minionSiteNumber": 4,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_07_189.jpg",
     "i18n": {
       "en": {
@@ -68645,7 +68642,7 @@
     "twilightCost": 2,
     "strength": 6,
     "vitality": 2,
-    "minionSiteNumber": 4,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_07_190.jpg",
     "i18n": {
       "en": {
@@ -68685,7 +68682,7 @@
     "twilightCost": 7,
     "strength": 15,
     "vitality": 4,
-    "minionSiteNumber": 4,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_07_191.jpg",
     "i18n": {
       "en": {
@@ -68727,7 +68724,7 @@
     "twilightCost": 2,
     "strength": 5,
     "vitality": 2,
-    "minionSiteNumber": 4,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_07_192.jpg",
     "i18n": {
       "en": {
@@ -68772,7 +68769,7 @@
     "twilightCost": 2,
     "strength": 6,
     "vitality": 2,
-    "minionSiteNumber": 4,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_07_193.jpg",
     "i18n": {
       "en": {
@@ -68817,7 +68814,7 @@
     "twilightCost": 3,
     "strength": 7,
     "vitality": 2,
-    "minionSiteNumber": 4,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_07_194.jpg",
     "i18n": {
       "en": {
@@ -68913,7 +68910,7 @@
     "twilightCost": 5,
     "strength": 11,
     "vitality": 3,
-    "minionSiteNumber": 4,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_07_196.jpg",
     "i18n": {
       "en": {
@@ -68958,7 +68955,7 @@
     "twilightCost": 7,
     "strength": 15,
     "vitality": 4,
-    "minionSiteNumber": 4,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_07_197.jpg",
     "i18n": {
       "en": {
@@ -69000,7 +68997,7 @@
     "twilightCost": 2,
     "strength": 7,
     "vitality": 1,
-    "minionSiteNumber": 4,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_07_198.jpg",
     "i18n": {
       "en": {
@@ -69042,7 +69039,7 @@
     "twilightCost": 2,
     "strength": 6,
     "vitality": 2,
-    "minionSiteNumber": 4,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_07_199.jpg",
     "i18n": {
       "en": {
@@ -69084,7 +69081,7 @@
     "twilightCost": 4,
     "strength": 9,
     "vitality": 2,
-    "minionSiteNumber": 4,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_07_200.jpg",
     "i18n": {
       "en": {
@@ -69126,7 +69123,7 @@
     "twilightCost": 2,
     "strength": 6,
     "vitality": 2,
-    "minionSiteNumber": 4,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_07_201.jpg",
     "i18n": {
       "en": {
@@ -69168,7 +69165,7 @@
     "twilightCost": 1,
     "strength": 3,
     "vitality": 1,
-    "minionSiteNumber": 4,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_07_202.jpg",
     "i18n": {
       "en": {
@@ -69498,7 +69495,7 @@
     "twilightCost": 6,
     "strength": 12,
     "vitality": 3,
-    "minionSiteNumber": 3,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_07_210.jpg",
     "i18n": {
       "en": {
@@ -69545,7 +69542,7 @@
     "twilightCost": 6,
     "strength": 11,
     "vitality": 4,
-    "minionSiteNumber": 3,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_07_212.jpg",
     "i18n": {
       "en": {
@@ -69590,7 +69587,7 @@
     "twilightCost": 4,
     "strength": 9,
     "vitality": 2,
-    "minionSiteNumber": 3,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_07_213.jpg",
     "i18n": {
       "en": {
@@ -69635,7 +69632,7 @@
     "twilightCost": 4,
     "strength": 9,
     "vitality": 2,
-    "minionSiteNumber": 3,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_07_214.jpg",
     "i18n": {
       "en": {
@@ -69688,7 +69685,7 @@
     "twilightCost": 5,
     "strength": 10,
     "vitality": 3,
-    "minionSiteNumber": 2,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_07_215.jpg",
     "i18n": {
       "en": {
@@ -69737,7 +69734,7 @@
     "twilightCost": 5,
     "strength": 10,
     "vitality": 3,
-    "minionSiteNumber": 2,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_07_216.jpg",
     "i18n": {
       "en": {
@@ -69783,7 +69780,7 @@
     "twilightCost": 4,
     "strength": 9,
     "vitality": 2,
-    "minionSiteNumber": 3,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_07_217.jpg",
     "i18n": {
       "en": {
@@ -69833,7 +69830,7 @@
     "twilightCost": 4,
     "strength": 9,
     "vitality": 3,
-    "minionSiteNumber": 3,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_07_218.jpg",
     "i18n": {
       "en": {
@@ -69883,7 +69880,7 @@
     "twilightCost": 6,
     "strength": 12,
     "vitality": 3,
-    "minionSiteNumber": 3,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_07_219.jpg",
     "i18n": {
       "en": {
@@ -71843,7 +71840,7 @@
     "twilightCost": 9,
     "strength": 19,
     "vitality": 5,
-    "minionSiteNumber": 6,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_07_264.jpg",
     "i18n": {
       "en": {
@@ -72074,7 +72071,7 @@
     "twilightCost": 3,
     "strength": 9,
     "vitality": 2,
-    "minionSiteNumber": 5,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_07_270.jpg",
     "i18n": {
       "en": {
@@ -72118,7 +72115,7 @@
     "twilightCost": 3,
     "strength": 9,
     "vitality": 2,
-    "minionSiteNumber": 5,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_07_271.jpg",
     "i18n": {
       "en": {
@@ -72159,7 +72156,7 @@
     "twilightCost": 3,
     "strength": 9,
     "vitality": 2,
-    "minionSiteNumber": 5,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_07_272.jpg",
     "i18n": {
       "en": {
@@ -72203,7 +72200,7 @@
     "twilightCost": 3,
     "strength": 9,
     "vitality": 2,
-    "minionSiteNumber": 5,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_07_273.jpg",
     "i18n": {
       "en": {
@@ -72247,7 +72244,7 @@
     "twilightCost": 5,
     "strength": 12,
     "vitality": 2,
-    "minionSiteNumber": 5,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_07_274.jpg",
     "i18n": {
       "en": {
@@ -72288,7 +72285,7 @@
     "twilightCost": 4,
     "strength": 10,
     "vitality": 2,
-    "minionSiteNumber": 5,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_07_275.jpg",
     "i18n": {
       "en": {
@@ -72332,7 +72329,7 @@
     "twilightCost": 4,
     "strength": 10,
     "vitality": 2,
-    "minionSiteNumber": 5,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_07_276.jpg",
     "i18n": {
       "en": {
@@ -72376,7 +72373,7 @@
     "twilightCost": 3,
     "strength": 9,
     "vitality": 2,
-    "minionSiteNumber": 5,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_07_277.jpg",
     "i18n": {
       "en": {
@@ -72420,7 +72417,7 @@
     "twilightCost": 3,
     "strength": 9,
     "vitality": 2,
-    "minionSiteNumber": 5,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_07_278.jpg",
     "i18n": {
       "en": {
@@ -72464,7 +72461,7 @@
     "twilightCost": 6,
     "strength": 14,
     "vitality": 4,
-    "minionSiteNumber": 5,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_07_279.jpg",
     "i18n": {
       "en": {
@@ -72609,7 +72606,7 @@
     "twilightCost": 10,
     "strength": 21,
     "vitality": 5,
-    "minionSiteNumber": 6,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_07_282.jpg",
     "i18n": {
       "en": {
@@ -72700,7 +72697,7 @@
     "twilightCost": 3,
     "strength": 9,
     "vitality": 3,
-    "minionSiteNumber": 6,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_07_284.jpg",
     "i18n": {
       "en": {
@@ -72745,7 +72742,7 @@
     "twilightCost": 2,
     "strength": 7,
     "vitality": 2,
-    "minionSiteNumber": 6,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_07_285.jpg",
     "i18n": {
       "en": {
@@ -72787,7 +72784,7 @@
     "twilightCost": 2,
     "strength": 7,
     "vitality": 2,
-    "minionSiteNumber": 6,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_07_286.jpg",
     "i18n": {
       "en": {
@@ -72832,7 +72829,7 @@
     "twilightCost": 3,
     "strength": 9,
     "vitality": 3,
-    "minionSiteNumber": 6,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_07_287.jpg",
     "i18n": {
       "en": {
@@ -72873,7 +72870,7 @@
     "twilightCost": 3,
     "strength": 8,
     "vitality": 2,
-    "minionSiteNumber": 6,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_07_288.jpg",
     "i18n": {
       "en": {
@@ -72918,7 +72915,7 @@
     "twilightCost": 4,
     "strength": 10,
     "vitality": 2,
-    "minionSiteNumber": 6,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_07_289.jpg",
     "i18n": {
       "en": {
@@ -72963,7 +72960,7 @@
     "twilightCost": 1,
     "strength": 3,
     "vitality": 2,
-    "minionSiteNumber": 6,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_07_290.jpg",
     "i18n": {
       "en": {
@@ -73008,7 +73005,7 @@
     "twilightCost": 2,
     "strength": 6,
     "vitality": 2,
-    "minionSiteNumber": 6,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_07_291.jpg",
     "i18n": {
       "en": {
@@ -73053,7 +73050,7 @@
     "twilightCost": 3,
     "strength": 9,
     "vitality": 3,
-    "minionSiteNumber": 6,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_07_292.jpg",
     "i18n": {
       "en": {
@@ -73098,7 +73095,7 @@
     "twilightCost": 3,
     "strength": 9,
     "vitality": 3,
-    "minionSiteNumber": 6,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_07_293.jpg",
     "i18n": {
       "en": {
@@ -73143,7 +73140,7 @@
     "twilightCost": 6,
     "strength": 15,
     "vitality": 4,
-    "minionSiteNumber": 6,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_07_294.jpg",
     "i18n": {
       "en": {
@@ -73184,7 +73181,7 @@
     "twilightCost": 4,
     "strength": 10,
     "vitality": 3,
-    "minionSiteNumber": 6,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_07_295.jpg",
     "i18n": {
       "en": {
@@ -73229,7 +73226,7 @@
     "twilightCost": 2,
     "strength": 7,
     "vitality": 2,
-    "minionSiteNumber": 6,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_07_296.jpg",
     "i18n": {
       "en": {
@@ -73271,7 +73268,7 @@
     "twilightCost": 2,
     "strength": 6,
     "vitality": 2,
-    "minionSiteNumber": 6,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_07_297.jpg",
     "i18n": {
       "en": {
@@ -73315,7 +73312,7 @@
     "twilightCost": 2,
     "strength": 6,
     "vitality": 2,
-    "minionSiteNumber": 6,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_07_298.jpg",
     "i18n": {
       "en": {
@@ -73356,7 +73353,7 @@
     "twilightCost": 3,
     "strength": 9,
     "vitality": 3,
-    "minionSiteNumber": 6,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_07_299.jpg",
     "i18n": {
       "en": {
@@ -73401,7 +73398,7 @@
     "twilightCost": 2,
     "strength": 7,
     "vitality": 2,
-    "minionSiteNumber": 6,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_07_300.jpg",
     "i18n": {
       "en": {
@@ -73443,7 +73440,7 @@
     "twilightCost": 4,
     "strength": 11,
     "vitality": 3,
-    "minionSiteNumber": 6,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_07_301.jpg",
     "i18n": {
       "en": {
@@ -73485,7 +73482,7 @@
     "twilightCost": 3,
     "strength": 9,
     "vitality": 3,
-    "minionSiteNumber": 6,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_07_302.jpg",
     "i18n": {
       "en": {
@@ -73530,7 +73527,7 @@
     "twilightCost": 1,
     "strength": 5,
     "vitality": 2,
-    "minionSiteNumber": 6,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_07_303.jpg",
     "i18n": {
       "en": {
@@ -73571,7 +73568,7 @@
     "twilightCost": 3,
     "strength": 9,
     "vitality": 3,
-    "minionSiteNumber": 6,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_07_304.jpg",
     "i18n": {
       "en": {
@@ -73613,7 +73610,7 @@
     "twilightCost": 3,
     "strength": 9,
     "vitality": 3,
-    "minionSiteNumber": 6,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_07_305.jpg",
     "i18n": {
       "en": {
@@ -73658,7 +73655,7 @@
     "twilightCost": 4,
     "strength": 11,
     "vitality": 3,
-    "minionSiteNumber": 6,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_07_306.jpg",
     "i18n": {
       "en": {
@@ -73699,7 +73696,7 @@
     "twilightCost": 3,
     "strength": 8,
     "vitality": 2,
-    "minionSiteNumber": 6,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_07_307.jpg",
     "i18n": {
       "en": {
@@ -73900,7 +73897,7 @@
     "twilightCost": 5,
     "strength": 12,
     "vitality": 3,
-    "minionSiteNumber": 5,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_07_311.jpg",
     "i18n": {
       "en": {
@@ -75765,7 +75762,7 @@
     "twilightCost": 6,
     "strength": 8,
     "vitality": 8,
-    "minionSiteNumber": 8,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_08_026.jpg",
     "i18n": {
       "en": {
@@ -76833,7 +76830,7 @@
     "twilightCost": 6,
     "strength": 12,
     "vitality": 3,
-    "minionSiteNumber": 4,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_08_049.jpg",
     "i18n": {
       "en": {
@@ -76960,7 +76957,7 @@
     "twilightCost": 3,
     "strength": 8,
     "vitality": 2,
-    "minionSiteNumber": 4,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_08_053.jpg",
     "i18n": {
       "en": {
@@ -77005,7 +77002,7 @@
     "twilightCost": 3,
     "strength": 8,
     "vitality": 2,
-    "minionSiteNumber": 4,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_08_054.jpg",
     "i18n": {
       "en": {
@@ -77053,7 +77050,7 @@
     "twilightCost": 5,
     "strength": 10,
     "vitality": 3,
-    "minionSiteNumber": 4,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_08_055.jpg",
     "i18n": {
       "en": {
@@ -77098,7 +77095,7 @@
     "twilightCost": 1,
     "strength": 5,
     "vitality": 1,
-    "minionSiteNumber": 4,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_08_056.jpg",
     "i18n": {
       "en": {
@@ -77143,7 +77140,7 @@
     "twilightCost": 2,
     "strength": 6,
     "vitality": 2,
-    "minionSiteNumber": 4,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_08_058.jpg",
     "i18n": {
       "en": {
@@ -77226,7 +77223,7 @@
     "twilightCost": 5,
     "strength": 11,
     "vitality": 3,
-    "minionSiteNumber": 4,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_08_060.jpg",
     "i18n": {
       "en": {
@@ -77308,7 +77305,7 @@
     "twilightCost": 5,
     "strength": 11,
     "vitality": 3,
-    "minionSiteNumber": 4,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_08_062.jpg",
     "i18n": {
       "en": {
@@ -77725,7 +77722,7 @@
     "twilightCost": 7,
     "strength": 13,
     "vitality": 3,
-    "minionSiteNumber": 4,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_08_072.jpg",
     "i18n": {
       "en": {
@@ -77809,7 +77806,7 @@
     "twilightCost": 3,
     "strength": 8,
     "vitality": 2,
-    "minionSiteNumber": 4,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_08_074.jpg",
     "i18n": {
       "en": {
@@ -77851,7 +77848,7 @@
     "twilightCost": 3,
     "strength": 8,
     "vitality": 2,
-    "minionSiteNumber": 4,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_08_075.jpg",
     "i18n": {
       "en": {
@@ -77889,7 +77886,7 @@
     "twilightCost": 3,
     "strength": 8,
     "vitality": 2,
-    "minionSiteNumber": 4,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_08_076.jpg",
     "i18n": {
       "en": {
@@ -77934,7 +77931,7 @@
     "twilightCost": 3,
     "strength": 8,
     "vitality": 2,
-    "minionSiteNumber": 4,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_08_077.jpg",
     "i18n": {
       "en": {
@@ -78019,7 +78016,7 @@
     "twilightCost": 6,
     "strength": 12,
     "vitality": 3,
-    "minionSiteNumber": 3,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_08_079.jpg",
     "i18n": {
       "en": {
@@ -78066,7 +78063,7 @@
     "twilightCost": 4,
     "strength": 9,
     "vitality": 2,
-    "minionSiteNumber": 3,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_08_080.jpg",
     "i18n": {
       "en": {
@@ -78120,7 +78117,7 @@
     "twilightCost": 4,
     "strength": 9,
     "vitality": 3,
-    "minionSiteNumber": 3,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_08_081.jpg",
     "i18n": {
       "en": {
@@ -78260,7 +78257,7 @@
     "twilightCost": 8,
     "strength": 14,
     "vitality": 4,
-    "minionSiteNumber": 3,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_08_084.jpg",
     "i18n": {
       "en": {
@@ -78744,7 +78741,7 @@
     "twilightCost": 3,
     "strength": 9,
     "vitality": 2,
-    "minionSiteNumber": 5,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_08_094.jpg",
     "i18n": {
       "en": {
@@ -78787,7 +78784,7 @@
     "twilightCost": 2,
     "strength": 7,
     "vitality": 2,
-    "minionSiteNumber": 5,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_08_095.jpg",
     "i18n": {
       "en": {
@@ -78851,7 +78848,7 @@
     "twilightCost": 5,
     "strength": 12,
     "vitality": 3,
-    "minionSiteNumber": 5,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_08_096.jpg",
     "i18n": {
       "en": {
@@ -78898,7 +78895,7 @@
     "twilightCost": 3,
     "strength": 9,
     "vitality": 2,
-    "minionSiteNumber": 5,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_08_097.jpg",
     "i18n": {
       "en": {
@@ -78943,7 +78940,7 @@
     "twilightCost": 3,
     "strength": 9,
     "vitality": 2,
-    "minionSiteNumber": 5,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_08_098.jpg",
     "i18n": {
       "en": {
@@ -78991,7 +78988,7 @@
     "twilightCost": 4,
     "strength": 10,
     "vitality": 2,
-    "minionSiteNumber": 5,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_08_099.jpg",
     "i18n": {
       "en": {
@@ -79039,7 +79036,7 @@
     "twilightCost": 4,
     "strength": 10,
     "vitality": 2,
-    "minionSiteNumber": 5,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_08_100.jpg",
     "i18n": {
       "en": {
@@ -79083,7 +79080,7 @@
     "twilightCost": 4,
     "strength": 10,
     "vitality": 2,
-    "minionSiteNumber": 5,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_08_101.jpg",
     "i18n": {
       "en": {
@@ -79129,7 +79126,7 @@
     "twilightCost": 9,
     "strength": 16,
     "vitality": 4,
-    "minionSiteNumber": 5,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_08_102.jpg",
     "i18n": {
       "en": {
@@ -79217,7 +79214,7 @@
     "twilightCost": 10,
     "strength": 18,
     "vitality": 4,
-    "minionSiteNumber": 5,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_08_105.jpg",
     "i18n": {
       "en": {
@@ -79260,7 +79257,7 @@
     "twilightCost": 8,
     "strength": 20,
     "vitality": 4,
-    "minionSiteNumber": 5,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_08_106.jpg",
     "i18n": {
       "en": {
@@ -79380,7 +79377,7 @@
     "twilightCost": 10,
     "strength": 14,
     "vitality": 4,
-    "minionSiteNumber": 5,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_08_108.jpg",
     "i18n": {
       "en": {
@@ -79944,7 +79941,7 @@
     "twilightCost": 4,
     "strength": 9,
     "vitality": 1,
-    "minionSiteNumber": 3,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_09_002.jpg",
     "i18n": {
       "en": {
@@ -81279,7 +81276,7 @@
     "twilightCost": 2,
     "strength": 5,
     "vitality": 4,
-    "minionSiteNumber": 3,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_09_028.jpg",
     "i18n": {
       "en": {
@@ -81981,7 +81978,7 @@
     "twilightCost": 7,
     "strength": 15,
     "vitality": 3,
-    "minionSiteNumber": 4,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_09_041.jpg",
     "i18n": {
       "en": {
@@ -82338,7 +82335,7 @@
     "twilightCost": 18,
     "strength": 24,
     "vitality": 5,
-    "minionSiteNumber": 6,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_09_048.jpg",
     "i18n": {
       "en": {
@@ -83458,7 +83455,7 @@
     "twilightCost": 2,
     "strength": 5,
     "vitality": 4,
-    "minionSiteNumber": 3,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_10_021.jpg",
     "i18n": {
       "en": {
@@ -83551,7 +83548,7 @@
     "twilightCost": 6,
     "strength": 8,
     "vitality": 8,
-    "minionSiteNumber": 8,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_10_023.jpg",
     "i18n": {
       "en": {
@@ -84172,7 +84169,7 @@
     "twilightCost": 2,
     "strength": 6,
     "vitality": 2,
-    "minionSiteNumber": 4,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_10_037.jpg",
     "i18n": {
       "en": {
@@ -84217,7 +84214,7 @@
     "twilightCost": 5,
     "strength": 10,
     "vitality": 3,
-    "minionSiteNumber": 4,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_10_038.jpg",
     "i18n": {
       "en": {
@@ -84262,7 +84259,7 @@
     "twilightCost": 4,
     "strength": 9,
     "vitality": 2,
-    "minionSiteNumber": 4,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_10_039.jpg",
     "i18n": {
       "en": {
@@ -84324,7 +84321,7 @@
     "twilightCost": 6,
     "strength": 11,
     "vitality": 3,
-    "minionSiteNumber": 4,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_10_040.jpg",
     "i18n": {
       "en": {
@@ -84370,7 +84367,7 @@
     "twilightCost": 5,
     "strength": 11,
     "vitality": 3,
-    "minionSiteNumber": 4,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_10_041.jpg",
     "i18n": {
       "en": {
@@ -84415,7 +84412,7 @@
     "twilightCost": 5,
     "strength": 11,
     "vitality": 3,
-    "minionSiteNumber": 4,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_10_042.jpg",
     "i18n": {
       "en": {
@@ -84553,7 +84550,7 @@
     "twilightCost": 5,
     "strength": 11,
     "vitality": 3,
-    "minionSiteNumber": 4,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_10_045.jpg",
     "i18n": {
       "en": {
@@ -84749,7 +84746,7 @@
     "twilightCost": 3,
     "strength": 8,
     "vitality": 2,
-    "minionSiteNumber": 4,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_10_049.jpg",
     "i18n": {
       "en": {
@@ -84794,7 +84791,7 @@
     "twilightCost": 3,
     "strength": 8,
     "vitality": 2,
-    "minionSiteNumber": 4,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_10_050.jpg",
     "i18n": {
       "en": {
@@ -84962,7 +84959,7 @@
     "twilightCost": 3,
     "strength": 8,
     "vitality": 2,
-    "minionSiteNumber": 4,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_10_054.jpg",
     "i18n": {
       "en": {
@@ -85007,7 +85004,7 @@
     "twilightCost": 3,
     "strength": 8,
     "vitality": 2,
-    "minionSiteNumber": 4,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_10_055.jpg",
     "i18n": {
       "en": {
@@ -85052,7 +85049,7 @@
     "twilightCost": 4,
     "strength": 9,
     "vitality": 2,
-    "minionSiteNumber": 4,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_10_056.jpg",
     "i18n": {
       "en": {
@@ -85094,7 +85091,7 @@
     "twilightCost": 4,
     "strength": 9,
     "vitality": 2,
-    "minionSiteNumber": 4,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_10_057.jpg",
     "i18n": {
       "en": {
@@ -85177,7 +85174,7 @@
     "twilightCost": 5,
     "strength": 11,
     "vitality": 3,
-    "minionSiteNumber": 4,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_10_059.jpg",
     "i18n": {
       "en": {
@@ -85311,7 +85308,7 @@
     "twilightCost": 3,
     "strength": 8,
     "vitality": 2,
-    "minionSiteNumber": 4,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_10_062.jpg",
     "i18n": {
       "en": {
@@ -85356,7 +85353,7 @@
     "twilightCost": 6,
     "strength": 12,
     "vitality": 3,
-    "minionSiteNumber": 4,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_10_063.jpg",
     "i18n": {
       "en": {
@@ -85530,7 +85527,7 @@
     "twilightCost": 5,
     "strength": 10,
     "vitality": 3,
-    "minionSiteNumber": 3,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_10_067.jpg",
     "i18n": {
       "en": {
@@ -85583,7 +85580,7 @@
     "twilightCost": 6,
     "strength": 11,
     "vitality": 4,
-    "minionSiteNumber": 3,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_10_068.jpg",
     "i18n": {
       "en": {
@@ -85637,7 +85634,7 @@
     "twilightCost": 4,
     "strength": 9,
     "vitality": 2,
-    "minionSiteNumber": 3,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_10_069.jpg",
     "i18n": {
       "en": {
@@ -85691,7 +85688,7 @@
     "twilightCost": 5,
     "strength": 10,
     "vitality": 3,
-    "minionSiteNumber": 2,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_10_070.jpg",
     "i18n": {
       "en": {
@@ -85744,7 +85741,7 @@
     "twilightCost": 6,
     "strength": 12,
     "vitality": 3,
-    "minionSiteNumber": 3,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_10_071.jpg",
     "i18n": {
       "en": {
@@ -85940,7 +85937,7 @@
     "twilightCost": 3,
     "strength": 10,
     "vitality": 3,
-    "minionSiteNumber": 6,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_10_075.jpg",
     "i18n": {
       "en": {
@@ -85985,7 +85982,7 @@
     "twilightCost": 3,
     "strength": 9,
     "vitality": 3,
-    "minionSiteNumber": 6,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_10_076.jpg",
     "i18n": {
       "en": {
@@ -86027,7 +86024,7 @@
     "twilightCost": 3,
     "strength": 9,
     "vitality": 3,
-    "minionSiteNumber": 6,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_10_077.jpg",
     "i18n": {
       "en": {
@@ -86072,7 +86069,7 @@
     "twilightCost": 2,
     "strength": 7,
     "vitality": 2,
-    "minionSiteNumber": 6,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_10_078.jpg",
     "i18n": {
       "en": {
@@ -86215,7 +86212,7 @@
     "twilightCost": 3,
     "strength": 9,
     "vitality": 2,
-    "minionSiteNumber": 6,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_10_081.jpg",
     "i18n": {
       "en": {
@@ -86260,7 +86257,7 @@
     "twilightCost": 3,
     "strength": 8,
     "vitality": 2,
-    "minionSiteNumber": 6,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_10_082.jpg",
     "i18n": {
       "en": {
@@ -86305,7 +86302,7 @@
     "twilightCost": 2,
     "strength": 7,
     "vitality": 2,
-    "minionSiteNumber": 6,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_10_083.jpg",
     "i18n": {
       "en": {
@@ -86350,7 +86347,7 @@
     "twilightCost": 2,
     "strength": 8,
     "vitality": 2,
-    "minionSiteNumber": 6,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_10_084.jpg",
     "i18n": {
       "en": {
@@ -86440,7 +86437,7 @@
     "twilightCost": 4,
     "strength": 10,
     "vitality": 2,
-    "minionSiteNumber": 5,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_10_086.jpg",
     "i18n": {
       "en": {
@@ -86485,7 +86482,7 @@
     "twilightCost": 5,
     "strength": 12,
     "vitality": 3,
-    "minionSiteNumber": 5,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_10_087.jpg",
     "i18n": {
       "en": {
@@ -86574,7 +86571,7 @@
     "twilightCost": 3,
     "strength": 9,
     "vitality": 3,
-    "minionSiteNumber": 6,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_10_090.jpg",
     "i18n": {
       "en": {
@@ -86619,7 +86616,7 @@
     "twilightCost": 3,
     "strength": 9,
     "vitality": 3,
-    "minionSiteNumber": 6,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_10_091.jpg",
     "i18n": {
       "en": {
@@ -86668,7 +86665,7 @@
     "twilightCost": 3,
     "strength": 9,
     "vitality": 2,
-    "minionSiteNumber": 5,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_10_092.jpg",
     "i18n": {
       "en": {
@@ -86708,7 +86705,7 @@
     "twilightCost": 3,
     "strength": 9,
     "vitality": 3,
-    "minionSiteNumber": 6,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_10_093.jpg",
     "i18n": {
       "en": {
@@ -86768,7 +86765,7 @@
     "twilightCost": 4,
     "strength": 10,
     "vitality": 3,
-    "minionSiteNumber": 6,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_10_094.jpg",
     "i18n": {
       "en": {
@@ -86813,7 +86810,7 @@
     "twilightCost": 4,
     "strength": 10,
     "vitality": 3,
-    "minionSiteNumber": 6,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_10_095.jpg",
     "i18n": {
       "en": {
@@ -86982,7 +86979,7 @@
     "twilightCost": 5,
     "strength": 13,
     "vitality": 3,
-    "minionSiteNumber": 6,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_10_099.jpg",
     "i18n": {
       "en": {
@@ -87089,7 +87086,7 @@
     "twilightCost": 7,
     "strength": 14,
     "vitality": 4,
-    "minionSiteNumber": 6,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_10_101.jpg",
     "i18n": {
       "en": {
@@ -88176,6 +88173,9 @@
     "kind": "FREE_PEOPLE",
     "type": "POSSESSION",
     "subtype": "HAND-WEAPON",
+    "grantsKeywords": [
+      "MUSTER"
+    ],
     "attachedTo": [
       [
         "DWARF"
@@ -89692,7 +89692,7 @@
     "twilightCost": 2,
     "strength": 5,
     "vitality": 4,
-    "minionSiteNumber": 3,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_11_042.jpg",
     "i18n": {
       "en": {
@@ -90713,7 +90713,7 @@
     "twilightCost": 3,
     "strength": 7,
     "vitality": 1,
-    "minionSiteNumber": 4,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_11_067.jpg",
     "i18n": {
       "en": {
@@ -90761,7 +90761,7 @@
     "twilightCost": 4,
     "strength": 10,
     "vitality": 3,
-    "minionSiteNumber": 4,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_11_068.jpg",
     "i18n": {
       "en": {
@@ -90802,7 +90802,7 @@
     "twilightCost": 4,
     "strength": 11,
     "vitality": 3,
-    "minionSiteNumber": 4,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_11_069.jpg",
     "i18n": {
       "en": {
@@ -90935,7 +90935,7 @@
     "twilightCost": 3,
     "strength": 8,
     "vitality": 2,
-    "minionSiteNumber": 4,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_11_072.jpg",
     "i18n": {
       "en": {
@@ -90980,7 +90980,7 @@
     "twilightCost": 4,
     "strength": 10,
     "vitality": 3,
-    "minionSiteNumber": 4,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_11_073.jpg",
     "i18n": {
       "en": {
@@ -91025,7 +91025,7 @@
     "twilightCost": 5,
     "strength": 12,
     "vitality": 3,
-    "minionSiteNumber": 4,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_11_074.jpg",
     "i18n": {
       "en": {
@@ -91073,7 +91073,7 @@
     "twilightCost": 5,
     "strength": 13,
     "vitality": 3,
-    "minionSiteNumber": 4,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_11_075.jpg",
     "i18n": {
       "en": {
@@ -91121,7 +91121,7 @@
     "twilightCost": 4,
     "strength": 9,
     "vitality": 3,
-    "minionSiteNumber": 4,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_11_076.jpg",
     "i18n": {
       "en": {
@@ -91166,7 +91166,7 @@
     "twilightCost": 4,
     "strength": 10,
     "vitality": 3,
-    "minionSiteNumber": 4,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_11_077.jpg",
     "i18n": {
       "en": {
@@ -91255,7 +91255,7 @@
     "twilightCost": 3,
     "strength": 9,
     "vitality": 2,
-    "minionSiteNumber": 4,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_11_079.jpg",
     "i18n": {
       "en": {
@@ -91300,7 +91300,7 @@
     "twilightCost": 6,
     "strength": 12,
     "vitality": 3,
-    "minionSiteNumber": 4,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_11_080.jpg",
     "i18n": {
       "en": {
@@ -91345,7 +91345,7 @@
     "twilightCost": 3,
     "strength": 9,
     "vitality": 2,
-    "minionSiteNumber": 4,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_11_081.jpg",
     "i18n": {
       "en": {
@@ -91387,7 +91387,7 @@
     "twilightCost": 3,
     "strength": 7,
     "vitality": 3,
-    "minionSiteNumber": 4,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_11_082.jpg",
     "i18n": {
       "en": {
@@ -91429,7 +91429,7 @@
     "twilightCost": 4,
     "strength": 11,
     "vitality": 3,
-    "minionSiteNumber": 4,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_11_083.jpg",
     "i18n": {
       "en": {
@@ -91477,7 +91477,7 @@
     "twilightCost": 4,
     "strength": 10,
     "vitality": 2,
-    "minionSiteNumber": 4,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_11_084.jpg",
     "i18n": {
       "en": {
@@ -91522,7 +91522,7 @@
     "twilightCost": 5,
     "strength": 13,
     "vitality": 3,
-    "minionSiteNumber": 4,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_11_085.jpg",
     "i18n": {
       "en": {
@@ -91564,7 +91564,7 @@
     "twilightCost": 3,
     "strength": 8,
     "vitality": 2,
-    "minionSiteNumber": 4,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_11_086.jpg",
     "i18n": {
       "en": {
@@ -91667,7 +91667,7 @@
     "twilightCost": 6,
     "strength": 14,
     "vitality": 3,
-    "minionSiteNumber": 4,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_11_088.jpg",
     "i18n": {
       "en": {
@@ -91761,7 +91761,7 @@
     "twilightCost": 2,
     "strength": 4,
     "vitality": 1,
-    "minionSiteNumber": 4,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_11_090.jpg",
     "i18n": {
       "en": {
@@ -91883,7 +91883,7 @@
     "twilightCost": 3,
     "strength": 9,
     "vitality": 2,
-    "minionSiteNumber": 4,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_11_093.jpg",
     "i18n": {
       "en": {
@@ -92064,7 +92064,7 @@
     "twilightCost": 4,
     "strength": 10,
     "vitality": 3,
-    "minionSiteNumber": 4,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_11_097.jpg",
     "i18n": {
       "en": {
@@ -92109,7 +92109,7 @@
     "twilightCost": 2,
     "strength": 6,
     "vitality": 1,
-    "minionSiteNumber": 4,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_11_098.jpg",
     "i18n": {
       "en": {
@@ -92154,7 +92154,7 @@
     "twilightCost": 3,
     "strength": 9,
     "vitality": 2,
-    "minionSiteNumber": 4,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_11_099.jpg",
     "i18n": {
       "en": {
@@ -92199,7 +92199,7 @@
     "twilightCost": 4,
     "strength": 10,
     "vitality": 2,
-    "minionSiteNumber": 4,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_11_100.jpg",
     "i18n": {
       "en": {
@@ -92241,7 +92241,7 @@
     "twilightCost": 3,
     "strength": 8,
     "vitality": 2,
-    "minionSiteNumber": 4,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_11_101.jpg",
     "i18n": {
       "en": {
@@ -92283,7 +92283,7 @@
     "twilightCost": 4,
     "strength": 11,
     "vitality": 3,
-    "minionSiteNumber": 4,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_11_102.jpg",
     "i18n": {
       "en": {
@@ -92328,7 +92328,7 @@
     "twilightCost": 2,
     "strength": 8,
     "vitality": 1,
-    "minionSiteNumber": 4,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_11_103.jpg",
     "i18n": {
       "en": {
@@ -92514,7 +92514,7 @@
     "twilightCost": 3,
     "strength": 7,
     "vitality": 2,
-    "minionSiteNumber": 4,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_11_107.jpg",
     "i18n": {
       "en": {
@@ -92578,7 +92578,7 @@
     "twilightCost": 6,
     "strength": 13,
     "vitality": 3,
-    "minionSiteNumber": 5,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_11_108.jpg",
     "i18n": {
       "en": {
@@ -92717,7 +92717,7 @@
     "twilightCost": 5,
     "strength": 13,
     "vitality": 2,
-    "minionSiteNumber": 4,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_11_111.jpg",
     "i18n": {
       "en": {
@@ -92800,7 +92800,7 @@
     "twilightCost": 3,
     "strength": 9,
     "vitality": 2,
-    "minionSiteNumber": 4,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_11_113.jpg",
     "i18n": {
       "en": {
@@ -92896,7 +92896,7 @@
     "twilightCost": 3,
     "strength": 9,
     "vitality": 2,
-    "minionSiteNumber": 4,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_11_115.jpg",
     "i18n": {
       "en": {
@@ -92938,7 +92938,7 @@
     "twilightCost": 2,
     "strength": 7,
     "vitality": 1,
-    "minionSiteNumber": 4,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_11_116.jpg",
     "i18n": {
       "en": {
@@ -92980,7 +92980,7 @@
     "twilightCost": 4,
     "strength": 10,
     "vitality": 3,
-    "minionSiteNumber": 4,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_11_117.jpg",
     "i18n": {
       "en": {
@@ -93066,7 +93066,7 @@
     "twilightCost": 4,
     "strength": 11,
     "vitality": 2,
-    "minionSiteNumber": 4,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_11_119.jpg",
     "i18n": {
       "en": {
@@ -93111,7 +93111,7 @@
     "twilightCost": 3,
     "strength": 9,
     "vitality": 2,
-    "minionSiteNumber": 4,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_11_120.jpg",
     "i18n": {
       "en": {
@@ -93153,7 +93153,7 @@
     "twilightCost": 3,
     "strength": 9,
     "vitality": 2,
-    "minionSiteNumber": 4,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_11_121.jpg",
     "i18n": {
       "en": {
@@ -93195,7 +93195,7 @@
     "twilightCost": 4,
     "strength": 8,
     "vitality": 3,
-    "minionSiteNumber": 4,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_11_122.jpg",
     "i18n": {
       "en": {
@@ -93237,7 +93237,7 @@
     "twilightCost": 4,
     "strength": 12,
     "vitality": 2,
-    "minionSiteNumber": 4,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_11_124.jpg",
     "i18n": {
       "en": {
@@ -93279,7 +93279,7 @@
     "twilightCost": 3,
     "strength": 7,
     "vitality": 2,
-    "minionSiteNumber": 4,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_11_125.jpg",
     "i18n": {
       "en": {
@@ -93321,7 +93321,7 @@
     "twilightCost": 3,
     "strength": 10,
     "vitality": 2,
-    "minionSiteNumber": 4,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_11_126.jpg",
     "i18n": {
       "en": {
@@ -93363,7 +93363,7 @@
     "twilightCost": 5,
     "strength": 12,
     "vitality": 3,
-    "minionSiteNumber": 4,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_11_127.jpg",
     "i18n": {
       "en": {
@@ -93451,7 +93451,7 @@
     "twilightCost": 3,
     "strength": 9,
     "vitality": 2,
-    "minionSiteNumber": 4,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_11_129.jpg",
     "i18n": {
       "en": {
@@ -93557,7 +93557,7 @@
     "twilightCost": 3,
     "strength": 7,
     "vitality": 3,
-    "minionSiteNumber": 4,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_11_131.jpg",
     "i18n": {
       "en": {
@@ -93599,7 +93599,7 @@
     "twilightCost": 2,
     "strength": 6,
     "vitality": 1,
-    "minionSiteNumber": 4,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_11_132.jpg",
     "i18n": {
       "en": {
@@ -93641,7 +93641,7 @@
     "twilightCost": 3,
     "strength": 9,
     "vitality": 2,
-    "minionSiteNumber": 4,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_11_133.jpg",
     "i18n": {
       "en": {
@@ -93682,7 +93682,7 @@
     "twilightCost": 2,
     "strength": 7,
     "vitality": 1,
-    "minionSiteNumber": 4,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_11_134.jpg",
     "i18n": {
       "en": {
@@ -93743,7 +93743,7 @@
     "twilightCost": 7,
     "strength": 15,
     "vitality": 3,
-    "minionSiteNumber": 5,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_11_135.jpg",
     "i18n": {
       "en": {
@@ -93791,7 +93791,7 @@
     "twilightCost": 3,
     "strength": 6,
     "vitality": 2,
-    "minionSiteNumber": 4,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_11_136.jpg",
     "i18n": {
       "en": {
@@ -93833,7 +93833,7 @@
     "twilightCost": 1,
     "strength": 5,
     "vitality": 1,
-    "minionSiteNumber": 4,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_11_137.jpg",
     "i18n": {
       "en": {
@@ -93875,7 +93875,7 @@
     "twilightCost": 2,
     "strength": 6,
     "vitality": 2,
-    "minionSiteNumber": 4,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_11_138.jpg",
     "i18n": {
       "en": {
@@ -94059,7 +94059,7 @@
     "twilightCost": 2,
     "strength": 5,
     "vitality": 2,
-    "minionSiteNumber": 4,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_11_142.jpg",
     "i18n": {
       "en": {
@@ -94101,7 +94101,7 @@
     "twilightCost": 4,
     "strength": 8,
     "vitality": 3,
-    "minionSiteNumber": 4,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_11_143.jpg",
     "i18n": {
       "en": {
@@ -95712,7 +95712,7 @@
     "twilightCost": 5,
     "strength": 13,
     "vitality": 3,
-    "minionSiteNumber": 5,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_11_177.jpg",
     "i18n": {
       "en": {
@@ -95757,7 +95757,7 @@
     "twilightCost": 3,
     "strength": 8,
     "vitality": 2,
-    "minionSiteNumber": 5,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_11_178.jpg",
     "i18n": {
       "en": {
@@ -95805,7 +95805,7 @@
     "twilightCost": 3,
     "strength": 8,
     "vitality": 3,
-    "minionSiteNumber": 5,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_11_179.jpg",
     "i18n": {
       "en": {
@@ -95903,7 +95903,7 @@
     "twilightCost": 2,
     "strength": 7,
     "vitality": 2,
-    "minionSiteNumber": 5,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_11_181.jpg",
     "i18n": {
       "en": {
@@ -95989,7 +95989,7 @@
     "twilightCost": 3,
     "strength": 9,
     "vitality": 2,
-    "minionSiteNumber": 5,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_11_183.jpg",
     "i18n": {
       "en": {
@@ -96034,7 +96034,7 @@
     "twilightCost": 5,
     "strength": 13,
     "vitality": 3,
-    "minionSiteNumber": 5,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_11_184.jpg",
     "i18n": {
       "en": {
@@ -96121,7 +96121,7 @@
     "twilightCost": 3,
     "strength": 9,
     "vitality": 2,
-    "minionSiteNumber": 5,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_11_186.jpg",
     "i18n": {
       "en": {
@@ -96207,7 +96207,7 @@
     "twilightCost": 2,
     "strength": 5,
     "vitality": 2,
-    "minionSiteNumber": 5,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_11_188.jpg",
     "i18n": {
       "en": {
@@ -96252,7 +96252,7 @@
     "twilightCost": 4,
     "strength": 10,
     "vitality": 3,
-    "minionSiteNumber": 5,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_11_189.jpg",
     "i18n": {
       "en": {
@@ -96297,7 +96297,7 @@
     "twilightCost": 4,
     "strength": 11,
     "vitality": 2,
-    "minionSiteNumber": 5,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_11_190.jpg",
     "i18n": {
       "en": {
@@ -96436,7 +96436,7 @@
     "twilightCost": 3,
     "strength": 9,
     "vitality": 2,
-    "minionSiteNumber": 5,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_11_193.jpg",
     "i18n": {
       "en": {
@@ -96483,7 +96483,7 @@
     "twilightCost": 7,
     "strength": 13,
     "vitality": 3,
-    "minionSiteNumber": 5,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_11_194.jpg",
     "i18n": {
       "en": {
@@ -96534,7 +96534,7 @@
     "twilightCost": 3,
     "strength": 8,
     "vitality": 2,
-    "minionSiteNumber": 5,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_11_195.jpg",
     "i18n": {
       "en": {
@@ -96641,7 +96641,7 @@
     "twilightCost": 3,
     "strength": 7,
     "vitality": 2,
-    "minionSiteNumber": 5,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_11_197.jpg",
     "i18n": {
       "en": {
@@ -96686,7 +96686,7 @@
     "twilightCost": 4,
     "strength": 11,
     "vitality": 2,
-    "minionSiteNumber": 5,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_11_198.jpg",
     "i18n": {
       "en": {
@@ -96731,7 +96731,7 @@
     "twilightCost": 5,
     "strength": 14,
     "vitality": 3,
-    "minionSiteNumber": 5,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_11_199.jpg",
     "i18n": {
       "en": {
@@ -96773,7 +96773,7 @@
     "twilightCost": 3,
     "strength": 10,
     "vitality": 2,
-    "minionSiteNumber": 5,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_11_200.jpg",
     "i18n": {
       "en": {
@@ -96822,7 +96822,7 @@
     "twilightCost": 4,
     "strength": 8,
     "vitality": 3,
-    "minionSiteNumber": 5,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_11_201.jpg",
     "i18n": {
       "en": {
@@ -96867,7 +96867,7 @@
     "twilightCost": 4,
     "strength": 10,
     "vitality": 3,
-    "minionSiteNumber": 5,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_11_202.jpg",
     "i18n": {
       "en": {
@@ -96912,7 +96912,7 @@
     "twilightCost": 3,
     "strength": 9,
     "vitality": 2,
-    "minionSiteNumber": 5,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_11_203.jpg",
     "i18n": {
       "en": {
@@ -96958,7 +96958,7 @@
     "twilightCost": 6,
     "strength": 14,
     "vitality": 3,
-    "minionSiteNumber": 5,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_11_204.jpg",
     "i18n": {
       "en": {
@@ -97004,7 +97004,7 @@
     "twilightCost": 2,
     "strength": 6,
     "vitality": 2,
-    "minionSiteNumber": 5,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_11_205.jpg",
     "i18n": {
       "en": {
@@ -97049,7 +97049,7 @@
     "twilightCost": 3,
     "strength": 8,
     "vitality": 2,
-    "minionSiteNumber": 5,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_11_206.jpg",
     "i18n": {
       "en": {
@@ -97596,7 +97596,7 @@
     "twilightCost": 6,
     "strength": 12,
     "vitality": 3,
-    "minionSiteNumber": 3,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_11_219.jpg",
     "i18n": {
       "en": {
@@ -97646,7 +97646,7 @@
     "twilightCost": 5,
     "strength": 10,
     "vitality": 3,
-    "minionSiteNumber": 3,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_11_220.jpg",
     "i18n": {
       "en": {
@@ -97693,7 +97693,7 @@
     "twilightCost": 4,
     "strength": 9,
     "vitality": 2,
-    "minionSiteNumber": 3,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_11_221.jpg",
     "i18n": {
       "en": {
@@ -97746,7 +97746,7 @@
     "twilightCost": 5,
     "strength": 10,
     "vitality": 3,
-    "minionSiteNumber": 2,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_11_222.jpg",
     "i18n": {
       "en": {
@@ -97796,7 +97796,7 @@
     "twilightCost": 4,
     "strength": 9,
     "vitality": 2,
-    "minionSiteNumber": 3,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_11_223.jpg",
     "i18n": {
       "en": {
@@ -97843,7 +97843,7 @@
     "twilightCost": 4,
     "strength": 9,
     "vitality": 3,
-    "minionSiteNumber": 3,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_11_224.jpg",
     "i18n": {
       "en": {
@@ -97893,7 +97893,7 @@
     "twilightCost": 6,
     "strength": 12,
     "vitality": 3,
-    "minionSiteNumber": 3,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_11_225.jpg",
     "i18n": {
       "en": {
@@ -100252,7 +100252,7 @@
     "twilightCost": 4,
     "strength": 11,
     "vitality": 3,
-    "minionSiteNumber": 4,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_12_055.jpg",
     "i18n": {
       "en": {
@@ -100294,7 +100294,7 @@
     "twilightCost": 7,
     "strength": 14,
     "vitality": 4,
-    "minionSiteNumber": 4,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_12_056.jpg",
     "i18n": {
       "en": {
@@ -100344,7 +100344,7 @@
     "twilightCost": 4,
     "strength": 6,
     "vitality": 2,
-    "minionSiteNumber": 4,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_12_057.jpg",
     "i18n": {
       "en": {
@@ -100424,7 +100424,7 @@
     "twilightCost": 4,
     "strength": 10,
     "vitality": 3,
-    "minionSiteNumber": 4,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_12_059.jpg",
     "i18n": {
       "en": {
@@ -100469,7 +100469,7 @@
     "twilightCost": 2,
     "strength": 7,
     "vitality": 1,
-    "minionSiteNumber": 4,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_12_060.jpg",
     "i18n": {
       "en": {
@@ -100511,7 +100511,7 @@
     "twilightCost": 3,
     "strength": 4,
     "vitality": 2,
-    "minionSiteNumber": 4,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_12_061.jpg",
     "i18n": {
       "en": {
@@ -100553,7 +100553,7 @@
     "twilightCost": 3,
     "strength": 8,
     "vitality": 2,
-    "minionSiteNumber": 4,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_12_062.jpg",
     "i18n": {
       "en": {
@@ -100595,7 +100595,7 @@
     "twilightCost": 3,
     "strength": 9,
     "vitality": 2,
-    "minionSiteNumber": 4,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_12_063.jpg",
     "i18n": {
       "en": {
@@ -100640,7 +100640,7 @@
     "twilightCost": 4,
     "strength": 12,
     "vitality": 2,
-    "minionSiteNumber": 4,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_12_064.jpg",
     "i18n": {
       "en": {
@@ -100682,7 +100682,7 @@
     "twilightCost": 4,
     "strength": 12,
     "vitality": 2,
-    "minionSiteNumber": 4,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_12_065.jpg",
     "i18n": {
       "en": {
@@ -100825,7 +100825,7 @@
     "twilightCost": 2,
     "strength": 4,
     "vitality": 3,
-    "minionSiteNumber": 3,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_12_068.jpg",
     "i18n": {
       "en": {
@@ -100874,7 +100874,7 @@
     "twilightCost": 3,
     "strength": 9,
     "vitality": 2,
-    "minionSiteNumber": 4,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_12_069.jpg",
     "i18n": {
       "en": {
@@ -101046,7 +101046,7 @@
     "twilightCost": 4,
     "strength": 8,
     "vitality": 2,
-    "minionSiteNumber": 4,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_12_074.jpg",
     "i18n": {
       "en": {
@@ -101210,7 +101210,7 @@
     "twilightCost": 3,
     "strength": 12,
     "vitality": 2,
-    "minionSiteNumber": 4,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_12_078.jpg",
     "i18n": {
       "en": {
@@ -101485,7 +101485,7 @@
     "twilightCost": 12,
     "strength": 15,
     "vitality": 4,
-    "minionSiteNumber": 4,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_12_085.jpg",
     "i18n": {
       "en": {
@@ -101583,7 +101583,7 @@
     "twilightCost": 3,
     "strength": 8,
     "vitality": 2,
-    "minionSiteNumber": 4,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_12_087.jpg",
     "i18n": {
       "en": {
@@ -101662,7 +101662,7 @@
     "twilightCost": 5,
     "strength": 12,
     "vitality": 3,
-    "minionSiteNumber": 4,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_12_089.jpg",
     "i18n": {
       "en": {
@@ -101704,7 +101704,7 @@
     "twilightCost": 3,
     "strength": 9,
     "vitality": 2,
-    "minionSiteNumber": 4,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_12_090.jpg",
     "i18n": {
       "en": {
@@ -101746,7 +101746,7 @@
     "twilightCost": 5,
     "strength": 12,
     "vitality": 3,
-    "minionSiteNumber": 4,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_12_091.jpg",
     "i18n": {
       "en": {
@@ -101788,7 +101788,7 @@
     "twilightCost": 3,
     "strength": 10,
     "vitality": 3,
-    "minionSiteNumber": 4,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_12_092.jpg",
     "i18n": {
       "en": {
@@ -101830,7 +101830,7 @@
     "twilightCost": 3,
     "strength": 8,
     "vitality": 2,
-    "minionSiteNumber": 4,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_12_093.jpg",
     "i18n": {
       "en": {
@@ -101872,7 +101872,7 @@
     "twilightCost": 3,
     "strength": 9,
     "vitality": 2,
-    "minionSiteNumber": 4,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_12_094.jpg",
     "i18n": {
       "en": {
@@ -101917,7 +101917,7 @@
     "twilightCost": 2,
     "strength": 5,
     "vitality": 2,
-    "minionSiteNumber": 4,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_12_095.jpg",
     "i18n": {
       "en": {
@@ -102011,7 +102011,7 @@
     "twilightCost": 4,
     "strength": 11,
     "vitality": 3,
-    "minionSiteNumber": 4,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_12_097.jpg",
     "i18n": {
       "en": {
@@ -102053,7 +102053,7 @@
     "twilightCost": 2,
     "strength": 6,
     "vitality": 1,
-    "minionSiteNumber": 4,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_12_098.jpg",
     "i18n": {
       "en": {
@@ -102095,7 +102095,7 @@
     "twilightCost": 3,
     "strength": 7,
     "vitality": 2,
-    "minionSiteNumber": 4,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_12_099.jpg",
     "i18n": {
       "en": {
@@ -102140,7 +102140,7 @@
     "twilightCost": 3,
     "strength": 9,
     "vitality": 2,
-    "minionSiteNumber": 4,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_12_100.jpg",
     "i18n": {
       "en": {
@@ -102223,7 +102223,7 @@
     "twilightCost": 3,
     "strength": 8,
     "vitality": 1,
-    "minionSiteNumber": 4,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_12_102.jpg",
     "i18n": {
       "en": {
@@ -102356,7 +102356,7 @@
     "twilightCost": 3,
     "strength": 8,
     "vitality": 3,
-    "minionSiteNumber": 4,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_12_105.jpg",
     "i18n": {
       "en": {
@@ -102403,7 +102403,7 @@
     "twilightCost": 3,
     "strength": 10,
     "vitality": 2,
-    "minionSiteNumber": 4,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_12_106.jpg",
     "i18n": {
       "en": {
@@ -102953,7 +102953,7 @@
     "twilightCost": 3,
     "strength": 9,
     "vitality": 3,
-    "minionSiteNumber": 5,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_12_118.jpg",
     "i18n": {
       "en": {
@@ -103664,7 +103664,7 @@
     "twilightCost": 3,
     "strength": 9,
     "vitality": 2,
-    "minionSiteNumber": 5,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_12_134.jpg",
     "i18n": {
       "en": {
@@ -103706,7 +103706,7 @@
     "twilightCost": 3,
     "strength": 8,
     "vitality": 2,
-    "minionSiteNumber": 5,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_12_135.jpg",
     "i18n": {
       "en": {
@@ -103796,7 +103796,7 @@
     "twilightCost": 4,
     "strength": 10,
     "vitality": 2,
-    "minionSiteNumber": 5,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_12_137.jpg",
     "i18n": {
       "en": {
@@ -103929,7 +103929,7 @@
     "twilightCost": 4,
     "strength": 10,
     "vitality": 3,
-    "minionSiteNumber": 5,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_12_140.jpg",
     "i18n": {
       "en": {
@@ -104016,7 +104016,7 @@
     "twilightCost": 4,
     "strength": 11,
     "vitality": 3,
-    "minionSiteNumber": 5,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_12_142.jpg",
     "i18n": {
       "en": {
@@ -104105,7 +104105,7 @@
     "twilightCost": 4,
     "strength": 8,
     "vitality": 4,
-    "minionSiteNumber": 4,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_12_144.jpg",
     "i18n": {
       "en": {
@@ -104238,7 +104238,7 @@
     "twilightCost": 4,
     "strength": 11,
     "vitality": 2,
-    "minionSiteNumber": 5,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_12_147.jpg",
     "i18n": {
       "en": {
@@ -104320,7 +104320,7 @@
     "twilightCost": 4,
     "strength": 11,
     "vitality": 3,
-    "minionSiteNumber": 5,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_12_149.jpg",
     "i18n": {
       "en": {
@@ -104362,7 +104362,7 @@
     "twilightCost": 4,
     "strength": 12,
     "vitality": 3,
-    "minionSiteNumber": 5,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_12_150.jpg",
     "i18n": {
       "en": {
@@ -104407,7 +104407,7 @@
     "twilightCost": 4,
     "strength": 11,
     "vitality": 2,
-    "minionSiteNumber": 5,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_12_151.jpg",
     "i18n": {
       "en": {
@@ -104449,7 +104449,7 @@
     "twilightCost": 4,
     "strength": 8,
     "vitality": 3,
-    "minionSiteNumber": 5,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_12_152.jpg",
     "i18n": {
       "en": {
@@ -104494,7 +104494,7 @@
     "twilightCost": 3,
     "strength": 8,
     "vitality": 2,
-    "minionSiteNumber": 5,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_12_153.jpg",
     "i18n": {
       "en": {
@@ -104539,7 +104539,7 @@
     "twilightCost": 4,
     "strength": 10,
     "vitality": 2,
-    "minionSiteNumber": 5,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_12_154.jpg",
     "i18n": {
       "en": {
@@ -104599,7 +104599,7 @@
     "twilightCost": 6,
     "strength": 14,
     "vitality": 4,
-    "minionSiteNumber": 5,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_12_155.jpg",
     "i18n": {
       "en": {
@@ -104640,7 +104640,7 @@
     "twilightCost": 4,
     "strength": 11,
     "vitality": 2,
-    "minionSiteNumber": 5,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_12_156.jpg",
     "i18n": {
       "en": {
@@ -104685,7 +104685,7 @@
     "twilightCost": 5,
     "strength": 9,
     "vitality": 4,
-    "minionSiteNumber": 5,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_12_157.jpg",
     "i18n": {
       "en": {
@@ -104730,7 +104730,7 @@
     "twilightCost": 3,
     "strength": 9,
     "vitality": 2,
-    "minionSiteNumber": 5,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_12_158.jpg",
     "i18n": {
       "en": {
@@ -104860,7 +104860,7 @@
     "twilightCost": 5,
     "strength": 8,
     "vitality": 3,
-    "minionSiteNumber": 3,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_12_161.jpg",
     "i18n": {
       "en": {
@@ -105334,6 +105334,9 @@
     "kind": "SHADOW",
     "type": "POSSESSION",
     "subtype": "MOUNT",
+    "grantsKeywords": [
+      "MUSTER"
+    ],
     "attachedTo": [
       [
         "NAZGÛL"
@@ -105383,7 +105386,7 @@
     "twilightCost": 6,
     "strength": 12,
     "vitality": 3,
-    "minionSiteNumber": 3,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_12_173.jpg",
     "i18n": {
       "en": {
@@ -105433,7 +105436,7 @@
     "twilightCost": 6,
     "strength": 11,
     "vitality": 4,
-    "minionSiteNumber": 3,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_12_175.jpg",
     "i18n": {
       "en": {
@@ -105480,7 +105483,7 @@
     "twilightCost": 4,
     "strength": 9,
     "vitality": 2,
-    "minionSiteNumber": 3,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_12_176.jpg",
     "i18n": {
       "en": {
@@ -105530,7 +105533,7 @@
     "twilightCost": 5,
     "strength": 10,
     "vitality": 3,
-    "minionSiteNumber": 2,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_12_177.jpg",
     "i18n": {
       "en": {
@@ -105577,7 +105580,7 @@
     "twilightCost": 4,
     "strength": 9,
     "vitality": 2,
-    "minionSiteNumber": 3,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_12_178.jpg",
     "i18n": {
       "en": {
@@ -105627,7 +105630,7 @@
     "twilightCost": 4,
     "strength": 9,
     "vitality": 3,
-    "minionSiteNumber": 3,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_12_179.jpg",
     "i18n": {
       "en": {
@@ -105677,7 +105680,7 @@
     "twilightCost": 6,
     "strength": 12,
     "vitality": 3,
-    "minionSiteNumber": 3,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_12_180.jpg",
     "i18n": {
       "en": {
@@ -105811,7 +105814,7 @@
     "twilightCost": 8,
     "strength": 14,
     "vitality": 4,
-    "minionSiteNumber": 3,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_12_183.jpg",
     "i18n": {
       "en": {
@@ -106058,7 +106061,7 @@
     "twilightCost": 12,
     "strength": 17,
     "vitality": 5,
-    "minionSiteNumber": 4,
+    "minionSiteNumber": null,
     "i18n": {
       "en": {
         "title": "The Balrog",
@@ -106144,7 +106147,7 @@
     "twilightCost": 6,
     "strength": 12,
     "vitality": 3,
-    "minionSiteNumber": 3,
+    "minionSiteNumber": null,
     "i18n": {
       "en": {
         "title": "Úlairë Attëa",
@@ -106193,7 +106196,7 @@
     "twilightCost": 5,
     "strength": 10,
     "vitality": 3,
-    "minionSiteNumber": 3,
+    "minionSiteNumber": null,
     "i18n": {
       "en": {
         "title": "Úlairë Cantëa",
@@ -106242,7 +106245,7 @@
     "twilightCost": 6,
     "strength": 11,
     "vitality": 4,
-    "minionSiteNumber": 3,
+    "minionSiteNumber": null,
     "i18n": {
       "en": {
         "title": "Úlairë Enquëa",
@@ -106291,7 +106294,7 @@
     "twilightCost": 8,
     "strength": 14,
     "vitality": 4,
-    "minionSiteNumber": 3,
+    "minionSiteNumber": null,
     "i18n": {
       "en": {
         "title": "The Witch-king",
@@ -108449,7 +108452,7 @@
     "twilightCost": 2,
     "strength": 5,
     "vitality": 4,
-    "minionSiteNumber": 3,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_13_050.jpg",
     "i18n": {
       "en": {
@@ -109991,7 +109994,7 @@
     "twilightCost": 5,
     "strength": 11,
     "vitality": 3,
-    "minionSiteNumber": 4,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_13_084.jpg",
     "i18n": {
       "en": {
@@ -110035,7 +110038,7 @@
     "twilightCost": 3,
     "strength": 8,
     "vitality": 2,
-    "minionSiteNumber": 4,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_13_085.jpg",
     "i18n": {
       "en": {
@@ -110092,7 +110095,7 @@
     "twilightCost": 5,
     "strength": 12,
     "vitality": 3,
-    "minionSiteNumber": 4,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_13_086.jpg",
     "i18n": {
       "en": {
@@ -110179,7 +110182,7 @@
     "twilightCost": 6,
     "strength": 13,
     "vitality": 3,
-    "minionSiteNumber": 4,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_13_088.jpg",
     "i18n": {
       "en": {
@@ -110241,7 +110244,7 @@
     "twilightCost": 3,
     "strength": 7,
     "vitality": 2,
-    "minionSiteNumber": 4,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_13_089.jpg",
     "i18n": {
       "en": {
@@ -110286,7 +110289,7 @@
     "twilightCost": 3,
     "strength": 8,
     "vitality": 2,
-    "minionSiteNumber": 4,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_13_090.jpg",
     "i18n": {
       "en": {
@@ -110372,7 +110375,7 @@
     "twilightCost": 2,
     "strength": 4,
     "vitality": 3,
-    "minionSiteNumber": 3,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_13_092.jpg",
     "i18n": {
       "en": {
@@ -110537,7 +110540,7 @@
     "twilightCost": 3,
     "strength": 8,
     "vitality": 2,
-    "minionSiteNumber": 4,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_13_096.jpg",
     "i18n": {
       "en": {
@@ -110598,7 +110601,7 @@
     "twilightCost": 4,
     "strength": 12,
     "vitality": 2,
-    "minionSiteNumber": 4,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_13_097.jpg",
     "i18n": {
       "en": {
@@ -110643,7 +110646,7 @@
     "twilightCost": 3,
     "strength": 8,
     "vitality": 1,
-    "minionSiteNumber": 4,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_13_098.jpg",
     "i18n": {
       "en": {
@@ -110733,7 +110736,7 @@
     "twilightCost": 3,
     "strength": 8,
     "vitality": 2,
-    "minionSiteNumber": 4,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_13_100.jpg",
     "i18n": {
       "en": {
@@ -110790,7 +110793,7 @@
     "twilightCost": 4,
     "strength": 11,
     "vitality": 3,
-    "minionSiteNumber": 4,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_13_101.jpg",
     "i18n": {
       "en": {
@@ -110930,7 +110933,7 @@
     "twilightCost": 4,
     "strength": 11,
     "vitality": 3,
-    "minionSiteNumber": 4,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_13_104.jpg",
     "i18n": {
       "en": {
@@ -111151,7 +111154,7 @@
     "twilightCost": 3,
     "strength": 8,
     "vitality": 2,
-    "minionSiteNumber": 4,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_13_109.jpg",
     "i18n": {
       "en": {
@@ -111196,7 +111199,7 @@
     "twilightCost": 2,
     "strength": 7,
     "vitality": 2,
-    "minionSiteNumber": 4,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_13_110.jpg",
     "i18n": {
       "en": {
@@ -111279,7 +111282,7 @@
     "twilightCost": 5,
     "strength": 14,
     "vitality": 3,
-    "minionSiteNumber": 4,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_13_113.jpg",
     "i18n": {
       "en": {
@@ -111324,7 +111327,7 @@
     "twilightCost": 2,
     "strength": 7,
     "vitality": 2,
-    "minionSiteNumber": 4,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_13_114.jpg",
     "i18n": {
       "en": {
@@ -111382,7 +111385,7 @@
     "twilightCost": 5,
     "strength": 12,
     "vitality": 2,
-    "minionSiteNumber": 4,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_13_115.jpg",
     "i18n": {
       "en": {
@@ -111424,7 +111427,7 @@
     "twilightCost": 3,
     "strength": 8,
     "vitality": 2,
-    "minionSiteNumber": 4,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_13_116.jpg",
     "i18n": {
       "en": {
@@ -111484,7 +111487,7 @@
     "twilightCost": 6,
     "strength": 12,
     "vitality": 3,
-    "minionSiteNumber": 5,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_13_117.jpg",
     "i18n": {
       "en": {
@@ -111532,7 +111535,7 @@
     "twilightCost": 3,
     "strength": 9,
     "vitality": 2,
-    "minionSiteNumber": 4,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_13_118.jpg",
     "i18n": {
       "en": {
@@ -111574,7 +111577,7 @@
     "twilightCost": 2,
     "strength": 6,
     "vitality": 1,
-    "minionSiteNumber": 4,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_13_119.jpg",
     "i18n": {
       "en": {
@@ -112482,7 +112485,7 @@
     "twilightCost": 16,
     "strength": 24,
     "vitality": 5,
-    "minionSiteNumber": 6,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_13_140.jpg",
     "i18n": {
       "en": {
@@ -113281,7 +113284,7 @@
     "twilightCost": 4,
     "strength": 9,
     "vitality": 3,
-    "minionSiteNumber": 5,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_13_158.jpg",
     "i18n": {
       "en": {
@@ -113326,7 +113329,7 @@
     "twilightCost": 4,
     "strength": 9,
     "vitality": 2,
-    "minionSiteNumber": 5,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_13_159.jpg",
     "i18n": {
       "en": {
@@ -113371,7 +113374,7 @@
     "twilightCost": 2,
     "strength": 6,
     "vitality": 1,
-    "minionSiteNumber": 5,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_13_160.jpg",
     "i18n": {
       "en": {
@@ -113508,7 +113511,7 @@
     "twilightCost": 4,
     "strength": 9,
     "vitality": 2,
-    "minionSiteNumber": 5,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_13_163.jpg",
     "i18n": {
       "en": {
@@ -113602,7 +113605,7 @@
     "twilightCost": 3,
     "strength": 7,
     "vitality": 1,
-    "minionSiteNumber": 5,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_13_165.jpg",
     "i18n": {
       "en": {
@@ -113727,7 +113730,7 @@
     "twilightCost": 3,
     "strength": 8,
     "vitality": 2,
-    "minionSiteNumber": 5,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_13_168.jpg",
     "i18n": {
       "en": {
@@ -113787,7 +113790,7 @@
     "twilightCost": 4,
     "strength": 12,
     "vitality": 2,
-    "minionSiteNumber": 5,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_13_169.jpg",
     "i18n": {
       "en": {
@@ -113824,7 +113827,7 @@
     "twilightCost": 4,
     "strength": 9,
     "vitality": 2,
-    "minionSiteNumber": 5,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_13_170.jpg",
     "i18n": {
       "en": {
@@ -113869,7 +113872,7 @@
     "twilightCost": 4,
     "strength": 9,
     "vitality": 2,
-    "minionSiteNumber": 5,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_13_171.jpg",
     "i18n": {
       "en": {
@@ -113914,7 +113917,7 @@
     "twilightCost": 5,
     "strength": 15,
     "vitality": 2,
-    "minionSiteNumber": 5,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_13_172.jpg",
     "i18n": {
       "en": {
@@ -113956,7 +113959,7 @@
     "twilightCost": 4,
     "strength": 8,
     "vitality": 2,
-    "minionSiteNumber": 5,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_13_173.jpg",
     "i18n": {
       "en": {
@@ -113993,7 +113996,7 @@
     "twilightCost": 4,
     "strength": 7,
     "vitality": 3,
-    "minionSiteNumber": 5,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_13_175.jpg",
     "i18n": {
       "en": {
@@ -114325,7 +114328,7 @@
     "twilightCost": 6,
     "strength": 11,
     "vitality": 4,
-    "minionSiteNumber": 3,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_13_182.jpg",
     "i18n": {
       "en": {
@@ -114372,7 +114375,7 @@
     "twilightCost": 4,
     "strength": 9,
     "vitality": 2,
-    "minionSiteNumber": 3,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_13_183.jpg",
     "i18n": {
       "en": {
@@ -114422,7 +114425,7 @@
     "twilightCost": 4,
     "strength": 9,
     "vitality": 2,
-    "minionSiteNumber": 3,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_13_184.jpg",
     "i18n": {
       "en": {
@@ -115380,7 +115383,7 @@
     "twilightCost": 3,
     "strength": 8,
     "vitality": 2,
-    "minionSiteNumber": 4,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_14_010.jpg",
     "i18n": {
       "en": {
@@ -115422,7 +115425,7 @@
     "twilightCost": 3,
     "strength": 8,
     "vitality": 2,
-    "minionSiteNumber": 4,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_14_011.jpg",
     "i18n": {
       "en": {
@@ -115464,7 +115467,7 @@
     "twilightCost": 3,
     "strength": 8,
     "vitality": 2,
-    "minionSiteNumber": 4,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_14_012.jpg",
     "i18n": {
       "en": {
@@ -115514,7 +115517,7 @@
     "twilightCost": 4,
     "strength": 9,
     "vitality": 3,
-    "minionSiteNumber": 4,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_14_013.jpg",
     "i18n": {
       "en": {
@@ -115559,7 +115562,7 @@
     "twilightCost": 3,
     "strength": 8,
     "vitality": 2,
-    "minionSiteNumber": 5,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_14_014.jpg",
     "i18n": {
       "en": {
@@ -115604,7 +115607,7 @@
     "twilightCost": 3,
     "strength": 8,
     "vitality": 2,
-    "minionSiteNumber": 5,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_14_015.jpg",
     "i18n": {
       "en": {
@@ -117644,7 +117647,7 @@
     "strength": 0,
     "vitality": 4,
     "resistance": 3,
-    "minionSiteNumber": 3,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_15_043.jpg",
     "i18n": {
       "en": {
@@ -118961,7 +118964,7 @@
     "twilightCost": 2,
     "strength": 4,
     "vitality": 3,
-    "minionSiteNumber": 4,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_15_072.jpg",
     "i18n": {
       "en": {
@@ -119011,7 +119014,7 @@
     "twilightCost": 2,
     "strength": 8,
     "vitality": 1,
-    "minionSiteNumber": 4,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_15_073.jpg",
     "i18n": {
       "en": {
@@ -119056,7 +119059,7 @@
     "twilightCost": 5,
     "strength": 11,
     "vitality": 3,
-    "minionSiteNumber": 4,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_15_074.jpg",
     "i18n": {
       "en": {
@@ -119096,7 +119099,7 @@
     "twilightCost": 1,
     "strength": 5,
     "vitality": 1,
-    "minionSiteNumber": 4,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_15_075.jpg",
     "i18n": {
       "en": {
@@ -119180,7 +119183,7 @@
     "twilightCost": 3,
     "strength": 9,
     "vitality": 2,
-    "minionSiteNumber": 4,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_15_077.jpg",
     "i18n": {
       "en": {
@@ -119222,7 +119225,7 @@
     "twilightCost": 4,
     "strength": 10,
     "vitality": 3,
-    "minionSiteNumber": 4,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_15_078.jpg",
     "i18n": {
       "en": {
@@ -119264,7 +119267,7 @@
     "twilightCost": 5,
     "strength": 12,
     "vitality": 3,
-    "minionSiteNumber": 4,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_15_079.jpg",
     "i18n": {
       "en": {
@@ -119411,7 +119414,7 @@
     "twilightCost": 4,
     "strength": 9,
     "vitality": 2,
-    "minionSiteNumber": 4,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_15_082.jpg",
     "i18n": {
       "en": {
@@ -119456,7 +119459,7 @@
     "twilightCost": 3,
     "strength": 8,
     "vitality": 2,
-    "minionSiteNumber": 4,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_15_083.jpg",
     "i18n": {
       "en": {
@@ -119583,7 +119586,7 @@
     "twilightCost": 6,
     "strength": 14,
     "vitality": 3,
-    "minionSiteNumber": 4,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_15_086.jpg",
     "i18n": {
       "en": {
@@ -119630,7 +119633,7 @@
     "twilightCost": 5,
     "strength": 13,
     "vitality": 3,
-    "minionSiteNumber": 4,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_15_087.jpg",
     "i18n": {
       "en": {
@@ -119776,7 +119779,7 @@
     "twilightCost": 3,
     "strength": 9,
     "vitality": 2,
-    "minionSiteNumber": 4,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_15_090.jpg",
     "i18n": {
       "en": {
@@ -119818,7 +119821,7 @@
     "twilightCost": 4,
     "strength": 10,
     "vitality": 2,
-    "minionSiteNumber": 4,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_15_091.jpg",
     "i18n": {
       "en": {
@@ -119863,7 +119866,7 @@
     "twilightCost": 3,
     "strength": 8,
     "vitality": 2,
-    "minionSiteNumber": 4,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_15_092.jpg",
     "i18n": {
       "en": {
@@ -119905,7 +119908,7 @@
     "twilightCost": 2,
     "strength": 7,
     "vitality": 1,
-    "minionSiteNumber": 4,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_15_093.jpg",
     "i18n": {
       "en": {
@@ -119965,7 +119968,7 @@
     "twilightCost": 3,
     "strength": 8,
     "vitality": 3,
-    "minionSiteNumber": 4,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_15_094.jpg",
     "i18n": {
       "en": {
@@ -120010,7 +120013,7 @@
     "twilightCost": 3,
     "strength": 9,
     "vitality": 2,
-    "minionSiteNumber": 4,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_15_095.jpg",
     "i18n": {
       "en": {
@@ -120055,7 +120058,7 @@
     "twilightCost": 4,
     "strength": 11,
     "vitality": 2,
-    "minionSiteNumber": 4,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_15_096.jpg",
     "i18n": {
       "en": {
@@ -120154,7 +120157,7 @@
     "twilightCost": 5,
     "strength": 12,
     "vitality": 3,
-    "minionSiteNumber": 4,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_15_098.jpg",
     "i18n": {
       "en": {
@@ -120211,7 +120214,7 @@
     "twilightCost": 5,
     "strength": 12,
     "vitality": 3,
-    "minionSiteNumber": 4,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_15_099.jpg",
     "i18n": {
       "en": {
@@ -120256,7 +120259,7 @@
     "twilightCost": 3,
     "strength": 8,
     "vitality": 2,
-    "minionSiteNumber": 4,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_15_100.jpg",
     "i18n": {
       "en": {
@@ -120298,7 +120301,7 @@
     "twilightCost": 3,
     "strength": 8,
     "vitality": 2,
-    "minionSiteNumber": 4,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_15_101.jpg",
     "i18n": {
       "en": {
@@ -120343,7 +120346,7 @@
     "twilightCost": 4,
     "strength": 11,
     "vitality": 2,
-    "minionSiteNumber": 4,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_15_102.jpg",
     "i18n": {
       "en": {
@@ -120400,7 +120403,7 @@
     "twilightCost": 4,
     "strength": 9,
     "vitality": 3,
-    "minionSiteNumber": 4,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_15_103.jpg",
     "i18n": {
       "en": {
@@ -120457,7 +120460,7 @@
     "twilightCost": 8,
     "strength": 20,
     "vitality": 4,
-    "minionSiteNumber": 4,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_15_104.jpg",
     "i18n": {
       "en": {
@@ -120499,7 +120502,7 @@
     "twilightCost": 3,
     "strength": 8,
     "vitality": 2,
-    "minionSiteNumber": 4,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_15_105.jpg",
     "i18n": {
       "en": {
@@ -120624,7 +120627,7 @@
     "twilightCost": 2,
     "strength": 12,
     "vitality": 3,
-    "minionSiteNumber": 4,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_15_107.jpg",
     "i18n": {
       "en": {
@@ -120666,7 +120669,7 @@
     "twilightCost": 6,
     "strength": 14,
     "vitality": 3,
-    "minionSiteNumber": 4,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_15_108.jpg",
     "i18n": {
       "en": {
@@ -120711,7 +120714,7 @@
     "twilightCost": 6,
     "strength": 13,
     "vitality": 3,
-    "minionSiteNumber": 4,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_15_109.jpg",
     "i18n": {
       "en": {
@@ -120763,7 +120766,7 @@
     "twilightCost": 2,
     "strength": 12,
     "vitality": 2,
-    "minionSiteNumber": 4,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_15_110.jpg",
     "i18n": {
       "en": {
@@ -120808,7 +120811,7 @@
     "twilightCost": 3,
     "strength": 7,
     "vitality": 2,
-    "minionSiteNumber": 4,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_15_111.jpg",
     "i18n": {
       "en": {
@@ -120850,7 +120853,7 @@
     "twilightCost": 10,
     "strength": 22,
     "vitality": 6,
-    "minionSiteNumber": 5,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_15_112.jpg",
     "i18n": {
       "en": {
@@ -121037,7 +121040,7 @@
     "twilightCost": 3,
     "strength": 8,
     "vitality": 2,
-    "minionSiteNumber": 4,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_15_116.jpg",
     "i18n": {
       "en": {
@@ -121085,7 +121088,7 @@
     "twilightCost": 6,
     "strength": 15,
     "vitality": 3,
-    "minionSiteNumber": 4,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_15_117.jpg",
     "i18n": {
       "en": {
@@ -121203,7 +121206,7 @@
     "twilightCost": 4,
     "strength": 10,
     "vitality": 2,
-    "minionSiteNumber": 4,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_15_120.jpg",
     "i18n": {
       "en": {
@@ -122850,7 +122853,7 @@
     "twilightCost": 6,
     "strength": 14,
     "vitality": 3,
-    "minionSiteNumber": 5,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_15_155.jpg",
     "i18n": {
       "en": {
@@ -122892,7 +122895,7 @@
     "twilightCost": 3,
     "strength": 7,
     "vitality": 3,
-    "minionSiteNumber": 5,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_15_156.jpg",
     "i18n": {
       "en": {
@@ -122934,7 +122937,7 @@
     "twilightCost": 4,
     "strength": 10,
     "vitality": 2,
-    "minionSiteNumber": 5,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_15_157.jpg",
     "i18n": {
       "en": {
@@ -122979,7 +122982,7 @@
     "twilightCost": 4,
     "strength": 8,
     "vitality": 2,
-    "minionSiteNumber": 5,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_15_158.jpg",
     "i18n": {
       "en": {
@@ -123060,7 +123063,7 @@
     "twilightCost": 3,
     "strength": 8,
     "vitality": 2,
-    "minionSiteNumber": 5,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_15_160.jpg",
     "i18n": {
       "en": {
@@ -123102,7 +123105,7 @@
     "twilightCost": 4,
     "strength": 12,
     "vitality": 2,
-    "minionSiteNumber": 5,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_15_161.jpg",
     "i18n": {
       "en": {
@@ -123147,7 +123150,7 @@
     "twilightCost": 7,
     "strength": 13,
     "vitality": 3,
-    "minionSiteNumber": 5,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_15_162.jpg",
     "i18n": {
       "en": {
@@ -123190,6 +123193,9 @@
     "kind": "SHADOW",
     "type": "POSSESSION",
     "subtype": "HAND-WEAPON",
+    "grantsKeywords": [
+      "HUNTER 1"
+    ],
     "attachedTo": [
       [
         "URUKHAI",
@@ -123248,7 +123254,7 @@
     "twilightCost": 3,
     "strength": 8,
     "vitality": 2,
-    "minionSiteNumber": 5,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_15_164.jpg",
     "i18n": {
       "en": {
@@ -123296,7 +123302,7 @@
     "twilightCost": 3,
     "strength": 8,
     "vitality": 2,
-    "minionSiteNumber": 5,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_15_165.jpg",
     "i18n": {
       "en": {
@@ -123383,7 +123389,7 @@
     "twilightCost": 2,
     "strength": 6,
     "vitality": 2,
-    "minionSiteNumber": 5,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_15_167.jpg",
     "i18n": {
       "en": {
@@ -123425,7 +123431,7 @@
     "twilightCost": 2,
     "strength": 5,
     "vitality": 2,
-    "minionSiteNumber": 5,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_15_168.jpg",
     "i18n": {
       "en": {
@@ -123467,7 +123473,7 @@
     "twilightCost": 3,
     "strength": 7,
     "vitality": 2,
-    "minionSiteNumber": 5,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_15_169.jpg",
     "i18n": {
       "en": {
@@ -123527,7 +123533,7 @@
     "twilightCost": 4,
     "strength": 10,
     "vitality": 3,
-    "minionSiteNumber": 5,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_15_170.jpg",
     "i18n": {
       "en": {
@@ -123567,7 +123573,7 @@
     "twilightCost": 5,
     "strength": 14,
     "vitality": 3,
-    "minionSiteNumber": 5,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_15_171.jpg",
     "i18n": {
       "en": {
@@ -123609,7 +123615,7 @@
     "twilightCost": 4,
     "strength": 9,
     "vitality": 3,
-    "minionSiteNumber": 5,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_15_172.jpg",
     "i18n": {
       "en": {
@@ -123716,7 +123722,7 @@
     "twilightCost": 5,
     "strength": 11,
     "vitality": 3,
-    "minionSiteNumber": 5,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_15_174.jpg",
     "i18n": {
       "en": {
@@ -123764,7 +123770,7 @@
     "twilightCost": 3,
     "strength": 8,
     "vitality": 3,
-    "minionSiteNumber": 5,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_15_175.jpg",
     "i18n": {
       "en": {
@@ -123809,7 +123815,7 @@
     "twilightCost": 3,
     "strength": 8,
     "vitality": 3,
-    "minionSiteNumber": 5,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_15_176.jpg",
     "i18n": {
       "en": {
@@ -123854,7 +123860,7 @@
     "twilightCost": 2,
     "strength": 6,
     "vitality": 1,
-    "minionSiteNumber": 5,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_15_177.jpg",
     "i18n": {
       "en": {
@@ -123899,7 +123905,7 @@
     "twilightCost": 4,
     "strength": 10,
     "vitality": 2,
-    "minionSiteNumber": 5,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_15_178.jpg",
     "i18n": {
       "en": {
@@ -124155,7 +124161,7 @@
     "twilightCost": 6,
     "strength": 12,
     "vitality": 3,
-    "minionSiteNumber": 3,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_15_184.jpg",
     "i18n": {
       "en": {
@@ -124205,7 +124211,7 @@
     "twilightCost": 4,
     "strength": 9,
     "vitality": 2,
-    "minionSiteNumber": 3,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_15_185.jpg",
     "i18n": {
       "en": {
@@ -124258,7 +124264,7 @@
     "twilightCost": 5,
     "strength": 10,
     "vitality": 3,
-    "minionSiteNumber": 3,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_15_186.jpg",
     "i18n": {
       "en": {
@@ -124624,7 +124630,7 @@
     "twilightCost": 6,
     "strength": 12,
     "vitality": 3,
-    "minionSiteNumber": 3,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_15_184.jpg",
     "i18n": {
       "en": {
@@ -124674,7 +124680,7 @@
     "twilightCost": 4,
     "strength": 9,
     "vitality": 2,
-    "minionSiteNumber": 3,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_15_185.jpg",
     "i18n": {
       "en": {
@@ -124727,7 +124733,7 @@
     "twilightCost": 5,
     "strength": 10,
     "vitality": 3,
-    "minionSiteNumber": 3,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_15_186.jpg",
     "i18n": {
       "en": {
@@ -124853,7 +124859,7 @@
     "twilightCost": 5,
     "strength": 11,
     "vitality": 4,
-    "minionSiteNumber": 2,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_16_001.jpg",
     "i18n": {
       "en": {
@@ -124898,7 +124904,7 @@
     "twilightCost": 3,
     "strength": 8,
     "vitality": 2,
-    "minionSiteNumber": 3,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_16_002.jpg",
     "i18n": {
       "en": {
@@ -124943,7 +124949,7 @@
     "twilightCost": 2,
     "strength": 4,
     "vitality": 2,
-    "minionSiteNumber": 3,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_16_003.jpg",
     "i18n": {
       "en": {
@@ -124988,7 +124994,7 @@
     "twilightCost": 2,
     "strength": 4,
     "vitality": 2,
-    "minionSiteNumber": 3,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_16_004.jpg",
     "i18n": {
       "en": {
@@ -125033,7 +125039,7 @@
     "twilightCost": 7,
     "strength": 14,
     "vitality": 3,
-    "minionSiteNumber": 2,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_16_005.jpg",
     "i18n": {
       "en": {
@@ -125081,7 +125087,7 @@
     "twilightCost": 4,
     "strength": 9,
     "vitality": 3,
-    "minionSiteNumber": 2,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_16_006.jpg",
     "i18n": {
       "en": {
@@ -126780,7 +126786,7 @@
     "twilightCost": 3,
     "strength": 8,
     "vitality": 4,
-    "minionSiteNumber": 4,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_17_037.jpg",
     "i18n": {
       "en": {
@@ -126988,7 +126994,7 @@
     "twilightCost": 3,
     "strength": 8,
     "vitality": 2,
-    "minionSiteNumber": 4,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_17_042.jpg",
     "i18n": {
       "en": {
@@ -127030,7 +127036,7 @@
     "twilightCost": 6,
     "strength": 15,
     "vitality": 3,
-    "minionSiteNumber": 4,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_17_043.jpg",
     "i18n": {
       "en": {
@@ -127252,7 +127258,7 @@
     "twilightCost": 4,
     "strength": 8,
     "vitality": 4,
-    "minionSiteNumber": 4,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_17_048.jpg",
     "i18n": {
       "en": {
@@ -127295,7 +127301,7 @@
     "twilightCost": 8,
     "strength": 17,
     "vitality": 4,
-    "minionSiteNumber": 4,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_17_049.jpg",
     "i18n": {
       "en": {
@@ -127340,7 +127346,7 @@
     "twilightCost": 2,
     "strength": 7,
     "vitality": 1,
-    "minionSiteNumber": 4,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_17_050.jpg",
     "i18n": {
       "en": {
@@ -127397,7 +127403,7 @@
     "twilightCost": 6,
     "strength": 13,
     "vitality": 3,
-    "minionSiteNumber": 4,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_17_051.jpg",
     "i18n": {
       "en": {
@@ -127454,7 +127460,7 @@
     "twilightCost": 6,
     "strength": 13,
     "vitality": 3,
-    "minionSiteNumber": 4,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_17_052.jpg",
     "i18n": {
       "en": {
@@ -127499,7 +127505,7 @@
     "twilightCost": 3,
     "strength": 8,
     "vitality": 2,
-    "minionSiteNumber": 4,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_17_053.jpg",
     "i18n": {
       "en": {
@@ -127547,7 +127553,7 @@
     "twilightCost": 5,
     "strength": 11,
     "vitality": 2,
-    "minionSiteNumber": 4,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_17_054.jpg",
     "i18n": {
       "en": {
@@ -127592,7 +127598,7 @@
     "twilightCost": 3,
     "strength": 8,
     "vitality": 2,
-    "minionSiteNumber": 4,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_17_055.jpg",
     "i18n": {
       "en": {
@@ -127637,7 +127643,7 @@
     "twilightCost": 4,
     "strength": 10,
     "vitality": 2,
-    "minionSiteNumber": 4,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_17_056.jpg",
     "i18n": {
       "en": {
@@ -127679,7 +127685,7 @@
     "twilightCost": 2,
     "strength": 6,
     "vitality": 1,
-    "minionSiteNumber": 4,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_17_057.jpg",
     "i18n": {
       "en": {
@@ -127721,7 +127727,7 @@
     "twilightCost": 6,
     "strength": 14,
     "vitality": 3,
-    "minionSiteNumber": 4,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_17_058.jpg",
     "i18n": {
       "en": {
@@ -127766,7 +127772,7 @@
     "twilightCost": 3,
     "strength": 9,
     "vitality": 2,
-    "minionSiteNumber": 4,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_17_059.jpg",
     "i18n": {
       "en": {
@@ -127811,7 +127817,7 @@
     "twilightCost": 3,
     "strength": 8,
     "vitality": 2,
-    "minionSiteNumber": 4,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_17_060.jpg",
     "i18n": {
       "en": {
@@ -127868,7 +127874,7 @@
     "twilightCost": 6,
     "strength": 13,
     "vitality": 3,
-    "minionSiteNumber": 4,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_17_061.jpg",
     "i18n": {
       "en": {
@@ -127910,7 +127916,7 @@
     "twilightCost": 4,
     "strength": 10,
     "vitality": 2,
-    "minionSiteNumber": 4,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_17_062.jpg",
     "i18n": {
       "en": {
@@ -127952,7 +127958,7 @@
     "twilightCost": 2,
     "strength": 6,
     "vitality": 2,
-    "minionSiteNumber": 4,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_17_063.jpg",
     "i18n": {
       "en": {
@@ -127994,7 +128000,7 @@
     "twilightCost": 7,
     "strength": 15,
     "vitality": 4,
-    "minionSiteNumber": 4,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_17_064.jpg",
     "i18n": {
       "en": {
@@ -128036,7 +128042,7 @@
     "twilightCost": 6,
     "strength": 15,
     "vitality": 3,
-    "minionSiteNumber": 4,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_17_065.jpg",
     "i18n": {
       "en": {
@@ -128315,7 +128321,7 @@
     "twilightCost": 4,
     "strength": 11,
     "vitality": 3,
-    "minionSiteNumber": 4,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_17_071.jpg",
     "i18n": {
       "en": {
@@ -128353,7 +128359,7 @@
     "twilightCost": 3,
     "strength": 8,
     "vitality": 2,
-    "minionSiteNumber": 4,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_17_072.jpg",
     "i18n": {
       "en": {
@@ -128395,7 +128401,7 @@
     "twilightCost": 6,
     "strength": 17,
     "vitality": 2,
-    "minionSiteNumber": 4,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_17_073.jpg",
     "i18n": {
       "en": {
@@ -128440,7 +128446,7 @@
     "twilightCost": 3,
     "strength": 8,
     "vitality": 2,
-    "minionSiteNumber": 4,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_17_074.jpg",
     "i18n": {
       "en": {
@@ -128482,7 +128488,7 @@
     "twilightCost": 3,
     "strength": 9,
     "vitality": 2,
-    "minionSiteNumber": 4,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_17_075.jpg",
     "i18n": {
       "en": {
@@ -128539,7 +128545,7 @@
     "twilightCost": 8,
     "strength": 18,
     "vitality": 4,
-    "minionSiteNumber": 4,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_17_076.jpg",
     "i18n": {
       "en": {
@@ -128584,7 +128590,7 @@
     "twilightCost": 4,
     "strength": 9,
     "vitality": 2,
-    "minionSiteNumber": 4,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_17_077.jpg",
     "i18n": {
       "en": {
@@ -128626,7 +128632,7 @@
     "twilightCost": 3,
     "strength": 7,
     "vitality": 2,
-    "minionSiteNumber": 4,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_17_078.jpg",
     "i18n": {
       "en": {
@@ -128668,7 +128674,7 @@
     "twilightCost": 4,
     "strength": 10,
     "vitality": 2,
-    "minionSiteNumber": 4,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_17_079.jpg",
     "i18n": {
       "en": {
@@ -128713,7 +128719,7 @@
     "twilightCost": 1,
     "strength": 4,
     "vitality": 2,
-    "minionSiteNumber": 4,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_17_080.jpg",
     "i18n": {
       "en": {
@@ -128755,7 +128761,7 @@
     "twilightCost": 4,
     "strength": 6,
     "vitality": 2,
-    "minionSiteNumber": 4,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_17_081.jpg",
     "i18n": {
       "en": {
@@ -128800,7 +128806,7 @@
     "twilightCost": 2,
     "strength": 6,
     "vitality": 1,
-    "minionSiteNumber": 4,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_17_082.jpg",
     "i18n": {
       "en": {
@@ -128845,7 +128851,7 @@
     "twilightCost": 3,
     "strength": 8,
     "vitality": 2,
-    "minionSiteNumber": 4,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_17_083.jpg",
     "i18n": {
       "en": {
@@ -128890,7 +128896,7 @@
     "twilightCost": 3,
     "strength": 8,
     "vitality": 2,
-    "minionSiteNumber": 4,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_17_084.jpg",
     "i18n": {
       "en": {
@@ -128935,7 +128941,7 @@
     "twilightCost": 3,
     "strength": 7,
     "vitality": 2,
-    "minionSiteNumber": 4,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_17_085.jpg",
     "i18n": {
       "en": {
@@ -128980,7 +128986,7 @@
     "twilightCost": 4,
     "strength": 7,
     "vitality": 4,
-    "minionSiteNumber": 4,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_17_086.jpg",
     "i18n": {
       "en": {
@@ -129025,7 +129031,7 @@
     "twilightCost": 3,
     "strength": 8,
     "vitality": 2,
-    "minionSiteNumber": 4,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_17_087.jpg",
     "i18n": {
       "en": {
@@ -129067,7 +129073,7 @@
     "twilightCost": 4,
     "strength": 14,
     "vitality": 2,
-    "minionSiteNumber": 4,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_17_088.jpg",
     "i18n": {
       "en": {
@@ -130414,7 +130420,7 @@
     "twilightCost": 4,
     "strength": 8,
     "vitality": 4,
-    "minionSiteNumber": 4,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_17_115.jpg",
     "i18n": {
       "en": {
@@ -130460,7 +130466,7 @@
     "twilightCost": 4,
     "strength": 8,
     "vitality": 4,
-    "minionSiteNumber": 4,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_17_116.jpg",
     "i18n": {
       "en": {
@@ -130610,7 +130616,7 @@
     "twilightCost": 5,
     "strength": 13,
     "vitality": 1,
-    "minionSiteNumber": 5,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_17_119.jpg",
     "i18n": {
       "en": {
@@ -130655,7 +130661,7 @@
     "twilightCost": 3,
     "strength": 8,
     "vitality": 2,
-    "minionSiteNumber": 5,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_17_120.jpg",
     "i18n": {
       "en": {
@@ -130700,7 +130706,7 @@
     "twilightCost": 4,
     "strength": 10,
     "vitality": 2,
-    "minionSiteNumber": 5,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_17_121.jpg",
     "i18n": {
       "en": {
@@ -130742,7 +130748,7 @@
     "twilightCost": 4,
     "strength": 5,
     "vitality": 2,
-    "minionSiteNumber": 5,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_17_122.jpg",
     "i18n": {
       "en": {
@@ -130787,7 +130793,7 @@
     "twilightCost": 5,
     "strength": 12,
     "vitality": 3,
-    "minionSiteNumber": 5,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_17_123.jpg",
     "i18n": {
       "en": {
@@ -130832,7 +130838,7 @@
     "twilightCost": 5,
     "strength": 10,
     "vitality": 3,
-    "minionSiteNumber": 5,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_17_124.jpg",
     "i18n": {
       "en": {
@@ -130877,7 +130883,7 @@
     "twilightCost": 3,
     "strength": 8,
     "vitality": 2,
-    "minionSiteNumber": 5,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_17_125.jpg",
     "i18n": {
       "en": {
@@ -130922,7 +130928,7 @@
     "twilightCost": 4,
     "strength": 9,
     "vitality": 3,
-    "minionSiteNumber": 5,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_17_126.jpg",
     "i18n": {
       "en": {
@@ -130967,7 +130973,7 @@
     "twilightCost": 4,
     "strength": 9,
     "vitality": 2,
-    "minionSiteNumber": 5,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_17_127.jpg",
     "i18n": {
       "en": {
@@ -131012,7 +131018,7 @@
     "twilightCost": 3,
     "strength": 8,
     "vitality": 2,
-    "minionSiteNumber": 5,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_17_128.jpg",
     "i18n": {
       "en": {
@@ -131062,7 +131068,7 @@
     "twilightCost": 6,
     "strength": 17,
     "vitality": 3,
-    "minionSiteNumber": 5,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_17_129.jpg",
     "i18n": {
       "en": {
@@ -131104,7 +131110,7 @@
     "twilightCost": 2,
     "strength": 5,
     "vitality": 3,
-    "minionSiteNumber": 5,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_17_130.jpg",
     "i18n": {
       "en": {
@@ -131149,7 +131155,7 @@
     "twilightCost": 3,
     "strength": 6,
     "vitality": 2,
-    "minionSiteNumber": 5,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_17_131.jpg",
     "i18n": {
       "en": {
@@ -131191,7 +131197,7 @@
     "twilightCost": 4,
     "strength": 9,
     "vitality": 2,
-    "minionSiteNumber": 5,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_17_132.jpg",
     "i18n": {
       "en": {
@@ -131236,7 +131242,7 @@
     "twilightCost": 3,
     "strength": 9,
     "vitality": 2,
-    "minionSiteNumber": 5,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_17_133.jpg",
     "i18n": {
       "en": {
@@ -131281,7 +131287,7 @@
     "twilightCost": 4,
     "strength": 8,
     "vitality": 3,
-    "minionSiteNumber": 5,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_17_134.jpg",
     "i18n": {
       "en": {
@@ -131326,7 +131332,7 @@
     "twilightCost": 3,
     "strength": 7,
     "vitality": 2,
-    "minionSiteNumber": 5,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_17_135.jpg",
     "i18n": {
       "en": {
@@ -131368,7 +131374,7 @@
     "twilightCost": 3,
     "strength": 6,
     "vitality": 2,
-    "minionSiteNumber": 5,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_17_136.jpg",
     "i18n": {
       "en": {
@@ -131502,7 +131508,7 @@
     "twilightCost": 5,
     "strength": 10,
     "vitality": 3,
-    "minionSiteNumber": 3,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_17_139.jpg",
     "i18n": {
       "en": {
@@ -131551,7 +131557,7 @@
     "twilightCost": 6,
     "strength": 11,
     "vitality": 4,
-    "minionSiteNumber": 3,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_17_140.jpg",
     "i18n": {
       "en": {
@@ -131600,7 +131606,7 @@
     "twilightCost": 4,
     "strength": 9,
     "vitality": 2,
-    "minionSiteNumber": 3,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_17_141.jpg",
     "i18n": {
       "en": {
@@ -131737,7 +131743,7 @@
     "twilightCost": 8,
     "strength": 14,
     "vitality": 4,
-    "minionSiteNumber": 3,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_17_144.jpg",
     "i18n": {
       "en": {
@@ -133386,7 +133392,7 @@
     "twilightCost": 6,
     "strength": 8,
     "vitality": 8,
-    "minionSiteNumber": 8,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_18_034.jpg",
     "i18n": {
       "en": {
@@ -134936,7 +134942,7 @@
     "twilightCost": 2,
     "strength": 4,
     "vitality": 3,
-    "minionSiteNumber": 4,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_18_067.jpg",
     "i18n": {
       "en": {
@@ -134983,7 +134989,7 @@
     "twilightCost": 3,
     "strength": 6,
     "vitality": 2,
-    "minionSiteNumber": 2,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_18_068.jpg",
     "i18n": {
       "en": {
@@ -135115,7 +135121,7 @@
     "twilightCost": 5,
     "strength": 11,
     "vitality": 3,
-    "minionSiteNumber": 4,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_18_071.jpg",
     "i18n": {
       "en": {
@@ -135162,7 +135168,7 @@
     "twilightCost": 3,
     "strength": 8,
     "vitality": 1,
-    "minionSiteNumber": 2,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_18_072.jpg",
     "i18n": {
       "en": {
@@ -135263,7 +135269,7 @@
     "twilightCost": 5,
     "strength": 10,
     "vitality": 3,
-    "minionSiteNumber": 2,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_18_074.jpg",
     "i18n": {
       "en": {
@@ -135346,7 +135352,7 @@
     "twilightCost": 4,
     "strength": 9,
     "vitality": 2,
-    "minionSiteNumber": 2,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_18_076.jpg",
     "i18n": {
       "en": {
@@ -135438,7 +135444,7 @@
     "twilightCost": 1,
     "strength": 3,
     "vitality": 4,
-    "minionSiteNumber": 2,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_18_078.jpg",
     "i18n": {
       "en": {
@@ -135485,7 +135491,7 @@
     "twilightCost": 3,
     "strength": 8,
     "vitality": 2,
-    "minionSiteNumber": 4,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_18_079.jpg",
     "i18n": {
       "en": {
@@ -135582,7 +135588,7 @@
     "twilightCost": 5,
     "strength": 10,
     "vitality": 3,
-    "minionSiteNumber": 4,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_18_081.jpg",
     "i18n": {
       "en": {
@@ -135753,7 +135759,7 @@
     "twilightCost": 6,
     "strength": 15,
     "vitality": 3,
-    "minionSiteNumber": 4,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_18_085.jpg",
     "i18n": {
       "en": {
@@ -135865,7 +135871,7 @@
     "twilightCost": 4,
     "strength": 9,
     "vitality": 3,
-    "minionSiteNumber": 4,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_18_087.jpg",
     "i18n": {
       "en": {
@@ -135907,7 +135913,7 @@
     "twilightCost": 3,
     "strength": 8,
     "vitality": 2,
-    "minionSiteNumber": 4,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_18_088.jpg",
     "i18n": {
       "en": {
@@ -135952,7 +135958,7 @@
     "twilightCost": 5,
     "strength": 10,
     "vitality": 2,
-    "minionSiteNumber": 4,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_18_089.jpg",
     "i18n": {
       "en": {
@@ -135994,7 +136000,7 @@
     "twilightCost": 4,
     "strength": 9,
     "vitality": 3,
-    "minionSiteNumber": 4,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_18_090.jpg",
     "i18n": {
       "en": {
@@ -136039,7 +136045,7 @@
     "twilightCost": 2,
     "strength": 7,
     "vitality": 1,
-    "minionSiteNumber": 4,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_18_091.jpg",
     "i18n": {
       "en": {
@@ -136122,7 +136128,7 @@
     "twilightCost": 3,
     "strength": 7,
     "vitality": 2,
-    "minionSiteNumber": 4,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_18_093.jpg",
     "i18n": {
       "en": {
@@ -137266,7 +137272,7 @@
     "twilightCost": 7,
     "strength": 13,
     "vitality": 3,
-    "minionSiteNumber": 5,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_18_118.jpg",
     "i18n": {
       "en": {
@@ -137445,7 +137451,7 @@
     "twilightCost": 5,
     "strength": 13,
     "vitality": 3,
-    "minionSiteNumber": 5,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_18_122.jpg",
     "i18n": {
       "en": {
@@ -137534,7 +137540,7 @@
     "twilightCost": 3,
     "strength": 8,
     "vitality": 2,
-    "minionSiteNumber": 5,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_18_124.jpg",
     "i18n": {
       "en": {
@@ -137579,7 +137585,7 @@
     "twilightCost": 2,
     "strength": 6,
     "vitality": 1,
-    "minionSiteNumber": 5,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_18_125.jpg",
     "i18n": {
       "en": {
@@ -137624,7 +137630,7 @@
     "twilightCost": 4,
     "strength": 9,
     "vitality": 2,
-    "minionSiteNumber": 5,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_18_126.jpg",
     "i18n": {
       "en": {
@@ -137669,7 +137675,7 @@
     "twilightCost": 5,
     "strength": 11,
     "vitality": 3,
-    "minionSiteNumber": 5,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_18_127.jpg",
     "i18n": {
       "en": {
@@ -137717,7 +137723,7 @@
     "twilightCost": 4,
     "strength": 8,
     "vitality": 3,
-    "minionSiteNumber": 5,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_18_128.jpg",
     "i18n": {
       "en": {
@@ -137788,7 +137794,7 @@
     "twilightCost": 0,
     "strength": 7,
     "vitality": 1,
-    "minionSiteNumber": 5,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_18_129.jpg",
     "i18n": {
       "en": {
@@ -137836,7 +137842,7 @@
     "twilightCost": 3,
     "strength": 8,
     "vitality": 2,
-    "minionSiteNumber": 5,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_18_130.jpg",
     "i18n": {
       "en": {
@@ -137896,7 +137902,7 @@
     "twilightCost": 3,
     "strength": 10,
     "vitality": 2,
-    "minionSiteNumber": 5,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_18_131.jpg",
     "i18n": {
       "en": {
@@ -138115,6 +138121,9 @@
     "isUnique": false,
     "kind": "FREE_PEOPLE",
     "type": "CONDITION",
+    "grantsKeywords": [
+      "HUNTER 2"
+    ],
     "attachedTo": [
       [
         "DWARVEN",
@@ -138455,7 +138464,7 @@
     "twilightCost": 2,
     "strength": 5,
     "vitality": 4,
-    "minionSiteNumber": 3,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_19_010.jpg",
     "i18n": {
       "en": {
@@ -138752,7 +138761,7 @@
     "twilightCost": 2,
     "strength": 4,
     "vitality": 3,
-    "minionSiteNumber": 3,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_19_016.jpg",
     "i18n": {
       "en": {
@@ -138838,7 +138847,7 @@
     "twilightCost": 14,
     "strength": 17,
     "vitality": 5,
-    "minionSiteNumber": 4,
+    "minionSiteNumber": null,
     "i18n": {
       "en": {
         "title": "The Balrog",
@@ -138887,7 +138896,7 @@
     "twilightCost": 2,
     "strength": 4,
     "vitality": 2,
-    "minionSiteNumber": 4,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_19_019.jpg",
     "i18n": {
       "en": {
@@ -138932,7 +138941,7 @@
     "twilightCost": 3,
     "strength": 7,
     "vitality": 2,
-    "minionSiteNumber": 4,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_19_020.jpg",
     "i18n": {
       "en": {
@@ -138977,7 +138986,7 @@
     "twilightCost": 4,
     "strength": 11,
     "vitality": 4,
-    "minionSiteNumber": 4,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_19_021.jpg",
     "i18n": {
       "en": {
@@ -139039,7 +139048,7 @@
     "twilightCost": 7,
     "strength": 13,
     "vitality": 4,
-    "minionSiteNumber": 4,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_19_022.jpg",
     "i18n": {
       "en": {
@@ -139099,7 +139108,7 @@
     "twilightCost": 6,
     "strength": 13,
     "vitality": 3,
-    "minionSiteNumber": 4,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_19_023.jpg",
     "i18n": {
       "en": {
@@ -139583,7 +139592,7 @@
     "twilightCost": 7,
     "strength": 13,
     "vitality": 3,
-    "minionSiteNumber": 5,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_19_033.jpg",
     "i18n": {
       "en": {
@@ -139678,7 +139687,7 @@
     "twilightCost": 6,
     "strength": 12,
     "vitality": 3,
-    "minionSiteNumber": 3,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_19_035.jpg",
     "i18n": {
       "en": {
@@ -139731,7 +139740,7 @@
     "twilightCost": 6,
     "strength": 11,
     "vitality": 4,
-    "minionSiteNumber": 3,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_19_036.jpg",
     "i18n": {
       "en": {
@@ -139781,7 +139790,7 @@
     "twilightCost": 4,
     "strength": 9,
     "vitality": 2,
-    "minionSiteNumber": 3,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_19_037.jpg",
     "i18n": {
       "en": {
@@ -139831,7 +139840,7 @@
     "twilightCost": 4,
     "strength": 9,
     "vitality": 2,
-    "minionSiteNumber": 3,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_19_038.jpg",
     "i18n": {
       "en": {
@@ -139881,7 +139890,7 @@
     "twilightCost": 6,
     "strength": 12,
     "vitality": 3,
-    "minionSiteNumber": 3,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_19_039.jpg",
     "i18n": {
       "en": {
@@ -139934,7 +139943,7 @@
     "twilightCost": 8,
     "strength": 14,
     "vitality": 4,
-    "minionSiteNumber": 3,
+    "minionSiteNumber": null,
     "imageUrl": "/cards_visuals/o_19_040.jpg",
     "i18n": {
       "en": {
