@@ -16,6 +16,7 @@ import {
 import {
     resolveSkirmish,
     hasFierceMinionsOnBattlefield,
+    canSelectSkirmish
 } from './logic/skirmish';
 import { getUnassignedMinions } from './logic/assignment';
 import { commonMoves, advanceCompany, getTargetPlayerId } from './moves';
@@ -695,16 +696,12 @@ export const LotrGame: Game<GameState> = {
         },
 
         skirmish: {
-            // 🔀 Calcule dynamiquement la phase suivante
             next: ({ G }) => {
-                // Si on ÉTAIT en passe Acharnée -> Direction Regroupement
                 if (G.isFierceAssignment) {
                     return 'regroup';
                 }
 
-                // Si c'était la 1ère passe : y a-t-il des séides FIERCE ?
                 const hasFierce = hasFierceMinionsOnBattlefield(G);
-
                 if (hasFierce) {
                     return 'assignment';
                 }
@@ -712,7 +709,6 @@ export const LotrGame: Game<GameState> = {
             },
 
             onEnd: ({ G }) => {
-                // Si on termine la 1ère passe et qu'il y a des séides FIERCE, on prépare le flag pour Assignment !
                 if (!G.isFierceAssignment && hasFierceMinionsOnBattlefield(G)) {
                     G.pendingFierceAssignment = true;
                 }
@@ -727,11 +723,7 @@ export const LotrGame: Game<GameState> = {
                     (!G.pendingDeadCardIds ||
                         G.pendingDeadCardIds.length === 0);
 
-                const canEnd =
-                    noSkirmishesLeft && noActiveSkirmish && noPendingAnims;
-                if (canEnd) {
-                }
-                return canEnd;
+                return noSkirmishesLeft && noActiveSkirmish && noPendingAnims;
             },
 
             turn: { activePlayers: { value: { '0': 'play', '1': 'play' } } },
@@ -747,10 +739,12 @@ export const LotrGame: Game<GameState> = {
                     if (ctx.phase !== 'skirmish' || playerID !== fpId)
                         return 'INVALID_MOVE';
 
-                    const skirmish = G.skirmishes.find(
-                        (s) => s.id === skirmishId
-                    );
-                    if (!skirmish) return 'INVALID_MOVE';
+                    // Contrôle Lurker déporté
+                    if (!canSelectSkirmish(G, skirmishId)) {
+                        G.statusMessage =
+                            'Impossible de choisir un combat Lurker tant qu’il reste d’autres combats à résoudre !';
+                        return 'INVALID_MOVE';
+                    }
 
                     G.activeSkirmishId = skirmishId;
                     G.actionWindow = {

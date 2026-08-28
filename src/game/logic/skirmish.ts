@@ -10,7 +10,10 @@ import {
     applyOverwhelmAndCheckDeath,
 } from '../../utils/applyWoundAndCheckDeath';
 import { audioService } from '../../services/audioService';
-import { getKeywordValue } from '../engine/keywords/keywordUtils';
+import {
+    getKeywordValue,
+    getEffectiveKeywords,
+} from '../engine/keywords/keywordUtils';
 import { getCalculatedStrength } from './stats/statCalculator';
 
 /**
@@ -191,3 +194,42 @@ export const resolveSkirmish = (G: GameState, _ctx?: Ctx) => {
 
     G.statusMessage = resultMsg;
 };
+
+/**
+ * Vérifie si une escarmouche contient au moins un Séide avec le mot-clé LURKER.
+ */
+export function isLurkerSkirmish(
+    G: GameState,
+    skirmish: SkirmishState
+): boolean {
+    const minionIds =
+        skirmish.minionIds || (skirmish.minionId ? [skirmish.minionId] : []);
+
+    const minions = (G.battlefield || []).filter(
+        (c: CardState) =>
+            minionIds.includes(c.id) || minionIds.includes(c.instanceId)
+    );
+
+    return minions.some((minion) => {
+        const keywords = getEffectiveKeywords(minion);
+        return keywords.some((k) => k.key === 'LURKER');
+    });
+}
+
+/**
+ * Vérifie si le joueur FP a le droit de sélectionner cette escarmouche.
+ * Renvoie false si l'escarmouche est Lurker ALORS qu'il reste au moins une escarmouche non-Lurker.
+ */
+export function canSelectSkirmish(G: GameState, skirmishId: string): boolean {
+    const skirmish = (G.skirmishes || []).find((s) => s.id === skirmishId);
+    if (!skirmish) return false;
+
+    const targetIsLurker = isLurkerSkirmish(G, skirmish);
+    if (!targetIsLurker) return true;
+
+    // S'il s'agit d'un Lurker, on vérifie s'il existe au moins une escarmouche NON-Lurker dans la liste
+    const hasNonLurker = G.skirmishes.some((s) => !isLurkerSkirmish(G, s));
+
+    // Si une escarmouche non-Lurker existe encore, la sélection est interdite
+    return !hasNonLurker;
+}

@@ -196,6 +196,7 @@ export const SupportSplitLayout = styled.div`
     width: 100%;
     gap: 20px;
     overflow-x: auto;
+    overflow-y: hidden;
     padding-bottom: 4px;
 
     &::-webkit-scrollbar {
@@ -220,6 +221,7 @@ export const SupportSubZone = styled.div<{ $align: 'left' | 'right' }>`
     gap: 15px;
     min-height: 120px;
     flex: 1;
+    padding-inline-start: 38px;
 
     /* Alignement à gauche pour FP, à droite pour Ombre */
     justify-content: ${({ $align }) =>

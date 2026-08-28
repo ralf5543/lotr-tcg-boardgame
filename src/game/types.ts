@@ -240,6 +240,7 @@ export interface GameState {
     players: Record<string, PlayerState>;
     awaitingSiteSelection: boolean;
     isFierceAssignment?: boolean;
+    pendingFierceAssignment?: boolean;
     statusMessage: string;
     activeSkirmishId?: string;
     actionWindow?: ActionWindow;
