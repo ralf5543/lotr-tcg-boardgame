@@ -18,6 +18,7 @@ import {
     parseClassAndPhases,
     parseAttachedTo,
     parseToPlayConditions,
+    parseAidCost,
 } from './parsers.ts';
 
 async function convert() {
@@ -124,6 +125,7 @@ async function convert() {
         );
         const toPlayData = parseToPlayConditions(englishText);
         const grantsKeywords = parseGrantsKeywords(englishText);
+        const aidCost = type === 'FOLLOWER' ? parseAidCost(englishText) : undefined;
 
         const cardObj: any = {
             id: cardId,
@@ -136,6 +138,7 @@ async function convert() {
             type: type,
             subtype: subtype,
             keywords: keywords,
+            aidCost: aidCost,
             grantsKeywords: grantsKeywords,
             attachedTo: attachmentData || undefined,
             toPlay: toPlayData,

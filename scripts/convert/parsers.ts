@@ -6,6 +6,9 @@ import {
     VALID_CULTURES,
 } from './constants.ts';
 
+/**
+ * Nettoie et supprime les guillemets/apostrophes environnants d'une chaîne de texte.
+ */
 export function stripQuotes(text?: string): string | undefined {
     if (!text) return undefined;
     const cleaned = text
@@ -16,6 +19,9 @@ export function stripQuotes(text?: string): string | undefined {
     return cleaned.length > 0 ? cleaned : undefined;
 }
 
+/**
+ * Lit le contenu brut d'un CSV et gère les cellules contenant des retours à la ligne ou des guillemets.
+ */
 export function parseCsvContent(content: string): string[][] {
     const rows: string[][] = [];
     let currentRow: string[] = [];
@@ -56,10 +62,16 @@ export function parseCsvContent(content: string): string[][] {
     return rows;
 }
 
+/**
+ * Nettoie le texte de Lore (saveur) d'une carte.
+ */
 export function cleanLoreText(text?: string): string | undefined {
     return stripQuotes(text);
 }
 
+/**
+ * Formate le texte de jeu pour transformer les balises HTML/Keyword en gras ou symboles Markdown.
+ */
 export function formatGameText(text?: string): string | undefined {
     if (!text) return undefined;
     return text
@@ -72,17 +84,26 @@ export function formatGameText(text?: string): string | undefined {
         .trim();
 }
 
+/**
+ * Normalise le nom de la culture (ex: MAN -> MEN).
+ */
 export function mapCulture(cultureStr?: string): string | undefined {
     if (!cultureStr) return undefined;
     const cleanCulture = cultureStr.trim().toUpperCase();
     return cleanCulture === 'MAN' ? 'MEN' : cleanCulture;
 }
 
+/**
+ * Extrait le portrait/signet au bas d'une carte (ex: Signet_Frodo -> FRODO).
+ */
 export function parseSignet(bottomIcon?: string): string | undefined {
     if (!bottomIcon || !bottomIcon.startsWith('Signet_')) return undefined;
     return bottomIcon.replace('Signet_', '').toUpperCase();
 }
 
+/**
+ * Convertit une valeur de statistique texte en nombre (avec fallback textuel si la valeur primaire est vide).
+ */
 export function parseStat(
     primaryValue: string,
     fallbackText: string
@@ -98,6 +119,9 @@ export function parseStat(
     return undefined;
 }
 
+/**
+ * Construit l'objet i18n multilingue (Titre, Sous-titre, Texte de jeu, Lore).
+ */
 export function buildLangBlock(
     title?: string,
     subtitle?: string,
@@ -118,6 +142,9 @@ export function buildLangBlock(
     return Object.keys(block).length > 0 ? block : undefined;
 }
 
+/**
+ * Extrait les mots-clés octroyés au porteur par une carte d'attachement ou de suivant.
+ */
 export function parseGrantsKeywords(text?: string): string[] | undefined {
     if (!text) return undefined;
 
@@ -147,6 +174,52 @@ export function parseGrantsKeywords(text?: string): string[] | undefined {
     return granted.size > 0 ? Array.from(granted) : undefined;
 }
 
+/**
+ * Extrait le coût détaillé du mot-clé AID sous forme d'objet structuré.
+ */
+export function parseAidCost(
+    text?: string
+): { type: 'TWILIGHT' | 'THREAT' | 'BURDEN'; amount: number } | undefined {
+    if (!text) return undefined;
+
+    // 1. Coût en Twilight : <keyword>Aid</keyword> - <symbol>twilightX</symbol>
+    const twilightMatch = text.match(
+        /<keyword>Aid<\/keyword>\s*-\s*<symbol>twilight(\d+)<\/symbol>/i
+    );
+    if (twilightMatch && twilightMatch[1]) {
+        return { type: 'TWILIGHT', amount: parseInt(twilightMatch[1], 10) };
+    }
+
+    // 2. Coût en Menace : <keyword>Aid</keyword> - Add a threat. / Add 2 threats.
+    const threatMatch = text.match(
+        /<keyword>Aid<\/keyword>\s*-\s*Add\s+(a|\d+)\s+threat/i
+    );
+    if (threatMatch && threatMatch[1]) {
+        const count =
+            threatMatch[1].toLowerCase() === 'a'
+                ? 1
+                : parseInt(threatMatch[1], 10);
+        return { type: 'THREAT', amount: count };
+    }
+
+    // 3. Coût en Fardeau : <keyword>Aid</keyword> - Add a burden. / Add 2 burdens.
+    const burdenMatch = text.match(
+        /<keyword>Aid<\/keyword>\s*-\s*Add\s+(a|\d+)\s+burden/i
+    );
+    if (burdenMatch && burdenMatch[1]) {
+        const count =
+            burdenMatch[1].toLowerCase() === 'a'
+                ? 1
+                : parseInt(burdenMatch[1], 10);
+        return { type: 'BURDEN', amount: count };
+    }
+
+    return undefined;
+}
+
+/**
+ * Extrait la liste globale des mots-clés d'une carte (Ambush, Ring-bound, Unbound, Aid, etc.).
+ */
 export function parseKeywords(
     text?: string,
     titleVO?: string,
@@ -155,7 +228,13 @@ export function parseKeywords(
 ): string[] | undefined {
     const keywords: string[] = [];
 
+    // --- A. Mot-clé AID systématique pour les Followers ---
+    if (type === 'FOLLOWER') {
+        keywords.push('AID');
+    }
+
     if (text) {
+        // --- B. Embuscade (Ambush X) ---
         const ambushRegex =
             /<keyword>Ambush<\/keyword>\s*<symbol>twilight(\d+)<\/symbol>/gi;
         let ambushMatch;
@@ -165,11 +244,15 @@ export function parseKeywords(
             if (!keywords.includes(kw)) keywords.push(kw);
         }
 
+        // --- C. Mots-clés standards (<keyword>WORD.</keyword>) ---
         const regex = /<keyword>([A-Z][^<]*\.)<\/keyword>/g;
         let match;
         while ((match = regex.exec(text)) !== null) {
             const rawKw = match[1].slice(0, -1).trim();
             const upperKw = rawKw.toUpperCase();
+
+            // Éviter de dupliquer 'AID'
+            if (upperKw.startsWith('AID')) continue;
 
             if (VALID_KEYWORDS.has(upperKw) && !keywords.includes(upperKw)) {
                 keywords.push(upperKw);
@@ -177,6 +260,7 @@ export function parseKeywords(
         }
     }
 
+    // --- D. Statuts particuliers (Ring-bound, Unbound) ---
     if (
         titleVO &&
         titleVO.toLowerCase().startsWith('sam') &&
@@ -195,6 +279,9 @@ export function parseKeywords(
     return keywords.length > 0 ? keywords : undefined;
 }
 
+/**
+ * Identifie les sous-types de cartes ainsi que les phases d'action autorisées (Manoeuvre, Archery, Skirmish, etc.).
+ */
 export function parseClassAndPhases(
     classStr?: string,
     englishText?: string,
@@ -245,11 +332,22 @@ export function parseClassAndPhases(
     };
 }
 
+/**
+ * Détermine à quel type de cible une carte d'attachement ou un Suivant (Follower) peut être attaché.
+ */
 export function parseAttachedTo(text?: string): string[][] | null {
     if (!text) return null;
 
     if (/plays on a site/i.test(text)) {
         return [['SITE']];
+    }
+
+    // Détection spécifique aux Suivants (transfer to a companion / transfer to a minion)
+    if (/transfer this to a companion/i.test(text)) {
+        return [['COMPANION']];
+    }
+    if (/transfer this to a minion/i.test(text)) {
+        return [['MINION']];
     }
 
     const match = text.match(/(?:Bearer must be|Plays on)\s+([^.\n]+)/i);
@@ -308,6 +406,9 @@ export function parseAttachedTo(text?: string): string[][] | null {
     return combinedKeywords.length > 0 ? [combinedKeywords] : null;
 }
 
+/**
+ * Analyse les conditions requises pour jouer une carte ("To play, ...").
+ */
 export function parseToPlayConditions(text?: string): any[] | undefined {
     if (!text) return undefined;
 

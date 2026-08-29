@@ -167,6 +167,7 @@ export interface CardState {
     subtype?: CardSubtype;
     race?: CardRace;
     keywords?: CardKeyword[];
+    aidCost?: AidCost;
     isUnique: boolean;
     isFemale?: boolean;
     // Mots-clés temporaires gagnés via une capacité
@@ -327,3 +328,8 @@ export interface TempKeywordModifier {
     expiresAtPhase?: 'REGROUP' | 'SKIRMISH' | 'TURN_END'; // Phase où l'effet s'annule
 }
 
+// Structure du coût d'Aide pour les Followers
+export interface AidCost {
+    type: 'TWILIGHT' | 'THREAT' | 'BURDEN';
+    amount: number;
+}

@@ -7979,6 +7979,13 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "FOLLOWER",
+    "keywords": [
+      "AID"
+    ],
+    "aidCost": {
+      "type": "BURDEN",
+      "amount": 1
+    },
     "toPlay": [
       {
         "spot": [
@@ -8004,13 +8011,13 @@
       "en": {
         "title": "Déagol",
         "subtitle": "Fateful Finder",
-        "gameText": "To play, spot Sméagol.\n**Aid –** Add a burden.\n**Skirmish:** If bearer is not assigned to a skirmish, discard this from play to play an artifact or possession from your draw deck on bearer.",
+        "gameText": "To play, spot Sméagol.\n**Aid** - Add a burden.\n**Skirmish:** If bearer is not assigned to a skirmish, discard this from play to play an artifact or possession from your draw deck on bearer.",
         "loreText": "...there in his hand lay a beautiful golden ring."
       },
       "fr": {
         "title": "Déagol",
         "subtitle": "Fateful Finder",
-        "gameText": "To play, spot Sméagol.\n**Aid –** Add a burden.\n**Skirmish:** If bearer is not assigned to a skirmish, discard this from play to play an artifact or possession from your draw deck on bearer.",
+        "gameText": "To play, spot Sméagol.\n**Aid** - Add a burden.\n**Skirmish:** If bearer is not assigned to a skirmish, discard this from play to play an artifact or possession from your draw deck on bearer.",
         "loreText": "...there in his hand lay a beautiful golden ring."
       },
       "de": {
@@ -8021,13 +8028,13 @@
       "it": {
         "title": "Déagol",
         "subtitle": "Fateful Finder",
-        "gameText": "To play, spot Sméagol.\n**Aid –** Add a burden.\n**Skirmish:** If bearer is not assigned to a skirmish, discard this from play to play an artifact or possession from your draw deck on bearer.",
+        "gameText": "To play, spot Sméagol.\n**Aid** - Add a burden.\n**Skirmish:** If bearer is not assigned to a skirmish, discard this from play to play an artifact or possession from your draw deck on bearer.",
         "loreText": "...there in his hand lay a beautiful golden ring."
       },
       "es": {
         "title": "Déagol",
         "subtitle": "Fateful Finder",
-        "gameText": "To play, spot Sméagol.\n**Aid –** Add a burden.\n**Skirmish:** If bearer is not assigned to a skirmish, discard this from play to play an artifact or possession from your draw deck on bearer.",
+        "gameText": "To play, spot Sméagol.\n**Aid** - Add a burden.\n**Skirmish:** If bearer is not assigned to a skirmish, discard this from play to play an artifact or possession from your draw deck on bearer.",
         "loreText": "...there in his hand lay a beautiful golden ring."
       }
     }
@@ -107509,6 +107516,18 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "FOLLOWER",
+    "keywords": [
+      "AID"
+    ],
+    "aidCost": {
+      "type": "TWILIGHT",
+      "amount": 2
+    },
+    "attachedTo": [
+      [
+        "COMPANION"
+      ]
+    ],
     "culture": "GANDALF",
     "twilightCost": 2,
     "imageUrl": "/cards_visuals/o_13_028.jpg",
@@ -107516,13 +107535,13 @@
       "en": {
         "title": "Alatar",
         "subtitle": "Final Envoy",
-        "gameText": "**Aid –**<symbol>twilight2</symbol>. <i>(At the start of the maneuver phase, you may add</i> <symbol>twilight2</symbol> <i>to transfer this to a companion.)</i>\nEach time you transfer this to a companion, you may reinforce a <symbol>gandalf</symbol> token.  While you can spot a <symbol>gandalf</symbol> companion, each minion skirmishing bearer is strength –1.",
+        "gameText": "**Aid** -<symbol>twilight2</symbol>. <i>(At the start of the maneuver phase, you may add</i> <symbol>twilight2</symbol> <i>to transfer this to a companion.)</i>\nEach time you transfer this to a companion, you may reinforce a <symbol>gandalf</symbol> token.  While you can spot a <symbol>gandalf</symbol> companion, each minion skirmishing bearer is strength –1.",
         "loreText": "Third of the Istari to be named, he was clad in sea-blue."
       },
       "fr": {
         "title": "Alatar",
         "subtitle": "Final Envoy",
-        "gameText": "**Aid –**<symbol>twilight2</symbol>. <i>(At the start of the maneuver phase, you may add</i> <symbol>twilight2</symbol> <i>to transfer this to a companion.)</i>\nEach time you transfer this to a companion, you may reinforce a <symbol>gandalf</symbol> token.  While you can spot a <symbol>gandalf</symbol> companion, each minion skirmishing bearer is strength –1.",
+        "gameText": "**Aid** -<symbol>twilight2</symbol>. <i>(At the start of the maneuver phase, you may add</i> <symbol>twilight2</symbol> <i>to transfer this to a companion.)</i>\nEach time you transfer this to a companion, you may reinforce a <symbol>gandalf</symbol> token.  While you can spot a <symbol>gandalf</symbol> companion, each minion skirmishing bearer is strength –1.",
         "loreText": "Third of the Istari to be named, he was clad in sea-blue."
       },
       "de": {
@@ -107533,13 +107552,13 @@
       "it": {
         "title": "Alatar",
         "subtitle": "Final Envoy",
-        "gameText": "**Aid –**<symbol>twilight2</symbol>. <i>(At the start of the maneuver phase, you may add</i> <symbol>twilight2</symbol> <i>to transfer this to a companion.)</i>\nEach time you transfer this to a companion, you may reinforce a <symbol>gandalf</symbol> token.  While you can spot a <symbol>gandalf</symbol> companion, each minion skirmishing bearer is strength –1.",
+        "gameText": "**Aid** -<symbol>twilight2</symbol>. <i>(At the start of the maneuver phase, you may add</i> <symbol>twilight2</symbol> <i>to transfer this to a companion.)</i>\nEach time you transfer this to a companion, you may reinforce a <symbol>gandalf</symbol> token.  While you can spot a <symbol>gandalf</symbol> companion, each minion skirmishing bearer is strength –1.",
         "loreText": "Third of the Istari to be named, he was clad in sea-blue."
       },
       "es": {
         "title": "Alatar",
         "subtitle": "Final Envoy",
-        "gameText": "**Aid –**<symbol>twilight2</symbol>. <i>(At the start of the maneuver phase, you may add</i> <symbol>twilight2</symbol> <i>to transfer this to a companion.)</i>\nEach time you transfer this to a companion, you may reinforce a <symbol>gandalf</symbol> token.  While you can spot a <symbol>gandalf</symbol> companion, each minion skirmishing bearer is strength –1.",
+        "gameText": "**Aid** -<symbol>twilight2</symbol>. <i>(At the start of the maneuver phase, you may add</i> <symbol>twilight2</symbol> <i>to transfer this to a companion.)</i>\nEach time you transfer this to a companion, you may reinforce a <symbol>gandalf</symbol> token.  While you can spot a <symbol>gandalf</symbol> companion, each minion skirmishing bearer is strength –1.",
         "loreText": "Third of the Istari to be named, he was clad in sea-blue."
       }
     }
@@ -107912,6 +107931,18 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "FOLLOWER",
+    "keywords": [
+      "AID"
+    ],
+    "aidCost": {
+      "type": "TWILIGHT",
+      "amount": 2
+    },
+    "attachedTo": [
+      [
+        "COMPANION"
+      ]
+    ],
     "culture": "GANDALF",
     "twilightCost": 2,
     "strength": 1,
@@ -107920,13 +107951,13 @@
       "en": {
         "title": "Pallando",
         "subtitle": "Far-travelling One",
-        "gameText": "**Aid –** <symbol>twilight2</symbol>.\nEach time you transfer this to a companion, except a <symbol>gandalf</symbol> companion, exert bearer twice.  Each time bearer wins a skirmish, you may discard a condition from play.",
+        "gameText": "**Aid** - <symbol>twilight2</symbol>.\nEach time you transfer this to a companion, except a <symbol>gandalf</symbol> companion, exert bearer twice.  Each time bearer wins a skirmish, you may discard a condition from play.",
         "loreText": "Brought as a companion by Alatar, he traveled the South and East to aid the Free Peoples."
       },
       "fr": {
         "title": "Pallando",
         "subtitle": "Far-travelling One",
-        "gameText": "**Aid –** <symbol>twilight2</symbol>.\nEach time you transfer this to a companion, except a <symbol>gandalf</symbol> companion, exert bearer twice.  Each time bearer wins a skirmish, you may discard a condition from play.",
+        "gameText": "**Aid** - <symbol>twilight2</symbol>.\nEach time you transfer this to a companion, except a <symbol>gandalf</symbol> companion, exert bearer twice.  Each time bearer wins a skirmish, you may discard a condition from play.",
         "loreText": "Brought as a companion by Alatar, he traveled the South and East to aid the Free Peoples."
       },
       "de": {
@@ -107938,13 +107969,13 @@
       "it": {
         "title": "Pallando",
         "subtitle": "Far-travelling One",
-        "gameText": "**Aid –** <symbol>twilight2</symbol>.\nEach time you transfer this to a companion, except a <symbol>gandalf</symbol> companion, exert bearer twice.  Each time bearer wins a skirmish, you may discard a condition from play.",
+        "gameText": "**Aid** - <symbol>twilight2</symbol>.\nEach time you transfer this to a companion, except a <symbol>gandalf</symbol> companion, exert bearer twice.  Each time bearer wins a skirmish, you may discard a condition from play.",
         "loreText": "Brought as a companion by Alatar, he traveled the South and East to aid the Free Peoples."
       },
       "es": {
         "title": "Pallando",
         "subtitle": "Far-travelling One",
-        "gameText": "**Aid –** <symbol>twilight2</symbol>.\nEach time you transfer this to a companion, except a <symbol>gandalf</symbol> companion, exert bearer twice.  Each time bearer wins a skirmish, you may discard a condition from play.",
+        "gameText": "**Aid** - <symbol>twilight2</symbol>.\nEach time you transfer this to a companion, except a <symbol>gandalf</symbol> companion, exert bearer twice.  Each time bearer wins a skirmish, you may discard a condition from play.",
         "loreText": "Brought as a companion by Alatar, he traveled the South and East to aid the Free Peoples."
       }
     }
@@ -107956,6 +107987,18 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "FOLLOWER",
+    "keywords": [
+      "AID"
+    ],
+    "aidCost": {
+      "type": "TWILIGHT",
+      "amount": 2
+    },
+    "attachedTo": [
+      [
+        "COMPANION"
+      ]
+    ],
     "culture": "GANDALF",
     "twilightCost": 2,
     "resistance": 2,
@@ -107964,13 +108007,13 @@
       "en": {
         "title": "Radagast",
         "subtitle": "Tender of Beasts",
-        "gameText": "**Aid –** <symbol>twilight2</symbol>. <i>(At the start of the maneuver phase, you may add</i> <symbol>twilight2</symbol> <i>to transfer this to a companion.)</i>\nWhile you can spot 2 <symbol>gandalf</symbol> companions, minions skirmishing bearer do not gain strength bonuses from possessions.",
+        "gameText": "**Aid** - <symbol>twilight2</symbol>. <i>(At the start of the maneuver phase, you may add</i> <symbol>twilight2</symbol> <i>to transfer this to a companion.)</i>\nWhile you can spot 2 <symbol>gandalf</symbol> companions, minions skirmishing bearer do not gain strength bonuses from possessions.",
         "loreText": "It would have been useless in any case to try and win over the honest Radagast to treachery."
       },
       "fr": {
         "title": "Radagast",
         "subtitle": "Tender of Beasts",
-        "gameText": "**Aid –** <symbol>twilight2</symbol>. <i>(At the start of the maneuver phase, you may add</i> <symbol>twilight2</symbol> <i>to transfer this to a companion.)</i>\nWhile you can spot 2 <symbol>gandalf</symbol> companions, minions skirmishing bearer do not gain strength bonuses from possessions.",
+        "gameText": "**Aid** - <symbol>twilight2</symbol>. <i>(At the start of the maneuver phase, you may add</i> <symbol>twilight2</symbol> <i>to transfer this to a companion.)</i>\nWhile you can spot 2 <symbol>gandalf</symbol> companions, minions skirmishing bearer do not gain strength bonuses from possessions.",
         "loreText": "It would have been useless in any case to try and win over the honest Radagast to treachery."
       },
       "de": {
@@ -107982,13 +108025,13 @@
       "it": {
         "title": "Radagast",
         "subtitle": "Tender of Beasts",
-        "gameText": "**Aid –** <symbol>twilight2</symbol>. <i>(At the start of the maneuver phase, you may add</i> <symbol>twilight2</symbol> <i>to transfer this to a companion.)</i>\nWhile you can spot 2 <symbol>gandalf</symbol> companions, minions skirmishing bearer do not gain strength bonuses from possessions.",
+        "gameText": "**Aid** - <symbol>twilight2</symbol>. <i>(At the start of the maneuver phase, you may add</i> <symbol>twilight2</symbol> <i>to transfer this to a companion.)</i>\nWhile you can spot 2 <symbol>gandalf</symbol> companions, minions skirmishing bearer do not gain strength bonuses from possessions.",
         "loreText": "It would have been useless in any case to try and win over the honest Radagast to treachery."
       },
       "es": {
         "title": "Radagast",
         "subtitle": "Tender of Beasts",
-        "gameText": "**Aid –** <symbol>twilight2</symbol>. <i>(At the start of the maneuver phase, you may add</i> <symbol>twilight2</symbol> <i>to transfer this to a companion.)</i>\nWhile you can spot 2 <symbol>gandalf</symbol> companions, minions skirmishing bearer do not gain strength bonuses from possessions.",
+        "gameText": "**Aid** - <symbol>twilight2</symbol>. <i>(At the start of the maneuver phase, you may add</i> <symbol>twilight2</symbol> <i>to transfer this to a companion.)</i>\nWhile you can spot 2 <symbol>gandalf</symbol> companions, minions skirmishing bearer do not gain strength bonuses from possessions.",
         "loreText": "It would have been useless in any case to try and win over the honest Radagast to treachery."
       }
     }
@@ -112676,6 +112719,18 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "FOLLOWER",
+    "keywords": [
+      "AID"
+    ],
+    "aidCost": {
+      "type": "BURDEN",
+      "amount": 1
+    },
+    "attachedTo": [
+      [
+        "COMPANION"
+      ]
+    ],
     "culture": "SHIRE",
     "twilightCost": 1,
     "resistance": 1,
@@ -112684,13 +112739,13 @@
       "en": {
         "title": "Daddy Twofoot",
         "subtitle": "Next-door Neighbor",
-        "gameText": "**Aid –** Add a burden. <i>(At the start of the maneuver phase, you may add a burden to transfer this to a companion.)</i>\nEach time you transfer this to a companion, you may take a <symbol>shire</symbol> event into hand from your discard pile.",
+        "gameText": "**Aid** - Add a burden. <i>(At the start of the maneuver phase, you may add a burden to transfer this to a companion.)</i>\nEach time you transfer this to a companion, you may take a <symbol>shire</symbol> event into hand from your discard pile.",
         "loreText": "That's a dark bad place, if half the tales be true."
       },
       "fr": {
         "title": "Daddy Twofoot",
         "subtitle": "Next-door Neighbor",
-        "gameText": "**Aid –** Add a burden. <i>(At the start of the maneuver phase, you may add a burden to transfer this to a companion.)</i>\nEach time you transfer this to a companion, you may take a <symbol>shire</symbol> event into hand from your discard pile.",
+        "gameText": "**Aid** - Add a burden. <i>(At the start of the maneuver phase, you may add a burden to transfer this to a companion.)</i>\nEach time you transfer this to a companion, you may take a <symbol>shire</symbol> event into hand from your discard pile.",
         "loreText": "That's a dark bad place, if half the tales be true."
       },
       "de": {
@@ -112702,13 +112757,13 @@
       "it": {
         "title": "Daddy Twofoot",
         "subtitle": "Next-door Neighbor",
-        "gameText": "**Aid –** Add a burden. <i>(At the start of the maneuver phase, you may add a burden to transfer this to a companion.)</i>\nEach time you transfer this to a companion, you may take a <symbol>shire</symbol> event into hand from your discard pile.",
+        "gameText": "**Aid** - Add a burden. <i>(At the start of the maneuver phase, you may add a burden to transfer this to a companion.)</i>\nEach time you transfer this to a companion, you may take a <symbol>shire</symbol> event into hand from your discard pile.",
         "loreText": "That's a dark bad place, if half the tales be true."
       },
       "es": {
         "title": "Daddy Twofoot",
         "subtitle": "Next-door Neighbor",
-        "gameText": "**Aid –** Add a burden. <i>(At the start of the maneuver phase, you may add a burden to transfer this to a companion.)</i>\nEach time you transfer this to a companion, you may take a <symbol>shire</symbol> event into hand from your discard pile.",
+        "gameText": "**Aid** - Add a burden. <i>(At the start of the maneuver phase, you may add a burden to transfer this to a companion.)</i>\nEach time you transfer this to a companion, you may take a <symbol>shire</symbol> event into hand from your discard pile.",
         "loreText": "That's a dark bad place, if half the tales be true."
       }
     }
@@ -112929,6 +112984,18 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "FOLLOWER",
+    "keywords": [
+      "AID"
+    ],
+    "aidCost": {
+      "type": "BURDEN",
+      "amount": 2
+    },
+    "attachedTo": [
+      [
+        "COMPANION"
+      ]
+    ],
     "toPlay": [
       {
         "spot": [
@@ -112952,13 +113019,13 @@
       "en": {
         "title": "Frodo Gamgee",
         "subtitle": "Son of Samwise",
-        "gameText": "**Aid –** Add 2 burdens. <i>(At the start of the maneuver phase, you may add 2 burdens to transfer this to a companion.)</i>\nTo play, spot a Ring-bound Hobbit.\nBearer is strength +1 for each Ring-bound Hobbit you can spot.",
+        "gameText": "**Aid** - Add 2 burdens. <i>(At the start of the maneuver phase, you may add 2 burdens to transfer this to a companion.)</i>\nTo play, spot a Ring-bound Hobbit.\nBearer is strength +1 for each Ring-bound Hobbit you can spot.",
         "loreText": "...Rose and me had settled to call him Frodo, with your leave..."
       },
       "fr": {
         "title": "Frodo Gamgee",
         "subtitle": "Son of Samwise",
-        "gameText": "**Aid –** Add 2 burdens. <i>(At the start of the maneuver phase, you may add 2 burdens to transfer this to a companion.)</i>\nTo play, spot a Ring-bound Hobbit.\nBearer is strength +1 for each Ring-bound Hobbit you can spot.",
+        "gameText": "**Aid** - Add 2 burdens. <i>(At the start of the maneuver phase, you may add 2 burdens to transfer this to a companion.)</i>\nTo play, spot a Ring-bound Hobbit.\nBearer is strength +1 for each Ring-bound Hobbit you can spot.",
         "loreText": "...Rose and me had settled to call him Frodo, with your leave..."
       },
       "de": {
@@ -112970,13 +113037,13 @@
       "it": {
         "title": "Frodo Gamgee",
         "subtitle": "Son of Samwise",
-        "gameText": "**Aid –** Add 2 burdens. <i>(At the start of the maneuver phase, you may add 2 burdens to transfer this to a companion.)</i>\nTo play, spot a Ring-bound Hobbit.\nBearer is strength +1 for each Ring-bound Hobbit you can spot.",
+        "gameText": "**Aid** - Add 2 burdens. <i>(At the start of the maneuver phase, you may add 2 burdens to transfer this to a companion.)</i>\nTo play, spot a Ring-bound Hobbit.\nBearer is strength +1 for each Ring-bound Hobbit you can spot.",
         "loreText": "...Rose and me had settled to call him Frodo, with your leave..."
       },
       "es": {
         "title": "Frodo Gamgee",
         "subtitle": "Son of Samwise",
-        "gameText": "**Aid –** Add 2 burdens. <i>(At the start of the maneuver phase, you may add 2 burdens to transfer this to a companion.)</i>\nTo play, spot a Ring-bound Hobbit.\nBearer is strength +1 for each Ring-bound Hobbit you can spot.",
+        "gameText": "**Aid** - Add 2 burdens. <i>(At the start of the maneuver phase, you may add 2 burdens to transfer this to a companion.)</i>\nTo play, spot a Ring-bound Hobbit.\nBearer is strength +1 for each Ring-bound Hobbit you can spot.",
         "loreText": "...Rose and me had settled to call him Frodo, with your leave..."
       }
     }
@@ -112988,6 +113055,18 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "FOLLOWER",
+    "keywords": [
+      "AID"
+    ],
+    "aidCost": {
+      "type": "BURDEN",
+      "amount": 1
+    },
+    "attachedTo": [
+      [
+        "COMPANION"
+      ]
+    ],
     "culture": "SHIRE",
     "twilightCost": 1,
     "strength": 1,
@@ -112996,13 +113075,13 @@
       "en": {
         "title": "The Gaffer",
         "subtitle": "Master Gardener",
-        "gameText": "**Aid –** Add a burden. <i>(At the start of the maneuver phase, you may add a burden to transfer this to a companion.)</i>\nWhen you transfer The Gaffer to a <symbol>shire</symbol> companion, heal bearer (or heal bearer twice if he or she is at a dwelling site.)",
+        "gameText": "**Aid** - Add a burden. <i>(At the start of the maneuver phase, you may add a burden to transfer this to a companion.)</i>\nWhen you transfer The Gaffer to a <symbol>shire</symbol> companion, heal bearer (or heal bearer twice if he or she is at a dwelling site.)",
         "loreText": "...the Gaffer was recognized as the leading authority...."
       },
       "fr": {
         "title": "The Gaffer",
         "subtitle": "Master Gardener",
-        "gameText": "**Aid –** Add a burden. <i>(At the start of the maneuver phase, you may add a burden to transfer this to a companion.)</i>\nWhen you transfer The Gaffer to a <symbol>shire</symbol> companion, heal bearer (or heal bearer twice if he or she is at a dwelling site.)",
+        "gameText": "**Aid** - Add a burden. <i>(At the start of the maneuver phase, you may add a burden to transfer this to a companion.)</i>\nWhen you transfer The Gaffer to a <symbol>shire</symbol> companion, heal bearer (or heal bearer twice if he or she is at a dwelling site.)",
         "loreText": "...the Gaffer was recognized as the leading authority...."
       },
       "de": {
@@ -113014,13 +113093,13 @@
       "it": {
         "title": "The Gaffer",
         "subtitle": "Master Gardener",
-        "gameText": "**Aid –** Add a burden. <i>(At the start of the maneuver phase, you may add a burden to transfer this to a companion.)</i>\nWhen you transfer The Gaffer to a <symbol>shire</symbol> companion, heal bearer (or heal bearer twice if he or she is at a dwelling site.)",
+        "gameText": "**Aid** - Add a burden. <i>(At the start of the maneuver phase, you may add a burden to transfer this to a companion.)</i>\nWhen you transfer The Gaffer to a <symbol>shire</symbol> companion, heal bearer (or heal bearer twice if he or she is at a dwelling site.)",
         "loreText": "...the Gaffer was recognized as the leading authority...."
       },
       "es": {
         "title": "The Gaffer",
         "subtitle": "Master Gardener",
-        "gameText": "**Aid –** Add a burden. <i>(At the start of the maneuver phase, you may add a burden to transfer this to a companion.)</i>\nWhen you transfer The Gaffer to a <symbol>shire</symbol> companion, heal bearer (or heal bearer twice if he or she is at a dwelling site.)",
+        "gameText": "**Aid** - Add a burden. <i>(At the start of the maneuver phase, you may add a burden to transfer this to a companion.)</i>\nWhen you transfer The Gaffer to a <symbol>shire</symbol> companion, heal bearer (or heal bearer twice if he or she is at a dwelling site.)",
         "loreText": "...the Gaffer was recognized as the leading authority...."
       }
     }
@@ -114679,6 +114758,18 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "FOLLOWER",
+    "keywords": [
+      "AID"
+    ],
+    "aidCost": {
+      "type": "TWILIGHT",
+      "amount": 2
+    },
+    "attachedTo": [
+      [
+        "COMPANION"
+      ]
+    ],
     "culture": "GANDALF",
     "twilightCost": 2,
     "strength": 1,
@@ -114686,13 +114777,13 @@
       "en": {
         "title": "Pallando",
         "subtitle": "Far-travelling One",
-        "gameText": "**Aid –** <symbol>twilight2</symbol>.\nEach time you transfer this to a companion, except a <symbol>gandalf</symbol> companion, exert bearer twice.  Each time bearer wins a skirmish, you may discard a condition from play.",
+        "gameText": "**Aid** - <symbol>twilight2</symbol>.\nEach time you transfer this to a companion, except a <symbol>gandalf</symbol> companion, exert bearer twice.  Each time bearer wins a skirmish, you may discard a condition from play.",
         "loreText": "Brought as a companion by Alatar, he traveled the South and East to aid the Free Peoples."
       },
       "fr": {
         "title": "Pallando",
         "subtitle": "Far-travelling One",
-        "gameText": "**Aid –** <symbol>twilight2</symbol>.\nEach time you transfer this to a companion, except a <symbol>gandalf</symbol> companion, exert bearer twice.  Each time bearer wins a skirmish, you may discard a condition from play.",
+        "gameText": "**Aid** - <symbol>twilight2</symbol>.\nEach time you transfer this to a companion, except a <symbol>gandalf</symbol> companion, exert bearer twice.  Each time bearer wins a skirmish, you may discard a condition from play.",
         "loreText": "Brought as a companion by Alatar, he traveled the South and East to aid the Free Peoples."
       },
       "de": {
@@ -114704,13 +114795,13 @@
       "it": {
         "title": "Pallando",
         "subtitle": "Far-travelling One",
-        "gameText": "**Aid –** <symbol>twilight2</symbol>.\nEach time you transfer this to a companion, except a <symbol>gandalf</symbol> companion, exert bearer twice.  Each time bearer wins a skirmish, you may discard a condition from play.",
+        "gameText": "**Aid** - <symbol>twilight2</symbol>.\nEach time you transfer this to a companion, except a <symbol>gandalf</symbol> companion, exert bearer twice.  Each time bearer wins a skirmish, you may discard a condition from play.",
         "loreText": "Brought as a companion by Alatar, he traveled the South and East to aid the Free Peoples."
       },
       "es": {
         "title": "Pallando",
         "subtitle": "Far-travelling One",
-        "gameText": "**Aid –** <symbol>twilight2</symbol>.\nEach time you transfer this to a companion, except a <symbol>gandalf</symbol> companion, exert bearer twice.  Each time bearer wins a skirmish, you may discard a condition from play.",
+        "gameText": "**Aid** - <symbol>twilight2</symbol>.\nEach time you transfer this to a companion, except a <symbol>gandalf</symbol> companion, exert bearer twice.  Each time bearer wins a skirmish, you may discard a condition from play.",
         "loreText": "Brought as a companion by Alatar, he traveled the South and East to aid the Free Peoples."
       }
     }
@@ -116153,8 +116244,20 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "FOLLOWER",
+    "keywords": [
+      "AID"
+    ],
+    "aidCost": {
+      "type": "TWILIGHT",
+      "amount": 3
+    },
     "grantsKeywords": [
       "ARCHER"
+    ],
+    "attachedTo": [
+      [
+        "COMPANION"
+      ]
     ],
     "culture": "ELVEN",
     "twilightCost": 2,
@@ -116163,31 +116266,31 @@
       "en": {
         "title": "Dínendal",
         "subtitle": "Mirkwood Archer",
-        "gameText": "**Aid –** <symbol>twilight3</symbol>. <i>(At the start of the maneuver phase, you may add</i> <symbol>twilight3</symbol> <i>to transfer this to a companion.)</i>\nEach time you transfer this to a companion, except an <symbol>elven</symbol> companion, exert bearer.\nBearer is an **archer**.",
+        "gameText": "**Aid** - <symbol>twilight3</symbol>. <i>(At the start of the maneuver phase, you may add</i> <symbol>twilight3</symbol> <i>to transfer this to a companion.)</i>\nEach time you transfer this to a companion, except an <symbol>elven</symbol> companion, exert bearer.\nBearer is an **archer**.",
         "loreText": "Elven archers were seldom seen before it was too late."
       },
       "fr": {
         "title": "Dínendal",
         "subtitle": "Mirkwood Archer",
-        "gameText": "**Aid –** <symbol>twilight3</symbol>. <i>(At the start of the maneuver phase, you may add</i> <symbol>twilight3</symbol> <i>to transfer this to a companion.)</i>.\nEach time you transfer this to a companion, except an <symbol>elven</symbol> companion, exert bearer.\nBearer is an **archer**.",
+        "gameText": "**Aid** - <symbol>twilight3</symbol>. <i>(At the start of the maneuver phase, you may add</i> <symbol>twilight3</symbol> <i>to transfer this to a companion.)</i>.\nEach time you transfer this to a companion, except an <symbol>elven</symbol> companion, exert bearer.\nBearer is an **archer**.",
         "loreText": "Elven archers were seldom seen before it was too late."
       },
       "de": {
         "title": "Dínendal",
         "subtitle": "Mirkwood Archer",
-        "gameText": "**Aid –** <symbol>twilight3</symbol>. <i>(At the start of the maneuver phase, you may add</i> <symbol>twilight3</symbol> <i>to transfer this to a companion.)</i>.\nEach time you transfer this to a companion, except an <symbol>elven</symbol> companion, exert bearer.\nBearer is an **archer**.",
+        "gameText": "**Aid** - <symbol>twilight3</symbol>. <i>(At the start of the maneuver phase, you may add</i> <symbol>twilight3</symbol> <i>to transfer this to a companion.)</i>.\nEach time you transfer this to a companion, except an <symbol>elven</symbol> companion, exert bearer.\nBearer is an **archer**.",
         "loreText": "Elven archers were seldom seen before it was too late."
       },
       "it": {
         "title": "Dínendal",
         "subtitle": "Mirkwood Archer",
-        "gameText": "**Aid –** <symbol>twilight3</symbol>. <i>(At the start of the maneuver phase, you may add</i> <symbol>twilight3</symbol> <i>to transfer this to a companion.)</i>.\nEach time you transfer this to a companion, except an <symbol>elven</symbol> companion, exert bearer.\nBearer is an **archer**.",
+        "gameText": "**Aid** - <symbol>twilight3</symbol>. <i>(At the start of the maneuver phase, you may add</i> <symbol>twilight3</symbol> <i>to transfer this to a companion.)</i>.\nEach time you transfer this to a companion, except an <symbol>elven</symbol> companion, exert bearer.\nBearer is an **archer**.",
         "loreText": "Elven archers were seldom seen before it was too late."
       },
       "es": {
         "title": "Dínendal",
         "subtitle": "Mirkwood Archer",
-        "gameText": "**Aid –** <symbol>twilight3</symbol>. <i>(At the start of the maneuver phase, you may add</i> <symbol>twilight3</symbol> <i>to transfer this to a companion.)</i>.\nEach time you transfer this to a companion, except an <symbol>elven</symbol> companion, exert bearer.\nBearer is an **archer**.",
+        "gameText": "**Aid** - <symbol>twilight3</symbol>. <i>(At the start of the maneuver phase, you may add</i> <symbol>twilight3</symbol> <i>to transfer this to a companion.)</i>.\nEach time you transfer this to a companion, except an <symbol>elven</symbol> companion, exert bearer.\nBearer is an **archer**.",
         "loreText": "Elven archers were seldom seen before it was too late."
       }
     }
@@ -116822,6 +116925,18 @@
     "isFemale": true,
     "kind": "FREE_PEOPLE",
     "type": "FOLLOWER",
+    "keywords": [
+      "AID"
+    ],
+    "aidCost": {
+      "type": "TWILIGHT",
+      "amount": 1
+    },
+    "attachedTo": [
+      [
+        "COMPANION"
+      ]
+    ],
     "culture": "ELVEN",
     "twilightCost": 2,
     "resistance": 1,
@@ -116830,27 +116945,27 @@
       "en": {
         "title": "Uruviel",
         "subtitle": "Woodland Maid",
-        "gameText": "**Aid –** <symbol>twilight1</symbol>. <i>(At the start of the maneuver phase, you may add</i> <symbol>twilight1</symbol> <i>to transfer this to a companion.)</i>\nEach time you transfer this to a companion, you may exert an Elf to make the fellowship’s current site a forest until the end of the turn."
+        "gameText": "**Aid** - <symbol>twilight1</symbol>. <i>(At the start of the maneuver phase, you may add</i> <symbol>twilight1</symbol> <i>to transfer this to a companion.)</i>\nEach time you transfer this to a companion, you may exert an Elf to make the fellowship’s current site a forest until the end of the turn."
       },
       "fr": {
         "title": "Uruviel",
         "subtitle": "Woodland Maid",
-        "gameText": "**Aid –** <symbol>twilight1</symbol>. <i>(At the start of the maneuver phase, you may add</i> <symbol>twilight1</symbol> <i>to transfer this to a companion.)</i>.\nEach time you transfer this to a companion, you may exert an Elf to make the fellowship’s current site a forest until the end of the turn."
+        "gameText": "**Aid** - <symbol>twilight1</symbol>. <i>(At the start of the maneuver phase, you may add</i> <symbol>twilight1</symbol> <i>to transfer this to a companion.)</i>.\nEach time you transfer this to a companion, you may exert an Elf to make the fellowship’s current site a forest until the end of the turn."
       },
       "de": {
         "title": "Uruviel",
         "subtitle": "Woodland Maid",
-        "gameText": "**Aid –** <symbol>twilight1</symbol>. <i>(At the start of the maneuver phase, you may add</i> <symbol>twilight1</symbol> <i>to transfer this to a companion.)</i>.\nEach time you transfer this to a companion, you may exert an Elf to make the fellowship’s current site a forest until the end of the turn."
+        "gameText": "**Aid** - <symbol>twilight1</symbol>. <i>(At the start of the maneuver phase, you may add</i> <symbol>twilight1</symbol> <i>to transfer this to a companion.)</i>.\nEach time you transfer this to a companion, you may exert an Elf to make the fellowship’s current site a forest until the end of the turn."
       },
       "it": {
         "title": "Uruviel",
         "subtitle": "Woodland Maid",
-        "gameText": "**Aid –** <symbol>twilight1</symbol>. <i>(At the start of the maneuver phase, you may add</i> <symbol>twilight1</symbol> <i>to transfer this to a companion.)</i>.\nEach time you transfer this to a companion, you may exert an Elf to make the fellowship’s current site a forest until the end of the turn."
+        "gameText": "**Aid** - <symbol>twilight1</symbol>. <i>(At the start of the maneuver phase, you may add</i> <symbol>twilight1</symbol> <i>to transfer this to a companion.)</i>.\nEach time you transfer this to a companion, you may exert an Elf to make the fellowship’s current site a forest until the end of the turn."
       },
       "es": {
         "title": "Uruviel",
         "subtitle": "Woodland Maid",
-        "gameText": "**Aid –** <symbol>twilight1</symbol>. <i>(At the start of the maneuver phase, you may add</i> <symbol>twilight1</symbol> <i>to transfer this to a companion.)</i>.\nEach time you transfer this to a companion, you may exert an Elf to make the fellowship’s current site a forest until the end of the turn."
+        "gameText": "**Aid** - <symbol>twilight1</symbol>. <i>(At the start of the maneuver phase, you may add</i> <symbol>twilight1</symbol> <i>to transfer this to a companion.)</i>.\nEach time you transfer this to a companion, you may exert an Elf to make the fellowship’s current site a forest until the end of the turn."
       }
     }
   },
@@ -121856,6 +121971,18 @@
     "isUnique": false,
     "kind": "FREE_PEOPLE",
     "type": "FOLLOWER",
+    "keywords": [
+      "AID"
+    ],
+    "aidCost": {
+      "type": "TWILIGHT",
+      "amount": 1
+    },
+    "attachedTo": [
+      [
+        "COMPANION"
+      ]
+    ],
     "toPlay": [
       {
         "spot": [
@@ -121878,27 +122005,27 @@
     "i18n": {
       "en": {
         "title": "Rohan Stable Master",
-        "gameText": "**Aid –** <symbol>twilight1</symbol>. <i>(At the start of the maneuver phase, you may add</i> <symbol>twilight1</symbol> <i>to transfer this to a companion.)</i>\nTo play, spot a <symbol>rohan</symbol> Man.\nBearer is considered to be mounted.",
+        "gameText": "**Aid** - <symbol>twilight1</symbol>. <i>(At the start of the maneuver phase, you may add</i> <symbol>twilight1</symbol> <i>to transfer this to a companion.)</i>\nTo play, spot a <symbol>rohan</symbol> Man.\nBearer is considered to be mounted.",
         "loreText": "Rohirrim warriors were seldom seen without their mount."
       },
       "fr": {
         "title": "Rohan Stable Master",
-        "gameText": "**Aid –** <symbol>twilight1</symbol>. <i>(At the start of the maneuver phase, you may add</i> <symbol>twilight1</symbol> <i>to transfer this to a companion.)</i> To play, spot a <symbol>rohan</symbol> Man.\nBearer is considered to be mounted.",
+        "gameText": "**Aid** - <symbol>twilight1</symbol>. <i>(At the start of the maneuver phase, you may add</i> <symbol>twilight1</symbol> <i>to transfer this to a companion.)</i> To play, spot a <symbol>rohan</symbol> Man.\nBearer is considered to be mounted.",
         "loreText": "Rohirrim warriors were seldom seen without their mount."
       },
       "de": {
         "title": "Rohan Stable Master",
-        "gameText": "**Aid –** <symbol>twilight1</symbol>. <i>(At the start of the maneuver phase, you may add</i> <symbol>twilight1</symbol> <i>to transfer this to a companion.)</i> To play, spot a <symbol>rohan</symbol> Man.\nBearer is considered to be mounted.",
+        "gameText": "**Aid** - <symbol>twilight1</symbol>. <i>(At the start of the maneuver phase, you may add</i> <symbol>twilight1</symbol> <i>to transfer this to a companion.)</i> To play, spot a <symbol>rohan</symbol> Man.\nBearer is considered to be mounted.",
         "loreText": "Rohirrim warriors were seldom seen without their mount."
       },
       "it": {
         "title": "Rohan Stable Master",
-        "gameText": "**Aid –** <symbol>twilight1</symbol>. <i>(At the start of the maneuver phase, you may add</i> <symbol>twilight1</symbol> <i>to transfer this to a companion.)</i> To play, spot a <symbol>rohan</symbol> Man.\nBearer is considered to be mounted.",
+        "gameText": "**Aid** - <symbol>twilight1</symbol>. <i>(At the start of the maneuver phase, you may add</i> <symbol>twilight1</symbol> <i>to transfer this to a companion.)</i> To play, spot a <symbol>rohan</symbol> Man.\nBearer is considered to be mounted.",
         "loreText": "Rohirrim warriors were seldom seen without their mount."
       },
       "es": {
         "title": "Rohan Stable Master",
-        "gameText": "**Aid –** <symbol>twilight1</symbol>. <i>(At the start of the maneuver phase, you may add</i> <symbol>twilight1</symbol> <i>to transfer this to a companion.)</i> To play, spot a <symbol>rohan</symbol> Man.\nBearer is considered to be mounted.",
+        "gameText": "**Aid** - <symbol>twilight1</symbol>. <i>(At the start of the maneuver phase, you may add</i> <symbol>twilight1</symbol> <i>to transfer this to a companion.)</i> To play, spot a <symbol>rohan</symbol> Man.\nBearer is considered to be mounted.",
         "loreText": "Rohirrim warriors were seldom seen without their mount."
       }
     }
@@ -121910,33 +122037,45 @@
     "isUnique": false,
     "kind": "FREE_PEOPLE",
     "type": "FOLLOWER",
+    "keywords": [
+      "AID"
+    ],
+    "aidCost": {
+      "type": "TWILIGHT",
+      "amount": 1
+    },
+    "attachedTo": [
+      [
+        "COMPANION"
+      ]
+    ],
     "culture": "ROHAN",
     "twilightCost": 1,
     "imageUrl": "/cards_visuals/o_15_135.jpg",
     "i18n": {
       "en": {
         "title": "Rohan Worker",
-        "gameText": "**Aid –** <symbol>twilight1</symbol>.\nEach time you transfer this to a companion, except a <symbol>rohan</symbol> companion, exert bearer twice.\nEach time bearer wins a skirmish, you may liberate a site.",
+        "gameText": "**Aid** - <symbol>twilight1</symbol>.\nEach time you transfer this to a companion, except a <symbol>rohan</symbol> companion, exert bearer twice.\nEach time bearer wins a skirmish, you may liberate a site.",
         "loreText": "In preparation for the Battle of Helm's Deep, everyone helped fortify the doors and walls."
       },
       "fr": {
         "title": "Rohan Worker",
-        "gameText": "**Aid –** <symbol>twilight1</symbol>.\nEach time you transfer this to a companion, except a <symbol>rohan</symbol> companion, exert bearer twice.\nEach time bearer wins a skirmish, you may liberate a site.",
+        "gameText": "**Aid** - <symbol>twilight1</symbol>.\nEach time you transfer this to a companion, except a <symbol>rohan</symbol> companion, exert bearer twice.\nEach time bearer wins a skirmish, you may liberate a site.",
         "loreText": "In preparation for the Battle of Helm's Deep, everyone helped fortify the doors and walls."
       },
       "de": {
         "title": "Rohan Worker",
-        "gameText": "**Aid –** <symbol>twilight1</symbol>.\nEach time you transfer this to a companion, except a <symbol>rohan</symbol> companion, exert bearer twice.\nEach time bearer wins a skirmish, you may liberate a site.",
+        "gameText": "**Aid** - <symbol>twilight1</symbol>.\nEach time you transfer this to a companion, except a <symbol>rohan</symbol> companion, exert bearer twice.\nEach time bearer wins a skirmish, you may liberate a site.",
         "loreText": "In preparation for the Battle of Helm's Deep, everyone helped fortify the doors and walls."
       },
       "it": {
         "title": "Rohan Worker",
-        "gameText": "**Aid –** <symbol>twilight1</symbol>.\nEach time you transfer this to a companion, except a <symbol>rohan</symbol> companion, exert bearer twice.\nEach time bearer wins a skirmish, you may liberate a site.",
+        "gameText": "**Aid** - <symbol>twilight1</symbol>.\nEach time you transfer this to a companion, except a <symbol>rohan</symbol> companion, exert bearer twice.\nEach time bearer wins a skirmish, you may liberate a site.",
         "loreText": "In preparation for the Battle of Helm's Deep, everyone helped fortify the doors and walls."
       },
       "es": {
         "title": "Rohan Worker",
-        "gameText": "**Aid –** <symbol>twilight1</symbol>.\nEach time you transfer this to a companion, except a <symbol>rohan</symbol> companion, exert bearer twice.\nEach time bearer wins a skirmish, you may liberate a site.",
+        "gameText": "**Aid** - <symbol>twilight1</symbol>.\nEach time you transfer this to a companion, except a <symbol>rohan</symbol> companion, exert bearer twice.\nEach time bearer wins a skirmish, you may liberate a site.",
         "loreText": "In preparation for the Battle of Helm's Deep, everyone helped fortify the doors and walls."
       }
     }
@@ -121997,6 +122136,18 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "FOLLOWER",
+    "keywords": [
+      "AID"
+    ],
+    "aidCost": {
+      "type": "TWILIGHT",
+      "amount": 2
+    },
+    "attachedTo": [
+      [
+        "COMPANION"
+      ]
+    ],
     "toPlay": [
       {
         "spot": [
@@ -122018,27 +122169,27 @@
     "i18n": {
       "en": {
         "title": "Rohirrim Doorwarden",
-        "gameText": "**Aid –** <symbol>twilight2</symbol>. <i>(At the start of the maneuver phase, you may add</i> <symbol>twilight2</symbol> <i>to transfer this to a companion.)</i>\nTo play, spot a <symbol>rohan</symbol> Man.\nBearer is strength +1 for each possession he or she bears.",
+        "gameText": "**Aid** - <symbol>twilight2</symbol>. <i>(At the start of the maneuver phase, you may add</i> <symbol>twilight2</symbol> <i>to transfer this to a companion.)</i>\nTo play, spot a <symbol>rohan</symbol> Man.\nBearer is strength +1 for each possession he or she bears.",
         "loreText": "...any weapon that you bear, be it only a staff, you must leave it on the threshold."
       },
       "fr": {
         "title": "Rohirrim Doorwarden",
-        "gameText": "**Aid –** <symbol>twilight2</symbol>. <i>(At the start of the maneuver phase, you may add</i> <symbol>twilight2</symbol> <i>to transfer this to a companion.)</i> To play, spot a <symbol>rohan</symbol> Man.\nBearer is strength +1 for each possession he or she bears.",
+        "gameText": "**Aid** - <symbol>twilight2</symbol>. <i>(At the start of the maneuver phase, you may add</i> <symbol>twilight2</symbol> <i>to transfer this to a companion.)</i> To play, spot a <symbol>rohan</symbol> Man.\nBearer is strength +1 for each possession he or she bears.",
         "loreText": "...any weapon that you bear, be it only a staff, you must leave it on the threshold."
       },
       "de": {
         "title": "Rohirrim Doorwarden",
-        "gameText": "**Aid –** <symbol>twilight2</symbol>. <i>(At the start of the maneuver phase, you may add</i> <symbol>twilight2</symbol> <i>to transfer this to a companion.)</i> To play, spot a <symbol>rohan</symbol> Man.\nBearer is strength +1 for each possession he or she bears.",
+        "gameText": "**Aid** - <symbol>twilight2</symbol>. <i>(At the start of the maneuver phase, you may add</i> <symbol>twilight2</symbol> <i>to transfer this to a companion.)</i> To play, spot a <symbol>rohan</symbol> Man.\nBearer is strength +1 for each possession he or she bears.",
         "loreText": "...any weapon that you bear, be it only a staff, you must leave it on the threshold."
       },
       "it": {
         "title": "Rohirrim Doorwarden",
-        "gameText": "**Aid –** <symbol>twilight2</symbol>. <i>(At the start of the maneuver phase, you may add</i> <symbol>twilight2</symbol> <i>to transfer this to a companion.)</i> To play, spot a <symbol>rohan</symbol> Man.\nBearer is strength +1 for each possession he or she bears.",
+        "gameText": "**Aid** - <symbol>twilight2</symbol>. <i>(At the start of the maneuver phase, you may add</i> <symbol>twilight2</symbol> <i>to transfer this to a companion.)</i> To play, spot a <symbol>rohan</symbol> Man.\nBearer is strength +1 for each possession he or she bears.",
         "loreText": "...any weapon that you bear, be it only a staff, you must leave it on the threshold."
       },
       "es": {
         "title": "Rohirrim Doorwarden",
-        "gameText": "**Aid –** <symbol>twilight2</symbol>. <i>(At the start of the maneuver phase, you may add</i> <symbol>twilight2</symbol> <i>to transfer this to a companion.)</i> To play, spot a <symbol>rohan</symbol> Man.\nBearer is strength +1 for each possession he or she bears.",
+        "gameText": "**Aid** - <symbol>twilight2</symbol>. <i>(At the start of the maneuver phase, you may add</i> <symbol>twilight2</symbol> <i>to transfer this to a companion.)</i> To play, spot a <symbol>rohan</symbol> Man.\nBearer is strength +1 for each possession he or she bears.",
         "loreText": "...any weapon that you bear, be it only a staff, you must leave it on the threshold."
       }
     }
@@ -122412,6 +122563,18 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "FOLLOWER",
+    "keywords": [
+      "AID"
+    ],
+    "aidCost": {
+      "type": "BURDEN",
+      "amount": 2
+    },
+    "attachedTo": [
+      [
+        "COMPANION"
+      ]
+    ],
     "toPlay": [
       {
         "spot": [
@@ -122437,27 +122600,27 @@
       "en": {
         "title": "Hobbiton Brewer",
         "subtitle": "Maker of Fine Ales",
-        "gameText": "**Aid –** Add 2 burdens. <i>(At the start of the maneuver phase, you may add 2 burdens to transfer this to a companion.)</i>\nTo play, spot a Hobbit.\n**Response:** If bearer is about to take a wound, transfer Hobbiton Brewer to your support area to prevent that wound."
+        "gameText": "**Aid** - Add 2 burdens. <i>(At the start of the maneuver phase, you may add 2 burdens to transfer this to a companion.)</i>\nTo play, spot a Hobbit.\n**Response:** If bearer is about to take a wound, transfer Hobbiton Brewer to your support area to prevent that wound."
       },
       "fr": {
         "title": "Hobbiton Brewer",
         "subtitle": "Maker of Fine Ales",
-        "gameText": "**Aid –** Add 2 burdens. <i>(At the start of the maneuver phase, you may add 2 burdens to transfer this to a companion.)</i>\nTo play, spot a Hobbit.\n**Response:** If bearer is about to take a wound, transfer Hobbiton Brewer to your support area to prevent that wound."
+        "gameText": "**Aid** - Add 2 burdens. <i>(At the start of the maneuver phase, you may add 2 burdens to transfer this to a companion.)</i>\nTo play, spot a Hobbit.\n**Response:** If bearer is about to take a wound, transfer Hobbiton Brewer to your support area to prevent that wound."
       },
       "de": {
         "title": "Hobbiton Brewer",
         "subtitle": "Maker of Fine Ales",
-        "gameText": "**Aid –** Add 2 burdens. <i>(At the start of the maneuver phase, you may add 2 burdens to transfer this to a companion.)</i>\nTo play, spot a Hobbit.\n**Response:** If bearer is about to take a wound, transfer Hobbiton Brewer to your support area to prevent that wound."
+        "gameText": "**Aid** - Add 2 burdens. <i>(At the start of the maneuver phase, you may add 2 burdens to transfer this to a companion.)</i>\nTo play, spot a Hobbit.\n**Response:** If bearer is about to take a wound, transfer Hobbiton Brewer to your support area to prevent that wound."
       },
       "it": {
         "title": "Hobbiton Brewer",
         "subtitle": "Maker of Fine Ales",
-        "gameText": "**Aid –** Add 2 burdens. <i>(At the start of the maneuver phase, you may add 2 burdens to transfer this to a companion.)</i>\nTo play, spot a Hobbit.\n**Response:** If bearer is about to take a wound, transfer Hobbiton Brewer to your support area to prevent that wound."
+        "gameText": "**Aid** - Add 2 burdens. <i>(At the start of the maneuver phase, you may add 2 burdens to transfer this to a companion.)</i>\nTo play, spot a Hobbit.\n**Response:** If bearer is about to take a wound, transfer Hobbiton Brewer to your support area to prevent that wound."
       },
       "es": {
         "title": "Hobbiton Brewer",
         "subtitle": "Maker of Fine Ales",
-        "gameText": "**Aid –** Add 2 burdens. <i>(At the start of the maneuver phase, you may add 2 burdens to transfer this to a companion.)</i>\nTo play, spot a Hobbit.\n**Response:** If bearer is about to take a wound, transfer Hobbiton Brewer to your support area to prevent that wound."
+        "gameText": "**Aid** - Add 2 burdens. <i>(At the start of the maneuver phase, you may add 2 burdens to transfer this to a companion.)</i>\nTo play, spot a Hobbit.\n**Response:** If bearer is about to take a wound, transfer Hobbiton Brewer to your support area to prevent that wound."
       }
     }
   },
@@ -122468,6 +122631,18 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "FOLLOWER",
+    "keywords": [
+      "AID"
+    ],
+    "aidCost": {
+      "type": "BURDEN",
+      "amount": 1
+    },
+    "attachedTo": [
+      [
+        "COMPANION"
+      ]
+    ],
     "toPlay": [
       {
         "spot": [
@@ -122491,31 +122666,31 @@
       "en": {
         "title": "Hobbiton Farmer",
         "subtitle": "Lover of Pipeweed",
-        "gameText": "**Aid –** Add a burden. <i>(At the start of the maneuver phase, you may add a burden to transfer this to a companion.)</i>\nTo play, spot 2 Hobbits.\nBearer is strength +1 for each fierce minion you can spot.",
+        "gameText": "**Aid** - Add a burden. <i>(At the start of the maneuver phase, you may add a burden to transfer this to a companion.)</i>\nTo play, spot 2 Hobbits.\nBearer is strength +1 for each fierce minion you can spot.",
         "loreText": "...for ages folk in the Shire smoked various herbs..."
       },
       "fr": {
         "title": "Hobbiton Farmer",
         "subtitle": "Lover of Pipeweed",
-        "gameText": "**Aid –** Add a burden. <i>(At the start of the maneuver phase, you may add a burden to transfer this to a companion.)</i>\nTo play, spot 2 Hobbits.\nBearer is strength +1 for each fierce minion you can spot.",
+        "gameText": "**Aid** - Add a burden. <i>(At the start of the maneuver phase, you may add a burden to transfer this to a companion.)</i>\nTo play, spot 2 Hobbits.\nBearer is strength +1 for each fierce minion you can spot.",
         "loreText": "...for ages folk in the Shire smoked various herbs..."
       },
       "de": {
         "title": "Hobbiton Farmer",
         "subtitle": "Lover of Pipeweed",
-        "gameText": "**Aid –** Add a burden. <i>(At the start of the maneuver phase, you may add a burden to transfer this to a companion.)</i>\nTo play, spot 2 Hobbits.\nBearer is strength +1 for each fierce minion you can spot.",
+        "gameText": "**Aid** - Add a burden. <i>(At the start of the maneuver phase, you may add a burden to transfer this to a companion.)</i>\nTo play, spot 2 Hobbits.\nBearer is strength +1 for each fierce minion you can spot.",
         "loreText": "...for ages folk in the Shire smoked various herbs..."
       },
       "it": {
         "title": "Hobbiton Farmer",
         "subtitle": "Lover of Pipeweed",
-        "gameText": "**Aid –** Add a burden. <i>(At the start of the maneuver phase, you may add a burden to transfer this to a companion.)</i>\nTo play, spot 2 Hobbits.\nBearer is strength +1 for each fierce minion you can spot.",
+        "gameText": "**Aid** - Add a burden. <i>(At the start of the maneuver phase, you may add a burden to transfer this to a companion.)</i>\nTo play, spot 2 Hobbits.\nBearer is strength +1 for each fierce minion you can spot.",
         "loreText": "...for ages folk in the Shire smoked various herbs..."
       },
       "es": {
         "title": "Hobbiton Farmer",
         "subtitle": "Lover of Pipeweed",
-        "gameText": "**Aid –** Add a burden. <i>(At the start of the maneuver phase, you may add a burden to transfer this to a companion.)</i>\nTo play, spot 2 Hobbits.\nBearer is strength +1 for each fierce minion you can spot.",
+        "gameText": "**Aid** - Add a burden. <i>(At the start of the maneuver phase, you may add a burden to transfer this to a companion.)</i>\nTo play, spot 2 Hobbits.\nBearer is strength +1 for each fierce minion you can spot.",
         "loreText": "...for ages folk in the Shire smoked various herbs..."
       }
     }
@@ -125985,6 +126160,18 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "FOLLOWER",
+    "keywords": [
+      "AID"
+    ],
+    "aidCost": {
+      "type": "THREAT",
+      "amount": 1
+    },
+    "attachedTo": [
+      [
+        "COMPANION"
+      ]
+    ],
     "culture": "GANDALF",
     "twilightCost": 1,
     "strength": 1,
@@ -126071,6 +126258,18 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "FOLLOWER",
+    "keywords": [
+      "AID"
+    ],
+    "aidCost": {
+      "type": "TWILIGHT",
+      "amount": 1
+    },
+    "attachedTo": [
+      [
+        "COMPANION"
+      ]
+    ],
     "toPlay": [
       {
         "spot": [
@@ -126819,6 +127018,18 @@
     "isUnique": true,
     "kind": "SHADOW",
     "type": "FOLLOWER",
+    "keywords": [
+      "AID"
+    ],
+    "aidCost": {
+      "type": "TWILIGHT",
+      "amount": 1
+    },
+    "attachedTo": [
+      [
+        "MINION"
+      ]
+    ],
     "culture": "ISENGARD",
     "twilightCost": 1,
     "strength": 2,
@@ -132064,6 +132275,18 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "FOLLOWER",
+    "keywords": [
+      "AID"
+    ],
+    "aidCost": {
+      "type": "TWILIGHT",
+      "amount": 2
+    },
+    "attachedTo": [
+      [
+        "COMPANION"
+      ]
+    ],
     "toPlay": [
       {
         "spot": [
@@ -132564,6 +132787,18 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "FOLLOWER",
+    "keywords": [
+      "AID"
+    ],
+    "aidCost": {
+      "type": "TWILIGHT",
+      "amount": 2
+    },
+    "attachedTo": [
+      [
+        "COMPANION"
+      ]
+    ],
     "culture": "ELVEN",
     "twilightCost": 1,
     "strength": 1,
@@ -134014,6 +134249,14 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "FOLLOWER",
+    "keywords": [
+      "AID"
+    ],
+    "attachedTo": [
+      [
+        "COMPANION"
+      ]
+    ],
     "culture": "GONDOR",
     "twilightCost": 0,
     "strength": 2,
@@ -134106,6 +134349,18 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "FOLLOWER",
+    "keywords": [
+      "AID"
+    ],
+    "aidCost": {
+      "type": "THREAT",
+      "amount": 1
+    },
+    "attachedTo": [
+      [
+        "COMPANION"
+      ]
+    ],
     "culture": "GONDOR",
     "twilightCost": 1,
     "imageUrl": "/cards_visuals/o_18_049.jpg",
@@ -134230,6 +134485,18 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "FOLLOWER",
+    "keywords": [
+      "AID"
+    ],
+    "aidCost": {
+      "type": "TWILIGHT",
+      "amount": 1
+    },
+    "attachedTo": [
+      [
+        "COMPANION"
+      ]
+    ],
     "culture": "GONDOR",
     "twilightCost": 0,
     "resistance": 3,
@@ -136960,6 +137227,18 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "FOLLOWER",
+    "keywords": [
+      "AID"
+    ],
+    "aidCost": {
+      "type": "TWILIGHT",
+      "amount": 2
+    },
+    "attachedTo": [
+      [
+        "COMPANION"
+      ]
+    ],
     "culture": "SHIRE",
     "twilightCost": 2,
     "strength": 1,
