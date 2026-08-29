@@ -188,7 +188,7 @@ export interface CardState {
 
     // État dynamique en jeu
     attachments?: CardState[];
-    attachedTo?: string[][];
+    attachedTo?: string | string[];
     phases?: string[];
     wounds?: number;
     isStartingMember?: boolean;

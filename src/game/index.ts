@@ -595,19 +595,6 @@ export const LotrGame: Game<GameState> = {
 
                 G.maneuverStep = 'MANEUVER_START';
 
-                // 1. Marquer les cartes actionable
-                Object.values(G.players).forEach((player) => {
-                    player.supportArea?.forEach((card) => {
-                        if (
-                            card.type === 'FOLLOWER' &&
-                            card.keywords?.includes('AID') &&
-                            card.aidCost
-                        ) {
-                            card.isActionable = true;
-                        }
-                    });
-                });
-
                 // 2. Évaluer si chaque joueur a au moins un Follower jouable
                 const fpDone = !hasActionableFollowers(
                     G.players[fpId],
@@ -649,12 +636,6 @@ export const LotrGame: Game<GameState> = {
             },
 
             onEnd: ({ G }) => {
-                // Nettoyage à la sortie de la phase
-                Object.values(G.players).forEach((player) => {
-                    player.supportArea?.forEach((card) => {
-                        card.isActionable = false;
-                    });
-                });
 
                 G.maneuverStep = undefined;
                 G.aidState = undefined;
@@ -958,7 +939,6 @@ export const LotrGame: Game<GameState> = {
                     character.attachments.forEach((att: any) => {
                         if (att.attachedViaAid) {
                             delete att.attachedViaAid;
-                            att.isActionable = false;
 
                             const targetOwnerId =
                                 att.kind === 'FREE_PEOPLE' ? fpId : shadowId;

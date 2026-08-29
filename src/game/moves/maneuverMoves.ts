@@ -8,7 +8,6 @@ export const transferAid = (
     followerInstanceId: string,
     targetInstanceId: string
 ) => {
-
     const player = G.players?.[playerID];
     if (!player) {
         console.error(
@@ -31,7 +30,6 @@ export const transferAid = (
     }
 
     const follower = player.supportArea[followerIndex];
-
 
     // 2. Recherche de la Cible
     const targetCard = findTargetCard(G, targetInstanceId);
@@ -72,11 +70,17 @@ export const transferAid = (
         }
     }
 
-    // 5. Transfert
+    // 5. Transfert (Sécurisé pour Immer / boardgame.io)
     player.supportArea.splice(followerIndex, 1);
     follower.attachedViaAid = true;
+    follower.attachedTo = targetCard.id;
 
-    targetCard.attachments = [] as CardState[];
+    // S'assurer que le tableau d'attachements de la cible existe
+    if (!targetCard.attachments) {
+        targetCard.attachments = [];
+    }
+
+    // On ajoute le follower sans réinitialiser le tableau
     targetCard.attachments.push(follower);
 
     const followerTitle =
@@ -89,7 +93,6 @@ export const transferAid = (
         const remainingActionable = hasActionableFollowers(player, G, playerID);
 
         if (!remainingActionable && G.aidState?.players?.[playerID]) {
-
             G.aidState.players[playerID].isDone = true;
 
             const fpId = G.fpPlayerId || '0';
@@ -100,7 +103,6 @@ export const transferAid = (
                 G.aidState.players[fpId]?.isDone &&
                 G.aidState.players[shadowId]?.isDone
             ) {
-
                 G.maneuverStep = 'MANEUVER_ACTIONS';
                 G.actionWindow = {
                     isOpen: true,
@@ -118,7 +120,6 @@ export const transferAid = (
 };
 
 export const confirmAid = ({ G, playerID }: LotrMoveContext) => {
-
     if (!G.aidState?.players?.[playerID]) {
         console.error(
             `[confirmAid] ❌ G.aidState.players[${playerID}] est indéfini ! G.aidState =`,
@@ -136,7 +137,6 @@ export const confirmAid = ({ G, playerID }: LotrMoveContext) => {
     const shadowDone = G.aidState.players[shadowId]?.isDone;
 
     if (fpDone && shadowDone) {
-
         G.maneuverStep = 'MANEUVER_ACTIONS';
         G.actionWindow = {
             isOpen: true,

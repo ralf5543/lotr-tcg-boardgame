@@ -29,11 +29,20 @@ export interface ValidationOptions {
    ========================================================================== */
 
 export const requiresAttachmentTarget = (card: CardState): boolean => {
-    return Boolean(
-        card.attachedTo &&
-        Array.isArray(card.attachedTo) &&
-        card.attachedTo.length > 0
-    );
+    // 1. Si c'est un Suivant transféré
+    if (card.attachedViaAid) {
+        return true;
+    }
+
+    // 2. Si attachedTo est renseigné (string OU tableau de strings)
+    if (card.attachedTo) {
+        if (Array.isArray(card.attachedTo)) {
+            return card.attachedTo.length > 0;
+        }
+        return Boolean(card.attachedTo);
+    }
+
+    return false;
 };
 
 export const canDropInSupportArea = (card: CardState): boolean => {
@@ -63,16 +72,25 @@ export const canAttachToCharacter = (
     if (!requiresAttachmentTarget(attachment)) return false;
 
     // 1. Vérification DNF des cibles autorisées
-    const matchesTarget = cardMatchesTarget(targetCard, attachment.attachedTo as string[][]);
+    const matchesTarget = cardMatchesTarget(
+        targetCard,
+        attachment.attachedTo as string[][]
+    );
     if (!matchesTarget) return false;
 
     // 2. Vérification de la limite de subtype (t minuscule)
     const target = targetCard as CardState;
-    const newSubtype = (attachment as any).subtype || (attachment as any).subType || (attachment as any).itemClass;
+    const newSubtype =
+        (attachment as any).subtype ||
+        (attachment as any).subType ||
+        (attachment as any).itemClass;
 
     if (newSubtype && target.attachments && target.attachments.length > 0) {
         const hasSameSubtype = target.attachments.some((existing) => {
-            const existingSubtype = (existing as any).subtype || (existing as any).subType || (existing as any).itemClass;
+            const existingSubtype =
+                (existing as any).subtype ||
+                (existing as any).subType ||
+                (existing as any).itemClass;
             return existingSubtype === newSubtype;
         });
 
@@ -93,7 +111,7 @@ function checkTwilightCost(
     context: ValidationContext
 ): ValidationResult {
     if (!context || !context.G) {
-        return { valid: false, reason: "État du jeu (G) indisponible." };
+        return { valid: false, reason: 'État du jeu (G) indisponible.' };
     }
 
     const { G, playerID } = context;
@@ -154,7 +172,8 @@ function checkUniqueness(
                 p.supportArea.forEach((c) => {
                     if (c && c.kind === 'SHADOW') {
                         allShadowInPlay.push(c);
-                        if (c.attachments) allShadowInPlay.push(...c.attachments);
+                        if (c.attachments)
+                            allShadowInPlay.push(...c.attachments);
                     }
                 });
             }
@@ -178,7 +197,8 @@ function checkUniqueness(
                 player.fellowshipArea.forEach((c) => {
                     if (c) {
                         activePlayerInPlay.push(c);
-                        if (c.attachments) activePlayerInPlay.push(...c.attachments);
+                        if (c.attachments)
+                            activePlayerInPlay.push(...c.attachments);
                     }
                 });
             }
@@ -186,7 +206,8 @@ function checkUniqueness(
                 player.supportArea.forEach((c) => {
                     if (c) {
                         activePlayerInPlay.push(c);
-                        if (c.attachments) activePlayerInPlay.push(...c.attachments);
+                        if (c.attachments)
+                            activePlayerInPlay.push(...c.attachments);
                     }
                 });
             }
@@ -232,7 +253,7 @@ export function canPlayCard(
     options?: ValidationOptions
 ): ValidationResult {
     if (!card || !context || !context.G) {
-        return { valid: false, reason: "Données de validation manquantes." };
+        return { valid: false, reason: 'Données de validation manquantes.' };
     }
     // 1. Phase et rôle des joueurs
     if (!options?.ignorePhase) {
