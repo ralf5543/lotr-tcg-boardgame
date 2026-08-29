@@ -313,7 +313,7 @@ const CARDS_PRESETS: Record<string, CardState> = {
         isUnique: true,
         kind: 'SHADOW',
         type: 'MINION',
-        keywords: ['FIERCE'],
+        keywords: ['FIERCE', 'ENDURING'],
         actionPhases: ['SHADOW'],
         culture: 'WRAITH',
         race: 'NAZGÛL',

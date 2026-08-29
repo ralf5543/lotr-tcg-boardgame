@@ -1,5 +1,5 @@
 import type { Ctx } from 'boardgame.io';
-import type { GameState, CardState } from '../types';
+import type { GameState, CardState, SkirmishState } from '../types';
 import {
     getEffectiveStrength,
     getEffectiveVitality,

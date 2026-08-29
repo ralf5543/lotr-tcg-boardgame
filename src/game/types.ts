@@ -169,7 +169,7 @@ export interface CardState {
     keywords?: CardKeyword[];
     isUnique: boolean;
     isFemale?: boolean;
-    // Mots-clés temporaires gagnés via une capacité (ex: Aragorn)
+    // Mots-clés temporaires gagnés via une capacité
     tempKeywords?: TempKeywordModifier[];
 
     // Mots-clés qu'une carte confère à son porteur lorsqu'elle est attachée (ex: un Arc qui donne 'ARCHER')
@@ -193,6 +193,7 @@ export interface CardState {
     name?: string; // Si conservé pour compatibilité ou identification
     isDead?: boolean;
     isOverwhelmed?: boolean;
+    actionPhases?: string[];
 }
 
 export interface PlayerProfile {
