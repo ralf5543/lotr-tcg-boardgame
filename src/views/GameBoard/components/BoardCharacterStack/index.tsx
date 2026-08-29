@@ -7,6 +7,7 @@ import { useTargeting } from '../../../../contexts/TargetingContext';
 import { canPlayCard } from '../../../../game/engine/canPlayCard';
 import { SkirmishClash } from './SkirmishClash';
 import { getEffectiveVitality } from '../../../../utils/cardStats';
+import { canTransferAid } from '../../../../game/engine/validations/canTransferAid';
 
 interface BoardCharacterStackProps {
     character: CardState;
@@ -76,19 +77,31 @@ export const BoardCharacterStack: React.FC<BoardCharacterStackProps> = ({
     // On récupère la carte complète en cours de drag
     const draggedCard = dragged?.card as CardState | undefined;
 
-    // Validation d'attachement via la fonction DNF
-    const canAttach = draggedCard
-        ? canPlayCard(
-              draggedCard,
-              { G, ctx: {} as any, playerID },
-              character.id,
-              character,
-              { ignorePhase: true }
-          ).valid
-        : false;
+    // Validation d'attachement adaptative (Main = canPlayCard / SupportArea = canTransferAid)
+    let canAttach = false;
+    if (draggedCard) {
+        if (dragged?.origin === 'HAND') {
+            canAttach = canPlayCard(
+                draggedCard,
+                { G, ctx: {} as any, playerID },
+                character.id,
+                character,
+                { ignorePhase: true }
+            ).valid;
+        } else if (draggedCard.type === 'FOLLOWER') {
+            canAttach = canTransferAid(
+                draggedCard,
+                character,
+                G,
+                playerID
+            ).valid;
+        }
+    }
 
+    // 🎯 Matching avec instanceId prioritaire, sinon id
+    const currentId = character.instanceId || character.id;
     const isTargeted =
-        activeTargetId === character.id &&
+        (activeTargetId === currentId || activeTargetId === character.id) &&
         ((!isOpponent && canAttach) || isMinionAssignment);
 
     // Règle de sélection d'escarmouche
@@ -203,7 +216,7 @@ export const BoardCharacterStack: React.FC<BoardCharacterStackProps> = ({
                     $isDisabled={isDisabled}
                     data-card={JSON.stringify(character)}
                     data-draggable={canDragCharacter ? 'true' : undefined}
-                    ref={(el) => registerTarget(character.id, el)}
+                    ref={(el) => registerTarget(character.instanceId || character.id, el)}
                     onPointerDown={(e) => {
                         // 🎯 Si c'est ciblable, on déclenche directement la sélection au clic
                         if (isTargetable) {

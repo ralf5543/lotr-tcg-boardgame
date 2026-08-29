@@ -1,8 +1,4 @@
-import React, {
-    useState,
-    useEffect,
-    useRef,
-} from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import type { CardState, SiteCardState } from '../game/types';
 import { Card } from '../views/GameBoard/components/Card';
 import { SiteCard } from '../views/GameBoard/components/SiteCard';
@@ -120,7 +116,7 @@ export const DragProvider: React.FC<{ children: React.ReactNode }> = ({
             y: (e.clientY - rect.top) / scale,
         };
 
-        (e.currentTarget as HTMLElement).setPointerCapture(e.pointerId);
+        //(e.currentTarget as HTMLElement).setPointerCapture(e.pointerId);
         lastX.current = e.clientX;
 
         setDragged({ card, index, origin, orientation, parentId });
@@ -141,6 +137,7 @@ export const DragProvider: React.FC<{ children: React.ReactNode }> = ({
         if (!dragged) return;
 
         const handlePointerMove = (e: PointerEvent) => {
+
             const board = document
                 .querySelector('[class*="ScaledView"]')
                 ?.getBoundingClientRect();
@@ -234,7 +231,11 @@ const DragPortal: React.FC = () => {
                 {isLandscape ? (
                     <SiteCard site={dragged.card as SiteCardState} size="md" />
                 ) : (
-                    <Card card={dragged.card as CardState} size="md" isFaceDown={false} />
+                    <Card
+                        card={dragged.card as CardState}
+                        size="md"
+                        isFaceDown={false}
+                    />
                 )}
             </div>
         </div>

@@ -27,6 +27,7 @@ import { allMoves } from './moves/index';
 import { calculateArcheryTotals } from './logic/archery';
 import { getMusterCount } from './logic/musterHelpers';
 import { discardForMuster, confirmMuster } from './moves/regroupMoves';
+import { hasActionableFollowers } from './logic/aidHelpers';
 
 const shuffle = <T>(array: T[]): T[] => {
     const arr = [...array];
@@ -583,22 +584,84 @@ export const LotrGame: Game<GameState> = {
         },
 
         maneuver: {
-            next: 'archery',
+            endIf: ({ G }) => Boolean(G.pendingPhaseEnd),
+            next: ({ G }) => G.nextPhase || 'archery',
+
             turn: { activePlayers: { value: { '0': 'play', '1': 'play' } } },
+
             onBegin: ({ G }: LotrPhaseContext) => {
                 const fpId = G.fpPlayerId || '0';
-                G.actionWindow = {
-                    isOpen: true,
-                    activePlayerId: fpId,
-                    title: 'PHASE DE MANŒUVRE',
-                    message:
-                        'Voulez-vous jouer une carte / un effet de Manœuvre ou PASSER ?',
-                    canPass: true,
-                    passesCount: 0,
+                const shadowId = fpId === '0' ? '1' : '0';
+
+                G.maneuverStep = 'MANEUVER_START';
+
+                // 1. Marquer les cartes actionable
+                Object.values(G.players).forEach((player) => {
+                    player.supportArea?.forEach((card) => {
+                        if (
+                            card.type === 'FOLLOWER' &&
+                            card.keywords?.includes('AID') &&
+                            card.aidCost
+                        ) {
+                            card.isActionable = true;
+                        }
+                    });
+                });
+
+                // 2. Évaluer si chaque joueur a au moins un Follower jouable
+                const fpDone = !hasActionableFollowers(
+                    G.players[fpId],
+                    G,
+                    fpId
+                );
+                const shadowDone = !hasActionableFollowers(
+                    G.players[shadowId],
+                    G,
+                    shadowId
+                );
+
+                G.aidState = {
+                    players: {
+                        [fpId]: { isDone: fpDone },
+                        [shadowId]: { isDone: shadowDone },
+                    },
                 };
-                G.statusMessage =
-                    'Phase de Manœuvre : Fenêtre d’action ouverte.';
+
+                // 3. Si PERSONNE n'a de Follower jouable, passe directement aux actions de Manœuvre
+                if (fpDone && shadowDone) {
+                    G.maneuverStep = 'MANEUVER_ACTIONS';
+                    G.actionWindow = {
+                        isOpen: true,
+                        activePlayerId: fpId,
+                        title: 'PHASE DE MANŒUVRE',
+                        message:
+                            'Voulez-vous jouer une carte / un effet de Manœuvre ou PASSER ?',
+                        canPass: true,
+                        passesCount: 0,
+                    };
+                    G.statusMessage =
+                        'Manœuvre : Aucun Suivant à transférer, ouverture de la fenêtre d’action.';
+                } else {
+                    G.actionWindow = { isOpen: false, activePlayerId: fpId };
+                    G.statusMessage =
+                        'Phase de Manœuvre : Étape des Suivants (Aide).';
+                }
             },
+
+            onEnd: ({ G }) => {
+                // Nettoyage à la sortie de la phase
+                Object.values(G.players).forEach((player) => {
+                    player.supportArea?.forEach((card) => {
+                        card.isActionable = false;
+                    });
+                });
+
+                G.maneuverStep = undefined;
+                G.aidState = undefined;
+                G.pendingPhaseEnd = undefined;
+                G.nextPhase = undefined;
+            },
+
             moves: allMoves,
         },
 
@@ -877,6 +940,44 @@ export const LotrGame: Game<GameState> = {
                 }
 
                 initStandardRegroup(G, fpId);
+            },
+            onEnd: ({ G }) => {
+                const fpId = G.fpPlayerId || '0';
+                const shadowId =
+                    Object.keys(G.players).find((id) => id !== fpId) || '1';
+
+                const detachAidFollowers = (character: any) => {
+                    if (
+                        !character.attachments ||
+                        character.attachments.length === 0
+                    )
+                        return;
+
+                    const remainingAttachments: any[] = [];
+
+                    character.attachments.forEach((att: any) => {
+                        if (att.attachedViaAid) {
+                            delete att.attachedViaAid;
+                            att.isActionable = false;
+
+                            const targetOwnerId =
+                                att.kind === 'FREE_PEOPLE' ? fpId : shadowId;
+                            const owner = G.players[targetOwnerId];
+                            if (owner) {
+                                owner.supportArea.push(att);
+                            }
+                        } else {
+                            remainingAttachments.push(att);
+                        }
+                    });
+
+                    character.attachments = remainingAttachments;
+                };
+
+                Object.values(G.players).forEach((player) => {
+                    player.fellowshipArea?.forEach(detachAidFollowers);
+                });
+                G.battlefield?.forEach(detachAidFollowers);
             },
             moves: {
                 ...allMoves,

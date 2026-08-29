@@ -100,7 +100,6 @@ export const PlayerArea: React.FC<PlayerAreaProps> = ({
                 });
             }
         };
-        
 
         window.addEventListener('card-dropped', handleReorderDrop);
         return () =>
@@ -128,7 +127,9 @@ export const PlayerArea: React.FC<PlayerAreaProps> = ({
 
                     {isDormantExpanded && (
                         <S.DormantOverlay
-                    $isOpponent={isOpponent} onClick={(e) => e.stopPropagation()}>
+                            $isOpponent={isOpponent}
+                            onClick={(e) => e.stopPropagation()}
+                        >
                             <S.CardRow>
                                 {fellowshipArea.length === 0 && (
                                     <S.EmptyText>Aucun compagnon.</S.EmptyText>
@@ -233,8 +234,8 @@ export const PlayerArea: React.FC<PlayerAreaProps> = ({
                                 isFaceDown={shouldBeFaceDown}
                                 burdens={playerBurdens}
                                 isWounded={isWounded}
-                                            G={G}
-                                            playerID={_playerId}
+                                G={G}
+                                playerID={_playerId}
                                 isDead={isDead}
                                 isSelectedSkirmish={
                                     activeSkirmishId === skirmishId
@@ -338,7 +339,7 @@ export const PlayerArea: React.FC<PlayerAreaProps> = ({
                                             card,
                                             cardIdx,
                                             e,
-                                            'BOARD',
+                                            'SUPPORT_AREA',
                                             'portrait'
                                         );
                                     }}
@@ -382,7 +383,7 @@ export const PlayerArea: React.FC<PlayerAreaProps> = ({
                                             card,
                                             cardIdx,
                                             e,
-                                            'BOARD',
+                                            'SUPPORT_AREA',
                                             'portrait'
                                         );
                                     }}
@@ -394,7 +395,6 @@ export const PlayerArea: React.FC<PlayerAreaProps> = ({
             </S.SupportArea>
         );
     };
-    
 
     return (
         <S.AreaContainer $isOpponent={isOpponent}>

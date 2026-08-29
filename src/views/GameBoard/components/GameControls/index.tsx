@@ -21,7 +21,8 @@ interface GameControlsProps {
         endTurnChoice?: () => void;
         confirmHandRefill?: () => void;
         passActionWindow?: () => void;
-        confirmMuster?: () => void; // 🟢 AJOUT
+        confirmMuster?: () => void;
+        confirmAid?: () => void;
         [key: string]: ((...args: any[]) => void) | undefined;
     };
 }
@@ -65,6 +66,13 @@ export const GameControls: React.FC<GameControlsProps> = ({
         ctx.phase === 'regroup' && G.regroupStep === 'MUSTER_STEP';
     const myMusterState = isMusterStep
         ? G.musterState?.players?.[currentPlayerId]
+        : null;
+
+    // 🟢 MANEUVER AID STATE
+    const isManeuverAidStep =
+        ctx.phase === 'maneuver' && G.maneuverStep === 'MANEUVER_START';
+    const myAidState = isManeuverAidStep
+        ? G.aidState?.players?.[currentPlayerId]
         : null;
 
     // 🟢 CALCUL DU NUMÉRO DE SITE À POSER
@@ -227,6 +235,17 @@ export const GameControls: React.FC<GameControlsProps> = ({
             showPassButton: false,
             type: 'STANDARD',
         };
+    } else if (isManeuverAidStep && myAidState) {
+        // AID
+        toastConfig = {
+            show: true,
+            title: 'TRANSFERT DE SUIVANTS (AIDE)',
+            body: myAidState.isDone
+                ? "En attente du choix de l'adversaire..."
+                : "Vous pouvez transférer vos Suivants (Aide) de votre zone de soutien vers un personnage éligible en payant leur coût d'Aide, ou valider.",
+            showPassButton: false,
+            type: 'AID' as any,
+        };
     }
 
     // 🟢 5. OBTENTION DE LA CONSIGNE CONTEXTUELLE DU JOUEUR LOCAL
@@ -332,6 +351,13 @@ export const GameControls: React.FC<GameControlsProps> = ({
             return currentPlayerId === fpPlayerId
                 ? 'Choisissez de voyager vers le site suivant ou de terminer le tour.'
                 : 'Les Peuples Libres décident de la suite du voyage...';
+        }
+
+        if (isManeuverAidStep && myAidState) {
+            if (myAidState.isDone) {
+                return 'Choix d’Aide validé. En attente de l’autre joueur...';
+            }
+            return 'Glissez ou cliquez sur vos Suivants avec Aide pour les attacher, puis validez.';
         }
 
         return '';
@@ -539,7 +565,21 @@ export const GameControls: React.FC<GameControlsProps> = ({
                                 </div>
                             )}
 
-                        {/* 🟢 BOUTON DE VALIDATION DU MUSTER */}
+                        {/* BOUTON DE VALIDATION DE L'AIDE */}
+                        {toastConfig.type === ('AID' as any) &&
+                            myAidState &&
+                            !myAidState.isDone && (
+                                <S.ActionButton
+                                    style={{ marginTop: '12px', width: '100%' }}
+                                    onClick={() => {
+                                        moves.confirmAid?.();
+                                    }}
+                                >
+                                    Terminer l’étape d’Aide
+                                </S.ActionButton>
+                            )}
+
+                        {/* BOUTON DE VALIDATION DU MUSTER */}
                         {toastConfig.type === 'MUSTER' &&
                             myMusterState &&
                             !myMusterState.isDone && (

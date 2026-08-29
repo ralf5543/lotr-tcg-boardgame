@@ -138,38 +138,6 @@ export const CharacterStack = styled.div<{ $isBeingDragged?: boolean }>`
     transition: opacity 0.2s ease;
 `;
 
-export const CardDragTarget = styled.div<{
-    $isOpponent?: boolean;
-    $isTargeted?: boolean;
-}>`
-    cursor: ${({ $isOpponent }) => ($isOpponent ? 'default' : 'grab')};
-    border-radius: 6px;
-    transition: all 0.15s ease-in-out;
-    z-index: 1;
-
-    ${({ $isTargeted }) =>
-        $isTargeted &&
-        css`
-            transform: translateY(-4px) scale(1.05);
-            box-shadow: 0 0 14px #e2c044;
-            filter: drop-shadow(0 0 8px #e2c044);
-        `}
-`;
-
-export const AttachmentWrapper = styled.div<{ $index: number }>`
-    position: absolute;
-    top: ${({ $index }) => 45 + $index * 35}px;
-    transform: translateX(${({ $index }) => -1 * ($index + 1)}em);
-    z-index: ${({ $index }) => $index + 1};
-    transition:
-        transform 0.2s,
-        z-index 0.2s;
-
-    &:hover {
-        transform: scale(1) translateY(5px);
-        z-index: 999;
-    }
-`;
 
 export const MaskedZonePlaceholder = styled.div`
     padding: 15px;

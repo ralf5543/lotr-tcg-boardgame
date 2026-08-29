@@ -147,7 +147,7 @@ export interface CardState {
     id: string;
     instanceId: string;
 
-    // 🟢 Objet de traductions multi-langues
+    // Objet de traductions multi-langues
     i18n?: CardI18nMap;
 
     // Champs de texte racine (facultatifs ou servant de valeurs par défaut si i18n est absent)
@@ -171,7 +171,9 @@ export interface CardState {
     isUnique: boolean;
     isFemale?: boolean;
     // Mots-clés temporaires gagnés via une capacité
-    tempKeywords?: TempKeywordModifier[];
+    tempKeywords?: TempKeywordModifier[];i
+    isActionable?: boolean; // for halo css effet
+    attachedViaAid?: boolean;
 
     // Mots-clés qu'une carte confère à son porteur lorsqu'elle est attachée (ex: un Arc qui donne 'ARCHER')
     grantsKeywords?: CardKeyword[];
@@ -228,6 +230,7 @@ export interface SiteCardState {
     ownerId: string;
     imageUrl?: string;
     keywords?: CardKeyword[];
+    attachments?: string[];
 }
 export interface PlayerMusterInfo {
     allowedCount: number;
@@ -247,6 +250,8 @@ export interface GameState {
     musterState?: {
         players: Record<string, PlayerMusterInfo>;
     };
+    maneuverStep?: 'MANEUVER_START' | 'MANEUVER_ACTIONS';
+    aidState?: AidState;
     players: Record<string, PlayerState>;
     awaitingSiteSelection: boolean;
     isFierceAssignment?: boolean;
@@ -332,4 +337,12 @@ export interface TempKeywordModifier {
 export interface AidCost {
     type: 'TWILIGHT' | 'THREAT' | 'BURDEN';
     amount: number;
+}
+
+export interface AidStatePlayer {
+    isDone: boolean;
+}
+
+export interface AidState {
+    players: Record<string, AidStatePlayer>;
 }

@@ -2,7 +2,7 @@ import { createContext, useContext } from 'react';
 import type { CardState, SiteCardState } from '../game/types';
 
 export type CardOrientation = 'portrait' | 'landscape';
-export type CardOrigin = 'HAND' | 'BOARD' | 'ATTACHMENT' | 'BATTLEFIELD';
+export type CardOrigin = 'HAND' | 'BOARD' | 'ATTACHMENT' | 'BATTLEFIELD' | 'SUPPORT_AREA';
 
 export interface DraggedCardData {
     card: CardState | SiteCardState;

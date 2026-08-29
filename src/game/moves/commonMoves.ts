@@ -213,26 +213,7 @@ export const playCard = (
 };
 
 export const applyWound = ({ G }: LotrMoveContext, targetCardId: string) => {
-    const fpId = G.fpPlayerId || '0';
-    const shadowId = fpId === '0' ? '1' : '0';
-
-    const fpPlayer = G.players[fpId];
-    const shadowPlayer = G.players[shadowId];
-
-    // Recherche de la carte cible dans toutes les zones possibles
-    const targetCard =
-        fpPlayer?.fellowshipArea?.find(
-            (c) => c.id === targetCardId || c.instanceId === targetCardId
-        ) ||
-        fpPlayer?.supportArea?.find(
-            (c) => c.id === targetCardId || c.instanceId === targetCardId
-        ) ||
-        shadowPlayer?.supportArea?.find(
-            (c) => c.id === targetCardId || c.instanceId === targetCardId
-        ) ||
-        (G.battlefield || []).find(
-            (c) => c.id === targetCardId || c.instanceId === targetCardId
-        );
+    const targetCard = findTargetCard(G, targetCardId);
 
     if (targetCard) {
         applyWoundAndCheckDeath(G, targetCard, 1);

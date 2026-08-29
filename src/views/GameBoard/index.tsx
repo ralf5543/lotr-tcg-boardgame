@@ -44,6 +44,11 @@ export interface GameBoardProps extends BoardProps<GameState> {
             playSite: (siteId: string, targetIndex: number) => void;
             drawCard: () => void;
             selectStartingSite?: (siteCard: CardState) => void;
+            confirmAid?: () => void;
+            transferAid?: (
+                followerInstanceId: string,
+                targetInstanceId: string
+            ) => void;
         };
 }
 
@@ -247,6 +252,21 @@ export const GameBoard: React.FC<GameBoardProps> = ({
                 ) {
                     if (moves.assignMinion) {
                         moves.assignMinion(card.id, targetId);
+                    }
+                    return;
+                }
+            }
+            if (origin === 'SUPPORT_AREA') {
+                if (cardType === 'FOLLOWER') {
+                    const followerId = card.instanceId || card.id;
+
+                    if (typeof moves.transferAid === 'function') {
+                        moves.transferAid(followerId, targetId);
+                        audioService.play('CARD_PLAY');
+                    } else {
+                        console.error(
+                            '❌ [GameBoard] moves.transferAid est non défini dans le composant GameBoard'
+                        );
                     }
                     return;
                 }

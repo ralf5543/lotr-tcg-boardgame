@@ -335,8 +335,13 @@ export function parseClassAndPhases(
 /**
  * Détermine à quel type de cible une carte d'attachement ou un Suivant (Follower) peut être attaché.
  */
-export function parseAttachedTo(text?: string): string[][] | null {
+export function parseAttachedTo(text?: string, type?: string): string[][] | null {
     if (!text) return null;
+
+    // 🟢 RÈGLE ABSOLUE : Un Follower n'a PAS de propriété attachedTo d'origine !
+    if (type === 'FOLLOWER') {
+        return null;
+    }
 
     if (/plays on a site/i.test(text)) {
         return [['SITE']];

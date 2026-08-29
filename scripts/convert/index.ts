@@ -112,7 +112,7 @@ async function convert() {
             type,
             isRingbearer
         );
-        const attachmentData = parseAttachedTo(englishText);
+        const attachmentData = parseAttachedTo(englishText, type);
 
         const computedStrength = parseStat(data['Strength'], data['Top Text']);
         const computedVitality = parseStat(
@@ -156,7 +156,7 @@ async function convert() {
             resistance: computedResistance,
             minionSiteNumber:
                 data['Minion Site Number'] !== ''
-                    ? parseInt(data['Minion SiteNumber'], 10)
+                    ? parseInt(data['Minion Site Number'], 10)
                     : undefined,
             allyHomeSites: data['Ally Home Sites'] || undefined,
             siteNumber:
