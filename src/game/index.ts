@@ -863,13 +863,13 @@ export const LotrGame: Game<GameState> = {
                     };
 
                     G.statusMessage =
-                        'Phase de Regroupement (Ralliement) : Choix des cartes à défausser.';
+                        'Phase de Ralliement : Choix des cartes à défausser.';
 
                     G.actionWindow = {
                         isOpen: true,
                         title: 'RALLIEMENT (MUSTER)',
                         message:
-                            'Défaussez des cartes (jusqu’au nombre de vos personnages Rassembleurs) puis validez.',
+                            'Défaussez des cartes (jusqu’au nombre de vos personnages "Rassembleur") puis validez.',
                         activePlayerId: fpId,
                         canPass: true,
                     };

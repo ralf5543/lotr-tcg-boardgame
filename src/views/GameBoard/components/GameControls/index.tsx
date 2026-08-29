@@ -176,7 +176,7 @@ export const GameControls: React.FC<GameControlsProps> = ({
             type: 'MULLIGAN',
         };
     } else if (isMusterStep && myMusterState) {
-        // 🟢 AJOUT MUSTER
+        // MUSTER
         toastConfig = {
             show: true,
             title: 'PHASE DE RALLIEMENT (MUSTER)',
@@ -250,9 +250,9 @@ export const GameControls: React.FC<GameControlsProps> = ({
         }
 
         if (isMusterStep && myMusterState) {
-            // 🟢 CONSIGNE MUSTER
+            // CONSIGNE MUSTER
             if (myMusterState.isDone) {
-                return 'Ralliement validé. En attente de l’autre joueur...';
+                return 'Effet de Rassembleur validé. En attente de l’autre joueur...';
             }
             return `Défaussées : ${myMusterState.discardedCount} / ${myMusterState.allowedCount} carte(s). Cliquez sur vos cartes ou validez.`;
         }
@@ -551,7 +551,7 @@ export const GameControls: React.FC<GameControlsProps> = ({
                                 >
                                     {myMusterState.discardedCount > 0
                                         ? `Valider (${myMusterState.discardedCount} piochée(s))`
-                                        : 'Ignorer "Rassembleur'}
+                                        : 'Ignorer "Rassembleur"'}
                                 </S.ActionButton>
                             )}
 
