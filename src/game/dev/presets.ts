@@ -11,7 +11,7 @@ const CARDS_PRESETS: Record<string, CardState> = {
         isUnique: true,
         kind: 'FREE_PEOPLE',
         type: 'COMPANION',
-        keywords: ['RING-BOUND', 'RING-BEARER'],
+        keywords: ['RING-BOUND', 'RING-BEARER', 'MUSTER'],
         culture: 'SHIRE',
         race: 'HOBBIT',
         signet: 'ARAGORN',

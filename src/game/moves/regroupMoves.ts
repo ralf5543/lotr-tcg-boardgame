@@ -1,6 +1,6 @@
-import type { LotrMoveContext } from '../types';
+import type { LotrMoveContext, GameState } from '../types';
 import { drawCardsForPlayer } from '../../utils/drawCards';
-import { commonMoves } from './commonMoves';
+import { initStandardRegroup } from '..';
 
 export const endTurnChoice = ({ G }: LotrMoveContext) => {
     G.regroupStep = 'FP_REFILL';
@@ -19,18 +19,28 @@ export const discardCardFromHand = (
     const shadowPlayerId = G.fpPlayerId === '0' ? '1' : '0';
     const fpPlayerId = G.fpPlayerId || '0';
 
-    if (G.regroupStep === 'SHADOW_REFILL' && actingPlayerId !== shadowPlayerId) {
-        console.warn('❌ [moves.discardCardFromHand] Ce n’est pas au tour de l’Ombre de défausser.');
+    if (
+        G.regroupStep === 'SHADOW_REFILL' &&
+        actingPlayerId !== shadowPlayerId
+    ) {
+        console.warn(
+            '❌ [moves.discardCardFromHand] Ce n’est pas au tour de l’Ombre de défausser.'
+        );
         return 'INVALID_MOVE';
     }
     if (G.regroupStep === 'FP_REFILL' && actingPlayerId !== fpPlayerId) {
-        console.warn('❌ [moves.discardCardFromHand] Ce n’est pas au tour de FP de défausser.');
+        console.warn(
+            '❌ [moves.discardCardFromHand] Ce n’est pas au tour de FP de défausser.'
+        );
         return 'INVALID_MOVE';
     }
 
     if (player.hand.length <= 8 && player.hasDiscardedInRegroup) {
-        console.warn(`⚠️ [moves.discardCardFromHand] Le Joueur ${actingPlayerId} a déjà défaussé sa carte optionnelle.`);
-        G.statusMessage = 'Vous avez déjà défaussé votre carte optionnelle pour ce tour.';
+        console.warn(
+            `⚠️ [moves.discardCardFromHand] Le Joueur ${actingPlayerId} a déjà défaussé sa carte optionnelle.`
+        );
+        G.statusMessage =
+            'Vous avez déjà défaussé votre carte optionnelle pour ce tour.';
         return 'INVALID_MOVE';
     }
 
@@ -107,10 +117,12 @@ export const confirmHandRefill = ({ G, events, playerID }: LotrMoveContext) => {
         const nextFpPlayer = G.players[nextFpPlayerId];
 
         if (nextFpPlayer?.fellowshipArea) {
-            nextFpPlayer.fellowshipArea = nextFpPlayer.fellowshipArea.map((card: any) => ({
-                ...card,
-                isFaceDown: false,
-            }));
+            nextFpPlayer.fellowshipArea = nextFpPlayer.fellowshipArea.map(
+                (card: any) => ({
+                    ...card,
+                    isFaceDown: false,
+                })
+            );
         }
 
         G.statusMessage = `Nouveau tour ! Le joueur ${nextFpPlayerId} devient les Peuples Libres.`;
@@ -120,8 +132,117 @@ export const confirmHandRefill = ({ G, events, playerID }: LotrMoveContext) => {
     }
 };
 
+// 1. Défausse individuelle d'une carte au clic dans la main
+export const discardForMuster = (
+    context: LotrMoveContext,
+    cardIndex: number
+) => {
+    const { G, ctx } = context;
+
+    // 1. Récupération et normalisation de l'ID du joueur
+    const playerID = context.playerID ?? ctx.playerID ?? ctx.currentPlayer;
+
+    if (!playerID) {
+        return 'INVALID_MOVE';
+    }
+
+    // 2. Vérification de la phase et de la sous-étape
+    if (G.regroupStep !== 'MUSTER_STEP') {
+        return 'INVALID_MOVE';
+    }
+
+    const player = G.players?.[playerID];
+    const musterState = G.musterState?.players?.[playerID];
+
+    // 3. Contrôles sur l'état du joueur et du Ralliement
+    if (!player || !musterState) {
+        return 'INVALID_MOVE';
+    }
+
+    if (musterState.isDone) {
+        return 'INVALID_MOVE';
+    }
+
+    if (musterState.discardedCount >= musterState.allowedCount) {
+        return 'INVALID_MOVE';
+    }
+
+    if (cardIndex < 0 || cardIndex >= player.hand.length) {
+        return 'INVALID_MOVE';
+    }
+
+    // 4. Mutation de l'état (Défausse)
+    const [discardedCard] = player.hand.splice(cardIndex, 1);
+
+    if (discardedCard) {
+        if (!player.discard) {
+            player.discard = [];
+        }
+        player.discard.push(discardedCard);
+        musterState.discardedCount += 1;
+    }
+};
+
+// 2. Pioche groupée & validation au clic sur le bouton du Toaster
+export const confirmMuster = (context: LotrMoveContext) => {
+    const { G, ctx } = context;
+
+    // 🟢 RÉSOLUTIONS STRICTES DU PLAYERID
+    const playerID = context.playerID ?? ctx.playerID ?? ctx.currentPlayer;
+
+    if (!playerID) {
+        return 'INVALID_MOVE';
+    }
+
+    const player = G.players?.[playerID];
+    const musterState = G.musterState?.players?.[playerID];
+
+    if (!player || !musterState) {
+        return 'INVALID_MOVE';
+    }
+
+    if (musterState.isDone) {
+        return 'INVALID_MOVE';
+    }
+
+    // 1. Pioche groupée des cartes défaussées
+    const countToDraw = musterState.discardedCount;
+
+    for (let i = 0; i < countToDraw; i++) {
+        if (player.deck.length > 0) {
+            const drawnCard = player.deck.pop();
+            if (drawnCard) {
+                player.hand.push(drawnCard);
+            }
+        }
+    }
+
+    // 2. Marquer ce joueur comme terminé
+    musterState.isDone = true;
+
+    // 3. Fermer la fenêtre de Toaster globale/locale si besoin
+    if (G.actionWindow) {
+        G.actionWindow.isOpen = false;
+    }
+
+    // 4. Si tous les joueurs ont terminé leur ralliement, on passe à la suite
+    const allPlayersDone = Object.values(G.musterState.players).every(
+        (p) => p.isDone
+    );
+
+    if (allPlayersDone) {
+        G.regroupStep = undefined;
+        G.musterState = undefined;
+
+        const fpId = G.fpPlayerId || '0';
+        initStandardRegroup(G, fpId);
+    }
+};
+
 export const regroupMoves = {
     endTurnChoice,
     discardCardFromHand,
     confirmHandRefill,
+    discardForMuster,
+    confirmMuster,
 };

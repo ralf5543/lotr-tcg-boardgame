@@ -227,6 +227,11 @@ export interface SiteCardState {
     imageUrl?: string;
     keywords?: CardKeyword[];
 }
+export interface PlayerMusterInfo {
+    allowedCount: number;
+    discardedCount: number;
+    isDone: boolean;
+}
 
 export interface GameState {
     fpPlayerId: string;
@@ -237,6 +242,9 @@ export interface GameState {
     movesThisTurn?: number;
     path: (SiteCardState | null)[];
     battlefield: CardState[];
+    musterState?: {
+        players: Record<string, PlayerMusterInfo>;
+    };
     players: Record<string, PlayerState>;
     awaitingSiteSelection: boolean;
     isFierceAssignment?: boolean;

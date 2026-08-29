@@ -61,23 +61,23 @@ export const GameBoard: React.FC<GameBoardProps> = ({
     const oppId = myId === '0' ? '1' : '0';
 
     // 🟢 1. Détection stricte de la phase de setup
-const isSetupPhase = Boolean(
-    G?.setupState && 
-    G.setupState.step !== 'COMPLETED' && 
-    ctx.phase === 'setup'
-);
+    const isSetupPhase = Boolean(
+        G?.setupState &&
+        G.setupState.step !== 'COMPLETED' &&
+        ctx.phase === 'setup'
+    );
 
-// 🟢 2. Identification des rôles (TOUJOURS définie)
-const fpPlayerId = G.fpPlayerId || '0';
-const isLocalFP = myId === fpPlayerId;
-const isLocalShadow = !isLocalFP; // 👈 Rétabli pour G.awaitingSiteSelection et les rôles
+    // 🟢 2. Identification des rôles (TOUJOURS définie)
+    const fpPlayerId = G.fpPlayerId || '0';
+    const isLocalFP = myId === fpPlayerId;
+    const isLocalShadow = !isLocalFP; // 👈 Rétabli pour G.awaitingSiteSelection et les rôles
 
-// 🟢 3. Thème visuel du plateau uniquement
-const currentFaction: 'FREE_PEOPLE' | 'SHADOW' | 'NEUTRAL' = isSetupPhase
-    ? 'NEUTRAL'
-    : isLocalFP
-    ? 'FREE_PEOPLE'
-    : 'SHADOW';
+    // 🟢 3. Thème visuel du plateau uniquement
+    const currentFaction: 'FREE_PEOPLE' | 'SHADOW' | 'NEUTRAL' = isSetupPhase
+        ? 'NEUTRAL'
+        : isLocalFP
+          ? 'FREE_PEOPLE'
+          : 'SHADOW';
 
     const me = G.players[myId] || {
         deck: [],
@@ -554,15 +554,13 @@ const currentFaction: 'FREE_PEOPLE' | 'SHADOW' | 'NEUTRAL' = isSetupPhase
                                 currentSiteIndex={currentSiteIndex}
                                 phase={ctx.phase}
                                 regroupStep={G.regroupStep}
-                                onDrawCard={() => {
-                                    if (moves.drawCard) moves.drawCard();
+                                onDiscardCard={(index) => {
+                                    if (G.regroupStep === 'MUSTER_STEP') {
+                                        moves.discardForMuster(index); // Pas de wrapper supplémentaire
+                                    } else {
+                                        moves.discardCardFromHand(index);
+                                    }
                                 }}
-                                onPlayCard={(idx) => {
-                                    if (moves.playCard) moves.playCard(idx);
-                                }}
-                                onDiscardCard={(index) =>
-                                    moves.discardCardFromHand(index)
-                                }
                             />
                         }
                         sitesView={<SitesPicker sites={me.sitesDeck || []} />}

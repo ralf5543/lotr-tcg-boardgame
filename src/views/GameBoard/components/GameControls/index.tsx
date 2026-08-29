@@ -21,6 +21,7 @@ interface GameControlsProps {
         endTurnChoice?: () => void;
         confirmHandRefill?: () => void;
         passActionWindow?: () => void;
+        confirmMuster?: () => void; // 🟢 AJOUT
         [key: string]: ((...args: any[]) => void) | undefined;
     };
 }
@@ -58,6 +59,13 @@ export const GameControls: React.FC<GameControlsProps> = ({
         mulliganChoice !== null && mulliganChoice !== undefined;
 
     const isAuctionWinner = G.setupState?.auctionWinnerId === currentPlayerId;
+
+    // 🟢 MUSTER STATE
+    const isMusterStep =
+        ctx.phase === 'regroup' && G.regroupStep === 'MUSTER_STEP';
+    const myMusterState = isMusterStep
+        ? G.musterState?.players?.[currentPlayerId]
+        : null;
 
     // 🟢 CALCUL DU NUMÉRO DE SITE À POSER
     const rawSiteIdx = G.currentSiteIndex ?? 0;
@@ -125,7 +133,12 @@ export const GameControls: React.FC<GameControlsProps> = ({
         title: string;
         body: string;
         showPassButton: boolean;
-        type?: 'BIDDING' | 'CHOOSING_FIRST' | 'MULLIGAN' | 'STANDARD';
+        type?:
+            | 'BIDDING'
+            | 'CHOOSING_FIRST'
+            | 'MULLIGAN'
+            | 'MUSTER'
+            | 'STANDARD';
     } = {
         show: false,
         title: 'ACTION REQUISE',
@@ -161,6 +174,17 @@ export const GameControls: React.FC<GameControlsProps> = ({
                 : 'Examinez votre main de 8 cartes. Voulez-vous la garder ou faire un Mulligan ?',
             showPassButton: false,
             type: 'MULLIGAN',
+        };
+    } else if (isMusterStep && myMusterState) {
+        // 🟢 AJOUT MUSTER
+        toastConfig = {
+            show: true,
+            title: 'PHASE DE RALLIEMENT (MUSTER)',
+            body: myMusterState.isDone
+                ? "En attente de l'adversaire..."
+                : `Vous avez ${myMusterState.allowedCount} carte(s) avec Rassembleur. Vous pouvez défausser jusqu'à ${myMusterState.allowedCount} carte(s) pour en piocher autant.`,
+            showPassButton: false,
+            type: 'MUSTER',
         };
     } else if (isActionWindowActive && isMyTurnToAct) {
         toastConfig = {
@@ -221,8 +245,16 @@ export const GameControls: React.FC<GameControlsProps> = ({
 
         if (isMulliganStep) {
             return hasMadeMulliganChoice
-                ? "Votre choix de Mulligan est enregistré."
+                ? 'Votre choix de Mulligan est enregistré.'
                 : 'Décidez si vous conservez votre main de départ ou si vous remélangez.';
+        }
+
+        if (isMusterStep && myMusterState) {
+            // 🟢 CONSIGNE MUSTER
+            if (myMusterState.isDone) {
+                return 'Ralliement validé. En attente de l’autre joueur...';
+            }
+            return `Défaussées : ${myMusterState.discardedCount} / ${myMusterState.allowedCount} carte(s). Cliquez sur vos cartes ou validez.`;
         }
 
         if (isActionWindowActive) {
@@ -306,7 +338,8 @@ export const GameControls: React.FC<GameControlsProps> = ({
     };
 
     // Le log narratif de la dernière action (ex: "Lurtz est assigné à Aragorn.")
-    const currentNarrativeLog = G.statusMessage || statusMessage || 'Partie en cours';
+    const currentNarrativeLog =
+        G.statusMessage || statusMessage || 'Partie en cours';
     const instructionText = getInstructionText();
 
     return (
@@ -349,12 +382,23 @@ export const GameControls: React.FC<GameControlsProps> = ({
                     </S.InfoGroup>
 
                     {/* Zone de Texte : Récit narratif principal + Consigne sous-jacente */}
-                    <div style={{ flex: 1, textAlign: 'center', padding: '0 12px' }}>
-                        <S.MessageText>
-                            {currentNarrativeLog}
-                        </S.MessageText>
+                    <div
+                        style={{
+                            flex: 1,
+                            textAlign: 'center',
+                            padding: '0 12px',
+                        }}
+                    >
+                        <S.MessageText>{currentNarrativeLog}</S.MessageText>
                         {instructionText && (
-                            <div style={{ fontSize: '0.85rem', opacity: 0.8, marginTop: '2px', fontStyle: 'italic' }}>
+                            <div
+                                style={{
+                                    fontSize: '0.85rem',
+                                    opacity: 0.8,
+                                    marginTop: '2px',
+                                    fontStyle: 'italic',
+                                }}
+                            >
                                 {instructionText}
                             </div>
                         )}
@@ -493,6 +537,22 @@ export const GameControls: React.FC<GameControlsProps> = ({
                                         Mulligan (8 nouvelles)
                                     </S.ActionButton>
                                 </div>
+                            )}
+
+                        {/* 🟢 BOUTON DE VALIDATION DU MUSTER */}
+                        {toastConfig.type === 'MUSTER' &&
+                            myMusterState &&
+                            !myMusterState.isDone && (
+                                <S.ActionButton
+                                    style={{ marginTop: '12px', width: '100%' }}
+                                    onClick={() => {
+                                        moves.confirmMuster?.();
+                                    }}
+                                >
+                                    {myMusterState.discardedCount > 0
+                                        ? `Valider (${myMusterState.discardedCount} piochée(s))`
+                                        : 'Ignorer "Rassembleur'}
+                                </S.ActionButton>
                             )}
 
                         {/* ACTION PASSER STANDARD */}

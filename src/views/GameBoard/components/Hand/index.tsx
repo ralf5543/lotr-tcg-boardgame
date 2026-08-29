@@ -20,6 +20,7 @@ interface HandProps {
     onDrawCard: () => void;
     onPlayCard?: (index: number) => void;
     onDiscardCard?: (index: number) => void;
+    onDrawCard?: () => void;
 }
 
 // 🟢 CACHE GLOBAL : Persiste même si le composant Hand est démonté / remonté lors d'un changement d'onglet
@@ -27,7 +28,7 @@ const knownCardIdsCache = new Set<string>();
 
 export const Hand: React.FC<HandProps> = ({
     hand,
-    G, // 👈 2. Récupération de G
+    G,
     playerRole: propPlayerRole,
     currentSiteIndex,
     phase,
@@ -44,8 +45,17 @@ export const Hand: React.FC<HandProps> = ({
         regroupStep === 'SHADOW_REFILL' && effectivePlayerId === shadowPlayerId;
     const isFpRefill = regroupStep === 'FP_REFILL' && isFreePeoplesPlayer;
 
+    // 🟢 PRISE EN COMPTE DE L'ÉTAPE MUSTER
+    const myMusterState = G?.musterState?.players?.[effectivePlayerId];
+    const isMusterActive =
+        regroupStep === 'MUSTER_STEP' &&
+        !!myMusterState &&
+        !myMusterState.isDone &&
+        myMusterState.discardedCount < myMusterState.allowedCount;
+
     const isDiscardPhase =
-        phase === 'regroup' && (isShadowRefill || isFpRefill);
+        (phase === 'regroup' && (isShadowRefill || isFpRefill)) ||
+        isMusterActive;
 
     const getFanStyles = (index: number, total: number) => {
         const baseY = -60;
@@ -151,7 +161,6 @@ export const Hand: React.FC<HandProps> = ({
                               (c) => c.id === card.id
                           );
 
-                          // 👈 3. Calculs placés dans la boucle map pour chaque carte
                           const hasSpot = hasSpotCondition(card);
                           const isSpotMet = hasSpot
                               ? isSpotConditionMet(card, {

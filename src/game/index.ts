@@ -16,7 +16,7 @@ import {
 import {
     resolveSkirmish,
     hasFierceMinionsOnBattlefield,
-    canSelectSkirmish
+    canSelectSkirmish,
 } from './logic/skirmish';
 import { getUnassignedMinions } from './logic/assignment';
 import { commonMoves, advanceCompany, getTargetPlayerId } from './moves';
@@ -25,6 +25,8 @@ import { drawCardsForPlayer } from '../utils/drawCards';
 import { buildDeckFromIds } from '../utils/deckBuilder';
 import { allMoves } from './moves/index';
 import { calculateArcheryTotals } from './logic/archery';
+import { getMusterCount } from './logic/musterHelpers';
+import { discardForMuster, confirmMuster } from './moves/regroupMoves';
 
 const shuffle = <T>(array: T[]): T[] => {
     const arr = [...array];
@@ -255,6 +257,24 @@ export const setupGame = ({ random }: { random: any }): GameState => {
 
     return G;
 };
+
+export function initStandardRegroup(G: any, fpId: string) {
+    G.regroupStep = 'SHADOW_REFILL';
+    G.statusMessage =
+        (G.movesThisTurn || 0) >= 2
+            ? "Limite de déplacement atteinte (2/2). Reconstitution de la main de l'Ombre."
+            : "Phase de Regroupement : L'Ombre ajuste sa main.";
+
+    G.actionWindow = {
+        isOpen: true,
+        activePlayerId: fpId,
+        title: 'PHASE DE REGROUPEMENT',
+        message:
+            'Voulez-vous jouer une carte / un effet de Regroupement ou PASSER ?',
+        canPass: true,
+        passesCount: 0,
+    };
+}
 
 export const LotrGame: Game<GameState> = {
     setup: setupGame,
@@ -792,34 +812,76 @@ export const LotrGame: Game<GameState> = {
 
         regroup: {
             next: 'fellowship',
-            turn: { activePlayers: { value: { '0': 'play', '1': 'play' } } },
+
+            // 🟢 Autorise les deux joueurs à jouer simultanément pendant cette phase
+            turn: {
+                activePlayers: {
+                    all: 'muster', // Place automatiquement les 2 joueurs dans la stage 'muster'
+                },
+                stages: {
+                    muster: {
+                        moves: {
+                            ...allMoves,
+                            discardForMuster,
+                            confirmMuster,
+                        },
+                    },
+                },
+            },
 
             onBegin: ({ G }: LotrPhaseContext) => {
                 G.isFierceAssignment = false;
-                const fpId = G.fpPlayerId || '0';
-                if ((G.movesThisTurn || 0) >= 2) {
-                    G.regroupStep = 'SHADOW_REFILL';
+
+                // 🟢 1. Source de vérité STRICTE et IMMUTABLE
+                const fpId = G.fpPlayerId;
+
+                // 🟢 2. L'Ombre est mathématiquement l'autre joueur
+                const playerIds = Object.keys(G.players || {});
+                const shadowId =
+                    playerIds.find((id) => id !== fpId) ??
+                    (fpId === '0' ? '1' : '0');
+
+                // 🟢 3. Calcul des Musters
+                const fpMuster = getMusterCount(G, fpId);
+                const shadowMuster = getMusterCount(G, shadowId);
+
+                if (fpMuster > 0 || shadowMuster > 0) {
+                    G.regroupStep = 'MUSTER_STEP' as any;
+                    G.musterState = {
+                        players: {
+                            [fpId]: {
+                                allowedCount: fpMuster,
+                                discardedCount: 0,
+                                isDone: fpMuster === 0,
+                            },
+                            [shadowId]: {
+                                allowedCount: shadowMuster,
+                                discardedCount: 0,
+                                isDone: shadowMuster === 0,
+                            },
+                        },
+                    };
+
                     G.statusMessage =
-                        "Limite de déplacement atteinte (2/2). Reconstitution de la main de l'Ombre.";
-                } else {
-                    G.regroupStep = 'SHADOW_REFILL';
-                    G.statusMessage =
-                        'Phase de Regroupement : L’Ombre ajuste sa main.';
+                        'Phase de Regroupement (Ralliement) : Choix des cartes à défausser.';
+
+                    G.actionWindow = {
+                        isOpen: true,
+                        title: 'RALLIEMENT (MUSTER)',
+                        message:
+                            'Défaussez des cartes (jusqu’au nombre de vos personnages Rassembleurs) puis validez.',
+                        activePlayerId: fpId,
+                        canPass: true,
+                    };
+                    return;
                 }
 
-                G.actionWindow = {
-                    isOpen: true,
-                    activePlayerId: fpId,
-                    title: 'PHASE DE REGROUPEMENT',
-                    message:
-                        'Voulez-vous jouer une carte / un effet de Regroupement ou PASSER ?',
-                    canPass: true,
-                    passesCount: 0,
-                };
+                initStandardRegroup(G, fpId);
             },
-
             moves: {
                 ...allMoves,
+                discardForMuster,
+                confirmMuster,
 
                 moveNextSite: ({
                     G,
