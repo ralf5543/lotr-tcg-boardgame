@@ -76,7 +76,6 @@ export const transferAid = (
     player.supportArea.splice(followerIndex, 1);
     follower.attachedViaAid = true;
 
-    if (!targetCard.attachments) {
     targetCard.attachments = [] as CardState[];
     targetCard.attachments.push(follower);
 
