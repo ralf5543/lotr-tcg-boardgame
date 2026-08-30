@@ -2632,6 +2632,9 @@
     "keywords": [
       "PLAINS"
     ],
+    "actionPhases": [
+      "START_OF_FELLOWSHIP"
+    ],
     "twilightCost": 1,
     "siteNumber": 2,
     "siteArrow": "Left",
@@ -4704,6 +4707,9 @@
     "keywords": [
       "PLAINS"
     ],
+    "actionPhases": [
+      "START_OF_MANEUVER"
+    ],
     "twilightCost": 6,
     "siteNumber": 5,
     "siteArrow": "Left",
@@ -5477,6 +5483,9 @@
     "isUnique": false,
     "kind": "SITE",
     "type": "SITE",
+    "actionPhases": [
+      "START_OF_REGROUP"
+    ],
     "twilightCost": 7,
     "siteNumber": 5,
     "siteArrow": "Left",
@@ -5782,6 +5791,9 @@
     "keywords": [
       "MOUNTAIN"
     ],
+    "actionPhases": [
+      "START_OF_FELLOWSHIP"
+    ],
     "twilightCost": 2,
     "siteArrow": "Right",
     "imageUrl": "/cards_visuals/o_11_229.jpg",
@@ -6000,6 +6012,9 @@
     "type": "SITE",
     "keywords": [
       "MARSH"
+    ],
+    "actionPhases": [
+      "START_OF_FELLOWSHIP"
     ],
     "twilightCost": 3,
     "siteArrow": "Left",
@@ -6258,6 +6273,9 @@
     "type": "SITE",
     "keywords": [
       "DWELLING"
+    ],
+    "actionPhases": [
+      "START_OF_FELLOWSHIP"
     ],
     "twilightCost": 3,
     "siteArrow": "Left",
@@ -6588,6 +6606,9 @@
     "keywords": [
       "FOREST"
     ],
+    "actionPhases": [
+      "START_OF_FELLOWSHIP"
+    ],
     "twilightCost": 3,
     "siteArrow": "Right",
     "imageUrl": "/cards_visuals/o_11_251.jpg",
@@ -6696,6 +6717,9 @@
     "keywords": [
       "PLAINS"
     ],
+    "actionPhases": [
+      "START_OF_MANEUVER"
+    ],
     "twilightCost": 1,
     "siteArrow": "Right",
     "imageUrl": "/cards_visuals/o_07_345.jpg",
@@ -6732,6 +6756,9 @@
     "keywords": [
       "MOUNTAIN"
     ],
+    "actionPhases": [
+      "START_OF_FELLOWSHIP"
+    ],
     "twilightCost": 3,
     "siteArrow": "Right",
     "imageUrl": "/cards_visuals/o_11_255.jpg",
@@ -6767,6 +6794,9 @@
     "type": "SITE",
     "keywords": [
       "DWELLING"
+    ],
+    "actionPhases": [
+      "START_OF_FELLOWSHIP"
     ],
     "twilightCost": 3,
     "siteArrow": "Right",
@@ -6873,6 +6903,9 @@
     "isUnique": false,
     "kind": "SITE",
     "type": "SITE",
+    "actionPhases": [
+      "START_OF_FELLOWSHIP"
+    ],
     "twilightCost": 2,
     "siteArrow": "Right",
     "imageUrl": "/cards_visuals/o_04_339.jpg",
@@ -7789,6 +7822,9 @@
     "isUnique": false,
     "kind": "SITE",
     "type": "SITE",
+    "actionPhases": [
+      "START_OF_REGROUP"
+    ],
     "twilightCost": 0,
     "siteArrow": "Left",
     "imageUrl": "/cards_visuals/o_13_193.jpg",
@@ -7963,6 +7999,9 @@
     "isUnique": false,
     "kind": "SITE",
     "type": "SITE",
+    "actionPhases": [
+      "START_OF_FELLOWSHIP"
+    ],
     "twilightCost": 3,
     "siteArrow": "Right",
     "imageUrl": "/cards_visuals/o_15_190.jpg",

@@ -33,7 +33,25 @@ export function checkPhases(
         }
     }
 
-    // 2. ÉVÉNEMENTS (type === 'EVENT') : Doivent respecter card.phases s'il existe
+    // 2. CAPACITÉS / ACTIONS (Carte déjà sur le plateau)
+    // Si la carte n'est pas dans la main, on valide son activation via actionPhases
+    const isAlreadyInPlay = card.location && card.location !== 'hand';
+    if (isAlreadyInPlay) {
+        if (Array.isArray(card.actionPhases) && card.actionPhases.length > 0) {
+            const allowedActionPhases = card.actionPhases.map((p) =>
+                p.toUpperCase()
+            );
+            if (!allowedActionPhases.includes(currentPhase)) {
+                return {
+                    valid: false,
+                    reason: `Cette capacité ne peut être activée qu'en phase : ${card.actionPhases.join(', ')}.`,
+                };
+            }
+            return { valid: true };
+        }
+    }
+
+    // 3. ÉVÉNEMENTS (type === 'EVENT', joués de la main) : Doivent respecter card.phases s'il existe
     if (card.type === 'EVENT') {
         if (Array.isArray(card.phases) && card.phases.length > 0) {
             const allowedPhases = card.phases.map((p) => p.toUpperCase());
@@ -47,7 +65,7 @@ export function checkPhases(
         }
     }
 
-    // 3. CARTES PERMANENTES (Companion, Condition, Possession, Minion, Ally, etc.)
+    // 4. POSE DE CARTES PERMANENTES DEPUIS LA MAIN
     // Elles se jouent durant la phase principale standard de leur alignement.
     if (card.kind === 'FREE_PEOPLE' && currentPhase !== 'FELLOWSHIP') {
         return {

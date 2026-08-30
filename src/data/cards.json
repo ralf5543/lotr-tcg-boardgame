@@ -148,6 +148,9 @@
         "DWARF"
       ]
     ],
+    "actionPhases": [
+      "START_OF_FELLOWSHIP"
+    ],
     "culture": "DWARVEN",
     "twilightCost": 2,
     "imageUrl": "/cards_visuals/o_03_001.jpg",
@@ -913,6 +916,9 @@
     "keywords": [
       "KNIGHT",
       "UNBOUND"
+    ],
+    "actionPhases": [
+      "START_OF_FELLOWSHIP"
     ],
     "culture": "GONDOR",
     "race": "MAN",
@@ -2930,6 +2936,9 @@
         "MAN"
       ]
     ],
+    "actionPhases": [
+      "START_OF_ARCHERY"
+    ],
     "culture": "GONDOR",
     "twilightCost": 1,
     "strength": 1,
@@ -3076,6 +3085,9 @@
           }
         ]
       }
+    ],
+    "actionPhases": [
+      "START_OF_SHADOW"
     ],
     "culture": "ORC",
     "twilightCost": 1,
@@ -3957,6 +3969,9 @@
       "FIERCE",
       "TOIL 2",
       "MUSTER"
+    ],
+    "actionPhases": [
+      "START_OF_REGROUP"
     ],
     "culture": "WRAITH",
     "race": "NAZGÛL",
@@ -7094,6 +7109,9 @@
     "keywords": [
       "UNBOUND"
     ],
+    "actionPhases": [
+      "START_OF_FELLOWSHIP"
+    ],
     "culture": "GONDOR",
     "race": "MAN",
     "signet": "FRODO",
@@ -7557,6 +7575,9 @@
       "FIERCE",
       "TOIL 2",
       "MUSTER"
+    ],
+    "actionPhases": [
+      "START_OF_REGROUP"
     ],
     "culture": "WRAITH",
     "race": "NAZGÛL",
@@ -8309,6 +8330,9 @@
       "DAMAGE +1",
       "UNBOUND"
     ],
+    "actionPhases": [
+      "START_OF_FELLOWSHIP"
+    ],
     "culture": "DWARVEN",
     "race": "DWARF",
     "twilightCost": 2,
@@ -8353,6 +8377,9 @@
     "keywords": [
       "ARCHER",
       "UNBOUND"
+    ],
+    "actionPhases": [
+      "START_OF_ARCHERY"
     ],
     "culture": "ELVEN",
     "race": "ELF",
@@ -8517,6 +8544,9 @@
     "keywords": [
       "RANGER",
       "UNBOUND"
+    ],
+    "actionPhases": [
+      "START_OF_MANEUVER"
     ],
     "culture": "GONDOR",
     "race": "MAN",
@@ -8813,6 +8843,9 @@
     "keywords": [
       "UNBOUND"
     ],
+    "actionPhases": [
+      "START_OF_FELLOWSHIP"
+    ],
     "culture": "ROHAN",
     "race": "MAN",
     "twilightCost": 2,
@@ -8920,7 +8953,8 @@
       "RING-BOUND"
     ],
     "actionPhases": [
-      "RESPONSE"
+      "RESPONSE",
+      "START_OF_FELLOWSHIP"
     ],
     "culture": "SHIRE",
     "race": "HOBBIT",
@@ -9639,7 +9673,8 @@
     "type": "CONDITION",
     "subtype": "SUPPORT-AREA",
     "actionPhases": [
-      "MANEUVER"
+      "MANEUVER",
+      "START_OF_REGROUP"
     ],
     "culture": "WRAITH",
     "twilightCost": 0,
@@ -10146,6 +10181,9 @@
         "COMPANION"
       ]
     ],
+    "actionPhases": [
+      "START_OF_FELLOWSHIP"
+    ],
     "culture": "GONDOR",
     "twilightCost": 1,
     "i18n": {
@@ -10182,6 +10220,9 @@
       [
         "HOBBIT"
       ]
+    ],
+    "actionPhases": [
+      "START_OF_FELLOWSHIP"
     ],
     "culture": "SHIRE",
     "twilightCost": 1,
@@ -10220,6 +10261,9 @@
         "ROHAN",
         "COMPANION"
       ]
+    ],
+    "actionPhases": [
+      "START_OF_FELLOWSHIP"
     ],
     "culture": "ROHAN",
     "twilightCost": 1,
@@ -19178,7 +19222,8 @@
     "type": "CONDITION",
     "subtype": "SUPPORT-AREA",
     "actionPhases": [
-      "RESPONSE"
+      "RESPONSE",
+      "START_OF_FELLOWSHIP"
     ],
     "culture": "WRAITH",
     "twilightCost": 0,
@@ -29514,6 +29559,9 @@
         "DWARF"
       ]
     ],
+    "actionPhases": [
+      "START_OF_FELLOWSHIP"
+    ],
     "culture": "DWARVEN",
     "twilightCost": 2,
     "imageUrl": "/cards_visuals/o_03_001.jpg",
@@ -30603,6 +30651,9 @@
       [
         "Galadriel"
       ]
+    ],
+    "actionPhases": [
+      "START_OF_REGROUP"
     ],
     "culture": "ELVEN",
     "twilightCost": 0,
@@ -47945,6 +47996,9 @@
     "kind": "FREE_PEOPLE",
     "type": "CONDITION",
     "subtype": "SUPPORT-AREA",
+    "actionPhases": [
+      "START_OF_FELLOWSHIP"
+    ],
     "culture": "ROHAN",
     "twilightCost": 1,
     "imageUrl": "/cards_visuals/o_04_296.jpg",
@@ -61549,6 +61603,9 @@
         ]
       }
     ],
+    "actionPhases": [
+      "START_OF_REGROUP"
+    ],
     "culture": "ELVEN",
     "twilightCost": 2,
     "imageUrl": "/cards_visuals/o_07_028.jpg",
@@ -62226,6 +62283,9 @@
     "kind": "FREE_PEOPLE",
     "type": "CONDITION",
     "subtype": "SUPPORT-AREA",
+    "actionPhases": [
+      "START_OF_REGROUP"
+    ],
     "culture": "GANDALF",
     "twilightCost": 2,
     "imageUrl": "/cards_visuals/o_07_044.jpg",
@@ -62279,6 +62339,9 @@
         ],
         "addThreats": 3
       }
+    ],
+    "actionPhases": [
+      "START_OF_REGROUP"
     ],
     "culture": "GANDALF",
     "twilightCost": 1,
@@ -63254,6 +63317,9 @@
         "addThreats": 9
       }
     ],
+    "actionPhases": [
+      "START_OF_REGROUP"
+    ],
     "culture": "GOLLUM",
     "twilightCost": 5,
     "imageUrl": "/cards_visuals/o_07_067.jpg",
@@ -63832,6 +63898,9 @@
       "KNIGHT",
       "UNBOUND"
     ],
+    "actionPhases": [
+      "START_OF_FELLOWSHIP"
+    ],
     "culture": "GONDOR",
     "race": "MAN",
     "signet": "ARAGORN",
@@ -64147,6 +64216,9 @@
     "type": "COMPANION",
     "keywords": [
       "UNBOUND"
+    ],
+    "actionPhases": [
+      "START_OF_REGROUP"
     ],
     "culture": "GONDOR",
     "race": "MAN",
@@ -64491,7 +64563,8 @@
       }
     ],
     "actionPhases": [
-      "REGROUP"
+      "REGROUP",
+      "START_OF_REGROUP"
     ],
     "culture": "GONDOR",
     "twilightCost": 3,
@@ -64850,6 +64923,9 @@
     "kind": "FREE_PEOPLE",
     "type": "CONDITION",
     "subtype": "SUPPORT-AREA",
+    "actionPhases": [
+      "START_OF_REGROUP"
+    ],
     "culture": "GONDOR",
     "twilightCost": 2,
     "imageUrl": "/cards_visuals/o_07_103.jpg",
@@ -65101,7 +65177,8 @@
       }
     ],
     "actionPhases": [
-      "SKIRMISH"
+      "SKIRMISH",
+      "START_OF_REGROUP"
     ],
     "culture": "GONDOR",
     "twilightCost": 2,
@@ -65964,6 +66041,9 @@
         ],
         "addThreats": 1
       }
+    ],
+    "actionPhases": [
+      "START_OF_REGROUP"
     ],
     "culture": "RAIDER",
     "twilightCost": 1,
@@ -72662,6 +72742,9 @@
         ],
         "addThreats": 3
       }
+    ],
+    "actionPhases": [
+      "START_OF_REGROUP"
     ],
     "culture": "SAURON",
     "twilightCost": 3,
@@ -83648,6 +83731,9 @@
         "addThreats": 1
       }
     ],
+    "actionPhases": [
+      "START_OF_MANEUVER"
+    ],
     "culture": "GONDOR",
     "race": "WRAITH",
     "twilightCost": 3,
@@ -88081,6 +88167,9 @@
     "keywords": [
       "UNBOUND"
     ],
+    "actionPhases": [
+      "START_OF_REGROUP"
+    ],
     "culture": "DWARVEN",
     "race": "DWARF",
     "twilightCost": 2,
@@ -88189,7 +88278,8 @@
       ]
     ],
     "actionPhases": [
-      "SKIRMISH"
+      "SKIRMISH",
+      "START_OF_REGROUP"
     ],
     "culture": "DWARVEN",
     "twilightCost": 2,
@@ -88284,6 +88374,9 @@
     "kind": "FREE_PEOPLE",
     "type": "CONDITION",
     "subtype": "SUPPORT-AREA",
+    "actionPhases": [
+      "START_OF_MANEUVER"
+    ],
     "culture": "DWARVEN",
     "twilightCost": 2,
     "imageUrl": "/cards_visuals/o_11_011.jpg",
@@ -88616,6 +88709,9 @@
     "keywords": [
       "UNBOUND"
     ],
+    "actionPhases": [
+      "START_OF_REGROUP"
+    ],
     "culture": "ELVEN",
     "race": "ELF",
     "twilightCost": 2,
@@ -88792,6 +88888,9 @@
     "type": "COMPANION",
     "keywords": [
       "UNBOUND"
+    ],
+    "actionPhases": [
+      "START_OF_ARCHERY"
     ],
     "culture": "ELVEN",
     "race": "ELF",
@@ -89325,6 +89424,9 @@
       [
         "WIZARD"
       ]
+    ],
+    "actionPhases": [
+      "START_OF_REGROUP"
     ],
     "culture": "GANDALF",
     "twilightCost": 2,
@@ -90301,6 +90403,9 @@
         "GONDOR",
         "MAN"
       ]
+    ],
+    "actionPhases": [
+      "START_OF_ARCHERY"
     ],
     "culture": "GONDOR",
     "twilightCost": 1,
@@ -91806,6 +91911,9 @@
     "kind": "SHADOW",
     "type": "CONDITION",
     "subtype": "SUPPORT-AREA",
+    "actionPhases": [
+      "START_OF_MANEUVER"
+    ],
     "culture": "MEN",
     "twilightCost": 4,
     "imageUrl": "/cards_visuals/o_11_091.jpg",
@@ -92243,6 +92351,9 @@
     "isUnique": false,
     "kind": "SHADOW",
     "type": "MINION",
+    "actionPhases": [
+      "START_OF_MANEUVER"
+    ],
     "culture": "MEN",
     "race": "MAN",
     "twilightCost": 3,
@@ -93935,6 +94046,9 @@
         ]
       }
     ],
+    "actionPhases": [
+      "START_OF_SHADOW"
+    ],
     "culture": "ORC",
     "twilightCost": 1,
     "imageUrl": "/cards_visuals/o_11_139.jpg",
@@ -94290,6 +94404,9 @@
     "type": "COMPANION",
     "keywords": [
       "UNBOUND"
+    ],
+    "actionPhases": [
+      "START_OF_FELLOWSHIP"
     ],
     "culture": "ROHAN",
     "race": "MAN",
@@ -94886,6 +95003,9 @@
     "keywords": [
       "UNBOUND"
     ],
+    "actionPhases": [
+      "START_OF_REGROUP"
+    ],
     "culture": "ROHAN",
     "race": "MAN",
     "twilightCost": 3,
@@ -95112,6 +95232,9 @@
     "type": "COMPANION",
     "keywords": [
       "RING-BOUND"
+    ],
+    "actionPhases": [
+      "START_OF_REGROUP"
     ],
     "culture": "SHIRE",
     "race": "HOBBIT",
@@ -96485,6 +96608,9 @@
       "DAMAGE +1",
       "MUSTER"
     ],
+    "actionPhases": [
+      "START_OF_REGROUP"
+    ],
     "culture": "URUK-HAI",
     "race": "URUK-HAI",
     "twilightCost": 7,
@@ -96535,6 +96661,9 @@
     "keywords": [
       "DAMAGE +1",
       "MUSTER"
+    ],
+    "actionPhases": [
+      "START_OF_REGROUP"
     ],
     "culture": "URUK-HAI",
     "race": "URUK-HAI",
@@ -96642,6 +96771,9 @@
     "keywords": [
       "DAMAGE +1",
       "MUSTER"
+    ],
+    "actionPhases": [
+      "START_OF_REGROUP"
     ],
     "culture": "URUK-HAI",
     "race": "URUK-HAI",
@@ -97470,7 +97602,8 @@
     "type": "CONDITION",
     "subtype": "SUPPORT-AREA",
     "actionPhases": [
-      "MANEUVER"
+      "MANEUVER",
+      "START_OF_REGROUP"
     ],
     "culture": "WRAITH",
     "twilightCost": 0,
@@ -98503,6 +98636,9 @@
     "kind": "FREE_PEOPLE",
     "type": "CONDITION",
     "subtype": "SUPPORT-AREA",
+    "actionPhases": [
+      "START_OF_REGROUP"
+    ],
     "culture": "DWARVEN",
     "twilightCost": 0,
     "imageUrl": "/cards_visuals/o_12_014.jpg",
@@ -99429,6 +99565,9 @@
     "kind": "FREE_PEOPLE",
     "type": "CONDITION",
     "subtype": "SUPPORT-AREA",
+    "actionPhases": [
+      "START_OF_REGROUP"
+    ],
     "culture": "GANDALF",
     "twilightCost": 1,
     "imageUrl": "/cards_visuals/o_12_036.jpg",
@@ -101133,6 +101272,9 @@
     "kind": "SHADOW",
     "type": "CONDITION",
     "subtype": "SUPPORT-AREA",
+    "actionPhases": [
+      "START_OF_MANEUVER"
+    ],
     "culture": "MEN",
     "twilightCost": 0,
     "imageUrl": "/cards_visuals/o_12_076.jpg",
@@ -103533,6 +103675,9 @@
     "kind": "FREE_PEOPLE",
     "type": "CONDITION",
     "subtype": "SUPPORT-AREA",
+    "actionPhases": [
+      "START_OF_REGROUP"
+    ],
     "culture": "SHIRE",
     "twilightCost": 0,
     "imageUrl": "/cards_visuals/o_12_131.jpg",
@@ -103666,6 +103811,9 @@
     "isUnique": false,
     "kind": "SHADOW",
     "type": "MINION",
+    "actionPhases": [
+      "START_OF_REGROUP"
+    ],
     "culture": "URUK-HAI",
     "race": "URUK-HAI",
     "twilightCost": 3,
@@ -103798,6 +103946,9 @@
     "isUnique": false,
     "kind": "SHADOW",
     "type": "MINION",
+    "actionPhases": [
+      "START_OF_REGROUP"
+    ],
     "culture": "URUK-HAI",
     "race": "URUK-HAI",
     "twilightCost": 4,
@@ -104821,6 +104972,9 @@
     "kind": "SHADOW",
     "type": "CONDITION",
     "subtype": "SUPPORT-AREA",
+    "actionPhases": [
+      "START_OF_REGROUP"
+    ],
     "culture": "URUK-HAI",
     "twilightCost": 0,
     "imageUrl": "/cards_visuals/o_12_160.jpg",
@@ -105349,6 +105503,9 @@
         "NAZGÛL"
       ]
     ],
+    "actionPhases": [
+      "START_OF_REGROUP"
+    ],
     "culture": "WRAITH",
     "twilightCost": 2,
     "strength": 1,
@@ -105582,6 +105739,9 @@
     "isUnique": true,
     "kind": "SHADOW",
     "type": "MINION",
+    "actionPhases": [
+      "START_OF_REGROUP"
+    ],
     "culture": "WRAITH",
     "race": "NAZGÛL",
     "twilightCost": 4,
@@ -106763,6 +106923,9 @@
     "keywords": [
       "UNBOUND"
     ],
+    "actionPhases": [
+      "START_OF_REGROUP"
+    ],
     "culture": "ELVEN",
     "race": "ELF",
     "twilightCost": 2,
@@ -107081,6 +107244,9 @@
     "keywords": [
       "ARCHER",
       "UNBOUND"
+    ],
+    "actionPhases": [
+      "START_OF_ARCHERY"
     ],
     "culture": "ELVEN",
     "race": "ELF",
@@ -107523,6 +107689,9 @@
       "type": "TWILIGHT",
       "amount": 2
     },
+    "actionPhases": [
+      "START_OF_MANEUVER"
+    ],
     "culture": "GANDALF",
     "twilightCost": 2,
     "imageUrl": "/cards_visuals/o_13_028.jpg",
@@ -107567,6 +107736,9 @@
     "type": "COMPANION",
     "keywords": [
       "UNBOUND"
+    ],
+    "actionPhases": [
+      "START_OF_FELLOWSHIP"
     ],
     "culture": "GANDALF",
     "race": "MAN",
@@ -107617,7 +107789,8 @@
     "type": "CONDITION",
     "subtype": "SUPPORT-AREA",
     "actionPhases": [
-      "MANEUVER"
+      "MANEUVER",
+      "START_OF_REGROUP"
     ],
     "culture": "GANDALF",
     "twilightCost": 1,
@@ -107883,6 +108056,9 @@
         "Gandalf"
       ]
     ],
+    "actionPhases": [
+      "START_OF_FELLOWSHIP"
+    ],
     "culture": "GANDALF",
     "twilightCost": 0,
     "resistance": -2,
@@ -107984,6 +108160,9 @@
       "type": "TWILIGHT",
       "amount": 2
     },
+    "actionPhases": [
+      "START_OF_MANEUVER"
+    ],
     "culture": "GANDALF",
     "twilightCost": 2,
     "resistance": 2,
@@ -108123,6 +108302,9 @@
     "kind": "FREE_PEOPLE",
     "type": "CONDITION",
     "subtype": "SUPPORT-AREA",
+    "actionPhases": [
+      "START_OF_REGROUP"
+    ],
     "culture": "GANDALF",
     "twilightCost": 1,
     "imageUrl": "/cards_visuals/o_13_041.jpg",
@@ -108733,7 +108915,8 @@
     "kind": "FREE_PEOPLE",
     "type": "EVENT",
     "phases": [
-      "MANEUVER"
+      "MANEUVER",
+      "START_OF_REGROUP"
     ],
     "culture": "GOLLUM",
     "twilightCost": 1,
@@ -108871,6 +109054,9 @@
     "type": "COMPANION",
     "keywords": [
       "UNBOUND"
+    ],
+    "actionPhases": [
+      "START_OF_ASSIGNMENT"
     ],
     "culture": "GONDOR",
     "race": "MAN",
@@ -109639,6 +109825,9 @@
     "kind": "FREE_PEOPLE",
     "type": "CONDITION",
     "subtype": "SUPPORT-AREA",
+    "actionPhases": [
+      "START_OF_REGROUP"
+    ],
     "culture": "GONDOR",
     "twilightCost": 2,
     "imageUrl": "/cards_visuals/o_13_075.jpg",
@@ -109716,6 +109905,9 @@
     "type": "COMPANION",
     "keywords": [
       "UNBOUND"
+    ],
+    "actionPhases": [
+      "START_OF_FELLOWSHIP"
     ],
     "culture": "GONDOR",
     "race": "MAN",
@@ -109798,6 +109990,9 @@
     "kind": "SHADOW",
     "type": "CONDITION",
     "subtype": "SUPPORT-AREA",
+    "actionPhases": [
+      "START_OF_MANEUVER"
+    ],
     "culture": "ISENGARD",
     "twilightCost": 3,
     "imageUrl": "/cards_visuals/o_13_079.jpg",
@@ -110488,6 +110683,9 @@
     "kind": "SHADOW",
     "type": "CONDITION",
     "subtype": "SUPPORT-AREA",
+    "actionPhases": [
+      "START_OF_ARCHERY"
+    ],
     "culture": "MEN",
     "twilightCost": 0,
     "imageUrl": "/cards_visuals/o_13_094.jpg",
@@ -111644,7 +111842,8 @@
     "type": "CONDITION",
     "subtype": "SUPPORT-AREA",
     "actionPhases": [
-      "SHADOW"
+      "SHADOW",
+      "START_OF_REGROUP"
     ],
     "culture": "ORC",
     "twilightCost": 0,
@@ -111924,6 +112123,9 @@
         "ROHAN",
         "MAN"
       ]
+    ],
+    "actionPhases": [
+      "START_OF_MANEUVER"
     ],
     "culture": "ROHAN",
     "twilightCost": 2,
@@ -112475,6 +112677,9 @@
         ]
       }
     ],
+    "actionPhases": [
+      "START_OF_REGROUP"
+    ],
     "culture": "ROHAN",
     "twilightCost": 2,
     "imageUrl": "/cards_visuals/o_13_139.jpg",
@@ -112711,6 +112916,9 @@
       "type": "BURDEN",
       "amount": 1
     },
+    "actionPhases": [
+      "START_OF_MANEUVER"
+    ],
     "culture": "SHIRE",
     "twilightCost": 1,
     "resistance": 1,
@@ -112986,6 +113194,9 @@
         ]
       }
     ],
+    "actionPhases": [
+      "START_OF_MANEUVER"
+    ],
     "culture": "SHIRE",
     "twilightCost": 1,
     "vitality": 1,
@@ -113037,6 +113248,9 @@
       "type": "BURDEN",
       "amount": 1
     },
+    "actionPhases": [
+      "START_OF_MANEUVER"
+    ],
     "culture": "SHIRE",
     "twilightCost": 1,
     "strength": 1,
@@ -113243,6 +113457,9 @@
         "RING-BOUND",
         "HOBBIT"
       ]
+    ],
+    "actionPhases": [
+      "START_OF_REGROUP"
     ],
     "culture": "SHIRE",
     "twilightCost": 0,
@@ -114519,6 +114736,9 @@
     "keywords": [
       "UNBOUND"
     ],
+    "actionPhases": [
+      "START_OF_REGROUP"
+    ],
     "culture": "ELVEN",
     "race": "ELF",
     "twilightCost": 2,
@@ -114632,6 +114852,9 @@
     "keywords": [
       "ARCHER",
       "UNBOUND"
+    ],
+    "actionPhases": [
+      "START_OF_ARCHERY"
     ],
     "culture": "ELVEN",
     "race": "ELF",
@@ -114780,6 +115003,9 @@
     "type": "COMPANION",
     "keywords": [
       "UNBOUND"
+    ],
+    "actionPhases": [
+      "START_OF_ASSIGNMENT"
     ],
     "culture": "GONDOR",
     "race": "MAN",
@@ -114981,6 +115207,9 @@
     "keywords": [
       "UNBOUND"
     ],
+    "actionPhases": [
+      "START_OF_REGROUP"
+    ],
     "culture": "DWARVEN",
     "race": "DWARF",
     "twilightCost": 3,
@@ -115131,6 +115360,9 @@
     "keywords": [
       "UNBOUND"
     ],
+    "actionPhases": [
+      "START_OF_ARCHERY"
+    ],
     "culture": "ELVEN",
     "race": "ELF",
     "twilightCost": 2,
@@ -115230,6 +115462,9 @@
     "type": "COMPANION",
     "keywords": [
       "UNBOUND"
+    ],
+    "actionPhases": [
+      "START_OF_MANEUVER"
     ],
     "culture": "GANDALF",
     "race": "MAN",
@@ -115384,6 +115619,9 @@
       "RANGER",
       "UNBOUND"
     ],
+    "actionPhases": [
+      "START_OF_MANEUVER"
+    ],
     "culture": "GONDOR",
     "race": "MAN",
     "twilightCost": 3,
@@ -115476,6 +115714,9 @@
     "isUnique": false,
     "kind": "SHADOW",
     "type": "MINION",
+    "actionPhases": [
+      "START_OF_REGROUP"
+    ],
     "culture": "MEN",
     "race": "MAN",
     "twilightCost": 3,
@@ -115518,6 +115759,9 @@
     "isUnique": false,
     "kind": "SHADOW",
     "type": "MINION",
+    "actionPhases": [
+      "START_OF_ASSIGNMENT"
+    ],
     "culture": "ORC",
     "race": "HALF-TROLL",
     "twilightCost": 3,
@@ -115612,6 +115856,9 @@
     "type": "MINION",
     "keywords": [
       "DAMAGE +1"
+    ],
+    "actionPhases": [
+      "START_OF_ASSIGNMENT"
     ],
     "culture": "URUK-HAI",
     "race": "URUK-HAI",
@@ -116219,6 +116466,9 @@
     "grantsKeywords": [
       "ARCHER"
     ],
+    "actionPhases": [
+      "START_OF_MANEUVER"
+    ],
     "culture": "ELVEN",
     "twilightCost": 2,
     "imageUrl": "/cards_visuals/o_15_012.jpg",
@@ -116400,6 +116650,9 @@
     "kind": "FREE_PEOPLE",
     "type": "ARTIFACT",
     "subtype": "SUPPORT-AREA",
+    "actionPhases": [
+      "START_OF_MANEUVER"
+    ],
     "culture": "ELVEN",
     "twilightCost": 2,
     "imageUrl": "/cards_visuals/o_15_016.jpg",
@@ -116892,6 +117145,9 @@
       "type": "TWILIGHT",
       "amount": 1
     },
+    "actionPhases": [
+      "START_OF_MANEUVER"
+    ],
     "culture": "ELVEN",
     "twilightCost": 2,
     "resistance": 1,
@@ -117146,6 +117402,9 @@
           }
         ]
       }
+    ],
+    "actionPhases": [
+      "START_OF_MANEUVER"
     ],
     "culture": "GANDALF",
     "twilightCost": 4,
@@ -118352,6 +118611,9 @@
     "keywords": [
       "UNBOUND"
     ],
+    "actionPhases": [
+      "START_OF_FELLOWSHIP"
+    ],
     "culture": "GONDOR",
     "race": "MAN",
     "twilightCost": 3,
@@ -118679,6 +118941,9 @@
     "type": "COMPANION",
     "keywords": [
       "UNBOUND"
+    ],
+    "actionPhases": [
+      "START_OF_MANEUVER"
     ],
     "culture": "GONDOR",
     "race": "MAN",
@@ -119290,6 +119555,9 @@
     "isUnique": false,
     "kind": "SHADOW",
     "type": "MINION",
+    "actionPhases": [
+      "START_OF_MANEUVER"
+    ],
     "culture": "MEN",
     "race": "MAN",
     "twilightCost": 4,
@@ -119439,6 +119707,9 @@
           }
         ]
       }
+    ],
+    "actionPhases": [
+      "START_OF_REGROUP"
     ],
     "culture": "MEN",
     "twilightCost": 1,
@@ -119842,7 +120113,8 @@
     "kind": "SHADOW",
     "type": "MINION",
     "actionPhases": [
-      "MANEUVER"
+      "MANEUVER",
+      "START_OF_REGROUP"
     ],
     "culture": "MEN",
     "race": "MAN",
@@ -120180,6 +120452,9 @@
           }
         ]
       }
+    ],
+    "actionPhases": [
+      "START_OF_SHADOW"
     ],
     "culture": "ORC",
     "twilightCost": 0,
@@ -121948,6 +122223,9 @@
         ]
       }
     ],
+    "actionPhases": [
+      "START_OF_MANEUVER"
+    ],
     "culture": "ROHAN",
     "twilightCost": 2,
     "strength": 1,
@@ -122103,6 +122381,9 @@
         ]
       }
     ],
+    "actionPhases": [
+      "START_OF_MANEUVER"
+    ],
     "culture": "ROHAN",
     "twilightCost": 2,
     "imageUrl": "/cards_visuals/o_15_137.jpg",
@@ -122190,6 +122471,9 @@
     "keywords": [
       "VALIANT",
       "UNBOUND"
+    ],
+    "actionPhases": [
+      "START_OF_MANEUVER"
     ],
     "culture": "ROHAN",
     "race": "MAN",
@@ -122525,7 +122809,8 @@
       }
     ],
     "actionPhases": [
-      "RESPONSE"
+      "RESPONSE",
+      "START_OF_MANEUVER"
     ],
     "culture": "SHIRE",
     "twilightCost": 2,
@@ -122586,6 +122871,9 @@
           }
         ]
       }
+    ],
+    "actionPhases": [
+      "START_OF_MANEUVER"
     ],
     "culture": "SHIRE",
     "twilightCost": 2,
@@ -123915,6 +124203,9 @@
     "keywords": [
       "DAMAGE +1"
     ],
+    "actionPhases": [
+      "START_OF_MANEUVER"
+    ],
     "culture": "URUK-HAI",
     "race": "URUK-HAI",
     "twilightCost": 3,
@@ -124631,6 +124922,9 @@
     "type": "COMPANION",
     "keywords": [
       "UNBOUND"
+    ],
+    "actionPhases": [
+      "START_OF_MANEUVER"
     ],
     "culture": "GONDOR",
     "race": "MAN",
@@ -126097,6 +126391,9 @@
       "type": "THREAT",
       "amount": 1
     },
+    "actionPhases": [
+      "START_OF_MANEUVER"
+    ],
     "culture": "GANDALF",
     "twilightCost": 1,
     "strength": 1,
@@ -126204,6 +126501,9 @@
           }
         ]
       }
+    ],
+    "actionPhases": [
+      "START_OF_MANEUVER"
     ],
     "culture": "GANDALF",
     "twilightCost": 3,
@@ -126798,7 +127098,8 @@
       "FORTIFICATION"
     ],
     "actionPhases": [
-      "REGROUP"
+      "REGROUP",
+      "START_OF_MANEUVER"
     ],
     "culture": "GONDOR",
     "twilightCost": 2,
@@ -126945,6 +127246,9 @@
       "type": "TWILIGHT",
       "amount": 1
     },
+    "actionPhases": [
+      "START_OF_MANEUVER"
+    ],
     "culture": "ISENGARD",
     "twilightCost": 1,
     "strength": 2,
@@ -127806,6 +128110,9 @@
     "isUnique": false,
     "kind": "SHADOW",
     "type": "MINION",
+    "actionPhases": [
+      "START_OF_MANEUVER"
+    ],
     "culture": "MEN",
     "race": "MAN",
     "twilightCost": 2,
@@ -128079,6 +128386,9 @@
     "isUnique": false,
     "kind": "SHADOW",
     "type": "MINION",
+    "actionPhases": [
+      "START_OF_MANEUVER"
+    ],
     "culture": "MEN",
     "race": "MAN",
     "twilightCost": 2,
@@ -130694,7 +131004,8 @@
       }
     ],
     "actionPhases": [
-      "REGROUP"
+      "REGROUP",
+      "START_OF_SHADOW"
     ],
     "culture": "URUK-HAI",
     "twilightCost": 2,
@@ -130826,6 +131137,9 @@
     "type": "MINION",
     "keywords": [
       "DAMAGE +1"
+    ],
+    "actionPhases": [
+      "START_OF_ARCHERY"
     ],
     "culture": "URUK-HAI",
     "race": "URUK-HAI",
@@ -132212,6 +132526,9 @@
         ]
       }
     ],
+    "actionPhases": [
+      "START_OF_MANEUVER"
+    ],
     "culture": "ELVEN",
     "twilightCost": 3,
     "strength": 2,
@@ -132704,6 +133021,9 @@
       "type": "TWILIGHT",
       "amount": 2
     },
+    "actionPhases": [
+      "START_OF_MANEUVER"
+    ],
     "culture": "ELVEN",
     "twilightCost": 1,
     "strength": 1,
@@ -133106,6 +133426,9 @@
           }
         ]
       }
+    ],
+    "actionPhases": [
+      "START_OF_MANEUVER"
     ],
     "culture": "GANDALF",
     "twilightCost": 0,
@@ -134157,6 +134480,9 @@
     "keywords": [
       "AID"
     ],
+    "actionPhases": [
+      "START_OF_MANEUVER"
+    ],
     "culture": "GONDOR",
     "twilightCost": 0,
     "strength": 2,
@@ -134256,6 +134582,9 @@
       "type": "THREAT",
       "amount": 1
     },
+    "actionPhases": [
+      "START_OF_MANEUVER"
+    ],
     "culture": "GONDOR",
     "twilightCost": 1,
     "imageUrl": "/cards_visuals/o_18_049.jpg",
@@ -134387,6 +134716,9 @@
       "type": "TWILIGHT",
       "amount": 1
     },
+    "actionPhases": [
+      "START_OF_MANEUVER"
+    ],
     "culture": "GONDOR",
     "twilightCost": 0,
     "resistance": 3,
@@ -134677,7 +135009,8 @@
       "FORTIFICATION"
     ],
     "actionPhases": [
-      "REGROUP"
+      "REGROUP",
+      "START_OF_MANEUVER"
     ],
     "culture": "GONDOR",
     "twilightCost": 2,
@@ -135786,6 +136119,9 @@
       [
         "FOLLOWER"
       ]
+    ],
+    "actionPhases": [
+      "START_OF_MANEUVER"
     ],
     "culture": "MEN",
     "twilightCost": 0,
@@ -137124,6 +137460,9 @@
       "type": "TWILIGHT",
       "amount": 2
     },
+    "actionPhases": [
+      "START_OF_MANEUVER"
+    ],
     "culture": "SHIRE",
     "twilightCost": 2,
     "strength": 1,

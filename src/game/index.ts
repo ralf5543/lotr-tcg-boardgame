@@ -25,9 +25,8 @@ import { drawCardsForPlayer } from '../utils/drawCards';
 import { buildDeckFromIds } from '../utils/deckBuilder';
 import { allMoves } from './moves/index';
 import { calculateArcheryTotals } from './logic/archery';
-import { getMusterCount } from './logic/musterHelpers';
-import { discardForMuster, confirmMuster } from './moves/regroupMoves';
 import { hasActionableFollowers } from './logic/aidHelpers';
+import { hasPlayableCardsInPhase } from './engine/validations/hasPlayableCardsInPhase';
 
 const shuffle = <T>(array: T[]): T[] => {
     const arr = [...array];
@@ -297,7 +296,7 @@ export const LotrGame: Game<GameState> = {
     phases: {
         setup: {
             start: true,
-            next: 'fellowship',
+            next: 'startOfFellowship',
             turn: {
                 activePlayers: { value: { '0': 'play', '1': 'play' } },
             },
@@ -447,8 +446,43 @@ export const LotrGame: Game<GameState> = {
             },
         },
 
+        startOfFellowship: {
+            next: 'fellowship',
+            turn: { activePlayers: { value: { '0': 'play', '1': 'play' } } },
+            onBegin: ({ G, events }: LotrPhaseContext) => {
+                console.log('--- 🚀 [START OF FELLOWSHIP] ---');
+
+                G.movesThisTurn = 0;
+                G.isFierceAssignment = false;
+                G.skirmishes = [];
+                G.activeSkirmishId = undefined;
+
+                const fpId = G.fpPlayerId || '0';
+                const hasActions = hasPlayableCardsInPhase(
+                    G,
+                    'START_OF_FELLOWSHIP',
+                    fpId
+                );
+
+                if (!hasActions) {
+                    events?.setPhase?.('fellowship');
+                } else {
+                    G.actionWindow = {
+                        isOpen: true,
+                        activePlayerId: fpId,
+                        title: 'DÉBUT DE LA COMMUNAUTÉ',
+                        message:
+                            'Actions de début de Communauté disponibles. Choisissez une action ou PASSER.',
+                        canPass: true,
+                        passesCount: 0,
+                    };
+                }
+            },
+            moves: allMoves,
+        },
+
         fellowship: {
-            next: 'shadow',
+            next: 'startOfShadow',
             turn: {
                 order: {
                     first: ({ G }) => Number(G.fpPlayerId || '0'),
@@ -469,6 +503,19 @@ export const LotrGame: Game<GameState> = {
             },
         },
 
+        startOfShadow: {
+            next: 'shadow',
+            onBegin: ({ G, events }: LotrPhaseContext) => {
+                console.log('--- 🌑 [START OF SHADOW] ---');
+
+                // Réinitialisation de l'état de combat pour la nouvelle région/site
+                G.skirmishes = [];
+                G.activeSkirmishId = undefined;
+
+                events?.setPhase?.('shadow');
+            },
+        },
+
         shadow: {
             turn: {
                 order: {
@@ -478,7 +525,7 @@ export const LotrGame: Game<GameState> = {
                 activePlayers: { value: { '0': 'play', '1': 'play' } },
             },
 
-            next: 'maneuver',
+            next: 'startOfManeuver',
 
             onBegin: ({ G }: LotrPhaseContext) => {
                 G.actionWindow = undefined;
@@ -583,9 +630,17 @@ export const LotrGame: Game<GameState> = {
             },
         },
 
+        startOfManeuver: {
+            next: 'maneuver',
+            onBegin: ({ G, events }: LotrPhaseContext) => {
+                console.log('--- ⚔️ [START OF MANEUVER] ---');
+                events?.setPhase?.('maneuver');
+            },
+        },
+
         maneuver: {
             endIf: ({ G }) => Boolean(G.pendingPhaseEnd),
-            next: ({ G }) => G.nextPhase || 'archery',
+            next: ({ G }) => G.nextPhase || 'startOfArchery',
 
             turn: { activePlayers: { value: { '0': 'play', '1': 'play' } } },
 
@@ -636,7 +691,6 @@ export const LotrGame: Game<GameState> = {
             },
 
             onEnd: ({ G }) => {
-
                 G.maneuverStep = undefined;
                 G.aidState = undefined;
                 G.pendingPhaseEnd = undefined;
@@ -646,12 +700,20 @@ export const LotrGame: Game<GameState> = {
             moves: allMoves,
         },
 
+        startOfArchery: {
+            next: 'archery',
+            onBegin: ({ G, events }: LotrPhaseContext) => {
+                console.log('--- 🏹 [START OF ARCHERY] ---');
+                events?.setPhase?.('archery');
+            },
+        },
+
         archery: {
             // 1. Indique à boardgame.io quand arrêter la phase
             endIf: ({ G }) => Boolean(G.pendingPhaseEnd),
 
             // 2. Détermine dynamiquement la phase suivante au moment de la transition
-            next: ({ G }) => G.nextPhase || 'assignment',
+            next: ({ G }) => G.nextPhase || 'startOfAssignment',
 
             turn: { activePlayers: { value: { '0': 'play', '1': 'play' } } },
 
@@ -724,8 +786,16 @@ export const LotrGame: Game<GameState> = {
             moves: allMoves,
         },
 
+        startOfAssignment: {
+            next: 'assignment',
+            onBegin: ({ G, events }: LotrPhaseContext) => {
+                console.log('--- 🛡️ [START OF ASSIGNMENT] ---');
+                events?.setPhase?.('assignment');
+            },
+        },
+
         assignment: {
-            next: 'skirmish',
+            next: 'startOfSkirmish',
             turn: { activePlayers: { value: { '0': 'play', '1': 'play' } } },
             onBegin: ({ G }: LotrPhaseContext) => {
                 G.skirmishes = [];
@@ -759,22 +829,31 @@ export const LotrGame: Game<GameState> = {
             },
         },
 
+        startOfSkirmish: {
+            next: 'skirmish',
+            onBegin: ({ G, events }: LotrPhaseContext) => {
+                console.log('--- ⚔️ [START OF SKIRMISH] ---');
+                events?.setPhase?.('skirmish');
+            },
+        },
+
         skirmish: {
             next: ({ G }) => {
                 if (G.isFierceAssignment) {
-                    return 'regroup';
+                    return 'startOfRegroup';
                 }
 
                 const hasFierce = hasFierceMinionsOnBattlefield(G);
                 if (hasFierce) {
                     return 'assignment';
                 }
-                return 'regroup';
+                return 'startOfRegroup';
             },
 
             onEnd: ({ G }) => {
                 if (!G.isFierceAssignment && hasFierceMinionsOnBattlefield(G)) {
                     G.pendingFierceAssignment = true;
+                    console.log('[SKIRMISH onEnd] Fin de la phase skirmish');
                 }
             },
 
@@ -854,74 +933,61 @@ export const LotrGame: Game<GameState> = {
             },
         },
 
-        regroup: {
-            next: 'fellowship',
+        startOfRegroup: {
+            next: 'regroup',
+            turn: { activePlayers: { value: { '0': 'play', '1': 'play' } } },
+            onBegin: ({ G, events }: LotrPhaseContext) => {
+                console.log('--- 🧹 [START OF REGROUP] ---');
 
-            // 🟢 Autorise les deux joueurs à jouer simultanément pendant cette phase
-            turn: {
-                activePlayers: {
-                    all: 'muster', // Place automatiquement les 2 joueurs dans la stage 'muster'
-                },
-                stages: {
-                    muster: {
-                        moves: {
-                            ...allMoves,
-                            discardForMuster,
-                            confirmMuster,
-                        },
-                    },
-                },
-            },
+                const fpId = G.fpPlayerId || '0';
+                const shadowId = fpId === '0' ? '1' : '0';
 
-            onBegin: ({ G }: LotrPhaseContext) => {
-                G.isFierceAssignment = false;
+                const fpHas = hasPlayableCardsInPhase(
+                    G,
+                    'START_OF_REGROUP',
+                    fpId
+                );
+                const shadowHas = hasPlayableCardsInPhase(
+                    G,
+                    'START_OF_REGROUP',
+                    shadowId
+                );
 
-                // 🟢 1. Source de vérité STRICTE et IMMUTABLE
-                const fpId = G.fpPlayerId;
-
-                // 🟢 2. L'Ombre est mathématiquement l'autre joueur
-                const playerIds = Object.keys(G.players || {});
-                const shadowId =
-                    playerIds.find((id) => id !== fpId) ??
-                    (fpId === '0' ? '1' : '0');
-
-                // 🟢 3. Calcul des Musters
-                const fpMuster = getMusterCount(G, fpId);
-                const shadowMuster = getMusterCount(G, shadowId);
-
-                if (fpMuster > 0 || shadowMuster > 0) {
-                    G.regroupStep = 'MUSTER_STEP' as any;
-                    G.musterState = {
-                        players: {
-                            [fpId]: {
-                                allowedCount: fpMuster,
-                                discardedCount: 0,
-                                isDone: fpMuster === 0,
-                            },
-                            [shadowId]: {
-                                allowedCount: shadowMuster,
-                                discardedCount: 0,
-                                isDone: shadowMuster === 0,
-                            },
-                        },
-                    };
-
-                    G.statusMessage =
-                        'Phase de Ralliement : Choix des cartes à défausser.';
-
+                if (fpHas || shadowHas) {
                     G.actionWindow = {
                         isOpen: true,
+                        activePlayerId: fpId,
                         title: 'RALLIEMENT (MUSTER)',
                         message:
-                            'Défaussez des cartes (jusqu’au nombre de vos personnages "Rassembleur") puis validez.',
-                        activePlayerId: fpId,
+                            'Actions de début de Regroupement disponibles.',
                         canPass: true,
+                        passesCount: 0,
                     };
-                    return;
+                } else {
+                    G.actionWindow = undefined;
+                    events?.endPhase?.();
                 }
+            },
+            moves: {
+                ...allMoves,
+            },
+        },
 
+        regroup: {
+            turn: { activePlayers: { value: { '0': 'play', '1': 'play' } } },
+
+            onBegin: ({ G }: LotrPhaseContext) => {
+                console.log(
+                    '--- 🛑 [REGROUP] Début de la phase de Regroupement ---'
+                );
+                G.isFierceAssignment = false;
+
+                const fpId = G.fpPlayerId || '0';
+
+                // Initialise le regroupement standard (définit regroupStep sur 'SHADOW_REFILL')
                 initStandardRegroup(G, fpId);
             },
+
             onEnd: ({ G }) => {
                 const fpId = G.fpPlayerId || '0';
                 const shadowId =
@@ -944,6 +1010,7 @@ export const LotrGame: Game<GameState> = {
                                 att.kind === 'FREE_PEOPLE' ? fpId : shadowId;
                             const owner = G.players[targetOwnerId];
                             if (owner) {
+                                if (!owner.supportArea) owner.supportArea = [];
                                 owner.supportArea.push(att);
                             }
                         } else {
@@ -959,10 +1026,9 @@ export const LotrGame: Game<GameState> = {
                 });
                 G.battlefield?.forEach(detachAidFollowers);
             },
+
             moves: {
                 ...allMoves,
-                discardForMuster,
-                confirmMuster,
 
                 moveNextSite: ({
                     G,
@@ -985,7 +1051,7 @@ export const LotrGame: Game<GameState> = {
                     if (!G.awaitingSiteSelection) {
                         G.skirmishes = [];
                         G.activeSkirmishId = undefined;
-                        events?.setPhase?.('shadow');
+                        events?.setPhase?.('startOfShadow');
                     }
                 },
             },

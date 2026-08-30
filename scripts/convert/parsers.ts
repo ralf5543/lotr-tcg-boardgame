@@ -290,6 +290,7 @@ export function parseClassAndPhases(
     const textPhasesSet = new Set<string>();
     const subTypeParts: string[] = [];
 
+    // A. Lecture de la colonne Class du CSV
     if (classStr && classStr.trim()) {
         const parts = classStr.split(/[,;/]/);
         parts.forEach((part) => {
@@ -304,7 +305,9 @@ export function parseClassAndPhases(
         });
     }
 
+    // B. Analyse du texte anglais pour les balises <keyword> et les expressions "At the start of..."
     if (englishText) {
+        // 1. Mots-clés de phase classiques (<keyword>Maneuver.</keyword>)
         const keywordRegex = /<keyword>([^<]+)<\/keyword>/gi;
         let match;
         while ((match = keywordRegex.exec(englishText)) !== null) {
@@ -315,6 +318,24 @@ export function parseClassAndPhases(
             if (GAME_PHASES.has(rawKeyword)) {
                 textPhasesSet.add(rawKeyword);
             }
+        }
+
+        // 2. Détection des déclenchements "At the start of (each|the|your) [PHASE] phase"
+        const startOfRegex =
+            /At the start of (?:each|the|your)?\s*(\w+)\s+phase/gi;
+        let startMatch;
+        while ((startMatch = startOfRegex.exec(englishText)) !== null) {
+            const phaseName = startMatch[1].toUpperCase(); // Ex: FELLOWSHIP, SHADOW, MANEUVER, etc.
+            const startOfPhaseKey = `START_OF_${phaseName}`;
+
+            if (GAME_PHASES.has(startOfPhaseKey)) {
+                textPhasesSet.add(startOfPhaseKey);
+            }
+        }
+
+        // 3. Règle spéciale : Le mot-clé Muster donne une action au début du Regroupement
+        if (/<keyword>Muster<\/keyword>/i.test(englishText)) {
+            textPhasesSet.add('START_OF_REGROUP');
         }
     }
 
@@ -335,7 +356,10 @@ export function parseClassAndPhases(
 /**
  * Détermine à quel type de cible une carte d'attachement ou un Suivant (Follower) peut être attaché.
  */
-export function parseAttachedTo(text?: string, type?: string): string[][] | null {
+export function parseAttachedTo(
+    text?: string,
+    type?: string
+): string[][] | null {
     if (!text) return null;
 
     // 🟢 RÈGLE ABSOLUE : Un Follower n'a PAS de propriété attachedTo d'origine !

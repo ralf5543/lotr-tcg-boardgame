@@ -14,6 +14,7 @@ export const FEMALE_TITLES = new Set([
 ]);
 
 export const GAME_PHASES = new Set([
+    // Phases standards
     'FELLOWSHIP',
     'SHADOW',
     'MANEUVER',
@@ -22,6 +23,15 @@ export const GAME_PHASES = new Set([
     'SKIRMISH',
     'REGROUP',
     'RESPONSE',
+
+    // Sub-phases de début de phase (Timing d'action)
+    'START_OF_FELLOWSHIP',
+    'START_OF_SHADOW',
+    'START_OF_MANEUVER',
+    'START_OF_ARCHERY',
+    'START_OF_ASSIGNMENT',
+    'START_OF_SKIRMISH',
+    'START_OF_REGROUP',
 ]);
 
 export const VALID_RACES = new Set([

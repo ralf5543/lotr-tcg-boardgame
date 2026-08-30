@@ -7,7 +7,7 @@ export interface DevMoves {
     devSetPhase: (phase: string) => void;
     devSetTwilight: (amount: number) => void;
     devSetBurdens?: (amount: number) => void;
-    devSetArchery?: (amount: number) => void; // 🏹 Nouveau move pour l'archerie
+    devSetArchery?: (amount: number) => void;
     devLoadPreset: (presetName: string) => void;
     devForceEndPhase: () => void;
 }
@@ -20,23 +20,31 @@ export interface DevPanelProps {
     deckCount: number;
 }
 
-const ALL_PHASES = [
-    'fellowship',
-    'shadow',
-    'maneuver',
-    'archery',
-    'assignment',
-    'skirmish',
-    'regroup',
-];
+// Map chaque phase vers sa sub-phase "startOf" correspondante
+const PHASE_MAPPING: Record<string, { startPhase: string; label: string }> = {
+    fellowship: { startPhase: 'startOfFellowship', label: 'fellowship' },
+    shadow: { startPhase: 'startOfShadow', label: 'shadow' },
+    maneuver: { startPhase: 'startOfManeuver', label: 'maneuver' },
+    archery: { startPhase: 'startOfArchery', label: 'archery' },
+    assignment: { startPhase: 'startOfAssignment', label: 'assignment' },
+    skirmish: { startPhase: 'startOfSkirmish', label: 'skirmish' },
+    regroup: { startPhase: 'startOfRegroup', label: 'regroup' },
+};
 
-export const DevPanel: React.FC<DevPanelProps> = ({ moves, G, ctx, onDrawCard,
-    deckCount, }) => {
+export const DevPanel: React.FC<DevPanelProps> = ({
+    moves,
+    G,
+    ctx,
+    onDrawCard,
+    deckCount,
+}) => {
     const [isOpen, setIsOpen] = useState(false);
 
     if (process.env.NODE_ENV === 'production') return null;
 
-    const currentArchery = G.archeryWoundsToAssign ?? G.archeryState?.fpTotal ?? 0;
+    const currentArchery =
+        G.archeryWoundsToAssign ?? G.archeryState?.fpTotal ?? 0;
+    const currentPhase = ctx.phase || '';
 
     return (
         <S.PanelContainer>
@@ -48,19 +56,31 @@ export const DevPanel: React.FC<DevPanelProps> = ({ moves, G, ctx, onDrawCard,
                 <S.PanelContent>
                     <S.Title>Panneau de Test</S.Title>
 
-                    {/* Sauts de Phase */}
+                    {/* Sauts de Phase (Lancement au début de la phase) */}
                     <S.Section>
-                        <S.Label>Sauter à la phase :</S.Label>
+                        <S.Label>Sauter au début de :</S.Label>
                         <S.PhaseGrid>
-                            {ALL_PHASES.map((phase) => (
-                                <S.PhaseButton
-                                    key={phase}
-                                    $isActive={ctx.phase === phase}
-                                    onClick={() => moves.devSetPhase(phase)}
-                                >
-                                    {phase}
-                                </S.PhaseButton>
-                            ))}
+                            {Object.entries(PHASE_MAPPING).map(
+                                ([key, config]) => {
+                                    const isActive =
+                                        currentPhase === key ||
+                                        currentPhase === config.startPhase;
+
+                                    return (
+                                        <S.PhaseButton
+                                            key={key}
+                                            $isActive={isActive}
+                                            onClick={() =>
+                                                moves.devSetPhase(
+                                                    config.startPhase
+                                                )
+                                            }
+                                        >
+                                            {config.label}
+                                        </S.PhaseButton>
+                                    );
+                                }
+                            )}
                         </S.PhaseGrid>
                     </S.Section>
 
@@ -122,16 +142,19 @@ export const DevPanel: React.FC<DevPanelProps> = ({ moves, G, ctx, onDrawCard,
                         </S.Label>
                         <S.ButtonGroup>
                             <S.ActionButton
-                                onClick={() => moves.devSetArchery?.(currentArchery - 1)}
+                                onClick={() =>
+                                    moves.devSetArchery?.(currentArchery - 1)
+                                }
                             >
                                 -1
                             </S.ActionButton>
                             <S.ActionButton
-                                onClick={() => moves.devSetArchery?.(currentArchery + 1)}
+                                onClick={() =>
+                                    moves.devSetArchery?.(currentArchery + 1)
+                                }
                             >
                                 +1
                             </S.ActionButton>
-
                         </S.ButtonGroup>
                     </S.Section>
 
