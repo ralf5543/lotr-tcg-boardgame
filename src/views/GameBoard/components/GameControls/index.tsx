@@ -63,7 +63,10 @@ export const GameControls: React.FC<GameControlsProps> = ({
 
     // 🟢 MUSTER STATE
     const isMusterStep =
-        ctx.phase === 'regroup' && G.regroupStep === 'MUSTER_STEP';
+        ctx.phase === 'startOfRegroup' &&
+        (G.regroupStep === 'MUSTER_STEP' ||
+            G.regroupStep === 'START_OF_REGROUP') &&
+        Boolean(G.musterState);
     const myMusterState = isMusterStep
         ? G.musterState?.players?.[currentPlayerId]
         : null;
@@ -363,10 +366,10 @@ export const GameControls: React.FC<GameControlsProps> = ({
         return '';
     };
 
-    // Le log narratif de la dernière action (ex: "Lurtz est assigné à Aragorn.")
     const currentNarrativeLog =
         G.statusMessage || statusMessage || 'Partie en cours';
     const instructionText = getInstructionText();
+
 
     return (
         <>

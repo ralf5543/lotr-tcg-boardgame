@@ -27,6 +27,7 @@ import { allMoves } from './moves/index';
 import { calculateArcheryTotals } from './logic/archery';
 import { hasActionableFollowers } from './logic/aidHelpers';
 import { hasPlayableCardsInPhase } from './engine/validations/hasPlayableCardsInPhase';
+import { getMusterCount } from './logic/musterHelpers';
 
 const shuffle = <T>(array: T[]): T[] => {
     const arr = [...array];
@@ -258,12 +259,10 @@ export const setupGame = ({ random }: { random: any }): GameState => {
     return G;
 };
 
-export function initStandardRegroup(G: any, fpId: string) {
-    G.regroupStep = 'SHADOW_REFILL';
+export function initStandardRegroup(G: GameState, fpId: string) {
+    G.regroupStep = 'ACTION_WINDOW';
     G.statusMessage =
-        (G.movesThisTurn || 0) >= 2
-            ? "Limite de déplacement atteinte (2/2). Reconstitution de la main de l'Ombre."
-            : "Phase de Regroupement : L'Ombre ajuste sa main.";
+        'Phase de Regroupement : Jouer des cartes/effets de regroupement.';
 
     G.actionWindow = {
         isOpen: true,
@@ -274,6 +273,14 @@ export function initStandardRegroup(G: any, fpId: string) {
         canPass: true,
         passesCount: 0,
     };
+
+    console.log(
+        '   └─ 🪟 [initStandardRegroup] G.regroupStep = "ACTION_WINDOW"'
+    );
+    console.log(
+        '   └─ 🪟 G.actionWindow ouvert pour FP :',
+        JSON.stringify(G.actionWindow)
+    );
 }
 
 export const LotrGame: Game<GameState> = {
@@ -546,11 +553,22 @@ export const LotrGame: Game<GameState> = {
 
                     const targetId = getTargetPlayerId(playerID, ctx);
                     const player = G.players?.[targetId];
-                    if (!player || !player.hand) return;
+                    if (!player || !player.hand) return 'INVALID_MOVE';
 
                     const card = player.hand[cardIndex];
-                    if (!card || card.kind !== 'SHADOW') return;
+                    if (!card || card.kind !== 'SHADOW') return 'INVALID_MOVE';
 
+                    // 🟢 1. CHECK DE PHASE AU DÉBUT DU MOVE
+                    if (card.type === 'MINION') {
+                        if (
+                            ctx.phase !== 'shadow' &&
+                            G.regroupStep !== 'START_OF_REGROUP'
+                        ) {
+                            return 'INVALID_MOVE'; // 'INVALID_MOVE' au lieu de false pour TypeScript
+                        }
+                    }
+
+                    // 🟢 2. VÉRIFICATION DU COÛT
                     const fpId = G.fpPlayerId || '0';
                     const fpSiteIndex = G.players[fpId]?.currentSiteIndex || 0;
                     const effectiveCost = getEffectiveTwilightCost(
@@ -564,19 +582,31 @@ export const LotrGame: Game<GameState> = {
                         );
                         return 'INVALID_MOVE';
                     }
-                    //if (G.twilightPool < effectiveCost) return 'INVALID_MOVE';
 
-                    player.hand.splice(cardIndex, 1);
+                    // 🟢 3. RETRAIT DE LA MAIN & PAIEMENT
+                    const [playedCard] = player.hand.splice(cardIndex, 1);
                     G.twilightPool -= effectiveCost;
 
-                    if (card.type === 'MINION') {
-                        G.battlefield.push(card);
-                    } else {
-                        player.supportArea.push(card);
+                    // 🟢 4. AJOUT EFFECTIF DE LA CARTE AU BATTLEFIELD
+                    if (playedCard.type === 'MINION') {
+                        playedCard.inPlay = true;
+                        if (!G.battlefield) {
+                            G.battlefield = [];
+                        }
+                        G.battlefield.push(playedCard);
+                    } else if (
+                        playedCard.type === 'SHADOW_SUPPORT' ||
+                        playedCard.type === 'CONDITION'
+                    ) {
+                        playedCard.inPlay = true;
+                        if (!player.supportArea) {
+                            player.supportArea = [];
+                        }
+                        player.supportArea.push(playedCard);
                     }
 
                     const wasRoaming = isMinionRoaming(card, fpSiteIndex);
-                    G.statusMessage = `L'Ombre joue ${card.name} (${effectiveCost} Crépuscule${wasRoaming ? ' dont +2 Errance' : ''}).`;
+                    G.statusMessage = `L'Ombre joue ${card.name || card.title} (${effectiveCost} Crépuscule${wasRoaming ? ' dont +2 Errance' : ''}).`;
                 },
 
                 attachShadowCard: (
@@ -853,7 +883,6 @@ export const LotrGame: Game<GameState> = {
             onEnd: ({ G }) => {
                 if (!G.isFierceAssignment && hasFierceMinionsOnBattlefield(G)) {
                     G.pendingFierceAssignment = true;
-                    console.log('[SKIRMISH onEnd] Fin de la phase skirmish');
                 }
             },
 
@@ -936,55 +965,45 @@ export const LotrGame: Game<GameState> = {
         startOfRegroup: {
             next: 'regroup',
             turn: { activePlayers: { value: { '0': 'play', '1': 'play' } } },
-            onBegin: ({ G, events }: LotrPhaseContext) => {
-                console.log('--- 🧹 [START OF REGROUP] ---');
-
+            onBegin: ({ G, events }) => {
                 const fpId = G.fpPlayerId || '0';
                 const shadowId = fpId === '0' ? '1' : '0';
 
-                const fpHas = hasPlayableCardsInPhase(
-                    G,
-                    'START_OF_REGROUP',
-                    fpId
-                );
-                const shadowHas = hasPlayableCardsInPhase(
-                    G,
-                    'START_OF_REGROUP',
-                    shadowId
-                );
+                const fpMuster = getMusterCount(G, fpId);
+                const shadowMuster = getMusterCount(G, shadowId);
 
-                if (fpHas || shadowHas) {
-                    G.actionWindow = {
-                        isOpen: true,
-                        activePlayerId: fpId,
-                        title: 'RALLIEMENT (MUSTER)',
-                        message:
-                            'Actions de début de Regroupement disponibles.',
-                        canPass: true,
-                        passesCount: 0,
+                if (fpMuster > 0 || shadowMuster > 0) {
+                    G.musterState = {
+                        players: {
+                            [fpId]: {
+                                allowedCount: fpMuster,
+                                discardedCount: 0,
+                                isDone: fpMuster === 0,
+                            },
+                            [shadowId]: {
+                                allowedCount: shadowMuster,
+                                discardedCount: 0,
+                                isDone: shadowMuster === 0,
+                            },
+                        },
                     };
-                } else {
+                    G.regroupStep = 'MUSTER_STEP';
                     G.actionWindow = undefined;
-                    events?.endPhase?.();
+                } else {
+                    events?.setPhase?.('regroup');
                 }
             },
-            moves: {
-                ...allMoves,
-            },
+            moves: { ...allMoves },
         },
 
         regroup: {
             turn: { activePlayers: { value: { '0': 'play', '1': 'play' } } },
 
             onBegin: ({ G }: LotrPhaseContext) => {
-                console.log(
-                    '--- 🛑 [REGROUP] Début de la phase de Regroupement ---'
-                );
+                console.log('[regroup:onBegin] Entrée dans la phase "regroup"');
                 G.isFierceAssignment = false;
-
                 const fpId = G.fpPlayerId || '0';
 
-                // Initialise le regroupement standard (définit regroupStep sur 'SHADOW_REFILL')
                 initStandardRegroup(G, fpId);
             },
 

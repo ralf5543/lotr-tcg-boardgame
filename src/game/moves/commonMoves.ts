@@ -55,7 +55,16 @@ export const passActionWindow = ({
             advanceArcheryAssignmentStep(G, events);
         } else if (ctx.phase === 'skirmish' && G.activeSkirmishId) {
             resolveSkirmish(G, ctx);
-        } else if (ctx.phase === 'regroup') {
+        } else if (
+            ctx.phase === 'regroup' ||
+            ctx.phase === 'startOfRegroup' // 🟢 Prise en compte du nom exact de la phase
+        ) {
+            // 1. Si on est en phase startOfRegroup, on bascule vers la phase regroup
+            if (ctx.phase === 'startOfRegroup') {
+                events?.setPhase?.('regroup');
+            }
+
+            // 2. On lance l'étape d'ajustement de la main
             G.regroupStep = 'SHADOW_REFILL';
             G.statusMessage =
                 'Ombre : Vous pouvez défausser 1 carte, puis validez votre main à 8 cartes.';

@@ -1,37 +1,34 @@
 // src/game/helpers/musterHelpers.ts
 import type { GameState, CardState } from '../types';
 
+// Helper interne pour vérifier si la carte a le mot-clé MUSTER
+function cardHasMuster(card: CardState): boolean {
+    if (!card) return false;
+
+    const hasInKeywords =
+        card.keywords?.some((k) => k.startsWith('MUSTER')) ?? false;
+    const hasInGranted =
+        card.grantsKeywords?.some((k) => k.startsWith('MUSTER')) ?? false;
+
+    return hasInKeywords || hasInGranted;
+}
+
 export function getMusterCount(G: GameState, playerId: string): number {
     const player = G.players?.[playerId];
     if (!player) return 0;
 
     let count = 0;
-
-    // Si c'est l'ID du joueur FP, c'est FP. Sinon, c'est l'Ombre.
     const isFP = playerId === G.fpPlayerId;
-    const isShadow = !isFP;
 
-    // 1. Peuples Libres (Zone de Communauté du joueur)
+    // 1. Peuples Libres (Zone de Communauté)
     if (isFP) {
         (player.fellowshipArea || []).forEach((card: CardState) => {
-            if (
-                card.keywords?.includes('MUSTER') ||
-                card.grantsKeywords?.includes('MUSTER')
-            ) {
-                count++;
-            }
+            if (cardHasMuster(card)) count++;
         });
-    }
-
-    // 2. Ombre (Champ de bataille)
-    if (isShadow) {
+    } else {
+        // 2. Ombre (Champ de bataille)
         (G.battlefield || []).forEach((card: CardState) => {
-            if (
-                card.keywords?.includes('MUSTER') ||
-                card.grantsKeywords?.includes('MUSTER')
-            ) {
-                count++;
-            }
+            if (cardHasMuster(card)) count++;
         });
     }
 

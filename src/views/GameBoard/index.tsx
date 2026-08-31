@@ -575,11 +575,10 @@ export const GameBoard: React.FC<GameBoardProps> = ({
                                 phase={ctx.phase}
                                 regroupStep={G.regroupStep}
                                 onDiscardCard={(index) => {
-                                    if (G.regroupStep === 'MUSTER_STEP') {
-                                        moves.discardForMuster(index); // Pas de wrapper supplémentaire
-                                    } else {
-                                        moves.discardCardFromHand(index);
-                                    }
+                                    moves.discardCardFromHand(index);
+                                }}
+                                onDiscardForMuster={(index) => {
+                                    moves.discardForMuster(index);
                                 }}
                             />
                         }

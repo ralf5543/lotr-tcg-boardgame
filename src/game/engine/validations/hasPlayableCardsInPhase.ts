@@ -2,6 +2,7 @@
 
 import type { GameState } from '../../types';
 import { canPlayCard } from '../canPlayCard';
+import { getKeywordValue } from '../keywords/keywordUtils';
 
 export function hasPlayableCardsInPhase(
     G: GameState,
@@ -17,16 +18,21 @@ export function hasPlayableCardsInPhase(
         playerID,
     };
 
-    // 1. Scanner les cartes en main
-    if (player.hand) {
+    const currentPhaseUpper = phaseName.toUpperCase();
+    const fpPlayerId = G.fpPlayerId || '0';
+
+    // 1. SCAN DE LA MAIN (Pose de carte classique)
+    if (player.hand && player.hand.length > 0) {
         for (const card of player.hand) {
-            if (canPlayCard(card, context).valid) {
+            if (!card) continue;
+            const res = canPlayCard(card, context);
+            if (res.valid) {
                 return true;
             }
         }
     }
 
-    // 2. Scanner les cartes sur le plateau (fellowshipArea, supportArea, battlefield)
+    // 2. SCAN DU PLATEAU (Capacités & Muster)
     const cardsInPlay = [
         ...(player.fellowshipArea || []),
         ...(player.supportArea || []),
@@ -35,18 +41,47 @@ export function hasPlayableCardsInPhase(
 
     for (const card of cardsInPlay) {
         if (!card) continue;
-        if (canPlayCard(card, context).valid) {
-            return true;
+
+        // Contrôle de rôle du joueur
+        const isOwner = card.kind === 'FREE_PEOPLE' 
+            ? playerID === fpPlayerId 
+            : playerID !== fpPlayerId;
+
+        if (!isOwner) continue; // Si la carte n'appartient pas au joueur scanné, on passe
+
+        // Check MUSTER en phase START_OF_REGROUP
+        if (currentPhaseUpper === 'START_OF_REGROUP') {
+            const hasMuster = getKeywordValue(card, 'MUSTER') >= 0;
+            if (hasMuster) {
+                return true;
+            }
         }
-        // Scanner également les cartes attachées
+
+        // Check actionPhases standard
+        if (Array.isArray(card.actionPhases)) {
+            const hasMatchingPhase = card.actionPhases.some(
+                (p) => p.toUpperCase() === currentPhaseUpper
+            );
+            if (hasMatchingPhase) {
+                return true;
+            }
+        }
+
+        // Scan des attachements
         if (card.attachments) {
             for (const att of card.attachments) {
-                if (att && canPlayCard(att, context).valid) {
+                if (!att) continue;
+                const attOwner = att.kind === 'FREE_PEOPLE' 
+                    ? playerID === fpPlayerId 
+                    : playerID !== fpPlayerId;
+
+                if (!attOwner) continue;
+
+                if (currentPhaseUpper === 'START_OF_REGROUP' && getKeywordValue(att, 'MUSTER') >= 0) {
                     return true;
                 }
             }
         }
     }
-
     return false;
 }

@@ -12,15 +12,15 @@ import {
 
 interface HandProps {
     hand: CardState[];
-    G: GameState; // 👈 1. Ajout de G
+    G: GameState;
     playerRole?: '0' | '1';
     currentSiteIndex?: number;
     phase?: string;
     regroupStep?: string;
-    onDrawCard: () => void;
+    onDrawCard?: () => void;
     onPlayCard?: (index: number) => void;
     onDiscardCard?: (index: number) => void;
-    onDrawCard?: () => void;
+    onDiscardForMuster?: (index: number) => void;
 }
 
 // 🟢 CACHE GLOBAL : Persiste même si le composant Hand est démonté / remonté lors d'un changement d'onglet
@@ -34,6 +34,7 @@ export const Hand: React.FC<HandProps> = ({
     phase,
     regroupStep,
     onDiscardCard,
+    onDiscardForMuster,
 }) => {
     const { myPlayerId, fpPlayerId } = useFaction();
 
@@ -45,10 +46,12 @@ export const Hand: React.FC<HandProps> = ({
         regroupStep === 'SHADOW_REFILL' && effectivePlayerId === shadowPlayerId;
     const isFpRefill = regroupStep === 'FP_REFILL' && isFreePeoplesPlayer;
 
-    // 🟢 PRISE EN COMPTE DE L'ÉTAPE MUSTER
+    // 🟢 PRISE EN COMPTE DE L'ÉTAPE MUSTER (Élargie à START_OF_REGROUP)
     const myMusterState = G?.musterState?.players?.[effectivePlayerId];
     const isMusterActive =
-        regroupStep === 'MUSTER_STEP' &&
+        (regroupStep === 'MUSTER_STEP' ||
+            regroupStep === 'START_OF_REGROUP' ||
+            phase === 'START_OF_REGROUP') &&
         !!myMusterState &&
         !myMusterState.isDone &&
         myMusterState.discardedCount < myMusterState.allowedCount;
@@ -129,7 +132,11 @@ export const Hand: React.FC<HandProps> = ({
         setDiscardingIndex(idx);
 
         setTimeout(() => {
-            onDiscardCard?.(idx);
+            if (isMusterActive) {
+                onDiscardForMuster?.(idx);
+            } else {
+                onDiscardCard?.(idx);
+            }
             setDiscardingIndex(null);
         }, 450);
     };

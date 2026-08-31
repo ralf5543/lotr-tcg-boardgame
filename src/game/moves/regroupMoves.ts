@@ -1,6 +1,9 @@
-import type { LotrMoveContext, GameState } from '../types';
+// src/game/engine/moves/regroupMoves.ts
+
+import type { LotrMoveContext } from '../types';
 import { drawCardsForPlayer } from '../../utils/drawCards';
 import { initStandardRegroup } from '..';
+import { hasPlayableCardsInPhase } from '../engine/validations/hasPlayableCardsInPhase';
 
 export const endTurnChoice = ({ G }: LotrMoveContext) => {
     G.regroupStep = 'FP_REFILL';
@@ -132,111 +135,91 @@ export const confirmHandRefill = ({ G, events, playerID }: LotrMoveContext) => {
     }
 };
 
-// 1. Défausse individuelle d'une carte au clic dans la main
+// 1. Défausse individuelle d'une carte au clic dans la main pendant le Ralliement (Muster)
 export const discardForMuster = (
     context: LotrMoveContext,
     cardIndex: number
 ) => {
     const { G, ctx } = context;
+    const playerID = context.playerID ?? ctx.currentPlayer;
 
-    // 1. Récupération et normalisation de l'ID du joueur
-    const playerID = context.playerID ?? ctx.playerID ?? ctx.currentPlayer;
+    if (!playerID) return 'INVALID_MOVE';
 
-    if (!playerID) {
-        return 'INVALID_MOVE';
-    }
-
-    // 2. Vérification de la phase et de la sous-étape
-    if (G.regroupStep !== 'MUSTER_STEP') {
+    // Tolère MUSTER_STEP et START_OF_REGROUP
+    if (
+        G.regroupStep !== 'MUSTER_STEP' &&
+        G.regroupStep !== 'START_OF_REGROUP'
+    ) {
         return 'INVALID_MOVE';
     }
 
     const player = G.players?.[playerID];
     const musterState = G.musterState?.players?.[playerID];
 
-    // 3. Contrôles sur l'état du joueur et du Ralliement
-    if (!player || !musterState) {
-        return 'INVALID_MOVE';
-    }
-
-    if (musterState.isDone) {
-        return 'INVALID_MOVE';
-    }
-
+    if (!player || !musterState || musterState.isDone) return 'INVALID_MOVE';
     if (musterState.discardedCount >= musterState.allowedCount) {
         return 'INVALID_MOVE';
     }
+    if (cardIndex < 0 || cardIndex >= player.hand.length) return 'INVALID_MOVE';
 
-    if (cardIndex < 0 || cardIndex >= player.hand.length) {
-        return 'INVALID_MOVE';
-    }
-
-    // 4. Mutation de l'état (Défausse)
+    // Clic en main = Défausse pour le Ralliement
     const [discardedCard] = player.hand.splice(cardIndex, 1);
-
     if (discardedCard) {
-        if (!player.discard) {
-            player.discard = [];
-        }
+        if (!player.discard) player.discard = [];
         player.discard.push(discardedCard);
         musterState.discardedCount += 1;
+        G.statusMessage = `Ralliement (${musterState.discardedCount}/${musterState.allowedCount}) : Carte défaussée.`;
     }
 };
 
-// 2. Pioche groupée & validation au clic sur le bouton du Toaster
-export const confirmMuster = (context: LotrMoveContext) => {
-    const { G, ctx } = context;
+// 2. Confirmation ou passage du Ralliement (Piocher les cartes & avancer le tour)
+export const confirmMuster = ({
+    G,
+    ctx,
+    events,
+    playerID,
+}: LotrMoveContext) => {
+    const pId = String(playerID ?? ctx.currentPlayer);
 
-    // 🟢 RÉSOLUTIONS STRICTES DU PLAYERID
-    const playerID = context.playerID ?? ctx.playerID ?? ctx.currentPlayer;
-
-    if (!playerID) {
+    if (!G.musterState?.players?.[pId]) {
+        console.error(
+            '   └─ ❌ REJET : musterState introuvable pour ce joueur !'
+        );
         return 'INVALID_MOVE';
     }
 
-    const player = G.players?.[playerID];
-    const musterState = G.musterState?.players?.[playerID];
-
-    if (!player || !musterState) {
+    const playerMuster = G.musterState.players[pId];
+    if (playerMuster.isDone) {
+        console.warn(
+            '   └─ ⚠️ REJET : Le joueur a déjà validé son ralliement.'
+        );
         return 'INVALID_MOVE';
     }
 
-    if (musterState.isDone) {
-        return 'INVALID_MOVE';
+    const player = G.players?.[pId];
+    if (player && playerMuster.discardedCount > 0) {
+
+        drawCardsForPlayer(G, player, playerMuster.discardedCount, false);
     }
 
-    // 1. Pioche groupée des cartes défaussées
-    const countToDraw = musterState.discardedCount;
+    playerMuster.isDone = true;
 
-    for (let i = 0; i < countToDraw; i++) {
-        if (player.deck.length > 0) {
-            const drawnCard = player.deck.pop();
-            if (drawnCard) {
-                player.hand.push(drawnCard);
-            }
-        }
+    const fpId = G.fpPlayerId || '0';
+    const shadowId = fpId === '0' ? '1' : '0';
+    const fpDone = G.musterState.players[fpId]?.isDone ?? true;
+    const shadowDone = G.musterState.players[shadowId]?.isDone ?? true;
+
+    if (!fpDone || !shadowDone) {
+        G.statusMessage = `Joueur ${pId} a validé. En attente de l'adversaire...`;
+        return;
     }
 
-    // 2. Marquer ce joueur comme terminé
-    musterState.isDone = true;
-
-    // 3. Fermer la fenêtre de Toaster globale/locale si besoin
-    if (G.actionWindow) {
-        G.actionWindow.isOpen = false;
-    }
-
-    // 4. Si tous les joueurs ont terminé leur ralliement, on passe à la suite
-    const allPlayersDone = Object.values(G.musterState.players).every(
-        (p) => p.isDone
-    );
-
-    if (allPlayersDone) {
-        G.regroupStep = undefined;
-        G.musterState = undefined;
-
-        const fpId = G.fpPlayerId || '0';
-        initStandardRegroup(G, fpId);
-    }
+    console.log('   └─ 🎉 TOUS LES JOUEURS ONT VALIDÉ !');
+    G.musterState = undefined;
+    console.log('   └─ 🗑️ G.musterState passé à undefined.');
+    console.log('   └─ 🔄 Appel de events.setPhase("regroup")...');
+    events?.setPhase?.('regroup');
+    console.log('--------------------------------------------------');
 };
 
 export const regroupMoves = {

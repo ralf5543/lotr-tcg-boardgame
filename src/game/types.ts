@@ -269,6 +269,8 @@ export interface GameState {
     pendingDeadCardIds?: string[];
     archeryWoundsToAssign?: number;
     regroupStep?:
+        | 'MUSTER_STEP'
+        | 'START_OF_REGROUP'
         | 'ACTION_WINDOW'
         | 'SHADOW_REFILL'
         | 'FP_DECISION'

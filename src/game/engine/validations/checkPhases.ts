@@ -1,6 +1,7 @@
 // src/game/engine/validations/checkPhases.ts
 
 import type { CardState } from '../../types';
+import { getKeywordValue } from '../keywords/keywordUtils';
 
 export interface ValidationContext {
     G: any;
@@ -33,25 +34,15 @@ export function checkPhases(
         }
     }
 
-    // 2. CAPACITÉS / ACTIONS (Carte déjà sur le plateau)
-    // Si la carte n'est pas dans la main, on valide son activation via actionPhases
-    const isAlreadyInPlay = card.location && card.location !== 'hand';
-    if (isAlreadyInPlay) {
-        if (Array.isArray(card.actionPhases) && card.actionPhases.length > 0) {
-            const allowedActionPhases = card.actionPhases.map((p) =>
-                p.toUpperCase()
-            );
-            if (!allowedActionPhases.includes(currentPhase)) {
-                return {
-                    valid: false,
-                    reason: `Cette capacité ne peut être activée qu'en phase : ${card.actionPhases.join(', ')}.`,
-                };
-            }
+    // 2. RÈGLE D'ÉQUIVALENCE MUSTER POUR START_OF_REGROUP
+    if (currentPhase === 'START_OF_REGROUP') {
+        const hasMuster = getKeywordValue(card, 'MUSTER') >= 0;
+        if (hasMuster) {
             return { valid: true };
         }
     }
 
-    // 3. ÉVÉNEMENTS (type === 'EVENT', joués de la main) : Doivent respecter card.phases s'il existe
+    // 3. ÉVÉNEMENTS (utilisent le champ "phases" pour la pose)
     if (card.type === 'EVENT') {
         if (Array.isArray(card.phases) && card.phases.length > 0) {
             const allowedPhases = card.phases.map((p) => p.toUpperCase());
@@ -61,25 +52,45 @@ export function checkPhases(
                     reason: `Cet Événement ne peut être joué qu'en phase : ${card.phases.join(', ')}.`,
                 };
             }
-            return { valid: true };
+        }
+        return { valid: true };
+    }
+
+    // 4. CAPACITÉS / ACTIONS SUR CARTE EN JEU (utilisent "actionPhases")
+    // ⚠️ Ne s'applique que si la carte est DÉJÀ en jeu (activation d'effet)
+    if (
+        card.inPlay &&
+        Array.isArray(card.actionPhases) &&
+        card.actionPhases.length > 0
+    ) {
+        const allowedActionPhases = card.actionPhases.map((p) =>
+            p.toUpperCase()
+        );
+        if (!allowedActionPhases.includes(currentPhase)) {
+            return {
+                valid: false,
+                reason: `Cette capacité ne peut être activée qu'en phase : ${card.actionPhases.join(', ')}.`,
+            };
         }
     }
 
-    // 4. POSE DE CARTES PERMANENTES DEPUIS LA MAIN
-    // Elles se jouent durant la phase principale standard de leur alignement.
-    if (card.kind === 'FREE_PEOPLE' && currentPhase !== 'FELLOWSHIP') {
-        return {
-            valid: false,
-            reason: 'Les cartes Peuples Libres se jouent en phase de Communauté (Fellowship).',
-        };
+    // 5. POSE DE CARTES PERMANENTES DEPUIS LA MAIN (!card.inPlay)
+    if (!card.inPlay) {
+        if (card.kind === 'FREE_PEOPLE' && currentPhase !== 'FELLOWSHIP') {
+            return {
+                valid: false,
+                reason: 'Les cartes Peuples Libres se jouent en phase de Communauté (Fellowship).',
+            };
+        }
+
+        if (card.kind === 'SHADOW' && currentPhase !== 'SHADOW') {
+            return {
+                valid: false,
+                reason: "Les cartes de l'Ombre se jouent en phase d'Ombre (Shadow).",
+            };
+        }
     }
 
-    if (card.kind === 'SHADOW' && currentPhase !== 'SHADOW') {
-        return {
-            valid: false,
-            reason: "Les cartes de l'Ombre se jouent en phase d'Ombre (Shadow).",
-        };
-    }
-
+    // Si tout est OK côté phase, on valide la phase (canPlayCard prendra le relais pour la destination)
     return { valid: true };
 }
