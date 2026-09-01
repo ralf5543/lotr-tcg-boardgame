@@ -73,7 +73,8 @@ export const GameControls: React.FC<GameControlsProps> = ({
 
     // 🟢 MANEUVER AID STATE
     const isManeuverAidStep =
-        ctx.phase === 'maneuver' && G.maneuverStep === 'MANEUVER_START';
+    (ctx.phase === 'startOfManeuver' || ctx.phase === 'maneuver') &&
+    G.maneuverStep === 'MANEUVER_START';
     const myAidState = isManeuverAidStep
         ? G.aidState?.players?.[currentPlayerId]
         : null;

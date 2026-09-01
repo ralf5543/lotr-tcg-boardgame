@@ -2,10 +2,58 @@
 
 import type { LotrMoveContext } from '../types';
 import { drawCardsForPlayer } from '../../utils/drawCards';
-import { initStandardRegroup } from '..';
-import { hasPlayableCardsInPhase } from '../engine/validations/hasPlayableCardsInPhase';
+import type { GameState } from '../types';
+
+// Helper pour renvoyer les Suivants en zone de support à la vraie fin de tour
+export const returnAidFollowersToSupport = (G: GameState) => {
+    const fpId = G.fpPlayerId || '0';
+    const shadowId = Object.keys(G.players).find((id) => id !== fpId) || '1';
+
+    const processCharacter = (character: any) => {
+        if (!character.attachments || character.attachments.length === 0)
+            return;
+
+        const remainingAttachments: any[] = [];
+
+        character.attachments.forEach((att: any) => {
+            if (att.attachedViaAid) {
+                // 1. Nettoyage complet des marqueurs d'attachement
+                delete att.attachedViaAid;
+                delete att.attachedTo;
+                delete att.isAttached;
+                delete att.$isAttachment;
+
+                // 2. Identification du propriétaire
+                const targetOwnerId =
+                    att.kind === 'FREE_PEOPLE' ? fpId : shadowId;
+                const owner = G.players[targetOwnerId];
+
+                if (owner) {
+                    if (!owner.supportArea) {
+                        owner.supportArea = [];
+                    }
+                    // 3. Injection explicite dans la supportArea
+                    owner.supportArea = [...owner.supportArea, att];
+                }
+            } else {
+                remainingAttachments.push(att);
+            }
+        });
+
+        character.attachments = remainingAttachments;
+    };
+
+    // Parcourir toute la Compagnie + le champ de bataille
+    Object.values(G.players).forEach((player: any) => {
+        player.fellowshipArea?.forEach(processCharacter);
+    });
+    G.battlefield?.forEach(processCharacter);
+};
 
 export const endTurnChoice = ({ G }: LotrMoveContext) => {
+    // 🟢 Renvoyer les Suivants en support-area seulement quand le FP choisit de finir son tour
+    returnAidFollowersToSupport(G);
+
     G.regroupStep = 'FP_REFILL';
     G.statusMessage =
         'Peuples Libres : Ajustez votre main à 8 cartes et validez pour terminer le tour.';
@@ -198,7 +246,6 @@ export const confirmMuster = ({
 
     const player = G.players?.[pId];
     if (player && playerMuster.discardedCount > 0) {
-
         drawCardsForPlayer(G, player, playerMuster.discardedCount, false);
     }
 
@@ -214,12 +261,8 @@ export const confirmMuster = ({
         return;
     }
 
-    console.log('   └─ 🎉 TOUS LES JOUEURS ONT VALIDÉ !');
     G.musterState = undefined;
-    console.log('   └─ 🗑️ G.musterState passé à undefined.');
-    console.log('   └─ 🔄 Appel de events.setPhase("regroup")...');
     events?.setPhase?.('regroup');
-    console.log('--------------------------------------------------');
 };
 
 export const regroupMoves = {
