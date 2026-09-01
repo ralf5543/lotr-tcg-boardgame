@@ -1,22 +1,40 @@
-import type { LotrMoveContext, CardState } from '../types';
+import type { LotrMoveContext } from '../types';
 import { canTransferAid } from '../engine/validations/canTransferAid';
 import { findTargetCard } from '../../utils/cardUtils';
 import { hasActionableFollowers } from '../logic/aidHelpers';
 
 export const transferAid = (
-    { G, playerID }: LotrMoveContext,
+    { G, ctx, events, playerID }: LotrMoveContext,
     followerInstanceId: string,
     targetInstanceId: string
 ) => {
-    const player = G.players?.[playerID];
-    if (!player) {
+
+    // 1. Garde : Doit obligatoirement être en startOfManeuver + MANEUVER_START
+    if (
+        ctx.phase !== 'startOfManeuver' ||
+        G.maneuverStep !== 'MANEUVER_START'
+    ) {
         console.error(
-            `[transferAid] ❌ Joueur introuvable pour ID : ${playerID}`
+            `   └─ ❌ REJET : transferAid autorisé uniquement durant "startOfManeuver" + "MANEUVER_START" (Actuel: phase="${ctx.phase}", step="${G.maneuverStep}")`
         );
         return 'INVALID_MOVE';
     }
 
-    // 1. Recherche du Follower dans supportArea (par instanceId ou id)
+    // 🛑 2. Garde : Le joueur ne doit pas avoir déjà validé
+    if (G.aidState?.players?.[playerID]?.isDone) {
+        console.error(
+            `   └─ ❌ REJET : Le Joueur "${playerID}" a déjà validé son étape d'Aide.`
+        );
+        return 'INVALID_MOVE';
+    }
+
+    const player = G.players?.[playerID];
+    if (!player) {
+        console.error(`   └─ ❌ Joueur introuvable pour ID : ${playerID}`);
+        return 'INVALID_MOVE';
+    }
+
+    // 1. Recherche du Follower dans supportArea
     const followerIndex = player.supportArea.findIndex(
         (c) =>
             c.instanceId === followerInstanceId || c.id === followerInstanceId
@@ -24,7 +42,7 @@ export const transferAid = (
 
     if (followerIndex === -1) {
         console.error(
-            `[transferAid] ❌ Follower ${followerInstanceId} non trouvé dans la supportArea du joueur ${playerID}`
+            `   └─ ❌ Follower ${followerInstanceId} non trouvé dans la supportArea du joueur ${playerID}`
         );
         return 'INVALID_MOVE';
     }
@@ -36,7 +54,7 @@ export const transferAid = (
 
     if (!targetCard) {
         console.error(
-            `[transferAid] ❌ Cible ${targetInstanceId} introuvable sur le plateau.`
+            `   └─ ❌ Cible ${targetInstanceId} introuvable sur le plateau.`
         );
         return 'INVALID_MOVE';
     }
@@ -44,9 +62,7 @@ export const transferAid = (
     // 3. Validation
     const validation = canTransferAid(follower, targetCard, G, playerID);
     if (!validation.valid) {
-        console.warn(
-            `[transferAid] ⛔ Validation refusée : ${validation.reason}`
-        );
+        console.warn(`   └─ ⛔ Validation refusée : ${validation.reason}`);
         G.statusMessage = `Transfert Aid impossible : ${validation.reason}`;
         return 'INVALID_MOVE';
     }
@@ -70,17 +86,14 @@ export const transferAid = (
         }
     }
 
-    // 5. Transfert (Sécurisé pour Immer / boardgame.io)
+    // 5. Transfert
     player.supportArea.splice(followerIndex, 1);
     follower.attachedViaAid = true;
     follower.attachedTo = targetCard.id;
 
-    // S'assurer que le tableau d'attachements de la cible existe
     if (!targetCard.attachments) {
         targetCard.attachments = [];
     }
-
-    // On ajoute le follower sans réinitialiser le tableau
     targetCard.attachments.push(follower);
 
     const followerTitle =
@@ -89,41 +102,43 @@ export const transferAid = (
         targetCard.i18n?.fr?.title || targetCard.title || 'le personnage';
     G.statusMessage = `${followerTitle} est attaché à ${targetTitle} (Aide).`;
 
-    if (player) {
-        const remainingActionable = hasActionableFollowers(player, G, playerID);
+    // 6. Vérifier s'il reste des followers éligibles pour ce joueur
+    const remainingActionable = hasActionableFollowers(player, G, playerID);
 
-        if (!remainingActionable && G.aidState?.players?.[playerID]) {
-            G.aidState.players[playerID].isDone = true;
+    if (!remainingActionable && G.aidState?.players?.[playerID]) {
+        G.aidState.players[playerID].isDone = true;
+    }
 
-            const fpId = G.fpPlayerId || '0';
-            const shadowId = fpId === '0' ? '1' : '0';
+    // 7. Vérification globale : vérification croisée isDone OU absence de Suivants
+    const fpId = G.fpPlayerId || '0';
+    const shadowId = fpId === '0' ? '1' : '0';
 
-            // Si les deux ont terminé l'étape Aide, on passe aux actions de Manœuvre
-            if (
-                G.aidState.players[fpId]?.isDone &&
-                G.aidState.players[shadowId]?.isDone
-            ) {
-                G.maneuverStep = 'MANEUVER_ACTIONS';
-                G.actionWindow = {
-                    isOpen: true,
-                    activePlayerId: fpId,
-                    title: 'PHASE DE MANŒUVRE',
-                    message:
-                        'Voulez-vous jouer une carte / un effet de Manœuvre ou PASSER ?',
-                    canPass: true,
-                    passesCount: 0,
-                };
-                G.statusMessage = `${followerTitle} attaché à ${targetTitle}. Étape d'Aide terminée !`;
-            }
-        }
+    const fpDone =
+        G.aidState?.players?.[fpId]?.isDone ||
+        !hasActionableFollowers(G.players[fpId], G, fpId);
+
+    const shadowDone =
+        G.aidState?.players?.[shadowId]?.isDone ||
+        !hasActionableFollowers(G.players[shadowId], G, shadowId);
+
+    if (fpDone && shadowDone) {
+        G.aidState = undefined;
+        events?.setPhase?.('maneuver');
     }
 };
 
-export const confirmAid = ({ G, playerID }: LotrMoveContext) => {
+export const confirmAid = ({ G, ctx, events, playerID }: LotrMoveContext) => {
+
+    if (
+        ctx.phase !== 'startOfManeuver' ||
+        G.maneuverStep !== 'MANEUVER_START'
+    ) {
+        return 'INVALID_MOVE';
+    }
+
     if (!G.aidState?.players?.[playerID]) {
         console.error(
-            `[confirmAid] ❌ G.aidState.players[${playerID}] est indéfini ! G.aidState =`,
-            G.aidState
+            `   └─ ❌ G.aidState.players[${playerID}] est indéfini !`
         );
         return 'INVALID_MOVE';
     }
@@ -137,17 +152,8 @@ export const confirmAid = ({ G, playerID }: LotrMoveContext) => {
     const shadowDone = G.aidState.players[shadowId]?.isDone;
 
     if (fpDone && shadowDone) {
-        G.maneuverStep = 'MANEUVER_ACTIONS';
-        G.actionWindow = {
-            isOpen: true,
-            activePlayerId: fpId,
-            title: 'PHASE DE MANŒUVRE',
-            message:
-                'Voulez-vous jouer une carte / un effet de Manœuvre ou PASSER ?',
-            canPass: true,
-            passesCount: 0,
-        };
-        G.statusMessage = 'Manœuvre : Ouverture de la fenêtre d’action.';
+        G.aidState = undefined;
+        events?.setPhase?.('maneuver');
     } else {
         G.statusMessage = `Joueur ${playerID} a terminé son étape d'Aide. En attente de l'adversaire...`;
     }
