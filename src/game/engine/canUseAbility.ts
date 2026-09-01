@@ -28,7 +28,7 @@ export function canUseAbility(
     if (card.kind === 'FREE_PEOPLE' && playerID !== fpPlayerId) {
         return {
             valid: false,
-            reason: "Seul le joueur des Peuples Libres peut utiliser cette capacité.",
+            reason: 'Seul le joueur des Peuples Libres peut utiliser cette capacité.',
         };
     }
     if (card.kind === 'SHADOW' && playerID === fpPlayerId) {
@@ -48,8 +48,19 @@ export function canUseAbility(
 
     // 3. Traitement des capacités avec phases explicites (actionPhases)
     if (Array.isArray(card.actionPhases) && card.actionPhases.length > 0) {
-        const allowedActionPhases = card.actionPhases.map((p) => p.toUpperCase());
-        if (!allowedActionPhases.includes(currentPhase)) {
+        const allowedActionPhases = card.actionPhases.map((p) =>
+            p.toUpperCase()
+        );
+
+        // Transforme "startOfManeuver" en "START_OF_MANEUVER" pour correspondre au JSON
+        const normalizedPhase = currentPhase
+            .replace(/([a-z])([A-Z])/g, '$1_$2')
+            .toUpperCase();
+
+        if (
+            !allowedActionPhases.includes(currentPhase) &&
+            !allowedActionPhases.includes(normalizedPhase)
+        ) {
             return {
                 valid: false,
                 reason: `Cette capacité ne peut être activée qu'en phase : ${card.actionPhases.join(', ')}.`,
@@ -60,6 +71,6 @@ export function canUseAbility(
 
     return {
         valid: false,
-        reason: "Aucune capacité activable pour cette carte dans la phase actuelle.",
+        reason: 'Aucune capacité activable pour cette carte dans la phase actuelle.',
     };
 }

@@ -17,6 +17,7 @@ interface BoardCharacterStackProps {
     onStartDrag?: (e: React.PointerEvent) => void;
     isAssignmentPhase?: boolean;
     isSkirmishPhase?: boolean;
+    isActionable?: boolean;
     skirmishId?: string;
     assignedMinions?: CardState[];
     onSelectSkirmish?: (skirmishId: string) => void;
@@ -39,6 +40,7 @@ export const BoardCharacterStack: React.FC<BoardCharacterStackProps> = ({
     isOpponent = false,
     currentSiteIndex,
     onStartDrag,
+    isActionable,
     isAssignmentPhase = false,
     isSkirmishPhase = false,
     skirmishId,
@@ -167,6 +169,7 @@ export const BoardCharacterStack: React.FC<BoardCharacterStackProps> = ({
                                         isDead={isMinionDead}
                                         isDisabled={isDisabled}
                                         isOpponent={!isOpponent}
+                                        isActionable={isActionable}
                                         G={G}
                                     />
 
@@ -190,6 +193,9 @@ export const BoardCharacterStack: React.FC<BoardCharacterStackProps> = ({
                                                                 size="sm"
                                                                 isDisabled={
                                                                     isDisabled
+                                                                }
+                                                                isActionable={
+                                                                    isActionable
                                                                 }
                                                                 isDraggable={
                                                                     false
@@ -216,7 +222,9 @@ export const BoardCharacterStack: React.FC<BoardCharacterStackProps> = ({
                     $isDisabled={isDisabled}
                     data-card={JSON.stringify(character)}
                     data-draggable={canDragCharacter ? 'true' : undefined}
-                    ref={(el) => registerTarget(character.instanceId || character.id, el)}
+                    ref={(el) =>
+                        registerTarget(character.instanceId || character.id, el)
+                    }
                     onPointerDown={(e) => {
                         // 🎯 Si c'est ciblable, on déclenche directement la sélection au clic
                         if (isTargetable) {
@@ -250,6 +258,7 @@ export const BoardCharacterStack: React.FC<BoardCharacterStackProps> = ({
                         isWounded={isWounded}
                         isDead={isDead}
                         isDisabled={isDisabled}
+                        isActionable={isActionable}
                         isOpponent={isOpponent}
                         burdens={burdens}
                         isFaceDown={isFaceDown}
@@ -293,6 +302,7 @@ export const BoardCharacterStack: React.FC<BoardCharacterStackProps> = ({
                                     card={attachment}
                                     size="sm"
                                     isDisabled={isDisabled}
+                                    isActionable={isActionable}
                                     isDraggable={
                                         !isOpponent &&
                                         !isTargetable &&

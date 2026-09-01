@@ -91,6 +91,7 @@ interface CardProps {
     size?: 'sm' | 'md' | 'lg';
     isRingBearer?: boolean;
     isWounded?: boolean;
+    isActionable?: boolean;
     isOverwhelmed?: boolean;
     G?: GameState;
     isDead?: boolean;
@@ -115,6 +116,7 @@ export const Card: React.FC<CardProps> = ({
     isDead = false,
     isOpponent = false,
     isDisabled = false,
+    isActionable,
     burdens = 0,
     isFaceDown: isFaceDownProp,
     currentLang = 'fr',
@@ -274,6 +276,7 @@ export const Card: React.FC<CardProps> = ({
             $isShadow={isShadow}
             $isPlayable={isPlayable}
             $size={size}
+            $isActionable={card.isActionable}
             $isRoaming={isRoaming}
             $isWounded={isWounded || hasWounds}
             $isTakingDamage={isTakingDamage}

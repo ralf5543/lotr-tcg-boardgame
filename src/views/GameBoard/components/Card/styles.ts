@@ -12,6 +12,7 @@ export interface CardContainerProps {
     $isOverwhelmed?: boolean;
     $isDead?: boolean;
     $isDisabled?: boolean;
+    $isActionable?: boolean;
     $isOpponent?: boolean; // Position globale de la carte (HAUT = true, BAS = false)
     $kind: string;
     $size?: 'sm' | 'md' | 'lg';
@@ -388,6 +389,11 @@ export const CardContainer = styled.div<CardContainerProps>`
                 opacity: 0.7;
                 pointer-events: none;
                 cursor: not-allowed;
+            `}
+            /* ======------ Carte jouable durant cette phase ($size === 'sm') ------====== */
+            ${props.$isActionable &&
+            css`
+                box-shadow: rgb(255 247 10) 0px 0px 14px 7px;
             `}
         `}
 

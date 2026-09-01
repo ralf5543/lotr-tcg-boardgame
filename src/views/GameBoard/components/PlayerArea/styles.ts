@@ -163,8 +163,8 @@ export const SupportSplitLayout = styled.div`
     justify-content: space-between;
     width: 100%;
     gap: 20px;
-    overflow-x: auto;
-    overflow-y: hidden;
+    /*overflow-x: auto;
+    overflow-y: hidden;*/
     padding-bottom: 4px;
 
     &::-webkit-scrollbar {

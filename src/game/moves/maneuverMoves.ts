@@ -1,14 +1,13 @@
 import type { LotrMoveContext } from '../types';
 import { canTransferAid } from '../engine/validations/canTransferAid';
 import { findTargetCard } from '../../utils/cardUtils';
-import { hasActionableFollowers } from '../logic/aidHelpers';
+import { hasActionableStartOfManeuverCards } from '../logic/hasActionableStartOfManeuverCards';
 
 export const transferAid = (
     { G, ctx, events, playerID }: LotrMoveContext,
     followerInstanceId: string,
     targetInstanceId: string
 ) => {
-
     // 1. Garde : Doit obligatoirement être en startOfManeuver + MANEUVER_START
     if (
         ctx.phase !== 'startOfManeuver' ||
@@ -102,33 +101,39 @@ export const transferAid = (
         targetCard.i18n?.fr?.title || targetCard.title || 'le personnage';
     G.statusMessage = `${followerTitle} est attaché à ${targetTitle} (Aide).`;
 
-    // 6. Vérifier s'il reste des followers éligibles pour ce joueur
-    const remainingActionable = hasActionableFollowers(player, G, playerID);
+    // 6. Vérifier s'il reste des cartes actionnables pour ce joueur
+    const remainingActionable = hasActionableStartOfManeuverCards(
+        player,
+        G,
+        playerID
+    );
 
     if (!remainingActionable && G.aidState?.players?.[playerID]) {
         G.aidState.players[playerID].isDone = true;
     }
 
-    // 7. Vérification globale : vérification croisée isDone OU absence de Suivants
+    // 7. Vérification globale : transition si aucun des deux n'a d'actions en attente
     const fpId = G.fpPlayerId || '0';
     const shadowId = fpId === '0' ? '1' : '0';
 
     const fpDone =
         G.aidState?.players?.[fpId]?.isDone ||
-        !hasActionableFollowers(G.players[fpId], G, fpId);
+        !hasActionableStartOfManeuverCards(G.players[fpId], G, fpId);
 
     const shadowDone =
         G.aidState?.players?.[shadowId]?.isDone ||
-        !hasActionableFollowers(G.players[shadowId], G, shadowId);
+        !hasActionableStartOfManeuverCards(G.players[shadowId], G, shadowId);
 
     if (fpDone && shadowDone) {
+        console.log(
+            '   └─ 🎉 Aucune action "Début de manœuvre" restante. Transition automatique vers "maneuver"...'
+        );
         G.aidState = undefined;
         events?.setPhase?.('maneuver');
     }
 };
 
 export const confirmAid = ({ G, ctx, events, playerID }: LotrMoveContext) => {
-
     if (
         ctx.phase !== 'startOfManeuver' ||
         G.maneuverStep !== 'MANEUVER_START'

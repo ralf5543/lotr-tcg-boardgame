@@ -25,9 +25,9 @@ import { drawCardsForPlayer } from '../utils/drawCards';
 import { buildDeckFromIds } from '../utils/deckBuilder';
 import { allMoves } from './moves/index';
 import { calculateArcheryTotals } from './logic/archery';
-import { hasActionableFollowers } from './logic/aidHelpers';
 import { hasPlayableCardsInPhase } from './engine/validations/hasPlayableCardsInPhase';
 import { getMusterCount } from './logic/musterHelpers';
+import { hasActionableStartOfManeuverCards } from './logic/hasActionableStartOfManeuverCards';
 
 const shuffle = <T>(array: T[]): T[] => {
     const arr = [...array];
@@ -656,36 +656,53 @@ export const LotrGame: Game<GameState> = {
             next: 'maneuver',
             turn: { activePlayers: { value: { '0': 'play', '1': 'play' } } },
             onBegin: ({ G, events }: LotrPhaseContext) => {
-  const fpId = G.fpPlayerId || '0';
-                const shadowId = fpId === '0' ? '1' : '0';
+    const fpId = G.fpPlayerId || '0';
+    const shadowId = fpId === '0' ? '1' : '0';
 
-                G.maneuverStep = 'MANEUVER_START';
+    G.maneuverStep = 'MANEUVER_START';
 
-                const fpDone = !hasActionableFollowers(
-                    G.players[fpId],
-                    G,
-                    fpId
-                );
-                const shadowDone = !hasActionableFollowers(
-                    G.players[shadowId],
-                    G,
-                    shadowId
-                );
+    // Remplacement strict de hasActionableFollowers par hasActionableStartOfManeuverCards
+    const fpDone = !hasActionableStartOfManeuverCards(
+        G.players[fpId],
+        G,
+        fpId
+    );
+    const shadowDone = !hasActionableStartOfManeuverCards(
+        G.players[shadowId],
+        G,
+        shadowId
+    );
 
-                G.aidState = {
-                    players: {
-                        [fpId]: { isDone: fpDone },
-                        [shadowId]: { isDone: shadowDone },
-                    },
-                };
+    G.aidState = {
+        players: {
+            [fpId]: { isDone: fpDone },
+            [shadowId]: { isDone: shadowDone },
+        },
+    };
 
-                // S'il n'y a aucun follower à transférer, on passe directement à la phase maneuver
-                if (fpDone && shadowDone) {
-                    events?.setPhase?.('maneuver');
-                } else {
-                    G.actionWindow = undefined;
-                    G.statusMessage =
-                        'Phase de Manœuvre : Étape des Suivants (Aide).';
+    // S'il n'y a aucun follower ou effet à jouer, on passe directement à la phase maneuver
+    if (fpDone && shadowDone) {
+        events?.setPhase?.('maneuver');
+    } else {
+        G.actionWindow = undefined;
+        G.statusMessage =
+            'Phase de Manœuvre : Étape des Suivants (Aide).';
+    }
+},
+            onEnd: ({ G }: LotrPhaseContext) => {
+                // 🧹 Nettoyage des drapeaux isActionable
+                Object.values(G.players || {}).forEach((player) => {
+                    player.supportArea?.forEach((c) => {
+                        c.isActionable = false;
+                    });
+                    player.fellowshipArea?.forEach((c) => {
+                        c.isActionable = false;
+                    });
+                });
+                if (G.battlefield) {
+                    G.battlefield.forEach((c) => {
+                        c.isActionable = false;
+                    });
                 }
             },
             moves: allMoves,
@@ -698,7 +715,6 @@ export const LotrGame: Game<GameState> = {
             turn: { activePlayers: { value: { '0': 'play', '1': 'play' } } },
 
             onBegin: ({ G }: LotrPhaseContext) => {
-
                 console.log(
                     '[maneuver:onBegin] Début de la fenêtre d’actions de Manœuvre'
                 );

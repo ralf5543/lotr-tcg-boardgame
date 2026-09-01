@@ -171,7 +171,7 @@ export interface CardState {
     isUnique: boolean;
     isFemale?: boolean;
     // Mots-clés temporaires gagnés via une capacité
-    tempKeywords?: TempKeywordModifier[];i
+    tempKeywords?: TempKeywordModifier[];
     isActionable?: boolean; // for halo css effet
     attachedViaAid?: boolean;
 
