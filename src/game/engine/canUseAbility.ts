@@ -52,8 +52,9 @@ export function canUseAbility(
             p.toUpperCase()
         );
 
-        // Transforme "startOfManeuver" en "START_OF_MANEUVER" pour correspondre au JSON
-        const normalizedPhase = currentPhase
+        // Convertit d'abord camelCase ("startOfManeuver") -> SNAKE_CASE ("START_OF_MANEUVER")
+        const rawPhase = ctx.phase || '';
+        const normalizedPhase = rawPhase
             .replace(/([a-z])([A-Z])/g, '$1_$2')
             .toUpperCase();
 
