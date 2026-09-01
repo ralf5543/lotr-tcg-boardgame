@@ -172,7 +172,7 @@ export interface CardState {
     isFemale?: boolean;
     // Mots-clés temporaires gagnés via une capacité
     tempKeywords?: TempKeywordModifier[];
-    isActionable?: boolean; // for halo css effet
+    isActionable?: boolean;
     attachedViaAid?: boolean;
 
     // Mots-clés qu'une carte confère à son porteur lorsqu'elle est attachée (ex: un Arc qui donne 'ARCHER')
@@ -238,6 +238,14 @@ export interface PlayerMusterInfo {
     isDone: boolean;
 }
 
+export interface PlayerStartOfPhaseInfo {
+    isDone: boolean;
+}
+
+export interface StartOfPhaseState {
+    players: Record<string, PlayerStartOfPhaseInfo>;
+}
+
 export interface GameState {
     fpPlayerId: string;
     twilightPool: number;
@@ -251,7 +259,7 @@ export interface GameState {
         players: Record<string, PlayerMusterInfo>;
     };
     maneuverStep?: 'MANEUVER_START' | 'MANEUVER_ACTIONS';
-    aidState?: AidState;
+    startOfPhaseState?: StartOfPhaseState;
     players: Record<string, PlayerState>;
     awaitingSiteSelection: boolean;
     isFierceAssignment?: boolean;
@@ -339,12 +347,4 @@ export interface TempKeywordModifier {
 export interface AidCost {
     type: 'TWILIGHT' | 'THREAT' | 'BURDEN';
     amount: number;
-}
-
-export interface AidStatePlayer {
-    isDone: boolean;
-}
-
-export interface AidState {
-    players: Record<string, AidStatePlayer>;
 }

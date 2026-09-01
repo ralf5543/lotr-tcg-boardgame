@@ -267,6 +267,9 @@ export const Card: React.FC<CardProps> = ({
 
     const effectiveKeywords = getEffectiveKeywords(card);
 
+    const rawActionable = isActionable ?? card?.isActionable ?? false;
+    const effectiveIsActionable = rawActionable && !isOpponent;
+
     return (
         <S.CardContainer
             $culture={card.culture}
@@ -276,7 +279,7 @@ export const Card: React.FC<CardProps> = ({
             $isShadow={isShadow}
             $isPlayable={isPlayable}
             $size={size}
-            $isActionable={card.isActionable}
+            $isActionable={effectiveIsActionable}
             $isRoaming={isRoaming}
             $isWounded={isWounded || hasWounds}
             $isTakingDamage={isTakingDamage}

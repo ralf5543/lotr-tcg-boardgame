@@ -25,9 +25,9 @@ import { drawCardsForPlayer } from '../utils/drawCards';
 import { buildDeckFromIds } from '../utils/deckBuilder';
 import { allMoves } from './moves/index';
 import { calculateArcheryTotals } from './logic/archery';
-import { hasPlayableCardsInPhase } from './engine/validations/hasPlayableCardsInPhase';
 import { getMusterCount } from './logic/musterHelpers';
-import { hasActionableStartOfManeuverCards } from './logic/hasActionableStartOfManeuverCards';
+import { hasActionableStartOfPhaseCards } from './logic/hasActionableStartOfPhaseCards';
+import { clearActionableFlags } from '../utils/clearActionableFlags';
 
 const shuffle = <T>(array: T[]): T[] => {
     const arr = [...array];
@@ -449,33 +449,40 @@ export const LotrGame: Game<GameState> = {
             next: 'fellowship',
             turn: { activePlayers: { value: { '0': 'play', '1': 'play' } } },
             onBegin: ({ G, events }: LotrPhaseContext) => {
-                console.log('--- 🚀 [START OF FELLOWSHIP] ---');
-
-                G.movesThisTurn = 0;
-                G.isFierceAssignment = false;
-                G.skirmishes = [];
-                G.activeSkirmishId = undefined;
-
                 const fpId = G.fpPlayerId || '0';
-                const hasActions = hasPlayableCardsInPhase(
+                const shadowId = fpId === '0' ? '1' : '0';
+
+                const fpDone = !hasActionableStartOfPhaseCards(
+                    G.players[fpId],
                     G,
-                    'START_OF_FELLOWSHIP',
-                    fpId
+                    fpId,
+                    'startOfFellowship'
+                );
+                const shadowDone = !hasActionableStartOfPhaseCards(
+                    G.players[shadowId],
+                    G,
+                    shadowId,
+                    'startOfFellowship'
                 );
 
-                if (!hasActions) {
+                // Initialisation de l'état générique de début de phase
+                G.startOfPhaseState = {
+                    players: {
+                        [fpId]: { isDone: fpDone },
+                        [shadowId]: { isDone: shadowDone },
+                    },
+                };
+
+                if (fpDone && shadowDone) {
+                    G.startOfPhaseState = undefined;
                     events?.setPhase?.('fellowship');
                 } else {
-                    G.actionWindow = {
-                        isOpen: true,
-                        activePlayerId: fpId,
-                        title: 'DÉBUT DE LA COMMUNAUTÉ',
-                        message:
-                            'Actions de début de Communauté disponibles. Choisissez une action ou PASSER.',
-                        canPass: true,
-                        passesCount: 0,
-                    };
+                    G.statusMessage =
+                        "Début de la phase de compagnie : Capacités spéciales.";
                 }
+            },
+            onEnd: ({ G }) => {
+                clearActionableFlags(G);
             },
             moves: allMoves,
         },
@@ -505,13 +512,40 @@ export const LotrGame: Game<GameState> = {
         startOfShadow: {
             next: 'shadow',
             onBegin: ({ G, events }: LotrPhaseContext) => {
-                console.log('--- 🌑 [START OF SHADOW] ---');
+                const fpId = G.fpPlayerId || '0';
+                const shadowId = fpId === '0' ? '1' : '0';
 
-                // Réinitialisation de l'état de combat pour la nouvelle région/site
-                G.skirmishes = [];
-                G.activeSkirmishId = undefined;
+                const fpDone = !hasActionableStartOfPhaseCards(
+                    G.players[fpId],
+                    G,
+                    fpId,
+                    'startOfShadow'
+                );
+                const shadowDone = !hasActionableStartOfPhaseCards(
+                    G.players[shadowId],
+                    G,
+                    shadowId,
+                    'startOfShadow'
+                );
 
-                events?.setPhase?.('shadow');
+                // Initialisation de l'état générique de début de phase
+                G.startOfPhaseState = {
+                    players: {
+                        [fpId]: { isDone: fpDone },
+                        [shadowId]: { isDone: shadowDone },
+                    },
+                };
+
+                if (fpDone && shadowDone) {
+                    G.startOfPhaseState = undefined;
+                    events?.setPhase?.('shadow');
+                } else {
+                    G.statusMessage =
+                        "Début de la phase d'Ombre : Capacités spéciales.";
+                }
+            },
+            onEnd: ({ G }) => {
+                clearActionableFlags(G);
             },
         },
 
@@ -656,54 +690,43 @@ export const LotrGame: Game<GameState> = {
             next: 'maneuver',
             turn: { activePlayers: { value: { '0': 'play', '1': 'play' } } },
             onBegin: ({ G, events }: LotrPhaseContext) => {
-    const fpId = G.fpPlayerId || '0';
-    const shadowId = fpId === '0' ? '1' : '0';
+                const fpId = G.fpPlayerId || '0';
+                const shadowId = fpId === '0' ? '1' : '0';
 
-    G.maneuverStep = 'MANEUVER_START';
+                G.maneuverStep = 'MANEUVER_START';
 
-    // Remplacement strict de hasActionableFollowers par hasActionableStartOfManeuverCards
-    const fpDone = !hasActionableStartOfManeuverCards(
-        G.players[fpId],
-        G,
-        fpId
-    );
-    const shadowDone = !hasActionableStartOfManeuverCards(
-        G.players[shadowId],
-        G,
-        shadowId
-    );
+                const fpDone = !hasActionableStartOfPhaseCards(
+                    G.players[fpId],
+                    G,
+                    fpId,
+                    'startOfManeuver'
+                );
+                const shadowDone = !hasActionableStartOfPhaseCards(
+                    G.players[shadowId],
+                    G,
+                    shadowId,
+                    'startOfManeuver'
+                );
 
-    G.aidState = {
-        players: {
-            [fpId]: { isDone: fpDone },
-            [shadowId]: { isDone: shadowDone },
-        },
-    };
+                // 🟢 Utilisation de 'startOfPhaseState' au lieu de 'aidState'
+                G.startOfPhaseState = {
+                    players: {
+                        [fpId]: { isDone: fpDone },
+                        [shadowId]: { isDone: shadowDone },
+                    },
+                };
 
-    // S'il n'y a aucun follower ou effet à jouer, on passe directement à la phase maneuver
-    if (fpDone && shadowDone) {
-        events?.setPhase?.('maneuver');
-    } else {
-        G.actionWindow = undefined;
-        G.statusMessage =
-            'Phase de Manœuvre : Étape des Suivants (Aide).';
-    }
-},
-            onEnd: ({ G }: LotrPhaseContext) => {
-                // 🧹 Nettoyage des drapeaux isActionable
-                Object.values(G.players || {}).forEach((player) => {
-                    player.supportArea?.forEach((c) => {
-                        c.isActionable = false;
-                    });
-                    player.fellowshipArea?.forEach((c) => {
-                        c.isActionable = false;
-                    });
-                });
-                if (G.battlefield) {
-                    G.battlefield.forEach((c) => {
-                        c.isActionable = false;
-                    });
+                // Si aucune action/capacité de début de phase n'est jouable, on enchaîne immédiatement
+                if (fpDone && shadowDone) {
+                    events?.setPhase?.('maneuver');
+                } else {
+                    G.actionWindow = undefined;
+                    G.statusMessage =
+                        'Phase de Manœuvre : Capacités et effets de début de phase.';
                 }
+            },
+            onEnd: ({ G }) => {
+                clearActionableFlags(G);
             },
             moves: allMoves,
         },
@@ -715,10 +738,6 @@ export const LotrGame: Game<GameState> = {
             turn: { activePlayers: { value: { '0': 'play', '1': 'play' } } },
 
             onBegin: ({ G }: LotrPhaseContext) => {
-                console.log(
-                    '[maneuver:onBegin] Début de la fenêtre d’actions de Manœuvre'
-                );
-
                 const fpId = G.fpPlayerId || '0';
 
                 G.maneuverStep = 'MANEUVER_ACTIONS';
@@ -737,7 +756,7 @@ export const LotrGame: Game<GameState> = {
 
             onEnd: ({ G }) => {
                 G.maneuverStep = undefined;
-                G.aidState = undefined;
+                G.startOfPhaseState = undefined;
                 G.pendingPhaseEnd = undefined;
                 G.nextPhase = undefined;
             },
@@ -748,8 +767,40 @@ export const LotrGame: Game<GameState> = {
         startOfArchery: {
             next: 'archery',
             onBegin: ({ G, events }: LotrPhaseContext) => {
-                console.log('--- 🏹 [START OF ARCHERY] ---');
-                events?.setPhase?.('archery');
+                const fpId = G.fpPlayerId || '0';
+                const shadowId = fpId === '0' ? '1' : '0';
+
+                const fpDone = !hasActionableStartOfPhaseCards(
+                    G.players[fpId],
+                    G,
+                    fpId,
+                    'startOfArchery'
+                );
+                const shadowDone = !hasActionableStartOfPhaseCards(
+                    G.players[shadowId],
+                    G,
+                    shadowId,
+                    'startOfArchery'
+                );
+
+                // Initialisation de l'état générique de début de phase
+                G.startOfPhaseState = {
+                    players: {
+                        [fpId]: { isDone: fpDone },
+                        [shadowId]: { isDone: shadowDone },
+                    },
+                };
+
+                if (fpDone && shadowDone) {
+                    G.startOfPhaseState = undefined;
+                    events?.setPhase?.('archery');
+                } else {
+                    G.statusMessage =
+                        "Début de la phase d'archerie : Capacités spéciales.";
+                }
+            },
+            onEnd: ({ G }) => {
+                clearActionableFlags(G);
             },
         },
 
@@ -834,8 +885,31 @@ export const LotrGame: Game<GameState> = {
         startOfAssignment: {
             next: 'assignment',
             onBegin: ({ G, events }: LotrPhaseContext) => {
-                console.log('--- 🛡️ [START OF ASSIGNMENT] ---');
-                events?.setPhase?.('assignment');
+                const fpId = G.fpPlayerId || '0';
+                const shadowId = fpId === '0' ? '1' : '0';
+
+                const fpDone = !hasActionableStartOfPhaseCards(
+                    G.players[fpId],
+                    G,
+                    fpId,
+                    'startOfAssignment'
+                );
+                const shadowDone = !hasActionableStartOfPhaseCards(
+                    G.players[shadowId],
+                    G,
+                    shadowId,
+                    'startOfAssignment'
+                );
+
+                if (fpDone && shadowDone) {
+                    events?.setPhase?.('assignment');
+                } else {
+                    G.statusMessage =
+                        "Début de la phase d'affectation : Capacités spéciales.";
+                }
+            },
+            onEnd: ({ G }) => {
+                clearActionableFlags(G);
             },
         },
 
@@ -877,8 +951,31 @@ export const LotrGame: Game<GameState> = {
         startOfSkirmish: {
             next: 'skirmish',
             onBegin: ({ G, events }: LotrPhaseContext) => {
-                console.log('--- ⚔️ [START OF SKIRMISH] ---');
-                events?.setPhase?.('skirmish');
+                const fpId = G.fpPlayerId || '0';
+                const shadowId = fpId === '0' ? '1' : '0';
+
+                const fpDone = !hasActionableStartOfPhaseCards(
+                    G.players[fpId],
+                    G,
+                    fpId,
+                    'startOfSkirmish'
+                );
+                const shadowDone = !hasActionableStartOfPhaseCards(
+                    G.players[shadowId],
+                    G,
+                    shadowId,
+                    'startOfSkirmish'
+                );
+
+                if (fpDone && shadowDone) {
+                    events?.setPhase?.('skirmish');
+                } else {
+                    G.statusMessage =
+                        'Début de la phase de combat : Capacités spéciales.';
+                }
+            },
+            onEnd: ({ G }) => {
+                clearActionableFlags(G);
             },
         },
 
@@ -980,14 +1077,16 @@ export const LotrGame: Game<GameState> = {
         startOfRegroup: {
             next: 'regroup',
             turn: { activePlayers: { value: { '0': 'play', '1': 'play' } } },
-            onBegin: ({ G, events }) => {
+            onBegin: ({ G, events }: LotrPhaseContext) => {
                 const fpId = G.fpPlayerId || '0';
                 const shadowId = fpId === '0' ? '1' : '0';
 
+                // 1. Gestion existante du Muster
                 const fpMuster = getMusterCount(G, fpId);
                 const shadowMuster = getMusterCount(G, shadowId);
+                const hasMusterToProcess = fpMuster > 0 || shadowMuster > 0;
 
-                if (fpMuster > 0 || shadowMuster > 0) {
+                if (hasMusterToProcess) {
                     G.musterState = {
                         players: {
                             [fpId]: {
@@ -1004,9 +1103,41 @@ export const LotrGame: Game<GameState> = {
                     };
                     G.regroupStep = 'MUSTER_STEP';
                     G.actionWindow = undefined;
-                } else {
-                    events?.setPhase?.('regroup');
                 }
+
+                // 2. Détection des cartes & effets actionnables de "Début de Regroupement"
+                const fpHasCards = hasActionableStartOfPhaseCards(
+                    G.players[fpId],
+                    G,
+                    fpId,
+                    'startOfRegroup'
+                );
+                const shadowHasCards = hasActionableStartOfPhaseCards(
+                    G.players[shadowId],
+                    G,
+                    shadowId,
+                    'startOfRegroup'
+                );
+
+                // 🟢 Initialisation de l'état générique de début de phase pour le toaster / l'IHM
+                G.startOfPhaseState = {
+                    players: {
+                        [fpId]: { isDone: !fpHasCards },
+                        [shadowId]: { isDone: !shadowHasCards },
+                    },
+                };
+
+                // 3. Transition automatique uniquement si ni Muster ni effets à jouer
+                if (!hasMusterToProcess && !fpHasCards && !shadowHasCards) {
+                    G.startOfPhaseState = undefined;
+                    events?.setPhase?.('regroup');
+                } else if (!hasMusterToProcess) {
+                    G.statusMessage =
+                        'Phase de Regroupement : Étape initiale (Capacités).';
+                }
+            },
+            onEnd: ({ G }) => {
+                clearActionableFlags(G);
             },
             moves: { ...allMoves },
         },
@@ -1015,7 +1146,6 @@ export const LotrGame: Game<GameState> = {
             turn: { activePlayers: { value: { '0': 'play', '1': 'play' } } },
 
             onBegin: ({ G }: LotrPhaseContext) => {
-                console.log('[regroup:onBegin] Entrée dans la phase "regroup"');
                 G.isFierceAssignment = false;
                 const fpId = G.fpPlayerId || '0';
 

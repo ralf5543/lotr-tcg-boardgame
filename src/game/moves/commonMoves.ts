@@ -8,6 +8,7 @@ import { devMoves } from '../dev/devMoves';
 import { playSite } from './fellowshipMoves';
 import { canPlayCard } from '../engine/canPlayCard';
 import { findTargetCard } from '../../utils/cardUtils';
+
 export interface ReorderPayload {
     fromIndex?: number;
     toIndex?: number;
@@ -20,6 +21,46 @@ const getTargetPlayerId = (playerID: string | undefined, ctx: any): string => {
         return String(playerID);
     }
     return String(ctx.currentPlayer ?? '0');
+};
+
+/**
+ * Move universelle pour valider la fin des actions de début de phase (startOf*)
+ */
+export const confirmStartOfPhase = ({
+    G,
+    ctx,
+    events,
+    playerID,
+}: LotrMoveContext) => {
+    const currentPhase = ctx.phase || '';
+
+    if (
+        !currentPhase.startsWith('startOf') ||
+        !G.startOfPhaseState?.players?.[playerID]
+    ) {
+        return 'INVALID_MOVE';
+    }
+
+    G.startOfPhaseState.players[playerID].isDone = true;
+
+    const fpId = G.fpPlayerId || '0';
+    const shadowId = fpId === '0' ? '1' : '0';
+
+    const fpDone = G.startOfPhaseState.players[fpId]?.isDone;
+    const shadowDone = G.startOfPhaseState.players[shadowId]?.isDone;
+
+    if (fpDone && shadowDone) {
+        G.startOfPhaseState = undefined;
+
+        // Transformation universelle : 'startOfArchery' -> 'archery'
+        const targetPhase = currentPhase
+            .replace(/^startOf/, '')
+            .replace(/^./, (str) => str.toLowerCase());
+
+        events?.setPhase?.(targetPhase);
+    } else {
+        G.statusMessage = `Joueur ${playerID} a terminé ses actions de début de phase. En attente de l'adversaire...`;
+    }
 };
 
 export const passActionWindow = ({
@@ -55,16 +96,11 @@ export const passActionWindow = ({
             advanceArcheryAssignmentStep(G, events);
         } else if (ctx.phase === 'skirmish' && G.activeSkirmishId) {
             resolveSkirmish(G, ctx);
-        } else if (
-            ctx.phase === 'regroup' ||
-            ctx.phase === 'startOfRegroup' // 🟢 Prise en compte du nom exact de la phase
-        ) {
-            // 1. Si on est en phase startOfRegroup, on bascule vers la phase regroup
+        } else if (ctx.phase === 'regroup' || ctx.phase === 'startOfRegroup') {
             if (ctx.phase === 'startOfRegroup') {
                 events?.setPhase?.('regroup');
             }
 
-            // 2. On lance l'étape d'ajustement de la main
             G.regroupStep = 'SHADOW_REFILL';
             G.statusMessage =
                 'Ombre : Vous pouvez défausser 1 carte, puis validez votre main à 8 cartes.';
@@ -94,10 +130,8 @@ export const attachCard = (
 
     const card = player.hand[cardIndex];
 
-    // Helper pour trouver le personnage cible dans les aires de jeu
     const targetCard = findTargetCard(G, targetCharacterId);
 
-    // 🟢 VALIDATION CENTRALISÉE : Passer targetCharacterId (3e) ET targetCard (4e)
     const validation = canPlayCard(
         card,
         { G, ctx, playerID: actingPlayerId },
@@ -110,7 +144,6 @@ export const attachCard = (
         return 'INVALID_MOVE';
     }
 
-    // Traitement du Move...
     const cost = Number(card.twilightCost) || 0;
     const [attachedCard] = player.hand.splice(cardIndex, 1);
     G.twilightPool += cost;
@@ -138,7 +171,6 @@ export const playCard = (
 
     const card = player.hand[cardIndex];
 
-    // 🟢 VALIDATION CENTRALISÉE (Unicité, Phase, Kind, Twilight)
     const validation = canPlayCard(card, { G, ctx, playerID: actingPlayerId });
     if (!validation.valid) {
         console.warn(`❌ [playCard] Rejet : ${validation.reason}`);
@@ -320,6 +352,7 @@ export const cleanupPendingDeaths = ({ G }: LotrMoveContext) => {
 };
 
 export const commonMoves = {
+    confirmStartOfPhase,
     passActionWindow,
     attachCard,
     playCard,

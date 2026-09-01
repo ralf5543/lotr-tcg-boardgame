@@ -22,7 +22,7 @@ interface GameControlsProps {
         confirmHandRefill?: () => void;
         passActionWindow?: () => void;
         confirmMuster?: () => void;
-        confirmAid?: () => void;
+        confirmStartOfPhase?: () => void;
         [key: string]: ((...args: any[]) => void) | undefined;
     };
 }
@@ -71,12 +71,14 @@ export const GameControls: React.FC<GameControlsProps> = ({
         ? G.musterState?.players?.[currentPlayerId]
         : null;
 
-    // 🟢 MANEUVER AID STATE
-    const isManeuverAidStep =
-    (ctx.phase === 'startOfManeuver' || ctx.phase === 'maneuver') &&
-    G.maneuverStep === 'MANEUVER_START';
-    const myAidState = isManeuverAidStep
-        ? G.aidState?.players?.[currentPlayerId]
+    // 🟢 START OF PHASE (MÉCANIQUE UNIVERSELLE DE DÉBUT DE PHASE)
+    const isStartOfPhaseStep =
+        (ctx.phase?.startsWith('startOf') ?? false) ||
+        G.regroupStep === 'START_OF_REGROUP' ||
+        G.maneuverStep === 'MANEUVER_START';
+
+    const myStartOfPhaseState = isStartOfPhaseStep
+        ? G.startOfPhaseState?.players?.[currentPlayerId]
         : null;
 
     // 🟢 CALCUL DU NUMÉRO DE SITE À POSER
@@ -150,6 +152,7 @@ export const GameControls: React.FC<GameControlsProps> = ({
             | 'CHOOSING_FIRST'
             | 'MULLIGAN'
             | 'MUSTER'
+            | 'START_OF_PHASE'
             | 'STANDARD';
     } = {
         show: false,
@@ -188,7 +191,6 @@ export const GameControls: React.FC<GameControlsProps> = ({
             type: 'MULLIGAN',
         };
     } else if (isMusterStep && myMusterState) {
-        // MUSTER
         toastConfig = {
             show: true,
             title: 'PHASE DE RALLIEMENT (MUSTER)',
@@ -197,6 +199,16 @@ export const GameControls: React.FC<GameControlsProps> = ({
                 : `Vous avez ${myMusterState.allowedCount} carte(s) avec Rassembleur. Vous pouvez défausser jusqu'à ${myMusterState.allowedCount} carte(s) pour en piocher autant.`,
             showPassButton: false,
             type: 'MUSTER',
+        };
+    } else if (isStartOfPhaseStep && myStartOfPhaseState) {
+        toastConfig = {
+            show: true,
+            title: 'DÉBUT DE PHASE',
+            body: myStartOfPhaseState.isDone
+                ? "Vos actions de début de phase sont validées. En attente de l'adversaire..."
+                : 'Vous avez des capacités ou des effets de début de phase disponibles. Activez-les sur vos cartes ou validez.',
+            showPassButton: false,
+            type: 'START_OF_PHASE',
         };
     } else if (isActionWindowActive && isMyTurnToAct) {
         toastConfig = {
@@ -239,17 +251,6 @@ export const GameControls: React.FC<GameControlsProps> = ({
             showPassButton: false,
             type: 'STANDARD',
         };
-    } else if (isManeuverAidStep && myAidState) {
-        // AID
-        toastConfig = {
-            show: true,
-            title: 'TRANSFERT DE SUIVANTS (AIDE)',
-            body: myAidState.isDone
-                ? "En attente du choix de l'adversaire..."
-                : "Vous pouvez transférer vos Suivants (Aide) de votre zone de soutien vers un personnage éligible en payant leur coût d'Aide, ou valider.",
-            showPassButton: false,
-            type: 'AID' as any,
-        };
     }
 
     // 🟢 5. OBTENTION DE LA CONSIGNE CONTEXTUELLE DU JOUEUR LOCAL
@@ -273,11 +274,17 @@ export const GameControls: React.FC<GameControlsProps> = ({
         }
 
         if (isMusterStep && myMusterState) {
-            // CONSIGNE MUSTER
             if (myMusterState.isDone) {
                 return 'Effet de Rassembleur validé. En attente de l’autre joueur...';
             }
             return `Défaussées : ${myMusterState.discardedCount} / ${myMusterState.allowedCount} carte(s). Cliquez sur vos cartes ou validez.`;
+        }
+
+        if (isStartOfPhaseStep && myStartOfPhaseState) {
+            if (myStartOfPhaseState.isDone) {
+                return 'Étape validée. En attente de l’autre joueur...';
+            }
+            return 'Cliquez sur vos cartes brillantes pour déclencher leurs effets, ou validez.';
         }
 
         if (isActionWindowActive) {
@@ -357,20 +364,12 @@ export const GameControls: React.FC<GameControlsProps> = ({
                 : 'Les Peuples Libres décident de la suite du voyage...';
         }
 
-        if (isManeuverAidStep && myAidState) {
-            if (myAidState.isDone) {
-                return 'Choix d’Aide validé. En attente de l’autre joueur...';
-            }
-            return 'Glissez ou cliquez sur vos Suivants avec Aide pour les attacher, puis validez.';
-        }
-
         return '';
     };
 
     const currentNarrativeLog =
         G.statusMessage || statusMessage || 'Partie en cours';
     const instructionText = getInstructionText();
-
 
     return (
         <>
@@ -569,20 +568,6 @@ export const GameControls: React.FC<GameControlsProps> = ({
                                 </div>
                             )}
 
-                        {/* BOUTON DE VALIDATION DE L'AIDE */}
-                        {toastConfig.type === ('AID' as any) &&
-                            myAidState &&
-                            !myAidState.isDone && (
-                                <S.ActionButton
-                                    style={{ marginTop: '12px', width: '100%' }}
-                                    onClick={() => {
-                                        moves.confirmAid?.();
-                                    }}
-                                >
-                                    Terminer l’étape d’Aide
-                                </S.ActionButton>
-                            )}
-
                         {/* BOUTON DE VALIDATION DU MUSTER */}
                         {toastConfig.type === 'MUSTER' &&
                             myMusterState &&
@@ -596,6 +581,20 @@ export const GameControls: React.FC<GameControlsProps> = ({
                                     {myMusterState.discardedCount > 0
                                         ? `Valider (${myMusterState.discardedCount} piochée(s))`
                                         : 'Ignorer "Rassembleur"'}
+                                </S.ActionButton>
+                            )}
+
+                        {/* BOUTON DE VALIDATION DU DÉBUT DE PHASE */}
+                        {toastConfig.type === 'START_OF_PHASE' &&
+                            myStartOfPhaseState &&
+                            !myStartOfPhaseState.isDone && (
+                                <S.ActionButton
+                                    style={{ marginTop: '12px', width: '100%' }}
+                                    onClick={() => {
+                                        moves.confirmStartOfPhase?.();
+                                    }}
+                                >
+                                    Terminer le début de phase ➔
                                 </S.ActionButton>
                             )}
 

@@ -5,7 +5,7 @@ import { archeryMoves } from './archeryMoves';
 import { assignmentMoves } from './assignmentMoves';
 import { regroupMoves } from './regroupMoves';
 import { setupMoves } from './setupMoves';
-import { maneuverMoves, transferAid, confirmAid } from './maneuverMoves';
+import { maneuverMoves } from './maneuverMoves';
 
 export const allMoves = {
     ...commonMoves,
@@ -16,8 +16,6 @@ export const allMoves = {
     ...regroupMoves,
     ...setupMoves,
     ...maneuverMoves,
-    ...transferAid,
-    ...confirmAid,
 };
 
 export {
@@ -29,6 +27,4 @@ export {
     regroupMoves,
     setupMoves,
     maneuverMoves,
-    transferAid,
-    confirmAid,
 };
