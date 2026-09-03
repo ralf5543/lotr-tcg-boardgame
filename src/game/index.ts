@@ -303,7 +303,7 @@ export const LotrGame: Game<GameState> = {
                 ...commonMoves,
 
                 submitBid: (
-                    { G, playerID }: LotrMoveContext,
+                    { G, playerID, random }: LotrMoveContext,
                     bidAmount: number
                 ) => {
                     if (!G.setupState || G.setupState.step !== 'BIDDING')
@@ -338,7 +338,7 @@ export const LotrGame: Game<GameState> = {
                             G.setupState.auctionWinnerId = '1';
                         } else {
                             G.setupState.auctionWinnerId =
-                                Math.random() < 0.5 ? '0' : '1';
+                                random.Die(2) === 1 ? '0' : '1';
                         }
 
                         G.setupState.step = 'CHOOSING_FIRST';
