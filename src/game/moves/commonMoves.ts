@@ -16,7 +16,10 @@ export interface ReorderPayload {
     newIndex?: number;
 }
 
-const getTargetPlayerId = (playerID: string | undefined, ctx: any): string => {
+const getTargetPlayerId = (
+    playerID: string | undefined,
+    ctx: { currentPlayer?: string }
+): string => {
     if (playerID !== undefined && playerID !== null && playerID !== '') {
         return String(playerID);
     }

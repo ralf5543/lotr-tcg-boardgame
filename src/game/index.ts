@@ -19,7 +19,7 @@ import {
     canSelectSkirmish,
 } from './logic/skirmish';
 import { getUnassignedMinions } from './logic/assignment';
-import { commonMoves, advanceCompany, getTargetPlayerId } from './moves';
+import { advanceCompany } from './moves/fellowshipMoves';
 import { devMoves } from './dev/devMoves';
 import { drawCardsForPlayer } from '../utils/drawCards';
 import { buildDeckFromIds } from '../utils/deckBuilder';
@@ -289,7 +289,6 @@ export const LotrGame: Game<GameState> = {
     moves: {
         ...devMoves,
         ...allMoves,
-        ...commonMoves,
     },
 
     phases: {
@@ -300,7 +299,7 @@ export const LotrGame: Game<GameState> = {
                 activePlayers: { value: { '0': 'play', '1': 'play' } },
             },
             moves: {
-                ...commonMoves,
+                ...devMoves,
 
                 submitBid: (
                     { G, playerID, random }: LotrMoveContext,
@@ -504,7 +503,6 @@ export const LotrGame: Game<GameState> = {
                     'Phase de Communauté : Jouez vos compagnons et soutiens.';
             },
             moves: {
-                ...commonMoves,
                 ...allMoves,
             },
         },
@@ -577,8 +575,7 @@ export const LotrGame: Game<GameState> = {
                     const shadowId = G.fpPlayerId === '0' ? '1' : '0';
                     if (playerID !== shadowId) return 'INVALID_MOVE';
 
-                    const targetId = getTargetPlayerId(playerID, ctx);
-                    const player = G.players?.[targetId];
+                    const player = G.players?.[playerID];
                     if (!player || !player.hand) return 'INVALID_MOVE';
 
                     const card = player.hand[cardIndex];
@@ -643,8 +640,7 @@ export const LotrGame: Game<GameState> = {
                     const shadowId = G.fpPlayerId === '0' ? '1' : '0';
                     if (playerID !== shadowId) return 'INVALID_MOVE';
 
-                    const targetId = getTargetPlayerId(playerID, ctx);
-                    const player = G.players?.[targetId];
+                    const player = G.players?.[playerID];
                     if (!player || !player.hand) return;
 
                     const attachmentCard = player.hand[cardIndex];
@@ -1157,7 +1153,6 @@ export const LotrGame: Game<GameState> = {
 
                 moveNextSite: ({
                     G,
-                    ctx,
                     events,
                     playerID,
                 }: LotrMoveContext) => {
@@ -1171,7 +1166,7 @@ export const LotrGame: Game<GameState> = {
                         return 'INVALID_MOVE';
                     }
 
-                    advanceCompany(G, ctx);
+                    advanceCompany(G);
 
                     if (!G.awaitingSiteSelection) {
                         G.skirmishes = [];

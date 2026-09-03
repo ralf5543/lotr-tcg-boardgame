@@ -81,9 +81,8 @@ export const GameControls: React.FC<GameControlsProps> = ({
         ? G.startOfPhaseState?.players?.[currentPlayerId]
         : null;
 
-    // 🟢 CALCUL DU NUMÉRO DE SITE À POSER
-    const rawSiteIdx = G.currentSiteIndex ?? 0;
-    const targetSiteIdx = isSetupPhase ? rawSiteIdx : Math.max(1, rawSiteIdx);
+    const targetSiteIdx =
+        G.players[fpPlayerId]?.currentSiteIndex ?? G.currentSiteIndex ?? 0;
 
     const siteSelectorPlayerId =
         targetSiteIdx === 0 ? fpPlayerId : shadowPlayerId;

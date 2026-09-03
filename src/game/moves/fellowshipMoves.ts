@@ -1,6 +1,6 @@
-import type { LotrMoveContext } from '../types';
+import type { GameState, LotrMoveContext } from '../types';
 
-export const advanceCompany = (G: any) => {
+export const advanceCompany = (G: GameState) => {
     const fpId = G.fpPlayerId || '0';
     const fpPlayer = G.players[fpId];
     if (!fpPlayer) {
@@ -23,6 +23,7 @@ export const advanceCompany = (G: any) => {
     const targetSite = G.path[nextIndex];
 
     if (targetSite !== null) {
+        G.awaitingSiteSelection = false;
         const siteCost = Number(targetSite.twilightCost) || 0;
         const companionsCount = fpPlayer.fellowshipArea
             ? fpPlayer.fellowshipArea.length
@@ -196,7 +197,6 @@ export const endFellowshipPhase = ({
 };
 
 export const fellowshipMoves = {
-    advanceCompany,
     revealCompanion,
     playSite,
     endFellowshipPhase,
