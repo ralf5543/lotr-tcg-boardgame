@@ -9,7 +9,6 @@ import {
     applyWoundAndCheckDeath,
     applyOverwhelmAndCheckDeath,
 } from '../../utils/applyWoundAndCheckDeath';
-import { audioService } from '../../services/audioService';
 import {
     getKeywordValue,
     getEffectiveKeywords,
@@ -78,7 +77,7 @@ export const applyOverwhelmToCard = (G: GameState, card: CardState) => {
 
 /**
  * Résout le combat d'escarmouche actif.
- * Marque les cartes mortes / blessées, déclenche les sons et alimente `pendingDeadCardIds` & `lastWoundedCardIds`.
+ * Marque les cartes mortes / blessées et alimente `pendingDeadCardIds` & `lastWoundedCardIds`.
  */
 export const resolveSkirmish = (G: GameState, _ctx?: Ctx) => {
     if (!G.activeSkirmishId) return;
@@ -123,6 +122,7 @@ export const resolveSkirmish = (G: GameState, _ctx?: Ctx) => {
 
     G.lastWoundedCardIds = [];
     G.pendingDeadCardIds = [];
+    skirmish.resolved = true;
 
     const minionsSummary = minions
         .map(
@@ -141,8 +141,6 @@ export const resolveSkirmish = (G: GameState, _ctx?: Ctx) => {
             minionsStrength > 0
                 ? companionStrength >= 2 * minionsStrength
                 : companionStrength > 0;
-
-        audioService.play('SMASH', { enablePitch: true });
 
         const woundsToApply = 1 + getDamageBonus(companion);
 
@@ -168,8 +166,6 @@ export const resolveSkirmish = (G: GameState, _ctx?: Ctx) => {
             companionStrength > 0
                 ? minionsStrength >= 2 * companionStrength
                 : minionsStrength > 0;
-
-        audioService.play('SMASH', { enablePitch: true });
 
         if (isCompanionOverwhelmed) {
             applyOverwhelmAndCheckDeath(G, companion);

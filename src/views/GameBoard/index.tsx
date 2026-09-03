@@ -27,6 +27,7 @@ import { useCardPlayAudio } from '../../hooks/audio/useCardPlayAudio';
 import { useArcheryAudio } from '../../hooks/audio/useArcheryAudio';
 import { useWoundAudio } from '../../hooks/audio/useWoundAudio';
 import { useAssignmentAudio } from '../../hooks/audio/useAssignmentAudio';
+import { useSkirmishAudio } from '../../hooks/audio/useSkirmishAudio';
 
 export interface GameBoardProps extends BoardProps<GameState> {
     moves: BoardProps<GameState>['moves'] &
@@ -62,6 +63,7 @@ export const GameBoard: React.FC<GameBoardProps> = ({
     useArcheryAudio(G);
     useWoundAudio(G);
     useAssignmentAudio(G);
+    useSkirmishAudio(G);
     const myId = playerID || ctx.currentPlayer;
     const oppId = myId === '0' ? '1' : '0';
 
@@ -340,20 +342,6 @@ export const GameBoard: React.FC<GameBoardProps> = ({
         startTargeting,
         stopTargeting,
     ]);
-
-    const lastPlayedSkirmishIdRef = React.useRef<string | null>(null);
-
-    useEffect(() => {
-        if (ctx.phase !== 'skirmish' || !G.activeSkirmishId) {
-            lastPlayedSkirmishIdRef.current = null;
-            return;
-        }
-
-        if (G.activeSkirmishId !== lastPlayedSkirmishIdRef.current) {
-            lastPlayedSkirmishIdRef.current = G.activeSkirmishId;
-            audioService.play('SKIRMISH');
-        }
-    }, [ctx.phase, G.activeSkirmishId]);
 
     // 🟢 5. SYNCHRONISATION DU CIBLAGE EN PHASE DE SKIRMISH
     useEffect(() => {
