@@ -148,13 +148,21 @@ export const attachCard = (
     }
 
     const cost = Number(card.twilightCost) || 0;
+    const fpId = G.fpPlayerId || '0';
+    const isFP = actingPlayerId === fpId;
+
     const [attachedCard] = player.hand.splice(cardIndex, 1);
-    G.twilightPool += cost;
+    if (isFP) {
+        G.twilightPool += cost;
+    } else {
+        G.twilightPool = Math.max(0, (G.twilightPool || 0) - cost);
+    }
 
     if (targetCard) {
         if (!targetCard.attachments) targetCard.attachments = [];
         targetCard.attachments.push(attachedCard);
-        G.statusMessage = `${attachedCard.title || attachedCard.i18n?.fr?.title || 'Carte'} est attaché à ${targetCard.title || targetCard.i18n?.fr?.title || 'Personnage'} (+${cost} Crépuscule).`;
+        const sign = isFP ? '+' : '-';
+        G.statusMessage = `${attachedCard.title || attachedCard.i18n?.fr?.title || 'Carte'} est attaché à ${targetCard.title || targetCard.i18n?.fr?.title || 'Personnage'} (${sign}${cost} Crépuscule).`;
     }
 };
 

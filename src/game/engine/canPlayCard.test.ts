@@ -159,4 +159,81 @@ describe('canPlayCard', () => {
         });
         expect(enough.valid).toBe(true);
     });
+
+    it('refuse une unique déjà dans la pile des morts', () => {
+        const result = canPlayCard(
+            createCompanion({
+                id: 'aragorn-hand',
+                title: 'Aragorn',
+                isUnique: true,
+            }),
+            {
+                G: createGameState({
+                    players: {
+                        '0': createPlayerState('0', {
+                            deadPile: [
+                                createCompanion({
+                                    id: 'aragorn-dead',
+                                    title: 'Aragorn',
+                                    isUnique: true,
+                                }),
+                            ],
+                        }),
+                    },
+                }),
+                ctx: { phase: 'fellowship' },
+                playerID: '0',
+            }
+        );
+
+        expect(result.valid).toBe(false);
+        expect(result.reason).toMatch(/morts/i);
+    });
+
+    it('refuse un séide unique déjà en jeu', () => {
+        const result = canPlayCard(
+            createMinion({
+                id: 'witchking-hand',
+                title: 'Witch-king',
+                isUnique: true,
+                twilightCost: 8,
+            }),
+            {
+                G: createGameState({
+                    twilightPool: 10,
+                    battlefield: [
+                        createMinion({
+                            id: 'witchking-play',
+                            title: 'Witch-king',
+                            isUnique: true,
+                        }),
+                    ],
+                }),
+                ctx: { phase: 'shadow' },
+                playerID: '1',
+            }
+        );
+
+        expect(result.valid).toBe(false);
+        expect(result.reason).toMatch(/unique/i);
+    });
+
+    it('refuse en soutien une possession qui doit être attachée', () => {
+        const mustAttach = {
+            ...createCard({
+                id: 'sword',
+                kind: 'FREE_PEOPLE',
+                type: 'POSSESSION',
+            }),
+            attachedTo: [['COMPANION']],
+        };
+
+        const result = canPlayCard(mustAttach as never, {
+            G: createGameState(),
+            ctx: { phase: 'fellowship' },
+            playerID: '0',
+        }, 'supportArea');
+
+        expect(result.valid).toBe(false);
+    });
 });

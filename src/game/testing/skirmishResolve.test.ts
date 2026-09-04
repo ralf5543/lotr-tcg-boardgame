@@ -91,4 +91,86 @@ describe('résolution d’escarmouche', () => {
         expect(minion?.wounds).toBe(2);
         expect(minion?.isDead).not.toBe(true);
     });
+
+    it('donne la victoire à l’Ombre en cas d’égalité', () => {
+        const engine = createEngineClient({
+            startPhase: 'skirmish',
+            playerID: '0',
+            G: {
+                battlefield: [
+                    createMinion({
+                        id: 'minion-1',
+                        strength: 5,
+                        vitality: 3,
+                    }),
+                ],
+                players: {
+                    '0': createPlayerState('0', {
+                        fellowshipArea: [
+                            createCompanion({
+                                id: 'comp-1',
+                                strength: 5,
+                                vitality: 4,
+                            }),
+                        ],
+                    }),
+                },
+                skirmishes: [
+                    {
+                        id: 'skirmish_comp-1',
+                        companionId: 'comp-1',
+                        minionIds: ['minion-1'],
+                    },
+                ],
+            },
+        });
+
+        engine.moves.selectSkirmish('skirmish_comp-1');
+        engine.moves.resolveActiveSkirmish();
+
+        expect(engine.getG().players['0']?.fellowshipArea[0]?.wounds).toBe(1);
+        expect(engine.getG().battlefield[0]?.wounds || 0).toBe(0);
+    });
+
+    it('submerge un compagnon si l’Ombre a au moins le double de force', () => {
+        const engine = createEngineClient({
+            startPhase: 'skirmish',
+            playerID: '0',
+            G: {
+                battlefield: [
+                    createMinion({
+                        id: 'minion-1',
+                        strength: 8,
+                        vitality: 3,
+                    }),
+                ],
+                players: {
+                    '0': createPlayerState('0', {
+                        fellowshipArea: [
+                            createCompanion({
+                                id: 'comp-1',
+                                strength: 4,
+                                vitality: 4,
+                            }),
+                        ],
+                    }),
+                },
+                skirmishes: [
+                    {
+                        id: 'skirmish_comp-1',
+                        companionId: 'comp-1',
+                        minionIds: ['minion-1'],
+                    },
+                ],
+            },
+        });
+
+        engine.moves.selectSkirmish('skirmish_comp-1');
+        engine.moves.resolveActiveSkirmish();
+
+        const companion = engine.getG().players['0']?.fellowshipArea[0];
+        expect(companion?.isOverwhelmed).toBe(true);
+        expect(companion?.isDead).toBe(true);
+        expect(companion?.wounds || 0).toBe(0);
+    });
 });

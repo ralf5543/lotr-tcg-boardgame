@@ -79,3 +79,34 @@ describe('HUNTER', () => {
         expect(getCalculatedStrength(vsHunter, hunter)).toBe(4);
     });
 });
+
+describe('tempModifiers', () => {
+    it('ajoute le bonus de force ciblé pendant l’escarmouche', () => {
+        const companion = createCompanion({ id: 'comp-1', strength: 4 });
+        const G = createGameState({
+            players: {
+                '0': createPlayerState('0', {
+                    fellowshipArea: [companion],
+                }),
+            },
+            skirmishes: [
+                {
+                    id: 'sk',
+                    companionId: 'comp-1',
+                    minionIds: ['orc'],
+                },
+            ],
+            tempModifiers: [
+                {
+                    id: 'event-1',
+                    targetCardId: 'comp-1',
+                    stat: 'STRENGTH',
+                    value: 3,
+                    scope: 'SKIRMISH',
+                },
+            ],
+        });
+
+        expect(getCalculatedStrength(G, companion)).toBe(7);
+    });
+});
