@@ -1,5 +1,6 @@
 import type { LotrMoveContext } from '../types';
 import {
+    beginShadowAssignment,
     checkAssignmentProgress,
     getCompanionDefenderCapacity,
     getUnassignedMinions,
@@ -91,6 +92,27 @@ export const assignMinion = (
     checkAssignmentProgress(G, ctx, events);
 };
 
+export const yieldAssignmentToShadow = ({
+    G,
+    playerID,
+    events,
+}: LotrMoveContext) => {
+    const fpId = G.fpPlayerId || '0';
+    if (playerID !== fpId) return 'INVALID_MOVE';
+    if (G.assignmentStep !== 'FP_ASSIGN') return 'INVALID_MOVE';
+
+    if (getUnassignedMinions(G).length === 0) {
+        return 'INVALID_MOVE';
+    }
+
+    beginShadowAssignment(
+        G,
+        events,
+        'Les Peuples Libres laissent l’Ombre affecter les séides restants.'
+    );
+};
+
 export const assignmentMoves = {
     assignMinion,
+    yieldAssignmentToShadow,
 };

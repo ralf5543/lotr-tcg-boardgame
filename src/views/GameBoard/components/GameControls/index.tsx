@@ -23,6 +23,7 @@ interface GameControlsProps {
         passActionWindow?: () => void;
         confirmMuster?: () => void;
         confirmStartOfPhase?: () => void;
+        yieldAssignmentToShadow?: () => void;
         [key: string]: ((...args: any[]) => void) | undefined;
     };
 }
@@ -96,13 +97,18 @@ export const GameControls: React.FC<GameControlsProps> = ({
             ctx.phase === 'fellowship' ||
             ctx.phase === 'regroup');
 
+    const isShadowActing =
+        ctx.phase === 'shadow' ||
+        G.regroupStep === 'SHADOW_REFILL' ||
+        (ctx.phase === 'assignment' && G.assignmentStep === 'SHADOW_ASSIGN');
+
     const actingPlayerId = isSetupPhase
         ? currentPlayerId
         : isActionWindowActive
           ? G.actionWindow!.activePlayerId
           : isAwaitingSiteActive
             ? siteSelectorPlayerId
-            : ctx.phase === 'shadow' || G.regroupStep === 'SHADOW_REFILL'
+            : isShadowActing
               ? shadowPlayerId
               : fpPlayerId;
 
@@ -152,6 +158,7 @@ export const GameControls: React.FC<GameControlsProps> = ({
             | 'MULLIGAN'
             | 'MUSTER'
             | 'START_OF_PHASE'
+            | 'ASSIGNMENT_YIELD'
             | 'STANDARD';
     } = {
         show: false,
@@ -249,6 +256,22 @@ export const GameControls: React.FC<GameControlsProps> = ({
             body: 'Cliquez sur les cartes de votre main pour ajuster à 8 cartes maximum et terminer le tour.',
             showPassButton: false,
             type: 'STANDARD',
+        };
+    } else if (
+        ctx.phase === 'assignment' &&
+        currentPlayerId === fpPlayerId &&
+        (G.assignmentStep === 'FP_ASSIGN' ||
+            G.assignmentStep === 'SHADOW_ASSIGN')
+    ) {
+        const isFpAssign = G.assignmentStep === 'FP_ASSIGN';
+        toastConfig = {
+            show: true,
+            title: 'AFFECTATION',
+            body: isFpAssign
+                ? 'Laissez l’Ombre affecter tous les autres séides non-affectés ?'
+                : 'L’Ombre affecte les séides restants…',
+            showPassButton: false,
+            type: isFpAssign ? 'ASSIGNMENT_YIELD' : 'STANDARD',
         };
     }
 
@@ -596,6 +619,18 @@ export const GameControls: React.FC<GameControlsProps> = ({
                                     Terminer le début de phase ➔
                                 </S.ActionButton>
                             )}
+
+                        {/* CESSION D’AFFECTATION AU JOUEUR DE L’OMBRE */}
+                        {toastConfig.type === 'ASSIGNMENT_YIELD' && (
+                            <S.ActionButton
+                                style={{ marginTop: '12px', width: '100%' }}
+                                onClick={() => {
+                                    moves.yieldAssignmentToShadow?.();
+                                }}
+                            >
+                                Valider
+                            </S.ActionButton>
+                        )}
 
                         {/* ACTION PASSER STANDARD */}
                         {toastConfig.showPassButton && (

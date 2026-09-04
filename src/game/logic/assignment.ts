@@ -45,17 +45,32 @@ export const getCompanionDefenderCapacity = (
     return 1 + extraDefender;
 };
 
-export const checkAssignmentProgress = (
+type AssignmentEvents = {
+    endPhase?: () => void;
+    endTurn?: () => void;
+    setActivePlayers?: (arg: { value: Record<string, string> }) => void;
+};
+
+/** Passe la main à l’Ombre pour les séides encore libres (surcharge ou cession FP). */
+export const beginShadowAssignment = (
     G: GameState,
-    _ctx: Ctx,
-    events?: { 
-        endPhase?: () => void; 
-        endTurn?: () => void;
-        setActivePlayers?: (arg: { value: Record<string, string> }) => void;
-    }
+    events?: AssignmentEvents,
+    statusMessage = "Surcharge ! L'Ombre affecte les séides restants à son choix."
 ) => {
     const fpId = G.fpPlayerId || '0';
     const shadowId = fpId === '0' ? '1' : '0';
+
+    G.assignmentStep = 'SHADOW_ASSIGN';
+    G.statusMessage = statusMessage;
+    events?.setActivePlayers?.({ value: { [shadowId]: 'play' } });
+};
+
+export const checkAssignmentProgress = (
+    G: GameState,
+    _ctx: Ctx,
+    events?: AssignmentEvents
+) => {
+    const fpId = G.fpPlayerId || '0';
 
     const unassignedMinions = getUnassignedMinions(G);
     const companions = G.players[fpId]?.fellowshipArea || [];
@@ -69,28 +84,19 @@ export const checkAssignmentProgress = (
     }
 
     if (G.assignmentStep === 'FP_ASSIGN') {
-
-        const allCompanionsFull = companions.every((comp: any) => {
-            const compId = comp.instanceId || comp.id;
-            
-            // Cherche le combat associé à ce compagnon
+        const allCompanionsFull = companions.every((comp: CardState) => {
             const skirmish = G.skirmishes.find(
-                (s) => s.companionId === comp.id || s.companionId === comp.instanceId
+                (s) =>
+                    s.companionId === comp.id ||
+                    s.companionId === comp.instanceId
             );
             const assignedCount = skirmish ? skirmish.minionIds.length : 0;
-            
-            // Capacité dynamique (1 + DEFENDER)
             const maxCapacity = getCompanionDefenderCapacity(comp, G);
-            const isFull = assignedCount >= maxCapacity;
-
-            return isFull;
+            return assignedCount >= maxCapacity;
         });
 
         if (allCompanionsFull) {
-            G.assignmentStep = 'SHADOW_ASSIGN';
-            G.statusMessage =
-                "Surcharge ! L'Ombre affecte les séides restants à son choix.";
-            events?.setActivePlayers?.({ value: { [shadowId]: 'play' } });
+            beginShadowAssignment(G, events);
         }
     }
 };
