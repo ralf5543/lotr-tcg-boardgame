@@ -474,6 +474,17 @@ export const Card: React.FC<CardProps> = ({
                         width="16px"
                     />
                 )}
+
+            {card.type &&
+                card.type === 'FOLLOWER' &&
+                size === 'sm' && (
+                    <S.AttachmentSubtype
+                        src={`/interface/pictos/AID.webp`}
+                        alt='Follower'
+                        draggable={false}
+                        width="16px"
+                    />
+                )}
         </S.CardContainer>
     );
 };

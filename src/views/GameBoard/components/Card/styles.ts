@@ -883,6 +883,7 @@ export const KeywordsContainer = styled.div`
     flex-direction: column;
     gap: 4px;
     flex-wrap: wrap-reverse;
+    aspect-ratio: 1;
 `;
 
 export const AttachmentSubtype = styled.img`
@@ -896,6 +897,7 @@ export const AttachmentSubtype = styled.img`
     width: 20px;
     border: 1px solid black;
     filter: invert(1);
+    aspect-ratio: 1;
 `;
 
 export const AttachmentSubtypeRing = styled.img`
