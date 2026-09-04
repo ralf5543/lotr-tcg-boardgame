@@ -11,6 +11,7 @@ import { useDrag } from '../../../../contexts/DragContext';
 import { BoardCharacterStack } from '../BoardCharacterStack';
 import { canPlayCard } from '../../../../game/engine/canPlayCard';
 import { useFaction } from '../../../../contexts/FactionContext';
+import { audioService } from '../../../../services/audioService';
 
 interface SkirmishEntry {
     id?: string;
@@ -96,17 +97,25 @@ export const PlayerArea: React.FC<PlayerAreaProps> = ({
                     return;
                 }
 
+                if (index === targetIndex) {
+                    return;
+                }
+
                 moves.reorderFellowship?.({
                     fromIndex: index,
                     toIndex: targetIndex,
                 });
+
+                if (phase === 'fellowship') {
+                    audioService.play('CARD_PLAY');
+                }
             }
         };
 
         window.addEventListener('card-dropped', handleReorderDrop);
         return () =>
             window.removeEventListener('card-dropped', handleReorderDrop);
-    }, [isOpponent, moves, fellowshipArea]);
+    }, [isOpponent, moves, fellowshipArea, phase]);
 
     const renderFellowship = () => {
         // 💤 MODE BANDEAU : Si ce joueur incarne l'Ombre, la Compagnie roupille
