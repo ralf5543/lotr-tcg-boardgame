@@ -804,8 +804,18 @@ export const LotrGame: Game<GameState> = {
             // 1. Indique à boardgame.io quand arrêter la phase
             endIf: ({ G }) => Boolean(G.pendingPhaseEnd),
 
-            // 2. Détermine dynamiquement la phase suivante au moment de la transition
-            next: ({ G }) => G.nextPhase || 'startOfAssignment',
+            // next() est lu APRÈS onEnd, qui reset G.nextPhase : on dérive
+            // depuis les séides encore vivants (règle : plus de séides → regroupement).
+            next: ({ G }) => {
+                const hasLivingMinions = (G.battlefield || []).some((c) => {
+                    if (c.kind !== 'SHADOW' || c.type !== 'MINION') {
+                        return false;
+                    }
+                    const maxVit = Number(c.vitality) || 1;
+                    return !c.isDead && (c.wounds || 0) < maxVit;
+                });
+                return hasLivingMinions ? 'assignment' : 'regroup';
+            },
 
             turn: { activePlayers: { value: { '0': 'play', '1': 'play' } } },
 

@@ -1,4 +1,4 @@
-import { defineConfig } from 'vite'
+import { defineConfig } from 'vitest/config'
 import react from '@vitejs/plugin-react-swc' // 👈 Changement d'import ici !
 
 // https://vite.dev/config/
@@ -13,4 +13,8 @@ export default defineConfig({
       ],
     }),
   ],
+  test: {
+    environment: 'node',
+    include: ['src/**/*.test.ts'],
+  },
 });
