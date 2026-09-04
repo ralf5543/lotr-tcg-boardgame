@@ -56,6 +56,19 @@ export function createCompanion(overrides: Partial<CardState> = {}): CardState {
     });
 }
 
+export function createFollower(overrides: Partial<CardState> = {}): CardState {
+    return createCard({
+        id: 'test-follower',
+        kind: 'FREE_PEOPLE',
+        type: 'FOLLOWER',
+        culture: 'GONDOR',
+        title: 'Test Follower',
+        twilightCost: 1,
+        aidCost: { type: 'TWILIGHT', amount: 1 },
+        ...overrides,
+    });
+}
+
 export function createSite(
     overrides: Partial<SiteCardState> = {}
 ): SiteCardState {
