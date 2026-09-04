@@ -488,6 +488,7 @@ export const GameBoard: React.FC<GameBoardProps> = ({
                         isSkirmishPhase={ctx.phase === 'skirmish'}
                         activeSkirmishId={G.activeSkirmishId}
                         G={G}
+                        phase={ctx.phase}
                     />
 
                     {/* ==================== 2. CENTRAL ==================== */}
@@ -497,7 +498,7 @@ export const GameBoard: React.FC<GameBoardProps> = ({
                                 cards={G.battlefield}
                                 playerRole={myId as '0' | '1'}
                                 currentSiteIndex={currentSiteIndex}
-                                isAssignmentPhase={ctx.phase === 'assignment'}
+                                phase={ctx.phase}
                                 skirmishes={G.skirmishes}
                                 lastWoundedCardIds={G.lastWoundedCardIds}
                                 G={G}
@@ -520,6 +521,7 @@ export const GameBoard: React.FC<GameBoardProps> = ({
                         isSkirmishPhase={ctx.phase === 'skirmish'}
                         activeSkirmishId={G.activeSkirmishId}
                         G={G}
+                        phase={ctx.phase}
                     />
 
                     {/* ==================== SITE PATH ==================== */}

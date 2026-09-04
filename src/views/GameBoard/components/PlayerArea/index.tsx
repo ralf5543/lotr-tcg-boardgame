@@ -37,6 +37,7 @@ interface PlayerAreaProps {
     activeSkirmishId?: string;
     G: GameState;
     isFaceDown?: boolean;
+    phase?: string;
 }
 
 export const PlayerArea: React.FC<PlayerAreaProps> = ({
@@ -51,6 +52,7 @@ export const PlayerArea: React.FC<PlayerAreaProps> = ({
     isSkirmishPhase = false,
     activeSkirmishId,
     G,
+    phase,
 }) => {
     const { activeTargetId, registerTarget, startDrag, dragged } = useDrag();
     const [isDormantExpanded, setIsDormantExpanded] = useState(false);
@@ -143,6 +145,7 @@ export const PlayerArea: React.FC<PlayerAreaProps> = ({
                                             isOpponent={isOpponent}
                                             G={G}
                                             playerID={_playerId}
+                                            phase={phase}
                                             isFaceDown={
                                                 isOpponent
                                                     ? (companion.isFaceDown ??
@@ -236,6 +239,7 @@ export const PlayerArea: React.FC<PlayerAreaProps> = ({
                                 isWounded={isWounded}
                                 G={G}
                                 playerID={_playerId}
+                                phase={phase}
                                 isDead={isDead}
                                 isSelectedSkirmish={
                                     activeSkirmishId === skirmishId
@@ -330,6 +334,7 @@ export const PlayerArea: React.FC<PlayerAreaProps> = ({
                                     isWounded={isWounded}
                                     G={G}
                                     playerID={_playerId}
+                                    phase={phase}
                                     isDead={isDead}
                                     onStartDrag={(e) => {
                                         if (isOpponent || e.button !== 0)
@@ -374,6 +379,7 @@ export const PlayerArea: React.FC<PlayerAreaProps> = ({
                                     isWounded={isWounded}
                                     G={G}
                                     playerID={_playerId}
+                                    phase={phase}
                                     isDead={isDead}
                                     onStartDrag={(e) => {
                                         if (isOpponent || e.button !== 0)

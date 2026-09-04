@@ -19,7 +19,7 @@ interface BattlefieldProps {
     cards: CardState[];
     playerRole?: '0' | '1';
     currentSiteIndex?: number;
-    isAssignmentPhase?: boolean;
+    phase?: string;
     skirmishes?: Array<{ companionId?: string; minionIds?: string[] }>;
     lastWoundedCardIds?: string[];
     pendingDeadCardIds?: string[];
@@ -31,7 +31,7 @@ interface BattlefieldProps {
 export const Battlefield: React.FC<BattlefieldProps> = ({
     cards,
     currentSiteIndex,
-    isAssignmentPhase = false,
+    phase,
     skirmishes = [],
     lastWoundedCardIds = [],
     pendingDeadCardIds = [],
@@ -102,7 +102,7 @@ export const Battlefield: React.FC<BattlefieldProps> = ({
                             index={idx}
                             isOpponent={isOpponent}
                             currentSiteIndex={currentSiteIndex}
-                            isAssignmentPhase={isAssignmentPhase}
+                            phase={phase}
                             isWounded={isWounded}
                             isDead={isDead}
                             isDisabled={isDisabled}

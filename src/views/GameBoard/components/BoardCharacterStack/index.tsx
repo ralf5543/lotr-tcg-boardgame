@@ -8,6 +8,7 @@ import { canPlayCard } from '../../../../game/engine/canPlayCard';
 import { SkirmishClash } from './SkirmishClash';
 import { getEffectiveVitality } from '../../../../utils/cardStats';
 import { canTransferAid } from '../../../../game/engine/validations/canTransferAid';
+import { isInPlayCardDraggable } from './isInPlayCardDraggable';
 
 interface BoardCharacterStackProps {
     character: CardState;
@@ -15,7 +16,7 @@ interface BoardCharacterStackProps {
     isOpponent?: boolean;
     currentSiteIndex?: number;
     onStartDrag?: (e: React.PointerEvent) => void;
-    isAssignmentPhase?: boolean;
+    phase?: string;
     isSkirmishPhase?: boolean;
     isActionable?: boolean;
     skirmishId?: string;
@@ -41,7 +42,7 @@ export const BoardCharacterStack: React.FC<BoardCharacterStackProps> = ({
     currentSiteIndex,
     onStartDrag,
     isActionable,
-    isAssignmentPhase = false,
+    phase,
     isSkirmishPhase = false,
     skirmishId,
     assignedMinions = [],
@@ -67,11 +68,16 @@ export const BoardCharacterStack: React.FC<BoardCharacterStackProps> = ({
 
     const isBeingDragged = dragged?.card?.id === character.id;
 
-    // ⛔ Si la carte est ciblable ou désactivée, ON BLOQUE LE DRAG
-    const canDragCharacter =
-        !isDisabled &&
-        !isTargetable &&
-        (!isOpponent || (isAssignmentPhase && character.type === 'MINION'));
+    const isFpOwner = playerID === (G.fpPlayerId || '0');
+
+    const canDragCharacter = isInPlayCardDraggable({
+        card: character,
+        phase,
+        isOpponent,
+        isDisabled,
+        isTargetable,
+        isFpOwner,
+    });
 
     const isMinionAssignment =
         dragged?.origin === 'BATTLEFIELD' && draggedType === 'MINION';
@@ -253,7 +259,6 @@ export const BoardCharacterStack: React.FC<BoardCharacterStackProps> = ({
                         card={character}
                         size="sm"
                         isDraggable={canDragCharacter}
-                        index={index}
                         currentSiteIndex={currentSiteIndex}
                         isWounded={isWounded}
                         isDead={isDead}
@@ -269,48 +274,53 @@ export const BoardCharacterStack: React.FC<BoardCharacterStackProps> = ({
                 {/* ATTACHEMENTS CLASSIQUES */}
                 {character.attachments && character.attachments.length > 0 && (
                     <S.AttachmentsContainer className="attachments-group">
-                        {character.attachments.map((attachment, attachIdx) => (
-                            <S.AttachmentWrapper
-                                key={attachment.id}
-                                $index={attachIdx}
-                                data-draggable={
-                                    !isOpponent && !isTargetable && !isDisabled
-                                        ? 'true'
-                                        : undefined
-                                }
-                                onPointerDown={(e) => {
-                                    if (
-                                        isOpponent ||
-                                        isTargetable ||
-                                        isDisabled ||
-                                        e.button !== 0
-                                    )
-                                        return;
-                                    e.stopPropagation();
+                        {character.attachments.map((attachment, attachIdx) => {
+                            const canDragAttachment = isInPlayCardDraggable({
+                                card: attachment,
+                                phase,
+                                isOpponent,
+                                isDisabled,
+                                isTargetable,
+                                isFpOwner,
+                                isAttachment: true,
+                            });
 
-                                    startDrag(
-                                        attachment,
-                                        attachIdx,
-                                        e,
-                                        'ATTACHMENT',
-                                        'portrait',
-                                        character.id
-                                    );
-                                }}
-                            >
-                                <Card
-                                    card={attachment}
-                                    size="sm"
-                                    isDisabled={isDisabled}
-                                    isActionable={isActionable}
-                                    isDraggable={
-                                        !isOpponent &&
-                                        !isTargetable &&
-                                        !isDisabled
+                            return (
+                                <S.AttachmentWrapper
+                                    key={attachment.id}
+                                    $index={attachIdx}
+                                    data-draggable={
+                                        canDragAttachment ? 'true' : undefined
                                     }
-                                />
-                            </S.AttachmentWrapper>
-                        ))}
+                                    onPointerDown={(e) => {
+                                        if (
+                                            !canDragAttachment ||
+                                            e.button !== 0
+                                        )
+                                            return;
+                                        e.stopPropagation();
+
+                                        startDrag(
+                                            attachment,
+                                            attachIdx,
+                                            e,
+                                            'ATTACHMENT',
+                                            'portrait',
+                                            character.id
+                                        );
+                                    }}
+                                >
+                                    <Card
+                                        card={attachment}
+                                        size="sm"
+                                        isDisabled={isDisabled}
+                                        isActionable={isActionable}
+                                        isDraggable={canDragAttachment}
+                                        G={G}
+                                    />
+                                </S.AttachmentWrapper>
+                            );
+                        })}
                     </S.AttachmentsContainer>
                 )}
             </S.CharacterStack>
