@@ -182,4 +182,64 @@ describe('playCard', () => {
         expect(engine.getG().players['0']?.hand).toHaveLength(1);
         expect(engine.getG().players['0']?.fellowshipArea).toHaveLength(1);
     });
+
+    it('pose un Allié en soutien et ajoute du Crépuscule', () => {
+        const ally = createCard({
+            id: 'ally-1',
+            kind: 'FREE_PEOPLE',
+            type: 'ALLY',
+            title: 'Test Ally',
+            twilightCost: 2,
+        });
+
+        const engine = createEngineClient({
+            startPhase: 'fellowship',
+            playerID: '0',
+            G: {
+                twilightPool: 0,
+                players: {
+                    '0': createPlayerState('0', { hand: [ally] }),
+                },
+            },
+        });
+
+        engine.moves.playCard(0);
+
+        expect(engine.getG().twilightPool).toBe(2);
+        expect(engine.getG().players['0']?.supportArea[0]?.id).toBe('ally-1');
+        expect(engine.getG().players['0']?.hand).toHaveLength(0);
+        expect(engine.getG().players['0']?.fellowshipArea).toHaveLength(0);
+    });
+});
+
+describe('playShadowCard (soutien)', () => {
+    it('pose une condition d’Ombre en soutien et paie le Crépuscule', () => {
+        const condition = createCard({
+            id: 'shadow-cond',
+            kind: 'SHADOW',
+            type: 'CONDITION',
+            title: 'Shadow Condition',
+            twilightCost: 1,
+        });
+
+        const engine = createEngineClient({
+            startPhase: 'shadow',
+            playerID: '1',
+            G: {
+                twilightPool: 3,
+                players: {
+                    '1': createPlayerState('1', { hand: [condition] }),
+                },
+            },
+        });
+
+        engine.moves.playShadowCard(0);
+
+        expect(engine.getG().twilightPool).toBe(2);
+        expect(engine.getG().players['1']?.supportArea[0]?.id).toBe(
+            'shadow-cond'
+        );
+        expect(engine.getG().players['1']?.hand).toHaveLength(0);
+        expect(engine.getG().battlefield).toHaveLength(0);
+    });
 });

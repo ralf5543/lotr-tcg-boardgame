@@ -21,7 +21,12 @@ export function canUseAbility(
     context: ValidationContext
 ): ValidationResult {
     const { ctx, playerID, G } = context;
-    const currentPhase = (ctx.phase || '').toUpperCase();
+    const rawPhase = ctx.phase || '';
+    const currentPhase = rawPhase.toUpperCase();
+    // camelCase boardgame.io ("startOfRegroup") → SNAKE_CASE ("START_OF_REGROUP")
+    const normalizedPhase = rawPhase
+        .replace(/([a-z])([A-Z])/g, '$1_$2')
+        .toUpperCase();
     const fpPlayerId = G.fpPlayerId || '0';
 
     // 1. Contrôle du joueur (Peuples Libres vs Ombre)
@@ -39,7 +44,12 @@ export function canUseAbility(
     }
 
     // 2. Traitement du mot-clé MUSTER en phase START_OF_REGROUP / REGROUP
-    if (currentPhase === 'START_OF_REGROUP' || currentPhase === 'REGROUP') {
+    if (
+        currentPhase === 'START_OF_REGROUP' ||
+        currentPhase === 'REGROUP' ||
+        normalizedPhase === 'START_OF_REGROUP' ||
+        normalizedPhase === 'REGROUP'
+    ) {
         const hasMuster = getKeywordValue(card, 'MUSTER') >= 0;
         if (hasMuster) {
             return { valid: true };
@@ -51,12 +61,6 @@ export function canUseAbility(
         const allowedActionPhases = card.actionPhases.map((p) =>
             p.toUpperCase()
         );
-
-        // Convertit d'abord camelCase ("startOfManeuver") -> SNAKE_CASE ("START_OF_MANEUVER")
-        const rawPhase = ctx.phase || '';
-        const normalizedPhase = rawPhase
-            .replace(/([a-z])([A-Z])/g, '$1_$2')
-            .toUpperCase();
 
         if (
             !allowedActionPhases.includes(currentPhase) &&

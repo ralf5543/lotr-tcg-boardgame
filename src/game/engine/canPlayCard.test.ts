@@ -236,4 +236,206 @@ describe('canPlayCard', () => {
 
         expect(result.valid).toBe(false);
     });
+
+    it('autorise un Allié en soutien, pas en Communauté', () => {
+        const ally = createCard({
+            id: 'ally',
+            kind: 'FREE_PEOPLE',
+            type: 'ALLY',
+            title: 'Test Ally',
+        });
+        const ctx = {
+            G: createGameState(),
+            ctx: { phase: 'fellowship' },
+            playerID: '0',
+        };
+
+        expect(canPlayCard(ally, ctx, 'supportArea').valid).toBe(true);
+        expect(canPlayCard(ally, ctx, 'fellowshipArea').valid).toBe(false);
+    });
+
+    it('refuse discardFromHand si la main n’a pas assez de cartes (la carte jouée compte)', () => {
+        const card = {
+            ...createCard({
+                id: 'discard-hand',
+                kind: 'FREE_PEOPLE',
+                type: 'CONDITION',
+            }),
+            toPlay: [{ discardFromHand: 1 }],
+        };
+
+        const tooFew = canPlayCard(card as never, {
+            G: createGameState({
+                players: {
+                    '0': createPlayerState('0', {
+                        hand: [createCard({ id: 'only-this' })],
+                    }),
+                },
+            }),
+            ctx: { phase: 'fellowship' },
+            playerID: '0',
+        });
+        expect(tooFew.valid).toBe(false);
+
+        const enough = canPlayCard(card as never, {
+            G: createGameState({
+                players: {
+                    '0': createPlayerState('0', {
+                        hand: [
+                            createCard({ id: 'this-card' }),
+                            createCard({ id: 'other' }),
+                        ],
+                    }),
+                },
+            }),
+            ctx: { phase: 'fellowship' },
+            playerID: '0',
+        });
+        expect(enough.valid).toBe(true);
+    });
+
+    it('refuse discardFromPlay si aucune carte en jeu ne matche', () => {
+        const card = {
+            ...createCard({
+                id: 'discard-play',
+                kind: 'FREE_PEOPLE',
+                type: 'CONDITION',
+            }),
+            toPlay: [
+                { discardFromPlay: [{ count: 1, target: [['CONDITION']] }] },
+            ],
+        };
+
+        const none = canPlayCard(card as never, {
+            G: createGameState({
+                players: {
+                    '0': createPlayerState('0', {
+                        fellowshipArea: [createCompanion({ id: 'comp' })],
+                    }),
+                },
+            }),
+            ctx: { phase: 'fellowship' },
+            playerID: '0',
+        });
+        expect(none.valid).toBe(false);
+
+        const withCondition = canPlayCard(card as never, {
+            G: createGameState({
+                players: {
+                    '0': createPlayerState('0', {
+                        supportArea: [
+                            createCard({
+                                id: 'cond',
+                                kind: 'FREE_PEOPLE',
+                                type: 'CONDITION',
+                            }),
+                        ],
+                    }),
+                },
+            }),
+            ctx: { phase: 'fellowship' },
+            playerID: '0',
+        });
+        expect(withCondition.valid).toBe(true);
+    });
+
+    it('refuse un spotThreats insuffisant', () => {
+        const card = {
+            ...createCard({
+                id: 'threat-cond',
+                kind: 'FREE_PEOPLE',
+                type: 'CONDITION',
+            }),
+            toPlay: [{ spotThreats: 2 }],
+        };
+
+        const tooFew = canPlayCard(card as never, {
+            G: createGameState({
+                players: {
+                    '0': createPlayerState('0', { threats: 1 }),
+                },
+            }),
+            ctx: { phase: 'fellowship' },
+            playerID: '0',
+        });
+        expect(tooFew.valid).toBe(false);
+
+        const enough = canPlayCard(card as never, {
+            G: createGameState({
+                players: {
+                    '0': createPlayerState('0', { threats: 2 }),
+                },
+            }),
+            ctx: { phase: 'fellowship' },
+            playerID: '0',
+        });
+        expect(enough.valid).toBe(true);
+    });
+
+    it('accepte toPlay si au moins une option est valide (OU)', () => {
+        const card = {
+            ...createCard({
+                id: 'or-cond',
+                kind: 'FREE_PEOPLE',
+                type: 'CONDITION',
+            }),
+            toPlay: [
+                { spot: [{ count: 1, target: [['DWARF']] }] },
+                { spotBurdens: 2 },
+            ],
+        };
+
+        const viaBurdens = canPlayCard(card as never, {
+            G: createGameState({
+                players: {
+                    '0': createPlayerState('0', { burdens: 2 }),
+                },
+            }),
+            ctx: { phase: 'fellowship' },
+            playerID: '0',
+        });
+        expect(viaBurdens.valid).toBe(true);
+    });
+
+    it('le FP ne spotte pas les séides du champ de bataille', () => {
+        const card = {
+            ...createCard({
+                id: 'spot-minion',
+                kind: 'FREE_PEOPLE',
+                type: 'CONDITION',
+            }),
+            toPlay: [{ spot: [{ count: 1, target: [['MINION']] }] }],
+        };
+
+        const result = canPlayCard(card as never, {
+            G: createGameState({
+                battlefield: [createMinion({ id: 'orc' })],
+            }),
+            ctx: { phase: 'fellowship' },
+            playerID: '0',
+        });
+        expect(result.valid).toBe(false);
+    });
+
+    it('l’Ombre peut spotter un séide sur le champ de bataille', () => {
+        const card = {
+            ...createCard({
+                id: 'shadow-spot',
+                kind: 'SHADOW',
+                type: 'CONDITION',
+                twilightCost: 0,
+            }),
+            toPlay: [{ spot: [{ count: 1, target: [['MINION']] }] }],
+        };
+
+        const result = canPlayCard(card as never, {
+            G: createGameState({
+                twilightPool: 0,
+                battlefield: [createMinion({ id: 'orc' })],
+            }),
+            ctx: { phase: 'shadow' },
+            playerID: '1',
+        });
+        expect(result.valid).toBe(true);
+    });
 });

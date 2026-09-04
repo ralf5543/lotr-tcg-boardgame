@@ -53,6 +53,59 @@ describe('fin de Communauté', () => {
         expect(engine.getG().twilightPool).toBe(3);
         expect(['startOfShadow', 'shadow']).toContain(engine.getCtx().phase);
     });
+
+    it('attend que l’Ombre pose le site suivant, refuse un mauvais joueur / emplacement', () => {
+        const nextSite = createSite({ id: 'site-2', twilightCost: 1 });
+
+        const engine = createEngineClient({
+            startPhase: 'fellowship',
+            playerID: '0',
+            G: {
+                twilightPool: 0,
+                path: [
+                    createSite({ id: 'site-1' }),
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                ],
+                players: {
+                    '0': createPlayerState('0', {
+                        currentSiteIndex: 0,
+                        fellowshipArea: [createCompanion({ id: 'comp-1' })],
+                    }),
+                    '1': createPlayerState('1', {
+                        sitesDeck: [nextSite],
+                    }),
+                },
+            },
+        });
+
+        engine.moves.playSite('site-2', 1);
+        expect(engine.getG().path[1]).toBeNull();
+
+        engine.moves.endFellowshipPhase();
+        expect(engine.getG().awaitingSiteSelection).toBe(true);
+        expect(engine.getCtx().phase).toBe('fellowship');
+
+        engine.moves.playSite('site-2', 1);
+        expect(engine.getG().path[1]).toBeNull();
+
+        engine.updatePlayerID('1');
+        engine.moves.playSite('site-2', 2);
+        expect(engine.getG().path[1]).toBeNull();
+
+        engine.moves.playSite('site-2', 1);
+
+        expect(engine.getG().path[1]?.id).toBe('site-2');
+        expect(engine.getG().awaitingSiteSelection).toBe(false);
+        expect(engine.getG().twilightPool).toBe(2);
+        expect(['startOfShadow', 'shadow']).toContain(engine.getCtx().phase);
+    });
 });
 
 describe('pioche et ordre de la Communauté', () => {
