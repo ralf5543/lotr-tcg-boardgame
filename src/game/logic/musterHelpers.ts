@@ -1,16 +1,15 @@
 // src/game/helpers/musterHelpers.ts
 import type { GameState, CardState } from '../types';
+import { getKeywordValue } from '../engine/keywords/keywordUtils';
 
-// Helper interne pour vérifier si la carte a le mot-clé MUSTER
 function cardHasMuster(card: CardState): boolean {
     if (!card) return false;
-
-    const hasInKeywords =
-        card.keywords?.some((k) => k.startsWith('MUSTER')) ?? false;
-    const hasInGranted =
-        card.grantsKeywords?.some((k) => k.startsWith('MUSTER')) ?? false;
-
-    return hasInKeywords || hasInGranted;
+    if (getKeywordValue(card, 'MUSTER') >= 0) return true;
+    return (
+        card.grantsKeywords?.some((k) =>
+            k.toUpperCase().startsWith('MUSTER')
+        ) ?? false
+    );
 }
 
 export function getMusterCount(G: GameState, playerId: string): number {

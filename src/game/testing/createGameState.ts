@@ -56,6 +56,30 @@ export function createCompanion(overrides: Partial<CardState> = {}): CardState {
     });
 }
 
+export function createSite(
+    overrides: Partial<SiteCardState> = {}
+): SiteCardState {
+    return {
+        id: 'test-site',
+        name: 'Test Site',
+        twilightCost: 0,
+        gameText: '',
+        ownerId: '0',
+        siteNumber: 1,
+        ...overrides,
+    };
+}
+
+export function createBiddingSetupState(): NonNullable<
+    GameState['setupState']
+> {
+    return {
+        bids: { '0': null, '1': null },
+        mulligans: { '0': null, '1': null },
+        step: 'BIDDING',
+    };
+}
+
 export function createPlayerState(
     playerId: string,
     overrides: Partial<PlayerState> = {}
