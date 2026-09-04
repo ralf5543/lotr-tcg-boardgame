@@ -67187,12 +67187,9 @@
     "kind": "SHADOW",
     "type": "POSSESSION",
     "subtype": "RANGED-WEAPON",
-    "keywords": [
-      "AMBUSH 5"
-    ],
     "grantsKeywords": [
       "ARCHER",
-      "AMBUSH"
+      "AMBUSH 5"
     ],
     "attachedTo": [
       [

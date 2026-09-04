@@ -1,5 +1,6 @@
 import type { LotrMoveContext } from '../types';
 import {
+    applyAmbushTwilight,
     beginShadowAssignment,
     checkAssignmentProgress,
     getCompanionDefenderCapacity,
@@ -76,6 +77,8 @@ export const assignMinion = (
 
     G.skirmishes = G.skirmishes.filter((s) => s.minionIds.length > 0);
 
+    const ambushAdded = applyAmbushTwilight(G, minionCard, isFP);
+
     const compCardState = compCard.card || compCard;
     const minionCardState = minionCard?.card || minionCard;
 
@@ -87,7 +90,10 @@ export const assignMinion = (
         ? getCardText(minionCardState, 'fr').title || 'Le séide'
         : 'Le séide';
 
-    G.statusMessage = `${minionName} est assigné à ${compName}.`;
+    G.statusMessage =
+        ambushAdded > 0
+            ? `${minionName} est assigné à ${compName}. Embuscade : +${ambushAdded} Crépuscule.`
+            : `${minionName} est assigné à ${compName}.`;
 
     checkAssignmentProgress(G, ctx, events);
 };

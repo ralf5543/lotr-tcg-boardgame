@@ -281,7 +281,7 @@ const CARDS_PRESETS: Record<string, CardState> = {
         kind: 'SHADOW',
         type: 'MINION',
         phases: ['SKIRMISH'],
-        keywords: ['LURKER'],
+        keywords: ['AMBUSH 2'],
         culture: 'SAURON',
         race: 'ORC',
         twilightCost: 2,

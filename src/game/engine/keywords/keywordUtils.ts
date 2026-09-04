@@ -6,6 +6,17 @@ export interface ParsedKeyword {
     value: number;     // ex: 1 pour "DEFENDER +1", 0 pour "ARCHER"
 }
 
+/** DAMAGE / DEFENDER s’écrivent « KEY +N » ; Ambush, Hunter, Toil : « KEY N ». */
+const PLUS_VALUE_KEYWORDS = new Set(['DAMAGE', 'DEFENDER']);
+
+function formatKeywordRaw(key: string, value: number): CardKeyword {
+    if (value <= 0) return key as CardKeyword;
+    const formatted = PLUS_VALUE_KEYWORDS.has(key)
+        ? `${key} +${value}`
+        : `${key} ${value}`;
+    return formatted as CardKeyword;
+}
+
 export function parseKeyword(raw: CardKeyword | string): ParsedKeyword {
     if (!raw) return { raw: '', key: '', value: 0 };
     
@@ -59,9 +70,8 @@ export function getEffectiveKeywords(card: CardState): ParsedKeyword[] {
 
     const result: ParsedKeyword[] = [];
     map.forEach((value, key) => {
-        const rawString = value > 0 ? `${key} +${value}` : key;
         result.push({
-            raw: rawString as CardKeyword,
+            raw: formatKeywordRaw(key, value),
             key,
             value,
         });

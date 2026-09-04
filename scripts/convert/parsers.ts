@@ -143,6 +143,34 @@ export function buildLangBlock(
 }
 
 /**
+ * Mot-clé Ambush X : `<keyword>Ambush</keyword> <symbol>twilightN</symbol>`
+ * (espace optionnel, ex. Southron Invaders).
+ */
+const AMBUSH_KEYWORD_REGEX =
+    /<keyword>Ambush<\/keyword>\s*<symbol>twilight(\d+)<\/symbol>/gi;
+
+function collectAmbushKeywords(text: string): string[] {
+    const found: string[] = [];
+    const regex = new RegExp(AMBUSH_KEYWORD_REGEX.source, 'gi');
+    let match;
+    while ((match = regex.exec(text)) !== null) {
+        const kw = `AMBUSH ${match[1]}`;
+        if (!found.includes(kw)) found.push(kw);
+    }
+    return found;
+}
+
+function isAmbushGrantedToBearer(text: string, matchIndex: number): boolean {
+    const before = text.slice(0, matchIndex);
+    const splitAt = Math.max(
+        before.lastIndexOf('<br>'),
+        before.lastIndexOf('\n')
+    );
+    const clause = before.slice(splitAt === -1 ? 0 : splitAt);
+    return /\bBearer\s+(?:is|gains)\b/i.test(clause);
+}
+
+/**
  * Extrait les mots-clés octroyés au porteur par une carte d'attachement ou de suivant.
  */
 export function parseGrantsKeywords(text?: string): string[] | undefined {
@@ -165,9 +193,16 @@ export function parseGrantsKeywords(text?: string): string[] | undefined {
 
         while ((kwMatch = kwRegex.exec(clauseAfterVerb)) !== null) {
             const rawKw = kwMatch[1].trim().replace(/\.$/, '').toUpperCase();
+            // Ambush X : la valeur est dans le symbole twilight, pas dans le tag keyword.
+            if (rawKw === 'AMBUSH') continue;
+
             if (VALID_KEYWORDS.has(rawKw)) {
                 granted.add(rawKw);
             }
+        }
+
+        for (const ambush of collectAmbushKeywords(clauseAfterVerb)) {
+            granted.add(ambush);
         }
     }
 
@@ -234,13 +269,12 @@ export function parseKeywords(
     }
 
     if (text) {
-        // --- B. Embuscade (Ambush X) ---
-        const ambushRegex =
-            /<keyword>Ambush<\/keyword>\s*<symbol>twilight(\d+)<\/symbol>/gi;
+        // --- B. Embuscade (Ambush X) : mot-clé du séide, pas celui conféré au porteur ---
+        const ambushRegex = new RegExp(AMBUSH_KEYWORD_REGEX.source, 'gi');
         let ambushMatch;
         while ((ambushMatch = ambushRegex.exec(text)) !== null) {
-            const cost = ambushMatch[1];
-            const kw = `AMBUSH ${cost}`;
+            if (isAmbushGrantedToBearer(text, ambushMatch.index)) continue;
+            const kw = `AMBUSH ${ambushMatch[1]}`;
             if (!keywords.includes(kw)) keywords.push(kw);
         }
 

@@ -51,6 +51,24 @@ type AssignmentEvents = {
     setActivePlayers?: (arg: { value: Record<string, string> }) => void;
 };
 
+/**
+ * Embuscade X : si le joueur des Peuples Libres affecte le séide, ajoute X Crépuscule.
+ * L’Ombre n’ajoute rien. Utilise getKeywordValue (attachements + tempKeywords).
+ */
+export const applyAmbushTwilight = (
+    G: GameState,
+    minion: CardState | undefined,
+    assignedByFreePeoples: boolean
+): number => {
+    if (!assignedByFreePeoples || !minion) return 0;
+
+    const ambushValue = getKeywordValue(minion, 'AMBUSH');
+    if (ambushValue <= 0) return 0;
+
+    G.twilightPool = (G.twilightPool || 0) + ambushValue;
+    return ambushValue;
+};
+
 /** Passe la main à l’Ombre pour les séides encore libres (surcharge ou cession FP). */
 export const beginShadowAssignment = (
     G: GameState,
