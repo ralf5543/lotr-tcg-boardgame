@@ -6,6 +6,7 @@ import {
 } from '../engine/abilities/payAbilityCost';
 import { applyAbilityEffect } from '../engine/abilities/applyAbilityEffect';
 import { abilityMatchesPhase } from '../engine/abilities/collectAbilities';
+import { yieldPriorityAfterAction } from '../engine/actionWindow';
 import { findTargetCard } from '../../utils/cardUtils';
 
 export const activateAbility = (
@@ -25,6 +26,8 @@ export const activateAbility = (
     if (!canPayAbilityCost(G, source, ability.cost)) return 'INVALID_MOVE';
     if (!payAbilityCost(G, source, ability.cost)) return 'INVALID_MOVE';
     if (!applyAbilityEffect(G, source, ability)) return 'INVALID_MOVE';
+
+    yieldPriorityAfterAction(G, playerID);
 
     const title =
         source.i18n?.fr?.title || source.title || source.id;

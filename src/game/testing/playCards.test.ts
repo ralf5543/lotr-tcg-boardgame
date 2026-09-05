@@ -212,6 +212,8 @@ describe('playCard', () => {
         expect(engine.getG().players['0']?.discard[0]?.id).toBe('4R307');
         expect(samInPlay?.wounds).toBe(1);
         expect(getCalculatedStrength(engine.getG(), samInPlay)).toBe(6);
+        expect(engine.getG().actionWindow?.activePlayerId).toBe('1');
+        expect(engine.getG().actionWindow?.passesCount).toBe(0);
     });
 
     it('refuse Impatient and Angry si Sam n’est pas en jeu', () => {

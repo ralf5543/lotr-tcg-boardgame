@@ -56,6 +56,9 @@ describe('activateAbility', () => {
         expect(aragorn?.wounds).toBe(1);
         expect(aragorn?.isDead).not.toBe(true);
         expect(getKeywordValue(aragorn!, 'DEFENDER')).toBe(1);
+        expect(engine.getG().actionWindow?.isOpen).toBe(true);
+        expect(engine.getG().actionWindow?.activePlayerId).toBe('1');
+        expect(engine.getG().actionWindow?.passesCount).toBe(0);
     });
 
     it('refuse hors phase (fellowship)', () => {
@@ -229,6 +232,9 @@ describe('activateAbility', () => {
         const card = engine.getG().players['0']?.fellowshipArea[0];
         expect(card?.wounds).toBe(1);
         expect(getCalculatedStrength(engine.getG(), card)).toBe(8);
+        expect(engine.getG().actionWindow?.isOpen).toBe(true);
+        expect(engine.getG().actionWindow?.activePlayerId).toBe('1');
+        expect(engine.getG().actionWindow?.passesCount).toBe(0);
     });
 
     it('Exert Sam nommé : blesse Sam et lui donne force +3 (pas la source)', () => {
@@ -432,5 +438,51 @@ describe('activateAbility', () => {
                 engine.getG().players['0']?.fellowshipArea[0]
             )
         ).toBe(8);
+    });
+
+    it('après Aragorn, un Passer de l’Ombre ne clôt pas la manœuvre', () => {
+        const engine = createEngineClient({
+            startPhase: 'maneuver',
+            playerID: '0',
+            G: {
+                players: {
+                    '0': createPlayerState('0', {
+                        fellowshipArea: [createAragorn()],
+                    }),
+                },
+            },
+        });
+
+        engine.moves.activateAbility('1R89', '1R89:0');
+        engine.updatePlayerID('1');
+        engine.moves.passActionWindow();
+
+        expect(engine.getCtx().phase).toBe('maneuver');
+        expect(engine.getG().actionWindow?.isOpen).toBe(true);
+        expect(engine.getG().actionWindow?.activePlayerId).toBe('0');
+        expect(engine.getG().actionWindow?.passesCount).toBe(1);
+    });
+
+    it('refuse d’activer si ce n’est pas sa fenêtre d’action', () => {
+        const engine = createEngineClient({
+            startPhase: 'maneuver',
+            playerID: '0',
+            G: {
+                players: {
+                    '0': createPlayerState('0', {
+                        fellowshipArea: [createAragorn()],
+                    }),
+                },
+            },
+        });
+
+        engine.moves.passActionWindow();
+        expect(engine.getG().actionWindow?.activePlayerId).toBe('1');
+
+        engine.moves.activateAbility('1R89', '1R89:0');
+
+        const aragorn = engine.getG().players['0']?.fellowshipArea[0];
+        expect(aragorn?.wounds || 0).toBe(0);
+        expect(engine.getG().actionWindow?.activePlayerId).toBe('1');
     });
 });

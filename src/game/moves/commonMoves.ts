@@ -9,6 +9,7 @@ import { playSite } from './fellowshipMoves';
 import { canPlayCard } from '../engine/canPlayCard';
 import { applyEventAbility } from '../engine/abilities/playEventAbility';
 import { clearExpiredTempKeywords } from '../engine/abilities/applyAbilityEffect';
+import { yieldPriorityAfterAction } from '../engine/actionWindow';
 import { findTargetCard } from '../../utils/cardUtils';
 
 export interface ReorderPayload {
@@ -232,6 +233,7 @@ export const playCard = (
             G.twilightPool -= cost;
             return 'INVALID_MOVE';
         }
+        yieldPriorityAfterAction(G, actingPlayerId);
         return;
     }
 
@@ -273,6 +275,7 @@ export const playCard = (
             G.twilightPool += cost;
             return 'INVALID_MOVE';
         }
+        yieldPriorityAfterAction(G, actingPlayerId);
     }
 };
 

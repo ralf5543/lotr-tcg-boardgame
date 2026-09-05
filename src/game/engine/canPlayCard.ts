@@ -5,6 +5,7 @@ import { checkPhases } from './validations/checkPhases';
 import { checkToPlayConditions } from './validations/checkToPlayConditions';
 import { cardMatchesTarget } from './validations/matchers';
 import { canPayEventAbility } from './abilities/playEventAbility';
+import { canActInActionWindow } from './actionWindow';
 
 /* ==========================================================================
    TYPES & INTERFACES
@@ -260,6 +261,13 @@ export function canPlayCard(
     if (!options?.ignorePhase) {
         const phaseCheck = checkPhases(card, context);
         if (!phaseCheck.valid) return phaseCheck;
+    }
+
+    if (!canActInActionWindow(context.G, context.playerID)) {
+        return {
+            valid: false,
+            reason: "Ce n'est pas à vous d'agir.",
+        };
     }
 
     // 2. Coût en crépuscule

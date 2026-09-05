@@ -129,5 +129,18 @@ describe('canUseAbility', () => {
                 playerID: '0',
             }).valid
         ).toBe(true);
+        expect(
+            canUseAbility(card, {
+                G: {
+                    ...open,
+                    actionWindow: {
+                        ...open.actionWindow!,
+                        activePlayerId: '1',
+                    },
+                },
+                ctx: { phase: 'skirmish' },
+                playerID: '0',
+            }).valid
+        ).toBe(false);
     });
 });
