@@ -6,6 +6,7 @@ import { assignmentMoves } from './assignmentMoves';
 import { regroupMoves } from './regroupMoves';
 import { setupMoves } from './setupMoves';
 import { maneuverMoves } from './maneuverMoves';
+import { abilityMoves } from './abilityMoves';
 
 export const allMoves = {
     ...commonMoves,
@@ -16,6 +17,7 @@ export const allMoves = {
     ...regroupMoves,
     ...setupMoves,
     ...maneuverMoves,
+    ...abilityMoves,
 };
 
 export {
@@ -27,4 +29,5 @@ export {
     regroupMoves,
     setupMoves,
     maneuverMoves,
+    abilityMoves,
 };

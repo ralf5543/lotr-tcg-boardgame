@@ -6,6 +6,7 @@ import {
     createGameState,
     createMinion,
     createPlayerState,
+    createSkirmishActionWindow,
 } from '../testing/createGameState';
 
 describe('canPlayCard', () => {
@@ -124,6 +125,95 @@ describe('canPlayCard', () => {
             playerID: '0',
         });
         expect(fresh.valid).toBe(true);
+    });
+
+    it('refuse un événement Exert Sam si Sam n’est pas en jeu', () => {
+        const event = createCard({
+            id: '4R307',
+            kind: 'FREE_PEOPLE',
+            type: 'EVENT',
+            title: 'Impatient and Angry',
+            phases: ['SKIRMISH'],
+            abilities: [
+                {
+                    id: '4R307:0',
+                    phases: ['SKIRMISH'],
+                    cost: [{ exert: [{ count: 1, target: [['Sam']] }] }],
+                    effect: {
+                        type: 'ADD_TEMP_STAT',
+                        stat: 'STRENGTH',
+                        value: 3,
+                        target: [['Sam']],
+                        expiresAtPhase: 'SKIRMISH',
+                    },
+                    source: 'SELF',
+                },
+            ],
+        });
+
+        const withoutSam = canPlayCard(event, {
+            G: createGameState({
+                ...createSkirmishActionWindow('sk-1'),
+                players: {
+                    '0': createPlayerState('0', {
+                        fellowshipArea: [
+                            createCompanion({ id: 'frodo', title: 'Frodo' }),
+                        ],
+                    }),
+                },
+            }),
+            ctx: { phase: 'skirmish' },
+            playerID: '0',
+        });
+        expect(withoutSam.valid).toBe(false);
+
+        const withSam = canPlayCard(event, {
+            G: createGameState({
+                ...createSkirmishActionWindow('sk-1'),
+                players: {
+                    '0': createPlayerState('0', {
+                        fellowshipArea: [
+                            createCompanion({
+                                id: 'sam',
+                                title: 'Sam',
+                                vitality: 4,
+                            }),
+                        ],
+                    }),
+                },
+            }),
+            ctx: { phase: 'skirmish' },
+            playerID: '0',
+        });
+        expect(withSam.valid).toBe(true);
+    });
+
+    it('refuse un événement Skirmish hors fenêtre de combat', () => {
+        const event = createCard({
+            id: '4R307',
+            kind: 'FREE_PEOPLE',
+            type: 'EVENT',
+            phases: ['SKIRMISH'],
+        });
+
+        const result = canPlayCard(event, {
+            G: createGameState({
+                players: {
+                    '0': createPlayerState('0', {
+                        fellowshipArea: [
+                            createCompanion({
+                                id: 'sam',
+                                title: 'Sam',
+                                vitality: 4,
+                            }),
+                        ],
+                    }),
+                },
+            }),
+            ctx: { phase: 'skirmish' },
+            playerID: '0',
+        });
+        expect(result.valid).toBe(false);
     });
 
     it('refuse un spotBurdens insuffisant', () => {

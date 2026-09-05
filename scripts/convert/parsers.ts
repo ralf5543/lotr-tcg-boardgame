@@ -670,3 +670,259 @@ export function parseToPlayConditions(text?: string): any[] | undefined {
     }
     return parsedOptions.length > 0 ? parsedOptions : undefined;
 }
+
+const ABILITY_PHASES = [
+    'FELLOWSHIP',
+    'SHADOW',
+    'MANEUVER',
+    'ARCHERY',
+    'ASSIGNMENT',
+    'SKIRMISH',
+    'REGROUP',
+    'RESPONSE',
+] as const;
+
+function normalizeParsedKeyword(raw: string): string | undefined {
+    const clean = raw
+        .replace(/[:.]/g, '')
+        .replace(/\s+/g, ' ')
+        .trim()
+        .toUpperCase();
+    if (VALID_KEYWORDS.has(clean)) return clean;
+    const spaced = clean.replace(/(\w)\+(\d)/, '$1 +$2');
+    if (VALID_KEYWORDS.has(spaced)) return spaced;
+    return undefined;
+}
+
+function findKnownKeyword(text: string): string | undefined {
+    const tagged = text.match(/<keyword>([^<]+)<\/keyword>/i);
+    if (tagged) {
+        const fromTag = normalizeParsedKeyword(tagged[1]);
+        if (fromTag) return fromTag;
+    }
+
+    const plain = text
+        .replace(/<[^>]+>/g, ' ')
+        .replace(/[:.]/g, ' ')
+        .replace(/\s+/g, ' ')
+        .trim()
+        .toUpperCase();
+
+    const sorted = [...VALID_KEYWORDS].sort((a, b) => b.length - a.length);
+    for (const kw of sorted) {
+        if (plain.includes(kw)) return kw;
+    }
+    return undefined;
+}
+
+function parseExertSubject(
+    raw: string,
+    cardTitle?: string
+): { target: 'SELF' | 'BEARER' | string[][]; count: number } | null {
+    let count = 1;
+    let body = raw.replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim();
+
+    const twiceMatch = body.match(/^(.*)\s+twice$/i);
+    if (twiceMatch) {
+        count = 2;
+        body = twiceMatch[1].trim();
+    } else {
+        const timesMatch = body.match(/^(.*)\s+(\d+)\s+times$/i);
+        if (timesMatch) {
+            count = parseInt(timesMatch[2], 10);
+            body = timesMatch[1].trim();
+        }
+    }
+
+    if (/^bearer$/i.test(body)) {
+        return { target: 'BEARER', count };
+    }
+    if (/^this\b/i.test(body)) {
+        return { target: 'SELF', count };
+    }
+
+    const title = (cardTitle || '').trim();
+    if (title && body.toLowerCase() === title.toLowerCase()) {
+        return { target: 'SELF', count };
+    }
+
+    // Désignation (« a Hobbit ») / filtres : pas de résolution auto.
+    if (/^(a|an|another|your)\b/i.test(body)) return null;
+    if (
+        /\b(companion|minion|ally|man|elf|dwarf|hobbit|orc|uruk-hai|ent|southron)\b/i.test(
+            body
+        )
+    ) {
+        return null;
+    }
+
+    return { target: [[body]], count };
+}
+
+function parseUntilExpiry(
+    effectText: string,
+    phase: string
+): 'REGROUP' | 'SKIRMISH' | 'TURN_END' {
+    if (/until the regroup phase/i.test(effectText)) return 'REGROUP';
+    if (/until the end of (?:the |this )?skirmish/i.test(effectText)) {
+        return 'SKIRMISH';
+    }
+    if (/until the end of (?:the |this )?turn/i.test(effectText)) {
+        return 'TURN_END';
+    }
+    return phase === 'SKIRMISH' ? 'SKIRMISH' : 'REGROUP';
+}
+
+function parseEffectTarget(
+    effectText: string,
+    costTarget: 'SELF' | 'BEARER' | string[][]
+): 'SELF' | 'BEARER' | string[][] {
+    if (/^\s*bearer\b/i.test(effectText.replace(/<[^>]+>/g, '').trim())) {
+        return 'BEARER';
+    }
+    if (costTarget === 'BEARER') return 'BEARER';
+    if (costTarget === 'SELF') return 'SELF';
+    // « make him » vise la même carte que le coût nommé (Exert Sam → Sam, pas l’event).
+    return costTarget;
+}
+
+function extractKeywordFromMakeClause(effectText: string): string | undefined {
+    const remainder = remainderAfterPronoun(effectText);
+    if (!remainder) return undefined;
+    return findKnownKeyword(remainder);
+}
+
+const STAT_NAMES: Record<string, 'STRENGTH' | 'VITALITY' | 'RESISTANCE'> = {
+    STRENGTH: 'STRENGTH',
+    VITALITY: 'VITALITY',
+    RESISTANCE: 'RESISTANCE',
+};
+
+function remainderAfterPronoun(effectText: string): string | undefined {
+    const pronounMatch = effectText.match(
+        /^\s*(him or her|him|her|it|bearer)\s+/i
+    );
+    if (!pronounMatch) return undefined;
+
+    const remainder = effectText.slice(pronounMatch[0].length);
+    const remainderPlain = remainder.replace(/<[^>]+>/g, ' ').trim();
+    if (/^(a|an)\s+/i.test(remainderPlain)) return undefined;
+    return remainder;
+}
+
+function extractStatFromMakeClause(effectText: string): {
+    stat: 'STRENGTH' | 'VITALITY' | 'RESISTANCE';
+    value: number;
+} | undefined {
+    const remainder = remainderAfterPronoun(effectText);
+    if (!remainder) return undefined;
+
+    const plain = remainder
+        .replace(/<[^>]+>/g, ' ')
+        .replace(/\s+/g, ' ')
+        .trim();
+    const match = plain.match(
+        /^(strength|vitality|resistance)\s*([+-]\d+)\b/i
+    );
+    if (!match) return undefined;
+
+    const stat = STAT_NAMES[match[1].toUpperCase()];
+    if (!stat) return undefined;
+    return { stat, value: parseInt(match[2], 10) };
+}
+
+/**
+ * Famille : `[Phase]: Exert [self/bearer/X] to make [him/bearer] KEYWORD|STAT [until …]?`
+ */
+export function parseAbilities(
+    text?: string,
+    cardTitle?: string,
+    cardId?: string
+) {
+    if (!text) return undefined;
+
+    const phaseRe = new RegExp(
+        `<keyword>(${ABILITY_PHASES.join('|')})[:.]?<\\/keyword>`,
+        'gi'
+    );
+    const markers: { phase: string; markerStart: number; bodyStart: number }[] =
+        [];
+    let markerMatch: RegExpExecArray | null;
+    while ((markerMatch = phaseRe.exec(text)) !== null) {
+        markers.push({
+            phase: markerMatch[1].toUpperCase(),
+            markerStart: markerMatch.index,
+            bodyStart: markerMatch.index + markerMatch[0].length,
+        });
+    }
+
+    const abilities: Record<string, unknown>[] = [];
+
+    markers.forEach((marker, index) => {
+        const bodyEnd =
+            index + 1 < markers.length
+                ? markers[index + 1].markerStart
+                : text.length;
+        const body = text.slice(marker.bodyStart, bodyEnd).trim();
+        const exertMatch = body.match(
+            /^Exert\s+([\s\S]+?)\s+to make\s+([\s\S]+)/i
+        );
+        if (!exertMatch) return;
+        if (/\b(and|or)\b/i.test(exertMatch[1])) return;
+
+        const subject = parseExertSubject(exertMatch[1], cardTitle);
+        if (!subject) return;
+        const effectText = exertMatch[2];
+        if (/\bfor each\b/i.test(effectText.replace(/<[^>]+>/g, ' '))) return;
+
+        const remainder = remainderAfterPronoun(effectText);
+        if (remainder && /\band\b/i.test(remainder.replace(/<[^>]+>/g, ' '))) {
+            return;
+        }
+        const keyword = extractKeywordFromMakeClause(effectText);
+        const statMod = keyword ? undefined : extractStatFromMakeClause(effectText);
+        if (!keyword && !statMod) return;
+
+        const expiresAtPhase = parseUntilExpiry(effectText, marker.phase);
+        const effectTarget = parseEffectTarget(effectText, subject.target);
+        const source = subject.target === 'BEARER' ? 'ATTACHMENT' : 'SELF';
+        const clause = `${marker.phase}: Exert ${exertMatch[1].trim()} to make ${effectText}`
+            .replace(/<[^>]+>/g, '')
+            .replace(/\s+/g, ' ')
+            .replace(/\s+\./g, '.')
+            .trim();
+
+        abilities.push({
+            id: `${cardId || 'ability'}:${abilities.length}`,
+            phases: [marker.phase],
+            cost: [
+                {
+                    exert: [
+                        {
+                            count: subject.count,
+                            target: subject.target,
+                        },
+                    ],
+                },
+            ],
+            effect: keyword
+                ? {
+                      type: 'ADD_TEMP_KEYWORD',
+                      keyword,
+                      target: effectTarget,
+                      expiresAtPhase,
+                  }
+                : {
+                      type: 'ADD_TEMP_STAT',
+                      stat: statMod!.stat,
+                      value: statMod!.value,
+                      target: effectTarget,
+                      expiresAtPhase,
+                  },
+            source,
+            text: clause,
+        });
+    });
+
+    return abilities.length > 0 ? abilities : undefined;
+}

@@ -74,10 +74,20 @@ npm run preview
 
 ## Données de cartes
 
-Les cartes sont chargées depuis des fichiers JSON dérivés d’un CSV source communautaire :
+Les cartes sont chargées depuis des JSON dérivés du CSV de l'ancien jeu officiel : The Lord of The Rings TCG Online.
 
-- Source : [lotro_card_data.csv](https://files.lotrtcgpc.net/digital_play/lotro_card_data.csv)
-- Conversion (script hors repo / relatif selon ton setup) : génération JSON à partir du CSV
+- Source : [lotro_card_data.csv](https://files.lotrtcgpc.net/digital_play/lotro_card_data.csv) → `src/lotro_card_data.csv`
+- Sortie : `src/data/cards.json` et `src/data/sites.json`
+
+Depuis la **racine du repo** (pas depuis `src/`) :
+
+```bash
+npm run convert
+```
+
+Équivalent : `npx tsx scripts/convert/index.ts`.
+
+L’ancien `node ../scripts/convert/index.ts` (lancé depuis `src/`) ne marche plus : les chemins du script sont relatifs à la racine.
 
 ---
 

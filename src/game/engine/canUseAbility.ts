@@ -2,6 +2,7 @@
 
 import type { CardState, GameState } from '../types';
 import { getKeywordValue } from './keywords/keywordUtils';
+import { isSkirmishActionWindowOpen } from './skirmishActionWindow';
 export interface ValidationContext {
     G: GameState;
     ctx: { phase?: string; currentPlayer?: string };
@@ -69,6 +70,17 @@ export function canUseAbility(
             return {
                 valid: false,
                 reason: `Cette capacité ne peut être activée qu'en phase : ${card.actionPhases.join(', ')}.`,
+            };
+        }
+
+        if (
+            (currentPhase === 'SKIRMISH' || normalizedPhase === 'SKIRMISH') &&
+            allowedActionPhases.includes('SKIRMISH') &&
+            !isSkirmishActionWindowOpen(G)
+        ) {
+            return {
+                valid: false,
+                reason: 'Les actions de combat ne peuvent être utilisées que pendant une escarmouche en cours.',
             };
         }
         return { valid: true };

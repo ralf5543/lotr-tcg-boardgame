@@ -1,4 +1,10 @@
-import type { CardState, GameState, PlayerState, SiteCardState } from '../types';
+import type {
+    ActionWindow,
+    CardState,
+    GameState,
+    PlayerState,
+    SiteCardState,
+} from '../types';
 
 const EMPTY_PATH: (SiteCardState | null)[] = [
     null,
@@ -90,6 +96,26 @@ export function createBiddingSetupState(): NonNullable<
         bids: { '0': null, '1': null },
         mulligans: { '0': null, '1': null },
         step: 'BIDDING',
+    };
+}
+
+export function createSkirmishActionWindow(
+    skirmishId: string,
+    activePlayerId = '0'
+): {
+    activeSkirmishId: string;
+    actionWindow: ActionWindow;
+} {
+    return {
+        activeSkirmishId: skirmishId,
+        actionWindow: {
+            isOpen: true,
+            activePlayerId,
+            title: 'ESCARMOUCHE',
+            message: '',
+            canPass: true,
+            passesCount: 0,
+        },
     };
 }
 

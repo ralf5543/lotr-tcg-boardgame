@@ -98,4 +98,36 @@ describe('canUseAbility', () => {
             }).valid
         ).toBe(false);
     });
+
+    it('n’autorise une action Skirmish que pendant une escarmouche sélectionnée', () => {
+        const card = createCompanion({
+            id: 'gimli',
+            actionPhases: ['SKIRMISH'],
+        });
+        const closed = createGameState();
+        const open = createGameState({
+            activeSkirmishId: 'sk-1',
+            actionWindow: {
+                isOpen: true,
+                activePlayerId: '0',
+                canPass: true,
+                passesCount: 0,
+            },
+        });
+
+        expect(
+            canUseAbility(card, {
+                G: closed,
+                ctx: { phase: 'skirmish' },
+                playerID: '0',
+            }).valid
+        ).toBe(false);
+        expect(
+            canUseAbility(card, {
+                G: open,
+                ctx: { phase: 'skirmish' },
+                playerID: '0',
+            }).valid
+        ).toBe(true);
+    });
 });

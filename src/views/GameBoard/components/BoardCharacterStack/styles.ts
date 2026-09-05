@@ -2,6 +2,7 @@ import styled, { css } from 'styled-components';
 
 export const CharacterStack = styled.div<{ $isBeingDragged?: boolean }>`
     position: relative;
+    overflow: visible;
 
     ${({ $isBeingDragged }) =>
         $isBeingDragged &&

@@ -14,6 +14,7 @@ import {
     getEffectiveKeywords,
 } from '../engine/keywords/keywordUtils';
 import { getCalculatedStrength } from './stats/statCalculator';
+import { clearExpiredTempKeywords } from '../engine/abilities/applyAbilityEffect';
 
 /**
  * Helper interne pour extraire proprement le nom d'une carte dans la langue par défaut (FR).
@@ -87,6 +88,7 @@ export const resolveSkirmish = (G: GameState, _ctx?: Ctx) => {
     );
     if (skirmishIndex === -1) {
         G.activeSkirmishId = undefined;
+        clearExpiredTempKeywords(G, 'SKIRMISH');
         return;
     }
 
@@ -108,6 +110,7 @@ export const resolveSkirmish = (G: GameState, _ctx?: Ctx) => {
         G.skirmishes.splice(skirmishIndex, 1);
         G.activeSkirmishId = undefined;
         G.actionWindow = undefined;
+        clearExpiredTempKeywords(G, 'SKIRMISH');
         return;
     }
 

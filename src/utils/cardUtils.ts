@@ -23,11 +23,20 @@ export function findTargetCard(
             const attached = char.attachments?.find(match);
             if (attached) return attached;
         }
+
+        for (const card of player.supportArea || []) {
+            if (match(card)) return card;
+            const attached = card.attachments?.find(match);
+            if (attached) return attached;
+        }
     }
 
     // 2. Champ de Bataille
-    const foundInBattlefield = G.battlefield?.find(match);
-    if (foundInBattlefield) return foundInBattlefield;
+    for (const char of G.battlefield || []) {
+        if (match(char)) return char;
+        const attached = char.attachments?.find(match);
+        if (attached) return attached;
+    }
 
     // 3. Path (Sites)
     const foundInPath = G.path?.find((s) => match(s as any));

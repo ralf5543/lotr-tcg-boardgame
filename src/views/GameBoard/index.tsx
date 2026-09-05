@@ -50,6 +50,10 @@ export interface GameBoardProps extends BoardProps<GameState> {
                 followerInstanceId: string,
                 targetInstanceId: string
             ) => void;
+            activateAbility?: (
+                sourceInstanceId: string,
+                abilityId: string
+            ) => void;
         };
 }
 
@@ -66,6 +70,13 @@ export const GameBoard: React.FC<GameBoardProps> = ({
     useSkirmishAudio(G);
     const myId = playerID || ctx.currentPlayer;
     const oppId = myId === '0' ? '1' : '0';
+
+    const handleActivateAbility = (
+        sourceInstanceId: string,
+        abilityId: string
+    ) => {
+        moves.activateAbility?.(sourceInstanceId, abilityId);
+    };
 
     // 🟢 1. Détection stricte de la phase de setup
     const isSetupPhase = Boolean(
@@ -489,6 +500,7 @@ export const GameBoard: React.FC<GameBoardProps> = ({
                         activeSkirmishId={G.activeSkirmishId}
                         G={G}
                         phase={ctx.phase}
+                        onActivateAbility={handleActivateAbility}
                     />
 
                     {/* ==================== 2. CENTRAL ==================== */}
@@ -503,6 +515,7 @@ export const GameBoard: React.FC<GameBoardProps> = ({
                                 lastWoundedCardIds={G.lastWoundedCardIds}
                                 G={G}
                                 playerId={myId}
+                                onActivateAbility={handleActivateAbility}
                             />
                             <TwilightPool value={G.twilightPool} />
                         </S.MainZone>
@@ -522,6 +535,7 @@ export const GameBoard: React.FC<GameBoardProps> = ({
                         activeSkirmishId={G.activeSkirmishId}
                         G={G}
                         phase={ctx.phase}
+                        onActivateAbility={handleActivateAbility}
                     />
 
                     {/* ==================== SITE PATH ==================== */}

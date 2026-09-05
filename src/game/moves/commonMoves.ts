@@ -7,6 +7,8 @@ import { getEffectiveVitality } from '../../utils/cardStats';
 import { devMoves } from '../dev/devMoves';
 import { playSite } from './fellowshipMoves';
 import { canPlayCard } from '../engine/canPlayCard';
+import { applyEventAbility } from '../engine/abilities/playEventAbility';
+import { clearExpiredTempKeywords } from '../engine/abilities/applyAbilityEffect';
 import { findTargetCard } from '../../utils/cardUtils';
 
 export interface ReorderPayload {
@@ -214,6 +216,11 @@ export const playCard = (
             player.supportArea.push(playedCard);
             G.statusMessage = `${playedCard.title} rejoint l'aire de soutien (+${cost} Crépuscule).`;
         } else if (playedCard.type === 'EVENT') {
+            if (!applyEventAbility(G, playedCard, ctx.phase || '')) {
+                player.hand.splice(cardIndex, 0, playedCard);
+                G.twilightPool -= cost;
+                return 'INVALID_MOVE';
+            }
             if (!player.discard) player.discard = [];
             player.discard.push(playedCard);
             G.statusMessage = `${playedCard.title} est joué (+${cost} Crépuscule).`;
@@ -250,6 +257,11 @@ export const playCard = (
             player.supportArea.push(playedCard);
             G.statusMessage = `${playedCard.title} rejoint l'aire de soutien de l'Ombre (-${cost} Crépuscule).`;
         } else if (playedCard.type === 'EVENT') {
+            if (!applyEventAbility(G, playedCard, ctx.phase || '')) {
+                player.hand.splice(cardIndex, 0, playedCard);
+                G.twilightPool += cost;
+                return 'INVALID_MOVE';
+            }
             if (!player.discard) player.discard = [];
             player.discard.push(playedCard);
             G.statusMessage = `${playedCard.title} est joué (-${cost} Crépuscule).`;
@@ -353,10 +365,15 @@ export const cleanupPendingDeaths = ({ G }: LotrMoveContext) => {
         const skirmishIndex = G.skirmishes.findIndex(
             (s) => s.id === G.activeSkirmishId
         );
-        if (skirmishIndex !== -1) {
+        const skirmish =
+            skirmishIndex !== -1 ? G.skirmishes[skirmishIndex] : undefined;
+        // Un exert pendant le combat remplit lastWoundedCardIds : on ne clôture
+        // le combat que s'il a déjà été résolu.
+        if (skirmish?.resolved) {
             G.skirmishes.splice(skirmishIndex, 1);
+            G.activeSkirmishId = undefined;
+            clearExpiredTempKeywords(G, 'SKIRMISH');
         }
-        G.activeSkirmishId = undefined;
     }
     G.pendingDeadCardIds = [];
     G.lastWoundedCardIds = [];

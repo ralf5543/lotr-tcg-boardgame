@@ -81,8 +81,24 @@ const CARDS_PRESETS: Record<string, CardState> = {
         isUnique: true,
         kind: 'FREE_PEOPLE',
         type: 'COMPANION',
-        keywords: ['DAMAGE +1'],
-        phases: ['SKIRMISH'],
+        keywords: ['DAMAGE +1', 'UNBOUND'],
+        actionPhases: ['SKIRMISH'],
+        abilities: [
+            {
+                id: '0P12:0',
+                phases: ['SKIRMISH'],
+                cost: [{ exert: [{ count: 1, target: 'SELF' }] }],
+                effect: {
+                    type: 'ADD_TEMP_STAT' as const,
+                    stat: 'STRENGTH' as const,
+                    value: 2,
+                    target: 'SELF' as const,
+                    expiresAtPhase: 'SKIRMISH' as const,
+                },
+                source: 'SELF' as const,
+                text: 'SKIRMISH: Exert Gimli to make him strength +2.',
+            },
+        ],
         culture: 'DWARVEN',
         race: 'DWARF',
         signet: 'GANDALF',
@@ -176,35 +192,65 @@ const CARDS_PRESETS: Record<string, CardState> = {
         },
     },
     ARAGORN: {
-        id: '4C109',
-        set: 4,
-        rarity: 'C',
+        id: "1R89",
+        set: 1,
+        rarity: "R",
         isUnique: true,
-        kind: 'FREE_PEOPLE',
-        type: 'COMPANION',
-        keywords: ['DEFENDER +2', 'UNBOUND', 'HUNTER 1'],
-        culture: 'GONDOR',
-        race: 'MAN',
-        signet: 'GANDALF',
+        kind: "FREE_PEOPLE",
+        type: "COMPANION",
+        keywords: [
+          "RANGER",
+          "UNBOUND"
+        ],
+        abilities: [
+          {
+            id: "1R89:0",
+            phases: [
+              "MANEUVER"
+            ],
+            cost: [
+              {
+                "exert": [
+                  {
+                    "count": 1,
+                    "target": "SELF"
+                  }
+                ]
+              }
+            ],
+            effect: {
+              type: "ADD_TEMP_KEYWORD",
+              keyword: "DEFENDER +1",
+              target: "SELF",
+              expiresAtPhase: "REGROUP"
+            },
+            source: "SELF",
+            text: "MANEUVER: Exert Aragorn to make him defender +1 until the regroup phase."
+          }
+        ],
+        actionPhases: [
+          "MANEUVER"
+        ],
+        culture: "GONDOR",
+        race: "MAN",
+        signet: "GANDALF",
         twilightCost: 4,
         strength: 8,
         vitality: 4,
-        imageUrl: '/cards_visuals/o_04_109.jpg',
+        imageUrl: "/cards_visuals/o_01_089.jpg",
         i18n: {
-            en: {
-                title: 'Aragorn',
-                subtitle: 'Heir of Elendil',
-                gameText: '**Defender +1.**',
-                loreText:
-                    'Sauron fears you, Aragorn, he fears what you may become.',
-            },
-            fr: {
-                title: 'Aragorn',
-                subtitle: "Héritier d'Elendil",
-                gameText: '**Défenseur +1.**',
-                loreText:
-                    'Sauron te craint, Aragorn, Il craint ce que tu pourrais devenir.',
-            },
+          en: {
+            title: "Aragorn",
+            subtitle: "Ranger of the North",
+            gameText: "**Ranger.** \n**Maneuver:** Exert Aragorn to make him **defender +1** until the regroup phase.",
+            loreText: "Lonely men are we, Rangers of the wild, hunters – but hunters ever of the servants of the Enemy...."
+          },
+          fr: {
+            title: "Aragorn",
+            subtitle: "Rôdeur du Nord",
+            gameText: "**Rôdeur.**\n**Manœuvre :** Affaiblissez Aragorn pour le rendre **défenseur +1** jusqu’à la phase de ralliement.",
+            loreText: "Nous sommes des hommes solitaires, Rôdeurs des Terres Sauvages, chasseurs – mais toujours chasseurs des serviteurs de l'Ennemi...."
+          },
         },
     },
     LURTZ: {

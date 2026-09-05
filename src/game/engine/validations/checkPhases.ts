@@ -2,6 +2,7 @@
 
 import type { CardState } from '../../types';
 import { getKeywordValue } from '../keywords/keywordUtils';
+import { isSkirmishActionWindowOpen } from '../skirmishActionWindow';
 
 export interface ValidationContext {
     G: any;
@@ -52,6 +53,12 @@ export function checkPhases(
                     reason: `Cet Événement ne peut être joué qu'en phase : ${card.phases.join(', ')}.`,
                 };
             }
+        }
+        if (currentPhase === 'SKIRMISH' && !isSkirmishActionWindowOpen(G)) {
+            return {
+                valid: false,
+                reason: 'Les événements de combat se jouent pendant une escarmouche en cours.',
+            };
         }
         return { valid: true };
     }

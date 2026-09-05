@@ -346,6 +346,33 @@
       "DAMAGE +1",
       "UNBOUND"
     ],
+    "abilities": [
+      {
+        "id": "0P12:0",
+        "phases": [
+          "SKIRMISH"
+        ],
+        "cost": [
+          {
+            "exert": [
+              {
+                "count": 1,
+                "target": "SELF"
+              }
+            ]
+          }
+        ],
+        "effect": {
+          "type": "ADD_TEMP_STAT",
+          "stat": "STRENGTH",
+          "value": 2,
+          "target": "SELF",
+          "expiresAtPhase": "SKIRMISH"
+        },
+        "source": "SELF",
+        "text": "SKIRMISH: Exert Gimli to make him strength +2."
+      }
+    ],
     "actionPhases": [
       "SKIRMISH"
     ],
@@ -453,6 +480,32 @@
     "keywords": [
       "RANGER",
       "UNBOUND"
+    ],
+    "abilities": [
+      {
+        "id": "0P14:0",
+        "phases": [
+          "MANEUVER"
+        ],
+        "cost": [
+          {
+            "exert": [
+              {
+                "count": 1,
+                "target": "SELF"
+              }
+            ]
+          }
+        ],
+        "effect": {
+          "type": "ADD_TEMP_KEYWORD",
+          "keyword": "DEFENDER +1",
+          "target": "SELF",
+          "expiresAtPhase": "REGROUP"
+        },
+        "source": "SELF",
+        "text": "MANEUVER: Exert Aragorn to make him defender +1 until the regroup phase."
+      }
     ],
     "actionPhases": [
       "MANEUVER"
@@ -4579,6 +4632,33 @@
       "DAMAGE +1",
       "UNBOUND"
     ],
+    "abilities": [
+      {
+        "id": "1R13:0",
+        "phases": [
+          "SKIRMISH"
+        ],
+        "cost": [
+          {
+            "exert": [
+              {
+                "count": 1,
+                "target": "SELF"
+              }
+            ]
+          }
+        ],
+        "effect": {
+          "type": "ADD_TEMP_STAT",
+          "stat": "STRENGTH",
+          "value": 2,
+          "target": "SELF",
+          "expiresAtPhase": "SKIRMISH"
+        },
+        "source": "SELF",
+        "text": "SKIRMISH: Exert Gimli to make him strength +2."
+      }
+    ],
     "actionPhases": [
       "SKIRMISH"
     ],
@@ -4883,6 +4963,32 @@
     "keywords": [
       "RANGER",
       "UNBOUND"
+    ],
+    "abilities": [
+      {
+        "id": "1R89:0",
+        "phases": [
+          "MANEUVER"
+        ],
+        "cost": [
+          {
+            "exert": [
+              {
+                "count": 1,
+                "target": "SELF"
+              }
+            ]
+          }
+        ],
+        "effect": {
+          "type": "ADD_TEMP_KEYWORD",
+          "keyword": "DEFENDER +1",
+          "target": "SELF",
+          "expiresAtPhase": "REGROUP"
+        },
+        "source": "SELF",
+        "text": "MANEUVER: Exert Aragorn to make him defender +1 until the regroup phase."
+      }
     ],
     "actionPhases": [
       "MANEUVER"
@@ -18395,6 +18501,33 @@
         "ORC"
       ]
     ],
+    "abilities": [
+      {
+        "id": "1R190:0",
+        "phases": [
+          "SKIRMISH"
+        ],
+        "cost": [
+          {
+            "exert": [
+              {
+                "count": 1,
+                "target": "BEARER"
+              }
+            ]
+          }
+        ],
+        "effect": {
+          "type": "ADD_TEMP_STAT",
+          "stat": "STRENGTH",
+          "value": 2,
+          "target": "BEARER",
+          "expiresAtPhase": "SKIRMISH"
+        },
+        "source": "ATTACHMENT",
+        "text": "SKIRMISH: Exert bearer to make him strength +2."
+      }
+    ],
     "actionPhases": [
       "SKIRMISH"
     ],
@@ -29397,6 +29530,32 @@
     "type": "COMPANION",
     "keywords": [
       "RING-BOUND"
+    ],
+    "abilities": [
+      {
+        "id": "2C114:0",
+        "phases": [
+          "MANEUVER"
+        ],
+        "cost": [
+          {
+            "exert": [
+              {
+                "count": 2,
+                "target": "SELF"
+              }
+            ]
+          }
+        ],
+        "effect": {
+          "type": "ADD_TEMP_KEYWORD",
+          "keyword": "DEFENDER +1",
+          "target": "SELF",
+          "expiresAtPhase": "REGROUP"
+        },
+        "source": "SELF",
+        "text": "MANEUVER: Exert Sam twice to make him defender +1 until the regroup phase."
+      }
     ],
     "actionPhases": [
       "MANEUVER",
@@ -48443,6 +48602,41 @@
     "isUnique": false,
     "kind": "FREE_PEOPLE",
     "type": "EVENT",
+    "abilities": [
+      {
+        "id": "4R307:0",
+        "phases": [
+          "SKIRMISH"
+        ],
+        "cost": [
+          {
+            "exert": [
+              {
+                "count": 1,
+                "target": [
+                  [
+                    "Sam"
+                  ]
+                ]
+              }
+            ]
+          }
+        ],
+        "effect": {
+          "type": "ADD_TEMP_STAT",
+          "stat": "STRENGTH",
+          "value": 3,
+          "target": [
+            [
+              "Sam"
+            ]
+          ],
+          "expiresAtPhase": "SKIRMISH"
+        },
+        "source": "SELF",
+        "text": "SKIRMISH: Exert Sam to make him strength +3. If Sam wins this skirmish, you may remove a burden."
+      }
+    ],
     "phases": [
       "SKIRMISH"
     ],
@@ -66542,6 +66736,32 @@
       "EASTERLING",
       "DAMAGE +1"
     ],
+    "abilities": [
+      {
+        "id": "7C141:0",
+        "phases": [
+          "SKIRMISH"
+        ],
+        "cost": [
+          {
+            "exert": [
+              {
+                "count": 1,
+                "target": "SELF"
+              }
+            ]
+          }
+        ],
+        "effect": {
+          "type": "ADD_TEMP_KEYWORD",
+          "keyword": "DAMAGE +1",
+          "target": "SELF",
+          "expiresAtPhase": "SKIRMISH"
+        },
+        "source": "SELF",
+        "text": "SKIRMISH: Exert this minion to make him Damage +1.."
+      }
+    ],
     "actionPhases": [
       "SKIRMISH"
     ],
@@ -66586,6 +66806,32 @@
     "keywords": [
       "EASTERLING",
       "DAMAGE +1"
+    ],
+    "abilities": [
+      {
+        "id": "7C142:0",
+        "phases": [
+          "SKIRMISH"
+        ],
+        "cost": [
+          {
+            "exert": [
+              {
+                "count": 1,
+                "target": "SELF"
+              }
+            ]
+          }
+        ],
+        "effect": {
+          "type": "ADD_TEMP_KEYWORD",
+          "keyword": "DAMAGE +1",
+          "target": "SELF",
+          "expiresAtPhase": "SKIRMISH"
+        },
+        "source": "SELF",
+        "text": "SKIRMISH: Exert this minion to make him Damage +1.."
+      }
     ],
     "actionPhases": [
       "SKIRMISH"
@@ -66675,6 +66921,32 @@
     "keywords": [
       "EASTERLING",
       "DAMAGE +1"
+    ],
+    "abilities": [
+      {
+        "id": "7C144:0",
+        "phases": [
+          "SKIRMISH"
+        ],
+        "cost": [
+          {
+            "exert": [
+              {
+                "count": 1,
+                "target": "SELF"
+              }
+            ]
+          }
+        ],
+        "effect": {
+          "type": "ADD_TEMP_KEYWORD",
+          "keyword": "DAMAGE +1",
+          "target": "SELF",
+          "expiresAtPhase": "SKIRMISH"
+        },
+        "source": "SELF",
+        "text": "SKIRMISH: Exert this minion to make him Damage +1.."
+      }
     ],
     "actionPhases": [
       "SKIRMISH"
@@ -81169,6 +81441,32 @@
             ]
           }
         ]
+      }
+    ],
+    "abilities": [
+      {
+        "id": "9R24:0",
+        "phases": [
+          "SKIRMISH"
+        ],
+        "cost": [
+          {
+            "exert": [
+              {
+                "count": 1,
+                "target": "BEARER"
+              }
+            ]
+          }
+        ],
+        "effect": {
+          "type": "ADD_TEMP_KEYWORD",
+          "keyword": "DAMAGE +1",
+          "target": "BEARER",
+          "expiresAtPhase": "SKIRMISH"
+        },
+        "source": "ATTACHMENT",
+        "text": "SKIRMISH: Exert bearer to make him or her damage +1."
       }
     ],
     "actionPhases": [
@@ -102987,6 +103285,33 @@
     "type": "COMPANION",
     "keywords": [
       "UNBOUND"
+    ],
+    "abilities": [
+      {
+        "id": "12R116:0",
+        "phases": [
+          "SKIRMISH"
+        ],
+        "cost": [
+          {
+            "exert": [
+              {
+                "count": 1,
+                "target": "SELF"
+              }
+            ]
+          }
+        ],
+        "effect": {
+          "type": "ADD_TEMP_STAT",
+          "stat": "STRENGTH",
+          "value": 1,
+          "target": "SELF",
+          "expiresAtPhase": "SKIRMISH"
+        },
+        "source": "SELF",
+        "text": "SKIRMISH: Exert Haethen to make him strength +1."
+      }
     ],
     "actionPhases": [
       "SKIRMISH"

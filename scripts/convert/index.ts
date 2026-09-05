@@ -19,6 +19,7 @@ import {
     parseAttachedTo,
     parseToPlayConditions,
     parseAidCost,
+    parseAbilities,
 } from './parsers.ts';
 
 async function convert() {
@@ -126,6 +127,9 @@ async function convert() {
         const toPlayData = parseToPlayConditions(englishText);
         const grantsKeywords = parseGrantsKeywords(englishText);
         const aidCost = type === 'FOLLOWER' ? parseAidCost(englishText) : undefined;
+        const abilities = isSite
+            ? undefined
+            : parseAbilities(englishText, titleVO, cardId);
 
         const cardObj: any = {
             id: cardId,
@@ -142,6 +146,7 @@ async function convert() {
             grantsKeywords: grantsKeywords,
             attachedTo: attachmentData || undefined,
             toPlay: toPlayData,
+            abilities: abilities,
             phases: phases,
             actionPhases: actionPhases,
             culture: culture,

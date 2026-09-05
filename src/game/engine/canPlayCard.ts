@@ -4,6 +4,7 @@ import type { CardState, SiteCardState, GameState, CardType } from '../types';
 import { checkPhases } from './validations/checkPhases';
 import { checkToPlayConditions } from './validations/checkToPlayConditions';
 import { cardMatchesTarget } from './validations/matchers';
+import { canPayEventAbility } from './abilities/playEventAbility';
 
 /* ==========================================================================
    TYPES & INTERFACES
@@ -272,6 +273,14 @@ export function canPlayCard(
     // 4. Conditions prérequis "To Play" (spot, exert, burdens, discard...)
     const toPlayCheck = checkToPlayConditions(card, context);
     if (!toPlayCheck.valid) return toPlayCheck;
+
+    // 4b. Événement : coût d'ability parsé (Exert Sam, etc.) — play depuis la main
+    const eventAbilityCheck = canPayEventAbility(
+        context.G,
+        card,
+        context.ctx.phase || ''
+    );
+    if (!eventAbilityCheck.valid) return eventAbilityCheck;
 
     // 5. Validation du dépôt en Zone ou sur Cible (Uniquement si pose depuis la main ou cible explicite)
 if (targetId) {

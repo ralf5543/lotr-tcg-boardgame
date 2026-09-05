@@ -922,3 +922,82 @@ export const WoundToken = styled.img`
     height: fit-content;
     margin-inline-end: 4px;
 `;
+
+export const AbilityButton = styled.button<{ $abilityPhaseMatch?: boolean }>`
+    position: absolute;
+    z-index: 8;
+    inset-block-end: 6px;
+    inset-inline-start: 50%;
+    transform: translateX(-50%);
+    width: 18px;
+    height: 18px;
+    padding: 0;
+    border: 1px solid #111;
+    border-radius: 50%;
+    background: #222;
+    color: #eee;
+    font-size: 11px;
+    line-height: 1;
+    cursor: pointer;
+
+    ${(props) =>
+        props.$abilityPhaseMatch &&
+        css`
+            background: #c9a227;
+            color: #111;
+        `}
+`;
+
+export const AbilityBubble = styled.div`
+    position: absolute;
+    z-index: 9;
+    bottom: calc(100% + 4px);
+    left: 50%;
+    transform: translateX(-50%);
+    min-width: 140px;
+    padding: 6px;
+    background: #111;
+    color: #eee;
+    border: 1px solid #333;
+    font-size: 11px;
+    line-height: 1.3;
+`;
+
+export const AbilityBubbleClose = styled.button`
+    position: absolute;
+    top: 2px;
+    right: 2px;
+    width: 16px;
+    height: 16px;
+    padding: 0;
+    border: 0;
+    background: transparent;
+    color: #eee;
+    cursor: pointer;
+    font-size: 12px;
+    line-height: 1;
+`;
+
+export const AbilityBubbleList = styled.ul`
+    margin: 14px 0 0;
+    padding: 0;
+    list-style: none;
+`;
+
+export const AbilityBubbleItem = styled.button`
+    display: block;
+    width: 100%;
+    margin: 0 0 4px;
+    padding: 4px 6px;
+    border: 0;
+    background: transparent;
+    color: inherit;
+    text-align: left;
+    cursor: pointer;
+    font: inherit;
+
+    &:hover {
+        text-decoration: underline;
+    }
+`;
+

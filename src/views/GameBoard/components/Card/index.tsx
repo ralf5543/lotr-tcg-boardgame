@@ -16,6 +16,12 @@ import { getCardText } from '../../../../utils/i18n';
 import type { SupportedLanguage } from '../../../../utils/i18n';
 import { requiresAttachmentTarget } from '../../../../game/engine/canPlayCard';
 import { getEffectiveKeywords } from '../../../../game/engine/keywords/keywordUtils';
+import { canUseAbility } from '../../../../game/engine/canUseAbility';
+import {
+    cardOrAttachmentsHaveActionPhases,
+    collectCardAbilities,
+    formatAbilityLabel,
+} from '../../../../game/engine/abilities/collectAbilities';
 
 interface CardImageProps {
     imageUrl?: string;
@@ -100,6 +106,9 @@ interface CardProps {
     burdens?: number;
     isFaceDown?: boolean;
     currentLang?: SupportedLanguage;
+    phase?: string;
+    playerID?: string;
+    onActivateAbility?: (sourceInstanceId: string, abilityId: string) => void;
 }
 
 export const Card: React.FC<CardProps> = ({
@@ -120,11 +129,15 @@ export const Card: React.FC<CardProps> = ({
     burdens = 0,
     isFaceDown: isFaceDownProp,
     currentLang = 'fr',
+    phase,
+    playerID,
+    onActivateAbility,
 }) => {
     const { setHoveredCard } = useHoverCard();
     const { startDrag } = useDrag();
 
     const [isTakingDamage, setIsTakingDamage] = useState(false);
+    const [isAbilityMenuOpen, setIsAbilityMenuOpen] = useState(false);
     const prevWoundsRef = useRef(card?.wounds || 0);
 
     useEffect(() => {
@@ -269,6 +282,28 @@ export const Card: React.FC<CardProps> = ({
 
     const rawActionable = isActionable ?? card?.isActionable ?? false;
     const effectiveIsActionable = rawActionable && !isOpponent;
+
+    const isAttachedCard =
+        requiresAttachmentTarget(card) || Boolean(card.attachedViaAid);
+    const showAbilityButton =
+        size === 'sm' &&
+        !isOpponent &&
+        !isAttachedCard &&
+        cardOrAttachmentsHaveActionPhases(card);
+
+    const abilityContext =
+        G && playerID
+            ? { G, ctx: { phase }, playerID }
+            : null;
+    const abilityPhaseMatch = Boolean(
+        showAbilityButton &&
+            abilityContext &&
+            (canUseAbility(card, abilityContext).valid ||
+                card.attachments?.some(
+                    (att) => canUseAbility(att, abilityContext).valid
+                ))
+    );
+    const listedAbilities = showAbilityButton ? collectCardAbilities(card) : [];
 
     return (
         <S.CardContainer
@@ -485,6 +520,58 @@ export const Card: React.FC<CardProps> = ({
                         width="16px"
                     />
                 )}
+
+            {showAbilityButton && (
+                <S.AbilityButton
+                    type="button"
+                    $abilityPhaseMatch={abilityPhaseMatch}
+                    onPointerDown={(e) => {
+                        e.stopPropagation();
+                    }}
+                    onClick={(e) => {
+                        e.stopPropagation();
+                        setIsAbilityMenuOpen((open) => !open);
+                    }}
+                >
+                    A
+                </S.AbilityButton>
+            )}
+
+            {showAbilityButton && isAbilityMenuOpen && (
+                <S.AbilityBubble
+                    onPointerDown={(e) => e.stopPropagation()}
+                    onClick={(e) => e.stopPropagation()}
+                >
+                    <S.AbilityBubbleClose
+                        type="button"
+                        onClick={(e) => {
+                            e.stopPropagation();
+                            setIsAbilityMenuOpen(false);
+                        }}
+                    >
+                        ×
+                    </S.AbilityBubbleClose>
+                    <S.AbilityBubbleList>
+                        {listedAbilities.map(({ source, ability }) => (
+                            <li key={`${source.instanceId || source.id}:${ability.id}`}>
+                                <S.AbilityBubbleItem
+                                    type="button"
+                                    onClick={(e) => {
+                                        e.stopPropagation();
+                                        onActivateAbility?.(
+                                            source.instanceId || source.id,
+                                            ability.id
+                                        );
+                                        setIsAbilityMenuOpen(false);
+                                    }}
+                                >
+                                    {formatAbilityLabel(ability, source)}
+                                </S.AbilityBubbleItem>
+                            </li>
+                        ))}
+                    </S.AbilityBubbleList>
+                </S.AbilityBubble>
+            )}
         </S.CardContainer>
     );
 };

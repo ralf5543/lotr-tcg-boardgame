@@ -1,5 +1,5 @@
 import type { FnContext } from 'boardgame.io';
-import type { StatModifier } from './logic/stats/types';
+import type { StatModifier, StatType } from './logic/stats/types';
 
 export type CardKind = 'FREE_PEOPLE' | 'SHADOW' | 'NONE';
 
@@ -143,6 +143,59 @@ export interface CardI18nContent {
 export type CardI18nMap = Partial<
     Record<'fr' | 'en' | 'de' | 'it' | 'es', CardI18nContent>
 >;
+
+export type AbilityTargetToken = 'SELF' | 'BEARER';
+
+/** SELF / BEARER, ou DNF de titres / filtres (ex. `[['Sam']]`). */
+export type AbilityTargetRef = AbilityTargetToken | string[][];
+
+export type SpotMode = 'CONDITION' | 'DESIGNATION';
+
+export interface CostSelector {
+    count: number;
+    target: AbilityTargetRef;
+    mode?: SpotMode;
+}
+
+export interface CostOption {
+    spot?: CostSelector[];
+    exert?: CostSelector[];
+    discardFromPlay?: CostSelector[];
+    discardFromHand?: number;
+    spotBurdens?: number;
+    removeBurdens?: number;
+    spotThreats?: number;
+    removeThreats?: number;
+}
+
+export type AbilityCost = CostOption[];
+
+export type AbilityEffectExpiry = 'REGROUP' | 'SKIRMISH' | 'TURN_END';
+
+export type AbilityEffect =
+    | {
+          type: 'ADD_TEMP_KEYWORD';
+          keyword: CardKeyword;
+          target: AbilityTargetRef;
+          expiresAtPhase: AbilityEffectExpiry;
+      }
+    | {
+          type: 'ADD_TEMP_STAT';
+          stat: StatType;
+          value: number;
+          target: AbilityTargetRef;
+          expiresAtPhase: AbilityEffectExpiry;
+      };
+
+export interface Ability {
+    id: string;
+    phases: string[];
+    cost: AbilityCost;
+    effect: AbilityEffect;
+    source: 'SELF' | 'ATTACHMENT';
+    text?: string;
+}
+
 export interface CardState {
     id: string;
     instanceId: string;
@@ -197,6 +250,8 @@ export interface CardState {
     isDead?: boolean;
     isOverwhelmed?: boolean;
     actionPhases?: string[];
+    abilities?: Ability[];
+    toPlay?: CostOption[];
 }
 
 export interface PlayerProfile {
@@ -340,7 +395,7 @@ export type DevPresetType = 'ARCHERY_TEST' | 'SKIRMISH_TEST';
 
 export interface TempKeywordModifier {
     keyword: CardKeyword;
-    expiresAtPhase?: 'REGROUP' | 'SKIRMISH' | 'TURN_END'; // Phase où l'effet s'annule
+    expiresAtPhase?: AbilityEffectExpiry;
 }
 
 // Structure du coût d'Aide pour les Followers

@@ -31,6 +31,7 @@ interface BoardCharacterStackProps {
     isFaceDown: boolean;
     G: GameState;
     playerID: string;
+    onActivateAbility?: (sourceInstanceId: string, abilityId: string) => void;
 }
 
 export const BoardCharacterStack: React.FC<BoardCharacterStackProps> = ({
@@ -54,6 +55,7 @@ export const BoardCharacterStack: React.FC<BoardCharacterStackProps> = ({
     isDisabled = false,
     burdens = 0,
     isFaceDown = false,
+    onActivateAbility,
 }) => {
     const { registerTarget, activeTargetId, dragged, startDrag } = useDrag();
     const { isCardTargetable, selectCard } = useTargeting();
@@ -177,6 +179,9 @@ export const BoardCharacterStack: React.FC<BoardCharacterStackProps> = ({
                                         isOpponent={!isOpponent}
                                         isActionable={isActionable}
                                         G={G}
+                                        phase={phase}
+                                        playerID={playerID}
+                                        onActivateAbility={onActivateAbility}
                                     />
 
                                     {/* 2. Attachements portés par ce séide assigné */}
@@ -268,6 +273,9 @@ export const BoardCharacterStack: React.FC<BoardCharacterStackProps> = ({
                         burdens={burdens}
                         isFaceDown={isFaceDown}
                         G={G}
+                        phase={phase}
+                        playerID={playerID}
+                        onActivateAbility={onActivateAbility}
                     />
                 </S.CardDragTarget>
 

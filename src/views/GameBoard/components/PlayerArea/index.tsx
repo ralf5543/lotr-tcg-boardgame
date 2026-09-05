@@ -39,6 +39,7 @@ interface PlayerAreaProps {
     G: GameState;
     isFaceDown?: boolean;
     phase?: string;
+    onActivateAbility?: (sourceInstanceId: string, abilityId: string) => void;
 }
 
 export const PlayerArea: React.FC<PlayerAreaProps> = ({
@@ -54,6 +55,7 @@ export const PlayerArea: React.FC<PlayerAreaProps> = ({
     activeSkirmishId,
     G,
     phase,
+    onActivateAbility,
 }) => {
     const { activeTargetId, registerTarget, startDrag, dragged } = useDrag();
     const [isDormantExpanded, setIsDormantExpanded] = useState(false);
@@ -155,6 +157,7 @@ export const PlayerArea: React.FC<PlayerAreaProps> = ({
                                             G={G}
                                             playerID={_playerId}
                                             phase={phase}
+                                            onActivateAbility={onActivateAbility}
                                             isFaceDown={
                                                 isOpponent
                                                     ? (companion.isFaceDown ??
@@ -249,6 +252,7 @@ export const PlayerArea: React.FC<PlayerAreaProps> = ({
                                 G={G}
                                 playerID={_playerId}
                                 phase={phase}
+                                onActivateAbility={onActivateAbility}
                                 isDead={isDead}
                                 isSelectedSkirmish={
                                     activeSkirmishId === skirmishId
@@ -344,6 +348,7 @@ export const PlayerArea: React.FC<PlayerAreaProps> = ({
                                     G={G}
                                     playerID={_playerId}
                                     phase={phase}
+                                    onActivateAbility={onActivateAbility}
                                     isDead={isDead}
                                     onStartDrag={(e) => {
                                         if (isOpponent || e.button !== 0)
@@ -389,6 +394,7 @@ export const PlayerArea: React.FC<PlayerAreaProps> = ({
                                     G={G}
                                     playerID={_playerId}
                                     phase={phase}
+                                    onActivateAbility={onActivateAbility}
                                     isDead={isDead}
                                     onStartDrag={(e) => {
                                         if (isOpponent || e.button !== 0)

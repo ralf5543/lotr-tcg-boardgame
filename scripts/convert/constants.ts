@@ -1,8 +1,14 @@
 import path from 'path';
 
-export const CSV_PATH = path.join(process.cwd(), 'lotro_card_data.csv');
-export const OUTPUT_CARDS_PATH = path.join(process.cwd(), 'data/cards.json');
-export const OUTPUT_SITES_PATH = path.join(process.cwd(), 'data/sites.json');
+export const CSV_PATH = path.join(process.cwd(), 'src/lotro_card_data.csv');
+export const OUTPUT_CARDS_PATH = path.join(
+    process.cwd(),
+    'src/data/cards.json'
+);
+export const OUTPUT_SITES_PATH = path.join(
+    process.cwd(),
+    'src/data/sites.json'
+);
 
 export const FEMALE_TITLES = new Set([
     'Galadriel',

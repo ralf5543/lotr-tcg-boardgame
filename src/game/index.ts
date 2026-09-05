@@ -28,6 +28,7 @@ import { calculateArcheryTotals } from './logic/archery';
 import { getMusterCount } from './logic/musterHelpers';
 import { hasActionableStartOfPhaseCards } from './logic/hasActionableStartOfPhaseCards';
 import { clearActionableFlags } from '../utils/clearActionableFlags';
+import { clearExpiredTempKeywords } from './engine/abilities/applyAbilityEffect';
 
 const shuffle = <T>(array: T[]): T[] => {
     const arr = [...array];
@@ -1072,6 +1073,7 @@ export const LotrGame: Game<GameState> = {
                             (m) => m.scope !== 'SKIRMISH'
                         );
                     }
+                    clearExpiredTempKeywords(G, 'SKIRMISH');
                 },
 
                 endSkirmishPhase: ({ events }: LotrMoveContext) => {
@@ -1086,6 +1088,8 @@ export const LotrGame: Game<GameState> = {
             onBegin: ({ G, events }: LotrPhaseContext) => {
                 const fpId = G.fpPlayerId || '0';
                 const shadowId = fpId === '0' ? '1' : '0';
+
+                clearExpiredTempKeywords(G, 'REGROUP');
 
                 // 1. Gestion existante du Muster
                 const fpMuster = getMusterCount(G, fpId);

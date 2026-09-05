@@ -10,7 +10,8 @@
     "test": "vitest",
     "test:run": "vitest run",
     "preview": "vite preview",
-    "server": "tsx server.ts"
+    "server": "tsx server.ts",
+    "convert": "tsx scripts/convert/index.ts"
   },
   "dependencies": {
     "boardgame.io": "^0.50.2",

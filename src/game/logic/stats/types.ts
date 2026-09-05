@@ -9,4 +9,5 @@ export interface StatModifier {
     stat: StatType;
     value: number;
     scope: ModifierScope;
+    expiresAtPhase?: 'REGROUP' | 'SKIRMISH' | 'TURN_END';
 }

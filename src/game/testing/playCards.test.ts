@@ -6,6 +6,8 @@ import {
     createMinion,
     createPlayerState,
 } from './createGameState';
+import { getCalculatedStrength } from '../logic/stats/statCalculator';
+import type { Ability } from '../types';
 
 describe('playShadowCard', () => {
     it('refuse un séide trop cher pour le pool de Crépuscule', () => {
@@ -141,6 +143,113 @@ describe('playCard', () => {
             G: {
                 players: {
                     '0': createPlayerState('0', { hand: [event] }),
+                },
+            },
+        });
+
+        engine.moves.playCard(0);
+
+        expect(engine.getG().players['0']?.hand).toHaveLength(1);
+        expect(engine.getG().players['0']?.discard).toHaveLength(0);
+    });
+
+    it('joue Impatient and Angry : exert Sam, force +3, event défaussé', () => {
+        const impatient: Ability = {
+            id: '4R307:0',
+            phases: ['SKIRMISH'],
+            cost: [{ exert: [{ count: 1, target: [['Sam']] }] }],
+            effect: {
+                type: 'ADD_TEMP_STAT',
+                stat: 'STRENGTH',
+                value: 3,
+                target: [['Sam']],
+                expiresAtPhase: 'SKIRMISH',
+            },
+            source: 'SELF',
+        };
+
+        const sam = createCompanion({
+            id: '1C311',
+            title: 'Sam',
+            vitality: 4,
+            strength: 3,
+        });
+        const event = createCard({
+            id: '4R307',
+            kind: 'FREE_PEOPLE',
+            type: 'EVENT',
+            title: 'Impatient and Angry',
+            phases: ['SKIRMISH'],
+            twilightCost: 0,
+            abilities: [impatient],
+        });
+
+        const engine = createEngineClient({
+            startPhase: 'skirmish',
+            playerID: '0',
+            G: {
+                skirmishes: [
+                    {
+                        id: 'sk-1',
+                        companionId: '1C311',
+                        minionIds: ['orc'],
+                    },
+                ],
+                players: {
+                    '0': createPlayerState('0', {
+                        fellowshipArea: [sam],
+                        hand: [event],
+                    }),
+                },
+            },
+        });
+
+        engine.moves.selectSkirmish('sk-1');
+        engine.moves.playCard(0);
+
+        const samInPlay = engine.getG().players['0']?.fellowshipArea[0];
+        expect(engine.getG().players['0']?.hand).toHaveLength(0);
+        expect(engine.getG().players['0']?.discard[0]?.id).toBe('4R307');
+        expect(samInPlay?.wounds).toBe(1);
+        expect(getCalculatedStrength(engine.getG(), samInPlay)).toBe(6);
+    });
+
+    it('refuse Impatient and Angry si Sam n’est pas en jeu', () => {
+        const event = createCard({
+            id: '4R307',
+            kind: 'FREE_PEOPLE',
+            type: 'EVENT',
+            title: 'Impatient and Angry',
+            phases: ['SKIRMISH'],
+            twilightCost: 0,
+            abilities: [
+                {
+                    id: '4R307:0',
+                    phases: ['SKIRMISH'],
+                    cost: [{ exert: [{ count: 1, target: [['Sam']] }] }],
+                    effect: {
+                        type: 'ADD_TEMP_STAT',
+                        stat: 'STRENGTH',
+                        value: 3,
+                        target: [['Sam']],
+                        expiresAtPhase: 'SKIRMISH',
+                    },
+                    source: 'SELF',
+                },
+            ],
+        });
+
+        const engine = createEngineClient({
+            startPhase: 'skirmish',
+            playerID: '0',
+            G: {
+                players: {
+                    '0': createPlayerState('0', {
+                        fellowshipArea: [
+                            createCompanion({ id: 'frodo', title: 'Frodo' }),
+                        ],
+                        hand: [event],
+                    }),
                 },
             },
         });

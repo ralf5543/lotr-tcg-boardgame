@@ -26,6 +26,7 @@ interface BattlefieldProps {
     isOpponent?: boolean;
     playerId: string;
     G: GameState;
+    onActivateAbility?: (sourceInstanceId: string, abilityId: string) => void;
 }
 
 export const Battlefield: React.FC<BattlefieldProps> = ({
@@ -38,6 +39,7 @@ export const Battlefield: React.FC<BattlefieldProps> = ({
     isOpponent = false,
     G,
     playerId,
+    onActivateAbility,
 }) => {
     const { registerTarget, activeTargetId, dragged } = useDrag();
     const containerRef = useRef<HTMLDivElement | null>(null);
@@ -110,6 +112,7 @@ export const Battlefield: React.FC<BattlefieldProps> = ({
                             isFaceDown={false}
                             G={G}
                             playerID={playerId}
+                            onActivateAbility={onActivateAbility}
                         />
                     );
                 })}
