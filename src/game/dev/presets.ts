@@ -483,6 +483,10 @@ export const applyDevPreset = (
                 const player = G.players[pId];
                 if (player) {
                     player.hand = [];
+                    if (pId !== fpId) {
+                        player.fellowshipArea = [];
+                        player.supportArea = [];
+                    }
                 }
             });
 
@@ -491,7 +495,8 @@ export const applyDevPreset = (
                 clonePresetCard('1C311'),
                 { ...CARDS_PRESETS.GIMLI },
             ];
-            fpPlayer.hand = [clonePresetCard('4R307')];
+            const deftness = clonePresetCard('1U293');
+            fpPlayer.hand = [clonePresetCard('4R307'), deftness];
 
             G.battlefield = [{ ...CARDS_PRESETS.ORC_SOLDIER }];
             G.skirmishes = [];

@@ -68,12 +68,17 @@ export function formatAbilityLabel(
 ): string {
     const exert = ability.cost[0]?.exert?.[0];
     const count = exert?.count || 1;
-    const who =
-        exert?.target === 'BEARER'
-            ? 'le détenteur'
-            : Array.isArray(exert?.target)
-              ? exert.target.flat().join(' ')
-              : source.i18n?.fr?.title || source.title || 'cette carte';
+    const who = (() => {
+        if (exert?.target === 'BEARER') return 'le détenteur';
+        if (Array.isArray(exert?.target)) {
+            const label = exert.target.flat().join(' ');
+            if (exert.mode === 'DESIGNATION') {
+                return `un ${label.toLowerCase()}`;
+            }
+            return label;
+        }
+        return source.i18n?.fr?.title || source.title || 'cette carte';
+    })();
     const times = count > 1 ? ` ${count} fois` : '';
     const bits = (ability.effects || [])
         .map(formatEffectBit)

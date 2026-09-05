@@ -259,6 +259,7 @@ export const PlayerArea: React.FC<PlayerAreaProps> = ({
                                 isSelectedSkirmish={
                                     activeSkirmishId === skirmishId
                                 }
+                                isSelectionAllowed={!isCombatLocked}
                                 onSelectSkirmish={(id) => {
                                     if (isCombatLocked) return;
                                     moves.selectSkirmish?.(id);

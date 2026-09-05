@@ -1,4 +1,24 @@
-import styled, { css } from 'styled-components';
+import styled, { css, keyframes } from 'styled-components';
+
+const designationPulse = keyframes`
+    0%,
+    100% {
+        filter: drop-shadow(0 0 8px #e2c044)
+            drop-shadow(0 0 16px rgba(226, 192, 68, 0.55));
+    }
+    50% {
+        filter: drop-shadow(0 0 14px #ffe07a)
+            drop-shadow(0 0 26px rgba(226, 192, 68, 0.9));
+    }
+`;
+
+const designationGlow = css`
+    cursor: pointer !important;
+    outline: 2px solid #e2c044;
+    outline-offset: 3px;
+    border-radius: 8px;
+    animation: ${designationPulse} 1.4s ease-in-out infinite;
+`;
 
 export const CharacterStack = styled.div<{ $isBeingDragged?: boolean }>`
     position: relative;
@@ -15,26 +35,35 @@ export const CardDragTarget = styled.div<{
     $isOpponent?: boolean;
     $isTargeted?: boolean;
     $isTargetable?: boolean;
+    $isDesignationTarget?: boolean;
+    $suppressHoverScale?: boolean;
     $isDead?: boolean;
 }>`
     position: relative;
     z-index: 2;
-    transition: all 0.2s ease-in-out;
+    transition: transform 0.2s ease-in-out, filter 0.2s ease-in-out;
 
-    /* EFFET VISUEL SI C'EST UNE CIBLE VALIDE (Archerie, Événement, Capacités...) */
-    ${({ $isTargetable }) =>
+    ${({ $isTargetable, $isDesignationTarget }) =>
         $isTargetable &&
+        $isDesignationTarget &&
+        designationGlow}
+
+    ${({ $isTargetable, $isDesignationTarget, $suppressHoverScale }) =>
+        $isTargetable &&
+        !$isDesignationTarget &&
         css`
             cursor: pointer !important;
 
             &:hover {
-                transform: scale(1.05);
+                ${!$suppressHoverScale &&
+                css`
+                    transform: scale(1.05);
+                `}
                 filter: drop-shadow(0 0 12px #e74c3c)
                     drop-shadow(0 0 20px rgba(231, 76, 60, 0.8));
             }
         `}
 
-    /* EFFET VISUEL QUAND LA CARTE EST CIBLÉE PAR UN DRAG */
     ${({ $isTargeted }) =>
     $isTargeted &&
     css`
@@ -138,18 +167,31 @@ export const AssignedMinionsContainer = styled.div<{ $isOpponent?: boolean }>`
     }
 `;
 
-export const MinionWrapper = styled.div<{ $isTargetable?: boolean }>`
+export const MinionWrapper = styled.div<{
+    $isTargetable?: boolean;
+    $isDesignationTarget?: boolean;
+    $suppressHoverScale?: boolean;
+}>`
     position: relative;
     flex: 0 0 auto;
-    transition: all 0.2s ease-in-out;
+    transition: transform 0.2s ease-in-out, filter 0.2s ease-in-out;
 
-    ${({ $isTargetable }) =>
+    ${({ $isTargetable, $isDesignationTarget }) =>
         $isTargetable &&
+        $isDesignationTarget &&
+        designationGlow}
+
+    ${({ $isTargetable, $isDesignationTarget, $suppressHoverScale }) =>
+        $isTargetable &&
+        !$isDesignationTarget &&
         css`
             cursor: pointer !important;
 
             &:hover {
-                transform: scale(1.05);
+                ${!$suppressHoverScale &&
+                css`
+                    transform: scale(1.05);
+                `}
                 filter: drop-shadow(0 0 12px #e74c3c);
                 outline: 2px solid #e74c3c;
                 border-radius: 8px;
@@ -161,7 +203,6 @@ export const MinionWrapper = styled.div<{ $isTargetable?: boolean }>`
    3. ENROBAGE DU COUPLE DE COMBAT (Escarmouche)
    ========================================================= */
 export const SkirmishGroup = styled.div<{
-    $isSkirmishPhase?: boolean;
     $isSelected?: boolean;
     $isSelectable?: boolean;
     $isOpponent?: boolean;
@@ -169,7 +210,7 @@ export const SkirmishGroup = styled.div<{
     position: relative;
     z-index: 1;
     border-radius: 8px;
-    transition: all 0.2s ease-in-out;
+    transition: filter 0.2s ease-in-out;
 
     /* PONT INVISIBLE : Donne de la texture entre le personnage et ses séides */
     &::before {
@@ -184,8 +225,9 @@ export const SkirmishGroup = styled.div<{
         z-index: 0;
     }
 
-    ${({ $isSkirmishPhase }) =>
-        $isSkirmishPhase &&
+    ${({ $isSelectable, $isSelected }) =>
+        $isSelectable &&
+        !$isSelected &&
         css`
             cursor: pointer;
             &:hover {

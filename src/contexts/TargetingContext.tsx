@@ -1,14 +1,21 @@
 import React, { createContext, useContext, useState, useCallback } from 'react';
+import type { CardState } from '../game/types';
+
+type TargetingKind = 'ARCHERY' | 'SKIRMISH_SELECT' | 'DESIGNATION';
 
 interface TargetingRequest {
     targetableCardIds: string[];
     onSelectTarget: (cardId: string) => void;
     message?: string;
+    kind?: TargetingKind;
+    pendingCard?: CardState;
 }
 
 interface TargetingContextType {
     isTargetingActive: boolean;
+    targetingKind?: TargetingKind;
     targetableCardIds: string[];
+    pendingCard?: CardState;
     startTargeting: (request: TargetingRequest) => void;
     stopTargeting: () => void;
     isCardTargetable: (cardId: string) => boolean;
@@ -31,7 +38,8 @@ export const TargetingProvider: React.FC<{ children: React.ReactNode }> = ({ chi
 
     const isCardTargetable = useCallback(
         (cardId: string) => {
-            return request?.targetableCardIds.includes(cardId) ?? false;
+            if (!request || !cardId) return false;
+            return request.targetableCardIds.includes(cardId);
         },
         [request]
     );
@@ -49,12 +57,14 @@ export const TargetingProvider: React.FC<{ children: React.ReactNode }> = ({ chi
         <TargetingContext.Provider
             value={{
                 isTargetingActive: Boolean(request),
+                targetingKind: request?.kind,
                 targetableCardIds: request?.targetableCardIds || [],
                 startTargeting,
                 stopTargeting,
                 isCardTargetable,
                 selectCard,
                 message: request?.message,
+                pendingCard: request?.pendingCard,
             }}
         >
             {children}

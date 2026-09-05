@@ -5,6 +5,7 @@ import {
     createCompanion,
     createMinion,
     createPlayerState,
+    createSkirmishActionWindow,
 } from './createGameState';
 import { getCalculatedStrength } from '../logic/stats/statCalculator';
 import type { Ability } from '../types';
@@ -216,6 +217,76 @@ describe('playCard', () => {
         expect(engine.getG().actionWindow?.passesCount).toBe(0);
     });
 
+    it('Impatient and Angry ignore un Sam resté dans la fellowship de l’Ombre', () => {
+        const impatient: Ability = {
+            id: '4R307:0',
+            phases: ['SKIRMISH'],
+            cost: [{ exert: [{ count: 1, target: [['Sam']] }] }],
+            effects: [{
+                type: 'ADD_TEMP_STAT',
+                stat: 'STRENGTH',
+                value: 3,
+                target: [['Sam']],
+                expiresAtPhase: 'SKIRMISH',
+            }],
+            source: 'SELF',
+        };
+
+        const fpSam = createCompanion({
+            id: '1C311',
+            title: 'Sam',
+            vitality: 4,
+            strength: 3,
+        });
+        const shadowSam = createCompanion({
+            id: '11U172',
+            title: 'Sam',
+            vitality: 4,
+            strength: 3,
+        });
+        const event = createCard({
+            id: '4R307',
+            kind: 'FREE_PEOPLE',
+            type: 'EVENT',
+            title: 'Impatient and Angry',
+            phases: ['SKIRMISH'],
+            twilightCost: 0,
+            abilities: [impatient],
+        });
+
+        const engine = createEngineClient({
+            startPhase: 'skirmish',
+            playerID: '0',
+            G: {
+                skirmishes: [
+                    {
+                        id: 'sk-1',
+                        companionId: '1C311',
+                        minionIds: ['orc'],
+                    },
+                ],
+                players: {
+                    '0': createPlayerState('0', {
+                        fellowshipArea: [fpSam],
+                        hand: [event],
+                    }),
+                    '1': createPlayerState('1', {
+                        fellowshipArea: [shadowSam],
+                    }),
+                },
+            },
+        });
+
+        engine.moves.selectSkirmish('sk-1');
+        engine.moves.playCard(0);
+
+        expect(engine.getG().players['0']?.discard[0]?.id).toBe('4R307');
+        expect(engine.getG().players['0']?.fellowshipArea[0]?.wounds).toBe(1);
+        expect(engine.getG().players['1']?.fellowshipArea[0]?.wounds || 0).toBe(
+            0
+        );
+    });
+
     it('refuse Impatient and Angry si Sam n’est pas en jeu', () => {
         const event = createCard({
             id: '4R307',
@@ -320,6 +391,185 @@ describe('playCard', () => {
         expect(engine.getG().players['0']?.supportArea[0]?.id).toBe('ally-1');
         expect(engine.getG().players['0']?.hand).toHaveLength(0);
         expect(engine.getG().players['0']?.fellowshipArea).toHaveLength(0);
+    });
+
+    const HALFLING: Ability = {
+        id: '1U293:0',
+        phases: ['SKIRMISH'],
+        cost: [
+            {
+                exert: [
+                    {
+                        count: 1,
+                        target: [['HOBBIT']],
+                        mode: 'DESIGNATION',
+                    },
+                ],
+            },
+        ],
+        effects: [{
+            type: 'ADD_TEMP_STAT',
+            stat: 'STRENGTH',
+            value: 3,
+            target: [['HOBBIT']],
+            expiresAtPhase: 'SKIRMISH',
+        }],
+        source: 'SELF',
+    };
+
+    function createHalflingEvent() {
+        return createCard({
+            id: '1U293',
+            kind: 'FREE_PEOPLE',
+            type: 'EVENT',
+            title: 'Halfling Deftness',
+            phases: ['SKIRMISH'],
+            twilightCost: 0,
+            abilities: [HALFLING],
+        });
+    }
+
+    it('refuse Halfling Deftness si deux Hobbits sans désignation', () => {
+        const engine = createEngineClient({
+            startPhase: 'skirmish',
+            playerID: '0',
+            G: {
+                ...createSkirmishActionWindow('sk-1'),
+                skirmishes: [
+                    {
+                        id: 'sk-1',
+                        companionId: 'frodo',
+                        minionIds: ['orc'],
+                    },
+                ],
+                players: {
+                    '0': createPlayerState('0', {
+                        fellowshipArea: [
+                            createCompanion({
+                                id: 'frodo',
+                                title: 'Frodo',
+                                race: 'HOBBIT',
+                                vitality: 4,
+                                strength: 3,
+                            }),
+                            createCompanion({
+                                id: 'sam',
+                                title: 'Sam',
+                                race: 'HOBBIT',
+                                vitality: 4,
+                                strength: 3,
+                            }),
+                        ],
+                        hand: [createHalflingEvent()],
+                    }),
+                },
+            },
+        });
+
+        engine.moves.playCard(0);
+
+        expect(engine.getG().players['0']?.hand).toHaveLength(1);
+        expect(engine.getG().players['0']?.discard).toHaveLength(0);
+        expect(engine.getG().players['0']?.fellowshipArea[0]?.wounds || 0).toBe(
+            0
+        );
+    });
+
+    it('joue Halfling Deftness sur le Hobbit désigné', () => {
+        const frodo = createCompanion({
+            id: 'frodo',
+            title: 'Frodo',
+            race: 'HOBBIT',
+            vitality: 4,
+            strength: 3,
+        });
+        const sam = createCompanion({
+            id: 'sam',
+            title: 'Sam',
+            race: 'HOBBIT',
+            vitality: 4,
+            strength: 3,
+        });
+
+        const engine = createEngineClient({
+            startPhase: 'skirmish',
+            playerID: '0',
+            G: {
+                ...createSkirmishActionWindow('sk-1'),
+                skirmishes: [
+                    {
+                        id: 'sk-1',
+                        companionId: 'frodo',
+                        minionIds: ['orc'],
+                    },
+                ],
+                players: {
+                    '0': createPlayerState('0', {
+                        fellowshipArea: [frodo, sam],
+                        hand: [createHalflingEvent()],
+                    }),
+                },
+            },
+        });
+
+        engine.moves.playCard(0, 'frodo');
+
+        const board = engine.getG().players['0']?.fellowshipArea || [];
+        expect(engine.getG().players['0']?.hand).toHaveLength(0);
+        expect(engine.getG().players['0']?.discard[0]?.id).toBe('1U293');
+        expect(board.find((c) => c.id === 'frodo')?.wounds).toBe(1);
+        expect(board.find((c) => c.id === 'sam')?.wounds || 0).toBe(0);
+        expect(
+            getCalculatedStrength(
+                engine.getG(),
+                board.find((c) => c.id === 'frodo')
+            )
+        ).toBe(6);
+    });
+
+    it('refuse Halfling Deftness s’il n’y a qu’un Hobbit sans désignation', () => {
+        const engine = createEngineClient({
+            startPhase: 'skirmish',
+            playerID: '0',
+            G: {
+                ...createSkirmishActionWindow('sk-1'),
+                skirmishes: [
+                    {
+                        id: 'sk-1',
+                        companionId: 'frodo',
+                        minionIds: ['orc'],
+                    },
+                ],
+                players: {
+                    '0': createPlayerState('0', {
+                        fellowshipArea: [
+                            createCompanion({
+                                id: 'frodo',
+                                title: 'Frodo',
+                                race: 'HOBBIT',
+                                vitality: 4,
+                                strength: 3,
+                            }),
+                            createCompanion({
+                                id: 'aragorn',
+                                title: 'Aragorn',
+                                race: 'MAN',
+                                vitality: 4,
+                            }),
+                        ],
+                        hand: [createHalflingEvent()],
+                    }),
+                },
+            },
+        });
+
+        engine.moves.playCard(0);
+
+        expect(engine.getG().players['0']?.hand).toHaveLength(1);
+        expect(engine.getG().players['0']?.discard).toHaveLength(0);
+        expect(engine.getG().players['0']?.fellowshipArea[0]?.wounds || 0).toBe(
+            0
+        );
     });
 });
 

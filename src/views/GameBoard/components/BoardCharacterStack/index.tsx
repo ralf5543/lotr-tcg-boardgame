@@ -58,10 +58,14 @@ export const BoardCharacterStack: React.FC<BoardCharacterStackProps> = ({
     onActivateAbility,
 }) => {
     const { registerTarget, activeTargetId, dragged, startDrag } = useDrag();
-    const { isCardTargetable, selectCard } = useTargeting();
+    const { isCardTargetable, selectCard, targetingKind } = useTargeting();
 
-    // 🎯 Vérifie si le personnage principal est une cible valide pour l'action en cours
-    const isTargetable = isCardTargetable(character.id);
+    const cardKey = character.instanceId || character.id;
+    const isTargetable =
+        isCardTargetable(cardKey) || isCardTargetable(character.id);
+    const isInCombat = assignedMinions.length > 0;
+    const isDesignationTarget =
+        isTargetable && targetingKind === 'DESIGNATION';
 
     // 🟢 Extraction distincte du TYPE et du SUBTYPE
     const draggedType = (dragged?.card as CardState)?.type as
@@ -133,7 +137,6 @@ export const BoardCharacterStack: React.FC<BoardCharacterStackProps> = ({
 
     return (
         <S.SkirmishGroup
-            $isSkirmishPhase={isSkirmishPhase && assignedMinions.length > 0}
             $isSelected={isSelectedSkirmish}
             $isOpponent={isOpponent}
             $isSelectable={canSelectThisSkirmish}
@@ -148,9 +151,13 @@ export const BoardCharacterStack: React.FC<BoardCharacterStackProps> = ({
                         className="assigned-minions-group"
                     >
                         {assignedMinions.map((minion) => {
-                            const isMinionTargetable = isCardTargetable(
-                                minion.id
-                            );
+                            const minionKey = minion.instanceId || minion.id;
+                            const isMinionTargetable =
+                                isCardTargetable(minionKey) ||
+                                isCardTargetable(minion.id);
+                            const isMinionDesignationTarget =
+                                isMinionTargetable &&
+                                targetingKind === 'DESIGNATION';
                             const isMinionWounded = Boolean(
                                 minion.wounds && minion.wounds > 0
                             );
@@ -161,10 +168,14 @@ export const BoardCharacterStack: React.FC<BoardCharacterStackProps> = ({
                                 <S.MinionWrapper
                                     key={minion.instanceId || minion.id}
                                     $isTargetable={isMinionTargetable}
+                                    $isDesignationTarget={
+                                        isMinionDesignationTarget
+                                    }
+                                    $suppressHoverScale
                                     onClick={(e) => {
                                         if (isMinionTargetable) {
                                             e.stopPropagation();
-                                            selectCard(minion.id);
+                                            selectCard(minionKey);
                                         }
                                     }}
                                 >
@@ -229,6 +240,8 @@ export const BoardCharacterStack: React.FC<BoardCharacterStackProps> = ({
                     $isOpponent={isOpponent}
                     $isTargeted={isTargeted}
                     $isTargetable={isTargetable}
+                    $isDesignationTarget={isDesignationTarget}
+                    $suppressHoverScale={isInCombat}
                     $isDead={isDead}
                     $isDisabled={isDisabled}
                     data-card={JSON.stringify(character)}
@@ -240,7 +253,7 @@ export const BoardCharacterStack: React.FC<BoardCharacterStackProps> = ({
                         // 🎯 Si c'est ciblable, on déclenche directement la sélection au clic
                         if (isTargetable) {
                             e.stopPropagation();
-                            selectCard(character.id);
+                            selectCard(cardKey);
                             return;
                         }
 

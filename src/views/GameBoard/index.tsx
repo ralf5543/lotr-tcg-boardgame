@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useCallback, useEffect } from 'react';
 import type { BoardProps } from 'boardgame.io/react';
 import type { CardState, SiteCardState, GameState } from '../../game/types';
 import { Battlefield } from './components/Battlefield';
@@ -24,6 +24,13 @@ import { useTargeting } from '../../contexts/TargetingContext';
 import { audioService } from '../../services/audioService';
 import { findTargetCard } from '../../utils/cardUtils';
 import { canPlayCard } from '../../game/engine/canPlayCard';
+import {
+    abilityNeedsDesignation,
+    cardTargetIds,
+    formatDesignationPrompt,
+    getDesignationCandidates,
+} from '../../game/engine/abilities/designation';
+import { findEventAbilityForPhase } from '../../game/engine/abilities/playEventAbility';
 import { useCardPlayAudio } from '../../hooks/audio/useCardPlayAudio';
 import { useArcheryAudio } from '../../hooks/audio/useArcheryAudio';
 import { useWoundAudio } from '../../hooks/audio/useWoundAudio';
@@ -34,7 +41,7 @@ export interface GameBoardProps extends BoardProps<GameState> {
     moves: BoardProps<GameState>['moves'] &
         DevMoves & {
             confirmEndPhase?: () => void;
-            playCard: (index: number) => void;
+            playCard: (index: number, chosenTargetId?: string) => void;
             playShadowCard: (index: number) => void;
             attachCard: (index: number, targetId: string) => void;
             transferAttachment?: (data: {
@@ -53,7 +60,8 @@ export interface GameBoardProps extends BoardProps<GameState> {
             ) => void;
             activateAbility?: (
                 sourceInstanceId: string,
-                abilityId: string
+                abilityId: string,
+                chosenTargetId?: string
             ) => void;
         };
 }
@@ -87,6 +95,22 @@ const EventPlayOverlay: React.FC<{
     );
 };
 
+const DesignationOverlay: React.FC<{ G: GameState }> = ({ G }) => {
+    const { targetingKind, pendingCard, message } = useTargeting();
+    if (targetingKind !== 'DESIGNATION' || !pendingCard) return null;
+
+    return (
+        <S.DesignationOverlay>
+            <S.DesignationPendingCard>
+                <Card card={pendingCard} size="md" isDraggable={false} G={G} />
+            </S.DesignationPendingCard>
+            <S.EventPlayHint $isReady>
+                {message || 'Choisissez une cible.'}
+            </S.EventPlayHint>
+        </S.DesignationOverlay>
+    );
+};
+
 export const GameBoard: React.FC<GameBoardProps> = ({
     playerID,
     G,
@@ -100,11 +124,48 @@ export const GameBoard: React.FC<GameBoardProps> = ({
     useSkirmishAudio(G);
     const myId = playerID || ctx.currentPlayer;
     const oppId = myId === '0' ? '1' : '0';
+    const { startTargeting, stopTargeting, targetingKind } = useTargeting();
+
+    const requestDesignation = useCallback(
+        (
+            source: CardState,
+            ability: NonNullable<CardState['abilities']>[number],
+            onChosen: (cardId: string) => void
+        ): boolean => {
+            if (!abilityNeedsDesignation(G, source, ability)) return false;
+            const candidates = getDesignationCandidates(G, source, ability);
+            startTargeting({
+                kind: 'DESIGNATION',
+                targetableCardIds: candidates.flatMap(cardTargetIds),
+                message: formatDesignationPrompt(ability),
+                pendingCard: source.type === 'EVENT' ? source : undefined,
+                onSelectTarget: (cardId) => {
+                    onChosen(cardId);
+                    stopTargeting();
+                },
+            });
+            return true;
+        },
+        [G, startTargeting, stopTargeting]
+    );
 
     const handleActivateAbility = (
         sourceInstanceId: string,
         abilityId: string
     ) => {
+        const source = findTargetCard(G, sourceInstanceId) as CardState | null;
+        const ability = source?.abilities?.find((ab) => ab.id === abilityId);
+        if (!source || !ability) {
+            moves.activateAbility?.(sourceInstanceId, abilityId);
+            return;
+        }
+        if (
+            requestDesignation(source, ability, (chosenId) => {
+                moves.activateAbility?.(sourceInstanceId, abilityId, chosenId);
+            })
+        ) {
+            return;
+        }
         moves.activateAbility?.(sourceInstanceId, abilityId);
     };
 
@@ -208,6 +269,20 @@ export const GameBoard: React.FC<GameBoardProps> = ({
                     console.warn(
                         `❌ [canPlayCard] Rejet : ${validation.reason}`
                     );
+                    return;
+                }
+
+                const eventAbility = findEventAbilityForPhase(
+                    card,
+                    ctx.phase || ''
+                );
+                if (
+                    eventAbility &&
+                    requestDesignation(card, eventAbility, (chosenId) => {
+                        moves.playCard(index, chosenId);
+                        audioService.play('CARD_PLAY');
+                    })
+                ) {
                     return;
                 }
 
@@ -348,7 +423,7 @@ export const GameBoard: React.FC<GameBoardProps> = ({
         window.addEventListener('card-dropped', handleGlobalCardDrop);
         return () =>
             window.removeEventListener('card-dropped', handleGlobalCardDrop);
-    }, [moves, ctx.phase, G]);
+    }, [moves, ctx.phase, G, myId, requestDesignation]);
 
     const { setFpPlayerId } = useFaction();
     useEffect(() => {
@@ -357,12 +432,12 @@ export const GameBoard: React.FC<GameBoardProps> = ({
         }
     }, [G.fpPlayerId, setFpPlayerId]);
 
-    const { startTargeting, stopTargeting } = useTargeting();
-
     // 🟢 4. SYNCHRONISATION DU CIBLAGE D'ARCHERIE
     useEffect(() => {
+        if (targetingKind === 'DESIGNATION') return;
+
         if (ctx.phase !== 'archery' || !G.archeryState) {
-            stopTargeting();
+            if (targetingKind === 'ARCHERY') stopTargeting();
             return;
         }
 
@@ -375,6 +450,7 @@ export const GameBoard: React.FC<GameBoardProps> = ({
                 .map((c) => c.id);
 
             startTargeting({
+                kind: 'ARCHERY',
                 targetableCardIds: validTargets,
                 message:
                     "Tir d'archerie : Cliquez sur un compagnon pour lui assigner une blessure.",
@@ -390,6 +466,7 @@ export const GameBoard: React.FC<GameBoardProps> = ({
                 .map((c) => c.id);
 
             startTargeting({
+                kind: 'ARCHERY',
                 targetableCardIds: validTargets,
                 message:
                     "Tir d'archerie : Cliquez sur un séide pour lui assigner une blessure.",
@@ -399,7 +476,7 @@ export const GameBoard: React.FC<GameBoardProps> = ({
                     }
                 },
             });
-        } else {
+        } else if (targetingKind === 'ARCHERY') {
             stopTargeting();
         }
     }, [
@@ -411,23 +488,26 @@ export const GameBoard: React.FC<GameBoardProps> = ({
         moves,
         startTargeting,
         stopTargeting,
+        targetingKind,
     ]);
 
     // 🟢 5. SYNCHRONISATION DU CIBLAGE EN PHASE DE SKIRMISH
     useEffect(() => {
+        if (targetingKind === 'DESIGNATION') return;
+
         if (
             ctx.phase !== 'skirmish' ||
             !G.skirmishes ||
             G.skirmishes.length === 0
         ) {
-            if (ctx.phase !== 'archery') {
+            if (ctx.phase !== 'archery' && targetingKind === 'SKIRMISH_SELECT') {
                 stopTargeting();
             }
             return;
         }
 
         if (G.activeSkirmishId) {
-            stopTargeting();
+            if (targetingKind === 'SKIRMISH_SELECT') stopTargeting();
             return;
         }
 
@@ -436,6 +516,7 @@ export const GameBoard: React.FC<GameBoardProps> = ({
             .filter(Boolean);
 
         startTargeting({
+            kind: 'SKIRMISH_SELECT',
             targetableCardIds: targetableCompanionIds,
             message:
                 'Escarmouche : Cliquez sur un groupe pour résoudre son combat.',
@@ -456,7 +537,18 @@ export const GameBoard: React.FC<GameBoardProps> = ({
         moves,
         startTargeting,
         stopTargeting,
+        targetingKind,
     ]);
+
+    useEffect(() => {
+        const onKeyDown = (event: KeyboardEvent) => {
+            if (event.key === 'Escape' && targetingKind === 'DESIGNATION') {
+                stopTargeting();
+            }
+        };
+        window.addEventListener('keydown', onKeyDown);
+        return () => window.removeEventListener('keydown', onKeyDown);
+    }, [targetingKind, stopTargeting]);
 
     // Détermination de l'onglet prioritaire selon le state du jeu
     const getRequestedTab = (): 'hand' | 'sites' | null => {
@@ -503,6 +595,7 @@ export const GameBoard: React.FC<GameBoardProps> = ({
                         phase={ctx.phase}
                         playerID={myId}
                     />
+                    <DesignationOverlay G={G} />
                     {hoveredData && (
                         <S.HoveredCardsZone
                             $orientation={hoveredData.orientation}

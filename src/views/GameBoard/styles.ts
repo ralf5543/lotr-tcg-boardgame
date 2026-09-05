@@ -200,3 +200,23 @@ export const EventPlayHint = styled.span<{ $isReady: boolean }>`
     color: ${(props) => (props.$isReady ? '#e2c044' : 'rgba(193, 160, 84, 0.55)')};
     text-shadow: 0 2px 16px rgba(0, 0, 0, 0.85);
 `;
+
+export const DesignationOverlay = styled.div`
+    position: absolute;
+    left: 50%;
+    top: 92px;
+    transform: translateX(-50%);
+    z-index: 36;
+    pointer-events: none;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 16px;
+`;
+
+export const DesignationPendingCard = styled.div`
+    pointer-events: auto;
+    transform: scale(0.58);
+    transform-origin: top center;
+    filter: drop-shadow(0 8px 18px rgba(0, 0, 0, 0.75));
+`;

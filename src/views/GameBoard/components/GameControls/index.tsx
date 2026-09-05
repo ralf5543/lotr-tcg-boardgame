@@ -4,6 +4,7 @@ import type { Ctx } from 'boardgame.io';
 import type { GameState } from '../../../../game/types';
 import { TRANSLATIONS } from '../../../../game/translations';
 import { BiddingWidget } from '../BiddingWidget';
+import { useTargeting } from '../../../../contexts/TargetingContext';
 
 interface GameControlsProps {
     G: GameState;
@@ -36,6 +37,9 @@ export const GameControls: React.FC<GameControlsProps> = ({
     moves,
     G,
 }) => {
+    const { isTargetingActive, targetingKind, message: targetingMessage } =
+        useTargeting();
+
     if (!G || !ctx) return null;
 
     const currentPlayerId = playerID ?? '0';
@@ -275,6 +279,16 @@ export const GameControls: React.FC<GameControlsProps> = ({
         };
     }
 
+    if (isTargetingActive && targetingKind === 'DESIGNATION' && targetingMessage) {
+        toastConfig = {
+            show: true,
+            title: 'CHOIX DE CIBLE',
+            body: `${targetingMessage} Échap pour annuler.`,
+            showPassButton: false,
+            type: 'STANDARD',
+        };
+    }
+
     // 🟢 5. OBTENTION DE LA CONSIGNE CONTEXTUELLE DU JOUEUR LOCAL
     const getInstructionText = (): string => {
         if (isBiddingStep) {
@@ -307,6 +321,10 @@ export const GameControls: React.FC<GameControlsProps> = ({
                 return 'Étape validée. En attente de l’autre joueur...';
             }
             return 'Cliquez sur vos cartes brillantes pour déclencher leurs effets, ou validez.';
+        }
+
+        if (isTargetingActive && targetingKind === 'DESIGNATION') {
+            return targetingMessage || 'Cliquez sur une carte pour la désigner.';
         }
 
         if (isActionWindowActive) {

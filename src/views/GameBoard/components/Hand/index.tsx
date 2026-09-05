@@ -4,6 +4,7 @@ import { Card } from '../Card';
 import * as S from './styles';
 import { useDrag } from '../../../../contexts/DragContext';
 import { useFaction } from '../../../../contexts/FactionContext';
+import { useTargeting } from '../../../../contexts/TargetingContext';
 import { audioService } from '../../../../services/audioService';
 import { canPlayCard } from '../../../../game/engine/canPlayCard';
 import {
@@ -78,7 +79,10 @@ export const Hand: React.FC<HandProps> = ({
     };
 
     const { startDrag, dragged } = useDrag();
+    const { targetingKind, pendingCard } = useTargeting();
     const isDragging = !!dragged;
+    const isDesignating = targetingKind === 'DESIGNATION';
+    const pendingCardId = pendingCard?.id;
 
     const [discardingIndex, setDiscardingIndex] = useState<number | null>(null);
 
@@ -158,6 +162,8 @@ export const Hand: React.FC<HandProps> = ({
                           );
 
                           const isBeingDragged = dragged?.card.id === card.id;
+                          const isPendingPlay = pendingCardId === card.id;
+                          const isHidden = isBeingDragged || isPendingPlay;
                           const isDiscarding = discardingIndex === idx;
 
                           const isNewCard = animatingCardIds.has(card.id);
@@ -209,13 +215,14 @@ export const Hand: React.FC<HandProps> = ({
                                           : undefined
                                   }
                                   style={{
-                                      visibility: isBeingDragged
+                                      visibility: isHidden
                                           ? 'hidden'
                                           : 'visible',
-                                      width: isBeingDragged ? '0px' : '',
-                                      opacity: isBeingDragged ? 0 : undefined,
+                                      width: isHidden ? '0px' : '',
+                                      opacity: isHidden ? 0 : undefined,
                                       pointerEvents:
-                                          isBeingDragged ||
+                                          isHidden ||
+                                          isDesignating ||
                                           discardingIndex !== null
                                               ? 'none'
                                               : 'auto',
@@ -231,6 +238,8 @@ export const Hand: React.FC<HandProps> = ({
                                           e.stopPropagation();
                                           return;
                                       }
+
+                                      if (isDesignating) return;
 
                                       if (
                                           !isMatchingPlayerRole ||

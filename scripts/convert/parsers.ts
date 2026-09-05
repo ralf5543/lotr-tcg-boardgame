@@ -715,10 +715,33 @@ function findKnownKeyword(text: string): string | undefined {
     return undefined;
 }
 
+function parseClassFilters(raw: string): string[] {
+    const filters: string[] = [];
+    let segment = raw.replace(/<(symbol|keyword)>(.*?)<\/\1>/gi, (_, _tag, content) => {
+        const clean = String(content || '')
+            .replace(/[^a-zA-Z-]/g, '')
+            .toUpperCase();
+        if (clean) filters.push(clean);
+        return ' ';
+    });
+    segment = segment.replace(/<[^>]+>/g, ' ');
+    for (const word of segment.split(/\s+/)) {
+        const clean = word.replace(/[^a-zA-Z-]/g, '').toUpperCase();
+        if (clean && !['A', 'AN', 'THE', 'OR'].includes(clean)) {
+            filters.push(clean);
+        }
+    }
+    return filters;
+}
+
 function parseExertSubject(
     raw: string,
     cardTitle?: string
-): { target: 'SELF' | 'BEARER' | string[][]; count: number } | null {
+): {
+    target: 'SELF' | 'BEARER' | string[][];
+    count: number;
+    mode?: 'DESIGNATION';
+} | null {
     let count = 1;
     let body = raw.replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim();
 
@@ -746,15 +769,15 @@ function parseExertSubject(
         return { target: 'SELF', count };
     }
 
-    // Désignation (« a Hobbit ») / filtres : pas de résolution auto.
-    if (/^(a|an|another|your)\b/i.test(body)) return null;
-    if (
-        /\b(companion|minion|ally|man|elf|dwarf|hobbit|orc|uruk-hai|ent|southron)\b/i.test(
-            body
-        )
-    ) {
-        return null;
+    const articleMatch = body.match(/^(a|an)\s+(.+)$/i);
+    if (articleMatch) {
+        const filters = parseClassFilters(articleMatch[2]);
+        if (filters.length === 0) return null;
+        return { target: [filters], count, mode: 'DESIGNATION' };
     }
+
+    // « another / your » : pas encore.
+    if (/^(another|your)\b/i.test(body)) return null;
 
     return { target: [[body]], count };
 }
@@ -929,6 +952,7 @@ export function parseAbilities(
                         {
                             count: subject.count,
                             target: subject.target,
+                            ...(subject.mode ? { mode: subject.mode } : {}),
                         },
                     ],
                 },

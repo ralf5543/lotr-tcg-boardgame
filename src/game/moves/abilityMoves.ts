@@ -12,7 +12,8 @@ import { findTargetCard } from '../../utils/cardUtils';
 export const activateAbility = (
     { G, ctx, playerID }: LotrMoveContext,
     sourceInstanceId: string,
-    abilityId: string
+    abilityId: string,
+    chosenTargetId?: string
 ) => {
     const source = findTargetCard(G, sourceInstanceId) as CardState | null;
     if (!source) return 'INVALID_MOVE';
@@ -24,8 +25,12 @@ export const activateAbility = (
     if (!canUseAbility(source, context).valid) return 'INVALID_MOVE';
     if (!abilityMatchesPhase(ability, ctx.phase || '')) return 'INVALID_MOVE';
     if (!canPayAbilityCost(G, source, ability.cost)) return 'INVALID_MOVE';
-    if (!payAbilityCost(G, source, ability.cost)) return 'INVALID_MOVE';
-    if (!applyAbilityEffect(G, source, ability)) return 'INVALID_MOVE';
+    if (!payAbilityCost(G, source, ability.cost, chosenTargetId)) {
+        return 'INVALID_MOVE';
+    }
+    if (!applyAbilityEffect(G, source, ability, chosenTargetId)) {
+        return 'INVALID_MOVE';
+    }
 
     yieldPriorityAfterAction(G, playerID);
 

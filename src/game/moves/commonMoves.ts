@@ -171,7 +171,8 @@ export const attachCard = (
 
 export const playCard = (
     { G, ctx, playerID }: LotrMoveContext,
-    cardIndex: number
+    cardIndex: number,
+    chosenTargetId?: string
 ) => {
     const actingPlayerId = playerID ?? ctx.currentPlayer ?? '0';
     const player = G.players[actingPlayerId];
@@ -217,7 +218,7 @@ export const playCard = (
             player.supportArea.push(playedCard);
             G.statusMessage = `${playedCard.title} rejoint l'aire de soutien (+${cost} Crépuscule).`;
         } else if (playedCard.type === 'EVENT') {
-            if (!applyEventAbility(G, playedCard, ctx.phase || '')) {
+            if (!applyEventAbility(G, playedCard, ctx.phase || '', chosenTargetId)) {
                 player.hand.splice(cardIndex, 0, playedCard);
                 G.twilightPool -= cost;
                 return 'INVALID_MOVE';
@@ -259,7 +260,7 @@ export const playCard = (
             player.supportArea.push(playedCard);
             G.statusMessage = `${playedCard.title} rejoint l'aire de soutien de l'Ombre (-${cost} Crépuscule).`;
         } else if (playedCard.type === 'EVENT') {
-            if (!applyEventAbility(G, playedCard, ctx.phase || '')) {
+            if (!applyEventAbility(G, playedCard, ctx.phase || '', chosenTargetId)) {
                 player.hand.splice(cardIndex, 0, playedCard);
                 G.twilightPool += cost;
                 return 'INVALID_MOVE';

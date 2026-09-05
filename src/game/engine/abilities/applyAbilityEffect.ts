@@ -16,14 +16,15 @@ function expiryToScope(expiresAtPhase: AbilityEffectExpiry): ModifierScope {
 export function applyAbilityEffect(
     G: GameState,
     source: CardState,
-    ability: Ability
+    ability: Ability,
+    chosenTargetId?: string
 ): boolean {
     const effects = ability.effects || [];
     if (effects.length === 0) return false;
 
     const resolved = effects.map((effect) => ({
         effect,
-        target: resolveAbilityTarget(G, source, effect.target),
+        target: resolveAbilityTarget(G, source, effect.target, chosenTargetId),
     }));
     if (resolved.some((item) => !item.target)) return false;
 

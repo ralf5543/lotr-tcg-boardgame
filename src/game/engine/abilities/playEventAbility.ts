@@ -47,12 +47,13 @@ export function canPayEventAbility(
 export function applyEventAbility(
     G: GameState,
     card: CardState,
-    rawPhase: string
+    rawPhase: string,
+    chosenTargetId?: string
 ): boolean {
     if (card.type !== 'EVENT' || !card.abilities?.length) return true;
 
     const ability = findEventAbilityForPhase(card, rawPhase);
     if (!ability) return false;
-    if (!payAbilityCost(G, card, ability.cost)) return false;
-    return applyAbilityEffect(G, card, ability);
+    if (!payAbilityCost(G, card, ability.cost, chosenTargetId)) return false;
+    return applyAbilityEffect(G, card, ability, chosenTargetId);
 }

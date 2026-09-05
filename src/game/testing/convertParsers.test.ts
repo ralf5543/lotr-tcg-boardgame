@@ -161,10 +161,35 @@ describe('parseAbilities — Exert … to make KEYWORD', () => {
         expect(parseAbilities(text, 'Gwemegil', '1R47')).toBeUndefined();
     });
 
-    it('n’émet rien si la cible du coût est une classe (a Hobbit) — désignation plus tard', () => {
+    it('parse Exert a Hobbit (désignation) : Halfling Deftness', () => {
         const text =
             '<keyword>Skirmish:</keyword> Exert a Hobbit to make him strength +3.';
-        expect(parseAbilities(text, 'Halfling Deftness', '1U293')).toBeUndefined();
+        expect(parseAbilities(text, 'Halfling Deftness', '1U293')).toEqual([
+            {
+                id: '1U293:0',
+                phases: ['SKIRMISH'],
+                cost: [
+                    {
+                        exert: [
+                            {
+                                count: 1,
+                                target: [['HOBBIT']],
+                                mode: 'DESIGNATION',
+                            },
+                        ],
+                    },
+                ],
+                effects: [{
+                    type: 'ADD_TEMP_STAT',
+                    stat: 'STRENGTH',
+                    value: 3,
+                    target: [['HOBBIT']],
+                    expiresAtPhase: 'SKIRMISH',
+                }],
+                source: 'SELF',
+                text: expect.stringMatching(/SKIRMISH: Exert a Hobbit to make him strength \+3/i),
+            },
+        ]);
     });
 
     it('n’émet rien si le bonus scale (for each)', () => {

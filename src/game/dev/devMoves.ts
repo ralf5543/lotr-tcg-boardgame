@@ -1,5 +1,32 @@
-import type { LotrMoveContext, LotrPhaseContext, DevPresetType } from '../types';
+import type {
+    LotrMoveContext,
+    LotrPhaseContext,
+    DevPresetType,
+    GameState,
+} from '../types';
 import { applyDevPreset } from './presets';
+import { clearActionableFlags } from '../../utils/clearActionableFlags';
+
+/** État de machine de phase : toasters, fenêtres, sous-étapes. */
+function resetPhaseMachine(G: GameState): void {
+    G.actionWindow = undefined;
+    G.skirmishes = [];
+    G.activeSkirmishId = undefined;
+    G.maneuverStep = undefined;
+    G.startOfPhaseState = undefined;
+    G.musterState = undefined;
+    G.assignmentStep = undefined;
+    G.archeryState = undefined;
+    G.archeryAssignStep = undefined;
+    G.archeryWoundsToAssign = undefined;
+    G.pendingPhaseEnd = undefined;
+    G.nextPhase = undefined;
+    G.isFierceAssignment = false;
+    G.pendingFierceAssignment = false;
+    G.regroupStep = undefined;
+    G.awaitingSiteSelection = false;
+    clearActionableFlags(G);
+}
 
 export const devMoves = {
     devSetTwilight: ({ G }: LotrMoveContext, amount: number) => {
@@ -34,19 +61,16 @@ export const devMoves = {
     },
 
     devSetPhase: ({ G, events }: LotrPhaseContext, targetPhase: string) => {
-        G.actionWindow = undefined;
-        G.skirmishes = [];
-        G.activeSkirmishId = undefined;
+        resetPhaseMachine(G);
 
         if (targetPhase === 'regroup') {
             G.regroupStep = 'SHADOW_REFILL';
             if (!G.movesThisTurn) {
                 G.movesThisTurn = 1;
             }
-        } else {
-            G.regroupStep = undefined;
         }
 
+        G.statusMessage = `[DEV] Phase forcée : ${targetPhase}`;
         events?.setPhase?.(targetPhase);
     },
 

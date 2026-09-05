@@ -10,7 +10,9 @@ const matchCard = (c: CardState | undefined | null, targetId: string) =>
     Boolean(c && (c.instanceId === targetId || c.id === targetId));
 
 /**
- * Parcourt toutes les cartes en jeu (fellowship, support, battlefield + attachments).
+ * Parcourt les cartes réellement en jeu : compagnie des Peuples Libres,
+ * zones de soutien, champ de bataille (+ attachements).
+ * La fellowship de l’Ombre n’est pas en jeu (reste de setup / bandeau dormant).
  */
 export function forEachInPlayCard(
     G: GameState,
@@ -27,8 +29,10 @@ export function forEachInPlayCard(
         });
     };
 
+    const fpId = G.fpPlayerId || '0';
+    visitList(G.players?.[fpId]?.fellowshipArea);
+
     Object.values(G.players || {}).forEach((player) => {
-        visitList(player.fellowshipArea);
         visitList(player.supportArea);
     });
     visitList(G.battlefield);
@@ -62,12 +66,18 @@ function resolveDnfTargets(G: GameState, target: string[][]): CardState[] {
 export function resolveAbilityTarget(
     G: GameState,
     source: CardState,
-    token: AbilityTargetRef
+    token: AbilityTargetRef,
+    chosenTargetId?: string
 ): CardState | null {
     if (token === 'SELF') return source;
     if (token === 'BEARER') return findBearer(G, source);
     if (Array.isArray(token)) {
-        return resolveDnfTargets(G, token)[0] || null;
+        const matches = resolveDnfTargets(G, token);
+        if (chosenTargetId) {
+            return matches.find((card) => matchCard(card, chosenTargetId)) || null;
+        }
+        if (matches.length === 1) return matches[0];
+        return null;
     }
     return null;
 }
