@@ -57,12 +57,12 @@ describe('parseAbilities — Exert … to make KEYWORD', () => {
                 id: '1R89:0',
                 phases: ['MANEUVER'],
                 cost: [{ exert: [{ count: 1, target: 'SELF' }] }],
-                effect: {
+                effects: [{
                     type: 'ADD_TEMP_KEYWORD',
                     keyword: 'DEFENDER +1',
                     target: 'SELF',
                     expiresAtPhase: 'REGROUP',
-                },
+                }],
                 source: 'SELF',
                 text: expect.stringMatching(/MANEUVER: Exert Aragorn/i),
             },
@@ -80,12 +80,12 @@ describe('parseAbilities — Exert … to make KEYWORD', () => {
             id: '9R24:0',
             phases: ['SKIRMISH'],
             cost: [{ exert: [{ count: 1, target: 'BEARER' }] }],
-            effect: {
+            effects: [{
                 type: 'ADD_TEMP_KEYWORD',
                 keyword: 'DAMAGE +1',
                 target: 'BEARER',
                 expiresAtPhase: 'SKIRMISH',
-            },
+            }],
             source: 'ATTACHMENT',
         });
     });
@@ -96,11 +96,11 @@ describe('parseAbilities — Exert … to make KEYWORD', () => {
         expect(abilities?.[0]).toMatchObject({
             phases: ['MANEUVER'],
             cost: [{ exert: [{ count: 2, target: 'SELF' }] }],
-            effect: {
+            effects: [{
                 type: 'ADD_TEMP_KEYWORD',
                 keyword: 'DEFENDER +1',
                 expiresAtPhase: 'REGROUP',
-            },
+            }],
         });
     });
 
@@ -112,13 +112,13 @@ describe('parseAbilities — Exert … to make KEYWORD', () => {
                 id: '0P12:0',
                 phases: ['SKIRMISH'],
                 cost: [{ exert: [{ count: 1, target: 'SELF' }] }],
-                effect: {
+                effects: [{
                     type: 'ADD_TEMP_STAT',
                     stat: 'STRENGTH',
                     value: 2,
                     target: 'SELF',
                     expiresAtPhase: 'SKIRMISH',
-                },
+                }],
                 source: 'SELF',
                 text: expect.stringMatching(/SKIRMISH: Exert Gimli/i),
             },
@@ -132,13 +132,13 @@ describe('parseAbilities — Exert … to make KEYWORD', () => {
             id: '1R190:0',
             phases: ['SKIRMISH'],
             cost: [{ exert: [{ count: 1, target: 'BEARER' }] }],
-            effect: {
+            effects: [{
                 type: 'ADD_TEMP_STAT',
                 stat: 'STRENGTH',
                 value: 2,
                 target: 'BEARER',
                 expiresAtPhase: 'SKIRMISH',
-            },
+            }],
             source: 'ATTACHMENT',
         });
     });
@@ -181,15 +181,46 @@ describe('parseAbilities — Exert … to make KEYWORD', () => {
                 id: '4R307:0',
                 phases: ['SKIRMISH'],
                 cost: [{ exert: [{ count: 1, target: [['Sam']] }] }],
-                effect: {
+                effects: [{
                     type: 'ADD_TEMP_STAT',
                     stat: 'STRENGTH',
                     value: 3,
                     target: [['Sam']],
                     expiresAtPhase: 'SKIRMISH',
-                },
+                }],
                 source: 'SELF',
                 text: expect.stringMatching(/SKIRMISH: Exert Sam to make him strength \+3/i),
+            },
+        ]);
+    });
+
+    it('parse force +2 et damage +1 après un seul exert', () => {
+        const text =
+            '<keyword>Skirmish:</keyword> Exert Gimli to make him strength +2 and <keyword>damage +1.</keyword>';
+        expect(parseAbilities(text, 'Gimli', '0P12')).toEqual([
+            {
+                id: '0P12:0',
+                phases: ['SKIRMISH'],
+                cost: [{ exert: [{ count: 1, target: 'SELF' }] }],
+                effects: [
+                    {
+                        type: 'ADD_TEMP_STAT',
+                        stat: 'STRENGTH',
+                        value: 2,
+                        target: 'SELF',
+                        expiresAtPhase: 'SKIRMISH',
+                    },
+                    {
+                        type: 'ADD_TEMP_KEYWORD',
+                        keyword: 'DAMAGE +1',
+                        target: 'SELF',
+                        expiresAtPhase: 'SKIRMISH',
+                    },
+                ],
+                source: 'SELF',
+                text: expect.stringMatching(
+                    /SKIRMISH: Exert Gimli to make him strength \+2 and damage \+1/i
+                ),
             },
         ]);
     });

@@ -15,12 +15,12 @@ const ARAGORN_ABILITY: Ability = {
     id: '1R89:0',
     phases: ['MANEUVER'],
     cost: [{ exert: [{ count: 1, target: 'SELF' }] }],
-    effect: {
+    effects: [{
         type: 'ADD_TEMP_KEYWORD',
         keyword: 'DEFENDER +1',
         target: 'SELF',
         expiresAtPhase: 'REGROUP',
-    },
+    }],
     source: 'SELF',
     text: 'Maneuver: Exert Aragorn to make him defender +1 until the regroup phase.',
 };
@@ -133,12 +133,12 @@ describe('activateAbility', () => {
             id: '9R24:0',
             phases: ['SKIRMISH'],
             cost: [{ exert: [{ count: 1, target: 'BEARER' }] }],
-            effect: {
+            effects: [{
                 type: 'ADD_TEMP_KEYWORD',
                 keyword: 'DAMAGE +1',
                 target: 'BEARER',
                 expiresAtPhase: 'SKIRMISH',
-            },
+            }],
             source: 'ATTACHMENT',
         };
 
@@ -188,13 +188,13 @@ describe('activateAbility', () => {
             id: '0P12:0',
             phases: ['SKIRMISH'],
             cost: [{ exert: [{ count: 1, target: 'SELF' }] }],
-            effect: {
+            effects: [{
                 type: 'ADD_TEMP_STAT',
                 stat: 'STRENGTH',
                 value: 2,
                 target: 'SELF',
                 expiresAtPhase: 'SKIRMISH',
-            },
+            }],
             source: 'SELF',
         };
 
@@ -237,18 +237,78 @@ describe('activateAbility', () => {
         expect(engine.getG().actionWindow?.passesCount).toBe(0);
     });
 
+    it('enchaîne force +2 et damage +1 après un seul exert', () => {
+        const ability: Ability = {
+            id: 'compound:0',
+            phases: ['SKIRMISH'],
+            cost: [{ exert: [{ count: 1, target: 'SELF' }] }],
+            effects: [
+                {
+                    type: 'ADD_TEMP_STAT',
+                    stat: 'STRENGTH',
+                    value: 2,
+                    target: 'SELF',
+                    expiresAtPhase: 'SKIRMISH',
+                },
+                {
+                    type: 'ADD_TEMP_KEYWORD',
+                    keyword: 'DAMAGE +1',
+                    target: 'SELF',
+                    expiresAtPhase: 'SKIRMISH',
+                },
+            ],
+            source: 'SELF',
+        };
+
+        const companion = createCompanion({
+            id: 'comp-2fx',
+            vitality: 3,
+            strength: 6,
+            actionPhases: ['SKIRMISH'],
+            abilities: [ability],
+        });
+
+        const engine = createEngineClient({
+            startPhase: 'skirmish',
+            playerID: '0',
+            G: {
+                ...createSkirmishActionWindow('sk-1'),
+                skirmishes: [
+                    {
+                        id: 'sk-1',
+                        companionId: 'comp-2fx',
+                        minionIds: ['orc'],
+                    },
+                ],
+                players: {
+                    '0': createPlayerState('0', {
+                        fellowshipArea: [companion],
+                    }),
+                },
+            },
+        });
+
+        engine.moves.activateAbility('comp-2fx', 'compound:0');
+
+        const card = engine.getG().players['0']?.fellowshipArea[0];
+        expect(card?.wounds).toBe(1);
+        expect(getCalculatedStrength(engine.getG(), card)).toBe(8);
+        expect(getKeywordValue(card!, 'DAMAGE')).toBe(1);
+        expect(engine.getG().actionWindow?.activePlayerId).toBe('1');
+    });
+
     it('Exert Sam nommé : blesse Sam et lui donne force +3 (pas la source)', () => {
         const impatient: Ability = {
             id: '4R307:0',
             phases: ['SKIRMISH'],
             cost: [{ exert: [{ count: 1, target: [['Sam']] }] }],
-            effect: {
+            effects: [{
                 type: 'ADD_TEMP_STAT',
                 stat: 'STRENGTH',
                 value: 3,
                 target: [['Sam']],
                 expiresAtPhase: 'SKIRMISH',
-            },
+            }],
             source: 'SELF',
         };
 
@@ -300,13 +360,13 @@ describe('activateAbility', () => {
         id: '0P12:0',
         phases: ['SKIRMISH'],
         cost: [{ exert: [{ count: 1, target: 'SELF' }] }],
-        effect: {
+        effects: [{
             type: 'ADD_TEMP_STAT',
             stat: 'STRENGTH',
             value: 2,
             target: 'SELF',
             expiresAtPhase: 'SKIRMISH',
-        },
+        }],
         source: 'SELF',
     };
 

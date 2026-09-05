@@ -47,6 +47,21 @@ export function cardOrAttachmentsHaveActionPhases(card: CardState): boolean {
     );
 }
 
+function formatEffectBit(effect: Ability['effects'][number]): string {
+    if (effect.type === 'ADD_TEMP_STAT') {
+        const statLabels: Record<string, string> = {
+            STRENGTH: 'force',
+            VITALITY: 'vitalité',
+            RESISTANCE: 'résistance',
+            TWILIGHT_COST: 'crépuscule',
+        };
+        const sign = effect.value > 0 ? '+' : '';
+        const stat = statLabels[effect.stat] || effect.stat.toLowerCase();
+        return `${stat} ${sign}${effect.value}`;
+    }
+    return effect.keyword ? effect.keyword.toLowerCase() : '';
+}
+
 export function formatAbilityLabel(
     ability: Ability,
     source: CardState
@@ -60,22 +75,9 @@ export function formatAbilityLabel(
               ? exert.target.flat().join(' ')
               : source.i18n?.fr?.title || source.title || 'cette carte';
     const times = count > 1 ? ` ${count} fois` : '';
-
-    if (ability.effect.type === 'ADD_TEMP_STAT') {
-        const statLabels: Record<string, string> = {
-            STRENGTH: 'force',
-            VITALITY: 'vitalité',
-            RESISTANCE: 'résistance',
-            TWILIGHT_COST: 'crépuscule',
-        };
-        const sign = ability.effect.value > 0 ? '+' : '';
-        const stat =
-            statLabels[ability.effect.stat] || ability.effect.stat.toLowerCase();
-        return `Affaiblir ${who}${times} : ${stat} ${sign}${ability.effect.value}`;
-    }
-
-    const keyword = ability.effect.keyword
-        ? ability.effect.keyword.toLowerCase()
-        : '';
-    return `Affaiblir ${who}${times} : ${keyword}`;
+    const bits = (ability.effects || [])
+        .map(formatEffectBit)
+        .filter(Boolean)
+        .join(' et ');
+    return `Affaiblir ${who}${times} : ${bits}`;
 }

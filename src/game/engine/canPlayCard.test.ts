@@ -139,13 +139,13 @@ describe('canPlayCard', () => {
                     id: '4R307:0',
                     phases: ['SKIRMISH'],
                     cost: [{ exert: [{ count: 1, target: [['Sam']] }] }],
-                    effect: {
+                    effects: [{
                         type: 'ADD_TEMP_STAT',
                         stat: 'STRENGTH',
                         value: 3,
                         target: [['Sam']],
                         expiresAtPhase: 'SKIRMISH',
-                    },
+                    }],
                     source: 'SELF',
                 },
             ],

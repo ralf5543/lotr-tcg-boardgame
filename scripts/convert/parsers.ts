@@ -786,17 +786,67 @@ function parseEffectTarget(
     return costTarget;
 }
 
-function extractKeywordFromMakeClause(effectText: string): string | undefined {
-    const remainder = remainderAfterPronoun(effectText);
-    if (!remainder) return undefined;
-    return findKnownKeyword(remainder);
-}
-
 const STAT_NAMES: Record<string, 'STRENGTH' | 'VITALITY' | 'RESISTANCE'> = {
     STRENGTH: 'STRENGTH',
     VITALITY: 'VITALITY',
     RESISTANCE: 'RESISTANCE',
 };
+
+function parseMakeEffectPiece(chunk: string):
+    | { kind: 'keyword'; keyword: string }
+    | { kind: 'stat'; stat: 'STRENGTH' | 'VITALITY' | 'RESISTANCE'; value: number }
+    | undefined {
+    const keyword = findKnownKeyword(chunk);
+    if (keyword) return { kind: 'keyword', keyword };
+
+    const plain = chunk
+        .replace(/<[^>]+>/g, ' ')
+        .replace(/\s+/g, ' ')
+        .trim();
+    const match = plain.match(
+        /^(strength|vitality|resistance)\s*([+-]\d+)\b/i
+    );
+    if (!match) return undefined;
+
+    const stat = STAT_NAMES[match[1].toUpperCase()];
+    if (!stat) return undefined;
+    return { kind: 'stat', stat, value: parseInt(match[2], 10) };
+}
+
+function parseMakeEffects(
+    effectText: string,
+    effectTarget: 'SELF' | 'BEARER' | string[][],
+    expiresAtPhase: 'REGROUP' | 'SKIRMISH' | 'TURN_END'
+) {
+    const remainder = remainderAfterPronoun(effectText);
+    if (!remainder) return undefined;
+
+    const pieces = remainder
+        .split(/\band\b/i)
+        .map((piece) => piece.trim())
+        .filter(Boolean);
+    if (pieces.length === 0) return undefined;
+
+    const parsed = pieces.map(parseMakeEffectPiece);
+    if (parsed.some((piece) => !piece)) return undefined;
+
+    return parsed.map((piece) =>
+        piece!.kind === 'keyword'
+            ? {
+                  type: 'ADD_TEMP_KEYWORD' as const,
+                  keyword: piece!.keyword,
+                  target: effectTarget,
+                  expiresAtPhase,
+              }
+            : {
+                  type: 'ADD_TEMP_STAT' as const,
+                  stat: piece!.stat,
+                  value: piece!.value,
+                  target: effectTarget,
+                  expiresAtPhase,
+              }
+    );
+}
 
 function remainderAfterPronoun(effectText: string): string | undefined {
     const pronounMatch = effectText.match(
@@ -808,27 +858,6 @@ function remainderAfterPronoun(effectText: string): string | undefined {
     const remainderPlain = remainder.replace(/<[^>]+>/g, ' ').trim();
     if (/^(a|an)\s+/i.test(remainderPlain)) return undefined;
     return remainder;
-}
-
-function extractStatFromMakeClause(effectText: string): {
-    stat: 'STRENGTH' | 'VITALITY' | 'RESISTANCE';
-    value: number;
-} | undefined {
-    const remainder = remainderAfterPronoun(effectText);
-    if (!remainder) return undefined;
-
-    const plain = remainder
-        .replace(/<[^>]+>/g, ' ')
-        .replace(/\s+/g, ' ')
-        .trim();
-    const match = plain.match(
-        /^(strength|vitality|resistance)\s*([+-]\d+)\b/i
-    );
-    if (!match) return undefined;
-
-    const stat = STAT_NAMES[match[1].toUpperCase()];
-    if (!stat) return undefined;
-    return { stat, value: parseInt(match[2], 10) };
 }
 
 /**
@@ -875,16 +904,15 @@ export function parseAbilities(
         const effectText = exertMatch[2];
         if (/\bfor each\b/i.test(effectText.replace(/<[^>]+>/g, ' '))) return;
 
-        const remainder = remainderAfterPronoun(effectText);
-        if (remainder && /\band\b/i.test(remainder.replace(/<[^>]+>/g, ' '))) {
-            return;
-        }
-        const keyword = extractKeywordFromMakeClause(effectText);
-        const statMod = keyword ? undefined : extractStatFromMakeClause(effectText);
-        if (!keyword && !statMod) return;
-
         const expiresAtPhase = parseUntilExpiry(effectText, marker.phase);
         const effectTarget = parseEffectTarget(effectText, subject.target);
+        const effects = parseMakeEffects(
+            effectText,
+            effectTarget,
+            expiresAtPhase
+        );
+        if (!effects || effects.length === 0) return;
+
         const source = subject.target === 'BEARER' ? 'ATTACHMENT' : 'SELF';
         const clause = `${marker.phase}: Exert ${exertMatch[1].trim()} to make ${effectText}`
             .replace(/<[^>]+>/g, '')
@@ -905,20 +933,7 @@ export function parseAbilities(
                     ],
                 },
             ],
-            effect: keyword
-                ? {
-                      type: 'ADD_TEMP_KEYWORD',
-                      keyword,
-                      target: effectTarget,
-                      expiresAtPhase,
-                  }
-                : {
-                      type: 'ADD_TEMP_STAT',
-                      stat: statMod!.stat,
-                      value: statMod!.value,
-                      target: effectTarget,
-                      expiresAtPhase,
-                  },
+            effects,
             source,
             text: clause,
         });

@@ -88,13 +88,13 @@ const CARDS_PRESETS: Record<string, CardState> = {
                 id: '0P12:0',
                 phases: ['SKIRMISH'],
                 cost: [{ exert: [{ count: 1, target: 'SELF' }] }],
-                effect: {
+                effects: [{
                     type: 'ADD_TEMP_STAT' as const,
                     stat: 'STRENGTH' as const,
                     value: 2,
                     target: 'SELF' as const,
                     expiresAtPhase: 'SKIRMISH' as const,
-                },
+                }],
                 source: 'SELF' as const,
                 text: 'SKIRMISH: Exert Gimli to make him strength +2.',
             },
@@ -218,12 +218,12 @@ const CARDS_PRESETS: Record<string, CardState> = {
                 ]
               }
             ],
-            effect: {
+            effects: [{
               type: "ADD_TEMP_KEYWORD",
               keyword: "DEFENDER +1",
               target: "SELF",
               expiresAtPhase: "REGROUP"
-            },
+            }],
             source: "SELF",
             text: "MANEUVER: Exert Aragorn to make him defender +1 until the regroup phase."
           }

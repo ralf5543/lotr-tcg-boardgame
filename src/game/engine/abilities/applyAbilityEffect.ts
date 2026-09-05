@@ -18,10 +18,30 @@ export function applyAbilityEffect(
     source: CardState,
     ability: Ability
 ): boolean {
-    const { effect } = ability;
-    const target = resolveAbilityTarget(G, source, effect.target);
-    if (!target) return false;
+    const effects = ability.effects || [];
+    if (effects.length === 0) return false;
 
+    const resolved = effects.map((effect) => ({
+        effect,
+        target: resolveAbilityTarget(G, source, effect.target),
+    }));
+    if (resolved.some((item) => !item.target)) return false;
+
+    for (const { effect, target } of resolved) {
+        if (!applyOneEffect(G, source, ability, effect, target!)) {
+            return false;
+        }
+    }
+    return true;
+}
+
+function applyOneEffect(
+    G: GameState,
+    source: CardState,
+    ability: Ability,
+    effect: Ability['effects'][number],
+    target: CardState
+): boolean {
     if (effect.type === 'ADD_TEMP_KEYWORD') {
         if (!target.tempKeywords) target.tempKeywords = [];
         target.tempKeywords.push({

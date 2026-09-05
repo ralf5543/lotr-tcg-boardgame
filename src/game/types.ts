@@ -191,7 +191,7 @@ export interface Ability {
     id: string;
     phases: string[];
     cost: AbilityCost;
-    effect: AbilityEffect;
+    effects: AbilityEffect[];
     source: 'SELF' | 'ATTACHMENT';
     text?: string;
 }
