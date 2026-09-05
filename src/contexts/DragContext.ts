@@ -4,6 +4,9 @@ import type { CardState, SiteCardState } from '../game/types';
 export type CardOrientation = 'portrait' | 'landscape';
 export type CardOrigin = 'HAND' | 'BOARD' | 'ATTACHMENT' | 'BATTLEFIELD' | 'SUPPORT_AREA';
 
+/** En coords design (1080), sous ce Y le drop d'événement est un cancel (main / dock). */
+export const HAND_CANCEL_VIRTUAL_Y = 820;
+
 export interface DraggedCardData {
     card: CardState | SiteCardState;
     index: number;
@@ -28,6 +31,7 @@ export interface DragContextType {
     stopDrag: () => void;
     registerTarget: (id: string, element: HTMLDivElement | null) => void;
     rotation: number;
+    isOverHandCancel: boolean;
 }
 
 export const DragContext = createContext<DragContextType | undefined>(undefined);

@@ -8,6 +8,7 @@ import {
     type CardOrientation,
     type CardOrigin,
     type DraggedCardData,
+    HAND_CANCEL_VIRTUAL_Y,
 } from './DragContext'; // Ajustez le chemin d'import selon votre arborescence
 
 const getXScale = (): number => {
@@ -17,6 +18,25 @@ const getXScale = (): number => {
     return rect.width / 1920;
 };
 
+const getVirtualPoint = (
+    clientX: number,
+    clientY: number,
+    scale: number
+): { x: number; y: number } => {
+    const board = document
+        .querySelector('[class*="ScaledView"]')
+        ?.getBoundingClientRect();
+    const boardLeft = board ? board.left : 0;
+    const boardTop = board ? board.top : 0;
+    return {
+        x: (clientX - boardLeft) / scale,
+        y: (clientY - boardTop) / scale,
+    };
+};
+
+const isInHandCancelZone = (virtualY: number): boolean =>
+    virtualY >= HAND_CANCEL_VIRTUAL_Y;
+
 export const DragProvider: React.FC<{ children: React.ReactNode }> = ({
     children,
 }) => {
@@ -24,6 +44,7 @@ export const DragProvider: React.FC<{ children: React.ReactNode }> = ({
     const [position, setPosition] = useState({ x: 0, y: 0 });
     const [activeTargetId, setActiveTargetId] = useState<string | null>(null);
     const [rotation, setRotation] = useState(0);
+    const [isOverHandCancel, setIsOverHandCancel] = useState(false);
     const lastX = useRef(0);
 
     const targetsRef = useRef<Map<string, HTMLDivElement>>(new Map());
@@ -120,6 +141,7 @@ export const DragProvider: React.FC<{ children: React.ReactNode }> = ({
         lastX.current = e.clientX;
 
         setDragged({ card, index, origin, orientation, parentId });
+        setIsOverHandCancel(isInHandCancelZone((e.clientY - boardTop) / scale));
 
         setPosition({
             x: (e.clientX - boardLeft) / scale,
@@ -131,24 +153,22 @@ export const DragProvider: React.FC<{ children: React.ReactNode }> = ({
         setDragged(null);
         setActiveTargetId(null);
         setRotation(0);
+        setIsOverHandCancel(false);
     };
 
     useEffect(() => {
         if (!dragged) return;
 
         const handlePointerMove = (e: PointerEvent) => {
-
-            const board = document
-                .querySelector('[class*="ScaledView"]')
-                ?.getBoundingClientRect();
-            const boardLeft = board ? board.left : 0;
-            const boardTop = board ? board.top : 0;
             const scale = currentScale.current;
-
-            const virtualX = (e.clientX - boardLeft) / scale;
-            const virtualY = (e.clientY - boardTop) / scale;
+            const { x: virtualX, y: virtualY } = getVirtualPoint(
+                e.clientX,
+                e.clientY,
+                scale
+            );
 
             setPosition({ x: virtualX, y: virtualY });
+            setIsOverHandCancel(isInHandCancelZone(virtualY));
 
             const deltaX = e.clientX - lastX.current;
             lastX.current = e.clientX;
@@ -165,9 +185,18 @@ export const DragProvider: React.FC<{ children: React.ReactNode }> = ({
             if (dragged) {
                 const finalTargetId = getHitTargetId(e.clientX, e.clientY);
                 const targetToUse = finalTargetId || activeTargetIdRef.current;
+                const { y: virtualY } = getVirtualPoint(
+                    e.clientX,
+                    e.clientY,
+                    currentScale.current
+                );
 
                 const dropEvent = new CustomEvent('card-dropped', {
-                    detail: { draggedCard: dragged, targetId: targetToUse },
+                    detail: {
+                        draggedCard: dragged,
+                        targetId: targetToUse,
+                        cancelled: isInHandCancelZone(virtualY),
+                    },
                 });
                 window.dispatchEvent(dropEvent);
             }
@@ -194,6 +223,7 @@ export const DragProvider: React.FC<{ children: React.ReactNode }> = ({
                 startDrag,
                 stopDrag,
                 registerTarget,
+                isOverHandCancel,
             }}
         >
             {children}

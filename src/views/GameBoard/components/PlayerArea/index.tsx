@@ -177,8 +177,10 @@ export const PlayerArea: React.FC<PlayerAreaProps> = ({
 
         // ⚔️ MODE NORMAL : Compagnie active (Joueur FP)
         const draggedCard = dragged?.card as CardState | undefined;
+        const isEventDrag = draggedCard?.type === 'EVENT';
         const isFellowshipTargeted =
             !isOpponent &&
+            !isEventDrag &&
             activeTargetId === 'fellowshipArea' &&
             dragged?.orientation === 'portrait' &&
             (draggedCard
@@ -282,9 +284,11 @@ export const PlayerArea: React.FC<PlayerAreaProps> = ({
 
     const renderSupportArea = () => {
         const draggedCard = dragged?.card as CardState | undefined;
+        const isEventDrag = draggedCard?.type === 'EVENT';
 
         const isSupportTargeted =
             !isOpponent &&
+            !isEventDrag &&
             activeTargetId === 'supportArea' &&
             dragged?.orientation === 'portrait' &&
             (draggedCard

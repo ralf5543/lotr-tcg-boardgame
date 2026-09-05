@@ -290,44 +290,44 @@ export function canPlayCard(
     );
     if (!eventAbilityCheck.valid) return eventAbilityCheck;
 
-    // 5. Validation du dépôt en Zone ou sur Cible (Uniquement si pose depuis la main ou cible explicite)
-if (targetId) {
-    if (targetId === 'fellowshipArea') {
-        if (!canDropInFellowship(card.type)) {
-            return {
-                valid: false,
-                reason: 'Seuls les Compagnons vont dans la zone Communauté.',
-            };
-        }
-    } else if (targetId === 'supportArea') {
-        if (!canDropInSupportArea(card)) {
-            return {
-                valid: false,
-                reason: 'Cette carte doit être attachée à un personnage et ne peut pas aller en zone de soutien.',
-            };
-        }
-    } else if (targetId === 'battlefield') {
-        if (card.kind !== 'SHADOW' || card.type !== 'MINION') {
-            return {
-                valid: false,
-                reason: "Seuls les Séides de l'Ombre vont sur le champ de bataille.",
-            };
-        }
-    } else {
-        if (!targetCard) {
-            return {
-                valid: false,
-                reason: "Cible d'attachement introuvable.",
-            };
-        }
-        if (!canAttachToCharacter(card, targetCard)) {
-            return {
-                valid: false,
-                reason: "Cible d'attachement invalide pour cette carte.",
-            };
+    // 5. Destination : un événement se défausse, il n'a pas de zone / d'hôte.
+    if (targetId && card.type !== 'EVENT') {
+        if (targetId === 'fellowshipArea') {
+            if (!canDropInFellowship(card.type)) {
+                return {
+                    valid: false,
+                    reason: 'Seuls les Compagnons vont dans la zone Communauté.',
+                };
+            }
+        } else if (targetId === 'supportArea') {
+            if (!canDropInSupportArea(card)) {
+                return {
+                    valid: false,
+                    reason: 'Cette carte doit être attachée à un personnage et ne peut pas aller en zone de soutien.',
+                };
+            }
+        } else if (targetId === 'battlefield') {
+            if (card.kind !== 'SHADOW' || card.type !== 'MINION') {
+                return {
+                    valid: false,
+                    reason: "Seuls les Séides de l'Ombre vont sur le champ de bataille.",
+                };
+            }
+        } else {
+            if (!targetCard) {
+                return {
+                    valid: false,
+                    reason: "Cible d'attachement introuvable.",
+                };
+            }
+            if (!canAttachToCharacter(card, targetCard)) {
+                return {
+                    valid: false,
+                    reason: "Cible d'attachement invalide pour cette carte.",
+                };
+            }
         }
     }
-}
 
     return { valid: true };
 }

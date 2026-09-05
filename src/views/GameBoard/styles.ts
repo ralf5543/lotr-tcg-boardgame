@@ -160,3 +160,43 @@ export const HoveredCardsZone = styled.div<{ $orientation?: 'portrait' | 'landsc
     box-shadow: 0 10px 25px rgba(0, 0, 0, 0.8);
     border-radius: 8px;
 `;
+
+export const EventPlayOverlay = styled.div<{ $isReady: boolean }>`
+    position: absolute;
+    inset: 12px 12px 260px 12px;
+    z-index: 35;
+    pointer-events: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 16px;
+    border: 1px dashed
+        ${(props) =>
+            props.$isReady
+                ? 'rgba(226, 192, 68, 0.7)'
+                : 'rgba(193, 160, 84, 0.22)'};
+    background: ${(props) =>
+        props.$isReady
+            ? 'linear-gradient(180deg, rgba(193, 160, 84, 0.14) 0%, rgba(13, 14, 18, 0.04) 100%)'
+            : 'transparent'};
+    box-shadow: ${(props) =>
+        props.$isReady
+            ? 'inset 0 0 48px rgba(193, 160, 84, 0.12)'
+            : 'none'};
+    opacity: ${(props) => (props.$isReady ? 1 : 0.45)};
+    transition:
+        border-color 0.16s ease,
+        background 0.16s ease,
+        box-shadow 0.16s ease,
+        opacity 0.16s ease;
+`;
+
+export const EventPlayHint = styled.span<{ $isReady: boolean }>`
+    font-family: 'DecipherTitle', serif;
+    font-size: 20px;
+    font-weight: 400;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: ${(props) => (props.$isReady ? '#e2c044' : 'rgba(193, 160, 84, 0.55)')};
+    text-shadow: 0 2px 16px rgba(0, 0, 0, 0.85);
+`;

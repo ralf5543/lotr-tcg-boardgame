@@ -49,6 +49,7 @@ export const CardWrapper = styled.div<{
     $isDiscarding?: boolean;
     $hasSpot?: boolean;
     $isSpotMet?: boolean;
+    $isPlayableEvent?: boolean;
 }>`
     position: relative;
     margin: 0 -15px;
@@ -119,6 +120,16 @@ export const CardWrapper = styled.div<{
     border: 1px solid #ff4b4b;
     box-shadow: 0 0 10px rgba(255, 75, 75, 0.6);
   `}
+
+  ${(props) =>
+        props.$isPlayableEvent &&
+        css`
+            overflow: visible;
+            outline: 1px solid rgba(226, 192, 68, 0.95);
+            box-shadow:
+                0 4px 6px rgba(0, 0, 0, 1),
+                0 0 18px 3px rgba(226, 192, 68, 0.65);
+        `}
 `;
 
 export const CardRow = styled.div`

@@ -10,6 +10,7 @@ import { useHoverCard } from '../../contexts/HoverCardContext';
 import { Card } from './components/Card';
 import { SiteCard } from './components/SiteCard';
 import { DragProvider } from '../../contexts/DragProvider';
+import { useDrag } from '../../contexts/DragContext';
 import { TwilightPool } from './components/TwilightPool';
 import { Dock } from './components/Dock';
 import { SitesPicker } from './components/SitePicker';
@@ -56,6 +57,35 @@ export interface GameBoardProps extends BoardProps<GameState> {
             ) => void;
         };
 }
+
+const EventPlayOverlay: React.FC<{
+    G: GameState;
+    phase?: string;
+    playerID: string;
+}> = ({ G, phase, playerID }) => {
+    const { dragged, isOverHandCancel } = useDrag();
+    if (!dragged || dragged.origin !== 'HAND') return null;
+
+    const card = dragged.card as CardState;
+    if (card.type !== 'EVENT') return null;
+
+    const playable = canPlayCard(card, {
+        G,
+        ctx: { phase },
+        playerID,
+    }).valid;
+    if (!playable) return null;
+
+    const isReady = !isOverHandCancel;
+
+    return (
+        <S.EventPlayOverlay $isReady={isReady}>
+            <S.EventPlayHint $isReady={isReady}>
+                {isReady ? 'Relâchez pour jouer' : 'Relâchez dans le plateau'}
+            </S.EventPlayHint>
+        </S.EventPlayOverlay>
+    );
+};
 
 export const GameBoard: React.FC<GameBoardProps> = ({
     playerID,
@@ -155,17 +185,46 @@ export const GameBoard: React.FC<GameBoardProps> = ({
         const handleGlobalCardDrop = (e: Event) => {
             const customEvent = e as CustomEvent;
 
-            const { draggedCard, targetId } = customEvent.detail || {};
+            const { draggedCard, targetId, cancelled } =
+                customEvent.detail || {};
 
-            if (!targetId || !draggedCard) {
+            if (!draggedCard) {
+                console.warn('⚠️ DROP IGNORÉ : draggedCard manquant');
+                return;
+            }
+
+            const { index, origin, card, parentId } = draggedCard;
+
+            if (origin === 'HAND' && card?.type === 'EVENT') {
+                if (cancelled) return;
+
+                const validation = canPlayCard(card, {
+                    G,
+                    ctx,
+                    playerID: myId,
+                });
+
+                if (!validation.valid) {
+                    console.warn(
+                        `❌ [canPlayCard] Rejet : ${validation.reason}`
+                    );
+                    return;
+                }
+
+                if (typeof moves.playCard === 'function') {
+                    moves.playCard(index);
+                    audioService.play('CARD_PLAY');
+                }
+                return;
+            }
+
+            if (!targetId) {
                 console.warn(
                     '⚠️ DROP IGNORÉ : targetId ou draggedCard manquant',
                     { targetId, draggedCard }
                 );
                 return;
             }
-
-            const { index, origin, card, parentId } = draggedCard;
 
             const cardType = card?.type;
             const cardSubtype = card?.subtype;
@@ -422,10 +481,11 @@ export const GameBoard: React.FC<GameBoardProps> = ({
             return null;
         }
 
+        const isActionWindowOpen = Boolean(G.actionWindow?.isOpen);
         const isMainGamePhase =
             ctx.phase === 'fellowship' || ctx.phase === 'shadow';
 
-        if (isMainGamePhase) return 'hand';
+        if (isActionWindowOpen || isMainGamePhase) return 'hand';
 
         return null;
     };
@@ -438,6 +498,11 @@ export const GameBoard: React.FC<GameBoardProps> = ({
         >
             <DragProvider>
                 <S.BoardContainer $faction={currentFaction}>
+                    <EventPlayOverlay
+                        G={G}
+                        phase={ctx.phase}
+                        playerID={myId}
+                    />
                     {hoveredData && (
                         <S.HoveredCardsZone
                             $orientation={hoveredData.orientation}

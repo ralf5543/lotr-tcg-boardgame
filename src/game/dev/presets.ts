@@ -2,6 +2,7 @@ import type { GameState } from '../types';
 import type { DevPresetType } from '../types';
 import type { CardState } from '../types';
 import { drawCardsForPlayer } from '../../utils/drawCards';
+import { getCardById } from '../cardsData';
 
 const CARDS_PRESETS: Record<string, CardState> = {
     FRODO: {
@@ -413,6 +414,14 @@ const CARDS_PRESETS: Record<string, CardState> = {
     },
 };
 
+const clonePresetCard = (id: string): CardState => {
+    const card = getCardById(id);
+    if (!card) {
+        throw new Error(`[DEV] Carte introuvable pour le preset : ${id}`);
+    }
+    return { ...card, instanceId: card.instanceId || card.id };
+};
+
 export const applyDevPreset = (
     G: GameState,
     presetType: DevPresetType
@@ -465,6 +474,32 @@ export const applyDevPreset = (
 
             G.statusMessage =
                 '[DEV] Preset Archerie chargé (Gimli a +1 Vitalité via Armure)';
+            break;
+        }
+        case 'SKIRMISH_TEST': {
+            G.twilightPool = 4;
+
+            Object.keys(G.players).forEach((pId) => {
+                const player = G.players[pId];
+                if (player) {
+                    player.hand = [];
+                }
+            });
+
+            fpPlayer.fellowshipArea = [
+                { ...CARDS_PRESETS.FRODO },
+                clonePresetCard('1C311'),
+                { ...CARDS_PRESETS.GIMLI },
+            ];
+            fpPlayer.hand = [clonePresetCard('4R307')];
+
+            G.battlefield = [{ ...CARDS_PRESETS.ORC_SOLDIER }];
+            G.skirmishes = [];
+            G.activeSkirmishId = undefined;
+            G.actionWindow = undefined;
+
+            G.statusMessage =
+                '[DEV] Preset Combat chargé (Sam + Impatience et Colère). Passe en skirmish, assigne, joue l’événement dans le vide.';
             break;
         }
     }

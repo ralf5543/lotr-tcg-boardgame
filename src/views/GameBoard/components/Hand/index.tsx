@@ -5,6 +5,7 @@ import * as S from './styles';
 import { useDrag } from '../../../../contexts/DragContext';
 import { useFaction } from '../../../../contexts/FactionContext';
 import { audioService } from '../../../../services/audioService';
+import { canPlayCard } from '../../../../game/engine/canPlayCard';
 import {
     hasSpotCondition,
     isSpotConditionMet,
@@ -177,6 +178,16 @@ export const Hand: React.FC<HandProps> = ({
                                 })
                               : false;
 
+                          const isPlayableEvent =
+                              !isDiscardPhase &&
+                              card.type === 'EVENT' &&
+                              isMatchingPlayerRole &&
+                              canPlayCard(card, {
+                                  G,
+                                  ctx: { phase },
+                                  playerID: effectivePlayerId,
+                              }).valid;
+
                           return (
                               <S.CardWrapper
                                   key={card.id}
@@ -191,6 +202,7 @@ export const Hand: React.FC<HandProps> = ({
                                   $isDiscarding={isDiscarding}
                                   $hasSpot={hasSpot}
                                   $isSpotMet={isSpotMet}
+                                  $isPlayableEvent={isPlayableEvent}
                                   data-draggable={
                                       !isDiscardPhase && isMatchingPlayerRole
                                           ? 'true'

@@ -167,7 +167,7 @@ describe('canPlayCard', () => {
         });
         expect(withoutSam.valid).toBe(false);
 
-        const withSam = canPlayCard(event, {
+        const withSamContext = {
             G: createGameState({
                 ...createSkirmishActionWindow('sk-1'),
                 players: {
@@ -184,8 +184,12 @@ describe('canPlayCard', () => {
             }),
             ctx: { phase: 'skirmish' },
             playerID: '0',
-        });
-        expect(withSam.valid).toBe(true);
+        };
+        expect(canPlayCard(event, withSamContext).valid).toBe(true);
+        expect(canPlayCard(event, withSamContext, 'fellowshipArea').valid).toBe(
+            true
+        );
+        expect(canPlayCard(event, withSamContext, 'sam').valid).toBe(true);
     });
 
     it('refuse un événement Skirmish hors fenêtre de combat', () => {
