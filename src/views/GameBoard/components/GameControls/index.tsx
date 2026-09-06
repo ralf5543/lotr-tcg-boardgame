@@ -287,6 +287,14 @@ export const GameControls: React.FC<GameControlsProps> = ({
             showPassButton: false,
             type: 'STANDARD',
         };
+    } else if (G.pendingPlay && G.pendingPlay.playerId !== currentPlayerId) {
+        toastConfig = {
+            show: true,
+            title: 'CARTE EN COURS',
+            body: 'L’adversaire désigne une cible.',
+            showPassButton: false,
+            type: 'STANDARD',
+        };
     }
 
     // 🟢 5. OBTENTION DE LA CONSIGNE CONTEXTUELLE DU JOUEUR LOCAL
@@ -325,6 +333,10 @@ export const GameControls: React.FC<GameControlsProps> = ({
 
         if (isTargetingActive && targetingKind === 'DESIGNATION') {
             return targetingMessage || 'Cliquez sur une carte pour la désigner.';
+        }
+
+        if (G.pendingPlay && G.pendingPlay.playerId !== currentPlayerId) {
+            return 'L’adversaire désigne une cible.';
         }
 
         if (isActionWindowActive) {

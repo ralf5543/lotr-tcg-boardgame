@@ -255,4 +255,24 @@ describe('parseAbilities — Exert … to make KEYWORD', () => {
             '<keyword>Valiant.</keyword> To play, spot a <symbol>rohan</symbol> Man. \n<keyword>Skirmish:</keyword> Play a <symbol>rohan</symbol> possession on Gamling to make him strength +2 and <keyword>damage +1.</keyword>';
         expect(parseAbilities(text, 'Gamling', '5R82')).toBeUndefined();
     });
+
+    it('parse Legolas Vertefeuille : Archerie, exert SELF, blesser un séide', () => {
+        const text =
+            '<keyword>Archer.</keyword> <br><keyword>Archery:</keyword> Exert Legolas to wound a minion; Legolas does not add to the fellowship archery total.';
+        expect(parseAbilities(text, 'Legolas', '1R50')).toEqual([
+            {
+                id: '1R50:0',
+                phases: ['ARCHERY'],
+                cost: [{ exert: [{ count: 1, target: 'SELF' }] }],
+                effects: [{
+                    type: 'WOUND',
+                    count: 1,
+                    target: [['MINION']],
+                }],
+                source: 'SELF',
+                text: expect.stringMatching(/ARCHERY: Exert Legolas to wound a minion/i),
+                omitFromArcheryTotal: true,
+            },
+        ]);
+    });
 });

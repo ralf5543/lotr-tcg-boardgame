@@ -60,4 +60,25 @@ describe('calculateArcheryTotals', () => {
             shadowTotal: 0,
         });
     });
+
+    it('ignore un archer marqué omitFromArcheryTotal', () => {
+        const G = createGameState({
+            players: {
+                '0': createPlayerState('0', {
+                    fellowshipArea: [
+                        createCompanion({
+                            id: 'legolas',
+                            keywords: ['ARCHER'],
+                            omitFromArcheryTotal: true,
+                        }),
+                    ],
+                }),
+            },
+        });
+
+        expect(calculateArcheryTotals(G)).toEqual({
+            fpTotal: 0,
+            shadowTotal: 0,
+        });
+    });
 });

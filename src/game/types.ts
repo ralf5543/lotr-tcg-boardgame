@@ -185,6 +185,11 @@ export type AbilityEffect =
           value: number;
           target: AbilityTargetRef;
           expiresAtPhase: AbilityEffectExpiry;
+      }
+    | {
+          type: 'WOUND';
+          count: number;
+          target: AbilityTargetRef;
       };
 
 export interface Ability {
@@ -194,6 +199,7 @@ export interface Ability {
     effects: AbilityEffect[];
     source: 'SELF' | 'ATTACHMENT';
     text?: string;
+    omitFromArcheryTotal?: boolean;
 }
 
 export interface CardState {
@@ -246,6 +252,7 @@ export interface CardState {
     wounds?: number;
     isStartingMember?: boolean;
     isFaceDown?: boolean;
+    omitFromArcheryTotal?: boolean;
     name?: string; // Si conservé pour compatibilité ou identification
     isDead?: boolean;
     isOverwhelmed?: boolean;
@@ -301,6 +308,13 @@ export interface StartOfPhaseState {
     players: Record<string, PlayerStartOfPhaseInfo>;
 }
 
+export interface PendingPlay {
+    playerId: string;
+    card: CardState;
+    handIndex: number;
+    prompt: string;
+}
+
 export interface GameState {
     fpPlayerId: string;
     twilightPool: number;
@@ -339,6 +353,7 @@ export interface GameState {
         | 'FP_DECISION'
         | 'FP_REFILL';
     fellowshipCardsDrawn: number;
+    pendingPlay?: PendingPlay;
     setupState?: {
         bids: Record<string, number | null>;
         auctionWinnerId?: string;

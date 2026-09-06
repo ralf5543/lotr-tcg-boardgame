@@ -7,6 +7,7 @@ import { useFaction } from '../../../../contexts/FactionContext';
 import { useTargeting } from '../../../../contexts/TargetingContext';
 import { audioService } from '../../../../services/audioService';
 import { canPlayCard } from '../../../../game/engine/canPlayCard';
+import { getHandEventDesignationTargetIds } from '../../../../game/engine/abilities/designation';
 import {
     hasSpotCondition,
     isSpotConditionMet,
@@ -82,7 +83,11 @@ export const Hand: React.FC<HandProps> = ({
     const { targetingKind, pendingCard } = useTargeting();
     const isDragging = !!dragged;
     const isDesignating = targetingKind === 'DESIGNATION';
-    const pendingCardId = pendingCard?.id;
+    const enginePendingId =
+        G.pendingPlay?.playerId === effectivePlayerId
+            ? G.pendingPlay.card.id
+            : undefined;
+    const pendingCardId = pendingCard?.id ?? enginePendingId;
 
     const [discardingIndex, setDiscardingIndex] = useState<number | null>(null);
 
@@ -194,6 +199,14 @@ export const Hand: React.FC<HandProps> = ({
                                   playerID: effectivePlayerId,
                               }).valid;
 
+                          const designationTargetIds = isPlayableEvent
+                              ? getHandEventDesignationTargetIds(
+                                    G,
+                                    card,
+                                    phase
+                                )
+                              : undefined;
+
                           return (
                               <S.CardWrapper
                                   key={card.id}
@@ -248,7 +261,16 @@ export const Hand: React.FC<HandProps> = ({
                                           return;
                                       e.stopPropagation();
                                       e.preventDefault();
-                                      startDrag(card, idx, e);
+                                      startDrag(
+                                          card,
+                                          idx,
+                                          e,
+                                          'HAND',
+                                          'portrait',
+                                          undefined,
+                                          isPlayableEvent,
+                                          designationTargetIds
+                                      );
                                   }}
                               >
                                   <Card
@@ -257,6 +279,10 @@ export const Hand: React.FC<HandProps> = ({
                                           isDiscardPhase
                                               ? true
                                               : isMatchingPlayerRole
+                                      }
+                                      isPlayableEvent={isPlayableEvent}
+                                      designationTargetIds={
+                                          designationTargetIds
                                       }
                                       index={idx}
                                       isDraggable={

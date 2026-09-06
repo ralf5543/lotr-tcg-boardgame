@@ -23,7 +23,7 @@ export function calculateArcheryTotals(G: GameState) {
     if (fpPlayer && fpPlayer.fellowshipArea) {
         fpPlayer.fellowshipArea.forEach((companion) => {
             const isArcher = hasKeyword(companion, 'ARCHER');
-            if (isArcher) {
+            if (isArcher && !companion.omitFromArcheryTotal) {
                 fpTotal += 1;
             }
         });
@@ -34,7 +34,7 @@ export function calculateArcheryTotals(G: GameState) {
         G.battlefield.forEach((minion) => {
             if (minion.kind === 'SHADOW' && minion.type === 'MINION') {
                 const isArcher = hasKeyword(minion, 'ARCHER');
-                if (isArcher) {
+                if (isArcher && !minion.omitFromArcheryTotal) {
                     shadowTotal += 1;
                 }
             }

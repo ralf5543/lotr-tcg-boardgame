@@ -4,6 +4,7 @@ import type { CardState, GameState } from '../types';
 import { getKeywordValue } from './keywords/keywordUtils';
 import { isSkirmishActionWindowOpen } from './skirmishActionWindow';
 import { canActInActionWindow } from './actionWindow';
+import { abilityMatchesPhase } from './abilities/collectAbilities';
 export interface ValidationContext {
     G: GameState;
     ctx: { phase?: string; currentPlayer?: string };
@@ -85,6 +86,28 @@ export function canUseAbility(
             };
         }
 
+        if (!canActInActionWindow(G, playerID)) {
+            return {
+                valid: false,
+                reason: "Ce n'est pas à vous d'agir.",
+            };
+        }
+        return { valid: true };
+    }
+
+    const hasMatchingAbility = (card.abilities || []).some((ability) =>
+        abilityMatchesPhase(ability, rawPhase)
+    );
+    if (hasMatchingAbility) {
+        if (
+            (currentPhase === 'SKIRMISH' || normalizedPhase === 'SKIRMISH') &&
+            !isSkirmishActionWindowOpen(G)
+        ) {
+            return {
+                valid: false,
+                reason: 'Les actions de combat ne peuvent être utilisées que pendant une escarmouche en cours.',
+            };
+        }
         if (!canActInActionWindow(G, playerID)) {
             return {
                 valid: false,

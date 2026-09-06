@@ -169,6 +169,43 @@ export const attachCard = (
     }
 };
 
+const getActingPlayerId = (
+    playerID: string | undefined,
+    ctx: { currentPlayer?: string }
+): string => playerID ?? ctx.currentPlayer ?? '0';
+
+export const beginPendingPlay = (
+    { G, ctx, playerID }: LotrMoveContext,
+    cardIndex: number,
+    prompt: string
+) => {
+    const actingPlayerId = getActingPlayerId(playerID, ctx);
+    if (G.pendingPlay && G.pendingPlay.playerId !== actingPlayerId) {
+        return 'INVALID_MOVE';
+    }
+
+    const player = G.players[actingPlayerId];
+    const card = player?.hand?.[cardIndex];
+    if (!card || card.type !== 'EVENT') return 'INVALID_MOVE';
+
+    const validation = canPlayCard(card, { G, ctx, playerID: actingPlayerId });
+    if (!validation.valid) return 'INVALID_MOVE';
+
+    G.pendingPlay = {
+        playerId: actingPlayerId,
+        card: { ...card },
+        handIndex: cardIndex,
+        prompt: prompt || 'Choisissez une cible.',
+    };
+};
+
+export const cancelPendingPlay = ({ G, playerID }: LotrMoveContext) => {
+    if (!G.pendingPlay || G.pendingPlay.playerId !== playerID) {
+        return 'INVALID_MOVE';
+    }
+    G.pendingPlay = undefined;
+};
+
 export const playCard = (
     { G, ctx, playerID }: LotrMoveContext,
     cardIndex: number,
@@ -235,6 +272,7 @@ export const playCard = (
             return 'INVALID_MOVE';
         }
         yieldPriorityAfterAction(G, actingPlayerId);
+        G.pendingPlay = undefined;
         return;
     }
 
@@ -277,6 +315,7 @@ export const playCard = (
             return 'INVALID_MOVE';
         }
         yieldPriorityAfterAction(G, actingPlayerId);
+        G.pendingPlay = undefined;
     }
 };
 
@@ -387,6 +426,8 @@ export const commonMoves = {
     confirmStartOfPhase,
     passActionWindow,
     attachCard,
+    beginPendingPlay,
+    cancelPendingPlay,
     playCard,
     playSite,
     applyWound,

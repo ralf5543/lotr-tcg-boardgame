@@ -21,6 +21,7 @@ import {
     cardOrAttachmentsHaveActionPhases,
     collectCardAbilities,
     formatAbilityLabel,
+    abilityMatchesPhase,
 } from '../../../../game/engine/abilities/collectAbilities';
 
 interface CardImageProps {
@@ -90,6 +91,8 @@ interface CardProps {
     card: CardState;
     isPlayable?: boolean;
     isDraggable?: boolean;
+    isPlayableEvent?: boolean;
+    designationTargetIds?: string[];
     index?: number;
     currentSiteIndex?: number;
     roaming?: number;
@@ -117,6 +120,8 @@ export const Card: React.FC<CardProps> = ({
     isPlayable,
     size = 'md',
     isDraggable = false,
+    isPlayableEvent = false,
+    designationTargetIds,
     index,
     isRingBearer: isRingBearerProp,
     currentSiteIndex,
@@ -159,8 +164,9 @@ export const Card: React.FC<CardProps> = ({
 
     if (!card) return null;
 
-    const isFaceDown =
-        isOpponent && (card?.isFaceDown ?? isFaceDownProp ?? false);
+    const isFaceDown = Boolean(
+        isOpponent && (isFaceDownProp || card?.isFaceDown)
+    );
 
     const { title, subtitle, gameText, loreText } = getCardText(
         card,
@@ -237,7 +243,16 @@ export const Card: React.FC<CardProps> = ({
     const handlePointerDown = (e: React.PointerEvent) => {
         if (!isDraggable || isPlayable === false || index === undefined) return;
         e.preventDefault();
-        startDrag(card, index, e);
+        startDrag(
+            card,
+            index,
+            e,
+            'HAND',
+            'portrait',
+            undefined,
+            isPlayableEvent,
+            designationTargetIds
+        );
         setHoveredCard(null);
     };
 
@@ -303,7 +318,11 @@ export const Card: React.FC<CardProps> = ({
                     (att) => canUseAbility(att, abilityContext).valid
                 ))
     );
-    const listedAbilities = showAbilityButton ? collectCardAbilities(card) : [];
+    const listedAbilities = showAbilityButton
+        ? collectCardAbilities(card).filter(
+              ({ ability }) => !phase || abilityMatchesPhase(ability, phase)
+          )
+        : [];
 
     return (
         <S.CardContainer

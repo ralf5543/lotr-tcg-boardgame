@@ -2,11 +2,14 @@ import { describe, expect, it } from 'vitest';
 import {
     abilityNeedsDesignation,
     getDesignationCandidates,
+    getHandEventDesignationTargetIds,
+    isDesignationTargetId,
 } from '../engine/abilities/designation';
 import type { Ability } from '../types';
 import {
     createCard,
     createCompanion,
+    createMinion,
     createGameState,
     createPlayerState,
 } from './createGameState';
@@ -137,5 +140,56 @@ describe('designation', () => {
         expect(getDesignationCandidates(G, event, HOBBIT_ABILITY)).toHaveLength(
             2
         );
+    });
+
+    it('blesser un séide : désignation même s’il n’y en a qu’un', () => {
+        const G = createGameState({
+            battlefield: [createMinion({ id: 'orc', vitality: 3 })],
+        });
+        const ability: Ability = {
+            id: '1R50:0',
+            phases: ['ARCHERY'],
+            cost: [{ exert: [{ count: 1, target: 'SELF' }] }],
+            effects: [{ type: 'WOUND', count: 1, target: [['MINION']] }],
+            source: 'SELF',
+        };
+        const source = createCompanion({ id: '1R50', title: 'Legolas' });
+        expect(abilityNeedsDesignation(G, source, ability)).toBe(true);
+        expect(getDesignationCandidates(G, source, ability)).toHaveLength(1);
+    });
+
+    it('event en main : IDs de désignation pour la flèche', () => {
+        const G = createGameState({
+            players: {
+                '0': createPlayerState('0', {
+                    fellowshipArea: [
+                        createCompanion({
+                            id: 'frodo',
+                            title: 'Frodo',
+                            race: 'HOBBIT',
+                            vitality: 4,
+                        }),
+                    ],
+                }),
+            },
+        });
+        const eventCard = createCard({
+            id: '1U293',
+            kind: 'FREE_PEOPLE',
+            type: 'EVENT',
+            title: 'Halfling Deftness',
+            phases: ['SKIRMISH'],
+            twilightCost: 0,
+            abilities: [HOBBIT_ABILITY],
+        });
+
+        expect(
+            getHandEventDesignationTargetIds(G, eventCard, 'skirmish')
+        ).toContain('frodo');
+        expect(
+            getHandEventDesignationTargetIds(G, eventCard, 'fellowship')
+        ).toEqual([]);
+        expect(isDesignationTargetId(['frodo'], 'frodo')).toBe(true);
+        expect(isDesignationTargetId(['frodo'], 'sam')).toBe(false);
     });
 });

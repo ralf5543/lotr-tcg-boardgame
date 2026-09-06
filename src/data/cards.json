@@ -429,6 +429,38 @@
       "ARCHER",
       "UNBOUND"
     ],
+    "abilities": [
+      {
+        "id": "0P13:0",
+        "phases": [
+          "ARCHERY"
+        ],
+        "cost": [
+          {
+            "exert": [
+              {
+                "count": 1,
+                "target": "SELF"
+              }
+            ]
+          }
+        ],
+        "effects": [
+          {
+            "type": "WOUND",
+            "count": 1,
+            "target": [
+              [
+                "MINION"
+              ]
+            ]
+          }
+        ],
+        "source": "SELF",
+        "text": "ARCHERY: Exert Legolas to wound a minion; Legolas does not add to the fellowship archery total.",
+        "omitFromArcheryTotal": true
+      }
+    ],
     "actionPhases": [
       "ARCHERY"
     ],
@@ -1866,6 +1898,42 @@
       [
         "Aragorn"
       ]
+    ],
+    "abilities": [
+      {
+        "id": "0P41:0",
+        "phases": [
+          "ARCHERY"
+        ],
+        "cost": [
+          {
+            "exert": [
+              {
+                "count": 1,
+                "target": [
+                  [
+                    "Aragorn"
+                  ]
+                ]
+              }
+            ]
+          }
+        ],
+        "effects": [
+          {
+            "type": "WOUND",
+            "count": 1,
+            "target": [
+              [
+                "MINION"
+              ]
+            ]
+          }
+        ],
+        "source": "SELF",
+        "text": "ARCHERY: Exert Aragorn to wound a minion; Aragorn does not add to the fellowship archery total.",
+        "omitFromArcheryTotal": true
+      }
     ],
     "actionPhases": [
       "ARCHERY"
@@ -4821,6 +4889,38 @@
     "keywords": [
       "ARCHER",
       "UNBOUND"
+    ],
+    "abilities": [
+      {
+        "id": "1R50:0",
+        "phases": [
+          "ARCHERY"
+        ],
+        "cost": [
+          {
+            "exert": [
+              {
+                "count": 1,
+                "target": "SELF"
+              }
+            ]
+          }
+        ],
+        "effects": [
+          {
+            "type": "WOUND",
+            "count": 1,
+            "target": [
+              [
+                "MINION"
+              ]
+            ]
+          }
+        ],
+        "source": "SELF",
+        "text": "ARCHERY: Exert Legolas to wound a minion; Legolas does not add to the fellowship archery total.",
+        "omitFromArcheryTotal": true
+      }
     ],
     "actionPhases": [
       "ARCHERY"
@@ -12715,6 +12815,37 @@
     "keywords": [
       "ARCHER"
     ],
+    "abilities": [
+      {
+        "id": "1U56:0",
+        "phases": [
+          "ARCHERY"
+        ],
+        "cost": [
+          {
+            "exert": [
+              {
+                "count": 1,
+                "target": "SELF"
+              }
+            ]
+          }
+        ],
+        "effects": [
+          {
+            "type": "WOUND",
+            "count": 1,
+            "target": [
+              [
+                "URUK-HAI"
+              ]
+            ]
+          }
+        ],
+        "source": "SELF",
+        "text": "ARCHERY: Exert Orophin to wound an Uruk-hai."
+      }
+    ],
     "actionPhases": [
       "ARCHERY"
     ],
@@ -12766,6 +12897,37 @@
     "type": "ALLY",
     "keywords": [
       "ARCHER"
+    ],
+    "abilities": [
+      {
+        "id": "1U57:0",
+        "phases": [
+          "ARCHERY"
+        ],
+        "cost": [
+          {
+            "exert": [
+              {
+                "count": 1,
+                "target": "SELF"
+              }
+            ]
+          }
+        ],
+        "effects": [
+          {
+            "type": "WOUND",
+            "count": 1,
+            "target": [
+              [
+                "ORC"
+              ]
+            ]
+          }
+        ],
+        "source": "SELF",
+        "text": "ARCHERY: Exert Rúmil to wound an Orc."
+      }
     ],
     "actionPhases": [
       "ARCHERY"
@@ -14161,6 +14323,42 @@
         "Aragorn"
       ]
     ],
+    "abilities": [
+      {
+        "id": "1R90:0",
+        "phases": [
+          "ARCHERY"
+        ],
+        "cost": [
+          {
+            "exert": [
+              {
+                "count": 1,
+                "target": [
+                  [
+                    "Aragorn"
+                  ]
+                ]
+              }
+            ]
+          }
+        ],
+        "effects": [
+          {
+            "type": "WOUND",
+            "count": 1,
+            "target": [
+              [
+                "MINION"
+              ]
+            ]
+          }
+        ],
+        "source": "SELF",
+        "text": "ARCHERY: Exert Aragorn to wound a minion; Aragorn does not add to the fellowship archery total.",
+        "omitFromArcheryTotal": true
+      }
+    ],
     "actionPhases": [
       "ARCHERY"
     ],
@@ -14390,6 +14588,45 @@
       [
         "Boromir"
       ]
+    ],
+    "abilities": [
+      {
+        "id": "1R95:0",
+        "phases": [
+          "SKIRMISH"
+        ],
+        "cost": [
+          {
+            "exert": [
+              {
+                "count": 1,
+                "target": [
+                  [
+                    "Boromir"
+                  ]
+                ]
+              }
+            ]
+          }
+        ],
+        "effects": [
+          {
+            "type": "WOUND",
+            "count": 1,
+            "target": [
+              [
+                "ORC",
+                "URUK-HAI",
+                "HE",
+                "IS",
+                "SKIRMISHING"
+              ]
+            ]
+          }
+        ],
+        "source": "SELF",
+        "text": "SKIRMISH: Exert Boromir to wound an Orc or Uruk-hai he is skirmishing."
+      }
     ],
     "actionPhases": [
       "SKIRMISH"
@@ -14787,6 +15024,44 @@
     "kind": "FREE_PEOPLE",
     "type": "CONDITION",
     "subtype": "SUPPORT-AREA",
+    "abilities": [
+      {
+        "id": "1U105:0",
+        "phases": [
+          "MANEUVER"
+        ],
+        "cost": [
+          {
+            "exert": [
+              {
+                "count": 1,
+                "target": [
+                  [
+                    "GONDOR",
+                    "CHARACTER"
+                  ]
+                ],
+                "mode": "DESIGNATION"
+              }
+            ]
+          }
+        ],
+        "effects": [
+          {
+            "type": "WOUND",
+            "count": 1,
+            "target": [
+              [
+                "SAURON",
+                "MINION"
+              ]
+            ]
+          }
+        ],
+        "source": "SELF",
+        "text": "MANEUVER: Exert a gondor character to wound a sauron minion."
+      }
+    ],
     "actionPhases": [
       "MANEUVER"
     ],
@@ -21172,6 +21447,45 @@
     "isUnique": false,
     "kind": "SHADOW",
     "type": "EVENT",
+    "abilities": [
+      {
+        "id": "1R250:0",
+        "phases": [
+          "MANEUVER"
+        ],
+        "cost": [
+          {
+            "exert": [
+              {
+                "count": 1,
+                "target": [
+                  [
+                    "SAURON",
+                    "ORC"
+                  ]
+                ],
+                "mode": "DESIGNATION"
+              }
+            ]
+          }
+        ],
+        "effects": [
+          {
+            "type": "WOUND",
+            "count": 1,
+            "target": [
+              [
+                "COMPANION",
+                "EXCEPT",
+                "RING-BEARER"
+              ]
+            ]
+          }
+        ],
+        "source": "SELF",
+        "text": "MANEUVER: Exert a sauron Orc to wound a companion (except the Ring-bearer)."
+      }
+    ],
     "phases": [
       "MANEUVER"
     ],
@@ -21415,6 +21729,46 @@
     "isUnique": false,
     "kind": "SHADOW",
     "type": "EVENT",
+    "abilities": [
+      {
+        "id": "1C255:0",
+        "phases": [
+          "SKIRMISH"
+        ],
+        "cost": [
+          {
+            "exert": [
+              {
+                "count": 1,
+                "target": [
+                  [
+                    "SAURON",
+                    "ORC"
+                  ]
+                ],
+                "mode": "DESIGNATION"
+              }
+            ]
+          }
+        ],
+        "effects": [
+          {
+            "type": "WOUND",
+            "count": 1,
+            "target": [
+              [
+                "CHARACTER",
+                "HE",
+                "IS",
+                "SKIRMISHING"
+              ]
+            ]
+          }
+        ],
+        "source": "SELF",
+        "text": "SKIRMISH: Exert a sauron Orc to wound a character he is skirmishing."
+      }
+    ],
     "phases": [
       "SKIRMISH"
     ],
@@ -21880,6 +22234,40 @@
     "isUnique": false,
     "kind": "SHADOW",
     "type": "MINION",
+    "abilities": [
+      {
+        "id": "1U267:0",
+        "phases": [
+          "SKIRMISH"
+        ],
+        "cost": [
+          {
+            "exert": [
+              {
+                "count": 1,
+                "target": "SELF"
+              }
+            ]
+          }
+        ],
+        "effects": [
+          {
+            "type": "WOUND",
+            "count": 1,
+            "target": [
+              [
+                "CHARACTER",
+                "HE",
+                "IS",
+                "SKIRMISHING"
+              ]
+            ]
+          }
+        ],
+        "source": "SELF",
+        "text": "SKIRMISH: Exert this minion to wound a character he is skirmishing."
+      }
+    ],
     "actionPhases": [
       "SKIRMISH"
     ],
@@ -22019,6 +22407,40 @@
     "keywords": [
       "TRACKER"
     ],
+    "abilities": [
+      {
+        "id": "1U270:0",
+        "phases": [
+          "SKIRMISH"
+        ],
+        "cost": [
+          {
+            "exert": [
+              {
+                "count": 1,
+                "target": "SELF"
+              }
+            ]
+          }
+        ],
+        "effects": [
+          {
+            "type": "WOUND",
+            "count": 1,
+            "target": [
+              [
+                "CHARACTER",
+                "IT",
+                "IS",
+                "SKIRMISHING"
+              ]
+            ]
+          }
+        ],
+        "source": "SELF",
+        "text": "SKIRMISH: Exert this minion to wound a character it is skirmishing."
+      }
+    ],
     "actionPhases": [
       "SKIRMISH"
     ],
@@ -22063,6 +22485,40 @@
     "isUnique": false,
     "kind": "SHADOW",
     "type": "MINION",
+    "abilities": [
+      {
+        "id": "1C271:0",
+        "phases": [
+          "SKIRMISH"
+        ],
+        "cost": [
+          {
+            "exert": [
+              {
+                "count": 1,
+                "target": "SELF"
+              }
+            ]
+          }
+        ],
+        "effects": [
+          {
+            "type": "WOUND",
+            "count": 1,
+            "target": [
+              [
+                "CHARACTER",
+                "HE",
+                "IS",
+                "SKIRMISHING"
+              ]
+            ]
+          }
+        ],
+        "source": "SELF",
+        "text": "SKIRMISH: Exert this minion to wound a character he is skirmishing."
+      }
+    ],
     "actionPhases": [
       "SKIRMISH"
     ],
@@ -22108,6 +22564,40 @@
     "isUnique": false,
     "kind": "SHADOW",
     "type": "MINION",
+    "abilities": [
+      {
+        "id": "1R272:0",
+        "phases": [
+          "SKIRMISH"
+        ],
+        "cost": [
+          {
+            "exert": [
+              {
+                "count": 1,
+                "target": "SELF"
+              }
+            ]
+          }
+        ],
+        "effects": [
+          {
+            "type": "WOUND",
+            "count": 1,
+            "target": [
+              [
+                "CHARACTER",
+                "IT",
+                "IS",
+                "SKIRMISHING"
+              ]
+            ]
+          }
+        ],
+        "source": "SELF",
+        "text": "SKIRMISH: Exert this minion to wound a character it is skirmishing."
+      }
+    ],
     "actionPhases": [
       "SKIRMISH"
     ],
@@ -28717,6 +29207,37 @@
     "isUnique": true,
     "kind": "SHADOW",
     "type": "MINION",
+    "abilities": [
+      {
+        "id": "2R93:0",
+        "phases": [
+          "MANEUVER"
+        ],
+        "cost": [
+          {
+            "exert": [
+              {
+                "count": 1,
+                "target": "SELF"
+              }
+            ]
+          }
+        ],
+        "effects": [
+          {
+            "type": "WOUND",
+            "count": 1,
+            "target": [
+              [
+                "ALLY"
+              ]
+            ]
+          }
+        ],
+        "source": "SELF",
+        "text": "MANEUVER: Exert Tower Assassin to wound an ally."
+      }
+    ],
     "actionPhases": [
       "MANEUVER"
     ],
@@ -29157,6 +29678,53 @@
     "isUnique": false,
     "kind": "FREE_PEOPLE",
     "type": "EVENT",
+    "abilities": [
+      {
+        "id": "2U103:0",
+        "phases": [
+          "MANEUVER"
+        ],
+        "cost": [
+          {
+            "exert": [
+              {
+                "count": 1,
+                "target": [
+                  [
+                    "HOBBIT",
+                    "BEARING",
+                    "WEAPON"
+                  ]
+                ],
+                "mode": "DESIGNATION"
+              }
+            ]
+          }
+        ],
+        "effects": [
+          {
+            "type": "WOUND",
+            "count": 1,
+            "target": [
+              [
+                "MINION",
+                "THAT",
+                "MINIONS",
+                "OWNER",
+                "MAY",
+                "REMOVE",
+                "TWILIGHT",
+                "TO",
+                "PREVENT",
+                "THIS"
+              ]
+            ]
+          }
+        ],
+        "source": "SELF",
+        "text": "MANEUVER: Exert a Hobbit bearing a weapon to wound a minion. That minion’s owner may remove twilight3 to prevent this."
+      }
+    ],
     "phases": [
       "MANEUVER"
     ],
@@ -30228,6 +30796,37 @@
     "type": "ALLY",
     "keywords": [
       "ARCHER"
+    ],
+    "abilities": [
+      {
+        "id": "3U10:0",
+        "phases": [
+          "REGROUP"
+        ],
+        "cost": [
+          {
+            "exert": [
+              {
+                "count": 1,
+                "target": "SELF"
+              }
+            ]
+          }
+        ],
+        "effects": [
+          {
+            "type": "WOUND",
+            "count": 1,
+            "target": [
+              [
+                "MINION"
+              ]
+            ]
+          }
+        ],
+        "source": "SELF",
+        "text": "REGROUP: Exert Calaglin to wound a minion."
+      }
     ],
     "actionPhases": [
       "REGROUP"
@@ -34015,6 +34614,39 @@
     "isUnique": false,
     "kind": "SHADOW",
     "type": "MINION",
+    "abilities": [
+      {
+        "id": "3R93:0",
+        "phases": [
+          "REGROUP"
+        ],
+        "cost": [
+          {
+            "exert": [
+              {
+                "count": 1,
+                "target": "SELF"
+              }
+            ]
+          }
+        ],
+        "effects": [
+          {
+            "type": "WOUND",
+            "count": 1,
+            "target": [
+              [
+                "COMPANION",
+                "EXCEPT",
+                "RING-BEARER"
+              ]
+            ]
+          }
+        ],
+        "source": "SELF",
+        "text": "REGROUP: Exert this minion to wound a companion (except the Ring-bearer)."
+      }
+    ],
     "actionPhases": [
       "REGROUP"
     ],
@@ -34189,6 +34821,39 @@
     "isUnique": false,
     "kind": "SHADOW",
     "type": "MINION",
+    "abilities": [
+      {
+        "id": "3U97:0",
+        "phases": [
+          "REGROUP"
+        ],
+        "cost": [
+          {
+            "exert": [
+              {
+                "count": 1,
+                "target": "SELF"
+              }
+            ]
+          }
+        ],
+        "effects": [
+          {
+            "type": "WOUND",
+            "count": 1,
+            "target": [
+              [
+                "COMPANION",
+                "EXCEPT",
+                "RING-BEARER"
+              ]
+            ]
+          }
+        ],
+        "source": "SELF",
+        "text": "REGROUP: Exert this minion to wound a companion (except the Ring-bearer)."
+      }
+    ],
     "actionPhases": [
       "REGROUP"
     ],
@@ -34694,6 +35359,41 @@
       [
         "HOBBIT"
       ]
+    ],
+    "abilities": [
+      {
+        "id": "3C108:0",
+        "phases": [
+          "SKIRMISH"
+        ],
+        "cost": [
+          {
+            "exert": [
+              {
+                "count": 1,
+                "target": "BEARER"
+              }
+            ]
+          }
+        ],
+        "effects": [
+          {
+            "type": "WOUND",
+            "count": 1,
+            "target": [
+              [
+                "ORC",
+                "HE",
+                "SHE",
+                "IS",
+                "SKIRMISHING"
+              ]
+            ]
+          }
+        ],
+        "source": "ATTACHMENT",
+        "text": "SKIRMISH: Exert bearer to wound an Orc he or she is skirmishing."
+      }
     ],
     "actionPhases": [
       "SKIRMISH"
@@ -40060,6 +40760,50 @@
     "isUnique": false,
     "kind": "FREE_PEOPLE",
     "type": "EVENT",
+    "abilities": [
+      {
+        "id": "4C115:0",
+        "phases": [
+          "MANEUVER"
+        ],
+        "cost": [
+          {
+            "exert": [
+              {
+                "count": 1,
+                "target": [
+                  [
+                    "GONDOR",
+                    "MAN"
+                  ]
+                ],
+                "mode": "DESIGNATION"
+              }
+            ]
+          }
+        ],
+        "effects": [
+          {
+            "type": "WOUND",
+            "count": 1,
+            "target": [
+              [
+                "MINION",
+                "ONCE",
+                "TWICE",
+                "IF",
+                "THAT",
+                "MINION",
+                "IS",
+                "URUK-HAI"
+              ]
+            ]
+          }
+        ],
+        "source": "SELF",
+        "text": "MANEUVER: Exert a gondor Man to wound a minion once (or twice if that minion is an Uruk-hai)."
+      }
+    ],
     "phases": [
       "MANEUVER"
     ],
@@ -49693,6 +50437,48 @@
     "isUnique": false,
     "kind": "FREE_PEOPLE",
     "type": "EVENT",
+    "abilities": [
+      {
+        "id": "5R5:0",
+        "phases": [
+          "MANEUVER"
+        ],
+        "cost": [
+          {
+            "exert": [
+              {
+                "count": 1,
+                "target": [
+                  [
+                    "DWARF"
+                  ]
+                ],
+                "mode": "DESIGNATION"
+              }
+            ]
+          }
+        ],
+        "effects": [
+          {
+            "type": "WOUND",
+            "count": 1,
+            "target": [
+              [
+                "MINION",
+                "YOU",
+                "MAY",
+                "TAKE",
+                "NEXT",
+                "MANEUVER",
+                "ACTION"
+              ]
+            ]
+          }
+        ],
+        "source": "SELF",
+        "text": "MANEUVER: Exert a Dwarf to wound a minion. You may take the next maneuver action."
+      }
+    ],
     "phases": [
       "MANEUVER"
     ],
@@ -50356,6 +51142,41 @@
     "keywords": [
       "UNHASTY",
       "UNBOUND"
+    ],
+    "abilities": [
+      {
+        "id": "5R19:0",
+        "phases": [
+          "SKIRMISH"
+        ],
+        "cost": [
+          {
+            "exert": [
+              {
+                "count": 1,
+                "target": "SELF"
+              }
+            ]
+          }
+        ],
+        "effects": [
+          {
+            "type": "WOUND",
+            "count": 1,
+            "target": [
+              [
+                "ISENGARD",
+                "MINION",
+                "HE",
+                "IS",
+                "SKIRMISHING"
+              ]
+            ]
+          }
+        ],
+        "source": "SELF",
+        "text": "SKIRMISH: Exert Lindenroot to wound an isengard minion he is skirmishing."
+      }
     ],
     "actionPhases": [
       "ASSIGNMENT",
@@ -51322,6 +52143,40 @@
             ]
           }
         ]
+      }
+    ],
+    "abilities": [
+      {
+        "id": "5U42:0",
+        "phases": [
+          "MANEUVER"
+        ],
+        "cost": [
+          {
+            "exert": [
+              {
+                "count": 1,
+                "target": "SELF"
+              }
+            ]
+          }
+        ],
+        "effects": [
+          {
+            "type": "WOUND",
+            "count": 1,
+            "target": [
+              [
+                "MINION",
+                "BEARING",
+                "GONDOR",
+                "FORTIFICATION"
+              ]
+            ]
+          }
+        ],
+        "source": "SELF",
+        "text": "MANEUVER: Exert Turgon to wound a minion bearing a gondor Fortification."
       }
     ],
     "actionPhases": [
@@ -54859,6 +55714,48 @@
     "isUnique": false,
     "kind": "FREE_PEOPLE",
     "type": "EVENT",
+    "abilities": [
+      {
+        "id": "5R123:0",
+        "phases": [
+          "MANEUVER"
+        ],
+        "cost": [
+          {
+            "exert": [
+              {
+                "count": 1,
+                "target": [
+                  [
+                    "DWARF"
+                  ]
+                ],
+                "mode": "DESIGNATION"
+              }
+            ]
+          }
+        ],
+        "effects": [
+          {
+            "type": "WOUND",
+            "count": 1,
+            "target": [
+              [
+                "MINION",
+                "YOU",
+                "MAY",
+                "TAKE",
+                "NEXT",
+                "MANEUVER",
+                "ACTION"
+              ]
+            ]
+          }
+        ],
+        "source": "SELF",
+        "text": "MANEUVER: Exert a Dwarf to wound a minion. You may take the next maneuver action."
+      }
+    ],
     "phases": [
       "MANEUVER"
     ],
@@ -64793,6 +65690,46 @@
         "MAN"
       ]
     ],
+    "abilities": [
+      {
+        "id": "7U94:0",
+        "phases": [
+          "SKIRMISH"
+        ],
+        "cost": [
+          {
+            "exert": [
+              {
+                "count": 1,
+                "target": "BEARER"
+              }
+            ]
+          }
+        ],
+        "effects": [
+          {
+            "type": "WOUND",
+            "count": 1,
+            "target": [
+              [
+                "MINION",
+                "HE",
+                "SHE",
+                "IS",
+                "SKIRMISHING",
+                "IF",
+                "THAT",
+                "MINION",
+                "BEARS",
+                "FORTIFICATION"
+              ]
+            ]
+          }
+        ],
+        "source": "ATTACHMENT",
+        "text": "SKIRMISH: Exert bearer to wound a minion he or she is skirmishing if that minion bears a Fortification."
+      }
+    ],
     "actionPhases": [
       "SKIRMISH"
     ],
@@ -65458,6 +66395,56 @@
     "toPlay": [
       {
         "addThreats": 2
+      }
+    ],
+    "abilities": [
+      {
+        "id": "7U109:0",
+        "phases": [
+          "SKIRMISH"
+        ],
+        "cost": [
+          {
+            "exert": [
+              {
+                "count": 1,
+                "target": [
+                  [
+                    "GONDOR",
+                    "MAN"
+                  ]
+                ],
+                "mode": "DESIGNATION"
+              }
+            ]
+          }
+        ],
+        "effects": [
+          {
+            "type": "WOUND",
+            "count": 1,
+            "target": [
+              [
+                "ROAMING",
+                "MINION",
+                "THAT",
+                "MAN",
+                "IS",
+                "SKIRMISHING",
+                "DISCARD",
+                "THIS",
+                "CONDITION",
+                "AT",
+                "START",
+                "OF",
+                "REGROUP",
+                "PHASE"
+              ]
+            ]
+          }
+        ],
+        "source": "SELF",
+        "text": "SKIRMISH: Exert a gondor Man to wound a roaming minion that Man is skirmishing. Discard this condition at the start of the regroup phase."
       }
     ],
     "actionPhases": [
@@ -119311,6 +120298,41 @@
     "keywords": [
       "UNBOUND"
     ],
+    "abilities": [
+      {
+        "id": "15U63:0",
+        "phases": [
+          "SKIRMISH"
+        ],
+        "cost": [
+          {
+            "exert": [
+              {
+                "count": 1,
+                "target": "SELF"
+              }
+            ]
+          }
+        ],
+        "effects": [
+          {
+            "type": "WOUND",
+            "count": 1,
+            "target": [
+              [
+                "ROAMING",
+                "MINION",
+                "HE",
+                "IS",
+                "SKIRMISHING"
+              ]
+            ]
+          }
+        ],
+        "source": "SELF",
+        "text": "SKIRMISH: Exert Mablung to wound a roaming minion he is skirmishing."
+      }
+    ],
     "actionPhases": [
       "SKIRMISH"
     ],
@@ -120916,6 +121938,40 @@
     "isUnique": true,
     "kind": "SHADOW",
     "type": "MINION",
+    "abilities": [
+      {
+        "id": "15U98:0",
+        "phases": [
+          "SKIRMISH"
+        ],
+        "cost": [
+          {
+            "exert": [
+              {
+                "count": 1,
+                "target": "SELF"
+              }
+            ]
+          }
+        ],
+        "effects": [
+          {
+            "type": "WOUND",
+            "count": 1,
+            "target": [
+              [
+                "COMPANION",
+                "IT",
+                "IS",
+                "SKIRMISHING"
+              ]
+            ]
+          }
+        ],
+        "source": "SELF",
+        "text": "SKIRMISH: Exert this minion to wound a companion it is skirmishing."
+      }
+    ],
     "actionPhases": [
       "SKIRMISH"
     ],
@@ -121799,6 +122855,40 @@
     "isUnique": false,
     "kind": "SHADOW",
     "type": "MINION",
+    "abilities": [
+      {
+        "id": "15C116:0",
+        "phases": [
+          "SKIRMISH"
+        ],
+        "cost": [
+          {
+            "exert": [
+              {
+                "count": 1,
+                "target": "SELF"
+              }
+            ]
+          }
+        ],
+        "effects": [
+          {
+            "type": "WOUND",
+            "count": 1,
+            "target": [
+              [
+                "COMPANION",
+                "IT",
+                "IS",
+                "SKIRMISHING"
+              ]
+            ]
+          }
+        ],
+        "source": "SELF",
+        "text": "SKIRMISH: Exert this minion to wound a companion it is skirmishing."
+      }
+    ],
     "actionPhases": [
       "SKIRMISH"
     ],
@@ -121965,6 +123055,40 @@
     "isUnique": false,
     "kind": "SHADOW",
     "type": "MINION",
+    "abilities": [
+      {
+        "id": "15C120:0",
+        "phases": [
+          "SKIRMISH"
+        ],
+        "cost": [
+          {
+            "exert": [
+              {
+                "count": 1,
+                "target": "SELF"
+              }
+            ]
+          }
+        ],
+        "effects": [
+          {
+            "type": "WOUND",
+            "count": 1,
+            "target": [
+              [
+                "COMPANION",
+                "IT",
+                "IS",
+                "SKIRMISHING"
+              ]
+            ]
+          }
+        ],
+        "source": "SELF",
+        "text": "SKIRMISH: Exert this minion to wound a companion it is skirmishing."
+      }
+    ],
     "actionPhases": [
       "SKIRMISH"
     ],

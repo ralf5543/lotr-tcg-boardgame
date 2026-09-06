@@ -29,6 +29,7 @@ import {
     cardTargetIds,
     formatDesignationPrompt,
     getDesignationCandidates,
+    isDesignationTargetId,
 } from '../../game/engine/abilities/designation';
 import { findEventAbilityForPhase } from '../../game/engine/abilities/playEventAbility';
 import { useCardPlayAudio } from '../../hooks/audio/useCardPlayAudio';
@@ -36,12 +37,15 @@ import { useArcheryAudio } from '../../hooks/audio/useArcheryAudio';
 import { useWoundAudio } from '../../hooks/audio/useWoundAudio';
 import { useAssignmentAudio } from '../../hooks/audio/useAssignmentAudio';
 import { useSkirmishAudio } from '../../hooks/audio/useSkirmishAudio';
+import { BoardTargetingArrow } from './components/TargetingArrow';
 
 export interface GameBoardProps extends BoardProps<GameState> {
     moves: BoardProps<GameState>['moves'] &
         DevMoves & {
             confirmEndPhase?: () => void;
             playCard: (index: number, chosenTargetId?: string) => void;
+            beginPendingPlay?: (index: number, prompt: string) => void;
+            cancelPendingPlay?: () => void;
             playShadowCard: (index: number) => void;
             attachCard: (index: number, targetId: string) => void;
             transferAttachment?: (data: {
@@ -84,29 +88,43 @@ const EventPlayOverlay: React.FC<{
     }).valid;
     if (!playable) return null;
 
+    const needsTarget = Boolean(dragged.designationTargetIds?.length);
+    if (needsTarget && !isOverHandCancel) return null;
+
     const isReady = !isOverHandCancel;
 
     return (
         <S.EventPlayOverlay $isReady={isReady}>
             <S.EventPlayHint $isReady={isReady}>
-                {isReady ? 'Relâchez pour jouer' : 'Relâchez dans le plateau'}
+                {needsTarget
+                    ? 'Relâchez pour annuler'
+                    : isReady
+                      ? 'Relâchez pour jouer'
+                      : 'Relâchez dans le plateau'}
             </S.EventPlayHint>
         </S.EventPlayOverlay>
     );
 };
 
-const DesignationOverlay: React.FC<{ G: GameState }> = ({ G }) => {
-    const { targetingKind, pendingCard, message } = useTargeting();
-    if (targetingKind !== 'DESIGNATION' || !pendingCard) return null;
+const DesignationOverlay: React.FC<{ G: GameState; myId: string }> = ({
+    G,
+    myId,
+}) => {
+    const pending = G.pendingPlay;
+    if (!pending || pending.playerId === myId) return null;
 
     return (
         <S.DesignationOverlay>
             <S.DesignationPendingCard>
-                <Card card={pendingCard} size="md" isDraggable={false} G={G} />
+                <Card
+                    card={{ ...pending.card, isFaceDown: true }}
+                    size="md"
+                    isDraggable={false}
+                    isOpponent
+                    isFaceDown
+                    G={G}
+                />
             </S.DesignationPendingCard>
-            <S.EventPlayHint $isReady>
-                {message || 'Choisissez une cible.'}
-            </S.EventPlayHint>
         </S.DesignationOverlay>
     );
 };
@@ -130,15 +148,24 @@ export const GameBoard: React.FC<GameBoardProps> = ({
         (
             source: CardState,
             ability: NonNullable<CardState['abilities']>[number],
-            onChosen: (cardId: string) => void
+            onChosen: (cardId: string) => void,
+            handIndex?: number
         ): boolean => {
             if (!abilityNeedsDesignation(G, source, ability)) return false;
             const candidates = getDesignationCandidates(G, source, ability);
+            const prompt = formatDesignationPrompt(ability);
+            if (source.type === 'EVENT' && typeof handIndex === 'number') {
+                moves.beginPendingPlay?.(handIndex, prompt);
+            }
             startTargeting({
                 kind: 'DESIGNATION',
                 targetableCardIds: candidates.flatMap(cardTargetIds),
-                message: formatDesignationPrompt(ability),
+                message: prompt,
                 pendingCard: source.type === 'EVENT' ? source : undefined,
+                arrowFromCardId:
+                    source.type === 'EVENT'
+                        ? undefined
+                        : source.instanceId || source.id,
                 onSelectTarget: (cardId) => {
                     onChosen(cardId);
                     stopTargeting();
@@ -146,7 +173,7 @@ export const GameBoard: React.FC<GameBoardProps> = ({
             });
             return true;
         },
-        [G, startTargeting, stopTargeting]
+        [G, moves, startTargeting, stopTargeting]
     );
 
     const handleActivateAbility = (
@@ -208,7 +235,39 @@ export const GameBoard: React.FC<GameBoardProps> = ({
     };
 
     const { hoveredData } = useHoverCard();
+    const { dragged, isOverHandCancel } = useDrag();
     const currentSiteIndex = G.players['0']?.currentSiteIndex ?? 0;
+
+    useEffect(() => {
+        if (
+            dragged?.origin !== 'HAND' ||
+            !dragged.designationTargetIds?.length
+        ) {
+            return;
+        }
+        if (isOverHandCancel) {
+            if (G.pendingPlay?.playerId === myId) {
+                moves.cancelPendingPlay?.();
+            }
+            return;
+        }
+        if (G.pendingPlay?.playerId === myId) return;
+        const card = dragged.card as CardState;
+        const ability = findEventAbilityForPhase(card, ctx.phase || '');
+        moves.beginPendingPlay?.(
+            dragged.index,
+            ability
+                ? formatDesignationPrompt(ability)
+                : 'Choisissez une cible.'
+        );
+    }, [
+        dragged,
+        isOverHandCancel,
+        G.pendingPlay,
+        myId,
+        moves,
+        ctx.phase,
+    ]);
 
     // 🟢 1. GESTION GLOBALE DE LA TEMPORISATION DE FIN DE PHASE
     useEffect(() => {
@@ -257,7 +316,10 @@ export const GameBoard: React.FC<GameBoardProps> = ({
             const { index, origin, card, parentId } = draggedCard;
 
             if (origin === 'HAND' && card?.type === 'EVENT') {
-                if (cancelled) return;
+                if (cancelled) {
+                    moves.cancelPendingPlay?.();
+                    return;
+                }
 
                 const validation = canPlayCard(card, {
                     G,
@@ -272,16 +334,33 @@ export const GameBoard: React.FC<GameBoardProps> = ({
                     return;
                 }
 
+                const designationIds = draggedCard.designationTargetIds;
+                if (designationIds?.length) {
+                    if (!isDesignationTargetId(designationIds, targetId)) {
+                        return;
+                    }
+                    if (typeof moves.playCard === 'function') {
+                        moves.playCard(index, targetId);
+                        audioService.play('CARD_PLAY');
+                    }
+                    return;
+                }
+
                 const eventAbility = findEventAbilityForPhase(
                     card,
                     ctx.phase || ''
                 );
                 if (
                     eventAbility &&
-                    requestDesignation(card, eventAbility, (chosenId) => {
-                        moves.playCard(index, chosenId);
-                        audioService.play('CARD_PLAY');
-                    })
+                    requestDesignation(
+                        card,
+                        eventAbility,
+                        (chosenId) => {
+                            moves.playCard(index, chosenId);
+                            audioService.play('CARD_PLAY');
+                        },
+                        index
+                    )
                 ) {
                     return;
                 }
@@ -542,13 +621,15 @@ export const GameBoard: React.FC<GameBoardProps> = ({
 
     useEffect(() => {
         const onKeyDown = (event: KeyboardEvent) => {
-            if (event.key === 'Escape' && targetingKind === 'DESIGNATION') {
-                stopTargeting();
-            }
+            if (event.key !== 'Escape') return;
+            const isMine = G.pendingPlay?.playerId === myId;
+            if (targetingKind !== 'DESIGNATION' && !isMine) return;
+            stopTargeting();
+            if (isMine) moves.cancelPendingPlay?.();
         };
         window.addEventListener('keydown', onKeyDown);
         return () => window.removeEventListener('keydown', onKeyDown);
-    }, [targetingKind, stopTargeting]);
+    }, [targetingKind, stopTargeting, G.pendingPlay, myId, moves]);
 
     // Détermination de l'onglet prioritaire selon le state du jeu
     const getRequestedTab = (): 'hand' | 'sites' | null => {
@@ -595,7 +676,8 @@ export const GameBoard: React.FC<GameBoardProps> = ({
                         phase={ctx.phase}
                         playerID={myId}
                     />
-                    <DesignationOverlay G={G} />
+                    <DesignationOverlay G={G} myId={myId} />
+                    <BoardTargetingArrow />
                     {hoveredData && (
                         <S.HoveredCardsZone
                             $orientation={hoveredData.orientation}

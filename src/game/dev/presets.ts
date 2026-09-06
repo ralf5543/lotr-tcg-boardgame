@@ -453,7 +453,7 @@ export const applyDevPreset = (
                 { ...CARDS_PRESETS.FRODO },
                 { ...CARDS_PRESETS.ARAGORN },
                 { ...CARDS_PRESETS.SMEAGOL },
-                { ...CARDS_PRESETS.LEGOLAS },
+                clonePresetCard('1R50'),
                 gimliWithArmor,
                 { ...CARDS_PRESETS.EOWYN },
             ];

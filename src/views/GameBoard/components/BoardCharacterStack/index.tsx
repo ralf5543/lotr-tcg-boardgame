@@ -57,15 +57,26 @@ export const BoardCharacterStack: React.FC<BoardCharacterStackProps> = ({
     isFaceDown = false,
     onActivateAbility,
 }) => {
-    const { registerTarget, activeTargetId, dragged, startDrag } = useDrag();
+    const { registerTarget, activeTargetId, dragged, startDrag, isOverHandCancel } =
+        useDrag();
     const { isCardTargetable, selectCard, targetingKind } = useTargeting();
 
     const cardKey = character.instanceId || character.id;
     const isTargetable =
         isCardTargetable(cardKey) || isCardTargetable(character.id);
     const isInCombat = assignedMinions.length > 0;
+    const dragDesignationIds = dragged?.designationTargetIds;
+    const isDragDesignating =
+        Boolean(dragDesignationIds?.length) && !isOverHandCancel;
+    const isDragDesignationCandidate = (id: string, altId?: string) =>
+        Boolean(
+            isDragDesignating &&
+                (dragDesignationIds!.includes(id) ||
+                    (altId && dragDesignationIds!.includes(altId)))
+        );
     const isDesignationTarget =
-        isTargetable && targetingKind === 'DESIGNATION';
+        (isTargetable && targetingKind === 'DESIGNATION') ||
+        isDragDesignationCandidate(cardKey, character.id);
 
     // 🟢 Extraction distincte du TYPE et du SUBTYPE
     const draggedType = (dragged?.card as CardState)?.type as
@@ -94,7 +105,9 @@ export const BoardCharacterStack: React.FC<BoardCharacterStackProps> = ({
     // Validation d'attachement adaptative (Main = canPlayCard / SupportArea = canTransferAid)
     let canAttach = false;
     if (draggedCard) {
-        if (dragged?.origin === 'HAND') {
+        if (draggedCard.type === 'EVENT') {
+            canAttach = false;
+        } else if (dragged?.origin === 'HAND') {
             canAttach = canPlayCard(
                 draggedCard,
                 { G, ctx: {} as any, playerID },
@@ -114,9 +127,13 @@ export const BoardCharacterStack: React.FC<BoardCharacterStackProps> = ({
 
     // 🎯 Matching avec instanceId prioritaire, sinon id
     const currentId = character.instanceId || character.id;
+    const isAimedByArrow =
+        isDragDesignating &&
+        (activeTargetId === currentId || activeTargetId === character.id);
     const isTargeted =
-        (activeTargetId === currentId || activeTargetId === character.id) &&
-        ((!isOpponent && canAttach) || isMinionAssignment);
+        ((activeTargetId === currentId || activeTargetId === character.id) &&
+            ((!isOpponent && canAttach) || isMinionAssignment)) ||
+        isAimedByArrow;
 
     // Règle de sélection d'escarmouche
     const canSelectThisSkirmish =
@@ -156,8 +173,12 @@ export const BoardCharacterStack: React.FC<BoardCharacterStackProps> = ({
                                 isCardTargetable(minionKey) ||
                                 isCardTargetable(minion.id);
                             const isMinionDesignationTarget =
-                                isMinionTargetable &&
-                                targetingKind === 'DESIGNATION';
+                                (isMinionTargetable &&
+                                    targetingKind === 'DESIGNATION') ||
+                                isDragDesignationCandidate(
+                                    minionKey,
+                                    minion.id
+                                );
                             const isMinionWounded = Boolean(
                                 minion.wounds && minion.wounds > 0
                             );

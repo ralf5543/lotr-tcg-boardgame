@@ -48,6 +48,9 @@ export function cardOrAttachmentsHaveActionPhases(card: CardState): boolean {
 }
 
 function formatEffectBit(effect: Ability['effects'][number]): string {
+    if (effect.type === 'WOUND') {
+        return 'blesser un séide';
+    }
     if (effect.type === 'ADD_TEMP_STAT') {
         const statLabels: Record<string, string> = {
             STRENGTH: 'force',

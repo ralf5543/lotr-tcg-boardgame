@@ -846,8 +846,15 @@ export const LotrGame: Game<GameState> = {
                 const fpId = G.fpPlayerId || '0';
                 const shadowId = fpId === '0' ? '1' : '0';
 
-                // Nettoyage des Compagnons morts
                 const fpPlayer = G.players[fpId];
+                fpPlayer?.fellowshipArea?.forEach((c) => {
+                    c.omitFromArcheryTotal = undefined;
+                });
+                (G.battlefield || []).forEach((c) => {
+                    c.omitFromArcheryTotal = undefined;
+                });
+
+                // Nettoyage des Compagnons morts
                 if (fpPlayer && fpPlayer.fellowshipArea) {
                     fpPlayer.fellowshipArea = fpPlayer.fellowshipArea.filter(
                         (c: any) => {

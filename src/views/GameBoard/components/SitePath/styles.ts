@@ -3,9 +3,7 @@ import styled, { css } from 'styled-components';
 export const SitespathContainer = styled.section`
     position: absolute;
     inset-block-start: 75px;
-    inset-block-end: 50px;
     inset-inline-start: 20px;
-    padding: 12px;
     background: rgba(26, 37, 47, 0.5);
     border-radius: 8px;
     width: 300px;

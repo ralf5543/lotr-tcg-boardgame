@@ -349,7 +349,7 @@ describe('activateAbility', () => {
             },
         });
 
-        engine.moves.activateAbility('named-exert', '4R307:0');
+        engine.moves.activateAbility('named-exert', '4R307:0', '1C311');
 
         const samInPlay = engine.getG().players['0']?.fellowshipArea[0];
         expect(samInPlay?.wounds).toBe(1);
@@ -544,5 +544,84 @@ describe('activateAbility', () => {
         const aragorn = engine.getG().players['0']?.fellowshipArea[0];
         expect(aragorn?.wounds || 0).toBe(0);
         expect(engine.getG().actionWindow?.activePlayerId).toBe('1');
+    });
+
+    const GREENLEAF: Ability = {
+        id: '1R50:0',
+        phases: ['ARCHERY'],
+        cost: [{ exert: [{ count: 1, target: 'SELF' }] }],
+        effects: [{ type: 'WOUND', count: 1, target: [['MINION']] }],
+        source: 'SELF',
+        omitFromArcheryTotal: true,
+    };
+
+    it('refuse Legolas Vertefeuille sans séide désigné', () => {
+        const engine = createEngineClient({
+            startPhase: 'archery',
+            playerID: '0',
+            G: {
+                battlefield: [createMinion({ id: 'orc', vitality: 3 })],
+                players: {
+                    '0': createPlayerState('0', {
+                        fellowshipArea: [
+                            createCompanion({
+                                id: '1R50',
+                                title: 'Legolas',
+                                vitality: 3,
+                                keywords: ['ARCHER'],
+                                actionPhases: ['ARCHERY'],
+                                abilities: [GREENLEAF],
+                            }),
+                        ],
+                    }),
+                },
+            },
+        });
+
+        engine.moves.activateAbility('1R50', '1R50:0');
+        expect(engine.getG().players['0']?.fellowshipArea[0]?.wounds || 0).toBe(
+            0
+        );
+        expect(engine.getG().battlefield[0]?.wounds || 0).toBe(0);
+    });
+
+    it('Legolas Vertefeuille blesse le séide désigné et sort du total d’archerie', () => {
+        const engine = createEngineClient({
+            startPhase: 'archery',
+            playerID: '0',
+            G: {
+                battlefield: [
+                    createMinion({ id: 'orc-a', vitality: 3 }),
+                    createMinion({ id: 'orc-b', vitality: 3 }),
+                ],
+                players: {
+                    '0': createPlayerState('0', {
+                        fellowshipArea: [
+                            createCompanion({
+                                id: '1R50',
+                                title: 'Legolas',
+                                vitality: 3,
+                                keywords: ['ARCHER'],
+                                actionPhases: ['ARCHERY'],
+                                abilities: [GREENLEAF],
+                            }),
+                        ],
+                    }),
+                },
+            },
+        });
+
+        engine.moves.activateAbility('1R50', '1R50:0', 'orc-b');
+
+        expect(engine.getG().players['0']?.fellowshipArea[0]?.wounds).toBe(1);
+        expect(engine.getG().players['0']?.fellowshipArea[0]?.omitFromArcheryTotal).toBe(
+            true
+        );
+        expect(engine.getG().battlefield.find((c) => c.id === 'orc-a')?.wounds || 0).toBe(
+            0
+        );
+        expect(engine.getG().battlefield.find((c) => c.id === 'orc-b')?.wounds).toBe(
+            1
+        );
     });
 });

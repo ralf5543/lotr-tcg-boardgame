@@ -6,6 +6,7 @@ import type {
 } from '../../types';
 import type { ModifierScope } from '../../logic/stats/types';
 import { resolveAbilityTarget, forEachInPlayCard } from './resolveCostTarget';
+import { applyWoundAndCheckDeath } from '../../../utils/applyWoundAndCheckDeath';
 
 function expiryToScope(expiresAtPhase: AbilityEffectExpiry): ModifierScope {
     if (expiresAtPhase === 'SKIRMISH') return 'SKIRMISH';
@@ -64,6 +65,11 @@ function applyOneEffect(
             scope: expiryToScope(effect.expiresAtPhase),
             expiresAtPhase: effect.expiresAtPhase,
         });
+        return true;
+    }
+
+    if (effect.type === 'WOUND') {
+        applyWoundAndCheckDeath(G, target, effect.count || 1);
         return true;
     }
 

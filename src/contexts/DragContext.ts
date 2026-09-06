@@ -14,6 +14,8 @@ export interface DraggedCardData {
     origin: CardOrigin;
     orientation: CardOrientation;
     parentId?: string;
+    isPlayableEvent?: boolean;
+    designationTargetIds?: string[];
 }
 
 export interface DragContextType {
@@ -26,12 +28,22 @@ export interface DragContextType {
         e: React.PointerEvent,
         origin?: CardOrigin,
         orientation?: CardOrientation,
-        parentId?: string
+        parentId?: string,
+        isPlayableEvent?: boolean,
+        designationTargetIds?: string[]
     ) => void;
     stopDrag: () => void;
     registerTarget: (id: string, element: HTMLDivElement | null) => void;
     rotation: number;
     isOverHandCancel: boolean;
+    arrowOrigin: { x: number; y: number } | null;
+    getHitTargetId: (
+        clientX: number,
+        clientY: number,
+        allowedIds?: string[]
+    ) => string | null;
+    getTargetVirtualCenter: (id: string) => { x: number; y: number } | null;
+    getVirtualCursor: (clientX: number, clientY: number) => { x: number; y: number };
 }
 
 export const DragContext = createContext<DragContextType | undefined>(undefined);

@@ -9,6 +9,7 @@ interface TargetingRequest {
     message?: string;
     kind?: TargetingKind;
     pendingCard?: CardState;
+    arrowFromCardId?: string;
 }
 
 interface TargetingContextType {
@@ -16,6 +17,7 @@ interface TargetingContextType {
     targetingKind?: TargetingKind;
     targetableCardIds: string[];
     pendingCard?: CardState;
+    arrowFromCardId?: string;
     startTargeting: (request: TargetingRequest) => void;
     stopTargeting: () => void;
     isCardTargetable: (cardId: string) => boolean;
@@ -65,6 +67,7 @@ export const TargetingProvider: React.FC<{ children: React.ReactNode }> = ({ chi
                 selectCard,
                 message: request?.message,
                 pendingCard: request?.pendingCard,
+                arrowFromCardId: request?.arrowFromCardId,
             }}
         >
             {children}

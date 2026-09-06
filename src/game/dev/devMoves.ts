@@ -25,6 +25,7 @@ function resetPhaseMachine(G: GameState): void {
     G.pendingFierceAssignment = false;
     G.regroupStep = undefined;
     G.awaitingSiteSelection = false;
+    G.pendingPlay = undefined;
     clearActionableFlags(G);
 }
 

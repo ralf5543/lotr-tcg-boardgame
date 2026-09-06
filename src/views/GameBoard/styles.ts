@@ -211,12 +211,10 @@ export const DesignationOverlay = styled.div`
     display: flex;
     flex-direction: row;
     align-items: center;
-    gap: 16px;
 `;
 
 export const DesignationPendingCard = styled.div`
     pointer-events: auto;
-    transform: scale(0.58);
     transform-origin: top center;
     filter: drop-shadow(0 8px 18px rgba(0, 0, 0, 0.75));
 `;

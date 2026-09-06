@@ -81,16 +81,6 @@ export const SitePath: React.FC<SitePathProps> = ({
 
     return (
         <S.SitespathContainer>
-            <h3
-                style={{
-                    margin: '0 0 8px 0',
-                    color: '#e2c044',
-                    fontSize: '14px',
-                    textTransform: 'uppercase',
-                }}
-            >
-                Chemin d'Aventure
-            </h3>
 
             <S.SitesGrid>
                 {slots.map((site, index) => {

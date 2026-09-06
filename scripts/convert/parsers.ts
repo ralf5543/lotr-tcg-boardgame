@@ -916,28 +916,73 @@ export function parseAbilities(
                 ? markers[index + 1].markerStart
                 : text.length;
         const body = text.slice(marker.bodyStart, bodyEnd).trim();
-        const exertMatch = body.match(
+        const makeMatch = body.match(
             /^Exert\s+([\s\S]+?)\s+to make\s+([\s\S]+)/i
         );
-        if (!exertMatch) return;
-        if (/\b(and|or)\b/i.test(exertMatch[1])) return;
+        if (makeMatch) {
+            if (/\b(and|or)\b/i.test(makeMatch[1])) return;
+            const subject = parseExertSubject(makeMatch[1], cardTitle);
+            if (!subject) return;
+            const effectText = makeMatch[2];
+            if (/\bfor each\b/i.test(effectText.replace(/<[^>]+>/g, ' '))) return;
 
-        const subject = parseExertSubject(exertMatch[1], cardTitle);
-        if (!subject) return;
-        const effectText = exertMatch[2];
-        if (/\bfor each\b/i.test(effectText.replace(/<[^>]+>/g, ' '))) return;
+            const expiresAtPhase = parseUntilExpiry(effectText, marker.phase);
+            const effectTarget = parseEffectTarget(effectText, subject.target);
+            const effects = parseMakeEffects(
+                effectText,
+                effectTarget,
+                expiresAtPhase
+            );
+            if (!effects || effects.length === 0) return;
 
-        const expiresAtPhase = parseUntilExpiry(effectText, marker.phase);
-        const effectTarget = parseEffectTarget(effectText, subject.target);
-        const effects = parseMakeEffects(
-            effectText,
-            effectTarget,
-            expiresAtPhase
+            const source = subject.target === 'BEARER' ? 'ATTACHMENT' : 'SELF';
+            const clause = `${marker.phase}: Exert ${makeMatch[1].trim()} to make ${effectText}`
+                .replace(/<[^>]+>/g, '')
+                .replace(/\s+/g, ' ')
+                .replace(/\s+\./g, '.')
+                .trim();
+
+            abilities.push({
+                id: `${cardId || 'ability'}:${abilities.length}`,
+                phases: [marker.phase],
+                cost: [
+                    {
+                        exert: [
+                            {
+                                count: subject.count,
+                                target: subject.target,
+                                ...(subject.mode ? { mode: subject.mode } : {}),
+                            },
+                        ],
+                    },
+                ],
+                effects,
+                source,
+                text: clause,
+            });
+            return;
+        }
+
+        const woundMatch = body.match(
+            /^Exert\s+([\s\S]+?)\s+to wound\s+([\s\S]+)/i
         );
-        if (!effects || effects.length === 0) return;
+        if (!woundMatch) return;
+        if (/\b(and|or)\b/i.test(woundMatch[1])) return;
 
-        const source = subject.target === 'BEARER' ? 'ATTACHMENT' : 'SELF';
-        const clause = `${marker.phase}: Exert ${exertMatch[1].trim()} to make ${effectText}`
+        const woundSubject = parseExertSubject(woundMatch[1], cardTitle);
+        if (!woundSubject) return;
+
+        const woundClause = woundMatch[2].split(';')[0].replace(/<[^>]+>/g, ' ').trim();
+        const woundArticle = woundClause.match(/^(a|an)\s+(.+)$/i);
+        if (!woundArticle) return;
+        const woundFilters = parseClassFilters(woundArticle[2]);
+        if (woundFilters.length === 0) return;
+
+        const omitFromArcheryTotal =
+            /does not add to the fellowship archery total/i.test(body);
+        const woundSource =
+            woundSubject.target === 'BEARER' ? 'ATTACHMENT' : 'SELF';
+        const woundText = `${marker.phase}: Exert ${woundMatch[1].trim()} to wound ${woundMatch[2]}`
             .replace(/<[^>]+>/g, '')
             .replace(/\s+/g, ' ')
             .replace(/\s+\./g, '.')
@@ -950,16 +995,25 @@ export function parseAbilities(
                 {
                     exert: [
                         {
-                            count: subject.count,
-                            target: subject.target,
-                            ...(subject.mode ? { mode: subject.mode } : {}),
+                            count: woundSubject.count,
+                            target: woundSubject.target,
+                            ...(woundSubject.mode
+                                ? { mode: woundSubject.mode }
+                                : {}),
                         },
                     ],
                 },
             ],
-            effects,
-            source,
-            text: clause,
+            effects: [
+                {
+                    type: 'WOUND',
+                    count: 1,
+                    target: [woundFilters],
+                },
+            ],
+            source: woundSource,
+            text: woundText,
+            ...(omitFromArcheryTotal ? { omitFromArcheryTotal: true } : {}),
         });
     });
 

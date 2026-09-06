@@ -1,6 +1,7 @@
 import type { Ability, CardState, GameState } from '../../types';
 import { getEffectiveVitality } from '../../../utils/cardStats';
 import { resolveCostTarget } from './resolveCostTarget';
+import { findEventAbilityForPhase } from './playEventAbility';
 
 export function cardTargetIds(card: CardState): string[] {
     const ids = [card.instanceId, card.id].filter(Boolean);
@@ -18,10 +19,11 @@ function uniqueCards(cards: CardState[]): CardState[] {
 }
 
 /**
- * Cibles payables d’un coût DNF (pas SELF / BEARER).
- * Unique nommé (`[['Sam']]`) comme « un Hobbit » : le joueur désigne toujours
+ * Cibles payables d’un coût DNF (pas SELF / BEARER), ou d’un effet
+ * qui vise une autre carte (ex. blesser un séide).
+ * Unique nommé comme « un Hobbit » / « un séide » : le joueur désigne toujours
  * (même une seule cible), pour pouvoir annuler.
- * 0 → impossible ; ≥1 → halo + clic.
+ * 0 → impossible ; ≥1 → halo + flèche (main) ou clic (carte en jeu).
  */
 export function getDesignationCandidates(
     G: GameState,
@@ -40,14 +42,20 @@ export function getDesignationCandidates(
     });
 
     const req = option?.exert?.[0];
-    if (!req || req.target === 'SELF' || req.target === 'BEARER') return [];
+    if (req && req.target !== 'SELF' && req.target !== 'BEARER') {
+        const count = req.count || 1;
+        return uniqueCards(
+            resolveCostTarget(G, source, req.target).filter(
+                (card) => getEffectiveVitality(card) > count
+            )
+        );
+    }
 
-    const count = req.count || 1;
-    return uniqueCards(
-        resolveCostTarget(G, source, req.target).filter(
-            (card) => getEffectiveVitality(card) > count
-        )
+    const effect = (ability.effects || []).find((item) =>
+        Array.isArray(item.target)
     );
+    if (!effect || !Array.isArray(effect.target)) return [];
+    return uniqueCards(resolveCostTarget(G, source, effect.target));
 }
 
 export function abilityNeedsDesignation(
@@ -59,11 +67,38 @@ export function abilityNeedsDesignation(
 }
 
 export function formatDesignationPrompt(ability: Ability): string {
-    const target = ability.cost[0]?.exert?.[0]?.target;
-    if (!Array.isArray(target)) return 'Choisissez une cible.';
+    const costTarget = ability.cost[0]?.exert?.[0]?.target;
+    const effectTarget = ability.effects[0]?.target;
+    const target = Array.isArray(costTarget)
+        ? costTarget
+        : Array.isArray(effectTarget)
+          ? effectTarget
+          : null;
+    if (!target) return 'Choisissez une cible.';
     const label = target
         .flat()
-        .map((token) => token.charAt(0) + token.slice(1).toLowerCase())
+        .map((token) => {
+            if (token === 'MINION') return 'séide';
+            return token.charAt(0) + token.slice(1).toLowerCase();
+        })
         .join(' ');
     return `Choisissez un ${label}.`;
+}
+
+export function isDesignationTargetId(
+    designationTargetIds: string[] | undefined,
+    targetId?: string | null
+): boolean {
+    if (!targetId || !designationTargetIds?.length) return false;
+    return designationTargetIds.includes(targetId);
+}
+
+export function getHandEventDesignationTargetIds(
+    G: GameState,
+    card: CardState,
+    phase?: string
+): string[] {
+    const ability = findEventAbilityForPhase(card, phase || '');
+    if (!ability || !abilityNeedsDesignation(G, card, ability)) return [];
+    return getDesignationCandidates(G, card, ability).flatMap(cardTargetIds);
 }
