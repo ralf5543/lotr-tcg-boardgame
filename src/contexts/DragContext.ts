@@ -33,7 +33,8 @@ export interface DragContextType {
         designationTargetIds?: string[]
     ) => void;
     stopDrag: () => void;
-    registerTarget: (id: string, element: HTMLDivElement | null) => void;
+    registerTarget: (id: string, element: HTMLElement | null) => void;
+    registerArrowAnchor: (id: string, element: HTMLElement | null) => void;
     rotation: number;
     isOverHandCancel: boolean;
     arrowOrigin: { x: number; y: number } | null;

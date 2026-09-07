@@ -4,6 +4,7 @@ import { Card } from '../Card';
 import * as S from './styles';
 import { useDrag } from '../../../../contexts/DragContext';
 import { useTargeting } from '../../../../contexts/TargetingContext';
+import { useTargetingArrowSync } from '../TargetingArrow/TargetingArrowSync';
 import { canPlayCard } from '../../../../game/engine/canPlayCard';
 import { SkirmishClash } from './SkirmishClash';
 import { getEffectiveVitality } from '../../../../utils/cardStats';
@@ -57,9 +58,10 @@ export const BoardCharacterStack: React.FC<BoardCharacterStackProps> = ({
     isFaceDown = false,
     onActivateAbility,
 }) => {
-    const { registerTarget, activeTargetId, dragged, startDrag, isOverHandCancel } =
+    const { registerTarget, registerArrowAnchor, activeTargetId, dragged, startDrag, isOverHandCancel } =
         useDrag();
     const { isCardTargetable, selectCard, targetingKind } = useTargeting();
+    const remoteTargetId = useTargetingArrowSync()?.remote?.toCardId;
 
     const cardKey = character.instanceId || character.id;
     const isTargetable =
@@ -128,8 +130,10 @@ export const BoardCharacterStack: React.FC<BoardCharacterStackProps> = ({
     // 🎯 Matching avec instanceId prioritaire, sinon id
     const currentId = character.instanceId || character.id;
     const isAimedByArrow =
-        isDragDesignating &&
-        (activeTargetId === currentId || activeTargetId === character.id);
+        (isDragDesignating &&
+            (activeTargetId === currentId || activeTargetId === character.id)) ||
+        remoteTargetId === currentId ||
+        remoteTargetId === character.id;
     const isTargeted =
         ((activeTargetId === currentId || activeTargetId === character.id) &&
             ((!isOpponent && canAttach) || isMinionAssignment)) ||
@@ -188,6 +192,20 @@ export const BoardCharacterStack: React.FC<BoardCharacterStackProps> = ({
                             return (
                                 <S.MinionWrapper
                                     key={minion.instanceId || minion.id}
+                                    ref={(el) => {
+                                        registerArrowAnchor(minionKey, el);
+                                        if (
+                                            minion.id &&
+                                            minion.id !== minionKey
+                                        ) {
+                                            registerArrowAnchor(minion.id, el);
+                                        }
+                                        if (isMinionDesignationTarget && el) {
+                                            registerTarget(minionKey, el);
+                                        } else {
+                                            registerTarget(minionKey, null);
+                                        }
+                                    }}
                                     $isTargetable={isMinionTargetable}
                                     $isDesignationTarget={
                                         isMinionDesignationTarget
@@ -267,9 +285,17 @@ export const BoardCharacterStack: React.FC<BoardCharacterStackProps> = ({
                     $isDisabled={isDisabled}
                     data-card={JSON.stringify(character)}
                     data-draggable={canDragCharacter ? 'true' : undefined}
-                    ref={(el) =>
-                        registerTarget(character.instanceId || character.id, el)
-                    }
+                    ref={(el) => {
+                        const id = character.instanceId || character.id;
+                        registerTarget(id, el);
+                        registerArrowAnchor(id, el);
+                        if (
+                            character.id &&
+                            character.id !== id
+                        ) {
+                            registerArrowAnchor(character.id, el);
+                        }
+                    }}
                     onPointerDown={(e) => {
                         // 🎯 Si c'est ciblable, on déclenche directement la sélection au clic
                         if (isTargetable) {

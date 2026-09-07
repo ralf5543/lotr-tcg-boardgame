@@ -38,7 +38,12 @@ import { useArcheryAudio } from '../../hooks/audio/useArcheryAudio';
 import { useWoundAudio } from '../../hooks/audio/useWoundAudio';
 import { useAssignmentAudio } from '../../hooks/audio/useAssignmentAudio';
 import { useSkirmishAudio } from '../../hooks/audio/useSkirmishAudio';
-import { BoardTargetingArrow } from './components/TargetingArrow';
+import {
+    BoardTargetingArrow,
+    RemoteTargetingArrow,
+} from './components/TargetingArrow';
+import { TargetingArrowSyncProvider, useTargetingArrowSync } from './components/TargetingArrow/TargetingArrowSync';
+import { PENDING_PLAY_ORIGIN_ID } from './components/TargetingArrow/sync';
 
 export interface GameBoardProps extends BoardProps<GameState> {
     moves: BoardProps<GameState>['moves'] &
@@ -111,23 +116,75 @@ const DesignationOverlay: React.FC<{ G: GameState; myId: string }> = ({
     G,
     myId,
 }) => {
+    const { registerArrowAnchor } = useDrag();
+    const sync = useTargetingArrowSync();
     const pending = G.pendingPlay;
-    if (!pending || pending.playerId === myId) return null;
+    const isOpponentPending = Boolean(pending && pending.playerId !== myId);
+    const needsOrigin =
+        isOpponentPending ||
+        sync?.remote?.fromCardId === PENDING_PLAY_ORIGIN_ID;
+    if (!needsOrigin) return null;
 
     return (
-        <S.DesignationOverlay>
-            <S.DesignationPendingCard>
-                <Card
-                    card={{ ...pending.card, isFaceDown: true }}
-                    size="md"
-                    isDraggable={false}
-                    isOpponent
-                    isFaceDown
-                    G={G}
-                />
-            </S.DesignationPendingCard>
+        <S.DesignationOverlay
+            ref={(el) => registerArrowAnchor(PENDING_PLAY_ORIGIN_ID, el)}
+        >
+            {isOpponentPending && pending && (
+                <S.DesignationPendingCard>
+                    <Card
+                        card={{ ...pending.card, isFaceDown: true }}
+                        size="md"
+                        isDraggable={false}
+                        isOpponent
+                        isFaceDown
+                        G={G}
+                    />
+                </S.DesignationPendingCard>
+            )}
         </S.DesignationOverlay>
     );
+};
+
+const PendingPlayOnDrag: React.FC<{
+    G: GameState;
+    myId: string;
+    phase?: string;
+    moves: GameBoardProps['moves'];
+}> = ({ G, myId, phase, moves }) => {
+    const { dragged, isOverHandCancel } = useDrag();
+
+    useEffect(() => {
+        if (
+            dragged?.origin !== 'HAND' ||
+            !dragged.designationTargetIds?.length
+        ) {
+            return;
+        }
+        if (isOverHandCancel) {
+            if (G.pendingPlay?.playerId === myId) {
+                moves.cancelPendingPlay?.();
+            }
+            return;
+        }
+        if (G.pendingPlay?.playerId === myId) return;
+        const card = dragged.card as CardState;
+        const ability = findEventAbilityForPhase(card, phase || '');
+        moves.beginPendingPlay?.(
+            dragged.index,
+            ability
+                ? formatDesignationPrompt(ability)
+                : 'Choisissez une cible.'
+        );
+    }, [
+        dragged,
+        isOverHandCancel,
+        G.pendingPlay,
+        myId,
+        moves,
+        phase,
+    ]);
+
+    return null;
 };
 
 export const GameBoard: React.FC<GameBoardProps> = ({
@@ -135,6 +192,9 @@ export const GameBoard: React.FC<GameBoardProps> = ({
     G,
     ctx,
     moves,
+    sendChatMessage,
+    chatMessages,
+    matchID,
 }) => {
     useCardPlayAudio(G);
     useArcheryAudio(G);
@@ -236,39 +296,7 @@ export const GameBoard: React.FC<GameBoardProps> = ({
     };
 
     const { hoveredData } = useHoverCard();
-    const { dragged, isOverHandCancel } = useDrag();
     const currentSiteIndex = G.players['0']?.currentSiteIndex ?? 0;
-
-    useEffect(() => {
-        if (
-            dragged?.origin !== 'HAND' ||
-            !dragged.designationTargetIds?.length
-        ) {
-            return;
-        }
-        if (isOverHandCancel) {
-            if (G.pendingPlay?.playerId === myId) {
-                moves.cancelPendingPlay?.();
-            }
-            return;
-        }
-        if (G.pendingPlay?.playerId === myId) return;
-        const card = dragged.card as CardState;
-        const ability = findEventAbilityForPhase(card, ctx.phase || '');
-        moves.beginPendingPlay?.(
-            dragged.index,
-            ability
-                ? formatDesignationPrompt(ability)
-                : 'Choisissez une cible.'
-        );
-    }, [
-        dragged,
-        isOverHandCancel,
-        G.pendingPlay,
-        myId,
-        moves,
-        ctx.phase,
-    ]);
 
     // 🟢 1. GESTION GLOBALE DE LA TEMPORISATION DE FIN DE PHASE
     useEffect(() => {
@@ -670,8 +698,20 @@ export const GameBoard: React.FC<GameBoardProps> = ({
             fpPlayerId={fpPlayerId}
             isSetupPhase={isSetupPhase}
         >
-            <DragProvider>
-                <S.BoardContainer $faction={currentFaction}>
+            <TargetingArrowSyncProvider
+                myId={myId}
+                matchID={matchID}
+                sendChatMessage={sendChatMessage}
+                chatMessages={chatMessages}
+            >
+                <DragProvider>
+                    <S.BoardContainer $faction={currentFaction}>
+                    <PendingPlayOnDrag
+                        G={G}
+                        myId={myId}
+                        phase={ctx.phase}
+                        moves={moves}
+                    />
                     <EventPlayOverlay
                         G={G}
                         phase={ctx.phase}
@@ -679,6 +719,7 @@ export const GameBoard: React.FC<GameBoardProps> = ({
                     />
                     <DesignationOverlay G={G} myId={myId} />
                     <BoardTargetingArrow />
+                    <RemoteTargetingArrow />
                     {hoveredData && (
                         <S.HoveredCardsZone
                             $orientation={hoveredData.orientation}
@@ -838,8 +879,9 @@ export const GameBoard: React.FC<GameBoardProps> = ({
                         }
                         sitesView={<SitesPicker sites={me.sitesDeck || []} />}
                     />
-                </S.BoardContainer>
-            </DragProvider>
+                    </S.BoardContainer>
+                </DragProvider>
+            </TargetingArrowSyncProvider>
         </FactionProvider>
     );
 };

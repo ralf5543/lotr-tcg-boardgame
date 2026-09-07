@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useDrag } from '../../../../contexts/DragContext';
 import { useTargeting } from '../../../../contexts/TargetingContext';
+import { usePublishTargetingArrow, useTargetingArrowSync } from './TargetingArrowSync';
 
 const GOLD = '#e2c044';
 const GOLD_DIM = 'rgba(226, 192, 68, 0.45)';
@@ -22,7 +23,6 @@ export const TargetingArrow: React.FC<TargetingArrowProps> = ({
     if (dist < 12) return null;
 
     const midX = (from.x + to.x) / 2;
-    const midY = (from.y + to.y) / 2;
     const bend = Math.min(90, dist * 0.28);
     const controlX = midX;
     const controlY = Math.min(from.y, to.y) - bend;
@@ -88,11 +88,20 @@ export const BoardTargetingArrow: React.FC = () => {
         null
     );
     const [hoverId, setHoverId] = useState<string | null>(null);
+    const isDesignating =
+        targetingKind === 'DESIGNATION' && Boolean(arrowFromCardId);
+
+    const activeCursor = isDesignating ? cursor : null;
+    const activeHoverId = isDesignating ? hoverId : null;
+
+    usePublishTargetingArrow(
+        isDesignating,
+        arrowFromCardId ?? null,
+        activeHoverId
+    );
 
     useEffect(() => {
-        if (targetingKind !== 'DESIGNATION' || !arrowFromCardId) {
-            setCursor(null);
-            setHoverId(null);
+        if (!isDesignating) {
             return;
         }
 
@@ -123,8 +132,7 @@ export const BoardTargetingArrow: React.FC = () => {
             window.removeEventListener('pointerdown', onPointerDown);
         };
     }, [
-        targetingKind,
-        arrowFromCardId,
+        isDesignating,
         targetableCardIds,
         getHitTargetId,
         getVirtualCursor,
@@ -132,18 +140,51 @@ export const BoardTargetingArrow: React.FC = () => {
         stopTargeting,
     ]);
 
-    if (targetingKind !== 'DESIGNATION' || !arrowFromCardId || !cursor) {
+    if (!isDesignating || !arrowFromCardId || !activeCursor) {
         return null;
     }
 
     const from = getTargetVirtualCenter(arrowFromCardId);
+    const targetCenter = activeHoverId
+        ? getTargetVirtualCenter(activeHoverId)
+        : null;
     if (!from) return null;
 
     return (
         <TargetingArrow
             from={from}
-            to={cursor}
-            isValidTarget={Boolean(hoverId)}
+            to={targetCenter ?? activeCursor}
+            isValidTarget={Boolean(activeHoverId)}
         />
     );
+};
+
+export const RemoteTargetingArrow: React.FC = () => {
+    const sync = useTargetingArrowSync();
+    const { getTargetVirtualCenter } = useDrag();
+    const fromId = sync?.remote?.fromCardId ?? null;
+    const toId = sync?.remote?.toCardId ?? null;
+    const [, setTick] = useState(0);
+
+    useEffect(() => {
+        if (!fromId || !toId) return;
+        const raf = window.requestAnimationFrame(() => {
+            setTick((tick) => tick + 1);
+        });
+        const timer = window.setInterval(() => {
+            setTick((tick) => tick + 1);
+        }, 80);
+        return () => {
+            window.cancelAnimationFrame(raf);
+            window.clearInterval(timer);
+        };
+    }, [fromId, toId]);
+
+    if (!fromId || !toId) return null;
+
+    const from = getTargetVirtualCenter(fromId);
+    const to = getTargetVirtualCenter(toId);
+    if (!from || !to) return null;
+
+    return <TargetingArrow from={from} to={to} isValidTarget />;
 };

@@ -6,6 +6,8 @@ import { SiteCard } from '../views/GameBoard/components/SiteCard';
 import { TargetingArrow } from '../views/GameBoard/components/TargetingArrow';
 import { playableEventHalo, spotMetHalo } from '../views/GameBoard/cardHalo';
 import { isDesignationTargetId } from '../game/engine/abilities/designation';
+import { PENDING_PLAY_ORIGIN_ID } from '../views/GameBoard/components/TargetingArrow/sync';
+import { usePublishTargetingArrow } from '../views/GameBoard/components/TargetingArrow/TargetingArrowSync';
 import {
     DragContext,
     useDrag,
@@ -54,7 +56,8 @@ export const DragProvider: React.FC<{ children: React.ReactNode }> = ({
     );
     const lastX = useRef(0);
 
-    const targetsRef = useRef<Map<string, HTMLDivElement>>(new Map());
+    const targetsRef = useRef<Map<string, HTMLElement>>(new Map());
+    const arrowAnchorsRef = useRef<Map<string, HTMLElement>>(new Map());
     const activeTargetIdRef = useRef<string | null>(null);
     const currentScale = useRef(1);
     const dragOffset = useRef({ x: 0, y: 0 });
@@ -70,11 +73,22 @@ export const DragProvider: React.FC<{ children: React.ReactNode }> = ({
         };
     }, [dragged]);
 
-    const registerTarget = (id: string, element: HTMLDivElement | null) => {
+    const registerTarget = (id: string, element: HTMLElement | null) => {
         if (element) {
             targetsRef.current.set(id, element);
         } else {
             targetsRef.current.delete(id);
+        }
+    };
+
+    const registerArrowAnchor = (
+        id: string,
+        element: HTMLElement | null
+    ) => {
+        if (element) {
+            arrowAnchorsRef.current.set(id, element);
+        } else {
+            arrowAnchorsRef.current.delete(id);
         }
     };
 
@@ -126,7 +140,8 @@ export const DragProvider: React.FC<{ children: React.ReactNode }> = ({
     const getTargetVirtualCenter = (
         id: string
     ): { x: number; y: number } | null => {
-        const el = targetsRef.current.get(id);
+        const el =
+            arrowAnchorsRef.current.get(id) || targetsRef.current.get(id);
         if (!el) return null;
         const rect = el.getBoundingClientRect();
         return getVirtualPoint(
@@ -311,6 +326,7 @@ export const DragProvider: React.FC<{ children: React.ReactNode }> = ({
                 startDrag,
                 stopDrag,
                 registerTarget,
+                registerArrowAnchor,
                 isOverHandCancel,
                 arrowOrigin,
                 getHitTargetId,
@@ -390,18 +406,46 @@ const DragPortal: React.FC = () => {
 };
 
 const DragTargetingArrow: React.FC = () => {
-    const { dragged, position, isOverHandCancel, arrowOrigin, activeTargetId } =
-        useDrag();
-    if (!dragged || isOverHandCancel || !dragged.designationTargetIds?.length) {
+    const {
+        dragged,
+        position,
+        isOverHandCancel,
+        arrowOrigin,
+        activeTargetId,
+        getTargetVirtualCenter,
+    } = useDrag();
+    const isActive = Boolean(
+        dragged && !isOverHandCancel && dragged.designationTargetIds?.length
+    );
+    const draggedCard = dragged?.card as CardState | undefined;
+    const fromCardId = !isActive
+        ? null
+        : dragged?.origin === 'HAND'
+          ? PENDING_PLAY_ORIGIN_ID
+          : draggedCard?.instanceId || draggedCard?.id || null;
+    const isValid = isDesignationTargetId(
+        dragged?.designationTargetIds,
+        activeTargetId
+    );
+    usePublishTargetingArrow(
+        isActive,
+        fromCardId,
+        isValid ? activeTargetId : null
+    );
+
+    if (!isActive || !dragged) {
         return null;
     }
     const from = arrowOrigin ?? position;
-    const isValid = isDesignationTargetId(
-        dragged.designationTargetIds,
-        activeTargetId
-    );
+    const targetCenter = isValid
+        ? getTargetVirtualCenter(activeTargetId as string)
+        : null;
 
     return (
-        <TargetingArrow from={from} to={position} isValidTarget={isValid} />
+        <TargetingArrow
+            from={from}
+            to={targetCenter ?? position}
+            isValidTarget={isValid}
+        />
     );
 };

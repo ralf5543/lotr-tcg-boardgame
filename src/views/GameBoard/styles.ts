@@ -217,4 +217,19 @@ export const DesignationPendingCard = styled.div`
     pointer-events: auto;
     transform-origin: top center;
     filter: drop-shadow(0 8px 18px rgba(0, 0, 0, 0.75));
+    overflow: hidden;
+    border-radius: 4px;
+
+    & > div {
+        overflow: hidden;
+    }
+
+    figure {
+        position: absolute;
+        inset: 0 !important;
+        width: 100%;
+        height: 100% !important;
+        margin: 0;
+        padding: 0 !important;
+    }
 `;
