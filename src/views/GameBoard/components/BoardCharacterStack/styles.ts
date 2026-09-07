@@ -116,7 +116,7 @@ export const AssignedMinionsContainer = styled.div<{ $isOpponent?: boolean }>`
     left: 50%;
     transform: translateX(-50%);
     margin-bottom: 26px;
-    z-index: 3;
+    z-index: 2;
 
     /* 🟢 ANCRAGE SELON LA DIRECTION DU JOUEUR */
     ${({ $isOpponent }) =>

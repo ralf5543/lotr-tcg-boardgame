@@ -61,7 +61,7 @@ export const ClashContainer = styled.div<{ $isOpponent?: boolean }>`
     position: absolute;
     width: 80px;
     height: 80px;
-    z-index: 10;
+    z-index: 4;
     pointer-events: none;
     inset-inline-start: 50%;
     transform: translateX(-50%);
