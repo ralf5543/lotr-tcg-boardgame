@@ -5,6 +5,7 @@ import { Battlefield } from './components/Battlefield';
 import { SitePath } from './components/SitePath';
 import { PlayerArea } from './components/PlayerArea';
 import { Hand } from './components/Hand';
+import { OpponentHand } from './components/Hand/OpponentHand';
 import * as S from './styles';
 import { useHoverCard } from '../../contexts/HoverCardContext';
 import { Card } from './components/Card';
@@ -724,6 +725,15 @@ export const GameBoard: React.FC<GameBoardProps> = ({
                         isMyTurn={ctx.currentPlayer === playerID}
                         awaitingSite={G.awaitingSiteSelection ?? false}
                         moves={moves}
+                    />
+
+                    <OpponentHand
+                        hand={opponent.hand || []}
+                        hiddenCardId={
+                            G.pendingPlay?.playerId === oppId
+                                ? G.pendingPlay.card.id
+                                : undefined
+                        }
                     />
 
                     {/* ==================== 1. ADVERSAIRE ==================== */}

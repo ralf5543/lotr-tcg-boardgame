@@ -130,3 +130,70 @@ export const CardRow = styled.div`
     inset-inline-start: 50%;
     transform: translateX(-50%);
 `;
+
+const drawOpponentCardIn = keyframes`
+    0% {
+        transform: rotate(var(--angle)) translateY(calc(var(--translateY) - 140px));
+        opacity: 0;
+    }
+    100% {
+        transform: rotate(var(--angle)) translateY(var(--translateY));
+        opacity: 1;
+    }
+`;
+
+export const OpponentHandContainer = styled.div`
+    position: fixed;
+    inset-block-start: -28px;
+    left: 0;
+    right: 0;
+    z-index: 40;
+    pointer-events: none;
+    display: flex;
+    justify-content: center;
+`;
+
+export const OpponentCardRow = styled.div`
+    display: flex;
+    justify-content: center;
+`;
+
+export const OpponentCardWrapper = styled.div<{
+    $angle: number;
+    $translateY: number;
+    $zIndex: number;
+    $isNew?: boolean;
+    $staggerIndex?: number;
+}>`
+    position: relative;
+    margin: 0 -8px;
+    --angle: ${(props) => props.$angle}deg;
+    --translateY: ${(props) => props.$translateY}px;
+    transform: rotate(var(--angle)) translateY(var(--translateY));
+    transform-origin: top center;
+    z-index: ${(props) => props.$zIndex};
+    box-shadow: 0 3px 5px rgba(0, 0, 0, 0.85);
+    height: fit-content;
+    overflow: hidden;
+    border-radius: 2px;
+    transition: transform 0.25s cubic-bezier(0.25, 0.8, 0.25, 1);
+
+    ${(props) =>
+        props.$isNew &&
+        css`
+            animation: ${drawOpponentCardIn} 0.5s cubic-bezier(0.16, 1, 0.3, 1)
+                backwards;
+            animation-delay: ${(props.$staggerIndex ?? 0) * 0.08}s;
+        `}
+`;
+
+export const OpponentCardBack = styled.img`
+    width: 65px;
+    aspect-ratio: 1 / 1.39;
+    object-fit: cover;
+    display: block;
+    border-radius: 2px;
+    user-select: none;
+    -webkit-user-drag: none;
+    pointer-events: none;
+`;
