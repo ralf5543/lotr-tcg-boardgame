@@ -544,6 +544,7 @@ export const Card: React.FC<CardProps> = ({
                 <S.AbilityButton
                     type="button"
                     $abilityPhaseMatch={abilityPhaseMatch}
+                    $culture={card.culture}
                     onPointerDown={(e) => {
                         e.stopPropagation();
                     }}
@@ -552,7 +553,7 @@ export const Card: React.FC<CardProps> = ({
                         setIsAbilityMenuOpen((open) => !open);
                     }}
                 >
-                    A
+                    <img src={`/interface/icons/icon_culture_${card.culture}.webp`} alt={card.culture} draggable={false} width="17px" />
                 </S.AbilityButton>
             )}
 

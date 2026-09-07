@@ -916,6 +916,7 @@ export const WoundsOverlay = styled.div`
     position: absolute;
     inset: 30px 32px 33px -11px;
     z-index: 10;
+    pointer-events: none;
 `;
 
 export const WoundToken = styled.img`
@@ -923,34 +924,45 @@ export const WoundToken = styled.img`
     margin-inline-end: 4px;
 `;
 
-export const AbilityButton = styled.button<{ $abilityPhaseMatch?: boolean }>`
+export const AbilityButton = styled.button<{ $abilityPhaseMatch?: boolean, $culture?: string }>`
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
     position: absolute;
-    z-index: 8;
-    inset-block-end: 6px;
-    inset-inline-start: 50%;
-    transform: translateX(-50%);
-    width: 18px;
-    height: 18px;
+    z-index: 11;
+    inset-block-start: 50%;
+    inset-inline-start: 0;
+    transform: translate(-50%, -50%);
+    width: 25px;
+    aspect-ratio: 1;
     padding: 0;
-    border: 1px solid #111;
     border-radius: 50%;
-    background: #222;
     color: #eee;
     font-size: 11px;
     line-height: 1;
     cursor: pointer;
+    background-image: ${(props) =>
+        `url(interface/icons/icon_signet_${props.$culture}.webp)`};
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+    box-shadow: rgb(0, 0, 0) 0px 2px 2px;
 
     ${(props) =>
         props.$abilityPhaseMatch &&
         css`
-            background: #c9a227;
-            color: #111;
+            outline: rgba(226, 192, 68, 0.45) solid 1px;
+            box-shadow: rgb(0, 0, 0) 0px 2px 2px, rgba(226, 192, 68, 1) 0px 0px 8px 3px;
         `}
+
+    img {
+        filter: drop-shadow(1px 2px 1px rgba(0, 0, 0, 0.5));
+    }
 `;
 
 export const AbilityBubble = styled.div`
     position: absolute;
-    z-index: 9;
+    z-index: 12;
     bottom: calc(100% + 4px);
     left: 50%;
     transform: translateX(-50%);
