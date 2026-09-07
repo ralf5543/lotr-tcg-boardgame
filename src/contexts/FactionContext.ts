@@ -29,3 +29,9 @@ export const useFaction = () => {
     
     return context;
 };
+
+export const useLocalFaction = (): Faction => {
+    const { myPlayerId, fpPlayerId, isSetupPhase } = useFaction();
+    if (isSetupPhase) return 'FREE_PEOPLE';
+    return myPlayerId === fpPlayerId ? 'FREE_PEOPLE' : 'SHADOW';
+};

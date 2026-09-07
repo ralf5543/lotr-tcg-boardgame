@@ -3,6 +3,7 @@ import type { CardState, CardType, GameState } from '../../../../game/types';
 import { Card } from '../Card';
 import * as S from './styles';
 import { useDrag } from '../../../../contexts/DragContext';
+import { useLocalFaction } from '../../../../contexts/FactionContext';
 import { useTargeting } from '../../../../contexts/TargetingContext';
 import { useTargetingArrowSync } from '../TargetingArrow/TargetingArrowSync';
 import { canPlayCard } from '../../../../game/engine/canPlayCard';
@@ -60,8 +61,10 @@ export const BoardCharacterStack: React.FC<BoardCharacterStackProps> = ({
 }) => {
     const { registerTarget, registerArrowAnchor, activeTargetId, dragged, startDrag, isOverHandCancel } =
         useDrag();
-    const { isCardTargetable, selectCard, targetingKind } = useTargeting();
-    const remoteTargetId = useTargetingArrowSync()?.remote?.toCardId;
+    const { isCardTargetable, selectCard, targetingKind, hoveredTargetId } = useTargeting();
+    const arrowSync = useTargetingArrowSync();
+    const remoteTargetId = arrowSync?.remote?.toCardId;
+    const myFaction = useLocalFaction();
 
     const cardKey = character.instanceId || character.id;
     const isTargetable =
@@ -127,13 +130,35 @@ export const BoardCharacterStack: React.FC<BoardCharacterStackProps> = ({
         }
     }
 
+    const matchesAimedCard = (id: string, altId?: string) => {
+        const aimedIds = [remoteTargetId, hoveredTargetId];
+        if (isDragDesignating) {
+            aimedIds.push(activeTargetId);
+        }
+        return aimedIds.some(
+            (aimedId) => aimedId && (aimedId === id || aimedId === altId)
+        );
+    };
+
+    const factionForAim = (id: string, altId?: string) => {
+        const isLocal =
+            hoveredTargetId === id ||
+            hoveredTargetId === altId ||
+            (isDragDesignating &&
+                (activeTargetId === id || activeTargetId === altId));
+        if (isLocal) return myFaction;
+        if (remoteTargetId === id || remoteTargetId === altId) {
+            return arrowSync?.remote?.faction === 'SHADOW'
+                ? 'SHADOW'
+                : 'FREE_PEOPLE';
+        }
+        return myFaction;
+    };
+
     // 🎯 Matching avec instanceId prioritaire, sinon id
     const currentId = character.instanceId || character.id;
-    const isAimedByArrow =
-        (isDragDesignating &&
-            (activeTargetId === currentId || activeTargetId === character.id)) ||
-        remoteTargetId === currentId ||
-        remoteTargetId === character.id;
+    const isAimedByArrow = matchesAimedCard(currentId, character.id);
+    const aimFaction = factionForAim(currentId, character.id);
     const isTargeted =
         ((activeTargetId === currentId || activeTargetId === character.id) &&
             ((!isOpponent && canAttach) || isMinionAssignment)) ||
@@ -188,6 +213,10 @@ export const BoardCharacterStack: React.FC<BoardCharacterStackProps> = ({
                             );
                             const isMinionDead =
                                 getEffectiveVitality(minion) <= 0;
+                            const isMinionAimed = matchesAimedCard(
+                                minionKey,
+                                minion.id
+                            );
 
                             return (
                                 <S.MinionWrapper
@@ -210,6 +239,11 @@ export const BoardCharacterStack: React.FC<BoardCharacterStackProps> = ({
                                     $isDesignationTarget={
                                         isMinionDesignationTarget
                                     }
+                                    $isTargeted={isMinionAimed}
+                                    $aimFaction={factionForAim(
+                                        minionKey,
+                                        minion.id
+                                    )}
                                     $suppressHoverScale
                                     onClick={(e) => {
                                         if (isMinionTargetable) {
@@ -278,6 +312,7 @@ export const BoardCharacterStack: React.FC<BoardCharacterStackProps> = ({
                 <S.CardDragTarget
                     $isOpponent={isOpponent}
                     $isTargeted={isTargeted}
+                    $aimFaction={aimFaction}
                     $isTargetable={isTargetable}
                     $isDesignationTarget={isDesignationTarget}
                     $suppressHoverScale={isInCombat}

@@ -18,10 +18,12 @@ interface TargetingContextType {
     targetableCardIds: string[];
     pendingCard?: CardState;
     arrowFromCardId?: string;
+    hoveredTargetId: string | null;
     startTargeting: (request: TargetingRequest) => void;
     stopTargeting: () => void;
     isCardTargetable: (cardId: string) => boolean;
     selectCard: (cardId: string) => void;
+    setHoveredTargetId: (cardId: string | null) => void;
     message?: string;
 }
 
@@ -29,12 +31,15 @@ const TargetingContext = createContext<TargetingContextType | null>(null);
 
 export const TargetingProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
     const [request, setRequest] = useState<TargetingRequest | null>(null);
+    const [hoveredTargetId, setHoveredTargetId] = useState<string | null>(null);
 
     const startTargeting = useCallback((req: TargetingRequest) => {
+        setHoveredTargetId(null);
         setRequest(req);
     }, []);
 
     const stopTargeting = useCallback(() => {
+        setHoveredTargetId(null);
         setRequest(null);
     }, []);
 
@@ -68,6 +73,8 @@ export const TargetingProvider: React.FC<{ children: React.ReactNode }> = ({ chi
                 message: request?.message,
                 pendingCard: request?.pendingCard,
                 arrowFromCardId: request?.arrowFromCardId,
+                hoveredTargetId,
+                setHoveredTargetId,
             }}
         >
             {children}

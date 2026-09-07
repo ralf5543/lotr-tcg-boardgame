@@ -4,6 +4,7 @@ import type { CardState, SiteCardState } from '../game/types';
 import { Card } from '../views/GameBoard/components/Card';
 import { SiteCard } from '../views/GameBoard/components/SiteCard';
 import { TargetingArrow } from '../views/GameBoard/components/TargetingArrow';
+import { useLocalFaction } from './FactionContext';
 import { playableEventHalo, spotMetHalo } from '../views/GameBoard/cardHalo';
 import { isDesignationTargetId } from '../game/engine/abilities/designation';
 import { PENDING_PLAY_ORIGIN_ID } from '../views/GameBoard/components/TargetingArrow/sync';
@@ -427,6 +428,7 @@ const DragTargetingArrow: React.FC = () => {
         dragged?.designationTargetIds,
         activeTargetId
     );
+    const faction = useLocalFaction();
     usePublishTargetingArrow(
         isActive,
         fromCardId,
@@ -446,6 +448,7 @@ const DragTargetingArrow: React.FC = () => {
             from={from}
             to={targetCenter ?? position}
             isValidTarget={isValid}
+            faction={faction}
         />
     );
 };

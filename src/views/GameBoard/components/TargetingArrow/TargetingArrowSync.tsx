@@ -7,6 +7,7 @@ import React, {
     useRef,
     useState,
 } from 'react';
+import { useLocalFaction, type Faction } from '../../../../contexts/FactionContext';
 import {
     getRemoteTargetingArrow,
     isTargetingArrowPayload,
@@ -21,7 +22,11 @@ type ChatLike = {
 
 interface TargetingArrowSyncValue {
     remote: TargetingArrowSyncPayload | null;
-    publish: (fromCardId: string | null, toCardId: string | null) => void;
+    publish: (
+        fromCardId: string | null,
+        toCardId: string | null,
+        faction: Faction
+    ) => void;
 }
 
 const TargetingArrowSyncContext =
@@ -43,7 +48,7 @@ export const TargetingArrowSyncProvider: React.FC<
     const [remote, setRemote] = useState<TargetingArrowSyncPayload | null>(
         null
     );
-    const lastSentRef = useRef(`${null}|${null}`);
+    const lastSentRef = useRef(`${null}|${null}|${null}`);
     const channelRef = useRef<BroadcastChannel | null>(null);
 
     useEffect(() => {
@@ -78,14 +83,19 @@ export const TargetingArrowSyncProvider: React.FC<
     }, [matchID, myId]);
 
     const publish = useCallback(
-        (fromCardId: string | null, toCardId: string | null) => {
-            const key = `${fromCardId}|${toCardId}`;
+        (
+            fromCardId: string | null,
+            toCardId: string | null,
+            faction: Faction
+        ) => {
+            const key = `${fromCardId}|${toCardId}|${faction}`;
             if (lastSentRef.current === key) return;
             lastSentRef.current = key;
             const payload: TargetingArrowSyncPayload = {
                 type: TARGETING_ARROW_TYPE,
                 fromCardId,
                 toCardId,
+                faction,
             };
             sendChatMessage?.(payload);
             channelRef.current?.postMessage({
@@ -119,13 +129,14 @@ export const usePublishTargetingArrow = (
 ) => {
     const sync = useTargetingArrowSync();
     const publish = sync?.publish;
+    const faction = useLocalFaction();
     useEffect(() => {
         if (!publish) return;
         if (!isActive) {
-            publish(null, null);
+            publish(null, null, faction);
             return;
         }
-        publish(fromCardId, toCardId);
-        return () => publish(null, null);
-    }, [publish, isActive, fromCardId, toCardId]);
+        publish(fromCardId, toCardId, faction);
+        return () => publish(null, null, faction);
+    }, [publish, isActive, fromCardId, toCardId, faction]);
 };

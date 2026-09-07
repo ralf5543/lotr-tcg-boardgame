@@ -1,3 +1,5 @@
+import type { Faction } from '../../../../contexts/FactionContext';
+
 export const TARGETING_ARROW_TYPE = 'TARGETING_ARROW' as const;
 
 /** Ancre DOM de la carte d’événement en attente (overlay adverse). */
@@ -7,12 +9,16 @@ export type TargetingArrowSyncPayload = {
     type: typeof TARGETING_ARROW_TYPE;
     fromCardId: string | null;
     toCardId: string | null;
+    faction?: Faction;
 };
 
 type ChatLike = {
     sender: string;
     payload: unknown;
 };
+
+const isFaction = (value: unknown): value is Faction =>
+    value === 'FREE_PEOPLE' || value === 'SHADOW';
 
 export function isTargetingArrowPayload(
     value: unknown
@@ -23,7 +29,8 @@ export function isTargetingArrowPayload(
         payload.type === TARGETING_ARROW_TYPE &&
         (payload.fromCardId === null ||
             typeof payload.fromCardId === 'string') &&
-        (payload.toCardId === null || typeof payload.toCardId === 'string')
+        (payload.toCardId === null || typeof payload.toCardId === 'string') &&
+        (payload.faction === undefined || isFaction(payload.faction))
     );
 }
 

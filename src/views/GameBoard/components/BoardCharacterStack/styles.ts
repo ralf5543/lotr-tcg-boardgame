@@ -1,23 +1,26 @@
-import styled, { css, keyframes } from 'styled-components';
+import styled, { css } from 'styled-components';
+import type { Faction } from '../../../../contexts/FactionContext';
 
-const designationPulse = keyframes`
-    0%,
-    100% {
-        filter: drop-shadow(0 0 8px #e2c044)
-            drop-shadow(0 0 16px rgba(226, 192, 68, 0.55));
-    }
-    50% {
-        filter: drop-shadow(0 0 14px #ffe07a)
-            drop-shadow(0 0 26px rgba(226, 192, 68, 0.9));
-    }
-`;
-
-const designationGlow = css`
-    cursor: pointer !important;
-    outline: 2px solid #e2c044;
-    outline-offset: 3px;
-    border-radius: 8px;
-    animation: ${designationPulse} 1.4s ease-in-out infinite;
+const targetedHover = (faction: Faction = 'FREE_PEOPLE') => css`
+    ${faction === 'SHADOW'
+        ? css`
+              border-color: #e23b3b !important;
+              box-shadow:
+                  0 0 10px #e23b3b,
+                  0 0 25px #c0392b,
+                  0 0 45px rgba(255, 0, 0, 0.7),
+                  0 0 70px rgba(255, 0, 0, 0.35);
+          `
+        : css`
+              border-color: #e2c044 !important;
+              box-shadow:
+                  0 0 10px #e2c044,
+                  0 0 25px #c9a227,
+                  0 0 45px rgba(226, 192, 68, 0.8),
+                  0 0 70px rgba(226, 192, 68, 0.4);
+          `}
+    transform: scale(1.08);
+    z-index: 10;
 `;
 
 export const CharacterStack = styled.div<{ $isBeingDragged?: boolean }>`
@@ -34,6 +37,7 @@ export const CharacterStack = styled.div<{ $isBeingDragged?: boolean }>`
 export const CardDragTarget = styled.div<{
     $isOpponent?: boolean;
     $isTargeted?: boolean;
+    $aimFaction?: Faction;
     $isTargetable?: boolean;
     $isDesignationTarget?: boolean;
     $suppressHoverScale?: boolean;
@@ -43,17 +47,16 @@ export const CardDragTarget = styled.div<{
     z-index: 2;
     transition: transform 0.2s ease-in-out, filter 0.2s ease-in-out;
 
-    ${({ $isTargetable, $isDesignationTarget }) =>
+    ${({ $isTargetable }) =>
         $isTargetable &&
-        $isDesignationTarget &&
-        designationGlow}
+        css`
+            cursor: pointer !important;
+        `}
 
     ${({ $isTargetable, $isDesignationTarget, $suppressHoverScale }) =>
         $isTargetable &&
         !$isDesignationTarget &&
         css`
-            cursor: pointer !important;
-
             &:hover {
                 ${!$suppressHoverScale &&
                 css`
@@ -64,18 +67,8 @@ export const CardDragTarget = styled.div<{
             }
         `}
 
-    ${({ $isTargeted }) =>
-    $isTargeted &&
-    css`
-        border-color: #ffd700 !important;
-        box-shadow:
-            0 0 10px #ffd700,
-            0 0 25px #ffb700,
-            0 0 45px rgba(255, 183, 0, 0.8),
-            0 0 70px rgba(255, 215, 0, 0.4);
-        transform: scale(1.08);
-        z-index: 10;
-    `}
+    ${({ $isTargeted, $aimFaction }) =>
+        $isTargeted && targetedHover($aimFaction)}
 `;
 
 /* =========================================================
@@ -170,23 +163,24 @@ export const AssignedMinionsContainer = styled.div<{ $isOpponent?: boolean }>`
 export const MinionWrapper = styled.div<{
     $isTargetable?: boolean;
     $isDesignationTarget?: boolean;
+    $isTargeted?: boolean;
+    $aimFaction?: Faction;
     $suppressHoverScale?: boolean;
 }>`
     position: relative;
     flex: 0 0 auto;
     transition: transform 0.2s ease-in-out, filter 0.2s ease-in-out;
 
-    ${({ $isTargetable, $isDesignationTarget }) =>
+    ${({ $isTargetable }) =>
         $isTargetable &&
-        $isDesignationTarget &&
-        designationGlow}
+        css`
+            cursor: pointer !important;
+        `}
 
     ${({ $isTargetable, $isDesignationTarget, $suppressHoverScale }) =>
         $isTargetable &&
         !$isDesignationTarget &&
         css`
-            cursor: pointer !important;
-
             &:hover {
                 ${!$suppressHoverScale &&
                 css`
@@ -197,6 +191,9 @@ export const MinionWrapper = styled.div<{
                 border-radius: 8px;
             }
         `}
+
+    ${({ $isTargeted, $aimFaction }) =>
+        $isTargeted && targetedHover($aimFaction)}
 `;
 
 /* =========================================================
