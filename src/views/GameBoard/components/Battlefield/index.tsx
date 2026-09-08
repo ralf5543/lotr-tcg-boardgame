@@ -8,7 +8,7 @@ import * as S from './styles';
 import { useDrag } from '../../../../contexts/DragContext';
 import { BoardCharacterStack } from '../BoardCharacterStack';
 import { getEffectiveVitality } from '../../../../utils/cardStats';
-import { getKeywordValue } from '../../../../game/engine/keywords/keywordUtils';
+import { isMinionDisabledForFierceAssignment } from '../../../../game/logic/assignment';
 
 // Helper pour déterminer si une carte est une carte standard (CardState)
 const isStandardCard = (card: CardState | SiteCardState): card is CardState => {
@@ -90,11 +90,9 @@ export const Battlefield: React.FC<BattlefieldProps> = ({
                         getEffectiveVitality(minion) <= 0
                     );
 
-                    // CALCUL DE ISDISABLED :
-                    // On vérifie si le jeu est en phase d'affectation féroce ET si la carte n'est pas FIERCE
-                    const isFierce = getKeywordValue(minion, 'FIERCE') >= 0; // ou minion.keywords?.includes('FIERCE')
-                    const isDisabled = Boolean(
-                        G?.isFierceAssignment && !isFierce
+                    const isDisabled = isMinionDisabledForFierceAssignment(
+                        G,
+                        minion
                     );
 
                     return (

@@ -53,6 +53,7 @@ describe('affectation acharnée (FIERCE)', () => {
         engine.moves.clearSkirmishAnimation();
 
         expect(['startOfRegroup', 'regroup']).toContain(engine.getCtx().phase);
+        expect(engine.getG().isFierceAssignment).toBe(false);
     });
 
     it('en passe acharnée, refuse d’assigner un séide non-FIERCE', () => {
@@ -86,5 +87,51 @@ describe('affectation acharnée (FIERCE)', () => {
         expect(engine.getG().skirmishes[0]?.minionIds).toEqual([
             'minion-fierce',
         ]);
+    });
+
+    it('lève isFierceAssignment à la fin du combat acharné', () => {
+        const companion = createCompanion({
+            id: 'comp-1',
+            strength: 4,
+            vitality: 4,
+        });
+        const fierceMinion = createMinion({
+            id: 'minion-fierce',
+            strength: 3,
+            vitality: 3,
+            keywords: ['FIERCE'],
+        });
+        const normalMinion = createMinion({
+            id: 'minion-normal',
+            strength: 1,
+            vitality: 3,
+        });
+
+        const engine = createEngineClient({
+            startPhase: 'assignment',
+            playerID: '0',
+            G: {
+                pendingFierceAssignment: true,
+                battlefield: [fierceMinion, normalMinion],
+                players: {
+                    '0': createPlayerState('0', {
+                        fellowshipArea: [companion],
+                    }),
+                },
+            },
+        });
+
+        expect(engine.getG().isFierceAssignment).toBe(true);
+
+        engine.moves.assignMinion('minion-fierce', 'comp-1');
+        expect(engine.getCtx().phase).toBe('skirmish');
+        expect(engine.getG().isFierceAssignment).toBe(true);
+
+        engine.moves.selectSkirmish('skirmish_comp-1');
+        engine.moves.resolveActiveSkirmish();
+        engine.moves.clearSkirmishAnimation();
+
+        expect(['startOfRegroup', 'regroup']).toContain(engine.getCtx().phase);
+        expect(engine.getG().isFierceAssignment).toBe(false);
     });
 });

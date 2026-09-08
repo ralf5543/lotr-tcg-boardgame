@@ -1097,6 +1097,9 @@ export const LotrGame: Game<GameState> = {
                 const fpId = G.fpPlayerId || '0';
                 const shadowId = fpId === '0' ? '1' : '0';
 
+                // Fin du dernier combat : on lève le grisage FIERCE du Battlefield
+                G.isFierceAssignment = false;
+
                 clearExpiredTempKeywords(G, 'REGROUP');
 
                 // 1. Gestion existante du Muster

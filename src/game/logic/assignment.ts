@@ -2,6 +2,18 @@ import type { Ctx } from 'boardgame.io';
 import type { GameState, CardState } from '../types';
 import { getKeywordValue } from '../engine/keywords/keywordUtils';
 
+export const isFierceMinion = (card: CardState): boolean =>
+    getKeywordValue(card, 'FIERCE') >= 0;
+
+/**
+ * Grisage visuel du Battlefield : séide non-Acharné pendant la passe FIERCE.
+ * `isFierceAssignment` est remis à false à la fin du dernier combat (début de regroupement).
+ */
+export const isMinionDisabledForFierceAssignment = (
+    G: GameState,
+    minion: CardState
+): boolean => Boolean(G.isFierceAssignment) && !isFierceMinion(minion);
+
 export const getUnassignedMinions = (G: GameState): CardState[] => {
     // 1. Liste des séides déjà engagés dans la PASSE ACTUELLE
     const assignedMinionIds = (G.skirmishes || []).flatMap((s) => s.minionIds);
@@ -20,10 +32,7 @@ export const getUnassignedMinions = (G: GameState): CardState[] => {
 
         // B. Si on est en passe Acharnée (Fierce) -> SEULS les FIERCE sont éligibles
         if (G.isFierceAssignment) {
-            const fierceVal = getKeywordValue(c, 'FIERCE');
-            // getKeywordValue renvoie >= 0 s'il possède le mot-clé FIERCE (ex: 0 ou 1)
-            const isFierce = fierceVal !== undefined && fierceVal >= 0;
-            return isFierce;
+            return isFierceMinion(c);
         }
 
         // C. Passe normale -> Tous les séides sont éligibles
