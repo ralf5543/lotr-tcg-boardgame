@@ -420,6 +420,7 @@ export const cleanupPendingDeaths = ({ G }: LotrMoveContext) => {
     }
     G.pendingDeadCardIds = [];
     G.lastWoundedCardIds = [];
+    G.lastExertedCardIds = [];
 };
 
 export const commonMoves = {

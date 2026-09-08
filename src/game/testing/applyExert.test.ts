@@ -26,6 +26,8 @@ describe('applyExert', () => {
         expect(card.wounds).toBe(1);
         expect(card.isDead).not.toBe(true);
         expect(G.pendingDeadCardIds || []).not.toContain('comp-1');
+        expect(G.lastExertedCardIds).toContain(card.instanceId);
+        expect(G.lastWoundedCardIds).toContain(card.instanceId);
     });
 
     it('refuse d’exert un personnage à 1 de vitalité restante', () => {
@@ -46,6 +48,7 @@ describe('applyExert', () => {
         expect(applyExert(G, card)).toBe(false);
         expect(card.wounds || 0).toBe(0);
         expect(card.isDead).not.toBe(true);
+        expect(G.lastExertedCardIds || []).toHaveLength(0);
     });
 
     it('refuse d’exert un personnage déjà à 1 PV (vitalité 2, 1 blessure)', () => {

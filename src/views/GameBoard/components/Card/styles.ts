@@ -9,11 +9,14 @@ export interface CardContainerProps {
     $isPlayable?: boolean;
     $isWounded?: boolean;
     $isTakingDamage?: boolean;
+    $isExerting?: boolean;
+    $exertGen?: number;
     $isOverwhelmed?: boolean;
     $isDead?: boolean;
     $isDisabled?: boolean;
     $isActionable?: boolean;
     $isOpponent?: boolean; // Position globale de la carte (HAUT = true, BAS = false)
+    $recoilDown?: boolean;
     $kind: string;
     $size?: 'sm' | 'md' | 'lg';
     $isRoaming?: boolean;
@@ -56,6 +59,23 @@ const woundImpactAnimation = (recoilY: number) => keyframes`
   }
   45% {
     transform: translate(calc(var(--strike-x, 0%) * 0.35), ${recoilY * 0.35}px) rotate(calc(var(--strike-rot, 4deg) * -0.25)) scale(0.97);
+  }
+  100% {
+    transform: translate(0, 0) rotate(0deg) scale(1);
+    filter: drop-shadow(0 3px 4px rgba(0, 0, 0, 1)) brightness(1);
+  }
+`;
+
+// Affaiblissement : un léger affaissement, pas un recul de coup
+const exertFatigueAnimation = (sagY: number, gen = 0) => keyframes`
+  /* ${gen} */
+  0% {
+    transform: translate(0, 0) rotate(0deg) scale(1);
+    filter: drop-shadow(0 3px 4px rgba(0, 0, 0, 1)) brightness(1);
+  }
+  32% {
+    transform: translate(0, ${sagY}px) rotate(${sagY > 0 ? 1 : -1}deg) scale(0.985, 0.96);
+    filter: drop-shadow(0 3px 4px rgba(0, 0, 0, 1)) brightness(0.86) saturate(0.8);
   }
   100% {
     transform: translate(0, 0) rotate(0deg) scale(1);
@@ -349,21 +369,28 @@ export const CardContainer = styled.div<CardContainerProps>`
             css`
                 will-change: transform, filter;
                 animation: ${() => {
-                        // Si en HAUT ($isOpponent = true) -> Recule vers le haut (-35px)
-                        // Si en BAS ($isOpponent = false) -> Recule vers le bas (+35px)
-                        const recoilY = props.$isOpponent ? -35 : 35;
+                        const recoilY = props.$recoilDown ? 35 : -35;
                         return woundImpactAnimation(recoilY);
                     }}
                     0.65s cubic-bezier(0.12, 0.85, 0.2, 1);
+            `}
+            /* ======------ Affaiblissement (exert) ------====== */
+            ${props.$isExerting &&
+            !props.$isTakingDamage &&
+            css`
+                will-change: transform, filter;
+                animation: ${() => {
+                        const sagY = props.$recoilDown ? 8 : -8;
+                        return exertFatigueAnimation(sagY, props.$exertGen);
+                    }}
+                    0.5s cubic-bezier(0.22, 0.7, 0.3, 1);
             `}
             /* ======------ OVERWHELMED ------====== */
             ${props.$isOverwhelmed &&
             css`
                 will-change: transform, filter;
                 animation: ${() => {
-                        // Si en HAUT ($isOpponent = true) -> Recule vers le haut (-35px)
-                        // Si en BAS ($isOpponent = false) -> Recule vers le bas (+35px)
-                        const recoilY = props.$isOpponent ? -35 : 35;
+                        const recoilY = props.$recoilDown ? 35 : -35;
                         return woundImpactAnimation(recoilY);
                     }}
                     0.65s cubic-bezier(0.12, 0.85, 0.2, 1);

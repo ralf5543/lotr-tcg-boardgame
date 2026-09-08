@@ -7,6 +7,8 @@ import type { CardSignet } from '../../../../game/types';
 import { FormattedText } from '../../../../utils/FormattedText';
 import { KeywordBadge } from '../KeywordBadge';
 import { useDrag } from '../../../../contexts/DragContext';
+import { useLocalFaction } from '../../../../contexts/FactionContext';
+import { isWoundRecoilDown } from './woundRecoil';
 import {
     getEffectiveVitality,
     getEffectiveStrength,
@@ -140,27 +142,49 @@ export const Card: React.FC<CardProps> = ({
 }) => {
     const { setHoveredCard } = useHoverCard();
     const { startDrag } = useDrag();
+    const localFaction = useLocalFaction();
+    const recoilDown = isWoundRecoilDown(card?.kind, localFaction, isOpponent);
 
     const [isTakingDamage, setIsTakingDamage] = useState(false);
+    const [isExerting, setIsExerting] = useState(false);
+    const [exertGen, setExertGen] = useState(0);
     const [isAbilityMenuOpen, setIsAbilityMenuOpen] = useState(false);
     const prevWoundsRef = useRef(card?.wounds || 0);
+    const lastExertedIdsRef = useRef(G?.lastExertedCardIds);
+    lastExertedIdsRef.current = G?.lastExertedCardIds;
 
     useEffect(() => {
         if (!card) return;
         const currentWounds = card.wounds || 0;
 
         if (currentWounds > prevWoundsRef.current) {
+            const cardId = card.instanceId || card.id;
+            const exertedIds = lastExertedIdsRef.current;
+            const fromExert = Boolean(
+                exertedIds?.includes(cardId) || exertedIds?.includes(card.id)
+            );
+
+            if (fromExert) {
+                setExertGen((n) => n + 1);
+                setIsExerting(true);
+                const timer = setTimeout(() => {
+                    setIsExerting(false);
+                }, 500);
+                prevWoundsRef.current = currentWounds;
+                return () => clearTimeout(timer);
+            }
+
             setIsTakingDamage(true);
             const timer = setTimeout(() => {
                 setIsTakingDamage(false);
-            }, 650); // 0.65s correspondant à la durée de l'animation CSS
+            }, 650);
 
             prevWoundsRef.current = currentWounds;
             return () => clearTimeout(timer);
         }
 
         prevWoundsRef.current = currentWounds;
-    }, [card?.wounds]);
+    }, [card?.wounds, card?.instanceId, card?.id]);
 
     if (!card) return null;
 
@@ -337,9 +361,12 @@ export const Card: React.FC<CardProps> = ({
             $isRoaming={isRoaming}
             $isWounded={isWounded || hasWounds}
             $isTakingDamage={isTakingDamage}
+            $isExerting={isExerting}
+            $exertGen={exertGen}
             $isOverwhelmed={isOverwhelmed || card.isOverwhelmed}
             $isDead={isDead || card.isDead}
             $isOpponent={isOpponent}
+            $recoilDown={recoilDown}
             $isDisabled={isDisabled}
             onMouseEnter={handleMouseEnter}
             onMouseLeave={handleMouseLeave}

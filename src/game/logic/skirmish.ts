@@ -124,6 +124,7 @@ export const resolveSkirmish = (G: GameState, _ctx?: Ctx) => {
     );
 
     G.lastWoundedCardIds = [];
+    G.lastExertedCardIds = [];
     G.pendingDeadCardIds = [];
     skirmish.resolved = true;
 

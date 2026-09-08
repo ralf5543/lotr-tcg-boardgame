@@ -14,6 +14,18 @@ export const SOUND_LIBRARY = {
     COMPANION: [
         '/audio/sfx/cards/companion.opus',
     ],
+    EXERT_GOLLUM: [
+        '/audio/sfx/cards/exert_gollum.opus',
+        '/audio/sfx/cards/exert_gollum2.opus',
+    ],
+    EXERT_HUMAN_MALE: [
+        '/audio/sfx/cards/exert_human_male.opus',
+        '/audio/sfx/cards/exert_human_male2.opus',
+    ],
+    EXERT_HUMAN_FEMALE: [
+        '/audio/sfx/cards/exert_human_female.opus',
+        '/audio/sfx/cards/exert_human_female2.opus',
+    ],
     MINION: [
         '/audio/sfx/cards/minion.opus',
     ],

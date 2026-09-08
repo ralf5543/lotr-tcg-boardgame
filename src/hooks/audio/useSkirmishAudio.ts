@@ -2,7 +2,18 @@ import { useEffect, useRef } from 'react';
 import type { GameState } from '../../game/types';
 import { audioService } from '../../services/audioService';
 
-export function useSkirmishAudio(G: GameState) {
+/** Blessure infligée (pas un affaiblissement) pas encore traitée pour le bruit d’impact. */
+export function hasNewInflictedWound(
+    lastWoundedIds: string[],
+    lastExertedIds: string[],
+    alreadyHeard: Set<string>
+): boolean {
+    return lastWoundedIds.some(
+        (id) => !alreadyHeard.has(id) && !lastExertedIds.includes(id)
+    );
+}
+
+export function useSkirmishAudio(G: GameState, phase?: string) {
     const lastClashIdRef = useRef<string | null>(null);
     const smashedIdsRef = useRef<Set<string>>(new Set());
 
@@ -19,21 +30,29 @@ export function useSkirmishAudio(G: GameState) {
     }, [G.activeSkirmishId]);
 
     useEffect(() => {
-        const skirmishes = G.skirmishes || [];
-        const currentIds = new Set(skirmishes.map((s) => s.id));
-
-        for (const id of smashedIdsRef.current) {
-            if (!currentIds.has(id)) {
-                smashedIdsRef.current.delete(id);
-            }
+        if (phase !== 'skirmish') {
+            smashedIdsRef.current.clear();
+            return;
         }
 
-        skirmishes.forEach((skirmish) => {
-            if (!skirmish.resolved || smashedIdsRef.current.has(skirmish.id)) {
-                return;
-            }
-            smashedIdsRef.current.add(skirmish.id);
+        const lastWoundedIds = G.lastWoundedCardIds || [];
+        const lastExertedIds = G.lastExertedCardIds || [];
+
+        if (lastWoundedIds.length === 0) {
+            smashedIdsRef.current.clear();
+            return;
+        }
+
+        if (
+            hasNewInflictedWound(
+                lastWoundedIds,
+                lastExertedIds,
+                smashedIdsRef.current
+            )
+        ) {
             audioService.play('SMASH', { enablePitch: true });
-        });
-    }, [G.skirmishes]);
+        }
+
+        lastWoundedIds.forEach((id) => smashedIdsRef.current.add(id));
+    }, [phase, G.lastWoundedCardIds, G.lastExertedCardIds]);
 }

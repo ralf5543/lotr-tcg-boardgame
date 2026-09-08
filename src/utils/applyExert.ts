@@ -13,5 +13,12 @@ export const applyExert = (G: GameState, card: CardState): boolean => {
     if (currentVitality <= 1) return false;
 
     applyWoundAndCheckDeath(G, card, 1);
+
+    const cardId = card.instanceId || card.id;
+    if (!G.lastExertedCardIds) G.lastExertedCardIds = [];
+    if (cardId && !G.lastExertedCardIds.includes(cardId)) {
+        G.lastExertedCardIds.push(cardId);
+    }
+
     return true;
 };

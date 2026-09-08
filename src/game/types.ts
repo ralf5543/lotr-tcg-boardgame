@@ -341,6 +341,7 @@ export interface GameState {
     assignmentStep?: 'FP_ASSIGN' | 'SHADOW_ASSIGN' | 'COMPLETED';
     archeryAssignStep?: 'FP' | 'SHADOW' | undefined;
     lastWoundedCardIds?: string[];
+    lastExertedCardIds?: string[];
     pendingPhaseEnd?: boolean;
     nextPhase?: string;
     pendingDeadCardIds?: string[];

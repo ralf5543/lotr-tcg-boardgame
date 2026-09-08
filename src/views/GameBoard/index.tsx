@@ -36,6 +36,7 @@ import { findEventAbilityForPhase } from '../../game/engine/abilities/playEventA
 import { useCardPlayAudio } from '../../hooks/audio/useCardPlayAudio';
 import { useArcheryAudio } from '../../hooks/audio/useArcheryAudio';
 import { useWoundAudio } from '../../hooks/audio/useWoundAudio';
+import { useExertAudio } from '../../hooks/audio/useExertAudio';
 import { useAssignmentAudio } from '../../hooks/audio/useAssignmentAudio';
 import { useSkirmishAudio } from '../../hooks/audio/useSkirmishAudio';
 import {
@@ -199,8 +200,9 @@ export const GameBoard: React.FC<GameBoardProps> = ({
     useCardPlayAudio(G);
     useArcheryAudio(G);
     useWoundAudio(G);
+    useExertAudio(G);
     useAssignmentAudio(G);
-    useSkirmishAudio(G);
+    useSkirmishAudio(G, ctx.phase);
     const myId = playerID || ctx.currentPlayer;
     const oppId = myId === '0' ? '1' : '0';
     const { startTargeting, stopTargeting, targetingKind } = useTargeting();
@@ -317,17 +319,19 @@ export const GameBoard: React.FC<GameBoardProps> = ({
     useEffect(() => {
         const hasWounded =
             G.lastWoundedCardIds && G.lastWoundedCardIds.length > 0;
+        const hasExerted =
+            G.lastExertedCardIds && G.lastExertedCardIds.length > 0;
         const hasPendingDead =
             G.pendingDeadCardIds && G.pendingDeadCardIds.length > 0;
 
-        if (hasWounded || hasPendingDead) {
+        if (hasWounded || hasExerted || hasPendingDead) {
             const timer = setTimeout(() => {
                 moves.cleanupPendingDeaths?.();
             }, 2000);
 
             return () => clearTimeout(timer);
         }
-    }, [G.lastWoundedCardIds, G.pendingDeadCardIds, moves]);
+    }, [G.lastWoundedCardIds, G.lastExertedCardIds, G.pendingDeadCardIds, moves]);
 
     // 🟢 3. ROUTER DE DRAG & DROP GLOBAL
     useEffect(() => {

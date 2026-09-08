@@ -1073,6 +1073,7 @@ export const LotrGame: Game<GameState> = {
                     }
 
                     G.lastWoundedCardIds = [];
+                    G.lastExertedCardIds = [];
                     G.pendingDeadCardIds = [];
 
                     if (G.tempModifiers) {
