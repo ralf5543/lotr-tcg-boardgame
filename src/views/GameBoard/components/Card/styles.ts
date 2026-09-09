@@ -997,6 +997,21 @@ export const AbilityButton = styled.button<{ $abilityPhaseMatch?: boolean, $cult
         aspect-ratio: 1 / 1;
         pointer-events: none;
     }
+
+    &:active {
+        box-shadow: inset 0 0 10px black, rgb(226, 192, 68) 0px 0px 8px 3px;
+    }
+`;
+
+export const fadeIn = keyframes`
+    from {
+        opacity: 0;
+        transform: translate(-50%, -95%);
+    }
+    to {
+        opacity: 1;
+        transform: translate(-50%, -100%);
+    }
 `;
 
 export const AbilityBubble = styled.div<{ $top: number; $left: number }>`
@@ -1005,32 +1020,48 @@ export const AbilityBubble = styled.div<{ $top: number; $left: number }>`
     top: ${(props) => props.$top}px;
     left: ${(props) => props.$left}px;
     transform: translate(-50%, -100%);
-    min-width: 140px;
-    padding: 6px;
-    background: #111;
-    color: #eee;
+    width: 120px;
+    padding: 6px 12px 6px 6px;
     border: 1px solid #333;
     font-size: 11px;
     line-height: 1.3;
+    background-color: rgba(18, 18, 20, 0.95);
+    border: 1px solid #e2c044;
+    border-radius: 6px;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.8);
+    animation: ${fadeIn} 0.15s ease-out forwards;
+
+    &::after {
+        content: '';
+        position: absolute;
+        top: 100%;
+        left: 50%;
+        margin-left: -5px;
+        border-width: 5px;
+        border-style: solid;
+        border-color: #e2c044 transparent transparent transparent;
+    }
 `;
 
 export const AbilityBubbleClose = styled.button`
     position: absolute;
-    top: 2px;
-    right: 2px;
+    top: 0px;
+    right: 0px;
     width: 16px;
     height: 16px;
     padding: 0;
     border: 0;
     background: transparent;
-    color: #eee;
+    color: #c7c7c7;
     cursor: pointer;
     font-size: 12px;
     line-height: 1;
 `;
 
 export const AbilityBubbleList = styled.ul`
-    margin: 14px 0 0;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
     padding: 0;
     list-style: none;
 `;
@@ -1038,7 +1069,6 @@ export const AbilityBubbleList = styled.ul`
 export const AbilityBubbleItem = styled.button`
     display: block;
     width: 100%;
-    margin: 0 0 4px;
     padding: 4px 6px;
     border: 0;
     background: transparent;
