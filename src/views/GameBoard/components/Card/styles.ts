@@ -978,8 +978,7 @@ export const AbilityButton = styled.button<{ $abilityPhaseMatch?: boolean, $cult
     ${(props) =>
         props.$abilityPhaseMatch &&
         css`
-            outline: rgba(226, 192, 68, 0.45) solid 1px;
-            box-shadow: rgb(0, 0, 0) 0px 2px 2px, rgba(226, 192, 68, 1) 0px 0px 8px 3px;
+            box-shadow: rgb(0, 0, 0) 0px 2px 2px, rgb(226, 192, 68) 0px 0px 10px 7px;
         `}
 
     img {
@@ -1072,13 +1071,17 @@ export const AbilityBubbleItem = styled.button`
     padding: 4px 6px;
     border: 0;
     background: transparent;
-    color: inherit;
+    color: white;
     text-align: left;
     cursor: pointer;
     font: inherit;
+    opacity: 0.8;
 
     &:hover {
-        text-decoration: underline;
+        opacity: 1;
+    }
+    span {
+        color: #e2c044;
     }
 `;
 

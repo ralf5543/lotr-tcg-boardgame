@@ -1,4 +1,6 @@
-import type { Ability, CardState } from '../../types';
+import { createElement, Fragment, type ReactNode } from 'react';
+import type { Ability, CardKeyword, CardState } from '../../types';
+import { TRANSLATIONS } from '../../translations';
 
 export function abilityMatchesPhase(ability: Ability, rawPhase: string): boolean {
     const currentPhase = (rawPhase || '').toUpperCase();
@@ -47,9 +49,36 @@ export function cardOrAttachmentsHaveActionPhases(card: CardState): boolean {
     );
 }
 
+function translateCriterionToken(token: string): string {
+    const upper = token.toUpperCase();
+    const typeLabel = TRANSLATIONS.type[upper as keyof typeof TRANSLATIONS.type];
+    if (typeLabel) return typeLabel.toLowerCase();
+
+    const raceLabel = TRANSLATIONS.race[upper as keyof typeof TRANSLATIONS.race];
+    if (raceLabel) return raceLabel.toLowerCase();
+
+    const cultureLabel =
+        TRANSLATIONS.culture[upper as keyof typeof TRANSLATIONS.culture];
+    if (cultureLabel) return cultureLabel.toLowerCase();
+
+    const keywordLabel =
+        TRANSLATIONS.keyword[token as CardKeyword]?.label ||
+        TRANSLATIONS.keyword[upper as CardKeyword]?.label;
+    if (keywordLabel) return keywordLabel.toLowerCase();
+
+    return token.toLowerCase();
+}
+
+function translateKeyword(keyword: CardKeyword | string): string {
+    return (
+        TRANSLATIONS.keyword[keyword as CardKeyword]?.label ||
+        String(keyword)
+    );
+}
+
 function formatEffectBit(effect: Ability['effects'][number]): string {
     if (effect.type === 'WOUND') {
-        return 'blesser un séide';
+        return `blesser un ${TRANSLATIONS.type.MINION.toLowerCase()}`;
     }
     if (effect.type === 'ADD_TEMP_STAT') {
         const statLabels: Record<string, string> = {
@@ -62,21 +91,27 @@ function formatEffectBit(effect: Ability['effects'][number]): string {
         const stat = statLabels[effect.stat] || effect.stat.toLowerCase();
         return `${stat} ${sign}${effect.value}`;
     }
-    return effect.keyword ? effect.keyword.toLowerCase() : '';
+    if (effect.type === 'ADD_TEMP_KEYWORD') {
+        return translateKeyword(effect.keyword);
+    }
+    return '';
 }
 
 export function formatAbilityLabel(
     ability: Ability,
     source: CardState
-): string {
+): ReactNode {
     const exert = ability.cost[0]?.exert?.[0];
     const count = exert?.count || 1;
     const who = (() => {
         if (exert?.target === 'BEARER') return 'le détenteur';
         if (Array.isArray(exert?.target)) {
-            const label = exert.target.flat().join(' ');
+            const label = exert.target
+                .flat()
+                .map(translateCriterionToken)
+                .join(' ');
             if (exert.mode === 'DESIGNATION') {
-                return `un ${label.toLowerCase()}`;
+                return `un ${label}`;
             }
             return label;
         }
@@ -87,5 +122,11 @@ export function formatAbilityLabel(
         .map(formatEffectBit)
         .filter(Boolean)
         .join(' et ');
-    return `Affaiblir ${who}${times} : ${bits}`;
+
+    return createElement(
+        Fragment,
+        null,
+        createElement('span', null, `Affaiblir ${who}${times} :`),
+        bits ? ` ${bits}` : null
+    );
 }
