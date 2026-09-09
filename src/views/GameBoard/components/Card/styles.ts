@@ -984,15 +984,27 @@ export const AbilityButton = styled.button<{ $abilityPhaseMatch?: boolean, $cult
 
     img {
         filter: drop-shadow(1px 2px 1px rgba(0, 0, 0, 0.5));
+        width: 16px;
+    }
+        &::before {
+        content: "";
+        position: absolute;
+        background-image: url(interface/tokens/token_player_top.webp);
+        background-size: contain;
+        background-repeat: no-repeat;
+        z-index: 2;
+        width: 22px;
+        aspect-ratio: 1 / 1;
+        pointer-events: none;
     }
 `;
 
-export const AbilityBubble = styled.div`
-    position: absolute;
-    z-index: 12;
-    bottom: calc(100% + 4px);
-    left: 50%;
-    transform: translateX(-50%);
+export const AbilityBubble = styled.div<{ $top: number; $left: number }>`
+    position: fixed;
+    z-index: 10;
+    top: ${(props) => props.$top}px;
+    left: ${(props) => props.$left}px;
+    transform: translate(-50%, -100%);
     min-width: 140px;
     padding: 6px;
     background: #111;

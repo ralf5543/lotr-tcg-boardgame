@@ -464,6 +464,7 @@ export const applyDevPreset = (
                 { ...CARDS_PRESETS.ORC_SOLDIER },
                 { ...CARDS_PRESETS.NAZGUL },
             ];
+            fpPlayer.hand = [clonePresetCard('1R90')];
 
             // Initialisation propre de l'état d'archerie
             G.archeryWoundsToAssign = 0;

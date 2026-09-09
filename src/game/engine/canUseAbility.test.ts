@@ -143,4 +143,66 @@ describe('canUseAbility', () => {
             }).valid
         ).toBe(false);
     });
+
+    it('refuse les capacités d’archerie pendant l’attribution des flèches', () => {
+        const card = createCompanion({
+            id: 'legolas',
+            actionPhases: ['ARCHERY'],
+        });
+        const duringActions = createGameState({
+            archeryState: {
+                step: 'ACTIONS',
+                fpTotal: 1,
+                shadowTotal: 1,
+                fpRemainingWounds: 1,
+                shadowRemainingWounds: 1,
+            },
+            actionWindow: {
+                isOpen: true,
+                activePlayerId: '0',
+                canPass: true,
+                passesCount: 0,
+            },
+        });
+        const duringFpAssign = createGameState({
+            archeryState: {
+                step: 'FP_ASSIGN',
+                fpTotal: 1,
+                shadowTotal: 1,
+                fpRemainingWounds: 1,
+                shadowRemainingWounds: 1,
+            },
+        });
+        const duringShadowAssign = createGameState({
+            archeryState: {
+                step: 'SHADOW_ASSIGN',
+                fpTotal: 1,
+                shadowTotal: 1,
+                fpRemainingWounds: 0,
+                shadowRemainingWounds: 1,
+            },
+        });
+
+        expect(
+            canUseAbility(card, {
+                G: duringActions,
+                ctx: { phase: 'archery' },
+                playerID: '0',
+            }).valid
+        ).toBe(true);
+        expect(
+            canUseAbility(card, {
+                G: duringFpAssign,
+                ctx: { phase: 'archery' },
+                playerID: '0',
+            }).valid
+        ).toBe(false);
+        expect(
+            canUseAbility(card, {
+                G: duringShadowAssign,
+                ctx: { phase: 'archery' },
+                playerID: '0',
+            }).valid
+        ).toBe(false);
+    });
 });

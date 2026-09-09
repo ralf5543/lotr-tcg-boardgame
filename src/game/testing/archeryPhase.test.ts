@@ -23,6 +23,7 @@ describe('phase d’archerie', () => {
         passBothActionWindows(engine);
 
         expect(engine.getCtx().phase).toBe('assignment');
+        expect(engine.getG().archeryState).toBeUndefined();
     });
 
     it('tue le dernier séide par archerie FP → regroupement', () => {
@@ -92,6 +93,7 @@ describe('phase d’archerie', () => {
         engine.moves.assignArcheryWound('comp-1');
 
         expect(engine.getCtx().phase).toBe('assignment');
+        expect(engine.getG().archeryState).toBeUndefined();
         expect(engine.getG().players['0']?.fellowshipArea[0]?.wounds).toBe(1);
         expect(engine.getG().battlefield).toHaveLength(1);
     });

@@ -31,7 +31,7 @@ export const TooltipPortalContainer = styled.div<{ $top: number; $left: number }
     position: fixed;
     top: ${(props) => props.$top}px;
     left: ${(props) => props.$left}px;
-    z-index: 999999; /* Au-dessus de toutes les cartes et éléments du jeu */
+    z-index: 9; /* Au-dessus de toutes les cartes et éléments du jeu */
     
     display: flex;
     flex-direction: column;

@@ -889,6 +889,9 @@ export const LotrGame: Game<GameState> = {
                 G.pendingDeadCardIds = [];
 
                 // Nettoyage des flags de transition
+                G.archeryState = undefined;
+                G.archeryAssignStep = undefined;
+                G.archeryWoundsToAssign = undefined;
                 G.pendingPhaseEnd = undefined;
                 G.nextPhase = undefined;
             },

@@ -59,6 +59,18 @@ export function canUseAbility(
         }
     }
 
+    // Pendant l'attribution des blessures d'archerie (FP puis Ombre), plus aucune action.
+    if (
+        (currentPhase === 'ARCHERY' || normalizedPhase === 'ARCHERY') &&
+        G.archeryState?.step &&
+        G.archeryState.step !== 'ACTIONS'
+    ) {
+        return {
+            valid: false,
+            reason: "Les capacités d'archerie ne sont plus jouables pendant l'attribution des flèches.",
+        };
+    }
+
     // 3. Traitement des capacités avec phases explicites (actionPhases)
     if (Array.isArray(card.actionPhases) && card.actionPhases.length > 0) {
         const allowedActionPhases = card.actionPhases.map((p) =>
