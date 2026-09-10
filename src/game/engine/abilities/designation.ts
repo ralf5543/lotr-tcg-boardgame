@@ -51,11 +51,28 @@ export function getDesignationCandidates(
         );
     }
 
-    const effect = (ability.effects || []).find((item) =>
-        Array.isArray(item.target)
+    const effect = (ability.effects || []).find(
+        (item) =>
+            'target' in item &&
+            (Array.isArray(item.target) || item.target === 'SKIRMISHING')
     );
-    if (!effect || !Array.isArray(effect.target)) return [];
+    if (!effect || !('target' in effect)) return [];
     return uniqueCards(resolveCostTarget(G, source, effect.target));
+}
+
+export function abilityHasLegalEffectTarget(
+    G: GameState,
+    source: CardState,
+    ability: Ability
+): boolean {
+    for (const effect of ability.effects || []) {
+        if (!('target' in effect)) continue;
+        if (effect.target === 'SELF' || effect.target === 'BEARER') continue;
+        if (resolveCostTarget(G, source, effect.target).length === 0) {
+            return false;
+        }
+    }
+    return true;
 }
 
 export function abilityNeedsDesignation(
@@ -69,6 +86,9 @@ export function abilityNeedsDesignation(
 export function formatDesignationPrompt(ability: Ability): string {
     const costTarget = ability.cost[0]?.exert?.[0]?.target;
     const effectTarget = ability.effects[0]?.target;
+    if (effectTarget === 'SKIRMISHING') {
+        return 'Choisissez un personnage au combat.';
+    }
     const target = Array.isArray(costTarget)
         ? costTarget
         : Array.isArray(effectTarget)

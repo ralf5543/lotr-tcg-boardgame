@@ -1,4 +1,4 @@
-import type { Ability, CardKeyword, CardState, CostSelector, GameState } from '../../types';
+import type { Ability, AbilityTargetRef, CardKeyword, CardState, CostSelector, GameState } from '../../types';
 import { TRANSLATIONS } from '../../translations';
 import { forEachInPlayCard, resolveCostTarget } from './resolveCostTarget';
 
@@ -46,6 +46,13 @@ export function abilityProjectsOnto(
     host: CardState
 ): boolean {
     if (!exertTargetIsOtherCharacter(ability)) return false;
+    if (
+        source.type === 'COMPANION' ||
+        source.type === 'ALLY' ||
+        source.type === 'MINION'
+    ) {
+        return false;
+    }
     const sourceId = source.instanceId || source.id;
     const hostId = host.instanceId || host.id;
     if (sourceId === hostId) return false;
@@ -80,8 +87,7 @@ export function collectVisibleAbilities(
     card: CardState
 ): { source: CardState; ability: Ability }[] {
     const own = collectCardAbilities(card).filter(
-        ({ source, ability }) =>
-            source !== card || !exertTargetIsOtherCharacter(ability)
+        ({ ability }) => ability.trigger?.type !== 'WHEN_PLAYED'
     );
     if (!G) return own;
     return [...own, ...collectProjectedAbilities(G, card)];
@@ -106,10 +112,10 @@ export function cardOrAttachmentsHaveActionPhases(card: CardState): boolean {
 function translateCriterionToken(token: string): string {
     const upper = token.toUpperCase();
     const typeLabel = TRANSLATIONS.type[upper as keyof typeof TRANSLATIONS.type];
-    if (typeLabel) return typeLabel.toLowerCase();
+    if (typeLabel) return typeLabel;
 
     const raceLabel = TRANSLATIONS.race[upper as keyof typeof TRANSLATIONS.race];
-    if (raceLabel) return raceLabel.toLowerCase();
+    if (raceLabel) return raceLabel;
 
     const cultureLabel =
         TRANSLATIONS.culture[upper as keyof typeof TRANSLATIONS.culture];
@@ -124,6 +130,21 @@ function translateCriterionToken(token: string): string {
     return token.toLowerCase();
 }
 
+function formatFilterList(tokens: string[]): string {
+    const unbound = tokens.filter((token) => token.toUpperCase() === 'UNBOUND');
+    const rest = tokens.filter((token) => token.toUpperCase() !== 'UNBOUND');
+    return [...rest, ...unbound].map(translateCriterionToken).join(' ');
+}
+
+function formatTargetPhrase(target: AbilityTargetRef | undefined): string | null {
+    if (!target || target === 'SELF' || target === 'BEARER') return null;
+    if (target === 'SKIRMISHING') return 'un personnage au combat';
+    if (Array.isArray(target)) {
+        return `un ${formatFilterList(target.flat())}`;
+    }
+    return null;
+}
+
 function translateKeyword(keyword: CardKeyword | string): string {
     return (
         TRANSLATIONS.keyword[keyword as CardKeyword]?.label ||
@@ -131,15 +152,31 @@ function translateKeyword(keyword: CardKeyword | string): string {
     );
 }
 
-function formatEffectBit(effect: Ability['effects'][number]): string {
+function formatEffectBit(
+    effect: Ability['effects'][number],
+    source: CardState
+): string {
     if (effect.type === 'WOUND') {
-        return `blesser un ${TRANSLATIONS.type.MINION.toLowerCase()}`;
+        if (effect.target === 'SKIRMISHING') {
+            return 'blesser un personnage au combat';
+        }
+        if (Array.isArray(effect.target)) {
+            return `blesser un ${formatFilterList(effect.target.flat())}`;
+        }
+        return 'blesser';
+    }
+    if (effect.type === 'ADD_TWILIGHT') {
+        return `ajouter <symbol>twilight${effect.count}</symbol>`;
     }
     if (effect.type === 'PREVENT_WOUND') {
         return 'empêcher cette blessure';
     }
     if (effect.type === 'WEAR_RING') {
         return 'mettre l’Anneau Unique';
+    }
+    if (effect.type === 'ALLOW_SKIRMISH') {
+        const who = source.i18n?.fr?.title || source.title || 'ce personnage';
+        return `permettre à ${who} de combattre`;
     }
     if (effect.type === 'ADD_TEMP_STAT') {
         const statLabels: Record<string, string> = {
@@ -150,10 +187,14 @@ function formatEffectBit(effect: Ability['effects'][number]): string {
         };
         const sign = effect.value > 0 ? '+' : '';
         const stat = statLabels[effect.stat] || effect.stat.toLowerCase();
-        return `${stat} ${sign}${effect.value}`;
+        const bit = `${stat} ${sign}${effect.value}`;
+        const who = formatTargetPhrase(effect.target);
+        return who ? `${bit} à ${who}` : bit;
     }
     if (effect.type === 'ADD_TEMP_KEYWORD') {
-        return translateKeyword(effect.keyword);
+        const bit = translateKeyword(effect.keyword);
+        const who = formatTargetPhrase(effect.target);
+        return who ? `${bit} à ${who}` : bit;
     }
     return '';
 }
@@ -165,7 +206,7 @@ function formatCostWho(
 ): string {
     if (target === 'BEARER') return 'le détenteur';
     if (Array.isArray(target)) {
-        const label = target.flat().map(translateCriterionToken).join(' ');
+        const label = formatFilterList(target.flat());
         if (asDesignation) return `un ${label}`;
         return label;
     }
@@ -211,14 +252,20 @@ function formatCostLabel(ability: Ability, source: CardState): string {
     return parts.join(' et ');
 }
 
+function capitalizeLabel(text: string): string {
+    if (!text) return text;
+    if (text.startsWith('<')) return text;
+    return text.charAt(0).toUpperCase() + text.slice(1);
+}
+
 export function formatAbilityLabelParts(
     ability: Ability,
     source: CardState
 ): { cost: string; effect: string } {
     return {
-        cost: formatCostLabel(ability, source),
+        cost: capitalizeLabel(formatCostLabel(ability, source)),
         effect: (ability.effects || [])
-            .map(formatEffectBit)
+            .map((effect) => formatEffectBit(effect, source))
             .filter(Boolean)
             .join(' et '),
     };

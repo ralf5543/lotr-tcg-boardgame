@@ -303,13 +303,6 @@ export function parseKeywords(
         keywords.push('RING-BOUND');
     }
 
-    if (type === 'COMPANION') {
-        const isRingbound = keywords.includes('RING-BOUND');
-        if (!isRingbearer && !isRingbound && !keywords.includes('UNBOUND')) {
-            keywords.push('UNBOUND');
-        }
-    }
-
     return keywords.length > 0 ? keywords : undefined;
 }
 
@@ -715,22 +708,65 @@ function findKnownKeyword(text: string): string | undefined {
     return undefined;
 }
 
+const FILTER_STOPWORDS = new Set(['A', 'AN', 'THE', 'OR']);
+
+const FILTER_ALIASES: Record<string, string> = {
+    URUKHAI: 'URUK-HAI',
+    NAZGUL: 'NAZGÛL',
+    RINGBEARER: 'RING-BEARER',
+    RINGBOUND: 'RING-BOUND',
+};
+
+function normalizeFilterToken(raw: string): string {
+    const upper = raw.replace(/[^a-zA-ZÀ-ÿÛû-]/g, '').toUpperCase();
+    return FILTER_ALIASES[upper] || upper;
+}
+
+function isKnownFilterToken(token: string): boolean {
+    return (
+        VALID_RACES.has(token) ||
+        VALID_TARGET_TYPES.has(token) ||
+        VALID_CULTURES.has(token) ||
+        VALID_KEYWORDS.has(token)
+    );
+}
+
+function isProperNameToken(word: string): boolean {
+    return /^[A-ZÀ-ŸÉ][a-zà-ÿ]/.test(word);
+}
+
+/** Filtres de classe : uniquement tokens connus (ou nom propre). Reste inconnu → []. */
 function parseClassFilters(raw: string): string[] {
     const filters: string[] = [];
-    let segment = raw.replace(/<(symbol|keyword)>(.*?)<\/\1>/gi, (_, _tag, content) => {
-        const clean = String(content || '')
-            .replace(/[^a-zA-Z-]/g, '')
-            .toUpperCase();
-        if (clean) filters.push(clean);
-        return ' ';
-    });
-    segment = segment.replace(/<[^>]+>/g, ' ');
-    for (const word of segment.split(/\s+/)) {
-        const clean = word.replace(/[^a-zA-Z-]/g, '').toUpperCase();
-        if (clean && !['A', 'AN', 'THE', 'OR'].includes(clean)) {
-            filters.push(clean);
+    let unknown = false;
+    let segment = raw.replace(
+        /<(symbol|keyword)>(.*?)<\/\1>/gi,
+        (_, _tag, content) => {
+            const token = normalizeFilterToken(String(content || ''));
+            if (!token) return ' ';
+            if (isKnownFilterToken(token)) {
+                filters.push(token);
+            } else {
+                unknown = true;
+            }
+            return ' ';
         }
+    );
+    segment = segment.replace(/<[^>]+>/g, ' ');
+    for (const word of segment.split(/\s+/).filter(Boolean)) {
+        const token = normalizeFilterToken(word);
+        if (!token || FILTER_STOPWORDS.has(token)) continue;
+        if (isKnownFilterToken(token)) {
+            filters.push(token);
+            continue;
+        }
+        if (isProperNameToken(word)) {
+            filters.push(word);
+            continue;
+        }
+        unknown = true;
     }
+    if (unknown || filters.length === 0) return [];
     return filters;
 }
 
@@ -780,6 +816,18 @@ function parseExertSubject(
     if (/^(another|your)\b/i.test(body)) return null;
 
     return { target: [[body]], count };
+}
+
+/** `this companion` / `him` / le nom de la carte → SELF. Autre nom → on refuse. */
+function parseAllowSkirmishTarget(
+    raw: string,
+    cardTitle?: string
+): 'SELF' | null {
+    const who = raw.replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim();
+    if (/^(this companion|him|her|it)$/i.test(who)) return 'SELF';
+    const title = (cardTitle || '').trim();
+    if (title && who.toLowerCase() === title.toLowerCase()) return 'SELF';
+    return null;
 }
 
 function parseUntilExpiry(
@@ -836,14 +884,11 @@ function parseMakeEffectPiece(chunk: string):
     return { kind: 'stat', stat, value: parseInt(match[2], 10) };
 }
 
-function parseMakeEffects(
-    effectText: string,
-    effectTarget: 'SELF' | 'BEARER' | string[][],
+function parseMakeEffectsFromRemainder(
+    remainder: string,
+    effectTarget: 'SELF' | 'BEARER' | 'SKIRMISHING' | string[][],
     expiresAtPhase: 'REGROUP' | 'SKIRMISH' | 'TURN_END'
 ) {
-    const remainder = remainderAfterPronoun(effectText);
-    if (!remainder) return undefined;
-
     const pieces = remainder
         .split(/\band\b/i)
         .map((piece) => piece.trim())
@@ -869,6 +914,105 @@ function parseMakeEffects(
                   expiresAtPhase,
               }
     );
+}
+
+function parseMakeEffects(
+    effectText: string,
+    effectTarget: 'SELF' | 'BEARER' | 'SKIRMISHING' | string[][],
+    expiresAtPhase: 'REGROUP' | 'SKIRMISH' | 'TURN_END'
+) {
+    const remainder = remainderAfterPronoun(effectText);
+    if (!remainder) return undefined;
+    return parseMakeEffectsFromRemainder(
+        remainder,
+        effectTarget,
+        expiresAtPhase
+    );
+}
+
+function splitClassAndMakeRemainder(
+    effectText: string
+): { classRaw: string; remainder: string } | null {
+    const noUntil = effectText
+        .replace(/<br\s*\/?>/gi, ' ')
+        .replace(/\s+until the .+$/i, '')
+        .replace(/\s+/g, ' ')
+        .trim()
+        .replace(/[.\s]+$/, '');
+
+    const stat = noUntil.match(
+        /^(.*?)\s+((?:strength|vitality|resistance)\s*[+-]\d+)\s*$/i
+    );
+    if (stat?.[1]?.trim()) {
+        return { classRaw: stat[1].trim(), remainder: stat[2].trim() };
+    }
+
+    const kwTagged = noUntil.match(/^(.*?)\s+(<keyword>[^<]+<\/keyword>)\s*$/i);
+    if (kwTagged?.[1]?.trim() && findKnownKeyword(kwTagged[2])) {
+        return { classRaw: kwTagged[1].trim(), remainder: kwTagged[2].trim() };
+    }
+
+    const kwPlain = noUntil.match(
+        /^(.*?)\s+((?:damage|defender)\s*\+\d+|fierce|archer)\s*$/i
+    );
+    if (kwPlain?.[1]?.trim() && findKnownKeyword(kwPlain[2])) {
+        return { classRaw: kwPlain[1].trim(), remainder: kwPlain[2].trim() };
+    }
+
+    return null;
+}
+
+function parseMakeTargetAndEffects(
+    effectText: string,
+    costTarget: 'SELF' | 'BEARER' | string[][],
+    expiresAtPhase: 'REGROUP' | 'SKIRMISH' | 'TURN_END'
+):
+    | {
+          target: 'SELF' | 'BEARER' | 'SKIRMISHING' | string[][];
+          effects: NonNullable<ReturnType<typeof parseMakeEffectsFromRemainder>>;
+      }
+    | undefined {
+    const pronounTarget = parseEffectTarget(effectText, costTarget);
+    const pronounEffects = parseMakeEffects(
+        effectText,
+        pronounTarget,
+        expiresAtPhase
+    );
+    if (pronounEffects) {
+        return { target: pronounTarget, effects: pronounEffects };
+    }
+
+    const thisMatch = effectText
+        .replace(/<[^>]+>/g, ' ')
+        .replace(/\s+/g, ' ')
+        .trim()
+        .match(/^this\s+\w+\s+([\s\S]+)/i);
+    if (thisMatch) {
+        const effects = parseMakeEffectsFromRemainder(
+            thisMatch[1],
+            'SELF',
+            expiresAtPhase
+        );
+        if (!effects) return undefined;
+        return { target: 'SELF', effects };
+    }
+
+    const split = splitClassAndMakeRemainder(effectText);
+    if (!split) return undefined;
+    const article = split.classRaw.match(/^(a|an)\s+(.+)$/i);
+    if (!article) return undefined;
+    if (/\b(and|or|each|skirmishing|that|your|another)\b/i.test(article[2])) {
+        return undefined;
+    }
+    const filters = parseClassFilters(article[2]);
+    if (filters.length === 0) return undefined;
+    const effects = parseMakeEffectsFromRemainder(
+        split.remainder,
+        [filters],
+        expiresAtPhase
+    );
+    if (!effects) return undefined;
+    return { target: [filters], effects };
 }
 
 function remainderAfterPronoun(effectText: string): string | undefined {
@@ -1062,6 +1206,60 @@ function parseWhileWearingReplacement(
     return null;
 }
 
+function parseWhenPlayedAbilities(
+    text: string,
+    cardId?: string
+): Record<string, unknown>[] {
+    const found: Record<string, unknown>[] = [];
+    const re =
+        /When you play this(?:\s+(?:minion|possession|condition|companion|artifact|ally|follower))?, (?!you may)([\s\S]+?)\./gi;
+    let match: RegExpExecArray | null;
+    while ((match = re.exec(text)) !== null) {
+        const clause = match[1].trim();
+        const addOnly = clause.match(/^add <symbol>twilight(\d+)<\/symbol>$/i);
+        const spotAdd = clause.match(
+            /^spot ([\s\S]+?) to add <symbol>twilight(\d+)<\/symbol>$/i
+        );
+
+        let cost: Record<string, unknown>[] = [];
+        let twilight = 0;
+
+        if (addOnly) {
+            twilight = parseInt(addOnly[1], 10);
+        } else if (spotAdd) {
+            if (/\b(and|or|each|may)\b/i.test(spotAdd[1])) continue;
+            const subject = parseExertSubject(spotAdd[1].trim());
+            if (!subject) continue;
+            twilight = parseInt(spotAdd[2], 10);
+            cost = [
+                {
+                    spot: [
+                        {
+                            count: subject.count,
+                            target: subject.target,
+                        },
+                    ],
+                },
+            ];
+        } else {
+            continue;
+        }
+
+        if (!Number.isFinite(twilight) || twilight <= 0) continue;
+
+        found.push({
+            id: `${cardId || 'ability'}:${found.length}:when-played`,
+            phases: [],
+            trigger: { type: 'WHEN_PLAYED' },
+            cost,
+            effects: [{ type: 'ADD_TWILIGHT', count: twilight }],
+            source: 'SELF',
+            text: stripAbilityMarkup(match[0]),
+        });
+    }
+    return found;
+}
+
 /**
  * Famille : `[Phase]: Exert [self/bearer/X] to make [him/bearer] KEYWORD|STAT [until …]?`
  */
@@ -1188,13 +1386,12 @@ export function parseAbilities(
             if (/\bfor each\b/i.test(effectText.replace(/<[^>]+>/g, ' '))) return;
 
             const expiresAtPhase = parseUntilExpiry(effectText, marker.phase);
-            const effectTarget = parseEffectTarget(effectText, subject.target);
-            const effects = parseMakeEffects(
+            const parsedMake = parseMakeTargetAndEffects(
                 effectText,
-                effectTarget,
+                subject.target,
                 expiresAtPhase
             );
-            if (!effects || effects.length === 0) return;
+            if (!parsedMake || parsedMake.effects.length === 0) return;
 
             const source = subject.target === 'BEARER' ? 'ATTACHMENT' : 'SELF';
             const clause = `${marker.phase}: Exert ${makeMatch[1].trim()} to make ${effectText}`
@@ -1217,9 +1414,51 @@ export function parseAbilities(
                         ],
                     },
                 ],
-                effects,
+                effects: parsedMake.effects,
                 source,
                 text: clause,
+            });
+            return;
+        }
+
+        const allowMatch = body.match(
+            /^Exert\s+([\s\S]+?)\s+to allow\s+([\s\S]+?)\s+to skirmish/i
+        );
+        if (allowMatch) {
+            if (/\b(and|or)\b/i.test(allowMatch[1])) return;
+            const allowSubject = parseExertSubject(allowMatch[1], cardTitle);
+            if (!allowSubject) return;
+            if (parseAllowSkirmishTarget(allowMatch[2], cardTitle) !== 'SELF') {
+                return;
+            }
+
+            const allowClause =
+                `${marker.phase}: Exert ${allowMatch[1].trim()} to allow ${allowMatch[2].trim()} to skirmish`
+                    .replace(/<[^>]+>/g, '')
+                    .replace(/\s+/g, ' ')
+                    .replace(/\s+\./g, '.')
+                    .trim();
+
+            abilities.push({
+                id: `${cardId || 'ability'}:${abilities.length}`,
+                phases: [marker.phase],
+                cost: [
+                    {
+                        exert: [
+                            {
+                                count: allowSubject.count,
+                                target: allowSubject.target,
+                                ...(allowSubject.mode
+                                    ? { mode: allowSubject.mode }
+                                    : {}),
+                            },
+                        ],
+                    },
+                ],
+                effects: [{ type: 'ALLOW_SKIRMISH', target: 'SELF' }],
+                source:
+                    allowSubject.target === 'BEARER' ? 'ATTACHMENT' : 'SELF',
+                text: allowClause,
             });
             return;
         }
@@ -1233,11 +1472,29 @@ export function parseAbilities(
         const woundSubject = parseExertSubject(woundMatch[1], cardTitle);
         if (!woundSubject) return;
 
-        const woundClause = woundMatch[2].split(';')[0].replace(/<[^>]+>/g, ' ').trim();
-        const woundArticle = woundClause.match(/^(a|an)\s+(.+)$/i);
-        if (!woundArticle) return;
-        const woundFilters = parseClassFilters(woundArticle[2]);
-        if (woundFilters.length === 0) return;
+        const woundClause = woundMatch[2]
+            .split(';')[0]
+            .replace(/<[^>]+>/g, ' ')
+            .replace(/\s+/g, ' ')
+            .trim()
+            .replace(/\.$/, '');
+
+        const skirmishingWound =
+            /^(?:a|an) character(?: that)? (?:he or she|he|she|it|this \w+|bearer) is skirmishing$/i.test(
+                woundClause
+            );
+
+        let woundTarget: 'SELF' | 'BEARER' | 'SKIRMISHING' | string[][] | null =
+            null;
+        if (skirmishingWound) {
+            woundTarget = 'SKIRMISHING';
+        } else {
+            const woundArticle = woundClause.match(/^(a|an|the)\s+(.+)$/i);
+            if (!woundArticle) return;
+            const woundFilters = parseClassFilters(woundArticle[2]);
+            if (woundFilters.length === 0) return;
+            woundTarget = [woundFilters];
+        }
 
         const omitFromArcheryTotal =
             /does not add to the fellowship archery total/i.test(body);
@@ -1269,12 +1526,19 @@ export function parseAbilities(
                 {
                     type: 'WOUND',
                     count: 1,
-                    target: [woundFilters],
+                    target: woundTarget,
                 },
             ],
             source: woundSource,
             text: woundText,
             ...(omitFromArcheryTotal ? { omitFromArcheryTotal: true } : {}),
+        });
+    });
+
+    parseWhenPlayedAbilities(text, cardId).forEach((ability) => {
+        abilities.push({
+            ...ability,
+            id: `${cardId || 'ability'}:${abilities.length}`,
         });
     });
 

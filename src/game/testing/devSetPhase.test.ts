@@ -39,7 +39,9 @@ describe('devSetPhase', () => {
         expect(engine.getCtx().phase).toBe('assignment');
         expect(engine.getG().maneuverStep).toBeUndefined();
         expect(engine.getG().startOfPhaseState).toBeUndefined();
-        expect(engine.getG().actionWindow).toBeUndefined();
+        expect(engine.getG().assignmentStep).toBe('ACTIONS');
+        expect(engine.getG().actionWindow?.isOpen).toBe(true);
+        expect(engine.getG().actionWindow?.activePlayerId).toBe('0');
         expect(engine.getG().players['1']?.supportArea[0]?.id).toBe(
             'sh-follower'
         );

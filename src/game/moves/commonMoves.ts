@@ -13,6 +13,7 @@ import {
 import { clearExpiredTempKeywords } from '../engine/abilities/applyAbilityEffect';
 import { yieldPriorityAfterAction } from '../engine/actionWindow';
 import { findTargetCard } from '../../utils/cardUtils';
+import { beginMinionAssignment } from '../logic/assignment';
 import {
     afterResponseResolved,
     isResponseWindowOpen,
@@ -20,6 +21,7 @@ import {
     pauseActionYieldForResponses,
     requestWounds,
 } from '../engine/responseWindow';
+import { resolveWhenPlayed } from '../engine/abilities/whenPlayed';
 
 export interface ReorderPayload {
     fromIndex?: number;
@@ -112,6 +114,8 @@ export const passActionWindow = ({
             events?.endPhase?.();
         } else if (ctx.phase === 'archery') {
             advanceArcheryAssignmentStep(G, events);
+        } else if (ctx.phase === 'assignment') {
+            beginMinionAssignment(G, events);
         } else if (ctx.phase === 'skirmish' && G.activeSkirmishId) {
             resolveSkirmish(G, ctx);
         } else if (ctx.phase === 'regroup' || ctx.phase === 'startOfRegroup') {
@@ -310,6 +314,9 @@ export const playCard = (
             G.twilightPool -= cost;
             return 'INVALID_MOVE';
         }
+        if (playedCard.type !== 'EVENT') {
+            resolveWhenPlayed(G, playedCard);
+        }
         yieldAfterPlay(G, actingPlayerId, playedCard, wasResponseWindowOpen);
         G.pendingPlay = undefined;
         return;
@@ -352,6 +359,9 @@ export const playCard = (
             player.hand.splice(cardIndex, 0, playedCard);
             G.twilightPool += cost;
             return 'INVALID_MOVE';
+        }
+        if (playedCard.type !== 'EVENT') {
+            resolveWhenPlayed(G, playedCard);
         }
         yieldAfterPlay(G, actingPlayerId, playedCard, wasResponseWindowOpen);
         G.pendingPlay = undefined;

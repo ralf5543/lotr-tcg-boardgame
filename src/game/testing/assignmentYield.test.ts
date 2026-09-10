@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { createEngineClient } from './createEngineClient';
+import { createEngineClient, skipAssignmentActions } from './createEngineClient';
 import {
     createCompanion,
     createMinion,
@@ -27,6 +27,7 @@ describe('cession d’affectation à l’Ombre', () => {
             },
         });
 
+        skipAssignmentActions(engine);
         engine.moves.assignMinion('minion-1', 'comp-1');
         expect(engine.getG().assignmentStep).toBe('FP_ASSIGN');
 
@@ -70,6 +71,7 @@ describe('cession d’affectation à l’Ombre', () => {
             },
         });
 
+        skipAssignmentActions(engine, '1');
         engine.moves.yieldAssignmentToShadow();
         expect(engine.getG().assignmentStep).toBe('FP_ASSIGN');
 

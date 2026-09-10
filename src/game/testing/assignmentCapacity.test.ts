@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { createEngineClient } from './createEngineClient';
+import { createEngineClient, skipAssignmentActions } from './createEngineClient';
 import {
     createCompanion,
     createMinion,
@@ -24,6 +24,7 @@ describe('capacité d’affectation', () => {
             },
         });
 
+        skipAssignmentActions(engine);
         engine.moves.assignMinion('minion-1', 'comp-1');
 
         expect(engine.getG().assignmentStep).toBe('SHADOW_ASSIGN');
@@ -64,6 +65,7 @@ describe('capacité d’affectation', () => {
             },
         });
 
+        skipAssignmentActions(engine);
         engine.moves.assignMinion('minion-1', 'comp-1');
         expect(engine.getG().assignmentStep).toBe('FP_ASSIGN');
 

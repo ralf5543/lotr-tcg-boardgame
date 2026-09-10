@@ -9,6 +9,7 @@ import {
     collectProjectedAbilities,
 } from './abilities/collectAbilities';
 import { canPayAbilityCost } from './abilities/payAbilityCost';
+import { abilityHasLegalEffectTarget } from './abilities/designation';
 import {
     abilityMatchesTrigger,
     isResponseWindowOpen,
@@ -117,6 +118,16 @@ export function canUseAbility(
         };
     }
 
+    if (
+        (currentPhase === 'ASSIGNMENT' || normalizedPhase === 'ASSIGNMENT') &&
+        G.assignmentStep !== 'ACTIONS'
+    ) {
+        return {
+            valid: false,
+            reason: 'Les actions d’affectation se jouent avant l’attribution des séides.',
+        };
+    }
+
     const projectedForPhase = collectProjectedAbilities(G, card).some(
         ({ ability }) => abilityMatchesPhase(ability, rawPhase)
     );
@@ -156,12 +167,40 @@ export function canUseAbility(
                     reason: "Ce n'est pas à vous d'agir.",
                 };
             }
-            return { valid: true };
+            const phaseAbilities = (card.abilities || []).filter((ability) =>
+                abilityMatchesPhase(ability, rawPhase)
+            );
+            if ((card.abilities || []).length > 0) {
+                if (phaseAbilities.length === 0 && !projectedForPhase) {
+                    return {
+                        valid: false,
+                        reason: 'Aucune capacité activable pour cette carte dans la phase actuelle.',
+                    };
+                }
+                if (
+                    phaseAbilities.length > 0 &&
+                    !phaseAbilities.some((ability) =>
+                        abilityHasLegalEffectTarget(G, card, ability)
+                    )
+                ) {
+                    return {
+                        valid: false,
+                        reason: 'Aucune cible légale pour cette capacité.',
+                    };
+                }
+                if (phaseAbilities.length > 0) {
+                    return { valid: true };
+                }
+            } else {
+                return { valid: true };
+            }
         }
     }
 
-    const hasMatchingAbility = (card.abilities || []).some((ability) =>
-        abilityMatchesPhase(ability, rawPhase)
+    const hasMatchingAbility = (card.abilities || []).some(
+        (ability) =>
+            abilityMatchesPhase(ability, rawPhase) &&
+            abilityHasLegalEffectTarget(G, card, ability)
     );
     if (hasMatchingAbility || projectedForPhase) {
         if (

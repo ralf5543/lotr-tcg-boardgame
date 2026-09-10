@@ -337,6 +337,11 @@ export const TRANSLATIONS = {
             label: 'Crépusculaire',
             description: unloadKeyword,
         },
+        UNBOUND: {
+            label: 'Dissocié',
+            description:
+                'Un compagnon ou un allié est dissocié s’il n’est pas ring-bound et n’est pas le Porteur. Ce n’est pas un mot-clé imprimé.',
+        },
         UNDERGROUND: {
             label: 'Souterrain',
             description: unloadKeyword,
@@ -344,7 +349,7 @@ export const TRANSLATIONS = {
         UNHASTY: {
             label: 'Peu hâtif',
             description:
-                'Les Ents avec ce mot-clé ne peuvent pas participer au combat, sauf si le combat a lieu sur leur site natif, ou si un effet les autorise expressément.',
+                'Ce personnage ne peut pas être affecté à un combat, sauf si un effet l’y autorise (souvent une capacité d’affectation).',
         },
         VALIANT: {
             label: 'Vaillant',

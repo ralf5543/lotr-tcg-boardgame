@@ -3,6 +3,7 @@ import type { CardState } from '../../../../game/types';
 interface InPlayDragOptions {
     card: CardState;
     phase?: string;
+    assignmentStep?: string;
     isOpponent?: boolean;
     isDisabled?: boolean;
     isTargetable?: boolean;
@@ -24,6 +25,7 @@ const isTransferableAttachment = (card: CardState): boolean =>
 export function isInPlayCardDraggable({
     card,
     phase,
+    assignmentStep,
     isOpponent = false,
     isDisabled = false,
     isTargetable = false,
@@ -59,6 +61,12 @@ export function isInPlayCardDraggable({
     }
 
     if (phase === 'assignment') {
+        if (
+            assignmentStep !== 'FP_ASSIGN' &&
+            assignmentStep !== 'SHADOW_ASSIGN'
+        ) {
+            return false;
+        }
         return !isAttachment && card.type === 'MINION';
     }
 

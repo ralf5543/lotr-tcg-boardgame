@@ -51,6 +51,12 @@ const MORIA_AXE_TEXT =
     'Bearer must be a <symbol>moria</symbol> Orc.  <br>Bearer is <keyword>damage +1.</keyword>  <br><keyword>Skirmish:</keyword> Exert bearer to make him strength +2.';
 
 describe('parseAbilities — Exert … to make KEYWORD', () => {
+    it('n’écrit pas Unbound sur un compagnon : ce n’est pas un mot-clé imprimé', () => {
+        expect(parseKeywords(ARAGORN_TEXT, 'Aragorn', 'COMPANION')).toEqual([
+            'RANGER',
+        ]);
+    });
+
     it('parse Aragorn : Maneuver, exert SELF, defender +1 until regroup', () => {
         expect(parseAbilities(ARAGORN_TEXT, 'Aragorn', '1R89')).toEqual([
             {
@@ -143,10 +149,29 @@ describe('parseAbilities — Exert … to make KEYWORD', () => {
         });
     });
 
-    it('n’émet rien si le complément est une autre cible (unbound Hobbit strength +2)', () => {
+    it('parse Faramir : Exert SELF, Hobbit dissocié force +2 (autre cible)', () => {
         const text =
-            '<keyword>Skirmish:</keyword> Exert Faramir to make an unbound Hobbit strength +2.';
-        expect(parseAbilities(text, 'Faramir', '7R91')).toBeUndefined();
+            '<keyword>Ranger.</keyword> <br><keyword>Fellowship:</keyword> Play a <symbol>rohan</symbol> Man to heal Faramir. <br><keyword>Skirmish:</keyword> Exert Faramir to make an unbound Hobbit strength +2. <br><keyword>Skirmish:</keyword> Exert Gandalf to prevent all wounds to Faramir.';
+        expect(parseAbilities(text, 'Faramir', '7R91')).toEqual([
+            {
+                id: '7R91:0',
+                phases: ['SKIRMISH'],
+                cost: [{ exert: [{ count: 1, target: 'SELF' }] }],
+                effects: [
+                    {
+                        type: 'ADD_TEMP_STAT',
+                        stat: 'STRENGTH',
+                        value: 2,
+                        target: [['UNBOUND', 'HOBBIT']],
+                        expiresAtPhase: 'SKIRMISH',
+                    },
+                ],
+                source: 'SELF',
+                text: expect.stringMatching(
+                    /SKIRMISH: Exert Faramir to make an unbound Hobbit strength \+2/i
+                ),
+            },
+        ]);
     });
 
     it('n’émet rien si le coût combine exert et autre verbe (and)', () => {
@@ -272,6 +297,79 @@ describe('parseAbilities — Exert … to make KEYWORD', () => {
                 source: 'SELF',
                 text: expect.stringMatching(/ARCHERY: Exert Legolas to wound a minion/i),
                 omitFromArcheryTotal: true,
+            },
+        ]);
+    });
+
+    it('parse Treebeard : Assignment allow skirmish + Skirmish make an Ent damage +1', () => {
+        const text =
+            '<keyword>Unhasty.</keyword> <keyword>Assignment:</keyword> Exert an unbound Hobbit to allow Treebeard to skirmish. <keyword>Skirmish:</keyword> Exert Treebeard to make an Ent <keyword>Damage +1.</keyword>.';
+        expect(parseAbilities(text, 'Treebeard', '0P21')).toEqual([
+            {
+                id: '0P21:0',
+                phases: ['ASSIGNMENT'],
+                cost: [
+                    {
+                        exert: [
+                            {
+                                count: 1,
+                                target: [['UNBOUND', 'HOBBIT']],
+                                mode: 'DESIGNATION',
+                            },
+                        ],
+                    },
+                ],
+                effects: [{ type: 'ALLOW_SKIRMISH', target: 'SELF' }],
+                source: 'SELF',
+                text: expect.stringMatching(
+                    /ASSIGNMENT: Exert an unbound Hobbit to allow Treebeard to skirmish/i
+                ),
+            },
+            {
+                id: '0P21:1',
+                phases: ['SKIRMISH'],
+                cost: [{ exert: [{ count: 1, target: 'SELF' }] }],
+                effects: [
+                    {
+                        type: 'ADD_TEMP_KEYWORD',
+                        keyword: 'DAMAGE +1',
+                        target: [['ENT']],
+                        expiresAtPhase: 'SKIRMISH',
+                    },
+                ],
+                source: 'SELF',
+                text: expect.stringMatching(
+                    /SKIRMISH: Exert Treebeard to make an Ent Damage \+1/i
+                ),
+            },
+        ]);
+    });
+
+    it('refuse Assignment allow skirmish si le coût a un « or » (Birchseed)', () => {
+        const text =
+            '<keyword>Unhasty.</keyword><br><keyword>Assignment:</keyword> Exert an unbound Hobbit or discard 2 cards from hand to allow Birchseed to skirmish.';
+        expect(parseAbilities(text, 'Birchseed', '5U15')).toBeUndefined();
+    });
+
+    it('parse Soldat orque : blesser le personnage qu’il combat', () => {
+        const text =
+            '<keyword>Skirmish:</keyword> Exert this minion to wound a character he is skirmishing.';
+        expect(parseAbilities(text, 'Orc Soldier', '1C271')).toEqual([
+            {
+                id: '1C271:0',
+                phases: ['SKIRMISH'],
+                cost: [{ exert: [{ count: 1, target: 'SELF' }] }],
+                effects: [
+                    {
+                        type: 'WOUND',
+                        count: 1,
+                        target: 'SKIRMISHING',
+                    },
+                ],
+                source: 'SELF',
+                text: expect.stringMatching(
+                    /SKIRMISH: Exert this minion to wound a character he is skirmishing/i
+                ),
             },
         ]);
     });
@@ -550,6 +648,32 @@ describe('parseAbilities — Response prevent wound', () => {
         const text =
             '<keyword>Ranger.</keyword> <br><keyword>Response:</keyword> If the Ring-bearer is about to take a wound, discard 3 cards from hand to prevent that wound.';
         expect(parseAbilities(text, 'Arwen', '3U7')).toBeUndefined();
+    });
+});
+
+describe('parseAbilities — When you play this', () => {
+    it('parse Éclaireur de la Moria : spot un Elfe, ajouter du crépuscule (requis)', () => {
+        const text =
+            'When you play this minion, spot an Elf to add <symbol>twilight2</symbol>.';
+        expect(parseAbilities(text, 'Moria Scout', '1C191')).toEqual([
+            {
+                id: '1C191:0',
+                phases: [],
+                trigger: { type: 'WHEN_PLAYED' },
+                cost: [{ spot: [{ count: 1, target: [['ELF']] }] }],
+                effects: [{ type: 'ADD_TWILIGHT', count: 2 }],
+                source: 'SELF',
+                text: expect.stringMatching(
+                    /When you play this minion, spot an Elf to add/i
+                ),
+            },
+        ]);
+    });
+
+    it('n’émet rien pour Coureur Gobelin (you may)', () => {
+        const text =
+            'When you play this minion, you may add <symbol>twilight2</symbol>.';
+        expect(parseAbilities(text, 'Goblin Runner', '1U178')).toBeUndefined();
     });
 });
 

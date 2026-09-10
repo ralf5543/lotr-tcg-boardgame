@@ -205,4 +205,87 @@ describe('canUseAbility', () => {
             }).valid
         ).toBe(false);
     });
+
+    it('n’autorise une action d’affectation que pendant la fenêtre d’actions', () => {
+        const card = createCompanion({
+            id: '0P21',
+            actionPhases: ['ASSIGNMENT', 'SKIRMISH'],
+            abilities: [
+                {
+                    id: '0P21:0',
+                    phases: ['ASSIGNMENT'],
+                    cost: [{ exert: [{ count: 1, target: 'SELF' }] }],
+                    effects: [{ type: 'ALLOW_SKIRMISH', target: 'SELF' }],
+                    source: 'SELF',
+                },
+            ],
+        });
+        const duringActions = createGameState({
+            assignmentStep: 'ACTIONS',
+            actionWindow: {
+                isOpen: true,
+                activePlayerId: '0',
+                canPass: true,
+                passesCount: 0,
+            },
+        });
+        const duringFpAssign = createGameState({
+            assignmentStep: 'FP_ASSIGN',
+        });
+
+        expect(
+            canUseAbility(card, {
+                G: duringActions,
+                ctx: { phase: 'assignment' },
+                playerID: '0',
+            }).valid
+        ).toBe(true);
+        expect(
+            canUseAbility(card, {
+                G: duringFpAssign,
+                ctx: { phase: 'assignment' },
+                playerID: '0',
+            }).valid
+        ).toBe(false);
+    });
+
+    it('n’allume pas une carte dont actionPhases matche mais sans capacité de cette phase', () => {
+        const card = createCompanion({
+            id: '0P21',
+            actionPhases: ['ASSIGNMENT', 'SKIRMISH'],
+            abilities: [
+                {
+                    id: '0P21:1',
+                    phases: ['SKIRMISH'],
+                    cost: [{ exert: [{ count: 1, target: 'SELF' }] }],
+                    effects: [
+                        {
+                            type: 'ADD_TEMP_KEYWORD',
+                            keyword: 'DAMAGE +1',
+                            target: 'SELF',
+                            expiresAtPhase: 'SKIRMISH',
+                        },
+                    ],
+                    source: 'SELF',
+                },
+            ],
+        });
+        const G = createGameState({
+            assignmentStep: 'ACTIONS',
+            actionWindow: {
+                isOpen: true,
+                activePlayerId: '0',
+                canPass: true,
+                passesCount: 0,
+            },
+        });
+
+        expect(
+            canUseAbility(card, {
+                G,
+                ctx: { phase: 'assignment' },
+                playerID: '0',
+            }).valid
+        ).toBe(false);
+    });
 });

@@ -1,6 +1,7 @@
 // src/game/engine/validations/matchers.ts
 
 import type { CardState, SiteCardState } from '../../types';
+import { isRingBearerCard } from '../../../utils/cardUtils';
 
 /**
  * Normalise un terme pour la comparaison case-insensitive.
@@ -36,6 +37,22 @@ export function cardMatchesCriterion(
 
     const critUpper = criterion.toUpperCase().trim();
     const c = card as CardState;
+
+    if (critUpper === 'CHARACTER') {
+        return (
+            c.type === 'COMPANION' ||
+            c.type === 'ALLY' ||
+            c.type === 'MINION'
+        );
+    }
+
+    if (critUpper === 'UNBOUND') {
+        const keywordsUpper = (c.keywords || []).map((k) => normalize(k));
+        if (keywordsUpper.includes('UNBOUND')) return true;
+        if (keywordsUpper.includes('RING-BOUND')) return false;
+        if (isRingBearerCard(c)) return false;
+        return c.type === 'COMPANION' || c.type === 'ALLY';
+    }
 
     // Type SITE
     if (critUpper === 'SITE' && c.type === 'SITE') return true;

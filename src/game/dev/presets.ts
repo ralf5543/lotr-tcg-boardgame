@@ -508,7 +508,7 @@ export const applyDevPreset = (
             break;
         }
         case 'SKIRMISH_TEST': {
-            G.twilightPool = 4;
+            G.twilightPool = 6;
             const shadowId = fpId === '0' ? '1' : '0';
             const shadowPlayer = G.players[shadowId];
 
@@ -523,40 +523,28 @@ export const applyDevPreset = (
                 }
             });
 
-            const gimli = clonePresetCard('0P12');
-            gimli.attachments = [clonePresetCard('2U3')];
-
             fpPlayer.fellowshipArea = [
-                {
-                    ...asRingBearer(clonePresetCard('2C102')),
-                    attachments: [clonePresetCard('1R1')],
-                },
-                clonePresetCard('1R72'),
+                asRingBearer(clonePresetCard('2C102')),
+                clonePresetCard('1C303'),
+                clonePresetCard('7R91'),
                 clonePresetCard('1R50'),
-                gimli,
-                clonePresetCard('3U7'),
+                clonePresetCard('0P21'),
             ];
-            fpPlayer.supportArea = [clonePresetCard('3C36')];
-            fpPlayer.hand = [clonePresetCard('1C76')];
+            fpPlayer.supportArea = [];
+            fpPlayer.hand = [];
 
             if (shadowPlayer) {
-                shadowPlayer.supportArea = [
-                    clonePresetCard('1R173'),
-                    clonePresetCard('4R19'),
-                ];
+                shadowPlayer.hand = [clonePresetCard('1C191')];
+                shadowPlayer.supportArea = [];
             }
 
-            G.battlefield = [
-                clonePresetCard('1U178'),
-                clonePresetCard('4C16'),
-                clonePresetCard('3C59'),
-            ];
+            G.battlefield = [clonePresetCard('1C271')];
             G.skirmishes = [];
             G.activeSkirmishId = undefined;
             G.actionWindow = undefined;
 
             G.statusMessage =
-                '[DEV] Preset Réponse : Vertefeuille, Intimidate en main, Hides/Armurerie en soutien Ombre, brassards sur Gimli. Passe en archerie et assigne une blessure.';
+                '[DEV] Make / blessure / When you play / Affectation — Éclaireur en main Ombre, Soldat orque en face, Faramir + Merry + Sylvebarbe + Legolas. Sauter à assignment pour le toaster d’affectation (Sylvebarbe).';
             break;
         }
     }

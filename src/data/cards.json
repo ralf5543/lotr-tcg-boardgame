@@ -343,8 +343,7 @@
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
     "keywords": [
-      "DAMAGE +1",
-      "UNBOUND"
+      "DAMAGE +1"
     ],
     "abilities": [
       {
@@ -426,8 +425,7 @@
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
     "keywords": [
-      "ARCHER",
-      "UNBOUND"
+      "ARCHER"
     ],
     "abilities": [
       {
@@ -512,8 +510,7 @@
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
     "keywords": [
-      "RANGER",
-      "UNBOUND"
+      "RANGER"
     ],
     "abilities": [
       {
@@ -594,8 +591,7 @@
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
     "keywords": [
-      "ARCHER",
-      "UNBOUND"
+      "ARCHER"
     ],
     "culture": "ELVEN",
     "race": "ELF",
@@ -643,9 +639,6 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
-    "keywords": [
-      "UNBOUND"
-    ],
     "culture": "GONDOR",
     "race": "MAN",
     "signet": "FRODO",
@@ -695,8 +688,7 @@
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
     "keywords": [
-      "VALIANT",
-      "UNBOUND"
+      "VALIANT"
     ],
     "abilities": [
       {
@@ -840,8 +832,7 @@
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
     "keywords": [
-      "VALIANT",
-      "UNBOUND"
+      "VALIANT"
     ],
     "actionPhases": [
       "MANEUVER"
@@ -939,8 +930,69 @@
     "type": "COMPANION",
     "keywords": [
       "UNHASTY",
-      "DAMAGE +1",
-      "UNBOUND"
+      "DAMAGE +1"
+    ],
+    "abilities": [
+      {
+        "id": "0P21:0",
+        "phases": [
+          "ASSIGNMENT"
+        ],
+        "cost": [
+          {
+            "exert": [
+              {
+                "count": 1,
+                "target": [
+                  [
+                    "UNBOUND",
+                    "HOBBIT"
+                  ]
+                ],
+                "mode": "DESIGNATION"
+              }
+            ]
+          }
+        ],
+        "effects": [
+          {
+            "type": "ALLOW_SKIRMISH",
+            "target": "SELF"
+          }
+        ],
+        "source": "SELF",
+        "text": "ASSIGNMENT: Exert an unbound Hobbit to allow Treebeard to skirmish"
+      },
+      {
+        "id": "0P21:1",
+        "phases": [
+          "SKIRMISH"
+        ],
+        "cost": [
+          {
+            "exert": [
+              {
+                "count": 1,
+                "target": "SELF"
+              }
+            ]
+          }
+        ],
+        "effects": [
+          {
+            "type": "ADD_TEMP_KEYWORD",
+            "keyword": "DAMAGE +1",
+            "target": [
+              [
+                "ENT"
+              ]
+            ],
+            "expiresAtPhase": "SKIRMISH"
+          }
+        ],
+        "source": "SELF",
+        "text": "SKIRMISH: Exert Treebeard to make an Ent Damage +1.."
+      }
     ],
     "actionPhases": [
       "ASSIGNMENT",
@@ -1038,8 +1090,7 @@
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
     "keywords": [
-      "KNIGHT",
-      "UNBOUND"
+      "KNIGHT"
     ],
     "actionPhases": [
       "START_OF_FELLOWSHIP"
@@ -1092,8 +1143,7 @@
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
     "keywords": [
-      "ARCHER",
-      "UNBOUND"
+      "ARCHER"
     ],
     "culture": "ELVEN",
     "race": "ELF",
@@ -1142,9 +1192,6 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
-    "keywords": [
-      "UNBOUND"
-    ],
     "culture": "GONDOR",
     "race": "MAN",
     "signet": "ARAGORN",
@@ -1192,9 +1239,6 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
-    "keywords": [
-      "UNBOUND"
-    ],
     "culture": "GANDALF",
     "race": "WIZARD",
     "signet": "GANDALF",
@@ -1285,9 +1329,6 @@
     "isFemale": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
-    "keywords": [
-      "UNBOUND"
-    ],
     "culture": "ELVEN",
     "race": "ELF",
     "signet": "GANDALF",
@@ -1337,8 +1378,7 @@
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
     "keywords": [
-      "VALIANT",
-      "UNBOUND"
+      "VALIANT"
     ],
     "culture": "ROHAN",
     "race": "MAN",
@@ -1487,8 +1527,7 @@
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
     "keywords": [
-      "DAMAGE +1",
-      "UNBOUND"
+      "DAMAGE +1"
     ],
     "culture": "GANDALF",
     "race": "WIZARD",
@@ -1823,8 +1862,7 @@
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
     "keywords": [
-      "VALIANT",
-      "UNBOUND"
+      "VALIANT"
     ],
     "actionPhases": [
       "RESPONSE"
@@ -2165,9 +2203,6 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
-    "keywords": [
-      "UNBOUND"
-    ],
     "culture": "ROHAN",
     "race": "MAN",
     "signet": "THEODEN",
@@ -2215,8 +2250,7 @@
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
     "keywords": [
-      "DAMAGE +1",
-      "UNBOUND"
+      "DAMAGE +1"
     ],
     "culture": "DWARVEN",
     "race": "DWARF",
@@ -2264,9 +2298,6 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
-    "keywords": [
-      "UNBOUND"
-    ],
     "actionPhases": [
       "SKIRMISH",
       "REGROUP"
@@ -2370,8 +2401,7 @@
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
     "keywords": [
-      "VALIANT",
-      "UNBOUND"
+      "VALIANT"
     ],
     "culture": "ROHAN",
     "race": "MAN",
@@ -2526,9 +2556,6 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
-    "keywords": [
-      "UNBOUND"
-    ],
     "actionPhases": [
       "SKIRMISH"
     ],
@@ -2573,9 +2600,6 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
-    "keywords": [
-      "UNBOUND"
-    ],
     "culture": "GANDALF",
     "race": "WIZARD",
     "signet": "GANDALF",
@@ -2719,9 +2743,6 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
-    "keywords": [
-      "UNBOUND"
-    ],
     "culture": "GANDALF",
     "race": "MAN",
     "twilightCost": 2,
@@ -2801,9 +2822,6 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
-    "keywords": [
-      "UNBOUND"
-    ],
     "actionPhases": [
       "SKIRMISH"
     ],
@@ -2845,9 +2863,6 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
-    "keywords": [
-      "UNBOUND"
-    ],
     "culture": "ROHAN",
     "race": "MAN",
     "twilightCost": 3,
@@ -2988,9 +3003,6 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
-    "keywords": [
-      "UNBOUND"
-    ],
     "culture": "GANDALF",
     "race": "WIZARD",
     "twilightCost": 4,
@@ -3039,8 +3051,7 @@
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
     "keywords": [
-      "KNIGHT",
-      "UNBOUND"
+      "KNIGHT"
     ],
     "culture": "GONDOR",
     "race": "MAN",
@@ -3287,9 +3298,6 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
-    "keywords": [
-      "UNBOUND"
-    ],
     "toPlay": [
       {
         "spot": [
@@ -3398,9 +3406,6 @@
     "isFemale": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
-    "keywords": [
-      "UNBOUND"
-    ],
     "culture": "ELVEN",
     "race": "ELF",
     "twilightCost": 2,
@@ -3650,9 +3655,6 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
-    "keywords": [
-      "UNBOUND"
-    ],
     "culture": "GANDALF",
     "race": "MAN",
     "twilightCost": 2,
@@ -3828,9 +3830,6 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
-    "keywords": [
-      "UNBOUND"
-    ],
     "culture": "SHIRE",
     "race": "HOBBIT",
     "twilightCost": 1,
@@ -4080,9 +4079,6 @@
     "isUnique": false,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
-    "keywords": [
-      "UNBOUND"
-    ],
     "culture": "GONDOR",
     "race": "MAN",
     "twilightCost": 3,
@@ -4624,9 +4620,6 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
-    "keywords": [
-      "UNBOUND"
-    ],
     "toPlay": [
       {
         "spot": [
@@ -4758,8 +4751,7 @@
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
     "keywords": [
-      "DAMAGE +1",
-      "UNBOUND"
+      "DAMAGE +1"
     ],
     "abilities": [
       {
@@ -4893,8 +4885,7 @@
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
     "keywords": [
-      "RANGER",
-      "UNBOUND"
+      "RANGER"
     ],
     "culture": "ELVEN",
     "race": "ELF",
@@ -4944,8 +4935,7 @@
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
     "keywords": [
-      "ARCHER",
-      "UNBOUND"
+      "ARCHER"
     ],
     "abilities": [
       {
@@ -5029,9 +5019,6 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
-    "keywords": [
-      "UNBOUND"
-    ],
     "culture": "GANDALF",
     "race": "WIZARD",
     "signet": "FRODO",
@@ -5124,8 +5111,7 @@
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
     "keywords": [
-      "RANGER",
-      "UNBOUND"
+      "RANGER"
     ],
     "abilities": [
       {
@@ -5206,8 +5192,7 @@
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
     "keywords": [
-      "RANGER",
-      "UNBOUND"
+      "RANGER"
     ],
     "culture": "GONDOR",
     "race": "MAN",
@@ -5782,8 +5767,7 @@
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
     "keywords": [
-      "ARCHER",
-      "UNBOUND"
+      "ARCHER"
     ],
     "culture": "ELVEN",
     "race": "ELF",
@@ -5833,8 +5817,7 @@
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
     "keywords": [
-      "RANGER",
-      "UNBOUND"
+      "RANGER"
     ],
     "culture": "GONDOR",
     "race": "MAN",
@@ -6237,9 +6220,6 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
-    "keywords": [
-      "UNBOUND"
-    ],
     "culture": "GANDALF",
     "race": "WIZARD",
     "signet": "GANDALF",
@@ -6854,8 +6834,7 @@
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
     "keywords": [
-      "VALIANT",
-      "UNBOUND"
+      "VALIANT"
     ],
     "actionPhases": [
       "FELLOWSHIP"
@@ -6903,9 +6882,6 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
-    "keywords": [
-      "UNBOUND"
-    ],
     "actionPhases": [
       "SKIRMISH"
     ],
@@ -6956,9 +6932,6 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
-    "keywords": [
-      "UNBOUND"
-    ],
     "actionPhases": [
       "SKIRMISH"
     ],
@@ -7009,9 +6982,6 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
-    "keywords": [
-      "UNBOUND"
-    ],
     "culture": "GANDALF",
     "race": "WIZARD",
     "signet": "ARAGORN",
@@ -7110,8 +7080,7 @@
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
     "keywords": [
-      "ENDURING",
-      "UNBOUND"
+      "ENDURING"
     ],
     "toPlay": [
       {
@@ -7325,9 +7294,6 @@
     "isFemale": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
-    "keywords": [
-      "UNBOUND"
-    ],
     "culture": "ELVEN",
     "race": "ELF",
     "signet": "FRODO",
@@ -7375,9 +7341,6 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
-    "keywords": [
-      "UNBOUND"
-    ],
     "toPlay": [
       {
         "spot": [
@@ -7438,9 +7401,6 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
-    "keywords": [
-      "UNBOUND"
-    ],
     "actionPhases": [
       "START_OF_FELLOWSHIP"
     ],
@@ -7719,9 +7679,6 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
-    "keywords": [
-      "UNBOUND"
-    ],
     "culture": "GANDALF",
     "race": "WIZARD",
     "twilightCost": 4,
@@ -7770,8 +7727,7 @@
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
     "keywords": [
-      "RANGER",
-      "UNBOUND"
+      "RANGER"
     ],
     "culture": "GONDOR",
     "race": "MAN",
@@ -7821,8 +7777,7 @@
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
     "keywords": [
-      "KNIGHT",
-      "UNBOUND"
+      "KNIGHT"
     ],
     "culture": "GONDOR",
     "race": "MAN",
@@ -7980,9 +7935,6 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
-    "keywords": [
-      "UNBOUND"
-    ],
     "toPlay": [
       {
         "spot": [
@@ -8301,8 +8253,7 @@
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
     "keywords": [
-      "DAMAGE +1",
-      "UNBOUND"
+      "DAMAGE +1"
     ],
     "actionPhases": [
       "ASSIGNMENT"
@@ -8478,8 +8429,7 @@
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
     "keywords": [
-      "DAMAGE +1",
-      "UNBOUND"
+      "DAMAGE +1"
     ],
     "culture": "ROHAN",
     "race": "MAN",
@@ -8681,8 +8631,7 @@
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
     "keywords": [
-      "DAMAGE +1",
-      "UNBOUND"
+      "DAMAGE +1"
     ],
     "actionPhases": [
       "START_OF_FELLOWSHIP"
@@ -8729,8 +8678,7 @@
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
     "keywords": [
-      "ARCHER",
-      "UNBOUND"
+      "ARCHER"
     ],
     "actionPhases": [
       "START_OF_ARCHERY"
@@ -8782,8 +8730,39 @@
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
     "keywords": [
-      "UNHASTY",
-      "UNBOUND"
+      "UNHASTY"
+    ],
+    "abilities": [
+      {
+        "id": "0W4:0",
+        "phases": [
+          "ASSIGNMENT"
+        ],
+        "cost": [
+          {
+            "exert": [
+              {
+                "count": 1,
+                "target": [
+                  [
+                    "UNBOUND",
+                    "HOBBIT"
+                  ]
+                ],
+                "mode": "DESIGNATION"
+              }
+            ]
+          }
+        ],
+        "effects": [
+          {
+            "type": "ALLOW_SKIRMISH",
+            "target": "SELF"
+          }
+        ],
+        "source": "SELF",
+        "text": "ASSIGNMENT: Exert an unbound Hobbit to allow Treebeard to skirmish"
+      }
     ],
     "actionPhases": [
       "ASSIGNMENT"
@@ -8896,8 +8875,7 @@
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
     "keywords": [
-      "RANGER",
-      "UNBOUND"
+      "RANGER"
     ],
     "actionPhases": [
       "START_OF_MANEUVER"
@@ -9194,9 +9172,6 @@
     "isFemale": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
-    "keywords": [
-      "UNBOUND"
-    ],
     "actionPhases": [
       "START_OF_FELLOWSHIP"
     ],
@@ -9393,9 +9368,6 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
-    "keywords": [
-      "UNBOUND"
-    ],
     "culture": "DWARVEN",
     "race": "DWARF",
     "twilightCost": 2,
@@ -9437,9 +9409,6 @@
     "isFemale": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
-    "keywords": [
-      "UNBOUND"
-    ],
     "culture": "ELVEN",
     "race": "ELF",
     "twilightCost": 2,
@@ -9480,9 +9449,6 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
-    "keywords": [
-      "UNBOUND"
-    ],
     "culture": "GANDALF",
     "race": "WIZARD",
     "twilightCost": 4,
@@ -9563,9 +9529,6 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
-    "keywords": [
-      "UNBOUND"
-    ],
     "culture": "GONDOR",
     "race": "MAN",
     "twilightCost": 3,
@@ -9719,9 +9682,6 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
-    "keywords": [
-      "UNBOUND"
-    ],
     "culture": "ROHAN",
     "race": "MAN",
     "twilightCost": 3,
@@ -10115,9 +10075,6 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
-    "keywords": [
-      "UNBOUND"
-    ],
     "culture": "GANDALF",
     "race": "WIZARD",
     "twilightCost": 4,
@@ -10166,8 +10123,7 @@
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
     "keywords": [
-      "HUNTER 2",
-      "UNBOUND"
+      "HUNTER 2"
     ],
     "culture": "GONDOR",
     "race": "MAN",
@@ -10216,9 +10172,6 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
-    "keywords": [
-      "UNBOUND"
-    ],
     "culture": "DWARVEN",
     "race": "DWARF",
     "twilightCost": 2,
@@ -10421,9 +10374,6 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
-    "keywords": [
-      "UNBOUND"
-    ],
     "toPlay": [
       {
         "spot": [
@@ -10479,9 +10429,6 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
-    "keywords": [
-      "UNBOUND"
-    ],
     "culture": "ROHAN",
     "race": "MAN",
     "twilightCost": 2,
@@ -10888,9 +10835,6 @@
     "isUnique": false,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
-    "keywords": [
-      "UNBOUND"
-    ],
     "toPlay": [
       {
         "spot": [
@@ -11078,9 +11022,6 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
-    "keywords": [
-      "UNBOUND"
-    ],
     "toPlay": [
       {
         "spot": [
@@ -11142,8 +11083,7 @@
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
     "keywords": [
-      "DAMAGE +1",
-      "UNBOUND"
+      "DAMAGE +1"
     ],
     "actionPhases": [
       "FELLOWSHIP"
@@ -12637,9 +12577,6 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
-    "keywords": [
-      "UNBOUND"
-    ],
     "toPlay": [
       {
         "spot": [
@@ -12748,8 +12685,7 @@
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
     "keywords": [
-      "ARCHER",
-      "UNBOUND"
+      "ARCHER"
     ],
     "culture": "ELVEN",
     "race": "ELF",
@@ -12838,9 +12774,6 @@
     "isUnique": false,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
-    "keywords": [
-      "UNBOUND"
-    ],
     "toPlay": [
       {
         "spot": [
@@ -14790,45 +14723,6 @@
         "Boromir"
       ]
     ],
-    "abilities": [
-      {
-        "id": "1R95:0",
-        "phases": [
-          "SKIRMISH"
-        ],
-        "cost": [
-          {
-            "exert": [
-              {
-                "count": 1,
-                "target": [
-                  [
-                    "Boromir"
-                  ]
-                ]
-              }
-            ]
-          }
-        ],
-        "effects": [
-          {
-            "type": "WOUND",
-            "count": 1,
-            "target": [
-              [
-                "ORC",
-                "URUK-HAI",
-                "HE",
-                "IS",
-                "SKIRMISHING"
-              ]
-            ]
-          }
-        ],
-        "source": "SELF",
-        "text": "SKIRMISH: Exert Boromir to wound an Orc or Uruk-hai he is skirmishing."
-      }
-    ],
     "actionPhases": [
       "SKIRMISH"
     ],
@@ -14871,8 +14765,38 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
-    "keywords": [
-      "UNBOUND"
+    "abilities": [
+      {
+        "id": "1U97:0",
+        "phases": [
+          "SKIRMISH"
+        ],
+        "cost": [
+          {
+            "exert": [
+              {
+                "count": 1,
+                "target": "SELF"
+              }
+            ]
+          }
+        ],
+        "effects": [
+          {
+            "type": "ADD_TEMP_STAT",
+            "stat": "STRENGTH",
+            "value": 3,
+            "target": [
+              [
+                "HOBBIT"
+              ]
+            ],
+            "expiresAtPhase": "SKIRMISH"
+          }
+        ],
+        "source": "SELF",
+        "text": "SKIRMISH: Exert Boromir to make a Hobbit strength +3."
+      }
     ],
     "actionPhases": [
       "SKIRMISH"
@@ -19128,6 +19052,37 @@
     "isUnique": false,
     "kind": "SHADOW",
     "type": "MINION",
+    "abilities": [
+      {
+        "id": "1C191:0",
+        "phases": [],
+        "trigger": {
+          "type": "WHEN_PLAYED"
+        },
+        "cost": [
+          {
+            "spot": [
+              {
+                "count": 1,
+                "target": [
+                  [
+                    "ELF"
+                  ]
+                ]
+              }
+            ]
+          }
+        ],
+        "effects": [
+          {
+            "type": "ADD_TWILIGHT",
+            "count": 2
+          }
+        ],
+        "source": "SELF",
+        "text": "When you play this minion, spot an Elf to add twilight2."
+      }
+    ],
     "culture": "MORIA",
     "race": "ORC",
     "twilightCost": 2,
@@ -21031,6 +20986,39 @@
     "isUnique": true,
     "kind": "SHADOW",
     "type": "MINION",
+    "abilities": [
+      {
+        "id": "1U235:0",
+        "phases": [
+          "SHADOW"
+        ],
+        "cost": [
+          {
+            "exert": [
+              {
+                "count": 1,
+                "target": "SELF"
+              }
+            ]
+          }
+        ],
+        "effects": [
+          {
+            "type": "ADD_TEMP_KEYWORD",
+            "keyword": "FIERCE",
+            "target": [
+              [
+                "WRAITH",
+                "MINION"
+              ]
+            ],
+            "expiresAtPhase": "REGROUP"
+          }
+        ],
+        "source": "SELF",
+        "text": "SHADOW: Exert Úlairë Otsëa to make a wraith minion fierce until the regroup phase."
+      }
+    ],
     "actionPhases": [
       "SHADOW"
     ],
@@ -21682,45 +21670,6 @@
     "isUnique": false,
     "kind": "SHADOW",
     "type": "EVENT",
-    "abilities": [
-      {
-        "id": "1R250:0",
-        "phases": [
-          "MANEUVER"
-        ],
-        "cost": [
-          {
-            "exert": [
-              {
-                "count": 1,
-                "target": [
-                  [
-                    "SAURON",
-                    "ORC"
-                  ]
-                ],
-                "mode": "DESIGNATION"
-              }
-            ]
-          }
-        ],
-        "effects": [
-          {
-            "type": "WOUND",
-            "count": 1,
-            "target": [
-              [
-                "COMPANION",
-                "EXCEPT",
-                "RING-BEARER"
-              ]
-            ]
-          }
-        ],
-        "source": "SELF",
-        "text": "MANEUVER: Exert a sauron Orc to wound a companion (except the Ring-bearer)."
-      }
-    ],
     "phases": [
       "MANEUVER"
     ],
@@ -21990,14 +21939,7 @@
           {
             "type": "WOUND",
             "count": 1,
-            "target": [
-              [
-                "CHARACTER",
-                "HE",
-                "IS",
-                "SKIRMISHING"
-              ]
-            ]
+            "target": "SKIRMISHING"
           }
         ],
         "source": "SELF",
@@ -22489,14 +22431,7 @@
           {
             "type": "WOUND",
             "count": 1,
-            "target": [
-              [
-                "CHARACTER",
-                "HE",
-                "IS",
-                "SKIRMISHING"
-              ]
-            ]
+            "target": "SKIRMISHING"
           }
         ],
         "source": "SELF",
@@ -22662,14 +22597,7 @@
           {
             "type": "WOUND",
             "count": 1,
-            "target": [
-              [
-                "CHARACTER",
-                "IT",
-                "IS",
-                "SKIRMISHING"
-              ]
-            ]
+            "target": "SKIRMISHING"
           }
         ],
         "source": "SELF",
@@ -22740,14 +22668,7 @@
           {
             "type": "WOUND",
             "count": 1,
-            "target": [
-              [
-                "CHARACTER",
-                "HE",
-                "IS",
-                "SKIRMISHING"
-              ]
-            ]
+            "target": "SKIRMISHING"
           }
         ],
         "source": "SELF",
@@ -22819,14 +22740,7 @@
           {
             "type": "WOUND",
             "count": 1,
-            "target": [
-              [
-                "CHARACTER",
-                "IT",
-                "IS",
-                "SKIRMISHING"
-              ]
-            ]
+            "target": "SKIRMISHING"
           }
         ],
         "source": "SELF",
@@ -24283,9 +24197,6 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
-    "keywords": [
-      "UNBOUND"
-    ],
     "actionPhases": [
       "SKIRMISH"
     ],
@@ -24336,9 +24247,6 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
-    "keywords": [
-      "UNBOUND"
-    ],
     "culture": "SHIRE",
     "race": "HOBBIT",
     "signet": "ARAGORN",
@@ -24468,9 +24376,6 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
-    "keywords": [
-      "UNBOUND"
-    ],
     "culture": "SHIRE",
     "race": "HOBBIT",
     "signet": "FRODO",
@@ -24518,9 +24423,6 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
-    "keywords": [
-      "UNBOUND"
-    ],
     "culture": "SHIRE",
     "race": "HOBBIT",
     "signet": "GANDALF",
@@ -25109,9 +25011,6 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
-    "keywords": [
-      "UNBOUND"
-    ],
     "actionPhases": [
       "FELLOWSHIP"
     ],
@@ -25163,8 +25062,7 @@
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
     "keywords": [
-      "RANGER",
-      "UNBOUND"
+      "RANGER"
     ],
     "culture": "GONDOR",
     "race": "MAN",
@@ -25468,9 +25366,6 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
-    "keywords": [
-      "UNBOUND"
-    ],
     "toPlay": [
       {
         "spot": [
@@ -25531,9 +25426,6 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
-    "keywords": [
-      "UNBOUND"
-    ],
     "culture": "DWARVEN",
     "race": "DWARF",
     "twilightCost": 2,
@@ -26600,6 +26492,39 @@
       [
         "WIZARD"
       ]
+    ],
+    "abilities": [
+      {
+        "id": "2C29:0",
+        "phases": [
+          "SKIRMISH"
+        ],
+        "cost": [
+          {
+            "exert": [
+              {
+                "count": 2,
+                "target": "BEARER"
+              }
+            ]
+          }
+        ],
+        "effects": [
+          {
+            "type": "ADD_TEMP_STAT",
+            "stat": "STRENGTH",
+            "value": -3,
+            "target": [
+              [
+                "MINION"
+              ]
+            ],
+            "expiresAtPhase": "SKIRMISH"
+          }
+        ],
+        "source": "ATTACHMENT",
+        "text": "SKIRMISH: Exert bearer twice to make a minion strength -3."
+      }
     ],
     "actionPhases": [
       "SKIRMISH"
@@ -28833,7 +28758,7 @@
           "target": [
             [
               "TWILIGHT",
-              "NAZGL"
+              "NAZGÛL"
             ]
           ]
         },
@@ -30043,53 +29968,6 @@
     "isUnique": false,
     "kind": "FREE_PEOPLE",
     "type": "EVENT",
-    "abilities": [
-      {
-        "id": "2U103:0",
-        "phases": [
-          "MANEUVER"
-        ],
-        "cost": [
-          {
-            "exert": [
-              {
-                "count": 1,
-                "target": [
-                  [
-                    "HOBBIT",
-                    "BEARING",
-                    "WEAPON"
-                  ]
-                ],
-                "mode": "DESIGNATION"
-              }
-            ]
-          }
-        ],
-        "effects": [
-          {
-            "type": "WOUND",
-            "count": 1,
-            "target": [
-              [
-                "MINION",
-                "THAT",
-                "MINIONS",
-                "OWNER",
-                "MAY",
-                "REMOVE",
-                "TWILIGHT",
-                "TO",
-                "PREVENT",
-                "THIS"
-              ]
-            ]
-          }
-        ],
-        "source": "SELF",
-        "text": "MANEUVER: Exert a Hobbit bearing a weapon to wound a minion. That minion’s owner may remove twilight3 to prevent this."
-      }
-    ],
     "phases": [
       "MANEUVER"
     ],
@@ -30131,9 +30009,6 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
-    "keywords": [
-      "UNBOUND"
-    ],
     "actionPhases": [
       "FELLOWSHIP"
     ],
@@ -30406,9 +30281,6 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
-    "keywords": [
-      "UNBOUND"
-    ],
     "actionPhases": [
       "FELLOWSHIP"
     ],
@@ -30664,8 +30536,7 @@
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
     "keywords": [
-      "DAMAGE +1",
-      "UNBOUND"
+      "DAMAGE +1"
     ],
     "culture": "DWARVEN",
     "race": "DWARF",
@@ -30714,9 +30585,6 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
-    "keywords": [
-      "UNBOUND"
-    ],
     "culture": "GANDALF",
     "race": "WIZARD",
     "signet": "ARAGORN",
@@ -31043,8 +30911,7 @@
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
     "keywords": [
-      "RANGER",
-      "UNBOUND"
+      "RANGER"
     ],
     "actionPhases": [
       "RESPONSE"
@@ -31097,9 +30964,6 @@
     "isFemale": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
-    "keywords": [
-      "UNBOUND"
-    ],
     "culture": "ELVEN",
     "race": "ELF",
     "signet": "GANDALF",
@@ -31753,6 +31617,39 @@
         ]
       }
     ],
+    "abilities": [
+      {
+        "id": "3U20:0",
+        "phases": [
+          "SKIRMISH"
+        ],
+        "cost": [
+          {
+            "exert": [
+              {
+                "count": 1,
+                "target": "SELF"
+              }
+            ]
+          }
+        ],
+        "effects": [
+          {
+            "type": "ADD_TEMP_STAT",
+            "stat": "STRENGTH",
+            "value": -1,
+            "target": [
+              [
+                "ORC"
+              ]
+            ],
+            "expiresAtPhase": "SKIRMISH"
+          }
+        ],
+        "source": "SELF",
+        "text": "SKIRMISH: Exert Golradir to make an Orc strength -1."
+      }
+    ],
     "actionPhases": [
       "SKIRMISH"
     ],
@@ -32008,6 +31905,39 @@
             ]
           }
         ]
+      }
+    ],
+    "abilities": [
+      {
+        "id": "3U25:0",
+        "phases": [
+          "SKIRMISH"
+        ],
+        "cost": [
+          {
+            "exert": [
+              {
+                "count": 1,
+                "target": "SELF"
+              }
+            ]
+          }
+        ],
+        "effects": [
+          {
+            "type": "ADD_TEMP_STAT",
+            "stat": "STRENGTH",
+            "value": -1,
+            "target": [
+              [
+                "URUK-HAI"
+              ]
+            ],
+            "expiresAtPhase": "SKIRMISH"
+          }
+        ],
+        "source": "SELF",
+        "text": "SKIRMISH: Exert Saelbeth to make an Uruk-hai strength -1."
       }
     ],
     "actionPhases": [
@@ -32619,8 +32549,7 @@
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
     "keywords": [
-      "RANGER",
-      "UNBOUND"
+      "RANGER"
     ],
     "culture": "GONDOR",
     "race": "MAN",
@@ -35112,39 +35041,6 @@
     "isUnique": false,
     "kind": "SHADOW",
     "type": "MINION",
-    "abilities": [
-      {
-        "id": "3R93:0",
-        "phases": [
-          "REGROUP"
-        ],
-        "cost": [
-          {
-            "exert": [
-              {
-                "count": 1,
-                "target": "SELF"
-              }
-            ]
-          }
-        ],
-        "effects": [
-          {
-            "type": "WOUND",
-            "count": 1,
-            "target": [
-              [
-                "COMPANION",
-                "EXCEPT",
-                "RING-BEARER"
-              ]
-            ]
-          }
-        ],
-        "source": "SELF",
-        "text": "REGROUP: Exert this minion to wound a companion (except the Ring-bearer)."
-      }
-    ],
     "actionPhases": [
       "REGROUP"
     ],
@@ -35319,39 +35215,6 @@
     "isUnique": false,
     "kind": "SHADOW",
     "type": "MINION",
-    "abilities": [
-      {
-        "id": "3U97:0",
-        "phases": [
-          "REGROUP"
-        ],
-        "cost": [
-          {
-            "exert": [
-              {
-                "count": 1,
-                "target": "SELF"
-              }
-            ]
-          }
-        ],
-        "effects": [
-          {
-            "type": "WOUND",
-            "count": 1,
-            "target": [
-              [
-                "COMPANION",
-                "EXCEPT",
-                "RING-BEARER"
-              ]
-            ]
-          }
-        ],
-        "source": "SELF",
-        "text": "REGROUP: Exert this minion to wound a companion (except the Ring-bearer)."
-      }
-    ],
     "actionPhases": [
       "REGROUP"
     ],
@@ -35858,41 +35721,6 @@
         "HOBBIT"
       ]
     ],
-    "abilities": [
-      {
-        "id": "3C108:0",
-        "phases": [
-          "SKIRMISH"
-        ],
-        "cost": [
-          {
-            "exert": [
-              {
-                "count": 1,
-                "target": "BEARER"
-              }
-            ]
-          }
-        ],
-        "effects": [
-          {
-            "type": "WOUND",
-            "count": 1,
-            "target": [
-              [
-                "ORC",
-                "HE",
-                "SHE",
-                "IS",
-                "SKIRMISHING"
-              ]
-            ]
-          }
-        ],
-        "source": "ATTACHMENT",
-        "text": "SKIRMISH: Exert bearer to wound an Orc he or she is skirmishing."
-      }
-    ],
     "actionPhases": [
       "SKIRMISH"
     ],
@@ -36217,8 +36045,7 @@
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
     "keywords": [
-      "ARCHER",
-      "UNBOUND"
+      "ARCHER"
     ],
     "culture": "ELVEN",
     "race": "ELF",
@@ -36268,8 +36095,7 @@
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
     "keywords": [
-      "RANGER",
-      "UNBOUND"
+      "RANGER"
     ],
     "actionPhases": [
       "FELLOWSHIP"
@@ -37613,6 +37439,40 @@
     "isUnique": true,
     "kind": "SHADOW",
     "type": "MINION",
+    "abilities": [
+      {
+        "id": "4R33:0",
+        "phases": [
+          "SKIRMISH"
+        ],
+        "cost": [
+          {
+            "exert": [
+              {
+                "count": 1,
+                "target": "SELF"
+              }
+            ]
+          }
+        ],
+        "effects": [
+          {
+            "type": "ADD_TEMP_STAT",
+            "stat": "STRENGTH",
+            "value": 2,
+            "target": [
+              [
+                "DUNLAND",
+                "MAN"
+              ]
+            ],
+            "expiresAtPhase": "SKIRMISH"
+          }
+        ],
+        "source": "SELF",
+        "text": "SKIRMISH: Exert Saruman to make a dunland Man strength +2."
+      }
+    ],
     "actionPhases": [
       "SKIRMISH"
     ],
@@ -38261,8 +38121,7 @@
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
     "keywords": [
-      "DAMAGE +1",
-      "UNBOUND"
+      "DAMAGE +1"
     ],
     "culture": "DWARVEN",
     "race": "DWARF",
@@ -38312,8 +38171,7 @@
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
     "keywords": [
-      "DAMAGE +1",
-      "UNBOUND"
+      "DAMAGE +1"
     ],
     "actionPhases": [
       "SKIRMISH"
@@ -39026,9 +38884,6 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
-    "keywords": [
-      "UNBOUND"
-    ],
     "toPlay": [
       {
         "spot": [
@@ -39130,9 +38985,6 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
-    "keywords": [
-      "UNBOUND"
-    ],
     "toPlay": [
       {
         "spot": [
@@ -39196,9 +39048,6 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
-    "keywords": [
-      "UNBOUND"
-    ],
     "toPlay": [
       {
         "spot": [
@@ -39337,9 +39186,6 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
-    "keywords": [
-      "UNBOUND"
-    ],
     "actionPhases": [
       "REGROUP"
     ],
@@ -39443,8 +39289,7 @@
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
     "keywords": [
-      "ARCHER",
-      "UNBOUND"
+      "ARCHER"
     ],
     "actionPhases": [
       "SKIRMISH"
@@ -39556,9 +39401,6 @@
     "isUnique": false,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
-    "keywords": [
-      "UNBOUND"
-    ],
     "actionPhases": [
       "REGROUP"
     ],
@@ -39656,9 +39498,6 @@
     "isUnique": false,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
-    "keywords": [
-      "UNBOUND"
-    ],
     "culture": "ELVEN",
     "race": "ELF",
     "twilightCost": 2,
@@ -39741,9 +39580,6 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
-    "keywords": [
-      "UNBOUND"
-    ],
     "toPlay": [
       {
         "spot": [
@@ -39804,9 +39640,6 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
-    "keywords": [
-      "UNBOUND"
-    ],
     "toPlay": [
       {
         "spot": [
@@ -39992,9 +39825,6 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
-    "keywords": [
-      "UNBOUND"
-    ],
     "toPlay": [
       {
         "spot": [
@@ -40058,9 +39888,6 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
-    "keywords": [
-      "UNBOUND"
-    ],
     "toPlay": [
       {
         "spot": [
@@ -40204,9 +40031,6 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
-    "keywords": [
-      "UNBOUND"
-    ],
     "actionPhases": [
       "FELLOWSHIP"
     ],
@@ -40986,8 +40810,7 @@
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
     "keywords": [
-      "DEFENDER +1",
-      "UNBOUND"
+      "DEFENDER +1"
     ],
     "culture": "GONDOR",
     "race": "MAN",
@@ -41282,50 +41105,6 @@
     "isUnique": false,
     "kind": "FREE_PEOPLE",
     "type": "EVENT",
-    "abilities": [
-      {
-        "id": "4C115:0",
-        "phases": [
-          "MANEUVER"
-        ],
-        "cost": [
-          {
-            "exert": [
-              {
-                "count": 1,
-                "target": [
-                  [
-                    "GONDOR",
-                    "MAN"
-                  ]
-                ],
-                "mode": "DESIGNATION"
-              }
-            ]
-          }
-        ],
-        "effects": [
-          {
-            "type": "WOUND",
-            "count": 1,
-            "target": [
-              [
-                "MINION",
-                "ONCE",
-                "TWICE",
-                "IF",
-                "THAT",
-                "MINION",
-                "IS",
-                "URUK-HAI"
-              ]
-            ]
-          }
-        ],
-        "source": "SELF",
-        "text": "MANEUVER: Exert a gondor Man to wound a minion once (or twice if that minion is an Uruk-hai)."
-      }
-    ],
     "phases": [
       "MANEUVER"
     ],
@@ -41418,9 +41197,6 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
-    "keywords": [
-      "UNBOUND"
-    ],
     "culture": "GONDOR",
     "race": "MAN",
     "signet": "FRODO",
@@ -41647,8 +41423,7 @@
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
     "keywords": [
-      "RANGER",
-      "UNBOUND"
+      "RANGER"
     ],
     "culture": "GONDOR",
     "race": "MAN",
@@ -48036,9 +47811,6 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
-    "keywords": [
-      "UNBOUND"
-    ],
     "actionPhases": [
       "RESPONSE"
     ],
@@ -48088,9 +47860,6 @@
     "isUnique": false,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
-    "keywords": [
-      "UNBOUND"
-    ],
     "culture": "ROHAN",
     "race": "MAN",
     "twilightCost": 3,
@@ -48132,9 +47901,6 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
-    "keywords": [
-      "UNBOUND"
-    ],
     "culture": "ROHAN",
     "race": "MAN",
     "signet": "ARAGORN",
@@ -48182,9 +47948,6 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
-    "keywords": [
-      "UNBOUND"
-    ],
     "culture": "ROHAN",
     "race": "MAN",
     "signet": "THEODEN",
@@ -48278,9 +48041,6 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
-    "keywords": [
-      "UNBOUND"
-    ],
     "culture": "ROHAN",
     "race": "MAN",
     "twilightCost": 2,
@@ -48329,8 +48089,7 @@
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
     "keywords": [
-      "VALIANT",
-      "UNBOUND"
+      "VALIANT"
     ],
     "abilities": [
       {
@@ -48419,8 +48178,7 @@
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
     "keywords": [
-      "VALIANT",
-      "UNBOUND"
+      "VALIANT"
     ],
     "actionPhases": [
       "RESPONSE"
@@ -48876,6 +48634,40 @@
     "keywords": [
       "VILLAGER"
     ],
+    "abilities": [
+      {
+        "id": "4C281:0",
+        "phases": [
+          "SKIRMISH"
+        ],
+        "cost": [
+          {
+            "exert": [
+              {
+                "count": 1,
+                "target": "SELF"
+              }
+            ]
+          }
+        ],
+        "effects": [
+          {
+            "type": "ADD_TEMP_STAT",
+            "stat": "STRENGTH",
+            "value": 2,
+            "target": [
+              [
+                "ROHAN",
+                "MAN"
+              ]
+            ],
+            "expiresAtPhase": "SKIRMISH"
+          }
+        ],
+        "source": "SELF",
+        "text": "SKIRMISH: Exert Hlafwine to make a rohan Man strength +2."
+      }
+    ],
     "actionPhases": [
       "SKIRMISH"
     ],
@@ -49130,9 +48922,6 @@
     "isUnique": false,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
-    "keywords": [
-      "UNBOUND"
-    ],
     "actionPhases": [
       "SKIRMISH"
     ],
@@ -49356,9 +49145,6 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
-    "keywords": [
-      "UNBOUND"
-    ],
     "actionPhases": [
       "REGROUP"
     ],
@@ -50151,9 +49937,6 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
-    "keywords": [
-      "UNBOUND"
-    ],
     "actionPhases": [
       "SKIRMISH"
     ],
@@ -50204,9 +49987,6 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
-    "keywords": [
-      "UNBOUND"
-    ],
     "actionPhases": [
       "SKIRMISH"
     ],
@@ -50298,9 +50078,6 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
-    "keywords": [
-      "UNBOUND"
-    ],
     "actionPhases": [
       "SKIRMISH"
     ],
@@ -50351,9 +50128,6 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
-    "keywords": [
-      "UNBOUND"
-    ],
     "actionPhases": [
       "SKIRMISH"
     ],
@@ -50774,9 +50548,6 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
-    "keywords": [
-      "UNBOUND"
-    ],
     "actionPhases": [
       "FELLOWSHIP"
     ],
@@ -50994,48 +50765,6 @@
     "isUnique": false,
     "kind": "FREE_PEOPLE",
     "type": "EVENT",
-    "abilities": [
-      {
-        "id": "5R5:0",
-        "phases": [
-          "MANEUVER"
-        ],
-        "cost": [
-          {
-            "exert": [
-              {
-                "count": 1,
-                "target": [
-                  [
-                    "DWARF"
-                  ]
-                ],
-                "mode": "DESIGNATION"
-              }
-            ]
-          }
-        ],
-        "effects": [
-          {
-            "type": "WOUND",
-            "count": 1,
-            "target": [
-              [
-                "MINION",
-                "YOU",
-                "MAY",
-                "TAKE",
-                "NEXT",
-                "MANEUVER",
-                "ACTION"
-              ]
-            ]
-          }
-        ],
-        "source": "SELF",
-        "text": "MANEUVER: Exert a Dwarf to wound a minion. You may take the next maneuver action."
-      }
-    ],
     "phases": [
       "MANEUVER"
     ],
@@ -51119,8 +50848,7 @@
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
     "keywords": [
-      "DAMAGE +1",
-      "UNBOUND"
+      "DAMAGE +1"
     ],
     "culture": "DWARVEN",
     "race": "DWARF",
@@ -51253,9 +50981,6 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
-    "keywords": [
-      "UNBOUND"
-    ],
     "toPlay": [
       {
         "spot": [
@@ -51402,9 +51127,6 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
-    "keywords": [
-      "UNBOUND"
-    ],
     "toPlay": [
       {
         "spot": [
@@ -51507,8 +51229,7 @@
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
     "keywords": [
-      "UNHASTY",
-      "UNBOUND"
+      "UNHASTY"
     ],
     "actionPhases": [
       "ASSIGNMENT",
@@ -51605,8 +51326,7 @@
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
     "keywords": [
-      "UNHASTY",
-      "UNBOUND"
+      "UNHASTY"
     ],
     "actionPhases": [
       "ASSIGNMENT"
@@ -51697,43 +51417,7 @@
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
     "keywords": [
-      "UNHASTY",
-      "UNBOUND"
-    ],
-    "abilities": [
-      {
-        "id": "5R19:0",
-        "phases": [
-          "SKIRMISH"
-        ],
-        "cost": [
-          {
-            "exert": [
-              {
-                "count": 1,
-                "target": "SELF"
-              }
-            ]
-          }
-        ],
-        "effects": [
-          {
-            "type": "WOUND",
-            "count": 1,
-            "target": [
-              [
-                "ISENGARD",
-                "MINION",
-                "HE",
-                "IS",
-                "SKIRMISHING"
-              ]
-            ]
-          }
-        ],
-        "source": "SELF",
-        "text": "SKIRMISH: Exert Lindenroot to wound an isengard minion he is skirmishing."
-      }
+      "UNHASTY"
     ],
     "actionPhases": [
       "ASSIGNMENT",
@@ -52194,8 +51878,7 @@
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
     "keywords": [
-      "KNIGHT",
-      "UNBOUND"
+      "KNIGHT"
     ],
     "actionPhases": [
       "ASSIGNMENT"
@@ -52381,8 +52064,7 @@
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
     "keywords": [
-      "KNIGHT",
-      "UNBOUND"
+      "KNIGHT"
     ],
     "culture": "GONDOR",
     "race": "MAN",
@@ -52426,8 +52108,7 @@
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
     "keywords": [
-      "KNIGHT",
-      "UNBOUND"
+      "KNIGHT"
     ],
     "actionPhases": [
       "FELLOWSHIP"
@@ -52685,8 +52366,7 @@
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
     "keywords": [
-      "KNIGHT",
-      "UNBOUND"
+      "KNIGHT"
     ],
     "toPlay": [
       {
@@ -52700,40 +52380,6 @@
             ]
           }
         ]
-      }
-    ],
-    "abilities": [
-      {
-        "id": "5U42:0",
-        "phases": [
-          "MANEUVER"
-        ],
-        "cost": [
-          {
-            "exert": [
-              {
-                "count": 1,
-                "target": "SELF"
-              }
-            ]
-          }
-        ],
-        "effects": [
-          {
-            "type": "WOUND",
-            "count": 1,
-            "target": [
-              [
-                "MINION",
-                "BEARING",
-                "GONDOR",
-                "FORTIFICATION"
-              ]
-            ]
-          }
-        ],
-        "source": "SELF",
-        "text": "MANEUVER: Exert Turgon to wound a minion bearing a gondor Fortification."
       }
     ],
     "actionPhases": [
@@ -54633,8 +54279,7 @@
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
     "keywords": [
-      "VALIANT",
-      "UNBOUND"
+      "VALIANT"
     ],
     "toPlay": [
       {
@@ -54701,8 +54346,7 @@
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
     "keywords": [
-      "VALIANT",
-      "UNBOUND"
+      "VALIANT"
     ],
     "culture": "ROHAN",
     "race": "MAN",
@@ -55011,8 +54655,7 @@
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
     "keywords": [
-      "VALIANT",
-      "UNBOUND"
+      "VALIANT"
     ],
     "actionPhases": [
       "REGROUP"
@@ -55160,8 +54803,7 @@
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
     "keywords": [
-      "VALIANT",
-      "UNBOUND"
+      "VALIANT"
     ],
     "actionPhases": [
       "MANEUVER"
@@ -56194,8 +55836,7 @@
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
     "keywords": [
-      "ARCHER",
-      "UNBOUND"
+      "ARCHER"
     ],
     "culture": "ELVEN",
     "race": "ELF",
@@ -56246,8 +55887,7 @@
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
     "keywords": [
-      "VALIANT",
-      "UNBOUND"
+      "VALIANT"
     ],
     "actionPhases": [
       "MANEUVER"
@@ -56299,48 +55939,6 @@
     "isUnique": false,
     "kind": "FREE_PEOPLE",
     "type": "EVENT",
-    "abilities": [
-      {
-        "id": "5R123:0",
-        "phases": [
-          "MANEUVER"
-        ],
-        "cost": [
-          {
-            "exert": [
-              {
-                "count": 1,
-                "target": [
-                  [
-                    "DWARF"
-                  ]
-                ],
-                "mode": "DESIGNATION"
-              }
-            ]
-          }
-        ],
-        "effects": [
-          {
-            "type": "WOUND",
-            "count": 1,
-            "target": [
-              [
-                "MINION",
-                "YOU",
-                "MAY",
-                "TAKE",
-                "NEXT",
-                "MANEUVER",
-                "ACTION"
-              ]
-            ]
-          }
-        ],
-        "source": "SELF",
-        "text": "MANEUVER: Exert a Dwarf to wound a minion. You may take the next maneuver action."
-      }
-    ],
     "phases": [
       "MANEUVER"
     ],
@@ -57097,9 +56695,6 @@
     "isFemale": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
-    "keywords": [
-      "UNBOUND"
-    ],
     "actionPhases": [
       "SKIRMISH"
     ],
@@ -57527,9 +57122,6 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
-    "keywords": [
-      "UNBOUND"
-    ],
     "toPlay": [
       {
         "spot": [
@@ -57589,9 +57181,6 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
-    "keywords": [
-      "UNBOUND"
-    ],
     "toPlay": [
       {
         "spot": [
@@ -57774,9 +57363,6 @@
     "isUnique": false,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
-    "keywords": [
-      "UNBOUND"
-    ],
     "culture": "GANDALF",
     "race": "ENT",
     "twilightCost": 4,
@@ -57818,9 +57404,6 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
-    "keywords": [
-      "UNBOUND"
-    ],
     "toPlay": [
       {
         "spot": [
@@ -57937,8 +57520,7 @@
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
     "keywords": [
-      "DAMAGE +1",
-      "UNBOUND"
+      "DAMAGE +1"
     ],
     "culture": "GANDALF",
     "race": "WIZARD",
@@ -58043,9 +57625,6 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
-    "keywords": [
-      "UNBOUND"
-    ],
     "toPlay": [
       {
         "spot": [
@@ -58102,9 +57681,6 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
-    "keywords": [
-      "UNBOUND"
-    ],
     "culture": "GANDALF",
     "race": "ENT",
     "twilightCost": 4,
@@ -58192,9 +57768,6 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
-    "keywords": [
-      "UNBOUND"
-    ],
     "abilities": [
       {
         "id": "6R35:0",
@@ -58324,8 +57897,69 @@
     "type": "COMPANION",
     "keywords": [
       "UNHASTY",
-      "DAMAGE +1",
-      "UNBOUND"
+      "DAMAGE +1"
+    ],
+    "abilities": [
+      {
+        "id": "6C37:0",
+        "phases": [
+          "ASSIGNMENT"
+        ],
+        "cost": [
+          {
+            "exert": [
+              {
+                "count": 1,
+                "target": [
+                  [
+                    "UNBOUND",
+                    "HOBBIT"
+                  ]
+                ],
+                "mode": "DESIGNATION"
+              }
+            ]
+          }
+        ],
+        "effects": [
+          {
+            "type": "ALLOW_SKIRMISH",
+            "target": "SELF"
+          }
+        ],
+        "source": "SELF",
+        "text": "ASSIGNMENT: Exert an unbound Hobbit to allow Treebeard to skirmish"
+      },
+      {
+        "id": "6C37:1",
+        "phases": [
+          "SKIRMISH"
+        ],
+        "cost": [
+          {
+            "exert": [
+              {
+                "count": 1,
+                "target": "SELF"
+              }
+            ]
+          }
+        ],
+        "effects": [
+          {
+            "type": "ADD_TEMP_KEYWORD",
+            "keyword": "DAMAGE +1",
+            "target": [
+              [
+                "ENT"
+              ]
+            ],
+            "expiresAtPhase": "SKIRMISH"
+          }
+        ],
+        "source": "SELF",
+        "text": "SKIRMISH: Exert Treebeard to make an Ent Damage +1.."
+      }
     ],
     "actionPhases": [
       "ASSIGNMENT",
@@ -58902,9 +58536,6 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
-    "keywords": [
-      "UNBOUND"
-    ],
     "actionPhases": [
       "SKIRMISH",
       "REGROUP"
@@ -60753,8 +60384,7 @@
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
     "keywords": [
-      "VALIANT",
-      "UNBOUND"
+      "VALIANT"
     ],
     "actionPhases": [
       "SKIRMISH"
@@ -60847,9 +60477,6 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
-    "keywords": [
-      "UNBOUND"
-    ],
     "toPlay": [
       {
         "spot": [
@@ -60914,9 +60541,6 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
-    "keywords": [
-      "UNBOUND"
-    ],
     "toPlay": [
       {
         "spot": [
@@ -61726,9 +61350,6 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
-    "keywords": [
-      "UNBOUND"
-    ],
     "actionPhases": [
       "REGROUP"
     ],
@@ -61779,9 +61400,6 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
-    "keywords": [
-      "UNBOUND"
-    ],
     "actionPhases": [
       "REGROUP"
     ],
@@ -61980,9 +61598,6 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
-    "keywords": [
-      "UNBOUND"
-    ],
     "abilities": [
       {
         "id": "6R124:0",
@@ -62437,8 +62052,7 @@
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
     "keywords": [
-      "DAMAGE +1",
-      "UNBOUND"
+      "DAMAGE +1"
     ],
     "culture": "DWARVEN",
     "race": "DWARF",
@@ -62484,8 +62098,7 @@
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
     "keywords": [
-      "DAMAGE +1",
-      "UNBOUND"
+      "DAMAGE +1"
     ],
     "actionPhases": [
       "RESPONSE"
@@ -62868,9 +62481,6 @@
     "isFemale": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
-    "keywords": [
-      "UNBOUND"
-    ],
     "culture": "ELVEN",
     "race": "ELF",
     "signet": "GANDALF",
@@ -63088,9 +62698,6 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
-    "keywords": [
-      "UNBOUND"
-    ],
     "toPlay": [
       {
         "spot": [
@@ -63306,8 +62913,7 @@
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
     "keywords": [
-      "ARCHER",
-      "UNBOUND"
+      "ARCHER"
     ],
     "actionPhases": [
       "ARCHERY"
@@ -63356,8 +62962,7 @@
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
     "keywords": [
-      "ARCHER",
-      "UNBOUND"
+      "ARCHER"
     ],
     "actionPhases": [
       "ARCHERY"
@@ -63785,9 +63390,6 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
-    "keywords": [
-      "UNBOUND"
-    ],
     "culture": "GANDALF",
     "race": "WIZARD",
     "signet": "GANDALF",
@@ -63835,9 +63437,6 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
-    "keywords": [
-      "UNBOUND"
-    ],
     "actionPhases": [
       "SKIRMISH"
     ],
@@ -65753,8 +65352,7 @@
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
     "keywords": [
-      "KNIGHT",
-      "UNBOUND"
+      "KNIGHT"
     ],
     "actionPhases": [
       "START_OF_FELLOWSHIP"
@@ -65802,9 +65400,6 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
-    "keywords": [
-      "UNBOUND"
-    ],
     "culture": "GONDOR",
     "race": "MAN",
     "twilightCost": 2,
@@ -65926,9 +65521,6 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
-    "keywords": [
-      "UNBOUND"
-    ],
     "actionPhases": [
       "FELLOWSHIP"
     ],
@@ -65975,9 +65567,6 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
-    "keywords": [
-      "UNBOUND"
-    ],
     "culture": "GONDOR",
     "race": "MAN",
     "signet": "ARAGORN",
@@ -66025,9 +65614,6 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
-    "keywords": [
-      "UNBOUND"
-    ],
     "actionPhases": [
       "REGROUP"
     ],
@@ -66072,9 +65658,6 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
-    "keywords": [
-      "UNBOUND"
-    ],
     "actionPhases": [
       "START_OF_REGROUP"
     ],
@@ -66161,8 +65744,7 @@
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
     "keywords": [
-      "RANGER",
-      "UNBOUND"
+      "RANGER"
     ],
     "toPlay": [
       {
@@ -66223,8 +65805,41 @@
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
     "keywords": [
-      "RANGER",
-      "UNBOUND"
+      "RANGER"
+    ],
+    "abilities": [
+      {
+        "id": "7R91:0",
+        "phases": [
+          "SKIRMISH"
+        ],
+        "cost": [
+          {
+            "exert": [
+              {
+                "count": 1,
+                "target": "SELF"
+              }
+            ]
+          }
+        ],
+        "effects": [
+          {
+            "type": "ADD_TEMP_STAT",
+            "stat": "STRENGTH",
+            "value": 2,
+            "target": [
+              [
+                "UNBOUND",
+                "HOBBIT"
+              ]
+            ],
+            "expiresAtPhase": "SKIRMISH"
+          }
+        ],
+        "source": "SELF",
+        "text": "SKIRMISH: Exert Faramir to make an unbound Hobbit strength +2."
+      }
     ],
     "actionPhases": [
       "FELLOWSHIP",
@@ -66367,46 +65982,6 @@
         "MAN"
       ]
     ],
-    "abilities": [
-      {
-        "id": "7U94:0",
-        "phases": [
-          "SKIRMISH"
-        ],
-        "cost": [
-          {
-            "exert": [
-              {
-                "count": 1,
-                "target": "BEARER"
-              }
-            ]
-          }
-        ],
-        "effects": [
-          {
-            "type": "WOUND",
-            "count": 1,
-            "target": [
-              [
-                "MINION",
-                "HE",
-                "SHE",
-                "IS",
-                "SKIRMISHING",
-                "IF",
-                "THAT",
-                "MINION",
-                "BEARS",
-                "FORTIFICATION"
-              ]
-            ]
-          }
-        ],
-        "source": "ATTACHMENT",
-        "text": "SKIRMISH: Exert bearer to wound a minion he or she is skirmishing if that minion bears a Fortification."
-      }
-    ],
     "actionPhases": [
       "SKIRMISH"
     ],
@@ -66498,8 +66073,7 @@
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
     "keywords": [
-      "KNIGHT",
-      "UNBOUND"
+      "KNIGHT"
     ],
     "actionPhases": [
       "FELLOWSHIP"
@@ -66939,8 +66513,7 @@
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
     "keywords": [
-      "KNIGHT",
-      "UNBOUND"
+      "KNIGHT"
     ],
     "actionPhases": [
       "FELLOWSHIP"
@@ -66982,9 +66555,6 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
-    "keywords": [
-      "UNBOUND"
-    ],
     "actionPhases": [
       "RESPONSE"
     ],
@@ -67074,56 +66644,6 @@
         "addThreats": 2
       }
     ],
-    "abilities": [
-      {
-        "id": "7U109:0",
-        "phases": [
-          "SKIRMISH"
-        ],
-        "cost": [
-          {
-            "exert": [
-              {
-                "count": 1,
-                "target": [
-                  [
-                    "GONDOR",
-                    "MAN"
-                  ]
-                ],
-                "mode": "DESIGNATION"
-              }
-            ]
-          }
-        ],
-        "effects": [
-          {
-            "type": "WOUND",
-            "count": 1,
-            "target": [
-              [
-                "ROAMING",
-                "MINION",
-                "THAT",
-                "MAN",
-                "IS",
-                "SKIRMISHING",
-                "DISCARD",
-                "THIS",
-                "CONDITION",
-                "AT",
-                "START",
-                "OF",
-                "REGROUP",
-                "PHASE"
-              ]
-            ]
-          }
-        ],
-        "source": "SELF",
-        "text": "SKIRMISH: Exert a gondor Man to wound a roaming minion that Man is skirmishing. Discard this condition at the start of the regroup phase."
-      }
-    ],
     "actionPhases": [
       "SKIRMISH",
       "START_OF_REGROUP"
@@ -67163,8 +66683,7 @@
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
     "keywords": [
-      "RANGER",
-      "UNBOUND"
+      "RANGER"
     ],
     "actionPhases": [
       "SKIRMISH"
@@ -67378,8 +66897,7 @@
     "type": "COMPANION",
     "keywords": [
       "RANGER",
-      "DAMAGE +1",
-      "UNBOUND"
+      "DAMAGE +1"
     ],
     "culture": "GONDOR",
     "race": "MAN",
@@ -67419,8 +66937,7 @@
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
     "keywords": [
-      "RANGER",
-      "UNBOUND"
+      "RANGER"
     ],
     "actionPhases": [
       "REGROUP"
@@ -67761,8 +67278,7 @@
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
     "keywords": [
-      "RANGER",
-      "UNBOUND"
+      "RANGER"
     ],
     "actionPhases": [
       "SKIRMISH"
@@ -67889,9 +67405,6 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
-    "keywords": [
-      "UNBOUND"
-    ],
     "actionPhases": [
       "REGROUP"
     ],
@@ -72161,8 +71674,7 @@
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
     "keywords": [
-      "VALIANT",
-      "UNBOUND"
+      "VALIANT"
     ],
     "actionPhases": [
       "SKIRMISH"
@@ -72209,9 +71721,6 @@
     "isUnique": false,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
-    "keywords": [
-      "UNBOUND"
-    ],
     "culture": "ROHAN",
     "race": "MAN",
     "twilightCost": 3,
@@ -72249,8 +71758,7 @@
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
     "keywords": [
-      "DAMAGE +1",
-      "UNBOUND"
+      "DAMAGE +1"
     ],
     "culture": "ROHAN",
     "race": "MAN",
@@ -72295,8 +71803,7 @@
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
     "keywords": [
-      "VALIANT",
-      "UNBOUND"
+      "VALIANT"
     ],
     "culture": "ROHAN",
     "race": "MAN",
@@ -72342,9 +71849,6 @@
     "isFemale": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
-    "keywords": [
-      "UNBOUND"
-    ],
     "actionPhases": [
       "SKIRMISH"
     ],
@@ -72534,8 +72038,7 @@
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
     "keywords": [
-      "VALIANT",
-      "UNBOUND"
+      "VALIANT"
     ],
     "actionPhases": [
       "SKIRMISH"
@@ -72623,9 +72126,6 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
-    "keywords": [
-      "UNBOUND"
-    ],
     "actionPhases": [
       "SKIRMISH"
     ],
@@ -73126,9 +72626,6 @@
     "isUnique": false,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
-    "keywords": [
-      "UNBOUND"
-    ],
     "actionPhases": [
       "SKIRMISH"
     ],
@@ -73504,8 +73001,7 @@
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
     "keywords": [
-      "VALIANT",
-      "UNBOUND"
+      "VALIANT"
     ],
     "culture": "ROHAN",
     "race": "MAN",
@@ -73550,9 +73046,6 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
-    "keywords": [
-      "UNBOUND"
-    ],
     "actionPhases": [
       "FELLOWSHIP"
     ],
@@ -73639,9 +73132,6 @@
     "isUnique": false,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
-    "keywords": [
-      "UNBOUND"
-    ],
     "actionPhases": [
       "SKIRMISH"
     ],
@@ -76432,9 +75922,6 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
-    "keywords": [
-      "UNBOUND"
-    ],
     "actionPhases": [
       "SKIRMISH"
     ],
@@ -76521,9 +76008,6 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
-    "keywords": [
-      "UNBOUND"
-    ],
     "culture": "SHIRE",
     "race": "HOBBIT",
     "signet": "GANDALF",
@@ -76766,9 +76250,6 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
-    "keywords": [
-      "UNBOUND"
-    ],
     "actionPhases": [
       "REGROUP"
     ],
@@ -76816,8 +76297,7 @@
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
     "keywords": [
-      "VALIANT",
-      "UNBOUND"
+      "VALIANT"
     ],
     "actionPhases": [
       "SKIRMISH"
@@ -77033,8 +76513,7 @@
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
     "keywords": [
-      "DAMAGE +1",
-      "UNBOUND"
+      "DAMAGE +1"
     ],
     "culture": "DWARVEN",
     "race": "DWARF",
@@ -77253,8 +76732,7 @@
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
     "keywords": [
-      "ARCHER",
-      "UNBOUND"
+      "ARCHER"
     ],
     "culture": "ELVEN",
     "race": "ELF",
@@ -78238,8 +77716,7 @@
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
     "keywords": [
-      "KNIGHT",
-      "UNBOUND"
+      "KNIGHT"
     ],
     "culture": "GONDOR",
     "race": "MAN",
@@ -78336,8 +77813,7 @@
     "type": "COMPANION",
     "keywords": [
       "ARCHER",
-      "KNIGHT",
-      "UNBOUND"
+      "KNIGHT"
     ],
     "toPlay": [
       {
@@ -78396,8 +77872,7 @@
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
     "keywords": [
-      "KNIGHT",
-      "UNBOUND"
+      "KNIGHT"
     ],
     "toPlay": [
       {
@@ -78460,8 +77935,7 @@
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
     "keywords": [
-      "KNIGHT",
-      "UNBOUND"
+      "KNIGHT"
     ],
     "culture": "GONDOR",
     "race": "MAN",
@@ -78550,8 +78024,7 @@
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
     "keywords": [
-      "ENDURING",
-      "UNBOUND"
+      "ENDURING"
     ],
     "toPlay": [
       {
@@ -78647,8 +78120,7 @@
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
     "keywords": [
-      "ENDURING",
-      "UNBOUND"
+      "ENDURING"
     ],
     "toPlay": [
       {
@@ -78755,8 +78227,7 @@
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
     "keywords": [
-      "ENDURING",
-      "UNBOUND"
+      "ENDURING"
     ],
     "toPlay": [
       {
@@ -80502,8 +79973,7 @@
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
     "keywords": [
-      "VALIANT",
-      "UNBOUND"
+      "VALIANT"
     ],
     "culture": "ROHAN",
     "race": "MAN",
@@ -80682,9 +80152,6 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
-    "keywords": [
-      "UNBOUND"
-    ],
     "toPlay": [
       {
         "spot": [
@@ -80742,8 +80209,7 @@
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
     "keywords": [
-      "VALIANT",
-      "UNBOUND"
+      "VALIANT"
     ],
     "culture": "ROHAN",
     "race": "MAN",
@@ -81875,9 +81341,6 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
-    "keywords": [
-      "UNBOUND"
-    ],
     "toPlay": [
       {
         "spot": [
@@ -81939,9 +81402,6 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
-    "keywords": [
-      "UNBOUND"
-    ],
     "toPlay": [
       {
         "spot": [
@@ -82103,8 +81563,7 @@
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
     "keywords": [
-      "DAMAGE +1",
-      "UNBOUND"
+      "DAMAGE +1"
     ],
     "culture": "DWARVEN",
     "race": "DWARF",
@@ -82204,8 +81663,7 @@
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
     "keywords": [
-      "DAMAGE +1",
-      "UNBOUND"
+      "DAMAGE +1"
     ],
     "actionPhases": [
       "SKIRMISH"
@@ -82453,9 +81911,6 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
-    "keywords": [
-      "UNBOUND"
-    ],
     "culture": "DWARVEN",
     "race": "DWARF",
     "twilightCost": 2,
@@ -82502,9 +81957,6 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
-    "keywords": [
-      "UNBOUND"
-    ],
     "actionPhases": [
       "SKIRMISH"
     ],
@@ -82715,9 +82167,6 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
-    "keywords": [
-      "UNBOUND"
-    ],
     "toPlay": [
       {
         "spot": [
@@ -82782,9 +82231,6 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
-    "keywords": [
-      "UNBOUND"
-    ],
     "actionPhases": [
       "SKIRMISH"
     ],
@@ -83274,8 +82720,7 @@
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
     "keywords": [
-      "DAMAGE +1",
-      "UNBOUND"
+      "DAMAGE +1"
     ],
     "actionPhases": [
       "RESPONSE"
@@ -83321,9 +82766,6 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
-    "keywords": [
-      "UNBOUND"
-    ],
     "culture": "GANDALF",
     "race": "WIZARD",
     "signet": "GANDALF",
@@ -83414,6 +82856,37 @@
     "isUnique": true,
     "kind": "SHADOW",
     "type": "MINION",
+    "abilities": [
+      {
+        "id": "9R+28:0",
+        "phases": [
+          "REGROUP"
+        ],
+        "cost": [
+          {
+            "exert": [
+              {
+                "count": 2,
+                "target": "SELF"
+              }
+            ]
+          }
+        ],
+        "effects": [
+          {
+            "type": "WOUND",
+            "count": 1,
+            "target": [
+              [
+                "RING-BEARER"
+              ]
+            ]
+          }
+        ],
+        "source": "SELF",
+        "text": "REGROUP: Exert Gollum twice to wound the Ring-bearer."
+      }
+    ],
     "actionPhases": [
       "SHADOW",
       "SKIRMISH",
@@ -83608,9 +83081,6 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
-    "keywords": [
-      "UNBOUND"
-    ],
     "toPlay": [
       {
         "spot": [
@@ -84220,6 +83690,39 @@
       [
         "The Witch-king"
       ]
+    ],
+    "abilities": [
+      {
+        "id": "9R+43:0",
+        "phases": [
+          "SKIRMISH"
+        ],
+        "cost": [
+          {
+            "exert": [
+              {
+                "count": 2,
+                "target": "BEARER"
+              }
+            ]
+          }
+        ],
+        "effects": [
+          {
+            "type": "ADD_TEMP_KEYWORD",
+            "keyword": "DAMAGE +1",
+            "target": [
+              [
+                "WRAITH",
+                "MINION"
+              ]
+            ],
+            "expiresAtPhase": "SKIRMISH"
+          }
+        ],
+        "source": "ATTACHMENT",
+        "text": "SKIRMISH: Exert bearer twice to make a wraith minion damage +1."
+      }
     ],
     "actionPhases": [
       "SKIRMISH",
@@ -84865,9 +84368,6 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
-    "keywords": [
-      "UNBOUND"
-    ],
     "actionPhases": [
       "SKIRMISH"
     ],
@@ -84918,9 +84418,6 @@
     "isFemale": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
-    "keywords": [
-      "UNBOUND"
-    ],
     "actionPhases": [
       "SKIRMISH"
     ],
@@ -84971,9 +84468,6 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
-    "keywords": [
-      "UNBOUND"
-    ],
     "culture": "ELVEN",
     "race": "ELF",
     "twilightCost": 2,
@@ -85020,9 +84514,6 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
-    "keywords": [
-      "UNBOUND"
-    ],
     "toPlay": [
       {
         "spot": [
@@ -85128,9 +84619,6 @@
     "isFemale": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
-    "keywords": [
-      "UNBOUND"
-    ],
     "actionPhases": [
       "FELLOWSHIP",
       "REGROUP"
@@ -85448,9 +84936,6 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
-    "keywords": [
-      "UNBOUND"
-    ],
     "toPlay": [
       {
         "spot": [
@@ -85780,8 +85265,7 @@
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
     "keywords": [
-      "ENDURING",
-      "UNBOUND"
+      "ENDURING"
     ],
     "toPlay": [
       {
@@ -85833,8 +85317,7 @@
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
     "keywords": [
-      "ENDURING",
-      "UNBOUND"
+      "ENDURING"
     ],
     "toPlay": [
       {
@@ -85882,9 +85365,6 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
-    "keywords": [
-      "UNBOUND"
-    ],
     "toPlay": [
       {
         "spot": [
@@ -87934,9 +87414,6 @@
     "isFemale": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
-    "keywords": [
-      "UNBOUND"
-    ],
     "actionPhases": [
       "SKIRMISH"
     ],
@@ -90245,9 +89722,6 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
-    "keywords": [
-      "UNBOUND"
-    ],
     "actionPhases": [
       "START_OF_REGROUP"
     ],
@@ -90299,8 +89773,7 @@
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
     "keywords": [
-      "DAMAGE +1",
-      "UNBOUND"
+      "DAMAGE +1"
     ],
     "culture": "DWARVEN",
     "race": "DWARF",
@@ -90401,9 +89874,6 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
-    "keywords": [
-      "UNBOUND"
-    ],
     "actionPhases": [
       "RESPONSE"
     ],
@@ -90633,9 +90103,6 @@
     "isFemale": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
-    "keywords": [
-      "UNBOUND"
-    ],
     "culture": "ELVEN",
     "race": "ELF",
     "twilightCost": 2,
@@ -90787,9 +90254,6 @@
     "isUnique": false,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
-    "keywords": [
-      "UNBOUND"
-    ],
     "actionPhases": [
       "START_OF_REGROUP"
     ],
@@ -90917,9 +90381,6 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
-    "keywords": [
-      "UNBOUND"
-    ],
     "culture": "ELVEN",
     "race": "ELF",
     "twilightCost": 2,
@@ -90967,9 +90428,6 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
-    "keywords": [
-      "UNBOUND"
-    ],
     "actionPhases": [
       "START_OF_ARCHERY"
     ],
@@ -91194,9 +90652,6 @@
     "isUnique": false,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
-    "keywords": [
-      "UNBOUND"
-    ],
     "culture": "ELVEN",
     "race": "ELF",
     "twilightCost": 2,
@@ -91338,9 +90793,6 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
-    "keywords": [
-      "UNBOUND"
-    ],
     "toPlay": [
       {
         "spot": [
@@ -92342,8 +91794,7 @@
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
     "keywords": [
-      "RANGER",
-      "UNBOUND"
+      "RANGER"
     ],
     "culture": "GONDOR",
     "race": "MAN",
@@ -92660,8 +92111,7 @@
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
     "keywords": [
-      "RANGER",
-      "UNBOUND"
+      "RANGER"
     ],
     "actionPhases": [
       "FELLOWSHIP"
@@ -92796,8 +92246,7 @@
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
     "keywords": [
-      "RANGER",
-      "UNBOUND"
+      "RANGER"
     ],
     "culture": "GONDOR",
     "race": "MAN",
@@ -94826,6 +94275,40 @@
         "MINION"
       ]
     ],
+    "abilities": [
+      {
+        "id": "11U109:0",
+        "phases": [
+          "SKIRMISH"
+        ],
+        "cost": [
+          {
+            "exert": [
+              {
+                "count": 1,
+                "target": "BEARER"
+              }
+            ]
+          }
+        ],
+        "effects": [
+          {
+            "type": "ADD_TEMP_STAT",
+            "stat": "STRENGTH",
+            "value": 2,
+            "target": [
+              [
+                "ORC",
+                "MINION"
+              ]
+            ],
+            "expiresAtPhase": "SKIRMISH"
+          }
+        ],
+        "source": "ATTACHMENT",
+        "text": "SKIRMISH: Exert bearer to make an orc minion strength +2."
+      }
+    ],
     "actionPhases": [
       "SKIRMISH"
     ],
@@ -96382,9 +95865,6 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
-    "keywords": [
-      "UNBOUND"
-    ],
     "culture": "ROHAN",
     "race": "MAN",
     "twilightCost": 3,
@@ -96433,9 +95913,6 @@
     "isFemale": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
-    "keywords": [
-      "UNBOUND"
-    ],
     "culture": "ROHAN",
     "race": "MAN",
     "twilightCost": 2,
@@ -96483,9 +95960,6 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
-    "keywords": [
-      "UNBOUND"
-    ],
     "actionPhases": [
       "START_OF_FELLOWSHIP"
     ],
@@ -96536,9 +96010,6 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
-    "keywords": [
-      "UNBOUND"
-    ],
     "actionPhases": [
       "RESPONSE"
     ],
@@ -96729,9 +96200,6 @@
     "isUnique": false,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
-    "keywords": [
-      "UNBOUND"
-    ],
     "culture": "ROHAN",
     "race": "MAN",
     "twilightCost": 2,
@@ -96823,9 +96291,6 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
-    "keywords": [
-      "UNBOUND"
-    ],
     "toPlay": [
       {
         "spot": [
@@ -97081,9 +96546,6 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
-    "keywords": [
-      "UNBOUND"
-    ],
     "actionPhases": [
       "START_OF_REGROUP"
     ],
@@ -97260,9 +96722,6 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
-    "keywords": [
-      "UNBOUND"
-    ],
     "culture": "SHIRE",
     "race": "HOBBIT",
     "twilightCost": 1,
@@ -97499,9 +96958,6 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
-    "keywords": [
-      "UNBOUND"
-    ],
     "culture": "SHIRE",
     "race": "HOBBIT",
     "twilightCost": 1,
@@ -97593,9 +97049,6 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
-    "keywords": [
-      "UNBOUND"
-    ],
     "actionPhases": [
       "SKIRMISH"
     ],
@@ -100446,9 +99899,6 @@
     "isUnique": false,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
-    "keywords": [
-      "UNBOUND"
-    ],
     "culture": "DWARVEN",
     "race": "DWARF",
     "twilightCost": 2,
@@ -100787,9 +100237,6 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
-    "keywords": [
-      "UNBOUND"
-    ],
     "culture": "DWARVEN",
     "race": "DWARF",
     "twilightCost": 3,
@@ -100968,9 +100415,6 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
-    "keywords": [
-      "UNBOUND"
-    ],
     "culture": "ELVEN",
     "race": "ELF",
     "twilightCost": 2,
@@ -101074,9 +100518,6 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
-    "keywords": [
-      "UNBOUND"
-    ],
     "actionPhases": [
       "MANEUVER"
     ],
@@ -101294,9 +100735,6 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
-    "keywords": [
-      "UNBOUND"
-    ],
     "actionPhases": [
       "SKIRMISH"
     ],
@@ -101437,9 +100875,6 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
-    "keywords": [
-      "UNBOUND"
-    ],
     "culture": "GANDALF",
     "race": "MAN",
     "twilightCost": 2,
@@ -102003,9 +101438,6 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
-    "keywords": [
-      "UNBOUND"
-    ],
     "culture": "GONDOR",
     "race": "MAN",
     "signet": "GANDALF",
@@ -102178,9 +101610,6 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
-    "keywords": [
-      "UNBOUND"
-    ],
     "culture": "GONDOR",
     "race": "MAN",
     "twilightCost": 3,
@@ -104699,9 +104128,6 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
-    "keywords": [
-      "UNBOUND"
-    ],
     "culture": "ROHAN",
     "race": "MAN",
     "twilightCost": 1,
@@ -104917,9 +104343,6 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
-    "keywords": [
-      "UNBOUND"
-    ],
     "actionPhases": [
       "MANEUVER"
     ],
@@ -104970,9 +104393,6 @@
     "isUnique": false,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
-    "keywords": [
-      "UNBOUND"
-    ],
     "culture": "ROHAN",
     "race": "MAN",
     "twilightCost": 2,
@@ -105098,9 +104518,6 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
-    "keywords": [
-      "UNBOUND"
-    ],
     "abilities": [
       {
         "id": "12R116:0",
@@ -105180,9 +104597,6 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
-    "keywords": [
-      "UNBOUND"
-    ],
     "actionPhases": [
       "SKIRMISH"
     ],
@@ -105630,9 +105044,6 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
-    "keywords": [
-      "UNBOUND"
-    ],
     "culture": "SHIRE",
     "race": "HOBBIT",
     "signet": "GANDALF",
@@ -105721,9 +105132,6 @@
     "isFemale": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
-    "keywords": [
-      "UNBOUND"
-    ],
     "culture": "SHIRE",
     "race": "HOBBIT",
     "twilightCost": 1,
@@ -105897,9 +105305,6 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
-    "keywords": [
-      "UNBOUND"
-    ],
     "actionPhases": [
       "RESPONSE"
     ],
@@ -108211,9 +107616,6 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
-    "keywords": [
-      "UNBOUND"
-    ],
     "actionPhases": [
       "SKIRMISH"
     ],
@@ -108263,9 +107665,6 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
-    "keywords": [
-      "UNBOUND"
-    ],
     "culture": "GONDOR",
     "race": "MAN",
     "twilightCost": 3,
@@ -108954,9 +108353,6 @@
     "isFemale": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
-    "keywords": [
-      "UNBOUND"
-    ],
     "actionPhases": [
       "SKIRMISH"
     ],
@@ -109059,9 +108455,6 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
-    "keywords": [
-      "UNBOUND"
-    ],
     "actionPhases": [
       "START_OF_REGROUP"
     ],
@@ -109235,9 +108628,6 @@
     "isFemale": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
-    "keywords": [
-      "UNBOUND"
-    ],
     "toPlay": [
       {
         "spot": [
@@ -109381,8 +108771,7 @@
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
     "keywords": [
-      "ARCHER",
-      "UNBOUND"
+      "ARCHER"
     ],
     "actionPhases": [
       "START_OF_ARCHERY"
@@ -109475,9 +108864,6 @@
     "isUnique": false,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
-    "keywords": [
-      "UNBOUND"
-    ],
     "culture": "ELVEN",
     "race": "ELF",
     "twilightCost": 2,
@@ -109612,9 +108998,6 @@
     "isUnique": false,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
-    "keywords": [
-      "UNBOUND"
-    ],
     "actionPhases": [
       "RESPONSE"
     ],
@@ -109873,9 +109256,6 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
-    "keywords": [
-      "UNBOUND"
-    ],
     "actionPhases": [
       "START_OF_FELLOWSHIP"
     ],
@@ -110057,9 +109437,6 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
-    "keywords": [
-      "UNBOUND"
-    ],
     "culture": "GANDALF",
     "race": "WIZARD",
     "twilightCost": 4,
@@ -111191,9 +110568,6 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
-    "keywords": [
-      "UNBOUND"
-    ],
     "actionPhases": [
       "START_OF_ASSIGNMENT"
     ],
@@ -111327,9 +110701,6 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
-    "keywords": [
-      "UNBOUND"
-    ],
     "actionPhases": [
       "SKIRMISH"
     ],
@@ -111433,9 +110804,6 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
-    "keywords": [
-      "UNBOUND"
-    ],
     "actionPhases": [
       "MANEUVER"
     ],
@@ -111487,8 +110855,7 @@
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
     "keywords": [
-      "KNIGHT",
-      "UNBOUND"
+      "KNIGHT"
     ],
     "toPlay": [
       {
@@ -111568,9 +110935,6 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
-    "keywords": [
-      "UNBOUND"
-    ],
     "culture": "GONDOR",
     "race": "MAN",
     "twilightCost": 3,
@@ -111618,9 +110982,6 @@
     "isUnique": false,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
-    "keywords": [
-      "UNBOUND"
-    ],
     "culture": "GONDOR",
     "race": "MAN",
     "twilightCost": 3,
@@ -111788,8 +111149,7 @@
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
     "keywords": [
-      "KNIGHT",
-      "UNBOUND"
+      "KNIGHT"
     ],
     "culture": "GONDOR",
     "race": "MAN",
@@ -112042,9 +111402,6 @@
     "isUnique": false,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
-    "keywords": [
-      "UNBOUND"
-    ],
     "actionPhases": [
       "START_OF_FELLOWSHIP"
     ],
@@ -114099,9 +113456,6 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
-    "keywords": [
-      "UNBOUND"
-    ],
     "culture": "ROHAN",
     "race": "MAN",
     "twilightCost": 3,
@@ -114150,9 +113504,6 @@
     "isFemale": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
-    "keywords": [
-      "UNBOUND"
-    ],
     "culture": "ROHAN",
     "race": "MAN",
     "twilightCost": 2,
@@ -114347,9 +113698,6 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
-    "keywords": [
-      "UNBOUND"
-    ],
     "culture": "ROHAN",
     "race": "MAN",
     "twilightCost": 2,
@@ -114521,9 +113869,6 @@
     "isUnique": false,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
-    "keywords": [
-      "UNBOUND"
-    ],
     "culture": "ROHAN",
     "race": "MAN",
     "twilightCost": 2,
@@ -114566,9 +113911,6 @@
     "isUnique": false,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
-    "keywords": [
-      "UNBOUND"
-    ],
     "culture": "ROHAN",
     "race": "MAN",
     "twilightCost": 2,
@@ -114750,9 +114092,6 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
-    "keywords": [
-      "UNBOUND"
-    ],
     "culture": "ROHAN",
     "race": "MAN",
     "twilightCost": 2,
@@ -115639,9 +114978,6 @@
     "isUnique": false,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
-    "keywords": [
-      "UNBOUND"
-    ],
     "culture": "SHIRE",
     "race": "HOBBIT",
     "twilightCost": 2,
@@ -116872,9 +116208,6 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
-    "keywords": [
-      "UNBOUND"
-    ],
     "actionPhases": [
       "START_OF_REGROUP"
     ],
@@ -116925,9 +116258,6 @@
     "isFemale": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
-    "keywords": [
-      "UNBOUND"
-    ],
     "toPlay": [
       {
         "spot": [
@@ -116989,8 +116319,7 @@
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
     "keywords": [
-      "ARCHER",
-      "UNBOUND"
+      "ARCHER"
     ],
     "actionPhases": [
       "START_OF_ARCHERY"
@@ -117041,9 +116370,6 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
-    "keywords": [
-      "UNBOUND"
-    ],
     "culture": "GANDALF",
     "race": "WIZARD",
     "twilightCost": 4,
@@ -117140,9 +116466,6 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
-    "keywords": [
-      "UNBOUND"
-    ],
     "actionPhases": [
       "START_OF_ASSIGNMENT"
     ],
@@ -117192,9 +116515,6 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
-    "keywords": [
-      "UNBOUND"
-    ],
     "actionPhases": [
       "MANEUVER"
     ],
@@ -117244,9 +116564,6 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
-    "keywords": [
-      "UNBOUND"
-    ],
     "culture": "ROHAN",
     "race": "MAN",
     "twilightCost": 3,
@@ -117294,8 +116611,7 @@
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
     "keywords": [
-      "DAMAGE +1",
-      "UNBOUND"
+      "DAMAGE +1"
     ],
     "culture": "ROHAN",
     "race": "MAN",
@@ -117343,9 +116659,6 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
-    "keywords": [
-      "UNBOUND"
-    ],
     "actionPhases": [
       "START_OF_REGROUP"
     ],
@@ -117396,9 +116709,6 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
-    "keywords": [
-      "UNBOUND"
-    ],
     "culture": "ELVEN",
     "race": "ELF",
     "twilightCost": 3,
@@ -117446,9 +116756,6 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
-    "keywords": [
-      "UNBOUND"
-    ],
     "culture": "ELVEN",
     "race": "ELF",
     "twilightCost": 3,
@@ -117496,9 +116803,6 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
-    "keywords": [
-      "UNBOUND"
-    ],
     "actionPhases": [
       "START_OF_ARCHERY"
     ],
@@ -117549,9 +116853,6 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
-    "keywords": [
-      "UNBOUND"
-    ],
     "culture": "GANDALF",
     "race": "MAN",
     "twilightCost": 2,
@@ -117599,9 +116900,6 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
-    "keywords": [
-      "UNBOUND"
-    ],
     "actionPhases": [
       "START_OF_MANEUVER"
     ],
@@ -117653,8 +116951,7 @@
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
     "keywords": [
-      "RANGER",
-      "UNBOUND"
+      "RANGER"
     ],
     "culture": "GONDOR",
     "race": "MAN",
@@ -117704,8 +117001,7 @@
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
     "keywords": [
-      "DAMAGE +1",
-      "UNBOUND"
+      "DAMAGE +1"
     ],
     "culture": "GONDOR",
     "race": "MAN",
@@ -117755,8 +117051,7 @@
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
     "keywords": [
-      "RANGER",
-      "UNBOUND"
+      "RANGER"
     ],
     "actionPhases": [
       "START_OF_MANEUVER"
@@ -118280,9 +117575,6 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
-    "keywords": [
-      "UNBOUND"
-    ],
     "culture": "DWARVEN",
     "race": "DWARF",
     "twilightCost": 2,
@@ -118330,9 +117622,6 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
-    "keywords": [
-      "UNBOUND"
-    ],
     "actionPhases": [
       "SKIRMISH"
     ],
@@ -118566,9 +117855,6 @@
     "isFemale": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
-    "keywords": [
-      "UNBOUND"
-    ],
     "actionPhases": [
       "SKIRMISH"
     ],
@@ -118722,9 +118008,6 @@
     "isUnique": false,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
-    "keywords": [
-      "UNBOUND"
-    ],
     "actionPhases": [
       "MANEUVER"
     ],
@@ -118854,9 +118137,6 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
-    "keywords": [
-      "UNBOUND"
-    ],
     "toPlay": [
       {
         "spot": [
@@ -118919,8 +118199,7 @@
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
     "keywords": [
-      "HUNTER 1",
-      "UNBOUND"
+      "HUNTER 1"
     ],
     "actionPhases": [
       "REGROUP"
@@ -118972,9 +118251,6 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
-    "keywords": [
-      "UNBOUND"
-    ],
     "actionPhases": [
       "ARCHERY"
     ],
@@ -119391,9 +118667,6 @@
     "isUnique": false,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
-    "keywords": [
-      "UNBOUND"
-    ],
     "culture": "GANDALF",
     "race": "ENT",
     "twilightCost": 4,
@@ -119436,9 +118709,6 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
-    "keywords": [
-      "UNBOUND"
-    ],
     "toPlay": [
       {
         "spot": [
@@ -119500,9 +118770,6 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
-    "keywords": [
-      "UNBOUND"
-    ],
     "culture": "GANDALF",
     "race": "ENT",
     "twilightCost": 7,
@@ -119684,9 +118951,6 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
-    "keywords": [
-      "UNBOUND"
-    ],
     "actionPhases": [
       "MANEUVER"
     ],
@@ -119737,9 +119001,6 @@
     "isUnique": false,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
-    "keywords": [
-      "UNBOUND"
-    ],
     "actionPhases": [
       "FELLOWSHIP"
     ],
@@ -119785,9 +119046,6 @@
     "isUnique": false,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
-    "keywords": [
-      "UNBOUND"
-    ],
     "actionPhases": [
       "MANEUVER"
     ],
@@ -119833,9 +119091,6 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
-    "keywords": [
-      "UNBOUND"
-    ],
     "culture": "GANDALF",
     "race": "ENT",
     "twilightCost": 7,
@@ -119883,9 +119138,6 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
-    "keywords": [
-      "UNBOUND"
-    ],
     "toPlay": [
       {
         "spot": [
@@ -120389,9 +119641,6 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
-    "keywords": [
-      "UNBOUND"
-    ],
     "toPlay": [
       {
         "addBurdens": 1
@@ -120610,9 +119859,6 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
-    "keywords": [
-      "UNBOUND"
-    ],
     "actionPhases": [
       "SKIRMISH"
     ],
@@ -120663,9 +119909,6 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
-    "keywords": [
-      "UNBOUND"
-    ],
     "actionPhases": [
       "MANEUVER"
     ],
@@ -120771,9 +120014,6 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
-    "keywords": [
-      "UNBOUND"
-    ],
     "actionPhases": [
       "START_OF_FELLOWSHIP"
     ],
@@ -120868,9 +120108,6 @@
     "isUnique": false,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
-    "keywords": [
-      "UNBOUND"
-    ],
     "culture": "GONDOR",
     "race": "MAN",
     "twilightCost": 3,
@@ -120952,9 +120189,6 @@
     "isUnique": false,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
-    "keywords": [
-      "UNBOUND"
-    ],
     "actionPhases": [
       "SKIRMISH"
     ],
@@ -121049,44 +120283,6 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
-    "keywords": [
-      "UNBOUND"
-    ],
-    "abilities": [
-      {
-        "id": "15U63:0",
-        "phases": [
-          "SKIRMISH"
-        ],
-        "cost": [
-          {
-            "exert": [
-              {
-                "count": 1,
-                "target": "SELF"
-              }
-            ]
-          }
-        ],
-        "effects": [
-          {
-            "type": "WOUND",
-            "count": 1,
-            "target": [
-              [
-                "ROAMING",
-                "MINION",
-                "HE",
-                "IS",
-                "SKIRMISHING"
-              ]
-            ]
-          }
-        ],
-        "source": "SELF",
-        "text": "SKIRMISH: Exert Mablung to wound a roaming minion he is skirmishing."
-      }
-    ],
     "actionPhases": [
       "SKIRMISH"
     ],
@@ -121137,9 +120333,6 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
-    "keywords": [
-      "UNBOUND"
-    ],
     "actionPhases": [
       "START_OF_MANEUVER"
     ],
@@ -121362,9 +120555,6 @@
     "isUnique": false,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
-    "keywords": [
-      "UNBOUND"
-    ],
     "culture": "GONDOR",
     "race": "MAN",
     "twilightCost": 2,
@@ -121444,9 +120634,6 @@
     "isUnique": false,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
-    "keywords": [
-      "UNBOUND"
-    ],
     "culture": "GONDOR",
     "race": "MAN",
     "twilightCost": 3,
@@ -122692,40 +121879,6 @@
     "isUnique": true,
     "kind": "SHADOW",
     "type": "MINION",
-    "abilities": [
-      {
-        "id": "15U98:0",
-        "phases": [
-          "SKIRMISH"
-        ],
-        "cost": [
-          {
-            "exert": [
-              {
-                "count": 1,
-                "target": "SELF"
-              }
-            ]
-          }
-        ],
-        "effects": [
-          {
-            "type": "WOUND",
-            "count": 1,
-            "target": [
-              [
-                "COMPANION",
-                "IT",
-                "IS",
-                "SKIRMISHING"
-              ]
-            ]
-          }
-        ],
-        "source": "SELF",
-        "text": "SKIRMISH: Exert this minion to wound a companion it is skirmishing."
-      }
-    ],
     "actionPhases": [
       "SKIRMISH"
     ],
@@ -123609,40 +122762,6 @@
     "isUnique": false,
     "kind": "SHADOW",
     "type": "MINION",
-    "abilities": [
-      {
-        "id": "15C116:0",
-        "phases": [
-          "SKIRMISH"
-        ],
-        "cost": [
-          {
-            "exert": [
-              {
-                "count": 1,
-                "target": "SELF"
-              }
-            ]
-          }
-        ],
-        "effects": [
-          {
-            "type": "WOUND",
-            "count": 1,
-            "target": [
-              [
-                "COMPANION",
-                "IT",
-                "IS",
-                "SKIRMISHING"
-              ]
-            ]
-          }
-        ],
-        "source": "SELF",
-        "text": "SKIRMISH: Exert this minion to wound a companion it is skirmishing."
-      }
-    ],
     "actionPhases": [
       "SKIRMISH"
     ],
@@ -123809,40 +122928,6 @@
     "isUnique": false,
     "kind": "SHADOW",
     "type": "MINION",
-    "abilities": [
-      {
-        "id": "15C120:0",
-        "phases": [
-          "SKIRMISH"
-        ],
-        "cost": [
-          {
-            "exert": [
-              {
-                "count": 1,
-                "target": "SELF"
-              }
-            ]
-          }
-        ],
-        "effects": [
-          {
-            "type": "WOUND",
-            "count": 1,
-            "target": [
-              [
-                "COMPANION",
-                "IT",
-                "IS",
-                "SKIRMISHING"
-              ]
-            ]
-          }
-        ],
-        "source": "SELF",
-        "text": "SKIRMISH: Exert this minion to wound a companion it is skirmishing."
-      }
-    ],
     "actionPhases": [
       "SKIRMISH"
     ],
@@ -123973,9 +123058,6 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
-    "keywords": [
-      "UNBOUND"
-    ],
     "actionPhases": [
       "SKIRMISH"
     ],
@@ -124079,9 +123161,6 @@
     "isFemale": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
-    "keywords": [
-      "UNBOUND"
-    ],
     "culture": "ROHAN",
     "race": "MAN",
     "twilightCost": 2,
@@ -124129,9 +123208,6 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
-    "keywords": [
-      "UNBOUND"
-    ],
     "toPlay": [
       {
         "spot": [
@@ -124236,8 +123312,7 @@
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
     "keywords": [
-      "DAMAGE +1",
-      "UNBOUND"
+      "DAMAGE +1"
     ],
     "culture": "ROHAN",
     "race": "MAN",
@@ -124288,6 +123363,40 @@
         "MAN"
       ]
     ],
+    "abilities": [
+      {
+        "id": "15U129:0",
+        "phases": [
+          "SKIRMISH"
+        ],
+        "cost": [
+          {
+            "exert": [
+              {
+                "count": 1,
+                "target": "BEARER"
+              }
+            ]
+          }
+        ],
+        "effects": [
+          {
+            "type": "ADD_TEMP_STAT",
+            "stat": "STRENGTH",
+            "value": 1,
+            "target": [
+              [
+                "ROHAN",
+                "MAN"
+              ]
+            ],
+            "expiresAtPhase": "SKIRMISH"
+          }
+        ],
+        "source": "ATTACHMENT",
+        "text": "SKIRMISH: Exert bearer to make a rohan Man strength +1."
+      }
+    ],
     "actionPhases": [
       "SKIRMISH"
     ],
@@ -124329,9 +123438,6 @@
     "isUnique": false,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
-    "keywords": [
-      "UNBOUND"
-    ],
     "culture": "ROHAN",
     "race": "MAN",
     "twilightCost": 3,
@@ -124723,8 +123829,7 @@
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
     "keywords": [
-      "VALIANT",
-      "UNBOUND"
+      "VALIANT"
     ],
     "culture": "ROHAN",
     "race": "MAN",
@@ -124769,8 +123874,7 @@
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
     "keywords": [
-      "VALIANT",
-      "UNBOUND"
+      "VALIANT"
     ],
     "actionPhases": [
       "START_OF_MANEUVER"
@@ -125259,9 +124363,6 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
-    "keywords": [
-      "UNBOUND"
-    ],
     "actionPhases": [
       "SKIRMISH"
     ],
@@ -125353,9 +124454,6 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
-    "keywords": [
-      "UNBOUND"
-    ],
     "actionPhases": [
       "SKIRMISH"
     ],
@@ -126997,9 +126095,6 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
-    "keywords": [
-      "UNBOUND"
-    ],
     "actionPhases": [
       "ARCHERY"
     ],
@@ -127050,9 +126145,6 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
-    "keywords": [
-      "UNBOUND"
-    ],
     "toPlay": [
       {
         "spot": [
@@ -127114,9 +126206,6 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
-    "keywords": [
-      "UNBOUND"
-    ],
     "actionPhases": [
       "MANEUVER"
     ],
@@ -127167,9 +126256,6 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
-    "keywords": [
-      "UNBOUND"
-    ],
     "actionPhases": [
       "MANEUVER"
     ],
@@ -127220,9 +126306,6 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
-    "keywords": [
-      "UNBOUND"
-    ],
     "actionPhases": [
       "START_OF_MANEUVER"
     ],
@@ -127273,9 +126356,6 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
-    "keywords": [
-      "UNBOUND"
-    ],
     "actionPhases": [
       "SKIRMISH"
     ],
@@ -128049,8 +127129,7 @@
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
     "keywords": [
-      "DAMAGE +1",
-      "UNBOUND"
+      "DAMAGE +1"
     ],
     "culture": "DWARVEN",
     "race": "DWARF",
@@ -128096,8 +127175,7 @@
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
     "keywords": [
-      "HUNTER 1",
-      "UNBOUND"
+      "HUNTER 1"
     ],
     "actionPhases": [
       "MANEUVER"
@@ -128269,8 +127347,7 @@
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
     "keywords": [
-      "HUNTER 1",
-      "UNBOUND"
+      "HUNTER 1"
     ],
     "actionPhases": [
       "ARCHERY"
@@ -128319,8 +127396,7 @@
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
     "keywords": [
-      "HUNTER 1",
-      "UNBOUND"
+      "HUNTER 1"
     ],
     "actionPhases": [
       "ARCHERY"
@@ -128501,9 +127577,6 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
-    "keywords": [
-      "UNBOUND"
-    ],
     "actionPhases": [
       "MANEUVER"
     ],
@@ -128550,9 +127623,6 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
-    "keywords": [
-      "UNBOUND"
-    ],
     "culture": "GANDALF",
     "race": "WIZARD",
     "twilightCost": 4,
@@ -128977,9 +128047,6 @@
     "isUnique": false,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
-    "keywords": [
-      "UNBOUND"
-    ],
     "actionPhases": [
       "SKIRMISH"
     ],
@@ -129078,9 +128145,6 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
-    "keywords": [
-      "UNBOUND"
-    ],
     "actionPhases": [
       "SKIRMISH"
     ],
@@ -129171,9 +128235,6 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
-    "keywords": [
-      "UNBOUND"
-    ],
     "actionPhases": [
       "MANEUVER"
     ],
@@ -129306,9 +128367,6 @@
     "isUnique": false,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
-    "keywords": [
-      "UNBOUND"
-    ],
     "actionPhases": [
       "MANEUVER"
     ],
@@ -132058,8 +131116,7 @@
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
     "keywords": [
-      "VALIANT",
-      "UNBOUND"
+      "VALIANT"
     ],
     "culture": "ROHAN",
     "race": "MAN",
@@ -132147,8 +131204,7 @@
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
     "keywords": [
-      "DAMAGE +1",
-      "UNBOUND"
+      "DAMAGE +1"
     ],
     "actionPhases": [
       "MANEUVER"
@@ -132197,9 +131253,6 @@
     "isFemale": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
-    "keywords": [
-      "UNBOUND"
-    ],
     "actionPhases": [
       "ASSIGNMENT"
     ],
@@ -132342,9 +131395,6 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
-    "keywords": [
-      "UNBOUND"
-    ],
     "culture": "ROHAN",
     "race": "MAN",
     "twilightCost": 2,
@@ -132445,9 +131495,6 @@
     "isUnique": false,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
-    "keywords": [
-      "UNBOUND"
-    ],
     "culture": "ROHAN",
     "race": "MAN",
     "twilightCost": 2,
@@ -132490,9 +131537,6 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
-    "keywords": [
-      "UNBOUND"
-    ],
     "actionPhases": [
       "REGROUP"
     ],
@@ -132580,9 +131624,6 @@
     "isUnique": false,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
-    "keywords": [
-      "UNBOUND"
-    ],
     "actionPhases": [
       "FELLOWSHIP"
     ],
@@ -132743,9 +131784,6 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
-    "keywords": [
-      "UNBOUND"
-    ],
     "actionPhases": [
       "REGROUP"
     ],
@@ -132852,9 +131890,6 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
-    "keywords": [
-      "UNBOUND"
-    ],
     "actionPhases": [
       "MANEUVER"
     ],
@@ -134516,9 +133551,6 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
-    "keywords": [
-      "UNBOUND"
-    ],
     "culture": "DWARVEN",
     "race": "DWARF",
     "twilightCost": 2,
@@ -134940,9 +133972,6 @@
     "isUnique": false,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
-    "keywords": [
-      "UNBOUND"
-    ],
     "culture": "ELVEN",
     "race": "ELF",
     "twilightCost": 2,
@@ -135094,8 +134123,7 @@
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
     "keywords": [
-      "RANGER",
-      "UNBOUND"
+      "RANGER"
     ],
     "toPlay": [
       {
@@ -135159,9 +134187,6 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
-    "keywords": [
-      "UNBOUND"
-    ],
     "actionPhases": [
       "SKIRMISH"
     ],
@@ -135368,9 +134393,6 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
-    "keywords": [
-      "UNBOUND"
-    ],
     "toPlay": [
       {
         "spot": [
@@ -135612,9 +134634,6 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
-    "keywords": [
-      "UNBOUND"
-    ],
     "actionPhases": [
       "REGROUP"
     ],
@@ -136330,8 +135349,7 @@
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
     "keywords": [
-      "HUNTER 2",
-      "UNBOUND"
+      "HUNTER 2"
     ],
     "culture": "GONDOR",
     "race": "MAN",
@@ -136425,8 +135443,7 @@
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
     "keywords": [
-      "RANGER",
-      "UNBOUND"
+      "RANGER"
     ],
     "culture": "GONDOR",
     "race": "MAN",
@@ -136545,8 +135562,7 @@
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
     "keywords": [
-      "DAMAGE +1",
-      "UNBOUND"
+      "DAMAGE +1"
     ],
     "actionPhases": [
       "SKIRMISH"
@@ -136822,9 +135838,6 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
-    "keywords": [
-      "UNBOUND"
-    ],
     "actionPhases": [
       "MANEUVER"
     ],
@@ -137112,8 +136125,7 @@
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
     "keywords": [
-      "KNIGHT",
-      "UNBOUND"
+      "KNIGHT"
     ],
     "culture": "GONDOR",
     "race": "MAN",
@@ -137211,8 +136223,7 @@
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
     "keywords": [
-      "RANGER",
-      "UNBOUND"
+      "RANGER"
     ],
     "culture": "GONDOR",
     "race": "MAN",
@@ -137347,8 +136358,7 @@
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
     "keywords": [
-      "RANGER",
-      "UNBOUND"
+      "RANGER"
     ],
     "actionPhases": [
       "SKIRMISH"
@@ -139224,8 +138234,7 @@
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
     "keywords": [
-      "VALIANT",
-      "UNBOUND"
+      "VALIANT"
     ],
     "actionPhases": [
       "SKIRMISH"
@@ -139425,8 +138434,7 @@
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
     "keywords": [
-      "VALIANT",
-      "UNBOUND"
+      "VALIANT"
     ],
     "culture": "ROHAN",
     "race": "MAN",
@@ -139513,8 +138521,7 @@
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
     "keywords": [
-      "DAMAGE +1",
-      "UNBOUND"
+      "DAMAGE +1"
     ],
     "culture": "ROHAN",
     "race": "MAN",
@@ -139622,9 +138629,6 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
-    "keywords": [
-      "UNBOUND"
-    ],
     "culture": "SHIRE",
     "race": "HOBBIT",
     "twilightCost": 1,
@@ -140572,7 +139576,7 @@
           "type": "ABOUT_TO_WOUND",
           "target": [
             [
-              "URUKHAI",
+              "URUK-HAI",
               "MINION"
             ]
           ]
@@ -140952,9 +139956,6 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
-    "keywords": [
-      "UNBOUND"
-    ],
     "culture": "DWARVEN",
     "race": "DWARF",
     "twilightCost": 2,
@@ -141127,8 +140128,7 @@
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
     "keywords": [
-      "RANGER",
-      "UNBOUND"
+      "RANGER"
     ],
     "actionPhases": [
       "MANEUVER"
@@ -141180,9 +140180,6 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
-    "keywords": [
-      "UNBOUND"
-    ],
     "actionPhases": [
       "ARCHERY"
     ],
@@ -141233,9 +140230,6 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
-    "keywords": [
-      "UNBOUND"
-    ],
     "actionPhases": [
       "FELLOWSHIP",
       "RESPONSE"
@@ -141444,9 +140438,6 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
-    "keywords": [
-      "UNBOUND"
-    ],
     "culture": "GONDOR",
     "race": "MAN",
     "twilightCost": 4,
@@ -141494,9 +140485,6 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
-    "keywords": [
-      "UNBOUND"
-    ],
     "culture": "GONDOR",
     "race": "MAN",
     "twilightCost": 3,
@@ -142077,8 +141065,7 @@
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
     "keywords": [
-      "VALIANT",
-      "UNBOUND"
+      "VALIANT"
     ],
     "culture": "ROHAN",
     "race": "MAN",
@@ -142129,8 +141116,7 @@
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
     "keywords": [
-      "VALIANT",
-      "UNBOUND"
+      "VALIANT"
     ],
     "actionPhases": [
       "FELLOWSHIP"
@@ -142271,9 +141257,6 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
-    "keywords": [
-      "UNBOUND"
-    ],
     "actionPhases": [
       "FELLOWSHIP",
       "SKIRMISH"
@@ -142325,9 +141308,6 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
-    "keywords": [
-      "UNBOUND"
-    ],
     "actionPhases": [
       "FELLOWSHIP"
     ],

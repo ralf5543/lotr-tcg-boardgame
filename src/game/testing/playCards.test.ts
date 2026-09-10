@@ -604,3 +604,89 @@ describe('playShadowCard (soutien)', () => {
         expect(engine.getG().battlefield).toHaveLength(0);
     });
 });
+
+describe('playShadowCard — When you play this', () => {
+    it('Éclaireur de la Moria : spot un Elfe, ajoute 2 crépuscule', () => {
+        const scout: Ability = {
+            id: '1C191:0',
+            phases: [],
+            trigger: { type: 'WHEN_PLAYED' },
+            cost: [{ spot: [{ count: 1, target: [['ELF']] }] }],
+            effects: [{ type: 'ADD_TWILIGHT', count: 2 }],
+            source: 'SELF',
+        };
+        const moriaScout = createMinion({
+            id: '1C191',
+            title: 'Moria Scout',
+            twilightCost: 2,
+            abilities: [scout],
+        });
+        const legolas = createCompanion({
+            id: '1R50',
+            title: 'Legolas',
+            race: 'ELF',
+        });
+
+        const engine = createEngineClient({
+            startPhase: 'shadow',
+            playerID: '1',
+            G: {
+                twilightPool: 4,
+                players: {
+                    '0': createPlayerState('0', {
+                        fellowshipArea: [legolas],
+                    }),
+                    '1': createPlayerState('1', { hand: [moriaScout] }),
+                },
+            },
+        });
+
+        engine.moves.playShadowCard(0);
+
+        expect(engine.getG().battlefield).toHaveLength(1);
+        expect(engine.getG().twilightPool).toBe(4);
+    });
+
+    it('Éclaireur de la Moria sans Elfe : pas de crépuscule ajouté', () => {
+        const scout: Ability = {
+            id: '1C191:0',
+            phases: [],
+            trigger: { type: 'WHEN_PLAYED' },
+            cost: [{ spot: [{ count: 1, target: [['ELF']] }] }],
+            effects: [{ type: 'ADD_TWILIGHT', count: 2 }],
+            source: 'SELF',
+        };
+
+        const engine = createEngineClient({
+            startPhase: 'shadow',
+            playerID: '1',
+            G: {
+                twilightPool: 4,
+                players: {
+                    '0': createPlayerState('0', {
+                        fellowshipArea: [
+                            createCompanion({
+                                id: 'aragorn',
+                                race: 'MAN',
+                            }),
+                        ],
+                    }),
+                    '1': createPlayerState('1', {
+                        hand: [
+                            createMinion({
+                                id: '1C191',
+                                twilightCost: 2,
+                                abilities: [scout],
+                            }),
+                        ],
+                    }),
+                },
+            },
+        });
+
+        engine.moves.playShadowCard(0);
+
+        expect(engine.getG().battlefield).toHaveLength(1);
+        expect(engine.getG().twilightPool).toBe(2);
+    });
+});

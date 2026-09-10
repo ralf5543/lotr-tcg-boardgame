@@ -11,6 +11,7 @@ import { SkirmishClash } from './SkirmishClash';
 import { getEffectiveVitality } from '../../../../utils/cardStats';
 import { canTransferAid } from '../../../../game/engine/validations/canTransferAid';
 import { isInPlayCardDraggable } from './isInPlayCardDraggable';
+import { canCompanionBeAssigned } from '../../../../game/logic/assignment';
 
 interface BoardCharacterStackProps {
     character: CardState;
@@ -99,6 +100,7 @@ export const BoardCharacterStack: React.FC<BoardCharacterStackProps> = ({
     const canDragCharacter = isInPlayCardDraggable({
         card: character,
         phase,
+        assignmentStep: G.assignmentStep,
         isOpponent,
         isDisabled,
         isTargetable,
@@ -107,6 +109,13 @@ export const BoardCharacterStack: React.FC<BoardCharacterStackProps> = ({
 
     const isMinionAssignment =
         dragged?.origin === 'BATTLEFIELD' && draggedType === 'MINION';
+    const canReceiveAssignment =
+        isMinionAssignment &&
+        phase === 'assignment' &&
+        (G.assignmentStep === 'FP_ASSIGN' ||
+            G.assignmentStep === 'SHADOW_ASSIGN') &&
+        (character.type === 'COMPANION' || character.type === 'ALLY') &&
+        canCompanionBeAssigned(character);
 
     // On récupère la carte complète en cours de drag
     const draggedCard = dragged?.card as CardState | undefined;
@@ -165,7 +174,7 @@ export const BoardCharacterStack: React.FC<BoardCharacterStackProps> = ({
     const aimFaction = factionForAim(currentId, character.id);
     const isTargeted =
         ((activeTargetId === currentId || activeTargetId === character.id) &&
-            ((!isOpponent && canAttach) || isMinionAssignment)) ||
+            ((!isOpponent && canAttach) || canReceiveAssignment)) ||
         isAimedByArrow;
 
     // Règle de sélection d'escarmouche

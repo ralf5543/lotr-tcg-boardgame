@@ -55,6 +55,56 @@ export function findBearer(
     return found;
 }
 
+export function resolveSkirmishingOpponents(
+    G: GameState,
+    source: CardState
+): CardState[] {
+    const bearer = findBearer(G, source);
+    const fighter = bearer || source;
+    const fighterId = fighter.instanceId || fighter.id;
+
+    const involves = (skirmish: {
+        id?: string;
+        companionId?: string;
+        minionIds?: string[];
+        minionId?: string;
+    }) => {
+        if (skirmish.companionId === fighterId) return true;
+        const minionIds =
+            skirmish.minionIds ||
+            (skirmish.minionId ? [skirmish.minionId] : []);
+        return minionIds.includes(fighterId);
+    };
+
+    const active = (G.skirmishes || []).find(
+        (skirmish) =>
+            skirmish.id === G.activeSkirmishId && involves(skirmish)
+    );
+    const skirmish =
+        active || (G.skirmishes || []).find((item) => involves(item));
+    if (!skirmish) return [];
+
+    const fpId = G.fpPlayerId || '0';
+    const companion = (G.players[fpId]?.fellowshipArea || []).find(
+        (card) =>
+            (card.instanceId || card.id) === skirmish.companionId &&
+            !card.isDead
+    );
+    const minionIds =
+        skirmish.minionIds ||
+        (skirmish.minionId ? [skirmish.minionId] : []);
+    const minions = (G.battlefield || []).filter(
+        (card) =>
+            !card.isDead &&
+            minionIds.includes(card.instanceId || card.id)
+    );
+
+    if (fighter.kind === 'SHADOW' || fighter.type === 'MINION') {
+        return companion ? [companion] : [];
+    }
+    return minions;
+}
+
 function resolveDnfTargets(G: GameState, target: string[][]): CardState[] {
     const matches: CardState[] = [];
     forEachInPlayCard(G, (card) => {
@@ -71,6 +121,14 @@ export function resolveAbilityTarget(
 ): CardState | null {
     if (token === 'SELF') return source;
     if (token === 'BEARER') return findBearer(G, source);
+    if (token === 'SKIRMISHING') {
+        const matches = resolveSkirmishingOpponents(G, source);
+        if (chosenTargetId) {
+            return matches.find((card) => matchCard(card, chosenTargetId)) || null;
+        }
+        if (matches.length === 1) return matches[0];
+        return null;
+    }
     if (Array.isArray(token)) {
         const matches = resolveDnfTargets(G, token);
         if (chosenTargetId) {
@@ -91,6 +149,9 @@ export function resolveCostTarget(
     if (target === 'BEARER') {
         const bearer = findBearer(G, source);
         return bearer ? [bearer] : [];
+    }
+    if (target === 'SKIRMISHING') {
+        return resolveSkirmishingOpponents(G, source);
     }
     if (Array.isArray(target)) {
         return resolveDnfTargets(G, target);

@@ -699,4 +699,173 @@ describe('activateAbility', () => {
         expect(afterPrevent.actionWindow?.isOpen).toBe(true);
         expect(afterPrevent.actionWindow?.activePlayerId).toBe('1');
     });
+
+    it('Faramir affaiblit SELF et donne +2 au Hobbit dissocié désigné', () => {
+        const faramirAbility: Ability = {
+            id: '7R91:0',
+            phases: ['SKIRMISH'],
+            cost: [{ exert: [{ count: 1, target: 'SELF' }] }],
+            effects: [
+                {
+                    type: 'ADD_TEMP_STAT',
+                    stat: 'STRENGTH',
+                    value: 2,
+                    target: [['UNBOUND', 'HOBBIT']],
+                    expiresAtPhase: 'SKIRMISH',
+                },
+            ],
+            source: 'SELF',
+        };
+
+        const faramir = createCompanion({
+            id: '7R91',
+            title: 'Faramir',
+            vitality: 3,
+            strength: 7,
+            actionPhases: ['SKIRMISH'],
+            abilities: [faramirAbility],
+        });
+        const merry = createCompanion({
+            id: '1C303',
+            title: 'Merry',
+            race: 'HOBBIT',
+            vitality: 4,
+            strength: 3,
+        });
+
+        const engine = createEngineClient({
+            startPhase: 'skirmish',
+            playerID: '0',
+            G: {
+                ...createSkirmishActionWindow('sk-1'),
+                skirmishes: [
+                    {
+                        id: 'sk-1',
+                        companionId: '7R91',
+                        minionIds: ['orc'],
+                    },
+                ],
+                players: {
+                    '0': createPlayerState('0', {
+                        fellowshipArea: [faramir, merry],
+                    }),
+                },
+            },
+        });
+
+        engine.moves.activateAbility('7R91', '7R91:0', '1C303');
+
+        const after = engine.getG().players['0']?.fellowshipArea || [];
+        const faramirInPlay = after.find((c) => c.id === '7R91');
+        const merryInPlay = after.find((c) => c.id === '1C303');
+        expect(faramirInPlay?.wounds).toBe(1);
+        expect(getCalculatedStrength(engine.getG(), faramirInPlay)).toBe(7);
+        expect(getCalculatedStrength(engine.getG(), merryInPlay)).toBe(5);
+    });
+
+    it('Sylvebarbe : Dégâts +1 sur lui-même (Ent) s’ajoute au Dégâts +1 imprimé', () => {
+        const treebeardAbility: Ability = {
+            id: '0P21:1',
+            phases: ['SKIRMISH'],
+            cost: [{ exert: [{ count: 1, target: 'SELF' }] }],
+            effects: [
+                {
+                    type: 'ADD_TEMP_KEYWORD',
+                    keyword: 'DAMAGE +1',
+                    target: [['ENT']],
+                    expiresAtPhase: 'SKIRMISH',
+                },
+            ],
+            source: 'SELF',
+        };
+        const treebeard = createCompanion({
+            id: '0P21',
+            title: 'Treebeard',
+            race: 'ENT',
+            keywords: ['UNHASTY', 'DAMAGE +1'],
+            vitality: 4,
+            strength: 12,
+            actionPhases: ['SKIRMISH'],
+            abilities: [treebeardAbility],
+        });
+
+        const engine = createEngineClient({
+            startPhase: 'skirmish',
+            playerID: '0',
+            G: {
+                ...createSkirmishActionWindow('sk-1'),
+                skirmishes: [
+                    {
+                        id: 'sk-1',
+                        companionId: '0P21',
+                        minionIds: ['orc'],
+                    },
+                ],
+                players: {
+                    '0': createPlayerState('0', {
+                        fellowshipArea: [treebeard],
+                    }),
+                },
+            },
+        });
+
+        engine.moves.activateAbility('0P21', '0P21:1', '0P21');
+
+        const after = engine.getG().players['0']?.fellowshipArea[0];
+        expect(after?.wounds).toBe(1);
+        expect(getKeywordValue(after!, 'DAMAGE')).toBe(2);
+        expect(getCalculatedStrength(engine.getG(), after)).toBe(12);
+    });
+
+    it('Soldat orque blesse le compagnon qu’il combat', () => {
+        const soldierAbility: Ability = {
+            id: '1C271:0',
+            phases: ['SKIRMISH'],
+            cost: [{ exert: [{ count: 1, target: 'SELF' }] }],
+            effects: [{ type: 'WOUND', count: 1, target: 'SKIRMISHING' }],
+            source: 'SELF',
+        };
+
+        const companion = createCompanion({
+            id: 'aragorn',
+            title: 'Aragorn',
+            vitality: 4,
+            strength: 8,
+        });
+        const soldier = createMinion({
+            id: '1C271',
+            title: 'Orc Soldier',
+            vitality: 2,
+            strength: 7,
+            actionPhases: ['SKIRMISH'],
+            abilities: [soldierAbility],
+        });
+
+        const engine = createEngineClient({
+            startPhase: 'skirmish',
+            playerID: '1',
+            G: {
+                ...createSkirmishActionWindow('sk-1', '1'),
+                battlefield: [soldier],
+                skirmishes: [
+                    {
+                        id: 'sk-1',
+                        companionId: 'aragorn',
+                        minionIds: ['1C271'],
+                    },
+                ],
+                players: {
+                    '0': createPlayerState('0', {
+                        fellowshipArea: [companion],
+                    }),
+                    '1': createPlayerState('1'),
+                },
+            },
+        });
+
+        engine.moves.activateAbility('1C271', '1C271:0', 'aragorn');
+
+        expect(engine.getG().battlefield[0]?.wounds).toBe(1);
+        expect(engine.getG().players['0']?.fellowshipArea[0]?.wounds).toBe(1);
+    });
 });

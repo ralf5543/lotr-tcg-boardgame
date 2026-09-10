@@ -47,6 +47,33 @@ describe('cardMatchesTarget (DNF)', () => {
         );
     });
 
+    it('UNBOUND sans mot-clé : compagnon ni ring-bound ni Porteur', () => {
+        const merry = createCompanion({
+            id: 'merry',
+            race: 'HOBBIT',
+        });
+        expect(cardMatchesCriterion(merry, 'UNBOUND')).toBe(true);
+        expect(cardMatchesGroup(merry, ['UNBOUND', 'HOBBIT'])).toBe(true);
+    });
+
+    it('CHARACTER matche compagnon, allié, séide', () => {
+        expect(
+            cardMatchesCriterion(
+                createCompanion({ id: 'aragorn' }),
+                'CHARACTER'
+            )
+        ).toBe(true);
+        expect(
+            cardMatchesCriterion(createMinion({ id: 'orc' }), 'CHARACTER')
+        ).toBe(true);
+        expect(
+            cardMatchesCriterion(
+                createCard({ id: 'event', type: 'EVENT' }),
+                'CHARACTER'
+            )
+        ).toBe(false);
+    });
+
     it('accepte n’importe quel groupe (OU)', () => {
         const dwarf = createCompanion({ id: 'gimli', race: 'DWARF' });
         const orc = createMinion({ id: 'orc', race: 'ORC' });

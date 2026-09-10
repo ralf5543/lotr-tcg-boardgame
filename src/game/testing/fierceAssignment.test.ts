@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { createEngineClient } from './createEngineClient';
+import { createEngineClient, skipAssignmentActions } from './createEngineClient';
 import {
     createCompanion,
     createMinion,
@@ -33,6 +33,7 @@ describe('affectation acharnée (FIERCE)', () => {
             },
         });
 
+        skipAssignmentActions(engine);
         engine.moves.assignMinion('minion-fierce', 'comp-1');
         expect(engine.getCtx().phase).toBe('skirmish');
 
@@ -45,6 +46,7 @@ describe('affectation acharnée (FIERCE)', () => {
         expect(engine.getG().battlefield[0]?.isDead).not.toBe(true);
         expect(engine.getG().battlefield[0]?.wounds).toBe(1);
 
+        skipAssignmentActions(engine);
         engine.moves.assignMinion('minion-fierce', 'comp-1');
         expect(engine.getCtx().phase).toBe('skirmish');
 
@@ -79,6 +81,7 @@ describe('affectation acharnée (FIERCE)', () => {
 
         expect(engine.getG().isFierceAssignment).toBe(true);
 
+        skipAssignmentActions(engine);
         engine.moves.assignMinion('minion-normal', 'comp-1');
         expect(engine.getG().skirmishes).toHaveLength(0);
         expect(engine.getCtx().phase).toBe('assignment');
@@ -123,6 +126,7 @@ describe('affectation acharnée (FIERCE)', () => {
 
         expect(engine.getG().isFierceAssignment).toBe(true);
 
+        skipAssignmentActions(engine);
         engine.moves.assignMinion('minion-fierce', 'comp-1');
         expect(engine.getCtx().phase).toBe('skirmish');
         expect(engine.getG().isFierceAssignment).toBe(true);

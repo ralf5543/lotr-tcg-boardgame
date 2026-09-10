@@ -12,10 +12,28 @@ export const fadeIn = keyframes`
 `;
 
 export const BadgeContainer = styled.span`
+    position: relative;
     display: inline-flex;
     align-items: center;
     justify-content: center;
     cursor: help;
+`;
+
+export const BadgeValue = styled.span`
+    position: absolute;
+    right: -3px;
+    bottom: -4px;
+    min-width: 10px;
+    padding: 0 2px;
+    color: #f3e2a0;
+    font-family: LOTRIcons, Georgia, serif;
+    font-size: 8px;
+    font-weight: 700;
+    line-height: 1.1;
+    text-shadow:
+        0 0 2px #000,
+        0 1px 1px #000;
+    pointer-events: none;
 `;
 
 export const BadgeImage = styled.img`

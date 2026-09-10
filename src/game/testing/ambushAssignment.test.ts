@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { createEngineClient } from './createEngineClient';
+import { createEngineClient, skipAssignmentActions } from './createEngineClient';
 import {
     createCard,
     createCompanion,
@@ -28,6 +28,7 @@ describe('Embuscade (AMBUSH) à l’affectation', () => {
             },
         });
 
+        skipAssignmentActions(engine);
         engine.moves.assignMinion('minion-ambush', 'comp-1');
 
         expect(engine.getG().twilightPool).toBe(5);
@@ -57,6 +58,7 @@ describe('Embuscade (AMBUSH) à l’affectation', () => {
             },
         });
 
+        skipAssignmentActions(engine);
         engine.moves.assignMinion('minion-2', 'comp-1');
         expect(engine.getG().assignmentStep).toBe('SHADOW_ASSIGN');
         expect(engine.getG().twilightPool).toBe(4);
@@ -94,6 +96,7 @@ describe('Embuscade (AMBUSH) à l’affectation', () => {
             },
         });
 
+        skipAssignmentActions(engine);
         engine.moves.yieldAssignmentToShadow();
         engine.updatePlayerID('1');
         engine.moves.assignMinion('minion-ambush', 'comp-1');
@@ -129,6 +132,7 @@ describe('Embuscade (AMBUSH) à l’affectation', () => {
             },
         });
 
+        skipAssignmentActions(engine);
         engine.moves.assignMinion('minion-raider', 'comp-1');
 
         expect(engine.getG().twilightPool).toBe(5);
@@ -162,6 +166,7 @@ describe('Embuscade (AMBUSH) à l’affectation', () => {
             },
         });
 
+        skipAssignmentActions(engine);
         engine.moves.assignMinion('minion-ambush', 'comp-1');
 
         expect(engine.getG().twilightPool).toBe(3);
@@ -190,6 +195,7 @@ describe('Embuscade (AMBUSH) à l’affectation', () => {
 
         expect(engine.getG().isFierceAssignment).toBe(true);
 
+        skipAssignmentActions(engine);
         engine.moves.assignMinion('minion-fierce', 'comp-1');
 
         expect(engine.getG().twilightPool).toBe(1);

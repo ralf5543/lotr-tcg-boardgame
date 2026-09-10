@@ -306,9 +306,9 @@ export const Card: React.FC<CardProps> = ({
         card &&
             showAbilityButton &&
             abilityContext &&
+            listedAbilities.length > 0 &&
             (G?.responseWindow?.isOpen
-                ? listedAbilities.length > 0 &&
-                  G.responseWindow.activePlayerId === viewerPlayerId
+                ? G.responseWindow.activePlayerId === viewerPlayerId
                 : canUseAbility(card, abilityContext).valid)
     );
 
@@ -572,6 +572,7 @@ export const Card: React.FC<CardProps> = ({
                         <KeywordBadge
                             key={kw.raw}
                             keyword={kw.raw as CardKeyword}
+                            value={kw.value}
                             size={18}
                         />
                     ))}

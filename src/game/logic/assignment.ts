@@ -5,6 +5,68 @@ import { getKeywordValue } from '../engine/keywords/keywordUtils';
 export const isFierceMinion = (card: CardState): boolean =>
     getKeywordValue(card, 'FIERCE') >= 0;
 
+/** Peu hâtif : pas d’affectation tant qu’un effet n’a pas autorisé le combat. */
+export const canCompanionBeAssigned = (companion: CardState): boolean => {
+    if (getKeywordValue(companion, 'UNHASTY') < 0) return true;
+    return Boolean(companion.allowedToSkirmish);
+};
+
+export const isAssignmentActionWindowOpen = (G: GameState): boolean =>
+    G.assignmentStep === 'ACTIONS' && Boolean(G.actionWindow?.isOpen);
+
+function clearAllowedToSkirmish(G: GameState): void {
+    const fpId = G.fpPlayerId || '0';
+    (G.players[fpId]?.fellowshipArea || []).forEach((card) => {
+        if (card.allowedToSkirmish) card.allowedToSkirmish = undefined;
+    });
+}
+
+/** Fenêtre d’actions d’affectation (FP d’abord), avant d’attribuer les séides. */
+export const openAssignmentActionWindow = (G: GameState): void => {
+    const fpId = G.fpPlayerId || '0';
+    clearAllowedToSkirmish(G);
+    G.assignmentStep = 'ACTIONS';
+    G.actionWindow = {
+        isOpen: true,
+        activePlayerId: fpId,
+        title: 'PHASE D’AFFECTATION',
+        message:
+            'Voulez-vous jouer une carte / un effet d’Affectation ou PASSER ?',
+        canPass: true,
+        passesCount: 0,
+    };
+    G.statusMessage = 'Affectation : Ouverture de la fenêtre d’action.';
+};
+
+/** Après deux passes : le FP attribue, ou on saute s’il n’y a plus de séide. */
+export const beginMinionAssignment = (
+    G: GameState,
+    events?: AssignmentEvents
+): void => {
+    G.actionWindow = undefined;
+    const unassignedMinions = getUnassignedMinions(G);
+    const fpId = G.fpPlayerId || '0';
+    const companions = G.players[fpId]?.fellowshipArea || [];
+    const assignable = companions.filter(canCompanionBeAssigned);
+
+    if (unassignedMinions.length === 0 || assignable.length === 0) {
+        G.assignmentStep = 'COMPLETED';
+        G.statusMessage =
+            unassignedMinions.length === 0
+                ? G.isFierceAssignment
+                    ? 'Aucun séide Acharné (FIERCE) à assigner.'
+                    : 'Aucun séide en jeu : pas d’affectation nécessaire.'
+                : 'Aucun compagnon ne peut combattre. Les séides restants ne sont pas affectés.';
+        events?.endPhase?.();
+        return;
+    }
+
+    G.assignmentStep = 'FP_ASSIGN';
+    G.statusMessage = G.isFierceAssignment
+        ? 'Phase d’Affectation Acharnée : Assignez les séides FIERCE.'
+        : 'Phase d’Affectation : Le joueur des Peuples Libres attribue les séides aux compagnons.';
+};
+
 /**
  * Grisage visuel du Battlefield : séide non-Acharné pendant la passe FIERCE.
  * `isFierceAssignment` est remis à false à la fin du dernier combat (début de regroupement).
@@ -86,6 +148,14 @@ export const beginShadowAssignment = (
 ) => {
     const fpId = G.fpPlayerId || '0';
     const shadowId = fpId === '0' ? '1' : '0';
+    const companions = G.players[fpId]?.fellowshipArea || [];
+    if (!companions.some(canCompanionBeAssigned)) {
+        G.assignmentStep = 'COMPLETED';
+        G.statusMessage =
+            'Aucun compagnon ne peut combattre. Les séides restants ne sont pas affectés.';
+        events?.endPhase?.();
+        return;
+    }
 
     G.assignmentStep = 'SHADOW_ASSIGN';
     G.statusMessage = statusMessage;
@@ -110,17 +180,28 @@ export const checkAssignmentProgress = (
         return;
     }
 
+    const assignableCompanions = companions.filter(canCompanionBeAssigned);
+    if (assignableCompanions.length === 0) {
+        G.assignmentStep = 'COMPLETED';
+        G.statusMessage =
+            'Aucun compagnon ne peut combattre. Les séides restants ne sont pas affectés.';
+        events?.endPhase?.();
+        return;
+    }
+
     if (G.assignmentStep === 'FP_ASSIGN') {
-        const allCompanionsFull = companions.every((comp: CardState) => {
-            const skirmish = G.skirmishes.find(
-                (s) =>
-                    s.companionId === comp.id ||
-                    s.companionId === comp.instanceId
-            );
-            const assignedCount = skirmish ? skirmish.minionIds.length : 0;
-            const maxCapacity = getCompanionDefenderCapacity(comp, G);
-            return assignedCount >= maxCapacity;
-        });
+        const allCompanionsFull = assignableCompanions.every(
+            (comp: CardState) => {
+                const skirmish = G.skirmishes.find(
+                    (s) =>
+                        s.companionId === comp.id ||
+                        s.companionId === comp.instanceId
+                );
+                const assignedCount = skirmish ? skirmish.minionIds.length : 0;
+                const maxCapacity = getCompanionDefenderCapacity(comp, G);
+                return assignedCount >= maxCapacity;
+            }
+        );
 
         if (allCompanionsFull) {
             beginShadowAssignment(G, events);

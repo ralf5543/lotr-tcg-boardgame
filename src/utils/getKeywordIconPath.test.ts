@@ -22,3 +22,19 @@ describe('getKeywordIconPath', () => {
         );
     });
 });
+
+describe('getEffectiveKeywords — cumul', () => {
+    it('cumule Dégâts imprimé et temporaire', () => {
+        const keywords = getEffectiveKeywords(
+            createMinion({
+                keywords: ['DAMAGE +1'],
+                tempKeywords: [
+                    { keyword: 'DAMAGE +1', expiresAtPhase: 'SKIRMISH' },
+                ],
+            })
+        );
+        const damage = keywords.find((k) => k.key === 'DAMAGE');
+        expect(damage?.raw).toBe('DAMAGE +2');
+        expect(damage?.value).toBe(2);
+    });
+});

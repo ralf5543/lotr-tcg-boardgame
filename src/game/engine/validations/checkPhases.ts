@@ -66,6 +66,15 @@ export function checkPhases(
                 reason: 'Les événements de combat se jouent pendant une escarmouche en cours.',
             };
         }
+        if (
+            currentPhase === 'ASSIGNMENT' &&
+            G.assignmentStep !== 'ACTIONS'
+        ) {
+            return {
+                valid: false,
+                reason: 'Les événements d’affectation se jouent avant l’attribution des séides.',
+            };
+        }
         return { valid: true };
     }
 

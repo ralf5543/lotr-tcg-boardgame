@@ -136,7 +136,12 @@ export const VALID_KEYWORDS = new Set([
     'WEATHER',
 ]);
 
-export const VALID_TARGET_TYPES = new Set(['MINION', 'COMPANION', 'ALLY']);
+export const VALID_TARGET_TYPES = new Set([
+    'MINION',
+    'COMPANION',
+    'ALLY',
+    'CHARACTER',
+]);
 
 export const SHADOW_CULTURES = [
     'ISENGARD',

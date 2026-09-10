@@ -2,6 +2,7 @@ import type { LotrMoveContext } from '../types';
 import {
     applyAmbushTwilight,
     beginShadowAssignment,
+    canCompanionBeAssigned,
     checkAssignmentProgress,
     getCompanionDefenderCapacity,
     getUnassignedMinions,
@@ -17,6 +18,9 @@ export const assignMinion = (
     const isFP = playerID === fpId;
     const isShadow = playerID !== fpId;
 
+    if (G.assignmentStep !== 'FP_ASSIGN' && G.assignmentStep !== 'SHADOW_ASSIGN') {
+        return 'INVALID_MOVE';
+    }
     if (G.assignmentStep === 'FP_ASSIGN' && !isFP) return 'INVALID_MOVE';
     if (G.assignmentStep === 'SHADOW_ASSIGN' && !isShadow) return 'INVALID_MOVE';
 
@@ -42,6 +46,7 @@ export const assignMinion = (
     );
 
     if (!compCard) return 'INVALID_MOVE';
+    if (!canCompanionBeAssigned(compCard)) return 'INVALID_MOVE';
 
     const existingSkirmish = G.skirmishes.find(
         (s) => s.companionId === companionId

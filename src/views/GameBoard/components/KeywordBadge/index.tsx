@@ -8,9 +8,14 @@ import { getKeywordIconPath } from '../../../../utils/getKeywordIconPath';
 interface KeywordBadgeProps {
     keyword: CardKeyword;
     size?: number;
+    value?: number;
 }
 
-export const KeywordBadge: React.FC<KeywordBadgeProps> = ({ keyword, size = 18 }) => {
+export const KeywordBadge: React.FC<KeywordBadgeProps> = ({
+    keyword,
+    size = 18,
+    value = 0,
+}) => {
     const [hasError, setHasError] = useState(false);
     const [isHovered, setIsHovered] = useState(false);
     const [coords, setCoords] = useState<{ top: number; left: number }>({ top: 0, left: 0 });
@@ -59,6 +64,7 @@ export const KeywordBadge: React.FC<KeywordBadgeProps> = ({ keyword, size = 18 }
                     height={size}
                     onError={() => setHasError(true)}
                 />
+                {value > 0 && <S.BadgeValue>+{value}</S.BadgeValue>}
             </S.BadgeContainer>
 
             {/* PORTAL : Injecte le tooltip directement à la racine du DOM (document.body) */}

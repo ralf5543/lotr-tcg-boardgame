@@ -115,3 +115,12 @@ export function passBothActionWindows(engine: EngineClient) {
     engine.updatePlayerID(second);
     engine.moves.passActionWindow();
 }
+
+/** Ferme la fenêtre d’actions d’affectation, puis reprend avec `resumePlayerId`. */
+export function skipAssignmentActions(
+    engine: EngineClient,
+    resumePlayerId = '0'
+) {
+    passBothActionWindows(engine);
+    engine.updatePlayerID(resumePlayerId);
+}

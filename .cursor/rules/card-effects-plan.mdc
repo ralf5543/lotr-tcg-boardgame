@@ -16,6 +16,26 @@ Réponse n’est pas une phase. Fenêtre dédiée `responseWindow` + `pendingEve
 3. Anneau : mettre l’Anneau (réponse) **puis** fardeaux à la place (passif `While`, pas un toaster). ✅
 4. Coûts prevent-wound : spot, crépuscule, défausser cette carte. ✅ (`1C76`, `1R173`, `4R19`). Encore : effets défausser / soigner / piocher ; défausse depuis la main ; `in a skirmish`.
 5. Étendre exert-to-make / to-wound. Puis `When you play this`. Puis réponses « gagne une escarmouche » / mort.
+   - **5a** — exert-to-make une **autre** classe (`7R91` Faramir, `0P21` Treebeard) ; to-wound un personnage **au combat** (`1C271` Soldat orque). Refuser tout reste inconnu. ✅
+   - **5b** — `When you play this` **requis** (pas « you may ») : `1C191` Éclaireur de la Moria (spot Elfe → crépuscule). ✅ « you may » = choix, toaster à part.
+   - **5c** — Réponses « gagne une escarmouche » / mort. Sam Porteur si Frodo meurt = exception (étape 6).
 6. Exceptions (~300) en handlers par id, pas dans le parser.
 
 Tests : cartes réelles du CSV. UI : toaster seulement s’il existe au moins une réponse payable dont le trigger matche.
+
+## Vocabulaire des actions
+
+Source : [Actions — LOTR-TCG Wiki](https://wiki.lotrtcgpc.net/wiki/Actions)
+
+Toute action a un **coût** (payé entièrement, d’abord) et un **effet** (peut ne rien faire si la cible a disparu). Optional = mot « may », événement, ou special ability (`Phase:` / `Response:`). Le reste est **requis**. Les requis d’un même trigger se résolvent avant les optionnels ; le joueur FP choisit l’ordre des requis simultanés.
+
+| Famille | Termes |
+| --- | --- |
+| General | At Random, Can/Cannot, Cost, Effect, May, Limit, Pass, Prevent, Spot, Up To |
+| Triggers | At the Start, Each Time, When, While |
+| Phase Actions | Assign, Cancel, Special Ability, Response |
+| Character Actions | Corrupt, Exert, Exhaust, Heal, Kill, Overwhelm, Participate, Wound |
+| Site Actions | At a Site, Control, Liberate, Replace |
+| Card Actions | Draw, Discard, Play, Reveal, Reconcile, Shuffle, Stack, Transfer |
+
+Triggers : **When** (souvent une fois, ex. `When you play this`) ; **Each time** (répété) ; **While** (passif tant que c’est vrai) ; **At the start** = variante d’Each time. **Response** n’est pas une phase : special ability optionnelle sur un trigger. « may » = au choix ; « can » = pas un choix (`While you can spot The Balrog, skip the archery phase`).

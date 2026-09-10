@@ -18,7 +18,7 @@ import {
     hasFierceMinionsOnBattlefield,
     canSelectSkirmish,
 } from './logic/skirmish';
-import { getUnassignedMinions } from './logic/assignment';
+import { openAssignmentActionWindow } from './logic/assignment';
 import { advanceCompany } from './moves/fellowshipMoves';
 import { devMoves } from './dev/devMoves';
 import { drawCardsForPlayer } from '../utils/drawCards';
@@ -29,6 +29,7 @@ import { getMusterCount } from './logic/musterHelpers';
 import { hasActionableStartOfPhaseCards } from './logic/hasActionableStartOfPhaseCards';
 import { clearActionableFlags } from '../utils/clearActionableFlags';
 import { clearExpiredTempKeywords } from './engine/abilities/applyAbilityEffect';
+import { resolveWhenPlayed } from './engine/abilities/whenPlayed';
 
 const shuffle = <T>(array: T[]): T[] => {
     const arr = [...array];
@@ -629,6 +630,8 @@ export const LotrGame: Game<GameState> = {
                         player.supportArea.push(playedCard);
                     }
 
+                    resolveWhenPlayed(G, playedCard);
+
                     const wasRoaming = isMinionRoaming(card, fpSiteIndex);
                     G.statusMessage = `L'Ombre joue ${card.name || card.title} (${effectiveCost} Crépuscule${wasRoaming ? ' dont +2 Errance' : ''}).`;
                 },
@@ -945,19 +948,7 @@ export const LotrGame: Game<GameState> = {
                 }
 
                 G.skirmishes = [];
-                const unassignedMinions = getUnassignedMinions(G);
-
-                if (unassignedMinions.length === 0) {
-                    G.assignmentStep = 'COMPLETED';
-                    G.statusMessage = G.isFierceAssignment
-                        ? 'Aucun séide Acharné (FIERCE) à assigner.'
-                        : 'Aucun séide en jeu : pas d’affectation nécessaire.';
-                } else {
-                    G.assignmentStep = 'FP_ASSIGN';
-                    G.statusMessage = G.isFierceAssignment
-                        ? 'Phase d’Affectation Acharnée : Assignez les séides FIERCE.'
-                        : 'Phase d’Affectation : Le joueur des Peuples Libres attribue les séides aux compagnons.';
-                }
+                openAssignmentActionWindow(G);
             },
             moves: {
                 ...allMoves,

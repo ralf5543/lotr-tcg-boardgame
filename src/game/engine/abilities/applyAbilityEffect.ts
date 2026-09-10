@@ -35,6 +35,11 @@ export function applyAbilityEffect(
             continue;
         }
 
+        if (effect.type === 'ADD_TWILIGHT') {
+            G.twilightPool = (G.twilightPool || 0) + (effect.count || 0);
+            continue;
+        }
+
         if (effect.type === 'WEAR_RING') {
             if (G.wearingTheOneRing) return false;
             G.wearingTheOneRing = {
@@ -94,6 +99,11 @@ function applyOneEffect(
 
     if (effect.type === 'WOUND') {
         requestWounds(G, target, effect.count || 1);
+        return true;
+    }
+
+    if (effect.type === 'ALLOW_SKIRMISH') {
+        target.allowedToSkirmish = true;
         return true;
     }
 

@@ -144,7 +144,7 @@ export type CardI18nMap = Partial<
     Record<'fr' | 'en' | 'de' | 'it' | 'es', CardI18nContent>
 >;
 
-export type AbilityTargetToken = 'SELF' | 'BEARER';
+export type AbilityTargetToken = 'SELF' | 'BEARER' | 'SKIRMISHING';
 
 /** SELF / BEARER, ou DNF de titres / filtres (ex. `[['Sam']]`). */
 export type AbilityTargetRef = AbilityTargetToken | string[][];
@@ -195,6 +195,10 @@ export type AbilityEffect =
           target: AbilityTargetRef;
       }
     | {
+          type: 'ADD_TWILIGHT';
+          count: number;
+      }
+    | {
           type: 'PREVENT_WOUND';
       }
     | {
@@ -202,13 +206,21 @@ export type AbilityEffect =
           expiresAtPhase: AbilityEffectExpiry;
           replaceWoundWithBurdens: number;
           onlyInSkirmish?: boolean;
+      }
+    | {
+          type: 'ALLOW_SKIRMISH';
+          target: AbilityTargetRef;
       };
 
-export type AbilityTrigger = {
-    type: 'ABOUT_TO_WOUND';
-    target: AbilityTargetRef;
-    inSkirmish?: boolean;
-};
+export type AbilityTrigger =
+    | {
+          type: 'ABOUT_TO_WOUND';
+          target: AbilityTargetRef;
+          inSkirmish?: boolean;
+      }
+    | {
+          type: 'WHEN_PLAYED';
+      };
 
 export interface Ability {
     id: string;
@@ -272,6 +284,8 @@ export interface CardState {
     isStartingMember?: boolean;
     isFaceDown?: boolean;
     omitFromArcheryTotal?: boolean;
+    /** Peu hâtif : un effet d’affectation a autorisé ce personnage à combattre. */
+    allowedToSkirmish?: boolean;
     name?: string; // Si conservé pour compatibilité ou identification
     isDead?: boolean;
     isOverwhelmed?: boolean;
@@ -387,7 +401,7 @@ export interface GameState {
     woundQueue?: WoundQueueItem[];
     skirmishes: SkirmishState[];
     archeryState?: ArcheryState;
-    assignmentStep?: 'FP_ASSIGN' | 'SHADOW_ASSIGN' | 'COMPLETED';
+    assignmentStep?: 'ACTIONS' | 'FP_ASSIGN' | 'SHADOW_ASSIGN' | 'COMPLETED';
     archeryAssignStep?: 'FP' | 'SHADOW' | undefined;
     lastWoundedCardIds?: string[];
     lastExertedCardIds?: string[];
