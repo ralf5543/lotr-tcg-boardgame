@@ -4,7 +4,10 @@ import type { CardState, GameState } from '../types';
 import { getKeywordValue } from './keywords/keywordUtils';
 import { isSkirmishActionWindowOpen } from './skirmishActionWindow';
 import { canActInActionWindow } from './actionWindow';
-import { abilityMatchesPhase } from './abilities/collectAbilities';
+import {
+    abilityMatchesPhase,
+    collectProjectedAbilities,
+} from './abilities/collectAbilities';
 import { canPayAbilityCost } from './abilities/payAbilityCost';
 import {
     abilityMatchesTrigger,
@@ -58,13 +61,31 @@ export function canUseAbility(
                 reason: "Ce n'est pas à vous de répondre.",
             };
         }
-        const hasMatchingResponse = (card.abilities || []).some(
+        const ownMatch = (card.abilities || []).some(
             (ability) =>
                 abilityMatchesPhase(ability, 'RESPONSE') &&
                 abilityMatchesTrigger(ability, G.pendingEvent, card, G) &&
                 canPayAbilityCost(G, card, ability.cost)
         );
-        if (hasMatchingResponse) return { valid: true };
+        if (ownMatch) return { valid: true };
+
+        const attachmentMatch = (card.attachments || []).some((att) =>
+            (att.abilities || []).some(
+                (ability) =>
+                    abilityMatchesPhase(ability, 'RESPONSE') &&
+                    abilityMatchesTrigger(ability, G.pendingEvent, att, G) &&
+                    canPayAbilityCost(G, att, ability.cost)
+            )
+        );
+        if (attachmentMatch) return { valid: true };
+
+        const projectedMatch = collectProjectedAbilities(G, card).some(
+            ({ source, ability }) =>
+                abilityMatchesPhase(ability, 'RESPONSE') &&
+                abilityMatchesTrigger(ability, G.pendingEvent, source, G) &&
+                canPayAbilityCost(G, source, ability.cost)
+        );
+        if (projectedMatch) return { valid: true };
         return {
             valid: false,
             reason: 'Aucune réponse éligible sur cette carte.',
@@ -96,46 +117,53 @@ export function canUseAbility(
         };
     }
 
+    const projectedForPhase = collectProjectedAbilities(G, card).some(
+        ({ ability }) => abilityMatchesPhase(ability, rawPhase)
+    );
+
     // 3. Traitement des capacités avec phases explicites (actionPhases)
     if (Array.isArray(card.actionPhases) && card.actionPhases.length > 0) {
         const allowedActionPhases = card.actionPhases.map((p) =>
             p.toUpperCase()
         );
+        const ownPhaseOk =
+            allowedActionPhases.includes(currentPhase) ||
+            allowedActionPhases.includes(normalizedPhase);
 
-        if (
-            !allowedActionPhases.includes(currentPhase) &&
-            !allowedActionPhases.includes(normalizedPhase)
-        ) {
+        if (!ownPhaseOk && !projectedForPhase) {
             return {
                 valid: false,
                 reason: `Cette capacité ne peut être activée qu'en phase : ${card.actionPhases.join(', ')}.`,
             };
         }
 
-        if (
-            (currentPhase === 'SKIRMISH' || normalizedPhase === 'SKIRMISH') &&
-            allowedActionPhases.includes('SKIRMISH') &&
-            !isSkirmishActionWindowOpen(G)
-        ) {
-            return {
-                valid: false,
-                reason: 'Les actions de combat ne peuvent être utilisées que pendant une escarmouche en cours.',
-            };
-        }
+        if (ownPhaseOk) {
+            if (
+                (currentPhase === 'SKIRMISH' ||
+                    normalizedPhase === 'SKIRMISH') &&
+                allowedActionPhases.includes('SKIRMISH') &&
+                !isSkirmishActionWindowOpen(G)
+            ) {
+                return {
+                    valid: false,
+                    reason: 'Les actions de combat ne peuvent être utilisées que pendant une escarmouche en cours.',
+                };
+            }
 
-        if (!canActInActionWindow(G, playerID)) {
-            return {
-                valid: false,
-                reason: "Ce n'est pas à vous d'agir.",
-            };
+            if (!canActInActionWindow(G, playerID)) {
+                return {
+                    valid: false,
+                    reason: "Ce n'est pas à vous d'agir.",
+                };
+            }
+            return { valid: true };
         }
-        return { valid: true };
     }
 
     const hasMatchingAbility = (card.abilities || []).some((ability) =>
         abilityMatchesPhase(ability, rawPhase)
     );
-    if (hasMatchingAbility) {
+    if (hasMatchingAbility || projectedForPhase) {
         if (
             (currentPhase === 'SKIRMISH' || normalizedPhase === 'SKIRMISH') &&
             !isSkirmishActionWindowOpen(G)

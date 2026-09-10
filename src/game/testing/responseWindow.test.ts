@@ -7,6 +7,8 @@ import {
     createPlayerState,
 } from './createGameState';
 import type { Ability } from '../types';
+import { canUseAbility } from '../engine/canUseAbility';
+import { collectVisibleAbilities } from '../engine/abilities/collectAbilities';
 
 const EOWYN_ABILITY: Ability = {
     id: '4C270:0',
@@ -548,5 +550,676 @@ describe('responseWindow / Anneau Unique', () => {
 
         expect(engine.getG().activeSkirmishId).toBeUndefined();
         expect(engine.getG().skirmishes).toHaveLength(0);
+    });
+
+    it('Frodon 2C102 sans mot-clé RING-BEARER : mettre l’Anneau en combat remplace la blessure', () => {
+        const frodo = createCompanion({
+            id: '2C102',
+            title: 'Frodo',
+            keywords: ['RING-BOUND'],
+            vitality: 4,
+            strength: 3,
+            attachments: [createTheOneRing()],
+        });
+        const orc = createMinion({
+            id: 'orc',
+            strength: 5,
+            vitality: 2,
+        });
+
+        const engine = createEngineClient({
+            startPhase: 'skirmish',
+            playerID: '0',
+            G: {
+                activeSkirmishId: 'sk-frodo',
+                skirmishes: [
+                    {
+                        id: 'sk-frodo',
+                        companionId: '2C102',
+                        minionIds: ['orc'],
+                    },
+                ],
+                battlefield: [orc],
+                players: {
+                    '0': createPlayerState('0', {
+                        fellowshipArea: [frodo],
+                    }),
+                },
+            },
+        });
+
+        engine.moves.resolveActiveSkirmish();
+        expect(engine.getG().responseWindow?.isOpen).toBe(true);
+
+        engine.moves.activateAbility('1R1', '1R1:0');
+
+        const G = engine.getG();
+        expect(G.players['0']?.fellowshipArea[0]?.wounds || 0).toBe(0);
+        expect(G.players['0']?.burdens).toBe(2);
+        expect(G.wearingTheOneRing).toEqual({
+            expiresAtPhase: 'REGROUP',
+            replaceWoundWithBurdens: 2,
+        });
+        expect(G.responseWindow).toBeUndefined();
+    });
+});
+
+const INTIMIDATE_ABILITY: Ability = {
+    id: '1C76:0',
+    phases: ['RESPONSE'],
+    trigger: {
+        type: 'ABOUT_TO_WOUND',
+        target: [['COMPANION']],
+    },
+    cost: [{ spot: [{ count: 1, target: [['Gandalf']] }] }],
+    effects: [{ type: 'PREVENT_WOUND' }],
+    source: 'SELF',
+};
+
+const GOBLIN_ARMORY_ABILITY: Ability = {
+    id: '1R173:0',
+    phases: ['RESPONSE'],
+    trigger: {
+        type: 'ABOUT_TO_WOUND',
+        target: [['MORIA', 'ORC']],
+    },
+    cost: [{ discardFromPlay: [{ count: 1, target: 'SELF' }] }],
+    effects: [{ type: 'PREVENT_WOUND' }],
+    source: 'SELF',
+};
+
+const HIDES_TWILIGHT_ABILITY: Ability = {
+    id: '4R19:0',
+    phases: ['RESPONSE'],
+    trigger: {
+        type: 'ABOUT_TO_WOUND',
+        target: [['DUNLAND', 'MAN']],
+    },
+    cost: [{ removeTwilight: 2 }],
+    effects: [{ type: 'PREVENT_WOUND' }],
+    source: 'SELF',
+};
+
+const HIDES_DISCARD_ABILITY: Ability = {
+    id: '4R19:1',
+    phases: ['RESPONSE'],
+    trigger: {
+        type: 'ABOUT_TO_WOUND',
+        target: [['DUNLAND', 'MAN']],
+    },
+    cost: [{ discardFromPlay: [{ count: 1, target: 'SELF' }] }],
+    effects: [{ type: 'PREVENT_WOUND' }],
+    source: 'SELF',
+};
+
+const SHAMAN_ABILITY: Ability = {
+    id: '3C59:0',
+    phases: ['RESPONSE'],
+    trigger: {
+        type: 'ABOUT_TO_WOUND',
+        target: [['ISENGARD', 'ORC']],
+    },
+    cost: [{ removeTwilight: 2 }],
+    effects: [{ type: 'PREVENT_WOUND' }],
+    source: 'SELF',
+};
+
+describe('responseWindow / coûts prevent-wound', () => {
+    it('Intimidate : spot Gandalf, événement défaussé, compagnon intact', () => {
+        const gandalf = createCompanion({
+            id: 'gandalf',
+            title: 'Gandalf',
+            vitality: 4,
+        });
+        const gimli = createUnboundCompanion();
+        const intimidate = createCard({
+            id: '1C76',
+            title: 'Intimidate',
+            kind: 'FREE_PEOPLE',
+            type: 'EVENT',
+            culture: 'GANDALF',
+            twilightCost: 2,
+            phases: ['RESPONSE'],
+            abilities: [INTIMIDATE_ABILITY],
+        });
+
+        const engine = createEngineClient({
+            startPhase: 'archery',
+            playerID: '0',
+            G: {
+                twilightPool: 0,
+                players: {
+                    '0': createPlayerState('0', {
+                        fellowshipArea: [gimli, gandalf],
+                        hand: [intimidate],
+                    }),
+                },
+            },
+        });
+
+        engine.moves.applyWound('gimli');
+        expect(engine.getG().responseWindow?.isOpen).toBe(true);
+
+        engine.moves.playCard(0);
+
+        const G = engine.getG();
+        const wounded = G.players['0']?.fellowshipArea.find(
+            (c) => c.id === 'gimli'
+        );
+        expect(wounded?.wounds || 0).toBe(0);
+        expect(G.players['0']?.hand).toHaveLength(0);
+        expect(G.players['0']?.discard.map((c) => c.id)).toContain('1C76');
+        expect(G.twilightPool).toBe(2);
+        expect(G.responseWindow).toBeUndefined();
+        expect(G.pendingEvent).toBeUndefined();
+    });
+
+    it('Intimidate sans Gandalf : blessure immédiate, pas de toaster', () => {
+        const gimli = createUnboundCompanion();
+        const intimidate = createCard({
+            id: '1C76',
+            title: 'Intimidate',
+            kind: 'FREE_PEOPLE',
+            type: 'EVENT',
+            culture: 'GANDALF',
+            twilightCost: 2,
+            phases: ['RESPONSE'],
+            abilities: [INTIMIDATE_ABILITY],
+        });
+
+        const engine = createEngineClient({
+            startPhase: 'archery',
+            playerID: '0',
+            G: {
+                players: {
+                    '0': createPlayerState('0', {
+                        fellowshipArea: [gimli],
+                        hand: [intimidate],
+                    }),
+                },
+            },
+        });
+
+        engine.moves.applyWound('gimli');
+
+        const G = engine.getG();
+        expect(G.players['0']?.fellowshipArea[0]?.wounds).toBe(1);
+        expect(G.responseWindow).toBeUndefined();
+        expect(G.players['0']?.hand).toHaveLength(1);
+    });
+
+    it('Goblin Armory : défausse la condition, Orc Moria intact', () => {
+        const orc = createMinion({
+            id: 'moria-orc',
+            title: 'Goblin Runner',
+            culture: 'MORIA',
+            race: 'ORC',
+            vitality: 2,
+        });
+        const armory = createCard({
+            id: '1R173',
+            title: 'Goblin Armory',
+            kind: 'SHADOW',
+            type: 'CONDITION',
+            culture: 'MORIA',
+            actionPhases: ['RESPONSE'],
+            abilities: [GOBLIN_ARMORY_ABILITY],
+        });
+
+        const engine = createEngineClient({
+            startPhase: 'archery',
+            playerID: '0',
+            G: {
+                battlefield: [orc],
+                players: {
+                    '1': createPlayerState('1', {
+                        supportArea: [armory],
+                    }),
+                },
+            },
+        });
+
+        engine.moves.applyWound('moria-orc');
+        expect(engine.getG().responseWindow?.isOpen).toBe(true);
+        expect(engine.getG().responseWindow?.activePlayerId).toBe('1');
+
+        engine.updatePlayerID('1');
+        engine.moves.activateAbility('1R173', '1R173:0');
+
+        const G = engine.getG();
+        expect(G.battlefield[0]?.wounds || 0).toBe(0);
+        expect(G.players['1']?.supportArea).toHaveLength(0);
+        expect(G.players['1']?.discard.map((c) => c.id)).toContain('1R173');
+        expect(G.responseWindow).toBeUndefined();
+    });
+
+    it('Isengard Shaman : crépuscule insuffisant → blessure immédiate', () => {
+        const shaman = createMinion({
+            id: '3C59',
+            title: 'Isengard Shaman',
+            culture: 'ISENGARD',
+            race: 'ORC',
+            vitality: 2,
+            actionPhases: ['RESPONSE'],
+            abilities: [SHAMAN_ABILITY],
+        });
+        const grunt = createMinion({
+            id: 'isengard-orc',
+            title: 'Isengard Orc',
+            culture: 'ISENGARD',
+            race: 'ORC',
+            vitality: 2,
+        });
+
+        const engine = createEngineClient({
+            startPhase: 'archery',
+            playerID: '0',
+            G: {
+                twilightPool: 1,
+                battlefield: [shaman, grunt],
+            },
+        });
+
+        engine.moves.applyWound('isengard-orc');
+
+        const G = engine.getG();
+        expect(G.battlefield.find((c) => c.id === 'isengard-orc')?.wounds).toBe(
+            1
+        );
+        expect(G.responseWindow).toBeUndefined();
+        expect(G.twilightPool).toBe(1);
+    });
+
+    it('Isengard Shaman : retire 2 crépuscule, Orc intact', () => {
+        const shaman = createMinion({
+            id: '3C59',
+            title: 'Isengard Shaman',
+            culture: 'ISENGARD',
+            race: 'ORC',
+            vitality: 2,
+            actionPhases: ['RESPONSE'],
+            abilities: [SHAMAN_ABILITY],
+        });
+        const grunt = createMinion({
+            id: 'isengard-orc',
+            title: 'Isengard Orc',
+            culture: 'ISENGARD',
+            race: 'ORC',
+            vitality: 2,
+        });
+
+        const engine = createEngineClient({
+            startPhase: 'archery',
+            playerID: '0',
+            G: {
+                twilightPool: 3,
+                battlefield: [shaman, grunt],
+            },
+        });
+
+        engine.moves.applyWound('isengard-orc');
+        engine.updatePlayerID('1');
+        engine.moves.activateAbility('3C59', '3C59:0');
+
+        const G = engine.getG();
+        expect(G.battlefield.find((c) => c.id === 'isengard-orc')?.wounds || 0).toBe(
+            0
+        );
+        expect(G.twilightPool).toBe(1);
+        expect(G.responseWindow).toBeUndefined();
+    });
+
+    it('Hides : retire 2 crépuscule, possession reste en jeu', () => {
+        const dunlending = createMinion({
+            id: 'dunlending',
+            title: 'Dunlending Pillager',
+            culture: 'DUNLAND',
+            race: 'MAN',
+            vitality: 2,
+        });
+        const hides = createCard({
+            id: '4R19',
+            title: 'Hides',
+            kind: 'SHADOW',
+            type: 'POSSESSION',
+            culture: 'DUNLAND',
+            actionPhases: ['RESPONSE'],
+            abilities: [HIDES_TWILIGHT_ABILITY, HIDES_DISCARD_ABILITY],
+        });
+
+        const engine = createEngineClient({
+            startPhase: 'archery',
+            playerID: '0',
+            G: {
+                twilightPool: 2,
+                battlefield: [dunlending],
+                players: {
+                    '1': createPlayerState('1', {
+                        supportArea: [hides],
+                    }),
+                },
+            },
+        });
+
+        engine.moves.applyWound('dunlending');
+        engine.updatePlayerID('1');
+        engine.moves.activateAbility('4R19', '4R19:0');
+
+        const G = engine.getG();
+        expect(G.battlefield[0]?.wounds || 0).toBe(0);
+        expect(G.twilightPool).toBe(0);
+        expect(G.players['1']?.supportArea.map((c) => c.id)).toContain('4R19');
+        expect(G.responseWindow).toBeUndefined();
+    });
+
+    it('Hides : défausse la possession si pas assez de crépuscule', () => {
+        const dunlending = createMinion({
+            id: 'dunlending',
+            title: 'Dunlending Pillager',
+            culture: 'DUNLAND',
+            race: 'MAN',
+            vitality: 2,
+        });
+        const hides = createCard({
+            id: '4R19',
+            title: 'Hides',
+            kind: 'SHADOW',
+            type: 'POSSESSION',
+            culture: 'DUNLAND',
+            actionPhases: ['RESPONSE'],
+            abilities: [HIDES_TWILIGHT_ABILITY, HIDES_DISCARD_ABILITY],
+        });
+
+        const engine = createEngineClient({
+            startPhase: 'archery',
+            playerID: '0',
+            G: {
+                twilightPool: 0,
+                battlefield: [dunlending],
+                players: {
+                    '1': createPlayerState('1', {
+                        supportArea: [hides],
+                    }),
+                },
+            },
+        });
+
+        engine.moves.applyWound('dunlending');
+        expect(engine.getG().responseWindow?.isOpen).toBe(true);
+
+        engine.updatePlayerID('1');
+        engine.moves.activateAbility('4R19', '4R19:1');
+
+        const G = engine.getG();
+        expect(G.battlefield[0]?.wounds || 0).toBe(0);
+        expect(G.twilightPool).toBe(0);
+        expect(G.players['1']?.supportArea).toHaveLength(0);
+        expect(G.players['1']?.discard.map((c) => c.id)).toContain('4R19');
+        expect(G.responseWindow).toBeUndefined();
+    });
+
+    it('Dwarven Bracers : défausse l’attachement, porteur intact', () => {
+        const bracersAbility: Ability = {
+            id: '2U3:0',
+            phases: ['RESPONSE'],
+            trigger: {
+                type: 'ABOUT_TO_WOUND',
+                target: 'BEARER',
+            },
+            cost: [{ discardFromPlay: [{ count: 1, target: 'SELF' }] }],
+            effects: [{ type: 'PREVENT_WOUND' }],
+            source: 'SELF',
+        };
+        const gimli = createCompanion({
+            id: 'gimli',
+            title: 'Gimli',
+            keywords: ['UNBOUND'],
+            race: 'DWARF',
+            vitality: 3,
+            attachments: [
+                createCard({
+                    id: '2U3',
+                    title: 'Dwarven Bracers',
+                    kind: 'FREE_PEOPLE',
+                    type: 'POSSESSION',
+                    culture: 'DWARVEN',
+                    actionPhases: ['RESPONSE'],
+                    abilities: [bracersAbility],
+                }),
+            ],
+        });
+
+        const engine = createEngineClient({
+            startPhase: 'archery',
+            playerID: '0',
+            G: {
+                players: {
+                    '0': createPlayerState('0', {
+                        fellowshipArea: [gimli],
+                    }),
+                },
+            },
+        });
+
+        engine.moves.applyWound('gimli');
+        engine.moves.activateAbility('2U3', '2U3:0');
+
+        const G = engine.getG();
+        const bearer = G.players['0']?.fellowshipArea[0];
+        expect(bearer?.wounds || 0).toBe(0);
+        expect(bearer?.attachments || []).toHaveLength(0);
+        expect(G.players['0']?.discard.map((c) => c.id)).toContain('2U3');
+        expect(G.responseWindow).toBeUndefined();
+    });
+});
+
+const UNKNOWN_PERILS_ABILITY: Ability = {
+    id: '3C36:0',
+    phases: ['RESPONSE'],
+    trigger: {
+        type: 'ABOUT_TO_WOUND',
+        target: [['COMPANION']],
+    },
+    cost: [
+        {
+            spotTwilight: 4,
+            exert: [{ count: 1, target: [['Gandalf']] }],
+        },
+    ],
+    effects: [{ type: 'PREVENT_WOUND' }],
+    source: 'SELF',
+};
+
+describe('responseWindow / Périls inconnus + projection', () => {
+    it('spot 4 twilight + affaiblir Gandalf empêche la blessure', () => {
+        const gandalf = createCompanion({
+            id: 'gandalf',
+            title: 'Gandalf',
+            vitality: 4,
+        });
+        const gimli = createUnboundCompanion();
+        const perils = createCard({
+            id: '3C36',
+            title: 'Unknown Perils',
+            kind: 'FREE_PEOPLE',
+            type: 'CONDITION',
+            subtype: 'SUPPORT-AREA',
+            actionPhases: ['RESPONSE'],
+            abilities: [UNKNOWN_PERILS_ABILITY],
+        });
+
+        const engine = createEngineClient({
+            startPhase: 'archery',
+            playerID: '0',
+            G: {
+                twilightPool: 4,
+                players: {
+                    '0': createPlayerState('0', {
+                        fellowshipArea: [gimli, gandalf],
+                        supportArea: [perils],
+                    }),
+                },
+            },
+        });
+
+        engine.moves.applyWound('gimli');
+        expect(engine.getG().responseWindow?.isOpen).toBe(true);
+
+        engine.moves.activateAbility('3C36', '3C36:0', 'gandalf');
+
+        const G = engine.getG();
+        expect(
+            G.players['0']?.fellowshipArea.find((c) => c.id === 'gimli')
+                ?.wounds || 0
+        ).toBe(0);
+        expect(
+            G.players['0']?.fellowshipArea.find((c) => c.id === 'gandalf')
+                ?.wounds
+        ).toBe(1);
+        expect(G.twilightPool).toBe(4);
+        expect(G.responseWindow).toBeUndefined();
+    });
+
+    it('crépuscule insuffisant : pas de toaster, blessure immédiate', () => {
+        const gandalf = createCompanion({
+            id: 'gandalf',
+            title: 'Gandalf',
+            vitality: 4,
+        });
+        const gimli = createUnboundCompanion();
+        const perils = createCard({
+            id: '3C36',
+            title: 'Unknown Perils',
+            kind: 'FREE_PEOPLE',
+            type: 'CONDITION',
+            subtype: 'SUPPORT-AREA',
+            actionPhases: ['RESPONSE'],
+            abilities: [UNKNOWN_PERILS_ABILITY],
+        });
+
+        const engine = createEngineClient({
+            startPhase: 'archery',
+            playerID: '0',
+            G: {
+                twilightPool: 3,
+                players: {
+                    '0': createPlayerState('0', {
+                        fellowshipArea: [gimli, gandalf],
+                        supportArea: [perils],
+                    }),
+                },
+            },
+        });
+
+        engine.moves.applyWound('gimli');
+
+        const G = engine.getG();
+        expect(G.players['0']?.fellowshipArea[0]?.wounds).toBe(1);
+        expect(G.responseWindow).toBeUndefined();
+    });
+});
+
+describe('responseWindow / Anneau puis autre réponse', () => {
+    it('après mise de l’Anneau, Intimidate reste jouable ; Passer pose les fardeaux', () => {
+        const intimidate = createCard({
+            id: '1C76',
+            title: 'Intimidate',
+            kind: 'FREE_PEOPLE',
+            type: 'EVENT',
+            culture: 'GANDALF',
+            twilightCost: 2,
+            phases: ['RESPONSE'],
+            abilities: [INTIMIDATE_ABILITY],
+        });
+        const gandalf = createCompanion({
+            id: 'gandalf',
+            title: 'Gandalf',
+            vitality: 4,
+        });
+
+        const engine = createEngineClient({
+            startPhase: 'archery',
+            playerID: '0',
+            G: {
+                twilightPool: 0,
+                players: {
+                    '0': createPlayerState('0', {
+                        fellowshipArea: [createFrodoWithRing(), gandalf],
+                        hand: [intimidate],
+                    }),
+                },
+            },
+        });
+
+        engine.moves.applyWound('frodo');
+        engine.moves.activateAbility('1R1', '1R1:0');
+
+        const afterRing = engine.getG();
+        expect(afterRing.wearingTheOneRing).toBeDefined();
+        expect(afterRing.responseWindow?.isOpen).toBe(true);
+        expect(afterRing.players['0']?.burdens || 0).toBe(0);
+        expect(afterRing.responseWindow?.message).toMatch(/Anneau Unique/i);
+
+        engine.moves.passResponseWindow();
+
+        const G = engine.getG();
+        expect(G.players['0']?.fellowshipArea[0]?.wounds || 0).toBe(0);
+        expect(G.players['0']?.burdens).toBe(2);
+        expect(G.responseWindow).toBeUndefined();
+    });
+});
+
+describe('responseWindow / halo Périls inconnus', () => {
+    it('Gandalf (sans titre racine, culture GANDALF) peut jouer la réponse projetée', () => {
+        const gandalf = createCompanion({
+            id: '1R72',
+            culture: 'GANDALF',
+            race: 'WIZARD',
+            vitality: 4,
+            i18n: { en: { title: 'Gandalf' }, fr: { title: 'Gandalf' } },
+        });
+        delete (gandalf as { title?: string }).title;
+        const gimli = createUnboundCompanion();
+        const perils = createCard({
+            id: '3C36',
+            title: 'Unknown Perils',
+            kind: 'FREE_PEOPLE',
+            type: 'CONDITION',
+            culture: 'GANDALF',
+            subtype: 'SUPPORT-AREA',
+            actionPhases: ['RESPONSE'],
+            abilities: [UNKNOWN_PERILS_ABILITY],
+        });
+
+        const engine = createEngineClient({
+            startPhase: 'skirmish',
+            playerID: '0',
+            G: {
+                twilightPool: 4,
+                players: {
+                    '0': createPlayerState('0', {
+                        fellowshipArea: [gimli, gandalf],
+                        supportArea: [perils],
+                    }),
+                },
+            },
+        });
+
+        engine.moves.applyWound('gimli');
+        const G = engine.getG();
+        const host = G.players['0']?.fellowshipArea.find((c) => c.id === '1R72');
+        expect(host).toBeDefined();
+        expect(
+            collectVisibleAbilities(G, host!).some(
+                ({ ability }) => ability.id === '3C36:0'
+            )
+        ).toBe(true);
+        expect(
+            canUseAbility(host!, {
+                G,
+                ctx: { phase: 'skirmish' },
+                playerID: '0',
+            }).valid
+        ).toBe(true);
     });
 });

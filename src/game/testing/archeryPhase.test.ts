@@ -97,4 +97,75 @@ describe('phase d’archerie', () => {
         expect(engine.getG().players['0']?.fellowshipArea[0]?.wounds).toBe(1);
         expect(engine.getG().battlefield).toHaveLength(1);
     });
+
+    it('reste en archerie si une réponse s’ouvre sur la dernière flèche Ombre', () => {
+        const shaman = createMinion({
+            id: '3C59',
+            title: 'Isengard Shaman',
+            culture: 'ISENGARD',
+            race: 'ORC',
+            vitality: 2,
+            actionPhases: ['RESPONSE'],
+            abilities: [
+                {
+                    id: '3C59:0',
+                    phases: ['RESPONSE'],
+                    trigger: {
+                        type: 'ABOUT_TO_WOUND',
+                        target: [['ISENGARD', 'ORC']],
+                    },
+                    cost: [{ removeTwilight: 2 }],
+                    effects: [{ type: 'PREVENT_WOUND' }],
+                    source: 'SELF',
+                },
+            ],
+        });
+        const grunt = createMinion({
+            id: 'isengard-orc',
+            title: 'Isengard Orc',
+            culture: 'ISENGARD',
+            race: 'ORC',
+            vitality: 3,
+        });
+
+        const engine = createEngineClient({
+            startPhase: 'archery',
+            playerID: '0',
+            G: {
+                twilightPool: 3,
+                battlefield: [shaman, grunt],
+                players: {
+                    '0': createPlayerState('0', {
+                        fellowshipArea: [
+                            createCompanion({
+                                id: 'legolas',
+                                keywords: ['ARCHER'],
+                            }),
+                        ],
+                    }),
+                },
+            },
+        });
+
+        passBothActionWindows(engine);
+
+        expect(engine.getG().archeryState?.step).toBe('SHADOW_ASSIGN');
+        engine.updatePlayerID('1');
+        engine.moves.assignArcheryWound('isengard-orc');
+
+        expect(engine.getCtx().phase).toBe('archery');
+        expect(engine.getG().responseWindow?.isOpen).toBe(true);
+        expect(
+            engine.getG().battlefield.find((c) => c.id === 'isengard-orc')
+                ?.wounds || 0
+        ).toBe(0);
+
+        engine.moves.passResponseWindow();
+
+        expect(engine.getCtx().phase).toBe('assignment');
+        expect(
+            engine.getG().battlefield.find((c) => c.id === 'isengard-orc')
+                ?.wounds
+        ).toBe(1);
+    });
 });

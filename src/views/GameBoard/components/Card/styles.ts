@@ -1133,7 +1133,7 @@ export const fadeIn = keyframes`
 
 export const AbilityBubble = styled.div<{ $top: number; $left: number }>`
     position: fixed;
-    z-index: 10;
+    z-index: 10050;
     top: ${(props) => props.$top}px;
     left: ${(props) => props.$left}px;
     transform: translate(-50%, -100%);

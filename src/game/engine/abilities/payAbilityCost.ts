@@ -1,6 +1,8 @@
 import type { Ability, AbilityCost, CardState, GameState } from '../../types';
 import { applyExert } from '../../../utils/applyExert';
+import { discardCardFromPlay } from '../../../utils/discardCardFromPlay';
 import { getEffectiveVitality } from '../../../utils/cardStats';
+import { findTargetCard } from '../../../utils/cardUtils';
 import { resolveCostTarget } from './resolveCostTarget';
 
 function canPayOption(
@@ -17,6 +19,38 @@ function canPayOption(
                 (c) => getEffectiveVitality(c) > count
             );
             if (payable.length < 1) return false;
+        }
+    }
+
+    if (option.spot && Array.isArray(option.spot)) {
+        for (const req of option.spot) {
+            const count = req.count || 1;
+            const cards = resolveCostTarget(G, source, req.target);
+            if (cards.length < count) return false;
+        }
+    }
+
+    if (option.removeTwilight && option.removeTwilight > 0) {
+        if ((G.twilightPool || 0) < option.removeTwilight) return false;
+    }
+
+    if (option.spotTwilight && option.spotTwilight > 0) {
+        if ((G.twilightPool || 0) < option.spotTwilight) return false;
+    }
+
+    if (option.discardFromPlay && Array.isArray(option.discardFromPlay)) {
+        for (const req of option.discardFromPlay) {
+            if (req.target !== 'SELF' && req.target !== 'BEARER') {
+                return false;
+            }
+            const cards = resolveCostTarget(G, source, req.target);
+            const target = cards[0];
+            if (!target || target.isDead) return false;
+            const inPlay = findTargetCard(
+                G,
+                target.instanceId || target.id
+            );
+            if (!inPlay) return false;
         }
     }
 
@@ -76,6 +110,20 @@ function payOption(
     }
     if (option.addTwilight && option.addTwilight > 0) {
         G.twilightPool = (G.twilightPool || 0) + option.addTwilight;
+    }
+    if (option.removeTwilight && option.removeTwilight > 0) {
+        if ((G.twilightPool || 0) < option.removeTwilight) return false;
+        G.twilightPool -= option.removeTwilight;
+    }
+    if (option.discardFromPlay && Array.isArray(option.discardFromPlay)) {
+        for (const req of option.discardFromPlay) {
+            if (req.target !== 'SELF' && req.target !== 'BEARER') {
+                return false;
+            }
+            const cards = resolveCostTarget(G, source, req.target);
+            const target = cards[0];
+            if (!target || !discardCardFromPlay(G, target)) return false;
+        }
     }
     return true;
 }

@@ -9,7 +9,7 @@ import { abilityMatchesPhase } from '../engine/abilities/collectAbilities';
 import { yieldPriorityAfterAction } from '../engine/actionWindow';
 import { findTargetCard } from '../../utils/cardUtils';
 import { abilityNeedsDesignation } from '../engine/abilities/designation';
-import { afterResponseResolved, isResponseWindowOpen } from '../engine/responseWindow';
+import { afterResponseResolved, isResponseWindowOpen, pauseActionYieldForResponses } from '../engine/responseWindow';
 
 export const activateAbility = (
     { G, ctx, playerID }: LotrMoveContext,
@@ -31,6 +31,9 @@ export const activateAbility = (
     if (abilityNeedsDesignation(G, source, ability) && !chosenTargetId) {
         return 'INVALID_MOVE';
     }
+    const wasResponseWindowOpen = isResponseWindowOpen(G);
+    const isResponseAbility = abilityMatchesPhase(ability, 'RESPONSE');
+
     if (!payAbilityCost(G, source, ability.cost, chosenTargetId)) {
         return 'INVALID_MOVE';
     }
@@ -42,14 +45,18 @@ export const activateAbility = (
         source.omitFromArcheryTotal = true;
     }
 
-    if (isResponseWindowOpen(G)) {
+    if (wasResponseWindowOpen && isResponseAbility) {
         afterResponseResolved(G, playerID, ability);
-    } else {
-        yieldPriorityAfterAction(G, playerID);
+        return;
     }
 
-    const title =
-        source.i18n?.fr?.title || source.title || source.id;
+    if (isResponseWindowOpen(G) && !wasResponseWindowOpen) {
+        pauseActionYieldForResponses(G, playerID);
+        return;
+    }
+
+    yieldPriorityAfterAction(G, playerID);
+    const title = source.i18n?.fr?.title || source.title || source.id;
     G.statusMessage = `${title} active une capacité.`;
 };
 

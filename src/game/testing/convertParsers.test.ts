@@ -394,5 +394,162 @@ describe('parseAbilities — Response prevent wound', () => {
             parseAbilities(text, 'The One Ring', '4R1')
         ).toBeUndefined();
     });
+
+    it('parse Intimidate : spot Gandalf', () => {
+        const text =
+            '<keyword>Spell.</keyword> <br><keyword>Response:</keyword> If a companion is about to take a wound, spot Gandalf to prevent that wound.';
+        expect(parseAbilities(text, 'Intimidate', '1C76')).toEqual([
+            {
+                id: '1C76:0',
+                phases: ['RESPONSE'],
+                trigger: {
+                    type: 'ABOUT_TO_WOUND',
+                    target: [['COMPANION']],
+                },
+                cost: [{ spot: [{ count: 1, target: [['Gandalf']] }] }],
+                effects: [{ type: 'PREVENT_WOUND' }],
+                source: 'SELF',
+                text: expect.stringMatching(/spot Gandalf to prevent that wound/i),
+            },
+        ]);
+    });
+
+    it('parse Périls inconnus : spot 4 twilight + exert Gandalf', () => {
+        const text =
+            '<keyword>Response:</keyword> If a companion is about to take a wound, spot 4 twilight tokens and exert Gandalf to prevent that wound.';
+        expect(parseAbilities(text, 'Unknown Perils', '3C36')).toEqual([
+            {
+                id: '3C36:0',
+                phases: ['RESPONSE'],
+                trigger: {
+                    type: 'ABOUT_TO_WOUND',
+                    target: [['COMPANION']],
+                },
+                cost: [
+                    {
+                        spotTwilight: 4,
+                        exert: [{ count: 1, target: [['Gandalf']] }],
+                    },
+                ],
+                effects: [{ type: 'PREVENT_WOUND' }],
+                source: 'SELF',
+                text: expect.stringMatching(
+                    /spot 4 twilight tokens and exert Gandalf to prevent that wound/i
+                ),
+            },
+        ]);
+    });
+
+    it('parse Goblin Armory : défausser cette condition, culture Moria', () => {
+        const text =
+            'Each time you play a <symbol>moria</symbol> weapon, add <symbol>twilight1</symbol>.  <br><keyword>Response:</keyword> If a <symbol>moria</symbol> Orc is about to take a wound, discard this condition to prevent that wound.';
+        expect(parseAbilities(text, 'Goblin Armory', '1R173')).toEqual([
+            {
+                id: '1R173:0',
+                phases: ['RESPONSE'],
+                trigger: {
+                    type: 'ABOUT_TO_WOUND',
+                    target: [['MORIA', 'ORC']],
+                },
+                cost: [
+                    {
+                        discardFromPlay: [{ count: 1, target: 'SELF' }],
+                    },
+                ],
+                effects: [{ type: 'PREVENT_WOUND' }],
+                source: 'SELF',
+                text: expect.stringMatching(
+                    /discard this condition to prevent that wound/i
+                ),
+            },
+        ]);
+    });
+
+    it('parse Hides : retirer du crépuscule OU défausser (deux abilities)', () => {
+        const text =
+            'When you play this possession, you may draw a card. <br><keyword>Response: </keyword>If a <symbol>dunland</symbol> Man is about to take a wound, remove <symbol>twilight2</symbol> or discard this possession to prevent that wound.';
+        expect(parseAbilities(text, 'Hides', '4R19')).toEqual([
+            {
+                id: '4R19:0',
+                phases: ['RESPONSE'],
+                trigger: {
+                    type: 'ABOUT_TO_WOUND',
+                    target: [['DUNLAND', 'MAN']],
+                },
+                cost: [{ removeTwilight: 2 }],
+                effects: [{ type: 'PREVENT_WOUND' }],
+                source: 'SELF',
+                text: expect.stringMatching(/remove twilight2 to prevent that wound/i),
+            },
+            {
+                id: '4R19:1',
+                phases: ['RESPONSE'],
+                trigger: {
+                    type: 'ABOUT_TO_WOUND',
+                    target: [['DUNLAND', 'MAN']],
+                },
+                cost: [
+                    {
+                        discardFromPlay: [{ count: 1, target: 'SELF' }],
+                    },
+                ],
+                effects: [{ type: 'PREVENT_WOUND' }],
+                source: 'SELF',
+                text: expect.stringMatching(
+                    /discard this possession to prevent that wound/i
+                ),
+            },
+        ]);
+    });
+
+    it('parse Isengard Shaman : retirer du crépuscule', () => {
+        const text =
+            '<keyword>Response:</keyword> If an <symbol>isengard</symbol> Orc is about to take a wound, remove <symbol>twilight2</symbol> to prevent that wound.';
+        expect(parseAbilities(text, 'Isengard Shaman', '3C59')).toEqual([
+            {
+                id: '3C59:0',
+                phases: ['RESPONSE'],
+                trigger: {
+                    type: 'ABOUT_TO_WOUND',
+                    target: [['ISENGARD', 'ORC']],
+                },
+                cost: [{ removeTwilight: 2 }],
+                effects: [{ type: 'PREVENT_WOUND' }],
+                source: 'SELF',
+                text: expect.stringMatching(/remove twilight2 to prevent that wound/i),
+            },
+        ]);
+    });
+
+    it('parse Dwarven Bracers : bearer + défausser cette possession', () => {
+        const text =
+            'Bearer must be a Dwarf.<br><keyword>Response:</keyword> If bearer is about to take a wound, discard this possession to prevent that wound.';
+        expect(parseAbilities(text, 'Dwarven Bracers', '2U3')).toEqual([
+            {
+                id: '2U3:0',
+                phases: ['RESPONSE'],
+                trigger: {
+                    type: 'ABOUT_TO_WOUND',
+                    target: 'BEARER',
+                },
+                cost: [
+                    {
+                        discardFromPlay: [{ count: 1, target: 'SELF' }],
+                    },
+                ],
+                effects: [{ type: 'PREVENT_WOUND' }],
+                source: 'SELF',
+                text: expect.stringMatching(
+                    /If bearer is about to take a wound, discard this possession/i
+                ),
+            },
+        ]);
+    });
+
+    it('n’émet rien pour Arwen (défausse depuis la main)', () => {
+        const text =
+            '<keyword>Ranger.</keyword> <br><keyword>Response:</keyword> If the Ring-bearer is about to take a wound, discard 3 cards from hand to prevent that wound.';
+        expect(parseAbilities(text, 'Arwen', '3U7')).toBeUndefined();
+    });
 });
 

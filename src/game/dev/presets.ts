@@ -441,6 +441,14 @@ const clonePresetCard = (id: string): CardState => {
     return { ...card, instanceId: card.instanceId || card.id };
 };
 
+const asRingBearer = (card: CardState): CardState => {
+    const keywords = [...(card.keywords || [])];
+    if (!keywords.includes('RING-BEARER')) {
+        keywords.push('RING-BEARER');
+    }
+    return { ...card, keywords };
+};
+
 export const applyDevPreset = (
     G: GameState,
     presetType: DevPresetType
@@ -501,36 +509,54 @@ export const applyDevPreset = (
         }
         case 'SKIRMISH_TEST': {
             G.twilightPool = 4;
+            const shadowId = fpId === '0' ? '1' : '0';
+            const shadowPlayer = G.players[shadowId];
 
             Object.keys(G.players).forEach((pId) => {
                 const player = G.players[pId];
                 if (player) {
                     player.hand = [];
+                    player.supportArea = [];
                     if (pId !== fpId) {
                         player.fellowshipArea = [];
-                        player.supportArea = [];
                     }
                 }
             });
 
+            const gimli = clonePresetCard('0P12');
+            gimli.attachments = [clonePresetCard('2U3')];
+
             fpPlayer.fellowshipArea = [
                 {
-                    ...CARDS_PRESETS.FRODO,
+                    ...asRingBearer(clonePresetCard('2C102')),
                     attachments: [clonePresetCard('1R1')],
                 },
-                clonePresetCard('1C311'),
-                { ...CARDS_PRESETS.GIMLI },
+                clonePresetCard('1R72'),
+                clonePresetCard('1R50'),
+                gimli,
+                clonePresetCard('3U7'),
             ];
-            const deftness = clonePresetCard('1U293');
-            fpPlayer.hand = [clonePresetCard('4R307'), deftness];
+            fpPlayer.supportArea = [clonePresetCard('3C36')];
+            fpPlayer.hand = [clonePresetCard('1C76')];
 
-            G.battlefield = [{ ...CARDS_PRESETS.ORC_SOLDIER }];
+            if (shadowPlayer) {
+                shadowPlayer.supportArea = [
+                    clonePresetCard('1R173'),
+                    clonePresetCard('4R19'),
+                ];
+            }
+
+            G.battlefield = [
+                clonePresetCard('1U178'),
+                clonePresetCard('4C16'),
+                clonePresetCard('3C59'),
+            ];
             G.skirmishes = [];
             G.activeSkirmishId = undefined;
             G.actionWindow = undefined;
 
             G.statusMessage =
-                '[DEV] Preset Combat chargé (Sam + Impatience et Colère). Passe en skirmish, assigne, joue l’événement dans le vide.';
+                '[DEV] Preset Réponse : Vertefeuille, Intimidate en main, Hides/Armurerie en soutien Ombre, brassards sur Gimli. Passe en archerie et assigne une blessure.';
             break;
         }
     }

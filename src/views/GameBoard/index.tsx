@@ -241,17 +241,22 @@ export const GameBoard: React.FC<GameBoardProps> = ({
 
     const handleActivateAbility = (
         sourceInstanceId: string,
-        abilityId: string
+        abilityId: string,
+        chosenTargetId?: string
     ) => {
         const source = findTargetCard(G, sourceInstanceId) as CardState | null;
         const ability = source?.abilities?.find((ab) => ab.id === abilityId);
         if (!source || !ability) {
-            moves.activateAbility?.(sourceInstanceId, abilityId);
+            moves.activateAbility?.(sourceInstanceId, abilityId, chosenTargetId);
+            return;
+        }
+        if (chosenTargetId) {
+            moves.activateAbility?.(sourceInstanceId, abilityId, chosenTargetId);
             return;
         }
         if (
-            requestDesignation(source, ability, (chosenId) => {
-                moves.activateAbility?.(sourceInstanceId, abilityId, chosenId);
+            requestDesignation(source, ability, (cardId) => {
+                moves.activateAbility?.(sourceInstanceId, abilityId, cardId);
             })
         ) {
             return;
@@ -302,7 +307,11 @@ export const GameBoard: React.FC<GameBoardProps> = ({
 
     // 🟢 1. GESTION GLOBALE DE LA TEMPORISATION DE FIN DE PHASE
     useEffect(() => {
-        if (G.pendingPhaseEnd) {
+        if (
+            G.pendingPhaseEnd &&
+            !G.responseWindow?.isOpen &&
+            !G.pendingEvent
+        ) {
             const GLOBAL_PHASE_DELAY = 1500;
 
             const timer = setTimeout(() => {
@@ -313,7 +322,7 @@ export const GameBoard: React.FC<GameBoardProps> = ({
 
             return () => clearTimeout(timer);
         }
-    }, [G.pendingPhaseEnd, moves]);
+    }, [G.pendingPhaseEnd, G.responseWindow, G.pendingEvent, moves]);
 
     // 🟢 NETTOYAGE VISUEL UNIVERSEL (Toutes phases / Tous événements)
     useEffect(() => {
@@ -571,7 +580,12 @@ export const GameBoard: React.FC<GameBoardProps> = ({
     useEffect(() => {
         if (targetingKind === 'DESIGNATION') return;
 
-        if (ctx.phase !== 'archery' || !G.archeryState) {
+        if (
+            ctx.phase !== 'archery' ||
+            !G.archeryState ||
+            G.responseWindow?.isOpen ||
+            G.pendingEvent
+        ) {
             if (targetingKind === 'ARCHERY') stopTargeting();
             return;
         }
@@ -620,6 +634,8 @@ export const GameBoard: React.FC<GameBoardProps> = ({
         G.fpPlayerId,
         G.players,
         G.battlefield,
+        G.responseWindow,
+        G.pendingEvent,
         moves,
         startTargeting,
         stopTargeting,

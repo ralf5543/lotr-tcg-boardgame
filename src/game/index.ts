@@ -803,7 +803,10 @@ export const LotrGame: Game<GameState> = {
 
         archery: {
             // 1. Indique à boardgame.io quand arrêter la phase
-            endIf: ({ G }) => Boolean(G.pendingPhaseEnd),
+            endIf: ({ G }) =>
+                Boolean(G.pendingPhaseEnd) &&
+                !G.responseWindow?.isOpen &&
+                !G.pendingEvent,
 
             // next() est lu APRÈS onEnd, qui reset G.nextPhase : on dérive
             // depuis les séides encore vivants (règle : plus de séides → regroupement).

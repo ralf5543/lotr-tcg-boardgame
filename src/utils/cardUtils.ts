@@ -1,5 +1,12 @@
 import type { GameState, CardState, SiteCardState } from '../game/types';
 
+/** Porteur désigné (mot-clé) ou compagnon qui a l’Anneau Unique attaché. */
+export function isRingBearerCard(card: CardState | null | undefined): boolean {
+    if (!card) return false;
+    if ((card.keywords || []).includes('RING-BEARER')) return true;
+    return (card.attachments || []).some((att) => att?.type === 'RING');
+}
+
 /**
  * Recherche une carte par son ID dynamique dans l'ensemble des zones du jeu
  */

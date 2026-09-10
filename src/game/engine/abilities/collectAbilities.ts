@@ -1,5 +1,6 @@
-import type { Ability, CardKeyword, CardState } from '../../types';
+import type { Ability, CardKeyword, CardState, CostSelector, GameState } from '../../types';
 import { TRANSLATIONS } from '../../translations';
+import { forEachInPlayCard, resolveCostTarget } from './resolveCostTarget';
 
 export function abilityMatchesPhase(ability: Ability, rawPhase: string): boolean {
     const currentPhase = (rawPhase || '').toUpperCase();
@@ -30,6 +31,60 @@ export function collectCardAbilities(
     }
 
     return rows;
+}
+
+function exertTargetIsOtherCharacter(ability: Ability): boolean {
+    const exert = ability.cost?.[0]?.exert?.[0];
+    if (!exert) return false;
+    return exert.target !== 'SELF' && exert.target !== 'BEARER';
+}
+
+export function abilityProjectsOnto(
+    G: GameState,
+    source: CardState,
+    ability: Ability,
+    host: CardState
+): boolean {
+    if (!exertTargetIsOtherCharacter(ability)) return false;
+    const sourceId = source.instanceId || source.id;
+    const hostId = host.instanceId || host.id;
+    if (sourceId === hostId) return false;
+    const exert = ability.cost[0]?.exert?.[0];
+    if (!exert) return false;
+    return resolveCostTarget(G, source, exert.target).some(
+        (card) => (card.instanceId || card.id) === hostId
+    );
+}
+
+export function collectProjectedAbilities(
+    G: GameState,
+    host: CardState
+): { source: CardState; ability: Ability }[] {
+    const rows: { source: CardState; ability: Ability }[] = [];
+    forEachInPlayCard(G, (card) => {
+        if ((card.instanceId || card.id) === (host.instanceId || host.id)) {
+            return;
+        }
+        for (const ability of card.abilities || []) {
+            if (abilityProjectsOnto(G, card, ability, host)) {
+                rows.push({ source: card, ability });
+            }
+        }
+    });
+    return rows;
+}
+
+/** Capacités affichées sur cette carte : les siennes (sauf celles qui s’exercent sur un autre) + attachements + projections. */
+export function collectVisibleAbilities(
+    G: GameState | undefined,
+    card: CardState
+): { source: CardState; ability: Ability }[] {
+    const own = collectCardAbilities(card).filter(
+        ({ source, ability }) =>
+            source !== card || !exertTargetIsOtherCharacter(ability)
+    );
+    if (!G) return own;
+    return [...own, ...collectProjectedAbilities(G, card)];
 }
 
 export function cardOrAttachmentsHaveActionPhases(card: CardState): boolean {
@@ -65,6 +120,7 @@ function translateCriterionToken(token: string): string {
         TRANSLATIONS.keyword[upper as CardKeyword]?.label;
     if (keywordLabel) return keywordLabel.toLowerCase();
 
+    if (token !== token.toUpperCase()) return token;
     return token.toLowerCase();
 }
 
@@ -102,33 +158,55 @@ function formatEffectBit(effect: Ability['effects'][number]): string {
     return '';
 }
 
+function formatCostWho(
+    target: CostSelector['target'] | undefined,
+    source: CardState,
+    asDesignation: boolean
+): string {
+    if (target === 'BEARER') return 'le détenteur';
+    if (Array.isArray(target)) {
+        const label = target.flat().map(translateCriterionToken).join(' ');
+        if (asDesignation) return `un ${label}`;
+        return label;
+    }
+    return source.i18n?.fr?.title || source.title || 'cette carte';
+}
+
 function formatCostLabel(ability: Ability, source: CardState): string {
     const option = ability.cost[0];
     const parts: string[] = [];
     const exert = option?.exert?.[0];
     if (exert) {
         const count = exert.count || 1;
-        const who = (() => {
-            if (exert.target === 'BEARER') return 'le détenteur';
-            if (Array.isArray(exert.target)) {
-                const label = exert.target
-                    .flat()
-                    .map(translateCriterionToken)
-                    .join(' ');
-                if (exert.mode === 'DESIGNATION') {
-                    return `un ${label}`;
-                }
-                return label;
-            }
-            return source.i18n?.fr?.title || source.title || 'cette carte';
-        })();
+        const who = formatCostWho(
+            exert.target,
+            source,
+            exert.mode === 'DESIGNATION'
+        );
         const times = count > 1 ? ` ${count} fois` : '';
         parts.push(`Affaiblir ${who}${times}`);
+    }
+    const spot = option?.spot?.[0];
+    if (spot) {
+        parts.push(`Désigner ${formatCostWho(spot.target, source, false)}`);
     }
     if (option?.addTwilight && option.addTwilight > 0) {
         parts.push(
             `ajouter <symbol>twilight${option.addTwilight}</symbol>`
         );
+    }
+    if (option?.removeTwilight && option.removeTwilight > 0) {
+        parts.push(
+            `retirer <symbol>twilight${option.removeTwilight}</symbol>`
+        );
+    }
+    if (option?.spotTwilight && option.spotTwilight > 0) {
+        parts.push(
+            `désigner <symbol>twilight${option.spotTwilight}</symbol>`
+        );
+    }
+    if (option?.discardFromPlay?.length) {
+        parts.push('Défausser cette carte');
     }
     return parts.join(' et ');
 }

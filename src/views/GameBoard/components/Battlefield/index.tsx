@@ -26,7 +26,11 @@ interface BattlefieldProps {
     isOpponent?: boolean;
     playerId: string;
     G: GameState;
-    onActivateAbility?: (sourceInstanceId: string, abilityId: string) => void;
+    onActivateAbility?: (
+        sourceInstanceId: string,
+        abilityId: string,
+        chosenTargetId?: string
+    ) => void;
 }
 
 export const Battlefield: React.FC<BattlefieldProps> = ({

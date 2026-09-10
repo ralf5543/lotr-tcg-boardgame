@@ -715,13 +715,13 @@
         },
         "cost": [
           {
-            "addTwilight": 1,
             "exert": [
               {
                 "count": 1,
                 "target": "SELF"
               }
-            ]
+            ],
+            "addTwilight": 1
           }
         ],
         "effects": [
@@ -6521,6 +6521,67 @@
     "isUnique": false,
     "kind": "SHADOW",
     "type": "POSSESSION",
+    "abilities": [
+      {
+        "id": "4R19:0",
+        "phases": [
+          "RESPONSE"
+        ],
+        "trigger": {
+          "type": "ABOUT_TO_WOUND",
+          "target": [
+            [
+              "DUNLAND",
+              "MAN"
+            ]
+          ]
+        },
+        "cost": [
+          {
+            "removeTwilight": 2
+          }
+        ],
+        "effects": [
+          {
+            "type": "PREVENT_WOUND"
+          }
+        ],
+        "source": "SELF",
+        "text": "RESPONSE: If a dunland Man is about to take a wound, remove twilight2 to prevent that wound"
+      },
+      {
+        "id": "4R19:1",
+        "phases": [
+          "RESPONSE"
+        ],
+        "trigger": {
+          "type": "ABOUT_TO_WOUND",
+          "target": [
+            [
+              "DUNLAND",
+              "MAN"
+            ]
+          ]
+        },
+        "cost": [
+          {
+            "discardFromPlay": [
+              {
+                "count": 1,
+                "target": "SELF"
+              }
+            ]
+          }
+        ],
+        "effects": [
+          {
+            "type": "PREVENT_WOUND"
+          }
+        ],
+        "source": "SELF",
+        "text": "RESPONSE: If a dunland Man is about to take a wound, discard this possession to prevent that wound"
+      }
+    ],
     "actionPhases": [
       "RESPONSE"
     ],
@@ -13872,6 +13933,43 @@
     "keywords": [
       "SPELL"
     ],
+    "abilities": [
+      {
+        "id": "1C76:0",
+        "phases": [
+          "RESPONSE"
+        ],
+        "trigger": {
+          "type": "ABOUT_TO_WOUND",
+          "target": [
+            [
+              "COMPANION"
+            ]
+          ]
+        },
+        "cost": [
+          {
+            "spot": [
+              {
+                "count": 1,
+                "target": [
+                  [
+                    "Gandalf"
+                  ]
+                ]
+              }
+            ]
+          }
+        ],
+        "effects": [
+          {
+            "type": "PREVENT_WOUND"
+          }
+        ],
+        "source": "SELF",
+        "text": "RESPONSE: If a companion is about to take a wound, spot Gandalf to prevent that wound"
+      }
+    ],
     "phases": [
       "RESPONSE"
     ],
@@ -18179,6 +18277,40 @@
     "kind": "SHADOW",
     "type": "CONDITION",
     "subtype": "SUPPORT-AREA",
+    "abilities": [
+      {
+        "id": "1R173:0",
+        "phases": [
+          "RESPONSE"
+        ],
+        "trigger": {
+          "type": "ABOUT_TO_WOUND",
+          "target": [
+            [
+              "MORIA",
+              "ORC"
+            ]
+          ]
+        },
+        "cost": [
+          {
+            "discardFromPlay": [
+              {
+                "count": 1,
+                "target": "SELF"
+              }
+            ]
+          }
+        ],
+        "effects": [
+          {
+            "type": "PREVENT_WOUND"
+          }
+        ],
+        "source": "SELF",
+        "text": "RESPONSE: If a moria Orc is about to take a wound, discard this condition to prevent that wound"
+      }
+    ],
     "actionPhases": [
       "RESPONSE"
     ],
@@ -25174,6 +25306,35 @@
         "DWARF"
       ]
     ],
+    "abilities": [
+      {
+        "id": "2U3:0",
+        "phases": [
+          "RESPONSE"
+        ],
+        "trigger": {
+          "type": "ABOUT_TO_WOUND",
+          "target": "BEARER"
+        },
+        "cost": [
+          {
+            "discardFromPlay": [
+              {
+                "count": 1,
+                "target": "SELF"
+              }
+            ]
+          }
+        ],
+        "effects": [
+          {
+            "type": "PREVENT_WOUND"
+          }
+        ],
+        "source": "SELF",
+        "text": "RESPONSE: If bearer is about to take a wound, discard this possession to prevent that wound"
+      }
+    ],
     "actionPhases": [
       "RESPONSE"
     ],
@@ -25873,6 +26034,39 @@
     "subtype": "SUPPORT-AREA",
     "keywords": [
       "TALE"
+    ],
+    "abilities": [
+      {
+        "id": "2U18:0",
+        "phases": [
+          "RESPONSE"
+        ],
+        "trigger": {
+          "type": "ABOUT_TO_WOUND",
+          "target": [
+            [
+              "ELF"
+            ]
+          ]
+        },
+        "cost": [
+          {
+            "discardFromPlay": [
+              {
+                "count": 1,
+                "target": "SELF"
+              }
+            ]
+          }
+        ],
+        "effects": [
+          {
+            "type": "PREVENT_WOUND"
+          }
+        ],
+        "source": "SELF",
+        "text": "RESPONSE: If an Elf is about to take a wound, discard this condition to prevent that wound"
+      }
     ],
     "actionPhases": [
       "RESPONSE"
@@ -28628,6 +28822,35 @@
     "isUnique": false,
     "kind": "SHADOW",
     "type": "CONDITION",
+    "abilities": [
+      {
+        "id": "2R77:0",
+        "phases": [
+          "RESPONSE"
+        ],
+        "trigger": {
+          "type": "ABOUT_TO_WOUND",
+          "target": [
+            [
+              "TWILIGHT",
+              "NAZGL"
+            ]
+          ]
+        },
+        "cost": [
+          {
+            "removeTwilight": 1
+          }
+        ],
+        "effects": [
+          {
+            "type": "PREVENT_WOUND"
+          }
+        ],
+        "source": "SELF",
+        "text": "RESPONSE: If a twilight Nazgûl is about to take a wound, remove twilight1 to prevent that wound"
+      }
+    ],
     "actionPhases": [
       "RESPONSE"
     ],
@@ -29964,6 +30187,39 @@
     "subtype": "SUPPORT-AREA",
     "keywords": [
       "STEALTH"
+    ],
+    "abilities": [
+      {
+        "id": "2U106:0",
+        "phases": [
+          "RESPONSE"
+        ],
+        "trigger": {
+          "type": "ABOUT_TO_WOUND",
+          "target": [
+            [
+              "HOBBIT"
+            ]
+          ]
+        },
+        "cost": [
+          {
+            "discardFromPlay": [
+              {
+                "count": 1,
+                "target": "SELF"
+              }
+            ]
+          }
+        ],
+        "effects": [
+          {
+            "type": "PREVENT_WOUND"
+          }
+        ],
+        "source": "SELF",
+        "text": "RESPONSE: If a Hobbit is about to take a wound, discard this condition to prevent that wound"
+      }
     ],
     "actionPhases": [
       "RESPONSE"
@@ -32241,6 +32497,44 @@
     "kind": "FREE_PEOPLE",
     "type": "CONDITION",
     "subtype": "SUPPORT-AREA",
+    "abilities": [
+      {
+        "id": "3C36:0",
+        "phases": [
+          "RESPONSE"
+        ],
+        "trigger": {
+          "type": "ABOUT_TO_WOUND",
+          "target": [
+            [
+              "COMPANION"
+            ]
+          ]
+        },
+        "cost": [
+          {
+            "spotTwilight": 4,
+            "exert": [
+              {
+                "count": 1,
+                "target": [
+                  [
+                    "Gandalf"
+                  ]
+                ]
+              }
+            ]
+          }
+        ],
+        "effects": [
+          {
+            "type": "PREVENT_WOUND"
+          }
+        ],
+        "source": "SELF",
+        "text": "RESPONSE: If a companion is about to take a wound, spot 4 twilight tokens and exert Gandalf to prevent that wound"
+      }
+    ],
     "actionPhases": [
       "RESPONSE"
     ],
@@ -32255,7 +32549,7 @@
       },
       "fr": {
         "title": "Périls Inconnus",
-        "gameText": "**Réponse :** Si un compagnon est sur le point d’être blessé, affaiblissez Gandalf pour prévenir la blessure.",
+        "gameText": "**Réponse :** Si un compagnon est sur le point d’être blessé, désignez 4 jetons-crépuscule et affaiblissez Gandalf pour prévenir la blessure.",
         "loreText": "Il s'arrêta soudain, comme pour écouter. Frodon s'aperçut que tout était très silencieux, tant à l'intérieur qu'à l'extérieur."
       },
       "de": {
@@ -33249,6 +33543,35 @@
     "isUnique": false,
     "kind": "SHADOW",
     "type": "MINION",
+    "abilities": [
+      {
+        "id": "3C59:0",
+        "phases": [
+          "RESPONSE"
+        ],
+        "trigger": {
+          "type": "ABOUT_TO_WOUND",
+          "target": [
+            [
+              "ISENGARD",
+              "ORC"
+            ]
+          ]
+        },
+        "cost": [
+          {
+            "removeTwilight": 2
+          }
+        ],
+        "effects": [
+          {
+            "type": "PREVENT_WOUND"
+          }
+        ],
+        "source": "SELF",
+        "text": "RESPONSE: If an isengard Orc is about to take a wound, remove twilight2 to prevent that wound"
+      }
+    ],
     "actionPhases": [
       "RESPONSE"
     ],
@@ -48026,13 +48349,13 @@
         },
         "cost": [
           {
-            "addTwilight": 1,
             "exert": [
               {
                 "count": 1,
                 "target": "SELF"
               }
-            ]
+            ],
+            "addTwilight": 1
           }
         ],
         "effects": [
@@ -53988,6 +54311,34 @@
     "keywords": [
       "AMBUSH 2",
       "SOUTHRON"
+    ],
+    "abilities": [
+      {
+        "id": "5C76:0",
+        "phases": [
+          "RESPONSE"
+        ],
+        "trigger": {
+          "type": "ABOUT_TO_WOUND",
+          "target": [
+            [
+              "SOUTHRON"
+            ]
+          ]
+        },
+        "cost": [
+          {
+            "removeTwilight": 3
+          }
+        ],
+        "effects": [
+          {
+            "type": "PREVENT_WOUND"
+          }
+        ],
+        "source": "SELF",
+        "text": "RESPONSE: If a Southron is about to take a wound, remove twilight3 to prevent that wound"
+      }
     ],
     "actionPhases": [
       "RESPONSE"
@@ -99979,6 +100330,35 @@
         "DWARF"
       ]
     ],
+    "abilities": [
+      {
+        "id": "12U5:0",
+        "phases": [
+          "RESPONSE"
+        ],
+        "trigger": {
+          "type": "ABOUT_TO_WOUND",
+          "target": "BEARER"
+        },
+        "cost": [
+          {
+            "discardFromPlay": [
+              {
+                "count": 1,
+                "target": "SELF"
+              }
+            ]
+          }
+        ],
+        "effects": [
+          {
+            "type": "PREVENT_WOUND"
+          }
+        ],
+        "source": "SELF",
+        "text": "RESPONSE: If bearer is about to take a wound, discard this possession to prevent that wound"
+      }
+    ],
     "actionPhases": [
       "RESPONSE"
     ],
@@ -138720,6 +139100,50 @@
         "ROHAN",
         "MAN"
       ]
+    ],
+    "abilities": [
+      {
+        "id": "18R97:0",
+        "phases": [
+          "RESPONSE"
+        ],
+        "trigger": {
+          "type": "ABOUT_TO_WOUND",
+          "target": [
+            [
+              "ROHAN",
+              "MAN"
+            ]
+          ]
+        },
+        "cost": [
+          {
+            "spot": [
+              {
+                "count": 1,
+                "target": [
+                  [
+                    "Gandalf"
+                  ]
+                ]
+              }
+            ],
+            "exert": [
+              {
+                "count": 1,
+                "target": "BEARER"
+              }
+            ]
+          }
+        ],
+        "effects": [
+          {
+            "type": "PREVENT_WOUND"
+          }
+        ],
+        "source": "ATTACHMENT",
+        "text": "RESPONSE: If a rohan Man is about to take a wound, spot Gandalf and exert bearer to prevent that wound"
+      }
     ],
     "actionPhases": [
       "SKIRMISH",

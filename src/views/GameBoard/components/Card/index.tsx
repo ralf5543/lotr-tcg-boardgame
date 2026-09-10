@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useLayoutEffect, useRef } from 'react';
 import { createPortal } from 'react-dom';
-import type { CardState, CardKeyword, GameState } from '../../../../game/types';
+import type { Ability, CardState, CardKeyword, GameState } from '../../../../game/types';
 import * as S from './styles';
 import { TRANSLATIONS } from '../../../../game/translations';
 import { useHoverCard } from '../../../../contexts/HoverCardContext';
@@ -8,7 +8,10 @@ import type { CardSignet } from '../../../../game/types';
 import { FormattedText } from '../../../../utils/FormattedText';
 import { KeywordBadge } from '../KeywordBadge';
 import { useDrag } from '../../../../contexts/DragContext';
-import { useLocalFaction } from '../../../../contexts/FactionContext';
+import {
+    useFaction,
+    useLocalFaction,
+} from '../../../../contexts/FactionContext';
 import { isWoundRecoilDown } from './woundRecoil';
 import {
     getEffectiveVitality,
@@ -16,16 +19,20 @@ import {
     getEffectiveResistance,
 } from '../../../../utils/cardStats';
 import { getCardText } from '../../../../utils/i18n';
+import { isRingBearerCard } from '../../../../utils/cardUtils';
 import type { SupportedLanguage } from '../../../../utils/i18n';
 import { requiresAttachmentTarget } from '../../../../game/engine/canPlayCard';
 import { getEffectiveKeywords } from '../../../../game/engine/keywords/keywordUtils';
 import { canUseAbility } from '../../../../game/engine/canUseAbility';
+import { canPayAbilityCost } from '../../../../game/engine/abilities/payAbilityCost';
+import { abilityNeedsDesignation } from '../../../../game/engine/abilities/designation';
 import {
     cardOrAttachmentsHaveActionPhases,
-    collectCardAbilities,
+    collectVisibleAbilities,
     formatAbilityLabelParts,
     abilityMatchesPhase,
 } from '../../../../game/engine/abilities/collectAbilities';
+import { abilityMatchesTrigger } from '../../../../game/engine/responseWindow';
 
 interface CardImageProps {
     imageUrl?: string;
@@ -194,7 +201,11 @@ interface CardProps {
     currentLang?: SupportedLanguage;
     phase?: string;
     playerID?: string;
-    onActivateAbility?: (sourceInstanceId: string, abilityId: string) => void;
+    onActivateAbility?: (
+        sourceInstanceId: string,
+        abilityId: string,
+        chosenTargetId?: string
+    ) => void;
 }
 
 export const Card: React.FC<CardProps> = ({
@@ -223,6 +234,7 @@ export const Card: React.FC<CardProps> = ({
 }) => {
     const { setHoveredCard } = useHoverCard();
     const { startDrag } = useDrag();
+    const { myPlayerId } = useFaction();
     const localFaction = useLocalFaction();
     const recoilDown = isWoundRecoilDown(card?.kind, localFaction, isOpponent);
 
@@ -246,25 +258,58 @@ export const Card: React.FC<CardProps> = ({
                 card.attachedViaAid ||
                 card.type === 'RING')
     );
+    const viewerPlayerId = myPlayerId || playerID;
+    const viewerOwnsCard = Boolean(card && card.kind === localFaction);
+    const visibleAbilities =
+        card && size === 'sm' && !isAttachedCard
+            ? collectVisibleAbilities(G, card)
+            : [];
     const showAbilityButton = Boolean(
         card &&
             size === 'sm' &&
-            !isOpponent &&
+            viewerOwnsCard &&
             !isAttachedCard &&
-            cardOrAttachmentsHaveActionPhases(card)
+            (visibleAbilities.length > 0 ||
+                (!G && cardOrAttachmentsHaveActionPhases(card)))
     );
     const abilityContext =
-        G && playerID
-            ? { G, ctx: { phase }, playerID }
+        G && viewerPlayerId
+            ? { G, ctx: { phase }, playerID: viewerPlayerId }
             : null;
+    const listedAbilities = showAbilityButton
+        ? visibleAbilities.filter(({ source, ability }) => {
+              if (G?.responseWindow?.isOpen) {
+                  if (!abilityMatchesPhase(ability, 'RESPONSE')) return false;
+                  if (
+                      !abilityMatchesTrigger(
+                          ability,
+                          G.pendingEvent,
+                          source,
+                          G
+                      )
+                  ) {
+                      return false;
+                  }
+                  return canPayAbilityCost(G, source, ability.cost);
+              }
+              const responseAbility = abilityMatchesPhase(ability, 'RESPONSE');
+              const responseUsable = Boolean(
+                  abilityContext &&
+                      responseAbility &&
+                      canUseAbility(source, abilityContext).valid
+              );
+              if (responseUsable) return responseAbility;
+              return !phase || abilityMatchesPhase(ability, phase);
+          })
+        : [];
     const abilityPhaseMatch = Boolean(
         card &&
             showAbilityButton &&
             abilityContext &&
-            (canUseAbility(card, abilityContext).valid ||
-                card.attachments?.some(
-                    (att) => canUseAbility(att, abilityContext).valid
-                ))
+            (G?.responseWindow?.isOpen
+                ? listedAbilities.length > 0 &&
+                  G.responseWindow.activePlayerId === viewerPlayerId
+                : canUseAbility(card, abilityContext).valid)
     );
 
     if (isAbilityMenuOpen && !abilityPhaseMatch) {
@@ -375,10 +420,7 @@ export const Card: React.FC<CardProps> = ({
 
     const isShadow = card.kind === 'SHADOW';
 
-    const isRingBearer =
-        isRingBearerProp ??
-        (Array.isArray(card.keywords) &&
-            card.keywords.includes('RING-BEARER' as CardKeyword));
+    const isRingBearer = isRingBearerProp ?? isRingBearerCard(card);
 
     const handleMouseEnter = () => {
         if (size !== 'lg') setHoveredCard(card);
@@ -478,20 +520,23 @@ export const Card: React.FC<CardProps> = ({
     const effectiveIsActionable =
         rawActionable && !isOpponent && !showAbilityButton;
 
-    const listedAbilities = showAbilityButton
-        ? collectCardAbilities(card).filter(({ source, ability }) => {
-              const responseAbility = abilityMatchesPhase(ability, 'RESPONSE');
-              const responseUsable = Boolean(
-                  abilityContext &&
-                      responseAbility &&
-                      canUseAbility(source, abilityContext).valid
-              );
-              if (G?.responseWindow?.isOpen || responseUsable) {
-                  return responseAbility;
-              }
-              return !phase || abilityMatchesPhase(ability, phase);
-          })
-        : [];
+    const activateListedAbility = (
+        source: CardState,
+        ability: Ability
+    ) => {
+        const hostId = card.instanceId || card.id;
+        const sourceId = source.instanceId || source.id;
+        const passHost = Boolean(
+            G &&
+                sourceId !== hostId &&
+                abilityNeedsDesignation(G, source, ability)
+        );
+        onActivateAbility?.(
+            sourceId,
+            ability.id,
+            passHost ? hostId : undefined
+        );
+    };
 
     return (
         <S.CardContainer
@@ -779,9 +824,9 @@ export const Card: React.FC<CardProps> = ({
                                         type="button"
                                         onClick={(e) => {
                                             e.stopPropagation();
-                                            onActivateAbility?.(
-                                                source.instanceId || source.id,
-                                                ability.id
+                                            activateListedAbility(
+                                                source,
+                                                ability
                                             );
                                             setIsAbilityMenuOpen(false);
                                         }}

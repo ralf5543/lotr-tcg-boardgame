@@ -883,46 +883,145 @@ function remainderAfterPronoun(effectText: string): string | undefined {
     return remainder;
 }
 
-function parsePreventCost(
-    raw: string,
+function parseWoundTriggerTarget(
+    raw: string
+): 'SELF' | 'BEARER' | string[][] | null {
+    const plain = raw.replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim();
+    if (/^bearer$/i.test(plain)) return 'BEARER';
+    if (/^this\b/i.test(plain)) return 'SELF';
+
+    const withoutArticle = raw.replace(/^(a|an|the)\s+/i, '');
+    const filters = parseClassFilters(withoutArticle);
+    if (filters.length === 0) return null;
+    return [filters];
+}
+
+function parsePreventCostClause(
+    segment: string,
     cardTitle?: string
 ): Record<string, unknown> | null {
-    let rest = raw.trim();
-    const option: Record<string, unknown> = {};
+    const text = segment.replace(/[.,;]+$/g, '').trim();
+    if (!text) return null;
 
-    const twilightMatch = rest.match(
-        /(?:\band\s+)?add\s*<symbol>twilight(\d+)<\/symbol>/i
+    const addTw = text.match(/^add\s*<symbol>twilight(\d+)<\/symbol>$/i);
+    if (addTw) return { addTwilight: parseInt(addTw[1], 10) };
+
+    const remTw = text.match(/^remove\s*<symbol>twilight(\d+)<\/symbol>$/i);
+    if (remTw) return { removeTwilight: parseInt(remTw[1], 10) };
+
+    const spotTw = text.match(
+        /^spot\s+(\d+)\s+twilight tokens?$/i
     );
-    if (twilightMatch) {
-        option.addTwilight = parseInt(twilightMatch[1], 10);
-        rest = rest
-            .replace(twilightMatch[0], ' ')
-            .replace(/\s+/g, ' ')
-            .trim()
-            .replace(/\s+and\s*$/i, '')
-            .replace(/^and\s+/i, '')
-            .trim();
+    if (spotTw) return { spotTwilight: parseInt(spotTw[1], 10) };
+
+    if (/^discard\s+this(?:\s+[\w’-]+)?$/i.test(text)) {
+        return { discardFromPlay: [{ count: 1, target: 'SELF' }] };
     }
 
-    const exertMatch = rest.match(/^Exert\s+([\s\S]+)$/i);
+    const exertMatch = text.match(/^Exert\s+([\s\S]+)$/i);
     if (exertMatch) {
         if (/\b(and|or)\b/i.test(exertMatch[1])) return null;
         const subject = parseExertSubject(exertMatch[1], cardTitle);
         if (!subject) return null;
-        option.exert = [
-            {
-                count: subject.count,
-                target: subject.target,
-                ...(subject.mode ? { mode: subject.mode } : {}),
-            },
-        ];
-        rest = '';
+        return {
+            exert: [
+                {
+                    count: subject.count,
+                    target: subject.target,
+                    ...(subject.mode ? { mode: subject.mode } : {}),
+                },
+            ],
+        };
     }
 
-    rest = rest.replace(/^[.,;]+/, '').trim();
-    if (rest.length > 0) return null;
-    if (!option.exert && option.addTwilight === undefined) return null;
+    const spotMatch = text.match(/^spot\s+([\s\S]+)$/i);
+    if (spotMatch) {
+        if (/\b(and|or)\b/i.test(spotMatch[1])) return null;
+        if (/\b(twilight|tokens?|burdens?|threats?)\b/i.test(spotMatch[1])) {
+            return null;
+        }
+        const subject = parseExertSubject(spotMatch[1], cardTitle);
+        if (!subject) return null;
+        return {
+            spot: [{ count: subject.count, target: subject.target }],
+        };
+    }
+
+    return null;
+}
+
+function mergePreventCostClauses(
+    clauses: Record<string, unknown>[]
+): Record<string, unknown> | null {
+    const option: Record<string, unknown> = {};
+    for (const clause of clauses) {
+        if (clause.exert) {
+            option.exert = [
+                ...((option.exert as unknown[]) || []),
+                ...(clause.exert as unknown[]),
+            ];
+        }
+        if (clause.spot) {
+            option.spot = [
+                ...((option.spot as unknown[]) || []),
+                ...(clause.spot as unknown[]),
+            ];
+        }
+        if (clause.discardFromPlay) {
+            option.discardFromPlay = [
+                ...((option.discardFromPlay as unknown[]) || []),
+                ...(clause.discardFromPlay as unknown[]),
+            ];
+        }
+        if (typeof clause.addTwilight === 'number') {
+            option.addTwilight =
+                (typeof option.addTwilight === 'number'
+                    ? option.addTwilight
+                    : 0) + clause.addTwilight;
+        }
+        if (typeof clause.removeTwilight === 'number') {
+            option.removeTwilight =
+                (typeof option.removeTwilight === 'number'
+                    ? option.removeTwilight
+                    : 0) + clause.removeTwilight;
+        }
+        if (typeof clause.spotTwilight === 'number') {
+            option.spotTwilight =
+                (typeof option.spotTwilight === 'number'
+                    ? option.spotTwilight
+                    : 0) + clause.spotTwilight;
+        }
+    }
+    if (Object.keys(option).length === 0) return null;
     return option;
+}
+
+/** Une alternative de coût (clauses liées par `and`). `or` = plusieurs abilities. */
+function parsePreventCostOption(
+    raw: string,
+    cardTitle?: string
+): Record<string, unknown> | null {
+    const segments = raw
+        .split(/\s+and\s+/i)
+        .map((segment) => segment.trim())
+        .filter(Boolean);
+    if (segments.length === 0) return null;
+    const clauses = segments.map((segment) =>
+        parsePreventCostClause(segment, cardTitle)
+    );
+    if (clauses.some((clause) => !clause)) return null;
+    return mergePreventCostClauses(clauses as Record<string, unknown>[]);
+}
+
+function preventAbilitySource(
+    cost: Record<string, unknown>
+): 'SELF' | 'ATTACHMENT' {
+    const exert = cost.exert as { target?: unknown }[] | undefined;
+    const spot = cost.spot as { target?: unknown }[] | undefined;
+    if (exert?.[0]?.target === 'BEARER' || spot?.[0]?.target === 'BEARER') {
+        return 'ATTACHMENT';
+    }
+    return 'SELF';
 }
 
 function parseBurdenWord(raw: string): number | null {
@@ -974,7 +1073,7 @@ export function parseAbilities(
     if (!text) return undefined;
 
     const phaseRe = new RegExp(
-        `<keyword>(${ABILITY_PHASES.join('|')})[:.]?<\\/keyword>`,
+        `<keyword>(${ABILITY_PHASES.join('|')})[:.]?\\s*<\\/keyword>`,
         'gi'
     );
     const markers: { phase: string; markerStart: number; bodyStart: number }[] =
@@ -1037,39 +1136,43 @@ export function parseAbilities(
             /^If\s+([\s\S]+?)\s+is about to take a wound,\s*([\s\S]+?)\s+to prevent that wound/i
         );
         if (preventMatch) {
-            const filterRaw = preventMatch[1].replace(/<[^>]+>/g, ' ').trim();
-            if (/^(this|bearer)\b/i.test(filterRaw)) return;
+            const triggerTarget = parseWoundTriggerTarget(
+                preventMatch[1].trim()
+            );
+            if (!triggerTarget) return;
 
-            const filterBody = filterRaw.replace(/^(a|an|the)\s+/i, '');
-            const woundFilters = parseClassFilters(filterBody);
-            if (woundFilters.length === 0) return;
+            const optionTexts = preventMatch[2]
+                .split(/\s+or\s+/i)
+                .map((text) => text.trim())
+                .filter(Boolean);
+            const costOptions = optionTexts.map((text) =>
+                parsePreventCostOption(text, cardTitle)
+            );
+            if (costOptions.length === 0 || costOptions.some((cost) => !cost)) {
+                return;
+            }
 
-            const cost = parsePreventCost(preventMatch[2], cardTitle);
-            if (!cost) return;
+            optionTexts.forEach((optionText, index) => {
+                const cost = costOptions[index] as Record<string, unknown>;
+                const clause =
+                    `${marker.phase}: If ${preventMatch[1].trim()} is about to take a wound, ${optionText} to prevent that wound`
+                        .replace(/<[^>]+>/g, '')
+                        .replace(/\s+/g, ' ')
+                        .replace(/\s+\./g, '.')
+                        .trim();
 
-            const source =
-                (cost.exert as { target?: unknown }[] | undefined)?.[0]
-                    ?.target === 'BEARER'
-                    ? 'ATTACHMENT'
-                    : 'SELF';
-            const clause =
-                `${marker.phase}: If ${preventMatch[1].trim()} is about to take a wound, ${preventMatch[2].trim()} to prevent that wound`
-                    .replace(/<[^>]+>/g, '')
-                    .replace(/\s+/g, ' ')
-                    .replace(/\s+\./g, '.')
-                    .trim();
-
-            abilities.push({
-                id: `${cardId || 'ability'}:${abilities.length}`,
-                phases: [marker.phase],
-                trigger: {
-                    type: 'ABOUT_TO_WOUND',
-                    target: [woundFilters],
-                },
-                cost: [cost],
-                effects: [{ type: 'PREVENT_WOUND' }],
-                source,
-                text: clause,
+                abilities.push({
+                    id: `${cardId || 'ability'}:${abilities.length}`,
+                    phases: [marker.phase],
+                    trigger: {
+                        type: 'ABOUT_TO_WOUND',
+                        target: triggerTarget,
+                    },
+                    cost: [cost],
+                    effects: [{ type: 'PREVENT_WOUND' }],
+                    source: preventAbilitySource(cost),
+                    text: clause,
+                });
             });
             return;
         }

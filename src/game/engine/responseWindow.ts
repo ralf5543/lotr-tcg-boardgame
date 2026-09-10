@@ -5,12 +5,14 @@ import type {
     PendingEvent,
 } from '../types';
 import { applyWoundAndCheckDeath } from '../../utils/applyWoundAndCheckDeath';
-import { findTargetCard } from '../../utils/cardUtils';
+import { findTargetCard, isRingBearerCard } from '../../utils/cardUtils';
 import { clearActionableFlags } from '../../utils/clearActionableFlags';
 import { canPayAbilityCost } from './abilities/payAbilityCost';
 import { findBearer, forEachInPlayCard } from './abilities/resolveCostTarget';
 import { cardMatchesTarget } from './validations/matchers';
 import { abilityMatchesPhase } from './abilities/collectAbilities';
+import { getEffectiveVitality } from '../../utils/cardStats';
+import { yieldPriorityAfterAction } from './actionWindow';
 
 const matchCard = (card: CardState, targetId: string): boolean =>
     card.instanceId === targetId || card.id === targetId;
@@ -70,10 +72,6 @@ function cardOwnerId(G: GameState, card: CardState): string | null {
     return null;
 }
 
-function isRingBearer(card: CardState): boolean {
-    return (card.keywords || []).includes('RING-BEARER');
-}
-
 function isInSkirmish(G: GameState): boolean {
     return Boolean(G.activeSkirmishId);
 }
@@ -82,12 +80,26 @@ function abilityWearsTheOneRing(ability: Ability): boolean {
     return (ability.effects || []).some((effect) => effect.type === 'WEAR_RING');
 }
 
+function pendingWoundIsRingBearer(G: GameState): boolean {
+    const event = G.pendingEvent;
+    if (!event || event.type !== 'ABOUT_TO_WOUND') return false;
+    const card = findTargetCard(G, event.targetId) as CardState | null;
+    return Boolean(card && isRingBearerCard(card));
+}
+
+function responseWoundMessage(G: GameState): string {
+    if (G.wearingTheOneRing && pendingWoundIsRingBearer(G)) {
+        return 'L’Anneau Unique est porté. Jouez une autre réponse ou passez (fardeaux à la place).';
+    }
+    return 'Une carte est sur le point d’être blessée. Jouez une réponse ou passez.';
+}
+
 function shouldReplaceWoundWithBurdens(
     G: GameState,
     card: CardState
 ): boolean {
     const wearing = G.wearingTheOneRing;
-    if (!wearing || card.isDead || !isRingBearer(card)) return false;
+    if (!wearing || card.isDead || !isRingBearerCard(card)) return false;
     if (wearing.onlyInSkirmish && !isInSkirmish(G)) return false;
     return true;
 }
@@ -122,8 +134,12 @@ function inPlayResponseIsLegal(
     ability: Ability
 ): boolean {
     if (!isResponseAbility(ability)) return false;
+    const event = G.pendingEvent;
+    if (!event || event.type !== 'ABOUT_TO_WOUND' || event.remaining <= 0) {
+        return false;
+    }
     if (abilityWearsTheOneRing(ability) && G.wearingTheOneRing) return false;
-    if (!abilityMatchesTrigger(ability, G.pendingEvent, source, G)) return false;
+    if (!abilityMatchesTrigger(ability, event, source, G)) return false;
     return canPayAbilityCost(G, source, ability.cost);
 }
 
@@ -144,11 +160,15 @@ function handResponseIsLegal(
     playerID: string
 ): boolean {
     if (card.type !== 'EVENT' || card.kind === 'NONE') return false;
+    const event = G.pendingEvent;
+    if (!event || event.type !== 'ABOUT_TO_WOUND' || event.remaining <= 0) {
+        return false;
+    }
     const owner = cardOwnerId(G, card);
     if (owner !== playerID) return false;
     const ability = (card.abilities || []).find(isResponseAbility);
     if (!ability) return false;
-    if (!abilityMatchesTrigger(ability, G.pendingEvent, card, G)) return false;
+    if (!abilityMatchesTrigger(ability, event, card, G)) return false;
     if (!twilightPayableForEvent(G, card, playerID)) return false;
     return canPayAbilityCost(G, card, ability.cost);
 }
@@ -193,8 +213,7 @@ function openResponseWindow(G: GameState): void {
         isOpen: true,
         activePlayerId,
         title: 'RÉPONSE',
-        message:
-            'Une carte est sur le point d’être blessée. Jouez une réponse ou passez.',
+        message: responseWoundMessage(G),
         canPass: true,
         passesCount: 0,
     };
@@ -233,6 +252,8 @@ function processWoundQueue(G: GameState): 'APPLIED' | 'WAITING' {
     G.woundQueue = undefined;
     G.pendingEvent = undefined;
     closeResponseWindow(G);
+    tryResumeArcheryAfterResponses(G);
+    flushPendingActionYield(G);
     return 'APPLIED';
 }
 
@@ -330,34 +351,120 @@ export function yieldResponsePriorityAfterAction(
     if (G.responseWindow.activePlayerId !== playerID) return;
 
     const other = otherPlayerId(playerID);
-    if (!playerHasEligibleResponse(G, other)) {
-        continueAfterCurrentWound(G);
+    const fpId = G.fpPlayerId || '0';
+
+    if (playerHasEligibleResponse(G, other)) {
+        G.responseWindow = {
+            ...G.responseWindow,
+            activePlayerId: other,
+            passesCount: 0,
+            message: `Au tour du joueur ${other === fpId ? 'FP' : 'Ombre'} de répondre ou de passer.`,
+        };
+        clearActionableFlags(G);
         return;
     }
 
-    const fpId = G.fpPlayerId || '0';
-    G.responseWindow = {
-        ...G.responseWindow,
-        activePlayerId: other,
-        passesCount: 0,
-        message: `Au tour du joueur ${other === fpId ? 'FP' : 'Ombre'} de répondre ou de passer.`,
-    };
-    clearActionableFlags(G);
+    if (playerHasEligibleResponse(G, playerID)) {
+        G.responseWindow = {
+            ...G.responseWindow,
+            activePlayerId: playerID,
+            passesCount: 1,
+            message: responseWoundMessage(G),
+        };
+        G.statusMessage =
+            'Réponse : vous pouvez enchaîner ou passer.';
+        clearActionableFlags(G);
+        return;
+    }
+
+    resolvePendingResponse(G);
+}
+
+function resolvePendingResponse(G: GameState): void {
+    const event = G.pendingEvent;
+    if (!event || event.type !== 'ABOUT_TO_WOUND' || event.remaining <= 0) {
+        G.pendingEvent = undefined;
+        closeResponseWindow(G);
+        processWoundQueue(G);
+        return;
+    }
+    applyOnePendingWound(G);
+    continueAfterCurrentWound(G);
 }
 
 export function afterResponseResolved(
     G: GameState,
     playerID: string,
-    ability: Ability
+    _ability: Ability
 ): void {
     if (!G.responseWindow?.isOpen) return;
+    yieldResponsePriorityAfterAction(G, playerID);
+}
 
-    const prevented = (ability.effects || []).some(
-        (effect) => effect.type === 'PREVENT_WOUND'
+export function flushPendingActionYield(G: GameState): void {
+    const playerID = G.pendingActionYieldPlayerId;
+    G.pendingActionYieldPlayerId = undefined;
+    if (!playerID) return;
+    yieldPriorityAfterAction(G, playerID);
+}
+
+export function pauseActionYieldForResponses(
+    G: GameState,
+    playerID: string
+): void {
+    G.pendingActionYieldPlayerId = playerID;
+}
+
+function livingBattlefieldMinions(G: GameState): CardState[] {
+    return (G.battlefield || []).filter(
+        (card) =>
+            card.kind === 'SHADOW' &&
+            card.type === 'MINION' &&
+            !card.isDead &&
+            getEffectiveVitality(card) > 0
     );
-    if (prevented) {
-        continueAfterCurrentWound(G);
+}
+
+function startShadowArcheryAssign(G: GameState): boolean {
+    const shadowWoundsToAssign = G.archeryState?.fpTotal ?? 0;
+    const livingMinions = livingBattlefieldMinions(G);
+    if (shadowWoundsToAssign <= 0 || livingMinions.length === 0) {
+        return false;
+    }
+
+    G.archeryAssignStep = 'SHADOW';
+    G.archeryWoundsToAssign = shadowWoundsToAssign;
+    if (G.archeryState) {
+        G.archeryState.step = 'SHADOW_ASSIGN';
+        G.archeryState.shadowRemainingWounds = shadowWoundsToAssign;
+        G.archeryState.fpRemainingWounds = 0;
+    }
+    G.statusMessage = 'Passage à l’assignation des blessures d’Ombre.';
+    return true;
+}
+
+function concludeArcheryPhase(G: GameState): void {
+    G.archeryAssignStep = undefined;
+    if (G.archeryState) G.archeryState.step = 'COMPLETE';
+
+    const livingMinions = livingBattlefieldMinions(G);
+    G.pendingPhaseEnd = true;
+    G.nextPhase = livingMinions.length === 0 ? 'regroup' : 'assignment';
+    G.statusMessage =
+        livingMinions.length === 0
+            ? 'Plus aucun séide sur le plateau ! Passage au Regroupement.'
+            : 'Phase d’Archerie terminée. Passage à l’Assignation.';
+}
+
+function tryResumeArcheryAfterResponses(G: GameState): void {
+    if (!G.archeryAfterResponses) return;
+    if (G.responseWindow?.isOpen || G.pendingEvent) return;
+
+    const next = G.archeryAfterResponses;
+    G.archeryAfterResponses = undefined;
+
+    if (next === 'SHADOW_ASSIGN' && startShadowArcheryAssign(G)) {
         return;
     }
-    yieldResponsePriorityAfterAction(G, playerID);
+    concludeArcheryPhase(G);
 }

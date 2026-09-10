@@ -33,7 +33,11 @@ interface BoardCharacterStackProps {
     isFaceDown: boolean;
     G: GameState;
     playerID: string;
-    onActivateAbility?: (sourceInstanceId: string, abilityId: string) => void;
+    onActivateAbility?: (
+        sourceInstanceId: string,
+        abilityId: string,
+        chosenTargetId?: string
+    ) => void;
 }
 
 export const BoardCharacterStack: React.FC<BoardCharacterStackProps> = ({

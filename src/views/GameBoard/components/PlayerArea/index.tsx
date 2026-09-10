@@ -39,7 +39,11 @@ interface PlayerAreaProps {
     G: GameState;
     isFaceDown?: boolean;
     phase?: string;
-    onActivateAbility?: (sourceInstanceId: string, abilityId: string) => void;
+    onActivateAbility?: (
+        sourceInstanceId: string,
+        abilityId: string,
+        chosenTargetId?: string
+    ) => void;
 }
 
 export const PlayerArea: React.FC<PlayerAreaProps> = ({

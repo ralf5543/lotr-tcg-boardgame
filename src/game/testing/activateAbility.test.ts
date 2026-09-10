@@ -624,4 +624,79 @@ describe('activateAbility', () => {
             1
         );
     });
+
+    it('Legolas : si une réponse peut empêcher, ouvre le toaster sans blesser tout de suite', () => {
+        const shamanAbility: Ability = {
+            id: '3C59:0',
+            phases: ['RESPONSE'],
+            trigger: {
+                type: 'ABOUT_TO_WOUND',
+                target: [['ISENGARD', 'ORC']],
+            },
+            cost: [{ removeTwilight: 2 }],
+            effects: [{ type: 'PREVENT_WOUND' }],
+            source: 'SELF',
+        };
+
+        const engine = createEngineClient({
+            startPhase: 'archery',
+            playerID: '0',
+            G: {
+                twilightPool: 3,
+                battlefield: [
+                    createMinion({
+                        id: 'orc-b',
+                        culture: 'ISENGARD',
+                        race: 'ORC',
+                        vitality: 3,
+                    }),
+                    createMinion({
+                        id: '3C59',
+                        title: 'Isengard Shaman',
+                        culture: 'ISENGARD',
+                        race: 'ORC',
+                        vitality: 2,
+                        actionPhases: ['RESPONSE'],
+                        abilities: [shamanAbility],
+                    }),
+                ],
+                players: {
+                    '0': createPlayerState('0', {
+                        fellowshipArea: [
+                            createCompanion({
+                                id: '1R50',
+                                title: 'Legolas',
+                                vitality: 3,
+                                keywords: ['ARCHER'],
+                                actionPhases: ['ARCHERY'],
+                                abilities: [GREENLEAF],
+                            }),
+                        ],
+                    }),
+                },
+            },
+        });
+
+        engine.moves.activateAbility('1R50', '1R50:0', 'orc-b');
+
+        const afterShot = engine.getG();
+        expect(afterShot.players['0']?.fellowshipArea[0]?.wounds).toBe(1);
+        expect(afterShot.battlefield.find((c) => c.id === 'orc-b')?.wounds || 0).toBe(
+            0
+        );
+        expect(afterShot.responseWindow?.isOpen).toBe(true);
+        expect(afterShot.responseWindow?.activePlayerId).toBe('1');
+        expect(afterShot.actionWindow?.activePlayerId).toBe('0');
+
+        engine.updatePlayerID('1');
+        engine.moves.activateAbility('3C59', '3C59:0');
+
+        const afterPrevent = engine.getG();
+        expect(
+            afterPrevent.battlefield.find((c) => c.id === 'orc-b')?.wounds || 0
+        ).toBe(0);
+        expect(afterPrevent.responseWindow).toBeUndefined();
+        expect(afterPrevent.actionWindow?.isOpen).toBe(true);
+        expect(afterPrevent.actionWindow?.activePlayerId).toBe('1');
+    });
 });

@@ -17,6 +17,7 @@ import {
     afterResponseResolved,
     isResponseWindowOpen,
     passResponseWindow as resolveResponsePass,
+    pauseActionYieldForResponses,
     requestWounds,
 } from '../engine/responseWindow';
 
@@ -220,15 +221,26 @@ export const cancelPendingPlay = ({ G, playerID }: LotrMoveContext) => {
 function yieldAfterPlay(
     G: LotrMoveContext['G'],
     playerID: string,
-    playedCard: CardState
+    playedCard: CardState,
+    wasResponseWindowOpen: boolean
 ) {
-    if (isResponseWindowOpen(G) && playedCard.type === 'EVENT') {
+    const isResponseEvent =
+        playedCard.type === 'EVENT' &&
+        Boolean(findEventAbilityForPhase(playedCard, 'RESPONSE'));
+
+    if (wasResponseWindowOpen && isResponseEvent) {
         const ability = findEventAbilityForPhase(playedCard, 'RESPONSE');
         if (ability) {
             afterResponseResolved(G, playerID, ability);
             return;
         }
     }
+
+    if (isResponseWindowOpen(G) && !wasResponseWindowOpen) {
+        pauseActionYieldForResponses(G, playerID);
+        return;
+    }
+
     yieldPriorityAfterAction(G, playerID);
 }
 
@@ -238,6 +250,7 @@ export const playCard = (
     chosenTargetId?: string
 ) => {
     const actingPlayerId = playerID ?? ctx.currentPlayer ?? '0';
+    const wasResponseWindowOpen = isResponseWindowOpen(G);
     const player = G.players[actingPlayerId];
 
     if (!player || !player.hand || !player.hand[cardIndex]) {
@@ -297,7 +310,7 @@ export const playCard = (
             G.twilightPool -= cost;
             return 'INVALID_MOVE';
         }
-        yieldAfterPlay(G, actingPlayerId, playedCard);
+        yieldAfterPlay(G, actingPlayerId, playedCard, wasResponseWindowOpen);
         G.pendingPlay = undefined;
         return;
     }
@@ -340,7 +353,7 @@ export const playCard = (
             G.twilightPool += cost;
             return 'INVALID_MOVE';
         }
-        yieldAfterPlay(G, actingPlayerId, playedCard);
+        yieldAfterPlay(G, actingPlayerId, playedCard, wasResponseWindowOpen);
         G.pendingPlay = undefined;
     }
 };

@@ -167,6 +167,8 @@ export interface CostOption {
     spotThreats?: number;
     removeThreats?: number;
     addTwilight?: number;
+    removeTwilight?: number;
+    spotTwilight?: number;
 }
 
 export type AbilityCost = CostOption[];
@@ -390,6 +392,10 @@ export interface GameState {
     lastWoundedCardIds?: string[];
     lastExertedCardIds?: string[];
     pendingPhaseEnd?: boolean;
+    /** Archerie : une réponse est ouverte, reprendre l’attribution ou clore après. */
+    archeryAfterResponses?: 'END' | 'SHADOW_ASSIGN';
+    /** Action de phase (archerie, combat…) qui a ouvert une fenêtre de réponse : céder la priorité une fois les réponses closes. */
+    pendingActionYieldPlayerId?: string;
     nextPhase?: string;
     pendingDeadCardIds?: string[];
     archeryWoundsToAssign?: number;
