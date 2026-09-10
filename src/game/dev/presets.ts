@@ -469,7 +469,10 @@ export const applyDevPreset = (
             };
 
             fpPlayer.fellowshipArea = [
-                { ...CARDS_PRESETS.FRODO },
+                {
+                    ...CARDS_PRESETS.FRODO,
+                    attachments: [clonePresetCard('1R1')],
+                },
                 { ...CARDS_PRESETS.ARAGORN },
                 { ...CARDS_PRESETS.SMEAGOL },
                 clonePresetCard('1R50'),
@@ -511,7 +514,10 @@ export const applyDevPreset = (
             });
 
             fpPlayer.fellowshipArea = [
-                { ...CARDS_PRESETS.FRODO },
+                {
+                    ...CARDS_PRESETS.FRODO,
+                    attachments: [clonePresetCard('1R1')],
+                },
                 clonePresetCard('1C311'),
                 { ...CARDS_PRESETS.GIMLI },
             ];

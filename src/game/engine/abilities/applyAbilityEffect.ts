@@ -35,6 +35,18 @@ export function applyAbilityEffect(
             continue;
         }
 
+        if (effect.type === 'WEAR_RING') {
+            if (G.wearingTheOneRing) return false;
+            G.wearingTheOneRing = {
+                expiresAtPhase: effect.expiresAtPhase,
+                replaceWoundWithBurdens: effect.replaceWoundWithBurdens,
+                ...(effect.onlyInSkirmish
+                    ? { onlyInSkirmish: true }
+                    : {}),
+            };
+            continue;
+        }
+
         const target = resolveAbilityTarget(
             G,
             source,
@@ -109,5 +121,9 @@ export function clearExpiredTempKeywords(
         if (G.tempModifiers.length === 0) {
             delete G.tempModifiers;
         }
+    }
+
+    if (phase === 'REGROUP') {
+        delete G.wearingTheOneRing;
     }
 }

@@ -4688,6 +4688,28 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "RING",
+    "abilities": [
+      {
+        "id": "1R1:0",
+        "phases": [
+          "RESPONSE"
+        ],
+        "trigger": {
+          "type": "ABOUT_TO_WOUND",
+          "target": "BEARER"
+        },
+        "cost": [],
+        "effects": [
+          {
+            "type": "WEAR_RING",
+            "expiresAtPhase": "REGROUP",
+            "replaceWoundWithBurdens": 2
+          }
+        ],
+        "source": "ATTACHMENT",
+        "text": "RESPONSE: If bearer is about to take a wound, he wears The One Ring until the regroup phase."
+      }
+    ],
     "actionPhases": [
       "RESPONSE"
     ],
@@ -7568,6 +7590,28 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "RING",
+    "abilities": [
+      {
+        "id": "11R1:0",
+        "phases": [
+          "RESPONSE"
+        ],
+        "trigger": {
+          "type": "ABOUT_TO_WOUND",
+          "target": "BEARER"
+        },
+        "cost": [],
+        "effects": [
+          {
+            "type": "WEAR_RING",
+            "expiresAtPhase": "REGROUP",
+            "replaceWoundWithBurdens": 1
+          }
+        ],
+        "source": "ATTACHMENT",
+        "text": "RESPONSE: If the Ring-bearer is about to take a wound, he wears The One Ring until the regroup phase."
+      }
+    ],
     "actionPhases": [
       "RESPONSE"
     ],
@@ -10546,6 +10590,30 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "RING",
+    "abilities": [
+      {
+        "id": "1C2:0",
+        "phases": [
+          "RESPONSE"
+        ],
+        "trigger": {
+          "type": "ABOUT_TO_WOUND",
+          "target": "BEARER",
+          "inSkirmish": true
+        },
+        "cost": [],
+        "effects": [
+          {
+            "type": "WEAR_RING",
+            "expiresAtPhase": "REGROUP",
+            "replaceWoundWithBurdens": 1,
+            "onlyInSkirmish": true
+          }
+        ],
+        "source": "ATTACHMENT",
+        "text": "RESPONSE: If bearer is about to take a wound in a skirmish, he wears The One Ring until the regroup phase."
+      }
+    ],
     "actionPhases": [
       "RESPONSE"
     ],
@@ -35930,6 +35998,30 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "RING",
+    "abilities": [
+      {
+        "id": "4C2:0",
+        "phases": [
+          "RESPONSE"
+        ],
+        "trigger": {
+          "type": "ABOUT_TO_WOUND",
+          "target": "BEARER",
+          "inSkirmish": true
+        },
+        "cost": [],
+        "effects": [
+          {
+            "type": "WEAR_RING",
+            "expiresAtPhase": "REGROUP",
+            "replaceWoundWithBurdens": 1,
+            "onlyInSkirmish": true
+          }
+        ],
+        "source": "ATTACHMENT",
+        "text": "RESPONSE: If bearer is about to take a wound in a skirmish, he wears The One Ring until the regroup phase."
+      }
+    ],
     "actionPhases": [
       "RESPONSE"
     ],
@@ -61790,6 +61882,30 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "RING",
+    "abilities": [
+      {
+        "id": "7C1:0",
+        "phases": [
+          "RESPONSE"
+        ],
+        "trigger": {
+          "type": "ABOUT_TO_WOUND",
+          "target": "BEARER",
+          "inSkirmish": true
+        },
+        "cost": [],
+        "effects": [
+          {
+            "type": "WEAR_RING",
+            "expiresAtPhase": "REGROUP",
+            "replaceWoundWithBurdens": 1,
+            "onlyInSkirmish": true
+          }
+        ],
+        "source": "ATTACHMENT",
+        "text": "RESPONSE: If bearer is about to take a wound in a skirmish, he wears The One Ring until the regroup phase."
+      }
+    ],
     "actionPhases": [
       "RESPONSE"
     ],
@@ -89519,6 +89635,30 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "RING",
+    "abilities": [
+      {
+        "id": "11S2:0",
+        "phases": [
+          "RESPONSE"
+        ],
+        "trigger": {
+          "type": "ABOUT_TO_WOUND",
+          "target": "BEARER",
+          "inSkirmish": true
+        },
+        "cost": [],
+        "effects": [
+          {
+            "type": "WEAR_RING",
+            "expiresAtPhase": "REGROUP",
+            "replaceWoundWithBurdens": 1,
+            "onlyInSkirmish": true
+          }
+        ],
+        "source": "ATTACHMENT",
+        "text": "RESPONSE: If the Ring-bearer is about to take a wound in a skirmish, he wears The One Ring until the regroup phase."
+      }
+    ],
     "actionPhases": [
       "RESPONSE"
     ],
@@ -117612,6 +117752,30 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "RING",
+    "abilities": [
+      {
+        "id": "15S2:0",
+        "phases": [
+          "RESPONSE"
+        ],
+        "trigger": {
+          "type": "ABOUT_TO_WOUND",
+          "target": "BEARER",
+          "inSkirmish": true
+        },
+        "cost": [],
+        "effects": [
+          {
+            "type": "WEAR_RING",
+            "expiresAtPhase": "REGROUP",
+            "replaceWoundWithBurdens": 1,
+            "onlyInSkirmish": true
+          }
+        ],
+        "source": "ATTACHMENT",
+        "text": "RESPONSE: If the Ring-bearer is about to take a wound in a skirmish, he wears The One Ring until the regroup phase."
+      }
+    ],
     "actionPhases": [
       "RESPONSE"
     ],

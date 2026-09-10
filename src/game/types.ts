@@ -194,11 +194,18 @@ export type AbilityEffect =
       }
     | {
           type: 'PREVENT_WOUND';
+      }
+    | {
+          type: 'WEAR_RING';
+          expiresAtPhase: AbilityEffectExpiry;
+          replaceWoundWithBurdens: number;
+          onlyInSkirmish?: boolean;
       };
 
 export type AbilityTrigger = {
     type: 'ABOUT_TO_WOUND';
     target: AbilityTargetRef;
+    inSkirmish?: boolean;
 };
 
 export interface Ability {
@@ -370,6 +377,11 @@ export interface GameState {
     actionWindow?: ActionWindow;
     pendingEvent?: PendingEvent;
     responseWindow?: ResponseWindow;
+    wearingTheOneRing?: {
+        expiresAtPhase: AbilityEffectExpiry;
+        replaceWoundWithBurdens: number;
+        onlyInSkirmish?: boolean;
+    };
     woundQueue?: WoundQueueItem[];
     skirmishes: SkirmishState[];
     archeryState?: ArcheryState;

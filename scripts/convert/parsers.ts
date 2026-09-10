@@ -925,6 +925,44 @@ function parsePreventCost(
     return option;
 }
 
+function parseBurdenWord(raw: string): number | null {
+    const token = raw.trim().toLowerCase();
+    if (token === 'a' || token === 'one') return 1;
+    if (token === 'two') return 2;
+    const n = parseInt(token, 10);
+    return Number.isFinite(n) && n > 0 ? n : null;
+}
+
+function stripAbilityMarkup(text: string): string {
+    return text
+        .replace(/<[^>]+>/g, ' ')
+        .replace(/\s+/g, ' ')
+        .replace(/\s+\./g, '.')
+        .trim();
+}
+
+/** Passif `While wearing` : fardeaux à la place, sans clause extra (force, hunter…). */
+function parseWhileWearingReplacement(
+    rest: string
+): { count: number; onlyInSkirmish: boolean } | null {
+    const cleaned = stripAbilityMarkup(rest);
+    if (!cleaned) return null;
+
+    const patterns = [
+        /^While wearing The One Ring,\s*each time the Ring-bearer is about to take a wound(?: (during a skirmish|in a skirmish))?,\s*add (a|one|two|\d+) burdens? instead\.?$/i,
+        /^While the Ring-bearer is wearing The One Ring,\s*each time (?:he or she|he|she) is about to take a wound(?: (in a skirmish|during a skirmish))?,\s*add (a|one|two|\d+) burdens? instead\.?$/i,
+    ];
+
+    for (const pattern of patterns) {
+        const match = cleaned.match(pattern);
+        if (!match) continue;
+        const count = parseBurdenWord(match[2]);
+        if (!count) return null;
+        return { count, onlyInSkirmish: Boolean(match[1]) };
+    }
+    return null;
+}
+
 /**
  * Famille : `[Phase]: Exert [self/bearer/X] to make [him/bearer] KEYWORD|STAT [until …]?`
  */
@@ -958,6 +996,43 @@ export function parseAbilities(
                 ? markers[index + 1].markerStart
                 : text.length;
         const body = text.slice(marker.bodyStart, bodyEnd).trim();
+        const bodyPlain = stripAbilityMarkup(body);
+
+        if (marker.phase === 'RESPONSE') {
+            const wearMatch = bodyPlain.match(
+                /^If\s+(bearer|the Ring-bearer)\s+is about to take a wound( in a skirmish)?,\s*(?:he or she|he|she)\s+wears The One Ring until the regroup phase\.?\s*([\s\S]*)$/i
+            );
+            const whileWearing = wearMatch
+                ? parseWhileWearingReplacement(wearMatch[3] || '')
+                : null;
+            if (wearMatch && whileWearing) {
+                const inSkirmish = Boolean(wearMatch[2]);
+                abilities.push({
+                    id: `${cardId || 'ability'}:${abilities.length}`,
+                    phases: ['RESPONSE'],
+                    trigger: {
+                        type: 'ABOUT_TO_WOUND',
+                        target: 'BEARER',
+                        ...(inSkirmish ? { inSkirmish: true } : {}),
+                    },
+                    cost: [],
+                    effects: [
+                        {
+                            type: 'WEAR_RING',
+                            expiresAtPhase: 'REGROUP',
+                            replaceWoundWithBurdens: whileWearing.count,
+                            ...(whileWearing.onlyInSkirmish
+                                ? { onlyInSkirmish: true }
+                                : {}),
+                        },
+                    ],
+                    source: 'ATTACHMENT',
+                    text: `RESPONSE: If ${wearMatch[1]} is about to take a wound${inSkirmish ? ' in a skirmish' : ''}, he wears The One Ring until the regroup phase.`,
+                });
+                return;
+            }
+        }
+
         const preventMatch = body.match(
             /^If\s+([\s\S]+?)\s+is about to take a wound,\s*([\s\S]+?)\s+to prevent that wound/i
         );

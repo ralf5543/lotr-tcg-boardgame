@@ -185,11 +185,23 @@ export const resolveSkirmish = (G: GameState, _ctx?: Ctx) => {
                     ? ` (${woundsToApply} blessures incluant DAMAGE +${damageBonus})`
                     : '';
             const waiting = Boolean(G.responseWindow?.isOpen);
-            resultMsg += waiting
-                ? `${companionName} est sur le point de subir ${woundsToApply} blessure${woundsToApply > 1 ? 's' : ''}${damageText}.`
-                : `${companionName} subit ${woundsToApply} blessure${woundsToApply > 1 ? 's' : ''}${damageText}${
-                      companion.isDead ? ' et meurt' : ''
-                  }.`;
+            const companionId = companion.instanceId || companion.id;
+            const tookWound = (G.lastWoundedCardIds || []).includes(
+                companionId
+            );
+            const burdensInstead =
+                !waiting && Boolean(G.wearingTheOneRing) && !tookWound;
+            if (waiting) {
+                resultMsg += `${companionName} est sur le point de subir ${woundsToApply} blessure${woundsToApply > 1 ? 's' : ''}${damageText}.`;
+            } else if (burdensInstead) {
+                const each = G.wearingTheOneRing!.replaceWoundWithBurdens;
+                const total = each * woundsToApply;
+                resultMsg += `${companionName} porte l’Anneau Unique : ${total} fardeau${total > 1 ? 's' : ''} à la place.`;
+            } else {
+                resultMsg += `${companionName} subit ${woundsToApply} blessure${woundsToApply > 1 ? 's' : ''}${damageText}${
+                    companion.isDead ? ' et meurt' : ''
+                }.`;
+            }
         }
     }
 

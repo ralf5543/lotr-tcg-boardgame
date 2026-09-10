@@ -694,6 +694,8 @@ export const VisualContainer = styled.figure<{ $type?: string }>`
     height: 76px;
     margin: 0px;
     padding-inline: 13px;
+    position: relative;
+    overflow: hidden;
     ${(props) =>
         isNotCharacter(props.$type) &&
         css`
@@ -712,6 +714,118 @@ export const Visual = styled.img`
     object-fit: cover;
     user-select: none;
     -webkit-user-drag: none;
+`;
+
+const wraithOpacity = keyframes`
+  0%,
+  100% {
+    opacity: 0.34;
+  }
+  16% {
+    opacity: 0.72;
+  }
+  31% {
+    opacity: 0.48;
+  }
+  54% {
+    opacity: 0.86;
+  }
+  73% {
+    opacity: 0.4;
+  }
+  88% {
+    opacity: 0.68;
+  }
+`;
+
+const wraithWarp = keyframes`
+  0%,
+  100% {
+    transform: scale(1.03) translate3d(0, 0, 0);
+  }
+  28% {
+    transform: scale(1.08) translate3d(-1.6%, 1.1%, 0) skewX(-0.6deg);
+  }
+  57% {
+    transform: scale(1.05) translate3d(1.4%, -0.9%, 0) skewX(0.5deg);
+  }
+  81% {
+    transform: scale(1.09) translate3d(-0.6%, -1.3%, 0) skewY(0.4deg);
+  }
+`;
+
+const wraithInvert = keyframes`
+  0%,
+  100% {
+    filter: invert(1) grayscale(1) contrast(1.4) brightness(1.08) blur(0.45px);
+  }
+  22% {
+    filter: invert(1) grayscale(1) contrast(1.62) brightness(1.22) blur(1.35px);
+  }
+  49% {
+    filter: invert(1) grayscale(1) contrast(1.28) brightness(0.98) blur(0.7px);
+  }
+  71% {
+    filter: invert(1) grayscale(1) contrast(1.55) brightness(1.18) blur(1.8px);
+  }
+`;
+
+const wraithVeil = keyframes`
+  0%,
+  100% {
+    opacity: 0.28;
+  }
+  40% {
+    opacity: 0.55;
+  }
+  70% {
+    opacity: 0.18;
+  }
+`;
+
+export const WraithWorldLayer = styled.div<{ $filterId: string }>`
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    pointer-events: none;
+    overflow: hidden;
+    border-radius: inherit;
+    filter: url(#${(props) => props.$filterId});
+    animation: ${wraithOpacity} 12.8s ease-in-out infinite;
+    will-change: opacity;
+`;
+
+export const WraithWorldVisual = styled.div`
+    width: 100%;
+    height: 100%;
+    animation: ${wraithWarp} 14.4s ease-in-out infinite;
+    will-change: transform;
+
+    ${Visual} {
+        animation: ${wraithInvert} 11.2s ease-in-out infinite;
+        will-change: filter;
+    }
+`;
+
+export const WraithWorldVeil = styled.div`
+    position: absolute;
+    inset: -8%;
+    pointer-events: none;
+    background: radial-gradient(
+        ellipse at 42% 28%,
+        rgba(210, 236, 245, 0.55) 0%,
+        rgba(90, 140, 160, 0.18) 46%,
+        rgba(12, 22, 32, 0.35) 100%
+    );
+    mix-blend-mode: overlay;
+    animation: ${wraithVeil} 10.2s ease-in-out infinite;
+`;
+
+export const WraithWorldFilterSvg = styled.svg`
+    position: absolute;
+    width: 0;
+    height: 0;
+    overflow: hidden;
 `;
 
 export const TextContainer = styled.div`
@@ -1007,14 +1121,14 @@ export const AbilityButton = styled.button<{ $abilityPhaseMatch?: boolean, $cult
 `;
 
 export const fadeIn = keyframes`
-    from {
-        opacity: 0;
-        transform: translate(-50%, -95%);
-    }
-    to {
-        opacity: 1;
-        transform: translate(-50%, -100%);
-    }
+  from {
+    opacity: 0;
+    transform: translate(-50%, -95%);
+  }
+  to {
+    opacity: 1;
+    transform: translate(-50%, -100%);
+  }
 `;
 
 export const AbilityBubble = styled.div<{ $top: number; $left: number }>`

@@ -37,6 +37,7 @@ export function abilityMatchesTrigger(
     if (ability.trigger.type !== event.type) return false;
 
     if (event.type !== 'ABOUT_TO_WOUND') return false;
+    if (ability.trigger.inSkirmish && !isInSkirmish(G)) return false;
 
     const wounded = findTargetCard(G, event.targetId) as CardState | null;
     if (!wounded) return false;
@@ -69,12 +70,59 @@ function cardOwnerId(G: GameState, card: CardState): string | null {
     return null;
 }
 
+function isRingBearer(card: CardState): boolean {
+    return (card.keywords || []).includes('RING-BEARER');
+}
+
+function isInSkirmish(G: GameState): boolean {
+    return Boolean(G.activeSkirmishId);
+}
+
+function abilityWearsTheOneRing(ability: Ability): boolean {
+    return (ability.effects || []).some((effect) => effect.type === 'WEAR_RING');
+}
+
+function shouldReplaceWoundWithBurdens(
+    G: GameState,
+    card: CardState
+): boolean {
+    const wearing = G.wearingTheOneRing;
+    if (!wearing || card.isDead || !isRingBearer(card)) return false;
+    if (wearing.onlyInSkirmish && !isInSkirmish(G)) return false;
+    return true;
+}
+
+function addFpBurdens(G: GameState, count: number): void {
+    const fpId = G.fpPlayerId || '0';
+    const player = G.players[fpId];
+    if (!player || count <= 0) return;
+    player.burdens = (player.burdens || 0) + count;
+}
+
+function applyWoundOrRingReplacement(
+    G: GameState,
+    card: CardState,
+    count: number
+): void {
+    if (shouldReplaceWoundWithBurdens(G, card)) {
+        const each = G.wearingTheOneRing!.replaceWoundWithBurdens;
+        const total = each * count;
+        addFpBurdens(G, total);
+        const name =
+            card.i18n?.fr?.title || card.title || 'Le Porteur de l’Anneau';
+        G.statusMessage = `${name} porte l’Anneau Unique : ${total} fardeau${total > 1 ? 's' : ''} à la place.`;
+        return;
+    }
+    applyWoundAndCheckDeath(G, card, count);
+}
+
 function inPlayResponseIsLegal(
     G: GameState,
     source: CardState,
     ability: Ability
 ): boolean {
     if (!isResponseAbility(ability)) return false;
+    if (abilityWearsTheOneRing(ability) && G.wearingTheOneRing) return false;
     if (!abilityMatchesTrigger(ability, G.pendingEvent, source, G)) return false;
     return canPayAbilityCost(G, source, ability.cost);
 }
@@ -151,7 +199,7 @@ function openResponseWindow(G: GameState): void {
         passesCount: 0,
     };
     G.statusMessage =
-        'Réponse : une blessure peut être empêchée. Jouez une réponse ou passez.';
+        'Réponse : jouez une réponse ou passez.';
     clearActionableFlags(G);
 }
 
@@ -173,7 +221,7 @@ function processWoundQueue(G: GameState): 'APPLIED' | 'WAITING' {
         };
 
         if (!hasAnyEligibleResponse(G)) {
-            applyWoundAndCheckDeath(G, card, next.count);
+            applyWoundOrRingReplacement(G, card, next.count);
             G.pendingEvent = undefined;
             continue;
         }
@@ -210,7 +258,7 @@ export function continueAfterCurrentWound(
         return 'WAITING';
     }
 
-    applyWoundAndCheckDeath(G, card, event.remaining);
+    applyWoundOrRingReplacement(G, card, event.remaining);
     G.pendingEvent = undefined;
     closeResponseWindow(G);
     return processWoundQueue(G);
@@ -223,7 +271,7 @@ function applyOnePendingWound(G: GameState): void {
     }
     const card = findTargetCard(G, event.targetId) as CardState | null;
     if (card && !card.isDead) {
-        applyWoundAndCheckDeath(G, card, 1);
+        applyWoundOrRingReplacement(G, card, 1);
     }
     event.remaining -= 1;
 }

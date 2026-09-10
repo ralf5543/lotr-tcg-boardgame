@@ -323,15 +323,38 @@ export const GameBoard: React.FC<GameBoardProps> = ({
             G.lastExertedCardIds && G.lastExertedCardIds.length > 0;
         const hasPendingDead =
             G.pendingDeadCardIds && G.pendingDeadCardIds.length > 0;
+        const activeSkirmish = G.skirmishes?.find(
+            (skirmish) => skirmish.id === G.activeSkirmishId
+        );
+        const skirmishOutcomeSettled =
+            Boolean(activeSkirmish?.resolved) &&
+            !G.responseWindow?.isOpen &&
+            !G.pendingEvent;
 
-        if (hasWounded || hasExerted || hasPendingDead) {
+        if (
+            hasWounded ||
+            hasExerted ||
+            hasPendingDead ||
+            skirmishOutcomeSettled
+        ) {
+            const delay =
+                hasWounded || hasPendingDead || hasExerted ? 2000 : 1000;
             const timer = setTimeout(() => {
                 moves.cleanupPendingDeaths?.();
-            }, 2000);
+            }, delay);
 
             return () => clearTimeout(timer);
         }
-    }, [G.lastWoundedCardIds, G.lastExertedCardIds, G.pendingDeadCardIds, moves]);
+    }, [
+        G.lastWoundedCardIds,
+        G.lastExertedCardIds,
+        G.pendingDeadCardIds,
+        G.activeSkirmishId,
+        G.skirmishes,
+        G.responseWindow,
+        G.pendingEvent,
+        moves,
+    ]);
 
     // 🟢 3. ROUTER DE DRAG & DROP GLOBAL
     useEffect(() => {

@@ -90,6 +90,86 @@ export const CardImage: React.FC<CardImageProps> = ({
     );
 };
 
+function sanitizeFilterId(raw: string): string {
+    return `wraith-${raw.replace(/[^a-zA-Z0-9_-]/g, '')}`;
+}
+
+const WraithWorldOverlay: React.FC<{
+    imageUrl?: string;
+    alt: string;
+    filterId: string;
+    size: 'sm' | 'md' | 'lg';
+}> = ({ imageUrl, alt, filterId, size }) => {
+    const turbulenceRef = useRef<SVGFETurbulenceElement>(null);
+    const displaceRef = useRef<SVGFEDisplacementMapElement>(null);
+
+    useEffect(() => {
+        const turbulence = turbulenceRef.current;
+        const displace = displaceRef.current;
+        if (!turbulence || !displace) return;
+
+        const baseScale = size === 'lg' ? 18 : size === 'md' ? 12 : 9;
+        let frame = 0;
+        const tick = (now: number) => {
+            const t = now / 2000;
+            const fx =
+                0.013 + Math.sin(t * 0.33) * 0.006 + Math.sin(t * 0.91) * 0.0025;
+            const fy =
+                0.032 + Math.cos(t * 0.27) * 0.012 + Math.sin(t * 0.6) * 0.004;
+            turbulence.setAttribute(
+                'baseFrequency',
+                `${fx.toFixed(4)} ${fy.toFixed(4)}`
+            );
+            const scale =
+                baseScale +
+                Math.sin(t * 0.52) * (baseScale * 0.45) +
+                Math.sin(t * 1.25) * (baseScale * 0.18);
+            displace.setAttribute('scale', scale.toFixed(2));
+            frame = requestAnimationFrame(tick);
+        };
+        frame = requestAnimationFrame(tick);
+        return () => cancelAnimationFrame(frame);
+    }, [size]);
+
+    return (
+        <>
+            <S.WraithWorldFilterSvg aria-hidden>
+                <filter
+                    id={filterId}
+                    x="-25%"
+                    y="-25%"
+                    width="150%"
+                    height="150%"
+                    colorInterpolationFilters="sRGB"
+                >
+                    <feTurbulence
+                        ref={turbulenceRef}
+                        type="fractalNoise"
+                        baseFrequency="0.018 0.04"
+                        numOctaves="3"
+                        seed="3"
+                        result="noise"
+                    />
+                    <feDisplacementMap
+                        ref={displaceRef}
+                        in="SourceGraphic"
+                        in2="noise"
+                        scale="10"
+                        xChannelSelector="R"
+                        yChannelSelector="G"
+                    />
+                </filter>
+            </S.WraithWorldFilterSvg>
+            <S.WraithWorldLayer $filterId={filterId}>
+                <S.WraithWorldVisual>
+                    <CardImage imageUrl={imageUrl} alt={alt} />
+                </S.WraithWorldVisual>
+                <S.WraithWorldVeil />
+            </S.WraithWorldLayer>
+        </>
+    );
+};
+
 interface CardProps {
     card: CardState;
     isPlayable?: boolean;
@@ -161,7 +241,10 @@ export const Card: React.FC<CardProps> = ({
     lastExertedIdsRef.current = G?.lastExertedCardIds;
 
     const isAttachedCard = Boolean(
-        card && (requiresAttachmentTarget(card) || card.attachedViaAid)
+        card &&
+            (requiresAttachmentTarget(card) ||
+                card.attachedViaAid ||
+                card.type === 'RING')
     );
     const showAbilityButton = Boolean(
         card &&
@@ -488,6 +571,22 @@ export const Card: React.FC<CardProps> = ({
                         imageUrl={card.imageUrl}
                         alt={title ?? ''}
                     />
+                    {Boolean(
+                        G?.wearingTheOneRing &&
+                            isRingBearer &&
+                            size !== 'lg' &&
+                            !isDead &&
+                            !isFaceDown
+                    ) && (
+                        <WraithWorldOverlay
+                            imageUrl={card.imageUrl}
+                            alt=""
+                            filterId={sanitizeFilterId(
+                                `${card.instanceId || card.id}-${size}`
+                            )}
+                            size={size}
+                        />
+                    )}
                 </S.VisualContainer>
             )}
 

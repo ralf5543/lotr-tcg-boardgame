@@ -308,9 +308,90 @@ describe('parseAbilities — Response prevent wound', () => {
         ]);
     });
 
-    it('n’émet rien pour l’Anneau Unique (pas prevent that wound)', () => {
+    it('parse 1R1 : mettre l’Anneau (réponse) + 2 fardeaux (While)', () => {
         expect(
             parseAbilities(ONE_RING_TEXT, 'The One Ring', '1R1')
+        ).toEqual([
+            {
+                id: '1R1:0',
+                phases: ['RESPONSE'],
+                trigger: {
+                    type: 'ABOUT_TO_WOUND',
+                    target: 'BEARER',
+                },
+                cost: [],
+                effects: [
+                    {
+                        type: 'WEAR_RING',
+                        expiresAtPhase: 'REGROUP',
+                        replaceWoundWithBurdens: 2,
+                    },
+                ],
+                source: 'ATTACHMENT',
+                text: expect.stringMatching(
+                    /RESPONSE: If bearer is about to take a wound/i
+                ),
+            },
+        ]);
+    });
+
+    it('parse The Ruling Ring : blessure d’escarmouche, 1 fardeau', () => {
+        const text =
+            '<keyword>Response:</keyword> If bearer is about to take a wound in a skirmish, he wears The One Ring until the regroup phase. <br>While wearing The One Ring, each time the Ring-bearer is about to take a wound during a skirmish, add a burden instead.';
+        expect(parseAbilities(text, 'The One Ring', '1C2')).toEqual([
+            {
+                id: '1C2:0',
+                phases: ['RESPONSE'],
+                trigger: {
+                    type: 'ABOUT_TO_WOUND',
+                    target: 'BEARER',
+                    inSkirmish: true,
+                },
+                cost: [],
+                effects: [
+                    {
+                        type: 'WEAR_RING',
+                        expiresAtPhase: 'REGROUP',
+                        replaceWoundWithBurdens: 1,
+                        onlyInSkirmish: true,
+                    },
+                ],
+                source: 'ATTACHMENT',
+                text: expect.stringMatching(/in a skirmish/i),
+            },
+        ]);
+    });
+
+    it('parse 11R1 : Ring-bearer, 1 fardeau, toute blessure', () => {
+        const text =
+            '<keyword>Response:</keyword> If the Ring-bearer is about to take a wound, he or she wears The One Ring until the regroup phase. While the Ring-bearer is wearing The One Ring, each time he or she is about to take a wound, add a burden instead.';
+        expect(parseAbilities(text, 'The One Ring', '11R1')).toEqual([
+            {
+                id: '11R1:0',
+                phases: ['RESPONSE'],
+                trigger: {
+                    type: 'ABOUT_TO_WOUND',
+                    target: 'BEARER',
+                },
+                cost: [],
+                effects: [
+                    {
+                        type: 'WEAR_RING',
+                        expiresAtPhase: 'REGROUP',
+                        replaceWoundWithBurdens: 1,
+                    },
+                ],
+                source: 'ATTACHMENT',
+                text: expect.stringMatching(/Ring-bearer is about to take a wound/i),
+            },
+        ]);
+    });
+
+    it('n’émet rien pour 4R1 (While avec +2 force + Combat pour mettre)', () => {
+        const text =
+            'While wearing The One Ring, the Ring-bearer is strength +2, and each time he is about to take a wound in a skirmish, add a burden instead.\n<keyword>Skirmish:</keyword> Add a burden to wear The One Ring until the regroup phase.';
+        expect(
+            parseAbilities(text, 'The One Ring', '4R1')
         ).toBeUndefined();
     });
 });

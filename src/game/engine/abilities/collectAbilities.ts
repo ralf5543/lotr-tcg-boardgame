@@ -82,6 +82,9 @@ function formatEffectBit(effect: Ability['effects'][number]): string {
     if (effect.type === 'PREVENT_WOUND') {
         return 'empêcher cette blessure';
     }
+    if (effect.type === 'WEAR_RING') {
+        return 'mettre l’Anneau Unique';
+    }
     if (effect.type === 'ADD_TEMP_STAT') {
         const statLabels: Record<string, string> = {
             STRENGTH: 'force',
