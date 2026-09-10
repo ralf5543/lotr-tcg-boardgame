@@ -1,16 +1,24 @@
-import type { LotrMoveContext } from '../types';
+import type { CardState, LotrMoveContext } from '../types';
 import { resolveSkirmish } from '../logic/skirmish';
-import { applyWoundAndCheckDeath } from '../../utils/applyWoundAndCheckDeath';
 import { drawCardsForPlayer } from '../../utils/drawCards';
 import { advanceArcheryAssignmentStep } from '../index';
 import { getEffectiveVitality } from '../../utils/cardStats';
 import { devMoves } from '../dev/devMoves';
 import { playSite } from './fellowshipMoves';
 import { canPlayCard } from '../engine/canPlayCard';
-import { applyEventAbility } from '../engine/abilities/playEventAbility';
+import {
+    applyEventAbility,
+    findEventAbilityForPhase,
+} from '../engine/abilities/playEventAbility';
 import { clearExpiredTempKeywords } from '../engine/abilities/applyAbilityEffect';
 import { yieldPriorityAfterAction } from '../engine/actionWindow';
 import { findTargetCard } from '../../utils/cardUtils';
+import {
+    afterResponseResolved,
+    isResponseWindowOpen,
+    passResponseWindow as resolveResponsePass,
+    requestWounds,
+} from '../engine/responseWindow';
 
 export interface ReorderPayload {
     fromIndex?: number;
@@ -75,6 +83,9 @@ export const passActionWindow = ({
     playerID,
     events,
 }: LotrMoveContext) => {
+    if (G.responseWindow?.isOpen) {
+        return;
+    }
     if (!G.actionWindow || !G.actionWindow.isOpen) {
         console.warn(
             '⚠️ [moves.passActionWindow] Aucune fenêtre d’action ouverte.'
@@ -206,6 +217,21 @@ export const cancelPendingPlay = ({ G, playerID }: LotrMoveContext) => {
     G.pendingPlay = undefined;
 };
 
+function yieldAfterPlay(
+    G: LotrMoveContext['G'],
+    playerID: string,
+    playedCard: CardState
+) {
+    if (isResponseWindowOpen(G) && playedCard.type === 'EVENT') {
+        const ability = findEventAbilityForPhase(playedCard, 'RESPONSE');
+        if (ability) {
+            afterResponseResolved(G, playerID, ability);
+            return;
+        }
+    }
+    yieldPriorityAfterAction(G, playerID);
+}
+
 export const playCard = (
     { G, ctx, playerID }: LotrMoveContext,
     cardIndex: number,
@@ -271,7 +297,7 @@ export const playCard = (
             G.twilightPool -= cost;
             return 'INVALID_MOVE';
         }
-        yieldPriorityAfterAction(G, actingPlayerId);
+        yieldAfterPlay(G, actingPlayerId, playedCard);
         G.pendingPlay = undefined;
         return;
     }
@@ -314,7 +340,7 @@ export const playCard = (
             G.twilightPool += cost;
             return 'INVALID_MOVE';
         }
-        yieldPriorityAfterAction(G, actingPlayerId);
+        yieldAfterPlay(G, actingPlayerId, playedCard);
         G.pendingPlay = undefined;
     }
 };
@@ -323,7 +349,13 @@ export const applyWound = ({ G }: LotrMoveContext, targetCardId: string) => {
     const targetCard = findTargetCard(G, targetCardId);
 
     if (targetCard) {
-        applyWoundAndCheckDeath(G, targetCard, 1);
+        requestWounds(G, targetCard as CardState, 1);
+    }
+};
+
+export const passResponseWindow = ({ G, playerID }: LotrMoveContext) => {
+    if (resolveResponsePass(G, playerID) === 'INVALID') {
+        return 'INVALID_MOVE';
     }
 };
 
@@ -426,6 +458,7 @@ export const cleanupPendingDeaths = ({ G }: LotrMoveContext) => {
 export const commonMoves = {
     confirmStartOfPhase,
     passActionWindow,
+    passResponseWindow,
     attachCard,
     beginPendingPlay,
     cancelPendingPlay,

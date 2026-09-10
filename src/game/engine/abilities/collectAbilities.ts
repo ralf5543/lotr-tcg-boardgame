@@ -1,4 +1,3 @@
-import { createElement, Fragment, type ReactNode } from 'react';
 import type { Ability, CardKeyword, CardState } from '../../types';
 import { TRANSLATIONS } from '../../translations';
 
@@ -80,6 +79,9 @@ function formatEffectBit(effect: Ability['effects'][number]): string {
     if (effect.type === 'WOUND') {
         return `blesser un ${TRANSLATIONS.type.MINION.toLowerCase()}`;
     }
+    if (effect.type === 'PREVENT_WOUND') {
+        return 'empêcher cette blessure';
+    }
     if (effect.type === 'ADD_TEMP_STAT') {
         const statLabels: Record<string, string> = {
             STRENGTH: 'force',
@@ -97,36 +99,46 @@ function formatEffectBit(effect: Ability['effects'][number]): string {
     return '';
 }
 
-export function formatAbilityLabel(
+function formatCostLabel(ability: Ability, source: CardState): string {
+    const option = ability.cost[0];
+    const parts: string[] = [];
+    const exert = option?.exert?.[0];
+    if (exert) {
+        const count = exert.count || 1;
+        const who = (() => {
+            if (exert.target === 'BEARER') return 'le détenteur';
+            if (Array.isArray(exert.target)) {
+                const label = exert.target
+                    .flat()
+                    .map(translateCriterionToken)
+                    .join(' ');
+                if (exert.mode === 'DESIGNATION') {
+                    return `un ${label}`;
+                }
+                return label;
+            }
+            return source.i18n?.fr?.title || source.title || 'cette carte';
+        })();
+        const times = count > 1 ? ` ${count} fois` : '';
+        parts.push(`Affaiblir ${who}${times}`);
+    }
+    if (option?.addTwilight && option.addTwilight > 0) {
+        parts.push(
+            `ajouter <symbol>twilight${option.addTwilight}</symbol>`
+        );
+    }
+    return parts.join(' et ');
+}
+
+export function formatAbilityLabelParts(
     ability: Ability,
     source: CardState
-): ReactNode {
-    const exert = ability.cost[0]?.exert?.[0];
-    const count = exert?.count || 1;
-    const who = (() => {
-        if (exert?.target === 'BEARER') return 'le détenteur';
-        if (Array.isArray(exert?.target)) {
-            const label = exert.target
-                .flat()
-                .map(translateCriterionToken)
-                .join(' ');
-            if (exert.mode === 'DESIGNATION') {
-                return `un ${label}`;
-            }
-            return label;
-        }
-        return source.i18n?.fr?.title || source.title || 'cette carte';
-    })();
-    const times = count > 1 ? ` ${count} fois` : '';
-    const bits = (ability.effects || [])
-        .map(formatEffectBit)
-        .filter(Boolean)
-        .join(' et ');
-
-    return createElement(
-        Fragment,
-        null,
-        createElement('span', null, `Affaiblir ${who}${times} :`),
-        bits ? ` ${bits}` : null
-    );
+): { cost: string; effect: string } {
+    return {
+        cost: formatCostLabel(ability, source),
+        effect: (ability.effects || [])
+            .map(formatEffectBit)
+            .filter(Boolean)
+            .join(' et '),
+    };
 }

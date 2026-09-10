@@ -74,6 +74,9 @@ function payOption(
             }
         }
     }
+    if (option.addTwilight && option.addTwilight > 0) {
+        G.twilightPool = (G.twilightPool || 0) + option.addTwilight;
+    }
     return true;
 }
 

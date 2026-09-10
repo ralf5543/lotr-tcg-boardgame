@@ -98,7 +98,8 @@ export function getHandEventDesignationTargetIds(
     card: CardState,
     phase?: string
 ): string[] {
-    const ability = findEventAbilityForPhase(card, phase || '');
+    const phaseToMatch = G.responseWindow?.isOpen ? 'RESPONSE' : phase || '';
+    const ability = findEventAbilityForPhase(card, phaseToMatch);
     if (!ability || !abilityNeedsDesignation(G, card, ability)) return [];
     return getDesignationCandidates(G, card, ability).flatMap(cardTargetIds);
 }

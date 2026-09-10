@@ -2,6 +2,11 @@ import type { Ability, CardState, GameState } from '../../types';
 import { abilityMatchesPhase } from './collectAbilities';
 import { applyAbilityEffect } from './applyAbilityEffect';
 import { canPayAbilityCost, payAbilityCost } from './payAbilityCost';
+import { isResponseWindowOpen } from '../responseWindow';
+
+function abilityPhaseToMatch(G: GameState, rawPhase: string): string {
+    return isResponseWindowOpen(G) ? 'RESPONSE' : rawPhase;
+}
 
 export function findEventAbilityForPhase(
     card: CardState,
@@ -26,7 +31,10 @@ export function canPayEventAbility(
         return { valid: true };
     }
 
-    const ability = findEventAbilityForPhase(card, rawPhase);
+    const ability = findEventAbilityForPhase(
+        card,
+        abilityPhaseToMatch(G, rawPhase)
+    );
     if (!ability) {
         return {
             valid: false,
@@ -52,7 +60,10 @@ export function applyEventAbility(
 ): boolean {
     if (card.type !== 'EVENT' || !card.abilities?.length) return true;
 
-    const ability = findEventAbilityForPhase(card, rawPhase);
+    const ability = findEventAbilityForPhase(
+        card,
+        abilityPhaseToMatch(G, rawPhase)
+    );
     if (!ability) return false;
     if (!payAbilityCost(G, card, ability.cost, chosenTargetId)) return false;
     return applyAbilityEffect(G, card, ability, chosenTargetId);

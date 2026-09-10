@@ -14,7 +14,7 @@ import {
     getEffectiveKeywords,
 } from '../engine/keywords/keywordUtils';
 import { getCalculatedStrength } from './stats/statCalculator';
-import { clearExpiredTempKeywords } from '../engine/abilities/applyAbilityEffect';
+import { requestWounds } from '../engine/responseWindow';
 
 /**
  * Helper interne pour extraire proprement le nom d'une carte dans la langue par défaut (FR).
@@ -152,7 +152,7 @@ export const resolveSkirmish = (G: GameState, _ctx?: Ctx) => {
             if (isMinionsOverwhelmed) {
                 applyOverwhelmAndCheckDeath(G, minion);
             } else {
-                applyWoundAndCheckDeath(G, minion, woundsToApply);
+                requestWounds(G, minion, woundsToApply);
             }
         });
 
@@ -178,17 +178,18 @@ export const resolveSkirmish = (G: GameState, _ctx?: Ctx) => {
             const damageBonus = getDamageBonus(minions);
             const woundsToApply = 1 + damageBonus;
 
-            const shouldDie = applyWoundAndCheckDeath(
-                G,
-                companion,
-                woundsToApply
-            );
+            requestWounds(G, companion, woundsToApply);
 
             const damageText =
                 damageBonus > 0
                     ? ` (${woundsToApply} blessures incluant DAMAGE +${damageBonus})`
                     : '';
-            resultMsg += `${companionName} subit ${woundsToApply} blessure${woundsToApply > 1 ? 's' : ''}${damageText}${shouldDie ? ' et meurt' : ''}.`;
+            const waiting = Boolean(G.responseWindow?.isOpen);
+            resultMsg += waiting
+                ? `${companionName} est sur le point de subir ${woundsToApply} blessure${woundsToApply > 1 ? 's' : ''}${damageText}.`
+                : `${companionName} subit ${woundsToApply} blessure${woundsToApply > 1 ? 's' : ''}${damageText}${
+                      companion.isDead ? ' et meurt' : ''
+                  }.`;
         }
     }
 

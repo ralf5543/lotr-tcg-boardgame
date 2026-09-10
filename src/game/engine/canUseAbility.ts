@@ -5,6 +5,11 @@ import { getKeywordValue } from './keywords/keywordUtils';
 import { isSkirmishActionWindowOpen } from './skirmishActionWindow';
 import { canActInActionWindow } from './actionWindow';
 import { abilityMatchesPhase } from './abilities/collectAbilities';
+import { canPayAbilityCost } from './abilities/payAbilityCost';
+import {
+    abilityMatchesTrigger,
+    isResponseWindowOpen,
+} from './responseWindow';
 export interface ValidationContext {
     G: GameState;
     ctx: { phase?: string; currentPlayer?: string };
@@ -43,6 +48,26 @@ export function canUseAbility(
         return {
             valid: false,
             reason: "Seul le joueur de l'Ombre peut utiliser cette capacité.",
+        };
+    }
+
+    if (isResponseWindowOpen(G)) {
+        if (!canActInActionWindow(G, playerID)) {
+            return {
+                valid: false,
+                reason: "Ce n'est pas à vous de répondre.",
+            };
+        }
+        const hasMatchingResponse = (card.abilities || []).some(
+            (ability) =>
+                abilityMatchesPhase(ability, 'RESPONSE') &&
+                abilityMatchesTrigger(ability, G.pendingEvent, card, G) &&
+                canPayAbilityCost(G, card, ability.cost)
+        );
+        if (hasMatchingResponse) return { valid: true };
+        return {
+            valid: false,
+            reason: 'Aucune réponse éligible sur cette carte.',
         };
     }
 

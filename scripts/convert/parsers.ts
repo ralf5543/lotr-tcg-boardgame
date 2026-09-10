@@ -883,6 +883,48 @@ function remainderAfterPronoun(effectText: string): string | undefined {
     return remainder;
 }
 
+function parsePreventCost(
+    raw: string,
+    cardTitle?: string
+): Record<string, unknown> | null {
+    let rest = raw.trim();
+    const option: Record<string, unknown> = {};
+
+    const twilightMatch = rest.match(
+        /(?:\band\s+)?add\s*<symbol>twilight(\d+)<\/symbol>/i
+    );
+    if (twilightMatch) {
+        option.addTwilight = parseInt(twilightMatch[1], 10);
+        rest = rest
+            .replace(twilightMatch[0], ' ')
+            .replace(/\s+/g, ' ')
+            .trim()
+            .replace(/\s+and\s*$/i, '')
+            .replace(/^and\s+/i, '')
+            .trim();
+    }
+
+    const exertMatch = rest.match(/^Exert\s+([\s\S]+)$/i);
+    if (exertMatch) {
+        if (/\b(and|or)\b/i.test(exertMatch[1])) return null;
+        const subject = parseExertSubject(exertMatch[1], cardTitle);
+        if (!subject) return null;
+        option.exert = [
+            {
+                count: subject.count,
+                target: subject.target,
+                ...(subject.mode ? { mode: subject.mode } : {}),
+            },
+        ];
+        rest = '';
+    }
+
+    rest = rest.replace(/^[.,;]+/, '').trim();
+    if (rest.length > 0) return null;
+    if (!option.exert && option.addTwilight === undefined) return null;
+    return option;
+}
+
 /**
  * Famille : `[Phase]: Exert [self/bearer/X] to make [him/bearer] KEYWORD|STAT [until …]?`
  */
@@ -916,6 +958,47 @@ export function parseAbilities(
                 ? markers[index + 1].markerStart
                 : text.length;
         const body = text.slice(marker.bodyStart, bodyEnd).trim();
+        const preventMatch = body.match(
+            /^If\s+([\s\S]+?)\s+is about to take a wound,\s*([\s\S]+?)\s+to prevent that wound/i
+        );
+        if (preventMatch) {
+            const filterRaw = preventMatch[1].replace(/<[^>]+>/g, ' ').trim();
+            if (/^(this|bearer)\b/i.test(filterRaw)) return;
+
+            const filterBody = filterRaw.replace(/^(a|an|the)\s+/i, '');
+            const woundFilters = parseClassFilters(filterBody);
+            if (woundFilters.length === 0) return;
+
+            const cost = parsePreventCost(preventMatch[2], cardTitle);
+            if (!cost) return;
+
+            const source =
+                (cost.exert as { target?: unknown }[] | undefined)?.[0]
+                    ?.target === 'BEARER'
+                    ? 'ATTACHMENT'
+                    : 'SELF';
+            const clause =
+                `${marker.phase}: If ${preventMatch[1].trim()} is about to take a wound, ${preventMatch[2].trim()} to prevent that wound`
+                    .replace(/<[^>]+>/g, '')
+                    .replace(/\s+/g, ' ')
+                    .replace(/\s+\./g, '.')
+                    .trim();
+
+            abilities.push({
+                id: `${cardId || 'ability'}:${abilities.length}`,
+                phases: [marker.phase],
+                trigger: {
+                    type: 'ABOUT_TO_WOUND',
+                    target: [woundFilters],
+                },
+                cost: [cost],
+                effects: [{ type: 'PREVENT_WOUND' }],
+                source,
+                text: clause,
+            });
+            return;
+        }
+
         const makeMatch = body.match(
             /^Exert\s+([\s\S]+?)\s+to make\s+([\s\S]+)/i
         );

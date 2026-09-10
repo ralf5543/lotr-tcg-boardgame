@@ -166,6 +166,7 @@ export interface CostOption {
     removeBurdens?: number;
     spotThreats?: number;
     removeThreats?: number;
+    addTwilight?: number;
 }
 
 export type AbilityCost = CostOption[];
@@ -186,11 +187,19 @@ export type AbilityEffect =
           target: AbilityTargetRef;
           expiresAtPhase: AbilityEffectExpiry;
       }
-    | {
+      | {
           type: 'WOUND';
           count: number;
           target: AbilityTargetRef;
+      }
+    | {
+          type: 'PREVENT_WOUND';
       };
+
+export type AbilityTrigger = {
+    type: 'ABOUT_TO_WOUND';
+    target: AbilityTargetRef;
+};
 
 export interface Ability {
     id: string;
@@ -200,6 +209,7 @@ export interface Ability {
     source: 'SELF' | 'ATTACHMENT';
     text?: string;
     omitFromArcheryTotal?: boolean;
+    trigger?: AbilityTrigger;
 }
 
 export interface CardState {
@@ -315,6 +325,28 @@ export interface PendingPlay {
     prompt: string;
 }
 
+export interface PendingWoundEvent {
+    type: 'ABOUT_TO_WOUND';
+    targetId: string;
+    remaining: number;
+}
+
+export type PendingEvent = PendingWoundEvent;
+
+export interface WoundQueueItem {
+    targetId: string;
+    count: number;
+}
+
+export interface ResponseWindow {
+    isOpen: boolean;
+    title?: string;
+    message?: string;
+    activePlayerId: string;
+    canPass?: boolean;
+    passesCount?: number;
+}
+
 export interface GameState {
     fpPlayerId: string;
     twilightPool: number;
@@ -336,6 +368,9 @@ export interface GameState {
     statusMessage: string;
     activeSkirmishId?: string;
     actionWindow?: ActionWindow;
+    pendingEvent?: PendingEvent;
+    responseWindow?: ResponseWindow;
+    woundQueue?: WoundQueueItem[];
     skirmishes: SkirmishState[];
     archeryState?: ArcheryState;
     assignmentStep?: 'FP_ASSIGN' | 'SHADOW_ASSIGN' | 'COMPLETED';

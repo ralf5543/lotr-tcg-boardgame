@@ -47,6 +47,12 @@ export function checkPhases(
     if (card.type === 'EVENT') {
         if (Array.isArray(card.phases) && card.phases.length > 0) {
             const allowedPhases = card.phases.map((p) => p.toUpperCase());
+            if (
+                allowedPhases.includes('RESPONSE') &&
+                G.responseWindow?.isOpen
+            ) {
+                return { valid: true };
+            }
             if (!allowedPhases.includes(currentPhase)) {
                 return {
                     valid: false,

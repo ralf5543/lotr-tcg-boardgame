@@ -4,6 +4,9 @@ export function canActInActionWindow(
     G: GameState,
     playerID: string
 ): boolean {
+    if (G.responseWindow?.isOpen) {
+        return G.responseWindow.activePlayerId === playerID;
+    }
     if (!G.actionWindow?.isOpen) return true;
     return G.actionWindow.activePlayerId === playerID;
 }

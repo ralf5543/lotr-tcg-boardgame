@@ -9,6 +9,7 @@ import { abilityMatchesPhase } from '../engine/abilities/collectAbilities';
 import { yieldPriorityAfterAction } from '../engine/actionWindow';
 import { findTargetCard } from '../../utils/cardUtils';
 import { abilityNeedsDesignation } from '../engine/abilities/designation';
+import { afterResponseResolved, isResponseWindowOpen } from '../engine/responseWindow';
 
 export const activateAbility = (
     { G, ctx, playerID }: LotrMoveContext,
@@ -24,7 +25,8 @@ export const activateAbility = (
 
     const context = { G, ctx, playerID };
     if (!canUseAbility(source, context).valid) return 'INVALID_MOVE';
-    if (!abilityMatchesPhase(ability, ctx.phase || '')) return 'INVALID_MOVE';
+    const phaseToMatch = isResponseWindowOpen(G) ? 'RESPONSE' : ctx.phase || '';
+    if (!abilityMatchesPhase(ability, phaseToMatch)) return 'INVALID_MOVE';
     if (!canPayAbilityCost(G, source, ability.cost)) return 'INVALID_MOVE';
     if (abilityNeedsDesignation(G, source, ability) && !chosenTargetId) {
         return 'INVALID_MOVE';
@@ -40,7 +42,11 @@ export const activateAbility = (
         source.omitFromArcheryTotal = true;
     }
 
-    yieldPriorityAfterAction(G, playerID);
+    if (isResponseWindowOpen(G)) {
+        afterResponseResolved(G, playerID, ability);
+    } else {
+        yieldPriorityAfterAction(G, playerID);
+    }
 
     const title =
         source.i18n?.fr?.title || source.title || source.id;

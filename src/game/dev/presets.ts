@@ -134,8 +134,27 @@ const CARDS_PRESETS: Record<string, CardState> = {
         isFemale: true,
         kind: 'FREE_PEOPLE',
         type: 'COMPANION',
-        keywords: ['VALIANT', 'HUNTER 4'],
-        phases: ['RESPONSE'],
+        keywords: ['VALIANT', 'UNBOUND'],
+        actionPhases: ['RESPONSE'],
+        abilities: [
+            {
+                id: '4C270:0',
+                phases: ['RESPONSE'],
+                trigger: {
+                    type: 'ABOUT_TO_WOUND' as const,
+                    target: [['UNBOUND', 'COMPANION']],
+                },
+                cost: [
+                    {
+                        exert: [{ count: 1, target: 'SELF' as const }],
+                        addTwilight: 1,
+                    },
+                ],
+                effects: [{ type: 'PREVENT_WOUND' as const }],
+                source: 'SELF' as const,
+                text: 'RESPONSE: If an unbound companion is about to take a wound, exert Éowyn and add twilight1 to prevent that wound.',
+            },
+        ],
         culture: 'ROHAN',
         race: 'MAN',
         signet: 'THEODEN',

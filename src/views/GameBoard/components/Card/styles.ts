@@ -979,13 +979,19 @@ export const AbilityButton = styled.button<{ $abilityPhaseMatch?: boolean, $cult
         props.$abilityPhaseMatch &&
         css`
             box-shadow: rgb(0, 0, 0) 0px 2px 2px, rgb(226, 192, 68) 0px 0px 10px 7px;
+            &:active {
+                box-shadow: inset 0 0 10px black, rgb(226, 192, 68) 0px 0px 8px 3px;
+            }
         `}
 
     img {
         filter: drop-shadow(1px 2px 1px rgba(0, 0, 0, 0.5));
-        width: 16px;
+        width: auto;
+        height: auto;
+        max-height: 16px;
+        max-width: 16px;
     }
-        &::before {
+    &::before {
         content: "";
         position: absolute;
         background-image: url(interface/tokens/token_player_top.webp);
@@ -997,9 +1003,7 @@ export const AbilityButton = styled.button<{ $abilityPhaseMatch?: boolean, $cult
         pointer-events: none;
     }
 
-    &:active {
-        box-shadow: inset 0 0 10px black, rgb(226, 192, 68) 0px 0px 8px 3px;
-    }
+    
 `;
 
 export const fadeIn = keyframes`
@@ -1019,7 +1023,7 @@ export const AbilityBubble = styled.div<{ $top: number; $left: number }>`
     top: ${(props) => props.$top}px;
     left: ${(props) => props.$left}px;
     transform: translate(-50%, -100%);
-    width: 120px;
+    max-width: 200px;
     padding: 6px 12px 6px 6px;
     border: 1px solid #333;
     font-size: 11px;

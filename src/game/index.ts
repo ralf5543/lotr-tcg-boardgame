@@ -1023,8 +1023,14 @@ export const LotrGame: Game<GameState> = {
                         G.lastWoundedCardIds.length === 0) &&
                     (!G.pendingDeadCardIds ||
                         G.pendingDeadCardIds.length === 0);
+                const noResponseWindow = !G.responseWindow?.isOpen;
 
-                return noSkirmishesLeft && noActiveSkirmish && noPendingAnims;
+                return (
+                    noSkirmishesLeft &&
+                    noActiveSkirmish &&
+                    noPendingAnims &&
+                    noResponseWindow
+                );
             },
 
             turn: { activePlayers: { value: { '0': 'play', '1': 'play' } } },

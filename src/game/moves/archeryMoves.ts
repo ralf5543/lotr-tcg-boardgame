@@ -1,6 +1,6 @@
 import type { LotrMoveContext, CardState } from '../types';
-import { applyWoundAndCheckDeath } from '../../utils/applyWoundAndCheckDeath';
 import { getEffectiveVitality } from '../../utils/cardStats';
+import { requestWounds } from '../engine/responseWindow';
 
 export const assignArcheryWound = (
     { G, playerID }: LotrMoveContext,
@@ -37,7 +37,7 @@ export const assignArcheryWound = (
         if (!companion || companion.isDead || getEffectiveVitality(companion) <= 0) {
             return 'INVALID_MOVE';
         }
-        applyWoundAndCheckDeath(G, companion, 1);
+        requestWounds(G, companion, 1);
 
         if (G.archeryWoundsToAssign !== undefined) G.archeryWoundsToAssign -= 1;
         if (G.archeryState?.fpRemainingWounds !== undefined)
@@ -89,7 +89,7 @@ export const assignArcheryWound = (
         if (!minion || minion.isDead || getEffectiveVitality(minion) <= 0) {
             return 'INVALID_MOVE';
         }
-        applyWoundAndCheckDeath(G, minion, 1);
+        requestWounds(G, minion, 1);
 
         if (G.archeryWoundsToAssign !== undefined) G.archeryWoundsToAssign -= 1;
         if (G.archeryState?.shadowRemainingWounds !== undefined)

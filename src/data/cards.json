@@ -698,6 +698,41 @@
       "VALIANT",
       "UNBOUND"
     ],
+    "abilities": [
+      {
+        "id": "0P17:0",
+        "phases": [
+          "RESPONSE"
+        ],
+        "trigger": {
+          "type": "ABOUT_TO_WOUND",
+          "target": [
+            [
+              "UNBOUND",
+              "COMPANION"
+            ]
+          ]
+        },
+        "cost": [
+          {
+            "addTwilight": 1,
+            "exert": [
+              {
+                "count": 1,
+                "target": "SELF"
+              }
+            ]
+          }
+        ],
+        "effects": [
+          {
+            "type": "PREVENT_WOUND"
+          }
+        ],
+        "source": "SELF",
+        "text": "RESPONSE: If an unbound companion is about to take a wound, exert Éowyn and add twilight1 to prevent that wound"
+      }
+    ],
     "actionPhases": [
       "RESPONSE"
     ],
@@ -26540,6 +26575,45 @@
     "isUnique": false,
     "kind": "FREE_PEOPLE",
     "type": "EVENT",
+    "abilities": [
+      {
+        "id": "2U34:0",
+        "phases": [
+          "RESPONSE"
+        ],
+        "trigger": {
+          "type": "ABOUT_TO_WOUND",
+          "target": [
+            [
+              "COMPANION"
+            ]
+          ]
+        },
+        "cost": [
+          {
+            "exert": [
+              {
+                "count": 1,
+                "target": [
+                  [
+                    "GONDOR",
+                    "COMPANION"
+                  ]
+                ],
+                "mode": "DESIGNATION"
+              }
+            ]
+          }
+        ],
+        "effects": [
+          {
+            "type": "PREVENT_WOUND"
+          }
+        ],
+        "source": "SELF",
+        "text": "RESPONSE: If a companion is about to take a wound, exert a gondor companion to prevent that wound"
+      }
+    ],
     "phases": [
       "RESPONSE"
     ],
@@ -33523,6 +33597,39 @@
     "isUnique": true,
     "kind": "SHADOW",
     "type": "MINION",
+    "abilities": [
+      {
+        "id": "3R68:0",
+        "phases": [
+          "RESPONSE"
+        ],
+        "trigger": {
+          "type": "ABOUT_TO_WOUND",
+          "target": [
+            [
+              "URUK-HAI"
+            ]
+          ]
+        },
+        "cost": [
+          {
+            "exert": [
+              {
+                "count": 1,
+                "target": "SELF"
+              }
+            ]
+          }
+        ],
+        "effects": [
+          {
+            "type": "PREVENT_WOUND"
+          }
+        ],
+        "source": "SELF",
+        "text": "RESPONSE: If an Uruk-hai is about to take a wound, exert Saruman to prevent that wound"
+      }
+    ],
     "actionPhases": [
       "RESPONSE"
     ],
@@ -47810,6 +47917,41 @@
       "VALIANT",
       "UNBOUND"
     ],
+    "abilities": [
+      {
+        "id": "4C270:0",
+        "phases": [
+          "RESPONSE"
+        ],
+        "trigger": {
+          "type": "ABOUT_TO_WOUND",
+          "target": [
+            [
+              "UNBOUND",
+              "COMPANION"
+            ]
+          ]
+        },
+        "cost": [
+          {
+            "addTwilight": 1,
+            "exert": [
+              {
+                "count": 1,
+                "target": "SELF"
+              }
+            ]
+          }
+        ],
+        "effects": [
+          {
+            "type": "PREVENT_WOUND"
+          }
+        ],
+        "source": "SELF",
+        "text": "RESPONSE: If an unbound companion is about to take a wound, exert Éowyn and add twilight1 to prevent that wound"
+      }
+    ],
     "actionPhases": [
       "RESPONSE"
     ],
@@ -57610,6 +57752,40 @@
     "keywords": [
       "UNBOUND"
     ],
+    "abilities": [
+      {
+        "id": "6R35:0",
+        "phases": [
+          "RESPONSE"
+        ],
+        "trigger": {
+          "type": "ABOUT_TO_WOUND",
+          "target": [
+            [
+              "UNBOUND",
+              "HOBBIT"
+            ]
+          ]
+        },
+        "cost": [
+          {
+            "exert": [
+              {
+                "count": 1,
+                "target": "SELF"
+              }
+            ]
+          }
+        ],
+        "effects": [
+          {
+            "type": "PREVENT_WOUND"
+          }
+        ],
+        "source": "SELF",
+        "text": "RESPONSE: If an unbound Hobbit is about to take a wound, exert Skinbark to prevent that wound"
+      }
+    ],
     "actionPhases": [
       "RESPONSE"
     ],
@@ -61363,6 +61539,40 @@
     "type": "COMPANION",
     "keywords": [
       "UNBOUND"
+    ],
+    "abilities": [
+      {
+        "id": "6R124:0",
+        "phases": [
+          "RESPONSE"
+        ],
+        "trigger": {
+          "type": "ABOUT_TO_WOUND",
+          "target": [
+            [
+              "UNBOUND",
+              "HOBBIT"
+            ]
+          ]
+        },
+        "cost": [
+          {
+            "exert": [
+              {
+                "count": 1,
+                "target": "SELF"
+              }
+            ]
+          }
+        ],
+        "effects": [
+          {
+            "type": "PREVENT_WOUND"
+          }
+        ],
+        "source": "SELF",
+        "text": "RESPONSE: If an unbound Hobbit is about to take a wound, exert Skinbark to prevent that wound"
+      }
     ],
     "actionPhases": [
       "RESPONSE"
@@ -139763,6 +139973,40 @@
     "type": "MINION",
     "keywords": [
       "DAMAGE +1"
+    ],
+    "abilities": [
+      {
+        "id": "18C128:0",
+        "phases": [
+          "RESPONSE"
+        ],
+        "trigger": {
+          "type": "ABOUT_TO_WOUND",
+          "target": [
+            [
+              "URUKHAI",
+              "MINION"
+            ]
+          ]
+        },
+        "cost": [
+          {
+            "exert": [
+              {
+                "count": 1,
+                "target": "SELF"
+              }
+            ]
+          }
+        ],
+        "effects": [
+          {
+            "type": "PREVENT_WOUND"
+          }
+        ],
+        "source": "SELF",
+        "text": "RESPONSE: If an urukhai minion is about to take a wound, exert this minion to prevent that wound"
+      }
     ],
     "actionPhases": [
       "RESPONSE"

@@ -1,0 +1,21 @@
+---
+description: Plan d’implémentation des effets de cartes (Réponse, primitifs, exceptions)
+alwaysApply: true
+---
+
+# Effets de cartes — plan et credo
+
+Credo : **mieux vaut une carte inerte qu’une carte fausse.** Le parser n’émet une ability que s’il est sûr.
+
+Réponse n’est pas une phase. Fenêtre dédiée `responseWindow` + `pendingEvent` (ne pas recycler `actionWindow`). Toaster comme la fenêtre d’action ; le joueur clique la carte qu’il veut.
+
+## Ordre
+
+1. Infra : `pendingEvent` ABOUT_TO_WOUND, `responseWindow`, toaster, Passer. Sans réponse éligible = blessure immédiate (comportement actuel).
+2. `PREVENT_WOUND` (Éowyn `4C270`) avant l’Anneau Unique.
+3. Anneau : mettre l’Anneau (réponse) **puis** fardeaux à la place (passif `While`, pas un toaster).
+4. Coûts : spot, crépuscule, défausse. Effets : défausser, soigner, piocher.
+5. Étendre exert-to-make / to-wound. Puis `When you play this`. Puis réponses « gagne une escarmouche » / mort.
+6. Exceptions (~300) en handlers par id, pas dans le parser.
+
+Tests : cartes réelles du CSV. UI : toaster seulement s’il existe au moins une réponse payable dont le trigger matche.

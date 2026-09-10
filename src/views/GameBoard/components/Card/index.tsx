@@ -23,7 +23,7 @@ import { canUseAbility } from '../../../../game/engine/canUseAbility';
 import {
     cardOrAttachmentsHaveActionPhases,
     collectCardAbilities,
-    formatAbilityLabel,
+    formatAbilityLabelParts,
     abilityMatchesPhase,
 } from '../../../../game/engine/abilities/collectAbilities';
 
@@ -392,12 +392,22 @@ export const Card: React.FC<CardProps> = ({
     const effectiveKeywords = getEffectiveKeywords(card);
 
     const rawActionable = isActionable ?? card?.isActionable ?? false;
-    const effectiveIsActionable = rawActionable && !isOpponent;
+    const effectiveIsActionable =
+        rawActionable && !isOpponent && !showAbilityButton;
 
     const listedAbilities = showAbilityButton
-        ? collectCardAbilities(card).filter(
-              ({ ability }) => !phase || abilityMatchesPhase(ability, phase)
-          )
+        ? collectCardAbilities(card).filter(({ source, ability }) => {
+              const responseAbility = abilityMatchesPhase(ability, 'RESPONSE');
+              const responseUsable = Boolean(
+                  abilityContext &&
+                      responseAbility &&
+                      canUseAbility(source, abilityContext).valid
+              );
+              if (G?.responseWindow?.isOpen || responseUsable) {
+                  return responseAbility;
+              }
+              return !phase || abilityMatchesPhase(ability, phase);
+          })
         : [];
 
     return (
@@ -659,7 +669,10 @@ export const Card: React.FC<CardProps> = ({
                             ×
                         </S.AbilityBubbleClose>
                         <S.AbilityBubbleList>
-                            {listedAbilities.map(({ source, ability }) => (
+                            {listedAbilities.map(({ source, ability }) => {
+                                const { cost, effect } =
+                                    formatAbilityLabelParts(ability, source);
+                                return (
                                 <li
                                     key={`${source.instanceId || source.id}:${ability.id}`}
                                 >
@@ -674,10 +687,20 @@ export const Card: React.FC<CardProps> = ({
                                             setIsAbilityMenuOpen(false);
                                         }}
                                     >
-                                        {formatAbilityLabel(ability, source)}
+                                        {cost ? (
+                                            <span>
+                                                <FormattedText text={cost} />
+                                            </span>
+                                        ) : null}
+                                        {effect
+                                            ? cost
+                                                ? ` : ${effect}`
+                                                : effect
+                                            : null}
                                     </S.AbilityBubbleItem>
                                 </li>
-                            ))}
+                                );
+                            })}
                         </S.AbilityBubbleList>
                     </S.AbilityBubble>,
                     document.body

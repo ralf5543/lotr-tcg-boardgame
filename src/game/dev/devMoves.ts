@@ -10,6 +10,9 @@ import { clearActionableFlags } from '../../utils/clearActionableFlags';
 /** État de machine de phase : toasters, fenêtres, sous-étapes. */
 function resetPhaseMachine(G: GameState): void {
     G.actionWindow = undefined;
+    G.responseWindow = undefined;
+    G.pendingEvent = undefined;
+    G.woundQueue = undefined;
     G.skirmishes = [];
     G.activeSkirmishId = undefined;
     G.maneuverStep = undefined;

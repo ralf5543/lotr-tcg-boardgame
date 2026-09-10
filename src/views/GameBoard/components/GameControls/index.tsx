@@ -22,6 +22,7 @@ interface GameControlsProps {
         endTurnChoice?: () => void;
         confirmHandRefill?: () => void;
         passActionWindow?: () => void;
+        passResponseWindow?: () => void;
         confirmMuster?: () => void;
         confirmStartOfPhase?: () => void;
         yieldAssignmentToShadow?: () => void;
@@ -94,6 +95,7 @@ export const GameControls: React.FC<GameControlsProps> = ({
 
     // 🟢 1. DÉTERMINATION DU JOUEUR QUI DOIT AGIR
     const isActionWindowActive = G.actionWindow?.isOpen ?? false;
+    const isResponseWindowActive = G.responseWindow?.isOpen ?? false;
 
     const isAwaitingSiteActive =
         awaitingSite &&
@@ -108,13 +110,15 @@ export const GameControls: React.FC<GameControlsProps> = ({
 
     const actingPlayerId = isSetupPhase
         ? currentPlayerId
-        : isActionWindowActive
-          ? G.actionWindow!.activePlayerId
-          : isAwaitingSiteActive
-            ? siteSelectorPlayerId
-            : isShadowActing
-              ? shadowPlayerId
-              : fpPlayerId;
+        : isResponseWindowActive
+          ? G.responseWindow!.activePlayerId
+          : isActionWindowActive
+            ? G.actionWindow!.activePlayerId
+            : isAwaitingSiteActive
+              ? siteSelectorPlayerId
+              : isShadowActing
+                ? shadowPlayerId
+                : fpPlayerId;
 
     const actingPlayer = G.players?.[actingPlayerId];
     const isMyTurnToAct = currentPlayerId === actingPlayerId;
@@ -163,6 +167,7 @@ export const GameControls: React.FC<GameControlsProps> = ({
             | 'MUSTER'
             | 'START_OF_PHASE'
             | 'ASSIGNMENT_YIELD'
+            | 'RESPONSE'
             | 'STANDARD';
     } = {
         show: false,
@@ -219,6 +224,16 @@ export const GameControls: React.FC<GameControlsProps> = ({
                 : 'Vous avez des capacités ou des effets de début de phase disponibles. Activez-les sur vos cartes ou validez.',
             showPassButton: false,
             type: 'START_OF_PHASE',
+        };
+    } else if (isResponseWindowActive && isMyTurnToAct) {
+        toastConfig = {
+            show: true,
+            title: G.responseWindow?.title || 'RÉPONSE',
+            body:
+                G.responseWindow?.message ||
+                'Voulez-vous jouer une réponse ou passer ?',
+            showPassButton: G.responseWindow?.canPass ?? true,
+            type: 'RESPONSE',
         };
     } else if (isActionWindowActive && isMyTurnToAct) {
         toastConfig = {
@@ -667,7 +682,13 @@ export const GameControls: React.FC<GameControlsProps> = ({
                             <S.ActionButton
                                 $variant="secondary"
                                 style={{ marginTop: '8px', width: '100%' }}
-                                onClick={() => moves.passActionWindow?.()}
+                                onClick={() => {
+                                    if (G.responseWindow?.isOpen) {
+                                        moves.passResponseWindow?.();
+                                    } else {
+                                        moves.passActionWindow?.();
+                                    }
+                                }}
                             >
                                 PASSER (Ne rien jouer)
                             </S.ActionButton>

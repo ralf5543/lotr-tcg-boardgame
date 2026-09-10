@@ -23,14 +23,26 @@ export function applyAbilityEffect(
     const effects = ability.effects || [];
     if (effects.length === 0) return false;
 
-    const resolved = effects.map((effect) => ({
-        effect,
-        target: resolveAbilityTarget(G, source, effect.target, chosenTargetId),
-    }));
-    if (resolved.some((item) => !item.target)) return false;
+    for (const effect of effects) {
+        if (effect.type === 'PREVENT_WOUND') {
+            if (
+                G.pendingEvent?.type !== 'ABOUT_TO_WOUND' ||
+                G.pendingEvent.remaining <= 0
+            ) {
+                return false;
+            }
+            G.pendingEvent.remaining -= 1;
+            continue;
+        }
 
-    for (const { effect, target } of resolved) {
-        if (!applyOneEffect(G, source, ability, effect, target!)) {
+        const target = resolveAbilityTarget(
+            G,
+            source,
+            effect.target,
+            chosenTargetId
+        );
+        if (!target) return false;
+        if (!applyOneEffect(G, source, ability, effect, target)) {
             return false;
         }
     }

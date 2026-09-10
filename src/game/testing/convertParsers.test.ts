@@ -276,3 +276,42 @@ describe('parseAbilities — Exert … to make KEYWORD', () => {
         ]);
     });
 });
+
+const EOWYN_RESPONSE_TEXT =
+    '<keyword>Valiant.</keyword> <br><keyword>Response:</keyword> If an unbound companion is about to take a wound, exert Éowyn and add <symbol>twilight1</symbol> to prevent that wound.';
+
+const ONE_RING_TEXT =
+    '<keyword>Response:</keyword> If bearer is about to take a wound, he wears The One Ring until the regroup phase. <br>While wearing The One Ring, each time the Ring-bearer is about to take a wound, add two burdens instead.';
+
+describe('parseAbilities — Response prevent wound', () => {
+    it('parse Éowyn : trigger unbound companion, exert SELF, add twilight, PREVENT_WOUND', () => {
+        expect(parseAbilities(EOWYN_RESPONSE_TEXT, 'Éowyn', '4C270')).toEqual([
+            {
+                id: '4C270:0',
+                phases: ['RESPONSE'],
+                trigger: {
+                    type: 'ABOUT_TO_WOUND',
+                    target: [['UNBOUND', 'COMPANION']],
+                },
+                cost: [
+                    {
+                        exert: [{ count: 1, target: 'SELF' }],
+                        addTwilight: 1,
+                    },
+                ],
+                effects: [{ type: 'PREVENT_WOUND' }],
+                source: 'SELF',
+                text: expect.stringMatching(
+                    /RESPONSE: If an unbound companion is about to take a wound/i
+                ),
+            },
+        ]);
+    });
+
+    it('n’émet rien pour l’Anneau Unique (pas prevent that wound)', () => {
+        expect(
+            parseAbilities(ONE_RING_TEXT, 'The One Ring', '1R1')
+        ).toBeUndefined();
+    });
+});
+

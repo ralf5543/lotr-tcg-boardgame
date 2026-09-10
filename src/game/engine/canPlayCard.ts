@@ -4,8 +4,12 @@ import type { CardState, SiteCardState, GameState, CardType } from '../types';
 import { checkPhases } from './validations/checkPhases';
 import { checkToPlayConditions } from './validations/checkToPlayConditions';
 import { cardMatchesTarget } from './validations/matchers';
-import { canPayEventAbility } from './abilities/playEventAbility';
+import { canPayEventAbility, findEventAbilityForPhase } from './abilities/playEventAbility';
 import { canActInActionWindow } from './actionWindow';
+import {
+    abilityMatchesTrigger,
+    isResponseWindowOpen,
+} from './responseWindow';
 
 /* ==========================================================================
    TYPES & INTERFACES
@@ -267,6 +271,40 @@ export function canPlayCard(
         return {
             valid: false,
             reason: "Ce n'est pas à vous d'agir.",
+        };
+    }
+
+    if (isResponseWindowOpen(context.G)) {
+        if (card.type !== 'EVENT') {
+            return {
+                valid: false,
+                reason: 'Pendant une réponse, seules les cartes Événement Réponse sont jouables.',
+            };
+        }
+        const responseAbility = findEventAbilityForPhase(card, 'RESPONSE');
+        if (
+            !responseAbility ||
+            !abilityMatchesTrigger(
+                responseAbility,
+                context.G.pendingEvent,
+                card,
+                context.G
+            )
+        ) {
+            return {
+                valid: false,
+                reason: 'Cette carte ne répond pas à cet événement.',
+            };
+        }
+    } else if (
+        card.type === 'EVENT' &&
+        Array.isArray(card.phases) &&
+        card.phases.some((p) => p.toUpperCase() === 'RESPONSE') &&
+        !card.phases.some((p) => p.toUpperCase() !== 'RESPONSE')
+    ) {
+        return {
+            valid: false,
+            reason: 'Cet événement Réponse ne peut être joué que lorsqu’une réponse est possible.',
         };
     }
 
