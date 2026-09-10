@@ -1,5 +1,7 @@
 import type {
+    Ability,
     AbilityTargetRef,
+    AbilityTrigger,
     CardState,
     CostSelector,
     GameState,
@@ -113,6 +115,60 @@ function resolveDnfTargets(G: GameState, target: string[][]): CardState[] {
     return matches;
 }
 
+function findInPlayCard(
+    G: GameState,
+    targetId: string
+): CardState | null {
+    let found: CardState | null = null;
+    forEachInPlayCard(G, (card) => {
+        if (!found && matchCard(card, targetId)) found = card;
+    });
+    return found;
+}
+
+export function cardMatchesWinsSkirmishWinner(
+    G: GameState,
+    source: CardState,
+    winner: CardState,
+    trigger: Extract<AbilityTrigger, { type: 'WINS_SKIRMISH' }>
+): boolean {
+    if (trigger.yours && source.kind !== winner.kind) return false;
+    const target = trigger.winner;
+    if (target === 'SELF') {
+        return matchCard(winner, source.instanceId || source.id);
+    }
+    if (target === 'BEARER') {
+        const bearer = findBearer(G, source);
+        return Boolean(
+            bearer && matchCard(winner, bearer.instanceId || bearer.id)
+        );
+    }
+    if (target === 'WINNER' || target === 'SKIRMISHING') return false;
+    if (Array.isArray(target)) return cardMatchesTarget(winner, target);
+    return false;
+}
+
+export function resolveWinnerTargets(
+    G: GameState,
+    source: CardState,
+    ability: Ability
+): CardState[] {
+    const event = G.pendingEvent;
+    if (!event || event.type !== 'WINS_SKIRMISH') return [];
+    const trigger = ability.trigger;
+    if (!trigger || trigger.type !== 'WINS_SKIRMISH') return [];
+
+    const matches: CardState[] = [];
+    for (const winnerId of event.winnerIds) {
+        const winner = findInPlayCard(G, winnerId);
+        if (!winner || winner.isDead) continue;
+        if (cardMatchesWinsSkirmishWinner(G, source, winner, trigger)) {
+            matches.push(winner);
+        }
+    }
+    return matches;
+}
+
 export function resolveAbilityTarget(
     G: GameState,
     source: CardState,
@@ -121,6 +177,20 @@ export function resolveAbilityTarget(
 ): CardState | null {
     if (token === 'SELF') return source;
     if (token === 'BEARER') return findBearer(G, source);
+    if (token === 'WINNER') {
+        const event = G.pendingEvent;
+        if (!event || event.type !== 'WINS_SKIRMISH') return null;
+        const winners = event.winnerIds
+            .map((id) => findInPlayCard(G, id))
+            .filter((card): card is CardState => Boolean(card && !card.isDead));
+        if (chosenTargetId) {
+            return (
+                winners.find((card) => matchCard(card, chosenTargetId)) || null
+            );
+        }
+        if (winners.length === 1) return winners[0];
+        return null;
+    }
     if (token === 'SKIRMISHING') {
         const matches = resolveSkirmishingOpponents(G, source);
         if (chosenTargetId) {
@@ -152,6 +222,13 @@ export function resolveCostTarget(
     }
     if (target === 'SKIRMISHING') {
         return resolveSkirmishingOpponents(G, source);
+    }
+    if (target === 'WINNER') {
+        const event = G.pendingEvent;
+        if (!event || event.type !== 'WINS_SKIRMISH') return [];
+        return event.winnerIds
+            .map((id) => findInPlayCard(G, id))
+            .filter((card): card is CardState => Boolean(card && !card.isDead));
     }
     if (Array.isArray(target)) {
         return resolveDnfTargets(G, target);

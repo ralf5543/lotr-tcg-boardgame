@@ -122,6 +122,22 @@ export function parseStat(
 /**
  * Construit l'objet i18n multilingue (Titre, Sous-titre, Texte de jeu, Lore).
  */
+export function coerceOrphanGameTextAsLore(
+    gameText: string | undefined,
+    lore: string | undefined,
+    englishHasGameText: boolean
+): { gameText?: string; lore?: string } {
+    const text = (gameText || '').trim();
+    const loreText = (lore || '').trim();
+    if (!englishHasGameText && text && !loreText) {
+        return { lore: text };
+    }
+    return {
+        ...(text ? { gameText: text } : {}),
+        ...(loreText ? { lore: loreText } : {}),
+    };
+}
+
 export function buildLangBlock(
     title?: string,
     subtitle?: string,
@@ -886,7 +902,7 @@ function parseMakeEffectPiece(chunk: string):
 
 function parseMakeEffectsFromRemainder(
     remainder: string,
-    effectTarget: 'SELF' | 'BEARER' | 'SKIRMISHING' | string[][],
+    effectTarget: 'SELF' | 'BEARER' | 'SKIRMISHING' | 'WINNER' | string[][],
     expiresAtPhase: 'REGROUP' | 'SKIRMISH' | 'TURN_END'
 ) {
     const pieces = remainder
@@ -918,7 +934,7 @@ function parseMakeEffectsFromRemainder(
 
 function parseMakeEffects(
     effectText: string,
-    effectTarget: 'SELF' | 'BEARER' | 'SKIRMISHING' | string[][],
+    effectTarget: 'SELF' | 'BEARER' | 'SKIRMISHING' | 'WINNER' | string[][],
     expiresAtPhase: 'REGROUP' | 'SKIRMISH' | 'TURN_END'
 ) {
     const remainder = remainderAfterPronoun(effectText);
@@ -968,7 +984,7 @@ function parseMakeTargetAndEffects(
     expiresAtPhase: 'REGROUP' | 'SKIRMISH' | 'TURN_END'
 ):
     | {
-          target: 'SELF' | 'BEARER' | 'SKIRMISHING' | string[][];
+          target: 'SELF' | 'BEARER' | 'SKIRMISHING' | 'WINNER' | string[][];
           effects: NonNullable<ReturnType<typeof parseMakeEffectsFromRemainder>>;
       }
     | undefined {
@@ -1025,6 +1041,132 @@ function remainderAfterPronoun(effectText: string): string | undefined {
     const remainderPlain = remainder.replace(/<[^>]+>/g, ' ').trim();
     if (/^(a|an)\s+/i.test(remainderPlain)) return undefined;
     return remainder;
+}
+
+function remainderAfterWinnerRef(effectText: string): string | undefined {
+    const refMatch = effectText.match(
+        /^\s*(him or her|him|her|it|that\s+[\w’-]+)\s+/i
+    );
+    if (!refMatch) return undefined;
+
+    const remainder = effectText.slice(refMatch[0].length);
+    const remainderPlain = remainder.replace(/<[^>]+>/g, ' ').trim();
+    if (/^(a|an)\s+/i.test(remainderPlain)) return undefined;
+    return remainder;
+}
+
+function parseWinsSkirmishWinner(
+    raw: string,
+    cardTitle?: string
+): { winner: 'SELF' | 'BEARER' | string[][]; yours?: boolean } | null {
+    const plain = raw.replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim();
+    if (/^this\b/i.test(plain)) return { winner: 'SELF' };
+    if (/^bearer$/i.test(plain)) return { winner: 'BEARER' };
+    const title = (cardTitle || '').trim();
+    if (title && plain.toLowerCase() === title.toLowerCase()) {
+        return { winner: 'SELF' };
+    }
+    if (/^(another|each)\b/i.test(plain)) return null;
+
+    const yours = /^your\s+/i.test(plain);
+    const withoutArticle = raw.replace(/^(a|an|the|your)\s+/i, '');
+    const stripped = withoutArticle
+        .replace(/<[^>]+>/g, ' ')
+        .replace(/\s+/g, ' ')
+        .trim();
+    if (/^(another|each)\b/i.test(stripped)) return null;
+
+    const filters = parseClassFilters(withoutArticle);
+    if (filters.length === 0) return null;
+    return yours ? { winner: [filters], yours: true } : { winner: [filters] };
+}
+
+function winsSkirmishCostIsSafe(cost: Record<string, unknown>): boolean {
+    const selectors = [
+        ...((cost.exert as { target?: unknown }[] | undefined) || []),
+        ...((cost.spot as { target?: unknown }[] | undefined) || []),
+    ];
+    for (const req of selectors) {
+        if (req.target === 'SELF' || req.target === 'BEARER') continue;
+        if (!Array.isArray(req.target)) return false;
+        const tokens = (req.target as string[][]).flat();
+        if (
+            tokens.some(
+                (token) =>
+                    !isKnownFilterToken(token) && !isProperNameToken(token)
+            )
+        ) {
+            return false;
+        }
+    }
+    return true;
+}
+
+function parseWinsSkirmishResponse(
+    body: string,
+    cardTitle: string | undefined,
+    cardId: string | undefined,
+    abilityIndex: number
+): Record<string, unknown> | null {
+    const match = body.match(
+        /^If\s+([\s\S]+?)\s+wins a skirmish,\s*([\s\S]+)/i
+    );
+    if (!match) return null;
+
+    const winnerParsed = parseWinsSkirmishWinner(match[1].trim(), cardTitle);
+    if (!winnerParsed) return null;
+
+    const rest = match[2].trim().replace(/[.\s]+$/g, '');
+    const toMake = rest.match(/^(?:([\s\S]+?)\s+to\s+)?make\s+([\s\S]+)/i);
+    if (!toMake) return null;
+
+    const costText = toMake[1]?.trim();
+    const effectText = toMake[2].trim();
+    const effectPlain = effectText.replace(/<[^>]+>/g, ' ');
+    if (
+        /\b(heal|discard|wound|kill|play|draw|stack|control|reveal|prevent)\b/i.test(
+            effectPlain
+        )
+    ) {
+        return null;
+    }
+
+    let cost: Record<string, unknown>[] = [];
+    if (costText) {
+        const parsedCost = parsePreventCostOption(costText, cardTitle);
+        if (!parsedCost || !winsSkirmishCostIsSafe(parsedCost)) return null;
+        cost = [parsedCost];
+    }
+
+    const expiresAtPhase = parseUntilExpiry(effectText, 'RESPONSE');
+    const remainder = remainderAfterWinnerRef(effectText);
+    if (!remainder) return null;
+    const effects = parseMakeEffectsFromRemainder(
+        remainder,
+        'WINNER',
+        expiresAtPhase
+    );
+    if (!effects || effects.length === 0) return null;
+
+    const clause = `RESPONSE: If ${match[1].trim()} wins a skirmish, ${rest}`
+        .replace(/<[^>]+>/g, '')
+        .replace(/\s+/g, ' ')
+        .replace(/\s+\./g, '.')
+        .trim();
+
+    return {
+        id: `${cardId || 'ability'}:${abilityIndex}`,
+        phases: ['RESPONSE'],
+        trigger: {
+            type: 'WINS_SKIRMISH',
+            winner: winnerParsed.winner,
+            ...(winnerParsed.yours ? { yours: true } : {}),
+        },
+        cost,
+        effects,
+        source: winnerParsed.winner === 'BEARER' ? 'ATTACHMENT' : 'SELF',
+        text: clause,
+    };
 }
 
 function parseWoundTriggerTarget(
@@ -1373,6 +1515,22 @@ export function parseAbilities(
                 });
             });
             return;
+        }
+
+        if (marker.phase === 'RESPONSE') {
+            const winsMatch = body.match(
+                /^If\s+([\s\S]+?)\s+wins a skirmish,/i
+            );
+            if (winsMatch) {
+                const parsed = parseWinsSkirmishResponse(
+                    body,
+                    cardTitle,
+                    cardId,
+                    abilities.length
+                );
+                if (parsed) abilities.push(parsed);
+                return;
+            }
         }
 
         const makeMatch = body.match(

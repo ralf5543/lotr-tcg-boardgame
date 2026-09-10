@@ -17636,6 +17636,38 @@
         ]
       }
     ],
+    "abilities": [
+      {
+        "id": "1U159:0",
+        "phases": [
+          "RESPONSE"
+        ],
+        "trigger": {
+          "type": "WINS_SKIRMISH",
+          "winner": [
+            [
+              "URUK-HAI"
+            ]
+          ],
+          "yours": true
+        },
+        "cost": [
+          {
+            "removeTwilight": 3
+          }
+        ],
+        "effects": [
+          {
+            "type": "ADD_TEMP_KEYWORD",
+            "keyword": "FIERCE",
+            "target": "WINNER",
+            "expiresAtPhase": "REGROUP"
+          }
+        ],
+        "source": "SELF",
+        "text": "RESPONSE: If your Uruk-hai wins a skirmish, remove twilight3 to make him fierce until the regroup phase"
+      }
+    ],
     "actionPhases": [
       "RESPONSE"
     ],
@@ -18438,7 +18470,7 @@
       },
       "de": {
         "title": "Goblin Patrouille",
-        "gameText": "Während sie rannten, hörten sie das Stampfen und den Widerhall von vielen hastenden Füssen hinter sich. Ein schriller Schrei verriet, dass sie gesehen worden waren. Es gab ein Gerassel und Geklirr von Stahl."
+        "loreText": "Während sie rannten, hörten sie das Stampfen und den Widerhall von vielen hastenden Füssen hinter sich. Ein schriller Schrei verriet, dass sie gesehen worden waren. Es gab ein Gerassel und Geklirr von Stahl."
       },
       "it": {
         "title": "Pattuglia Goblin",
@@ -21549,6 +21581,34 @@
     "isUnique": false,
     "kind": "SHADOW",
     "type": "EVENT",
+    "abilities": [
+      {
+        "id": "1R247:0",
+        "phases": [
+          "RESPONSE"
+        ],
+        "trigger": {
+          "type": "WINS_SKIRMISH",
+          "winner": [
+            [
+              "SAURON",
+              "ORC"
+            ]
+          ]
+        },
+        "cost": [],
+        "effects": [
+          {
+            "type": "ADD_TEMP_KEYWORD",
+            "keyword": "FIERCE",
+            "target": "WINNER",
+            "expiresAtPhase": "REGROUP"
+          }
+        ],
+        "source": "SELF",
+        "text": "RESPONSE: If a sauron Orc wins a skirmish, make that Orc fierce until the regroup phase"
+      }
+    ],
     "phases": [
       "RESPONSE"
     ],
@@ -36819,19 +36879,19 @@
       },
       "fr": {
         "title": "Sauvage Dun",
-        "gameText": "Seule la mort du roi de Rohan pouvait mettre un terme à la furie de Ceux du Pays de Dun."
+        "loreText": "Seule la mort du roi de Rohan pouvait mettre un terme à la furie de Ceux du Pays de Dun."
       },
       "de": {
         "title": "Wilder Dunländer",
-        "gameText": "Die wilde Wut der Dunländer konnte nur durch den Tod des Königs von Rohan besänftigt werden."
+        "loreText": "Die wilde Wut der Dunländer konnte nur durch den Tod des Königs von Rohan besänftigt werden."
       },
       "it": {
         "title": "Selvaggio Dunlandiano",
-        "gameText": "La furia dei Dunlandiani poteva concludersi solo con la morte del re di Rohan."
+        "loreText": "La furia dei Dunlandiani poteva concludersi solo con la morte del re di Rohan."
       },
       "es": {
         "title": "Salvaje Dunlendino",
-        "gameText": "La furia de los Dunlendinos sólo terminará con la muerte del rey de Rohan."
+        "loreText": "La furia de los Dunlendinos sólo terminará con la muerte del rey de Rohan."
       }
     }
   },
@@ -37642,6 +37702,41 @@
     "isUnique": false,
     "kind": "SHADOW",
     "type": "EVENT",
+    "abilities": [
+      {
+        "id": "4C37:0",
+        "phases": [
+          "RESPONSE"
+        ],
+        "trigger": {
+          "type": "WINS_SKIRMISH",
+          "winner": [
+            [
+              "DUNLAND",
+              "MAN"
+            ]
+          ]
+        },
+        "cost": [],
+        "effects": [
+          {
+            "type": "ADD_TEMP_KEYWORD",
+            "keyword": "FIERCE",
+            "target": "WINNER",
+            "expiresAtPhase": "REGROUP"
+          },
+          {
+            "type": "ADD_TEMP_STAT",
+            "stat": "STRENGTH",
+            "value": 4,
+            "target": "WINNER",
+            "expiresAtPhase": "REGROUP"
+          }
+        ],
+        "source": "SELF",
+        "text": "RESPONSE: If a dunland Man wins a skirmish, make him fierce and strength +4 until the regroup phase"
+      }
+    ],
     "phases": [
       "RESPONSE"
     ],

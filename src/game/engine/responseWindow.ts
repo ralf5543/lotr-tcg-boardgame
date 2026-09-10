@@ -8,7 +8,11 @@ import { applyWoundAndCheckDeath } from '../../utils/applyWoundAndCheckDeath';
 import { findTargetCard, isRingBearerCard } from '../../utils/cardUtils';
 import { clearActionableFlags } from '../../utils/clearActionableFlags';
 import { canPayAbilityCost } from './abilities/payAbilityCost';
-import { findBearer, forEachInPlayCard } from './abilities/resolveCostTarget';
+import {
+    findBearer,
+    forEachInPlayCard,
+    resolveWinnerTargets,
+} from './abilities/resolveCostTarget';
 import { cardMatchesTarget } from './validations/matchers';
 import { abilityMatchesPhase } from './abilities/collectAbilities';
 import { getEffectiveVitality } from '../../utils/cardStats';
@@ -38,7 +42,16 @@ export function abilityMatchesTrigger(
     if (!ability.trigger || !event) return false;
     if (ability.trigger.type !== event.type) return false;
 
+    if (event.type === 'WINS_SKIRMISH') {
+        if (ability.trigger.type !== 'WINS_SKIRMISH') return false;
+        if (resolveWinnerTargets(G, source, ability).length === 0) {
+            return false;
+        }
+        return true;
+    }
+
     if (event.type !== 'ABOUT_TO_WOUND') return false;
+    if (ability.trigger.type !== 'ABOUT_TO_WOUND') return false;
     if (ability.trigger.inSkirmish && !isInSkirmish(G)) return false;
 
     const wounded = findTargetCard(G, event.targetId) as CardState | null;
@@ -128,6 +141,20 @@ function applyWoundOrRingReplacement(
     applyWoundAndCheckDeath(G, card, count);
 }
 
+function responseEventIsActive(event: PendingEvent | undefined): boolean {
+    if (!event) return false;
+    if (event.type === 'ABOUT_TO_WOUND') return event.remaining > 0;
+    if (event.type === 'WINS_SKIRMISH') return event.winnerIds.length > 0;
+    return false;
+}
+
+function responseWindowMessage(G: GameState): string {
+    if (G.pendingEvent?.type === 'WINS_SKIRMISH') {
+        return 'Un personnage a gagné ce combat. Jouez une réponse ou passez.';
+    }
+    return responseWoundMessage(G);
+}
+
 function inPlayResponseIsLegal(
     G: GameState,
     source: CardState,
@@ -135,7 +162,7 @@ function inPlayResponseIsLegal(
 ): boolean {
     if (!isResponseAbility(ability)) return false;
     const event = G.pendingEvent;
-    if (!event || event.type !== 'ABOUT_TO_WOUND' || event.remaining <= 0) {
+    if (!responseEventIsActive(event)) {
         return false;
     }
     if (abilityWearsTheOneRing(ability) && G.wearingTheOneRing) return false;
@@ -161,7 +188,7 @@ function handResponseIsLegal(
 ): boolean {
     if (card.type !== 'EVENT' || card.kind === 'NONE') return false;
     const event = G.pendingEvent;
-    if (!event || event.type !== 'ABOUT_TO_WOUND' || event.remaining <= 0) {
+    if (!responseEventIsActive(event)) {
         return false;
     }
     const owner = cardOwnerId(G, card);
@@ -213,7 +240,7 @@ function openResponseWindow(G: GameState): void {
         isOpen: true,
         activePlayerId,
         title: 'RÉPONSE',
-        message: responseWoundMessage(G),
+        message: responseWindowMessage(G),
         canPass: true,
         passesCount: 0,
     };
@@ -252,6 +279,7 @@ function processWoundQueue(G: GameState): 'APPLIED' | 'WAITING' {
     G.woundQueue = undefined;
     G.pendingEvent = undefined;
     closeResponseWindow(G);
+    if (tryOpenWinsSkirmish(G) === 'WAITING') return 'WAITING';
     tryResumeArcheryAfterResponses(G);
     flushPendingActionYield(G);
     return 'APPLIED';
@@ -313,6 +341,40 @@ export function requestWounds(
     return processWoundQueue(G);
 }
 
+export function tryOpenWinsSkirmish(G: GameState): 'APPLIED' | 'WAITING' {
+    if (G.responseWindow?.isOpen || G.pendingEvent) {
+        return G.responseWindow?.isOpen ? 'WAITING' : 'APPLIED';
+    }
+    const pending = G.pendingWinsSkirmish;
+    if (!pending || pending.winnerIds.length === 0) return 'APPLIED';
+
+    G.pendingWinsSkirmish = undefined;
+    G.pendingEvent = {
+        type: 'WINS_SKIRMISH',
+        winnerIds: pending.winnerIds,
+        skirmishId: pending.skirmishId,
+    };
+
+    if (!hasAnyEligibleResponse(G)) {
+        G.pendingEvent = undefined;
+        return 'APPLIED';
+    }
+
+    openResponseWindow(G);
+    return 'WAITING';
+}
+
+function concludeOpenResponse(G: GameState): 'APPLIED' | 'WAITING' {
+    if (G.pendingEvent?.type === 'ABOUT_TO_WOUND') {
+        applyOnePendingWound(G);
+        return continueAfterCurrentWound(G);
+    }
+
+    G.pendingEvent = undefined;
+    closeResponseWindow(G);
+    return processWoundQueue(G);
+}
+
 export function passResponseWindow(
     G: GameState,
     playerID: string
@@ -322,14 +384,12 @@ export function passResponseWindow(
 
     const other = otherPlayerId(playerID);
     if (!playerHasEligibleResponse(G, other)) {
-        applyOnePendingWound(G);
-        return continueAfterCurrentWound(G);
+        return concludeOpenResponse(G);
     }
 
     const currentPasses = (G.responseWindow.passesCount || 0) + 1;
     if (currentPasses >= 2) {
-        applyOnePendingWound(G);
-        return continueAfterCurrentWound(G);
+        return concludeOpenResponse(G);
     }
 
     const fpId = G.fpPlayerId || '0';
@@ -369,7 +429,7 @@ export function yieldResponsePriorityAfterAction(
             ...G.responseWindow,
             activePlayerId: playerID,
             passesCount: 1,
-            message: responseWoundMessage(G),
+            message: responseWindowMessage(G),
         };
         G.statusMessage =
             'Réponse : vous pouvez enchaîner ou passer.';
@@ -381,15 +441,7 @@ export function yieldResponsePriorityAfterAction(
 }
 
 function resolvePendingResponse(G: GameState): void {
-    const event = G.pendingEvent;
-    if (!event || event.type !== 'ABOUT_TO_WOUND' || event.remaining <= 0) {
-        G.pendingEvent = undefined;
-        closeResponseWindow(G);
-        processWoundQueue(G);
-        return;
-    }
-    applyOnePendingWound(G);
-    continueAfterCurrentWound(G);
+    concludeOpenResponse(G);
 }
 
 export function afterResponseResolved(

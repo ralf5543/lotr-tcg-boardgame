@@ -3,7 +3,65 @@ import {
     parseAbilities,
     parseGrantsKeywords,
     parseKeywords,
+    coerceOrphanGameTextAsLore,
+    buildLangBlock,
 } from '../../../scripts/convert/parsers';
+
+describe('coerceOrphanGameTextAsLore', () => {
+    it('replace le Text traduit par du lore si l’anglais n’a pas de texte de jeu', () => {
+        expect(
+            coerceOrphanGameTextAsLore(
+                'Seule la mort du roi de Rohan pouvait mettre un terme à la furie de Ceux du Pays de Dun.',
+                '',
+                false
+            )
+        ).toEqual({
+            lore: 'Seule la mort du roi de Rohan pouvait mettre un terme à la furie de Ceux du Pays de Dun.',
+        });
+    });
+
+    it('ne touche pas une carte qui a un vrai texte de jeu anglais', () => {
+        expect(
+            coerceOrphanGameTextAsLore(
+                '<keyword>Damage +1.</keyword>',
+                'A lore.',
+                true
+            )
+        ).toEqual({
+            gameText: '<keyword>Damage +1.</keyword>',
+            lore: 'A lore.',
+        });
+    });
+
+    it('ne vole pas le Text s’il y a déjà un Lore traduit', () => {
+        expect(
+            coerceOrphanGameTextAsLore('un texte', 'un lore', false)
+        ).toEqual({
+            gameText: 'un texte',
+            lore: 'un lore',
+        });
+    });
+
+    it('buildLangBlock : 4C17 FR n’a que du lore, pas de gameText', () => {
+        const coerced = coerceOrphanGameTextAsLore(
+            'Seule la mort du roi de Rohan pouvait mettre un terme à la furie de Ceux du Pays de Dun.',
+            '',
+            false
+        );
+        expect(
+            buildLangBlock(
+                'Sauvage Dun',
+                '',
+                coerced.gameText,
+                coerced.lore
+            )
+        ).toEqual({
+            title: 'Sauvage Dun',
+            loreText:
+                'Seule la mort du roi de Rohan pouvait mettre un terme à la furie de Ceux du Pays de Dun.',
+        });
+    });
+});
 
 const RAIDER_BOW_TEXT =
     'Bearer must be a <symbol>raider</symbol> Man. <br>Bearer is an <keyword>archer</keyword> and <keyword>Ambush</keyword> <symbol>twilight5</symbol>.';
@@ -676,4 +734,126 @@ describe('parseAbilities — When you play this', () => {
         expect(parseAbilities(text, 'Goblin Runner', '1U178')).toBeUndefined();
     });
 });
+
+const RAMPAGE_TEXT =
+    'To play, spot an Uruk-hai. <br><keyword>Response:</keyword> If your Uruk-hai wins a skirmish, remove <symbol>twilight3</symbol> to make him <keyword>fierce</keyword> until the regroup phase.';
+
+const ENHEARTENED_FOE_TEXT =
+    '<keyword>Response:</keyword> If a <symbol>sauron</symbol> Orc wins a skirmish, make that Orc <keyword>fierce</keyword> until the regroup phase.';
+
+const WAR_CRY_TEXT =
+    '<keyword>Response:</keyword> If a <symbol>dunland</symbol> Man wins a skirmish, make him <keyword>fierce</keyword> and strength +4 until the regroup phase.';
+
+describe('parseAbilities — Response wins a skirmish', () => {
+    it('parse Frénésie Ourouk-Haï : your Uruk-hai, retirer 3, vainqueur acharné', () => {
+        expect(parseAbilities(RAMPAGE_TEXT, 'Uruk-hai Rampage', '1U159')).toEqual([
+            {
+                id: '1U159:0',
+                phases: ['RESPONSE'],
+                trigger: {
+                    type: 'WINS_SKIRMISH',
+                    winner: [['URUK-HAI']],
+                    yours: true,
+                },
+                cost: [{ removeTwilight: 3 }],
+                effects: [
+                    {
+                        type: 'ADD_TEMP_KEYWORD',
+                        keyword: 'FIERCE',
+                        target: 'WINNER',
+                        expiresAtPhase: 'REGROUP',
+                    },
+                ],
+                source: 'SELF',
+                text: expect.stringMatching(
+                    /RESPONSE: If your Uruk-hai wins a skirmish/i
+                ),
+            },
+        ]);
+    });
+
+    it('parse Ennemi sans Pitié : Orque Sauron, pas de coût, that Orc acharné', () => {
+        expect(
+            parseAbilities(ENHEARTENED_FOE_TEXT, 'Enheartened Foe', '1R247')
+        ).toEqual([
+            {
+                id: '1R247:0',
+                phases: ['RESPONSE'],
+                trigger: {
+                    type: 'WINS_SKIRMISH',
+                    winner: [['SAURON', 'ORC']],
+                },
+                cost: [],
+                effects: [
+                    {
+                        type: 'ADD_TEMP_KEYWORD',
+                        keyword: 'FIERCE',
+                        target: 'WINNER',
+                        expiresAtPhase: 'REGROUP',
+                    },
+                ],
+                source: 'SELF',
+                text: expect.stringMatching(
+                    /If a sauron Orc wins a skirmish/i
+                ),
+            },
+        ]);
+    });
+
+    it('parse Cri de Guerre du Pays de Dun : acharné et force +4', () => {
+        expect(
+            parseAbilities(WAR_CRY_TEXT, 'War Cry of Dunland', '4C37')
+        ).toEqual([
+            {
+                id: '4C37:0',
+                phases: ['RESPONSE'],
+                trigger: {
+                    type: 'WINS_SKIRMISH',
+                    winner: [['DUNLAND', 'MAN']],
+                },
+                cost: [],
+                effects: [
+                    {
+                        type: 'ADD_TEMP_KEYWORD',
+                        keyword: 'FIERCE',
+                        target: 'WINNER',
+                        expiresAtPhase: 'REGROUP',
+                    },
+                    {
+                        type: 'ADD_TEMP_STAT',
+                        stat: 'STRENGTH',
+                        value: 4,
+                        target: 'WINNER',
+                        expiresAtPhase: 'REGROUP',
+                    },
+                ],
+                source: 'SELF',
+                text: expect.stringMatching(
+                    /If a dunland Man wins a skirmish/i
+                ),
+            },
+        ]);
+    });
+
+    it('n’émet rien pour Encore du Souffle (soigner)', () => {
+        const text =
+            '<keyword>Response:</keyword> If a Dwarf wins a skirmish, heal that Dwarf.';
+        expect(parseAbilities(text, 'Still Draws Breath', '1C25')).toBeUndefined();
+    });
+
+    it('n’émet rien pour Personne ne Lance un Nain (moulin)', () => {
+        const text =
+            '<keyword>Response:</keyword> If a Dwarf wins a skirmish, make an opponent discard 3 cards from the top of his or her draw deck.';
+        expect(
+            parseAbilities(text, 'Nobody Tosses a Dwarf', '1R23')
+        ).toBeUndefined();
+    });
+
+    it('n’émet pas la réponse Sam si Frodo meurt (exception étape 6)', () => {
+        const abilities = parseAbilities(SAM_TEXT, 'Sam', '2C114');
+        expect(abilities).toHaveLength(1);
+        expect(abilities?.[0]?.phases).toEqual(['MANEUVER']);
+    });
+});
+
 

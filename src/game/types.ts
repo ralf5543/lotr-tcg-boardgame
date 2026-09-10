@@ -144,7 +144,7 @@ export type CardI18nMap = Partial<
     Record<'fr' | 'en' | 'de' | 'it' | 'es', CardI18nContent>
 >;
 
-export type AbilityTargetToken = 'SELF' | 'BEARER' | 'SKIRMISHING';
+export type AbilityTargetToken = 'SELF' | 'BEARER' | 'SKIRMISHING' | 'WINNER';
 
 /** SELF / BEARER, ou DNF de titres / filtres (ex. `[['Sam']]`). */
 export type AbilityTargetRef = AbilityTargetToken | string[][];
@@ -217,6 +217,11 @@ export type AbilityTrigger =
           type: 'ABOUT_TO_WOUND';
           target: AbilityTargetRef;
           inSkirmish?: boolean;
+      }
+    | {
+          type: 'WINS_SKIRMISH';
+          winner: AbilityTargetRef;
+          yours?: boolean;
       }
     | {
           type: 'WHEN_PLAYED';
@@ -354,7 +359,16 @@ export interface PendingWoundEvent {
     remaining: number;
 }
 
-export type PendingEvent = PendingWoundEvent;
+export interface PendingWinsSkirmish {
+    winnerIds: string[];
+    skirmishId: string;
+}
+
+export interface PendingWinsSkirmishEvent extends PendingWinsSkirmish {
+    type: 'WINS_SKIRMISH';
+}
+
+export type PendingEvent = PendingWoundEvent | PendingWinsSkirmishEvent;
 
 export interface WoundQueueItem {
     targetId: string;
@@ -392,6 +406,8 @@ export interface GameState {
     activeSkirmishId?: string;
     actionWindow?: ActionWindow;
     pendingEvent?: PendingEvent;
+    /** Victoire d’escarmouche en attente : s’ouvre après la file de blessures. */
+    pendingWinsSkirmish?: PendingWinsSkirmish;
     responseWindow?: ResponseWindow;
     wearingTheOneRing?: {
         expiresAtPhase: AbilityEffectExpiry;

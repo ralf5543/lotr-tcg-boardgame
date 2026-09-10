@@ -85,4 +85,35 @@ describe('formatAbilityLabelParts', () => {
             effect: 'permettre à Sylvebarbe de combattre',
         });
     });
+
+    it('Frénésie : retirer le crépuscule, acharné sans nommer le vainqueur', () => {
+        const ability: Ability = {
+            id: '1U159:0',
+            phases: ['RESPONSE'],
+            trigger: {
+                type: 'WINS_SKIRMISH',
+                winner: [['URUK-HAI']],
+                yours: true,
+            },
+            cost: [{ removeTwilight: 3 }],
+            effects: [
+                {
+                    type: 'ADD_TEMP_KEYWORD',
+                    keyword: 'FIERCE',
+                    target: 'WINNER',
+                    expiresAtPhase: 'REGROUP',
+                },
+            ],
+            source: 'SELF',
+        };
+        const rampage = createCompanion({
+            id: '1U159',
+            title: 'Uruk-hai Rampage',
+            i18n: { fr: { title: 'Frénésie Ourouk-Haï' } },
+        });
+        expect(formatAbilityLabelParts(ability, rampage)).toEqual({
+            cost: 'Retirer <symbol>twilight3</symbol>',
+            effect: 'Acharné',
+        });
+    });
 });

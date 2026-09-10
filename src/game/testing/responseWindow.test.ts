@@ -1223,3 +1223,305 @@ describe('responseWindow / halo Périls inconnus', () => {
         ).toBe(true);
     });
 });
+
+const RAMPAGE_ABILITY: Ability = {
+    id: '1U159:0',
+    phases: ['RESPONSE'],
+    trigger: {
+        type: 'WINS_SKIRMISH',
+        winner: [['URUK-HAI']],
+        yours: true,
+    },
+    cost: [{ removeTwilight: 3 }],
+    effects: [
+        {
+            type: 'ADD_TEMP_KEYWORD',
+            keyword: 'FIERCE',
+            target: 'WINNER',
+            expiresAtPhase: 'REGROUP',
+        },
+    ],
+    source: 'SELF',
+    text: 'RESPONSE: If your Uruk-hai wins a skirmish, remove twilight3 to make him fierce until the regroup phase.',
+};
+
+const ENHEARTENED_ABILITY: Ability = {
+    id: '1R247:0',
+    phases: ['RESPONSE'],
+    trigger: {
+        type: 'WINS_SKIRMISH',
+        winner: [['SAURON', 'ORC']],
+    },
+    cost: [],
+    effects: [
+        {
+            type: 'ADD_TEMP_KEYWORD',
+            keyword: 'FIERCE',
+            target: 'WINNER',
+            expiresAtPhase: 'REGROUP',
+        },
+    ],
+    source: 'SELF',
+    text: 'RESPONSE: If a sauron Orc wins a skirmish, make that Orc fierce until the regroup phase.',
+};
+
+describe('responseWindow / WINS_SKIRMISH', () => {
+    it('après victoire d’un Uruk : toaster, Frénésie rend acharné jusqu’au ralliement', () => {
+        const companion = createCompanion({
+            id: 'merry',
+            title: 'Merry',
+            strength: 4,
+            vitality: 4,
+        });
+        const uruk = createMinion({
+            id: 'uruk',
+            title: 'Uruk Soldier',
+            culture: 'ISENGARD',
+            race: 'URUK-HAI',
+            strength: 7,
+            vitality: 2,
+        });
+        const rampage = createCard({
+            id: '1U159',
+            title: 'Uruk-hai Rampage',
+            kind: 'SHADOW',
+            type: 'CONDITION',
+            culture: 'ISENGARD',
+            actionPhases: ['RESPONSE'],
+            abilities: [RAMPAGE_ABILITY],
+        });
+
+        const engine = createEngineClient({
+            startPhase: 'skirmish',
+            playerID: '0',
+            G: {
+                twilightPool: 3,
+                activeSkirmishId: 'sk-merry',
+                skirmishes: [
+                    {
+                        id: 'sk-merry',
+                        companionId: 'merry',
+                        minionIds: ['uruk'],
+                    },
+                ],
+                battlefield: [uruk],
+                players: {
+                    '0': createPlayerState('0', {
+                        fellowshipArea: [companion],
+                    }),
+                    '1': createPlayerState('1', {
+                        supportArea: [rampage],
+                    }),
+                },
+            },
+        });
+
+        engine.moves.resolveActiveSkirmish();
+
+        const afterResolve = engine.getG();
+        expect(afterResolve.players['0']?.fellowshipArea[0]?.wounds).toBe(1);
+        expect(afterResolve.responseWindow?.isOpen).toBe(true);
+        expect(afterResolve.pendingEvent).toEqual({
+            type: 'WINS_SKIRMISH',
+            winnerIds: ['uruk'],
+            skirmishId: 'sk-merry',
+        });
+        expect(afterResolve.responseWindow?.activePlayerId).toBe('1');
+
+        engine.updatePlayerID('1');
+        engine.moves.activateAbility('1U159', '1U159:0');
+
+        const afterAbility = engine.getG();
+        expect(afterAbility.twilightPool).toBe(0);
+        expect(afterAbility.battlefield[0]?.tempKeywords).toEqual([
+            { keyword: 'FIERCE', expiresAtPhase: 'REGROUP' },
+        ]);
+        expect(afterAbility.responseWindow).toBeUndefined();
+        expect(afterAbility.pendingEvent).toBeUndefined();
+    });
+
+    it('sans crépuscule : pas de toaster Frénésie, victoire quand même', () => {
+        const companion = createCompanion({
+            id: 'merry',
+            strength: 4,
+            vitality: 4,
+        });
+        const uruk = createMinion({
+            id: 'uruk',
+            culture: 'ISENGARD',
+            race: 'URUK-HAI',
+            strength: 7,
+            vitality: 2,
+        });
+        const rampage = createCard({
+            id: '1U159',
+            kind: 'SHADOW',
+            type: 'CONDITION',
+            actionPhases: ['RESPONSE'],
+            abilities: [RAMPAGE_ABILITY],
+        });
+
+        const engine = createEngineClient({
+            startPhase: 'skirmish',
+            playerID: '0',
+            G: {
+                twilightPool: 2,
+                activeSkirmishId: 'sk-merry',
+                skirmishes: [
+                    {
+                        id: 'sk-merry',
+                        companionId: 'merry',
+                        minionIds: ['uruk'],
+                    },
+                ],
+                battlefield: [uruk],
+                players: {
+                    '0': createPlayerState('0', {
+                        fellowshipArea: [companion],
+                    }),
+                    '1': createPlayerState('1', {
+                        supportArea: [rampage],
+                    }),
+                },
+            },
+        });
+
+        engine.moves.resolveActiveSkirmish();
+
+        const G = engine.getG();
+        expect(G.players['0']?.fellowshipArea[0]?.wounds).toBe(1);
+        expect(G.responseWindow).toBeUndefined();
+        expect(G.pendingEvent).toBeUndefined();
+        expect(G.battlefield[0]?.tempKeywords).toBeUndefined();
+    });
+
+    it('événement Ennemi sans Pitié depuis la main après victoire d’un Orque Sauron', () => {
+        const companion = createCompanion({
+            id: 'merry',
+            strength: 4,
+            vitality: 4,
+        });
+        const orc = createMinion({
+            id: 'orc',
+            title: 'Orc Soldier',
+            culture: 'SAURON',
+            race: 'ORC',
+            strength: 7,
+            vitality: 2,
+        });
+        const event = createCard({
+            id: '1R247',
+            title: 'Enheartened Foe',
+            kind: 'SHADOW',
+            type: 'EVENT',
+            culture: 'SAURON',
+            twilightCost: 0,
+            phases: ['RESPONSE'],
+            abilities: [ENHEARTENED_ABILITY],
+        });
+
+        const engine = createEngineClient({
+            startPhase: 'skirmish',
+            playerID: '0',
+            G: {
+                twilightPool: 0,
+                activeSkirmishId: 'sk-merry',
+                skirmishes: [
+                    {
+                        id: 'sk-merry',
+                        companionId: 'merry',
+                        minionIds: ['orc'],
+                    },
+                ],
+                battlefield: [orc],
+                players: {
+                    '0': createPlayerState('0', {
+                        fellowshipArea: [companion],
+                    }),
+                    '1': createPlayerState('1', {
+                        hand: [event],
+                    }),
+                },
+            },
+        });
+
+        engine.moves.resolveActiveSkirmish();
+        expect(engine.getG().responseWindow?.isOpen).toBe(true);
+        expect(engine.getG().responseWindow?.activePlayerId).toBe('1');
+
+        engine.updatePlayerID('1');
+        engine.moves.playCard(0);
+
+        const G = engine.getG();
+        expect(G.players['1']?.hand).toHaveLength(0);
+        expect(G.players['1']?.discard.map((c) => c.id)).toContain('1R247');
+        expect(G.battlefield[0]?.tempKeywords).toEqual([
+            { keyword: 'FIERCE', expiresAtPhase: 'REGROUP' },
+        ]);
+        expect(G.responseWindow).toBeUndefined();
+    });
+
+    it('blessure d’abord, victoire ensuite : Éowyn puis Frénésie', () => {
+        const merry = createUnboundCompanion();
+        merry.id = 'merry';
+        merry.instanceId = 'merry';
+        merry.strength = 4;
+        merry.vitality = 4;
+        const eowyn = createEowyn();
+        const uruk = createMinion({
+            id: 'uruk',
+            culture: 'ISENGARD',
+            race: 'URUK-HAI',
+            strength: 7,
+            vitality: 2,
+        });
+        const rampage = createCard({
+            id: '1U159',
+            kind: 'SHADOW',
+            type: 'CONDITION',
+            actionPhases: ['RESPONSE'],
+            abilities: [RAMPAGE_ABILITY],
+        });
+
+        const engine = createEngineClient({
+            startPhase: 'skirmish',
+            playerID: '0',
+            G: {
+                twilightPool: 3,
+                activeSkirmishId: 'sk-merry',
+                skirmishes: [
+                    {
+                        id: 'sk-merry',
+                        companionId: 'merry',
+                        minionIds: ['uruk'],
+                    },
+                ],
+                battlefield: [uruk],
+                players: {
+                    '0': createPlayerState('0', {
+                        fellowshipArea: [merry, eowyn],
+                    }),
+                    '1': createPlayerState('1', {
+                        supportArea: [rampage],
+                    }),
+                },
+            },
+        });
+
+        engine.moves.resolveActiveSkirmish();
+        expect(engine.getG().pendingEvent?.type).toBe('ABOUT_TO_WOUND');
+        expect(engine.getG().responseWindow?.activePlayerId).toBe('0');
+
+        engine.moves.passResponseWindow();
+
+        const afterWound = engine.getG();
+        expect(afterWound.players['0']?.fellowshipArea[0]?.wounds).toBe(1);
+        expect(afterWound.pendingEvent).toEqual({
+            type: 'WINS_SKIRMISH',
+            winnerIds: ['uruk'],
+            skirmishId: 'sk-merry',
+        });
+        expect(afterWound.responseWindow?.isOpen).toBe(true);
+        expect(afterWound.responseWindow?.activePlayerId).toBe('1');
+    });
+});

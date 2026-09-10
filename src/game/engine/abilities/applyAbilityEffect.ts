@@ -5,7 +5,7 @@ import type {
     GameState,
 } from '../../types';
 import type { ModifierScope } from '../../logic/stats/types';
-import { resolveAbilityTarget, forEachInPlayCard } from './resolveCostTarget';
+import { resolveAbilityTarget, forEachInPlayCard, resolveWinnerTargets } from './resolveCostTarget';
 import { requestWounds } from '../responseWindow';
 
 function expiryToScope(expiresAtPhase: AbilityEffectExpiry): ModifierScope {
@@ -49,6 +49,24 @@ export function applyAbilityEffect(
                     ? { onlyInSkirmish: true }
                     : {}),
             };
+            continue;
+        }
+
+        if ('target' in effect && effect.target === 'WINNER') {
+            const matches = resolveWinnerTargets(G, source, ability);
+            const target = chosenTargetId
+                ? matches.find(
+                      (card) =>
+                          card.instanceId === chosenTargetId ||
+                          card.id === chosenTargetId
+                  ) || null
+                : matches.length === 1
+                  ? matches[0]
+                  : null;
+            if (!target) return false;
+            if (!applyOneEffect(G, source, ability, effect, target)) {
+                return false;
+            }
             continue;
         }
 

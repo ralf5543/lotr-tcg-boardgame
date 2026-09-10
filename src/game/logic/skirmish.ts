@@ -14,7 +14,7 @@ import {
     getEffectiveKeywords,
 } from '../engine/keywords/keywordUtils';
 import { getCalculatedStrength } from './stats/statCalculator';
-import { requestWounds } from '../engine/responseWindow';
+import { requestWounds, tryOpenWinsSkirmish } from '../engine/responseWindow';
 
 /**
  * Helper interne pour extraire proprement le nom d'une carte dans la langue par défaut (FR).
@@ -137,6 +137,19 @@ export const resolveSkirmish = (G: GameState, _ctx?: Ctx) => {
     let resultMsg = `Résolution : ${companionName} (${companionStrength}) vs ${minionsSummary}`;
     resultMsg += ` [Total Ombre: ${minionsStrength}]. `;
 
+    const companionId = companion.instanceId || companion.id;
+    if (companionStrength > minionsStrength) {
+        G.pendingWinsSkirmish = {
+            winnerIds: [companionId],
+            skirmishId: skirmish.id,
+        };
+    } else if (minionsStrength > companionStrength) {
+        G.pendingWinsSkirmish = {
+            winnerIds: minions.map((minion) => minion.instanceId || minion.id),
+            skirmishId: skirmish.id,
+        };
+    }
+
     // ⚔️ CAS 1 : VICTOIRE DU COMPAGNON
     if (companionStrength > minionsStrength) {
         resultMsg += `Victoire de ${companionName} ! `;
@@ -185,7 +198,6 @@ export const resolveSkirmish = (G: GameState, _ctx?: Ctx) => {
                     ? ` (${woundsToApply} blessures incluant DAMAGE +${damageBonus})`
                     : '';
             const waiting = Boolean(G.responseWindow?.isOpen);
-            const companionId = companion.instanceId || companion.id;
             const tookWound = (G.lastWoundedCardIds || []).includes(
                 companionId
             );
@@ -205,7 +217,10 @@ export const resolveSkirmish = (G: GameState, _ctx?: Ctx) => {
         }
     }
 
-    G.statusMessage = resultMsg;
+    if (!G.responseWindow?.isOpen) {
+        G.statusMessage = resultMsg;
+    }
+    tryOpenWinsSkirmish(G);
 };
 
 /**

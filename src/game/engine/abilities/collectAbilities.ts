@@ -137,7 +137,7 @@ function formatFilterList(tokens: string[]): string {
 }
 
 function formatTargetPhrase(target: AbilityTargetRef | undefined): string | null {
-    if (!target || target === 'SELF' || target === 'BEARER') return null;
+    if (!target || target === 'SELF' || target === 'BEARER' || target === 'WINNER') return null;
     if (target === 'SKIRMISHING') return 'un personnage au combat';
     if (Array.isArray(target)) {
         return `un ${formatFilterList(target.flat())}`;

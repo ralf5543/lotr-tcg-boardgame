@@ -1,6 +1,6 @@
 import type { Ability, CardState, GameState } from '../../types';
 import { getEffectiveVitality } from '../../../utils/cardStats';
-import { resolveCostTarget } from './resolveCostTarget';
+import { resolveCostTarget, resolveWinnerTargets } from './resolveCostTarget';
 import { findEventAbilityForPhase } from './playEventAbility';
 
 export function cardTargetIds(card: CardState): string[] {
@@ -51,6 +51,15 @@ export function getDesignationCandidates(
         );
     }
 
+    const winnerEffect = (ability.effects || []).find(
+        (item) => 'target' in item && item.target === 'WINNER'
+    );
+    if (winnerEffect) {
+        const matches = resolveWinnerTargets(G, source, ability);
+        if (matches.length <= 1) return [];
+        return uniqueCards(matches);
+    }
+
     const effect = (ability.effects || []).find(
         (item) =>
             'target' in item &&
@@ -68,6 +77,12 @@ export function abilityHasLegalEffectTarget(
     for (const effect of ability.effects || []) {
         if (!('target' in effect)) continue;
         if (effect.target === 'SELF' || effect.target === 'BEARER') continue;
+        if (effect.target === 'WINNER') {
+            if (resolveWinnerTargets(G, source, ability).length === 0) {
+                return false;
+            }
+            continue;
+        }
         if (resolveCostTarget(G, source, effect.target).length === 0) {
             return false;
         }

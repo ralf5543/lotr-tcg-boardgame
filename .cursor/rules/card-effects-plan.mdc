@@ -18,7 +18,7 @@ Réponse n’est pas une phase. Fenêtre dédiée `responseWindow` + `pendingEve
 5. Étendre exert-to-make / to-wound. Puis `When you play this`. Puis réponses « gagne une escarmouche » / mort.
    - **5a** — exert-to-make une **autre** classe (`7R91` Faramir, `0P21` Treebeard) ; to-wound un personnage **au combat** (`1C271` Soldat orque). Refuser tout reste inconnu. ✅
    - **5b** — `When you play this` **requis** (pas « you may ») : `1C191` Éclaireur de la Moria (spot Elfe → crépuscule). ✅ « you may » = choix, toaster à part.
-   - **5c** — Réponses « gagne une escarmouche » / mort. Sam Porteur si Frodo meurt = exception (étape 6).
+   - **5c** — Réponses « gagne une escarmouche » (make fierce / force jusqu’au ralliement) : `1U159`, `1R247`, `4C37`. ✅ Mort : Sam Porteur si Frodo meurt = exception étape 6 ; le reste (soigner, moulin, défausse…) reste inerte.
 6. Exceptions (~300) en handlers par id, pas dans le parser.
 
 Tests : cartes réelles du CSV. UI : toaster seulement s’il existe au moins une réponse payable dont le trigger matche.

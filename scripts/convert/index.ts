@@ -20,7 +20,17 @@ import {
     parseToPlayConditions,
     parseAidCost,
     parseAbilities,
+    coerceOrphanGameTextAsLore,
 } from './parsers.ts';
+
+function langTextAndLore(
+    text: string | undefined,
+    lore: string | undefined,
+    englishHasGameText: boolean
+): [string | undefined, string | undefined] {
+    const coerced = coerceOrphanGameTextAsLore(text, lore, englishHasGameText);
+    return [coerced.gameText, coerced.lore];
+}
 
 async function convert() {
     console.log('🔄 Lecture et traitement du CSV des cartes...');
@@ -65,6 +75,7 @@ async function convert() {
 
         const frenchText = data['French Text'] || '';
         const englishText = data['Text'] || '';
+        const englishHasGameText = Boolean(englishText.trim());
         const targetMap = isSite ? siteMap : cardMap;
 
         if (targetMap.has(cardId)) {
@@ -180,26 +191,38 @@ async function convert() {
                 fr: buildLangBlock(
                     data['French Title'],
                     data['French Subtitle'],
-                    data['French Text'],
-                    data['French Lore']
+                    ...langTextAndLore(
+                        data['French Text'],
+                        data['French Lore'],
+                        englishHasGameText
+                    )
                 ),
                 de: buildLangBlock(
                     data['German Title'],
                     data['German Subtitle'],
-                    data['German Text'],
-                    data['German Lore']
+                    ...langTextAndLore(
+                        data['German Text'],
+                        data['German Lore'],
+                        englishHasGameText
+                    )
                 ),
                 it: buildLangBlock(
                     data['Italian Title'],
                     data['Italian Subtitle'],
-                    data['Italian Text'],
-                    data['Italian Lore']
+                    ...langTextAndLore(
+                        data['Italian Text'],
+                        data['Italian Lore'],
+                        englishHasGameText
+                    )
                 ),
                 es: buildLangBlock(
                     data['Spanish Title'],
                     data['Spanish Subtitle'],
-                    data['Spanish Text'],
-                    data['Spanish Lore']
+                    ...langTextAndLore(
+                        data['Spanish Text'],
+                        data['Spanish Lore'],
+                        englishHasGameText
+                    )
                 ),
             },
         };

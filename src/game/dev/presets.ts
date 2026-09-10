@@ -534,17 +534,25 @@ export const applyDevPreset = (
             fpPlayer.hand = [];
 
             if (shadowPlayer) {
-                shadowPlayer.hand = [clonePresetCard('1C191')];
-                shadowPlayer.supportArea = [];
+                shadowPlayer.hand = [
+                    clonePresetCard('1C191'),
+                    clonePresetCard('1R247'),
+                    clonePresetCard('4C37'),
+                ];
+                shadowPlayer.supportArea = [clonePresetCard('1U159')];
             }
 
-            G.battlefield = [clonePresetCard('1C271')];
+            G.battlefield = [
+                clonePresetCard('1C271'),
+                clonePresetCard('1C158'),
+                clonePresetCard('4C17'),
+            ];
             G.skirmishes = [];
             G.activeSkirmishId = undefined;
             G.actionWindow = undefined;
 
             G.statusMessage =
-                '[DEV] Make / blessure / When you play / Affectation — Éclaireur en main Ombre, Soldat orque en face, Faramir + Merry + Sylvebarbe + Legolas. Sauter à assignment pour le toaster d’affectation (Sylvebarbe).';
+                '[DEV] Victoire : Frénésie en soutien Ombre. Main Ombre (?player=1) : Ennemi sans Pitié + Cri de Guerre. Séides : Soldat orque, Pillards, Sauvage Dun. Affecter l’Uruk / le Dun à Merry.';
             break;
         }
     }
