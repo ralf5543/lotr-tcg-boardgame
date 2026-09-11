@@ -173,6 +173,13 @@ export const DevPanel: React.FC<DevPanelProps> = ({
                         >
                             ⚔️ Sam — si Frodon meurt
                         </S.PresetButton>
+                        <S.PresetButton
+                            onClick={() =>
+                                moves.devLoadPreset('LAYOUT_CROWDED')
+                            }
+                        >
+                            📐 Plateau saturé (9 compagnons)
+                        </S.PresetButton>
                         <S.GameButton $bgColor="#3498db" onClick={onDrawCard}>
                             🃏 Piocher ({deckCount})
                         </S.GameButton>

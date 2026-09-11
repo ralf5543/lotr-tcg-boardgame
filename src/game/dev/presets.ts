@@ -563,5 +563,67 @@ export const applyDevPreset = (
                 '[DEV] Sam 2C114 : blesse Frodon à mort (dev) → réponse Sam devient Porteur (résistance 5) + Anneau Unique.';
             break;
         }
+        case 'LAYOUT_CROWDED': {
+            const shadowId = fpId === '0' ? '1' : '0';
+            const shadowPlayer = G.players[shadowId];
+
+            Object.keys(G.players).forEach((pId) => {
+                const player = G.players[pId];
+                if (player) {
+                    player.hand = [];
+                    player.supportArea = [];
+                    player.fellowshipArea = [];
+                }
+            });
+
+            const frodo = asRingBearer(clonePresetCard('2C102', 'dev-layout-frodo'));
+            frodo.attachments = [clonePresetCard('1R1', 'dev-layout-ring')];
+
+            fpPlayer.fellowshipArea = [
+                frodo,
+                clonePresetCard('2C114', 'dev-layout-sam'),
+                clonePresetCard('1R302', 'dev-layout-merry'),
+                clonePresetCard('1R89', 'dev-layout-aragorn'),
+                clonePresetCard('1R72', 'dev-layout-gandalf'),
+                clonePresetCard('0P12', 'dev-layout-gimli'),
+                clonePresetCard('0P13', 'dev-layout-legolas'),
+                clonePresetCard('4C270', 'dev-layout-eowyn'),
+                clonePresetCard('1R96', 'dev-layout-boromir'),
+            ];
+            fpPlayer.supportArea = [
+                clonePresetCard('1R34', 'dev-layout-celeborn'),
+                clonePresetCard('1R40', 'dev-layout-elrond'),
+                clonePresetCard('1R45', 'dev-layout-galadriel'),
+                clonePresetCard('1C10', 'dev-layout-dwarven-resolve'),
+                clonePresetCard('1R114', 'dev-layout-elendil'),
+                clonePresetCard('1C20', 'dev-layout-let-them-come'),
+            ];
+            fpPlayer.hand = [];
+
+            if (shadowPlayer) {
+                shadowPlayer.fellowshipArea = [];
+                shadowPlayer.hand = [];
+                shadowPlayer.supportArea = [
+                    clonePresetCard('1C133', 'dev-layout-ambition'),
+                    clonePresetCard('1R125', 'dev-layout-greed'),
+                    clonePresetCard('1U130', 'dev-layout-storm'),
+                    clonePresetCard('1C141', 'dev-layout-arrows'),
+                    clonePresetCard('1C157', 'dev-layout-armory'),
+                    clonePresetCard('1U142', 'dev-layout-voice'),
+                ];
+            }
+
+            G.battlefield = [];
+            G.skirmishes = [];
+            G.activeSkirmishId = undefined;
+            G.actionWindow = undefined;
+            G.responseWindow = undefined;
+            G.pendingEvent = undefined;
+            G.twilightPool = 4;
+
+            G.statusMessage =
+                '[DEV] Plateau saturé : 9 compagnons + alliés/conditions FP et Ombre (test de place UI).';
+            break;
+        }
     }
 };
