@@ -171,6 +171,14 @@ function formatEffectBit(
     if (effect.type === 'DRAW') {
         return `piocher ${effect.count} carte${effect.count > 1 ? 's' : ''}`;
     }
+    if (effect.type === 'HEAL') {
+        const who = formatTargetPhrase(effect.target);
+        return who ? `guérir ${who}` : 'guérir';
+    }
+    if (effect.type === 'DISCARD') {
+        const who = formatTargetPhrase(effect.target);
+        return who ? `défausser ${who}` : 'défausser';
+    }
     if (effect.type === 'PREVENT_WOUND') {
         return 'empêcher cette blessure';
     }

@@ -239,4 +239,52 @@ describe('designation', () => {
             'gimli'
         );
     });
+
+    it('Heal a Hobbit : uniquement les Hobbits déjà blessés', () => {
+        const heal: Ability = {
+            id: '1C315:0',
+            phases: ['SKIRMISH'],
+            cost: [],
+            effects: [{ type: 'HEAL', count: 1, target: [['HOBBIT']] }],
+            source: 'SELF',
+        };
+        const G = createGameState({
+            players: {
+                '0': createPlayerState('0', {
+                    fellowshipArea: [
+                        createCompanion({
+                            id: 'frodo',
+                            race: 'HOBBIT',
+                            vitality: 4,
+                            wounds: 1,
+                        }),
+                        createCompanion({
+                            id: 'sam',
+                            race: 'HOBBIT',
+                            vitality: 4,
+                            wounds: 0,
+                        }),
+                    ],
+                }),
+            },
+        });
+        const event = createCard({
+            id: '1C315',
+            kind: 'FREE_PEOPLE',
+            type: 'EVENT',
+            title: 'Stout and Sturdy',
+            phases: ['SKIRMISH'],
+            abilities: [heal],
+        });
+        expect(abilityNeedsDesignation(G, event, heal)).toBe(true);
+        expect(getDesignationCandidates(G, event, heal).map((c) => c.id)).toEqual(
+            ['frodo']
+        );
+        expect(getHandEventDesignationTargetIds(G, event, 'skirmish')).toContain(
+            'frodo'
+        );
+        expect(
+            getHandEventDesignationTargetIds(G, event, 'skirmish')
+        ).not.toContain('sam');
+    });
 });

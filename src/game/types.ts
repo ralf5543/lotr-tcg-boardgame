@@ -197,7 +197,17 @@ export type AbilityEffect =
           type: 'DRAW';
           count: number;
       }
-      | {
+    | {
+          type: 'HEAL';
+          count: number;
+          target: AbilityTargetRef;
+      }
+    | {
+          type: 'DISCARD';
+          count: number;
+          target: AbilityTargetRef;
+      }
+    | {
           type: 'WOUND';
           count: number;
           target: AbilityTargetRef;

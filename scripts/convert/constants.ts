@@ -141,6 +141,9 @@ export const VALID_TARGET_TYPES = new Set([
     'COMPANION',
     'ALLY',
     'CHARACTER',
+    'CONDITION',
+    'POSSESSION',
+    'ARTIFACT',
     'HAND-WEAPON',
     'RANGED-WEAPON',
 ]);

@@ -1983,11 +1983,7 @@
             "exert": [
               {
                 "count": 1,
-                "target": [
-                  [
-                    "Aragorn"
-                  ]
-                ]
+                "target": "BEARER"
               }
             ]
           }
@@ -2003,7 +1999,7 @@
             ]
           }
         ],
-        "source": "SELF",
+        "source": "ATTACHMENT",
         "text": "ARCHERY: Exert Aragorn to wound a minion; Aragorn does not add to the fellowship archery total.",
         "omitFromArcheryTotal": true
       }
@@ -12083,6 +12079,38 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "ALLY",
+    "abilities": [
+      {
+        "id": "1R34:0",
+        "phases": [
+          "FELLOWSHIP"
+        ],
+        "cost": [
+          {
+            "exert": [
+              {
+                "count": 1,
+                "target": "SELF"
+              }
+            ]
+          }
+        ],
+        "effects": [
+          {
+            "type": "HEAL",
+            "count": 1,
+            "target": [
+              [
+                "ELVEN",
+                "ALLY"
+              ]
+            ]
+          }
+        ],
+        "source": "SELF",
+        "text": "FELLOWSHIP: Exert Celeborn to heal an elven ally."
+      }
+    ],
     "actionPhases": [
       "FELLOWSHIP"
     ],
@@ -12364,6 +12392,32 @@
         ]
       }
     ],
+    "abilities": [
+      {
+        "id": "1R40:0",
+        "phases": [
+          "FELLOWSHIP"
+        ],
+        "cost": [
+          {
+            "exert": [
+              {
+                "count": 1,
+                "target": "SELF"
+              }
+            ]
+          }
+        ],
+        "effects": [
+          {
+            "type": "DRAW",
+            "count": 1
+          }
+        ],
+        "source": "SELF",
+        "text": "FELLOWSHIP: Exert Elrond to draw a card"
+      }
+    ],
     "actionPhases": [
       "FELLOWSHIP"
     ],
@@ -12384,8 +12438,8 @@
       "fr": {
         "title": "Elrond",
         "subtitle": "Seigneur de Fondcombe",
-        "gameText": "Pour jouer, désignez Gandalf ou un Elfe. Au début de chacun de vos tours, guérissez chaque allié dont la demeure est un site 3.",
-        "loreText": "Compagnie: Affaiblissez Elrond pour piocher une carte."
+        "gameText": "Pour jouer, désignez Gandalf ou un Elfe. \nAu début de chacun de vos tours, guérissez chaque allié dont la demeure est un site 3. \n**Compagnie :** Affaiblissez Elrond pour piocher une carte.",
+        "loreText": "Il était le Seigneur de Fondcombe et puissant parmi les Elfes et les Hommes."
       },
       "de": {
         "title": "Elrond",
@@ -14649,11 +14703,7 @@
             "exert": [
               {
                 "count": 1,
-                "target": [
-                  [
-                    "Aragorn"
-                  ]
-                ]
+                "target": "BEARER"
               }
             ]
           }
@@ -14669,7 +14719,7 @@
             ]
           }
         ],
-        "source": "SELF",
+        "source": "ATTACHMENT",
         "text": "ARCHERY: Exert Aragorn to wound a minion; Aragorn does not add to the fellowship archery total.",
         "omitFromArcheryTotal": true
       }
@@ -15034,6 +15084,38 @@
       [
         "Boromir"
       ]
+    ],
+    "abilities": [
+      {
+        "id": "1U98:0",
+        "phases": [
+          "MANEUVER"
+        ],
+        "cost": [
+          {
+            "exert": [
+              {
+                "count": 1,
+                "target": "BEARER"
+              }
+            ]
+          }
+        ],
+        "effects": [
+          {
+            "type": "DISCARD",
+            "count": 1,
+            "target": [
+              [
+                "WEATHER",
+                "CONDITION"
+              ]
+            ]
+          }
+        ],
+        "source": "ATTACHMENT",
+        "text": "MANEUVER: Exert Boromir to discard a weather condition."
+      }
     ],
     "actionPhases": [
       "MANEUVER"
@@ -25143,6 +25225,29 @@
     "isUnique": false,
     "kind": "FREE_PEOPLE",
     "type": "EVENT",
+    "abilities": [
+      {
+        "id": "1C315:0",
+        "phases": [
+          "MANEUVER",
+          "SKIRMISH"
+        ],
+        "cost": [],
+        "effects": [
+          {
+            "type": "HEAL",
+            "count": 1,
+            "target": [
+              [
+                "HOBBIT"
+              ]
+            ]
+          }
+        ],
+        "source": "SELF",
+        "text": "SKIRMISH: Heal a Hobbit."
+      }
+    ],
     "phases": [
       "MANEUVER",
       "SKIRMISH"
@@ -31584,6 +31689,37 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "ALLY",
+    "abilities": [
+      {
+        "id": "3R13:0",
+        "phases": [
+          "REGROUP"
+        ],
+        "cost": [
+          {
+            "exert": [
+              {
+                "count": 2,
+                "target": "SELF"
+              }
+            ]
+          }
+        ],
+        "effects": [
+          {
+            "type": "HEAL",
+            "count": 1,
+            "target": [
+              [
+                "COMPANION"
+              ]
+            ]
+          }
+        ],
+        "source": "SELF",
+        "text": "REGROUP: Exert Elrond twice to heal a companion."
+      }
+    ],
     "actionPhases": [
       "REGROUP"
     ],
@@ -48883,6 +49019,38 @@
     "keywords": [
       "VILLAGER"
     ],
+    "abilities": [
+      {
+        "id": "4C277:0",
+        "phases": [
+          "FELLOWSHIP"
+        ],
+        "cost": [
+          {
+            "exert": [
+              {
+                "count": 1,
+                "target": "SELF"
+              }
+            ]
+          }
+        ],
+        "effects": [
+          {
+            "type": "HEAL",
+            "count": 1,
+            "target": [
+              [
+                "ROHAN",
+                "MAN"
+              ]
+            ]
+          }
+        ],
+        "source": "SELF",
+        "text": "FELLOWSHIP: Exert Guma to heal a rohan Man."
+      }
+    ],
     "actionPhases": [
       "FELLOWSHIP"
     ],
@@ -50943,6 +51111,29 @@
     "keywords": [
       "STEALTH"
     ],
+    "abilities": [
+      {
+        "id": "4C322:0",
+        "phases": [
+          "SKIRMISH"
+        ],
+        "cost": [],
+        "effects": [
+          {
+            "type": "DISCARD",
+            "count": 1,
+            "target": [
+              [
+                "UNBOUND",
+                "HOBBIT"
+              ]
+            ]
+          }
+        ],
+        "source": "SELF",
+        "text": "SKIRMISH: Discard an unbound Hobbit."
+      }
+    ],
     "phases": [
       "SKIRMISH"
     ],
@@ -51666,6 +51857,38 @@
     "type": "COMPANION",
     "keywords": [
       "UNHASTY"
+    ],
+    "abilities": [
+      {
+        "id": "5U15:0",
+        "phases": [
+          "FELLOWSHIP"
+        ],
+        "cost": [
+          {
+            "exert": [
+              {
+                "count": 1,
+                "target": "SELF"
+              }
+            ]
+          }
+        ],
+        "effects": [
+          {
+            "type": "HEAL",
+            "count": 1,
+            "target": [
+              [
+                "UNBOUND",
+                "HOBBIT"
+              ]
+            ]
+          }
+        ],
+        "source": "SELF",
+        "text": "FELLOWSHIP: Exert Birchseed to heal an unbound Hobbit."
+      }
     ],
     "actionPhases": [
       "ASSIGNMENT",

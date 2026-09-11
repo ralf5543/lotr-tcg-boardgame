@@ -9,6 +9,7 @@ import { resolveAbilityTarget, forEachInPlayCard, resolveWinnerTargets } from '.
 import { requestWounds } from '../responseWindow';
 import { cardMatchesTarget } from '../validations/matchers';
 import { drawCardsForPlayer } from '../../../utils/drawCards';
+import { discardCardFromPlay } from '../../../utils/discardCardFromPlay';
 
 function expiryToScope(expiresAtPhase: AbilityEffectExpiry): ModifierScope {
     if (expiresAtPhase === 'SKIRMISH') return 'SKIRMISH';
@@ -144,6 +145,17 @@ function applyOneEffect(
     if (effect.type === 'WOUND') {
         requestWounds(G, target, effect.count || 1);
         return true;
+    }
+
+    if (effect.type === 'HEAL') {
+        if (target.isDead) return false;
+        const amount = effect.count || 1;
+        target.wounds = Math.max(0, (target.wounds || 0) - amount);
+        return true;
+    }
+
+    if (effect.type === 'DISCARD') {
+        return discardCardFromPlay(G, target);
     }
 
     if (effect.type === 'ALLOW_SKIRMISH') {

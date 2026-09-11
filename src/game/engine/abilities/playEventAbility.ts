@@ -2,7 +2,7 @@ import type { Ability, CardState, GameState } from '../../types';
 import { abilityMatchesPhase } from './collectAbilities';
 import { applyAbilityEffect } from './applyAbilityEffect';
 import { canPayAbilityCost, payAbilityCost } from './payAbilityCost';
-import { resolveCostTarget, resolveWinnerTargets } from './resolveCostTarget';
+import { abilityHasLegalEffectTarget } from './designation';
 import { isResponseWindowOpen } from '../responseWindow';
 
 function abilityPhaseToMatch(G: GameState, rawPhase: string): string {
@@ -56,24 +56,11 @@ export function canPayEventAbility(
         };
     }
 
-    for (const effect of ability.effects || []) {
-        if (!('target' in effect)) continue;
-        if (effect.target === 'SELF' || effect.target === 'BEARER') continue;
-        if (effect.target === 'WINNER') {
-            if (resolveWinnerTargets(G, card, ability).length === 0) {
-                return {
-                    valid: false,
-                    reason: 'Aucune cible valide pour cet événement.',
-                };
-            }
-            continue;
-        }
-        if (resolveCostTarget(G, card, effect.target).length === 0) {
-            return {
-                valid: false,
-                reason: 'Aucune cible valide pour cet événement.',
-            };
-        }
+    if (!abilityHasLegalEffectTarget(G, card, ability)) {
+        return {
+            valid: false,
+            reason: 'Aucune cible valide pour cet événement.',
+        };
     }
 
     return { valid: true };

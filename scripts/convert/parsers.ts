@@ -789,9 +789,22 @@ function parseClassFilters(raw: string): string[] {
     return filters;
 }
 
+function parseBearerMustBeName(fullText?: string): string | null {
+    if (!fullText) return null;
+    const match = fullText.match(/Bearer must be\s+([^.\n]+)/i);
+    if (!match) return null;
+    const name = match[1]
+        .replace(/<[^>]+>/g, ' ')
+        .replace(/\s+/g, ' ')
+        .trim();
+    if (!name || /^(a|an)\s+/i.test(name)) return null;
+    return name;
+}
+
 function parseExertSubject(
     raw: string,
-    cardTitle?: string
+    cardTitle?: string,
+    fullText?: string
 ): {
     target: 'SELF' | 'BEARER' | string[][];
     count: number;
@@ -812,6 +825,8 @@ function parseExertSubject(
         }
     }
 
+    if (/^\d+\s+/.test(body)) return null;
+
     if (/^bearer$/i.test(body)) {
         return { target: 'BEARER', count };
     }
@@ -822,6 +837,11 @@ function parseExertSubject(
     const title = (cardTitle || '').trim();
     if (title && body.toLowerCase() === title.toLowerCase()) {
         return { target: 'SELF', count };
+    }
+
+    const bearerName = parseBearerMustBeName(fullText);
+    if (bearerName && body.toLowerCase() === bearerName.toLowerCase()) {
+        return { target: 'BEARER', count };
     }
 
     const articleMatch = body.match(/^(a|an)\s+(.+)$/i);
@@ -1128,6 +1148,101 @@ function remainderAfterWinnerRef(effectText: string): string | undefined {
     return remainder;
 }
 
+const NON_CHARACTER_FILTERS = new Set([
+    'CONDITION',
+    'POSSESSION',
+    'ARTIFACT',
+    'SITE',
+    'EVENT',
+    'FOLLOWER',
+    'HAND-WEAPON',
+    'RANGED-WEAPON',
+]);
+
+function isCharacterishHealTarget(
+    target: 'SELF' | 'BEARER' | 'SKIRMISHING' | 'WINNER' | string[][]
+): boolean {
+    if (target === 'SELF' || target === 'BEARER') return true;
+    if (!Array.isArray(target)) return false;
+    const tokens = target.flat().map((token) => token.toUpperCase());
+    if (tokens.some((token) => NON_CHARACTER_FILTERS.has(token))) return false;
+    return tokens.length > 0;
+}
+
+function effectTargetConflictsWithCost(
+    costTarget: 'SELF' | 'BEARER' | string[][],
+    effectTarget: 'SELF' | 'BEARER' | 'SKIRMISHING' | 'WINNER' | string[][]
+): boolean {
+    if (costTarget === 'SELF' || costTarget === 'BEARER') return false;
+    if (!Array.isArray(costTarget)) return false;
+    if (effectTarget === 'SELF' || effectTarget === 'BEARER') return false;
+    if (effectTarget === costTarget) return false;
+    if (Array.isArray(effectTarget)) {
+        return JSON.stringify(effectTarget) !== JSON.stringify(costTarget);
+    }
+    return true;
+}
+
+/** Cible d’un soin / d’une défausse : him, bearer, that CLASS, a CLASS. */
+function parseNounTarget(
+    raw: string,
+    costTarget: 'SELF' | 'BEARER' | string[][],
+    cardTitle?: string
+): 'SELF' | 'BEARER' | string[][] | null {
+    const normalized = raw
+        .replace(/<br\s*\/?>/gi, ' ')
+        .replace(/him or her/gi, 'him')
+        .replace(/\s+/g, ' ')
+        .trim()
+        .replace(/[.\s]+$/, '')
+        .replace(/\s+from play$/i, '')
+        .trim();
+    const plain = normalized.replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim();
+    if (!plain) return null;
+    if (
+        /\b(and|or|each|every|all|may|from|twice|times|up to|except|stacked|borne)\b/i.test(
+            plain
+        )
+    ) {
+        return null;
+    }
+
+    if (/^(him|her|it)$/i.test(plain)) {
+        return parseEffectTarget(normalized, costTarget);
+    }
+    if (/^bearer$/i.test(plain)) return 'BEARER';
+    if (/^this(?:\s+[\w’-]+)?$/i.test(plain)) return 'SELF';
+    const title = (cardTitle || '').trim();
+    if (title && plain.toLowerCase() === title.toLowerCase()) return 'SELF';
+    if (/^that\s+[\w’-]+$/i.test(plain)) {
+        if (costTarget === 'SELF' || costTarget === 'BEARER') return null;
+        return costTarget;
+    }
+
+    const article = normalized.match(/^(a|an)\s+([\s\S]+)$/i);
+    if (!article) return null;
+    const filters = parseClassFilters(article[2]);
+    if (filters.length === 0) return null;
+    return [filters];
+}
+
+function phasesJoinedByOr(
+    markers: { phase: string; markerStart: number; bodyStart: number }[],
+    index: number,
+    text: string
+): string[] {
+    const extras: string[] = [];
+    for (let i = index; i > 0; i--) {
+        const prev = markers[i - 1];
+        const prevBody = stripAbilityMarkup(
+            text.slice(prev.bodyStart, markers[i].markerStart)
+        );
+        if (!/^or$/i.test(prevBody)) break;
+        extras.unshift(prev.phase);
+    }
+    return [...extras, markers[index].phase];
+}
+
 function parseWinsSkirmishWinner(
     raw: string,
     cardTitle?: string
@@ -1257,7 +1372,8 @@ function parseWoundTriggerTarget(
 
 function parsePreventCostClause(
     segment: string,
-    cardTitle?: string
+    cardTitle?: string,
+    fullText?: string
 ): Record<string, unknown> | null {
     const text = segment.replace(/[.,;]+$/g, '').trim();
     if (!text) return null;
@@ -1289,7 +1405,7 @@ function parsePreventCostClause(
     const exertMatch = text.match(/^Exert\s+([\s\S]+)$/i);
     if (exertMatch) {
         if (/\b(and|or)\b/i.test(exertMatch[1])) return null;
-        const subject = parseExertSubject(exertMatch[1], cardTitle);
+        const subject = parseExertSubject(exertMatch[1], cardTitle, fullText);
         if (!subject) return null;
         return {
             exert: [
@@ -1308,7 +1424,7 @@ function parsePreventCostClause(
         if (/\b(twilight|tokens?|burdens?|threats?)\b/i.test(spotMatch[1])) {
             return null;
         }
-        const subject = parseExertSubject(spotMatch[1], cardTitle);
+        const subject = parseExertSubject(spotMatch[1], cardTitle, fullText);
         if (!subject) return null;
         return {
             spot: [{ count: subject.count, target: subject.target }],
@@ -1373,7 +1489,8 @@ function mergePreventCostClauses(
 /** Une alternative de coût (clauses liées par `and`). `or` = plusieurs abilities. */
 function parsePreventCostOption(
     raw: string,
-    cardTitle?: string
+    cardTitle?: string,
+    fullText?: string
 ): Record<string, unknown> | null {
     const segments = raw
         .split(/\s+and\s+/i)
@@ -1381,7 +1498,7 @@ function parsePreventCostOption(
         .filter(Boolean);
     if (segments.length === 0) return null;
     const clauses = segments.map((segment) =>
-        parsePreventCostClause(segment, cardTitle)
+        parsePreventCostClause(segment, cardTitle, fullText)
     );
     if (clauses.some((clause) => !clause)) return null;
     return mergePreventCostClauses(clauses as Record<string, unknown>[]);
@@ -1524,6 +1641,9 @@ export function parseAbilities(
                 : text.length;
         const body = text.slice(marker.bodyStart, bodyEnd).trim();
         const bodyPlain = stripAbilityMarkup(body);
+        if (/^or$/i.test(bodyPlain)) return;
+
+        const phases = phasesJoinedByOr(markers, index, text);
 
         if (marker.phase === 'RESPONSE') {
             const wearMatch = bodyPlain.match(
@@ -1577,10 +1697,10 @@ export function parseAbilities(
             const inSkirmish = Boolean(preventMatch[2]);
             const optionTexts = preventMatch[3]
                 .split(/\s+or\s+/i)
-                .map((text) => text.trim())
+                .map((option) => option.trim())
                 .filter(Boolean);
-            const costOptions = optionTexts.map((text) =>
-                parsePreventCostOption(text, cardTitle)
+            const costOptions = optionTexts.map((option) =>
+                parsePreventCostOption(option, cardTitle, text)
             );
             if (costOptions.length === 0 || costOptions.some((cost) => !cost)) {
                 return;
@@ -1597,7 +1717,7 @@ export function parseAbilities(
 
                 abilities.push({
                     id: `${cardId || 'ability'}:${abilities.length}`,
-                    phases: [marker.phase],
+                    phases,
                     trigger: {
                         type: 'ABOUT_TO_WOUND',
                         target: triggerTarget,
@@ -1633,7 +1753,7 @@ export function parseAbilities(
         );
         if (makeMatch) {
             if (/\b(and|or)\b/i.test(makeMatch[1])) return;
-            const subject = parseExertSubject(makeMatch[1], cardTitle);
+            const subject = parseExertSubject(makeMatch[1], cardTitle, text);
             if (!subject) return;
             const effectText = makeMatch[2];
             if (/\bfor each\b/i.test(effectText.replace(/<[^>]+>/g, ' '))) return;
@@ -1655,7 +1775,7 @@ export function parseAbilities(
 
             abilities.push({
                 id: `${cardId || 'ability'}:${abilities.length}`,
-                phases: [marker.phase],
+                phases,
                 cost: [
                     {
                         exert: [
@@ -1702,7 +1822,7 @@ export function parseAbilities(
 
             abilities.push({
                 id: `${cardId || 'ability'}:${abilities.length}`,
-                phases: [marker.phase],
+                phases,
                 cost: [],
                 effects: parsedMake.effects,
                 source: 'SELF',
@@ -1716,7 +1836,7 @@ export function parseAbilities(
         );
         if (allowMatch) {
             if (/\b(and|or)\b/i.test(allowMatch[1])) return;
-            const allowSubject = parseExertSubject(allowMatch[1], cardTitle);
+            const allowSubject = parseExertSubject(allowMatch[1], cardTitle, text);
             if (!allowSubject) return;
             if (parseAllowSkirmishTarget(allowMatch[2], cardTitle) !== 'SELF') {
                 return;
@@ -1731,7 +1851,7 @@ export function parseAbilities(
 
             abilities.push({
                 id: `${cardId || 'ability'}:${abilities.length}`,
-                phases: [marker.phase],
+                phases,
                 cost: [
                     {
                         exert: [
@@ -1754,17 +1874,17 @@ export function parseAbilities(
         }
 
         const drawMatch = body.match(
-            /^Exert\s+([\s\S]+?)\s+to draw\s+(\d+)\s+cards?\s*\.?$/i
+            /^Exert\s+([\s\S]+?)\s+to draw\s+(a|\d+)\s+cards?\s*\.?$/i
         );
         if (drawMatch) {
             if (/\b(and|or)\b/i.test(drawMatch[1])) return;
-            const drawSubject = parseExertSubject(drawMatch[1], cardTitle);
+            const drawSubject = parseExertSubject(drawMatch[1], cardTitle, text);
             if (!drawSubject) return;
-            const drawCount = parseInt(drawMatch[2], 10);
-            if (!drawCount || drawCount < 1) return;
+            const drawCount = parseBurdenWord(drawMatch[2]);
+            if (!drawCount) return;
 
             const drawClause =
-                `${marker.phase}: Exert ${drawMatch[1].trim()} to draw ${drawCount} cards`
+                `${marker.phase}: Exert ${drawMatch[1].trim()} to draw ${drawMatch[2]} card${drawCount > 1 ? 's' : ''}`
                     .replace(/<[^>]+>/g, '')
                     .replace(/\s+/g, ' ')
                     .replace(/\s+\./g, '.')
@@ -1772,7 +1892,7 @@ export function parseAbilities(
 
             abilities.push({
                 id: `${cardId || 'ability'}:${abilities.length}`,
-                phases: [marker.phase],
+                phases,
                 cost: [
                     {
                         exert: [
@@ -1794,13 +1914,183 @@ export function parseAbilities(
             return;
         }
 
+        const healMatch = body.match(
+            /^Exert\s+([\s\S]+?)\s+to heal\s+([\s\S]+)/i
+        );
+        if (healMatch) {
+            if (/\b(and|or)\b/i.test(healMatch[1])) return;
+            const healSubject = parseExertSubject(healMatch[1], cardTitle, text);
+            if (!healSubject) return;
+            const healTarget = parseNounTarget(
+                healMatch[2],
+                healSubject.target,
+                cardTitle
+            );
+            if (!healTarget || !isCharacterishHealTarget(healTarget)) return;
+            if (effectTargetConflictsWithCost(healSubject.target, healTarget)) {
+                return;
+            }
+
+            const healClause =
+                `${marker.phase}: Exert ${healMatch[1].trim()} to heal ${healMatch[2]}`
+                    .replace(/<[^>]+>/g, '')
+                    .replace(/\s+/g, ' ')
+                    .replace(/\s+\./g, '.')
+                    .trim();
+
+            abilities.push({
+                id: `${cardId || 'ability'}:${abilities.length}`,
+                phases,
+                cost: [
+                    {
+                        exert: [
+                            {
+                                count: healSubject.count,
+                                target: healSubject.target,
+                                ...(healSubject.mode
+                                    ? { mode: healSubject.mode }
+                                    : {}),
+                            },
+                        ],
+                    },
+                ],
+                effects: [{ type: 'HEAL', count: 1, target: healTarget }],
+                source:
+                    healSubject.target === 'BEARER' ? 'ATTACHMENT' : 'SELF',
+                text: healClause,
+            });
+            return;
+        }
+
+        const healBareMatch = body.match(/^Heal\s+([\s\S]+)/i);
+        if (healBareMatch) {
+            const healTarget = parseNounTarget(
+                healBareMatch[1],
+                [['']],
+                cardTitle
+            );
+            if (
+                !healTarget ||
+                !Array.isArray(healTarget) ||
+                !isCharacterishHealTarget(healTarget)
+            ) {
+                return;
+            }
+
+            const healBareClause = `${marker.phase}: Heal ${healBareMatch[1]}`
+                .replace(/<[^>]+>/g, '')
+                .replace(/\s+/g, ' ')
+                .replace(/\s+\./g, '.')
+                .trim();
+
+            abilities.push({
+                id: `${cardId || 'ability'}:${abilities.length}`,
+                phases,
+                cost: [],
+                effects: [{ type: 'HEAL', count: 1, target: healTarget }],
+                source: 'SELF',
+                text: healBareClause,
+            });
+            return;
+        }
+
+        const discardMatch = body.match(
+            /^Exert\s+([\s\S]+?)\s+to discard\s+([\s\S]+)/i
+        );
+        if (discardMatch) {
+            if (/\b(and|or)\b/i.test(discardMatch[1])) return;
+            const discardSubject = parseExertSubject(
+                discardMatch[1],
+                cardTitle,
+                text
+            );
+            if (!discardSubject) return;
+            const discardTarget = parseNounTarget(
+                discardMatch[2],
+                discardSubject.target,
+                cardTitle
+            );
+            if (!discardTarget) return;
+            if (
+                effectTargetConflictsWithCost(
+                    discardSubject.target,
+                    discardTarget
+                )
+            ) {
+                return;
+            }
+
+            const discardClause =
+                `${marker.phase}: Exert ${discardMatch[1].trim()} to discard ${discardMatch[2]}`
+                    .replace(/<[^>]+>/g, '')
+                    .replace(/\s+/g, ' ')
+                    .replace(/\s+\./g, '.')
+                    .trim();
+
+            abilities.push({
+                id: `${cardId || 'ability'}:${abilities.length}`,
+                phases,
+                cost: [
+                    {
+                        exert: [
+                            {
+                                count: discardSubject.count,
+                                target: discardSubject.target,
+                                ...(discardSubject.mode
+                                    ? { mode: discardSubject.mode }
+                                    : {}),
+                            },
+                        ],
+                    },
+                ],
+                effects: [
+                    { type: 'DISCARD', count: 1, target: discardTarget },
+                ],
+                source:
+                    discardSubject.target === 'BEARER'
+                        ? 'ATTACHMENT'
+                        : 'SELF',
+                text: discardClause,
+            });
+            return;
+        }
+
+        const discardBareMatch = body.match(/^Discard\s+([\s\S]+)/i);
+        if (discardBareMatch) {
+            const discardTarget = parseNounTarget(
+                discardBareMatch[1],
+                [['']],
+                cardTitle
+            );
+            if (!discardTarget || !Array.isArray(discardTarget)) return;
+
+            const discardBareClause =
+                `${marker.phase}: Discard ${discardBareMatch[1]}`
+                    .replace(/<[^>]+>/g, '')
+                    .replace(/\s+/g, ' ')
+                    .replace(/\s+\./g, '.')
+                    .trim();
+
+            abilities.push({
+                id: `${cardId || 'ability'}:${abilities.length}`,
+                phases,
+                cost: [],
+                effects: [
+                    { type: 'DISCARD', count: 1, target: discardTarget },
+                ],
+                source: 'SELF',
+                text: discardBareClause,
+            });
+            return;
+        }
+
         const woundMatch = body.match(
             /^Exert\s+([\s\S]+?)\s+to wound\s+([\s\S]+)/i
         );
         if (!woundMatch) return;
         if (/\b(and|or)\b/i.test(woundMatch[1])) return;
 
-        const woundSubject = parseExertSubject(woundMatch[1], cardTitle);
+        const woundSubject = parseExertSubject(woundMatch[1], cardTitle, text);
         if (!woundSubject) return;
 
         const woundClause = woundMatch[2]
@@ -1839,7 +2129,7 @@ export function parseAbilities(
 
         abilities.push({
             id: `${cardId || 'ability'}:${abilities.length}`,
-            phases: [marker.phase],
+            phases,
             cost: [
                 {
                     exert: [

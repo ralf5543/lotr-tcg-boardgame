@@ -146,6 +146,52 @@ describe('formatAbilityLabelParts', () => {
         });
     });
 
+    it('Celeborn : guérir un allié elfe', () => {
+        const ability: Ability = {
+            id: '1R34:0',
+            phases: ['FELLOWSHIP'],
+            cost: [{ exert: [{ count: 1, target: 'SELF' }] }],
+            effects: [
+                { type: 'HEAL', count: 1, target: [['ELVEN', 'ALLY']] },
+            ],
+            source: 'SELF',
+        };
+        const celeborn = createCompanion({
+            id: '1R34',
+            title: 'Celeborn',
+            i18n: { fr: { title: 'Celeborn' } },
+        });
+        expect(formatAbilityLabelParts(ability, celeborn)).toEqual({
+            cost: 'Affaiblir Celeborn',
+            effect: 'guérir un elfe Allié',
+        });
+    });
+
+    it('Cape de Boromir : défausser une situation climat', () => {
+        const ability: Ability = {
+            id: '1U98:0',
+            phases: ['MANEUVER'],
+            cost: [{ exert: [{ count: 1, target: 'BEARER' }] }],
+            effects: [
+                {
+                    type: 'DISCARD',
+                    count: 1,
+                    target: [['WEATHER', 'CONDITION']],
+                },
+            ],
+            source: 'ATTACHMENT',
+        };
+        const cloak = createCompanion({
+            id: '1U98',
+            title: "Boromir's Cloak",
+            i18n: { fr: { title: 'Cape de Boromir' } },
+        });
+        expect(formatAbilityLabelParts(ability, cloak)).toEqual({
+            cost: 'Affaiblir le détenteur',
+            effect: 'défausser un climat Situation',
+        });
+    });
+
     it('Arwen : défausser 3 cartes de la main', () => {
         const ability: Ability = {
             id: '3U7:0',

@@ -914,6 +914,60 @@ describe('playCard', () => {
         expect(G.twilightPool).toBe(1);
         expect(G.fellowshipCardsDrawn).toBe(3);
     });
+
+    it('joue Solide et Robuste : guérit un Hobbit blessé', () => {
+        const heal: Ability = {
+            id: '1C315:0',
+            phases: ['MANEUVER', 'SKIRMISH'],
+            cost: [],
+            effects: [{ type: 'HEAL', count: 1, target: [['HOBBIT']] }],
+            source: 'SELF',
+        };
+        const frodo = createCompanion({
+            id: 'frodo',
+            title: 'Frodo',
+            race: 'HOBBIT',
+            vitality: 4,
+            wounds: 1,
+        });
+        const event = createCard({
+            id: '1C315',
+            kind: 'FREE_PEOPLE',
+            type: 'EVENT',
+            title: 'Stout and Sturdy',
+            phases: ['SKIRMISH'],
+            twilightCost: 1,
+            abilities: [heal],
+        });
+
+        const engine = createEngineClient({
+            startPhase: 'skirmish',
+            playerID: '0',
+            G: {
+                ...createSkirmishActionWindow('sk-1'),
+                twilightPool: 0,
+                skirmishes: [
+                    {
+                        id: 'sk-1',
+                        companionId: 'frodo',
+                        minionIds: ['orc'],
+                    },
+                ],
+                players: {
+                    '0': createPlayerState('0', {
+                        fellowshipArea: [frodo],
+                        hand: [event],
+                    }),
+                },
+            },
+        });
+
+        engine.moves.playCard(0, 'frodo');
+
+        expect(engine.getG().players['0']?.discard[0]?.id).toBe('1C315');
+        expect(engine.getG().players['0']?.fellowshipArea[0]?.wounds).toBe(0);
+        expect(engine.getG().twilightPool).toBe(1);
+    });
 });
 
 describe('playShadowCard (soutien)', () => {

@@ -868,4 +868,197 @@ describe('activateAbility', () => {
         expect(engine.getG().battlefield[0]?.wounds).toBe(1);
         expect(engine.getG().players['0']?.fellowshipArea[0]?.wounds).toBe(1);
     });
+
+    it('Celeborn : affaiblit et guérit un allié elfe blessé', () => {
+        const celebornAbility: Ability = {
+            id: '1R34:0',
+            phases: ['FELLOWSHIP'],
+            cost: [{ exert: [{ count: 1, target: 'SELF' }] }],
+            effects: [
+                { type: 'HEAL', count: 1, target: [['ELVEN', 'ALLY']] },
+            ],
+            source: 'SELF',
+        };
+        const celeborn = createCard({
+            id: '1R34',
+            kind: 'FREE_PEOPLE',
+            type: 'ALLY',
+            title: 'Celeborn',
+            culture: 'ELVEN',
+            race: 'ELF',
+            vitality: 3,
+            actionPhases: ['FELLOWSHIP'],
+            abilities: [celebornAbility],
+        });
+        const elrond = createCard({
+            id: '1R40',
+            kind: 'FREE_PEOPLE',
+            type: 'ALLY',
+            title: 'Elrond',
+            culture: 'ELVEN',
+            race: 'ELF',
+            vitality: 4,
+            wounds: 2,
+        });
+
+        const engine = createEngineClient({
+            startPhase: 'fellowship',
+            playerID: '0',
+            G: {
+                players: {
+                    '0': createPlayerState('0', {
+                        supportArea: [celeborn, elrond],
+                    }),
+                },
+            },
+        });
+
+        engine.moves.activateAbility('1R34', '1R34:0', '1R40');
+
+        const board = engine.getG().players['0']?.supportArea || [];
+        expect(board.find((c) => c.id === '1R34')?.wounds).toBe(1);
+        expect(board.find((c) => c.id === '1R40')?.wounds).toBe(1);
+    });
+
+    it('Celeborn : refuse s’il n’y a aucun allié elfe blessé', () => {
+        const celebornAbility: Ability = {
+            id: '1R34:0',
+            phases: ['FELLOWSHIP'],
+            cost: [{ exert: [{ count: 1, target: 'SELF' }] }],
+            effects: [
+                { type: 'HEAL', count: 1, target: [['ELVEN', 'ALLY']] },
+            ],
+            source: 'SELF',
+        };
+        const celeborn = createCard({
+            id: '1R34',
+            kind: 'FREE_PEOPLE',
+            type: 'ALLY',
+            title: 'Celeborn',
+            culture: 'ELVEN',
+            race: 'ELF',
+            vitality: 3,
+            actionPhases: ['FELLOWSHIP'],
+            abilities: [celebornAbility],
+        });
+
+        const engine = createEngineClient({
+            startPhase: 'fellowship',
+            playerID: '0',
+            G: {
+                players: {
+                    '0': createPlayerState('0', {
+                        supportArea: [celeborn],
+                    }),
+                },
+            },
+        });
+
+        engine.moves.activateAbility('1R34', '1R34:0', '1R34');
+
+        expect(engine.getG().players['0']?.supportArea[0]?.wounds || 0).toBe(0);
+    });
+
+    it('Elrond : affaiblit et pioche une carte', () => {
+        const elrondAbility: Ability = {
+            id: '1R40:0',
+            phases: ['FELLOWSHIP'],
+            cost: [{ exert: [{ count: 1, target: 'SELF' }] }],
+            effects: [{ type: 'DRAW', count: 1 }],
+            source: 'SELF',
+        };
+        const elrond = createCard({
+            id: '1R40',
+            kind: 'FREE_PEOPLE',
+            type: 'ALLY',
+            title: 'Elrond',
+            culture: 'ELVEN',
+            vitality: 4,
+            actionPhases: ['FELLOWSHIP'],
+            abilities: [elrondAbility],
+        });
+
+        const engine = createEngineClient({
+            startPhase: 'fellowship',
+            playerID: '0',
+            G: {
+                players: {
+                    '0': createPlayerState('0', {
+                        supportArea: [elrond],
+                        deck: [
+                            createCard({
+                                id: 'drawn',
+                                kind: 'FREE_PEOPLE',
+                                type: 'EVENT',
+                            }),
+                        ],
+                    }),
+                },
+            },
+        });
+
+        engine.moves.activateAbility('1R40', '1R40:0');
+
+        expect(engine.getG().players['0']?.supportArea[0]?.wounds).toBe(1);
+        expect(engine.getG().players['0']?.hand[0]?.id).toBe('drawn');
+        expect(engine.getG().fellowshipCardsDrawn).toBe(1);
+    });
+
+    it('Cape de Boromir : affaiblit Boromir et défausse une situation climat', () => {
+        const cloakAbility: Ability = {
+            id: '1U98:0',
+            phases: ['MANEUVER'],
+            cost: [{ exert: [{ count: 1, target: 'BEARER' }] }],
+            effects: [
+                {
+                    type: 'DISCARD',
+                    count: 1,
+                    target: [['WEATHER', 'CONDITION']],
+                },
+            ],
+            source: 'ATTACHMENT',
+        };
+        const cloak = createCard({
+            id: '1U98',
+            kind: 'FREE_PEOPLE',
+            type: 'POSSESSION',
+            title: "Boromir's Cloak",
+            actionPhases: ['MANEUVER'],
+            abilities: [cloakAbility],
+        });
+        const boromir = createCompanion({
+            id: '1R96',
+            title: 'Boromir',
+            vitality: 3,
+            attachments: [cloak],
+        });
+        const snows = createCard({
+            id: '1C138',
+            kind: 'SHADOW',
+            type: 'CONDITION',
+            title: "Saruman's Snows",
+            keywords: ['WEATHER'],
+        });
+
+        const engine = createEngineClient({
+            startPhase: 'maneuver',
+            playerID: '0',
+            G: {
+                players: {
+                    '0': createPlayerState('0', {
+                        fellowshipArea: [boromir],
+                    }),
+                    '1': createPlayerState('1', {
+                        supportArea: [snows],
+                    }),
+                },
+            },
+        });
+
+        engine.moves.activateAbility('1U98', '1U98:0', '1C138');
+
+        expect(engine.getG().players['0']?.fellowshipArea[0]?.wounds).toBe(1);
+        expect(engine.getG().players['1']?.supportArea).toHaveLength(0);
+        expect(engine.getG().players['1']?.discard[0]?.id).toBe('1C138');
+    });
 });

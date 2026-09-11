@@ -1023,6 +1023,100 @@ describe('parseAbilities — Response wins a skirmish', () => {
             },
         ]);
     });
+
+    it('parse Elrond : affaiblir SELF pour piocher une carte (pas le soin de début de tour)', () => {
+        const text =
+            'To play, spot Gandalf or an Elf. <br>At the start of each of your turns, heal every ally whose home is site 3. <br><keyword>Fellowship:</keyword> Exert Elrond to draw a card.';
+        expect(parseAbilities(text, 'Elrond', '1R40')).toEqual([
+            {
+                id: '1R40:0',
+                phases: ['FELLOWSHIP'],
+                cost: [{ exert: [{ count: 1, target: 'SELF' }] }],
+                effects: [{ type: 'DRAW', count: 1 }],
+                source: 'SELF',
+                text: expect.stringMatching(
+                    /FELLOWSHIP: Exert Elrond to draw a card/i
+                ),
+            },
+        ]);
+    });
+
+    it('parse Celeborn : affaiblir SELF pour guérir un allié elfe', () => {
+        const text =
+            '<keyword>Fellowship:</keyword> Exert Celeborn to heal an <symbol>elven</symbol> ally.';
+        expect(parseAbilities(text, 'Celeborn', '1R34')).toEqual([
+            {
+                id: '1R34:0',
+                phases: ['FELLOWSHIP'],
+                cost: [{ exert: [{ count: 1, target: 'SELF' }] }],
+                effects: [
+                    {
+                        type: 'HEAL',
+                        count: 1,
+                        target: [['ELVEN', 'ALLY']],
+                    },
+                ],
+                source: 'SELF',
+                text: expect.stringMatching(
+                    /FELLOWSHIP: Exert Celeborn to heal an elven ally/i
+                ),
+            },
+        ]);
+    });
+
+    it('parse Solide et Robuste : Manœuvre ou Combat, guérir un Hobbit', () => {
+        const text =
+            '<keyword>Maneuver</keyword> or <keyword>Skirmish:</keyword> Heal a Hobbit.';
+        expect(parseAbilities(text, 'Stout and Sturdy', '1C315')).toEqual([
+            {
+                id: '1C315:0',
+                phases: ['MANEUVER', 'SKIRMISH'],
+                cost: [],
+                effects: [{ type: 'HEAL', count: 1, target: [['HOBBIT']] }],
+                source: 'SELF',
+                text: expect.stringMatching(/SKIRMISH: Heal a Hobbit/i),
+            },
+        ]);
+    });
+
+    it('parse Cape de Boromir : affaiblir le détenteur pour défausser une situation climat', () => {
+        const text =
+            'Bearer must be Boromir.  <br><keyword>Maneuver:</keyword> Exert Boromir to discard a weather condition.';
+        expect(parseAbilities(text, "Boromir's Cloak", '1U98')).toEqual([
+            {
+                id: '1U98:0',
+                phases: ['MANEUVER'],
+                cost: [{ exert: [{ count: 1, target: 'BEARER' }] }],
+                effects: [
+                    {
+                        type: 'DISCARD',
+                        count: 1,
+                        target: [['WEATHER', 'CONDITION']],
+                    },
+                ],
+                source: 'ATTACHMENT',
+                text: expect.stringMatching(
+                    /MANEUVER: Exert Boromir to discard a weather condition/i
+                ),
+            },
+        ]);
+    });
+
+    it('n’émet rien pour La Vengeance de Gondor (deux désignations)', () => {
+        const text =
+            '<keyword>Regroup:</keyword> Exert a ranger companion to discard a minion.';
+        expect(
+            parseAbilities(text, "Gondor's Vengeance", '1C106')
+        ).toBeUndefined();
+    });
+
+    it('n’émet rien pour Le Visible et l’Invisible (Exert 2 Elves)', () => {
+        const text =
+            '<keyword>Fellowship:</keyword> Exert 2 Elves to discard a condition.';
+        expect(
+            parseAbilities(text, 'The Seen and the Unseen', '1C58')
+        ).toBeUndefined();
+    });
 });
 
 

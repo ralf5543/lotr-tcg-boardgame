@@ -433,12 +433,12 @@ const CARDS_PRESETS: Record<string, CardState> = {
     },
 };
 
-const clonePresetCard = (id: string): CardState => {
+const clonePresetCard = (id: string, instanceId?: string): CardState => {
     const card = getCardById(id);
     if (!card) {
         throw new Error(`[DEV] Carte introuvable pour le preset : ${id}`);
     }
-    return { ...card, instanceId: card.instanceId || card.id };
+    return { ...card, instanceId: instanceId || `dev-${id}` };
 };
 
 const asRingBearer = (card: CardState): CardState => {
@@ -523,19 +523,27 @@ export const applyDevPreset = (
                 }
             });
 
-            fpPlayer.fellowshipArea = [
-                asRingBearer(clonePresetCard('2C102')),
-                clonePresetCard('3U7'),
-                clonePresetCard('0P12'),
-                clonePresetCard('1C7'),
+            const frodo = asRingBearer(clonePresetCard('2C102', 'dev-frodo'));
+            frodo.wounds = 1;
+            const boromir = clonePresetCard('1R96', 'dev-boromir');
+            boromir.attachments = [
+                clonePresetCard('1U98', 'dev-cloak-1U98'),
             ];
-            fpPlayer.supportArea = [];
+            const elrond = clonePresetCard('1R40', 'dev-elrond-1R40');
+            elrond.wounds = 1;
+
+            fpPlayer.fellowshipArea = [
+                frodo,
+                boromir,
+                clonePresetCard('0P12', 'dev-gimli'),
+            ];
+            fpPlayer.supportArea = [
+                clonePresetCard('1R34', 'dev-celeborn'),
+                elrond,
+            ];
             fpPlayer.hand = [
-                clonePresetCard('1C3'),
-                clonePresetCard('1C4'),
-                clonePresetCard('1C5'),
-                clonePresetCard('1C6'),
-                clonePresetCard('1C9'),
+                clonePresetCard('1C315', 'dev-stout'),
+                clonePresetCard('1C6', 'dev-delving'),
             ];
 
             if (shadowPlayer) {
@@ -556,7 +564,7 @@ export const applyDevPreset = (
             }));
 
             G.statusMessage =
-                '[DEV] Arwen puis nains. Archerie : blessure +1 sur Frodon, clique Arwen (3 cartes s’envolent). Compagnie : Fouilles. Combat : vise un Nain — Éclaireur trop faible pour submerger Frodon.';
+                '[DEV] Compagnie : Celeborn soigne Elrond (1R40), Elrond pioche, Fouilles. Manœuvre/Combat : Solide et Robuste soigne Frodon. (Cape 1U98 sur Boromir — défausse climat reportée, attache aux sites pas prête.)';
             break;
         }
     }

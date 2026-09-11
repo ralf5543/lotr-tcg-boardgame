@@ -1,6 +1,6 @@
 import type { Ability, CardState, GameState } from '../../types';
 import { getEffectiveVitality } from '../../../utils/cardStats';
-import { resolveCostTarget, resolveWinnerTargets } from './resolveCostTarget';
+import { resolveAbilityTarget, resolveCostTarget, resolveWinnerTargets } from './resolveCostTarget';
 import { findEventAbilityForPhase } from './playEventAbility';
 
 export function cardTargetIds(card: CardState): string[] {
@@ -16,6 +16,27 @@ function uniqueCards(cards: CardState[]): CardState[] {
         seen.add(key);
         return true;
     });
+}
+
+export function isHealableCard(card: CardState): boolean {
+    return Boolean(card) && !card.isDead && (card.wounds || 0) > 0;
+}
+
+function candidatesForEffect(
+    G: GameState,
+    source: CardState,
+    ability: Ability,
+    effect: Ability['effects'][number]
+): CardState[] {
+    if (!('target' in effect)) return [];
+    if (effect.target === 'WINNER') {
+        return uniqueCards(resolveWinnerTargets(G, source, ability));
+    }
+    const matches = uniqueCards(resolveCostTarget(G, source, effect.target));
+    if (effect.type === 'HEAL') {
+        return matches.filter(isHealableCard);
+    }
+    return matches.filter((card) => !card.isDead);
 }
 
 /**
@@ -55,9 +76,9 @@ export function getDesignationCandidates(
         (item) => 'target' in item && item.target === 'WINNER'
     );
     if (winnerEffect) {
-        const matches = resolveWinnerTargets(G, source, ability);
+        const matches = candidatesForEffect(G, source, ability, winnerEffect);
         if (matches.length <= 1) return [];
-        return uniqueCards(matches);
+        return matches;
     }
 
     const effect = (ability.effects || []).find(
@@ -65,8 +86,8 @@ export function getDesignationCandidates(
             'target' in item &&
             (Array.isArray(item.target) || item.target === 'SKIRMISHING')
     );
-    if (!effect || !('target' in effect)) return [];
-    return uniqueCards(resolveCostTarget(G, source, effect.target));
+    if (!effect) return [];
+    return candidatesForEffect(G, source, ability, effect);
 }
 
 export function abilityHasLegalEffectTarget(
@@ -76,14 +97,14 @@ export function abilityHasLegalEffectTarget(
 ): boolean {
     for (const effect of ability.effects || []) {
         if (!('target' in effect)) continue;
-        if (effect.target === 'SELF' || effect.target === 'BEARER') continue;
-        if (effect.target === 'WINNER') {
-            if (resolveWinnerTargets(G, source, ability).length === 0) {
-                return false;
+        if (effect.target === 'SELF' || effect.target === 'BEARER') {
+            if (effect.type === 'HEAL') {
+                const card = resolveAbilityTarget(G, source, effect.target);
+                if (!card || !isHealableCard(card)) return false;
             }
             continue;
         }
-        if (resolveCostTarget(G, source, effect.target).length === 0) {
+        if (candidatesForEffect(G, source, ability, effect).length === 0) {
             return false;
         }
     }
