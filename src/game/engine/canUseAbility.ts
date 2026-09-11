@@ -10,6 +10,7 @@ import {
 } from './abilities/collectAbilities';
 import { canPayAbilityCost } from './abilities/payAbilityCost';
 import { abilityHasLegalEffectTarget } from './abilities/designation';
+import { abilityMeetsPlayRestrictions } from './abilities/abilityRestrictions';
 import {
     abilityMatchesTrigger,
     isResponseWindowOpen,
@@ -133,10 +134,18 @@ export function canUseAbility(
     );
 
     // 3. Traitement des capacités avec phases explicites (actionPhases)
-    if (Array.isArray(card.actionPhases) && card.actionPhases.length > 0) {
-        const allowedActionPhases = card.actionPhases.map((p) =>
-            p.toUpperCase()
-        );
+    //    — carte OU attachements (Anneau Unique en combat, etc.)
+    const ownActionPhases = (card.actionPhases || []).map((p) =>
+        p.toUpperCase()
+    );
+    const attachmentActionPhases = (card.attachments || []).flatMap((att) =>
+        (att.actionPhases || []).map((p) => p.toUpperCase())
+    );
+    const allowedActionPhases = [
+        ...new Set([...ownActionPhases, ...attachmentActionPhases]),
+    ];
+
+    if (allowedActionPhases.length > 0) {
         const ownPhaseOk =
             allowedActionPhases.includes(currentPhase) ||
             allowedActionPhases.includes(normalizedPhase);
@@ -144,7 +153,12 @@ export function canUseAbility(
         if (!ownPhaseOk && !projectedForPhase) {
             return {
                 valid: false,
-                reason: `Cette capacité ne peut être activée qu'en phase : ${card.actionPhases.join(', ')}.`,
+                reason: `Cette capacité ne peut être activée qu'en phase : ${[
+                    ...(card.actionPhases || []),
+                    ...(card.attachments || []).flatMap(
+                        (att) => att.actionPhases || []
+                    ),
+                ].join(', ')}.`,
             };
         }
 
@@ -167,11 +181,33 @@ export function canUseAbility(
                     reason: "Ce n'est pas à vous d'agir.",
                 };
             }
-            const phaseAbilities = (card.abilities || []).filter((ability) =>
-                abilityMatchesPhase(ability, rawPhase)
+            const phaseAbilities = (card.abilities || []).filter(
+                (ability) =>
+                    abilityMatchesPhase(ability, rawPhase) &&
+                    abilityMeetsPlayRestrictions(G, card, ability)
             );
-            if ((card.abilities || []).length > 0) {
-                if (phaseAbilities.length === 0 && !projectedForPhase) {
+            const attachmentPhaseAbilities = (card.attachments || []).flatMap(
+                (att) =>
+                    (att.abilities || [])
+                        .filter(
+                            (ability) =>
+                                abilityMatchesPhase(ability, rawPhase) &&
+                                abilityMeetsPlayRestrictions(G, att, ability)
+                        )
+                        .map((ability) => ({ att, ability }))
+            );
+            const hasAnyAbility =
+                (card.abilities || []).length > 0 ||
+                (card.attachments || []).some(
+                    (att) => (att.abilities || []).length > 0
+                );
+
+            if (hasAnyAbility) {
+                if (
+                    phaseAbilities.length === 0 &&
+                    attachmentPhaseAbilities.length === 0 &&
+                    !projectedForPhase
+                ) {
                     return {
                         valid: false,
                         reason: 'Aucune capacité activable pour cette carte dans la phase actuelle.',
@@ -181,14 +217,30 @@ export function canUseAbility(
                     phaseAbilities.length > 0 &&
                     !phaseAbilities.some((ability) =>
                         abilityHasLegalEffectTarget(G, card, ability)
-                    )
+                    ) &&
+                    attachmentPhaseAbilities.length === 0
                 ) {
                     return {
                         valid: false,
                         reason: 'Aucune cible légale pour cette capacité.',
                     };
                 }
-                if (phaseAbilities.length > 0) {
+                if (
+                    attachmentPhaseAbilities.length > 0 &&
+                    !attachmentPhaseAbilities.some(({ att, ability }) =>
+                        abilityHasLegalEffectTarget(G, att, ability)
+                    ) &&
+                    phaseAbilities.length === 0
+                ) {
+                    return {
+                        valid: false,
+                        reason: 'Aucune cible légale pour cette capacité.',
+                    };
+                }
+                if (
+                    phaseAbilities.length > 0 ||
+                    attachmentPhaseAbilities.length > 0
+                ) {
                     return { valid: true };
                 }
             } else {

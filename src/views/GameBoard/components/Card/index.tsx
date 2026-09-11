@@ -25,6 +25,7 @@ import { requiresAttachmentTarget } from '../../../../game/engine/canPlayCard';
 import { getEffectiveKeywords } from '../../../../game/engine/keywords/keywordUtils';
 import { canUseAbility } from '../../../../game/engine/canUseAbility';
 import { canPayAbilityCost } from '../../../../game/engine/abilities/payAbilityCost';
+import { abilityMeetsPlayRestrictions } from '../../../../game/engine/abilities/abilityRestrictions';
 import {
     abilityHasLegalEffectTarget,
     abilityNeedsDesignation,
@@ -291,7 +292,13 @@ export const Card: React.FC<CardProps> = ({
         }
         // Hors fenêtre de réponse : jamais une Response dans la bulle
         if (abilityMatchesPhase(ability, 'RESPONSE')) return false;
-        return !phase || abilityMatchesPhase(ability, phase);
+        if (!phase || !abilityMatchesPhase(ability, phase)) return false;
+        if (!G) return true;
+        return (
+            abilityMeetsPlayRestrictions(G, source, ability) &&
+            canPayAbilityCost(G, source, ability.cost) &&
+            abilityHasLegalEffectTarget(G, source, ability)
+        );
     });
     const showAbilityButton = Boolean(
         card &&

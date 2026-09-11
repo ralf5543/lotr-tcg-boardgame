@@ -164,6 +164,7 @@ export interface CostOption {
     discardFromHand?: number;
     spotBurdens?: number;
     removeBurdens?: number;
+    addBurdens?: number;
     spotThreats?: number;
     removeThreats?: number;
     addTwilight?: number;
@@ -192,6 +193,10 @@ export type AbilityEffect =
               value: number;
               attachment: string[][];
           };
+          /** Copie la force actuelle de la source au moment de l’activation (Merry…). */
+          valueFromSourceStat?: 'STRENGTH';
+          /** « another companion » : exclure la source des cibles. */
+          excludeSource?: boolean;
       }
     | {
           type: 'DRAW';
@@ -208,9 +213,15 @@ export type AbilityEffect =
           target: AbilityTargetRef;
       }
     | {
+          /** Défausse toutes les cartes en jeu qui matchent (ex. every condition). */
+          type: 'DISCARD_ALL';
+          target: string[][];
+      }
+    | {
           type: 'WOUND';
           count: number;
           target: AbilityTargetRef;
+          excludeRingBearer?: boolean;
       }
     | {
           type: 'ADD_TWILIGHT';
@@ -224,6 +235,7 @@ export type AbilityEffect =
           expiresAtPhase: AbilityEffectExpiry;
           replaceWoundWithBurdens: number;
           onlyInSkirmish?: boolean;
+          strengthBonus?: number;
       }
     | {
           type: 'ALLOW_SKIRMISH';
@@ -262,6 +274,8 @@ export interface Ability {
     text?: string;
     omitFromArcheryTotal?: boolean;
     trigger?: AbilityTrigger;
+    /** Ex. Merry : seulement s’il n’est pas affecté à une escarmouche. */
+    requiresUnassigned?: boolean;
 }
 
 export interface CardState {
@@ -449,6 +463,7 @@ export interface GameState {
         expiresAtPhase: AbilityEffectExpiry;
         replaceWoundWithBurdens: number;
         onlyInSkirmish?: boolean;
+        strengthBonus?: number;
     };
     woundQueue?: WoundQueueItem[];
     skirmishes: SkirmishState[];

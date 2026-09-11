@@ -5,12 +5,13 @@ import type {
     GameState,
 } from '../../types';
 import type { ModifierScope } from '../../logic/stats/types';
-import { resolveAbilityTarget, forEachInPlayCard, resolveWinnerTargets } from './resolveCostTarget';
+import { resolveAbilityTarget, forEachInPlayCard, resolveWinnerTargets, resolveCostTarget } from './resolveCostTarget';
 import { requestWounds } from '../responseWindow';
 import { cardMatchesTarget } from '../validations/matchers';
 import { drawCardsForPlayer } from '../../../utils/drawCards';
 import { discardCardFromPlay } from '../../../utils/discardCardFromPlay';
 import { findTargetCard, isRingBearerCard } from '../../../utils/cardUtils';
+import { getCalculatedStrength } from '../../logic/stats/statCalculator';
 
 function expiryToScope(expiresAtPhase: AbilityEffectExpiry): ModifierScope {
     if (expiresAtPhase === 'SKIRMISH') return 'SKIRMISH';
@@ -69,7 +70,18 @@ export function applyAbilityEffect(
                 ...(effect.onlyInSkirmish
                     ? { onlyInSkirmish: true }
                     : {}),
+                ...(effect.strengthBonus
+                    ? { strengthBonus: effect.strengthBonus }
+                    : {}),
             };
+            continue;
+        }
+
+        if (effect.type === 'DISCARD_ALL') {
+            const matches = resolveCostTarget(G, source, effect.target);
+            for (const card of [...matches]) {
+                discardCardFromPlay(G, card);
+            }
             continue;
         }
 
@@ -132,6 +144,9 @@ function applyOneEffect(
         if (!G.tempModifiers) G.tempModifiers = [];
         const targetCardId = target.instanceId || target.id;
         let value = effect.value;
+        if (effect.valueFromSourceStat === 'STRENGTH') {
+            value = getCalculatedStrength(G, source);
+        }
         if (effect.bearingBonus) {
             const bears = (target.attachments || []).some((att) =>
                 cardMatchesTarget(att, effect.bearingBonus!.attachment)

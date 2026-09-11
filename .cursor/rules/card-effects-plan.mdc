@@ -11,6 +11,8 @@ Réponse n’est pas une phase. Fenêtre dédiée `responseWindow` + `pendingEve
 
 ## Ordre
 
+**Prochaine priorité (avant le reste)** : **UX + affichage des menaces (threats)**. Compteur FP déjà en `G.players[fp].threats` ; rien à l’écran. Règles papier / Gemp : jetons sur la **pile de mort** FP (mêmes pions que les blessures), pas sur les cartes. Limite = nb de compagnons. Décider le placement UI (zone pile de mort / compteur dédié) avant de continuer les effets qui ajoutent/retirent des menaces.
+
 1. Infra : `pendingEvent` ABOUT_TO_WOUND, `responseWindow`, toaster, Passer. Sans réponse éligible = blessure immédiate (comportement actuel). ✅
 2. `PREVENT_WOUND` (Éowyn `4C270`) avant l’Anneau Unique. ✅
 3. Anneau : mettre l’Anneau (réponse) **puis** fardeaux à la place (passif `While`, pas un toaster). ✅
@@ -19,7 +21,7 @@ Réponse n’est pas une phase. Fenêtre dédiée `responseWindow` + `pendingEve
    - **5a** — exert-to-make une **autre** classe (`7R91` Faramir, `0P21` Treebeard) ; to-wound un personnage **au combat** (`1C271` Soldat orque). Refuser tout reste inconnu. ✅
    - **5b** — `When you play this` **requis** (pas « you may ») : `1C191` Éclaireur de la Moria (spot Elfe → crépuscule). ✅ « you may » = choix, toaster à part.
    - **5c** — Réponses « gagne une escarmouche » (make fierce / force jusqu’au ralliement) : `1U159`, `1R247`, `4C37`. ✅ Mort : Sam Porteur si Frodo meurt = exception étape 6 ; le reste (soigner, moulin, défausse…) reste inerte.
-6. Exceptions (~300) en handlers par id, pas dans le parser. Infra registre ✅ + **Sam `2C114`** (si Frodon meurt → Porteur, fardeaux FP à 0) ✅. Suite : autres exceptions une par une.
+6. Exceptions (~300) en handlers par id, pas dans le parser. Infra registre ✅ + **Sam `2C114`** ✅. Priorité aux **trous parser** (deck checklist `fumeurs-gollum-threats`). Lot récent : Anneau phase + fardeau, Merry force, Sleep Caradhras (`DISCARD_ALL`), Albert Dreary (culture OU), Roll of Thunder (Fellowship or Maneuver + Shadow), Gollum exert/menace, Response Gollum wins → wound. Suite après UX menaces : pipes / pipeweed / cancel skirmish / When you play may / Each time…
 7. **Sites (UX à concevoir avant code)** : attache sur site, contrôle d’un site, attache sur site contrôlé. Puis climat « Plays on a site » + défausse (`1C138` + cape `1U98`). Pause jusqu’à décision UX.
 
 Tests : cartes réelles du CSV. UI : toaster seulement s’il existe au moins une réponse payable dont le trigger matche.

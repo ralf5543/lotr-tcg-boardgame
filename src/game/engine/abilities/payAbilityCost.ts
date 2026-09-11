@@ -59,6 +59,14 @@ function canPayOption(
         if ((G.twilightPool || 0) < option.spotTwilight) return false;
     }
 
+    if (option.removeThreats && option.removeThreats > 0) {
+        const fpId = G.fpPlayerId || '0';
+        const fpPlayer = G.players[fpId];
+        if (!fpPlayer || (fpPlayer.threats || 0) < option.removeThreats) {
+            return false;
+        }
+    }
+
     if (option.discardFromPlay && Array.isArray(option.discardFromPlay)) {
         for (const req of option.discardFromPlay) {
             if (req.target !== 'SELF' && req.target !== 'BEARER') {
@@ -81,6 +89,8 @@ function canPayOption(
         const hand = G.players[ownerId]?.hand || [];
         if (hand.length < option.discardFromHand) return false;
     }
+
+    // addBurdens : toujours payable (on ajoute).
 
     return true;
 }
@@ -194,6 +204,20 @@ function payOption(
             return false;
         }
         if (!discardCardsFromHand(G, ownerId, discardedHandIds)) return false;
+    }
+    if (option.addBurdens && option.addBurdens > 0) {
+        const fpId = G.fpPlayerId || '0';
+        const fpPlayer = G.players[fpId];
+        if (!fpPlayer) return false;
+        fpPlayer.burdens = (fpPlayer.burdens || 0) + option.addBurdens;
+    }
+    if (option.removeThreats && option.removeThreats > 0) {
+        const fpId = G.fpPlayerId || '0';
+        const fpPlayer = G.players[fpId];
+        if (!fpPlayer || (fpPlayer.threats || 0) < option.removeThreats) {
+            return false;
+        }
+        fpPlayer.threats -= option.removeThreats;
     }
     return true;
 }

@@ -179,6 +179,9 @@ function formatEffectBit(
         const who = formatTargetPhrase(effect.target);
         return who ? `défausser ${who}` : 'défausser';
     }
+    if (effect.type === 'DISCARD_ALL') {
+        return 'défausser toutes les situations';
+    }
     if (effect.type === 'PREVENT_WOUND') {
         return 'empêcher cette blessure';
     }
@@ -199,9 +202,13 @@ function formatEffectBit(
             RESISTANCE: 'résistance',
             TWILIGHT_COST: 'crépuscule',
         };
-        const sign = effect.value > 0 ? '+' : '';
         const stat = statLabels[effect.stat] || effect.stat.toLowerCase();
-        const bit = `${stat} ${sign}${effect.value}`;
+        const bit = effect.valueFromSourceStat
+            ? `ajouter sa ${stat}`
+            : (() => {
+                  const sign = effect.value > 0 ? '+' : '';
+                  return `${stat} ${sign}${effect.value}`;
+              })();
         const who = formatTargetPhrase(effect.target);
         return who ? `${bit} à ${who}` : bit;
     }
@@ -249,6 +256,16 @@ function formatCostLabel(ability: Ability, source: CardState): string {
         parts.push(
             `ajouter <symbol>twilight${option.addTwilight}</symbol>`
         );
+    }
+    if (option?.addBurdens && option.addBurdens > 0) {
+        const n = option.addBurdens;
+        parts.push(
+            `ajouter ${n} fardeau${n > 1 ? 'x' : ''}`
+        );
+    }
+    if (option?.removeThreats && option.removeThreats > 0) {
+        const n = option.removeThreats;
+        parts.push(`retirer ${n} menace${n > 1 ? 's' : ''}`);
     }
     if (option?.removeTwilight && option.removeTwilight > 0) {
         parts.push(

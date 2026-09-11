@@ -66,6 +66,12 @@ export function cardMatchesCriterion(
     // Type (COMPANION, MINION, ALLY, POSSESSION, CONDITION, etc.)
     if (c.type && normalize(c.type) === critUpper) return true;
 
+    // Kind (SHADOW / FREE_PEOPLE) — ex. « Shadow possession »
+    if (c.kind && normalize(c.kind) === critUpper) return true;
+    if (critUpper === 'FREE_PEOPLES' && normalize(c.kind) === 'FREE_PEOPLE') {
+        return true;
+    }
+
     // Sous-type (HAND-WEAPON, ARMOR, …)
     if (c.subtype && normalize(c.subtype) === critUpper) return true;
 

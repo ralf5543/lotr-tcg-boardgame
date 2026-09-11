@@ -11,6 +11,7 @@ import { yieldPriorityAfterAction } from '../engine/actionWindow';
 import { findTargetCard } from '../../utils/cardUtils';
 import { abilityNeedsDesignation } from '../engine/abilities/designation';
 import { afterResponseResolved, isResponseWindowOpen, pauseActionYieldForResponses } from '../engine/responseWindow';
+import { abilityMeetsPlayRestrictions } from '../engine/abilities/abilityRestrictions';
 
 export const activateAbility = (
     { G, ctx, playerID }: LotrMoveContext,
@@ -29,6 +30,7 @@ export const activateAbility = (
     if (!canUseAbility(source, context).valid) return 'INVALID_MOVE';
     const phaseToMatch = isResponseWindowOpen(G) ? 'RESPONSE' : ctx.phase || '';
     if (!abilityMatchesPhase(ability, phaseToMatch)) return 'INVALID_MOVE';
+    if (!abilityMeetsPlayRestrictions(G, source, ability)) return 'INVALID_MOVE';
     if (!canPayAbilityCost(G, source, ability.cost)) return 'INVALID_MOVE';
     if (abilityNeedsDesignation(G, source, ability) && !chosenTargetId) {
         return 'INVALID_MOVE';

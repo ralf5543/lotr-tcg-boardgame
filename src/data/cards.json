@@ -5716,6 +5716,30 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "RING",
+    "abilities": [
+      {
+        "id": "4R1:0",
+        "phases": [
+          "SKIRMISH"
+        ],
+        "cost": [
+          {
+            "addBurdens": 1
+          }
+        ],
+        "effects": [
+          {
+            "type": "WEAR_RING",
+            "expiresAtPhase": "REGROUP",
+            "replaceWoundWithBurdens": 1,
+            "onlyInSkirmish": true,
+            "strengthBonus": 2
+          }
+        ],
+        "source": "ATTACHMENT",
+        "text": "SKIRMISH: Add a burden to wear The One Ring until the regroup phase."
+      }
+    ],
     "actionPhases": [
       "SKIRMISH"
     ],
@@ -6693,6 +6717,28 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "RING",
+    "abilities": [
+      {
+        "id": "7R2:0",
+        "phases": [
+          "MANEUVER"
+        ],
+        "cost": [
+          {
+            "addBurdens": 1
+          }
+        ],
+        "effects": [
+          {
+            "type": "WEAR_RING",
+            "expiresAtPhase": "REGROUP",
+            "replaceWoundWithBurdens": 1
+          }
+        ],
+        "source": "ATTACHMENT",
+        "text": "MANEUVER: Add a burden to wear The One Ring until the regroup phase."
+      }
+    ],
     "actionPhases": [
       "MANEUVER"
     ],
@@ -13813,6 +13859,42 @@
         ]
       }
     ],
+    "abilities": [
+      {
+        "id": "1R69:0",
+        "phases": [
+          "MANEUVER"
+        ],
+        "cost": [
+          {
+            "exert": [
+              {
+                "count": 1,
+                "target": "SELF"
+              }
+            ]
+          }
+        ],
+        "effects": [
+          {
+            "type": "DISCARD",
+            "count": 1,
+            "target": [
+              [
+                "ISENGARD",
+                "CONDITION"
+              ],
+              [
+                "MORIA",
+                "CONDITION"
+              ]
+            ]
+          }
+        ],
+        "source": "SELF",
+        "text": "MANEUVER: Exert Albert Dreary to discard a isengard or moria condition."
+      }
+    ],
     "actionPhases": [
       "MANEUVER"
     ],
@@ -14470,6 +14552,40 @@
     "type": "EVENT",
     "keywords": [
       "SPELL"
+    ],
+    "abilities": [
+      {
+        "id": "1C84:0",
+        "phases": [
+          "FELLOWSHIP"
+        ],
+        "cost": [
+          {
+            "exert": [
+              {
+                "count": 1,
+                "target": [
+                  [
+                    "Gandalf"
+                  ]
+                ]
+              }
+            ]
+          }
+        ],
+        "effects": [
+          {
+            "type": "DISCARD_ALL",
+            "target": [
+              [
+                "CONDITION"
+              ]
+            ]
+          }
+        ],
+        "source": "SELF",
+        "text": "FELLOWSHIP: Exert Gandalf to discard every condition."
+      }
     ],
     "phases": [
       "FELLOWSHIP"
@@ -16868,6 +16984,42 @@
     "type": "EVENT",
     "keywords": [
       "SPELL"
+    ],
+    "abilities": [
+      {
+        "id": "1U136:0",
+        "phases": [
+          "SHADOW"
+        ],
+        "cost": [
+          {
+            "exert": [
+              {
+                "count": 1,
+                "target": [
+                  [
+                    "ISENGARD",
+                    "MINION"
+                  ]
+                ],
+                "mode": "DESIGNATION"
+              }
+            ]
+          }
+        ],
+        "effects": [
+          {
+            "type": "DISCARD_ALL",
+            "target": [
+              [
+                "CONDITION"
+              ]
+            ]
+          }
+        ],
+        "source": "SELF",
+        "text": "SHADOW: Exert a isengard minion to discard all conditions."
+      }
     ],
     "phases": [
       "SHADOW"
@@ -21642,6 +21794,44 @@
     "isUnique": false,
     "kind": "SHADOW",
     "type": "EVENT",
+    "abilities": [
+      {
+        "id": "1U241:0",
+        "phases": [
+          "SHADOW"
+        ],
+        "cost": [
+          {
+            "spot": [
+              {
+                "count": 1,
+                "target": [
+                  [
+                    "SAURON",
+                    "ORC"
+                  ]
+                ],
+                "mode": "DESIGNATION"
+              }
+            ]
+          }
+        ],
+        "effects": [
+          {
+            "type": "DISCARD",
+            "count": 1,
+            "target": [
+              [
+                "ELVEN",
+                "CONDITION"
+              ]
+            ]
+          }
+        ],
+        "source": "SELF",
+        "text": "SHADOW: Spot a sauron Orc to discard an elven condition."
+      }
+    ],
     "phases": [
       "SHADOW"
     ],
@@ -24600,6 +24790,42 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
+    "abilities": [
+      {
+        "id": "1R302:0",
+        "phases": [
+          "SKIRMISH"
+        ],
+        "requiresUnassigned": true,
+        "cost": [
+          {
+            "exert": [
+              {
+                "count": 2,
+                "target": "SELF"
+              }
+            ]
+          }
+        ],
+        "effects": [
+          {
+            "type": "ADD_TEMP_STAT",
+            "stat": "STRENGTH",
+            "value": 0,
+            "valueFromSourceStat": "STRENGTH",
+            "target": [
+              [
+                "COMPANION"
+              ]
+            ],
+            "excludeSource": true,
+            "expiresAtPhase": "SKIRMISH"
+          }
+        ],
+        "source": "SELF",
+        "text": "SKIRMISH: If Merry is not assigned to a skirmish, exert him twice to add his strength to another companion."
+      }
+    ],
     "actionPhases": [
       "SKIRMISH"
     ],
@@ -40702,6 +40928,41 @@
     "keywords": [
       "SPELL"
     ],
+    "abilities": [
+      {
+        "id": "4R92:0",
+        "phases": [
+          "FELLOWSHIP"
+        ],
+        "cost": [
+          {
+            "spot": [
+              {
+                "count": 1,
+                "target": [
+                  [
+                    "Gandalf"
+                  ]
+                ]
+              }
+            ]
+          }
+        ],
+        "effects": [
+          {
+            "type": "DISCARD",
+            "count": 1,
+            "target": [
+              [
+                "CONDITION"
+              ]
+            ]
+          }
+        ],
+        "source": "SELF",
+        "text": "FELLOWSHIP: Spot Gandalf to discard all conditions."
+      }
+    ],
     "phases": [
       "FELLOWSHIP"
     ],
@@ -41019,6 +41280,47 @@
     "isUnique": false,
     "kind": "FREE_PEOPLE",
     "type": "EVENT",
+    "abilities": [
+      {
+        "id": "4U99:0",
+        "phases": [
+          "FELLOWSHIP",
+          "MANEUVER"
+        ],
+        "cost": [
+          {
+            "spot": [
+              {
+                "count": 1,
+                "target": [
+                  [
+                    "Gandalf"
+                  ]
+                ]
+              }
+            ]
+          }
+        ],
+        "effects": [
+          {
+            "type": "DISCARD",
+            "count": 1,
+            "target": [
+              [
+                "SHADOW",
+                "POSSESSION"
+              ],
+              [
+                "SHADOW",
+                "ARTIFACT"
+              ]
+            ]
+          }
+        ],
+        "source": "SELF",
+        "text": "MANEUVER: Spot Gandalf to discard a Shadow possession or Shadow artifact."
+      }
+    ],
     "phases": [
       "FELLOWSHIP",
       "MANEUVER"
@@ -59058,6 +59360,37 @@
     "isUnique": false,
     "kind": "SHADOW",
     "type": "EVENT",
+    "abilities": [
+      {
+        "id": "6C47:0",
+        "phases": [
+          "RESPONSE"
+        ],
+        "trigger": {
+          "type": "WINS_SKIRMISH",
+          "winner": [
+            [
+              "GOLLUM"
+            ]
+          ]
+        },
+        "cost": [],
+        "effects": [
+          {
+            "type": "WOUND",
+            "count": 1,
+            "target": [
+              [
+                "COMPANION"
+              ]
+            ],
+            "excludeRingBearer": true
+          }
+        ],
+        "source": "SELF",
+        "text": "RESPONSE: If Gollum wins a skirmish, wound a companion (except the Ring-bearer)"
+      }
+    ],
     "phases": [
       "RESPONSE"
     ],
@@ -65037,6 +65370,38 @@
     "isUnique": true,
     "kind": "SHADOW",
     "type": "MINION",
+    "abilities": [
+      {
+        "id": "7C59:0",
+        "phases": [
+          "SKIRMISH"
+        ],
+        "cost": [
+          {
+            "exert": [
+              {
+                "count": 2,
+                "target": "SELF"
+              }
+            ]
+          },
+          {
+            "removeThreats": 1
+          }
+        ],
+        "effects": [
+          {
+            "type": "ADD_TEMP_STAT",
+            "stat": "STRENGTH",
+            "value": 2,
+            "target": "SELF",
+            "expiresAtPhase": "SKIRMISH"
+          }
+        ],
+        "source": "SELF",
+        "text": "SKIRMISH: Exert Gollum twice or remove a threat to make him strength +2."
+      }
+    ],
     "actionPhases": [
       "SKIRMISH"
     ],
@@ -118029,6 +118394,29 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "RING",
+    "abilities": [
+      {
+        "id": "15R1:0",
+        "phases": [
+          "SKIRMISH"
+        ],
+        "cost": [
+          {
+            "addBurdens": 1
+          }
+        ],
+        "effects": [
+          {
+            "type": "WEAR_RING",
+            "expiresAtPhase": "REGROUP",
+            "replaceWoundWithBurdens": 1,
+            "onlyInSkirmish": true
+          }
+        ],
+        "source": "ATTACHMENT",
+        "text": "SKIRMISH: Add a burden to wear The One Ring until the regroup phase."
+      }
+    ],
     "actionPhases": [
       "SKIRMISH"
     ],

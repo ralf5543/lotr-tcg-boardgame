@@ -33,7 +33,19 @@ function candidatesForEffect(
     if (effect.target === 'WINNER') {
         return uniqueCards(resolveWinnerTargets(G, source, ability));
     }
-    const matches = uniqueCards(resolveCostTarget(G, source, effect.target));
+    let matches = uniqueCards(resolveCostTarget(G, source, effect.target));
+    if (
+        effect.type === 'ADD_TEMP_STAT' &&
+        effect.excludeSource
+    ) {
+        const sourceId = source.instanceId || source.id;
+        matches = matches.filter(
+            (card) => (card.instanceId || card.id) !== sourceId
+        );
+    }
+    if (effect.type === 'WOUND' && effect.excludeRingBearer) {
+        matches = matches.filter((card) => !isRingBearerCard(card));
+    }
     if (effect.type === 'HEAL') {
         return matches.filter(isHealableCard);
     }
@@ -99,6 +111,9 @@ export function abilityHasLegalEffectTarget(
     for (const effect of ability.effects || []) {
         if (effect.type === 'MAKE_RING_BEARER') {
             if (isRingBearerCard(source)) return false;
+            continue;
+        }
+        if (effect.type === 'DISCARD_ALL') {
             continue;
         }
         if (!('target' in effect)) continue;

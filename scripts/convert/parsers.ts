@@ -833,6 +833,9 @@ function parseExertSubject(
     if (/^this\b/i.test(body)) {
         return { target: 'SELF', count };
     }
+    if (/^(him|her|it)$/i.test(body)) {
+        return { target: 'SELF', count };
+    }
 
     const title = (cardTitle || '').trim();
     if (title && body.toLowerCase() === title.toLowerCase()) {
@@ -1199,6 +1202,16 @@ function parseNounTarget(
         .trim();
     const plain = normalized.replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim();
     if (!plain) return null;
+
+    // « every / all conditions » → géré à part (DISCARD_ALL)
+    if (/^(every|all)\s+conditions?$/i.test(plain)) {
+        return [['CONDITION']];
+    }
+
+    // « a Shadow possession or Shadow artifact » / « a isengard or moria condition »
+    const dnf = parseArticleOrFilters(plain);
+    if (dnf) return dnf;
+
     if (
         /\b(and|or|each|every|all|may|from|twice|times|up to|except|stacked|borne)\b/i.test(
             plain
@@ -1226,8 +1239,70 @@ function parseNounTarget(
     return [filters];
 }
 
+/**
+ * « a X or Y TYPE » → [[X,TYPE],[Y,TYPE]]
+ * « a Shadow possession or Shadow artifact » → [[SHADOW,POSSESSION],[SHADOW,ARTIFACT]]
+ */
+function parseArticleOrFilters(plain: string): string[][] | null {
+    const article = plain.match(/^(a|an)\s+(.+)$/i);
+    if (!article) return null;
+    const body = article[2].trim();
+    if (!/\bor\b/i.test(body)) return null;
+
+    // Forme B d’abord : « isengard or moria condition » (TYPE partagé à la fin)
+    // Pas si une branche contient déjà un type (« Shadow possession or Shadow artifact »)
+    const shared = body.match(
+        /^(.+?)\s+or\s+(.+?)\s+(condition|possession|artifact|companion|minion|ally|character)s?$/i
+    );
+    const typeWordRe =
+        /\b(condition|possession|artifact|companion|minion|ally|character)s?\b/i;
+    if (
+        shared &&
+        !typeWordRe.test(shared[1]) &&
+        !typeWordRe.test(shared[2])
+    ) {
+        const left = parseClassFilters(shared[1]);
+        const right = parseClassFilters(shared[2]);
+        const typeToken = normalizeFilterToken(shared[3]);
+        if (
+            left.length > 0 &&
+            right.length > 0 &&
+            isKnownFilterToken(typeToken)
+        ) {
+            return [
+                [...left, typeToken],
+                [...right, typeToken],
+            ];
+        }
+    }
+
+    // Forme A : « Shadow possession or Shadow artifact » (chaque branche complète)
+    const branches = body.split(/\s+or\s+/i).map((b) => b.trim());
+    if (branches.length < 2) return null;
+    const branchFilters = branches.map((b) => parseClassFilters(b));
+    if (branchFilters.every((f) => f.length > 0)) {
+        return branchFilters;
+    }
+    return null;
+}
+
+function isDiscardEveryAll(raw: string): boolean {
+    const plain = raw
+        .replace(/<[^>]+>/g, ' ')
+        .replace(/\s+/g, ' ')
+        .trim()
+        .replace(/[.\s]+$/, '')
+        .replace(/\s+from play$/i, '');
+    return /^(every|all)\s+conditions?$/i.test(plain);
+}
+
 function phasesJoinedByOr(
-    markers: { phase: string; markerStart: number; bodyStart: number }[],
+    markers: {
+        phases: string[];
+        phase: string;
+        markerStart: number;
+        bodyStart: number;
+    }[],
     index: number,
     text: string
 ): string[] {
@@ -1238,9 +1313,9 @@ function phasesJoinedByOr(
             text.slice(prev.bodyStart, markers[i].markerStart)
         );
         if (!/^or$/i.test(prevBody)) break;
-        extras.unshift(prev.phase);
+        extras.unshift(...prev.phases);
     }
-    return [...extras, markers[index].phase];
+    return [...extras, ...markers[index].phases];
 }
 
 function parseWinsSkirmishWinner(
@@ -1305,6 +1380,39 @@ function parseWinsSkirmishResponse(
     if (!winnerParsed) return null;
 
     const rest = match[2].trim().replace(/[.\s]+$/g, '');
+
+    // « wound a companion (except the Ring-bearer) »
+    const woundExcept = rest.match(
+        /^wound\s+(a|an)\s+companion\s*\(\s*except the Ring-bearer\s*\)\.?$/i
+    );
+    if (woundExcept) {
+        const clause = `RESPONSE: If ${match[1].trim()} wins a skirmish, ${rest}`
+            .replace(/<[^>]+>/g, '')
+            .replace(/\s+/g, ' ')
+            .replace(/\s+\./g, '.')
+            .trim();
+        return {
+            id: `${cardId || 'ability'}:${abilityIndex}`,
+            phases: ['RESPONSE'],
+            trigger: {
+                type: 'WINS_SKIRMISH',
+                winner: winnerParsed.winner,
+                ...(winnerParsed.yours ? { yours: true } : {}),
+            },
+            cost: [],
+            effects: [
+                {
+                    type: 'WOUND',
+                    count: 1,
+                    target: [['COMPANION']],
+                    excludeRingBearer: true,
+                },
+            ],
+            source: winnerParsed.winner === 'BEARER' ? 'ATTACHMENT' : 'SELF',
+            text: clause,
+        };
+    }
+
     const toMake = rest.match(/^(?:([\s\S]+?)\s+to\s+)?make\s+([\s\S]+)/i);
     if (!toMake) return null;
 
@@ -1531,26 +1639,80 @@ function stripAbilityMarkup(text: string): string {
         .trim();
 }
 
-/** Passif `While wearing` : fardeaux à la place, sans clause extra (force, hunter…). */
-function parseWhileWearingReplacement(
+/** Passif `While wearing` : fardeaux à la place (+ force optionnelle). */
+function parseWhileWearingEffects(
     rest: string
-): { count: number; onlyInSkirmish: boolean } | null {
-    const cleaned = stripAbilityMarkup(rest);
+): {
+    count: number;
+    onlyInSkirmish: boolean;
+    strengthBonus?: number;
+} | null {
+    const cleaned = stripAbilityMarkup(rest)
+        .replace(/\u2013|\u2014/g, '-')
+        .replace(/\s+/g, ' ')
+        .trim();
     if (!cleaned) return null;
 
-    const patterns = [
+    const patterns: RegExp[] = [
+        /^While wearing The One Ring,\s*the Ring-bearer is strength ([+-]\d+),\s*and each time (?:he or she|he|she) is about to take a wound(?: (during a skirmish|in a skirmish))?,\s*add (a|one|two|\d+) burdens? instead\.?$/i,
         /^While wearing The One Ring,\s*each time the Ring-bearer is about to take a wound(?: (during a skirmish|in a skirmish))?,\s*add (a|one|two|\d+) burdens? instead\.?$/i,
         /^While the Ring-bearer is wearing The One Ring,\s*each time (?:he or she|he|she) is about to take a wound(?: (in a skirmish|during a skirmish))?,\s*add (a|one|two|\d+) burdens? instead\.?$/i,
+        /^While wearing The One Ring,\s*each time bearer is about to take a wound(?: (during a skirmish|in a skirmish))?,\s*add (a|one|two|\d+) burdens? instead\.?$/i,
+        // hunter / etc. : on prend au moins le remplacement fardeaux
+        /^While wearing The One Ring,[\s\S]*?each time (?:he or she|he|she|the Ring-bearer|bearer) is about to take a wound(?: (during a skirmish|in a skirmish))?,\s*add (a|one|two|\d+) burdens? instead\.?$/i,
     ];
 
     for (const pattern of patterns) {
         const match = cleaned.match(pattern);
         if (!match) continue;
-        const count = parseBurdenWord(match[2]);
+
+        let strengthBonus: number | undefined;
+        let skirmishGroup: string | undefined;
+        let burdenGroup: string | undefined;
+
+        if (match.length >= 4 && /^[+-]\d+$/.test(match[1] || '')) {
+            strengthBonus = parseInt(match[1], 10);
+            skirmishGroup = match[2];
+            burdenGroup = match[3];
+        } else {
+            skirmishGroup = match[1];
+            burdenGroup = match[2];
+        }
+
+        const count = parseBurdenWord(burdenGroup || '');
         if (!count) return null;
-        return { count, onlyInSkirmish: Boolean(match[1]) };
+        return {
+            count,
+            onlyInSkirmish: Boolean(skirmishGroup),
+            ...(strengthBonus !== undefined && Number.isFinite(strengthBonus)
+                ? { strengthBonus }
+                : {}),
+        };
     }
     return null;
+}
+
+/** Cherche un passif While wearing n’importe où sur la carte. */
+function findWhileWearingOnCard(
+    fullText: string
+): ReturnType<typeof parseWhileWearingEffects> {
+    const plain = stripAbilityMarkup(fullText)
+        .replace(/\u2013|\u2014/g, '-')
+        .replace(/\s+/g, ' ');
+    let start = plain.search(/While wearing The One Ring/i);
+    if (start < 0) {
+        start = plain.search(/While the Ring-bearer is wearing The One Ring/i);
+        if (start < 0) return null;
+    }
+    let slice = plain.slice(start).trim();
+    // Ne pas avaler la capacité de phase qui suit (Skirmish: …)
+    const phaseCut = slice.search(
+        /\b(?:Fellowship|Shadow|Maneuver|Archery|Assignment|Skirmish|Regroup|Response)\s*:/i
+    );
+    if (phaseCut > 0) {
+        slice = slice.slice(0, phaseCut).trim();
+    }
+    return parseWhileWearingEffects(slice);
 }
 
 function parseWhenPlayedAbilities(
@@ -1617,16 +1779,27 @@ export function parseAbilities(
 ) {
     if (!text) return undefined;
 
+    const phaseAlt = ABILITY_PHASES.join('|');
     const phaseRe = new RegExp(
-        `<keyword>(${ABILITY_PHASES.join('|')})[:.]?\\s*<\\/keyword>`,
+        `<keyword>((?:${phaseAlt})(?:\\s+or\\s+(?:${phaseAlt}))*)[:.]?\\s*<\\/keyword>`,
         'gi'
     );
-    const markers: { phase: string; markerStart: number; bodyStart: number }[] =
-        [];
+    const markers: {
+        phase: string;
+        phases: string[];
+        markerStart: number;
+        bodyStart: number;
+    }[] = [];
     let markerMatch: RegExpExecArray | null;
     while ((markerMatch = phaseRe.exec(text)) !== null) {
+        const phaseParts = markerMatch[1]
+            .split(/\s+or\s+/i)
+            .map((part) => part.replace(/[:.]/g, '').trim().toUpperCase())
+            .filter(Boolean);
+        if (phaseParts.length === 0) continue;
         markers.push({
-            phase: markerMatch[1].toUpperCase(),
+            phase: phaseParts[phaseParts.length - 1],
+            phases: phaseParts,
             markerStart: markerMatch.index,
             bodyStart: markerMatch.index + markerMatch[0].length,
         });
@@ -1650,7 +1823,7 @@ export function parseAbilities(
                 /^If\s+(bearer|the Ring-bearer)\s+is about to take a wound( in a skirmish)?,\s*(?:he or she|he|she)\s+wears The One Ring until the regroup phase\.?\s*([\s\S]*)$/i
             );
             const whileWearing = wearMatch
-                ? parseWhileWearingReplacement(wearMatch[3] || '')
+                ? parseWhileWearingEffects(wearMatch[3] || '')
                 : null;
             if (wearMatch && whileWearing) {
                 const inSkirmish = Boolean(wearMatch[2]);
@@ -1670,6 +1843,9 @@ export function parseAbilities(
                             replaceWoundWithBurdens: whileWearing.count,
                             ...(whileWearing.onlyInSkirmish
                                 ? { onlyInSkirmish: true }
+                                : {}),
+                            ...(whileWearing.strengthBonus
+                                ? { strengthBonus: whileWearing.strengthBonus }
                                 : {}),
                         },
                     ],
@@ -1745,6 +1921,155 @@ export function parseAbilities(
                 );
                 if (parsed) abilities.push(parsed);
                 return;
+            }
+        }
+
+        // Phase : Add N burden(s) to wear The One Ring until the regroup phase.
+        const wearCostMatch = bodyPlain.match(
+            /^Add\s+(a|one|two|\d+)\s+burdens?\s+to wear The One Ring until the regroup phase\.?/i
+        );
+        if (wearCostMatch) {
+            const burdenCost = parseBurdenWord(wearCostMatch[1]);
+            const whileWearing = findWhileWearingOnCard(text);
+            if (burdenCost && whileWearing) {
+                abilities.push({
+                    id: `${cardId || 'ability'}:${abilities.length}`,
+                    phases,
+                    cost: [{ addBurdens: burdenCost }],
+                    effects: [
+                        {
+                            type: 'WEAR_RING',
+                            expiresAtPhase: 'REGROUP',
+                            replaceWoundWithBurdens: whileWearing.count,
+                            ...(whileWearing.onlyInSkirmish
+                                ? { onlyInSkirmish: true }
+                                : {}),
+                            ...(whileWearing.strengthBonus
+                                ? { strengthBonus: whileWearing.strengthBonus }
+                                : {}),
+                        },
+                    ],
+                    source: 'ATTACHMENT',
+                    text: `${marker.phase}: Add ${wearCostMatch[1]} burden${burdenCost > 1 ? 's' : ''} to wear The One Ring until the regroup phase.`,
+                });
+                return;
+            }
+        }
+
+        // Phase : If X is not assigned…, exert him|X N to add his strength to another companion.
+        const addOwnStrengthMatch = bodyPlain.match(
+            /^If\s+([\s\S]+?)\s+is not assigned to a skirmish,\s*exert\s+([\s\S]+?)\s+to add (?:his|her|its) strength to another companion\.?$/i
+        );
+        if (addOwnStrengthMatch) {
+            const subject = parseExertSubject(
+                addOwnStrengthMatch[2],
+                cardTitle,
+                text
+            );
+            const who = addOwnStrengthMatch[1].trim();
+            const title = (cardTitle || '').trim();
+            const whoIsSelf =
+                /^(this|he|she|it)$/i.test(who) ||
+                (title && who.toLowerCase() === title.toLowerCase());
+            if (
+                subject &&
+                whoIsSelf &&
+                (subject.target === 'SELF' ||
+                    (title &&
+                        Array.isArray(subject.target) &&
+                        subject.target[0]?.[0]?.toLowerCase() ===
+                            title.toLowerCase()))
+            ) {
+                abilities.push({
+                    id: `${cardId || 'ability'}:${abilities.length}`,
+                    phases,
+                    requiresUnassigned: true,
+                    cost: [
+                        {
+                            exert: [
+                                {
+                                    count: subject.count,
+                                    target: 'SELF',
+                                },
+                            ],
+                        },
+                    ],
+                    effects: [
+                        {
+                            type: 'ADD_TEMP_STAT',
+                            stat: 'STRENGTH',
+                            value: 0,
+                            valueFromSourceStat: 'STRENGTH',
+                            target: [['COMPANION']],
+                            excludeSource: true,
+                            expiresAtPhase: parseUntilExpiry(
+                                bodyPlain,
+                                marker.phase
+                            ),
+                        },
+                    ],
+                    source: 'SELF',
+                    text: `${marker.phase}: If ${who} is not assigned to a skirmish, exert ${addOwnStrengthMatch[2].trim()} to add his strength to another companion.`,
+                });
+                return;
+            }
+        }
+
+        // Exert X twice or remove a threat to make him strength +N
+        // (avant makeMatch : sinon « Exert … or remove … to make » est mangé)
+        const exertOrThreatMake = bodyPlain.match(
+            /^Exert\s+([\s\S]+?)\s+or remove\s+(a|one|two|\d+)\s+threats?\s+to make\s+([\s\S]+)/i
+        );
+        if (exertOrThreatMake) {
+            const subject = parseExertSubject(
+                exertOrThreatMake[1],
+                cardTitle,
+                text
+            );
+            const threatCount = parseBurdenWord(exertOrThreatMake[2]);
+            if (subject && threatCount) {
+                const expiresAtPhase = parseUntilExpiry(
+                    exertOrThreatMake[3],
+                    marker.phase
+                );
+                const effectTarget = parseEffectTarget(
+                    exertOrThreatMake[3],
+                    subject.target
+                );
+                const effects = parseMakeEffects(
+                    exertOrThreatMake[3],
+                    effectTarget,
+                    expiresAtPhase
+                );
+                if (effects && effects.length > 0) {
+                    abilities.push({
+                        id: `${cardId || 'ability'}:${abilities.length}`,
+                        phases,
+                        cost: [
+                            {
+                                exert: [
+                                    {
+                                        count: subject.count,
+                                        target: subject.target,
+                                        ...(subject.mode
+                                            ? { mode: subject.mode }
+                                            : {}),
+                                    },
+                                ],
+                            },
+                            { removeThreats: threatCount },
+                        ],
+                        effects,
+                        source:
+                            subject.target === 'BEARER' ? 'ATTACHMENT' : 'SELF',
+                        text: `${marker.phase}: Exert ${exertOrThreatMake[1].trim()} or remove ${exertOrThreatMake[2]} threat${threatCount > 1 ? 's' : ''} to make ${exertOrThreatMake[3]}`
+                            .replace(/<[^>]+>/g, '')
+                            .replace(/\s+/g, ' ')
+                            .replace(/\s+\./g, '.')
+                            .trim(),
+                    });
+                    return;
+                }
             }
         }
 
@@ -2005,6 +2330,42 @@ export function parseAbilities(
                 text
             );
             if (!discardSubject) return;
+
+            if (isDiscardEveryAll(discardMatch[2])) {
+                const discardClause =
+                    `${marker.phase}: Exert ${discardMatch[1].trim()} to discard ${discardMatch[2]}`
+                        .replace(/<[^>]+>/g, '')
+                        .replace(/\s+/g, ' ')
+                        .replace(/\s+\./g, '.')
+                        .trim();
+                abilities.push({
+                    id: `${cardId || 'ability'}:${abilities.length}`,
+                    phases,
+                    cost: [
+                        {
+                            exert: [
+                                {
+                                    count: discardSubject.count,
+                                    target: discardSubject.target,
+                                    ...(discardSubject.mode
+                                        ? { mode: discardSubject.mode }
+                                        : {}),
+                                },
+                            ],
+                        },
+                    ],
+                    effects: [
+                        { type: 'DISCARD_ALL', target: [['CONDITION']] },
+                    ],
+                    source:
+                        discardSubject.target === 'BEARER'
+                            ? 'ATTACHMENT'
+                            : 'SELF',
+                    text: discardClause,
+                });
+                return;
+            }
+
             const discardTarget = parseNounTarget(
                 discardMatch[2],
                 discardSubject.target,
@@ -2051,6 +2412,57 @@ export function parseAbilities(
                         ? 'ATTACHMENT'
                         : 'SELF',
                 text: discardClause,
+            });
+            return;
+        }
+
+        // Spot X to discard Y (events / special abilities)
+        const spotDiscardMatch = body.match(
+            /^Spot\s+([\s\S]+?)\s+to discard\s+([\s\S]+)/i
+        );
+        if (spotDiscardMatch) {
+            if (/\b(and|or)\b/i.test(spotDiscardMatch[1])) return;
+            const spotSubject = parseExertSubject(
+                spotDiscardMatch[1],
+                cardTitle,
+                text
+            );
+            if (!spotSubject) return;
+            const discardTarget = parseNounTarget(
+                spotDiscardMatch[2],
+                [['']],
+                cardTitle
+            );
+            if (!discardTarget || !Array.isArray(discardTarget)) return;
+
+            const spotDiscardClause =
+                `${marker.phase}: Spot ${spotDiscardMatch[1].trim()} to discard ${spotDiscardMatch[2]}`
+                    .replace(/<[^>]+>/g, '')
+                    .replace(/\s+/g, ' ')
+                    .replace(/\s+\./g, '.')
+                    .trim();
+
+            abilities.push({
+                id: `${cardId || 'ability'}:${abilities.length}`,
+                phases,
+                cost: [
+                    {
+                        spot: [
+                            {
+                                count: spotSubject.count,
+                                target: spotSubject.target,
+                                ...(spotSubject.mode
+                                    ? { mode: spotSubject.mode }
+                                    : {}),
+                            },
+                        ],
+                    },
+                ],
+                effects: [
+                    { type: 'DISCARD', count: 1, target: discardTarget },
+                ],
+                source: 'SELF',
+                text: spotDiscardClause,
             });
             return;
         }

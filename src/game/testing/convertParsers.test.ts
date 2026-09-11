@@ -543,12 +543,57 @@ describe('parseAbilities — Response prevent wound', () => {
         ]);
     });
 
-    it('n’émet rien pour 4R1 (While avec +2 force + Combat pour mettre)', () => {
+    it('parse 4R1 : Combat — fardeau pour mettre l’Anneau (+2 force While)', () => {
         const text =
             'While wearing The One Ring, the Ring-bearer is strength +2, and each time he is about to take a wound in a skirmish, add a burden instead.\n<keyword>Skirmish:</keyword> Add a burden to wear The One Ring until the regroup phase.';
-        expect(
-            parseAbilities(text, 'The One Ring', '4R1')
-        ).toBeUndefined();
+        expect(parseAbilities(text, 'The One Ring', '4R1')).toEqual([
+            {
+                id: '4R1:0',
+                phases: ['SKIRMISH'],
+                cost: [{ addBurdens: 1 }],
+                effects: [
+                    {
+                        type: 'WEAR_RING',
+                        expiresAtPhase: 'REGROUP',
+                        replaceWoundWithBurdens: 1,
+                        onlyInSkirmish: true,
+                        strengthBonus: 2,
+                    },
+                ],
+                source: 'ATTACHMENT',
+                text: expect.stringMatching(
+                    /SKIRMISH: Add a burden to wear The One Ring/i
+                ),
+            },
+        ]);
+    });
+
+    it('parse Merry 1R302 : force vers un autre compagnon si non affecté', () => {
+        const text =
+            '<keyword>Skirmish:</keyword> If Merry is not assigned to a skirmish, exert him twice to add his strength to another companion.';
+        expect(parseAbilities(text, 'Merry', '1R302')).toEqual([
+            {
+                id: '1R302:0',
+                phases: ['SKIRMISH'],
+                requiresUnassigned: true,
+                cost: [{ exert: [{ count: 2, target: 'SELF' }] }],
+                effects: [
+                    {
+                        type: 'ADD_TEMP_STAT',
+                        stat: 'STRENGTH',
+                        value: 0,
+                        valueFromSourceStat: 'STRENGTH',
+                        target: [['COMPANION']],
+                        excludeSource: true,
+                        expiresAtPhase: 'SKIRMISH',
+                    },
+                ],
+                source: 'SELF',
+                text: expect.stringMatching(
+                    /not assigned to a skirmish.*another companion/i
+                ),
+            },
+        ]);
     });
 
     it('parse Intimidate : spot Gandalf', () => {
@@ -1116,6 +1161,133 @@ describe('parseAbilities — Response wins a skirmish', () => {
         expect(
             parseAbilities(text, 'The Seen and the Unseen', '1C58')
         ).toBeUndefined();
+    });
+
+    it('parse Sleep Caradhras : défausser toutes les situations', () => {
+        const text =
+            '<keyword>Spell.</keyword> <br><keyword>Fellowship:</keyword> Exert Gandalf to discard every condition.';
+        expect(parseAbilities(text, 'Sleep, Caradhras', '1C84')).toEqual([
+            {
+                id: '1C84:0',
+                phases: ['FELLOWSHIP'],
+                cost: [{ exert: [{ count: 1, target: [['Gandalf']] }] }],
+                effects: [{ type: 'DISCARD_ALL', target: [['CONDITION']] }],
+                source: 'SELF',
+                text: expect.stringMatching(
+                    /Exert Gandalf to discard every condition/i
+                ),
+            },
+        ]);
+    });
+
+    it('parse Albert Dreary : défausser situation Isengard ou Moria', () => {
+        const text =
+            'To play, spot Gandalf. <br><keyword>Maneuver:</keyword> Exert Albert Dreary to discard a <symbol>isengard</symbol> or <symbol>moria</symbol> condition.';
+        expect(parseAbilities(text, 'Albert Dreary', '1R69')).toEqual([
+            {
+                id: '1R69:0',
+                phases: ['MANEUVER'],
+                cost: [{ exert: [{ count: 1, target: 'SELF' }] }],
+                effects: [
+                    {
+                        type: 'DISCARD',
+                        count: 1,
+                        target: [
+                            ['ISENGARD', 'CONDITION'],
+                            ['MORIA', 'CONDITION'],
+                        ],
+                    },
+                ],
+                source: 'SELF',
+                text: expect.stringMatching(
+                    /discard a .* condition/i
+                ),
+            },
+        ]);
+    });
+
+    it('parse Roll of Thunder : spot Gandalf, défausser possession/artefact Ombre', () => {
+        const text =
+            '<keyword>Fellowship or Maneuver:</keyword> Spot Gandalf to discard a Shadow possession or Shadow artifact.';
+        expect(parseAbilities(text, 'Roll of Thunder', '4U99')).toEqual([
+            {
+                id: '4U99:0',
+                phases: ['FELLOWSHIP', 'MANEUVER'],
+                cost: [{ spot: [{ count: 1, target: [['Gandalf']] }] }],
+                effects: [
+                    {
+                        type: 'DISCARD',
+                        count: 1,
+                        target: [
+                            ['SHADOW', 'POSSESSION'],
+                            ['SHADOW', 'ARTIFACT'],
+                        ],
+                    },
+                ],
+                source: 'SELF',
+                text: expect.stringMatching(
+                    /Spot Gandalf to discard a Shadow possession/i
+                ),
+            },
+        ]);
+    });
+
+    it('parse Gollum 7C59 : exert ×2 ou retirer menace → force +2', () => {
+        const text =
+            '<keyword>Skirmish:</keyword> Exert Gollum twice or remove a threat to make him strength +2.';
+        expect(parseAbilities(text, 'Gollum', '7C59')).toEqual([
+            {
+                id: '7C59:0',
+                phases: ['SKIRMISH'],
+                cost: [
+                    { exert: [{ count: 2, target: 'SELF' }] },
+                    { removeThreats: 1 },
+                ],
+                effects: [
+                    {
+                        type: 'ADD_TEMP_STAT',
+                        stat: 'STRENGTH',
+                        value: 2,
+                        target: 'SELF',
+                        expiresAtPhase: 'SKIRMISH',
+                    },
+                ],
+                source: 'SELF',
+                text: expect.stringMatching(
+                    /Exert Gollum twice or remove a threat/i
+                ),
+            },
+        ]);
+    });
+
+    it('parse You’re a Liar : Gollum gagne → blesser un compagnon (sauf Porteur)', () => {
+        const text =
+            '<keyword>Response:</keyword> If Gollum wins a skirmish, wound a companion (except the Ring-bearer).';
+        expect(
+            parseAbilities(text, "You're a Liar and a Thief", '6C47')
+        ).toEqual([
+            {
+                id: '6C47:0',
+                phases: ['RESPONSE'],
+                trigger: {
+                    type: 'WINS_SKIRMISH',
+                    winner: [['GOLLUM']],
+                },
+                cost: [],
+                effects: [
+                    {
+                        type: 'WOUND',
+                        count: 1,
+                        target: [['COMPANION']],
+                        excludeRingBearer: true,
+                    },
+                ],
+                source: 'SELF',
+                text: expect.stringMatching(
+                    /wound a companion \(except the Ring-bearer\)/i
+                ),
+            },
+        ]);
     });
 });
 

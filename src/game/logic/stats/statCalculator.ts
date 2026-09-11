@@ -1,6 +1,7 @@
 import type { GameState, CardState } from '../../types';
 import { getHunterStrengthBonus } from './mechanics/hunterModifier';
 import { getEnduringStrengthBonus } from './mechanics/enduringModifier'; // 👈 Import
+import { isRingBearerCard } from '../../../utils/cardUtils';
 
 /**
  * Calcule la force totale effective d'un personnage à un instant T
@@ -36,6 +37,14 @@ export function getCalculatedStrength(G?: GameState, card?: CardState): number {
             .forEach((m) => {
                 totalStrength += m.value;
             });
+    }
+
+    // 3b. Anneau au doigt : bonus de force du Porteur
+    if (
+        G.wearingTheOneRing?.strengthBonus &&
+        isRingBearerCard(card)
+    ) {
+        totalStrength += G.wearingTheOneRing.strengthBonus;
     }
 
     // 4. Bonus contextuels d'escarmouche (délégués aux sous-modules dédiés)
