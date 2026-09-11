@@ -10,6 +10,7 @@ import { requestWounds } from '../responseWindow';
 import { cardMatchesTarget } from '../validations/matchers';
 import { drawCardsForPlayer } from '../../../utils/drawCards';
 import { discardCardFromPlay } from '../../../utils/discardCardFromPlay';
+import { findTargetCard, isRingBearerCard } from '../../../utils/cardUtils';
 
 function expiryToScope(expiresAtPhase: AbilityEffectExpiry): ModifierScope {
     if (expiresAtPhase === 'SKIRMISH') return 'SKIRMISH';
@@ -69,6 +70,13 @@ export function applyAbilityEffect(
                     ? { onlyInSkirmish: true }
                     : {}),
             };
+            continue;
+        }
+
+        if (effect.type === 'MAKE_RING_BEARER') {
+            if (!makeRingBearer(G, source, effect.resistance)) {
+                return false;
+            }
             continue;
         }
 
@@ -164,6 +172,70 @@ function applyOneEffect(
     }
 
     return false;
+}
+
+function makeRingBearer(
+    G: GameState,
+    newBearer: CardState,
+    resistance: number
+): boolean {
+    if (!newBearer || newBearer.isDead) return false;
+    if (isRingBearerCard(newBearer)) return false;
+
+    forEachInPlayCard(G, (card) => {
+        if (!card.keywords?.includes('RING-BEARER')) return;
+        card.keywords = card.keywords.filter(
+            (keyword) => keyword !== 'RING-BEARER'
+        );
+    });
+
+    if (!newBearer.keywords) newBearer.keywords = [];
+    if (!newBearer.keywords.includes('RING-BEARER')) {
+        newBearer.keywords.push('RING-BEARER');
+    }
+    newBearer.resistance = resistance;
+
+    const deadId =
+        G.pendingEvent?.type === 'CHARACTER_DIES'
+            ? G.pendingEvent.deadCardId
+            : undefined;
+    const dead = deadId
+        ? (findTargetCard(G, deadId) as CardState | null)
+        : null;
+
+    const ringSources: CardState[] = [];
+    if (dead?.attachments?.length) ringSources.push(dead);
+    forEachInPlayCard(G, (card) => {
+        if (card === newBearer || card === dead) return;
+        if (card.attachments?.some((att) => att.type === 'RING')) {
+            ringSources.push(card);
+        }
+    });
+
+    if (!newBearer.attachments) newBearer.attachments = [];
+    for (const host of ringSources) {
+        const kept: CardState[] = [];
+        for (const att of host.attachments || []) {
+            if (att.type === 'RING') {
+                newBearer.attachments.push(att);
+            } else {
+                kept.push(att);
+            }
+        }
+        host.attachments = kept;
+    }
+
+    // Nouveau Porteur : les fardeaux du joueur FP repartent à zéro.
+    const fpId = G.fpPlayerId || '0';
+    const fpPlayer = G.players[fpId];
+    if (fpPlayer) {
+        fpPlayer.burdens = 0;
+    }
+
+    const name =
+        newBearer.i18n?.fr?.title || newBearer.title || 'Ce personnage';
+    G.statusMessage = `${name} devient le Porteur de l’Anneau (résistance ${resistance}).`;
+    return true;
 }
 
 export function clearExpiredTempKeywords(

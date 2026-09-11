@@ -31,6 +31,7 @@ function resetPhaseMachine(G: GameState): void {
     G.regroupStep = undefined;
     G.awaitingSiteSelection = false;
     G.pendingPlay = undefined;
+    G.pendingDeathQueue = undefined;
     clearActionableFlags(G);
 }
 

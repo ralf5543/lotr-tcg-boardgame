@@ -7543,7 +7543,6 @@
     "twilightCost": 2,
     "strength": 3,
     "vitality": 4,
-    "resistance": 5,
     "imageUrl": "/cards_visuals/o_10_122.jpg",
     "i18n": {
       "en": {
@@ -24978,7 +24977,6 @@
     "twilightCost": 2,
     "strength": 3,
     "vitality": 4,
-    "resistance": 5,
     "imageUrl": "/cards_visuals/o_01_310.jpg",
     "i18n": {
       "en": {
@@ -25033,7 +25031,6 @@
     "twilightCost": 2,
     "strength": 3,
     "vitality": 4,
-    "resistance": 5,
     "imageUrl": "/cards_visuals/o_01_311.jpg",
     "i18n": {
       "en": {
@@ -30920,7 +30917,6 @@
     "twilightCost": 2,
     "strength": 3,
     "vitality": 4,
-    "resistance": 5,
     "imageUrl": "/cards_visuals/o_02_114.jpg",
     "i18n": {
       "en": {
@@ -50795,7 +50791,6 @@
     "twilightCost": 2,
     "strength": 3,
     "vitality": 4,
-    "resistance": 5,
     "imageUrl": "/cards_visuals/o_04_315.jpg",
     "i18n": {
       "en": {
@@ -50849,7 +50844,6 @@
     "twilightCost": 2,
     "strength": 3,
     "vitality": 4,
-    "resistance": 5,
     "imageUrl": "/cards_visuals/o_04_316.jpg",
     "i18n": {
       "en": {
@@ -56411,7 +56405,6 @@
     "twilightCost": 2,
     "strength": 3,
     "vitality": 4,
-    "resistance": 5,
     "imageUrl": "/cards_visuals/o_05_115.jpg",
     "i18n": {
       "en": {
@@ -76778,7 +76771,6 @@
     "twilightCost": 2,
     "strength": 3,
     "vitality": 4,
-    "resistance": 5,
     "imageUrl": "/cards_visuals/o_07_326.jpg",
     "i18n": {
       "en": {
@@ -76829,7 +76821,6 @@
     "twilightCost": 2,
     "strength": 3,
     "vitality": 4,
-    "resistance": 5,
     "imageUrl": "/cards_visuals/o_07_327.jpg",
     "i18n": {
       "en": {
@@ -102103,7 +102094,6 @@
     "twilightCost": 3,
     "strength": 7,
     "vitality": 3,
-    "resistance": 6,
     "imageUrl": "/cards_visuals/o_12_043.jpg",
     "i18n": {
       "en": {
@@ -105709,7 +105699,6 @@
     "twilightCost": 1,
     "strength": 3,
     "vitality": 4,
-    "resistance": 6,
     "imageUrl": "/cards_visuals/o_12_127.jpg",
     "i18n": {
       "en": {

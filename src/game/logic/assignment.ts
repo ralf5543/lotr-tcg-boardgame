@@ -86,10 +86,10 @@ export const getUnassignedMinions = (G: GameState): CardState[] => {
     );
 
     return minionCards.filter((c: CardState) => {
-        const cardId = c.instanceId || c.id;
-        
         // A. Si déjà assigné dans CETTE passe d'assignment en cours -> Exclu
-        const isAssignedInCurrentPass = assignedMinionIds.includes(cardId);
+        const isAssignedInCurrentPass = assignedMinionIds.some(
+            (id) => id === c.id || id === c.instanceId
+        );
         if (isAssignedInCurrentPass) return false;
 
         // B. Si on est en passe Acharnée (Fierce) -> SEULS les FIERCE sont éligibles

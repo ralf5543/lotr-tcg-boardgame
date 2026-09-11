@@ -8,6 +8,7 @@ import { applyWoundAndCheckDeath } from '../../utils/applyWoundAndCheckDeath';
 import { findTargetCard, isRingBearerCard } from '../../utils/cardUtils';
 import { clearActionableFlags } from '../../utils/clearActionableFlags';
 import { canPayAbilityCost } from './abilities/payAbilityCost';
+import { abilityHasLegalEffectTarget } from './abilities/designation';
 import {
     findBearer,
     forEachInPlayCard,
@@ -48,6 +49,18 @@ export function abilityMatchesTrigger(
             return false;
         }
         return true;
+    }
+
+    if (event.type === 'CHARACTER_DIES') {
+        if (ability.trigger.type !== 'CHARACTER_DIES') return false;
+        const dead = findTargetCard(G, event.deadCardId) as CardState | null;
+        if (!dead || !dead.isDead) return false;
+        const target = ability.trigger.target;
+        if (target === 'SELF') {
+            return matchCard(dead, source.instanceId || source.id);
+        }
+        if (Array.isArray(target)) return cardMatchesTarget(dead, target);
+        return false;
     }
 
     if (event.type !== 'ABOUT_TO_WOUND') return false;
@@ -145,12 +158,16 @@ function responseEventIsActive(event: PendingEvent | undefined): boolean {
     if (!event) return false;
     if (event.type === 'ABOUT_TO_WOUND') return event.remaining > 0;
     if (event.type === 'WINS_SKIRMISH') return event.winnerIds.length > 0;
+    if (event.type === 'CHARACTER_DIES') return Boolean(event.deadCardId);
     return false;
 }
 
 function responseWindowMessage(G: GameState): string {
     if (G.pendingEvent?.type === 'WINS_SKIRMISH') {
         return 'Un personnage a gagné ce combat. Jouez une réponse ou passez.';
+    }
+    if (G.pendingEvent?.type === 'CHARACTER_DIES') {
+        return 'Un personnage est mort. Jouez une réponse ou passez.';
     }
     return responseWoundMessage(G);
 }
@@ -167,7 +184,8 @@ function inPlayResponseIsLegal(
     }
     if (abilityWearsTheOneRing(ability) && G.wearingTheOneRing) return false;
     if (!abilityMatchesTrigger(ability, event, source, G)) return false;
-    return canPayAbilityCost(G, source, ability.cost);
+    if (!canPayAbilityCost(G, source, ability.cost)) return false;
+    return abilityHasLegalEffectTarget(G, source, ability);
 }
 
 function twilightPayableForEvent(
@@ -279,6 +297,7 @@ function processWoundQueue(G: GameState): 'APPLIED' | 'WAITING' {
     G.woundQueue = undefined;
     G.pendingEvent = undefined;
     closeResponseWindow(G);
+    if (tryOpenCharacterDies(G) === 'WAITING') return 'WAITING';
     if (tryOpenWinsSkirmish(G) === 'WAITING') return 'WAITING';
     tryResumeArcheryAfterResponses(G);
     flushPendingActionYield(G);
@@ -364,14 +383,60 @@ export function tryOpenWinsSkirmish(G: GameState): 'APPLIED' | 'WAITING' {
     return 'WAITING';
 }
 
+export function notifyCharacterDied(G: GameState, card: CardState): void {
+    const id = card.instanceId || card.id;
+    if (!id) return;
+    if (!G.pendingDeathQueue) G.pendingDeathQueue = [];
+    if (!G.pendingDeathQueue.includes(id)) {
+        G.pendingDeathQueue.push(id);
+    }
+}
+
+export function tryOpenCharacterDies(G: GameState): 'APPLIED' | 'WAITING' {
+    if (G.responseWindow?.isOpen || G.pendingEvent) {
+        return G.responseWindow?.isOpen ? 'WAITING' : 'APPLIED';
+    }
+
+    while (G.pendingDeathQueue && G.pendingDeathQueue.length > 0) {
+        const deadCardId = G.pendingDeathQueue.shift()!;
+        const dead = findTargetCard(G, deadCardId) as CardState | null;
+        if (!dead || !dead.isDead) continue;
+
+        G.pendingEvent = {
+            type: 'CHARACTER_DIES',
+            deadCardId,
+        };
+
+        if (!hasAnyEligibleResponse(G)) {
+            G.pendingEvent = undefined;
+            continue;
+        }
+
+        openResponseWindow(G);
+        return 'WAITING';
+    }
+
+    G.pendingDeathQueue = undefined;
+    return 'APPLIED';
+}
+
 function concludeOpenResponse(G: GameState): 'APPLIED' | 'WAITING' {
     if (G.pendingEvent?.type === 'ABOUT_TO_WOUND') {
         applyOnePendingWound(G);
         return continueAfterCurrentWound(G);
     }
 
+    if (G.pendingEvent?.type === 'CHARACTER_DIES') {
+        G.pendingEvent = undefined;
+        closeResponseWindow(G);
+        if (tryOpenCharacterDies(G) === 'WAITING') return 'WAITING';
+        if (tryOpenWinsSkirmish(G) === 'WAITING') return 'WAITING';
+        return processWoundQueue(G);
+    }
+
     G.pendingEvent = undefined;
     closeResponseWindow(G);
+    if (tryOpenCharacterDies(G) === 'WAITING') return 'WAITING';
     return processWoundQueue(G);
 }
 

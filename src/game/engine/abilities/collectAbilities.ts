@@ -185,6 +185,9 @@ function formatEffectBit(
     if (effect.type === 'WEAR_RING') {
         return 'mettre l’Anneau Unique';
     }
+    if (effect.type === 'MAKE_RING_BEARER') {
+        return `devenir Porteur de l’Anneau (résistance ${effect.resistance})`;
+    }
     if (effect.type === 'ALLOW_SKIRMISH') {
         const who = source.i18n?.fr?.title || source.title || 'ce personnage';
         return `permettre à ${who} de combattre`;

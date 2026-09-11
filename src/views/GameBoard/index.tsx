@@ -408,6 +408,10 @@ export const GameBoard: React.FC<GameBoardProps> = ({
 
     // 🟢 NETTOYAGE VISUEL UNIVERSEL (Toutes phases / Tous événements)
     useEffect(() => {
+        if (G.responseWindow?.isOpen || G.pendingEvent) {
+            return;
+        }
+
         const hasWounded =
             G.lastWoundedCardIds && G.lastWoundedCardIds.length > 0;
         const hasExerted =
@@ -417,10 +421,7 @@ export const GameBoard: React.FC<GameBoardProps> = ({
         const activeSkirmish = G.skirmishes?.find(
             (skirmish) => skirmish.id === G.activeSkirmishId
         );
-        const skirmishOutcomeSettled =
-            Boolean(activeSkirmish?.resolved) &&
-            !G.responseWindow?.isOpen &&
-            !G.pendingEvent;
+        const skirmishOutcomeSettled = Boolean(activeSkirmish?.resolved);
 
         if (
             hasWounded ||
@@ -625,7 +626,10 @@ export const GameBoard: React.FC<GameBoardProps> = ({
                     targetId !== 'sitePath'
                 ) {
                     if (moves.assignMinion) {
-                        moves.assignMinion(card.id, targetId);
+                        moves.assignMinion(
+                            card.instanceId || card.id,
+                            targetId
+                        );
                     }
                     return;
                 }
@@ -756,7 +760,9 @@ export const GameBoard: React.FC<GameBoardProps> = ({
                 'Escarmouche : Cliquez sur un groupe pour résoudre son combat.',
             onSelectTarget: (companionCardId) => {
                 const chosenSkirmish = G.skirmishes.find(
-                    (s) => s.companionId === companionCardId
+                    (s) =>
+                        s.companionId === companionCardId ||
+                        s.id === `skirmish_${companionCardId}`
                 );
 
                 if (chosenSkirmish && moves.selectSkirmish) {

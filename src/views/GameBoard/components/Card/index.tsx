@@ -25,7 +25,10 @@ import { requiresAttachmentTarget } from '../../../../game/engine/canPlayCard';
 import { getEffectiveKeywords } from '../../../../game/engine/keywords/keywordUtils';
 import { canUseAbility } from '../../../../game/engine/canUseAbility';
 import { canPayAbilityCost } from '../../../../game/engine/abilities/payAbilityCost';
-import { abilityNeedsDesignation } from '../../../../game/engine/abilities/designation';
+import {
+    abilityHasLegalEffectTarget,
+    abilityNeedsDesignation,
+} from '../../../../game/engine/abilities/designation';
 import {
     cardOrAttachmentsHaveActionPhases,
     collectVisibleAbilities,
@@ -264,44 +267,40 @@ export const Card: React.FC<CardProps> = ({
         card && size === 'sm' && !isAttachedCard
             ? collectVisibleAbilities(G, card)
             : [];
+    const abilityContext =
+        G && viewerPlayerId
+            ? { G, ctx: { phase }, playerID: viewerPlayerId }
+            : null;
+    const listedAbilities = visibleAbilities.filter(({ source, ability }) => {
+        if (G?.responseWindow?.isOpen) {
+            if (!abilityMatchesPhase(ability, 'RESPONSE')) return false;
+            if (
+                !abilityMatchesTrigger(
+                    ability,
+                    G.pendingEvent,
+                    source,
+                    G
+                )
+            ) {
+                return false;
+            }
+            return (
+                canPayAbilityCost(G, source, ability.cost) &&
+                abilityHasLegalEffectTarget(G, source, ability)
+            );
+        }
+        // Hors fenêtre de réponse : jamais une Response dans la bulle
+        if (abilityMatchesPhase(ability, 'RESPONSE')) return false;
+        return !phase || abilityMatchesPhase(ability, phase);
+    });
     const showAbilityButton = Boolean(
         card &&
             size === 'sm' &&
             viewerOwnsCard &&
             !isAttachedCard &&
-            (visibleAbilities.length > 0 ||
+            (listedAbilities.length > 0 ||
                 (!G && cardOrAttachmentsHaveActionPhases(card)))
     );
-    const abilityContext =
-        G && viewerPlayerId
-            ? { G, ctx: { phase }, playerID: viewerPlayerId }
-            : null;
-    const listedAbilities = showAbilityButton
-        ? visibleAbilities.filter(({ source, ability }) => {
-              if (G?.responseWindow?.isOpen) {
-                  if (!abilityMatchesPhase(ability, 'RESPONSE')) return false;
-                  if (
-                      !abilityMatchesTrigger(
-                          ability,
-                          G.pendingEvent,
-                          source,
-                          G
-                      )
-                  ) {
-                      return false;
-                  }
-                  return canPayAbilityCost(G, source, ability.cost);
-              }
-              const responseAbility = abilityMatchesPhase(ability, 'RESPONSE');
-              const responseUsable = Boolean(
-                  abilityContext &&
-                      responseAbility &&
-                      canUseAbility(source, abilityContext).valid
-              );
-              if (responseUsable) return responseAbility;
-              return !phase || abilityMatchesPhase(ability, phase);
-          })
-        : [];
     const abilityPhaseMatch = Boolean(
         card &&
             showAbilityButton &&

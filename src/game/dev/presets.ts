@@ -524,39 +524,35 @@ export const applyDevPreset = (
             });
 
             const frodo = asRingBearer(clonePresetCard('2C102', 'dev-frodo'));
-            frodo.wounds = 1;
-            const boromir = clonePresetCard('1R96', 'dev-boromir');
-            boromir.attachments = [
-                clonePresetCard('1U98', 'dev-cloak-1U98'),
-            ];
-            const elrond = clonePresetCard('1R40', 'dev-elrond-1R40');
-            elrond.wounds = 1;
+            // Anneau Unique : +1 vitalité → 5 ; 4 blessures = 1 PV restant.
+            frodo.wounds = 4;
+            frodo.attachments = [clonePresetCard('1R1', 'dev-one-ring')];
+            const sam = clonePresetCard('2C114', 'dev-sam');
+
+            // Fardeaux pour vérifier le reset à 0 quand Sam devient Porteur.
+            fpPlayer.burdens = 3;
 
             fpPlayer.fellowshipArea = [
                 frodo,
-                boromir,
+                sam,
                 clonePresetCard('0P12', 'dev-gimli'),
             ];
-            fpPlayer.supportArea = [
-                clonePresetCard('1R34', 'dev-celeborn'),
-                elrond,
-            ];
-            fpPlayer.hand = [
-                clonePresetCard('1C315', 'dev-stout'),
-                clonePresetCard('1C6', 'dev-delving'),
-            ];
+            fpPlayer.supportArea = [];
+            fpPlayer.hand = [];
 
             if (shadowPlayer) {
                 shadowPlayer.hand = [];
                 shadowPlayer.supportArea = [];
             }
 
-            G.battlefield = [{ ...CARDS_PRESETS.MORIA_SCOUT }];
+            const scout = { ...CARDS_PRESETS.MORIA_SCOUT, instanceId: 'dev-moria-scout' };
+            G.battlefield = [scout];
             G.skirmishes = [];
             G.activeSkirmishId = undefined;
             G.actionWindow = undefined;
             G.responseWindow = undefined;
             G.pendingEvent = undefined;
+            G.pendingDeathQueue = undefined;
 
             fpPlayer.deck = [1, 2, 3, 4, 5, 6, 7, 8].map((n) => ({
                 ...clonePresetCard('1C8'),
@@ -564,7 +560,7 @@ export const applyDevPreset = (
             }));
 
             G.statusMessage =
-                '[DEV] Compagnie : Celeborn soigne Elrond (1R40), Elrond pioche, Fouilles. Manœuvre/Combat : Solide et Robuste soigne Frodon. (Cape 1U98 sur Boromir — défausse climat reportée, attache aux sites pas prête.)';
+                '[DEV] Sam 2C114 : blesse Frodon à mort (dev) → réponse Sam devient Porteur (résistance 5) + Anneau Unique.';
             break;
         }
     }

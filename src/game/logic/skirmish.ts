@@ -14,7 +14,11 @@ import {
     getEffectiveKeywords,
 } from '../engine/keywords/keywordUtils';
 import { getCalculatedStrength } from './stats/statCalculator';
-import { requestWounds, tryOpenWinsSkirmish } from '../engine/responseWindow';
+import {
+    requestWounds,
+    tryOpenCharacterDies,
+    tryOpenWinsSkirmish,
+} from '../engine/responseWindow';
 
 /**
  * Helper interne pour extraire proprement le nom d'une carte dans la langue par défaut (FR).
@@ -101,8 +105,10 @@ export const resolveSkirmish = (G: GameState, _ctx?: Ctx) => {
             c.id === skirmish.companionId ||
             c.instanceId === skirmish.companionId
     );
-    const minions = (G.battlefield || []).filter((c) =>
-        skirmish.minionIds.includes(c.id || c.instanceId)
+    const minions = (G.battlefield || []).filter(
+        (c) =>
+            skirmish.minionIds.includes(c.id) ||
+            skirmish.minionIds.includes(c.instanceId)
     );
 
     // Si le compagnon n'est plus là, on annule cette escarmouche
@@ -220,6 +226,7 @@ export const resolveSkirmish = (G: GameState, _ctx?: Ctx) => {
     if (!G.responseWindow?.isOpen) {
         G.statusMessage = resultMsg;
     }
+    if (tryOpenCharacterDies(G) === 'WAITING') return;
     tryOpenWinsSkirmish(G);
 };
 

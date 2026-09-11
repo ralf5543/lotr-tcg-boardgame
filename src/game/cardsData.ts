@@ -1,12 +1,13 @@
 import rawCards from '../data/cards.json';
 import rawSites from '../data/sites.json';
 import type { CardState } from './types';
+import { mergeExceptionAbilities } from './engine/abilities/exceptions';
 
 // Fusion des cartes normales et des sites dans la même base
 export const CARDS_DATABASE: CardState[] = [
     ...(rawCards as unknown as CardState[]),
     ...(rawSites as unknown as CardState[]),
-];
+].map(mergeExceptionAbilities);
 
 // Recherche d'une carte spécifique par son ID (ex: "1R89" ou "11S241")
 export const getCardById = (id: string): CardState | undefined => {

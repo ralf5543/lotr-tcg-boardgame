@@ -49,8 +49,15 @@ export const assignMinion = (
     if (!canCompanionBeAssigned(compCard)) return 'INVALID_MOVE';
 
     const existingSkirmish = G.skirmishes.find(
-        (s) => s.companionId === companionId
+        (s) =>
+            s.companionId === companionId ||
+            s.companionId === compCard.instanceId ||
+            s.companionId === compCard.id
     );
+
+    const resolvedCompanionId = compCard.instanceId || compCard.id;
+    const resolvedMinionId =
+        (minionCard?.instanceId || minionCard?.id || minionId) as string;
 
     // 🟢 Capacité dynamique : 1 par défaut, ou (1 + X) si DEFENDER +X
     const maxCapacity = getCompanionDefenderCapacity(compCard, G);
@@ -59,24 +66,30 @@ export const assignMinion = (
         G.assignmentStep === 'FP_ASSIGN' &&
         existingSkirmish &&
         existingSkirmish.minionIds.length >= maxCapacity &&
+        !existingSkirmish.minionIds.includes(resolvedMinionId) &&
         !existingSkirmish.minionIds.includes(minionId)
     ) {
         return 'INVALID_MOVE';
     }
 
     G.skirmishes.forEach((s) => {
-        s.minionIds = s.minionIds.filter((id) => id !== minionId);
+        s.minionIds = s.minionIds.filter(
+            (id) => id !== minionId && id !== resolvedMinionId
+        );
     });
 
     if (existingSkirmish) {
-        if (!existingSkirmish.minionIds.includes(minionId)) {
-            existingSkirmish.minionIds.push(minionId);
+        if (
+            !existingSkirmish.minionIds.includes(resolvedMinionId) &&
+            !existingSkirmish.minionIds.includes(minionId)
+        ) {
+            existingSkirmish.minionIds.push(resolvedMinionId);
         }
     } else {
         G.skirmishes.push({
-            id: `skirmish_${companionId}`,
-            companionId,
-            minionIds: [minionId],
+            id: `skirmish_${resolvedCompanionId}`,
+            companionId: resolvedCompanionId,
+            minionIds: [resolvedMinionId],
         });
     }
 

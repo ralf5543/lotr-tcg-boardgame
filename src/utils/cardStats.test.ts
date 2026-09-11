@@ -38,4 +38,14 @@ describe('getEffectiveResistance', () => {
         expect(getEffectiveResistance(minion, 3)).toBe(4);
         expect(getEffectiveResistance(companion, 20)).toBe(0);
     });
+
+    it('défaut 6 si pas de résistance imprimée (sceau), puis fardeaux', () => {
+        const companion = createCompanion({
+            id: 'gimli',
+            resistance: undefined,
+            signet: 'GANDALF',
+        });
+        expect(getEffectiveResistance(companion, 0)).toBe(6);
+        expect(getEffectiveResistance(companion, 3)).toBe(3);
+    });
 });

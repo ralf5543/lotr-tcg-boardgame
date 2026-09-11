@@ -66,7 +66,12 @@ export const Battlefield: React.FC<BattlefieldProps> = ({
 
     // Filtrer les séides non assignés
     const unassignedMinions = cards.filter(
-        (minion) => !skirmishes.some((s) => s.minionIds?.includes(minion.id))
+        (minion) =>
+            !skirmishes.some((s) =>
+                s.minionIds?.some(
+                    (id) => id === minion.id || id === minion.instanceId
+                )
+            )
     );
 
     return (

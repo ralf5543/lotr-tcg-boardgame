@@ -1,6 +1,15 @@
 import type { GameState, CardState } from '../game/types';
 import { getEffectiveVitality } from './cardStats';
 
+function enqueueCharacterDeath(G: GameState, card: CardState): void {
+    const cardId = card.instanceId || card.id;
+    if (!cardId) return;
+    if (!G.pendingDeathQueue) G.pendingDeathQueue = [];
+    if (!G.pendingDeathQueue.includes(cardId)) {
+        G.pendingDeathQueue.push(cardId);
+    }
+}
+
 /**
  * Applique une mort directe par submersion (overwhelm).
  * Ne modifie PAS le compteur de blessures (card.wounds).
@@ -27,6 +36,7 @@ export const applyOverwhelmAndCheckDeath = (
     if (cardId && !G.pendingDeadCardIds.includes(cardId)) {
         G.pendingDeadCardIds.push(cardId);
     }
+    enqueueCharacterDeath(G, card);
 };
 
 /**
@@ -63,6 +73,7 @@ export const applyWoundAndCheckDeath = (
         if (cardId && !G.pendingDeadCardIds.includes(cardId)) {
             G.pendingDeadCardIds.push(cardId);
         }
+        enqueueCharacterDeath(G, card);
     }
 
     return isDead;

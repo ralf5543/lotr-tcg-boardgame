@@ -1,5 +1,6 @@
 import type { Ability, CardState, GameState } from '../../types';
 import { getEffectiveVitality } from '../../../utils/cardStats';
+import { isRingBearerCard } from '../../../utils/cardUtils';
 import { resolveAbilityTarget, resolveCostTarget, resolveWinnerTargets } from './resolveCostTarget';
 import { findEventAbilityForPhase } from './playEventAbility';
 
@@ -96,6 +97,10 @@ export function abilityHasLegalEffectTarget(
     ability: Ability
 ): boolean {
     for (const effect of ability.effects || []) {
+        if (effect.type === 'MAKE_RING_BEARER') {
+            if (isRingBearerCard(source)) return false;
+            continue;
+        }
         if (!('target' in effect)) continue;
         if (effect.target === 'SELF' || effect.target === 'BEARER') {
             if (effect.type === 'HEAL') {

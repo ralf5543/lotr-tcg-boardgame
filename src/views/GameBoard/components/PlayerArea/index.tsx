@@ -92,6 +92,7 @@ export const PlayerArea: React.FC<PlayerAreaProps> = ({
                         (c) =>
                             c &&
                             (c.id === targetId ||
+                                c.instanceId === targetId ||
                                 (c as { card?: { id: string } }).card?.id ===
                                     targetId)
                     );
@@ -230,14 +231,19 @@ export const PlayerArea: React.FC<PlayerAreaProps> = ({
                             G?.pendingDeadCardIds?.includes(cardId)
                         );
                         const skirmish = skirmishes.find(
-                            (s) => s.companionId === companion.id
+                            (s) =>
+                                s.companionId === companion.id ||
+                                s.companionId === companion.instanceId
                         );
                         const assignedMinions = battlefield.filter((m) =>
-                            skirmish?.minionIds?.includes(m.id)
+                            skirmish?.minionIds?.some(
+                                (id) => id === m.id || id === m.instanceId
+                            )
                         );
 
                         const skirmishId =
-                            skirmish?.id || `skirmish_${companion.id}`;
+                            skirmish?.id ||
+                            `skirmish_${companion.instanceId || companion.id}`;
 
                         const shouldBeFaceDown = isOpponent
                             ? (companion.isFaceDown ?? false)

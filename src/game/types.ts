@@ -228,6 +228,10 @@ export type AbilityEffect =
     | {
           type: 'ALLOW_SKIRMISH';
           target: AbilityTargetRef;
+      }
+    | {
+          type: 'MAKE_RING_BEARER';
+          resistance: number;
       };
 
 export type AbilityTrigger =
@@ -243,6 +247,10 @@ export type AbilityTrigger =
       }
     | {
           type: 'WHEN_PLAYED';
+      }
+    | {
+          type: 'CHARACTER_DIES';
+          target: AbilityTargetRef;
       };
 
 export interface Ability {
@@ -386,7 +394,15 @@ export interface PendingWinsSkirmishEvent extends PendingWinsSkirmish {
     type: 'WINS_SKIRMISH';
 }
 
-export type PendingEvent = PendingWoundEvent | PendingWinsSkirmishEvent;
+export interface PendingCharacterDiesEvent {
+    type: 'CHARACTER_DIES';
+    deadCardId: string;
+}
+
+export type PendingEvent =
+    | PendingWoundEvent
+    | PendingWinsSkirmishEvent
+    | PendingCharacterDiesEvent;
 
 export interface WoundQueueItem {
     targetId: string;
@@ -426,6 +442,8 @@ export interface GameState {
     pendingEvent?: PendingEvent;
     /** Victoire d’escarmouche en attente : s’ouvre après la file de blessures. */
     pendingWinsSkirmish?: PendingWinsSkirmish;
+    /** Morts en attente d’une éventuelle fenêtre CHARACTER_DIES. */
+    pendingDeathQueue?: string[];
     responseWindow?: ResponseWindow;
     wearingTheOneRing?: {
         expiresAtPhase: AbilityEffectExpiry;

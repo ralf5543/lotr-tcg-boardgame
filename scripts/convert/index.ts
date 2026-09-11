@@ -131,10 +131,16 @@ async function convert() {
             data['Vitality'],
             data['Middle Text']
         );
-        const computedResistance = parseStat(
+        const rawResistance = parseStat(
             data['Resistance'],
             data['Bottom Text']
         );
+        // Sceau = pas de résistance imprimée (défaut moteur 6). Le CSV met parfois
+        // une valeur tirée du gametext (« Ring-bearer (resistance 5) ») — à ignorer.
+        // Les Porteurs (Frodon, Icon_ringbearer) gardent leur résistance réelle.
+        const signet = parseSignet(bottomIcon);
+        const computedResistance =
+            signet && !isRingbearer ? undefined : rawResistance;
         const toPlayData = parseToPlayConditions(englishText);
         const grantsKeywords = parseGrantsKeywords(englishText);
         const aidCost = type === 'FOLLOWER' ? parseAidCost(englishText) : undefined;
@@ -162,7 +168,7 @@ async function convert() {
             actionPhases: actionPhases,
             culture: culture,
             race: data['Race'] ? data['Race'].toUpperCase() : undefined,
-            signet: parseSignet(bottomIcon),
+            signet,
             twilightCost:
                 data['Twilight Cost'] !== ''
                     ? parseInt(data['Twilight Cost'], 10)
