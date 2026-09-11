@@ -702,10 +702,51 @@ describe('parseAbilities — Response prevent wound', () => {
         ]);
     });
 
-    it('n’émet rien pour Arwen (défausse depuis la main)', () => {
+    it('parse Arwen : Porteur, défausser 3 cartes de la main', () => {
         const text =
             '<keyword>Ranger.</keyword> <br><keyword>Response:</keyword> If the Ring-bearer is about to take a wound, discard 3 cards from hand to prevent that wound.';
-        expect(parseAbilities(text, 'Arwen', '3U7')).toBeUndefined();
+        expect(parseAbilities(text, 'Arwen', '3U7')).toEqual([
+            {
+                id: '3U7:0',
+                phases: ['RESPONSE'],
+                trigger: {
+                    type: 'ABOUT_TO_WOUND',
+                    target: [['RING-BEARER']],
+                },
+                cost: [{ discardFromHand: 3 }],
+                effects: [{ type: 'PREVENT_WOUND' }],
+                source: 'SELF',
+                text: expect.stringMatching(
+                    /discard 3 cards from hand to prevent that wound/i
+                ),
+            },
+        ]);
+    });
+
+    it('parse King of the Dead : Aragorn blessé en combat, affaiblir SELF', () => {
+        const text =
+            '<keyword>Response:</keyword> If Aragorn is about to take a wound in a skirmish, exert King of the Dead to prevent that wound.';
+        expect(parseAbilities(text, 'King of the Dead', '8R38')).toEqual([
+            {
+                id: '8R38:0',
+                phases: ['RESPONSE'],
+                trigger: {
+                    type: 'ABOUT_TO_WOUND',
+                    target: [['Aragorn']],
+                    inSkirmish: true,
+                },
+                cost: [{ exert: [{ count: 1, target: 'SELF' }] }],
+                effects: [{ type: 'PREVENT_WOUND' }],
+                source: 'SELF',
+                text: expect.stringMatching(/in a skirmish/i),
+            },
+        ]);
+    });
+
+    it('n’émet rien pour Éowyn épuisée (condition extra)', () => {
+        const text =
+            '<keyword>Valiant.</keyword><br><keyword>Response:</keyword> If Éowyn is exhausted and about to take a wound in a skirmish, discard 2 cards from hand to prevent that wound.';
+        expect(parseAbilities(text, 'Éowyn', '0P39')).toBeUndefined();
     });
 });
 
@@ -853,6 +894,134 @@ describe('parseAbilities — Response wins a skirmish', () => {
         const abilities = parseAbilities(SAM_TEXT, 'Sam', '2C114');
         expect(abilities).toHaveLength(1);
         expect(abilities?.[0]?.phases).toEqual(['MANEUVER']);
+    });
+
+    it('parse Coup de Hache : +2, ou +3 si arme de mêlée naine', () => {
+        const text =
+            '<keyword>Skirmish:</keyword> Make a Dwarf strength +2 (or +3 if bearing a <symbol>dwarven</symbol> hand weapon).';
+        expect(parseAbilities(text, 'Axe Strike', '1C3')).toEqual([
+            {
+                id: '1C3:0',
+                phases: ['SKIRMISH'],
+                cost: [],
+                effects: [
+                    {
+                        type: 'ADD_TEMP_STAT',
+                        stat: 'STRENGTH',
+                        value: 2,
+                        target: [['DWARF']],
+                        expiresAtPhase: 'SKIRMISH',
+                        bearingBonus: {
+                            value: 3,
+                            attachment: [['DWARVEN', 'HAND-WEAPON']],
+                        },
+                    },
+                ],
+                source: 'SELF',
+                text: expect.stringMatching(
+                    /SKIRMISH: Make a Dwarf strength \+2 \(or \+3 if bearing a dwarven hand weapon\)/i
+                ),
+            },
+        ]);
+    });
+
+    it('parse Fureur de la Bataille : that Dwarf force +3 et damage +1', () => {
+        const text =
+            '<keyword>Skirmish:</keyword> Exert a Dwarf to make that Dwarf strength +3 and <keyword>damage +1.</keyword>';
+        expect(parseAbilities(text, 'Battle Fury', '1C4')).toEqual([
+            {
+                id: '1C4:0',
+                phases: ['SKIRMISH'],
+                cost: [
+                    {
+                        exert: [
+                            {
+                                count: 1,
+                                target: [['DWARF']],
+                                mode: 'DESIGNATION',
+                            },
+                        ],
+                    },
+                ],
+                effects: [
+                    {
+                        type: 'ADD_TEMP_STAT',
+                        stat: 'STRENGTH',
+                        value: 3,
+                        target: [['DWARF']],
+                        expiresAtPhase: 'SKIRMISH',
+                    },
+                    {
+                        type: 'ADD_TEMP_KEYWORD',
+                        keyword: 'DAMAGE +1',
+                        target: [['DWARF']],
+                        expiresAtPhase: 'SKIRMISH',
+                    },
+                ],
+                source: 'SELF',
+                text: expect.stringMatching(
+                    /SKIRMISH: Exert a Dwarf to make that Dwarf strength \+3 and damage \+1/i
+                ),
+            },
+        ]);
+    });
+
+    it('parse Coup Tranchant : Make a Dwarf force +2 et Damage +1', () => {
+        const text =
+            '<keyword>Skirmish:</keyword> Make a Dwarf strength +2 and <keyword>Damage +1.</keyword>.';
+        expect(parseAbilities(text, 'Cleaving Blow', '1C5')).toEqual([
+            {
+                id: '1C5:0',
+                phases: ['SKIRMISH'],
+                cost: [],
+                effects: [
+                    {
+                        type: 'ADD_TEMP_STAT',
+                        stat: 'STRENGTH',
+                        value: 2,
+                        target: [['DWARF']],
+                        expiresAtPhase: 'SKIRMISH',
+                    },
+                    {
+                        type: 'ADD_TEMP_KEYWORD',
+                        keyword: 'DAMAGE +1',
+                        target: [['DWARF']],
+                        expiresAtPhase: 'SKIRMISH',
+                    },
+                ],
+                source: 'SELF',
+                text: expect.stringMatching(
+                    /SKIRMISH: Make a Dwarf strength \+2 and Damage \+1/i
+                ),
+            },
+        ]);
+    });
+
+    it('parse Fouilles : affaiblir un compagnon Nain pour piocher 3', () => {
+        const text =
+            '<keyword>Fellowship:</keyword> Exert a Dwarf companion to draw 3 cards.';
+        expect(parseAbilities(text, 'Delving', '1C6')).toEqual([
+            {
+                id: '1C6:0',
+                phases: ['FELLOWSHIP'],
+                cost: [
+                    {
+                        exert: [
+                            {
+                                count: 1,
+                                target: [['DWARF', 'COMPANION']],
+                                mode: 'DESIGNATION',
+                            },
+                        ],
+                    },
+                ],
+                effects: [{ type: 'DRAW', count: 3 }],
+                source: 'SELF',
+                text: expect.stringMatching(
+                    /FELLOWSHIP: Exert a Dwarf companion to draw 3 cards/i
+                ),
+            },
+        ]);
     });
 });
 

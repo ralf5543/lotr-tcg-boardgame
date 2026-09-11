@@ -6,7 +6,7 @@ import { useDrag } from '../../../../contexts/DragContext';
 import { useLocalFaction } from '../../../../contexts/FactionContext';
 import { useTargeting } from '../../../../contexts/TargetingContext';
 import { useTargetingArrowSync } from '../TargetingArrow/TargetingArrowSync';
-import { canPlayCard } from '../../../../game/engine/canPlayCard';
+import { canPlayCard, canAttachToCharacter } from '../../../../game/engine/canPlayCard';
 import { SkirmishClash } from './SkirmishClash';
 import { getEffectiveVitality } from '../../../../utils/cardStats';
 import { canTransferAid } from '../../../../game/engine/validations/canTransferAid';
@@ -133,6 +133,12 @@ export const BoardCharacterStack: React.FC<BoardCharacterStackProps> = ({
                 character,
                 { ignorePhase: true }
             ).valid;
+        } else if (dragged?.origin === 'ATTACHMENT') {
+            const parentId = dragged.parentId;
+            const sameHost =
+                parentId === character.instanceId || parentId === character.id;
+            canAttach =
+                !sameHost && canAttachToCharacter(draggedCard, character);
         } else if (draggedCard.type === 'FOLLOWER') {
             canAttach = canTransferAid(
                 draggedCard,
@@ -422,7 +428,7 @@ export const BoardCharacterStack: React.FC<BoardCharacterStackProps> = ({
                                             e,
                                             'ATTACHMENT',
                                             'portrait',
-                                            character.id
+                                            character.instanceId || character.id
                                         );
                                     }}
                                 >

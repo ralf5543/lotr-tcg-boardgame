@@ -14,7 +14,7 @@ Réponse n’est pas une phase. Fenêtre dédiée `responseWindow` + `pendingEve
 1. Infra : `pendingEvent` ABOUT_TO_WOUND, `responseWindow`, toaster, Passer. Sans réponse éligible = blessure immédiate (comportement actuel). ✅
 2. `PREVENT_WOUND` (Éowyn `4C270`) avant l’Anneau Unique. ✅
 3. Anneau : mettre l’Anneau (réponse) **puis** fardeaux à la place (passif `While`, pas un toaster). ✅
-4. Coûts prevent-wound : spot, crépuscule, défausser cette carte. ✅ (`1C76`, `1R173`, `4R19`). Encore : effets défausser / soigner / piocher ; défausse depuis la main ; `in a skirmish`.
+4. Coûts prevent-wound : spot, crépuscule, défausser cette carte. ✅ (`1C76`, `1R173`, `4R19`). Défausse depuis la main (`3U7`) et `in a skirmish` (`8R38`). ✅ Encore : effets défausser / soigner / piocher.
 5. Étendre exert-to-make / to-wound. Puis `When you play this`. Puis réponses « gagne une escarmouche » / mort.
    - **5a** — exert-to-make une **autre** classe (`7R91` Faramir, `0P21` Treebeard) ; to-wound un personnage **au combat** (`1C271` Soldat orque). Refuser tout reste inconnu. ✅
    - **5b** — `When you play this` **requis** (pas « you may ») : `1C191` Éclaireur de la Moria (spot Elfe → crépuscule). ✅ « you may » = choix, toaster à part.

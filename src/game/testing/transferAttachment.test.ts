@@ -48,6 +48,51 @@ describe('transferAttachment', () => {
         expect(engine.getG().twilightPool).toBe(1);
     });
 
+    it('transfère en s’appuyant sur instanceId, pas seulement id catalogue', () => {
+        const sword = createCard({
+            id: '1C9',
+            instanceId: 'axe-a',
+            kind: 'FREE_PEOPLE',
+            type: 'POSSESSION',
+            title: 'Sword',
+            twilightCost: 1,
+        });
+
+        const engine = createEngineClient({
+            startPhase: 'fellowship',
+            playerID: '0',
+            G: {
+                twilightPool: 0,
+                players: {
+                    '0': createPlayerState('0', {
+                        fellowshipArea: [
+                            createCompanion({
+                                id: '0P12',
+                                instanceId: 'gimli-a',
+                                attachments: [sword],
+                            }),
+                            createCompanion({
+                                id: '1C7',
+                                instanceId: 'guard-a',
+                            }),
+                        ],
+                    }),
+                },
+            },
+        });
+
+        engine.moves.transferAttachment({
+            attachmentId: 'axe-a',
+            fromCharacterId: 'gimli-a',
+            toCharacterId: 'guard-a',
+        });
+
+        const [first, second] = engine.getG().players['0']?.fellowshipArea ?? [];
+        expect(first?.attachments).toHaveLength(0);
+        expect(second?.attachments?.[0]?.instanceId).toBe('axe-a');
+        expect(engine.getG().twilightPool).toBe(1);
+    });
+
     it('refuse le transfert vers le même hôte, et hors phase de Communauté', () => {
         const sword = createCard({
             id: 'sword',

@@ -7098,6 +7098,40 @@
         "addThreats": 2
       }
     ],
+    "abilities": [
+      {
+        "id": "8R38:0",
+        "phases": [
+          "RESPONSE"
+        ],
+        "trigger": {
+          "type": "ABOUT_TO_WOUND",
+          "target": [
+            [
+              "Aragorn"
+            ]
+          ],
+          "inSkirmish": true
+        },
+        "cost": [
+          {
+            "exert": [
+              {
+                "count": 1,
+                "target": "SELF"
+              }
+            ]
+          }
+        ],
+        "effects": [
+          {
+            "type": "PREVENT_WOUND"
+          }
+        ],
+        "source": "SELF",
+        "text": "RESPONSE: If Aragorn is about to take a wound in a skirmish, exert King of the Dead to prevent that wound"
+      }
+    ],
     "actionPhases": [
       "RESPONSE"
     ],
@@ -10668,6 +10702,39 @@
     "isUnique": false,
     "kind": "FREE_PEOPLE",
     "type": "EVENT",
+    "abilities": [
+      {
+        "id": "1C3:0",
+        "phases": [
+          "SKIRMISH"
+        ],
+        "cost": [],
+        "effects": [
+          {
+            "type": "ADD_TEMP_STAT",
+            "stat": "STRENGTH",
+            "value": 2,
+            "target": [
+              [
+                "DWARF"
+              ]
+            ],
+            "expiresAtPhase": "SKIRMISH",
+            "bearingBonus": {
+              "value": 3,
+              "attachment": [
+                [
+                  "DWARVEN",
+                  "HAND-WEAPON"
+                ]
+              ]
+            }
+          }
+        ],
+        "source": "SELF",
+        "text": "SKIRMISH: Make a Dwarf strength +2 (or +3 if bearing a dwarven hand weapon)."
+      }
+    ],
     "phases": [
       "SKIRMISH"
     ],
@@ -10709,6 +10776,54 @@
     "isUnique": false,
     "kind": "FREE_PEOPLE",
     "type": "EVENT",
+    "abilities": [
+      {
+        "id": "1C4:0",
+        "phases": [
+          "SKIRMISH"
+        ],
+        "cost": [
+          {
+            "exert": [
+              {
+                "count": 1,
+                "target": [
+                  [
+                    "DWARF"
+                  ]
+                ],
+                "mode": "DESIGNATION"
+              }
+            ]
+          }
+        ],
+        "effects": [
+          {
+            "type": "ADD_TEMP_STAT",
+            "stat": "STRENGTH",
+            "value": 3,
+            "target": [
+              [
+                "DWARF"
+              ]
+            ],
+            "expiresAtPhase": "SKIRMISH"
+          },
+          {
+            "type": "ADD_TEMP_KEYWORD",
+            "keyword": "DAMAGE +1",
+            "target": [
+              [
+                "DWARF"
+              ]
+            ],
+            "expiresAtPhase": "SKIRMISH"
+          }
+        ],
+        "source": "SELF",
+        "text": "SKIRMISH: Exert a Dwarf to make that Dwarf strength +3 and damage +1."
+      }
+    ],
     "phases": [
       "SKIRMISH"
     ],
@@ -10753,6 +10868,40 @@
     "keywords": [
       "DAMAGE +1"
     ],
+    "abilities": [
+      {
+        "id": "1C5:0",
+        "phases": [
+          "SKIRMISH"
+        ],
+        "cost": [],
+        "effects": [
+          {
+            "type": "ADD_TEMP_STAT",
+            "stat": "STRENGTH",
+            "value": 2,
+            "target": [
+              [
+                "DWARF"
+              ]
+            ],
+            "expiresAtPhase": "SKIRMISH"
+          },
+          {
+            "type": "ADD_TEMP_KEYWORD",
+            "keyword": "DAMAGE +1",
+            "target": [
+              [
+                "DWARF"
+              ]
+            ],
+            "expiresAtPhase": "SKIRMISH"
+          }
+        ],
+        "source": "SELF",
+        "text": "SKIRMISH: Make a Dwarf strength +2 and Damage +1.."
+      }
+    ],
     "phases": [
       "SKIRMISH"
     ],
@@ -10794,6 +10943,38 @@
     "isUnique": false,
     "kind": "FREE_PEOPLE",
     "type": "EVENT",
+    "abilities": [
+      {
+        "id": "1C6:0",
+        "phases": [
+          "FELLOWSHIP"
+        ],
+        "cost": [
+          {
+            "exert": [
+              {
+                "count": 1,
+                "target": [
+                  [
+                    "DWARF",
+                    "COMPANION"
+                  ]
+                ],
+                "mode": "DESIGNATION"
+              }
+            ]
+          }
+        ],
+        "effects": [
+          {
+            "type": "DRAW",
+            "count": 3
+          }
+        ],
+        "source": "SELF",
+        "text": "FELLOWSHIP: Exert a Dwarf companion to draw 3 cards"
+      }
+    ],
     "phases": [
       "FELLOWSHIP"
     ],
@@ -15066,6 +15247,30 @@
     "isUnique": false,
     "kind": "FREE_PEOPLE",
     "type": "EVENT",
+    "abilities": [
+      {
+        "id": "1C103:0",
+        "phases": [
+          "MANEUVER"
+        ],
+        "cost": [],
+        "effects": [
+          {
+            "type": "ADD_TEMP_KEYWORD",
+            "keyword": "DEFENDER +1",
+            "target": [
+              [
+                "GONDOR",
+                "COMPANION"
+              ]
+            ],
+            "expiresAtPhase": "REGROUP"
+          }
+        ],
+        "source": "SELF",
+        "text": "MANEUVER: Make a gondor companion defender +1 until the regroup phase."
+      }
+    ],
     "phases": [
       "MANEUVER"
     ],
@@ -16097,6 +16302,29 @@
     "isUnique": false,
     "kind": "SHADOW",
     "type": "EVENT",
+    "abilities": [
+      {
+        "id": "1U126:0",
+        "phases": [
+          "MANEUVER"
+        ],
+        "cost": [],
+        "effects": [
+          {
+            "type": "ADD_TEMP_KEYWORD",
+            "keyword": "FIERCE",
+            "target": [
+              [
+                "URUK-HAI"
+              ]
+            ],
+            "expiresAtPhase": "REGROUP"
+          }
+        ],
+        "source": "SELF",
+        "text": "MANEUVER: Make an Uruk-hai fierce until the regroup phase."
+      }
+    ],
     "phases": [
       "MANEUVER"
     ],
@@ -16138,6 +16366,40 @@
     "isUnique": false,
     "kind": "SHADOW",
     "type": "EVENT",
+    "abilities": [
+      {
+        "id": "1R128:0",
+        "phases": [
+          "SKIRMISH"
+        ],
+        "cost": [],
+        "effects": [
+          {
+            "type": "ADD_TEMP_STAT",
+            "stat": "STRENGTH",
+            "value": -1,
+            "target": [
+              [
+                "URUK-HAI"
+              ]
+            ],
+            "expiresAtPhase": "SKIRMISH"
+          },
+          {
+            "type": "ADD_TEMP_KEYWORD",
+            "keyword": "DAMAGE +1",
+            "target": [
+              [
+                "URUK-HAI"
+              ]
+            ],
+            "expiresAtPhase": "SKIRMISH"
+          }
+        ],
+        "source": "SELF",
+        "text": "SKIRMISH: Make an Uruk-hai strength -1 and damage +1."
+      }
+    ],
     "phases": [
       "SKIRMISH"
     ],
@@ -30973,6 +31235,34 @@
     "keywords": [
       "RANGER"
     ],
+    "abilities": [
+      {
+        "id": "3U7:0",
+        "phases": [
+          "RESPONSE"
+        ],
+        "trigger": {
+          "type": "ABOUT_TO_WOUND",
+          "target": [
+            [
+              "RING-BEARER"
+            ]
+          ]
+        },
+        "cost": [
+          {
+            "discardFromHand": 3
+          }
+        ],
+        "effects": [
+          {
+            "type": "PREVENT_WOUND"
+          }
+        ],
+        "source": "SELF",
+        "text": "RESPONSE: If the Ring-bearer is about to take a wound, discard 3 cards from hand to prevent that wound"
+      }
+    ],
     "actionPhases": [
       "RESPONSE"
     ],
@@ -32660,6 +32950,57 @@
     "type": "EVENT",
     "keywords": [
       "TALE"
+    ],
+    "abilities": [
+      {
+        "id": "3R39:0",
+        "phases": [
+          "MANEUVER"
+        ],
+        "cost": [
+          {
+            "exert": [
+              {
+                "count": 1,
+                "target": [
+                  [
+                    "GONDOR",
+                    "COMPANION"
+                  ]
+                ],
+                "mode": "DESIGNATION"
+              }
+            ]
+          }
+        ],
+        "effects": [
+          {
+            "type": "ADD_TEMP_STAT",
+            "stat": "STRENGTH",
+            "value": 3,
+            "target": [
+              [
+                "GONDOR",
+                "COMPANION"
+              ]
+            ],
+            "expiresAtPhase": "REGROUP"
+          },
+          {
+            "type": "ADD_TEMP_KEYWORD",
+            "keyword": "DEFENDER +1",
+            "target": [
+              [
+                "GONDOR",
+                "COMPANION"
+              ]
+            ],
+            "expiresAtPhase": "REGROUP"
+          }
+        ],
+        "source": "SELF",
+        "text": "MANEUVER: Exert a gondor companion to make that companion strength +3 and defender +1 until the regroup phase."
+      }
     ],
     "phases": [
       "MANEUVER"
@@ -131390,6 +131731,45 @@
     "kind": "FREE_PEOPLE",
     "type": "CONDITION",
     "subtype": "SUPPORT-AREA",
+    "abilities": [
+      {
+        "id": "17U97:0",
+        "phases": [
+          "SKIRMISH"
+        ],
+        "cost": [
+          {
+            "exert": [
+              {
+                "count": 1,
+                "target": [
+                  [
+                    "ROHAN",
+                    "COMPANION"
+                  ]
+                ],
+                "mode": "DESIGNATION"
+              }
+            ]
+          }
+        ],
+        "effects": [
+          {
+            "type": "ADD_TEMP_KEYWORD",
+            "keyword": "HUNTER 1",
+            "target": [
+              [
+                "ROHAN",
+                "COMPANION"
+              ]
+            ],
+            "expiresAtPhase": "SKIRMISH"
+          }
+        ],
+        "source": "SELF",
+        "text": "SKIRMISH: Exert a rohan companion to make that companion gain hunter 1 until the start of the regroup phase."
+      }
+    ],
     "actionPhases": [
       "SKIRMISH"
     ],

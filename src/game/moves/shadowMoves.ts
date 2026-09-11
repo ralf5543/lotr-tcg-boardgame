@@ -16,6 +16,12 @@ const getTargetPlayerId = (
     return String(ctx.currentPlayer ?? '0');
 };
 
+const matchHost = (card: { id?: string; instanceId?: string }, targetId: string) =>
+    Boolean(
+        targetId &&
+            (card.instanceId === targetId || card.id === targetId)
+    );
+
 export const transferAttachment = (
     { G, ctx, playerID }: LotrMoveContext,
     payload: TransferPayload
@@ -32,14 +38,16 @@ export const transferAttachment = (
     ];
 
     const sourceHost = fromCharacterId
-        ? allPossibleHosts.find((c) => c.id === fromCharacterId)
+        ? allPossibleHosts.find((c) => matchHost(c, fromCharacterId))
         : allPossibleHosts.find((c) =>
-              c.attachments?.some((a) => a.id === attachmentId)
+              c.attachments?.some((a) => matchHost(a, attachmentId))
           );
 
     if (!sourceHost || !sourceHost.attachments) return 'INVALID_MOVE';
 
-    const attachIndex = sourceHost.attachments.findIndex((a) => a.id === attachmentId);
+    const attachIndex = sourceHost.attachments.findIndex((a) =>
+        matchHost(a, attachmentId)
+    );
     if (attachIndex === -1) return 'INVALID_MOVE';
 
     const movedAttachment = sourceHost.attachments[attachIndex];
@@ -57,8 +65,16 @@ export const transferAttachment = (
         }
     }
 
-    const targetHost = allPossibleHosts.find((c) => c.id === toCharacterId);
-    if (!targetHost || sourceHost.id === targetHost.id) return 'INVALID_MOVE';
+    const targetHost = allPossibleHosts.find((c) =>
+        matchHost(c, toCharacterId)
+    );
+    if (
+        !targetHost ||
+        (sourceHost.instanceId || sourceHost.id) ===
+            (targetHost.instanceId || targetHost.id)
+    ) {
+        return 'INVALID_MOVE';
+    }
 
     const cost = Number(movedAttachment.twilightCost) || 0;
 

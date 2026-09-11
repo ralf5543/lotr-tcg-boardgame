@@ -192,4 +192,51 @@ describe('designation', () => {
         expect(isDesignationTargetId(['frodo'], 'frodo')).toBe(true);
         expect(isDesignationTargetId(['frodo'], 'sam')).toBe(false);
     });
+
+    it('Make a Dwarf sans coût : flèche même s’il n’y a qu’un Nain', () => {
+        const G = createGameState({
+            players: {
+                '0': createPlayerState('0', {
+                    fellowshipArea: [
+                        createCompanion({
+                            id: 'gimli',
+                            title: 'Gimli',
+                            race: 'DWARF',
+                            vitality: 3,
+                        }),
+                    ],
+                }),
+            },
+        });
+        const ability: Ability = {
+            id: '1C5:0',
+            phases: ['SKIRMISH'],
+            cost: [],
+            effects: [
+                {
+                    type: 'ADD_TEMP_STAT',
+                    stat: 'STRENGTH',
+                    value: 2,
+                    target: [['DWARF']],
+                    expiresAtPhase: 'SKIRMISH',
+                },
+            ],
+            source: 'SELF',
+        };
+        const event = createCard({
+            id: '1C5',
+            kind: 'FREE_PEOPLE',
+            type: 'EVENT',
+            title: 'Cleaving Blow',
+            phases: ['SKIRMISH'],
+            twilightCost: 1,
+            abilities: [ability],
+        });
+
+        expect(abilityNeedsDesignation(G, event, ability)).toBe(true);
+        expect(getDesignationCandidates(G, event, ability)).toHaveLength(1);
+        expect(getHandEventDesignationTargetIds(G, event, 'skirmish')).toContain(
+            'gimli'
+        );
+    });
 });

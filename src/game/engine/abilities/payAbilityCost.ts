@@ -5,6 +5,27 @@ import { getEffectiveVitality } from '../../../utils/cardStats';
 import { findTargetCard } from '../../../utils/cardUtils';
 import { resolveCostTarget } from './resolveCostTarget';
 
+const matchCard = (card: CardState | undefined | null, targetId: string) =>
+    Boolean(card && (card.instanceId === targetId || card.id === targetId));
+
+function abilityOwnerPlayerId(
+    G: GameState,
+    source: CardState
+): string | undefined {
+    const fpId = G.fpPlayerId || '0';
+    if (source.kind === 'FREE_PEOPLE') return fpId;
+    if (source.kind === 'SHADOW') return fpId === '0' ? '1' : '0';
+    return undefined;
+}
+
+export function abilityDiscardFromHandCount(ability: Ability): number {
+    return ability.cost?.[0]?.discardFromHand || 0;
+}
+
+export function abilityNeedsHandDiscard(ability: Ability): boolean {
+    return abilityDiscardFromHandCount(ability) > 0;
+}
+
 function canPayOption(
     G: GameState,
     source: CardState,
@@ -54,6 +75,13 @@ function canPayOption(
         }
     }
 
+    if (typeof option.discardFromHand === 'number' && option.discardFromHand > 0) {
+        const ownerId = abilityOwnerPlayerId(G, source);
+        if (!ownerId) return false;
+        const hand = G.players[ownerId]?.hand || [];
+        if (hand.length < option.discardFromHand) return false;
+    }
+
     return true;
 }
 
@@ -83,11 +111,42 @@ function pickExertTarget(
     return undefined;
 }
 
+function discardCardsFromHand(
+    G: GameState,
+    ownerId: string,
+    cardIds: string[]
+): boolean {
+    const player = G.players[ownerId];
+    if (!player?.hand) return false;
+    const unique = [...new Set(cardIds)];
+    if (unique.length !== cardIds.length || unique.length === 0) return false;
+
+    const picked: CardState[] = [];
+    for (const id of unique) {
+        const card = player.hand.find((item) => matchCard(item, id));
+        if (!card) return false;
+        picked.push(card);
+    }
+
+    if (!player.discard) player.discard = [];
+    for (const card of picked) {
+        const index = player.hand.findIndex((item) =>
+            matchCard(item, card.instanceId || card.id)
+        );
+        if (index < 0) return false;
+        const [removed] = player.hand.splice(index, 1);
+        if (!removed) return false;
+        player.discard.push(removed);
+    }
+    return true;
+}
+
 function payOption(
     G: GameState,
     source: CardState,
     option: AbilityCost[number],
-    chosenTargetId?: string
+    chosenTargetId?: string,
+    discardedHandIds?: string[]
 ): boolean {
     if (option.exert && Array.isArray(option.exert)) {
         for (const req of option.exert) {
@@ -125,6 +184,17 @@ function payOption(
             if (!target || !discardCardFromPlay(G, target)) return false;
         }
     }
+    if (typeof option.discardFromHand === 'number' && option.discardFromHand > 0) {
+        const ownerId = abilityOwnerPlayerId(G, source);
+        if (!ownerId) return false;
+        if (
+            !discardedHandIds ||
+            discardedHandIds.length !== option.discardFromHand
+        ) {
+            return false;
+        }
+        if (!discardCardsFromHand(G, ownerId, discardedHandIds)) return false;
+    }
     return true;
 }
 
@@ -132,12 +202,13 @@ export function payAbilityCost(
     G: GameState,
     source: CardState,
     cost: AbilityCost,
-    chosenTargetId?: string
+    chosenTargetId?: string,
+    discardedHandIds?: string[]
 ): boolean {
     if (!cost || cost.length === 0) return true;
     const option = cost.find((opt) => canPayOption(G, source, opt));
     if (!option) return false;
-    return payOption(G, source, option, chosenTargetId);
+    return payOption(G, source, option, chosenTargetId, discardedHandIds);
 }
 
 export function canPayAbility(G: GameState, source: CardState, ability: Ability): boolean {

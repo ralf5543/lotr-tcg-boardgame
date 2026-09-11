@@ -80,9 +80,11 @@ export const Hand: React.FC<HandProps> = ({
     };
 
     const { startDrag, dragged } = useDrag();
-    const { targetingKind, pendingCard } = useTargeting();
+    const { targetingKind, pendingCard, isCardTargetable, selectCard } =
+        useTargeting();
     const isDragging = !!dragged;
     const isDesignating = targetingKind === 'DESIGNATION';
+    const isHandDiscard = targetingKind === 'HAND_DISCARD';
     const enginePendingId =
         G.pendingPlay?.playerId === effectivePlayerId
             ? G.pendingPlay.card.id
@@ -90,6 +92,10 @@ export const Hand: React.FC<HandProps> = ({
     const pendingCardId = pendingCard?.id ?? enginePendingId;
 
     const [discardingIndex, setDiscardingIndex] = useState<number | null>(null);
+    const [discardingIds, setDiscardingIds] = useState<Set<string>>(
+        new Set()
+    );
+    const handDiscardTimeoutsRef = useRef<number[]>([]);
 
     const [animatingCardIds, setAnimatingCardIds] = useState<Set<string>>(
         new Set()
@@ -136,6 +142,13 @@ export const Hand: React.FC<HandProps> = ({
         currentIds.forEach((id) => knownCardIdsCache.add(id));
     }, [hand]);
 
+    useEffect(() => {
+        if (isHandDiscard) return;
+        handDiscardTimeoutsRef.current.forEach((id) => window.clearTimeout(id));
+        handDiscardTimeoutsRef.current = [];
+        setDiscardingIds(new Set());
+    }, [isHandDiscard]);
+
     const handleDiscardClick = (idx: number) => {
         if (discardingIndex !== null || !isDiscardPhase) return;
 
@@ -149,6 +162,15 @@ export const Hand: React.FC<HandProps> = ({
             }
             setDiscardingIndex(null);
         }, 450);
+    };
+
+    const handleHandDiscardClick = (cardKey: string) => {
+        if (discardingIds.has(cardKey)) return;
+        setDiscardingIds((prev) => new Set([...prev, cardKey]));
+        const timeoutId = window.setTimeout(() => {
+            selectCard(cardKey);
+        }, 450);
+        handDiscardTimeoutsRef.current.push(timeoutId);
     };
 
     return (
@@ -169,7 +191,10 @@ export const Hand: React.FC<HandProps> = ({
                           const isBeingDragged = dragged?.card.id === card.id;
                           const isPendingPlay = pendingCardId === card.id;
                           const isHidden = isBeingDragged || isPendingPlay;
-                          const isDiscarding = discardingIndex === idx;
+                          const cardKey = card.instanceId || card.id;
+                          const isDiscarding =
+                              discardingIndex === idx ||
+                              discardingIds.has(cardKey);
 
                           const isNewCard = animatingCardIds.has(card.id);
 
@@ -207,6 +232,11 @@ export const Hand: React.FC<HandProps> = ({
                                 )
                               : undefined;
 
+                          const isHandDiscardTarget =
+                              isHandDiscard &&
+                              isCardTargetable(cardKey) &&
+                              !discardingIds.has(cardKey);
+
                           return (
                               <S.CardWrapper
                                   key={card.id}
@@ -217,13 +247,19 @@ export const Hand: React.FC<HandProps> = ({
                                   $staggerIndex={
                                       staggerIndex >= 0 ? staggerIndex : 0
                                   }
-                                  $isDiscardPhase={isDiscardPhase}
+                                  $isDiscardPhase={
+                                      isDiscardPhase || isHandDiscard
+                                  }
                                   $isDiscarding={isDiscarding}
                                   $hasSpot={hasSpot}
                                   $isSpotMet={isSpotMet}
-                                  $isPlayableEvent={isPlayableEvent}
+                                  $isPlayableEvent={
+                                      isPlayableEvent || isHandDiscardTarget
+                                  }
                                   data-draggable={
-                                      !isDiscardPhase && isMatchingPlayerRole
+                                      !isDiscardPhase &&
+                                      isMatchingPlayerRole &&
+                                      !isHandDiscard
                                           ? 'true'
                                           : undefined
                                   }
@@ -241,13 +277,20 @@ export const Hand: React.FC<HandProps> = ({
                                               : 'auto',
                                   }}
                                   onClick={(e) => {
+                                      if (isHandDiscard) {
+                                          e.stopPropagation();
+                                          if (isHandDiscardTarget) {
+                                              handleHandDiscardClick(cardKey);
+                                          }
+                                          return;
+                                      }
                                       if (isDiscardPhase) {
                                           e.stopPropagation();
                                           handleDiscardClick(idx);
                                       }
                                   }}
                                   onPointerDown={(e) => {
-                                      if (isDiscardPhase) {
+                                      if (isDiscardPhase || isHandDiscard) {
                                           e.stopPropagation();
                                           return;
                                       }
@@ -276,17 +319,20 @@ export const Hand: React.FC<HandProps> = ({
                                   <Card
                                       card={card}
                                       isPlayable={
-                                          isDiscardPhase
+                                          isDiscardPhase || isHandDiscardTarget
                                               ? true
                                               : isMatchingPlayerRole
                                       }
-                                      isPlayableEvent={isPlayableEvent}
+                                      isPlayableEvent={
+                                          isPlayableEvent || isHandDiscardTarget
+                                      }
                                       designationTargetIds={
                                           designationTargetIds
                                       }
                                       index={idx}
                                       isDraggable={
                                           !isDiscardPhase &&
+                                          !isHandDiscard &&
                                           isMatchingPlayerRole
                                       }
                                       size="md"

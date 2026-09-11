@@ -1,7 +1,7 @@
 import React, { createContext, useContext, useState, useCallback } from 'react';
 import type { CardState } from '../game/types';
 
-type TargetingKind = 'ARCHERY' | 'SKIRMISH_SELECT' | 'DESIGNATION';
+type TargetingKind = 'ARCHERY' | 'SKIRMISH_SELECT' | 'DESIGNATION' | 'HAND_DISCARD';
 
 interface TargetingRequest {
     targetableCardIds: string[];

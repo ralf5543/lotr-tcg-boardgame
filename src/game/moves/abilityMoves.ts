@@ -1,6 +1,7 @@
 import type { CardState, LotrMoveContext } from '../types';
 import { canUseAbility } from '../engine/canUseAbility';
 import {
+    abilityNeedsHandDiscard,
     canPayAbilityCost,
     payAbilityCost,
 } from '../engine/abilities/payAbilityCost';
@@ -15,7 +16,8 @@ export const activateAbility = (
     { G, ctx, playerID }: LotrMoveContext,
     sourceInstanceId: string,
     abilityId: string,
-    chosenTargetId?: string
+    chosenTargetId?: string,
+    discardedHandIds?: string[]
 ) => {
     const source = findTargetCard(G, sourceInstanceId) as CardState | null;
     if (!source) return 'INVALID_MOVE';
@@ -31,10 +33,21 @@ export const activateAbility = (
     if (abilityNeedsDesignation(G, source, ability) && !chosenTargetId) {
         return 'INVALID_MOVE';
     }
+    if (abilityNeedsHandDiscard(ability) && !discardedHandIds?.length) {
+        return 'INVALID_MOVE';
+    }
     const wasResponseWindowOpen = isResponseWindowOpen(G);
     const isResponseAbility = abilityMatchesPhase(ability, 'RESPONSE');
 
-    if (!payAbilityCost(G, source, ability.cost, chosenTargetId)) {
+    if (
+        !payAbilityCost(
+            G,
+            source,
+            ability.cost,
+            chosenTargetId,
+            discardedHandIds
+        )
+    ) {
         return 'INVALID_MOVE';
     }
     if (!applyAbilityEffect(G, source, ability, chosenTargetId)) {

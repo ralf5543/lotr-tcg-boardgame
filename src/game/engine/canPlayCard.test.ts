@@ -1,4 +1,5 @@
 import { describe, expect, it } from 'vitest';
+import type { Ability } from '../types';
 import { canPlayCard } from './canPlayCard';
 import {
     createCard,
@@ -8,6 +9,16 @@ import {
     createPlayerState,
     createSkirmishActionWindow,
 } from '../testing/createGameState';
+
+function stubEventAbility(phase: string): Ability {
+    return {
+        id: 'stub:0',
+        phases: [phase],
+        cost: [],
+        effects: [{ type: 'ADD_TWILIGHT', count: 0 }],
+        source: 'SELF',
+    };
+}
 
 describe('canPlayCard', () => {
     it('refuse une carte FP hors phase de Communauté', () => {
@@ -44,6 +55,7 @@ describe('canPlayCard', () => {
                 phases: ['FELLOWSHIP'],
             }),
             toPlay: [{ spot: [{ count: 1, target: [['DWARF']] }] }],
+            abilities: [stubEventAbility('FELLOWSHIP')],
         };
 
         const withoutDwarf = canPlayCard(card as never, {
@@ -86,6 +98,7 @@ describe('canPlayCard', () => {
                 phases: ['FELLOWSHIP'],
             }),
             toPlay: [{ exert: [{ count: 1, target: [['COMPANION']] }] }],
+            abilities: [stubEventAbility('FELLOWSHIP')],
         };
 
         const exhausted = canPlayCard(card as never, {
@@ -220,6 +233,25 @@ describe('canPlayCard', () => {
         expect(result.valid).toBe(false);
     });
 
+    it('refuse un événement sans effet connu, même en phase', () => {
+        const event = createCard({
+            id: '1C3',
+            kind: 'FREE_PEOPLE',
+            type: 'EVENT',
+            phases: ['SKIRMISH'],
+        });
+
+        const result = canPlayCard(event, {
+            G: createGameState({
+                ...createSkirmishActionWindow('sk-1'),
+            }),
+            ctx: { phase: 'skirmish' },
+            playerID: '0',
+        });
+        expect(result.valid).toBe(false);
+        expect(result.reason).toMatch(/effet connu/i);
+    });
+
     it('refuse un spotBurdens insuffisant', () => {
         const card = {
             ...createCard({
@@ -229,6 +261,7 @@ describe('canPlayCard', () => {
                 phases: ['FELLOWSHIP'],
             }),
             toPlay: [{ spotBurdens: 3 }],
+            abilities: [stubEventAbility('FELLOWSHIP')],
         };
 
         const tooFew = canPlayCard(card as never, {

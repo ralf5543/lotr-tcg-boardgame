@@ -171,7 +171,7 @@ export const DevPanel: React.FC<DevPanelProps> = ({
                                 moves.devLoadPreset('SKIRMISH_TEST')
                             }
                         >
-                            ⚔️ Make / blessure / Victoire
+                            ⚔️ Arwen / Gimli — combat
                         </S.PresetButton>
                         <S.GameButton $bgColor="#3498db" onClick={onDrawCard}>
                             🃏 Piocher ({deckCount})

@@ -32,6 +32,10 @@ import {
     getDesignationCandidates,
     isDesignationTargetId,
 } from '../../game/engine/abilities/designation';
+import {
+    abilityDiscardFromHandCount,
+    abilityNeedsHandDiscard,
+} from '../../game/engine/abilities/payAbilityCost';
 import { findEventAbilityForPhase } from '../../game/engine/abilities/playEventAbility';
 import { useCardPlayAudio } from '../../hooks/audio/useCardPlayAudio';
 import { useArcheryAudio } from '../../hooks/audio/useArcheryAudio';
@@ -72,7 +76,8 @@ export interface GameBoardProps extends BoardProps<GameState> {
             activateAbility?: (
                 sourceInstanceId: string,
                 abilityId: string,
-                chosenTargetId?: string
+                chosenTargetId?: string,
+                discardedHandIds?: string[]
             ) => void;
         };
 }
@@ -239,24 +244,101 @@ export const GameBoard: React.FC<GameBoardProps> = ({
         [G, moves, startTargeting, stopTargeting]
     );
 
+    const requestHandDiscard = useCallback(
+        (
+            source: CardState,
+            ability: NonNullable<CardState['abilities']>[number],
+            onChosen: (cardIds: string[]) => void
+        ): boolean => {
+            const need = abilityDiscardFromHandCount(ability);
+            if (need <= 0) return false;
+
+            const fpId = G.fpPlayerId || '0';
+            const ownerId =
+                source.kind === 'SHADOW' ? (fpId === '0' ? '1' : '0') : fpId;
+
+            const collect = (picked: string[]) => {
+                const remaining = need - picked.length;
+                const hand = G.players[ownerId]?.hand || [];
+                const targetableCardIds = hand
+                    .filter((card) => {
+                        const id = card.instanceId || card.id;
+                        return Boolean(id && !picked.includes(id));
+                    })
+                    .flatMap((card) => cardTargetIds(card));
+                startTargeting({
+                    kind: 'HAND_DISCARD',
+                    targetableCardIds,
+                    message:
+                        remaining === need
+                            ? `Défaussez ${need} carte${need > 1 ? 's' : ''} de votre main.`
+                            : `Encore ${remaining} carte${remaining > 1 ? 's' : ''}.`,
+                    onSelectTarget: (cardId) => {
+                        const card = hand.find(
+                            (item) =>
+                                item.instanceId === cardId || item.id === cardId
+                        );
+                        const canonical = card?.instanceId || card?.id || cardId;
+                        if (picked.includes(canonical)) return;
+                        const next = [...picked, canonical];
+                        if (next.length >= need) {
+                            onChosen(next);
+                            stopTargeting();
+                            return;
+                        }
+                        collect(next);
+                    },
+                });
+            };
+
+            collect([]);
+            return true;
+        },
+        [G, startTargeting, stopTargeting]
+    );
+
     const handleActivateAbility = (
         sourceInstanceId: string,
         abilityId: string,
-        chosenTargetId?: string
+        chosenTargetId?: string,
+        discardedHandIds?: string[]
     ) => {
         const source = findTargetCard(G, sourceInstanceId) as CardState | null;
         const ability = source?.abilities?.find((ab) => ab.id === abilityId);
         if (!source || !ability) {
-            moves.activateAbility?.(sourceInstanceId, abilityId, chosenTargetId);
+            moves.activateAbility?.(
+                sourceInstanceId,
+                abilityId,
+                chosenTargetId,
+                discardedHandIds
+            );
             return;
         }
-        if (chosenTargetId) {
-            moves.activateAbility?.(sourceInstanceId, abilityId, chosenTargetId);
+        if (chosenTargetId || discardedHandIds?.length) {
+            moves.activateAbility?.(
+                sourceInstanceId,
+                abilityId,
+                chosenTargetId,
+                discardedHandIds
+            );
             return;
         }
         if (
             requestDesignation(source, ability, (cardId) => {
                 moves.activateAbility?.(sourceInstanceId, abilityId, cardId);
+            })
+        ) {
+            return;
+        }
+        if (
+            abilityNeedsHandDiscard(ability) &&
+            requestHandDiscard(source, ability, (cardIds) => {
+                moves.activateAbility?.(
+                    sourceInstanceId,
+                    abilityId,
+                    undefined,
+                    cardIds
+                );
             })
         ) {
             return;
@@ -518,7 +600,8 @@ export const GameBoard: React.FC<GameBoardProps> = ({
                     if (canAttachToCharacter(card, targetCard)) {
                         if (moves.transferAttachment) {
                             moves.transferAttachment({
-                                attachmentId: card.id,
+                                attachmentId:
+                                    card.instanceId || card.id,
                                 fromCharacterId: parentId,
                                 toCharacterId: targetId,
                             });
@@ -695,7 +778,12 @@ export const GameBoard: React.FC<GameBoardProps> = ({
         const onKeyDown = (event: KeyboardEvent) => {
             if (event.key !== 'Escape') return;
             const isMine = G.pendingPlay?.playerId === myId;
-            if (targetingKind !== 'DESIGNATION' && !isMine) return;
+            if (
+                targetingKind !== 'DESIGNATION' &&
+                targetingKind !== 'HAND_DISCARD' &&
+                !isMine
+            )
+                return;
             stopTargeting();
             if (isMine) moves.cancelPendingPlay?.();
         };

@@ -7,6 +7,8 @@ import type {
 import type { ModifierScope } from '../../logic/stats/types';
 import { resolveAbilityTarget, forEachInPlayCard, resolveWinnerTargets } from './resolveCostTarget';
 import { requestWounds } from '../responseWindow';
+import { cardMatchesTarget } from '../validations/matchers';
+import { drawCardsForPlayer } from '../../../utils/drawCards';
 
 function expiryToScope(expiresAtPhase: AbilityEffectExpiry): ModifierScope {
     if (expiresAtPhase === 'SKIRMISH') return 'SKIRMISH';
@@ -37,6 +39,23 @@ export function applyAbilityEffect(
 
         if (effect.type === 'ADD_TWILIGHT') {
             G.twilightPool = (G.twilightPool || 0) + (effect.count || 0);
+            continue;
+        }
+
+        if (effect.type === 'DRAW') {
+            const fpId = G.fpPlayerId || '0';
+            const ownerId =
+                source.kind === 'SHADOW'
+                    ? fpId === '0'
+                        ? '1'
+                        : '0'
+                    : fpId;
+            const player = G.players[ownerId];
+            if (!player) return false;
+            const isFellowship = (ability.phases || []).some(
+                (phase) => phase.toUpperCase() === 'FELLOWSHIP'
+            );
+            drawCardsForPlayer(G, player, effect.count || 0, isFellowship);
             continue;
         }
 
@@ -103,12 +122,19 @@ function applyOneEffect(
     if (effect.type === 'ADD_TEMP_STAT') {
         if (!G.tempModifiers) G.tempModifiers = [];
         const targetCardId = target.instanceId || target.id;
+        let value = effect.value;
+        if (effect.bearingBonus) {
+            const bears = (target.attachments || []).some((att) =>
+                cardMatchesTarget(att, effect.bearingBonus!.attachment)
+            );
+            if (bears) value = effect.bearingBonus.value;
+        }
         G.tempModifiers.push({
             id: `${ability.id}:${G.tempModifiers.length}`,
             sourceCardTitle: source.i18n?.fr?.title || source.title,
             targetCardId,
             stat: effect.stat,
-            value: effect.value,
+            value,
             scope: expiryToScope(effect.expiresAtPhase),
             expiresAtPhase: effect.expiresAtPhase,
         });

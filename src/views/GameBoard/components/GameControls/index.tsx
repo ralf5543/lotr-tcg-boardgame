@@ -294,10 +294,17 @@ export const GameControls: React.FC<GameControlsProps> = ({
         };
     }
 
-    if (isTargetingActive && targetingKind === 'DESIGNATION' && targetingMessage) {
+    if (
+        isTargetingActive &&
+        (targetingKind === 'DESIGNATION' || targetingKind === 'HAND_DISCARD') &&
+        targetingMessage
+    ) {
         toastConfig = {
             show: true,
-            title: 'CHOIX DE CIBLE',
+            title:
+                targetingKind === 'HAND_DISCARD'
+                    ? 'DÉFAUSSE'
+                    : 'CHOIX DE CIBLE',
             body: `${targetingMessage} Échap pour annuler.`,
             showPassButton: false,
             type: 'STANDARD',
@@ -346,8 +353,16 @@ export const GameControls: React.FC<GameControlsProps> = ({
             return 'Cliquez sur vos cartes brillantes pour déclencher leurs effets, ou validez.';
         }
 
-        if (isTargetingActive && targetingKind === 'DESIGNATION') {
-            return targetingMessage || 'Cliquez sur une carte pour la désigner.';
+        if (
+            isTargetingActive &&
+            (targetingKind === 'DESIGNATION' || targetingKind === 'HAND_DISCARD')
+        ) {
+            return (
+                targetingMessage ||
+                (targetingKind === 'HAND_DISCARD'
+                    ? 'Cliquez sur les cartes à défausser.'
+                    : 'Cliquez sur une carte pour la désigner.')
+            );
         }
 
         if (G.pendingPlay && G.pendingPlay.playerId !== currentPlayerId) {

@@ -2,6 +2,7 @@ import type { Ability, CardState, GameState } from '../../types';
 import { abilityMatchesPhase } from './collectAbilities';
 import { applyAbilityEffect } from './applyAbilityEffect';
 import { canPayAbilityCost, payAbilityCost } from './payAbilityCost';
+import { resolveCostTarget, resolveWinnerTargets } from './resolveCostTarget';
 import { isResponseWindowOpen } from '../responseWindow';
 
 function abilityPhaseToMatch(G: GameState, rawPhase: string): string {
@@ -27,8 +28,14 @@ export function canPayEventAbility(
     card: CardState,
     rawPhase: string
 ): { valid: boolean; reason?: string } {
-    if (card.type !== 'EVENT' || !card.abilities?.length) {
+    if (card.type !== 'EVENT') {
         return { valid: true };
+    }
+    if (!card.abilities?.length) {
+        return {
+            valid: false,
+            reason: 'Cet événement n’a pas d’effet connu.',
+        };
     }
 
     const ability = findEventAbilityForPhase(
@@ -49,6 +56,26 @@ export function canPayEventAbility(
         };
     }
 
+    for (const effect of ability.effects || []) {
+        if (!('target' in effect)) continue;
+        if (effect.target === 'SELF' || effect.target === 'BEARER') continue;
+        if (effect.target === 'WINNER') {
+            if (resolveWinnerTargets(G, card, ability).length === 0) {
+                return {
+                    valid: false,
+                    reason: 'Aucune cible valide pour cet événement.',
+                };
+            }
+            continue;
+        }
+        if (resolveCostTarget(G, card, effect.target).length === 0) {
+            return {
+                valid: false,
+                reason: 'Aucune cible valide pour cet événement.',
+            };
+        }
+    }
+
     return { valid: true };
 }
 
@@ -58,7 +85,8 @@ export function applyEventAbility(
     rawPhase: string,
     chosenTargetId?: string
 ): boolean {
-    if (card.type !== 'EVENT' || !card.abilities?.length) return true;
+    if (card.type !== 'EVENT') return true;
+    if (!card.abilities?.length) return false;
 
     const ability = findEventAbilityForPhase(
         card,

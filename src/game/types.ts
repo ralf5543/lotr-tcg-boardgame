@@ -188,6 +188,14 @@ export type AbilityEffect =
           value: number;
           target: AbilityTargetRef;
           expiresAtPhase: AbilityEffectExpiry;
+          bearingBonus?: {
+              value: number;
+              attachment: string[][];
+          };
+      }
+    | {
+          type: 'DRAW';
+          count: number;
       }
       | {
           type: 'WOUND';

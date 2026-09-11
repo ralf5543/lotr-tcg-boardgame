@@ -1011,6 +1011,231 @@ describe('responseWindow / coûts prevent-wound', () => {
         expect(G.players['0']?.discard.map((c) => c.id)).toContain('2U3');
         expect(G.responseWindow).toBeUndefined();
     });
+
+    it('Arwen : défausse 3 cartes de la main, Porteur intact', () => {
+        const frodo = createCompanion({
+            id: 'frodo',
+            title: 'Frodo',
+            keywords: ['RING-BOUND', 'RING-BEARER'],
+            vitality: 4,
+        });
+        const arwen = createCompanion({
+            id: '3U7',
+            title: 'Arwen',
+            keywords: ['RANGER', 'UNBOUND'],
+            vitality: 3,
+            actionPhases: ['RESPONSE'],
+            abilities: [
+                {
+                    id: '3U7:0',
+                    phases: ['RESPONSE'],
+                    trigger: {
+                        type: 'ABOUT_TO_WOUND',
+                        target: [['RING-BEARER']],
+                    },
+                    cost: [{ discardFromHand: 3 }],
+                    effects: [{ type: 'PREVENT_WOUND' }],
+                    source: 'SELF',
+                },
+            ],
+        });
+        const hand = ['h1', 'h2', 'h3', 'h4'].map((id) =>
+            createCard({ id, title: id, kind: 'FREE_PEOPLE', type: 'EVENT' })
+        );
+
+        const engine = createEngineClient({
+            startPhase: 'archery',
+            playerID: '0',
+            G: {
+                players: {
+                    '0': createPlayerState('0', {
+                        fellowshipArea: [frodo, arwen],
+                        hand,
+                    }),
+                },
+            },
+        });
+
+        engine.moves.applyWound('frodo');
+        expect(engine.getG().responseWindow?.isOpen).toBe(true);
+
+        engine.moves.activateAbility('3U7', '3U7:0', undefined, [
+            'h1',
+            'h2',
+            'h3',
+        ]);
+
+        const G = engine.getG();
+        expect(G.players['0']?.fellowshipArea[0]?.wounds || 0).toBe(0);
+        expect(G.players['0']?.hand.map((c) => c.id)).toEqual(['h4']);
+        expect(G.players['0']?.discard.map((c) => c.id)).toEqual([
+            'h1',
+            'h2',
+            'h3',
+        ]);
+        expect(G.responseWindow).toBeUndefined();
+    });
+
+    it('Arwen : main trop courte, blessure immédiate', () => {
+        const frodo = createCompanion({
+            id: 'frodo',
+            title: 'Frodo',
+            keywords: ['RING-BOUND', 'RING-BEARER'],
+            vitality: 4,
+        });
+        const arwen = createCompanion({
+            id: '3U7',
+            title: 'Arwen',
+            vitality: 3,
+            actionPhases: ['RESPONSE'],
+            abilities: [
+                {
+                    id: '3U7:0',
+                    phases: ['RESPONSE'],
+                    trigger: {
+                        type: 'ABOUT_TO_WOUND',
+                        target: [['RING-BEARER']],
+                    },
+                    cost: [{ discardFromHand: 3 }],
+                    effects: [{ type: 'PREVENT_WOUND' }],
+                    source: 'SELF',
+                },
+            ],
+        });
+
+        const engine = createEngineClient({
+            startPhase: 'archery',
+            playerID: '0',
+            G: {
+                players: {
+                    '0': createPlayerState('0', {
+                        fellowshipArea: [frodo, arwen],
+                        hand: [
+                            createCard({
+                                id: 'h1',
+                                kind: 'FREE_PEOPLE',
+                                type: 'EVENT',
+                            }),
+                        ],
+                    }),
+                },
+            },
+        });
+
+        engine.moves.applyWound('frodo');
+        const G = engine.getG();
+        expect(G.players['0']?.fellowshipArea[0]?.wounds).toBe(1);
+        expect(G.responseWindow).toBeUndefined();
+    });
+
+    it('King of the Dead : seulement en combat, affaiblir le séide', () => {
+        const aragorn = createCompanion({
+            id: 'aragorn',
+            title: 'Aragorn',
+            vitality: 4,
+        });
+        const king = createMinion({
+            id: '8R38',
+            title: 'King of the Dead',
+            vitality: 4,
+            actionPhases: ['RESPONSE'],
+            abilities: [
+                {
+                    id: '8R38:0',
+                    phases: ['RESPONSE'],
+                    trigger: {
+                        type: 'ABOUT_TO_WOUND',
+                        target: [['Aragorn']],
+                        inSkirmish: true,
+                    },
+                    cost: [{ exert: [{ count: 1, target: 'SELF' }] }],
+                    effects: [{ type: 'PREVENT_WOUND' }],
+                    source: 'SELF',
+                },
+            ],
+        });
+
+        const engine = createEngineClient({
+            startPhase: 'skirmish',
+            playerID: '0',
+            G: {
+                activeSkirmishId: 'sk-aragorn',
+                skirmishes: [
+                    {
+                        id: 'sk-aragorn',
+                        companionId: 'aragorn',
+                        minionIds: ['8R38'],
+                    },
+                ],
+                battlefield: [king],
+                players: {
+                    '0': createPlayerState('0', {
+                        fellowshipArea: [aragorn],
+                    }),
+                    '1': createPlayerState('1'),
+                },
+            },
+        });
+
+        engine.moves.applyWound('aragorn');
+        expect(engine.getG().responseWindow?.isOpen).toBe(true);
+        expect(engine.getG().responseWindow?.activePlayerId).toBe('1');
+
+        engine.updatePlayerID('1');
+        engine.moves.activateAbility('8R38', '8R38:0');
+
+        const G = engine.getG();
+        expect(G.players['0']?.fellowshipArea[0]?.wounds || 0).toBe(0);
+        expect(G.battlefield[0]?.wounds).toBe(1);
+        expect(G.responseWindow).toBeUndefined();
+    });
+
+    it('King of the Dead : hors combat, pas de toaster', () => {
+        const aragorn = createCompanion({
+            id: 'aragorn',
+            title: 'Aragorn',
+            vitality: 4,
+        });
+        const king = createMinion({
+            id: '8R38',
+            title: 'King of the Dead',
+            vitality: 4,
+            actionPhases: ['RESPONSE'],
+            abilities: [
+                {
+                    id: '8R38:0',
+                    phases: ['RESPONSE'],
+                    trigger: {
+                        type: 'ABOUT_TO_WOUND',
+                        target: [['Aragorn']],
+                        inSkirmish: true,
+                    },
+                    cost: [{ exert: [{ count: 1, target: 'SELF' }] }],
+                    effects: [{ type: 'PREVENT_WOUND' }],
+                    source: 'SELF',
+                },
+            ],
+        });
+
+        const engine = createEngineClient({
+            startPhase: 'archery',
+            playerID: '0',
+            G: {
+                battlefield: [king],
+                players: {
+                    '0': createPlayerState('0', {
+                        fellowshipArea: [aragorn],
+                    }),
+                    '1': createPlayerState('1'),
+                },
+            },
+        });
+
+        engine.moves.applyWound('aragorn');
+        const G = engine.getG();
+        expect(G.players['0']?.fellowshipArea[0]?.wounds).toBe(1);
+        expect(G.responseWindow).toBeUndefined();
+    });
 });
 
 const UNKNOWN_PERILS_ABILITY: Ability = {

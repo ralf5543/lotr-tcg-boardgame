@@ -168,6 +168,9 @@ function formatEffectBit(
     if (effect.type === 'ADD_TWILIGHT') {
         return `ajouter <symbol>twilight${effect.count}</symbol>`;
     }
+    if (effect.type === 'DRAW') {
+        return `piocher ${effect.count} carte${effect.count > 1 ? 's' : ''}`;
+    }
     if (effect.type === 'PREVENT_WOUND') {
         return 'empêcher cette blessure';
     }
@@ -248,6 +251,12 @@ function formatCostLabel(ability: Ability, source: CardState): string {
     }
     if (option?.discardFromPlay?.length) {
         parts.push('Défausser cette carte');
+    }
+    if (option?.discardFromHand && option.discardFromHand > 0) {
+        const n = option.discardFromHand;
+        parts.push(
+            `Défausser ${n} carte${n > 1 ? 's' : ''} de la main`
+        );
     }
     return parts.join(' et ');
 }

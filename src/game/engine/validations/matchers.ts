@@ -66,6 +66,9 @@ export function cardMatchesCriterion(
     // Type (COMPANION, MINION, ALLY, POSSESSION, CONDITION, etc.)
     if (c.type && normalize(c.type) === critUpper) return true;
 
+    // Sous-type (HAND-WEAPON, ARMOR, …)
+    if (c.subtype && normalize(c.subtype) === critUpper) return true;
+
     // Keywords (UNBOUND, RING-BOUND, ARCHER, KNIGHT, etc.)
     if (Array.isArray(c.keywords)) {
         const keywordsUpper = c.keywords.map((k) => normalize(k));

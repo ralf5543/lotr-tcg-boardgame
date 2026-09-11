@@ -141,6 +141,8 @@ export const VALID_TARGET_TYPES = new Set([
     'COMPANION',
     'ALLY',
     'CHARACTER',
+    'HAND-WEAPON',
+    'RANGED-WEAPON',
 ]);
 
 export const SHADOW_CULTURES = [

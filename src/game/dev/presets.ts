@@ -508,7 +508,7 @@ export const applyDevPreset = (
             break;
         }
         case 'SKIRMISH_TEST': {
-            G.twilightPool = 6;
+            G.twilightPool = 0;
             const shadowId = fpId === '0' ? '1' : '0';
             const shadowPlayer = G.players[shadowId];
 
@@ -525,34 +525,38 @@ export const applyDevPreset = (
 
             fpPlayer.fellowshipArea = [
                 asRingBearer(clonePresetCard('2C102')),
-                clonePresetCard('1C303'),
-                clonePresetCard('7R91'),
-                clonePresetCard('1R50'),
-                clonePresetCard('0P21'),
+                clonePresetCard('3U7'),
+                clonePresetCard('0P12'),
+                clonePresetCard('1C7'),
             ];
             fpPlayer.supportArea = [];
-            fpPlayer.hand = [];
+            fpPlayer.hand = [
+                clonePresetCard('1C3'),
+                clonePresetCard('1C4'),
+                clonePresetCard('1C5'),
+                clonePresetCard('1C6'),
+                clonePresetCard('1C9'),
+            ];
 
             if (shadowPlayer) {
-                shadowPlayer.hand = [
-                    clonePresetCard('1C191'),
-                    clonePresetCard('1R247'),
-                    clonePresetCard('4C37'),
-                ];
-                shadowPlayer.supportArea = [clonePresetCard('1U159')];
+                shadowPlayer.hand = [];
+                shadowPlayer.supportArea = [];
             }
 
-            G.battlefield = [
-                clonePresetCard('1C271'),
-                clonePresetCard('1C158'),
-                clonePresetCard('4C17'),
-            ];
+            G.battlefield = [{ ...CARDS_PRESETS.MORIA_SCOUT }];
             G.skirmishes = [];
             G.activeSkirmishId = undefined;
             G.actionWindow = undefined;
+            G.responseWindow = undefined;
+            G.pendingEvent = undefined;
+
+            fpPlayer.deck = [1, 2, 3, 4, 5, 6, 7, 8].map((n) => ({
+                ...clonePresetCard('1C8'),
+                instanceId: `dev-deck-${n}`,
+            }));
 
             G.statusMessage =
-                '[DEV] Victoire : Frénésie en soutien Ombre. Main Ombre (?player=1) : Ennemi sans Pitié + Cri de Guerre. Séides : Soldat orque, Pillards, Sauvage Dun. Affecter l’Uruk / le Dun à Merry.';
+                '[DEV] Arwen puis nains. Archerie : blessure +1 sur Frodon, clique Arwen (3 cartes s’envolent). Compagnie : Fouilles. Combat : vise un Nain — Éclaireur trop faible pour submerger Frodon.';
             break;
         }
     }

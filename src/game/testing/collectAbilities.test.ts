@@ -116,4 +116,56 @@ describe('formatAbilityLabelParts', () => {
             effect: 'Acharné',
         });
     });
+
+    it('Fouilles : affaiblir un compagnon Nain, piocher 3', () => {
+        const ability: Ability = {
+            id: '1C6:0',
+            phases: ['FELLOWSHIP'],
+            cost: [
+                {
+                    exert: [
+                        {
+                            count: 1,
+                            target: [['DWARF', 'COMPANION']],
+                            mode: 'DESIGNATION',
+                        },
+                    ],
+                },
+            ],
+            effects: [{ type: 'DRAW', count: 3 }],
+            source: 'SELF',
+        };
+        const delving = createCompanion({
+            id: '1C6',
+            title: 'Delving',
+            i18n: { fr: { title: 'Fouilles' } },
+        });
+        expect(formatAbilityLabelParts(ability, delving)).toEqual({
+            cost: 'Affaiblir un Nain Compagnon',
+            effect: 'piocher 3 cartes',
+        });
+    });
+
+    it('Arwen : défausser 3 cartes de la main', () => {
+        const ability: Ability = {
+            id: '3U7:0',
+            phases: ['RESPONSE'],
+            trigger: {
+                type: 'ABOUT_TO_WOUND',
+                target: [['RING-BEARER']],
+            },
+            cost: [{ discardFromHand: 3 }],
+            effects: [{ type: 'PREVENT_WOUND' }],
+            source: 'SELF',
+        };
+        const arwen = createCompanion({
+            id: '3U7',
+            title: 'Arwen',
+            i18n: { fr: { title: 'Arwen' } },
+        });
+        expect(formatAbilityLabelParts(ability, arwen)).toEqual({
+            cost: 'Défausser 3 cartes de la main',
+            effect: 'empêcher cette blessure',
+        });
+    });
 });

@@ -571,6 +571,349 @@ describe('playCard', () => {
             0
         );
     });
+
+    const BATTLE_FURY: Ability = {
+        id: '1C4:0',
+        phases: ['SKIRMISH'],
+        cost: [
+            {
+                exert: [
+                    {
+                        count: 1,
+                        target: [['DWARF']],
+                        mode: 'DESIGNATION',
+                    },
+                ],
+            },
+        ],
+        effects: [
+            {
+                type: 'ADD_TEMP_STAT',
+                stat: 'STRENGTH',
+                value: 3,
+                target: [['DWARF']],
+                expiresAtPhase: 'SKIRMISH',
+            },
+            {
+                type: 'ADD_TEMP_KEYWORD',
+                keyword: 'DAMAGE +1',
+                target: [['DWARF']],
+                expiresAtPhase: 'SKIRMISH',
+            },
+        ],
+        source: 'SELF',
+    };
+
+    const CLEAVING_BLOW: Ability = {
+        id: '1C5:0',
+        phases: ['SKIRMISH'],
+        cost: [],
+        effects: [
+            {
+                type: 'ADD_TEMP_STAT',
+                stat: 'STRENGTH',
+                value: 2,
+                target: [['DWARF']],
+                expiresAtPhase: 'SKIRMISH',
+            },
+            {
+                type: 'ADD_TEMP_KEYWORD',
+                keyword: 'DAMAGE +1',
+                target: [['DWARF']],
+                expiresAtPhase: 'SKIRMISH',
+            },
+        ],
+        source: 'SELF',
+    };
+
+    function createDwarf(id: string, strength: number) {
+        return createCompanion({
+            id,
+            title: id,
+            race: 'DWARF',
+            vitality: 3,
+            strength,
+        });
+    }
+
+    it('joue Fureur de la Bataille sur le Nain désigné : +3, damage +1, affaibli', () => {
+        const gimli = createDwarf('gimli', 6);
+        const guard = createDwarf('guard', 4);
+        const event = createCard({
+            id: '1C4',
+            kind: 'FREE_PEOPLE',
+            type: 'EVENT',
+            title: 'Battle Fury',
+            phases: ['SKIRMISH'],
+            twilightCost: 0,
+            abilities: [BATTLE_FURY],
+        });
+
+        const engine = createEngineClient({
+            startPhase: 'skirmish',
+            playerID: '0',
+            G: {
+                ...createSkirmishActionWindow('sk-1'),
+                skirmishes: [
+                    {
+                        id: 'sk-1',
+                        companionId: 'gimli',
+                        minionIds: ['orc'],
+                    },
+                ],
+                players: {
+                    '0': createPlayerState('0', {
+                        fellowshipArea: [gimli, guard],
+                        hand: [event],
+                    }),
+                },
+            },
+        });
+
+        engine.moves.playCard(0, 'gimli');
+
+        const board = engine.getG().players['0']?.fellowshipArea || [];
+        const gimliInPlay = board.find((c) => c.id === 'gimli');
+        const guardInPlay = board.find((c) => c.id === 'guard');
+        expect(engine.getG().players['0']?.discard[0]?.id).toBe('1C4');
+        expect(gimliInPlay?.wounds).toBe(1);
+        expect(guardInPlay?.wounds || 0).toBe(0);
+        expect(getCalculatedStrength(engine.getG(), gimliInPlay)).toBe(9);
+        expect(getCalculatedStrength(engine.getG(), guardInPlay)).toBe(4);
+        expect(gimliInPlay?.tempKeywords).toEqual([
+            { keyword: 'DAMAGE +1', expiresAtPhase: 'SKIRMISH' },
+        ]);
+    });
+
+    it('joue Coup Tranchant sur le Nain désigné : +2 et damage +1, sans affaiblir', () => {
+        const gimli = createDwarf('gimli', 6);
+        const guard = createDwarf('guard', 4);
+        const event = createCard({
+            id: '1C5',
+            kind: 'FREE_PEOPLE',
+            type: 'EVENT',
+            title: 'Cleaving Blow',
+            phases: ['SKIRMISH'],
+            twilightCost: 1,
+            abilities: [CLEAVING_BLOW],
+        });
+
+        const engine = createEngineClient({
+            startPhase: 'skirmish',
+            playerID: '0',
+            G: {
+                ...createSkirmishActionWindow('sk-1'),
+                twilightPool: 0,
+                skirmishes: [
+                    {
+                        id: 'sk-1',
+                        companionId: 'gimli',
+                        minionIds: ['orc'],
+                    },
+                ],
+                players: {
+                    '0': createPlayerState('0', {
+                        fellowshipArea: [gimli, guard],
+                        hand: [event],
+                    }),
+                },
+            },
+        });
+
+        engine.moves.playCard(0, 'gimli');
+
+        const board = engine.getG().players['0']?.fellowshipArea || [];
+        const gimliInPlay = board.find((c) => c.id === 'gimli');
+        const guardInPlay = board.find((c) => c.id === 'guard');
+        expect(engine.getG().players['0']?.discard[0]?.id).toBe('1C5');
+        expect(engine.getG().twilightPool).toBe(1);
+        expect(gimliInPlay?.wounds || 0).toBe(0);
+        expect(getCalculatedStrength(engine.getG(), gimliInPlay)).toBe(8);
+        expect(getCalculatedStrength(engine.getG(), guardInPlay)).toBe(4);
+        expect(gimliInPlay?.tempKeywords).toEqual([
+            { keyword: 'DAMAGE +1', expiresAtPhase: 'SKIRMISH' },
+        ]);
+    });
+
+    const AXE_STRIKE: Ability = {
+        id: '1C3:0',
+        phases: ['SKIRMISH'],
+        cost: [],
+        effects: [
+            {
+                type: 'ADD_TEMP_STAT',
+                stat: 'STRENGTH',
+                value: 2,
+                target: [['DWARF']],
+                expiresAtPhase: 'SKIRMISH',
+                bearingBonus: {
+                    value: 3,
+                    attachment: [['DWARVEN', 'HAND-WEAPON']],
+                },
+            },
+        ],
+        source: 'SELF',
+    };
+
+    const DELVING: Ability = {
+        id: '1C6:0',
+        phases: ['FELLOWSHIP'],
+        cost: [
+            {
+                exert: [
+                    {
+                        count: 1,
+                        target: [['DWARF', 'COMPANION']],
+                        mode: 'DESIGNATION',
+                    },
+                ],
+            },
+        ],
+        effects: [{ type: 'DRAW', count: 3 }],
+        source: 'SELF',
+    };
+
+    it('joue Coup de Hache : +2 sans arme, +3 avec une arme de mêlée naine', () => {
+        const gimli = createDwarf('gimli', 6);
+        const guard = createDwarf('guard', 4);
+        const event = createCard({
+            id: '1C3',
+            kind: 'FREE_PEOPLE',
+            type: 'EVENT',
+            title: 'Axe Strike',
+            phases: ['SKIRMISH'],
+            twilightCost: 0,
+            abilities: [AXE_STRIKE],
+        });
+
+        const engine = createEngineClient({
+            startPhase: 'skirmish',
+            playerID: '0',
+            G: {
+                ...createSkirmishActionWindow('sk-1'),
+                skirmishes: [
+                    {
+                        id: 'sk-1',
+                        companionId: 'gimli',
+                        minionIds: ['orc'],
+                    },
+                ],
+                players: {
+                    '0': createPlayerState('0', {
+                        fellowshipArea: [gimli, guard],
+                        hand: [event],
+                        deck: ['d1', 'd2', 'd3'].map((id) =>
+                            createCard({ id, kind: 'FREE_PEOPLE' })
+                        ),
+                    }),
+                },
+            },
+        });
+
+        engine.moves.playCard(0, 'gimli');
+
+        const board = engine.getG().players['0']?.fellowshipArea || [];
+        expect(engine.getG().players['0']?.discard[0]?.id).toBe('1C3');
+        expect(engine.getG().players['0']?.hand).toHaveLength(0);
+        expect(engine.getG().players['0']?.deck).toHaveLength(3);
+        expect(getCalculatedStrength(engine.getG(), board.find((c) => c.id === 'gimli'))).toBe(8);
+        expect(getCalculatedStrength(engine.getG(), board.find((c) => c.id === 'guard'))).toBe(4);
+    });
+
+    it('Coup de Hache : +3 si le Nain porte une arme de mêlée naine', () => {
+        const axe = createCard({
+            id: '1C9',
+            kind: 'FREE_PEOPLE',
+            type: 'POSSESSION',
+            subtype: 'HAND-WEAPON',
+            culture: 'DWARVEN',
+            title: 'Dwarven Axe',
+        });
+        const gimli = {
+            ...createDwarf('gimli', 6),
+            attachments: [axe],
+        };
+        const event = createCard({
+            id: '1C3',
+            kind: 'FREE_PEOPLE',
+            type: 'EVENT',
+            title: 'Axe Strike',
+            phases: ['SKIRMISH'],
+            twilightCost: 0,
+            abilities: [AXE_STRIKE],
+        });
+
+        const engine = createEngineClient({
+            startPhase: 'skirmish',
+            playerID: '0',
+            G: {
+                ...createSkirmishActionWindow('sk-1'),
+                skirmishes: [
+                    {
+                        id: 'sk-1',
+                        companionId: 'gimli',
+                        minionIds: ['orc'],
+                    },
+                ],
+                players: {
+                    '0': createPlayerState('0', {
+                        fellowshipArea: [gimli],
+                        hand: [event],
+                    }),
+                },
+            },
+        });
+
+        engine.moves.playCard(0, 'gimli');
+
+        const gimliInPlay = engine.getG().players['0']?.fellowshipArea[0];
+        expect(getCalculatedStrength(engine.getG(), gimliInPlay)).toBe(9);
+    });
+
+    it('joue Fouilles : affaiblit un Nain et pioche 3 cartes', () => {
+        const gimli = createDwarf('gimli', 6);
+        const event = createCard({
+            id: '1C6',
+            kind: 'FREE_PEOPLE',
+            type: 'EVENT',
+            title: 'Delving',
+            phases: ['FELLOWSHIP'],
+            twilightCost: 1,
+            abilities: [DELVING],
+        });
+        const deck = ['d1', 'd2', 'd3', 'd4', 'd5'].map((id) =>
+            createCard({ id, kind: 'FREE_PEOPLE', type: 'EVENT' })
+        );
+
+        const engine = createEngineClient({
+            startPhase: 'fellowship',
+            playerID: '0',
+            G: {
+                twilightPool: 0,
+                players: {
+                    '0': createPlayerState('0', {
+                        fellowshipArea: [gimli],
+                        hand: [event],
+                        deck,
+                    }),
+                },
+            },
+        });
+
+        engine.moves.playCard(0, 'gimli');
+
+        const G = engine.getG();
+        expect(G.players['0']?.discard[0]?.id).toBe('1C6');
+        expect(G.players['0']?.hand.map((c) => c.id)).toEqual([
+            'd1',
+            'd2',
+            'd3',
+        ]);
+        expect(G.players['0']?.deck).toHaveLength(2);
+        expect(G.players['0']?.fellowshipArea[0]?.wounds).toBe(1);
+        expect(G.twilightPool).toBe(1);
+        expect(G.fellowshipCardsDrawn).toBe(3);
+    });
 });
 
 describe('playShadowCard (soutien)', () => {
