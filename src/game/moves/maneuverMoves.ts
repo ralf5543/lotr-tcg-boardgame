@@ -2,6 +2,7 @@ import type { LotrMoveContext } from '../types';
 import { canTransferAid } from '../engine/validations/canTransferAid';
 import { findTargetCard } from '../../utils/cardUtils';
 import { hasActionableStartOfPhaseCards } from '../logic/hasActionableStartOfPhaseCards';
+import { addThreats } from '../logic/threats';
 
 export const transferAid = (
     { G, ctx, events, playerID }: LotrMoveContext,
@@ -52,7 +53,7 @@ export const transferAid = (
                 G.twilightPool = Math.max(0, (G.twilightPool || 0) - amount);
             }
         } else if (type === 'THREAT') {
-            if (fpPlayer) fpPlayer.threats = (fpPlayer.threats || 0) + amount;
+            addThreats(G, amount);
         } else if (type === 'BURDEN') {
             if (fpPlayer) fpPlayer.burdens = (fpPlayer.burdens || 0) + amount;
         }

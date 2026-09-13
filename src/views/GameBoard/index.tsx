@@ -49,6 +49,7 @@ import {
 } from './components/TargetingArrow';
 import { TargetingArrowSyncProvider, useTargetingArrowSync } from './components/TargetingArrow/TargetingArrowSync';
 import { PENDING_PLAY_ORIGIN_ID } from './components/TargetingArrow/sync';
+import { getThreatLimit } from '../../game/logic/threats';
 
 export interface GameBoardProps extends BoardProps<GameState> {
     moves: BoardProps<GameState>['moves'] &
@@ -79,6 +80,8 @@ export interface GameBoardProps extends BoardProps<GameState> {
                 chosenTargetId?: string,
                 discardedHandIds?: string[]
             ) => void;
+            assignArcheryWound?: (cardId: string) => void;
+            assignThreatWound?: (cardId: string) => void;
         };
 }
 
@@ -667,6 +670,11 @@ export const GameBoard: React.FC<GameBoardProps> = ({
     useEffect(() => {
         if (targetingKind === 'DESIGNATION') return;
 
+        if ((G.threatWoundsToAssign ?? 0) > 0) {
+            if (targetingKind === 'ARCHERY') stopTargeting();
+            return;
+        }
+
         if (
             ctx.phase !== 'archery' ||
             !G.archeryState ||
@@ -682,8 +690,13 @@ export const GameBoard: React.FC<GameBoardProps> = ({
         if (step === 'FP_ASSIGN') {
             const fpPlayer = G.players[G.fpPlayerId || '0'];
             const validTargets = (fpPlayer?.fellowshipArea || [])
-                .filter((c) => c && c.id)
-                .map((c) => c.id);
+                .filter((c) => c && !c.isDead)
+                .flatMap((c) =>
+                    [c.instanceId, c.id].filter(
+                        (id, index, ids): id is string =>
+                            Boolean(id) && ids.indexOf(id) === index
+                    )
+                );
 
             startTargeting({
                 kind: 'ARCHERY',
@@ -723,6 +736,59 @@ export const GameBoard: React.FC<GameBoardProps> = ({
         G.battlefield,
         G.responseWindow,
         G.pendingEvent,
+        G.threatWoundsToAssign,
+        moves,
+        startTargeting,
+        stopTargeting,
+        targetingKind,
+    ]);
+
+    // 🟢 4b. BLESSURES DE MENACES (même geste que l’archerie)
+    useEffect(() => {
+        if (
+            targetingKind === 'DESIGNATION' ||
+            targetingKind === 'HAND_DISCARD'
+        ) {
+            return;
+        }
+
+        const remaining = G.threatWoundsToAssign ?? 0;
+        if (
+            remaining <= 0 ||
+            G.responseWindow?.isOpen ||
+            G.pendingEvent
+        ) {
+            if (targetingKind === 'THREAT_WOUND') stopTargeting();
+            return;
+        }
+
+        const fpPlayer = G.players[G.fpPlayerId || '0'];
+        const validTargets = (fpPlayer?.fellowshipArea || [])
+            .filter((c) => c.type === 'COMPANION' && !c.isDead)
+            .flatMap((c) =>
+                [c.instanceId, c.id].filter(
+                    (id, index, ids): id is string =>
+                        Boolean(id) && ids.indexOf(id) === index
+                )
+            );
+
+        startTargeting({
+            kind: 'THREAT_WOUND',
+            targetableCardIds: validTargets,
+            message:
+                remaining === 1
+                    ? 'Menaces : cliquez sur un compagnon pour lui assigner 1 blessure.'
+                    : `Menaces : cliquez sur un compagnon pour lui assigner une blessure (${remaining} restantes).`,
+            onSelectTarget: (cardId) => {
+                moves.assignThreatWound?.(cardId);
+            },
+        });
+    }, [
+        G.threatWoundsToAssign,
+        G.fpPlayerId,
+        G.players,
+        G.responseWindow,
+        G.pendingEvent,
         moves,
         startTargeting,
         stopTargeting,
@@ -732,6 +798,11 @@ export const GameBoard: React.FC<GameBoardProps> = ({
     // 🟢 5. SYNCHRONISATION DU CIBLAGE EN PHASE DE SKIRMISH
     useEffect(() => {
         if (targetingKind === 'DESIGNATION') return;
+
+        if ((G.threatWoundsToAssign ?? 0) > 0) {
+            if (targetingKind === 'SKIRMISH_SELECT') stopTargeting();
+            return;
+        }
 
         if (
             ctx.phase !== 'skirmish' ||
@@ -774,6 +845,7 @@ export const GameBoard: React.FC<GameBoardProps> = ({
         ctx.phase,
         G.skirmishes,
         G.activeSkirmishId,
+        G.threatWoundsToAssign,
         moves,
         startTargeting,
         stopTargeting,
@@ -970,6 +1042,8 @@ export const GameBoard: React.FC<GameBoardProps> = ({
                     <OutOfPlayRail
                         twilight={G.twilightPool}
                         fpIsOpponent={fpPlayerId === oppId}
+                        threats={G.players[fpPlayerId]?.threats ?? 0}
+                        threatLimit={getThreatLimit(G)}
                     />
                     </S.BoardColumns>
 

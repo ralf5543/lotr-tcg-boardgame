@@ -6,6 +6,7 @@ import type {
 } from '../types';
 import { applyDevPreset } from './presets';
 import { clearActionableFlags } from '../../utils/clearActionableFlags';
+import { addThreats, getThreatLimit } from '../logic/threats';
 
 /** État de machine de phase : toasters, fenêtres, sous-étapes. */
 function resetPhaseMachine(G: GameState): void {
@@ -22,6 +23,7 @@ function resetPhaseMachine(G: GameState): void {
     G.archeryState = undefined;
     G.archeryAssignStep = undefined;
     G.archeryWoundsToAssign = undefined;
+    G.threatWoundsToAssign = undefined;
     G.archeryAfterResponses = undefined;
     G.pendingActionYieldPlayerId = undefined;
     G.pendingPhaseEnd = undefined;
@@ -51,6 +53,20 @@ export const devMoves = {
             fpPlayer.burdens = Math.max(0, deltaOrAmount);
         }
         G.statusMessage = `[DEV] Burdens ajustés à ${fpPlayer.burdens}.`;
+    },
+
+    devSetThreats: ({ G }: LotrMoveContext, delta: number) => {
+        const added = addThreats(G, delta);
+        const fpId = G.fpPlayerId || '0';
+        const threats = G.players[fpId]?.threats ?? 0;
+        const limit = getThreatLimit(G);
+
+        if (delta > 0 && added === 0) {
+            G.statusMessage = `[DEV] Menaces déjà au plafond (${threats}/${limit} compagnons).`;
+            return;
+        }
+
+        G.statusMessage = `[DEV] Menaces ajustées à ${threats}/${limit}.`;
     },
 
     devSetArchery: ({ G }: LotrMoveContext, amount: number) => {

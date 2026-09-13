@@ -235,6 +235,18 @@ export const GameControls: React.FC<GameControlsProps> = ({
             showPassButton: G.responseWindow?.canPass ?? true,
             type: 'RESPONSE',
         };
+    } else if ((G.threatWoundsToAssign ?? 0) > 0) {
+        const remaining = G.threatWoundsToAssign ?? 0;
+        toastConfig = {
+            show: true,
+            title: 'MENACES',
+            body:
+                currentPlayerId === fpPlayerId
+                    ? `Un compagnon ou un allié est mort. Assignez ${remaining} blessure(s) à vos compagnons.`
+                    : 'Les Peuples Libres assignent les blessures des menaces…',
+            showPassButton: false,
+            type: 'STANDARD',
+        };
     } else if (isActionWindowActive && isMyTurnToAct) {
         toastConfig = {
             show: true,
@@ -351,6 +363,13 @@ export const GameControls: React.FC<GameControlsProps> = ({
                 return 'Étape validée. En attente de l’autre joueur...';
             }
             return 'Cliquez sur vos cartes brillantes pour déclencher leurs effets, ou validez.';
+        }
+
+        if ((G.threatWoundsToAssign ?? 0) > 0) {
+            const remaining = G.threatWoundsToAssign ?? 0;
+            return currentPlayerId === fpPlayerId
+                ? `Assignez ${remaining} blessure(s) de menaces à vos compagnons.`
+                : 'Les Peuples Libres assignent les blessures des menaces...';
         }
 
         if (

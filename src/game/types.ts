@@ -480,6 +480,8 @@ export interface GameState {
     nextPhase?: string;
     pendingDeadCardIds?: string[];
     archeryWoundsToAssign?: number;
+    /** Blessures à assigner aux compagnons après une mort (menaces converties). */
+    threatWoundsToAssign?: number;
     regroupStep?:
         | 'MUSTER_STEP'
         | 'START_OF_REGROUP'

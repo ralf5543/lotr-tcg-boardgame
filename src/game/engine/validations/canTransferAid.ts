@@ -1,4 +1,5 @@
 import type { CardState, SiteCardState, GameState } from '../../types';
+import { canAddThreats } from '../../logic/threats';
 
 export interface AidValidationResult {
     valid: boolean;
@@ -36,6 +37,13 @@ export function canTransferAid(
                 reason: `Crépuscule insuffisant (${G.twilightPool || 0}/${amount}).`,
             };
         }
+    }
+
+    if (type === 'THREAT' && !canAddThreats(G)) {
+        return {
+            valid: false,
+            reason: 'Le nombre de menaces atteint déjà la limite (compagnons en jeu).',
+        };
     }
 
     // 2. Validation du type de cible pour un Follower

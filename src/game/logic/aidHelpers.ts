@@ -1,4 +1,5 @@
 import type { GameState, PlayerState } from '../types';
+import { canAddThreats } from './threats';
 
 /**
  * Vérifie si un joueur possède au moins un Follower éligible et une cible valide avec ressources suffisantes.
@@ -44,6 +45,7 @@ export function hasActionableFollowers(
         if (type === 'TWILIGHT' && !isFP) {
             if ((G.twilightPool || 0) < amount) return false;
         }
+        if (type === 'THREAT' && !canAddThreats(G)) return false;
 
         return true;
     });

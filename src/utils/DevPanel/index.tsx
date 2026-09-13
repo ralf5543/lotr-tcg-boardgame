@@ -2,11 +2,13 @@ import React, { useState } from 'react';
 import * as S from './styles';
 import type { BoardProps } from 'boardgame.io/react';
 import type { GameState } from '../../game/types';
+import { getThreatLimit } from '../../game/logic/threats';
 
 export interface DevMoves {
     devSetPhase: (phase: string) => void;
     devSetTwilight: (amount: number) => void;
     devSetBurdens?: (amount: number) => void;
+    devSetThreats: (amount: number) => void;
     devSetArchery?: (amount: number) => void;
     devLoadPreset: (presetName: string) => void;
     devForceEndPhase: () => void;
@@ -126,6 +128,29 @@ export const DevPanel: React.FC<DevPanelProps> = ({
                             </S.ActionButton>
                             <S.ActionButton
                                 onClick={() => moves.devSetBurdens?.(1)}
+                            >
+                                +1
+                            </S.ActionButton>
+                        </S.ButtonGroup>
+                    </S.Section>
+
+                    <S.Section>
+                        <S.Label>
+                            Menaces (FP) :{' '}
+                            <strong style={{ color: '#f87171' }}>
+                                {G.players[G.fpPlayerId || '0']?.threats ?? 0}
+                            </strong>
+                            {' / '}
+                            {getThreatLimit(G)}
+                        </S.Label>
+                        <S.ButtonGroup>
+                            <S.ActionButton
+                                onClick={() => moves.devSetThreats(-1)}
+                            >
+                                -1
+                            </S.ActionButton>
+                            <S.ActionButton
+                                onClick={() => moves.devSetThreats(1)}
                             >
                                 +1
                             </S.ActionButton>

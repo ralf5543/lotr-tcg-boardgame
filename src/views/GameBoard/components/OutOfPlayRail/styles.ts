@@ -14,16 +14,6 @@ export const Rail = styled.aside`
     pointer-events: none;
 `;
 
-export const RailTitle = styled.p`
-    margin: 0;
-    font-size: 10px;
-    font-weight: 700;
-    letter-spacing: 0.14em;
-    text-transform: uppercase;
-    color: #e2c044;
-    text-align: center;
-`;
-
 export const PileRow = styled.div`
     display: flex;
     gap: 8px;
@@ -64,16 +54,20 @@ export const PileLabel = styled.span`
 
 export const ThreatDots = styled.div`
     position: absolute;
-    inset: 10px 8px auto;
+    inset: 10px 6px 34px;
     display: flex;
     flex-wrap: wrap;
-    gap: 2px;
+    align-content: flex-start;
+    justify-content: center;
+    gap: 0;
 `;
 
 export const ThreatDot = styled.img`
-    width: 22px;
-    height: 22px;
+    width: 24px;
+    height: 24px;
     object-fit: contain;
+    margin: -3px;
+    filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.7));
 `;
 
 export const TwilightSlot = styled.div`

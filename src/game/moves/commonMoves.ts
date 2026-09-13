@@ -22,6 +22,10 @@ import {
     requestWounds,
 } from '../engine/responseWindow';
 import { resolveWhenPlayed } from '../engine/abilities/whenPlayed';
+import {
+    beginThreatWoundAssignment,
+    livingCompanionsForThreatWounds,
+} from '../logic/threats';
 
 export interface ReorderPayload {
     fromIndex?: number;
@@ -432,21 +436,42 @@ export const confirmEndPhase = ({ G, events }: LotrMoveContext) => {
 export const cleanupPendingDeaths = ({ G }: LotrMoveContext) => {
     const fpId = G.fpPlayerId || '0';
     const shadowId = fpId === '0' ? '1' : '0';
+    const killedFpCharacters: CardState[] = [];
+
+    const buryIfDead = (
+        card: CardState,
+        owner: { deadPile?: CardState[] } | undefined
+    ): boolean => {
+        const dead = card.isDead || getEffectiveVitality(card) <= 0;
+        if (!dead) return true;
+        if (owner) {
+            if (!owner.deadPile) owner.deadPile = [];
+            owner.deadPile.push(card);
+        }
+        return false;
+    };
 
     const fpPlayer = G.players[fpId];
     if (fpPlayer?.fellowshipArea) {
-        fpPlayer.fellowshipArea = fpPlayer.fellowshipArea.filter((c: any) => {
-            const remainingVitality = getEffectiveVitality(c);
-            const dead = c.isDead || remainingVitality <= 0;
-            if (dead) {
-                if (!fpPlayer.deadPile) fpPlayer.deadPile = [];
-                fpPlayer.deadPile.push(c);
+        fpPlayer.fellowshipArea = fpPlayer.fellowshipArea.filter((c) => {
+            const keep = buryIfDead(c, fpPlayer);
+            if (!keep && (c.type === 'COMPANION' || c.type === 'ALLY')) {
+                killedFpCharacters.push(c);
             }
-            return !dead;
+            return keep;
         });
     }
 
-    G.battlefield = (G.battlefield || []).filter((c: any) => {
+    if (fpPlayer?.supportArea) {
+        fpPlayer.supportArea = fpPlayer.supportArea.filter((c) => {
+            if (c.type !== 'ALLY' && c.type !== 'COMPANION') return true;
+            const keep = buryIfDead(c, fpPlayer);
+            if (!keep) killedFpCharacters.push(c);
+            return keep;
+        });
+    }
+
+    G.battlefield = (G.battlefield || []).filter((c) => {
         const remainingVitality = getEffectiveVitality(c);
         const dead = c.isDead || remainingVitality <= 0;
         if (dead) {
@@ -476,6 +501,45 @@ export const cleanupPendingDeaths = ({ G }: LotrMoveContext) => {
     G.pendingDeadCardIds = [];
     G.lastWoundedCardIds = [];
     G.lastExertedCardIds = [];
+
+    if (killedFpCharacters.length > 0) {
+        beginThreatWoundAssignment(G);
+    }
+};
+
+export const assignThreatWound = (
+    { G, playerID }: LotrMoveContext,
+    targetCardId: string
+) => {
+    if (G.responseWindow?.isOpen || G.pendingEvent) return 'INVALID_MOVE';
+
+    const remaining = G.threatWoundsToAssign ?? 0;
+    if (remaining <= 0) return 'INVALID_MOVE';
+
+    const fpId = G.fpPlayerId || '0';
+    if (playerID !== fpId) return 'INVALID_MOVE';
+
+    const companion = livingCompanionsForThreatWounds(G).find(
+        (card) => card.id === targetCardId || card.instanceId === targetCardId
+    );
+    if (!companion) return 'INVALID_MOVE';
+
+    requestWounds(G, companion, 1);
+    G.threatWoundsToAssign = remaining - 1;
+
+    const left = G.threatWoundsToAssign;
+    const stillLiving = livingCompanionsForThreatWounds(G);
+
+    if (left <= 0 || stillLiving.length === 0) {
+        G.threatWoundsToAssign = undefined;
+        G.statusMessage =
+            left > 0
+                ? 'Plus de compagnon à blesser. Blessures de menaces restantes perdues.'
+                : 'Blessures de menaces assignées.';
+        return;
+    }
+
+    G.statusMessage = `Menaces : encore ${left} blessure(s) à assigner.`;
 };
 
 export const commonMoves = {
@@ -492,5 +556,6 @@ export const commonMoves = {
     reorderFellowship,
     confirmEndPhase,
     cleanupPendingDeaths,
+    assignThreatWound,
     ...(process.env.NODE_ENV !== 'production' ? devMoves : {}),
 };

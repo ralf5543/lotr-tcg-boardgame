@@ -97,6 +97,7 @@ const createInitialPlayer = (playerId: string): PlayerState => {
             sitesDeck,
             currentSiteIndex: 0,
             burdens: 0,
+            threats: 0,
         };
     }
 
@@ -115,6 +116,7 @@ const createInitialPlayer = (playerId: string): PlayerState => {
         sitesDeck,
         currentSiteIndex: 0,
         burdens: 0,
+        threats: 0,
     };
 };
 

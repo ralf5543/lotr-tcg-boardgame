@@ -5,6 +5,7 @@ import {
     createFollower,
     createGameState,
     createMinion,
+    createPlayerState,
 } from '../../testing/createGameState';
 
 describe('canTransferAid', () => {
@@ -75,5 +76,33 @@ describe('canTransferAid', () => {
                 '1'
             ).valid
         ).toBe(true);
+    });
+
+    it('refuse un Suivant dont l’Aide ajoute des menaces déjà à la limite', () => {
+        const follower = createFollower({
+            id: 'fp-threat',
+            aidCost: { type: 'THREAT', amount: 1 },
+        });
+        const host = createCompanion({ id: 'host' });
+        const atCap = createGameState({
+            players: {
+                '0': createPlayerState('0', {
+                    threats: 1,
+                    fellowshipArea: [host],
+                }),
+            },
+        });
+
+        expect(canTransferAid(follower, host, atCap, '0').valid).toBe(false);
+
+        const withRoom = createGameState({
+            players: {
+                '0': createPlayerState('0', {
+                    threats: 0,
+                    fellowshipArea: [host],
+                }),
+            },
+        });
+        expect(canTransferAid(follower, host, withRoom, '0').valid).toBe(true);
     });
 });

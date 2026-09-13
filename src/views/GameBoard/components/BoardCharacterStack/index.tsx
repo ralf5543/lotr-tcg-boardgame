@@ -424,7 +424,11 @@ export const BoardCharacterStack: React.FC<BoardCharacterStackProps> = ({
                         // 🎯 Si c'est ciblable, on déclenche directement la sélection au clic
                         if (isTargetable) {
                             e.stopPropagation();
-                            selectCard(cardKey);
+                            selectCard(
+                                isCardTargetable(cardKey)
+                                    ? cardKey
+                                    : character.id
+                            );
                             return;
                         }
 
