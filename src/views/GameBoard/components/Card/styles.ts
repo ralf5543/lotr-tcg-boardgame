@@ -314,6 +314,16 @@ export const CardContainer = styled.div<CardContainerProps>`
                     content: none;
                 }
 
+                ${StatsDisplay} {
+                    display: flex;
+                    flex-direction: column;
+                    align-items: center;
+                    gap: 0px;
+                    position: absolute;
+                    width: 13px;
+                    inset-block-start: 23px;
+                }
+
                 ${CardHeader} {
                     display: none;
                 }
@@ -324,8 +334,9 @@ export const CardContainer = styled.div<CardContainerProps>`
                     display: none;
                 }
                 ${StrengthBadge} {
+                    position: static;
                     width: 25px;
-                    inset-block-start: 28px;
+                    inset-block-start: 50%;
                     inset-inline-start: -5px;
                     background-position: center;
                     background-size: 27px;
@@ -333,8 +344,9 @@ export const CardContainer = styled.div<CardContainerProps>`
                     font-size: 16px;
                 }
                 ${VitalityBadge} {
+                    position: static;
                     width: 25px;
-                    inset-block-start: 57px;
+                    inset-block-start: 50%;
                     inset-inline-start: -6px;
                     background-position: 1px center;
                     background-size: 27px;
@@ -347,20 +359,19 @@ export const CardContainer = styled.div<CardContainerProps>`
             ${props.$type === 'RING' &&
             css`
                 border: 0px;
+
+
+
+                ${StatsDisplay} {
+                    inset-block-start: 29px;
+                    inset-inline-start: 6px;
+                }
+
                 ${VisualContainer} {
                     display: block;
-                    inset: 0px -6px;
                     border-radius: 6px;
                     overflow: hidden;
                     height: auto;
-                }
-
-                ${VitalityBadge} {
-                    inset-inline-start: -1px;
-                }
-
-                ${StrengthBadge} {
-                    inset-inline-start: -1px;
                 }
             `}
 
@@ -592,6 +603,7 @@ export const CardHeader = styled.div`
     padding-inline: 4px;
     line-height: 1;
 `;
+export const StatsDisplay = styled.div``;
 
 export const CardTitles = styled.div<{ $type?: string }>`
     display: flex;
@@ -1065,7 +1077,10 @@ export const WoundToken = styled.img`
     margin-inline-end: 4px;
 `;
 
-export const AbilityButton = styled.button<{ $abilityPhaseMatch?: boolean, $culture?: string }>`
+export const AbilityButton = styled.button<{
+    $abilityPhaseMatch?: boolean;
+    $culture?: string;
+}>`
     display: inline-flex;
     align-items: center;
     justify-content: center;
@@ -1092,9 +1107,13 @@ export const AbilityButton = styled.button<{ $abilityPhaseMatch?: boolean, $cult
     ${(props) =>
         props.$abilityPhaseMatch &&
         css`
-            box-shadow: rgb(0, 0, 0) 0px 2px 2px, rgb(226, 192, 68) 0px 0px 10px 7px;
+            box-shadow:
+                rgb(0, 0, 0) 0px 2px 2px,
+                rgb(226, 192, 68) 0px 0px 10px 7px;
             &:active {
-                box-shadow: inset 0 0 10px black, rgb(226, 192, 68) 0px 0px 8px 3px;
+                box-shadow:
+                    inset 0 0 10px black,
+                    rgb(226, 192, 68) 0px 0px 8px 3px;
             }
         `}
 
@@ -1106,7 +1125,7 @@ export const AbilityButton = styled.button<{ $abilityPhaseMatch?: boolean, $cult
         max-width: 16px;
     }
     &::before {
-        content: "";
+        content: '';
         position: absolute;
         background-image: url(interface/tokens/token_player_top.webp);
         background-size: contain;
@@ -1116,8 +1135,6 @@ export const AbilityButton = styled.button<{ $abilityPhaseMatch?: boolean, $cult
         aspect-ratio: 1 / 1;
         pointer-events: none;
     }
-
-    
 `;
 
 export const fadeIn = keyframes`
@@ -1202,4 +1219,3 @@ export const AbilityBubbleItem = styled.button`
         color: #e2c044;
     }
 `;
-

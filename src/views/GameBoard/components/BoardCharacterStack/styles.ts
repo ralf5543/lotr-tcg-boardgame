@@ -26,6 +26,7 @@ const targetedHover = (faction: Faction = 'FREE_PEOPLE') => css`
 export const CharacterStack = styled.div<{ $isBeingDragged?: boolean }>`
     position: relative;
     overflow: visible;
+    flex-shrink: 0;
 
     ${({ $isBeingDragged }) =>
         $isBeingDragged &&
@@ -78,14 +79,13 @@ export const AttachmentsContainer = styled.div`
     display: flex;
     flex-direction: column;
     position: absolute;
-    inset-block-start: 0;
     inset-inline-start: -30px;
-    height: 100%;
     z-index: 1;
-    pointer-events: none; /* Empeche les attachements de gêner le survol du personnage principal */
+    pointer-events: none;
     border-radius: 6px;
-    overflow: hidden;
     border: 2px solid black;
+    inset-block-end: 0;
+    aspect-ratio: 1 / 1.33;
 `;
 
 export const AttachmentWrapper = styled.div<{ $index?: number }>`
@@ -99,29 +99,50 @@ export const AttachmentWrapper = styled.div<{ $index?: number }>`
 /* =========================================================
    2. SÉIDES ASSIGNÉS EN COMBAT (Minions)
    ========================================================= */
-export const AssignedMinionsContainer = styled.div<{ $isOpponent?: boolean }>`
-    display: grid;
-    /* grid-template-columns: repeat(6, max-content); */
-    column-gap: 20px;
-    row-gap: 10px;
-    position: absolute;
-    bottom: 100%;
-    left: 50%;
-    transform: translateX(-50%);
-    margin-bottom: 26px;
+export const AssignedMinionsContainer = styled.div<{
+    $isOpponent?: boolean;
+    $portaled?: boolean;
+    $isPairHovered?: boolean;
+}>`
     z-index: 2;
+    width: max-content;
+    pointer-events: auto;
 
-    /* 🟢 ANCRAGE SELON LA DIRECTION DU JOUEUR */
-    ${({ $isOpponent }) =>
-        $isOpponent
+    ${({ $portaled, $isOpponent }) =>
+        $portaled
             ? css`
-                  inset-block-start: 100%;
-                  margin-block-start: 26px;
+                  position: absolute;
+                  margin: 0;
+                  transform: ${$isOpponent
+                      ? 'translateX(-50%)'
+                      : 'translate(-50%, -100%)'};
               `
             : css`
-                  inset-block-end: 100%;
-                  margin-block-end: 26px;
+                  position: absolute;
+                  left: 50%;
+                  transform: translateX(-50%);
+                  ${$isOpponent
+                      ? css`
+                            inset-block-start: 100%;
+                            margin-block-start: 26px;
+                        `
+                      : css`
+                            inset-block-end: 100%;
+                            margin-block-end: 26px;
+                        `}
               `}
+
+    ${({ $isPairHovered }) =>
+        $isPairHovered &&
+        css`
+            filter: drop-shadow(red 0px 0px 25px) drop-shadow(red 0px 0px 25px);
+        `}
+`;
+
+export const MinionsPyramid = styled.div<{ $isOpponent?: boolean }>`
+    display: grid;
+    column-gap: 20px;
+    row-gap: 10px;
 
     /* --- 1er Séide (Pointe de la pyramide : Toujours collé au Compagnon) --- */
     & > *:nth-child(1) {
@@ -203,6 +224,7 @@ export const SkirmishGroup = styled.div<{
     $isSelected?: boolean;
     $isSelectable?: boolean;
     $isOpponent?: boolean;
+    $isPairHovered?: boolean;
 }>`
     position: relative;
     z-index: 1;
@@ -218,15 +240,28 @@ export const SkirmishGroup = styled.div<{
         left: 0;
         right: 0;
         background: transparent;
-        pointer-events: auto;
+        pointer-events: none;
         z-index: 0;
     }
 
-    ${({ $isSelectable, $isSelected }) =>
+    ${({ $isSelectable }) =>
+        $isSelectable &&
+        css`
+            &::before {
+                pointer-events: auto;
+            }
+        `}
+
+    ${({ $isSelectable, $isSelected, $isPairHovered }) =>
         $isSelectable &&
         !$isSelected &&
         css`
             cursor: pointer;
+            ${$isPairHovered &&
+            css`
+                filter: drop-shadow(red 0px 0px 25px)
+                    drop-shadow(red 0px 0px 25px);
+            `}
             &:hover {
                 filter: drop-shadow(red 0px 0px 25px)
                     drop-shadow(red 0px 0px 25px);

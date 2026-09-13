@@ -1,4 +1,5 @@
-import React from 'react';
+import React, { useLayoutEffect, useRef, useState } from 'react';
+import { createPortal } from 'react-dom';
 import type { CardState, CardType, GameState } from '../../../../game/types';
 import { Card } from '../Card';
 import * as S from './styles';
@@ -12,6 +13,7 @@ import { getEffectiveVitality } from '../../../../utils/cardStats';
 import { canTransferAid } from '../../../../game/engine/validations/canTransferAid';
 import { isInPlayCardDraggable } from './isInPlayCardDraggable';
 import { canCompanionBeAssigned } from '../../../../game/logic/assignment';
+import { useAssignedMinionsTrack } from '../PlayerArea/AssignedMinionsTrackContext';
 
 interface BoardCharacterStackProps {
     character: CardState;
@@ -200,21 +202,83 @@ export const BoardCharacterStack: React.FC<BoardCharacterStackProps> = ({
         }
     };
 
+    const companionAnchorRef = useRef<HTMLDivElement | null>(null);
+    const { track, scroller } = useAssignedMinionsTrack();
+    const [overlayPos, setOverlayPos] = useState<{
+        left: number;
+        top: number;
+    } | null>(null);
+    const [pairHovered, setPairHovered] = useState(false);
+
+    useLayoutEffect(() => {
+        if (assignedMinions.length === 0) {
+            setOverlayPos(null);
+            return;
+        }
+        const place = () => {
+            const layer = track;
+            const anchor = companionAnchorRef.current;
+            if (!layer || !anchor) return false;
+            const lr = layer.getBoundingClientRect();
+            const ar = anchor.getBoundingClientRect();
+            const scale = lr.width / Math.max(layer.offsetWidth, 1);
+            const left = (ar.left + ar.width / 2 - lr.left) / scale;
+            const top = isOpponent
+                ? (ar.bottom - lr.top) / scale + 26
+                : (ar.top - lr.top) / scale - 26;
+            setOverlayPos((prev) => {
+                if (
+                    prev &&
+                    Math.abs(prev.left - left) < 0.5 &&
+                    Math.abs(prev.top - top) < 0.5
+                ) {
+                    return prev;
+                }
+                return { left, top };
+            });
+            return true;
+        };
+
+        place();
+        const ro = new ResizeObserver(place);
+        if (track) ro.observe(track);
+        if (companionAnchorRef.current) ro.observe(companionAnchorRef.current);
+        scroller?.addEventListener('scroll', place, { passive: true });
+        window.addEventListener('resize', place);
+        return () => {
+            ro.disconnect();
+            scroller?.removeEventListener('scroll', place);
+            window.removeEventListener('resize', place);
+        };
+    }, [assignedMinions, isOpponent, track, scroller]);
+
     return (
         <S.SkirmishGroup
             $isSelected={isSelectedSkirmish}
             $isOpponent={isOpponent}
             $isSelectable={canSelectThisSkirmish}
+            $isPairHovered={pairHovered}
             onClick={handleStackClick}
+            onMouseEnter={() => setPairHovered(true)}
+            onMouseLeave={() => setPairHovered(false)}
         >
-            {isSelectedSkirmish && <SkirmishClash $isOpponent={isOpponent} />}
             <S.CharacterStack $isBeingDragged={isBeingDragged}>
-                {/* 🟢 SÉIDES ASSIGNÉS */}
-                {assignedMinions.length > 0 && (
+                {/* 🟢 SÉIDES ASSIGNÉS — hors du CardScroller, collés au compagnon */}
+                {assignedMinions.length > 0 &&
+                    overlayPos &&
+                    track &&
+                    createPortal(
                     <S.AssignedMinionsContainer
                         $isOpponent={isOpponent}
+                        $portaled
+                        $isPairHovered={pairHovered && canSelectThisSkirmish}
                         className="assigned-minions-group"
+                        style={{ left: overlayPos.left, top: overlayPos.top }}
+                        onMouseEnter={() => setPairHovered(true)}
+                        onMouseLeave={() => setPairHovered(false)}
+                        onClick={handleStackClick}
                     >
+                        <S.MinionsPyramid $isOpponent={isOpponent}>
                         {assignedMinions.map((minion) => {
                             const minionKey = minion.instanceId || minion.id;
                             const isMinionTargetable =
@@ -324,7 +388,12 @@ export const BoardCharacterStack: React.FC<BoardCharacterStackProps> = ({
                                 </S.MinionWrapper>
                             );
                         })}
-                    </S.AssignedMinionsContainer>
+                        </S.MinionsPyramid>
+                        {isSelectedSkirmish && (
+                            <SkirmishClash $isOpponent={isOpponent} />
+                        )}
+                    </S.AssignedMinionsContainer>,
+                    track
                 )}
 
                 {/* CARTE PRINCIPALE (Compagnon ou Séide solo) */}
@@ -340,6 +409,7 @@ export const BoardCharacterStack: React.FC<BoardCharacterStackProps> = ({
                     data-card={JSON.stringify(character)}
                     data-draggable={canDragCharacter ? 'true' : undefined}
                     ref={(el) => {
+                        companionAnchorRef.current = el;
                         const id = character.instanceId || character.id;
                         registerTarget(id, el);
                         registerArrowAnchor(id, el);

@@ -1,6 +1,11 @@
 import React, { useState, useEffect, useLayoutEffect, useRef } from 'react';
 import { createPortal } from 'react-dom';
-import type { Ability, CardState, CardKeyword, GameState } from '../../../../game/types';
+import type {
+    Ability,
+    CardState,
+    CardKeyword,
+    GameState,
+} from '../../../../game/types';
 import * as S from './styles';
 import { TRANSLATIONS } from '../../../../game/translations';
 import { useHoverCard } from '../../../../contexts/HoverCardContext';
@@ -124,7 +129,9 @@ const WraithWorldOverlay: React.FC<{
         const tick = (now: number) => {
             const t = now / 2000;
             const fx =
-                0.013 + Math.sin(t * 0.33) * 0.006 + Math.sin(t * 0.91) * 0.0025;
+                0.013 +
+                Math.sin(t * 0.33) * 0.006 +
+                Math.sin(t * 0.91) * 0.0025;
             const fy =
                 0.032 + Math.cos(t * 0.27) * 0.012 + Math.sin(t * 0.6) * 0.004;
             turbulence.setAttribute(
@@ -258,9 +265,9 @@ export const Card: React.FC<CardProps> = ({
 
     const isAttachedCard = Boolean(
         card &&
-            (requiresAttachmentTarget(card) ||
-                card.attachedViaAid ||
-                card.type === 'RING')
+        (requiresAttachmentTarget(card) ||
+            card.attachedViaAid ||
+            card.type === 'RING')
     );
     const viewerPlayerId = myPlayerId || playerID;
     const viewerOwnsCard = Boolean(card && card.kind === localFaction);
@@ -275,14 +282,7 @@ export const Card: React.FC<CardProps> = ({
     const listedAbilities = visibleAbilities.filter(({ source, ability }) => {
         if (G?.responseWindow?.isOpen) {
             if (!abilityMatchesPhase(ability, 'RESPONSE')) return false;
-            if (
-                !abilityMatchesTrigger(
-                    ability,
-                    G.pendingEvent,
-                    source,
-                    G
-                )
-            ) {
+            if (!abilityMatchesTrigger(ability, G.pendingEvent, source, G)) {
                 return false;
             }
             return (
@@ -302,20 +302,20 @@ export const Card: React.FC<CardProps> = ({
     });
     const showAbilityButton = Boolean(
         card &&
-            size === 'sm' &&
-            viewerOwnsCard &&
-            !isAttachedCard &&
-            (listedAbilities.length > 0 ||
-                (!G && cardOrAttachmentsHaveActionPhases(card)))
+        size === 'sm' &&
+        viewerOwnsCard &&
+        !isAttachedCard &&
+        (listedAbilities.length > 0 ||
+            (!G && cardOrAttachmentsHaveActionPhases(card)))
     );
     const abilityPhaseMatch = Boolean(
         card &&
-            showAbilityButton &&
-            abilityContext &&
-            listedAbilities.length > 0 &&
-            (G?.responseWindow?.isOpen
-                ? G.responseWindow.activePlayerId === viewerPlayerId
-                : canUseAbility(card, abilityContext).valid)
+        showAbilityButton &&
+        abilityContext &&
+        listedAbilities.length > 0 &&
+        (G?.responseWindow?.isOpen
+            ? G.responseWindow.activePlayerId === viewerPlayerId
+            : canUseAbility(card, abilityContext).valid)
     );
 
     if (isAbilityMenuOpen && !abilityPhaseMatch) {
@@ -526,16 +526,13 @@ export const Card: React.FC<CardProps> = ({
     const effectiveIsActionable =
         rawActionable && !isOpponent && !showAbilityButton;
 
-    const activateListedAbility = (
-        source: CardState,
-        ability: Ability
-    ) => {
+    const activateListedAbility = (source: CardState, ability: Ability) => {
         const hostId = card.instanceId || card.id;
         const sourceId = source.instanceId || source.id;
         const passHost = Boolean(
             G &&
-                sourceId !== hostId &&
-                abilityNeedsDesignation(G, source, ability)
+            sourceId !== hostId &&
+            abilityNeedsDesignation(G, source, ability)
         );
         onActivateAbility?.(
             sourceId,
@@ -625,10 +622,10 @@ export const Card: React.FC<CardProps> = ({
                     />
                     {Boolean(
                         G?.wearingTheOneRing &&
-                            isRingBearer &&
-                            size !== 'lg' &&
-                            !isDead &&
-                            !isFaceDown
+                        isRingBearer &&
+                        size !== 'lg' &&
+                        !isDead &&
+                        !isFaceDown
                     ) && (
                         <WraithWorldOverlay
                             imageUrl={card.imageUrl}
@@ -675,79 +672,83 @@ export const Card: React.FC<CardProps> = ({
                 )}
             </S.TextContainer>
 
-            {card.strength !== undefined && (
-                <S.StrengthBadge>
-                    {card.type === 'POSSESSION' ||
-                    card.type === 'ARTIFACT' ||
-                    card.type === 'CONDITION' ||
-                    (card.type === 'RING' && card.subtype !== 'SUPPORT-AREA')
-                        ? card.strength > 0
-                            ? `+${card.strength}`
-                            : `${card.strength}`
-                        : size === 'sm'
-                          ? effectiveStrength
-                          : card.strength}
-                </S.StrengthBadge>
-            )}
+            <S.StatsDisplay>
+                {card.strength !== undefined && (
+                    <S.StrengthBadge>
+                        {card.type === 'POSSESSION' ||
+                        card.type === 'ARTIFACT' ||
+                        card.type === 'CONDITION' ||
+                        (card.type === 'RING' &&
+                            card.subtype !== 'SUPPORT-AREA')
+                            ? card.strength > 0
+                                ? `+${card.strength}`
+                                : `${card.strength}`
+                            : size === 'sm'
+                              ? effectiveStrength
+                              : card.strength}
+                    </S.StrengthBadge>
+                )}
 
-            {card.vitality !== undefined && (
-                <S.VitalityBadge>
-                    {card.type === 'POSSESSION' ||
-                    card.type === 'ARTIFACT' ||
-                    card.type === 'CONDITION' ||
-                    (card.type === 'RING' && card.subtype !== 'SUPPORT-AREA')
-                        ? card.vitality > 0
-                            ? `+${card.vitality}`
-                            : `${card.vitality}`
-                        : size === 'sm'
-                          ? effectiveVitality
-                          : card.vitality}
-                </S.VitalityBadge>
-            )}
+                {card.vitality !== undefined && (
+                    <S.VitalityBadge>
+                        {card.type === 'POSSESSION' ||
+                        card.type === 'ARTIFACT' ||
+                        card.type === 'CONDITION' ||
+                        (card.type === 'RING' &&
+                            card.subtype !== 'SUPPORT-AREA')
+                            ? card.vitality > 0
+                                ? `+${card.vitality}`
+                                : `${card.vitality}`
+                            : size === 'sm'
+                              ? effectiveVitality
+                              : card.vitality}
+                    </S.VitalityBadge>
+                )}
 
-            {card.minionSiteNumber !== undefined && (
-                <S.RoamingNumber $isRoaming={isRoaming}>
-                    {card.minionSiteNumber}
+                {card.minionSiteNumber !== undefined && (
+                    <S.RoamingNumber $isRoaming={isRoaming}>
+                        {card.minionSiteNumber}
 
-                    {isRoaming && size === 'md' && (
-                        <S.RoamingBadge title="Pénalité d'errance (+2 Crépuscule)">
-                            +2
-                        </S.RoamingBadge>
-                    )}
-                </S.RoamingNumber>
-            )}
+                        {isRoaming && size === 'md' && (
+                            <S.RoamingBadge title="Pénalité d'errance (+2 Crépuscule)">
+                                +2
+                            </S.RoamingBadge>
+                        )}
+                    </S.RoamingNumber>
+                )}
 
-            {isFreepeopleCharacter && shouldShowResistance && (
-                <S.ResistanceWrapper>
-                    <S.CardResistance $isRingBearer={Boolean(isRingBearer)}>
-                        {displayResistance}
-                    </S.CardResistance>
+                {isFreepeopleCharacter && shouldShowResistance && (
+                    <S.ResistanceWrapper>
+                        <S.CardResistance $isRingBearer={Boolean(isRingBearer)}>
+                            {displayResistance}
+                        </S.CardResistance>
 
-                    {/* 🟢 Affichage orbital des jetons de Fardeau sur le Porteur de l'Anneau */}
-                    {isRingBearer && burdens > 0 && (
-                        <S.BurdensOrbitalContainer>
-                            {Array.from({ length: burdens }).map((_, i) => {
-                                const angle = (360 / burdens) * i;
-                                return (
-                                    <S.OrbitalBurdenToken
-                                        key={i}
-                                        $angle={angle}
-                                        $radius={22}
-                                        $size={32}
-                                        src="/interface/tokens/twilight_token.webp"
-                                        alt="Fardeau"
-                                        title={`${burdens} Fardeau(x)`}
-                                    />
-                                );
-                            })}
-                        </S.BurdensOrbitalContainer>
-                    )}
-                </S.ResistanceWrapper>
-            )}
+                        {/* 🟢 Affichage orbital des jetons de Fardeau sur le Porteur de l'Anneau */}
+                        {isRingBearer && burdens > 0 && (
+                            <S.BurdensOrbitalContainer>
+                                {Array.from({ length: burdens }).map((_, i) => {
+                                    const angle = (360 / burdens) * i;
+                                    return (
+                                        <S.OrbitalBurdenToken
+                                            key={i}
+                                            $angle={angle}
+                                            $radius={22}
+                                            $size={32}
+                                            src="/interface/tokens/twilight_token.webp"
+                                            alt="Fardeau"
+                                            title={`${burdens} Fardeau(x)`}
+                                        />
+                                    );
+                                })}
+                            </S.BurdensOrbitalContainer>
+                        )}
+                    </S.ResistanceWrapper>
+                )}
 
-            {shouldShowSignet && card.signet && (
-                <S.CardSignet $signet={card.signet} />
-            )}
+                {shouldShowSignet && card.signet && (
+                    <S.CardSignet $signet={card.signet} />
+                )}
+            </S.StatsDisplay>
 
             {card.type && card.type === 'RING' && size === 'sm' && (
                 <S.AttachmentSubtypeRing
@@ -769,16 +770,14 @@ export const Card: React.FC<CardProps> = ({
                     />
                 )}
 
-            {card.type &&
-                card.type === 'FOLLOWER' &&
-                size === 'sm' && (
-                    <S.AttachmentSubtype
-                        src={`/interface/pictos/AID.webp`}
-                        alt='Follower'
-                        draggable={false}
-                        width="16px"
-                    />
-                )}
+            {card.type && card.type === 'FOLLOWER' && size === 'sm' && (
+                <S.AttachmentSubtype
+                    src={`/interface/pictos/AID.webp`}
+                    alt="Follower"
+                    draggable={false}
+                    width="16px"
+                />
+            )}
 
             {showAbilityButton && (
                 <S.AbilityButton
@@ -795,7 +794,12 @@ export const Card: React.FC<CardProps> = ({
                         setIsAbilityMenuOpen((open) => !open);
                     }}
                 >
-                    <img src={`/interface/icons/icon_culture_${card.culture}.webp`} alt={card.culture} draggable={false} width="17px" />
+                    <img
+                        src={`/interface/icons/icon_culture_${card.culture}.webp`}
+                        alt={card.culture}
+                        draggable={false}
+                        width="17px"
+                    />
                 </S.AbilityButton>
             )}
 
@@ -824,32 +828,34 @@ export const Card: React.FC<CardProps> = ({
                                 const { cost, effect } =
                                     formatAbilityLabelParts(ability, source);
                                 return (
-                                <li
-                                    key={`${source.instanceId || source.id}:${ability.id}`}
-                                >
-                                    <S.AbilityBubbleItem
-                                        type="button"
-                                        onClick={(e) => {
-                                            e.stopPropagation();
-                                            activateListedAbility(
-                                                source,
-                                                ability
-                                            );
-                                            setIsAbilityMenuOpen(false);
-                                        }}
+                                    <li
+                                        key={`${source.instanceId || source.id}:${ability.id}`}
                                     >
-                                        {cost ? (
-                                            <span>
-                                                <FormattedText text={cost} />
-                                            </span>
-                                        ) : null}
-                                        {effect
-                                            ? cost
-                                                ? ` : ${effect}`
-                                                : effect
-                                            : null}
-                                    </S.AbilityBubbleItem>
-                                </li>
+                                        <S.AbilityBubbleItem
+                                            type="button"
+                                            onClick={(e) => {
+                                                e.stopPropagation();
+                                                activateListedAbility(
+                                                    source,
+                                                    ability
+                                                );
+                                                setIsAbilityMenuOpen(false);
+                                            }}
+                                        >
+                                            {cost ? (
+                                                <span>
+                                                    <FormattedText
+                                                        text={cost}
+                                                    />
+                                                </span>
+                                            ) : null}
+                                            {effect
+                                                ? cost
+                                                    ? ` : ${effect}`
+                                                    : effect
+                                                : null}
+                                        </S.AbilityBubbleItem>
+                                    </li>
                                 );
                             })}
                         </S.AbilityBubbleList>

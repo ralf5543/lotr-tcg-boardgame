@@ -9,6 +9,7 @@ export const Battlefield = styled.div<{ $isHovered?: boolean }>`
     background-color: ${(props) =>
         props.$isHovered ? 'rgba(231, 76, 60, 0.15)' : 'transparent'};
     transition: all 0.2s ease;
+    height: 100%;
 `;
 
 export const Title = styled.span`
@@ -25,7 +26,7 @@ export const CardRow = styled.div`
     display: flex;
     flex-wrap: wrap;
     width: 100%;
-    gap: 50px;
+    gap: 20px 60px;
     min-height: 80px;
     align-items: center;
     justify-content: end;

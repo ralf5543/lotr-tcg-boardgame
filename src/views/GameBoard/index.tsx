@@ -12,7 +12,7 @@ import { Card } from './components/Card';
 import { SiteCard } from './components/SiteCard';
 import { DragProvider } from '../../contexts/DragProvider';
 import { useDrag } from '../../contexts/DragContext';
-import { TwilightPool } from './components/TwilightPool';
+import { OutOfPlayRail } from './components/OutOfPlayRail';
 import { Dock } from './components/Dock';
 import { SitesPicker } from './components/SitePicker';
 import { GameControls } from './components/GameControls';
@@ -914,6 +914,8 @@ export const GameBoard: React.FC<GameBoardProps> = ({
                         }
                     />
 
+                    <S.BoardColumns>
+                    <S.BoardPlayColumn>
                     {/* ==================== 1. ADVERSAIRE ==================== */}
                     <PlayerArea
                         playerId={oppId}
@@ -945,7 +947,6 @@ export const GameBoard: React.FC<GameBoardProps> = ({
                                 playerId={myId}
                                 onActivateAbility={handleActivateAbility}
                             />
-                            <TwilightPool value={G.twilightPool} />
                         </S.MainZone>
                     </S.CentralBlock>
 
@@ -965,6 +966,12 @@ export const GameBoard: React.FC<GameBoardProps> = ({
                         phase={ctx.phase}
                         onActivateAbility={handleActivateAbility}
                     />
+                    </S.BoardPlayColumn>
+                    <OutOfPlayRail
+                        twilight={G.twilightPool}
+                        fpIsOpponent={fpPlayerId === oppId}
+                    />
+                    </S.BoardColumns>
 
                     {/* ==================== SITE PATH ==================== */}
                     <SitePath

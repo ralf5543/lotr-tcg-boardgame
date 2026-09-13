@@ -61,20 +61,21 @@ export const ClashContainer = styled.div<{ $isOpponent?: boolean }>`
     position: absolute;
     width: 80px;
     height: 80px;
-    z-index: 4;
+    z-index: 12;
     pointer-events: none;
     inset-inline-start: 50%;
     transform: translateX(-50%);
 
+    /* Ancré sur le bord de la pile côté compagnon (dans le portail des séides). */
     ${({ $isOpponent }) =>
         $isOpponent
             ? css`
-                  inset-block-start: 100%;
-                  margin-block-start: -25px;
+                  inset-block-start: 0;
+                  margin-block-start: -60px;
               `
             : css`
-                  inset-block-end: 100%;
-                  margin-block-end: -25px;
+                  inset-block-end: 0;
+                  margin-block-end: -60px;
               `}
 
     /* 💥 Micro-snap de choc synchronisé sur la fin de frappe */

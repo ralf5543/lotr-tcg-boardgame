@@ -20,6 +20,7 @@ export const DrawerContainer = styled.div`
 `;
 
 export const DockBar = styled.div`
+    position: relative;
     pointer-events: auto;
     display: flex;
     gap: 8px;

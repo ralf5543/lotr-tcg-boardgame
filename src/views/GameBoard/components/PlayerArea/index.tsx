@@ -12,6 +12,7 @@ import { BoardCharacterStack } from '../BoardCharacterStack';
 import { canPlayCard } from '../../../../game/engine/canPlayCard';
 import { useFaction } from '../../../../contexts/FactionContext';
 import { audioService } from '../../../../services/audioService';
+import { AssignedMinionsTrackContext } from './AssignedMinionsTrackContext';
 
 interface SkirmishEntry {
     id?: string;
@@ -66,6 +67,11 @@ export const PlayerArea: React.FC<PlayerAreaProps> = ({
 
     // Identification des rôles : Seul le joueur Peuples Libres a sa Compagnie active
     const { fpPlayerId, isSetupPhase } = useFaction();
+    const [minionTrackEl, setMinionTrackEl] = useState<HTMLDivElement | null>(
+        null
+    );
+    const [cardScrollerEl, setCardScrollerEl] =
+        useState<HTMLDivElement | null>(null);
 
     // En setup, on force isFP à true pour afficher la zone normalement
     const isFP = isSetupPhase ? true : _playerId === fpPlayerId;
@@ -148,7 +154,8 @@ export const PlayerArea: React.FC<PlayerAreaProps> = ({
                             $isOpponent={isOpponent}
                             onClick={(e) => e.stopPropagation()}
                         >
-                            <S.CardRow>
+                            <S.CardScroller>
+                            <S.CardRow $isOpponent={isOpponent}>
                                 {fellowshipArea.length === 0 && (
                                     <S.EmptyText>Aucun compagnon.</S.EmptyText>
                                 )}
@@ -174,6 +181,7 @@ export const PlayerArea: React.FC<PlayerAreaProps> = ({
                                     )
                                 )}
                             </S.CardRow>
+                            </S.CardScroller>
                         </S.DormantOverlay>
                     )}
                 </S.DormantFellowshipBanner>
@@ -213,10 +221,11 @@ export const PlayerArea: React.FC<PlayerAreaProps> = ({
                     }
                 }}
             >
-                <S.ZoneTitle color="#3498db">
-                    🛡️ Compagnie (Fellowship) {isOpponent ? '(Adverse)' : ''}
-                </S.ZoneTitle>
-                <S.CardRow>
+                <AssignedMinionsTrackContext.Provider
+                    value={{ track: minionTrackEl, scroller: cardScrollerEl }}
+                >
+                <S.CardScroller ref={setCardScrollerEl}>
+                <S.CardRow $isOpponent={isOpponent}>
                     {fellowshipArea.length === 0 && (
                         <S.EmptyText>Aucun compagnon déployé.</S.EmptyText>
                     )}
@@ -289,6 +298,9 @@ export const PlayerArea: React.FC<PlayerAreaProps> = ({
                         );
                     })}
                 </S.CardRow>
+                </S.CardScroller>
+                <S.MinionTrack ref={setMinionTrackEl} />
+                </AssignedMinionsTrackContext.Provider>
             </S.Fellowship>
         );
     };
@@ -331,10 +343,7 @@ export const PlayerArea: React.FC<PlayerAreaProps> = ({
                     }
                 }}
             >
-                <S.ZoneTitle color="#f39c12">
-                    🎒 Aire de Soutien (Support Area)
-                </S.ZoneTitle>
-
+                <S.CardScroller>
                 <S.SupportSplitLayout>
                     {/* Sous-zone GAUCHE : Peuples Libres */}
                     <S.SupportSubZone $align="left">
@@ -428,6 +437,7 @@ export const PlayerArea: React.FC<PlayerAreaProps> = ({
                         })}
                     </S.SupportSubZone>
                 </S.SupportSplitLayout>
+                </S.CardScroller>
             </S.SupportArea>
         );
     };

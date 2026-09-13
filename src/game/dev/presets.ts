@@ -441,14 +441,6 @@ const clonePresetCard = (id: string, instanceId?: string): CardState => {
     return { ...card, instanceId: instanceId || `dev-${id}` };
 };
 
-const asRingBearer = (card: CardState): CardState => {
-    const keywords = [...(card.keywords || [])];
-    if (!keywords.includes('RING-BEARER')) {
-        keywords.push('RING-BEARER');
-    }
-    return { ...card, keywords };
-};
-
 export const applyDevPreset = (
     G: GameState,
     presetType: DevPresetType
@@ -507,122 +499,74 @@ export const applyDevPreset = (
                 '[DEV] Preset Archerie chargé (Gimli a +1 Vitalité via Armure)';
             break;
         }
-        case 'SKIRMISH_TEST': {
-            G.twilightPool = 0;
-            const shadowId = fpId === '0' ? '1' : '0';
-            const shadowPlayer = G.players[shadowId];
+        case 'DEFENDER_TEST': {
+            G.twilightPool = 6;
+            fpPlayer.burdens = 1;
 
             Object.keys(G.players).forEach((pId) => {
                 const player = G.players[pId];
                 if (player) {
                     player.hand = [];
                     player.supportArea = [];
-                    if (pId !== fpId) {
-                        player.fellowshipArea = [];
-                    }
                 }
             });
 
-            const frodo = asRingBearer(clonePresetCard('2C102', 'dev-frodo'));
-            // Anneau Unique : +1 vitalité → 5 ; 4 blessures = 1 PV restant.
-            frodo.wounds = 4;
-            frodo.attachments = [clonePresetCard('1R1', 'dev-one-ring')];
-            const sam = clonePresetCard('2C114', 'dev-sam');
+            const aragorn: CardState = {
+                ...CARDS_PRESETS.ARAGORN,
+                instanceId: 'dev-aragorn',
+                tempKeywords: [
+                    {
+                        keyword: 'DEFENDER +1',
+                        expiresAtPhase: 'REGROUP',
+                    },
+                ],
+            };
 
-            // Fardeaux pour vérifier le reset à 0 quand Sam devient Porteur.
-            fpPlayer.burdens = 3;
+            const frodo: CardState = {
+                ...CARDS_PRESETS.FRODO,
+                instanceId: 'dev-frodo',
+                attachments: [clonePresetCard('1R1', 'dev-ring')],
+            };
+
+            const lurtz = { ...CARDS_PRESETS.LURTZ, instanceId: 'dev-lurtz' };
+            const scout = {
+                ...CARDS_PRESETS.MORIA_SCOUT,
+                instanceId: 'dev-scout',
+            };
+            const orc = {
+                ...CARDS_PRESETS.ORC_SOLDIER,
+                instanceId: 'dev-orc',
+            };
+            const nazgul = {
+                ...CARDS_PRESETS.NAZGUL,
+                instanceId: 'dev-nazgul',
+            };
 
             fpPlayer.fellowshipArea = [
                 frodo,
-                sam,
-                clonePresetCard('0P12', 'dev-gimli'),
+                aragorn,
+                { ...CARDS_PRESETS.SMEAGOL, instanceId: 'dev-smeagol' },
+                clonePresetCard('1R50', 'dev-legolas'),
+                { ...CARDS_PRESETS.GIMLI, instanceId: 'dev-gimli' },
+                { ...CARDS_PRESETS.EOWYN, instanceId: 'dev-eowyn' },
             ];
-            fpPlayer.supportArea = [];
             fpPlayer.hand = [];
 
-            if (shadowPlayer) {
-                shadowPlayer.hand = [];
-                shadowPlayer.supportArea = [];
-            }
-
-            const scout = { ...CARDS_PRESETS.MORIA_SCOUT, instanceId: 'dev-moria-scout' };
-            G.battlefield = [scout];
-            G.skirmishes = [];
+            G.battlefield = [lurtz, scout, orc, nazgul];
+            G.skirmishes = [
+                {
+                    id: 'skirmish_dev-aragorn',
+                    companionId: 'dev-aragorn',
+                    minionIds: ['dev-lurtz', 'dev-scout'],
+                },
+            ];
             G.activeSkirmishId = undefined;
             G.actionWindow = undefined;
             G.responseWindow = undefined;
             G.pendingEvent = undefined;
-            G.pendingDeathQueue = undefined;
-
-            fpPlayer.deck = [1, 2, 3, 4, 5, 6, 7, 8].map((n) => ({
-                ...clonePresetCard('1C8'),
-                instanceId: `dev-deck-${n}`,
-            }));
 
             G.statusMessage =
-                '[DEV] Sam 2C114 : blesse Frodon à mort (dev) → réponse Sam devient Porteur (résistance 5) + Anneau Unique.';
-            break;
-        }
-        case 'LAYOUT_CROWDED': {
-            const shadowId = fpId === '0' ? '1' : '0';
-            const shadowPlayer = G.players[shadowId];
-
-            Object.keys(G.players).forEach((pId) => {
-                const player = G.players[pId];
-                if (player) {
-                    player.hand = [];
-                    player.supportArea = [];
-                    player.fellowshipArea = [];
-                }
-            });
-
-            const frodo = asRingBearer(clonePresetCard('2C102', 'dev-layout-frodo'));
-            frodo.attachments = [clonePresetCard('1R1', 'dev-layout-ring')];
-
-            fpPlayer.fellowshipArea = [
-                frodo,
-                clonePresetCard('2C114', 'dev-layout-sam'),
-                clonePresetCard('1R302', 'dev-layout-merry'),
-                clonePresetCard('1R89', 'dev-layout-aragorn'),
-                clonePresetCard('1R72', 'dev-layout-gandalf'),
-                clonePresetCard('0P12', 'dev-layout-gimli'),
-                clonePresetCard('0P13', 'dev-layout-legolas'),
-                clonePresetCard('4C270', 'dev-layout-eowyn'),
-                clonePresetCard('1R96', 'dev-layout-boromir'),
-            ];
-            fpPlayer.supportArea = [
-                clonePresetCard('1R34', 'dev-layout-celeborn'),
-                clonePresetCard('1R40', 'dev-layout-elrond'),
-                clonePresetCard('1R45', 'dev-layout-galadriel'),
-                clonePresetCard('1C10', 'dev-layout-dwarven-resolve'),
-                clonePresetCard('1R114', 'dev-layout-elendil'),
-                clonePresetCard('1C20', 'dev-layout-let-them-come'),
-            ];
-            fpPlayer.hand = [];
-
-            if (shadowPlayer) {
-                shadowPlayer.fellowshipArea = [];
-                shadowPlayer.hand = [];
-                shadowPlayer.supportArea = [
-                    clonePresetCard('1C133', 'dev-layout-ambition'),
-                    clonePresetCard('1R125', 'dev-layout-greed'),
-                    clonePresetCard('1U130', 'dev-layout-storm'),
-                    clonePresetCard('1C141', 'dev-layout-arrows'),
-                    clonePresetCard('1C157', 'dev-layout-armory'),
-                    clonePresetCard('1U142', 'dev-layout-voice'),
-                ];
-            }
-
-            G.battlefield = [];
-            G.skirmishes = [];
-            G.activeSkirmishId = undefined;
-            G.actionWindow = undefined;
-            G.responseWindow = undefined;
-            G.pendingEvent = undefined;
-            G.twilightPool = 4;
-
-            G.statusMessage =
-                '[DEV] Plateau saturé : 9 compagnons + alliés/conditions FP et Ombre (test de place UI).';
+                '[DEV] Aragorn défenseur +1 : Lurtz + Éclaireur déjà assignés (pyramide). Soldat et Nazgûl restent sur le champ de bataille.';
             break;
         }
     }

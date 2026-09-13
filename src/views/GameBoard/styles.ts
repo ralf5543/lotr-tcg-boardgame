@@ -19,6 +19,23 @@ export const BoardContainer = styled.div<{ $faction: 'FREE_PEOPLE' | 'SHADOW' | 
     background-attachment: fixed;
 `;
 
+export const BoardColumns = styled.div`
+    display: grid;
+    grid-template-columns: 1fr 240px;
+    gap: 12px;
+    flex: 1;
+    min-height: 0;
+`;
+
+export const BoardPlayColumn = styled.div`
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    min-height: 0;
+    overflow: hidden;
+    position: relative;
+`;
+
 export const OpponentSection = styled.div`
     margin-bottom: 20px;
 `;
@@ -33,11 +50,13 @@ export const CentralBlock = styled.div`
     flex-direction: column;
     gap: 20px;
     margin-bottom: 20px;
-    height: 100%;
+    position: relative;
+    z-index: 1;
+    flex: 1;
+    min-height: 0;
 `;
 export const MainZone = styled.div`
-    display: grid;
-    grid-template-columns: 1fr 26%;
+    display: block;
     height: 100%;
 `;
 export const PhaseBanner = styled.div`

@@ -541,10 +541,7 @@ export interface ArcheryState {
     shadowRemainingWounds: number;
 }
 
-export type DevPresetType =
-    | 'ARCHERY_TEST'
-    | 'SKIRMISH_TEST'
-    | 'LAYOUT_CROWDED';
+export type DevPresetType = 'ARCHERY_TEST' | 'DEFENDER_TEST';
 
 export interface TempKeywordModifier {
     keyword: CardKeyword;

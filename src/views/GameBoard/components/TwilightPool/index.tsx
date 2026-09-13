@@ -2,25 +2,24 @@ import React, { useState } from 'react';
 import * as S from './styles';
 
 interface TwilightPoolProps {
-    value: number; // Reçu depuis G.twilightPool
+    value: number;
 }
 
 interface PhysicalToken {
     id: string;
-    left: number; // Position X aléatoire (%)
-    top: number; // Position Y aléatoire (%)
-    rotate: number; // Angle aléatoire (degrés)
+    left: number;
+    top: number;
+    rotate: number;
 }
 
 const generateToken = (): PhysicalToken => ({
     id: `twilight-${Date.now()}-${Math.random()}`,
-    left: Math.floor(Math.random() * 80) + 5,
-    top: Math.floor(Math.random() * 60) + 15,
+    left: Math.floor(Math.random() * 72) + 14,
+    top: Math.floor(Math.random() * 58) + 28,
     rotate: Math.floor(Math.random() * 360),
 });
 
 export const TwilightPool: React.FC<TwilightPoolProps> = ({ value }) => {
-    // 🟢 On gère à la fois les tokens et la valeur précédente dans le state
     const [{ tokens, prevValue }, setTokensState] = useState<{
         tokens: PhysicalToken[];
         prevValue: number;
@@ -29,7 +28,6 @@ export const TwilightPool: React.FC<TwilightPoolProps> = ({ value }) => {
         prevValue: 0,
     });
 
-    // 🟢 Si la prop "value" a changé pendant le rendu, on ajuste les tokens synchroniquement
     if (value !== prevValue) {
         let newTokens = tokens;
 
@@ -49,13 +47,9 @@ export const TwilightPool: React.FC<TwilightPoolProps> = ({ value }) => {
 
     return (
         <S.PoolContainer>
-            <S.PoolHeader>
-                🔮 RÉSERVE CRÉPUSCULAIRE
-                <S.CounterBadge>{value}</S.CounterBadge>
-            </S.PoolHeader>
-
+            <S.CompactLabel>Crépuscule</S.CompactLabel>
+            <S.CounterBadge>{value}</S.CounterBadge>
             <S.BowlArea>
-                {/* Nos pions physiques éparpillés */}
                 {tokens.map((token) => (
                     <S.TwilightToken
                         key={token.id}
@@ -66,13 +60,6 @@ export const TwilightPool: React.FC<TwilightPoolProps> = ({ value }) => {
                         alt=""
                     />
                 ))}
-
-                {/* Petit texte d'ambiance si la coupelle est vide */}
-                {value === 0 && (
-                    <S.EmptyText>
-                        La nuit n'est pas encore tombée...
-                    </S.EmptyText>
-                )}
             </S.BowlArea>
         </S.PoolContainer>
     );

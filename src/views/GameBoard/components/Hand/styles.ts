@@ -3,7 +3,7 @@ import { playableEventHalo, spotMetHalo } from '../../cardHalo';
 
 export const FixedHandContainer = styled.div<{ $isDragging?: boolean }>`
     position: fixed;
-    inset-block-end: 100px;
+    inset-block-end: 70px;
     left: 0;
     right: 0;
     display: flex;

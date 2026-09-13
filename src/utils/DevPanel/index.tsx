@@ -168,17 +168,10 @@ export const DevPanel: React.FC<DevPanelProps> = ({
                         </S.PresetButton>
                         <S.PresetButton
                             onClick={() =>
-                                moves.devLoadPreset('SKIRMISH_TEST')
+                                moves.devLoadPreset('DEFENDER_TEST')
                             }
                         >
-                            ⚔️ Sam — si Frodon meurt
-                        </S.PresetButton>
-                        <S.PresetButton
-                            onClick={() =>
-                                moves.devLoadPreset('LAYOUT_CROWDED')
-                            }
-                        >
-                            📐 Plateau saturé (9 compagnons)
+                            🛡️ Aragorn défenseur +1 (pyramide)
                         </S.PresetButton>
                         <S.GameButton $bgColor="#3498db" onClick={onDrawCard}>
                             🃏 Piocher ({deckCount})

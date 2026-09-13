@@ -1,7 +1,9 @@
 import styled, { css } from 'styled-components';
 
 export const AreaContainer = styled.div<{ $isOpponent?: boolean }>`
-    margin-bottom: 20px;
+    flex-shrink: 0;
+    position: relative;
+    z-index: 2;
 `;
 
 export const MetaInfo = styled.span<{ $isOpponent?: boolean }>`
@@ -16,22 +18,44 @@ export const Fellowship = styled.div<{
     $isTargeted?: boolean;
     $isOpponent?: boolean;
 }>`
-    border: 2px solid ${({ $borderColor }) => $borderColor};
-    background-color: rgba(26, 37, 47, 0.5);
-    border-radius: 6px;
-    padding: 10px;
+    position: relative;
     margin-bottom: 10px;
+    border: none;
+    background: none;
+    padding: 0;
     transition: all 0.2s ease-in-out;
 
-    /* Surbrillance quand on survole la zone globale */
+    &::before {
+        content: '';
+        position: absolute;
+        z-index: 0;
+        pointer-events: none;
+        bottom: 18px;
+        left: 0;
+        width: 100%;
+        height: 176px;
+        border: 2px solid ${({ $borderColor }) => $borderColor};
+        background-color: rgba(26, 37, 47, 0.5);
+        border-radius: 6px;
+        transition: all 0.2s ease-in-out;
+
+        ${({ $isOpponent }) =>
+        $isOpponent &&
+        css`
+            inset-block-start: 0;
+        `}
+    }
+
     ${({ $isTargeted }) =>
         $isTargeted &&
         css`
-            border-color: #3498db;
-            box-shadow:
-                0 0 16px rgba(52, 152, 219, 0.7),
-                inset 0 0 10px rgba(52, 152, 219, 0.2);
-            background-color: rgba(26, 37, 47, 0.7);
+            &::before {
+                border-color: #3498db;
+                box-shadow:
+                    0 0 16px rgba(52, 152, 219, 0.7),
+                    inset 0 0 10px rgba(52, 152, 219, 0.2);
+                background-color: rgba(26, 37, 47, 0.7);
+            }
         `}
 `;
 
@@ -94,39 +118,90 @@ export const SupportArea = styled.div<{
     $isOpponent?: boolean;
     $isTargeted?: boolean;
 }>`
-    border: 2px solid ${({ $borderColor }) => $borderColor};
-    background-color: rgba(26, 37, 47, 0.5);
-    border-radius: 6px;
-    padding: 10px;
+    position: relative;
     margin-bottom: 10px;
+    border: none;
+    background: none;
+    padding: 0;
     transition: all 0.2s ease-in-out;
+
+    &::before {
+        content: '';
+        position: absolute;
+        z-index: 0;
+        pointer-events: none;
+        inset: 0px 0px 18px;
+        border: 2px solid ${({ $borderColor }) => $borderColor};
+        background-color: rgba(26, 37, 47, 0.5);
+        border-radius: 6px;
+        transition: all 0.2s ease-in-out;
+    }
 
     ${({ $isTargeted }) =>
         $isTargeted &&
         css`
-            border-color: #f39c12;
-            box-shadow:
-                0 0 16px rgba(243, 156, 18, 0.7),
-                inset 0 0 10px rgba(243, 156, 18, 0.2);
-            background-color: rgba(26, 37, 47, 0.7);
+            &::before {
+                border-color: #f39c12;
+                box-shadow:
+                    0 0 16px rgba(243, 156, 18, 0.7),
+                    inset 0 0 10px rgba(243, 156, 18, 0.2);
+                background-color: rgba(26, 37, 47, 0.7);
+            }
         `}
 `;
 
-export const ZoneTitle = styled.span<{ color?: string }>`
-    display: block;
-    font-size: 11px;
-    font-weight: bold;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-    margin-bottom: 8px;
-    color: ${({ color }) => color || '#fff'};
+const hangScrollbar = css`
+    overflow-x: auto;
+    overflow-y: hidden;
+    min-width: 0;
+    scrollbar-width: thin;
+    scrollbar-color: rgba(226, 192, 68, 0.5) transparent;
+
+    &::-webkit-scrollbar {
+        height: 6px;
+    }
+    &::-webkit-scrollbar-track {
+        background: transparent;
+    }
+    &::-webkit-scrollbar-thumb {
+        background: rgba(226, 192, 68, 0.5);
+        border-radius: 4px;
+    }
 `;
 
-export const CardRow = styled.div`
+export const CardScroller = styled.div`
+    ${hangScrollbar}
+    position: relative;
+    z-index: 1;
+`;
+
+/* Couche sœur du scroll : même taille que la compagnie, overflow visible.
+   Les séides assignés y sont portés (hors du clip overflow-x).
+   inset 0 = boîte compagnie seulement, pas le champ de bataille. */
+export const MinionTrack = styled.div`
+    position: absolute;
+    inset: 0;
+    z-index: 3;
+    pointer-events: none;
+    overflow: visible;
+`;
+
+export const CardRow = styled.div<{ $isOpponent?: boolean }>`
     display: flex;
     gap: 60px;
     min-height: 120px;
+    box-sizing: border-box;
+    width: max-content;
+    min-width: 100%;
+    padding-block: 16px 32px;
     padding-inline-start: 40px;
+    padding-inline-end: 32px;
+    align-items: ${({ $isOpponent }) =>
+        $isOpponent ? 'flex-start' : 'flex-end'};
+
+    & > * {
+        flex-shrink: 0;
+    }
 `;
 
 export const CharacterStack = styled.div<{ $isBeingDragged?: boolean }>`
@@ -161,37 +236,27 @@ export const EmptyText = styled.p`
 export const SupportSplitLayout = styled.div`
     display: flex;
     justify-content: space-between;
-    width: 100%;
+    align-items: center;
     gap: 20px;
-    /*overflow-x: auto;
-    overflow-y: hidden;*/
-    padding-bottom: 4px;
-
-    &::-webkit-scrollbar {
-        height: 6px;
-    }
-    &::-webkit-scrollbar-track {
-        background: rgba(15, 23, 42, 0.4);
-        border-radius: 4px;
-    }
-    &::-webkit-scrollbar-thumb {
-        background: #f39c12;
-        border-radius: 4px;
-    }
-    &::-webkit-scrollbar-thumb:hover {
-        background: #e67e22;
-    }
+    box-sizing: border-box;
+    width: max-content;
+    min-width: 100%;
+    padding-block: 16px 32px;
 `;
 
 export const SupportSubZone = styled.div<{ $align: 'left' | 'right' }>`
     display: flex;
     align-items: center;
-    gap: 15px;
+    gap: 26px;
     min-height: 120px;
-    flex: 1;
+    flex: 0 0 auto;
     padding-inline-start: 38px;
+    padding-inline-end: 24px;
 
-    /* Alignement à gauche pour FP, à droite pour Ombre */
+    & > * {
+        flex-shrink: 0;
+    }
+
     justify-content: ${({ $align }) =>
         $align === 'left' ? 'flex-start' : 'flex-end'};
 `;
