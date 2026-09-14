@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import type { BoardProps } from 'boardgame.io/react';
 import type { CardState, SiteCardState, GameState } from '../../game/types';
 import { Battlefield } from './components/Battlefield';
@@ -12,7 +12,11 @@ import { Card } from './components/Card';
 import { SiteCard } from './components/SiteCard';
 import { DragProvider } from '../../contexts/DragProvider';
 import { useDrag } from '../../contexts/DragContext';
-import { OutOfPlayRail } from './components/OutOfPlayRail';
+import {
+    OutOfPlayRail,
+    type OutOfPlayZoneKey,
+} from './components/OutOfPlayRail';
+import { CardZoneOverlay } from './components/CardZoneOverlay';
 import { Dock } from './components/Dock';
 import { SitesPicker } from './components/SitePicker';
 import { GameControls } from './components/GameControls';
@@ -372,6 +376,7 @@ export const GameBoard: React.FC<GameBoardProps> = ({
         deck: [],
         hand: [],
         discard: [],
+        deadPile: [],
         fellowshipArea: [],
         supportArea: [],
         sitesDeck: [],
@@ -381,11 +386,44 @@ export const GameBoard: React.FC<GameBoardProps> = ({
         deck: [],
         hand: [],
         discard: [],
+        deadPile: [],
         fellowshipArea: [],
         supportArea: [],
         sitesDeck: [],
         currentSiteIndex: 0,
     };
+
+    const [openOutOfPlayZone, setOpenOutOfPlayZone] =
+        useState<OutOfPlayZoneKey | null>(null);
+
+    const outOfPlayOverlay = useMemo(() => {
+        if (!openOutOfPlayZone) return null;
+
+        switch (openOutOfPlayZone) {
+            case 'my-discard':
+                return {
+                    title: 'Ma défausse',
+                    cards: me.discard || [],
+                };
+            case 'my-cemetery':
+                return {
+                    title: 'Mon cimetière',
+                    cards: me.deadPile || [],
+                };
+            case 'opponent-discard':
+                return {
+                    title: 'Défausse adverse',
+                    cards: opponent.discard || [],
+                };
+            case 'opponent-cemetery':
+                return {
+                    title: 'Cimetière adverse',
+                    cards: opponent.deadPile || [],
+                };
+            default:
+                return null;
+        }
+    }, [openOutOfPlayZone, me.deadPile, me.discard, opponent.deadPile, opponent.discard]);
 
     const { hoveredData } = useHoverCard();
     const currentSiteIndex = G.players['0']?.currentSiteIndex ?? 0;
@@ -1044,6 +1082,11 @@ export const GameBoard: React.FC<GameBoardProps> = ({
                         fpIsOpponent={fpPlayerId === oppId}
                         threats={G.players[fpPlayerId]?.threats ?? 0}
                         threatLimit={getThreatLimit(G)}
+                        myDiscard={me.discard || []}
+                        myDeadPile={me.deadPile || []}
+                        opponentDiscard={opponent.discard || []}
+                        opponentDeadPile={opponent.deadPile || []}
+                        onOpenZone={setOpenOutOfPlayZone}
                     />
                     </S.BoardColumns>
 
@@ -1074,10 +1117,17 @@ export const GameBoard: React.FC<GameBoardProps> = ({
                             }
                         }}
                     />
+                    {outOfPlayOverlay && (
+                        <CardZoneOverlay
+                            title={outOfPlayOverlay.title}
+                            cards={outOfPlayOverlay.cards}
+                            currentSiteIndex={currentSiteIndex}
+                            onClose={() => setOpenOutOfPlayZone(null)}
+                        />
+                    )}
                     <Dock
                         handCount={me.hand?.length || 0}
                         sitesCount={me.sitesDeck?.length || 0}
-                        discardCount={me.discard?.length || 0}
                         requestedTab={getRequestedTab()}
                         handView={
                             <Hand

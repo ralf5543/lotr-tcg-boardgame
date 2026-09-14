@@ -21,7 +21,7 @@ export const PileRow = styled.div`
     flex-shrink: 0;
 `;
 
-export const PileBlock = styled.div<{ $variant: 'discard' | 'cemetery' }>`
+export const PileBlock = styled.button<{ $variant: 'discard' | 'cemetery' }>`
     position: relative;
     width: 92px;
     height: 128px;
@@ -39,6 +39,27 @@ export const PileBlock = styled.div<{ $variant: 'discard' | 'cemetery' }>`
     justify-content: flex-end;
     padding: 6px 4px;
     box-shadow: inset 0 0 18px rgba(0, 0, 0, 0.45);
+    pointer-events: auto;
+    cursor: pointer;
+    font: inherit;
+    color: inherit;
+    transition:
+        border-color 0.15s ease,
+        box-shadow 0.15s ease,
+        transform 0.15s ease;
+
+    &:hover {
+        border-color: #e2c044;
+        box-shadow:
+            inset 0 0 18px rgba(0, 0, 0, 0.45),
+            0 0 10px rgba(226, 192, 68, 0.25);
+        transform: translateY(-1px);
+    }
+
+    &:focus-visible {
+        outline: 2px solid #e2c044;
+        outline-offset: 2px;
+    }
 `;
 
 export const PileLabel = styled.span`
