@@ -1720,10 +1720,10 @@ function parseWhenPlayedAbilities(
     cardId?: string
 ): Record<string, unknown>[] {
     const found: Record<string, unknown>[] = [];
-    const re =
+    const requiredRe =
         /When you play this(?:\s+(?:minion|possession|condition|companion|artifact|ally|follower))?, (?!you may)([\s\S]+?)\./gi;
     let match: RegExpExecArray | null;
-    while ((match = re.exec(text)) !== null) {
+    while ((match = requiredRe.exec(text)) !== null) {
         const clause = match[1].trim();
         const addOnly = clause.match(/^add <symbol>twilight(\d+)<\/symbol>$/i);
         const spotAdd = clause.match(
@@ -1766,6 +1766,27 @@ function parseWhenPlayedAbilities(
             text: stripAbilityMarkup(match[0]),
         });
     }
+
+    const optionalDrawRe =
+        /When you play this(?:\s+(?:minion|possession|condition|companion|artifact|ally|follower))?, you may draw (a card|\d+ cards?)\./gi;
+    while ((match = optionalDrawRe.exec(text)) !== null) {
+        const countToken = match[1].trim().toLowerCase();
+        const count =
+            countToken === 'a card' ? 1 : parseInt(countToken, 10);
+        if (!Number.isFinite(count) || count <= 0) continue;
+
+        found.push({
+            id: `${cardId || 'ability'}:${found.length}:when-played-may`,
+            phases: [],
+            trigger: { type: 'WHEN_PLAYED' },
+            optional: true,
+            cost: [],
+            effects: [{ type: 'DRAW', count }],
+            source: 'SELF',
+            text: stripAbilityMarkup(match[0]),
+        });
+    }
+
     return found;
 }
 

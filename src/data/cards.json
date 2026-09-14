@@ -6580,6 +6580,23 @@
         ],
         "source": "SELF",
         "text": "RESPONSE: If a dunland Man is about to take a wound, discard this possession to prevent that wound"
+      },
+      {
+        "id": "4R19:2",
+        "phases": [],
+        "trigger": {
+          "type": "WHEN_PLAYED"
+        },
+        "optional": true,
+        "cost": [],
+        "effects": [
+          {
+            "type": "DRAW",
+            "count": 1
+          }
+        ],
+        "source": "SELF",
+        "text": "When you play this possession, you may draw a card."
       }
     ],
     "actionPhases": [
@@ -19075,6 +19092,25 @@
         "ORC"
       ]
     ],
+    "abilities": [
+      {
+        "id": "1C180:0",
+        "phases": [],
+        "trigger": {
+          "type": "WHEN_PLAYED"
+        },
+        "optional": true,
+        "cost": [],
+        "effects": [
+          {
+            "type": "DRAW",
+            "count": 1
+          }
+        ],
+        "source": "SELF",
+        "text": "When you play this possession, you may draw a card."
+      }
+    ],
     "culture": "MORIA",
     "twilightCost": 0,
     "strength": 2,
@@ -24966,6 +25002,25 @@
     "type": "POSSESSION",
     "keywords": [
       "PIPEWEED"
+    ],
+    "abilities": [
+      {
+        "id": "1C305:0",
+        "phases": [],
+        "trigger": {
+          "type": "WHEN_PLAYED"
+        },
+        "optional": true,
+        "cost": [],
+        "effects": [
+          {
+            "type": "DRAW",
+            "count": 1
+          }
+        ],
+        "source": "SELF",
+        "text": "When you play this possession, you may draw a card."
+      }
     ],
     "culture": "SHIRE",
     "twilightCost": 1,
@@ -62084,6 +62139,25 @@
         "SAURON",
         "TROLL"
       ]
+    ],
+    "abilities": [
+      {
+        "id": "6U107:0",
+        "phases": [],
+        "trigger": {
+          "type": "WHEN_PLAYED"
+        },
+        "optional": true,
+        "cost": [],
+        "effects": [
+          {
+            "type": "DRAW",
+            "count": 1
+          }
+        ],
+        "source": "SELF",
+        "text": "When you play this possession, you may draw a card."
+      }
     ],
     "culture": "SAURON",
     "twilightCost": 1,
@@ -142575,6 +142649,25 @@
         "WRAITH",
         "MINION"
       ]
+    ],
+    "abilities": [
+      {
+        "id": "19P34:0",
+        "phases": [],
+        "trigger": {
+          "type": "WHEN_PLAYED"
+        },
+        "optional": true,
+        "cost": [],
+        "effects": [
+          {
+            "type": "DRAW",
+            "count": 1
+          }
+        ],
+        "source": "SELF",
+        "text": "When you play this, you may draw a card."
+      }
     ],
     "culture": "WRAITH",
     "twilightCost": 2,

@@ -16,12 +16,17 @@ import { findTargetCard } from '../../utils/cardUtils';
 import { beginMinionAssignment } from '../logic/assignment';
 import {
     afterResponseResolved,
+    flushPendingActionYield,
     isResponseWindowOpen,
     passResponseWindow as resolveResponsePass,
     pauseActionYieldForResponses,
     requestWounds,
 } from '../engine/responseWindow';
-import { resolveWhenPlayed } from '../engine/abilities/whenPlayed';
+import {
+    acceptPendingWhenPlayed,
+    declinePendingWhenPlayed,
+    resolveWhenPlayed,
+} from '../engine/abilities/whenPlayed';
 import {
     beginThreatWoundAssignment,
     livingCompanionsForThreatWounds,
@@ -187,6 +192,14 @@ export const attachCard = (
         const sign = isFP ? '+' : '-';
         G.statusMessage = `${attachedCard.title || attachedCard.i18n?.fr?.title || 'Carte'} est attaché à ${targetCard.title || targetCard.i18n?.fr?.title || 'Personnage'} (${sign}${cost} Crépuscule).`;
     }
+
+    resolveWhenPlayed(G, attachedCard, {
+        playerId: actingPlayerId,
+        phase: ctx.phase,
+    });
+    if (G.pendingWhenPlayed) {
+        pauseActionYieldForResponses(G, actingPlayerId);
+    }
 };
 
 const getActingPlayerId = (
@@ -242,6 +255,11 @@ function yieldAfterPlay(
             afterResponseResolved(G, playerID, ability);
             return;
         }
+    }
+
+    if (G.pendingWhenPlayed) {
+        pauseActionYieldForResponses(G, playerID);
+        return;
     }
 
     if (isResponseWindowOpen(G) && !wasResponseWindowOpen) {
@@ -319,7 +337,10 @@ export const playCard = (
             return 'INVALID_MOVE';
         }
         if (playedCard.type !== 'EVENT') {
-            resolveWhenPlayed(G, playedCard);
+            resolveWhenPlayed(G, playedCard, {
+                playerId: actingPlayerId,
+                phase: ctx.phase,
+            });
         }
         yieldAfterPlay(G, actingPlayerId, playedCard, wasResponseWindowOpen);
         G.pendingPlay = undefined;
@@ -365,7 +386,10 @@ export const playCard = (
             return 'INVALID_MOVE';
         }
         if (playedCard.type !== 'EVENT') {
-            resolveWhenPlayed(G, playedCard);
+            resolveWhenPlayed(G, playedCard, {
+                playerId: actingPlayerId,
+                phase: ctx.phase,
+            });
         }
         yieldAfterPlay(G, actingPlayerId, playedCard, wasResponseWindowOpen);
         G.pendingPlay = undefined;
@@ -384,6 +408,23 @@ export const passResponseWindow = ({ G, playerID }: LotrMoveContext) => {
     if (resolveResponsePass(G, playerID) === 'INVALID') {
         return 'INVALID_MOVE';
     }
+};
+
+export const resolveWhenPlayedChoice = (
+    { G, playerID }: LotrMoveContext,
+    accept: boolean
+) => {
+    if (!G.pendingWhenPlayed || G.pendingWhenPlayed.playerId !== playerID) {
+        return 'INVALID_MOVE';
+    }
+
+    if (accept) {
+        acceptPendingWhenPlayed(G, playerID);
+    } else {
+        declinePendingWhenPlayed(G, playerID);
+    }
+
+    flushPendingActionYield(G);
 };
 
 export const drawCard = (
@@ -557,5 +598,6 @@ export const commonMoves = {
     confirmEndPhase,
     cleanupPendingDeaths,
     assignThreatWound,
+    resolveWhenPlayedChoice,
     ...(process.env.NODE_ENV !== 'production' ? devMoves : {}),
 };

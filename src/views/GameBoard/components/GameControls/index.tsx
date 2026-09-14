@@ -23,6 +23,7 @@ interface GameControlsProps {
         confirmHandRefill?: () => void;
         passActionWindow?: () => void;
         passResponseWindow?: () => void;
+        resolveWhenPlayedChoice?: (accept: boolean) => void;
         confirmMuster?: () => void;
         confirmStartOfPhase?: () => void;
         yieldAssignmentToShadow?: () => void;
@@ -96,6 +97,7 @@ export const GameControls: React.FC<GameControlsProps> = ({
     // 🟢 1. DÉTERMINATION DU JOUEUR QUI DOIT AGIR
     const isActionWindowActive = G.actionWindow?.isOpen ?? false;
     const isResponseWindowActive = G.responseWindow?.isOpen ?? false;
+    const isWhenPlayedChoiceActive = Boolean(G.pendingWhenPlayed);
 
     const isAwaitingSiteActive =
         awaitingSite &&
@@ -112,6 +114,8 @@ export const GameControls: React.FC<GameControlsProps> = ({
         ? currentPlayerId
         : isResponseWindowActive
           ? G.responseWindow!.activePlayerId
+          : isWhenPlayedChoiceActive
+            ? G.pendingWhenPlayed!.playerId
           : isActionWindowActive
             ? G.actionWindow!.activePlayerId
             : isAwaitingSiteActive
@@ -168,6 +172,7 @@ export const GameControls: React.FC<GameControlsProps> = ({
             | 'START_OF_PHASE'
             | 'ASSIGNMENT_YIELD'
             | 'RESPONSE'
+            | 'WHEN_PLAYED_CHOICE'
             | 'STANDARD';
     } = {
         show: false,
@@ -234,6 +239,16 @@ export const GameControls: React.FC<GameControlsProps> = ({
                 'Voulez-vous jouer une réponse ou passer ?',
             showPassButton: G.responseWindow?.canPass ?? true,
             type: 'RESPONSE',
+        };
+    } else if (isWhenPlayedChoiceActive && isMyTurnToAct) {
+        toastConfig = {
+            show: true,
+            title: 'QUAND VOUS JOUEZ',
+            body:
+                G.statusMessage ||
+                'Vous pouvez activer l’effet optionnel de cette carte.',
+            showPassButton: false,
+            type: 'WHEN_PLAYED_CHOICE',
         };
     } else if ((G.threatWoundsToAssign ?? 0) > 0) {
         const remaining = G.threatWoundsToAssign ?? 0;
@@ -709,6 +724,28 @@ export const GameControls: React.FC<GameControlsProps> = ({
                             >
                                 Valider
                             </S.ActionButton>
+                        )}
+
+                        {toastConfig.type === 'WHEN_PLAYED_CHOICE' && (
+                            <>
+                                <S.ActionButton
+                                    style={{ marginTop: '12px', width: '100%' }}
+                                    onClick={() => {
+                                        moves.resolveWhenPlayedChoice?.(true);
+                                    }}
+                                >
+                                    Activer l’effet
+                                </S.ActionButton>
+                                <S.ActionButton
+                                    $variant="secondary"
+                                    style={{ marginTop: '8px', width: '100%' }}
+                                    onClick={() => {
+                                        moves.resolveWhenPlayedChoice?.(false);
+                                    }}
+                                >
+                                    Passer
+                                </S.ActionButton>
+                            </>
                         )}
 
                         {/* ACTION PASSER STANDARD */}

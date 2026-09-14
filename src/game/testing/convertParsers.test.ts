@@ -666,7 +666,7 @@ describe('parseAbilities — Response prevent wound', () => {
         ]);
     });
 
-    it('parse Hides : retirer du crépuscule OU défausser (deux abilities)', () => {
+    it('parse Hides : draw optionnel + retirer crépuscule OU défausser', () => {
         const text =
             'When you play this possession, you may draw a card. <br><keyword>Response: </keyword>If a <symbol>dunland</symbol> Man is about to take a wound, remove <symbol>twilight2</symbol> or discard this possession to prevent that wound.';
         expect(parseAbilities(text, 'Hides', '4R19')).toEqual([
@@ -698,6 +698,18 @@ describe('parseAbilities — Response prevent wound', () => {
                 source: 'SELF',
                 text: expect.stringMatching(
                     /discard this possession to prevent that wound/i
+                ),
+            },
+            {
+                id: '4R19:2',
+                phases: [],
+                trigger: { type: 'WHEN_PLAYED' },
+                optional: true,
+                cost: [],
+                effects: [{ type: 'DRAW', count: 1 }],
+                source: 'SELF',
+                text: expect.stringMatching(
+                    /When you play this possession, you may draw a card/i
                 ),
             },
         ]);
@@ -814,10 +826,29 @@ describe('parseAbilities — When you play this', () => {
         ]);
     });
 
-    it('n’émet rien pour Coureur Gobelin (you may)', () => {
+    it('n’émet rien pour Coureur Gobelin (you may crépuscule — pas encore)', () => {
         const text =
             'When you play this minion, you may add <symbol>twilight2</symbol>.';
         expect(parseAbilities(text, 'Goblin Runner', '1U178')).toBeUndefined();
+    });
+
+    it('parse Vieux Tobie : you may draw a card (optionnel)', () => {
+        const text =
+            '**Pipeweed.**  \nWhen you play this possession, you may draw a card.';
+        expect(parseAbilities(text, 'Old Toby', '1C305')).toEqual([
+            {
+                id: '1C305:0',
+                phases: [],
+                trigger: { type: 'WHEN_PLAYED' },
+                optional: true,
+                cost: [],
+                effects: [{ type: 'DRAW', count: 1 }],
+                source: 'SELF',
+                text: expect.stringMatching(
+                    /When you play this possession, you may draw a card/i
+                ),
+            },
+        ]);
     });
 });
 

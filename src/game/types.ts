@@ -274,6 +274,8 @@ export interface Ability {
     text?: string;
     omitFromArcheryTotal?: boolean;
     trigger?: AbilityTrigger;
+    /** « you may » : choix du joueur (toaster), pas une résolution auto. */
+    optional?: boolean;
     /** Ex. Merry : seulement s’il n’est pas affecté à une escarmouche. */
     requiresUnassigned?: boolean;
 }
@@ -491,6 +493,13 @@ export interface GameState {
         | 'FP_REFILL';
     fellowshipCardsDrawn: number;
     pendingPlay?: PendingPlay;
+    /** Choix optionnel « When you play » (you may…). */
+    pendingWhenPlayed?: {
+        playerId: string;
+        sourceInstanceId: string;
+        abilityId: string;
+        phase?: string;
+    };
     setupState?: {
         bids: Record<string, number | null>;
         auctionWinnerId?: string;

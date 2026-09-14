@@ -632,7 +632,10 @@ export const LotrGame: Game<GameState> = {
                         player.supportArea.push(playedCard);
                     }
 
-                    resolveWhenPlayed(G, playedCard);
+                    resolveWhenPlayed(G, playedCard, {
+                        playerId: String(playerID),
+                        phase: ctx.phase || 'shadow',
+                    });
 
                     const wasRoaming = isMinionRoaming(card, fpSiteIndex);
                     G.statusMessage = `L'Ombre joue ${card.name || card.title} (${effectiveCost} Crépuscule${wasRoaming ? ' dont +2 Errance' : ''}).`;
