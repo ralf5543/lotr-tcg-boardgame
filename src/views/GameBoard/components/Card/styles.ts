@@ -451,14 +451,19 @@ export const CardContainer = styled.div<CardContainerProps>`
             }
 
             ${CardTitles} {
+                display: flex;
+                margin-block-start: -5px;
+                gap: 4px;
                 ${isNotCharacter(props.$type) &&
                 css`
-                    inset: 80px 325px 260px 25px;
+                    margin-block-start: 0px;
+                    inset: 88px 330px 260px 22px;
                 `}
             }
 
             ${CardTitle} {
                 font-size: 26px;
+                margin-block-start: 0.5px;
                 margin-block-end: 1px;
 
                 ${isNotCharacter(props.$type) &&
@@ -470,6 +475,7 @@ export const CardContainer = styled.div<CardContainerProps>`
 
             ${CardSubtitle} {
                 font-size: 18px;
+                margin-block-start: 2px;
             }
 
             ${CardTypes} {
@@ -611,14 +617,17 @@ export const CardTitles = styled.div<{ $type?: string }>`
     font-family: 'DecipherTitle', serif;
     font-variant: small-caps;
     z-index: 2;
+    gap: 2px;
+    justify-content: center;
+    line-height: 0.7;
     ${(props) =>
         isNotCharacter(props.$type) &&
         css`
             position: absolute;
-            inset: 26px 109px 83px 7px;
+            inset: 28px 109px 79px 7px;
             writing-mode: sideways-lr;
             line-height: 0.8;
-            text-align: center;
+            text-align: end;   
         `}
 `;
 
@@ -627,8 +636,6 @@ export const CardTitle = styled.p<{ $type?: string }>`
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
-    margin-block-start: 0.5px;
-    margin-block-start: 2px;
     ${(props) =>
         isNotCharacter(props.$type) &&
         css`
@@ -641,7 +648,7 @@ export const CardSubtitle = styled.p<{ $type?: string }>`
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
-    margin-block-start: 0.5px;
+    margin-block-start: -0.5px;
     ${(props) =>
         isNotCharacter(props.$type) &&
         css`

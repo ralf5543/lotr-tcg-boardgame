@@ -463,6 +463,19 @@ export const Card: React.FC<CardProps> = ({
         ? TRANSLATIONS.subtype[card.subtype] || card.subtype
         : undefined;
 
+    const translatedPhases = (card.phases || [])
+        .map(
+            (phase) =>
+                TRANSLATIONS.phase[
+                    phase as keyof typeof TRANSLATIONS.phase
+                ] || phase
+        )
+        .filter(Boolean);
+    const phaseLabel =
+        translatedPhases.length > 0
+            ? translatedPhases.join(' ou ')
+            : undefined;
+
     const translatedRace = card.race
         ? TRANSLATIONS.race[card.race] || card.race
         : null;
@@ -646,7 +659,15 @@ export const Card: React.FC<CardProps> = ({
                             {translatedType}
                         </S.CardType>
                     )}
-                    {translatedSubtype && card.subtype !== 'SUPPORT-AREA' && (
+                    {phaseLabel && (
+                        <S.CardType>
+                            <S.Separator>•</S.Separator>
+                            {phaseLabel}
+                        </S.CardType>
+                    )}
+                    {!phaseLabel &&
+                        translatedSubtype &&
+                        card.subtype !== 'SUPPORT-AREA' && (
                         <S.CardType>
                             <S.Separator>•</S.Separator>
                             {translatedSubtype}
