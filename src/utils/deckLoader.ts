@@ -29,13 +29,13 @@ export const loadAndValidateDeck = (playerId: string) => {
     const totalShadow = config.shadow.length;
 
     // Vérification de l'équité 50/50
-    if (totalFP !== totalShadow) {
+    /*if (totalFP !== totalShadow) {
         console.warn(
             `[DECK WARNING] Joueur ${playerId} : ` +
             `Total FP (${totalFP} = ${config.freePeople.length} pioche + ${config.startingCompanionIds.length} départ) ` +
             `!= Total Ombre (${totalShadow}) !`
         );
-    }
+    }*/
 
     // Vérification du coût des compagnons de départ (max 4)
     const totalStartingCost = config.startingCompanionIds.reduce((sum, id) => {
@@ -44,10 +44,10 @@ export const loadAndValidateDeck = (playerId: string) => {
     }, 0);
 
     if (totalStartingCost > 4) {
-        console.warn(
+        /*console.warn(
             `[DECK WARNING] Joueur ${playerId} : ` +
             `Coût des compagnons de départ (${totalStartingCost}) > 4 !`
-        );
+        );*/
     }
 
     return config;
