@@ -5,6 +5,7 @@ import { resolveAbilityTarget, resolveCostTarget, resolveWinnerTargets } from '.
 import { findEventAbilityForPhase } from './playEventAbility';
 
 import { findSkirmishToCancel } from './cancelSkirmish';
+import { countFromSpotCost } from './applyAbilityEffect';
 
 export function cardTargetIds(card: CardState): string[] {
     const ids = [card.instanceId, card.id].filter(Boolean);
@@ -148,6 +149,23 @@ export function abilityNeedsEffectDesignation(
     return getEffectDesignationCandidates(G, source, ability).length >= 1;
 }
 
+/** Nombre de cibles d’effet à désigner (1, ou min(X, blessés) si multiFromSpot). */
+export function getEffectDesignationCount(
+    G: GameState,
+    source: CardState,
+    ability: Ability
+): number {
+    const heal = (ability.effects || []).find(
+        (item) => item.type === 'HEAL' && item.multiFromSpot
+    );
+    if (heal && heal.type === 'HEAL') {
+        const spot = countFromSpotCost(G, source, ability);
+        const available = candidatesForEffect(G, source, ability, heal).length;
+        return Math.min(Math.max(0, spot), available);
+    }
+    return 1;
+}
+
 export function abilityHasLegalEffectTarget(
     G: GameState,
     source: CardState,
@@ -173,6 +191,12 @@ export function abilityHasLegalEffectTarget(
         }
         if (effect.type === 'CANCEL_SKIRMISH') {
             if (!findSkirmishToCancel(G, source, effect.involving)) {
+                return false;
+            }
+            continue;
+        }
+        if (effect.type === 'HEAL' && effect.multiFromSpot) {
+            if (candidatesForEffect(G, source, ability, effect).length < 1) {
                 return false;
             }
             continue;
@@ -242,6 +266,21 @@ export function formatDesignationPrompt(
     const tokens = target.flat();
     if (tokens.includes('PIPEWEED')) {
         return 'Choisissez une herbe à pipe.';
+    }
+    const signetToken = tokens.find((token) =>
+        token.toUpperCase().startsWith('SIGNET_')
+    );
+    if (signetToken) {
+        const signet = signetToken.replace(/^SIGNET_/i, '');
+        const label =
+            signet.charAt(0) + signet.slice(1).toLowerCase();
+        return `Choisissez un compagnon au sceau ${label}.`;
+    }
+    const healMulti = (ability.effects || []).some(
+        (item) => item.type === 'HEAL' && item.multiFromSpot
+    );
+    if (healMulti && useEffect) {
+        return 'Choisissez les compagnons à soigner.';
     }
     const label = tokens
         .map((token) => {

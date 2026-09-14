@@ -14946,6 +14946,53 @@
         "COMPANION"
       ]
     ],
+    "abilities": [
+      {
+        "id": "1U91:0",
+        "phases": [
+          "FELLOWSHIP"
+        ],
+        "cost": [
+          {
+            "discardFromPlay": [
+              {
+                "count": 1,
+                "target": [
+                  [
+                    "PIPEWEED",
+                    "POSSESSION"
+                  ]
+                ],
+                "mode": "DESIGNATION"
+              }
+            ],
+            "spot": [
+              {
+                "count": 1,
+                "target": [
+                  [
+                    "PIPE"
+                  ]
+                ]
+              }
+            ]
+          }
+        ],
+        "effects": [
+          {
+            "type": "HEAL",
+            "multiFromSpot": true,
+            "target": [
+              [
+                "COMPANION"
+              ]
+            ]
+          }
+        ],
+        "source": "SELF",
+        "text": "FELLOWSHIP: Discard a pipeweed possession and spot X pipes to heal X companions."
+      }
+    ],
     "actionPhases": [
       "FELLOWSHIP"
     ],
@@ -36617,6 +36664,54 @@
       [
         "Frodo"
       ]
+    ],
+    "abilities": [
+      {
+        "id": "3U107:0",
+        "phases": [
+          "FELLOWSHIP"
+        ],
+        "cost": [
+          {
+            "discardFromPlay": [
+              {
+                "count": 1,
+                "target": [
+                  [
+                    "PIPEWEED",
+                    "POSSESSION"
+                  ]
+                ],
+                "mode": "DESIGNATION"
+              }
+            ],
+            "spot": [
+              {
+                "count": 1,
+                "target": [
+                  [
+                    "PIPE"
+                  ]
+                ]
+              }
+            ]
+          }
+        ],
+        "effects": [
+          {
+            "type": "HEAL",
+            "countFromSpot": true,
+            "target": [
+              [
+                "COMPANION",
+                "SIGNET_FRODO"
+              ]
+            ]
+          }
+        ],
+        "source": "SELF",
+        "text": "FELLOWSHIP: Discard a pipeweed possession and spot X pipes to heal a companion with the Frodo signet X times."
+      }
     ],
     "actionPhases": [
       "FELLOWSHIP"

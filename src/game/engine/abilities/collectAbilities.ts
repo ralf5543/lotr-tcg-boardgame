@@ -111,6 +111,11 @@ export function cardOrAttachmentsHaveActionPhases(card: CardState): boolean {
 
 function translateCriterionToken(token: string): string {
     const upper = token.toUpperCase();
+    if (upper.startsWith('SIGNET_')) {
+        const name = upper.slice('SIGNET_'.length);
+        const pretty = name.charAt(0) + name.slice(1).toLowerCase();
+        return `sceau ${pretty}`;
+    }
     const typeLabel = TRANSLATIONS.type[upper as keyof typeof TRANSLATIONS.type];
     if (typeLabel) return typeLabel;
 
@@ -205,6 +210,13 @@ function formatEffectBit(
             : 'annuler une escarmouche';
     }
     if (effect.type === 'HEAL') {
+        if (effect.multiFromSpot) {
+            return 'guérir X compagnons';
+        }
+        if (effect.countFromSpot) {
+            const who = formatTargetPhrase(effect.target);
+            return who ? `guérir ${who} X fois` : 'guérir X fois';
+        }
         const who = formatTargetPhrase(effect.target);
         return who ? `guérir ${who}` : 'guérir';
     }

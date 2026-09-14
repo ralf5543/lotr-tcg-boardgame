@@ -348,7 +348,9 @@ export const GameControls: React.FC<GameControlsProps> = ({
 
     if (
         isTargetingActive &&
-        (targetingKind === 'DESIGNATION' || targetingKind === 'HAND_DISCARD') &&
+        (targetingKind === 'DESIGNATION' ||
+            targetingKind === 'HAND_DISCARD' ||
+            targetingKind === 'SANCTUARY_HEAL') &&
         targetingMessage
     ) {
         toastConfig = {
@@ -356,8 +358,14 @@ export const GameControls: React.FC<GameControlsProps> = ({
             title:
                 targetingKind === 'HAND_DISCARD'
                     ? 'DÉFAUSSE'
-                    : 'CHOIX DE CIBLE',
-            body: `${targetingMessage} Échap pour annuler.`,
+                    : targetingKind === 'SANCTUARY_HEAL'
+                      ? 'SANCTUAIRE'
+                      : 'CHOIX DE CIBLE',
+            body: `${targetingMessage} ${
+                targetingKind === 'SANCTUARY_HEAL'
+                    ? ''
+                    : 'Échap pour annuler.'
+            }`.trim(),
             showPassButton: false,
             type: 'STANDARD',
         };
@@ -405,6 +413,11 @@ export const GameControls: React.FC<GameControlsProps> = ({
             return 'Cliquez sur vos cartes brillantes pour déclencher leurs effets, ou validez.';
         }
 
+        if (G.sanctuaryHeal) {
+            const remaining = G.sanctuaryHeal.remaining;
+            return `Sanctuaire : soignez jusqu’à ${remaining} blessure(s), ou validez.`;
+        }
+
         if ((G.threatWoundsToAssign ?? 0) > 0) {
             const remaining = G.threatWoundsToAssign ?? 0;
             return currentPlayerId === fpPlayerId
@@ -414,7 +427,9 @@ export const GameControls: React.FC<GameControlsProps> = ({
 
         if (
             isTargetingActive &&
-            (targetingKind === 'DESIGNATION' || targetingKind === 'HAND_DISCARD')
+            (targetingKind === 'DESIGNATION' ||
+                targetingKind === 'HAND_DISCARD' ||
+                targetingKind === 'SANCTUARY_HEAL')
         ) {
             return (
                 targetingMessage ||
@@ -776,7 +791,13 @@ export const GameControls: React.FC<GameControlsProps> = ({
                         {targetingOnConfirm && (
                             <S.ActionButton
                                 style={{ marginTop: '12px', width: '100%' }}
-                                onClick={() => requestConfirm()}
+                                onClick={() => {
+                                    if (targetingKind === 'HAND_DISCARD') {
+                                        requestConfirm();
+                                        return;
+                                    }
+                                    targetingOnConfirm();
+                                }}
                             >
                                 {targetingConfirmLabel || 'Valider'}
                             </S.ActionButton>

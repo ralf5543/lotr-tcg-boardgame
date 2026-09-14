@@ -12,9 +12,15 @@ import { findTargetCard } from '../../utils/cardUtils';
 import {
     abilityNeedsCostDesignation,
     abilityNeedsEffectDesignation,
+    getEffectDesignationCount,
 } from '../engine/abilities/designation';
 import { afterResponseResolved, isResponseWindowOpen, pauseActionYieldForResponses } from '../engine/responseWindow';
 import { abilityMeetsPlayRestrictions } from '../engine/abilities/abilityRestrictions';
+
+function normalizeChosenIds(chosen?: string | string[]): string[] {
+    if (!chosen) return [];
+    return Array.isArray(chosen) ? chosen.filter(Boolean) : [chosen];
+}
 
 export const activateAbility = (
     { G, ctx, playerID }: LotrMoveContext,
@@ -22,7 +28,7 @@ export const activateAbility = (
     abilityId: string,
     chosenTargetId?: string,
     discardedHandIds?: string[],
-    chosenEffectTargetId?: string
+    chosenEffectTargetId?: string | string[]
 ) => {
     const source = findTargetCard(G, sourceInstanceId) as CardState | null;
     if (!source) return 'INVALID_MOVE';
@@ -49,11 +55,14 @@ export const activateAbility = (
     if (needsCostDesignation && !chosenTargetId) {
         return 'INVALID_MOVE';
     }
-    if (
-        needsEffectDesignation &&
-        !(needsCostDesignation ? chosenEffectTargetId : chosenTargetId)
-    ) {
-        return 'INVALID_MOVE';
+    if (needsEffectDesignation) {
+        const need = getEffectDesignationCount(G, source, ability);
+        const provided = normalizeChosenIds(
+            needsCostDesignation ? chosenEffectTargetId : chosenTargetId
+        );
+        if (provided.length !== need) {
+            return 'INVALID_MOVE';
+        }
     }
     if (abilityNeedsHandDiscard(ability) && !discardedHandIds?.length) {
         return 'INVALID_MOVE';

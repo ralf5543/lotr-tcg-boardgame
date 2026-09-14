@@ -204,7 +204,14 @@ export type AbilityEffect =
       }
     | {
           type: 'HEAL';
-          count: number;
+          count?: number;
+          /** Magnitude = nombre spoté (ex. soigner X fois). */
+          countFromSpot?: boolean;
+          /**
+           * Soigner des compagnons distincts, 1 soin chacun.
+           * N = min(pipes spotées, compagnons blessés) — autant que possible, jusqu’à X.
+           */
+          multiFromSpot?: boolean;
           target: AbilityTargetRef;
       }
     | {
@@ -474,6 +481,11 @@ export interface GameState {
     };
     maneuverStep?: 'MANEUVER_START' | 'MANEUVER_ACTIONS';
     startOfPhaseState?: StartOfPhaseState;
+    /**
+     * Sanctuaire (sites 3 et 6) : jusqu’à 5 blessures à soigner au début
+     * de la compagnie. Le joueur répartit comme il veut, ou valide à 0.
+     */
+    sanctuaryHeal?: { remaining: number };
     players: Record<string, PlayerState>;
     awaitingSiteSelection: boolean;
     isFierceAssignment?: boolean;
@@ -500,6 +512,7 @@ export interface GameState {
     archeryAssignStep?: 'FP' | 'SHADOW' | undefined;
     lastWoundedCardIds?: string[];
     lastExertedCardIds?: string[];
+    lastHealedCardIds?: string[];
     pendingPhaseEnd?: boolean;
     /** Archerie : une réponse est ouverte, reprendre l’attribution ou clore après. */
     archeryAfterResponses?: 'END' | 'SHADOW_ASSIGN';
@@ -578,10 +591,7 @@ export interface ArcheryState {
     shadowRemainingWounds: number;
 }
 
-export type DevPresetType =
-    | 'ARCHERY_TEST'
-    | 'DEFENDER_TEST'
-    | 'CANCEL_SKIRMISH_TEST';
+export type DevPresetType = 'ARCHERY_TEST' | 'HEAL_TEST';
 
 export interface TempKeywordModifier {
     keyword: CardKeyword;

@@ -1085,6 +1085,110 @@ export const WoundToken = styled.img`
     margin-inline-end: 4px;
 `;
 
+const healGlowPulse = keyframes`
+    0% { opacity: 0; }
+    22% { opacity: 1; }
+    100% { opacity: 0; }
+`;
+
+const healVeilSweep = keyframes`
+    0% {
+        transform: translateX(-130%) skewX(-18deg);
+        opacity: 0;
+    }
+    18% { opacity: 0.95; }
+    100% {
+        transform: translateX(160%) skewX(-18deg);
+        opacity: 0;
+    }
+`;
+
+const healSparkleTwinkle = keyframes`
+    0% {
+        opacity: 0;
+        transform: scale(0.25);
+    }
+    35% {
+        opacity: 1;
+        transform: scale(1);
+    }
+    100% {
+        opacity: 0;
+        transform: scale(0.15) translateY(-10px);
+    }
+`;
+
+const HEAL_SPARKLE_SLOTS = [
+    { top: '18%', left: '22%', delay: '0.08s', size: '5px' },
+    { top: '32%', left: '68%', delay: '0.18s', size: '4px' },
+    { top: '48%', left: '38%', delay: '0.28s', size: '6px' },
+    { top: '58%', left: '76%', delay: '0.14s', size: '4px' },
+    { top: '72%', left: '28%', delay: '0.36s', size: '5px' },
+    { top: '24%', left: '52%', delay: '0.42s', size: '3px' },
+    { top: '64%', left: '54%', delay: '0.22s', size: '4px' },
+] as const;
+
+export const HealOverlay = styled.div<{ $healGen?: number }>`
+    position: absolute;
+    inset: 0;
+    z-index: 8;
+    pointer-events: none;
+    overflow: hidden;
+    border-radius: inherit;
+    /* ${props => props.$healGen ?? 0} */
+`;
+
+export const HealGlow = styled.span`
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    background: radial-gradient(
+        ellipse 80% 70% at 50% 40%,
+        rgba(160, 210, 255, 0.38) 0%,
+        rgba(90, 160, 230, 0.12) 42%,
+        transparent 72%
+    );
+    box-shadow: inset 0 0 18px rgba(140, 200, 255, 0.35);
+    animation: ${healGlowPulse} 1.15s ease-out both;
+`;
+
+export const HealVeil = styled.span`
+    position: absolute;
+    top: -12%;
+    bottom: -12%;
+    left: 0;
+    width: 42%;
+    background: linear-gradient(
+        90deg,
+        transparent 0%,
+        rgba(190, 230, 255, 0.08) 22%,
+        rgba(170, 220, 255, 0.55) 50%,
+        rgba(210, 240, 255, 0.18) 72%,
+        transparent 100%
+    );
+    filter: blur(0.4px);
+    animation: ${healVeilSweep} 1.05s cubic-bezier(0.22, 0.7, 0.28, 1) both;
+`;
+
+export const HealSparkle = styled.span<{ $index: number }>`
+    position: absolute;
+    top: ${(props) => HEAL_SPARKLE_SLOTS[props.$index]?.top};
+    left: ${(props) => HEAL_SPARKLE_SLOTS[props.$index]?.left};
+    width: ${(props) => HEAL_SPARKLE_SLOTS[props.$index]?.size};
+    height: ${(props) => HEAL_SPARKLE_SLOTS[props.$index]?.size};
+    border-radius: 50%;
+    background: radial-gradient(
+        circle,
+        #fff 0%,
+        rgba(180, 225, 255, 0.95) 40%,
+        transparent 72%
+    );
+    box-shadow: 0 0 6px 1px rgba(160, 215, 255, 0.85);
+    animation: ${healSparkleTwinkle} 0.95s ease-out both;
+    animation-delay: ${(props) =>
+        HEAL_SPARKLE_SLOTS[props.$index]?.delay || '0s'};
+`;
+
 export const AbilityButton = styled.button<{
     $abilityPhaseMatch?: boolean;
     $culture?: string;

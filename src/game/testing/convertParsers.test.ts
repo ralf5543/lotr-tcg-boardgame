@@ -939,16 +939,46 @@ describe('parseAbilities — Discard a [classe] and spot X [classe]', () => {
         ]);
     });
 
-    it('n’émet rien si l’effet n’est pas un fragment sûr (soin ×X + sceau)', () => {
+    it('parse heal companion with Frodo signet X times', () => {
         const text =
             'Bearer must be Frodo. <br><keyword>Fellowship:</keyword> Discard a pipeweed possession and spot X pipes to heal a companion with the Frodo signet X times.';
-        expect(parseAbilities(text, "Frodo's Pipe", '3U107')).toBeUndefined();
+        expect(parseAbilities(text, "Frodo's Pipe", '3U107')).toEqual([
+            {
+                id: '3U107:0',
+                phases: ['FELLOWSHIP'],
+                cost: [pipeweedAndPipesCost],
+                effects: [
+                    {
+                        type: 'HEAL',
+                        countFromSpot: true,
+                        target: [['COMPANION', 'SIGNET_FRODO']],
+                    },
+                ],
+                source: 'SELF',
+                text: expect.stringMatching(/Frodo signet X times/i),
+            },
+        ]);
     });
 
-    it('n’émet rien si l’effet n’est pas un fragment sûr (soin X compagnons)', () => {
+    it('parse heal X companions', () => {
         const text =
             'Bearer must be a gondor companion. <br><keyword>Fellowship:</keyword> Discard a pipeweed possession and spot X pipes to heal X companions.';
-        expect(parseAbilities(text, "Aragorn’s Pipe", '1U91')).toBeUndefined();
+        expect(parseAbilities(text, "Aragorn’s Pipe", '1U91')).toEqual([
+            {
+                id: '1U91:0',
+                phases: ['FELLOWSHIP'],
+                cost: [pipeweedAndPipesCost],
+                effects: [
+                    {
+                        type: 'HEAL',
+                        multiFromSpot: true,
+                        target: [['COMPANION']],
+                    },
+                ],
+                source: 'SELF',
+                text: expect.stringMatching(/heal X companions/i),
+            },
+        ]);
     });
 });
 

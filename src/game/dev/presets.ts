@@ -3,6 +3,7 @@ import type { DevPresetType } from '../types';
 import type { CardState } from '../types';
 import { drawCardsForPlayer } from '../../utils/drawCards';
 import { getCardById } from '../cardsData';
+import { beginSanctuaryHeals } from '../logic/sanctuary';
 
 const CARDS_PRESETS: Record<string, CardState> = {
     FRODO: {
@@ -499,79 +500,18 @@ export const applyDevPreset = (
                 '[DEV] Preset Archerie chargé (Gimli a +1 Vitalité via Armure)';
             break;
         }
-        case 'DEFENDER_TEST': {
-            G.twilightPool = 6;
+        case 'HEAL_TEST': {
+            G.twilightPool = 4;
             fpPlayer.burdens = 1;
-
-            Object.keys(G.players).forEach((pId) => {
-                const player = G.players[pId];
-                if (player) {
-                    player.hand = [];
-                    player.supportArea = [];
-                }
-            });
-
-            const aragorn: CardState = {
-                ...CARDS_PRESETS.ARAGORN,
-                instanceId: 'dev-aragorn',
-                tempKeywords: [
-                    {
-                        keyword: 'DEFENDER +1',
-                        expiresAtPhase: 'REGROUP',
-                    },
-                ],
-            };
-
-            const frodo: CardState = {
-                ...CARDS_PRESETS.FRODO,
-                instanceId: 'dev-frodo',
-                attachments: [clonePresetCard('1R1', 'dev-ring')],
-            };
-
-            const lurtz = { ...CARDS_PRESETS.LURTZ, instanceId: 'dev-lurtz' };
-            const scout = {
-                ...CARDS_PRESETS.MORIA_SCOUT,
-                instanceId: 'dev-scout',
-            };
-            const orc = {
-                ...CARDS_PRESETS.ORC_SOLDIER,
-                instanceId: 'dev-orc',
-            };
-            const nazgul = {
-                ...CARDS_PRESETS.NAZGUL,
-                instanceId: 'dev-nazgul',
-            };
-
-            fpPlayer.fellowshipArea = [
-                frodo,
-                aragorn,
-                { ...CARDS_PRESETS.SMEAGOL, instanceId: 'dev-smeagol' },
-                clonePresetCard('1R50', 'dev-legolas'),
-                { ...CARDS_PRESETS.GIMLI, instanceId: 'dev-gimli' },
-                { ...CARDS_PRESETS.EOWYN, instanceId: 'dev-eowyn' },
-            ];
-            fpPlayer.hand = [];
-
-            G.battlefield = [lurtz, scout, orc, nazgul];
-            G.skirmishes = [
-                {
-                    id: 'skirmish_dev-aragorn',
-                    companionId: 'dev-aragorn',
-                    minionIds: ['dev-lurtz', 'dev-scout'],
-                },
-            ];
+            fpPlayer.currentSiteIndex = 2;
+            G.currentSiteIndex = 2;
+            G.battlefield = [];
+            G.skirmishes = [];
             G.activeSkirmishId = undefined;
             G.actionWindow = undefined;
             G.responseWindow = undefined;
             G.pendingEvent = undefined;
-
-            G.statusMessage =
-                '[DEV] Aragorn défenseur +1 : Lurtz + Éclaireur déjà assignés (pyramide). Soldat et Nazgûl restent sur le champ de bataille.';
-            break;
-        }
-        case 'CANCEL_SKIRMISH_TEST': {
-            G.twilightPool = 4;
-            fpPlayer.burdens = 1;
+            G.lastHealedCardIds = [];
 
             Object.keys(G.players).forEach((pId) => {
                 const player = G.players[pId];
@@ -581,62 +521,38 @@ export const applyDevPreset = (
                 }
             });
 
-            const merry = clonePresetCard('1R302', 'dev-merry');
-            const escape = clonePresetCard('4R300', 'dev-escape');
-            merry.attachments = [escape];
-
-            const frodo = clonePresetCard('5U111', 'dev-frodo');
-            const ring = clonePresetCard('4R1', 'dev-ring');
-            if (ring) frodo.attachments = [ring];
-
-            const leaf = clonePresetCard('17U106', 'dev-halfling-leaf');
-            const toby = clonePresetCard('1C305', 'dev-old-toby');
-
-            const lurtz = { ...CARDS_PRESETS.LURTZ, instanceId: 'dev-lurtz' };
-            const scout = {
-                ...CARDS_PRESETS.MORIA_SCOUT,
-                instanceId: 'dev-scout',
-            };
-            const orc = {
-                ...CARDS_PRESETS.ORC_SOLDIER,
-                instanceId: 'dev-orc',
-            };
-
-            fpPlayer.fellowshipArea = [
-                frodo,
-                merry,
-                { ...CARDS_PRESETS.SMEAGOL, instanceId: 'dev-smeagol' },
+            const frodo = clonePresetCard('2C102', 'dev-frodo');
+            frodo.wounds = 2;
+            frodo.attachments = [
+                clonePresetCard('1R1', 'dev-ring'),
+                clonePresetCard('3U107', 'dev-frodo-pipe'),
+                clonePresetCard('1U292', 'dev-gaffer-pipe'),
             ];
-            fpPlayer.supportArea = [leaf, toby].filter(Boolean) as CardState[];
 
-            G.battlefield = [lurtz, scout, orc];
-            G.skirmishes = [
-                {
-                    id: 'skirmish_dev-merry',
-                    companionId: 'dev-merry',
-                    minionIds: ['dev-lurtz', 'dev-scout'],
-                },
-                {
-                    id: 'skirmish_dev-smeagol',
-                    companionId: 'dev-smeagol',
-                    minionIds: ['dev-orc'],
-                },
-            ];
-            G.activeSkirmishId = 'skirmish_dev-merry';
-            G.actionWindow = {
-                isOpen: true,
-                activePlayerId: fpId,
-                title: 'ESCARMOUCHE',
-                message:
-                    'Phase d’actions de Skirmish : Jouez des cartes/effets ou PASSER.',
-                canPass: true,
-                passesCount: 0,
+            const aragorn = {
+                ...CARDS_PRESETS.ARAGORN,
+                instanceId: 'dev-aragorn',
+                wounds: 2,
+                attachments: [clonePresetCard('1U91', 'dev-aragorn-pipe')],
             };
-            G.responseWindow = undefined;
-            G.pendingEvent = undefined;
+
+            const gimli = {
+                ...CARDS_PRESETS.GIMLI,
+                instanceId: 'dev-gimli',
+                wounds: 2,
+            };
+
+            const legolas = clonePresetCard('0P13', 'dev-legolas');
+            legolas.wounds = 2;
+
+            fpPlayer.fellowshipArea = [frodo, aragorn, gimli, legolas];
+            fpPlayer.supportArea = [clonePresetCard('1C305', 'dev-old-toby')];
+            fpPlayer.hand = [];
+
+            beginSanctuaryHeals(G);
 
             G.statusMessage =
-                '[DEV] Annulation : Merry (Évasion) vs Lurtz+Éclaireur — Fenêtre ouverte. Feuille de Hobbit + Old Toby en soutien. Sméagol a aussi un combat.';
+                '[DEV] Site 3 (sanctuaire) : soignez jusqu’à 5 blessures, puis pipes + Old Toby.';
             break;
         }
     }

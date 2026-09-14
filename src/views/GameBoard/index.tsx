@@ -28,6 +28,7 @@ import { FactionProvider } from '../../contexts/FactionProvider';
 import { useTargeting } from '../../contexts/TargetingContext';
 import { audioService } from '../../services/audioService';
 import { findTargetCard } from '../../utils/cardUtils';
+import { getSanctuaryHealCandidates, SANCTUARY_HEAL_LIMIT } from '../../game/logic/sanctuary';
 import { canPlayCard } from '../../game/engine/canPlayCard';
 import {
     abilityNeedsCostDesignation,
@@ -37,6 +38,7 @@ import {
     getCostDesignationCandidates,
     getDesignationCandidates,
     getEffectDesignationCandidates,
+    getEffectDesignationCount,
     isDesignationTargetId,
 } from '../../game/engine/abilities/designation';
 import {
@@ -49,6 +51,7 @@ import { useCardPlayAudio } from '../../hooks/audio/useCardPlayAudio';
 import { useArcheryAudio } from '../../hooks/audio/useArcheryAudio';
 import { useWoundAudio } from '../../hooks/audio/useWoundAudio';
 import { useExertAudio } from '../../hooks/audio/useExertAudio';
+import { useHealAudio } from '../../hooks/audio/useHealAudio';
 import { useAssignmentAudio } from '../../hooks/audio/useAssignmentAudio';
 import { useSkirmishAudio } from '../../hooks/audio/useSkirmishAudio';
 import {
@@ -87,7 +90,7 @@ export interface GameBoardProps extends BoardProps<GameState> {
                 abilityId: string,
                 chosenTargetId?: string,
                 discardedHandIds?: string[],
-                chosenEffectTargetId?: string
+                chosenEffectTargetId?: string | string[]
             ) => void;
             assignArcheryWound?: (cardId: string) => void;
             assignThreatWound?: (cardId: string) => void;
@@ -218,6 +221,7 @@ export const GameBoard: React.FC<GameBoardProps> = ({
     useArcheryAudio(G);
     useWoundAudio(G);
     useExertAudio(G);
+    useHealAudio(G);
     useAssignmentAudio(G);
     useSkirmishAudio(G, ctx.phase);
     const myId = playerID || ctx.currentPlayer;
@@ -253,13 +257,14 @@ export const GameBoard: React.FC<GameBoardProps> = ({
                         ? undefined
                         : source.instanceId || source.id,
                 onSelectTarget: (cardId) => {
+                    // Ne pas stop ici : onChosen peut enchaîner une autre visée
+                    // (herbe → compagnon). stop écraserait la nouvelle.
                     onChosen(cardId);
-                    stopTargeting();
                 },
             });
             return true;
         },
-        [G, moves, startTargeting, stopTargeting]
+        [G, moves, startTargeting]
     );
 
     const requestHandDiscard = useCallback(
@@ -332,12 +337,69 @@ export const GameBoard: React.FC<GameBoardProps> = ({
         [G, startTargeting, stopTargeting]
     );
 
+    const requestMultiEffectDesignation = useCallback(
+        (
+            source: CardState,
+            ability: NonNullable<CardState['abilities']>[number],
+            need: number,
+            onChosen: (cardIds: string[]) => void
+        ): boolean => {
+            if (need <= 0) return false;
+            const allCandidates = getEffectDesignationCandidates(
+                G,
+                source,
+                ability
+            );
+            if (allCandidates.length < need) return false;
+
+            const collect = (picked: string[]) => {
+                const targetableCardIds = allCandidates
+                    .filter((card) => {
+                        const id = card.instanceId || card.id;
+                        return Boolean(id && !picked.includes(id));
+                    })
+                    .flatMap((card) => cardTargetIds(card));
+                const remaining = need - picked.length;
+                startTargeting({
+                    kind: 'DESIGNATION',
+                    targetableCardIds,
+                    selectedCardIds: picked,
+                    message:
+                        picked.length === 0
+                            ? `Choisissez ${need} compagnon${need > 1 ? 's' : ''} à soigner.`
+                            : `Encore ${remaining} compagnon${remaining > 1 ? 's' : ''} (${picked.length}/${need}).`,
+                    arrowFromCardId: source.instanceId || source.id,
+                    onSelectTarget: (cardId) => {
+                        const card = allCandidates.find(
+                            (item) =>
+                                item.instanceId === cardId || item.id === cardId
+                        );
+                        const canonical =
+                            card?.instanceId || card?.id || cardId;
+                        if (picked.includes(canonical)) return;
+                        const next = [...picked, canonical];
+                        if (next.length >= need) {
+                            stopTargeting();
+                            queueMicrotask(() => onChosen(next));
+                            return;
+                        }
+                        collect(next);
+                    },
+                });
+            };
+
+            collect([]);
+            return true;
+        },
+        [G, startTargeting, stopTargeting]
+    );
+
     const handleActivateAbility = (
         sourceInstanceId: string,
         abilityId: string,
         chosenTargetId?: string,
         discardedHandIds?: string[],
-        chosenEffectTargetId?: string
+        chosenEffectTargetId?: string | string[]
     ) => {
         const source = findTargetCard(G, sourceInstanceId) as CardState | null;
         const ability = source?.abilities?.find((ab) => ab.id === abilityId);
@@ -351,7 +413,13 @@ export const GameBoard: React.FC<GameBoardProps> = ({
             );
             return;
         }
-        if (chosenTargetId || discardedHandIds?.length || chosenEffectTargetId) {
+        if (
+            chosenTargetId ||
+            discardedHandIds?.length ||
+            (Array.isArray(chosenEffectTargetId)
+                ? chosenEffectTargetId.length
+                : chosenEffectTargetId)
+        ) {
             moves.activateAbility?.(
                 sourceInstanceId,
                 abilityId,
@@ -363,27 +431,57 @@ export const GameBoard: React.FC<GameBoardProps> = ({
         }
         const needsCost = abilityNeedsCostDesignation(G, source, ability);
         const needsEffect = abilityNeedsEffectDesignation(G, source, ability);
+        const effectNeed = getEffectDesignationCount(G, source, ability);
+
+        const requestEffect = (costId?: string) => {
+            if (effectNeed > 1) {
+                return requestMultiEffectDesignation(
+                    source,
+                    ability,
+                    effectNeed,
+                    (effectIds) => {
+                        stopTargeting();
+                        moves.activateAbility?.(
+                            sourceInstanceId,
+                            abilityId,
+                            costId,
+                            costId ? [] : undefined,
+                            effectIds
+                        );
+                    }
+                );
+            }
+            const effectCandidates = getEffectDesignationCandidates(
+                G,
+                source,
+                ability
+            );
+            if (effectCandidates.length === 0) return false;
+            return requestDesignation(
+                source,
+                ability,
+                (effectId) => {
+                    stopTargeting();
+                    moves.activateAbility?.(
+                        sourceInstanceId,
+                        abilityId,
+                        costId || effectId,
+                        costId ? [] : undefined,
+                        costId ? effectId : undefined
+                    );
+                },
+                undefined,
+                needsCost ? 'effect' : 'auto'
+            );
+        };
+
         if (needsCost && needsEffect) {
             if (
                 requestDesignation(
                     source,
                     ability,
                     (costId) => {
-                        requestDesignation(
-                            source,
-                            ability,
-                            (effectId) => {
-                                moves.activateAbility?.(
-                                    sourceInstanceId,
-                                    abilityId,
-                                    costId,
-                                    [],
-                                    effectId
-                                );
-                            },
-                            undefined,
-                            'effect'
-                        );
+                        requestEffect(costId);
                     },
                     undefined,
                     'cost'
@@ -392,8 +490,13 @@ export const GameBoard: React.FC<GameBoardProps> = ({
                 return;
             }
         }
+        if (needsEffect && requestEffect()) {
+            return;
+        }
         if (
+            !needsEffect &&
             requestDesignation(source, ability, (cardId) => {
+                stopTargeting();
                 moves.activateAbility?.(sourceInstanceId, abilityId, cardId);
             })
         ) {
@@ -569,6 +672,8 @@ export const GameBoard: React.FC<GameBoardProps> = ({
             G.lastWoundedCardIds && G.lastWoundedCardIds.length > 0;
         const hasExerted =
             G.lastExertedCardIds && G.lastExertedCardIds.length > 0;
+        const hasHealed =
+            G.lastHealedCardIds && G.lastHealedCardIds.length > 0;
         const hasPendingDead =
             G.pendingDeadCardIds && G.pendingDeadCardIds.length > 0;
         const activeSkirmish = G.skirmishes?.find(
@@ -579,11 +684,14 @@ export const GameBoard: React.FC<GameBoardProps> = ({
         if (
             hasWounded ||
             hasExerted ||
+            hasHealed ||
             hasPendingDead ||
             skirmishOutcomeSettled
         ) {
             const delay =
-                hasWounded || hasPendingDead || hasExerted ? 2000 : 1000;
+                hasWounded || hasPendingDead || hasExerted || hasHealed
+                    ? 2000
+                    : 1000;
             const timer = setTimeout(() => {
                 moves.cleanupPendingDeaths?.();
             }, delay);
@@ -593,6 +701,7 @@ export const GameBoard: React.FC<GameBoardProps> = ({
     }, [
         G.lastWoundedCardIds,
         G.lastExertedCardIds,
+        G.lastHealedCardIds,
         G.pendingDeadCardIds,
         G.activeSkirmishId,
         G.skirmishes,
@@ -657,6 +766,7 @@ export const GameBoard: React.FC<GameBoardProps> = ({
                         card,
                         eventAbility,
                         (chosenId) => {
+                            stopTargeting();
                             moves.playCard(index, chosenId);
                             audioService.play('CARD_PLAY');
                         },
@@ -816,9 +926,55 @@ export const GameBoard: React.FC<GameBoardProps> = ({
         }
     }, [G.fpPlayerId, setFpPlayerId]);
 
+    // Sanctuaire : cliquer un compagnon soigne 1 blessure (jusqu’à 5).
+    useEffect(() => {
+        if (targetingKind === 'DESIGNATION') return;
+
+        const remaining = G.sanctuaryHeal?.remaining ?? 0;
+        if (remaining <= 0) {
+            if (targetingKind === 'SANCTUARY_HEAL') stopTargeting();
+            return;
+        }
+
+        const validTargets = getSanctuaryHealCandidates(G).flatMap((card) =>
+            cardTargetIds(card)
+        );
+        if (validTargets.length === 0) {
+            if (targetingKind === 'SANCTUARY_HEAL') stopTargeting();
+            return;
+        }
+
+        startTargeting({
+            kind: 'SANCTUARY_HEAL',
+            targetableCardIds: validTargets,
+            upTo: true,
+            onConfirm: () => moves.confirmSanctuaryHeals?.(),
+            confirmLabel:
+                remaining === SANCTUARY_HEAL_LIMIT
+                    ? 'Ne rien soigner'
+                    : 'Valider les soins',
+            message:
+                remaining === SANCTUARY_HEAL_LIMIT
+                    ? 'Sanctuaire : cliquez un compagnon pour soigner 1 blessure (jusqu’à 5).'
+                    : `Sanctuaire : encore ${remaining} soin(s). Cliquez un compagnon ou validez.`,
+            onSelectTarget: (cardId) => {
+                moves.assignSanctuaryHeal?.(cardId);
+            },
+        });
+    }, [
+        G.sanctuaryHeal,
+        G.players,
+        G.fpPlayerId,
+        moves,
+        startTargeting,
+        stopTargeting,
+        targetingKind,
+    ]);
+
     // 🟢 4. SYNCHRONISATION DU CIBLAGE D'ARCHERIE
     useEffect(() => {
         if (targetingKind === 'DESIGNATION') return;
+        if (targetingKind === 'SANCTUARY_HEAL' || G.sanctuaryHeal) return;
 
         if ((G.threatWoundsToAssign ?? 0) > 0) {
             if (targetingKind === 'ARCHERY') stopTargeting();
@@ -897,7 +1053,9 @@ export const GameBoard: React.FC<GameBoardProps> = ({
     useEffect(() => {
         if (
             targetingKind === 'DESIGNATION' ||
-            targetingKind === 'HAND_DISCARD'
+            targetingKind === 'HAND_DISCARD' ||
+            targetingKind === 'SANCTUARY_HEAL' ||
+            G.sanctuaryHeal
         ) {
             return;
         }
@@ -948,6 +1106,7 @@ export const GameBoard: React.FC<GameBoardProps> = ({
     // 🟢 5. SYNCHRONISATION DU CIBLAGE EN PHASE DE SKIRMISH
     useEffect(() => {
         if (targetingKind === 'DESIGNATION') return;
+        if (targetingKind === 'SANCTUARY_HEAL' || G.sanctuaryHeal) return;
 
         if ((G.threatWoundsToAssign ?? 0) > 0) {
             if (targetingKind === 'SKIRMISH_SELECT') stopTargeting();

@@ -147,6 +147,11 @@ export const VALID_TARGET_TYPES = new Set([
     'HAND-WEAPON',
     'RANGED-WEAPON',
     'PIPE',
+    // Sceaux (ex. « companion with the Frodo signet »)
+    'SIGNET_FRODO',
+    'SIGNET_ARAGORN',
+    'SIGNET_GANDALF',
+    'SIGNET_THEODEN',
     // Kind (ex. « Shadow possession »)
     'SHADOW',
     'FREE_PEOPLE',

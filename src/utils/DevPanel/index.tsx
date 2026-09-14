@@ -192,18 +192,9 @@ export const DevPanel: React.FC<DevPanelProps> = ({
                             🏹 Charger Legolas vs Nazgûl
                         </S.PresetButton>
                         <S.PresetButton
-                            onClick={() =>
-                                moves.devLoadPreset('DEFENDER_TEST')
-                            }
+                            onClick={() => moves.devLoadPreset('HEAL_TEST')}
                         >
-                            🛡️ Aragorn défenseur +1 (pyramide)
-                        </S.PresetButton>
-                        <S.PresetButton
-                            onClick={() =>
-                                moves.devLoadPreset('CANCEL_SKIRMISH_TEST')
-                            }
-                        >
-                            ✦ Annuler escarmouche (Merry)
+                            ✦ Soin / sanctuaire
                         </S.PresetButton>
                         <S.GameButton $bgColor="#3498db" onClick={onDrawCard}>
                             🃏 Piocher ({deckCount})

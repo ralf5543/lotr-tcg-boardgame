@@ -29,6 +29,7 @@ import { getMusterCount } from './logic/musterHelpers';
 import { hasActionableStartOfPhaseCards } from './logic/hasActionableStartOfPhaseCards';
 import { clearActionableFlags } from '../utils/clearActionableFlags';
 import { clearExpiredTempKeywords } from './engine/abilities/applyAbilityEffect';
+import { onStartOfFellowshipBegin } from './logic/startOfFellowship';
 import { resolveWhenPlayed } from './engine/abilities/whenPlayed';
 
 const shuffle = <T>(array: T[]): T[] => {
@@ -452,37 +453,7 @@ export const LotrGame: Game<GameState> = {
             next: 'fellowship',
             turn: { activePlayers: { value: { '0': 'play', '1': 'play' } } },
             onBegin: ({ G, events }: LotrPhaseContext) => {
-                const fpId = G.fpPlayerId || '0';
-                const shadowId = fpId === '0' ? '1' : '0';
-
-                const fpDone = !hasActionableStartOfPhaseCards(
-                    G.players[fpId],
-                    G,
-                    fpId,
-                    'startOfFellowship'
-                );
-                const shadowDone = !hasActionableStartOfPhaseCards(
-                    G.players[shadowId],
-                    G,
-                    shadowId,
-                    'startOfFellowship'
-                );
-
-                // Initialisation de l'état générique de début de phase
-                G.startOfPhaseState = {
-                    players: {
-                        [fpId]: { isDone: fpDone },
-                        [shadowId]: { isDone: shadowDone },
-                    },
-                };
-
-                if (fpDone && shadowDone) {
-                    G.startOfPhaseState = undefined;
-                    events?.setPhase?.('fellowship');
-                } else {
-                    G.statusMessage =
-                        "Début de la phase de compagnie : Capacités spéciales.";
-                }
+                onStartOfFellowshipBegin(G, events);
             },
             onEnd: ({ G }) => {
                 clearActionableFlags(G);
@@ -503,8 +474,9 @@ export const LotrGame: Game<GameState> = {
                 G.movesThisTurn = 0;
                 G.fellowshipCardsDrawn = 0;
                 G.regroupStep = undefined;
-                G.statusMessage =
-                    'Phase de Communauté : Jouez vos compagnons et soutiens.';
+                G.statusMessage = G.lastHealedCardIds?.length
+                    ? 'Sanctuaire : les compagnons blessés sont soignés.'
+                    : 'Phase de Communauté : Jouez vos compagnons et soutiens.';
             },
             moves: {
                 ...allMoves,

@@ -87,7 +87,9 @@ export const BoardCharacterStack: React.FC<BoardCharacterStackProps> = ({
                     (altId && dragDesignationIds!.includes(altId)))
         );
     const isDesignationTarget =
-        (isTargetable && targetingKind === 'DESIGNATION') ||
+        (isTargetable &&
+            (targetingKind === 'DESIGNATION' ||
+                targetingKind === 'SANCTUARY_HEAL')) ||
         isDragDesignationCandidate(cardKey, character.id);
 
     // 🟢 Extraction distincte du TYPE et du SUBTYPE

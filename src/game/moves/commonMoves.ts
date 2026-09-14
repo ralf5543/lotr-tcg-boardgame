@@ -1,4 +1,9 @@
 import type { CardState, LotrMoveContext } from '../types';
+import {
+    assignSanctuaryHeal as applySanctuaryHealToCard,
+    sanctuaryHealsFinished,
+} from '../logic/sanctuary';
+import { proceedStartOfFellowship } from '../logic/startOfFellowship';
 import { resolveSkirmish } from '../logic/skirmish';
 import { drawCardsForPlayer } from '../../utils/drawCards';
 import { advanceArcheryAssignmentStep } from '../index';
@@ -59,6 +64,10 @@ export const confirmStartOfPhase = ({
     playerID,
 }: LotrMoveContext) => {
     const currentPhase = ctx.phase || '';
+
+    if (G.sanctuaryHeal) {
+        return 'INVALID_MOVE';
+    }
 
     if (
         !currentPhase.startsWith('startOf') ||
@@ -545,6 +554,7 @@ export const cleanupPendingDeaths = ({ G }: LotrMoveContext) => {
     G.pendingDeadCardIds = [];
     G.lastWoundedCardIds = [];
     G.lastExertedCardIds = [];
+    G.lastHealedCardIds = [];
 
     if (killedFpCharacters.length > 0) {
         beginThreatWoundAssignment(G);
@@ -586,6 +596,34 @@ export const assignThreatWound = (
     G.statusMessage = `Menaces : encore ${left} blessure(s) à assigner.`;
 };
 
+export const assignSanctuaryHeal = (
+    { G, events, playerID }: LotrMoveContext,
+    cardId: string
+) => {
+    const fpId = G.fpPlayerId || '0';
+    if (playerID !== fpId) return 'INVALID_MOVE';
+    if (!applySanctuaryHealToCard(G, cardId)) return 'INVALID_MOVE';
+
+    if (sanctuaryHealsFinished(G)) {
+        proceedStartOfFellowship(G, events);
+        return;
+    }
+
+    const left = G.sanctuaryHeal?.remaining ?? 0;
+    G.statusMessage = `Sanctuaire : encore ${left} soin(s) possible(s).`;
+};
+
+export const confirmSanctuaryHeals = ({
+    G,
+    events,
+    playerID,
+}: LotrMoveContext) => {
+    const fpId = G.fpPlayerId || '0';
+    if (playerID !== fpId) return 'INVALID_MOVE';
+    if (!G.sanctuaryHeal) return 'INVALID_MOVE';
+    proceedStartOfFellowship(G, events);
+};
+
 export const commonMoves = {
     confirmStartOfPhase,
     passActionWindow,
@@ -601,6 +639,8 @@ export const commonMoves = {
     confirmEndPhase,
     cleanupPendingDeaths,
     assignThreatWound,
+    assignSanctuaryHeal,
+    confirmSanctuaryHeals,
     resolveWhenPlayedChoice,
     ...(process.env.NODE_ENV !== 'production' ? devMoves : {}),
 };

@@ -32,6 +32,7 @@ function resetPhaseMachine(G: GameState): void {
     G.pendingFierceAssignment = false;
     G.regroupStep = undefined;
     G.awaitingSiteSelection = false;
+    G.sanctuaryHeal = undefined;
     G.pendingPlay = undefined;
     G.pendingWhenPlayed = undefined;
     G.pendingDeathQueue = undefined;
@@ -109,10 +110,12 @@ export const devMoves = {
         { G, events }: LotrPhaseContext,
         presetType: DevPresetType
     ) => {
-        if (presetType === 'CANCEL_SKIRMISH_TEST') {
+        if (presetType === 'HEAL_TEST') {
             resetPhaseMachine(G);
-            events?.setPhase?.('skirmish');
         }
         applyDevPreset(G, presetType);
+        if (presetType === 'HEAL_TEST') {
+            events?.setPhase?.('startOfFellowship');
+        }
     },
 };

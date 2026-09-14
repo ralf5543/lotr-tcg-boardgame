@@ -17,10 +17,16 @@ import {
     discardCardsFromHand,
 } from './payAbilityCost';
 import { addThreats } from '../../logic/threats';
+import { applyHeal } from '../../../utils/applyHeal';
 import {
     cancelSkirmish,
     findSkirmishToCancel,
 } from './cancelSkirmish';
+
+function normalizeChosenIds(chosen?: string | string[]): string[] {
+    if (!chosen) return [];
+    return Array.isArray(chosen) ? chosen.filter(Boolean) : [chosen];
+}
 
 function expiryToScope(expiresAtPhase: AbilityEffectExpiry): ModifierScope {
     if (expiresAtPhase === 'SKIRMISH') return 'SKIRMISH';
@@ -32,11 +38,12 @@ export function applyAbilityEffect(
     G: GameState,
     source: CardState,
     ability: Ability,
-    chosenTargetId?: string,
+    chosenTargetId?: string | string[],
     discardedHandIds?: string[]
 ): boolean {
     const effects = ability.effects || [];
     if (effects.length === 0) return false;
+    const chosenIds = normalizeChosenIds(chosenTargetId);
 
     for (const effect of effects) {
         if (effect.type === 'PREVENT_WOUND') {
@@ -155,11 +162,11 @@ export function applyAbilityEffect(
 
         if ('target' in effect && effect.target === 'WINNER') {
             const matches = resolveWinnerTargets(G, source, ability);
-            const target = chosenTargetId
+            const pick = chosenIds[0];
+            const target = pick
                 ? matches.find(
                       (card) =>
-                          card.instanceId === chosenTargetId ||
-                          card.id === chosenTargetId
+                          card.instanceId === pick || card.id === pick
                   ) || null
                 : matches.length === 1
                   ? matches[0]
@@ -171,11 +178,34 @@ export function applyAbilityEffect(
             continue;
         }
 
+        if (effect.type === 'HEAL' && effect.multiFromSpot) {
+            const spot = countFromSpotCost(G, source, ability);
+            const pool = resolveCostTarget(G, source, effect.target).filter(
+                isHealableForMulti
+            );
+            const need = Math.min(spot, pool.length);
+            if (need <= 0 || chosenIds.length !== need) return false;
+            if (new Set(chosenIds).size !== chosenIds.length) return false;
+            for (const id of chosenIds) {
+                const target =
+                    pool.find(
+                        (card) =>
+                            card.instanceId === id || card.id === id
+                    ) || null;
+                if (!target) return false;
+                if (!applyOneEffect(G, source, ability, effect, target)) {
+                    return false;
+                }
+            }
+            continue;
+        }
+
+        const pick = chosenIds[0];
         const target = resolveAbilityTarget(
             G,
             source,
             effect.target,
-            chosenTargetId
+            pick
         );
         if (!target) return false;
         if (!applyOneEffect(G, source, ability, effect, target)) {
@@ -183,6 +213,10 @@ export function applyAbilityEffect(
         }
     }
     return true;
+}
+
+function isHealableForMulti(card: CardState): boolean {
+    return Boolean(card) && !card.isDead && (card.wounds || 0) > 0;
 }
 
 function applyOneEffect(
@@ -233,8 +267,12 @@ function applyOneEffect(
 
     if (effect.type === 'HEAL') {
         if (target.isDead) return false;
-        const amount = effect.count || 1;
-        target.wounds = Math.max(0, (target.wounds || 0) - amount);
+        const amount = effect.multiFromSpot
+            ? 1
+            : effect.countFromSpot
+              ? countFromSpotCost(G, source, ability)
+              : effect.count || 1;
+        applyHeal(G, target, amount);
         return true;
     }
 
@@ -259,6 +297,8 @@ function countFromSpotCost(
     if (!spot) return 0;
     return resolveCostTarget(G, source, spot.target).length;
 }
+
+export { countFromSpotCost };
 
 function makeRingBearer(
     G: GameState,

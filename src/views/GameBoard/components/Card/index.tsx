@@ -251,6 +251,8 @@ export const Card: React.FC<CardProps> = ({
     const [isTakingDamage, setIsTakingDamage] = useState(false);
     const [isExerting, setIsExerting] = useState(false);
     const [exertGen, setExertGen] = useState(0);
+    const [isHealing, setIsHealing] = useState(false);
+    const [healGen, setHealGen] = useState(0);
     const [isAbilityMenuOpen, setIsAbilityMenuOpen] = useState(false);
     const [abilityBubbleCoords, setAbilityBubbleCoords] = useState({
         top: 0,
@@ -259,6 +261,7 @@ export const Card: React.FC<CardProps> = ({
     const abilityButtonRef = useRef<HTMLButtonElement>(null);
     const abilityBubbleRef = useRef<HTMLDivElement>(null);
     const prevWoundsRef = useRef(card?.wounds || 0);
+    const prevCardKeyRef = useRef(card?.instanceId || card?.id);
     const lastExertedIdsRef = useRef(G?.lastExertedCardIds);
     lastExertedIdsRef.current = G?.lastExertedCardIds;
 
@@ -362,6 +365,18 @@ export const Card: React.FC<CardProps> = ({
     useEffect(() => {
         if (!card) return;
         const currentWounds = card.wounds || 0;
+        const cardKey = card.instanceId || card.id;
+
+        // La carte du zoom n’est pas démontée : Aragorn blessé → pipe = 2→0
+        // et ça jouait le voile de soin. Changement d’identité : on reset.
+        if (prevCardKeyRef.current !== cardKey) {
+            prevCardKeyRef.current = cardKey;
+            prevWoundsRef.current = currentWounds;
+            setIsHealing(false);
+            setIsTakingDamage(false);
+            setIsExerting(false);
+            return;
+        }
 
         if (currentWounds > prevWoundsRef.current) {
             const cardId = card.instanceId || card.id;
@@ -385,6 +400,16 @@ export const Card: React.FC<CardProps> = ({
                 setIsTakingDamage(false);
             }, 650);
 
+            prevWoundsRef.current = currentWounds;
+            return () => clearTimeout(timer);
+        }
+
+        if (currentWounds < prevWoundsRef.current) {
+            setHealGen((n) => n + 1);
+            setIsHealing(true);
+            const timer = setTimeout(() => {
+                setIsHealing(false);
+            }, 1150);
             prevWoundsRef.current = currentWounds;
             return () => clearTimeout(timer);
         }
@@ -587,6 +612,15 @@ export const Card: React.FC<CardProps> = ({
             data-overwhelmed={card.isOverwhelmed ? 'true' : 'false'}
             $isAttachment={isAttachment}
         >
+            {isHealing && (
+                <S.HealOverlay $healGen={healGen} aria-hidden>
+                    <S.HealGlow />
+                    <S.HealVeil />
+                    {Array.from({ length: 7 }, (_, i) => (
+                        <S.HealSparkle key={`${healGen}-${i}`} $index={i} />
+                    ))}
+                </S.HealOverlay>
+            )}
             {isCharacter && size === 'sm' && effectiveKeywords.length > 0 && (
                 <S.KeywordsContainer>
                     {effectiveKeywords.map((kw) => (

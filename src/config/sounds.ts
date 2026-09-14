@@ -26,6 +26,9 @@ export const SOUND_LIBRARY = {
         '/audio/sfx/cards/exert_human_female.opus',
         '/audio/sfx/cards/exert_human_female2.opus',
     ],
+    HEAL: [
+        '/audio/sfx/cards/heal.opus',
+    ],
     MINION: [
         '/audio/sfx/cards/minion.opus',
     ],

@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { createEngineClient } from './createEngineClient';
+import { getCardById } from '../cardsData';
 import {
     createCard,
     createCompanion,
@@ -241,6 +242,303 @@ describe('Pipes — défausse pipeweed + spot X', () => {
         engine.moves.activateAbility('1U74', '1U74:0', '1C305');
 
         expect(engine.getG().players['0']?.burdens).toBe(2);
+        expect(engine.getG().players['0']?.discard.map((c) => c.id)).toEqual([
+            '1C305',
+        ]);
+
+        engine.stop();
+    });
+
+    it('Pipe de Frodon : soigne ×X un compagnon au sceau Frodon', () => {
+        const frodoPipeAbility: Ability = {
+            id: '3U107:0',
+            phases: ['FELLOWSHIP'],
+            cost: [
+                {
+                    discardFromPlay: [
+                        {
+                            count: 1,
+                            target: [['PIPEWEED', 'POSSESSION']],
+                            mode: 'DESIGNATION',
+                        },
+                    ],
+                    spot: [{ count: 1, target: [['PIPE']] }],
+                },
+            ],
+            effects: [
+                {
+                    type: 'HEAL',
+                    countFromSpot: true,
+                    target: [['COMPANION', 'SIGNET_FRODO']],
+                },
+            ],
+            source: 'SELF',
+        };
+        const frodo = createCompanion({
+            id: 'frodo',
+            title: 'Frodo',
+            race: 'HOBBIT',
+            culture: 'SHIRE',
+            signet: 'FRODO',
+            wounds: 2,
+            attachments: [
+                createCard({
+                    id: '3U107',
+                    title: "Frodo's Pipe",
+                    type: 'POSSESSION',
+                    subtype: 'PIPE',
+                    kind: 'FREE_PEOPLE',
+                    culture: 'SHIRE',
+                    actionPhases: ['FELLOWSHIP'],
+                    abilities: [frodoPipeAbility],
+                }),
+            ],
+        });
+        const sam = createCompanion({
+            id: 'sam',
+            title: 'Sam',
+            race: 'HOBBIT',
+            culture: 'SHIRE',
+            signet: 'FRODO',
+            wounds: 3,
+        });
+        const engine = createEngineClient({
+            startPhase: 'fellowship',
+            playerID: '0',
+            G: {
+                players: {
+                    '0': createPlayerState('0', {
+                        fellowshipArea: [frodo, sam],
+                        supportArea: [createPipeweed()],
+                    }),
+                },
+            },
+        });
+
+        // 1 pipe → soin 1 ; coût herbe + cible Sam
+        engine.moves.activateAbility('3U107', '3U107:0', '1C305', [], 'sam');
+
+        expect(engine.getG().players['0']?.fellowshipArea[1]?.wounds).toBe(2);
+        expect(engine.getG().players['0']?.discard.map((c) => c.id)).toEqual([
+            '1C305',
+        ]);
+
+        engine.stop();
+    });
+
+    it('Pipe d’Aragorn : soigne X compagnons distincts', () => {
+        const aragornPipeAbility: Ability = {
+            id: '1U91:0',
+            phases: ['FELLOWSHIP'],
+            cost: [
+                {
+                    discardFromPlay: [
+                        {
+                            count: 1,
+                            target: [['PIPEWEED', 'POSSESSION']],
+                            mode: 'DESIGNATION',
+                        },
+                    ],
+                    spot: [{ count: 1, target: [['PIPE']] }],
+                },
+            ],
+            effects: [
+                {
+                    type: 'HEAL',
+                    multiFromSpot: true,
+                    target: [['COMPANION']],
+                },
+            ],
+            source: 'SELF',
+        };
+        const aragorn = createCompanion({
+            id: 'aragorn',
+            title: 'Aragorn',
+            culture: 'GONDOR',
+            wounds: 1,
+            attachments: [
+                createCard({
+                    id: '1U91',
+                    title: "Aragorn's Pipe",
+                    type: 'POSSESSION',
+                    subtype: 'PIPE',
+                    kind: 'FREE_PEOPLE',
+                    culture: 'GONDOR',
+                    actionPhases: ['FELLOWSHIP'],
+                    abilities: [aragornPipeAbility],
+                }),
+                createCard({
+                    id: 'pipe-2',
+                    title: 'Extra Pipe',
+                    type: 'POSSESSION',
+                    subtype: 'PIPE',
+                    kind: 'FREE_PEOPLE',
+                }),
+            ],
+        });
+        const gimli = createCompanion({
+            id: 'gimli',
+            title: 'Gimli',
+            culture: 'DWARVEN',
+            wounds: 2,
+        });
+        const engine = createEngineClient({
+            startPhase: 'fellowship',
+            playerID: '0',
+            G: {
+                players: {
+                    '0': createPlayerState('0', {
+                        fellowshipArea: [aragorn, gimli],
+                        supportArea: [createPipeweed()],
+                    }),
+                },
+            },
+        });
+
+        // 2 pipes → 2 compagnons
+        engine.moves.activateAbility(
+            '1U91',
+            '1U91:0',
+            '1C305',
+            [],
+            ['aragorn', 'gimli']
+        );
+
+        expect(engine.getG().players['0']?.fellowshipArea[0]?.wounds).toBe(0);
+        expect(engine.getG().players['0']?.fellowshipArea[1]?.wounds).toBe(1);
+
+        engine.stop();
+    });
+
+    it('Pipe d’Aragorn : moins de blessés que de pipes → soigne autant que possible', () => {
+        const aragornPipeAbility: Ability = {
+            id: '1U91:0',
+            phases: ['FELLOWSHIP'],
+            cost: [
+                {
+                    discardFromPlay: [
+                        {
+                            count: 1,
+                            target: [['PIPEWEED', 'POSSESSION']],
+                            mode: 'DESIGNATION',
+                        },
+                    ],
+                    spot: [{ count: 1, target: [['PIPE']] }],
+                },
+            ],
+            effects: [
+                {
+                    type: 'HEAL',
+                    multiFromSpot: true,
+                    target: [['COMPANION']],
+                },
+            ],
+            source: 'SELF',
+        };
+        const aragorn = createCompanion({
+            id: 'aragorn',
+            wounds: 2,
+            attachments: [
+                createCard({
+                    id: '1U91',
+                    abilities: [aragornPipeAbility],
+                    type: 'POSSESSION',
+                    subtype: 'PIPE',
+                    kind: 'FREE_PEOPLE',
+                    actionPhases: ['FELLOWSHIP'],
+                }),
+                createCard({
+                    id: 'pipe-2',
+                    type: 'POSSESSION',
+                    subtype: 'PIPE',
+                    kind: 'FREE_PEOPLE',
+                }),
+                createCard({
+                    id: 'pipe-3',
+                    type: 'POSSESSION',
+                    subtype: 'PIPE',
+                    kind: 'FREE_PEOPLE',
+                }),
+            ],
+        });
+        const gimli = createCompanion({
+            id: 'gimli',
+            wounds: 0,
+        });
+        const engine = createEngineClient({
+            startPhase: 'fellowship',
+            playerID: '0',
+            G: {
+                players: {
+                    '0': createPlayerState('0', {
+                        fellowshipArea: [aragorn, gimli],
+                        supportArea: [createPipeweed()],
+                    }),
+                },
+            },
+        });
+
+        // 3 pipes, 1 blessé → 1 soin
+        engine.moves.activateAbility(
+            '1U91',
+            '1U91:0',
+            '1C305',
+            [],
+            'aragorn'
+        );
+
+        expect(engine.getG().players['0']?.fellowshipArea[0]?.wounds).toBe(1);
+        expect(engine.getG().players['0']?.discard.map((c) => c.id)).toEqual([
+            '1C305',
+        ]);
+
+        engine.stop();
+    });
+
+    it('Pipe de Frodon (carte réelle) : soigne Legolas au sceau Frodon', () => {
+        const pipe = {
+            ...getCardById('3U107')!,
+            instanceId: 'frodo-pipe',
+        };
+        const toby = {
+            ...getCardById('1C305')!,
+            instanceId: 'old-toby',
+        };
+        const frodo = {
+            ...getCardById('2C102')!,
+            instanceId: 'frodo',
+            wounds: 2,
+            attachments: [pipe],
+        };
+        const legolas = {
+            ...getCardById('0P13')!,
+            instanceId: 'legolas',
+            wounds: 2,
+        };
+        const engine = createEngineClient({
+            startPhase: 'fellowship',
+            playerID: '0',
+            G: {
+                players: {
+                    '0': createPlayerState('0', {
+                        fellowshipArea: [frodo, legolas],
+                        supportArea: [toby],
+                    }),
+                },
+            },
+        });
+
+        engine.moves.activateAbility(
+            'frodo-pipe',
+            '3U107:0',
+            'old-toby',
+            [],
+            'legolas'
+        );
+
+        expect(
+            engine.getG().players['0']?.fellowshipArea[1]?.wounds
+        ).toBe(1);
         expect(engine.getG().players['0']?.discard.map((c) => c.id)).toEqual([
             '1C305',
         ]);

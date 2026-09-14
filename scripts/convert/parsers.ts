@@ -1834,16 +1834,42 @@ function parseWhenPlayedAbilities(
 function parseCountFromSpotEffect(
     remainder: string
 ): Record<string, unknown> | null {
-    const clause = remainder.replace(/[.\s]+$/, '').trim();
+    const raw = remainder.replace(/[.\s]+$/, '').trim();
+    const clause = stripAbilityMarkup(raw).replace(/[.\s]+$/, '').trim();
+    if (!clause) return null;
+
     if (/^remove X burdens$/i.test(clause)) {
         return { type: 'REMOVE_BURDENS', countFromSpot: true };
     }
     if (
-        /^remove <symbol>twilightX<\/symbol>$/i.test(clause) ||
-        /^remove twilight X$/i.test(clause)
+        /^remove <symbol>twilightX<\/symbol>$/i.test(raw) ||
+        /^remove twilight\s*X$/i.test(clause)
     ) {
         return { type: 'REMOVE_TWILIGHT', countFromSpot: true };
     }
+
+    const healSignet = clause.match(
+        /^heal (?:a|an) companion with the (\w+) signet X times$/i
+    );
+    if (healSignet) {
+        const name = healSignet[1].toUpperCase();
+        const token = `SIGNET_${name}`;
+        if (!VALID_TARGET_TYPES.has(token)) return null;
+        return {
+            type: 'HEAL',
+            countFromSpot: true,
+            target: [['COMPANION', token]],
+        };
+    }
+
+    if (/^heal X companions$/i.test(clause)) {
+        return {
+            type: 'HEAL',
+            multiFromSpot: true,
+            target: [['COMPANION']],
+        };
+    }
+
     return null;
 }
 

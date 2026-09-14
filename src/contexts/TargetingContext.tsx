@@ -6,7 +6,8 @@ type TargetingKind =
     | 'THREAT_WOUND'
     | 'SKIRMISH_SELECT'
     | 'DESIGNATION'
-    | 'HAND_DISCARD';
+    | 'HAND_DISCARD'
+    | 'SANCTUARY_HEAL';
 
 interface TargetingRequest {
     targetableCardIds: string[];

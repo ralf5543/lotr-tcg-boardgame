@@ -68,6 +68,15 @@ export const CardDragTarget = styled.div<{
             }
         `}
 
+    ${({ $isDesignationTarget, $isTargeted, $aimFaction }) =>
+        $isDesignationTarget &&
+        !$isTargeted &&
+        css`
+            &:hover {
+                ${targetedHover($aimFaction || 'FREE_PEOPLE')}
+            }
+        `}
+
     ${({ $isTargeted, $aimFaction }) =>
         $isTargeted && targetedHover($aimFaction)}
 `;
@@ -210,6 +219,15 @@ export const MinionWrapper = styled.div<{
                 filter: drop-shadow(0 0 12px #e74c3c);
                 outline: 2px solid #e74c3c;
                 border-radius: 8px;
+            }
+        `}
+
+    ${({ $isDesignationTarget, $isTargeted, $aimFaction }) =>
+        $isDesignationTarget &&
+        !$isTargeted &&
+        css`
+            &:hover {
+                ${targetedHover($aimFaction || 'FREE_PEOPLE')}
             }
         `}
 

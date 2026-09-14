@@ -54,6 +54,11 @@ export function cardMatchesCriterion(
         return c.type === 'COMPANION' || c.type === 'ALLY';
     }
 
+    if (critUpper.startsWith('SIGNET_')) {
+        const wanted = critUpper.slice('SIGNET_'.length);
+        return normalize(c.signet || '') === wanted;
+    }
+
     // Type SITE
     if (critUpper === 'SITE' && c.type === 'SITE') return true;
 
