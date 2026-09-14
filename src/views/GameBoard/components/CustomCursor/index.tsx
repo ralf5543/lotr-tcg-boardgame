@@ -29,11 +29,15 @@ export function CustomAssetCursor() {
             if (!target) return;
 
             const isDraggableCard = target.closest('[data-draggable="true"]');
+            const forceArrow = target.closest('[data-cursor="arrow"]');
             const isClickable = target.closest(
                 'button, a, input, select, textarea, [role="button"], [data-interactive="true"]'
             );
 
-            if (isDraggableCard) {
+            if (forceArrow) {
+                setCursorState('DEFAULT');
+                setIsInteractive(true);
+            } else if (isDraggableCard) {
                 setCursorState('HOVER');
                 setIsInteractive(true);
             } else if (isClickable) {

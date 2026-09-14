@@ -184,6 +184,7 @@ const ScaledView = styled.div<{ $scale: number }>`
     transform-origin: center center;
     transform: scale(${(props) => props.$scale});
     flex-shrink: 0;
+    overflow: hidden;
 
     & > div {
         height: 100%;

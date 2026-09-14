@@ -218,6 +218,23 @@ export type AbilityEffect =
           target: string[][];
       }
     | {
+          type: 'DISCARD_FROM_HAND';
+          count: number;
+          /** « up to N » : 0 à count, le joueur choisit. */
+          upTo?: boolean;
+      }
+    | {
+          type: 'REMOVE_TWILIGHT';
+          count?: number;
+          /** X = nombre de cartes du spot du coût (pipes). */
+          countFromSpot?: boolean;
+      }
+    | {
+          type: 'REMOVE_BURDENS';
+          count?: number;
+          countFromSpot?: boolean;
+      }
+    | {
           type: 'WOUND';
           count: number;
           target: AbilityTargetRef;

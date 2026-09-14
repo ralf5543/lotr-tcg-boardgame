@@ -210,7 +210,8 @@ export const CardContainer = styled.div<CardContainerProps>`
 
                 ${isForSupportArea(props.$type, props.$subtype) &&
                 css`
-                    inset: 0px 0px 0px 2px;
+                    inset: 0;
+                    padding-inline-end: 8px;
                 `}
             }
 
@@ -1112,6 +1113,13 @@ export const AbilityButton = styled.button<{
     box-shadow: rgb(0, 0, 0) 0px 2px 2px;
 
     ${(props) =>
+        !props.$abilityPhaseMatch &&
+        css`
+            cursor: default;
+            opacity: 0.72;
+        `}
+
+    ${(props) =>
         props.$abilityPhaseMatch &&
         css`
             box-shadow:
@@ -1222,7 +1230,7 @@ export const AbilityBubbleItem = styled.button`
     &:hover {
         opacity: 1;
     }
-    span {
+    span.ability-bubble-cost {
         color: #e2c044;
     }
 `;

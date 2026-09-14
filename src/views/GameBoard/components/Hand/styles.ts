@@ -48,6 +48,7 @@ export const CardWrapper = styled.div<{
     $isRoaming?: boolean;
     $isDiscardPhase?: boolean;
     $isDiscarding?: boolean;
+    $isSelected?: boolean;
     $hasSpot?: boolean;
     $isSpotMet?: boolean;
     $isPlayableEvent?: boolean;
@@ -93,6 +94,13 @@ export const CardWrapper = styled.div<{
                 box-shadow: 0 0 15px 4px rgba(231, 76, 60, 0.85);
             `}
     }
+
+    ${(props) =>
+        props.$isSelected &&
+        css`
+            box-shadow: 0 0 0 2px #f1c40f, 0 0 14px 4px rgba(241, 196, 15, 0.7);
+            z-index: 80;
+        `}
 
     ${(props) =>
         props.$isDiscarding &&

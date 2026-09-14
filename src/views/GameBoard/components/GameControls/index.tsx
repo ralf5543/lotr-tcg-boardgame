@@ -1,10 +1,13 @@
 import React from 'react';
 import * as S from './styles';
 import type { Ctx } from 'boardgame.io';
-import type { GameState } from '../../../../game/types';
+import type { CardState, GameState } from '../../../../game/types';
 import { TRANSLATIONS } from '../../../../game/translations';
 import { BiddingWidget } from '../BiddingWidget';
 import { useTargeting } from '../../../../contexts/TargetingContext';
+import { findTargetCard } from '../../../../utils/cardUtils';
+import { getCardText } from '../../../../utils/i18n';
+import { FormattedText } from '../../../../utils/FormattedText';
 
 interface GameControlsProps {
     G: GameState;
@@ -23,7 +26,10 @@ interface GameControlsProps {
         confirmHandRefill?: () => void;
         passActionWindow?: () => void;
         passResponseWindow?: () => void;
-        resolveWhenPlayedChoice?: (accept: boolean) => void;
+        resolveWhenPlayedChoice?: (
+            accept: boolean,
+            discardedHandIds?: string[]
+        ) => void;
         confirmMuster?: () => void;
         confirmStartOfPhase?: () => void;
         yieldAssignmentToShadow?: () => void;
@@ -39,8 +45,14 @@ export const GameControls: React.FC<GameControlsProps> = ({
     moves,
     G,
 }) => {
-    const { isTargetingActive, targetingKind, message: targetingMessage } =
-        useTargeting();
+    const {
+        isTargetingActive,
+        targetingKind,
+        message: targetingMessage,
+        onConfirm: targetingOnConfirm,
+        confirmLabel: targetingConfirmLabel,
+        requestConfirm,
+    } = useTargeting();
 
     if (!G || !ctx) return null;
 
@@ -162,7 +174,7 @@ export const GameControls: React.FC<GameControlsProps> = ({
     let toastConfig: {
         show: boolean;
         title: string;
-        body: string;
+        body: React.ReactNode;
         showPassButton: boolean;
         type?:
             | 'BIDDING'
@@ -241,12 +253,25 @@ export const GameControls: React.FC<GameControlsProps> = ({
             type: 'RESPONSE',
         };
     } else if (isWhenPlayedChoiceActive && isMyTurnToAct) {
+        const whenPlayedSource = G.pendingWhenPlayed
+            ? (findTargetCard(
+                  G,
+                  G.pendingWhenPlayed.sourceInstanceId
+              ) as CardState | null)
+            : null;
+        // Même défaut que Card (`currentLang = 'fr'`) tant qu’il n’y a pas de sélecteur global.
+        const localizedGameText = whenPlayedSource
+            ? getCardText(whenPlayedSource, 'fr').gameText
+            : undefined;
         toastConfig = {
             show: true,
             title: 'QUAND VOUS JOUEZ',
-            body:
+            body: localizedGameText ? (
+                <FormattedText text={localizedGameText} />
+            ) : (
                 G.statusMessage ||
-                'Vous pouvez activer l’effet optionnel de cette carte.',
+                'Vous pouvez activer l’effet optionnel de cette carte.'
+            ),
             showPassButton: false,
             type: 'WHEN_PLAYED_CHOICE',
         };
@@ -746,6 +771,15 @@ export const GameControls: React.FC<GameControlsProps> = ({
                                     Passer
                                 </S.ActionButton>
                             </>
+                        )}
+
+                        {targetingOnConfirm && (
+                            <S.ActionButton
+                                style={{ marginTop: '12px', width: '100%' }}
+                                onClick={() => requestConfirm()}
+                            >
+                                {targetingConfirmLabel || 'Valider'}
+                            </S.ActionButton>
                         )}
 
                         {/* ACTION PASSER STANDARD */}

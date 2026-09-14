@@ -33,10 +33,9 @@ import { canPayAbilityCost } from '../../../../game/engine/abilities/payAbilityC
 import { abilityMeetsPlayRestrictions } from '../../../../game/engine/abilities/abilityRestrictions';
 import {
     abilityHasLegalEffectTarget,
-    abilityNeedsDesignation,
+    getDesignationCandidates,
 } from '../../../../game/engine/abilities/designation';
 import {
-    cardOrAttachmentsHaveActionPhases,
     collectVisibleAbilities,
     formatAbilityLabelParts,
     abilityMatchesPhase,
@@ -300,13 +299,14 @@ export const Card: React.FC<CardProps> = ({
             abilityHasLegalEffectTarget(G, source, ability)
         );
     });
+    // Bouton seulement s’il existe une capacité affichable (pas WHEN_PLAYED seul).
+    // Le halo dépend de la phase / payabilité (`abilityPhaseMatch`).
     const showAbilityButton = Boolean(
         card &&
         size === 'sm' &&
         viewerOwnsCard &&
         !isAttachedCard &&
-        (listedAbilities.length > 0 ||
-            (!G && cardOrAttachmentsHaveActionPhases(card)))
+        visibleAbilities.length > 0
     );
     const abilityPhaseMatch = Boolean(
         card &&
@@ -542,10 +542,15 @@ export const Card: React.FC<CardProps> = ({
     const activateListedAbility = (source: CardState, ability: Ability) => {
         const hostId = card.instanceId || card.id;
         const sourceId = source.instanceId || source.id;
+        // Ne pré-désigner le porteur que s’il est vraiment une cible de désignation
+        // (ex. exert un Hobbit). Pas pour défausser une herbe à pipe, etc.
         const passHost = Boolean(
             G &&
             sourceId !== hostId &&
-            abilityNeedsDesignation(G, source, ability)
+            getDesignationCandidates(G, source, ability).some(
+                (candidate) =>
+                    (candidate.instanceId || candidate.id) === hostId
+            )
         );
         onActivateAbility?.(
             sourceId,
@@ -804,6 +809,7 @@ export const Card: React.FC<CardProps> = ({
                 <S.AbilityButton
                     ref={abilityButtonRef}
                     type="button"
+                    data-cursor="arrow"
                     $abilityPhaseMatch={abilityPhaseMatch}
                     $culture={card.culture}
                     onPointerDown={(e) => {
@@ -864,17 +870,20 @@ export const Card: React.FC<CardProps> = ({
                                             }}
                                         >
                                             {cost ? (
-                                                <span>
+                                                <span className="ability-bubble-cost">
                                                     <FormattedText
                                                         text={cost}
                                                     />
                                                 </span>
                                             ) : null}
-                                            {effect
-                                                ? cost
-                                                    ? ` : ${effect}`
-                                                    : effect
-                                                : null}
+                                            {effect ? (
+                                                <>
+                                                    {cost ? ' : ' : null}
+                                                    <FormattedText
+                                                        text={effect}
+                                                    />
+                                                </>
+                                            ) : null}
                                         </S.AbilityBubbleItem>
                                     </li>
                                 );

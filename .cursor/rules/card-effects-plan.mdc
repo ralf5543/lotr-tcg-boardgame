@@ -7,11 +7,13 @@ alwaysApply: true
 
 Credo : **mieux vaut une carte inerte qu’une carte fausse.** Le parser n’émet une ability que s’il est sûr.
 
+**Parser = fragments de gametext, jamais une carte.** On assemble des morceaux déjà connus (Discard, Spot, Exert, Heal, Draw, classes, mots-clés, `X` variable). Une regex collée sur la phrase entière d’une carte = trop spécifique : on généralise ou on n’émet rien. **Les exceptions (handlers par id, cartes vraiment uniques) : tout à la fin.** Un deck test incomplet (fumeurs / Gollum, etc.), c’est OK.
+
 Réponse n’est pas une phase. Fenêtre dédiée `responseWindow` + `pendingEvent` (ne pas recycler `actionWindow`). Toaster comme la fenêtre d’action ; le joueur clique la carte qu’il veut.
 
 ## Ordre
 
-**Prochaine priorité** : pipes / pipeweed / cancel skirmish / When you play may / Each time… (après UX menaces ✅ + overlay défausse ✅). Lot en cours : **When you play may DRAW** (Old Toby `1C305`, aussi Hides `4R19`). Ensuite Longbottom Leaf (défausse main optionnelle) puis infra pipes (défausse pipeweed + spot X).
+**Prochaine priorité** : familles parser suivantes (cancel skirmish, Each time…, soin ×X / X cibles). Longbottom Leaf ✅. Coût `Discard a [classe] and spot X [classe]` + effets `remove X burdens` / crépuscule X ✅ (Gaffer / Gandalf en bonus, pas des exceptions).
 
 1. Infra : `pendingEvent` ABOUT_TO_WOUND, `responseWindow`, toaster, Passer. Sans réponse éligible = blessure immédiate (comportement actuel). ✅
 2. `PREVENT_WOUND` (Éowyn `4C270`) avant l’Anneau Unique. ✅
@@ -19,9 +21,9 @@ Réponse n’est pas une phase. Fenêtre dédiée `responseWindow` + `pendingEve
 4. Coûts prevent-wound : spot, crépuscule, défausser cette carte. ✅ (`1C76`, `1R173`, `4R19`). Défausse depuis la main (`3U7`) et `in a skirmish` (`8R38`). ✅ Soin / défausse / pioche sûrs (`1R34`, `1R40`, `1U98`, `1C315`). Défausse d’un climat **sur un site** (`1U98` vs Neiges) → étape 7.
 5. Étendre exert-to-make / to-wound. Puis `When you play this`. Puis réponses « gagne une escarmouche » / mort.
    - **5a** — exert-to-make une **autre** classe (`7R91` Faramir, `0P21` Treebeard) ; to-wound un personnage **au combat** (`1C271` Soldat orque). Refuser tout reste inconnu. ✅
-   - **5b** — `When you play this` **requis** (pas « you may ») : `1C191` Éclaireur de la Moria (spot Elfe → crépuscule). ✅ « you may » DRAW : Old Toby `1C305` (+ Hides) ✅. Longbottom Leaf (défausse main « up to ») reste.
+   - **5b** — `When you play this` **requis** (pas « you may ») : `1C191` Éclaireur de la Moria (spot Elfe → crépuscule). ✅ « you may » DRAW : Old Toby `1C305` (+ Hides) ✅. Longbottom Leaf (`1C300`, défausse main « up to 2 ») ✅.
    - **5c** — Réponses « gagne une escarmouche » (make fierce / force jusqu’au ralliement) : `1U159`, `1R247`, `4C37`. ✅ Mort : Sam Porteur si Frodo meurt = exception étape 6 ; le reste (soigner, moulin, défausse…) reste inerte.
-6. Exceptions (~300) en handlers par id, pas dans le parser. Infra registre ✅ + **Sam `2C114`** ✅. Priorité aux **trous parser** (deck checklist `fumeurs-gollum-threats`). Lot récent : Anneau phase + fardeau, Merry force, Sleep Caradhras (`DISCARD_ALL`), Albert Dreary (culture OU), Roll of Thunder (Fellowship or Maneuver + Shadow), Gollum exert/menace, Response Gollum wins → wound. Suite : Longbottom Leaf / pipes / cancel skirmish / Each time…
+6. **Exceptions en dernier** (~300 handlers par id, pas dans le parser). Infra registre ✅ + **Sam `2C114`** ✅. D’ici là : élargir les familles parser. Un deck checklist peut rester partiellement inerte.
 7. **Sites (UX à concevoir avant code)** : attache sur site, contrôle d’un site, attache sur site contrôlé. Puis climat « Plays on a site » + défausse (`1C138` + cape `1U98`). Pause jusqu’à décision UX.
 
 Tests : cartes réelles du CSV. UI : toaster seulement s’il existe au moins une réponse payable dont le trigger matche.

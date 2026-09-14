@@ -15,6 +15,10 @@ interface TargetingRequest {
     kind?: TargetingKind;
     pendingCard?: CardState;
     arrowFromCardId?: string;
+    upTo?: boolean;
+    selectedCardIds?: string[];
+    onConfirm?: () => void;
+    confirmLabel?: string;
 }
 
 interface TargetingContextType {
@@ -30,6 +34,14 @@ interface TargetingContextType {
     selectCard: (cardId: string) => void;
     setHoveredTargetId: (cardId: string | null) => void;
     message?: string;
+    upTo?: boolean;
+    selectedCardIds: string[];
+    onConfirm?: () => void;
+    confirmLabel?: string;
+    /** Demande une validation (Hand anime la défausse puis appelle onConfirm). */
+    requestConfirm: () => void;
+    /** Incrémenté à chaque requestConfirm — Hand écoute pour animer. */
+    confirmNonce: number;
 }
 
 const TargetingContext = createContext<TargetingContextType | null>(null);
@@ -37,6 +49,7 @@ const TargetingContext = createContext<TargetingContextType | null>(null);
 export const TargetingProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
     const [request, setRequest] = useState<TargetingRequest | null>(null);
     const [hoveredTargetId, setHoveredTargetId] = useState<string | null>(null);
+    const [confirmNonce, setConfirmNonce] = useState(0);
 
     const startTargeting = useCallback((req: TargetingRequest) => {
         setHoveredTargetId(null);
@@ -46,6 +59,10 @@ export const TargetingProvider: React.FC<{ children: React.ReactNode }> = ({ chi
     const stopTargeting = useCallback(() => {
         setHoveredTargetId(null);
         setRequest(null);
+    }, []);
+
+    const requestConfirm = useCallback(() => {
+        setConfirmNonce((n) => n + 1);
     }, []);
 
     const isCardTargetable = useCallback(
@@ -80,6 +97,12 @@ export const TargetingProvider: React.FC<{ children: React.ReactNode }> = ({ chi
                 arrowFromCardId: request?.arrowFromCardId,
                 hoveredTargetId,
                 setHoveredTargetId,
+                upTo: request?.upTo,
+                selectedCardIds: request?.selectedCardIds || [],
+                onConfirm: request?.onConfirm,
+                confirmLabel: request?.confirmLabel,
+                requestConfirm,
+                confirmNonce,
             }}
         >
             {children}

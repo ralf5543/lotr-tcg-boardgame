@@ -242,6 +242,7 @@ export const SupportSplitLayout = styled.div`
     width: max-content;
     min-width: 100%;
     padding-block: 16px 32px;
+    min-height: 194px;
 `;
 
 export const SupportSubZone = styled.div<{ $align: 'left' | 'right' }>`

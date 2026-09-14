@@ -14100,6 +14100,48 @@
         "Gandalf"
       ]
     ],
+    "abilities": [
+      {
+        "id": "1U74:0",
+        "phases": [
+          "FELLOWSHIP"
+        ],
+        "cost": [
+          {
+            "discardFromPlay": [
+              {
+                "count": 1,
+                "target": [
+                  [
+                    "PIPEWEED",
+                    "POSSESSION"
+                  ]
+                ],
+                "mode": "DESIGNATION"
+              }
+            ],
+            "spot": [
+              {
+                "count": 1,
+                "target": [
+                  [
+                    "PIPE"
+                  ]
+                ]
+              }
+            ]
+          }
+        ],
+        "effects": [
+          {
+            "type": "REMOVE_BURDENS",
+            "countFromSpot": true
+          }
+        ],
+        "source": "SELF",
+        "text": "FELLOWSHIP: Discard a pipeweed possession and spot X pipes to remove X burdens."
+      }
+    ],
     "actionPhases": [
       "FELLOWSHIP"
     ],
@@ -24351,6 +24393,48 @@
         "HOBBIT"
       ]
     ],
+    "abilities": [
+      {
+        "id": "1U292:0",
+        "phases": [
+          "FELLOWSHIP"
+        ],
+        "cost": [
+          {
+            "discardFromPlay": [
+              {
+                "count": 1,
+                "target": [
+                  [
+                    "PIPEWEED",
+                    "POSSESSION"
+                  ]
+                ],
+                "mode": "DESIGNATION"
+              }
+            ],
+            "spot": [
+              {
+                "count": 1,
+                "target": [
+                  [
+                    "PIPE"
+                  ]
+                ]
+              }
+            ]
+          }
+        ],
+        "effects": [
+          {
+            "type": "REMOVE_TWILIGHT",
+            "countFromSpot": true
+          }
+        ],
+        "source": "SELF",
+        "text": "FELLOWSHIP: Discard a pipeweed possession and spot X pipes to remove twilightX."
+      }
+    ],
     "actionPhases": [
       "FELLOWSHIP"
     ],
@@ -24737,6 +24821,26 @@
     "type": "POSSESSION",
     "keywords": [
       "PIPEWEED"
+    ],
+    "abilities": [
+      {
+        "id": "1C300:0",
+        "phases": [],
+        "trigger": {
+          "type": "WHEN_PLAYED"
+        },
+        "optional": true,
+        "cost": [],
+        "effects": [
+          {
+            "type": "DISCARD_FROM_HAND",
+            "count": 2,
+            "upTo": true
+          }
+        ],
+        "source": "SELF",
+        "text": "When you play this possession, you may discard up to 2 cards from hand."
+      }
     ],
     "culture": "SHIRE",
     "twilightCost": 1,

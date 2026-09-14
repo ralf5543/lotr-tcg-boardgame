@@ -38,6 +38,7 @@ import {
 } from '../../game/engine/abilities/designation';
 import {
     abilityDiscardFromHandCount,
+    abilityDiscardFromHandEffect,
     abilityNeedsHandDiscard,
 } from '../../game/engine/abilities/payAbilityCost';
 import { findEventAbilityForPhase } from '../../game/engine/abilities/playEventAbility';
@@ -257,7 +258,9 @@ export const GameBoard: React.FC<GameBoardProps> = ({
             ability: NonNullable<CardState['abilities']>[number],
             onChosen: (cardIds: string[]) => void
         ): boolean => {
-            const need = abilityDiscardFromHandCount(ability);
+            const effect = abilityDiscardFromHandEffect(ability);
+            const need = effect?.count || abilityDiscardFromHandCount(ability);
+            const upTo = Boolean(effect?.upTo);
             if (need <= 0) return false;
 
             const fpId = G.fpPlayerId || '0';
@@ -273,13 +276,26 @@ export const GameBoard: React.FC<GameBoardProps> = ({
                         return Boolean(id && !picked.includes(id));
                     })
                     .flatMap((card) => cardTargetIds(card));
+                const commit = () => {
+                    onChosen(picked);
+                    stopTargeting();
+                };
                 startTargeting({
                     kind: 'HAND_DISCARD',
                     targetableCardIds,
-                    message:
-                        remaining === need
-                            ? `Défaussez ${need} carte${need > 1 ? 's' : ''} de votre main.`
-                            : `Encore ${remaining} carte${remaining > 1 ? 's' : ''}.`,
+                    selectedCardIds: picked,
+                    upTo,
+                    onConfirm: upTo ? commit : undefined,
+                    confirmLabel: upTo ? 'Valider la défausse' : undefined,
+                    message: upTo
+                        ? picked.length === 0
+                            ? `Défaussez jusqu’à ${need} carte${need > 1 ? 's' : ''} de votre main.`
+                            : picked.length >= need
+                              ? `${picked.length}/${need} — validez pour défausser.`
+                              : `${picked.length}/${need} choisie${picked.length > 1 ? 's' : ''}. Validez ou cliquez encore.`
+                        : remaining === need
+                          ? `Défaussez ${need} carte${need > 1 ? 's' : ''} de votre main.`
+                          : `Encore ${remaining} carte${remaining > 1 ? 's' : ''}.`,
                     onSelectTarget: (cardId) => {
                         const card = hand.find(
                             (item) =>
@@ -288,7 +304,9 @@ export const GameBoard: React.FC<GameBoardProps> = ({
                         const canonical = card?.instanceId || card?.id || cardId;
                         if (picked.includes(canonical)) return;
                         const next = [...picked, canonical];
-                        if (next.length >= need) {
+                        // « up to » : on sélectionne jusqu’au max, validation (anim) à part.
+                        // Coût exact : la dernière carte commit (l’anim a déjà joué dans Hand).
+                        if (!upTo && next.length >= need) {
                             onChosen(next);
                             stopTargeting();
                             return;
@@ -352,6 +370,56 @@ export const GameBoard: React.FC<GameBoardProps> = ({
         }
         moves.activateAbility?.(sourceInstanceId, abilityId);
     };
+
+    const handleResolveWhenPlayedChoice = useCallback(
+        (accept: boolean, discardedHandIds?: string[]) => {
+            if (!accept) {
+                moves.resolveWhenPlayedChoice?.(false);
+                return;
+            }
+            if (discardedHandIds !== undefined) {
+                moves.resolveWhenPlayedChoice?.(true, discardedHandIds);
+                return;
+            }
+            const pending = G.pendingWhenPlayed;
+            if (!pending) {
+                moves.resolveWhenPlayedChoice?.(true);
+                return;
+            }
+            const source = findTargetCard(
+                G,
+                pending.sourceInstanceId
+            ) as CardState | null;
+            const ability = source?.abilities?.find(
+                (ab) => ab.id === pending.abilityId
+            );
+            if (!source || !ability) {
+                moves.resolveWhenPlayedChoice?.(true);
+                return;
+            }
+            const discard = abilityDiscardFromHandEffect(ability);
+            if (discard) {
+                const fpId = G.fpPlayerId || '0';
+                const ownerId =
+                    source.kind === 'SHADOW'
+                        ? fpId === '0'
+                            ? '1'
+                            : '0'
+                        : fpId;
+                const hand = G.players[ownerId]?.hand || [];
+                if (hand.length === 0) {
+                    moves.resolveWhenPlayedChoice?.(true, []);
+                    return;
+                }
+                requestHandDiscard(source, ability, (cardIds) => {
+                    moves.resolveWhenPlayedChoice?.(true, cardIds);
+                });
+                return;
+            }
+            moves.resolveWhenPlayedChoice?.(true);
+        },
+        [G, moves, requestHandDiscard]
+    );
 
     // 🟢 1. Détection stricte de la phase de setup
     const isSetupPhase = Boolean(
@@ -1012,7 +1080,11 @@ export const GameBoard: React.FC<GameBoardProps> = ({
                         playerID={playerID}
                         isMyTurn={ctx.currentPlayer === playerID}
                         awaitingSite={G.awaitingSiteSelection ?? false}
-                        moves={moves}
+                        moves={{
+                            ...moves,
+                            resolveWhenPlayedChoice:
+                                handleResolveWhenPlayedChoice,
+                        }}
                     />
 
                     <OpponentHand

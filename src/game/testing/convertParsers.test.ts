@@ -850,6 +850,106 @@ describe('parseAbilities — When you play this', () => {
             },
         ]);
     });
+
+    it('parse Feuille de Longoulet : you may discard up to 2 from hand', () => {
+        const text =
+            '**Pipeweed.**  \nWhen you play this possession, you may discard up to 2 cards from hand.';
+        expect(parseAbilities(text, 'Longbottom Leaf', '1C300')).toEqual([
+            {
+                id: '1C300:0',
+                phases: [],
+                trigger: { type: 'WHEN_PLAYED' },
+                optional: true,
+                cost: [],
+                effects: [{ type: 'DISCARD_FROM_HAND', count: 2, upTo: true }],
+                source: 'SELF',
+                text: expect.stringMatching(
+                    /you may discard up to 2 cards from hand/i
+                ),
+            },
+        ]);
+    });
+});
+
+describe('parseAbilities — Discard a [classe] and spot X [classe]', () => {
+    const pipeweedAndPipesCost = {
+        discardFromPlay: [
+            {
+                count: 1,
+                target: [['PIPEWEED', 'POSSESSION']],
+                mode: 'DESIGNATION',
+            },
+        ],
+        spot: [{ count: 1, target: [['PIPE']] }],
+    };
+
+    it('parse Discard a pipeweed possession and spot X pipes → crépuscule X', () => {
+        const text =
+            'Bearer must be a Hobbit. <br><keyword>Fellowship:</keyword> Discard a pipeweed possession and spot X pipes to remove <symbol>twilightX</symbol>.';
+        expect(parseAbilities(text, "The Gaffer's Pipe", '1U292')).toEqual([
+            {
+                id: '1U292:0',
+                phases: ['FELLOWSHIP'],
+                cost: [pipeweedAndPipesCost],
+                effects: [{ type: 'REMOVE_TWILIGHT', countFromSpot: true }],
+                source: 'SELF',
+                text: expect.stringMatching(/spot X pipes to remove/i),
+            },
+        ]);
+    });
+
+    it('parse la même famille → fardeaux X (pas un titre de carte)', () => {
+        const text =
+            'Bearer must be Gandalf. <br><keyword>Fellowship:</keyword> Discard a pipeweed possession and spot X pipes to remove X burdens.';
+        expect(parseAbilities(text, "Gandalf’s Pipe", '1U74')).toEqual([
+            {
+                id: '1U74:0',
+                phases: ['FELLOWSHIP'],
+                cost: [pipeweedAndPipesCost],
+                effects: [{ type: 'REMOVE_BURDENS', countFromSpot: true }],
+                source: 'SELF',
+                text: expect.stringMatching(/remove X burdens/i),
+            },
+        ]);
+    });
+
+    it('même famille, autre classe défaussée (condition, pas pipeweed)', () => {
+        const text =
+            '<keyword>Fellowship:</keyword> Discard a condition and spot X pipes to remove X burdens.';
+        expect(parseAbilities(text, 'Synthetic', 'X1')).toEqual([
+            {
+                id: 'X1:0',
+                phases: ['FELLOWSHIP'],
+                cost: [
+                    {
+                        discardFromPlay: [
+                            {
+                                count: 1,
+                                target: [['CONDITION']],
+                                mode: 'DESIGNATION',
+                            },
+                        ],
+                        spot: [{ count: 1, target: [['PIPE']] }],
+                    },
+                ],
+                effects: [{ type: 'REMOVE_BURDENS', countFromSpot: true }],
+                source: 'SELF',
+                text: expect.stringMatching(/Discard a condition and spot X pipes/i),
+            },
+        ]);
+    });
+
+    it('n’émet rien si l’effet n’est pas un fragment sûr (soin ×X + sceau)', () => {
+        const text =
+            'Bearer must be Frodo. <br><keyword>Fellowship:</keyword> Discard a pipeweed possession and spot X pipes to heal a companion with the Frodo signet X times.';
+        expect(parseAbilities(text, "Frodo's Pipe", '3U107')).toBeUndefined();
+    });
+
+    it('n’émet rien si l’effet n’est pas un fragment sûr (soin X compagnons)', () => {
+        const text =
+            'Bearer must be a gondor companion. <br><keyword>Fellowship:</keyword> Discard a pipeweed possession and spot X pipes to heal X companions.';
+        expect(parseAbilities(text, "Aragorn’s Pipe", '1U91')).toBeUndefined();
+    });
 });
 
 const RAMPAGE_TEXT =

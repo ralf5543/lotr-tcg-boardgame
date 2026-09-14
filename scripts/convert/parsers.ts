@@ -731,6 +731,7 @@ const FILTER_ALIASES: Record<string, string> = {
     NAZGUL: 'NAZGÛL',
     RINGBEARER: 'RING-BEARER',
     RINGBOUND: 'RING-BOUND',
+    PIPES: 'PIPE',
 };
 
 function normalizeFilterToken(raw: string): string {
@@ -826,6 +827,14 @@ function parseExertSubject(
     }
 
     if (/^\d+\s+/.test(body)) return null;
+
+    // « spot X pipes » : X = nombre variable, la classe passe par les filtres connus.
+    const variableClass = body.match(/^X\s+(.+)$/i);
+    if (variableClass) {
+        const filters = parseClassFilters(variableClass[1]);
+        if (filters.length === 0) return null;
+        return { target: [filters], count: 1 };
+    }
 
     if (/^bearer$/i.test(body)) {
         return { target: 'BEARER', count };
@@ -1510,6 +1519,19 @@ function parsePreventCostClause(
         return { discardFromPlay: [{ count: 1, target: 'SELF' }] };
     }
 
+    const discardAClass = text.match(/^discard\s+((?:a|an)\s+.+)$/i);
+    if (discardAClass && !/\bfrom hand\b/i.test(text)) {
+        const noun = parseNounTarget(discardAClass[1], [['']]);
+        if (noun && Array.isArray(noun)) {
+            return {
+                discardFromPlay: [
+                    { count: 1, target: noun, mode: 'DESIGNATION' },
+                ],
+            };
+        }
+        return null;
+    }
+
     const exertMatch = text.match(/^Exert\s+([\s\S]+)$/i);
     if (exertMatch) {
         if (/\b(and|or)\b/i.test(exertMatch[1])) return null;
@@ -1787,7 +1809,42 @@ function parseWhenPlayedAbilities(
         });
     }
 
+    const optionalDiscardHandRe =
+        /When you play this(?:\s+(?:minion|possession|condition|companion|artifact|ally|follower))?, you may discard up to (\d+) cards? from (?:your )?hand\./gi;
+    while ((match = optionalDiscardHandRe.exec(text)) !== null) {
+        const count = parseInt(match[1], 10);
+        if (!Number.isFinite(count) || count <= 0) continue;
+
+        found.push({
+            id: `${cardId || 'ability'}:${found.length}:when-played-may`,
+            phases: [],
+            trigger: { type: 'WHEN_PLAYED' },
+            optional: true,
+            cost: [],
+            effects: [{ type: 'DISCARD_FROM_HAND', count, upTo: true }],
+            source: 'SELF',
+            text: stripAbilityMarkup(match[0]),
+        });
+    }
+
     return found;
+}
+
+/** Effet dont la magnitude est le nombre spoté (X). Fragments sûrs seulement. */
+function parseCountFromSpotEffect(
+    remainder: string
+): Record<string, unknown> | null {
+    const clause = remainder.replace(/[.\s]+$/, '').trim();
+    if (/^remove X burdens$/i.test(clause)) {
+        return { type: 'REMOVE_BURDENS', countFromSpot: true };
+    }
+    if (
+        /^remove <symbol>twilightX<\/symbol>$/i.test(clause) ||
+        /^remove twilight X$/i.test(clause)
+    ) {
+        return { type: 'REMOVE_TWILIGHT', countFromSpot: true };
+    }
+    return null;
 }
 
 /**
@@ -2484,6 +2541,65 @@ export function parseAbilities(
                 ],
                 source: 'SELF',
                 text: spotDiscardClause,
+            });
+            return;
+        }
+
+        const discardAndSpotMatch = body.match(
+            /^Discard\s+([\s\S]+?)\s+and\s+spot\s+([\s\S]+?)\s+to\s+([\s\S]+)/i
+        );
+        if (discardAndSpotMatch) {
+            const discardTarget = parseNounTarget(
+                discardAndSpotMatch[1],
+                [['']],
+                cardTitle
+            );
+            const spotSubject = parseExertSubject(
+                discardAndSpotMatch[2],
+                cardTitle,
+                text
+            );
+            const effect = parseCountFromSpotEffect(discardAndSpotMatch[3]);
+            if (
+                !discardTarget ||
+                !Array.isArray(discardTarget) ||
+                !spotSubject ||
+                !Array.isArray(spotSubject.target) ||
+                !effect
+            ) {
+                return;
+            }
+
+            const discardAndSpotClause =
+                `${marker.phase}: Discard ${discardAndSpotMatch[1].trim()} and spot ${discardAndSpotMatch[2].trim()} to ${discardAndSpotMatch[3]}`
+                    .replace(/<[^>]+>/g, '')
+                    .replace(/\s+/g, ' ')
+                    .replace(/\s+\./g, '.')
+                    .trim();
+
+            abilities.push({
+                id: `${cardId || 'ability'}:${abilities.length}`,
+                phases,
+                cost: [
+                    {
+                        discardFromPlay: [
+                            {
+                                count: 1,
+                                target: discardTarget,
+                                mode: 'DESIGNATION',
+                            },
+                        ],
+                        spot: [
+                            {
+                                count: spotSubject.count,
+                                target: spotSubject.target,
+                            },
+                        ],
+                    },
+                ],
+                effects: [effect],
+                source: 'SELF',
+                text: discardAndSpotClause,
             });
             return;
         }

@@ -12,6 +12,10 @@ import { drawCardsForPlayer } from '../../../utils/drawCards';
 import { discardCardFromPlay } from '../../../utils/discardCardFromPlay';
 import { findTargetCard, isRingBearerCard } from '../../../utils/cardUtils';
 import { getCalculatedStrength } from '../../logic/stats/statCalculator';
+import {
+    abilityOwnerPlayerId,
+    discardCardsFromHand,
+} from './payAbilityCost';
 
 function expiryToScope(expiresAtPhase: AbilityEffectExpiry): ModifierScope {
     if (expiresAtPhase === 'SKIRMISH') return 'SKIRMISH';
@@ -23,7 +27,8 @@ export function applyAbilityEffect(
     G: GameState,
     source: CardState,
     ability: Ability,
-    chosenTargetId?: string
+    chosenTargetId?: string,
+    discardedHandIds?: string[]
 ): boolean {
     const effects = ability.effects || [];
     if (effects.length === 0) return false;
@@ -59,6 +64,41 @@ export function applyAbilityEffect(
                 (phase) => phase.toUpperCase() === 'FELLOWSHIP'
             );
             drawCardsForPlayer(G, player, effect.count || 0, isFellowship);
+            continue;
+        }
+
+        if (effect.type === 'DISCARD_FROM_HAND') {
+            const ownerId = abilityOwnerPlayerId(G, source);
+            if (!ownerId) return false;
+            if (discardedHandIds === undefined) return false;
+            const ids = discardedHandIds;
+            if (effect.upTo) {
+                if (ids.length > (effect.count || 0)) return false;
+            } else if (ids.length !== (effect.count || 0)) {
+                return false;
+            }
+            if (ids.length > 0 && !discardCardsFromHand(G, ownerId, ids)) {
+                return false;
+            }
+            continue;
+        }
+
+        if (effect.type === 'REMOVE_TWILIGHT') {
+            const count = effect.countFromSpot
+                ? countFromSpotCost(G, source, ability)
+                : effect.count || 0;
+            G.twilightPool = Math.max(0, (G.twilightPool || 0) - count);
+            continue;
+        }
+
+        if (effect.type === 'REMOVE_BURDENS') {
+            const fpId = G.fpPlayerId || '0';
+            const fpPlayer = G.players[fpId];
+            if (!fpPlayer) return false;
+            const count = effect.countFromSpot
+                ? countFromSpotCost(G, source, ability)
+                : effect.count || 0;
+            fpPlayer.burdens = Math.max(0, (fpPlayer.burdens || 0) - count);
             continue;
         }
 
@@ -187,6 +227,16 @@ function applyOneEffect(
     }
 
     return false;
+}
+
+function countFromSpotCost(
+    G: GameState,
+    source: CardState,
+    ability: Ability
+): number {
+    const spot = ability.cost?.[0]?.spot?.[0];
+    if (!spot) return 0;
+    return resolveCostTarget(G, source, spot.target).length;
 }
 
 function makeRingBearer(

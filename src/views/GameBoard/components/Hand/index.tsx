@@ -80,8 +80,16 @@ export const Hand: React.FC<HandProps> = ({
     };
 
     const { startDrag, dragged } = useDrag();
-    const { targetingKind, pendingCard, isCardTargetable, selectCard } =
-        useTargeting();
+    const {
+        targetingKind,
+        pendingCard,
+        isCardTargetable,
+        selectCard,
+        upTo,
+        selectedCardIds,
+        onConfirm,
+        confirmNonce,
+    } = useTargeting();
     const isDragging = !!dragged;
     const isDesignating = targetingKind === 'DESIGNATION';
     const isHandDiscard = targetingKind === 'HAND_DISCARD';
@@ -96,6 +104,7 @@ export const Hand: React.FC<HandProps> = ({
         new Set()
     );
     const handDiscardTimeoutsRef = useRef<number[]>([]);
+    const lastConfirmNonceRef = useRef(0);
 
     const [animatingCardIds, setAnimatingCardIds] = useState<Set<string>>(
         new Set()
@@ -149,6 +158,27 @@ export const Hand: React.FC<HandProps> = ({
         setDiscardingIds(new Set());
     }, [isHandDiscard]);
 
+    // Validation « up to » : même animation fly-up que la défausse carte par carte.
+    useEffect(() => {
+        if (!confirmNonce || confirmNonce === lastConfirmNonceRef.current) {
+            return;
+        }
+        if (!isHandDiscard || !onConfirm) return;
+        lastConfirmNonceRef.current = confirmNonce;
+
+        if (selectedCardIds.length === 0) {
+            onConfirm();
+            return;
+        }
+
+        setDiscardingIds(new Set(selectedCardIds));
+        const timeoutId = window.setTimeout(() => {
+            onConfirm();
+        }, 450);
+        handDiscardTimeoutsRef.current.push(timeoutId);
+        return () => window.clearTimeout(timeoutId);
+    }, [confirmNonce, isHandDiscard, onConfirm, selectedCardIds]);
+
     const handleDiscardClick = (idx: number) => {
         if (discardingIndex !== null || !isDiscardPhase) return;
 
@@ -166,6 +196,10 @@ export const Hand: React.FC<HandProps> = ({
 
     const handleHandDiscardClick = (cardKey: string) => {
         if (discardingIds.has(cardKey)) return;
+        if (upTo) {
+            selectCard(cardKey);
+            return;
+        }
         setDiscardingIds((prev) => new Set([...prev, cardKey]));
         const timeoutId = window.setTimeout(() => {
             selectCard(cardKey);
@@ -232,6 +266,9 @@ export const Hand: React.FC<HandProps> = ({
                                 )
                               : undefined;
 
+                          const isHandDiscardSelected =
+                              isHandDiscard &&
+                              selectedCardIds.includes(cardKey);
                           const isHandDiscardTarget =
                               isHandDiscard &&
                               isCardTargetable(cardKey) &&
@@ -251,6 +288,7 @@ export const Hand: React.FC<HandProps> = ({
                                       isDiscardPhase || isHandDiscard
                                   }
                                   $isDiscarding={isDiscarding}
+                                  $isSelected={isHandDiscardSelected}
                                   $hasSpot={hasSpot}
                                   $isSpotMet={isSpotMet}
                                   $isPlayableEvent={

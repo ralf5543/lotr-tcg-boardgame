@@ -412,14 +412,17 @@ export const passResponseWindow = ({ G, playerID }: LotrMoveContext) => {
 
 export const resolveWhenPlayedChoice = (
     { G, playerID }: LotrMoveContext,
-    accept: boolean
+    accept: boolean,
+    discardedHandIds?: string[]
 ) => {
     if (!G.pendingWhenPlayed || G.pendingWhenPlayed.playerId !== playerID) {
         return 'INVALID_MOVE';
     }
 
     if (accept) {
-        acceptPendingWhenPlayed(G, playerID);
+        if (!acceptPendingWhenPlayed(G, playerID, discardedHandIds)) {
+            return 'INVALID_MOVE';
+        }
     } else {
         declinePendingWhenPlayed(G, playerID);
     }

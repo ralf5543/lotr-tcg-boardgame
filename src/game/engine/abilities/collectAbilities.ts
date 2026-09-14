@@ -171,6 +171,23 @@ function formatEffectBit(
     if (effect.type === 'DRAW') {
         return `piocher ${effect.count} carte${effect.count > 1 ? 's' : ''}`;
     }
+    if (effect.type === 'DISCARD_FROM_HAND') {
+        const n = effect.count;
+        const cards = `${n} carte${n > 1 ? 's' : ''}`;
+        return effect.upTo
+            ? `défausser jusqu’à ${cards} de la main`
+            : `défausser ${cards} de la main`;
+    }
+    if (effect.type === 'REMOVE_TWILIGHT') {
+        return effect.countFromSpot
+            ? 'retirer <symbol>twilightX</symbol>'
+            : `retirer <symbol>twilight${effect.count || 0}</symbol>`;
+    }
+    if (effect.type === 'REMOVE_BURDENS') {
+        if (effect.countFromSpot) return 'retirer X fardeaux';
+        const n = effect.count || 0;
+        return `retirer ${n} fardeau${n > 1 ? 'x' : ''}`;
+    }
     if (effect.type === 'HEAL') {
         const who = formatTargetPhrase(effect.target);
         return who ? `guérir ${who}` : 'guérir';
@@ -227,7 +244,11 @@ function formatCostWho(
 ): string {
     if (target === 'BEARER') return 'le détenteur';
     if (Array.isArray(target)) {
-        const label = formatFilterList(target.flat());
+        const tokens = target.flat();
+        if (tokens.includes('PIPEWEED')) {
+            return asDesignation ? 'une herbe à pipe' : 'herbe à pipe';
+        }
+        const label = formatFilterList(tokens);
         if (asDesignation) return `un ${label}`;
         return label;
     }
@@ -250,7 +271,12 @@ function formatCostLabel(ability: Ability, source: CardState): string {
     }
     const spot = option?.spot?.[0];
     if (spot) {
-        parts.push(`Désigner ${formatCostWho(spot.target, source, false)}`);
+        const tokens = Array.isArray(spot.target) ? spot.target.flat() : [];
+        if (tokens.includes('PIPE')) {
+            parts.push('Désigner X pipes');
+        } else {
+            parts.push(`Désigner ${formatCostWho(spot.target, source, false)}`);
+        }
     }
     if (option?.addTwilight && option.addTwilight > 0) {
         parts.push(
@@ -278,7 +304,14 @@ function formatCostLabel(ability: Ability, source: CardState): string {
         );
     }
     if (option?.discardFromPlay?.length) {
-        parts.push('Défausser cette carte');
+        const discardTarget = option.discardFromPlay[0]?.target;
+        if (discardTarget === 'SELF' || discardTarget === 'BEARER') {
+            parts.push('Défausser cette carte');
+        } else {
+            parts.push(
+                `Défausser ${formatCostWho(discardTarget, source, true)}`
+            );
+        }
     }
     if (option?.discardFromHand && option.discardFromHand > 0) {
         const n = option.discardFromHand;

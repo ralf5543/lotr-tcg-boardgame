@@ -146,6 +146,7 @@ export const VALID_TARGET_TYPES = new Set([
     'ARTIFACT',
     'HAND-WEAPON',
     'RANGED-WEAPON',
+    'PIPE',
     // Kind (ex. « Shadow possession »)
     'SHADOW',
     'FREE_PEOPLE',

@@ -19,12 +19,13 @@ function applyWhenPlayedAbility(
     G: GameState,
     card: CardState,
     ability: Ability,
-    phase?: string
+    phase?: string,
+    discardedHandIds?: string[]
 ): boolean {
     const prepared = abilityForPhase(ability, phase);
     if (!canPayAbilityCost(G, card, prepared.cost)) return false;
     if (!payAbilityCost(G, card, prepared.cost)) return false;
-    return applyAbilityEffect(G, card, prepared);
+    return applyAbilityEffect(G, card, prepared, undefined, discardedHandIds);
 }
 
 function beginOptionalWhenPlayed(
@@ -43,9 +44,8 @@ function beginOptionalWhenPlayed(
         abilityId: ability.id,
         phase,
     };
-    G.statusMessage =
-        ability.text ||
-        'Vous pouvez activer l’effet optionnel de cette carte.';
+    // Texte affiché côté UI via getCardText (langue du joueur), pas ability.text EN.
+    G.statusMessage = 'Vous pouvez activer l’effet optionnel de cette carte.';
     pauseActionYieldForResponses(G, playerId);
 }
 
@@ -88,7 +88,11 @@ export function resolveWhenPlayed(
     }
 }
 
-export function acceptPendingWhenPlayed(G: GameState, playerID: string): boolean {
+export function acceptPendingWhenPlayed(
+    G: GameState,
+    playerID: string,
+    discardedHandIds?: string[]
+): boolean {
     const pending = G.pendingWhenPlayed;
     if (!pending || pending.playerId !== playerID) return false;
 
@@ -99,9 +103,16 @@ export function acceptPendingWhenPlayed(G: GameState, playerID: string): boolean
         return false;
     }
 
-    const applied = applyWhenPlayedAbility(G, source, ability, pending.phase);
+    const applied = applyWhenPlayedAbility(
+        G,
+        source,
+        ability,
+        pending.phase,
+        discardedHandIds
+    );
+    if (!applied) return false;
     G.pendingWhenPlayed = undefined;
-    return applied;
+    return true;
 }
 
 export function declinePendingWhenPlayed(

@@ -85,6 +85,17 @@ export function getDesignationCandidates(
         );
     }
 
+    const discardReq = (ability.cost || [])
+        .flatMap((opt) => opt.discardFromPlay || [])
+        .find((item) => Array.isArray(item.target));
+    if (discardReq && Array.isArray(discardReq.target)) {
+        return uniqueCards(
+            resolveCostTarget(G, source, discardReq.target).filter(
+                (card) => !card.isDead
+            )
+        );
+    }
+
     const winnerEffect = (ability.effects || []).find(
         (item) => 'target' in item && item.target === 'WINNER'
     );
@@ -116,6 +127,15 @@ export function abilityHasLegalEffectTarget(
         if (effect.type === 'DISCARD_ALL') {
             continue;
         }
+        if (effect.type === 'DISCARD_FROM_HAND') {
+            continue;
+        }
+        if (
+            effect.type === 'REMOVE_TWILIGHT' ||
+            effect.type === 'REMOVE_BURDENS'
+        ) {
+            continue;
+        }
         if (!('target' in effect)) continue;
         if (effect.target === 'SELF' || effect.target === 'BEARER') {
             if (effect.type === 'HEAL') {
@@ -141,20 +161,27 @@ export function abilityNeedsDesignation(
 
 export function formatDesignationPrompt(ability: Ability): string {
     const costTarget = ability.cost[0]?.exert?.[0]?.target;
+    const discardTarget = ability.cost[0]?.discardFromPlay?.[0]?.target;
     const effectTarget = ability.effects[0]?.target;
     if (effectTarget === 'SKIRMISHING') {
         return 'Choisissez un personnage au combat.';
     }
     const target = Array.isArray(costTarget)
         ? costTarget
-        : Array.isArray(effectTarget)
-          ? effectTarget
-          : null;
+        : Array.isArray(discardTarget)
+          ? discardTarget
+          : Array.isArray(effectTarget)
+            ? effectTarget
+            : null;
     if (!target) return 'Choisissez une cible.';
-    const label = target
-        .flat()
+    const tokens = target.flat();
+    if (tokens.includes('PIPEWEED')) {
+        return 'Choisissez une herbe à pipe.';
+    }
+    const label = tokens
         .map((token) => {
             if (token === 'MINION') return 'séide';
+            if (token === 'PIPE') return 'pipe';
             return token.charAt(0) + token.slice(1).toLowerCase();
         })
         .join(' ');

@@ -8,7 +8,7 @@ import { resolveCostTarget } from './resolveCostTarget';
 const matchCard = (card: CardState | undefined | null, targetId: string) =>
     Boolean(card && (card.instanceId === targetId || card.id === targetId));
 
-function abilityOwnerPlayerId(
+export function abilityOwnerPlayerId(
     G: GameState,
     source: CardState
 ): string | undefined {
@@ -24,6 +24,16 @@ export function abilityDiscardFromHandCount(ability: Ability): number {
 
 export function abilityNeedsHandDiscard(ability: Ability): boolean {
     return abilityDiscardFromHandCount(ability) > 0;
+}
+
+export function abilityDiscardFromHandEffect(
+    ability: Ability
+): { count: number; upTo?: boolean } | undefined {
+    const effect = ability.effects?.find(
+        (item) => item.type === 'DISCARD_FROM_HAND'
+    );
+    if (!effect || effect.type !== 'DISCARD_FROM_HAND') return undefined;
+    return { count: effect.count, upTo: effect.upTo };
 }
 
 function canPayOption(
@@ -69,17 +79,23 @@ function canPayOption(
 
     if (option.discardFromPlay && Array.isArray(option.discardFromPlay)) {
         for (const req of option.discardFromPlay) {
-            if (req.target !== 'SELF' && req.target !== 'BEARER') {
+            const count = req.count || 1;
+            const cards = resolveCostTarget(G, source, req.target).filter(
+                (card) => !card.isDead
+            );
+            if (req.target === 'SELF' || req.target === 'BEARER') {
+                const target = cards[0];
+                if (!target) return false;
+                const inPlay = findTargetCard(
+                    G,
+                    target.instanceId || target.id
+                );
+                if (!inPlay) return false;
+            } else if (Array.isArray(req.target)) {
+                if (cards.length < count) return false;
+            } else {
                 return false;
             }
-            const cards = resolveCostTarget(G, source, req.target);
-            const target = cards[0];
-            if (!target || target.isDead) return false;
-            const inPlay = findTargetCard(
-                G,
-                target.instanceId || target.id
-            );
-            if (!inPlay) return false;
         }
     }
 
@@ -121,7 +137,7 @@ function pickExertTarget(
     return undefined;
 }
 
-function discardCardsFromHand(
+export function discardCardsFromHand(
     G: GameState,
     ownerId: string,
     cardIds: string[]
@@ -186,12 +202,19 @@ function payOption(
     }
     if (option.discardFromPlay && Array.isArray(option.discardFromPlay)) {
         for (const req of option.discardFromPlay) {
-            if (req.target !== 'SELF' && req.target !== 'BEARER') {
+            const cards = resolveCostTarget(G, source, req.target);
+            if (req.target === 'SELF' || req.target === 'BEARER') {
+                const target = cards[0];
+                if (!target || !discardCardFromPlay(G, target)) return false;
+            } else if (Array.isArray(req.target)) {
+                const target = chosenTargetId
+                    ? cards.find((card) => matchCard(card, chosenTargetId))
+                    : undefined;
+                if (!target || target.isDead) return false;
+                if (!discardCardFromPlay(G, target)) return false;
+            } else {
                 return false;
             }
-            const cards = resolveCostTarget(G, source, req.target);
-            const target = cards[0];
-            if (!target || !discardCardFromPlay(G, target)) return false;
         }
     }
     if (typeof option.discardFromHand === 'number' && option.discardFromHand > 0) {
