@@ -16,6 +16,11 @@ import {
     abilityOwnerPlayerId,
     discardCardsFromHand,
 } from './payAbilityCost';
+import { addThreats } from '../../logic/threats';
+import {
+    cancelSkirmish,
+    findSkirmishToCancel,
+} from './cancelSkirmish';
 
 function expiryToScope(expiresAtPhase: AbilityEffectExpiry): ModifierScope {
     if (expiresAtPhase === 'SKIRMISH') return 'SKIRMISH';
@@ -99,6 +104,22 @@ export function applyAbilityEffect(
                 ? countFromSpotCost(G, source, ability)
                 : effect.count || 0;
             fpPlayer.burdens = Math.max(0, (fpPlayer.burdens || 0) - count);
+            continue;
+        }
+
+        if (effect.type === 'REMOVE_THREATS') {
+            addThreats(G, -(effect.count || 0));
+            continue;
+        }
+
+        if (effect.type === 'CANCEL_SKIRMISH') {
+            const skirmish = findSkirmishToCancel(
+                G,
+                source,
+                effect.involving
+            );
+            if (!skirmish) return false;
+            if (!cancelSkirmish(G, skirmish.id)) return false;
             continue;
         }
 

@@ -9,7 +9,10 @@ import { applyAbilityEffect } from '../engine/abilities/applyAbilityEffect';
 import { abilityMatchesPhase } from '../engine/abilities/collectAbilities';
 import { yieldPriorityAfterAction } from '../engine/actionWindow';
 import { findTargetCard } from '../../utils/cardUtils';
-import { abilityNeedsDesignation } from '../engine/abilities/designation';
+import {
+    abilityNeedsCostDesignation,
+    abilityNeedsEffectDesignation,
+} from '../engine/abilities/designation';
 import { afterResponseResolved, isResponseWindowOpen, pauseActionYieldForResponses } from '../engine/responseWindow';
 import { abilityMeetsPlayRestrictions } from '../engine/abilities/abilityRestrictions';
 
@@ -18,7 +21,8 @@ export const activateAbility = (
     sourceInstanceId: string,
     abilityId: string,
     chosenTargetId?: string,
-    discardedHandIds?: string[]
+    discardedHandIds?: string[],
+    chosenEffectTargetId?: string
 ) => {
     const source = findTargetCard(G, sourceInstanceId) as CardState | null;
     if (!source) return 'INVALID_MOVE';
@@ -32,7 +36,23 @@ export const activateAbility = (
     if (!abilityMatchesPhase(ability, phaseToMatch)) return 'INVALID_MOVE';
     if (!abilityMeetsPlayRestrictions(G, source, ability)) return 'INVALID_MOVE';
     if (!canPayAbilityCost(G, source, ability.cost)) return 'INVALID_MOVE';
-    if (abilityNeedsDesignation(G, source, ability) && !chosenTargetId) {
+    const needsCostDesignation = abilityNeedsCostDesignation(
+        G,
+        source,
+        ability
+    );
+    const needsEffectDesignation = abilityNeedsEffectDesignation(
+        G,
+        source,
+        ability
+    );
+    if (needsCostDesignation && !chosenTargetId) {
+        return 'INVALID_MOVE';
+    }
+    if (
+        needsEffectDesignation &&
+        !(needsCostDesignation ? chosenEffectTargetId : chosenTargetId)
+    ) {
         return 'INVALID_MOVE';
     }
     if (abilityNeedsHandDiscard(ability) && !discardedHandIds?.length) {
@@ -52,7 +72,18 @@ export const activateAbility = (
     ) {
         return 'INVALID_MOVE';
     }
-    if (!applyAbilityEffect(G, source, ability, chosenTargetId)) {
+    const effectTargetId = needsCostDesignation
+        ? chosenEffectTargetId
+        : chosenTargetId;
+    if (
+        !applyAbilityEffect(
+            G,
+            source,
+            ability,
+            effectTargetId,
+            discardedHandIds
+        )
+    ) {
         return 'INVALID_MOVE';
     }
 

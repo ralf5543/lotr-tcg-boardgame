@@ -1848,6 +1848,73 @@ function parseCountFromSpotEffect(
 }
 
 /**
+ * Effets terminaux sûrs après « Discard … to … » (sans magnitude X).
+ * Pas de make / heal : familles à part.
+ */
+function parseDiscardToEffect(
+    remainder: string,
+    cardTitle?: string
+): Record<string, unknown> | null {
+    const clause = stripAbilityMarkup(remainder)
+        .replace(/[.\s]+$/, '')
+        .trim();
+    if (!clause) return null;
+
+    const threatMatch = clause.match(
+        /^remove\s+(a|one|two|\d+)\s+threats?$/i
+    );
+    if (threatMatch) {
+        const count = parseBurdenWord(threatMatch[1]);
+        if (!count) return null;
+        return { type: 'REMOVE_THREATS', count };
+    }
+
+    const discardMatch = clause.match(/^discard\s+((?:a|an)\s+.+)$/i);
+    if (discardMatch) {
+        const target = parseNounTarget(discardMatch[1], [['']], cardTitle);
+        if (!target || !Array.isArray(target)) return null;
+        return { type: 'DISCARD', count: 1, target };
+    }
+
+    const cancelMatch = clause.match(
+        /^cancel a skirmish involving\s+(.+)$/i
+    );
+    if (cancelMatch) {
+        const involving = parseCancelInvolving(
+            cancelMatch[1],
+            [['']],
+            cardTitle
+        );
+        if (!involving) return null;
+        return { type: 'CANCEL_SKIRMISH', involving };
+    }
+
+    return null;
+}
+
+/** Cible du « involving … » pour cancel skirmish. */
+function parseCancelInvolving(
+    raw: string,
+    costTarget: 'SELF' | 'BEARER' | string[][],
+    cardTitle?: string
+): 'SELF' | 'BEARER' | string[][] | null {
+    const plain = stripAbilityMarkup(raw).replace(/[.\s]+$/, '').trim();
+    if (!plain) return null;
+    if (/^(him|her|it)$/i.test(plain)) {
+        return parseEffectTarget(plain, costTarget);
+    }
+    if (/^bearer$/i.test(plain)) return 'BEARER';
+    return parseNounTarget(plain, costTarget, cardTitle);
+}
+
+/** Empêche Ombre (Escape) : pas encore géré — on émet quand même le cancel. */
+function isOnlyShadowPreventClause(leftover: string): boolean {
+    const plain = stripAbilityMarkup(leftover).replace(/[.\s]+$/g, '').trim();
+    if (!plain) return true;
+    return /^Any Shadow player may remove\b/i.test(plain);
+}
+
+/**
  * Famille : `[Phase]: Exert [self/bearer/X] to make [him/bearer] KEYWORD|STAT [until …]?`
  */
 export function parseAbilities(
@@ -2604,6 +2671,48 @@ export function parseAbilities(
             return;
         }
 
+        const discardToMatch = body.match(
+            /^Discard\s+([\s\S]+?)\s+to\s+([\s\S]+)/i
+        );
+        if (discardToMatch) {
+            const discardTarget = parseNounTarget(
+                discardToMatch[1],
+                [['']],
+                cardTitle
+            );
+            const effect = parseDiscardToEffect(
+                discardToMatch[2],
+                cardTitle
+            );
+            if (!discardTarget || !effect) return;
+
+            const discardToClause =
+                `${marker.phase}: Discard ${discardToMatch[1].trim()} to ${discardToMatch[2]}`
+                    .replace(/<[^>]+>/g, '')
+                    .replace(/\s+/g, ' ')
+                    .replace(/\s+\./g, '.')
+                    .trim();
+
+            const discardCost =
+                discardTarget === 'SELF' || discardTarget === 'BEARER'
+                    ? { count: 1, target: discardTarget }
+                    : {
+                          count: 1,
+                          target: discardTarget,
+                          mode: 'DESIGNATION' as const,
+                      };
+
+            abilities.push({
+                id: `${cardId || 'ability'}:${abilities.length}`,
+                phases,
+                cost: [{ discardFromPlay: [discardCost] }],
+                effects: [effect],
+                source: 'SELF',
+                text: discardToClause,
+            });
+            return;
+        }
+
         const discardBareMatch = body.match(/^Discard\s+([\s\S]+)/i);
         if (discardBareMatch) {
             const discardTarget = parseNounTarget(
@@ -2629,6 +2738,64 @@ export function parseAbilities(
                 ],
                 source: 'SELF',
                 text: discardBareClause,
+            });
+            return;
+        }
+
+        const cancelSkirmishMatch = body.match(
+            /^Exert\s+([\s\S]+?)\s+to cancel a skirmish involving\s+([\s\S]+)/i
+        );
+        if (cancelSkirmishMatch) {
+            if (/\b(and|or)\b/i.test(cancelSkirmishMatch[1])) return;
+            const subject = parseExertSubject(
+                cancelSkirmishMatch[1],
+                cardTitle,
+                text
+            );
+            if (!subject) return;
+
+            const involvingChunk = cancelSkirmishMatch[2];
+            const involvingSentence = involvingChunk.split(/\./)[0] || '';
+            const leftoverAfterDot = involvingChunk
+                .slice(involvingSentence.length)
+                .replace(/^\./, '')
+                .trim();
+            if (!isOnlyShadowPreventClause(leftoverAfterDot)) return;
+
+            const involving = parseCancelInvolving(
+                involvingSentence,
+                subject.target,
+                cardTitle
+            );
+            if (!involving) return;
+
+            const cancelClause =
+                `${marker.phase}: Exert ${cancelSkirmishMatch[1].trim()} to cancel a skirmish involving ${involvingSentence.trim()}`
+                    .replace(/<[^>]+>/g, '')
+                    .replace(/\s+/g, ' ')
+                    .replace(/\s+\./g, '.')
+                    .trim();
+
+            abilities.push({
+                id: `${cardId || 'ability'}:${abilities.length}`,
+                phases,
+                cost: [
+                    {
+                        exert: [
+                            {
+                                count: subject.count,
+                                target: subject.target,
+                                ...(subject.mode
+                                    ? { mode: subject.mode }
+                                    : {}),
+                            },
+                        ],
+                    },
+                ],
+                effects: [{ type: 'CANCEL_SKIRMISH', involving }],
+                source:
+                    subject.target === 'BEARER' ? 'ATTACHMENT' : 'SELF',
+                text: cancelClause,
             });
             return;
         }

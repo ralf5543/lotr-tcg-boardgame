@@ -4,6 +4,8 @@ import { isRingBearerCard } from '../../../utils/cardUtils';
 import { resolveAbilityTarget, resolveCostTarget, resolveWinnerTargets } from './resolveCostTarget';
 import { findEventAbilityForPhase } from './playEventAbility';
 
+import { findSkirmishToCancel } from './cancelSkirmish';
+
 export function cardTargetIds(card: CardState): string[] {
     const ids = [card.instanceId, card.id].filter(Boolean);
     return [...new Set(ids)];
@@ -53,13 +55,11 @@ function candidatesForEffect(
 }
 
 /**
- * Cibles payables d’un coût DNF (pas SELF / BEARER), ou d’un effet
- * qui vise une autre carte (ex. blesser un séide).
- * Unique nommé comme « un Hobbit » / « un séide » : le joueur désigne toujours
- * (même une seule cible), pour pouvoir annuler.
+ * Cibles d’un coût à désigner (exert / défausse DNF, pas SELF / BEARER).
+ * Unique nommé : le joueur désigne toujours (même une seule cible), pour pouvoir annuler.
  * 0 → impossible ; ≥1 → halo + flèche (main) ou clic (carte en jeu).
  */
-export function getDesignationCandidates(
+export function getCostDesignationCandidates(
     G: GameState,
     source: CardState,
     ability: Ability
@@ -96,6 +96,14 @@ export function getDesignationCandidates(
         );
     }
 
+    return [];
+}
+
+export function getEffectDesignationCandidates(
+    G: GameState,
+    source: CardState,
+    ability: Ability
+): CardState[] {
     const winnerEffect = (ability.effects || []).find(
         (item) => 'target' in item && item.target === 'WINNER'
     );
@@ -112,6 +120,32 @@ export function getDesignationCandidates(
     );
     if (!effect) return [];
     return candidatesForEffect(G, source, ability, effect);
+}
+
+export function getDesignationCandidates(
+    G: GameState,
+    source: CardState,
+    ability: Ability
+): CardState[] {
+    const cost = getCostDesignationCandidates(G, source, ability);
+    if (cost.length > 0) return cost;
+    return getEffectDesignationCandidates(G, source, ability);
+}
+
+export function abilityNeedsCostDesignation(
+    G: GameState,
+    source: CardState,
+    ability: Ability
+): boolean {
+    return getCostDesignationCandidates(G, source, ability).length >= 1;
+}
+
+export function abilityNeedsEffectDesignation(
+    G: GameState,
+    source: CardState,
+    ability: Ability
+): boolean {
+    return getEffectDesignationCandidates(G, source, ability).length >= 1;
 }
 
 export function abilityHasLegalEffectTarget(
@@ -132,8 +166,15 @@ export function abilityHasLegalEffectTarget(
         }
         if (
             effect.type === 'REMOVE_TWILIGHT' ||
-            effect.type === 'REMOVE_BURDENS'
+            effect.type === 'REMOVE_BURDENS' ||
+            effect.type === 'REMOVE_THREATS'
         ) {
+            continue;
+        }
+        if (effect.type === 'CANCEL_SKIRMISH') {
+            if (!findSkirmishToCancel(G, source, effect.involving)) {
+                return false;
+            }
             continue;
         }
         if (!('target' in effect)) continue;
@@ -156,23 +197,47 @@ export function abilityNeedsDesignation(
     source: CardState,
     ability: Ability
 ): boolean {
-    return getDesignationCandidates(G, source, ability).length >= 1;
+    return (
+        abilityNeedsCostDesignation(G, source, ability) ||
+        abilityNeedsEffectDesignation(G, source, ability)
+    );
 }
 
-export function formatDesignationPrompt(ability: Ability): string {
+export function formatDesignationPrompt(
+    ability: Ability,
+    which: 'cost' | 'effect' | 'auto' = 'auto'
+): string {
     const costTarget = ability.cost[0]?.exert?.[0]?.target;
     const discardTarget = ability.cost[0]?.discardFromPlay?.[0]?.target;
-    const effectTarget = ability.effects[0]?.target;
-    if (effectTarget === 'SKIRMISHING') {
+    const effectTarget =
+        ability.effects.find(
+            (item) =>
+                'target' in item &&
+                (Array.isArray(item.target) ||
+                    item.target === 'SKIRMISHING' ||
+                    item.target === 'WINNER')
+        )?.target ?? ability.effects[0]?.target;
+
+    const useEffect =
+        which === 'effect' ||
+        (which === 'auto' &&
+            !Array.isArray(costTarget) &&
+            !Array.isArray(discardTarget));
+
+    if (useEffect && effectTarget === 'SKIRMISHING') {
         return 'Choisissez un personnage au combat.';
     }
-    const target = Array.isArray(costTarget)
-        ? costTarget
-        : Array.isArray(discardTarget)
-          ? discardTarget
-          : Array.isArray(effectTarget)
+    const target = useEffect
+        ? Array.isArray(effectTarget)
             ? effectTarget
-            : null;
+            : null
+        : Array.isArray(costTarget)
+          ? costTarget
+          : Array.isArray(discardTarget)
+            ? discardTarget
+            : Array.isArray(effectTarget)
+              ? effectTarget
+              : null;
     if (!target) return 'Choisissez une cible.';
     const tokens = target.flat();
     if (tokens.includes('PIPEWEED')) {

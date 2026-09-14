@@ -30,10 +30,13 @@ import { audioService } from '../../services/audioService';
 import { findTargetCard } from '../../utils/cardUtils';
 import { canPlayCard } from '../../game/engine/canPlayCard';
 import {
-    abilityNeedsDesignation,
+    abilityNeedsCostDesignation,
+    abilityNeedsEffectDesignation,
     cardTargetIds,
     formatDesignationPrompt,
+    getCostDesignationCandidates,
     getDesignationCandidates,
+    getEffectDesignationCandidates,
     isDesignationTargetId,
 } from '../../game/engine/abilities/designation';
 import {
@@ -83,7 +86,8 @@ export interface GameBoardProps extends BoardProps<GameState> {
                 sourceInstanceId: string,
                 abilityId: string,
                 chosenTargetId?: string,
-                discardedHandIds?: string[]
+                discardedHandIds?: string[],
+                chosenEffectTargetId?: string
             ) => void;
             assignArcheryWound?: (cardId: string) => void;
             assignThreatWound?: (cardId: string) => void;
@@ -225,11 +229,17 @@ export const GameBoard: React.FC<GameBoardProps> = ({
             source: CardState,
             ability: NonNullable<CardState['abilities']>[number],
             onChosen: (cardId: string) => void,
-            handIndex?: number
+            handIndex?: number,
+            which: 'cost' | 'effect' | 'auto' = 'auto'
         ): boolean => {
-            if (!abilityNeedsDesignation(G, source, ability)) return false;
-            const candidates = getDesignationCandidates(G, source, ability);
-            const prompt = formatDesignationPrompt(ability);
+            const candidates =
+                which === 'cost'
+                    ? getCostDesignationCandidates(G, source, ability)
+                    : which === 'effect'
+                      ? getEffectDesignationCandidates(G, source, ability)
+                      : getDesignationCandidates(G, source, ability);
+            if (candidates.length === 0) return false;
+            const prompt = formatDesignationPrompt(ability, which);
             if (source.type === 'EVENT' && typeof handIndex === 'number') {
                 moves.beginPendingPlay?.(handIndex, prompt);
             }
@@ -326,7 +336,8 @@ export const GameBoard: React.FC<GameBoardProps> = ({
         sourceInstanceId: string,
         abilityId: string,
         chosenTargetId?: string,
-        discardedHandIds?: string[]
+        discardedHandIds?: string[],
+        chosenEffectTargetId?: string
     ) => {
         const source = findTargetCard(G, sourceInstanceId) as CardState | null;
         const ability = source?.abilities?.find((ab) => ab.id === abilityId);
@@ -335,18 +346,51 @@ export const GameBoard: React.FC<GameBoardProps> = ({
                 sourceInstanceId,
                 abilityId,
                 chosenTargetId,
-                discardedHandIds
+                discardedHandIds,
+                chosenEffectTargetId
             );
             return;
         }
-        if (chosenTargetId || discardedHandIds?.length) {
+        if (chosenTargetId || discardedHandIds?.length || chosenEffectTargetId) {
             moves.activateAbility?.(
                 sourceInstanceId,
                 abilityId,
                 chosenTargetId,
-                discardedHandIds
+                discardedHandIds,
+                chosenEffectTargetId
             );
             return;
+        }
+        const needsCost = abilityNeedsCostDesignation(G, source, ability);
+        const needsEffect = abilityNeedsEffectDesignation(G, source, ability);
+        if (needsCost && needsEffect) {
+            if (
+                requestDesignation(
+                    source,
+                    ability,
+                    (costId) => {
+                        requestDesignation(
+                            source,
+                            ability,
+                            (effectId) => {
+                                moves.activateAbility?.(
+                                    sourceInstanceId,
+                                    abilityId,
+                                    costId,
+                                    [],
+                                    effectId
+                                );
+                            },
+                            undefined,
+                            'effect'
+                        );
+                    },
+                    undefined,
+                    'cost'
+                )
+            ) {
+                return;
+            }
         }
         if (
             requestDesignation(source, ability, (cardId) => {

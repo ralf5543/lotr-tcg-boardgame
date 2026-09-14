@@ -3,6 +3,7 @@ import { createEngineClient } from './createEngineClient';
 import {
     createCard,
     createCompanion,
+    createMinion,
     createPlayerState,
 } from './createGameState';
 import type { Ability } from '../types';
@@ -242,6 +243,126 @@ describe('Pipes — défausse pipeweed + spot X', () => {
         expect(engine.getG().players['0']?.burdens).toBe(2);
         expect(engine.getG().players['0']?.discard.map((c) => c.id)).toEqual([
             '1C305',
+        ]);
+
+        engine.stop();
+    });
+});
+
+const HORNBLOWER_REMOVE_THREAT: Ability = {
+    id: '17U108:0',
+    phases: ['REGROUP'],
+    cost: [
+        {
+            discardFromPlay: [
+                {
+                    count: 1,
+                    target: [['PIPEWEED']],
+                    mode: 'DESIGNATION',
+                },
+            ],
+        },
+    ],
+    effects: [{ type: 'REMOVE_THREATS', count: 1 }],
+    source: 'SELF',
+    text: 'Regroup: Discard a pipeweed from play to remove a threat.',
+};
+
+const HORNBLOWER_DISCARD_MINION: Ability = {
+    id: '17U108:1',
+    phases: ['REGROUP'],
+    cost: [
+        {
+            discardFromPlay: [
+                {
+                    count: 1,
+                    target: [['PIPEWEED']],
+                    mode: 'DESIGNATION',
+                },
+            ],
+        },
+    ],
+    effects: [{ type: 'DISCARD', count: 1, target: [['MINION']] }],
+    source: 'SELF',
+    text: 'Regroup: Discard a pipeweed from play to discard a minion.',
+};
+
+describe('Hornblower Leaf — Discard pipeweed to …', () => {
+    it('retire une menace', () => {
+        const leaf = createCard({
+            id: '17U108',
+            title: 'Hornblower Leaf',
+            type: 'CONDITION',
+            kind: 'FREE_PEOPLE',
+            culture: 'SHIRE',
+            keywords: ['PIPEWEED'],
+            actionPhases: ['REGROUP'],
+            abilities: [HORNBLOWER_REMOVE_THREAT],
+        });
+        const engine = createEngineClient({
+            startPhase: 'regroup',
+            playerID: '0',
+            G: {
+                players: {
+                    '0': createPlayerState('0', {
+                        supportArea: [leaf, createPipeweed()],
+                        threats: 2,
+                    }),
+                },
+            },
+        });
+
+        engine.moves.activateAbility('17U108', '17U108:0', '1C305');
+
+        expect(engine.getG().players['0']?.threats).toBe(1);
+        expect(engine.getG().players['0']?.discard.map((c) => c.id)).toEqual([
+            '1C305',
+        ]);
+
+        engine.stop();
+    });
+
+    it('défausse un séide (coût + effet désignés)', () => {
+        const leaf = createCard({
+            id: '17U108',
+            title: 'Hornblower Leaf',
+            type: 'CONDITION',
+            kind: 'FREE_PEOPLE',
+            culture: 'SHIRE',
+            keywords: ['PIPEWEED'],
+            actionPhases: ['REGROUP'],
+            abilities: [HORNBLOWER_DISCARD_MINION],
+        });
+        const engine = createEngineClient({
+            startPhase: 'regroup',
+            playerID: '0',
+            G: {
+                battlefield: [
+                    createMinion({ id: 'orc-a' }),
+                    createMinion({ id: 'orc-b' }),
+                ],
+                players: {
+                    '0': createPlayerState('0', {
+                        supportArea: [leaf, createPipeweed()],
+                    }),
+                },
+            },
+        });
+
+        engine.moves.activateAbility(
+            '17U108',
+            '17U108:1',
+            '1C305',
+            [],
+            'orc-b'
+        );
+
+        expect(engine.getG().players['0']?.discard.map((c) => c.id)).toEqual([
+            '1C305',
+        ]);
+        expect(engine.getG().battlefield.map((c) => c.id)).toEqual(['orc-a']);
+        expect(engine.getG().players['1']?.discard.map((c) => c.id)).toEqual([
+            'orc-b',
         ]);
 
         engine.stop();

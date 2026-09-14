@@ -198,6 +198,13 @@ export const DevPanel: React.FC<DevPanelProps> = ({
                         >
                             🛡️ Aragorn défenseur +1 (pyramide)
                         </S.PresetButton>
+                        <S.PresetButton
+                            onClick={() =>
+                                moves.devLoadPreset('CANCEL_SKIRMISH_TEST')
+                            }
+                        >
+                            ✦ Annuler escarmouche (Merry)
+                        </S.PresetButton>
                         <S.GameButton $bgColor="#3498db" onClick={onDrawCard}>
                             🃏 Piocher ({deckCount})
                         </S.GameButton>

@@ -235,6 +235,15 @@ export type AbilityEffect =
           countFromSpot?: boolean;
       }
     | {
+          type: 'REMOVE_THREATS';
+          count: number;
+      }
+    | {
+          /** Annule une escarmouche impliquant la cible (pas de vainqueur / blessures). */
+          type: 'CANCEL_SKIRMISH';
+          involving: AbilityTargetRef;
+      }
+    | {
           type: 'WOUND';
           count: number;
           target: AbilityTargetRef;
@@ -569,7 +578,10 @@ export interface ArcheryState {
     shadowRemainingWounds: number;
 }
 
-export type DevPresetType = 'ARCHERY_TEST' | 'DEFENDER_TEST';
+export type DevPresetType =
+    | 'ARCHERY_TEST'
+    | 'DEFENDER_TEST'
+    | 'CANCEL_SKIRMISH_TEST';
 
 export interface TempKeywordModifier {
     keyword: CardKeyword;

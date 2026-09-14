@@ -105,7 +105,14 @@ export const devMoves = {
         }
     },
 
-    devLoadPreset: ({ G }: LotrMoveContext, presetType: DevPresetType) => {
+    devLoadPreset: (
+        { G, events }: LotrPhaseContext,
+        presetType: DevPresetType
+    ) => {
+        if (presetType === 'CANCEL_SKIRMISH_TEST') {
+            resetPhaseMachine(G);
+            events?.setPhase?.('skirmish');
+        }
         applyDevPreset(G, presetType);
     },
 };

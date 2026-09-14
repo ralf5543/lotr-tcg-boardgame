@@ -952,6 +952,60 @@ describe('parseAbilities — Discard a [classe] and spot X [classe]', () => {
     });
 });
 
+describe('parseAbilities — Discard a [classe] from play to …', () => {
+    const hornblowerText =
+        '<keyword>Pipeweed.</keyword> To play, spot an unbound Hobbit.<br><keyword>Regroup:</keyword> Discard a pipeweed from play to remove a threat.<br><keyword>Regroup:</keyword> Discard a pipeweed from play to discard a minion.';
+
+    it('Hornblower Leaf : menaces + défausse séide', () => {
+        expect(parseAbilities(hornblowerText, 'Hornblower Leaf', '17U108')).toEqual([
+            {
+                id: '17U108:0',
+                phases: ['REGROUP'],
+                cost: [
+                    {
+                        discardFromPlay: [
+                            {
+                                count: 1,
+                                target: [['PIPEWEED']],
+                                mode: 'DESIGNATION',
+                            },
+                        ],
+                    },
+                ],
+                effects: [{ type: 'REMOVE_THREATS', count: 1 }],
+                source: 'SELF',
+                text: expect.stringMatching(/remove a threat/i),
+            },
+            {
+                id: '17U108:1',
+                phases: ['REGROUP'],
+                cost: [
+                    {
+                        discardFromPlay: [
+                            {
+                                count: 1,
+                                target: [['PIPEWEED']],
+                                mode: 'DESIGNATION',
+                            },
+                        ],
+                    },
+                ],
+                effects: [
+                    { type: 'DISCARD', count: 1, target: [['MINION']] },
+                ],
+                source: 'SELF',
+                text: expect.stringMatching(/discard a minion/i),
+            },
+        ]);
+    });
+
+    it('n’émet rien pour un make (Southfarthing Leaf)', () => {
+        const text =
+            '<keyword>Pipeweed.</keyword> <keyword>Maneuver:</keyword> Discard a pipeweed from play to make an unbound Hobbit strength +2 until the regroup phase.';
+        expect(parseAbilities(text, 'Southfarthing Leaf', '17U109')).toBeUndefined();
+    });
+});
+
 const RAMPAGE_TEXT =
     'To play, spot an Uruk-hai. <br><keyword>Response:</keyword> If your Uruk-hai wins a skirmish, remove <symbol>twilight3</symbol> to make him <keyword>fierce</keyword> until the regroup phase.';
 

@@ -26959,6 +26959,32 @@
         "Gandalf"
       ]
     ],
+    "abilities": [
+      {
+        "id": "2R22:0",
+        "phases": [
+          "SKIRMISH"
+        ],
+        "cost": [
+          {
+            "exert": [
+              {
+                "count": 2,
+                "target": "BEARER"
+              }
+            ]
+          }
+        ],
+        "effects": [
+          {
+            "type": "CANCEL_SKIRMISH",
+            "involving": "BEARER"
+          }
+        ],
+        "source": "ATTACHMENT",
+        "text": "SKIRMISH: Exert Gandalf twice to cancel a skirmish involving him"
+      }
+    ],
     "actionPhases": [
       "SKIRMISH"
     ],
@@ -41984,6 +42010,32 @@
         "MAN"
       ]
     ],
+    "abilities": [
+      {
+        "id": "4C112:0",
+        "phases": [
+          "SKIRMISH"
+        ],
+        "cost": [
+          {
+            "exert": [
+              {
+                "count": 1,
+                "target": "BEARER"
+              }
+            ]
+          }
+        ],
+        "effects": [
+          {
+            "type": "CANCEL_SKIRMISH",
+            "involving": "BEARER"
+          }
+        ],
+        "source": "ATTACHMENT",
+        "text": "SKIRMISH: Exert bearer to cancel a skirmish involving bearer"
+      }
+    ],
     "actionPhases": [
       "SKIRMISH"
     ],
@@ -50570,6 +50622,32 @@
         "UNBOUND",
         "HOBBIT"
       ]
+    ],
+    "abilities": [
+      {
+        "id": "4R300:0",
+        "phases": [
+          "SKIRMISH"
+        ],
+        "cost": [
+          {
+            "exert": [
+              {
+                "count": 2,
+                "target": "BEARER"
+              }
+            ]
+          }
+        ],
+        "effects": [
+          {
+            "type": "CANCEL_SKIRMISH",
+            "involving": "BEARER"
+          }
+        ],
+        "source": "ATTACHMENT",
+        "text": "SKIRMISH: Exert bearer twice to cancel a skirmish involving him"
+      }
     ],
     "actionPhases": [
       "SKIRMISH"
@@ -67269,6 +67347,37 @@
     "type": "COMPANION",
     "keywords": [
       "KNIGHT"
+    ],
+    "abilities": [
+      {
+        "id": "7C96:0",
+        "phases": [
+          "FELLOWSHIP"
+        ],
+        "cost": [
+          {
+            "discardFromPlay": [
+              {
+                "count": 1,
+                "target": [
+                  [
+                    "FORTIFICATION"
+                  ]
+                ],
+                "mode": "DESIGNATION"
+              }
+            ]
+          }
+        ],
+        "effects": [
+          {
+            "type": "REMOVE_THREATS",
+            "count": 1
+          }
+        ],
+        "source": "SELF",
+        "text": "FELLOWSHIP: Discard a fortification to remove a threat."
+      }
     ],
     "actionPhases": [
       "FELLOWSHIP"
@@ -132996,6 +133105,42 @@
         ]
       }
     ],
+    "abilities": [
+      {
+        "id": "17U106:0",
+        "phases": [
+          "SKIRMISH"
+        ],
+        "cost": [
+          {
+            "discardFromPlay": [
+              {
+                "count": 1,
+                "target": [
+                  [
+                    "PIPEWEED"
+                  ]
+                ],
+                "mode": "DESIGNATION"
+              }
+            ]
+          }
+        ],
+        "effects": [
+          {
+            "type": "CANCEL_SKIRMISH",
+            "involving": [
+              [
+                "UNBOUND",
+                "HOBBIT"
+              ]
+            ]
+          }
+        ],
+        "source": "SELF",
+        "text": "SKIRMISH: Discard a pipeweed from play to cancel a skirmish involving an unbound Hobbit."
+      }
+    ],
     "actionPhases": [
       "SKIRMISH"
     ],
@@ -133100,6 +133245,71 @@
             ]
           }
         ]
+      }
+    ],
+    "abilities": [
+      {
+        "id": "17U108:0",
+        "phases": [
+          "REGROUP"
+        ],
+        "cost": [
+          {
+            "discardFromPlay": [
+              {
+                "count": 1,
+                "target": [
+                  [
+                    "PIPEWEED"
+                  ]
+                ],
+                "mode": "DESIGNATION"
+              }
+            ]
+          }
+        ],
+        "effects": [
+          {
+            "type": "REMOVE_THREATS",
+            "count": 1
+          }
+        ],
+        "source": "SELF",
+        "text": "REGROUP: Discard a pipeweed from play to remove a threat."
+      },
+      {
+        "id": "17U108:1",
+        "phases": [
+          "REGROUP"
+        ],
+        "cost": [
+          {
+            "discardFromPlay": [
+              {
+                "count": 1,
+                "target": [
+                  [
+                    "PIPEWEED"
+                  ]
+                ],
+                "mode": "DESIGNATION"
+              }
+            ]
+          }
+        ],
+        "effects": [
+          {
+            "type": "DISCARD",
+            "count": 1,
+            "target": [
+              [
+                "MINION"
+              ]
+            ]
+          }
+        ],
+        "source": "SELF",
+        "text": "REGROUP: Discard a pipeweed from play to discard a minion."
       }
     ],
     "actionPhases": [

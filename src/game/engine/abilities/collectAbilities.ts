@@ -188,6 +188,22 @@ function formatEffectBit(
         const n = effect.count || 0;
         return `retirer ${n} fardeau${n > 1 ? 'x' : ''}`;
     }
+    if (effect.type === 'REMOVE_THREATS') {
+        const n = effect.count || 0;
+        return `retirer ${n} menace${n > 1 ? 's' : ''}`;
+    }
+    if (effect.type === 'CANCEL_SKIRMISH') {
+        if (effect.involving === 'BEARER') {
+            return 'annuler une escarmouche impliquant le détenteur';
+        }
+        if (effect.involving === 'SELF') {
+            return 'annuler une escarmouche impliquant ce personnage';
+        }
+        const who = formatTargetPhrase(effect.involving);
+        return who
+            ? `annuler une escarmouche impliquant ${who}`
+            : 'annuler une escarmouche';
+    }
     if (effect.type === 'HEAL') {
         const who = formatTargetPhrase(effect.target);
         return who ? `guérir ${who}` : 'guérir';

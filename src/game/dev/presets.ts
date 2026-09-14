@@ -569,5 +569,75 @@ export const applyDevPreset = (
                 '[DEV] Aragorn défenseur +1 : Lurtz + Éclaireur déjà assignés (pyramide). Soldat et Nazgûl restent sur le champ de bataille.';
             break;
         }
+        case 'CANCEL_SKIRMISH_TEST': {
+            G.twilightPool = 4;
+            fpPlayer.burdens = 1;
+
+            Object.keys(G.players).forEach((pId) => {
+                const player = G.players[pId];
+                if (player) {
+                    player.hand = [];
+                    player.supportArea = [];
+                }
+            });
+
+            const merry = clonePresetCard('1R302', 'dev-merry');
+            const escape = clonePresetCard('4R300', 'dev-escape');
+            merry.attachments = [escape];
+
+            const frodo = clonePresetCard('5U111', 'dev-frodo');
+            const ring = clonePresetCard('4R1', 'dev-ring');
+            if (ring) frodo.attachments = [ring];
+
+            const leaf = clonePresetCard('17U106', 'dev-halfling-leaf');
+            const toby = clonePresetCard('1C305', 'dev-old-toby');
+
+            const lurtz = { ...CARDS_PRESETS.LURTZ, instanceId: 'dev-lurtz' };
+            const scout = {
+                ...CARDS_PRESETS.MORIA_SCOUT,
+                instanceId: 'dev-scout',
+            };
+            const orc = {
+                ...CARDS_PRESETS.ORC_SOLDIER,
+                instanceId: 'dev-orc',
+            };
+
+            fpPlayer.fellowshipArea = [
+                frodo,
+                merry,
+                { ...CARDS_PRESETS.SMEAGOL, instanceId: 'dev-smeagol' },
+            ];
+            fpPlayer.supportArea = [leaf, toby].filter(Boolean) as CardState[];
+
+            G.battlefield = [lurtz, scout, orc];
+            G.skirmishes = [
+                {
+                    id: 'skirmish_dev-merry',
+                    companionId: 'dev-merry',
+                    minionIds: ['dev-lurtz', 'dev-scout'],
+                },
+                {
+                    id: 'skirmish_dev-smeagol',
+                    companionId: 'dev-smeagol',
+                    minionIds: ['dev-orc'],
+                },
+            ];
+            G.activeSkirmishId = 'skirmish_dev-merry';
+            G.actionWindow = {
+                isOpen: true,
+                activePlayerId: fpId,
+                title: 'ESCARMOUCHE',
+                message:
+                    'Phase d’actions de Skirmish : Jouez des cartes/effets ou PASSER.',
+                canPass: true,
+                passesCount: 0,
+            };
+            G.responseWindow = undefined;
+            G.pendingEvent = undefined;
+
+            G.statusMessage =
+                '[DEV] Annulation : Merry (Évasion) vs Lurtz+Éclaireur — Fenêtre ouverte. Feuille de Hobbit + Old Toby en soutien. Sméagol a aussi un combat.';
+            break;
+        }
     }
 };
