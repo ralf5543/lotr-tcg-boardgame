@@ -3,6 +3,7 @@ import * as S from './styles';
 import type { Ctx } from 'boardgame.io';
 import type { CardState, GameState } from '../../../../game/types';
 import { TRANSLATIONS } from '../../../../game/translations';
+import { canonicalPhaseName } from '../../canonicalPhaseName';
 import { BiddingWidget } from '../BiddingWidget';
 import { useTargeting } from '../../../../contexts/TargetingContext';
 import { findTargetCard } from '../../../../utils/cardUtils';
@@ -526,6 +527,11 @@ export const GameControls: React.FC<GameControlsProps> = ({
     const currentNarrativeLog =
         G.statusMessage || statusMessage || 'Partie en cours';
     const instructionText = getInstructionText();
+    const phaseLabelKey = canonicalPhaseName(ctx.phase).toUpperCase();
+    const phaseLabel =
+        TRANSLATIONS.phase[
+            phaseLabelKey as keyof typeof TRANSLATIONS.phase
+        ] || phaseLabelKey || 'SETUP';
 
     return (
         <>
@@ -533,14 +539,7 @@ export const GameControls: React.FC<GameControlsProps> = ({
             <S.ControlsContainer>
                 <S.PhaseBanner>
                     <S.InfoGroup>
-                        <S.PhaseBadge>
-                            Phase :{' '}
-                            {ctx.phase
-                                ? TRANSLATIONS.phase[
-                                      ctx.phase.toUpperCase() as keyof typeof TRANSLATIONS.phase
-                                  ] || ctx.phase.toUpperCase()
-                                : 'SETUP'}
-                        </S.PhaseBadge>
+                        <S.PhaseBadge>Phase : {phaseLabel}</S.PhaseBadge>
 
                         {actingPlayer?.profile?.avatar && (
                             <img

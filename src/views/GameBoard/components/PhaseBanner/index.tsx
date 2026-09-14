@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { canonicalPhaseName } from '../../canonicalPhaseName';
 import * as S from './styles';
 
 interface PhaseBannerProps {
@@ -18,6 +19,7 @@ const PHASE_LABELS: Record<string, string> = {
 
 export const PhaseBanner: React.FC<PhaseBannerProps> = ({ phaseName }) => {
     const [isVisible, setIsVisible] = useState(true);
+    const displayPhase = canonicalPhaseName(phaseName);
 
     useEffect(() => {
         // Masque le composant après la durée de l'animation CSS
@@ -28,15 +30,17 @@ export const PhaseBanner: React.FC<PhaseBannerProps> = ({ phaseName }) => {
         return () => clearTimeout(timer);
     }, []); // Déclenché uniquement au montage (mount)
 
-    if (!isVisible || !phaseName) return null;
+    if (!isVisible || !displayPhase) return null;
 
-    const label = PHASE_LABELS[phaseName] || phaseName.toUpperCase();
+    const label = PHASE_LABELS[displayPhase] || displayPhase.toUpperCase();
 
     return (
         <S.Overlay>
             <S.BannerContent>
                 <S.BannerTitle>{label}</S.BannerTitle>
-                <S.BannerImage src={`interface/icons/phase_${phaseName}.webp`} />
+                <S.BannerImage
+                    src={`interface/icons/phase_${displayPhase}.webp`}
+                />
             </S.BannerContent>
         </S.Overlay>
     );

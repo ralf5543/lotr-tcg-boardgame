@@ -22,6 +22,7 @@ import { SitesPicker } from './components/SitePicker';
 import { GameControls } from './components/GameControls';
 import { canAttachToCharacter } from '../../game/engine/canPlayCard';
 import { PhaseBanner } from './components/PhaseBanner';
+import { canonicalPhaseName } from './canonicalPhaseName';
 import { DevPanel, type DevMoves } from '../../utils/DevPanel';
 import { useFaction } from '../../contexts/FactionContext';
 import { FactionProvider } from '../../contexts/FactionProvider';
@@ -1262,7 +1263,10 @@ export const GameBoard: React.FC<GameBoardProps> = ({
                             )}
                         </S.HoveredCardsZone>
                     )}
-                    <PhaseBanner key={ctx.phase} phaseName={ctx.phase} />
+                    <PhaseBanner
+                        key={canonicalPhaseName(ctx.phase)}
+                        phaseName={ctx.phase || ''}
+                    />
                     <DevPanel
                         G={G}
                         ctx={ctx}
