@@ -1,0 +1,64 @@
+---
+description: Plan d’implémentation des sites (mots-clés, gametext, attache, contrôle)
+alwaysApply: true
+---
+
+# Sites — plan et credo
+
+Credo (hérité) : **mieux vaut un site inerte qu’un site faux.** On n’émet une ability / un effet site que si le fragment est sûr.
+
+**Parser = fragments**, jamais une carte site entière. Réutiliser les primitifs déjà connus (Spot, Exert, Discard, Draw, remove twilight, phases, classes, mots-clés). Regex collée sur une phrase unique = trop spécifique : on généralise ou on n’émet rien. Exceptions par id en dernier.
+
+Aujourd’hui vivant : chemin d’aventure, pose de site, crépuscule au déplacement (coût site + compagnons), soins « sanctuaire » **hardcodés** sur les index 3 et 6. Le reste (keywords utiles, gametext, attache, contrôle) = inerte.
+
+L’ancien plan effets de cartes est **figé** (`.cursor/rules/card-effects-plan.mdc`, `alwaysApply: false`). Suite = ce plan.
+
+## Ordre
+
+**Prochaine priorité** : **socle + mots-clés** (étape 1–2). Gametext ensuite. Attache / contrôle plus tard, **UX avant code**.
+
+1. **Socle modèle**
+   - Clarifier `SiteCardState` : `attachments` = vraies cartes (`CardState[]`), pas `string[]`.
+   - Site courant / « at this site » / chemin (`path`) comme source de vérité unique.
+   - Sanctuary comme **mot-clé** (aujourd’hui absent de l’union keywords ; soins uniquement via index 3/6).
+   - Convert : ne plus forcer `abilities: undefined` sur les sites **quand** on commence à parser (étape 3) — d’ici là, keywords d’abord.
+
+2. **Mots-clés de site**
+   - Rendre opérants pour le reste du jeu : `UNDERGROUND`, `BATTLEGROUND`, `FOREST`, `RIVER`, `PLAINS`, `MARSH`, `MOUNTAIN`, `DWELLING`, (+ `SANCTUARY` une fois dans le modèle).
+   - Cas d’usage : spot / « at an underground site », conditions d’attache, textes cartes qui ciblent un terrain.
+   - Affichage badges déjà cosmétique — la prio est la **logique**, pas le polish UI.
+   - Sanctuary textuel du type « When the fellowship moves from …, remove Ⓣ » = **gametext** (étape 3), pas magie du seul mot-clé — sauf règle papier clairement universelle.
+
+3. **Gametext des sites**
+   - Réactiver le parse d’abilities sur `Type=SITE` par **familles sûres**.
+   - Priorité fragments : `When the fellowship moves to/from …` ; capacités de phase `Fellowship:` / `Shadow:` / `Maneuver:` / `Regroup:` simples (coût + effet déjà connus).
+   - Refuser le reste (multi-clauses floues, contrôle, replace, etc.) tant que l’infra manque.
+   - Tests sur textes CSV / `sites.json` réels.
+
+4. **Attache sur un site** (UX à concevoir **avant** code)
+   - Jouer une carte « Plays on a site » (climats, etc.) : cibler un site du `path`, limite 1 par site.
+   - Défausser / effets qui ciblent une condition **sur** un site (ex. cape `1U98` vs Neiges `1C138`).
+   - Débloque le vrai modèle (plus de Neiges en `supportArea` en workaround).
+
+5. **Contrôle de site** (UX à concevoir **avant** code)
+   - Contrôler / libérer un site (cultures concernées : **Dunland**, **Sauron** ; **Uruk-hai** à vérifier wiki/CSV avant de câbler).
+   - Puis « Plays on a site you control » / textes While control / skip liés au contrôle.
+   - Vocabulaire wiki : Control, Liberate, Replace, At a Site.
+
+## Hors scope pour l’instant
+
+- Reprendre les familles cartes inertes du vieux plan (While Archer each, prevent Ombre hors cancel, exceptions hors Sam…).
+- Multi-Shadow / plus de 2 joueurs.
+- `siteArrow` / home d’alliés liés au site tant que le socle keywords + move n’est pas solide.
+
+## État de référence (à ne pas casser)
+
+| Mécanique | Statut |
+| --- | --- |
+| Pose site / avance / crépuscule au move | ✅ |
+| Limite 2 moves / tour | ✅ |
+| Soins sanctuaire index 3 & 6 | ✅ (à migrer vers keyword + règle papier) |
+| Keywords site en logique | ❌ |
+| Abilities / gametext site | ❌ (convert les ignore) |
+| Attache sur site | ❌ |
+| Contrôle / libération | ❌ |

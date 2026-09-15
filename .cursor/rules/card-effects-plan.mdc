@@ -1,9 +1,13 @@
 ---
-description: Plan d’implémentation des effets de cartes (Réponse, primitifs, exceptions)
-alwaysApply: true
+description: "ARCHIVÉ — Plan effets de cartes (figé ; suite = sites-plan.mdc)"
+alwaysApply: false
 ---
 
-# Effets de cartes — plan et credo
+# Effets de cartes — plan archivé
+
+> **Figé.** Ne plus enchaîner de nouvelles familles ici. Suite active : [`.cursor/rules/sites-plan.mdc`](sites-plan.mdc) (sites : mots-clés → gametext → attache → contrôle).
+>
+> Credo et vocabulaire ci-dessous restent une **référence** si on retouche des effets de cartes hors sites.
 
 Credo : **mieux vaut une carte inerte qu’une carte fausse.** Le parser n’émet une ability que s’il est sûr.
 
@@ -11,22 +15,22 @@ Credo : **mieux vaut une carte inerte qu’une carte fausse.** Le parser n’ém
 
 Réponse n’est pas une phase. Fenêtre dédiée `responseWindow` + `pendingEvent` (ne pas recycler `actionWindow`). Toaster comme la fenêtre d’action ; le joueur clique la carte qu’il veut.
 
-## Ordre
+## Bilan (figé)
 
-**Prochaine priorité** : familles parser suivantes. **Prevent Ombre** sur cancel skirmish ✅ (`Any Shadow player may remove Ⓣ to prevent this` — Escape / Gantelets de Boromir ; pas draw / discard / wound / liberate). **Skip the archery phase** ✅ (`While you can spot The Balrog…` Fill With Fear ; `Skip the archery phase.` Sang de Númenor / Balrog ; pas sites / control / multi-phase / bearing unique). **While you can spot …, each [classe] is Damage +N / fierce** ✅ (Raging Dunlending / Shingle ; pas other / Archer / and). **While you can spot …, each [classe] is strength ±N** ✅ (Nertëa / Unending Life / Chaotic Clash ; pas skirmishing / of your / not roaming). **While bearing … → strength / Damage / fierce** ✅. **While skirmishing … → strength ±N** ✅ (classe / fierce minion). **While you can spot … → Damage +N / fierce** ✅ (miroir force). **Remove Ⓣ to make … strength ±N (limit +Y)** ✅ (Attëa, cimeterres, etc. ; pas for each / fierce / Damage). **While you can spot … → strength +N** (self / bearer / crépuscule) ✅. **Each time you play a [classe], add Ⓣ** ✅ (Armurerie gobeline ; le reste Each time reste inerte). Longbottom Leaf ✅. Coût `Discard a [classe] and spot X [classe]` + effets `remove X burdens` / crépuscule X / **soin ×X / X cibles** ✅ (Gaffer / Gandalf / Frodo / Aragorn pipes). `Discard a [classe] from play to remove a threat` / `to discard a minion` ✅ (Hornblower Leaf). **Cancel skirmish** ✅ (`Exert … to cancel a skirmish involving …`, `Discard … to cancel…`) — Escape / Halfling Leaf / bâton de Gandalf.
+**Prevent Ombre** sur cancel skirmish ✅ (`Any Shadow player may remove Ⓣ to prevent this` — Escape / Gantelets de Boromir ; pas draw / discard / wound / liberate). **Skip the archery phase** ✅ (`While you can spot The Balrog…` Fill With Fear ; `Skip the archery phase.` Sang de Númenor / Balrog ; pas sites / control / multi-phase / bearing unique). **While you can spot …, each [classe] is Damage +N / fierce** ✅ (Raging Dunlending / Shingle ; pas other / Archer / and). **While you can spot …, each [classe] is strength ±N** ✅ (Nertëa / Unending Life / Chaotic Clash ; pas skirmishing / of your / not roaming). **While bearing … → strength / Damage / fierce** ✅. **While skirmishing … → strength ±N** ✅ (classe / fierce minion). **While you can spot … → Damage +N / fierce** ✅ (miroir force). **Remove Ⓣ to make … strength ±N (limit +Y)** ✅ (Attëa, cimeterres, etc. ; pas for each / fierce / Damage). **While you can spot … → strength +N** (self / bearer / crépuscule) ✅. **Each time you play a [classe], add Ⓣ** ✅ (Armurerie gobeline ; le reste Each time reste inerte). Longbottom Leaf ✅. Coût `Discard a [classe] and spot X [classe]` + effets `remove X burdens` / crépuscule X / **soin ×X / X cibles** ✅ (Gaffer / Gandalf / Frodo / Aragorn pipes). `Discard a [classe] from play to remove a threat` / `to discard a minion` ✅ (Hornblower Leaf). **Cancel skirmish** ✅ (`Exert … to cancel a skirmish involving …`, `Discard … to cancel…`) — Escape / Halfling Leaf / bâton de Gandalf.
 
-While : ~500 textes EN. Câblé = Anneau Unique (`While wearing`) + **spot → force / Damage / fierce** + **skirmishing → force** + **bearing → force / Damage / fierce** + **spot → each [classe] force / Damage / fierce** + **skip archery**. Le reste (Archer each, sites/control skip, roaming/wounded…) reste inerte.
+While : ~500 textes EN. Câblé = Anneau Unique (`While wearing`) + **spot → force / Damage / fierce** + **skirmishing → force** + **bearing → force / Damage / fierce** + **spot → each [classe] force / Damage / fierce** + **skip archery**. Le reste (Archer each, sites/control skip, roaming/wounded…) reste inerte — **pas repris** tant que le plan sites est actif.
 
 1. Infra : `pendingEvent` ABOUT_TO_WOUND, `responseWindow`, toaster, Passer. Sans réponse éligible = blessure immédiate (comportement actuel). ✅
 2. `PREVENT_WOUND` (Éowyn `4C270`) avant l’Anneau Unique. ✅
 3. Anneau : mettre l’Anneau (réponse) **puis** fardeaux à la place (passif `While`, pas un toaster). ✅
-4. Coûts prevent-wound : spot, crépuscule, défausser cette carte. ✅ (`1C76`, `1R173`, `4R19`). Défausse depuis la main (`3U7`) et `in a skirmish` (`8R38`). ✅ Soin / défausse / pioche sûrs (`1R34`, `1R40`, `1U98`, `1C315`). Défausse d’un climat **sur un site** (`1U98` vs Neiges) → étape 7.
+4. Coûts prevent-wound : spot, crépuscule, défausser cette carte. ✅ (`1C76`, `1R173`, `4R19`). Défausse depuis la main (`3U7`) et `in a skirmish` (`8R38`). ✅ Soin / défausse / pioche sûrs (`1R34`, `1R40`, `1U98`, `1C315`). Défausse d’un climat **sur un site** (`1U98` vs Neiges) → **plan sites** (attache).
 5. Étendre exert-to-make / to-wound. Puis `When you play this`. Puis réponses « gagne une escarmouche » / mort.
    - **5a** — exert-to-make une **autre** classe (`7R91` Faramir, `0P21` Treebeard) ; to-wound un personnage **au combat** (`1C271` Soldat orque). Refuser tout reste inconnu. ✅
    - **5b** — `When you play this` **requis** (pas « you may ») : `1C191` Éclaireur de la Moria (spot Elfe → crépuscule). ✅ « you may » DRAW : Old Toby `1C305` (+ Hides) ✅. Longbottom Leaf (`1C300`, défausse main « up to 2 ») ✅.
    - **5c** — Réponses « gagne une escarmouche » (make fierce / force jusqu’au ralliement) : `1U159`, `1R247`, `4C37`. ✅ Mort : Sam Porteur si Frodo meurt = exception étape 6 ; le reste (soigner, moulin, défausse…) reste inerte.
-6. **Exceptions en dernier** (~300 handlers par id, pas dans le parser). Infra registre ✅ + **Sam `2C114`** ✅. D’ici là : élargir les familles parser. Un deck checklist peut rester partiellement inerte.
-7. **Sites (UX à concevoir avant code)** : attache sur site, contrôle d’un site, attache sur site contrôlé. Puis climat « Plays on a site » + défausse (`1C138` + cape `1U98`). Pause jusqu’à décision UX.
+6. **Exceptions en dernier** (~300 handlers par id, pas dans le parser). Infra registre ✅ + **Sam `2C114`** ✅. Un deck checklist peut rester partiellement inerte.
+7. **Sites** → basculé vers [`.cursor/rules/sites-plan.mdc`](sites-plan.mdc) (plus de pause dans ce fichier).
 
 Tests : cartes réelles du CSV. UI : toaster seulement s’il existe au moins une réponse payable dont le trigger matche.
 
