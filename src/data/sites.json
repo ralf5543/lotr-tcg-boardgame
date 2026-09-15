@@ -6512,7 +6512,7 @@
       },
       "de": {
         "title": "Die Treppen von Moria",
-        "gameText": "**Unterirdisch.** Jeder Charakter, der eine Handwaffe trägt, erhält **Schaden +1**."
+        "gameText": "**Unterirdisch.** Jeder Charakter, der eine Handwaffe trägt, erhält **Schaden +1.**"
       },
       "it": {
         "title": "Moria Stairway",
@@ -7140,7 +7140,7 @@
       },
       "de": {
         "title": "Fenster nach Westen",
-        "gameText": "**Unterirdisch.** Jeder nicht verwundete <symbol>gondor</symbol> Mensch ist **Verteidiger +1**."
+        "gameText": "**Unterirdisch.** Jeder nicht verwundete <symbol>gondor</symbol> Mensch ist **Verteidiger +1.**"
       },
       "it": {
         "title": "Window on the West",
@@ -7208,7 +7208,7 @@
       },
       "fr": {
         "title": "The Angle",
-        "gameText": "<b>Forest. Shadow:</b> Play a Nazgûl (or spot 6 companions and discard 2 cards from hand) to draw a card."
+        "gameText": "**Forest. Shadow:** Play a Nazgûl (or spot 6 companions and discard 2 cards from hand) to draw a card."
       },
       "de": {
         "title": "Der Winkel",
@@ -7216,11 +7216,11 @@
       },
       "it": {
         "title": "The Angle",
-        "gameText": "<b>Forest. Shadow:</b> Play a Nazgûl (or spot 6 companions and discard 2 cards from hand) to draw a card."
+        "gameText": "**Forest. Shadow:** Play a Nazgûl (or spot 6 companions and discard 2 cards from hand) to draw a card."
       },
       "es": {
         "title": "The Angle",
-        "gameText": "<b>Forest. Shadow:</b> Play a Nazgûl (or spot 6 companions and discard 2 cards from hand) to draw a card."
+        "gameText": "**Forest. Shadow:** Play a Nazgûl (or spot 6 companions and discard 2 cards from hand) to draw a card."
       }
     }
   },
@@ -7241,7 +7241,7 @@
       },
       "fr": {
         "title": "The Bridge of Khazad-dûm",
-        "gameText": "<b>Battleground. Underground.</b> The Balrog is twilight cost –3."
+        "gameText": "**Battleground. Underground.** The Balrog is twilight cost –3."
       },
       "de": {
         "title": "Die Brücke von Khazad-dûm",
@@ -7249,11 +7249,11 @@
       },
       "it": {
         "title": "The Bridge of Khazad-dûm",
-        "gameText": "<b>Battleground. Underground.</b> The Balrog is twilight cost –3."
+        "gameText": "**Battleground. Underground.** The Balrog is twilight cost –3."
       },
       "es": {
         "title": "The Bridge of Khazad-dûm",
-        "gameText": "<b>Battleground. Underground.</b> The Balrog is twilight cost –3."
+        "gameText": "**Battleground. Underground.** The Balrog is twilight cost –3."
       }
     }
   },
@@ -7274,7 +7274,7 @@
       },
       "fr": {
         "title": "Emyn Muil",
-        "gameText": "<b>Mountain. Maneuver:</b> Remove <symbol>twilight2</symbol> and exert your minion that is not fierce to make that minion <b>fierce</b> until the regroup phase."
+        "gameText": "**Mountain. Maneuver:** Remove <symbol>twilight2</symbol> and exert your minion that is not fierce to make that minion **fierce** until the regroup phase."
       },
       "de": {
         "title": "Emyn Muil",
@@ -7282,11 +7282,11 @@
       },
       "it": {
         "title": "Emyn Muil",
-        "gameText": "<b>Mountain. Maneuver:</b> Remove <symbol>twilight2</symbol> and exert your minion that is not fierce to make that minion <b>fierce</b> until the regroup phase."
+        "gameText": "**Mountain. Maneuver:** Remove <symbol>twilight2</symbol> and exert your minion that is not fierce to make that minion **fierce** until the regroup phase."
       },
       "es": {
         "title": "Emyn Muil",
-        "gameText": "<b>Mountain. Maneuver:</b> Remove <symbol>twilight2</symbol> and exert your minion that is not fierce to make that minion <b>fierce</b> until the regroup phase."
+        "gameText": "**Mountain. Maneuver:** Remove <symbol>twilight2</symbol> and exert your minion that is not fierce to make that minion **fierce** until the regroup phase."
       }
     }
   },
@@ -7307,7 +7307,7 @@
       },
       "fr": {
         "title": "Hill of Sight",
-        "gameText": "<b>Battleground. Forest.</b> While you can spot 3 minions (or 6 companions), each unbound companion is resistance –2."
+        "gameText": "**Battleground. Forest.** While you can spot 3 minions (or 6 companions), each unbound companion is resistance –2."
       },
       "de": {
         "title": "Berg des Auges",
@@ -7315,11 +7315,11 @@
       },
       "it": {
         "title": "Hill of Sight",
-        "gameText": "<b>Battleground. Forest.</b> While you can spot 3 minions (or 6 companions), each unbound companion is resistance –2."
+        "gameText": "**Battleground. Forest.** While you can spot 3 minions (or 6 companions), each unbound companion is resistance –2."
       },
       "es": {
         "title": "Hill of Sight",
-        "gameText": "<b>Battleground. Forest.</b> While you can spot 3 minions (or 6 companions), each unbound companion is resistance –2."
+        "gameText": "**Battleground. Forest.** While you can spot 3 minions (or 6 companions), each unbound companion is resistance –2."
       }
     }
   },
@@ -7343,7 +7343,7 @@
       },
       "fr": {
         "title": "Hobbiton Market",
-        "gameText": "<b>Dwelling.</b> When the fellowship moves from this site, wound each minion that is not a lurker."
+        "gameText": "**Dwelling.** When the fellowship moves from this site, wound each minion that is not a lurker."
       },
       "de": {
         "title": "Marktplatz in Hobbingen",
@@ -7351,11 +7351,11 @@
       },
       "it": {
         "title": "Hobbiton Market",
-        "gameText": "<b>Dwelling.</b> When the fellowship moves from this site, wound each minion that is not a lurker."
+        "gameText": "**Dwelling.** When the fellowship moves from this site, wound each minion that is not a lurker."
       },
       "es": {
         "title": "Hobbiton Market",
-        "gameText": "<b>Dwelling.</b> When the fellowship moves from this site, wound each minion that is not a lurker."
+        "gameText": "**Dwelling.** When the fellowship moves from this site, wound each minion that is not a lurker."
       }
     }
   },
@@ -7376,7 +7376,7 @@
       },
       "fr": {
         "title": "Northern Pelennor",
-        "gameText": "<b>Battleground. Plains. Shadow:</b> Make your lurker minion lose <b>lurker</b> until the regroup phase."
+        "gameText": "**Battleground. Plains. Shadow:** Make your lurker minion lose **lurker** until the regroup phase."
       },
       "de": {
         "title": "Nördlicher Pelennor",
@@ -7384,11 +7384,11 @@
       },
       "it": {
         "title": "Northern Pelennor",
-        "gameText": "<b>Battleground. Plains. Shadow:</b> Make your lurker minion lose <b>lurker</b> until the regroup phase."
+        "gameText": "**Battleground. Plains. Shadow:** Make your lurker minion lose **lurker** until the regroup phase."
       },
       "es": {
         "title": "Northern Pelennor",
-        "gameText": "<b>Battleground. Plains. Shadow:</b> Make your lurker minion lose <b>lurker</b> until the regroup phase."
+        "gameText": "**Battleground. Plains. Shadow:** Make your lurker minion lose **lurker** until the regroup phase."
       }
     }
   },
@@ -7409,7 +7409,7 @@
       },
       "fr": {
         "title": "Shores of Nen Hithoel",
-        "gameText": "<b>River. Shadow:</b> Spot 5 <symbol>orc</symbol> Orcs to prevent the fellowship from moving again this turn."
+        "gameText": "**River. Shadow:** Spot 5 <symbol>orc</symbol> Orcs to prevent the fellowship from moving again this turn."
       },
       "de": {
         "title": "Die Ufer von Nen Hithoel",
@@ -7417,11 +7417,11 @@
       },
       "it": {
         "title": "Shores of Nen Hithoel",
-        "gameText": "<b>River. Shadow:</b> Spot 5 <symbol>orc</symbol> Orcs to prevent the fellowship from moving again this turn."
+        "gameText": "**River. Shadow:** Spot 5 <symbol>orc</symbol> Orcs to prevent the fellowship from moving again this turn."
       },
       "es": {
         "title": "Shores of Nen Hithoel",
-        "gameText": "<b>River. Shadow:</b> Spot 5 <symbol>orc</symbol> Orcs to prevent the fellowship from moving again this turn."
+        "gameText": "**River. Shadow:** Spot 5 <symbol>orc</symbol> Orcs to prevent the fellowship from moving again this turn."
       }
     }
   },
@@ -7442,7 +7442,7 @@
       },
       "fr": {
         "title": "Slopes of Orodruin",
-        "gameText": "<b>Mountain. Shadow:</b> Remove <symbol>twilight2</symbol> and discard 2 Free Peoples cards from hand to draw a card."
+        "gameText": "**Mountain. Shadow:** Remove <symbol>twilight2</symbol> and discard 2 Free Peoples cards from hand to draw a card."
       },
       "de": {
         "title": "Die Hänge des Orodruin",
@@ -7450,11 +7450,11 @@
       },
       "it": {
         "title": "Slopes of Orodruin",
-        "gameText": "<b>Mountain. Shadow:</b> Remove <symbol>twilight2</symbol> and discard 2 Free Peoples cards from hand to draw a card."
+        "gameText": "**Mountain. Shadow:** Remove <symbol>twilight2</symbol> and discard 2 Free Peoples cards from hand to draw a card."
       },
       "es": {
         "title": "Slopes of Orodruin",
-        "gameText": "<b>Mountain. Shadow:</b> Remove <symbol>twilight2</symbol> and discard 2 Free Peoples cards from hand to draw a card."
+        "gameText": "**Mountain. Shadow:** Remove <symbol>twilight2</symbol> and discard 2 Free Peoples cards from hand to draw a card."
       }
     }
   },
@@ -7478,7 +7478,7 @@
       },
       "fr": {
         "title": "Starkhorn",
-        "gameText": "<b>Mountain.</b> Each time your Dwarf wins a skirmish, you may draw a card."
+        "gameText": "**Mountain.** Each time your Dwarf wins a skirmish, you may draw a card."
       },
       "de": {
         "title": "Starkhorn",
@@ -7486,11 +7486,11 @@
       },
       "it": {
         "title": "Starkhorn",
-        "gameText": "<b>Mountain.</b> Each time your Dwarf wins a skirmish, you may draw a card."
+        "gameText": "**Mountain.** Each time your Dwarf wins a skirmish, you may draw a card."
       },
       "es": {
         "title": "Starkhorn",
-        "gameText": "<b>Mountain.</b> Each time your Dwarf wins a skirmish, you may draw a card."
+        "gameText": "**Mountain.** Each time your Dwarf wins a skirmish, you may draw a card."
       }
     }
   },
@@ -7511,7 +7511,7 @@
       },
       "fr": {
         "title": "Wold Battlefield",
-        "gameText": "<b>Plains. Skirmish:</b> Exert your Man (except an enduring Man) to make him or her <b>damage +1.</b>"
+        "gameText": "**Plains. Skirmish:** Exert your Man (except an enduring Man) to make him or her **damage +1.**"
       },
       "de": {
         "title": "Schlachtfeld im Ödland",
@@ -7519,11 +7519,11 @@
       },
       "it": {
         "title": "Wold Battlefield",
-        "gameText": "<b>Plains. Skirmish:</b> Exert your Man (except an enduring Man) to make him or her <b>damage +1.</b>"
+        "gameText": "**Plains. Skirmish:** Exert your Man (except an enduring Man) to make him or her **damage +1.**"
       },
       "es": {
         "title": "Wold Battlefield",
-        "gameText": "<b>Plains. Skirmish:</b> Exert your Man (except an enduring Man) to make him or her <b>damage +1.</b>"
+        "gameText": "**Plains. Skirmish:** Exert your Man (except an enduring Man) to make him or her **damage +1.**"
       }
     }
   },
@@ -7839,7 +7839,7 @@
       },
       "de": {
         "title": "Flussbett des Isen",
-        "gameText": "**Schlachtfeld. Ebene**. Zu Beginn der Sammelphase darf jeder Schat-tenspieler einen Diener anstrengen, um einen Gefährten anzustrengen."
+        "gameText": "**Schlachtfeld. Ebene.** Zu Beginn der Sammelphase darf jeder Schat-tenspieler einen Diener anstrengen, um einen Gefährten anzustrengen."
       },
       "it": {
         "title": "Isenwash",
