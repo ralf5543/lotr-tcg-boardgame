@@ -208,6 +208,12 @@ export type AbilityEffect =
           target: AbilityTargetRef;
       }
     | {
+          /** Mot-clé passif (While…) — pas d’expiration de phase. */
+          type: 'MODIFY_KEYWORD';
+          keyword: CardKeyword;
+          target: AbilityTargetRef;
+      }
+    | {
           type: 'DRAW';
           count: number;
       }

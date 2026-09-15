@@ -504,8 +504,7 @@ export const applyDevPreset = (
             const shadowPlayer = G.players[shadowId];
             if (!shadowPlayer) return;
 
-            // Crépuscule 6 : Attëa peut booster + Gandalf déjà au seuil While (3+)
-            G.twilightPool = 6;
+            G.twilightPool = 0;
             fpPlayer.burdens = 0;
             G.battlefield = [];
             G.skirmishes = [];
@@ -524,35 +523,49 @@ export const applyDevPreset = (
                 }
             });
 
+            // Duinhir + monture → Damage +1 (While you can spot a mount)
             fpPlayer.fellowshipArea = [
                 {
                     ...CARDS_PRESETS.FRODO,
                     instanceId: 'dev-frodo',
                     attachments: [clonePresetCard('1R1', 'dev-ring')],
                 },
-                clonePresetCard('4C90', 'dev-gandalf'),
+                {
+                    ...clonePresetCard('14R8', 'dev-duinhir'),
+                    attachments: [clonePresetCard('4U263', 'dev-brego')],
+                },
             ];
 
-            // Morgul Cur (While) + Attëa (Remove Ⓣ → force, en escarmouche)
-            const attea = clonePresetCard('1R229', 'dev-attea');
+            // 3 possessions → Cirith Ungol Patroller fierce
+            fpPlayer.supportArea = [
+                clonePresetCard('1C300', 'dev-leaf-1'),
+                clonePresetCard('1C305', 'dev-toby'),
+                clonePresetCard('1C300', 'dev-leaf-2'),
+            ];
+
+            // Uglúk + 2 trackers Isengard → force +3 et Damage +1
+            // Patroller → fierce (3 possessions)
             G.battlefield = [
-                clonePresetCard('7C189', 'dev-morgul-cur'),
-                attea,
+                clonePresetCard('4R176', 'dev-ugluk'),
+                clonePresetCard('2C47', 'dev-scout'),
+                clonePresetCard('4C181', 'dev-chaser'),
+                clonePresetCard('10U82', 'dev-patroller'),
             ];
             shadowPlayer.hand = [];
             shadowPlayer.supportArea = [];
 
+            // Escarmouche : Duinhir (Damage +1) vs Uglúk (Damage +1)
             G.skirmishes = [
                 {
                     id: 'sk-while',
-                    companionId: 'dev-frodo',
-                    minionIds: ['dev-attea'],
+                    companionId: 'dev-duinhir',
+                    minionIds: ['dev-ugluk'],
                 },
             ];
             G.activeSkirmishId = 'sk-while';
             G.actionWindow = {
                 isOpen: true,
-                activePlayerId: shadowId,
+                activePlayerId: fpId,
                 title: 'ESCARMOUCHE',
                 message: '',
                 canPass: true,
@@ -560,7 +573,7 @@ export const applyDevPreset = (
             };
 
             G.statusMessage =
-                '[DEV] While + Attëa : Gandalf +3 (crépuscule≥3). Cur +2. Escarmouche Frodon vs Attëa — Ⓣ1 → +1 force (limit +5).';
+                '[DEV] While Damage/fierce : Duinhir Damage +1 (monture), Uglúk +3 force / Damage +1 (3 trackers), Patroller fierce (3 possessions).';
             break;
         }
     }

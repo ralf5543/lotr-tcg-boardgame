@@ -2,8 +2,8 @@ import type { Ctx } from 'boardgame.io';
 import type { GameState, CardState } from '../types';
 import { getKeywordValue } from '../engine/keywords/keywordUtils';
 
-export const isFierceMinion = (card: CardState): boolean =>
-    getKeywordValue(card, 'FIERCE') >= 0;
+export const isFierceMinion = (card: CardState, G?: GameState): boolean =>
+    getKeywordValue(card, 'FIERCE', G) >= 0;
 
 /** Peu hâtif : pas d’affectation tant qu’un effet n’a pas autorisé le combat. */
 export const canCompanionBeAssigned = (companion: CardState): boolean => {
@@ -74,7 +74,7 @@ export const beginMinionAssignment = (
 export const isMinionDisabledForFierceAssignment = (
     G: GameState,
     minion: CardState
-): boolean => Boolean(G.isFierceAssignment) && !isFierceMinion(minion);
+): boolean => Boolean(G.isFierceAssignment) && !isFierceMinion(minion, G);
 
 export const getUnassignedMinions = (G: GameState): CardState[] => {
     // 1. Liste des séides déjà engagés dans la PASSE ACTUELLE
@@ -94,7 +94,7 @@ export const getUnassignedMinions = (G: GameState): CardState[] => {
 
         // B. Si on est en passe Acharnée (Fierce) -> SEULS les FIERCE sont éligibles
         if (G.isFierceAssignment) {
-            return isFierceMinion(c);
+            return isFierceMinion(c, G);
         }
 
         // C. Passe normale -> Tous les séides sont éligibles

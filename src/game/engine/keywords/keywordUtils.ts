@@ -1,4 +1,5 @@
-import type { CardState, CardKeyword } from '../../types';
+import type { CardState, CardKeyword, GameState } from '../../types';
+import { getWhileKeywordRaws } from '../../logic/stats/mechanics/whileModifier';
 
 export interface ParsedKeyword {
     raw: CardKeyword | string;
@@ -40,7 +41,10 @@ export function parseKeyword(raw: CardKeyword | string): ParsedKeyword {
     };
 }
 
-export function getEffectiveKeywords(card: CardState): ParsedKeyword[] {
+export function getEffectiveKeywords(
+    card: CardState,
+    G?: GameState
+): ParsedKeyword[] {
     const rawList: (CardKeyword | string)[] = [...(card.keywords || [])];
 
     // Attachements (Mots-clés accordés au porteur)
@@ -57,6 +61,10 @@ export function getEffectiveKeywords(card: CardState): ParsedKeyword[] {
         card.tempKeywords.forEach((mod) => {
             rawList.push(mod.keyword);
         });
+    }
+
+    if (G) {
+        rawList.push(...getWhileKeywordRaws(G, card));
     }
 
     // Cumul des valeurs par mot-clé
@@ -80,8 +88,12 @@ export function getEffectiveKeywords(card: CardState): ParsedKeyword[] {
     return result;
 }
 
-export function getKeywordValue(card: CardState, keywordKey: string): number {
-    const effective = getEffectiveKeywords(card);
+export function getKeywordValue(
+    card: CardState,
+    keywordKey: string,
+    G?: GameState
+): number {
+    const effective = getEffectiveKeywords(card, G);
     const keyToFind = keywordKey.toUpperCase();
     
     const found = effective.find((k) => k.key === keyToFind);

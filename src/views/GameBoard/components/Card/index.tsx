@@ -558,7 +558,7 @@ export const Card: React.FC<CardProps> = ({
 
     const shouldShowSignet = Boolean(card.signet);
 
-    const effectiveKeywords = getEffectiveKeywords(card);
+    const effectiveKeywords = getEffectiveKeywords(card, G);
 
     const rawActionable = isActionable ?? card?.isActionable ?? false;
     const effectiveIsActionable =

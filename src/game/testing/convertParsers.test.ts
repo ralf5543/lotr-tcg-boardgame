@@ -986,7 +986,7 @@ describe('parseAbilities — While you can spot → strength', () => {
         ]);
     });
 
-    it('parse Uglúk : spot 2 trackers Isengard → force +3 (pas le damage +1)', () => {
+    it('parse Uglúk : spot 2 trackers → force +3 ; spot 3 → damage +1', () => {
         const text =
             'While you can spot 2 <symbol>isengard</symbol> trackers, Uglúk is strength +3.\nWhile you can spot 3 <symbol>isengard</symbol> trackers, Uglúk is <keyword>damage +1.</keyword>';
         expect(parseAbilities(text, 'Uglúk', '4R176')).toEqual([
@@ -1011,6 +1011,55 @@ describe('parseAbilities — While you can spot → strength', () => {
                     /While you can spot 2 isengard trackers, Uglúk is strength \+3/i
                 ),
             },
+            {
+                id: '4R176:1',
+                phases: [],
+                trigger: {
+                    type: 'WHILE',
+                    spot: [{ count: 3, target: [['ISENGARD', 'TRACKER']] }],
+                },
+                cost: [],
+                effects: [
+                    {
+                        type: 'MODIFY_KEYWORD',
+                        keyword: 'DAMAGE +1',
+                        target: 'SELF',
+                    },
+                ],
+                source: 'SELF',
+                text: expect.stringMatching(
+                    /While you can spot 3 isengard trackers, Uglúk is damage \+1/i
+                ),
+            },
+        ]);
+    });
+
+    it('parse Cirith Ungol Patroller : spot 3 possessions → fierce', () => {
+        const text =
+            'While you can spot 3 possessions, this minion is <keyword>fierce.</keyword>';
+        expect(
+            parseAbilities(text, 'Cirith Ungol Patroller', '10U82')
+        ).toEqual([
+            {
+                id: '10U82:0',
+                phases: [],
+                trigger: {
+                    type: 'WHILE',
+                    spot: [{ count: 3, target: [['POSSESSION']] }],
+                },
+                cost: [],
+                effects: [
+                    {
+                        type: 'MODIFY_KEYWORD',
+                        keyword: 'FIERCE',
+                        target: 'SELF',
+                    },
+                ],
+                source: 'SELF',
+                text: expect.stringMatching(
+                    /While you can spot 3 possessions, this minion is fierce/i
+                ),
+            },
         ]);
     });
 
@@ -1027,6 +1076,13 @@ describe('parseAbilities — While you can spot → strength', () => {
                 'While you can spot 2 burdens, this minion is strength +3 and fierce.',
                 'Easterling Axeman',
                 '4C224'
+            )
+        ).toBeUndefined();
+        expect(
+            parseAbilities(
+                'While you can spot 2 companions, this minion is <keyword>fierce</keyword> and <keyword>damage +1.</keyword>',
+                'Dummy',
+                'X1'
             )
         ).toBeUndefined();
     });

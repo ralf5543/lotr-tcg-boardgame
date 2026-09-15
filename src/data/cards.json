@@ -6513,6 +6513,34 @@
         ],
         "source": "SELF",
         "text": "While you can spot 2 isengard trackers, Uglúk is strength +3."
+      },
+      {
+        "id": "4R176:1",
+        "phases": [],
+        "trigger": {
+          "type": "WHILE",
+          "spot": [
+            {
+              "count": 3,
+              "target": [
+                [
+                  "ISENGARD",
+                  "TRACKER"
+                ]
+              ]
+            }
+          ]
+        },
+        "cost": [],
+        "effects": [
+          {
+            "type": "MODIFY_KEYWORD",
+            "keyword": "DAMAGE +1",
+            "target": "SELF"
+          }
+        ],
+        "source": "SELF",
+        "text": "While you can spot 3 isengard trackers, Uglúk is damage +1."
       }
     ],
     "culture": "ISENGARD",
@@ -72924,6 +72952,35 @@
       "FIERCE",
       "DAMAGE +1"
     ],
+    "abilities": [
+      {
+        "id": "7U212:0",
+        "phases": [],
+        "trigger": {
+          "type": "WHILE",
+          "spot": [
+            {
+              "count": 6,
+              "target": [
+                [
+                  "COMPANION"
+                ]
+              ]
+            }
+          ]
+        },
+        "cost": [],
+        "effects": [
+          {
+            "type": "MODIFY_KEYWORD",
+            "keyword": "DAMAGE +1",
+            "target": "SELF"
+          }
+        ],
+        "source": "SELF",
+        "text": "While you can spot 6 companions, Úlairë Enquëa is Damage +1."
+      }
+    ],
     "culture": "WRAITH",
     "race": "NAZGÛL",
     "twilightCost": 6,
@@ -89634,6 +89691,35 @@
     "type": "MINION",
     "keywords": [
       "DAMAGE +1"
+    ],
+    "abilities": [
+      {
+        "id": "10U82:0",
+        "phases": [],
+        "trigger": {
+          "type": "WHILE",
+          "spot": [
+            {
+              "count": 3,
+              "target": [
+                [
+                  "POSSESSION"
+                ]
+              ]
+            }
+          ]
+        },
+        "cost": [],
+        "effects": [
+          {
+            "type": "MODIFY_KEYWORD",
+            "keyword": "FIERCE",
+            "target": "SELF"
+          }
+        ],
+        "source": "SELF",
+        "text": "While you can spot 3 possessions, this minion is fierce."
+      }
     ],
     "culture": "SAURON",
     "race": "URUK-HAI",
@@ -118814,6 +118900,35 @@
     "keywords": [
       "DAMAGE +1"
     ],
+    "abilities": [
+      {
+        "id": "14R8:0",
+        "phases": [],
+        "trigger": {
+          "type": "WHILE",
+          "spot": [
+            {
+              "count": 1,
+              "target": [
+                [
+                  "MOUNT"
+                ]
+              ]
+            }
+          ]
+        },
+        "cost": [],
+        "effects": [
+          {
+            "type": "MODIFY_KEYWORD",
+            "keyword": "DAMAGE +1",
+            "target": "SELF"
+          }
+        ],
+        "source": "SELF",
+        "text": "While you can spot a mount, Duinhir is Damage +1.."
+      }
+    ],
     "culture": "GONDOR",
     "race": "MAN",
     "twilightCost": 2,
@@ -125300,6 +125415,33 @@
         ],
         "source": "SELF",
         "text": "While you can spot 2 mounts, Haleth is strength +2."
+      },
+      {
+        "id": "15U128:1",
+        "phases": [],
+        "trigger": {
+          "type": "WHILE",
+          "spot": [
+            {
+              "count": 3,
+              "target": [
+                [
+                  "MOUNT"
+                ]
+              ]
+            }
+          ]
+        },
+        "cost": [],
+        "effects": [
+          {
+            "type": "MODIFY_KEYWORD",
+            "keyword": "DAMAGE +1",
+            "target": "SELF"
+          }
+        ],
+        "source": "SELF",
+        "text": "While you can spot 3 mounts, Haleth is Damage +1.."
       }
     ],
     "culture": "ROHAN",
@@ -127305,6 +127447,36 @@
             ]
           }
         ]
+      }
+    ],
+    "abilities": [
+      {
+        "id": "15R170:0",
+        "phases": [],
+        "trigger": {
+          "type": "WHILE",
+          "spot": [
+            {
+              "count": 1,
+              "target": [
+                [
+                  "FIERCE",
+                  "MINION"
+                ]
+              ]
+            }
+          ]
+        },
+        "cost": [],
+        "effects": [
+          {
+            "type": "MODIFY_KEYWORD",
+            "keyword": "FIERCE",
+            "target": "SELF"
+          }
+        ],
+        "source": "SELF",
+        "text": "While you can spot a fierce minion, this minion is fierce."
       }
     ],
     "culture": "URUK-HAI",

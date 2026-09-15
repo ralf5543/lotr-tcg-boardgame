@@ -1947,6 +1947,115 @@ function parseWhileSpotStrengthAbilities(
     return found;
 }
 
+/** « damage +1 » / « fierce » seuls — refuse and / each. */
+function parseWhileKeywordGrant(
+    raw: string
+): { keyword: string } | null {
+    const plain = stripAbilityMarkup(raw)
+        .replace(/\*+/g, ' ')
+        .replace(/\s+/g, ' ')
+        .trim()
+        .replace(/\.+$/, '');
+    if (/\b(and|or|each)\b/i.test(plain)) return null;
+
+    const damage = plain.match(/^damage\s*\+\s*(\d+)$/i);
+    if (damage) {
+        const n = parseInt(damage[1], 10);
+        if (!Number.isFinite(n) || n <= 0 || n > 4) return null;
+        return { keyword: `DAMAGE +${n}` };
+    }
+    if (/^fierce$/i.test(plain)) return { keyword: 'FIERCE' };
+    return null;
+}
+
+/**
+ * While you can spot [classe|crépuscule], [self/bearer] is Damage +N | fierce.
+ * Miroir force — un seul mot-clé, pas d’and.
+ */
+function parseWhileSpotKeywordAbilities(
+    text: string,
+    cardTitle?: string,
+    cardId?: string
+): Record<string, unknown>[] {
+    const found: Record<string, unknown>[] = [];
+    const kwTail =
+        '((?:<keyword>[^<]*</keyword>|\\*\\*[^*]+\\*\\*|damage\\s*\\+\\s*\\d+|fierce)\\.?)';
+
+    const twilightRe = new RegExp(
+        `While you can spot (\\d+) twilight tokens?, ([^,]+?) is ${kwTail}`,
+        'gi'
+    );
+    let match: RegExpExecArray | null;
+    while ((match = twilightRe.exec(text)) !== null) {
+        const who = parseWhileStrengthWho(match[2], cardTitle);
+        if (!who) continue;
+        const twilight = parseInt(match[1], 10);
+        if (!Number.isFinite(twilight) || twilight <= 0) continue;
+        const grant = parseWhileKeywordGrant(match[3]);
+        if (!grant) continue;
+        // « is fierce and Damage +1 » : le regex s’arrête trop tôt — on refuse
+        const after = stripAbilityMarkup(
+            text.slice(match.index + match[0].length)
+        ).trim();
+        if (/^and\b/i.test(after)) continue;
+
+        found.push({
+            id: `${cardId || 'ability'}:${found.length}:while-spot-kw`,
+            phases: [],
+            trigger: { type: 'WHILE', spotTwilight: twilight },
+            cost: [],
+            effects: [
+                {
+                    type: 'MODIFY_KEYWORD',
+                    keyword: grant.keyword,
+                    target: who,
+                },
+            ],
+            source: who === 'BEARER' ? 'ATTACHMENT' : 'SELF',
+            text: stripAbilityMarkup(match[0]),
+        });
+    }
+
+    const classRe = new RegExp(
+        `While you can spot ((?:a|an|\\d+) [^,.]+), ([^,]+?) is ${kwTail}`,
+        'gi'
+    );
+    while ((match = classRe.exec(text)) !== null) {
+        if (/twilight tokens?/i.test(match[1])) continue;
+        const spot = parseWhileSpotSubject(match[1]);
+        if (!spot) continue;
+        const who = parseWhileStrengthWho(match[2], cardTitle);
+        if (!who) continue;
+        const grant = parseWhileKeywordGrant(match[3]);
+        if (!grant) continue;
+        const after = stripAbilityMarkup(
+            text.slice(match.index + match[0].length)
+        ).trim();
+        if (/^and\b/i.test(after)) continue;
+
+        found.push({
+            id: `${cardId || 'ability'}:${found.length}:while-spot-kw`,
+            phases: [],
+            trigger: {
+                type: 'WHILE',
+                spot: [{ count: spot.count, target: spot.target }],
+            },
+            cost: [],
+            effects: [
+                {
+                    type: 'MODIFY_KEYWORD',
+                    keyword: grant.keyword,
+                    target: who,
+                },
+            ],
+            source: who === 'BEARER' ? 'ATTACHMENT' : 'SELF',
+            text: stripAbilityMarkup(match[0]),
+        });
+    }
+
+    return found;
+}
+
 function parseWhenPlayedAbilities(
     text: string,
     cardId?: string
@@ -3183,6 +3292,15 @@ export function parseAbilities(
     });
 
     parseWhileSpotStrengthAbilities(text, cardTitle, cardId).forEach(
+        (ability) => {
+            abilities.push({
+                ...ability,
+                id: `${cardId || 'ability'}:${abilities.length}`,
+            });
+        }
+    );
+
+    parseWhileSpotKeywordAbilities(text, cardTitle, cardId).forEach(
         (ability) => {
             abilities.push({
                 ...ability,

@@ -43,7 +43,7 @@ export const hasFierceMinionsOnBattlefield = (G: GameState): boolean => {
     );
 
     const hasFierce = minionCards.some(
-        (card: CardState) => getKeywordValue(card, 'FIERCE') >= 0
+        (card: CardState) => getKeywordValue(card, 'FIERCE', G) >= 0
     );
     return hasFierce;
 };
@@ -59,10 +59,13 @@ export const getCardTotalStrength = (card: CardState): number => {
  * Calcule les blessures supplémentaires apportées par le mot-clé DAMAGE +X.
  * Si une carte a DAMAGE +1, getKeywordValue doit renvoyer 1. Si elle n'a pas le mot-clé, 0.
  */
-const getDamageBonus = (cards: CardState | CardState[]): number => {
+const getDamageBonus = (
+    cards: CardState | CardState[],
+    G: GameState
+): number => {
     const list = Array.isArray(cards) ? cards : [cards];
     return list.reduce((sum, c) => {
-        const bonus = getKeywordValue(c, 'DAMAGE');
+        const bonus = getKeywordValue(c, 'DAMAGE', G);
         // On s'assure de ne prendre en compte que les valeurs stricte positives (> 0)
         return sum + (bonus > 0 ? bonus : 0);
     }, 0);
@@ -165,7 +168,7 @@ export const resolveSkirmish = (G: GameState, _ctx?: Ctx) => {
                 ? companionStrength >= 2 * minionsStrength
                 : companionStrength > 0;
 
-        const woundsToApply = 1 + getDamageBonus(companion);
+        const woundsToApply = 1 + getDamageBonus(companion, G);
 
         minions.forEach((minion) => {
             if (isMinionsOverwhelmed) {
@@ -194,7 +197,7 @@ export const resolveSkirmish = (G: GameState, _ctx?: Ctx) => {
             applyOverwhelmAndCheckDeath(G, companion);
             resultMsg += `${companionName} est SUBMERGÉ et tué sur le coup !`;
         } else {
-            const damageBonus = getDamageBonus(minions);
+            const damageBonus = getDamageBonus(minions, G);
             const woundsToApply = 1 + damageBonus;
 
             requestWounds(G, companion, woundsToApply);
@@ -246,7 +249,7 @@ export function isLurkerSkirmish(
     );
 
     return minions.some((minion) => {
-        const keywords = getEffectiveKeywords(minion);
+        const keywords = getEffectiveKeywords(minion, G);
         return keywords.some((k) => k.key === 'LURKER');
     });
 }
