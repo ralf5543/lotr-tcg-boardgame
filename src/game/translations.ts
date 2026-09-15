@@ -290,6 +290,11 @@ export const TRANSLATIONS = {
             label: 'Rivière',
             description: unloadKeyword,
         },
+        SANCTUARY: {
+            label: 'Sanctuaire',
+            description:
+                'Au début de la phase de Compagnie, si la compagnie est à un site Sanctuaire, soignez jusqu’à 5 blessures sur vos compagnons.',
+        },
         SEARCH: {
             label: 'Recherche',
             description: unloadKeyword,

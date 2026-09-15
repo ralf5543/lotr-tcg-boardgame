@@ -9,25 +9,25 @@ Credo (hérité) : **mieux vaut un site inerte qu’un site faux.** On n’émet
 
 **Parser = fragments**, jamais une carte site entière. Réutiliser les primitifs déjà connus (Spot, Exert, Discard, Draw, remove twilight, phases, classes, mots-clés). Regex collée sur une phrase unique = trop spécifique : on généralise ou on n’émet rien. Exceptions par id en dernier.
 
-Aujourd’hui vivant : chemin d’aventure, pose de site, crépuscule au déplacement (coût site + compagnons), soins « sanctuaire » **hardcodés** sur les index 3 et 6. Le reste (keywords utiles, gametext, attache, contrôle) = inerte.
+Aujourd’hui vivant : chemin d’aventure, pose de site, crépuscule au déplacement (coût site + compagnons), soins sanctuaire via mot-clé **`SANCTUARY`**, helpers at/spot keywords. Gametext site, attache, contrôle = encore inertes.
 
 L’ancien plan effets de cartes est **figé** (`.cursor/rules/card-effects-plan.mdc`, `alwaysApply: false`). Suite = ce plan.
 
 ## Ordre
 
-**Prochaine priorité** : **socle + mots-clés** (étape 1–2). Gametext ensuite. Attache / contrôle plus tard, **UX avant code**.
+**Prochaine priorité** : **gametext des sites** (étape 3). Socle + mots-clés ✅.
 
-1. **Socle modèle**
-   - Clarifier `SiteCardState` : `attachments` = vraies cartes (`CardState[]`), pas `string[]`.
-   - Site courant / « at this site » / chemin (`path`) comme source de vérité unique.
-   - Sanctuary comme **mot-clé** (aujourd’hui absent de l’union keywords ; soins uniquement via index 3/6).
-   - Convert : ne plus forcer `abilities: undefined` sur les sites **quand** on commence à parser (étape 3) — d’ici là, keywords d’abord.
+1. **Socle modèle** ✅
+   - `SiteCardState.attachments` = `CardState[]` (vide tant que l’attache n’est pas câblée).
+   - Helpers chemin : `getCurrentSite`, `isAtSiteWithKeyword`, `canSpotSiteWithKeyword` (`src/game/logic/sites.ts`).
+   - `SANCTUARY` dans `CardKeyword` + convert `VALID_KEYWORDS`.
+   - Convert : abilities sites toujours `undefined` jusqu’à l’étape 3.
 
-2. **Mots-clés de site**
-   - Rendre opérants pour le reste du jeu : `UNDERGROUND`, `BATTLEGROUND`, `FOREST`, `RIVER`, `PLAINS`, `MARSH`, `MOUNTAIN`, `DWELLING`, (+ `SANCTUARY` une fois dans le modèle).
-   - Cas d’usage : spot / « at an underground site », conditions d’attache, textes cartes qui ciblent un terrain.
-   - Affichage badges déjà cosmétique — la prio est la **logique**, pas le polish UI.
-   - Sanctuary textuel du type « When the fellowship moves from …, remove Ⓣ » = **gametext** (étape 3), pas magie du seul mot-clé — sauf règle papier clairement universelle.
+2. **Mots-clés de site** ✅ (logique de base)
+   - Lecture keywords du site courant / path pour spot et « at … site ».
+   - Soins sanctuaire : **mot-clé `SANCTUARY`** sur le site courant (plus d’index 3/6 hardcodés).
+   - Terrains (`UNDERGROUND`, `BATTLEGROUND`, …) : disponibles pour le reste du jeu via helpers ; pas encore branchés sur des textes cartes.
+   - Sanctuary textuel « When the fellowship moves… remove Ⓣ » = **étape 3**.
 
 3. **Gametext des sites**
    - Réactiver le parse d’abilities sur `Type=SITE` par **familles sûres**.
@@ -57,8 +57,9 @@ L’ancien plan effets de cartes est **figé** (`.cursor/rules/card-effects-plan
 | --- | --- |
 | Pose site / avance / crépuscule au move | ✅ |
 | Limite 2 moves / tour | ✅ |
-| Soins sanctuaire index 3 & 6 | ✅ (à migrer vers keyword + règle papier) |
-| Keywords site en logique | ❌ |
+| Soins sanctuaire via mot-clé `SANCTUARY` | ✅ |
+| Helpers keywords site (at / spot) | ✅ |
+| Keywords branchés sur gametext cartes | partiel (helpers prêts) |
 | Abilities / gametext site | ❌ (convert les ignore) |
 | Attache sur site | ❌ |
 | Contrôle / libération | ❌ |

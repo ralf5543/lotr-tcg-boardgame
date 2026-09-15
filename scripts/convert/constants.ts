@@ -116,6 +116,7 @@ export const VALID_KEYWORDS = new Set([
     'RING-BEARER',
     'RING-BOUND',
     'RIVER',
+    'SANCTUARY',
     'SEARCH',
     'SOUTHRON',
     'SPELL',

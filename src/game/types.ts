@@ -44,6 +44,7 @@ export type CardKeyword =
     | 'RING-BEARER'
     | 'RING-BOUND'
     | 'RIVER'
+    | 'SANCTUARY'
     | 'SEARCH'
     | 'SOUTHRON'
     | 'SPELL'
@@ -439,13 +440,15 @@ export interface PlayerState {
 export interface SiteCardState {
     siteNumber?: number;
     id: string;
+    /** Affichage legacy ; souvent synonyme de title issu du JSON. */
     name: string;
     twilightCost: number;
     gameText: string;
     ownerId: string;
     imageUrl?: string;
     keywords?: CardKeyword[];
-    attachments?: string[];
+    /** Cartes posées sur le site (climats, etc.) — pas encore câblé. */
+    attachments?: CardState[];
 }
 export interface PlayerMusterInfo {
     allowedCount: number;

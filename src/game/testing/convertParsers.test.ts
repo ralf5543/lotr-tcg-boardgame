@@ -116,6 +116,14 @@ describe('parseKeywords / parseGrantsKeywords — Ambush', () => {
             expect.arrayContaining(['SOUTHRON', 'AMBUSH 1'])
         );
     });
+
+    it('extrait Sanctuary sur un site', () => {
+        const text =
+            '<keyword>Sanctuary.</keyword> When the fellowship moves from Council Courtyard, remove <symbol>twilight2</symbol>.';
+        expect(parseKeywords(text, 'Council Courtyard', 'SITE')).toEqual([
+            'SANCTUARY',
+        ]);
+    });
 });
 
 const ARAGORN_TEXT =

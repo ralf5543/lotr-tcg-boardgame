@@ -43,6 +43,9 @@
     "isUnique": false,
     "kind": "SITE",
     "type": "SITE",
+    "keywords": [
+      "SANCTUARY"
+    ],
     "twilightCost": 0,
     "siteNumber": 3,
     "siteArrow": "Right",
@@ -117,6 +120,9 @@
     "isUnique": false,
     "kind": "SITE",
     "type": "SITE",
+    "keywords": [
+      "SANCTUARY"
+    ],
     "actionPhases": [
       "FELLOWSHIP"
     ],
@@ -805,6 +811,9 @@
     "isUnique": false,
     "kind": "SITE",
     "type": "SITE",
+    "keywords": [
+      "SANCTUARY"
+    ],
     "twilightCost": 0,
     "siteNumber": 3,
     "siteArrow": "Right",
@@ -840,7 +849,8 @@
     "kind": "SITE",
     "type": "SITE",
     "keywords": [
-      "RIVER"
+      "RIVER",
+      "SANCTUARY"
     ],
     "twilightCost": 0,
     "siteNumber": 3,
@@ -876,6 +886,9 @@
     "isUnique": false,
     "kind": "SITE",
     "type": "SITE",
+    "keywords": [
+      "SANCTUARY"
+    ],
     "actionPhases": [
       "FELLOWSHIP"
     ],
@@ -913,6 +926,9 @@
     "isUnique": false,
     "kind": "SITE",
     "type": "SITE",
+    "keywords": [
+      "SANCTUARY"
+    ],
     "actionPhases": [
       "FELLOWSHIP"
     ],
@@ -950,6 +966,9 @@
     "isUnique": false,
     "kind": "SITE",
     "type": "SITE",
+    "keywords": [
+      "SANCTUARY"
+    ],
     "actionPhases": [
       "FELLOWSHIP"
     ],
@@ -988,7 +1007,8 @@
     "kind": "SITE",
     "type": "SITE",
     "keywords": [
-      "FOREST"
+      "FOREST",
+      "SANCTUARY"
     ],
     "twilightCost": 0,
     "siteNumber": 3,
@@ -1296,6 +1316,9 @@
     "isUnique": false,
     "kind": "SITE",
     "type": "SITE",
+    "keywords": [
+      "SANCTUARY"
+    ],
     "twilightCost": 3,
     "siteNumber": 6,
     "siteArrow": "Left",
@@ -1330,6 +1353,9 @@
     "isUnique": false,
     "kind": "SITE",
     "type": "SITE",
+    "keywords": [
+      "SANCTUARY"
+    ],
     "actionPhases": [
       "FELLOWSHIP"
     ],
@@ -1368,7 +1394,8 @@
     "kind": "SITE",
     "type": "SITE",
     "keywords": [
-      "FOREST"
+      "FOREST",
+      "SANCTUARY"
     ],
     "twilightCost": 3,
     "siteNumber": 6,
@@ -2004,7 +2031,8 @@
     "kind": "SITE",
     "type": "SITE",
     "keywords": [
-      "RIVER"
+      "RIVER",
+      "SANCTUARY"
     ],
     "twilightCost": 3,
     "siteNumber": 6,
@@ -2041,7 +2069,8 @@
     "kind": "SITE",
     "type": "SITE",
     "keywords": [
-      "FOREST"
+      "FOREST",
+      "SANCTUARY"
     ],
     "twilightCost": 3,
     "siteNumber": 6,
@@ -2185,6 +2214,9 @@
     "isUnique": false,
     "kind": "SITE",
     "type": "SITE",
+    "keywords": [
+      "SANCTUARY"
+    ],
     "twilightCost": 0,
     "siteNumber": 3,
     "siteArrow": "Right",
@@ -2779,6 +2811,9 @@
     "isUnique": false,
     "kind": "SITE",
     "type": "SITE",
+    "keywords": [
+      "SANCTUARY"
+    ],
     "actionPhases": [
       "FELLOWSHIP"
     ],
@@ -2816,6 +2851,9 @@
     "isUnique": false,
     "kind": "SITE",
     "type": "SITE",
+    "keywords": [
+      "SANCTUARY"
+    ],
     "twilightCost": 1,
     "siteNumber": 3,
     "siteArrow": "Right",
@@ -2850,6 +2888,9 @@
     "isUnique": false,
     "kind": "SITE",
     "type": "SITE",
+    "keywords": [
+      "SANCTUARY"
+    ],
     "actionPhases": [
       "FELLOWSHIP"
     ],
@@ -2887,6 +2928,9 @@
     "isUnique": false,
     "kind": "SITE",
     "type": "SITE",
+    "keywords": [
+      "SANCTUARY"
+    ],
     "twilightCost": 0,
     "siteNumber": 3,
     "siteArrow": "Right",
@@ -2921,6 +2965,9 @@
     "isUnique": false,
     "kind": "SITE",
     "type": "SITE",
+    "keywords": [
+      "SANCTUARY"
+    ],
     "actionPhases": [
       "FELLOWSHIP"
     ],
@@ -2959,7 +3006,8 @@
     "kind": "SITE",
     "type": "SITE",
     "keywords": [
-      "PLAINS"
+      "PLAINS",
+      "SANCTUARY"
     ],
     "twilightCost": 1,
     "siteNumber": 3,
@@ -3338,7 +3386,8 @@
     "kind": "SITE",
     "type": "SITE",
     "keywords": [
-      "UNDERGROUND"
+      "UNDERGROUND",
+      "SANCTUARY"
     ],
     "actionPhases": [
       "MANEUVER"
@@ -3378,6 +3427,7 @@
     "kind": "SITE",
     "type": "SITE",
     "keywords": [
+      "SANCTUARY",
       "BATTLEGROUND"
     ],
     "twilightCost": 3,
@@ -3414,6 +3464,9 @@
     "isUnique": false,
     "kind": "SITE",
     "type": "SITE",
+    "keywords": [
+      "SANCTUARY"
+    ],
     "actionPhases": [
       "FELLOWSHIP"
     ],
@@ -3970,6 +4023,9 @@
     "isUnique": false,
     "kind": "SITE",
     "type": "SITE",
+    "keywords": [
+      "SANCTUARY"
+    ],
     "actionPhases": [
       "FELLOWSHIP"
     ],
@@ -4007,6 +4063,9 @@
     "isUnique": false,
     "kind": "SITE",
     "type": "SITE",
+    "keywords": [
+      "SANCTUARY"
+    ],
     "actionPhases": [
       "FELLOWSHIP"
     ],
@@ -4439,6 +4498,9 @@
     "isUnique": false,
     "kind": "SITE",
     "type": "SITE",
+    "keywords": [
+      "SANCTUARY"
+    ],
     "actionPhases": [
       "FELLOWSHIP"
     ],
@@ -4476,6 +4538,9 @@
     "isUnique": false,
     "kind": "SITE",
     "type": "SITE",
+    "keywords": [
+      "SANCTUARY"
+    ],
     "actionPhases": [
       "FELLOWSHIP"
     ],
@@ -4513,6 +4578,9 @@
     "isUnique": false,
     "kind": "SITE",
     "type": "SITE",
+    "keywords": [
+      "SANCTUARY"
+    ],
     "actionPhases": [
       "FELLOWSHIP"
     ],
@@ -4744,6 +4812,9 @@
     "isUnique": false,
     "kind": "SITE",
     "type": "SITE",
+    "keywords": [
+      "SANCTUARY"
+    ],
     "twilightCost": 3,
     "siteNumber": 6,
     "siteArrow": "Left",
@@ -4778,6 +4849,9 @@
     "isUnique": false,
     "kind": "SITE",
     "type": "SITE",
+    "keywords": [
+      "SANCTUARY"
+    ],
     "twilightCost": 3,
     "siteNumber": 6,
     "siteArrow": "Left",
@@ -4812,6 +4886,9 @@
     "isUnique": false,
     "kind": "SITE",
     "type": "SITE",
+    "keywords": [
+      "SANCTUARY"
+    ],
     "twilightCost": 3,
     "siteNumber": 6,
     "siteArrow": "Left",
@@ -4846,6 +4923,9 @@
     "isUnique": false,
     "kind": "SITE",
     "type": "SITE",
+    "keywords": [
+      "SANCTUARY"
+    ],
     "twilightCost": 3,
     "siteNumber": 6,
     "siteArrow": "Left",
@@ -4880,6 +4960,9 @@
     "isUnique": false,
     "kind": "SITE",
     "type": "SITE",
+    "keywords": [
+      "SANCTUARY"
+    ],
     "twilightCost": 3,
     "siteNumber": 6,
     "siteArrow": "Left",
@@ -4914,6 +4997,9 @@
     "isUnique": false,
     "kind": "SITE",
     "type": "SITE",
+    "keywords": [
+      "SANCTUARY"
+    ],
     "twilightCost": 3,
     "siteNumber": 6,
     "siteArrow": "Left",
@@ -4948,6 +5034,9 @@
     "isUnique": false,
     "kind": "SITE",
     "type": "SITE",
+    "keywords": [
+      "SANCTUARY"
+    ],
     "twilightCost": 3,
     "siteNumber": 6,
     "siteArrow": "Left",
@@ -5396,6 +5485,7 @@
     "kind": "SITE",
     "type": "SITE",
     "keywords": [
+      "SANCTUARY",
       "UNDERGROUND"
     ],
     "actionPhases": [
@@ -5568,6 +5658,9 @@
     "isUnique": false,
     "kind": "SITE",
     "type": "SITE",
+    "keywords": [
+      "SANCTUARY"
+    ],
     "actionPhases": [
       "FELLOWSHIP"
     ],

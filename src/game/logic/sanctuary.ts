@@ -1,9 +1,6 @@
 import type { CardState, GameState } from '../types';
 import { applyHeal } from '../../utils/applyHeal';
-
-/** Sites 3 et 6 du chemin d’aventure (index 0-based). */
-export const isSanctuarySiteIndex = (siteIndex: number): boolean =>
-    siteIndex === 2 || siteIndex === 5;
+import { isCurrentSiteSanctuary } from './sites';
 
 export const SANCTUARY_HEAL_LIMIT = 5;
 
@@ -17,14 +14,9 @@ export const getSanctuaryHealCandidates = (G: GameState): CardState[] => {
     );
 };
 
-const currentSiteIndexOf = (G: GameState): number => {
-    const fpId = G.fpPlayerId || '0';
-    return G.players[fpId]?.currentSiteIndex ?? G.currentSiteIndex ?? 0;
-};
-
-/** Ouvre le choix « jusqu’à 5 blessures » si on est au sanctuaire avec des compagnons blessés. */
+/** Ouvre le choix « jusqu’à 5 blessures » si le site courant a Sanctuary. */
 export const beginSanctuaryHeals = (G: GameState): boolean => {
-    if (!isSanctuarySiteIndex(currentSiteIndexOf(G))) return false;
+    if (!isCurrentSiteSanctuary(G)) return false;
     if (getSanctuaryHealCandidates(G).length === 0) return false;
 
     G.sanctuaryHeal = { remaining: SANCTUARY_HEAL_LIMIT };
