@@ -97,12 +97,8 @@ function whileConditionHolds(
         }
     }
 
-    return Boolean(
-        trigger.spotTwilight ||
-            (trigger.spot && trigger.spot.length) ||
-            trigger.skirmishing ||
-            trigger.bearing
-    );
+    // Prédicats OK, ou WHILE vide (vrai tant que la carte est en jeu).
+    return true;
 }
 
 function forEachWhileOnCard(
@@ -216,4 +212,28 @@ export function getWhileKeywordRaws(
     });
 
     return raw;
+}
+
+/**
+ * True si un passif While en jeu demande d’ignorer la phase donnée.
+ */
+export function shouldSkipPhase(
+    G: GameState,
+    phase: 'ARCHERY'
+): boolean {
+    let skip = false;
+    forEachInPlayCard(G, (source) => {
+        if (skip) return;
+        for (const ability of source.abilities || []) {
+            if (ability.trigger?.type !== 'WHILE') continue;
+            if (!whileConditionHolds(G, source, ability)) continue;
+            for (const effect of ability.effects || []) {
+                if (effect.type === 'SKIP_PHASE' && effect.phase === phase) {
+                    skip = true;
+                    return;
+                }
+            }
+        }
+    });
+    return skip;
 }

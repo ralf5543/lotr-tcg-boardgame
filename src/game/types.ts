@@ -214,6 +214,11 @@ export type AbilityEffect =
           target: AbilityTargetRef;
       }
     | {
+          /** Passif While : ignorer une phase tant que la condition tient. */
+          type: 'SKIP_PHASE';
+          phase: 'ARCHERY';
+      }
+    | {
           type: 'DRAW';
           count: number;
       }

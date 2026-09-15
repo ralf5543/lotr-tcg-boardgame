@@ -1467,6 +1467,113 @@ describe('parseAbilities — While bearing → strength / keyword', () => {
     });
 });
 
+describe('parseAbilities — While / skip archery phase', () => {
+    it('parse Fill With Fear : spot The Balrog → skip archery', () => {
+        const text =
+            'While you can spot The Balrog, skip the archery phase.';
+        expect(parseAbilities(text, 'Fill With Fear', '2U56')).toEqual([
+            {
+                id: '2U56:0',
+                phases: [],
+                trigger: {
+                    type: 'WHILE',
+                    spot: [{ count: 1, target: [['The Balrog']] }],
+                },
+                cost: [],
+                effects: [{ type: 'SKIP_PHASE', phase: 'ARCHERY' }],
+                source: 'SELF',
+                text: expect.stringMatching(
+                    /While you can spot The Balrog, skip the archery phase/i
+                ),
+            },
+        ]);
+    });
+
+    it('parse Blood of Númenor / Balrog : Skip the archery phase.', () => {
+        expect(
+            parseAbilities(
+                'To play, exert a companion.\nSkip the archery phase.\nDiscard this condition during the regroup phase.',
+                'Blood of Númenor',
+                '2U31'
+            )
+        ).toEqual([
+            {
+                id: '2U31:0',
+                phases: [],
+                trigger: { type: 'WHILE' },
+                cost: [],
+                effects: [{ type: 'SKIP_PHASE', phase: 'ARCHERY' }],
+                source: 'SELF',
+                text: expect.stringMatching(/Skip the archery phase/i),
+            },
+        ]);
+
+        expect(
+            parseAbilities(
+                'Each Orc comes into play exhausted.  <br>Skip the archery phase.  <br>Discard this condition.',
+                'Blood of Númenor',
+                '2U31b'
+            )
+        ).toEqual([
+            {
+                id: '2U31b:0',
+                phases: [],
+                trigger: { type: 'WHILE' },
+                cost: [],
+                effects: [{ type: 'SKIP_PHASE', phase: 'ARCHERY' }],
+                source: 'SELF',
+                text: expect.stringMatching(/Skip the archery phase/i),
+            },
+        ]);
+
+        const balrogText =
+            'While you can spot The Balrog, discard all other minions. Skip the archery phase. Discard The Balrog if not underground.';
+        const abilities = parseAbilities(balrogText, 'The Balrog', '2C51');
+        expect(abilities).toEqual([
+            {
+                id: '2C51:0',
+                phases: [],
+                trigger: { type: 'WHILE' },
+                cost: [],
+                effects: [{ type: 'SKIP_PHASE', phase: 'ARCHERY' }],
+                source: 'SELF',
+                text: expect.stringMatching(/Skip the archery phase/i),
+            },
+        ]);
+    });
+
+    it('refuse control sites / site / multi-phase / bearing unique', () => {
+        expect(
+            parseAbilities(
+                'While you control 2 sites, skip the archery phase.',
+                'Hillman Horde',
+                '4R22'
+            )
+        ).toBeUndefined();
+        expect(
+            parseAbilities(
+                'While the fellowship is at Anduin Wilderland, skip the archery phase.',
+                'Anduin Wilderland',
+                '1C354'
+            )
+        ).toBeUndefined();
+        expect(
+            parseAbilities(
+                'While a unique companion bears this possession, skip the archery phase.',
+                'Elven Armaments',
+                '18U8'
+            )
+        ).toBeUndefined();
+        expect(
+            parseAbilities(
+                'While at an underground site, skip the archery phase, the maneuver phase, and The Balrog cannot be assigned to skirmish companions of strength 6 or less.',
+                'The Balrog',
+                '19P18'
+            )
+        ).toBeUndefined();
+    });
+});
+
 describe('parseAbilities — Remove twilight to make strength', () => {
     it('parse Attëa : Remove Ⓣ1 → force +1 (limit +5)', () => {
         const text =

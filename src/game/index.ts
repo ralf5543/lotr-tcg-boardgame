@@ -31,6 +31,20 @@ import { clearActionableFlags } from '../utils/clearActionableFlags';
 import { clearExpiredTempKeywords } from './engine/abilities/applyAbilityEffect';
 import { onStartOfFellowshipBegin } from './logic/startOfFellowship';
 import { afterCardPlayed } from './engine/abilities/eachTimeYouPlay';
+import { shouldSkipPhase } from './logic/stats/mechanics/whileModifier';
+
+function hasLivingMinionsOnBattlefield(G: GameState): boolean {
+    return (G.battlefield || []).some((c) => {
+        if (c.kind !== 'SHADOW' || c.type !== 'MINION') return false;
+        const maxVit = Number(c.vitality) || 1;
+        return !c.isDead && (c.wounds || 0) < maxVit;
+    });
+}
+
+/** Phase suivante si l’archerie est ignorée (même règle que fin d’archerie). */
+function phaseAfterSkippedArchery(G: GameState): 'assignment' | 'regroup' {
+    return hasLivingMinionsOnBattlefield(G) ? 'assignment' : 'regroup';
+}
 
 const shuffle = <T>(array: T[]): T[] => {
     const arr = [...array];
@@ -715,7 +729,12 @@ export const LotrGame: Game<GameState> = {
 
         maneuver: {
             endIf: ({ G }) => Boolean(G.pendingPhaseEnd),
-            next: ({ G }) => G.nextPhase || 'startOfArchery',
+            next: ({ G }) => {
+                if (shouldSkipPhase(G, 'ARCHERY')) {
+                    return phaseAfterSkippedArchery(G);
+                }
+                return G.nextPhase || 'startOfArchery';
+            },
 
             turn: { activePlayers: { value: { '0': 'play', '1': 'play' } } },
 
@@ -741,6 +760,10 @@ export const LotrGame: Game<GameState> = {
                 G.startOfPhaseState = undefined;
                 G.pendingPhaseEnd = undefined;
                 G.nextPhase = undefined;
+                if (shouldSkipPhase(G, 'ARCHERY')) {
+                    G.statusMessage =
+                        'Archerie ignorée (effet en jeu). Passage à la suite.';
+                }
             },
 
             moves: allMoves,
@@ -749,6 +772,15 @@ export const LotrGame: Game<GameState> = {
         startOfArchery: {
             next: 'archery',
             onBegin: ({ G, events }: LotrPhaseContext) => {
+                if (shouldSkipPhase(G, 'ARCHERY')) {
+                    G.startOfPhaseState = undefined;
+                    G.actionWindow = undefined;
+                    G.statusMessage =
+                        'Archerie ignorée (effet en jeu). Passage à la suite.';
+                    events?.setPhase?.(phaseAfterSkippedArchery(G));
+                    return;
+                }
+
                 const fpId = G.fpPlayerId || '0';
                 const shadowId = fpId === '0' ? '1' : '0';
 
@@ -796,19 +828,22 @@ export const LotrGame: Game<GameState> = {
             // next() est lu APRÈS onEnd, qui reset G.nextPhase : on dérive
             // depuis les séides encore vivants (règle : plus de séides → regroupement).
             next: ({ G }) => {
-                const hasLivingMinions = (G.battlefield || []).some((c) => {
-                    if (c.kind !== 'SHADOW' || c.type !== 'MINION') {
-                        return false;
-                    }
-                    const maxVit = Number(c.vitality) || 1;
-                    return !c.isDead && (c.wounds || 0) < maxVit;
-                });
+                const hasLivingMinions = hasLivingMinionsOnBattlefield(G);
                 return hasLivingMinions ? 'assignment' : 'regroup';
             },
 
             turn: { activePlayers: { value: { '0': 'play', '1': 'play' } } },
 
-            onBegin: ({ G }: LotrPhaseContext) => {
+            onBegin: ({ G, events }: LotrPhaseContext) => {
+                if (shouldSkipPhase(G, 'ARCHERY')) {
+                    G.archeryState = undefined;
+                    G.actionWindow = undefined;
+                    G.statusMessage =
+                        'Archerie ignorée (effet en jeu). Passage à la suite.';
+                    events?.setPhase?.(phaseAfterSkippedArchery(G));
+                    return;
+                }
+
                 const fpId = G.fpPlayerId || '0';
                 G.archeryState = {
                     step: 'ACTIONS',

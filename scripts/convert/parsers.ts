@@ -1903,6 +1903,88 @@ function parseWhileEachClass(raw: string): string[][] | null {
 }
 
 /**
+ * Spot While : classe (a/an/N) ou nom propre (The Balrog).
+ */
+function parseWhileSpotSubjectOrName(
+    raw: string
+): { count: number; target: string[][] } | null {
+    const classed = parseWhileSpotSubject(raw);
+    if (classed) return classed;
+
+    const cleaned = stripAbilityMarkup(raw).replace(/\s+/g, ' ').trim();
+    if (!cleaned) return null;
+    if (
+        /\b(and|or|each|other|whose|bearing|except|from|to|may|token|burden|threat|twilight|wound|exhausted|roaming|mounted|home|resistance|title|control|site|unique)\b/i.test(
+            cleaned
+        )
+    ) {
+        return null;
+    }
+    // Nom propre : The Balrog, Gandalf…
+    if (!/^(the\s+)?[A-ZÀ-ŸÉ]/.test(cleaned)) return null;
+    const withoutThe = cleaned.replace(/^the\s+/i, '');
+    if (!/^[A-ZÀ-ŸÉ]/.test(withoutThe)) return null;
+    // Titre entier (avec The) pour matcher card.title
+    return { count: 1, target: [[cleaned]] };
+}
+
+/**
+ * While you can spot [classe|nom], skip the archery phase.
+ * Skip the archery phase. (WHILE vide — vrai en jeu)
+ * Refuse control sites / at this site / and the maneuver / bearing unique.
+ */
+function parseWhileSkipArcheryAbilities(
+    text: string,
+    cardId?: string
+): Record<string, unknown>[] {
+    const found: Record<string, unknown>[] = [];
+
+    const spotRe =
+        /While you can spot ([^,.]+), skip the archery phase\./gi;
+    let match: RegExpExecArray | null;
+    while ((match = spotRe.exec(text)) !== null) {
+        const spot = parseWhileSpotSubjectOrName(match[1]);
+        if (!spot) continue;
+
+        found.push({
+            id: `${cardId || 'ability'}:${found.length}:while-skip-archery`,
+            phases: [],
+            trigger: {
+                type: 'WHILE',
+                spot: [{ count: spot.count, target: spot.target }],
+            },
+            cost: [],
+            effects: [{ type: 'SKIP_PHASE', phase: 'ARCHERY' }],
+            source: 'SELF',
+            text: stripAbilityMarkup(match[0]),
+        });
+    }
+
+    const bareRe =
+        /(?:^|[.!?])(?:\s|<[^>]+>)*Skip the archery phase\./gi;
+    while ((match = bareRe.exec(text)) !== null) {
+        const clause = 'Skip the archery phase.';
+        // Refuse si d’autres phases suivent (virgule)
+        const after = stripAbilityMarkup(
+            text.slice(match.index + match[0].length)
+        ).trim();
+        if (/^,\s*the\s+\w+\s+phase/i.test(after)) continue;
+
+        found.push({
+            id: `${cardId || 'ability'}:${found.length}:while-skip-archery`,
+            phases: [],
+            trigger: { type: 'WHILE' },
+            cost: [],
+            effects: [{ type: 'SKIP_PHASE', phase: 'ARCHERY' }],
+            source: 'SELF',
+            text: clause,
+        });
+    }
+
+    return found;
+}
+
+/**
  * While you can spot [classe|crépuscule], [self/bearer] is strength ±N.
  * Passif uniquement — refuse each / and fierce / for each / etc.
  */
@@ -3625,6 +3707,13 @@ export function parseAbilities(
     );
 
     parseWhileBearingAbilities(text, cardTitle, cardId).forEach((ability) => {
+        abilities.push({
+            ...ability,
+            id: `${cardId || 'ability'}:${abilities.length}`,
+        });
+    });
+
+    parseWhileSkipArcheryAbilities(text, cardId).forEach((ability) => {
         abilities.push({
             ...ability,
             id: `${cardId || 'ability'}:${abilities.length}`,

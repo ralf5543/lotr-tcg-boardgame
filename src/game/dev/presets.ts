@@ -514,6 +514,7 @@ export const applyDevPreset = (
             G.pendingEvent = undefined;
             G.pendingWhenPlayed = undefined;
             G.tempModifiers = [];
+            G.archeryState = undefined;
 
             Object.keys(G.players).forEach((pId) => {
                 const player = G.players[pId];
@@ -523,56 +524,28 @@ export const applyDevPreset = (
                 }
             });
 
-            // 6 companions → spot pour Nertëa / Unending Life
-            // Chaotic Clash + orc → chaque companion -1
-            // clonePresetCard : abilities / actionPhases depuis cards.json
+            // Legolas archer (témoin) + Fill With Fear / Balrog → skip archery
             fpPlayer.fellowshipArea = [
                 {
                     ...clonePresetCard('2C102', 'dev-frodo'),
                     attachments: [clonePresetCard('1R1', 'dev-ring')],
                 },
-                clonePresetCard('1R89', 'dev-aragorn'),
-                clonePresetCard('0P12', 'dev-gimli'),
-                clonePresetCard('4C270', 'dev-eowyn'),
                 clonePresetCard('0P13', 'dev-legolas'),
-                clonePresetCard('1C303', 'dev-merry'),
+                clonePresetCard('1R89', 'dev-aragorn'),
             ];
-            fpPlayer.supportArea = [];
+            fpPlayer.supportArea = [clonePresetCard('2U31', 'dev-blood')];
 
-            // Nertëa / Raging / Uruk (+ Shingle) ; orc = témoin
             G.battlefield = [
-                clonePresetCard('0P116', 'dev-nertea'),
-                clonePresetCard('11S97', 'dev-raging'),
-                clonePresetCard('1C146', 'dev-uruk'),
+                clonePresetCard('2C51', 'dev-balrog'),
                 clonePresetCard('1C271', 'dev-orc'),
             ];
             shadowPlayer.hand = [];
-            // Unending Life +3 Nazgûl ; Chaotic -1 companion ; Shingle Damage Uruk
             shadowPlayer.supportArea = [
-                clonePresetCard('12C181', 'dev-unending'),
-                clonePresetCard('17C68', 'dev-chaotic'),
-                clonePresetCard('12C145', 'dev-shingle'),
+                clonePresetCard('2U56', 'dev-fill-fear'),
             ];
-
-            G.skirmishes = [
-                {
-                    id: 'sk-while-each',
-                    companionId: 'dev-merry',
-                    minionIds: ['dev-nertea'],
-                },
-            ];
-            G.activeSkirmishId = 'sk-while-each';
-            G.actionWindow = {
-                isOpen: true,
-                activePlayerId: fpId,
-                title: 'ESCARMOUCHE',
-                message: '',
-                canPass: true,
-                passesCount: 0,
-            };
 
             G.statusMessage =
-                '[DEV] While each : Nazgûl +5, Men fierce (Raging), Uruk Damage +1 (Shingle), companions -1, orc témoin.';
+                '[DEV] Skip archery : Sang de Númenor + Fill With Fear (Balrog). Passe la manœuvre → assignment.';
             break;
         }
     }

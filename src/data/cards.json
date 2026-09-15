@@ -251,6 +251,24 @@
       "DAMAGE +1",
       "FIERCE"
     ],
+    "abilities": [
+      {
+        "id": "0P10:0",
+        "phases": [],
+        "trigger": {
+          "type": "WHILE"
+        },
+        "cost": [],
+        "effects": [
+          {
+            "type": "SKIP_PHASE",
+            "phase": "ARCHERY"
+          }
+        ],
+        "source": "SELF",
+        "text": "Skip the archery phase."
+      }
+    ],
     "culture": "MORIA",
     "race": "BALROG",
     "twilightCost": 12,
@@ -28030,6 +28048,24 @@
         ]
       }
     ],
+    "abilities": [
+      {
+        "id": "2U31:0",
+        "phases": [],
+        "trigger": {
+          "type": "WHILE"
+        },
+        "cost": [],
+        "effects": [
+          {
+            "type": "SKIP_PHASE",
+            "phase": "ARCHERY"
+          }
+        ],
+        "source": "SELF",
+        "text": "Skip the archery phase."
+      }
+    ],
     "actionPhases": [
       "REGROUP"
     ],
@@ -29009,6 +29045,24 @@
       "DAMAGE +1",
       "FIERCE"
     ],
+    "abilities": [
+      {
+        "id": "2C51:0",
+        "phases": [],
+        "trigger": {
+          "type": "WHILE"
+        },
+        "cost": [],
+        "effects": [
+          {
+            "type": "SKIP_PHASE",
+            "phase": "ARCHERY"
+          }
+        ],
+        "source": "SELF",
+        "text": "Skip the archery phase."
+      }
+    ],
     "culture": "MORIA",
     "race": "BALROG",
     "twilightCost": 12,
@@ -29201,6 +29255,34 @@
     "kind": "SHADOW",
     "type": "CONDITION",
     "subtype": "SUPPORT-AREA",
+    "abilities": [
+      {
+        "id": "2U56:0",
+        "phases": [],
+        "trigger": {
+          "type": "WHILE",
+          "spot": [
+            {
+              "count": 1,
+              "target": [
+                [
+                  "The Balrog"
+                ]
+              ]
+            }
+          ]
+        },
+        "cost": [],
+        "effects": [
+          {
+            "type": "SKIP_PHASE",
+            "phase": "ARCHERY"
+          }
+        ],
+        "source": "SELF",
+        "text": "While you can spot The Balrog, skip the archery phase."
+      }
+    ],
     "actionPhases": [
       "MANEUVER"
     ],
