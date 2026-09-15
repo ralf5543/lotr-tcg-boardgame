@@ -197,6 +197,8 @@ export type AbilityEffect =
           valueFromSourceStat?: 'STRENGTH';
           /** « another companion » : exclure la source des cibles. */
           excludeSource?: boolean;
+          /** Plafond cumulé des bonus de cette capacité (ex. limit +5). */
+          limit?: number;
       }
     | {
           /** Modificateur passif (While…) — pas d’expiration de phase. */

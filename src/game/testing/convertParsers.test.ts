@@ -1032,6 +1032,115 @@ describe('parseAbilities — While you can spot → strength', () => {
     });
 });
 
+describe('parseAbilities — Remove twilight to make strength', () => {
+    it('parse Attëa : Remove Ⓣ1 → force +1 (limit +5)', () => {
+        const text =
+            '<keyword>Fierce.</keyword> \n<keyword>Skirmish:</keyword> Remove <symbol>twilight1</symbol> to make Úlairë Attëa strength +1 (limit +5).';
+        expect(parseAbilities(text, 'Úlairë Attëa', '1R229')).toEqual([
+            {
+                id: '1R229:0',
+                phases: ['SKIRMISH'],
+                cost: [{ removeTwilight: 1 }],
+                effects: [
+                    {
+                        type: 'ADD_TEMP_STAT',
+                        stat: 'STRENGTH',
+                        value: 1,
+                        target: 'SELF',
+                        expiresAtPhase: 'SKIRMISH',
+                        limit: 5,
+                    },
+                ],
+                source: 'SELF',
+                text: expect.stringMatching(
+                    /SKIRMISH: Remove twilight1 to make Úlairë Attëa strength \+1 \(limit \+5\)/i
+                ),
+            },
+        ]);
+    });
+
+    it('parse bearer + classe (sans fierceness / for each)', () => {
+        expect(
+            parseAbilities(
+                '<keyword>Skirmish:</keyword> Remove <symbol>twilight1</symbol> to make bearer strength +1 (limit +3).',
+                'Orc Scimitar',
+                '1C269'
+            )
+        ).toEqual([
+            {
+                id: '1C269:0',
+                phases: ['SKIRMISH'],
+                cost: [{ removeTwilight: 1 }],
+                effects: [
+                    {
+                        type: 'ADD_TEMP_STAT',
+                        stat: 'STRENGTH',
+                        value: 1,
+                        target: 'BEARER',
+                        expiresAtPhase: 'SKIRMISH',
+                        limit: 3,
+                    },
+                ],
+                source: 'ATTACHMENT',
+                text: expect.stringMatching(
+                    /SKIRMISH: Remove twilight1 to make bearer strength \+1 \(limit \+3\)/i
+                ),
+            },
+        ]);
+
+        expect(
+            parseAbilities(
+                '<keyword>Skirmish:</keyword> Remove <symbol>twilight3</symbol> to make a <symbol>moria</symbol> Orc strength +2.',
+                'Cave Troll',
+                '1R165'
+            )
+        ).toEqual([
+            {
+                id: '1R165:0',
+                phases: ['SKIRMISH'],
+                cost: [{ removeTwilight: 3 }],
+                effects: [
+                    {
+                        type: 'ADD_TEMP_STAT',
+                        stat: 'STRENGTH',
+                        value: 2,
+                        target: [['MORIA', 'ORC']],
+                        expiresAtPhase: 'SKIRMISH',
+                    },
+                ],
+                source: 'SELF',
+                text: expect.stringMatching(
+                    /SKIRMISH: Remove twilight3 to make a moria Orc strength \+2/i
+                ),
+            },
+        ]);
+    });
+
+    it('refuse for each / and fierce / Damage', () => {
+        expect(
+            parseAbilities(
+                '<keyword>Skirmish:</keyword> Remove <symbol>twilight2</symbol> to make this minion strength +1 for each other Uruk-hai you spot.',
+                'Uruk Regular',
+                '1C151'
+            )
+        ).toBeUndefined();
+        expect(
+            parseAbilities(
+                '<keyword>Skirmish:</keyword> Remove <symbol>twilight2</symbol> to make a lurker fierce until the regroup phase.',
+                'Host of Isengard',
+                '4C209'
+            )
+        ).toBeUndefined();
+        expect(
+            parseAbilities(
+                '<keyword>Skirmish:</keyword> Remove <symbol>twilight2</symbol> to make a lurker <keyword>Damage +1.</keyword>',
+                'Host of Isengard',
+                '4C209'
+            )
+        ).toBeUndefined();
+    });
+});
+
 describe('parseAbilities — Discard a [classe] and spot X [classe]', () => {
     const pipeweedAndPipesCost = {
         discardFromPlay: [

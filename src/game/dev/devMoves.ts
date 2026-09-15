@@ -115,7 +115,7 @@ export const devMoves = {
         }
         applyDevPreset(G, presetType);
         if (presetType === 'WHILE_TEST') {
-            events?.setPhase?.('shadow');
+            events?.setPhase?.('skirmish');
         }
     },
 };

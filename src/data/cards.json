@@ -3148,6 +3148,34 @@
     "keywords": [
       "DAMAGE +1"
     ],
+    "abilities": [
+      {
+        "id": "0P73:0",
+        "phases": [
+          "SKIRMISH"
+        ],
+        "cost": [
+          {
+            "removeTwilight": 2
+          }
+        ],
+        "effects": [
+          {
+            "type": "ADD_TEMP_STAT",
+            "stat": "STRENGTH",
+            "value": 1,
+            "target": [
+              [
+                "LURKER"
+              ]
+            ],
+            "expiresAtPhase": "SKIRMISH"
+          }
+        ],
+        "source": "SELF",
+        "text": "SKIRMISH: Remove twilight2 to make a lurker strength +1."
+      }
+    ],
     "actionPhases": [
       "SKIRMISH"
     ],
@@ -18039,6 +18067,31 @@
     "keywords": [
       "DAMAGE +1"
     ],
+    "abilities": [
+      {
+        "id": "1U153:0",
+        "phases": [
+          "SKIRMISH"
+        ],
+        "cost": [
+          {
+            "removeTwilight": 1
+          }
+        ],
+        "effects": [
+          {
+            "type": "ADD_TEMP_STAT",
+            "stat": "STRENGTH",
+            "value": 1,
+            "target": "SELF",
+            "expiresAtPhase": "SKIRMISH",
+            "limit": 3
+          }
+        ],
+        "source": "SELF",
+        "text": "SKIRMISH: Remove twilight1 to make this minion strength +1 (limit +3)."
+      }
+    ],
     "actionPhases": [
       "SKIRMISH"
     ],
@@ -19559,6 +19612,35 @@
     "isUnique": true,
     "kind": "SHADOW",
     "type": "MINION",
+    "abilities": [
+      {
+        "id": "1R186:0",
+        "phases": [
+          "SKIRMISH"
+        ],
+        "cost": [
+          {
+            "removeTwilight": 3
+          }
+        ],
+        "effects": [
+          {
+            "type": "ADD_TEMP_STAT",
+            "stat": "STRENGTH",
+            "value": 2,
+            "target": [
+              [
+                "MORIA",
+                "ORC"
+              ]
+            ],
+            "expiresAtPhase": "SKIRMISH"
+          }
+        ],
+        "source": "SELF",
+        "text": "SKIRMISH: Remove twilight3 to make a moria Orc strength +2."
+      }
+    ],
     "actionPhases": [
       "SKIRMISH"
     ],
@@ -21494,6 +21576,31 @@
     "keywords": [
       "FIERCE"
     ],
+    "abilities": [
+      {
+        "id": "1R229:0",
+        "phases": [
+          "SKIRMISH"
+        ],
+        "cost": [
+          {
+            "removeTwilight": 1
+          }
+        ],
+        "effects": [
+          {
+            "type": "ADD_TEMP_STAT",
+            "stat": "STRENGTH",
+            "value": 1,
+            "target": "SELF",
+            "expiresAtPhase": "SKIRMISH",
+            "limit": 5
+          }
+        ],
+        "source": "SELF",
+        "text": "SKIRMISH: Remove twilight1 to make Úlairë Attëa strength +1 (limit +5)."
+      }
+    ],
     "actionPhases": [
       "SKIRMISH"
     ],
@@ -23355,6 +23462,31 @@
         "ORC"
       ]
     ],
+    "abilities": [
+      {
+        "id": "1C269:0",
+        "phases": [
+          "SKIRMISH"
+        ],
+        "cost": [
+          {
+            "removeTwilight": 1
+          }
+        ],
+        "effects": [
+          {
+            "type": "ADD_TEMP_STAT",
+            "stat": "STRENGTH",
+            "value": 1,
+            "target": "BEARER",
+            "expiresAtPhase": "SKIRMISH",
+            "limit": 3
+          }
+        ],
+        "source": "ATTACHMENT",
+        "text": "SKIRMISH: Remove twilight1 to make bearer strength +1 (limit +3)."
+      }
+    ],
     "actionPhases": [
       "SKIRMISH"
     ],
@@ -23839,6 +23971,35 @@
     "kind": "SHADOW",
     "type": "CONDITION",
     "subtype": "SUPPORT-AREA",
+    "abilities": [
+      {
+        "id": "1C278:0",
+        "phases": [
+          "SKIRMISH"
+        ],
+        "cost": [
+          {
+            "removeTwilight": 3
+          }
+        ],
+        "effects": [
+          {
+            "type": "ADD_TEMP_STAT",
+            "stat": "STRENGTH",
+            "value": 1,
+            "target": [
+              [
+                "SAURON",
+                "ORC"
+              ]
+            ],
+            "expiresAtPhase": "SKIRMISH"
+          }
+        ],
+        "source": "SELF",
+        "text": "SKIRMISH: Remove twilight3 to make a sauron Orc strength +1."
+      }
+    ],
     "actionPhases": [
       "SKIRMISH"
     ],
@@ -93990,6 +94151,34 @@
     "keywords": [
       "DAMAGE +1"
     ],
+    "abilities": [
+      {
+        "id": "11R68:0",
+        "phases": [
+          "SKIRMISH"
+        ],
+        "cost": [
+          {
+            "removeTwilight": 2
+          }
+        ],
+        "effects": [
+          {
+            "type": "ADD_TEMP_STAT",
+            "stat": "STRENGTH",
+            "value": 1,
+            "target": [
+              [
+                "LURKER"
+              ]
+            ],
+            "expiresAtPhase": "SKIRMISH"
+          }
+        ],
+        "source": "SELF",
+        "text": "SKIRMISH: Remove twilight2 to make a lurker strength +1."
+      }
+    ],
     "actionPhases": [
       "SKIRMISH"
     ],
@@ -97059,6 +97248,35 @@
     "type": "MINION",
     "keywords": [
       "LURKER"
+    ],
+    "abilities": [
+      {
+        "id": "11C136:0",
+        "phases": [
+          "SKIRMISH"
+        ],
+        "cost": [
+          {
+            "removeTwilight": 2
+          }
+        ],
+        "effects": [
+          {
+            "type": "ADD_TEMP_STAT",
+            "stat": "STRENGTH",
+            "value": 1,
+            "target": [
+              [
+                "ORC",
+                "MINION"
+              ]
+            ],
+            "expiresAtPhase": "SKIRMISH"
+          }
+        ],
+        "source": "SELF",
+        "text": "SKIRMISH: Remove twilight2 to make an orc minion strength +1."
+      }
     ],
     "actionPhases": [
       "SKIRMISH"

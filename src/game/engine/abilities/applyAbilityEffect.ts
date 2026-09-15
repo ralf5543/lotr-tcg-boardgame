@@ -248,6 +248,12 @@ function applyOneEffect(
             );
             if (bears) value = effect.bearingBonus.value;
         }
+        if (effect.limit != null) {
+            const used = G.tempModifiers
+                .filter((mod) => mod.id.startsWith(`${ability.id}:`))
+                .reduce((sum, mod) => sum + mod.value, 0);
+            if (used + value > effect.limit) return false;
+        }
         G.tempModifiers.push({
             id: `${ability.id}:${G.tempModifiers.length}`,
             sourceCardTitle: source.i18n?.fr?.title || source.title,

@@ -504,8 +504,8 @@ export const applyDevPreset = (
             const shadowPlayer = G.players[shadowId];
             if (!shadowPlayer) return;
 
-            // 2 crépuscule : Gandalf pas encore boosté — passe à 3 via Dev Tools
-            G.twilightPool = 2;
+            // Crépuscule 6 : Attëa peut booster + Gandalf déjà au seuil While (3+)
+            G.twilightPool = 6;
             fpPlayer.burdens = 0;
             G.battlefield = [];
             G.skirmishes = [];
@@ -514,6 +514,7 @@ export const applyDevPreset = (
             G.responseWindow = undefined;
             G.pendingEvent = undefined;
             G.pendingWhenPlayed = undefined;
+            G.tempModifiers = [];
 
             Object.keys(G.players).forEach((pId) => {
                 const player = G.players[pId];
@@ -532,16 +533,34 @@ export const applyDevPreset = (
                 clonePresetCard('4C90', 'dev-gandalf'),
             ];
 
-            // Morgul Cur (spot Nazgûl → +2) + Úlairë Attëa
+            // Morgul Cur (While) + Attëa (Remove Ⓣ → force, en escarmouche)
+            const attea = clonePresetCard('1R229', 'dev-attea');
             G.battlefield = [
                 clonePresetCard('7C189', 'dev-morgul-cur'),
-                clonePresetCard('1R229', 'dev-attea'),
+                attea,
             ];
             shadowPlayer.hand = [];
             shadowPlayer.supportArea = [];
 
+            G.skirmishes = [
+                {
+                    id: 'sk-while',
+                    companionId: 'dev-frodo',
+                    minionIds: ['dev-attea'],
+                },
+            ];
+            G.activeSkirmishId = 'sk-while';
+            G.actionWindow = {
+                isOpen: true,
+                activePlayerId: shadowId,
+                title: 'ESCARMOUCHE',
+                message: '',
+                canPass: true,
+                passesCount: 0,
+            };
+
             G.statusMessage =
-                '[DEV] While : Crépuscule 2→3 booste Gandalf (+3). Morgul Cur déjà +2 (Nazgûl spoté).';
+                '[DEV] While + Attëa : Gandalf +3 (crépuscule≥3). Cur +2. Escarmouche Frodon vs Attëa — Ⓣ1 → +1 force (limit +5).';
             break;
         }
     }

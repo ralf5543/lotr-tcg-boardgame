@@ -913,6 +913,38 @@ function parseUntilExpiry(
     return phase === 'SKIRMISH' ? 'SKIRMISH' : 'REGROUP';
 }
 
+/** « (limit +5) » en fin de clause make. */
+function stripMakeStatLimit(effectText: string): {
+    text: string;
+    limit?: number;
+} {
+    const match = effectText
+        .replace(/\s+/g, ' ')
+        .trim()
+        .match(/^(.*?)\s*\(\s*limit\s*\+(\d+)\s*\)\s*\.?$/i);
+    if (!match) return { text: effectText };
+    const limit = parseInt(match[2], 10);
+    if (!Number.isFinite(limit) || limit <= 0) return { text: effectText };
+    return { text: match[1].trim(), limit };
+}
+
+/** Nom de la carte → « this companion … » pour réutiliser le parse make SELF. */
+function rewriteNamedSelfMakeText(
+    effectText: string,
+    cardTitle?: string
+): string {
+    const title = (cardTitle || '').trim();
+    if (!title) return effectText;
+    const plain = effectText
+        .replace(/<[^>]+>/g, ' ')
+        .replace(/\s+/g, ' ')
+        .trim();
+    if (plain.toLowerCase().startsWith(`${title.toLowerCase()} `)) {
+        return `this companion ${plain.slice(title.length).trim()}`;
+    }
+    return effectText;
+}
+
 function parseEffectTarget(
     effectText: string,
     costTarget: 'SELF' | 'BEARER' | string[][]
@@ -2420,6 +2452,66 @@ export function parseAbilities(
                     return;
                 }
             }
+        }
+
+        const removeTwilightMake = body.match(
+            /^Remove\s+<symbol>twilight(\d+)<\/symbol>\s+to make\s+([\s\S]+)/i
+        );
+        if (removeTwilightMake) {
+            const twilight = parseInt(removeTwilightMake[1], 10);
+            if (!Number.isFinite(twilight) || twilight <= 0) return;
+
+            let effectText = removeTwilightMake[2];
+            if (/\bfor each\b/i.test(effectText.replace(/<[^>]+>/g, ' '))) {
+                return;
+            }
+            // Un seul effet force (pas « and fierce / and Damage »)
+            const effectPlainCheck = effectText
+                .replace(/<[^>]+>/g, ' ')
+                .replace(/\s+/g, ' ');
+            if (
+                /\band\b/i.test(
+                    effectPlainCheck.replace(/\(\s*limit\s*\+\d+\s*\)/i, '')
+                )
+            ) {
+                return;
+            }
+
+            const { text: withoutLimit, limit } = stripMakeStatLimit(effectText);
+            effectText = rewriteNamedSelfMakeText(withoutLimit, cardTitle);
+
+            const expiresAtPhase = parseUntilExpiry(effectText, marker.phase);
+            const parsedMake = parseMakeTargetAndEffects(
+                effectText,
+                'SELF',
+                expiresAtPhase
+            );
+            if (!parsedMake || parsedMake.effects.length === 0) return;
+            if (parsedMake.effects.length !== 1) return;
+            const only = parsedMake.effects[0];
+            if (!only || only.type !== 'ADD_TEMP_STAT') return;
+            if (limit !== undefined) {
+                only.limit = limit;
+            }
+
+            const source =
+                parsedMake.target === 'BEARER' ? 'ATTACHMENT' : 'SELF';
+            const clause =
+                `${marker.phase}: Remove twilight${twilight} to make ${removeTwilightMake[2]}`
+                    .replace(/<[^>]+>/g, '')
+                    .replace(/\s+/g, ' ')
+                    .replace(/\s+\./g, '.')
+                    .trim();
+
+            abilities.push({
+                id: `${cardId || 'ability'}:${abilities.length}`,
+                phases,
+                cost: [{ removeTwilight: twilight }],
+                effects: parsedMake.effects,
+                source,
+                text: clause,
+            });
+            return;
         }
 
         const makeMatch = body.match(

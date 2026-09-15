@@ -207,7 +207,19 @@ export function abilityHasLegalEffectTarget(
                 const card = resolveAbilityTarget(G, source, effect.target);
                 if (!card || !isHealableCard(card)) return false;
             }
+            if (effect.type === 'ADD_TEMP_STAT' && effect.limit != null) {
+                const used = (G.tempModifiers || [])
+                    .filter((mod) => mod.id.startsWith(`${ability.id}:`))
+                    .reduce((sum, mod) => sum + mod.value, 0);
+                if (used + effect.value > effect.limit) return false;
+            }
             continue;
+        }
+        if (effect.type === 'ADD_TEMP_STAT' && effect.limit != null) {
+            const used = (G.tempModifiers || [])
+                .filter((mod) => mod.id.startsWith(`${ability.id}:`))
+                .reduce((sum, mod) => sum + mod.value, 0);
+            if (used + effect.value > effect.limit) return false;
         }
         if (candidatesForEffect(G, source, ability, effect).length === 0) {
             return false;

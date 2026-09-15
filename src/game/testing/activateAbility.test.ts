@@ -349,7 +349,13 @@ describe('activateAbility', () => {
             },
         });
 
-        engine.moves.activateAbility('named-exert', '4R307:0', '1C311');
+        engine.moves.activateAbility(
+            'named-exert',
+            '4R307:0',
+            '1C311',
+            undefined,
+            '1C311'
+        );
 
         const samInPlay = engine.getG().players['0']?.fellowshipArea[0];
         expect(samInPlay?.wounds).toBe(1);
@@ -1060,5 +1066,85 @@ describe('activateAbility', () => {
         expect(engine.getG().players['0']?.fellowshipArea[0]?.wounds).toBe(1);
         expect(engine.getG().players['1']?.supportArea).toHaveLength(0);
         expect(engine.getG().players['1']?.discard[0]?.id).toBe('1C138');
+    });
+
+    it('Attëa : retire Ⓣ1 pour +1 force (limit +5)', () => {
+        const ability: Ability = {
+            id: '1R229:0',
+            phases: ['SKIRMISH'],
+            cost: [{ removeTwilight: 1 }],
+            effects: [
+                {
+                    type: 'ADD_TEMP_STAT',
+                    stat: 'STRENGTH',
+                    value: 1,
+                    target: 'SELF',
+                    expiresAtPhase: 'SKIRMISH',
+                    limit: 5,
+                },
+            ],
+            source: 'SELF',
+        };
+        const attea = createMinion({
+            id: '1R229',
+            instanceId: 'attea',
+            title: 'Úlairë Attëa',
+            strength: 12,
+            vitality: 3,
+            actionPhases: ['SKIRMISH'],
+            abilities: [ability],
+        });
+        const frodo = createCompanion({
+            id: 'frodo',
+            instanceId: 'frodo',
+            vitality: 4,
+        });
+
+        const engine = createEngineClient({
+            startPhase: 'skirmish',
+            playerID: '1',
+            G: {
+                twilightPool: 6,
+                ...createSkirmishActionWindow('sk-1', '1'),
+                skirmishes: [
+                    {
+                        id: 'sk-1',
+                        companionId: 'frodo',
+                        minionIds: ['attea'],
+                    },
+                ],
+                battlefield: [attea],
+                players: {
+                    '0': createPlayerState('0', {
+                        fellowshipArea: [frodo],
+                    }),
+                    '1': createPlayerState('1'),
+                },
+            },
+        });
+
+        for (let i = 0; i < 5; i++) {
+            engine.updatePlayerID('1');
+            engine.moves.activateAbility('attea', '1R229:0');
+            engine.updatePlayerID('0');
+            engine.moves.passActionWindow();
+        }
+
+        const g = engine.getG();
+        expect(g.twilightPool).toBe(1);
+        expect(
+            getCalculatedStrength(g, g.battlefield.find((c) => c.id === '1R229')!)
+        ).toBe(17);
+
+        // 6e activation bloquée par la limite
+        engine.updatePlayerID('1');
+        engine.moves.activateAbility('attea', '1R229:0');
+        expect(engine.getG().twilightPool).toBe(1);
+        expect(
+            getCalculatedStrength(
+                engine.getG(),
+                engine.getG().battlefield.find((c) => c.id === '1R229')!
+            )
+        ).toBe(17);
     });
 });
