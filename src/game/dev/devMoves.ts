@@ -107,9 +107,15 @@ export const devMoves = {
     },
 
     devLoadPreset: (
-        { G }: LotrPhaseContext,
+        { G, events }: LotrPhaseContext,
         presetType: DevPresetType
     ) => {
+        if (presetType === 'ESCAPE_PREVENT_TEST') {
+            resetPhaseMachine(G);
+        }
         applyDevPreset(G, presetType);
+        if (presetType === 'ESCAPE_PREVENT_TEST') {
+            events?.setPhase?.('skirmish');
+        }
     },
 };

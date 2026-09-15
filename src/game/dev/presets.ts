@@ -499,5 +499,64 @@ export const applyDevPreset = (
                 '[DEV] Preset Archerie chargé (Gimli a +1 Vitalité via Armure)';
             break;
         }
+        case 'ESCAPE_PREVENT_TEST': {
+            const shadowId = fpId === '0' ? '1' : '0';
+            const shadowPlayer = G.players[shadowId];
+            if (!shadowPlayer) return;
+
+            G.twilightPool = 2;
+            fpPlayer.burdens = 0;
+            G.tempModifiers = [];
+            G.archeryState = undefined;
+
+            Object.keys(G.players).forEach((pId) => {
+                const player = G.players[pId];
+                if (player) {
+                    player.hand = [];
+                    player.supportArea = [];
+                    player.discard = [];
+                }
+            });
+
+            const merry = {
+                ...clonePresetCard('1C303', 'dev-merry'),
+                attachments: [clonePresetCard('4R300', 'dev-escape')],
+            };
+
+            fpPlayer.fellowshipArea = [
+                {
+                    ...clonePresetCard('2C102', 'dev-frodo'),
+                    attachments: [clonePresetCard('1R1', 'dev-ring')],
+                },
+                merry,
+            ];
+
+            G.battlefield = [clonePresetCard('11R194', 'dev-lurtz')];
+
+            const skirmishId = 'skirmish_dev-merry';
+            G.skirmishes = [
+                {
+                    id: skirmishId,
+                    companionId: 'dev-merry',
+                    minionIds: ['dev-lurtz'],
+                },
+            ];
+            G.activeSkirmishId = skirmishId;
+            G.actionWindow = {
+                isOpen: true,
+                activePlayerId: fpId,
+                title: 'ESCARMOUCHE',
+                message:
+                    'Phase d’actions de Skirmish : Jouez des cartes/effets ou PASSER.',
+                canPass: true,
+                passesCount: 0,
+            };
+
+            shadowPlayer.hand = [];
+            shadowPlayer.supportArea = [];
+
+            G.statusMessage = '[DEV] Preset Escape / prevent Ombre chargé.';
+            break;
+        }
     }
 };
