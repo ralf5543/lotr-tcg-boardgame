@@ -149,6 +149,7 @@ export const VALID_TARGET_TYPES = new Set([
     /** Main ou distance (ex. « a Moria weapon »). */
     'WEAPON',
     'MOUNT',
+    'FOLLOWER',
     'PIPE',
     // Sceaux (ex. « companion with the Frodo signet »)
     'SIGNET_FRODO',

@@ -5,7 +5,29 @@ import {
     parseKeywords,
     coerceOrphanGameTextAsLore,
     buildLangBlock,
+    formatGameText,
 } from '../../../scripts/convert/parsers';
+
+describe('formatGameText', () => {
+    it('convertit <keyword> et l’ancien <b> en Markdown gras', () => {
+        expect(
+            formatGameText(
+                'While bearing a possession, it is <keyword>fierce.</keyword>'
+            )
+        ).toBe('While bearing a possession, it is **fierce.**');
+        expect(
+            formatGameText(
+                'While bearing a possession, it is <b>fierce.</b>'
+            )
+        ).toBe('While bearing a possession, it is **fierce.**');
+    });
+
+    it('ramène le point collé après le gras à l’intérieur', () => {
+        expect(formatGameText('<keyword>fierce</keyword>.')).toBe(
+            '**fierce.**'
+        );
+    });
+});
 
 describe('coerceOrphanGameTextAsLore', () => {
     it('replace le Text traduit par du lore si l’anglais n’a pas de texte de jeu', () => {
@@ -1198,6 +1220,110 @@ describe('parseAbilities — While skirmishing → strength', () => {
                 'While skirmishing a non-hunter minion, this companion is strength +1.',
                 'Dummy',
                 'X4'
+            )
+        ).toBeUndefined();
+    });
+});
+
+describe('parseAbilities — While bearing → strength / keyword', () => {
+    it('parse Merry : bears a weapon → force +2', () => {
+        expect(
+            parseAbilities(
+                'While Merry bears a weapon, he is strength +2.',
+                'Merry',
+                '1C303'
+            )
+        ).toEqual([
+            {
+                id: '1C303:0',
+                phases: [],
+                trigger: {
+                    type: 'WHILE',
+                    bearing: { target: [['WEAPON']] },
+                },
+                cost: [],
+                effects: [
+                    {
+                        type: 'MODIFY_STAT',
+                        stat: 'STRENGTH',
+                        value: 2,
+                        target: 'SELF',
+                    },
+                ],
+                source: 'SELF',
+                text: expect.stringMatching(
+                    /While Merry bears a weapon, he is strength \+2/i
+                ),
+            },
+        ]);
+    });
+
+    it('parse possession → fierce / Damage', () => {
+        expect(
+            parseAbilities(
+                'While this minion is bearing a possession, it is <keyword>fierce.</keyword>',
+                'Frenzied Dunlending',
+                '12S65'
+            )
+        ).toEqual([
+            {
+                id: '12S65:0',
+                phases: [],
+                trigger: {
+                    type: 'WHILE',
+                    bearing: { target: [['POSSESSION']] },
+                },
+                cost: [],
+                effects: [
+                    {
+                        type: 'MODIFY_KEYWORD',
+                        keyword: 'FIERCE',
+                        target: 'SELF',
+                    },
+                ],
+                source: 'SELF',
+                text: expect.stringMatching(
+                    /While this minion is bearing a possession, it is fierce/i
+                ),
+            },
+        ]);
+
+        expect(
+            parseAbilities(
+                'While Éomer bears a mount, he is <keyword>damage +1.</keyword>',
+                'Éomer',
+                '13R123'
+            )
+        ).toEqual([
+            {
+                id: '13R123:0',
+                phases: [],
+                trigger: {
+                    type: 'WHILE',
+                    bearing: { target: [['MOUNT']] },
+                },
+                cost: [],
+                effects: [
+                    {
+                        type: 'MODIFY_KEYWORD',
+                        keyword: 'DAMAGE +1',
+                        target: 'SELF',
+                    },
+                ],
+                source: 'SELF',
+                text: expect.stringMatching(
+                    /While Éomer bears a mount, he is damage \+1/i
+                ),
+            },
+        ]);
+    });
+
+    it('refuse nom propre d’attachement', () => {
+        expect(
+            parseAbilities(
+                'While bearing a Goblin Spear, this minion is <keyword>damage +2.</keyword>',
+                'Goblin Spearman',
+                '2C65'
             )
         ).toBeUndefined();
     });

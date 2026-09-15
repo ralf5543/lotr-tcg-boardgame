@@ -85,10 +85,22 @@ function whileConditionHolds(
         }
     }
 
+    if (trigger.bearing) {
+        const attachments = source.attachments || [];
+        if (
+            !attachments.some((att) =>
+                att ? cardMatchesTarget(att, trigger.bearing!.target) : false
+            )
+        ) {
+            return false;
+        }
+    }
+
     return Boolean(
         trigger.spotTwilight ||
             (trigger.spot && trigger.spot.length) ||
-            trigger.skirmishing
+            trigger.skirmishing ||
+            trigger.bearing
     );
 }
 

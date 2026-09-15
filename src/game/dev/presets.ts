@@ -523,22 +523,34 @@ export const applyDevPreset = (
                 }
             });
 
-            // Arwen : +3 vs Nazgûl ; Farin : +2 vs Orc (pas boosté ici)
+            // Merry + arme → +2 force ; Éomer + monture → Damage +1
             fpPlayer.fellowshipArea = [
                 {
                     ...CARDS_PRESETS.FRODO,
                     instanceId: 'dev-frodo',
                     attachments: [clonePresetCard('1R1', 'dev-ring')],
                 },
-                clonePresetCard('1R30', 'dev-arwen'),
-                clonePresetCard('1C11', 'dev-farin'),
+                {
+                    ...clonePresetCard('1C303', 'dev-merry'),
+                    attachments: [clonePresetCard('1C299', 'dev-sword')],
+                },
+                {
+                    ...clonePresetCard('13R123', 'dev-eomer'),
+                    attachments: [clonePresetCard('4U263', 'dev-brego')],
+                },
             ];
             fpPlayer.supportArea = [];
 
-            // Attëa (Nazgûl) vs Arwen → +3 ; un Orc hors combat pour contraste
+            // Orc Swordsman + arme → +2 ; Dunlending + possession → fierce
             G.battlefield = [
-                clonePresetCard('1R229', 'dev-attea'),
-                clonePresetCard('1C271', 'dev-orc'),
+                {
+                    ...clonePresetCard('3C98', 'dev-swordsman'),
+                    attachments: [clonePresetCard('1C269', 'dev-scimitar')],
+                },
+                {
+                    ...clonePresetCard('12S65', 'dev-dunlending'),
+                    attachments: [clonePresetCard('1C269', 'dev-scimitar-2')],
+                },
             ];
             shadowPlayer.hand = [];
             shadowPlayer.supportArea = [];
@@ -546,8 +558,8 @@ export const applyDevPreset = (
             G.skirmishes = [
                 {
                     id: 'sk-while',
-                    companionId: 'dev-arwen',
-                    minionIds: ['dev-attea'],
+                    companionId: 'dev-merry',
+                    minionIds: ['dev-swordsman'],
                 },
             ];
             G.activeSkirmishId = 'sk-while';
@@ -561,7 +573,7 @@ export const applyDevPreset = (
             };
 
             G.statusMessage =
-                '[DEV] While skirmishing : Arwen +3 vs Nazgûl (Attëa). Farin +2 seulement vs Orc (pas en combat).';
+                '[DEV] While bearing : Merry +2 (arme), Éomer Damage +1 (monture), Swordsman +2, Dunlending fierce.';
             break;
         }
     }

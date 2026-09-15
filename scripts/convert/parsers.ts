@@ -70,7 +70,8 @@ export function cleanLoreText(text?: string): string | undefined {
 }
 
 /**
- * Formate le texte de jeu pour transformer les balises HTML/Keyword en gras ou symboles Markdown.
+ * Formate le texte de jeu : balises CSV → Markdown d’affichage.
+ * Source de vérité CSV = `<keyword>…</keyword>` (pas `<b>`).
  */
 export function formatGameText(text?: string): string | undefined {
     if (!text) return undefined;
@@ -80,7 +81,13 @@ export function formatGameText(text?: string): string | undefined {
             /<keyword>Ambush<\/keyword>\s*(<symbol>twilight\d+<\/symbol>)/gi,
             '**Ambush** $1'
         )
+        // Ancien markup HTML dans certaines traductions → même rendu que <keyword>
+        .replace(/<b>([^<]+)<\/b>/gi, '**$1**')
         .replace(/<keyword>([^<]+)<\/keyword>/gi, '**$1**')
+        // Point collé après le gras (`**fierce**.` → `**fierce.**`)
+        .replace(/\*\*([^*]+?)\*\*\./g, (_m, inner: string) =>
+            /[.!?…]$/.test(inner.trim()) ? `**${inner}**.` : `**${inner}.**`
+        )
         .trim();
 }
 
@@ -1865,7 +1872,11 @@ function parseWhileStrengthWho(
     cardTitle?: string
 ): 'SELF' | 'BEARER' | null {
     const who = stripAbilityMarkup(raw).replace(/\s+/g, ' ').trim();
-    if (/^(this minion|this companion|him|her|it)$/i.test(who)) return 'SELF';
+    if (
+        /^(this minion|this companion|him|her|he|she|it)$/i.test(who)
+    ) {
+        return 'SELF';
+    }
     if (/^bearer$/i.test(who)) return 'BEARER';
     const title = (cardTitle || '').trim();
     if (title && who.toLowerCase() === title.toLowerCase()) return 'SELF';
@@ -2006,6 +2017,111 @@ function parseWhileSkirmishingStrengthAbilities(
             text: stripAbilityMarkup(match[0]),
         });
     }
+    return found;
+}
+
+/** Classe portée : weapon / possession / mount / follower… */
+function parseWhileBearingClass(raw: string): string[][] | null {
+    const cleaned = stripAbilityMarkup(raw)
+        .replace(/\bhand\s+weapons?\b/gi, 'HAND-WEAPON')
+        .replace(/\branged\s+weapons?\b/gi, 'RANGED-WEAPON')
+        .replace(/\bweapons?\b/gi, 'WEAPON')
+        .replace(/\s+/g, ' ')
+        .trim();
+    if (!cleaned) return null;
+    if (
+        /\b(and|or|each|other|whose|except|from|to|may|named|search|card)\b/i.test(
+            cleaned
+        )
+    ) {
+        return null;
+    }
+    const filters = parseClassFilters(cleaned);
+    if (filters.length === 0) return null;
+    return [filters];
+}
+
+/**
+ * While [self] bears / is bearing a [classe], [self] is strength ±N | Damage | fierce.
+ */
+function parseWhileBearingAbilities(
+    text: string,
+    cardTitle?: string,
+    cardId?: string
+): Record<string, unknown>[] {
+    const found: Record<string, unknown>[] = [];
+    const subjectAlt = 'this minion|this companion|[^,]+?';
+    const kwTail =
+        '((?:<keyword>[^<]*</keyword>|\\*\\*[^*]+\\*\\*|damage\\s*\\+\\s*\\d+|fierce)\\.?)';
+
+    const strengthRe = new RegExp(
+        `While (${subjectAlt}) (?:bears|is bearing) (?:a|an) ([^,]+), ([^,]+?) is strength ([+-]\\d+)\\.`,
+        'gi'
+    );
+    let match: RegExpExecArray | null;
+    while ((match = strengthRe.exec(text)) !== null) {
+        const bearer = parseWhileStrengthWho(match[1], cardTitle);
+        if (!bearer || bearer !== 'SELF') continue;
+        const bearing = parseWhileBearingClass(match[2]);
+        if (!bearing) continue;
+        const who = parseWhileStrengthWho(match[3], cardTitle);
+        if (!who || who !== 'SELF') continue;
+        const value = parseInt(match[4], 10);
+        if (!Number.isFinite(value) || value === 0) continue;
+
+        found.push({
+            id: `${cardId || 'ability'}:${found.length}:while-bearing`,
+            phases: [],
+            trigger: { type: 'WHILE', bearing: { target: bearing } },
+            cost: [],
+            effects: [
+                {
+                    type: 'MODIFY_STAT',
+                    stat: 'STRENGTH',
+                    value,
+                    target: 'SELF',
+                },
+            ],
+            source: 'SELF',
+            text: stripAbilityMarkup(match[0]),
+        });
+    }
+
+    const keywordRe = new RegExp(
+        `While (${subjectAlt}) (?:bears|is bearing) (?:a|an) ([^,]+), ([^,]+?) is ${kwTail}`,
+        'gi'
+    );
+    while ((match = keywordRe.exec(text)) !== null) {
+        const bearer = parseWhileStrengthWho(match[1], cardTitle);
+        if (!bearer || bearer !== 'SELF') continue;
+        const bearing = parseWhileBearingClass(match[2]);
+        if (!bearing) continue;
+        const who = parseWhileStrengthWho(match[3], cardTitle);
+        if (!who || who !== 'SELF') continue;
+        const grant = parseWhileKeywordGrant(match[4]);
+        if (!grant) continue;
+        const after = stripAbilityMarkup(
+            text.slice(match.index + match[0].length)
+        ).trim();
+        if (/^and\b/i.test(after)) continue;
+
+        found.push({
+            id: `${cardId || 'ability'}:${found.length}:while-bearing`,
+            phases: [],
+            trigger: { type: 'WHILE', bearing: { target: bearing } },
+            cost: [],
+            effects: [
+                {
+                    type: 'MODIFY_KEYWORD',
+                    keyword: grant.keyword,
+                    target: 'SELF',
+                },
+            ],
+            source: 'SELF',
+            text: stripAbilityMarkup(match[0]),
+        });
+    }
+
     return found;
 }
 
@@ -3379,6 +3495,13 @@ export function parseAbilities(
             });
         }
     );
+
+    parseWhileBearingAbilities(text, cardTitle, cardId).forEach((ability) => {
+        abilities.push({
+            ...ability,
+            id: `${cardId || 'ability'}:${abilities.length}`,
+        });
+    });
 
     return abilities.length > 0 ? abilities : undefined;
 }

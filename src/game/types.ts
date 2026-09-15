@@ -323,6 +323,8 @@ export type AbilityTrigger =
           spotTwilight?: number;
           /** Adversaire(s) de l’escarmouche (While skirmishing a …). */
           skirmishing?: { target: string[][] };
+          /** Attachement porté (While … bears a …). */
+          bearing?: { target: string[][] };
       }
     | {
           type: 'CHARACTER_DIES';

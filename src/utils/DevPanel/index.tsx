@@ -194,7 +194,7 @@ export const DevPanel: React.FC<DevPanelProps> = ({
                         <S.PresetButton
                             onClick={() => moves.devLoadPreset('WHILE_TEST')}
                         >
-                            ∿ While skirmishing
+                            ∿ While bearing
                         </S.PresetButton>
                         <S.GameButton $bgColor="#3498db" onClick={onDrawCard}>
                             🃏 Piocher ({deckCount})
