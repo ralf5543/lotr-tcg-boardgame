@@ -275,6 +275,7 @@
     "strength": 17,
     "vitality": 5,
     "minionSiteNumber": 4,
+    "imageUrl": "/cards_visuals/o_02_051.jpg",
     "i18n": {
       "en": {
         "title": "The Balrog",
@@ -285,7 +286,7 @@
       "fr": {
         "title": "Le Balrog",
         "subtitle": "Le Fléau de Durin",
-        "gameText": "**Dégâts +1.** **Acharné.**\nLorsque vous pouvez désigner Le Balrog, défaussez tous les autres séides. Ignorer la phase d’archerie. Défaussez Le Balrog si vous n’êtes pas à un site souterrain.</keyword>",
+        "gameText": "**Dégâts +1.** **Acharné.**\nLorsque vous pouvez désigner Le Balrog, défaussez tous les autres séides. Ignorer la phase d’archerie. Défaussez Le Balrog si vous n’êtes pas à un site **Souterrain.**",
         "loreText": "En vérité, j'ai vu sur le pont ce qui hante nos pires cauchemars..."
       },
       "de": {
@@ -1510,6 +1511,7 @@
     "strength": 17,
     "vitality": 5,
     "minionSiteNumber": 4,
+    "imageUrl": "/cards_visuals/o_00_030.jpg",
     "i18n": {
       "en": {
         "title": "The Balrog",
@@ -1801,6 +1803,7 @@
     "culture": "MORIA",
     "twilightCost": 1,
     "strength": 1,
+    "imageUrl": "/cards_visuals/o_00_036.jpg",
     "i18n": {
       "en": {
         "title": "Whip of Many Thongs",
@@ -1845,6 +1848,7 @@
     "strength": 14,
     "vitality": 4,
     "minionSiteNumber": 3,
+    "imageUrl": "/cards_visuals/o_00_037.jpg",
     "i18n": {
       "en": {
         "title": "The Witch-king",
@@ -2133,6 +2137,7 @@
     "culture": "MORIA",
     "twilightCost": 1,
     "strength": 3,
+    "imageUrl": "/cards_visuals/o_00_042.jpg",
     "i18n": {
       "en": {
         "title": "The Balrog's Sword",
@@ -5743,6 +5748,7 @@
     "strength": 17,
     "vitality": 5,
     "minionSiteNumber": 4,
+    "imageUrl": "/cards_visuals/o_02_052.jpg",
     "i18n": {
       "en": {
         "title": "The Balrog",
@@ -5753,7 +5759,7 @@
       "fr": {
         "title": "Le Balrog",
         "subtitle": "La Flamme d'Udûn",
-        "gameText": "**Dégâts +1.** **Acharné.**\nPour jouer, désignez un Orque <symbol>moria</symbol>. Défaussez Le Balrog si vous n’êtes pas à un site souterrain.\nOmbre : Affaiblissez Le Balrog et retirez <symbol>twilight2</symbol> pour jouer un Orque <symbol>moria</symbol> de votre pile de défausse.",
+        "gameText": "**Dégâts +1.** **Acharné.**\nPour jouer, désignez un Orque <symbol>moria</symbol>. Défaussez Le Balrog si vous n’êtes pas à un site **Souterrain.**\nOmbre : Affaiblissez Le Balrog et retirez <symbol>twilight2</symbol> pour jouer un Orque <symbol>moria</symbol> de votre pile de défausse.",
         "loreText": "La forme s'avança ... elle se redressa soudain jusqu'à une grande stature, et ses ailes s'étendirent d'un mur à l'autre ..."
       },
       "de": {
@@ -8497,6 +8503,7 @@
     "strength": 17,
     "vitality": 5,
     "minionSiteNumber": 4,
+    "imageUrl": "/cards_visuals/o_12_079.jpg",
     "i18n": {
       "en": {
         "title": "The Balrog",
@@ -29069,6 +29076,7 @@
     "strength": 17,
     "vitality": 5,
     "minionSiteNumber": 4,
+    "imageUrl": "/cards_visuals/o_02_051.jpg",
     "i18n": {
       "en": {
         "title": "The Balrog",
@@ -29079,7 +29087,7 @@
       "fr": {
         "title": "Le Balrog",
         "subtitle": "Le Fléau de Durin",
-        "gameText": "**Dégâts +1.** **Acharné.**\nLorsque vous pouvez désigner Le Balrog, défaussez tous les autres séides. Ignorer la phase d’archerie. Défaussez Le Balrog si vous n’êtes pas à un site souterrain.</keyword>",
+        "gameText": "**Dégâts +1.** **Acharné.**\nLorsque vous pouvez désigner Le Balrog, défaussez tous les autres séides. Ignorer la phase d’archerie. Défaussez Le Balrog si vous n’êtes pas à un site **Souterrain.**",
         "loreText": "En vérité, j'ai vu sur le pont ce qui hante nos pires cauchemars..."
       },
       "de": {
@@ -61741,6 +61749,7 @@
     "strength": 17,
     "vitality": 5,
     "minionSiteNumber": 4,
+    "imageUrl": "/cards_visuals/o_06_076.jpg",
     "i18n": {
       "en": {
         "title": "The Balrog",

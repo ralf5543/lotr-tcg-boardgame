@@ -3,6 +3,7 @@ import styled, { css, keyframes } from 'styled-components';
 export interface CardContainerProps {
     $culture: string;
     $type: string;
+    $race?: string;
     $subtype?: string;
     $signet?: string;
     $isShadow?: boolean;
@@ -88,6 +89,14 @@ export const CardContainer = styled.div<CardContainerProps>`
     width: 130px;
     z-index: 2;
     background-image: ${(props) => {
+        // Balrog : fonds dédiés (perso + artefacts Moria)
+        if (props.$type === 'MINION' && props.$race === 'BALROG') {
+            return `url(interface/cards_backgrounds/MORIA_BALROG_character.webp)`;
+        }
+        if (props.$culture === 'MORIA' && props.$type === 'ARTIFACT') {
+            return `url(interface/cards_backgrounds/MORIA_BALROG_modifier.webp)`;
+        }
+
         if (props.$culture === 'GOLLUM') {
             if (props.$type === 'COMPANION' || props.$type === 'ALLY') {
                 return `url(interface/cards_backgrounds/${props.$culture}_freeps_character.webp)`;

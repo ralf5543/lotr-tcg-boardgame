@@ -588,6 +588,7 @@ export const Card: React.FC<CardProps> = ({
         <S.CardContainer
             $culture={card.culture}
             $type={card.type}
+            $race={card.race}
             $subtype={card.subtype}
             $kind={card.kind}
             $isShadow={isShadow}
