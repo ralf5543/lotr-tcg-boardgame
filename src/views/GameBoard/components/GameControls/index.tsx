@@ -27,6 +27,7 @@ interface GameControlsProps {
         confirmHandRefill?: () => void;
         passActionWindow?: () => void;
         passResponseWindow?: () => void;
+        preventPendingEffect?: () => void;
         resolveWhenPlayedChoice?: (
             accept: boolean,
             discardedHandIds?: string[]
@@ -786,6 +787,24 @@ export const GameControls: React.FC<GameControlsProps> = ({
                                 </S.ActionButton>
                             </>
                         )}
+
+                        {toastConfig.type === 'RESPONSE' &&
+                            G.pendingEvent?.type ===
+                                'ABOUT_TO_CANCEL_SKIRMISH' && (
+                                <S.ActionButton
+                                    style={{ marginTop: '12px', width: '100%' }}
+                                    onClick={() => {
+                                        moves.preventPendingEffect?.();
+                                    }}
+                                >
+                                    Empêcher (−
+                                    {G.pendingEvent.removeTwilight} crépuscule
+                                    {G.pendingEvent.removeTwilight > 1
+                                        ? 's'
+                                        : ''}
+                                    )
+                                </S.ActionButton>
+                            )}
 
                         {targetingOnConfirm && (
                             <S.ActionButton

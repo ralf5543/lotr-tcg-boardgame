@@ -2626,11 +2626,27 @@ function parseCancelInvolving(
     return parseNounTarget(plain, costTarget, cardTitle);
 }
 
-/** Empêche Ombre (Escape) : pas encore géré — on émet quand même le cancel. */
+/**
+ * « Any Shadow player may remove ⓉN to prevent this ».
+ * Uniquement remove twilight N — autre coût Ombre = inconnu (inerte).
+ */
+function parseShadowMayPrevent(
+    leftover: string
+): { removeTwilight: number } | null {
+    const plain = stripAbilityMarkup(leftover).replace(/[.\s]+$/g, '').trim();
+    if (!plain) return null;
+    const match = plain.match(
+        /^Any Shadow player may remove\s+twilight(\d+)\s+to prevent this$/i
+    );
+    if (!match) return null;
+    return { removeTwilight: parseInt(match[1], 10) };
+}
+
+/** Leftover vide, ou prevent Ombre twilight reconnu. Sinon → ne pas émettre. */
 function isOnlyShadowPreventClause(leftover: string): boolean {
     const plain = stripAbilityMarkup(leftover).replace(/[.\s]+$/g, '').trim();
     if (!plain) return true;
-    return /^Any Shadow player may remove\b/i.test(plain);
+    return parseShadowMayPrevent(leftover) !== null;
 }
 
 /**
@@ -3548,6 +3564,9 @@ export function parseAbilities(
             );
             if (!involving) return;
 
+            const shadowMayPrevent =
+                parseShadowMayPrevent(leftoverAfterDot) || undefined;
+
             const cancelClause =
                 `${marker.phase}: Exert ${cancelSkirmishMatch[1].trim()} to cancel a skirmish involving ${involvingSentence.trim()}`
                     .replace(/<[^>]+>/g, '')
@@ -3571,7 +3590,15 @@ export function parseAbilities(
                         ],
                     },
                 ],
-                effects: [{ type: 'CANCEL_SKIRMISH', involving }],
+                effects: [
+                    {
+                        type: 'CANCEL_SKIRMISH',
+                        involving,
+                        ...(shadowMayPrevent
+                            ? { shadowMayPrevent }
+                            : {}),
+                    },
+                ],
                 source:
                     subject.target === 'BEARER' ? 'ATTACHMENT' : 'SELF',
                 text: cancelClause,

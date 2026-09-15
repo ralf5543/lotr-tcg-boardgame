@@ -25,6 +25,7 @@ import {
     isResponseWindowOpen,
     passResponseWindow as resolveResponsePass,
     pauseActionYieldForResponses,
+    preventPendingEffect as resolvePreventPending,
     requestWounds,
 } from '../engine/responseWindow';
 import {
@@ -417,6 +418,12 @@ export const passResponseWindow = ({ G, playerID }: LotrMoveContext) => {
     }
 };
 
+export const preventPendingEffect = ({ G, playerID }: LotrMoveContext) => {
+    if (resolvePreventPending(G, playerID) === 'INVALID') {
+        return 'INVALID_MOVE';
+    }
+};
+
 export const resolveWhenPlayedChoice = (
     { G, playerID }: LotrMoveContext,
     accept: boolean,
@@ -626,6 +633,7 @@ export const commonMoves = {
     confirmStartOfPhase,
     passActionWindow,
     passResponseWindow,
+    preventPendingEffect,
     attachCard,
     beginPendingPlay,
     cancelPendingPlay,

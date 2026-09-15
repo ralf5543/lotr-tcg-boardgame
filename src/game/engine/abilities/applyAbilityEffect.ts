@@ -6,7 +6,7 @@ import type {
 } from '../../types';
 import type { ModifierScope } from '../../logic/stats/types';
 import { resolveAbilityTarget, forEachInPlayCard, resolveWinnerTargets, resolveCostTarget } from './resolveCostTarget';
-import { requestWounds } from '../responseWindow';
+import { requestWounds, requestCancelSkirmish } from '../responseWindow';
 import { cardMatchesTarget } from '../validations/matchers';
 import { drawCardsForPlayer } from '../../../utils/drawCards';
 import { discardCardFromPlay } from '../../../utils/discardCardFromPlay';
@@ -18,10 +18,7 @@ import {
 } from './payAbilityCost';
 import { addThreats } from '../../logic/threats';
 import { applyHeal } from '../../../utils/applyHeal';
-import {
-    cancelSkirmish,
-    findSkirmishToCancel,
-} from './cancelSkirmish';
+import { findSkirmishToCancel } from './cancelSkirmish';
 
 function normalizeChosenIds(chosen?: string | string[]): string[] {
     if (!chosen) return [];
@@ -126,7 +123,15 @@ export function applyAbilityEffect(
                 effect.involving
             );
             if (!skirmish) return false;
-            if (!cancelSkirmish(G, skirmish.id)) return false;
+            if (
+                !requestCancelSkirmish(
+                    G,
+                    skirmish.id,
+                    effect.shadowMayPrevent
+                )
+            ) {
+                return false;
+            }
             continue;
         }
 

@@ -18,6 +18,7 @@ import { cardMatchesTarget } from './validations/matchers';
 import { abilityMatchesPhase } from './abilities/collectAbilities';
 import { getEffectiveVitality } from '../../utils/cardStats';
 import { yieldPriorityAfterAction } from './actionWindow';
+import { cancelSkirmish } from './abilities/cancelSkirmish';
 
 const matchCard = (card: CardState, targetId: string): boolean =>
     card.instanceId === targetId || card.id === targetId;
@@ -159,7 +160,21 @@ function responseEventIsActive(event: PendingEvent | undefined): boolean {
     if (event.type === 'ABOUT_TO_WOUND') return event.remaining > 0;
     if (event.type === 'WINS_SKIRMISH') return event.winnerIds.length > 0;
     if (event.type === 'CHARACTER_DIES') return Boolean(event.deadCardId);
+    if (event.type === 'ABOUT_TO_CANCEL_SKIRMISH') {
+        return Boolean(event.skirmishId);
+    }
     return false;
+}
+
+function shadowPlayerId(G: GameState): string {
+    const fpId = G.fpPlayerId || '0';
+    return fpId === '0' ? '1' : '0';
+}
+
+function shadowCanPreventCancel(G: GameState): boolean {
+    const event = G.pendingEvent;
+    if (!event || event.type !== 'ABOUT_TO_CANCEL_SKIRMISH') return false;
+    return (G.twilightPool || 0) >= event.removeTwilight;
 }
 
 function responseWindowMessage(G: GameState): string {
@@ -168,6 +183,10 @@ function responseWindowMessage(G: GameState): string {
     }
     if (G.pendingEvent?.type === 'CHARACTER_DIES') {
         return 'Un personnage est mort. Jouez une réponse ou passez.';
+    }
+    if (G.pendingEvent?.type === 'ABOUT_TO_CANCEL_SKIRMISH') {
+        const n = G.pendingEvent.removeTwilight;
+        return `Une escarmouche va être annulée. Retirez ${n} crépuscule${n > 1 ? 's' : ''} pour empêcher, ou passez.`;
     }
     return responseWoundMessage(G);
 }
@@ -223,6 +242,12 @@ export function playerHasEligibleResponse(
     playerID: string
 ): boolean {
     if (!G.pendingEvent) return false;
+
+    if (G.pendingEvent.type === 'ABOUT_TO_CANCEL_SKIRMISH') {
+        return (
+            playerID === shadowPlayerId(G) && shadowCanPreventCancel(G)
+        );
+    }
 
     const player = G.players[playerID];
     if (player?.hand?.some((card) => card && handResponseIsLegal(G, card, playerID))) {
@@ -434,6 +459,15 @@ function concludeOpenResponse(G: GameState): 'APPLIED' | 'WAITING' {
         return processWoundQueue(G);
     }
 
+    if (G.pendingEvent?.type === 'ABOUT_TO_CANCEL_SKIRMISH') {
+        const skirmishId = G.pendingEvent.skirmishId;
+        G.pendingEvent = undefined;
+        closeResponseWindow(G);
+        cancelSkirmish(G, skirmishId);
+        flushPendingActionYield(G);
+        return 'APPLIED';
+    }
+
     G.pendingEvent = undefined;
     closeResponseWindow(G);
     if (tryOpenCharacterDies(G) === 'WAITING') return 'WAITING';
@@ -530,6 +564,62 @@ export function pauseActionYieldForResponses(
     playerID: string
 ): void {
     G.pendingActionYieldPlayerId = playerID;
+}
+
+/**
+ * Annulation d’escarmouche : si l’Ombre peut payer le prevent, ouvre la
+ * fenêtre ; sinon annule tout de suite.
+ */
+export function requestCancelSkirmish(
+    G: GameState,
+    skirmishId: string,
+    shadowMayPrevent?: { removeTwilight: number }
+): boolean {
+    const exists = (G.skirmishes || []).some((s) => s.id === skirmishId);
+    if (!exists) return false;
+
+    const cost = shadowMayPrevent?.removeTwilight;
+    if (typeof cost === 'number' && cost > 0 && (G.twilightPool || 0) >= cost) {
+        G.pendingEvent = {
+            type: 'ABOUT_TO_CANCEL_SKIRMISH',
+            skirmishId,
+            removeTwilight: cost,
+        };
+        openResponseWindow(G);
+        G.statusMessage =
+            'Réponse Ombre : empêcher l’annulation ou passer.';
+        return true;
+    }
+
+    return cancelSkirmish(G, skirmishId);
+}
+
+/**
+ * Ombre retire le crépuscule pour empêcher l’effet pending (Escape, etc.).
+ * Le coût FP reste payé ; l’escarmouche continue.
+ */
+export function preventPendingEffect(
+    G: GameState,
+    playerID: string
+): 'APPLIED' | 'INVALID' {
+    if (!G.responseWindow?.isOpen) return 'INVALID';
+    if (G.responseWindow.activePlayerId !== playerID) return 'INVALID';
+
+    const event = G.pendingEvent;
+    if (!event || event.type !== 'ABOUT_TO_CANCEL_SKIRMISH') {
+        return 'INVALID';
+    }
+    if (playerID !== shadowPlayerId(G)) return 'INVALID';
+
+    const cost = event.removeTwilight;
+    if ((G.twilightPool || 0) < cost) return 'INVALID';
+
+    G.twilightPool = (G.twilightPool || 0) - cost;
+    G.pendingEvent = undefined;
+    closeResponseWindow(G);
+    G.statusMessage = `L’Ombre empêche l’annulation (−${cost} crépuscule${cost > 1 ? 's' : ''}).`;
+    flushPendingActionYield(G);
+    return 'APPLIED';
 }
 
 function livingBattlefieldMinions(G: GameState): CardState[] {

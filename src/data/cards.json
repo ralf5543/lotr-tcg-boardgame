@@ -42788,7 +42788,10 @@
         "effects": [
           {
             "type": "CANCEL_SKIRMISH",
-            "involving": "BEARER"
+            "involving": "BEARER",
+            "shadowMayPrevent": {
+              "removeTwilight": 1
+            }
           }
         ],
         "source": "ATTACHMENT",
@@ -51434,7 +51437,10 @@
         "effects": [
           {
             "type": "CANCEL_SKIRMISH",
-            "involving": "BEARER"
+            "involving": "BEARER",
+            "shadowMayPrevent": {
+              "removeTwilight": 1
+            }
           }
         ],
         "source": "ATTACHMENT",

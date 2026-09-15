@@ -499,54 +499,5 @@ export const applyDevPreset = (
                 '[DEV] Preset Archerie chargé (Gimli a +1 Vitalité via Armure)';
             break;
         }
-        case 'WHILE_TEST': {
-            const shadowId = fpId === '0' ? '1' : '0';
-            const shadowPlayer = G.players[shadowId];
-            if (!shadowPlayer) return;
-
-            G.twilightPool = 0;
-            fpPlayer.burdens = 0;
-            G.battlefield = [];
-            G.skirmishes = [];
-            G.activeSkirmishId = undefined;
-            G.actionWindow = undefined;
-            G.responseWindow = undefined;
-            G.pendingEvent = undefined;
-            G.pendingWhenPlayed = undefined;
-            G.tempModifiers = [];
-            G.archeryState = undefined;
-
-            Object.keys(G.players).forEach((pId) => {
-                const player = G.players[pId];
-                if (player) {
-                    player.hand = [];
-                    player.supportArea = [];
-                }
-            });
-
-            // Legolas archer (témoin) + Fill With Fear / Balrog → skip archery
-            fpPlayer.fellowshipArea = [
-                {
-                    ...clonePresetCard('2C102', 'dev-frodo'),
-                    attachments: [clonePresetCard('1R1', 'dev-ring')],
-                },
-                clonePresetCard('0P13', 'dev-legolas'),
-                clonePresetCard('1R89', 'dev-aragorn'),
-            ];
-            fpPlayer.supportArea = [clonePresetCard('2U31', 'dev-blood')];
-
-            G.battlefield = [
-                clonePresetCard('2C51', 'dev-balrog'),
-                clonePresetCard('1C271', 'dev-orc'),
-            ];
-            shadowPlayer.hand = [];
-            shadowPlayer.supportArea = [
-                clonePresetCard('2U56', 'dev-fill-fear'),
-            ];
-
-            G.statusMessage =
-                '[DEV] Skip archery : Sang de Númenor + Fill With Fear (Balrog). Passe la manœuvre → assignment.';
-            break;
-        }
     }
 };

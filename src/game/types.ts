@@ -269,6 +269,8 @@ export type AbilityEffect =
           /** Annule une escarmouche impliquant la cible (pas de vainqueur / blessures). */
           type: 'CANCEL_SKIRMISH';
           involving: AbilityTargetRef;
+          /** Ombre peut retirer N crépuscule pour empêcher l’effet (Escape, etc.). */
+          shadowMayPrevent?: { removeTwilight: number };
       }
     | {
           type: 'WOUND';
@@ -486,10 +488,18 @@ export interface PendingCharacterDiesEvent {
     deadCardId: string;
 }
 
+/** Effet d’annulation d’escarmouche engagé ; l’Ombre peut encore l’empêcher. */
+export interface PendingCancelSkirmishEvent {
+    type: 'ABOUT_TO_CANCEL_SKIRMISH';
+    skirmishId: string;
+    removeTwilight: number;
+}
+
 export type PendingEvent =
     | PendingWoundEvent
     | PendingWinsSkirmishEvent
-    | PendingCharacterDiesEvent;
+    | PendingCharacterDiesEvent
+    | PendingCancelSkirmishEvent;
 
 export interface WoundQueueItem {
     targetId: string;
@@ -629,7 +639,7 @@ export interface ArcheryState {
     shadowRemainingWounds: number;
 }
 
-export type DevPresetType = 'ARCHERY_TEST' | 'WHILE_TEST';
+export type DevPresetType = 'ARCHERY_TEST';
 
 export interface TempKeywordModifier {
     keyword: CardKeyword;
