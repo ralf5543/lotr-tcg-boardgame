@@ -4606,6 +4606,40 @@
     "keywords": [
       "LURKER"
     ],
+    "abilities": [
+      {
+        "id": "0P116:0",
+        "phases": [],
+        "trigger": {
+          "type": "WHILE",
+          "spot": [
+            {
+              "count": 6,
+              "target": [
+                [
+                  "COMPANION"
+                ]
+              ]
+            }
+          ]
+        },
+        "cost": [],
+        "effects": [
+          {
+            "type": "MODIFY_STAT",
+            "stat": "STRENGTH",
+            "value": 2,
+            "target": [
+              [
+                "NAZGÛL"
+              ]
+            ]
+          }
+        ],
+        "source": "SELF",
+        "text": "While you can spot 6 companions, each Nazgûl is strength +2."
+      }
+    ],
     "culture": "WRAITH",
     "race": "NAZGÛL",
     "twilightCost": 4,
@@ -101666,6 +101700,40 @@
     "keywords": [
       "LURKER"
     ],
+    "abilities": [
+      {
+        "id": "11S223:0",
+        "phases": [],
+        "trigger": {
+          "type": "WHILE",
+          "spot": [
+            {
+              "count": 6,
+              "target": [
+                [
+                  "COMPANION"
+                ]
+              ]
+            }
+          ]
+        },
+        "cost": [],
+        "effects": [
+          {
+            "type": "MODIFY_STAT",
+            "stat": "STRENGTH",
+            "value": 2,
+            "target": [
+              [
+                "NAZGÛL"
+              ]
+            ]
+          }
+        ],
+        "source": "SELF",
+        "text": "While you can spot 6 companions, each Nazgûl is strength +2."
+      }
+    ],
     "culture": "WRAITH",
     "race": "NAZGÛL",
     "twilightCost": 4,
@@ -109685,6 +109753,40 @@
     "kind": "SHADOW",
     "type": "CONDITION",
     "subtype": "SUPPORT-AREA",
+    "abilities": [
+      {
+        "id": "12C181:0",
+        "phases": [],
+        "trigger": {
+          "type": "WHILE",
+          "spot": [
+            {
+              "count": 6,
+              "target": [
+                [
+                  "COMPANION"
+                ]
+              ]
+            }
+          ]
+        },
+        "cost": [],
+        "effects": [
+          {
+            "type": "MODIFY_STAT",
+            "stat": "STRENGTH",
+            "value": 3,
+            "target": [
+              [
+                "NAZGÛL"
+              ]
+            ]
+          }
+        ],
+        "source": "SELF",
+        "text": "While you can spot 6 companions, each Nazgûl is strength +3."
+      }
+    ],
     "actionPhases": [
       "SKIRMISH"
     ],
@@ -132604,6 +132706,41 @@
             ]
           }
         ]
+      }
+    ],
+    "abilities": [
+      {
+        "id": "17C68:0",
+        "phases": [],
+        "trigger": {
+          "type": "WHILE",
+          "spot": [
+            {
+              "count": 1,
+              "target": [
+                [
+                  "ORC",
+                  "MINION"
+                ]
+              ]
+            }
+          ]
+        },
+        "cost": [],
+        "effects": [
+          {
+            "type": "MODIFY_STAT",
+            "stat": "STRENGTH",
+            "value": -1,
+            "target": [
+              [
+                "COMPANION"
+              ]
+            ]
+          }
+        ],
+        "source": "SELF",
+        "text": "While you can spot an orc minion, each companion is strength -1."
       }
     ],
     "culture": "ORC",

@@ -523,46 +523,43 @@ export const applyDevPreset = (
                 }
             });
 
-            // Merry + arme → +2 force ; Éomer + monture → Damage +1
+            // 6 companions → spot pour Nertëa / Unending Life
+            // Chaotic Clash + orc → chaque companion -1
+            // clonePresetCard : abilities / actionPhases depuis cards.json
             fpPlayer.fellowshipArea = [
                 {
-                    ...CARDS_PRESETS.FRODO,
-                    instanceId: 'dev-frodo',
+                    ...clonePresetCard('2C102', 'dev-frodo'),
                     attachments: [clonePresetCard('1R1', 'dev-ring')],
                 },
-                {
-                    ...clonePresetCard('1C303', 'dev-merry'),
-                    attachments: [clonePresetCard('1C299', 'dev-sword')],
-                },
-                {
-                    ...clonePresetCard('13R123', 'dev-eomer'),
-                    attachments: [clonePresetCard('4U263', 'dev-brego')],
-                },
+                clonePresetCard('1R89', 'dev-aragorn'),
+                clonePresetCard('0P12', 'dev-gimli'),
+                clonePresetCard('4C270', 'dev-eowyn'),
+                clonePresetCard('0P13', 'dev-legolas'),
+                clonePresetCard('1C303', 'dev-merry'),
             ];
             fpPlayer.supportArea = [];
 
-            // Orc Swordsman + arme → +2 ; Dunlending + possession → fierce
+            // Nertëa : each Nazgûl +2 ; Attëa aussi buffé ; orc = témoin
             G.battlefield = [
-                {
-                    ...clonePresetCard('3C98', 'dev-swordsman'),
-                    attachments: [clonePresetCard('1C269', 'dev-scimitar')],
-                },
-                {
-                    ...clonePresetCard('12S65', 'dev-dunlending'),
-                    attachments: [clonePresetCard('1C269', 'dev-scimitar-2')],
-                },
+                clonePresetCard('0P116', 'dev-nertea'),
+                clonePresetCard('1R229', 'dev-attea'),
+                clonePresetCard('1C271', 'dev-orc'),
             ];
             shadowPlayer.hand = [];
-            shadowPlayer.supportArea = [];
+            // Unending Life : each Nazgûl +3 ; Chaotic Clash : each companion -1
+            shadowPlayer.supportArea = [
+                clonePresetCard('12C181', 'dev-unending'),
+                clonePresetCard('17C68', 'dev-chaotic'),
+            ];
 
             G.skirmishes = [
                 {
-                    id: 'sk-while',
+                    id: 'sk-while-each',
                     companionId: 'dev-merry',
-                    minionIds: ['dev-swordsman'],
+                    minionIds: ['dev-nertea'],
                 },
             ];
-            G.activeSkirmishId = 'sk-while';
+            G.activeSkirmishId = 'sk-while-each';
             G.actionWindow = {
                 isOpen: true,
                 activePlayerId: fpId,
@@ -573,7 +570,7 @@ export const applyDevPreset = (
             };
 
             G.statusMessage =
-                '[DEV] While bearing : Merry +2 (arme), Éomer Damage +1 (monture), Swordsman +2, Dunlending fierce.';
+                '[DEV] While each : Nazgûl +5 (Nertëa +2, Unending +3), companions -1 (Chaotic Clash), orc inchangé.';
             break;
         }
     }

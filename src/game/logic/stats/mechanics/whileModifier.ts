@@ -7,6 +7,7 @@ import type {
 import {
     resolveCostTarget,
     findBearer,
+    forEachInPlayCard,
 } from '../../../engine/abilities/resolveCostTarget';
 import { cardMatchesTarget } from '../../../engine/validations/matchers';
 import { findTargetCard } from '../../../../utils/cardUtils';
@@ -123,23 +124,25 @@ function forEachWhileOnCard(
     }
 }
 
-function beneficiaryMatches(
+/** SELF / BEARER uniquement — les cibles classe passent par le scan global. */
+function localBeneficiaryMatches(
     G: GameState,
     source: CardState,
-    target: 'SELF' | 'BEARER' | string | string[][],
+    target: 'SELF' | 'BEARER',
     cardId: string
 ): boolean {
     let beneficiary: CardState | null = null;
     if (target === 'SELF') {
         beneficiary = source;
-    } else if (target === 'BEARER') {
+    } else {
         beneficiary = findBearer(G, source);
     }
     return Boolean(beneficiary && matchCard(beneficiary, cardId));
 }
 
 /**
- * Bonus de force issus des passifs While sur la carte (ou ses attachements).
+ * Bonus de force issus des passifs While sur la carte (ou ses attachements),
+ * plus les « each [classe] » portés par n’importe quelle carte en jeu.
  */
 export function getWhileStrengthBonus(
     G: GameState,
@@ -152,8 +155,25 @@ export function getWhileStrengthBonus(
         for (const effect of ability.effects || []) {
             if (effect.type !== 'MODIFY_STAT') continue;
             if (effect.stat !== 'STRENGTH') continue;
-            if (!beneficiaryMatches(G, source, effect.target, cardId)) continue;
+            if (effect.target !== 'SELF' && effect.target !== 'BEARER') continue;
+            if (!localBeneficiaryMatches(G, source, effect.target, cardId)) {
+                continue;
+            }
             bonus += effect.value || 0;
+        }
+    });
+
+    forEachInPlayCard(G, (source) => {
+        for (const ability of source.abilities || []) {
+            if (ability.trigger?.type !== 'WHILE') continue;
+            if (!whileConditionHolds(G, source, ability)) continue;
+            for (const effect of ability.effects || []) {
+                if (effect.type !== 'MODIFY_STAT') continue;
+                if (effect.stat !== 'STRENGTH') continue;
+                if (!Array.isArray(effect.target)) continue;
+                if (!cardMatchesTarget(card, effect.target)) continue;
+                bonus += effect.value || 0;
+            }
         }
     });
 
@@ -173,7 +193,10 @@ export function getWhileKeywordRaws(
     forEachWhileOnCard(G, card, (source, ability) => {
         for (const effect of ability.effects || []) {
             if (effect.type !== 'MODIFY_KEYWORD') continue;
-            if (!beneficiaryMatches(G, source, effect.target, cardId)) continue;
+            if (effect.target !== 'SELF' && effect.target !== 'BEARER') continue;
+            if (!localBeneficiaryMatches(G, source, effect.target, cardId)) {
+                continue;
+            }
             raw.push(effect.keyword);
         }
     });

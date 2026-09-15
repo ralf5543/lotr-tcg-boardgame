@@ -1085,14 +1085,63 @@ describe('parseAbilities — While you can spot → strength', () => {
         ]);
     });
 
-    it('refuse each / and fierce / for each', () => {
-        expect(
-            parseAbilities(
-                'While you can spot 6 companions, each Nazgûl is strength +2.',
-                'Úlairë Nertëa',
-                '0P116'
-            )
-        ).toBeUndefined();
+    it('parse Úlairë Nertëa : spot 6 companions → each Nazgûl +2', () => {
+        const text =
+            'While you can spot 6 companions, each Nazgûl is strength +2.';
+        expect(parseAbilities(text, 'Úlairë Nertëa', '0P116')).toEqual([
+            {
+                id: '0P116:0',
+                phases: [],
+                trigger: {
+                    type: 'WHILE',
+                    spot: [{ count: 6, target: [['COMPANION']] }],
+                },
+                cost: [],
+                effects: [
+                    {
+                        type: 'MODIFY_STAT',
+                        stat: 'STRENGTH',
+                        value: 2,
+                        target: [['NAZGÛL']],
+                    },
+                ],
+                source: 'SELF',
+                text: expect.stringMatching(
+                    /While you can spot 6 companions, each Nazgûl is strength \+2/i
+                ),
+            },
+        ]);
+    });
+
+    it('parse Chaotic Clash : spot orc minion → each companion -1', () => {
+        const text =
+            'While you can spot an <symbol>orc</symbol> minion, each companion is strength -1.';
+        expect(parseAbilities(text, 'Chaotic Clash', '17C68')).toEqual([
+            {
+                id: '17C68:0',
+                phases: [],
+                trigger: {
+                    type: 'WHILE',
+                    spot: [{ count: 1, target: [['ORC', 'MINION']] }],
+                },
+                cost: [],
+                effects: [
+                    {
+                        type: 'MODIFY_STAT',
+                        stat: 'STRENGTH',
+                        value: -1,
+                        target: [['COMPANION']],
+                    },
+                ],
+                source: 'SELF',
+                text: expect.stringMatching(
+                    /While you can spot an orc minion, each companion is strength -1/i
+                ),
+            },
+        ]);
+    });
+
+    it('refuse and fierce / for each / each skirmishing / of your', () => {
         expect(
             parseAbilities(
                 'While you can spot 2 burdens, this minion is strength +3 and fierce.',
@@ -1105,6 +1154,27 @@ describe('parseAbilities — While you can spot → strength', () => {
                 'While you can spot 2 companions, this minion is <keyword>fierce</keyword> and <keyword>damage +1.</keyword>',
                 'Dummy',
                 'X1'
+            )
+        ).toBeUndefined();
+        expect(
+            parseAbilities(
+                'While you can spot 3 <symbol>elven</symbol> allies whose home is site 3, each minion skirmishing Arwen is strength -3.',
+                'Arwen',
+                '3R8'
+            )
+        ).toBeUndefined();
+        expect(
+            parseAbilities(
+                'While you can spot 2 <symbol>gandalf</symbol> tokens, each of your <symbol>gandalf</symbol> Men is strength +2.',
+                'Librarian',
+                '18C22'
+            )
+        ).toBeUndefined();
+        expect(
+            parseAbilities(
+                'While you can spot 3 threats, each <symbol>sauron</symbol> Orc that is not roaming is strength +1.',
+                'Fires Raged Unchecked',
+                '7R269'
             )
         ).toBeUndefined();
     });
