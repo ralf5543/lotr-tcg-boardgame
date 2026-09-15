@@ -110,3 +110,94 @@ describe('tempModifiers', () => {
         expect(getCalculatedStrength(G, companion)).toBe(7);
     });
 });
+
+describe('While you can spot → strength', () => {
+    it('Gandalf : +3 force dès 3 crépuscule', () => {
+        const gandalf = createCompanion({
+            id: '4C90',
+            title: 'Gandalf',
+            strength: 7,
+            abilities: [
+                {
+                    id: '4C90:0',
+                    phases: [],
+                    trigger: { type: 'WHILE', spotTwilight: 3 },
+                    cost: [],
+                    effects: [
+                        {
+                            type: 'MODIFY_STAT',
+                            stat: 'STRENGTH',
+                            value: 3,
+                            target: 'SELF',
+                        },
+                    ],
+                    source: 'SELF',
+                },
+            ],
+        });
+
+        const low = createGameState({
+            twilightPool: 2,
+            players: {
+                '0': createPlayerState('0', { fellowshipArea: [gandalf] }),
+            },
+        });
+        expect(getCalculatedStrength(low, gandalf)).toBe(7);
+
+        const high = createGameState({
+            twilightPool: 3,
+            players: {
+                '0': createPlayerState('0', { fellowshipArea: [gandalf] }),
+            },
+        });
+        expect(getCalculatedStrength(high, gandalf)).toBe(10);
+    });
+
+    it('Morgul Cur : +2 force si un Nazgûl est en jeu', () => {
+        const cur = createMinion({
+            id: '7C189',
+            title: 'Morgul Cur',
+            race: 'ORC',
+            culture: 'SAURON',
+            strength: 8,
+            abilities: [
+                {
+                    id: '7C189:0',
+                    phases: [],
+                    trigger: {
+                        type: 'WHILE',
+                        spot: [{ count: 1, target: [['NAZGÛL']] }],
+                    },
+                    cost: [],
+                    effects: [
+                        {
+                            type: 'MODIFY_STAT',
+                            stat: 'STRENGTH',
+                            value: 2,
+                            target: 'SELF',
+                        },
+                    ],
+                    source: 'SELF',
+                },
+            ],
+        });
+        const nazgul = createMinion({
+            id: 'nazgul',
+            race: 'NAZGÛL',
+            culture: 'WRAITH',
+            strength: 12,
+        });
+
+        const alone = createGameState({
+            battlefield: [cur],
+            players: { '1': createPlayerState('1') },
+        });
+        expect(getCalculatedStrength(alone, cur)).toBe(8);
+
+        const withNazgul = createGameState({
+            battlefield: [cur, nazgul],
+            players: { '1': createPlayerState('1') },
+        });
+        expect(getCalculatedStrength(withNazgul, cur)).toBe(10);
+    });
+});

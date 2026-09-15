@@ -932,6 +932,106 @@ describe('parseAbilities — Each time you play', () => {
     });
 });
 
+describe('parseAbilities — While you can spot → strength', () => {
+    it('parse Gandalf : spot 3 crépuscule → force +3', () => {
+        const text =
+            'While you can spot 3 twilight tokens, Gandalf is strength +3.';
+        expect(parseAbilities(text, 'Gandalf', '4C90')).toEqual([
+            {
+                id: '4C90:0',
+                phases: [],
+                trigger: { type: 'WHILE', spotTwilight: 3 },
+                cost: [],
+                effects: [
+                    {
+                        type: 'MODIFY_STAT',
+                        stat: 'STRENGTH',
+                        value: 3,
+                        target: 'SELF',
+                    },
+                ],
+                source: 'SELF',
+                text: expect.stringMatching(
+                    /While you can spot 3 twilight tokens, Gandalf is strength \+3/i
+                ),
+            },
+        ]);
+    });
+
+    it('parse Morgul Cur : spot un Nazgûl → force +2', () => {
+        const text =
+            'While you can spot a Nazgûl, this minion is strength +2.';
+        expect(parseAbilities(text, 'Morgul Cur', '7C189')).toEqual([
+            {
+                id: '7C189:0',
+                phases: [],
+                trigger: {
+                    type: 'WHILE',
+                    spot: [{ count: 1, target: [['NAZGÛL']] }],
+                },
+                cost: [],
+                effects: [
+                    {
+                        type: 'MODIFY_STAT',
+                        stat: 'STRENGTH',
+                        value: 2,
+                        target: 'SELF',
+                    },
+                ],
+                source: 'SELF',
+                text: expect.stringMatching(
+                    /While you can spot a Nazgûl, this minion is strength \+2/i
+                ),
+            },
+        ]);
+    });
+
+    it('parse Uglúk : spot 2 trackers Isengard → force +3 (pas le damage +1)', () => {
+        const text =
+            'While you can spot 2 <symbol>isengard</symbol> trackers, Uglúk is strength +3.\nWhile you can spot 3 <symbol>isengard</symbol> trackers, Uglúk is <keyword>damage +1.</keyword>';
+        expect(parseAbilities(text, 'Uglúk', '4R176')).toEqual([
+            {
+                id: '4R176:0',
+                phases: [],
+                trigger: {
+                    type: 'WHILE',
+                    spot: [{ count: 2, target: [['ISENGARD', 'TRACKER']] }],
+                },
+                cost: [],
+                effects: [
+                    {
+                        type: 'MODIFY_STAT',
+                        stat: 'STRENGTH',
+                        value: 3,
+                        target: 'SELF',
+                    },
+                ],
+                source: 'SELF',
+                text: expect.stringMatching(
+                    /While you can spot 2 isengard trackers, Uglúk is strength \+3/i
+                ),
+            },
+        ]);
+    });
+
+    it('refuse each / and fierce / for each', () => {
+        expect(
+            parseAbilities(
+                'While you can spot 6 companions, each Nazgûl is strength +2.',
+                'Úlairë Nertëa',
+                '0P116'
+            )
+        ).toBeUndefined();
+        expect(
+            parseAbilities(
+                'While you can spot 2 burdens, this minion is strength +3 and fierce.',
+                'Easterling Axeman',
+                '4C224'
+            )
+        ).toBeUndefined();
+    });
+});
+
 describe('parseAbilities — Discard a [classe] and spot X [classe]', () => {
     const pipeweedAndPipesCost = {
         discardFromPlay: [

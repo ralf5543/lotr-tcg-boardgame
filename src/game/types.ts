@@ -199,6 +199,13 @@ export type AbilityEffect =
           excludeSource?: boolean;
       }
     | {
+          /** Modificateur passif (While…) — pas d’expiration de phase. */
+          type: 'MODIFY_STAT';
+          stat: StatType;
+          value: number;
+          target: AbilityTargetRef;
+      }
+    | {
           type: 'DRAW';
           count: number;
       }
@@ -297,6 +304,15 @@ export type AbilityTrigger =
           /** Each time you play a [classe]… (la carte jouée matche `played`). */
           type: 'YOU_PLAY';
           played: string[][];
+      }
+    | {
+          /**
+           * Passif While : vrai tant que la condition tient.
+           * Pas un toaster — lu au calcul de stats.
+           */
+          type: 'WHILE';
+          spot?: CostSelector[];
+          spotTwilight?: number;
       }
     | {
           type: 'CHARACTER_DIES';
@@ -596,7 +612,7 @@ export interface ArcheryState {
     shadowRemainingWounds: number;
 }
 
-export type DevPresetType = 'ARCHERY_TEST' | 'ARMORY_TEST';
+export type DevPresetType = 'ARCHERY_TEST' | 'WHILE_TEST';
 
 export interface TempKeywordModifier {
     keyword: CardKeyword;

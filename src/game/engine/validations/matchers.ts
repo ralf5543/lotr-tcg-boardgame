@@ -2,6 +2,7 @@
 
 import type { CardState, SiteCardState } from '../../types';
 import { isRingBearerCard } from '../../../utils/cardUtils';
+import { getEffectiveKeywords } from '../keywords/keywordUtils';
 
 /**
  * Normalise un terme pour la comparaison case-insensitive.
@@ -89,10 +90,15 @@ export function cardMatchesCriterion(
         return true;
     }
 
-    // Keywords (UNBOUND, RING-BOUND, ARCHER, KNIGHT, etc.)
-    if (Array.isArray(c.keywords)) {
-        const keywordsUpper = c.keywords.map((k) => normalize(k));
-        if (keywordsUpper.includes(critUpper)) return true;
+    // Keywords (UNBOUND, RING-BOUND, ARCHER, KNIGHT, HUNTER 1 → HUNTER, etc.)
+    const effectiveKeywords = getEffectiveKeywords(c);
+    if (
+        effectiveKeywords.some(
+            (kw) =>
+                kw.key === critUpper || normalize(String(kw.raw)) === critUpper
+        )
+    ) {
+        return true;
     }
 
     // Titre / Nom propre (ex: "Gimli", "Frodo", "The One Ring")

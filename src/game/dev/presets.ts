@@ -499,12 +499,13 @@ export const applyDevPreset = (
                 '[DEV] Preset Archerie chargé (Gimli a +1 Vitalité via Armure)';
             break;
         }
-        case 'ARMORY_TEST': {
+        case 'WHILE_TEST': {
             const shadowId = fpId === '0' ? '1' : '0';
             const shadowPlayer = G.players[shadowId];
             if (!shadowPlayer) return;
 
-            G.twilightPool = 6;
+            // 2 crépuscule : Gandalf pas encore boosté — passe à 3 via Dev Tools
+            G.twilightPool = 2;
             fpPlayer.burdens = 0;
             G.battlefield = [];
             G.skirmishes = [];
@@ -528,26 +529,19 @@ export const applyDevPreset = (
                     instanceId: 'dev-frodo',
                     attachments: [clonePresetCard('1R1', 'dev-ring')],
                 },
-                { ...CARDS_PRESETS.ARAGORN, instanceId: 'dev-aragorn' },
+                clonePresetCard('4C90', 'dev-gandalf'),
             ];
 
-            // Deux orques : une seule HAND-WEAPON par porteur
+            // Morgul Cur (spot Nazgûl → +2) + Úlairë Attëa
             G.battlefield = [
-                clonePresetCard('1C174', 'dev-backstabber'),
-                clonePresetCard('1C176', 'dev-marksman'),
+                clonePresetCard('7C189', 'dev-morgul-cur'),
+                clonePresetCard('1R229', 'dev-attea'),
             ];
-            shadowPlayer.supportArea = [
-                clonePresetCard('1R173', 'dev-goblin-armory'),
-            ];
-            // Cimitarre 0 + Lance 1 + Hache 1 → chaque attache doit +1 crépuscule
-            shadowPlayer.hand = [
-                clonePresetCard('1C180', 'dev-scimitar'),
-                clonePresetCard('1C182', 'dev-spear'),
-                clonePresetCard('1R190', 'dev-axe'),
-            ];
+            shadowPlayer.hand = [];
+            shadowPlayer.supportArea = [];
 
             G.statusMessage =
-                '[DEV] Armurerie gobeline en soutien : attache une arme Moria → +1 Crépuscule (Each time).';
+                '[DEV] While : Crépuscule 2→3 booste Gandalf (+3). Morgul Cur déjà +2 (Nazgûl spoté).';
             break;
         }
     }

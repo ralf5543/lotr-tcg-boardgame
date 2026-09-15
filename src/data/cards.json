@@ -6240,6 +6240,27 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
+    "abilities": [
+      {
+        "id": "4C90:0",
+        "phases": [],
+        "trigger": {
+          "type": "WHILE",
+          "spotTwilight": 3
+        },
+        "cost": [],
+        "effects": [
+          {
+            "type": "MODIFY_STAT",
+            "stat": "STRENGTH",
+            "value": 3,
+            "target": "SELF"
+          }
+        ],
+        "source": "SELF",
+        "text": "While you can spot 3 twilight tokens, Gandalf is strength +3."
+      }
+    ],
     "culture": "GANDALF",
     "race": "WIZARD",
     "signet": "GANDALF",
@@ -6434,6 +6455,37 @@
     "keywords": [
       "TRACKER",
       "FIERCE"
+    ],
+    "abilities": [
+      {
+        "id": "4R176:0",
+        "phases": [],
+        "trigger": {
+          "type": "WHILE",
+          "spot": [
+            {
+              "count": 2,
+              "target": [
+                [
+                  "ISENGARD",
+                  "TRACKER"
+                ]
+              ]
+            }
+          ]
+        },
+        "cost": [],
+        "effects": [
+          {
+            "type": "MODIFY_STAT",
+            "stat": "STRENGTH",
+            "value": 3,
+            "target": "SELF"
+          }
+        ],
+        "source": "SELF",
+        "text": "While you can spot 2 isengard trackers, Uglúk is strength +3."
+      }
     ],
     "culture": "ISENGARD",
     "race": "URUK-HAI",
@@ -17772,6 +17824,37 @@
     "type": "MINION",
     "keywords": [
       "DAMAGE +1"
+    ],
+    "abilities": [
+      {
+        "id": "1C149:0",
+        "phases": [],
+        "trigger": {
+          "type": "WHILE",
+          "spot": [
+            {
+              "count": 1,
+              "target": [
+                [
+                  "WEATHER",
+                  "CONDITION"
+                ]
+              ]
+            }
+          ]
+        },
+        "cost": [],
+        "effects": [
+          {
+            "type": "MODIFY_STAT",
+            "stat": "STRENGTH",
+            "value": 3,
+            "target": "SELF"
+          }
+        ],
+        "source": "SELF",
+        "text": "While you can spot a weather condition, this minion is strength +3."
+      }
     ],
     "culture": "ISENGARD",
     "race": "URUK-HAI",
@@ -45980,6 +46063,39 @@
         "URUK-HAI"
       ]
     ],
+    "abilities": [
+      {
+        "id": "4C196:0",
+        "phases": [
+          "MANEUVER"
+        ],
+        "cost": [
+          {
+            "exert": [
+              {
+                "count": 1,
+                "target": "BEARER"
+              }
+            ]
+          }
+        ],
+        "effects": [
+          {
+            "type": "DISCARD",
+            "count": 1,
+            "target": [
+              [
+                "Free",
+                "Peoples",
+                "MOUNT"
+              ]
+            ]
+          }
+        ],
+        "source": "ATTACHMENT",
+        "text": "MANEUVER: Exert bearer to discard a Free Peoples mount."
+      }
+    ],
     "actionPhases": [
       "MANEUVER"
     ],
@@ -58671,6 +58787,36 @@
     "isUnique": false,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
+    "abilities": [
+      {
+        "id": "6C27:0",
+        "phases": [],
+        "trigger": {
+          "type": "WHILE",
+          "spot": [
+            {
+              "count": 3,
+              "target": [
+                [
+                  "ENT"
+                ]
+              ]
+            }
+          ]
+        },
+        "cost": [],
+        "effects": [
+          {
+            "type": "MODIFY_STAT",
+            "stat": "STRENGTH",
+            "value": 2,
+            "target": "SELF"
+          }
+        ],
+        "source": "SELF",
+        "text": "While you can spot 3 Ents, this companion is strength +2."
+      }
+    ],
     "culture": "GANDALF",
     "race": "ENT",
     "twilightCost": 4,
@@ -71642,6 +71788,36 @@
     "isUnique": false,
     "kind": "SHADOW",
     "type": "MINION",
+    "abilities": [
+      {
+        "id": "7C189:0",
+        "phases": [],
+        "trigger": {
+          "type": "WHILE",
+          "spot": [
+            {
+              "count": 1,
+              "target": [
+                [
+                  "NAZGÛL"
+                ]
+              ]
+            }
+          ]
+        },
+        "cost": [],
+        "effects": [
+          {
+            "type": "MODIFY_STAT",
+            "stat": "STRENGTH",
+            "value": 2,
+            "target": "SELF"
+          }
+        ],
+        "source": "SELF",
+        "text": "While you can spot a Nazgûl, this minion is strength +2."
+      }
+    ],
     "culture": "WRAITH",
     "race": "ORC",
     "twilightCost": 3,
@@ -120107,6 +120283,36 @@
     "isUnique": false,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
+    "abilities": [
+      {
+        "id": "15C28:0",
+        "phases": [],
+        "trigger": {
+          "type": "WHILE",
+          "spot": [
+            {
+              "count": 3,
+              "target": [
+                [
+                  "ENT"
+                ]
+              ]
+            }
+          ]
+        },
+        "cost": [],
+        "effects": [
+          {
+            "type": "MODIFY_STAT",
+            "stat": "STRENGTH",
+            "value": 2,
+            "target": "SELF"
+          }
+        ],
+        "source": "SELF",
+        "text": "While you can spot 3 Ents, this companion is strength +2."
+      }
+    ],
     "culture": "GANDALF",
     "race": "ENT",
     "twilightCost": 4,
@@ -120486,6 +120692,36 @@
     "isUnique": false,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
+    "abilities": [
+      {
+        "id": "15R36:0",
+        "phases": [],
+        "trigger": {
+          "type": "WHILE",
+          "spot": [
+            {
+              "count": 4,
+              "target": [
+                [
+                  "ENT"
+                ]
+              ]
+            }
+          ]
+        },
+        "cost": [],
+        "effects": [
+          {
+            "type": "MODIFY_STAT",
+            "stat": "STRENGTH",
+            "value": 3,
+            "target": "SELF"
+          }
+        ],
+        "source": "SELF",
+        "text": "While you can spot 4 Ents, this companion is strength +3."
+      }
+    ],
     "actionPhases": [
       "MANEUVER"
     ],
@@ -121299,6 +121535,40 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
+    "abilities": [
+      {
+        "id": "15S54:0",
+        "phases": [
+          "SKIRMISH"
+        ],
+        "cost": [
+          {
+            "exert": [
+              {
+                "count": 1,
+                "target": "SELF"
+              }
+            ]
+          }
+        ],
+        "effects": [
+          {
+            "type": "ADD_TEMP_STAT",
+            "stat": "STRENGTH",
+            "value": 1,
+            "target": [
+              [
+                "HUNTER",
+                "COMPANION"
+              ]
+            ],
+            "expiresAtPhase": "SKIRMISH"
+          }
+        ],
+        "source": "SELF",
+        "text": "SKIRMISH: Exert Aragorn to make a hunter companion strength +1."
+      }
+    ],
     "actionPhases": [
       "SKIRMISH"
     ],
@@ -124663,6 +124933,36 @@
         ]
       }
     ],
+    "abilities": [
+      {
+        "id": "15S126:0",
+        "phases": [],
+        "trigger": {
+          "type": "WHILE",
+          "spot": [
+            {
+              "count": 3,
+              "target": [
+                [
+                  "HUNTER"
+                ]
+              ]
+            }
+          ]
+        },
+        "cost": [],
+        "effects": [
+          {
+            "type": "MODIFY_STAT",
+            "stat": "STRENGTH",
+            "value": 3,
+            "target": "SELF"
+          }
+        ],
+        "source": "SELF",
+        "text": "While you can spot 3 hunters, Gamling is strength +3."
+      }
+    ],
     "culture": "ROHAN",
     "race": "MAN",
     "twilightCost": 2,
@@ -124753,6 +125053,36 @@
     "type": "COMPANION",
     "keywords": [
       "DAMAGE +1"
+    ],
+    "abilities": [
+      {
+        "id": "15U128:0",
+        "phases": [],
+        "trigger": {
+          "type": "WHILE",
+          "spot": [
+            {
+              "count": 2,
+              "target": [
+                [
+                  "MOUNT"
+                ]
+              ]
+            }
+          ]
+        },
+        "cost": [],
+        "effects": [
+          {
+            "type": "MODIFY_STAT",
+            "stat": "STRENGTH",
+            "value": 2,
+            "target": "SELF"
+          }
+        ],
+        "source": "SELF",
+        "text": "While you can spot 2 mounts, Haleth is strength +2."
+      }
     ],
     "culture": "ROHAN",
     "race": "MAN",
@@ -134275,6 +134605,41 @@
     "isUnique": false,
     "kind": "SHADOW",
     "type": "MINION",
+    "abilities": [
+      {
+        "id": "17C126:0",
+        "phases": [
+          "SKIRMISH"
+        ],
+        "cost": [
+          {
+            "exert": [
+              {
+                "count": 1,
+                "target": "SELF"
+              }
+            ]
+          }
+        ],
+        "effects": [
+          {
+            "type": "ADD_TEMP_STAT",
+            "stat": "STRENGTH",
+            "value": 2,
+            "target": [
+              [
+                "URUK-HAI",
+                "HUNTER",
+                "MINION"
+              ]
+            ],
+            "expiresAtPhase": "SKIRMISH"
+          }
+        ],
+        "source": "SELF",
+        "text": "SKIRMISH: Exert this minion to make an urukhai hunter minion strength +2."
+      }
+    ],
     "actionPhases": [
       "SKIRMISH"
     ],
@@ -142979,6 +143344,37 @@
     "type": "COMPANION",
     "keywords": [
       "RING-BOUND"
+    ],
+    "abilities": [
+      {
+        "id": "19P32:0",
+        "phases": [],
+        "trigger": {
+          "type": "WHILE",
+          "spot": [
+            {
+              "count": 3,
+              "target": [
+                [
+                  "SHIRE",
+                  "COMPANION"
+                ]
+              ]
+            }
+          ]
+        },
+        "cost": [],
+        "effects": [
+          {
+            "type": "MODIFY_STAT",
+            "stat": "STRENGTH",
+            "value": 2,
+            "target": "SELF"
+          }
+        ],
+        "source": "SELF",
+        "text": "While you can spot 3 shire companions, Sam is strength +2."
+      }
     ],
     "actionPhases": [
       "RESPONSE"

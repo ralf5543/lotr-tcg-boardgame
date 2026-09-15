@@ -110,11 +110,11 @@ export const devMoves = {
         { G, events }: LotrPhaseContext,
         presetType: DevPresetType
     ) => {
-        if (presetType === 'ARMORY_TEST') {
+        if (presetType === 'WHILE_TEST') {
             resetPhaseMachine(G);
         }
         applyDevPreset(G, presetType);
-        if (presetType === 'ARMORY_TEST') {
+        if (presetType === 'WHILE_TEST') {
             events?.setPhase?.('shadow');
         }
     },

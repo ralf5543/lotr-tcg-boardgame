@@ -732,6 +732,20 @@ const FILTER_ALIASES: Record<string, string> = {
     RINGBEARER: 'RING-BEARER',
     RINGBOUND: 'RING-BOUND',
     PIPES: 'PIPE',
+    COMPANIONS: 'COMPANION',
+    MINIONS: 'MINION',
+    ALLIES: 'ALLY',
+    CONDITIONS: 'CONDITION',
+    POSSESSIONS: 'POSSESSION',
+    ARTIFACTS: 'ARTIFACT',
+    ENTS: 'ENT',
+    HUNTERS: 'HUNTER',
+    TRACKERS: 'TRACKER',
+    MOUNTS: 'MOUNT',
+    ORCS: 'ORC',
+    DWARVES: 'DWARF',
+    ELVES: 'ELF',
+    HOBBITS: 'HOBBIT',
 };
 
 function normalizeFilterToken(raw: string): string {
@@ -744,7 +758,11 @@ function isKnownFilterToken(token: string): boolean {
         VALID_RACES.has(token) ||
         VALID_TARGET_TYPES.has(token) ||
         VALID_CULTURES.has(token) ||
-        VALID_KEYWORDS.has(token)
+        VALID_KEYWORDS.has(token) ||
+        // Mots-clés à valeur (HUNTER 1…) : le pluriel / le spot utilise la clé nue
+        token === 'HUNTER' ||
+        token === 'TOIL' ||
+        token === 'AMBUSH'
     );
 }
 
@@ -1777,6 +1795,123 @@ function parseEachTimeYouPlayAbilities(
             text: stripAbilityMarkup(match[0]),
         });
     }
+    return found;
+}
+
+/** Spot « a CLASS » / « N CLASS » pour While — refuse le reste inconnu. */
+function parseWhileSpotSubject(
+    raw: string
+): { count: number; target: string[][] } | null {
+    const cleaned = stripAbilityMarkup(raw).replace(/\s+/g, ' ').trim();
+    if (!cleaned) return null;
+    if (
+        /\b(and|or|each|other|whose|bearing|except|from|to|may|token|burden|threat|twilight|wound|exhausted|roaming|mounted|home|resistance|title)\b/i.test(
+            cleaned
+        )
+    ) {
+        return null;
+    }
+
+    const numbered = cleaned.match(/^(\d+)\s+(.+)$/i);
+    if (numbered) {
+        const count = parseInt(numbered[1], 10);
+        if (!Number.isFinite(count) || count <= 0) return null;
+        const filters = parseClassFilters(numbered[2]);
+        if (filters.length === 0) return null;
+        return { count, target: [filters] };
+    }
+
+    const article = cleaned.match(/^(a|an)\s+(.+)$/i);
+    if (!article) return null;
+    const filters = parseClassFilters(article[2]);
+    if (filters.length === 0) return null;
+    return { count: 1, target: [filters] };
+}
+
+function parseWhileStrengthWho(
+    raw: string,
+    cardTitle?: string
+): 'SELF' | 'BEARER' | null {
+    const who = stripAbilityMarkup(raw).replace(/\s+/g, ' ').trim();
+    if (/^(this minion|this companion|him|her|it)$/i.test(who)) return 'SELF';
+    if (/^bearer$/i.test(who)) return 'BEARER';
+    const title = (cardTitle || '').trim();
+    if (title && who.toLowerCase() === title.toLowerCase()) return 'SELF';
+    return null;
+}
+
+/**
+ * While you can spot [classe|crépuscule], [self/bearer] is strength ±N.
+ * Passif uniquement — refuse each / and fierce / for each / etc.
+ */
+function parseWhileSpotStrengthAbilities(
+    text: string,
+    cardTitle?: string,
+    cardId?: string
+): Record<string, unknown>[] {
+    const found: Record<string, unknown>[] = [];
+
+    const twilightRe =
+        /While you can spot (\d+) twilight tokens?, ([^,]+?) is strength ([+-]\d+)\./gi;
+    let match: RegExpExecArray | null;
+    while ((match = twilightRe.exec(text)) !== null) {
+        const who = parseWhileStrengthWho(match[2], cardTitle);
+        if (!who) continue;
+        const twilight = parseInt(match[1], 10);
+        const value = parseInt(match[3], 10);
+        if (!Number.isFinite(twilight) || twilight <= 0) continue;
+        if (!Number.isFinite(value) || value === 0) continue;
+
+        found.push({
+            id: `${cardId || 'ability'}:${found.length}:while-spot`,
+            phases: [],
+            trigger: { type: 'WHILE', spotTwilight: twilight },
+            cost: [],
+            effects: [
+                {
+                    type: 'MODIFY_STAT',
+                    stat: 'STRENGTH',
+                    value,
+                    target: who,
+                },
+            ],
+            source: who === 'BEARER' ? 'ATTACHMENT' : 'SELF',
+            text: stripAbilityMarkup(match[0]),
+        });
+    }
+
+    const classRe =
+        /While you can spot ((?:a|an|\d+) [^,.]+), ([^,]+?) is strength ([+-]\d+)\./gi;
+    while ((match = classRe.exec(text)) !== null) {
+        if (/twilight tokens?/i.test(match[1])) continue;
+        const spot = parseWhileSpotSubject(match[1]);
+        if (!spot) continue;
+        const who = parseWhileStrengthWho(match[2], cardTitle);
+        if (!who) continue;
+        const value = parseInt(match[3], 10);
+        if (!Number.isFinite(value) || value === 0) continue;
+
+        found.push({
+            id: `${cardId || 'ability'}:${found.length}:while-spot`,
+            phases: [],
+            trigger: {
+                type: 'WHILE',
+                spot: [{ count: spot.count, target: spot.target }],
+            },
+            cost: [],
+            effects: [
+                {
+                    type: 'MODIFY_STAT',
+                    stat: 'STRENGTH',
+                    value,
+                    target: who,
+                },
+            ],
+            source: who === 'BEARER' ? 'ATTACHMENT' : 'SELF',
+            text: stripAbilityMarkup(match[0]),
+        });
+    }
+
     return found;
 }
 
@@ -2954,6 +3089,15 @@ export function parseAbilities(
             id: `${cardId || 'ability'}:${abilities.length}`,
         });
     });
+
+    parseWhileSpotStrengthAbilities(text, cardTitle, cardId).forEach(
+        (ability) => {
+            abilities.push({
+                ...ability,
+                id: `${cardId || 'ability'}:${abilities.length}`,
+            });
+        }
+    );
 
     return abilities.length > 0 ? abilities : undefined;
 }

@@ -1,6 +1,7 @@
 import type { GameState, CardState } from '../../types';
 import { getHunterStrengthBonus } from './mechanics/hunterModifier';
 import { getEnduringStrengthBonus } from './mechanics/enduringModifier'; // 👈 Import
+import { getWhileStrengthBonus } from './mechanics/whileModifier';
 import { isRingBearerCard } from '../../../utils/cardUtils';
 
 /**
@@ -46,6 +47,9 @@ export function getCalculatedStrength(G?: GameState, card?: CardState): number {
     ) {
         totalStrength += G.wearingTheOneRing.strengthBonus;
     }
+
+    // 3c. Passifs While (spot / crépuscule → force)
+    totalStrength += getWhileStrengthBonus(G, card);
 
     // 4. Bonus contextuels d'escarmouche (délégués aux sous-modules dédiés)
     if (G.skirmishes) {
