@@ -1,8 +1,59 @@
-import type { Ability, CardState, GameState } from '../../../types';
-import { resolveCostTarget, findBearer } from '../../../engine/abilities/resolveCostTarget';
+import type {
+    Ability,
+    CardState,
+    GameState,
+    SkirmishState,
+} from '../../../types';
+import {
+    resolveCostTarget,
+    findBearer,
+} from '../../../engine/abilities/resolveCostTarget';
+import { cardMatchesTarget } from '../../../engine/validations/matchers';
+import { findTargetCard } from '../../../../utils/cardUtils';
 
 function matchCard(card: CardState, targetId: string): boolean {
     return card.instanceId === targetId || card.id === targetId;
+}
+
+function skirmishInvolves(skirmish: SkirmishState, cardId: string): boolean {
+    if (skirmish.companionId === cardId) return true;
+    if (skirmish.minionIds?.some((id) => id === cardId)) return true;
+    if (skirmish.minionId === cardId) return true;
+    return false;
+}
+
+function findSkirmishForCard(
+    G: GameState,
+    cardId: string
+): SkirmishState | undefined {
+    const list = G.skirmishes || [];
+    if (G.activeSkirmishId) {
+        const active = list.find((s) => s.id === G.activeSkirmishId);
+        if (active && skirmishInvolves(active, cardId)) return active;
+    }
+    return list.find((s) => skirmishInvolves(s, cardId));
+}
+
+/** Opposants dans l’escarmouche de `source` (compagnon ↔ séides). */
+function getSkirmishOpponents(
+    G: GameState,
+    source: CardState
+): CardState[] {
+    const sourceId = source.instanceId || source.id;
+    const skirmish = findSkirmishForCard(G, sourceId);
+    if (!skirmish) return [];
+
+    if (source.kind === 'FREE_PEOPLE' || skirmish.companionId === sourceId) {
+        const minionIds =
+            skirmish.minionIds ||
+            (skirmish.minionId ? [skirmish.minionId] : []);
+        return minionIds
+            .map((id) => findTargetCard(G, id) as CardState | null)
+            .filter((c): c is CardState => Boolean(c));
+    }
+
+    const companion = findTargetCard(G, skirmish.companionId) as CardState | null;
+    return companion ? [companion] : [];
 }
 
 function whileConditionHolds(
@@ -23,7 +74,22 @@ function whileConditionHolds(
         if (cards.length < count) return false;
     }
 
-    return Boolean(trigger.spotTwilight || (trigger.spot && trigger.spot.length));
+    if (trigger.skirmishing) {
+        const opponents = getSkirmishOpponents(G, source);
+        if (
+            !opponents.some((opp) =>
+                cardMatchesTarget(opp, trigger.skirmishing!.target)
+            )
+        ) {
+            return false;
+        }
+    }
+
+    return Boolean(
+        trigger.spotTwilight ||
+            (trigger.spot && trigger.spot.length) ||
+            trigger.skirmishing
+    );
 }
 
 function forEachWhileOnCard(

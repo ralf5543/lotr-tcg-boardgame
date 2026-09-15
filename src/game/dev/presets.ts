@@ -523,43 +523,31 @@ export const applyDevPreset = (
                 }
             });
 
-            // Duinhir + monture → Damage +1 (While you can spot a mount)
+            // Arwen : +3 vs Nazgûl ; Farin : +2 vs Orc (pas boosté ici)
             fpPlayer.fellowshipArea = [
                 {
                     ...CARDS_PRESETS.FRODO,
                     instanceId: 'dev-frodo',
                     attachments: [clonePresetCard('1R1', 'dev-ring')],
                 },
-                {
-                    ...clonePresetCard('14R8', 'dev-duinhir'),
-                    attachments: [clonePresetCard('4U263', 'dev-brego')],
-                },
+                clonePresetCard('1R30', 'dev-arwen'),
+                clonePresetCard('1C11', 'dev-farin'),
             ];
+            fpPlayer.supportArea = [];
 
-            // 3 possessions → Cirith Ungol Patroller fierce
-            fpPlayer.supportArea = [
-                clonePresetCard('1C300', 'dev-leaf-1'),
-                clonePresetCard('1C305', 'dev-toby'),
-                clonePresetCard('1C300', 'dev-leaf-2'),
-            ];
-
-            // Uglúk + 2 trackers Isengard → force +3 et Damage +1
-            // Patroller → fierce (3 possessions)
+            // Attëa (Nazgûl) vs Arwen → +3 ; un Orc hors combat pour contraste
             G.battlefield = [
-                clonePresetCard('4R176', 'dev-ugluk'),
-                clonePresetCard('2C47', 'dev-scout'),
-                clonePresetCard('4C181', 'dev-chaser'),
-                clonePresetCard('10U82', 'dev-patroller'),
+                clonePresetCard('1R229', 'dev-attea'),
+                clonePresetCard('1C271', 'dev-orc'),
             ];
             shadowPlayer.hand = [];
             shadowPlayer.supportArea = [];
 
-            // Escarmouche : Duinhir (Damage +1) vs Uglúk (Damage +1)
             G.skirmishes = [
                 {
                     id: 'sk-while',
-                    companionId: 'dev-duinhir',
-                    minionIds: ['dev-ugluk'],
+                    companionId: 'dev-arwen',
+                    minionIds: ['dev-attea'],
                 },
             ];
             G.activeSkirmishId = 'sk-while';
@@ -573,7 +561,7 @@ export const applyDevPreset = (
             };
 
             G.statusMessage =
-                '[DEV] While Damage/fierce : Duinhir Damage +1 (monture), Uglúk +3 force / Damage +1 (3 trackers), Patroller fierce (3 possessions).';
+                '[DEV] While skirmishing : Arwen +3 vs Nazgûl (Attëa). Farin +2 seulement vs Orc (pas en combat).';
             break;
         }
     }

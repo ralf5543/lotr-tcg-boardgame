@@ -1947,6 +1947,68 @@ function parseWhileSpotStrengthAbilities(
     return found;
 }
 
+/** Adversaire de « While skirmishing a … » — classe ou fierce minion. */
+function parseWhileSkirmishingOpponent(raw: string): string[][] | null {
+    const cleaned = stripAbilityMarkup(raw).replace(/\s+/g, ' ').trim();
+    if (!cleaned) return null;
+    if (
+        /\b(and|or|each|other|whose|bearing|roaming|wounded|mounted|exhausted|non-hunter|hunter|except|from|to|may)\b/i.test(
+            cleaned
+        )
+    ) {
+        return null;
+    }
+    if (/^fierce minion$/i.test(cleaned)) {
+        return [['FIERCE', 'MINION']];
+    }
+    const filters = parseClassFilters(cleaned);
+    if (filters.length === 0) return null;
+    return [filters];
+}
+
+/**
+ * While skirmishing a [classe|fierce minion], [self] is strength ±N.
+ */
+function parseWhileSkirmishingStrengthAbilities(
+    text: string,
+    cardTitle?: string,
+    cardId?: string
+): Record<string, unknown>[] {
+    const found: Record<string, unknown>[] = [];
+    const re =
+        /While skirmishing (?:a|an) ([^,]+), ([^,]+?) is strength ([+-]\d+)\./gi;
+    let match: RegExpExecArray | null;
+    while ((match = re.exec(text)) !== null) {
+        const opponent = parseWhileSkirmishingOpponent(match[1]);
+        if (!opponent) continue;
+        const who = parseWhileStrengthWho(match[2], cardTitle);
+        if (!who || who === 'BEARER') continue;
+        const value = parseInt(match[3], 10);
+        if (!Number.isFinite(value) || value === 0) continue;
+
+        found.push({
+            id: `${cardId || 'ability'}:${found.length}:while-skirmish`,
+            phases: [],
+            trigger: {
+                type: 'WHILE',
+                skirmishing: { target: opponent },
+            },
+            cost: [],
+            effects: [
+                {
+                    type: 'MODIFY_STAT',
+                    stat: 'STRENGTH',
+                    value,
+                    target: who,
+                },
+            ],
+            source: 'SELF',
+            text: stripAbilityMarkup(match[0]),
+        });
+    }
+    return found;
+}
+
 /** « damage +1 » / « fierce » seuls — refuse and / each. */
 function parseWhileKeywordGrant(
     raw: string
@@ -3301,6 +3363,15 @@ export function parseAbilities(
     );
 
     parseWhileSpotKeywordAbilities(text, cardTitle, cardId).forEach(
+        (ability) => {
+            abilities.push({
+                ...ability,
+                id: `${cardId || 'ability'}:${abilities.length}`,
+            });
+        }
+    );
+
+    parseWhileSkirmishingStrengthAbilities(text, cardTitle, cardId).forEach(
         (ability) => {
             abilities.push({
                 ...ability,

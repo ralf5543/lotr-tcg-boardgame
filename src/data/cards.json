@@ -1329,6 +1329,34 @@
     "isFemale": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
+    "abilities": [
+      {
+        "id": "0P28:0",
+        "phases": [],
+        "trigger": {
+          "type": "WHILE",
+          "skirmishing": {
+            "target": [
+              [
+                "FIERCE",
+                "MINION"
+              ]
+            ]
+          }
+        },
+        "cost": [],
+        "effects": [
+          {
+            "type": "MODIFY_STAT",
+            "stat": "STRENGTH",
+            "value": 3,
+            "target": "SELF"
+          }
+        ],
+        "source": "SELF",
+        "text": "While skirmishing a fierce minion, Arwen is strength +3."
+      }
+    ],
     "culture": "ELVEN",
     "race": "ELF",
     "signet": "GANDALF",
@@ -1379,6 +1407,34 @@
     "type": "COMPANION",
     "keywords": [
       "VALIANT"
+    ],
+    "abilities": [
+      {
+        "id": "0P29:0",
+        "phases": [],
+        "trigger": {
+          "type": "WHILE",
+          "skirmishing": {
+            "target": [
+              [
+                "FIERCE",
+                "MINION"
+              ]
+            ]
+          }
+        },
+        "cost": [],
+        "effects": [
+          {
+            "type": "MODIFY_STAT",
+            "stat": "STRENGTH",
+            "value": 2,
+            "target": "SELF"
+          }
+        ],
+        "source": "SELF",
+        "text": "While skirmishing a fierce minion, Éowyn is strength +2."
+      }
     ],
     "culture": "ROHAN",
     "race": "MAN",
@@ -4910,6 +4966,33 @@
     "type": "COMPANION",
     "keywords": [
       "RANGER"
+    ],
+    "abilities": [
+      {
+        "id": "1R30:0",
+        "phases": [],
+        "trigger": {
+          "type": "WHILE",
+          "skirmishing": {
+            "target": [
+              [
+                "NAZGÛL"
+              ]
+            ]
+          }
+        },
+        "cost": [],
+        "effects": [
+          {
+            "type": "MODIFY_STAT",
+            "stat": "STRENGTH",
+            "value": 3,
+            "target": "SELF"
+          }
+        ],
+        "source": "SELF",
+        "text": "While skirmishing a Nazgûl, Arwen is strength +3."
+      }
     ],
     "culture": "ELVEN",
     "race": "ELF",
@@ -11383,6 +11466,33 @@
         ]
       }
     ],
+    "abilities": [
+      {
+        "id": "1C11:0",
+        "phases": [],
+        "trigger": {
+          "type": "WHILE",
+          "skirmishing": {
+            "target": [
+              [
+                "ORC"
+              ]
+            ]
+          }
+        },
+        "cost": [],
+        "effects": [
+          {
+            "type": "MODIFY_STAT",
+            "stat": "STRENGTH",
+            "value": 2,
+            "target": "SELF"
+          }
+        ],
+        "source": "SELF",
+        "text": "While skirmishing an Orc, Farin is strength +2."
+      }
+    ],
     "culture": "DWARVEN",
     "race": "DWARF",
     "twilightCost": 2,
@@ -13091,6 +13201,33 @@
     "type": "COMPANION",
     "keywords": [
       "ARCHER"
+    ],
+    "abilities": [
+      {
+        "id": "1U51:0",
+        "phases": [],
+        "trigger": {
+          "type": "WHILE",
+          "skirmishing": {
+            "target": [
+              [
+                "NAZGÛL"
+              ]
+            ]
+          }
+        },
+        "cost": [],
+        "effects": [
+          {
+            "type": "MODIFY_STAT",
+            "stat": "STRENGTH",
+            "value": 3,
+            "target": "SELF"
+          }
+        ],
+        "source": "SELF",
+        "text": "While skirmishing a Nazgûl, Legolas is strength +3."
+      }
     ],
     "culture": "ELVEN",
     "race": "ELF",
@@ -26530,6 +26667,33 @@
         ]
       }
     ],
+    "abilities": [
+      {
+        "id": "2C6:0",
+        "phases": [],
+        "trigger": {
+          "type": "WHILE",
+          "skirmishing": {
+            "target": [
+              [
+                "URUK-HAI"
+              ]
+            ]
+          }
+        },
+        "cost": [],
+        "effects": [
+          {
+            "type": "MODIFY_STAT",
+            "stat": "STRENGTH",
+            "value": 3,
+            "target": "SELF"
+          }
+        ],
+        "source": "SELF",
+        "text": "While skirmishing an Uruk-hai, Frór is strength +3."
+      }
+    ],
     "culture": "DWARVEN",
     "race": "DWARF",
     "twilightCost": 2,
@@ -38051,6 +38215,34 @@
     "isUnique": false,
     "kind": "SHADOW",
     "type": "MINION",
+    "abilities": [
+      {
+        "id": "4C15:0",
+        "phases": [],
+        "trigger": {
+          "type": "WHILE",
+          "skirmishing": {
+            "target": [
+              [
+                "ROHAN",
+                "MAN"
+              ]
+            ]
+          }
+        },
+        "cost": [],
+        "effects": [
+          {
+            "type": "MODIFY_STAT",
+            "stat": "STRENGTH",
+            "value": 2,
+            "target": "SELF"
+          }
+        ],
+        "source": "SELF",
+        "text": "While skirmishing a rohan Man, this minion is strength +2."
+      }
+    ],
     "actionPhases": [
       "ASSIGNMENT"
     ],
@@ -64174,6 +64366,34 @@
     "isFemale": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
+    "abilities": [
+      {
+        "id": "7R16:0",
+        "phases": [],
+        "trigger": {
+          "type": "WHILE",
+          "skirmishing": {
+            "target": [
+              [
+                "FIERCE",
+                "MINION"
+              ]
+            ]
+          }
+        },
+        "cost": [],
+        "effects": [
+          {
+            "type": "MODIFY_STAT",
+            "stat": "STRENGTH",
+            "value": 3,
+            "target": "SELF"
+          }
+        ],
+        "source": "SELF",
+        "text": "While skirmishing a fierce minion, Arwen is strength +3."
+      }
+    ],
     "culture": "ELVEN",
     "race": "ELF",
     "signet": "GANDALF",
@@ -73619,6 +73839,34 @@
     "type": "COMPANION",
     "keywords": [
       "VALIANT"
+    ],
+    "abilities": [
+      {
+        "id": "7R228:0",
+        "phases": [],
+        "trigger": {
+          "type": "WHILE",
+          "skirmishing": {
+            "target": [
+              [
+                "FIERCE",
+                "MINION"
+              ]
+            ]
+          }
+        },
+        "cost": [],
+        "effects": [
+          {
+            "type": "MODIFY_STAT",
+            "stat": "STRENGTH",
+            "value": 2,
+            "target": "SELF"
+          }
+        ],
+        "source": "SELF",
+        "text": "While skirmishing a fierce minion, Éowyn is strength +2."
+      }
     ],
     "culture": "ROHAN",
     "race": "MAN",

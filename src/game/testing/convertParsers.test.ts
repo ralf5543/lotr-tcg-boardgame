@@ -1088,6 +1088,121 @@ describe('parseAbilities — While you can spot → strength', () => {
     });
 });
 
+describe('parseAbilities — While skirmishing → strength', () => {
+    it('parse Arwen : skirmishing a Nazgûl → force +3', () => {
+        const text = 'While skirmishing a Nazgûl, Arwen is strength +3.';
+        expect(parseAbilities(text, 'Arwen', '1R30')).toEqual([
+            {
+                id: '1R30:0',
+                phases: [],
+                trigger: {
+                    type: 'WHILE',
+                    skirmishing: { target: [['NAZGÛL']] },
+                },
+                cost: [],
+                effects: [
+                    {
+                        type: 'MODIFY_STAT',
+                        stat: 'STRENGTH',
+                        value: 3,
+                        target: 'SELF',
+                    },
+                ],
+                source: 'SELF',
+                text: expect.stringMatching(
+                    /While skirmishing a Nazgûl, Arwen is strength \+3/i
+                ),
+            },
+        ]);
+    });
+
+    it('parse fierce minion + classe culture', () => {
+        expect(
+            parseAbilities(
+                'While skirmishing a fierce minion, Arwen is strength +3.',
+                'Arwen',
+                '7R16'
+            )
+        ).toEqual([
+            {
+                id: '7R16:0',
+                phases: [],
+                trigger: {
+                    type: 'WHILE',
+                    skirmishing: { target: [['FIERCE', 'MINION']] },
+                },
+                cost: [],
+                effects: [
+                    {
+                        type: 'MODIFY_STAT',
+                        stat: 'STRENGTH',
+                        value: 3,
+                        target: 'SELF',
+                    },
+                ],
+                source: 'SELF',
+                text: expect.stringMatching(
+                    /While skirmishing a fierce minion, Arwen is strength \+3/i
+                ),
+            },
+        ]);
+
+        expect(
+            parseAbilities(
+                'While skirmishing a <symbol>rohan</symbol> Man, this minion is strength +2.',
+                'Dunlending Ravager',
+                '4C15'
+            )
+        ).toEqual([
+            {
+                id: '4C15:0',
+                phases: [],
+                trigger: {
+                    type: 'WHILE',
+                    skirmishing: { target: [['ROHAN', 'MAN']] },
+                },
+                cost: [],
+                effects: [
+                    {
+                        type: 'MODIFY_STAT',
+                        stat: 'STRENGTH',
+                        value: 2,
+                        target: 'SELF',
+                    },
+                ],
+                source: 'SELF',
+                text: expect.stringMatching(
+                    /While skirmishing a rohan Man, this minion is strength \+2/i
+                ),
+            },
+        ]);
+    });
+
+    it('refuse roaming / wounded / non-hunter', () => {
+        expect(
+            parseAbilities(
+                'While skirmishing a roaming minion, this companion is strength +2.',
+                'Dummy',
+                'X2'
+            )
+        ).toBeUndefined();
+        expect(
+            parseAbilities(
+                'While skirmishing a wounded minion, Farin is strength +2.',
+                'Farin',
+                'X3'
+            )
+        ).toBeUndefined();
+        expect(
+            parseAbilities(
+                'While skirmishing a non-hunter minion, this companion is strength +1.',
+                'Dummy',
+                'X4'
+            )
+        ).toBeUndefined();
+    });
+});
+
 describe('parseAbilities — Remove twilight to make strength', () => {
     it('parse Attëa : Remove Ⓣ1 → force +1 (limit +5)', () => {
         const text =

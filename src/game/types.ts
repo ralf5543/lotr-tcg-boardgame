@@ -321,6 +321,8 @@ export type AbilityTrigger =
           type: 'WHILE';
           spot?: CostSelector[];
           spotTwilight?: number;
+          /** Adversaire(s) de l’escarmouche (While skirmishing a …). */
+          skirmishing?: { target: string[][] };
       }
     | {
           type: 'CHARACTER_DIES';
