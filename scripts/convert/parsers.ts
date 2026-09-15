@@ -1891,7 +1891,7 @@ function parseWhileEachClass(raw: string): string[][] | null {
     const cleaned = stripAbilityMarkup(raw).replace(/\s+/g, ' ').trim();
     if (!cleaned) return null;
     if (
-        /\b(and|or|skirmishing|whose|who|that|bearing|your|hunter|roaming|wounded|mounted|exhausted|except|from|to|may|token|burden|threat|twilight|resistance|title|gains|cannot|more|less)\b/i.test(
+        /\b(and|or|skirmishing|whose|who|that|bearing|your|other|hunter|roaming|wounded|mounted|exhausted|except|from|to|may|token|burden|threat|twilight|resistance|title|gains|cannot|more|less)\b/i.test(
             cleaned
         )
     ) {
@@ -2011,6 +2011,57 @@ function parseWhileSpotEachStrengthAbilities(
                     type: 'MODIFY_STAT',
                     stat: 'STRENGTH',
                     value,
+                    target: eachTarget,
+                },
+            ],
+            source: 'SELF',
+            text: stripAbilityMarkup(match[0]),
+        });
+    }
+    return found;
+}
+
+/**
+ * While you can spot [classe], each [classe] is Damage +N | fierce.
+ * Miroir force each — un seul mot-clé, pas d’and / other / archer.
+ */
+function parseWhileSpotEachKeywordAbilities(
+    text: string,
+    cardId?: string
+): Record<string, unknown>[] {
+    const found: Record<string, unknown>[] = [];
+    const kwTail =
+        '((?:<keyword>[^<]*</keyword>|\\*\\*[^*]+\\*\\*|damage\\s*\\+\\s*\\d+|fierce)\\.?)';
+    const re = new RegExp(
+        `While you can spot ((?:a|an|\\d+) [^,.]+), each ([^,]+?) is ${kwTail}`,
+        'gi'
+    );
+    let match: RegExpExecArray | null;
+    while ((match = re.exec(text)) !== null) {
+        if (/twilight tokens?/i.test(match[1])) continue;
+        const spot = parseWhileSpotSubject(match[1]);
+        if (!spot) continue;
+        const eachTarget = parseWhileEachClass(match[2]);
+        if (!eachTarget) continue;
+        const grant = parseWhileKeywordGrant(match[3]);
+        if (!grant) continue;
+        const after = stripAbilityMarkup(
+            text.slice(match.index + match[0].length)
+        ).trim();
+        if (/^and\b/i.test(after)) continue;
+
+        found.push({
+            id: `${cardId || 'ability'}:${found.length}:while-spot-each-kw`,
+            phases: [],
+            trigger: {
+                type: 'WHILE',
+                spot: [{ count: spot.count, target: spot.target }],
+            },
+            cost: [],
+            effects: [
+                {
+                    type: 'MODIFY_KEYWORD',
+                    keyword: grant.keyword,
                     target: eachTarget,
                 },
             ],
@@ -3556,6 +3607,13 @@ export function parseAbilities(
             });
         }
     );
+
+    parseWhileSpotEachKeywordAbilities(text, cardId).forEach((ability) => {
+        abilities.push({
+            ...ability,
+            id: `${cardId || 'ability'}:${abilities.length}`,
+        });
+    });
 
     parseWhileSkirmishingStrengthAbilities(text, cardTitle, cardId).forEach(
         (ability) => {

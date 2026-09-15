@@ -181,7 +181,8 @@ export function getWhileStrengthBonus(
 }
 
 /**
- * Mots-clés bruts des passifs While (Damage / Fierce) sur la carte (ou attachements).
+ * Mots-clés bruts des passifs While (Damage / Fierce) sur la carte (ou attachements),
+ * plus les « each [classe] » portés par n’importe quelle carte en jeu.
  */
 export function getWhileKeywordRaws(
     G: GameState,
@@ -198,6 +199,19 @@ export function getWhileKeywordRaws(
                 continue;
             }
             raw.push(effect.keyword);
+        }
+    });
+
+    forEachInPlayCard(G, (source) => {
+        for (const ability of source.abilities || []) {
+            if (ability.trigger?.type !== 'WHILE') continue;
+            if (!whileConditionHolds(G, source, ability)) continue;
+            for (const effect of ability.effects || []) {
+                if (effect.type !== 'MODIFY_KEYWORD') continue;
+                if (!Array.isArray(effect.target)) continue;
+                if (!cardMatchesTarget(card, effect.target)) continue;
+                raw.push(effect.keyword);
+            }
         }
     });
 

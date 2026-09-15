@@ -95910,6 +95910,40 @@
     "keywords": [
       "FIERCE"
     ],
+    "abilities": [
+      {
+        "id": "11S97:0",
+        "phases": [],
+        "trigger": {
+          "type": "WHILE",
+          "spot": [
+            {
+              "count": 6,
+              "target": [
+                [
+                  "COMPANION"
+                ]
+              ]
+            }
+          ]
+        },
+        "cost": [],
+        "effects": [
+          {
+            "type": "MODIFY_KEYWORD",
+            "keyword": "FIERCE",
+            "target": [
+              [
+                "MEN",
+                "MINION"
+              ]
+            ]
+          }
+        ],
+        "source": "SELF",
+        "text": "While you can spot 6 companions, each men minion is Fierce."
+      }
+    ],
     "culture": "MEN",
     "race": "MAN",
     "twilightCost": 4,
@@ -108143,6 +108177,40 @@
     "kind": "SHADOW",
     "type": "CONDITION",
     "subtype": "SUPPORT-AREA",
+    "abilities": [
+      {
+        "id": "12C145:0",
+        "phases": [],
+        "trigger": {
+          "type": "WHILE",
+          "spot": [
+            {
+              "count": 6,
+              "target": [
+                [
+                  "COMPANION"
+                ]
+              ]
+            }
+          ]
+        },
+        "cost": [],
+        "effects": [
+          {
+            "type": "MODIFY_KEYWORD",
+            "keyword": "DAMAGE +1",
+            "target": [
+              [
+                "URUK-HAI",
+                "MINION"
+              ]
+            ]
+          }
+        ],
+        "source": "SELF",
+        "text": "While you can spot 6 companions, each urukhai minion is damage +1."
+      }
+    ],
     "actionPhases": [
       "ASSIGNMENT"
     ],

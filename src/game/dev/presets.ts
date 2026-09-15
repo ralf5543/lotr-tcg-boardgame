@@ -539,17 +539,19 @@ export const applyDevPreset = (
             ];
             fpPlayer.supportArea = [];
 
-            // Nertëa : each Nazgûl +2 ; Attëa aussi buffé ; orc = témoin
+            // Nertëa / Raging / Uruk (+ Shingle) ; orc = témoin
             G.battlefield = [
                 clonePresetCard('0P116', 'dev-nertea'),
-                clonePresetCard('1R229', 'dev-attea'),
+                clonePresetCard('11S97', 'dev-raging'),
+                clonePresetCard('1C146', 'dev-uruk'),
                 clonePresetCard('1C271', 'dev-orc'),
             ];
             shadowPlayer.hand = [];
-            // Unending Life : each Nazgûl +3 ; Chaotic Clash : each companion -1
+            // Unending Life +3 Nazgûl ; Chaotic -1 companion ; Shingle Damage Uruk
             shadowPlayer.supportArea = [
                 clonePresetCard('12C181', 'dev-unending'),
                 clonePresetCard('17C68', 'dev-chaotic'),
+                clonePresetCard('12C145', 'dev-shingle'),
             ];
 
             G.skirmishes = [
@@ -570,7 +572,7 @@ export const applyDevPreset = (
             };
 
             G.statusMessage =
-                '[DEV] While each : Nazgûl +5 (Nertëa +2, Unending +3), companions -1 (Chaotic Clash), orc inchangé.';
+                '[DEV] While each : Nazgûl +5, Men fierce (Raging), Uruk Damage +1 (Shingle), companions -1, orc témoin.';
             break;
         }
     }

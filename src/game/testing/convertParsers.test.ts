@@ -1141,7 +1141,61 @@ describe('parseAbilities — While you can spot → strength', () => {
         ]);
     });
 
-    it('refuse and fierce / for each / each skirmishing / of your', () => {
+    it('parse Raging Dunlending : spot 6 companions → each Men minion fierce', () => {
+        const text =
+            'While you can spot 6 companions, each <symbol>men</symbol> minion is <keyword>Fierce.</keyword>';
+        expect(parseAbilities(text, 'Raging Dunlending', '11S97')).toEqual([
+            {
+                id: '11S97:0',
+                phases: [],
+                trigger: {
+                    type: 'WHILE',
+                    spot: [{ count: 6, target: [['COMPANION']] }],
+                },
+                cost: [],
+                effects: [
+                    {
+                        type: 'MODIFY_KEYWORD',
+                        keyword: 'FIERCE',
+                        target: [['MEN', 'MINION']],
+                    },
+                ],
+                source: 'SELF',
+                text: expect.stringMatching(
+                    /While you can spot 6 companions, each men minion is Fierce/i
+                ),
+            },
+        ]);
+    });
+
+    it('parse Shingle in a Storm : spot 6 companions → each Uruk damage +1', () => {
+        const text =
+            'While you can spot 6 companions, each <symbol>urukhai</symbol> minion is <keyword>damage +1.</keyword>';
+        expect(parseAbilities(text, 'Shingle in a Storm', '12C145')).toEqual([
+            {
+                id: '12C145:0',
+                phases: [],
+                trigger: {
+                    type: 'WHILE',
+                    spot: [{ count: 6, target: [['COMPANION']] }],
+                },
+                cost: [],
+                effects: [
+                    {
+                        type: 'MODIFY_KEYWORD',
+                        keyword: 'DAMAGE +1',
+                        target: [['URUK-HAI', 'MINION']],
+                    },
+                ],
+                source: 'SELF',
+                text: expect.stringMatching(
+                    /While you can spot 6 companions, each urukhai minion is damage \+1/i
+                ),
+            },
+        ]);
+    });
+
+    it('refuse and fierce / for each / each skirmishing / of your / other / archer', () => {
         expect(
             parseAbilities(
                 'While you can spot 2 burdens, this minion is strength +3 and fierce.',
@@ -1175,6 +1229,20 @@ describe('parseAbilities — While you can spot → strength', () => {
                 'While you can spot 3 threats, each <symbol>sauron</symbol> Orc that is not roaming is strength +1.',
                 'Fires Raged Unchecked',
                 '7R269'
+            )
+        ).toBeUndefined();
+        expect(
+            parseAbilities(
+                'While you can spot Sauron, each other minion is <keyword>Damage +1.</keyword>.',
+                'Throne of the Dark Lord',
+                '17R105'
+            )
+        ).toBeUndefined();
+        expect(
+            parseAbilities(
+                'While you can spot 6 companions, each <symbol>men</symbol> minion is an <keyword>Archer.</keyword>',
+                'Fletcher of Harad',
+                '11R81'
             )
         ).toBeUndefined();
     });
