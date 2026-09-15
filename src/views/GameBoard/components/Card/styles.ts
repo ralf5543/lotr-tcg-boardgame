@@ -207,6 +207,7 @@ export const CardContainer = styled.div<CardContainerProps>`
 
             ${CardTitles} {
                 max-width: 86px;
+                inset-block: 0;
 
                 ${isForSupportArea(props.$type, props.$subtype) &&
                 css`
@@ -453,7 +454,8 @@ export const CardContainer = styled.div<CardContainerProps>`
 
             ${CardTitles} {
                 display: flex;
-                margin-block-start: -5px;
+                inset-block-start: 25px;
+                inset-inline-start: 80px;
                 gap: 4px;
                 ${isNotCharacter(props.$type) &&
                 css`
@@ -621,6 +623,7 @@ export const CardTitles = styled.div<{ $type?: string }>`
     gap: 2px;
     justify-content: center;
     line-height: 0.7;
+    position: absolute;
     ${(props) =>
         isNotCharacter(props.$type) &&
         css`
@@ -1215,13 +1218,6 @@ export const AbilityButton = styled.button<{
     background-repeat: no-repeat;
     background-position: center;
     box-shadow: rgb(0, 0, 0) 0px 2px 2px;
-
-    ${(props) =>
-        !props.$abilityPhaseMatch &&
-        css`
-            cursor: default;
-            opacity: 0.72;
-        `}
 
     ${(props) =>
         props.$abilityPhaseMatch &&

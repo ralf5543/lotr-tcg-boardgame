@@ -110,12 +110,12 @@ export const devMoves = {
         { G, events }: LotrPhaseContext,
         presetType: DevPresetType
     ) => {
-        if (presetType === 'HEAL_TEST') {
+        if (presetType === 'ARMORY_TEST') {
             resetPhaseMachine(G);
         }
         applyDevPreset(G, presetType);
-        if (presetType === 'HEAL_TEST') {
-            events?.setPhase?.('startOfFellowship');
+        if (presetType === 'ARMORY_TEST') {
+            events?.setPhase?.('shadow');
         }
     },
 };

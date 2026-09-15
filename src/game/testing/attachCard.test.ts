@@ -1,4 +1,4 @@
-import type { CardState } from '../types';
+import type { CardState, Ability } from '../types';
 import { describe, expect, it } from 'vitest';
 import { calculateArcheryTotals } from '../logic/archery';
 import { createEngineClient } from './createEngineClient';
@@ -125,6 +125,105 @@ describe('attachCard', () => {
         expect(engine.getG().twilightPool).toBe(3);
         expect(engine.getG().battlefield[0]?.attachments?.[0]?.id).toBe('blade');
         expect(engine.getG().players['1']?.hand).toHaveLength(0);
+    });
+
+    it('Armurerie gobeline : attacher une arme Moria ajoute 1 crépuscule', () => {
+        const armoryAbility: Ability = {
+            id: '1R173:1',
+            phases: [],
+            trigger: {
+                type: 'YOU_PLAY',
+                played: [['MORIA', 'WEAPON']],
+            },
+            cost: [],
+            effects: [{ type: 'ADD_TWILIGHT', count: 1 }],
+            source: 'SELF',
+        };
+        const blade = possession({
+            id: 'goblin-scimitar',
+            kind: 'SHADOW',
+            culture: 'MORIA',
+            subtype: 'HAND-WEAPON',
+            twilightCost: 1,
+            attachedTo: [['MINION']],
+        });
+
+        const engine = createEngineClient({
+            startPhase: 'shadow',
+            playerID: '1',
+            G: {
+                twilightPool: 5,
+                battlefield: [createMinion({ id: 'orc' })],
+                players: {
+                    '1': createPlayerState('1', {
+                        supportArea: [
+                            createCard({
+                                id: '1R173',
+                                title: 'Goblin Armory',
+                                kind: 'SHADOW',
+                                type: 'CONDITION',
+                                culture: 'MORIA',
+                                abilities: [armoryAbility],
+                            }),
+                        ],
+                        hand: [blade],
+                    }),
+                },
+            },
+        });
+
+        engine.moves.attachCard(0, 'orc');
+        expect(engine.getG().twilightPool).toBe(5);
+        expect(engine.getG().battlefield[0]?.attachments).toHaveLength(1);
+    });
+
+    it('Armurerie gobeline : une armure Moria n’ajoute pas de crépuscule', () => {
+        const armoryAbility: Ability = {
+            id: '1R173:1',
+            phases: [],
+            trigger: {
+                type: 'YOU_PLAY',
+                played: [['MORIA', 'WEAPON']],
+            },
+            cost: [],
+            effects: [{ type: 'ADD_TWILIGHT', count: 1 }],
+            source: 'SELF',
+        };
+        const armor = possession({
+            id: 'goblin-armor',
+            kind: 'SHADOW',
+            culture: 'MORIA',
+            subtype: 'ARMOR',
+            twilightCost: 1,
+            attachedTo: [['MINION']],
+        });
+
+        const engine = createEngineClient({
+            startPhase: 'shadow',
+            playerID: '1',
+            G: {
+                twilightPool: 5,
+                battlefield: [createMinion({ id: 'orc' })],
+                players: {
+                    '1': createPlayerState('1', {
+                        supportArea: [
+                            createCard({
+                                id: '1R173',
+                                title: 'Goblin Armory',
+                                kind: 'SHADOW',
+                                type: 'CONDITION',
+                                culture: 'MORIA',
+                                abilities: [armoryAbility],
+                            }),
+                        ],
+                        hand: [armor],
+                    }),
+                },
+            },
+        });
+
+        engine.moves.attachCard(0, 'orc');
+        expect(engine.getG().twilightPool).toBe(4);
     });
 
     it('confère ARCHER via grantsKeywords une fois attaché', () => {

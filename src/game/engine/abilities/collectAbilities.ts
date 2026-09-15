@@ -87,7 +87,9 @@ export function collectVisibleAbilities(
     card: CardState
 ): { source: CardState; ability: Ability }[] {
     const own = collectCardAbilities(card).filter(
-        ({ ability }) => ability.trigger?.type !== 'WHEN_PLAYED'
+        ({ ability }) =>
+            ability.trigger?.type !== 'WHEN_PLAYED' &&
+            ability.trigger?.type !== 'YOU_PLAY'
     );
     if (!G) return own;
     return [...own, ...collectProjectedAbilities(G, card)];

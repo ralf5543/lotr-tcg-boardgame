@@ -80,6 +80,15 @@ export function cardMatchesCriterion(
     // Sous-type (HAND-WEAPON, ARMOR, …)
     if (c.subtype && normalize(c.subtype) === critUpper) return true;
 
+    // « weapon » = arme de mêlée ou à distance
+    if (
+        critUpper === 'WEAPON' &&
+        (normalize(c.subtype) === 'HAND-WEAPON' ||
+            normalize(c.subtype) === 'RANGED-WEAPON')
+    ) {
+        return true;
+    }
+
     // Keywords (UNBOUND, RING-BOUND, ARCHER, KNIGHT, etc.)
     if (Array.isArray(c.keywords)) {
         const keywordsUpper = c.keywords.map((k) => normalize(k));

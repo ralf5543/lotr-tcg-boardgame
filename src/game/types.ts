@@ -294,6 +294,11 @@ export type AbilityTrigger =
           type: 'WHEN_PLAYED';
       }
     | {
+          /** Each time you play a [classe]… (la carte jouée matche `played`). */
+          type: 'YOU_PLAY';
+          played: string[][];
+      }
+    | {
           type: 'CHARACTER_DIES';
           target: AbilityTargetRef;
       };
@@ -591,7 +596,7 @@ export interface ArcheryState {
     shadowRemainingWounds: number;
 }
 
-export type DevPresetType = 'ARCHERY_TEST' | 'HEAL_TEST';
+export type DevPresetType = 'ARCHERY_TEST' | 'ARMORY_TEST';
 
 export interface TempKeywordModifier {
     keyword: CardKeyword;

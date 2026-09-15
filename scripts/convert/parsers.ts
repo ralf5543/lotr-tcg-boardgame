@@ -1737,6 +1737,49 @@ function findWhileWearingOnCard(
     return parseWhileWearingEffects(slice);
 }
 
+/**
+ * Each time you play a [classe], add twilight N.
+ * Requis, pas de « you may », pas de complément (during, on, here…).
+ */
+function parseEachTimeYouPlayAbilities(
+    text: string,
+    cardId?: string
+): Record<string, unknown>[] {
+    const found: Record<string, unknown>[] = [];
+    const re =
+        /Each time you play (?:a|an) ([\s\S]+?), add <symbol>twilight(\d+)<\/symbol>\./gi;
+    let match: RegExpExecArray | null;
+    while ((match = re.exec(text)) !== null) {
+        const subject = match[1]
+            .trim()
+            .replace(/\bhand\s+weapons?\b/gi, 'HAND-WEAPON')
+            .replace(/\branged\s+weapons?\b/gi, 'RANGED-WEAPON')
+            .replace(/\bweapons?\b/gi, 'WEAPON');
+        if (
+            /\b(you may|and|or|during|here|whose|except|another|from|to)\b/i.test(
+                subject
+            )
+        ) {
+            continue;
+        }
+        const filters = parseClassFilters(subject);
+        if (filters.length === 0) continue;
+        const twilight = parseInt(match[2], 10);
+        if (!Number.isFinite(twilight) || twilight <= 0) continue;
+
+        found.push({
+            id: `${cardId || 'ability'}:${found.length}:each-time-play`,
+            phases: [],
+            trigger: { type: 'YOU_PLAY', played: [filters] },
+            cost: [],
+            effects: [{ type: 'ADD_TWILIGHT', count: twilight }],
+            source: 'SELF',
+            text: stripAbilityMarkup(match[0]),
+        });
+    }
+    return found;
+}
+
 function parseWhenPlayedAbilities(
     text: string,
     cardId?: string
@@ -2899,6 +2942,13 @@ export function parseAbilities(
     });
 
     parseWhenPlayedAbilities(text, cardId).forEach((ability) => {
+        abilities.push({
+            ...ability,
+            id: `${cardId || 'ability'}:${abilities.length}`,
+        });
+    });
+
+    parseEachTimeYouPlayAbilities(text, cardId).forEach((ability) => {
         abilities.push({
             ...ability,
             id: `${cardId || 'ability'}:${abilities.length}`,

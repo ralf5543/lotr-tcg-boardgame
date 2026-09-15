@@ -663,6 +663,20 @@ describe('parseAbilities — Response prevent wound', () => {
                     /discard this condition to prevent that wound/i
                 ),
             },
+            {
+                id: '1R173:1',
+                phases: [],
+                trigger: {
+                    type: 'YOU_PLAY',
+                    played: [['MORIA', 'WEAPON']],
+                },
+                cost: [],
+                effects: [{ type: 'ADD_TWILIGHT', count: 1 }],
+                source: 'SELF',
+                text: expect.stringMatching(
+                    /Each time you play a moria weapon, add twilight1/i
+                ),
+            },
         ]);
     });
 
@@ -868,6 +882,53 @@ describe('parseAbilities — When you play this', () => {
                 ),
             },
         ]);
+    });
+});
+
+describe('parseAbilities — Each time you play', () => {
+    it('parse Armurerie gobeline : jouer une arme Moria → +1 crépuscule', () => {
+        const text =
+            'Each time you play a <symbol>moria</symbol> weapon, add <symbol>twilight1</symbol>.';
+        expect(parseAbilities(text, 'Goblin Armory', '1R173')).toEqual([
+            {
+                id: '1R173:0',
+                phases: [],
+                trigger: {
+                    type: 'YOU_PLAY',
+                    played: [['MORIA', 'WEAPON']],
+                },
+                cost: [],
+                effects: [{ type: 'ADD_TWILIGHT', count: 1 }],
+                source: 'SELF',
+                text: expect.stringMatching(
+                    /Each time you play a moria weapon, add twilight1/i
+                ),
+            },
+        ]);
+    });
+
+    it('n’émet rien si you may, during, ou effet inconnu', () => {
+        expect(
+            parseAbilities(
+                'Each time you play a <symbol>moria</symbol> weapon, you may add <symbol>twilight1</symbol>.',
+                'Fake',
+                'x1'
+            )
+        ).toBeUndefined();
+        expect(
+            parseAbilities(
+                'Each time you play a spell during a skirmish, add <symbol>twilight1</symbol>.',
+                'Glamdring',
+                '0P44'
+            )
+        ).toBeUndefined();
+        expect(
+            parseAbilities(
+                'Each time you play an Elf, choose an opponent to discard a card from hand.',
+                'Far-seeing Eyes',
+                '1C43'
+            )
+        ).toBeUndefined();
     });
 });
 

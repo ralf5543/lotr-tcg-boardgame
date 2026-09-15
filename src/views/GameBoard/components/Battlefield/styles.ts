@@ -4,6 +4,7 @@ export const Battlefield = styled.div<{ $isHovered?: boolean }>`
     border-radius: 8px;
     padding: 15px;
     display: flex;
+    justify-content: center;
     border: 2px dashed
         ${(props) => (props.$isHovered ? '#e74c3c' : 'transparent')};
     background-color: ${(props) =>
@@ -25,7 +26,6 @@ export const Title = styled.span`
 export const CardRow = styled.div`
     display: flex;
     flex-wrap: wrap;
-    width: 100%;
     gap: 20px 60px;
     min-height: 80px;
     align-items: center;

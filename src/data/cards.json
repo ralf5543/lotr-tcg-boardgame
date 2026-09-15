@@ -18866,6 +18866,28 @@
         ],
         "source": "SELF",
         "text": "RESPONSE: If a moria Orc is about to take a wound, discard this condition to prevent that wound"
+      },
+      {
+        "id": "1R173:1",
+        "phases": [],
+        "trigger": {
+          "type": "YOU_PLAY",
+          "played": [
+            [
+              "MORIA",
+              "WEAPON"
+            ]
+          ]
+        },
+        "cost": [],
+        "effects": [
+          {
+            "type": "ADD_TWILIGHT",
+            "count": 1
+          }
+        ],
+        "source": "SELF",
+        "text": "Each time you play a moria weapon, add twilight1."
       }
     ],
     "actionPhases": [

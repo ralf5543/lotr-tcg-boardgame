@@ -85,6 +85,31 @@ describe('cardMatchesTarget (DNF)', () => {
         expect(cardMatchesTarget(man, dwarfOrElf)).toBe(false);
     });
 
+    it('WEAPON matche main ou distance, pas une armure', () => {
+        const sword = createCard({
+            id: 'sword',
+            type: 'POSSESSION',
+            subtype: 'HAND-WEAPON',
+            culture: 'MORIA',
+        });
+        const bow = createCard({
+            id: 'bow',
+            type: 'POSSESSION',
+            subtype: 'RANGED-WEAPON',
+            culture: 'MORIA',
+        });
+        const armor = createCard({
+            id: 'armor',
+            type: 'POSSESSION',
+            subtype: 'ARMOR',
+            culture: 'MORIA',
+        });
+        const filter = [['MORIA', 'WEAPON']];
+        expect(cardMatchesTarget(sword, filter)).toBe(true);
+        expect(cardMatchesTarget(bow, filter)).toBe(true);
+        expect(cardMatchesTarget(armor, filter)).toBe(false);
+    });
+
     it('refuse un target vide', () => {
         expect(cardMatchesTarget(createCard({ id: 'x' }), [])).toBe(false);
         expect(cardMatchesGroup(createCard({ id: 'x' }), [])).toBe(false);

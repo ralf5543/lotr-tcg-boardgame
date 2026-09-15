@@ -13,7 +13,9 @@ Réponse n’est pas une phase. Fenêtre dédiée `responseWindow` + `pendingEve
 
 ## Ordre
 
-**Prochaine priorité** : familles parser suivantes (Each time…, prevent Ombre sur Escape). Longbottom Leaf ✅. Coût `Discard a [classe] and spot X [classe]` + effets `remove X burdens` / crépuscule X / **soin ×X / X cibles** ✅ (Gaffer / Gandalf / Frodo / Aragorn pipes). `Discard a [classe] from play to remove a threat` / `to discard a minion` ✅ (Hornblower Leaf). **Cancel skirmish** ✅ (`Exert … to cancel a skirmish involving …`, `Discard … to cancel…`) — Escape / Halfling Leaf / bâton de Gandalf. **Prevent Ombre** sur Escape (`Any Shadow player may remove Ⓣ to prevent this`) : pas encore (le cancel part quand même).
+**Prochaine priorité** : familles parser suivantes (**While** générique, prevent Ombre sur Escape). **Each time you play a [classe], add Ⓣ** ✅ (Armurerie gobeline ; le reste Each time reste inerte). Longbottom Leaf ✅. Coût `Discard a [classe] and spot X [classe]` + effets `remove X burdens` / crépuscule X / **soin ×X / X cibles** ✅ (Gaffer / Gandalf / Frodo / Aragorn pipes). `Discard a [classe] from play to remove a threat` / `to discard a minion` ✅ (Hornblower Leaf). **Cancel skirmish** ✅ (`Exert … to cancel a skirmish involving …`, `Discard … to cancel…`) — Escape / Halfling Leaf / bâton de Gandalf. **Prevent Ombre** sur Escape (`Any Shadow player may remove Ⓣ to prevent this`) : pas encore (le cancel part quand même).
+
+While : ~500 textes EN (plusieurs langues dans le JSON). Seul passif câblé = Anneau Unique (`While wearing`). Le reste (spot, skip phase, force +N…) reste inerte — **à ne pas oublier**, ce n’est pas qu’un cas Anneau.
 
 1. Infra : `pendingEvent` ABOUT_TO_WOUND, `responseWindow`, toaster, Passer. Sans réponse éligible = blessure immédiate (comportement actuel). ✅
 2. `PREVENT_WOUND` (Éowyn `4C270`) avant l’Anneau Unique. ✅

@@ -3,7 +3,6 @@ import type { DevPresetType } from '../types';
 import type { CardState } from '../types';
 import { drawCardsForPlayer } from '../../utils/drawCards';
 import { getCardById } from '../cardsData';
-import { beginSanctuaryHeals } from '../logic/sanctuary';
 
 const CARDS_PRESETS: Record<string, CardState> = {
     FRODO: {
@@ -500,18 +499,20 @@ export const applyDevPreset = (
                 '[DEV] Preset Archerie chargé (Gimli a +1 Vitalité via Armure)';
             break;
         }
-        case 'HEAL_TEST': {
-            G.twilightPool = 4;
-            fpPlayer.burdens = 1;
-            fpPlayer.currentSiteIndex = 2;
-            G.currentSiteIndex = 2;
+        case 'ARMORY_TEST': {
+            const shadowId = fpId === '0' ? '1' : '0';
+            const shadowPlayer = G.players[shadowId];
+            if (!shadowPlayer) return;
+
+            G.twilightPool = 6;
+            fpPlayer.burdens = 0;
             G.battlefield = [];
             G.skirmishes = [];
             G.activeSkirmishId = undefined;
             G.actionWindow = undefined;
             G.responseWindow = undefined;
             G.pendingEvent = undefined;
-            G.lastHealedCardIds = [];
+            G.pendingWhenPlayed = undefined;
 
             Object.keys(G.players).forEach((pId) => {
                 const player = G.players[pId];
@@ -521,38 +522,32 @@ export const applyDevPreset = (
                 }
             });
 
-            const frodo = clonePresetCard('2C102', 'dev-frodo');
-            frodo.wounds = 2;
-            frodo.attachments = [
-                clonePresetCard('1R1', 'dev-ring'),
-                clonePresetCard('3U107', 'dev-frodo-pipe'),
-                clonePresetCard('1U292', 'dev-gaffer-pipe'),
+            fpPlayer.fellowshipArea = [
+                {
+                    ...CARDS_PRESETS.FRODO,
+                    instanceId: 'dev-frodo',
+                    attachments: [clonePresetCard('1R1', 'dev-ring')],
+                },
+                { ...CARDS_PRESETS.ARAGORN, instanceId: 'dev-aragorn' },
             ];
 
-            const aragorn = {
-                ...CARDS_PRESETS.ARAGORN,
-                instanceId: 'dev-aragorn',
-                wounds: 2,
-                attachments: [clonePresetCard('1U91', 'dev-aragorn-pipe')],
-            };
-
-            const gimli = {
-                ...CARDS_PRESETS.GIMLI,
-                instanceId: 'dev-gimli',
-                wounds: 2,
-            };
-
-            const legolas = clonePresetCard('0P13', 'dev-legolas');
-            legolas.wounds = 2;
-
-            fpPlayer.fellowshipArea = [frodo, aragorn, gimli, legolas];
-            fpPlayer.supportArea = [clonePresetCard('1C305', 'dev-old-toby')];
-            fpPlayer.hand = [];
-
-            beginSanctuaryHeals(G);
+            // Deux orques : une seule HAND-WEAPON par porteur
+            G.battlefield = [
+                clonePresetCard('1C174', 'dev-backstabber'),
+                clonePresetCard('1C176', 'dev-marksman'),
+            ];
+            shadowPlayer.supportArea = [
+                clonePresetCard('1R173', 'dev-goblin-armory'),
+            ];
+            // Cimitarre 0 + Lance 1 + Hache 1 → chaque attache doit +1 crépuscule
+            shadowPlayer.hand = [
+                clonePresetCard('1C180', 'dev-scimitar'),
+                clonePresetCard('1C182', 'dev-spear'),
+                clonePresetCard('1R190', 'dev-axe'),
+            ];
 
             G.statusMessage =
-                '[DEV] Site 3 (sanctuaire) : soignez jusqu’à 5 blessures, puis pipes + Old Toby.';
+                '[DEV] Armurerie gobeline en soutien : attache une arme Moria → +1 Crépuscule (Each time).';
             break;
         }
     }

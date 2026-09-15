@@ -30,8 +30,8 @@ import {
 import {
     acceptPendingWhenPlayed,
     declinePendingWhenPlayed,
-    resolveWhenPlayed,
 } from '../engine/abilities/whenPlayed';
+import { afterCardPlayed } from '../engine/abilities/eachTimeYouPlay';
 import {
     beginThreatWoundAssignment,
     livingCompanionsForThreatWounds,
@@ -202,7 +202,7 @@ export const attachCard = (
         G.statusMessage = `${attachedCard.title || attachedCard.i18n?.fr?.title || 'Carte'} est attaché à ${targetCard.title || targetCard.i18n?.fr?.title || 'Personnage'} (${sign}${cost} Crépuscule).`;
     }
 
-    resolveWhenPlayed(G, attachedCard, {
+    afterCardPlayed(G, attachedCard, {
         playerId: actingPlayerId,
         phase: ctx.phase,
     });
@@ -345,12 +345,11 @@ export const playCard = (
             G.twilightPool -= cost;
             return 'INVALID_MOVE';
         }
-        if (playedCard.type !== 'EVENT') {
-            resolveWhenPlayed(G, playedCard, {
-                playerId: actingPlayerId,
-                phase: ctx.phase,
-            });
-        }
+        afterCardPlayed(G, playedCard, {
+            playerId: actingPlayerId,
+            phase: ctx.phase,
+            skipWhenPlayed: playedCard.type === 'EVENT',
+        });
         yieldAfterPlay(G, actingPlayerId, playedCard, wasResponseWindowOpen);
         G.pendingPlay = undefined;
         return;
@@ -394,12 +393,11 @@ export const playCard = (
             G.twilightPool += cost;
             return 'INVALID_MOVE';
         }
-        if (playedCard.type !== 'EVENT') {
-            resolveWhenPlayed(G, playedCard, {
-                playerId: actingPlayerId,
-                phase: ctx.phase,
-            });
-        }
+        afterCardPlayed(G, playedCard, {
+            playerId: actingPlayerId,
+            phase: ctx.phase,
+            skipWhenPlayed: playedCard.type === 'EVENT',
+        });
         yieldAfterPlay(G, actingPlayerId, playedCard, wasResponseWindowOpen);
         G.pendingPlay = undefined;
     }

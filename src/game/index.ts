@@ -30,7 +30,7 @@ import { hasActionableStartOfPhaseCards } from './logic/hasActionableStartOfPhas
 import { clearActionableFlags } from '../utils/clearActionableFlags';
 import { clearExpiredTempKeywords } from './engine/abilities/applyAbilityEffect';
 import { onStartOfFellowshipBegin } from './logic/startOfFellowship';
-import { resolveWhenPlayed } from './engine/abilities/whenPlayed';
+import { afterCardPlayed } from './engine/abilities/eachTimeYouPlay';
 
 const shuffle = <T>(array: T[]): T[] => {
     const arr = [...array];
@@ -604,7 +604,7 @@ export const LotrGame: Game<GameState> = {
                         player.supportArea.push(playedCard);
                     }
 
-                    resolveWhenPlayed(G, playedCard, {
+                    afterCardPlayed(G, playedCard, {
                         playerId: String(playerID),
                         phase: ctx.phase || 'shadow',
                     });
@@ -642,6 +642,11 @@ export const LotrGame: Game<GameState> = {
                     if (!targetMinion.attachments)
                         targetMinion.attachments = [];
                     targetMinion.attachments.push(attachmentCard);
+
+                    afterCardPlayed(G, attachmentCard, {
+                        playerId: String(playerID),
+                        phase: ctx.phase || 'shadow',
+                    });
 
                     G.statusMessage = `L'Ombre attache ${attachmentCard.name} à ${targetMinion.name}.`;
                 },

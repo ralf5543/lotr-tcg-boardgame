@@ -192,9 +192,9 @@ export const DevPanel: React.FC<DevPanelProps> = ({
                             🏹 Charger Legolas vs Nazgûl
                         </S.PresetButton>
                         <S.PresetButton
-                            onClick={() => moves.devLoadPreset('HEAL_TEST')}
+                            onClick={() => moves.devLoadPreset('ARMORY_TEST')}
                         >
-                            ✦ Soin / sanctuaire
+                            ⚔ Armurerie / Each time
                         </S.PresetButton>
                         <S.GameButton $bgColor="#3498db" onClick={onDrawCard}>
                             🃏 Piocher ({deckCount})
