@@ -20,6 +20,7 @@ import {
     parseToPlayConditions,
     parseAidCost,
     parseAbilities,
+    parseSiteAbilities,
     coerceOrphanGameTextAsLore,
 } from './parsers.ts';
 
@@ -145,7 +146,7 @@ async function convert() {
         const grantsKeywords = parseGrantsKeywords(englishText);
         const aidCost = type === 'FOLLOWER' ? parseAidCost(englishText) : undefined;
         const abilities = isSite
-            ? undefined
+            ? parseSiteAbilities(englishText, cardId)
             : parseAbilities(englishText, titleVO, cardId);
 
         const cardObj: any = {

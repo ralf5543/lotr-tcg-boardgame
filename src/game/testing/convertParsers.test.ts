@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import {
     parseAbilities,
+    parseSiteAbilities,
     parseGrantsKeywords,
     parseKeywords,
     coerceOrphanGameTextAsLore,
@@ -123,6 +124,46 @@ describe('parseKeywords / parseGrantsKeywords — Ambush', () => {
         expect(parseKeywords(text, 'Council Courtyard', 'SITE')).toEqual([
             'SANCTUARY',
         ]);
+    });
+});
+
+describe('parseSiteAbilities — moves to/from twilight', () => {
+    it('émet remove twilight au départ (11S263)', () => {
+        const text =
+            '<keyword>Underground.</keyword> When the fellowship moves from this site, remove <symbol>twilight2</symbol>.';
+        expect(parseSiteAbilities(text, '11S263')).toEqual([
+            expect.objectContaining({
+                trigger: { type: 'MOVES_FROM' },
+                cost: [],
+                effects: [{ type: 'REMOVE_TWILIGHT', count: 2 }],
+            }),
+        ]);
+    });
+
+    it('émet add twilight à l’arrivée', () => {
+        const text =
+            'When the fellowship moves to this site, add <symbol>twilight3</symbol>.';
+        expect(parseSiteAbilities(text, 'test')).toEqual([
+            expect.objectContaining({
+                trigger: { type: 'MOVES_TO' },
+                effects: [{ type: 'ADD_TWILIGHT', count: 3 }],
+            }),
+        ]);
+    });
+
+    it('refuse may / spot / for each', () => {
+        expect(
+            parseSiteAbilities(
+                'When the fellowship moves from this site, the Free Peoples player may spot 3 burdens to remove a burden.',
+                '11S252'
+            )
+        ).toBeUndefined();
+        expect(
+            parseSiteAbilities(
+                'When the fellowship moves to this site, add <symbol>twilight1</symbol> for each Free Peoples weapon.',
+                '11S239'
+            )
+        ).toBeUndefined();
     });
 });
 

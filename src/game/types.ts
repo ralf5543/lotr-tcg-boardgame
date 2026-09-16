@@ -337,6 +337,14 @@ export type AbilityTrigger =
     | {
           type: 'CHARACTER_DIES';
           target: AbilityTargetRef;
+      }
+    | {
+          /** Site : When the fellowship moves to this site… */
+          type: 'MOVES_TO';
+      }
+    | {
+          /** Site : When the fellowship moves from this site… */
+          type: 'MOVES_FROM';
       };
 
 export interface Ability {
@@ -449,6 +457,8 @@ export interface SiteCardState {
     keywords?: CardKeyword[];
     /** Cartes posées sur le site (climats, etc.) — pas encore câblé. */
     attachments?: CardState[];
+    /** Gametext site (fragments sûrs uniquement). */
+    abilities?: Ability[];
 }
 export interface PlayerMusterInfo {
     allowedCount: number;

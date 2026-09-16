@@ -7147,6 +7147,24 @@
     "keywords": [
       "UNDERGROUND"
     ],
+    "abilities": [
+      {
+        "id": "11S263:0:site-move",
+        "phases": [],
+        "trigger": {
+          "type": "MOVES_FROM"
+        },
+        "cost": [],
+        "effects": [
+          {
+            "type": "REMOVE_TWILIGHT",
+            "count": 2
+          }
+        ],
+        "source": "SELF",
+        "text": "When the fellowship moves from this site, remove twilight2."
+      }
+    ],
     "twilightCost": 2,
     "siteArrow": "Right",
     "imageUrl": "/cards_visuals/o_11_263.jpg",

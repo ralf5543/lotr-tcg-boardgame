@@ -2430,6 +2430,65 @@ function parseWhileSpotKeywordAbilities(
     return found;
 }
 
+/**
+ * Sites — famille sûre uniquement :
+ * « When the fellowship moves to/from this site|here, add|remove twilightN. »
+ * Refuse may / spot / for each / sanctuary / phase / multi-clause.
+ */
+function parseSiteMoveTwilightAbilities(
+    text: string,
+    cardId?: string
+): Record<string, unknown>[] {
+    const found: Record<string, unknown>[] = [];
+    const re =
+        /When the fellowship moves (to|from) (?:this site|here), (remove|add) <symbol>twilight(\d+)<\/symbol>\./gi;
+    let match: RegExpExecArray | null;
+    while ((match = re.exec(text)) !== null) {
+        const sentence = match[0];
+        if (/\b(may|spot|each|if|during|burden|threat|wound|discard|draw|heal)\b/i.test(sentence)) {
+            continue;
+        }
+        const direction = match[1].toLowerCase() === 'to' ? 'MOVES_TO' : 'MOVES_FROM';
+        const op = match[2].toLowerCase();
+        const count = parseInt(match[3], 10);
+        if (!Number.isFinite(count) || count <= 0) continue;
+
+        found.push({
+            id: `${cardId || 'ability'}:${found.length}:site-move`,
+            phases: [],
+            trigger: { type: direction },
+            cost: [],
+            effects: [
+                op === 'add'
+                    ? { type: 'ADD_TWILIGHT', count }
+                    : { type: 'REMOVE_TWILIGHT', count },
+            ],
+            source: 'SELF',
+            text: stripAbilityMarkup(sentence),
+        });
+    }
+    return found;
+}
+
+/**
+ * Parse abilities pour Type=SITE.
+ * Ne réutilise pas parseAbilities entier : familles élargies une par une.
+ */
+export function parseSiteAbilities(
+    text: string,
+    cardId?: string
+): Record<string, unknown>[] | undefined {
+    if (!text) return undefined;
+    const abilities: Record<string, unknown>[] = [];
+    parseSiteMoveTwilightAbilities(text, cardId).forEach((ability, index) => {
+        abilities.push({
+            ...ability,
+            id: `${cardId || 'ability'}:${index}:site-move`,
+        });
+    });
+    return abilities.length > 0 ? abilities : undefined;
+}
+
 function parseWhenPlayedAbilities(
     text: string,
     cardId?: string

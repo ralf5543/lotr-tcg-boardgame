@@ -1,5 +1,6 @@
 import type { GameState, LotrMoveContext } from '../types';
 import { getRegionTwilightBonus } from '../logic/sites';
+import { resolveSiteMoveAbilities } from '../engine/abilities/siteMove';
 
 export const advanceCompany = (G: GameState) => {
     const fpId = G.fpPlayerId || '0';
@@ -9,7 +10,9 @@ export const advanceCompany = (G: GameState) => {
         return;
     }
 
-    const nextIndex = fpPlayer.currentSiteIndex + 1;
+    const fromIndex = fpPlayer.currentSiteIndex;
+    const fromSite = G.path?.[fromIndex] ?? null;
+    const nextIndex = fromIndex + 1;
 
     if (nextIndex >= 9) {
         console.warn(
@@ -35,8 +38,13 @@ export const advanceCompany = (G: GameState) => {
         const totalAdded = siteCost + companionsCount + regionBonus;
         G.twilightPool += totalAdded;
 
+        // Crépuscule du move d’abord, puis effets « moves from / to »
+        resolveSiteMoveAbilities(G, fromSite, 'MOVES_FROM');
+        resolveSiteMoveAbilities(G, targetSite, 'MOVES_TO');
+
         G.statusMessage = `La compagnie avance au site ${siteNumber} : ${targetSite.name}`;
     } else {
+        // Départ enregistré ; « moves from / to » se résolvent à la pose du site
         G.awaitingSiteSelection = true;
         G.statusMessage =
             "En attente du joueur de l'Ombre pour poser le prochain site...";
@@ -154,6 +162,11 @@ export const playSite = (
     const regionBonus = getRegionTwilightBonus(siteNumber);
     const addedTwilight = siteCost + companionsCount + regionBonus;
     G.twilightPool += addedTwilight;
+
+    const previousSite =
+        targetIndex > 0 ? (G.path[targetIndex - 1] ?? null) : null;
+    resolveSiteMoveAbilities(G, previousSite, 'MOVES_FROM');
+    resolveSiteMoveAbilities(G, playedSite, 'MOVES_TO');
 
     Object.keys(G.players).forEach((pId) => {
         const p = G.players[pId];

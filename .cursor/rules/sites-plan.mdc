@@ -31,10 +31,11 @@ L’ancien plan effets de cartes est **figé** (`.cursor/rules/card-effects-plan
    - Terrains (`UNDERGROUND`, `BATTLEGROUND`, …) : helpers prêts ; pas encore branchés sur des textes cartes.
    - Effets du type « if it is a sanctuary, … » sur un site moderne = gametext (**étape 3**) + test « est-ce un sanctuaire ? » (position ou keyword).
 
-3. **Gametext des sites**
+3. **Gametext des sites** (en cours)
    - Réactiver le parse d’abilities sur `Type=SITE` par **familles sûres**.
-   - Priorité fragments : `When the fellowship moves to/from …` ; capacités de phase `Fellowship:` / `Shadow:` / `Maneuver:` / `Regroup:` simples (coût + effet déjà connus).
-   - Refuser le reste (multi-clauses floues, contrôle, replace, etc.) tant que l’infra manque.
+   - ✅ Fragment : `When the fellowship moves to/from this site|here, add|remove twilightN` (+ hook `advanceCompany` / `playSite`).
+   - Priorité suivante : capacités de phase `Fellowship:` / `Shadow:` / `Maneuver:` / `Regroup:` simples (coût + effet déjà connus).
+   - Refuser le reste (multi-clauses floues, contrôle, replace, for each, may/spot, etc.) tant que l’infra manque.
    - Tests sur textes CSV / `sites.json` réels.
 
 4. **Attache sur un site** (UX à concevoir **avant** code)
@@ -63,6 +64,6 @@ L’ancien plan effets de cartes est **figé** (`.cursor/rules/card-effects-plan
 | Helpers keywords site (at / spot) | ✅ |
 | Bonus crépuscule de région (+3 / +6) | ✅ |
 | Keywords branchés sur gametext cartes | partiel (helpers prêts) |
-| Abilities / gametext site | ❌ (convert les ignore) |
+| Abilities / gametext site | partiel (move → twilight fixe ✅) |
 | Attache sur site | ❌ |
 | Contrôle / libération | ❌ |
