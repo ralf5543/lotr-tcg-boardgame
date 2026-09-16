@@ -469,7 +469,7 @@ const clonePresetSite = (
 /** Neuf sites Standard (sets 11+), sans numéro imprimé. Sanctuaire = cases 3 et 6. */
 const SITES_TEST_PATH_IDS = [
     '11S263', // 1 West Gate of Moria — UNDERGROUND, moves from → remove twilight2
-    '11S231', // 2 Caras Galadhon — FOREST
+    '11S228', // 2 Anduin Confluence — RIVER, moves to → discard each ally
     '11S237', // 3 Ettenmoors — PLAINS (+ sanctuaire par position)
     '11S233', // 4 Chamber of Mazarbul — UNDERGROUND
     '11S229', // 5 Barazinbar — MOUNTAIN

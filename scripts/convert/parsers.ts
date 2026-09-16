@@ -2431,24 +2431,31 @@ function parseWhileSpotKeywordAbilities(
 }
 
 /**
- * Sites — famille sûre uniquement :
- * « When the fellowship moves to/from this site|here, add|remove twilightN. »
+ * Sites — famille sûre move :
+ * « When the fellowship moves to/from this site|here, … »
+ * Effets : add/remove twilight fixe ; discard each ally.
  * Refuse may / spot / for each / sanctuary / phase / multi-clause.
  */
-function parseSiteMoveTwilightAbilities(
+function parseSiteMoveAbilities(
     text: string,
     cardId?: string
 ): Record<string, unknown>[] {
     const found: Record<string, unknown>[] = [];
-    const re =
+
+    const twilightRe =
         /When the fellowship moves (to|from) (?:this site|here), (remove|add) <symbol>twilight(\d+)<\/symbol>\./gi;
     let match: RegExpExecArray | null;
-    while ((match = re.exec(text)) !== null) {
+    while ((match = twilightRe.exec(text)) !== null) {
         const sentence = match[0];
-        if (/\b(may|spot|each|if|during|burden|threat|wound|discard|draw|heal)\b/i.test(sentence)) {
+        if (
+            /\b(may|spot|each|if|during|burden|threat|wound|discard|draw|heal)\b/i.test(
+                sentence
+            )
+        ) {
             continue;
         }
-        const direction = match[1].toLowerCase() === 'to' ? 'MOVES_TO' : 'MOVES_FROM';
+        const direction =
+            match[1].toLowerCase() === 'to' ? 'MOVES_TO' : 'MOVES_FROM';
         const op = match[2].toLowerCase();
         const count = parseInt(match[3], 10);
         if (!Number.isFinite(count) || count <= 0) continue;
@@ -2467,6 +2474,23 @@ function parseSiteMoveTwilightAbilities(
             text: stripAbilityMarkup(sentence),
         });
     }
+
+    const discardAlliesRe =
+        /When the fellowship moves (to|from) (?:this site|here), discard each ally(?: from play)?\./gi;
+    while ((match = discardAlliesRe.exec(text)) !== null) {
+        const direction =
+            match[1].toLowerCase() === 'to' ? 'MOVES_TO' : 'MOVES_FROM';
+        found.push({
+            id: `${cardId || 'ability'}:${found.length}:site-move`,
+            phases: [],
+            trigger: { type: direction },
+            cost: [],
+            effects: [{ type: 'DISCARD_ALL', target: [['ALLY']] }],
+            source: 'SELF',
+            text: stripAbilityMarkup(match[0]),
+        });
+    }
+
     return found;
 }
 
@@ -2480,7 +2504,7 @@ export function parseSiteAbilities(
 ): Record<string, unknown>[] | undefined {
     if (!text) return undefined;
     const abilities: Record<string, unknown>[] = [];
-    parseSiteMoveTwilightAbilities(text, cardId).forEach((ability, index) => {
+    parseSiteMoveAbilities(text, cardId).forEach((ability, index) => {
         abilities.push({
             ...ability,
             id: `${cardId || 'ability'}:${index}:site-move`,

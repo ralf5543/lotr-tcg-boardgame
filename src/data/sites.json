@@ -5848,6 +5848,28 @@
     "keywords": [
       "RIVER"
     ],
+    "abilities": [
+      {
+        "id": "11S228:0:site-move",
+        "phases": [],
+        "trigger": {
+          "type": "MOVES_TO"
+        },
+        "cost": [],
+        "effects": [
+          {
+            "type": "DISCARD_ALL",
+            "target": [
+              [
+                "ALLY"
+              ]
+            ]
+          }
+        ],
+        "source": "SELF",
+        "text": "When the fellowship moves to this site, discard each ally from play."
+      }
+    ],
     "twilightCost": 1,
     "siteArrow": "Left",
     "imageUrl": "/cards_visuals/o_01_353.jpg",

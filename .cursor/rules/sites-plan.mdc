@@ -34,7 +34,8 @@ L’ancien plan effets de cartes est **figé** (`.cursor/rules/card-effects-plan
 3. **Gametext des sites** (en cours)
    - Réactiver le parse d’abilities sur `Type=SITE` par **familles sûres**.
    - ✅ Fragment : `When the fellowship moves to/from this site|here, add|remove twilightN` (+ hook `advanceCompany` / `playSite`).
-   - Priorité suivante : capacités de phase `Fellowship:` / `Shadow:` / `Maneuver:` / `Regroup:` simples (coût + effet déjà connus).
+   - ✅ Fragment : `… discard each ally (from play)` (ex. `11S228`).
+   - Priorité suivante : capacités de phase `Fellowship:` / `Shadow:` / `Maneuver:` / `Regroup:` — **reporté** : les 11 sites modernes concernés demandent « Play a Nazgûl / next site / lose lurker… » hors primitifs sûrs ; rester inertes (credo).
    - Refuser le reste (multi-clauses floues, contrôle, replace, for each, may/spot, etc.) tant que l’infra manque.
    - Tests sur textes CSV / `sites.json` réels.
 
@@ -64,6 +65,6 @@ L’ancien plan effets de cartes est **figé** (`.cursor/rules/card-effects-plan
 | Helpers keywords site (at / spot) | ✅ |
 | Bonus crépuscule de région (+3 / +6) | ✅ |
 | Keywords branchés sur gametext cartes | partiel (helpers prêts) |
-| Abilities / gametext site | partiel (move → twilight fixe ✅) |
+| Abilities / gametext site | partiel (move → twilight fixe + discard each ally ✅) |
 | Attache sur site | ❌ |
 | Contrôle / libération | ❌ |

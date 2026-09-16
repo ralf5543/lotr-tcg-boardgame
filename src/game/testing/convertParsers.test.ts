@@ -165,6 +165,17 @@ describe('parseSiteAbilities — moves to/from twilight', () => {
             )
         ).toBeUndefined();
     });
+
+    it('émet discard each ally à l’arrivée (11S228)', () => {
+        const text =
+            '<keyword>River.</keyword> When the fellowship moves to this site, discard each ally from play.';
+        expect(parseSiteAbilities(text, '11S228')).toEqual([
+            expect.objectContaining({
+                trigger: { type: 'MOVES_TO' },
+                effects: [{ type: 'DISCARD_ALL', target: [['ALLY']] }],
+            }),
+        ]);
+    });
 });
 
 const ARAGORN_TEXT =

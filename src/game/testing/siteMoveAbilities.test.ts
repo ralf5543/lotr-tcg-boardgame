@@ -3,6 +3,7 @@ import { advanceCompany } from '../moves/fellowshipMoves';
 import type { Ability } from '../types';
 import {
     createGameState,
+    createCard,
     createCompanion,
     createPlayerState,
     createSite,
@@ -89,5 +90,59 @@ describe('site move abilities', () => {
 
         advanceCompany(G);
         expect(G.twilightPool).toBe(3); // 2 + 1 compagnon
+    });
+
+    it('défausse chaque allié à l’arrivée (11S228)', () => {
+        const toSite = createSite({
+            id: '11S228',
+            name: 'Anduin Banks',
+            twilightCost: 0,
+            abilities: [
+                {
+                    id: '11S228:0:site-move',
+                    phases: [],
+                    cost: [],
+                    effects: [{ type: 'DISCARD_ALL', target: [['ALLY']] }],
+                    source: 'SELF',
+                    trigger: { type: 'MOVES_TO' },
+                },
+            ],
+        });
+        const ally = createCard({
+            id: 'ally-1',
+            type: 'ALLY',
+            kind: 'FREE_PEOPLE',
+        });
+        const companion = createCompanion({ id: 'c1' });
+
+        const G = createGameState({
+            path: [
+                createSite({ id: 'from' }),
+                toSite,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+            ],
+            players: {
+                '0': createPlayerState('0', {
+                    currentSiteIndex: 0,
+                    fellowshipArea: [companion],
+                    supportArea: [ally],
+                    discard: [],
+                }),
+            },
+        });
+
+        advanceCompany(G);
+
+        expect(G.players['0']?.supportArea).toHaveLength(0);
+        expect(G.players['0']?.discard?.some((c) => c.id === 'ally-1')).toBe(
+            true
+        );
+        expect(G.players['0']?.fellowshipArea).toHaveLength(1);
     });
 });

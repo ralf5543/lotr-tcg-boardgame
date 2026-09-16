@@ -1,4 +1,7 @@
-import type { Ability, GameState, SiteCardState } from '../../types';
+import type { Ability, CardState, GameState, SiteCardState } from '../../types';
+import { discardCardFromPlay } from '../../../utils/discardCardFromPlay';
+import { cardMatchesTarget } from '../validations/matchers';
+import { forEachInPlayCard } from './resolveCostTarget';
 
 function isSiteMoveTrigger(
     ability: Ability,
@@ -7,9 +10,19 @@ function isSiteMoveTrigger(
     return ability.trigger?.type === direction;
 }
 
+function discardAllMatching(G: GameState, target: string[][]): void {
+    const matches: CardState[] = [];
+    forEachInPlayCard(G, (card) => {
+        if (cardMatchesTarget(card, target)) matches.push(card);
+    });
+    for (const card of matches) {
+        discardCardFromPlay(G, card);
+    }
+}
+
 /**
  * Applique les abilities site déclenchées par un déplacement (fragments sûrs).
- * Uniquement add/remove twilight fixe, sans coût ni optionnel.
+ * Uniquement effets sans coût ni optionnel.
  */
 export function resolveSiteMoveAbilities(
     G: GameState,
@@ -33,6 +46,10 @@ export function resolveSiteMoveAbilities(
                     0,
                     (G.twilightPool || 0) - (effect.count || 0)
                 );
+                continue;
+            }
+            if (effect.type === 'DISCARD_ALL') {
+                discardAllMatching(G, effect.target);
             }
         }
     }
