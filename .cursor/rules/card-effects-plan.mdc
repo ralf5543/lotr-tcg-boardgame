@@ -7,6 +7,8 @@ alwaysApply: false
 
 > **Figé.** Ne plus enchaîner de nouvelles familles ici. Suite active : [`.cursor/rules/sites-plan.mdc`](sites-plan.mdc) (sites : mots-clés → gametext → attache → contrôle).
 >
+> **Format : Standard (règles modernes)** — voir [`.cursor/rules/format-standard.mdc`](format-standard.mdc).
+>
 > Credo et vocabulaire ci-dessous restent une **référence** si on retouche des effets de cartes hors sites.
 
 Credo : **mieux vaut une carte inerte qu’une carte fausse.** Le parser n’émet une ability que s’il est sûr.

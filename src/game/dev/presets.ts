@@ -1,6 +1,4 @@
-import type { GameState } from '../types';
-import type { DevPresetType } from '../types';
-import type { CardState } from '../types';
+import type { CardState, DevPresetType, GameState, SiteCardState } from '../types';
 import { drawCardsForPlayer } from '../../utils/drawCards';
 import { getCardById } from '../cardsData';
 
@@ -441,6 +439,45 @@ const clonePresetCard = (id: string, instanceId?: string): CardState => {
     return { ...card, instanceId: instanceId || `dev-${id}` };
 };
 
+/** Site issu du JSON, prêt pour `G.path` (même forme que le setup). */
+const clonePresetSite = (
+    id: string,
+    ownerId: string,
+    siteNumber: number
+): SiteCardState => {
+    const card = getCardById(id);
+    if (!card) {
+        throw new Error(`[DEV] Site introuvable pour le preset : ${id}`);
+    }
+    const title =
+        card.i18n?.en?.title || card.title || id;
+    return {
+        ...card,
+        id: card.id,
+        name: title,
+        twilightCost: card.twilightCost ?? 0,
+        gameText: card.i18n?.en?.gameText || '',
+        ownerId,
+        siteNumber,
+        imageUrl: card.imageUrl,
+        keywords: card.keywords,
+        attachments: [],
+    } as SiteCardState;
+};
+
+/** Neuf sites Standard (sets 11+), sans numéro imprimé. Sanctuaire = cases 3 et 6. */
+const SITES_TEST_PATH_IDS = [
+    '11S230', // 1 Buckland Homestead — DWELLING
+    '11S231', // 2 Caras Galadhon — FOREST
+    '11S237', // 3 Ettenmoors — PLAINS (+ sanctuaire par position)
+    '11S233', // 4 Chamber of Mazarbul — UNDERGROUND
+    '11S229', // 5 Barazinbar — MOUNTAIN
+    '11U227', // 6 Anduin Banks — RIVER (+ sanctuaire par position)
+    '11S241', // 7 Fortress of Orthanc — BATTLEGROUND
+    '11U235', // 8 Dammed Gate-stream — MARSH
+    '11S240', // 9 Flats of Rohan — PLAINS
+] as const;
+
 export const applyDevPreset = (
     G: GameState,
     presetType: DevPresetType
@@ -499,15 +536,19 @@ export const applyDevPreset = (
                 '[DEV] Preset Archerie chargé (Gimli a +1 Vitalité via Armure)';
             break;
         }
-        case 'ESCAPE_PREVENT_TEST': {
+        case 'SITES_TEST': {
             const shadowId = fpId === '0' ? '1' : '0';
             const shadowPlayer = G.players[shadowId];
-            if (!shadowPlayer) return;
 
-            G.twilightPool = 2;
+            G.twilightPool = 0;
             fpPlayer.burdens = 0;
             G.tempModifiers = [];
             G.archeryState = undefined;
+            G.battlefield = [];
+            G.skirmishes = [];
+            G.activeSkirmishId = undefined;
+            G.actionWindow = undefined;
+            G.awaitingSiteSelection = false;
 
             Object.keys(G.players).forEach((pId) => {
                 const player = G.players[pId];
@@ -518,44 +559,41 @@ export const applyDevPreset = (
                 }
             });
 
-            const merry = {
-                ...clonePresetCard('1C303', 'dev-merry'),
-                attachments: [clonePresetCard('4R300', 'dev-escape')],
-            };
+            G.path = SITES_TEST_PATH_IDS.map((siteId, index) =>
+                clonePresetSite(
+                    siteId,
+                    index === 0 ? fpId : shadowId,
+                    index + 1
+                )
+            );
+
+            // Site 3 (index 2) = Sanctuaire — prêt pour tester les soins
+            const startIndex = 2;
+            Object.values(G.players).forEach((player) => {
+                if (player) player.currentSiteIndex = startIndex;
+            });
+            G.currentSiteIndex = startIndex;
 
             fpPlayer.fellowshipArea = [
                 {
                     ...clonePresetCard('2C102', 'dev-frodo'),
+                    wounds: 2,
                     attachments: [clonePresetCard('1R1', 'dev-ring')],
                 },
-                merry,
-            ];
-
-            G.battlefield = [clonePresetCard('11R194', 'dev-lurtz')];
-
-            const skirmishId = 'skirmish_dev-merry';
-            G.skirmishes = [
                 {
-                    id: skirmishId,
-                    companionId: 'dev-merry',
-                    minionIds: ['dev-lurtz'],
+                    ...clonePresetCard('1R89', 'dev-aragorn'),
+                    wounds: 1,
                 },
             ];
-            G.activeSkirmishId = skirmishId;
-            G.actionWindow = {
-                isOpen: true,
-                activePlayerId: fpId,
-                title: 'ESCARMOUCHE',
-                message:
-                    'Phase d’actions de Skirmish : Jouez des cartes/effets ou PASSER.',
-                canPass: true,
-                passesCount: 0,
-            };
 
-            shadowPlayer.hand = [];
-            shadowPlayer.supportArea = [];
+            if (shadowPlayer) {
+                shadowPlayer.hand = [];
+                shadowPlayer.supportArea = [];
+                shadowPlayer.fellowshipArea = [];
+            }
 
-            G.statusMessage = '[DEV] Preset Escape / prevent Ombre chargé.';
+            G.statusMessage =
+                '[DEV] Preset Sites (Standard) : chemin sets 11+. Compagnie au site 3 (sanctuaire).';
             break;
         }
     }

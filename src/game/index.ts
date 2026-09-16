@@ -81,10 +81,11 @@ const createInitialPlayer = (playerId: string): PlayerState => {
     // Chargement dynamique des sites depuis siteIds via buildDeckFromIds
     const siteCards = buildDeckFromIds(deckConfig.siteIds || [], playerId);
 
-    const sitesDeck: SiteCardState[] = siteCards.map((card, index) => ({
+    const sitesDeck: SiteCardState[] = siteCards.map((card) => ({
         ...card,
         ownerId: playerId,
-        siteNumber: index + 1,
+        // Standard : le numéro s’assigne à la pose sur le chemin, pas dans le deck
+        siteNumber: undefined,
     })) as SiteCardState[];
 
     if (isP0) {
@@ -403,7 +404,11 @@ export const LotrGame: Game<GameState> = {
                         return 'INVALID_MOVE';
                     }
 
-                    G.path[0] = siteCard;
+                    G.path[0] = {
+                        ...siteCard,
+                        ownerId: playerID || G.fpPlayerId || '0',
+                        siteNumber: 1,
+                    } as typeof G.path[0];
                     G.awaitingSiteSelection = false;
 
                     Object.values(G.players).forEach((p) => {

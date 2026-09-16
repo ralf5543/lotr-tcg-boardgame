@@ -5,11 +5,13 @@ alwaysApply: true
 
 # Sites — plan et credo
 
+**Format : Standard (règles modernes).** Sites sans numéro imprimé (sets 11–18), jouables dans n’importe quel ordre ; numéro / région assignés à la pose. Sanctuaire = **emplacements 3 et 6** du chemin. Voir `.cursor/rules/format-standard.mdc`.
+
 Credo (hérité) : **mieux vaut un site inerte qu’un site faux.** On n’émet une ability / un effet site que si le fragment est sûr.
 
 **Parser = fragments**, jamais une carte site entière. Réutiliser les primitifs déjà connus (Spot, Exert, Discard, Draw, remove twilight, phases, classes, mots-clés). Regex collée sur une phrase unique = trop spécifique : on généralise ou on n’émet rien. Exceptions par id en dernier.
 
-Aujourd’hui vivant : chemin d’aventure, pose de site, crépuscule au déplacement (coût site + compagnons), soins sanctuaire via mot-clé **`SANCTUARY`**, helpers at/spot keywords. Gametext site, attache, contrôle = encore inertes.
+Aujourd’hui vivant : chemin d’aventure, pose de site, crépuscule au déplacement (coût site + compagnons + **bonus de région Standard**), soins sanctuaire via **emplacements 3 et 6**, helpers at/spot keywords. Gametext site, attache, contrôle = encore inertes.
 
 L’ancien plan effets de cartes est **figé** (`.cursor/rules/card-effects-plan.mdc`, `alwaysApply: false`). Suite = ce plan.
 
@@ -25,9 +27,9 @@ L’ancien plan effets de cartes est **figé** (`.cursor/rules/card-effects-plan
 
 2. **Mots-clés de site** ✅ (logique de base)
    - Lecture keywords du site courant / path pour spot et « at … site ».
-   - Soins sanctuaire : **mot-clé `SANCTUARY`** sur le site courant (plus d’index 3/6 hardcodés).
-   - Terrains (`UNDERGROUND`, `BATTLEGROUND`, …) : disponibles pour le reste du jeu via helpers ; pas encore branchés sur des textes cartes.
-   - Sanctuary textuel « When the fellowship moves… remove Ⓣ » = **étape 3**.
+   - Soins sanctuaire (**Standard**) : **sites 3 et 6 du chemin** (index 2 et 5) ; le mot-clé imprimé `SANCTUARY` reste reconnu pour les sites pré-Shadows.
+   - Terrains (`UNDERGROUND`, `BATTLEGROUND`, …) : helpers prêts ; pas encore branchés sur des textes cartes.
+   - Effets du type « if it is a sanctuary, … » sur un site moderne = gametext (**étape 3**) + test « est-ce un sanctuaire ? » (position ou keyword).
 
 3. **Gametext des sites**
    - Réactiver le parse d’abilities sur `Type=SITE` par **familles sûres**.
@@ -57,8 +59,9 @@ L’ancien plan effets de cartes est **figé** (`.cursor/rules/card-effects-plan
 | --- | --- |
 | Pose site / avance / crépuscule au move | ✅ |
 | Limite 2 moves / tour | ✅ |
-| Soins sanctuaire via mot-clé `SANCTUARY` | ✅ |
+| Soins sanctuaire (sites 3 & 6 du chemin, Standard) | ✅ |
 | Helpers keywords site (at / spot) | ✅ |
+| Bonus crépuscule de région (+3 / +6) | ✅ |
 | Keywords branchés sur gametext cartes | partiel (helpers prêts) |
 | Abilities / gametext site | ❌ (convert les ignore) |
 | Attache sur site | ❌ |

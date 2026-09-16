@@ -642,7 +642,7 @@ export interface ArcheryState {
     shadowRemainingWounds: number;
 }
 
-export type DevPresetType = 'ARCHERY_TEST' | 'ESCAPE_PREVENT_TEST';
+export type DevPresetType = 'ARCHERY_TEST' | 'SITES_TEST';
 
 export interface TempKeywordModifier {
     keyword: CardKeyword;

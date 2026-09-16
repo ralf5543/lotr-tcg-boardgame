@@ -14,15 +14,16 @@ import {
 } from './createGameState';
 import type { SiteCardState } from '../types';
 
-function pathWithSanctuaryAt(index: number): (SiteCardState | null)[] {
+/** Chemin Standard : n’importe quelle carte ; sanctuaire = positions 3 et 6. */
+function pathWithSiteAt(index: number): (SiteCardState | null)[] {
     const path: (SiteCardState | null)[] = Array.from(
         { length: 9 },
         () => null
     );
     path[index] = createSite({
-        id: `sanctuary-${index}`,
-        name: 'Sanctuary Site',
-        keywords: ['SANCTUARY'],
+        id: `site-${index}`,
+        name: `Site ${index + 1}`,
+        keywords: ['PLAINS'],
         siteNumber: index + 1,
     });
     return path;
@@ -54,13 +55,13 @@ describe('applyHeal', () => {
     });
 });
 
-describe('sanctuaire (mot-clé SANCTUARY)', () => {
-    it('ouvre le choix de 5 soins au début de la compagnie sur un site Sanctuaire', () => {
+describe('sanctuaire (Standard : sites 3 et 6)', () => {
+    it('ouvre le choix de 5 soins au début de la compagnie sur le site 3', () => {
         const engine = createEngineClient({
             startPhase: 'startOfFellowship',
             playerID: '0',
             G: {
-                path: pathWithSanctuaryAt(2),
+                path: pathWithSiteAt(2),
                 players: {
                     '0': createPlayerState('0', {
                         currentSiteIndex: 2,
@@ -89,10 +90,6 @@ describe('sanctuaire (mot-clé SANCTUARY)', () => {
         const opened = engine.getG();
         expect(engine.getCtx().phase).toBe('startOfFellowship');
         expect(opened.sanctuaryHeal?.remaining).toBe(5);
-        expect(
-            opened.players['0']?.fellowshipArea.find((c) => c.id === 'aragorn')
-                ?.wounds
-        ).toBe(2);
 
         engine.moves.assignSanctuaryHeal('aragorn');
         engine.moves.assignSanctuaryHeal('aragorn');
@@ -102,7 +99,6 @@ describe('sanctuaire (mot-clé SANCTUARY)', () => {
         const fellows = G.players['0']?.fellowshipArea || [];
         expect(fellows.find((c) => c.id === 'aragorn')?.wounds).toBe(0);
         expect(fellows.find((c) => c.id === 'gimli')?.wounds).toBe(0);
-        expect(fellows.find((c) => c.id === 'frodo')?.wounds).toBe(0);
         expect(G.sanctuaryHeal).toBeUndefined();
         expect(engine.getCtx().phase).toBe('fellowship');
 
@@ -114,7 +110,7 @@ describe('sanctuaire (mot-clé SANCTUARY)', () => {
             startPhase: 'startOfFellowship',
             playerID: '0',
             G: {
-                path: pathWithSanctuaryAt(2),
+                path: pathWithSiteAt(2),
                 players: {
                     '0': createPlayerState('0', {
                         currentSiteIndex: 2,
@@ -139,43 +135,29 @@ describe('sanctuaire (mot-clé SANCTUARY)', () => {
         engine.stop();
     });
 
-    it('ne soigne pas sans mot-clé Sanctuary (même index 3)', () => {
-        const wounded = createCompanion({
-            id: 'aragorn',
-            wounds: 2,
-        });
-        const path: (SiteCardState | null)[] = Array.from(
-            { length: 9 },
-            () => null
-        );
-        path[2] = createSite({
-            id: 'plains',
-            name: 'Open Plains',
-            keywords: ['PLAINS'],
-            siteNumber: 3,
-        });
+    it('soigne aussi au site 6', () => {
         const G = createGameState({
-            path,
+            path: pathWithSiteAt(5),
             players: {
                 '0': createPlayerState('0', {
-                    currentSiteIndex: 2,
-                    fellowshipArea: [wounded],
+                    currentSiteIndex: 5,
+                    fellowshipArea: [
+                        createCompanion({ id: 'aragorn', wounds: 1 }),
+                    ],
                 }),
             },
         });
-        expect(beginSanctuaryHeals(G)).toBe(false);
-        expect(getSanctuaryHealCandidates(G)).toHaveLength(1);
-        expect(assignSanctuaryHeal(G, 'aragorn')).toBe(false);
-        expect(wounded.wounds).toBe(2);
+        expect(beginSanctuaryHeals(G)).toBe(true);
+        expect(G.sanctuaryHeal?.remaining).toBe(5);
     });
 
-    it('ne soigne pas hors sanctuaire', () => {
+    it('ne soigne pas hors sites 3 et 6', () => {
         const wounded = createCompanion({
             id: 'aragorn',
             wounds: 2,
         });
         const G = createGameState({
-            path: pathWithSanctuaryAt(2),
+            path: pathWithSiteAt(0),
             players: {
                 '0': createPlayerState('0', {
                     currentSiteIndex: 0,

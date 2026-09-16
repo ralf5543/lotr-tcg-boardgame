@@ -10,6 +10,7 @@ export interface DevMoves {
     devSetBurdens?: (amount: number) => void;
     devSetThreats: (amount: number) => void;
     devSetArchery?: (amount: number) => void;
+    devSetCurrentSite?: (siteIndex: number) => void;
     devLoadPreset: (presetName: string) => void;
     devForceEndPhase: () => void;
 }
@@ -47,6 +48,14 @@ export const DevPanel: React.FC<DevPanelProps> = ({
     const currentArchery =
         G.archeryWoundsToAssign ?? G.archeryState?.fpTotal ?? 0;
     const currentPhase = ctx.phase || '';
+    const fpId = G.fpPlayerId || '0';
+    const currentSiteIndex =
+        G.players[fpId]?.currentSiteIndex ?? G.currentSiteIndex ?? 0;
+    const currentSite = G.path?.[currentSiteIndex] ?? null;
+    const currentSiteLabel =
+        currentSite?.name ||
+        (currentSite as { title?: string } | null)?.title ||
+        (currentSite ? currentSite.id : 'vide');
 
     return (
         <S.PanelContainer>
@@ -86,6 +95,62 @@ export const DevPanel: React.FC<DevPanelProps> = ({
                         </S.PhaseGrid>
                     </S.Section>
 
+                    {/* Site courant */}
+                    <S.Section>
+                        <S.Label>
+                            Site courant :{' '}
+                            <strong style={{ color: '#a3e635' }}>
+                                {currentSiteIndex + 1}
+                            </strong>
+                            {' — '}
+                            {currentSiteLabel}
+                        </S.Label>
+                        <S.SiteGrid>
+                            {Array.from({ length: 9 }, (_, index) => {
+                                const site = G.path?.[index] ?? null;
+                                const occupied = Boolean(site);
+                                const kwHint =
+                                    index === 2 ||
+                                    index === 5 ||
+                                    site?.keywords?.includes('SANCTUARY')
+                                        ? 'S'
+                                        : site?.keywords?.[0]?.[0] || '';
+                                return (
+                                    <S.SiteButton
+                                        key={index}
+                                        $isActive={index === currentSiteIndex}
+                                        $isEmpty={!occupied}
+                                        onClick={() =>
+                                            moves.devSetCurrentSite?.(index)
+                                        }
+                                        title={
+                                            site
+                                                ? `${site.name}${
+                                                      index === 2 || index === 5
+                                                          ? ' (sanctuaire)'
+                                                          : ''
+                                                  }${
+                                                      site.keywords?.length
+                                                          ? ` — ${site.keywords.join(', ')}`
+                                                          : ''
+                                                  }`
+                                                : `Emplacement ${index + 1} vide`
+                                        }
+                                    >
+                                        {index + 1}
+                                        {kwHint ? (
+                                            <S.SiteKwHint>{kwHint}</S.SiteKwHint>
+                                        ) : null}
+                                    </S.SiteButton>
+                                );
+                            })}
+                        </S.SiteGrid>
+                        <S.Hint>
+                            Standard : sanctuaire = cases 3 et 6 (badge S). Y aller
+                            puis « fellowship » pour le toaster de soins.
+                        </S.Hint>
+                    </S.Section>
+
                     {/* Twilight Pool */}
                     <S.Section>
                         <S.Label>
@@ -117,7 +182,7 @@ export const DevPanel: React.FC<DevPanelProps> = ({
                         <S.Label>
                             Burdens (FP) :{' '}
                             <strong style={{ color: '#ef4444' }}>
-                                {G.players[G.fpPlayerId || '0']?.burdens ?? 0}
+                                {G.players[fpId]?.burdens ?? 0}
                             </strong>
                         </S.Label>
                         <S.ButtonGroup>
@@ -138,7 +203,7 @@ export const DevPanel: React.FC<DevPanelProps> = ({
                         <S.Label>
                             Menaces (FP) :{' '}
                             <strong style={{ color: '#f87171' }}>
-                                {G.players[G.fpPlayerId || '0']?.threats ?? 0}
+                                {G.players[fpId]?.threats ?? 0}
                             </strong>
                             {' / '}
                             {getThreatLimit(G)}
@@ -192,11 +257,9 @@ export const DevPanel: React.FC<DevPanelProps> = ({
                             🏹 Charger Legolas vs Nazgûl
                         </S.PresetButton>
                         <S.PresetButton
-                            onClick={() =>
-                                moves.devLoadPreset('ESCAPE_PREVENT_TEST')
-                            }
+                            onClick={() => moves.devLoadPreset('SITES_TEST')}
                         >
-                            Escape / prevent Ombre
+                            Sites (chemin + mots-clés)
                         </S.PresetButton>
                         <S.GameButton $bgColor="#3498db" onClick={onDrawCard}>
                             🃏 Piocher ({deckCount})

@@ -14,7 +14,7 @@ export const getSanctuaryHealCandidates = (G: GameState): CardState[] => {
     );
 };
 
-/** Ouvre le choix « jusqu’à 5 blessures » si le site courant a Sanctuary. */
+/** Ouvre le choix « jusqu’à 5 blessures » si le site courant est un sanctuaire (Standard : emplacements 3 ou 6). */
 export const beginSanctuaryHeals = (G: GameState): boolean => {
     if (!isCurrentSiteSanctuary(G)) return false;
     if (getSanctuaryHealCandidates(G).length === 0) return false;

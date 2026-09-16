@@ -1,0 +1,16 @@
+---
+description: Format de jeu — Standard (règles modernes)
+alwaysApply: true
+---
+
+# Format de jeu
+
+**Ce projet suit les règles modernes du format Standard** (Comprehensive Rules post-Shadows) : pool de cartes large (ensembles récents / presque tout le jeu hors liste X et exceptions), **pas** le Fellowship/Towers Block « sites numérotés films ».
+
+**Sites** : on utilise des sites **sans numéro imprimé** (sets **11–18** / Shadows et suites), jouables **dans n’importe quel ordre**. Le numéro de site (1–9) et la région (1–3) sont **assignés à la pose** sur le chemin d’aventure.
+
+**Sanctuaire** : ce sont les **emplacements 3 et 6** du chemin (toute carte posée là est un sanctuaire tant qu’elle y reste). Le mot-clé imprimé `SANCTUARY` ne concerne que les sites pré-Shadows.
+
+**Crépuscule au déplacement (rappel Standard)** : coût d’ombre du site + 1 par compagnon + **+3 en région 2** ou **+6 en région 3**.
+
+Tout nouveau plan ou règle Cursor doit rappeler ce format **en gras** en tête, pour ne pas retomber dans les conventions Block (sites #1–9 imprimés, sanctuaire = mot-clé uniquement, etc.).

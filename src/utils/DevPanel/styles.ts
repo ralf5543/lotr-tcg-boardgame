@@ -67,6 +67,55 @@ export const PhaseGrid = styled.div`
     gap: 4px;
 `;
 
+export const SiteGrid = styled.div`
+    display: grid;
+    grid-template-columns: repeat(9, 1fr);
+    gap: 3px;
+`;
+
+export const SiteButton = styled.button<{
+    $isActive: boolean;
+    $isEmpty: boolean;
+}>`
+    position: relative;
+    padding: 6px 0 10px;
+    border-radius: 4px;
+    border: 1px solid
+        ${(props) => (props.$isActive ? '#65a30d' : '#334155')};
+    background-color: ${(props) =>
+        props.$isActive
+            ? '#3f6212'
+            : props.$isEmpty
+              ? '#0f172a'
+              : '#1e293b'};
+    color: ${(props) => (props.$isEmpty ? '#64748b' : '#ffffff')};
+    cursor: pointer;
+    font-weight: ${(props) => (props.$isActive ? 'bold' : 'normal')};
+    font-size: 11px;
+
+    &:hover {
+        background-color: ${(props) =>
+            props.$isActive ? '#3f6212' : '#334155'};
+        color: #ffffff;
+    }
+`;
+
+export const SiteKwHint = styled.span`
+    position: absolute;
+    right: 2px;
+    bottom: 1px;
+    font-size: 8px;
+    color: #a3e635;
+    font-weight: 700;
+`;
+
+export const Hint = styled.p`
+    margin: 0;
+    color: #64748b;
+    font-size: 10px;
+    line-height: 1.35;
+`;
+
 export const PhaseButton = styled.button<{ $isActive: boolean }>`
     padding: 4px 6px;
     border-radius: 4px;

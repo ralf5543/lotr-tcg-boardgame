@@ -28,10 +28,10 @@ describe('logic/sites — mots-clés', () => {
     });
 
     it('getCurrentSite / isAtSiteWithKeyword suivent le chemin', () => {
-        const sanctuary = createSite({
-            id: 'sanctuary',
-            name: 'Rivendell',
-            keywords: ['SANCTUARY'],
+        const plains = createSite({
+            id: 'plains',
+            name: 'Ettenmoors',
+            keywords: ['PLAINS'],
         });
         const underground = createSite({
             id: 'mines',
@@ -40,7 +40,7 @@ describe('logic/sites — mots-clés', () => {
         });
         const path = emptyPath();
         path[0] = underground;
-        path[2] = sanctuary;
+        path[2] = plains;
 
         const G = createGameState({
             path,
@@ -49,8 +49,10 @@ describe('logic/sites — mots-clés', () => {
             },
         });
 
-        expect(getCurrentSite(G)?.id).toBe('sanctuary');
+        expect(getCurrentSite(G)?.id).toBe('plains');
+        // Standard : emplacement 3 = sanctuaire même sans mot-clé imprimé
         expect(isCurrentSiteSanctuary(G)).toBe(true);
+        expect(isAtSiteWithKeyword(G, 'PLAINS')).toBe(true);
         expect(isAtSiteWithKeyword(G, 'UNDERGROUND')).toBe(false);
 
         G.players['0']!.currentSiteIndex = 0;

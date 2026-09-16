@@ -1,4 +1,5 @@
 import type { GameState, LotrMoveContext } from '../types';
+import { getRegionTwilightBonus } from '../logic/sites';
 
 export const advanceCompany = (G: GameState) => {
     const fpId = G.fpPlayerId || '0';
@@ -24,14 +25,17 @@ export const advanceCompany = (G: GameState) => {
 
     if (targetSite !== null) {
         G.awaitingSiteSelection = false;
+        const siteNumber = nextIndex + 1;
+        targetSite.siteNumber = siteNumber;
         const siteCost = Number(targetSite.twilightCost) || 0;
         const companionsCount = fpPlayer.fellowshipArea
             ? fpPlayer.fellowshipArea.length
             : 0;
-        const totalAdded = siteCost + companionsCount;
+        const regionBonus = getRegionTwilightBonus(siteNumber);
+        const totalAdded = siteCost + companionsCount + regionBonus;
         G.twilightPool += totalAdded;
 
-        G.statusMessage = `La compagnie avance au site ${nextIndex + 1} : ${targetSite.name}`;
+        G.statusMessage = `La compagnie avance au site ${siteNumber} : ${targetSite.name}`;
     } else {
         G.awaitingSiteSelection = true;
         G.statusMessage =
@@ -132,6 +136,7 @@ export const playSite = (
 
     player.sitesDeck.splice(siteIndex, 1);
     playedSite.ownerId = playerID;
+    playedSite.siteNumber = targetIndex + 1;
     G.path[targetIndex] = playedSite;
 
     G.awaitingSiteSelection = false;
@@ -141,11 +146,13 @@ export const playSite = (
         fpPlayer.currentSiteIndex = targetIndex;
     }
 
+    const siteNumber = targetIndex + 1;
     const siteCost = Number(playedSite.twilightCost) || 0;
     const companionsCount = fpPlayer?.fellowshipArea
         ? fpPlayer.fellowshipArea.length
         : 0;
-    const addedTwilight = siteCost + companionsCount;
+    const regionBonus = getRegionTwilightBonus(siteNumber);
+    const addedTwilight = siteCost + companionsCount + regionBonus;
     G.twilightPool += addedTwilight;
 
     Object.keys(G.players).forEach((pId) => {

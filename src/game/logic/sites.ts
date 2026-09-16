@@ -42,5 +42,25 @@ export function canSpotSiteWithKeyword(
 }
 
 export function isCurrentSiteSanctuary(G: GameState): boolean {
-    return isAtSiteWithKeyword(G, 'SANCTUARY');
+    const index = getCurrentSiteIndex(G);
+    // Standard / post-Shadows : sites 3 et 6 du chemin sont des sanctuaires
+    // (la carte y « gagne » Sanctuary tant qu’elle est à cet emplacement).
+    if (index === 2 || index === 5) return true;
+    // Sites pré-Shadows : mot-clé imprimé éventuel
+    return siteHasKeyword(getCurrentSite(G), 'SANCTUARY');
+}
+
+/** Région 1 (sites 1–3), 2 (4–6) ou 3 (7–9). */
+export function getSiteRegion(siteNumber: number): 1 | 2 | 3 {
+    if (siteNumber <= 3) return 1;
+    if (siteNumber <= 6) return 2;
+    return 3;
+}
+
+/** Crépuscule de région au déplacement vers ce numéro de site (Standard). */
+export function getRegionTwilightBonus(siteNumber: number): number {
+    const region = getSiteRegion(siteNumber);
+    if (region === 2) return 3;
+    if (region === 3) return 6;
+    return 0;
 }

@@ -7,6 +7,7 @@ import type {
 import { applyDevPreset } from './presets';
 import { clearActionableFlags } from '../../utils/clearActionableFlags';
 import { addThreats, getThreatLimit } from '../logic/threats';
+import { onStartOfFellowshipBegin } from '../logic/startOfFellowship';
 
 /** État de machine de phase : toasters, fenêtres, sous-étapes. */
 function resetPhaseMachine(G: GameState): void {
@@ -85,6 +86,24 @@ export const devMoves = {
         G.statusMessage = `[DEV] Archerie FP forcée à : ${newAmount}`;
     },
 
+    /** Place la compagnie sur l’emplacement 0–8 du chemin (sites déjà posés ou non). */
+    devSetCurrentSite: ({ G }: LotrMoveContext, siteIndex: number) => {
+        const index = Math.max(0, Math.min(8, Math.floor(siteIndex)));
+        Object.values(G.players).forEach((player) => {
+            if (player) player.currentSiteIndex = index;
+        });
+        G.currentSiteIndex = index;
+
+        const site = G.path?.[index];
+        const label =
+            site?.name ||
+            (site as { title?: string } | null)?.title ||
+            site?.id;
+        G.statusMessage = site
+            ? `[DEV] Compagnie au site ${index + 1} : ${label}`
+            : `[DEV] Compagnie à l’emplacement ${index + 1} (vide)`;
+    },
+
     devSetPhase: ({ G, events }: LotrPhaseContext, targetPhase: string) => {
         resetPhaseMachine(G);
 
@@ -97,6 +116,11 @@ export const devMoves = {
 
         G.statusMessage = `[DEV] Phase forcée : ${targetPhase}`;
         events?.setPhase?.(targetPhase);
+
+        // setPhase ne rejoue pas onBegin si on est déjà sur cette phase.
+        if (targetPhase === 'startOfFellowship' && !G.sanctuaryHeal) {
+            onStartOfFellowshipBegin(G, events);
+        }
     },
 
     devForceEndPhase: ({ events }: LotrMoveContext) => {
@@ -110,12 +134,15 @@ export const devMoves = {
         { G, events }: LotrPhaseContext,
         presetType: DevPresetType
     ) => {
-        if (presetType === 'ESCAPE_PREVENT_TEST') {
+        if (presetType === 'SITES_TEST') {
             resetPhaseMachine(G);
         }
         applyDevPreset(G, presetType);
-        if (presetType === 'ESCAPE_PREVENT_TEST') {
-            events?.setPhase?.('skirmish');
+        if (presetType === 'SITES_TEST') {
+            events?.setPhase?.('startOfFellowship');
+            if (!G.sanctuaryHeal) {
+                onStartOfFellowshipBegin(G, events);
+            }
         }
     },
 };
