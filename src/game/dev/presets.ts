@@ -587,12 +587,29 @@ export const applyDevPreset = (
                 },
                 // FOREST → force +2 (site 5)
                 clonePresetCard('11C27', 'dev-woodland-sentinel'),
+                // BATTLEGROUND → +2 / FOREST → Archer (sites 7 / 5)
+                clonePresetCard('15U17', 'dev-haldir'),
+                // MOUNTAIN → each Dwarf +2 (site 8) — condition en soutien
+                clonePresetCard('11U12', 'dev-well-equipped'),
                 // MOUNTAIN → Damage +1 via hache (site 8)
                 {
                     ...clonePresetCard('0P12', 'dev-gimli'),
                     attachments: [clonePresetCard('11U3', 'dev-axe-khazad')],
                 },
             ];
+
+            // Well-equipped est une condition → support
+            {
+                const wellEq = fpPlayer.fellowshipArea.find(
+                    (c) => c.id === '11U12'
+                );
+                if (wellEq) {
+                    fpPlayer.fellowshipArea = fpPlayer.fellowshipArea.filter(
+                        (c) => c.id !== '11U12'
+                    );
+                    fpPlayer.supportArea = [wellEq];
+                }
+            }
 
             G.battlefield = [
                 // UNDERGROUND → +2 / +3 (sites 1 & 4)

@@ -1905,8 +1905,8 @@ function parseSiteLocationKeyword(raw: string): string | null {
 }
 
 /**
- * While (this X is) at a [terrain] site, … is strength ±N.
- * Famille sûre force seule — refuse and Fierce / Damage / multi-clauses.
+ * While (this X is | the fellowship is) at a [terrain] site, … is strength ±N.
+ * Inclut « each [classe] ». Refuse and Fierce / Damage / multi-clauses.
  */
 function parseWhileAtSiteStrengthAbilities(
     text: string,
@@ -1915,12 +1915,13 @@ function parseWhileAtSiteStrengthAbilities(
 ): Record<string, unknown>[] {
     const found: Record<string, unknown>[] = [];
 
-    const patterns: RegExp[] = [
+    const selfPatterns: RegExp[] = [
         /While this (?:minion|companion) is at an? ([^,]+?) site, ([^,]+?) is strength ([+-]\d+)\./gi,
         /While at an? ([^,]+?) site, ([^,]+?) is strength ([+-]\d+)\./gi,
+        /While the fellowship is at an? ([^,]+?) site, ([^,]+?) is strength ([+-]\d+)\./gi,
     ];
 
-    for (const re of patterns) {
+    for (const re of selfPatterns) {
         let match: RegExpExecArray | null;
         while ((match = re.exec(text)) !== null) {
             const sentence = match[0];
@@ -1957,6 +1958,43 @@ function parseWhileAtSiteStrengthAbilities(
         }
     }
 
+    const eachRe =
+        /While the fellowship is at an? ([^,]+?) site, each ([^,]+?) is strength ([+-]\d+)\./gi;
+    let match: RegExpExecArray | null;
+    while ((match = eachRe.exec(text)) !== null) {
+        const sentence = match[0];
+        if (
+            /\b(and|or|may|fierce|damage|archery|other|your|who|whose)\b/i.test(
+                sentence
+            )
+        ) {
+            continue;
+        }
+        const keyword = parseSiteLocationKeyword(match[1]);
+        if (!keyword) continue;
+        const eachTarget = parseWhileEachClass(match[2]);
+        if (!eachTarget) continue;
+        const value = parseInt(match[3], 10);
+        if (!Number.isFinite(value) || value === 0) continue;
+
+        found.push({
+            id: `${cardId || 'ability'}:${found.length}:while-at-site-each`,
+            phases: [],
+            trigger: { type: 'WHILE', atSiteKeyword: keyword },
+            cost: [],
+            effects: [
+                {
+                    type: 'MODIFY_STAT',
+                    stat: 'STRENGTH',
+                    value,
+                    target: eachTarget,
+                },
+            ],
+            source: 'SELF',
+            text: stripAbilityMarkup(sentence),
+        });
+    }
+
     return found;
 }
 
@@ -1983,6 +2021,12 @@ function parseWhileAtSiteKeywordAbilities(
         {
             re: new RegExp(
                 `While at an? ([^,]+?) site, ([^,]+?) is (?:an?\\s+)?${kwTail}`,
+                'gi'
+            ),
+        },
+        {
+            re: new RegExp(
+                `While the fellowship is at an? ([^,]+?) site, ([^,]+?) is (?:an?\\s+)?${kwTail}`,
                 'gi'
             ),
         },

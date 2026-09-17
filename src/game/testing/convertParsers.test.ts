@@ -1610,6 +1610,69 @@ describe('parseAbilities — While at a … site → strength', () => {
             )
         ).toBeUndefined();
     });
+    it('parse fellowship at site : Haldir force + each Nain', () => {
+        expect(
+            parseAbilities(
+                'While the fellowship is at a battleground site, Haldir is strength +2.',
+                'Haldir',
+                '15U17'
+            )
+        ).toEqual([
+            expect.objectContaining({
+                trigger: { type: 'WHILE', atSiteKeyword: 'BATTLEGROUND' },
+                effects: [
+                    expect.objectContaining({
+                        type: 'MODIFY_STAT',
+                        value: 2,
+                        target: 'SELF',
+                    }),
+                ],
+            }),
+        ]);
+        expect(
+            parseAbilities(
+                'While the fellowship is at a mountain site, each Dwarf is strength +2.',
+                'Well-equipped',
+                '11U12'
+            )
+        ).toEqual([
+            expect.objectContaining({
+                trigger: { type: 'WHILE', atSiteKeyword: 'MOUNTAIN' },
+                effects: [
+                    {
+                        type: 'MODIFY_STAT',
+                        stat: 'STRENGTH',
+                        value: 2,
+                        target: [['DWARF']],
+                    },
+                ],
+            }),
+        ]);
+    });
+
+    it('parse Haldir forest → Archer', () => {
+        const abs = parseAbilities(
+            'While the fellowship is at a battleground site, Haldir is strength +2. While the fellowship is at a forest site, Haldir is an <keyword>archer.</keyword>',
+            'Haldir',
+            '15U17'
+        );
+        expect(abs).toEqual(
+            expect.arrayContaining([
+                expect.objectContaining({
+                    trigger: { type: 'WHILE', atSiteKeyword: 'BATTLEGROUND' },
+                }),
+                expect.objectContaining({
+                    trigger: { type: 'WHILE', atSiteKeyword: 'FOREST' },
+                    effects: [
+                        expect.objectContaining({
+                            type: 'MODIFY_KEYWORD',
+                            keyword: 'ARCHER',
+                        }),
+                    ],
+                }),
+            ])
+        );
+    });
 });
 
 describe('parseAbilities — While at a … site → keyword', () => {

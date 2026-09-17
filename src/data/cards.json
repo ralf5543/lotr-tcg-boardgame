@@ -4771,6 +4771,45 @@
         ]
       }
     ],
+    "abilities": [
+      {
+        "id": "0P122:0",
+        "phases": [],
+        "trigger": {
+          "type": "WHILE",
+          "atSiteKeyword": "BATTLEGROUND"
+        },
+        "cost": [],
+        "effects": [
+          {
+            "type": "MODIFY_STAT",
+            "stat": "STRENGTH",
+            "value": 2,
+            "target": "SELF"
+          }
+        ],
+        "source": "SELF",
+        "text": "While the fellowship is at a battleground site, Haldir is strength +2."
+      },
+      {
+        "id": "0P122:1",
+        "phases": [],
+        "trigger": {
+          "type": "WHILE",
+          "atSiteKeyword": "FOREST"
+        },
+        "cost": [],
+        "effects": [
+          {
+            "type": "MODIFY_KEYWORD",
+            "keyword": "ARCHER",
+            "target": "SELF"
+          }
+        ],
+        "source": "SELF",
+        "text": "While the fellowship is at a forest site, Haldir is an archer."
+      }
+    ],
     "culture": "ELVEN",
     "race": "ELF",
     "twilightCost": 2,
@@ -92340,6 +92379,31 @@
         ]
       }
     ],
+    "abilities": [
+      {
+        "id": "11U12:0",
+        "phases": [],
+        "trigger": {
+          "type": "WHILE",
+          "atSiteKeyword": "MOUNTAIN"
+        },
+        "cost": [],
+        "effects": [
+          {
+            "type": "MODIFY_STAT",
+            "stat": "STRENGTH",
+            "value": 2,
+            "target": [
+              [
+                "DWARF"
+              ]
+            ]
+          }
+        ],
+        "source": "SELF",
+        "text": "While the fellowship is at a mountain site, each Dwarf is strength +2."
+      }
+    ],
     "culture": "DWARVEN",
     "twilightCost": 3,
     "imageUrl": "/cards_visuals/o_11_012.jpg",
@@ -121084,6 +121148,45 @@
             ]
           }
         ]
+      }
+    ],
+    "abilities": [
+      {
+        "id": "15U17:0",
+        "phases": [],
+        "trigger": {
+          "type": "WHILE",
+          "atSiteKeyword": "BATTLEGROUND"
+        },
+        "cost": [],
+        "effects": [
+          {
+            "type": "MODIFY_STAT",
+            "stat": "STRENGTH",
+            "value": 2,
+            "target": "SELF"
+          }
+        ],
+        "source": "SELF",
+        "text": "While the fellowship is at a battleground site, Haldir is strength +2."
+      },
+      {
+        "id": "15U17:1",
+        "phases": [],
+        "trigger": {
+          "type": "WHILE",
+          "atSiteKeyword": "FOREST"
+        },
+        "cost": [],
+        "effects": [
+          {
+            "type": "MODIFY_KEYWORD",
+            "keyword": "ARCHER",
+            "target": "SELF"
+          }
+        ],
+        "source": "SELF",
+        "text": "While the fellowship is at a forest site, Haldir is an archer."
       }
     ],
     "culture": "ELVEN",
