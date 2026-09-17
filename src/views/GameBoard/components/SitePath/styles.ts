@@ -20,6 +20,7 @@ export const SitespathContainer = styled.section`
         background-size: 200px;
         background-repeat: no-repeat;
         background-position: center;
+        filter: drop-shadow(2px 4px 6px black);
     }
 
     &::before {
@@ -51,6 +52,7 @@ export const SiteCardContainer = styled.div<{
     $hasSite: boolean;
     $isHovered?: boolean;
     $index: number;
+    $isMine?: boolean;
     $pathReplaceTargetable?: boolean;
     $pathReplaceDimmed?: boolean;
 }>`
@@ -74,6 +76,18 @@ export const SiteCardContainer = styled.div<{
         css`
             outline: 2px solid rgba(255, 220, 120, 0.9);
             outline-offset: 2px;
+        `}
+
+    ${({ $isMine }) => 
+        $isMine &&
+        css`
+            translate: -15px 0;
+        `
+    }
+    ${({ $isMine }) =>
+        $isMine === false &&
+        css`
+          translate: 15px 0;
         `}
 
     ${({ $isHovered }) =>

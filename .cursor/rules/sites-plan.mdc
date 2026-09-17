@@ -58,7 +58,9 @@ L’ancien plan effets de cartes est **figé** (`.cursor/rules/card-effects-plan
    - **2ᵉ** : CURRENT **sans** filtre terrain → **11S222** Nelya (exert), **12C40** There’s Another Way (discard). ✅
    - **3ᵉ** : when-played optionnel + spot another + CURRENT terrain → **11R143** Watchful Orc. ✅
    - **4ᵉ** : REGION (site path + deck, région courante) → **12C34** Traveled Leader. ✅
-   - Suite : cannot replace, échange path↔deck (`11U45`).
+   - **5ᵉ** : cannot replace (While spot → FP bloqué) → **15U113** CURRENT, **15U89** REGION, **15U159** ANY. ✅
+   - **6ᵉ** : échange path↔deck (sites **à toi**) → **11U45** Led Astray (+ crépuscule). ✅ ≠ replace (cannot replace ne bloque pas).
+   - Suite : attache / contrôle. Site Mount Doom / attache « this site cannot » = plus tard.
 
 5. **Attache sur un site** (UX à concevoir **avant** code)
    - Jouer une carte « Plays on a site » (climats, etc.) : cibler un site du `path`, limite 1 par site.
@@ -87,6 +89,6 @@ L’ancien plan effets de cartes est **figé** (`.cursor/rules/card-effects-plan
 | Bonus crépuscule de région (+3 / +6) | ✅ |
 | Keywords branchés sur gametext cartes | partiel (at/spot sites ✅ ; skip@site / reinforce jetons ⏸) |
 | Abilities / gametext site | partiel (move twilight + discard allies ✅) |
-| Remplacement de site sur le path | partiel (CURRENT ± terrain ✅ — 13C120, 11S222, 12C40 ; when-played ✅ — 11R143 ; REGION ✅ — 12C34) |
+| Remplacement de site sur le path | partiel (CURRENT/REGION/when-played/cannot ✅ ; échange OWNED ✅ — 11U45) |
 | Attache sur site | ❌ |
 | Contrôle / libération | ❌ |

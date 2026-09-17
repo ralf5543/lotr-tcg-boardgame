@@ -241,6 +241,15 @@ export type AbilityEffect =
       }
     | {
           /**
+           * Passif While : le joueur indiqué ne peut pas remplacer
+           * le site courant / la région / n’importe quel site.
+           */
+          type: 'CANNOT_REPLACE_SITE';
+          player: 'FREE_PEOPLE';
+          scope: 'CURRENT' | 'REGION' | 'ANY';
+      }
+    | {
+          /**
            * Remplace un site du chemin par un site du deck d’aventure.
            * La cible choisie = id du site dans sitesDeck (avant activateAbility).
            */
@@ -250,6 +259,15 @@ export type AbilityEffect =
           from: 'SITES_DECK';
           /** Filtre terrain optionnel (underground, plains…). */
           siteKeyword?: CardKeyword;
+      }
+    | {
+          /**
+           * Échange un de tes sites du path avec un site de ton deck d’aventure.
+           * (≠ replace : pas bloqué par cannot replace ; uniquement sites dont tu es propriétaire.)
+           * Cibles : [pathSiteId, deckSiteId].
+           */
+          type: 'EXCHANGE_SITE';
+          from: 'SITES_DECK';
       }
     | {
           type: 'DRAW';

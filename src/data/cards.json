@@ -94006,6 +94006,38 @@
     "isUnique": false,
     "kind": "SHADOW",
     "type": "EVENT",
+    "abilities": [
+      {
+        "id": "11U45:0",
+        "phases": [],
+        "cost": [
+          {
+            "spot": [
+              {
+                "count": 1,
+                "target": [
+                  [
+                    "Gollum"
+                  ]
+                ]
+              }
+            ]
+          }
+        ],
+        "effects": [
+          {
+            "type": "ADD_TWILIGHT",
+            "count": 3
+          },
+          {
+            "type": "EXCHANGE_SITE",
+            "from": "SITES_DECK"
+          }
+        ],
+        "source": "SELF",
+        "text": "Spot Gollum to add twilight3 and exchange one of your sites on the adventure path with another site from your adventure deck"
+      }
+    ],
     "phases": [
       "SHADOW"
     ],
@@ -125010,6 +125042,36 @@
     "kind": "SHADOW",
     "type": "CONDITION",
     "subtype": "SUPPORT-AREA",
+    "abilities": [
+      {
+        "id": "15U89:0",
+        "phases": [],
+        "trigger": {
+          "type": "WHILE",
+          "spot": [
+            {
+              "count": 1,
+              "target": [
+                [
+                  "MEN",
+                  "MAN"
+                ]
+              ]
+            }
+          ]
+        },
+        "cost": [],
+        "effects": [
+          {
+            "type": "CANNOT_REPLACE_SITE",
+            "player": "FREE_PEOPLE",
+            "scope": "REGION"
+          }
+        ],
+        "source": "SELF",
+        "text": "While you can spot a men Man, the Free Peoples player cannot replace a site in the current region."
+      }
+    ],
     "actionPhases": [
       "ARCHERY"
     ],
@@ -126175,6 +126237,36 @@
     "kind": "SHADOW",
     "type": "CONDITION",
     "subtype": "SUPPORT-AREA",
+    "abilities": [
+      {
+        "id": "15U113:0",
+        "phases": [],
+        "trigger": {
+          "type": "WHILE",
+          "spot": [
+            {
+              "count": 1,
+              "target": [
+                [
+                  "ORC",
+                  "ORC"
+                ]
+              ]
+            }
+          ]
+        },
+        "cost": [],
+        "effects": [
+          {
+            "type": "CANNOT_REPLACE_SITE",
+            "player": "FREE_PEOPLE",
+            "scope": "CURRENT"
+          }
+        ],
+        "source": "SELF",
+        "text": "While you can spot a orc Orc, the Free Peoples player cannot replace the fellowship’s current site."
+      }
+    ],
     "actionPhases": [
       "SHADOW"
     ],
@@ -128550,6 +128642,36 @@
     "kind": "SHADOW",
     "type": "CONDITION",
     "subtype": "SUPPORT-AREA",
+    "abilities": [
+      {
+        "id": "15U159:0",
+        "phases": [],
+        "trigger": {
+          "type": "WHILE",
+          "spot": [
+            {
+              "count": 1,
+              "target": [
+                [
+                  "URUK-HAI",
+                  "MINION"
+                ]
+              ]
+            }
+          ]
+        },
+        "cost": [],
+        "effects": [
+          {
+            "type": "CANNOT_REPLACE_SITE",
+            "player": "FREE_PEOPLE",
+            "scope": "ANY"
+          }
+        ],
+        "source": "SELF",
+        "text": "While you can spot an urukhai minion, the Free Peoples player cannot replace a site."
+      }
+    ],
     "culture": "URUK-HAI",
     "twilightCost": 1,
     "imageUrl": "/cards_visuals/o_15_159.jpg",

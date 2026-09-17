@@ -2,6 +2,7 @@ import type { CardState, LotrMoveContext } from '../types';
 import { canUseAbility } from '../engine/canUseAbility';
 import {
     abilityNeedsSiteReplace,
+    abilityNeedsSiteExchange,
     applyAbilityEffect,
     abilityReplaceSiteEffect,
 } from '../engine/abilities/applyAbilityEffect';
@@ -81,6 +82,12 @@ export const activateAbility = (
         } else if (ids.length < 1) {
             return 'INVALID_MOVE';
         }
+    }
+    if (abilityNeedsSiteExchange(ability)) {
+        const ids = normalizeChosenIds(
+            chosenEffectTargetId ?? chosenTargetId
+        );
+        if (ids.length < 2) return 'INVALID_MOVE';
     }
     const wasResponseWindowOpen = isResponseWindowOpen(G);
     const isResponseAbility = abilityMatchesPhase(ability, 'RESPONSE');

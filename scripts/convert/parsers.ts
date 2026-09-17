@@ -2360,7 +2360,7 @@ function parseWhileSpotSubjectOrName(
 }
 
 /**
- * While you can spot [classe|nom], skip the archery phase.
+ * While you can spot [classe], skip the archery phase.
  * Skip the archery phase. (WHILE vide — vrai en jeu)
  * Refuse control sites / at this site / and the maneuver / bearing unique.
  */
@@ -2410,6 +2410,64 @@ function parseWhileSkipArcheryAbilities(
             source: 'SELF',
             text: clause,
         });
+    }
+
+    return found;
+}
+
+/**
+ * While you can spot X, the Free Peoples player cannot replace …
+ * Scopes : current site / current region / any site.
+ */
+function parseWhileCannotReplaceSiteAbilities(
+    text: string,
+    cardId?: string
+): Record<string, unknown>[] {
+    const found: Record<string, unknown>[] = [];
+
+    const patterns: {
+        re: RegExp;
+        scope: 'CURRENT' | 'REGION' | 'ANY';
+    }[] = [
+        {
+            re: /While you can spot ([^,.]+), the Free Peoples player cannot replace the fellowship[''\u2019]s current site\./gi,
+            scope: 'CURRENT',
+        },
+        {
+            re: /While you can spot ([^,.]+), the Free Peoples player cannot replace a site in the current region\./gi,
+            scope: 'REGION',
+        },
+        {
+            re: /While you can spot ([^,.]+), the Free Peoples player cannot replace a site\./gi,
+            scope: 'ANY',
+        },
+    ];
+
+    for (const { re, scope } of patterns) {
+        let match: RegExpExecArray | null;
+        while ((match = re.exec(text)) !== null) {
+            const spot = parseWhileSpotSubjectOrName(match[1]);
+            if (!spot) continue;
+
+            found.push({
+                id: `${cardId || 'ability'}:${found.length}:while-cannot-replace`,
+                phases: [],
+                trigger: {
+                    type: 'WHILE',
+                    spot: [{ count: spot.count, target: spot.target }],
+                },
+                cost: [],
+                effects: [
+                    {
+                        type: 'CANNOT_REPLACE_SITE',
+                        player: 'FREE_PEOPLE',
+                        scope,
+                    },
+                ],
+                source: 'SELF',
+                text: stripAbilityMarkup(match[0]),
+            });
+        }
     }
 
     return found;
@@ -3267,6 +3325,79 @@ function parseReplaceSiteEffect(
     }
 
     return null;
+}
+
+function parseExchangeSiteEffect(
+    remainder: string
+): Record<string, unknown> | null {
+    const clause = stripAbilityMarkup(remainder)
+        .replace(/\s+/g, ' ')
+        .replace(/[.\s]+$/u, '')
+        .trim();
+    if (!clause) return null;
+
+    // « exchange one of your sites on the adventure path with another site from your adventure deck »
+    if (
+        /^exchange one of your sites on the adventure path with another site from your adventure deck$/i.test(
+            clause
+        )
+    ) {
+        return {
+            type: 'EXCHANGE_SITE',
+            from: 'SITES_DECK',
+        };
+    }
+
+    return null;
+}
+
+/** Événements sans balise de phase : Spot X to add twilightN and exchange … */
+function parseStandaloneSpotTwilightExchangeAbilities(
+    text: string,
+    cardTitle?: string,
+    cardId?: string
+): Record<string, unknown>[] {
+    const spotMatch = text.match(
+        /^Spot\s+([\s\S]+?)\s+to\s+add\s+<symbol>twilight(\d+)<\/symbol>\s+and\s+(exchange\s+[\s\S]+)$/i
+    );
+    if (!spotMatch) return [];
+    if (/\b(and|or)\b/i.test(spotMatch[1])) return [];
+
+    const spotSubject = parseExertSubject(spotMatch[1], cardTitle, text);
+    const twilight = parseInt(spotMatch[2], 10);
+    const exchange = parseExchangeSiteEffect(spotMatch[3]);
+    if (!spotSubject || !exchange || !Number.isFinite(twilight) || twilight <= 0) {
+        return [];
+    }
+
+    return [
+        {
+            id: `${cardId || 'ability'}:0`,
+            phases: [],
+            cost: [
+                {
+                    spot: [
+                        {
+                            count: spotSubject.count,
+                            target: spotSubject.target,
+                            ...(spotSubject.excludeSource
+                                ? { excludeSource: true }
+                                : {}),
+                        },
+                    ],
+                },
+            ],
+            effects: [
+                { type: 'ADD_TWILIGHT', count: twilight },
+                exchange,
+            ],
+            source: 'SELF',
+            text: stripAbilityMarkup(spotMatch[0])
+                .replace(/\s+/g, ' ')
+                .replace(/[.\s]+$/u, '')
+                .trim(),
+        },
+    ];
 }
 
 /** Événements sans balise de phase : « Spot X to replace Y » sur tout le gametext. */
@@ -4194,6 +4325,61 @@ export function parseAbilities(
             return;
         }
 
+        // Spot X to add twilightN and exchange Y
+        const spotTwilightExchangeMatch = body.match(
+            /^Spot\s+([\s\S]+?)\s+to\s+add\s+<symbol>twilight(\d+)<\/symbol>\s+and\s+(exchange\s+[\s\S]+)/i
+        );
+        if (spotTwilightExchangeMatch) {
+            if (/\b(and|or)\b/i.test(spotTwilightExchangeMatch[1])) return;
+            const spotSubject = parseExertSubject(
+                spotTwilightExchangeMatch[1],
+                cardTitle,
+                text
+            );
+            const twilight = parseInt(spotTwilightExchangeMatch[2], 10);
+            const exchange = parseExchangeSiteEffect(
+                spotTwilightExchangeMatch[3]
+            );
+            if (
+                !spotSubject ||
+                !exchange ||
+                !Number.isFinite(twilight) ||
+                twilight <= 0
+            ) {
+                return;
+            }
+
+            abilities.push({
+                id: `${cardId || 'ability'}:${abilities.length}`,
+                phases,
+                cost: [
+                    {
+                        spot: [
+                            {
+                                count: spotSubject.count,
+                                target: spotSubject.target,
+                                ...(spotSubject.excludeSource
+                                    ? { excludeSource: true }
+                                    : {}),
+                            },
+                        ],
+                    },
+                ],
+                effects: [
+                    { type: 'ADD_TWILIGHT', count: twilight },
+                    exchange,
+                ],
+                source: 'SELF',
+                text: stripAbilityMarkup(
+                    `${marker.phase}: Spot ${spotTwilightExchangeMatch[1].trim()} to add twilight${twilight} and ${spotTwilightExchangeMatch[3]}`
+                )
+                    .replace(/\s+/g, ' ')
+                    .replace(/\s+\./g, '.')
+                    .trim(),
+            });
+            return;
+        }
+
         // Spot X to replace Y (events / special abilities)
         const spotReplaceMatch = body.match(
             /^Spot\s+([\s\S]+?)\s+to\s+(replace\s+[\s\S]+)/i
@@ -4668,7 +4854,24 @@ export function parseAbilities(
         });
     });
 
+    parseWhileCannotReplaceSiteAbilities(text, cardId).forEach((ability) => {
+        abilities.push({
+            ...ability,
+            id: `${cardId || 'ability'}:${abilities.length}`,
+        });
+    });
+
     if (markers.length === 0) {
+        parseStandaloneSpotTwilightExchangeAbilities(
+            text,
+            cardTitle,
+            cardId
+        ).forEach((ability) => {
+            abilities.push({
+                ...ability,
+                id: `${cardId || 'ability'}:${abilities.length}`,
+            });
+        });
         parseStandaloneSpotReplaceAbilities(text, cardTitle, cardId).forEach(
             (ability) => {
                 abilities.push({

@@ -23,8 +23,9 @@ import {
     getReplaceSiteCandidates,
     replaceCurrentSiteFromDeck,
     replacePathSiteFromDeck,
-    canReplaceSiteInCurrentRegion,
+    getCurrentSiteIndex,
 } from '../../logic/sites';
+import { isSiteReplaceForbidden } from '../../logic/siteReplaceRestrictions';
 import type { CardKeyword } from '../../types';
 
 export function abilityReplaceSiteEffect(
@@ -36,8 +37,28 @@ export function abilityReplaceSiteEffect(
     return effect && effect.type === 'REPLACE_SITE' ? effect : null;
 }
 
+export function abilityExchangeSiteEffect(
+    ability: Ability
+): Extract<Ability['effects'][number], { type: 'EXCHANGE_SITE' }> | null {
+    const effect = (ability.effects || []).find(
+        (item) => item.type === 'EXCHANGE_SITE'
+    );
+    return effect && effect.type === 'EXCHANGE_SITE' ? effect : null;
+}
+
 export function abilityNeedsSiteReplace(ability: Ability): boolean {
     return Boolean(abilityReplaceSiteEffect(ability));
+}
+
+export function abilityNeedsSiteExchange(ability: Ability): boolean {
+    return Boolean(abilityExchangeSiteEffect(ability));
+}
+
+/** Replace REGION ou exchange : 1ʳᵉ cible path, 2ᵉ deck. */
+export function abilityNeedsPathThenDeckSite(ability: Ability): boolean {
+    const replace = abilityReplaceSiteEffect(ability);
+    if (replace?.scope === 'REGION') return true;
+    return abilityNeedsSiteExchange(ability);
 }
 
 export function abilityReplaceSiteScope(
@@ -121,6 +142,9 @@ export function applyAbilityEffect(
             if (effect.scope === 'CURRENT') {
                 const siteId = chosenIds[0];
                 if (!siteId) return false;
+                if (isSiteReplaceForbidden(G, ownerId, getCurrentSiteIndex(G))) {
+                    return false;
+                }
                 if (
                     getReplaceSiteCandidates(G, ownerId, keyword).length === 0
                 ) {
@@ -140,6 +164,9 @@ export function applyAbilityEffect(
                 if (!pathSiteId || !deckSiteId) return false;
                 const pathIndex = findPathIndexForSiteId(G, pathSiteId);
                 if (pathIndex < 0) return false;
+                if (isSiteReplaceForbidden(G, ownerId, pathIndex)) {
+                    return false;
+                }
                 const oldSite = G.path[pathIndex];
                 if (!oldSite) return false;
                 if (
@@ -167,6 +194,36 @@ export function applyAbilityEffect(
             }
 
             return false;
+        }
+
+        if (effect.type === 'EXCHANGE_SITE') {
+            if (effect.from !== 'SITES_DECK') return false;
+            const ownerId = abilityOwnerPlayerId(G, source);
+            if (!ownerId) return false;
+            const pathSiteId = chosenIds[0];
+            const deckSiteId = chosenIds[1];
+            if (!pathSiteId || !deckSiteId) return false;
+            const pathIndex = findPathIndexForSiteId(G, pathSiteId);
+            if (pathIndex < 0) return false;
+            const oldSite = G.path[pathIndex];
+            if (!oldSite || (oldSite.ownerId || '') !== ownerId) return false;
+            if (
+                getReplaceSiteCandidates(G, ownerId, undefined, oldSite.id)
+                    .length === 0
+            ) {
+                return false;
+            }
+            if (
+                !replacePathSiteFromDeck(
+                    G,
+                    ownerId,
+                    pathIndex,
+                    deckSiteId
+                )
+            ) {
+                return false;
+            }
+            continue;
         }
 
         if (effect.type === 'DISCARD_FROM_HAND') {

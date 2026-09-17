@@ -2,6 +2,7 @@ import type { Ability, CardState, GameState } from '../../types';
 import {
     applyAbilityEffect,
     abilityNeedsSiteReplace,
+    abilityNeedsSiteExchange,
     abilityReplaceSiteEffect,
 } from './applyAbilityEffect';
 import {
@@ -11,7 +12,11 @@ import {
 } from './payAbilityCost';
 import { findTargetCard } from '../../../utils/cardUtils';
 import { pauseActionYieldForResponses } from '../responseWindow';
-import { getReplaceSiteCandidates, canReplaceSiteInCurrentRegion } from '../../logic/sites';
+import {
+    canReplaceCurrentSite,
+    canReplaceSiteInCurrentRegionForPlayer,
+} from '../../logic/siteReplaceRestrictions';
+import { canExchangeOwnedPathSite } from '../../logic/sites';
 
 export function isWhenPlayedAbility(ability: Ability): boolean {
     return ability.trigger?.type === 'WHEN_PLAYED';
@@ -29,15 +34,24 @@ function canFulfillWhenPlayedEffects(
     card: CardState,
     ability: Ability
 ): boolean {
+    if (abilityNeedsSiteExchange(ability)) {
+        const ownerId = abilityOwnerPlayerId(G, card);
+        if (!ownerId) return false;
+        return canExchangeOwnedPathSite(G, ownerId);
+    }
     if (!abilityNeedsSiteReplace(ability)) return true;
     const effect = abilityReplaceSiteEffect(ability);
     if (!effect) return false;
     const ownerId = abilityOwnerPlayerId(G, card);
     if (!ownerId) return false;
     if (effect.scope === 'REGION') {
-        return canReplaceSiteInCurrentRegion(G, ownerId, effect.siteKeyword);
+        return canReplaceSiteInCurrentRegionForPlayer(
+            G,
+            ownerId,
+            effect.siteKeyword
+        );
     }
-    return getReplaceSiteCandidates(G, ownerId, effect.siteKeyword).length > 0;
+    return canReplaceCurrentSite(G, ownerId, effect.siteKeyword);
 }
 
 function applyWhenPlayedAbility(

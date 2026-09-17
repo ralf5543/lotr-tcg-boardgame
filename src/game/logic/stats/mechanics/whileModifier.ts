@@ -132,7 +132,7 @@ function getSkirmishOpponents(
     return companion ? [companion] : [];
 }
 
-function whileConditionHolds(
+export function whileConditionHolds(
     G: GameState,
     source: CardState,
     ability: Ability

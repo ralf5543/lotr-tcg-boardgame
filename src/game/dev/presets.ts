@@ -614,16 +614,21 @@ export const applyDevPreset = (
                 shadowPlayer.hand = [
                     // when-played optional + CURRENT underground
                     clonePresetCard('11R143', 'dev-watchful-orc'),
+                    // Spot Gollum → +3 crépuscule + exchange owned path site
+                    clonePresetCard('11U45', 'dev-led-astray'),
                 ];
                 shadowPlayer.supportArea = [
                     // CURRENT underground (Shadow : discard + spot Orc)
                     clonePresetCard('13C120', 'dev-unforgiving-depths'),
+                    // FP cannot replace current site (While spot Orc)
+                    clonePresetCard('15U113', 'dev-orkish-camp'),
                 ];
                 shadowPlayer.fellowshipArea = [];
-                // Nelya = CURRENT any site (exert) ; 1 Orc pour spot Depths / Watchful
+                // Nelya ; Orc (Depths/Camp) ; Gollum (Led Astray)
                 G.battlefield = [
                     clonePresetCard('11S222', 'dev-nelya'),
                     clonePresetCard('11S115', 'dev-orc-spot'),
+                    clonePresetCard('5C24', 'dev-gollum'),
                 ];
                 shadowPlayer.sitesDeck = SITES_TEST_SHADOW_DECK.map((id) =>
                     clonePresetSite(id, shadowId)
@@ -631,7 +636,7 @@ export const applyDevPreset = (
             }
 
             G.statusMessage =
-                '[DEV] Replace sites. FP : Traveled Leader (main, Maneuver/Regroup = REGION) ; There’s Another Way (soutien, Regroup). Ombre : Depths / Nelya (CURRENT) ; Watchful Orc (main, when-played). Vrai move = Fin de Communauté (West Gate −2 crépuscule).';
+                '[DEV] Replace/exchange. FP : Traveled Leader / Another Way. Ombre : Depths / Nelya / Watchful / Led Astray (échange tes sites) ; Orkish Camp bloque replace FP courant.';
             break;
         }
     }

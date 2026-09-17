@@ -125,21 +125,6 @@ function App() {
                                 </FullscreenButton>
 
                                 <PlayerSwitcher>
-                                    <span>
-                                        Joueur :{' '}
-                                        <strong>
-                                            {myPlayerId === '0'
-                                                ? 'FP (0)'
-                                                : 'Ombre (1)'}
-                                        </strong>
-                                    </span>
-                                    <a
-                                        href={`?player=0&match=${currentMatchId}`}
-                                        target="_blank"
-                                        rel="noreferrer"
-                                    >
-                                        Onglet FP
-                                    </a>
                                     <a
                                         href={`?player=1&match=${currentMatchId}`}
                                         target="_blank"

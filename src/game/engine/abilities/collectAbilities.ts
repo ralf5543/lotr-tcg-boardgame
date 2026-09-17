@@ -288,6 +288,9 @@ function formatEffectBit(
         }
         return 'remplacer un site';
     }
+    if (effect.type === 'EXCHANGE_SITE') {
+        return 'échanger un de vos sites du chemin avec un site du deck d’aventure';
+    }
     return '';
 }
 

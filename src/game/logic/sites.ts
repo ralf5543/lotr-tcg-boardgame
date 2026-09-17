@@ -123,6 +123,17 @@ export function getReplaceSiteCandidates(
     });
 }
 
+/** Au moins une paire (site path owned, site deck) pour EXCHANGE_SITE. */
+export function canExchangeOwnedPathSite(
+    G: GameState,
+    ownerId: string
+): boolean {
+    return getOwnedPathSites(G, ownerId).some(
+        ({ site }) =>
+            getReplaceSiteCandidates(G, ownerId, undefined, site.id).length > 0
+    );
+}
+
 /** Au moins une paire (site région, site deck) légale pour un replace REGION. */
 export function canReplaceSiteInCurrentRegion(
     G: GameState,
@@ -134,6 +145,21 @@ export function canReplaceSiteInCurrentRegion(
             getReplaceSiteCandidates(G, ownerId, siteKeyword, site.id)
                 .length > 0
     );
+}
+
+/** Sites du path dont `ownerId` est le joueur (pour échange Led Astray). */
+export function getOwnedPathSites(
+    G: GameState,
+    ownerId: string
+): { site: SiteCardState; pathIndex: number }[] {
+    const found: { site: SiteCardState; pathIndex: number }[] = [];
+    for (let i = 0; i < 9; i++) {
+        const site = G.path[i];
+        if (!site) continue;
+        if ((site.ownerId || '') !== ownerId) continue;
+        found.push({ site, pathIndex: i });
+    }
+    return found;
 }
 
 /**

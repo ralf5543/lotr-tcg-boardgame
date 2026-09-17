@@ -5,12 +5,18 @@ import { resolveAbilityTarget, resolveCostTarget, resolveWinnerTargets } from '.
 import { findEventAbilityForPhase } from './playEventAbility';
 
 import { findSkirmishToCancel } from './cancelSkirmish';
-import { countFromSpotCost, abilityReplaceSiteEffect } from './applyAbilityEffect';
+import { countFromSpotCost, abilityReplaceSiteEffect, abilityExchangeSiteEffect } from './applyAbilityEffect';
 import {
     getReplaceSiteCandidates,
-    canReplaceSiteInCurrentRegion,
     getReplaceablePathSitesInCurrentRegion,
+    getOwnedPathSites,
+    canExchangeOwnedPathSite,
 } from '../../logic/sites';
+import {
+    canReplaceCurrentSite,
+    canReplaceSiteInCurrentRegionForPlayer,
+    isSiteReplaceForbidden,
+} from '../../logic/siteReplaceRestrictions';
 import { abilityOwnerPlayerId } from './payAbilityCost';
 export function cardTargetIds(card: CardState): string[] {
     const ids = [card.instanceId, card.id].filter(Boolean);
@@ -192,7 +198,7 @@ export function abilityHasLegalEffectTarget(
             if (!ownerId) return false;
             if (effect.scope === 'REGION') {
                 if (
-                    !canReplaceSiteInCurrentRegion(
+                    !canReplaceSiteInCurrentRegionForPlayer(
                         G,
                         ownerId,
                         effect.siteKeyword
@@ -203,11 +209,16 @@ export function abilityHasLegalEffectTarget(
                 continue;
             }
             if (
-                getReplaceSiteCandidates(G, ownerId, effect.siteKeyword)
-                    .length < 1
+                !canReplaceCurrentSite(G, ownerId, effect.siteKeyword)
             ) {
                 return false;
             }
+            continue;
+        }
+        if (effect.type === 'EXCHANGE_SITE') {
+            const ownerId = abilityOwnerPlayerId(G, source);
+            if (!ownerId) return false;
+            if (!canExchangeOwnedPathSite(G, ownerId)) return false;
             continue;
         }
         if (
@@ -340,20 +351,35 @@ export function isDesignationTargetId(
     return designationTargetIds.includes(targetId);
 }
 
-/** Sites du path ciblables pour REPLACE_SITE scope REGION (1ʳᵉ cible d’un event). */
-export function getRegionReplacePathSiteTargetIds(
+/** Sites du path ciblables pour REPLACE REGION ou EXCHANGE (1ʳᵉ cible d’un event). */
+export function getPathThenDeckSiteTargetIds(
     G: GameState,
     source: CardState,
     ability: Ability
 ): string[] {
-    const effect = abilityReplaceSiteEffect(ability);
-    if (!effect || effect.scope !== 'REGION') return [];
     const ownerId = abilityOwnerPlayerId(G, source);
     if (!ownerId) return [];
 
+    const exchange = abilityExchangeSiteEffect(ability);
+    if (exchange) {
+        return getOwnedPathSites(G, ownerId)
+            .filter(
+                ({ site }) =>
+                    getReplaceSiteCandidates(G, ownerId, undefined, site.id)
+                        .length > 0
+            )
+            .flatMap(({ site }) =>
+                [site.instanceId, site.id].filter(Boolean) as string[]
+            );
+    }
+
+    const effect = abilityReplaceSiteEffect(ability);
+    if (!effect || effect.scope !== 'REGION') return [];
+
     return getReplaceablePathSitesInCurrentRegion(G)
         .filter(
-            ({ site }) =>
+            ({ site, pathIndex }) =>
+                !isSiteReplaceForbidden(G, ownerId, pathIndex) &&
                 getReplaceSiteCandidates(
                     G,
                     ownerId,
@@ -366,9 +392,18 @@ export function getRegionReplacePathSiteTargetIds(
         );
 }
 
+/** @deprecated alias — préférer getPathThenDeckSiteTargetIds */
+export function getRegionReplacePathSiteTargetIds(
+    G: GameState,
+    source: CardState,
+    ability: Ability
+): string[] {
+    return getPathThenDeckSiteTargetIds(G, source, ability);
+}
+
 /**
  * Cibles pour drag d’event depuis la main (flèche + halo).
- * Inclut désignation classique et sites path pour replace REGION.
+ * Inclut désignation classique et sites path pour replace REGION / exchange.
  */
 export function getHandEventDesignationTargetIds(
     G: GameState,
@@ -383,8 +418,8 @@ export function getHandEventDesignationTargetIds(
         return getDesignationCandidates(G, card, ability).flatMap(cardTargetIds);
     }
 
-    const regionPathIds = getRegionReplacePathSiteTargetIds(G, card, ability);
-    if (regionPathIds.length > 0) return [...new Set(regionPathIds)];
+    const pathIds = getPathThenDeckSiteTargetIds(G, card, ability);
+    if (pathIds.length > 0) return [...new Set(pathIds)];
 
     return [];
 }

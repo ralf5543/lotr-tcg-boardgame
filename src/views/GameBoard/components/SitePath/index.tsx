@@ -13,6 +13,8 @@ import { audioService } from '../../../../services/audioService';
 interface SitePathProps {
     path: (SiteCardState | null)[];
     players?: Record<string, PlayerState>;
+    /** Joueur local — pour `$isMine` sur les emplacements. */
+    localPlayerId?: string;
     onPlaySite?: (siteId: string, targetIndex: number) => void;
 }
 
@@ -25,6 +27,7 @@ const REGION_INDEXES: Record<1 | 2 | 3, number[]> = {
 export const SitePath: React.FC<SitePathProps> = ({
     path = [],
     players = {},
+    localPlayerId,
     onPlaySite,
 }) => {
     const {
@@ -168,6 +171,11 @@ export const SitePath: React.FC<SitePathProps> = ({
                 $index={index}
                 $isHovered={isHovered || (isDragDesignationCandidate && isAimed)}
                 $hasSite={Boolean(site)}
+                $isMine={
+                    site && localPlayerId !== undefined
+                        ? site.ownerId === localPlayerId
+                        : undefined
+                }
                 $pathReplaceTargetable={pathReplaceTargetable}
                 $pathReplaceDimmed={pathReplaceDimmed}
                 onMouseEnter={() => {

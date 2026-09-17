@@ -59,28 +59,21 @@ export const SiteCard: React.FC<SiteCardProps> = ({
                     <FormattedText text={gameText} />
                 </S.Text>
             )}
-            {size === 'sm' && (
+            {size === 'sm' && playersHere && (hasP0 || hasP1) && (
                 <S.Footer>
-                    <span>
-                        {site.ownerId !== undefined ? `P${site.ownerId}` : ''}
-                    </span>
-                    {playersHere && (
-                        <>
-                            {hasP0 && (
-                                <TokenPlayer
-                                    value="0"
-                                    avatarUrl={p0Data?.avatarUrl}
-                                    playerName={p0Data?.name}
-                                />
-                            )}
-                            {hasP1 && (
-                                <TokenPlayer
-                                    value="1"
-                                    avatarUrl={p1Data?.avatarUrl}
-                                    playerName={p1Data?.name}
-                                />
-                            )}
-                        </>
+                    {hasP0 && (
+                        <TokenPlayer
+                            value="0"
+                            avatarUrl={p0Data?.avatarUrl}
+                            playerName={p0Data?.name}
+                        />
+                    )}
+                    {hasP1 && (
+                        <TokenPlayer
+                            value="1"
+                            avatarUrl={p1Data?.avatarUrl}
+                            playerName={p1Data?.name}
+                        />
                     )}
                 </S.Footer>
             )}

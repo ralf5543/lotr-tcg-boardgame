@@ -2125,6 +2125,94 @@ describe('parseAbilities — While spot N terrain sites', () => {
         ]);
     });
 
+    it('parse Led Astray : Spot Gollum → +twilight + exchange owned path site', () => {
+        expect(
+            parseAbilities(
+                'Spot Gollum to add <symbol>twilight3</symbol> and exchange one of your sites on the adventure path with another site from your adventure deck.',
+                'Led Astray',
+                '11U45'
+            )
+        ).toEqual([
+            expect.objectContaining({
+                cost: [
+                    {
+                        spot: [{ count: 1, target: [['Gollum']] }],
+                    },
+                ],
+                effects: [
+                    { type: 'ADD_TWILIGHT', count: 3 },
+                    { type: 'EXCHANGE_SITE', from: 'SITES_DECK' },
+                ],
+            }),
+        ]);
+    });
+
+    it('parse cannot replace : CURRENT / REGION / ANY (FP)', () => {
+        expect(
+            parseAbilities(
+                'While you can spot a <symbol>orc</symbol> Orc, the Free Peoples player cannot replace the fellowship’s current site.',
+                'Orkish Camp',
+                '15U113'
+            )
+        ).toEqual(
+            expect.arrayContaining([
+                expect.objectContaining({
+                    trigger: {
+                        type: 'WHILE',
+                        spot: [{ count: 1, target: [['ORC', 'ORC']] }],
+                    },
+                    effects: [
+                        {
+                            type: 'CANNOT_REPLACE_SITE',
+                            player: 'FREE_PEOPLE',
+                            scope: 'CURRENT',
+                        },
+                    ],
+                }),
+            ])
+        );
+
+        expect(
+            parseAbilities(
+                'While you can spot a <symbol>men</symbol> Man, the Free Peoples player cannot replace a site in the current region.',
+                'Rapid Reload',
+                '15U89'
+            )
+        ).toEqual(
+            expect.arrayContaining([
+                expect.objectContaining({
+                    effects: [
+                        {
+                            type: 'CANNOT_REPLACE_SITE',
+                            player: 'FREE_PEOPLE',
+                            scope: 'REGION',
+                        },
+                    ],
+                }),
+            ])
+        );
+
+        expect(
+            parseAbilities(
+                'While you can spot an <symbol>urukhai</symbol> minion, the Free Peoples player cannot replace a site.',
+                'Defensive Rush',
+                '15U159'
+            )
+        ).toEqual(
+            expect.arrayContaining([
+                expect.objectContaining({
+                    effects: [
+                        {
+                            type: 'CANNOT_REPLACE_SITE',
+                            player: 'FREE_PEOPLE',
+                            scope: 'ANY',
+                        },
+                    ],
+                }),
+            ])
+        );
+    });
+
     it('parse With Doom We Come : Gandalf / each gandalf at site → Muster', () => {
         const abs = parseAbilities(
             'While Gandalf is at an underground site, he gains **muster.** While the fellowship is at a battleground site, each <symbol>gandalf</symbol> character gains **muster.**',
