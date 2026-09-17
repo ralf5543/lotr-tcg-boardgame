@@ -6,7 +6,10 @@ import { findEventAbilityForPhase } from './playEventAbility';
 
 import { findSkirmishToCancel } from './cancelSkirmish';
 import { countFromSpotCost } from './applyAbilityEffect';
-
+import {
+    getReplaceSiteCandidates,
+} from '../../logic/sites';
+import { abilityOwnerPlayerId } from './payAbilityCost';
 export function cardTargetIds(card: CardState): string[] {
     const ids = [card.instanceId, card.id].filter(Boolean);
     return [...new Set(ids)];
@@ -180,6 +183,17 @@ export function abilityHasLegalEffectTarget(
             continue;
         }
         if (effect.type === 'DISCARD_FROM_HAND') {
+            continue;
+        }
+        if (effect.type === 'REPLACE_SITE') {
+            const ownerId = abilityOwnerPlayerId(G, source);
+            if (!ownerId) return false;
+            if (
+                getReplaceSiteCandidates(G, ownerId, effect.siteKeyword)
+                    .length < 1
+            ) {
+                return false;
+            }
             continue;
         }
         if (

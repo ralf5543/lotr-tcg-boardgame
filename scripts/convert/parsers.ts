@@ -3159,10 +3159,36 @@ function parseWhenPlayedAbilities(
     return found;
 }
 
+function parseReplaceSiteEffect(
+    remainder: string
+): Record<string, unknown> | null {
+    const clause = stripAbilityMarkup(remainder)
+        .replace(/[.\s]+$/u, '')
+        .trim();
+    if (!clause) return null;
+
+    // « replace the fellowship's current site with an underground site from your adventure deck »
+    const match = clause.match(
+        /^replace the fellowship[''\u2019]s current site with an? ([a-z-]+) site from your adventure deck$/i
+    );
+    if (!match) return null;
+    const siteKw = parseSiteLocationKeyword(match[1]);
+    if (!siteKw) return null;
+    return {
+        type: 'REPLACE_SITE',
+        scope: 'CURRENT',
+        from: 'SITES_DECK',
+        siteKeyword: siteKw,
+    };
+}
+
 /** Effet dont la magnitude est le nombre spoté (X). Fragments sûrs seulement. */
 function parseCountFromSpotEffect(
     remainder: string
 ): Record<string, unknown> | null {
+    const replace = parseReplaceSiteEffect(remainder);
+    if (replace) return replace;
+
     const raw = remainder.replace(/[.\s]+$/, '').trim();
     const clause = stripAbilityMarkup(raw).replace(/[.\s]+$/, '').trim();
     if (!clause) return null;
@@ -4060,7 +4086,6 @@ export function parseAbilities(
             const effect = parseCountFromSpotEffect(discardAndSpotMatch[3]);
             if (
                 !discardTarget ||
-                !Array.isArray(discardTarget) ||
                 !spotSubject ||
                 !Array.isArray(spotSubject.target) ||
                 !effect
@@ -4075,18 +4100,24 @@ export function parseAbilities(
                     .replace(/\s+\./g, '.')
                     .trim();
 
+            const discardCost =
+                discardTarget === 'SELF' || discardTarget === 'BEARER'
+                    ? { count: 1, target: discardTarget }
+                    : Array.isArray(discardTarget)
+                      ? {
+                            count: 1,
+                            target: discardTarget,
+                            mode: 'DESIGNATION' as const,
+                        }
+                      : null;
+            if (!discardCost) return;
+
             abilities.push({
                 id: `${cardId || 'ability'}:${abilities.length}`,
                 phases,
                 cost: [
                     {
-                        discardFromPlay: [
-                            {
-                                count: 1,
-                                target: discardTarget,
-                                mode: 'DESIGNATION',
-                            },
-                        ],
+                        discardFromPlay: [discardCost],
                         spot: [
                             {
                                 count: spotSubject.count,

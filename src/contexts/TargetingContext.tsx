@@ -7,6 +7,7 @@ type TargetingKind =
     | 'SKIRMISH_SELECT'
     | 'DESIGNATION'
     | 'HAND_DISCARD'
+    | 'SITE_REPLACE'
     | 'SANCTUARY_HEAL';
 
 interface TargetingRequest {

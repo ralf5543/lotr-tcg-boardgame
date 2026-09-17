@@ -116323,6 +116323,43 @@
     "abilities": [
       {
         "id": "13C120:0",
+        "phases": [
+          "SHADOW"
+        ],
+        "cost": [
+          {
+            "discardFromPlay": [
+              {
+                "count": 1,
+                "target": "SELF"
+              }
+            ],
+            "spot": [
+              {
+                "count": 1,
+                "target": [
+                  [
+                    "ORC",
+                    "MINION"
+                  ]
+                ]
+              }
+            ]
+          }
+        ],
+        "effects": [
+          {
+            "type": "REPLACE_SITE",
+            "scope": "CURRENT",
+            "from": "SITES_DECK",
+            "siteKeyword": "UNDERGROUND"
+          }
+        ],
+        "source": "SELF",
+        "text": "SHADOW: Discard this condition from play and spot an orc minion to replace the fellowship’s current site with an underground site from your adventure deck."
+      },
+      {
+        "id": "13C120:1",
         "phases": [],
         "trigger": {
           "type": "WHILE",

@@ -352,6 +352,7 @@ export const GameControls: React.FC<GameControlsProps> = ({
         isTargetingActive &&
         (targetingKind === 'DESIGNATION' ||
             targetingKind === 'HAND_DISCARD' ||
+            targetingKind === 'SITE_REPLACE' ||
             targetingKind === 'SANCTUARY_HEAL') &&
         targetingMessage
     ) {
@@ -360,7 +361,9 @@ export const GameControls: React.FC<GameControlsProps> = ({
             title:
                 targetingKind === 'HAND_DISCARD'
                     ? 'DÉFAUSSE'
-                    : targetingKind === 'SANCTUARY_HEAL'
+                    : targetingKind === 'SITE_REPLACE'
+                      ? 'REMPLACER UN SITE'
+                      : targetingKind === 'SANCTUARY_HEAL'
                       ? 'SANCTUAIRE'
                       : 'CHOIX DE CIBLE',
             body: `${targetingMessage} ${

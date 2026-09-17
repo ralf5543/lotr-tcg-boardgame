@@ -443,7 +443,7 @@ const clonePresetCard = (id: string, instanceId?: string): CardState => {
 const clonePresetSite = (
     id: string,
     ownerId: string,
-    siteNumber: number
+    siteNumber?: number
 ): SiteCardState => {
     const card = getCardById(id);
     if (!card) {
@@ -638,10 +638,16 @@ export const applyDevPreset = (
                     clonePresetCard('13C120', 'dev-unforgiving-depths'),
                 ];
                 shadowPlayer.fellowshipArea = [];
+                // Deck Ombre : underground pour Shadow replace (13C120)
+                shadowPlayer.sitesDeck = [
+                    clonePresetSite('2U118', shadowId),
+                    clonePresetSite('4U352', shadowId),
+                    clonePresetSite('1U344', shadowId),
+                ];
             }
 
             G.statusMessage =
-                '[DEV] Sites + keywords. Gandalf 1R72 : +1/race. Quickbeam : Muster seulement battleground (pas underground — nom ≠ culture).';
+                '[DEV] Sites. Phase Ombre : Unforgiving Depths → défausse + spot Orque → replace site courant (underground du deck).';
             break;
         }
     }

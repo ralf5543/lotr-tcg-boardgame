@@ -238,6 +238,18 @@ export type AbilityEffect =
           phase: 'ARCHERY';
       }
     | {
+          /**
+           * Remplace un site du chemin par un site du deck d’aventure.
+           * La cible choisie = id du site dans sitesDeck (avant activateAbility).
+           */
+          type: 'REPLACE_SITE';
+          /** Site où se trouve la compagnie. */
+          scope: 'CURRENT';
+          from: 'SITES_DECK';
+          /** Filtre terrain optionnel (underground, plains…). */
+          siteKeyword?: CardKeyword;
+      }
+    | {
           type: 'DRAW';
           count: number;
       }

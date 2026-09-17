@@ -1937,28 +1937,64 @@ describe('parseAbilities — For each … strength', () => {
 });
 
 describe('parseAbilities — While spot N terrain sites', () => {
-    it('parse Unforgiving Depths : 3 underground → each Orc Muster', () => {
+    it('parse Unforgiving Depths : 3 underground → each Orc Muster + Shadow replace', () => {
         expect(
             parseAbilities(
-                'While you can spot 3 underground sites, each <symbol>orc</symbol> Orc gains **muster.** **Shadow:** Discard this condition from play and spot an <symbol>orc</symbol> minion to replace the fellowship’s current site with an underground site from your adventure deck.',
+                'While you can spot 3 underground sites, each <symbol>orc</symbol> Orc gains **muster.** <keyword>Shadow:</keyword> Discard this condition from play and spot an <symbol>orc</symbol> minion to replace the fellowship’s current site with an underground site from your adventure deck.',
                 'Unforgiving Depths',
                 '13C120'
             )
-        ).toEqual([
-            expect.objectContaining({
-                trigger: {
-                    type: 'WHILE',
-                    spotSiteKeyword: { keyword: 'UNDERGROUND', count: 3 },
-                },
-                effects: [
-                    {
-                        type: 'MODIFY_KEYWORD',
-                        keyword: 'MUSTER',
-                        target: [['ORC', 'ORC']],
+        ).toEqual(
+            expect.arrayContaining([
+                expect.objectContaining({
+                    trigger: {
+                        type: 'WHILE',
+                        spotSiteKeyword: {
+                            keyword: 'UNDERGROUND',
+                            count: 3,
+                        },
                     },
-                ],
-            }),
-        ]);
+                    effects: [
+                        {
+                            type: 'MODIFY_KEYWORD',
+                            keyword: 'MUSTER',
+                            target: [['ORC', 'ORC']],
+                        },
+                    ],
+                }),
+                expect.objectContaining({
+                    phases: ['SHADOW'],
+                    cost: [
+                        expect.objectContaining({
+                            discardFromPlay: [
+                                { count: 1, target: 'SELF' },
+                            ],
+                            spot: [
+                                {
+                                    count: 1,
+                                    target: [['ORC', 'MINION']],
+                                },
+                            ],
+                        }),
+                    ],
+                    effects: [
+                        {
+                            type: 'REPLACE_SITE',
+                            scope: 'CURRENT',
+                            from: 'SITES_DECK',
+                            siteKeyword: 'UNDERGROUND',
+                        },
+                    ],
+                }),
+            ])
+        );
+        expect(
+            parseAbilities(
+                'While you can spot 3 underground sites, each <symbol>orc</symbol> Orc gains **muster.** <keyword>Shadow:</keyword> Discard this condition from play and spot an <symbol>orc</symbol> minion to replace the fellowship’s current site with an underground site from your adventure deck.',
+                'Unforgiving Depths',
+                '13C120'
+            )
+        ).toHaveLength(2);
     });
 
     it('parse With Doom We Come : Gandalf / each gandalf at site → Muster', () => {

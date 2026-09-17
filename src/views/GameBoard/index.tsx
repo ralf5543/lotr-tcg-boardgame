@@ -46,7 +46,13 @@ import {
     abilityDiscardFromHandCount,
     abilityDiscardFromHandEffect,
     abilityNeedsHandDiscard,
+    abilityOwnerPlayerId,
 } from '../../game/engine/abilities/payAbilityCost';
+import {
+    abilityNeedsSiteReplace,
+    abilityReplaceSiteEffect,
+} from '../../game/engine/abilities/applyAbilityEffect';
+import { getReplaceSiteCandidates } from '../../game/logic/sites';
 import { findEventAbilityForPhase } from '../../game/engine/abilities/playEventAbility';
 import { useCardPlayAudio } from '../../hooks/audio/useCardPlayAudio';
 import { useArcheryAudio } from '../../hooks/audio/useArcheryAudio';
@@ -266,6 +272,44 @@ export const GameBoard: React.FC<GameBoardProps> = ({
             return true;
         },
         [G, moves, startTargeting]
+    );
+
+    const requestSiteReplace = useCallback(
+        (
+            source: CardState,
+            ability: NonNullable<CardState['abilities']>[number],
+            onChosen: (siteId: string) => void
+        ): boolean => {
+            if (!abilityNeedsSiteReplace(ability)) return false;
+            const effect = abilityReplaceSiteEffect(ability);
+            if (!effect) return false;
+            const ownerId = abilityOwnerPlayerId(G, source);
+            if (!ownerId) return false;
+            const candidates = getReplaceSiteCandidates(
+                G,
+                ownerId,
+                effect.siteKeyword
+            );
+            if (candidates.length === 0) return false;
+            const terrain = effect.siteKeyword
+                ? effect.siteKeyword.toLowerCase()
+                : '';
+            startTargeting({
+                kind: 'SITE_REPLACE',
+                targetableCardIds: candidates.flatMap((site) =>
+                    [site.instanceId, site.id].filter(Boolean)
+                ),
+                message: terrain
+                    ? `Choisissez un site ${terrain} dans votre deck d’aventure.`
+                    : 'Choisissez un site dans votre deck d’aventure.',
+                onSelectTarget: (siteId) => {
+                    onChosen(siteId);
+                    stopTargeting();
+                },
+            });
+            return true;
+        },
+        [G, startTargeting, stopTargeting]
     );
 
     const requestHandDiscard = useCallback(
@@ -512,6 +556,14 @@ export const GameBoard: React.FC<GameBoardProps> = ({
                     undefined,
                     cardIds
                 );
+            })
+        ) {
+            return;
+        }
+        if (
+            abilityNeedsSiteReplace(ability) &&
+            requestSiteReplace(source, ability, (siteId) => {
+                moves.activateAbility?.(sourceInstanceId, abilityId, siteId);
             })
         ) {
             return;
@@ -1169,6 +1221,7 @@ export const GameBoard: React.FC<GameBoardProps> = ({
             if (
                 targetingKind !== 'DESIGNATION' &&
                 targetingKind !== 'HAND_DISCARD' &&
+                targetingKind !== 'SITE_REPLACE' &&
                 !isMine
             )
                 return;
@@ -1181,6 +1234,9 @@ export const GameBoard: React.FC<GameBoardProps> = ({
 
     // Détermination de l'onglet prioritaire selon le state du jeu
     const getRequestedTab = (): 'hand' | 'sites' | null => {
+        if (targetingKind === 'SITE_REPLACE') return 'sites';
+        if (targetingKind === 'HAND_DISCARD') return 'hand';
+
         const isSetupPhase = ctx.phase === 'setup';
         const auctionWinnerId = G.setupState?.auctionWinnerId || fpPlayerId;
 

@@ -1,11 +1,14 @@
 import type { CardState, LotrMoveContext } from '../types';
 import { canUseAbility } from '../engine/canUseAbility';
 import {
+    abilityNeedsSiteReplace,
+    applyAbilityEffect,
+} from '../engine/abilities/applyAbilityEffect';
+import {
     abilityNeedsHandDiscard,
     canPayAbilityCost,
     payAbilityCost,
 } from '../engine/abilities/payAbilityCost';
-import { applyAbilityEffect } from '../engine/abilities/applyAbilityEffect';
 import { abilityMatchesPhase } from '../engine/abilities/collectAbilities';
 import { yieldPriorityAfterAction } from '../engine/actionWindow';
 import { findTargetCard } from '../../utils/cardUtils';
@@ -65,6 +68,9 @@ export const activateAbility = (
         }
     }
     if (abilityNeedsHandDiscard(ability) && !discardedHandIds?.length) {
+        return 'INVALID_MOVE';
+    }
+    if (abilityNeedsSiteReplace(ability) && !chosenTargetId && !chosenEffectTargetId) {
         return 'INVALID_MOVE';
     }
     const wasResponseWindowOpen = isResponseWindowOpen(G);

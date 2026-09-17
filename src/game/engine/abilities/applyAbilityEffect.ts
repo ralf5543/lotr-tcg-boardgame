@@ -19,6 +19,24 @@ import {
 import { addThreats } from '../../logic/threats';
 import { applyHeal } from '../../../utils/applyHeal';
 import { findSkirmishToCancel } from './cancelSkirmish';
+import {
+    getReplaceSiteCandidates,
+    replaceCurrentSiteFromDeck,
+} from '../../logic/sites';
+import type { CardKeyword } from '../../types';
+
+export function abilityReplaceSiteEffect(
+    ability: Ability
+): Extract<Ability['effects'][number], { type: 'REPLACE_SITE' }> | null {
+    const effect = (ability.effects || []).find(
+        (item) => item.type === 'REPLACE_SITE'
+    );
+    return effect && effect.type === 'REPLACE_SITE' ? effect : null;
+}
+
+export function abilityNeedsSiteReplace(ability: Ability): boolean {
+    return Boolean(abilityReplaceSiteEffect(ability));
+}
 
 function normalizeChosenIds(chosen?: string | string[]): string[] {
     if (!chosen) return [];
@@ -73,6 +91,28 @@ export function applyAbilityEffect(
                 (phase) => phase.toUpperCase() === 'FELLOWSHIP'
             );
             drawCardsForPlayer(G, player, effect.count || 0, isFellowship);
+            continue;
+        }
+
+        if (effect.type === 'REPLACE_SITE') {
+            if (effect.scope !== 'CURRENT' || effect.from !== 'SITES_DECK') {
+                return false;
+            }
+            const ownerId = abilityOwnerPlayerId(G, source);
+            if (!ownerId) return false;
+            const siteId = chosenIds[0];
+            if (!siteId) return false;
+            const keyword = effect.siteKeyword as CardKeyword | undefined;
+            if (
+                getReplaceSiteCandidates(G, ownerId, keyword).length === 0
+            ) {
+                return false;
+            }
+            if (
+                !replaceCurrentSiteFromDeck(G, ownerId, siteId, keyword)
+            ) {
+                return false;
+            }
             continue;
         }
 

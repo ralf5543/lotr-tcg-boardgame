@@ -72,3 +72,75 @@ export function getRegionTwilightBonus(siteNumber: number): number {
     if (region === 3) return 6;
     return 0;
 }
+
+/**
+ * Sites du deck d’aventure éligibles pour un remplacement
+ * (filtre terrain optionnel ; exclut le même id que le site courant).
+ */
+export function getReplaceSiteCandidates(
+    G: GameState,
+    ownerId: string,
+    siteKeyword?: CardKeyword
+): SiteCardState[] {
+    const player = G.players[ownerId];
+    if (!player?.sitesDeck?.length) return [];
+    const current = getCurrentSite(G);
+    return player.sitesDeck.filter((site) => {
+        if (!site) return false;
+        if (current && site.id === current.id) return false;
+        if (siteKeyword && !siteHasKeyword(site, siteKeyword)) return false;
+        return true;
+    });
+}
+
+/**
+ * Remplace le site courant par un site du deck d’aventure du propriétaire.
+ * Pas de crépuscule de move / MOVES_FROM|TO. Attachments transférés.
+ */
+export function replaceCurrentSiteFromDeck(
+    G: GameState,
+    ownerId: string,
+    newSiteId: string,
+    siteKeyword?: CardKeyword
+): boolean {
+    const player = G.players[ownerId];
+    if (!player?.sitesDeck) return false;
+
+    const pathIndex = getCurrentSiteIndex(G);
+    const oldSite = G.path?.[pathIndex] ?? null;
+    if (!oldSite) return false;
+
+    const deckIndex = player.sitesDeck.findIndex(
+        (s) => s && (s.instanceId === newSiteId || s.id === newSiteId)
+    );
+    if (deckIndex < 0) return false;
+    const newSite = player.sitesDeck[deckIndex];
+    if (!newSite) return false;
+    if (newSite.id === oldSite.id) return false;
+    if (siteKeyword && !siteHasKeyword(newSite, siteKeyword)) return false;
+
+    player.sitesDeck.splice(deckIndex, 1);
+
+    const siteNumber = oldSite.siteNumber ?? pathIndex + 1;
+    const attachments = [...(oldSite.attachments || [])];
+
+    newSite.siteNumber = siteNumber;
+    newSite.ownerId = ownerId;
+    newSite.attachments = attachments;
+
+    const returned: SiteCardState = {
+        ...oldSite,
+        siteNumber: undefined,
+        attachments: [],
+    };
+    const returnOwnerId = oldSite.ownerId || ownerId;
+    const returnPlayer = G.players[returnOwnerId];
+    if (returnPlayer?.sitesDeck) {
+        returnPlayer.sitesDeck.push(returned);
+    } else {
+        player.sitesDeck.push(returned);
+    }
+
+    G.path[pathIndex] = newSite;
+    return true;
+}

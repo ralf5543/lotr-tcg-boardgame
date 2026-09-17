@@ -30,7 +30,9 @@ L’ancien plan effets de cartes est **figé** (`.cursor/rules/card-effects-plan
    - ✅ Cartes : `While … at a [terrain] site` → force / Fierce / Damage / Archer (denizens, Haldir, Corps of Harad, etc.).
    - ✅ Cartes : `While you can spot N [terrain] sites, each … gains Muster` (`13C120`).
    - ✅ Cartes : nom propre / `gains muster` at site (`12U36` With Doom, `11S223` Nertëa force).
-   - ⏳ Suite keywords cartes : skip phase at site ; when-played reinforce if spot site on path.
+   - ✅ Cartes : `For each` / `For every` → force (`1R72` Gandalf + famille).
+   - ⏸ Skip phase at site : runtime `SKIP_PHASE`+`atSiteKeyword` prêt, **mais aucune carte CSV** en phrase unique (seul **19P18** = multi-phase → inerte).
+   - ⏸ When-played reinforce si spot site path (**13C83**, **13C164**) : bloqué — **pas de modèle jetons culture**.
    - Preset DevPanel `SITES_TEST` : chemin terrains variés + cartes de test.
 
 3. **Gametext des sites** (pause après 1ʳᵉ verticale move)
@@ -38,12 +40,20 @@ L’ancien plan effets de cartes est **figé** (`.cursor/rules/card-effects-plan
    - Capacités de phase sites modernes : **reporté** (Play Nazgûl / next site… hors primitifs).
    - Reprendre quand les keywords cartes sont solides.
 
-4. **Remplacer un site sur le chemin** (UX à concevoir **avant** code)
+4. **Remplacer un site sur le chemin** (en cours — UX tranchée ci-dessous)
    - Remplacer le site courant (ou un site du `path` / de la région) par un site du deck d’aventure.
    - Variantes : même numéro (Block / pré-Shadows), site underground/plains/… depuis le deck, échange entre path et deck (`11U45`), « cannot replace » (While spot Men/Orc/Uruk).
    - Prérequis : cibler un emplacement du path, retirer l’ancien site (où va-t-il ? deck / hors jeu — à trancher règles), poser le nouveau en gardant `siteNumber` / région Standard.
    - Débloque une grosse famille Shadow / Skirmish / Regroup (Nelya, Unforgiving Depths Shadow, etc.).
    - **Avant** attache et contrôle : beaucoup de textes « replace » n’ont pas besoin de contrôle.
+
+   **Décisions UX / règles (Standard)** — sources : CR + Current Rulings « site » :
+   - Ancien site → **deck d’aventure du propriétaire** (`sitesDeck`), `siteNumber` effacé.
+   - Nouveau site → **même `siteNumber` / région** ; **pas** de crépuscule de move ni effets MOVES_FROM/TO.
+   - Attachments / stacked sur l’ancien → **transférés** sur le nouveau (même si attache pas encore jouable).
+   - Interdit de remplacer par **la même carte site** (même id).
+   - Sélection : comme défausse main — choisir le site dans `sitesDeck` (filtré keyword si besoin) **avant** `activateAbility` (coût+effet atomiques).
+   - **1ʳᵉ verticale** : `REPLACE_SITE` scope `CURRENT` + filtre terrain + deck du joueur actif → **13C120** Shadow.
 
 5. **Attache sur un site** (UX à concevoir **avant** code)
    - Jouer une carte « Plays on a site » (climats, etc.) : cibler un site du `path`, limite 1 par site.
@@ -70,8 +80,8 @@ L’ancien plan effets de cartes est **figé** (`.cursor/rules/card-effects-plan
 | Soins sanctuaire (sites 3 & 6 du chemin, Standard) | ✅ |
 | Helpers keywords site (at / spot / count) | ✅ |
 | Bonus crépuscule de région (+3 / +6) | ✅ |
-| Keywords branchés sur gametext cartes | partiel (at site + spot N sites ✅) |
+| Keywords branchés sur gametext cartes | partiel (at/spot sites ✅ ; skip@site / reinforce jetons ⏸) |
 | Abilities / gametext site | partiel (move twilight + discard allies ✅) |
-| Remplacement de site sur le path | ❌ |
+| Remplacement de site sur le path | partiel (CURRENT + terrain ✅ — 13C120 Shadow) |
 | Attache sur site | ❌ |
 | Contrôle / libération | ❌ |
