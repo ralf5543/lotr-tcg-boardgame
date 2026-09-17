@@ -56,7 +56,14 @@ function canPayOption(
     if (option.spot && Array.isArray(option.spot)) {
         for (const req of option.spot) {
             const count = req.count || 1;
-            const cards = resolveCostTarget(G, source, req.target);
+            let cards = resolveCostTarget(G, source, req.target);
+            if (req.excludeSource) {
+                const sourceId = source.instanceId || source.id;
+                cards = cards.filter(
+                    (card) =>
+                        card.instanceId !== sourceId && card.id !== sourceId
+                );
+            }
             if (cards.length < count) return false;
         }
     }

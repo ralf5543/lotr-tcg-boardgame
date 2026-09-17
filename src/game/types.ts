@@ -156,6 +156,8 @@ export interface CostSelector {
     count: number;
     target: AbilityTargetRef;
     mode?: SpotMode;
+    /** « another … » : la source ne compte pas pour le spot / exert. */
+    excludeSource?: boolean;
 }
 
 export interface CostOption {

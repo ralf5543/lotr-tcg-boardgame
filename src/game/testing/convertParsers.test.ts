@@ -998,6 +998,42 @@ describe('parseAbilities — When you play this', () => {
             },
         ]);
     });
+
+    it('parse Watchful Orc : you may spot another orc to replace current site', () => {
+        const text =
+            "When you play this minion, you may spot another <symbol>orc</symbol> minion to replace the fellowship's current site with an underground site from your adventure deck.";
+        expect(parseAbilities(text, 'Watchful Orc', '11R143')).toEqual([
+            {
+                id: '11R143:0',
+                phases: [],
+                trigger: { type: 'WHEN_PLAYED' },
+                optional: true,
+                cost: [
+                    {
+                        spot: [
+                            {
+                                count: 1,
+                                target: [['ORC', 'MINION']],
+                                excludeSource: true,
+                            },
+                        ],
+                    },
+                ],
+                effects: [
+                    {
+                        type: 'REPLACE_SITE',
+                        scope: 'CURRENT',
+                        from: 'SITES_DECK',
+                        siteKeyword: 'UNDERGROUND',
+                    },
+                ],
+                source: 'SELF',
+                text: expect.stringMatching(
+                    /spot another .* minion to replace the fellowship/i
+                ),
+            },
+        ]);
+    });
 });
 
 describe('parseAbilities — Each time you play', () => {

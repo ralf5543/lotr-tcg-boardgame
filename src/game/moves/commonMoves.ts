@@ -430,14 +430,22 @@ export const preventPendingEffect = ({ G, playerID }: LotrMoveContext) => {
 export const resolveWhenPlayedChoice = (
     { G, playerID }: LotrMoveContext,
     accept: boolean,
-    discardedHandIds?: string[]
+    discardedHandIds?: string[],
+    chosenTargetId?: string
 ) => {
     if (!G.pendingWhenPlayed || G.pendingWhenPlayed.playerId !== playerID) {
         return 'INVALID_MOVE';
     }
 
     if (accept) {
-        if (!acceptPendingWhenPlayed(G, playerID, discardedHandIds)) {
+        if (
+            !acceptPendingWhenPlayed(
+                G,
+                playerID,
+                discardedHandIds,
+                chosenTargetId
+            )
+        ) {
             return 'INVALID_MOVE';
         }
     } else {

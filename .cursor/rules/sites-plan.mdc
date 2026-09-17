@@ -55,7 +55,8 @@ L’ancien plan effets de cartes est **figé** (`.cursor/rules/card-effects-plan
    - Sélection : comme défausse main — choisir le site dans `sitesDeck` (filtré keyword si besoin) **avant** `activateAbility` (coût+effet atomiques).
    - **1ʳᵉ verticale** : `REPLACE_SITE` scope `CURRENT` + filtre terrain + deck du joueur actif → **13C120** Shadow. ✅
    - **2ᵉ** : CURRENT **sans** filtre terrain → **11S222** Nelya (exert), **12C40** There’s Another Way (discard). ✅
-   - Suite : REGION, cannot replace, when-played (Watchful Orc), échange path↔deck.
+   - **3ᵉ** : when-played optionnel + spot another + CURRENT terrain → **11R143** Watchful Orc. ✅
+   - Suite : REGION, cannot replace, échange path↔deck (`11U45`).
 
 5. **Attache sur un site** (UX à concevoir **avant** code)
    - Jouer une carte « Plays on a site » (climats, etc.) : cibler un site du `path`, limite 1 par site.
@@ -84,6 +85,6 @@ L’ancien plan effets de cartes est **figé** (`.cursor/rules/card-effects-plan
 | Bonus crépuscule de région (+3 / +6) | ✅ |
 | Keywords branchés sur gametext cartes | partiel (at/spot sites ✅ ; skip@site / reinforce jetons ⏸) |
 | Abilities / gametext site | partiel (move twilight + discard allies ✅) |
-| Remplacement de site sur le path | partiel (CURRENT ± terrain ✅ — 13C120, 11S222, 12C40) |
+| Remplacement de site sur le path | partiel (CURRENT ± terrain ✅ — 13C120, 11S222, 12C40 ; when-played ✅ — 11R143) |
 | Attache sur site | ❌ |
 | Contrôle / libération | ❌ |

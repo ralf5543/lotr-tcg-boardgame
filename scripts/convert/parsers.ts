@@ -849,6 +849,7 @@ function parseExertSubject(
     target: 'SELF' | 'BEARER' | string[][];
     count: number;
     mode?: 'DESIGNATION';
+    excludeSource?: boolean;
 } | null {
     let count = 1;
     let body = raw.replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim();
@@ -902,8 +903,16 @@ function parseExertSubject(
         return { target: [filters], count, mode: 'DESIGNATION' };
     }
 
-    // « another / your » : pas encore.
-    if (/^(another|your)\b/i.test(body)) return null;
+    // « another orc minion » → filtres + excludeSource (pas la carte elle-même)
+    const anotherMatch = body.match(/^another\s+(.+)$/i);
+    if (anotherMatch) {
+        const filters = parseClassFilters(anotherMatch[1]);
+        if (filters.length === 0) return null;
+        return { target: [filters], count, excludeSource: true };
+    }
+
+    // « your » : pas encore.
+    if (/^your\b/i.test(body)) return null;
 
     return { target: [[body]], count };
 }
@@ -1628,7 +1637,13 @@ function parsePreventCostClause(
         const subject = parseExertSubject(spotMatch[1], cardTitle, fullText);
         if (!subject) return null;
         return {
-            spot: [{ count: subject.count, target: subject.target }],
+            spot: [
+                {
+                    count: subject.count,
+                    target: subject.target,
+                    ...(subject.excludeSource ? { excludeSource: true } : {}),
+                },
+            ],
         };
     }
 
@@ -3151,6 +3166,40 @@ function parseWhenPlayedAbilities(
             optional: true,
             cost: [],
             effects: [{ type: 'DISCARD_FROM_HAND', count, upTo: true }],
+            source: 'SELF',
+            text: stripAbilityMarkup(match[0]),
+        });
+    }
+
+    // « you may spot … to replace the fellowship's current site … »
+    const optionalSpotReplaceRe =
+        /When you play this(?:\s+(?:minion|possession|condition|companion|artifact|ally|follower))?, you may spot ([\s\S]+?) to (replace the fellowship[''\u2019]s current site with (?:an? [a-z-]+ site|a site) from your adventure deck)\./gi;
+    while ((match = optionalSpotReplaceRe.exec(text)) !== null) {
+        if (/\b(and|or|each|may)\b/i.test(match[1])) continue;
+        const subject = parseExertSubject(match[1].trim());
+        if (!subject) continue;
+        const effect = parseReplaceSiteEffect(match[2].trim());
+        if (!effect) continue;
+
+        found.push({
+            id: `${cardId || 'ability'}:${found.length}:when-played-may`,
+            phases: [],
+            trigger: { type: 'WHEN_PLAYED' },
+            optional: true,
+            cost: [
+                {
+                    spot: [
+                        {
+                            count: subject.count,
+                            target: subject.target,
+                            ...(subject.excludeSource
+                                ? { excludeSource: true }
+                                : {}),
+                        },
+                    ],
+                },
+            ],
+            effects: [effect],
             source: 'SELF',
             text: stripAbilityMarkup(match[0]),
         });

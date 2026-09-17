@@ -1,8 +1,17 @@
 import type { Ability, CardState, GameState } from '../../types';
-import { applyAbilityEffect } from './applyAbilityEffect';
-import { canPayAbilityCost, payAbilityCost } from './payAbilityCost';
+import {
+    applyAbilityEffect,
+    abilityNeedsSiteReplace,
+    abilityReplaceSiteEffect,
+} from './applyAbilityEffect';
+import {
+    abilityOwnerPlayerId,
+    canPayAbilityCost,
+    payAbilityCost,
+} from './payAbilityCost';
 import { findTargetCard } from '../../../utils/cardUtils';
 import { pauseActionYieldForResponses } from '../responseWindow';
+import { getReplaceSiteCandidates } from '../../logic/sites';
 
 export function isWhenPlayedAbility(ability: Ability): boolean {
     return ability.trigger?.type === 'WHEN_PLAYED';
@@ -15,17 +24,37 @@ function abilityForPhase(ability: Ability, phase?: string): Ability {
     return ability;
 }
 
+function canFulfillWhenPlayedEffects(
+    G: GameState,
+    card: CardState,
+    ability: Ability
+): boolean {
+    if (!abilityNeedsSiteReplace(ability)) return true;
+    const effect = abilityReplaceSiteEffect(ability);
+    if (!effect) return false;
+    const ownerId = abilityOwnerPlayerId(G, card);
+    if (!ownerId) return false;
+    return getReplaceSiteCandidates(G, ownerId, effect.siteKeyword).length > 0;
+}
+
 function applyWhenPlayedAbility(
     G: GameState,
     card: CardState,
     ability: Ability,
     phase?: string,
-    discardedHandIds?: string[]
+    discardedHandIds?: string[],
+    chosenTargetId?: string
 ): boolean {
     const prepared = abilityForPhase(ability, phase);
     if (!canPayAbilityCost(G, card, prepared.cost)) return false;
     if (!payAbilityCost(G, card, prepared.cost)) return false;
-    return applyAbilityEffect(G, card, prepared, undefined, discardedHandIds);
+    return applyAbilityEffect(
+        G,
+        card,
+        prepared,
+        chosenTargetId,
+        discardedHandIds
+    );
 }
 
 function beginOptionalWhenPlayed(
@@ -74,7 +103,11 @@ export function resolveWhenPlayed(
         if (!isWhenPlayedAbility(ability)) continue;
 
         if (ability.optional) {
-            if (!firstOptional && canPayAbilityCost(G, card, ability.cost)) {
+            if (
+                !firstOptional &&
+                canPayAbilityCost(G, card, ability.cost) &&
+                canFulfillWhenPlayedEffects(G, card, ability)
+            ) {
                 firstOptional = ability;
             }
             continue;
@@ -91,13 +124,19 @@ export function resolveWhenPlayed(
 export function acceptPendingWhenPlayed(
     G: GameState,
     playerID: string,
-    discardedHandIds?: string[]
+    discardedHandIds?: string[],
+    chosenTargetId?: string
 ): boolean {
     const pending = G.pendingWhenPlayed;
     if (!pending || pending.playerId !== playerID) return false;
 
-    const source = findTargetCard(G, pending.sourceInstanceId) as CardState | null;
-    const ability = source?.abilities?.find((ab) => ab.id === pending.abilityId);
+    const source = findTargetCard(
+        G,
+        pending.sourceInstanceId
+    ) as CardState | null;
+    const ability = source?.abilities?.find(
+        (ab) => ab.id === pending.abilityId
+    );
     if (!source || !ability) {
         G.pendingWhenPlayed = undefined;
         return false;
@@ -108,7 +147,8 @@ export function acceptPendingWhenPlayed(
         source,
         ability,
         pending.phase,
-        discardedHandIds
+        discardedHandIds,
+        chosenTargetId
     );
     if (!applied) return false;
     G.pendingWhenPlayed = undefined;

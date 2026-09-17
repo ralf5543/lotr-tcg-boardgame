@@ -3,7 +3,9 @@ import { createEngineClient } from './createEngineClient';
 import {
     createCard,
     createCompanion,
+    createMinion,
     createPlayerState,
+    createSite,
 } from './createGameState';
 import type { Ability } from '../types';
 
@@ -252,6 +254,142 @@ describe('When you play — optionnel (Longbottom Leaf)', () => {
         expect(engine.getG().pendingWhenPlayed?.abilityId).toBe('1C300:0');
         expect(engine.getG().players['0']?.hand).toHaveLength(3);
 
+        engine.stop();
+    });
+});
+
+const watchfulAbility: Ability = {
+    id: '11R143:0',
+    phases: [],
+    trigger: { type: 'WHEN_PLAYED' },
+    optional: true,
+    cost: [
+        {
+            spot: [
+                {
+                    count: 1,
+                    target: [['ORC', 'MINION']],
+                    excludeSource: true,
+                },
+            ],
+        },
+    ],
+    effects: [
+        {
+            type: 'REPLACE_SITE',
+            scope: 'CURRENT',
+            from: 'SITES_DECK',
+            siteKeyword: 'UNDERGROUND',
+        },
+    ],
+    source: 'SELF',
+    text: "When you play this minion, you may spot another orc minion to replace the fellowship's current site with an underground site from your adventure deck.",
+};
+
+describe('When you play — Watchful Orc (replace site)', () => {
+    it('ouvre le choix si un autre orc et un site underground sont dispo, puis remplace', () => {
+        const watchful = createMinion({
+            id: '11R143',
+            instanceId: 'watchful',
+            culture: 'ORC',
+            race: 'ORC',
+            twilightCost: 4,
+            abilities: [watchfulAbility],
+        });
+        const otherOrc = createMinion({
+            id: 'other-orc',
+            culture: 'ORC',
+            race: 'ORC',
+        });
+        const plains = createSite({
+            id: 'plains',
+            keywords: ['PLAINS'],
+            siteNumber: 1,
+            ownerId: '0',
+        });
+        const cave = createSite({
+            id: 'cave',
+            instanceId: 'cave',
+            keywords: ['UNDERGROUND'],
+            ownerId: '1',
+        });
+
+        const engine = createEngineClient({
+            startPhase: 'shadow',
+            playerID: '1',
+            G: {
+                twilightPool: 10,
+                path: [plains, null, null, null, null, null, null, null, null],
+                battlefield: [otherOrc],
+                players: {
+                    '0': createPlayerState('0', { currentSiteIndex: 0 }),
+                    '1': createPlayerState('1', {
+                        hand: [watchful],
+                        sitesDeck: [cave],
+                    }),
+                },
+            },
+        });
+
+        engine.moves.playShadowCard(0);
+
+        expect(engine.getG().battlefield.some((c) => c.id === '11R143')).toBe(
+            true
+        );
+        expect(engine.getG().pendingWhenPlayed?.abilityId).toBe('11R143:0');
+
+        engine.moves.resolveWhenPlayedChoice(true, undefined, 'cave');
+
+        expect(engine.getG().pendingWhenPlayed).toBeUndefined();
+        expect(engine.getG().path[0]?.id).toBe('cave');
+        expect(engine.getG().path[0]?.siteNumber).toBe(1);
+        expect(
+            engine.getG().players['0']?.sitesDeck.some((s) => s.id === 'plains')
+        ).toBe(true);
+
+        engine.stop();
+    });
+
+    it('n’ouvre pas le choix s’il n’y a pas d’autre orc', () => {
+        const watchful = createMinion({
+            id: '11R143',
+            culture: 'ORC',
+            race: 'ORC',
+            twilightCost: 4,
+            abilities: [watchfulAbility],
+        });
+        const plains = createSite({
+            id: 'plains',
+            keywords: ['PLAINS'],
+            siteNumber: 1,
+            ownerId: '0',
+        });
+        const cave = createSite({
+            id: 'cave',
+            keywords: ['UNDERGROUND'],
+            ownerId: '1',
+        });
+
+        const engine = createEngineClient({
+            startPhase: 'shadow',
+            playerID: '1',
+            G: {
+                twilightPool: 10,
+                path: [plains, null, null, null, null, null, null, null, null],
+                battlefield: [],
+                players: {
+                    '0': createPlayerState('0', { currentSiteIndex: 0 }),
+                    '1': createPlayerState('1', {
+                        hand: [watchful],
+                        sitesDeck: [cave],
+                    }),
+                },
+            },
+        });
+
+        engine.moves.playShadowCard(0);
+
+        expect(engine.getG().pendingWhenPlayed).toBeUndefined();
         engine.stop();
     });
 });

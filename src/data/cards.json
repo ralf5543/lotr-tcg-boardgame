@@ -98535,6 +98535,42 @@
     "isUnique": false,
     "kind": "SHADOW",
     "type": "MINION",
+    "abilities": [
+      {
+        "id": "11R143:0",
+        "phases": [],
+        "trigger": {
+          "type": "WHEN_PLAYED"
+        },
+        "optional": true,
+        "cost": [
+          {
+            "spot": [
+              {
+                "count": 1,
+                "target": [
+                  [
+                    "ORC",
+                    "MINION"
+                  ]
+                ],
+                "excludeSource": true
+              }
+            ]
+          }
+        ],
+        "effects": [
+          {
+            "type": "REPLACE_SITE",
+            "scope": "CURRENT",
+            "from": "SITES_DECK",
+            "siteKeyword": "UNDERGROUND"
+          }
+        ],
+        "source": "SELF",
+        "text": "When you play this minion, you may spot another orc minion to replace the fellowship's current site with an underground site from your adventure deck."
+      }
+    ],
     "culture": "ORC",
     "race": "ORC",
     "twilightCost": 4,
@@ -139426,6 +139462,56 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
+    "abilities": [
+      {
+        "id": "18R42:0",
+        "phases": [
+          "SKIRMISH"
+        ],
+        "cost": [
+          {
+            "exert": [
+              {
+                "count": 1,
+                "target": [
+                  [
+                    "GONDOR",
+                    "MAN"
+                  ]
+                ]
+              }
+            ]
+          }
+        ],
+        "effects": [
+          {
+            "type": "ADD_TEMP_STAT",
+            "stat": "STRENGTH",
+            "value": 1,
+            "target": [
+              [
+                "GONDOR",
+                "MAN"
+              ]
+            ],
+            "expiresAtPhase": "SKIRMISH"
+          },
+          {
+            "type": "ADD_TEMP_KEYWORD",
+            "keyword": "DAMAGE +1",
+            "target": [
+              [
+                "GONDOR",
+                "MAN"
+              ]
+            ],
+            "expiresAtPhase": "SKIRMISH"
+          }
+        ],
+        "source": "SELF",
+        "text": "SKIRMISH: Exert another gondor Man to make him or her strength +1 and Damage +1.."
+      }
+    ],
     "actionPhases": [
       "SKIRMISH"
     ],

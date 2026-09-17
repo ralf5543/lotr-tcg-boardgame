@@ -616,9 +616,26 @@ export const GameBoard: React.FC<GameBoardProps> = ({
                 });
                 return;
             }
+            if (
+                abilityNeedsSiteReplace(ability) &&
+                requestSiteReplace(source, ability, (siteId) => {
+                    moves.resolveWhenPlayedChoice?.(
+                        true,
+                        undefined,
+                        siteId
+                    );
+                })
+            ) {
+                return;
+            }
             moves.resolveWhenPlayedChoice?.(true);
         },
-        [G, moves, requestHandDiscard]
+        [
+            G,
+            moves,
+            requestHandDiscard,
+            requestSiteReplace,
+        ]
     );
 
     // 🟢 1. Détection stricte de la phase de setup
