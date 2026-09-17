@@ -1,0 +1,44 @@
+---
+description: Feuille de route globale — axes du projet (évolutive)
+alwaysApply: true
+---
+
+# Feuille de route
+
+**Format : Standard (règles modernes).** Voir `.cursor/rules/format-standard.mdc`.
+
+Document **vivant** : précisé, modifié, complété au fur et à mesure. **Liste non exhaustive.** L’ordre des axes n’est **pas** figé — on choisit le chantier suivant quand le plan actif est bouclé (ou mis en pause).
+
+## Mode de travail
+
+1. **Un plan thématique actif** à la fois (détail, credo, étapes) — aujourd’hui : [`.cursor/rules/sites-plan.mdc`](sites-plan.mdc).
+2. **Cette roadmap** = vision d’ensemble + statut des grands axes.
+3. À la bascule : figer / désactiver le plan courant (`alwaysApply: false`), activer le suivant, mettre à jour le statut ici.
+
+Credo transversal (hérités des plans cartes / sites) : **mieux vaut inerte que faux** ; parser = **fragments** sûrs ; exceptions par id en dernier.
+
+## Plan actif
+
+| | |
+| --- | --- |
+| **Chantier** | Sites |
+| **Plan** | [`sites-plan.mdc`](sites-plan.mdc) |
+| **Statut** | En cours (remplacement partiel ✅ ; attache / contrôle encore à faire) |
+
+## Grands axes
+
+Statuts : `en cours` · `à faire` · `plus tard` · `fait` · `pause`
+
+| Axe | Statut | Notes |
+| --- | --- | --- |
+| **Sites** | en cours | Mots-clés / gametext partiel / replace courant. Suite : attache, contrôle, variantes replace. Plan dédié. |
+| **Création de deck** | à faire | Construction / édition / validation (format Standard, X-list…). |
+| **Affronter un BOT** | à faire | Via boardgame.io (adversaire automatisé). |
+| **Chat** | à faire | Via boardgame.io (table / match). |
+| **Tokens de culture** | à faire | Modèle + reinforce / remove / UI. Bloque une famille de cartes (ex. spot site path → reinforce). |
+| **Gagner / Perdre** | à faire | Conditions de victoire / défaite (Anneau, sites, élimination…). |
+| **Options** | à faire | Préférences joueur (couper le son, etc.). |
+| **Écran de bienvenue** | à faire | Avant le plateau boardgame.io (lobby / menu). |
+| **Exceptions de cartes** | à faire | Cartes trop spécifiques pour le parser générique — handlers par id, en dernier. |
+
+Axes futurs possibles (non listés ici volontairement) : à ajouter quand ils deviennent concrets.

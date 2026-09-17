@@ -11,13 +11,13 @@ Credo (hérité) : **mieux vaut un site inerte qu’un site faux.** On n’émet
 
 **Parser = fragments**, jamais une carte site entière. Réutiliser les primitifs déjà connus (Spot, Exert, Discard, Draw, remove twilight, phases, classes, mots-clés). Regex collée sur une phrase unique = trop spécifique : on généralise ou on n’émet rien. Exceptions par id en dernier.
 
-Aujourd’hui vivant : chemin d’aventure, pose de site, crépuscule au déplacement (coût site + compagnons + **bonus de région Standard**), soins sanctuaire via **emplacements 3 et 6**, helpers at/spot keywords, **While at / spot N sites → force & mots-clés** (cartes). Gametext site partiel (move twilight / discard allies). Remplacement / attache / contrôle = encore inertes.
+Aujourd’hui vivant : chemin d’aventure, pose de site, crépuscule au déplacement (coût site + compagnons + **bonus de région Standard**), soins sanctuaire via **emplacements 3 et 6**, helpers at/spot keywords, **While at / spot N sites → force & mots-clés** (cartes), **replace site courant** (terrain depuis le deck). Gametext site partiel (move twilight / discard allies). Attache / contrôle = encore inertes.
 
-L’ancien plan effets de cartes est **figé** (`.cursor/rules/card-effects-plan.mdc`, `alwaysApply: false`). Suite = ce plan.
+L’ancien plan effets de cartes est **figé** (`.cursor/rules/card-effects-plan.mdc`, `alwaysApply: false`). Suite = ce plan. Vision d’ensemble : [`.cursor/rules/roadmap.mdc`](roadmap.mdc) (feuille de route évolutive).
 
 ## Ordre
 
-**Priorité courante** : **mots-clés de site branchés sur les cartes** (étape 2), puis gametext sites, puis **remplacement de site**, puis attache / contrôle. Preset `SITES_TEST` pour valider.
+**Priorité courante** : **remplacement de site** (variantes + cannot replace), puis **attache**, puis **contrôle**. Keywords cartes : skip@site / reinforce jetons = ⏸. Preset `SITES_TEST` pour valider.
 
 1. **Socle modèle** ✅
    - `SiteCardState.attachments` = `CardState[]` (vide tant que l’attache n’est pas câblée).
