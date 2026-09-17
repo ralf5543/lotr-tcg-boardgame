@@ -35,7 +35,7 @@ export const submitMulliganChoice = (
         G.statusMessage = 'Mise en place terminée ! Début de la partie.';
 
         if (events?.setPhase) {
-            events.setPhase('fellowship');
+            events.setPhase('startOfFellowship');
         }
     } else {
         G.statusMessage = `Le joueur ${pId} a validé sa main. En attente de l'adversaire...`;

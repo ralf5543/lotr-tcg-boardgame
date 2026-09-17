@@ -19,6 +19,7 @@ import { abilityMatchesPhase } from './abilities/collectAbilities';
 import { getEffectiveVitality } from '../../utils/cardStats';
 import { yieldPriorityAfterAction } from './actionWindow';
 import { cancelSkirmish } from './abilities/cancelSkirmish';
+import { enterPhase } from '../logic/phaseEntry';
 
 const matchCard = (card: CardState, targetId: string): boolean =>
     card.instanceId === targetId || card.id === targetId;
@@ -656,7 +657,10 @@ function concludeArcheryPhase(G: GameState): void {
 
     const livingMinions = livingBattlefieldMinions(G);
     G.pendingPhaseEnd = true;
-    G.nextPhase = livingMinions.length === 0 ? 'regroup' : 'assignment';
+    G.nextPhase =
+        livingMinions.length === 0
+            ? enterPhase('regroup')
+            : enterPhase('assignment');
     G.statusMessage =
         livingMinions.length === 0
             ? 'Plus aucun séide sur le plateau ! Passage au Regroupement.'

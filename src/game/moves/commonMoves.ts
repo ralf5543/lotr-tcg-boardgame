@@ -4,6 +4,7 @@ import {
     sanctuaryHealsFinished,
 } from '../logic/sanctuary';
 import { proceedStartOfFellowship } from '../logic/startOfFellowship';
+import { exitStartOf, isPlayPhase } from '../logic/phaseEntry';
 import { resolveSkirmish } from '../logic/skirmish';
 import { drawCardsForPlayer } from '../../utils/drawCards';
 import { advanceArcheryAssignmentStep } from '../index';
@@ -93,7 +94,9 @@ export const confirmStartOfPhase = ({
             .replace(/^startOf/, '')
             .replace(/^./, (str) => str.toLowerCase());
 
-        events?.setPhase?.(targetPhase);
+        if (isPlayPhase(targetPhase)) {
+            exitStartOf(events, targetPhase);
+        }
     } else {
         G.statusMessage = `Joueur ${playerID} a terminé ses actions de début de phase. En attente de l'adversaire...`;
     }
@@ -139,7 +142,7 @@ export const passActionWindow = ({
             resolveSkirmish(G, ctx);
         } else if (ctx.phase === 'regroup' || ctx.phase === 'startOfRegroup') {
             if (ctx.phase === 'startOfRegroup') {
-                events?.setPhase?.('regroup');
+                exitStartOf(events, 'regroup');
             }
 
             G.regroupStep = 'SHADOW_REFILL';

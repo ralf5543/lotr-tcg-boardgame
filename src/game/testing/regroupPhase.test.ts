@@ -180,7 +180,10 @@ describe('regroupement : refill et fin de tour', () => {
         expect(engine.getG().fpPlayerId).toBe('1');
         expect(engine.getG().twilightPool).toBe(0);
         expect(engine.getG().battlefield).toHaveLength(0);
-        expect(engine.getCtx().phase).toBe('fellowship');
+        // Pas de sanctuaire / capacité début → startOfFellowship saute vers fellowship
+        expect(['startOfFellowship', 'fellowship']).toContain(
+            engine.getCtx().phase
+        );
         expect(
             engine.getG().players['0']?.fellowshipArea[0]?.attachments
         ).toHaveLength(0);

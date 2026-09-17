@@ -32,6 +32,7 @@ import { clearExpiredTempKeywords } from './engine/abilities/applyAbilityEffect'
 import { onStartOfFellowshipBegin } from './logic/startOfFellowship';
 import { afterCardPlayed } from './engine/abilities/eachTimeYouPlay';
 import { shouldSkipPhase } from './logic/stats/mechanics/whileModifier';
+import { enterPhase, exitStartOf } from './logic/phaseEntry';
 
 function hasLivingMinionsOnBattlefield(G: GameState): boolean {
     return (G.battlefield || []).some((c) => {
@@ -42,8 +43,12 @@ function hasLivingMinionsOnBattlefield(G: GameState): boolean {
 }
 
 /** Phase suivante si l’archerie est ignorée (même règle que fin d’archerie). */
-function phaseAfterSkippedArchery(G: GameState): 'assignment' | 'regroup' {
-    return hasLivingMinionsOnBattlefield(G) ? 'assignment' : 'regroup';
+function phaseAfterSkippedArchery(
+    G: GameState
+): 'startOfAssignment' | 'startOfRegroup' {
+    return hasLivingMinionsOnBattlefield(G)
+        ? enterPhase('assignment')
+        : enterPhase('regroup');
 }
 
 const shuffle = <T>(array: T[]): T[] => {
@@ -194,11 +199,11 @@ export const advanceArcheryAssignmentStep = (G: GameState, events: any) => {
     if (remainingMinions.length === 0) {
         G.statusMessage =
             "Plus aucun séide en jeu après l'archerie : passage direct au Regroupement.";
-        events?.setPhase?.('regroup');
+        events?.setPhase?.(enterPhase('regroup'));
     } else {
         G.statusMessage =
-            "Phase d'Archerie terminée : Début de la phase de Manœuvre.";
-        events?.setPhase?.('assignment');
+            "Phase d'Archerie terminée : Début de la phase d'Affectation.";
+        events?.setPhase?.(enterPhase('assignment'));
     }
 };
 
@@ -460,7 +465,7 @@ export const LotrGame: Game<GameState> = {
                         G.setupState.step = 'COMPLETE';
                         G.statusMessage =
                             'Mise en place terminée ! Début de la partie.';
-                        events?.setPhase?.('fellowship');
+                        events?.setPhase?.('startOfFellowship');
                     } else {
                         G.statusMessage = `Le joueur ${pId} a validé son choix. En attente de l'adversaire...`;
                     }
@@ -531,7 +536,7 @@ export const LotrGame: Game<GameState> = {
 
                 if (fpDone && shadowDone) {
                     G.startOfPhaseState = undefined;
-                    events?.setPhase?.('shadow');
+                    exitStartOf(events, 'shadow');
                 } else {
                     G.statusMessage =
                         "Début de la phase d'Ombre : Capacités spéciales.";
@@ -679,9 +684,9 @@ export const LotrGame: Game<GameState> = {
                     );
 
                     if (hasMinions) {
-                        events?.setPhase?.('startOfManeuver');
+                        events?.setPhase?.(enterPhase('maneuver'));
                     } else {
-                        events?.setPhase?.('regroup');
+                        events?.setPhase?.(enterPhase('regroup'));
                     }
                 },
             },
@@ -719,7 +724,7 @@ export const LotrGame: Game<GameState> = {
 
                 // Si aucune action/capacité de début de phase n'est jouable, on enchaîne immédiatement
                 if (fpDone && shadowDone) {
-                    events?.setPhase?.('maneuver');
+                    exitStartOf(events, 'maneuver');
                 } else {
                     G.actionWindow = undefined;
                     G.statusMessage =
@@ -812,7 +817,7 @@ export const LotrGame: Game<GameState> = {
 
                 if (fpDone && shadowDone) {
                     G.startOfPhaseState = undefined;
-                    events?.setPhase?.('archery');
+                    exitStartOf(events, 'archery');
                 } else {
                     G.statusMessage =
                         "Début de la phase d'archerie : Capacités spéciales.";
@@ -834,7 +839,9 @@ export const LotrGame: Game<GameState> = {
             // depuis les séides encore vivants (règle : plus de séides → regroupement).
             next: ({ G }) => {
                 const hasLivingMinions = hasLivingMinionsOnBattlefield(G);
-                return hasLivingMinions ? 'assignment' : 'regroup';
+                return hasLivingMinions
+                    ? enterPhase('assignment')
+                    : enterPhase('regroup');
             },
 
             turn: { activePlayers: { value: { '0': 'play', '1': 'play' } } },
@@ -946,8 +953,16 @@ export const LotrGame: Game<GameState> = {
                     'startOfAssignment'
                 );
 
+                G.startOfPhaseState = {
+                    players: {
+                        [fpId]: { isDone: fpDone },
+                        [shadowId]: { isDone: shadowDone },
+                    },
+                };
+
                 if (fpDone && shadowDone) {
-                    events?.setPhase?.('assignment');
+                    G.startOfPhaseState = undefined;
+                    exitStartOf(events, 'assignment');
                 } else {
                     G.statusMessage =
                         "Début de la phase d'affectation : Capacités spéciales.";
@@ -1000,8 +1015,16 @@ export const LotrGame: Game<GameState> = {
                     'startOfSkirmish'
                 );
 
+                G.startOfPhaseState = {
+                    players: {
+                        [fpId]: { isDone: fpDone },
+                        [shadowId]: { isDone: shadowDone },
+                    },
+                };
+
                 if (fpDone && shadowDone) {
-                    events?.setPhase?.('skirmish');
+                    G.startOfPhaseState = undefined;
+                    exitStartOf(events, 'skirmish');
                 } else {
                     G.statusMessage =
                         'Début de la phase de combat : Capacités spéciales.';
@@ -1015,14 +1038,14 @@ export const LotrGame: Game<GameState> = {
         skirmish: {
             next: ({ G }) => {
                 if (G.isFierceAssignment) {
-                    return 'startOfRegroup';
+                    return enterPhase('regroup');
                 }
 
                 const hasFierce = hasFierceMinionsOnBattlefield(G);
                 if (hasFierce) {
-                    return 'assignment';
+                    return enterPhase('assignment');
                 }
-                return 'startOfRegroup';
+                return enterPhase('regroup');
             },
 
             onEnd: ({ G }) => {
@@ -1176,7 +1199,7 @@ export const LotrGame: Game<GameState> = {
                 // 3. Transition automatique uniquement si ni Muster ni effets à jouer
                 if (!hasMusterToProcess && !fpHasCards && !shadowHasCards) {
                     G.startOfPhaseState = undefined;
-                    events?.setPhase?.('regroup');
+                    exitStartOf(events, 'regroup');
                 } else if (!hasMusterToProcess) {
                     G.statusMessage =
                         'Phase de Regroupement : Étape initiale (Capacités).';

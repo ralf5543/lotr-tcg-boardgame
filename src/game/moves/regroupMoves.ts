@@ -3,6 +3,7 @@
 import type { LotrMoveContext } from '../types';
 import { drawCardsForPlayer } from '../../utils/drawCards';
 import type { GameState } from '../types';
+import { exitStartOf } from '../logic/phaseEntry';
 
 // Helper pour renvoyer les Suivants en zone de support à la vraie fin de tour
 export const returnAidFollowersToSupport = (G: GameState) => {
@@ -179,7 +180,8 @@ export const confirmHandRefill = ({ G, events, playerID }: LotrMoveContext) => {
         G.statusMessage = `Nouveau tour ! Le joueur ${nextFpPlayerId} devient les Peuples Libres.`;
 
         events?.endTurn?.({ next: nextFpPlayerId });
-        events?.setPhase?.('fellowship');
+        // Sanctuaire + capacités « début de compagnie » (ne pas sauter vers fellowship)
+        events?.setPhase?.('startOfFellowship');
     }
 };
 
@@ -262,7 +264,7 @@ export const confirmMuster = ({
     }
 
     G.musterState = undefined;
-    events?.setPhase?.('regroup');
+    exitStartOf(events, 'regroup');
 };
 
 export const regroupMoves = {

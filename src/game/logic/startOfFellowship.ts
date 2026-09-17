@@ -4,6 +4,7 @@ import {
     beginSanctuaryHeals,
     clearSanctuaryHeals,
 } from './sanctuary';
+import { exitStartOf } from './phaseEntry';
 
 type PhaseEvents = {
     setPhase?: (phase: string) => void;
@@ -41,7 +42,7 @@ export const proceedStartOfFellowship = (
 
     if (fpDone && shadowDone) {
         G.startOfPhaseState = undefined;
-        events?.setPhase?.('fellowship');
+        exitStartOf(events, 'fellowship');
     } else {
         G.statusMessage =
             'Début de la phase de compagnie : Capacités spéciales.';

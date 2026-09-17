@@ -420,7 +420,9 @@ export const GameControls: React.FC<GameControlsProps> = ({
 
         if (G.sanctuaryHeal) {
             const remaining = G.sanctuaryHeal.remaining;
-            return `Sanctuaire : soignez jusqu’à ${remaining} blessure(s), ou validez.`;
+            return currentPlayerId === fpPlayerId
+                ? `Sanctuaire : soignez jusqu’à ${remaining} blessure(s), ou validez.`
+                : 'Les Peuples Libres soignent leurs compagnons au sanctuaire...';
         }
 
         if ((G.threatWoundsToAssign ?? 0) > 0) {

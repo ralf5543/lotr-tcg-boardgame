@@ -1,6 +1,7 @@
 import type { GameState, LotrMoveContext } from '../types';
 import { getRegionTwilightBonus } from '../logic/sites';
 import { resolveSiteMoveAbilities } from '../engine/abilities/siteMove';
+import { enterPhase } from '../logic/phaseEntry';
 
 export const advanceCompany = (G: GameState) => {
     const fpId = G.fpPlayerId || '0';
@@ -182,14 +183,14 @@ export const playSite = (
 
     if (ctx.phase === 'fellowship') {
         if (events?.setPhase) {
-            events.setPhase('shadow');
+            events.setPhase(enterPhase('shadow'));
         }
     } else if (ctx.phase === 'regroup') {
         G.skirmishes = [];
         G.activeSkirmishId = undefined;
 
         if (events?.setPhase) {
-            events.setPhase('shadow');
+            events.setPhase(enterPhase('shadow'));
         }
     }
 };
@@ -212,7 +213,7 @@ export const endFellowshipPhase = ({
     advanceCompany(G);
 
     if (!G.awaitingSiteSelection) {
-        events?.setPhase?.('shadow');
+        events?.setPhase?.(enterPhase('shadow'));
     }
 };
 

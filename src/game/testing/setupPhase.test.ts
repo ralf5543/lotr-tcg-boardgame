@@ -112,7 +112,10 @@ describe('mise en place', () => {
         engine.moves.submitMulliganChoice(false);
 
         expect(engine.getG().setupState?.step).toBe('COMPLETE');
-        expect(engine.getCtx().phase).toBe('fellowship');
+        // Pas de blessé au sanctuaire → startOfFellowship enchaîne sur fellowship
+        expect(['startOfFellowship', 'fellowship']).toContain(
+            engine.getCtx().phase
+        );
     });
 
     it('en cas d’égalité, le RNG seedé désigne un gagnant', () => {

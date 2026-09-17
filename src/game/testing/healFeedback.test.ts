@@ -170,4 +170,59 @@ describe('sanctuaire (Standard : sites 3 et 6)', () => {
         expect(assignSanctuaryHeal(G, 'aragorn')).toBe(false);
         expect(wounded.wounds).toBe(2);
     });
+
+    it('après le regroupement, le nouveau FP au site 3 ouvre le sanctuaire', () => {
+        const engine = createEngineClient({
+            startPhase: 'regroup',
+            playerID: '0',
+            G: {
+                path: pathWithSiteAt(2),
+                players: {
+                    '0': createPlayerState('0', {
+                        currentSiteIndex: 0,
+                        fellowshipArea: [
+                            createCompanion({ id: 'comp-0', wounds: 0 }),
+                        ],
+                        hand: Array.from({ length: 8 }, (_, i) =>
+                            createCompanion({ id: `h0-${i}` })
+                        ),
+                        deck: Array.from({ length: 8 }, (_, i) =>
+                            createCompanion({ id: `d0-${i}` })
+                        ),
+                    }),
+                    '1': createPlayerState('1', {
+                        currentSiteIndex: 2,
+                        fellowshipArea: [
+                            createCompanion({
+                                id: 'aragorn',
+                                instanceId: 'aragorn',
+                                wounds: 2,
+                            }),
+                        ],
+                        hand: Array.from({ length: 8 }, (_, i) =>
+                            createCompanion({ id: `h1-${i}` })
+                        ),
+                        deck: Array.from({ length: 8 }, (_, i) =>
+                            createCompanion({ id: `d1-${i}` })
+                        ),
+                    }),
+                },
+            },
+        });
+
+        engine.moves.passActionWindow?.();
+        engine.updatePlayerID('1');
+        engine.moves.passActionWindow?.();
+        engine.updatePlayerID('1');
+        engine.moves.confirmHandRefill();
+        engine.updatePlayerID('0');
+        engine.moves.endTurnChoice();
+        engine.moves.confirmHandRefill();
+
+        expect(engine.getG().fpPlayerId).toBe('1');
+        expect(engine.getCtx().phase).toBe('startOfFellowship');
+        expect(engine.getG().sanctuaryHeal?.remaining).toBe(5);
+
+        engine.stop();
+    });
 });

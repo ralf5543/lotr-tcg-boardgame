@@ -3,6 +3,7 @@ import { canTransferAid } from '../engine/validations/canTransferAid';
 import { findTargetCard } from '../../utils/cardUtils';
 import { hasActionableStartOfPhaseCards } from '../logic/hasActionableStartOfPhaseCards';
 import { addThreats } from '../logic/threats';
+import { exitStartOf } from '../logic/phaseEntry';
 
 export const transferAid = (
     { G, ctx, events, playerID }: LotrMoveContext,
@@ -110,7 +111,7 @@ export const transferAid = (
 
     if (fpDone && shadowDone) {
         G.startOfPhaseState = undefined;
-        events?.setPhase?.('maneuver');
+        exitStartOf(events, 'maneuver');
     }
 };
 

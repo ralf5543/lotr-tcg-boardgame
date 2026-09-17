@@ -1,6 +1,7 @@
 import type { LotrMoveContext, CardState, GameState } from '../types';
 import { getEffectiveVitality } from '../../utils/cardStats';
 import { requestWounds } from '../engine/responseWindow';
+import { enterPhase } from '../logic/phaseEntry';
 
 function livingCompanions(G: GameState, fpId: string): CardState[] {
     const fpPlayer = G.players[fpId];
@@ -46,7 +47,9 @@ function endArcheryPhase(G: GameState, noMinionsLeft: boolean): void {
     G.archeryAssignStep = undefined;
     if (G.archeryState) G.archeryState.step = 'COMPLETE';
     G.pendingPhaseEnd = true;
-    G.nextPhase = noMinionsLeft ? 'regroup' : 'assignment';
+    G.nextPhase = noMinionsLeft
+        ? enterPhase('regroup')
+        : enterPhase('assignment');
     G.statusMessage = noMinionsLeft
         ? 'Plus aucun séide sur le plateau ! Passage au Regroupement.'
         : 'Phase d’Archerie terminée. Passage à l’Assignation.';

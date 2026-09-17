@@ -979,12 +979,12 @@ export const GameBoard: React.FC<GameBoardProps> = ({
         }
     }, [G.fpPlayerId, setFpPlayerId]);
 
-    // Sanctuaire : cliquer un compagnon soigne 1 blessure (jusqu’à 5).
+    // Sanctuaire : cliquer un compagnon soigne 1 blessure (jusqu’à 5). FP uniquement.
     useEffect(() => {
         if (targetingKind === 'DESIGNATION') return;
 
         const remaining = G.sanctuaryHeal?.remaining ?? 0;
-        if (remaining <= 0) {
+        if (remaining <= 0 || !isLocalFP) {
             if (targetingKind === 'SANCTUARY_HEAL') stopTargeting();
             return;
         }
@@ -1018,6 +1018,7 @@ export const GameBoard: React.FC<GameBoardProps> = ({
         G.sanctuaryHeal,
         G.players,
         G.fpPlayerId,
+        isLocalFP,
         moves,
         startTargeting,
         stopTargeting,
