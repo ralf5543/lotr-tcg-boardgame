@@ -30,6 +30,15 @@ describe('formatGameText', () => {
     });
 });
 
+describe('FormattedText — italique <i>', () => {
+    it('conserve <i> dans formatGameText (rendu côté FormattedText)', () => {
+        const text =
+            'he gains **muster.** <i>(At the start of the regroup phase, you may discard a card from hand to draw a card.)</i>';
+        expect(formatGameText(text)).toContain('<i>(');
+        expect(formatGameText(text)).toContain(')</i>');
+    });
+});
+
 describe('coerceOrphanGameTextAsLore', () => {
     it('replace le Text traduit par du lore si l’anglais n’a pas de texte de jeu', () => {
         expect(
@@ -1782,6 +1791,151 @@ describe('parseAbilities — While at a … site → keyword', () => {
     });
 });
 
+describe('parseAbilities — For each … strength', () => {
+    it('parse Gandalf 1R72 : +1 par race distincte en fellowship', () => {
+        expect(
+            parseAbilities(
+                'Gandalf is strength +1 for each of these races you can spot in the fellowship: Hobbit, Dwarf, Elf, and Man.',
+                'Gandalf',
+                '1R72'
+            )
+        ).toEqual([
+            expect.objectContaining({
+                trigger: { type: 'WHILE' },
+                effects: [
+                    {
+                        type: 'MODIFY_STAT',
+                        stat: 'STRENGTH',
+                        value: 1,
+                        target: 'SELF',
+                        perDistinctRace: {
+                            races: ['HOBBIT', 'DWARF', 'ELF', 'MAN'],
+                            inFellowship: true,
+                        },
+                    },
+                ],
+            }),
+        ]);
+    });
+
+    it('parse passif for each companion you can spot', () => {
+        expect(
+            parseAbilities(
+                'This minion is strength +1 for each companion you can spot.',
+                'Some Minion',
+                '0P20'
+            )
+        ).toEqual([
+            expect.objectContaining({
+                effects: [
+                    expect.objectContaining({
+                        type: 'MODIFY_STAT',
+                        value: 1,
+                        target: 'SELF',
+                        perSpot: { target: [['COMPANION']] },
+                    }),
+                ],
+            }),
+        ]);
+    });
+
+    it('parse malgré mot-clé en gras avant la phrase', () => {
+        expect(
+            parseAbilities(
+                '**Fierce.**\n This minion is strength +1 for each companion you can spot.',
+                'Watcher',
+                '0P20'
+            )
+        ).toEqual([
+            expect.objectContaining({
+                effects: [
+                    expect.objectContaining({
+                        type: 'MODIFY_STAT',
+                        perSpot: { target: [['COMPANION']] },
+                    }),
+                ],
+            }),
+        ]);
+    });
+
+    it('parse depuis markup CSV <keyword> + <br>', () => {
+        expect(
+            parseAbilities(
+                '<keyword>Fierce.</keyword><br> This minion is strength +1 for each companion you can spot.',
+                'Black Rider',
+                '0P20'
+            )
+        ).toEqual([
+            expect.objectContaining({
+                effects: [
+                    expect.objectContaining({
+                        perSpot: { target: [['COMPANION']] },
+                    }),
+                ],
+            }),
+        ]);
+    });
+
+    it('parse you spot (sans can) et ignore rappel <i> avec skirmish', () => {
+        expect(
+            parseAbilities(
+                '**Hunter 1.** <i>(While skirmishing a non-hunter character, this character is strength +1.)</i>\nThis minion is strength +3 for each follower you can spot.',
+                'Uruk',
+                '15C83'
+            )
+        ).toEqual([
+            expect.objectContaining({
+                effects: [
+                    expect.objectContaining({
+                        value: 3,
+                        perSpot: { target: [['FOLLOWER']] },
+                    }),
+                ],
+            }),
+        ]);
+    });
+
+    it('parse for every + you spot', () => {
+        expect(
+            parseAbilities(
+                'This companion is strength +1 for every Ent you spot.',
+                'Treebeard',
+                '9R25'
+            )
+        ).toEqual([
+            expect.objectContaining({
+                effects: [
+                    expect.objectContaining({
+                        perSpot: { target: [['ENT']] },
+                    }),
+                ],
+            }),
+        ]);
+    });
+
+    it('parse Bearer for each Elf with limit', () => {
+        expect(
+            parseAbilities(
+                'Bearer is strength +1 for each Elf you can spot (limit +3).',
+                'Some Tale',
+                '1R49'
+            )
+        ).toEqual([
+            expect.objectContaining({
+                effects: [
+                    {
+                        type: 'MODIFY_STAT',
+                        stat: 'STRENGTH',
+                        value: 1,
+                        target: 'BEARER',
+                        perSpot: { target: [['ELF']], limit: 3 },
+                    },
+                ],
+            }),
+        ]);
+    });
+});
+
 describe('parseAbilities — While spot N terrain sites', () => {
     it('parse Unforgiving Depths : 3 underground → each Orc Muster', () => {
         expect(
@@ -1805,6 +1959,66 @@ describe('parseAbilities — While spot N terrain sites', () => {
                 ],
             }),
         ]);
+    });
+
+    it('parse With Doom We Come : Gandalf / each gandalf at site → Muster', () => {
+        const abs = parseAbilities(
+            'While Gandalf is at an underground site, he gains **muster.** While the fellowship is at a battleground site, each <symbol>gandalf</symbol> character gains **muster.**',
+            'With Doom We Come',
+            '12U36'
+        );
+        expect(abs).toEqual(
+            expect.arrayContaining([
+                expect.objectContaining({
+                    trigger: { type: 'WHILE', atSiteKeyword: 'UNDERGROUND' },
+                    effects: [
+                        expect.objectContaining({
+                            type: 'MODIFY_KEYWORD',
+                            keyword: 'MUSTER',
+                            target: [['Gandalf']],
+                        }),
+                    ],
+                }),
+                expect.objectContaining({
+                    trigger: { type: 'WHILE', atSiteKeyword: 'BATTLEGROUND' },
+                    effects: [
+                        expect.objectContaining({
+                            type: 'MODIFY_KEYWORD',
+                            keyword: 'MUSTER',
+                            target: [['GANDALF', 'CHARACTER']],
+                        }),
+                    ],
+                }),
+            ])
+        );
+    });
+
+    it('parse Nertëa : named at forest → force +2', () => {
+        const abs = parseAbilities(
+            '<keyword>Lurker.</keyword> While Úlairë Nertëa is at a forest site, he is strength +2. While you can spot 6 companions, each Nazgûl is strength +2.',
+            'Úlairë Nertëa',
+            '11S223'
+        );
+        expect(abs).toEqual(
+            expect.arrayContaining([
+                expect.objectContaining({
+                    trigger: { type: 'WHILE', atSiteKeyword: 'FOREST' },
+                    effects: [
+                        expect.objectContaining({
+                            type: 'MODIFY_STAT',
+                            value: 2,
+                            target: 'SELF',
+                        }),
+                    ],
+                }),
+                expect.objectContaining({
+                    trigger: {
+                        type: 'WHILE',
+                        spot: [{ count: 6, target: [['COMPANION']] }],
+                    },
+                }),
+            ])
+        );
     });
 });
 

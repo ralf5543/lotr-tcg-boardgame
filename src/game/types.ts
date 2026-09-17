@@ -207,6 +207,24 @@ export type AbilityEffect =
           stat: StatType;
           value: number;
           target: AbilityTargetRef;
+          /**
+           * Bonus = value × nombre de cartes matchant `target` spotées.
+           * (ex. +1 for each companion you can spot)
+           */
+          perSpot?: {
+              target: string[][];
+              /** Uniquement la compagnie FP (défaut : tout en jeu). */
+              inFellowship?: boolean;
+              limit?: number;
+          };
+          /**
+           * Bonus = value × races distinctes listées présentes
+           * (ex. Gandalf 1R72 : Hobbit, Dwarf, Elf, Man).
+           */
+          perDistinctRace?: {
+              races: string[];
+              inFellowship?: boolean;
+          };
       }
     | {
           /** Mot-clé passif (While…) — pas d’expiration de phase. */

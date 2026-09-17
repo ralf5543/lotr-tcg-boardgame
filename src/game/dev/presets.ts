@@ -589,6 +589,10 @@ export const applyDevPreset = (
                 clonePresetCard('11C27', 'dev-woodland-sentinel'),
                 // BATTLEGROUND → +2 / FOREST → Archer (sites 7 / 5)
                 clonePresetCard('15U17', 'dev-haldir'),
+                // Underground → Muster via With Doom (site 1)
+                clonePresetCard('1R72', 'dev-gandalf'),
+                // Ent : ne doit PAS gagner Muster (contrôle négatif With Doom / Depths)
+                clonePresetCard('6C33', 'dev-quickbeam'),
                 // MOUNTAIN → each Dwarf +2 (site 8) — condition en soutien
                 clonePresetCard('11U12', 'dev-well-equipped'),
                 // MOUNTAIN → Damage +1 via hache (site 8)
@@ -598,17 +602,19 @@ export const applyDevPreset = (
                 },
             ];
 
-            // Well-equipped est une condition → support
+            // Conditions FP en soutien
             {
                 const wellEq = fpPlayer.fellowshipArea.find(
                     (c) => c.id === '11U12'
                 );
-                if (wellEq) {
-                    fpPlayer.fellowshipArea = fpPlayer.fellowshipArea.filter(
-                        (c) => c.id !== '11U12'
-                    );
-                    fpPlayer.supportArea = [wellEq];
-                }
+                fpPlayer.fellowshipArea = fpPlayer.fellowshipArea.filter(
+                    (c) => c.id !== '11U12'
+                );
+                fpPlayer.supportArea = [
+                    ...(wellEq ? [wellEq] : []),
+                    // Gandalf / each gandalf at site → Muster
+                    clonePresetCard('12U36', 'dev-with-doom'),
+                ];
             }
 
             G.battlefield = [
@@ -621,6 +627,8 @@ export const applyDevPreset = (
                 clonePresetCard('11C73', 'dev-corps-harad'),
                 // PLAINS → Damage +1 (sites 3 & 9)
                 clonePresetCard('11S77', 'dev-elder-dunland'),
+                // FOREST → force +2 (site 5) — Nertëa
+                clonePresetCard('11S223', 'dev-nertea'),
             ];
 
             if (shadowPlayer) {
@@ -633,7 +641,7 @@ export const applyDevPreset = (
             }
 
             G.statusMessage =
-                '[DEV] Sites + keywords : 3×UNDERGROUND (1/2/4) + Unforgiving Depths. 5=FOREST, 7=BATTLEGROUND, 8=MOUNTAIN, 3/9=PLAINS, 3/6=sanctuaire.';
+                '[DEV] Sites + keywords. Gandalf 1R72 : +1/race. Quickbeam : Muster seulement battleground (pas underground — nom ≠ culture).';
             break;
         }
     }

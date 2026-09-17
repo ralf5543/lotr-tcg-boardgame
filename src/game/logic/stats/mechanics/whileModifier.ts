@@ -1,5 +1,6 @@
 import type {
     Ability,
+    AbilityEffect,
     CardState,
     GameState,
     SkirmishState,
@@ -19,6 +20,75 @@ import {
 
 function matchCard(card: CardState, targetId: string): boolean {
     return card.instanceId === targetId || card.id === targetId;
+}
+
+function countPerSpot(
+    G: GameState,
+    source: CardState,
+    perSpot: NonNullable<
+        Extract<AbilityEffect, { type: 'MODIFY_STAT' }>['perSpot']
+    >
+): number {
+    let cards: CardState[];
+    if (perSpot.inFellowship) {
+        const fpId = G.fpPlayerId || '0';
+        cards = (G.players[fpId]?.fellowshipArea || []).filter(
+            (card) =>
+                card &&
+                !card.isDead &&
+                cardMatchesTarget(card, perSpot.target)
+        );
+    } else {
+        cards = resolveCostTarget(G, source, perSpot.target).filter(
+            (card) => !card.isDead
+        );
+    }
+    let n = cards.length;
+    if (perSpot.limit !== undefined) n = Math.min(n, perSpot.limit);
+    return Math.max(0, n);
+}
+
+function countDistinctRaces(
+    G: GameState,
+    races: string[],
+    inFellowship?: boolean
+): number {
+    const wanted = new Set(races.map((r) => r.toUpperCase()));
+    const seen = new Set<string>();
+    const visit = (card: CardState) => {
+        if (!card || card.isDead) return;
+        const race = (card.race || '').toUpperCase();
+        if (race && wanted.has(race)) seen.add(race);
+    };
+    if (inFellowship) {
+        const fpId = G.fpPlayerId || '0';
+        (G.players[fpId]?.fellowshipArea || []).forEach(visit);
+    } else {
+        forEachInPlayCard(G, visit);
+    }
+    return seen.size;
+}
+
+function modifyStatMagnitude(
+    G: GameState,
+    source: CardState,
+    effect: Extract<AbilityEffect, { type: 'MODIFY_STAT' }>
+): number {
+    const base = effect.value || 0;
+    if (effect.perDistinctRace) {
+        return (
+            base *
+            countDistinctRaces(
+                G,
+                effect.perDistinctRace.races,
+                effect.perDistinctRace.inFellowship
+            )
+        );
+    }
+    if (effect.perSpot) {
+        return base * countPerSpot(G, source, effect.perSpot);
+    }
+    return base;
 }
 
 function skirmishInvolves(skirmish: SkirmishState, cardId: string): boolean {
@@ -178,7 +248,7 @@ export function getWhileStrengthBonus(
             if (!localBeneficiaryMatches(G, source, effect.target, cardId)) {
                 continue;
             }
-            bonus += effect.value || 0;
+            bonus += modifyStatMagnitude(G, source, effect);
         }
     });
 
@@ -191,7 +261,7 @@ export function getWhileStrengthBonus(
                 if (effect.stat !== 'STRENGTH') continue;
                 if (!Array.isArray(effect.target)) continue;
                 if (!cardMatchesTarget(card, effect.target)) continue;
-                bonus += effect.value || 0;
+                bonus += modifyStatMagnitude(G, source, effect);
             }
         }
     });

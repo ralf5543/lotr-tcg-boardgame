@@ -10,6 +10,10 @@ const BoldText = styled.strong`
     font-weight: bold;
 `;
 
+const ItalicText = styled.em`
+    font-style: italic;
+`;
+
 interface FormattedTextProps {
     text: string;
 }
@@ -18,8 +22,10 @@ export const FormattedText: React.FC<FormattedTextProps> = ({ text }) => {
     // Si text est undefined, null ou pas une chaîne, on utilise une chaîne vide
     const safeText = text || '';
 
-    // La Regex capture les symboles et le gras
-    const tokens = safeText.split(/(<symbol>[^<]+<\/symbol>|\*\*[^*]+\*\*)/gi);
+    // Symboles, gras Markdown, italique HTML (<i>…</i>)
+    const tokens = safeText.split(
+        /(<symbol>[^<]+<\/symbol>|\*\*[^*]+\*\*|<i>[\s\S]*?<\/i>)/gi
+    );
 
     return (
         <TextWrapper>
@@ -57,7 +63,13 @@ export const FormattedText: React.FC<FormattedTextProps> = ({ text }) => {
                     return <BoldText key={index}>{cleanText}</BoldText>;
                 }
 
-                // C. CAS : TEXTE NORMAL
+                // C. CAS : ITALIQUE HTML (<i>…</i>) — rappels de règles, etc.
+                if (/^<i>[\s\S]*<\/i>$/i.test(token)) {
+                    const cleanText = token.replace(/<\/?i>/gi, '');
+                    return <ItalicText key={index}>{cleanText}</ItalicText>;
+                }
+
+                // D. CAS : TEXTE NORMAL
                 return <span key={index}>{token}</span>;
             })}
         </TextWrapper>

@@ -905,6 +905,33 @@
     "keywords": [
       "FIERCE"
     ],
+    "abilities": [
+      {
+        "id": "0P20:0",
+        "phases": [],
+        "trigger": {
+          "type": "WHILE"
+        },
+        "cost": [],
+        "effects": [
+          {
+            "type": "MODIFY_STAT",
+            "stat": "STRENGTH",
+            "value": 1,
+            "target": "SELF",
+            "perSpot": {
+              "target": [
+                [
+                  "COMPANION"
+                ]
+              ]
+            }
+          }
+        ],
+        "source": "SELF",
+        "text": ". This minion is strength +1 for each companion you can spot."
+      }
+    ],
     "culture": "WRAITH",
     "race": "NAZGÛL",
     "twilightCost": 5,
@@ -4617,6 +4644,25 @@
         "phases": [],
         "trigger": {
           "type": "WHILE",
+          "atSiteKeyword": "FOREST"
+        },
+        "cost": [],
+        "effects": [
+          {
+            "type": "MODIFY_STAT",
+            "stat": "STRENGTH",
+            "value": 2,
+            "target": "SELF"
+          }
+        ],
+        "source": "SELF",
+        "text": "While Úlairë Nertëa is at a forest site, he is strength +2."
+      },
+      {
+        "id": "0P116:1",
+        "phases": [],
+        "trigger": {
+          "type": "WHILE",
           "spot": [
             {
               "count": 6,
@@ -5201,6 +5247,35 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
+    "abilities": [
+      {
+        "id": "1R72:0",
+        "phases": [],
+        "trigger": {
+          "type": "WHILE"
+        },
+        "cost": [],
+        "effects": [
+          {
+            "type": "MODIFY_STAT",
+            "stat": "STRENGTH",
+            "value": 1,
+            "target": "SELF",
+            "perDistinctRace": {
+              "races": [
+                "HOBBIT",
+                "DWARF",
+                "ELF",
+                "MAN"
+              ],
+              "inFellowship": true
+            }
+          }
+        ],
+        "source": "SELF",
+        "text": "Gandalf is strength +1 for each of these races you can spot in the fellowship: Hobbit, Dwarf, Elf, and Man."
+      }
+    ],
     "culture": "GANDALF",
     "race": "WIZARD",
     "signet": "FRODO",
@@ -7863,6 +7938,34 @@
     "type": "COMPANION",
     "keywords": [
       "RING-BOUND"
+    ],
+    "abilities": [
+      {
+        "id": "10P122:0",
+        "phases": [],
+        "trigger": {
+          "type": "WHILE"
+        },
+        "cost": [],
+        "effects": [
+          {
+            "type": "MODIFY_STAT",
+            "stat": "STRENGTH",
+            "value": 1,
+            "target": "SELF",
+            "perSpot": {
+              "target": [
+                [
+                  "SHIRE",
+                  "COMPANION"
+                ]
+              ]
+            }
+          }
+        ],
+        "source": "SELF",
+        "text": ". Sam is strength +1 for each shire companion you can spot."
+      }
     ],
     "actionPhases": [
       "RESPONSE"
@@ -13246,6 +13349,34 @@
         "GONDOR",
         "MAN"
       ]
+    ],
+    "abilities": [
+      {
+        "id": "1R49:0",
+        "phases": [],
+        "trigger": {
+          "type": "WHILE"
+        },
+        "cost": [],
+        "effects": [
+          {
+            "type": "MODIFY_STAT",
+            "stat": "STRENGTH",
+            "value": 1,
+            "target": "BEARER",
+            "perSpot": {
+              "target": [
+                [
+                  "ELF"
+                ]
+              ],
+              "limit": 3
+            }
+          }
+        ],
+        "source": "SELF",
+        "text": ". Bearer is strength +1 for each Elf you can spot (limit +3)."
+      }
     ],
     "culture": "ELVEN",
     "twilightCost": 1,
@@ -39901,6 +40032,35 @@
     "type": "COMPANION",
     "keywords": [
       "DAMAGE +1"
+    ],
+    "abilities": [
+      {
+        "id": "4R48:0",
+        "phases": [],
+        "trigger": {
+          "type": "WHILE"
+        },
+        "cost": [],
+        "effects": [
+          {
+            "type": "MODIFY_STAT",
+            "stat": "STRENGTH",
+            "value": 1,
+            "target": "SELF",
+            "perSpot": {
+              "target": [
+                [
+                  "UNBOUND",
+                  "HOBBIT",
+                  "COMPANION"
+                ]
+              ]
+            }
+          }
+        ],
+        "source": "SELF",
+        "text": ". Gimli is strength +1 for each unbound Hobbit companion you can spot."
+      }
     ],
     "culture": "DWARVEN",
     "race": "DWARF",
@@ -84924,6 +85084,33 @@
     "keywords": [
       "DAMAGE +1"
     ],
+    "abilities": [
+      {
+        "id": "9R25:0",
+        "phases": [],
+        "trigger": {
+          "type": "WHILE"
+        },
+        "cost": [],
+        "effects": [
+          {
+            "type": "MODIFY_STAT",
+            "stat": "STRENGTH",
+            "value": 1,
+            "target": "SELF",
+            "perSpot": {
+              "target": [
+                [
+                  "ENT"
+                ]
+              ]
+            }
+          }
+        ],
+        "source": "SELF",
+        "text": ". This companion is strength +1 for each Ent you spot."
+      }
+    ],
     "actionPhases": [
       "RESPONSE"
     ],
@@ -90934,6 +91121,33 @@
             ]
           }
         ]
+      }
+    ],
+    "abilities": [
+      {
+        "id": "10R101:0",
+        "phases": [],
+        "trigger": {
+          "type": "WHILE"
+        },
+        "cost": [],
+        "effects": [
+          {
+            "type": "MODIFY_STAT",
+            "stat": "STRENGTH",
+            "value": 1,
+            "target": "SELF",
+            "perSpot": {
+              "target": [
+                [
+                  "POSSESSION"
+                ]
+              ]
+            }
+          }
+        ],
+        "source": "SELF",
+        "text": ". This minion is strength +1 for each possession you can spot."
       }
     ],
     "culture": "SAURON",
@@ -101965,6 +102179,25 @@
         "phases": [],
         "trigger": {
           "type": "WHILE",
+          "atSiteKeyword": "FOREST"
+        },
+        "cost": [],
+        "effects": [
+          {
+            "type": "MODIFY_STAT",
+            "stat": "STRENGTH",
+            "value": 2,
+            "target": "SELF"
+          }
+        ],
+        "source": "SELF",
+        "text": "While Úlairë Nertëa is at a forest site, he is strength +2."
+      },
+      {
+        "id": "11S223:1",
+        "phases": [],
+        "trigger": {
+          "type": "WHILE",
           "spot": [
             {
               "count": 6,
@@ -103635,6 +103868,53 @@
     "kind": "FREE_PEOPLE",
     "type": "CONDITION",
     "subtype": "SUPPORT-AREA",
+    "abilities": [
+      {
+        "id": "12U36:0",
+        "phases": [],
+        "trigger": {
+          "type": "WHILE",
+          "atSiteKeyword": "UNDERGROUND"
+        },
+        "cost": [],
+        "effects": [
+          {
+            "type": "MODIFY_KEYWORD",
+            "keyword": "MUSTER",
+            "target": [
+              [
+                "Gandalf"
+              ]
+            ]
+          }
+        ],
+        "source": "SELF",
+        "text": "While Gandalf is at an underground site, he gains muster."
+      },
+      {
+        "id": "12U36:1",
+        "phases": [],
+        "trigger": {
+          "type": "WHILE",
+          "atSiteKeyword": "BATTLEGROUND"
+        },
+        "cost": [],
+        "effects": [
+          {
+            "type": "MODIFY_KEYWORD",
+            "keyword": "MUSTER",
+            "target": [
+              [
+                "GANDALF",
+                "CHARACTER"
+              ]
+            ]
+          }
+        ],
+        "source": "SELF",
+        "text": "While the fellowship is at a battleground site, each gandalf character gains muster."
+      }
+    ],
     "actionPhases": [
       "START_OF_REGROUP"
     ],
@@ -109182,6 +109462,33 @@
     "keywords": [
       "FIERCE"
     ],
+    "abilities": [
+      {
+        "id": "12U161:0",
+        "phases": [],
+        "trigger": {
+          "type": "WHILE"
+        },
+        "cost": [],
+        "effects": [
+          {
+            "type": "MODIFY_STAT",
+            "stat": "STRENGTH",
+            "value": 1,
+            "target": "SELF",
+            "perSpot": {
+              "target": [
+                [
+                  "COMPANION"
+                ]
+              ]
+            }
+          }
+        ],
+        "source": "SELF",
+        "text": ". This minion is strength +1 for each companion you can spot."
+      }
+    ],
     "culture": "WRAITH",
     "race": "NAZGÛL",
     "twilightCost": 5,
@@ -112614,6 +112921,38 @@
     "kind": "SHADOW",
     "type": "CONDITION",
     "subtype": "SUPPORT-AREA",
+    "abilities": [
+      {
+        "id": "13R44:0",
+        "phases": [],
+        "trigger": {
+          "type": "WHILE"
+        },
+        "cost": [],
+        "effects": [
+          {
+            "type": "MODIFY_STAT",
+            "stat": "STRENGTH",
+            "value": 1,
+            "target": [
+              [
+                "Gollum"
+              ]
+            ],
+            "perSpot": {
+              "target": [
+                [
+                  "RING-BOUND",
+                  "COMPANION"
+                ]
+              ]
+            }
+          }
+        ],
+        "source": "SELF",
+        "text": "Gollum is strength +1 for each Ring-bound companion you can spot."
+      }
+    ],
     "culture": "GOLLUM",
     "twilightCost": 1,
     "imageUrl": "/cards_visuals/o_13_044.jpg",
@@ -116396,6 +116735,34 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
+    "abilities": [
+      {
+        "id": "13U128:0",
+        "phases": [],
+        "trigger": {
+          "type": "WHILE"
+        },
+        "cost": [],
+        "effects": [
+          {
+            "type": "MODIFY_STAT",
+            "stat": "STRENGTH",
+            "value": 1,
+            "target": "SELF",
+            "perSpot": {
+              "target": [
+                [
+                  "SHADOW",
+                  "POSSESSION"
+                ]
+              ]
+            }
+          }
+        ],
+        "source": "SELF",
+        "text": "Háma is strength +1 for each Shadow possession you can spot."
+      }
+    ],
     "culture": "ROHAN",
     "race": "MAN",
     "twilightCost": 2,
@@ -117362,6 +117729,34 @@
             ]
           }
         ]
+      }
+    ],
+    "abilities": [
+      {
+        "id": "13U150:0",
+        "phases": [],
+        "trigger": {
+          "type": "WHILE"
+        },
+        "cost": [],
+        "effects": [
+          {
+            "type": "MODIFY_STAT",
+            "stat": "STRENGTH",
+            "value": 1,
+            "target": "BEARER",
+            "perSpot": {
+              "target": [
+                [
+                  "RING-BOUND",
+                  "HOBBIT"
+                ]
+              ]
+            }
+          }
+        ],
+        "source": "SELF",
+        "text": ". Bearer is strength +1 for each Ring-bound Hobbit you can spot."
       }
     ],
     "actionPhases": [
@@ -124089,6 +124484,33 @@
     "keywords": [
       "HUNTER 1"
     ],
+    "abilities": [
+      {
+        "id": "15C83:0",
+        "phases": [],
+        "trigger": {
+          "type": "WHILE"
+        },
+        "cost": [],
+        "effects": [
+          {
+            "type": "MODIFY_STAT",
+            "stat": "STRENGTH",
+            "value": 3,
+            "target": "SELF",
+            "perSpot": {
+              "target": [
+                [
+                  "FOLLOWER"
+                ]
+              ]
+            }
+          }
+        ],
+        "source": "SELF",
+        "text": ". This minion is strength +3 for each follower you can spot."
+      }
+    ],
     "culture": "MEN",
     "race": "MAN",
     "twilightCost": 3,
@@ -126815,6 +127237,34 @@
     "keywords": [
       "VALIANT"
     ],
+    "abilities": [
+      {
+        "id": "15S138:0",
+        "phases": [],
+        "trigger": {
+          "type": "WHILE"
+        },
+        "cost": [],
+        "effects": [
+          {
+            "type": "MODIFY_STAT",
+            "stat": "STRENGTH",
+            "value": 1,
+            "target": "SELF",
+            "perSpot": {
+              "target": [
+                [
+                  "HUNTER",
+                  "MINION"
+                ]
+              ]
+            }
+          }
+        ],
+        "source": "SELF",
+        "text": ". This companion is strength +1 for each hunter minion you can spot."
+      }
+    ],
     "culture": "ROHAN",
     "race": "MAN",
     "twilightCost": 3,
@@ -127258,6 +127708,34 @@
             ]
           }
         ]
+      }
+    ],
+    "abilities": [
+      {
+        "id": "15C147:0",
+        "phases": [],
+        "trigger": {
+          "type": "WHILE"
+        },
+        "cost": [],
+        "effects": [
+          {
+            "type": "MODIFY_STAT",
+            "stat": "STRENGTH",
+            "value": 1,
+            "target": "BEARER",
+            "perSpot": {
+              "target": [
+                [
+                  "FIERCE",
+                  "MINION"
+                ]
+              ]
+            }
+          }
+        ],
+        "source": "SELF",
+        "text": ". Bearer is strength +1 for each fierce minion you can spot."
       }
     ],
     "actionPhases": [
@@ -127778,6 +128256,33 @@
     "type": "MINION",
     "keywords": [
       "DAMAGE +1"
+    ],
+    "abilities": [
+      {
+        "id": "15C158:0",
+        "phases": [],
+        "trigger": {
+          "type": "WHILE"
+        },
+        "cost": [],
+        "effects": [
+          {
+            "type": "MODIFY_STAT",
+            "stat": "STRENGTH",
+            "value": 1,
+            "target": "SELF",
+            "perSpot": {
+              "target": [
+                [
+                  "POSSESSION"
+                ]
+              ]
+            }
+          }
+        ],
+        "source": "SELF",
+        "text": ". This minion is strength +1 for each possession you spot."
+      }
     ],
     "culture": "URUK-HAI",
     "race": "URUK-HAI",
@@ -141135,6 +141640,34 @@
     "isUnique": false,
     "kind": "SHADOW",
     "type": "MINION",
+    "abilities": [
+      {
+        "id": "18U93:0",
+        "phases": [],
+        "trigger": {
+          "type": "WHILE"
+        },
+        "cost": [],
+        "effects": [
+          {
+            "type": "MODIFY_STAT",
+            "stat": "STRENGTH",
+            "value": 1,
+            "target": "SELF",
+            "perSpot": {
+              "target": [
+                [
+                  "HUNTER",
+                  "COMPANION"
+                ]
+              ]
+            }
+          }
+        ],
+        "source": "SELF",
+        "text": "This minion is strength +1 for each hunter companion you can spot."
+      }
+    ],
     "culture": "ORC",
     "race": "ORC",
     "twilightCost": 3,
@@ -143960,6 +144493,33 @@
     "keywords": [
       "TENTACLE"
     ],
+    "abilities": [
+      {
+        "id": "19P19:0",
+        "phases": [],
+        "trigger": {
+          "type": "WHILE"
+        },
+        "cost": [],
+        "effects": [
+          {
+            "type": "MODIFY_STAT",
+            "stat": "STRENGTH",
+            "value": 1,
+            "target": "SELF",
+            "perSpot": {
+              "target": [
+                [
+                  "TENTACLE"
+                ]
+              ]
+            }
+          }
+        ],
+        "source": "SELF",
+        "text": ". This minion is strength +1 for each tentacle you spot."
+      }
+    ],
     "culture": "MORIA",
     "race": "CREATURE",
     "twilightCost": 2,
@@ -144004,6 +144564,33 @@
     "type": "MINION",
     "keywords": [
       "TENTACLE"
+    ],
+    "abilities": [
+      {
+        "id": "19P20:0",
+        "phases": [],
+        "trigger": {
+          "type": "WHILE"
+        },
+        "cost": [],
+        "effects": [
+          {
+            "type": "MODIFY_STAT",
+            "stat": "STRENGTH",
+            "value": 1,
+            "target": "SELF",
+            "perSpot": {
+              "target": [
+                [
+                  "TENTACLE"
+                ]
+              ]
+            }
+          }
+        ],
+        "source": "SELF",
+        "text": ". This minion is strength +1 for each tentacle you spot."
+      }
     ],
     "culture": "MORIA",
     "race": "CREATURE",
@@ -144508,6 +145095,33 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
+    "abilities": [
+      {
+        "id": "19P30:0",
+        "phases": [],
+        "trigger": {
+          "type": "WHILE"
+        },
+        "cost": [],
+        "effects": [
+          {
+            "type": "MODIFY_STAT",
+            "stat": "STRENGTH",
+            "value": 1,
+            "target": "SELF",
+            "perSpot": {
+              "target": [
+                [
+                  "TALE"
+                ]
+              ]
+            }
+          }
+        ],
+        "source": "SELF",
+        "text": ". Pippin is strength +1 for each tale you can spot."
+      }
+    ],
     "actionPhases": [
       "FELLOWSHIP"
     ],

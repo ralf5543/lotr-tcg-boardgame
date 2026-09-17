@@ -36,8 +36,21 @@ export function cardMatchesCriterion(
 ): boolean {
     if (!card || !criterion) return false;
 
-    const critUpper = criterion.toUpperCase().trim();
+    const critTrim = criterion.trim();
+    const critUpper = critTrim.toUpperCase();
     const c = card as CardState;
+
+    // Nom propre (casse mixte, ex. « Gandalf ») → titre uniquement.
+    // Sinon « Gandalf » matcherait aussi la culture GANDALF (Ents, etc.).
+    // « Bearer » reste un jeton spécial (pas un titre de carte).
+    const isProperName =
+        critTrim !== critUpper &&
+        !/^bearer$/i.test(critTrim) &&
+        /[a-zà-ÿ]/.test(critTrim);
+    if (isProperName) {
+        const cardTitle = getCardTitle(card);
+        return Boolean(cardTitle && cardTitle === critTrim.toLowerCase());
+    }
 
     if (critUpper === 'CHARACTER') {
         return (
@@ -101,9 +114,9 @@ export function cardMatchesCriterion(
         return true;
     }
 
-    // Titre / Nom propre (ex: "Gimli", "Frodo", "The One Ring")
+    // Titre / Nom propre en majuscules (rare) — repli
     const cardTitle = getCardTitle(card);
-    if (cardTitle && cardTitle === criterion.trim().toLowerCase()) {
+    if (cardTitle && cardTitle === critTrim.toLowerCase()) {
         return true;
     }
 

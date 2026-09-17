@@ -1919,7 +1919,7 @@ function parseSiteLocationKeyword(raw: string): string | null {
 }
 
 /**
- * While (this X is | the fellowship is) at a [terrain] site, … is strength ±N.
+ * While (this X is | the fellowship is | Name is) at a [terrain] site, … is strength ±N.
  * Inclut « each [classe] ». Refuse and Fierce / Damage / multi-clauses.
  */
 function parseWhileAtSiteStrengthAbilities(
@@ -1972,9 +1972,56 @@ function parseWhileAtSiteStrengthAbilities(
         }
     }
 
+    // « While Úlairë Nertëa is at a forest site, he is strength +2. »
+    const namedRe =
+        /While ([A-ZÀ-ŸÉ][^,]+?) is at an? ([^,]+?) site, ([^,]+?) is strength ([+-]\d+)\./gi;
+    let match: RegExpExecArray | null;
+    while ((match = namedRe.exec(text)) !== null) {
+        const sentence = match[0];
+        if (
+            /\b(and|or|each|may|fierce|damage|archery|discard|wound|heal|draw|this minion|this companion|the fellowship|bearer)\b/i.test(
+                sentence
+            )
+        ) {
+            continue;
+        }
+        const atName = stripAbilityMarkup(match[1]).replace(/\s+/g, ' ').trim();
+        const siteKw = parseSiteLocationKeyword(match[2]);
+        if (!siteKw || !atName) continue;
+        const value = parseInt(match[4], 10);
+        if (!Number.isFinite(value) || value === 0) continue;
+
+        const title = (cardTitle || '').trim();
+        const isSelf =
+            title && atName.toLowerCase() === title.toLowerCase();
+        const who = isSelf
+            ? parseWhileStrengthWho(match[3], cardTitle)
+            : null;
+        const target = isSelf
+            ? who
+            : [[atName]];
+        if (!target || (isSelf && !who)) continue;
+
+        found.push({
+            id: `${cardId || 'ability'}:${found.length}:while-at-site`,
+            phases: [],
+            trigger: { type: 'WHILE', atSiteKeyword: siteKw },
+            cost: [],
+            effects: [
+                {
+                    type: 'MODIFY_STAT',
+                    stat: 'STRENGTH',
+                    value,
+                    target,
+                },
+            ],
+            source: 'SELF',
+            text: stripAbilityMarkup(sentence),
+        });
+    }
+
     const eachRe =
         /While the fellowship is at an? ([^,]+?) site, each ([^,]+?) is strength ([+-]\d+)\./gi;
-    let match: RegExpExecArray | null;
     while ((match = eachRe.exec(text)) !== null) {
         const sentence = match[0];
         if (
@@ -2013,8 +2060,9 @@ function parseWhileAtSiteStrengthAbilities(
 }
 
 /**
- * While (this X / bearer is) at a [terrain] site, … is Fierce | Damage +N | Archer.
- * Un seul mot-clé — refuse and / strength+ / multi-clauses.
+ * While (this X / bearer / fellowship / Name is) at a [terrain] site,
+ * … is|gains Fierce | Damage +N | Archer | Muster.
+ * Un seul mot-clé — refuse and / strength+ / multi-clauses / cannot.
  */
 function parseWhileAtSiteKeywordAbilities(
     text: string,
@@ -2023,30 +2071,31 @@ function parseWhileAtSiteKeywordAbilities(
 ): Record<string, unknown>[] {
     const found: Record<string, unknown>[] = [];
     const kwTail =
-        '((?:<keyword>[^<]*</keyword>|\\*\\*[^*]+\\*\\*|damage\\s*\\+\\s*\\d+|fierce|archer)\\.?)';
+        '((?:<keyword>[^<]*</keyword>|\\*\\*[^*]+\\*\\*|damage\\s*\\+\\s*\\d+|fierce|archer|muster)\\.?)';
+    const verb = '(?:is|gains)';
 
     const patterns: { re: RegExp; forceBearer?: boolean }[] = [
         {
             re: new RegExp(
-                `While this (?:minion|companion) is at an? ([^,]+?) site, ([^,]+?) is (?:an?\\s+)?${kwTail}`,
+                `While this (?:minion|companion) is at an? ([^,]+?) site, ([^,]+?) ${verb} (?:an?\\s+)?${kwTail}`,
                 'gi'
             ),
         },
         {
             re: new RegExp(
-                `While at an? ([^,]+?) site, ([^,]+?) is (?:an?\\s+)?${kwTail}`,
+                `While at an? ([^,]+?) site, ([^,]+?) ${verb} (?:an?\\s+)?${kwTail}`,
                 'gi'
             ),
         },
         {
             re: new RegExp(
-                `While the fellowship is at an? ([^,]+?) site, ([^,]+?) is (?:an?\\s+)?${kwTail}`,
+                `While the fellowship is at an? ([^,]+?) site, ([^,]+?) ${verb} (?:an?\\s+)?${kwTail}`,
                 'gi'
             ),
         },
         {
             re: new RegExp(
-                `While bearer is at an? ([^,]+?) site, ([^,]+?) is (?:an?\\s+)?${kwTail}`,
+                `While bearer is at an? ([^,]+?) site, ([^,]+?) ${verb} (?:an?\\s+)?${kwTail}`,
                 'gi'
             ),
             forceBearer: true,
@@ -2058,7 +2107,7 @@ function parseWhileAtSiteKeywordAbilities(
         while ((match = re.exec(text)) !== null) {
             const sentence = match[0];
             if (
-                /\b(and|or|each|may|strength|archery|discard|wound|heal|draw|cannot|gains)\b/i.test(
+                /\b(and|or|each|may|strength|archery|discard|wound|heal|draw|cannot)\b/i.test(
                     sentence
                 )
             ) {
@@ -2093,6 +2142,99 @@ function parseWhileAtSiteKeywordAbilities(
                 text: stripAbilityMarkup(sentence),
             });
         }
+    }
+
+    // « While Gandalf is at an underground site, he gains muster. »
+    const namedRe = new RegExp(
+        `While ([A-ZÀ-ŸÉ][^,]+?) is at an? ([^,]+?) site, ([^,]+?) ${verb} (?:an?\\s+)?${kwTail}`,
+        'gi'
+    );
+    let match: RegExpExecArray | null;
+    while ((match = namedRe.exec(text)) !== null) {
+        const sentence = match[0];
+        if (
+            /\b(and|or|each|may|strength|archery|discard|wound|heal|draw|cannot|this minion|this companion|the fellowship|bearer)\b/i.test(
+                sentence
+            )
+        ) {
+            continue;
+        }
+        const atName = stripAbilityMarkup(match[1]).replace(/\s+/g, ' ').trim();
+        const siteKw = parseSiteLocationKeyword(match[2]);
+        if (!siteKw || !atName) continue;
+        const grant = parseWhileKeywordGrant(match[4]);
+        if (!grant) continue;
+        const after = stripAbilityMarkup(
+            text.slice(match.index + match[0].length)
+        ).trim();
+        if (/^and\b/i.test(after)) continue;
+
+        const title = (cardTitle || '').trim();
+        const isSelf =
+            title && atName.toLowerCase() === title.toLowerCase();
+        const who = isSelf
+            ? parseWhileStrengthWho(match[3], cardTitle)
+            : null;
+        const target = isSelf ? who : [[atName]];
+        if (!target || (isSelf && !who)) continue;
+
+        found.push({
+            id: `${cardId || 'ability'}:${found.length}:while-at-site-kw`,
+            phases: [],
+            trigger: { type: 'WHILE', atSiteKeyword: siteKw },
+            cost: [],
+            effects: [
+                {
+                    type: 'MODIFY_KEYWORD',
+                    keyword: grant.keyword,
+                    target,
+                },
+            ],
+            source: 'SELF',
+            text: stripAbilityMarkup(sentence),
+        });
+    }
+
+    // « While the fellowship is at a battleground site, each gandalf character gains muster. »
+    const eachRe = new RegExp(
+        `While the fellowship is at an? ([^,]+?) site, each ([^,]+?) ${verb} (?:an?\\s+)?${kwTail}`,
+        'gi'
+    );
+    while ((match = eachRe.exec(text)) !== null) {
+        const sentence = match[0];
+        if (
+            /\b(and|or|may|strength|archery|discard|wound|heal|draw|cannot|other|your|who|whose)\b/i.test(
+                sentence
+            )
+        ) {
+            continue;
+        }
+        const siteKw = parseSiteLocationKeyword(match[1]);
+        if (!siteKw) continue;
+        const eachTarget = parseWhileEachClass(match[2]);
+        if (!eachTarget) continue;
+        const grant = parseWhileKeywordGrant(match[3]);
+        if (!grant) continue;
+        const after = stripAbilityMarkup(
+            text.slice(match.index + match[0].length)
+        ).trim();
+        if (/^and\b/i.test(after)) continue;
+
+        found.push({
+            id: `${cardId || 'ability'}:${found.length}:while-at-site-each-kw`,
+            phases: [],
+            trigger: { type: 'WHILE', atSiteKeyword: siteKw },
+            cost: [],
+            effects: [
+                {
+                    type: 'MODIFY_KEYWORD',
+                    keyword: grant.keyword,
+                    target: eachTarget,
+                },
+            ],
+            source: 'SELF',
+            text: stripAbilityMarkup(sentence),
+        });
     }
 
     return found;
@@ -2779,6 +2921,149 @@ export function parseSiteAbilities(
         });
     });
     return abilities.length > 0 ? abilities : undefined;
+}
+
+
+/**
+ * Passifs « X is strength +N for each … you can spot » / « for each of these races ».
+ * Trigger WHILE vide (vrai en jeu). Refuse wound/assigned/discarded/control/skirmish.
+ */
+function parseForEachStrengthAbilities(
+    text: string,
+    cardTitle?: string,
+    cardId?: string
+): Record<string, unknown>[] {
+    const found: Record<string, unknown>[] = [];
+    const refuse =
+        /\b(wound|assigned|discarded|control|skirmish|twilight|threat|burden|site|bearing|over|less|more than)\b/i;
+
+    // Source CSV : <keyword>…</keyword>, <br>, <i> rappels. On normalise les
+    // frontières de phrase sans toucher aux <symbol> (filtres culture).
+    const working = text
+        .replace(/<i>[\s\S]*?<\/i>/gi, ' ')
+        .replace(/<\/?keyword>/gi, '')
+        .replace(/<br\s*\/?>/gi, ' ')
+        .replace(/\*\*/g, ' ')
+        .replace(/\s+/g, ' ')
+        .trim();
+
+    const resolveWho = (
+        raw: string
+    ): 'SELF' | 'BEARER' | string[][] | null => {
+        const who = stripAbilityMarkup(raw).replace(/\s+/g, ' ').trim();
+        if (/^this (?:minion|companion)$/i.test(who)) return 'SELF';
+        if (/^bearer$/i.test(who)) return 'BEARER';
+        const title = (cardTitle || '').trim();
+        if (title && who.toLowerCase() === title.toLowerCase()) return 'SELF';
+        if (/^[A-ZÀ-ŸÉ]/.test(who) && !/\b(and|or|each)\b/i.test(who)) {
+            return [[who]];
+        }
+        return null;
+    };
+
+    const normalizeRace = (raw: string): string | null => {
+        const cleaned = stripAbilityMarkup(raw).replace(/\s+/g, ' ').trim();
+        if (!cleaned) return null;
+        const lower = cleaned.toLowerCase();
+        if (/^hobbits?$/.test(lower)) return 'HOBBIT';
+        if (/^dwarves$|^dwarf$/.test(lower)) return 'DWARF';
+        if (/^elves$|^elf$/.test(lower)) return 'ELF';
+        if (/^men$|^man$/.test(lower)) return 'MAN';
+        if (/^orcs?$/.test(lower)) return 'ORC';
+        if (/^ents?$/.test(lower)) return 'ENT';
+        if (/^wizards?$/.test(lower)) return 'WIZARD';
+        if (/^uruk-hai$/.test(lower)) return 'URUK-HAI';
+        return null;
+    };
+
+    const racesRe =
+        /(?:^|[.!?]\s*)((?:This (?:minion|companion)|[A-ZÀ-ŸÉ][^,.]*?)) is strength \+(\d+) for (?:each|every) of these races you can spot in the fellowship:\s*([^.]+)\./gi;
+    let match: RegExpExecArray | null;
+    while ((match = racesRe.exec(working)) !== null) {
+        if (refuse.test(match[0])) continue;
+        const target = resolveWho(match[1]);
+        if (!target) continue;
+        const value = parseInt(match[2], 10);
+        if (!Number.isFinite(value) || value <= 0) continue;
+        const raceParts = stripAbilityMarkup(match[3])
+            .replace(/\band\b/gi, ',')
+            .split(',')
+            .map((p) => p.trim())
+            .filter(Boolean);
+        const races: string[] = [];
+        for (const part of raceParts) {
+            const race = normalizeRace(part);
+            if (!race) {
+                races.length = 0;
+                break;
+            }
+            if (!races.includes(race)) races.push(race);
+        }
+        if (races.length === 0) continue;
+
+        found.push({
+            id: `${cardId || 'ability'}:${found.length}:for-each-races`,
+            phases: [],
+            trigger: { type: 'WHILE' },
+            cost: [],
+            effects: [
+                {
+                    type: 'MODIFY_STAT',
+                    stat: 'STRENGTH',
+                    value,
+                    target,
+                    perDistinctRace: { races, inFellowship: true },
+                },
+            ],
+            source: 'SELF',
+            text: stripAbilityMarkup(match[0]),
+        });
+    }
+
+    const eachRe =
+        /(?:^|[.!?]\s*)((?:This (?:minion|companion)|Bearer|[A-ZÀ-ŸÉ][^,.]*?)) is strength \+(\d+) for (?:each|every) (other )?(?:a |an )?([^,.]+?) you (?:can )?spot(?: \(limit \+(\d+)\))?\./gi;
+    while ((match = eachRe.exec(working)) !== null) {
+        if (/for (?:each|every) of these races/i.test(match[0])) continue;
+        if (refuse.test(match[0])) continue;
+        const target = resolveWho(match[1]);
+        if (!target) continue;
+        const value = parseInt(match[2], 10);
+        if (!Number.isFinite(value) || value <= 0) continue;
+        if (match[3]) continue; // « other » : hors scope sûr
+        const spotRaw = match[4].trim();
+        if (/\b(and|or|who|whose|that|with|from|to|may)\b/i.test(spotRaw)) {
+            continue;
+        }
+        const filters = parseClassFilters(spotRaw);
+        if (filters.length === 0) continue;
+        const limit = match[5] ? parseInt(match[5], 10) : undefined;
+        if (limit !== undefined && (!Number.isFinite(limit) || limit <= 0)) {
+            continue;
+        }
+
+        found.push({
+            id: `${cardId || 'ability'}:${found.length}:for-each-spot`,
+            phases: [],
+            trigger: { type: 'WHILE' },
+            cost: [],
+            effects: [
+                {
+                    type: 'MODIFY_STAT',
+                    stat: 'STRENGTH',
+                    value,
+                    target,
+                    perSpot: {
+                        target: [filters],
+                        ...(limit !== undefined ? { limit } : {}),
+                    },
+                },
+            ],
+            source: 'SELF',
+            text: stripAbilityMarkup(match[0]),
+        });
+    }
+
+    return found;
 }
 
 function parseWhenPlayedAbilities(
@@ -4035,6 +4320,15 @@ export function parseAbilities(
             id: `${cardId || 'ability'}:${abilities.length}`,
         });
     });
+
+    parseForEachStrengthAbilities(text, cardTitle, cardId).forEach(
+        (ability) => {
+            abilities.push({
+                ...ability,
+                id: `${cardId || 'ability'}:${abilities.length}`,
+            });
+        }
+    );
 
     parseEachTimeYouPlayAbilities(text, cardId).forEach((ability) => {
         abilities.push({

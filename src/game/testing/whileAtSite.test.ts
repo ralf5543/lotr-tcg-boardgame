@@ -241,3 +241,122 @@ describe('While at a … site → keyword', () => {
         expect(getKeywordValue(dwarf, 'DAMAGE', G)).toBe(1);
     });
 });
+
+describe('With Doom — Gandalf nommé vs culture GANDALF', () => {
+    const withDoomUnderground: Ability = {
+        id: '12U36:0',
+        phases: [],
+        trigger: { type: 'WHILE', atSiteKeyword: 'UNDERGROUND' },
+        cost: [],
+        effects: [
+            {
+                type: 'MODIFY_KEYWORD',
+                keyword: 'MUSTER',
+                target: [['Gandalf']],
+            },
+        ],
+        source: 'SELF',
+    };
+    const withDoomBattleground: Ability = {
+        id: '12U36:1',
+        phases: [],
+        trigger: { type: 'WHILE', atSiteKeyword: 'BATTLEGROUND' },
+        cost: [],
+        effects: [
+            {
+                type: 'MODIFY_KEYWORD',
+                keyword: 'MUSTER',
+                target: [['GANDALF', 'CHARACTER']],
+            },
+        ],
+        source: 'SELF',
+    };
+
+    it('underground : Muster pour Gandalf seulement, pas l’Ent', () => {
+        const gandalf = createCompanion({
+            id: '1R72',
+            instanceId: 'gandalf',
+            title: 'Gandalf',
+            culture: 'GANDALF',
+            race: 'WIZARD',
+        });
+        const ent = createCompanion({
+            id: '6C33',
+            instanceId: 'quickbeam',
+            title: 'Quickbeam',
+            culture: 'GANDALF',
+            race: 'ENT',
+        });
+        const condition = createCard({
+            id: '12U36',
+            instanceId: 'with-doom',
+            type: 'CONDITION',
+            culture: 'GANDALF',
+            abilities: [withDoomUnderground, withDoomBattleground],
+        });
+        const G = createGameState({
+            path: pathWith(
+                0,
+                createSite({
+                    keywords: ['UNDERGROUND'],
+                    siteNumber: 1,
+                })
+            ),
+            players: {
+                '0': createPlayerState('0', {
+                    currentSiteIndex: 0,
+                    fellowshipArea: [gandalf, ent],
+                    supportArea: [condition],
+                }),
+            },
+            fpPlayerId: '0',
+        });
+
+        expect(getKeywordValue(gandalf, 'MUSTER', G)).toBeGreaterThanOrEqual(0);
+        expect(getKeywordValue(ent, 'MUSTER', G)).toBe(-1);
+    });
+
+    it('battleground : Muster pour chaque personnage culture Gandalf (Ent inclus)', () => {
+        const gandalf = createCompanion({
+            id: '1R72',
+            instanceId: 'gandalf',
+            title: 'Gandalf',
+            culture: 'GANDALF',
+            race: 'WIZARD',
+        });
+        const ent = createCompanion({
+            id: '6C33',
+            instanceId: 'quickbeam',
+            title: 'Quickbeam',
+            culture: 'GANDALF',
+            race: 'ENT',
+        });
+        const condition = createCard({
+            id: '12U36',
+            instanceId: 'with-doom',
+            type: 'CONDITION',
+            culture: 'GANDALF',
+            abilities: [withDoomUnderground, withDoomBattleground],
+        });
+        const G = createGameState({
+            path: pathWith(
+                6,
+                createSite({
+                    keywords: ['BATTLEGROUND'],
+                    siteNumber: 7,
+                })
+            ),
+            players: {
+                '0': createPlayerState('0', {
+                    currentSiteIndex: 6,
+                    fellowshipArea: [gandalf, ent],
+                    supportArea: [condition],
+                }),
+            },
+            fpPlayerId: '0',
+        });
+
+        expect(getKeywordValue(gandalf, 'MUSTER', G)).toBeGreaterThanOrEqual(0);
+        expect(getKeywordValue(ent, 'MUSTER', G)).toBeGreaterThanOrEqual(0);
+    });
+});
