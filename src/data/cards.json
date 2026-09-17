@@ -91880,6 +91880,26 @@
         "DWARF"
       ]
     ],
+    "abilities": [
+      {
+        "id": "11U3:0",
+        "phases": [],
+        "trigger": {
+          "type": "WHILE",
+          "atSiteKeyword": "MOUNTAIN"
+        },
+        "cost": [],
+        "effects": [
+          {
+            "type": "MODIFY_KEYWORD",
+            "keyword": "DAMAGE +1",
+            "target": "BEARER"
+          }
+        ],
+        "source": "ATTACHMENT",
+        "text": "While bearer is at a mountain site, he is Damage +1."
+      }
+    ],
     "culture": "DWARVEN",
     "twilightCost": 1,
     "strength": 2,
@@ -95004,6 +95024,26 @@
     "keywords": [
       "FIERCE"
     ],
+    "abilities": [
+      {
+        "id": "11C73:0",
+        "phases": [],
+        "trigger": {
+          "type": "WHILE",
+          "atSiteKeyword": "BATTLEGROUND"
+        },
+        "cost": [],
+        "effects": [
+          {
+            "type": "MODIFY_KEYWORD",
+            "keyword": "FIERCE",
+            "target": "SELF"
+          }
+        ],
+        "source": "SELF",
+        "text": "While this minion is at a battleground site, it is Fierce."
+      }
+    ],
     "culture": "MEN",
     "race": "MAN",
     "twilightCost": 4,
@@ -95190,6 +95230,26 @@
     "keywords": [
       "DAMAGE +1"
     ],
+    "abilities": [
+      {
+        "id": "11S77:0",
+        "phases": [],
+        "trigger": {
+          "type": "WHILE",
+          "atSiteKeyword": "PLAINS"
+        },
+        "cost": [],
+        "effects": [
+          {
+            "type": "MODIFY_KEYWORD",
+            "keyword": "DAMAGE +1",
+            "target": "SELF"
+          }
+        ],
+        "source": "SELF",
+        "text": "While this minion is at a plains site, it is Damage +1."
+      }
+    ],
     "culture": "MEN",
     "race": "MAN",
     "twilightCost": 4,
@@ -95369,6 +95429,26 @@
     "keywords": [
       "ARCHER"
     ],
+    "abilities": [
+      {
+        "id": "11R81:0",
+        "phases": [],
+        "trigger": {
+          "type": "WHILE",
+          "atSiteKeyword": "PLAINS"
+        },
+        "cost": [],
+        "effects": [
+          {
+            "type": "MODIFY_KEYWORD",
+            "keyword": "ARCHER",
+            "target": "SELF"
+          }
+        ],
+        "source": "SELF",
+        "text": "While this minion is at a plains site, it is an Archer."
+      }
+    ],
     "culture": "MEN",
     "race": "MAN",
     "twilightCost": 3,
@@ -95545,6 +95625,26 @@
     "type": "MINION",
     "keywords": [
       "FIERCE"
+    ],
+    "abilities": [
+      {
+        "id": "11C85:0",
+        "phases": [],
+        "trigger": {
+          "type": "WHILE",
+          "atSiteKeyword": "BATTLEGROUND"
+        },
+        "cost": [],
+        "effects": [
+          {
+            "type": "MODIFY_KEYWORD",
+            "keyword": "FIERCE",
+            "target": "SELF"
+          }
+        ],
+        "source": "SELF",
+        "text": "While this minion is at a battleground site, it is Fierce."
+      }
     ],
     "culture": "MEN",
     "race": "MAN",
@@ -100520,6 +100620,26 @@
         "URUKHAI",
         "MINION"
       ]
+    ],
+    "abilities": [
+      {
+        "id": "11U191:0",
+        "phases": [],
+        "trigger": {
+          "type": "WHILE",
+          "atSiteKeyword": "BATTLEGROUND"
+        },
+        "cost": [],
+        "effects": [
+          {
+            "type": "MODIFY_KEYWORD",
+            "keyword": "ARCHER",
+            "target": "BEARER"
+          }
+        ],
+        "source": "ATTACHMENT",
+        "text": "While bearer is at a battleground site, it is an Archer."
+      }
     ],
     "culture": "URUK-HAI",
     "twilightCost": 1,

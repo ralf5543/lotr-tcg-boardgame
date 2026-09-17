@@ -475,7 +475,7 @@ const SITES_TEST_PATH_IDS = [
     '11S231', // 5 Caras Galadhon — FOREST
     '11U227', // 6 Anduin Banks — RIVER (+ sanctuaire)
     '11S241', // 7 Fortress of Orthanc — BATTLEGROUND
-    '11U235', // 8 Dammed Gate-stream — MARSH
+    '11S229', // 8 Barazinbar — MOUNTAIN
     '11S240', // 9 Flats of Rohan — PLAINS
 ] as const;
 
@@ -585,16 +585,25 @@ export const applyDevPreset = (
                     ...clonePresetCard('1R89', 'dev-aragorn'),
                     wounds: 1,
                 },
-                // FOREST → force +2 (sauter au site 5)
+                // FOREST → force +2 (site 5)
                 clonePresetCard('11C27', 'dev-woodland-sentinel'),
+                // MOUNTAIN → Damage +1 via hache (site 8)
+                {
+                    ...clonePresetCard('0P12', 'dev-gimli'),
+                    attachments: [clonePresetCard('11U3', 'dev-axe-khazad')],
+                },
             ];
 
             G.battlefield = [
                 // UNDERGROUND → +2 / +3 (sites 1 & 4)
                 clonePresetCard('11S115', 'dev-denizen-khazad'),
                 clonePresetCard('11S116', 'dev-denizen-moria'),
-                // BATTLEGROUND → +2 (site 7)
+                // BATTLEGROUND → force +2 (site 7) + Damage si possession
                 clonePresetCard('12R150', 'dev-uruk-decimator'),
+                // BATTLEGROUND → Fierce (site 7)
+                clonePresetCard('11C73', 'dev-corps-harad'),
+                // PLAINS → Damage +1 (sites 3 & 9)
+                clonePresetCard('11S77', 'dev-elder-dunland'),
             ];
 
             if (shadowPlayer) {
@@ -604,7 +613,7 @@ export const applyDevPreset = (
             }
 
             G.statusMessage =
-                '[DEV] Sites + keywords : site 1 UNDERGROUND (denizens +force). Grille : 5=FOREST, 7=BATTLEGROUND, 3/6=sanctuaire.';
+                '[DEV] Sites + keywords : site 1 UNDERGROUND. Grille 5=FOREST, 7=BATTLEGROUND, 8=MOUNTAIN, 3/9=PLAINS, 3/6=sanctuaire.';
             break;
         }
     }

@@ -28,7 +28,8 @@ L’ancien plan effets de cartes est **figé** (`.cursor/rules/card-effects-plan
    - ✅ Helpers lecture keywords site courant / path.
    - ✅ Soins sanctuaire (**Standard**) : **sites 3 et 6 du chemin** ; mot-clé imprimé `SANCTUARY` pour pré-Shadows.
    - ✅ Cartes : `While … at a [terrain] site, … strength ±N` → `trigger.atSiteKeyword` + `isAtSiteWithKeyword` (ex. denizens 11S115/116, Woodland Sentinel, Uruk Decimator).
-   - ⏳ Suite keywords cartes : Fierce/Damage au site, spot a [terrain] site, skip phase at site — familles sûres seulement.
+   - ✅ Cartes : `While … at a [terrain] site, … Fierce | Damage +N | Archer` (ex. Corps of Harad, Elder of Dunland, Axe of Khazad-dûm).
+   - ⏳ Suite keywords cartes : spot a [terrain] site, skip phase at site, « each » / fellowship at site — familles sûres seulement.
    - Preset DevPanel `SITES_TEST` : chemin terrains variés + cartes de test.
 
 3. **Gametext des sites** (pause après 1ʳᵉ verticale move)
@@ -61,7 +62,7 @@ L’ancien plan effets de cartes est **figé** (`.cursor/rules/card-effects-plan
 | Soins sanctuaire (sites 3 & 6 du chemin, Standard) | ✅ |
 | Helpers keywords site (at / spot) | ✅ |
 | Bonus crépuscule de région (+3 / +6) | ✅ |
-| Keywords branchés sur gametext cartes | partiel (While at site → force ✅) |
+| Keywords branchés sur gametext cartes | partiel (While at site → force + Fierce/Damage/Archer ✅) |
 | Abilities / gametext site | partiel (move twilight + discard allies ✅) |
 | Attache sur site | ❌ |
 | Contrôle / libération | ❌ |

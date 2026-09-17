@@ -1,6 +1,8 @@
 import { describe, expect, it } from 'vitest';
 import { getCalculatedStrength } from '../logic/stats/statCalculator';
+import { getKeywordValue } from '../engine/keywords/keywordUtils';
 import {
+    createCard,
     createCompanion,
     createGameState,
     createMinion,
@@ -134,5 +136,94 @@ describe('While at a … site → force', () => {
         });
 
         expect(getCalculatedStrength(G, companion)).toBe(7);
+    });
+});
+
+describe('While at a … site → keyword', () => {
+    it('accorde Fierce sur BATTLEGROUND', () => {
+        const minion = createMinion({
+            id: '11C73',
+            instanceId: 'corps',
+            abilities: [
+                {
+                    id: '11C73:0',
+                    phases: [],
+                    trigger: { type: 'WHILE', atSiteKeyword: 'BATTLEGROUND' },
+                    cost: [],
+                    effects: [
+                        {
+                            type: 'MODIFY_KEYWORD',
+                            keyword: 'FIERCE',
+                            target: 'SELF',
+                        },
+                    ],
+                    source: 'SELF',
+                },
+            ],
+        });
+        const G = createGameState({
+            path: pathWith(
+                6,
+                createSite({
+                    keywords: ['BATTLEGROUND'],
+                    siteNumber: 7,
+                })
+            ),
+            players: {
+                '0': createPlayerState('0', { currentSiteIndex: 6 }),
+            },
+            battlefield: [minion],
+        });
+
+        expect(getKeywordValue(minion, 'FIERCE', G)).toBe(0);
+    });
+
+    it('accorde Damage +1 au porteur sur MOUNTAIN', () => {
+        const axe = createCard({
+            id: '11U3',
+            instanceId: 'axe',
+            kind: 'FREE_PEOPLE',
+            type: 'POSSESSION',
+            subtype: 'HAND-WEAPON',
+            abilities: [
+                {
+                    id: '11U3:0',
+                    phases: [],
+                    trigger: { type: 'WHILE', atSiteKeyword: 'MOUNTAIN' },
+                    cost: [],
+                    effects: [
+                        {
+                            type: 'MODIFY_KEYWORD',
+                            keyword: 'DAMAGE +1',
+                            target: 'BEARER',
+                        },
+                    ],
+                    source: 'ATTACHMENT',
+                },
+            ],
+        });
+        const dwarf = createCompanion({
+            id: 'gimli',
+            instanceId: 'gimli',
+            race: 'DWARF',
+            attachments: [axe],
+        });
+        const G = createGameState({
+            path: pathWith(
+                7,
+                createSite({
+                    keywords: ['MOUNTAIN'],
+                    siteNumber: 8,
+                })
+            ),
+            players: {
+                '0': createPlayerState('0', {
+                    currentSiteIndex: 7,
+                    fellowshipArea: [dwarf],
+                }),
+            },
+        });
+
+        expect(getKeywordValue(dwarf, 'DAMAGE', G)).toBe(1);
     });
 });

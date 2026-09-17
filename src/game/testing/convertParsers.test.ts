@@ -1612,6 +1612,89 @@ describe('parseAbilities — While at a … site → strength', () => {
     });
 });
 
+describe('parseAbilities — While at a … site → keyword', () => {
+    it('parse Corps of Harad : battleground → Fierce', () => {
+        expect(
+            parseAbilities(
+                'While this minion is at a battleground site, it is <keyword>Fierce.</keyword>',
+                'Corps of Harad',
+                '11C73'
+            )
+        ).toEqual([
+            expect.objectContaining({
+                trigger: { type: 'WHILE', atSiteKeyword: 'BATTLEGROUND' },
+                effects: [
+                    {
+                        type: 'MODIFY_KEYWORD',
+                        keyword: 'FIERCE',
+                        target: 'SELF',
+                    },
+                ],
+            }),
+        ]);
+    });
+
+    it('parse Elder of Dunland : plains → Damage +1', () => {
+        expect(
+            parseAbilities(
+                'While this minion is at a plains site, it is <keyword>Damage +1.</keyword>',
+                'Elder of Dunland',
+                '11S77'
+            )
+        ).toEqual([
+            expect.objectContaining({
+                trigger: { type: 'WHILE', atSiteKeyword: 'PLAINS' },
+                effects: [
+                    expect.objectContaining({
+                        type: 'MODIFY_KEYWORD',
+                        keyword: 'DAMAGE +1',
+                    }),
+                ],
+            }),
+        ]);
+    });
+
+    it('parse Fletcher : plains → Archer (ignore each suite)', () => {
+        const abs = parseAbilities(
+            'While this minion is at a plains site, it is an <keyword>Archer.</keyword> While you can spot 6 companions, each <symbol>men</symbol> minion is an <keyword>Archer.</keyword>',
+            'Fletcher of Harad',
+            '11R81'
+        );
+        expect(abs).toEqual([
+            expect.objectContaining({
+                trigger: { type: 'WHILE', atSiteKeyword: 'PLAINS' },
+                effects: [
+                    expect.objectContaining({
+                        keyword: 'ARCHER',
+                    }),
+                ],
+            }),
+        ]);
+    });
+
+    it('parse Axe of Khazad-dûm : bearer at mountain → Damage +1', () => {
+        expect(
+            parseAbilities(
+                'Bearer must be a Dwarf. <br>While bearer is at a mountain site, he is <keyword>Damage +1.</keyword>',
+                'Axe of Khazad-dûm',
+                '11U3'
+            )
+        ).toEqual([
+            expect.objectContaining({
+                trigger: { type: 'WHILE', atSiteKeyword: 'MOUNTAIN' },
+                effects: [
+                    {
+                        type: 'MODIFY_KEYWORD',
+                        keyword: 'DAMAGE +1',
+                        target: 'BEARER',
+                    },
+                ],
+                source: 'ATTACHMENT',
+            }),
+        ]);
+    });
+});
+
 describe('parseAbilities — While / skip archery phase', () => {
     it('parse Fill With Fear : spot The Balrog → skip archery', () => {
         const text =
