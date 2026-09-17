@@ -1782,6 +1782,32 @@ describe('parseAbilities — While at a … site → keyword', () => {
     });
 });
 
+describe('parseAbilities — While spot N terrain sites', () => {
+    it('parse Unforgiving Depths : 3 underground → each Orc Muster', () => {
+        expect(
+            parseAbilities(
+                'While you can spot 3 underground sites, each <symbol>orc</symbol> Orc gains **muster.** **Shadow:** Discard this condition from play and spot an <symbol>orc</symbol> minion to replace the fellowship’s current site with an underground site from your adventure deck.',
+                'Unforgiving Depths',
+                '13C120'
+            )
+        ).toEqual([
+            expect.objectContaining({
+                trigger: {
+                    type: 'WHILE',
+                    spotSiteKeyword: { keyword: 'UNDERGROUND', count: 3 },
+                },
+                effects: [
+                    {
+                        type: 'MODIFY_KEYWORD',
+                        keyword: 'MUSTER',
+                        target: [['ORC', 'ORC']],
+                    },
+                ],
+            }),
+        ]);
+    });
+});
+
 describe('parseAbilities — While / skip archery phase', () => {
     it('parse Fill With Fear : spot The Balrog → skip archery', () => {
         const text =

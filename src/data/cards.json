@@ -115981,6 +115981,34 @@
     "kind": "SHADOW",
     "type": "CONDITION",
     "subtype": "SUPPORT-AREA",
+    "abilities": [
+      {
+        "id": "13C120:0",
+        "phases": [],
+        "trigger": {
+          "type": "WHILE",
+          "spotSiteKeyword": {
+            "keyword": "UNDERGROUND",
+            "count": 3
+          }
+        },
+        "cost": [],
+        "effects": [
+          {
+            "type": "MODIFY_KEYWORD",
+            "keyword": "MUSTER",
+            "target": [
+              [
+                "ORC",
+                "ORC"
+              ]
+            ]
+          }
+        ],
+        "source": "SELF",
+        "text": "While you can spot 3 underground sites, each orc Orc gains muster."
+      }
+    ],
     "actionPhases": [
       "SHADOW",
       "START_OF_REGROUP"

@@ -469,7 +469,7 @@ const clonePresetSite = (
 /** Neuf sites Standard — terrains variés pour tester les mots-clés. Sanctuaire = 3 & 6. */
 const SITES_TEST_PATH_IDS = [
     '11S263', // 1 West Gate of Moria — UNDERGROUND
-    '11S228', // 2 Anduin Confluence — RIVER
+    '11S247', // 2 Moria Guardroom — UNDERGROUND (3ᵉ pour spot 3)
     '11S237', // 3 Ettenmoors — PLAINS (+ sanctuaire)
     '11S233', // 4 Chamber of Mazarbul — UNDERGROUND
     '11S231', // 5 Caras Galadhon — FOREST
@@ -625,12 +625,15 @@ export const applyDevPreset = (
 
             if (shadowPlayer) {
                 shadowPlayer.hand = [];
-                shadowPlayer.supportArea = [];
+                // Spot 3 underground → each Orc Muster (chemin a 3 UNDERGROUND)
+                shadowPlayer.supportArea = [
+                    clonePresetCard('13C120', 'dev-unforgiving-depths'),
+                ];
                 shadowPlayer.fellowshipArea = [];
             }
 
             G.statusMessage =
-                '[DEV] Sites + keywords : site 1 UNDERGROUND. Grille 5=FOREST, 7=BATTLEGROUND, 8=MOUNTAIN, 3/9=PLAINS, 3/6=sanctuaire.';
+                '[DEV] Sites + keywords : 3×UNDERGROUND (1/2/4) + Unforgiving Depths. 5=FOREST, 7=BATTLEGROUND, 8=MOUNTAIN, 3/9=PLAINS, 3/6=sanctuaire.';
             break;
         }
     }

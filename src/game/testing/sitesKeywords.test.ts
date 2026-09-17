@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import {
     canSpotSiteWithKeyword,
+    countSitesWithKeyword,
     getCurrentSite,
     isAtSiteWithKeyword,
     isCurrentSiteSanctuary,
@@ -75,5 +76,7 @@ describe('logic/sites — mots-clés', () => {
         expect(canSpotSiteWithKeyword(G, 'UNDERGROUND')).toBe(true);
         expect(canSpotSiteWithKeyword(G, 'MOUNTAIN')).toBe(false);
         expect(isAtSiteWithKeyword(G, 'PLAINS')).toBe(true);
+        expect(countSitesWithKeyword(G, 'UNDERGROUND')).toBe(1);
+        expect(countSitesWithKeyword(G, 'PLAINS')).toBe(1);
     });
 });

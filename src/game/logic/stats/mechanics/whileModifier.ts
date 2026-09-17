@@ -14,6 +14,7 @@ import { findTargetCard } from '../../../../utils/cardUtils';
 import {
     isAtSiteWithKeyword,
     isCurrentSiteSanctuary,
+    countSitesWithKeyword,
 } from '../../sites';
 
 function matchCard(card: CardState, targetId: string): boolean {
@@ -106,6 +107,15 @@ function whileConditionHolds(
         if (trigger.atSiteKeyword === 'SANCTUARY') {
             if (!isCurrentSiteSanctuary(G)) return false;
         } else if (!isAtSiteWithKeyword(G, trigger.atSiteKeyword)) {
+            return false;
+        }
+    }
+
+    if (trigger.spotSiteKeyword) {
+        const needed = trigger.spotSiteKeyword.count || 1;
+        if (
+            countSitesWithKeyword(G, trigger.spotSiteKeyword.keyword) < needed
+        ) {
             return false;
         }
     }

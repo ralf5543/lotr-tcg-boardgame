@@ -335,6 +335,8 @@ export type AbilityTrigger =
           bearing?: { target: string[][] };
           /** Compagnie sur un site portant ce mot-clé (terrains / Sanctuary). */
           atSiteKeyword?: CardKeyword;
+          /** Spot N sites du chemin avec ce mot-clé. */
+          spotSiteKeyword?: { keyword: CardKeyword; count: number };
       }
     | {
           type: 'CHARACTER_DIES';

@@ -36,9 +36,17 @@ export function canSpotSiteWithKeyword(
     G: GameState,
     keyword: CardKeyword
 ): boolean {
-    return (G.path || []).some(
+    return countSitesWithKeyword(G, keyword) >= 1;
+}
+
+/** Nombre de sites posés sur le chemin portant ce mot-clé. */
+export function countSitesWithKeyword(
+    G: GameState,
+    keyword: CardKeyword
+): number {
+    return (G.path || []).filter(
         (site) => site !== null && siteHasKeyword(site, keyword)
-    );
+    ).length;
 }
 
 export function isCurrentSiteSanctuary(G: GameState): boolean {

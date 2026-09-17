@@ -2099,6 +2099,57 @@ function parseWhileAtSiteKeywordAbilities(
 }
 
 /**
+ * While you can spot N [terrain] sites, each [classe] gains/is Fierce|Damage|Muster|Archer.
+ */
+function parseWhileSpotSiteEachKeywordAbilities(
+    text: string,
+    cardId?: string
+): Record<string, unknown>[] {
+    const found: Record<string, unknown>[] = [];
+    const kwTail =
+        '((?:<keyword>[^<]*</keyword>|\\*\\*[^*]+\\*\\*|damage\\s*\\+\\s*\\d+|fierce|archer|muster)\\.?)';
+    const re = new RegExp(
+        `While you can spot (\\d+) ([^,]+?) sites?, each ([^,]+?) (?:is|gains) (?:an?\\s+)?${kwTail}`,
+        'gi'
+    );
+    let match: RegExpExecArray | null;
+    while ((match = re.exec(text)) !== null) {
+        const count = parseInt(match[1], 10);
+        if (!Number.isFinite(count) || count <= 0) continue;
+        const siteKw = parseSiteLocationKeyword(match[2]);
+        if (!siteKw) continue;
+        const eachTarget = parseWhileEachClass(match[3]);
+        if (!eachTarget) continue;
+        const grant = parseWhileKeywordGrant(match[4]);
+        if (!grant) continue;
+        const after = stripAbilityMarkup(
+            text.slice(match.index + match[0].length)
+        ).trim();
+        if (/^and\b/i.test(after)) continue;
+
+        found.push({
+            id: `${cardId || 'ability'}:${found.length}:while-spot-site-each-kw`,
+            phases: [],
+            trigger: {
+                type: 'WHILE',
+                spotSiteKeyword: { keyword: siteKw, count },
+            },
+            cost: [],
+            effects: [
+                {
+                    type: 'MODIFY_KEYWORD',
+                    keyword: grant.keyword,
+                    target: eachTarget,
+                },
+            ],
+            source: 'SELF',
+            text: stripAbilityMarkup(match[0]),
+        });
+    }
+    return found;
+}
+
+/**
  * Bénéficiaire « each [classe] » — filtres connus uniquement.
  * Refuse skirmishing / of your / who has / not roaming / etc.
  */
@@ -2555,6 +2606,7 @@ function parseWhileKeywordGrant(
     }
     if (/^fierce$/i.test(plain)) return { keyword: 'FIERCE' };
     if (/^archer$/i.test(plain)) return { keyword: 'ARCHER' };
+    if (/^muster$/i.test(plain)) return { keyword: 'MUSTER' };
     return null;
 }
 
@@ -4017,6 +4069,13 @@ export function parseAbilities(
             });
         }
     );
+
+    parseWhileSpotSiteEachKeywordAbilities(text, cardId).forEach((ability) => {
+        abilities.push({
+            ...ability,
+            id: `${cardId || 'ability'}:${abilities.length}`,
+        });
+    });
 
     parseWhileSpotEachStrengthAbilities(text, cardId).forEach((ability) => {
         abilities.push({
