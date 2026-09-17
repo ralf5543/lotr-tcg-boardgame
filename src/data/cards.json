@@ -948,8 +948,7 @@
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
     "keywords": [
-      "UNHASTY",
-      "DAMAGE +1"
+      "UNHASTY"
     ],
     "abilities": [
       {
@@ -2123,9 +2122,6 @@
     "kind": "SHADOW",
     "type": "ARTIFACT",
     "subtype": "HAND-WEAPON",
-    "keywords": [
-      "DAMAGE +1"
-    ],
     "grantsKeywords": [
       "DAMAGE +1"
     ],
@@ -2174,8 +2170,7 @@
     "kind": "SHADOW",
     "type": "MINION",
     "keywords": [
-      "TWILIGHT",
-      "DAMAGE +1"
+      "TWILIGHT"
     ],
     "culture": "WRAITH",
     "race": "NAZGÛL",
@@ -2224,9 +2219,6 @@
     "kind": "FREE_PEOPLE",
     "type": "POSSESSION",
     "subtype": "HAND-WEAPON",
-    "keywords": [
-      "DAMAGE +1"
-    ],
     "grantsKeywords": [
       "DAMAGE +1"
     ],
@@ -2425,8 +2417,7 @@
     "type": "MINION",
     "keywords": [
       "ENDURING",
-      "FIERCE",
-      "DAMAGE +1"
+      "FIERCE"
     ],
     "culture": "GOLLUM",
     "race": "SPIDER",
@@ -3224,9 +3215,6 @@
     "isUnique": false,
     "kind": "SHADOW",
     "type": "MINION",
-    "keywords": [
-      "DAMAGE +1"
-    ],
     "abilities": [
       {
         "id": "0P73:0",
@@ -3806,9 +3794,6 @@
     "kind": "FREE_PEOPLE",
     "type": "CONDITION",
     "subtype": "SUPPORT-AREA",
-    "keywords": [
-      "DAMAGE +1"
-    ],
     "actionPhases": [
       "SKIRMISH"
     ],
@@ -4382,9 +4367,6 @@
     "isUnique": true,
     "kind": "SHADOW",
     "type": "MINION",
-    "keywords": [
-      "FIERCE"
-    ],
     "culture": "WRAITH",
     "race": "NAZGÛL",
     "twilightCost": 5,
@@ -5009,9 +4991,6 @@
     "kind": "FREE_PEOPLE",
     "type": "POSSESSION",
     "subtype": "HAND-WEAPON",
-    "keywords": [
-      "DAMAGE +1"
-    ],
     "grantsKeywords": [
       "DAMAGE +1"
     ],
@@ -7936,9 +7915,6 @@
     "kind": "FREE_PEOPLE",
     "type": "ARTIFACT",
     "subtype": "HAND-WEAPON",
-    "keywords": [
-      "DAMAGE +1"
-    ],
     "grantsKeywords": [
       "DAMAGE +1"
     ],
@@ -8809,9 +8785,6 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
-    "keywords": [
-      "DAMAGE +1"
-    ],
     "culture": "ROHAN",
     "race": "MAN",
     "twilightCost": 3,
@@ -11212,9 +11185,6 @@
     "isUnique": false,
     "kind": "FREE_PEOPLE",
     "type": "EVENT",
-    "keywords": [
-      "DAMAGE +1"
-    ],
     "abilities": [
       {
         "id": "1C5:0",
@@ -13158,9 +13128,6 @@
     "kind": "FREE_PEOPLE",
     "type": "POSSESSION",
     "subtype": "HAND-WEAPON",
-    "keywords": [
-      "DAMAGE +1"
-    ],
     "grantsKeywords": [
       "DAMAGE +1"
     ],
@@ -14548,9 +14515,6 @@
     "kind": "FREE_PEOPLE",
     "type": "POSSESSION",
     "subtype": "HAND-WEAPON",
-    "keywords": [
-      "DAMAGE +1"
-    ],
     "grantsKeywords": [
       "DAMAGE +1"
     ],
@@ -18956,9 +18920,6 @@
     "kind": "SHADOW",
     "type": "POSSESSION",
     "subtype": "HAND-WEAPON",
-    "keywords": [
-      "DAMAGE +1"
-    ],
     "attachedTo": [
       [
         "Cave Troll of Moria"
@@ -28217,9 +28178,6 @@
     "kind": "FREE_PEOPLE",
     "type": "POSSESSION",
     "subtype": "HAND-WEAPON",
-    "keywords": [
-      "DAMAGE +1"
-    ],
     "grantsKeywords": [
       "DAMAGE +1"
     ],
@@ -28750,9 +28708,6 @@
     "kind": "SHADOW",
     "type": "POSSESSION",
     "subtype": "HAND-WEAPON",
-    "keywords": [
-      "DAMAGE +1"
-    ],
     "grantsKeywords": [
       "DAMAGE +1"
     ],
@@ -29100,9 +29055,6 @@
     "kind": "SHADOW",
     "type": "ARTIFACT",
     "subtype": "HAND-WEAPON",
-    "keywords": [
-      "DAMAGE +1"
-    ],
     "grantsKeywords": [
       "DAMAGE +1"
     ],
@@ -30676,8 +30628,7 @@
     "kind": "SHADOW",
     "type": "MINION",
     "keywords": [
-      "TWILIGHT",
-      "DAMAGE +1"
+      "TWILIGHT"
     ],
     "culture": "WRAITH",
     "race": "NAZGÛL",
@@ -34645,9 +34596,6 @@
     "isUnique": false,
     "kind": "FREE_PEOPLE",
     "type": "EVENT",
-    "keywords": [
-      "DAMAGE +1"
-    ],
     "phases": [
       "MANEUVER"
     ],
@@ -38242,9 +38190,6 @@
     "isUnique": false,
     "kind": "SHADOW",
     "type": "MINION",
-    "keywords": [
-      "DAMAGE +1"
-    ],
     "culture": "DUNLAND",
     "race": "MAN",
     "twilightCost": 4,
@@ -38821,9 +38766,6 @@
     "isUnique": false,
     "kind": "SHADOW",
     "type": "MINION",
-    "keywords": [
-      "DAMAGE +1"
-    ],
     "culture": "DUNLAND",
     "race": "MAN",
     "twilightCost": 5,
@@ -39523,9 +39465,6 @@
     "isUnique": false,
     "kind": "SHADOW",
     "type": "MINION",
-    "keywords": [
-      "DAMAGE +1"
-    ],
     "culture": "DUNLAND",
     "race": "MAN",
     "twilightCost": 3,
@@ -46630,8 +46569,7 @@
     "type": "MINION",
     "keywords": [
       "TRACKER",
-      "FIERCE",
-      "DAMAGE +1"
+      "FIERCE"
     ],
     "culture": "ISENGARD",
     "race": "URUK-HAI",
@@ -59691,9 +59629,6 @@
     "kind": "FREE_PEOPLE",
     "type": "POSSESSION",
     "subtype": "HAND-WEAPON",
-    "keywords": [
-      "DAMAGE +1"
-    ],
     "grantsKeywords": [
       "DAMAGE +1"
     ],
@@ -60017,8 +59952,7 @@
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
     "keywords": [
-      "UNHASTY",
-      "DAMAGE +1"
+      "UNHASTY"
     ],
     "abilities": [
       {
@@ -60998,9 +60932,6 @@
     "isUnique": false,
     "kind": "SHADOW",
     "type": "MINION",
-    "keywords": [
-      "DAMAGE +1"
-    ],
     "culture": "ISENGARD",
     "race": "MAN",
     "twilightCost": 5,
@@ -61986,9 +61917,6 @@
     "kind": "SHADOW",
     "type": "POSSESSION",
     "subtype": "HAND-WEAPON",
-    "keywords": [
-      "DAMAGE +1"
-    ],
     "attachedTo": [
       [
         "EASTERLING"
@@ -63478,9 +63406,6 @@
     "isUnique": false,
     "kind": "FREE_PEOPLE",
     "type": "EVENT",
-    "keywords": [
-      "DAMAGE +1"
-    ],
     "phases": [
       "SKIRMISH"
     ],
@@ -64362,9 +64287,6 @@
     "kind": "FREE_PEOPLE",
     "type": "POSSESSION",
     "subtype": "HAND-WEAPON",
-    "keywords": [
-      "DAMAGE +1"
-    ],
     "attachedTo": [
       [
         "DWARF"
@@ -65729,9 +65651,6 @@
     "kind": "FREE_PEOPLE",
     "type": "POSSESSION",
     "subtype": "HAND-WEAPON",
-    "keywords": [
-      "DAMAGE +1"
-    ],
     "grantsKeywords": [
       "DAMAGE +1"
     ],
@@ -66786,9 +66705,6 @@
     "isUnique": false,
     "kind": "SHADOW",
     "type": "CONDITION",
-    "keywords": [
-      "DAMAGE +1"
-    ],
     "grantsKeywords": [
       "DAMAGE +1"
     ],
@@ -67714,9 +67630,6 @@
     "isUnique": false,
     "kind": "FREE_PEOPLE",
     "type": "EVENT",
-    "keywords": [
-      "DAMAGE +1"
-    ],
     "phases": [
       "SKIRMISH"
     ],
@@ -68205,9 +68118,6 @@
     "kind": "FREE_PEOPLE",
     "type": "POSSESSION",
     "subtype": "RANGED-WEAPON",
-    "keywords": [
-      "FORTIFICATION"
-    ],
     "attachedTo": [
       [
         "GONDOR",
@@ -68424,9 +68334,6 @@
     "kind": "FREE_PEOPLE",
     "type": "POSSESSION",
     "subtype": "HAND-WEAPON",
-    "keywords": [
-      "DAMAGE +1"
-    ],
     "attachedTo": [
       [
         "GONDOR",
@@ -69033,9 +68940,6 @@
     "kind": "FREE_PEOPLE",
     "type": "CONDITION",
     "subtype": "SUPPORT-AREA",
-    "keywords": [
-      "DAMAGE +1"
-    ],
     "actionPhases": [
       "SKIRMISH"
     ],
@@ -69159,8 +69063,7 @@
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
     "keywords": [
-      "RANGER",
-      "DAMAGE +1"
+      "RANGER"
     ],
     "culture": "GONDOR",
     "race": "MAN",
@@ -69886,8 +69789,7 @@
     "kind": "SHADOW",
     "type": "MINION",
     "keywords": [
-      "SOUTHRON",
-      "DAMAGE +1"
+      "SOUTHRON"
     ],
     "culture": "RAIDER",
     "race": "MAN",
@@ -70263,8 +70165,7 @@
     "kind": "SHADOW",
     "type": "MINION",
     "keywords": [
-      "EASTERLING",
-      "DAMAGE +1"
+      "EASTERLING"
     ],
     "abilities": [
       {
@@ -70336,8 +70237,7 @@
     "kind": "SHADOW",
     "type": "MINION",
     "keywords": [
-      "EASTERLING",
-      "DAMAGE +1"
+      "EASTERLING"
     ],
     "abilities": [
       {
@@ -70453,8 +70353,7 @@
     "kind": "SHADOW",
     "type": "MINION",
     "keywords": [
-      "EASTERLING",
-      "DAMAGE +1"
+      "EASTERLING"
     ],
     "abilities": [
       {
@@ -71259,8 +71158,7 @@
     "kind": "SHADOW",
     "type": "MINION",
     "keywords": [
-      "SOUTHRON",
-      "DAMAGE +1"
+      "SOUTHRON"
     ],
     "actionPhases": [
       "SHADOW"
@@ -71755,8 +71653,7 @@
     "kind": "SHADOW",
     "type": "MINION",
     "keywords": [
-      "SOUTHRON",
-      "DAMAGE +1"
+      "SOUTHRON"
     ],
     "culture": "RAIDER",
     "race": "MAN",
@@ -72075,9 +71972,6 @@
     "isUnique": true,
     "kind": "SHADOW",
     "type": "MINION",
-    "keywords": [
-      "DAMAGE +1"
-    ],
     "culture": "WRAITH",
     "race": "ORC",
     "twilightCost": 5,
@@ -72360,9 +72254,6 @@
     "kind": "SHADOW",
     "type": "POSSESSION",
     "subtype": "HAND-WEAPON",
-    "keywords": [
-      "DAMAGE +1"
-    ],
     "attachedTo": [
       [
         "WRAITH",
@@ -72596,9 +72487,6 @@
     "isUnique": false,
     "kind": "SHADOW",
     "type": "MINION",
-    "keywords": [
-      "DAMAGE +1"
-    ],
     "culture": "WRAITH",
     "race": "ORC",
     "twilightCost": 7,
@@ -72728,9 +72616,6 @@
     "isUnique": false,
     "kind": "SHADOW",
     "type": "MINION",
-    "keywords": [
-      "DAMAGE +1"
-    ],
     "culture": "WRAITH",
     "race": "ORC",
     "twilightCost": 3,
@@ -73120,9 +73005,6 @@
     "kind": "SHADOW",
     "type": "POSSESSION",
     "subtype": "HAND-WEAPON",
-    "keywords": [
-      "DAMAGE +1"
-    ],
     "attachedTo": [
       [
         "WRAITH",
@@ -73456,8 +73338,7 @@
     "kind": "SHADOW",
     "type": "MINION",
     "keywords": [
-      "FIERCE",
-      "DAMAGE +1"
+      "FIERCE"
     ],
     "abilities": [
       {
@@ -73530,9 +73411,6 @@
     "isUnique": true,
     "kind": "SHADOW",
     "type": "MINION",
-    "keywords": [
-      "DAMAGE +1"
-    ],
     "culture": "WRAITH",
     "race": "NAZGÛL",
     "twilightCost": 4,
@@ -74079,9 +73957,6 @@
     "isUnique": false,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
-    "keywords": [
-      "DAMAGE +1"
-    ],
     "culture": "ROHAN",
     "race": "MAN",
     "twilightCost": 2,
@@ -74526,9 +74401,6 @@
     "kind": "FREE_PEOPLE",
     "type": "POSSESSION",
     "subtype": "HAND-WEAPON",
-    "keywords": [
-      "DAMAGE +1"
-    ],
     "grantsKeywords": [
       "DAMAGE +1"
     ],
@@ -75253,9 +75125,6 @@
     "isUnique": false,
     "kind": "FREE_PEOPLE",
     "type": "CONDITION",
-    "keywords": [
-      "PLAINS"
-    ],
     "attachedTo": [
       [
         "SITE"
@@ -78693,9 +78562,6 @@
     "kind": "FREE_PEOPLE",
     "type": "CONDITION",
     "subtype": "SUPPORT-AREA",
-    "keywords": [
-      "DAMAGE +1"
-    ],
     "actionPhases": [
       "FELLOWSHIP"
     ],
@@ -78993,9 +78859,6 @@
     "kind": "FREE_PEOPLE",
     "type": "CONDITION",
     "subtype": "SUPPORT-AREA",
-    "keywords": [
-      "DAMAGE +1"
-    ],
     "actionPhases": [
       "FELLOWSHIP",
       "SKIRMISH"
@@ -79699,8 +79562,7 @@
     "type": "MINION",
     "keywords": [
       "ENDURING",
-      "FIERCE",
-      "DAMAGE +1"
+      "FIERCE"
     ],
     "culture": "GOLLUM",
     "race": "SPIDER",
@@ -81321,8 +81183,7 @@
     "type": "POSSESSION",
     "subtype": "MOUNT",
     "keywords": [
-      "SOUTHRON",
-      "DAMAGE +1"
+      "SOUTHRON"
     ],
     "attachedTo": [
       [
@@ -81488,9 +81349,6 @@
     "isUnique": false,
     "kind": "SHADOW",
     "type": "EVENT",
-    "keywords": [
-      "DAMAGE +1"
-    ],
     "phases": [
       "SKIRMISH"
     ],
@@ -83139,8 +82997,7 @@
     "type": "MINION",
     "keywords": [
       "BESIEGER",
-      "FIERCE",
-      "DAMAGE +1"
+      "FIERCE"
     ],
     "culture": "SAURON",
     "race": "TROLL",
@@ -84010,9 +83867,6 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
-    "keywords": [
-      "DAMAGE +1"
-    ],
     "actionPhases": [
       "SKIRMISH"
     ],
@@ -88663,9 +88517,6 @@
     "isUnique": false,
     "kind": "SHADOW",
     "type": "CONDITION",
-    "keywords": [
-      "ENDURING"
-    ],
     "grantsKeywords": [
       "ENDURING"
     ],
@@ -91911,9 +91762,6 @@
     "kind": "FREE_PEOPLE",
     "type": "POSSESSION",
     "subtype": "HAND-WEAPON",
-    "keywords": [
-      "DAMAGE +1"
-    ],
     "attachedTo": [
       [
         "DWARF"
@@ -91978,9 +91826,6 @@
     "isUnique": false,
     "kind": "FREE_PEOPLE",
     "type": "EVENT",
-    "keywords": [
-      "DAMAGE +1"
-    ],
     "phases": [
       "SKIRMISH"
     ],
@@ -92023,9 +91868,6 @@
     "kind": "FREE_PEOPLE",
     "type": "CONDITION",
     "subtype": "SUPPORT-AREA",
-    "keywords": [
-      "DAMAGE +1"
-    ],
     "toPlay": [
       {
         "spot": [
@@ -92901,9 +92743,6 @@
     "kind": "FREE_PEOPLE",
     "type": "POSSESSION",
     "subtype": "RANGED-WEAPON",
-    "keywords": [
-      "ARCHER"
-    ],
     "grantsKeywords": [
       "ARCHER"
     ],
@@ -94422,9 +94261,6 @@
     "kind": "FREE_PEOPLE",
     "type": "POSSESSION",
     "subtype": "HAND-WEAPON",
-    "keywords": [
-      "DAMAGE +1"
-    ],
     "attachedTo": [
       [
         "GONDOR",
@@ -94835,9 +94671,6 @@
     "isUnique": false,
     "kind": "SHADOW",
     "type": "MINION",
-    "keywords": [
-      "DAMAGE +1"
-    ],
     "abilities": [
       {
         "id": "11R68:0",
@@ -95085,9 +94918,6 @@
     "isUnique": false,
     "kind": "SHADOW",
     "type": "MINION",
-    "keywords": [
-      "FIERCE"
-    ],
     "abilities": [
       {
         "id": "11C73:0",
@@ -95291,9 +95121,6 @@
     "isUnique": false,
     "kind": "SHADOW",
     "type": "MINION",
-    "keywords": [
-      "DAMAGE +1"
-    ],
     "abilities": [
       {
         "id": "11S77:0",
@@ -95490,9 +95317,6 @@
     "isUnique": false,
     "kind": "SHADOW",
     "type": "MINION",
-    "keywords": [
-      "ARCHER"
-    ],
     "abilities": [
       {
         "id": "11R81:0",
@@ -95639,9 +95463,6 @@
     "isUnique": false,
     "kind": "SHADOW",
     "type": "MINION",
-    "keywords": [
-      "DAMAGE +1"
-    ],
     "actionPhases": [
       "SKIRMISH"
     ],
@@ -95687,9 +95508,6 @@
     "isUnique": false,
     "kind": "SHADOW",
     "type": "MINION",
-    "keywords": [
-      "FIERCE"
-    ],
     "abilities": [
       {
         "id": "11C85:0",
@@ -95898,9 +95716,6 @@
     "kind": "SHADOW",
     "type": "POSSESSION",
     "subtype": "RANGED-WEAPON",
-    "keywords": [
-      "ARCHER"
-    ],
     "grantsKeywords": [
       "ARCHER"
     ],
@@ -96252,9 +96067,6 @@
     "isUnique": false,
     "kind": "SHADOW",
     "type": "MINION",
-    "keywords": [
-      "FIERCE"
-    ],
     "abilities": [
       {
         "id": "11S97:0",
@@ -96848,9 +96660,6 @@
     "kind": "SHADOW",
     "type": "POSSESSION",
     "subtype": "ARMOR",
-    "keywords": [
-      "LURKER"
-    ],
     "grantsKeywords": [
       "LURKER"
     ],
@@ -98920,9 +98729,6 @@
     "kind": "FREE_PEOPLE",
     "type": "POSSESSION",
     "subtype": "HAND-WEAPON",
-    "keywords": [
-      "DAMAGE +1"
-    ],
     "attachedTo": [
       [
         "ROHAN",
@@ -100322,9 +100128,6 @@
     "isUnique": false,
     "kind": "SHADOW",
     "type": "MINION",
-    "keywords": [
-      "DAMAGE +1"
-    ],
     "culture": "URUK-HAI",
     "race": "URUK-HAI",
     "twilightCost": 3,
@@ -100676,9 +100479,6 @@
     "kind": "SHADOW",
     "type": "POSSESSION",
     "subtype": "RANGED-WEAPON",
-    "keywords": [
-      "ARCHER"
-    ],
     "attachedTo": [
       [
         "URUKHAI",
@@ -102009,9 +101809,6 @@
     "isUnique": true,
     "kind": "SHADOW",
     "type": "MINION",
-    "keywords": [
-      "FIERCE"
-    ],
     "culture": "WRAITH",
     "race": "NAZGÛL",
     "twilightCost": 5,
@@ -102841,9 +102638,6 @@
     "kind": "FREE_PEOPLE",
     "type": "CONDITION",
     "subtype": "SUPPORT-AREA",
-    "keywords": [
-      "DAMAGE +1"
-    ],
     "actionPhases": [
       "FELLOWSHIP"
     ],
@@ -104436,9 +104230,6 @@
     "kind": "FREE_PEOPLE",
     "type": "POSSESSION",
     "subtype": "MOUNT",
-    "keywords": [
-      "DAMAGE +1"
-    ],
     "grantsKeywords": [
       "DAMAGE +1"
     ],
@@ -104751,9 +104542,6 @@
     "isUnique": false,
     "kind": "SHADOW",
     "type": "MINION",
-    "keywords": [
-      "DAMAGE +1"
-    ],
     "culture": "MEN",
     "race": "MAN",
     "twilightCost": 4,
@@ -112784,9 +112572,6 @@
     "kind": "FREE_PEOPLE",
     "type": "CONDITION",
     "subtype": "SUPPORT-AREA",
-    "keywords": [
-      "DAMAGE +1"
-    ],
     "actionPhases": [
       "SKIRMISH"
     ],
@@ -114067,9 +113852,6 @@
     "kind": "FREE_PEOPLE",
     "type": "CONDITION",
     "subtype": "SUPPORT-AREA",
-    "keywords": [
-      "DAMAGE +1"
-    ],
     "culture": "GONDOR",
     "twilightCost": 2,
     "imageUrl": "/cards_visuals/o_13_072.jpg",
@@ -114720,9 +114502,6 @@
     "kind": "SHADOW",
     "type": "CONDITION",
     "subtype": "SUPPORT-AREA",
-    "keywords": [
-      "DAMAGE +1"
-    ],
     "actionPhases": [
       "SKIRMISH"
     ],
@@ -115315,9 +115094,6 @@
     "isUnique": false,
     "kind": "SHADOW",
     "type": "MINION",
-    "keywords": [
-      "DAMAGE +1"
-    ],
     "actionPhases": [
       "SKIRMISH"
     ],
@@ -116842,9 +116618,6 @@
     "isUnique": false,
     "kind": "FREE_PEOPLE",
     "type": "EVENT",
-    "keywords": [
-      "DAMAGE +1"
-    ],
     "phases": [
       "SKIRMISH"
     ],
@@ -117133,9 +116906,6 @@
     "kind": "SHADOW",
     "type": "ARTIFACT",
     "subtype": "HAND-WEAPON",
-    "keywords": [
-      "DAMAGE +1"
-    ],
     "grantsKeywords": [
       "DAMAGE +1"
     ],
@@ -118402,9 +118172,6 @@
     "isUnique": true,
     "kind": "SHADOW",
     "type": "MINION",
-    "keywords": [
-      "DAMAGE +1"
-    ],
     "toPlay": [
       {
         "spot": [
@@ -118544,9 +118311,6 @@
     "isUnique": false,
     "kind": "SHADOW",
     "type": "MINION",
-    "keywords": [
-      "DAMAGE +1"
-    ],
     "culture": "URUK-HAI",
     "race": "URUK-HAI",
     "twilightCost": 5,
@@ -119530,9 +119294,6 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
-    "keywords": [
-      "DAMAGE +1"
-    ],
     "culture": "ROHAN",
     "race": "MAN",
     "twilightCost": 3,
@@ -119920,9 +119681,6 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
-    "keywords": [
-      "DAMAGE +1"
-    ],
     "abilities": [
       {
         "id": "14R8:0",
@@ -120732,9 +120490,6 @@
     "kind": "FREE_PEOPLE",
     "type": "POSSESSION",
     "subtype": "ARMOR",
-    "keywords": [
-      "DAMAGE +1"
-    ],
     "attachedTo": [
       [
         "DWARF"
@@ -120782,9 +120537,6 @@
     "kind": "FREE_PEOPLE",
     "type": "CONDITION",
     "subtype": "SUPPORT-AREA",
-    "keywords": [
-      "DAMAGE +1"
-    ],
     "actionPhases": [
       "SKIRMISH"
     ],
@@ -122532,9 +122284,6 @@
     "kind": "FREE_PEOPLE",
     "type": "CONDITION",
     "subtype": "SUPPORT-AREA",
-    "keywords": [
-      "DAMAGE +1"
-    ],
     "culture": "GOLLUM",
     "twilightCost": 1,
     "imageUrl": "/cards_visuals/o_15_044.jpg",
@@ -125939,9 +125688,6 @@
     "isUnique": true,
     "kind": "SHADOW",
     "type": "MINION",
-    "keywords": [
-      "DAMAGE +1"
-    ],
     "actionPhases": [
       "ASSIGNMENT"
     ],
@@ -126236,9 +125982,6 @@
     "kind": "FREE_PEOPLE",
     "type": "POSSESSION",
     "subtype": "HAND-WEAPON",
-    "keywords": [
-      "DAMAGE +1"
-    ],
     "attachedTo": [
       [
         "ROHAN",
@@ -126473,9 +126216,6 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
-    "keywords": [
-      "DAMAGE +1"
-    ],
     "abilities": [
       {
         "id": "15U128:0",
@@ -126936,9 +126676,6 @@
     "kind": "FREE_PEOPLE",
     "type": "POSSESSION",
     "subtype": "HAND-WEAPON",
-    "keywords": [
-      "DAMAGE +1"
-    ],
     "attachedTo": [
       [
         "ROHAN",
@@ -128547,9 +128284,6 @@
     "isUnique": true,
     "kind": "SHADOW",
     "type": "MINION",
-    "keywords": [
-      "DAMAGE +1"
-    ],
     "toPlay": [
       {
         "spot": [
@@ -128725,9 +128459,6 @@
     "kind": "SHADOW",
     "type": "POSSESSION",
     "subtype": "HAND-WEAPON",
-    "keywords": [
-      "DAMAGE +1"
-    ],
     "attachedTo": [
       [
         "URUKHAI",
@@ -130938,9 +130669,6 @@
     "kind": "FREE_PEOPLE",
     "type": "POSSESSION",
     "subtype": "HAND-WEAPON",
-    "keywords": [
-      "DAMAGE +1"
-    ],
     "grantsKeywords": [
       "DAMAGE +1"
     ],
@@ -131369,9 +131097,6 @@
     "kind": "FREE_PEOPLE",
     "type": "ARTIFACT",
     "subtype": "HAND-WEAPON",
-    "keywords": [
-      "DAMAGE +1"
-    ],
     "grantsKeywords": [
       "DAMAGE +1"
     ],
@@ -131553,9 +131278,6 @@
     "kind": "FREE_PEOPLE",
     "type": "ARTIFACT",
     "subtype": "HAND-WEAPON",
-    "keywords": [
-      "DAMAGE +1"
-    ],
     "grantsKeywords": [
       "DAMAGE +1"
     ],
@@ -131963,9 +131685,6 @@
     "kind": "SHADOW",
     "type": "POSSESSION",
     "subtype": "MOUNT",
-    "keywords": [
-      "DAMAGE +1"
-    ],
     "attachedTo": [
       [
         "MEN",
@@ -134216,9 +133935,6 @@
     "kind": "SHADOW",
     "type": "POSSESSION",
     "subtype": "MOUNT",
-    "keywords": [
-      "DAMAGE +1"
-    ],
     "grantsKeywords": [
       "FIERCE"
     ],
@@ -135020,9 +134736,6 @@
     "kind": "SHADOW",
     "type": "ARTIFACT",
     "subtype": "SUPPORT-AREA",
-    "keywords": [
-      "DAMAGE +1"
-    ],
     "toPlay": [
       {
         "spot": [
@@ -135503,9 +135216,6 @@
     "kind": "SHADOW",
     "type": "POSSESSION",
     "subtype": "HAND-WEAPON",
-    "keywords": [
-      "DAMAGE +1"
-    ],
     "attachedTo": [
       [
         "URUKHAI",
@@ -135590,9 +135300,6 @@
     "isUnique": false,
     "kind": "SHADOW",
     "type": "EVENT",
-    "keywords": [
-      "DAMAGE +1"
-    ],
     "phases": [
       "SKIRMISH"
     ],
@@ -136714,9 +136421,6 @@
     "kind": "SHADOW",
     "type": "CONDITION",
     "subtype": "SUPPORT-AREA",
-    "keywords": [
-      "DAMAGE +1"
-    ],
     "actionPhases": [
       "SKIRMISH"
     ],
@@ -136949,9 +136653,6 @@
     "kind": "SHADOW",
     "type": "ARTIFACT",
     "subtype": "RING",
-    "keywords": [
-      "DAMAGE +1"
-    ],
     "grantsKeywords": [
       "DAMAGE +1"
     ],
@@ -139047,9 +138748,6 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
-    "keywords": [
-      "DAMAGE +1"
-    ],
     "actionPhases": [
       "SKIRMISH"
     ],
@@ -140038,9 +139736,6 @@
     "kind": "SHADOW",
     "type": "POSSESSION",
     "subtype": "HAND-WEAPON",
-    "keywords": [
-      "DAMAGE +1"
-    ],
     "grantsKeywords": [
       "DAMAGE +1"
     ],
@@ -141455,9 +141150,6 @@
     "kind": "FREE_PEOPLE",
     "type": "CONDITION",
     "subtype": "SUPPORT-AREA",
-    "keywords": [
-      "DAMAGE +1"
-    ],
     "actionPhases": [
       "SKIRMISH"
     ],
@@ -142006,9 +141698,6 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
-    "keywords": [
-      "DAMAGE +1"
-    ],
     "culture": "ROHAN",
     "race": "MAN",
     "twilightCost": 3,
@@ -142556,9 +142245,6 @@
     "isUnique": false,
     "kind": "SHADOW",
     "type": "EVENT",
-    "keywords": [
-      "DAMAGE +1"
-    ],
     "phases": [
       "SKIRMISH"
     ],

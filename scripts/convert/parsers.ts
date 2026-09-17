@@ -194,6 +194,19 @@ function isAmbushGrantedToBearer(text: string, matchIndex: number): boolean {
 }
 
 /**
+ * Mot-clé dans un « is / gains / make … Fierce » (While, Skirmish, etc.) —
+ * ce n’est pas un mot-clé imprimé de la carte.
+ */
+function isGrantedKeywordMarkup(text: string, matchIndex: number): boolean {
+    const before = text
+        .slice(0, matchIndex)
+        .replace(/<\/?[^>]+>/g, ' ')
+        .replace(/\s+/g, ' ')
+        .trimEnd();
+    return /\b(?:is(?:\s+an?)?|gains|make)\b[\w\s+'’-]*$/i.test(before);
+}
+
+/**
  * Extrait les mots-clés octroyés au porteur par une carte d'attachement ou de suivant.
  */
 export function parseGrantsKeywords(text?: string): string[] | undefined {
@@ -305,6 +318,7 @@ export function parseKeywords(
         const regex = /<keyword>([A-Z][^<]*\.)<\/keyword>/g;
         let match;
         while ((match = regex.exec(text)) !== null) {
+            if (isGrantedKeywordMarkup(text, match.index)) continue;
             const rawKw = match[1].slice(0, -1).trim();
             const upperKw = rawKw.toUpperCase();
 

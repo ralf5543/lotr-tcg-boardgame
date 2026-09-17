@@ -161,7 +161,7 @@ describe('While at a … site → keyword', () => {
                 },
             ],
         });
-        const G = createGameState({
+        const atBattleground = createGameState({
             path: pathWith(
                 6,
                 createSite({
@@ -174,8 +174,22 @@ describe('While at a … site → keyword', () => {
             },
             battlefield: [minion],
         });
+        const elsewhere = createGameState({
+            path: pathWith(
+                0,
+                createSite({
+                    keywords: ['UNDERGROUND'],
+                    siteNumber: 1,
+                })
+            ),
+            players: {
+                '0': createPlayerState('0', { currentSiteIndex: 0 }),
+            },
+            battlefield: [minion],
+        });
 
-        expect(getKeywordValue(minion, 'FIERCE', G)).toBe(0);
+        expect(getKeywordValue(minion, 'FIERCE', atBattleground)).toBe(0);
+        expect(getKeywordValue(minion, 'FIERCE', elsewhere)).toBe(-1);
     });
 
     it('accorde Damage +1 au porteur sur MOUNTAIN', () => {

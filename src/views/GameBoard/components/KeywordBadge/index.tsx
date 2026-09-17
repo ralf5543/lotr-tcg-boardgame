@@ -54,6 +54,7 @@ export const KeywordBadge: React.FC<KeywordBadgeProps> = ({
         <>
             <S.BadgeContainer
                 ref={badgeRef}
+                data-cursor="arrow"
                 onMouseEnter={handleMouseEnter}
                 onMouseLeave={handleMouseLeave}
             >

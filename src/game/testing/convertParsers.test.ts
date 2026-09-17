@@ -125,6 +125,30 @@ describe('parseKeywords / parseGrantsKeywords — Ambush', () => {
             'SANCTUARY',
         ]);
     });
+
+    it('n’imprime pas Fierce / Damage accordés par un While at site', () => {
+        expect(
+            parseKeywords(
+                'While this minion is at a battleground site, it is <keyword>Fierce.</keyword>',
+                'Corps of Harad',
+                'MINION'
+            )
+        ).toBeUndefined();
+        expect(
+            parseKeywords(
+                'While this minion is at a plains site, it is <keyword>Damage +1.</keyword>',
+                'Elder of Dunland',
+                'MINION'
+            )
+        ).toBeUndefined();
+        expect(
+            parseKeywords(
+                '<keyword>Damage +1.</keyword> While this minion is at a battleground site, it is <keyword>fierce.</keyword>',
+                'Uruk',
+                'MINION'
+            )
+        ).toEqual(['DAMAGE +1']);
+    });
 });
 
 describe('parseSiteAbilities — moves to/from twilight', () => {

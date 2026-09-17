@@ -16,7 +16,7 @@ export const BadgeContainer = styled.span`
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    cursor: help;
+    cursor: none;
 `;
 
 export const BadgeValue = styled.span`

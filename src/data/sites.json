@@ -1199,8 +1199,7 @@
     "kind": "SITE",
     "type": "SITE",
     "keywords": [
-      "UNDERGROUND",
-      "DAMAGE +1"
+      "UNDERGROUND"
     ],
     "twilightCost": 2,
     "siteNumber": 4,
@@ -4658,9 +4657,6 @@
     "isUnique": false,
     "kind": "SITE",
     "type": "SITE",
-    "keywords": [
-      "DAMAGE +1"
-    ],
     "actionPhases": [
       "SKIRMISH"
     ],
@@ -6610,8 +6606,7 @@
     "kind": "SITE",
     "type": "SITE",
     "keywords": [
-      "UNDERGROUND",
-      "DAMAGE +1"
+      "UNDERGROUND"
     ],
     "twilightCost": 2,
     "siteArrow": "Right",
