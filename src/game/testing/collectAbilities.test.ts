@@ -214,4 +214,66 @@ describe('formatAbilityLabelParts', () => {
             effect: 'empêcher cette blessure',
         });
     });
+
+    it('Nelya : replace site sans filtre', () => {
+        const ability: Ability = {
+            id: '11S222:0',
+            phases: ['SHADOW'],
+            cost: [{ exert: [{ count: 1, target: 'SELF' }] }],
+            effects: [
+                {
+                    type: 'REPLACE_SITE',
+                    scope: 'CURRENT',
+                    from: 'SITES_DECK',
+                },
+            ],
+            source: 'SELF',
+        };
+        const nelya = createCompanion({
+            id: '11S222',
+            title: 'Úlairë Nelya',
+            kind: 'SHADOW',
+            type: 'MINION',
+            i18n: { fr: { title: 'Úlairë Nelya' } },
+        });
+        expect(formatAbilityLabelParts(ability, nelya)).toEqual({
+            cost: 'Affaiblir Úlairë Nelya',
+            effect:
+                'remplacer le site actuel par un site du deck d’aventure',
+        });
+    });
+
+    it('Unforgiving Depths : défausse + spot + replace underground', () => {
+        const ability: Ability = {
+            id: '13C120:0',
+            phases: ['SHADOW'],
+            cost: [
+                {
+                    discardFromPlay: [{ count: 1, target: 'SELF' }],
+                    spot: [{ count: 1, target: [['ORC', 'MINION']] }],
+                },
+            ],
+            effects: [
+                {
+                    type: 'REPLACE_SITE',
+                    scope: 'CURRENT',
+                    from: 'SITES_DECK',
+                    siteKeyword: 'UNDERGROUND',
+                },
+            ],
+            source: 'SELF',
+        };
+        const depths = createCompanion({
+            id: '13C120',
+            title: 'Unforgiving Depths',
+            kind: 'SHADOW',
+            type: 'CONDITION',
+            i18n: { fr: { title: 'Profondeurs Impitoyables' } },
+        });
+        expect(formatAbilityLabelParts(ability, depths)).toEqual({
+            cost: 'Désigner Orque Séide et Défausser cette carte',
+            effect:
+                'remplacer le site actuel par un site souterrain du deck d’aventure',
+        });
+    });
 });

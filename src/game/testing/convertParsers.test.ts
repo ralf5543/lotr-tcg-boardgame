@@ -1997,6 +1997,64 @@ describe('parseAbilities — While spot N terrain sites', () => {
         ).toHaveLength(2);
     });
 
+    it('parse Nelya : Exert self → replace site courant (sans filtre)', () => {
+        expect(
+            parseAbilities(
+                '<keyword>Fierce.</keyword> <keyword>Shadow:</keyword> Exert Úlairë Nelya to replace  the fellowship\'s current site with a site from your adventure deck.',
+                'Úlairë Nelya',
+                '11S222'
+            )
+        ).toEqual(
+            expect.arrayContaining([
+                expect.objectContaining({
+                    phases: ['SHADOW'],
+                    cost: [
+                        {
+                            exert: [
+                                { count: 1, target: 'SELF' },
+                            ],
+                        },
+                    ],
+                    effects: [
+                        {
+                            type: 'REPLACE_SITE',
+                            scope: 'CURRENT',
+                            from: 'SITES_DECK',
+                        },
+                    ],
+                }),
+            ])
+        );
+    });
+
+    it('parse There’s Another Way : Discard SELF → replace site courant', () => {
+        expect(
+            parseAbilities(
+                '<keyword>Regroup:</keyword> Discard this condition to replace the fellowship’s current site with a site from your adventure deck.',
+                "There's Another Way",
+                '12C40'
+            )
+        ).toEqual([
+            expect.objectContaining({
+                phases: ['REGROUP'],
+                cost: [
+                    {
+                        discardFromPlay: [
+                            { count: 1, target: 'SELF' },
+                        ],
+                    },
+                ],
+                effects: [
+                    {
+                        type: 'REPLACE_SITE',
+                        scope: 'CURRENT',
+                        from: 'SITES_DECK',
+                    },
+                ],
+            }),
+        ]);
+    });
+
     it('parse With Doom We Come : Gandalf / each gandalf at site → Muster', () => {
         const abs = parseAbilities(
             'While Gandalf is at an underground site, he gains **muster.** While the fellowship is at a battleground site, each <symbol>gandalf</symbol> character gains **muster.**',

@@ -3163,23 +3163,40 @@ function parseReplaceSiteEffect(
     remainder: string
 ): Record<string, unknown> | null {
     const clause = stripAbilityMarkup(remainder)
+        .replace(/\s+/g, ' ')
         .replace(/[.\s]+$/u, '')
         .trim();
     if (!clause) return null;
 
-    // « replace the fellowship's current site with an underground site from your adventure deck »
-    const match = clause.match(
+    // « … with an underground site from your adventure deck »
+    const withTerrain = clause.match(
         /^replace the fellowship[''\u2019]s current site with an? ([a-z-]+) site from your adventure deck$/i
     );
-    if (!match) return null;
-    const siteKw = parseSiteLocationKeyword(match[1]);
-    if (!siteKw) return null;
-    return {
-        type: 'REPLACE_SITE',
-        scope: 'CURRENT',
-        from: 'SITES_DECK',
-        siteKeyword: siteKw,
-    };
+    if (withTerrain) {
+        const siteKw = parseSiteLocationKeyword(withTerrain[1]);
+        if (!siteKw) return null;
+        return {
+            type: 'REPLACE_SITE',
+            scope: 'CURRENT',
+            from: 'SITES_DECK',
+            siteKeyword: siteKw,
+        };
+    }
+
+    // « … with a site from your adventure deck » (sans filtre terrain)
+    if (
+        /^replace the fellowship[''\u2019]s current site with a site from your adventure deck$/i.test(
+            clause
+        )
+    ) {
+        return {
+            type: 'REPLACE_SITE',
+            scope: 'CURRENT',
+            from: 'SITES_DECK',
+        };
+    }
+
+    return null;
 }
 
 /** Effet dont la magnitude est le nombre spoté (X). Fragments sûrs seulement. */
@@ -3236,6 +3253,9 @@ function parseDiscardToEffect(
     remainder: string,
     cardTitle?: string
 ): Record<string, unknown> | null {
+    const replace = parseReplaceSiteEffect(remainder);
+    if (replace) return replace;
+
     const clause = stripAbilityMarkup(remainder)
         .replace(/[.\s]+$/, '')
         .trim();
@@ -3917,6 +3937,47 @@ export function parseAbilities(
                 effects: [{ type: 'HEAL', count: 1, target: healTarget }],
                 source: 'SELF',
                 text: healBareClause,
+            });
+            return;
+        }
+
+        const replaceSiteMatch = body.match(
+            /^Exert\s+([\s\S]+?)\s+to\s+(replace\s+[\s\S]+)/i
+        );
+        if (replaceSiteMatch) {
+            if (/\b(and|or)\b/i.test(replaceSiteMatch[1])) return;
+            const subject = parseExertSubject(
+                replaceSiteMatch[1],
+                cardTitle,
+                text
+            );
+            const effect = parseReplaceSiteEffect(replaceSiteMatch[2]);
+            if (!subject || !effect) return;
+
+            const replaceClause =
+                `${marker.phase}: Exert ${replaceSiteMatch[1].trim()} to ${replaceSiteMatch[2]}`
+                    .replace(/<[^>]+>/g, '')
+                    .replace(/\s+/g, ' ')
+                    .replace(/\s+\./g, '.')
+                    .trim();
+
+            abilities.push({
+                id: `${cardId || 'ability'}:${abilities.length}`,
+                phases,
+                cost: [
+                    {
+                        exert: [
+                            {
+                                count: subject.count,
+                                target: subject.target,
+                                ...(subject.mode ? { mode: subject.mode } : {}),
+                            },
+                        ],
+                    },
+                ],
+                effects: [effect],
+                source: subject.target === 'BEARER' ? 'ATTACHMENT' : 'SELF',
+                text: replaceClause,
             });
             return;
         }

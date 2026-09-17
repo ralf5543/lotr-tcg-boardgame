@@ -4144,6 +4144,33 @@
     "keywords": [
       "FIERCE"
     ],
+    "abilities": [
+      {
+        "id": "0P97:0",
+        "phases": [
+          "SHADOW"
+        ],
+        "cost": [
+          {
+            "exert": [
+              {
+                "count": 1,
+                "target": "SELF"
+              }
+            ]
+          }
+        ],
+        "effects": [
+          {
+            "type": "REPLACE_SITE",
+            "scope": "CURRENT",
+            "from": "SITES_DECK"
+          }
+        ],
+        "source": "SELF",
+        "text": "SHADOW: Exert Úlairë Nelya to replace the fellowship's current site with a site from your adventure deck."
+      }
+    ],
     "actionPhases": [
       "SHADOW"
     ],
@@ -4343,6 +4370,33 @@
     "type": "MINION",
     "keywords": [
       "FIERCE"
+    ],
+    "abilities": [
+      {
+        "id": "0P110:0",
+        "phases": [
+          "SHADOW"
+        ],
+        "cost": [
+          {
+            "exert": [
+              {
+                "count": 1,
+                "target": "SELF"
+              }
+            ]
+          }
+        ],
+        "effects": [
+          {
+            "type": "REPLACE_SITE",
+            "scope": "CURRENT",
+            "from": "SITES_DECK"
+          }
+        ],
+        "source": "SELF",
+        "text": "SHADOW: Exert Úlairë Nelya to replace the fellowship's current site with a site from your adventure deck."
+      }
     ],
     "actionPhases": [
       "SHADOW"
@@ -102120,6 +102174,33 @@
     "keywords": [
       "FIERCE"
     ],
+    "abilities": [
+      {
+        "id": "11S222:0",
+        "phases": [
+          "SHADOW"
+        ],
+        "cost": [
+          {
+            "exert": [
+              {
+                "count": 1,
+                "target": "SELF"
+              }
+            ]
+          }
+        ],
+        "effects": [
+          {
+            "type": "REPLACE_SITE",
+            "scope": "CURRENT",
+            "from": "SITES_DECK"
+          }
+        ],
+        "source": "SELF",
+        "text": "SHADOW: Exert Úlairë Nelya to replace the fellowship's current site with a site from your adventure deck."
+      }
+    ],
     "actionPhases": [
       "SHADOW"
     ],
@@ -104088,6 +104169,33 @@
             ]
           }
         ]
+      }
+    ],
+    "abilities": [
+      {
+        "id": "12C40:0",
+        "phases": [
+          "REGROUP"
+        ],
+        "cost": [
+          {
+            "discardFromPlay": [
+              {
+                "count": 1,
+                "target": "SELF"
+              }
+            ]
+          }
+        ],
+        "effects": [
+          {
+            "type": "REPLACE_SITE",
+            "scope": "CURRENT",
+            "from": "SITES_DECK"
+          }
+        ],
+        "source": "SELF",
+        "text": "REGROUP: Discard this condition to replace the fellowship’s current site with a site from your adventure deck."
       }
     ],
     "actionPhases": [

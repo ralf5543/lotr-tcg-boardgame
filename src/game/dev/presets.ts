@@ -621,6 +621,8 @@ export const applyDevPreset = (
                 // UNDERGROUND → +2 / +3 (sites 1 & 4)
                 clonePresetCard('11S115', 'dev-denizen-khazad'),
                 clonePresetCard('11S116', 'dev-denizen-moria'),
+                // Shadow replace sans filtre terrain (exert)
+                clonePresetCard('11S222', 'dev-nelya'),
                 // BATTLEGROUND → force +2 (site 7) + Damage si possession
                 clonePresetCard('12R150', 'dev-uruk-decimator'),
                 // BATTLEGROUND → Fierce (site 7)
@@ -638,16 +640,18 @@ export const applyDevPreset = (
                     clonePresetCard('13C120', 'dev-unforgiving-depths'),
                 ];
                 shadowPlayer.fellowshipArea = [];
-                // Deck Ombre : underground pour Shadow replace (13C120)
+                // Deck Ombre : underground + autres terrains (Nelya = any site)
                 shadowPlayer.sitesDeck = [
                     clonePresetSite('2U118', shadowId),
                     clonePresetSite('4U352', shadowId),
                     clonePresetSite('1U344', shadowId),
+                    clonePresetSite('11S260', shadowId), // FOREST
+                    clonePresetSite('11S262', shadowId), // MOUNTAIN
                 ];
             }
 
             G.statusMessage =
-                '[DEV] Sites. Phase Ombre : Unforgiving Depths → défausse + spot Orque → replace site courant (underground du deck).';
+                '[DEV] Sites. Ombre : Depths (underground) ou Nelya (n’importe quel site du deck) → replace courant.';
             break;
         }
     }

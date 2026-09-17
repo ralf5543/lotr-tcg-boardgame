@@ -265,6 +265,16 @@ function formatEffectBit(
         const who = formatTargetPhrase(effect.target);
         return who ? `${bit} à ${who}` : bit;
     }
+    if (effect.type === 'REPLACE_SITE') {
+        if (effect.scope === 'CURRENT' && effect.from === 'SITES_DECK') {
+            if (effect.siteKeyword) {
+                const terrain = translateKeyword(effect.siteKeyword).toLowerCase();
+                return `remplacer le site actuel par un site ${terrain} du deck d’aventure`;
+            }
+            return 'remplacer le site actuel par un site du deck d’aventure';
+        }
+        return 'remplacer un site';
+    }
     return '';
 }
 
