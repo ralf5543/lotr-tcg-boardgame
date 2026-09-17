@@ -21,6 +21,7 @@ export interface DevPanelProps {
     ctx: BoardProps<GameState>['ctx'];
     onDrawCard: () => void;
     deckCount: number;
+    matchID?: string;
 }
 
 // Map chaque phase vers sa sub-phase "startOf" correspondante
@@ -34,12 +35,15 @@ const PHASE_MAPPING: Record<string, { startPhase: string; label: string }> = {
     regroup: { startPhase: 'startOfRegroup', label: 'regroup' },
 };
 
+const MATCH_SYNC_CHANNEL = 'lotr_match_sync';
+
 export const DevPanel: React.FC<DevPanelProps> = ({
     moves,
     G,
     ctx,
     onDrawCard,
     deckCount,
+    matchID,
 }) => {
     const [isOpen, setIsOpen] = useState(false);
 
@@ -56,6 +60,30 @@ export const DevPanel: React.FC<DevPanelProps> = ({
         currentSite?.name ||
         (currentSite as { title?: string } | null)?.title ||
         (currentSite ? currentSite.id : 'vide');
+    const currentMatchId =
+        matchID ||
+        new URLSearchParams(window.location.search).get('match') ||
+        'default';
+
+    const toggleFullScreen = () => {
+        if (!document.fullscreenElement) {
+            document.documentElement.requestFullscreen().catch((err) => {
+                console.error(`Erreur plein écran: ${err.message}`);
+            });
+        } else {
+            document.exitFullscreen();
+        }
+    };
+
+    const handleHardReset = () => {
+        const newMatchId = 'match_' + Date.now();
+        const syncChannel = new BroadcastChannel(MATCH_SYNC_CHANNEL);
+        syncChannel.postMessage({ type: 'NEW_MATCH', matchId: newMatchId });
+        syncChannel.close();
+        const url = new URL(window.location.href);
+        url.searchParams.set('match', newMatchId);
+        window.location.href = url.toString();
+    };
 
     return (
         <S.PanelContainer>
@@ -252,6 +280,29 @@ export const DevPanel: React.FC<DevPanelProps> = ({
                                 +1
                             </S.ActionButton>
                         </S.ButtonGroup>
+                    </S.Section>
+
+                    {/* Session / debug UI */}
+                    <S.Section>
+                        <S.Label>Session :</S.Label>
+                        <S.ButtonGroup>
+                            <S.ActionButton
+                                onClick={toggleFullScreen}
+                                title="Plein écran"
+                            >
+                                Plein écran ⛶
+                            </S.ActionButton>
+                            <S.ActionButton onClick={handleHardReset}>
+                                Reset partie 🔄
+                            </S.ActionButton>
+                        </S.ButtonGroup>
+                        <S.SessionLink
+                            href={`?player=1&match=${currentMatchId}`}
+                            target="_blank"
+                            rel="noreferrer"
+                        >
+                            Ouvrir onglet Ombre
+                        </S.SessionLink>
                     </S.Section>
 
                     {/* Preset de cartes */}

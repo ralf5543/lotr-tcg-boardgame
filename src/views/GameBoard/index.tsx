@@ -1505,6 +1505,7 @@ export const GameBoard: React.FC<GameBoardProps> = ({
                     <DevPanel
                         G={G}
                         ctx={ctx}
+                        matchID={matchID}
                         deckCount={me.deck?.length || 0}
                         onDrawCard={() => {
                             if (moves.drawCard) moves.drawCard();

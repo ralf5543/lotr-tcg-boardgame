@@ -68,14 +68,6 @@ function App() {
         return () => syncChannel.removeEventListener('message', handleSync);
     }, []);
 
-    const handleHardReset = () => {
-        const newMatchId = 'match_' + Date.now();
-        syncChannel.postMessage({ type: 'NEW_MATCH', matchId: newMatchId });
-        const url = new URL(window.location.href);
-        url.searchParams.set('match', newMatchId);
-        window.location.href = url.toString();
-    };
-
     useEffect(() => {
         const handleResize = () => {
             if (!containerRef.current) return;
@@ -90,16 +82,6 @@ function App() {
         handleResize();
         return () => window.removeEventListener('resize', handleResize);
     }, []);
-
-    const toggleFullScreen = () => {
-        if (!document.fullscreenElement) {
-            document.documentElement.requestFullscreen().catch((err) => {
-                console.error(`Erreur plein écran: ${err.message}`);
-            });
-        } else {
-            document.exitFullscreen();
-        }
-    };
 
     if (!myPlayerId) {
         return <div>Chargement de la session du joueur...</div>;
@@ -116,27 +98,6 @@ function App() {
                                     matchID={currentMatchId}
                                     playerID={myPlayerId}
                                 />
-
-                                <FullscreenButton
-                                    onClick={toggleFullScreen}
-                                    title="Plein écran"
-                                >
-                                    [ ⛶ ]
-                                </FullscreenButton>
-
-                                <PlayerSwitcher>
-                                    <a
-                                        href={`?player=1&match=${currentMatchId}`}
-                                        target="_blank"
-                                        rel="noreferrer"
-                                    >
-                                        Onglet Ombre
-                                    </a>
-
-                                    <button onClick={handleHardReset}>
-                                        Reset Partie 🔄
-                                    </button>
-                                </PlayerSwitcher>
                             </ScaledView>
                         </TargetingProvider>
                         {/* Le curseur reste ici en dehors de ScaledView */}
@@ -173,59 +134,5 @@ const ScaledView = styled.div<{ $scale: number }>`
 
     & > div {
         height: 100%;
-    }
-`;
-
-const FullscreenButton = styled.button`
-    position: absolute;
-    inset-block-end: 15px;
-    inset-inline-end: 15px;
-    background: rgba(0, 0, 0, 0.5);
-    border: 1px solid #c1a054;
-    color: #c1a054;
-    padding: 8px 12px;
-    border-radius: 4px;
-    z-index: 10000;
-    cursor: pointer;
-
-    &:hover {
-        background: #c1a054;
-        color: #0d0e12;
-    }
-`;
-
-const PlayerSwitcher = styled.div`
-    position: absolute;
-    top: 10px;
-    left: 10px;
-    height: auto !important;
-    background: rgba(0, 0, 0, 0.85);
-    border: 1px solid #444;
-    color: #fff;
-    padding: 6px 12px;
-    border-radius: 6px;
-    font-size: 12px;
-    z-index: 10000;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-
-    a {
-        color: #c1a054;
-        text-decoration: underline;
-    }
-
-    button {
-        color: #c1a054;
-        background: transparent;
-        border: 1px solid #c1a054;
-        padding: 2px 6px;
-        border-radius: 4px;
-        cursor: pointer;
-
-        &:hover {
-            background: #c1a054;
-            color: #0d0e12;
-        }
     }
 `;

@@ -180,3 +180,14 @@ export const GameButton = styled.button<{ $bgColor: string }>`
         filter: brightness(1.1);
     }
 `;
+
+export const SessionLink = styled.a`
+    color: #c1a054;
+    text-decoration: underline;
+    font-size: 12px;
+    margin-top: 2px;
+
+    &:hover {
+        color: #fbbf24;
+    }
+`;
