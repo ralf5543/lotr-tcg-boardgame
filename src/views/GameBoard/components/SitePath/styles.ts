@@ -51,6 +51,8 @@ export const SiteCardContainer = styled.div<{
     $hasSite: boolean;
     $isHovered?: boolean;
     $index: number;
+    $pathReplaceTargetable?: boolean;
+    $pathReplaceDimmed?: boolean;
 }>`
     position: relative;
     width: 100%;
@@ -63,6 +65,16 @@ export const SiteCardContainer = styled.div<{
     justify-content: space-between;
     padding: 6px;
     transition: all 0.15s ease-in-out;
+    cursor: ${({ $pathReplaceTargetable }) =>
+        $pathReplaceTargetable ? 'pointer' : 'default'};
+    opacity: ${({ $pathReplaceDimmed }) => ($pathReplaceDimmed ? 0.35 : 1)};
+
+    ${({ $pathReplaceTargetable }) =>
+        $pathReplaceTargetable &&
+        css`
+            outline: 2px solid rgba(255, 220, 120, 0.9);
+            outline-offset: 2px;
+        `}
 
     ${({ $isHovered }) =>
         $isHovered &&

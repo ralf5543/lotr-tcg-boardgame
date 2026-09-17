@@ -52,7 +52,7 @@ import {
     abilityNeedsSiteReplace,
     abilityReplaceSiteEffect,
 } from '../../game/engine/abilities/applyAbilityEffect';
-import { getReplaceSiteCandidates } from '../../game/logic/sites';
+import { getReplaceSiteCandidates, getReplaceablePathSitesInCurrentRegion } from '../../game/logic/sites';
 import { findEventAbilityForPhase } from '../../game/engine/abilities/playEventAbility';
 import { useCardPlayAudio } from '../../hooks/audio/useCardPlayAudio';
 import { useArcheryAudio } from '../../hooks/audio/useArcheryAudio';
@@ -73,7 +73,10 @@ export interface GameBoardProps extends BoardProps<GameState> {
     moves: BoardProps<GameState>['moves'] &
         DevMoves & {
             confirmEndPhase?: () => void;
-            playCard: (index: number, chosenTargetId?: string) => void;
+            playCard: (
+                index: number,
+                chosenTargetId?: string | string[]
+            ) => void;
             beginPendingPlay?: (index: number, prompt: string) => void;
             cancelPendingPlay?: () => void;
             playShadowCard: (index: number) => void;
@@ -103,42 +106,6 @@ export interface GameBoardProps extends BoardProps<GameState> {
             assignThreatWound?: (cardId: string) => void;
         };
 }
-
-const EventPlayOverlay: React.FC<{
-    G: GameState;
-    phase?: string;
-    playerID: string;
-}> = ({ G, phase, playerID }) => {
-    const { dragged, isOverHandCancel } = useDrag();
-    if (!dragged || dragged.origin !== 'HAND') return null;
-
-    const card = dragged.card as CardState;
-    if (card.type !== 'EVENT') return null;
-
-    const playable = canPlayCard(card, {
-        G,
-        ctx: { phase },
-        playerID,
-    }).valid;
-    if (!playable) return null;
-
-    const needsTarget = Boolean(dragged.designationTargetIds?.length);
-    if (needsTarget && !isOverHandCancel) return null;
-
-    const isReady = !isOverHandCancel;
-
-    return (
-        <S.EventPlayOverlay $isReady={isReady}>
-            <S.EventPlayHint $isReady={isReady}>
-                {needsTarget
-                    ? 'Relâchez pour annuler'
-                    : isReady
-                      ? 'Relâchez pour jouer'
-                      : 'Relâchez dans le plateau'}
-            </S.EventPlayHint>
-        </S.EventPlayOverlay>
-    );
-};
 
 const DesignationOverlay: React.FC<{ G: GameState; myId: string }> = ({
     G,
@@ -200,7 +167,9 @@ const PendingPlayOnDrag: React.FC<{
         moves.beginPendingPlay?.(
             dragged.index,
             ability
-                ? formatDesignationPrompt(ability)
+                ? abilityReplaceSiteEffect(ability)?.scope === 'REGION'
+                    ? 'Choisissez un site de la région actuelle à remplacer.'
+                    : formatDesignationPrompt(ability)
                 : 'Choisissez une cible.'
         );
     }, [
@@ -278,7 +247,8 @@ export const GameBoard: React.FC<GameBoardProps> = ({
         (
             source: CardState,
             ability: NonNullable<CardState['abilities']>[number],
-            onChosen: (siteId: string) => void
+            onChosen: (siteId: string) => void,
+            excludePathSiteId?: string
         ): boolean => {
             if (!abilityNeedsSiteReplace(ability)) return false;
             const effect = abilityReplaceSiteEffect(ability);
@@ -288,7 +258,8 @@ export const GameBoard: React.FC<GameBoardProps> = ({
             const candidates = getReplaceSiteCandidates(
                 G,
                 ownerId,
-                effect.siteKeyword
+                effect.siteKeyword,
+                excludePathSiteId
             );
             if (candidates.length === 0) return false;
             const terrain = effect.siteKeyword
@@ -310,6 +281,92 @@ export const GameBoard: React.FC<GameBoardProps> = ({
             return true;
         },
         [G, startTargeting, stopTargeting]
+    );
+
+    const requestRegionSiteReplace = useCallback(
+        (
+            source: CardState,
+            ability: NonNullable<CardState['abilities']>[number],
+            onChosen: (pathSiteId: string, deckSiteId: string) => void
+        ): boolean => {
+            if (!abilityNeedsSiteReplace(ability)) return false;
+            const effect = abilityReplaceSiteEffect(ability);
+            if (!effect || effect.scope !== 'REGION') return false;
+            const ownerId = abilityOwnerPlayerId(G, source);
+            if (!ownerId) return false;
+
+            const pathSites = getReplaceablePathSitesInCurrentRegion(G).filter(
+                ({ site }) =>
+                    getReplaceSiteCandidates(
+                        G,
+                        ownerId,
+                        effect.siteKeyword,
+                        site.id
+                    ).length > 0
+            );
+            if (pathSites.length === 0) return false;
+
+            startTargeting({
+                kind: 'SITE_REPLACE_PATH',
+                targetableCardIds: pathSites.flatMap(({ site }) =>
+                    [site.instanceId, site.id].filter(Boolean)
+                ),
+                message:
+                    'Choisissez un site de la région actuelle à remplacer.',
+                onSelectTarget: (pathSiteId) => {
+                    const pathSite = pathSites.find(
+                        ({ site }) =>
+                            site.instanceId === pathSiteId ||
+                            site.id === pathSiteId
+                    )?.site;
+                    if (!pathSite) return;
+                    requestSiteReplace(
+                        source,
+                        ability,
+                        (deckSiteId) => {
+                            onChosen(pathSiteId, deckSiteId);
+                            stopTargeting();
+                        },
+                        pathSite.id
+                    );
+                },
+            });
+            return true;
+        },
+        [G, requestSiteReplace, startTargeting, stopTargeting]
+    );
+
+    const runSiteReplaceFlow = useCallback(
+        (
+            source: CardState,
+            ability: NonNullable<CardState['abilities']>[number],
+            sourceInstanceId: string,
+            abilityId: string,
+            costId?: string
+        ) => {
+            const effect = abilityReplaceSiteEffect(ability);
+            const commit = (targetIds: string | string[]) => {
+                stopTargeting();
+                moves.activateAbility?.(
+                    sourceInstanceId,
+                    abilityId,
+                    costId || targetIds,
+                    undefined,
+                    costId ? targetIds : undefined
+                );
+            };
+
+            if (effect?.scope === 'REGION') {
+                requestRegionSiteReplace(source, ability, (pathId, deckId) => {
+                    commit([pathId, deckId]);
+                });
+                return;
+            }
+            requestSiteReplace(source, ability, (deckId) => {
+                commit(deckId);
+            });
+        },
+        [moves, requestRegionSiteReplace, requestSiteReplace, stopTargeting]
     );
 
     const requestHandDiscard = useCallback(
@@ -560,12 +617,31 @@ export const GameBoard: React.FC<GameBoardProps> = ({
         ) {
             return;
         }
-        if (
-            abilityNeedsSiteReplace(ability) &&
-            requestSiteReplace(source, ability, (siteId) => {
-                moves.activateAbility?.(sourceInstanceId, abilityId, siteId);
-            })
-        ) {
+        if (abilityNeedsSiteReplace(ability)) {
+            if (needsCost) {
+                requestDesignation(
+                    source,
+                    ability,
+                    (costId) => {
+                        runSiteReplaceFlow(
+                            source,
+                            ability,
+                            sourceInstanceId,
+                            abilityId,
+                            costId
+                        );
+                    },
+                    undefined,
+                    'cost'
+                );
+                return;
+            }
+            runSiteReplaceFlow(
+                source,
+                ability,
+                sourceInstanceId,
+                abilityId
+            );
             return;
         }
         moves.activateAbility?.(sourceInstanceId, abilityId);
@@ -616,17 +692,29 @@ export const GameBoard: React.FC<GameBoardProps> = ({
                 });
                 return;
             }
-            if (
-                abilityNeedsSiteReplace(ability) &&
-                requestSiteReplace(source, ability, (siteId) => {
-                    moves.resolveWhenPlayedChoice?.(
-                        true,
-                        undefined,
-                        siteId
-                    );
-                })
-            ) {
-                return;
+            if (abilityNeedsSiteReplace(ability)) {
+                const effect = abilityReplaceSiteEffect(ability);
+                if (effect?.scope === 'REGION') {
+                    requestRegionSiteReplace(source, ability, (pathId, deckId) => {
+                        moves.resolveWhenPlayedChoice?.(
+                            true,
+                            undefined,
+                            [pathId, deckId]
+                        );
+                    });
+                    return;
+                }
+                if (
+                    requestSiteReplace(source, ability, (siteId) => {
+                        moves.resolveWhenPlayedChoice?.(
+                            true,
+                            undefined,
+                            siteId
+                        );
+                    })
+                ) {
+                    return;
+                }
             }
             moves.resolveWhenPlayedChoice?.(true);
         },
@@ -635,6 +723,7 @@ export const GameBoard: React.FC<GameBoardProps> = ({
             moves,
             requestHandDiscard,
             requestSiteReplace,
+            requestRegionSiteReplace,
         ]
     );
 
@@ -819,6 +908,40 @@ export const GameBoard: React.FC<GameBoardProps> = ({
                     if (!isDesignationTargetId(designationIds, targetId)) {
                         return;
                     }
+
+                    const eventAbility = findEventAbilityForPhase(
+                        card,
+                        ctx.phase || ''
+                    );
+                    const replaceEffect = eventAbility
+                        ? abilityReplaceSiteEffect(eventAbility)
+                        : null;
+
+                    // Event replace REGION : flèche → site path, puis picker deck
+                    if (
+                        eventAbility &&
+                        replaceEffect?.scope === 'REGION' &&
+                        targetId
+                    ) {
+                        if (
+                            requestSiteReplace(
+                                card,
+                                eventAbility,
+                                (deckSiteId) => {
+                                    stopTargeting();
+                                    moves.playCard?.(index, [
+                                        targetId,
+                                        deckSiteId,
+                                    ]);
+                                    audioService.play('CARD_PLAY');
+                                },
+                                targetId
+                            )
+                        ) {
+                            return;
+                        }
+                    }
+
                     if (typeof moves.playCard === 'function') {
                         moves.playCard(index, targetId);
                         audioService.play('CARD_PLAY');
@@ -830,6 +953,21 @@ export const GameBoard: React.FC<GameBoardProps> = ({
                     card,
                     ctx.phase || ''
                 );
+                if (
+                    eventAbility &&
+                    abilityNeedsSiteReplace(eventAbility) &&
+                    abilityReplaceSiteEffect(eventAbility)?.scope === 'CURRENT'
+                ) {
+                    if (
+                        requestSiteReplace(card, eventAbility, (deckSiteId) => {
+                            stopTargeting();
+                            moves.playCard?.(index, deckSiteId);
+                            audioService.play('CARD_PLAY');
+                        })
+                    ) {
+                        return;
+                    }
+                }
                 if (
                     eventAbility &&
                     requestDesignation(
@@ -987,7 +1125,7 @@ export const GameBoard: React.FC<GameBoardProps> = ({
         window.addEventListener('card-dropped', handleGlobalCardDrop);
         return () =>
             window.removeEventListener('card-dropped', handleGlobalCardDrop);
-    }, [moves, ctx.phase, G, myId, requestDesignation]);
+    }, [moves, ctx.phase, G, myId, requestDesignation, requestSiteReplace, stopTargeting]);
 
     const { setFpPlayerId } = useFaction();
     useEffect(() => {
@@ -1304,11 +1442,6 @@ export const GameBoard: React.FC<GameBoardProps> = ({
                         myId={myId}
                         phase={ctx.phase}
                         moves={moves}
-                    />
-                    <EventPlayOverlay
-                        G={G}
-                        phase={ctx.phase}
-                        playerID={myId}
                     />
                     <DesignationOverlay G={G} myId={myId} />
                     <BoardTargetingArrow />

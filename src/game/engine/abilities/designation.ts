@@ -5,9 +5,11 @@ import { resolveAbilityTarget, resolveCostTarget, resolveWinnerTargets } from '.
 import { findEventAbilityForPhase } from './playEventAbility';
 
 import { findSkirmishToCancel } from './cancelSkirmish';
-import { countFromSpotCost } from './applyAbilityEffect';
+import { countFromSpotCost, abilityReplaceSiteEffect } from './applyAbilityEffect';
 import {
     getReplaceSiteCandidates,
+    canReplaceSiteInCurrentRegion,
+    getReplaceablePathSitesInCurrentRegion,
 } from '../../logic/sites';
 import { abilityOwnerPlayerId } from './payAbilityCost';
 export function cardTargetIds(card: CardState): string[] {
@@ -188,6 +190,18 @@ export function abilityHasLegalEffectTarget(
         if (effect.type === 'REPLACE_SITE') {
             const ownerId = abilityOwnerPlayerId(G, source);
             if (!ownerId) return false;
+            if (effect.scope === 'REGION') {
+                if (
+                    !canReplaceSiteInCurrentRegion(
+                        G,
+                        ownerId,
+                        effect.siteKeyword
+                    )
+                ) {
+                    return false;
+                }
+                continue;
+            }
             if (
                 getReplaceSiteCandidates(G, ownerId, effect.siteKeyword)
                     .length < 1
@@ -326,6 +340,36 @@ export function isDesignationTargetId(
     return designationTargetIds.includes(targetId);
 }
 
+/** Sites du path ciblables pour REPLACE_SITE scope REGION (1ʳᵉ cible d’un event). */
+export function getRegionReplacePathSiteTargetIds(
+    G: GameState,
+    source: CardState,
+    ability: Ability
+): string[] {
+    const effect = abilityReplaceSiteEffect(ability);
+    if (!effect || effect.scope !== 'REGION') return [];
+    const ownerId = abilityOwnerPlayerId(G, source);
+    if (!ownerId) return [];
+
+    return getReplaceablePathSitesInCurrentRegion(G)
+        .filter(
+            ({ site }) =>
+                getReplaceSiteCandidates(
+                    G,
+                    ownerId,
+                    effect.siteKeyword,
+                    site.id
+                ).length > 0
+        )
+        .flatMap(({ site }) =>
+            [site.instanceId, site.id].filter(Boolean) as string[]
+        );
+}
+
+/**
+ * Cibles pour drag d’event depuis la main (flèche + halo).
+ * Inclut désignation classique et sites path pour replace REGION.
+ */
 export function getHandEventDesignationTargetIds(
     G: GameState,
     card: CardState,
@@ -333,6 +377,14 @@ export function getHandEventDesignationTargetIds(
 ): string[] {
     const phaseToMatch = G.responseWindow?.isOpen ? 'RESPONSE' : phase || '';
     const ability = findEventAbilityForPhase(card, phaseToMatch);
-    if (!ability || !abilityNeedsDesignation(G, card, ability)) return [];
-    return getDesignationCandidates(G, card, ability).flatMap(cardTargetIds);
+    if (!ability) return [];
+
+    if (abilityNeedsDesignation(G, card, ability)) {
+        return getDesignationCandidates(G, card, ability).flatMap(cardTargetIds);
+    }
+
+    const regionPathIds = getRegionReplacePathSiteTargetIds(G, card, ability);
+    if (regionPathIds.length > 0) return [...new Set(regionPathIds)];
+
+    return [];
 }

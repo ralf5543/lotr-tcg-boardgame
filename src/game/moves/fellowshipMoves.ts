@@ -39,11 +39,19 @@ export const advanceCompany = (G: GameState) => {
         const totalAdded = siteCost + companionsCount + regionBonus;
         G.twilightPool += totalAdded;
 
+        const poolAfterCost = G.twilightPool;
         // Crépuscule du move d’abord, puis effets « moves from / to »
         resolveSiteMoveAbilities(G, fromSite, 'MOVES_FROM');
         resolveSiteMoveAbilities(G, targetSite, 'MOVES_TO');
+        const poolAfterSiteEffects = G.twilightPool;
+        const siteEffectDelta = poolAfterSiteEffects - poolAfterCost;
 
-        G.statusMessage = `La compagnie avance au site ${siteNumber} : ${targetSite.name}`;
+        const siteEffectNote =
+            siteEffectDelta === 0
+                ? ''
+                : ` puis ${siteEffectDelta > 0 ? '+' : ''}${siteEffectDelta} (effet site)`;
+
+        G.statusMessage = `La compagnie avance au site ${siteNumber} : ${targetSite.name} (+${totalAdded} crépuscule${siteEffectNote} → ${poolAfterSiteEffects}).`;
     } else {
         // Départ enregistré ; « moves from / to » se résolvent à la pose du site
         G.awaitingSiteSelection = true;

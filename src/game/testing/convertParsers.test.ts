@@ -2091,6 +2091,40 @@ describe('parseAbilities — While spot N terrain sites', () => {
         ]);
     });
 
+    it('parse Traveled Leader : Spot Wizard → replace site région courante', () => {
+        expect(
+            parseAbilities(
+                'Spot a <symbol>gandalf</symbol> Wizard to replace a site in the fellowship’s current region with a site from your adventure deck.',
+                'Traveled Leader',
+                '12C34'
+            )
+        ).toEqual([
+            {
+                id: '12C34:0',
+                phases: [],
+                cost: [
+                    {
+                        spot: [
+                            {
+                                count: 1,
+                                target: [['GANDALF', 'WIZARD']],
+                            },
+                        ],
+                    },
+                ],
+                effects: [
+                    {
+                        type: 'REPLACE_SITE',
+                        scope: 'REGION',
+                        from: 'SITES_DECK',
+                    },
+                ],
+                source: 'SELF',
+                text: 'Spot a gandalf Wizard to replace a site in the fellowship’s current region with a site from your adventure deck.',
+            },
+        ]);
+    });
+
     it('parse With Doom We Come : Gandalf / each gandalf at site → Muster', () => {
         const abs = parseAbilities(
             'While Gandalf is at an underground site, he gains **muster.** While the fellowship is at a battleground site, each <symbol>gandalf</symbol> character gains **muster.**',

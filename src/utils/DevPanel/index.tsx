@@ -95,7 +95,7 @@ export const DevPanel: React.FC<DevPanelProps> = ({
                         </S.PhaseGrid>
                     </S.Section>
 
-                    {/* Site courant */}
+                    {/* Site courant — téléport Dev, pas un vrai move */}
                     <S.Section>
                         <S.Label>
                             Site courant :{' '}
@@ -104,6 +104,12 @@ export const DevPanel: React.FC<DevPanelProps> = ({
                             </strong>
                             {' — '}
                             {currentSiteLabel}
+                            <br />
+                            <span style={{ opacity: 0.75, fontWeight: 400 }}>
+                                Boutons = téléport (aucun crépuscule / effet
+                                move). Vrai avance : Fin de Communauté ou
+                                Regroup.
+                            </span>
                         </S.Label>
                         <S.SiteGrid>
                             {Array.from({ length: 9 }, (_, index) => {
@@ -259,7 +265,7 @@ export const DevPanel: React.FC<DevPanelProps> = ({
                         <S.PresetButton
                             onClick={() => moves.devLoadPreset('SITES_TEST')}
                         >
-                            Sites (keywords + cartes)
+                            Sites (replace)
                         </S.PresetButton>
                         <S.GameButton $bgColor="#3498db" onClick={onDrawCard}>
                             🃏 Piocher ({deckCount})

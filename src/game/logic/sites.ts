@@ -65,6 +65,36 @@ export function getSiteRegion(siteNumber: number): 1 | 2 | 3 {
     return 3;
 }
 
+/** Région où se trouve la compagnie (Standard). */
+export function getFellowshipCurrentRegion(G: GameState): 1 | 2 | 3 {
+    const index = getCurrentSiteIndex(G);
+    return getSiteRegion(index + 1);
+}
+
+/** Sites posés sur le chemin dans une région donnée. */
+export function getPathSitesInRegion(
+    G: GameState,
+    region: 1 | 2 | 3
+): { site: SiteCardState; pathIndex: number }[] {
+    const found: { site: SiteCardState; pathIndex: number }[] = [];
+    for (let i = 0; i < 9; i++) {
+        const site = G.path[i];
+        if (!site) continue;
+        const siteNumber = site.siteNumber ?? i + 1;
+        if (getSiteRegion(siteNumber) === region) {
+            found.push({ site, pathIndex: i });
+        }
+    }
+    return found;
+}
+
+/** Sites remplaçables dans la région courante de la compagnie. */
+export function getReplaceablePathSitesInCurrentRegion(
+    G: GameState
+): { site: SiteCardState; pathIndex: number }[] {
+    return getPathSitesInRegion(G, getFellowshipCurrentRegion(G));
+}
+
 /** Crépuscule de région au déplacement vers ce numéro de site (Standard). */
 export function getRegionTwilightBonus(siteNumber: number): number {
     const region = getSiteRegion(siteNumber);
@@ -75,38 +105,51 @@ export function getRegionTwilightBonus(siteNumber: number): number {
 
 /**
  * Sites du deck d’aventure éligibles pour un remplacement
- * (filtre terrain optionnel ; exclut le même id que le site courant).
+ * (filtre terrain optionnel ; exclut le même id que le site remplacé).
  */
 export function getReplaceSiteCandidates(
     G: GameState,
     ownerId: string,
-    siteKeyword?: CardKeyword
+    siteKeyword?: CardKeyword,
+    excludeSiteId?: string
 ): SiteCardState[] {
     const player = G.players[ownerId];
     if (!player?.sitesDeck?.length) return [];
-    const current = getCurrentSite(G);
     return player.sitesDeck.filter((site) => {
         if (!site) return false;
-        if (current && site.id === current.id) return false;
+        if (excludeSiteId && site.id === excludeSiteId) return false;
         if (siteKeyword && !siteHasKeyword(site, siteKeyword)) return false;
         return true;
     });
 }
 
-/**
- * Remplace le site courant par un site du deck d’aventure du propriétaire.
- * Pas de crépuscule de move / MOVES_FROM|TO. Attachments transférés.
- */
-export function replaceCurrentSiteFromDeck(
+/** Au moins une paire (site région, site deck) légale pour un replace REGION. */
+export function canReplaceSiteInCurrentRegion(
     G: GameState,
     ownerId: string,
+    siteKeyword?: CardKeyword
+): boolean {
+    return getReplaceablePathSitesInCurrentRegion(G).some(
+        ({ site }) =>
+            getReplaceSiteCandidates(G, ownerId, siteKeyword, site.id)
+                .length > 0
+    );
+}
+
+/**
+ * Remplace un site du chemin par un site du deck d’aventure du propriétaire.
+ * Pas de crépuscule de move / MOVES_FROM|TO. Attachments transférés.
+ */
+export function replacePathSiteFromDeck(
+    G: GameState,
+    ownerId: string,
+    pathIndex: number,
     newSiteId: string,
     siteKeyword?: CardKeyword
 ): boolean {
     const player = G.players[ownerId];
     if (!player?.sitesDeck) return false;
 
-    const pathIndex = getCurrentSiteIndex(G);
     const oldSite = G.path?.[pathIndex] ?? null;
     if (!oldSite) return false;
 
@@ -144,3 +187,23 @@ export function replaceCurrentSiteFromDeck(
     G.path[pathIndex] = newSite;
     return true;
 }
+
+/**
+ * Remplace le site courant par un site du deck d’aventure du propriétaire.
+ * Pas de crépuscule de move / MOVES_FROM|TO. Attachments transférés.
+ */
+export function replaceCurrentSiteFromDeck(
+    G: GameState,
+    ownerId: string,
+    newSiteId: string,
+    siteKeyword?: CardKeyword
+): boolean {
+    return replacePathSiteFromDeck(
+        G,
+        ownerId,
+        getCurrentSiteIndex(G),
+        newSiteId,
+        siteKeyword
+    );
+}
+

@@ -94168,7 +94168,10 @@
     "isUnique": false,
     "kind": "FREE_PEOPLE",
     "type": "EVENT",
-    "subtype": "FELLOWSHIP-OR-REGROUP",
+    "phases": [
+      "FELLOWSHIP",
+      "REGROUP"
+    ],
     "culture": "GOLLUM",
     "twilightCost": 0,
     "imageUrl": "/cards_visuals/o_11_049.jpg",
@@ -94837,7 +94840,6 @@
     "isUnique": false,
     "kind": "FREE_PEOPLE",
     "type": "EVENT",
-    "subtype": "FELLOWSHIP-OR-REGROUP",
     "keywords": [
       "RANGER"
     ],
@@ -94855,6 +94857,10 @@
           }
         ]
       }
+    ],
+    "phases": [
+      "FELLOWSHIP",
+      "REGROUP"
     ],
     "culture": "GONDOR",
     "twilightCost": 0,
@@ -103945,7 +103951,40 @@
     "isUnique": false,
     "kind": "FREE_PEOPLE",
     "type": "EVENT",
-    "subtype": "MANEUVER-OR-REGROUP",
+    "abilities": [
+      {
+        "id": "12C34:0",
+        "phases": [],
+        "cost": [
+          {
+            "spot": [
+              {
+                "count": 1,
+                "target": [
+                  [
+                    "GANDALF",
+                    "WIZARD"
+                  ]
+                ]
+              }
+            ]
+          }
+        ],
+        "effects": [
+          {
+            "type": "REPLACE_SITE",
+            "scope": "REGION",
+            "from": "SITES_DECK"
+          }
+        ],
+        "source": "SELF",
+        "text": "Spot a gandalf Wizard to replace a site in the fellowship’s current region with a site from your adventure deck."
+      }
+    ],
+    "phases": [
+      "MANEUVER",
+      "REGROUP"
+    ],
     "culture": "GANDALF",
     "twilightCost": 1,
     "imageUrl": "/cards_visuals/o_12_034.jpg",
@@ -105736,9 +105775,12 @@
     "isUnique": false,
     "kind": "SHADOW",
     "type": "EVENT",
-    "subtype": "MANEUVER-OR-REGROUP",
     "keywords": [
       "TOIL 2"
+    ],
+    "phases": [
+      "MANEUVER",
+      "REGROUP"
     ],
     "culture": "MEN",
     "twilightCost": 4,
@@ -132040,7 +132082,10 @@
     "isUnique": false,
     "kind": "FREE_PEOPLE",
     "type": "EVENT",
-    "subtype": "FELLOWSHIP-OR-SKIRMISH",
+    "phases": [
+      "FELLOWSHIP",
+      "SKIRMISH"
+    ],
     "culture": "GONDOR",
     "twilightCost": 1,
     "imageUrl": "/cards_visuals/o_17_032.jpg",

@@ -467,9 +467,10 @@ const clonePresetSite = (
 };
 
 /** Neuf sites Standard — terrains variés pour tester les mots-clés. Sanctuaire = 3 & 6. */
+/** Neuf sites Standard — région 1 utile pour replace REGION (3 sites posés). */
 const SITES_TEST_PATH_IDS = [
-    '11S263', // 1 West Gate of Moria — UNDERGROUND
-    '11S247', // 2 Moria Guardroom — UNDERGROUND (3ᵉ pour spot 3)
+    '11S263', // 1 West Gate — UNDERGROUND + MOVES_FROM remove 2
+    '11S247', // 2 Moria Guardroom — UNDERGROUND
     '11S237', // 3 Ettenmoors — PLAINS (+ sanctuaire)
     '11S233', // 4 Chamber of Mazarbul — UNDERGROUND
     '11S231', // 5 Caras Galadhon — FOREST
@@ -477,6 +478,20 @@ const SITES_TEST_PATH_IDS = [
     '11S241', // 7 Fortress of Orthanc — BATTLEGROUND
     '11S229', // 8 Barazinbar — MOUNTAIN
     '11S240', // 9 Flats of Rohan — PLAINS
+] as const;
+
+/** Sites deck pour replace (CURRENT / REGION / when-played). */
+const SITES_TEST_FP_DECK = [
+    '11S260', // FOREST
+    '11S262', // MOUNTAIN
+    '11S239', // FOREST
+] as const;
+const SITES_TEST_SHADOW_DECK = [
+    '2U118', // underground (Depths / Watchful Orc)
+    '4U352', // underground
+    '1U344',
+    '11S260', // FOREST (Nelya = any)
+    '11S262', // MOUNTAIN
 ] as const;
 
 export const applyDevPreset = (
@@ -557,6 +572,7 @@ export const applyDevPreset = (
                     player.hand = [];
                     player.supportArea = [];
                     player.discard = [];
+                    player.fellowshipArea = [];
                 }
             });
 
@@ -568,90 +584,54 @@ export const applyDevPreset = (
                 )
             );
 
-            // Site 1 = UNDERGROUND — bonus force des denizens visible tout de suite
             const startIndex = 0;
             Object.values(G.players).forEach((player) => {
                 if (player) player.currentSiteIndex = startIndex;
             });
             G.currentSiteIndex = startIndex;
 
+            // Minimal : Frodo + Gandalf (spot Wizard pour Traveled Leader)
             fpPlayer.fellowshipArea = [
                 {
                     ...clonePresetCard('2C102', 'dev-frodo'),
-                    wounds: 2,
                     attachments: [clonePresetCard('1R1', 'dev-ring')],
                 },
-                {
-                    ...clonePresetCard('1R89', 'dev-aragorn'),
-                    wounds: 1,
-                },
-                // FOREST → force +2 (site 5)
-                clonePresetCard('11C27', 'dev-woodland-sentinel'),
-                // BATTLEGROUND → +2 / FOREST → Archer (sites 7 / 5)
-                clonePresetCard('15U17', 'dev-haldir'),
-                // Underground → Muster via With Doom (site 1)
                 clonePresetCard('1R72', 'dev-gandalf'),
-                // Ent : ne doit PAS gagner Muster (contrôle négatif With Doom / Depths)
-                clonePresetCard('6C33', 'dev-quickbeam'),
-                // MOUNTAIN → each Dwarf +2 (site 8) — condition en soutien
-                clonePresetCard('11U12', 'dev-well-equipped'),
-                // MOUNTAIN → Damage +1 via hache (site 8)
-                {
-                    ...clonePresetCard('0P12', 'dev-gimli'),
-                    attachments: [clonePresetCard('11U3', 'dev-axe-khazad')],
-                },
             ];
-
-            // Conditions FP en soutien
-            {
-                const wellEq = fpPlayer.fellowshipArea.find(
-                    (c) => c.id === '11U12'
-                );
-                fpPlayer.fellowshipArea = fpPlayer.fellowshipArea.filter(
-                    (c) => c.id !== '11U12'
-                );
-                fpPlayer.supportArea = [
-                    ...(wellEq ? [wellEq] : []),
-                    // Gandalf / each gandalf at site → Muster
-                    clonePresetCard('12U36', 'dev-with-doom'),
-                ];
-            }
-
-            G.battlefield = [
-                // UNDERGROUND → +2 / +3 (sites 1 & 4)
-                clonePresetCard('11S115', 'dev-denizen-khazad'),
-                clonePresetCard('11S116', 'dev-denizen-moria'),
-                // Shadow replace sans filtre terrain (exert)
-                clonePresetCard('11S222', 'dev-nelya'),
-                // BATTLEGROUND → force +2 (site 7) + Damage si possession
-                clonePresetCard('12R150', 'dev-uruk-decimator'),
-                // BATTLEGROUND → Fierce (site 7)
-                clonePresetCard('11C73', 'dev-corps-harad'),
-                // PLAINS → Damage +1 (sites 3 & 9)
-                clonePresetCard('11S77', 'dev-elder-dunland'),
-                // FOREST → force +2 (site 5) — Nertëa
-                clonePresetCard('11S223', 'dev-nertea'),
+            fpPlayer.hand = [
+                // REGION replace (Maneuver / Regroup)
+                clonePresetCard('12C34', 'dev-traveled-leader'),
             ];
+            fpPlayer.supportArea = [
+                // CURRENT replace (Regroup : discard)
+                clonePresetCard('12C40', 'dev-another-way'),
+            ];
+            fpPlayer.sitesDeck = SITES_TEST_FP_DECK.map((id) =>
+                clonePresetSite(id, fpId)
+            );
 
             if (shadowPlayer) {
-                shadowPlayer.hand = [];
-                // Spot 3 underground → each Orc Muster (chemin a 3 UNDERGROUND)
+                shadowPlayer.hand = [
+                    // when-played optional + CURRENT underground
+                    clonePresetCard('11R143', 'dev-watchful-orc'),
+                ];
                 shadowPlayer.supportArea = [
+                    // CURRENT underground (Shadow : discard + spot Orc)
                     clonePresetCard('13C120', 'dev-unforgiving-depths'),
                 ];
                 shadowPlayer.fellowshipArea = [];
-                // Deck Ombre : underground + autres terrains (Nelya = any site)
-                shadowPlayer.sitesDeck = [
-                    clonePresetSite('2U118', shadowId),
-                    clonePresetSite('4U352', shadowId),
-                    clonePresetSite('1U344', shadowId),
-                    clonePresetSite('11S260', shadowId), // FOREST
-                    clonePresetSite('11S262', shadowId), // MOUNTAIN
+                // Nelya = CURRENT any site (exert) ; 1 Orc pour spot Depths / Watchful
+                G.battlefield = [
+                    clonePresetCard('11S222', 'dev-nelya'),
+                    clonePresetCard('11S115', 'dev-orc-spot'),
                 ];
+                shadowPlayer.sitesDeck = SITES_TEST_SHADOW_DECK.map((id) =>
+                    clonePresetSite(id, shadowId)
+                );
             }
 
             G.statusMessage =
-                '[DEV] Sites. Ombre : Depths (underground) ou Nelya (n’importe quel site du deck) → replace courant.';
+                '[DEV] Replace sites. FP : Traveled Leader (main, Maneuver/Regroup = REGION) ; There’s Another Way (soutien, Regroup). Ombre : Depths / Nelya (CURRENT) ; Watchful Orc (main, when-played). Vrai move = Fin de Communauté (West Gate −2 crépuscule).';
             break;
         }
     }

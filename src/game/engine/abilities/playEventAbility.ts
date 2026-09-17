@@ -9,13 +9,30 @@ function abilityPhaseToMatch(G: GameState, rawPhase: string): string {
     return isResponseWindowOpen(G) ? 'RESPONSE' : rawPhase;
 }
 
+function eventAbilityMatchesPhase(
+    card: CardState,
+    ability: Ability,
+    rawPhase: string
+): boolean {
+    if (ability.phases?.length) {
+        return abilityMatchesPhase(ability, rawPhase);
+    }
+    if (card.phases?.length) {
+        return abilityMatchesPhase(
+            { ...ability, phases: card.phases },
+            rawPhase
+        );
+    }
+    return true;
+}
+
 export function findEventAbilityForPhase(
     card: CardState,
     rawPhase: string
 ): Ability | undefined {
     if (card.type !== 'EVENT' || !card.abilities?.length) return undefined;
     return card.abilities.find((ability) =>
-        abilityMatchesPhase(ability, rawPhase)
+        eventAbilityMatchesPhase(card, ability, rawPhase)
     );
 }
 
@@ -70,7 +87,7 @@ export function applyEventAbility(
     G: GameState,
     card: CardState,
     rawPhase: string,
-    chosenTargetId?: string
+    chosenTargetId?: string | string[]
 ): boolean {
     if (card.type !== 'EVENT') return true;
     if (!card.abilities?.length) return false;
@@ -80,6 +97,10 @@ export function applyEventAbility(
         abilityPhaseToMatch(G, rawPhase)
     );
     if (!ability) return false;
-    if (!payAbilityCost(G, card, ability.cost, chosenTargetId)) return false;
+    // Coût spot / exert : une seule id si besoin ; replace REGION passe [path, deck]
+    const costTargetId = Array.isArray(chosenTargetId)
+        ? chosenTargetId[0]
+        : chosenTargetId;
+    if (!payAbilityCost(G, card, ability.cost, costTargetId)) return false;
     return applyAbilityEffect(G, card, ability, chosenTargetId);
 }

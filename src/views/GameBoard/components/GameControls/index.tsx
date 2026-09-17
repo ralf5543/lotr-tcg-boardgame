@@ -353,6 +353,7 @@ export const GameControls: React.FC<GameControlsProps> = ({
         (targetingKind === 'DESIGNATION' ||
             targetingKind === 'HAND_DISCARD' ||
             targetingKind === 'SITE_REPLACE' ||
+            targetingKind === 'SITE_REPLACE_PATH' ||
             targetingKind === 'SANCTUARY_HEAL') &&
         targetingMessage
     ) {
@@ -363,6 +364,8 @@ export const GameControls: React.FC<GameControlsProps> = ({
                     ? 'DÉFAUSSE'
                     : targetingKind === 'SITE_REPLACE'
                       ? 'REMPLACER UN SITE'
+                      : targetingKind === 'SITE_REPLACE_PATH'
+                        ? 'REMPLACER UN SITE'
                       : targetingKind === 'SANCTUARY_HEAL'
                       ? 'SANCTUAIRE'
                       : 'CHOIX DE CIBLE',

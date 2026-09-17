@@ -358,14 +358,22 @@ export function parseClassAndPhases(
     if (classStr && classStr.trim()) {
         const parts = classStr.split(/[,;/]/);
         parts.forEach((part) => {
-            const cleanPart = part.trim().toUpperCase().replace(/\s+/g, '-');
-            if (!cleanPart) return;
+            part
+                .trim()
+                .split(/\s+or\s+/i)
+                .forEach((subPart) => {
+                    const cleanPart = subPart
+                        .trim()
+                        .toUpperCase()
+                        .replace(/\s+/g, '-');
+                    if (!cleanPart) return;
 
-            if (GAME_PHASES.has(cleanPart)) {
-                textPhasesSet.add(cleanPart);
-            } else {
-                subTypeParts.push(cleanPart);
-            }
+                    if (GAME_PHASES.has(cleanPart)) {
+                        textPhasesSet.add(cleanPart);
+                    } else {
+                        subTypeParts.push(cleanPart);
+                    }
+                });
         });
     }
 
@@ -3245,7 +3253,65 @@ function parseReplaceSiteEffect(
         };
     }
 
+    // « replace a site in the fellowship's current region with a site from your adventure deck »
+    if (
+        /^replace a site in the fellowship[''\u2019]s current region with a site from your adventure deck$/i.test(
+            clause
+        )
+    ) {
+        return {
+            type: 'REPLACE_SITE',
+            scope: 'REGION',
+            from: 'SITES_DECK',
+        };
+    }
+
     return null;
+}
+
+/** Événements sans balise de phase : « Spot X to replace Y » sur tout le gametext. */
+function parseStandaloneSpotReplaceAbilities(
+    text: string,
+    cardTitle?: string,
+    cardId?: string
+): Record<string, unknown>[] {
+    const plain = stripAbilityMarkup(text).replace(/\s+/g, ' ').trim();
+    const spotReplaceMatch = plain.match(
+        /^Spot\s+([\s\S]+?)\s+to\s+(replace\s+[\s\S]+)$/i
+    );
+    if (!spotReplaceMatch) return [];
+    if (/\b(and|or)\b/i.test(spotReplaceMatch[1])) return [];
+
+    const spotSubject = parseExertSubject(
+        spotReplaceMatch[1],
+        cardTitle,
+        text
+    );
+    const effect = parseReplaceSiteEffect(spotReplaceMatch[2]);
+    if (!spotSubject || !effect) return [];
+
+    return [
+        {
+            id: `${cardId || 'ability'}:0`,
+            phases: [],
+            cost: [
+                {
+                    spot: [
+                        {
+                            count: spotSubject.count,
+                            target: spotSubject.target,
+                            ...(spotSubject.excludeSource
+                                ? { excludeSource: true }
+                                : {}),
+                        },
+                    ],
+                },
+            ],
+            effects: [effect],
+            source: 'SELF',
+            text: plain,
+        },
+    ];
 }
 
 /** Effet dont la magnitude est le nombre spoté (X). Fragments sûrs seulement. */
@@ -4128,6 +4194,50 @@ export function parseAbilities(
             return;
         }
 
+        // Spot X to replace Y (events / special abilities)
+        const spotReplaceMatch = body.match(
+            /^Spot\s+([\s\S]+?)\s+to\s+(replace\s+[\s\S]+)/i
+        );
+        if (spotReplaceMatch) {
+            if (/\b(and|or)\b/i.test(spotReplaceMatch[1])) return;
+            const spotSubject = parseExertSubject(
+                spotReplaceMatch[1],
+                cardTitle,
+                text
+            );
+            const effect = parseReplaceSiteEffect(spotReplaceMatch[2]);
+            if (!spotSubject || !effect) return;
+
+            const spotReplaceClause =
+                `${marker.phase}: Spot ${spotReplaceMatch[1].trim()} to ${spotReplaceMatch[2]}`
+                    .replace(/<[^>]+>/g, '')
+                    .replace(/\s+/g, ' ')
+                    .replace(/\s+\./g, '.')
+                    .trim();
+
+            abilities.push({
+                id: `${cardId || 'ability'}:${abilities.length}`,
+                phases,
+                cost: [
+                    {
+                        spot: [
+                            {
+                                count: spotSubject.count,
+                                target: spotSubject.target,
+                                ...(spotSubject.excludeSource
+                                    ? { excludeSource: true }
+                                    : {}),
+                            },
+                        ],
+                    },
+                ],
+                effects: [effect],
+                source: 'SELF',
+                text: spotReplaceClause,
+            });
+            return;
+        }
+
         // Spot X to discard Y (events / special abilities)
         const spotDiscardMatch = body.match(
             /^Spot\s+([\s\S]+?)\s+to discard\s+([\s\S]+)/i
@@ -4557,6 +4667,17 @@ export function parseAbilities(
             id: `${cardId || 'ability'}:${abilities.length}`,
         });
     });
+
+    if (markers.length === 0) {
+        parseStandaloneSpotReplaceAbilities(text, cardTitle, cardId).forEach(
+            (ability) => {
+                abilities.push({
+                    ...ability,
+                    id: `${cardId || 'ability'}:${abilities.length}`,
+                });
+            }
+        );
+    }
 
     return abilities.length > 0 ? abilities : undefined;
 }

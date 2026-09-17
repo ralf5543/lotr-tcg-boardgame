@@ -12,6 +12,7 @@ import {
     createMinion,
     createGameState,
     createPlayerState,
+    createSite,
 } from './createGameState';
 
 const SAM_ABILITY: Ability = {
@@ -286,5 +287,74 @@ describe('designation', () => {
         expect(
             getHandEventDesignationTargetIds(G, event, 'skirmish')
         ).not.toContain('sam');
+    });
+
+    it('Traveled Leader : flèche sur les sites path de la région courante', () => {
+        const site1 = createSite({
+            id: 'site-a',
+            siteNumber: 1,
+            keywords: ['PLAINS'],
+        });
+        const site2 = createSite({
+            id: 'site-b',
+            siteNumber: 2,
+            keywords: ['FOREST'],
+        });
+        const deckSite = createSite({
+            id: 'site-deck',
+            keywords: ['RIVER'],
+        });
+        const G = createGameState({
+            currentSiteIndex: 0,
+            path: [
+                site1,
+                site2,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+            ],
+            players: {
+                '0': createPlayerState('0', {
+                    currentSiteIndex: 0,
+                    fellowshipArea: [
+                        createCompanion({
+                            id: 'gandalf',
+                            culture: 'GANDALF',
+                            race: 'WIZARD',
+                        }),
+                    ],
+                    sitesDeck: [deckSite],
+                }),
+            },
+        });
+        const ability: Ability = {
+            id: '12C34:0',
+            phases: [],
+            cost: [{ spot: [{ count: 1, target: [['GANDALF', 'WIZARD']] }] }],
+            effects: [
+                {
+                    type: 'REPLACE_SITE',
+                    scope: 'REGION',
+                    from: 'SITES_DECK',
+                },
+            ],
+            source: 'SELF',
+        };
+        const event = createCard({
+            id: '12C34',
+            kind: 'FREE_PEOPLE',
+            type: 'EVENT',
+            title: 'Traveled Leader',
+            phases: ['MANEUVER', 'REGROUP'],
+            abilities: [ability],
+        });
+
+        const ids = getHandEventDesignationTargetIds(G, event, 'maneuver');
+        expect(ids).toEqual(expect.arrayContaining(['site-a', 'site-b']));
+        expect(abilityNeedsDesignation(G, event, ability)).toBe(false);
     });
 });

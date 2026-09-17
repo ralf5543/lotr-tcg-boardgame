@@ -3,6 +3,7 @@ import { canUseAbility } from '../engine/canUseAbility';
 import {
     abilityNeedsSiteReplace,
     applyAbilityEffect,
+    abilityReplaceSiteEffect,
 } from '../engine/abilities/applyAbilityEffect';
 import {
     abilityNeedsHandDiscard,
@@ -70,8 +71,16 @@ export const activateAbility = (
     if (abilityNeedsHandDiscard(ability) && !discardedHandIds?.length) {
         return 'INVALID_MOVE';
     }
-    if (abilityNeedsSiteReplace(ability) && !chosenTargetId && !chosenEffectTargetId) {
-        return 'INVALID_MOVE';
+    if (abilityNeedsSiteReplace(ability)) {
+        const effect = abilityReplaceSiteEffect(ability);
+        const ids = normalizeChosenIds(
+            chosenEffectTargetId ?? chosenTargetId
+        );
+        if (effect?.scope === 'REGION') {
+            if (ids.length < 2) return 'INVALID_MOVE';
+        } else if (ids.length < 1) {
+            return 'INVALID_MOVE';
+        }
     }
     const wasResponseWindowOpen = isResponseWindowOpen(G);
     const isResponseAbility = abilityMatchesPhase(ability, 'RESPONSE');

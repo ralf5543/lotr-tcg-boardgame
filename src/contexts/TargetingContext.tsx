@@ -8,6 +8,7 @@ type TargetingKind =
     | 'DESIGNATION'
     | 'HAND_DISCARD'
     | 'SITE_REPLACE'
+    | 'SITE_REPLACE_PATH'
     | 'SANCTUARY_HEAL';
 
 interface TargetingRequest {

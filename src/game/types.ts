@@ -245,8 +245,8 @@ export type AbilityEffect =
            * La cible choisie = id du site dans sitesDeck (avant activateAbility).
            */
           type: 'REPLACE_SITE';
-          /** Site où se trouve la compagnie. */
-          scope: 'CURRENT';
+          /** Site où se trouve la compagnie, ou tout site de la région courante. */
+          scope: 'CURRENT' | 'REGION';
           from: 'SITES_DECK';
           /** Filtre terrain optionnel (underground, plains…). */
           siteKeyword?: CardKeyword;

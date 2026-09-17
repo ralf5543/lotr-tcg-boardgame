@@ -64,6 +64,7 @@ describe('site move abilities', () => {
         // Move : site 1 + 2 compagnons + région 1 (0) = 3, puis remove 2
         expect(G.players['0']?.currentSiteIndex).toBe(1);
         expect(G.twilightPool).toBe(1);
+        expect(G.statusMessage).toMatch(/-2 \(effet site\) → 1/);
     });
 
     it('n’applique rien si le site n’a pas d’ability', () => {

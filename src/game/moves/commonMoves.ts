@@ -286,7 +286,7 @@ function yieldAfterPlay(
 export const playCard = (
     { G, ctx, playerID }: LotrMoveContext,
     cardIndex: number,
-    chosenTargetId?: string
+    chosenTargetId?: string | string[]
 ) => {
     const actingPlayerId = playerID ?? ctx.currentPlayer ?? '0';
     const wasResponseWindowOpen = isResponseWindowOpen(G);
@@ -431,7 +431,7 @@ export const resolveWhenPlayedChoice = (
     { G, playerID }: LotrMoveContext,
     accept: boolean,
     discardedHandIds?: string[],
-    chosenTargetId?: string
+    chosenTargetId?: string | string[]
 ) => {
     if (!G.pendingWhenPlayed || G.pendingWhenPlayed.playerId !== playerID) {
         return 'INVALID_MOVE';

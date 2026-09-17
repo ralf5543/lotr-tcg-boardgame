@@ -22,6 +22,8 @@ import { findSkirmishToCancel } from './cancelSkirmish';
 import {
     getReplaceSiteCandidates,
     replaceCurrentSiteFromDeck,
+    replacePathSiteFromDeck,
+    canReplaceSiteInCurrentRegion,
 } from '../../logic/sites';
 import type { CardKeyword } from '../../types';
 
@@ -36,6 +38,22 @@ export function abilityReplaceSiteEffect(
 
 export function abilityNeedsSiteReplace(ability: Ability): boolean {
     return Boolean(abilityReplaceSiteEffect(ability));
+}
+
+export function abilityReplaceSiteScope(
+    ability: Ability
+): 'CURRENT' | 'REGION' | undefined {
+    return abilityReplaceSiteEffect(ability)?.scope;
+}
+
+function findPathIndexForSiteId(G: GameState, siteId: string): number {
+    for (let i = 0; i < 9; i++) {
+        const site = G.path[i];
+        if (site && (site.instanceId === siteId || site.id === siteId)) {
+            return i;
+        }
+    }
+    return -1;
 }
 
 function normalizeChosenIds(chosen?: string | string[]): string[] {
@@ -95,25 +113,60 @@ export function applyAbilityEffect(
         }
 
         if (effect.type === 'REPLACE_SITE') {
-            if (effect.scope !== 'CURRENT' || effect.from !== 'SITES_DECK') {
-                return false;
-            }
+            if (effect.from !== 'SITES_DECK') return false;
             const ownerId = abilityOwnerPlayerId(G, source);
             if (!ownerId) return false;
-            const siteId = chosenIds[0];
-            if (!siteId) return false;
             const keyword = effect.siteKeyword as CardKeyword | undefined;
-            if (
-                getReplaceSiteCandidates(G, ownerId, keyword).length === 0
-            ) {
-                return false;
+
+            if (effect.scope === 'CURRENT') {
+                const siteId = chosenIds[0];
+                if (!siteId) return false;
+                if (
+                    getReplaceSiteCandidates(G, ownerId, keyword).length === 0
+                ) {
+                    return false;
+                }
+                if (
+                    !replaceCurrentSiteFromDeck(G, ownerId, siteId, keyword)
+                ) {
+                    return false;
+                }
+                continue;
             }
-            if (
-                !replaceCurrentSiteFromDeck(G, ownerId, siteId, keyword)
-            ) {
-                return false;
+
+            if (effect.scope === 'REGION') {
+                const pathSiteId = chosenIds[0];
+                const deckSiteId = chosenIds[1];
+                if (!pathSiteId || !deckSiteId) return false;
+                const pathIndex = findPathIndexForSiteId(G, pathSiteId);
+                if (pathIndex < 0) return false;
+                const oldSite = G.path[pathIndex];
+                if (!oldSite) return false;
+                if (
+                    getReplaceSiteCandidates(
+                        G,
+                        ownerId,
+                        keyword,
+                        oldSite.id
+                    ).length === 0
+                ) {
+                    return false;
+                }
+                if (
+                    !replacePathSiteFromDeck(
+                        G,
+                        ownerId,
+                        pathIndex,
+                        deckSiteId,
+                        keyword
+                    )
+                ) {
+                    return false;
+                }
+                continue;
             }
-            continue;
+
+            return false;
         }
 
         if (effect.type === 'DISCARD_FROM_HAND') {

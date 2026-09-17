@@ -100,8 +100,8 @@ export const devMoves = {
             (site as { title?: string } | null)?.title ||
             site?.id;
         G.statusMessage = site
-            ? `[DEV] Compagnie au site ${index + 1} : ${label}`
-            : `[DEV] Compagnie à l’emplacement ${index + 1} (vide)`;
+            ? `[DEV] Téléport site ${index + 1} : ${label} (pas de crépuscule ni effets move)`
+            : `[DEV] Téléport emplacement ${index + 1} (vide)`;
     },
 
     devSetPhase: ({ G, events }: LotrPhaseContext, targetPhase: string) => {

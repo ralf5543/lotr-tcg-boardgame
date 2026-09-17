@@ -7,6 +7,7 @@ import { SiteCard } from '../SiteCard';
 import * as S from './styles';
 import { useDrag } from '../../../../contexts/DragContext';
 import { useHoverCard } from '../../../../contexts/HoverCardContext';
+import { useTargeting } from '../../../../contexts/TargetingContext';
 import { audioService } from '../../../../services/audioService';
 
 interface SitePathProps {
@@ -26,7 +27,23 @@ export const SitePath: React.FC<SitePathProps> = ({
     players = {},
     onPlaySite,
 }) => {
-    const { registerTarget, activeTargetId, dragged } = useDrag();
+    const {
+        registerTarget,
+        activeTargetId,
+        dragged,
+        isOverHandCancel,
+    } = useDrag();
+    const {
+        targetingKind,
+        isCardTargetable,
+        selectCard,
+        isTargetingActive,
+    } = useTargeting();
+    const isPathReplacePick =
+        targetingKind === 'SITE_REPLACE_PATH' && isTargetingActive;
+    const dragDesignationIds = dragged?.designationTargetIds;
+    const isDragDesignating =
+        Boolean(dragDesignationIds?.length) && !isOverHandCancel;
     const slots = Array.from({ length: 9 }, (_, i) => path?.[i] ?? null);
     const nextEmptyIndex = slots.findIndex((slot) => slot === null);
 
@@ -105,20 +122,70 @@ export const SitePath: React.FC<SitePathProps> = ({
                 : false,
         };
 
+        const siteKey = site
+            ? site.instanceId || site.id
+            : undefined;
+        const isDragDesignationCandidate = Boolean(
+            siteKey &&
+                isDragDesignating &&
+                (dragDesignationIds!.includes(siteKey) ||
+                    (site?.id && dragDesignationIds!.includes(site.id)))
+        );
+        const pathReplaceTargetable =
+            (Boolean(siteKey) &&
+                isPathReplacePick &&
+                isCardTargetable(siteKey)) ||
+            isDragDesignationCandidate;
+        const pathReplaceDimmed =
+            (isPathReplacePick || isDragDesignating) &&
+            Boolean(site) &&
+            !pathReplaceTargetable;
+        const isAimed =
+            Boolean(siteKey) &&
+            (activeTargetId === siteKey || activeTargetId === site?.id);
+
         return (
             <S.SiteCardContainer
                 key={index}
-                ref={isNextEmpty ? nextSlotRef : null}
+                ref={(el) => {
+                    if (isNextEmpty) {
+                        nextSlotRef.current = el;
+                    }
+                    if (!siteKey) return;
+                    if (isDragDesignationCandidate && el) {
+                        registerTarget(siteKey, el);
+                        if (site?.id && site.id !== siteKey) {
+                            registerTarget(site.id, el);
+                        }
+                    } else {
+                        registerTarget(siteKey, null);
+                        if (site?.id && site.id !== siteKey) {
+                            registerTarget(site.id, null);
+                        }
+                    }
+                }}
                 $isCurrent={isP0Here || isP1Here}
                 $index={index}
-                $isHovered={isHovered}
+                $isHovered={isHovered || (isDragDesignationCandidate && isAimed)}
                 $hasSite={Boolean(site)}
+                $pathReplaceTargetable={pathReplaceTargetable}
+                $pathReplaceDimmed={pathReplaceDimmed}
                 onMouseEnter={() => {
                     if (site) {
                         setHoveredCard(site, 'landscape');
                     }
                 }}
                 onMouseLeave={() => setHoveredCard(null)}
+                onPointerDown={(e) => {
+                    if (!pathReplaceTargetable || !siteKey) return;
+                    // Clic uniquement pour SITE_REPLACE_PATH (post-ability) ;
+                    // le drag event utilise la flèche + release.
+                    if (!isPathReplacePick || isDragDesignating) return;
+                    e.stopPropagation();
+                    e.preventDefault();
+                    setHoveredCard(null);
+                    selectCard(siteKey);
+                }}
             >
                 {site ? (
                     <SiteCard

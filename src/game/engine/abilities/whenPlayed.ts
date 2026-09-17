@@ -11,7 +11,7 @@ import {
 } from './payAbilityCost';
 import { findTargetCard } from '../../../utils/cardUtils';
 import { pauseActionYieldForResponses } from '../responseWindow';
-import { getReplaceSiteCandidates } from '../../logic/sites';
+import { getReplaceSiteCandidates, canReplaceSiteInCurrentRegion } from '../../logic/sites';
 
 export function isWhenPlayedAbility(ability: Ability): boolean {
     return ability.trigger?.type === 'WHEN_PLAYED';
@@ -34,6 +34,9 @@ function canFulfillWhenPlayedEffects(
     if (!effect) return false;
     const ownerId = abilityOwnerPlayerId(G, card);
     if (!ownerId) return false;
+    if (effect.scope === 'REGION') {
+        return canReplaceSiteInCurrentRegion(G, ownerId, effect.siteKeyword);
+    }
     return getReplaceSiteCandidates(G, ownerId, effect.siteKeyword).length > 0;
 }
 
@@ -125,7 +128,7 @@ export function acceptPendingWhenPlayed(
     G: GameState,
     playerID: string,
     discardedHandIds?: string[],
-    chosenTargetId?: string
+    chosenTargetId?: string | string[]
 ): boolean {
     const pending = G.pendingWhenPlayed;
     if (!pending || pending.playerId !== playerID) return false;
