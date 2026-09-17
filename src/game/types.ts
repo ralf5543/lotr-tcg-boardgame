@@ -333,6 +333,8 @@ export type AbilityTrigger =
           skirmishing?: { target: string[][] };
           /** Attachement porté (While … bears a …). */
           bearing?: { target: string[][] };
+          /** Compagnie sur un site portant ce mot-clé (terrains / Sanctuary). */
+          atSiteKeyword?: CardKeyword;
       }
     | {
           type: 'CHARACTER_DIES';

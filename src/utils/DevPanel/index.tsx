@@ -259,7 +259,7 @@ export const DevPanel: React.FC<DevPanelProps> = ({
                         <S.PresetButton
                             onClick={() => moves.devLoadPreset('SITES_TEST')}
                         >
-                            Sites (chemin + mots-clés)
+                            Sites (keywords + cartes)
                         </S.PresetButton>
                         <S.GameButton $bgColor="#3498db" onClick={onDrawCard}>
                             🃏 Piocher ({deckCount})

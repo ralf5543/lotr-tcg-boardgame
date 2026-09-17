@@ -1527,6 +1527,91 @@ describe('parseAbilities — While bearing → strength / keyword', () => {
     });
 });
 
+describe('parseAbilities — While at a … site → strength', () => {
+    it('parse Denizen : while at underground → force +2', () => {
+        expect(
+            parseAbilities(
+                'While this minion is at an underground site, it is strength +2.',
+                'Denizen of Khazad-dûm',
+                '11S115'
+            )
+        ).toEqual([
+            expect.objectContaining({
+                trigger: { type: 'WHILE', atSiteKeyword: 'UNDERGROUND' },
+                effects: [
+                    {
+                        type: 'MODIFY_STAT',
+                        stat: 'STRENGTH',
+                        value: 2,
+                        target: 'SELF',
+                    },
+                ],
+            }),
+        ]);
+    });
+
+    it('parse Goblin Wallcrawler (wording While at…)', () => {
+        const abs = parseAbilities(
+            'While at an underground site, this minion is strength +2.  <br>While you can spot another <symbol>moria</symbol> Orc, the fellowship archery total is -1.',
+            'Goblin Wallcrawler',
+            '1C184'
+        );
+        expect(abs).toEqual([
+            expect.objectContaining({
+                trigger: { type: 'WHILE', atSiteKeyword: 'UNDERGROUND' },
+                effects: [
+                    expect.objectContaining({
+                        type: 'MODIFY_STAT',
+                        value: 2,
+                    }),
+                ],
+            }),
+        ]);
+    });
+
+    it('parse Woodland Sentinel / Uruk Decimator terrains', () => {
+        expect(
+            parseAbilities(
+                'While this companion is at a forest site, he is strength +2.',
+                'Woodland Sentinel',
+                '11C27'
+            )
+        ).toEqual([
+            expect.objectContaining({
+                trigger: { type: 'WHILE', atSiteKeyword: 'FOREST' },
+            }),
+        ]);
+        const uruk = parseAbilities(
+            'While this minion is at a battleground site, it is strength +2. <br>While this minion is bearing a possession, it is <keyword>damage +1.</keyword>',
+            'Uruk Decimator',
+            '12R150'
+        );
+        expect(uruk).toEqual(
+            expect.arrayContaining([
+                expect.objectContaining({
+                    trigger: { type: 'WHILE', atSiteKeyword: 'BATTLEGROUND' },
+                }),
+                expect.objectContaining({
+                    trigger: {
+                        type: 'WHILE',
+                        bearing: { target: [['POSSESSION']] },
+                    },
+                }),
+            ])
+        );
+    });
+
+    it('refuse strength +N and Damage / Fierce', () => {
+        expect(
+            parseAbilities(
+                'While this minion is at a battleground site, it is strength +1 and <keyword>Damage +1.</keyword>',
+                'Feral Uruk',
+                '11S183'
+            )
+        ).toBeUndefined();
+    });
+});
+
 describe('parseAbilities — While / skip archery phase', () => {
     it('parse Fill With Fear : spot The Balrog → skip archery', () => {
         const text =

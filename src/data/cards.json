@@ -12293,6 +12293,27 @@
         "ELF"
       ]
     ],
+    "abilities": [
+      {
+        "id": "1U31:0",
+        "phases": [],
+        "trigger": {
+          "type": "WHILE",
+          "atSiteKeyword": "PLAINS"
+        },
+        "cost": [],
+        "effects": [
+          {
+            "type": "MODIFY_STAT",
+            "stat": "STRENGTH",
+            "value": 2,
+            "target": "BEARER"
+          }
+        ],
+        "source": "ATTACHMENT",
+        "text": "While at a plains site, bearer is strength +2."
+      }
+    ],
     "culture": "ELVEN",
     "twilightCost": 2,
     "strength": 2,
@@ -19752,6 +19773,27 @@
     "isUnique": false,
     "kind": "SHADOW",
     "type": "MINION",
+    "abilities": [
+      {
+        "id": "1C184:0",
+        "phases": [],
+        "trigger": {
+          "type": "WHILE",
+          "atSiteKeyword": "UNDERGROUND"
+        },
+        "cost": [],
+        "effects": [
+          {
+            "type": "MODIFY_STAT",
+            "stat": "STRENGTH",
+            "value": 2,
+            "target": "SELF"
+          }
+        ],
+        "source": "SELF",
+        "text": "While at an underground site, this minion is strength +2."
+      }
+    ],
     "culture": "MORIA",
     "race": "ORC",
     "twilightCost": 2,
@@ -20889,6 +20931,27 @@
       [
         "NAZGÛL"
       ]
+    ],
+    "abilities": [
+      {
+        "id": "1R208:0",
+        "phases": [],
+        "trigger": {
+          "type": "WHILE",
+          "atSiteKeyword": "PLAINS"
+        },
+        "cost": [],
+        "effects": [
+          {
+            "type": "MODIFY_STAT",
+            "stat": "STRENGTH",
+            "value": 2,
+            "target": "BEARER"
+          }
+        ],
+        "source": "ATTACHMENT",
+        "text": "While at a plains site, bearer is strength +2."
+      }
     ],
     "culture": "WRAITH",
     "twilightCost": 1,
@@ -92927,6 +92990,27 @@
     "isUnique": false,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
+    "abilities": [
+      {
+        "id": "11C27:0",
+        "phases": [],
+        "trigger": {
+          "type": "WHILE",
+          "atSiteKeyword": "FOREST"
+        },
+        "cost": [],
+        "effects": [
+          {
+            "type": "MODIFY_STAT",
+            "stat": "STRENGTH",
+            "value": 2,
+            "target": "SELF"
+          }
+        ],
+        "source": "SELF",
+        "text": "While this companion is at a forest site, he is strength +2."
+      }
+    ],
     "culture": "ELVEN",
     "race": "ELF",
     "twilightCost": 2,
@@ -96910,6 +96994,27 @@
     "isUnique": false,
     "kind": "SHADOW",
     "type": "MINION",
+    "abilities": [
+      {
+        "id": "11S115:0",
+        "phases": [],
+        "trigger": {
+          "type": "WHILE",
+          "atSiteKeyword": "UNDERGROUND"
+        },
+        "cost": [],
+        "effects": [
+          {
+            "type": "MODIFY_STAT",
+            "stat": "STRENGTH",
+            "value": 2,
+            "target": "SELF"
+          }
+        ],
+        "source": "SELF",
+        "text": "While this minion is at an underground site, it is strength +2."
+      }
+    ],
     "culture": "ORC",
     "race": "ORC",
     "twilightCost": 3,
@@ -96952,6 +97057,27 @@
     "isUnique": false,
     "kind": "SHADOW",
     "type": "MINION",
+    "abilities": [
+      {
+        "id": "11S116:0",
+        "phases": [],
+        "trigger": {
+          "type": "WHILE",
+          "atSiteKeyword": "UNDERGROUND"
+        },
+        "cost": [],
+        "effects": [
+          {
+            "type": "MODIFY_STAT",
+            "stat": "STRENGTH",
+            "value": 3,
+            "target": "SELF"
+          }
+        ],
+        "source": "SELF",
+        "text": "While this minion is at an underground site, it is strength +3."
+      }
+    ],
     "culture": "ORC",
     "race": "ORC",
     "twilightCost": 2,
@@ -96994,6 +97120,27 @@
     "isUnique": false,
     "kind": "SHADOW",
     "type": "MINION",
+    "abilities": [
+      {
+        "id": "11S117:0",
+        "phases": [],
+        "trigger": {
+          "type": "WHILE",
+          "atSiteKeyword": "UNDERGROUND"
+        },
+        "cost": [],
+        "effects": [
+          {
+            "type": "MODIFY_STAT",
+            "stat": "STRENGTH",
+            "value": 2,
+            "target": "SELF"
+          }
+        ],
+        "source": "SELF",
+        "text": "While this minion is at an underground site, it is strength +2."
+      }
+    ],
     "culture": "ORC",
     "race": "ORC",
     "twilightCost": 4,
@@ -108520,6 +108667,25 @@
     "abilities": [
       {
         "id": "12R150:0",
+        "phases": [],
+        "trigger": {
+          "type": "WHILE",
+          "atSiteKeyword": "BATTLEGROUND"
+        },
+        "cost": [],
+        "effects": [
+          {
+            "type": "MODIFY_STAT",
+            "stat": "STRENGTH",
+            "value": 2,
+            "target": "SELF"
+          }
+        ],
+        "source": "SELF",
+        "text": "While this minion is at a battleground site, it is strength +2."
+      },
+      {
+        "id": "12R150:1",
         "phases": [],
         "trigger": {
           "type": "WHILE",

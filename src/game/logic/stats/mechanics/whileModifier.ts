@@ -11,6 +11,10 @@ import {
 } from '../../../engine/abilities/resolveCostTarget';
 import { cardMatchesTarget } from '../../../engine/validations/matchers';
 import { findTargetCard } from '../../../../utils/cardUtils';
+import {
+    isAtSiteWithKeyword,
+    isCurrentSiteSanctuary,
+} from '../../sites';
 
 function matchCard(card: CardState, targetId: string): boolean {
     return card.instanceId === targetId || card.id === targetId;
@@ -93,6 +97,15 @@ function whileConditionHolds(
                 att ? cardMatchesTarget(att, trigger.bearing!.target) : false
             )
         ) {
+            return false;
+        }
+    }
+
+    if (trigger.atSiteKeyword) {
+        // Sanctuaire Standard = emplacements 3/6 (ou mot-clé pré-Shadows)
+        if (trigger.atSiteKeyword === 'SANCTUARY') {
+            if (!isCurrentSiteSanctuary(G)) return false;
+        } else if (!isAtSiteWithKeyword(G, trigger.atSiteKeyword)) {
             return false;
         }
     }

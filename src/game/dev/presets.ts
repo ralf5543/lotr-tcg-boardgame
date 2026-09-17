@@ -466,14 +466,14 @@ const clonePresetSite = (
     } as SiteCardState;
 };
 
-/** Neuf sites Standard (sets 11+), sans numéro imprimé. Sanctuaire = cases 3 et 6. */
+/** Neuf sites Standard — terrains variés pour tester les mots-clés. Sanctuaire = 3 & 6. */
 const SITES_TEST_PATH_IDS = [
-    '11S263', // 1 West Gate of Moria — UNDERGROUND, moves from → remove twilight2
-    '11S228', // 2 Anduin Confluence — RIVER, moves to → discard each ally
-    '11S237', // 3 Ettenmoors — PLAINS (+ sanctuaire par position)
+    '11S263', // 1 West Gate of Moria — UNDERGROUND
+    '11S228', // 2 Anduin Confluence — RIVER
+    '11S237', // 3 Ettenmoors — PLAINS (+ sanctuaire)
     '11S233', // 4 Chamber of Mazarbul — UNDERGROUND
-    '11S229', // 5 Barazinbar — MOUNTAIN
-    '11U227', // 6 Anduin Banks — RIVER (+ sanctuaire par position)
+    '11S231', // 5 Caras Galadhon — FOREST
+    '11U227', // 6 Anduin Banks — RIVER (+ sanctuaire)
     '11S241', // 7 Fortress of Orthanc — BATTLEGROUND
     '11U235', // 8 Dammed Gate-stream — MARSH
     '11S240', // 9 Flats of Rohan — PLAINS
@@ -568,8 +568,8 @@ export const applyDevPreset = (
                 )
             );
 
-            // Site 3 (index 2) = Sanctuaire — prêt pour tester les soins
-            const startIndex = 2;
+            // Site 1 = UNDERGROUND — bonus force des denizens visible tout de suite
+            const startIndex = 0;
             Object.values(G.players).forEach((player) => {
                 if (player) player.currentSiteIndex = startIndex;
             });
@@ -585,6 +585,16 @@ export const applyDevPreset = (
                     ...clonePresetCard('1R89', 'dev-aragorn'),
                     wounds: 1,
                 },
+                // FOREST → force +2 (sauter au site 5)
+                clonePresetCard('11C27', 'dev-woodland-sentinel'),
+            ];
+
+            G.battlefield = [
+                // UNDERGROUND → +2 / +3 (sites 1 & 4)
+                clonePresetCard('11S115', 'dev-denizen-khazad'),
+                clonePresetCard('11S116', 'dev-denizen-moria'),
+                // BATTLEGROUND → +2 (site 7)
+                clonePresetCard('12R150', 'dev-uruk-decimator'),
             ];
 
             if (shadowPlayer) {
@@ -594,7 +604,7 @@ export const applyDevPreset = (
             }
 
             G.statusMessage =
-                '[DEV] Preset Sites (Standard) : chemin sets 11+. Compagnie au site 3 (sanctuaire).';
+                '[DEV] Sites + keywords : site 1 UNDERGROUND (denizens +force). Grille : 5=FOREST, 7=BATTLEGROUND, 3/6=sanctuaire.';
             break;
         }
     }
