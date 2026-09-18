@@ -73,7 +73,10 @@ export const Title = styled.p<{
     ${(props) =>
         props.$size === 'sm' &&
         `
-        inset: 0px 0px 49px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        inset: 0px 0px 60px;
         font-size: 9px;
         color: white;
         background-color: rgba(0, 0, 0, 0.5);

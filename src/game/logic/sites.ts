@@ -191,11 +191,11 @@ export function replacePathSiteFromDeck(
     player.sitesDeck.splice(deckIndex, 1);
 
     const siteNumber = oldSite.siteNumber ?? pathIndex + 1;
-    const attachments = [...(oldSite.attachments || [])];
 
     newSite.siteNumber = siteNumber;
     newSite.ownerId = ownerId;
-    newSite.attachments = attachments;
+    // Pas de transfert attachments/stacked au replace (défausse à câbler avec l'attache).
+    newSite.attachments = [];
 
     const returned: SiteCardState = {
         ...oldSite,

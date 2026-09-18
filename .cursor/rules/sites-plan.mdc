@@ -50,7 +50,7 @@ L’ancien plan effets de cartes est **figé** (`.cursor/rules/card-effects-plan
    **Décisions UX / règles (Standard)** — sources : CR + Current Rulings « site » :
    - Ancien site → **deck d’aventure du propriétaire** (`sitesDeck`), `siteNumber` effacé.
    - Nouveau site → **même `siteNumber` / région** ; **pas** de crépuscule de move ni effets MOVES_FROM/TO.
-   - Attachments / stacked sur l’ancien → **transférés** sur le nouveau (même si attache pas encore jouable).
+   - **Attachments / stacked ne se transfèrent PAS** au replace. Conditions sur le site → défausse (à câbler avec l’attache). Les séides empilés se **rejouent depuis le site** tant qu’il est là ; pas de transfert sur le nouveau site.
    - Interdit de remplacer par **la même carte site** (même id).
    - Sélection : comme défausse main — choisir le site dans `sitesDeck` (filtré keyword si besoin) **avant** `activateAbility` (coût+effet atomiques).
    - **Events à cible** (dont replace REGION) : même UX que tout event ciblé — drag hors main → carte disparaît → **flèche + halo** sur la 1ʳᵉ cible (ici un site du path) → puis picker deck si besoin. Pas de message « Relâchez pour… ».
@@ -62,15 +62,20 @@ L’ancien plan effets de cartes est **figé** (`.cursor/rules/card-effects-plan
    - **6ᵉ** : échange path↔deck (sites **à toi**) → **11U45** Led Astray (+ crépuscule). ✅ ≠ replace (cannot replace ne bloque pas).
    - Suite : attache / contrôle. Site Mount Doom / attache « this site cannot » = plus tard.
 
-5. **Attache sur un site** (UX à concevoir **avant** code)
-   - Jouer une carte « Plays on a site » (climats, etc.) : cibler un site du `path`, limite 1 par site.
-   - Défausser / effets qui ciblent une condition **sur** un site (ex. cape `1U98` vs Neiges `1C138`).
-   - Débloque le vrai modèle (plus de Neiges en `supportArea` en workaround).
+5. **Attache sur un site** (UX tranchée — mock CSS en cours)
+   - Path = **sceau** culture + libellé **Climat** (si Weather) ou **Effet** (sinon) ; HoverCard pour le détail.
+   - Stack = **vraies cartes `sm`** scale ~⅓ hauteur du slot, grille centrée (pas de badge abstrait).
+   - Jouer : même flux event ciblé (flèche + halo).
+   - 9 conditions CSV « Plays on a site » (sets 1–7) ; **rien en 11+**.
+   - Défausser / cibler une condition **sur** un site ; sortir Neiges du `supportArea`.
+   - Mock DevPanel : « Mock UX sites ».
 
-6. **Contrôle de site** (UX à concevoir **avant** code)
-   - Contrôler / libérer un site (cultures concernées : **Dunland**, **Sauron** ; **Uruk-hai** à vérifier wiki/CSV avant de câbler).
-   - Puis « Plays on a site you control » / textes While control / skip liés au contrôle.
-   - Vocabulaire wiki : Control, Liberate, Replace (lié aussi à l’étape 4), At a Site.
+6. **Contrôle + stack** (UX tranchée — mock CSS en cours)
+   - **Contrôle** = drapeau **P1/P2** (joueur `0`/`1`), pas culture.
+   - Contrôle seulement après passage des joueurs → **pas de conflit** avec jetons footer ; drapeau en bas, mini-cartes au centre.
+   - **Stack** uniquement sur site contrôlé ; clic / hover → détail (tiroir Site plus tard si besoin).
+   - Puis « Plays on a site you control » / liberate / play from stack.
+   - Cultures concernées : **Dunland**, **Sauron** ; **Uruk-hai** à vérifier.
 
 ## Hors scope pour l’instant
 

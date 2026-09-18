@@ -10,6 +10,7 @@ export const SitespathContainer = styled.section`
     background: rgba(26, 37, 47, 0.5);
     border-radius: 8px;
     width: 300px;
+    overflow: visible;
 
     &::before, &::after {
         content: '';
@@ -43,8 +44,7 @@ export const RegionGroup = styled.div<{ $region: 1 | 2 | 3 }>`
     flex-direction: column;
     padding: 20px;
     gap: 20px;
-
-
+    overflow: visible;
 `;
 
 export const SiteCardContainer = styled.div<{
@@ -57,6 +57,7 @@ export const SiteCardContainer = styled.div<{
     $pathReplaceDimmed?: boolean;
 }>`
     position: relative;
+    overflow: visible;
     width: 100%;
     aspect-ratio: 3 / 1;
     border-radius: 6px;
@@ -145,4 +146,97 @@ export const SiteToken = styled.span<{ $playerId?: string }>`
     display: flex;
     align-items: center;
     justify-content: center;
+`;
+
+export const ControlFlag = styled.div<{ $playerId: '0' | '1' }>`
+    position: absolute;
+    inset-block-start: -39px;
+    inset-inline-start: -17px;
+    z-index: 4;
+    width: 100px;
+    height: 100px;
+    background-image: url('interface/UI/flag_control.webp');
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+    perspective: 126px;
+`;
+
+export const ControlFlagLabel = styled.span<{ $playerId: '0' | '1' }>`
+    display: flex;
+    position: absolute;
+    inset-block-start: 38px;
+    inset-inline-start: 43px;
+    transform: rotateX(353deg) rotateY(40deg) skew(15deg, 15deg);
+    transform-style: preserve-3d;
+`;
+
+/** Weather → Climat ; sinon → Effet. */
+export const SiteAttachmentSeal = styled.button<{ $isWeather?: boolean }>`
+    position: absolute;
+    inset-block-end: 0;
+    inset-inline-start: 50%;
+    translate: -50% 0;
+    z-index: 4;
+    display: flex;
+    align-items: center;
+    gap: 3px;
+    max-width: calc(100% - 8px);
+    padding: 2px 5px 2px 2px;
+    border-radius: 4px;
+    border: 1px solid
+        ${({ $isWeather }) =>
+            $isWeather
+                ? 'rgba(160, 200, 255, 0.95)'
+                : 'rgba(193, 160, 84, 0.9)'};
+    background: ${({ $isWeather }) =>
+        $isWeather
+            ? 'linear-gradient(135deg, rgba(30, 55, 90, 0.95), rgba(18, 32, 55, 0.95))'
+            : 'linear-gradient(135deg, rgba(45, 38, 28, 0.95), rgba(26, 37, 47, 0.95))'};
+    color: ${({ $isWeather }) => ($isWeather ? '#c5dcff' : '#e2c044')};
+    font-size: 8px;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    cursor: default;
+    pointer-events: auto;
+    box-shadow: ${({ $isWeather }) =>
+        $isWeather
+            ? '0 0 8px rgba(120, 180, 255, 0.35)'
+            : '0 0 6px rgba(193, 160, 84, 0.25)'};
+
+    img {
+        width: 14px;
+        height: 14px;
+        border-radius: 2px;
+        flex-shrink: 0;
+    }
+`;
+
+export const StackedMinionsGrid = styled.div`
+    position: absolute;
+    inset: 20% 10% 28% 10%;
+    z-index: 3;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    gap: 2px;
+    pointer-events: none;
+`;
+
+export const StackedMinionSlot = styled.div`
+    position: relative;
+    width: 16%;
+    flex: 0 0 auto;
+    pointer-events: auto;
+    overflow: visible;
+
+    & > * {
+        position: absolute;
+        left: 50%;
+        top: 50%;
+        transform: translate(-50%, -50%) scale(0.25);
+        transform-origin: center center;
+    }
 `;

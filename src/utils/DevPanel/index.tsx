@@ -3,6 +3,10 @@ import * as S from './styles';
 import type { BoardProps } from 'boardgame.io/react';
 import type { GameState } from '../../game/types';
 import { getThreatLimit } from '../../game/logic/threats';
+import {
+    SITE_UX_MOCK_EVENT,
+    SITE_UX_MOCK_KEY,
+} from '../../views/GameBoard/components/SitePath';
 
 export interface DevMoves {
     devSetPhase: (phase: string) => void;
@@ -46,8 +50,19 @@ export const DevPanel: React.FC<DevPanelProps> = ({
     matchID,
 }) => {
     const [isOpen, setIsOpen] = useState(false);
+    const [siteUxMock, setSiteUxMock] = useState(
+        () => sessionStorage.getItem(SITE_UX_MOCK_KEY) === '1'
+    );
 
     if (process.env.NODE_ENV === 'production') return null;
+
+    const toggleSiteUxMock = () => {
+        const next = !siteUxMock;
+        setSiteUxMock(next);
+        if (next) sessionStorage.setItem(SITE_UX_MOCK_KEY, '1');
+        else sessionStorage.removeItem(SITE_UX_MOCK_KEY);
+        window.dispatchEvent(new Event(SITE_UX_MOCK_EVENT));
+    };
 
     const currentArchery =
         G.archeryWoundsToAssign ?? G.archeryState?.fpTotal ?? 0;
@@ -317,6 +332,11 @@ export const DevPanel: React.FC<DevPanelProps> = ({
                             onClick={() => moves.devLoadPreset('SITES_TEST')}
                         >
                             Sites (replace)
+                        </S.PresetButton>
+                        <S.PresetButton onClick={toggleSiteUxMock}>
+                            {siteUxMock
+                                ? 'Masquer UX sites'
+                                : 'Aperçu UX sites'}
                         </S.PresetButton>
                         <S.GameButton $bgColor="#3498db" onClick={onDrawCard}>
                             🃏 Piocher ({deckCount})
