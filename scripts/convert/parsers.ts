@@ -3274,6 +3274,22 @@ function parseWhenPlayedAbilities(
     return found;
 }
 
+function parseTakeControlSiteEffect(
+    remainder: string
+): Record<string, unknown> | null {
+    const clause = stripAbilityMarkup(remainder)
+        .replace(/\s+/g, ' ')
+        .replace(/[.\s]+$/u, '')
+        .trim();
+    if (!clause) return null;
+
+    if (/^take control of a site$/i.test(clause)) {
+        return { type: 'TAKE_CONTROL_SITE' };
+    }
+
+    return null;
+}
+
 function parseReplaceSiteEffect(
     remainder: string
 ): Record<string, unknown> | null {
@@ -3501,6 +3517,9 @@ function parseDiscardToEffect(
 ): Record<string, unknown> | null {
     const replace = parseReplaceSiteEffect(remainder);
     if (replace) return replace;
+
+    const takeControl = parseTakeControlSiteEffect(remainder);
+    if (takeControl) return takeControl;
 
     const clause = stripAbilityMarkup(remainder)
         .replace(/[.\s]+$/, '')
@@ -4224,6 +4243,47 @@ export function parseAbilities(
                 effects: [effect],
                 source: subject.target === 'BEARER' ? 'ATTACHMENT' : 'SELF',
                 text: replaceClause,
+            });
+            return;
+        }
+
+        const takeControlMatch = body.match(
+            /^Exert\s+([\s\S]+?)\s+to\s+(take control of a site)\s*\.?$/i
+        );
+        if (takeControlMatch) {
+            if (/\b(and|or)\b/i.test(takeControlMatch[1])) return;
+            const subject = parseExertSubject(
+                takeControlMatch[1],
+                cardTitle,
+                text
+            );
+            const effect = parseTakeControlSiteEffect(takeControlMatch[2]);
+            if (!subject || !effect) return;
+
+            const takeControlClause =
+                `${marker.phase}: Exert ${takeControlMatch[1].trim()} to take control of a site`
+                    .replace(/<[^>]+>/g, '')
+                    .replace(/\s+/g, ' ')
+                    .replace(/\s+\./g, '.')
+                    .trim();
+
+            abilities.push({
+                id: `${cardId || 'ability'}:${abilities.length}`,
+                phases,
+                cost: [
+                    {
+                        exert: [
+                            {
+                                count: subject.count,
+                                target: subject.target,
+                                ...(subject.mode ? { mode: subject.mode } : {}),
+                            },
+                        ],
+                    },
+                ],
+                effects: [effect],
+                source: subject.target === 'BEARER' ? 'ATTACHMENT' : 'SELF',
+                text: takeControlClause,
             });
             return;
         }

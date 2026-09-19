@@ -356,16 +356,26 @@ export const SitePath: React.FC<SitePathProps> = ({
                     </S.EmptySlotContent>
                 )}
 
-                {mock?.controlledBy != null && (
-                    <S.ControlFlag
-                        $playerId={mock.controlledBy}
-                        title={`Contrôle P${Number(mock.controlledBy) + 1}`}
-                    >
-                        <S.ControlFlagLabel $playerId={mock.controlledBy}>
-                            P{Number(mock.controlledBy) + 1}
-                        </S.ControlFlagLabel>
-                    </S.ControlFlag>
-                )}
+                {(() => {
+                    const controlledBy =
+                        site?.controlledBy ??
+                        (uxMock ? mock?.controlledBy : undefined);
+                    if (controlledBy == null) return null;
+                    const playerId =
+                        controlledBy === '0' || controlledBy === '1'
+                            ? controlledBy
+                            : '0';
+                    return (
+                        <S.ControlFlag
+                            $playerId={playerId}
+                            title={`Contrôle P${Number(playerId) + 1}`}
+                        >
+                            <S.ControlFlagLabel $playerId={playerId}>
+                                P{Number(playerId) + 1}
+                            </S.ControlFlagLabel>
+                        </S.ControlFlag>
+                    );
+                })()}
 
                 {attachments.length > 0 && (
                     <S.AttachmentSeals>
@@ -413,7 +423,8 @@ export const SitePath: React.FC<SitePathProps> = ({
                         })}
                     </S.AttachmentSeals>
                 )}
-                {mock?.controlledBy != null &&
+                {uxMock &&
+                    mock?.controlledBy != null &&
                     mock.stackCount != null &&
                     mock.stackCount > 0 && (
                         <S.StackedMinionsGrid>

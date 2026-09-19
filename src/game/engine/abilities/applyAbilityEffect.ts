@@ -24,6 +24,7 @@ import {
     replaceCurrentSiteFromDeck,
     replacePathSiteFromDeck,
     getCurrentSiteIndex,
+    takeControlOfSite,
 } from '../../logic/sites';
 import { isSiteReplaceForbidden } from '../../logic/siteReplaceRestrictions';
 import type { CardKeyword } from '../../types';
@@ -223,6 +224,13 @@ export function applyAbilityEffect(
             ) {
                 return false;
             }
+            continue;
+        }
+
+        if (effect.type === 'TAKE_CONTROL_SITE') {
+            const ownerId = abilityOwnerPlayerId(G, source);
+            if (!ownerId) return false;
+            if (!takeControlOfSite(G, ownerId)) return false;
             continue;
         }
 

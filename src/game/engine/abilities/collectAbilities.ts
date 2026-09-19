@@ -291,6 +291,9 @@ function formatEffectBit(
     if (effect.type === 'EXCHANGE_SITE') {
         return 'échanger un de vos sites du chemin avec un site du deck d’aventure';
     }
+    if (effect.type === 'TAKE_CONTROL_SITE') {
+        return 'prendre le contrôle d’un site';
+    }
     return '';
 }
 

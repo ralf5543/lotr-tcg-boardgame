@@ -194,6 +194,58 @@ export function discardSiteAttachments(
 }
 
 /**
+ * Sites déjà passés par la compagnie, non contrôlés — éligibles au contrôle (CR).
+ * Ordre : plus bas numéro de site d’abord.
+ */
+export function getControllablePathSites(
+    G: GameState
+): { site: SiteCardState; pathIndex: number }[] {
+    const currentIndex = getCurrentSiteIndex(G);
+    const found: { site: SiteCardState; pathIndex: number }[] = [];
+    for (let i = 0; i < currentIndex; i++) {
+        const site = G.path?.[i];
+        if (!site) continue;
+        if (site.controlledBy) continue;
+        found.push({ site, pathIndex: i });
+    }
+    found.sort((a, b) => {
+        const na = a.site.siteNumber ?? a.pathIndex + 1;
+        const nb = b.site.siteNumber ?? b.pathIndex + 1;
+        return na - nb;
+    });
+    return found;
+}
+
+/** Y a-t-il au moins un site contrôlable sur le chemin ? */
+export function canTakeControlOfASite(G: GameState): boolean {
+    return getControllablePathSites(G).length > 0;
+}
+
+/** Nombre de sites contrôlés par un joueur. */
+export function countSitesControlledBy(
+    G: GameState,
+    playerId: string
+): number {
+    return (G.path || []).filter(
+        (site) => site !== null && site.controlledBy === playerId
+    ).length;
+}
+
+/**
+ * Prend le contrôle du site non contrôlé de plus bas numéro déjà passé.
+ * Le site reste sur le chemin (drapeau joueur) — pas de déplacement en support.
+ */
+export function takeControlOfSite(
+    G: GameState,
+    playerId: string
+): SiteCardState | null {
+    const [first] = getControllablePathSites(G);
+    if (!first) return null;
+    first.site.controlledBy = playerId;
+    return first.site;
+}
+
+/**
  * Remplace un site du chemin par un site du deck d’aventure du propriétaire.
  * Pas de crépuscule de move / MOVES_FROM|TO. Attachments défaussés (pas transférés).
  */
@@ -228,11 +280,13 @@ export function replacePathSiteFromDeck(
     newSite.siteNumber = siteNumber;
     newSite.ownerId = ownerId;
     newSite.attachments = [];
+    delete newSite.controlledBy;
 
     const returned: SiteCardState = {
         ...oldSite,
         siteNumber: undefined,
         attachments: [],
+        controlledBy: undefined,
     };
     const returnOwnerId = oldSite.ownerId || ownerId;
     const returnPlayer = G.players[returnOwnerId];

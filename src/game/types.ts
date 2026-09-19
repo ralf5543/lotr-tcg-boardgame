@@ -270,6 +270,13 @@ export type AbilityEffect =
           from: 'SITES_DECK';
       }
     | {
+          /**
+           * Prend le contrôle du site non contrôlé de plus bas numéro
+           * déjà passé par la compagnie (CR Standard). Pas de choix joueur.
+           */
+          type: 'TAKE_CONTROL_SITE';
+      }
+    | {
           type: 'DRAW';
           count: number;
       }
@@ -509,8 +516,13 @@ export interface SiteCardState {
     ownerId: string;
     imageUrl?: string;
     keywords?: CardKeyword[];
-    /** Cartes posées sur le site (climats, etc.) — pas encore câblé. */
+    /** Cartes posées sur le site (climats, etc.). */
     attachments?: CardState[];
+    /**
+     * Joueur qui contrôle le site (`0` / `1`). Distinct de `ownerId`
+     * (propriétaire du deck d’aventure). Reste sur le chemin (UX Standard).
+     */
+    controlledBy?: string;
     /** Gametext site (fragments sûrs uniquement). */
     abilities?: Ability[];
 }

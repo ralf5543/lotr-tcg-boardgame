@@ -17,6 +17,7 @@ import {
     getReplaceablePathSitesInCurrentRegion,
     getOwnedPathSites,
     canExchangeOwnedPathSite,
+    canTakeControlOfASite,
 } from '../../logic/sites';
 import {
     canReplaceCurrentSite,
@@ -230,6 +231,10 @@ export function abilityHasLegalEffectTarget(
             const ownerId = abilityOwnerPlayerId(G, source);
             if (!ownerId) return false;
             if (!canExchangeOwnedPathSite(G, ownerId)) return false;
+            continue;
+        }
+        if (effect.type === 'TAKE_CONTROL_SITE') {
+            if (!canTakeControlOfASite(G)) return false;
             continue;
         }
         if (

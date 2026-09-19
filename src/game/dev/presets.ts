@@ -584,7 +584,7 @@ export const applyDevPreset = (
                 )
             );
 
-            const startIndex = 0;
+            const startIndex = 3;
             Object.values(G.players).forEach((player) => {
                 if (player) player.currentSiteIndex = startIndex;
             });
@@ -635,6 +635,8 @@ export const applyDevPreset = (
                     clonePresetCard('5C24', 'dev-gollum'),
                     // Exert pour Les Neiges
                     clonePresetCard('5C61', 'dev-uruk-engineer'),
+                    // Regroup : exert ×2 → take control (sites 1–3 déjà passés)
+                    clonePresetCard('8C106', 'dev-siege-troop'),
                 ];
                 G.twilightPool = 8;
                 shadowPlayer.sitesDeck = SITES_TEST_SHADOW_DECK.map((id) =>
@@ -643,7 +645,7 @@ export const applyDevPreset = (
             }
 
             G.statusMessage =
-                '[DEV] Sites : replace/exchange + attache (Strong Arms / Neiges). Orkish Camp bloque replace FP courant.';
+                '[DEV] Sites : replace/attache + contrôle (Siege Troop / Regroup, compagnie au site 4).';
             break;
         }
     }

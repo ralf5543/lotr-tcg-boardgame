@@ -2091,6 +2091,27 @@ describe('parseAbilities — While spot N terrain sites', () => {
         ]);
     });
 
+    it('parse Siege Troop : Exert ×2 → take control of a site', () => {
+        expect(
+            parseAbilities(
+                '<keyword>Besieger.</keyword> <keyword>Regroup:</keyword> Exert this minion twice to take control of a site.',
+                'Siege Troop',
+                '8C106'
+            )
+        ).toEqual([
+            expect.objectContaining({
+                phases: ['REGROUP'],
+                cost: [
+                    {
+                        exert: [{ count: 2, target: 'SELF' }],
+                    },
+                ],
+                effects: [{ type: 'TAKE_CONTROL_SITE' }],
+                source: 'SELF',
+            }),
+        ]);
+    });
+
     it('parse Traveled Leader : Spot Wizard → replace site région courante', () => {
         expect(
             parseAbilities(

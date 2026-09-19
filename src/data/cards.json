@@ -47889,6 +47889,31 @@
         ]
       }
     ],
+    "abilities": [
+      {
+        "id": "4U217:0",
+        "phases": [
+          "REGROUP"
+        ],
+        "cost": [
+          {
+            "exert": [
+              {
+                "count": 2,
+                "target": "SELF"
+              }
+            ]
+          }
+        ],
+        "effects": [
+          {
+            "type": "TAKE_CONTROL_SITE"
+          }
+        ],
+        "source": "SELF",
+        "text": "REGROUP: Exert Desert Lancers twice to take control of a site"
+      }
+    ],
     "actionPhases": [
       "REGROUP"
     ],
@@ -48977,6 +49002,31 @@
             ]
           }
         ]
+      }
+    ],
+    "abilities": [
+      {
+        "id": "4R244:0",
+        "phases": [
+          "REGROUP"
+        ],
+        "cost": [
+          {
+            "exert": [
+              {
+                "count": 2,
+                "target": "SELF"
+              }
+            ]
+          }
+        ],
+        "effects": [
+          {
+            "type": "TAKE_CONTROL_SITE"
+          }
+        ],
+        "source": "SELF",
+        "text": "REGROUP: Exert Regiment of Haradrim twice to take control of a site"
       }
     ],
     "actionPhases": [
@@ -83252,6 +83302,31 @@
     "type": "MINION",
     "keywords": [
       "BESIEGER"
+    ],
+    "abilities": [
+      {
+        "id": "8C106:0",
+        "phases": [
+          "REGROUP"
+        ],
+        "cost": [
+          {
+            "exert": [
+              {
+                "count": 2,
+                "target": "SELF"
+              }
+            ]
+          }
+        ],
+        "effects": [
+          {
+            "type": "TAKE_CONTROL_SITE"
+          }
+        ],
+        "source": "SELF",
+        "text": "REGROUP: Exert this minion twice to take control of a site"
+      }
     ],
     "actionPhases": [
       "REGROUP"
