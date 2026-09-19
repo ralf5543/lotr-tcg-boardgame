@@ -1,9 +1,17 @@
 // src/hooks/useCardPlayAudio.ts
 import { useEffect, useRef } from 'react';
+import type { SoundEffect } from '../../config/sounds';
 import type { CardState, GameState } from '../../game/types';
 import { audioService } from '../../services/audioService';
 
-function getCardSoundPath(card: CardState): string | undefined {
+function isWeatherCard(card: CardState): boolean {
+    return (
+        card.keywords?.some((kw) => String(kw).toUpperCase() === 'WEATHER') ??
+        false
+    );
+}
+
+function getCardSoundPath(card: CardState): SoundEffect | undefined {
     if (!card) return undefined;
     const cardType = card.type;
     const cardSubtype = card.subtype;
@@ -13,7 +21,9 @@ function getCardSoundPath(card: CardState): string | undefined {
     } else if (cardType === 'MINION') {
         return 'MINION';
     } else if (cardType === 'POSSESSION') {
-        return cardSubtype ? `POSSESSION_${cardSubtype}` : 'POSSESSION';
+        return cardSubtype
+            ? (`POSSESSION_${cardSubtype}` as SoundEffect)
+            : 'POSSESSION';
     }
     return undefined;
 }
@@ -25,12 +35,17 @@ export function useCardPlayAudio(G: GameState) {
         const p0 = G.players?.['0'];
         const p1 = G.players?.['1'];
 
+        const siteAttachments: CardState[] = (G.path || []).flatMap(
+            (site) => site?.attachments || []
+        );
+
         const rawBoardCards: CardState[] = [
             ...(p0?.fellowshipArea || []),
             ...(p0?.supportArea || []),
             ...(p1?.fellowshipArea || []),
             ...(p1?.supportArea || []),
             ...(G.battlefield || []),
+            ...siteAttachments,
         ];
 
         const collectWithAttachments = (list: CardState[]): CardState[] => {
@@ -61,15 +76,18 @@ export function useCardPlayAudio(G: GameState) {
         );
 
         if (newCard) {
-
             audioService.play('CARD_PLAY');
 
-            const soundPath = getCardSoundPath(newCard);
-            if (soundPath) {
-                audioService.play(soundPath, { delay: 0.3 });
+            if (isWeatherCard(newCard)) {
+                audioService.play('WEATHER', { delay: 0.3 });
+            } else {
+                const soundPath = getCardSoundPath(newCard);
+                if (soundPath) {
+                    audioService.play(soundPath, { delay: 0.3 });
+                }
             }
         }
 
         knownCardIdsRef.current = currentIds;
-    }, [G.players, G.battlefield]);
+    }, [G.players, G.battlefield, G.path]);
 }

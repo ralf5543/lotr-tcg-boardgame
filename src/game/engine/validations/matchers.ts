@@ -73,8 +73,12 @@ export function cardMatchesCriterion(
         return normalize(c.signet || '') === wanted;
     }
 
-    // Type SITE
-    if (critUpper === 'SITE' && c.type === 'SITE') return true;
+    // Type SITE (carte site JSON ou SiteCardState sur le path)
+    if (critUpper === 'SITE') {
+        if (c.type === 'SITE') return true;
+        const site = card as SiteCardState;
+        if (site.ownerId != null && site.siteNumber != null) return true;
+    }
 
     // Race (DWARF, ELF, HOBBIT, etc.)
     if (c.race && normalize(c.race) === critUpper) return true;

@@ -1,4 +1,4 @@
-import type { CardState, LotrMoveContext } from '../types';
+import type { CardState, LotrMoveContext, SiteCardState } from '../types';
 import {
     assignSanctuaryHeal as applySanctuaryHealToCard,
     sanctuaryHealsFinished,
@@ -9,9 +9,11 @@ import { resolveSkirmish } from '../logic/skirmish';
 import { drawCardsForPlayer } from '../../utils/drawCards';
 import { advanceArcheryAssignmentStep } from '../index';
 import { getEffectiveVitality } from '../../utils/cardStats';
+import { applyExert } from '../../utils/applyExert';
 import { devMoves } from '../dev/devMoves';
 import { playSite } from './fellowshipMoves';
-import { canPlayCard } from '../engine/canPlayCard';
+import { canPlayCard, attachesToSite } from '../engine/canPlayCard';
+import { cardMatchesTarget } from '../engine/validations/matchers';
 import {
     applyEventAbility,
     findEventAbilityForPhase,
@@ -163,7 +165,8 @@ export const passActionWindow = ({
 export const attachCard = (
     { G, ctx, playerID }: LotrMoveContext,
     cardIndex: number,
-    targetCharacterId: string
+    targetCharacterId: string,
+    costTargetId?: string
 ) => {
     const actingPlayerId = playerID ?? ctx.currentPlayer ?? '0';
     const player = G.players[actingPlayerId];
@@ -188,6 +191,26 @@ export const attachCard = (
         return 'INVALID_MOVE';
     }
 
+    const toPlayExert = (card.toPlay || []).find((opt) =>
+        opt.exert?.some((r) => Array.isArray(r.target))
+    );
+    if (toPlayExert?.exert?.[0] && Array.isArray(toPlayExert.exert[0].target)) {
+        if (!costTargetId) {
+            return 'INVALID_MOVE';
+        }
+        const costAsCard = findTargetCard(G, costTargetId) as CardState | null;
+        if (
+            !costAsCard ||
+            costAsCard.type === 'SITE' ||
+            !cardMatchesTarget(costAsCard, toPlayExert.exert[0].target)
+        ) {
+            return 'INVALID_MOVE';
+        }
+        if (!applyExert(G, costAsCard)) {
+            return 'INVALID_MOVE';
+        }
+    }
+
     const cost = Number(card.twilightCost) || 0;
     const fpId = G.fpPlayerId || '0';
     const isFP = actingPlayerId === fpId;
@@ -203,7 +226,12 @@ export const attachCard = (
         if (!targetCard.attachments) targetCard.attachments = [];
         targetCard.attachments.push(attachedCard);
         const sign = isFP ? '+' : '-';
-        G.statusMessage = `${attachedCard.title || attachedCard.i18n?.fr?.title || 'Carte'} est attaché à ${targetCard.title || targetCard.i18n?.fr?.title || 'Personnage'} (${sign}${cost} Crépuscule).`;
+        const hostName =
+            (targetCard as CardState).title ||
+            (targetCard as CardState).i18n?.fr?.title ||
+            (targetCard as SiteCardState).name ||
+            'cible';
+        G.statusMessage = `${attachedCard.title || attachedCard.i18n?.fr?.title || 'Carte'} est attaché à ${hostName} (${sign}${cost} Crépuscule).`;
     }
 
     afterCardPlayed(G, attachedCard, {
@@ -232,7 +260,12 @@ export const beginPendingPlay = (
 
     const player = G.players[actingPlayerId];
     const card = player?.hand?.[cardIndex];
-    if (!card || card.type !== 'EVENT') return 'INVALID_MOVE';
+    if (
+        !card ||
+        (card.type !== 'EVENT' && !attachesToSite(card))
+    ) {
+        return 'INVALID_MOVE';
+    }
 
     const validation = canPlayCard(card, { G, ctx, playerID: actingPlayerId });
     if (!validation.valid) return 'INVALID_MOVE';

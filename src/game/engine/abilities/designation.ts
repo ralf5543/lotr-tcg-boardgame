@@ -1,4 +1,10 @@
-import type { Ability, CardState, GameState } from '../../types';
+import type {
+    Ability,
+    CardState,
+    CostSelector,
+    GameState,
+    SiteCardState,
+} from '../../types';
 import { getEffectiveVitality } from '../../../utils/cardStats';
 import { isRingBearerCard } from '../../../utils/cardUtils';
 import { resolveAbilityTarget, resolveCostTarget, resolveWinnerTargets } from './resolveCostTarget';
@@ -18,6 +24,11 @@ import {
     isSiteReplaceForbidden,
 } from '../../logic/siteReplaceRestrictions';
 import { abilityOwnerPlayerId } from './payAbilityCost';
+import {
+    attachesToSite,
+    canAttachToCharacter,
+} from '../canPlayCard';
+
 export function cardTargetIds(card: CardState): string[] {
     const ids = [card.instanceId, card.id].filter(Boolean);
     return [...new Set(ids)];
@@ -422,4 +433,52 @@ export function getHandEventDesignationTargetIds(
     if (pathIds.length > 0) return [...new Set(pathIds)];
 
     return [];
+}
+
+/** Coût toPlay.exert nommé (ex. affaiblir un séide Isengard pour Neiges). */
+export function getToPlayExertRequirement(
+    card: CardState
+): { count: number; target: CostSelector } | null {
+    const toPlay = card.toPlay;
+    if (!Array.isArray(toPlay)) return null;
+    for (const option of toPlay) {
+        const req = option.exert?.[0];
+        if (!req || req.target === 'SELF' || req.target === 'BEARER') continue;
+        if (!Array.isArray(req.target)) continue;
+        return { count: req.count || 1, target: req.target };
+    }
+    return null;
+}
+
+export function getToPlayExertTargetIds(
+    G: GameState,
+    card: CardState
+): string[] {
+    const req = getToPlayExertRequirement(card);
+    if (!req || !Array.isArray(req.target)) return [];
+    const count = req.count;
+    return uniqueCards(
+        resolveCostTarget(G, card, req.target).filter(
+            (c) => getEffectiveVitality(c) > count
+        )
+    ).flatMap(cardTargetIds);
+}
+
+/** Sites du path où cette condition peut être posée. */
+export function getSiteAttachmentHostIds(
+    G: GameState,
+    card: CardState,
+    playerId: string
+): string[] {
+    if (!attachesToSite(card)) return [];
+    const ids: string[] = [];
+    for (const site of G.path || []) {
+        if (!site) continue;
+        if (!canAttachToCharacter(card, site, playerId)) continue;
+        const key = (site as SiteCardState & { instanceId?: string })
+            .instanceId;
+        if (key) ids.push(key);
+        if (site.id) ids.push(site.id);
+    }
+    return [...new Set(ids)];
 }

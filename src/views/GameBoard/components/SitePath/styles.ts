@@ -171,33 +171,37 @@ export const ControlFlagLabel = styled.span<{ $playerId: '0' | '1' }>`
     transform-style: preserve-3d;
 `;
 
-/** Weather → Climat ; sinon → Effet. */
-export const SiteAttachmentSeal = styled.button<{ $isWeather?: boolean }>`
+/** Weather → teinte froide ; sinon or. */
+export const AttachmentSeals = styled.div`
     position: absolute;
     inset-block-end: 0;
     inset-inline-start: 50%;
     translate: -50% 0;
     z-index: 4;
     display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2px;
+    max-width: calc(100% - 8px);
+    pointer-events: none;
+`;
+
+export const SiteAttachmentSeal = styled.button<{ $isWeather?: boolean }>`
+    position: relative;
+    display: flex;
     align-items: center;
     gap: 3px;
-    max-width: calc(100% - 8px);
+    max-width: 100%;
     padding: 2px 5px 2px 2px;
-    border-radius: 4px;
-    border: 1px solid
-        ${({ $isWeather }) =>
-            $isWeather
-                ? 'rgba(160, 200, 255, 0.95)'
-                : 'rgba(193, 160, 84, 0.9)'};
-    background: ${({ $isWeather }) =>
-        $isWeather
-            ? 'linear-gradient(135deg, rgba(30, 55, 90, 0.95), rgba(18, 32, 55, 0.95))'
-            : 'linear-gradient(135deg, rgba(45, 38, 28, 0.95), rgba(26, 37, 47, 0.95))'};
+    border-radius: 4px 4px 0 0;
+    border: 1px solid rgba(193, 160, 84, 0.9);
+    border-block-end: 0;
+    background: linear-gradient(135deg, rgba(45, 38, 28, 0.95), rgba(26, 37, 47, 0.75));
     color: ${({ $isWeather }) => ($isWeather ? '#c5dcff' : '#e2c044')};
     font-size: 8px;
     font-weight: 700;
     letter-spacing: 0.04em;
-    text-transform: uppercase;
+    text-transform: none;
     cursor: default;
     pointer-events: auto;
     box-shadow: ${({ $isWeather }) =>
@@ -206,11 +210,23 @@ export const SiteAttachmentSeal = styled.button<{ $isWeather?: boolean }>`
             : '0 0 6px rgba(193, 160, 84, 0.25)'};
 
     img {
-        width: 14px;
-        height: 14px;
-        border-radius: 2px;
+        width: 10px;
+        height: auto;
         flex-shrink: 0;
     }
+`;
+
+export const WeatherEmoji = styled.span`
+    font-size: 10px;
+    line-height: 1;
+    flex-shrink: 0;
+`;
+
+export const AttachmentTitle = styled.span`
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    max-width: 140px;
 `;
 
 export const StackedMinionsGrid = styled.div`

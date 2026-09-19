@@ -154,7 +154,8 @@ export const BoardTargetingArrow: React.FC = () => {
     );
     const [hoverId, setHoverId] = useState<string | null>(null);
     const isDesignating =
-        targetingKind === 'DESIGNATION' && Boolean(arrowFromCardId);
+        (targetingKind === 'DESIGNATION' || targetingKind === 'SITE_ATTACH') &&
+        Boolean(arrowFromCardId);
 
     const activeCursor = isDesignating ? cursor : null;
     const activeHoverId = isDesignating ? hoverId : null;

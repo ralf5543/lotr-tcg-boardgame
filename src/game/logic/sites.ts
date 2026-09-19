@@ -1,4 +1,9 @@
-import type { CardKeyword, GameState, SiteCardState } from '../types';
+import type {
+    CardKeyword,
+    CardState,
+    GameState,
+    SiteCardState,
+} from '../types';
 
 export function getCurrentSiteIndex(G: GameState): number {
     const fpId = G.fpPlayerId || '0';
@@ -162,9 +167,35 @@ export function getOwnedPathSites(
     return found;
 }
 
+/** Défausse les conditions posées sur un site (pas de transfert au replace). */
+export function discardSiteAttachments(
+    G: GameState,
+    site: SiteCardState | null | undefined
+): void {
+    const attachments = site?.attachments;
+    if (!attachments?.length) return;
+
+    const fpId = G.fpPlayerId || '0';
+    const shadowId = Object.keys(G.players).find((id) => id !== fpId) || '1';
+
+    for (const att of attachments) {
+        if (!att) continue;
+        const ownerId =
+            att.kind === 'FREE_PEOPLE'
+                ? fpId
+                : att.kind === 'SHADOW'
+                  ? shadowId
+                  : fpId;
+        const player = G.players[ownerId];
+        if (!player) continue;
+        if (!player.discard) player.discard = [];
+        player.discard.push(att as CardState);
+    }
+}
+
 /**
  * Remplace un site du chemin par un site du deck d’aventure du propriétaire.
- * Pas de crépuscule de move / MOVES_FROM|TO. Attachments transférés.
+ * Pas de crépuscule de move / MOVES_FROM|TO. Attachments défaussés (pas transférés).
  */
 export function replacePathSiteFromDeck(
     G: GameState,
@@ -192,9 +223,10 @@ export function replacePathSiteFromDeck(
 
     const siteNumber = oldSite.siteNumber ?? pathIndex + 1;
 
+    discardSiteAttachments(G, oldSite);
+
     newSite.siteNumber = siteNumber;
     newSite.ownerId = ownerId;
-    // Pas de transfert attachments/stacked au replace (défausse à câbler avec l'attache).
     newSite.attachments = [];
 
     const returned: SiteCardState = {
@@ -216,7 +248,7 @@ export function replacePathSiteFromDeck(
 
 /**
  * Remplace le site courant par un site du deck d’aventure du propriétaire.
- * Pas de crépuscule de move / MOVES_FROM|TO. Attachments transférés.
+ * Pas de crépuscule de move / MOVES_FROM|TO. Attachments défaussés (pas transférés).
  */
 export function replaceCurrentSiteFromDeck(
     G: GameState,

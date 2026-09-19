@@ -62,13 +62,14 @@ L’ancien plan effets de cartes est **figé** (`.cursor/rules/card-effects-plan
    - **6ᵉ** : échange path↔deck (sites **à toi**) → **11U45** Led Astray (+ crépuscule). ✅ ≠ replace (cannot replace ne bloque pas).
    - Suite : attache / contrôle. Site Mount Doom / attache « this site cannot » = plus tard.
 
-5. **Attache sur un site** (UX tranchée — mock CSS en cours)
-   - Path = **sceau** culture + libellé **Climat** (si Weather) ou **Effet** (sinon) ; HoverCard pour le détail.
-   - Stack = **vraies cartes `sm`** scale ~⅓ hauteur du slot, grille centrée (pas de badge abstrait).
-   - Jouer : même flux event ciblé (flèche + halo).
-   - 9 conditions CSV « Plays on a site » (sets 1–7) ; **rien en 11+**.
-   - Défausser / cibler une condition **sur** un site ; sortir Neiges du `supportArea`.
-   - Mock DevPanel : « Mock UX sites ».
+5. **Attache sur un site** (en cours — 1ʳᵉ verticale)
+   - Path = **sceau** culture + titre carte ; emoji 🌧 si Weather ; HoverCard.
+   - Drag depuis la main → halo sites valides → `attachCard` (même move que possessions).
+   - `attachedTo: [['SITE']]` déjà parsé ; Limit 1 per site / pas de doublon id.
+   - Replace → défausse des conditions (pas de transfert).
+   - Preset `SITES_TEST` : Strong Arms (FP) + Neiges (Ombre).
+   - Effets gametext des conditions (skip skirmish events, etc.) = suite.
+   - « Plays on a site you control » = après contrôle.
 
 6. **Contrôle + stack** (UX tranchée — mock CSS en cours)
    - **Contrôle** = drapeau **P1/P2** (joueur `0`/`1`), pas culture.
@@ -95,5 +96,5 @@ L’ancien plan effets de cartes est **figé** (`.cursor/rules/card-effects-plan
 | Keywords branchés sur gametext cartes | partiel (at/spot sites ✅ ; skip@site / reinforce jetons ⏸) |
 | Abilities / gametext site | partiel (move twilight + discard allies ✅) |
 | Remplacement de site sur le path | partiel (CURRENT/REGION/when-played/cannot ✅ ; échange OWNED ✅ — 11U45) |
-| Attache sur site | ❌ |
+| Attache sur site | partiel (pose + badge ✅ ; effets / control later) |
 | Contrôle / libération | ❌ |

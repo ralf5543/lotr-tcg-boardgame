@@ -9,6 +9,7 @@ type TargetingKind =
     | 'HAND_DISCARD'
     | 'SITE_REPLACE'
     | 'SITE_REPLACE_PATH'
+    | 'SITE_ATTACH'
     | 'SANCTUARY_HEAL';
 
 interface TargetingRequest {

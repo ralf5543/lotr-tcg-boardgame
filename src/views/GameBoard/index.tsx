@@ -20,7 +20,7 @@ import { CardZoneOverlay } from './components/CardZoneOverlay';
 import { Dock } from './components/Dock';
 import { SitesPicker } from './components/SitePicker';
 import { GameControls } from './components/GameControls';
-import { canAttachToCharacter } from '../../game/engine/canPlayCard';
+import { canAttachToCharacter, attachesToSite } from '../../game/engine/canPlayCard';
 import { PhaseBanner } from './components/PhaseBanner';
 import { canonicalPhaseName } from './canonicalPhaseName';
 import { DevPanel, type DevMoves } from '../../utils/DevPanel';
@@ -40,6 +40,7 @@ import {
     getDesignationCandidates,
     getEffectDesignationCandidates,
     getEffectDesignationCount,
+    getSiteAttachmentHostIds,
     isDesignationTargetId,
 } from '../../game/engine/abilities/designation';
 import {
@@ -83,7 +84,11 @@ export interface GameBoardProps extends BoardProps<GameState> {
             beginPendingPlay?: (index: number, prompt: string) => void;
             cancelPendingPlay?: () => void;
             playShadowCard: (index: number) => void;
-            attachCard: (index: number, targetId: string) => void;
+            attachCard: (
+                index: number,
+                targetId: string,
+                costTargetId?: string
+            ) => void;
             transferAttachment?: (data: {
                 attachmentId: string;
                 fromCharacterId: string;
@@ -166,17 +171,26 @@ const PendingPlayOnDrag: React.FC<{
         }
         if (G.pendingPlay?.playerId === myId) return;
         const card = dragged.card as CardState;
-        const ability = findEventAbilityForPhase(card, phase || '');
-        moves.beginPendingPlay?.(
-            dragged.index,
-            ability
-                ? abilityNeedsSiteExchange(ability)
-                    ? 'Choisissez un de vos sites du chemin à échanger.'
-                    : abilityReplaceSiteEffect(ability)?.scope === 'REGION'
-                      ? 'Choisissez un site de la région actuelle à remplacer.'
-                      : formatDesignationPrompt(ability)
-                : 'Choisissez une cible.'
-        );
+        if (card.type === 'EVENT') {
+            const ability = findEventAbilityForPhase(card, phase || '');
+            moves.beginPendingPlay?.(
+                dragged.index,
+                ability
+                    ? abilityNeedsSiteExchange(ability)
+                        ? 'Choisissez un de vos sites du chemin à échanger.'
+                        : abilityReplaceSiteEffect(ability)?.scope === 'REGION'
+                          ? 'Choisissez un site de la région actuelle à remplacer.'
+                          : formatDesignationPrompt(ability)
+                    : 'Choisissez une cible.'
+            );
+            return;
+        }
+        if (attachesToSite(card)) {
+            moves.beginPendingPlay?.(
+                dragged.index,
+                'Affaiblissez un séide, puis choisissez un site.'
+            );
+        }
     }, [
         dragged,
         isOverHandCancel,
@@ -909,6 +923,54 @@ export const GameBoard: React.FC<GameBoardProps> = ({
 
             const { index, origin, card, parentId } = draggedCard;
 
+            // Condition « Plays on a site » avec coût exert : flèche séide → puis site
+            if (
+                origin === 'HAND' &&
+                card &&
+                attachesToSite(card) &&
+                draggedCard.designationTargetIds?.length
+            ) {
+                if (cancelled) {
+                    moves.cancelPendingPlay?.();
+                    return;
+                }
+                const designationIds = draggedCard.designationTargetIds;
+                if (!isDesignationTargetId(designationIds, targetId)) {
+                    return;
+                }
+                const validation = canPlayCard(card, {
+                    G,
+                    ctx,
+                    playerID: myId,
+                });
+                if (!validation.valid) {
+                    console.warn(
+                        `❌ [canPlayCard] Rejet : ${validation.reason}`
+                    );
+                    moves.cancelPendingPlay?.();
+                    return;
+                }
+                const siteIds = getSiteAttachmentHostIds(G, card, myId);
+                if (siteIds.length === 0) {
+                    moves.cancelPendingPlay?.();
+                    return;
+                }
+                const costTargetId = targetId as string;
+                startTargeting({
+                    kind: 'SITE_ATTACH',
+                    targetableCardIds: siteIds,
+                    pendingCard: card,
+                    arrowFromCardId: PENDING_PLAY_ORIGIN_ID,
+                    message: 'Choisissez un site pour y jouer cette carte.',
+                    onSelectTarget: (siteId) => {
+                        stopTargeting();
+                        moves.attachCard?.(index, siteId, costTargetId);
+                        moves.cancelPendingPlay?.();
+                    },
+                });
+                return;
+            }
+
             if (origin === 'HAND' && card?.type === 'EVENT') {
                 if (cancelled) {
                     moves.cancelPendingPlay?.();
@@ -1610,6 +1672,7 @@ export const GameBoard: React.FC<GameBoardProps> = ({
                         path={G.path}
                         players={G.players}
                         localPlayerId={myId}
+                        G={G}
                         onPlaySite={(siteId, targetIndex) => {
                             const isInitialSetupSite =
                                 ctx.phase === 'setup' &&

@@ -70,6 +70,9 @@ export const SOUND_LIBRARY = {
         '/audio/sfx/cards/site2.opus',
         '/audio/sfx/cards/site3.opus',
     ],
+    WEATHER: [
+        '/audio/sfx/cards/weather.opus',
+    ],
     /* ====================-------------------- Skirmish --------------------==================== */
     ARROW_IMPACT: [
         '/audio/sfx/battle/arrow_impact.opus',

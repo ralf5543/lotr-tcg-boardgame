@@ -6,8 +6,11 @@ import { useDrag } from '../../../../contexts/DragContext';
 import { useFaction } from '../../../../contexts/FactionContext';
 import { useTargeting } from '../../../../contexts/TargetingContext';
 import { audioService } from '../../../../services/audioService';
-import { canPlayCard } from '../../../../game/engine/canPlayCard';
-import { getHandEventDesignationTargetIds } from '../../../../game/engine/abilities/designation';
+import { canPlayCard, attachesToSite } from '../../../../game/engine/canPlayCard';
+import {
+    getHandEventDesignationTargetIds,
+    getToPlayExertTargetIds,
+} from '../../../../game/engine/abilities/designation';
 import {
     hasSpotCondition,
     isSpotConditionMet,
@@ -91,7 +94,8 @@ export const Hand: React.FC<HandProps> = ({
         confirmNonce,
     } = useTargeting();
     const isDragging = !!dragged;
-    const isDesignating = targetingKind === 'DESIGNATION';
+    const isDesignating =
+        targetingKind === 'DESIGNATION' || targetingKind === 'SITE_ATTACH';
     const isHandDiscard = targetingKind === 'HAND_DISCARD';
     const enginePendingId =
         G.pendingPlay?.playerId === effectivePlayerId
@@ -258,13 +262,30 @@ export const Hand: React.FC<HandProps> = ({
                                   playerID: effectivePlayerId,
                               }).valid;
 
+                          const siteAttachExertIds =
+                              !isDiscardPhase &&
+                              isMatchingPlayerRole &&
+                              attachesToSite(card) &&
+                              canPlayCard(card, {
+                                  G,
+                                  ctx: { phase },
+                                  playerID: effectivePlayerId,
+                              }).valid
+                                  ? getToPlayExertTargetIds(G, card)
+                                  : [];
+
                           const designationTargetIds = isPlayableEvent
                               ? getHandEventDesignationTargetIds(
                                     G,
                                     card,
                                     phase
                                 )
-                              : undefined;
+                              : siteAttachExertIds.length > 0
+                                ? siteAttachExertIds
+                                : undefined;
+
+                          const usesArrowDesignation =
+                              Boolean(designationTargetIds?.length);
 
                           const isHandDiscardSelected =
                               isHandDiscard &&
@@ -292,7 +313,9 @@ export const Hand: React.FC<HandProps> = ({
                                   $hasSpot={hasSpot}
                                   $isSpotMet={isSpotMet}
                                   $isPlayableEvent={
-                                      isPlayableEvent || isHandDiscardTarget
+                                      isPlayableEvent ||
+                                      isHandDiscardTarget ||
+                                      usesArrowDesignation
                                   }
                                   data-draggable={
                                       !isDiscardPhase &&
@@ -349,7 +372,8 @@ export const Hand: React.FC<HandProps> = ({
                                           'HAND',
                                           'portrait',
                                           undefined,
-                                          isPlayableEvent,
+                                          isPlayableEvent ||
+                                              usesArrowDesignation,
                                           designationTargetIds
                                       );
                                   }}
@@ -362,7 +386,9 @@ export const Hand: React.FC<HandProps> = ({
                                               : isMatchingPlayerRole
                                       }
                                       isPlayableEvent={
-                                          isPlayableEvent || isHandDiscardTarget
+                                          isPlayableEvent ||
+                                          isHandDiscardTarget ||
+                                          usesArrowDesignation
                                       }
                                       designationTargetIds={
                                           designationTargetIds

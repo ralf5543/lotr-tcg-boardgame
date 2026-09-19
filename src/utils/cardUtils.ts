@@ -45,9 +45,13 @@ export function findTargetCard(
         if (attached) return attached;
     }
 
-    // 3. Path (Sites)
-    const foundInPath = G.path?.find((s) => match(s as any));
-    if (foundInPath) return foundInPath;
+    // 3. Path (Sites + conditions attachées)
+    for (const site of G.path || []) {
+        if (!site) continue;
+        if (match(site as any)) return site;
+        const attached = site.attachments?.find(match);
+        if (attached) return attached;
+    }
 
     return null;
 }

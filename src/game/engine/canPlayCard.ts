@@ -68,9 +68,22 @@ export const canDropInFellowship = (type?: CardType): boolean => {
     return type === 'COMPANION';
 };
 
+/** Condition / possession qui se joue sur un site du chemin. */
+export const attachesToSite = (card?: CardState | null): boolean => {
+    if (!card || !requiresAttachmentTarget(card)) return false;
+    const groups = card.attachedTo;
+    if (!Array.isArray(groups)) return false;
+    return groups.some(
+        (group) =>
+            Array.isArray(group) &&
+            group.some((c) => String(c).toUpperCase() === 'SITE')
+    );
+};
+
 export const canAttachToCharacter = (
     attachmentCard?: CardState | SiteCardState | null,
-    targetCard?: CardState | SiteCardState | null
+    targetCard?: CardState | SiteCardState | null,
+    playerId?: string
 ): boolean => {
     if (!attachmentCard || !targetCard) return false;
 
@@ -83,6 +96,34 @@ export const canAttachToCharacter = (
         attachment.attachedTo as string[][]
     );
     if (!matchesTarget) return false;
+
+    const siteTarget = targetCard as SiteCardState;
+    const isSiteTarget =
+        (targetCard as CardState).type === 'SITE' ||
+        siteTarget.siteNumber != null;
+
+    if (isSiteTarget) {
+        // FP : uniquement un site que tu as posé (ownerId).
+        if (
+            attachment.kind === 'FREE_PEOPLE' &&
+            playerId &&
+            siteTarget.ownerId !== playerId
+        ) {
+            return false;
+        }
+        const existing = siteTarget.attachments || [];
+        if (existing.some((a) => a && a.id === attachment.id)) {
+            return false;
+        }
+        const text =
+            attachment.i18n?.en?.gameText ||
+            attachment.gameText ||
+            '';
+        if (/limit\s*1\s*per\s*site/i.test(text) && existing.length > 0) {
+            return false;
+        }
+        return true;
+    }
 
     // 2. Vérification de la limite de subtype (t minuscule)
     const target = targetCard as CardState;
@@ -358,7 +399,7 @@ export function canPlayCard(
                     reason: "Cible d'attachement introuvable.",
                 };
             }
-            if (!canAttachToCharacter(card, targetCard)) {
+            if (!canAttachToCharacter(card, targetCard, context.playerID)) {
                 return {
                     valid: false,
                     reason: "Cible d'attachement invalide pour cette carte.",

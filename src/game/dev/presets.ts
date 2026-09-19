@@ -590,17 +590,20 @@ export const applyDevPreset = (
             });
             G.currentSiteIndex = startIndex;
 
-            // Minimal : Frodo + Gandalf (spot Wizard pour Traveled Leader)
+            // Frodo + Gandalf + Éowyn (Strong Arms / Traveled Leader)
             fpPlayer.fellowshipArea = [
                 {
                     ...clonePresetCard('2C102', 'dev-frodo'),
                     attachments: [clonePresetCard('1R1', 'dev-ring')],
                 },
                 clonePresetCard('1R72', 'dev-gandalf'),
+                clonePresetCard('4C270', 'dev-eowyn'),
             ];
             fpPlayer.hand = [
                 // REGION replace (Maneuver / Regroup)
                 clonePresetCard('12C34', 'dev-traveled-leader'),
+                // Plays on a site → Plains + Rohan +1
+                clonePresetCard('7U252', 'dev-strong-arms'),
             ];
             fpPlayer.supportArea = [
                 // CURRENT replace (Regroup : discard)
@@ -616,6 +619,8 @@ export const applyDevPreset = (
                     clonePresetCard('11R143', 'dev-watchful-orc'),
                     // Spot Gollum → +3 crépuscule + exchange owned path site
                     clonePresetCard('11U45', 'dev-led-astray'),
+                    // Plays on a site (Weather) — exert Isengard
+                    clonePresetCard('1C138', 'dev-snows'),
                 ];
                 shadowPlayer.supportArea = [
                     // CURRENT underground (Shadow : discard + spot Orc)
@@ -624,19 +629,21 @@ export const applyDevPreset = (
                     clonePresetCard('15U113', 'dev-orkish-camp'),
                 ];
                 shadowPlayer.fellowshipArea = [];
-                // Nelya ; Orc (Depths/Camp) ; Gollum (Led Astray)
                 G.battlefield = [
                     clonePresetCard('11S222', 'dev-nelya'),
                     clonePresetCard('11S115', 'dev-orc-spot'),
                     clonePresetCard('5C24', 'dev-gollum'),
+                    // Exert pour Les Neiges
+                    clonePresetCard('5C61', 'dev-uruk-engineer'),
                 ];
+                G.twilightPool = 8;
                 shadowPlayer.sitesDeck = SITES_TEST_SHADOW_DECK.map((id) =>
                     clonePresetSite(id, shadowId)
                 );
             }
 
             G.statusMessage =
-                '[DEV] Replace/exchange. FP : Traveled Leader / Another Way. Ombre : Depths / Nelya / Watchful / Led Astray (échange tes sites) ; Orkish Camp bloque replace FP courant.';
+                '[DEV] Sites : replace/exchange + attache (Strong Arms / Neiges). Orkish Camp bloque replace FP courant.';
             break;
         }
     }

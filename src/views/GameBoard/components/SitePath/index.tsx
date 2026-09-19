@@ -1,9 +1,17 @@
 import React, { useEffect, useRef, useState } from 'react';
-import type { CardState, SiteCardState, PlayerState } from '../../../../game/types';
-import {
-    getRegionTwilightBonus,
-} from '../../../../game/logic/sites';
+import type {
+    CardState,
+    GameState,
+    SiteCardState,
+    PlayerState,
+} from '../../../../game/types';
+import { getRegionTwilightBonus } from '../../../../game/logic/sites';
 import { getCardById } from '../../../../game/cardsData';
+import {
+    attachesToSite,
+    canPlayCard,
+} from '../../../../game/engine/canPlayCard';
+import { getCardText } from '../../../../utils/i18n';
 import { SiteCard } from '../SiteCard';
 import { Card } from '../Card';
 import * as S from './styles';
@@ -40,33 +48,24 @@ function mockStackedCards(count: number): CardState[] {
     });
 }
 
-/** Decors DevPanel — à remplacer par controlledBy / attachments / stacked. */
+/** Contrôle / stack factices — attache réelle via site.attachments. */
 const UX_MOCK_BY_INDEX: Record<
     number,
     {
-        attachmentCulture?: string;
-        isWeather?: boolean;
         controlledBy?: '0' | '1';
         stackCount?: number;
     }
 > = {
-    0: { attachmentCulture: 'ROHAN' },
     1: { controlledBy: '1' },
-    2: { attachmentCulture: 'ISENGARD' },
     3: { controlledBy: '0', stackCount: 3 },
-    4: {
-        attachmentCulture: 'ISENGARD',
-        isWeather: true,
-        controlledBy: '1',
-        stackCount: 2,
-    },
+    4: { controlledBy: '1', stackCount: 2 },
 };
 
 interface SitePathProps {
     path: (SiteCardState | null)[];
     players?: Record<string, PlayerState>;
-    /** Joueur local — pour `$isMine` sur les emplacements. */
     localPlayerId?: string;
+    G?: GameState;
     onPlaySite?: (siteId: string, targetIndex: number) => void;
 }
 
@@ -80,10 +79,17 @@ function cultureIconPath(culture: string) {
     return `interface/icons/icon_culture_${culture}.webp`;
 }
 
+function isWeatherAttachment(card: CardState): boolean {
+    return (card.keywords || []).some(
+        (kw) => String(kw).toUpperCase() === 'WEATHER'
+    );
+}
+
 export const SitePath: React.FC<SitePathProps> = ({
     path = [],
     players = {},
     localPlayerId,
+    G,
     onPlaySite,
 }) => {
     const {
@@ -100,11 +106,22 @@ export const SitePath: React.FC<SitePathProps> = ({
     } = useTargeting();
     const isPathReplacePick =
         targetingKind === 'SITE_REPLACE_PATH' && isTargetingActive;
+    const isSiteAttachPick =
+        targetingKind === 'SITE_ATTACH' && isTargetingActive;
     const dragDesignationIds = dragged?.designationTargetIds;
     const isDragDesignating =
         Boolean(dragDesignationIds?.length) && !isOverHandCancel;
     const slots = Array.from({ length: 9 }, (_, i) => path?.[i] ?? null);
     const nextEmptyIndex = slots.findIndex((slot) => slot === null);
+
+    const draggedCard = dragged?.card as CardState | undefined;
+    /** Drop direct sur site (Strong Arms) — pas le 1er pas exert (Neiges). */
+    const isSiteAttachDrag =
+        dragged?.origin === 'HAND' &&
+        Boolean(draggedCard) &&
+        attachesToSite(draggedCard) &&
+        !dragged?.designationTargetIds?.length &&
+        !isOverHandCancel;
 
     const nextSlotRef = useRef<HTMLDivElement | null>(null);
     const [uxMock, setUxMock] = useState(
@@ -134,10 +151,10 @@ export const SitePath: React.FC<SitePathProps> = ({
 
     useEffect(() => {
         const handleCardDropped = (e: CustomEvent) => {
-            const { draggedCard, targetId } = e.detail;
+            const { draggedCard: dropped, targetId } = e.detail;
 
             if (targetId === 'sitePath') {
-                const siteId = draggedCard?.card?.id;
+                const siteId = dropped?.card?.id;
 
                 if (siteId && onPlaySite) {
                     onPlaySite(siteId, nextEmptyIndex);
@@ -200,26 +217,62 @@ export const SitePath: React.FC<SitePathProps> = ({
             ? (site as SiteCardState & { instanceId?: string }).instanceId ||
               site.id
             : undefined;
+
         const isDragDesignationCandidate = Boolean(
             siteKey &&
                 isDragDesignating &&
                 (dragDesignationIds!.includes(siteKey) ||
                     (site?.id && dragDesignationIds!.includes(site.id)))
         );
+
+        const canAcceptSiteAttach =
+            Boolean(site && siteKey && isSiteAttachDrag && G && localPlayerId) &&
+            canPlayCard(
+                draggedCard!,
+                {
+                    G: G!,
+                    ctx: { phase: undefined, currentPlayer: localPlayerId! },
+                    playerID: localPlayerId!,
+                },
+                siteKey,
+                site,
+                { ignorePhase: true }
+            ).valid;
+
         const pathReplaceTargetable =
-            (!!siteKey &&
+            (Boolean(siteKey) &&
                 isPathReplacePick &&
+                siteKey != null &&
                 isCardTargetable(siteKey as string)) ||
-            isDragDesignationCandidate;
+            (Boolean(siteKey) &&
+                isSiteAttachPick &&
+                siteKey != null &&
+                isCardTargetable(siteKey as string)) ||
+            isDragDesignationCandidate ||
+            canAcceptSiteAttach;
+
         const pathReplaceDimmed =
-            (isPathReplacePick || isDragDesignating) &&
+            (isPathReplacePick ||
+                isSiteAttachPick ||
+                isDragDesignating ||
+                isSiteAttachDrag) &&
             Boolean(site) &&
             !pathReplaceTargetable;
+
         const isAimed =
             Boolean(siteKey) &&
             (activeTargetId === siteKey || activeTargetId === site?.id);
 
         const mock = uxMock && site ? UX_MOCK_BY_INDEX[index] : undefined;
+        const attachments = site?.attachments || [];
+
+        const shouldRegisterSiteTarget =
+            Boolean(siteKey) &&
+            (isDragDesignationCandidate ||
+                canAcceptSiteAttach ||
+                (isSiteAttachPick &&
+                    siteKey != null &&
+                    isCardTargetable(siteKey as string)));
 
         return (
             <S.SiteCardContainer
@@ -229,7 +282,7 @@ export const SitePath: React.FC<SitePathProps> = ({
                         nextSlotRef.current = el;
                     }
                     if (!siteKey) return;
-                    if (isDragDesignationCandidate && el) {
+                    if (shouldRegisterSiteTarget && el) {
                         registerTarget(siteKey, el);
                         if (site?.id && site.id !== siteKey) {
                             registerTarget(site.id, el);
@@ -243,7 +296,13 @@ export const SitePath: React.FC<SitePathProps> = ({
                 }}
                 $isCurrent={isP0Here || isP1Here}
                 $index={index}
-                $isHovered={isHovered || (isDragDesignationCandidate && isAimed)}
+                $isHovered={
+                    isHovered ||
+                    ((isDragDesignationCandidate ||
+                        canAcceptSiteAttach ||
+                        isSiteAttachPick) &&
+                        isAimed)
+                }
                 $hasSite={Boolean(site)}
                 $isMine={
                     site && localPlayerId !== undefined
@@ -260,9 +319,12 @@ export const SitePath: React.FC<SitePathProps> = ({
                 onMouseLeave={() => setHoveredCard(null)}
                 onPointerDown={(e) => {
                     if (!pathReplaceTargetable || !siteKey) return;
-                    // Clic uniquement pour SITE_REPLACE_PATH (post-ability) ;
-                    // le drag event utilise la flèche + release.
-                    if (!isPathReplacePick || isDragDesignating) return;
+                    if (
+                        (!isPathReplacePick && !isSiteAttachPick) ||
+                        isDragDesignating
+                    ) {
+                        return;
+                    }
                     e.stopPropagation();
                     e.preventDefault();
                     setHoveredCard(null);
@@ -304,19 +366,52 @@ export const SitePath: React.FC<SitePathProps> = ({
                         </S.ControlFlagLabel>
                     </S.ControlFlag>
                 )}
-                {mock?.attachmentCulture && (
-                    <S.SiteAttachmentSeal
-                        type="button"
-                        $isWeather={Boolean(mock.isWeather)}
-                        title={mock.isWeather ? 'Climat' : 'Effet'}
-                    >
-                        <img
-                            src={cultureIconPath(mock.attachmentCulture)}
-                            alt=""
-                            draggable={false}
-                        />
-                        {mock.isWeather ? 'Climat' : 'Effet'}
-                    </S.SiteAttachmentSeal>
+
+                {attachments.length > 0 && (
+                    <S.AttachmentSeals>
+                        {attachments.map((att) => {
+                            const weather = isWeatherAttachment(att);
+                            const { title } = getCardText(att, 'fr');
+                            const label = title || att.id;
+                            return (
+                                <S.SiteAttachmentSeal
+                                    key={att.instanceId || att.id}
+                                    type="button"
+                                    $isWeather={weather}
+                                    title={label}
+                                    onMouseEnter={(e) => {
+                                        e.stopPropagation();
+                                        setHoveredCard(att, 'portrait');
+                                    }}
+                                    onMouseLeave={(e) => {
+                                        e.stopPropagation();
+                                        if (site) {
+                                            setHoveredCard(site, 'landscape');
+                                        } else {
+                                            setHoveredCard(null);
+                                        }
+                                    }}
+                                >
+                                    {att.culture && (
+                                        <img
+                                            src={cultureIconPath(att.culture)}
+                                            alt=""
+                                            draggable={false}
+                                        />
+                                    )}
+                                    
+                                    <S.AttachmentTitle>
+                                        {label}
+                                    </S.AttachmentTitle>
+                                    {weather && (
+                                        <S.WeatherEmoji aria-hidden>
+                                            🌧
+                                        </S.WeatherEmoji>
+                                    )}
+                                </S.SiteAttachmentSeal>
+                            );
+                        })}
+                    </S.AttachmentSeals>
                 )}
                 {mock?.controlledBy != null &&
                     mock.stackCount != null &&
