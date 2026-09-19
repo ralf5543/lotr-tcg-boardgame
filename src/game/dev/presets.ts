@@ -597,7 +597,11 @@ export const applyDevPreset = (
                     attachments: [clonePresetCard('1R1', 'dev-ring')],
                 },
                 clonePresetCard('1R72', 'dev-gandalf'),
-                clonePresetCard('4C270', 'dev-eowyn'),
+                {
+                    ...clonePresetCard('4C270', 'dev-eowyn'),
+                    // Regroup : discard → liberate (après contrôle Ombre)
+                    attachments: [clonePresetCard('15R141', 'dev-sturdy-shield')],
+                },
             ];
             fpPlayer.hand = [
                 // REGION replace (Maneuver / Regroup)
@@ -650,7 +654,7 @@ export const applyDevPreset = (
             }
 
             G.statusMessage =
-                '[DEV] Sites : contrôle + No Retreat (badge = action Regroup si Spot 2 Dunland).';
+                '[DEV] Sites : contrôle (Siege Troop) → liberate (Sturdy Shield / Éowyn) + No Retreat.';
             break;
         }
     }

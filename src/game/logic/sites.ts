@@ -191,6 +191,7 @@ export function discardSiteAttachments(
         if (!player.discard) player.discard = [];
         player.discard.push(att as CardState);
     }
+    site.attachments = [];
 }
 
 /**
@@ -242,6 +243,51 @@ export function takeControlOfSite(
     const [first] = getControllablePathSites(G);
     if (!first) return null;
     first.site.controlledBy = playerId;
+    return first.site;
+}
+
+/**
+ * Sites contrôlés par un adversaire — éligibles à la libération (CR).
+ * Ordre : plus haut numéro de site d’abord.
+ */
+export function getLiberatableSites(
+    G: GameState,
+    liberatingPlayerId: string
+): { site: SiteCardState; pathIndex: number }[] {
+    const found: { site: SiteCardState; pathIndex: number }[] = [];
+    for (let i = 0; i < (G.path?.length || 0); i++) {
+        const site = G.path?.[i];
+        if (!site?.controlledBy) continue;
+        if (site.controlledBy === liberatingPlayerId) continue;
+        found.push({ site, pathIndex: i });
+    }
+    found.sort((a, b) => {
+        const na = a.site.siteNumber ?? a.pathIndex + 1;
+        const nb = b.site.siteNumber ?? b.pathIndex + 1;
+        return nb - na;
+    });
+    return found;
+}
+
+export function canLiberateASite(
+    G: GameState,
+    liberatingPlayerId: string
+): boolean {
+    return getLiberatableSites(G, liberatingPlayerId).length > 0;
+}
+
+/**
+ * Libère le site adverse contrôlé de plus haut numéro.
+ * Reste sur le chemin ; conditions attachées défaussées (stack plus tard).
+ */
+export function liberateSite(
+    G: GameState,
+    liberatingPlayerId: string
+): SiteCardState | null {
+    const [first] = getLiberatableSites(G, liberatingPlayerId);
+    if (!first) return null;
+    discardSiteAttachments(G, first.site);
+    delete first.site.controlledBy;
     return first.site;
 }
 

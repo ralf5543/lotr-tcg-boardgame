@@ -2139,6 +2139,31 @@ describe('parseAbilities — While spot N terrain sites', () => {
         ]);
     });
 
+    it('parse Sturdy Shield : Discard this → liberate a site', () => {
+        expect(
+            parseAbilities(
+                'Bearer must be a <symbol>rohan</symbol> Man. While no opponent controls a site, bearer is strength +1. <keyword>Regroup:</keyword> Discard this to liberate a site (or two sites if bearer is mounted).',
+                'Sturdy Shield',
+                '15R141'
+            )
+        ).toEqual(
+            expect.arrayContaining([
+                expect.objectContaining({
+                    phases: ['REGROUP'],
+                    cost: [
+                        {
+                            discardFromPlay: [
+                                { count: 1, target: 'SELF' },
+                            ],
+                        },
+                    ],
+                    effects: [{ type: 'LIBERATE_SITE' }],
+                    source: 'SELF',
+                }),
+            ])
+        );
+    });
+
     it('parse Traveled Leader : Spot Wizard → replace site région courante', () => {
         expect(
             parseAbilities(

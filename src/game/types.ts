@@ -284,6 +284,13 @@ export type AbilityEffect =
           type: 'FORCE_CHOOSE_MOVE_AGAIN';
       }
     | {
+          /**
+           * Libère le site adverse contrôlé de plus haut numéro (CR).
+           * Site reste sur le path ; attachments défaussés.
+           */
+          type: 'LIBERATE_SITE';
+      }
+    | {
           type: 'DRAW';
           count: number;
       }

@@ -297,6 +297,9 @@ function formatEffectBit(
     if (effect.type === 'FORCE_CHOOSE_MOVE_AGAIN') {
         return 'obliger les Peuples Libres à se déplacer à nouveau';
     }
+    if (effect.type === 'LIBERATE_SITE') {
+        return 'libérer un site';
+    }
     return '';
 }
 

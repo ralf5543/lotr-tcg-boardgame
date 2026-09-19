@@ -65,6 +65,7 @@ import { useExertAudio } from '../../hooks/audio/useExertAudio';
 import { useHealAudio } from '../../hooks/audio/useHealAudio';
 import { useAssignmentAudio } from '../../hooks/audio/useAssignmentAudio';
 import { useSkirmishAudio } from '../../hooks/audio/useSkirmishAudio';
+import { useSiteControlAudio } from '../../hooks/audio/useSiteControlAudio';
 import {
     BoardTargetingArrow,
     RemoteTargetingArrow,
@@ -219,6 +220,7 @@ export const GameBoard: React.FC<GameBoardProps> = ({
     useHealAudio(G);
     useAssignmentAudio(G);
     useSkirmishAudio(G, ctx.phase);
+    useSiteControlAudio(G);
     const myId = playerID || ctx.currentPlayer;
     const oppId = myId === '0' ? '1' : '0';
     const { startTargeting, stopTargeting, targetingKind } = useTargeting();

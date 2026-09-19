@@ -18,6 +18,7 @@ import {
     getOwnedPathSites,
     canExchangeOwnedPathSite,
     canTakeControlOfASite,
+    canLiberateASite,
 } from '../../logic/sites';
 import {
     canReplaceCurrentSite,
@@ -238,6 +239,12 @@ export function abilityHasLegalEffectTarget(
             continue;
         }
         if (effect.type === 'FORCE_CHOOSE_MOVE_AGAIN') {
+            continue;
+        }
+        if (effect.type === 'LIBERATE_SITE') {
+            const ownerId = abilityOwnerPlayerId(G, source);
+            if (!ownerId) return false;
+            if (!canLiberateASite(G, ownerId)) return false;
             continue;
         }
         if (

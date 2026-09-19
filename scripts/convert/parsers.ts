@@ -3337,6 +3337,25 @@ function parseForceChooseMoveAgainEffect(
     return null;
 }
 
+/** « liberate a site » — ignore parenthèse optionnelle (or two if mounted…). */
+function parseLiberateSiteEffect(
+    remainder: string
+): Record<string, unknown> | null {
+    const clause = stripAbilityMarkup(remainder)
+        .replace(/\s+/g, ' ')
+        .replace(/\([^)]*\)/g, ' ')
+        .replace(/\s+/g, ' ')
+        .replace(/[.\s]+$/u, '')
+        .trim();
+    if (!clause) return null;
+
+    if (/^liberate a site$/i.test(clause)) {
+        return { type: 'LIBERATE_SITE' };
+    }
+
+    return null;
+}
+
 function parseReplaceSiteEffect(
     remainder: string
 ): Record<string, unknown> | null {
@@ -3570,6 +3589,9 @@ function parseDiscardToEffect(
 
     const forceMove = parseForceChooseMoveAgainEffect(remainder);
     if (forceMove) return forceMove;
+
+    const liberate = parseLiberateSiteEffect(remainder);
+    if (liberate) return liberate;
 
     const clause = stripAbilityMarkup(remainder)
         .replace(/[.\s]+$/, '')

@@ -14,6 +14,9 @@ export const SOUND_LIBRARY = {
     COMPANION: [
         '/audio/sfx/cards/companion.opus',
     ],
+    CONTROLE_SITE: [
+        '/audio/sfx/cards/controle_site.opus',
+    ],
     EXERT_GOLLUM: [
         '/audio/sfx/cards/exert_gollum.opus',
         '/audio/sfx/cards/exert_gollum2.opus',

@@ -1,4 +1,16 @@
-import styled, { css } from 'styled-components';
+import styled, { css, keyframes } from 'styled-components';
+
+/** Drapeau de contrôle : plongée depuis le haut-gauche, comme planté dans le site. */
+const plantControlFlag = keyframes`
+    from {
+        opacity: 0;
+        transform: translate(-22px, -34px);
+    }
+    to {
+        opacity: 1;
+        transform: translate(0, 0);
+    }
+`;
 
 export const SitespathContainer = styled.section`
     display: flex;
@@ -160,6 +172,7 @@ export const ControlFlag = styled.div<{ $playerId: '0' | '1' }>`
     background-repeat: no-repeat;
     background-position: center;
     perspective: 126px;
+    animation: ${plantControlFlag} 0.3s cubic-bezier(0.2, 0.85, 0.3, 1) both;
 `;
 
 export const ControlFlagLabel = styled.span<{ $playerId: '0' | '1' }>`

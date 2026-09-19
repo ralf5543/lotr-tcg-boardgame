@@ -85728,6 +85728,37 @@
         ]
       }
     ],
+    "abilities": [
+      {
+        "id": "9R+32:0",
+        "phases": [
+          "REGROUP"
+        ],
+        "cost": [
+          {
+            "discardFromPlay": [
+              {
+                "count": 1,
+                "target": [
+                  [
+                    "GONDOR",
+                    "ARTIFACT"
+                  ]
+                ],
+                "mode": "DESIGNATION"
+              }
+            ]
+          }
+        ],
+        "effects": [
+          {
+            "type": "LIBERATE_SITE"
+          }
+        ],
+        "source": "SELF",
+        "text": "REGROUP: Discard a gondor artifact to liberate a site."
+      }
+    ],
     "actionPhases": [
       "FELLOWSHIP",
       "REGROUP"
@@ -127943,6 +127974,31 @@
         "ROHAN",
         "MAN"
       ]
+    ],
+    "abilities": [
+      {
+        "id": "15R141:0",
+        "phases": [
+          "REGROUP"
+        ],
+        "cost": [
+          {
+            "discardFromPlay": [
+              {
+                "count": 1,
+                "target": "SELF"
+              }
+            ]
+          }
+        ],
+        "effects": [
+          {
+            "type": "LIBERATE_SITE"
+          }
+        ],
+        "source": "SELF",
+        "text": "REGROUP: Discard this to liberate a site (or two sites if bearer is mounted)."
+      }
     ],
     "actionPhases": [
       "REGROUP"

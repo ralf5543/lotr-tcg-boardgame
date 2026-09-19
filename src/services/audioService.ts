@@ -41,27 +41,35 @@ class AudioService {
     private async preloadSounds() {
         if (typeof window === 'undefined' || !this.ctx) return;
 
-        for (const [key, paths] of Object.entries(SOUND_LIBRARY)) {
-            const pathArray = Array.isArray(paths) ? paths : [paths];
-            const loadedBuffers: AudioBuffer[] = [];
-
-            for (const path of pathArray) {
-                try {
-                    const response = await fetch(path);
-                    const arrayBuffer = await response.arrayBuffer();
-                    const audioBuffer =
-                        await this.ctx.decodeAudioData(arrayBuffer);
-                    loadedBuffers.push(audioBuffer);
-                } catch (err) {
-                    console.warn(
-                        `[AudioService] Impossible de charger : ${path}`,
-                        err
-                    );
-                }
-            }
-
-            this.buffers.set(key as SoundEffect, loadedBuffers);
+        for (const key of Object.keys(SOUND_LIBRARY) as SoundEffect[]) {
+            await this.preloadSound(key);
         }
+    }
+
+    private async preloadSound(effect: SoundEffect) {
+        if (typeof window === 'undefined' || !this.ctx) return;
+
+        const paths = SOUND_LIBRARY[effect];
+        if (!paths) return;
+        const pathArray = Array.isArray(paths) ? paths : [paths];
+        const loadedBuffers: AudioBuffer[] = [];
+
+        for (const path of pathArray) {
+            try {
+                const response = await fetch(path);
+                const arrayBuffer = await response.arrayBuffer();
+                const audioBuffer =
+                    await this.ctx.decodeAudioData(arrayBuffer);
+                loadedBuffers.push(audioBuffer);
+            } catch (err) {
+                console.warn(
+                    `[AudioService] Impossible de charger : ${path}`,
+                    err
+                );
+            }
+        }
+
+        this.buffers.set(effect, loadedBuffers);
     }
 
     public async play(effect: SoundEffect, options: PlayOptions = {}) {
@@ -93,7 +101,12 @@ class AudioService {
             await this.preloadSounds();
         }
 
-        const availableBuffers = this.buffers.get(effect);
+        let availableBuffers = this.buffers.get(effect);
+        // Son ajouté après le 1er preload (HMR) ou échec ponctuel → recharger cette clé
+        if (!availableBuffers || availableBuffers.length === 0) {
+            await this.preloadSound(effect);
+            availableBuffers = this.buffers.get(effect);
+        }
         if (!availableBuffers || availableBuffers.length === 0) return;
 
         // Options par défaut

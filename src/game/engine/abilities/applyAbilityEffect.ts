@@ -25,6 +25,7 @@ import {
     replacePathSiteFromDeck,
     getCurrentSiteIndex,
     takeControlOfSite,
+    liberateSite,
 } from '../../logic/sites';
 import { isSiteReplaceForbidden } from '../../logic/siteReplaceRestrictions';
 import type { CardKeyword } from '../../types';
@@ -238,6 +239,13 @@ export function applyAbilityEffect(
             if ((G.movesThisTurn || 0) < 2) {
                 G.forceChooseMoveAgain = true;
             }
+            continue;
+        }
+
+        if (effect.type === 'LIBERATE_SITE') {
+            const ownerId = abilityOwnerPlayerId(G, source);
+            if (!ownerId) return false;
+            if (!liberateSite(G, ownerId)) return false;
             continue;
         }
 
