@@ -17,6 +17,7 @@ import {
     parseKeywords,
     parseClassAndPhases,
     parseAttachedTo,
+    parseRequiresControlledSite,
     parseToPlayConditions,
     parseAidCost,
     parseAbilities,
@@ -126,6 +127,8 @@ async function convert() {
             isRingbearer
         );
         const attachmentData = parseAttachedTo(englishText, type);
+        const requiresControlledSite =
+            parseRequiresControlledSite(englishText) || undefined;
 
         const computedStrength = parseStat(data['Strength'], data['Top Text']);
         const computedVitality = parseStat(
@@ -163,6 +166,7 @@ async function convert() {
             aidCost: aidCost,
             grantsKeywords: grantsKeywords,
             attachedTo: attachmentData || undefined,
+            requiresControlledSite,
             toPlay: toPlayData,
             abilities: abilities,
             phases: phases,

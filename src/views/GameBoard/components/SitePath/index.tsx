@@ -11,9 +11,9 @@ import {
     attachesToSite,
     canPlayCard,
 } from '../../../../game/engine/canPlayCard';
-import { getCardText } from '../../../../utils/i18n';
 import { SiteCard } from '../SiteCard';
 import { Card } from '../Card';
+import { SiteAttachmentAbilitySeal } from './SiteAttachmentAbilitySeal';
 import * as S from './styles';
 import { useDrag } from '../../../../contexts/DragContext';
 import { useHoverCard } from '../../../../contexts/HoverCardContext';
@@ -66,7 +66,15 @@ interface SitePathProps {
     players?: Record<string, PlayerState>;
     localPlayerId?: string;
     G?: GameState;
+    phase?: string;
     onPlaySite?: (siteId: string, targetIndex: number) => void;
+    onActivateAbility?: (
+        sourceInstanceId: string,
+        abilityId: string,
+        chosenTargetId?: string,
+        discardedHandIds?: string[],
+        chosenEffectTargetId?: string | string[]
+    ) => void;
 }
 
 const REGION_INDEXES: Record<1 | 2 | 3, number[]> = {
@@ -75,22 +83,14 @@ const REGION_INDEXES: Record<1 | 2 | 3, number[]> = {
     3: [6, 7, 8],
 };
 
-function cultureIconPath(culture: string) {
-    return `interface/icons/icon_culture_${culture}.webp`;
-}
-
-function isWeatherAttachment(card: CardState): boolean {
-    return (card.keywords || []).some(
-        (kw) => String(kw).toUpperCase() === 'WEATHER'
-    );
-}
-
 export const SitePath: React.FC<SitePathProps> = ({
     path = [],
     players = {},
     localPlayerId,
     G,
+    phase,
     onPlaySite,
+    onActivateAbility,
 }) => {
     const {
         registerTarget,
@@ -379,48 +379,17 @@ export const SitePath: React.FC<SitePathProps> = ({
 
                 {attachments.length > 0 && (
                     <S.AttachmentSeals>
-                        {attachments.map((att) => {
-                            const weather = isWeatherAttachment(att);
-                            const { title } = getCardText(att, 'fr');
-                            const label = title || att.id;
-                            return (
-                                <S.SiteAttachmentSeal
-                                    key={att.instanceId || att.id}
-                                    type="button"
-                                    $isWeather={weather}
-                                    title={label}
-                                    onMouseEnter={(e) => {
-                                        e.stopPropagation();
-                                        setHoveredCard(att, 'portrait');
-                                    }}
-                                    onMouseLeave={(e) => {
-                                        e.stopPropagation();
-                                        if (site) {
-                                            setHoveredCard(site, 'landscape');
-                                        } else {
-                                            setHoveredCard(null);
-                                        }
-                                    }}
-                                >
-                                    {att.culture && (
-                                        <img
-                                            src={cultureIconPath(att.culture)}
-                                            alt=""
-                                            draggable={false}
-                                        />
-                                    )}
-                                    
-                                    <S.AttachmentTitle>
-                                        {label}
-                                    </S.AttachmentTitle>
-                                    {weather && (
-                                        <S.WeatherEmoji aria-hidden>
-                                            🌧
-                                        </S.WeatherEmoji>
-                                    )}
-                                </S.SiteAttachmentSeal>
-                            );
-                        })}
+                        {attachments.map((att) => (
+                            <SiteAttachmentAbilitySeal
+                                key={att.instanceId || att.id}
+                                card={att}
+                                siteForHover={site}
+                                G={G}
+                                phase={phase}
+                                localPlayerId={localPlayerId}
+                                onActivateAbility={onActivateAbility}
+                            />
+                        ))}
                     </S.AttachmentSeals>
                 )}
                 {uxMock &&

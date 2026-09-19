@@ -2112,6 +2112,33 @@ describe('parseAbilities — While spot N terrain sites', () => {
         ]);
     });
 
+    it('parse No Retreat : Spot 2 Dunland Men + discard → force move again', () => {
+        expect(
+            parseAbilities(
+                'Plays on a site you control. <keyword>Regroup:</keyword> Spot 2 <symbol>dunland</symbol> Men and discard this condition to make the Free Peoples player choose to move again this turn (if the move limit allows).',
+                'No Retreat',
+                '4R30'
+            )
+        ).toEqual([
+            expect.objectContaining({
+                phases: ['REGROUP'],
+                cost: [
+                    {
+                        spot: [
+                            {
+                                count: 2,
+                                target: [['DUNLAND', 'MAN']],
+                            },
+                        ],
+                        discardFromPlay: [{ count: 1, target: 'SELF' }],
+                    },
+                ],
+                effects: [{ type: 'FORCE_CHOOSE_MOVE_AGAIN' }],
+                source: 'SELF',
+            }),
+        ]);
+    });
+
     it('parse Traveled Leader : Spot Wizard → replace site région courante', () => {
         expect(
             parseAbilities(

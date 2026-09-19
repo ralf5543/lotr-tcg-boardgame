@@ -1673,6 +1673,8 @@ export const GameBoard: React.FC<GameBoardProps> = ({
                         players={G.players}
                         localPlayerId={myId}
                         G={G}
+                        phase={ctx.phase}
+                        onActivateAbility={handleActivateAbility}
                         onPlaySite={(siteId, targetIndex) => {
                             const isInitialSetupSite =
                                 ctx.phase === 'setup' &&

@@ -111,6 +111,13 @@ export const canAttachToCharacter = (
         ) {
             return false;
         }
+        // « Plays on a site you control »
+        if (
+            attachment.requiresControlledSite &&
+            (!playerId || siteTarget.controlledBy !== playerId)
+        ) {
+            return false;
+        }
         const existing = siteTarget.attachments || [];
         if (existing.some((a) => a && a.id === attachment.id)) {
             return false;

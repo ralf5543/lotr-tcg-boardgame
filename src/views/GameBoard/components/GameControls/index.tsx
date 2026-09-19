@@ -638,12 +638,14 @@ export const GameControls: React.FC<GameControlsProps> = ({
                                         Avancer au site 🏕️
                                     </S.ActionButton>
                                 )}
-                                <S.ActionButton
-                                    $variant="secondary"
-                                    onClick={() => moves.endTurnChoice?.()}
-                                >
-                                    Terminer le tour 🏁
-                                </S.ActionButton>
+                                {!G.forceChooseMoveAgain && (
+                                    <S.ActionButton
+                                        $variant="secondary"
+                                        onClick={() => moves.endTurnChoice?.()}
+                                    >
+                                        Terminer le tour 🏁
+                                    </S.ActionButton>
+                                )}
                             </>
                         )}
 

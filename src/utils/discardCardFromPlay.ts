@@ -69,14 +69,34 @@ export function discardCardFromPlay(
     }
 
     const fromBattle = removeFromList(G.battlefield, targetId);
-    if (!fromBattle) return false;
+    if (fromBattle) {
+        const fpId = G.fpPlayerId || '0';
+        const shadowId = fpId === '0' ? '1' : '0';
+        const ownerId =
+            fromBattle.kind === 'FREE_PEOPLE' ? fpId : shadowId;
+        const pile = ownerDiscardPile(G, ownerId, fromBattle);
+        if (!pile) return false;
+        pile.push(fromBattle);
+        return true;
+    }
 
-    const fpId = G.fpPlayerId || '0';
-    const shadowId = fpId === '0' ? '1' : '0';
-    const ownerId =
-        fromBattle.kind === 'FREE_PEOPLE' ? fpId : shadowId;
-    const pile = ownerDiscardPile(G, ownerId, fromBattle);
-    if (!pile) return false;
-    pile.push(fromBattle);
-    return true;
+    for (const site of G.path || []) {
+        if (!site?.attachments?.length) continue;
+        const attachedIndex = site.attachments.findIndex((card) =>
+            matchCard(card, targetId)
+        );
+        if (attachedIndex < 0) continue;
+        const [removed] = site.attachments.splice(attachedIndex, 1);
+        if (!removed) return false;
+        const fpId = G.fpPlayerId || '0';
+        const shadowId = fpId === '0' ? '1' : '0';
+        const ownerId =
+            removed.kind === 'FREE_PEOPLE' ? fpId : shadowId;
+        const pile = ownerDiscardPile(G, ownerId, removed);
+        if (!pile) return false;
+        pile.push(removed);
+        return true;
+    }
+
+    return false;
 }

@@ -186,7 +186,10 @@ export const AttachmentSeals = styled.div`
     pointer-events: none;
 `;
 
-export const SiteAttachmentSeal = styled.button<{ $isWeather?: boolean }>`
+export const SiteAttachmentSeal = styled.button<{
+    $isWeather?: boolean;
+    $abilityPhaseMatch?: boolean;
+}>`
     position: relative;
     display: flex;
     align-items: center;
@@ -196,18 +199,36 @@ export const SiteAttachmentSeal = styled.button<{ $isWeather?: boolean }>`
     border-radius: 4px 4px 0 0;
     border: 1px solid rgba(193, 160, 84, 0.9);
     border-block-end: 0;
-    background: linear-gradient(135deg, rgba(45, 38, 28, 0.95), rgba(26, 37, 47, 0.75));
+    background: linear-gradient(
+        135deg,
+        rgba(45, 38, 28, 0.95),
+        rgba(26, 37, 47, 0.75)
+    );
     color: ${({ $isWeather }) => ($isWeather ? '#c5dcff' : '#e2c044')};
     font-size: 8px;
     font-weight: 700;
     letter-spacing: 0.04em;
     text-transform: none;
-    cursor: default;
+    cursor: ${({ $abilityPhaseMatch }) =>
+        $abilityPhaseMatch ? 'pointer' : 'default'};
     pointer-events: auto;
-    box-shadow: ${({ $isWeather }) =>
-        $isWeather
-            ? '0 0 8px rgba(120, 180, 255, 0.35)'
-            : '0 0 6px rgba(193, 160, 84, 0.25)'};
+    box-shadow: ${({ $isWeather, $abilityPhaseMatch }) =>
+        $abilityPhaseMatch
+            ? `0 0 6px rgba(193, 160, 84, 0.25),
+               rgb(226, 192, 68) 0px 0px 10px 7px`
+            : $isWeather
+              ? '0 0 8px rgba(120, 180, 255, 0.35)'
+              : '0 0 6px rgba(193, 160, 84, 0.25)'};
+
+    ${({ $abilityPhaseMatch }) =>
+        $abilityPhaseMatch &&
+        css`
+            &:active {
+                box-shadow:
+                    inset 0 0 8px black,
+                    rgb(226, 192, 68) 0px 0px 8px 3px;
+            }
+        `}
 
     img {
         width: 10px;

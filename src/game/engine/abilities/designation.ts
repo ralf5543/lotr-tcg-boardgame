@@ -237,6 +237,9 @@ export function abilityHasLegalEffectTarget(
             if (!canTakeControlOfASite(G)) return false;
             continue;
         }
+        if (effect.type === 'FORCE_CHOOSE_MOVE_AGAIN') {
+            continue;
+        }
         if (
             effect.type === 'REMOVE_TWILIGHT' ||
             effect.type === 'REMOVE_BURDENS' ||

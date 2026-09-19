@@ -17,7 +17,7 @@ L’ancien plan effets de cartes est **figé** (`.cursor/rules/card-effects-plan
 
 ## Ordre
 
-**Priorité courante** : **contrôle** (stack / liberate / « site you control »), puis effets gametext conditions site. Keywords cartes : skip@site / reinforce jetons = ⏸. Preset `SITES_TEST` pour valider.
+**Priorité courante** : **liberate** / **stack** / effets gametext conditions site. Keywords cartes : skip@site / reinforce jetons = ⏸. Preset `SITES_TEST` pour valider.
 
 1. **Socle modèle** ✅
    - `SiteCardState.attachments` = `CardState[]` (vide tant que l’attache n’est pas câblée).
@@ -62,22 +62,26 @@ L’ancien plan effets de cartes est **figé** (`.cursor/rules/card-effects-plan
    - **6ᵉ** : échange path↔deck (sites **à toi**) → **11U45** Led Astray (+ crépuscule). ✅ ≠ replace (cannot replace ne bloque pas).
    - Suite : attache / contrôle. Site Mount Doom / attache « this site cannot » = plus tard.
 
-5. **Attache sur un site** (en cours — 1ʳᵉ verticale)
+5. **Attache sur un site** (partiel — pose + « you control »)
    - Path = **sceau** culture + titre carte ; emoji 🌧 si Weather ; HoverCard.
    - Drag depuis la main → halo sites valides → `attachCard` (même move que possessions).
    - `attachedTo: [['SITE']]` déjà parsé ; Limit 1 per site / pas de doublon id.
    - Replace → défausse des conditions (pas de transfert).
-   - Preset `SITES_TEST` : Strong Arms (FP) + Neiges (Ombre).
-   - Effets gametext des conditions (skip skirmish events, etc.) = suite.
-   - « Plays on a site you control » = après contrôle.
+   - Preset `SITES_TEST` : Strong Arms (FP) + Neiges (Ombre) + **4R30** No Retreat.
+   - ✅ « Plays on a site you control » (`requiresControlledSite` + gate pose).
+   - ✅ « Plays on a plains site you control » (**5R69**) — sans tokens YOU/CONTROL.
+   - ✅ Badge site = bouton d’abilité (halo or + bulle) quand la condition a une capacité jouable.
+   - ✅ **4R30** No Retreat : Spot 2 + discard → `FORCE_CHOOSE_MOVE_AGAIN`.
+   - Effets passifs conditions site (skip skirmish events, etc.) = suite.
 
-6. **Contrôle + stack** (en cours — 1ʳᵉ verticale contrôle)
+6. **Contrôle + stack** (en cours — contrôle + attache you control ✅)
    - **Contrôle** = drapeau **P1/P2** (joueur `0`/`1`), pas culture.
    - Site reste sur le path ; `controlledBy` ; plus bas site libre déjà passé (CR).
    - **1ʳᵉ verticale** : `TAKE_CONTROL_SITE` + `Exert … to take control of a site` → **8C106** Siege Troop. ✅
+   - ✅ « Plays on a site you control » → **4R30** / **4R167** / **5R69**.
    - Contrôle seulement après passage des joueurs → **pas de conflit** avec jetons footer ; drapeau en bas, mini-cartes au centre.
    - **Stack** uniquement sur site contrôlé ; clic / hover → détail (tiroir Site plus tard si besoin) — mock CSS encore.
-   - Puis « Plays on a site you control » / liberate / play from stack.
+   - Puis liberate / play from stack.
    - Cultures concernées : **Dunland**, **Sauron** ; **Uruk-hai** à vérifier.
 
 ## Hors scope pour l’instant
@@ -98,5 +102,5 @@ L’ancien plan effets de cartes est **figé** (`.cursor/rules/card-effects-plan
 | Keywords branchés sur gametext cartes | partiel (at/spot sites ✅ ; skip@site / reinforce jetons ⏸) |
 | Abilities / gametext site | partiel (move twilight + discard allies ✅) |
 | Remplacement de site sur le path | partiel (CURRENT/REGION/when-played/cannot ✅ ; échange OWNED ✅ — 11U45) |
-| Attache sur site | partiel (pose + badge ✅ ; effets / control later) |
+| Attache sur site | partiel (pose + badge + you control ✅ ; effets gametext ❌) |
 | Contrôle / libération | partiel (TAKE_CONTROL_SITE + drapeau ✅ ; liberate / stack ❌) |

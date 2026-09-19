@@ -5,6 +5,7 @@ import {
     canAttachToCharacter,
 } from '../engine/canPlayCard';
 import { replacePathSiteFromDeck } from '../logic/sites';
+import { discardCardFromPlay } from '../../utils/discardCardFromPlay';
 import {
     createGameState,
     createPlayerState,
@@ -68,6 +69,48 @@ describe('Site attachments', () => {
         expect(canAttachToCharacter(snows, fpSite, '1')).toBe(true);
     });
 
+    it('No Retreat uniquement sur un site que l’on contrôle', () => {
+        const noRetreat = getCardById('4R30')!;
+        expect(noRetreat.requiresControlledSite).toBe(true);
+        expect(attachesToSite(noRetreat)).toBe(true);
+        const free = createSite({
+            id: 'free',
+            siteNumber: 1,
+            ownerId: '0',
+        });
+        const mine = createSite({
+            id: 'mine',
+            siteNumber: 2,
+            ownerId: '0',
+            controlledBy: '1',
+        });
+        expect(canAttachToCharacter(noRetreat, free, '1')).toBe(false);
+        expect(canAttachToCharacter(noRetreat, mine, '1')).toBe(true);
+        expect(canAttachToCharacter(noRetreat, mine, '0')).toBe(false);
+    });
+
+    it('Wolves of Isengard : plains + site contrôlé (pas YOU/CONTROL)', () => {
+        const wolves = getCardById('5R69')!;
+        expect(wolves.requiresControlledSite).toBe(true);
+        expect(wolves.attachedTo).toEqual([['PLAINS', 'SITE']]);
+        const plains = createSite({
+            id: 'plains',
+            siteNumber: 1,
+            ownerId: '0',
+            keywords: ['PLAINS'],
+            controlledBy: '1',
+        });
+        const forest = createSite({
+            id: 'forest',
+            siteNumber: 2,
+            ownerId: '0',
+            keywords: ['FOREST'],
+            controlledBy: '1',
+        });
+        expect(canAttachToCharacter(wolves, plains, '1')).toBe(true);
+        expect(canAttachToCharacter(wolves, forest, '1')).toBe(false);
+    });
+
     it('replace défausse les conditions du site (pas de transfert)', () => {
         const snows = {
             ...getCardById('1C138')!,
@@ -106,6 +149,33 @@ describe('Site attachments', () => {
         expect(G.path[0]?.attachments || []).toHaveLength(0);
         expect(
             G.players['1']?.discard?.some((c) => c.instanceId === 'snows-1')
+        ).toBe(true);
+    });
+
+    it('discardCardFromPlay retire une condition attachée au path', () => {
+        const noRetreat = {
+            ...getCardById('4R30')!,
+            instanceId: 'nr-1',
+            kind: 'SHADOW' as const,
+        };
+        const site = createSite({
+            id: 'controlled',
+            siteNumber: 1,
+            ownerId: '0',
+            controlledBy: '1',
+            attachments: [noRetreat],
+        });
+        const G = createGameState({
+            path: [site, null, null, null, null, null, null, null, null],
+            players: {
+                '0': createPlayerState('0', { discard: [] }),
+                '1': createPlayerState('1', { discard: [] }),
+            },
+        });
+        expect(discardCardFromPlay(G, noRetreat)).toBe(true);
+        expect(G.path[0]?.attachments || []).toHaveLength(0);
+        expect(
+            G.players['1']?.discard?.some((c) => c.instanceId === 'nr-1')
         ).toBe(true);
     });
 });

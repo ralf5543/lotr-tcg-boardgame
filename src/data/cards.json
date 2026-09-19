@@ -39247,6 +39247,43 @@
         "SITE"
       ]
     ],
+    "requiresControlledSite": true,
+    "abilities": [
+      {
+        "id": "4R30:0",
+        "phases": [
+          "REGROUP"
+        ],
+        "cost": [
+          {
+            "spot": [
+              {
+                "count": 2,
+                "target": [
+                  [
+                    "DUNLAND",
+                    "MAN"
+                  ]
+                ]
+              }
+            ],
+            "discardFromPlay": [
+              {
+                "count": 1,
+                "target": "SELF"
+              }
+            ]
+          }
+        ],
+        "effects": [
+          {
+            "type": "FORCE_CHOOSE_MOVE_AGAIN"
+          }
+        ],
+        "source": "SELF",
+        "text": "REGROUP: Spot 2 dunland Men and discard this condition to make the Free Peoples player choose to move again this turn (if the move limit allows)."
+      }
+    ],
     "actionPhases": [
       "REGROUP"
     ],
@@ -39692,6 +39729,47 @@
     "isUnique": false,
     "kind": "SHADOW",
     "type": "EVENT",
+    "abilities": [
+      {
+        "id": "4R39:0",
+        "phases": [
+          "MANEUVER"
+        ],
+        "cost": [
+          {
+            "spot": [
+              {
+                "count": 3,
+                "target": [
+                  [
+                    "DUNLAND",
+                    "MAN"
+                  ]
+                ]
+              }
+            ]
+          }
+        ],
+        "effects": [
+          {
+            "type": "DISCARD",
+            "count": 1,
+            "target": [
+              [
+                "Free",
+                "Peoples",
+                "POSSESSION"
+              ],
+              [
+                "CONDITION"
+              ]
+            ]
+          }
+        ],
+        "source": "SELF",
+        "text": "MANEUVER: Spot 3 dunland Men to discard a Free Peoples possession or condition."
+      }
+    ],
     "phases": [
       "MANEUVER"
     ],
@@ -40680,6 +40758,42 @@
     "isUnique": false,
     "kind": "FREE_PEOPLE",
     "type": "EVENT",
+    "abilities": [
+      {
+        "id": "4R61:0",
+        "phases": [
+          "ARCHERY"
+        ],
+        "cost": [
+          {
+            "spot": [
+              {
+                "count": 2,
+                "target": [
+                  [
+                    "ELF",
+                    "COMPANION"
+                  ]
+                ]
+              }
+            ]
+          }
+        ],
+        "effects": [
+          {
+            "type": "DISCARD",
+            "count": 1,
+            "target": [
+              [
+                "CONDITION"
+              ]
+            ]
+          }
+        ],
+        "source": "SELF",
+        "text": "ARCHERY: Spot 2 Elf companions to discard a condition."
+      }
+    ],
     "phases": [
       "ARCHERY"
     ],
@@ -45577,6 +45691,7 @@
         "SITE"
       ]
     ],
+    "requiresControlledSite": true,
     "culture": "ISENGARD",
     "twilightCost": 0,
     "imageUrl": "/cards_visuals/o_04_167.jpg",
@@ -55917,11 +56032,10 @@
     "attachedTo": [
       [
         "PLAINS",
-        "SITE",
-        "YOU",
-        "CONTROL"
+        "SITE"
       ]
     ],
+    "requiresControlledSite": true,
     "actionPhases": [
       "REGROUP"
     ],
@@ -96472,7 +96586,7 @@
             "keyword": "FIERCE",
             "target": [
               [
-                "MEN",
+                "MAN",
                 "MINION"
               ]
             ]
@@ -121744,6 +121858,37 @@
     "keywords": [
       "HUNTER 1"
     ],
+    "abilities": [
+      {
+        "id": "15S18:0",
+        "phases": [
+          "REGROUP"
+        ],
+        "cost": [
+          {
+            "exert": [
+              {
+                "count": 2,
+                "target": [
+                  [
+                    "HUNTER",
+                    "COMPANION"
+                  ]
+                ]
+              }
+            ]
+          }
+        ],
+        "effects": [
+          {
+            "type": "DRAW",
+            "count": 1
+          }
+        ],
+        "source": "SELF",
+        "text": "REGROUP: Exert 2 hunter companions to draw a card"
+      }
+    ],
     "actionPhases": [
       "REGROUP"
     ],
@@ -125128,7 +125273,7 @@
               "count": 1,
               "target": [
                 [
-                  "MEN",
+                  "MAN",
                   "MAN"
                 ]
               ]

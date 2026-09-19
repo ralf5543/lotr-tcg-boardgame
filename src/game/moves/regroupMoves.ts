@@ -52,6 +52,11 @@ export const returnAidFollowersToSupport = (G: GameState) => {
 };
 
 export const endTurnChoice = ({ G }: LotrMoveContext) => {
+    if (G.forceChooseMoveAgain && (G.movesThisTurn || 0) < 2) {
+        return 'INVALID_MOVE';
+    }
+    G.forceChooseMoveAgain = false;
+
     // 🟢 Renvoyer les Suivants en support-area seulement quand le FP choisit de finir son tour
     returnAidFollowersToSupport(G);
 
@@ -159,6 +164,7 @@ export const confirmHandRefill = ({ G, events, playerID }: LotrMoveContext) => {
         G.battlefield = [];
         G.twilightPool = 0;
         G.movesThisTurn = 0;
+        G.forceChooseMoveAgain = false;
         G.skirmishes = [];
         G.activeSkirmishId = undefined;
         G.regroupStep = undefined;

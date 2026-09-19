@@ -1240,6 +1240,7 @@ export const LotrGame: Game<GameState> = {
                     }
 
                     advanceCompany(G);
+                    G.forceChooseMoveAgain = false;
 
                     if (!G.awaitingSiteSelection) {
                         G.skirmishes = [];

@@ -439,7 +439,18 @@ export function parseAttachedTo(
         return null;
     }
 
-    if (/plays on a site/i.test(text)) {
+    // « Plays on a plains site you control » (terrain + contrôle)
+    const terrainControlled = text.match(
+        /plays on an?\s+([a-z-]+)\s+site you control/i
+    );
+    if (terrainControlled) {
+        const siteKw = parseSiteLocationKeyword(terrainControlled[1]);
+        if (siteKw) return [[siteKw, 'SITE']];
+        return null;
+    }
+
+    // « Plays on a site you control » / « Plays on a site »
+    if (/plays on a site(?:\s+you control)?/i.test(text)) {
         return [['SITE']];
     }
 
@@ -505,6 +516,12 @@ export function parseAttachedTo(
 
     const combinedKeywords = extractKeywords(rawClause);
     return combinedKeywords.length > 0 ? [combinedKeywords] : null;
+}
+
+/** « Plays on a (terrain) site you control ». */
+export function parseRequiresControlledSite(text?: string): boolean {
+    if (!text) return false;
+    return /plays on an?(?:\s+[a-z-]+)?\s+site you control/i.test(text);
 }
 
 /**
@@ -821,7 +838,9 @@ function parseClassFilters(raw: string): string[] {
         .replace(/\bhand\s+weapons?\b/gi, 'HAND-WEAPON')
         .replace(/\branged\s+weapons?\b/gi, 'RANGED-WEAPON');
     for (const word of segment.split(/\s+/).filter(Boolean)) {
-        const token = normalizeFilterToken(word);
+        let token = normalizeFilterToken(word);
+        // Pluriel de race Man (« dunland Men ») — culture Men reste via symbole.
+        if (token === 'MEN') token = 'MAN';
         if (!token || FILTER_STOPWORDS.has(token)) continue;
         if (isKnownFilterToken(token)) {
             filters.push(token);
@@ -874,7 +893,15 @@ function parseExertSubject(
         }
     }
 
-    if (/^\d+\s+/.test(body)) return null;
+    if (/^\d+\s+/.test(body) || /^(one|two)\s+/i.test(body)) {
+        const numbered = body.match(/^(one|two|\d+)\s+(.+)$/i);
+        if (!numbered) return null;
+        const n = parseBurdenWord(numbered[1]);
+        if (!n) return null;
+        const filters = parseClassFilters(numbered[2]);
+        if (filters.length === 0) return null;
+        return { target: [filters], count: n };
+    }
 
     // « spot X pipes » : X = nombre variable, la classe passe par les filtres connus.
     const variableClass = body.match(/^X\s+(.+)$/i);
@@ -3290,6 +3317,26 @@ function parseTakeControlSiteEffect(
     return null;
 }
 
+function parseForceChooseMoveAgainEffect(
+    remainder: string
+): Record<string, unknown> | null {
+    const clause = stripAbilityMarkup(remainder)
+        .replace(/\s+/g, ' ')
+        .replace(/[.\s]+$/u, '')
+        .trim();
+    if (!clause) return null;
+
+    if (
+        /^make the Free Peoples player choose to move again this turn(?:\s*\(if the move limit allows\))?$/i.test(
+            clause
+        )
+    ) {
+        return { type: 'FORCE_CHOOSE_MOVE_AGAIN' };
+    }
+
+    return null;
+}
+
 function parseReplaceSiteEffect(
     remainder: string
 ): Record<string, unknown> | null {
@@ -3520,6 +3567,9 @@ function parseDiscardToEffect(
 
     const takeControl = parseTakeControlSiteEffect(remainder);
     if (takeControl) return takeControl;
+
+    const forceMove = parseForceChooseMoveAgainEffect(remainder);
+    if (forceMove) return forceMove;
 
     const clause = stripAbilityMarkup(remainder)
         .replace(/[.\s]+$/, '')
@@ -4480,6 +4530,61 @@ export function parseAbilities(
                 effects: [effect],
                 source: 'SELF',
                 text: spotReplaceClause,
+            });
+            return;
+        }
+
+        // Spot X and discard this (condition) to …
+        const spotAndDiscardSelfMatch = body.match(
+            /^Spot\s+([\s\S]+?)\s+and\s+discard\s+this(?:\s+(?:condition|possession|card))?\s+to\s+([\s\S]+)/i
+        );
+        if (spotAndDiscardSelfMatch) {
+            if (/\b(and|or)\b/i.test(spotAndDiscardSelfMatch[1])) return;
+            const spotSubject = parseExertSubject(
+                spotAndDiscardSelfMatch[1],
+                cardTitle,
+                text
+            );
+            const effect =
+                parseForceChooseMoveAgainEffect(spotAndDiscardSelfMatch[2]) ||
+                parseTakeControlSiteEffect(spotAndDiscardSelfMatch[2]) ||
+                parseDiscardToEffect(spotAndDiscardSelfMatch[2], cardTitle);
+            if (!spotSubject || !effect) return;
+            if (
+                spotSubject.target !== 'SELF' &&
+                spotSubject.target !== 'BEARER' &&
+                !Array.isArray(spotSubject.target)
+            ) {
+                return;
+            }
+
+            const clause =
+                `${marker.phase}: Spot ${spotAndDiscardSelfMatch[1].trim()} and discard this condition to ${spotAndDiscardSelfMatch[2]}`
+                    .replace(/<[^>]+>/g, '')
+                    .replace(/\s+/g, ' ')
+                    .replace(/\s+\./g, '.')
+                    .trim();
+
+            abilities.push({
+                id: `${cardId || 'ability'}:${abilities.length}`,
+                phases,
+                cost: [
+                    {
+                        spot: [
+                            {
+                                count: spotSubject.count,
+                                target: spotSubject.target,
+                                ...(spotSubject.excludeSource
+                                    ? { excludeSource: true }
+                                    : {}),
+                            },
+                        ],
+                        discardFromPlay: [{ count: 1, target: 'SELF' }],
+                    },
+                ],
+                effects: [effect],
+                source: 'SELF',
+                text: clause,
             });
             return;
         }

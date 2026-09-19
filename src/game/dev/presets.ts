@@ -621,6 +621,8 @@ export const applyDevPreset = (
                     clonePresetCard('11U45', 'dev-led-astray'),
                     // Plays on a site (Weather) — exert Isengard
                     clonePresetCard('1C138', 'dev-snows'),
+                    // Plays on a site you control (après Siege Troop)
+                    clonePresetCard('4R30', 'dev-no-retreat'),
                 ];
                 shadowPlayer.supportArea = [
                     // CURRENT underground (Shadow : discard + spot Orc)
@@ -637,6 +639,9 @@ export const applyDevPreset = (
                     clonePresetCard('5C61', 'dev-uruk-engineer'),
                     // Regroup : exert ×2 → take control (sites 1–3 déjà passés)
                     clonePresetCard('8C106', 'dev-siege-troop'),
+                    // Spot 2 pour No Retreat
+                    clonePresetCard('4C14', 'dev-dunland-ransacker'),
+                    clonePresetCard('4C21', 'dev-hillman-band'),
                 ];
                 G.twilightPool = 8;
                 shadowPlayer.sitesDeck = SITES_TEST_SHADOW_DECK.map((id) =>
@@ -645,7 +650,7 @@ export const applyDevPreset = (
             }
 
             G.statusMessage =
-                '[DEV] Sites : replace/attache + contrôle (Siege Troop / Regroup, compagnie au site 4).';
+                '[DEV] Sites : contrôle + No Retreat (badge = action Regroup si Spot 2 Dunland).';
             break;
         }
     }

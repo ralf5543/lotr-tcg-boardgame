@@ -234,6 +234,13 @@ export function applyAbilityEffect(
             continue;
         }
 
+        if (effect.type === 'FORCE_CHOOSE_MOVE_AGAIN') {
+            if ((G.movesThisTurn || 0) < 2) {
+                G.forceChooseMoveAgain = true;
+            }
+            continue;
+        }
+
         if (effect.type === 'DISCARD_FROM_HAND') {
             const ownerId = abilityOwnerPlayerId(G, source);
             if (!ownerId) return false;

@@ -294,6 +294,9 @@ function formatEffectBit(
     if (effect.type === 'TAKE_CONTROL_SITE') {
         return 'prendre le contrôle d’un site';
     }
+    if (effect.type === 'FORCE_CHOOSE_MOVE_AGAIN') {
+        return 'obliger les Peuples Libres à se déplacer à nouveau';
+    }
     return '';
 }
 

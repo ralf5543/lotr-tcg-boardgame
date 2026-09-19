@@ -277,6 +277,13 @@ export type AbilityEffect =
           type: 'TAKE_CONTROL_SITE';
       }
     | {
+          /**
+           * Oblige le joueur FP à se déplacer à nouveau ce tour
+           * (si la limite de moves le permet) — No Retreat, etc.
+           */
+          type: 'FORCE_CHOOSE_MOVE_AGAIN';
+      }
+    | {
           type: 'DRAW';
           count: number;
       }
@@ -482,6 +489,11 @@ export interface CardState {
     actionPhases?: string[];
     abilities?: Ability[];
     toPlay?: CostOption[];
+    /**
+     * Condition / possession : « Plays on a site you control ».
+     * Pose uniquement si `site.controlledBy ===` joueur actif.
+     */
+    requiresControlledSite?: boolean;
 }
 
 export interface PlayerProfile {
@@ -601,6 +613,11 @@ export interface GameState {
     tempModifiers?: StatModifier[];
     currentSite?: number;
     movesThisTurn?: number;
+    /**
+     * Effet « choose to move again » (No Retreat…) : en FP_DECISION,
+     * le joueur FP ne peut pas terminer le tour tant que moves < 2.
+     */
+    forceChooseMoveAgain?: boolean;
     path: (SiteCardState | null)[];
     battlefield: CardState[];
     musterState?: {
