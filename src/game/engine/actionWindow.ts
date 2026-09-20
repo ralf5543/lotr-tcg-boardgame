@@ -4,11 +4,12 @@ export function canActInActionWindow(
     G: GameState,
     playerID: string
 ): boolean {
+    const pid = String(playerID);
     if (G.responseWindow?.isOpen) {
-        return G.responseWindow.activePlayerId === playerID;
+        return String(G.responseWindow.activePlayerId) === pid;
     }
     if (!G.actionWindow?.isOpen) return true;
-    return G.actionWindow.activePlayerId === playerID;
+    return String(G.actionWindow.activePlayerId) === pid;
 }
 
 /**
@@ -20,9 +21,10 @@ export function yieldPriorityAfterAction(
     playerID: string
 ): void {
     if (!G.actionWindow?.isOpen) return;
-    if (G.actionWindow.activePlayerId !== playerID) return;
+    const pid = String(playerID);
+    if (String(G.actionWindow.activePlayerId) !== pid) return;
 
-    const otherPlayer = playerID === '0' ? '1' : '0';
+    const otherPlayer = pid === '0' ? '1' : '0';
     const fpId = G.fpPlayerId || '0';
     G.actionWindow = {
         ...G.actionWindow,

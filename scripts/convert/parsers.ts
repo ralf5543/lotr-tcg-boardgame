@@ -1356,6 +1356,11 @@ function parseNounTarget(
         return costTarget;
     }
 
+    // Nom propre sans article (« Discard Gollum », « Discard Sméagol »)
+    if (!/\s/.test(plain) && isProperNameToken(plain)) {
+        return [[plain]];
+    }
+
     const article = normalized.match(/^(a|an)\s+([\s\S]+)$/i);
     if (!article) return null;
     const filters = parseClassFilters(article[2]);
@@ -1901,6 +1906,96 @@ function parseEachTimeYouPlayAbilities(
     return found;
 }
 
+/**
+ * Each time this minion wins a skirmish / the fellowship moves,
+ * you may spot another X to take control of a site.
+ */
+function parseEachTimeTakeControlSiteAbilities(
+    text: string,
+    cardTitle?: string,
+    cardId?: string
+): Record<string, unknown>[] {
+    const found: Record<string, unknown>[] = [];
+
+    const winRe =
+        /Each time ([\s\S]+?) wins a skirmish, you may spot ([\s\S]+?) to take control of a site\./gi;
+    let match: RegExpExecArray | null;
+    while ((match = winRe.exec(text)) !== null) {
+        const winnerParsed = parseWinsSkirmishWinner(
+            match[1].trim(),
+            cardTitle
+        );
+        if (!winnerParsed) continue;
+        const spot = parseExertSubject(match[2].trim(), cardTitle, text);
+        if (!spot || spot.target === 'SELF' || spot.target === 'BEARER') {
+            continue;
+        }
+        if (!Array.isArray(spot.target)) continue;
+
+        found.push({
+            id: `${cardId || 'ability'}:${found.length}:each-time-win-control`,
+            phases: ['RESPONSE'],
+            trigger: {
+                type: 'WINS_SKIRMISH',
+                winner: winnerParsed.winner,
+                ...(winnerParsed.yours ? { yours: true } : {}),
+            },
+            optional: true,
+            cost: [
+                {
+                    spot: [
+                        {
+                            count: spot.count,
+                            target: spot.target,
+                            ...(spot.excludeSource
+                                ? { excludeSource: true }
+                                : {}),
+                        },
+                    ],
+                },
+            ],
+            effects: [{ type: 'TAKE_CONTROL_SITE' }],
+            source: winnerParsed.winner === 'BEARER' ? 'ATTACHMENT' : 'SELF',
+            text: stripAbilityMarkup(match[0]),
+        });
+    }
+
+    const moveRe =
+        /Each time the fellowship moves, you may spot ([\s\S]+?) to take control of a site\./gi;
+    while ((match = moveRe.exec(text)) !== null) {
+        const spot = parseExertSubject(match[1].trim(), cardTitle, text);
+        if (!spot || spot.target === 'SELF' || spot.target === 'BEARER') {
+            continue;
+        }
+        if (!Array.isArray(spot.target)) continue;
+
+        found.push({
+            id: `${cardId || 'ability'}:${found.length}:each-time-move-control`,
+            phases: ['RESPONSE'],
+            trigger: { type: 'FELLOWSHIP_MOVES' },
+            optional: true,
+            cost: [
+                {
+                    spot: [
+                        {
+                            count: spot.count,
+                            target: spot.target,
+                            ...(spot.excludeSource
+                                ? { excludeSource: true }
+                                : {}),
+                        },
+                    ],
+                },
+            ],
+            effects: [{ type: 'TAKE_CONTROL_SITE' }],
+            source: 'SELF',
+            text: stripAbilityMarkup(match[0]),
+        });
+    }
+
+    return found;
+}
+
 /** Spot « a CLASS » / « N CLASS » pour While — refuse le reste inconnu. */
 function parseWhileSpotSubject(
     raw: string
@@ -2355,7 +2450,8 @@ function parseWhileEachClass(raw: string): string[][] | null {
     ) {
         return null;
     }
-    const filters = parseClassFilters(cleaned);
+    // Garder les <symbol> : culture Men ≠ race Man (pluriel plain « men »).
+    const filters = parseClassFilters(raw);
     if (filters.length === 0) return null;
     return [filters];
 }
@@ -2497,6 +2593,45 @@ function parseWhileCannotReplaceSiteAbilities(
         }
     }
 
+    return found;
+}
+
+/**
+ * While no opponent controls a site, [bearer|self] is strength ±N.
+ */
+function parseWhileNoOpponentControlsStrengthAbilities(
+    text: string,
+    cardTitle?: string,
+    cardId?: string
+): Record<string, unknown>[] {
+    const found: Record<string, unknown>[] = [];
+    const re =
+        /While no opponent controls a site, ([^,]+?) is strength ([+-]\d+)\./gi;
+    let match: RegExpExecArray | null;
+    while ((match = re.exec(text)) !== null) {
+        if (/\b(and|or|each|may|fierce|damage)\b/i.test(match[0])) continue;
+        const who = parseWhileStrengthWho(match[1], cardTitle);
+        if (!who) continue;
+        const value = parseInt(match[2], 10);
+        if (!Number.isFinite(value) || value === 0) continue;
+
+        found.push({
+            id: `${cardId || 'ability'}:${found.length}:while-no-opp-control`,
+            phases: [],
+            trigger: { type: 'WHILE', noOpponentControlsSite: true },
+            cost: [],
+            effects: [
+                {
+                    type: 'MODIFY_STAT',
+                    stat: 'STRENGTH',
+                    value,
+                    target: who,
+                },
+            ],
+            source: who === 'BEARER' ? 'ATTACHMENT' : 'SELF',
+            text: stripAbilityMarkup(match[0]),
+        });
+    }
     return found;
 }
 
@@ -3614,6 +3749,13 @@ function parseDiscardToEffect(
         return { type: 'DISCARD', count: 1, target };
     }
 
+    const exertMatch = clause.match(/^exert\s+((?:a|an)\s+.+)$/i);
+    if (exertMatch) {
+        const target = parseNounTarget(exertMatch[1], [['']], cardTitle);
+        if (!target || !Array.isArray(target)) return null;
+        return { type: 'EXERT', count: 1, target };
+    }
+
     const cancelMatch = clause.match(
         /^cancel a skirmish involving\s+(.+)$/i
     );
@@ -4570,6 +4712,7 @@ export function parseAbilities(
             const effect =
                 parseForceChooseMoveAgainEffect(spotAndDiscardSelfMatch[2]) ||
                 parseTakeControlSiteEffect(spotAndDiscardSelfMatch[2]) ||
+                parseLiberateSiteEffect(spotAndDiscardSelfMatch[2]) ||
                 parseDiscardToEffect(spotAndDiscardSelfMatch[2], cardTitle);
             if (!spotSubject || !effect) return;
             if (
@@ -4602,6 +4745,117 @@ export function parseAbilities(
                             },
                         ],
                         discardFromPlay: [{ count: 1, target: 'SELF' }],
+                    },
+                ],
+                effects: [effect],
+                source: 'SELF',
+                text: clause,
+            });
+            return;
+        }
+
+        // Spot X and exert Y to liberate / …
+        const spotAndExertMatch = body.match(
+            /^Spot\s+([\s\S]+?)\s+and\s+exert\s+([\s\S]+?)\s+to\s+([\s\S]+)/i
+        );
+        if (spotAndExertMatch) {
+            if (/\b(and|or)\b/i.test(spotAndExertMatch[1])) return;
+            if (/\b(and|or)\b/i.test(spotAndExertMatch[2])) return;
+            const spotSubject = parseExertSubject(
+                spotAndExertMatch[1],
+                cardTitle,
+                text
+            );
+            const exertSubject = parseExertSubject(
+                spotAndExertMatch[2],
+                cardTitle,
+                text
+            );
+            const effect =
+                parseLiberateSiteEffect(spotAndExertMatch[3]) ||
+                parseTakeControlSiteEffect(spotAndExertMatch[3]) ||
+                parseDiscardToEffect(spotAndExertMatch[3], cardTitle);
+            if (!spotSubject || !exertSubject || !effect) return;
+
+            const clause =
+                `${marker.phase}: Spot ${spotAndExertMatch[1].trim()} and exert ${spotAndExertMatch[2].trim()} to ${spotAndExertMatch[3]}`
+                    .replace(/<[^>]+>/g, '')
+                    .replace(/\s+/g, ' ')
+                    .replace(/\s+\./g, '.')
+                    .trim();
+
+            abilities.push({
+                id: `${cardId || 'ability'}:${abilities.length}`,
+                phases,
+                cost: [
+                    {
+                        spot: [
+                            {
+                                count: spotSubject.count,
+                                target: spotSubject.target,
+                                ...(spotSubject.excludeSource
+                                    ? { excludeSource: true }
+                                    : {}),
+                            },
+                        ],
+                        exert: [
+                            {
+                                count: exertSubject.count,
+                                target: exertSubject.target,
+                                ...(exertSubject.mode
+                                    ? { mode: exertSubject.mode }
+                                    : {}),
+                            },
+                        ],
+                    },
+                ],
+                effects: [effect],
+                source:
+                    exertSubject.target === 'BEARER' ? 'ATTACHMENT' : 'SELF',
+                text: clause,
+            });
+            return;
+        }
+
+        // Discard this and exert X to liberate / …
+        const discardSelfAndExertMatch = body.match(
+            /^Discard\s+this(?:\s+(?:condition|possession|card))?\s+and\s+exert\s+([\s\S]+?)\s+to\s+([\s\S]+)/i
+        );
+        if (discardSelfAndExertMatch) {
+            if (/\b(and|or)\b/i.test(discardSelfAndExertMatch[1])) return;
+            const exertSubject = parseExertSubject(
+                discardSelfAndExertMatch[1],
+                cardTitle,
+                text
+            );
+            const effect =
+                parseLiberateSiteEffect(discardSelfAndExertMatch[2]) ||
+                parseTakeControlSiteEffect(discardSelfAndExertMatch[2]) ||
+                parseDiscardToEffect(discardSelfAndExertMatch[2], cardTitle);
+            if (!exertSubject || !effect) return;
+
+            const clause =
+                `${marker.phase}: Discard this and exert ${discardSelfAndExertMatch[1].trim()} to ${discardSelfAndExertMatch[2]}`
+                    .replace(/<[^>]+>/g, '')
+                    .replace(/\s+/g, ' ')
+                    .replace(/\s+\./g, '.')
+                    .trim();
+
+            abilities.push({
+                id: `${cardId || 'ability'}:${abilities.length}`,
+                phases,
+                cost: [
+                    {
+                        discardFromPlay: [{ count: 1, target: 'SELF' }],
+                        exert: [
+                            {
+                                count: exertSubject.count,
+                                target: exertSubject.target,
+                                ...(exertSubject.mode
+                                    ? { mode: exertSubject.mode }
+                                    : {}),
+                            },
+                        ],
                     },
                 ],
                 effects: [effect],
@@ -4955,6 +5209,26 @@ export function parseAbilities(
     );
 
     parseEachTimeYouPlayAbilities(text, cardId).forEach((ability) => {
+        abilities.push({
+            ...ability,
+            id: `${cardId || 'ability'}:${abilities.length}`,
+        });
+    });
+
+    parseEachTimeTakeControlSiteAbilities(text, cardTitle, cardId).forEach(
+        (ability) => {
+            abilities.push({
+                ...ability,
+                id: `${cardId || 'ability'}:${abilities.length}`,
+            });
+        }
+    );
+
+    parseWhileNoOpponentControlsStrengthAbilities(
+        text,
+        cardTitle,
+        cardId
+    ).forEach((ability) => {
         abilities.push({
             ...ability,
             id: `${cardId || 'ability'}:${abilities.length}`,

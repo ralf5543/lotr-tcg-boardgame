@@ -2551,6 +2551,52 @@
         "spotThreats": 2
       }
     ],
+    "abilities": [
+      {
+        "id": "0P50:0",
+        "phases": [
+          "SKIRMISH"
+        ],
+        "cost": [
+          {
+            "spot": [
+              {
+                "count": 2,
+                "target": [
+                  [
+                    "SHIRE",
+                    "COMPANION"
+                  ]
+                ]
+              }
+            ],
+            "exert": [
+              {
+                "count": 1,
+                "target": [
+                  [
+                    "Tom Bombadil X times, where X is the fellowship’s site number,"
+                  ]
+                ]
+              }
+            ]
+          }
+        ],
+        "effects": [
+          {
+            "type": "CANCEL_SKIRMISH",
+            "involving": [
+              [
+                "SHIRE",
+                "COMPANION"
+              ]
+            ]
+          }
+        ],
+        "source": "SELF",
+        "text": "SKIRMISH: Spot 2 shire companions and exert Tom Bombadil X times, where X is the fellowship’s site number, to cancel a skirmish involving a shire companion."
+      }
+    ],
     "actionPhases": [
       "SKIRMISH"
     ],
@@ -26112,6 +26158,37 @@
     "isFemale": true,
     "kind": "FREE_PEOPLE",
     "type": "ALLY",
+    "abilities": [
+      {
+        "id": "1U309:0",
+        "phases": [
+          "FELLOWSHIP"
+        ],
+        "cost": [
+          {
+            "exert": [
+              {
+                "count": 1,
+                "target": "SELF"
+              }
+            ]
+          }
+        ],
+        "effects": [
+          {
+            "type": "HEAL",
+            "count": 1,
+            "target": [
+              [
+                "Sam"
+              ]
+            ]
+          }
+        ],
+        "source": "SELF",
+        "text": "FELLOWSHIP: Exert Rosie Cotton to heal Sam."
+      }
+    ],
     "actionPhases": [
       "FELLOWSHIP"
     ],
@@ -38583,6 +38660,42 @@
     "isUnique": false,
     "kind": "SHADOW",
     "type": "MINION",
+    "abilities": [
+      {
+        "id": "4C14:0",
+        "phases": [
+          "RESPONSE"
+        ],
+        "trigger": {
+          "type": "WINS_SKIRMISH",
+          "winner": "SELF"
+        },
+        "optional": true,
+        "cost": [
+          {
+            "spot": [
+              {
+                "count": 1,
+                "target": [
+                  [
+                    "DUNLAND",
+                    "MAN"
+                  ]
+                ],
+                "excludeSource": true
+              }
+            ]
+          }
+        ],
+        "effects": [
+          {
+            "type": "TAKE_CONTROL_SITE"
+          }
+        ],
+        "source": "SELF",
+        "text": "Each time this minion wins a skirmish, you may spot another dunland Man to take control of a site."
+      }
+    ],
     "culture": "DUNLAND",
     "race": "MAN",
     "twilightCost": 2,
@@ -38867,6 +38980,41 @@
     "isUnique": false,
     "kind": "SHADOW",
     "type": "MINION",
+    "abilities": [
+      {
+        "id": "4C21:0",
+        "phases": [
+          "RESPONSE"
+        ],
+        "trigger": {
+          "type": "FELLOWSHIP_MOVES"
+        },
+        "optional": true,
+        "cost": [
+          {
+            "spot": [
+              {
+                "count": 1,
+                "target": [
+                  [
+                    "DUNLAND",
+                    "MAN"
+                  ]
+                ],
+                "excludeSource": true
+              }
+            ]
+          }
+        ],
+        "effects": [
+          {
+            "type": "TAKE_CONTROL_SITE"
+          }
+        ],
+        "source": "SELF",
+        "text": "Each time the fellowship moves, you may spot another dunland Man to take control of a site."
+      }
+    ],
     "culture": "DUNLAND",
     "race": "MAN",
     "twilightCost": 3,
@@ -39038,6 +39186,42 @@
     "isUnique": false,
     "kind": "SHADOW",
     "type": "MINION",
+    "abilities": [
+      {
+        "id": "4C25:0",
+        "phases": [
+          "RESPONSE"
+        ],
+        "trigger": {
+          "type": "WINS_SKIRMISH",
+          "winner": "SELF"
+        },
+        "optional": true,
+        "cost": [
+          {
+            "spot": [
+              {
+                "count": 1,
+                "target": [
+                  [
+                    "DUNLAND",
+                    "MINION"
+                  ]
+                ],
+                "excludeSource": true
+              }
+            ]
+          }
+        ],
+        "effects": [
+          {
+            "type": "TAKE_CONTROL_SITE"
+          }
+        ],
+        "source": "SELF",
+        "text": "Each time this minion wins a skirmish, you may spot another dunland minion to take control of a site."
+      }
+    ],
     "culture": "DUNLAND",
     "race": "MAN",
     "twilightCost": 3,
@@ -41293,6 +41477,27 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
+    "abilities": [
+      {
+        "id": "4C71:0",
+        "phases": [],
+        "trigger": {
+          "type": "WHILE",
+          "noOpponentControlsSite": true
+        },
+        "cost": [],
+        "effects": [
+          {
+            "type": "MODIFY_STAT",
+            "stat": "STRENGTH",
+            "value": 2,
+            "target": "SELF"
+          }
+        ],
+        "source": "SELF",
+        "text": "While no opponent controls a site, Haldir is strength +2."
+      }
+    ],
     "actionPhases": [
       "REGROUP"
     ],
@@ -43593,6 +43798,43 @@
     "kind": "FREE_PEOPLE",
     "type": "CONDITION",
     "subtype": "SUPPORT-AREA",
+    "abilities": [
+      {
+        "id": "4R121:0",
+        "phases": [
+          "REGROUP"
+        ],
+        "cost": [
+          {
+            "discardFromPlay": [
+              {
+                "count": 1,
+                "target": "SELF"
+              }
+            ],
+            "exert": [
+              {
+                "count": 1,
+                "target": [
+                  [
+                    "RING-BOUND",
+                    "MAN"
+                  ]
+                ],
+                "mode": "DESIGNATION"
+              }
+            ]
+          }
+        ],
+        "effects": [
+          {
+            "type": "LIBERATE_SITE"
+          }
+        ],
+        "source": "SELF",
+        "text": "REGROUP: Discard this and exert a Ring-bound Man to liberate a site."
+      }
+    ],
     "actionPhases": [
       "REGROUP"
     ],
@@ -48562,6 +48804,50 @@
     "kind": "SHADOW",
     "type": "CONDITION",
     "subtype": "SUPPORT-AREA",
+    "abilities": [
+      {
+        "id": "4R231:0",
+        "phases": [
+          "MANEUVER"
+        ],
+        "cost": [
+          {
+            "discardFromPlay": [
+              {
+                "count": 1,
+                "target": "SELF"
+              }
+            ],
+            "exert": [
+              {
+                "count": 1,
+                "target": [
+                  [
+                    "RAIDER",
+                    "MAN"
+                  ]
+                ],
+                "mode": "DESIGNATION"
+              }
+            ]
+          }
+        ],
+        "effects": [
+          {
+            "type": "EXERT",
+            "count": 1,
+            "target": [
+              [
+                "RING-BOUND",
+                "COMPANION"
+              ]
+            ]
+          }
+        ],
+        "source": "SELF",
+        "text": "MANEUVER: Discard this and exert a raider Man to exert a Ring-bound companion."
+      }
+    ],
     "actionPhases": [
       "MANEUVER"
     ],
@@ -51472,6 +51758,42 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
+    "abilities": [
+      {
+        "id": "4C292:0",
+        "phases": [
+          "REGROUP"
+        ],
+        "cost": [
+          {
+            "spot": [
+              {
+                "count": 1,
+                "target": [
+                  [
+                    "ROHAN",
+                    "ALLY"
+                  ]
+                ]
+              }
+            ],
+            "exert": [
+              {
+                "count": 1,
+                "target": "SELF"
+              }
+            ]
+          }
+        ],
+        "effects": [
+          {
+            "type": "LIBERATE_SITE"
+          }
+        ],
+        "source": "SELF",
+        "text": "REGROUP: Spot a rohan ally and exert Théoden to liberate a site."
+      }
+    ],
     "actionPhases": [
       "REGROUP"
     ],
@@ -54051,6 +54373,40 @@
     "isUnique": true,
     "kind": "SHADOW",
     "type": "MINION",
+    "abilities": [
+      {
+        "id": "5C24:0",
+        "phases": [
+          "REGROUP"
+        ],
+        "cost": [
+          {
+            "discardFromPlay": [
+              {
+                "count": 1,
+                "target": "SELF"
+              }
+            ]
+          }
+        ],
+        "effects": [
+          {
+            "type": "EXERT",
+            "count": 1,
+            "target": [
+              [
+                "COMPANION"
+              ],
+              [
+                "ALLY"
+              ]
+            ]
+          }
+        ],
+        "source": "SELF",
+        "text": "REGROUP: Discard Gollum to exert a companion or ally."
+      }
+    ],
     "actionPhases": [
       "REGROUP"
     ],
@@ -57696,6 +58052,42 @@
     "isUnique": false,
     "kind": "SHADOW",
     "type": "MINION",
+    "abilities": [
+      {
+        "id": "5U105:0",
+        "phases": [
+          "REGROUP"
+        ],
+        "cost": [
+          {
+            "spot": [
+              {
+                "count": 1,
+                "target": [
+                  [
+                    "SAURON",
+                    "CONDITION"
+                  ]
+                ]
+              }
+            ],
+            "exert": [
+              {
+                "count": 1,
+                "target": "SELF"
+              }
+            ]
+          }
+        ],
+        "effects": [
+          {
+            "type": "TAKE_CONTROL_SITE"
+          }
+        ],
+        "source": "SELF",
+        "text": "REGROUP: Spot a sauron condition and exert this minion to take control of a site."
+      }
+    ],
     "actionPhases": [
       "REGROUP"
     ],
@@ -67206,6 +67598,37 @@
         ]
       }
     ],
+    "abilities": [
+      {
+        "id": "7C65:0",
+        "phases": [
+          "REGROUP"
+        ],
+        "cost": [
+          {
+            "discardFromPlay": [
+              {
+                "count": 1,
+                "target": [
+                  [
+                    "Sméagol"
+                  ]
+                ],
+                "mode": "DESIGNATION"
+              }
+            ]
+          }
+        ],
+        "effects": [
+          {
+            "type": "REMOVE_THREATS",
+            "count": 2
+          }
+        ],
+        "source": "SELF",
+        "text": "REGROUP: Discard Sméagol to remove 2 threats."
+      }
+    ],
     "actionPhases": [
       "REGROUP"
     ],
@@ -69949,6 +70372,27 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
+    "abilities": [
+      {
+        "id": "7R127:0",
+        "phases": [],
+        "trigger": {
+          "type": "WHILE",
+          "noOpponentControlsSite": true
+        },
+        "cost": [],
+        "effects": [
+          {
+            "type": "MODIFY_STAT",
+            "stat": "STRENGTH",
+            "value": 2,
+            "target": "SELF"
+          }
+        ],
+        "source": "SELF",
+        "text": "While no opponent controls a site, Vorondil is strength +2."
+      }
+    ],
     "actionPhases": [
       "REGROUP"
     ],
@@ -86847,6 +87291,52 @@
         "spotThreats": 2
       }
     ],
+    "abilities": [
+      {
+        "id": "9R+52:0",
+        "phases": [
+          "SKIRMISH"
+        ],
+        "cost": [
+          {
+            "spot": [
+              {
+                "count": 2,
+                "target": [
+                  [
+                    "SHIRE",
+                    "COMPANION"
+                  ]
+                ]
+              }
+            ],
+            "exert": [
+              {
+                "count": 1,
+                "target": [
+                  [
+                    "Tom Bombadil X times, where X is the fellowship’s site number,"
+                  ]
+                ]
+              }
+            ]
+          }
+        ],
+        "effects": [
+          {
+            "type": "CANCEL_SKIRMISH",
+            "involving": [
+              [
+                "SHIRE",
+                "COMPANION"
+              ]
+            ]
+          }
+        ],
+        "source": "SELF",
+        "text": "SKIRMISH: Spot 2 shire companions and exert Tom Bombadil X times, where X is the fellowship’s site number, to cancel a skirmish involving a shire companion."
+      }
+    ],
     "actionPhases": [
       "SKIRMISH"
     ],
@@ -96617,7 +97107,7 @@
             "keyword": "FIERCE",
             "target": [
               [
-                "MAN",
+                "MEN",
                 "MINION"
               ]
             ]
@@ -107440,6 +107930,48 @@
     "subtype": "SUPPORT-AREA",
     "keywords": [
       "TOIL 2"
+    ],
+    "abilities": [
+      {
+        "id": "12R108:0",
+        "phases": [
+          "MANEUVER"
+        ],
+        "cost": [
+          {
+            "spot": [
+              {
+                "count": 1,
+                "target": [
+                  [
+                    "ROHAN",
+                    "MAN"
+                  ]
+                ]
+              }
+            ],
+            "discardFromPlay": [
+              {
+                "count": 1,
+                "target": "SELF"
+              }
+            ]
+          }
+        ],
+        "effects": [
+          {
+            "type": "EXERT",
+            "count": 1,
+            "target": [
+              [
+                "MINION"
+              ]
+            ]
+          }
+        ],
+        "source": "SELF",
+        "text": "MANEUVER: Spot a rohan Man and discard this condition to exert a minion."
+      }
     ],
     "actionPhases": [
       "MANEUVER"
@@ -125364,6 +125896,43 @@
     "isUnique": false,
     "kind": "SHADOW",
     "type": "MINION",
+    "abilities": [
+      {
+        "id": "15U90:0",
+        "phases": [
+          "MANEUVER"
+        ],
+        "cost": [
+          {
+            "spot": [
+              {
+                "count": 1,
+                "target": [
+                  [
+                    "MAN",
+                    "MAN"
+                  ]
+                ],
+                "excludeSource": true
+              }
+            ],
+            "exert": [
+              {
+                "count": 1,
+                "target": "SELF"
+              }
+            ]
+          }
+        ],
+        "effects": [
+          {
+            "type": "TAKE_CONTROL_SITE"
+          }
+        ],
+        "source": "SELF",
+        "text": "MANEUVER: Spot another men Man and exert this minion to take control of a site."
+      }
+    ],
     "actionPhases": [
       "MANEUVER",
       "START_OF_REGROUP"
@@ -127998,6 +128567,25 @@
         ],
         "source": "SELF",
         "text": "REGROUP: Discard this to liberate a site (or two sites if bearer is mounted)."
+      },
+      {
+        "id": "15R141:1",
+        "phases": [],
+        "trigger": {
+          "type": "WHILE",
+          "noOpponentControlsSite": true
+        },
+        "cost": [],
+        "effects": [
+          {
+            "type": "MODIFY_STAT",
+            "stat": "STRENGTH",
+            "value": 1,
+            "target": "BEARER"
+          }
+        ],
+        "source": "ATTACHMENT",
+        "text": "While no opponent controls a site, bearer is strength +1."
       }
     ],
     "actionPhases": [

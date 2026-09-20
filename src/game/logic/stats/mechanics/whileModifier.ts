@@ -16,6 +16,7 @@ import {
     isAtSiteWithKeyword,
     isCurrentSiteSanctuary,
     countSitesWithKeyword,
+    countSitesControlledBy,
 } from '../../sites';
 
 function matchCard(card: CardState, targetId: string): boolean {
@@ -188,6 +189,20 @@ export function whileConditionHolds(
         ) {
             return false;
         }
+    }
+
+    if (trigger.noOpponentControlsSite) {
+        const fpId = G.fpPlayerId || '0';
+        const shadowId = fpId === '0' ? '1' : '0';
+        const ownerId =
+            source.kind === 'SHADOW'
+                ? shadowId
+                : source.kind === 'FREE_PEOPLE'
+                  ? fpId
+                  : null;
+        if (!ownerId) return false;
+        const opponentId = ownerId === fpId ? shadowId : fpId;
+        if (countSitesControlledBy(G, opponentId) > 0) return false;
     }
 
     // Prédicats OK, ou WHILE vide (vrai tant que la carte est en jeu).

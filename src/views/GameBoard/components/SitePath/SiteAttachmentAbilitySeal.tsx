@@ -15,7 +15,10 @@ import {
     collectVisibleAbilities,
     formatAbilityLabelParts,
 } from '../../../../game/engine/abilities/collectAbilities';
-import { abilityMatchesTrigger } from '../../../../game/engine/responseWindow';
+import {
+    abilityMatchesTrigger,
+    responseAbilityStillAvailable,
+} from '../../../../game/engine/responseWindow';
 import { FormattedText } from '../../../../utils/FormattedText';
 import { getCardText } from '../../../../utils/i18n';
 import { useHoverCard } from '../../../../contexts/HoverCardContext';
@@ -106,6 +109,7 @@ export const SiteAttachmentAbilitySeal: React.FC<
             if (!abilityMatchesTrigger(ability, G.pendingEvent, source, G)) {
                 return false;
             }
+            if (!responseAbilityStillAvailable(G, source, ability)) return false;
             return (
                 canPayAbilityCost(G, source, ability.cost) &&
                 abilityHasLegalEffectTarget(G, source, ability)
@@ -126,7 +130,8 @@ export const SiteAttachmentAbilitySeal: React.FC<
             abilityContext &&
             listedAbilities.length > 0 &&
             (G?.responseWindow?.isOpen
-                ? G.responseWindow.activePlayerId === localPlayerId
+                ? String(G.responseWindow.activePlayerId) ===
+                  String(localPlayerId)
                 : canUseAbility(card, abilityContext).valid)
     );
 

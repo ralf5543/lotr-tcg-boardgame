@@ -18,6 +18,7 @@ import {
 } from './payAbilityCost';
 import { addThreats } from '../../logic/threats';
 import { applyHeal } from '../../../utils/applyHeal';
+import { applyExert } from '../../../utils/applyExert';
 import { findSkirmishToCancel } from './cancelSkirmish';
 import {
     getReplaceSiteCandidates,
@@ -446,6 +447,14 @@ function applyOneEffect(
 
     if (effect.type === 'WOUND') {
         requestWounds(G, target, effect.count || 1);
+        return true;
+    }
+
+    if (effect.type === 'EXERT') {
+        const times = effect.count || 1;
+        for (let i = 0; i < times; i++) {
+            if (!applyExert(G, target)) return false;
+        }
         return true;
     }
 

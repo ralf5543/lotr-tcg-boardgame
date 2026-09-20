@@ -25,6 +25,7 @@ import { beginMinionAssignment } from '../logic/assignment';
 import {
     afterResponseResolved,
     flushPendingActionYield,
+    flushPendingPhaseAfterResponse,
     isResponseWindowOpen,
     passResponseWindow as resolveResponsePass,
     pauseActionYieldForResponses,
@@ -298,7 +299,7 @@ function yieldAfterPlay(
     if (wasResponseWindowOpen && isResponseEvent) {
         const ability = findEventAbilityForPhase(playedCard, 'RESPONSE');
         if (ability) {
-            afterResponseResolved(G, playerID, ability);
+            afterResponseResolved(G, playerID, ability, playedCard);
             return;
         }
     }
@@ -448,10 +449,11 @@ export const applyWound = ({ G }: LotrMoveContext, targetCardId: string) => {
     }
 };
 
-export const passResponseWindow = ({ G, playerID }: LotrMoveContext) => {
+export const passResponseWindow = ({ G, playerID, events }: LotrMoveContext) => {
     if (resolveResponsePass(G, playerID) === 'INVALID') {
         return 'INVALID_MOVE';
     }
+    flushPendingPhaseAfterResponse(G, events);
 };
 
 export const preventPendingEffect = ({ G, playerID }: LotrMoveContext) => {

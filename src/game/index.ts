@@ -20,6 +20,7 @@ import {
 } from './logic/skirmish';
 import { openAssignmentActionWindow } from './logic/assignment';
 import { advanceCompany } from './moves/fellowshipMoves';
+import { tryOpenFellowshipMoves } from './engine/responseWindow';
 import { devMoves } from './dev/devMoves';
 import { drawCardsForPlayer } from '../utils/drawCards';
 import { buildDeckFromIds } from '../utils/deckBuilder';
@@ -1085,6 +1086,12 @@ export const LotrGame: Game<GameState> = {
                     if (ctx.phase !== 'skirmish' || playerID !== fpId)
                         return 'INVALID_MOVE';
 
+                    if (G.responseWindow?.isOpen || G.pendingEvent) {
+                        G.statusMessage =
+                            'Une réponse est en cours. Attendez la fin avant de choisir un autre combat.';
+                        return 'INVALID_MOVE';
+                    }
+
                     // Contrôle Lurker déporté
                     if (!canSelectSkirmish(G, skirmishId)) {
                         G.statusMessage =
@@ -1245,7 +1252,11 @@ export const LotrGame: Game<GameState> = {
                     if (!G.awaitingSiteSelection) {
                         G.skirmishes = [];
                         G.activeSkirmishId = undefined;
-                        events?.setPhase?.('startOfShadow');
+                        if (tryOpenFellowshipMoves(G) === 'WAITING') {
+                            G.pendingPhaseAfterResponse = 'startOfShadow';
+                        } else {
+                            events?.setPhase?.('startOfShadow');
+                        }
                     }
                 },
             },

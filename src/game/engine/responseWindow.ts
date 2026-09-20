@@ -24,6 +24,40 @@ import { enterPhase } from '../logic/phaseEntry';
 const matchCard = (card: CardState, targetId: string): boolean =>
     card.instanceId === targetId || card.id === targetId;
 
+function responseKey(source: CardState, ability: Ability): string {
+    return `${source.instanceId || source.id}::${ability.id}`;
+}
+
+function isResponseAlreadyUsed(
+    G: GameState,
+    source: CardState,
+    ability: Ability
+): boolean {
+    const used = G.responseWindow?.usedResponseKeys;
+    if (!used || used.length === 0) return false;
+    return used.includes(responseKey(source, ability));
+}
+
+export function markResponseUsed(
+    G: GameState,
+    source: CardState,
+    ability: Ability
+): void {
+    if (!G.responseWindow?.isOpen) return;
+    const key = responseKey(source, ability);
+    const used = G.responseWindow.usedResponseKeys || [];
+    if (used.includes(key)) return;
+    G.responseWindow.usedResponseKeys = [...used, key];
+}
+
+export function responseAbilityStillAvailable(
+    G: GameState,
+    source: CardState,
+    ability: Ability
+): boolean {
+    return !isResponseAlreadyUsed(G, source, ability);
+}
+
 export function isResponseWindowOpen(G: GameState): boolean {
     return Boolean(G.responseWindow?.isOpen);
 }
@@ -33,7 +67,7 @@ export function canActInResponseWindow(
     playerID: string
 ): boolean {
     if (!G.responseWindow?.isOpen) return true;
-    return G.responseWindow.activePlayerId === playerID;
+    return String(G.responseWindow.activePlayerId) === String(playerID);
 }
 
 export function abilityMatchesTrigger(
@@ -51,6 +85,10 @@ export function abilityMatchesTrigger(
             return false;
         }
         return true;
+    }
+
+    if (event.type === 'FELLOWSHIP_MOVES') {
+        return ability.trigger.type === 'FELLOWSHIP_MOVES';
     }
 
     if (event.type === 'CHARACTER_DIES') {
@@ -164,6 +202,7 @@ function responseEventIsActive(event: PendingEvent | undefined): boolean {
     if (event.type === 'ABOUT_TO_CANCEL_SKIRMISH') {
         return Boolean(event.skirmishId);
     }
+    if (event.type === 'FELLOWSHIP_MOVES') return true;
     return false;
 }
 
@@ -189,6 +228,9 @@ function responseWindowMessage(G: GameState): string {
         const n = G.pendingEvent.removeTwilight;
         return `Une escarmouche va être annulée. Retirez ${n} crépuscule${n > 1 ? 's' : ''} pour empêcher, ou passez.`;
     }
+    if (G.pendingEvent?.type === 'FELLOWSHIP_MOVES') {
+        return 'La compagnie s’est déplacée. Jouez une réponse ou passez.';
+    }
     return responseWoundMessage(G);
 }
 
@@ -202,6 +244,7 @@ function inPlayResponseIsLegal(
     if (!responseEventIsActive(event)) {
         return false;
     }
+    if (isResponseAlreadyUsed(G, source, ability)) return false;
     if (abilityWearsTheOneRing(ability) && G.wearingTheOneRing) return false;
     if (!abilityMatchesTrigger(ability, event, source, G)) return false;
     if (!canPayAbilityCost(G, source, ability.cost)) return false;
@@ -233,6 +276,7 @@ function handResponseIsLegal(
     if (owner !== playerID) return false;
     const ability = (card.abilities || []).find(isResponseAbility);
     if (!ability) return false;
+    if (isResponseAlreadyUsed(G, card, ability)) return false;
     if (!abilityMatchesTrigger(ability, event, card, G)) return false;
     if (!twilightPayableForEvent(G, card, playerID)) return false;
     return canPayAbilityCost(G, card, ability.cost);
@@ -287,9 +331,9 @@ function openResponseWindow(G: GameState): void {
         message: responseWindowMessage(G),
         canPass: true,
         passesCount: 0,
+        usedResponseKeys: [],
     };
-    G.statusMessage =
-        'Réponse : jouez une réponse ou passez.';
+    G.statusMessage = 'Réponse : jouez une réponse ou passez.';
     clearActionableFlags(G);
 }
 
@@ -409,6 +453,26 @@ export function tryOpenWinsSkirmish(G: GameState): 'APPLIED' | 'WAITING' {
     return 'WAITING';
 }
 
+/**
+ * Each time the fellowship moves… — ouvre une fenêtre de réponse si une
+ * capacité éligible est en jeu.
+ */
+export function tryOpenFellowshipMoves(G: GameState): 'APPLIED' | 'WAITING' {
+    if (G.responseWindow?.isOpen || G.pendingEvent) {
+        return G.responseWindow?.isOpen ? 'WAITING' : 'APPLIED';
+    }
+
+    G.pendingEvent = { type: 'FELLOWSHIP_MOVES' };
+
+    if (!hasAnyEligibleResponse(G)) {
+        G.pendingEvent = undefined;
+        return 'APPLIED';
+    }
+
+    openResponseWindow(G);
+    return 'WAITING';
+}
+
 export function notifyCharacterDied(G: GameState, card: CardState): void {
     const id = card.instanceId || card.id;
     if (!id) return;
@@ -480,9 +544,11 @@ export function passResponseWindow(
     playerID: string
 ): 'APPLIED' | 'WAITING' | 'INVALID' {
     if (!G.responseWindow?.isOpen) return 'INVALID';
-    if (G.responseWindow.activePlayerId !== playerID) return 'INVALID';
+    if (String(G.responseWindow.activePlayerId) !== String(playerID)) {
+        return 'INVALID';
+    }
 
-    const other = otherPlayerId(playerID);
+    const other = otherPlayerId(String(playerID));
     if (!playerHasEligibleResponse(G, other)) {
         return concludeOpenResponse(G);
     }
@@ -499,6 +565,7 @@ export function passResponseWindow(
         passesCount: currentPasses,
         message: `Au tour du joueur ${other === fpId ? 'FP' : 'Ombre'} de répondre ou de passer.`,
     };
+    G.statusMessage = `Au tour du joueur ${other === fpId ? 'FP' : 'Ombre'} de répondre ou de passer.`;
     clearActionableFlags(G);
     return 'WAITING';
 }
@@ -508,9 +575,10 @@ export function yieldResponsePriorityAfterAction(
     playerID: string
 ): void {
     if (!G.responseWindow?.isOpen) return;
-    if (G.responseWindow.activePlayerId !== playerID) return;
+    const pid = String(playerID);
+    if (String(G.responseWindow.activePlayerId) !== pid) return;
 
-    const other = otherPlayerId(playerID);
+    const other = otherPlayerId(pid);
     const fpId = G.fpPlayerId || '0';
 
     if (playerHasEligibleResponse(G, other)) {
@@ -520,19 +588,22 @@ export function yieldResponsePriorityAfterAction(
             passesCount: 0,
             message: `Au tour du joueur ${other === fpId ? 'FP' : 'Ombre'} de répondre ou de passer.`,
         };
+        G.statusMessage = `Au tour du joueur ${other === fpId ? 'FP' : 'Ombre'} de répondre ou de passer.`;
         clearActionableFlags(G);
         return;
     }
 
-    if (playerHasEligibleResponse(G, playerID)) {
+    if (playerHasEligibleResponse(G, pid)) {
         G.responseWindow = {
             ...G.responseWindow,
-            activePlayerId: playerID,
+            activePlayerId: pid,
             passesCount: 1,
             message: responseWindowMessage(G),
         };
         G.statusMessage =
-            'Réponse : vous pouvez enchaîner ou passer.';
+            pid === fpId
+                ? 'Réponse : vous pouvez enchaîner ou passer.'
+                : 'Réponse : jouez une réponse ou passez.';
         clearActionableFlags(G);
         return;
     }
@@ -547,10 +618,24 @@ function resolvePendingResponse(G: GameState): void {
 export function afterResponseResolved(
     G: GameState,
     playerID: string,
-    _ability: Ability
+    ability: Ability,
+    source?: CardState
 ): void {
     if (!G.responseWindow?.isOpen) return;
+    if (source) markResponseUsed(G, source, ability);
     yieldResponsePriorityAfterAction(G, playerID);
+}
+
+/** Applique une transition de phase différée après une fenêtre de réponse. */
+export function flushPendingPhaseAfterResponse(
+    G: GameState,
+    events?: { setPhase?: (phase: string) => void }
+): void {
+    if (G.responseWindow?.isOpen || G.pendingEvent) return;
+    const next = G.pendingPhaseAfterResponse;
+    if (!next) return;
+    G.pendingPhaseAfterResponse = undefined;
+    events?.setPhase?.(next);
 }
 
 export function flushPendingActionYield(G: GameState): void {
@@ -604,7 +689,9 @@ export function preventPendingEffect(
     playerID: string
 ): 'APPLIED' | 'INVALID' {
     if (!G.responseWindow?.isOpen) return 'INVALID';
-    if (G.responseWindow.activePlayerId !== playerID) return 'INVALID';
+    if (String(G.responseWindow.activePlayerId) !== String(playerID)) {
+        return 'INVALID';
+    }
 
     const event = G.pendingEvent;
     if (!event || event.type !== 'ABOUT_TO_CANCEL_SKIRMISH') {

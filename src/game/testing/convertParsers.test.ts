@@ -2139,7 +2139,7 @@ describe('parseAbilities — While spot N terrain sites', () => {
         ]);
     });
 
-    it('parse Sturdy Shield : Discard this → liberate a site', () => {
+    it('parse Sturdy Shield : Discard this → liberate a site + While no opponent', () => {
         expect(
             parseAbilities(
                 'Bearer must be a <symbol>rohan</symbol> Man. While no opponent controls a site, bearer is strength +1. <keyword>Regroup:</keyword> Discard this to liberate a site (or two sites if bearer is mounted).',
@@ -2159,6 +2159,184 @@ describe('parseAbilities — While spot N terrain sites', () => {
                     ],
                     effects: [{ type: 'LIBERATE_SITE' }],
                     source: 'SELF',
+                }),
+                expect.objectContaining({
+                    trigger: {
+                        type: 'WHILE',
+                        noOpponentControlsSite: true,
+                    },
+                    effects: [
+                        {
+                            type: 'MODIFY_STAT',
+                            stat: 'STRENGTH',
+                            value: 1,
+                            target: 'BEARER',
+                        },
+                    ],
+                    source: 'ATTACHMENT',
+                }),
+            ])
+        );
+    });
+
+    it('parse Dunland Ransacker : each time wins → spot another → take control', () => {
+        expect(
+            parseAbilities(
+                'Each time this minion wins a skirmish, you may spot another <symbol>dunland</symbol> Man to take control of a site.',
+                'Dunland Ransacker',
+                '4C14'
+            )
+        ).toEqual([
+            expect.objectContaining({
+                phases: ['RESPONSE'],
+                trigger: { type: 'WINS_SKIRMISH', winner: 'SELF' },
+                optional: true,
+                cost: [
+                    {
+                        spot: [
+                            {
+                                count: 1,
+                                target: [['DUNLAND', 'MAN']],
+                                excludeSource: true,
+                            },
+                        ],
+                    },
+                ],
+                effects: [{ type: 'TAKE_CONTROL_SITE' }],
+            }),
+        ]);
+    });
+
+    it('parse Hillman Band : each time fellowship moves → take control', () => {
+        expect(
+            parseAbilities(
+                'Each time the fellowship moves, you may spot another <symbol>dunland</symbol> Man to take control of a site.',
+                'Hillman Band',
+                '4C21'
+            )
+        ).toEqual([
+            expect.objectContaining({
+                phases: ['RESPONSE'],
+                trigger: { type: 'FELLOWSHIP_MOVES' },
+                optional: true,
+                cost: [
+                    {
+                        spot: [
+                            {
+                                count: 1,
+                                target: [['DUNLAND', 'MAN']],
+                                excludeSource: true,
+                            },
+                        ],
+                    },
+                ],
+                effects: [{ type: 'TAKE_CONTROL_SITE' }],
+            }),
+        ]);
+    });
+
+    it('parse Gollum 5C24 : Discard Gollum (SELF) → exert companion or ally', () => {
+        expect(
+            parseAbilities(
+                '<keyword>Regroup:</keyword> Discard Gollum to exert a companion or ally.',
+                'Gollum',
+                '5C24'
+            )
+        ).toEqual([
+            expect.objectContaining({
+                phases: ['REGROUP'],
+                cost: [
+                    {
+                        discardFromPlay: [
+                            { count: 1, target: 'SELF' },
+                        ],
+                    },
+                ],
+                effects: [
+                    {
+                        type: 'EXERT',
+                        count: 1,
+                        target: [['COMPANION'], ['ALLY']],
+                    },
+                ],
+            }),
+        ]);
+    });
+
+    it('parse Discard Name (autre carte) : nom propre → désignation', () => {
+        expect(
+            parseAbilities(
+                '<keyword>Regroup:</keyword> Discard Gollum to remove a threat.',
+                'Not Watching',
+                'X1'
+            )
+        ).toEqual([
+            expect.objectContaining({
+                cost: [
+                    {
+                        discardFromPlay: [
+                            {
+                                count: 1,
+                                target: [['Gollum']],
+                                mode: 'DESIGNATION',
+                            },
+                        ],
+                    },
+                ],
+                effects: [{ type: 'REMOVE_THREATS', count: 1 }],
+            }),
+        ]);
+    });
+
+    it('parse Théoden : Spot Rohan ally + exert → liberate', () => {
+        expect(
+            parseAbilities(
+                '<keyword>Regroup:</keyword> Spot a <symbol>rohan</symbol> ally and exert Théoden to liberate a site.',
+                'Théoden',
+                '4C292'
+            )
+        ).toEqual([
+            expect.objectContaining({
+                phases: ['REGROUP'],
+                cost: [
+                    expect.objectContaining({
+                        spot: [
+                            expect.objectContaining({
+                                count: 1,
+                                target: [['ROHAN', 'ALLY']],
+                            }),
+                        ],
+                        exert: [{ count: 1, target: 'SELF' }],
+                    }),
+                ],
+                effects: [{ type: 'LIBERATE_SITE' }],
+            }),
+        ]);
+    });
+
+    it('parse Forests of Ithilien : Discard + exert Ring-bound Man → liberate', () => {
+        expect(
+            parseAbilities(
+                'Plays to your support area. While the fellowship is at site 5<symbol>tower</symbol>, the site number of each Man in a skirmish is +2. <keyword>Regroup:</keyword> Discard this condition and exert a Ring-bound Man to liberate a site.',
+                'Forests of Ithilien',
+                '4R121'
+            )
+        ).toEqual(
+            expect.arrayContaining([
+                expect.objectContaining({
+                    phases: ['REGROUP'],
+                    cost: [
+                        {
+                            discardFromPlay: [{ count: 1, target: 'SELF' }],
+                            exert: [
+                                expect.objectContaining({
+                                    count: 1,
+                                    target: [['RING-BOUND', 'MAN']],
+                                }),
+                            ],
+                        },
+                    ],
+                    effects: [{ type: 'LIBERATE_SITE' }],
                 }),
             ])
         );

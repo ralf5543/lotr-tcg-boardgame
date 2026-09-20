@@ -40,7 +40,10 @@ import {
     formatAbilityLabelParts,
     abilityMatchesPhase,
 } from '../../../../game/engine/abilities/collectAbilities';
-import { abilityMatchesTrigger } from '../../../../game/engine/responseWindow';
+import {
+    abilityMatchesTrigger,
+    responseAbilityStillAvailable,
+} from '../../../../game/engine/responseWindow';
 
 interface CardImageProps {
     imageUrl?: string;
@@ -287,6 +290,7 @@ export const Card: React.FC<CardProps> = ({
             if (!abilityMatchesTrigger(ability, G.pendingEvent, source, G)) {
                 return false;
             }
+            if (!responseAbilityStillAvailable(G, source, ability)) return false;
             return (
                 canPayAbilityCost(G, source, ability.cost) &&
                 abilityHasLegalEffectTarget(G, source, ability)
@@ -317,7 +321,8 @@ export const Card: React.FC<CardProps> = ({
         abilityContext &&
         listedAbilities.length > 0 &&
         (G?.responseWindow?.isOpen
-            ? G.responseWindow.activePlayerId === viewerPlayerId
+            ? String(G.responseWindow.activePlayerId) ===
+              String(viewerPlayerId)
             : canUseAbility(card, abilityContext).valid)
     );
 

@@ -14,6 +14,7 @@ import { abilityMeetsPlayRestrictions } from './abilities/abilityRestrictions';
 import {
     abilityMatchesTrigger,
     isResponseWindowOpen,
+    responseAbilityStillAvailable,
 } from './responseWindow';
 export interface ValidationContext {
     G: GameState;
@@ -40,16 +41,17 @@ export function canUseAbility(
     const normalizedPhase = rawPhase
         .replace(/([a-z])([A-Z])/g, '$1_$2')
         .toUpperCase();
-    const fpPlayerId = G.fpPlayerId || '0';
 
     // 1. Contrôle du joueur (Peuples Libres vs Ombre)
-    if (card.kind === 'FREE_PEOPLE' && playerID !== fpPlayerId) {
+    const pid = String(playerID);
+    const fpId = String(G.fpPlayerId || '0');
+    if (card.kind === 'FREE_PEOPLE' && pid !== fpId) {
         return {
             valid: false,
             reason: 'Seul le joueur des Peuples Libres peut utiliser cette capacité.',
         };
     }
-    if (card.kind === 'SHADOW' && playerID === fpPlayerId) {
+    if (card.kind === 'SHADOW' && pid === fpId) {
         return {
             valid: false,
             reason: "Seul le joueur de l'Ombre peut utiliser cette capacité.",
@@ -57,7 +59,7 @@ export function canUseAbility(
     }
 
     if (isResponseWindowOpen(G)) {
-        if (!canActInActionWindow(G, playerID)) {
+        if (!canActInActionWindow(G, pid)) {
             return {
                 valid: false,
                 reason: "Ce n'est pas à vous de répondre.",
@@ -66,6 +68,7 @@ export function canUseAbility(
         const ownMatch = (card.abilities || []).some(
             (ability) =>
                 abilityMatchesPhase(ability, 'RESPONSE') &&
+                responseAbilityStillAvailable(G, card, ability) &&
                 abilityMatchesTrigger(ability, G.pendingEvent, card, G) &&
                 canPayAbilityCost(G, card, ability.cost)
         );
@@ -75,6 +78,7 @@ export function canUseAbility(
             (att.abilities || []).some(
                 (ability) =>
                     abilityMatchesPhase(ability, 'RESPONSE') &&
+                    responseAbilityStillAvailable(G, att, ability) &&
                     abilityMatchesTrigger(ability, G.pendingEvent, att, G) &&
                     canPayAbilityCost(G, att, ability.cost)
             )
@@ -84,6 +88,7 @@ export function canUseAbility(
         const projectedMatch = collectProjectedAbilities(G, card).some(
             ({ source, ability }) =>
                 abilityMatchesPhase(ability, 'RESPONSE') &&
+                responseAbilityStillAvailable(G, source, ability) &&
                 abilityMatchesTrigger(ability, G.pendingEvent, source, G) &&
                 canPayAbilityCost(G, source, ability.cost)
         );
@@ -175,7 +180,7 @@ export function canUseAbility(
                 };
             }
 
-            if (!canActInActionWindow(G, playerID)) {
+            if (!canActInActionWindow(G, pid)) {
                 return {
                     valid: false,
                     reason: "Ce n'est pas à vous d'agir.",
@@ -264,7 +269,7 @@ export function canUseAbility(
                 reason: 'Les actions de combat ne peuvent être utilisées que pendant une escarmouche en cours.',
             };
         }
-        if (!canActInActionWindow(G, playerID)) {
+        if (!canActInActionWindow(G, pid)) {
             return {
                 valid: false,
                 reason: "Ce n'est pas à vous d'agir.",

@@ -4,12 +4,15 @@ export const SOUND_LIBRARY = {
         '/audio/sfx/ui/click.opus',
     ],
     /* ====================-------------------- Cards --------------------==================== */
-    CARD_PLAY: [
-        '/audio/sfx/cards/play_card.opus',
-        '/audio/sfx/cards/play_card2.opus',
+    CARD_DISCARD: [
+        '/audio/sfx/cards/discard_card.opus',
     ],
     CARD_DRAW: [
         '/audio/sfx/cards/draw_card.opus',
+    ],
+    CARD_PLAY: [
+        '/audio/sfx/cards/play_card.opus',
+        '/audio/sfx/cards/play_card2.opus',
     ],
     COMPANION: [
         '/audio/sfx/cards/companion.opus',

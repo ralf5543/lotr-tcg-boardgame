@@ -583,6 +583,10 @@ export const applyDevPreset = (
                     index + 1
                 )
             );
+            // Site 1 déjà contrôlé par l’Ombre → liberate immédiat (Sturdy Shield / Forests)
+            if (G.path[0]) {
+                G.path[0].controlledBy = shadowId;
+            }
 
             const startIndex = 3;
             Object.values(G.players).forEach((player) => {
@@ -590,7 +594,7 @@ export const applyDevPreset = (
             });
             G.currentSiteIndex = startIndex;
 
-            // Frodo + Gandalf + Éowyn (Strong Arms / Traveled Leader)
+            // Frodo + Gandalf + Éowyn + Théoden (liberate Rohan)
             fpPlayer.fellowshipArea = [
                 {
                     ...clonePresetCard('2C102', 'dev-frodo'),
@@ -599,9 +603,15 @@ export const applyDevPreset = (
                 clonePresetCard('1R72', 'dev-gandalf'),
                 {
                     ...clonePresetCard('4C270', 'dev-eowyn'),
-                    // Regroup : discard → liberate (après contrôle Ombre)
-                    attachments: [clonePresetCard('15R141', 'dev-sturdy-shield')],
+                    // Regroup : discard → liberate
+                    attachments: [
+                        clonePresetCard('15R141', 'dev-sturdy-shield'),
+                    ],
                 },
+                // Regroup : Spot Rohan ally + exert → liberate
+                clonePresetCard('4C292', 'dev-theoden'),
+                // Ring-bound Man pour Forests of Ithilien
+                clonePresetCard('4C130', 'dev-ranger-ithilien'),
             ];
             fpPlayer.hand = [
                 // REGION replace (Maneuver / Regroup)
@@ -612,6 +622,10 @@ export const applyDevPreset = (
             fpPlayer.supportArea = [
                 // CURRENT replace (Regroup : discard)
                 clonePresetCard('12C40', 'dev-another-way'),
+                // Regroup : discard + exert Ring-bound Man → liberate (Gondor)
+                clonePresetCard('4R121', 'dev-forests-ithilien'),
+                // Ally Rohan pour Théoden
+                clonePresetCard('4C277', 'dev-guma'),
             ];
             fpPlayer.sitesDeck = SITES_TEST_FP_DECK.map((id) =>
                 clonePresetSite(id, fpId)
@@ -625,7 +639,7 @@ export const applyDevPreset = (
                     clonePresetCard('11U45', 'dev-led-astray'),
                     // Plays on a site (Weather) — exert Isengard
                     clonePresetCard('1C138', 'dev-snows'),
-                    // Plays on a site you control (après Siege Troop)
+                    // Plays on a site you control
                     clonePresetCard('4R30', 'dev-no-retreat'),
                 ];
                 shadowPlayer.supportArea = [
@@ -641,7 +655,7 @@ export const applyDevPreset = (
                     clonePresetCard('5C24', 'dev-gollum'),
                     // Exert pour Les Neiges
                     clonePresetCard('5C61', 'dev-uruk-engineer'),
-                    // Regroup : exert ×2 → take control (sites 1–3 déjà passés)
+                    // Regroup : exert ×2 → take control
                     clonePresetCard('8C106', 'dev-siege-troop'),
                     // Spot 2 pour No Retreat
                     clonePresetCard('4C14', 'dev-dunland-ransacker'),
@@ -654,7 +668,7 @@ export const applyDevPreset = (
             }
 
             G.statusMessage =
-                '[DEV] Sites : contrôle (Siege Troop) → liberate (Sturdy Shield / Éowyn) + No Retreat.';
+                '[DEV] Sites : site 1 contrôlé Ombre → liberate Rohan (Sturdy Shield / Théoden) ou Gondor (Forests).';
             break;
         }
     }

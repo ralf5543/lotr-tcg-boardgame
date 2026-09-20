@@ -351,6 +351,12 @@ export type AbilityEffect =
           excludeRingBearer?: boolean;
       }
     | {
+          /** Affaiblir (exert) une cible — effet, pas coût. */
+          type: 'EXERT';
+          count: number;
+          target: AbilityTargetRef;
+      }
+    | {
           type: 'ADD_TWILIGHT';
           count: number;
       }
@@ -408,6 +414,8 @@ export type AbilityTrigger =
           atSiteKeyword?: CardKeyword;
           /** Spot N sites du chemin avec ce mot-clé. */
           spotSiteKeyword?: { keyword: CardKeyword; count: number };
+          /** While no opponent controls a site… */
+          noOpponentControlsSite?: boolean;
       }
     | {
           type: 'CHARACTER_DIES';
@@ -420,6 +428,10 @@ export type AbilityTrigger =
     | {
           /** Site : When the fellowship moves from this site… */
           type: 'MOVES_FROM';
+      }
+    | {
+          /** Each time the fellowship moves… (réponse optionnelle). */
+          type: 'FELLOWSHIP_MOVES';
       };
 
 export interface Ability {
@@ -593,11 +605,16 @@ export interface PendingCancelSkirmishEvent {
     removeTwilight: number;
 }
 
+export interface PendingFellowshipMovesEvent {
+    type: 'FELLOWSHIP_MOVES';
+}
+
 export type PendingEvent =
     | PendingWoundEvent
     | PendingWinsSkirmishEvent
     | PendingCharacterDiesEvent
-    | PendingCancelSkirmishEvent;
+    | PendingCancelSkirmishEvent
+    | PendingFellowshipMovesEvent;
 
 export interface WoundQueueItem {
     targetId: string;
@@ -611,6 +628,11 @@ export interface ResponseWindow {
     activePlayerId: string;
     canPass?: boolean;
     passesCount?: number;
+    /**
+     * Capacités déjà jouées pour cet événement
+     * (`instanceId::abilityId`) — une fois par occurrence « each time ».
+     */
+    usedResponseKeys?: string[];
 }
 
 export interface GameState {
@@ -665,6 +687,8 @@ export interface GameState {
     lastExertedCardIds?: string[];
     lastHealedCardIds?: string[];
     pendingPhaseEnd?: boolean;
+    /** Après une réponse (ex. each-time fellowship moves), reprendre cette phase. */
+    pendingPhaseAfterResponse?: string;
     /** Archerie : une réponse est ouverte, reprendre l’attribution ou clore après. */
     archeryAfterResponses?: 'END' | 'SHADOW_ASSIGN';
     /** Action de phase (archerie, combat…) qui a ouvert une fenêtre de réponse : céder la priorité une fois les réponses closes. */

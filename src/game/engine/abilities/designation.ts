@@ -73,6 +73,12 @@ function candidatesForEffect(
     if (effect.type === 'WOUND' && effect.excludeRingBearer) {
         matches = matches.filter((card) => !isRingBearerCard(card));
     }
+    if (effect.type === 'EXERT') {
+        const need = effect.count || 1;
+        return matches.filter(
+            (card) => !card.isDead && getEffectiveVitality(card) > need
+        );
+    }
     if (effect.type === 'HEAL') {
         return matches.filter(isHealableCard);
     }

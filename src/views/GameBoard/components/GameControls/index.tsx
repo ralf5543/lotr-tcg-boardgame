@@ -139,23 +139,27 @@ export const GameControls: React.FC<GameControlsProps> = ({
                 : fpPlayerId;
 
     const actingPlayer = G.players?.[actingPlayerId];
-    const isMyTurnToAct = currentPlayerId === actingPlayerId;
+    const isMyTurnToAct =
+        String(currentPlayerId) === String(actingPlayerId);
 
     // 🟢 2. ÉTAPE DE REGROUPEMENT SPÉCIFIQUE
     const isRegroupDecision =
         !isActionWindowActive &&
+        !isResponseWindowActive &&
         ctx.phase === 'regroup' &&
         G.regroupStep === 'FP_DECISION' &&
         currentPlayerId === fpPlayerId;
 
     const isShadowRefill =
         !isActionWindowActive &&
+        !isResponseWindowActive &&
         ctx.phase === 'regroup' &&
         G.regroupStep === 'SHADOW_REFILL' &&
         currentPlayerId === shadowPlayerId;
 
     const isFpRefill =
         !isActionWindowActive &&
+        !isResponseWindowActive &&
         ctx.phase === 'regroup' &&
         G.regroupStep === 'FP_REFILL' &&
         currentPlayerId === fpPlayerId;
@@ -163,12 +167,14 @@ export const GameControls: React.FC<GameControlsProps> = ({
     // 🟢 3. AUTRES ACTIONS STANDARD DE PHASE
     const isFellowshipAction =
         !isActionWindowActive &&
+        !isResponseWindowActive &&
         !isAwaitingSiteActive &&
         ctx.phase === 'fellowship' &&
         currentPlayerId === fpPlayerId;
 
     const isShadowAction =
         !isActionWindowActive &&
+        !isResponseWindowActive &&
         ctx.phase === 'shadow' &&
         currentPlayerId === shadowPlayerId;
 
@@ -456,6 +462,19 @@ export const GameControls: React.FC<GameControlsProps> = ({
             return 'L’adversaire désigne une cible.';
         }
 
+        if (isWhenPlayedChoiceActive) {
+            return isMyTurnToAct
+                ? 'Vous pouvez activer l’effet optionnel de cette carte.'
+                : 'L’adversaire décide d’un effet optionnel…';
+        }
+
+        if (isResponseWindowActive) {
+            return isMyTurnToAct
+                ? G.responseWindow?.message ||
+                      'Réponse : jouez une réponse ou passez.'
+                : 'En attente de la réponse de l’adversaire…';
+        }
+
         if (isActionWindowActive) {
             return isMyTurnToAct
                 ? 'Une fenêtre d’action est ouverte : Jouez une carte/effet ou passez.'
@@ -539,6 +558,32 @@ export const GameControls: React.FC<GameControlsProps> = ({
     const currentNarrativeLog =
         G.statusMessage || statusMessage || 'Partie en cours';
     const instructionText = getInstructionText();
+
+    // Consigne locale (par joueur) prioritaire dès qu’une fenêtre / étape
+    // “à toi / en attente” est active — le statusMessage moteur reste partagé.
+    const preferLocalInstruction =
+        Boolean(instructionText) &&
+        (isResponseWindowActive ||
+            isActionWindowActive ||
+            isWhenPlayedChoiceActive ||
+            isAwaitingSiteActive ||
+            Boolean(G.pendingPlay) ||
+            Boolean(G.sanctuaryHeal) ||
+            (G.threatWoundsToAssign ?? 0) > 0 ||
+            ctx.phase === 'archery' ||
+            ctx.phase === 'assignment' ||
+            isTargetingActive);
+
+    const bannerMessage = preferLocalInstruction
+        ? instructionText!
+        : currentNarrativeLog;
+    const bannerSubMessage =
+        instructionText &&
+        instructionText !== bannerMessage &&
+        !preferLocalInstruction
+            ? instructionText
+            : null;
+
     const phaseLabelKey = canonicalPhaseName(ctx.phase).toUpperCase();
     const phaseLabel =
         TRANSLATIONS.phase[
@@ -577,7 +622,7 @@ export const GameControls: React.FC<GameControlsProps> = ({
                         </S.PlayerBadge>
                     </S.InfoGroup>
 
-                    {/* Zone de Texte : Récit narratif principal + Consigne sous-jacente */}
+                    {/* Zone de Texte : consigne locale ou récit partagé */}
                     <div
                         style={{
                             flex: 1,
@@ -585,8 +630,8 @@ export const GameControls: React.FC<GameControlsProps> = ({
                             padding: '0 12px',
                         }}
                     >
-                        <S.MessageText>{currentNarrativeLog}</S.MessageText>
-                        {instructionText && (
+                        <S.MessageText>{bannerMessage}</S.MessageText>
+                        {bannerSubMessage && (
                             <div
                                 style={{
                                     fontSize: '0.85rem',
@@ -595,7 +640,7 @@ export const GameControls: React.FC<GameControlsProps> = ({
                                     fontStyle: 'italic',
                                 }}
                             >
-                                {instructionText}
+                                {bannerSubMessage}
                             </div>
                         )}
                     </div>

@@ -163,7 +163,7 @@ describe('formatAbilityLabelParts', () => {
         });
         expect(formatAbilityLabelParts(ability, celeborn)).toEqual({
             cost: 'Affaiblir Celeborn',
-            effect: 'guérir un elfe Allié',
+            effect: 'guérir un Allié elfe',
         });
     });
 
@@ -271,9 +271,110 @@ describe('formatAbilityLabelParts', () => {
             i18n: { fr: { title: 'Profondeurs Impitoyables' } },
         });
         expect(formatAbilityLabelParts(ability, depths)).toEqual({
-            cost: 'Désigner Orque Séide et Défausser cette carte',
+            cost: 'Désigner un Orque Séide et Défausser Profondeurs Impitoyables',
             effect:
                 'remplacer le site actuel par un site souterrain du deck d’aventure',
+        });
+    });
+
+    it('Forests : Ring-bound Man → Homme associé à l’Anneau ; défausse nommée', () => {
+        const ability: Ability = {
+            id: '4R121:0',
+            phases: ['REGROUP'],
+            cost: [
+                {
+                    discardFromPlay: [{ count: 1, target: 'SELF' }],
+                    exert: [
+                        {
+                            count: 1,
+                            target: [['RING-BOUND', 'MAN']],
+                            mode: 'DESIGNATION',
+                        },
+                    ],
+                },
+            ],
+            effects: [{ type: 'LIBERATE_SITE' }],
+            source: 'SELF',
+        };
+        const forests = createCompanion({
+            id: '4R121',
+            title: 'Forests of Ithilien',
+            type: 'CONDITION',
+            i18n: { fr: { title: 'Forêts d’Ithilien' } },
+        });
+        expect(formatAbilityLabelParts(ability, forests)).toEqual({
+            cost: "Affaiblir un Homme associé à l'anneau et Défausser Forêts d’Ithilien",
+            effect: 'libérer un site',
+        });
+    });
+
+    it('Sturdy Shield : défausse nommée (pas « cette carte »)', () => {
+        const ability: Ability = {
+            id: '15R141:0',
+            phases: ['REGROUP'],
+            cost: [
+                {
+                    discardFromPlay: [{ count: 1, target: 'SELF' }],
+                },
+            ],
+            effects: [{ type: 'LIBERATE_SITE' }],
+            source: 'SELF',
+        };
+        const shield = createCompanion({
+            id: '15R141',
+            title: 'Sturdy Shield',
+            type: 'POSSESSION',
+            i18n: { fr: { title: 'Bouclier solide' } },
+        });
+        expect(formatAbilityLabelParts(ability, shield)).toEqual({
+            cost: 'Défausser Bouclier solide',
+            effect: 'libérer un site',
+        });
+    });
+
+    it('culture + race : Homme du Pays de Dun / Homme du Gondor', () => {
+        const dunland: Ability = {
+            id: '4C14:0',
+            phases: ['RESPONSE'],
+            cost: [
+                {
+                    spot: [
+                        {
+                            count: 1,
+                            target: [['DUNLAND', 'MAN']],
+                            excludeSource: true,
+                        },
+                    ],
+                },
+            ],
+            effects: [{ type: 'TAKE_CONTROL_SITE' }],
+            source: 'SELF',
+        };
+        const gondor: Ability = {
+            id: 'x:0',
+            phases: ['FELLOWSHIP'],
+            cost: [
+                {
+                    exert: [
+                        {
+                            count: 1,
+                            target: [['GONDOR', 'MAN']],
+                            mode: 'DESIGNATION',
+                        },
+                    ],
+                },
+            ],
+            effects: [{ type: 'DRAW', count: 1 }],
+            source: 'SELF',
+        };
+        const card = createCompanion({ id: 'x', title: 'X' });
+        expect(formatAbilityLabelParts(dunland, card)).toEqual({
+            cost: 'Désigner un Homme du Pays de Dun',
+            effect: 'prendre le contrôle d’un site',
+        });
+        expect(formatAbilityLabelParts(gondor, card)).toEqual({
+            cost: 'Affaiblir un Homme du Gondor',
+            effect: 'piocher 1 carte',
         });
     });
 });

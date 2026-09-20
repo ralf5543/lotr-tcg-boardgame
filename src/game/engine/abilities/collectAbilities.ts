@@ -39,6 +39,13 @@ function exertTargetIsOtherCharacter(ability: Ability): boolean {
     return exert.target !== 'SELF' && exert.target !== 'BEARER';
 }
 
+/** Coût « discard this » : le bouton reste sur la source, pas de projection. */
+function abilityDiscardsSelf(ability: Ability): boolean {
+    return (ability.cost?.[0]?.discardFromPlay || []).some(
+        (req) => req.target === 'SELF'
+    );
+}
+
 export function abilityProjectsOnto(
     G: GameState,
     source: CardState,
@@ -46,6 +53,8 @@ export function abilityProjectsOnto(
     host: CardState
 ): boolean {
     if (!exertTargetIsOtherCharacter(ability)) return false;
+    // Forests of Ithilien & co. : défausse self + affaiblir un autre → bouton sur la situation.
+    if (abilityDiscardsSelf(ability)) return false;
     if (
         source.type === 'COMPANION' ||
         source.type === 'ALLY' ||
@@ -138,16 +147,82 @@ function translateCriterionToken(token: string): string {
     return token.toLowerCase();
 }
 
+/** « Homme du Gondor », « Orque de Sauron », « Compagnon nain »… */
+const CULTURE_OF: Record<string, string> = {
+    DUNLAND: 'du Pays de Dun',
+    DWARVEN: 'nain',
+    ELVEN: 'elfe',
+    GANDALF: 'de Gandalf',
+    GOLLUM: 'de Gollum',
+    GONDOR: 'du Gondor',
+    ISENGARD: 'd’Isengard',
+    MEN: 'des Hommes',
+    MORIA: 'de la Moria',
+    ORC: 'orque',
+    RAIDER: 'pillard',
+    WRAITH: 'spectre',
+    ROHAN: 'du Rohan',
+    SAURON: 'de Sauron',
+    SHIRE: 'de la Comté',
+    'URUK-HAI': 'ourouk-hai',
+};
+
+const CULTURE_TOKENS = new Set(Object.keys(CULTURE_OF));
+const TYPE_TOKENS = new Set(Object.keys(TRANSLATIONS.type));
+const RACE_TOKENS = new Set(Object.keys(TRANSLATIONS.race));
+
 function formatFilterList(tokens: string[]): string {
-    const unbound = tokens.filter((token) => token.toUpperCase() === 'UNBOUND');
-    const rest = tokens.filter((token) => token.toUpperCase() !== 'UNBOUND');
-    return [...rest, ...unbound].map(translateCriterionToken).join(' ');
+    // Race / classe d’abord, mot-clé ring en suffixe (« Homme associé à l’Anneau »).
+    const trailing = new Set(['UNBOUND', 'RING-BOUND']);
+    const suffix = tokens.filter((token) =>
+        trailing.has(token.toUpperCase())
+    );
+    const rest = tokens.filter(
+        (token) => !trailing.has(token.toUpperCase())
+    );
+
+    const cultures = rest.filter((t) => CULTURE_TOKENS.has(t.toUpperCase()));
+    const races = rest.filter((t) => RACE_TOKENS.has(t.toUpperCase()));
+    const types = rest.filter((t) => TYPE_TOKENS.has(t.toUpperCase()));
+    const other = rest.filter(
+        (t) =>
+            !CULTURE_TOKENS.has(t.toUpperCase()) &&
+            !RACE_TOKENS.has(t.toUpperCase()) &&
+            !TYPE_TOKENS.has(t.toUpperCase())
+    );
+
+    // Une culture + une race|type → « Homme du Pays de Dun », « Compagnon du Gondor ».
+    if (
+        cultures.length === 1 &&
+        other.length === 0 &&
+        ((races.length === 1 && types.length === 0) ||
+            (types.length === 1 && races.length === 0))
+    ) {
+        const headToken = races[0] || types[0];
+        const head = translateCriterionToken(headToken);
+        const ofCulture = CULTURE_OF[cultures[0].toUpperCase()];
+        const kw = suffix.map(translateCriterionToken).join(' ');
+        const core = ofCulture.startsWith('d')
+            ? `${head} ${ofCulture}`
+            : `${head} ${ofCulture}`;
+        return kw ? `${core} ${kw}` : core;
+    }
+
+    return [...rest, ...suffix].map(translateCriterionToken).join(' ');
 }
 
 function formatTargetPhrase(target: AbilityTargetRef | undefined): string | null {
     if (!target || target === 'SELF' || target === 'BEARER' || target === 'WINNER') return null;
     if (target === 'SKIRMISHING') return 'un personnage au combat';
     if (Array.isArray(target)) {
+        if (
+            target.length > 1 &&
+            target.every((branch) => Array.isArray(branch))
+        ) {
+            return target
+                .map((branch) => `un ${formatFilterList(branch)}`)
+                .join(' ou ');
+        }
         return `un ${formatFilterList(target.flat())}`;
     }
     return null;
@@ -172,6 +247,10 @@ function formatEffectBit(
             return `blesser un ${formatFilterList(effect.target.flat())}`;
         }
         return 'blesser';
+    }
+    if (effect.type === 'EXERT') {
+        const who = formatTargetPhrase(effect.target);
+        return who ? `affaiblir ${who}` : 'affaiblir';
     }
     if (effect.type === 'ADD_TWILIGHT') {
         return `ajouter <symbol>twilight${effect.count}</symbol>`;
@@ -341,7 +420,9 @@ function formatCostLabel(ability: Ability, source: CardState): string {
         if (tokens.includes('PIPE')) {
             parts.push('Désigner X pipes');
         } else {
-            parts.push(`Désigner ${formatCostWho(spot.target, source, false)}`);
+            parts.push(
+                `Désigner ${formatCostWho(spot.target, source, true)}`
+            );
         }
     }
     if (option?.addTwilight && option.addTwilight > 0) {
@@ -372,7 +453,10 @@ function formatCostLabel(ability: Ability, source: CardState): string {
     if (option?.discardFromPlay?.length) {
         const discardTarget = option.discardFromPlay[0]?.target;
         if (discardTarget === 'SELF' || discardTarget === 'BEARER') {
-            parts.push('Défausser cette carte');
+            // « this / it » → nom de la carte (évite l’ambiguïté sur un porteur).
+            const name =
+                source.i18n?.fr?.title || source.title || 'cette carte';
+            parts.push(`Défausser ${name}`);
         } else {
             parts.push(
                 `Défausser ${formatCostWho(discardTarget, source, true)}`

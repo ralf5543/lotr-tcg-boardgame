@@ -28,6 +28,7 @@ function resetPhaseMachine(G: GameState): void {
     G.archeryAfterResponses = undefined;
     G.pendingActionYieldPlayerId = undefined;
     G.pendingPhaseEnd = undefined;
+    G.pendingPhaseAfterResponse = undefined;
     G.nextPhase = undefined;
     G.isFierceAssignment = false;
     G.pendingFierceAssignment = false;

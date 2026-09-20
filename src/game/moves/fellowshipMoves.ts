@@ -1,7 +1,25 @@
 import type { GameState, LotrMoveContext } from '../types';
 import { getRegionTwilightBonus } from '../logic/sites';
 import { resolveSiteMoveAbilities } from '../engine/abilities/siteMove';
+import { tryOpenFellowshipMoves } from '../engine/responseWindow';
 import { enterPhase } from '../logic/phaseEntry';
+
+/** Après un déplacement réel : réponses « each time the fellowship moves ». */
+function afterFellowshipArrived(
+    G: GameState,
+    events?: { setPhase?: (phase: string) => void },
+    nextPhase?: string
+): void {
+    if (tryOpenFellowshipMoves(G) === 'WAITING') {
+        if (nextPhase) {
+            G.pendingPhaseAfterResponse = nextPhase;
+        }
+        return;
+    }
+    if (nextPhase) {
+        events?.setPhase?.(nextPhase);
+    }
+}
 
 export const advanceCompany = (G: GameState) => {
     const fpId = G.fpPlayerId || '0';
@@ -190,16 +208,11 @@ export const playSite = (
     G.statusMessage = `Nouveau site révélé ! La compagnie avance en ${playedSite.name} (+${addedTwilight} Crépuscule). Révélation des compagnons.`;
 
     if (ctx.phase === 'fellowship') {
-        if (events?.setPhase) {
-            events.setPhase(enterPhase('shadow'));
-        }
+        afterFellowshipArrived(G, events, enterPhase('shadow'));
     } else if (ctx.phase === 'regroup') {
         G.skirmishes = [];
         G.activeSkirmishId = undefined;
-
-        if (events?.setPhase) {
-            events.setPhase(enterPhase('shadow'));
-        }
+        afterFellowshipArrived(G, events, enterPhase('shadow'));
     }
 };
 
@@ -209,6 +222,9 @@ export const endFellowshipPhase = ({
     events,
     playerID,
 }: LotrMoveContext) => {
+    if (G.responseWindow?.isOpen || G.pendingEvent) {
+        return 'INVALID_MOVE';
+    }
     const fpId = G.fpPlayerId || '0';
     const actingPlayerId = playerID ?? ctx.currentPlayer ?? '0';
 
@@ -221,7 +237,7 @@ export const endFellowshipPhase = ({
     advanceCompany(G);
 
     if (!G.awaitingSiteSelection) {
-        events?.setPhase?.(enterPhase('shadow'));
+        afterFellowshipArrived(G, events, enterPhase('shadow'));
     }
 };
 

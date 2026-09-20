@@ -103,14 +103,7 @@ export const canAttachToCharacter = (
         siteTarget.siteNumber != null;
 
     if (isSiteTarget) {
-        // FP : uniquement un site que tu as posé (ownerId).
-        if (
-            attachment.kind === 'FREE_PEOPLE' &&
-            playerId &&
-            siteTarget.ownerId !== playerId
-        ) {
-            return false;
-        }
+        // « Plays on a site » = n’importe quel site du chemin (pas de filtre owner).
         // « Plays on a site you control »
         if (
             attachment.requiresControlledSite &&

@@ -59,6 +59,7 @@ import { getReplaceSiteCandidates, getReplaceablePathSitesInCurrentRegion, getOw
 import { isSiteReplaceForbidden } from '../../game/logic/siteReplaceRestrictions';
 import { findEventAbilityForPhase } from '../../game/engine/abilities/playEventAbility';
 import { useCardPlayAudio } from '../../hooks/audio/useCardPlayAudio';
+import { useDiscardAudio } from '../../hooks/audio/useDiscardAudio';
 import { useArcheryAudio } from '../../hooks/audio/useArcheryAudio';
 import { useWoundAudio } from '../../hooks/audio/useWoundAudio';
 import { useExertAudio } from '../../hooks/audio/useExertAudio';
@@ -214,6 +215,7 @@ export const GameBoard: React.FC<GameBoardProps> = ({
     matchID,
 }) => {
     useCardPlayAudio(G);
+    useDiscardAudio(G);
     useArcheryAudio(G);
     useWoundAudio(G);
     useExertAudio(G);

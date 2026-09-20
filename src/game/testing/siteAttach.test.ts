@@ -43,7 +43,7 @@ describe('Site attachments', () => {
         expect(canAttachToCharacter(snows, site)).toBe(false);
     });
 
-    it('Strong Arms (FP) uniquement sur un site que l’on possède', () => {
+    it('Strong Arms (FP) sur n’importe quel site du chemin', () => {
         const strongArms = getCardById('7U252')!;
         const mine = createSite({
             id: 'mine',
@@ -56,7 +56,7 @@ describe('Site attachments', () => {
             ownerId: '1',
         });
         expect(canAttachToCharacter(strongArms, mine, '0')).toBe(true);
-        expect(canAttachToCharacter(strongArms, theirs, '0')).toBe(false);
+        expect(canAttachToCharacter(strongArms, theirs, '0')).toBe(true);
     });
 
     it('Neiges (Ombre) peut aller sur un site adverse', () => {

@@ -19,7 +19,13 @@ import {
     abilityNeedsEffectDesignation,
     getEffectDesignationCount,
 } from '../engine/abilities/designation';
-import { afterResponseResolved, isResponseWindowOpen, pauseActionYieldForResponses } from '../engine/responseWindow';
+import {
+    afterResponseResolved,
+    isResponseWindowOpen,
+    pauseActionYieldForResponses,
+    flushPendingPhaseAfterResponse,
+    responseAbilityStillAvailable,
+} from '../engine/responseWindow';
 import { abilityMeetsPlayRestrictions } from '../engine/abilities/abilityRestrictions';
 
 function normalizeChosenIds(chosen?: string | string[]): string[] {
@@ -28,7 +34,7 @@ function normalizeChosenIds(chosen?: string | string[]): string[] {
 }
 
 export const activateAbility = (
-    { G, ctx, playerID }: LotrMoveContext,
+    { G, ctx, playerID, events }: LotrMoveContext,
     sourceInstanceId: string,
     abilityId: string,
     chosenTargetId?: string,
@@ -41,10 +47,16 @@ export const activateAbility = (
     const ability = source.abilities?.find((ab) => ab.id === abilityId);
     if (!ability) return 'INVALID_MOVE';
 
-    const context = { G, ctx, playerID };
+    const context = { G, ctx, playerID: String(playerID) };
     if (!canUseAbility(source, context).valid) return 'INVALID_MOVE';
     const phaseToMatch = isResponseWindowOpen(G) ? 'RESPONSE' : ctx.phase || '';
     if (!abilityMatchesPhase(ability, phaseToMatch)) return 'INVALID_MOVE';
+    if (
+        isResponseWindowOpen(G) &&
+        !responseAbilityStillAvailable(G, source, ability)
+    ) {
+        return 'INVALID_MOVE';
+    }
     if (!abilityMeetsPlayRestrictions(G, source, ability)) return 'INVALID_MOVE';
     if (!canPayAbilityCost(G, source, ability.cost)) return 'INVALID_MOVE';
     const needsCostDesignation = abilityNeedsCostDesignation(
@@ -123,16 +135,17 @@ export const activateAbility = (
     }
 
     if (wasResponseWindowOpen && isResponseAbility) {
-        afterResponseResolved(G, playerID, ability);
+        afterResponseResolved(G, String(playerID), ability, source);
+        flushPendingPhaseAfterResponse(G, events);
         return;
     }
 
     if (isResponseWindowOpen(G) && !wasResponseWindowOpen) {
-        pauseActionYieldForResponses(G, playerID);
+        pauseActionYieldForResponses(G, String(playerID));
         return;
     }
 
-    yieldPriorityAfterAction(G, playerID);
+    yieldPriorityAfterAction(G, String(playerID));
     const title = source.i18n?.fr?.title || source.title || source.id;
     G.statusMessage = `${title} active une capacité.`;
 };
