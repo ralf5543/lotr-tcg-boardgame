@@ -660,6 +660,8 @@ export const applyDevPreset = (
                     // Spot 2 pour No Retreat
                     clonePresetCard('4C14', 'dev-dunland-ransacker'),
                     clonePresetCard('4C21', 'dev-hillman-band'),
+                    // Regroup : stack / Shadow : play from stack (−1)
+                    clonePresetCard('4C180', 'dev-uruk-besieger'),
                 ];
                 G.twilightPool = 8;
                 shadowPlayer.sitesDeck = SITES_TEST_SHADOW_DECK.map((id) =>
@@ -668,7 +670,7 @@ export const applyDevPreset = (
             }
 
             G.statusMessage =
-                '[DEV] Sites : site 1 contrôlé Ombre → liberate Rohan (Sturdy Shield / Théoden) ou Gondor (Forests).';
+                '[DEV] Sites : contrôle Ombre + Uruk Besieger (stack Regroup / play Shadow).';
             break;
         }
     }

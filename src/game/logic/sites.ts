@@ -4,6 +4,7 @@ import type {
     GameState,
     SiteCardState,
 } from '../types';
+import { getEffectiveTwilightCost } from '../../utils/roamingDetection';
 
 export function getCurrentSiteIndex(G: GameState): number {
     const fpId = G.fpPlayerId || '0';
@@ -194,6 +195,182 @@ export function discardSiteAttachments(
     site.attachments = [];
 }
 
+/** Défausse les séides empilés sur un site (replace — pas de transfert). */
+export function discardSiteStacked(
+    G: GameState,
+    site: SiteCardState | null | undefined
+): void {
+    const stacked = site?.stacked;
+    if (!stacked?.length) return;
+
+    const fpId = G.fpPlayerId || '0';
+    const shadowId = Object.keys(G.players).find((id) => id !== fpId) || '1';
+
+    for (const card of stacked) {
+        if (!card) continue;
+        const ownerId =
+            card.kind === 'FREE_PEOPLE'
+                ? fpId
+                : card.kind === 'SHADOW'
+                  ? shadowId
+                  : shadowId;
+        const player = G.players[ownerId];
+        if (!player) continue;
+        if (!player.discard) player.discard = [];
+        player.discard.push(card);
+    }
+    site.stacked = [];
+}
+
+/** Sites contrôlés par un joueur, plus bas numéro d’abord. */
+export function getSitesControlledBy(
+    G: GameState,
+    playerId: string
+): { site: SiteCardState; pathIndex: number }[] {
+    const found: { site: SiteCardState; pathIndex: number }[] = [];
+    for (let i = 0; i < (G.path?.length || 0); i++) {
+        const site = G.path?.[i];
+        if (!site?.controlledBy) continue;
+        if (String(site.controlledBy) !== String(playerId)) continue;
+        found.push({ site, pathIndex: i });
+    }
+    found.sort((a, b) => {
+        const na = a.site.siteNumber ?? a.pathIndex + 1;
+        const nb = b.site.siteNumber ?? b.pathIndex + 1;
+        return na - nb;
+    });
+    return found;
+}
+
+export function findStackedCardSite(
+    G: GameState,
+    cardId: string
+): { site: SiteCardState; pathIndex: number; card: CardState } | null {
+    for (let i = 0; i < (G.path?.length || 0); i++) {
+        const site = G.path?.[i];
+        if (!site?.stacked?.length) continue;
+        const card = site.stacked.find(
+            (c) => c && (c.instanceId === cardId || c.id === cardId)
+        );
+        if (card) return { site, pathIndex: i, card };
+    }
+    return null;
+}
+
+export function isCardStackedOnControlledSite(
+    G: GameState,
+    card: CardState,
+    controllerId: string
+): boolean {
+    const loc = findStackedCardSite(G, card.instanceId || card.id);
+    if (!loc) return false;
+    return String(loc.site.controlledBy) === String(controllerId);
+}
+
+/**
+ * Retire une carte du champ de bataille (sans la défausser).
+ * Défausse ses attachements.
+ */
+export function detachCardFromBattlefield(
+    G: GameState,
+    card: CardState
+): CardState | null {
+    const targetId = card.instanceId || card.id;
+    if (!targetId || !G.battlefield) return null;
+    const index = G.battlefield.findIndex(
+        (c) => c && (c.instanceId === targetId || c.id === targetId)
+    );
+    if (index < 0) return null;
+    const [removed] = G.battlefield.splice(index, 1);
+    if (!removed) return null;
+
+    const fpId = G.fpPlayerId || '0';
+    const shadowId = fpId === '0' ? '1' : '0';
+    for (const att of removed.attachments || []) {
+        if (!att) continue;
+        const ownerId =
+            att.kind === 'FREE_PEOPLE'
+                ? fpId
+                : att.kind === 'SHADOW'
+                  ? shadowId
+                  : shadowId;
+        const player = G.players[ownerId];
+        if (!player) continue;
+        if (!player.discard) player.discard = [];
+        player.discard.push(att);
+    }
+    removed.attachments = [];
+    return removed;
+}
+
+/**
+ * Empile un séide du champ de bataille sur un site contrôlé.
+ * Sans `chosenSiteId` : plus bas numéro contrôlé (1ʳᵉ verticale).
+ */
+export function stackMinionOnControlledSite(
+    G: GameState,
+    card: CardState,
+    controllerId: string,
+    chosenSiteId?: string
+): SiteCardState | null {
+    if (card.type !== 'MINION' || card.kind !== 'SHADOW') return null;
+
+    const controlled = getSitesControlledBy(G, controllerId);
+    if (controlled.length === 0) return null;
+
+    let target = controlled[0];
+    if (chosenSiteId) {
+        const match = controlled.find(
+            ({ site }) =>
+                site.instanceId === chosenSiteId || site.id === chosenSiteId
+        );
+        if (!match) return null;
+        target = match;
+    }
+
+    const removed = detachCardFromBattlefield(G, card);
+    if (!removed) return null;
+
+    if (!target.site.stacked) target.site.stacked = [];
+    target.site.stacked.push(removed);
+    return target.site;
+}
+
+/**
+ * Joue un séide empilé sur un site contrôlé vers le champ de bataille.
+ * Retourne le coût crépuscule payé, ou null si échec.
+ */
+export function playStackedMinion(
+    G: GameState,
+    card: CardState,
+    controllerId: string,
+    twilightReduce = 0
+): number | null {
+    const loc = findStackedCardSite(G, card.instanceId || card.id);
+    if (!loc) return null;
+    if (String(loc.site.controlledBy) !== String(controllerId)) return null;
+
+    const currentSiteIndex = getCurrentSiteIndex(G);
+    const baseCost = getEffectiveTwilightCost(card, currentSiteIndex);
+    const cost = Math.max(0, baseCost - (twilightReduce || 0));
+    if ((G.twilightPool || 0) < cost) return null;
+
+    const stackIndex = (loc.site.stacked || []).findIndex(
+        (c) =>
+            c &&
+            (c.instanceId === (card.instanceId || card.id) ||
+                c.id === (card.instanceId || card.id))
+    );
+    if (stackIndex < 0) return null;
+    const [played] = loc.site.stacked!.splice(stackIndex, 1);
+    if (!played) return null;
+
+    G.twilightPool = (G.twilightPool || 0) - cost;
+    if (!G.battlefield) G.battlefield = [];
+    G.battlefield.push(played);
+    return cost;
+}
+
 /**
  * Sites déjà passés par la compagnie, non contrôlés — éligibles au contrôle (CR).
  * Ordre : plus bas numéro de site d’abord.
@@ -287,6 +464,7 @@ export function liberateSite(
     const [first] = getLiberatableSites(G, liberatingPlayerId);
     if (!first) return null;
     discardSiteAttachments(G, first.site);
+    // Stack : les séides restent empilés (inertes sans contrôle) — pas de défausse.
     delete first.site.controlledBy;
     return first.site;
 }
@@ -322,16 +500,19 @@ export function replacePathSiteFromDeck(
     const siteNumber = oldSite.siteNumber ?? pathIndex + 1;
 
     discardSiteAttachments(G, oldSite);
+    discardSiteStacked(G, oldSite);
 
     newSite.siteNumber = siteNumber;
     newSite.ownerId = ownerId;
     newSite.attachments = [];
+    newSite.stacked = [];
     delete newSite.controlledBy;
 
     const returned: SiteCardState = {
         ...oldSite,
         siteNumber: undefined,
         attachments: [],
+        stacked: [],
         controlledBy: undefined,
     };
     const returnOwnerId = oldSite.ownerId || ownerId;

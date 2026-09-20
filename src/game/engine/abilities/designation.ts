@@ -19,7 +19,12 @@ import {
     canExchangeOwnedPathSite,
     canTakeControlOfASite,
     canLiberateASite,
+    getSitesControlledBy,
+    isCardStackedOnControlledSite,
+    findStackedCardSite,
+    getCurrentSiteIndex,
 } from '../../logic/sites';
+import { getEffectiveTwilightCost } from '../../../utils/roamingDetection';
 import {
     canReplaceCurrentSite,
     canReplaceSiteInCurrentRegionForPlayer,
@@ -251,6 +256,30 @@ export function abilityHasLegalEffectTarget(
             const ownerId = abilityOwnerPlayerId(G, source);
             if (!ownerId) return false;
             if (!canLiberateASite(G, ownerId)) return false;
+            continue;
+        }
+        if (effect.type === 'STACK_ON_CONTROLLED_SITE') {
+            const ownerId = abilityOwnerPlayerId(G, source);
+            if (!ownerId) return false;
+            if (getSitesControlledBy(G, ownerId).length === 0) return false;
+            if (findStackedCardSite(G, source.instanceId || source.id)) {
+                return false;
+            }
+            continue;
+        }
+        if (effect.type === 'PLAY_FROM_STACK') {
+            const ownerId = abilityOwnerPlayerId(G, source);
+            if (!ownerId) return false;
+            if (!isCardStackedOnControlledSite(G, source, ownerId)) {
+                return false;
+            }
+            const reduce = effect.twilightReduce || 0;
+            const cost = Math.max(
+                0,
+                getEffectiveTwilightCost(source, getCurrentSiteIndex(G)) -
+                    reduce
+            );
+            if ((G.twilightPool || 0) < cost) return false;
             continue;
         }
         if (

@@ -291,6 +291,21 @@ export type AbilityEffect =
           type: 'LIBERATE_SITE';
       }
     | {
+          /**
+           * Empile cette carte (séide) sur un site que tu contrôles.
+           * Auto : plus bas numéro contrôlé. Cible optionnelle = site id.
+           */
+          type: 'STACK_ON_CONTROLLED_SITE';
+      }
+    | {
+          /**
+           * Joue ce séide depuis la pile d’un site que tu contrôles.
+           * Coût crépuscule = coût effectif − twilightReduce (min 0).
+           */
+          type: 'PLAY_FROM_STACK';
+          twilightReduce?: number;
+      }
+    | {
           type: 'DRAW';
           count: number;
       }
@@ -447,6 +462,11 @@ export interface Ability {
     optional?: boolean;
     /** Ex. Merry : seulement s’il n’est pas affecté à une escarmouche. */
     requiresUnassigned?: boolean;
+    /**
+     * Capacité utilisable seulement si la carte est empilée
+     * sur un site contrôlé par son propriétaire (play from stack).
+     */
+    requiresStackedOnControlledSite?: boolean;
 }
 
 export interface CardState {
@@ -549,6 +569,11 @@ export interface SiteCardState {
     keywords?: CardKeyword[];
     /** Cartes posées sur le site (climats, etc.). */
     attachments?: CardState[];
+    /**
+     * Séides empilés sur le site (stack). Uniquement utiles si
+     * `controlledBy` = joueur Ombre pour « play from stack ».
+     */
+    stacked?: CardState[];
     /**
      * Joueur qui contrôle le site (`0` / `1`). Distinct de `ownerId`
      * (propriétaire du deck d’aventure). Reste sur le chemin (UX Standard).

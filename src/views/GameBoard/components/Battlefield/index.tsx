@@ -55,12 +55,13 @@ export const Battlefield: React.FC<BattlefieldProps> = ({
         };
     }, [registerTarget]);
 
-    // Validation type-safe : on vérifie d'abord que c'est une carte standard
+    // Validation : séide Ombre depuis la main ou la pile d’un site
     const isValidCard =
         !!dragged?.card &&
         isStandardCard(dragged.card) &&
         dragged.card.type === 'MINION' &&
-        dragged.card.kind === 'SHADOW';
+        dragged.card.kind === 'SHADOW' &&
+        (dragged.origin === 'HAND' || dragged.origin === 'SITE_STACK');
 
     const isHovered = activeTargetId === 'battlefield' && isValidCard;
 

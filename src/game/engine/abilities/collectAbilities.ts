@@ -379,6 +379,15 @@ function formatEffectBit(
     if (effect.type === 'LIBERATE_SITE') {
         return 'libérer un site';
     }
+    if (effect.type === 'STACK_ON_CONTROLLED_SITE') {
+        return 'empiler ce séide sur un site que vous contrôlez';
+    }
+    if (effect.type === 'PLAY_FROM_STACK') {
+        const reduce = effect.twilightReduce || 0;
+        return reduce > 0
+            ? `jouer ce séide depuis la pile (−${reduce} crépuscule)`
+            : 'jouer ce séide depuis la pile';
+    }
     return '';
 }
 
@@ -482,11 +491,14 @@ export function formatAbilityLabelParts(
     ability: Ability,
     source: CardState
 ): { cost: string; effect: string } {
+    const cost = capitalizeLabel(formatCostLabel(ability, source));
+    const effectRaw = (ability.effects || [])
+        .map((effect) => formatEffectBit(effect, source))
+        .filter(Boolean)
+        .join(' et ');
+    // Début de phrase (pas de coût) → majuscule ; après « : » on laisse minuscule.
     return {
-        cost: capitalizeLabel(formatCostLabel(ability, source)),
-        effect: (ability.effects || [])
-            .map((effect) => formatEffectBit(effect, source))
-            .filter(Boolean)
-            .join(' et '),
+        cost,
+        effect: cost ? effectRaw : capitalizeLabel(effectRaw),
     };
 }

@@ -2112,6 +2112,30 @@ describe('parseAbilities — While spot N terrain sites', () => {
         ]);
     });
 
+    it('parse Uruk Besieger : stack Regroup + play from stack Shadow', () => {
+        expect(
+            parseAbilities(
+                '<keyword>Damage +1.</keyword> <keyword>Regroup:</keyword> Stack this minion on a site you control. <keyword>Shadow:</keyword> If stacked on a site you control, play this minion. Its twilight cost is -1.',
+                'Uruk Besieger',
+                '4C180'
+            )
+        ).toEqual([
+            expect.objectContaining({
+                phases: ['REGROUP'],
+                cost: [],
+                effects: [{ type: 'STACK_ON_CONTROLLED_SITE' }],
+                source: 'SELF',
+            }),
+            expect.objectContaining({
+                phases: ['SHADOW'],
+                cost: [],
+                effects: [{ type: 'PLAY_FROM_STACK', twilightReduce: 1 }],
+                source: 'SELF',
+                requiresStackedOnControlledSite: true,
+            }),
+        ]);
+    });
+
     it('parse No Retreat : Spot 2 Dunland Men + discard → force move again', () => {
         expect(
             parseAbilities(

@@ -271,22 +271,44 @@ export const StackedMinionsGrid = styled.div`
     flex-wrap: wrap;
     align-items: center;
     justify-content: center;
-    gap: 2px;
+    gap: 4px;
     pointer-events: none;
 `;
 
-export const StackedMinionSlot = styled.div`
+export const StackedMinionSlot = styled.div<{
+    $playable?: boolean;
+    $dragging?: boolean;
+}>`
     position: relative;
-    width: 16%;
+    width: 18%;
+    aspect-ratio: 2 / 3;
     flex: 0 0 auto;
     pointer-events: auto;
     overflow: visible;
+    border-radius: 2px;
+    opacity: ${({ $dragging }) => ($dragging ? 0 : 1)};
+    cursor: ${({ $playable }) => ($playable ? 'pointer' : 'default')};
+    transition:
+        box-shadow 0.15s ease,
+        filter 0.15s ease,
+        opacity 0.1s ease;
 
+    ${({ $playable, $dragging }) =>
+        $playable &&
+        !$dragging &&
+        css`
+            &:hover > div {
+                    transform: translate(-50%, -50%) scale(0.35);
+            }
+        `}
+
+    /* La carte est décorative : le slot gère hit-test / drag. */
     & > * {
         position: absolute;
         left: 50%;
         top: 50%;
         transform: translate(-50%, -50%) scale(0.25);
         transform-origin: center center;
+        pointer-events: none;
     }
 `;

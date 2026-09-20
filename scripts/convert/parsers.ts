@@ -4502,6 +4502,50 @@ export function parseAbilities(
             return;
         }
 
+        // « Stack this minion on a site you control. »
+        const stackOnSiteMatch = bodyPlain.match(
+            /^Stack (?:this minion|him|it|this) on a site you control\.?$/i
+        );
+        if (stackOnSiteMatch) {
+            const stackClause = `${marker.phase}: Stack this minion on a site you control.`
+                .replace(/\s+/g, ' ')
+                .trim();
+            abilities.push({
+                id: `${cardId || 'ability'}:${abilities.length}`,
+                phases,
+                cost: [],
+                effects: [{ type: 'STACK_ON_CONTROLLED_SITE' }],
+                source: 'SELF',
+                text: stackClause,
+            });
+            return;
+        }
+
+        // « If stacked on a site you control, play this minion. Its/His twilight cost is -N. »
+        const playFromStackMatch = bodyPlain.match(
+            /^If stacked on a site you control,\s*play this minion\.?\s*(?:Its|His|Her) twilight cost is -(\d+)\.?$/i
+        );
+        if (playFromStackMatch) {
+            const reduce = parseInt(playFromStackMatch[1], 10);
+            if (!Number.isFinite(reduce) || reduce < 0) return;
+            const playClause =
+                `${marker.phase}: If stacked on a site you control, play this minion. Its twilight cost is -${reduce}.`
+                    .replace(/\s+/g, ' ')
+                    .trim();
+            abilities.push({
+                id: `${cardId || 'ability'}:${abilities.length}`,
+                phases,
+                cost: [],
+                effects: [
+                    { type: 'PLAY_FROM_STACK', twilightReduce: reduce },
+                ],
+                source: 'SELF',
+                requiresStackedOnControlledSite: true,
+                text: playClause,
+            });
+            return;
+        }
+
         const discardMatch = body.match(
             /^Exert\s+([\s\S]+?)\s+to discard\s+([\s\S]+)/i
         );

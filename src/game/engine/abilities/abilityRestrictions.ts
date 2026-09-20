@@ -1,4 +1,8 @@
 import type { Ability, CardState, GameState } from '../../types';
+import {
+    isCardStackedOnControlledSite,
+} from '../../logic/sites';
+import { abilityOwnerPlayerId } from './payAbilityCost';
 
 export function isAssignedToSkirmish(
     G: GameState,
@@ -23,5 +27,24 @@ export function abilityMeetsPlayRestrictions(
     if (ability.requiresUnassigned && isAssignedToSkirmish(G, source)) {
         return false;
     }
+    if (ability.requiresStackedOnControlledSite) {
+        const ownerId = abilityOwnerPlayerId(G, source);
+        if (!ownerId) return false;
+        if (!isCardStackedOnControlledSite(G, source, ownerId)) return false;
+    } else if (
+        (ability.effects || []).some((e) => e.type === 'STACK_ON_CONTROLLED_SITE')
+    ) {
+        // Empiler : carte encore en jeu, pas déjà empilée
+        if (findStacked(G, source)) return false;
+    }
     return true;
+}
+
+function findStacked(G: GameState, source: CardState): boolean {
+    const id = source.instanceId || source.id;
+    return (G.path || []).some((site) =>
+        (site?.stacked || []).some(
+            (c) => c && (c.instanceId === id || c.id === id)
+        )
+    );
 }

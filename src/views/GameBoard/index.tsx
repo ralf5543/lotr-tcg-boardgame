@@ -58,6 +58,7 @@ import {
 import { getReplaceSiteCandidates, getReplaceablePathSitesInCurrentRegion, getOwnedPathSites } from '../../game/logic/sites';
 import { isSiteReplaceForbidden } from '../../game/logic/siteReplaceRestrictions';
 import { findEventAbilityForPhase } from '../../game/engine/abilities/playEventAbility';
+import { abilityMatchesPhase } from '../../game/engine/abilities/collectAbilities';
 import { useCardPlayAudio } from '../../hooks/audio/useCardPlayAudio';
 import { useDiscardAudio } from '../../hooks/audio/useDiscardAudio';
 import { useArcheryAudio } from '../../hooks/audio/useArcheryAudio';
@@ -1150,6 +1151,28 @@ export const GameBoard: React.FC<GameBoardProps> = ({
                     if (typeof moves.playCard === 'function') {
                         moves.playCard(index);
                     }
+                }
+                return;
+            }
+
+            if (origin === 'SITE_STACK') {
+                if (cancelled || targetId !== 'battlefield') return;
+                if (!card || card.type !== 'MINION') return;
+                const ability = (card.abilities || []).find(
+                    (ab) =>
+                        abilityMatchesPhase(ab, ctx.phase || '') &&
+                        (ab.effects || []).some(
+                            (effect) => effect.type === 'PLAY_FROM_STACK'
+                        )
+                );
+                if (!ability) return;
+                moves.activateAbility?.(
+                    card.instanceId || card.id,
+                    ability.id
+                );
+                audioService.play('CARD_PLAY');
+                if (soundPath) {
+                    audioService.play(soundPath, { delay: 0.3 });
                 }
                 return;
             }

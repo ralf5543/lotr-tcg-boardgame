@@ -6,11 +6,11 @@ import type {
     PlayerState,
 } from '../../../../game/types';
 import { getRegionTwilightBonus } from '../../../../game/logic/sites';
-import { getCardById } from '../../../../game/cardsData';
 import {
     attachesToSite,
     canPlayCard,
 } from '../../../../game/engine/canPlayCard';
+import { canUseAbility } from '../../../../game/engine/canUseAbility';
 import { SiteCard } from '../SiteCard';
 import { Card } from '../Card';
 import { SiteAttachmentAbilitySeal } from './SiteAttachmentAbilitySeal';
@@ -19,46 +19,21 @@ import { useDrag } from '../../../../contexts/DragContext';
 import { useHoverCard } from '../../../../contexts/HoverCardContext';
 import { useTargeting } from '../../../../contexts/TargetingContext';
 import { audioService } from '../../../../services/audioService';
+import { useLocalFaction } from '../../../../contexts/FactionContext';
 
 export const SITE_UX_MOCK_EVENT = 'lotr-site-ux-mock';
 export const SITE_UX_MOCK_KEY = 'lotr_site_ux_mock';
 
-const MOCK_STACK_IDS = ['4C180', '7C275', '4U11'] as const;
-
-function mockStackedCards(count: number): CardState[] {
-    return Array.from({ length: count }, (_, i) => {
-        const id = MOCK_STACK_IDS[i % MOCK_STACK_IDS.length];
-        const base = getCardById(id);
-        if (!base) {
-            return {
-                id,
-                instanceId: `mock-stack-${i}`,
-                kind: 'SHADOW',
-                type: 'MINION',
-                culture: 'SAURON',
-                twilightCost: 3,
-                strength: 8,
-                vitality: 2,
-            } as CardState;
-        }
-        return {
-            ...base,
-            instanceId: `mock-stack-${id}-${i}`,
-        };
-    });
-}
-
-/** Contrôle / stack factices — attache réelle via site.attachments. */
+/** Contrôle factice uniquement — stack = `site.stacked` réel. */
 const UX_MOCK_BY_INDEX: Record<
     number,
     {
         controlledBy?: '0' | '1';
-        stackCount?: number;
     }
 > = {
     1: { controlledBy: '1' },
-    3: { controlledBy: '0', stackCount: 3 },
-    4: { controlledBy: '1', stackCount: 2 },
+    3: { controlledBy: '0' },
+    4: { controlledBy: '1' },
 };
 
 interface SitePathProps {
@@ -97,6 +72,7 @@ export const SitePath: React.FC<SitePathProps> = ({
         activeTargetId,
         dragged,
         isOverHandCancel,
+        startDrag,
     } = useDrag();
     const {
         targetingKind,
@@ -182,9 +158,20 @@ export const SitePath: React.FC<SitePathProps> = ({
     }, [nextEmptyIndex, onPlaySite]);
 
     const { setHoveredCard } = useHoverCard();
+    const localFaction = useLocalFaction();
 
     const p0 = players?.['0'];
     const p1 = players?.['1'];
+
+    const isStackedPlayable = (card: CardState): boolean => {
+        if (!G || !phase || !localPlayerId) return false;
+        if (card.kind !== localFaction) return false;
+        return canUseAbility(card, {
+            G,
+            ctx: { phase },
+            playerID: localPlayerId,
+        }).valid;
+    };
 
     const renderSlot = (index: number) => {
         const site = slots[index];
@@ -392,17 +379,37 @@ export const SitePath: React.FC<SitePathProps> = ({
                         ))}
                     </S.AttachmentSeals>
                 )}
-                {uxMock &&
-                    mock?.controlledBy != null &&
-                    mock.stackCount != null &&
-                    mock.stackCount > 0 && (
-                        <S.StackedMinionsGrid>
-                            {mockStackedCards(mock.stackCount).map((card) => (
+                {(site?.stacked?.length || 0) > 0 && (
+                    <S.StackedMinionsGrid>
+                        {(site!.stacked || []).map((card, stackIndex) => {
+                            const playable = isStackedPlayable(card);
+                            const cardKey = card.instanceId || card.id;
+                            const draggedStacked =
+                                dragged?.origin === 'SITE_STACK' &&
+                                dragged.card &&
+                                'type' in dragged.card
+                                    ? (dragged.card as CardState)
+                                    : null;
+                            const isBeingDragged = Boolean(
+                                draggedStacked &&
+                                    (draggedStacked.instanceId === cardKey ||
+                                        draggedStacked.id === cardKey)
+                            );
+                            return (
                                 <S.StackedMinionSlot
-                                    key={card.instanceId || card.id}
-                                    onMouseEnter={() =>
-                                        setHoveredCard(card, 'portrait')
+                                    key={cardKey}
+                                    $playable={playable}
+                                    $dragging={Boolean(isBeingDragged)}
+                                    data-draggable={
+                                        playable ? 'true' : undefined
                                     }
+                                    data-cursor={
+                                        playable ? 'hand' : undefined
+                                    }
+                                    onMouseEnter={() => {
+                                        if (isBeingDragged) return;
+                                        setHoveredCard(card, 'portrait');
+                                    }}
                                     onMouseLeave={() => {
                                         if (site) {
                                             setHoveredCard(site, 'landscape');
@@ -410,16 +417,38 @@ export const SitePath: React.FC<SitePathProps> = ({
                                             setHoveredCard(null);
                                         }
                                     }}
+                                    onPointerDown={(e) => {
+                                        if (!playable || e.button !== 0) {
+                                            return;
+                                        }
+                                        e.stopPropagation();
+                                        e.preventDefault();
+                                        setHoveredCard(null);
+                                        startDrag(
+                                            card,
+                                            stackIndex,
+                                            e,
+                                            'SITE_STACK',
+                                            'portrait',
+                                            siteKey
+                                        );
+                                    }}
                                 >
                                     <Card
                                         card={card}
                                         size="sm"
                                         isDraggable={false}
+                                        isStackedOnSite
+                                        G={G}
+                                        phase={phase}
+                                        playerID={localPlayerId}
+                                        onActivateAbility={onActivateAbility}
                                     />
                                 </S.StackedMinionSlot>
-                            ))}
-                        </S.StackedMinionsGrid>
-                    )}
+                            );
+                        })}
+                    </S.StackedMinionsGrid>
+                )}
             </S.SiteCardContainer>
         );
     };

@@ -27,6 +27,8 @@ import {
     getCurrentSiteIndex,
     takeControlOfSite,
     liberateSite,
+    stackMinionOnControlledSite,
+    playStackedMinion,
 } from '../../logic/sites';
 import { isSiteReplaceForbidden } from '../../logic/siteReplaceRestrictions';
 import type { CardKeyword } from '../../types';
@@ -247,6 +249,35 @@ export function applyAbilityEffect(
             const ownerId = abilityOwnerPlayerId(G, source);
             if (!ownerId) return false;
             if (!liberateSite(G, ownerId)) return false;
+            continue;
+        }
+
+        if (effect.type === 'STACK_ON_CONTROLLED_SITE') {
+            const ownerId = abilityOwnerPlayerId(G, source);
+            if (!ownerId) return false;
+            if (
+                !stackMinionOnControlledSite(
+                    G,
+                    source,
+                    ownerId,
+                    chosenIds[0]
+                )
+            ) {
+                return false;
+            }
+            continue;
+        }
+
+        if (effect.type === 'PLAY_FROM_STACK') {
+            const ownerId = abilityOwnerPlayerId(G, source);
+            if (!ownerId) return false;
+            const paid = playStackedMinion(
+                G,
+                source,
+                ownerId,
+                effect.twilightReduce || 0
+            );
+            if (paid === null) return false;
             continue;
         }
 

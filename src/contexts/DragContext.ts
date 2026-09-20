@@ -2,7 +2,13 @@ import { createContext, useContext } from 'react';
 import type { CardState, SiteCardState } from '../game/types';
 
 export type CardOrientation = 'portrait' | 'landscape';
-export type CardOrigin = 'HAND' | 'BOARD' | 'ATTACHMENT' | 'BATTLEFIELD' | 'SUPPORT_AREA';
+export type CardOrigin =
+    | 'HAND'
+    | 'BOARD'
+    | 'ATTACHMENT'
+    | 'BATTLEFIELD'
+    | 'SUPPORT_AREA'
+    | 'SITE_STACK';
 
 /** En coords design (1080), sous ce Y le drop d'événement est un cancel (main / dock). */
 export const HAND_CANCEL_VIRTUAL_Y = 820;

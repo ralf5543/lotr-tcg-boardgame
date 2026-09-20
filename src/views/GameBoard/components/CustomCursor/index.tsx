@@ -1,24 +1,21 @@
 import { useEffect, useRef, useState } from 'react';
 import styled, { css } from 'styled-components';
-import { useFaction, Faction } from '../../../../contexts/FactionContext';
+import { useFaction, type Faction } from '../../../../contexts/FactionContext';
 
 type CursorState = 'DEFAULT' | 'HOVER';
 
 export function CustomAssetCursor() {
-    const { myPlayerId, fpPlayerId, G } = useFaction();
-    
-    // 🟢 DÉDUCTION DU RÔLE DE FACTION
-    const isSetupPhase = Boolean(G?.setupState && G.setupState.step !== 'COMPLETED');
+    const { myPlayerId, fpPlayerId, isSetupPhase } = useFaction();
 
     const playerFaction: Faction = isSetupPhase
         ? 'FREE_PEOPLE'
         : myPlayerId === fpPlayerId
-        ? 'FREE_PEOPLE'
-        : 'SHADOW';
+          ? 'FREE_PEOPLE'
+          : 'SHADOW';
 
     const [cursorState, setCursorState] = useState<CursorState>('DEFAULT');
     const [isInteractive, setIsInteractive] = useState(false);
-    
+
     const roundedRef = useRef<HTMLDivElement>(null);
     const pointedRef = useRef<HTMLDivElement>(null);
 
@@ -30,6 +27,7 @@ export function CustomAssetCursor() {
 
             const isDraggableCard = target.closest('[data-draggable="true"]');
             const forceArrow = target.closest('[data-cursor="arrow"]');
+            const forceHand = target.closest('[data-cursor="hand"]');
             const isClickable = target.closest(
                 'button, a, input, select, textarea, [role="button"], [data-interactive="true"]'
             );
@@ -37,7 +35,7 @@ export function CustomAssetCursor() {
             if (forceArrow) {
                 setCursorState('DEFAULT');
                 setIsInteractive(true);
-            } else if (isDraggableCard) {
+            } else if (forceHand || isDraggableCard) {
                 setCursorState('HOVER');
                 setIsInteractive(true);
             } else if (isClickable) {

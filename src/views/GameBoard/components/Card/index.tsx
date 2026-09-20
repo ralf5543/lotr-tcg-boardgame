@@ -214,6 +214,8 @@ interface CardProps {
     currentLang?: SupportedLanguage;
     phase?: string;
     playerID?: string;
+    /** Séide empilé sur un site : halo + clic direct (pas le petit sceau). */
+    isStackedOnSite?: boolean;
     onActivateAbility?: (
         sourceInstanceId: string,
         abilityId: string,
@@ -243,6 +245,7 @@ export const Card: React.FC<CardProps> = ({
     currentLang = 'fr',
     phase,
     playerID,
+    isStackedOnSite = false,
     onActivateAbility,
 }) => {
     const { setHoveredCard } = useHoverCard();
@@ -325,6 +328,12 @@ export const Card: React.FC<CardProps> = ({
               String(viewerPlayerId)
             : canUseAbility(card, abilityContext).valid)
     );
+
+    /** Empilé jouable : clic sur la mini-carte (le sceau est trop petit après scale). */
+    const stackedDirectPlay =
+        isStackedOnSite &&
+        abilityPhaseMatch &&
+        listedAbilities.length === 1;
 
     if (isAbilityMenuOpen && !abilityPhaseMatch) {
         setIsAbilityMenuOpen(false);
@@ -567,7 +576,8 @@ export const Card: React.FC<CardProps> = ({
 
     const rawActionable = isActionable ?? card?.isActionable ?? false;
     const effectiveIsActionable =
-        rawActionable && !isOpponent && !showAbilityButton;
+        (rawActionable && !isOpponent && !showAbilityButton) ||
+        Boolean(stackedDirectPlay);
 
     const activateListedAbility = (source: CardState, ability: Ability) => {
         const hostId = card.instanceId || card.id;
@@ -614,7 +624,16 @@ export const Card: React.FC<CardProps> = ({
             onMouseLeave={handleMouseLeave}
             onDragStart={isDraggable ? handleDragStart : undefined}
             onPointerDown={handlePointerDown}
+            onClick={(e) => {
+                if (!stackedDirectPlay) return;
+                e.stopPropagation();
+                const entry = listedAbilities[0];
+                if (!entry) return;
+                activateListedAbility(entry.source, entry.ability);
+            }}
             data-draggable={isDraggable ? 'true' : undefined}
+            data-cursor={stackedDirectPlay ? 'hand' : undefined}
+            data-interactive={stackedDirectPlay ? 'true' : undefined}
             data-overwhelmed={card.isOverwhelmed ? 'true' : 'false'}
             $isAttachment={isAttachment}
         >
@@ -845,7 +864,7 @@ export const Card: React.FC<CardProps> = ({
                 />
             )}
 
-            {showAbilityButton && (
+            {showAbilityButton && !stackedDirectPlay && (
                 <S.AbilityButton
                     ref={abilityButtonRef}
                     type="button"

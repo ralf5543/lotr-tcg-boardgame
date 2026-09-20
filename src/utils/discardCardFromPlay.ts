@@ -81,21 +81,41 @@ export function discardCardFromPlay(
     }
 
     for (const site of G.path || []) {
-        if (!site?.attachments?.length) continue;
-        const attachedIndex = site.attachments.findIndex((card) =>
-            matchCard(card, targetId)
-        );
-        if (attachedIndex < 0) continue;
-        const [removed] = site.attachments.splice(attachedIndex, 1);
-        if (!removed) return false;
-        const fpId = G.fpPlayerId || '0';
-        const shadowId = fpId === '0' ? '1' : '0';
-        const ownerId =
-            removed.kind === 'FREE_PEOPLE' ? fpId : shadowId;
-        const pile = ownerDiscardPile(G, ownerId, removed);
-        if (!pile) return false;
-        pile.push(removed);
-        return true;
+        if (!site?.attachments?.length && !site?.stacked?.length) continue;
+        if (site.attachments?.length) {
+            const attachedIndex = site.attachments.findIndex((card) =>
+                matchCard(card, targetId)
+            );
+            if (attachedIndex >= 0) {
+                const [removed] = site.attachments.splice(attachedIndex, 1);
+                if (!removed) return false;
+                const fpId = G.fpPlayerId || '0';
+                const shadowId = fpId === '0' ? '1' : '0';
+                const ownerId =
+                    removed.kind === 'FREE_PEOPLE' ? fpId : shadowId;
+                const pile = ownerDiscardPile(G, ownerId, removed);
+                if (!pile) return false;
+                pile.push(removed);
+                return true;
+            }
+        }
+        if (site.stacked?.length) {
+            const stackedIndex = site.stacked.findIndex((card) =>
+                matchCard(card, targetId)
+            );
+            if (stackedIndex >= 0) {
+                const [removed] = site.stacked.splice(stackedIndex, 1);
+                if (!removed) return false;
+                const fpId = G.fpPlayerId || '0';
+                const shadowId = fpId === '0' ? '1' : '0';
+                const ownerId =
+                    removed.kind === 'FREE_PEOPLE' ? fpId : shadowId;
+                const pile = ownerDiscardPile(G, ownerId, removed);
+                if (!pile) return false;
+                pile.push(removed);
+                return true;
+            }
+        }
     }
 
     return false;

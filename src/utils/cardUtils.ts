@@ -45,12 +45,14 @@ export function findTargetCard(
         if (attached) return attached;
     }
 
-    // 3. Path (Sites + conditions attachées)
+    // 3. Path (Sites + conditions attachées + séides empilés)
     for (const site of G.path || []) {
         if (!site) continue;
         if (match(site as any)) return site;
         const attached = site.attachments?.find(match);
         if (attached) return attached;
+        const stacked = site.stacked?.find(match);
+        if (stacked) return stacked;
     }
 
     return null;
