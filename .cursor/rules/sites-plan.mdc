@@ -87,7 +87,7 @@ L’ancien plan effets de cartes est **figé** (`.cursor/rules/card-effects-plan
    - **Stack** (1ʳᵉ verticale) : `STACK_ON_CONTROLLED_SITE` + `PLAY_FROM_STACK` → **4C180** Uruk Besieger (Regroup empile / Shadow rejoue −1). Auto = plus bas site contrôlé si 1 seul. ✅
    - ✅ Each time / When wins → stack → **4U24** Hillman Rabble, **4U11** Dunlending Looter (+ play −2 déjà câblé).
    - ✅ Choix multi-sites au stack (halo + flèche si plusieurs sites contrôlés).
-   - ✅ Stack un autre séide (filtre) : **8R108** Troll → besieger ; **8U107** Engine → Sauron minion (menace).
+   - ✅ Stack un autre séide (filtre) : **8R108** Troll → besieger ; **8U107** Engine Regroup → Sauron minion (menace). Shadow play depuis pile = suite.
    - Suite stack : play générique depuis pile (autre carte) / Olog-hai / Garrison discard-hand.
    - Cultures concernées : **Dunland**, **Sauron**, **Isengard** (Uruk).
 
