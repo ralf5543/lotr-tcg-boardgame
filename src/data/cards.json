@@ -84116,6 +84116,32 @@
         ]
       }
     ],
+    "abilities": [
+      {
+        "id": "8U107:0",
+        "phases": [
+          "REGROUP"
+        ],
+        "cost": [
+          {
+            "removeThreats": 1
+          }
+        ],
+        "effects": [
+          {
+            "type": "STACK_ON_CONTROLLED_SITE",
+            "target": [
+              [
+                "SAURON",
+                "MINION"
+              ]
+            ]
+          }
+        ],
+        "source": "SELF",
+        "text": "REGROUP: Remove a threat to stack your sauron minion on a site you control."
+      }
+    ],
     "actionPhases": [
       "REGROUP",
       "SHADOW"
@@ -84174,6 +84200,36 @@
             ]
           }
         ]
+      }
+    ],
+    "abilities": [
+      {
+        "id": "8R108:0",
+        "phases": [
+          "REGROUP"
+        ],
+        "cost": [
+          {
+            "exert": [
+              {
+                "count": 1,
+                "target": "SELF"
+              }
+            ]
+          }
+        ],
+        "effects": [
+          {
+            "type": "STACK_ON_CONTROLLED_SITE",
+            "target": [
+              [
+                "BESIEGER"
+              ]
+            ]
+          }
+        ],
+        "source": "SELF",
+        "text": "REGROUP: Exert Troll of Gorgoroth to stack a besieger on a site you control."
       }
     ],
     "actionPhases": [

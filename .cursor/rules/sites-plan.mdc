@@ -17,7 +17,7 @@ L’ancien plan effets de cartes est **figé** (`.cursor/rules/card-effects-plan
 
 ## Ordre
 
-**Priorité courante** : élargir **stack** (Sauron/Olog / play générique) / effets gametext conditions site. Keywords cartes : skip@site / reinforce jetons = ⏸. Preset `SITES_TEST` pour valider.
+**Priorité courante** : élargir **stack** (play depuis pile autre carte / Olog / Garrison) / effets gametext conditions site. Keywords cartes : skip@site / reinforce jetons = ⏸. Preset `SITES_TEST` pour valider.
 
 1. **Socle modèle** ✅
    - `SiteCardState.attachments` = `CardState[]` (vide tant que l’attache n’est pas câblée).
@@ -87,7 +87,8 @@ L’ancien plan effets de cartes est **figé** (`.cursor/rules/card-effects-plan
    - **Stack** (1ʳᵉ verticale) : `STACK_ON_CONTROLLED_SITE` + `PLAY_FROM_STACK` → **4C180** Uruk Besieger (Regroup empile / Shadow rejoue −1). Auto = plus bas site contrôlé si 1 seul. ✅
    - ✅ Each time / When wins → stack → **4U24** Hillman Rabble, **4U11** Dunlending Looter (+ play −2 déjà câblé).
    - ✅ Choix multi-sites au stack (halo + flèche si plusieurs sites contrôlés).
-   - Suite stack : play générique / Olog-hai etc.
+   - ✅ Stack un autre séide (filtre) : **8R108** Troll → besieger ; **8U107** Engine → Sauron minion (menace).
+   - Suite stack : play générique depuis pile (autre carte) / Olog-hai / Garrison discard-hand.
    - Cultures concernées : **Dunland**, **Sauron**, **Isengard** (Uruk).
 
 ## Hors scope pour l’instant
@@ -109,4 +110,4 @@ L’ancien plan effets de cartes est **figé** (`.cursor/rules/card-effects-plan
 | Abilities / gametext site | partiel (move twilight + discard allies ✅) |
 | Remplacement de site sur le path | partiel (CURRENT/REGION/when-played/cannot ✅ ; échange OWNED ✅ — 11U45) |
 | Attache sur site | partiel (pose + badge + you control ✅ ; effets gametext ❌) |
-| Contrôle / libération | partiel (take control + liberate + each-time ✅ ; stack Regroup + wins→stack + choix multi-sites ✅) |
+| Contrôle / libération | partiel (take control + liberate + each-time ✅ ; stack self/wins + multi-sites + stack autre ✅) |

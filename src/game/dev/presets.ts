@@ -593,16 +593,19 @@ export const applyDevPreset = (
 
             if (shadowPlayer) {
                 G.battlefield = [
-                    // Regroup : stack / Shadow : play (−1)
                     clonePresetCard('4C180', 'dev-uruk-besieger'),
-                    // Wins → stack / Shadow : play (−2)
+                    clonePresetCard('8R108', 'dev-troll-gorgoroth'),
                     clonePresetCard('4U24', 'dev-hillman-rabble'),
                 ];
+                shadowPlayer.supportArea = [
+                    clonePresetCard('8U107', 'dev-marching-companies'),
+                ];
                 G.twilightPool = 8;
+                fpPlayer.threats = 2;
             }
 
             G.statusMessage =
-                '[DEV] Sites : sites 1–2 contrôlés · Besieger (stack) · Rabble (wins→stack).';
+                '[DEV] Sites : 1–2 contrôlés · Besieger · Troll · Engine · Rabble.';
             break;
         }
     }

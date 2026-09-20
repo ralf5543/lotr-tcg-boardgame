@@ -66,6 +66,22 @@ function candidatesForEffect(
         return uniqueCards(resolveWinnerTargets(G, source, ability));
     }
     let matches = uniqueCards(resolveCostTarget(G, source, effect.target));
+    if (effect.type === 'STACK_ON_CONTROLLED_SITE') {
+        return matches.filter(
+            (card) =>
+                card.type === 'MINION' &&
+                card.kind === 'SHADOW' &&
+                !card.isDead &&
+                Boolean(
+                    (G.battlefield || []).some(
+                        (c) =>
+                            c &&
+                            (c.instanceId === card.instanceId ||
+                                c.id === card.id)
+                    )
+                )
+        );
+    }
     if (
         effect.type === 'ADD_TEMP_STAT' &&
         effect.excludeSource
@@ -262,6 +278,12 @@ export function abilityHasLegalEffectTarget(
             const ownerId = abilityOwnerPlayerId(G, source);
             if (!ownerId) return false;
             if (getSitesControlledBy(G, ownerId).length === 0) return false;
+            if (Array.isArray(effect.target)) {
+                if (candidatesForEffect(G, source, ability, effect).length < 1) {
+                    return false;
+                }
+                continue;
+            }
             if (findStackedCardSite(G, source.instanceId || source.id)) {
                 return false;
             }

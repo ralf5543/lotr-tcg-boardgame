@@ -4,6 +4,7 @@ import {
     abilityNeedsSiteReplace,
     abilityNeedsSiteExchange,
     abilityNeedsStackSiteChoice,
+    abilityStacksOtherMinion,
     applyAbilityEffect,
     abilityReplaceSiteEffect,
 } from '../engine/abilities/applyAbilityEffect';
@@ -78,7 +79,15 @@ export const activateAbility = (
         const provided = normalizeChosenIds(
             needsCostDesignation ? chosenEffectTargetId : chosenTargetId
         );
-        if (provided.length !== need) {
+        const siteExtra =
+            abilityNeedsStackSiteChoice(G, source, ability) &&
+            abilityStacksOtherMinion(ability)
+                ? 1
+                : 0;
+        if (
+            provided.length !== need &&
+            provided.length !== need + siteExtra
+        ) {
             return 'INVALID_MOVE';
         }
     }
@@ -102,7 +111,10 @@ export const activateAbility = (
         );
         if (ids.length < 2) return 'INVALID_MOVE';
     }
-    if (abilityNeedsStackSiteChoice(G, source, ability)) {
+    if (
+        abilityNeedsStackSiteChoice(G, source, ability) &&
+        !abilityStacksOtherMinion(ability)
+    ) {
         const ids = normalizeChosenIds(
             needsCostDesignation
                 ? chosenEffectTargetId

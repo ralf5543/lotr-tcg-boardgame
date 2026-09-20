@@ -770,7 +770,7 @@ function findKnownKeyword(text: string): string | undefined {
     return undefined;
 }
 
-const FILTER_STOPWORDS = new Set(['A', 'AN', 'THE', 'OR']);
+const FILTER_STOPWORDS = new Set(['A', 'AN', 'THE', 'OR', 'YOUR']);
 
 const FILTER_ALIASES: Record<string, string> = {
     URUKHAI: 'URUK-HAI',
@@ -4553,6 +4553,94 @@ export function parseAbilities(
                 phases,
                 cost: [],
                 effects: [{ type: 'STACK_ON_CONTROLLED_SITE' }],
+                source: 'SELF',
+                text: stackClause,
+            });
+            return;
+        }
+
+        // « Exert X to stack a besieger / a Sauron minion on a site you control. »
+        const exertStackOtherMatch = bodyPlain.match(
+            /^Exert\s+([\s\S]+?)\s+to\s+stack\s+(a\s+[\s\S]+?)\s+on a site you control\.?$/i
+        );
+        if (exertStackOtherMatch) {
+            if (/\b(and|or)\b/i.test(exertStackOtherMatch[1])) return;
+            const subject = parseExertSubject(
+                exertStackOtherMatch[1],
+                cardTitle,
+                text
+            );
+            const filters = parseClassFilters(exertStackOtherMatch[2]);
+            if (!subject || filters.length === 0) return;
+
+            const stackClause = `${marker.phase}: Exert ${exertStackOtherMatch[1].trim()} to stack ${exertStackOtherMatch[2].trim()} on a site you control.`
+                .replace(/<[^>]+>/g, '')
+                .replace(/\s+/g, ' ')
+                .replace(/\s+\./g, '.')
+                .trim();
+
+            abilities.push({
+                id: `${cardId || 'ability'}:${abilities.length}`,
+                phases,
+                cost: [
+                    {
+                        exert: [
+                            {
+                                count: subject.count,
+                                target: subject.target,
+                                ...(subject.mode ? { mode: subject.mode } : {}),
+                            },
+                        ],
+                    },
+                ],
+                effects: [
+                    {
+                        type: 'STACK_ON_CONTROLLED_SITE',
+                        target: [filters],
+                    },
+                ],
+                source: subject.target === 'BEARER' ? 'ATTACHMENT' : 'SELF',
+                text: stackClause,
+            });
+            return;
+        }
+
+        // « Remove a threat to stack your Sauron minion on a site you control. »
+        const threatStackOtherMatch = bodyPlain.match(
+            /^Remove\s+(\d+|a|one)\s+threats?\s+to\s+stack\s+your\s+([\s\S]+?)\s+on a site you control\.?$/i
+        );
+        if (threatStackOtherMatch) {
+            const rawCount = threatStackOtherMatch[1].toLowerCase();
+            const threatCount =
+                rawCount === 'a' || rawCount === 'one'
+                    ? 1
+                    : parseInt(rawCount, 10);
+            const filters = parseClassFilters(threatStackOtherMatch[2]);
+            if (
+                !Number.isFinite(threatCount) ||
+                threatCount < 1 ||
+                filters.length === 0
+            ) {
+                return;
+            }
+
+            const stackClause =
+                `${marker.phase}: Remove ${threatCount === 1 ? 'a' : threatCount} threat${threatCount > 1 ? 's' : ''} to stack your ${threatStackOtherMatch[2].trim()} on a site you control.`
+                    .replace(/<[^>]+>/g, '')
+                    .replace(/\s+/g, ' ')
+                    .replace(/\s+\./g, '.')
+                    .trim();
+
+            abilities.push({
+                id: `${cardId || 'ability'}:${abilities.length}`,
+                phases,
+                cost: [{ removeThreats: threatCount }],
+                effects: [
+                    {
+                        type: 'STACK_ON_CONTROLLED_SITE',
+                        target: [filters],
+                    },
+                ],
                 source: 'SELF',
                 text: stackClause,
             });

@@ -54,6 +54,7 @@ import {
     abilityNeedsSiteExchange,
     abilityNeedsPathThenDeckSite,
     abilityNeedsStackSiteChoice,
+    abilityStacksOtherMinion,
     abilityReplaceSiteEffect,
     getStackSiteCandidates,
 } from '../../game/engine/abilities/applyAbilityEffect';
@@ -599,6 +600,51 @@ export const GameBoard: React.FC<GameBoardProps> = ({
         const needsCost = abilityNeedsCostDesignation(G, source, ability);
         const needsEffect = abilityNeedsEffectDesignation(G, source, ability);
         const effectNeed = getEffectDesignationCount(G, source, ability);
+        const needsStackSite = abilityNeedsStackSiteChoice(G, source, ability);
+        const stacksOther = abilityStacksOtherMinion(ability);
+
+        const commitAbility = (
+            costId?: string,
+            effectIds?: string | string[]
+        ) => {
+            stopTargeting();
+            if (costId) {
+                moves.activateAbility?.(
+                    sourceInstanceId,
+                    abilityId,
+                    costId,
+                    [],
+                    effectIds
+                );
+                return;
+            }
+            moves.activateAbility?.(
+                sourceInstanceId,
+                abilityId,
+                effectIds
+            );
+        };
+
+        const afterMinionOrDirect = (
+            costId?: string,
+            minionId?: string
+        ) => {
+            if (needsStackSite) {
+                return requestStackSite(source, (siteId) => {
+                    if (minionId) {
+                        commitAbility(costId, [minionId, siteId]);
+                    } else {
+                        commitAbility(costId, siteId);
+                    }
+                });
+            }
+            if (minionId) {
+                commitAbility(costId, minionId);
+                return true;
+            }
+            commitAbility(costId);
+            return true;
+        };
 
         const requestEffect = (costId?: string) => {
             if (effectNeed > 1) {
@@ -628,6 +674,10 @@ export const GameBoard: React.FC<GameBoardProps> = ({
                 source,
                 ability,
                 (effectId) => {
+                    if (stacksOther) {
+                        afterMinionOrDirect(costId, effectId);
+                        return;
+                    }
                     stopTargeting();
                     moves.activateAbility?.(
                         sourceInstanceId,
@@ -712,7 +762,7 @@ export const GameBoard: React.FC<GameBoardProps> = ({
             );
             return;
         }
-        if (abilityNeedsStackSiteChoice(G, source, ability)) {
+        if (needsStackSite && !stacksOther) {
             if (needsCost) {
                 requestDesignation(
                     source,

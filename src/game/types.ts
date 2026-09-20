@@ -292,10 +292,12 @@ export type AbilityEffect =
       }
     | {
           /**
-           * Empile cette carte (séide) sur un site que tu contrôles.
-           * Auto : plus bas numéro contrôlé. Cible optionnelle = site id.
+           * Empile un séide sur un site que tu contrôles.
+           * Sans `target` : empile la source. Avec filtre (ex. besieger) : désigner le séide.
+           * Cibles choisies : `[minionId?, siteId?]` (site seulement si plusieurs contrôlés).
            */
           type: 'STACK_ON_CONTROLLED_SITE';
+          target?: AbilityTargetRef;
       }
     | {
           /**

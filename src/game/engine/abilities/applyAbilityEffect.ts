@@ -74,6 +74,21 @@ export function abilityNeedsStackSite(ability: Ability): boolean {
     );
 }
 
+export function abilityStackSiteEffect(
+    ability: Ability
+): Extract<Ability['effects'][number], { type: 'STACK_ON_CONTROLLED_SITE' }> | null {
+    const effect = (ability.effects || []).find(
+        (item) => item.type === 'STACK_ON_CONTROLLED_SITE'
+    );
+    return effect && effect.type === 'STACK_ON_CONTROLLED_SITE' ? effect : null;
+}
+
+/** Empile un autre séide (filtre) plutôt que la source. */
+export function abilityStacksOtherMinion(ability: Ability): boolean {
+    const effect = abilityStackSiteEffect(ability);
+    return Boolean(effect && Array.isArray(effect.target));
+}
+
 /** Sites contrôlés où l’on peut empiler le séide source. */
 export function getStackSiteCandidates(
     G: GameState,
@@ -283,12 +298,26 @@ export function applyAbilityEffect(
         if (effect.type === 'STACK_ON_CONTROLLED_SITE') {
             const ownerId = abilityOwnerPlayerId(G, source);
             if (!ownerId) return false;
+
+            let cardToStack: CardState = source;
+            let siteId: string | undefined = chosenIds[0];
+
+            if (Array.isArray(effect.target)) {
+                const minionId = chosenIds[0];
+                if (!minionId) return false;
+                const picked = findTargetCard(G, minionId) as CardState | null;
+                if (!picked || picked.type !== 'MINION') return false;
+                if (!cardMatchesTarget(picked, effect.target)) return false;
+                cardToStack = picked;
+                siteId = chosenIds[1];
+            }
+
             if (
                 !stackMinionOnControlledSite(
                     G,
-                    source,
+                    cardToStack,
                     ownerId,
-                    chosenIds[0]
+                    siteId
                 )
             ) {
                 return false;

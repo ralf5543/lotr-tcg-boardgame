@@ -2136,6 +2136,56 @@ describe('parseAbilities — While spot N terrain sites', () => {
         ]);
     });
 
+    it('parse Troll of Gorgoroth : exert to stack a besieger', () => {
+        expect(
+            parseAbilities(
+                '<keyword>Besieger.</keyword> <keyword>Fierce.</keyword> To play, spot a <symbol>sauron</symbol> Orc. The twilight cost of this minion is –2 for each <symbol>sauron</symbol> engine you spot. <keyword>Regroup:</keyword> Exert Troll of Gorgoroth to stack a besieger on a site you control.',
+                'Troll of Gorgoroth',
+                '8R108'
+            )
+        ).toEqual([
+            expect.objectContaining({
+                phases: ['REGROUP'],
+                cost: [
+                    {
+                        exert: [{ count: 1, target: 'SELF' }],
+                    },
+                ],
+                effects: [
+                    {
+                        type: 'STACK_ON_CONTROLLED_SITE',
+                        target: [['BESIEGER']],
+                    },
+                ],
+                source: 'SELF',
+            }),
+        ]);
+    });
+
+    it('parse Their Marching Companies : remove threat to stack Sauron minion', () => {
+        expect(
+            parseAbilities(
+                '<keyword>Engine.</keyword> To play, spot a <symbol>sauron</symbol> minion. <keyword>Regroup:</keyword> Remove a threat to stack your <symbol>sauron</symbol> minion on a site you control. <keyword>Shadow:</keyword> Remove a threat to play a <symbol>sauron</symbol> minion stacked on a site you control.',
+                'Their Marching Companies',
+                '8U107'
+            )
+        ).toEqual(
+            expect.arrayContaining([
+                expect.objectContaining({
+                    phases: ['REGROUP'],
+                    cost: [{ removeThreats: 1 }],
+                    effects: [
+                        {
+                            type: 'STACK_ON_CONTROLLED_SITE',
+                            target: [['SAURON', 'MINION']],
+                        },
+                    ],
+                    source: 'SELF',
+                }),
+            ])
+        );
+    });
+
     it('parse No Retreat : Spot 2 Dunland Men + discard → force move again', () => {
         expect(
             parseAbilities(
