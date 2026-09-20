@@ -1469,7 +1469,7 @@ export const GameBoard: React.FC<GameBoardProps> = ({
         window.addEventListener('card-dropped', handleGlobalCardDrop);
         return () =>
             window.removeEventListener('card-dropped', handleGlobalCardDrop);
-    }, [moves, ctx.phase, G, myId, requestDesignation, requestSiteReplace, stopTargeting, targetingKind, pendingCard, targetingAbilityId, targetingDiscardedHandIds, isCardTargetable]);
+    }, [moves, ctx.phase, G, myId, requestDesignation, requestSiteReplace, requestHandDiscard, stopTargeting, targetingKind, pendingCard, targetingAbilityId, targetingDiscardedHandIds, isCardTargetable]);
 
     const { setFpPlayerId } = useFaction();
     useEffect(() => {
