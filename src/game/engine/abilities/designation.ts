@@ -23,6 +23,7 @@ import {
     isCardStackedOnControlledSite,
     findStackedCardSite,
     getCurrentSiteIndex,
+    getStackedMinionsOnControlledSites,
 } from '../../logic/sites';
 import { getEffectiveTwilightCost } from '../../../utils/roamingDetection';
 import {
@@ -81,6 +82,23 @@ function candidatesForEffect(
                     )
                 )
         );
+    }
+    if (effect.type === 'PLAY_FROM_STACK' && Array.isArray(effect.target)) {
+        const ownerId = abilityOwnerPlayerId(G, source);
+        if (!ownerId) return [];
+        const reduce = effect.twilightReduce || 0;
+        const siteIndex = getCurrentSiteIndex(G);
+        return getStackedMinionsOnControlledSites(
+            G,
+            ownerId,
+            effect.target
+        ).filter((card) => {
+            const cost = Math.max(
+                0,
+                getEffectiveTwilightCost(card, siteIndex) - reduce
+            );
+            return (G.twilightPool || 0) >= cost;
+        });
     }
     if (
         effect.type === 'ADD_TEMP_STAT' &&
@@ -292,6 +310,12 @@ export function abilityHasLegalEffectTarget(
         if (effect.type === 'PLAY_FROM_STACK') {
             const ownerId = abilityOwnerPlayerId(G, source);
             if (!ownerId) return false;
+            if (Array.isArray(effect.target)) {
+                if (candidatesForEffect(G, source, ability, effect).length < 1) {
+                    return false;
+                }
+                continue;
+            }
             if (!isCardStackedOnControlledSite(G, source, ownerId)) {
                 return false;
             }

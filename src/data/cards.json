@@ -84140,6 +84140,30 @@
         ],
         "source": "SELF",
         "text": "REGROUP: Remove a threat to stack your sauron minion on a site you control."
+      },
+      {
+        "id": "8U107:1",
+        "phases": [
+          "SHADOW"
+        ],
+        "cost": [
+          {
+            "removeThreats": 1
+          }
+        ],
+        "effects": [
+          {
+            "type": "PLAY_FROM_STACK",
+            "target": [
+              [
+                "SAURON",
+                "MINION"
+              ]
+            ]
+          }
+        ],
+        "source": "SELF",
+        "text": "SHADOW: Remove a threat to play a sauron minion stacked on a site you control."
       }
     ],
     "actionPhases": [

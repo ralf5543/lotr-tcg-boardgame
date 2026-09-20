@@ -5,6 +5,7 @@ import type {
     SiteCardState,
 } from '../types';
 import { getEffectiveTwilightCost } from '../../utils/roamingDetection';
+import { cardMatchesTarget } from '../engine/validations/matchers';
 
 export function getCurrentSiteIndex(G: GameState): number {
     const fpId = G.fpPlayerId || '0';
@@ -255,6 +256,25 @@ export function findStackedCardSite(
         if (card) return { site, pathIndex: i, card };
     }
     return null;
+}
+
+/** Séides empilés sur tes sites contrôlés, optionnellement filtrés. */
+export function getStackedMinionsOnControlledSites(
+    G: GameState,
+    controllerId: string,
+    filter?: string[][]
+): CardState[] {
+    const found: CardState[] = [];
+    for (const { site } of getSitesControlledBy(G, controllerId)) {
+        for (const card of site.stacked || []) {
+            if (!card || card.type !== 'MINION' || card.kind !== 'SHADOW') {
+                continue;
+            }
+            if (filter && !cardMatchesTarget(card, filter)) continue;
+            found.push(card);
+        }
+    }
+    return found;
 }
 
 export function isCardStackedOnControlledSite(

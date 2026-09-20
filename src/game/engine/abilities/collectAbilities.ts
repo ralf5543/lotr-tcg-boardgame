@@ -121,12 +121,42 @@ export function cardOrAttachmentsHaveActionPhases(card: CardState): boolean {
     );
 }
 
+/** Cultures reconnues pour le rendu en `<symbol>…</symbol>` (FormattedText). */
+const CULTURE_TOKENS = new Set([
+    'DUNLAND',
+    'DWARVEN',
+    'ELVEN',
+    'GANDALF',
+    'GOLLUM',
+    'GONDOR',
+    'ISENGARD',
+    'MEN',
+    'MORIA',
+    'ORC',
+    'RAIDER',
+    'WRAITH',
+    'ROHAN',
+    'SAURON',
+    'SHIRE',
+    'URUK-HAI',
+]);
+
+const TYPE_TOKENS = new Set(Object.keys(TRANSLATIONS.type));
+const RACE_TOKENS = new Set(Object.keys(TRANSLATIONS.race));
+
+function cultureSymbol(token: string): string {
+    return `<symbol>${token.toLowerCase()}</symbol>`;
+}
+
 function translateCriterionToken(token: string): string {
     const upper = token.toUpperCase();
     if (upper.startsWith('SIGNET_')) {
         const name = upper.slice('SIGNET_'.length);
         const pretty = name.charAt(0) + name.slice(1).toLowerCase();
         return `sceau ${pretty}`;
+    }
+    if (CULTURE_TOKENS.has(upper)) {
+        return cultureSymbol(upper);
     }
     const typeLabel = TRANSLATIONS.type[upper as keyof typeof TRANSLATIONS.type];
     if (typeLabel) return typeLabel;
@@ -136,7 +166,7 @@ function translateCriterionToken(token: string): string {
 
     const cultureLabel =
         TRANSLATIONS.culture[upper as keyof typeof TRANSLATIONS.culture];
-    if (cultureLabel) return cultureLabel.toLowerCase();
+    if (cultureLabel) return cultureSymbol(upper);
 
     const keywordLabel =
         TRANSLATIONS.keyword[token as CardKeyword]?.label ||
@@ -146,30 +176,6 @@ function translateCriterionToken(token: string): string {
     if (token !== token.toUpperCase()) return token;
     return token.toLowerCase();
 }
-
-/** « Homme du Gondor », « Orque de Sauron », « Compagnon nain »… */
-const CULTURE_OF: Record<string, string> = {
-    DUNLAND: 'du Pays de Dun',
-    DWARVEN: 'nain',
-    ELVEN: 'elfe',
-    GANDALF: 'de Gandalf',
-    GOLLUM: 'de Gollum',
-    GONDOR: 'du Gondor',
-    ISENGARD: 'd’Isengard',
-    MEN: 'des Hommes',
-    MORIA: 'de la Moria',
-    ORC: 'orque',
-    RAIDER: 'pillard',
-    WRAITH: 'spectre',
-    ROHAN: 'du Rohan',
-    SAURON: 'de Sauron',
-    SHIRE: 'de la Comté',
-    'URUK-HAI': 'ourouk-hai',
-};
-
-const CULTURE_TOKENS = new Set(Object.keys(CULTURE_OF));
-const TYPE_TOKENS = new Set(Object.keys(TRANSLATIONS.type));
-const RACE_TOKENS = new Set(Object.keys(TRANSLATIONS.race));
 
 function formatFilterList(tokens: string[]): string {
     // Race / classe d’abord, mot-clé ring en suffixe (« Homme associé à l’Anneau »).
@@ -182,7 +188,12 @@ function formatFilterList(tokens: string[]): string {
     );
 
     const cultures = rest.filter((t) => CULTURE_TOKENS.has(t.toUpperCase()));
-    const races = rest.filter((t) => RACE_TOKENS.has(t.toUpperCase()));
+    // Si un jeton est culture et race (ex. ORC), on le traite comme culture.
+    const races = rest.filter(
+        (t) =>
+            RACE_TOKENS.has(t.toUpperCase()) &&
+            !CULTURE_TOKENS.has(t.toUpperCase())
+    );
     const types = rest.filter((t) => TYPE_TOKENS.has(t.toUpperCase()));
     const other = rest.filter(
         (t) =>
@@ -191,7 +202,7 @@ function formatFilterList(tokens: string[]): string {
             !TYPE_TOKENS.has(t.toUpperCase())
     );
 
-    // Une culture + une race|type → « Homme du Pays de Dun », « Compagnon du Gondor ».
+    // Culture + race|type → « séide <symbol>sauron</symbol> » (symbole = adjectif, après le nom).
     if (
         cultures.length === 1 &&
         other.length === 0 &&
@@ -199,12 +210,9 @@ function formatFilterList(tokens: string[]): string {
             (types.length === 1 && races.length === 0))
     ) {
         const headToken = races[0] || types[0];
-        const head = translateCriterionToken(headToken);
-        const ofCulture = CULTURE_OF[cultures[0].toUpperCase()];
+        const head = translateCriterionToken(headToken).toLowerCase();
         const kw = suffix.map(translateCriterionToken).join(' ');
-        const core = ofCulture.startsWith('d')
-            ? `${head} ${ofCulture}`
-            : `${head} ${ofCulture}`;
+        const core = `${head} ${cultureSymbol(cultures[0])}`;
         return kw ? `${core} ${kw}` : core;
     }
 
@@ -380,10 +388,23 @@ function formatEffectBit(
         return 'libérer un site';
     }
     if (effect.type === 'STACK_ON_CONTROLLED_SITE') {
-        return 'empiler ce séide sur un site que vous contrôlez';
+        const who = Array.isArray(effect.target)
+            ? formatTargetPhrase(effect.target)
+            : null;
+        return who
+            ? `empiler ${who} sur un site que vous contrôlez`
+            : 'empiler ce séide sur un site que vous contrôlez';
     }
     if (effect.type === 'PLAY_FROM_STACK') {
+        const who = Array.isArray(effect.target)
+            ? formatTargetPhrase(effect.target)
+            : null;
         const reduce = effect.twilightReduce || 0;
+        const reduceBit =
+            reduce > 0 ? ` (−${reduce} crépuscule)` : '';
+        if (who) {
+            return `jouer ${who} empilé sur un site que vous contrôlez${reduceBit}`;
+        }
         return reduce > 0
             ? `jouer ce séide depuis la pile (−${reduce} crépuscule)`
             : 'jouer ce séide depuis la pile';

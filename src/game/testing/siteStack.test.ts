@@ -9,6 +9,7 @@ import {
 import {
     createGameState,
     createMinion,
+    createCard,
     createPlayerState,
     createSite,
 } from './createGameState';
@@ -225,6 +226,77 @@ describe('stack on controlled site', () => {
         ).toBe(true);
         expect(G.battlefield?.map((c) => c.instanceId)).toEqual(['troll']);
         expect(G.path[1]?.stacked?.map((c) => c.instanceId)).toEqual(['troop']);
+    });
+
+    it('Engine Shadow : joue un séide Sauron empilé (désigné)', () => {
+        const engine = createCard({
+            id: '8U107',
+            instanceId: 'engine',
+            kind: 'SHADOW',
+            type: 'CONDITION',
+            culture: 'SAURON',
+            title: 'Their Marching Companies',
+        });
+        const troop = createMinion({
+            id: '7R279',
+            instanceId: 'troop',
+            twilightCost: 4,
+            keywords: ['BESIEGER'],
+            culture: 'SAURON',
+            race: 'ORC',
+        });
+        const playOther: Ability = {
+            id: '8U107:1',
+            phases: ['SHADOW'],
+            cost: [{ removeThreats: 1 }],
+            effects: [
+                {
+                    type: 'PLAY_FROM_STACK',
+                    target: [['SAURON', 'MINION']],
+                },
+            ],
+            source: 'SELF',
+        };
+        const site = createSite({
+            id: 's1',
+            instanceId: 's1',
+            siteNumber: 1,
+            ownerId: '0',
+            controlledBy: '1',
+        });
+        site.stacked = [troop];
+        const G = createGameState({
+            fpPlayerId: '0',
+            currentSiteIndex: 3,
+            twilightPool: 10,
+            path: [
+                site,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+            ],
+            players: {
+                '0': createPlayerState('0', {
+                    currentSiteIndex: 3,
+                    threats: 2,
+                }),
+                '1': createPlayerState('1', { currentSiteIndex: 3 }),
+            },
+            battlefield: [],
+        });
+
+        expect(abilityHasLegalEffectTarget(G, engine, playOther)).toBe(true);
+        expect(
+            applyAbilityEffect(G, engine, playOther, 'troop')
+        ).toBe(true);
+        expect(G.path[0]?.stacked || []).toHaveLength(0);
+        expect(G.battlefield?.map((c) => c.instanceId)).toEqual(['troop']);
+        expect(G.twilightPool).toBe(6);
     });
 
     it('refuse play from stack hors pile / sans contrôle', () => {

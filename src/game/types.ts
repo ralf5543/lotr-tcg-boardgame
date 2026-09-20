@@ -301,11 +301,13 @@ export type AbilityEffect =
       }
     | {
           /**
-           * Joue ce séide depuis la pile d’un site que tu contrôles.
+           * Joue un séide depuis la pile d’un site que tu contrôles.
+           * Sans `target` : joue la source. Avec filtre : désigner un séide empilé.
            * Coût crépuscule = coût effectif − twilightReduce (min 0).
            */
           type: 'PLAY_FROM_STACK';
           twilightReduce?: number;
+          target?: AbilityTargetRef;
       }
     | {
           type: 'DRAW';

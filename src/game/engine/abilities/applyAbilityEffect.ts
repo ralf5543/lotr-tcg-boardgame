@@ -89,6 +89,21 @@ export function abilityStacksOtherMinion(ability: Ability): boolean {
     return Boolean(effect && Array.isArray(effect.target));
 }
 
+export function abilityPlayFromStackEffect(
+    ability: Ability
+): Extract<Ability['effects'][number], { type: 'PLAY_FROM_STACK' }> | null {
+    const effect = (ability.effects || []).find(
+        (item) => item.type === 'PLAY_FROM_STACK'
+    );
+    return effect && effect.type === 'PLAY_FROM_STACK' ? effect : null;
+}
+
+/** Joue un autre séide empilé (filtre), pas la source elle-même. */
+export function abilityPlaysOtherFromStack(ability: Ability): boolean {
+    const effect = abilityPlayFromStackEffect(ability);
+    return Boolean(effect && Array.isArray(effect.target));
+}
+
 /** Sites contrôlés où l’on peut empiler le séide source. */
 export function getStackSiteCandidates(
     G: GameState,
@@ -328,9 +343,20 @@ export function applyAbilityEffect(
         if (effect.type === 'PLAY_FROM_STACK') {
             const ownerId = abilityOwnerPlayerId(G, source);
             if (!ownerId) return false;
+
+            let cardToPlay: CardState = source;
+            if (Array.isArray(effect.target)) {
+                const minionId = chosenIds[0];
+                if (!minionId) return false;
+                const picked = findTargetCard(G, minionId) as CardState | null;
+                if (!picked || picked.type !== 'MINION') return false;
+                if (!cardMatchesTarget(picked, effect.target)) return false;
+                cardToPlay = picked;
+            }
+
             const paid = playStackedMinion(
                 G,
-                source,
+                cardToPlay,
                 ownerId,
                 effect.twilightReduce || 0
             );

@@ -4647,6 +4647,48 @@ export function parseAbilities(
             return;
         }
 
+        // « Remove a threat to play a Sauron minion stacked on a site you control. »
+        const threatPlayStackedMatch = bodyPlain.match(
+            /^Remove\s+(\d+|a|one)\s+threats?\s+to\s+play\s+(a\s+[\s\S]+?)\s+stacked on a site you control\.?$/i
+        );
+        if (threatPlayStackedMatch) {
+            const rawCount = threatPlayStackedMatch[1].toLowerCase();
+            const threatCount =
+                rawCount === 'a' || rawCount === 'one'
+                    ? 1
+                    : parseInt(rawCount, 10);
+            const filters = parseClassFilters(threatPlayStackedMatch[2]);
+            if (
+                !Number.isFinite(threatCount) ||
+                threatCount < 1 ||
+                filters.length === 0
+            ) {
+                return;
+            }
+
+            const playClause =
+                `${marker.phase}: Remove ${threatCount === 1 ? 'a' : threatCount} threat${threatCount > 1 ? 's' : ''} to play ${threatPlayStackedMatch[2].trim()} stacked on a site you control.`
+                    .replace(/<[^>]+>/g, '')
+                    .replace(/\s+/g, ' ')
+                    .replace(/\s+\./g, '.')
+                    .trim();
+
+            abilities.push({
+                id: `${cardId || 'ability'}:${abilities.length}`,
+                phases,
+                cost: [{ removeThreats: threatCount }],
+                effects: [
+                    {
+                        type: 'PLAY_FROM_STACK',
+                        target: [filters],
+                    },
+                ],
+                source: 'SELF',
+                text: playClause,
+            });
+            return;
+        }
+
         // « If stacked on a site you control, play this minion. Its/His twilight cost is -N. »
         const playFromStackMatch = bodyPlain.match(
             /^If stacked on a site you control,\s*play this minion\.?\s*(?:Its|His|Her) twilight cost is -(\d+)\.?$/i

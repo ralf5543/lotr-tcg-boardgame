@@ -2162,28 +2162,37 @@ describe('parseAbilities — While spot N terrain sites', () => {
         ]);
     });
 
-    it('parse Their Marching Companies : remove threat to stack Sauron minion', () => {
+    it('parse Their Marching Companies : remove threat to stack / play Sauron minion', () => {
         expect(
             parseAbilities(
                 '<keyword>Engine.</keyword> To play, spot a <symbol>sauron</symbol> minion. <keyword>Regroup:</keyword> Remove a threat to stack your <symbol>sauron</symbol> minion on a site you control. <keyword>Shadow:</keyword> Remove a threat to play a <symbol>sauron</symbol> minion stacked on a site you control.',
                 'Their Marching Companies',
                 '8U107'
             )
-        ).toEqual(
-            expect.arrayContaining([
-                expect.objectContaining({
-                    phases: ['REGROUP'],
-                    cost: [{ removeThreats: 1 }],
-                    effects: [
-                        {
-                            type: 'STACK_ON_CONTROLLED_SITE',
-                            target: [['SAURON', 'MINION']],
-                        },
-                    ],
-                    source: 'SELF',
-                }),
-            ])
-        );
+        ).toEqual([
+            expect.objectContaining({
+                phases: ['REGROUP'],
+                cost: [{ removeThreats: 1 }],
+                effects: [
+                    {
+                        type: 'STACK_ON_CONTROLLED_SITE',
+                        target: [['SAURON', 'MINION']],
+                    },
+                ],
+                source: 'SELF',
+            }),
+            expect.objectContaining({
+                phases: ['SHADOW'],
+                cost: [{ removeThreats: 1 }],
+                effects: [
+                    {
+                        type: 'PLAY_FROM_STACK',
+                        target: [['SAURON', 'MINION']],
+                    },
+                ],
+                source: 'SELF',
+            }),
+        ]);
     });
 
     it('parse No Retreat : Spot 2 Dunland Men + discard → force move again', () => {

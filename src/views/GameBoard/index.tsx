@@ -55,6 +55,7 @@ import {
     abilityNeedsPathThenDeckSite,
     abilityNeedsStackSiteChoice,
     abilityStacksOtherMinion,
+    abilityPlaysOtherFromStack,
     abilityReplaceSiteEffect,
     getStackSiteCandidates,
 } from '../../game/engine/abilities/applyAbilityEffect';
@@ -229,7 +230,14 @@ export const GameBoard: React.FC<GameBoardProps> = ({
     useSiteControlAudio(G);
     const myId = playerID || ctx.currentPlayer;
     const oppId = myId === '0' ? '1' : '0';
-    const { startTargeting, stopTargeting, targetingKind } = useTargeting();
+    const {
+        startTargeting,
+        stopTargeting,
+        targetingKind,
+        pendingCard,
+        abilityId: targetingAbilityId,
+        isCardTargetable,
+    } = useTargeting();
 
     const requestDesignation = useCallback(
         (
@@ -381,16 +389,22 @@ export const GameBoard: React.FC<GameBoardProps> = ({
     const requestStackSite = useCallback(
         (
             source: CardState,
-            onChosen: (siteId: string) => void
+            onChosen: (siteId: string) => void,
+            ability?: NonNullable<CardState['abilities']>[number]
         ): boolean => {
             const candidates = getStackSiteCandidates(G, source);
             if (candidates.length === 0) return false;
+            const stacksOther = ability
+                ? abilityStacksOtherMinion(ability)
+                : false;
             startTargeting({
                 kind: 'SITE_STACK',
                 targetableCardIds: candidates.flatMap((site) =>
                     [site.instanceId, site.id].filter(Boolean)
                 ),
-                message: 'Choisissez un site que vous contrôlez pour y empiler ce séide.',
+                message: stacksOther
+                    ? 'Choisissez un site que vous contrôlez pour y empiler le séide choisi.'
+                    : 'Choisissez un site que vous contrôlez pour y empiler ce séide.',
                 arrowFromCardId: source.instanceId || source.id,
                 onSelectTarget: (siteId) => {
                     onChosen(siteId);
@@ -602,6 +616,7 @@ export const GameBoard: React.FC<GameBoardProps> = ({
         const effectNeed = getEffectDesignationCount(G, source, ability);
         const needsStackSite = abilityNeedsStackSiteChoice(G, source, ability);
         const stacksOther = abilityStacksOtherMinion(ability);
+        const playsOtherFromStack = abilityPlaysOtherFromStack(ability);
 
         const commitAbility = (
             costId?: string,
@@ -636,7 +651,7 @@ export const GameBoard: React.FC<GameBoardProps> = ({
                     } else {
                         commitAbility(costId, siteId);
                     }
-                });
+                }, ability);
             }
             if (minionId) {
                 commitAbility(costId, minionId);
@@ -707,6 +722,27 @@ export const GameBoard: React.FC<GameBoardProps> = ({
                 return;
             }
         }
+        // Play depuis pile d’un *autre* séide : pas de flèche — drag comme Uruk/Dun.
+        if (playsOtherFromStack) {
+            const candidates = getEffectDesignationCandidates(
+                G,
+                source,
+                ability
+            );
+            if (candidates.length === 0) return;
+            startTargeting({
+                kind: 'STACK_PLAY',
+                targetableCardIds: candidates.flatMap(cardTargetIds),
+                pendingCard: source,
+                abilityId,
+                message:
+                    'Faites glisser un séide empilé vers le champ de bataille.',
+                onSelectTarget: () => {
+                    /* complété par drag → battlefield */
+                },
+            });
+            return;
+        }
         if (needsEffect && requestEffect()) {
             return;
         }
@@ -776,7 +812,7 @@ export const GameBoard: React.FC<GameBoardProps> = ({
                                 undefined,
                                 siteId
                             );
-                        });
+                        }, ability);
                     },
                     undefined,
                     'cost'
@@ -790,7 +826,7 @@ export const GameBoard: React.FC<GameBoardProps> = ({
                         abilityId,
                         siteId
                     );
-                })
+                }, ability)
             ) {
                 return;
             }
@@ -1267,6 +1303,28 @@ export const GameBoard: React.FC<GameBoardProps> = ({
             if (origin === 'SITE_STACK') {
                 if (cancelled || targetId !== 'battlefield') return;
                 if (!card || card.type !== 'MINION') return;
+                const stackedId = card.instanceId || card.id;
+
+                // Engine / play autre : capacité armée → drag vers le champ
+                if (
+                    targetingKind === 'STACK_PLAY' &&
+                    pendingCard &&
+                    targetingAbilityId &&
+                    isCardTargetable(stackedId)
+                ) {
+                    stopTargeting();
+                    moves.activateAbility?.(
+                        pendingCard.instanceId || pendingCard.id,
+                        targetingAbilityId,
+                        stackedId
+                    );
+                    audioService.play('CARD_PLAY');
+                    if (soundPath) {
+                        audioService.play(soundPath, { delay: 0.3 });
+                    }
+                    return;
+                }
+
                 const ability = (card.abilities || []).find(
                     (ab) =>
                         abilityMatchesPhase(ab, ctx.phase || '') &&
@@ -1351,7 +1409,7 @@ export const GameBoard: React.FC<GameBoardProps> = ({
         window.addEventListener('card-dropped', handleGlobalCardDrop);
         return () =>
             window.removeEventListener('card-dropped', handleGlobalCardDrop);
-    }, [moves, ctx.phase, G, myId, requestDesignation, requestSiteReplace, stopTargeting]);
+    }, [moves, ctx.phase, G, myId, requestDesignation, requestSiteReplace, stopTargeting, targetingKind, pendingCard, targetingAbilityId, isCardTargetable]);
 
     const { setFpPlayerId } = useFaction();
     useEffect(() => {
@@ -1605,6 +1663,7 @@ export const GameBoard: React.FC<GameBoardProps> = ({
                 targetingKind !== 'HAND_DISCARD' &&
                 targetingKind !== 'SITE_REPLACE' &&
                 targetingKind !== 'SITE_STACK' &&
+                targetingKind !== 'STACK_PLAY' &&
                 !isMine
             )
                 return;

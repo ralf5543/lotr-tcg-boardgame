@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { formatAbilityLabelParts } from '../engine/abilities/collectAbilities';
-import { createCompanion } from './createGameState';
+import { createCompanion, createMinion } from './createGameState';
 import type { Ability } from '../types';
 
 describe('formatAbilityLabelParts', () => {
@@ -163,7 +163,7 @@ describe('formatAbilityLabelParts', () => {
         });
         expect(formatAbilityLabelParts(ability, celeborn)).toEqual({
             cost: 'Affaiblir Celeborn',
-            effect: 'guérir un Allié elfe',
+            effect: 'guérir un allié <symbol>elven</symbol>',
         });
     });
 
@@ -271,7 +271,7 @@ describe('formatAbilityLabelParts', () => {
             i18n: { fr: { title: 'Profondeurs Impitoyables' } },
         });
         expect(formatAbilityLabelParts(ability, depths)).toEqual({
-            cost: 'Désigner un Orque Séide et Défausser Profondeurs Impitoyables',
+            cost: 'Désigner un séide <symbol>orc</symbol> et Défausser Profondeurs Impitoyables',
             effect:
                 'remplacer le site actuel par un site souterrain du deck d’aventure',
         });
@@ -332,7 +332,59 @@ describe('formatAbilityLabelParts', () => {
         });
     });
 
-    it('culture + race : Homme du Pays de Dun / Homme du Gondor', () => {
+    it('stack autre séide : empiler un assiégeant / un séide de Sauron', () => {
+        const troll: Ability = {
+            id: '8R108:0',
+            phases: ['REGROUP'],
+            cost: [{ exert: [{ count: 1, target: 'SELF' }] }],
+            effects: [
+                {
+                    type: 'STACK_ON_CONTROLLED_SITE',
+                    target: [['BESIEGER']],
+                },
+            ],
+            source: 'SELF',
+        };
+        const engine: Ability = {
+            id: '8U107:0',
+            phases: ['REGROUP'],
+            cost: [{ removeThreats: 1 }],
+            effects: [
+                {
+                    type: 'STACK_ON_CONTROLLED_SITE',
+                    target: [['SAURON', 'MINION']],
+                },
+            ],
+            source: 'SELF',
+        };
+        const selfStack: Ability = {
+            id: '4C180:0',
+            phases: ['REGROUP'],
+            cost: [],
+            effects: [{ type: 'STACK_ON_CONTROLLED_SITE' }],
+            source: 'SELF',
+        };
+        const card = createMinion({
+            id: '8R108',
+            title: 'Troll of Gorgoroth',
+            i18n: { fr: { title: 'Troll de Gorgoroth' } },
+        });
+        expect(formatAbilityLabelParts(troll, card)).toEqual({
+            cost: 'Affaiblir Troll de Gorgoroth',
+            effect: 'empiler un assiégeant sur un site que vous contrôlez',
+        });
+        expect(formatAbilityLabelParts(engine, card)).toEqual({
+            cost: 'Retirer 1 menace',
+            effect:
+                'empiler un séide <symbol>sauron</symbol> sur un site que vous contrôlez',
+        });
+        expect(formatAbilityLabelParts(selfStack, card)).toEqual({
+            cost: '',
+            effect: 'Empiler ce séide sur un site que vous contrôlez',
+        });
+    });
+
+    it('culture + race/type : symbole culture (FormattedText), pas « de Sauron »', () => {
         const dunland: Ability = {
             id: '4C14:0',
             phases: ['RESPONSE'],
@@ -369,11 +421,11 @@ describe('formatAbilityLabelParts', () => {
         };
         const card = createCompanion({ id: 'x', title: 'X' });
         expect(formatAbilityLabelParts(dunland, card)).toEqual({
-            cost: 'Désigner un Homme du Pays de Dun',
+            cost: 'Désigner un homme <symbol>dunland</symbol>',
             effect: 'prendre le contrôle d’un site',
         });
         expect(formatAbilityLabelParts(gondor, card)).toEqual({
-            cost: 'Affaiblir un Homme du Gondor',
+            cost: 'Affaiblir un homme <symbol>gondor</symbol>',
             effect: 'piocher 1 carte',
         });
     });

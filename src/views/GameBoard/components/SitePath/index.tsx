@@ -72,6 +72,8 @@ export const SitePath: React.FC<SitePathProps> = ({
     const isSiteStackPick =
         targetingKind === 'SITE_STACK' && isTargetingActive;
     const isSitePathPick = isSiteAttachPick || isSiteStackPick;
+    const isStackPlayArmed =
+        targetingKind === 'STACK_PLAY' && isTargetingActive;
     const dragDesignationIds = dragged?.designationTargetIds;
     const isDragDesignating =
         Boolean(dragDesignationIds?.length) && !isOverHandCancel;
@@ -139,6 +141,14 @@ export const SitePath: React.FC<SitePathProps> = ({
     const isStackedPlayable = (card: CardState): boolean => {
         if (!G || !phase || !localPlayerId) return false;
         if (card.kind !== localFaction) return false;
+        const cardKey = card.instanceId || card.id;
+        if (
+            isStackPlayArmed &&
+            cardKey &&
+            isCardTargetable(cardKey)
+        ) {
+            return true;
+        }
         return canUseAbility(card, {
             G,
             ctx: { phase },
@@ -409,6 +419,7 @@ export const SitePath: React.FC<SitePathProps> = ({
                                         size="sm"
                                         isDraggable={false}
                                         isStackedOnSite
+                                        isActionable={playable}
                                         G={G}
                                         phase={phase}
                                         playerID={localPlayerId}

@@ -297,8 +297,12 @@ export const StackedMinionSlot = styled.div<{
         $playable &&
         !$dragging &&
         css`
+            /* Halo hors scale 0.25 de la mini-carte (sinon quasi invisible). */
+            filter: drop-shadow(0 0 5px rgb(255, 247, 10))
+                drop-shadow(0 0 10px rgba(255, 247, 10, 0.9));
+
             &:hover > div {
-                    transform: translate(-50%, -50%) scale(0.35);
+                transform: translate(-50%, -50%) scale(0.35);
             }
         `}
 
@@ -310,5 +314,6 @@ export const StackedMinionSlot = styled.div<{
         transform: translate(-50%, -50%) scale(0.25);
         transform-origin: center center;
         pointer-events: none;
+        filter: drop-shadow(black 12px 5px 11px);
     }
 `;

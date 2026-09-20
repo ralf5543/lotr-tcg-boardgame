@@ -11,6 +11,7 @@ type TargetingKind =
     | 'SITE_REPLACE_PATH'
     | 'SITE_ATTACH'
     | 'SITE_STACK'
+    | 'STACK_PLAY'
     | 'SANCTUARY_HEAL';
 
 interface TargetingRequest {
@@ -19,6 +20,8 @@ interface TargetingRequest {
     message?: string;
     kind?: TargetingKind;
     pendingCard?: CardState;
+    /** Capacité armée (ex. Engine → play from stack via drag). */
+    abilityId?: string;
     arrowFromCardId?: string;
     upTo?: boolean;
     selectedCardIds?: string[];
@@ -31,6 +34,7 @@ interface TargetingContextType {
     targetingKind?: TargetingKind;
     targetableCardIds: string[];
     pendingCard?: CardState;
+    abilityId?: string;
     arrowFromCardId?: string;
     hoveredTargetId: string | null;
     startTargeting: (request: TargetingRequest) => void;
@@ -99,6 +103,7 @@ export const TargetingProvider: React.FC<{ children: React.ReactNode }> = ({ chi
                 selectCard,
                 message: request?.message,
                 pendingCard: request?.pendingCard,
+                abilityId: request?.abilityId,
                 arrowFromCardId: request?.arrowFromCardId,
                 hoveredTargetId,
                 setHoveredTargetId,

@@ -380,6 +380,7 @@ export const GameControls: React.FC<GameControlsProps> = ({
             targetingKind === 'SITE_REPLACE_PATH' ||
             targetingKind === 'SITE_ATTACH' ||
             targetingKind === 'SITE_STACK' ||
+            targetingKind === 'STACK_PLAY' ||
             targetingKind === 'SANCTUARY_HEAL') &&
         targetingMessage
     ) {
@@ -396,6 +397,8 @@ export const GameControls: React.FC<GameControlsProps> = ({
                           ? 'JOUER SUR UN SITE'
                           : targetingKind === 'SITE_STACK'
                             ? 'EMPILER SUR UN SITE'
+                            : targetingKind === 'STACK_PLAY'
+                              ? 'JOUER DEPUIS LA PILE'
                       : targetingKind === 'SANCTUARY_HEAL'
                       ? 'SANCTUAIRE'
                       : 'CHOIX DE CIBLE',
