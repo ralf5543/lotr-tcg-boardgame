@@ -299,6 +299,106 @@ describe('stack on controlled site', () => {
         expect(G.twilightPool).toBe(6);
     });
 
+    it('Officer Skirmish : défausse 2 + play stacked Orc avec Fierce et force +6', () => {
+        const officer = createMinion({
+            id: '7R274',
+            instanceId: 'officer',
+            culture: 'SAURON',
+            race: 'ORC',
+            keywords: ['BESIEGER'],
+        });
+        const stacked = createMinion({
+            id: '7C273',
+            instanceId: 'garrison',
+            culture: 'SAURON',
+            race: 'ORC',
+            keywords: ['BESIEGER'],
+            twilightCost: 3,
+            minionSiteNumber: 1,
+        });
+        const playStacked: Ability = {
+            id: '7R274:0',
+            phases: ['SKIRMISH'],
+            cost: [{ discardFromHand: 2 }],
+            effects: [
+                {
+                    type: 'PLAY_FROM_STACK',
+                    target: [['SAURON', 'ORC']],
+                    grantsTempKeywords: [
+                        { keyword: 'FIERCE', expiresAtPhase: 'REGROUP' },
+                    ],
+                    grantsTempStats: [
+                        {
+                            stat: 'STRENGTH',
+                            value: 6,
+                            expiresAtPhase: 'REGROUP',
+                        },
+                    ],
+                },
+            ],
+            source: 'SELF',
+        };
+        const site = createSite({
+            id: 's1',
+            instanceId: 's1',
+            siteNumber: 1,
+            ownerId: '0',
+            controlledBy: '1',
+        });
+        site.stacked = [stacked];
+        const G = createGameState({
+            fpPlayerId: '0',
+            currentSiteIndex: 3,
+            twilightPool: 10,
+            path: [
+                site,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+            ],
+            players: {
+                '0': createPlayerState('0', { currentSiteIndex: 3 }),
+                '1': createPlayerState('1', {
+                    currentSiteIndex: 3,
+                    hand: [
+                        createMinion({ id: 'h1', instanceId: 'h1' }),
+                        createMinion({ id: 'h2', instanceId: 'h2' }),
+                    ],
+                }),
+            },
+            battlefield: [officer],
+        });
+
+        expect(abilityHasLegalEffectTarget(G, officer, playStacked)).toBe(
+            true
+        );
+        expect(
+            applyAbilityEffect(G, officer, playStacked, 'garrison')
+        ).toBe(true);
+        expect(G.path[0]?.stacked || []).toHaveLength(0);
+        expect(G.battlefield?.map((c) => c.instanceId).sort()).toEqual([
+            'garrison',
+            'officer',
+        ]);
+        const played = G.battlefield?.find((c) => c.instanceId === 'garrison');
+        expect(played?.tempKeywords).toEqual([
+            { keyword: 'FIERCE', expiresAtPhase: 'REGROUP' },
+        ]);
+        expect(
+            G.tempModifiers?.some(
+                (m) =>
+                    m.targetCardId === 'garrison' &&
+                    m.stat === 'STRENGTH' &&
+                    m.value === 6
+            )
+        ).toBe(true);
+    });
+
     it('refuse play from stack hors pile / sans contrôle', () => {
         const besieger = createMinion({
             id: '4C180',

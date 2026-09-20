@@ -77053,6 +77053,45 @@
     "keywords": [
       "BESIEGER"
     ],
+    "abilities": [
+      {
+        "id": "7R274:0",
+        "phases": [
+          "SKIRMISH"
+        ],
+        "cost": [
+          {
+            "discardFromHand": 2
+          }
+        ],
+        "effects": [
+          {
+            "type": "PLAY_FROM_STACK",
+            "target": [
+              [
+                "SAURON",
+                "ORC"
+              ]
+            ],
+            "grantsTempKeywords": [
+              {
+                "keyword": "FIERCE",
+                "expiresAtPhase": "REGROUP"
+              }
+            ],
+            "grantsTempStats": [
+              {
+                "stat": "STRENGTH",
+                "value": 6,
+                "expiresAtPhase": "REGROUP"
+              }
+            ]
+          }
+        ],
+        "source": "SELF",
+        "text": "SKIRMISH: Discard 2 cards from hand to play a sauron Orc stacked on a site you control."
+      }
+    ],
     "actionPhases": [
       "SKIRMISH"
     ],

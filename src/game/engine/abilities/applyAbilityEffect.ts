@@ -368,6 +368,19 @@ export function applyAbilityEffect(
                     expiresAtPhase: grant.expiresAtPhase,
                 });
             }
+            for (const grant of effect.grantsTempStats || []) {
+                if (!G.tempModifiers) G.tempModifiers = [];
+                const targetCardId = cardToPlay.instanceId || cardToPlay.id;
+                G.tempModifiers.push({
+                    id: `${ability.id}:stack-play:${G.tempModifiers.length}`,
+                    sourceCardTitle: source.i18n?.fr?.title || source.title,
+                    targetCardId,
+                    stat: grant.stat,
+                    value: grant.value,
+                    scope: expiryToScope(grant.expiresAtPhase),
+                    expiresAtPhase: grant.expiresAtPhase,
+                });
+            }
             continue;
         }
 

@@ -2370,6 +2370,40 @@ describe('parseAbilities — While spot N terrain sites', () => {
         );
     });
 
+    it('parse Gorgoroth Officer : discard 2 → play stacked Sauron Orc + Fierce/force', () => {
+        expect(
+            parseAbilities(
+                '<keyword>Besieger.</keyword> <keyword>Skirmish:</keyword> Discard 2 cards from hand to play a <symbol>sauron</symbol> Orc stacked on a site you control. That Orc is fierce and strength +6 until the regroup phase.',
+                'Gorgoroth Officer',
+                '7R274'
+            )
+        ).toEqual([
+            expect.objectContaining({
+                phases: ['SKIRMISH'],
+                cost: [{ discardFromHand: 2 }],
+                effects: [
+                    {
+                        type: 'PLAY_FROM_STACK',
+                        target: [['SAURON', 'ORC']],
+                        grantsTempKeywords: [
+                            {
+                                keyword: 'FIERCE',
+                                expiresAtPhase: 'REGROUP',
+                            },
+                        ],
+                        grantsTempStats: [
+                            {
+                                stat: 'STRENGTH',
+                                value: 6,
+                                expiresAtPhase: 'REGROUP',
+                            },
+                        ],
+                    },
+                ],
+            }),
+        ]);
+    });
+
     it('parse Hillman Band : each time fellowship moves → take control', () => {
         expect(
             parseAbilities(

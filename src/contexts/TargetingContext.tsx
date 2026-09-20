@@ -22,6 +22,8 @@ interface TargetingRequest {
     pendingCard?: CardState;
     /** Capacité armée (ex. Engine → play from stack via drag). */
     abilityId?: string;
+    /** Coût défausse main déjà choisi (Officer → play from stack). */
+    discardedHandIds?: string[];
     arrowFromCardId?: string;
     upTo?: boolean;
     selectedCardIds?: string[];
@@ -35,6 +37,7 @@ interface TargetingContextType {
     targetableCardIds: string[];
     pendingCard?: CardState;
     abilityId?: string;
+    discardedHandIds?: string[];
     arrowFromCardId?: string;
     hoveredTargetId: string | null;
     startTargeting: (request: TargetingRequest) => void;
@@ -104,6 +107,7 @@ export const TargetingProvider: React.FC<{ children: React.ReactNode }> = ({ chi
                 message: request?.message,
                 pendingCard: request?.pendingCard,
                 abilityId: request?.abilityId,
+                discardedHandIds: request?.discardedHandIds,
                 arrowFromCardId: request?.arrowFromCardId,
                 hoveredTargetId,
                 setHoveredTargetId,

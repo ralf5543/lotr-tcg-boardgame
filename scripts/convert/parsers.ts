@@ -4709,6 +4709,63 @@ export function parseAbilities(
             return;
         }
 
+        // « Discard N cards from hand to play a … stacked on a site you control. »
+        // Optionnel : That … is fierce and strength +N until the regroup phase.
+        // (Gorgoroth Officer — sans variante « or discard 1 if besieger ».)
+        const discardPlayStackedMatch = bodyPlain.match(
+            /^Discard\s+(\d+|a|one|two)\s+cards?\s+from hand\s+to\s+play\s+(a\s+[\s\S]+?)\s+stacked on a site you control\.(\s*That\s+\w+\s+is\s+fierce\s+and\s+strength\s*\+\s*(\d+)\s+until the regroup phase\.?)?$/i
+        );
+        if (discardPlayStackedMatch) {
+            const discardCount = parseBurdenWord(discardPlayStackedMatch[1]);
+            const filters = parseClassFilters(discardPlayStackedMatch[2]);
+            if (!discardCount || filters.length === 0) return;
+
+            const strengthBonus = discardPlayStackedMatch[4]
+                ? parseInt(discardPlayStackedMatch[4], 10)
+                : null;
+            const grantsFierce = Boolean(discardPlayStackedMatch[3]);
+
+            const playEffect: Record<string, unknown> = {
+                type: 'PLAY_FROM_STACK',
+                target: [filters],
+            };
+            if (grantsFierce) {
+                playEffect.grantsTempKeywords = [
+                    { keyword: 'FIERCE', expiresAtPhase: 'REGROUP' },
+                ];
+            }
+            if (
+                strengthBonus != null &&
+                Number.isFinite(strengthBonus) &&
+                strengthBonus > 0
+            ) {
+                playEffect.grantsTempStats = [
+                    {
+                        stat: 'STRENGTH',
+                        value: strengthBonus,
+                        expiresAtPhase: 'REGROUP',
+                    },
+                ];
+            }
+
+            const playClause =
+                `${marker.phase}: Discard ${discardCount} card${discardCount > 1 ? 's' : ''} from hand to play ${discardPlayStackedMatch[2].trim()} stacked on a site you control.`
+                    .replace(/<[^>]+>/g, '')
+                    .replace(/\s+/g, ' ')
+                    .replace(/\s+\./g, '.')
+                    .trim();
+
+            abilities.push({
+                id: `${cardId || 'ability'}:${abilities.length}`,
+                phases,
+                cost: [{ discardFromHand: discardCount }],
+                effects: [playEffect],
+                source: 'SELF',
+                text: playClause,
+            });
+            return;
+        }
+
         // « Remove a threat to play a Sauron minion stacked on a site you control. »
         const threatPlayStackedMatch = bodyPlain.match(
             /^Remove\s+(\d+|a|one)\s+threats?\s+to\s+play\s+(a\s+[\s\S]+?)\s+stacked on a site you control\.?$/i

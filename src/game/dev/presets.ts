@@ -596,17 +596,23 @@ export const applyDevPreset = (
                     clonePresetCard('4C180', 'dev-uruk-besieger'),
                     clonePresetCard('8R108', 'dev-troll-gorgoroth'),
                     clonePresetCard('8R105', 'dev-olog-mordor'),
+                    clonePresetCard('7R274', 'dev-gorgoroth-officer'),
                     clonePresetCard('4U24', 'dev-hillman-rabble'),
                 ];
                 shadowPlayer.supportArea = [
                     clonePresetCard('8U107', 'dev-marching-companies'),
+                ];
+                shadowPlayer.hand = [
+                    clonePresetCard('7C273', 'dev-hand-garrison-1'),
+                    clonePresetCard('7C273', 'dev-hand-garrison-2'),
+                    clonePresetCard('4C180', 'dev-hand-besieger'),
                 ];
                 G.twilightPool = 12;
                 fpPlayer.threats = 2;
             }
 
             G.statusMessage =
-                '[DEV] Sites : 1–2 contrôlés · Besieger · Troll · Olog · Engine · Rabble.';
+                '[DEV] Sites : 1–2 contrôlés · Besieger · Troll · Olog · Officer · Engine · Rabble.';
             break;
         }
     }

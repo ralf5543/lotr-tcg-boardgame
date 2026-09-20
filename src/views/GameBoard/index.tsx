@@ -236,6 +236,7 @@ export const GameBoard: React.FC<GameBoardProps> = ({
         targetingKind,
         pendingCard,
         abilityId: targetingAbilityId,
+        discardedHandIds: targetingDiscardedHandIds,
         isCardTargetable,
     } = useTargeting();
 
@@ -597,10 +598,25 @@ export const GameBoard: React.FC<GameBoardProps> = ({
         }
         if (
             chosenTargetId ||
-            discardedHandIds?.length ||
             (Array.isArray(chosenEffectTargetId)
                 ? chosenEffectTargetId.length
                 : chosenEffectTargetId)
+        ) {
+            moves.activateAbility?.(
+                sourceInstanceId,
+                abilityId,
+                chosenTargetId,
+                discardedHandIds,
+                chosenEffectTargetId
+            );
+            return;
+        }
+        // discardedHandIds seul : on continue le flux (ex. défausse puis STACK_PLAY).
+        if (
+            discardedHandIds?.length &&
+            !abilityPlaysOtherFromStack(ability) &&
+            !abilityNeedsEffectDesignation(G, source, ability) &&
+            !abilityNeedsStackSiteChoice(G, source, ability)
         ) {
             moves.activateAbility?.(
                 sourceInstanceId,
@@ -724,23 +740,36 @@ export const GameBoard: React.FC<GameBoardProps> = ({
         }
         // Play depuis pile d’un *autre* séide : pas de flèche — drag comme Uruk/Dun.
         if (playsOtherFromStack) {
-            const candidates = getEffectDesignationCandidates(
-                G,
-                source,
-                ability
-            );
-            if (candidates.length === 0) return;
-            startTargeting({
-                kind: 'STACK_PLAY',
-                targetableCardIds: candidates.flatMap(cardTargetIds),
-                pendingCard: source,
-                abilityId,
-                message:
-                    'Faites glisser un séide empilé vers le champ de bataille.',
-                onSelectTarget: () => {
-                    /* complété par drag → battlefield */
-                },
-            });
+            const armStackPlay = (handIds?: string[]) => {
+                const candidates = getEffectDesignationCandidates(
+                    G,
+                    source,
+                    ability
+                );
+                if (candidates.length === 0) return;
+                startTargeting({
+                    kind: 'STACK_PLAY',
+                    targetableCardIds: candidates.flatMap(cardTargetIds),
+                    pendingCard: source,
+                    abilityId,
+                    discardedHandIds: handIds,
+                    message:
+                        'Faites glisser un séide empilé vers le champ de bataille.',
+                    onSelectTarget: () => {
+                        /* complété par drag → battlefield */
+                    },
+                });
+            };
+            if (
+                abilityNeedsHandDiscard(ability) &&
+                !(discardedHandIds && discardedHandIds.length > 0)
+            ) {
+                requestHandDiscard(source, ability, (cardIds) => {
+                    armStackPlay(cardIds);
+                });
+                return;
+            }
+            armStackPlay(discardedHandIds);
             return;
         }
         if (needsEffect && requestEffect()) {
@@ -1316,7 +1345,8 @@ export const GameBoard: React.FC<GameBoardProps> = ({
                     moves.activateAbility?.(
                         pendingCard.instanceId || pendingCard.id,
                         targetingAbilityId,
-                        stackedId
+                        stackedId,
+                        targetingDiscardedHandIds
                     );
                     audioService.play('CARD_PLAY');
                     if (soundPath) {
@@ -1409,7 +1439,7 @@ export const GameBoard: React.FC<GameBoardProps> = ({
         window.addEventListener('card-dropped', handleGlobalCardDrop);
         return () =>
             window.removeEventListener('card-dropped', handleGlobalCardDrop);
-    }, [moves, ctx.phase, G, myId, requestDesignation, requestSiteReplace, stopTargeting, targetingKind, pendingCard, targetingAbilityId, isCardTargetable]);
+    }, [moves, ctx.phase, G, myId, requestDesignation, requestSiteReplace, stopTargeting, targetingKind, pendingCard, targetingAbilityId, targetingDiscardedHandIds, isCardTargetable]);
 
     const { setFpPlayerId } = useFaction();
     useEffect(() => {

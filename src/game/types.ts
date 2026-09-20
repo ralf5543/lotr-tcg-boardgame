@@ -313,6 +313,12 @@ export type AbilityEffect =
               keyword: CardKeyword;
               expiresAtPhase: AbilityEffectExpiry;
           }[];
+          /** Bonus de stats sur le séide joué (ex. Officer → force +6). */
+          grantsTempStats?: {
+              stat: StatType;
+              value: number;
+              expiresAtPhase: AbilityEffectExpiry;
+          }[];
       }
     | {
           type: 'DRAW';
