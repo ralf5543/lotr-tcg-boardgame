@@ -2336,6 +2336,40 @@ describe('parseAbilities — While spot N terrain sites', () => {
         );
     });
 
+    it('parse Olog-hai of Mordor : wins → play besieger from stack + Fierce/Damage', () => {
+        expect(
+            parseAbilities(
+                '<keyword>Besieger.</keyword> <keyword>Fierce.</keyword> The twilight cost of this minion is –2 for each <symbol>sauron</symbol> minion stacked on a site. Each time this minion wins a skirmish, you may play a besieger stacked on a site you control. That besieger is fierce and <keyword>Damage +1.</keyword> until the regroup phase.',
+                'Olog-hai of Mordor',
+                '8R105'
+            )
+        ).toEqual(
+            expect.arrayContaining([
+                expect.objectContaining({
+                    phases: ['RESPONSE'],
+                    trigger: { type: 'WINS_SKIRMISH', winner: 'SELF' },
+                    optional: true,
+                    effects: [
+                        {
+                            type: 'PLAY_FROM_STACK',
+                            target: [['BESIEGER']],
+                            grantsTempKeywords: [
+                                {
+                                    keyword: 'FIERCE',
+                                    expiresAtPhase: 'REGROUP',
+                                },
+                                {
+                                    keyword: 'DAMAGE +1',
+                                    expiresAtPhase: 'REGROUP',
+                                },
+                            ],
+                        },
+                    ],
+                }),
+            ])
+        );
+    });
+
     it('parse Hillman Band : each time fellowship moves → take control', () => {
         expect(
             parseAbilities(

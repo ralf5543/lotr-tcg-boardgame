@@ -17,7 +17,7 @@ L’ancien plan effets de cartes est **figé** (`.cursor/rules/card-effects-plan
 
 ## Ordre
 
-**Priorité courante** : élargir **stack** (play depuis pile autre carte / Olog / Garrison) / effets gametext conditions site. Keywords cartes : skip@site / reinforce jetons = ⏸. Preset `SITES_TEST` pour valider.
+**Priorité courante** : élargir **stack** (Garrison discard-hand / Officer bonus) / effets gametext conditions site. Keywords cartes : skip@site / reinforce jetons = ⏸. Preset `SITES_TEST` pour valider.
 
 1. **Socle modèle** ✅
    - `SiteCardState.attachments` = `CardState[]` (vide tant que l’attache n’est pas câblée).
@@ -82,13 +82,14 @@ L’ancien plan effets de cartes est **figé** (`.cursor/rules/card-effects-plan
   - ✅ `LIBERATE_SITE` (plus haut site adverse) → **15R141** Sturdy Shield, **4C292** Théoden, **4R121** Forests of Ithilien, **9R+32** Elendil (×2 monté reporté).
   - ✅ **15R141** While no opponent controls a site → force +1.
   - ✅ Each time wins / fellowship moves + spot another → take control → **4C14** / **4C21**.
-  - Preset `SITES_TEST` : site 1 contrôlé Ombre + Besieger + Rabble (stack).
+  - Preset `SITES_TEST` : sites 1–2 contrôlés Ombre + Besieger + Troll + Olog + Engine + Rabble.
    - Contrôle seulement après passage des joueurs → **pas de conflit** avec jetons footer ; drapeau en bas, mini-cartes au centre.
    - **Stack** (1ʳᵉ verticale) : `STACK_ON_CONTROLLED_SITE` + `PLAY_FROM_STACK` → **4C180** Uruk Besieger (Regroup empile / Shadow rejoue −1). Auto = plus bas site contrôlé si 1 seul. ✅
    - ✅ Each time / When wins → stack → **4U24** Hillman Rabble, **4U11** Dunlending Looter (+ play −2 déjà câblé).
    - ✅ Choix multi-sites au stack (halo + flèche si plusieurs sites contrôlés).
    - ✅ Stack un autre séide (filtre) : **8R108** Troll → besieger ; **8U107** Engine Regroup stack + Shadow play depuis pile.
-   - Suite stack : Olog-hai / Garrison discard-hand / play stacked avec bonus (Officer…).
+   - ✅ Wins → play stacked + temp keywords : **8R105** Olog-hai (besieger → Fierce + Damage +1 jusqu’au ralliement).
+   - Suite stack : Garrison discard-hand / play stacked avec bonus (Officer…) ; coût crépuscule Olog (−2 / Sauron empilé) = plus tard.
    - Cultures concernées : **Dunland**, **Sauron**, **Isengard** (Uruk).
 
 ## Hors scope pour l’instant
@@ -110,4 +111,4 @@ L’ancien plan effets de cartes est **figé** (`.cursor/rules/card-effects-plan
 | Abilities / gametext site | partiel (move twilight + discard allies ✅) |
 | Remplacement de site sur le path | partiel (CURRENT/REGION/when-played/cannot ✅ ; échange OWNED ✅ — 11U45) |
 | Attache sur site | partiel (pose + badge + you control ✅ ; effets gametext ❌) |
-| Contrôle / libération | partiel (take control + liberate + each-time ✅ ; stack self/wins + multi-sites + stack autre ✅) |
+| Contrôle / libération | partiel (take control + liberate + each-time ✅ ; stack self/wins + multi-sites + stack autre + Olog play ✅) |

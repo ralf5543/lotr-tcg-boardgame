@@ -361,6 +361,13 @@ export function applyAbilityEffect(
                 effect.twilightReduce || 0
             );
             if (paid === null) return false;
+            for (const grant of effect.grantsTempKeywords || []) {
+                if (!cardToPlay.tempKeywords) cardToPlay.tempKeywords = [];
+                cardToPlay.tempKeywords.push({
+                    keyword: grant.keyword,
+                    expiresAtPhase: grant.expiresAtPhase,
+                });
+            }
             continue;
         }
 

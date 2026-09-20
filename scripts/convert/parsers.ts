@@ -2034,6 +2034,68 @@ function parseWinsSkirmishStackOnSiteAbilities(
     return found;
 }
 
+/**
+ * Each time this minion wins a skirmish, you may play a besieger stacked
+ * on a site you control. That besieger is fierce and Damage +1 until regroup.
+ * (Olog-hai of Mordor…)
+ */
+function parseWinsSkirmishPlayFromStackAbilities(
+    text: string,
+    cardTitle?: string,
+    cardId?: string
+): Record<string, unknown>[] {
+    const found: Record<string, unknown>[] = [];
+    const re =
+        /(?:When|Each time)\s+([\s\S]+?)\s+wins a skirmish,\s*you may play\s+(a\s+[\s\S]+?)\s+stacked on a site you control\.(\s*That\s+\w+\s+is\s+fierce\s+and\s+(?:\*\*|<keyword>)?Damage\s*\+\s*1\.?(?:\*\*|<\/keyword>)?\s*until the regroup phase\.?)?/gi;
+    let match: RegExpExecArray | null;
+    while ((match = re.exec(text)) !== null) {
+        const winnerParsed = parseWinsSkirmishWinner(
+            match[1].trim(),
+            cardTitle
+        );
+        const filters = parseClassFilters(match[2]);
+        if (!winnerParsed || filters.length === 0) continue;
+
+        const grantsFierceDamage = Boolean(match[3]);
+        const effects: Record<string, unknown>[] = [
+            {
+                type: 'PLAY_FROM_STACK',
+                target: [filters],
+                ...(grantsFierceDamage
+                    ? {
+                          grantsTempKeywords: [
+                              {
+                                  keyword: 'FIERCE',
+                                  expiresAtPhase: 'REGROUP',
+                              },
+                              {
+                                  keyword: 'DAMAGE +1',
+                                  expiresAtPhase: 'REGROUP',
+                              },
+                          ],
+                      }
+                    : {}),
+            },
+        ];
+
+        found.push({
+            id: `${cardId || 'ability'}:${found.length}:win-play-stack`,
+            phases: ['RESPONSE'],
+            trigger: {
+                type: 'WINS_SKIRMISH',
+                winner: winnerParsed.winner,
+                ...(winnerParsed.yours ? { yours: true } : {}),
+            },
+            optional: true,
+            cost: [],
+            effects,
+            source: winnerParsed.winner === 'BEARER' ? 'ATTACHMENT' : 'SELF',
+            text: stripAbilityMarkup(match[0]),
+        });
+    }
+    return found;
+}
+
 /** Spot « a CLASS » / « N CLASS » pour While — refuse le reste inconnu. */
 function parseWhileSpotSubject(
     raw: string
@@ -5437,6 +5499,15 @@ export function parseAbilities(
     );
 
     parseWinsSkirmishStackOnSiteAbilities(text, cardTitle, cardId).forEach(
+        (ability) => {
+            abilities.push({
+                ...ability,
+                id: `${cardId || 'ability'}:${abilities.length}`,
+            });
+        }
+    );
+
+    parseWinsSkirmishPlayFromStackAbilities(text, cardTitle, cardId).forEach(
         (ability) => {
             abilities.push({
                 ...ability,

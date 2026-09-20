@@ -402,8 +402,15 @@ function formatEffectBit(
         const reduce = effect.twilightReduce || 0;
         const reduceBit =
             reduce > 0 ? ` (−${reduce} crépuscule)` : '';
+        const grants = (effect.grantsTempKeywords || [])
+            .map((g) => translateKeyword(g.keyword))
+            .filter(Boolean);
+        const grantBit =
+            grants.length > 0
+                ? ` (${grants.join(' et ')} jusqu’au ralliement)`
+                : '';
         if (who) {
-            return `jouer ${who} empilé sur un site que vous contrôlez${reduceBit}`;
+            return `jouer ${who} empilé sur un site que vous contrôlez${reduceBit}${grantBit}`;
         }
         return reduce > 0
             ? `jouer ce séide depuis la pile (−${reduce} crépuscule)`

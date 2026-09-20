@@ -595,17 +595,18 @@ export const applyDevPreset = (
                 G.battlefield = [
                     clonePresetCard('4C180', 'dev-uruk-besieger'),
                     clonePresetCard('8R108', 'dev-troll-gorgoroth'),
+                    clonePresetCard('8R105', 'dev-olog-mordor'),
                     clonePresetCard('4U24', 'dev-hillman-rabble'),
                 ];
                 shadowPlayer.supportArea = [
                     clonePresetCard('8U107', 'dev-marching-companies'),
                 ];
-                G.twilightPool = 8;
+                G.twilightPool = 12;
                 fpPlayer.threats = 2;
             }
 
             G.statusMessage =
-                '[DEV] Sites : 1–2 contrôlés · Besieger · Troll · Engine · Rabble.';
+                '[DEV] Sites : 1–2 contrôlés · Besieger · Troll · Olog · Engine · Rabble.';
             break;
         }
     }

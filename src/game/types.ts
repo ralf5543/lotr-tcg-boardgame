@@ -304,10 +304,15 @@ export type AbilityEffect =
            * Joue un séide depuis la pile d’un site que tu contrôles.
            * Sans `target` : joue la source. Avec filtre : désigner un séide empilé.
            * Coût crépuscule = coût effectif − twilightReduce (min 0).
+           * `grantsTempKeywords` : appliqués au séide joué (ex. Olog → Fierce + Damage).
            */
           type: 'PLAY_FROM_STACK';
           twilightReduce?: number;
           target?: AbilityTargetRef;
+          grantsTempKeywords?: {
+              keyword: CardKeyword;
+              expiresAtPhase: AbilityEffectExpiry;
+          }[];
       }
     | {
           type: 'DRAW';

@@ -83991,6 +83991,42 @@
       "BESIEGER",
       "FIERCE"
     ],
+    "abilities": [
+      {
+        "id": "8R105:0",
+        "phases": [
+          "RESPONSE"
+        ],
+        "trigger": {
+          "type": "WINS_SKIRMISH",
+          "winner": "SELF"
+        },
+        "optional": true,
+        "cost": [],
+        "effects": [
+          {
+            "type": "PLAY_FROM_STACK",
+            "target": [
+              [
+                "BESIEGER"
+              ]
+            ],
+            "grantsTempKeywords": [
+              {
+                "keyword": "FIERCE",
+                "expiresAtPhase": "REGROUP"
+              },
+              {
+                "keyword": "DAMAGE +1",
+                "expiresAtPhase": "REGROUP"
+              }
+            ]
+          }
+        ],
+        "source": "SELF",
+        "text": "Each time this minion wins a skirmish, you may play a besieger stacked on a site you control. That besieger is fierce and Damage +1. until the regroup phase."
+      }
+    ],
     "culture": "SAURON",
     "race": "TROLL",
     "twilightCost": 10,
