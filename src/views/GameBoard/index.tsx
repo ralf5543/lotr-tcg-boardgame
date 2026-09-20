@@ -454,10 +454,14 @@ export const GameBoard: React.FC<GameBoardProps> = ({
         (
             source: CardState,
             ability: NonNullable<CardState['abilities']>[number],
-            onChosen: (cardIds: string[]) => void
+            onChosen: (cardIds: string[]) => void,
+            countOverride?: number
         ): boolean => {
             const effect = abilityDiscardFromHandEffect(ability);
-            const need = effect?.count || abilityDiscardFromHandCount(ability);
+            const need =
+                countOverride ??
+                effect?.count ??
+                abilityDiscardFromHandCount(ability);
             const upTo = Boolean(effect?.upTo);
             if (need <= 0) return false;
 
@@ -636,7 +640,8 @@ export const GameBoard: React.FC<GameBoardProps> = ({
 
         const commitAbility = (
             costId?: string,
-            effectIds?: string | string[]
+            effectIds?: string | string[],
+            handIds?: string[]
         ) => {
             stopTargeting();
             if (costId) {
@@ -644,7 +649,7 @@ export const GameBoard: React.FC<GameBoardProps> = ({
                     sourceInstanceId,
                     abilityId,
                     costId,
-                    [],
+                    handIds || [],
                     effectIds
                 );
                 return;
@@ -652,7 +657,8 @@ export const GameBoard: React.FC<GameBoardProps> = ({
             moves.activateAbility?.(
                 sourceInstanceId,
                 abilityId,
-                effectIds
+                effectIds,
+                handIds
             );
         };
 
@@ -660,21 +666,37 @@ export const GameBoard: React.FC<GameBoardProps> = ({
             costId?: string,
             minionId?: string
         ) => {
-            if (needsStackSite) {
-                return requestStackSite(source, (siteId) => {
-                    if (minionId) {
-                        commitAbility(costId, [minionId, siteId]);
-                    } else {
-                        commitAbility(costId, siteId);
-                    }
-                }, ability);
-            }
-            if (minionId) {
-                commitAbility(costId, minionId);
+            const finish = (handIds?: string[]) => {
+                if (needsStackSite) {
+                    return requestStackSite(source, (siteId) => {
+                        if (minionId) {
+                            commitAbility(costId, [minionId, siteId], handIds);
+                        } else {
+                            commitAbility(costId, siteId, handIds);
+                        }
+                    }, ability);
+                }
+                if (minionId) {
+                    commitAbility(costId, minionId, handIds);
+                    return true;
+                }
+                commitAbility(costId, undefined, handIds);
                 return true;
+            };
+
+            if (abilityNeedsHandDiscard(ability) && minionId) {
+                const minion = findTargetCard(G, minionId) as CardState | null;
+                const need = abilityDiscardFromHandCount(ability, minion);
+                return requestHandDiscard(
+                    source,
+                    ability,
+                    (cardIds) => {
+                        finish(cardIds);
+                    },
+                    need
+                );
             }
-            commitAbility(costId);
-            return true;
+            return finish();
         };
 
         const requestEffect = (costId?: string) => {
@@ -739,37 +761,26 @@ export const GameBoard: React.FC<GameBoardProps> = ({
             }
         }
         // Play depuis pile d’un *autre* séide : pas de flèche — drag comme Uruk/Dun.
+        // Défausse main (Officer / Sapper) : après le drag, quand on connaît la cible
+        // (coût 1 si assiégeant, sinon 2).
         if (playsOtherFromStack) {
-            const armStackPlay = (handIds?: string[]) => {
-                const candidates = getEffectDesignationCandidates(
-                    G,
-                    source,
-                    ability
-                );
-                if (candidates.length === 0) return;
-                startTargeting({
-                    kind: 'STACK_PLAY',
-                    targetableCardIds: candidates.flatMap(cardTargetIds),
-                    pendingCard: source,
-                    abilityId,
-                    discardedHandIds: handIds,
-                    message:
-                        'Faites glisser un séide empilé vers le champ de bataille.',
-                    onSelectTarget: () => {
-                        /* complété par drag → battlefield */
-                    },
-                });
-            };
-            if (
-                abilityNeedsHandDiscard(ability) &&
-                !(discardedHandIds && discardedHandIds.length > 0)
-            ) {
-                requestHandDiscard(source, ability, (cardIds) => {
-                    armStackPlay(cardIds);
-                });
-                return;
-            }
-            armStackPlay(discardedHandIds);
+            const candidates = getEffectDesignationCandidates(
+                G,
+                source,
+                ability
+            );
+            if (candidates.length === 0) return;
+            startTargeting({
+                kind: 'STACK_PLAY',
+                targetableCardIds: candidates.flatMap(cardTargetIds),
+                pendingCard: source,
+                abilityId,
+                message:
+                    'Faites glisser un séide empilé vers le champ de bataille.',
+                onSelectTarget: () => {
+                    /* complété par drag → battlefield */
+                },
+            });
             return;
         }
         if (needsEffect && requestEffect()) {
@@ -1341,17 +1352,36 @@ export const GameBoard: React.FC<GameBoardProps> = ({
                     targetingAbilityId &&
                     isCardTargetable(stackedId)
                 ) {
-                    stopTargeting();
-                    moves.activateAbility?.(
-                        pendingCard.instanceId || pendingCard.id,
-                        targetingAbilityId,
-                        stackedId,
-                        targetingDiscardedHandIds
+                    const ability = (pendingCard.abilities || []).find(
+                        (ab) => ab.id === targetingAbilityId
                     );
-                    audioService.play('CARD_PLAY');
-                    if (soundPath) {
-                        audioService.play(soundPath, { delay: 0.3 });
+                    const finishPlay = (handIds?: string[]) => {
+                        stopTargeting();
+                        moves.activateAbility?.(
+                            pendingCard.instanceId || pendingCard.id,
+                            targetingAbilityId,
+                            stackedId,
+                            handIds
+                        );
+                        audioService.play('CARD_PLAY');
+                        if (soundPath) {
+                            audioService.play(soundPath, { delay: 0.3 });
+                        }
+                    };
+                    if (ability && abilityNeedsHandDiscard(ability)) {
+                        const need = abilityDiscardFromHandCount(
+                            ability,
+                            card
+                        );
+                        requestHandDiscard(
+                            pendingCard,
+                            ability,
+                            (cardIds) => finishPlay(cardIds),
+                            need
+                        );
+                        return;
                     }
+                    finishPlay(targetingDiscardedHandIds);
                     return;
                 }
 

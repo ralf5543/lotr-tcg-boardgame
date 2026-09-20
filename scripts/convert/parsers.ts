@@ -4709,21 +4709,67 @@ export function parseAbilities(
             return;
         }
 
+        // « Discard N cards from hand to stack a … on a site you control
+        // (or discard 1 if that … is a besieger). » — Gorgoroth Garrison
+        const discardStackOtherMatch = bodyPlain.match(
+            /^Discard\s+(\d+|a|one|two)\s+cards?\s+from hand\s+to\s+stack\s+(a\s+[\s\S]+?)\s+on a site you control\s*\(\s*or discard\s+(\d+|a|one)\s+cards?\s+from hand if that\s+\w+\s+is a besieger\s*\)\.?$/i
+        );
+        if (discardStackOtherMatch) {
+            const discardCount = parseBurdenWord(discardStackOtherMatch[1]);
+            const filters = parseClassFilters(discardStackOtherMatch[2]);
+            const reducedCount = parseBurdenWord(discardStackOtherMatch[3]);
+            if (!discardCount || filters.length === 0 || !reducedCount) return;
+
+            const stackClause =
+                `${marker.phase}: Discard ${discardCount} card${discardCount > 1 ? 's' : ''} from hand to stack ${discardStackOtherMatch[2].trim()} on a site you control.`
+                    .replace(/<[^>]+>/g, '')
+                    .replace(/\s+/g, ' ')
+                    .replace(/\s+\./g, '.')
+                    .trim();
+
+            abilities.push({
+                id: `${cardId || 'ability'}:${abilities.length}`,
+                phases,
+                cost: [
+                    {
+                        discardFromHand: discardCount,
+                        discardFromHandIfEffectHasKeyword: {
+                            keyword: 'BESIEGER',
+                            count: reducedCount,
+                        },
+                    },
+                ],
+                effects: [
+                    {
+                        type: 'STACK_ON_CONTROLLED_SITE',
+                        target: [filters],
+                    },
+                ],
+                source: 'SELF',
+                text: stackClause,
+            });
+            return;
+        }
+
         // « Discard N cards from hand to play a … stacked on a site you control. »
         // Optionnel : That … is fierce and strength +N until the regroup phase.
-        // (Gorgoroth Officer — sans variante « or discard 1 if besieger ».)
+        // Optionnel : (discard 1 instead if that … is a besieger) — Sapper.
+        // (Gorgoroth Officer / Sapper)
         const discardPlayStackedMatch = bodyPlain.match(
-            /^Discard\s+(\d+|a|one|two)\s+cards?\s+from hand\s+to\s+play\s+(a\s+[\s\S]+?)\s+stacked on a site you control\.(\s*That\s+\w+\s+is\s+fierce\s+and\s+strength\s*\+\s*(\d+)\s+until the regroup phase\.?)?$/i
+            /^Discard\s+(\d+|a|one|two)\s+cards?\s+from hand\s+to\s+play\s+(a\s+[\s\S]+?)\s+stacked on a site you control(?:\s*\(\s*discard\s+(\d+|a|one)\s+cards?\s+from hand instead if that\s+\w+\s+is a besieger\s*\))?\.(\s*That\s+\w+\s+is\s+fierce\s+and\s+strength\s*\+\s*(\d+)\s+until the regroup phase\.?)?$/i
         );
         if (discardPlayStackedMatch) {
             const discardCount = parseBurdenWord(discardPlayStackedMatch[1]);
             const filters = parseClassFilters(discardPlayStackedMatch[2]);
             if (!discardCount || filters.length === 0) return;
 
-            const strengthBonus = discardPlayStackedMatch[4]
-                ? parseInt(discardPlayStackedMatch[4], 10)
+            const reducedCount = discardPlayStackedMatch[3]
+                ? parseBurdenWord(discardPlayStackedMatch[3])
                 : null;
-            const grantsFierce = Boolean(discardPlayStackedMatch[3]);
+            const strengthBonus = discardPlayStackedMatch[5]
+                ? parseInt(discardPlayStackedMatch[5], 10)
+                : null;
+            const grantsFierce = Boolean(discardPlayStackedMatch[4]);
 
             const playEffect: Record<string, unknown> = {
                 type: 'PLAY_FROM_STACK',
@@ -4748,6 +4794,16 @@ export function parseAbilities(
                 ];
             }
 
+            const cost: Record<string, unknown> = {
+                discardFromHand: discardCount,
+            };
+            if (reducedCount) {
+                cost.discardFromHandIfEffectHasKeyword = {
+                    keyword: 'BESIEGER',
+                    count: reducedCount,
+                };
+            }
+
             const playClause =
                 `${marker.phase}: Discard ${discardCount} card${discardCount > 1 ? 's' : ''} from hand to play ${discardPlayStackedMatch[2].trim()} stacked on a site you control.`
                     .replace(/<[^>]+>/g, '')
@@ -4758,7 +4814,7 @@ export function parseAbilities(
             abilities.push({
                 id: `${cardId || 'ability'}:${abilities.length}`,
                 phases,
-                cost: [{ discardFromHand: discardCount }],
+                cost: [cost],
                 effects: [playEffect],
                 source: 'SELF',
                 text: playClause,

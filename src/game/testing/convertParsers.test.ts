@@ -2404,6 +2404,64 @@ describe('parseAbilities — While spot N terrain sites', () => {
         ]);
     });
 
+    it('parse Gorgoroth Garrison : discard 2 (1 si besieger) → stack Sauron Orc', () => {
+        expect(
+            parseAbilities(
+                '<keyword>Besieger.</keyword> <keyword>Regroup:</keyword> Discard 2 cards from hand to stack a <symbol>sauron</symbol> Orc on a site you control (or discard 1 card from hand if that Orc is a besieger).',
+                'Gorgoroth Garrison',
+                '7C273'
+            )
+        ).toEqual([
+            expect.objectContaining({
+                phases: ['REGROUP'],
+                cost: [
+                    {
+                        discardFromHand: 2,
+                        discardFromHandIfEffectHasKeyword: {
+                            keyword: 'BESIEGER',
+                            count: 1,
+                        },
+                    },
+                ],
+                effects: [
+                    {
+                        type: 'STACK_ON_CONTROLLED_SITE',
+                        target: [['SAURON', 'ORC']],
+                    },
+                ],
+            }),
+        ]);
+    });
+
+    it('parse Gorgoroth Sapper : discard 2 (1 si besieger) → play stacked Sauron Orc', () => {
+        expect(
+            parseAbilities(
+                '<keyword>Besieger.</keyword> <keyword>Shadow:</keyword> Discard 2 cards from hand to play a <symbol>sauron</symbol> Orc stacked on a site you control (discard 1 card from hand instead if that Orc is a besieger).',
+                'Gorgoroth Sapper',
+                '7C277'
+            )
+        ).toEqual([
+            expect.objectContaining({
+                phases: ['SHADOW'],
+                cost: [
+                    {
+                        discardFromHand: 2,
+                        discardFromHandIfEffectHasKeyword: {
+                            keyword: 'BESIEGER',
+                            count: 1,
+                        },
+                    },
+                ],
+                effects: [
+                    {
+                        type: 'PLAY_FROM_STACK',
+                        target: [['SAURON', 'ORC']],
+                    },
+                ],
+            }),
+        ]);
+    });
+
     it('parse Hillman Band : each time fellowship moves → take control', () => {
         expect(
             parseAbilities(

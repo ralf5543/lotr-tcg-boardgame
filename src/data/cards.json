@@ -77009,6 +77009,36 @@
     "keywords": [
       "BESIEGER"
     ],
+    "abilities": [
+      {
+        "id": "7C273:0",
+        "phases": [
+          "REGROUP"
+        ],
+        "cost": [
+          {
+            "discardFromHand": 2,
+            "discardFromHandIfEffectHasKeyword": {
+              "keyword": "BESIEGER",
+              "count": 1
+            }
+          }
+        ],
+        "effects": [
+          {
+            "type": "STACK_ON_CONTROLLED_SITE",
+            "target": [
+              [
+                "SAURON",
+                "ORC"
+              ]
+            ]
+          }
+        ],
+        "source": "SELF",
+        "text": "REGROUP: Discard 2 cards from hand to stack a sauron Orc on a site you control."
+      }
+    ],
     "actionPhases": [
       "REGROUP"
     ],
@@ -77220,6 +77250,36 @@
     "type": "MINION",
     "keywords": [
       "BESIEGER"
+    ],
+    "abilities": [
+      {
+        "id": "7C277:0",
+        "phases": [
+          "SHADOW"
+        ],
+        "cost": [
+          {
+            "discardFromHand": 2,
+            "discardFromHandIfEffectHasKeyword": {
+              "keyword": "BESIEGER",
+              "count": 1
+            }
+          }
+        ],
+        "effects": [
+          {
+            "type": "PLAY_FROM_STACK",
+            "target": [
+              [
+                "SAURON",
+                "ORC"
+              ]
+            ]
+          }
+        ],
+        "source": "SELF",
+        "text": "SHADOW: Discard 2 cards from hand to play a sauron Orc stacked on a site you control."
+      }
     ],
     "actionPhases": [
       "SHADOW"

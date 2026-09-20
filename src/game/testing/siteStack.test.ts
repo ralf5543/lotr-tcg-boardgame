@@ -3,6 +3,10 @@ import { applyAbilityEffect } from '../engine/abilities/applyAbilityEffect';
 import { abilityHasLegalEffectTarget } from '../engine/abilities/designation';
 import { abilityMeetsPlayRestrictions } from '../engine/abilities/abilityRestrictions';
 import {
+    payAbilityCost,
+    resolveDiscardFromHandCount,
+} from '../engine/abilities/payAbilityCost';
+import {
     playStackedMinion,
     stackMinionOnControlledSite,
 } from '../logic/sites';
@@ -397,6 +401,104 @@ describe('stack on controlled site', () => {
                     m.value === 6
             )
         ).toBe(true);
+    });
+
+    it('Garrison : défausse 1 si la cible est assiégeant, sinon 2', () => {
+        const garrison = createMinion({
+            id: '7C273',
+            instanceId: 'garrison',
+            culture: 'SAURON',
+            race: 'ORC',
+            keywords: ['BESIEGER'],
+        });
+        const besieger = createMinion({
+            id: '7R279',
+            instanceId: 'troop',
+            culture: 'SAURON',
+            race: 'ORC',
+            keywords: ['BESIEGER'],
+        });
+        const plainOrc = createMinion({
+            id: 'orc',
+            instanceId: 'plain',
+            culture: 'SAURON',
+            race: 'ORC',
+        });
+        const stackAbility: Ability = {
+            id: '7C273:0',
+            phases: ['REGROUP'],
+            cost: [
+                {
+                    discardFromHand: 2,
+                    discardFromHandIfEffectHasKeyword: {
+                        keyword: 'BESIEGER',
+                        count: 1,
+                    },
+                },
+            ],
+            effects: [
+                {
+                    type: 'STACK_ON_CONTROLLED_SITE',
+                    target: [['SAURON', 'ORC']],
+                },
+            ],
+            source: 'SELF',
+        };
+        expect(resolveDiscardFromHandCount(stackAbility, besieger)).toBe(1);
+        expect(resolveDiscardFromHandCount(stackAbility, plainOrc)).toBe(2);
+
+        const site = createSite({
+            id: 's1',
+            instanceId: 's1',
+            siteNumber: 1,
+            ownerId: '0',
+            controlledBy: '1',
+        });
+        const G = createGameState({
+            fpPlayerId: '0',
+            currentSiteIndex: 3,
+            twilightPool: 5,
+            path: [
+                site,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+            ],
+            players: {
+                '0': createPlayerState('0', { currentSiteIndex: 3 }),
+                '1': createPlayerState('1', {
+                    currentSiteIndex: 3,
+                    hand: [
+                        createMinion({ id: 'h1', instanceId: 'h1' }),
+                        createMinion({ id: 'h2', instanceId: 'h2' }),
+                    ],
+                }),
+            },
+            battlefield: [garrison, besieger, plainOrc],
+        });
+
+        expect(
+            payAbilityCost(
+                G,
+                garrison,
+                stackAbility.cost,
+                'troop',
+                ['h1'],
+                'troop'
+            )
+        ).toBe(true);
+        expect(G.players['1']?.hand).toHaveLength(1);
+        expect(applyAbilityEffect(G, garrison, stackAbility, 'troop')).toBe(
+            true
+        );
+        expect(G.path[0]?.stacked?.map((c) => c.instanceId)).toEqual([
+            'troop',
+        ]);
     });
 
     it('refuse play from stack hors pile / sans contrôle', () => {

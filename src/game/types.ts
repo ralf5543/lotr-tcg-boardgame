@@ -165,6 +165,14 @@ export interface CostOption {
     exert?: CostSelector[];
     discardFromPlay?: CostSelector[];
     discardFromHand?: number;
+    /**
+     * Si la cible d’effet a ce mot-clé, défausser `count` au lieu de
+     * `discardFromHand` (Garrison / Sapper : 1 si assiégeant).
+     */
+    discardFromHandIfEffectHasKeyword?: {
+        keyword: CardKeyword;
+        count: number;
+    };
     spotBurdens?: number;
     removeBurdens?: number;
     addBurdens?: number;

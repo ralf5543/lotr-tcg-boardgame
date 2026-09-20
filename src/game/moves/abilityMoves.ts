@@ -39,7 +39,7 @@ export const activateAbility = (
     { G, ctx, playerID, events }: LotrMoveContext,
     sourceInstanceId: string,
     abilityId: string,
-    chosenTargetId?: string,
+    chosenTargetId?: string | string[],
     discardedHandIds?: string[],
     chosenEffectTargetId?: string | string[]
 ) => {
@@ -131,7 +131,8 @@ export const activateAbility = (
             source,
             ability.cost,
             chosenTargetId,
-            discardedHandIds
+            discardedHandIds,
+            needsCostDesignation ? chosenEffectTargetId : chosenTargetId
         )
     ) {
         return 'INVALID_MOVE';

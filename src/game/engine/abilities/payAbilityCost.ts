@@ -1,12 +1,30 @@
-import type { Ability, AbilityCost, CardState, GameState } from '../../types';
+import type { Ability, AbilityCost, CardKeyword, CardState, GameState } from '../../types';
 import { applyExert } from '../../../utils/applyExert';
 import { discardCardFromPlay } from '../../../utils/discardCardFromPlay';
 import { getEffectiveVitality } from '../../../utils/cardStats';
 import { findTargetCard } from '../../../utils/cardUtils';
+import { getKeywordValue } from '../keywords/keywordUtils';
 import { resolveCostTarget } from './resolveCostTarget';
 
 const matchCard = (card: CardState | undefined | null, targetId: string) =>
     Boolean(card && (card.instanceId === targetId || card.id === targetId));
+
+function cardHasKeyword(card: CardState, keyword: CardKeyword): boolean {
+    return getKeywordValue(card, keyword) >= 0;
+}
+
+export function resolveDiscardFromHandCount(
+    ability: Ability,
+    effectTarget?: CardState | null
+): number {
+    const option = ability.cost?.[0];
+    if (!option || typeof option.discardFromHand !== 'number') return 0;
+    const rule = option.discardFromHandIfEffectHasKeyword;
+    if (rule && effectTarget && cardHasKeyword(effectTarget, rule.keyword)) {
+        return rule.count;
+    }
+    return option.discardFromHand;
+}
 
 export function abilityOwnerPlayerId(
     G: GameState,
@@ -18,7 +36,13 @@ export function abilityOwnerPlayerId(
     return undefined;
 }
 
-export function abilityDiscardFromHandCount(ability: Ability): number {
+export function abilityDiscardFromHandCount(
+    ability: Ability,
+    effectTarget?: CardState | null
+): number {
+    if (effectTarget !== undefined) {
+        return resolveDiscardFromHandCount(ability, effectTarget);
+    }
     return ability.cost?.[0]?.discardFromHand || 0;
 }
 
@@ -110,7 +134,12 @@ function canPayOption(
         const ownerId = abilityOwnerPlayerId(G, source);
         if (!ownerId) return false;
         const hand = G.players[ownerId]?.hand || [];
-        if (hand.length < option.discardFromHand) return false;
+        const rule = option.discardFromHandIfEffectHasKeyword;
+        // Sans cible : assez pour le minimum possible (réduction si mot-clé).
+        const need = rule
+            ? Math.min(option.discardFromHand, rule.count)
+            : option.discardFromHand;
+        if (hand.length < need) return false;
     }
 
     // addBurdens : toujours payable (on ajoute).
@@ -179,7 +208,8 @@ function payOption(
     source: CardState,
     option: AbilityCost[number],
     chosenTargetId?: string,
-    discardedHandIds?: string[]
+    discardedHandIds?: string[],
+    effectTargetId?: string
 ): boolean {
     if (option.exert && Array.isArray(option.exert)) {
         for (const req of option.exert) {
@@ -227,10 +257,15 @@ function payOption(
     if (typeof option.discardFromHand === 'number' && option.discardFromHand > 0) {
         const ownerId = abilityOwnerPlayerId(G, source);
         if (!ownerId) return false;
-        if (
-            !discardedHandIds ||
-            discardedHandIds.length !== option.discardFromHand
-        ) {
+        const effectCard = effectTargetId
+            ? (findTargetCard(G, effectTargetId) as CardState | null)
+            : null;
+        const rule = option.discardFromHandIfEffectHasKeyword;
+        const need =
+            rule && effectCard && cardHasKeyword(effectCard, rule.keyword)
+                ? rule.count
+                : option.discardFromHand;
+        if (!discardedHandIds || discardedHandIds.length !== need) {
             return false;
         }
         if (!discardCardsFromHand(G, ownerId, discardedHandIds)) return false;
@@ -256,13 +291,27 @@ export function payAbilityCost(
     G: GameState,
     source: CardState,
     cost: AbilityCost,
-    chosenTargetId?: string,
-    discardedHandIds?: string[]
+    chosenTargetId?: string | string[],
+    discardedHandIds?: string[],
+    effectTargetId?: string | string[]
 ): boolean {
     if (!cost || cost.length === 0) return true;
     const option = cost.find((opt) => canPayOption(G, source, opt));
     if (!option) return false;
-    return payOption(G, source, option, chosenTargetId, discardedHandIds);
+    const costId = Array.isArray(chosenTargetId)
+        ? chosenTargetId[0]
+        : chosenTargetId;
+    const effectId = Array.isArray(effectTargetId)
+        ? effectTargetId[0]
+        : effectTargetId || costId;
+    return payOption(
+        G,
+        source,
+        option,
+        costId,
+        discardedHandIds,
+        effectId
+    );
 }
 
 export function canPayAbility(G: GameState, source: CardState, ability: Ability): boolean {
