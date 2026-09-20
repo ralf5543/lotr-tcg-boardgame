@@ -2231,6 +2231,52 @@ describe('parseAbilities — While spot N terrain sites', () => {
         ]);
     });
 
+    it('parse Dunlending Looter : when wins → stack + Shadow play from stack', () => {
+        expect(
+            parseAbilities(
+                'When this minion wins a skirmish, you may stack him on a site you control. <keyword>Shadow:</keyword> If stacked on a site you control, play this minion. His twilight cost is -2.',
+                'Dunlending Looter',
+                '4U11'
+            )
+        ).toEqual([
+            expect.objectContaining({
+                phases: ['SHADOW'],
+                effects: [{ type: 'PLAY_FROM_STACK', twilightReduce: 2 }],
+                requiresStackedOnControlledSite: true,
+            }),
+            expect.objectContaining({
+                phases: ['RESPONSE'],
+                trigger: { type: 'WINS_SKIRMISH', winner: 'SELF' },
+                optional: true,
+                cost: [],
+                effects: [{ type: 'STACK_ON_CONTROLLED_SITE' }],
+            }),
+        ]);
+    });
+
+    it('parse Hillman Rabble : each time wins → stack', () => {
+        expect(
+            parseAbilities(
+                'Each time this minion wins a skirmish, you may stack it on a site you control. <keyword>Shadow:</keyword> If stacked on a site you control, play this minion. Its twilight cost is -2.',
+                'Hillman Rabble',
+                '4U24'
+            )
+        ).toEqual(
+            expect.arrayContaining([
+                expect.objectContaining({
+                    phases: ['RESPONSE'],
+                    trigger: { type: 'WINS_SKIRMISH', winner: 'SELF' },
+                    optional: true,
+                    effects: [{ type: 'STACK_ON_CONTROLLED_SITE' }],
+                }),
+                expect.objectContaining({
+                    phases: ['SHADOW'],
+                    effects: [{ type: 'PLAY_FROM_STACK', twilightReduce: 2 }],
+                }),
+            ])
+        );
+    });
+
     it('parse Hillman Band : each time fellowship moves → take control', () => {
         expect(
             parseAbilities(

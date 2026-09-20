@@ -990,10 +990,6 @@ export const LotrGame: Game<GameState> = {
             },
             moves: {
                 ...allMoves,
-
-                endAssignmentPhase: ({ events }: LotrMoveContext) => {
-                    events?.endPhase?.();
-                },
             },
         },
 

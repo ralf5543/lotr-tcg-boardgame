@@ -82,4 +82,43 @@ describe('cession d’affectation à l’Ombre', () => {
         engine.moves.yieldAssignmentToShadow();
         expect(engine.getG().assignmentStep).toBe('SHADOW_ASSIGN');
     });
+
+    it('Ombre peut passer aux combats sans affecter les séides restants', () => {
+        const engine = createEngineClient({
+            startPhase: 'assignment',
+            playerID: '0',
+            G: {
+                battlefield: [
+                    createMinion({ id: 'minion-1' }),
+                    createMinion({ id: 'minion-2' }),
+                ],
+                players: {
+                    '0': createPlayerState('0', {
+                        fellowshipArea: [createCompanion({ id: 'comp-1' })],
+                    }),
+                },
+            },
+        });
+
+        skipAssignmentActions(engine);
+        // Capacité FP remplie → surcharge automatique à l’Ombre
+        engine.moves.assignMinion('minion-1', 'comp-1');
+        expect(engine.getG().assignmentStep).toBe('SHADOW_ASSIGN');
+
+        engine.updatePlayerID('0');
+        engine.moves.passShadowAssignment();
+        expect(engine.getG().assignmentStep).toBe('SHADOW_ASSIGN');
+
+        engine.updatePlayerID('1');
+        engine.moves.passShadowAssignment();
+
+        expect(engine.getG().assignmentStep).toBe('COMPLETED');
+        expect(engine.getG().skirmishes).toEqual([
+            expect.objectContaining({
+                companionId: 'comp-1',
+                minionIds: ['minion-1'],
+            }),
+        ]);
+        expect(engine.getCtx().phase).toBe('skirmish');
+    });
 });

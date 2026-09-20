@@ -466,8 +466,7 @@ const clonePresetSite = (
     } as SiteCardState;
 };
 
-/** Neuf sites Standard — terrains variés pour tester les mots-clés. Sanctuaire = 3 & 6. */
-/** Neuf sites Standard — région 1 utile pour replace REGION (3 sites posés). */
+/** Neuf sites Standard — terrains variés (sanctuaire = emplacements 3 & 6). */
 const SITES_TEST_PATH_IDS = [
     '11S263', // 1 West Gate — UNDERGROUND + MOVES_FROM remove 2
     '11S247', // 2 Moria Guardroom — UNDERGROUND
@@ -478,20 +477,6 @@ const SITES_TEST_PATH_IDS = [
     '11S241', // 7 Fortress of Orthanc — BATTLEGROUND
     '11S229', // 8 Barazinbar — MOUNTAIN
     '11S240', // 9 Flats of Rohan — PLAINS
-] as const;
-
-/** Sites deck pour replace (CURRENT / REGION / when-played). */
-const SITES_TEST_FP_DECK = [
-    '11S260', // FOREST
-    '11S262', // MOUNTAIN
-    '11S239', // FOREST
-] as const;
-const SITES_TEST_SHADOW_DECK = [
-    '2U118', // underground (Depths / Watchful Orc)
-    '4U352', // underground
-    '1U344',
-    '11S260', // FOREST (Nelya = any)
-    '11S262', // MOUNTAIN
 ] as const;
 
 export const applyDevPreset = (
@@ -573,6 +558,7 @@ export const applyDevPreset = (
                     player.supportArea = [];
                     player.discard = [];
                     player.fellowshipArea = [];
+                    player.sitesDeck = [];
                 }
             });
 
@@ -583,9 +569,12 @@ export const applyDevPreset = (
                     index + 1
                 )
             );
-            // Site 1 déjà contrôlé par l’Ombre → liberate immédiat (Sturdy Shield / Forests)
+            // Sites 1–2 contrôlés Ombre → choix multi-sites au stack
             if (G.path[0]) {
                 G.path[0].controlledBy = shadowId;
+            }
+            if (G.path[1]) {
+                G.path[1].controlledBy = shadowId;
             }
 
             const startIndex = 3;
@@ -594,83 +583,26 @@ export const applyDevPreset = (
             });
             G.currentSiteIndex = startIndex;
 
-            // Frodo + Gandalf + Éowyn + Théoden (liberate Rohan)
+            // Compagnie minimale (cible d’escarmouche pour wins→stack)
             fpPlayer.fellowshipArea = [
                 {
                     ...clonePresetCard('2C102', 'dev-frodo'),
                     attachments: [clonePresetCard('1R1', 'dev-ring')],
                 },
-                clonePresetCard('1R72', 'dev-gandalf'),
-                {
-                    ...clonePresetCard('4C270', 'dev-eowyn'),
-                    // Regroup : discard → liberate
-                    attachments: [
-                        clonePresetCard('15R141', 'dev-sturdy-shield'),
-                    ],
-                },
-                // Regroup : Spot Rohan ally + exert → liberate
-                clonePresetCard('4C292', 'dev-theoden'),
-                // Ring-bound Man pour Forests of Ithilien
-                clonePresetCard('4C130', 'dev-ranger-ithilien'),
             ];
-            fpPlayer.hand = [
-                // REGION replace (Maneuver / Regroup)
-                clonePresetCard('12C34', 'dev-traveled-leader'),
-                // Plays on a site → Plains + Rohan +1
-                clonePresetCard('7U252', 'dev-strong-arms'),
-            ];
-            fpPlayer.supportArea = [
-                // CURRENT replace (Regroup : discard)
-                clonePresetCard('12C40', 'dev-another-way'),
-                // Regroup : discard + exert Ring-bound Man → liberate (Gondor)
-                clonePresetCard('4R121', 'dev-forests-ithilien'),
-                // Ally Rohan pour Théoden
-                clonePresetCard('4C277', 'dev-guma'),
-            ];
-            fpPlayer.sitesDeck = SITES_TEST_FP_DECK.map((id) =>
-                clonePresetSite(id, fpId)
-            );
 
             if (shadowPlayer) {
-                shadowPlayer.hand = [
-                    // when-played optional + CURRENT underground
-                    clonePresetCard('11R143', 'dev-watchful-orc'),
-                    // Spot Gollum → +3 crépuscule + exchange owned path site
-                    clonePresetCard('11U45', 'dev-led-astray'),
-                    // Plays on a site (Weather) — exert Isengard
-                    clonePresetCard('1C138', 'dev-snows'),
-                    // Plays on a site you control
-                    clonePresetCard('4R30', 'dev-no-retreat'),
-                ];
-                shadowPlayer.supportArea = [
-                    // CURRENT underground (Shadow : discard + spot Orc)
-                    clonePresetCard('13C120', 'dev-unforgiving-depths'),
-                    // FP cannot replace current site (While spot Orc)
-                    clonePresetCard('15U113', 'dev-orkish-camp'),
-                ];
-                shadowPlayer.fellowshipArea = [];
                 G.battlefield = [
-                    clonePresetCard('11S222', 'dev-nelya'),
-                    clonePresetCard('11S115', 'dev-orc-spot'),
-                    clonePresetCard('5C24', 'dev-gollum'),
-                    // Exert pour Les Neiges
-                    clonePresetCard('5C61', 'dev-uruk-engineer'),
-                    // Regroup : exert ×2 → take control
-                    clonePresetCard('8C106', 'dev-siege-troop'),
-                    // Spot 2 pour No Retreat
-                    clonePresetCard('4C14', 'dev-dunland-ransacker'),
-                    clonePresetCard('4C21', 'dev-hillman-band'),
-                    // Regroup : stack / Shadow : play from stack (−1)
+                    // Regroup : stack / Shadow : play (−1)
                     clonePresetCard('4C180', 'dev-uruk-besieger'),
+                    // Wins → stack / Shadow : play (−2)
+                    clonePresetCard('4U24', 'dev-hillman-rabble'),
                 ];
                 G.twilightPool = 8;
-                shadowPlayer.sitesDeck = SITES_TEST_SHADOW_DECK.map((id) =>
-                    clonePresetSite(id, shadowId)
-                );
             }
 
             G.statusMessage =
-                '[DEV] Sites : contrôle Ombre + Uruk Besieger (stack Regroup / play Shadow).';
+                '[DEV] Sites : sites 1–2 contrôlés · Besieger (stack) · Rabble (wins→stack).';
             break;
         }
     }

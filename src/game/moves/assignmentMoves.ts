@@ -136,7 +136,27 @@ export const yieldAssignmentToShadow = ({
     );
 };
 
+/** Ombre : laisse des séides hors combat et passe à la phase de combat. */
+export const passShadowAssignment = ({
+    G,
+    playerID,
+    events,
+}: LotrMoveContext) => {
+    const fpId = G.fpPlayerId || '0';
+    if (String(playerID) === String(fpId)) return 'INVALID_MOVE';
+    if (G.assignmentStep !== 'SHADOW_ASSIGN') return 'INVALID_MOVE';
+
+    G.assignmentStep = 'COMPLETED';
+    const leftover = getUnassignedMinions(G).length;
+    G.statusMessage =
+        leftover > 0
+            ? `L’Ombre laisse ${leftover} séide${leftover > 1 ? 's' : ''} hors combat. Début des combats !`
+            : 'Affectation terminée. Début des combats !';
+    events?.endPhase?.();
+};
+
 export const assignmentMoves = {
     assignMinion,
     yieldAssignmentToShadow,
+    passShadowAssignment,
 };

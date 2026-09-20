@@ -3,6 +3,7 @@ import type {
     AbilityEffectExpiry,
     CardState,
     GameState,
+    SiteCardState,
 } from '../../types';
 import type { ModifierScope } from '../../logic/stats/types';
 import { resolveAbilityTarget, forEachInPlayCard, resolveWinnerTargets, resolveCostTarget } from './resolveCostTarget';
@@ -29,6 +30,7 @@ import {
     liberateSite,
     stackMinionOnControlledSite,
     playStackedMinion,
+    getSitesControlledBy,
 } from '../../logic/sites';
 import { isSiteReplaceForbidden } from '../../logic/siteReplaceRestrictions';
 import type { CardKeyword } from '../../types';
@@ -64,6 +66,32 @@ export function abilityNeedsPathThenDeckSite(ability: Ability): boolean {
     const replace = abilityReplaceSiteEffect(ability);
     if (replace?.scope === 'REGION') return true;
     return abilityNeedsSiteExchange(ability);
+}
+
+export function abilityNeedsStackSite(ability: Ability): boolean {
+    return (ability.effects || []).some(
+        (item) => item.type === 'STACK_ON_CONTROLLED_SITE'
+    );
+}
+
+/** Sites contrôlés où l’on peut empiler le séide source. */
+export function getStackSiteCandidates(
+    G: GameState,
+    source: CardState
+): SiteCardState[] {
+    const ownerId = abilityOwnerPlayerId(G, source);
+    if (!ownerId) return [];
+    return getSitesControlledBy(G, ownerId).map(({ site }) => site);
+}
+
+/** Choix obligatoire seulement s’il y a plusieurs sites contrôlés. */
+export function abilityNeedsStackSiteChoice(
+    G: GameState,
+    source: CardState,
+    ability: Ability
+): boolean {
+    if (!abilityNeedsStackSite(ability)) return false;
+    return getStackSiteCandidates(G, source).length > 1;
 }
 
 export function abilityReplaceSiteScope(

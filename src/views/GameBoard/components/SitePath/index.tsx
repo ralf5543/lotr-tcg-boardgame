@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef } from 'react';
 import type {
     CardState,
     GameState,
@@ -20,21 +20,6 @@ import { useHoverCard } from '../../../../contexts/HoverCardContext';
 import { useTargeting } from '../../../../contexts/TargetingContext';
 import { audioService } from '../../../../services/audioService';
 import { useLocalFaction } from '../../../../contexts/FactionContext';
-
-export const SITE_UX_MOCK_EVENT = 'lotr-site-ux-mock';
-export const SITE_UX_MOCK_KEY = 'lotr_site_ux_mock';
-
-/** Contrôle factice uniquement — stack = `site.stacked` réel. */
-const UX_MOCK_BY_INDEX: Record<
-    number,
-    {
-        controlledBy?: '0' | '1';
-    }
-> = {
-    1: { controlledBy: '1' },
-    3: { controlledBy: '0' },
-    4: { controlledBy: '1' },
-};
 
 interface SitePathProps {
     path: (SiteCardState | null)[];
@@ -84,6 +69,9 @@ export const SitePath: React.FC<SitePathProps> = ({
         targetingKind === 'SITE_REPLACE_PATH' && isTargetingActive;
     const isSiteAttachPick =
         targetingKind === 'SITE_ATTACH' && isTargetingActive;
+    const isSiteStackPick =
+        targetingKind === 'SITE_STACK' && isTargetingActive;
+    const isSitePathPick = isSiteAttachPick || isSiteStackPick;
     const dragDesignationIds = dragged?.designationTargetIds;
     const isDragDesignating =
         Boolean(dragDesignationIds?.length) && !isOverHandCancel;
@@ -100,21 +88,6 @@ export const SitePath: React.FC<SitePathProps> = ({
         !isOverHandCancel;
 
     const nextSlotRef = useRef<HTMLDivElement | null>(null);
-    const [uxMock, setUxMock] = useState(
-        () =>
-            import.meta.env.DEV &&
-            sessionStorage.getItem(SITE_UX_MOCK_KEY) === '1'
-    );
-
-    useEffect(() => {
-        const sync = () =>
-            setUxMock(
-                import.meta.env.DEV &&
-                    sessionStorage.getItem(SITE_UX_MOCK_KEY) === '1'
-            );
-        window.addEventListener(SITE_UX_MOCK_EVENT, sync);
-        return () => window.removeEventListener(SITE_UX_MOCK_EVENT, sync);
-    }, []);
 
     useEffect(() => {
         if (nextSlotRef.current) {
@@ -232,7 +205,7 @@ export const SitePath: React.FC<SitePathProps> = ({
                 siteKey != null &&
                 isCardTargetable(siteKey as string)) ||
             (Boolean(siteKey) &&
-                isSiteAttachPick &&
+                isSitePathPick &&
                 siteKey != null &&
                 isCardTargetable(siteKey as string)) ||
             isDragDesignationCandidate ||
@@ -240,7 +213,7 @@ export const SitePath: React.FC<SitePathProps> = ({
 
         const pathReplaceDimmed =
             (isPathReplacePick ||
-                isSiteAttachPick ||
+                isSitePathPick ||
                 isDragDesignating ||
                 isSiteAttachDrag) &&
             Boolean(site) &&
@@ -250,14 +223,13 @@ export const SitePath: React.FC<SitePathProps> = ({
             Boolean(siteKey) &&
             (activeTargetId === siteKey || activeTargetId === site?.id);
 
-        const mock = uxMock && site ? UX_MOCK_BY_INDEX[index] : undefined;
         const attachments = site?.attachments || [];
 
         const shouldRegisterSiteTarget =
             Boolean(siteKey) &&
             (isDragDesignationCandidate ||
                 canAcceptSiteAttach ||
-                (isSiteAttachPick &&
+                (isSitePathPick &&
                     siteKey != null &&
                     isCardTargetable(siteKey as string)));
 
@@ -287,7 +259,7 @@ export const SitePath: React.FC<SitePathProps> = ({
                     isHovered ||
                     ((isDragDesignationCandidate ||
                         canAcceptSiteAttach ||
-                        isSiteAttachPick) &&
+                        isSitePathPick) &&
                         isAimed)
                 }
                 $hasSite={Boolean(site)}
@@ -307,7 +279,7 @@ export const SitePath: React.FC<SitePathProps> = ({
                 onPointerDown={(e) => {
                     if (!pathReplaceTargetable || !siteKey) return;
                     if (
-                        (!isPathReplacePick && !isSiteAttachPick) ||
+                        (!isPathReplacePick && !isSitePathPick) ||
                         isDragDesignating
                     ) {
                         return;
@@ -344,9 +316,7 @@ export const SitePath: React.FC<SitePathProps> = ({
                 )}
 
                 {(() => {
-                    const controlledBy =
-                        site?.controlledBy ??
-                        (uxMock ? mock?.controlledBy : undefined);
+                    const controlledBy = site?.controlledBy;
                     if (controlledBy == null) return null;
                     const playerId =
                         controlledBy === '0' || controlledBy === '1'

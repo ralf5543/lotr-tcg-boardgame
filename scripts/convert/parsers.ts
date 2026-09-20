@@ -1996,6 +1996,44 @@ function parseEachTimeTakeControlSiteAbilities(
     return found;
 }
 
+/**
+ * When / Each time this minion wins a skirmish, you may stack him/it
+ * on a site you control. (Dunland Looter, Hillman Rabble…)
+ */
+function parseWinsSkirmishStackOnSiteAbilities(
+    text: string,
+    cardTitle?: string,
+    cardId?: string
+): Record<string, unknown>[] {
+    const found: Record<string, unknown>[] = [];
+    const re =
+        /(?:When|Each time)\s+([\s\S]+?)\s+wins a skirmish,\s*you may stack (?:him|her|it|this minion|this) on a site you control\.?/gi;
+    let match: RegExpExecArray | null;
+    while ((match = re.exec(text)) !== null) {
+        const winnerParsed = parseWinsSkirmishWinner(
+            match[1].trim(),
+            cardTitle
+        );
+        if (!winnerParsed) continue;
+
+        found.push({
+            id: `${cardId || 'ability'}:${found.length}:win-stack-site`,
+            phases: ['RESPONSE'],
+            trigger: {
+                type: 'WINS_SKIRMISH',
+                winner: winnerParsed.winner,
+                ...(winnerParsed.yours ? { yours: true } : {}),
+            },
+            optional: true,
+            cost: [],
+            effects: [{ type: 'STACK_ON_CONTROLLED_SITE' }],
+            source: winnerParsed.winner === 'BEARER' ? 'ATTACHMENT' : 'SELF',
+            text: stripAbilityMarkup(match[0]),
+        });
+    }
+    return found;
+}
+
 /** Spot « a CLASS » / « N CLASS » pour While — refuse le reste inconnu. */
 function parseWhileSpotSubject(
     raw: string
@@ -5260,6 +5298,15 @@ export function parseAbilities(
     });
 
     parseEachTimeTakeControlSiteAbilities(text, cardTitle, cardId).forEach(
+        (ability) => {
+            abilities.push({
+                ...ability,
+                id: `${cardId || 'ability'}:${abilities.length}`,
+            });
+        }
+    );
+
+    parseWinsSkirmishStackOnSiteAbilities(text, cardTitle, cardId).forEach(
         (ability) => {
             abilities.push({
                 ...ability,

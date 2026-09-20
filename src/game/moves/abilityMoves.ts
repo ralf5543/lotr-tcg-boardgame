@@ -3,6 +3,7 @@ import { canUseAbility } from '../engine/canUseAbility';
 import {
     abilityNeedsSiteReplace,
     abilityNeedsSiteExchange,
+    abilityNeedsStackSiteChoice,
     applyAbilityEffect,
     abilityReplaceSiteEffect,
 } from '../engine/abilities/applyAbilityEffect';
@@ -100,6 +101,14 @@ export const activateAbility = (
             chosenEffectTargetId ?? chosenTargetId
         );
         if (ids.length < 2) return 'INVALID_MOVE';
+    }
+    if (abilityNeedsStackSiteChoice(G, source, ability)) {
+        const ids = normalizeChosenIds(
+            needsCostDesignation
+                ? chosenEffectTargetId
+                : (chosenEffectTargetId ?? chosenTargetId)
+        );
+        if (ids.length < 1) return 'INVALID_MOVE';
     }
     const wasResponseWindowOpen = isResponseWindowOpen(G);
     const isResponseAbility = abilityMatchesPhase(ability, 'RESPONSE');

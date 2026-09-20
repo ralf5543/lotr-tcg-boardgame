@@ -10,6 +10,7 @@ type TargetingKind =
     | 'SITE_REPLACE'
     | 'SITE_REPLACE_PATH'
     | 'SITE_ATTACH'
+    | 'SITE_STACK'
     | 'SANCTUARY_HEAL';
 
 interface TargetingRequest {

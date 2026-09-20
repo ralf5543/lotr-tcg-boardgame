@@ -38547,6 +38547,25 @@
         "source": "SELF",
         "requiresStackedOnControlledSite": true,
         "text": "SHADOW: If stacked on a site you control, play this minion. Its twilight cost is -2."
+      },
+      {
+        "id": "4U11:1",
+        "phases": [
+          "RESPONSE"
+        ],
+        "trigger": {
+          "type": "WINS_SKIRMISH",
+          "winner": "SELF"
+        },
+        "optional": true,
+        "cost": [],
+        "effects": [
+          {
+            "type": "STACK_ON_CONTROLLED_SITE"
+          }
+        ],
+        "source": "SELF",
+        "text": "When this minion wins a skirmish, you may stack him on a site you control."
       }
     ],
     "actionPhases": [
@@ -39175,6 +39194,25 @@
         "source": "SELF",
         "requiresStackedOnControlledSite": true,
         "text": "SHADOW: If stacked on a site you control, play this minion. Its twilight cost is -2."
+      },
+      {
+        "id": "4U24:1",
+        "phases": [
+          "RESPONSE"
+        ],
+        "trigger": {
+          "type": "WINS_SKIRMISH",
+          "winner": "SELF"
+        },
+        "optional": true,
+        "cost": [],
+        "effects": [
+          {
+            "type": "STACK_ON_CONTROLLED_SITE"
+          }
+        ],
+        "source": "SELF",
+        "text": "Each time this minion wins a skirmish, you may stack it on a site you control."
       }
     ],
     "actionPhases": [

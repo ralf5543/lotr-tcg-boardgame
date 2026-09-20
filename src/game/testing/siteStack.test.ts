@@ -96,6 +96,66 @@ describe('stack on controlled site', () => {
         expect(G.path[1]?.stacked || []).toHaveLength(0);
     });
 
+    it('empile sur le site choisi quand plusieurs sites sont contrôlés', () => {
+        const besieger = createMinion({
+            id: '4C180',
+            instanceId: 'besieger',
+            twilightCost: 2,
+            minionSiteNumber: 5,
+        });
+        const G = createGameState({
+            fpPlayerId: '0',
+            currentSiteIndex: 3,
+            twilightPool: 5,
+            path: [
+                createSite({
+                    id: 's1',
+                    instanceId: 's1',
+                    siteNumber: 1,
+                    ownerId: '0',
+                    controlledBy: '1',
+                }),
+                createSite({
+                    id: 's2',
+                    instanceId: 's2',
+                    siteNumber: 2,
+                    ownerId: '0',
+                    controlledBy: '1',
+                }),
+                createSite({
+                    id: 's3',
+                    instanceId: 's3',
+                    siteNumber: 3,
+                    ownerId: '0',
+                }),
+                createSite({
+                    id: 's4',
+                    instanceId: 's4',
+                    siteNumber: 4,
+                    ownerId: '0',
+                }),
+                null,
+                null,
+                null,
+                null,
+                null,
+            ],
+            players: {
+                '0': createPlayerState('0', { currentSiteIndex: 3 }),
+                '1': createPlayerState('1', { currentSiteIndex: 3 }),
+            },
+            battlefield: [besieger],
+        });
+
+        expect(
+            applyAbilityEffect(G, besieger, stackAbility, 's2')
+        ).toBe(true);
+        expect(G.path[0]?.stacked || []).toHaveLength(0);
+        expect(G.path[1]?.stacked?.map((c) => c.instanceId)).toEqual([
+            'besieger',
+        ]);
+    });
+
     it('refuse play from stack hors pile / sans contrôle', () => {
         const besieger = createMinion({
             id: '4C180',

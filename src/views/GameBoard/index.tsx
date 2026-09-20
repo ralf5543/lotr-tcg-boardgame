@@ -53,7 +53,9 @@ import {
     abilityNeedsSiteReplace,
     abilityNeedsSiteExchange,
     abilityNeedsPathThenDeckSite,
+    abilityNeedsStackSiteChoice,
     abilityReplaceSiteEffect,
+    getStackSiteCandidates,
 } from '../../game/engine/abilities/applyAbilityEffect';
 import { getReplaceSiteCandidates, getReplaceablePathSitesInCurrentRegion, getOwnedPathSites } from '../../game/logic/sites';
 import { isSiteReplaceForbidden } from '../../game/logic/siteReplaceRestrictions';
@@ -375,6 +377,30 @@ export const GameBoard: React.FC<GameBoardProps> = ({
         [G, requestSiteReplace, startTargeting, stopTargeting]
     );
 
+    const requestStackSite = useCallback(
+        (
+            source: CardState,
+            onChosen: (siteId: string) => void
+        ): boolean => {
+            const candidates = getStackSiteCandidates(G, source);
+            if (candidates.length === 0) return false;
+            startTargeting({
+                kind: 'SITE_STACK',
+                targetableCardIds: candidates.flatMap((site) =>
+                    [site.instanceId, site.id].filter(Boolean)
+                ),
+                message: 'Choisissez un site que vous contrôlez pour y empiler ce séide.',
+                arrowFromCardId: source.instanceId || source.id,
+                onSelectTarget: (siteId) => {
+                    onChosen(siteId);
+                    stopTargeting();
+                },
+            });
+            return true;
+        },
+        [G, startTargeting, stopTargeting]
+    );
+
     const runSiteReplaceFlow = useCallback(
         (
             source: CardState,
@@ -685,6 +711,39 @@ export const GameBoard: React.FC<GameBoardProps> = ({
                 abilityId
             );
             return;
+        }
+        if (abilityNeedsStackSiteChoice(G, source, ability)) {
+            if (needsCost) {
+                requestDesignation(
+                    source,
+                    ability,
+                    (costId) => {
+                        requestStackSite(source, (siteId) => {
+                            moves.activateAbility?.(
+                                sourceInstanceId,
+                                abilityId,
+                                costId,
+                                undefined,
+                                siteId
+                            );
+                        });
+                    },
+                    undefined,
+                    'cost'
+                );
+                return;
+            }
+            if (
+                requestStackSite(source, (siteId) => {
+                    moves.activateAbility?.(
+                        sourceInstanceId,
+                        abilityId,
+                        siteId
+                    );
+                })
+            ) {
+                return;
+            }
         }
         moves.activateAbility?.(sourceInstanceId, abilityId);
     };
@@ -1495,6 +1554,7 @@ export const GameBoard: React.FC<GameBoardProps> = ({
                 targetingKind !== 'DESIGNATION' &&
                 targetingKind !== 'HAND_DISCARD' &&
                 targetingKind !== 'SITE_REPLACE' &&
+                targetingKind !== 'SITE_STACK' &&
                 !isMine
             )
                 return;

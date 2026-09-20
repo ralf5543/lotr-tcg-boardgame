@@ -35,6 +35,7 @@ interface GameControlsProps {
         confirmMuster?: () => void;
         confirmStartOfPhase?: () => void;
         yieldAssignmentToShadow?: () => void;
+        passShadowAssignment?: () => void;
         [key: string]: ((...args: any[]) => void) | undefined;
     };
 }
@@ -191,6 +192,7 @@ export const GameControls: React.FC<GameControlsProps> = ({
             | 'MUSTER'
             | 'START_OF_PHASE'
             | 'ASSIGNMENT_YIELD'
+            | 'ASSIGNMENT_PASS'
             | 'RESPONSE'
             | 'WHEN_PLAYED_CHOICE'
             | 'STANDARD';
@@ -338,20 +340,36 @@ export const GameControls: React.FC<GameControlsProps> = ({
         };
     } else if (
         ctx.phase === 'assignment' &&
-        currentPlayerId === fpPlayerId &&
-        (G.assignmentStep === 'FP_ASSIGN' ||
-            G.assignmentStep === 'SHADOW_ASSIGN')
+        G.assignmentStep === 'FP_ASSIGN' &&
+        currentPlayerId === fpPlayerId
     ) {
-        const isFpAssign = G.assignmentStep === 'FP_ASSIGN';
         toastConfig = {
             show: true,
             title: 'AFFECTATION',
-            body: isFpAssign
-                ? 'Laissez l’Ombre affecter tous les autres séides non-affectés ?'
-                : 'L’Ombre affecte les séides restants…',
+            body: 'Laissez l’Ombre affecter tous les autres séides non-affectés ?',
             showPassButton: false,
-            type: isFpAssign ? 'ASSIGNMENT_YIELD' : 'STANDARD',
+            type: 'ASSIGNMENT_YIELD',
         };
+    } else if (
+        ctx.phase === 'assignment' &&
+        G.assignmentStep === 'SHADOW_ASSIGN'
+    ) {
+        toastConfig =
+            currentPlayerId === shadowPlayerId
+                ? {
+                      show: true,
+                      title: 'AFFECTATION',
+                      body: 'Affectez vos séides restants, ou passez directement aux combats.',
+                      showPassButton: false,
+                      type: 'ASSIGNMENT_PASS',
+                  }
+                : {
+                      show: true,
+                      title: 'AFFECTATION',
+                      body: 'L’Ombre affecte les séides restants…',
+                      showPassButton: false,
+                      type: 'STANDARD',
+                  };
     }
 
     if (
@@ -361,6 +379,7 @@ export const GameControls: React.FC<GameControlsProps> = ({
             targetingKind === 'SITE_REPLACE' ||
             targetingKind === 'SITE_REPLACE_PATH' ||
             targetingKind === 'SITE_ATTACH' ||
+            targetingKind === 'SITE_STACK' ||
             targetingKind === 'SANCTUARY_HEAL') &&
         targetingMessage
     ) {
@@ -375,6 +394,8 @@ export const GameControls: React.FC<GameControlsProps> = ({
                         ? 'REMPLACER UN SITE'
                         : targetingKind === 'SITE_ATTACH'
                           ? 'JOUER SUR UN SITE'
+                          : targetingKind === 'SITE_STACK'
+                            ? 'EMPILER SUR UN SITE'
                       : targetingKind === 'SANCTUARY_HEAL'
                       ? 'SANCTUAIRE'
                       : 'CHOIX DE CIBLE',
@@ -821,6 +842,18 @@ export const GameControls: React.FC<GameControlsProps> = ({
                                 }}
                             >
                                 Valider
+                            </S.ActionButton>
+                        )}
+
+                        {/* Ombre : laisser des séides hors combat */}
+                        {toastConfig.type === 'ASSIGNMENT_PASS' && (
+                            <S.ActionButton
+                                style={{ marginTop: '12px', width: '100%' }}
+                                onClick={() => {
+                                    moves.passShadowAssignment?.();
+                                }}
+                            >
+                                Passer aux combats
                             </S.ActionButton>
                         )}
 
