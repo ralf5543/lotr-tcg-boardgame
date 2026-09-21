@@ -135,6 +135,19 @@ describe('parseKeywords / parseGrantsKeywords — Ambush', () => {
         ]);
     });
 
+    it('Strong Arms : confère Plains au site hôte via grantsKeywords', () => {
+        expect(
+            parseGrantsKeywords(
+                'To play, spot a <symbol>rohan</symbol> Man. Plays on a site. This site is a <keyword>Plains.</keyword> Each <symbol>rohan</symbol> Man is strength +1 at this site.'
+            )
+        ).toEqual(['PLAINS']);
+        expect(
+            parseGrantsKeywords(
+                'To play, spot a <symbol>rohan</symbol> Man. Plays on a site. \nThis site is a **Plains.** \nEach <symbol>rohan</symbol> Man is strength +1 at this site.'
+            )
+        ).toEqual(['PLAINS']);
+    });
+
     it('n’imprime pas Fierce / Damage accordés par un While at site', () => {
         expect(
             parseKeywords(
@@ -2398,6 +2411,34 @@ describe('parseAbilities — While spot N terrain sites', () => {
                                 expiresAtPhase: 'REGROUP',
                             },
                         ],
+                    },
+                ],
+            }),
+        ]);
+    });
+
+    it('parse Gorgoroth Troop : stack besieger → force +2', () => {
+        expect(
+            parseAbilities(
+                '<keyword>Besieger.</keyword> <keyword>Skirmish:</keyword> Stack a besieger on a site you control to make Gorgoroth Troop strength +2.',
+                'Gorgoroth Troop',
+                '7R279'
+            )
+        ).toEqual([
+            expect.objectContaining({
+                phases: ['SKIRMISH'],
+                cost: [],
+                effects: [
+                    {
+                        type: 'STACK_ON_CONTROLLED_SITE',
+                        target: [['BESIEGER']],
+                    },
+                    {
+                        type: 'ADD_TEMP_STAT',
+                        stat: 'STRENGTH',
+                        value: 2,
+                        target: 'SELF',
+                        expiresAtPhase: 'SKIRMISH',
                     },
                 ],
             }),

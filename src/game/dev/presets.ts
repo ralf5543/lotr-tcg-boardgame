@@ -583,37 +583,54 @@ export const applyDevPreset = (
             });
             G.currentSiteIndex = startIndex;
 
-            // Compagnie minimale (cible d’escarmouche pour wins→stack)
+            // Compagnie : Frodon + Homme Rohan (spot pour Strong Arms)
             fpPlayer.fellowshipArea = [
                 {
                     ...clonePresetCard('2C102', 'dev-frodo'),
                     attachments: [clonePresetCard('1R1', 'dev-ring')],
                 },
+                clonePresetCard('0P19', 'dev-theoden'),
+            ];
+            fpPlayer.hand = [
+                clonePresetCard('7U252', 'dev-strong-arms'),
             ];
 
             if (shadowPlayer) {
+                // Déjà empilés sur sites contrôlés (play from stack / Officer / Sapper)
+                if (G.path[0]) {
+                    G.path[0].stacked = [
+                        clonePresetCard('4C180', 'dev-stacked-besieger'),
+                        clonePresetCard('7C273', 'dev-stacked-garrison'),
+                    ];
+                }
+                if (G.path[1]) {
+                    G.path[1].stacked = [
+                        clonePresetCard('7C273', 'dev-stacked-garrison-2'),
+                    ];
+                }
+
                 G.battlefield = [
-                    clonePresetCard('4C180', 'dev-uruk-besieger'),
                     clonePresetCard('8R108', 'dev-troll-gorgoroth'),
                     clonePresetCard('8R105', 'dev-olog-mordor'),
                     clonePresetCard('7R274', 'dev-gorgoroth-officer'),
-                    clonePresetCard('7C273', 'dev-gorgoroth-garrison'),
+                    clonePresetCard('7R279', 'dev-gorgoroth-troop'),
+                    clonePresetCard('7C277', 'dev-gorgoroth-sapper'),
                     clonePresetCard('4U24', 'dev-hillman-rabble'),
                 ];
                 shadowPlayer.supportArea = [
                     clonePresetCard('8U107', 'dev-marching-companies'),
                 ];
                 shadowPlayer.hand = [
-                    clonePresetCard('7C277', 'dev-hand-sapper-1'),
-                    clonePresetCard('7C277', 'dev-hand-sapper-2'),
+                    clonePresetCard('7C273', 'dev-hand-garrison'),
                     clonePresetCard('4C180', 'dev-hand-besieger'),
+                    clonePresetCard('7C273', 'dev-hand-discard-fodder'),
                 ];
                 G.twilightPool = 12;
                 fpPlayer.threats = 2;
             }
 
             G.statusMessage =
-                '[DEV] Sites : stack Besieger/Troll/Olog/Officer/Garrison/Engine/Rabble.';
+                '[DEV] Sites : pile · Strong Arms · Officer/Troop/Olog/Sapper/Troll.';
             break;
         }
     }

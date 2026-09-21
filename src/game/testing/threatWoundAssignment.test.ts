@@ -237,4 +237,53 @@ describe('cleanupPendingDeaths / blessures de menaces', () => {
 
         engine.stop();
     });
+
+    it('refuse de démarrer un autre combat tant que des menaces restent à assigner', () => {
+        const engine = createEngineClient({
+            startPhase: 'skirmish',
+            playerID: '0',
+            G: {
+                threatWoundsToAssign: 2,
+                battlefield: [
+                    createMinion({ id: 'minion-1', strength: 4, vitality: 3 }),
+                ],
+                players: {
+                    '0': createPlayerState('0', {
+                        fellowshipArea: [
+                            createCompanion({
+                                id: 'frodo',
+                                vitality: 4,
+                                strength: 3,
+                            }),
+                            createCompanion({
+                                id: 'sam',
+                                vitality: 4,
+                                strength: 3,
+                            }),
+                        ],
+                    }),
+                },
+                skirmishes: [
+                    {
+                        id: 'skirmish_frodo',
+                        companionId: 'frodo',
+                        minionIds: ['minion-1'],
+                    },
+                ],
+            },
+        });
+
+        engine.moves.selectSkirmish('skirmish_frodo');
+        expect(engine.getG().activeSkirmishId).toBeUndefined();
+        expect(engine.getG().threatWoundsToAssign).toBe(2);
+
+        engine.moves.assignThreatWound('frodo');
+        engine.moves.assignThreatWound('sam');
+        expect(engine.getG().threatWoundsToAssign).toBeUndefined();
+
+        engine.moves.selectSkirmish('skirmish_frodo');
+        expect(engine.getG().activeSkirmishId).toBe('skirmish_frodo');
+
+        engine.stop();
+    });
 });

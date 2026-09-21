@@ -36,6 +36,34 @@ describe('canUseAbility', () => {
         ).toBe(false);
     });
 
+    it('refuse toute capacité pendant l’assignation des blessures de menaces', () => {
+        const card = createCompanion({
+            id: 'comp',
+            actionPhases: ['fellowship'],
+            abilities: [
+                {
+                    id: 'comp:0',
+                    phases: ['FELLOWSHIP'],
+                    cost: [],
+                    effects: [{ type: 'DRAW', count: 1 }],
+                    source: 'SELF',
+                },
+            ],
+        });
+        const G = createGameState({ threatWoundsToAssign: 2 });
+
+        expect(
+            canUseAbility(card, {
+                G,
+                ctx: { phase: 'fellowship' },
+                playerID: '0',
+            })
+        ).toEqual({
+            valid: false,
+            reason: 'Assignez d’abord les blessures des menaces.',
+        });
+    });
+
     it('autorise MUSTER au regroupement, y compris via grantsKeywords', () => {
         const G = createGameState();
         const muster = createCompanion({
@@ -99,7 +127,7 @@ describe('canUseAbility', () => {
         ).toBe(false);
     });
 
-    it('n’autorise une action Skirmish que pendant une escarmouche sélectionnée', () => {
+    it('autorise une action Skirmish toute la phase (même hors escarmouche sélectionnée)', () => {
         const card = createCompanion({
             id: 'gimli',
             actionPhases: ['SKIRMISH'],
@@ -121,7 +149,7 @@ describe('canUseAbility', () => {
                 ctx: { phase: 'skirmish' },
                 playerID: '0',
             }).valid
-        ).toBe(false);
+        ).toBe(true);
         expect(
             canUseAbility(card, {
                 G: open,

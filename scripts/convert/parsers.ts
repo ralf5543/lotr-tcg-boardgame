@@ -242,6 +242,17 @@ export function parseGrantsKeywords(text?: string): string[] | undefined {
         }
     }
 
+    // « This site is a Plains. » (Strong Arms…) — terrain conféré au site hôte.
+    const siteTerrainRe =
+        /This site is (?:a |an )?(?:\*\*)?(?:<keyword>)?([A-Za-z][A-Za-z-]*)\.?(?:\*\*)?(?:<\/keyword>)?/gi;
+    let siteMatch: RegExpExecArray | null;
+    while ((siteMatch = siteTerrainRe.exec(text)) !== null) {
+        const rawKw = siteMatch[1].trim().toUpperCase();
+        if (VALID_KEYWORDS.has(rawKw)) {
+            granted.add(rawKw);
+        }
+    }
+
     return granted.size > 0 ? Array.from(granted) : undefined;
 }
 
@@ -4615,6 +4626,60 @@ export function parseAbilities(
                 phases,
                 cost: [],
                 effects: [{ type: 'STACK_ON_CONTROLLED_SITE' }],
+                source: 'SELF',
+                text: stackClause,
+            });
+            return;
+        }
+
+        // « Stack a besieger on a site you control to make [Name] strength +2. »
+        // (Gorgoroth Troop) — empiler un autre séide = coût, bonus sur la source.
+        const stackToMakeMatch = bodyPlain.match(
+            /^Stack\s+(a\s+[\s\S]+?)\s+on a site you control\s+to make\s+([\s\S]+?)\.?$/i
+        );
+        if (stackToMakeMatch) {
+            const filters = parseClassFilters(stackToMakeMatch[1]);
+            if (filters.length === 0) return;
+
+            const makeTargetRaw = stackToMakeMatch[2].trim();
+            const title = (cardTitle || '').trim();
+            const titleEsc = title.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+            const namedSelf = title
+                ? new RegExp(`^${titleEsc}\\s+(.+)$`, 'i').exec(makeTargetRaw)
+                : null;
+            const makeRemainder = namedSelf
+                ? namedSelf[1]
+                : /^(?:him|her|it|this(?:\s+\w+)?)\s+(.+)$/i.exec(
+                      makeTargetRaw
+                  )?.[1];
+            if (!makeRemainder) return;
+
+            const expiresAtPhase = parseUntilExpiry(bodyPlain, marker.phase);
+            const makeEffects = parseMakeEffectsFromRemainder(
+                makeRemainder,
+                'SELF',
+                expiresAtPhase
+            );
+            if (!makeEffects || makeEffects.length === 0) return;
+
+            const stackClause =
+                `${marker.phase}: Stack ${stackToMakeMatch[1].trim()} on a site you control to make ${makeTargetRaw}.`
+                    .replace(/<[^>]+>/g, '')
+                    .replace(/\s+/g, ' ')
+                    .replace(/\s+\./g, '.')
+                    .trim();
+
+            abilities.push({
+                id: `${cardId || 'ability'}:${abilities.length}`,
+                phases,
+                cost: [],
+                effects: [
+                    {
+                        type: 'STACK_ON_CONTROLLED_SITE',
+                        target: [filters],
+                    },
+                    ...makeEffects,
+                ],
                 source: 'SELF',
                 text: stackClause,
             });

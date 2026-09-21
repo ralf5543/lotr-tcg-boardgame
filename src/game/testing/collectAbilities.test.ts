@@ -277,6 +277,63 @@ describe('formatAbilityLabelParts', () => {
         });
     });
 
+    it('Officer : SAURON + ORC → orque + symbole culture (pas symbole orc)', () => {
+        const ability: Ability = {
+            id: '7R274:0',
+            phases: ['SKIRMISH'],
+            cost: [{ discardFromHand: 2 }],
+            effects: [
+                {
+                    type: 'PLAY_FROM_STACK',
+                    target: [['SAURON', 'ORC']],
+                    grantsTempKeywords: [
+                        { keyword: 'FIERCE', expiresAtPhase: 'REGROUP' },
+                    ],
+                    grantsTempStats: [
+                        {
+                            stat: 'STRENGTH',
+                            value: 6,
+                            expiresAtPhase: 'REGROUP',
+                        },
+                    ],
+                },
+            ],
+            source: 'SELF',
+        };
+        const officer = createMinion({
+            id: '7R274',
+            title: 'Gorgoroth Officer',
+            i18n: { fr: { title: 'Gorgoroth Officer' } },
+        });
+        expect(formatAbilityLabelParts(ability, officer)).toEqual({
+            cost: 'Défausser 2 cartes de la main',
+            effect:
+                'jouer un orque <symbol>sauron</symbol> empilé sur un site que vous contrôlez (Acharné et force +6 jusqu’au ralliement)',
+        });
+    });
+
+    it('Men + Man : culture symbole + race Homme (pas symbole men pour Man)', () => {
+        const ability: Ability = {
+            id: 'test-men:0',
+            phases: ['SKIRMISH'],
+            cost: [],
+            effects: [
+                {
+                    type: 'ADD_TEMP_STAT',
+                    stat: 'STRENGTH',
+                    value: 1,
+                    target: [['MEN', 'MAN']],
+                    expiresAtPhase: 'SKIRMISH',
+                },
+            ],
+            source: 'SELF',
+        };
+        const card = createMinion({ id: 'test-men' });
+        expect(formatAbilityLabelParts(ability, card).effect).toBe(
+            'Force +1 à un homme <symbol>men</symbol>'
+        );
+    });
+
     it('Forests : Ring-bound Man → Homme associé à l’Anneau ; défausse nommée', () => {
         const ability: Ability = {
             id: '4R121:0',

@@ -222,6 +222,9 @@ export const endFellowshipPhase = ({
     events,
     playerID,
 }: LotrMoveContext) => {
+    if ((G.threatWoundsToAssign ?? 0) > 0) {
+        return 'INVALID_MOVE';
+    }
     if (G.responseWindow?.isOpen || G.pendingEvent) {
         return 'INVALID_MOVE';
     }

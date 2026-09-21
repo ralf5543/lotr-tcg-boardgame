@@ -207,7 +207,8 @@ export const PlayerArea: React.FC<PlayerAreaProps> = ({
                 : false);
 
         const isCombatLocked = Boolean(
-            G?.actionWindow?.isOpen && G?.activeSkirmishId
+            (G?.actionWindow?.isOpen && G?.activeSkirmishId) ||
+                (G?.threatWoundsToAssign ?? 0) > 0
         );
 
         return (

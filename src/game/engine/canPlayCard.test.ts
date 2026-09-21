@@ -32,6 +32,17 @@ describe('canPlayCard', () => {
         expect(result.reason).toMatch(/Communauté/i);
     });
 
+    it('refuse de jouer pendant l’assignation des blessures de menaces', () => {
+        const result = canPlayCard(createCompanion({ id: 'comp' }), {
+            G: createGameState({ threatWoundsToAssign: 1 }),
+            ctx: { phase: 'fellowship' },
+            playerID: '0',
+        });
+
+        expect(result.valid).toBe(false);
+        expect(result.reason).toMatch(/menaces/i);
+    });
+
     it('refuse un séide si le Crépuscule ne suffit pas', () => {
         const result = canPlayCard(
             createMinion({ id: 'orc', twilightCost: 5 }),

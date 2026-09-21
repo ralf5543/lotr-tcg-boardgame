@@ -111,6 +111,9 @@ export const passActionWindow = ({
     playerID,
     events,
 }: LotrMoveContext) => {
+    if ((G.threatWoundsToAssign ?? 0) > 0) {
+        return 'INVALID_MOVE';
+    }
     if (G.responseWindow?.isOpen) {
         return;
     }
@@ -450,6 +453,9 @@ export const applyWound = ({ G }: LotrMoveContext, targetCardId: string) => {
 };
 
 export const passResponseWindow = ({ G, playerID, events }: LotrMoveContext) => {
+    if ((G.threatWoundsToAssign ?? 0) > 0) {
+        return 'INVALID_MOVE';
+    }
     if (resolveResponsePass(G, playerID) === 'INVALID') {
         return 'INVALID_MOVE';
     }

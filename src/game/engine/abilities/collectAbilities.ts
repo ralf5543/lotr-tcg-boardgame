@@ -144,6 +144,15 @@ const CULTURE_TOKENS = new Set([
 const TYPE_TOKENS = new Set(Object.keys(TRANSLATIONS.type));
 const RACE_TOKENS = new Set(Object.keys(TRANSLATIONS.race));
 
+/**
+ * Jetons à la fois culture et race (ORC, WRAITH, URUK-HAI…).
+ * Mot nu dans le gametext = race ; `<symbol>` = culture.
+ * Au formatage on départage via le contexte des autres jetons.
+ */
+const AMBIGUOUS_CULTURE_RACE = new Set(
+    [...CULTURE_TOKENS].filter((token) => RACE_TOKENS.has(token))
+);
+
 function cultureSymbol(token: string): string {
     return `<symbol>${token.toLowerCase()}</symbol>`;
 }
@@ -155,7 +164,9 @@ function translateCriterionToken(token: string): string {
         const pretty = name.charAt(0) + name.slice(1).toLowerCase();
         return `sceau ${pretty}`;
     }
-    if (CULTURE_TOKENS.has(upper)) {
+    // Culture non ambiguë → symbole. Ambigu (ORC…) → race en priorité
+    // (le symbole culture n’est émis que via cultureSymbol dans formatFilterList).
+    if (CULTURE_TOKENS.has(upper) && !AMBIGUOUS_CULTURE_RACE.has(upper)) {
         return cultureSymbol(upper);
     }
     const typeLabel = TRANSLATIONS.type[upper as keyof typeof TRANSLATIONS.type];
@@ -177,6 +188,47 @@ function translateCriterionToken(token: string): string {
     return token.toLowerCase();
 }
 
+/**
+ * Sépare culture / race / type. Pour ORC / WRAITH / URUK-HAI :
+ * - déjà une culture claire (SAURON…) → race (« sauron Orc »)
+ * - type ou race claire (minion, Man…) → culture (« orc minion »)
+ * - seul → race (mot nu, pas symbole)
+ */
+function partitionFilterTokens(tokens: string[]): {
+    cultures: string[];
+    races: string[];
+    types: string[];
+    other: string[];
+} {
+    const upper = tokens.map((token) => token.toUpperCase());
+    const types = upper.filter((token) => TYPE_TOKENS.has(token));
+    const unambiguousCultures = upper.filter(
+        (token) => CULTURE_TOKENS.has(token) && !RACE_TOKENS.has(token)
+    );
+    const unambiguousRaces = upper.filter(
+        (token) => RACE_TOKENS.has(token) && !CULTURE_TOKENS.has(token)
+    );
+    const ambiguous = upper.filter((token) =>
+        AMBIGUOUS_CULTURE_RACE.has(token)
+    );
+
+    const cultures = [...unambiguousCultures];
+    const races = [...unambiguousRaces];
+    for (const token of ambiguous) {
+        if (unambiguousCultures.length > 0) {
+            races.push(token);
+        } else if (types.length > 0 || unambiguousRaces.length > 0) {
+            cultures.push(token);
+        } else {
+            races.push(token);
+        }
+    }
+
+    const classified = new Set([...cultures, ...races, ...types]);
+    const other = upper.filter((token) => !classified.has(token));
+    return { cultures, races, types, other };
+}
+
 function formatFilterList(tokens: string[]): string {
     // Race / classe d’abord, mot-clé ring en suffixe (« Homme associé à l’Anneau »).
     const trailing = new Set(['UNBOUND', 'RING-BOUND']);
@@ -187,22 +239,10 @@ function formatFilterList(tokens: string[]): string {
         (token) => !trailing.has(token.toUpperCase())
     );
 
-    const cultures = rest.filter((t) => CULTURE_TOKENS.has(t.toUpperCase()));
-    // Si un jeton est culture et race (ex. ORC), on le traite comme culture.
-    const races = rest.filter(
-        (t) =>
-            RACE_TOKENS.has(t.toUpperCase()) &&
-            !CULTURE_TOKENS.has(t.toUpperCase())
-    );
-    const types = rest.filter((t) => TYPE_TOKENS.has(t.toUpperCase()));
-    const other = rest.filter(
-        (t) =>
-            !CULTURE_TOKENS.has(t.toUpperCase()) &&
-            !RACE_TOKENS.has(t.toUpperCase()) &&
-            !TYPE_TOKENS.has(t.toUpperCase())
-    );
+    const { cultures, races, types, other } = partitionFilterTokens(rest);
 
-    // Culture + race|type → « séide <symbol>sauron</symbol> » (symbole = adjectif, après le nom).
+    // Culture + race|type → « orque <symbol>sauron</symbol> » / « séide <symbol>orc</symbol> »
+    // (symbole = adjectif de culture, après le nom).
     if (
         cultures.length === 1 &&
         other.length === 0 &&
@@ -216,7 +256,22 @@ function formatFilterList(tokens: string[]): string {
         return kw ? `${core} ${kw}` : core;
     }
 
-    return [...rest, ...suffix].map(translateCriterionToken).join(' ');
+    // Garde l’ordre d’origine des jetons ; cultures ambiguës → symbole uniquement
+    // si classées comme culture (ORC + MINION), sinon race (SAURON + ORC).
+    return [...rest, ...suffix]
+        .map((token) => {
+            const upper = token.toUpperCase();
+            if (cultures.includes(upper)) return cultureSymbol(upper);
+            if (races.includes(upper) && AMBIGUOUS_CULTURE_RACE.has(upper)) {
+                return (
+                    TRANSLATIONS.race[
+                        upper as keyof typeof TRANSLATIONS.race
+                    ] ?? token
+                );
+            }
+            return translateCriterionToken(token);
+        })
+        .join(' ');
 }
 
 function formatTargetPhrase(target: AbilityTargetRef | undefined): string | null {

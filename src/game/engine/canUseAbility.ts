@@ -2,7 +2,6 @@
 
 import type { CardState, GameState } from '../types';
 import { getKeywordValue } from './keywords/keywordUtils';
-import { isSkirmishActionWindowOpen } from './skirmishActionWindow';
 import { canActInActionWindow } from './actionWindow';
 import {
     abilityMatchesPhase,
@@ -55,6 +54,14 @@ export function canUseAbility(
         return {
             valid: false,
             reason: "Seul le joueur de l'Ombre peut utiliser cette capacité.",
+        };
+    }
+
+    // Blessures de menaces : rien d’autre tant que le FP n’a pas fini d’assigner.
+    if ((G.threatWoundsToAssign ?? 0) > 0) {
+        return {
+            valid: false,
+            reason: 'Assignez d’abord les blessures des menaces.',
         };
     }
 
@@ -168,18 +175,6 @@ export function canUseAbility(
         }
 
         if (ownPhaseOk) {
-            if (
-                (currentPhase === 'SKIRMISH' ||
-                    normalizedPhase === 'SKIRMISH') &&
-                allowedActionPhases.includes('SKIRMISH') &&
-                !isSkirmishActionWindowOpen(G)
-            ) {
-                return {
-                    valid: false,
-                    reason: 'Les actions de combat ne peuvent être utilisées que pendant une escarmouche en cours.',
-                };
-            }
-
             if (!canActInActionWindow(G, pid)) {
                 return {
                     valid: false,
@@ -260,15 +255,6 @@ export function canUseAbility(
             abilityHasLegalEffectTarget(G, card, ability)
     );
     if (hasMatchingAbility || projectedForPhase) {
-        if (
-            (currentPhase === 'SKIRMISH' || normalizedPhase === 'SKIRMISH') &&
-            !isSkirmishActionWindowOpen(G)
-        ) {
-            return {
-                valid: false,
-                reason: 'Les actions de combat ne peuvent être utilisées que pendant une escarmouche en cours.',
-            };
-        }
         if (!canActInActionWindow(G, pid)) {
             return {
                 valid: false,

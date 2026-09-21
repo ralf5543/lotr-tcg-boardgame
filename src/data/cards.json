@@ -76117,6 +76117,9 @@
     "isUnique": false,
     "kind": "FREE_PEOPLE",
     "type": "CONDITION",
+    "grantsKeywords": [
+      "PLAINS"
+    ],
     "attachedTo": [
       [
         "SITE"
@@ -77368,6 +77371,34 @@
     "type": "MINION",
     "keywords": [
       "BESIEGER"
+    ],
+    "abilities": [
+      {
+        "id": "7R279:0",
+        "phases": [
+          "SKIRMISH"
+        ],
+        "cost": [],
+        "effects": [
+          {
+            "type": "STACK_ON_CONTROLLED_SITE",
+            "target": [
+              [
+                "BESIEGER"
+              ]
+            ]
+          },
+          {
+            "type": "ADD_TEMP_STAT",
+            "stat": "STRENGTH",
+            "value": 2,
+            "target": "SELF",
+            "expiresAtPhase": "SKIRMISH"
+          }
+        ],
+        "source": "SELF",
+        "text": "SKIRMISH: Stack a besieger on a site you control to make Gorgoroth Troop strength +2."
+      }
     ],
     "actionPhases": [
       "SKIRMISH"

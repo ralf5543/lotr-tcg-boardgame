@@ -19,12 +19,29 @@ export function getCurrentSite(G: GameState): SiteCardState | null {
     return site ?? null;
 }
 
+export function getEffectiveSiteKeywords(
+    site: SiteCardState | null | undefined
+): CardKeyword[] {
+    if (!site) return [];
+    const found = new Set<CardKeyword>();
+    for (const kw of site.keywords || []) {
+        if (kw) found.add(kw);
+    }
+    // « This site is a Plains. » / gains terrain — s’ajoute, ne remplace pas
+    // (CR : « gains that keyword » ; White Hand Attacker → multi-terrains).
+    for (const att of site.attachments || []) {
+        for (const kw of att?.grantsKeywords || []) {
+            if (kw) found.add(kw);
+        }
+    }
+    return Array.from(found);
+}
+
 export function siteHasKeyword(
     site: SiteCardState | null | undefined,
     keyword: CardKeyword
 ): boolean {
-    if (!site?.keywords?.length) return false;
-    return site.keywords.some((kw) => kw === keyword);
+    return getEffectiveSiteKeywords(site).includes(keyword);
 }
 
 /** La compagnie est-elle sur un site portant ce mot-clé ? */

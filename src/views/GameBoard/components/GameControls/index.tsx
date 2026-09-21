@@ -144,7 +144,10 @@ export const GameControls: React.FC<GameControlsProps> = ({
         String(currentPlayerId) === String(actingPlayerId);
 
     // 🟢 2. ÉTAPE DE REGROUPEMENT SPÉCIFIQUE
+    const threatWoundsPending = (G.threatWoundsToAssign ?? 0) > 0;
+
     const isRegroupDecision =
+        !threatWoundsPending &&
         !isActionWindowActive &&
         !isResponseWindowActive &&
         ctx.phase === 'regroup' &&
@@ -152,6 +155,7 @@ export const GameControls: React.FC<GameControlsProps> = ({
         currentPlayerId === fpPlayerId;
 
     const isShadowRefill =
+        !threatWoundsPending &&
         !isActionWindowActive &&
         !isResponseWindowActive &&
         ctx.phase === 'regroup' &&
@@ -159,6 +163,7 @@ export const GameControls: React.FC<GameControlsProps> = ({
         currentPlayerId === shadowPlayerId;
 
     const isFpRefill =
+        !threatWoundsPending &&
         !isActionWindowActive &&
         !isResponseWindowActive &&
         ctx.phase === 'regroup' &&
@@ -167,6 +172,7 @@ export const GameControls: React.FC<GameControlsProps> = ({
 
     // 🟢 3. AUTRES ACTIONS STANDARD DE PHASE
     const isFellowshipAction =
+        !threatWoundsPending &&
         !isActionWindowActive &&
         !isResponseWindowActive &&
         !isAwaitingSiteActive &&
@@ -174,6 +180,7 @@ export const GameControls: React.FC<GameControlsProps> = ({
         currentPlayerId === fpPlayerId;
 
     const isShadowAction =
+        !threatWoundsPending &&
         !isActionWindowActive &&
         !isResponseWindowActive &&
         ctx.phase === 'shadow' &&

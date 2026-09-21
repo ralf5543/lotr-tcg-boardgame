@@ -67,12 +67,13 @@ L’ancien plan effets de cartes est **figé** (`.cursor/rules/card-effects-plan
    - Drag depuis la main → halo sites valides → `attachCard` (même move que possessions).
    - `attachedTo: [['SITE']]` déjà parsé ; Limit 1 per site / pas de doublon id.
    - Replace → défausse des conditions (pas de transfert).
-   - Preset `SITES_TEST` : Strong Arms (FP) + Neiges (Ombre) + **4R30** No Retreat.
+   - ✅ « This site is a Plains » → `grantsKeywords` + lecture effective (imprint **+** attache, pas de remplacement — CR « gains »).
+   - Preset `SITES_TEST` : sites 1–2 contrôlés Ombre (séides déjà empilés) + Strong Arms en main FP (+ Théoden) · Olog/Officer/Sapper/Troll/Engine/Rabble.
    - ✅ « Plays on a site you control » (`requiresControlledSite` + gate pose).
    - ✅ « Plays on a plains site you control » (**5R69**) — sans tokens YOU/CONTROL.
    - ✅ Badge site = bouton d’abilité (halo or + bulle) quand la condition a une capacité jouable.
    - ✅ **4R30** No Retreat : Spot 2 + discard → `FORCE_CHOOSE_MOVE_AGAIN`.
-   - Effets passifs conditions site (skip skirmish events, etc.) = suite.
+   - Effets passifs conditions site (force +1 at this site, skip skirmish events, etc.) = suite.
 
 6. **Contrôle + stack** (en cours — contrôle + liberate ✅ ; stack à faire)
    - **Contrôle** = drapeau **P1/P2** (joueur `0`/`1`), pas culture.
@@ -82,7 +83,7 @@ L’ancien plan effets de cartes est **figé** (`.cursor/rules/card-effects-plan
   - ✅ `LIBERATE_SITE` (plus haut site adverse) → **15R141** Sturdy Shield, **4C292** Théoden, **4R121** Forests of Ithilien, **9R+32** Elendil (×2 monté reporté).
   - ✅ **15R141** While no opponent controls a site → force +1.
   - ✅ Each time wins / fellowship moves + spot another → take control → **4C14** / **4C21**.
-  - Preset `SITES_TEST` : sites 1–2 contrôlés Ombre + Besieger + Troll + Olog + Officer + Garrison + Engine + Rabble (+ main défausse).
+  - Preset `SITES_TEST` : sites 1–2 contrôlés Ombre (séides déjà empilés) + Strong Arms en main FP (+ Théoden) · Olog/Officer/Sapper/Troll/Engine/Rabble.
    - Contrôle seulement après passage des joueurs → **pas de conflit** avec jetons footer ; drapeau en bas, mini-cartes au centre.
    - **Stack** (1ʳᵉ verticale) : `STACK_ON_CONTROLLED_SITE` + `PLAY_FROM_STACK` → **4C180** Uruk Besieger (Regroup empile / Shadow rejoue −1). Auto = plus bas site contrôlé si 1 seul. ✅
    - ✅ Each time / When wins → stack → **4U24** Hillman Rabble, **4U11** Dunlending Looter (+ play −2 déjà câblé).
@@ -91,7 +92,8 @@ L’ancien plan effets de cartes est **figé** (`.cursor/rules/card-effects-plan
    - ✅ Wins → play stacked + temp keywords : **8R105** Olog-hai (besieger → Fierce + Damage +1 jusqu’au ralliement).
    - ✅ Skirmish discard → play stacked + Fierce/force : **7R274** Gorgoroth Officer (drag puis défausse).
    - ✅ Discard variable (2 ou 1 si besieger) : **7C273** Garrison stack ; **7C277** Sapper play.
-   - Suite stack : passifs empilés (**7C275** Pillager…) ; **7R279** Troop skirmish stack→force ; coût crépuscule Olog (−2 / Sauron empilé).
+   - ✅ **7R279** Troop skirmish : stack assiégeant → force +2.
+   - Suite stack : passifs empilés (**7C275** Pillager…) ; coût crépuscule Olog (−2 / Sauron empilé).
    - Cultures concernées : **Dunland**, **Sauron**, **Isengard** (Uruk).
 
 ## Hors scope pour l’instant
@@ -113,4 +115,4 @@ L’ancien plan effets de cartes est **figé** (`.cursor/rules/card-effects-plan
 | Abilities / gametext site | partiel (move twilight + discard allies ✅) |
 | Remplacement de site sur le path | partiel (CURRENT/REGION/when-played/cannot ✅ ; échange OWNED ✅ — 11U45) |
 | Attache sur site | partiel (pose + badge + you control ✅ ; effets gametext ❌) |
-| Contrôle / libération | partiel (take control + liberate + each-time ✅ ; stack self/wins + multi-sites + stack autre + Olog/Officer/Garrison/Sapper ✅) |
+| Contrôle / libération | partiel (take control + liberate + each-time ✅ ; stack self/wins + multi-sites + stack autre + Olog/Officer/Garrison/Sapper/Troop ✅) |

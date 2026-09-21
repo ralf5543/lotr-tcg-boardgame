@@ -302,6 +302,14 @@ export function canPlayCard(
     if (!card || !context || !context.G) {
         return { valid: false, reason: 'Données de validation manquantes.' };
     }
+
+    if ((context.G.threatWoundsToAssign ?? 0) > 0) {
+        return {
+            valid: false,
+            reason: 'Assignez d’abord les blessures des menaces.',
+        };
+    }
+
     // 1. Phase et rôle des joueurs
     if (!options?.ignorePhase) {
         const phaseCheck = checkPhases(card, context);

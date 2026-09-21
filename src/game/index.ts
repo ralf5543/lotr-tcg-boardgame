@@ -677,6 +677,9 @@ export const LotrGame: Game<GameState> = {
                 },
 
                 endShadowPhase: ({ G, events, playerID }: LotrMoveContext) => {
+                    if ((G.threatWoundsToAssign ?? 0) > 0) {
+                        return 'INVALID_MOVE';
+                    }
                     const shadowId = G.fpPlayerId === '0' ? '1' : '0';
                     if (playerID !== shadowId) return 'INVALID_MOVE';
 
@@ -1081,6 +1084,12 @@ export const LotrGame: Game<GameState> = {
                     const fpId = G.fpPlayerId || '0';
                     if (ctx.phase !== 'skirmish' || playerID !== fpId)
                         return 'INVALID_MOVE';
+
+                    if ((G.threatWoundsToAssign ?? 0) > 0) {
+                        G.statusMessage =
+                            'Assignez d’abord les blessures de menaces avant de choisir un autre combat.';
+                        return 'INVALID_MOVE';
+                    }
 
                     if (G.responseWindow?.isOpen || G.pendingEvent) {
                         G.statusMessage =

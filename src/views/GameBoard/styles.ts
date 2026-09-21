@@ -32,7 +32,6 @@ export const BoardPlayColumn = styled.div`
     flex-direction: column;
     min-width: 0;
     min-height: 0;
-    overflow: hidden;
     position: relative;
 `;
 

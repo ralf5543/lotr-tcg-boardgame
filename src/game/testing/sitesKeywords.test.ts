@@ -3,6 +3,7 @@ import {
     canSpotSiteWithKeyword,
     countSitesWithKeyword,
     getCurrentSite,
+    getEffectiveSiteKeywords,
     isAtSiteWithKeyword,
     isCurrentSiteSanctuary,
     siteHasKeyword,
@@ -12,6 +13,7 @@ import {
     createGameState,
     createPlayerState,
     createSite,
+    createCard,
 } from './createGameState';
 
 function emptyPath(): (SiteCardState | null)[] {
@@ -26,6 +28,40 @@ describe('logic/sites — mots-clés', () => {
         expect(siteHasKeyword(site, 'UNDERGROUND')).toBe(true);
         expect(siteHasKeyword(site, 'FOREST')).toBe(false);
         expect(siteHasKeyword(null, 'UNDERGROUND')).toBe(false);
+    });
+
+    it('siteHasKeyword lit grantsKeywords des attachements (Strong Arms → Plains)', () => {
+        const site = createSite({
+            keywords: ['UNDERGROUND'],
+            attachments: [
+                createCard({
+                    id: '7U252',
+                    instanceId: 'strong-arms',
+                    kind: 'FREE_PEOPLE',
+                    type: 'CONDITION',
+                    culture: 'ROHAN',
+                    grantsKeywords: ['PLAINS'],
+                }),
+            ],
+        });
+        expect(siteHasKeyword(site, 'UNDERGROUND')).toBe(true);
+        expect(siteHasKeyword(site, 'PLAINS')).toBe(true);
+        expect(siteHasKeyword(site, 'FOREST')).toBe(false);
+    });
+
+    it('getEffectiveSiteKeywords accumule imprint + attachements (pas de remplacement)', () => {
+        const site = createSite({
+            keywords: ['UNDERGROUND', 'BATTLEGROUND'],
+            attachments: [
+                createCard({
+                    id: '7U252',
+                    grantsKeywords: ['PLAINS'],
+                }),
+            ],
+        });
+        expect(getEffectiveSiteKeywords(site).sort()).toEqual(
+            ['BATTLEGROUND', 'PLAINS', 'UNDERGROUND'].sort()
+        );
     });
 
     it('getCurrentSite / isAtSiteWithKeyword suivent le chemin', () => {

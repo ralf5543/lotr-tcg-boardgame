@@ -7,6 +7,7 @@ import { KeywordBadge } from '../KeywordBadge';
 import { FormattedText } from '../../../../utils/FormattedText';
 import { getCardText } from '../../../../utils/i18n';
 import type { SupportedLanguage } from '../../../../utils/i18n';
+import { getEffectiveSiteKeywords } from '../../../../game/logic/sites';
 
 export interface SiteCardProps {
     site: SiteCardState;
@@ -34,6 +35,7 @@ export const SiteCard: React.FC<SiteCardProps> = ({
         site,
         currentLang
     );
+    const effectiveKeywords = getEffectiveSiteKeywords(site);
 
     // Helpers pour extraire facilement les infos p0 / p1
     const p0Data = typeof playersHere?.p0 === 'object' ? playersHere.p0 : null;
@@ -44,9 +46,9 @@ export const SiteCard: React.FC<SiteCardProps> = ({
 
     return (
         <S.Container $size={size} className={className} style={style}>
-            {site.keywords && site.keywords.length > 0 && size === 'sm' && (
+            {effectiveKeywords.length > 0 && size === 'sm' && (
                 <S.SiteKeywordsContainer>
-                    {site.keywords.map((kw) => (
+                    {effectiveKeywords.map((kw) => (
                         <KeywordBadge key={kw} keyword={kw} size={20} />
                     ))}
                 </S.SiteKeywordsContainer>

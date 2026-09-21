@@ -197,6 +197,16 @@ export const BoardCharacterStack: React.FC<BoardCharacterStackProps> = ({
     const handleStackClick = (e: React.MouseEvent) => {
         e.stopPropagation();
 
+        // Menaces / flèches / désignation : le clic sert au ciblage, pas au combat.
+        if (
+            targetingKind === 'THREAT_WOUND' ||
+            targetingKind === 'ARCHERY' ||
+            targetingKind === 'DESIGNATION' ||
+            targetingKind === 'SANCTUARY_HEAL'
+        ) {
+            return;
+        }
+
         if (!canSelectThisSkirmish || isSelectedSkirmish) return;
 
         if (isSkirmishPhase && skirmishId && onSelectSkirmish) {
@@ -447,6 +457,11 @@ export const BoardCharacterStack: React.FC<BoardCharacterStackProps> = ({
                                 'portrait'
                             );
                         }
+                    }}
+                    onClick={(e) => {
+                        // pointerDown assigne déjà (menaces / flèches) : ne pas laisser
+                        // le clic remonter au groupe et démarrer un combat.
+                        if (isTargetable) e.stopPropagation();
                     }}
                 >
                     {isDead && <S.DeathPicto src="/interface/UI/skull.webp" />}

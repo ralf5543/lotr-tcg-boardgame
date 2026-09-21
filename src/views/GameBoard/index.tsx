@@ -1659,6 +1659,10 @@ export const GameBoard: React.FC<GameBoardProps> = ({
     // 🟢 5. SYNCHRONISATION DU CIBLAGE EN PHASE DE SKIRMISH
     useEffect(() => {
         if (targetingKind === 'DESIGNATION') return;
+        if (targetingKind === 'HAND_DISCARD') return;
+        if (targetingKind === 'STACK_PLAY') return;
+        if (targetingKind === 'SITE_STACK') return;
+        if (targetingKind === 'SITE_ATTACH') return;
         if (targetingKind === 'SANCTUARY_HEAL' || G.sanctuaryHeal) return;
 
         if ((G.threatWoundsToAssign ?? 0) > 0) {
@@ -1736,7 +1740,15 @@ export const GameBoard: React.FC<GameBoardProps> = ({
 
     // Détermination de l'onglet prioritaire selon le state du jeu
     const getRequestedTab = (): 'hand' | 'sites' | null => {
-        if (targetingKind === 'SITE_REPLACE') return 'sites';
+        if (
+            targetingKind === 'SITE_REPLACE' ||
+            targetingKind === 'SITE_REPLACE_PATH' ||
+            targetingKind === 'SITE_ATTACH' ||
+            targetingKind === 'SITE_STACK' ||
+            targetingKind === 'STACK_PLAY'
+        ) {
+            return 'sites';
+        }
         if (targetingKind === 'HAND_DISCARD') return 'hand';
 
         const isSetupPhase = ctx.phase === 'setup';

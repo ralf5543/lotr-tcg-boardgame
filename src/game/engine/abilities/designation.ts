@@ -68,11 +68,21 @@ function candidatesForEffect(
     }
     let matches = uniqueCards(resolveCostTarget(G, source, effect.target));
     if (effect.type === 'STACK_ON_CONTROLLED_SITE') {
+        const sourceId = source.instanceId || source.id;
+        // « Stack a besieger to make this strength +N » : pas soi-même.
+        const alsoBuffsSelf = (ability.effects || []).some(
+            (item) =>
+                item.type === 'ADD_TEMP_STAT' && item.target === 'SELF'
+        );
         return matches.filter(
             (card) =>
                 card.type === 'MINION' &&
                 card.kind === 'SHADOW' &&
                 !card.isDead &&
+                !(
+                    alsoBuffsSelf &&
+                    (card.instanceId || card.id) === sourceId
+                ) &&
                 Boolean(
                     (G.battlefield || []).some(
                         (c) =>

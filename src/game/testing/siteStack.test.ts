@@ -403,6 +403,87 @@ describe('stack on controlled site', () => {
         ).toBe(true);
     });
 
+    it('Troop Skirmish : empile un assiégeant → force +2', () => {
+        const troop = createMinion({
+            id: '7R279',
+            instanceId: 'troop',
+            culture: 'SAURON',
+            race: 'ORC',
+            keywords: ['BESIEGER'],
+            strength: 14,
+        });
+        const other = createMinion({
+            id: '4C180',
+            instanceId: 'besieger',
+            culture: 'ISENGARD',
+            race: 'URUK-HAI',
+            keywords: ['BESIEGER'],
+        });
+        const stackBuff: Ability = {
+            id: '7R279:0',
+            phases: ['SKIRMISH'],
+            cost: [],
+            effects: [
+                {
+                    type: 'STACK_ON_CONTROLLED_SITE',
+                    target: [['BESIEGER']],
+                },
+                {
+                    type: 'ADD_TEMP_STAT',
+                    stat: 'STRENGTH',
+                    value: 2,
+                    target: 'SELF',
+                    expiresAtPhase: 'SKIRMISH',
+                },
+            ],
+            source: 'SELF',
+        };
+        const site = createSite({
+            id: 's1',
+            instanceId: 's1',
+            siteNumber: 1,
+            ownerId: '0',
+            controlledBy: '1',
+        });
+        const G = createGameState({
+            fpPlayerId: '0',
+            currentSiteIndex: 3,
+            path: [
+                site,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+            ],
+            players: {
+                '0': createPlayerState('0', { currentSiteIndex: 3 }),
+                '1': createPlayerState('1', { currentSiteIndex: 3 }),
+            },
+            battlefield: [troop, other],
+        });
+
+        expect(abilityHasLegalEffectTarget(G, troop, stackBuff)).toBe(true);
+        expect(applyAbilityEffect(G, troop, stackBuff, 'besieger')).toBe(
+            true
+        );
+        expect(G.path[0]?.stacked?.map((c) => c.instanceId)).toEqual([
+            'besieger',
+        ]);
+        expect(G.battlefield?.map((c) => c.instanceId)).toEqual(['troop']);
+        expect(
+            G.tempModifiers?.some(
+                (m) =>
+                    m.targetCardId === 'troop' &&
+                    m.stat === 'STRENGTH' &&
+                    m.value === 2
+            )
+        ).toBe(true);
+    });
+
     it('Garrison : défausse 1 si la cible est assiégeant, sinon 2', () => {
         const garrison = createMinion({
             id: '7C273',
