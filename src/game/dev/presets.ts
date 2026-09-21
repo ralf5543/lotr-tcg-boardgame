@@ -543,6 +543,7 @@ export const applyDevPreset = (
 
             G.twilightPool = 0;
             fpPlayer.burdens = 0;
+            fpPlayer.threats = 0;
             G.tempModifiers = [];
             G.archeryState = undefined;
             G.battlefield = [];
@@ -569,21 +570,25 @@ export const applyDevPreset = (
                     index + 1
                 )
             );
-            // Sites 1–2 contrôlés Ombre → choix multi-sites au stack
-            if (G.path[0]) {
-                G.path[0].controlledBy = shadowId;
-            }
-            if (G.path[1]) {
-                G.path[1].controlledBy = shadowId;
-            }
+            // Sites 1–2 contrôlés Ombre (stack / multi-sites)
+            if (G.path[0]) G.path[0].controlledBy = shadowId;
+            if (G.path[1]) G.path[1].controlledBy = shadowId;
 
+            // Compagnie au site 4 (index 3)
             const startIndex = 3;
             Object.values(G.players).forEach((player) => {
                 if (player) player.currentSiteIndex = startIndex;
             });
             G.currentSiteIndex = startIndex;
 
-            // Compagnie : Frodon + Homme Rohan (spot pour Strong Arms)
+            // Spies déjà sur le site courant → skip archerie
+            if (G.path[startIndex]) {
+                G.path[startIndex].attachments = [
+                    clonePresetCard('1R140', 'dev-spies-saruman'),
+                ];
+            }
+
+            // Frodon + Théoden (Rohan pour Strong Arms / libération)
             fpPlayer.fellowshipArea = [
                 {
                     ...clonePresetCard('2C102', 'dev-frodo'),
@@ -591,50 +596,45 @@ export const applyDevPreset = (
                 },
                 clonePresetCard('0P19', 'dev-theoden'),
             ];
-            fpPlayer.hand = [
-                clonePresetCard('7U252', 'dev-strong-arms'),
-            ];
+            fpPlayer.hand = [clonePresetCard('7U252', 'dev-strong-arms')];
 
             if (shadowPlayer) {
-                // Déjà empilés sur sites contrôlés (play from stack / Officer / Sapper)
+                // Pile site 1 : passifs / Ransacker / cible play-from-stack
                 if (G.path[0]) {
                     G.path[0].stacked = [
-                        clonePresetCard('4C180', 'dev-stacked-besieger'),
-                        clonePresetCard('7C273', 'dev-stacked-garrison'),
                         clonePresetCard('7C275', 'dev-stacked-pillager'),
                         clonePresetCard('7C276', 'dev-stacked-ransacker'),
+                        clonePresetCard('7C273', 'dev-stacked-garrison'),
                     ];
                 }
+                // Pile site 2 : 2ᵉ site contrôlé (choix multi)
                 if (G.path[1]) {
                     G.path[1].stacked = [
-                        clonePresetCard('7C273', 'dev-stacked-garrison-2'),
+                        clonePresetCard('4C180', 'dev-stacked-besieger'),
                     ];
                 }
 
+                // Champ : une verticale par famille (pas le musée)
                 G.battlefield = [
-                    clonePresetCard('8R108', 'dev-troll-gorgoroth'),
                     clonePresetCard('8R105', 'dev-olog-mordor'),
                     clonePresetCard('7R274', 'dev-gorgoroth-officer'),
                     clonePresetCard('7R279', 'dev-gorgoroth-troop'),
-                    clonePresetCard('7C277', 'dev-gorgoroth-sapper'),
                     clonePresetCard('7U278', 'dev-gorgoroth-soldier'),
-                    clonePresetCard('4U24', 'dev-hillman-rabble'),
                 ];
                 shadowPlayer.supportArea = [
-                    clonePresetCard('8U107', 'dev-marching-companies'),
                     clonePresetCard('7R316', 'dev-troop-tower'),
                 ];
+                // Défausses Officer / Soldier + séide à empiler (Troop)
                 shadowPlayer.hand = [
-                    clonePresetCard('7C273', 'dev-hand-garrison'),
                     clonePresetCard('4C180', 'dev-hand-besieger'),
-                    clonePresetCard('7C273', 'dev-hand-discard-fodder'),
+                    clonePresetCard('7C273', 'dev-hand-fodder-1'),
+                    clonePresetCard('7C273', 'dev-hand-fodder-2'),
                 ];
                 G.twilightPool = 12;
-                fpPlayer.threats = 2;
             }
 
             G.statusMessage =
-                '[DEV] Sites : pile · Strong Arms · Officer/Troop/Olog/Sapper/Troll.';
+                '[DEV] Sites (final) : Spies@4 · piles Pillager/Ransacker · Strong Arms · Olog/Officer/Troop/Soldier/Tower.';
             break;
         }
     }
