@@ -581,19 +581,21 @@ export const applyDevPreset = (
             });
             G.currentSiteIndex = startIndex;
 
-            // Spies déjà sur le site courant → skip archerie
-            if (G.path[startIndex]) {
-                G.path[startIndex].attachments = [
+            // Spies sur le site 5 (à côté) — pas sur le courant, sinon skip archerie
+            // et on ne peut pas tester Soldier / Legolas.
+            if (G.path[4]) {
+                G.path[4].attachments = [
                     clonePresetCard('1R140', 'dev-spies-saruman'),
                 ];
             }
 
-            // Frodon + Théoden (Rohan pour Strong Arms / libération)
+            // Frodon + Legolas (archerie) + Théoden (Rohan / Strong Arms)
             fpPlayer.fellowshipArea = [
                 {
                     ...clonePresetCard('2C102', 'dev-frodo'),
                     attachments: [clonePresetCard('1R1', 'dev-ring')],
                 },
+                clonePresetCard('1R50', 'dev-legolas-greenleaf'),
                 clonePresetCard('0P19', 'dev-theoden'),
             ];
             fpPlayer.hand = [clonePresetCard('7U252', 'dev-strong-arms')];
@@ -634,7 +636,7 @@ export const applyDevPreset = (
             }
 
             G.statusMessage =
-                '[DEV] Sites (final) : Spies@4 · piles Pillager/Ransacker · Strong Arms · Olog/Officer/Troop/Soldier/Tower.';
+                '[DEV] Sites : Legolas (archerie→Soldier) · Spies@5 · piles · Strong Arms · Olog/Officer/Troop/Tower.';
             break;
         }
     }
