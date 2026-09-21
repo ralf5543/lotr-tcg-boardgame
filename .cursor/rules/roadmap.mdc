@@ -23,7 +23,7 @@ Credo transversal (hérités des plans cartes / sites) : **mieux vaut inerte que
 | --- | --- |
 | **Chantier** | Sites |
 | **Plan** | [`sites-plan.mdc`](sites-plan.mdc) |
-| **Statut** | En cours (replace ✅ ; attache ✅ ; contrôle + liberate + each-time ✅ ; stack self/wins + multi-sites + stack autre + Olog/Officer/Garrison/Sapper/Troop/Pillager ✅) |
+| **Statut** | **Bouclé** (socle ✅ ; reportés volontaires : jetons, weather no-events, gametext site moderne) |
 
 ## Grands axes
 
@@ -31,7 +31,7 @@ Statuts : `en cours` · `à faire` · `plus tard` · `fait` · `pause`
 
 | Axe | Statut | Notes |
 | --- | --- | --- |
-| **Sites** | en cours | Mots-clés / gametext partiel / replace courant. Suite : attache, contrôle, variantes replace. Plan dédié. |
+| **Sites** | **fait** | Socle Standard livré. Suite hors sites : deck / BOT / chat / jetons… Reportés sites : weather no-events, jetons reinforce. |
 | **Création de deck** | à faire | Construction / édition / validation (format Standard, X-list…). |
 | **Affronter un BOT** | à faire | Via boardgame.io (adversaire automatisé). |
 | **Chat** | à faire | Via boardgame.io (table / match). |

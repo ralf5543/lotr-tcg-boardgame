@@ -602,6 +602,7 @@ export const applyDevPreset = (
                         clonePresetCard('4C180', 'dev-stacked-besieger'),
                         clonePresetCard('7C273', 'dev-stacked-garrison'),
                         clonePresetCard('7C275', 'dev-stacked-pillager'),
+                        clonePresetCard('7C276', 'dev-stacked-ransacker'),
                     ];
                 }
                 if (G.path[1]) {
@@ -616,10 +617,12 @@ export const applyDevPreset = (
                     clonePresetCard('7R274', 'dev-gorgoroth-officer'),
                     clonePresetCard('7R279', 'dev-gorgoroth-troop'),
                     clonePresetCard('7C277', 'dev-gorgoroth-sapper'),
+                    clonePresetCard('7U278', 'dev-gorgoroth-soldier'),
                     clonePresetCard('4U24', 'dev-hillman-rabble'),
                 ];
                 shadowPlayer.supportArea = [
                     clonePresetCard('8U107', 'dev-marching-companies'),
+                    clonePresetCard('7R316', 'dev-troop-tower'),
                 ];
                 shadowPlayer.hand = [
                     clonePresetCard('7C273', 'dev-hand-garrison'),

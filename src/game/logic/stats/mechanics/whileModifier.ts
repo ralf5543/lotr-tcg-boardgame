@@ -18,6 +18,7 @@ import {
     countSitesWithKeyword,
     countSitesControlledBy,
     isCardStackedOnControlledSite,
+    getCurrentSiteIndex,
 } from '../../sites';
 
 function matchCard(card: CardState, targetId: string): boolean {
@@ -234,8 +235,32 @@ export function whileConditionHolds(
         if (!isCardStackedOnControlledSite(G, source, ownerId)) return false;
     }
 
+    if (trigger.atAttachedSite) {
+        const hostIndex = findAttachedSiteIndex(G, source);
+        if (hostIndex < 0) return false;
+        if (getCurrentSiteIndex(G) !== hostIndex) return false;
+    }
+
     // Prédicats OK, ou WHILE vide (vrai tant que la carte est en jeu).
     return true;
+}
+
+/** Index du site qui porte cette attache, ou -1. */
+function findAttachedSiteIndex(G: GameState, attachment: CardState): number {
+    const id = attachment.instanceId || attachment.id;
+    if (!id) return -1;
+    for (let i = 0; i < (G.path || []).length; i++) {
+        const site = G.path[i];
+        if (!site?.attachments?.length) continue;
+        if (
+            site.attachments.some(
+                (att) => att && (att.instanceId === id || att.id === id)
+            )
+        ) {
+            return i;
+        }
+    }
+    return -1;
 }
 
 /** Cartes empilées sur un site contrôlé (passifs type Pillager). */
@@ -257,6 +282,19 @@ function forEachStackedOnControlledSite(
                 continue;
             }
             visit(stacked);
+        }
+    }
+}
+
+/** Conditions / attaches sur les sites du chemin. */
+function forEachSiteAttachment(
+    G: GameState,
+    visit: (card: CardState) => void
+): void {
+    for (const site of G.path || []) {
+        if (!site?.attachments?.length) continue;
+        for (const att of site.attachments) {
+            if (att) visit(att);
         }
     }
 }
@@ -320,6 +358,20 @@ export function getWhileStrengthBonus(
     });
 
     forEachInPlayCard(G, (source) => {
+        for (const ability of source.abilities || []) {
+            if (ability.trigger?.type !== 'WHILE') continue;
+            if (!whileConditionHolds(G, source, ability)) continue;
+            for (const effect of ability.effects || []) {
+                if (effect.type !== 'MODIFY_STAT') continue;
+                if (effect.stat !== 'STRENGTH') continue;
+                if (!Array.isArray(effect.target)) continue;
+                if (!cardMatchesTarget(card, effect.target)) continue;
+                bonus += modifyStatMagnitude(G, source, effect);
+            }
+        }
+    });
+
+    forEachSiteAttachment(G, (source) => {
         for (const ability of source.abilities || []) {
             if (ability.trigger?.type !== 'WHILE') continue;
             if (!whileConditionHolds(G, source, ability)) continue;
@@ -419,7 +471,7 @@ export function shouldSkipPhase(
     phase: 'ARCHERY'
 ): boolean {
     let skip = false;
-    forEachInPlayCard(G, (source) => {
+    const visit = (source: CardState) => {
         if (skip) return;
         for (const ability of source.abilities || []) {
             if (ability.trigger?.type !== 'WHILE') continue;
@@ -431,6 +483,8 @@ export function shouldSkipPhase(
                 }
             }
         }
-    });
+    };
+    forEachInPlayCard(G, visit);
+    forEachSiteAttachment(G, visit);
     return skip;
 }

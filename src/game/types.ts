@@ -210,6 +210,8 @@ export type AbilityEffect =
           excludeSource?: boolean;
           /** Plafond cumulé des bonus de cette capacité (ex. limit +5). */
           limit?: number;
+          /** Si tu as l’initiative, utiliser cette valeur à la place de `value`. */
+          valueIfInitiative?: number;
       }
     | {
           /** Modificateur passif (While…) — pas d’expiration de phase. */
@@ -458,6 +460,8 @@ export type AbilityTrigger =
           noOpponentControlsSite?: boolean;
           /** While this card is stacked on a site you control… */
           stackedOnControlledSite?: boolean;
+          /** While the fellowship is at the site hosting this attachment… */
+          atAttachedSite?: boolean;
       }
     | {
           type: 'CHARACTER_DIES';

@@ -17894,6 +17894,25 @@
         ]
       }
     ],
+    "abilities": [
+      {
+        "id": "1R140:0",
+        "phases": [],
+        "trigger": {
+          "type": "WHILE",
+          "atAttachedSite": true
+        },
+        "cost": [],
+        "effects": [
+          {
+            "type": "SKIP_PHASE",
+            "phase": "ARCHERY"
+          }
+        ],
+        "source": "SELF",
+        "text": "While the fellowship is at this site, skip the archery phase."
+      }
+    ],
     "culture": "ISENGARD",
     "twilightCost": 2,
     "imageUrl": "/cards_visuals/o_01_140.jpg",
@@ -76140,6 +76159,32 @@
         ]
       }
     ],
+    "abilities": [
+      {
+        "id": "7U252:0",
+        "phases": [],
+        "trigger": {
+          "type": "WHILE",
+          "atAttachedSite": true
+        },
+        "cost": [],
+        "effects": [
+          {
+            "type": "MODIFY_STAT",
+            "stat": "STRENGTH",
+            "value": 1,
+            "target": [
+              [
+                "ROHAN",
+                "MAN"
+              ]
+            ]
+          }
+        ],
+        "source": "SELF",
+        "text": "Each rohan Man is strength +1 at this site."
+      }
+    ],
     "culture": "ROHAN",
     "twilightCost": 1,
     "imageUrl": "/cards_visuals/o_07_252.jpg",
@@ -77234,6 +77279,42 @@
     "keywords": [
       "BESIEGER"
     ],
+    "abilities": [
+      {
+        "id": "7C276:0",
+        "phases": [
+          "SKIRMISH"
+        ],
+        "cost": [
+          {
+            "discardFromPlay": [
+              {
+                "count": 1,
+                "target": "SELF"
+              }
+            ]
+          }
+        ],
+        "effects": [
+          {
+            "type": "ADD_TEMP_STAT",
+            "stat": "STRENGTH",
+            "value": 5,
+            "target": [
+              [
+                "SAURON",
+                "ORC"
+              ]
+            ],
+            "expiresAtPhase": "SKIRMISH",
+            "valueIfInitiative": 10
+          }
+        ],
+        "source": "SELF",
+        "text": "SKIRMISH: If this minion is stacked on a site you control, discard him to make a sauron Orc strength +5 (or +10 if you have initiative).",
+        "requiresStackedOnControlledSite": true
+      }
+    ],
     "actionPhases": [
       "SKIRMISH"
     ],
@@ -77351,6 +77432,34 @@
     "type": "MINION",
     "keywords": [
       "BESIEGER"
+    ],
+    "abilities": [
+      {
+        "id": "7U278:0",
+        "phases": [
+          "RESPONSE"
+        ],
+        "trigger": {
+          "type": "ABOUT_TO_WOUND",
+          "target": [
+            [
+              "BESIEGER"
+            ]
+          ]
+        },
+        "cost": [
+          {
+            "discardFromHand": 2
+          }
+        ],
+        "effects": [
+          {
+            "type": "PREVENT_WOUND"
+          }
+        ],
+        "source": "SELF",
+        "text": "RESPONSE: If a besieger is about to take a wound, discard 2 cards from hand to prevent that wound"
+      }
     ],
     "actionPhases": [
       "RESPONSE"
@@ -79109,6 +79218,72 @@
             ]
           }
         ]
+      }
+    ],
+    "abilities": [
+      {
+        "id": "7R316:0",
+        "phases": [
+          "REGROUP"
+        ],
+        "cost": [
+          {
+            "discardFromPlay": [
+              {
+                "count": 1,
+                "target": [
+                  [
+                    "BESIEGER"
+                  ]
+                ],
+                "mode": "DESIGNATION"
+              }
+            ]
+          }
+        ],
+        "effects": [
+          {
+            "type": "TAKE_CONTROL_SITE"
+          },
+          {
+            "type": "DISCARD",
+            "count": 1,
+            "target": "SELF"
+          }
+        ],
+        "source": "SELF",
+        "text": "REGROUP: Discard a besieger to take control of a site. Discard this condition."
+      },
+      {
+        "id": "7R316:1",
+        "phases": [],
+        "trigger": {
+          "type": "WHILE"
+        },
+        "cost": [],
+        "effects": [
+          {
+            "type": "MODIFY_STAT",
+            "stat": "STRENGTH",
+            "value": 1,
+            "target": [
+              [
+                "SAURON",
+                "ORC"
+              ]
+            ],
+            "perSpot": {
+              "target": [
+                [
+                  "BESIEGER"
+                ]
+              ],
+              "stackedOnSites": true
+            }
+          }
+        ],
+        "source": "SELF",
+        "text": "All sauron Orcs are strength +1 for each besieger stacked on a site."
       }
     ],
     "actionPhases": [

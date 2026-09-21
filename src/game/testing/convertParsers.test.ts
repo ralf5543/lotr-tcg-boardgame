@@ -2421,6 +2421,129 @@ describe('parseAbilities — While spot N terrain sites', () => {
         ]);
     });
 
+    it('parse Gorgoroth Ransacker : défausse empilée → force + initiative', () => {
+        expect(
+            parseAbilities(
+                '<keyword>Besieger.</keyword> <keyword>Skirmish:</keyword> If this minion is stacked on a site you control, discard him to make a <symbol>sauron</symbol> Orc strength +5 (or +10 if you have initiative).',
+                'Gorgoroth Ransacker',
+                '7C276'
+            )
+        ).toEqual([
+            expect.objectContaining({
+                phases: ['SKIRMISH'],
+                requiresStackedOnControlledSite: true,
+                cost: [
+                    {
+                        discardFromPlay: [{ count: 1, target: 'SELF' }],
+                    },
+                ],
+                effects: [
+                    {
+                        type: 'ADD_TEMP_STAT',
+                        stat: 'STRENGTH',
+                        value: 5,
+                        valueIfInitiative: 10,
+                        target: [['SAURON', 'ORC']],
+                        expiresAtPhase: 'SKIRMISH',
+                    },
+                ],
+            }),
+        ]);
+    });
+
+    it('parse Troop Tower : force / empilé + Regroup contrôle', () => {
+        expect(
+            parseAbilities(
+                '<keyword>Engine.</keyword> To play, spot a <symbol>sauron</symbol> Orc. All <symbol>sauron</symbol> Orcs are strength +1 for each besieger stacked on a site. <keyword>Regroup:</keyword> Discard a besieger to take control of a site. Discard this condition.',
+                'Troop Tower',
+                '7R316'
+            )
+        ).toEqual(
+            expect.arrayContaining([
+                expect.objectContaining({
+                    phases: ['REGROUP'],
+                    effects: expect.arrayContaining([
+                        { type: 'TAKE_CONTROL_SITE' },
+                        { type: 'DISCARD', count: 1, target: 'SELF' },
+                    ]),
+                }),
+                expect.objectContaining({
+                    trigger: { type: 'WHILE' },
+                    effects: [
+                        expect.objectContaining({
+                            type: 'MODIFY_STAT',
+                            stat: 'STRENGTH',
+                            value: 1,
+                            perSpot: {
+                                target: [['BESIEGER']],
+                                stackedOnSites: true,
+                            },
+                        }),
+                    ],
+                }),
+            ])
+        );
+    });
+
+    it('parse Strong Arms : force Rohan au site hôte', () => {
+        expect(
+            parseAbilities(
+                'To play, spot a <symbol>rohan</symbol> Man. Plays on a site. This site is a <keyword>Plains.</keyword> Each <symbol>rohan</symbol> Man is strength +1 at this site.',
+                'Strong Arms',
+                '7U252'
+            )
+        ).toEqual(
+            expect.arrayContaining([
+                expect.objectContaining({
+                    trigger: { type: 'WHILE', atAttachedSite: true },
+                    effects: [
+                        {
+                            type: 'MODIFY_STAT',
+                            stat: 'STRENGTH',
+                            value: 1,
+                            target: [['ROHAN', 'MAN']],
+                        },
+                    ],
+                }),
+            ])
+        );
+    });
+
+    it('parse Spies of Saruman : skip archerie au site hôte', () => {
+        expect(
+            parseAbilities(
+                'To play, exert a <symbol>isengard</symbol> minion. Plays on a site. While the fellowship is at this site, skip the archery phase. Discard this condition at the end of the turn.',
+                'Spies of Saruman',
+                '1R140'
+            )
+        ).toEqual([
+            expect.objectContaining({
+                trigger: { type: 'WHILE', atAttachedSite: true },
+                effects: [{ type: 'SKIP_PHASE', phase: 'ARCHERY' }],
+            }),
+        ]);
+    });
+
+    it('parse Gorgoroth Soldier : prevent wound assiégeant', () => {
+        expect(
+            parseAbilities(
+                '<keyword>Besieger.</keyword> <keyword>Response:</keyword> If a besieger is about to take a wound, discard 2 cards from hand to prevent it.',
+                'Gorgoroth Soldier',
+                '7U278'
+            )
+        ).toEqual([
+            expect.objectContaining({
+                phases: ['RESPONSE'],
+                trigger: {
+                    type: 'ABOUT_TO_WOUND',
+                    target: [['BESIEGER']],
+                },
+                cost: [{ discardFromHand: 2 }],
+                effects: [{ type: 'PREVENT_WOUND' }],
+            }),
+        ]);
+    });
+
     it('parse Gorgoroth Officer : discard 2 → play stacked Sauron Orc + Fierce/force', () => {
         expect(
             parseAbilities(

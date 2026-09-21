@@ -11,98 +11,34 @@ Credo (hérité) : **mieux vaut un site inerte qu’un site faux.** On n’émet
 
 **Parser = fragments**, jamais une carte site entière. Réutiliser les primitifs déjà connus (Spot, Exert, Discard, Draw, remove twilight, phases, classes, mots-clés). Regex collée sur une phrase unique = trop spécifique : on généralise ou on n’émet rien. Exceptions par id en dernier.
 
-Aujourd’hui vivant : chemin d’aventure, pose de site, crépuscule au déplacement (coût site + compagnons + **bonus de région Standard**), soins sanctuaire via **emplacements 3 et 6**, helpers at/spot keywords, **While at / spot N sites → force & mots-clés** (cartes), **replace site courant** (terrain depuis le deck). Gametext site partiel (move twilight / discard allies). Attache site ✅. Contrôle + liberate + each-time ✅. Stack 1ʳᵉ verticale (Uruk Besieger) ✅.
+L’ancien plan effets de cartes est **figé** (`.cursor/rules/card-effects-plan.mdc`, `alwaysApply: false`). Vision d’ensemble : [`.cursor/rules/roadmap.mdc`](roadmap.mdc).
 
-L’ancien plan effets de cartes est **figé** (`.cursor/rules/card-effects-plan.mdc`, `alwaysApply: false`). Suite = ce plan. Vision d’ensemble : [`.cursor/rules/roadmap.mdc`](roadmap.mdc) (feuille de route évolutive).
+## Statut : chantier bouclé (socle sites)
 
-## Ordre
+Tout le socle sites / replace / attache / contrôle / stack est **jouable**. Ce qui reste ci-dessous est **volontairement reporté** (jetons culture, gametext site moderne, weather « no skirmish events », etc.) — pas bloquant pour basculer de plan.
 
-**Priorité courante** : élargir **stack** (passifs empilés Pillager / Ransacker / Troop) / effets gametext conditions site. Keywords cartes : skip@site / reinforce jetons = ⏸. Preset `SITES_TEST` pour valider.
+## Livré
 
-1. **Socle modèle** ✅
-   - `SiteCardState.attachments` = `CardState[]` (vide tant que l’attache n’est pas câblée).
-   - Helpers chemin : `getCurrentSite`, `isAtSiteWithKeyword`, `canSpotSiteWithKeyword`, `countSitesWithKeyword` (`src/game/logic/sites.ts`).
-   - `SANCTUARY` dans `CardKeyword` + convert `VALID_KEYWORDS`.
+1. **Socle modèle** ✅ — `attachments` / `stacked` / `controlledBy` ; helpers path (`sites.ts`).
+2. **Mots-clés site** ✅ — at / spot / count ; sanctuaire Standard 3 & 6 ; While at / spot N → force & keywords ; For each force.
+   - ⏸ Skip multi-phase CSV (19P18) ; reinforce jetons culture.
+3. **Gametext sites** ✅ partiel — move to/from twilight / discard allies. Capacités de phase sites modernes ⏸.
+4. **Replace** ✅ — CURRENT / REGION / when-played / cannot / échange OWNED (11U45). Mount Doom / « this site cannot » ⏸.
+5. **Attache site** ✅ — pose, you control, plains, badge, No Retreat ; passifs **Strong Arms** (force at site) + **Spies** (skip archery).
+   - ⏸ Weather « no skirmish events » (Snows / Pillage), exert on move (Chill / Storm), frost −2 Hobbit.
+6. **Contrôle + stack** ✅
+   - Contrôle / liberate / each-time.
+   - Stack play / stack autre / Olog / Officer / Garrison / Sapper / Troop / Pillager / **Ransacker** (initiative) / **Soldier** (prevent) / **Troop Tower**.
 
-2. **Mots-clés de site** (en cours — avant plus de gametext site)
-   - ✅ Helpers lecture keywords site courant / path.
-   - ✅ Soins sanctuaire (**Standard**) : **sites 3 et 6 du chemin** ; mot-clé imprimé `SANCTUARY` pour pré-Shadows.
-   - ✅ Cartes : `While … at a [terrain] site` → force / Fierce / Damage / Archer (denizens, Haldir, Corps of Harad, etc.).
-   - ✅ Cartes : `While you can spot N [terrain] sites, each … gains Muster` (`13C120`).
-   - ✅ Cartes : nom propre / `gains muster` at site (`12U36` With Doom, `11S223` Nertëa force).
-   - ✅ Cartes : `For each` / `For every` → force (`1R72` Gandalf + famille).
-   - ⏸ Skip phase at site : runtime `SKIP_PHASE`+`atSiteKeyword` prêt, **mais aucune carte CSV** en phrase unique (seul **19P18** = multi-phase → inerte).
-   - ⏸ When-played reinforce si spot site path (**13C83**, **13C164**) : bloqué — **pas de modèle jetons culture**.
-   - Preset DevPanel `SITES_TEST` : chemin terrains variés + cartes de test.
+Preset `SITES_TEST` : sites 1–2 contrôlés + piles (Pillager/Ransacker…) · Strong Arms · Olog/Officer/Troop/Soldier/Tower.
 
-3. **Gametext des sites** (pause après 1ʳᵉ verticale move)
-   - ✅ Fragment : move to/from → add/remove twilight fixe ; discard each ally.
-   - Capacités de phase sites modernes : **reporté** (Play Nazgûl / next site… hors primitifs).
-   - Reprendre quand les keywords cartes sont solides.
+## Hors scope / reporté
 
-4. **Remplacer un site sur le chemin** (en cours — UX tranchée ci-dessous)
-   - Remplacer le site courant (ou un site du `path` / de la région) par un site du deck d’aventure.
-   - Variantes : même numéro (Block / pré-Shadows), site underground/plains/… depuis le deck, échange entre path et deck (`11U45`), « cannot replace » (While spot Men/Orc/Uruk).
-   - Prérequis : cibler un emplacement du path, retirer l’ancien site (où va-t-il ? deck / hors jeu — à trancher règles), poser le nouveau en gardant `siteNumber` / région Standard.
-   - Débloque une grosse famille Shadow / Skirmish / Regroup (Nelya, Unforgiving Depths Shadow, etc.).
-   - **Avant** attache et contrôle : beaucoup de textes « replace » n’ont pas besoin de contrôle.
-
-   **Décisions UX / règles (Standard)** — sources : CR + Current Rulings « site » :
-   - Ancien site → **deck d’aventure du propriétaire** (`sitesDeck`), `siteNumber` effacé.
-   - Nouveau site → **même `siteNumber` / région** ; **pas** de crépuscule de move ni effets MOVES_FROM/TO.
-   - **Attachments / stacked ne se transfèrent PAS** au replace. Conditions sur le site → défausse (à câbler avec l’attache). Les séides empilés se **rejouent depuis le site** tant qu’il est là ; pas de transfert sur le nouveau site.
-   - Interdit de remplacer par **la même carte site** (même id).
-   - Sélection : comme défausse main — choisir le site dans `sitesDeck` (filtré keyword si besoin) **avant** `activateAbility` (coût+effet atomiques).
-   - **Events à cible** (dont replace REGION) : même UX que tout event ciblé — drag hors main → carte disparaît → **flèche + halo** sur la 1ʳᵉ cible (ici un site du path) → puis picker deck si besoin. Pas de message « Relâchez pour… ».
-   - **1ʳᵉ verticale** : `REPLACE_SITE` scope `CURRENT` + filtre terrain + deck du joueur actif → **13C120** Shadow. ✅
-   - **2ᵉ** : CURRENT **sans** filtre terrain → **11S222** Nelya (exert), **12C40** There’s Another Way (discard). ✅
-   - **3ᵉ** : when-played optionnel + spot another + CURRENT terrain → **11R143** Watchful Orc. ✅
-   - **4ᵉ** : REGION (site path + deck, région courante) → **12C34** Traveled Leader. ✅
-   - **5ᵉ** : cannot replace (While spot → FP bloqué) → **15U113** CURRENT, **15U89** REGION, **15U159** ANY. ✅
-   - **6ᵉ** : échange path↔deck (sites **à toi**) → **11U45** Led Astray (+ crépuscule). ✅ ≠ replace (cannot replace ne bloque pas).
-   - Suite : attache / contrôle. Site Mount Doom / attache « this site cannot » = plus tard.
-
-5. **Attache sur un site** (partiel — pose + « you control »)
-   - Path = **sceau** culture + titre carte ; emoji 🌧 si Weather ; HoverCard.
-   - Drag depuis la main → halo sites valides → `attachCard` (même move que possessions).
-   - `attachedTo: [['SITE']]` déjà parsé ; Limit 1 per site / pas de doublon id.
-   - Replace → défausse des conditions (pas de transfert).
-   - ✅ « This site is a Plains » → `grantsKeywords` + lecture effective (imprint **+** attache, pas de remplacement — CR « gains »).
-   - Preset `SITES_TEST` : sites 1–2 contrôlés Ombre (séides déjà empilés) + Strong Arms en main FP (+ Théoden) · Olog/Officer/Sapper/Troll/Engine/Rabble.
-   - ✅ « Plays on a site you control » (`requiresControlledSite` + gate pose).
-   - ✅ « Plays on a plains site you control » (**5R69**) — sans tokens YOU/CONTROL.
-   - ✅ Badge site = bouton d’abilité (halo or + bulle) quand la condition a une capacité jouable.
-   - ✅ **4R30** No Retreat : Spot 2 + discard → `FORCE_CHOOSE_MOVE_AGAIN`.
-   - Effets passifs conditions site (force +1 at this site, skip skirmish events, etc.) = suite.
-
-6. **Contrôle + stack** (en cours — contrôle + liberate ✅ ; stack à faire)
-   - **Contrôle** = drapeau **P1/P2** (joueur `0`/`1`), pas culture.
-   - Site reste sur le path ; `controlledBy` ; plus bas site libre déjà passé (CR).
-   - **1ʳᵉ verticale** : `TAKE_CONTROL_SITE` + `Exert … to take control of a site` → **8C106** Siege Troop. ✅
-   - ✅ « Plays on a site you control » → **4R30** / **4R167** / **5R69**.
-  - ✅ `LIBERATE_SITE` (plus haut site adverse) → **15R141** Sturdy Shield, **4C292** Théoden, **4R121** Forests of Ithilien, **9R+32** Elendil (×2 monté reporté).
-  - ✅ **15R141** While no opponent controls a site → force +1.
-  - ✅ Each time wins / fellowship moves + spot another → take control → **4C14** / **4C21**.
-  - Preset `SITES_TEST` : sites 1–2 contrôlés Ombre (séides déjà empilés) + Strong Arms en main FP (+ Théoden) · Olog/Officer/Sapper/Troll/Engine/Rabble.
-   - Contrôle seulement après passage des joueurs → **pas de conflit** avec jetons footer ; drapeau en bas, mini-cartes au centre.
-   - **Stack** (1ʳᵉ verticale) : `STACK_ON_CONTROLLED_SITE` + `PLAY_FROM_STACK` → **4C180** Uruk Besieger (Regroup empile / Shadow rejoue −1). Auto = plus bas site contrôlé si 1 seul. ✅
-   - ✅ Each time / When wins → stack → **4U24** Hillman Rabble, **4U11** Dunlending Looter (+ play −2 déjà câblé).
-   - ✅ Choix multi-sites au stack (halo + flèche si plusieurs sites contrôlés).
-   - ✅ Stack un autre séide (filtre) : **8R108** Troll → besieger ; **8U107** Engine Regroup stack + Shadow play depuis pile.
-   - ✅ Wins → play stacked + temp keywords : **8R105** Olog-hai (besieger → Fierce + Damage +1 jusqu’au ralliement).
-   - ✅ Skirmish discard → play stacked + Fierce/force : **7R274** Gorgoroth Officer (drag puis défausse).
-   - ✅ Discard variable (2 ou 1 si besieger) : **7C273** Garrison stack ; **7C277** Sapper play.
-   - ✅ **7R279** Troop skirmish : stack assiégeant → force +2.
-   - ✅ Passif empilé : **7C275** Pillager → besiegers fierce.
-   - ✅ Coût crépuscule Olog (−2 / Sauron empilé sur un site).
-   - Suite stack : **7C276** Ransacker (initiative) ; autres passifs empilés.
-   - Cultures concernées : **Dunland**, **Sauron**, **Isengard** (Uruk).
-
-## Hors scope pour l’instant
-
-- Reprendre les familles cartes inertes du vieux plan (While Archer each, prevent Ombre hors cancel, exceptions hors Sam…).
-- Multi-Shadow / plus de 2 joueurs.
-- `siteArrow` / home d’alliés liés au site tant que keywords + move ne sont pas solides.
+- Jetons culture (reinforce).
+- Multi-Shadow / >2 joueurs.
+- `siteArrow` / home d’alliés.
+- Familles cartes inertes hors sites (vieux plan effets).
+- Weather « cannot play skirmish events at this site » (nouveau gate play/ability).
 
 ## État de référence (à ne pas casser)
 
@@ -110,11 +46,12 @@ L’ancien plan effets de cartes est **figé** (`.cursor/rules/card-effects-plan
 | --- | --- |
 | Pose site / avance / crépuscule au move | ✅ |
 | Limite 2 moves / tour | ✅ |
-| Soins sanctuaire (sites 3 & 6 du chemin, Standard) | ✅ |
+| Soins sanctuaire (sites 3 & 6, Standard) | ✅ |
 | Helpers keywords site (at / spot / count) | ✅ |
 | Bonus crépuscule de région (+3 / +6) | ✅ |
-| Keywords branchés sur gametext cartes | partiel (at/spot sites ✅ ; skip@site / reinforce jetons ⏸) |
-| Abilities / gametext site | partiel (move twilight + discard allies ✅) |
-| Remplacement de site sur le path | partiel (CURRENT/REGION/when-played/cannot ✅ ; échange OWNED ✅ — 11U45) |
-| Attache sur site | partiel (pose + badge + you control ✅ ; effets gametext ❌) |
-| Contrôle / libération | partiel (take control + liberate + each-time ✅ ; stack self/wins + multi-sites + stack autre + Olog/Officer/Garrison/Sapper/Troop/Pillager ✅) |
+| Keywords cartes liés aux sites | ✅ (skip@site / reinforce ⏸) |
+| Abilities / gametext site | partiel (move ✅ ; phase moderne ⏸) |
+| Remplacement de site | ✅ (Mount Doom ⏸) |
+| Attache sur site | ✅ (pose + passifs Strong Arms / Spies ; weather events ⏸) |
+| Contrôle / libération / stack | ✅ |
+| Initiative (King) | ✅ (Ransacker + helper) |

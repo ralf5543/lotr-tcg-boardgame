@@ -17,6 +17,7 @@ import {
     abilityOwnerPlayerId,
     discardCardsFromHand,
 } from './payAbilityCost';
+import { playerHasInitiative } from '../../logic/initiative';
 import { addThreats } from '../../logic/threats';
 import { applyHeal } from '../../../utils/applyHeal';
 import { applyExert } from '../../../utils/applyExert';
@@ -556,6 +557,15 @@ function applyOneEffect(
         let value = effect.value;
         if (effect.valueFromSourceStat === 'STRENGTH') {
             value = getCalculatedStrength(G, source);
+        }
+        if (
+            effect.valueIfInitiative != null &&
+            playerHasInitiative(
+                G,
+                abilityOwnerPlayerId(G, source) || ''
+            )
+        ) {
+            value = effect.valueIfInitiative;
         }
         if (effect.bearingBonus) {
             const bears = (target.attachments || []).some((att) =>

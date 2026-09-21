@@ -3190,6 +3190,111 @@ function parseTwilightCostPerStackedAbilities(
 }
 
 /**
+ * All [classe] are strength +N for each [classe] stacked on a site.
+ * (Troop Tower — littéral : tout site.)
+ */
+function parseStrengthPerStackedAbilities(
+    text: string,
+    cardId?: string
+): Record<string, unknown>[] {
+    const found: Record<string, unknown>[] = [];
+    const re =
+        /All\s+([\s\S]+?)\s+are strength\s*\+\s*(\d+)\s+for each\s+([\s\S]+?)\s+stacked on a site\.?/gi;
+    let match: RegExpExecArray | null;
+    while ((match = re.exec(text)) !== null) {
+        if (/\b(and|or|may)\b/i.test(stripAbilityMarkup(match[0]))) continue;
+        const beneficiaries = parseClassFilters(match[1]);
+        const perFilters = parseClassFilters(match[3]);
+        const value = parseInt(match[2], 10);
+        if (
+            beneficiaries.length === 0 ||
+            perFilters.length === 0 ||
+            !Number.isFinite(value) ||
+            value === 0
+        ) {
+            continue;
+        }
+        found.push({
+            id: `${cardId || 'ability'}:${found.length}:str-per-stacked`,
+            phases: [],
+            trigger: { type: 'WHILE' },
+            cost: [],
+            effects: [
+                {
+                    type: 'MODIFY_STAT',
+                    stat: 'STRENGTH',
+                    value,
+                    target: [beneficiaries],
+                    perSpot: {
+                        target: [perFilters],
+                        stackedOnSites: true,
+                    },
+                },
+            ],
+            source: 'SELF',
+            text: stripAbilityMarkup(match[0]),
+        });
+    }
+    return found;
+}
+
+/**
+ * Each [classe] is strength +N at this site.
+ * While the fellowship is at this site, skip the archery phase.
+ * (Attaches site — Strong Arms, Spies of Saruman.)
+ */
+function parseWhileAtAttachedSiteAbilities(
+    text: string,
+    cardId?: string
+): Record<string, unknown>[] {
+    const found: Record<string, unknown>[] = [];
+
+    const eachStrRe =
+        /Each\s+([\s\S]+?)\s+is strength\s*([+-]\d+)\s+at this site\.?/gi;
+    let match: RegExpExecArray | null;
+    while ((match = eachStrRe.exec(text)) !== null) {
+        if (/\b(and|or|may)\b/i.test(stripAbilityMarkup(match[1]))) continue;
+        const filters = parseClassFilters(match[1]);
+        const value = parseInt(match[2], 10);
+        if (filters.length === 0 || !Number.isFinite(value) || value === 0) {
+            continue;
+        }
+        found.push({
+            id: `${cardId || 'ability'}:${found.length}:at-attached-str`,
+            phases: [],
+            trigger: { type: 'WHILE', atAttachedSite: true },
+            cost: [],
+            effects: [
+                {
+                    type: 'MODIFY_STAT',
+                    stat: 'STRENGTH',
+                    value,
+                    target: [filters],
+                },
+            ],
+            source: 'SELF',
+            text: stripAbilityMarkup(match[0]),
+        });
+    }
+
+    const skipRe =
+        /While the fellowship is at this site,\s*skip the archery phase\.?/gi;
+    while ((match = skipRe.exec(text)) !== null) {
+        found.push({
+            id: `${cardId || 'ability'}:${found.length}:at-attached-skip`,
+            phases: [],
+            trigger: { type: 'WHILE', atAttachedSite: true },
+            cost: [],
+            effects: [{ type: 'SKIP_PHASE', phase: 'ARCHERY' }],
+            source: 'SELF',
+            text: stripAbilityMarkup(match[0]),
+        });
+    }
+
+    return found;
+}
+
+/**
  * While you can spot [classe|crépuscule], [self/bearer] is Damage +N | fierce.
  * Miroir force — un seul mot-clé, pas d’and.
  */
@@ -4092,7 +4197,7 @@ export function parseAbilities(
         }
 
         const preventMatch = body.match(
-            /^If\s+([\s\S]+?)\s+is about to take a wound( in a skirmish)?,\s*([\s\S]+?)\s+to prevent that wound/i
+            /^If\s+([\s\S]+?)\s+is about to take a wound( in a skirmish)?,\s*([\s\S]+?)\s+to prevent (?:that wound|it)/i
         );
         if (preventMatch) {
             const remainder = stripAbilityMarkup(
@@ -5037,6 +5142,104 @@ export function parseAbilities(
             return;
         }
 
+        // « If this minion is stacked on a site you control, discard him to make a … strength +N (or +M if you have initiative). »
+        const discardStackedMakeMatch = bodyPlain.match(
+            /^If this minion is stacked on a site you control,\s*discard (?:him|her|it|this)\s+to make\s+(a\s+[\s\S]+?)\.?$/i
+        );
+        if (discardStackedMakeMatch) {
+            const makeRaw = discardStackedMakeMatch[1].trim();
+            const initiativeMake = makeRaw.match(
+                /^([\s\S]+?)\s+strength\s*\+\s*(\d+)\s*\(\s*or\s*\+\s*(\d+)\s+if you have initiative\s*\)$/i
+            );
+            const plainMake = makeRaw.match(
+                /^([\s\S]+?)\s+strength\s*\+\s*(\d+)$/i
+            );
+            const makeParts = initiativeMake || plainMake;
+            if (!makeParts) return;
+            const filters = parseClassFilters(makeParts[1]);
+            if (filters.length === 0) return;
+            const base = parseInt(makeParts[2], 10);
+            if (!Number.isFinite(base) || base === 0) return;
+            const ifInit = initiativeMake
+                ? parseInt(initiativeMake[3], 10)
+                : undefined;
+            if (
+                ifInit != null &&
+                (!Number.isFinite(ifInit) || ifInit === 0)
+            ) {
+                return;
+            }
+
+            const expiresAtPhase = parseUntilExpiry(bodyPlain, marker.phase);
+            const effect: Record<string, unknown> = {
+                type: 'ADD_TEMP_STAT',
+                stat: 'STRENGTH',
+                value: base,
+                target: [filters],
+                expiresAtPhase,
+            };
+            if (ifInit != null) effect.valueIfInitiative = ifInit;
+
+            const clause =
+                `${marker.phase}: If this minion is stacked on a site you control, discard him to make ${makeRaw}.`
+                    .replace(/<[^>]+>/g, '')
+                    .replace(/\s+/g, ' ')
+                    .replace(/\s+\./g, '.')
+                    .trim();
+
+            abilities.push({
+                id: `${cardId || 'ability'}:${abilities.length}`,
+                phases,
+                cost: [
+                    {
+                        discardFromPlay: [{ count: 1, target: 'SELF' }],
+                    },
+                ],
+                effects: [effect],
+                source: 'SELF',
+                text: clause,
+                requiresStackedOnControlledSite: true,
+            });
+            return;
+        }
+
+        // « Discard a besieger to take control of a site. Discard this condition. »
+        const discardBesiegerControlMatch = bodyPlain.match(
+            /^Discard\s+(a\s+[\s\S]+?)\s+to take control of a site\.?\s*Discard this condition\.?$/i
+        );
+        if (discardBesiegerControlMatch) {
+            const filters = parseClassFilters(discardBesiegerControlMatch[1]);
+            if (filters.length === 0) return;
+            const clause =
+                `${marker.phase}: Discard ${discardBesiegerControlMatch[1].trim()} to take control of a site. Discard this condition.`
+                    .replace(/<[^>]+>/g, '')
+                    .replace(/\s+/g, ' ')
+                    .replace(/\s+\./g, '.')
+                    .trim();
+            abilities.push({
+                id: `${cardId || 'ability'}:${abilities.length}`,
+                phases,
+                cost: [
+                    {
+                        discardFromPlay: [
+                            {
+                                count: 1,
+                                target: [filters],
+                                mode: 'DESIGNATION',
+                            },
+                        ],
+                    },
+                ],
+                effects: [
+                    { type: 'TAKE_CONTROL_SITE' },
+                    { type: 'DISCARD', count: 1, target: 'SELF' },
+                ],
+                source: 'SELF',
+                text: clause,
+            });
+            return;
+        }
+
         const discardMatch = body.match(
             /^Exert\s+([\s\S]+?)\s+to discard\s+([\s\S]+)/i
         );
@@ -5825,6 +6028,20 @@ export function parseAbilities(
     );
 
     parseTwilightCostPerStackedAbilities(text, cardId).forEach((ability) => {
+        abilities.push({
+            ...ability,
+            id: `${cardId || 'ability'}:${abilities.length}`,
+        });
+    });
+
+    parseStrengthPerStackedAbilities(text, cardId).forEach((ability) => {
+        abilities.push({
+            ...ability,
+            id: `${cardId || 'ability'}:${abilities.length}`,
+        });
+    });
+
+    parseWhileAtAttachedSiteAbilities(text, cardId).forEach((ability) => {
         abilities.push({
             ...ability,
             id: `${cardId || 'ability'}:${abilities.length}`,
