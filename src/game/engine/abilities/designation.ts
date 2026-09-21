@@ -26,6 +26,7 @@ import {
     getStackedMinionsOnControlledSites,
 } from '../../logic/sites';
 import { getEffectiveTwilightCost } from '../../../utils/roamingDetection';
+import { getWhileTwilightCostModifier } from '../../logic/stats/mechanics/whileModifier';
 import {
     canReplaceCurrentSite,
     canReplaceSiteInCurrentRegionForPlayer,
@@ -105,7 +106,11 @@ function candidatesForEffect(
         ).filter((card) => {
             const cost = Math.max(
                 0,
-                getEffectiveTwilightCost(card, siteIndex) - reduce
+                getEffectiveTwilightCost(
+                    card,
+                    siteIndex,
+                    getWhileTwilightCostModifier(G, card)
+                ) - reduce
             );
             return (G.twilightPool || 0) >= cost;
         });
@@ -332,8 +337,11 @@ export function abilityHasLegalEffectTarget(
             const reduce = effect.twilightReduce || 0;
             const cost = Math.max(
                 0,
-                getEffectiveTwilightCost(source, getCurrentSiteIndex(G)) -
-                    reduce
+                getEffectiveTwilightCost(
+                    source,
+                    getCurrentSiteIndex(G),
+                    getWhileTwilightCostModifier(G, source)
+                ) - reduce
             );
             if ((G.twilightPool || 0) < cost) return false;
             continue;

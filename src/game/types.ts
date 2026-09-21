@@ -225,6 +225,8 @@ export type AbilityEffect =
               target: string[][];
               /** Uniquement la compagnie FP (défaut : tout en jeu). */
               inFellowship?: boolean;
+              /** Compter les cartes empilées sur les sites (pas en jeu). */
+              stackedOnSites?: boolean;
               limit?: number;
           };
           /**
@@ -454,6 +456,8 @@ export type AbilityTrigger =
           spotSiteKeyword?: { keyword: CardKeyword; count: number };
           /** While no opponent controls a site… */
           noOpponentControlsSite?: boolean;
+          /** While this card is stacked on a site you control… */
+          stackedOnControlledSite?: boolean;
       }
     | {
           type: 'CHARACTER_DIES';

@@ -13,6 +13,7 @@ import {
     isMinionRoaming,
     getEffectiveTwilightCost,
 } from '../utils/roamingDetection';
+import { getWhileTwilightCostModifier } from './logic/stats/mechanics/whileModifier';
 import {
     resolveSkirmish,
     hasFierceMinionsOnBattlefield,
@@ -597,7 +598,8 @@ export const LotrGame: Game<GameState> = {
                     const fpSiteIndex = G.players[fpId]?.currentSiteIndex || 0;
                     const effectiveCost = getEffectiveTwilightCost(
                         card,
-                        fpSiteIndex
+                        fpSiteIndex,
+                        getWhileTwilightCostModifier(G, card)
                     );
 
                     if (G.twilightPool < effectiveCost) {

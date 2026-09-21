@@ -381,14 +381,19 @@ export function playStackedMinion(
     G: GameState,
     card: CardState,
     controllerId: string,
-    twilightReduce = 0
+    twilightReduce = 0,
+    twilightModifier = 0
 ): number | null {
     const loc = findStackedCardSite(G, card.instanceId || card.id);
     if (!loc) return null;
     if (String(loc.site.controlledBy) !== String(controllerId)) return null;
 
     const currentSiteIndex = getCurrentSiteIndex(G);
-    const baseCost = getEffectiveTwilightCost(card, currentSiteIndex);
+    const baseCost = getEffectiveTwilightCost(
+        card,
+        currentSiteIndex,
+        twilightModifier
+    );
     const cost = Math.max(0, baseCost - (twilightReduce || 0));
     if ((G.twilightPool || 0) < cost) return null;
 

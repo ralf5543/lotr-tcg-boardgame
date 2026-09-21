@@ -601,6 +601,7 @@ export const applyDevPreset = (
                     G.path[0].stacked = [
                         clonePresetCard('4C180', 'dev-stacked-besieger'),
                         clonePresetCard('7C273', 'dev-stacked-garrison'),
+                        clonePresetCard('7C275', 'dev-stacked-pillager'),
                     ];
                 }
                 if (G.path[1]) {

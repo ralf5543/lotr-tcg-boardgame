@@ -803,6 +803,7 @@ const FILTER_ALIASES: Record<string, string> = {
     DWARVES: 'DWARF',
     ELVES: 'ELF',
     HOBBITS: 'HOBBIT',
+    BESIEGERS: 'BESIEGER',
 };
 
 function normalizeFilterToken(raw: string): string {
@@ -3104,6 +3105,88 @@ function parseWhileKeywordGrant(
     if (/^archer$/i.test(plain)) return { keyword: 'ARCHER' };
     if (/^muster$/i.test(plain)) return { keyword: 'MUSTER' };
     return null;
+}
+
+/**
+ * While this minion is stacked on a site you control, besiegers are fierce.
+ * (Gorgoroth Pillager — source empilée, pas en jeu.)
+ */
+function parseWhileStackedOnControlledSiteKeywordAbilities(
+    text: string,
+    cardId?: string
+): Record<string, unknown>[] {
+    const found: Record<string, unknown>[] = [];
+    const re =
+        /While this minion is stacked on a site you control,\s*([\s\S]+?)\s+are\s+(fierce|damage\s*\+\s*\d+)\.?/gi;
+    let match: RegExpExecArray | null;
+    while ((match = re.exec(text)) !== null) {
+        const whoRaw = stripAbilityMarkup(match[1]).replace(/\s+/g, ' ').trim();
+        if (/\b(and|or|each|may)\b/i.test(whoRaw)) continue;
+        const filters = parseClassFilters(whoRaw);
+        if (filters.length === 0) continue;
+        const grant = parseWhileKeywordGrant(match[2]);
+        if (!grant) continue;
+
+        found.push({
+            id: `${cardId || 'ability'}:${found.length}:while-stacked`,
+            phases: [],
+            trigger: { type: 'WHILE', stackedOnControlledSite: true },
+            cost: [],
+            effects: [
+                {
+                    type: 'MODIFY_KEYWORD',
+                    keyword: grant.keyword,
+                    target: [filters],
+                },
+            ],
+            source: 'SELF',
+            text: stripAbilityMarkup(match[0]),
+        });
+    }
+    return found;
+}
+
+/**
+ * The twilight cost of this minion is –N for each [classe] stacked on a site.
+ * (Olog-hai — littéral : tout site, pas seulement contrôlé.)
+ */
+function parseTwilightCostPerStackedAbilities(
+    text: string,
+    cardId?: string
+): Record<string, unknown>[] {
+    const found: Record<string, unknown>[] = [];
+    const re =
+        /The twilight cost of this minion is\s*[–\-−](\d+)\s+for each\s+([\s\S]+?)\s+stacked on a site\.?/gi;
+    let match: RegExpExecArray | null;
+    while ((match = re.exec(text)) !== null) {
+        const amount = parseInt(match[1], 10);
+        if (!Number.isFinite(amount) || amount <= 0) continue;
+        const filters = parseClassFilters(match[2]);
+        if (filters.length === 0) continue;
+        if (/\b(and|or|may)\b/i.test(stripAbilityMarkup(match[2]))) continue;
+
+        found.push({
+            id: `${cardId || 'ability'}:${found.length}:twilight-per-stacked`,
+            phases: [],
+            trigger: { type: 'WHILE' },
+            cost: [],
+            effects: [
+                {
+                    type: 'MODIFY_STAT',
+                    stat: 'TWILIGHT_COST',
+                    value: -amount,
+                    target: 'SELF',
+                    perSpot: {
+                        target: [filters],
+                        stackedOnSites: true,
+                    },
+                },
+            ],
+            source: 'SELF',
+            text: stripAbilityMarkup(match[0]),
+        });
+    }
+    return found;
 }
 
 /**
@@ -5731,6 +5814,22 @@ export function parseAbilities(
             });
         }
     );
+
+    parseWhileStackedOnControlledSiteKeywordAbilities(text, cardId).forEach(
+        (ability) => {
+            abilities.push({
+                ...ability,
+                id: `${cardId || 'ability'}:${abilities.length}`,
+            });
+        }
+    );
+
+    parseTwilightCostPerStackedAbilities(text, cardId).forEach((ability) => {
+        abilities.push({
+            ...ability,
+            id: `${cardId || 'ability'}:${abilities.length}`,
+        });
+    });
 
     parseWhileSpotSiteEachKeywordAbilities(text, cardId).forEach((ability) => {
         abilities.push({

@@ -77169,6 +77169,30 @@
     "keywords": [
       "BESIEGER"
     ],
+    "abilities": [
+      {
+        "id": "7C275:0",
+        "phases": [],
+        "trigger": {
+          "type": "WHILE",
+          "stackedOnControlledSite": true
+        },
+        "cost": [],
+        "effects": [
+          {
+            "type": "MODIFY_KEYWORD",
+            "keyword": "FIERCE",
+            "target": [
+              [
+                "BESIEGER"
+              ]
+            ]
+          }
+        ],
+        "source": "SELF",
+        "text": "While this minion is stacked on a site you control, besiegers are fierce."
+      }
+    ],
     "culture": "SAURON",
     "race": "ORC",
     "twilightCost": 4,
@@ -84155,6 +84179,33 @@
         ],
         "source": "SELF",
         "text": "Each time this minion wins a skirmish, you may play a besieger stacked on a site you control. That besieger is fierce and Damage +1. until the regroup phase."
+      },
+      {
+        "id": "8R105:1",
+        "phases": [],
+        "trigger": {
+          "type": "WHILE"
+        },
+        "cost": [],
+        "effects": [
+          {
+            "type": "MODIFY_STAT",
+            "stat": "TWILIGHT_COST",
+            "value": -2,
+            "target": "SELF",
+            "perSpot": {
+              "target": [
+                [
+                  "SAURON",
+                  "MINION"
+                ]
+              ],
+              "stackedOnSites": true
+            }
+          }
+        ],
+        "source": "SELF",
+        "text": "The twilight cost of this minion is –2 for each sauron minion stacked on a site."
       }
     ],
     "culture": "SAURON",

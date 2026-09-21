@@ -2359,6 +2359,22 @@ describe('parseAbilities — While spot N terrain sites', () => {
         ).toEqual(
             expect.arrayContaining([
                 expect.objectContaining({
+                    phases: [],
+                    trigger: { type: 'WHILE' },
+                    effects: [
+                        {
+                            type: 'MODIFY_STAT',
+                            stat: 'TWILIGHT_COST',
+                            value: -2,
+                            target: 'SELF',
+                            perSpot: {
+                                target: [['SAURON', 'MINION']],
+                                stackedOnSites: true,
+                            },
+                        },
+                    ],
+                }),
+                expect.objectContaining({
                     phases: ['RESPONSE'],
                     trigger: { type: 'WINS_SKIRMISH', winner: 'SELF' },
                     optional: true,
@@ -2381,6 +2397,28 @@ describe('parseAbilities — While spot N terrain sites', () => {
                 }),
             ])
         );
+    });
+
+    it('parse Gorgoroth Pillager : empilé → besiegers fierce', () => {
+        expect(
+            parseAbilities(
+                '<keyword>Besieger.</keyword> While this minion is stacked on a site you control, besiegers are fierce.',
+                'Gorgoroth Pillager',
+                '7C275'
+            )
+        ).toEqual([
+            expect.objectContaining({
+                phases: [],
+                trigger: { type: 'WHILE', stackedOnControlledSite: true },
+                effects: [
+                    {
+                        type: 'MODIFY_KEYWORD',
+                        keyword: 'FIERCE',
+                        target: [['BESIEGER']],
+                    },
+                ],
+            }),
+        ]);
     });
 
     it('parse Gorgoroth Officer : discard 2 → play stacked Sauron Orc + Fierce/force', () => {

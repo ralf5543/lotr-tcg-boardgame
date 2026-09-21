@@ -32,6 +32,7 @@ import {
     playStackedMinion,
     getSitesControlledBy,
 } from '../../logic/sites';
+import { getWhileTwilightCostModifier } from '../../logic/stats/mechanics/whileModifier';
 import { isSiteReplaceForbidden } from '../../logic/siteReplaceRestrictions';
 import type { CardKeyword } from '../../types';
 
@@ -358,7 +359,8 @@ export function applyAbilityEffect(
                 G,
                 cardToPlay,
                 ownerId,
-                effect.twilightReduce || 0
+                effect.twilightReduce || 0,
+                getWhileTwilightCostModifier(G, cardToPlay)
             );
             if (paid === null) return false;
             for (const grant of effect.grantsTempKeywords || []) {

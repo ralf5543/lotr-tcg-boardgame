@@ -17,6 +17,7 @@ import {
     isCurrentSiteSanctuary,
     countSitesWithKeyword,
     countSitesControlledBy,
+    isCardStackedOnControlledSite,
 } from '../../sites';
 
 function matchCard(card: CardState, targetId: string): boolean {
@@ -31,7 +32,21 @@ function countPerSpot(
     >
 ): number {
     let cards: CardState[];
-    if (perSpot.inFellowship) {
+    if (perSpot.stackedOnSites) {
+        cards = [];
+        for (const site of G.path || []) {
+            if (!site) continue;
+            for (const stacked of site.stacked || []) {
+                if (
+                    stacked &&
+                    !stacked.isDead &&
+                    cardMatchesTarget(stacked, perSpot.target)
+                ) {
+                    cards.push(stacked);
+                }
+            }
+        }
+    } else if (perSpot.inFellowship) {
         const fpId = G.fpPlayerId || '0';
         cards = (G.players[fpId]?.fellowshipArea || []).filter(
             (card) =>
@@ -205,8 +220,45 @@ export function whileConditionHolds(
         if (countSitesControlledBy(G, opponentId) > 0) return false;
     }
 
+    if (trigger.stackedOnControlledSite) {
+        const fpId = G.fpPlayerId || '0';
+        const ownerId =
+            source.kind === 'SHADOW'
+                ? fpId === '0'
+                    ? '1'
+                    : '0'
+                : source.kind === 'FREE_PEOPLE'
+                  ? fpId
+                  : null;
+        if (!ownerId) return false;
+        if (!isCardStackedOnControlledSite(G, source, ownerId)) return false;
+    }
+
     // Prédicats OK, ou WHILE vide (vrai tant que la carte est en jeu).
     return true;
+}
+
+/** Cartes empilées sur un site contrôlé (passifs type Pillager). */
+function forEachStackedOnControlledSite(
+    G: GameState,
+    visit: (card: CardState) => void
+): void {
+    for (const site of G.path || []) {
+        if (!site || site.controlledBy == null) continue;
+        for (const stacked of site.stacked || []) {
+            if (!stacked) continue;
+            if (
+                !isCardStackedOnControlledSite(
+                    G,
+                    stacked,
+                    String(site.controlledBy)
+                )
+            ) {
+                continue;
+            }
+            visit(stacked);
+        }
+    }
 }
 
 function forEachWhileOnCard(
@@ -319,7 +371,44 @@ export function getWhileKeywordRaws(
         }
     });
 
+    // Passifs depuis une pile (Pillager empilé → besiegers fierce).
+    forEachStackedOnControlledSite(G, (source) => {
+        for (const ability of source.abilities || []) {
+            if (ability.trigger?.type !== 'WHILE') continue;
+            if (!ability.trigger.stackedOnControlledSite) continue;
+            if (!whileConditionHolds(G, source, ability)) continue;
+            for (const effect of ability.effects || []) {
+                if (effect.type !== 'MODIFY_KEYWORD') continue;
+                if (!Array.isArray(effect.target)) continue;
+                if (!cardMatchesTarget(card, effect.target)) continue;
+                raw.push(effect.keyword);
+            }
+        }
+    });
+
     return raw;
+}
+
+/**
+ * Modificateur de coût crépuscule (While SELF TWILIGHT_COST, ex. Olog −2 / empilé).
+ * Lu aussi depuis la main (la carte n’est pas encore en jeu).
+ */
+export function getWhileTwilightCostModifier(
+    G: GameState,
+    card: CardState
+): number {
+    let mod = 0;
+    for (const ability of card.abilities || []) {
+        if (ability.trigger?.type !== 'WHILE') continue;
+        if (!whileConditionHolds(G, card, ability)) continue;
+        for (const effect of ability.effects || []) {
+            if (effect.type !== 'MODIFY_STAT') continue;
+            if (effect.stat !== 'TWILIGHT_COST') continue;
+            if (effect.target !== 'SELF') continue;
+            mod += modifyStatMagnitude(G, card, effect);
+        }
+    }
+    return mod;
 }
 
 /**

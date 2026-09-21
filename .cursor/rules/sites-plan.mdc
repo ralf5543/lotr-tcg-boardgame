@@ -93,7 +93,9 @@ L’ancien plan effets de cartes est **figé** (`.cursor/rules/card-effects-plan
    - ✅ Skirmish discard → play stacked + Fierce/force : **7R274** Gorgoroth Officer (drag puis défausse).
    - ✅ Discard variable (2 ou 1 si besieger) : **7C273** Garrison stack ; **7C277** Sapper play.
    - ✅ **7R279** Troop skirmish : stack assiégeant → force +2.
-   - Suite stack : passifs empilés (**7C275** Pillager…) ; coût crépuscule Olog (−2 / Sauron empilé).
+   - ✅ Passif empilé : **7C275** Pillager → besiegers fierce.
+   - ✅ Coût crépuscule Olog (−2 / Sauron empilé sur un site).
+   - Suite stack : **7C276** Ransacker (initiative) ; autres passifs empilés.
    - Cultures concernées : **Dunland**, **Sauron**, **Isengard** (Uruk).
 
 ## Hors scope pour l’instant
@@ -115,4 +117,4 @@ L’ancien plan effets de cartes est **figé** (`.cursor/rules/card-effects-plan
 | Abilities / gametext site | partiel (move twilight + discard allies ✅) |
 | Remplacement de site sur le path | partiel (CURRENT/REGION/when-played/cannot ✅ ; échange OWNED ✅ — 11U45) |
 | Attache sur site | partiel (pose + badge + you control ✅ ; effets gametext ❌) |
-| Contrôle / libération | partiel (take control + liberate + each-time ✅ ; stack self/wins + multi-sites + stack autre + Olog/Officer/Garrison/Sapper/Troop ✅) |
+| Contrôle / libération | partiel (take control + liberate + each-time ✅ ; stack self/wins + multi-sites + stack autre + Olog/Officer/Garrison/Sapper/Troop/Pillager ✅) |
