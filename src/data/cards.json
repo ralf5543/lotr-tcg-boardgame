@@ -137852,6 +137852,30 @@
     "isUnique": false,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
+    "abilities": [
+      {
+        "id": "18C9:0",
+        "phases": [],
+        "trigger": {
+          "type": "WHILE",
+          "spotCultureTokens": {
+            "culture": "ELVEN",
+            "count": 1
+          }
+        },
+        "cost": [],
+        "effects": [
+          {
+            "type": "MODIFY_STAT",
+            "stat": "STRENGTH",
+            "value": 2,
+            "target": "SELF"
+          }
+        ],
+        "source": "SELF",
+        "text": "While you can spot an elven token, this companion is strength +2."
+      }
+    ],
     "culture": "ELVEN",
     "race": "ELF",
     "twilightCost": 2,
@@ -140152,6 +140176,30 @@
     "keywords": [
       "RANGER"
     ],
+    "abilities": [
+      {
+        "id": "18C56:0",
+        "phases": [],
+        "trigger": {
+          "type": "WHILE",
+          "spotCultureTokens": {
+            "culture": "GONDOR",
+            "count": 1
+          }
+        },
+        "cost": [],
+        "effects": [
+          {
+            "type": "MODIFY_STAT",
+            "stat": "STRENGTH",
+            "value": 2,
+            "target": "SELF"
+          }
+        ],
+        "source": "SELF",
+        "text": "While you can spot a gondor token, this companion is strength +2."
+      }
+    ],
     "culture": "GONDOR",
     "race": "MAN",
     "twilightCost": 2,
@@ -142317,6 +142365,30 @@
     "type": "COMPANION",
     "keywords": [
       "VALIANT"
+    ],
+    "abilities": [
+      {
+        "id": "18C103:0",
+        "phases": [],
+        "trigger": {
+          "type": "WHILE",
+          "spotCultureTokens": {
+            "culture": "ROHAN",
+            "count": 1
+          }
+        },
+        "cost": [],
+        "effects": [
+          {
+            "type": "MODIFY_STAT",
+            "stat": "STRENGTH",
+            "value": 2,
+            "target": "SELF"
+          }
+        ],
+        "source": "SELF",
+        "text": "While you can spot a rohan token, this companion is strength +2."
+      }
     ],
     "culture": "ROHAN",
     "race": "MAN",

@@ -3,6 +3,7 @@ import { getCalculatedStrength } from './statCalculator';
 import { getEnduringStrengthBonus } from './mechanics/enduringModifier';
 import { getHunterStrengthBonus } from './mechanics/hunterModifier';
 import {
+    createCard,
     createCompanion,
     createGameState,
     createMinion,
@@ -199,5 +200,61 @@ describe('While you can spot → strength', () => {
             players: { '1': createPlayerState('1') },
         });
         expect(getCalculatedStrength(withNazgul, cur)).toBe(10);
+    });
+
+    it('Elven Defender : +2 si jeton elven spoté', () => {
+        const defender = createCompanion({
+            id: '18C9',
+            title: 'Elven Defender',
+            culture: 'ELVEN',
+            strength: 6,
+            abilities: [
+                {
+                    id: '18C9:0',
+                    phases: [],
+                    trigger: {
+                        type: 'WHILE',
+                        spotCultureTokens: { culture: 'ELVEN', count: 1 },
+                    },
+                    cost: [],
+                    effects: [
+                        {
+                            type: 'MODIFY_STAT',
+                            stat: 'STRENGTH',
+                            value: 2,
+                            target: 'SELF',
+                        },
+                    ],
+                    source: 'SELF',
+                },
+            ],
+        });
+        const tokenCard = createCard({
+            id: 'token-holder',
+            kind: 'FREE_PEOPLE',
+            type: 'CONDITION',
+            subtype: 'SUPPORT-AREA',
+            culture: 'ELVEN',
+            cultureTokens: { ELVEN: 1 },
+        });
+
+        const without = createGameState({
+            players: {
+                '0': createPlayerState('0', {
+                    fellowshipArea: [defender],
+                }),
+            },
+        });
+        expect(getCalculatedStrength(without, defender)).toBe(6);
+
+        const withToken = createGameState({
+            players: {
+                '0': createPlayerState('0', {
+                    fellowshipArea: [defender],
+                    supportArea: [tokenCard],
+                }),
+            },
+        });
+        expect(getCalculatedStrength(withToken, defender)).toBe(8);
     });
 });

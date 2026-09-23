@@ -2925,6 +2925,50 @@ function parseWhileSpotStrengthAbilities(
 }
 
 /**
+ * While you can spot N [culture] tokens, this companion / bearer is strength ±N.
+ * (Elven Defender, Rohirrim Recruit…) — refuse « each », titre, initiative…
+ */
+function parseWhileSpotCultureTokenStrengthAbilities(
+    text: string,
+    cardTitle?: string,
+    cardId?: string
+): Record<string, unknown>[] {
+    const found: Record<string, unknown>[] = [];
+    const re =
+        /While you can spot (a|an|one|\d+)\s*((?:Free Peoples(?:\s+culture)?)|(?:<symbol>[^<]+<\/symbol>))\s*tokens?,\s*([^,]+?)\s+is strength\s*([+-]\d+)\./gi;
+    let match: RegExpExecArray | null;
+    while ((match = re.exec(text)) !== null) {
+        const count = parseCultureTokenCount(match[1]);
+        const culture = parseCultureTokenSpec(match[2]);
+        const who = parseWhileStrengthWho(match[3], cardTitle);
+        const value = parseInt(match[4], 10);
+        if (!count || !culture || !who) continue;
+        if (!Number.isFinite(value) || value === 0) continue;
+
+        found.push({
+            id: `${cardId || 'ability'}:${found.length}:while-spot-ct`,
+            phases: [],
+            trigger: {
+                type: 'WHILE',
+                spotCultureTokens: { culture, count },
+            },
+            cost: [],
+            effects: [
+                {
+                    type: 'MODIFY_STAT',
+                    stat: 'STRENGTH',
+                    value,
+                    target: who,
+                },
+            ],
+            source: who === 'BEARER' ? 'ATTACHMENT' : 'SELF',
+            text: stripAbilityMarkup(match[0]),
+        });
+    }
+    return found;
+}
+
+/**
  * While you can spot [classe], each [classe] is strength ±N.
  * Cible classe (string[][]) — pas SELF/BEARER. Refuse skirmishing / of your / …
  */
@@ -6628,6 +6672,15 @@ export function parseAbilities(
     });
 
     parseWhileSpotStrengthAbilities(text, cardTitle, cardId).forEach(
+        (ability) => {
+            abilities.push({
+                ...ability,
+                id: `${cardId || 'ability'}:${abilities.length}`,
+            });
+        }
+    );
+
+    parseWhileSpotCultureTokenStrengthAbilities(text, cardTitle, cardId).forEach(
         (ability) => {
             abilities.push({
                 ...ability,

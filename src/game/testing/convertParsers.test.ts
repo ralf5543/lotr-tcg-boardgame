@@ -1616,6 +1616,68 @@ describe('parseAbilities — While you can spot → strength', () => {
             )
         ).toBeUndefined();
     });
+
+    it('parse While spot culture token → this companion strength', () => {
+        expect(
+            parseAbilities(
+                'While you can spot an <symbol>elven</symbol> token, this companion is strength +2.',
+                'Elven Defender',
+                '18C9'
+            )
+        ).toEqual([
+            {
+                id: '18C9:0',
+                phases: [],
+                trigger: {
+                    type: 'WHILE',
+                    spotCultureTokens: { culture: 'ELVEN', count: 1 },
+                },
+                cost: [],
+                effects: [
+                    {
+                        type: 'MODIFY_STAT',
+                        stat: 'STRENGTH',
+                        value: 2,
+                        target: 'SELF',
+                    },
+                ],
+                source: 'SELF',
+                text: expect.stringMatching(
+                    /While you can spot an elven token, this companion is strength \+2/i
+                ),
+            },
+        ]);
+
+        expect(
+            parseAbilities(
+                'While you can spot a<symbol>gondor</symbol>token, this companion is strength +2.',
+                'Gondorian Defender',
+                '18C48'
+            )
+        ).toEqual([
+            {
+                id: '18C48:0',
+                phases: [],
+                trigger: {
+                    type: 'WHILE',
+                    spotCultureTokens: { culture: 'GONDOR', count: 1 },
+                },
+                cost: [],
+                effects: [
+                    {
+                        type: 'MODIFY_STAT',
+                        stat: 'STRENGTH',
+                        value: 2,
+                        target: 'SELF',
+                    },
+                ],
+                source: 'SELF',
+                text: expect.stringMatching(
+                    /While you can spot a gondor token, this companion is strength \+2/i
+                ),
+            },
+        ]);
+    });
 });
 
 describe('parseAbilities — While skirmishing → strength', () => {

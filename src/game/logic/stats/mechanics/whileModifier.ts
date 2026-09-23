@@ -20,6 +20,10 @@ import {
     isCardStackedOnControlledSite,
     getCurrentSiteIndex,
 } from '../../sites';
+import {
+    countCultureTokensForPlayer,
+    findInPlayCardOwnerId,
+} from '../../cultureTokens';
 
 function matchCard(card: CardState, targetId: string): boolean {
     return card.instanceId === targetId || card.id === targetId;
@@ -159,6 +163,17 @@ export function whileConditionHolds(
 
     if (trigger.spotTwilight && trigger.spotTwilight > 0) {
         if ((G.twilightPool || 0) < trigger.spotTwilight) return false;
+    }
+
+    if (trigger.spotCultureTokens) {
+        const ownerId = findInPlayCardOwnerId(G, source);
+        if (!ownerId) return false;
+        const have = countCultureTokensForPlayer(
+            G,
+            ownerId,
+            trigger.spotCultureTokens.culture
+        );
+        if (have < (trigger.spotCultureTokens.count || 1)) return false;
     }
 
     for (const req of trigger.spot || []) {

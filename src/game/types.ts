@@ -519,6 +519,8 @@ export type AbilityTrigger =
           type: 'WHILE';
           spot?: CostSelector[];
           spotTwilight?: number;
+          /** « While you can spot N [culture] tokens » (cartes actives du joueur). */
+          spotCultureTokens?: { culture: CultureTokenSpec; count: number };
           /** Adversaire(s) de l’escarmouche (While skirmishing a …). */
           skirmishing?: { target: string[][] };
           /** Attachement porté (While … bears a …). */

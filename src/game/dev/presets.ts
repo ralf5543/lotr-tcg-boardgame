@@ -131,6 +131,8 @@ export const applyDevPreset = (
                 },
                 // Homme culture Gandalf — cible Last Stand (+3) / spot exert si branché
                 clonePresetCard('11R30', 'dev-erland-ct'),
+                // While spot elven token → +2
+                clonePresetCard('18C9', 'dev-elven-defender'),
             ];
             fpPlayer.supportArea = [
                 {
@@ -140,6 +142,11 @@ export const applyDevPreset = (
                 {
                     ...clonePresetCard('4R52', 'dev-my-axe'),
                     cultureTokens: { DWARVEN: 2 },
+                },
+                {
+                    // Jeton elven pour Elven Defender
+                    ...clonePresetCard('4R69', 'dev-final-count'),
+                    cultureTokens: { ELVEN: 1 },
                 },
                 {
                     // Remove 1 shire from here → compagnon shire +1 (Frodon)
