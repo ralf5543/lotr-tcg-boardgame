@@ -17,7 +17,7 @@ export const CultureIcon = styled.span<{ $culture: string }>`
                 case 'GOLLUM': return '"¢"';
                 case 'MORIA': return '"{"';
                 case 'ISENGARD': return '"^"';
-                case 'RAITH': return '"]"';
+                case 'WRAITH': return '"]"';
                 case 'URUK-HAI': return '"_"';
                 case 'SAURON': return '"|"';
                 case 'DUNLAND': return '"~"';

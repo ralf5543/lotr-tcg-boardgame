@@ -326,8 +326,20 @@ export const BoardCharacterStack: React.FC<BoardCharacterStackProps> = ({
                                         }
                                         if (isMinionDesignationTarget && el) {
                                             registerTarget(minionKey, el);
+                                            if (
+                                                minion.id &&
+                                                minion.id !== minionKey
+                                            ) {
+                                                registerTarget(minion.id, el);
+                                            }
                                         } else {
                                             registerTarget(minionKey, null);
+                                            if (
+                                                minion.id &&
+                                                minion.id !== minionKey
+                                            ) {
+                                                registerTarget(minion.id, null);
+                                            }
                                         }
                                     }}
                                     $isTargetable={isMinionTargetable}
@@ -429,6 +441,7 @@ export const BoardCharacterStack: React.FC<BoardCharacterStackProps> = ({
                             character.id &&
                             character.id !== id
                         ) {
+                            registerTarget(character.id, el);
                             registerArrowAnchor(character.id, el);
                         }
                     }}

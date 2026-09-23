@@ -3,12 +3,26 @@
 import type { CardState, SiteCardState } from '../../types';
 import { isRingBearerCard } from '../../../utils/cardUtils';
 import { getEffectiveKeywords } from '../keywords/keywordUtils';
+import { getEffectiveVitality } from '../../../utils/cardStats';
 
 /**
  * Normalise un terme pour la comparaison case-insensitive.
  */
 function normalize(val?: string): string {
     return (val || '').trim().toUpperCase();
+}
+
+/** Alias CSV / symboles sans trait d’union (`urukhai` → URUK-HAI). */
+const CRITERION_ALIASES: Record<string, string> = {
+    URUKHAI: 'URUK-HAI',
+    NAZGUL: 'NAZGÛL',
+    RINGBEARER: 'RING-BEARER',
+    RINGBOUND: 'RING-BOUND',
+};
+
+function normalizeCriterion(criterion: string): string {
+    const upper = normalize(criterion);
+    return CRITERION_ALIASES[upper] || upper;
 }
 
 /**
@@ -37,7 +51,7 @@ export function cardMatchesCriterion(
     if (!card || !criterion) return false;
 
     const critTrim = criterion.trim();
-    const critUpper = critTrim.toUpperCase();
+    const critUpper = normalizeCriterion(critTrim);
     const c = card as CardState;
 
     // Nom propre (casse mixte, ex. « Gandalf ») → titre uniquement.
@@ -66,6 +80,17 @@ export function cardMatchesCriterion(
         if (keywordsUpper.includes('RING-BOUND')) return false;
         if (isRingBearerCard(c)) return false;
         return c.type === 'COMPANION' || c.type === 'ALLY';
+    }
+
+    // « exhausted » : 1 vitalité restante (CR), pas mort.
+    if (critUpper === 'EXHAUSTED') {
+        if (c.isDead) return false;
+        const typeOk =
+            c.type === 'COMPANION' ||
+            c.type === 'ALLY' ||
+            c.type === 'MINION';
+        if (!typeOk) return false;
+        return getEffectiveVitality(c) === 1;
     }
 
     if (critUpper.startsWith('SIGNET_')) {

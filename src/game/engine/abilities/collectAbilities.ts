@@ -315,6 +315,15 @@ function formatEffectBit(
         const who = formatTargetPhrase(effect.target);
         return who ? `affaiblir ${who}` : 'affaiblir';
     }
+    if (effect.type === 'EXHAUST') {
+        const who = formatTargetPhrase(effect.target);
+        const except = effect.excludeRingBearer
+            ? ' (sauf le Porteur de l’Anneau)'
+            : '';
+        return who
+            ? `épuiser ${who}${except}`
+            : `épuiser${except}`;
+    }
     if (effect.type === 'ADD_TWILIGHT') {
         return `ajouter <symbol>twilight${effect.count}</symbol>`;
     }
@@ -375,6 +384,14 @@ function formatEffectBit(
     if (effect.type === 'PREVENT_WOUND') {
         return 'empêcher cette blessure';
     }
+    if (effect.type === 'PLACE_CULTURE_TOKEN') {
+        const n = effect.count || 1;
+        const cultureBit =
+            effect.culture === 'FREE_PEOPLES'
+                ? 'Peuples Libres'
+                : `<symbol>${String(effect.culture).toLowerCase()}</symbol>`;
+        return `placer ${n} jeton${n > 1 ? 's' : ''} ${cultureBit} ici`;
+    }
     if (effect.type === 'WEAR_RING') {
         return 'mettre l’Anneau Unique';
     }
@@ -393,13 +410,22 @@ function formatEffectBit(
             TWILIGHT_COST: 'crépuscule',
         };
         const stat = statLabels[effect.stat] || effect.stat.toLowerCase();
+        const who = formatTargetPhrase(effect.target);
+        if (effect.perCultureTokensOnSelf) {
+            const cultureBit =
+                effect.perCultureTokensOnSelf.culture === 'FREE_PEOPLES'
+                    ? 'Peuples Libres'
+                    : `<symbol>${String(effect.perCultureTokensOnSelf.culture).toLowerCase()}</symbol>`;
+            const lim = effect.perCultureTokensOnSelf.limit;
+            const scale = `${stat} +${effect.value} par jeton ${cultureBit} ici${lim != null ? ` (limite +${lim})` : ''}`;
+            return who ? `${scale} à ${who}` : scale;
+        }
         const bit = effect.valueFromSourceStat
             ? `ajouter sa ${stat}`
             : (() => {
                   const sign = effect.value > 0 ? '+' : '';
                   return `${stat} ${sign}${effect.value}`;
               })();
-        const who = formatTargetPhrase(effect.target);
         return who ? `${bit} à ${who}` : bit;
     }
     if (effect.type === 'ADD_TEMP_KEYWORD') {
@@ -517,14 +543,12 @@ function formatCostLabel(ability: Ability, source: CardState): string {
         parts.push(`Affaiblir ${who}${times}`);
     }
     const spot = option?.spot?.[0];
+    // « spot » n’est pas un coût à désigner (condition amont), sauf pipes
+    // où le nombre spoté détermine l’effet (X pipes → retirer X…).
     if (spot) {
         const tokens = Array.isArray(spot.target) ? spot.target.flat() : [];
         if (tokens.includes('PIPE')) {
             parts.push('Désigner X pipes');
-        } else {
-            parts.push(
-                `Désigner ${formatCostWho(spot.target, source, true)}`
-            );
         }
     }
     if (option?.addTwilight && option.addTwilight > 0) {
@@ -547,11 +571,7 @@ function formatCostLabel(ability: Ability, source: CardState): string {
             `retirer <symbol>twilight${option.removeTwilight}</symbol>`
         );
     }
-    if (option?.spotTwilight && option.spotTwilight > 0) {
-        parts.push(
-            `désigner <symbol>twilight${option.spotTwilight}</symbol>`
-        );
-    }
+    // spotTwilight / spotHand : conditions, pas coûts affichés
     if (option?.discardFromPlay?.length) {
         const discardTarget = option.discardFromPlay[0]?.target;
         if (discardTarget === 'SELF' || discardTarget === 'BEARER') {
@@ -569,6 +589,20 @@ function formatCostLabel(ability: Ability, source: CardState): string {
         const n = option.discardFromHand;
         parts.push(
             `Défausser ${n} carte${n > 1 ? 's' : ''} de la main`
+        );
+    }
+    if (option?.discardEntireHand) {
+        parts.push('Défausser votre main');
+    }
+    if (option?.removeCultureTokens) {
+        const { culture, count } = option.removeCultureTokens;
+        const n = count || 1;
+        const cultureBit =
+            culture === 'FREE_PEOPLES'
+                ? 'Peuples Libres'
+                : `<symbol>${String(culture).toLowerCase()}</symbol>`;
+        parts.push(
+            `Retirer ${n} jeton${n > 1 ? 's' : ''} ${cultureBit}`
         );
     }
     return parts.join(' et ');

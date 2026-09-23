@@ -1,5 +1,5 @@
 import { useEffect, useRef } from 'react';
-import type { GameState } from '../../game/types';
+import type { CardState, GameState } from '../../game/types';
 import { audioService } from '../../services/audioService';
 
 function discardFingerprint(G: GameState): string {
@@ -15,21 +15,46 @@ function discardFingerprint(G: GameState): string {
         .join('|');
 }
 
+function cultureTokenTotal(G: GameState): number {
+    let total = 0;
+    const add = (card: CardState | undefined | null) => {
+        if (!card) return;
+        const tokens = card.cultureTokens || {};
+        for (const n of Object.values(tokens)) {
+            if (typeof n === 'number' && n > 0) total += n;
+        }
+        for (const att of card.attachments || []) add(att);
+    };
+    for (const player of Object.values(G.players || {})) {
+        if (!player) continue;
+        for (const card of player.fellowshipArea || []) add(card);
+        for (const card of player.supportArea || []) add(card);
+    }
+    for (const card of G.battlefield || []) add(card);
+    for (const site of G.adventurePath || []) {
+        for (const stacked of site.stackedCards || []) add(stacked);
+        for (const att of site.attachments || []) add(att);
+    }
+    return total;
+}
+
 /**
  * Son CARD_DISCARD dès qu’une carte arrive en défausse (main ou jeu),
- * sans délai ni variation de hauteur.
+ * ou qu’un jeton de culture est retiré — même son, sans délai ni variation.
  */
 export function useDiscardAudio(G: GameState) {
-    const knownRef = useRef<string | null>(null);
+    const knownDiscardRef = useRef<string | null>(null);
+    const knownTokensRef = useRef<number | null>(null);
     const fingerprint = discardFingerprint(G);
+    const tokenTotal = cultureTokenTotal(G);
 
     useEffect(() => {
-        if (knownRef.current === null) {
-            knownRef.current = fingerprint;
+        if (knownDiscardRef.current === null) {
+            knownDiscardRef.current = fingerprint;
             return;
         }
 
-        if (fingerprint === knownRef.current) return;
+        if (fingerprint === knownDiscardRef.current) return;
 
         const countIds = (fp: string) =>
             fp.split('|').reduce((n, part) => {
@@ -37,11 +62,23 @@ export function useDiscardAudio(G: GameState) {
                 return n + (ids ? ids.split(',').filter(Boolean).length : 0);
             }, 0);
 
-        const gained = countIds(fingerprint) > countIds(knownRef.current);
-        knownRef.current = fingerprint;
+        const gained = countIds(fingerprint) > countIds(knownDiscardRef.current);
+        knownDiscardRef.current = fingerprint;
 
         if (gained) {
             audioService.play('CARD_DISCARD', { enablePitch: false });
         }
     }, [fingerprint]);
+
+    useEffect(() => {
+        if (knownTokensRef.current === null) {
+            knownTokensRef.current = tokenTotal;
+            return;
+        }
+        const prev = knownTokensRef.current;
+        knownTokensRef.current = tokenTotal;
+        if (tokenTotal < prev) {
+            audioService.play('CARD_DISCARD', { enablePitch: false });
+        }
+    }, [tokenTotal]);
 }

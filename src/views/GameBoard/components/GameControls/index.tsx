@@ -30,7 +30,8 @@ interface GameControlsProps {
         preventPendingEffect?: () => void;
         resolveWhenPlayedChoice?: (
             accept: boolean,
-            discardedHandIds?: string[]
+            discardedHandIds?: string[],
+            chosenTargetId?: string | string[]
         ) => void;
         confirmMuster?: () => void;
         confirmStartOfPhase?: () => void;

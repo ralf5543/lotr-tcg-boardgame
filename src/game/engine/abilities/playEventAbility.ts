@@ -2,7 +2,12 @@ import type { Ability, CardState, GameState } from '../../types';
 import { abilityMatchesPhase } from './collectAbilities';
 import { applyAbilityEffect } from './applyAbilityEffect';
 import { canPayAbilityCost, payAbilityCost } from './payAbilityCost';
-import { abilityHasLegalEffectTarget } from './designation';
+import {
+    abilityHasLegalEffectTarget,
+    abilityNeedsCostDesignation,
+    abilityNeedsEffectDesignation,
+    costAndEffectShareHandDesignation,
+} from './designation';
 import { isResponseWindowOpen } from '../responseWindow';
 
 function abilityPhaseToMatch(G: GameState, rawPhase: string): string {
@@ -97,10 +102,34 @@ export function applyEventAbility(
         abilityPhaseToMatch(G, rawPhase)
     );
     if (!ability) return false;
-    // Coût spot / exert : une seule id si besoin ; replace REGION passe [path, deck]
-    const costTargetId = Array.isArray(chosenTargetId)
-        ? chosenTargetId[0]
-        : chosenTargetId;
+
+    const needsCost = abilityNeedsCostDesignation(G, card, ability);
+    const needsEffect = abilityNeedsEffectDesignation(G, card, ability);
+    const ids = Array.isArray(chosenTargetId)
+        ? chosenTargetId
+        : chosenTargetId
+          ? [chosenTargetId]
+          : [];
+
+    // Coût désigné + effet désigné
+    if (needsCost && needsEffect) {
+        // Même filtre (Hobbit → Hobbit) : une seule id pour les deux
+        if (costAndEffectShareHandDesignation(ability)) {
+            const sharedId = ids[0];
+            if (!sharedId) return false;
+            if (!payAbilityCost(G, card, ability.cost, sharedId)) return false;
+            return applyAbilityEffect(G, card, ability, sharedId);
+        }
+        // Filtres distincts (ranger → séide) : [costId, effectId]
+        const costTargetId = ids[0];
+        const effectTargetId = ids[1];
+        if (!costTargetId || !effectTargetId) return false;
+        if (!payAbilityCost(G, card, ability.cost, costTargetId)) return false;
+        return applyAbilityEffect(G, card, ability, effectTargetId);
+    }
+
+    // Coût seul / effet seul / replace REGION ([path, deck]) / pas de cible
+    const costTargetId = ids[0];
     if (!payAbilityCost(G, card, ability.cost, costTargetId)) return false;
     return applyAbilityEffect(G, card, ability, chosenTargetId);
 }

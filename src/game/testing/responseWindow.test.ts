@@ -145,6 +145,57 @@ describe('responseWindow / ABOUT_TO_WOUND', () => {
         expect(G.pendingEvent).toBeUndefined();
     });
 
+    it('permet la même PREVENT_WOUND deux fois si 2 blessures (Damage +1)', () => {
+        const engine = createEngineClient({
+            startPhase: 'archery',
+            playerID: '0',
+            G: {
+                twilightPool: 0,
+                players: {
+                    '0': createPlayerState('0', {
+                        fellowshipArea: [
+                            createUnboundCompanion(),
+                            createEowyn(),
+                        ],
+                    }),
+                },
+            },
+        });
+
+        engine.moves.applyWound('gimli', 2);
+
+        expect(engine.getG().pendingEvent).toEqual({
+            type: 'ABOUT_TO_WOUND',
+            targetId: 'gimli',
+            remaining: 2,
+        });
+
+        engine.moves.activateAbility('4C270', '4C270:0');
+
+        const mid = engine.getG();
+        expect(mid.pendingEvent).toEqual({
+            type: 'ABOUT_TO_WOUND',
+            targetId: 'gimli',
+            remaining: 1,
+        });
+        expect(mid.responseWindow?.isOpen).toBe(true);
+        expect(
+            mid.players['0']?.fellowshipArea.find((c) => c.id === 'gimli')
+                ?.wounds || 0
+        ).toBe(0);
+
+        engine.moves.activateAbility('4C270', '4C270:0');
+
+        const G = engine.getG();
+        const gimli = G.players['0']?.fellowshipArea.find((c) => c.id === 'gimli');
+        const eowyn = G.players['0']?.fellowshipArea.find((c) => c.id === '4C270');
+        expect(gimli?.wounds || 0).toBe(0);
+        expect(eowyn?.wounds).toBe(2);
+        expect(G.twilightPool).toBe(2);
+        expect(G.responseWindow).toBeUndefined();
+        expect(G.pendingEvent).toBeUndefined();
+    });
+
     it('n’ouvre pas la fenêtre si la cible n’est pas unbound (Frodo)', () => {
         const engine = createEngineClient({
             startPhase: 'archery',

@@ -34,6 +34,12 @@ import {
 } from '../../logic/siteReplaceRestrictions';
 import { abilityOwnerPlayerId } from './payAbilityCost';
 import {
+    canReinforce,
+    getOwnedInPlayCards,
+    getReinforceCandidates,
+    tokenCountOnCard,
+} from '../../logic/cultureTokens';
+import {
     attachesToSite,
     canAttachToCharacter,
 } from '../canPlayCard';
@@ -127,10 +133,18 @@ function candidatesForEffect(
     if (effect.type === 'WOUND' && effect.excludeRingBearer) {
         matches = matches.filter((card) => !isRingBearerCard(card));
     }
+    if (effect.type === 'EXHAUST' && effect.excludeRingBearer) {
+        matches = matches.filter((card) => !isRingBearerCard(card));
+    }
     if (effect.type === 'EXERT') {
         const need = effect.count || 1;
         return matches.filter(
             (card) => !card.isDead && getEffectiveVitality(card) > need
+        );
+    }
+    if (effect.type === 'EXHAUST') {
+        return matches.filter(
+            (card) => !card.isDead && getEffectiveVitality(card) > 1
         );
     }
     if (effect.type === 'HEAL') {
@@ -181,6 +195,23 @@ export function getCostDesignationCandidates(
         );
     }
 
+    const removeTokens = (ability.cost || []).find(
+        (opt) =>
+            opt.removeCultureTokens &&
+            opt.removeCultureTokens.from !== 'SELF'
+    )?.removeCultureTokens;
+    if (removeTokens) {
+        const ownerId = abilityOwnerPlayerId(G, source);
+        if (!ownerId) return [];
+        const pool = getOwnedInPlayCards(G, ownerId).filter(
+            (card) =>
+                tokenCountOnCard(card, removeTokens.culture) >=
+                removeTokens.count
+        );
+        if (pool.length <= 1) return [];
+        return uniqueCards(pool);
+    }
+
     return [];
 }
 
@@ -196,6 +227,22 @@ export function getEffectDesignationCandidates(
         const matches = candidatesForEffect(G, source, ability, winnerEffect);
         if (matches.length <= 1) return [];
         return matches;
+    }
+
+    const reinforce = (ability.effects || []).find(
+        (item) => item.type === 'REINFORCE_CULTURE_TOKEN'
+    );
+    if (reinforce && reinforce.type === 'REINFORCE_CULTURE_TOKEN') {
+        const ownerId = abilityOwnerPlayerId(G, source);
+        if (!ownerId) return [];
+        const matches = getReinforceCandidates(
+            G,
+            ownerId,
+            reinforce.culture
+        );
+        // Toujours désigner (≥ 1) : UX annulation / confirmation même à une cible.
+        if (matches.length < 1) return [];
+        return uniqueCards(matches);
     }
 
     const effect = (ability.effects || []).find(
@@ -231,6 +278,19 @@ export function abilityNeedsEffectDesignation(
     ability: Ability
 ): boolean {
     return getEffectDesignationCandidates(G, source, ability).length >= 1;
+}
+
+/**
+ * Effets « trajectoire » (attaque / exhaust…) : flèche plateau → cible.
+ * Pas pour reinforce / heal / empilement (halo + clic seulement).
+ */
+export function abilityEffectWantsTargetingArrow(ability: Ability): boolean {
+    return (ability.effects || []).some(
+        (effect) =>
+            effect.type === 'EXHAUST' ||
+            effect.type === 'WOUND' ||
+            effect.type === 'EXERT'
+    );
 }
 
 /** Nombre de cibles d’effet à désigner (1, ou min(X, blessés) si multiFromSpot). */
@@ -353,6 +413,21 @@ export function abilityHasLegalEffectTarget(
         ) {
             continue;
         }
+        if (effect.type === 'REINFORCE_CULTURE_TOKEN') {
+            const ownerId = abilityOwnerPlayerId(G, source);
+            if (!ownerId) return false;
+            if (
+                !canReinforce(
+                    G,
+                    ownerId,
+                    effect.culture,
+                    effect.count || 1
+                )
+            ) {
+                return false;
+            }
+            continue;
+        }
         if (effect.type === 'CANCEL_SKIRMISH') {
             if (!findSkirmishToCancel(G, source, effect.involving)) {
                 return false;
@@ -371,11 +446,38 @@ export function abilityHasLegalEffectTarget(
                 const card = resolveAbilityTarget(G, source, effect.target);
                 if (!card || !isHealableCard(card)) return false;
             }
+            if (effect.type === 'REMOVE_CULTURE_TOKEN') {
+                const card = resolveAbilityTarget(G, source, effect.target);
+                if (
+                    !card ||
+                    tokenCountOnCard(card, effect.culture) <
+                        (effect.count || 1)
+                ) {
+                    return false;
+                }
+            }
+            if (effect.type === 'PLACE_CULTURE_TOKEN') {
+                const card = resolveAbilityTarget(G, source, effect.target);
+                if (!card) return false;
+            }
             if (effect.type === 'ADD_TEMP_STAT' && effect.limit != null) {
                 const used = (G.tempModifiers || [])
                     .filter((mod) => mod.id.startsWith(`${ability.id}:`))
                     .reduce((sum, mod) => sum + mod.value, 0);
                 if (used + effect.value > effect.limit) return false;
+            }
+            if (
+                effect.type === 'ADD_TEMP_STAT' &&
+                effect.perCultureTokensOnSelf
+            ) {
+                if (
+                    tokenCountOnCard(
+                        source,
+                        effect.perCultureTokensOnSelf.culture
+                    ) < 1
+                ) {
+                    return false;
+                }
             }
             continue;
         }
@@ -384,6 +486,16 @@ export function abilityHasLegalEffectTarget(
                 .filter((mod) => mod.id.startsWith(`${ability.id}:`))
                 .reduce((sum, mod) => sum + mod.value, 0);
             if (used + effect.value > effect.limit) return false;
+        }
+        if (
+            effect.type === 'ADD_TEMP_STAT' &&
+            effect.perCultureTokensOnSelf &&
+            tokenCountOnCard(
+                source,
+                effect.perCultureTokensOnSelf.culture
+            ) < 1
+        ) {
+            return false;
         }
         if (candidatesForEffect(G, source, ability, effect).length === 0) {
             return false;
@@ -426,6 +538,14 @@ export function formatDesignationPrompt(
 
     if (useEffect && effectTarget === 'SKIRMISHING') {
         return 'Choisissez un personnage au combat.';
+    }
+    if (
+        useEffect &&
+        (ability.effects || []).some(
+            (item) => item.type === 'REINFORCE_CULTURE_TOKEN'
+        )
+    ) {
+        return 'Choisissez une carte à renforcer.';
     }
     const target = useEffect
         ? Array.isArray(effectTarget)
@@ -527,8 +647,35 @@ export function getRegionReplacePathSiteTargetIds(
 }
 
 /**
+ * Coût et effet désignent la même « classe » de cibles (ex. affaiblir un Hobbit
+ * pour le renforcer) → une seule flèche depuis la main.
+ * Sinon (ranger → séide) → chaîne TargetingContext après le drop.
+ */
+export function costAndEffectShareHandDesignation(ability: Ability): boolean {
+    const costTarget = ability.cost?.[0]?.exert?.[0]?.target;
+    const discardTarget = ability.cost?.[0]?.discardFromPlay?.[0]?.target;
+    const costRef = Array.isArray(costTarget)
+        ? costTarget
+        : Array.isArray(discardTarget)
+          ? discardTarget
+          : null;
+    const effect = (ability.effects || []).find(
+        (item) =>
+            'target' in item &&
+            (Array.isArray(item.target) || item.target === 'SKIRMISHING')
+    );
+    if (!costRef || !effect || !('target' in effect)) return false;
+    if (effect.target === 'SKIRMISHING') return false;
+    if (!Array.isArray(effect.target)) return false;
+    return JSON.stringify(costRef) === JSON.stringify(effect.target);
+}
+
+/**
  * Cibles pour drag d’event depuis la main (flèche + halo).
  * Inclut désignation classique et sites path pour replace REGION / exchange.
+ *
+ * Coût + effet sur des cibles différentes (ex. exert ranger → exhaust minion) :
+ * pas de flèche-main — le drop déclenche la chaîne TargetingContext.
  */
 export function getHandEventDesignationTargetIds(
     G: GameState,
@@ -538,6 +685,14 @@ export function getHandEventDesignationTargetIds(
     const phaseToMatch = G.responseWindow?.isOpen ? 'RESPONSE' : phase || '';
     const ability = findEventAbilityForPhase(card, phaseToMatch);
     if (!ability) return [];
+
+    if (
+        abilityNeedsCostDesignation(G, card, ability) &&
+        abilityNeedsEffectDesignation(G, card, ability) &&
+        !costAndEffectShareHandDesignation(ability)
+    ) {
+        return [];
+    }
 
     if (abilityNeedsDesignation(G, card, ability)) {
         return getDesignationCandidates(G, card, ability).flatMap(cardTargetIds);

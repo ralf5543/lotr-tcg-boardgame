@@ -18,6 +18,15 @@ interface FormattedTextProps {
     text: string;
 }
 
+/** CSV / JSON : `urukhai` → URUK-HAI (clé police / styles). */
+function normalizeCultureSymbol(raw: string): string {
+    const key = raw.trim().toUpperCase().replace(/\s+/g, '-');
+    if (key === 'URUKHAI') return 'URUK-HAI';
+    if (key === 'ONERING' || key === 'ONE-RING') return 'ONE-RING';
+    if (key === 'RAITH') return 'WRAITH';
+    return key;
+}
+
 export const FormattedText: React.FC<FormattedTextProps> = ({ text }) => {
     // Si text est undefined, null ou pas une chaîne, on utilise une chaîne vide
     const safeText = text || '';
@@ -46,8 +55,8 @@ export const FormattedText: React.FC<FormattedTextProps> = ({ text }) => {
                         );
                     }
 
-                    // A.2 Symbole de Culture : ex. "gondor", "rohan", "orc"
-                    const cultureKey = rawSymbol.toUpperCase();
+                    // A.2 Symbole de Culture : ex. "gondor", "rohan", "urukhai"
+                    const cultureKey = normalizeCultureSymbol(rawSymbol);
                     return (
                         <CultureIcon
                             key={index}

@@ -622,7 +622,19 @@ export function afterResponseResolved(
     source?: CardState
 ): void {
     if (!G.responseWindow?.isOpen) return;
-    if (source) markResponseUsed(G, source, ability);
+    if (source) {
+        // Chaque blessure = une occurrence distincte. Une PREVENT_WOUND peut
+        // être rejouée tant qu’il reste des blessures (et que le coût est payable).
+        const isPreventWound = (ability.effects || []).some(
+            (effect) => effect.type === 'PREVENT_WOUND'
+        );
+        const woundsStillPending =
+            G.pendingEvent?.type === 'ABOUT_TO_WOUND' &&
+            G.pendingEvent.remaining > 0;
+        if (!(isPreventWound && woundsStillPending)) {
+            markResponseUsed(G, source, ability);
+        }
+    }
     yieldResponsePriorityAfterAction(G, playerID);
 }
 

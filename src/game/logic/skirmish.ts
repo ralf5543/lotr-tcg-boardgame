@@ -19,6 +19,7 @@ import {
     tryOpenCharacterDies,
     tryOpenWinsSkirmish,
 } from '../engine/responseWindow';
+import { clearExpiredTempKeywords } from '../engine/abilities/applyAbilityEffect';
 
 /**
  * Helper interne pour extraire proprement le nom d'une carte dans la langue par défaut (FR).

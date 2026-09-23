@@ -19,8 +19,16 @@ import {
 } from './payAbilityCost';
 import { playerHasInitiative } from '../../logic/initiative';
 import { addThreats } from '../../logic/threats';
+import {
+    applyReinforce,
+    getReinforceCandidates,
+    placeCultureTokens,
+    removeCultureTokensFromCard,
+    tokenCountOnCard,
+} from '../../logic/cultureTokens';
 import { applyHeal } from '../../../utils/applyHeal';
 import { applyExert } from '../../../utils/applyExert';
+import { applyExhaust } from '../../../utils/applyExhaust';
 import { findSkirmishToCancel } from './cancelSkirmish';
 import {
     getReplaceSiteCandidates,
@@ -427,6 +435,32 @@ export function applyAbilityEffect(
             continue;
         }
 
+        if (effect.type === 'REINFORCE_CULTURE_TOKEN') {
+            const ownerId = abilityOwnerPlayerId(G, source);
+            if (!ownerId) return false;
+            const count = effect.count || 1;
+            const candidates = getReinforceCandidates(
+                G,
+                ownerId,
+                effect.culture
+            );
+            // Aucun candidat : reinforce inerte (CR) — succès sans placer.
+            if (candidates.length === 0) continue;
+            // Toujours exiger une désignation (≥ 1 cible).
+            if (chosenIds.length === 0) {
+                return false;
+            }
+            const placed = applyReinforce(
+                G,
+                ownerId,
+                effect.culture,
+                count,
+                chosenIds
+            );
+            if (placed < count) return false;
+            continue;
+        }
+
         if (effect.type === 'CANCEL_SKIRMISH') {
             const skirmish = findSkirmishToCancel(
                 G,
@@ -558,6 +592,16 @@ function applyOneEffect(
         if (effect.valueFromSourceStat === 'STRENGTH') {
             value = getCalculatedStrength(G, source);
         }
+        if (effect.perCultureTokensOnSelf) {
+            const n = tokenCountOnCard(
+                source,
+                effect.perCultureTokensOnSelf.culture
+            );
+            value = effect.value * n;
+            const cap = effect.perCultureTokensOnSelf.limit;
+            if (cap != null) value = Math.min(value, cap);
+            if (value <= 0) return false;
+        }
         if (
             effect.valueIfInitiative != null &&
             playerHasInitiative(
@@ -604,6 +648,10 @@ function applyOneEffect(
         return true;
     }
 
+    if (effect.type === 'EXHAUST') {
+        return applyExhaust(G, target);
+    }
+
     if (effect.type === 'HEAL') {
         if (target.isDead) return false;
         const amount = effect.multiFromSpot
@@ -617,6 +665,22 @@ function applyOneEffect(
 
     if (effect.type === 'DISCARD') {
         return discardCardFromPlay(G, target);
+    }
+
+    if (effect.type === 'PLACE_CULTURE_TOKEN') {
+        return (
+            placeCultureTokens(target, effect.culture, effect.count || 1) > 0
+        );
+    }
+
+    if (effect.type === 'REMOVE_CULTURE_TOKEN') {
+        return (
+            removeCultureTokensFromCard(
+                target,
+                effect.culture,
+                effect.count || 1
+            ) === (effect.count || 1)
+        );
     }
 
     if (effect.type === 'ALLOW_SKIRMISH') {

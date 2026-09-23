@@ -134,6 +134,13 @@ export type CardCulture =
     | 'URUK-HAI'
     | 'WRAITH';
 
+/**
+ * Spécifie un jeton de culture dans un effet / coût.
+ * `FREE_PEOPLES` = n’importe quelle culture Peuples Libres déjà présente.
+ * `ANY` = n’importe quel jeton de culture.
+ */
+export type CultureTokenSpec = CardCulture | 'FREE_PEOPLES' | 'ANY';
+
 export interface CardI18nContent {
     title: string;
     subtitle?: string;
@@ -181,6 +188,21 @@ export interface CostOption {
     addTwilight?: number;
     removeTwilight?: number;
     spotTwilight?: number;
+    /** Spotter N jetons de culture (cartes actives). */
+    spotCultureTokens?: { culture: CultureTokenSpec; count: number };
+    /**
+     * Retirer N jetons (coût). `from: 'SELF'` = « from here » ;
+     * sinon n’importe laquelle de tes cartes éligibles (désignation si plusieurs).
+     */
+    removeCultureTokens?: {
+        culture: CultureTokenSpec;
+        count: number;
+        from?: 'SELF';
+    };
+    /** « if you have N or more cards in hand » */
+    spotHand?: number;
+    /** « discard your hand » — toute la main. */
+    discardEntireHand?: boolean;
 }
 
 export type AbilityCost = CostOption[];
@@ -206,6 +228,15 @@ export type AbilityEffect =
           };
           /** Copie la force actuelle de la source au moment de l’activation (Merry…). */
           valueFromSourceStat?: 'STRENGTH';
+          /**
+           * Bonus = value × jetons de culture sur cette carte (SELF).
+           * « +1 for each [culture] token here (limit +3) ».
+           */
+          perCultureTokensOnSelf?: {
+              culture: CardCulture;
+              /** Plafond du bonus total (pas le plafond multi-activations). */
+              limit?: number;
+          };
           /** « another companion » : exclure la source des cibles. */
           excludeSource?: boolean;
           /** Plafond cumulé des bonus de cette capacité (ex. limit +5). */
@@ -380,6 +411,35 @@ export type AbilityEffect =
           count: number;
       }
     | {
+          /**
+           * Place N jetons de culture sur la cible (même à 0).
+           * « place a [culture] token on this card / here ».
+           */
+          type: 'PLACE_CULTURE_TOKEN';
+          culture: CardCulture;
+          count: number;
+          target: AbilityTargetRef;
+      }
+    | {
+          /**
+           * Reinforce : ajoute N jetons sur une/des de tes cartes
+           * qui ont déjà ≥ 1 jeton de la culture (CR Bloodlines).
+           * Cible désignée = carte(s) ; un seul id = les N sur cette carte.
+           */
+          type: 'REINFORCE_CULTURE_TOKEN';
+          culture: CultureTokenSpec;
+          count: number;
+      }
+    | {
+          /**
+           * Retire N jetons (effet). `target: 'SELF'` = from here.
+           */
+          type: 'REMOVE_CULTURE_TOKEN';
+          culture: CultureTokenSpec;
+          count: number;
+          target: AbilityTargetRef;
+      }
+    | {
           /** Annule une escarmouche impliquant la cible (pas de vainqueur / blessures). */
           type: 'CANCEL_SKIRMISH';
           involving: AbilityTargetRef;
@@ -397,6 +457,15 @@ export type AbilityEffect =
           type: 'EXERT';
           count: number;
           target: AbilityTargetRef;
+      }
+    | {
+          /**
+           * Exhaust : blesser jusqu’à 1 vitalité restante (CR).
+           * « Exhaust a companion / minion ».
+           */
+          type: 'EXHAUST';
+          target: AbilityTargetRef;
+          excludeRingBearer?: boolean;
       }
     | {
           type: 'ADD_TWILIGHT';
@@ -434,6 +503,8 @@ export type AbilityTrigger =
       }
     | {
           type: 'WHEN_PLAYED';
+          /** Si présent : n’applique que si N sites path ont ce mot-clé. */
+          spotSiteKeyword?: { keyword: CardKeyword; count: number };
       }
     | {
           /** Each time you play a [classe]… (la carte jouée matche `played`). */
@@ -462,6 +533,11 @@ export type AbilityTrigger =
           stackedOnControlledSite?: boolean;
           /** While the fellowship is at the site hosting this attachment… */
           atAttachedSite?: boolean;
+          /**
+           * « While you can spot N burdens or N wounds on the Ring-bearer »
+           * — vrai si fardeaux ≥ N OU blessures sur le Porteur ≥ N.
+           */
+          spotBurdensOrRingBearerWounds?: number;
       }
     | {
           type: 'CHARACTER_DIES';
@@ -548,6 +624,11 @@ export interface CardState {
     attachedTo?: string | string[];
     phases?: string[];
     wounds?: number;
+    /**
+     * Jetons de culture sur cette carte (CR : place / reinforce / remove).
+     * Une culture dominante par carte en pratique.
+     */
+    cultureTokens?: Partial<Record<CardCulture, number>>;
     isStartingMember?: boolean;
     isFaceDown?: boolean;
     omitFromArcheryTotal?: boolean;
@@ -822,7 +903,10 @@ export interface ArcheryState {
     shadowRemainingWounds: number;
 }
 
-export type DevPresetType = 'ARCHERY_TEST' | 'SITES_TEST';
+export type DevPresetType =
+    | 'CULTURE_TOKENS_TEST'
+    | 'CULTURE_TOKENS_CSS'
+    | 'EXHAUST_TEST';
 
 export interface TempKeywordModifier {
     keyword: CardKeyword;

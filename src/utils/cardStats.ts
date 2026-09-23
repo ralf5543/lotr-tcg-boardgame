@@ -26,6 +26,15 @@ export const getEffectiveVitality = (card: CardState): number => {
 };
 
 /**
+ * Personnage « exhaust » (CR) : 1 vitalité restante (pas mort).
+ * Un personnage à 0 est mort, pas exhaust.
+ */
+export const isExhausted = (card: CardState): boolean => {
+    if (!card || card.isDead) return false;
+    return getEffectiveVitality(card) === 1;
+};
+
+/**
  * 4. Force Effective (Base + Attachments)
  */
 /**

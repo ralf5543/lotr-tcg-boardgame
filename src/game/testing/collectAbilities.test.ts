@@ -486,4 +486,31 @@ describe('formatAbilityLabelParts', () => {
             effect: 'piocher 1 carte',
         });
     });
+
+    it('EXHAUST : libellé d’effet après les deux-points', () => {
+        const ability: Ability = {
+            id: '3R65:dev',
+            phases: ['REGROUP'],
+            cost: [{ exert: [{ count: 2, target: 'SELF' }] }],
+            effects: [
+                {
+                    type: 'EXHAUST',
+                    target: [['COMPANION']],
+                    excludeRingBearer: true,
+                },
+            ],
+            source: 'SELF',
+        };
+        const overseer = createCompanion({
+            id: '3R65',
+            title: 'Orc Overseer',
+            kind: 'SHADOW',
+            type: 'MINION',
+            i18n: { fr: { title: 'Surveillant orque' } },
+        });
+        expect(formatAbilityLabelParts(ability, overseer)).toEqual({
+            cost: 'Affaiblir Surveillant orque 2 fois',
+            effect: 'épuiser un Compagnon (sauf le Porteur de l’Anneau)',
+        });
+    });
 });

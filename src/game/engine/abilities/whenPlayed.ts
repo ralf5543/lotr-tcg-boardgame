@@ -16,10 +16,21 @@ import {
     canReplaceCurrentSite,
     canReplaceSiteInCurrentRegionForPlayer,
 } from '../../logic/siteReplaceRestrictions';
-import { canExchangeOwnedPathSite } from '../../logic/sites';
+import { canExchangeOwnedPathSite, countSitesWithKeyword } from '../../logic/sites';
+import { abilityNeedsEffectDesignation } from './designation';
 
 export function isWhenPlayedAbility(ability: Ability): boolean {
     return ability.trigger?.type === 'WHEN_PLAYED';
+}
+
+function whenPlayedSpotSiteMet(G: GameState, ability: Ability): boolean {
+    const trigger = ability.trigger;
+    if (!trigger || trigger.type !== 'WHEN_PLAYED') return true;
+    if (!trigger.spotSiteKeyword) return true;
+    const needed = trigger.spotSiteKeyword.count || 1;
+    return (
+        countSitesWithKeyword(G, trigger.spotSiteKeyword.keyword) >= needed
+    );
 }
 
 function abilityForPhase(ability: Ability, phase?: string): Ability {
@@ -34,6 +45,19 @@ function canFulfillWhenPlayedEffects(
     card: CardState,
     ability: Ability
 ): boolean {
+    if (!whenPlayedSpotSiteMet(G, ability)) return false;
+
+    const reinforce = (ability.effects || []).find(
+        (item) => item.type === 'REINFORCE_CULTURE_TOKEN'
+    );
+    if (reinforce && reinforce.type === 'REINFORCE_CULTURE_TOKEN') {
+        const ownerId = abilityOwnerPlayerId(G, card);
+        if (!ownerId) return false;
+        // Pas de candidat = effet inerte OK ; on laisse jouer la carte.
+        // Plusieurs candidats = désignation (toaster).
+        return true;
+    }
+
     if (abilityNeedsSiteExchange(ability)) {
         const ownerId = abilityOwnerPlayerId(G, card);
         if (!ownerId) return false;
@@ -118,12 +142,29 @@ export function resolveWhenPlayed(
 
     for (const ability of card.abilities || []) {
         if (!isWhenPlayedAbility(ability)) continue;
+        if (!whenPlayedSpotSiteMet(G, ability)) continue;
 
         if (ability.optional) {
             if (
                 !firstOptional &&
                 canPayAbilityCost(G, card, ability.cost) &&
                 canFulfillWhenPlayedEffects(G, card, ability)
+            ) {
+                firstOptional = ability;
+            }
+            continue;
+        }
+
+        // Reinforce multi-cibles : toaster (désignation) même si requis.
+        if (
+            abilityNeedsEffectDesignation(G, card, ability) &&
+            (ability.effects || []).some(
+                (item) => item.type === 'REINFORCE_CULTURE_TOKEN'
+            )
+        ) {
+            if (
+                !firstOptional &&
+                canPayAbilityCost(G, card, ability.cost)
             ) {
                 firstOptional = ability;
             }

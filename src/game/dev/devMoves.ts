@@ -7,7 +7,14 @@ import type {
 import { applyDevPreset } from './presets';
 import { clearActionableFlags } from '../../utils/clearActionableFlags';
 import { addThreats, getThreatLimit } from '../logic/threats';
+import {
+    placeCultureTokens,
+    removeCultureTokensFromCard,
+    resolveReinforceCulture,
+    tokenCountOnCard,
+} from '../logic/cultureTokens';
 import { onStartOfFellowshipBegin } from '../logic/startOfFellowship';
+import type { CardCulture } from '../types';
 
 /** État de machine de phase : toasters, fenêtres, sous-étapes. */
 function resetPhaseMachine(G: GameState): void {
@@ -73,6 +80,32 @@ export const devMoves = {
         G.statusMessage = `[DEV] Menaces ajustées à ${threats}/${limit}.`;
     },
 
+    /** ±1 jeton sur la 1ʳᵉ condition zone de soutien FP qui en a (ou la 1ʳᵉ). */
+    devAdjustCultureTokens: ({ G }: LotrMoveContext, delta: number) => {
+        const fpId = G.fpPlayerId || '0';
+        const fpPlayer = G.players[fpId];
+        if (!fpPlayer) return;
+        const support = fpPlayer.supportArea || [];
+        const withTokens = support.find(
+            (card) => tokenCountOnCard(card, 'ANY') > 0
+        );
+        const card = withTokens || support[0];
+        if (!card) {
+            G.statusMessage =
+                '[DEV] Aucune carte en zone de soutien FP pour les jetons.';
+            return;
+        }
+        const culture =
+            resolveReinforceCulture(card, 'ANY') ||
+            (card.culture as CardCulture);
+        if (delta > 0) {
+            placeCultureTokens(card, culture, delta);
+        } else {
+            removeCultureTokensFromCard(card, culture, -delta);
+        }
+        G.statusMessage = `[DEV] ${card.title || card.id} : ${tokenCountOnCard(card, 'ANY')} jeton(s) ${culture}.`;
+    },
+
     devSetArchery: ({ G }: LotrMoveContext, amount: number) => {
         const newAmount = Math.max(0, amount);
 
@@ -135,15 +168,11 @@ export const devMoves = {
         { G, events }: LotrPhaseContext,
         presetType: DevPresetType
     ) => {
-        if (presetType === 'SITES_TEST') {
-            resetPhaseMachine(G);
-        }
+        resetPhaseMachine(G);
         applyDevPreset(G, presetType);
-        if (presetType === 'SITES_TEST') {
-            events?.setPhase?.('startOfFellowship');
-            if (!G.sanctuaryHeal) {
-                onStartOfFellowshipBegin(G, events);
-            }
+        events?.setPhase?.('startOfFellowship');
+        if (!G.sanctuaryHeal) {
+            onStartOfFellowshipBegin(G, events);
         }
     },
 };

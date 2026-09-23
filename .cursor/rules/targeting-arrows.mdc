@@ -1,0 +1,25 @@
+---
+description: Homogénéité des flèches de ciblage (effets négatifs carte→carte)
+alwaysApply: true
+---
+
+# Flèches de ciblage
+
+**Format : Standard (règles modernes).** Voir `.cursor/rules/format-standard.mdc`.
+
+## Règle
+
+Si une **action négative** part d’une carte vers une autre (exhaust, blessure, exert en effet, défausse d’une cible en jeu, etc.), il faut une **flèche de ciblage** depuis la carte agent jusqu’à la cible.
+
+Exemples :
+- Surveillant orque : flèche **depuis** le Surveillant **vers** le compagnon.
+- Polyvalence de rôdeur : d’abord désigner le rôdeur à affaiblir (halo), **puis** flèche **depuis ce rôdeur** **vers** le séide.
+
+## Ce qui n’est pas une trajectoire
+
+- Coût d’exert SELF (pas de désignation).
+- Reinforce / place de jetons, heal, empilement : halo + clic (pas de flèche plateau→plateau), sauf convention déjà établie pour la sortie de main.
+
+## Homogénéité
+
+Même pattern pour capacités en jeu et événements (après paiement / choix du coût si besoin). Ne pas faire partir la flèche d’effet depuis `pendingPlay` quand l’agent est une carte en jeu déjà désignée.

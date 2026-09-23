@@ -5,6 +5,12 @@ import { getEffectiveVitality } from '../../../utils/cardStats';
 import { findTargetCard } from '../../../utils/cardUtils';
 import { getKeywordValue } from '../keywords/keywordUtils';
 import { resolveCostTarget } from './resolveCostTarget';
+import {
+    abilityOwnerCanSpotCultureTokens,
+    countCultureTokensForPlayer,
+    removeCultureTokensForPlayer,
+    tokenCountOnCard,
+} from '../../logic/cultureTokens';
 
 const matchCard = (card: CardState | undefined | null, targetId: string) =>
     Boolean(card && (card.instanceId === targetId || card.id === targetId));
@@ -104,6 +110,47 @@ function canPayOption(
         const fpId = G.fpPlayerId || '0';
         const fpPlayer = G.players[fpId];
         if (!fpPlayer || (fpPlayer.threats || 0) < option.removeThreats) {
+            return false;
+        }
+    }
+
+    if (option.spotCultureTokens) {
+        if (
+            !abilityOwnerCanSpotCultureTokens(
+                G,
+                source,
+                option.spotCultureTokens.culture,
+                option.spotCultureTokens.count
+            )
+        ) {
+            return false;
+        }
+    }
+
+    if (typeof option.spotHand === 'number' && option.spotHand > 0) {
+        const ownerId = abilityOwnerPlayerId(G, source);
+        if (!ownerId) return false;
+        const hand = G.players[ownerId]?.hand || [];
+        if (hand.length < option.spotHand) return false;
+    }
+
+    if (option.discardEntireHand) {
+        const ownerId = abilityOwnerPlayerId(G, source);
+        if (!ownerId) return false;
+        const hand = G.players[ownerId]?.hand || [];
+        // « discard your hand » exige au moins une carte (sinon inertie).
+        if (hand.length === 0) return false;
+    }
+
+    if (option.removeCultureTokens) {
+        const ownerId = abilityOwnerPlayerId(G, source);
+        if (!ownerId) return false;
+        const { culture, count, from } = option.removeCultureTokens;
+        if (from === 'SELF') {
+            if (tokenCountOnCard(source, culture) < count) return false;
+        } else if (
+            countCultureTokensForPlayer(G, ownerId, culture) < count
+        ) {
             return false;
         }
     }
@@ -270,6 +317,14 @@ function payOption(
         }
         if (!discardCardsFromHand(G, ownerId, discardedHandIds)) return false;
     }
+    if (option.discardEntireHand) {
+        const ownerId = abilityOwnerPlayerId(G, source);
+        if (!ownerId) return false;
+        const hand = G.players[ownerId]?.hand || [];
+        if (hand.length === 0) return false;
+        const allIds = hand.map((card) => card.instanceId || card.id);
+        if (!discardCardsFromHand(G, ownerId, allIds)) return false;
+    }
     if (option.addBurdens && option.addBurdens > 0) {
         const fpId = G.fpPlayerId || '0';
         const fpPlayer = G.players[fpId];
@@ -283,6 +338,23 @@ function payOption(
             return false;
         }
         fpPlayer.threats -= option.removeThreats;
+    }
+    if (option.removeCultureTokens) {
+        const ownerId = abilityOwnerPlayerId(G, source);
+        if (!ownerId) return false;
+        const { culture, count, from } = option.removeCultureTokens;
+        const removed = removeCultureTokensForPlayer(
+            G,
+            ownerId,
+            culture,
+            count,
+            from === 'SELF'
+                ? { fromSelf: source }
+                : chosenTargetId
+                  ? { targetId: chosenTargetId }
+                  : undefined
+        );
+        if (removed < count) return false;
     }
     return true;
 }

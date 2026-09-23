@@ -1,435 +1,11 @@
-import type { CardState, DevPresetType, GameState, SiteCardState } from '../types';
-import { drawCardsForPlayer } from '../../utils/drawCards';
+import type {
+    CardCulture,
+    CardState,
+    DevPresetType,
+    GameState,
+    SiteCardState,
+} from '../types';
 import { getCardById } from '../cardsData';
-
-const CARDS_PRESETS: Record<string, CardState> = {
-    FRODO: {
-        id: '2C102',
-        set: 2,
-        rarity: 'C',
-        isUnique: true,
-        kind: 'FREE_PEOPLE',
-        type: 'COMPANION',
-        keywords: ['RING-BOUND', 'RING-BEARER', 'MUSTER'],
-        culture: 'SHIRE',
-        race: 'HOBBIT',
-        signet: 'ARAGORN',
-        twilightCost: 0,
-        strength: 3,
-        vitality: 4,
-        resistance: 10,
-        imageUrl: '/cards_visuals/o_02_102.jpg',
-        i18n: {
-            en: {
-                title: 'Frodo',
-                subtitle: 'Reluctant Adventurer',
-                gameText:
-                    '**Ring-bound.** **Ring-bearer** (resistance 10).  \nThe cost of each artifact, possession, and <symbol>shire</symbol> tale played on Frodo is -1.',
-                loreText:
-                    'I am not made for perilous quests. I wish I had never seen the Ring! Why did it come to me? Why was I chosen?',
-            },
-            fr: {
-                title: 'Frodon',
-                subtitle: 'Aventurier Malgré Lui',
-                gameText:
-                    '**Porteur de l’Anneau (résistance 10).** Le coût de chaque artefact, possession et récit <symbol>shire</symbol> joué sur Frodon est de -1.',
-                loreText:
-                    "Je ne suis pas fait pour les quêtes périlleuses. Je voudrais bien n'avoir jamais vu l'Anneau! Pourquoi m'est-il venu? Pourquoi ai-je été choisi?",
-            },
-        },
-    },
-    LEGOLAS: {
-        id: '0P13',
-        set: 0,
-        rarity: 'P',
-        isUnique: true,
-        kind: 'FREE_PEOPLE',
-        type: 'COMPANION',
-        keywords: ['ARCHER'],
-        phases: ['ARCHERY'],
-        culture: 'ELVEN',
-        race: 'ELF',
-        signet: 'FRODO',
-        twilightCost: 2,
-        strength: 6,
-        vitality: 3,
-        imageUrl: '/cards_visuals/o_00_013.jpg',
-        i18n: {
-            en: {
-                title: 'Legolas',
-                subtitle: 'Greenleaf',
-                gameText:
-                    '**Archer.** \n**Archery:** Exert Legolas to wound a minion; Legolas does not add to the fellowship archery total.',
-                loreText:
-                    'If we are quick we shall catch Frodo and Sam before nightfall.',
-            },
-            fr: {
-                title: 'Legolas',
-                subtitle: 'Vertefeuille',
-                gameText:
-                    '**Archer.**\n**Archerie :** Affaiblissez Legolas pour blesser un séide ; Legolas ne s’ajoute pas au total d’archerie de la compagnie.',
-                loreText:
-                    "Moi aussi, j'irai avec lui' dit Legolas. ‘Il serait déloyal de lui dire maintenant adieu.",
-            },
-        },
-    },
-    GIMLI: {
-        id: '0P12',
-        set: 0,
-        rarity: 'P',
-        isUnique: true,
-        kind: 'FREE_PEOPLE',
-        type: 'COMPANION',
-        keywords: ['DAMAGE +1', 'UNBOUND'],
-        actionPhases: ['SKIRMISH'],
-        abilities: [
-            {
-                id: '0P12:0',
-                phases: ['SKIRMISH'],
-                cost: [{ exert: [{ count: 1, target: 'SELF' }] }],
-                effects: [{
-                    type: 'ADD_TEMP_STAT' as const,
-                    stat: 'STRENGTH' as const,
-                    value: 2,
-                    target: 'SELF' as const,
-                    expiresAtPhase: 'SKIRMISH' as const,
-                }],
-                source: 'SELF' as const,
-                text: 'SKIRMISH: Exert Gimli to make him strength +2.',
-            },
-        ],
-        culture: 'DWARVEN',
-        race: 'DWARF',
-        signet: 'GANDALF',
-        twilightCost: 2,
-        strength: 6,
-        vitality: 3,
-        imageUrl: '/cards_visuals/o_00_012.jpg',
-        i18n: {
-            en: {
-                title: 'Gimli',
-                subtitle: 'Son of Glóin',
-                gameText:
-                    '**Damage +1.**. \n**Skirmish:** Exert Gimli to make him strength +2.',
-                loreText:
-                    'Then it has all been in vain – the Fellowship has failed.',
-            },
-            fr: {
-                title: 'Gimli',
-                subtitle: 'Fils de Glóin',
-                gameText:
-                    '**Dégâts +1.**\n**Combat :** Affaiblissez Gimli pour lui donner +2 en force.',
-                loreText:
-                    'À côté de Glóin se trouvait un jeune Nain: son fils Gimli.',
-            },
-        },
-    },
-    EOWYN: {
-        id: '4C270',
-        set: 4,
-        rarity: 'C',
-        isUnique: true,
-        isFemale: true,
-        kind: 'FREE_PEOPLE',
-        type: 'COMPANION',
-        keywords: ['VALIANT', 'UNBOUND'],
-        actionPhases: ['RESPONSE'],
-        abilities: [
-            {
-                id: '4C270:0',
-                phases: ['RESPONSE'],
-                trigger: {
-                    type: 'ABOUT_TO_WOUND' as const,
-                    target: [['UNBOUND', 'COMPANION']],
-                },
-                cost: [
-                    {
-                        exert: [{ count: 1, target: 'SELF' as const }],
-                        addTwilight: 1,
-                    },
-                ],
-                effects: [{ type: 'PREVENT_WOUND' as const }],
-                source: 'SELF' as const,
-                text: 'RESPONSE: If an unbound companion is about to take a wound, exert Éowyn and add twilight1 to prevent that wound.',
-            },
-        ],
-        culture: 'ROHAN',
-        race: 'MAN',
-        signet: 'THEODEN',
-        twilightCost: 2,
-        strength: 6,
-        vitality: 3,
-        imageUrl: '/cards_visuals/o_04_270.jpg',
-        i18n: {
-            en: {
-                title: 'Éowyn',
-                subtitle: 'Lady of Rohan',
-                gameText:
-                    '**Valiant.**\n**Response:** If an unbound companion is about to take a wound, exert Éowyn and add <symbol>twilight1</symbol> to prevent that wound.',
-                loreText:
-                    'Thus Aragorn... beheld Éowyn... and thought her fair, fair and cold, like a morning of pale spring that is not yet come to womanhood.',
-            },
-            fr: {
-                title: 'Éowyn',
-                subtitle: 'Dame de Rohan',
-                gameText:
-                    '**Vaillant.**\n**Réponse :** Si un compagnon dissocié est sur le point d’être blessé, affaiblissez Éowyn et ajoutez <symbol>twilight1</symbol> pour empêcher cette blessure.',
-                loreText:
-                    "C'est ainsi qu'Aragorn vit pour la première fois... Éowyn, Dame de Rohan, et il la trouva belle, belle et froide, comme un pâle matin de printemps, non encore parvenue à la plénitude de la femme.",
-            },
-        },
-    },
-    SMEAGOL: {
-        id: '7R71',
-        set: 7,
-        rarity: 'R',
-        isUnique: true,
-        kind: 'FREE_PEOPLE',
-        type: 'COMPANION',
-        keywords: ['RING-BOUND'],
-        phases: ['ASSIGNMENT'],
-        culture: 'GOLLUM',
-        signet: 'FRODO',
-        twilightCost: 0,
-        strength: 3,
-        vitality: 4,
-        imageUrl: '/cards_visuals/o_07_071.jpg',
-        i18n: {
-            en: {
-                title: 'Sméagol',
-                subtitle: 'Always Helps',
-                gameText:
-                    '**Ring-bound.** To play, add a burden. \n**Assignment:** Assign a minion to Sméagol and add 2 threats to exhaust that minion.',
-            },
-            fr: {
-                title: 'Sméagol',
-                subtitle: 'Always Helps',
-                gameText:
-                    '**Ring-bound.** To play, add a burden. \n**Assignment:**: Assign a minion to Sméagol and add 2 threats to exhaust that minion.',
-            },
-        },
-    },
-    ARAGORN: {
-        id: "1R89",
-        set: 1,
-        rarity: "R",
-        isUnique: true,
-        kind: "FREE_PEOPLE",
-        type: "COMPANION",
-        keywords: [
-          "RANGER",
-          "UNBOUND"
-        ],
-        abilities: [
-          {
-            id: "1R89:0",
-            phases: [
-              "MANEUVER"
-            ],
-            cost: [
-              {
-                "exert": [
-                  {
-                    "count": 1,
-                    "target": "SELF"
-                  }
-                ]
-              }
-            ],
-            effects: [{
-              type: "ADD_TEMP_KEYWORD",
-              keyword: "DEFENDER +1",
-              target: "SELF",
-              expiresAtPhase: "REGROUP"
-            }],
-            source: "SELF",
-            text: "MANEUVER: Exert Aragorn to make him defender +1 until the regroup phase."
-          }
-        ],
-        actionPhases: [
-          "MANEUVER"
-        ],
-        culture: "GONDOR",
-        race: "MAN",
-        signet: "GANDALF",
-        twilightCost: 4,
-        strength: 8,
-        vitality: 4,
-        imageUrl: "/cards_visuals/o_01_089.jpg",
-        i18n: {
-          en: {
-            title: "Aragorn",
-            subtitle: "Ranger of the North",
-            gameText: "**Ranger.** \n**Maneuver:** Exert Aragorn to make him **defender +1** until the regroup phase.",
-            loreText: "Lonely men are we, Rangers of the wild, hunters – but hunters ever of the servants of the Enemy...."
-          },
-          fr: {
-            title: "Aragorn",
-            subtitle: "Rôdeur du Nord",
-            gameText: "**Rôdeur.**\n**Manœuvre :** Affaiblissez Aragorn pour le rendre **défenseur +1** jusqu’à la phase de ralliement.",
-            loreText: "Nous sommes des hommes solitaires, Rôdeurs des Terres Sauvages, chasseurs – mais toujours chasseurs des serviteurs de l'Ennemi...."
-          },
-        },
-    },
-    LURTZ: {
-        id: '11R194',
-        set: 11,
-        rarity: 'R',
-        isUnique: true,
-        kind: 'SHADOW',
-        type: 'MINION',
-        keywords: ['ARCHER', 'DAMAGE +1', 'MUSTER'],
-        culture: 'URUK-HAI',
-        race: 'URUK-HAI',
-        twilightCost: 7,
-        strength: 13,
-        vitality: 3,
-        minionSiteNumber: 5,
-        imageUrl: '/cards_visuals/o_11_194.jpg',
-        i18n: {
-            en: {
-                title: 'Lurtz',
-                subtitle: 'Minion of the White Wizard',
-                gameText:
-                    '**Archer.** **Damage +1.** **Muster.** (At the start of the regroup phase, you may discard a card from hand to draw a card.) Lurtz is strength +3 for each exhausted companion you can spot.',
-                loreText:
-                    'Saruman bred this ruthless commander, whose brutality matched his own ambition, to track the Nine Walkers.',
-            },
-            fr: {
-                title: 'Lurtz',
-                subtitle: 'Minion of the White Wizard',
-                gameText:
-                    '**Archer.** **Damage +1.** **Muster.** (At the start of the regroup phase, you may discard a card from hand to draw a card.) Lurtz is strength +3 for each exhausted companion you can spot.',
-                loreText:
-                    'Saruman bred this ruthless commander, whose brutality matched his own ambition, to track the Nine Walkers.',
-            },
-        },
-    },
-    MORIA_SCOUT: {
-        id: '1C191',
-        set: 1,
-        rarity: 'C',
-        isUnique: false,
-        kind: 'SHADOW',
-        type: 'MINION',
-        culture: 'MORIA',
-        keywords: ['HUNTER 1'],
-        race: 'ORC',
-        twilightCost: 2,
-        strength: 5,
-        vitality: 2,
-        minionSiteNumber: 4,
-        imageUrl: '/cards_visuals/o_01_191.jpg',
-        i18n: {
-            en: {
-                title: 'Moria Scout',
-                gameText:
-                    'When you play this minion, spot an Elf to add <symbol>twilight2</symbol>.',
-                loreText:
-                    'Like their kindred in the North, the Orcs of Moria have keen noses, often following their prey by scent.',
-            },
-            fr: {
-                title: 'Éclaireur de la Moria',
-                gameText:
-                    'Quand vous jouez ce séide, désignez un Elfe pour ajouter <symbol>twilight2</symbol>.',
-                loreText:
-                    "Comme leurs cousins du Nord, les Orques de la Moria ont des nez fins, pistant souvent leur proie à l'odeur.",
-            },
-        },
-    },
-    ORC_SOLDIER: {
-        id: '1C271',
-        set: 1,
-        rarity: 'C',
-        isUnique: false,
-        kind: 'SHADOW',
-        type: 'MINION',
-        phases: ['SKIRMISH'],
-        keywords: ['AMBUSH 2'],
-        culture: 'SAURON',
-        race: 'ORC',
-        twilightCost: 2,
-        strength: 7,
-        vitality: 2,
-        minionSiteNumber: 6,
-        imageUrl: '/cards_visuals/o_01_271.jpg',
-        i18n: {
-            en: {
-                title: 'Orc Soldier',
-                gameText:
-                    '**Skirmish:** Exert this minion to wound a character he is skirmishing.',
-                loreText:
-                    'Bearing cruel weapons, Orcs go forth from Mordor to serve the Eye.',
-            },
-            fr: {
-                title: 'Soldat Orque',
-                gameText:
-                    '**Combat :** Affaiblissez ce séide pour blesser un personnage qu’il combat.',
-                loreText:
-                    "Porteurs d'armes cruelles, les Orques sortent du Mordor pour servir l'*il.",
-            },
-        },
-    },
-    NAZGUL: {
-        id: '7R210',
-        set: 7,
-        rarity: 'R',
-        isUnique: true,
-        kind: 'SHADOW',
-        type: 'MINION',
-        keywords: ['FIERCE', 'ENDURING'],
-        actionPhases: ['SHADOW'],
-        culture: 'WRAITH',
-        race: 'NAZGÛL',
-        twilightCost: 6,
-        strength: 12,
-        vitality: 3,
-        minionSiteNumber: 3,
-        imageUrl: '/cards_visuals/o_07_210.jpg',
-        i18n: {
-            en: {
-                title: 'Úlairë Attëa',
-                subtitle: 'Wraith on Wings',
-                gameText:
-                    '**Fierce.** \n**Shadow:** If you have initiative, exert Úlairë Attëa and spot another <symbol>wraith</symbol> minion to add a burden.',
-            },
-            fr: {
-                title: 'Úlairë Attëa',
-                subtitle: 'Wraith on Wings',
-                gameText:
-                    '**Fierce.** \n**Shadow:** If you have initiative, exert Úlairë Attëa and spot another <symbol>wraith</symbol> minion to add a burden.',
-            },
-            
-        },
-    },
-    ARMOR: {
-        id: '1C92',
-        set: 1,
-        rarity: 'C',
-        isUnique: false,
-        kind: 'FREE_PEOPLE',
-        type: 'POSSESSION',
-        subtype: 'ARMOR',
-        culture: 'DWARVEN',
-        twilightCost: 2,
-        vitality: 1, // Bonus de +1 en Vitalité lorsqu'elle est attachée
-        imageUrl: '/cards_visuals/o_01_092.jpg',
-        i18n: {
-            en: {
-                title: 'Armor',
-                gameText: 'Bearer gains **vitality +1**.',
-                loreText:
-                    'Dwarf-mail was light and yet stronger than forged steel.',
-            },
-            fr: {
-                title: 'Armure',
-                gameText: 'Le porteur gagne **vitalité +1**.',
-                loreText:
-                    "La cotte de mailles naine était légère et pourtant plus solide que l'acier forgé.",
-            },
-        },
-    },
-};
 
 const clonePresetCard = (id: string, instanceId?: string): CardState => {
     const card = getCardById(id);
@@ -449,8 +25,7 @@ const clonePresetSite = (
     if (!card) {
         throw new Error(`[DEV] Site introuvable pour le preset : ${id}`);
     }
-    const title =
-        card.i18n?.en?.title || card.title || id;
+    const title = card.i18n?.en?.title || card.title || id;
     return {
         ...card,
         id: card.id,
@@ -467,8 +42,8 @@ const clonePresetSite = (
 };
 
 /** Neuf sites Standard — terrains variés (sanctuaire = emplacements 3 & 6). */
-const SITES_TEST_PATH_IDS = [
-    '11S263', // 1 West Gate — UNDERGROUND + MOVES_FROM remove 2
+const DEV_PATH_IDS = [
+    '11S263', // 1 West Gate — UNDERGROUND
     '11S247', // 2 Moria Guardroom — UNDERGROUND
     '11S237', // 3 Ettenmoors — PLAINS (+ sanctuaire)
     '11S233', // 4 Chamber of Mazarbul — UNDERGROUND
@@ -479,6 +54,72 @@ const SITES_TEST_PATH_IDS = [
     '11S240', // 9 Flats of Rohan — PLAINS
 ] as const;
 
+const resetBoardForPreset = (G: GameState): void => {
+    const fpId = G.fpPlayerId || '0';
+    const fpPlayer = G.players[fpId];
+    if (!fpPlayer) return;
+
+    G.twilightPool = 0;
+    fpPlayer.burdens = 0;
+    fpPlayer.threats = 0;
+    G.tempModifiers = [];
+    G.battlefield = [];
+    G.skirmishes = [];
+    G.activeSkirmishId = undefined;
+    G.actionWindow = undefined;
+    G.awaitingSiteSelection = false;
+    G.archeryState = undefined;
+    G.archeryWoundsToAssign = 0;
+
+    Object.keys(G.players).forEach((pId) => {
+        const player = G.players[pId];
+        if (player) {
+            player.hand = [];
+            player.supportArea = [];
+            player.discard = [];
+            player.fellowshipArea = [];
+            player.sitesDeck = [];
+        }
+    });
+};
+
+const setupDevPath = (G: GameState, startIndex = 3): void => {
+    const fpId = G.fpPlayerId || '0';
+    const shadowId = fpId === '0' ? '1' : '0';
+
+    G.path = DEV_PATH_IDS.map((siteId, index) =>
+        clonePresetSite(siteId, index === 0 ? fpId : shadowId, index + 1)
+    );
+    Object.values(G.players).forEach((player) => {
+        if (player) player.currentSiteIndex = startIndex;
+    });
+    G.currentSiteIndex = startIndex;
+};
+
+/** Une carte support par culture + 1 jeton de cette culture (CSS pastilles). */
+const CULTURE_TOKEN_CSS_CARDS: ReadonlyArray<{
+    id: string;
+    culture: CardCulture;
+    side: 'fp' | 'shadow';
+}> = [
+    { id: '0P60', culture: 'SHIRE', side: 'fp' },
+    { id: '4R52', culture: 'DWARVEN', side: 'fp' },
+    { id: '4R69', culture: 'ELVEN', side: 'fp' },
+    { id: '4U88', culture: 'GANDALF', side: 'fp' },
+    { id: '4U126', culture: 'GONDOR', side: 'fp' },
+    { id: '4U276', culture: 'ROHAN', side: 'fp' },
+    { id: '8U23', culture: 'GOLLUM', side: 'fp' },
+    { id: '1R173', culture: 'MORIA', side: 'shadow' },
+    { id: '4C137', culture: 'ISENGARD', side: 'shadow' },
+    { id: '4U28', culture: 'DUNLAND', side: 'shadow' },
+    { id: '4U216', culture: 'RAIDER', side: 'shadow' },
+    { id: '6R89', culture: 'WRAITH', side: 'shadow' },
+    { id: '8R103', culture: 'SAURON', side: 'shadow' },
+    { id: '11U185', culture: 'URUK-HAI', side: 'shadow' },
+    { id: '13U94', culture: 'MEN', side: 'shadow' },
+    { id: '13U103', culture: 'ORC', side: 'shadow' },
+];
+
 export const applyDevPreset = (
     G: GameState,
     presetType: DevPresetType
@@ -486,157 +127,207 @@ export const applyDevPreset = (
     const fpId = G.fpPlayerId || '0';
     const fpPlayer = G.players[fpId];
     if (!fpPlayer) return;
+    const shadowId = fpId === '0' ? '1' : '0';
+    const shadowPlayer = G.players[shadowId];
 
     switch (presetType) {
-        case 'ARCHERY_TEST': {
-            G.twilightPool = 8;
-            fpPlayer.burdens = 3;
-
-            Object.keys(G.players).forEach((pId) => {
-                const player = G.players[pId];
-                if (player) {
-                    player.hand = [];
-                    drawCardsForPlayer(G, player, 8, false);
-                }
-            });
-
-            // Gimli avec l'armure attachée (+1 Vitalité)
-            const gimliWithArmor = {
-                ...CARDS_PRESETS.GIMLI,
-                attachments: [{ ...CARDS_PRESETS.ARMOR }],
-            };
+        case 'CULTURE_TOKENS_TEST': {
+            resetBoardForPreset(G);
+            setupDevPath(G, 3);
+            G.twilightPool = 4;
 
             fpPlayer.fellowshipArea = [
                 {
-                    ...CARDS_PRESETS.FRODO,
-                    attachments: [clonePresetCard('1R1')],
+                    ...clonePresetCard('2C102', 'dev-frodo-ct'),
+                    attachments: [clonePresetCard('1R1', 'dev-ring-ct')],
+                    wounds: 3, // vit 4 → 1 restante = exhaust (Bloodthirsty)
                 },
-                { ...CARDS_PRESETS.ARAGORN },
-                { ...CARDS_PRESETS.SMEAGOL },
-                clonePresetCard('1R50'),
-                gimliWithArmor,
-                { ...CARDS_PRESETS.EOWYN },
-            ];
-
-            G.battlefield = [
-                { ...CARDS_PRESETS.LURTZ },
-                { ...CARDS_PRESETS.MORIA_SCOUT },
-                { ...CARDS_PRESETS.ORC_SOLDIER },
-                { ...CARDS_PRESETS.NAZGUL },
-            ];
-            fpPlayer.hand = [clonePresetCard('1R90')];
-
-            // Initialisation propre de l'état d'archerie
-            G.archeryWoundsToAssign = 0;
-            if (G.archeryState) {
-                G.archeryState.fpTotal = 0;
-                G.archeryState.fpRemainingWounds = 0;
-            }
-
-            G.statusMessage =
-                '[DEV] Preset Archerie chargé (Gimli a +1 Vitalité via Armure)';
-            break;
-        }
-        case 'SITES_TEST': {
-            const shadowId = fpId === '0' ? '1' : '0';
-            const shadowPlayer = G.players[shadowId];
-
-            G.twilightPool = 0;
-            fpPlayer.burdens = 0;
-            fpPlayer.threats = 0;
-            G.tempModifiers = [];
-            G.archeryState = undefined;
-            G.battlefield = [];
-            G.skirmishes = [];
-            G.activeSkirmishId = undefined;
-            G.actionWindow = undefined;
-            G.awaitingSiteSelection = false;
-
-            Object.keys(G.players).forEach((pId) => {
-                const player = G.players[pId];
-                if (player) {
-                    player.hand = [];
-                    player.supportArea = [];
-                    player.discard = [];
-                    player.fellowshipArea = [];
-                    player.sitesDeck = [];
-                }
-            });
-
-            G.path = SITES_TEST_PATH_IDS.map((siteId, index) =>
-                clonePresetSite(
-                    siteId,
-                    index === 0 ? fpId : shadowId,
-                    index + 1
-                )
-            );
-            // Sites 1–2 contrôlés Ombre (stack / multi-sites)
-            if (G.path[0]) G.path[0].controlledBy = shadowId;
-            if (G.path[1]) G.path[1].controlledBy = shadowId;
-
-            // Compagnie au site 4 (index 3)
-            const startIndex = 3;
-            Object.values(G.players).forEach((player) => {
-                if (player) player.currentSiteIndex = startIndex;
-            });
-            G.currentSiteIndex = startIndex;
-
-            // Spies sur le site 5 (à côté) — pas sur le courant, sinon skip archerie
-            // et on ne peut pas tester Soldier / Legolas.
-            if (G.path[4]) {
-                G.path[4].attachments = [
-                    clonePresetCard('1R140', 'dev-spies-saruman'),
-                ];
-            }
-
-            // Frodon + Legolas (archerie) + Théoden (Rohan / Strong Arms)
-            fpPlayer.fellowshipArea = [
                 {
-                    ...clonePresetCard('2C102', 'dev-frodo'),
-                    attachments: [clonePresetCard('1R1', 'dev-ring')],
+                    ...clonePresetCard('0P12', 'dev-gimli-ct'),
+                    // Arod monté : 2× prévenir (Damage +1) = 4 jetons nains
+                    attachments: [clonePresetCard('13R1', 'dev-arod')],
                 },
-                clonePresetCard('1R50', 'dev-legolas-greenleaf'),
-                clonePresetCard('0P19', 'dev-theoden'),
             ];
-            fpPlayer.hand = [clonePresetCard('7U252', 'dev-strong-arms')];
+            fpPlayer.supportArea = [
+                {
+                    ...clonePresetCard('4U57', 'dev-stout-strong'),
+                    cultureTokens: { DWARVEN: 2 },
+                },
+                {
+                    ...clonePresetCard('4R52', 'dev-my-axe'),
+                    cultureTokens: { DWARVEN: 2 },
+                },
+            ];
+            fpPlayer.hand = [];
 
             if (shadowPlayer) {
-                // Pile site 1 : passifs / Ransacker / cible play-from-stack
-                if (G.path[0]) {
-                    G.path[0].stacked = [
-                        clonePresetCard('7C275', 'dev-stacked-pillager'),
-                        clonePresetCard('7C276', 'dev-stacked-ransacker'),
-                        clonePresetCard('7C273', 'dev-stacked-garrison'),
-                    ];
-                }
-                // Pile site 2 : 2ᵉ site contrôlé (choix multi)
-                if (G.path[1]) {
-                    G.path[1].stacked = [
-                        clonePresetCard('4C180', 'dev-stacked-besieger'),
-                    ];
-                }
-
-                // Champ : une verticale par famille (pas le musée)
-                G.battlefield = [
-                    clonePresetCard('8R105', 'dev-olog-mordor'),
-                    clonePresetCard('7R274', 'dev-gorgoroth-officer'),
-                    clonePresetCard('7R279', 'dev-gorgoroth-troop'),
-                    clonePresetCard('7U278', 'dev-gorgoroth-soldier'),
-                ];
                 shadowPlayer.supportArea = [
-                    clonePresetCard('7R316', 'dev-troop-tower'),
+                    {
+                        ...clonePresetCard('11R91', 'dev-oath-sworn'),
+                        cultureTokens: { MEN: 1 },
+                    },
+                    {
+                        ...clonePresetCard('11U185', 'dev-fortitude'),
+                        cultureTokens: { 'URUK-HAI': 1 },
+                    },
                 ];
-                // Défausses Officer / Soldier + séide à empiler (Troop)
+                // 2 MEN (Oath) · Man of Bree str4 < Gimli · Uruk Damage+1
+                G.battlefield = [
+                    clonePresetCard('12S73', 'dev-mouth-sauron'),
+                    clonePresetCard('11S90', 'dev-man-of-bree'),
+                    clonePresetCard('11S178', 'dev-bloodthirsty-uruk'),
+                ];
                 shadowPlayer.hand = [
-                    clonePresetCard('4C180', 'dev-hand-besieger'),
-                    clonePresetCard('7C273', 'dev-hand-fodder-1'),
-                    clonePresetCard('7C273', 'dev-hand-fodder-2'),
+                    clonePresetCard('13C83', 'dev-caravan-hand'),
+                    clonePresetCard('13C164', 'dev-fearless-hand'),
                 ];
-                G.twilightPool = 12;
+                G.twilightPool = 8;
             }
 
             G.statusMessage =
-                '[DEV] Sites : Legolas (archerie→Soldier) · Spies@5 · piles · Strong Arms · Olog/Officer/Troop/Tower.';
+                '[DEV] Jetons · Frodon exhaust · Gimli+Arod (2× prevent) · Bree str4 · Uruk D+1 · Oath.';
+            break;
+        }
+
+        case 'CULTURE_TOKENS_CSS': {
+            resetBoardForPreset(G);
+            setupDevPath(G, 3);
+            G.twilightPool = 0;
+
+            fpPlayer.fellowshipArea = [
+                {
+                    ...clonePresetCard('2C102', 'dev-frodo-css'),
+                    attachments: [clonePresetCard('1R1', 'dev-ring-css')],
+                },
+            ];
+
+            const withToken = (
+                id: string,
+                culture: CardCulture,
+                instanceId: string
+            ): CardState => ({
+                ...clonePresetCard(id, instanceId),
+                cultureTokens: { [culture]: 1 },
+            });
+
+            fpPlayer.supportArea = CULTURE_TOKEN_CSS_CARDS.filter(
+                (c) => c.side === 'fp'
+            ).map((c) => withToken(c.id, c.culture, `dev-css-${c.culture}`));
+
+            if (shadowPlayer) {
+                shadowPlayer.supportArea = CULTURE_TOKEN_CSS_CARDS.filter(
+                    (c) => c.side === 'shadow'
+                ).map((c) =>
+                    withToken(c.id, c.culture, `dev-css-${c.culture}`)
+                );
+            }
+
+            G.statusMessage =
+                '[DEV] Jetons CSS : 1 carte / culture (16 pastilles) pour peaufiner les couleurs.';
+            break;
+        }
+
+        case 'EXHAUST_TEST': {
+            resetBoardForPreset(G);
+            // Site forêt (Caras Galadhon) — condition de A Ranger's Versatility
+            setupDevPath(G, 4);
+            G.twilightPool = 4;
+
+            // Frodo : 2 blessures (condition While de Nelya) · Aragorn ranger · Gimli déjà exhaust
+            fpPlayer.fellowshipArea = [
+                {
+                    ...clonePresetCard('2C102', 'dev-frodo-ex'),
+                    attachments: [clonePresetCard('1R1', 'dev-ring-ex')],
+                    wounds: 2,
+                },
+                {
+                    ...clonePresetCard('1R89', 'dev-aragorn-ex'),
+                    wounds: 0,
+                },
+                {
+                    ...clonePresetCard('0P12', 'dev-gimli-ex'),
+                    wounds: 2, // vit 3 → 1 restante = exhaust
+                },
+            ];
+
+            // Event réel : Maneuver — exert a ranger → exhaust a minion
+            // (parser Exhaust pas encore branché → capacité injectée fidèle au texte)
+            fpPlayer.hand = [
+                {
+                    ...clonePresetCard('1U113', 'dev-rangers-versatility'),
+                    abilities: [
+                        {
+                            id: '1U113:dev',
+                            phases: ['MANEUVER'],
+                            cost: [
+                                {
+                                    exert: [
+                                        {
+                                            count: 1,
+                                            target: [['RANGER']],
+                                            mode: 'DESIGNATION' as const,
+                                        },
+                                    ],
+                                },
+                            ],
+                            effects: [
+                                {
+                                    type: 'EXHAUST' as const,
+                                    target: [['MINION']],
+                                },
+                            ],
+                            source: 'SELF' as const,
+                            text: 'Maneuver: Exert a ranger to exhaust a minion. [DEV]',
+                        },
+                    ],
+                },
+            ];
+
+            if (shadowPlayer) {
+                // Overseer (Regroup) · Rider plein (cible Versatility) · Nelya (While 2 wounds RB)
+                G.battlefield = [
+                    {
+                        ...clonePresetCard('3R65', 'dev-orc-overseer'),
+                        wounds: 0,
+                        abilities: [
+                            {
+                                id: '3R65:dev',
+                                phases: ['REGROUP'],
+                                cost: [
+                                    {
+                                        exert: [
+                                            {
+                                                count: 2,
+                                                target: 'SELF' as const,
+                                            },
+                                        ],
+                                    },
+                                ],
+                                effects: [
+                                    {
+                                        type: 'EXHAUST' as const,
+                                        target: [['COMPANION']],
+                                        excludeRingBearer: true,
+                                    },
+                                ],
+                                source: 'SELF' as const,
+                                text: 'Regroup: Exert Orc Overseer twice to exhaust a companion (except the Ring-bearer). [DEV]',
+                            },
+                        ],
+                    },
+                    {
+                        ...clonePresetCard('0P20', 'dev-black-rider-ex'),
+                        wounds: 0,
+                    },
+                    {
+                        ...clonePresetCard('2R84', 'dev-nelya-ex'),
+                        wounds: 0,
+                    },
+                ];
+            }
+
+            G.statusMessage =
+                '[DEV] Exhaust : Frodon 2 blessures (Nelya) · Versatility = rôdeur (halo) puis flèche rôdeur→séide · Overseer = flèche depuis lui.';
             break;
         }
     }

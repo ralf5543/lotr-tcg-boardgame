@@ -1046,6 +1046,110 @@ export const OrbitalBurdenToken = styled.img<OrbitalTokenProps>`
     filter: drop-shadow(0px 0px 4px rgba(255, 0, 0, 0.8));
 `;
 
+/** Jetons de culture empilés en bas de la carte (zone soutien). */
+export const CultureTokensOverlay = styled.div`
+    position: absolute;
+    z-index: 3;
+    inset-block-end: 0px;
+    inset-inline-start: 50%;
+    translate: -50%;
+    display: flex;
+    flex-wrap: wrap-reverse;
+    justify-content: center;
+    gap: 2px;
+    pointer-events: none;
+    width: 100%;
+`;
+
+export const CultureTokenPip = styled.span<{ $culture: string }>`
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'LOTRSymbols';
+    font-size: 8px;
+    line-height: 0;
+    color: #f5e6c8;
+    width: 16px;
+    border-radius: 50%;
+    aspect-ratio: 1;
+    isolation: isolate;
+    background-image: ${({ $culture }) =>
+        `url(interface/cultures_backgrounds/background_${$culture}.webp)`};
+    background-size: cover;
+    background-position: center;
+    /* Dôme : lumière haut-gauche, ombre bas-droite + volume extérieur */
+    box-shadow:
+        inset 1px 1.5px 2px rgba(255, 255, 255, 0.45),
+        inset -1.5px -2px 3px rgba(0, 0, 0, 0.55),
+        0 1px 1px rgba(0, 0, 0, 0.35),
+        0 2px 3px rgba(0, 0, 0, 0.28);
+
+    /* Symbole incrusté : ombre interne (pas de halo externe) */
+    &::before {
+        position: relative;
+        z-index: 1;
+        margin-block-end: -0.2rem;
+        text-shadow:
+            -0.5px -0.75px 0 rgba(0, 0, 0, 0.7),
+            0.5px 0.75px 0 rgba(255, 255, 255, 0.28);
+        content: ${({ $culture }) => {
+            switch ($culture) {
+                case 'ELVEN':
+                    return '"*"';
+                case 'DWARVEN':
+                    return '"@"';
+                case 'SHIRE':
+                    return '"#"';
+                case 'GANDALF':
+                    return '"$"';
+                case 'GONDOR':
+                    return '"%"';
+                case 'ROHAN':
+                    return '"["';
+                case 'GOLLUM':
+                    return '"¢"';
+                case 'MORIA':
+                    return '"{"';
+                case 'ISENGARD':
+                    return '"^"';
+                case 'WRAITH':
+                    return '"]"';
+                case 'URUK-HAI':
+                    return '"_"';
+                case 'SAURON':
+                    return '"|"';
+                case 'DUNLAND':
+                    return '"~"';
+                case 'RAIDER':
+                    return '"}"';
+                case 'ORC':
+                    return '"`"';
+                case 'MEN':
+                    return '"&"';
+                default:
+                    return '""';
+            }
+        }};
+    }
+
+    /* Reflet de dôme (léger gloss en haut) */
+    &::after {
+        content: '';
+        position: absolute;
+        z-index: 0;
+        inset: 0;
+        border-radius: inherit;
+        background: radial-gradient(
+            120% 90% at 32% 22%,
+            rgba(255, 255, 255, 0.38) 0%,
+            rgba(255, 255, 255, 0.08) 38%,
+            transparent 62%
+        );
+        pointer-events: none;
+    }
+`;
+
 export const KeywordsContainer = styled.div`
     position: absolute;
     z-index: 2;

@@ -611,7 +611,10 @@ export function parseToPlayConditions(text?: string): any[] | undefined {
         let cleanBody = processedText.replace(
             /<symbol>(.*?)<\/symbol>/gi,
             (_, culture) => {
-                if (culture) targets.push(culture.toUpperCase());
+                if (culture) {
+                    const token = normalizeFilterToken(String(culture));
+                    targets.push(token || String(culture).toUpperCase());
+                }
                 return ' ';
             }
         );
@@ -820,7 +823,9 @@ function isKnownFilterToken(token: string): boolean {
         // Mots-clés à valeur (HUNTER 1…) : le pluriel / le spot utilise la clé nue
         token === 'HUNTER' ||
         token === 'TOIL' ||
-        token === 'AMBUSH'
+        token === 'AMBUSH' ||
+        // État (While / spot) — pas un mot-clé imprimé
+        token === 'EXHAUSTED'
     );
 }
 
@@ -1651,6 +1656,43 @@ function parsePreventCostClause(
         return { discardFromPlay: [{ count: 1, target: 'SELF' }] };
     }
 
+    // « remove an urukhai token from here » / « remove 2 dwarven tokens from here »
+    const removeTokensHere = text.match(
+        /^remove\s+(a|an|one|\d+)\s+((?:Free Peoples(?:\s+culture)?)|(?:<symbol>[^<]+<\/symbol>)|(?:culture))\s+tokens?\s+from here$/i
+    );
+    if (removeTokensHere) {
+        const count = parseCultureTokenCount(removeTokensHere[1]);
+        const culture = parseCultureTokenSpec(removeTokensHere[2]);
+        if (count && culture) {
+            return {
+                removeCultureTokens: {
+                    culture,
+                    count,
+                    from: 'SELF',
+                },
+            };
+        }
+        return null;
+    }
+
+    // « remove 2 dwarven tokens » (n’importe laquelle de tes cartes — Arod, etc.)
+    const removeTokensAny = text.match(
+        /^remove\s+(a|an|one|\d+)\s+((?:Free Peoples(?:\s+culture)?)|(?:<symbol>[^<]+<\/symbol>)|(?:culture))\s+tokens?$/i
+    );
+    if (removeTokensAny) {
+        const count = parseCultureTokenCount(removeTokensAny[1]);
+        const culture = parseCultureTokenSpec(removeTokensAny[2]);
+        if (count && culture) {
+            return {
+                removeCultureTokens: {
+                    culture,
+                    count,
+                },
+            };
+        }
+        return null;
+    }
+
     const discardAClass = text.match(/^discard\s+((?:a|an)\s+.+)$/i);
     if (discardAClass && !/\bfrom hand\b/i.test(text)) {
         const noun = parseNounTarget(discardAClass[1], [['']]);
@@ -1748,6 +1790,12 @@ function mergePreventCostClauses(
                 (typeof option.spotTwilight === 'number'
                     ? option.spotTwilight
                     : 0) + clause.spotTwilight;
+        }
+        if (clause.removeCultureTokens) {
+            // Une seule clause « remove tokens » par alternative de coût.
+            if (!option.removeCultureTokens) {
+                option.removeCultureTokens = clause.removeCultureTokens;
+            }
         }
     }
     if (Object.keys(option).length === 0) return null;
@@ -2009,6 +2057,56 @@ function parseEachTimeTakeControlSiteAbilities(
 }
 
 /**
+ * Each time [winner] wins a skirmish, (you may) place a [culture] token on this card / here.
+ * (Stout and Strong, My Axe Is Notched, Final Count… — ~17 cartes.)
+ * Même fenêtre RESPONSE que les autres « Each time … wins ».
+ */
+function parseEachTimeWinsPlaceCultureTokenAbilities(
+    text: string,
+    cardTitle?: string,
+    cardId?: string
+): Record<string, unknown>[] {
+    const found: Record<string, unknown>[] = [];
+    const re =
+        /Each time ([\s\S]+?) wins a skirmish,\s*(you may )?place (a|an|one|\d+) ((?:Free Peoples(?:\s+culture)?)|(?:<symbol>[^<]+<\/symbol>)|(?:culture)) tokens? (?:on this card|here)\.?/gi;
+    let match: RegExpExecArray | null;
+    while ((match = re.exec(text)) !== null) {
+        const winnerParsed = parseWinsSkirmishWinner(
+            match[1].trim(),
+            cardTitle
+        );
+        if (!winnerParsed) continue;
+        const count = parseCultureTokenCount(match[3]);
+        const culture = parseCultureTokenSpec(match[4]);
+        if (!count || !culture) continue;
+        const optional = Boolean(match[2]);
+
+        found.push({
+            id: `${cardId || 'ability'}:${found.length}:each-time-win-token`,
+            phases: ['RESPONSE'],
+            trigger: {
+                type: 'WINS_SKIRMISH',
+                winner: winnerParsed.winner,
+                ...(winnerParsed.yours ? { yours: true } : {}),
+            },
+            ...(optional ? { optional: true } : {}),
+            cost: [],
+            effects: [
+                {
+                    type: 'PLACE_CULTURE_TOKEN',
+                    culture,
+                    count,
+                    target: 'SELF',
+                },
+            ],
+            source: winnerParsed.winner === 'BEARER' ? 'ATTACHMENT' : 'SELF',
+            text: stripAbilityMarkup(match[0]),
+        });
+    }
+    return found;
+}
+
+/**
  * When / Each time this minion wins a skirmish, you may stack him/it
  * on a site you control. (Dunland Looter, Hillman Rabble…)
  */
@@ -2108,15 +2206,18 @@ function parseWinsSkirmishPlayFromStackAbilities(
     return found;
 }
 
-/** Spot « a CLASS » / « N CLASS » pour While — refuse le reste inconnu. */
+/** Spot « a CLASS » / « N CLASS » pour While — refuse le reste inconnu.
+ *  Conserve les `<symbol>` : culture (Men, Orc…), pas la race homonyme.
+ */
 function parseWhileSpotSubject(
     raw: string
 ): { count: number; target: string[][] } | null {
-    const cleaned = stripAbilityMarkup(raw).replace(/\s+/g, ' ').trim();
+    const cleaned = raw.replace(/\s+/g, ' ').trim();
     if (!cleaned) return null;
+    const plain = stripAbilityMarkup(cleaned);
     if (
-        /\b(and|or|each|other|whose|bearing|except|from|to|may|token|burden|threat|twilight|wound|exhausted|roaming|mounted|home|resistance|title)\b/i.test(
-            cleaned
+        /\b(and|or|each|other|whose|bearing|except|from|to|may|token|burden|threat|twilight|wound|roaming|mounted|home|resistance|title)\b/i.test(
+            plain
         )
     ) {
         return null;
@@ -3295,6 +3396,72 @@ function parseWhileAtAttachedSiteAbilities(
 }
 
 /**
+ * While you can spot N burdens or N wounds on the Ring-bearer, X is fierce and Damage +1.
+ * Credo : fragment sûr, deux effets MODIFY_KEYWORD.
+ */
+function parseWhileSpotBurdensOrRingBearerWoundsKeywordAbilities(
+    text: string,
+    cardTitle?: string,
+    cardId?: string
+): Record<string, unknown>[] {
+    const found: Record<string, unknown>[] = [];
+    const re =
+        /While you can spot (\d+) burdens? or (\d+) wounds? on the Ring-bearer,\s*([^,]+?) is\s+([^.]+)\./gi;
+    let match: RegExpExecArray | null;
+    while ((match = re.exec(text)) !== null) {
+        const burdens = parseInt(match[1], 10);
+        const wounds = parseInt(match[2], 10);
+        if (
+            !Number.isFinite(burdens) ||
+            !Number.isFinite(wounds) ||
+            burdens <= 0 ||
+            wounds <= 0 ||
+            burdens !== wounds
+        ) {
+            continue;
+        }
+        const who = parseWhileStrengthWho(match[3], cardTitle);
+        if (!who) continue;
+
+        const grantPlain = stripAbilityMarkup(match[4])
+            .replace(/\*+/g, ' ')
+            .replace(/\s+/g, ' ')
+            .trim();
+        const grantMatch = grantPlain.match(
+            /^fierce\s+and\s+damage\s*\+\s*(\d+)$/i
+        );
+        if (!grantMatch) continue;
+        const damageN = parseInt(grantMatch[1], 10);
+        if (!Number.isFinite(damageN) || damageN <= 0 || damageN > 4) continue;
+
+        found.push({
+            id: `${cardId || 'ability'}:${found.length}:while-burden-wound-kw`,
+            phases: [],
+            trigger: {
+                type: 'WHILE',
+                spotBurdensOrRingBearerWounds: burdens,
+            },
+            cost: [],
+            effects: [
+                {
+                    type: 'MODIFY_KEYWORD',
+                    keyword: 'FIERCE',
+                    target: who,
+                },
+                {
+                    type: 'MODIFY_KEYWORD',
+                    keyword: `DAMAGE +${damageN}`,
+                    target: who,
+                },
+            ],
+            source: who === 'BEARER' ? 'ATTACHMENT' : 'SELF',
+            text: stripAbilityMarkup(match[0]),
+        });
+    }
+    return found;
+}
+
+/**
  * While you can spot [classe|crépuscule], [self/bearer] is Damage +N | fierce.
  * Miroir force — un seul mot-clé, pas d’and.
  */
@@ -3443,6 +3610,59 @@ function parseSiteMoveAbilities(
         });
     }
 
+    return found;
+}
+
+/**
+ * At the start of the [phase] phase, if you have N or more cards in hand,
+ * you may spot X and discard your hand to add twilightY.
+ * (Oath Sworn 11R91 — fragment sûr.)
+ */
+function parseStartOfPhaseDiscardHandTwilightAbilities(
+    text: string,
+    cardId?: string
+): Record<string, unknown>[] {
+    const found: Record<string, unknown>[] = [];
+    const re =
+        /At the start of the (\w+) phase,\s*if you have (\d+) or more cards in hand,\s*you may spot ((?:a|an|\d+)\s+[^,.]+?)\s+and discard your hand to add <symbol>twilight(\d+)<\/symbol>\.?/gi;
+    let match: RegExpExecArray | null;
+    while ((match = re.exec(text)) !== null) {
+        const phaseName = match[1].toUpperCase();
+        const startPhase = `START_OF_${phaseName}`;
+        const minHand = parseInt(match[2], 10);
+        const twilight = parseInt(match[4], 10);
+        if (
+            !Number.isFinite(minHand) ||
+            minHand <= 0 ||
+            !Number.isFinite(twilight) ||
+            twilight <= 0
+        ) {
+            continue;
+        }
+        const spot = parseWhileSpotSubject(match[3]);
+        if (!spot) continue;
+
+        found.push({
+            id: `${cardId || 'ability'}:${found.length}:start-discard-hand`,
+            phases: [startPhase],
+            optional: true,
+            cost: [
+                {
+                    spotHand: minHand,
+                    spot: [
+                        {
+                            count: spot.count,
+                            target: spot.target,
+                        },
+                    ],
+                    discardEntireHand: true,
+                },
+            ],
+            effects: [{ type: 'ADD_TWILIGHT', count: twilight }],
+            source: 'SELF',
+            text: stripAbilityMarkup(match[0]),
+        });
+    }
     return found;
 }
 
@@ -3598,6 +3818,130 @@ function parseForEachStrengthAbilities(
                         target: [filters],
                         ...(limit !== undefined ? { limit } : {}),
                     },
+                },
+            ],
+            source: 'SELF',
+            text: stripAbilityMarkup(match[0]),
+        });
+    }
+
+    return found;
+}
+
+/** `<symbol>dwarven</symbol>` / Free Peoples / culture → CultureTokenSpec. */
+function parseCultureTokenSpec(raw: string): string | null {
+    const cleaned = stripAbilityMarkup(raw).replace(/\s+/g, ' ').trim();
+    if (!cleaned) return null;
+    if (/^Free Peoples(?:\s+culture)?$/i.test(cleaned)) return 'FREE_PEOPLES';
+    if (/^culture$/i.test(cleaned)) return 'ANY';
+
+    const withSymbol = raw.match(/<symbol>([^<]+)<\/symbol>/i);
+    const keyRaw = withSymbol
+        ? withSymbol[1].trim()
+        : cleaned.replace(/^an?\s+/i, '');
+    let key = keyRaw.toUpperCase().replace(/\s+/g, '-');
+    if (key === 'URUKHAI') key = 'URUK-HAI';
+    if (key === 'ONERING' || key === 'ONE-RING') key = 'THE-ONE-RING';
+    if (VALID_CULTURES.has(key)) return key;
+    return null;
+}
+
+function parseCultureTokenCount(raw: string): number | null {
+    const token = raw.trim().toLowerCase();
+    if (token === 'a' || token === 'an' || token === 'one') return 1;
+    if (token === 'two') return 2;
+    if (token === 'three') return 3;
+    const n = parseInt(token, 10);
+    return Number.isFinite(n) && n > 0 ? n : null;
+}
+
+/**
+ * Fragments jetons de culture (place / reinforce / remove) — sûrs uniquement.
+ */
+function parseCultureTokenAbilities(
+    text: string,
+    cardId?: string
+): Record<string, unknown>[] {
+    const found: Record<string, unknown>[] = [];
+
+    // When you play [Name|this], you may reinforce a [culture|Free Peoples] token.
+    const mayReinforceRe =
+        /When you play (?:this(?:\s+(?:minion|possession|condition|companion|artifact|ally|follower))?|[\w’'\-]+(?:\s+[\w’'\-]+)?), you may reinforce (a|an|one|\d+)\s+((?:Free Peoples(?:\s+culture)?)|(?:<symbol>[^<]+<\/symbol>)|(?:culture))\s+tokens?\./gi;
+    let match: RegExpExecArray | null;
+    while ((match = mayReinforceRe.exec(text)) !== null) {
+        const count = parseCultureTokenCount(match[1]);
+        const culture = parseCultureTokenSpec(match[2]);
+        if (!count || !culture) continue;
+        found.push({
+            id: `${cardId || 'ability'}:${found.length}:when-played-reinforce`,
+            phases: [],
+            trigger: { type: 'WHEN_PLAYED' },
+            optional: true,
+            cost: [],
+            effects: [
+                {
+                    type: 'REINFORCE_CULTURE_TOKEN',
+                    culture,
+                    count,
+                },
+            ],
+            source: 'SELF',
+            text: stripAbilityMarkup(match[0]),
+        });
+    }
+
+    // When you play this, if you spot a [terrain] site on the adventure path, reinforce N [culture] tokens.
+    const pathReinforceRe =
+        /When you play this(?:\s+(?:minion|possession|condition|companion|artifact|ally|follower))?, if you spot an? ([^,]+?) site on the adventure path, reinforce (a|an|one|\d+)\s+((?:Free Peoples(?:\s+culture)?)|(?:<symbol>[^<]+<\/symbol>)|(?:culture))\s+tokens?\./gi;
+    while ((match = pathReinforceRe.exec(text)) !== null) {
+        const siteKeyword = parseSiteLocationKeyword(match[1]);
+        if (!siteKeyword) continue;
+        const count = parseCultureTokenCount(match[2]);
+        const culture = parseCultureTokenSpec(match[3]);
+        if (!count || !culture) continue;
+        found.push({
+            id: `${cardId || 'ability'}:${found.length}:when-played-path-reinforce`,
+            phases: [],
+            trigger: {
+                type: 'WHEN_PLAYED',
+                spotSiteKeyword: { keyword: siteKeyword, count: 1 },
+            },
+            optional: false,
+            cost: [],
+            effects: [
+                {
+                    type: 'REINFORCE_CULTURE_TOKEN',
+                    culture,
+                    count,
+                },
+            ],
+            source: 'SELF',
+            text: stripAbilityMarkup(match[0]),
+        });
+    }
+
+    // When you play this, place a [culture] token here / on this card.
+    const placeWhenPlayedRe =
+        /When you play this(?:\s+(?:minion|possession|condition|companion|artifact|ally|follower))?, (?:you may )?place (a|an|one|\d+)\s+(<symbol>[^<]+<\/symbol>)\s+tokens? (?:here|on this card)\./gi;
+    while ((match = placeWhenPlayedRe.exec(text)) !== null) {
+        const count = parseCultureTokenCount(match[1]);
+        const culture = parseCultureTokenSpec(match[2]);
+        if (!count || !culture || culture === 'FREE_PEOPLES' || culture === 'ANY') {
+            continue;
+        }
+        const optional = /you may place/i.test(match[0]);
+        found.push({
+            id: `${cardId || 'ability'}:${found.length}:when-played-place-token`,
+            phases: [],
+            trigger: { type: 'WHEN_PLAYED' },
+            ...(optional ? { optional: true } : {}),
+            cost: [],
+            effects: [
+                {
+                    type: 'PLACE_CULTURE_TOKEN',
+                    culture,
+                    count,
+                    target: 'SELF',
                 },
             ],
             source: 'SELF',
@@ -4197,7 +4541,7 @@ export function parseAbilities(
         }
 
         const preventMatch = body.match(
-            /^If\s+([\s\S]+?)\s+is about to take a wound( in a skirmish)?,\s*([\s\S]+?)\s+to prevent (?:that wound|it)/i
+            /^If\s+([\s\S]+?)\s+is about to take a wound( in a skirmish| during a skirmish)?,\s*([\s\S]+?)\s+to prevent (?:that wound|that|it)/i
         );
         if (preventMatch) {
             const remainder = stripAbilityMarkup(
@@ -4413,6 +4757,75 @@ export function parseAbilities(
             }
         }
 
+        // « Remove twilightN to place a [culture] token here. »
+        const placeTokenTwilight = body.match(
+            /^Remove\s+<symbol>twilight(\d+)<\/symbol>\s+to place (a|an|one|\d+)\s+(<symbol>[^<]+<\/symbol>)\s+tokens? here\s*\.?$/i
+        );
+        if (placeTokenTwilight) {
+            const twilight = parseInt(placeTokenTwilight[1], 10);
+            const count = parseCultureTokenCount(placeTokenTwilight[2]);
+            const culture = parseCultureTokenSpec(placeTokenTwilight[3]);
+            if (
+                Number.isFinite(twilight) &&
+                twilight > 0 &&
+                count &&
+                culture &&
+                culture !== 'FREE_PEOPLES' &&
+                culture !== 'ANY'
+            ) {
+                abilities.push({
+                    id: `${cardId || 'ability'}:${abilities.length}`,
+                    phases,
+                    cost: [{ removeTwilight: twilight }],
+                    effects: [
+                        {
+                            type: 'PLACE_CULTURE_TOKEN',
+                            culture,
+                            count,
+                            target: 'SELF',
+                        },
+                    ],
+                    source: 'SELF',
+                    text: stripAbilityMarkup(
+                        `${marker.phase}: ${placeTokenTwilight[0]}`
+                    ),
+                });
+                return;
+            }
+        }
+
+        // « Remove N [culture] tokens from here to heal bearer. »
+        const removeTokensHeal = body.match(
+            /^Remove (a|an|one|\d+)\s+((?:Free Peoples(?:\s+culture)?)|(?:<symbol>[^<]+<\/symbol>)|(?:culture))\s+tokens? from here to heal bearer\s*\.?$/i
+        );
+        if (removeTokensHeal) {
+            const count = parseCultureTokenCount(removeTokensHeal[1]);
+            const culture = parseCultureTokenSpec(removeTokensHeal[2]);
+            if (count && culture) {
+                abilities.push({
+                    id: `${cardId || 'ability'}:${abilities.length}`,
+                    phases,
+                    cost: [
+                        {
+                            removeCultureTokens: {
+                                culture,
+                                count,
+                                from: 'SELF',
+                            },
+                        },
+                    ],
+                    effects: [
+                        { type: 'HEAL', count: 1, target: 'BEARER' },
+                    ],
+                    source: 'ATTACHMENT',
+                    text: stripAbilityMarkup(
+                        `${marker.phase}: ${removeTokensHeal[0]}`
+                    ),
+                });
+                return;
+            }
+        }
+
         const removeTwilightMake = body.match(
             /^Remove\s+<symbol>twilight(\d+)<\/symbol>\s+to make\s+([\s\S]+)/i
         );
@@ -4517,6 +4930,60 @@ export function parseAbilities(
                 text: clause,
             });
             return;
+        }
+
+        // « Make an unbound companion strength +1 for each [culture] token here
+        // (limit +3). Discard this condition. » (Stout and Strong 4U57)
+        const makePerTokenHere = body.match(
+            /^Make\s+((?:a|an)\s+.+?)\s+strength\s*\+(\d+)\s+for each\s+((?:Free Peoples(?:\s+culture)?)|(?:<symbol>[^<]+<\/symbol>)|(?:culture))\s+tokens?\s+here(?:\s*\(\s*limit\s*\+(\d+)\s*\))?\.\s*Discard this(?:\s+[\w’-]+)?\.?/i
+        );
+        if (makePerTokenHere) {
+            const filters = parseClassFilters(
+                makePerTokenHere[1].replace(/^(a|an)\s+/i, '')
+            );
+            const perToken = parseInt(makePerTokenHere[2], 10);
+            const culture = parseCultureTokenSpec(makePerTokenHere[3]);
+            const limitRaw = makePerTokenHere[4]
+                ? parseInt(makePerTokenHere[4], 10)
+                : undefined;
+            if (
+                filters.length > 0 &&
+                culture &&
+                Number.isFinite(perToken) &&
+                perToken > 0 &&
+                (limitRaw === undefined ||
+                    (Number.isFinite(limitRaw) && limitRaw > 0))
+            ) {
+                const expiresAtPhase = parseUntilExpiry(body, marker.phase);
+                const clause =
+                    `${marker.phase}: Make ${makePerTokenHere[1].trim()} strength +${perToken} for each ${stripAbilityMarkup(makePerTokenHere[3])} token here${limitRaw ? ` (limit +${limitRaw})` : ''}. Discard this condition.`
+                        .replace(/\s+/g, ' ')
+                        .trim();
+                abilities.push({
+                    id: `${cardId || 'ability'}:${abilities.length}`,
+                    phases,
+                    cost: [],
+                    effects: [
+                        {
+                            type: 'ADD_TEMP_STAT',
+                            stat: 'STRENGTH',
+                            value: perToken,
+                            target: [filters],
+                            expiresAtPhase,
+                            perCultureTokensOnSelf: {
+                                culture,
+                                ...(limitRaw != null
+                                    ? { limit: limitRaw }
+                                    : {}),
+                            },
+                        },
+                        { type: 'DISCARD', count: 1, target: 'SELF' },
+                    ],
+                    source: 'SELF',
+                    text: clause,
+                });
+                return;
+            }
         }
 
         const makeBareMatch = body.match(/^Make\s+((?:a|an)\s+[\s\S]+)/i);
@@ -5937,6 +6404,13 @@ export function parseAbilities(
         });
     });
 
+    parseCultureTokenAbilities(text, cardId).forEach((ability) => {
+        abilities.push({
+            ...ability,
+            id: `${cardId || 'ability'}:${abilities.length}`,
+        });
+    });
+
     parseForEachStrengthAbilities(text, cardTitle, cardId).forEach(
         (ability) => {
             abilities.push({
@@ -5954,6 +6428,15 @@ export function parseAbilities(
     });
 
     parseEachTimeTakeControlSiteAbilities(text, cardTitle, cardId).forEach(
+        (ability) => {
+            abilities.push({
+                ...ability,
+                id: `${cardId || 'ability'}:${abilities.length}`,
+            });
+        }
+    );
+
+    parseEachTimeWinsPlaceCultureTokenAbilities(text, cardTitle, cardId).forEach(
         (ability) => {
             abilities.push({
                 ...ability,
@@ -6071,6 +6554,17 @@ export function parseAbilities(
         }
     );
 
+    parseWhileSpotBurdensOrRingBearerWoundsKeywordAbilities(
+        text,
+        cardTitle,
+        cardId
+    ).forEach((ability) => {
+        abilities.push({
+            ...ability,
+            id: `${cardId || 'ability'}:${abilities.length}`,
+        });
+    });
+
     parseWhileSpotEachKeywordAbilities(text, cardId).forEach((ability) => {
         abilities.push({
             ...ability,
@@ -6107,6 +6601,15 @@ export function parseAbilities(
             id: `${cardId || 'ability'}:${abilities.length}`,
         });
     });
+
+    parseStartOfPhaseDiscardHandTwilightAbilities(text, cardId).forEach(
+        (ability) => {
+            abilities.push({
+                ...ability,
+                id: `${cardId || 'ability'}:${abilities.length}`,
+            });
+        }
+    );
 
     if (markers.length === 0) {
         parseStandaloneSpotTwilightExchangeAbilities(

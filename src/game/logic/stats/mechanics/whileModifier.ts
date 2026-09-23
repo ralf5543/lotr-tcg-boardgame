@@ -11,7 +11,7 @@ import {
     forEachInPlayCard,
 } from '../../../engine/abilities/resolveCostTarget';
 import { cardMatchesTarget } from '../../../engine/validations/matchers';
-import { findTargetCard } from '../../../../utils/cardUtils';
+import { findTargetCard, isRingBearerCard } from '../../../../utils/cardUtils';
 import {
     isAtSiteWithKeyword,
     isCurrentSiteSanctuary,
@@ -239,6 +239,24 @@ export function whileConditionHolds(
         const hostIndex = findAttachedSiteIndex(G, source);
         if (hostIndex < 0) return false;
         if (getCurrentSiteIndex(G) !== hostIndex) return false;
+    }
+
+    if (
+        trigger.spotBurdensOrRingBearerWounds &&
+        trigger.spotBurdensOrRingBearerWounds > 0
+    ) {
+        const need = trigger.spotBurdensOrRingBearerWounds;
+        const fpId = G.fpPlayerId || '0';
+        const burdens = G.players[fpId]?.burdens || 0;
+        if (burdens < need) {
+            let rbWounds = 0;
+            forEachInPlayCard(G, (card) => {
+                if (isRingBearerCard(card)) {
+                    rbWounds = Math.max(rbWounds, card.wounds || 0);
+                }
+            });
+            if (rbWounds < need) return false;
+        }
     }
 
     // Prédicats OK, ou WHILE vide (vrai tant que la carte est en jeu).

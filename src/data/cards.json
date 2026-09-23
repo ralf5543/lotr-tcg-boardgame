@@ -2199,6 +2199,31 @@
     "keywords": [
       "TWILIGHT"
     ],
+    "abilities": [
+      {
+        "id": "0P43:0",
+        "phases": [],
+        "trigger": {
+          "type": "WHILE",
+          "spotBurdensOrRingBearerWounds": 2
+        },
+        "cost": [],
+        "effects": [
+          {
+            "type": "MODIFY_KEYWORD",
+            "keyword": "FIERCE",
+            "target": "SELF"
+          },
+          {
+            "type": "MODIFY_KEYWORD",
+            "keyword": "DAMAGE +1",
+            "target": "SELF"
+          }
+        ],
+        "source": "SELF",
+        "text": "While you can spot 2 burdens or 2 wounds on the Ring-bearer, Úlairë Nelya is fierce and Damage +1."
+      }
+    ],
     "culture": "WRAITH",
     "race": "NAZGÛL",
     "twilightCost": 5,
@@ -10831,6 +10856,40 @@
     "isUnique": true,
     "kind": "SHADOW",
     "type": "MINION",
+    "abilities": [
+      {
+        "id": "0W36:0",
+        "phases": [
+          "RESPONSE"
+        ],
+        "trigger": {
+          "type": "ABOUT_TO_WOUND",
+          "target": [
+            [
+              "HUNTER",
+              "MINION"
+            ]
+          ]
+        },
+        "cost": [
+          {
+            "exert": [
+              {
+                "count": 1,
+                "target": "SELF"
+              }
+            ]
+          }
+        ],
+        "effects": [
+          {
+            "type": "PREVENT_WOUND"
+          }
+        ],
+        "source": "SELF",
+        "text": "RESPONSE: If a hunter minion is about to take a wound, exert Saruman to prevent that wound"
+      }
+    ],
     "actionPhases": [
       "RESPONSE"
     ],
@@ -16609,7 +16668,7 @@
       },
       "fr": {
         "title": "Polyvalence de Rôdeur",
-        "gameText": "**Manœuvre :** Affaiblissez un rôdeur à une rivière ou une forêt pour épuiser jusqu’à 2 séides.",
+        "gameText": "**Manœuvre :** Affaiblissez un rôdeur à une rivière ou une forêt pour épuiser un séide.",
         "loreText": "Quand on emmène avec soi un Rôdeur, il est bon de lui prêter attention, surtout quand ce Rôdeur est Aragorn."
       },
       "de": {
@@ -30911,6 +30970,31 @@
     "keywords": [
       "TWILIGHT"
     ],
+    "abilities": [
+      {
+        "id": "2R84:0",
+        "phases": [],
+        "trigger": {
+          "type": "WHILE",
+          "spotBurdensOrRingBearerWounds": 2
+        },
+        "cost": [],
+        "effects": [
+          {
+            "type": "MODIFY_KEYWORD",
+            "keyword": "FIERCE",
+            "target": "SELF"
+          },
+          {
+            "type": "MODIFY_KEYWORD",
+            "keyword": "DAMAGE +1",
+            "target": "SELF"
+          }
+        ],
+        "source": "SELF",
+        "text": "While you can spot 2 burdens or 2 wounds on the Ring-bearer, Úlairë Nelya is fierce and Damage +1."
+      }
+    ],
     "culture": "WRAITH",
     "race": "NAZGÛL",
     "twilightCost": 5,
@@ -40658,6 +40742,33 @@
     "kind": "FREE_PEOPLE",
     "type": "CONDITION",
     "subtype": "SUPPORT-AREA",
+    "abilities": [
+      {
+        "id": "4R52:0",
+        "phases": [
+          "RESPONSE"
+        ],
+        "trigger": {
+          "type": "WINS_SKIRMISH",
+          "winner": [
+            [
+              "Gimli"
+            ]
+          ]
+        },
+        "cost": [],
+        "effects": [
+          {
+            "type": "PLACE_CULTURE_TOKEN",
+            "culture": "DWARVEN",
+            "count": 1,
+            "target": "SELF"
+          }
+        ],
+        "source": "SELF",
+        "text": "Each time Gimli wins a skirmish, place a dwarven token on this card."
+      }
+    ],
     "culture": "DWARVEN",
     "twilightCost": 1,
     "imageUrl": "/cards_visuals/o_04_052.jpg",
@@ -40856,6 +40967,66 @@
     "kind": "FREE_PEOPLE",
     "type": "CONDITION",
     "subtype": "SUPPORT-AREA",
+    "abilities": [
+      {
+        "id": "4U57:0",
+        "phases": [
+          "SKIRMISH"
+        ],
+        "cost": [],
+        "effects": [
+          {
+            "type": "ADD_TEMP_STAT",
+            "stat": "STRENGTH",
+            "value": 1,
+            "target": [
+              [
+                "UNBOUND",
+                "COMPANION"
+              ]
+            ],
+            "expiresAtPhase": "SKIRMISH",
+            "perCultureTokensOnSelf": {
+              "culture": "DWARVEN",
+              "limit": 3
+            }
+          },
+          {
+            "type": "DISCARD",
+            "count": 1,
+            "target": "SELF"
+          }
+        ],
+        "source": "SELF",
+        "text": "SKIRMISH: Make an unbound companion strength +1 for each dwarven token here (limit +3). Discard this condition."
+      },
+      {
+        "id": "4U57:1",
+        "phases": [
+          "RESPONSE"
+        ],
+        "trigger": {
+          "type": "WINS_SKIRMISH",
+          "winner": [
+            [
+              "DWARF"
+            ]
+          ]
+        },
+        "optional": true,
+        "cost": [],
+        "effects": [
+          {
+            "type": "PLACE_CULTURE_TOKEN",
+            "culture": "DWARVEN",
+            "count": 1,
+            "target": "SELF"
+          }
+        ],
+        "source": "SELF",
+        "text": "Each time a Dwarf wins a skirmish, you may place a dwarven token on this card."
+      }
+    ],
     "actionPhases": [
       "SKIRMISH"
     ],
@@ -41496,6 +41667,34 @@
     "kind": "FREE_PEOPLE",
     "type": "CONDITION",
     "subtype": "SUPPORT-AREA",
+    "abilities": [
+      {
+        "id": "4R69:0",
+        "phases": [
+          "RESPONSE"
+        ],
+        "trigger": {
+          "type": "WINS_SKIRMISH",
+          "winner": [
+            [
+              "Legolas"
+            ]
+          ]
+        },
+        "optional": true,
+        "cost": [],
+        "effects": [
+          {
+            "type": "PLACE_CULTURE_TOKEN",
+            "culture": "ELVEN",
+            "count": 1,
+            "target": "SELF"
+          }
+        ],
+        "source": "SELF",
+        "text": "Each time Legolas wins a skirmish, you may place an elven token on this card."
+      }
+    ],
     "culture": "ELVEN",
     "twilightCost": 1,
     "imageUrl": "/cards_visuals/o_04_069.jpg",
@@ -42106,6 +42305,34 @@
     "kind": "FREE_PEOPLE",
     "type": "CONDITION",
     "subtype": "SUPPORT-AREA",
+    "abilities": [
+      {
+        "id": "4U82:0",
+        "phases": [
+          "RESPONSE"
+        ],
+        "trigger": {
+          "type": "WINS_SKIRMISH",
+          "winner": [
+            [
+              "ELF"
+            ]
+          ]
+        },
+        "optional": true,
+        "cost": [],
+        "effects": [
+          {
+            "type": "PLACE_CULTURE_TOKEN",
+            "culture": "ELVEN",
+            "count": 1,
+            "target": "SELF"
+          }
+        ],
+        "source": "SELF",
+        "text": "Each time an Elf wins a skirmish, you may place an elven token on this card."
+      }
+    ],
     "actionPhases": [
       "SKIRMISH"
     ],
@@ -42395,6 +42622,34 @@
     "kind": "FREE_PEOPLE",
     "type": "CONDITION",
     "subtype": "SUPPORT-AREA",
+    "abilities": [
+      {
+        "id": "4U88:0",
+        "phases": [
+          "RESPONSE"
+        ],
+        "trigger": {
+          "type": "WINS_SKIRMISH",
+          "winner": [
+            [
+              "GANDALF"
+            ]
+          ]
+        },
+        "optional": true,
+        "cost": [],
+        "effects": [
+          {
+            "type": "PLACE_CULTURE_TOKEN",
+            "culture": "GANDALF",
+            "count": 1,
+            "target": "SELF"
+          }
+        ],
+        "source": "SELF",
+        "text": "Each time Gandalf wins a skirmish, you may place a gandalf token here."
+      }
+    ],
     "actionPhases": [
       "SKIRMISH"
     ],
@@ -44140,6 +44395,35 @@
     "kind": "FREE_PEOPLE",
     "type": "CONDITION",
     "subtype": "SUPPORT-AREA",
+    "abilities": [
+      {
+        "id": "4U126:0",
+        "phases": [
+          "RESPONSE"
+        ],
+        "trigger": {
+          "type": "WINS_SKIRMISH",
+          "winner": [
+            [
+              "GONDOR",
+              "MAN"
+            ]
+          ]
+        },
+        "optional": true,
+        "cost": [],
+        "effects": [
+          {
+            "type": "PLACE_CULTURE_TOKEN",
+            "culture": "GONDOR",
+            "count": 1,
+            "target": "SELF"
+          }
+        ],
+        "source": "SELF",
+        "text": "Each time a gondor Man wins a skirmish, you may place a gondor token here."
+      }
+    ],
     "actionPhases": [
       "MANEUVER"
     ],
@@ -51173,6 +51457,35 @@
     "kind": "FREE_PEOPLE",
     "type": "CONDITION",
     "subtype": "SUPPORT-AREA",
+    "abilities": [
+      {
+        "id": "4U276:0",
+        "phases": [
+          "RESPONSE"
+        ],
+        "trigger": {
+          "type": "WINS_SKIRMISH",
+          "winner": [
+            [
+              "ROHAN",
+              "MAN"
+            ]
+          ]
+        },
+        "optional": true,
+        "cost": [],
+        "effects": [
+          {
+            "type": "PLACE_CULTURE_TOKEN",
+            "culture": "ROHAN",
+            "count": 1,
+            "target": "SELF"
+          }
+        ],
+        "source": "SELF",
+        "text": "Each time a rohan Man wins a skirmish, you may place a rohan token on this card."
+      }
+    ],
     "actionPhases": [
       "REGROUP"
     ],
@@ -52558,6 +52871,34 @@
     "kind": "FREE_PEOPLE",
     "type": "CONDITION",
     "subtype": "SUPPORT-AREA",
+    "abilities": [
+      {
+        "id": "4U305:0",
+        "phases": [
+          "RESPONSE"
+        ],
+        "trigger": {
+          "type": "WINS_SKIRMISH",
+          "winner": [
+            [
+              "HOBBIT"
+            ]
+          ]
+        },
+        "optional": true,
+        "cost": [],
+        "effects": [
+          {
+            "type": "PLACE_CULTURE_TOKEN",
+            "culture": "SHIRE",
+            "count": 1,
+            "target": "SELF"
+          }
+        ],
+        "source": "SELF",
+        "text": "Each time a Hobbit wins a skirmish, you may place a shire token here."
+      }
+    ],
     "actionPhases": [
       "FELLOWSHIP"
     ],
@@ -59189,6 +59530,71 @@
     "kind": "SHADOW",
     "type": "CONDITION",
     "subtype": "SUPPORT-AREA",
+    "abilities": [
+      {
+        "id": "6C1:0",
+        "phases": [
+          "RESPONSE"
+        ],
+        "trigger": {
+          "type": "ABOUT_TO_WOUND",
+          "target": [
+            [
+              "DUNLAND",
+              "MAN"
+            ]
+          ]
+        },
+        "cost": [
+          {
+            "discardFromPlay": [
+              {
+                "count": 1,
+                "target": "SELF"
+              }
+            ]
+          }
+        ],
+        "effects": [
+          {
+            "type": "PREVENT_WOUND"
+          }
+        ],
+        "source": "SELF",
+        "text": "RESPONSE: If a dunland Man is about to take a wound, discard this condition to prevent that wound"
+      },
+      {
+        "id": "6C1:1",
+        "phases": [
+          "RESPONSE"
+        ],
+        "trigger": {
+          "type": "ABOUT_TO_WOUND",
+          "target": [
+            [
+              "DUNLAND",
+              "MAN"
+            ]
+          ]
+        },
+        "cost": [
+          {
+            "removeCultureTokens": {
+              "culture": "DUNLAND",
+              "count": 1,
+              "from": "SELF"
+            }
+          }
+        ],
+        "effects": [
+          {
+            "type": "PREVENT_WOUND"
+          }
+        ],
+        "source": "SELF",
+        "text": "RESPONSE: If a dunland Man is about to take a wound, remove a dunland token from here to prevent that wound"
+      }
+    ],
     "actionPhases": [
       "RESPONSE"
     ],
@@ -64329,6 +64735,89 @@
     "kind": "FREE_PEOPLE",
     "type": "CONDITION",
     "subtype": "SUPPORT-AREA",
+    "abilities": [
+      {
+        "id": "6C111:0",
+        "phases": [
+          "RESPONSE"
+        ],
+        "trigger": {
+          "type": "ABOUT_TO_WOUND",
+          "target": [
+            [
+              "UNBOUND",
+              "HOBBIT"
+            ]
+          ]
+        },
+        "cost": [
+          {
+            "discardFromPlay": [
+              {
+                "count": 1,
+                "target": "SELF"
+              }
+            ]
+          }
+        ],
+        "effects": [
+          {
+            "type": "PREVENT_WOUND"
+          }
+        ],
+        "source": "SELF",
+        "text": "RESPONSE: If an unbound Hobbit is about to take a wound, discard this condition to prevent that wound"
+      },
+      {
+        "id": "6C111:1",
+        "phases": [
+          "RESPONSE"
+        ],
+        "trigger": {
+          "type": "ABOUT_TO_WOUND",
+          "target": [
+            [
+              "UNBOUND",
+              "HOBBIT"
+            ]
+          ]
+        },
+        "cost": [
+          {
+            "removeCultureTokens": {
+              "culture": "SHIRE",
+              "count": 1,
+              "from": "SELF"
+            }
+          }
+        ],
+        "effects": [
+          {
+            "type": "PREVENT_WOUND"
+          }
+        ],
+        "source": "SELF",
+        "text": "RESPONSE: If an unbound Hobbit is about to take a wound, remove a shire token from here to prevent that wound"
+      },
+      {
+        "id": "6C111:2",
+        "phases": [],
+        "trigger": {
+          "type": "WHEN_PLAYED"
+        },
+        "cost": [],
+        "effects": [
+          {
+            "type": "PLACE_CULTURE_TOKEN",
+            "culture": "SHIRE",
+            "count": 2,
+            "target": "SELF"
+          }
+        ],
+        "source": "SELF",
+        "text": "When you play this condition, place 2 shire tokens here."
+      }
+    ],
     "actionPhases": [
       "RESPONSE"
     ],
@@ -76008,6 +76497,34 @@
     "kind": "FREE_PEOPLE",
     "type": "CONDITION",
     "subtype": "SUPPORT-AREA",
+    "abilities": [
+      {
+        "id": "7R249:0",
+        "phases": [
+          "RESPONSE"
+        ],
+        "trigger": {
+          "type": "WINS_SKIRMISH",
+          "winner": [
+            [
+              "ROHAN",
+              "MAN"
+            ]
+          ]
+        },
+        "cost": [],
+        "effects": [
+          {
+            "type": "PLACE_CULTURE_TOKEN",
+            "culture": "ROHAN",
+            "count": 1,
+            "target": "SELF"
+          }
+        ],
+        "source": "SELF",
+        "text": "Each time a rohan Man wins a skirmish, place a rohan token here."
+      }
+    ],
     "culture": "ROHAN",
     "twilightCost": 2,
     "imageUrl": "/cards_visuals/o_07_249.jpg",
@@ -86416,6 +86933,38 @@
     "abilities": [
       {
         "id": "9R25:0",
+        "phases": [
+          "RESPONSE"
+        ],
+        "trigger": {
+          "type": "ABOUT_TO_WOUND",
+          "target": "SELF"
+        },
+        "cost": [
+          {
+            "exert": [
+              {
+                "count": 1,
+                "target": [
+                  [
+                    "ENT"
+                  ]
+                ],
+                "mode": "DESIGNATION"
+              }
+            ]
+          }
+        ],
+        "effects": [
+          {
+            "type": "PREVENT_WOUND"
+          }
+        ],
+        "source": "SELF",
+        "text": "RESPONSE: If this companion is about to take a wound, exert an Ent to prevent that wound"
+      },
+      {
+        "id": "9R25:1",
         "phases": [],
         "trigger": {
           "type": "WHILE"
@@ -86949,6 +87498,40 @@
         "GONDOR",
         "MAN"
       ]
+    ],
+    "abilities": [
+      {
+        "id": "9R+34:0",
+        "phases": [
+          "RESPONSE"
+        ],
+        "trigger": {
+          "type": "ABOUT_TO_WOUND",
+          "target": "BEARER"
+        },
+        "cost": [
+          {
+            "exert": [
+              {
+                "count": 2,
+                "target": [
+                  [
+                    "GONDOR",
+                    "MAN"
+                  ]
+                ]
+              }
+            ]
+          }
+        ],
+        "effects": [
+          {
+            "type": "PREVENT_WOUND"
+          }
+        ],
+        "source": "SELF",
+        "text": "RESPONSE: If bearer is about to take a wound, exert 2 gondor Men to prevent that wound"
+      }
     ],
     "actionPhases": [
       "RESPONSE"
@@ -96750,6 +97333,42 @@
     "keywords": [
       "LURKER"
     ],
+    "abilities": [
+      {
+        "id": "11C76:0",
+        "phases": [
+          "RESPONSE"
+        ],
+        "trigger": {
+          "type": "ABOUT_TO_WOUND",
+          "target": [
+            [
+              "MEN",
+              "MINION"
+            ]
+          ],
+          "inSkirmish": true
+        },
+        "cost": [
+          {
+            "exert": [
+              {
+                "count": 1,
+                "target": "SELF"
+              }
+            ],
+            "removeTwilight": 1
+          }
+        ],
+        "effects": [
+          {
+            "type": "PREVENT_WOUND"
+          }
+        ],
+        "source": "SELF",
+        "text": "RESPONSE: If a men minion is about to take a wound in a skirmish, exert this minion and remove twilight1 to prevent that wound"
+      }
+    ],
     "actionPhases": [
       "RESPONSE"
     ],
@@ -97481,6 +98100,40 @@
     "kind": "SHADOW",
     "type": "CONDITION",
     "subtype": "SUPPORT-AREA",
+    "abilities": [
+      {
+        "id": "11R91:0",
+        "phases": [
+          "START_OF_MANEUVER"
+        ],
+        "optional": true,
+        "cost": [
+          {
+            "spotHand": 2,
+            "spot": [
+              {
+                "count": 2,
+                "target": [
+                  [
+                    "MEN",
+                    "MINION"
+                  ]
+                ]
+              }
+            ],
+            "discardEntireHand": true
+          }
+        ],
+        "effects": [
+          {
+            "type": "ADD_TWILIGHT",
+            "count": 8
+          }
+        ],
+        "source": "SELF",
+        "text": "At the start of the maneuver phase, if you have 2 or more cards in hand, you may spot 2 men minions and discard your hand to add twilight8."
+      }
+    ],
     "actionPhases": [
       "START_OF_MANEUVER"
     ],
@@ -101609,6 +102262,37 @@
     "keywords": [
       "DAMAGE +1"
     ],
+    "abilities": [
+      {
+        "id": "11S178:0",
+        "phases": [],
+        "trigger": {
+          "type": "WHILE",
+          "spot": [
+            {
+              "count": 1,
+              "target": [
+                [
+                  "EXHAUSTED",
+                  "COMPANION"
+                ]
+              ]
+            }
+          ]
+        },
+        "cost": [],
+        "effects": [
+          {
+            "type": "MODIFY_STAT",
+            "stat": "STRENGTH",
+            "value": 3,
+            "target": "SELF"
+          }
+        ],
+        "source": "SELF",
+        "text": "While you can spot an exhausted companion, this minion is strength +3."
+      }
+    ],
     "culture": "URUK-HAI",
     "race": "URUK-HAI",
     "twilightCost": 3,
@@ -101747,7 +102431,7 @@
             "count": 1,
             "target": [
               [
-                "URUKHAI",
+                "URUK-HAI",
                 "MINION"
               ]
             ]
@@ -101926,6 +102610,71 @@
     "kind": "SHADOW",
     "type": "CONDITION",
     "subtype": "SUPPORT-AREA",
+    "abilities": [
+      {
+        "id": "11U185:0",
+        "phases": [
+          "RESPONSE"
+        ],
+        "trigger": {
+          "type": "ABOUT_TO_WOUND",
+          "target": [
+            [
+              "URUK-HAI",
+              "MINION"
+            ]
+          ]
+        },
+        "cost": [
+          {
+            "discardFromPlay": [
+              {
+                "count": 1,
+                "target": "SELF"
+              }
+            ]
+          }
+        ],
+        "effects": [
+          {
+            "type": "PREVENT_WOUND"
+          }
+        ],
+        "source": "SELF",
+        "text": "RESPONSE: If an urukhai minion is about to take a wound, discard this condition to prevent that wound"
+      },
+      {
+        "id": "11U185:1",
+        "phases": [
+          "RESPONSE"
+        ],
+        "trigger": {
+          "type": "ABOUT_TO_WOUND",
+          "target": [
+            [
+              "URUK-HAI",
+              "MINION"
+            ]
+          ]
+        },
+        "cost": [
+          {
+            "removeCultureTokens": {
+              "culture": "URUK-HAI",
+              "count": 1,
+              "from": "SELF"
+            }
+          }
+        ],
+        "effects": [
+          {
+            "type": "PREVENT_WOUND"
+          }
+        ],
+        "source": "SELF",
+        "text": "RESPONSE: If an urukhai minion is about to take a wound, remove an urukhai token from here to prevent that wound"
+      }
+    ],
     "actionPhases": [
       "RESPONSE"
     ],
@@ -102055,6 +102804,37 @@
     "type": "MINION",
     "keywords": [
       "DAMAGE +1"
+    ],
+    "abilities": [
+      {
+        "id": "11S188:0",
+        "phases": [],
+        "trigger": {
+          "type": "WHILE",
+          "spot": [
+            {
+              "count": 1,
+              "target": [
+                [
+                  "EXHAUSTED",
+                  "COMPANION"
+                ]
+              ]
+            }
+          ]
+        },
+        "cost": [],
+        "effects": [
+          {
+            "type": "MODIFY_STAT",
+            "stat": "STRENGTH",
+            "value": 3,
+            "target": "SELF"
+          }
+        ],
+        "source": "SELF",
+        "text": "While you can spot an exhausted companion, this minion is strength +3."
+      }
     ],
     "culture": "URUK-HAI",
     "race": "URUK-HAI",
@@ -102461,7 +103241,7 @@
             "count": 1,
             "target": [
               [
-                "URUKHAI",
+                "URUK-HAI",
                 "MINION"
               ]
             ]
@@ -107088,6 +107868,35 @@
         "The Mouth of Sauron"
       ]
     ],
+    "abilities": [
+      {
+        "id": "12R72:0",
+        "phases": [
+          "RESPONSE"
+        ],
+        "trigger": {
+          "type": "ABOUT_TO_WOUND",
+          "target": [
+            [
+              "MEN",
+              "MINION"
+            ]
+          ]
+        },
+        "cost": [
+          {
+            "removeTwilight": 3
+          }
+        ],
+        "effects": [
+          {
+            "type": "PREVENT_WOUND"
+          }
+        ],
+        "source": "SELF",
+        "text": "RESPONSE: If a men minion is about to take a wound, remove twilight3 to prevent that wound"
+      }
+    ],
     "actionPhases": [
       "RESPONSE"
     ],
@@ -110818,7 +111627,7 @@
             "count": 1,
             "target": [
               [
-                "URUKHAI",
+                "URUK-HAI",
                 "MINION"
               ]
             ]
@@ -112637,6 +113446,52 @@
         "DWARF"
       ]
     ],
+    "abilities": [
+      {
+        "id": "13R1:0",
+        "phases": [
+          "RESPONSE"
+        ],
+        "trigger": {
+          "type": "ABOUT_TO_WOUND",
+          "target": "BEARER",
+          "inSkirmish": true
+        },
+        "cost": [
+          {
+            "removeCultureTokens": {
+              "culture": "DWARVEN",
+              "count": 2
+            }
+          }
+        ],
+        "effects": [
+          {
+            "type": "PREVENT_WOUND"
+          }
+        ],
+        "source": "SELF",
+        "text": "RESPONSE: If bearer is about to take a wound in a skirmish, remove 2 dwarven tokens to prevent that wound"
+      },
+      {
+        "id": "13R1:1",
+        "phases": [],
+        "trigger": {
+          "type": "WHEN_PLAYED"
+        },
+        "optional": true,
+        "cost": [],
+        "effects": [
+          {
+            "type": "REINFORCE_CULTURE_TOKEN",
+            "culture": "DWARVEN",
+            "count": 1
+          }
+        ],
+        "source": "SELF",
+        "text": "When you play Arod, you may reinforce a dwarven token."
+      }
+    ],
     "actionPhases": [
       "RESPONSE"
     ],
@@ -112999,6 +113854,26 @@
       [
         "ELF"
       ]
+    ],
+    "abilities": [
+      {
+        "id": "13R10:0",
+        "phases": [],
+        "trigger": {
+          "type": "WHEN_PLAYED"
+        },
+        "optional": true,
+        "cost": [],
+        "effects": [
+          {
+            "type": "REINFORCE_CULTURE_TOKEN",
+            "culture": "ELVEN",
+            "count": 1
+          }
+        ],
+        "source": "SELF",
+        "text": "When you play Asfaloth, you may reinforce an elven token."
+      }
     ],
     "actionPhases": [
       "SKIRMISH"
@@ -114361,6 +115236,26 @@
         "WIZARD"
       ]
     ],
+    "abilities": [
+      {
+        "id": "13R40:0",
+        "phases": [],
+        "trigger": {
+          "type": "WHEN_PLAYED"
+        },
+        "optional": true,
+        "cost": [],
+        "effects": [
+          {
+            "type": "REINFORCE_CULTURE_TOKEN",
+            "culture": "GANDALF",
+            "count": 1
+          }
+        ],
+        "source": "SELF",
+        "text": "When you play Shadowfax, you may reinforce a gandalf token."
+      }
+    ],
     "actionPhases": [
       "SKIRMISH"
     ],
@@ -114705,6 +115600,26 @@
       [
         "Sméagol"
       ]
+    ],
+    "abilities": [
+      {
+        "id": "13R48:0",
+        "phases": [],
+        "trigger": {
+          "type": "WHEN_PLAYED"
+        },
+        "optional": true,
+        "cost": [],
+        "effects": [
+          {
+            "type": "REINFORCE_CULTURE_TOKEN",
+            "culture": "GOLLUM",
+            "count": 1
+          }
+        ],
+        "source": "SELF",
+        "text": "When you play Fishing Boat, you may reinforce a gollum token."
+      }
     ],
     "culture": "GOLLUM",
     "twilightCost": 2,
@@ -115377,6 +116292,26 @@
         "GONDOR",
         "COMPANION"
       ]
+    ],
+    "abilities": [
+      {
+        "id": "13R63:0",
+        "phases": [],
+        "trigger": {
+          "type": "WHEN_PLAYED"
+        },
+        "optional": true,
+        "cost": [],
+        "effects": [
+          {
+            "type": "REINFORCE_CULTURE_TOKEN",
+            "culture": "GONDOR",
+            "count": 1
+          }
+        ],
+        "source": "SELF",
+        "text": "When you play Brego, you may reinforce a gondor token."
+      }
     ],
     "actionPhases": [
       "MANEUVER"
@@ -116290,6 +117225,30 @@
             ]
           }
         ]
+      }
+    ],
+    "abilities": [
+      {
+        "id": "13C83:0",
+        "phases": [],
+        "trigger": {
+          "type": "WHEN_PLAYED",
+          "spotSiteKeyword": {
+            "keyword": "PLAINS",
+            "count": 1
+          }
+        },
+        "optional": false,
+        "cost": [],
+        "effects": [
+          {
+            "type": "REINFORCE_CULTURE_TOKEN",
+            "culture": "MEN",
+            "count": 3
+          }
+        ],
+        "source": "SELF",
+        "text": "When you play this, if you spot a plains site on the adventure path, reinforce 3 men tokens."
       }
     ],
     "culture": "MEN",
@@ -118316,6 +119275,26 @@
         "MAN"
       ]
     ],
+    "abilities": [
+      {
+        "id": "13R126:0",
+        "phases": [],
+        "trigger": {
+          "type": "WHEN_PLAYED"
+        },
+        "optional": true,
+        "cost": [],
+        "effects": [
+          {
+            "type": "REINFORCE_CULTURE_TOKEN",
+            "culture": "ROHAN",
+            "count": 1
+          }
+        ],
+        "source": "SELF",
+        "text": "When you play Firefoot, you may reinforce a rohan token."
+      }
+    ],
     "actionPhases": [
       "START_OF_MANEUVER"
     ],
@@ -118641,6 +119620,26 @@
     "isUnique": false,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
+    "abilities": [
+      {
+        "id": "13C133:0",
+        "phases": [],
+        "trigger": {
+          "type": "WHEN_PLAYED"
+        },
+        "optional": true,
+        "cost": [],
+        "effects": [
+          {
+            "type": "REINFORCE_CULTURE_TOKEN",
+            "culture": "ROHAN",
+            "count": 1
+          }
+        ],
+        "source": "SELF",
+        "text": "When you play this, you may reinforce a rohan token."
+      }
+    ],
     "culture": "ROHAN",
     "race": "MAN",
     "twilightCost": 2,
@@ -118770,6 +119769,26 @@
         "ROHAN",
         "MAN"
       ]
+    ],
+    "abilities": [
+      {
+        "id": "13R136:0",
+        "phases": [],
+        "trigger": {
+          "type": "WHEN_PLAYED"
+        },
+        "optional": true,
+        "cost": [],
+        "effects": [
+          {
+            "type": "REINFORCE_CULTURE_TOKEN",
+            "culture": "ROHAN",
+            "count": 1
+          }
+        ],
+        "source": "SELF",
+        "text": "When you play Snowmane, you may reinforce a rohan token."
+      }
     ],
     "actionPhases": [
       "SKIRMISH"
@@ -119949,7 +120968,7 @@
             "count": 2,
             "target": [
               [
-                "URUKHAI",
+                "URUK-HAI",
                 "MINION"
               ]
             ]
@@ -120049,12 +121068,36 @@
             "count": 1,
             "target": [
               [
-                "URUKHAI",
+                "URUK-HAI",
                 "MINION"
               ]
             ]
           }
         ]
+      }
+    ],
+    "abilities": [
+      {
+        "id": "13C164:0",
+        "phases": [],
+        "trigger": {
+          "type": "WHEN_PLAYED",
+          "spotSiteKeyword": {
+            "keyword": "BATTLEGROUND",
+            "count": 1
+          }
+        },
+        "optional": false,
+        "cost": [],
+        "effects": [
+          {
+            "type": "REINFORCE_CULTURE_TOKEN",
+            "culture": "URUK-HAI",
+            "count": 3
+          }
+        ],
+        "source": "SELF",
+        "text": "When you play this, if you spot a battleground site on the adventure path, reinforce 3 urukhai tokens."
       }
     ],
     "culture": "URUK-HAI",
@@ -120267,7 +121310,7 @@
             "count": 1,
             "target": [
               [
-                "URUKHAI",
+                "URUK-HAI",
                 "MINION"
               ]
             ]
@@ -124483,6 +125526,33 @@
     "kind": "FREE_PEOPLE",
     "type": "CONDITION",
     "subtype": "SUPPORT-AREA",
+    "abilities": [
+      {
+        "id": "15C46:0",
+        "phases": [
+          "RESPONSE"
+        ],
+        "trigger": {
+          "type": "WINS_SKIRMISH",
+          "winner": [
+            [
+              "Sméagol"
+            ]
+          ]
+        },
+        "cost": [],
+        "effects": [
+          {
+            "type": "PLACE_CULTURE_TOKEN",
+            "culture": "GOLLUM",
+            "count": 1,
+            "target": "SELF"
+          }
+        ],
+        "source": "SELF",
+        "text": "Each time Sméagol wins a skirmish, place a gollum token here."
+      }
+    ],
     "actionPhases": [
       "REGROUP"
     ],
@@ -126494,7 +127564,7 @@
               "count": 1,
               "target": [
                 [
-                  "MAN",
+                  "MEN",
                   "MAN"
                 ]
               ]
@@ -130691,7 +131761,7 @@
             "count": 1,
             "target": [
               [
-                "URUKHAI",
+                "URUK-HAI",
                 "MINION"
               ]
             ]
@@ -133957,6 +135027,40 @@
     "isUnique": true,
     "kind": "SHADOW",
     "type": "MINION",
+    "abilities": [
+      {
+        "id": "17R37:0",
+        "phases": [
+          "RESPONSE"
+        ],
+        "trigger": {
+          "type": "ABOUT_TO_WOUND",
+          "target": [
+            [
+              "HUNTER",
+              "MINION"
+            ]
+          ]
+        },
+        "cost": [
+          {
+            "exert": [
+              {
+                "count": 1,
+                "target": "SELF"
+              }
+            ]
+          }
+        ],
+        "effects": [
+          {
+            "type": "PREVENT_WOUND"
+          }
+        ],
+        "source": "SELF",
+        "text": "RESPONSE: If a hunter minion is about to take a wound, exert Saruman to prevent that wound"
+      }
+    ],
     "actionPhases": [
       "RESPONSE"
     ],
@@ -136828,6 +137932,46 @@
         ]
       }
     ],
+    "abilities": [
+      {
+        "id": "17R98:0",
+        "phases": [
+          "RESPONSE"
+        ],
+        "trigger": {
+          "type": "ABOUT_TO_WOUND",
+          "target": [
+            [
+              "ROHAN",
+              "MAN"
+            ]
+          ]
+        },
+        "cost": [
+          {
+            "exert": [
+              {
+                "count": 1,
+                "target": [
+                  [
+                    "ROHAN",
+                    "MAN"
+                  ]
+                ]
+              }
+            ],
+            "addTwilight": 2
+          }
+        ],
+        "effects": [
+          {
+            "type": "PREVENT_WOUND"
+          }
+        ],
+        "source": "SELF",
+        "text": "RESPONSE: If a rohan Man is about to take a wound, exert another rohan Man and add twilight2 to prevent that wound"
+      }
+    ],
     "actionPhases": [
       "RESPONSE"
     ],
@@ -137891,7 +139035,7 @@
             "count": 1,
             "target": [
               [
-                "URUKHAI",
+                "URUK-HAI",
                 "HUNTER"
               ]
             ]
@@ -139184,6 +140328,26 @@
     "kind": "FREE_PEOPLE",
     "type": "CONDITION",
     "subtype": "SUPPORT-AREA",
+    "abilities": [
+      {
+        "id": "18U2:0",
+        "phases": [],
+        "trigger": {
+          "type": "WHEN_PLAYED"
+        },
+        "cost": [],
+        "effects": [
+          {
+            "type": "PLACE_CULTURE_TOKEN",
+            "culture": "DWARVEN",
+            "count": 1,
+            "target": "SELF"
+          }
+        ],
+        "source": "SELF",
+        "text": "When you play this condition, place a dwarven token here."
+      }
+    ],
     "actionPhases": [
       "SKIRMISH"
     ],
@@ -145308,7 +146472,7 @@
             "count": 1,
             "target": [
               [
-                "URUKHAI",
+                "URUK-HAI",
                 "MINION"
               ]
             ]
@@ -145427,7 +146591,7 @@
             "count": 1,
             "target": [
               [
-                "URUKHAI",
+                "URUK-HAI",
                 "MINION"
               ]
             ]

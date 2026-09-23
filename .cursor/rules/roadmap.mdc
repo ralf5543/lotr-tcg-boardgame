@@ -11,7 +11,7 @@ Document **vivant** : précisé, modifié, complété au fur et à mesure. **Lis
 
 ## Mode de travail
 
-1. **Un plan thématique actif** à la fois (détail, credo, étapes) — aujourd’hui : [`.cursor/rules/sites-plan.mdc`](sites-plan.mdc).
+1. **Un plan thématique actif** à la fois (détail, credo, étapes) — aujourd’hui : [`.cursor/rules/culture-tokens-plan.mdc`](culture-tokens-plan.mdc).
 2. **Cette roadmap** = vision d’ensemble + statut des grands axes.
 3. À la bascule : figer / désactiver le plan courant (`alwaysApply: false`), activer le suivant, mettre à jour le statut ici.
 
@@ -21,9 +21,9 @@ Credo transversal (hérités des plans cartes / sites) : **mieux vaut inerte que
 
 | | |
 | --- | --- |
-| **Chantier** | Sites |
-| **Plan** | [`sites-plan.mdc`](sites-plan.mdc) |
-| **Statut** | **Bouclé** (socle ✅ ; reportés volontaires : jetons, weather no-events, gametext site moderne) |
+| **Chantier** | Tokens de culture |
+| **Plan** | [`culture-tokens-plan.mdc`](culture-tokens-plan.mdc) |
+| **Statut** | **Socle livré** (modèle / reinforce / remove / UI / parser / 13C83–164) ; familles complexes encore hors scope |
 
 ## Grands axes
 
@@ -31,11 +31,11 @@ Statuts : `en cours` · `à faire` · `plus tard` · `fait` · `pause`
 
 | Axe | Statut | Notes |
 | --- | --- | --- |
-| **Sites** | **fait** | Socle Standard livré. Suite hors sites : deck / BOT / chat / jetons… Reportés sites : weather no-events, jetons reinforce. |
+| **Sites** | **fait** | Socle Standard livré. Reportés : weather no-events, gametext site moderne. Reinforce site path → chantier jetons. |
+| **Tokens de culture** | **en cours** | Jetons sur cartes ; place / reinforce / remove / UI ; débloque spot site path → reinforce. |
 | **Création de deck** | à faire | Construction / édition / validation (format Standard, X-list…). |
 | **Affronter un BOT** | à faire | Via boardgame.io (adversaire automatisé). |
 | **Chat** | à faire | Via boardgame.io (table / match). |
-| **Tokens de culture** | à faire | Modèle + reinforce / remove / UI. Bloque une famille de cartes (ex. spot site path → reinforce). |
 | **Gagner / Perdre** | à faire | Conditions de victoire / défaite (Anneau, sites, élimination…). |
 | **Options** | à faire | Préférences joueur (couper le son, etc.). |
 | **Écran de bienvenue** | à faire | Avant le plateau boardgame.io (lobby / menu). |

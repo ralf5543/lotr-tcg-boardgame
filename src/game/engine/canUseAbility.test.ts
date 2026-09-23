@@ -104,10 +104,43 @@ describe('canUseAbility', () => {
         ).toBe(false);
     });
 
-    it('autorise une capacité dont actionPhases matche la phase courante', () => {
+    it('refuse le halo si actionPhases matche mais sans capacité parsée', () => {
         const card = createCompanion({
             id: 'comp',
             actionPhases: ['startOfFellowship'],
+        });
+        const G = createGameState();
+
+        expect(
+            canUseAbility(card, {
+                G,
+                ctx: { phase: 'startOfFellowship' },
+                playerID: '0',
+            }).valid
+        ).toBe(false);
+        expect(
+            canUseAbility(card, {
+                G,
+                ctx: { phase: 'fellowship' },
+                playerID: '0',
+            }).valid
+        ).toBe(false);
+    });
+
+    it('autorise une capacité dont actionPhases et abilities matchent la phase', () => {
+        const card = createCompanion({
+            id: 'comp',
+            actionPhases: ['startOfFellowship'],
+            abilities: [
+                {
+                    id: 'comp:0',
+                    phases: ['START_OF_FELLOWSHIP'],
+                    cost: [],
+                    effects: [{ type: 'ADD_TWILIGHT', count: 1 }],
+                    source: 'SELF',
+                    text: 'At the start of the fellowship phase, add twilight1.',
+                },
+            ],
         });
         const G = createGameState();
 
@@ -131,6 +164,16 @@ describe('canUseAbility', () => {
         const card = createCompanion({
             id: 'gimli',
             actionPhases: ['SKIRMISH'],
+            abilities: [
+                {
+                    id: 'gimli:0',
+                    phases: ['SKIRMISH'],
+                    cost: [],
+                    effects: [{ type: 'ADD_TWILIGHT', count: 1 }],
+                    source: 'SELF',
+                    text: 'SKIRMISH: Add twilight1.',
+                },
+            ],
         });
         const closed = createGameState();
         const open = createGameState({
@@ -176,6 +219,16 @@ describe('canUseAbility', () => {
         const card = createCompanion({
             id: 'legolas',
             actionPhases: ['ARCHERY'],
+            abilities: [
+                {
+                    id: 'legolas:0',
+                    phases: ['ARCHERY'],
+                    cost: [],
+                    effects: [{ type: 'ADD_TWILIGHT', count: 1 }],
+                    source: 'SELF',
+                    text: 'ARCHERY: Add twilight1.',
+                },
+            ],
         });
         const duringActions = createGameState({
             archeryState: {

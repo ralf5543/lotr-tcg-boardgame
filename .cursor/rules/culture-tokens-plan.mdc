@@ -1,0 +1,37 @@
+---
+description: Plan d’implémentation des jetons de culture (place / reinforce / remove / UI)
+alwaysApply: true
+---
+
+# Jetons de culture — plan et credo
+
+**Format : Standard (règles modernes).** Voir `.cursor/rules/format-standard.mdc`.
+
+Credo : **mieux vaut inerte que faux.** On n’émet place / reinforce / remove que si le fragment est sûr.
+
+**Parser = fragments**, jamais une carte entière. Réutiliser Spot, phases, cultures, when-played. Regex collée sur une phrase unique = trop spécifique : on généralise ou on n’émet rien. Exceptions par id en dernier.
+
+L’ancien plan sites est **figé** (`.cursor/rules/sites-plan.mdc`, `alwaysApply: false`). Vision d’ensemble : [`.cursor/rules/roadmap.mdc`](roadmap.mdc).
+
+## Règles papier (rappel)
+
+- Jetons **sur les cartes** (souvent conditions zone de soutien), **pas** un compteur joueur.
+- **Place** : ajoute sur la carte cible (même à 0).
+- **Reinforce** : ajoute sur une de **tes** cartes actives qui a déjà ≥ 1 jeton de cette culture ; N jetons = tout sur une carte ou réparti.
+- **Remove / spot** : cartes **actives** uniquement.
+- « Free Peoples token » = n’importe quel jeton d’une culture Peuples Libres déjà présent.
+
+## Étapes
+
+1. **Socle modèle** ✅ — `CardState.cultureTokens` ; helpers `cultureTokens.ts` ; effets / coûts.
+2. **Runtime** ✅ — apply / pay / désignation reinforce ; tests.
+3. **UI** ✅ — pastilles sur la carte ; move DEV ; preset `CULTURE_TOKENS_TEST`.
+4. **Parser** ✅ — place / reinforce / remove (fragments sûrs).
+5. **When-played spot site path → reinforce** ✅ — 13C83 / 13C164.
+
+## Hors scope / plus tard
+
+- Weather no-events, gametext site moderne (reportés sites).
+- Familles complexes (heal from culture token, machines Isengard, each-time place…).
+- Multi-Shadow / >2 joueurs.
+- Répartition multi-cartes d’un reinforce N (v1 = tout sur une carte désignée).

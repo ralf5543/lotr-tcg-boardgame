@@ -1,11 +1,13 @@
 ---
-description: Plan d’implémentation des sites (mots-clés, gametext, remplacement, attache, contrôle)
-alwaysApply: true
+description: "ARCHIVÉ — Plan sites (figé ; suite = culture-tokens-plan.mdc)"
+alwaysApply: false
 ---
 
-# Sites — plan et credo
+# Sites — plan et credo (archivé)
 
-**Format : Standard (règles modernes).** Sites sans numéro imprimé (sets 11–18), jouables dans n’importe quel ordre ; numéro / région assignés à la pose. Sanctuaire = **emplacements 3 et 6** du chemin. Voir `.cursor/rules/format-standard.mdc`.
+> **Figé.** Socle sites livré. Suite active : [`.cursor/rules/culture-tokens-plan.mdc`](culture-tokens-plan.mdc).
+>
+> **Format : Standard (règles modernes)** — voir [`.cursor/rules/format-standard.mdc`](format-standard.mdc).
 
 Credo (hérité) : **mieux vaut un site inerte qu’un site faux.** On n’émet une ability / un effet site que si le fragment est sûr.
 

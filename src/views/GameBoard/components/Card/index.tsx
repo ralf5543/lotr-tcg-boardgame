@@ -671,6 +671,28 @@ export const Card: React.FC<CardProps> = ({
                 </S.WoundsOverlay>
             )}
 
+            {size === 'sm' &&
+                card.cultureTokens &&
+                Object.values(card.cultureTokens).some((n) => (n || 0) > 0) && (
+                    <S.CultureTokensOverlay
+                        title={Object.entries(card.cultureTokens)
+                            .filter(([, n]) => (n || 0) > 0)
+                            .map(([c, n]) => `${n} ${c}`)
+                            .join(', ')}
+                    >
+                        {Object.entries(card.cultureTokens).flatMap(
+                            ([culture, count]) =>
+                                Array.from({ length: count || 0 }, (_, i) => (
+                                    <S.CultureTokenPip
+                                        key={`${culture}-${i}`}
+                                        $culture={culture}
+                                        aria-hidden
+                                    />
+                                ))
+                        )}
+                    </S.CultureTokensOverlay>
+                )}
+
             <S.CardHeader>
                 {size !== 'sm' && (
                     <S.TwilightBadge $isShadow={isShadow}>

@@ -444,11 +444,15 @@ export const playCard = (
     }
 };
 
-export const applyWound = ({ G }: LotrMoveContext, targetCardId: string) => {
+export const applyWound = (
+    { G }: LotrMoveContext,
+    targetCardId: string,
+    count = 1
+) => {
     const targetCard = findTargetCard(G, targetCardId);
 
     if (targetCard) {
-        requestWounds(G, targetCard as CardState, 1);
+        requestWounds(G, targetCard as CardState, count);
     }
 };
 

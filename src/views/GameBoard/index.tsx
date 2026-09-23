@@ -34,6 +34,8 @@ import { canPlayCard } from '../../game/engine/canPlayCard';
 import {
     abilityNeedsCostDesignation,
     abilityNeedsEffectDesignation,
+    abilityEffectWantsTargetingArrow,
+    costAndEffectShareHandDesignation,
     cardTargetIds,
     formatDesignationPrompt,
     getCostDesignationCandidates,
@@ -246,7 +248,9 @@ export const GameBoard: React.FC<GameBoardProps> = ({
             ability: NonNullable<CardState['abilities']>[number],
             onChosen: (cardId: string) => void,
             handIndex?: number,
-            which: 'cost' | 'effect' | 'auto' = 'auto'
+            which: 'cost' | 'effect' | 'auto' = 'auto',
+            /** Origine de flèche forcée (ex. rôdeur après coût → séide). */
+            arrowFromOverride?: string
         ): boolean => {
             const candidates =
                 which === 'cost'
@@ -259,15 +263,43 @@ export const GameBoard: React.FC<GameBoardProps> = ({
             if (source.type === 'EVENT' && typeof handIndex === 'number') {
                 moves.beginPendingPlay?.(handIndex, prompt);
             }
+
+            const resolvingEffect =
+                which === 'effect' ||
+                (which === 'auto' &&
+                    getCostDesignationCandidates(G, source, ability)
+                        .length === 0);
+            const resolvingCost = which === 'cost';
+
+            /**
+             * Trajectoire négative : flèche depuis l’agent.
+             * - Coût seul (désigner qui affaiblir) : halo, pas de flèche.
+             * - Effet : override (rôdeur choisi) > source en jeu > pending (event).
+             * - Event à désignation unique (coût=effet) : flèche depuis pending.
+             */
+            let arrowFromCardId: string | undefined;
+            if (arrowFromOverride) {
+                arrowFromCardId = arrowFromOverride;
+            } else if (resolvingCost) {
+                arrowFromCardId = undefined;
+            } else if (
+                resolvingEffect &&
+                abilityEffectWantsTargetingArrow(ability)
+            ) {
+                arrowFromCardId =
+                    source.type === 'EVENT'
+                        ? PENDING_PLAY_ORIGIN_ID
+                        : source.instanceId || source.id;
+            } else if (source.type === 'EVENT' && which === 'auto') {
+                arrowFromCardId = PENDING_PLAY_ORIGIN_ID;
+            }
+
             startTargeting({
                 kind: 'DESIGNATION',
                 targetableCardIds: candidates.flatMap(cardTargetIds),
                 message: prompt,
                 pendingCard: source.type === 'EVENT' ? source : undefined,
-                arrowFromCardId:
-                    source.type === 'EVENT'
-                        ? undefined
-                        : source.instanceId || source.id,
+                arrowFromCardId,
                 onSelectTarget: (cardId) => {
                     // Ne pas stop ici : onChosen peut enchaîner une autre visée
                     // (herbe → compagnon). stop écraserait la nouvelle.
@@ -555,7 +587,6 @@ export const GameBoard: React.FC<GameBoardProps> = ({
                         picked.length === 0
                             ? `Choisissez ${need} compagnon${need > 1 ? 's' : ''} à soigner.`
                             : `Encore ${remaining} compagnon${remaining > 1 ? 's' : ''} (${picked.length}/${need}).`,
-                    arrowFromCardId: source.instanceId || source.id,
                     onSelectTarget: (cardId) => {
                         const card = allCandidates.find(
                             (item) =>
@@ -741,7 +772,11 @@ export const GameBoard: React.FC<GameBoardProps> = ({
                     );
                 },
                 undefined,
-                needsCost ? 'effect' : 'auto'
+                needsCost ? 'effect' : 'auto',
+                // Trajectoire depuis l’agent désigné au coût (sinon source via défaut)
+                costId && abilityEffectWantsTargetingArrow(ability)
+                    ? costId
+                    : undefined
             );
         };
 
@@ -945,6 +980,27 @@ export const GameBoard: React.FC<GameBoardProps> = ({
                     return;
                 }
             }
+            // Reinforce (ou autre effet) : désigner la carte cible avant d’accepter.
+            if (abilityNeedsEffectDesignation(G, source, ability)) {
+                if (
+                    requestDesignation(
+                        source,
+                        ability,
+                        (cardId) => {
+                            stopTargeting();
+                            moves.resolveWhenPlayedChoice?.(
+                                true,
+                                undefined,
+                                cardId
+                            );
+                        },
+                        undefined,
+                        'effect'
+                    )
+                ) {
+                    return;
+                }
+            }
             moves.resolveWhenPlayedChoice?.(true);
         },
         [
@@ -953,6 +1009,8 @@ export const GameBoard: React.FC<GameBoardProps> = ({
             requestHandDiscard,
             requestSiteReplace,
             requestPathThenDeckSite,
+            requestDesignation,
+            stopTargeting,
         ]
     );
 
@@ -1222,6 +1280,32 @@ export const GameBoard: React.FC<GameBoardProps> = ({
                         }
                     }
 
+                    // Coût + effet distincts : halo coût, puis flèche depuis l’agent (coût)
+                    if (
+                        eventAbility &&
+                        abilityNeedsCostDesignation(G, card, eventAbility) &&
+                        abilityNeedsEffectDesignation(G, card, eventAbility) &&
+                        !costAndEffectShareHandDesignation(eventAbility)
+                    ) {
+                        const costId = targetId as string;
+                        if (
+                            requestDesignation(
+                                card,
+                                eventAbility,
+                                (effectId) => {
+                                    stopTargeting();
+                                    moves.playCard?.(index, [costId, effectId]);
+                                    audioService.play('CARD_PLAY');
+                                },
+                                index,
+                                'effect',
+                                costId
+                            )
+                        ) {
+                            return;
+                        }
+                    }
+
                     if (typeof moves.playCard === 'function') {
                         moves.playCard(index, targetId);
                         audioService.play('CARD_PLAY');
@@ -1247,6 +1331,34 @@ export const GameBoard: React.FC<GameBoardProps> = ({
                     ) {
                         return;
                     }
+                }
+                if (
+                    eventAbility &&
+                    abilityNeedsCostDesignation(G, card, eventAbility) &&
+                    abilityNeedsEffectDesignation(G, card, eventAbility) &&
+                    !costAndEffectShareHandDesignation(eventAbility) &&
+                    requestDesignation(
+                        card,
+                        eventAbility,
+                        (costId) => {
+                            requestDesignation(
+                                card,
+                                eventAbility,
+                                (effectId) => {
+                                    stopTargeting();
+                                    moves.playCard(index, [costId, effectId]);
+                                    audioService.play('CARD_PLAY');
+                                },
+                                index,
+                                'effect',
+                                costId
+                            );
+                        },
+                        index,
+                        'cost'
+                    )
+                ) {
+                    return;
                 }
                 if (
                     eventAbility &&

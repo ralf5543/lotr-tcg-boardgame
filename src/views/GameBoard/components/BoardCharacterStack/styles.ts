@@ -72,6 +72,11 @@ export const CardDragTarget = styled.div<{
         $isDesignationTarget &&
         !$isTargeted &&
         css`
+            /* Cible valide : halo permanent (pas seulement :hover) */
+            filter: drop-shadow(0 0 8px rgba(226, 192, 68, 0.85))
+                drop-shadow(0 0 16px rgba(226, 192, 68, 0.45));
+            outline: 2px solid rgba(226, 192, 68, 0.9);
+            border-radius: 8px;
             &:hover {
                 ${targetedHover($aimFaction || 'FREE_PEOPLE')}
             }
@@ -226,6 +231,11 @@ export const MinionWrapper = styled.div<{
         $isDesignationTarget &&
         !$isTargeted &&
         css`
+            /* Cible valide : halo permanent (pas seulement :hover) */
+            filter: drop-shadow(0 0 8px rgba(226, 192, 68, 0.85))
+                drop-shadow(0 0 16px rgba(226, 192, 68, 0.45));
+            outline: 2px solid rgba(226, 192, 68, 0.9);
+            border-radius: 8px;
             &:hover {
                 ${targetedHover($aimFaction || 'FREE_PEOPLE')}
             }

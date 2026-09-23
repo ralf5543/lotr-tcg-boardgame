@@ -2,6 +2,7 @@
 
 import type { CardState, GameState, PlayerState } from '../../types';
 import { cardMatchesTarget } from './matchers';
+import { countCultureTokensForPlayer } from '../../logic/cultureTokens';
 
 export interface ValidationContext {
     G: GameState;
@@ -161,6 +162,38 @@ function validateToPlayOption(
     }
     if (typeof option.removeThreats === 'number' && threats < option.removeThreats) {
         return { valid: false, reason: `Pas assez de menaces à retirer (${threats}/${option.removeThreats}).` };
+    }
+
+    // 7. Culture tokens (sur les cartes en jeu du joueur)
+    if (option.spotCultureTokens) {
+        const have = countCultureTokensForPlayer(
+            G,
+            playerID,
+            option.spotCultureTokens.culture
+        );
+        if (have < option.spotCultureTokens.count) {
+            return {
+                valid: false,
+                reason: `Jetons de culture insuffisants (${have}/${option.spotCultureTokens.count}).`,
+            };
+        }
+    }
+    if (option.removeCultureTokens) {
+        if (option.removeCultureTokens.from === 'SELF') {
+            // Validé à l’activation (source connue) — toPlay ignore SELF.
+        } else {
+            const have = countCultureTokensForPlayer(
+                G,
+                playerID,
+                option.removeCultureTokens.culture
+            );
+            if (have < option.removeCultureTokens.count) {
+                return {
+                    valid: false,
+                    reason: `Pas assez de jetons de culture à retirer (${have}/${option.removeCultureTokens.count}).`,
+                };
+            }
+        }
     }
 
     return { valid: true };

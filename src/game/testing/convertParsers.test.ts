@@ -567,6 +567,208 @@ const EOWYN_RESPONSE_TEXT =
 const ONE_RING_TEXT =
     '<keyword>Response:</keyword> If bearer is about to take a wound, he wears The One Ring until the regroup phase. <br>While wearing The One Ring, each time the Ring-bearer is about to take a wound, add two burdens instead.';
 
+describe('parseAbilities — Fortitude / Oath Sworn (culture tokens)', () => {
+    it('parse Fortitude : prevent that + discard OU remove token from here', () => {
+        const text =
+            'When you play this condition, spot an <symbol>urukhai</symbol> minion to add 3 <symbol>urukhai</symbol> tokens here. <br><keyword>Response:</keyword> If an <symbol>urukhai</symbol> minion is about to take a wound, discard this condition or remove an <symbol>urukhai</symbol> token from here to prevent that.';
+        expect(parseAbilities(text, 'Fortitude', '11U185')).toEqual(
+            expect.arrayContaining([
+                expect.objectContaining({
+                    phases: ['RESPONSE'],
+                    trigger: {
+                        type: 'ABOUT_TO_WOUND',
+                        target: [['URUK-HAI', 'MINION']],
+                    },
+                    cost: [
+                        {
+                            discardFromPlay: [{ count: 1, target: 'SELF' }],
+                        },
+                    ],
+                    effects: [{ type: 'PREVENT_WOUND' }],
+                }),
+                expect.objectContaining({
+                    phases: ['RESPONSE'],
+                    trigger: {
+                        type: 'ABOUT_TO_WOUND',
+                        target: [['URUK-HAI', 'MINION']],
+                    },
+                    cost: [
+                        {
+                            removeCultureTokens: {
+                                culture: 'URUK-HAI',
+                                count: 1,
+                                from: 'SELF',
+                            },
+                        },
+                    ],
+                    effects: [{ type: 'PREVENT_WOUND' }],
+                }),
+            ])
+        );
+    });
+
+    it('parse Oath Sworn : start of maneuver, spot hand + minions, discard hand, twilight', () => {
+        const text =
+            'At the start of the maneuver phase, if you have 2 or more cards in hand, you may spot 2 <symbol>men</symbol> minions and discard your hand to add <symbol>twilight8</symbol>.';
+        expect(parseAbilities(text, 'Oath Sworn', '11R91')).toEqual([
+            {
+                id: '11R91:0',
+                phases: ['START_OF_MANEUVER'],
+                optional: true,
+                cost: [
+                    {
+                        spotHand: 2,
+                        spot: [
+                            {
+                                count: 2,
+                                target: [['MEN', 'MINION']],
+                            },
+                        ],
+                        discardEntireHand: true,
+                    },
+                ],
+                effects: [{ type: 'ADD_TWILIGHT', count: 8 }],
+                source: 'SELF',
+                text: expect.stringMatching(
+                    /At the start of the maneuver phase.*discard your hand to add twilight8/i
+                ),
+            },
+        ]);
+    });
+});
+
+describe('parseAbilities — While exhausted / Each time place token / Arod', () => {
+    it('parse Bloodthirsty Uruk : While spot exhausted companion, strength +3', () => {
+        const text =
+            '<keyword>Damage +1.</keyword> While you can spot an exhausted companion, this minion is strength +3.';
+        expect(parseAbilities(text, 'Bloodthirsty Uruk', '11S178')).toEqual(
+            expect.arrayContaining([
+                expect.objectContaining({
+                    trigger: {
+                        type: 'WHILE',
+                        spot: [
+                            {
+                                count: 1,
+                                target: [['EXHAUSTED', 'COMPANION']],
+                            },
+                        ],
+                    },
+                    effects: [
+                        {
+                            type: 'MODIFY_STAT',
+                            stat: 'STRENGTH',
+                            value: 3,
+                            target: 'SELF',
+                        },
+                    ],
+                }),
+            ])
+        );
+    });
+
+    it('parse Stout and Strong : Each time a Dwarf wins → place dwarven token', () => {
+        const text =
+            'Each time a Dwarf wins a skirmish, you may place a <symbol>dwarven</symbol> token on this card.';
+        expect(parseAbilities(text, 'Stout and Strong', '4U57')).toEqual(
+            expect.arrayContaining([
+                expect.objectContaining({
+                    phases: ['RESPONSE'],
+                    optional: true,
+                    trigger: {
+                        type: 'WINS_SKIRMISH',
+                        winner: [['DWARF']],
+                    },
+                    effects: [
+                        {
+                            type: 'PLACE_CULTURE_TOKEN',
+                            culture: 'DWARVEN',
+                            count: 1,
+                            target: 'SELF',
+                        },
+                    ],
+                }),
+            ])
+        );
+    });
+
+    it('parse My Axe Is Notched : Each time Gimli wins → place token', () => {
+        const text =
+            'Each time Gimli wins a skirmish, place a <symbol>dwarven</symbol> token on this card.';
+        expect(parseAbilities(text, 'My Axe Is Notched', '4R52')).toEqual(
+            expect.arrayContaining([
+                expect.objectContaining({
+                    phases: ['RESPONSE'],
+                    trigger: {
+                        type: 'WINS_SKIRMISH',
+                        winner: [['Gimli']],
+                    },
+                    effects: [
+                        {
+                            type: 'PLACE_CULTURE_TOKEN',
+                            culture: 'DWARVEN',
+                            count: 1,
+                            target: 'SELF',
+                        },
+                    ],
+                }),
+            ])
+        );
+    });
+
+    it('parse Stout and Strong Skirmish : +1 par jeton ici, limite +3, défausse', () => {
+        const text =
+            'Each time a Dwarf wins a skirmish, you may place a <symbol>dwarven</symbol> token on this card. <br><keyword>Skirmish:</keyword> Make an unbound companion strength +1 for each <symbol>dwarven</symbol> token here (limit +3). Discard this condition.';
+        expect(parseAbilities(text, 'Stout and Strong', '4U57')).toEqual(
+            expect.arrayContaining([
+                expect.objectContaining({
+                    phases: ['SKIRMISH'],
+                    cost: [],
+                    effects: [
+                        {
+                            type: 'ADD_TEMP_STAT',
+                            stat: 'STRENGTH',
+                            value: 1,
+                            target: [['UNBOUND', 'COMPANION']],
+                            expiresAtPhase: 'SKIRMISH',
+                            perCultureTokensOnSelf: {
+                                culture: 'DWARVEN',
+                                limit: 3,
+                            },
+                        },
+                        { type: 'DISCARD', count: 1, target: 'SELF' },
+                    ],
+                }),
+            ])
+        );
+    });
+
+    it('parse Arod : remove 2 dwarven tokens to prevent that', () => {
+        const text =
+            'Bearer must be a Dwarf. <br>When you play Arod, you may reinforce a <symbol>dwarven</symbol> token. <br><keyword>Response:</keyword> If bearer is about to take a wound during a skirmish, remove 2 <symbol>dwarven</symbol> tokens to prevent that.';
+        expect(parseAbilities(text, 'Arod', '13R1')).toEqual(
+            expect.arrayContaining([
+                expect.objectContaining({
+                    phases: ['RESPONSE'],
+                    trigger: {
+                        type: 'ABOUT_TO_WOUND',
+                        target: 'BEARER',
+                        inSkirmish: true,
+                    },
+                    cost: [
+                        {
+                            removeCultureTokens: {
+                                culture: 'DWARVEN',
+                                count: 2,
+                            },
+                        },
+                    ],
+                    effects: [{ type: 'PREVENT_WOUND' }],
+                }),
+            ])
+        );
+    });
+});
+
 describe('parseAbilities — Response prevent wound', () => {
     it('parse Éowyn : trigger unbound companion, exert SELF, add twilight, PREVENT_WOUND', () => {
         expect(parseAbilities(EOWYN_RESPONSE_TEXT, 'Éowyn', '4C270')).toEqual([
@@ -1352,6 +1554,32 @@ describe('parseAbilities — While you can spot → strength', () => {
                 'X1'
             )
         ).toBeUndefined();
+        expect(
+            parseAbilities(
+                'While you can spot 2 burdens or 2 wounds on the Ring-bearer, Úlairë Nelya is **fierce** and **Damage +1.**',
+                'Úlairë Nelya',
+                '2R84'
+            )
+        ).toEqual([
+            expect.objectContaining({
+                trigger: {
+                    type: 'WHILE',
+                    spotBurdensOrRingBearerWounds: 2,
+                },
+                effects: [
+                    {
+                        type: 'MODIFY_KEYWORD',
+                        keyword: 'FIERCE',
+                        target: 'SELF',
+                    },
+                    {
+                        type: 'MODIFY_KEYWORD',
+                        keyword: 'DAMAGE +1',
+                        target: 'SELF',
+                    },
+                ],
+            }),
+        ]);
         expect(
             parseAbilities(
                 'While you can spot 3 <symbol>elven</symbol> allies whose home is site 3, each minion skirmishing Arwen is strength -3.',
@@ -3828,6 +4056,100 @@ describe('parseAbilities — Response wins a skirmish', () => {
                 text: expect.stringMatching(
                     /wound a companion \(except the Ring-bearer\)/i
                 ),
+            },
+        ]);
+    });
+});
+
+describe('parseAbilities — culture tokens', () => {
+    it('parse when-played may reinforce', () => {
+        const text =
+            'Bearer must be a Dwarf. \nWhen you play Arod, you may reinforce a <symbol>dwarven</symbol> token. \n**Response:** If bearer is about to take a wound during a skirmish, remove 2 <symbol>dwarven</symbol> tokens to prevent that.';
+        const abilities = parseAbilities(text, 'Arod', '13R1');
+        expect(abilities).toEqual(
+            expect.arrayContaining([
+                expect.objectContaining({
+                    trigger: { type: 'WHEN_PLAYED' },
+                    optional: true,
+                    effects: [
+                        {
+                            type: 'REINFORCE_CULTURE_TOKEN',
+                            culture: 'DWARVEN',
+                            count: 1,
+                        },
+                    ],
+                }),
+            ])
+        );
+    });
+
+    it('parse when-played spot site path → reinforce (13C83)', () => {
+        const text =
+            'To play, spot a <symbol>men</symbol> minion.\nWhen you play this, if you spot a plains site on the adventure path, reinforce 3 <symbol>men</symbol> tokens.\nEach time the Free Peoples player plays the fellowship’s next site, you may discard a possession from play.';
+        const abilities = parseAbilities(text, 'Caravan From the South', '13C83');
+        expect(abilities).toEqual(
+            expect.arrayContaining([
+                expect.objectContaining({
+                    trigger: {
+                        type: 'WHEN_PLAYED',
+                        spotSiteKeyword: {
+                            keyword: 'PLAINS',
+                            count: 1,
+                        },
+                    },
+                    effects: [
+                        {
+                            type: 'REINFORCE_CULTURE_TOKEN',
+                            culture: 'MEN',
+                            count: 3,
+                        },
+                    ],
+                }),
+            ])
+        );
+    });
+
+    it('parse remove tokens from here to heal bearer', () => {
+        const text =
+            '<keyword>Skirmish:</keyword> Remove 2 <symbol>elven</symbol> tokens from here to heal bearer.';
+        expect(parseAbilities(text, 'Asfaloth', '13R6')).toEqual([
+            {
+                id: '13R6:0',
+                phases: ['SKIRMISH'],
+                cost: [
+                    {
+                        removeCultureTokens: {
+                            culture: 'ELVEN',
+                            count: 2,
+                            from: 'SELF',
+                        },
+                    },
+                ],
+                effects: [{ type: 'HEAL', count: 1, target: 'BEARER' }],
+                source: 'ATTACHMENT',
+                text: expect.stringMatching(/Remove 2 .* tokens from here to heal bearer/i),
+            },
+        ]);
+    });
+
+    it('parse remove twilight to place token here', () => {
+        const text =
+            '<keyword>Shadow:</keyword> Remove <symbol>twilight3</symbol> to place a <symbol>dunland</symbol> token here.';
+        expect(parseAbilities(text, 'War Club', '4C31')).toEqual([
+            {
+                id: '4C31:0',
+                phases: ['SHADOW'],
+                cost: [{ removeTwilight: 3 }],
+                effects: [
+                    {
+                        type: 'PLACE_CULTURE_TOKEN',
+                        culture: 'DUNLAND',
+                        count: 1,
+                        target: 'SELF',
+                    },
+                ],
+                source: 'SELF',
+                text: expect.stringMatching(/place a .* token here/i),
             },
         ]);
     });
