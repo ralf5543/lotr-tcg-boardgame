@@ -336,23 +336,10 @@ export const DevPanel: React.FC<DevPanelProps> = ({
                         >
                             Jetons culture
                         </S.PresetButton>
-                        <S.PresetButton
-                            onClick={() =>
-                                moves.devLoadPreset('CULTURE_TOKENS_CSS')
-                            }
-                        >
-                            Jetons CSS (1 / culture)
-                        </S.PresetButton>
-                        <S.PresetButton
-                            onClick={() => moves.devLoadPreset('EXHAUST_TEST')}
-                        >
-                            Exhaust
-                        </S.PresetButton>
                         <S.GameButton $bgColor="#3498db" onClick={onDrawCard}>
                             🃏 Piocher ({deckCount})
                         </S.GameButton>
-                    </S.Section>
-                </S.PanelContent>
+                    </S.Section>                </S.PanelContent>
             )}
         </S.PanelContainer>
     );

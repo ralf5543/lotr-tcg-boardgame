@@ -23,7 +23,7 @@ Credo transversal (hérités des plans cartes / sites) : **mieux vaut inerte que
 | --- | --- |
 | **Chantier** | Tokens de culture |
 | **Plan** | [`culture-tokens-plan.mdc`](culture-tokens-plan.mdc) |
-| **Statut** | **Socle livré** (modèle / reinforce / remove / UI / parser / 13C83–164) ; familles complexes encore hors scope |
+| **Statut** | **Socle + remove→force** livrés ; familles complexes encore hors scope |
 
 ## Grands axes
 
@@ -33,6 +33,7 @@ Statuts : `en cours` · `à faire` · `plus tard` · `fait` · `pause`
 | --- | --- | --- |
 | **Sites** | **fait** | Socle Standard livré. Reportés : weather no-events, gametext site moderne. Reinforce site path → chantier jetons. |
 | **Tokens de culture** | **en cours** | Jetons sur cartes ; place / reinforce / remove / UI ; débloque spot site path → reinforce. |
+| **Main / initiative** | à faire | Force / conditions liées au **nombre de cartes en main** (Man of Bree, « N or more cards in hand ») + règle d’**initiative** (FP ≥ 4 en main). Socle `playerHasInitiative` partiel (Ransacker) ; pas encore While « for each card in hand ». |
 | **Création de deck** | à faire | Construction / édition / validation (format Standard, X-list…). |
 | **Affronter un BOT** | à faire | Via boardgame.io (adversaire automatisé). |
 | **Chat** | à faire | Via boardgame.io (table / match). |

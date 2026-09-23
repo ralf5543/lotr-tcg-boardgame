@@ -903,10 +903,7 @@ export interface ArcheryState {
     shadowRemainingWounds: number;
 }
 
-export type DevPresetType =
-    | 'CULTURE_TOKENS_TEST'
-    | 'CULTURE_TOKENS_CSS'
-    | 'EXHAUST_TEST';
+export type DevPresetType = 'CULTURE_TOKENS_TEST';
 
 export interface TempKeywordModifier {
     keyword: CardKeyword;

@@ -6,9 +6,6 @@
     "isUnique": false,
     "kind": "SITE",
     "type": "SITE",
-    "actionPhases": [
-      "FELLOWSHIP"
-    ],
     "twilightCost": 0,
     "siteNumber": 1,
     "siteArrow": "Left",
@@ -83,9 +80,6 @@
     "keywords": [
       "UNDERGROUND"
     ],
-    "actionPhases": [
-      "MANEUVER"
-    ],
     "twilightCost": 3,
     "siteNumber": 4,
     "siteArrow": "Right",
@@ -123,9 +117,6 @@
     "keywords": [
       "SANCTUARY"
     ],
-    "actionPhases": [
-      "FELLOWSHIP"
-    ],
     "twilightCost": 3,
     "siteNumber": 6,
     "siteArrow": "Left",
@@ -160,9 +151,6 @@
     "isUnique": false,
     "kind": "SITE",
     "type": "SITE",
-    "actionPhases": [
-      "FELLOWSHIP"
-    ],
     "twilightCost": 0,
     "siteNumber": 1,
     "siteArrow": "Left",
@@ -231,9 +219,6 @@
     "isUnique": false,
     "kind": "SITE",
     "type": "SITE",
-    "actionPhases": [
-      "FELLOWSHIP"
-    ],
     "twilightCost": 0,
     "siteNumber": 1,
     "siteArrow": "Left",
@@ -268,9 +253,6 @@
     "isUnique": false,
     "kind": "SITE",
     "type": "SITE",
-    "actionPhases": [
-      "FELLOWSHIP"
-    ],
     "twilightCost": 0,
     "siteNumber": 1,
     "siteArrow": "Left",
@@ -339,9 +321,6 @@
     "isUnique": false,
     "kind": "SITE",
     "type": "SITE",
-    "actionPhases": [
-      "FELLOWSHIP"
-    ],
     "twilightCost": 0,
     "siteNumber": 1,
     "siteArrow": "Left",
@@ -376,9 +355,6 @@
     "isUnique": false,
     "kind": "SITE",
     "type": "SITE",
-    "actionPhases": [
-      "FELLOWSHIP"
-    ],
     "twilightCost": 0,
     "siteNumber": 1,
     "siteArrow": "Left",
@@ -413,9 +389,6 @@
     "isUnique": false,
     "kind": "SITE",
     "type": "SITE",
-    "actionPhases": [
-      "FELLOWSHIP"
-    ],
     "twilightCost": 0,
     "siteNumber": 1,
     "siteArrow": "Left",
@@ -594,9 +567,6 @@
     "type": "SITE",
     "keywords": [
       "PLAINS"
-    ],
-    "actionPhases": [
-      "SKIRMISH"
     ],
     "twilightCost": 2,
     "siteNumber": 2,
@@ -889,9 +859,6 @@
     "keywords": [
       "SANCTUARY"
     ],
-    "actionPhases": [
-      "FELLOWSHIP"
-    ],
     "twilightCost": 0,
     "siteNumber": 3,
     "siteArrow": "Right",
@@ -929,9 +896,6 @@
     "keywords": [
       "SANCTUARY"
     ],
-    "actionPhases": [
-      "FELLOWSHIP"
-    ],
     "twilightCost": 0,
     "siteNumber": 3,
     "siteArrow": "Right",
@@ -968,9 +932,6 @@
     "type": "SITE",
     "keywords": [
       "SANCTUARY"
-    ],
-    "actionPhases": [
-      "FELLOWSHIP"
     ],
     "twilightCost": 0,
     "siteNumber": 3,
@@ -1047,9 +1008,6 @@
     "keywords": [
       "UNDERGROUND"
     ],
-    "actionPhases": [
-      "MANEUVER"
-    ],
     "twilightCost": 3,
     "siteNumber": 4,
     "siteArrow": "Right",
@@ -1123,9 +1081,6 @@
     "type": "SITE",
     "keywords": [
       "UNDERGROUND"
-    ],
-    "actionPhases": [
-      "SHADOW"
     ],
     "twilightCost": 3,
     "siteNumber": 4,
@@ -1238,9 +1193,6 @@
     "keywords": [
       "MOUNTAIN"
     ],
-    "actionPhases": [
-      "SHADOW"
-    ],
     "twilightCost": 2,
     "siteNumber": 4,
     "siteArrow": "Right",
@@ -1277,9 +1229,6 @@
     "type": "SITE",
     "keywords": [
       "UNDERGROUND"
-    ],
-    "actionPhases": [
-      "SHADOW"
     ],
     "twilightCost": 6,
     "siteNumber": 5,
@@ -1354,9 +1303,6 @@
     "type": "SITE",
     "keywords": [
       "SANCTUARY"
-    ],
-    "actionPhases": [
-      "FELLOWSHIP"
     ],
     "twilightCost": 3,
     "siteNumber": 6,
@@ -1619,9 +1565,6 @@
     "keywords": [
       "RIVER"
     ],
-    "actionPhases": [
-      "FELLOWSHIP"
-    ],
     "twilightCost": 6,
     "siteNumber": 8,
     "siteArrow": "Right",
@@ -1659,9 +1602,6 @@
     "keywords": [
       "RIVER"
     ],
-    "actionPhases": [
-      "SHADOW"
-    ],
     "twilightCost": 9,
     "siteNumber": 8,
     "siteArrow": "Right",
@@ -1696,9 +1636,6 @@
     "isUnique": false,
     "kind": "SITE",
     "type": "SITE",
-    "actionPhases": [
-      "MANEUVER"
-    ],
     "twilightCost": 9,
     "siteNumber": 9,
     "siteArrow": "Left",
@@ -1804,9 +1741,6 @@
     "keywords": [
       "RIVER"
     ],
-    "actionPhases": [
-      "SHADOW"
-    ],
     "twilightCost": 9,
     "siteNumber": 9,
     "siteArrow": "Left",
@@ -1841,9 +1775,6 @@
     "isUnique": false,
     "kind": "SITE",
     "type": "SITE",
-    "actionPhases": [
-      "FELLOWSHIP"
-    ],
     "twilightCost": 0,
     "siteNumber": 1,
     "siteArrow": "Left",
@@ -1881,9 +1812,6 @@
     "keywords": [
       "FOREST"
     ],
-    "actionPhases": [
-      "FELLOWSHIP"
-    ],
     "twilightCost": 0,
     "siteNumber": 1,
     "siteArrow": "Left",
@@ -1918,9 +1846,6 @@
     "isUnique": false,
     "kind": "SITE",
     "type": "SITE",
-    "actionPhases": [
-      "FELLOWSHIP"
-    ],
     "twilightCost": 0,
     "siteNumber": 1,
     "siteArrow": "Left",
@@ -2250,9 +2175,6 @@
     "isUnique": false,
     "kind": "SITE",
     "type": "SITE",
-    "actionPhases": [
-      "MANEUVER"
-    ],
     "twilightCost": 9,
     "siteNumber": 9,
     "siteArrow": "Left",
@@ -2355,9 +2277,6 @@
     "isUnique": false,
     "kind": "SITE",
     "type": "SITE",
-    "actionPhases": [
-      "FELLOWSHIP"
-    ],
     "twilightCost": 0,
     "siteNumber": 1,
     "siteArrow": "Left",
@@ -2432,9 +2351,6 @@
     "keywords": [
       "PLAINS"
     ],
-    "actionPhases": [
-      "FELLOWSHIP"
-    ],
     "twilightCost": 0,
     "siteNumber": 1,
     "siteArrow": "Left",
@@ -2471,9 +2387,6 @@
     "type": "SITE",
     "keywords": [
       "PLAINS"
-    ],
-    "actionPhases": [
-      "FELLOWSHIP"
     ],
     "twilightCost": 0,
     "siteNumber": 1,
@@ -2583,9 +2496,6 @@
     "keywords": [
       "PLAINS"
     ],
-    "actionPhases": [
-      "SHADOW"
-    ],
     "twilightCost": 2,
     "siteNumber": 2,
     "siteArrow": "Left",
@@ -2623,9 +2533,6 @@
     "keywords": [
       "FOREST"
     ],
-    "actionPhases": [
-      "FELLOWSHIP"
-    ],
     "twilightCost": 2,
     "siteNumber": 2,
     "siteArrow": "Left",
@@ -2662,9 +2569,6 @@
     "type": "SITE",
     "keywords": [
       "PLAINS"
-    ],
-    "actionPhases": [
-      "START_OF_FELLOWSHIP"
     ],
     "twilightCost": 1,
     "siteNumber": 2,
@@ -2813,9 +2717,6 @@
     "keywords": [
       "SANCTUARY"
     ],
-    "actionPhases": [
-      "FELLOWSHIP"
-    ],
     "twilightCost": 0,
     "siteNumber": 3,
     "siteArrow": "Right",
@@ -2890,9 +2791,6 @@
     "keywords": [
       "SANCTUARY"
     ],
-    "actionPhases": [
-      "FELLOWSHIP"
-    ],
     "twilightCost": 0,
     "siteNumber": 3,
     "siteArrow": "Right",
@@ -2966,9 +2864,6 @@
     "type": "SITE",
     "keywords": [
       "SANCTUARY"
-    ],
-    "actionPhases": [
-      "FELLOWSHIP"
     ],
     "twilightCost": 1,
     "siteNumber": 3,
@@ -3232,9 +3127,6 @@
     "keywords": [
       "BATTLEGROUND"
     ],
-    "actionPhases": [
-      "SHADOW"
-    ],
     "twilightCost": 7,
     "siteNumber": 5,
     "siteArrow": "Left",
@@ -3388,9 +3280,6 @@
       "UNDERGROUND",
       "SANCTUARY"
     ],
-    "actionPhases": [
-      "MANEUVER"
-    ],
     "twilightCost": 3,
     "siteNumber": 6,
     "siteArrow": "Left",
@@ -3465,9 +3354,6 @@
     "type": "SITE",
     "keywords": [
       "SANCTUARY"
-    ],
-    "actionPhases": [
-      "FELLOWSHIP"
     ],
     "twilightCost": 3,
     "siteNumber": 6,
@@ -3612,9 +3498,6 @@
     "isUnique": false,
     "kind": "SITE",
     "type": "SITE",
-    "actionPhases": [
-      "SHADOW"
-    ],
     "twilightCost": 7,
     "siteNumber": 8,
     "siteArrow": "Right",
@@ -3725,9 +3608,6 @@
     "keywords": [
       "BATTLEGROUND"
     ],
-    "actionPhases": [
-      "SHADOW"
-    ],
     "twilightCost": 8,
     "siteNumber": 9,
     "siteArrow": "Left",
@@ -3797,9 +3677,6 @@
     "isUnique": false,
     "kind": "SITE",
     "type": "SITE",
-    "actionPhases": [
-      "SHADOW"
-    ],
     "twilightCost": 9,
     "siteNumber": 9,
     "siteArrow": "Left",
@@ -3834,9 +3711,6 @@
     "isUnique": false,
     "kind": "SITE",
     "type": "SITE",
-    "actionPhases": [
-      "REGROUP"
-    ],
     "twilightCost": 6,
     "siteNumber": 7,
     "siteArrow": "Left",
@@ -3873,9 +3747,6 @@
     "type": "SITE",
     "keywords": [
       "PLAINS"
-    ],
-    "actionPhases": [
-      "RESPONSE"
     ],
     "twilightCost": 8,
     "siteNumber": 8,
@@ -3948,9 +3819,6 @@
     "isUnique": false,
     "kind": "SITE",
     "type": "SITE",
-    "actionPhases": [
-      "FELLOWSHIP"
-    ],
     "twilightCost": 0,
     "siteNumber": 1,
     "siteArrow": "Left",
@@ -3985,9 +3853,6 @@
     "isUnique": false,
     "kind": "SITE",
     "type": "SITE",
-    "actionPhases": [
-      "FELLOWSHIP"
-    ],
     "twilightCost": 0,
     "siteNumber": 1,
     "siteArrow": "Left",
@@ -4025,9 +3890,6 @@
     "keywords": [
       "SANCTUARY"
     ],
-    "actionPhases": [
-      "FELLOWSHIP"
-    ],
     "twilightCost": 0,
     "siteNumber": 3,
     "siteArrow": "Left",
@@ -4064,9 +3926,6 @@
     "type": "SITE",
     "keywords": [
       "SANCTUARY"
-    ],
-    "actionPhases": [
-      "FELLOWSHIP"
     ],
     "twilightCost": 3,
     "siteNumber": 6,
@@ -4136,9 +3995,6 @@
     "isUnique": false,
     "kind": "SITE",
     "type": "SITE",
-    "actionPhases": [
-      "RESPONSE"
-    ],
     "twilightCost": 9,
     "siteNumber": 9,
     "siteArrow": "Left",
@@ -4173,9 +4029,6 @@
     "isUnique": false,
     "kind": "SITE",
     "type": "SITE",
-    "actionPhases": [
-      "FELLOWSHIP"
-    ],
     "twilightCost": 0,
     "siteNumber": 1,
     "siteArrow": "Left",
@@ -4244,9 +4097,6 @@
     "isUnique": false,
     "kind": "SITE",
     "type": "SITE",
-    "actionPhases": [
-      "FELLOWSHIP"
-    ],
     "twilightCost": 0,
     "siteNumber": 1,
     "siteArrow": "Left",
@@ -4281,9 +4131,6 @@
     "isUnique": false,
     "kind": "SITE",
     "type": "SITE",
-    "actionPhases": [
-      "FELLOWSHIP"
-    ],
     "twilightCost": 0,
     "siteNumber": 1,
     "siteArrow": "Left",
@@ -4386,9 +4233,6 @@
     "isUnique": false,
     "kind": "SITE",
     "type": "SITE",
-    "actionPhases": [
-      "SHADOW"
-    ],
     "twilightCost": 1,
     "siteNumber": 2,
     "siteArrow": "Left",
@@ -4500,9 +4344,6 @@
     "keywords": [
       "SANCTUARY"
     ],
-    "actionPhases": [
-      "FELLOWSHIP"
-    ],
     "twilightCost": 0,
     "siteNumber": 3,
     "siteArrow": "Right",
@@ -4539,9 +4380,6 @@
     "type": "SITE",
     "keywords": [
       "SANCTUARY"
-    ],
-    "actionPhases": [
-      "FELLOWSHIP"
     ],
     "twilightCost": 1,
     "siteNumber": 3,
@@ -4580,9 +4418,6 @@
     "keywords": [
       "SANCTUARY"
     ],
-    "actionPhases": [
-      "FELLOWSHIP"
-    ],
     "twilightCost": 0,
     "siteNumber": 3,
     "siteArrow": "Right",
@@ -4620,9 +4455,6 @@
     "keywords": [
       "RIVER"
     ],
-    "actionPhases": [
-      "SKIRMISH"
-    ],
     "twilightCost": 3,
     "siteNumber": 4,
     "siteArrow": "Right",
@@ -4657,9 +4489,6 @@
     "isUnique": false,
     "kind": "SITE",
     "type": "SITE",
-    "actionPhases": [
-      "SKIRMISH"
-    ],
     "twilightCost": 2,
     "siteNumber": 4,
     "siteArrow": "Right",
@@ -4696,9 +4525,6 @@
     "type": "SITE",
     "keywords": [
       "PLAINS"
-    ],
-    "actionPhases": [
-      "ARCHERY"
     ],
     "twilightCost": 4,
     "siteNumber": 4,
@@ -4770,9 +4596,6 @@
     "type": "SITE",
     "keywords": [
       "PLAINS"
-    ],
-    "actionPhases": [
-      "START_OF_MANEUVER"
     ],
     "twilightCost": 6,
     "siteNumber": 5,
@@ -5070,9 +4893,6 @@
     "keywords": [
       "RIVER"
     ],
-    "actionPhases": [
-      "SHADOW"
-    ],
     "twilightCost": 6,
     "siteNumber": 7,
     "siteArrow": "Right",
@@ -5109,9 +4929,6 @@
     "type": "SITE",
     "keywords": [
       "PLAINS"
-    ],
-    "actionPhases": [
-      "SHADOW"
     ],
     "twilightCost": 6,
     "siteNumber": 7,
@@ -5150,9 +4967,6 @@
     "keywords": [
       "RIVER"
     ],
-    "actionPhases": [
-      "SHADOW"
-    ],
     "twilightCost": 6,
     "siteNumber": 7,
     "siteArrow": "Right",
@@ -5187,9 +5001,6 @@
     "isUnique": false,
     "kind": "SITE",
     "type": "SITE",
-    "actionPhases": [
-      "SHADOW"
-    ],
     "twilightCost": 8,
     "siteNumber": 8,
     "siteArrow": "Right",
@@ -5224,9 +5035,6 @@
     "isUnique": false,
     "kind": "SITE",
     "type": "SITE",
-    "actionPhases": [
-      "SKIRMISH"
-    ],
     "twilightCost": 8,
     "siteNumber": 8,
     "siteArrow": "Right",
@@ -5261,9 +5069,6 @@
     "isUnique": false,
     "kind": "SITE",
     "type": "SITE",
-    "actionPhases": [
-      "SHADOW"
-    ],
     "twilightCost": 8,
     "siteNumber": 8,
     "siteArrow": "Right",
@@ -5298,9 +5103,6 @@
     "isUnique": false,
     "kind": "SITE",
     "type": "SITE",
-    "actionPhases": [
-      "SHADOW"
-    ],
     "twilightCost": 8,
     "siteNumber": 8,
     "siteArrow": "Right",
@@ -5372,9 +5174,6 @@
     "isUnique": false,
     "kind": "SITE",
     "type": "SITE",
-    "actionPhases": [
-      "SHADOW"
-    ],
     "twilightCost": 9,
     "siteNumber": 9,
     "siteArrow": "Left",
@@ -5409,9 +5208,6 @@
     "isUnique": false,
     "kind": "SITE",
     "type": "SITE",
-    "actionPhases": [
-      "SHADOW"
-    ],
     "twilightCost": 9,
     "siteNumber": 9,
     "siteArrow": "Left",
@@ -5484,9 +5280,6 @@
       "SANCTUARY",
       "UNDERGROUND"
     ],
-    "actionPhases": [
-      "FELLOWSHIP"
-    ],
     "twilightCost": 1,
     "siteNumber": 3,
     "siteArrow": "Right",
@@ -5528,9 +5321,6 @@
     "keywords": [
       "UNDERGROUND"
     ],
-    "actionPhases": [
-      "SHADOW"
-    ],
     "twilightCost": 4,
     "siteNumber": 4,
     "siteArrow": "Right",
@@ -5569,9 +5359,6 @@
     "isUnique": false,
     "kind": "SITE",
     "type": "SITE",
-    "actionPhases": [
-      "START_OF_REGROUP"
-    ],
     "twilightCost": 7,
     "siteNumber": 5,
     "siteArrow": "Left",
@@ -5612,9 +5399,6 @@
     "type": "SITE",
     "keywords": [
       "RIVER"
-    ],
-    "actionPhases": [
-      "REGROUP"
     ],
     "twilightCost": 6,
     "siteNumber": 7,
@@ -5657,9 +5441,6 @@
     "keywords": [
       "SANCTUARY"
     ],
-    "actionPhases": [
-      "FELLOWSHIP"
-    ],
     "twilightCost": 0,
     "siteNumber": 3,
     "siteArrow": "Right",
@@ -5696,9 +5477,6 @@
     "type": "SITE",
     "keywords": [
       "PLAINS"
-    ],
-    "actionPhases": [
-      "SHADOW"
     ],
     "twilightCost": 3,
     "siteNumber": 4,
@@ -5768,9 +5546,6 @@
     "isUnique": false,
     "kind": "SITE",
     "type": "SITE",
-    "actionPhases": [
-      "SKIRMISH"
-    ],
     "twilightCost": 8,
     "siteNumber": 8,
     "siteArrow": "Right",
@@ -5902,9 +5677,6 @@
     "keywords": [
       "MOUNTAIN"
     ],
-    "actionPhases": [
-      "START_OF_FELLOWSHIP"
-    ],
     "twilightCost": 2,
     "siteArrow": "Right",
     "imageUrl": "/cards_visuals/o_11_229.jpg",
@@ -5940,9 +5712,6 @@
     "type": "SITE",
     "keywords": [
       "DWELLING"
-    ],
-    "actionPhases": [
-      "SHADOW"
     ],
     "twilightCost": 0,
     "siteArrow": "Left",
@@ -6124,9 +5893,6 @@
     "keywords": [
       "MARSH"
     ],
-    "actionPhases": [
-      "START_OF_FELLOWSHIP"
-    ],
     "twilightCost": 3,
     "siteArrow": "Left",
     "imageUrl": "/cards_visuals/o_11_235.jpg",
@@ -6199,9 +5965,6 @@
     "keywords": [
       "PLAINS"
     ],
-    "actionPhases": [
-      "SKIRMISH"
-    ],
     "twilightCost": 1,
     "siteArrow": "Left",
     "imageUrl": "/cards_visuals/o_01_331.jpg",
@@ -6237,9 +6000,6 @@
     "type": "SITE",
     "keywords": [
       "MARSH"
-    ],
-    "actionPhases": [
-      "SHADOW"
     ],
     "twilightCost": 1,
     "siteArrow": "Right",
@@ -6385,9 +6145,6 @@
     "keywords": [
       "DWELLING"
     ],
-    "actionPhases": [
-      "START_OF_FELLOWSHIP"
-    ],
     "twilightCost": 3,
     "siteArrow": "Left",
     "imageUrl": "/cards_visuals/o_01_322.jpg",
@@ -6532,9 +6289,6 @@
     "type": "SITE",
     "keywords": [
       "MARSH"
-    ],
-    "actionPhases": [
-      "REGROUP"
     ],
     "twilightCost": 2,
     "siteArrow": "Left",
@@ -6716,9 +6470,6 @@
     "keywords": [
       "FOREST"
     ],
-    "actionPhases": [
-      "START_OF_FELLOWSHIP"
-    ],
     "twilightCost": 3,
     "siteArrow": "Right",
     "imageUrl": "/cards_visuals/o_11_251.jpg",
@@ -6827,9 +6578,6 @@
     "keywords": [
       "PLAINS"
     ],
-    "actionPhases": [
-      "START_OF_MANEUVER"
-    ],
     "twilightCost": 1,
     "siteArrow": "Right",
     "imageUrl": "/cards_visuals/o_07_345.jpg",
@@ -6866,9 +6614,6 @@
     "keywords": [
       "MOUNTAIN"
     ],
-    "actionPhases": [
-      "START_OF_FELLOWSHIP"
-    ],
     "twilightCost": 3,
     "siteArrow": "Right",
     "imageUrl": "/cards_visuals/o_11_255.jpg",
@@ -6904,9 +6649,6 @@
     "type": "SITE",
     "keywords": [
       "DWELLING"
-    ],
-    "actionPhases": [
-      "START_OF_FELLOWSHIP"
     ],
     "twilightCost": 3,
     "siteArrow": "Right",
@@ -7013,9 +6755,6 @@
     "isUnique": false,
     "kind": "SITE",
     "type": "SITE",
-    "actionPhases": [
-      "START_OF_FELLOWSHIP"
-    ],
     "twilightCost": 2,
     "siteArrow": "Right",
     "imageUrl": "/cards_visuals/o_04_339.jpg",
@@ -7124,9 +6863,6 @@
     "type": "SITE",
     "keywords": [
       "MOUNTAIN"
-    ],
-    "actionPhases": [
-      "MANEUVER"
     ],
     "twilightCost": 1,
     "siteArrow": "Right",
@@ -7289,9 +7025,6 @@
     "type": "SITE",
     "keywords": [
       "FOREST"
-    ],
-    "actionPhases": [
-      "SHADOW"
     ],
     "twilightCost": 0,
     "siteArrow": "Left",
@@ -7950,9 +7683,6 @@
     "isUnique": false,
     "kind": "SITE",
     "type": "SITE",
-    "actionPhases": [
-      "START_OF_REGROUP"
-    ],
     "twilightCost": 0,
     "siteArrow": "Left",
     "imageUrl": "/cards_visuals/o_13_193.jpg",
@@ -8127,9 +7857,6 @@
     "isUnique": false,
     "kind": "SITE",
     "type": "SITE",
-    "actionPhases": [
-      "START_OF_FELLOWSHIP"
-    ],
     "twilightCost": 3,
     "siteArrow": "Right",
     "imageUrl": "/cards_visuals/o_15_190.jpg",
@@ -8304,9 +8031,6 @@
     "isUnique": false,
     "kind": "SITE",
     "type": "SITE",
-    "actionPhases": [
-      "REGROUP"
-    ],
     "twilightCost": 0,
     "imageUrl": "/cards_visuals/o_17_145.jpg",
     "i18n": {

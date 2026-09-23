@@ -1,10 +1,4 @@
-import type {
-    CardCulture,
-    CardState,
-    DevPresetType,
-    GameState,
-    SiteCardState,
-} from '../types';
+import type { CardState, DevPresetType, GameState, SiteCardState } from '../types';
 import { getCardById } from '../cardsData';
 
 const clonePresetCard = (id: string, instanceId?: string): CardState => {
@@ -96,30 +90,9 @@ const setupDevPath = (G: GameState, startIndex = 3): void => {
     G.currentSiteIndex = startIndex;
 };
 
-/** Une carte support par culture + 1 jeton de cette culture (CSS pastilles). */
-const CULTURE_TOKEN_CSS_CARDS: ReadonlyArray<{
-    id: string;
-    culture: CardCulture;
-    side: 'fp' | 'shadow';
-}> = [
-    { id: '0P60', culture: 'SHIRE', side: 'fp' },
-    { id: '4R52', culture: 'DWARVEN', side: 'fp' },
-    { id: '4R69', culture: 'ELVEN', side: 'fp' },
-    { id: '4U88', culture: 'GANDALF', side: 'fp' },
-    { id: '4U126', culture: 'GONDOR', side: 'fp' },
-    { id: '4U276', culture: 'ROHAN', side: 'fp' },
-    { id: '8U23', culture: 'GOLLUM', side: 'fp' },
-    { id: '1R173', culture: 'MORIA', side: 'shadow' },
-    { id: '4C137', culture: 'ISENGARD', side: 'shadow' },
-    { id: '4U28', culture: 'DUNLAND', side: 'shadow' },
-    { id: '4U216', culture: 'RAIDER', side: 'shadow' },
-    { id: '6R89', culture: 'WRAITH', side: 'shadow' },
-    { id: '8R103', culture: 'SAURON', side: 'shadow' },
-    { id: '11U185', culture: 'URUK-HAI', side: 'shadow' },
-    { id: '13U94', culture: 'MEN', side: 'shadow' },
-    { id: '13U103', culture: 'ORC', side: 'shadow' },
-];
-
+/**
+ * Applique un preset DEV sur l’état courant (zones vidées / chemin Standard).
+ */
 export const applyDevPreset = (
     G: GameState,
     presetType: DevPresetType
@@ -127,6 +100,7 @@ export const applyDevPreset = (
     const fpId = G.fpPlayerId || '0';
     const fpPlayer = G.players[fpId];
     if (!fpPlayer) return;
+
     const shadowId = fpId === '0' ? '1' : '0';
     const shadowPlayer = G.players[shadowId];
 
@@ -147,6 +121,16 @@ export const applyDevPreset = (
                     // Arod monté : 2× prévenir (Damage +1) = 4 jetons nains
                     attachments: [clonePresetCard('13R1', 'dev-arod')],
                 },
+                {
+                    // Remove 1 dwarven (Stout / Axe) → force +2
+                    ...clonePresetCard('15R6', 'dev-gloin-ct'),
+                    attachments: [
+                        // Remove 1 dwarven → porteur +1
+                        clonePresetCard('15U7', 'dev-heavy-axe'),
+                    ],
+                },
+                // Homme culture Gandalf — cible Last Stand (+3) / spot exert si branché
+                clonePresetCard('11R30', 'dev-erland-ct'),
             ];
             fpPlayer.supportArea = [
                 {
@@ -156,6 +140,16 @@ export const applyDevPreset = (
                 {
                     ...clonePresetCard('4R52', 'dev-my-axe'),
                     cultureTokens: { DWARVEN: 2 },
+                },
+                {
+                    // Remove 1 shire from here → compagnon shire +1 (Frodon)
+                    ...clonePresetCard('12U132', 'dev-sudden-fury'),
+                    cultureTokens: { SHIRE: 2 },
+                },
+                {
+                    // Remove 3 gandalf from here → compagnon +3 (Erland / etc.)
+                    ...clonePresetCard('18U21', 'dev-last-stand'),
+                    cultureTokens: { GANDALF: 3 },
                 },
             ];
             fpPlayer.hand = [];
@@ -185,149 +179,7 @@ export const applyDevPreset = (
             }
 
             G.statusMessage =
-                '[DEV] Jetons · Frodon exhaust · Gimli+Arod (2× prevent) · Bree str4 · Uruk D+1 · Oath.';
-            break;
-        }
-
-        case 'CULTURE_TOKENS_CSS': {
-            resetBoardForPreset(G);
-            setupDevPath(G, 3);
-            G.twilightPool = 0;
-
-            fpPlayer.fellowshipArea = [
-                {
-                    ...clonePresetCard('2C102', 'dev-frodo-css'),
-                    attachments: [clonePresetCard('1R1', 'dev-ring-css')],
-                },
-            ];
-
-            const withToken = (
-                id: string,
-                culture: CardCulture,
-                instanceId: string
-            ): CardState => ({
-                ...clonePresetCard(id, instanceId),
-                cultureTokens: { [culture]: 1 },
-            });
-
-            fpPlayer.supportArea = CULTURE_TOKEN_CSS_CARDS.filter(
-                (c) => c.side === 'fp'
-            ).map((c) => withToken(c.id, c.culture, `dev-css-${c.culture}`));
-
-            if (shadowPlayer) {
-                shadowPlayer.supportArea = CULTURE_TOKEN_CSS_CARDS.filter(
-                    (c) => c.side === 'shadow'
-                ).map((c) =>
-                    withToken(c.id, c.culture, `dev-css-${c.culture}`)
-                );
-            }
-
-            G.statusMessage =
-                '[DEV] Jetons CSS : 1 carte / culture (16 pastilles) pour peaufiner les couleurs.';
-            break;
-        }
-
-        case 'EXHAUST_TEST': {
-            resetBoardForPreset(G);
-            // Site forêt (Caras Galadhon) — condition de A Ranger's Versatility
-            setupDevPath(G, 4);
-            G.twilightPool = 4;
-
-            // Frodo : 2 blessures (condition While de Nelya) · Aragorn ranger · Gimli déjà exhaust
-            fpPlayer.fellowshipArea = [
-                {
-                    ...clonePresetCard('2C102', 'dev-frodo-ex'),
-                    attachments: [clonePresetCard('1R1', 'dev-ring-ex')],
-                    wounds: 2,
-                },
-                {
-                    ...clonePresetCard('1R89', 'dev-aragorn-ex'),
-                    wounds: 0,
-                },
-                {
-                    ...clonePresetCard('0P12', 'dev-gimli-ex'),
-                    wounds: 2, // vit 3 → 1 restante = exhaust
-                },
-            ];
-
-            // Event réel : Maneuver — exert a ranger → exhaust a minion
-            // (parser Exhaust pas encore branché → capacité injectée fidèle au texte)
-            fpPlayer.hand = [
-                {
-                    ...clonePresetCard('1U113', 'dev-rangers-versatility'),
-                    abilities: [
-                        {
-                            id: '1U113:dev',
-                            phases: ['MANEUVER'],
-                            cost: [
-                                {
-                                    exert: [
-                                        {
-                                            count: 1,
-                                            target: [['RANGER']],
-                                            mode: 'DESIGNATION' as const,
-                                        },
-                                    ],
-                                },
-                            ],
-                            effects: [
-                                {
-                                    type: 'EXHAUST' as const,
-                                    target: [['MINION']],
-                                },
-                            ],
-                            source: 'SELF' as const,
-                            text: 'Maneuver: Exert a ranger to exhaust a minion. [DEV]',
-                        },
-                    ],
-                },
-            ];
-
-            if (shadowPlayer) {
-                // Overseer (Regroup) · Rider plein (cible Versatility) · Nelya (While 2 wounds RB)
-                G.battlefield = [
-                    {
-                        ...clonePresetCard('3R65', 'dev-orc-overseer'),
-                        wounds: 0,
-                        abilities: [
-                            {
-                                id: '3R65:dev',
-                                phases: ['REGROUP'],
-                                cost: [
-                                    {
-                                        exert: [
-                                            {
-                                                count: 2,
-                                                target: 'SELF' as const,
-                                            },
-                                        ],
-                                    },
-                                ],
-                                effects: [
-                                    {
-                                        type: 'EXHAUST' as const,
-                                        target: [['COMPANION']],
-                                        excludeRingBearer: true,
-                                    },
-                                ],
-                                source: 'SELF' as const,
-                                text: 'Regroup: Exert Orc Overseer twice to exhaust a companion (except the Ring-bearer). [DEV]',
-                            },
-                        ],
-                    },
-                    {
-                        ...clonePresetCard('0P20', 'dev-black-rider-ex'),
-                        wounds: 0,
-                    },
-                    {
-                        ...clonePresetCard('2R84', 'dev-nelya-ex'),
-                        wounds: 0,
-                    },
-                ];
-            }
-
-            G.statusMessage =
-                '[DEV] Exhaust : Frodon 2 blessures (Nelya) · Versatility = rôdeur (halo) puis flèche rôdeur→séide · Overseer = flèche depuis lui.';
+                '[DEV] Jetons · remove→force : Glóin/Axe · Sudden Fury · Last Stand→Erland · + Stout/Arod.';
             break;
         }
     }

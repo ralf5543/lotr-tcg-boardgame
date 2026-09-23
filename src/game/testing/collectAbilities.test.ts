@@ -1,6 +1,16 @@
 import { describe, expect, it } from 'vitest';
-import { formatAbilityLabelParts } from '../engine/abilities/collectAbilities';
-import { createCompanion, createMinion } from './createGameState';
+import {
+    abilityProjectsOnto,
+    collectVisibleAbilities,
+    formatAbilityLabelParts,
+} from '../engine/abilities/collectAbilities';
+import {
+    createCard,
+    createCompanion,
+    createGameState,
+    createMinion,
+    createPlayerState,
+} from './createGameState';
 import type { Ability } from '../types';
 
 describe('formatAbilityLabelParts', () => {
@@ -512,5 +522,193 @@ describe('formatAbilityLabelParts', () => {
             cost: 'Affaiblir Surveillant orque 2 fois',
             effect: 'épuiser un Compagnon (sauf le Porteur de l’Anneau)',
         });
+    });
+    it('Hache lourde sur Glóin : préfixe le nom de l’attachement', () => {
+        const ability: Ability = {
+            id: '15U7:0',
+            phases: ['SKIRMISH'],
+            cost: [
+                {
+                    removeCultureTokens: {
+                        culture: 'DWARVEN',
+                        count: 1,
+                    },
+                },
+            ],
+            effects: [
+                {
+                    type: 'ADD_TEMP_STAT',
+                    stat: 'STRENGTH',
+                    value: 1,
+                    target: 'BEARER',
+                    expiresAtPhase: 'SKIRMISH',
+                },
+            ],
+            source: 'ATTACHMENT',
+        };
+        const axe = createCard({
+            id: '15U7',
+            title: 'Heavy Axe',
+            type: 'POSSESSION',
+            i18n: { fr: { title: 'Hache lourde' } },
+        });
+        const gloin = createCompanion({
+            id: '15R6',
+            title: 'Glóin',
+            i18n: { fr: { title: 'Glóin' } },
+        });
+        expect(formatAbilityLabelParts(ability, axe, gloin)).toEqual({
+            cost: 'Hache lourde — Retirer 1 jeton <symbol>dwarven</symbol>',
+            effect: expect.stringMatching(/force \+1/i),
+        });
+        // Projection support ≠ attachement : pas de préfixe « Périls… »
+        const perilsAbility: Ability = {
+            id: '3C36:0',
+            phases: ['RESPONSE'],
+            cost: [
+                {
+                    exert: [{ count: 1, target: [['Gandalf']] }],
+                },
+            ],
+            effects: [{ type: 'PREVENT_WOUND' }],
+            source: 'SELF',
+        };
+        const perils = createCard({
+            id: '3C36',
+            title: 'Unknown Perils',
+            type: 'CONDITION',
+            subtype: 'SUPPORT-AREA',
+            i18n: { fr: { title: 'Périls inconnus' } },
+        });
+        const gandalf = createCompanion({
+            id: 'gandalf',
+            title: 'Gandalf',
+            i18n: { fr: { title: 'Gandalf' } },
+        });
+        const labeled = formatAbilityLabelParts(
+            perilsAbility,
+            perils,
+            gandalf
+        );
+        expect(labeled.cost).not.toMatch(/Périls|—/);
+        expect(labeled.cost).toMatch(/Affaiblir/i);
+    });
+});
+
+describe('collectVisibleAbilities — support area vs projection', () => {
+    const lastStandFellowship: Ability = {
+        id: '18U21:0',
+        phases: ['FELLOWSHIP'],
+        cost: [
+            {
+                exert: [
+                    {
+                        count: 1,
+                        target: [['GANDALF', 'MAN']],
+                        mode: 'DESIGNATION',
+                    },
+                ],
+            },
+        ],
+        effects: [
+            {
+                type: 'PLACE_CULTURE_TOKEN',
+                culture: 'GANDALF',
+                count: 2,
+                target: 'SELF',
+            },
+        ],
+        source: 'SELF',
+    };
+
+    const unknownPerils: Ability = {
+        id: '3C36:0',
+        phases: ['RESPONSE'],
+        trigger: { type: 'ABOUT_TO_WOUND', target: [['COMPANION']] },
+        cost: [
+            {
+                spotTwilight: 4,
+                exert: [{ count: 1, target: [['Gandalf']] }],
+            },
+        ],
+        effects: [{ type: 'PREVENT_WOUND' }],
+        source: 'SELF',
+    };
+
+    it('Last Stand (classe) : bouton sur la situation, pas sur l’Homme Gandalf', () => {
+        const erland = createCompanion({
+            id: 'erland',
+            title: 'Erland',
+            culture: 'GANDALF',
+            race: 'MAN',
+        });
+        const lastStand = createCard({
+            id: '18U21',
+            title: 'Last Stand',
+            kind: 'FREE_PEOPLE',
+            type: 'CONDITION',
+            subtype: 'SUPPORT-AREA',
+            culture: 'GANDALF',
+            abilities: [lastStandFellowship],
+            actionPhases: ['FELLOWSHIP'],
+        });
+        const G = createGameState({
+            fpPlayerId: '0',
+            players: {
+                '0': createPlayerState('0', {
+                    fellowshipArea: [erland],
+                    supportArea: [lastStand],
+                }),
+                '1': createPlayerState('1'),
+            },
+        });
+
+        expect(
+            collectVisibleAbilities(G, lastStand).map((r) => r.ability.id)
+        ).toEqual(['18U21:0']);
+        expect(collectVisibleAbilities(G, erland)).toEqual([]);
+        expect(abilityProjectsOnto(G, lastStand, lastStandFellowship, erland)).toBe(
+            false
+        );
+    });
+
+    it('Périls inconnus (nom propre) : projection sur Gandalf, pas sur la situation', () => {
+        const gandalf = createCompanion({
+            id: 'gandalf',
+            title: 'Gandalf',
+            culture: 'GANDALF',
+            race: 'WIZARD',
+        });
+        const perils = createCard({
+            id: '3C36',
+            title: 'Unknown Perils',
+            kind: 'FREE_PEOPLE',
+            type: 'CONDITION',
+            subtype: 'SUPPORT-AREA',
+            abilities: [unknownPerils],
+            actionPhases: ['RESPONSE'],
+        });
+        const G = createGameState({
+            fpPlayerId: '0',
+            twilightPool: 4,
+            players: {
+                '0': createPlayerState('0', {
+                    fellowshipArea: [gandalf],
+                    supportArea: [perils],
+                }),
+                '1': createPlayerState('1'),
+            },
+        });
+
+        expect(collectVisibleAbilities(G, perils)).toEqual([]);
+        expect(
+            collectVisibleAbilities(G, gandalf).map((r) => ({
+                sourceId: r.source.id,
+                abilityId: r.ability.id,
+            }))
+        ).toEqual([{ sourceId: '3C36', abilityId: '3C36:0' }]);
+        expect(abilityProjectsOnto(G, perils, unknownPerils, gandalf)).toBe(
+            true
+        );
     });
 });

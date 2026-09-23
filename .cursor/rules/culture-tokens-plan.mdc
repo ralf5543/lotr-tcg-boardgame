@@ -26,12 +26,16 @@ L’ancien plan sites est **figé** (`.cursor/rules/sites-plan.mdc`, `alwaysAppl
 1. **Socle modèle** ✅ — `CardState.cultureTokens` ; helpers `cultureTokens.ts` ; effets / coûts.
 2. **Runtime** ✅ — apply / pay / désignation reinforce ; tests.
 3. **UI** ✅ — pastilles sur la carte ; move DEV ; preset `CULTURE_TOKENS_TEST`.
-4. **Parser** ✅ — place / reinforce / remove (fragments sûrs).
+4. **Parser** ✅ — place / reinforce / remove (fragments sûrs) ; **Exert classe → place/add tokens here** (Last Stand Fellowship, machines Isengard Shadow…).
 5. **When-played spot site path → reinforce** ✅ — 13C83 / 13C164.
+6. **Remove N jetons → force ±N** ✅ — coût `removeCultureTokens` + `ADD_TEMP_STAT` (Glóin, Heavy Axe, Sudden Fury, Last Stand…) ; refuse skirmishing / and Damage / from a machine.
 
 ## Hors scope / plus tard
 
 - Weather no-events, gametext site moderne (reportés sites).
-- Familles complexes (heal from culture token, machines Isengard, each-time place…).
+- Familles complexes (heal from culture token, machines Isengard, « discard this or remove token », While spot token).
+- Make strength « minion skirmishing X » (cible skirmishing).
 - Multi-Shadow / >2 joueurs.
 - Répartition multi-cartes d’un reinforce N (v1 = tout sur une carte désignée).
+- Place when-played + spot ; force/discard type Stout généralisé ; each-time loses → place.
+- **Cartes en main / initiative** (hors jetons, mais preset) : force « +1 per card in FP hand » (Man of Bree), condition « N or more cards in hand », règle d’initiative (FP ≥ 4 en main). → axe roadmap dédié.

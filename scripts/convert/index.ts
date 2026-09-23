@@ -152,8 +152,8 @@ async function convert() {
             ? parseSiteAbilities(englishText, cardId)
             : parseAbilities(englishText, titleVO, cardId);
 
-        // actionPhases = phases d’abilities réellement parsées (hors RESPONSE),
-        // pas les mots-clés du texte : sinon bouton « combat » sans capacité.
+        // actionPhases = phases d’abilities réellement parsées (hors RESPONSE).
+        // Pas de repli sur les mots-clés du texte : sinon bouton « combat » sans capacité.
         const parsedActionPhases = [
             ...new Set(
                 (abilities || [])
@@ -162,10 +162,6 @@ async function convert() {
                     .filter((p: string) => p && p !== 'RESPONSE')
             ),
         ];
-        const resolvedActionPhases =
-            parsedActionPhases.length > 0
-                ? parsedActionPhases
-                : actionPhases;
 
         const cardObj: any = {
             id: cardId,
@@ -185,7 +181,8 @@ async function convert() {
             toPlay: toPlayData,
             abilities: abilities,
             phases: phases,
-            actionPhases: resolvedActionPhases,
+            actionPhases:
+                parsedActionPhases.length > 0 ? parsedActionPhases : undefined,
             culture: culture,
             race: data['Race'] ? data['Race'].toUpperCase() : undefined,
             signet,

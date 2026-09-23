@@ -1,0 +1,35 @@
+---
+description: Bouton d’action des capacités — situation (support) vs projection sur personnage
+alwaysApply: true
+---
+
+# Où afficher le bouton d’action (aire de soutien)
+
+**Format : Standard (règles modernes).** Voir `.cursor/rules/format-standard.mdc`.
+
+## Règle
+
+Pour une carte en **aire de soutien** (situation / possession support, etc.) dont le gametext a un coût du type « affaiblir / exert … » :
+
+| Coût | Bouton d’action |
+| --- | --- |
+| **Classe** (« un Homme Gondor », « un compagnon », « un Homme Gandalf »…) | **Sur la situation** uniquement. Plusieurs cartes possibles → on ne met **pas** le bouton sur chaque candidat. |
+| **Nom propre** (« affaiblir Aragorn », « exert Gandalf »…) | Projection OK **sur ce personnage** (souvent le seul candidat). |
+
+Après clic sur la situation (classe) : désignation parmi les cibles légales (halo), comme d’habitude.
+
+## Hors scope de cette règle
+
+- **Attachement sur un personnage** : le bouton peut vivre sur le porteur (capacités de l’attachement listées via le host) — ce n’est pas de la projection support→compagnon. Libellé : préfixer le nom de l’attachement — [`attachment-ability-label.mdc`](attachment-ability-label.mdc).
+- Coût **SELF / BEARER** : bouton sur la source / le porteur, pas de projection « classe ».
+
+## Implémentation
+
+- `abilityProjectsOnto` / `collectProjectedAbilities` : ne projeter que si la cible d’exert est un **nom propre** (casse mixte, cf. matchers).
+- Classe / filtres UPPERCASE (`MAN`, `GONDOR`, `COMPANION`…) : **pas** de projection ; le bouton reste sur la carte support.
+
+## Exemples
+
+- **Last Stand** (Fellowship : Exert a Gandalf Man → tokens) → bouton sur Last Stand, pas sur Erland.
+- **Unknown Perils** (Response : exert Gandalf) → projection sur Gandalf OK.
+- **Forests of Ithilien** (discard this + exert Ring-bound Man) → déjà sur la situation (défausse self).

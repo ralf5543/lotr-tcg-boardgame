@@ -39,11 +39,48 @@ function exertTargetIsOtherCharacter(ability: Ability): boolean {
     return exert.target !== 'SELF' && exert.target !== 'BEARER';
 }
 
+/**
+ * Nom propre (casse mixte, ex. « Gandalf ») — même critère que matchers.
+ * Classe / culture UPPERCASE (« MAN », « GONDOR ») → pas un nom propre.
+ */
+function isProperNameCostToken(token: string): boolean {
+    const trim = token.trim();
+    const upper = trim.toUpperCase();
+    return (
+        trim !== upper &&
+        !/^bearer$/i.test(trim) &&
+        /[a-zà-ÿ]/i.test(trim)
+    );
+}
+
+/**
+ * Coût exert vers un nom propre uniquement (ex. « exert Gandalf »).
+ * « Exert a Gandalf Man » = filtres de classe → false → bouton sur la situation.
+ * Voir `.cursor/rules/support-area-ability-host.mdc`.
+ */
+function exertTargetIsProperName(ability: Ability): boolean {
+    const exert = ability.cost?.[0]?.exert?.[0];
+    if (!exert || typeof exert.target === 'string') return false;
+    const groups = exert.target as string[][];
+    if (groups.length === 0) return false;
+    return groups.every(
+        (group) =>
+            group.length > 0 && group.every((token) => isProperNameCostToken(token))
+    );
+}
+
 /** Coût « discard this » : le bouton reste sur la source, pas de projection. */
 function abilityDiscardsSelf(ability: Ability): boolean {
     return (ability.cost?.[0]?.discardFromPlay || []).some(
         (req) => req.target === 'SELF'
     );
+}
+
+/** Projection support → personnage : uniquement nom propre (pas classe). */
+function abilityMayProjectFromSupport(ability: Ability): boolean {
+    if (!exertTargetIsOtherCharacter(ability)) return false;
+    if (abilityDiscardsSelf(ability)) return false;
+    return exertTargetIsProperName(ability);
 }
 
 export function abilityProjectsOnto(
@@ -52,9 +89,7 @@ export function abilityProjectsOnto(
     ability: Ability,
     host: CardState
 ): boolean {
-    if (!exertTargetIsOtherCharacter(ability)) return false;
-    // Forests of Ithilien & co. : défausse self + affaiblir un autre → bouton sur la situation.
-    if (abilityDiscardsSelf(ability)) return false;
+    if (!abilityMayProjectFromSupport(ability)) return false;
     if (
         source.type === 'COMPANION' ||
         source.type === 'ALLY' ||
@@ -90,17 +125,29 @@ export function collectProjectedAbilities(
     return rows;
 }
 
-/** Capacités affichées sur cette carte : les siennes (sauf celles qui s’exercent sur un autre) + attachements + projections. */
+/**
+ * Capacités affichées sur cette carte :
+ * - les siennes (sauf WHEN_PLAYED / YOU_PLAY / WHILE, et sauf celles qui se
+ *   projettent sur un nom propre — bouton alors sur le personnage) ;
+ * - attachements ;
+ * - projections (support → nom propre uniquement).
+ */
 export function collectVisibleAbilities(
     G: GameState | undefined,
     card: CardState
 ): { source: CardState; ability: Ability }[] {
-    const own = collectCardAbilities(card).filter(
-        ({ ability }) =>
-            ability.trigger?.type !== 'WHEN_PLAYED' &&
-            ability.trigger?.type !== 'YOU_PLAY' &&
-            ability.trigger?.type !== 'WHILE'
-    );
+    const own = collectCardAbilities(card).filter(({ ability }) => {
+        if (
+            ability.trigger?.type === 'WHEN_PLAYED' ||
+            ability.trigger?.type === 'YOU_PLAY' ||
+            ability.trigger?.type === 'WHILE'
+        ) {
+            return false;
+        }
+        // Nom propre : le bouton vit sur le personnage projeté, pas aussi ici.
+        if (abilityMayProjectFromSupport(ability)) return false;
+        return true;
+    });
     if (!G) return own;
     return [...own, ...collectProjectedAbilities(G, card)];
 }
@@ -616,16 +663,45 @@ function capitalizeLabel(text: string): string {
 
 export function formatAbilityLabelParts(
     ability: Ability,
-    source: CardState
+    source: CardState,
+    /** Carte sur laquelle la bulle est ouverte (porteur, site…). */
+    host?: CardState
 ): { cost: string; effect: string } {
     const cost = capitalizeLabel(formatCostLabel(ability, source));
     const effectRaw = (ability.effects || [])
         .map((effect) => formatEffectBit(effect, source))
         .filter(Boolean)
         .join(' et ');
-    // Début de phrase (pas de coût) → majuscule ; après « : » on laisse minuscule.
-    return {
-        cost,
-        effect: cost ? effectRaw : capitalizeLabel(effectRaw),
-    };
+    const effect = cost ? effectRaw : capitalizeLabel(effectRaw);
+
+    // Capacité d’une carte attachée, listée sur le porteur / site → préfixer
+    // le nom de l’attachement (Heavy Axe sur Glóin, etc.).
+    // Pas pour une projection support→personnage (Périls inconnus).
+    // Voir `.cursor/rules/attachment-ability-label.mdc`.
+    if (host && abilityComesFromAttachment(ability, source, host)) {
+        const name = source.i18n?.fr?.title || source.title;
+        if (name) {
+            return {
+                cost: cost ? `${name} — ${cost}` : name,
+                effect,
+            };
+        }
+    }
+
+    return { cost, effect };
+}
+
+/** True si `source` est une carte attachée au `host` (ou marquée ATTACHMENT). */
+export function abilityComesFromAttachment(
+    ability: Ability,
+    source: CardState,
+    host: CardState
+): boolean {
+    const hostId = host.instanceId || host.id;
+    const sourceId = source.instanceId || source.id;
+    if (!hostId || !sourceId || hostId === sourceId) return false;
+    if (ability.source === 'ATTACHMENT') return true;
+    return (host.attachments || []).some(
+        (att) => (att.instanceId || att.id) === sourceId
+    );
 }

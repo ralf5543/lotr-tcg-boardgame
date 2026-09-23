@@ -1657,8 +1657,9 @@ function parsePreventCostClause(
     }
 
     // « remove an urukhai token from here » / « remove 2 dwarven tokens from here »
+    // « remove a gollum token here » / « remove a token from this card »
     const removeTokensHere = text.match(
-        /^remove\s+(a|an|one|\d+)\s+((?:Free Peoples(?:\s+culture)?)|(?:<symbol>[^<]+<\/symbol>)|(?:culture))\s+tokens?\s+from here$/i
+        /^remove\s+(a|an|one|\d+)\s+((?:Free Peoples(?:\s+culture)?)|(?:<symbol>[^<]+<\/symbol>)|(?:culture))\s+tokens?\s+(?:from here|here|from this card)$/i
     );
     if (removeTokensHere) {
         const count = parseCultureTokenCount(removeTokensHere[1]);
@@ -4826,6 +4827,97 @@ export function parseAbilities(
             }
         }
 
+        // « Remove N [culture] tokens [from here|here]? to make … strength ±N »
+        // (Glóin, Heavy Axe, Sudden Fury, Last Stand…) — un seul ADD_TEMP_STAT.
+        // Refuse « from a machine / condition », « and Damage », « for each », skirmishing…
+        const removeTokensMake = body.match(
+            /^Remove\s+(a|an|one|\d+)\s+((?:Free Peoples(?:\s+culture)?)|(?:<symbol>[^<]+<\/symbol>)|(?:culture))\s+tokens?(?:\s+from here|\s+here|\s+from this card)?\s+to make\s+([\s\S]+)/i
+        );
+        if (removeTokensMake) {
+            const count = parseCultureTokenCount(removeTokensMake[1]);
+            const culture = parseCultureTokenSpec(removeTokensMake[2]);
+            const locMatch = body.match(
+                /^Remove\s+(?:a|an|one|\d+)\s+(?:(?:Free Peoples(?:\s+culture)?)|(?:<symbol>[^<]+<\/symbol>)|(?:culture))\s+tokens?(\s+from here|\s+here|\s+from this card)?\s+to make\s+/i
+            );
+            const fromSelf = Boolean(locMatch?.[1]);
+            // « from a machine / from a condition » : pas dans le fragment (désignation).
+            if (
+                /\btokens?\s+from\s+a\b/i.test(
+                    body.replace(/<[^>]+>/g, ' ')
+                )
+            ) {
+                return;
+            }
+            if (count && culture) {
+                let effectText = removeTokensMake[3];
+                if (/\bfor each\b/i.test(effectText.replace(/<[^>]+>/g, ' '))) {
+                    return;
+                }
+                const effectPlainCheck = effectText
+                    .replace(/<[^>]+>/g, ' ')
+                    .replace(/[–−]/g, '-')
+                    .replace(/\s+/g, ' ');
+                if (
+                    /\band\b/i.test(
+                        effectPlainCheck.replace(/\(\s*limit\s*\+\d+\s*\)/i, '')
+                    )
+                ) {
+                    return;
+                }
+
+                const { text: withoutLimit, limit } =
+                    stripMakeStatLimit(effectText);
+                effectText = rewriteNamedSelfMakeText(
+                    withoutLimit.replace(/[–−]/g, '-'),
+                    cardTitle
+                );
+
+                const expiresAtPhase = parseUntilExpiry(
+                    effectText,
+                    marker.phase
+                );
+                const parsedMake = parseMakeTargetAndEffects(
+                    effectText,
+                    'SELF',
+                    expiresAtPhase
+                );
+                if (!parsedMake || parsedMake.effects.length === 0) return;
+                if (parsedMake.effects.length !== 1) return;
+                const only = parsedMake.effects[0];
+                if (!only || only.type !== 'ADD_TEMP_STAT') return;
+                if (limit !== undefined) {
+                    only.limit = limit;
+                }
+
+                const source =
+                    parsedMake.target === 'BEARER' ? 'ATTACHMENT' : 'SELF';
+                const clause =
+                    `${marker.phase}: Remove ${removeTokensMake[1]} ${stripAbilityMarkup(removeTokensMake[2])} token${count > 1 ? 's' : ''}${fromSelf ? ' from here' : ''} to make ${removeTokensMake[3]}`
+                        .replace(/<[^>]+>/g, '')
+                        .replace(/\s+/g, ' ')
+                        .replace(/\s+\./g, '.')
+                        .trim();
+
+                abilities.push({
+                    id: `${cardId || 'ability'}:${abilities.length}`,
+                    phases,
+                    cost: [
+                        {
+                            removeCultureTokens: {
+                                culture,
+                                count,
+                                ...(fromSelf ? { from: 'SELF' as const } : {}),
+                            },
+                        },
+                    ],
+                    effects: parsedMake.effects,
+                    source,
+                    text: clause,
+                });
+                return;
+            }
+        }
+
         const removeTwilightMake = body.match(
             /^Remove\s+<symbol>twilight(\d+)<\/symbol>\s+to make\s+([\s\S]+)/i
         );
@@ -4929,6 +5021,67 @@ export function parseAbilities(
                 source,
                 text: clause,
             });
+            return;
+        }
+
+        // « Exert a [classe] to add/place N [culture] tokens here / on this card. »
+        // (Last Stand, Battering Ram…) — trim <br> collé après le point CSV.
+        const exertPlaceBody = body
+            .replace(/<br\s*\/?>/gi, ' ')
+            .replace(/\s+/g, ' ')
+            .trim();
+        const exertPlaceTokens = exertPlaceBody.match(
+            /^Exert\s+([\s\S]+?)\s+to (?:add|place)\s+(a|an|one|\d+)\s+((?:Free Peoples(?:\s+culture)?)|(?:<symbol>[^<]+<\/symbol>)|(?:culture))\s+tokens?\s+(?:here|on this card)\s*\.?$/i
+        );
+        if (exertPlaceTokens) {
+            if (/\b(and|or)\b/i.test(exertPlaceTokens[1])) return;
+            const subject = parseExertSubject(
+                exertPlaceTokens[1],
+                cardTitle,
+                text
+            );
+            const count = parseCultureTokenCount(exertPlaceTokens[2]);
+            const culture = parseCultureTokenSpec(exertPlaceTokens[3]);
+            if (
+                subject &&
+                count &&
+                culture &&
+                culture !== 'FREE_PEOPLES' &&
+                culture !== 'ANY'
+            ) {
+                const source =
+                    subject.target === 'BEARER' ? 'ATTACHMENT' : 'SELF';
+                abilities.push({
+                    id: `${cardId || 'ability'}:${abilities.length}`,
+                    phases,
+                    cost: [
+                        {
+                            exert: [
+                                {
+                                    count: subject.count,
+                                    target: subject.target,
+                                    ...(subject.mode
+                                        ? { mode: subject.mode }
+                                        : {}),
+                                },
+                            ],
+                        },
+                    ],
+                    effects: [
+                        {
+                            type: 'PLACE_CULTURE_TOKEN',
+                            culture,
+                            count,
+                            target: 'SELF',
+                        },
+                    ],
+                    source,
+                    text: stripAbilityMarkup(
+                        `${marker.phase}: ${exertPlaceTokens[0]}`
+                    ),
+                });
+                return;
+            }
             return;
         }
 

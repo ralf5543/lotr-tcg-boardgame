@@ -3426,6 +3426,328 @@ describe('parseAbilities — Remove twilight to make strength', () => {
     });
 });
 
+describe('parseAbilities — Remove culture tokens to make strength', () => {
+    it('parse Glóin : remove dwarven (any) → SELF +2', () => {
+        expect(
+            parseAbilities(
+                '<keyword>Skirmish:</keyword> Remove a <symbol>dwarven</symbol> token to make Glóin strength +2.',
+                'Glóin',
+                '15R6'
+            )
+        ).toEqual([
+            {
+                id: '15R6:0',
+                phases: ['SKIRMISH'],
+                cost: [
+                    {
+                        removeCultureTokens: {
+                            culture: 'DWARVEN',
+                            count: 1,
+                        },
+                    },
+                ],
+                effects: [
+                    {
+                        type: 'ADD_TEMP_STAT',
+                        stat: 'STRENGTH',
+                        value: 2,
+                        target: 'SELF',
+                        expiresAtPhase: 'SKIRMISH',
+                    },
+                ],
+                source: 'SELF',
+                text: expect.stringMatching(
+                    /SKIRMISH: Remove a dwarven token to make Glóin strength \+2/i
+                ),
+            },
+        ]);
+    });
+
+    it('parse Heavy Axe : remove dwarven → bearer +1', () => {
+        expect(
+            parseAbilities(
+                '<keyword>Skirmish:</keyword> Remove a <symbol>dwarven</symbol> token to make bearer strength +1.',
+                'Heavy Axe',
+                '15U7'
+            )
+        ).toEqual([
+            {
+                id: '15U7:0',
+                phases: ['SKIRMISH'],
+                cost: [
+                    {
+                        removeCultureTokens: {
+                            culture: 'DWARVEN',
+                            count: 1,
+                        },
+                    },
+                ],
+                effects: [
+                    {
+                        type: 'ADD_TEMP_STAT',
+                        stat: 'STRENGTH',
+                        value: 1,
+                        target: 'BEARER',
+                        expiresAtPhase: 'SKIRMISH',
+                    },
+                ],
+                source: 'ATTACHMENT',
+                text: expect.stringMatching(
+                    /SKIRMISH: Remove a dwarven token to make bearer strength \+1/i
+                ),
+            },
+        ]);
+    });
+
+    it('parse Sudden Fury / Last Stand : from here → classe / companion', () => {
+        expect(
+            parseAbilities(
+                '<keyword>Skirmish:</keyword> Remove a <symbol>shire</symbol> token from here to make a <symbol>shire</symbol> companion strength +1.',
+                'Sudden Fury',
+                '12U132'
+            )
+        ).toEqual([
+            {
+                id: '12U132:0',
+                phases: ['SKIRMISH'],
+                cost: [
+                    {
+                        removeCultureTokens: {
+                            culture: 'SHIRE',
+                            count: 1,
+                            from: 'SELF',
+                        },
+                    },
+                ],
+                effects: [
+                    {
+                        type: 'ADD_TEMP_STAT',
+                        stat: 'STRENGTH',
+                        value: 1,
+                        target: [['SHIRE', 'COMPANION']],
+                        expiresAtPhase: 'SKIRMISH',
+                    },
+                ],
+                source: 'SELF',
+                text: expect.stringMatching(
+                    /Remove a shire token from here to make a shire companion strength \+1/i
+                ),
+            },
+        ]);
+
+        expect(
+            parseAbilities(
+                '<keyword>Skirmish:</keyword> Remove 3 <symbol>gandalf</symbol> tokens from here to make a companion strength +3.',
+                'Last Stand',
+                '18U21'
+            )
+        ).toEqual([
+            {
+                id: '18U21:0',
+                phases: ['SKIRMISH'],
+                cost: [
+                    {
+                        removeCultureTokens: {
+                            culture: 'GANDALF',
+                            count: 3,
+                            from: 'SELF',
+                        },
+                    },
+                ],
+                effects: [
+                    {
+                        type: 'ADD_TEMP_STAT',
+                        stat: 'STRENGTH',
+                        value: 3,
+                        target: [['COMPANION']],
+                        expiresAtPhase: 'SKIRMISH',
+                    },
+                ],
+                source: 'SELF',
+                text: expect.stringMatching(
+                    /Remove 3 gandalf tokens from here to make a companion strength \+3/i
+                ),
+            },
+        ]);
+    });
+
+    it('parse Last Stand Fellowship : Exert gandalf Man → add 2 tokens here', () => {
+        expect(
+            parseAbilities(
+                '<keyword>Fellowship:</keyword> Exert a <symbol>gandalf</symbol> Man to add 2 <symbol>gandalf</symbol> tokens here.<br><keyword>Skirmish:</keyword> Remove 3 <symbol>gandalf</symbol> tokens from here to make a companion strength +3.',
+                'Last Stand',
+                '18U21'
+            )
+        ).toEqual([
+            {
+                id: '18U21:0',
+                phases: ['FELLOWSHIP'],
+                cost: [
+                    {
+                        exert: [
+                            {
+                                count: 1,
+                                target: [['GANDALF', 'MAN']],
+                                mode: 'DESIGNATION',
+                            },
+                        ],
+                    },
+                ],
+                effects: [
+                    {
+                        type: 'PLACE_CULTURE_TOKEN',
+                        culture: 'GANDALF',
+                        count: 2,
+                        target: 'SELF',
+                    },
+                ],
+                source: 'SELF',
+                text: expect.stringMatching(
+                    /FELLOWSHIP: Exert a gandalf Man to add 2 gandalf tokens here/i
+                ),
+            },
+            {
+                id: '18U21:1',
+                phases: ['SKIRMISH'],
+                cost: [
+                    {
+                        removeCultureTokens: {
+                            culture: 'GANDALF',
+                            count: 3,
+                            from: 'SELF',
+                        },
+                    },
+                ],
+                effects: [
+                    {
+                        type: 'ADD_TEMP_STAT',
+                        stat: 'STRENGTH',
+                        value: 3,
+                        target: [['COMPANION']],
+                        expiresAtPhase: 'SKIRMISH',
+                    },
+                ],
+                source: 'SELF',
+                text: expect.stringMatching(
+                    /Remove 3 gandalf tokens from here to make a companion strength \+3/i
+                ),
+            },
+        ]);
+    });
+
+    it('parse Battering Ram Shadow : Exert Uruk-hai → place token on this card', () => {
+        expect(
+            parseAbilities(
+                '<keyword>Shadow:</keyword> Exert an Uruk-hai to place an <symbol>isengard</symbol> token on this card.',
+                'Battering Ram',
+                '5U44'
+            )
+        ).toEqual([
+            {
+                id: '5U44:0',
+                phases: ['SHADOW'],
+                cost: [
+                    {
+                        exert: [
+                            {
+                                count: 1,
+                                target: [['URUK-HAI']],
+                                mode: 'DESIGNATION',
+                            },
+                        ],
+                    },
+                ],
+                effects: [
+                    {
+                        type: 'PLACE_CULTURE_TOKEN',
+                        culture: 'ISENGARD',
+                        count: 1,
+                        target: 'SELF',
+                    },
+                ],
+                source: 'SELF',
+                text: expect.stringMatching(
+                    /SHADOW: Exert an Uruk-hai to place an isengard token on this card/i
+                ),
+            },
+        ]);
+    });
+
+    it('refuse Rank and File Regroup : Exert or discard → add token', () => {
+        expect(
+            parseAbilities(
+                '<keyword>Regroup:</keyword> Exert an Uruk-hai or discard a <symbol>sauron</symbol> minion to add a <symbol>sauron</symbol> token here.',
+                'Rank and File',
+                '10U96'
+            )
+        ).toBeUndefined();
+    });
+
+    it('parse « token here » (sans from) comme SELF', () => {
+        expect(
+            parseAbilities(
+                '<keyword>Skirmish:</keyword> Remove a <symbol>gollum</symbol> token here to make a companion strength +3 (limit +6).',
+                'Larder',
+                '8U23'
+            )
+        ).toEqual([
+            {
+                id: '8U23:0',
+                phases: ['SKIRMISH'],
+                cost: [
+                    {
+                        removeCultureTokens: {
+                            culture: 'GOLLUM',
+                            count: 1,
+                            from: 'SELF',
+                        },
+                    },
+                ],
+                effects: [
+                    {
+                        type: 'ADD_TEMP_STAT',
+                        stat: 'STRENGTH',
+                        value: 3,
+                        target: [['COMPANION']],
+                        expiresAtPhase: 'SKIRMISH',
+                        limit: 6,
+                    },
+                ],
+                source: 'SELF',
+                text: expect.stringMatching(
+                    /Remove a gollum token from here to make a companion strength \+3 \(limit \+6\)/i
+                ),
+            },
+        ]);
+    });
+
+    it('refuse skirmishing / and Damage / from a machine', () => {
+        expect(
+            parseAbilities(
+                '<keyword>Skirmish:</keyword> Remove an <symbol>elven</symbol> token to make a minion skirmishing Arwen strength -2.',
+                'Arwen',
+                '15R11'
+            )
+        ).toBeUndefined();
+
+        expect(
+            parseAbilities(
+                '<keyword>Skirmish:</keyword> Remove 3 <symbol>rohan</symbol> tokens from here to make a <symbol>rohan</symbol> companion strength +1 and <keyword>Damage +1.</keyword>',
+                'Cast from the Hall',
+                '18C94'
+            )
+        ).toBeUndefined();
+
+        expect(
+            parseAbilities(
+                '<keyword>Skirmish:</keyword> Remove 4 <symbol>isengard</symbol> tokens from a machine and exert Berserk Savage twice to make it strength +8.',
+                'Berserk Savage',
+                '5R46'
+            )
+        ).toBeUndefined();
+    });
+});
+
 describe('parseAbilities — Discard a [classe] and spot X [classe]', () => {
     const pipeweedAndPipesCost = {
         discardFromPlay: [

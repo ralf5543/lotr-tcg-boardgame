@@ -240,7 +240,11 @@ export const SiteAttachmentAbilitySeal: React.FC<
                         <CardS.AbilityBubbleList>
                             {listedAbilities.map(({ source, ability }) => {
                                 const { cost, effect } =
-                                    formatAbilityLabelParts(ability, source);
+                                    formatAbilityLabelParts(
+                                        ability,
+                                        source,
+                                        card
+                                    );
                                 return (
                                     <li
                                         key={`${source.instanceId || source.id}:${ability.id}`}

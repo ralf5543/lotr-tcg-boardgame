@@ -1,0 +1,27 @@
+---
+description: Libellé des capacités d’attachement — préfixer le nom de la carte attachée
+alwaysApply: true
+---
+
+# Libellé : capacités venues d’une carte attachée
+
+**Format : Standard (règles modernes).** Voir `.cursor/rules/format-standard.mdc`.
+
+## Règle
+
+Quand une capacité affichée sur un **hôte** (personnage, site, etc.) **vient d’une carte attachée** à cet hôte — et non du gametext de l’hôte lui-même — le libellé de la bulle d’action **préfixe le nom de l’attachement**.
+
+Exemple : Glóin (+2) + Heavy Axe (+1) →  
+`Hache lourde — Retirer 1 jeton … : force +1`  
+(pas un second effet anonyme de Glóin).
+
+## Périmètre
+
+- Possession / situation / The One Ring / etc. **attachés** à un personnage.
+- Attachements sur un **site** (même principe si la bulle est sur l’hôte site).
+- **Pas** les projections aire de soutien → personnage (ex. Périls inconnus sur Gandalf) : ce n’est pas un attachement. Voir [`support-area-ability-host.mdc`](support-area-ability-host.mdc).
+
+## Implémentation
+
+- `formatAbilityLabelParts(ability, source, host)` + `abilityComesFromAttachment`.
+- Tout UI qui ouvre une bulle d’action doit passer le **host** (carte cliquée / sceau).
