@@ -4586,6 +4586,85 @@ describe('parseAbilities — culture tokens', () => {
         );
     });
 
+    it('parse when-played spot classe → place/add tokens here', () => {
+        expect(
+            parseAbilities(
+                'When you play this, you may spot a Dwarf to place 2 <symbol>dwarven</symbol> tokens here.',
+                'Chamber of Records',
+                '15U3'
+            )
+        ).toEqual([
+            {
+                id: '15U3:0',
+                phases: [],
+                trigger: { type: 'WHEN_PLAYED' },
+                optional: true,
+                cost: [
+                    {
+                        spot: [
+                            {
+                                count: 1,
+                                target: [['DWARF']],
+                            },
+                        ],
+                    },
+                ],
+                effects: [
+                    {
+                        type: 'PLACE_CULTURE_TOKEN',
+                        culture: 'DWARVEN',
+                        count: 2,
+                        target: 'SELF',
+                    },
+                ],
+                source: 'SELF',
+                text: expect.stringMatching(
+                    /When you play this, you may spot a Dwarf to place 2 dwarven tokens here/i
+                ),
+            },
+        ]);
+
+        expect(
+            parseAbilities(
+                'When you play this condition, spot an <symbol>urukhai</symbol> minion to add 3 <symbol>urukhai</symbol> tokens here.',
+                'Fortitude',
+                '11U185'
+            )
+        ).toEqual(
+            expect.arrayContaining([
+                expect.objectContaining({
+                    trigger: { type: 'WHEN_PLAYED' },
+                    cost: [
+                        {
+                            spot: [
+                                {
+                                    count: 1,
+                                    target: [['URUK-HAI', 'MINION']],
+                                },
+                            ],
+                        },
+                    ],
+                    effects: [
+                        {
+                            type: 'PLACE_CULTURE_TOKEN',
+                            culture: 'URUK-HAI',
+                            count: 3,
+                            target: 'SELF',
+                        },
+                    ],
+                }),
+            ])
+        );
+
+        expect(
+            parseAbilities(
+                'When you play this condition, spot a mounted <symbol>rohan</symbol> Man to add 3 <symbol>rohan</symbol> tokens here.',
+                'Mounted',
+                'x'
+            )
+        ).toBeUndefined();
+    });
+
     it('parse remove tokens from here to heal bearer', () => {
         const text =
             '<keyword>Skirmish:</keyword> Remove 2 <symbol>elven</symbol> tokens from here to heal bearer.';

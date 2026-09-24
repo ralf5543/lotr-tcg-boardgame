@@ -31,6 +31,7 @@ L’ancien plan sites est **figé** (`.cursor/rules/sites-plan.mdc`, `alwaysAppl
 6. **Remove N jetons → force ±N** ✅ — coût `removeCultureTokens` + `ADD_TEMP_STAT` (Glóin, Heavy Axe, Sudden Fury, Last Stand…) ; refuse skirmishing / and Damage / from a machine.
 7. **While spot N jetons culture → force SELF/BEARER** ✅ — trigger `spotCultureTokens` (Elven Defender, Rohirrim Recruit…) ; refuse « each of your », titre, initiative.
 8. **While X jetons ici + même X sur carte nommée → force +X** ✅ — `matchingTokensOnNamedCard` (Ma hache / Décompte final) ; pas d’exception par id.
+9. **When-played spot classe → place/add tokens here** ✅ — Chamber of Records, Fortitude… ; refuse mounted / and / or.
 
 ## Hors scope / plus tard
 
@@ -39,5 +40,5 @@ L’ancien plan sites est **figé** (`.cursor/rules/sites-plan.mdc`, `alwaysAppl
 - Make strength « minion skirmishing X » (cible skirmishing).
 - Multi-Shadow / >2 joueurs.
 - Répartition multi-cartes d’un reinforce N (v1 = tout sur une carte désignée).
-- Place when-played + spot ; force/discard type Stout généralisé ; each-time loses → place.
+- Force/discard type Stout généralisé ; each-time loses → place.
 - **Cartes en main / initiative** (hors jetons, mais preset) : force « +1 per card in FP hand » (Man of Bree), condition « N or more cards in hand », règle d’initiative (FP ≥ 4 en main). → axe roadmap dédié.

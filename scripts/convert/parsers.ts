@@ -4086,6 +4086,56 @@ function parseCultureTokenAbilities(
         });
     }
 
+    // When you play this, (you may) spot [classe] to place/add N [culture] tokens here.
+    // (Chamber of Records, Fortitude…) — refuse mounted / and / or / each.
+    const spotPlaceWhenPlayedRe =
+        /When you play this(?:\s+(?:minion|possession|condition|companion|artifact|ally|follower))?, (you may )?spot ((?:a|an|\d+) [^,.]+?) to (?:place|add) (a|an|one|\d+)\s+(<symbol>[^<]+<\/symbol>)\s+tokens? (?:here|on this card)\./gi;
+    while ((match = spotPlaceWhenPlayedRe.exec(text)) !== null) {
+        const spotPlain = stripAbilityMarkup(match[2]);
+        if (/\b(and|or|each|mounted|other|whose|bearing)\b/i.test(spotPlain)) {
+            continue;
+        }
+        const spot = parseWhileSpotSubject(match[2]);
+        const count = parseCultureTokenCount(match[3]);
+        const culture = parseCultureTokenSpec(match[4]);
+        if (
+            !spot ||
+            !count ||
+            !culture ||
+            culture === 'FREE_PEOPLES' ||
+            culture === 'ANY'
+        ) {
+            continue;
+        }
+        const optional = Boolean(match[1]);
+        found.push({
+            id: `${cardId || 'ability'}:${found.length}:when-played-spot-place-token`,
+            phases: [],
+            trigger: { type: 'WHEN_PLAYED' },
+            ...(optional ? { optional: true } : {}),
+            cost: [
+                {
+                    spot: [
+                        {
+                            count: spot.count,
+                            target: spot.target,
+                        },
+                    ],
+                },
+            ],
+            effects: [
+                {
+                    type: 'PLACE_CULTURE_TOKEN',
+                    culture,
+                    count,
+                    target: 'SELF',
+                },
+            ],
+            source: 'SELF',
+            text: stripAbilityMarkup(match[0]),
+        });
+    }
+
     return found;
 }
 

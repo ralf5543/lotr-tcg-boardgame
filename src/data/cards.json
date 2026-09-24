@@ -58705,6 +58705,39 @@
         ],
         "source": "SELF",
         "text": "RESPONSE: If a dunland Man is about to take a wound, remove a dunland token from here to prevent that wound"
+      },
+      {
+        "id": "6C1:2",
+        "phases": [],
+        "trigger": {
+          "type": "WHEN_PLAYED"
+        },
+        "optional": true,
+        "cost": [
+          {
+            "spot": [
+              {
+                "count": 2,
+                "target": [
+                  [
+                    "DUNLAND",
+                    "MAN"
+                  ]
+                ]
+              }
+            ]
+          }
+        ],
+        "effects": [
+          {
+            "type": "PLACE_CULTURE_TOKEN",
+            "culture": "DUNLAND",
+            "count": 2,
+            "target": "SELF"
+          }
+        ],
+        "source": "SELF",
+        "text": "When you play this condition, you may spot 2 dunland Men to place 2 dunland tokens here."
       }
     ],
     "culture": "DUNLAND",
@@ -59075,6 +59108,40 @@
     "kind": "FREE_PEOPLE",
     "type": "CONDITION",
     "subtype": "SUPPORT-AREA",
+    "abilities": [
+      {
+        "id": "6C10:0",
+        "phases": [],
+        "trigger": {
+          "type": "WHEN_PLAYED"
+        },
+        "optional": true,
+        "cost": [
+          {
+            "spot": [
+              {
+                "count": 1,
+                "target": [
+                  [
+                    "DWARF"
+                  ]
+                ]
+              }
+            ]
+          }
+        ],
+        "effects": [
+          {
+            "type": "PLACE_CULTURE_TOKEN",
+            "culture": "DWARVEN",
+            "count": 2,
+            "target": "SELF"
+          }
+        ],
+        "source": "SELF",
+        "text": "When you play this condition, you may spot a Dwarf to place 2 dwarven tokens here."
+      }
+    ],
     "culture": "DWARVEN",
     "twilightCost": 2,
     "imageUrl": "/cards_visuals/o_06_010.jpg",
@@ -59150,6 +59217,40 @@
     "kind": "FREE_PEOPLE",
     "type": "CONDITION",
     "subtype": "SUPPORT-AREA",
+    "abilities": [
+      {
+        "id": "6C12:0",
+        "phases": [],
+        "trigger": {
+          "type": "WHEN_PLAYED"
+        },
+        "optional": true,
+        "cost": [
+          {
+            "spot": [
+              {
+                "count": 1,
+                "target": [
+                  [
+                    "ELF"
+                  ]
+                ]
+              }
+            ]
+          }
+        ],
+        "effects": [
+          {
+            "type": "PLACE_CULTURE_TOKEN",
+            "culture": "ELVEN",
+            "count": 2,
+            "target": "SELF"
+          }
+        ],
+        "source": "SELF",
+        "text": "When you play this condition, you may spot an Elf to place 2 elven tokens here."
+      }
+    ],
     "culture": "ELVEN",
     "twilightCost": 2,
     "imageUrl": "/cards_visuals/o_06_012.jpg",
@@ -61145,6 +61246,41 @@
     "subtype": "SUPPORT-AREA",
     "keywords": [
       "FORTIFICATION"
+    ],
+    "abilities": [
+      {
+        "id": "6C52:0",
+        "phases": [],
+        "trigger": {
+          "type": "WHEN_PLAYED"
+        },
+        "optional": true,
+        "cost": [
+          {
+            "spot": [
+              {
+                "count": 1,
+                "target": [
+                  [
+                    "GONDOR",
+                    "MAN"
+                  ]
+                ]
+              }
+            ]
+          }
+        ],
+        "effects": [
+          {
+            "type": "PLACE_CULTURE_TOKEN",
+            "culture": "GONDOR",
+            "count": 2,
+            "target": "SELF"
+          }
+        ],
+        "source": "SELF",
+        "text": "When you play this condition, you may spot a gondor Man to place 2 gondor tokens here."
+      }
     ],
     "culture": "GONDOR",
     "twilightCost": 2,
@@ -63142,6 +63278,41 @@
     "kind": "FREE_PEOPLE",
     "type": "CONDITION",
     "subtype": "SUPPORT-AREA",
+    "abilities": [
+      {
+        "id": "6C97:0",
+        "phases": [],
+        "trigger": {
+          "type": "WHEN_PLAYED"
+        },
+        "optional": true,
+        "cost": [
+          {
+            "spot": [
+              {
+                "count": 1,
+                "target": [
+                  [
+                    "ROHAN",
+                    "MAN"
+                  ]
+                ]
+              }
+            ]
+          }
+        ],
+        "effects": [
+          {
+            "type": "PLACE_CULTURE_TOKEN",
+            "culture": "ROHAN",
+            "count": 2,
+            "target": "SELF"
+          }
+        ],
+        "source": "SELF",
+        "text": "When you play this condition, you may spot a rohan Man to place 2 rohan tokens here."
+      }
+    ],
     "culture": "ROHAN",
     "twilightCost": 2,
     "imageUrl": "/cards_visuals/o_06_097.jpg",
@@ -93223,6 +93394,39 @@
     "kind": "FREE_PEOPLE",
     "type": "CONDITION",
     "subtype": "SUPPORT-AREA",
+    "abilities": [
+      {
+        "id": "11U26:0",
+        "phases": [],
+        "trigger": {
+          "type": "WHEN_PLAYED"
+        },
+        "cost": [
+          {
+            "spot": [
+              {
+                "count": 1,
+                "target": [
+                  [
+                    "ELF"
+                  ]
+                ]
+              }
+            ]
+          }
+        ],
+        "effects": [
+          {
+            "type": "PLACE_CULTURE_TOKEN",
+            "culture": "ELVEN",
+            "count": 3,
+            "target": "SELF"
+          }
+        ],
+        "source": "SELF",
+        "text": "When you play this condition, spot an Elf to add 3 elven tokens here."
+      }
+    ],
     "culture": "ELVEN",
     "twilightCost": 1,
     "imageUrl": "/cards_visuals/o_11_026.jpg",
@@ -94709,6 +94913,40 @@
     "kind": "FREE_PEOPLE",
     "type": "CONDITION",
     "subtype": "SUPPORT-AREA",
+    "abilities": [
+      {
+        "id": "11U61:0",
+        "phases": [],
+        "trigger": {
+          "type": "WHEN_PLAYED"
+        },
+        "cost": [
+          {
+            "spot": [
+              {
+                "count": 1,
+                "target": [
+                  [
+                    "GONDOR",
+                    "MAN"
+                  ]
+                ]
+              }
+            ]
+          }
+        ],
+        "effects": [
+          {
+            "type": "PLACE_CULTURE_TOKEN",
+            "culture": "GONDOR",
+            "count": 3,
+            "target": "SELF"
+          }
+        ],
+        "source": "SELF",
+        "text": "When you play this condition, spot a gondor Man to add 3 gondor tokens here."
+      }
+    ],
     "culture": "GONDOR",
     "twilightCost": 1,
     "imageUrl": "/cards_visuals/o_11_061.jpg",
@@ -100688,6 +100926,38 @@
         ],
         "source": "SELF",
         "text": "RESPONSE: If an urukhai minion is about to take a wound, remove an urukhai token from here to prevent that wound"
+      },
+      {
+        "id": "11U185:2",
+        "phases": [],
+        "trigger": {
+          "type": "WHEN_PLAYED"
+        },
+        "cost": [
+          {
+            "spot": [
+              {
+                "count": 1,
+                "target": [
+                  [
+                    "URUK-HAI",
+                    "MINION"
+                  ]
+                ]
+              }
+            ]
+          }
+        ],
+        "effects": [
+          {
+            "type": "PLACE_CULTURE_TOKEN",
+            "culture": "URUK-HAI",
+            "count": 3,
+            "target": "SELF"
+          }
+        ],
+        "source": "SELF",
+        "text": "When you play this condition, spot an urukhai minion to add 3 urukhai tokens here."
       }
     ],
     "culture": "URUK-HAI",
@@ -120986,6 +121256,40 @@
     "kind": "FREE_PEOPLE",
     "type": "CONDITION",
     "subtype": "SUPPORT-AREA",
+    "abilities": [
+      {
+        "id": "15U3:0",
+        "phases": [],
+        "trigger": {
+          "type": "WHEN_PLAYED"
+        },
+        "optional": true,
+        "cost": [
+          {
+            "spot": [
+              {
+                "count": 1,
+                "target": [
+                  [
+                    "DWARF"
+                  ]
+                ]
+              }
+            ]
+          }
+        ],
+        "effects": [
+          {
+            "type": "PLACE_CULTURE_TOKEN",
+            "culture": "DWARVEN",
+            "count": 2,
+            "target": "SELF"
+          }
+        ],
+        "source": "SELF",
+        "text": "When you play this, you may spot a Dwarf to place 2 dwarven tokens here."
+      }
+    ],
     "culture": "DWARVEN",
     "twilightCost": 2,
     "imageUrl": "/cards_visuals/o_15_003.jpg",
