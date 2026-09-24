@@ -3392,6 +3392,26 @@
     "keywords": [
       "UNDERGROUND"
     ],
+    "abilities": [
+      {
+        "id": "4U355:0:site-forbid-skirmish",
+        "phases": [],
+        "trigger": {
+          "type": "WHILE"
+        },
+        "cost": [],
+        "effects": [
+          {
+            "type": "FORBID_SKIRMISH_ACTIONS",
+            "who": "ALL",
+            "events": true,
+            "specialAbilities": true
+          }
+        ],
+        "source": "SELF",
+        "text": "Skirmish events may not be played and skirmish special abilities may not be used."
+      }
+    ],
     "twilightCost": 7,
     "siteNumber": 7,
     "siteArrow": "Right",
@@ -5784,6 +5804,26 @@
     "type": "SITE",
     "keywords": [
       "UNDERGROUND"
+    ],
+    "abilities": [
+      {
+        "id": "11S232:0:site-forbid-skirmish",
+        "phases": [],
+        "trigger": {
+          "type": "WHILE"
+        },
+        "cost": [],
+        "effects": [
+          {
+            "type": "FORBID_SKIRMISH_ACTIONS",
+            "who": "ALL",
+            "events": false,
+            "specialAbilities": true
+          }
+        ],
+        "source": "SELF",
+        "text": "Skirmish special abilities cannot be used."
+      }
     ],
     "twilightCost": 1,
     "siteArrow": "Left",

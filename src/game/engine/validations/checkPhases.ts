@@ -2,6 +2,7 @@
 
 import type { CardState } from '../../types';
 import { getKeywordValue } from '../keywords/keywordUtils';
+import { isSkirmishActionForbidden } from '../../logic/skirmishActionRestrictions';
 
 export interface ValidationContext {
     G: any;
@@ -72,6 +73,15 @@ export function checkPhases(
             return {
                 valid: false,
                 reason: 'Choisissez d’abord un combat avant de jouer un événement d’escarmouche.',
+            };
+        }
+        if (
+            currentPhase === 'SKIRMISH' &&
+            isSkirmishActionForbidden(G, playerID, 'EVENT')
+        ) {
+            return {
+                valid: false,
+                reason: 'Les événements d’escarmouche sont interdits pour le moment.',
             };
         }
         return { valid: true };

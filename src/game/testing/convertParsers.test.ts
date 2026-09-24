@@ -186,6 +186,46 @@ describe('parseSiteAbilities — moves to/from twilight', () => {
         ]);
     });
 
+    it('émet forbid skirmish (Cavern Entrance Standard / Towers)', () => {
+        expect(
+            parseSiteAbilities(
+                '<keyword>Underground.</keyword> Skirmish special abilities cannot be used.',
+                '11S232'
+            )
+        ).toEqual([
+            expect.objectContaining({
+                trigger: { type: 'WHILE' },
+                effects: [
+                    {
+                        type: 'FORBID_SKIRMISH_ACTIONS',
+                        who: 'ALL',
+                        events: false,
+                        specialAbilities: true,
+                    },
+                ],
+            }),
+        ]);
+
+        expect(
+            parseSiteAbilities(
+                '<keyword>Underground.</keyword> Skirmish events may not be played and skirmish special abilities may not be used.',
+                '4U355'
+            )
+        ).toEqual([
+            expect.objectContaining({
+                trigger: { type: 'WHILE' },
+                effects: [
+                    {
+                        type: 'FORBID_SKIRMISH_ACTIONS',
+                        who: 'ALL',
+                        events: true,
+                        specialAbilities: true,
+                    },
+                ],
+            }),
+        ]);
+    });
+
     it('émet add twilight à l’arrivée', () => {
         const text =
             'When the fellowship moves to this site, add <symbol>twilight3</symbol>.';
@@ -4708,6 +4748,263 @@ describe('parseAbilities — culture tokens', () => {
                 text: expect.stringMatching(/place a .* token here/i),
             },
         ]);
+    });
+
+    it('parse Discard this or remove token → make/heal (deux coûts)', () => {
+        expect(
+            parseAbilities(
+                '<keyword>Fortification.</keyword> When you play this condition, you may spot a <symbol>gondor</symbol> Man to place 2 <symbol>gondor</symbol> tokens here. <keyword>Skirmish:</keyword> Discard this condition or remove a <symbol>gondor</symbol> token from here to make a <symbol>gondor</symbol> Man strength +1.',
+                'Garrison of Osgiliath',
+                '6C52'
+            )
+        ).toEqual(
+            expect.arrayContaining([
+                expect.objectContaining({
+                    phases: ['SKIRMISH'],
+                    cost: [
+                        {
+                            discardFromPlay: [
+                                { count: 1, target: 'SELF' },
+                            ],
+                        },
+                    ],
+                    effects: [
+                        {
+                            type: 'ADD_TEMP_STAT',
+                            stat: 'STRENGTH',
+                            value: 1,
+                            target: [['GONDOR', 'MAN']],
+                            expiresAtPhase: 'SKIRMISH',
+                        },
+                    ],
+                }),
+                expect.objectContaining({
+                    phases: ['SKIRMISH'],
+                    cost: [
+                        {
+                            removeCultureTokens: {
+                                culture: 'GONDOR',
+                                count: 1,
+                                from: 'SELF',
+                            },
+                        },
+                    ],
+                    effects: [
+                        {
+                            type: 'ADD_TEMP_STAT',
+                            stat: 'STRENGTH',
+                            value: 1,
+                            target: [['GONDOR', 'MAN']],
+                            expiresAtPhase: 'SKIRMISH',
+                        },
+                    ],
+                }),
+            ])
+        );
+
+        expect(
+            parseAbilities(
+                'When you play this condition, place a <symbol>dwarven</symbol> token here.<br><keyword>Skirmish:</keyword> Discard this condition from play or remove a <symbol>dwarven</symbol> token from here to make a <symbol>dwarven</symbol> companion gain <keyword>hunter 1</keyword>.',
+                'Run Until Found',
+                '18U2'
+            )
+        ).toEqual(
+            expect.arrayContaining([
+                expect.objectContaining({
+                    phases: ['SKIRMISH'],
+                    cost: [
+                        {
+                            discardFromPlay: [
+                                { count: 1, target: 'SELF' },
+                            ],
+                        },
+                    ],
+                    effects: [
+                        {
+                            type: 'ADD_TEMP_KEYWORD',
+                            keyword: 'HUNTER 1',
+                            target: [['DWARVEN', 'COMPANION']],
+                            expiresAtPhase: 'SKIRMISH',
+                        },
+                    ],
+                }),
+                expect.objectContaining({
+                    phases: ['SKIRMISH'],
+                    cost: [
+                        {
+                            removeCultureTokens: {
+                                culture: 'DWARVEN',
+                                count: 1,
+                                from: 'SELF',
+                            },
+                        },
+                    ],
+                    effects: [
+                        {
+                            type: 'ADD_TEMP_KEYWORD',
+                            keyword: 'HUNTER 1',
+                            target: [['DWARVEN', 'COMPANION']],
+                            expiresAtPhase: 'SKIRMISH',
+                        },
+                    ],
+                }),
+            ])
+        );
+
+        expect(
+            parseAbilities(
+                '<keyword>Skirmish:</keyword> Discard this from play or remove 2 tokens from here to make a lurker minion strength +2.',
+                'Always Threatening',
+                '13U103'
+            )
+        ).toEqual([
+            {
+                id: '13U103:0',
+                phases: ['SKIRMISH'],
+                cost: [
+                    {
+                        discardFromPlay: [{ count: 1, target: 'SELF' }],
+                    },
+                ],
+                effects: [
+                    {
+                        type: 'ADD_TEMP_STAT',
+                        stat: 'STRENGTH',
+                        value: 2,
+                        target: [['LURKER', 'MINION']],
+                        expiresAtPhase: 'SKIRMISH',
+                    },
+                ],
+                source: 'SELF',
+                text: 'SKIRMISH: Discard this to make a lurker minion strength +2.',
+            },
+            {
+                id: '13U103:1',
+                phases: ['SKIRMISH'],
+                cost: [
+                    {
+                        removeCultureTokens: {
+                            culture: 'ANY',
+                            count: 2,
+                            from: 'SELF',
+                        },
+                    },
+                ],
+                effects: [
+                    {
+                        type: 'ADD_TEMP_STAT',
+                        stat: 'STRENGTH',
+                        value: 2,
+                        target: [['LURKER', 'MINION']],
+                        expiresAtPhase: 'SKIRMISH',
+                    },
+                ],
+                source: 'SELF',
+                text: 'SKIRMISH: Remove 2 culture tokens from here to make a lurker minion strength +2.',
+            },
+        ]);
+
+        expect(
+            parseAbilities(
+                '<keyword>Maneuver:</keyword> Discard this from play or remove a token from here to heal a <symbol>shire</symbol> companion.',
+                'Heal OR',
+                'healOr'
+            )
+        ).toEqual([
+            expect.objectContaining({
+                phases: ['MANEUVER'],
+                cost: [
+                    {
+                        discardFromPlay: [{ count: 1, target: 'SELF' }],
+                    },
+                ],
+                effects: [
+                    {
+                        type: 'HEAL',
+                        count: 1,
+                        target: [['SHIRE', 'COMPANION']],
+                    },
+                ],
+            }),
+            expect.objectContaining({
+                phases: ['MANEUVER'],
+                cost: [
+                    {
+                        removeCultureTokens: {
+                            culture: 'ANY',
+                            count: 1,
+                            from: 'SELF',
+                        },
+                    },
+                ],
+                effects: [
+                    {
+                        type: 'HEAL',
+                        count: 1,
+                        target: [['SHIRE', 'COMPANION']],
+                    },
+                ],
+            }),
+        ]);
+    });
+
+    it('refuse Discard this or remove : bearing / twilight+either / prevent / reveal', () => {
+        expect(
+            parseAbilities(
+                '<keyword>Skirmish:</keyword> Discard this from play or remove a token from here to make a <symbol>gondor</symbol> companion bearing a hand weapon strength +2.',
+                'Heirs of Gondor',
+                '13C69'
+            )
+        ).toBeUndefined();
+
+        const houses = parseAbilities(
+            '<keyword>Fellowship:</keyword> Add <symbol>twilight2</symbol> and either discard this condition or remove a <symbol>gondor</symbol> token from here to heal a <symbol>gondor</symbol> Man.',
+            'Houses of Healing',
+            '11U61'
+        );
+        expect(
+            houses?.some(
+                (a) =>
+                    a.cost?.some(
+                        (c) =>
+                            'discardFromPlay' in c ||
+                            'removeCultureTokens' in c
+                    )
+            )
+        ).toBeFalsy();
+
+        expect(
+            parseAbilities(
+                '<keyword>Fellowship:</keyword> Discard this possession or remove an <symbol>elven</symbol> token from here to reveal the top card of your draw deck.',
+                'Strands of Elven Hair',
+                '9R22'
+            )
+        ).toBeUndefined();
+    });
+
+    it('parse Faramir : opponent may not skirmish events/abilities involving him', () => {
+        expect(
+            parseAbilities(
+                '<keyword>Ring-bound. Ranger.</keyword> An opponent may not play skirmish events or use skirmish special abilities during skirmishes involving Faramir.',
+                'Faramir',
+                '0P16'
+            )
+        ).toEqual(
+            expect.arrayContaining([
+                expect.objectContaining({
+                    trigger: { type: 'WHILE' },
+                    effects: [
+                        {
+                            type: 'FORBID_SKIRMISH_ACTIONS',
+                            who: 'OPPONENT',
+                            events: true,
+                            specialAbilities: true,
+                            involvingSource: true,
+                        },
+                    ],
+                }),
+            ])
+        );
     });
 });
 

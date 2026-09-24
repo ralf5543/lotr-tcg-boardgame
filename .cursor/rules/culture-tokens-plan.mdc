@@ -32,11 +32,12 @@ L’ancien plan sites est **figé** (`.cursor/rules/sites-plan.mdc`, `alwaysAppl
 7. **While spot N jetons culture → force SELF/BEARER** ✅ — trigger `spotCultureTokens` (Elven Defender, Rohirrim Recruit…) ; refuse « each of your », titre, initiative.
 8. **While X jetons ici + même X sur carte nommée → force +X** ✅ — `matchingTokensOnNamedCard` (Ma hache / Décompte final) ; pas d’exception par id.
 9. **When-played spot classe → place/add tokens here** ✅ — Chamber of Records, Fortitude… ; refuse mounted / and / or.
+10. **Discard this or remove N jetons → make/heal** ✅ — deux capacités (coûts alternatifs) ; make force/keyword + heal classe ; refuse bearing / skirmishing / reveal / prevent / twilight+either.
 
 ## Hors scope / plus tard
 
 - Weather no-events, gametext site moderne (reportés sites).
-- Familles complexes (heal from culture token, machines Isengard, « discard this or remove token », While spot token avancé : each of your / titre / archery total / cannot take wounds).
+- Familles complexes (heal from culture token, machines Isengard, While spot token avancé : each of your / titre / archery total / cannot take wounds).
 - Make strength « minion skirmishing X » (cible skirmishing).
 - Multi-Shadow / >2 joueurs.
 - Répartition multi-cartes d’un reinforce N (v1 = tout sur une carte désignée).

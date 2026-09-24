@@ -649,6 +649,27 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
+    "abilities": [
+      {
+        "id": "0P16:0",
+        "phases": [],
+        "trigger": {
+          "type": "WHILE"
+        },
+        "cost": [],
+        "effects": [
+          {
+            "type": "FORBID_SKIRMISH_ACTIONS",
+            "who": "OPPONENT",
+            "events": true,
+            "specialAbilities": true,
+            "involvingSource": true
+          }
+        ],
+        "source": "SELF",
+        "text": "An opponent may not play skirmish events or use skirmish special abilities during skirmishes involving Faramir."
+      }
+    ],
     "culture": "GONDOR",
     "race": "MAN",
     "signet": "FRODO",
@@ -43349,6 +43370,27 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
+    "abilities": [
+      {
+        "id": "4C117:0",
+        "phases": [],
+        "trigger": {
+          "type": "WHILE"
+        },
+        "cost": [],
+        "effects": [
+          {
+            "type": "FORBID_SKIRMISH_ACTIONS",
+            "who": "OPPONENT",
+            "events": true,
+            "specialAbilities": true,
+            "involvingSource": true
+          }
+        ],
+        "source": "SELF",
+        "text": "An opponent may not play skirmish events or use skirmish special abilities during skirmishes involving Faramir."
+      }
+    ],
     "culture": "GONDOR",
     "race": "MAN",
     "signet": "FRODO",
@@ -61250,6 +61292,69 @@
     "abilities": [
       {
         "id": "6C52:0",
+        "phases": [
+          "SKIRMISH"
+        ],
+        "cost": [
+          {
+            "discardFromPlay": [
+              {
+                "count": 1,
+                "target": "SELF"
+              }
+            ]
+          }
+        ],
+        "effects": [
+          {
+            "type": "ADD_TEMP_STAT",
+            "stat": "STRENGTH",
+            "value": 1,
+            "target": [
+              [
+                "GONDOR",
+                "MAN"
+              ]
+            ],
+            "expiresAtPhase": "SKIRMISH"
+          }
+        ],
+        "source": "SELF",
+        "text": "SKIRMISH: Discard this to make a gondor Man strength +1."
+      },
+      {
+        "id": "6C52:1",
+        "phases": [
+          "SKIRMISH"
+        ],
+        "cost": [
+          {
+            "removeCultureTokens": {
+              "culture": "GONDOR",
+              "count": 1,
+              "from": "SELF"
+            }
+          }
+        ],
+        "effects": [
+          {
+            "type": "ADD_TEMP_STAT",
+            "stat": "STRENGTH",
+            "value": 1,
+            "target": [
+              [
+                "GONDOR",
+                "MAN"
+              ]
+            ],
+            "expiresAtPhase": "SKIRMISH"
+          }
+        ],
+        "source": "SELF",
+        "text": "SKIRMISH: Remove 1 gondor token from here to make a gondor Man strength +1."
+      },
+      {
+        "id": "6C52:2",
         "phases": [],
         "trigger": {
           "type": "WHEN_PLAYED"
@@ -61281,6 +61386,9 @@
         "source": "SELF",
         "text": "When you play this condition, you may spot a gondor Man to place 2 gondor tokens here."
       }
+    ],
+    "actionPhases": [
+      "SKIRMISH"
     ],
     "culture": "GONDOR",
     "twilightCost": 2,
@@ -116183,6 +116291,74 @@
     "kind": "SHADOW",
     "type": "CONDITION",
     "subtype": "SUPPORT-AREA",
+    "abilities": [
+      {
+        "id": "13U103:0",
+        "phases": [
+          "SKIRMISH"
+        ],
+        "cost": [
+          {
+            "discardFromPlay": [
+              {
+                "count": 1,
+                "target": "SELF"
+              }
+            ]
+          }
+        ],
+        "effects": [
+          {
+            "type": "ADD_TEMP_STAT",
+            "stat": "STRENGTH",
+            "value": 2,
+            "target": [
+              [
+                "LURKER",
+                "MINION"
+              ]
+            ],
+            "expiresAtPhase": "SKIRMISH"
+          }
+        ],
+        "source": "SELF",
+        "text": "SKIRMISH: Discard this to make a lurker minion strength +2."
+      },
+      {
+        "id": "13U103:1",
+        "phases": [
+          "SKIRMISH"
+        ],
+        "cost": [
+          {
+            "removeCultureTokens": {
+              "culture": "ANY",
+              "count": 2,
+              "from": "SELF"
+            }
+          }
+        ],
+        "effects": [
+          {
+            "type": "ADD_TEMP_STAT",
+            "stat": "STRENGTH",
+            "value": 2,
+            "target": [
+              [
+                "LURKER",
+                "MINION"
+              ]
+            ],
+            "expiresAtPhase": "SKIRMISH"
+          }
+        ],
+        "source": "SELF",
+        "text": "SKIRMISH: Remove 2 culture tokens from here to make a lurker minion strength +2."
+      }
+    ],
+    "actionPhases": [
+      "SKIRMISH"
+    ],
     "culture": "ORC",
     "twilightCost": 1,
     "imageUrl": "/cards_visuals/o_13_103.jpg",
@@ -137842,6 +138018,67 @@
     "abilities": [
       {
         "id": "18U2:0",
+        "phases": [
+          "SKIRMISH"
+        ],
+        "cost": [
+          {
+            "discardFromPlay": [
+              {
+                "count": 1,
+                "target": "SELF"
+              }
+            ]
+          }
+        ],
+        "effects": [
+          {
+            "type": "ADD_TEMP_KEYWORD",
+            "keyword": "HUNTER 1",
+            "target": [
+              [
+                "DWARVEN",
+                "COMPANION"
+              ]
+            ],
+            "expiresAtPhase": "SKIRMISH"
+          }
+        ],
+        "source": "SELF",
+        "text": "SKIRMISH: Discard this to make a dwarven companion gain hunter 1."
+      },
+      {
+        "id": "18U2:1",
+        "phases": [
+          "SKIRMISH"
+        ],
+        "cost": [
+          {
+            "removeCultureTokens": {
+              "culture": "DWARVEN",
+              "count": 1,
+              "from": "SELF"
+            }
+          }
+        ],
+        "effects": [
+          {
+            "type": "ADD_TEMP_KEYWORD",
+            "keyword": "HUNTER 1",
+            "target": [
+              [
+                "DWARVEN",
+                "COMPANION"
+              ]
+            ],
+            "expiresAtPhase": "SKIRMISH"
+          }
+        ],
+        "source": "SELF",
+        "text": "SKIRMISH: Remove 1 dwarven token from here to make a dwarven companion gain hunter 1."
+      },
+      {
+        "id": "18U2:2",
         "phases": [],
         "trigger": {
           "type": "WHEN_PLAYED"
@@ -137858,6 +138095,9 @@
         "source": "SELF",
         "text": "When you play this condition, place a dwarven token here."
       }
+    ],
+    "actionPhases": [
+      "SKIRMISH"
     ],
     "culture": "DWARVEN",
     "twilightCost": 0,

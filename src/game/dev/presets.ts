@@ -108,42 +108,52 @@ export const applyDevPreset = (
         case 'CULTURE_TOKENS_TEST': {
             resetBoardForPreset(G);
             setupDevPath(G, 3);
-            G.twilightPool = 4;
+            G.twilightPool = 6;
 
-            // Focus : Ma hache / Décompte final — jetons Gimli ↔ Legolas (X = X → force +X).
+            // Focus : Discard this or remove N jetons → make / heal (Skirmish).
             fpPlayer.fellowshipArea = [
                 {
                     ...clonePresetCard('2C102', 'dev-frodo-ct'),
                     attachments: [clonePresetCard('1R1', 'dev-ring-ct')],
                 },
-                clonePresetCard('0P12', 'dev-gimli-ct'),
-                clonePresetCard('1R50', 'dev-legolas-ct'),
+                clonePresetCard('0P12', 'dev-gimli-ct'), // nain → Run Until Found
+                clonePresetCard('0P16', 'dev-faramir-ct'), // Homme Gondor → Garrison
             ];
             fpPlayer.supportArea = [
                 {
-                    ...clonePresetCard('4R52', 'dev-my-axe'),
-                    cultureTokens: { DWARVEN: 2 },
+                    ...clonePresetCard('6C52', 'dev-garrison'),
+                    cultureTokens: { GONDOR: 2 },
                 },
                 {
-                    ...clonePresetCard('4R69', 'dev-final-count'),
-                    cultureTokens: { ELVEN: 2 },
+                    ...clonePresetCard('18U2', 'dev-run-until-found'),
+                    cultureTokens: { DWARVEN: 2 },
                 },
             ];
             fpPlayer.hand = [];
 
             if (shadowPlayer) {
-                shadowPlayer.supportArea = [];
-                // Séides faibles pour gagner des combats → placer des jetons
+                shadowPlayer.supportArea = [
+                    {
+                        ...clonePresetCard('13U103', 'dev-always-threat'),
+                        cultureTokens: { ORC: 3 },
+                    },
+                ];
+                // Séides faibles + lurker pour Always Threatening
                 G.battlefield = [
                     clonePresetCard('11S90', 'dev-man-of-bree'),
-                    clonePresetCard('4C252', 'dev-southron-scout'),
+                    clonePresetCard('11C98', 'dev-rampaging-easterling'),
                 ];
                 shadowPlayer.hand = [];
-                G.twilightPool = 6;
+            }
+
+            // Site Cavern Entrance (Standard) en dernière case — pour tester
+            // « no skirmish special abilities » (téléport site DEV → 9).
+            if (G.path?.[8]) {
+                G.path[8] = clonePresetSite('11S232', fpId, 9);
             }
 
             G.statusMessage =
-                '[DEV] Jetons · Gimli + Legolas · Ma hache (2) / Décompte final (2) → force +2 si les deux en jeu.';
+                '[DEV] Jetons · Discard/remove → make. Faramir bloque Ombre sur son combat. Site 9 = Cavern Entrance (capacités Skirmish interdites aux deux).';
             break;
         }
     }

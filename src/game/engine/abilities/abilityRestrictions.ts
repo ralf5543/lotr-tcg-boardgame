@@ -3,6 +3,10 @@ import {
     isCardStackedOnControlledSite,
 } from '../../logic/sites';
 import { abilityOwnerPlayerId } from './payAbilityCost';
+import {
+    isSkirmishActionForbidden,
+    isSkirmishSpecialAbility,
+} from '../../logic/skirmishActionRestrictions';
 
 export function isAssignedToSkirmish(
     G: GameState,
@@ -36,6 +40,15 @@ export function abilityMeetsPlayRestrictions(
     ) {
         // Empiler : carte encore en jeu, pas déjà empilée
         if (findStacked(G, source)) return false;
+    }
+    if (isSkirmishSpecialAbility(ability)) {
+        const ownerId = abilityOwnerPlayerId(G, source);
+        if (
+            ownerId &&
+            isSkirmishActionForbidden(G, ownerId, 'SPECIAL_ABILITY')
+        ) {
+            return false;
+        }
     }
     return true;
 }

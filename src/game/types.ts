@@ -306,6 +306,20 @@ export type AbilityEffect =
       }
     | {
           /**
+           * Passif : interdit événements et/ou capacités spéciales Skirmish.
+           * Faramir (adversaire, combat impliquant la source) ;
+           * Cavern Entrance (tous, site courant).
+           */
+          type: 'FORBID_SKIRMISH_ACTIONS';
+          /** Qui est bloqué. OPPONENT = adversaire du propriétaire de la source. */
+          who: 'OPPONENT' | 'ALL' | 'FREE_PEOPLE' | 'SHADOW';
+          events?: boolean;
+          specialAbilities?: boolean;
+          /** Uniquement pendant un combat impliquant la source (Faramir). */
+          involvingSource?: boolean;
+      }
+    | {
+          /**
            * Remplace un site du chemin par un site du deck d’aventure.
            * La cible choisie = id du site dans sitesDeck (avant activateAbility).
            */

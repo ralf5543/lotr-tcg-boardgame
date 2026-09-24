@@ -1130,6 +1130,27 @@ function splitClassAndMakeRemainder(
         return { classRaw: stat[1].trim(), remainder: stat[2].trim() };
     }
 
+    // « make a X companion gain hunter 1 » (Run Until Found, etc.)
+    const gainKwTagged = noUntil.match(
+        /^(.*?)\s+gains?\s+(<keyword>[^<]+<\/keyword>(?:\s+and\s+[\s\S]+)?)$/i
+    );
+    if (gainKwTagged?.[1]?.trim() && findKnownKeyword(gainKwTagged[2])) {
+        return {
+            classRaw: gainKwTagged[1].trim(),
+            remainder: gainKwTagged[2].trim(),
+        };
+    }
+
+    const gainKwPlain = noUntil.match(
+        /^(.*?)\s+gains?\s+((?:damage|defender)\s*\+\d+|fierce|archer|hunter\s*\d+)(\s+and\s+[\s\S]+)?$/i
+    );
+    if (gainKwPlain?.[1]?.trim() && findKnownKeyword(gainKwPlain[2])) {
+        return {
+            classRaw: gainKwPlain[1].trim(),
+            remainder: `${gainKwPlain[2]}${gainKwPlain[3] || ''}`.trim(),
+        };
+    }
+
     const kwTagged = noUntil.match(
         /^(.*?)\s+(<keyword>[^<]+<\/keyword>(?:\s+and\s+[\s\S]+)?)$/i
     );
@@ -2811,6 +2832,119 @@ function parseWhileCannotReplaceSiteAbilities(
 }
 
 /**
+ * « An opponent may not play skirmish events or use skirmish special abilities
+ * during skirmishes involving [Name]. »
+ * (Faramir 0P16 / 4C117 — Name = titre de la carte → involvingSource.)
+ */
+function parseForbidSkirmishActionAbilities(
+    text: string,
+    cardTitle?: string,
+    cardId?: string
+): Record<string, unknown>[] {
+    const found: Record<string, unknown>[] = [];
+    const plain = text
+        .replace(/<[^>]+>/g, ' ')
+        .replace(/\*\*/g, ' ')
+        .replace(/\s+/g, ' ')
+        .trim();
+
+    const re =
+        /An opponent may not play skirmish events or use skirmish special abilities during skirmishes involving ([^.]+)\./gi;
+    let match: RegExpExecArray | null;
+    while ((match = re.exec(plain)) !== null) {
+        const whoName = match[1].trim();
+        const title = (cardTitle || '').trim();
+        if (
+            !title ||
+            whoName.toLowerCase() !== title.toLowerCase()
+        ) {
+            continue;
+        }
+        found.push({
+            id: `${cardId || 'ability'}:${found.length}:forbid-skirmish`,
+            phases: [],
+            trigger: { type: 'WHILE' },
+            cost: [],
+            effects: [
+                {
+                    type: 'FORBID_SKIRMISH_ACTIONS',
+                    who: 'OPPONENT',
+                    events: true,
+                    specialAbilities: true,
+                    involvingSource: true,
+                },
+            ],
+            source: 'SELF',
+            text: stripAbilityMarkup(match[0]),
+        });
+    }
+
+    return found;
+}
+
+/**
+ * Sites : Cavern Entrance (events+abilities, ou abilities only).
+ */
+function parseSiteForbidSkirmishAbilities(
+    text: string,
+    cardId?: string
+): Record<string, unknown>[] {
+    const found: Record<string, unknown>[] = [];
+    const plain = text
+        .replace(/<[^>]+>/g, ' ')
+        .replace(/\*\*/g, ' ')
+        .replace(/\s+/g, ' ')
+        .trim();
+
+    // Plus long d’abord (events + abilities).
+    const both =
+        /Skirmish events may not be played and skirmish special abilities may not be used\.?/i;
+    const abilitiesOnly =
+        /Skirmish special abilities cannot be used\.?/i;
+
+    if (both.test(plain)) {
+        found.push({
+            id: `${cardId || 'ability'}:0:forbid-skirmish-site`,
+            phases: [],
+            trigger: { type: 'WHILE' },
+            cost: [],
+            effects: [
+                {
+                    type: 'FORBID_SKIRMISH_ACTIONS',
+                    who: 'ALL',
+                    events: true,
+                    specialAbilities: true,
+                },
+            ],
+            source: 'SELF',
+            text: 'Skirmish events may not be played and skirmish special abilities may not be used.',
+        });
+        return found;
+    }
+
+    if (abilitiesOnly.test(plain)) {
+        found.push({
+            id: `${cardId || 'ability'}:0:forbid-skirmish-site`,
+            phases: [],
+            trigger: { type: 'WHILE' },
+            cost: [],
+            effects: [
+                {
+                    type: 'FORBID_SKIRMISH_ACTIONS',
+                    who: 'ALL',
+                    events: false,
+                    specialAbilities: true,
+                },
+            ],
+            source: 'SELF',
+            text: 'Skirmish special abilities cannot be used.',
+        });
+    }
+
+    return found;
+}
+
+/**
  * While no opponent controls a site, [bearer|self] is strength ±N.
  */
 function parseWhileNoOpponentControlsStrengthAbilities(
@@ -3817,6 +3951,12 @@ export function parseSiteAbilities(
         abilities.push({
             ...ability,
             id: `${cardId || 'ability'}:${index}:site-move`,
+        });
+    });
+    parseSiteForbidSkirmishAbilities(text, cardId).forEach((ability) => {
+        abilities.push({
+            ...ability,
+            id: `${cardId || 'ability'}:${abilities.length}:site-forbid-skirmish`,
         });
     });
     return abilities.length > 0 ? abilities : undefined;
@@ -5011,6 +5151,118 @@ export function parseAbilities(
                 });
                 return;
             }
+        }
+
+        // « Discard this … or remove N [culture]? tokens [from here] to make/heal … »
+        // Deux coûts en alternative (comme Fortitude prevent). Effets sûrs uniquement.
+        const discardOrRemoveToken = body.match(
+            /^Discard this(?:\s+(?:condition|possession|card))?(?:\s+from play)?\s+or remove\s+(a|an|one|\d+)\s+(?:((?:Free Peoples(?:\s+culture)?)|(?:<symbol>[^<]+<\/symbol>)|(?:culture))\s+)?tokens?(?:\s+from here|\s+here)?\s+to\s+([\s\S]+)/i
+        );
+        if (discardOrRemoveToken) {
+            const count = parseCultureTokenCount(discardOrRemoveToken[1]);
+            const cultureRaw = discardOrRemoveToken[2];
+            const culture = cultureRaw
+                ? parseCultureTokenSpec(cultureRaw)
+                : 'ANY';
+            let effectText = discardOrRemoveToken[3].trim();
+            if (!count || !culture) return;
+            // Pas de multi-clauses hors make/heal simples.
+            const effectPlain = effectText
+                .replace(/<[^>]+>/g, ' ')
+                .replace(/\s+/g, ' ')
+                .trim();
+            if (
+                /\b(reveal|stack|play|discard|cancel|archery|reconcile|spot|exert|wound|prevent|draw|for each|skirmishing|bearing|from your|from his|from her)\b/i.test(
+                    effectPlain
+                )
+            ) {
+                return;
+            }
+
+            let effects: Record<string, unknown>[] | null = null;
+            const healWho = effectText.match(/^heal\s+([\s\S]+)/i);
+            if (healWho) {
+                const healTarget = parseNounTarget(
+                    healWho[1],
+                    [['']],
+                    cardTitle
+                );
+                if (
+                    healTarget &&
+                    Array.isArray(healTarget) &&
+                    isCharacterishHealTarget(healTarget)
+                ) {
+                    effects = [
+                        { type: 'HEAL', count: 1, target: healTarget },
+                    ];
+                }
+            } else {
+                const makeRaw = effectText.match(/^make\s+([\s\S]+)/i);
+                if (makeRaw) {
+                    if (/\bfor each\b/i.test(effectPlain)) return;
+                    const expiresAtPhase = parseUntilExpiry(
+                        makeRaw[1],
+                        marker.phase
+                    );
+                    const parsedMake = parseMakeTargetAndEffects(
+                        makeRaw[1],
+                        'SELF',
+                        expiresAtPhase
+                    );
+                    if (
+                        parsedMake &&
+                        parsedMake.effects.length > 0 &&
+                        parsedMake.effects.every(
+                            (e) =>
+                                e.type === 'ADD_TEMP_STAT' ||
+                                e.type === 'ADD_TEMP_KEYWORD'
+                        )
+                    ) {
+                        effects = parsedMake.effects as Record<
+                            string,
+                            unknown
+                        >[];
+                    }
+                }
+            }
+            if (!effects || effects.length === 0) return;
+
+            const cultureLabel = cultureRaw
+                ? stripAbilityMarkup(cultureRaw)
+                : 'culture';
+            const effectClause = stripAbilityMarkup(effectText)
+                .replace(/\s+/g, ' ')
+                .replace(/\s+\./g, '.')
+                .trim();
+            abilities.push({
+                id: `${cardId || 'ability'}:${abilities.length}`,
+                phases,
+                cost: [
+                    {
+                        discardFromPlay: [{ count: 1, target: 'SELF' }],
+                    },
+                ],
+                effects,
+                source: 'SELF',
+                text: `${marker.phase}: Discard this to ${effectClause}`,
+            });
+            abilities.push({
+                id: `${cardId || 'ability'}:${abilities.length}`,
+                phases,
+                cost: [
+                    {
+                        removeCultureTokens: {
+                            culture,
+                            count,
+                            from: 'SELF',
+                        },
+                    },
+                ],
+                effects,
+                source: 'SELF',
+                text: `${marker.phase}: Remove ${count} ${cultureLabel} token${count > 1 ? 's' : ''} from here to ${effectClause}`,
+            });
+            return;
         }
 
         // « Remove N [culture] tokens [from here|here]? to make … strength ±N »
@@ -6960,6 +7212,15 @@ export function parseAbilities(
             id: `${cardId || 'ability'}:${abilities.length}`,
         });
     });
+
+    parseForbidSkirmishActionAbilities(text, cardTitle, cardId).forEach(
+        (ability) => {
+            abilities.push({
+                ...ability,
+                id: `${cardId || 'ability'}:${abilities.length}`,
+            });
+        }
+    );
 
     parseStartOfPhaseDiscardHandTwilightAbilities(text, cardId).forEach(
         (ability) => {

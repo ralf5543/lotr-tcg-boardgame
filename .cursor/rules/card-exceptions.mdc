@@ -26,3 +26,5 @@ Quand un fragment suffit → **ne pas** lister ici ; noter l’étape dans le pl
 | Id | Titre | Comment |
 | --- | --- | --- |
 | 4R52 / 4R69 | My Axe Is Notched / Final Count | While X jetons ici + même X sur carte nommée → `matchingTokensOnNamedCard` / `perMatchingTokensOnNamedCard` |
+| 0P16 / 4C117 | Faramir | `FORBID_SKIRMISH_ACTIONS` (adversaire, involving source) |
+| 11S232 / 4U355 | Cavern Entrance | même effet (ALL ; 11S232 = abilities only, 4U355 = events+abilities) |
