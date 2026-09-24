@@ -160,7 +160,7 @@ describe('canUseAbility', () => {
         ).toBe(false);
     });
 
-    it('autorise une action Skirmish toute la phase (même hors escarmouche sélectionnée)', () => {
+    it('refuse une action Skirmish tant qu’aucun combat n’est sélectionné', () => {
         const card = createCompanion({
             id: 'gimli',
             actionPhases: ['SKIRMISH'],
@@ -192,7 +192,7 @@ describe('canUseAbility', () => {
                 ctx: { phase: 'skirmish' },
                 playerID: '0',
             }).valid
-        ).toBe(true);
+        ).toBe(false);
         expect(
             canUseAbility(card, {
                 G: open,

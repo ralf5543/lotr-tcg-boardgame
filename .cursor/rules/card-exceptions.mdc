@@ -1,0 +1,28 @@
+---
+description: Liste vivante des cartes candidates aux exceptions (handlers par id)
+alwaysApply: true
+---
+
+# Exceptions de cartes — candidats
+
+**Format : Standard (règles modernes).** Voir `.cursor/rules/format-standard.mdc`.
+
+Credo : **mieux vaut inerte que faux** ; d’abord un **fragment** parser ; handlers par id **en dernier** (axe roadmap « Exceptions de cartes »).
+
+## Comment remplir
+
+Quand un gametext reste inerte et qu’un fragment générique / dédié n’est **pas** raisonnable (trop unique, titre croisé fragile, règle hors modèle…) → ajouter une ligne ici avec **id**, titre, et ce qui manque.
+
+Quand un fragment suffit → **ne pas** lister ici ; noter l’étape dans le plan thématique actif.
+
+## Candidats
+
+| Id | Titre | Manque | Notes |
+| --- | --- | --- | --- |
+| — | — | — | (vide pour l’instant) |
+
+## Traité autrement (fragment, pas exception)
+
+| Id | Titre | Comment |
+| --- | --- | --- |
+| 4R52 / 4R69 | My Axe Is Notched / Final Count | While X jetons ici + même X sur carte nommée → `matchingTokensOnNamedCard` / `perMatchingTokensOnNamedCard` |

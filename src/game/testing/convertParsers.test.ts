@@ -1678,6 +1678,99 @@ describe('parseAbilities — While you can spot → strength', () => {
             },
         ]);
     });
+
+    it('parse Ma hache / Décompte final : X jetons ici + même X sur carte nommée', () => {
+        expect(
+            parseAbilities(
+                'Each time Gimli wins a skirmish, place a <symbol>dwarven</symbol> token on this card. While you can spot X <symbol>dwarven</symbol> tokens on this card and the same number of <symbol>elven</symbol> tokens on Final Count, Gimli is strength +X (limit +3).',
+                'My Axe Is Notched',
+                '4R52'
+            )
+        ).toEqual([
+            expect.objectContaining({
+                phases: ['RESPONSE'],
+                trigger: {
+                    type: 'WINS_SKIRMISH',
+                    winner: [['Gimli']],
+                },
+            }),
+            {
+                id: '4R52:1',
+                phases: [],
+                trigger: {
+                    type: 'WHILE',
+                    matchingTokensOnNamedCard: {
+                        selfCulture: 'DWARVEN',
+                        otherCulture: 'ELVEN',
+                        otherCardTitle: 'Final Count',
+                    },
+                },
+                cost: [],
+                effects: [
+                    {
+                        type: 'MODIFY_STAT',
+                        stat: 'STRENGTH',
+                        value: 1,
+                        target: [['Gimli']],
+                        perMatchingTokensOnNamedCard: {
+                            selfCulture: 'DWARVEN',
+                            otherCulture: 'ELVEN',
+                            otherCardTitle: 'Final Count',
+                            limit: 3,
+                        },
+                    },
+                ],
+                source: 'SELF',
+                text: expect.stringMatching(
+                    /While you can spot X dwarven tokens on this card and the same number of elven tokens on Final Count, Gimli is strength \+X \(limit \+3\)/i
+                ),
+            },
+        ]);
+
+        expect(
+            parseAbilities(
+                'Each time Legolas wins a skirmish, you may place an <symbol>elven</symbol> token on this card. While you can spot X <symbol>elven</symbol> tokens on this card and the same number of <symbol>dwarven</symbol> tokens on My Axe Is Notched, Legolas is strength +X (limit +3).',
+                'Final Count',
+                '4R69'
+            )
+        ).toEqual([
+            expect.objectContaining({
+                phases: ['RESPONSE'],
+                optional: true,
+            }),
+            {
+                id: '4R69:1',
+                phases: [],
+                trigger: {
+                    type: 'WHILE',
+                    matchingTokensOnNamedCard: {
+                        selfCulture: 'ELVEN',
+                        otherCulture: 'DWARVEN',
+                        otherCardTitle: 'My Axe Is Notched',
+                    },
+                },
+                cost: [],
+                effects: [
+                    {
+                        type: 'MODIFY_STAT',
+                        stat: 'STRENGTH',
+                        value: 1,
+                        target: [['Legolas']],
+                        perMatchingTokensOnNamedCard: {
+                            selfCulture: 'ELVEN',
+                            otherCulture: 'DWARVEN',
+                            otherCardTitle: 'My Axe Is Notched',
+                            limit: 3,
+                        },
+                    },
+                ],
+                source: 'SELF',
+                text: expect.stringMatching(
+                    /While you can spot X elven tokens on this card and the same number of dwarven tokens on My Axe Is Notched, Legolas is strength \+X \(limit \+3\)/i
+                ),
+            },
+        ]);
+    });
 });
 
 describe('parseAbilities — While skirmishing → strength', () => {

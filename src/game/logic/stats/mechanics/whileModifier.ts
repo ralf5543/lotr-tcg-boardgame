@@ -1,6 +1,7 @@
 import type {
     Ability,
     AbilityEffect,
+    CardCulture,
     CardState,
     GameState,
     SkirmishState,
@@ -23,6 +24,7 @@ import {
 import {
     countCultureTokensForPlayer,
     findInPlayCardOwnerId,
+    tokenCountOnCard,
 } from '../../cultureTokens';
 
 function matchCard(card: CardState, targetId: string): boolean {
@@ -90,12 +92,71 @@ function countDistinctRaces(
     return seen.size;
 }
 
+function cardTitleLower(card: CardState): string {
+    return (
+        card.title ||
+        card.i18n?.en?.title ||
+        card.i18n?.fr?.title ||
+        ''
+    )
+        .trim()
+        .toLowerCase();
+}
+
+/** Première carte en jeu (hors source) au titre donné. */
+function findInPlayCardByTitle(
+    G: GameState,
+    title: string,
+    exclude?: CardState
+): CardState | null {
+    const wanted = title.trim().toLowerCase();
+    if (!wanted) return null;
+    const excludeId = exclude?.instanceId || exclude?.id;
+    let found: CardState | null = null;
+    forEachInPlayCard(G, (card) => {
+        if (found) return;
+        const id = card.instanceId || card.id;
+        if (excludeId && id === excludeId) return;
+        if (cardTitleLower(card) === wanted) found = card;
+    });
+    return found;
+}
+
+function matchingTokensOnNamedCardCount(
+    G: GameState,
+    source: CardState,
+    spec: {
+        selfCulture: CardCulture;
+        otherCulture: CardCulture;
+        otherCardTitle: string;
+        limit?: number;
+    }
+): number {
+    const other = findInPlayCardByTitle(G, spec.otherCardTitle, source);
+    if (!other) return 0;
+    const selfCount = tokenCountOnCard(source, spec.selfCulture);
+    const otherCount = tokenCountOnCard(other, spec.otherCulture);
+    let matched = Math.min(selfCount, otherCount);
+    if (spec.limit != null && matched > spec.limit) matched = spec.limit;
+    return matched;
+}
+
 function modifyStatMagnitude(
     G: GameState,
     source: CardState,
     effect: Extract<AbilityEffect, { type: 'MODIFY_STAT' }>
 ): number {
     const base = effect.value || 0;
+    if (effect.perMatchingTokensOnNamedCard) {
+        return (
+            base *
+            matchingTokensOnNamedCardCount(
+                G,
+                source,
+                effect.perMatchingTokensOnNamedCard
+            )
+        );
+    }
     if (effect.perDistinctRace) {
         return (
             base *
@@ -174,6 +235,15 @@ export function whileConditionHolds(
             trigger.spotCultureTokens.culture
         );
         if (have < (trigger.spotCultureTokens.count || 1)) return false;
+    }
+
+    if (trigger.matchingTokensOnNamedCard) {
+        const matched = matchingTokensOnNamedCardCount(
+            G,
+            source,
+            trigger.matchingTokensOnNamedCard
+        );
+        if (matched < 1) return false;
     }
 
     for (const req of trigger.spot || []) {

@@ -257,4 +257,93 @@ describe('While you can spot → strength', () => {
         });
         expect(getCalculatedStrength(withToken, defender)).toBe(8);
     });
+
+    it('Ma hache / Décompte final : +min(jetons croisés), limite +3', () => {
+        const gimli = createCompanion({
+            id: 'gimli',
+            title: 'Gimli',
+            strength: 6,
+        });
+        const myAxe = createCard({
+            id: '4R52',
+            title: 'My Axe Is Notched',
+            kind: 'FREE_PEOPLE',
+            type: 'CONDITION',
+            subtype: 'SUPPORT-AREA',
+            culture: 'DWARVEN',
+            cultureTokens: { DWARVEN: 2 },
+            abilities: [
+                {
+                    id: '4R52:1',
+                    phases: [],
+                    trigger: {
+                        type: 'WHILE',
+                        matchingTokensOnNamedCard: {
+                            selfCulture: 'DWARVEN',
+                            otherCulture: 'ELVEN',
+                            otherCardTitle: 'Final Count',
+                        },
+                    },
+                    cost: [],
+                    effects: [
+                        {
+                            type: 'MODIFY_STAT',
+                            stat: 'STRENGTH',
+                            value: 1,
+                            target: [['Gimli']],
+                            perMatchingTokensOnNamedCard: {
+                                selfCulture: 'DWARVEN',
+                                otherCulture: 'ELVEN',
+                                otherCardTitle: 'Final Count',
+                                limit: 3,
+                            },
+                        },
+                    ],
+                    source: 'SELF',
+                },
+            ],
+        });
+        const finalCount = createCard({
+            id: '4R69',
+            title: 'Final Count',
+            kind: 'FREE_PEOPLE',
+            type: 'CONDITION',
+            subtype: 'SUPPORT-AREA',
+            culture: 'ELVEN',
+            cultureTokens: { ELVEN: 2 },
+        });
+
+        const alone = createGameState({
+            players: {
+                '0': createPlayerState('0', {
+                    fellowshipArea: [gimli],
+                    supportArea: [myAxe],
+                }),
+            },
+        });
+        expect(getCalculatedStrength(alone, gimli)).toBe(6);
+
+        const paired = createGameState({
+            players: {
+                '0': createPlayerState('0', {
+                    fellowshipArea: [gimli],
+                    supportArea: [myAxe, finalCount],
+                }),
+            },
+        });
+        expect(getCalculatedStrength(paired, gimli)).toBe(8);
+
+        const capped = createGameState({
+            players: {
+                '0': createPlayerState('0', {
+                    fellowshipArea: [gimli],
+                    supportArea: [
+                        { ...myAxe, cultureTokens: { DWARVEN: 5 } },
+                        { ...finalCount, cultureTokens: { ELVEN: 5 } },
+                    ],
+                }),
+            },
+        });
+        expect(getCalculatedStrength(capped, gimli)).toBe(9); // +3 limite
+    });
 });

@@ -2925,6 +2925,98 @@ function parseWhileSpotStrengthAbilities(
 }
 
 /**
+ * While you can spot X [c1] tokens on this card and the same number of [c2]
+ * tokens on [Card Name], [who] is strength +X (limit +N).
+ * (My Axe Is Notched / Final Count — 2 cartes corpus.)
+ */
+function parseWhileMatchingTokensOnNamedCardStrengthAbilities(
+    text: string,
+    cardTitle?: string,
+    cardId?: string
+): Record<string, unknown>[] {
+    const found: Record<string, unknown>[] = [];
+    const re =
+        /While you can spot X\s+(<symbol>[^<]+<\/symbol>)\s+tokens on this card and the same number of\s+(<symbol>[^<]+<\/symbol>)\s+tokens on\s+([^,]+?),\s*([^,]+?)\s+is strength \+X\s*(?:\(\s*limit\s*\+(\d+)\s*\))?\s*\./gi;
+    let match: RegExpExecArray | null;
+    while ((match = re.exec(text)) !== null) {
+        const selfCulture = parseCultureTokenSpec(match[1]);
+        const otherCulture = parseCultureTokenSpec(match[2]);
+        const otherCardTitle = stripAbilityMarkup(match[3])
+            .replace(/\s+/g, ' ')
+            .trim();
+        if (
+            !selfCulture ||
+            !otherCulture ||
+            selfCulture === 'FREE_PEOPLES' ||
+            selfCulture === 'ANY' ||
+            otherCulture === 'FREE_PEOPLES' ||
+            otherCulture === 'ANY' ||
+            !otherCardTitle
+        ) {
+            continue;
+        }
+
+        const whoRaw = match[4].trim();
+        let target: 'SELF' | 'BEARER' | string[][] | null =
+            parseWhileStrengthWho(whoRaw, cardTitle);
+        if (!target) {
+            const name = stripAbilityMarkup(whoRaw).replace(/\s+/g, ' ').trim();
+            // Nom propre (Gimli, Legolas…) — même critère que matchers.
+            if (
+                name &&
+                name !== name.toUpperCase() &&
+                /[a-zà-ÿ]/i.test(name) &&
+                !/^bearer$/i.test(name)
+            ) {
+                target = [[name]];
+            }
+        }
+        if (!target) continue;
+
+        const limitRaw = match[5] ? parseInt(match[5], 10) : undefined;
+        if (
+            limitRaw !== undefined &&
+            (!Number.isFinite(limitRaw) || limitRaw <= 0)
+        ) {
+            continue;
+        }
+
+        const matching = {
+            selfCulture,
+            otherCulture,
+            otherCardTitle,
+            ...(limitRaw !== undefined ? { limit: limitRaw } : {}),
+        };
+
+        found.push({
+            id: `${cardId || 'ability'}:${found.length}:while-match-ct`,
+            phases: [],
+            trigger: {
+                type: 'WHILE',
+                matchingTokensOnNamedCard: {
+                    selfCulture,
+                    otherCulture,
+                    otherCardTitle,
+                },
+            },
+            cost: [],
+            effects: [
+                {
+                    type: 'MODIFY_STAT',
+                    stat: 'STRENGTH',
+                    value: 1,
+                    target,
+                    perMatchingTokensOnNamedCard: matching,
+                },
+            ],
+            source: target === 'BEARER' ? 'ATTACHMENT' : 'SELF',
+            text: stripAbilityMarkup(match[0]),
+        });
+    }
+    return found;
+}
+
+/**
  * While you can spot N [culture] tokens, this companion / bearer is strength ±N.
  * (Elven Defender, Rohirrim Recruit…) — refuse « each », titre, initiative…
  */
@@ -6688,6 +6780,17 @@ export function parseAbilities(
             });
         }
     );
+
+    parseWhileMatchingTokensOnNamedCardStrengthAbilities(
+        text,
+        cardTitle,
+        cardId
+    ).forEach((ability) => {
+        abilities.push({
+            ...ability,
+            id: `${cardId || 'ability'}:${abilities.length}`,
+        });
+    });
 
     parseWhileAtSiteStrengthAbilities(text, cardTitle, cardId).forEach(
         (ability) => {

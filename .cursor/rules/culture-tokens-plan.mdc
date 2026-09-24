@@ -30,6 +30,7 @@ L’ancien plan sites est **figé** (`.cursor/rules/sites-plan.mdc`, `alwaysAppl
 5. **When-played spot site path → reinforce** ✅ — 13C83 / 13C164.
 6. **Remove N jetons → force ±N** ✅ — coût `removeCultureTokens` + `ADD_TEMP_STAT` (Glóin, Heavy Axe, Sudden Fury, Last Stand…) ; refuse skirmishing / and Damage / from a machine.
 7. **While spot N jetons culture → force SELF/BEARER** ✅ — trigger `spotCultureTokens` (Elven Defender, Rohirrim Recruit…) ; refuse « each of your », titre, initiative.
+8. **While X jetons ici + même X sur carte nommée → force +X** ✅ — `matchingTokensOnNamedCard` (Ma hache / Décompte final) ; pas d’exception par id.
 
 ## Hors scope / plus tard
 

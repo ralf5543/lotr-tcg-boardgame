@@ -68,6 +68,12 @@ export function checkPhases(
                 reason: 'Les événements d’affectation se jouent avant l’attribution des séides.',
             };
         }
+        if (currentPhase === 'SKIRMISH' && !G.activeSkirmishId) {
+            return {
+                valid: false,
+                reason: 'Choisissez d’abord un combat avant de jouer un événement d’escarmouche.',
+            };
+        }
         return { valid: true };
     }
 

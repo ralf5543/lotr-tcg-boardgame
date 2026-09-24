@@ -40,6 +40,6 @@ Statuts : `en cours` · `à faire` · `plus tard` · `fait` · `pause`
 | **Gagner / Perdre** | à faire | Conditions de victoire / défaite (Anneau, sites, élimination…). |
 | **Options** | à faire | Préférences joueur (couper le son, etc.). |
 | **Écran de bienvenue** | à faire | Avant le plateau boardgame.io (lobby / menu). |
-| **Exceptions de cartes** | à faire | Cartes trop spécifiques pour le parser générique — handlers par id, en dernier. |
+| **Exceptions de cartes** | à faire | Cartes trop spécifiques pour le parser — handlers par id, en dernier. Liste vivante : [`card-exceptions.mdc`](card-exceptions.mdc). |
 
 Axes futurs possibles (non listés ici volontairement) : à ajouter quand ils deviennent concrets.

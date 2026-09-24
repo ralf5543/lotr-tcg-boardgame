@@ -110,83 +110,40 @@ export const applyDevPreset = (
             setupDevPath(G, 3);
             G.twilightPool = 4;
 
+            // Focus : Ma hache / Décompte final — jetons Gimli ↔ Legolas (X = X → force +X).
             fpPlayer.fellowshipArea = [
                 {
                     ...clonePresetCard('2C102', 'dev-frodo-ct'),
                     attachments: [clonePresetCard('1R1', 'dev-ring-ct')],
-                    wounds: 3, // vit 4 → 1 restante = exhaust (Bloodthirsty)
                 },
-                {
-                    ...clonePresetCard('0P12', 'dev-gimli-ct'),
-                    // Arod monté : 2× prévenir (Damage +1) = 4 jetons nains
-                    attachments: [clonePresetCard('13R1', 'dev-arod')],
-                },
-                {
-                    // Remove 1 dwarven (Stout / Axe) → force +2
-                    ...clonePresetCard('15R6', 'dev-gloin-ct'),
-                    attachments: [
-                        // Remove 1 dwarven → porteur +1
-                        clonePresetCard('15U7', 'dev-heavy-axe'),
-                    ],
-                },
-                // Homme culture Gandalf — cible Last Stand (+3) / spot exert si branché
-                clonePresetCard('11R30', 'dev-erland-ct'),
-                // While spot elven token → +2
-                clonePresetCard('18C9', 'dev-elven-defender'),
+                clonePresetCard('0P12', 'dev-gimli-ct'),
+                clonePresetCard('1R50', 'dev-legolas-ct'),
             ];
             fpPlayer.supportArea = [
-                {
-                    ...clonePresetCard('4U57', 'dev-stout-strong'),
-                    cultureTokens: { DWARVEN: 2 },
-                },
                 {
                     ...clonePresetCard('4R52', 'dev-my-axe'),
                     cultureTokens: { DWARVEN: 2 },
                 },
                 {
-                    // Jeton elven pour Elven Defender
                     ...clonePresetCard('4R69', 'dev-final-count'),
-                    cultureTokens: { ELVEN: 1 },
-                },
-                {
-                    // Remove 1 shire from here → compagnon shire +1 (Frodon)
-                    ...clonePresetCard('12U132', 'dev-sudden-fury'),
-                    cultureTokens: { SHIRE: 2 },
-                },
-                {
-                    // Remove 3 gandalf from here → compagnon +3 (Erland / etc.)
-                    ...clonePresetCard('18U21', 'dev-last-stand'),
-                    cultureTokens: { GANDALF: 3 },
+                    cultureTokens: { ELVEN: 2 },
                 },
             ];
             fpPlayer.hand = [];
 
             if (shadowPlayer) {
-                shadowPlayer.supportArea = [
-                    {
-                        ...clonePresetCard('11R91', 'dev-oath-sworn'),
-                        cultureTokens: { MEN: 1 },
-                    },
-                    {
-                        ...clonePresetCard('11U185', 'dev-fortitude'),
-                        cultureTokens: { 'URUK-HAI': 1 },
-                    },
-                ];
-                // 2 MEN (Oath) · Man of Bree str4 < Gimli · Uruk Damage+1
+                shadowPlayer.supportArea = [];
+                // Séides faibles pour gagner des combats → placer des jetons
                 G.battlefield = [
-                    clonePresetCard('12S73', 'dev-mouth-sauron'),
                     clonePresetCard('11S90', 'dev-man-of-bree'),
-                    clonePresetCard('11S178', 'dev-bloodthirsty-uruk'),
+                    clonePresetCard('4C252', 'dev-southron-scout'),
                 ];
-                shadowPlayer.hand = [
-                    clonePresetCard('13C83', 'dev-caravan-hand'),
-                    clonePresetCard('13C164', 'dev-fearless-hand'),
-                ];
-                G.twilightPool = 8;
+                shadowPlayer.hand = [];
+                G.twilightPool = 6;
             }
 
             G.statusMessage =
-                '[DEV] Jetons · remove→force : Glóin/Axe · Sudden Fury · Last Stand→Erland · + Stout/Arod.';
+                '[DEV] Jetons · Gimli + Legolas · Ma hache (2) / Décompte final (2) → force +2 si les deux en jeu.';
             break;
         }
     }

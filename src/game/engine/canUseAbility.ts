@@ -141,6 +141,18 @@ export function canUseAbility(
         };
     }
 
+    // Skirmish : actions / capacités seulement une fois un combat sélectionné
+    // (paire d’adversaires), pas pendant le choix du prochain combat.
+    if (
+        (currentPhase === 'SKIRMISH' || normalizedPhase === 'SKIRMISH') &&
+        !G.activeSkirmishId
+    ) {
+        return {
+            valid: false,
+            reason: 'Choisissez d’abord un combat avant de jouer des actions d’escarmouche.',
+        };
+    }
+
     const projectedForPhase = collectProjectedAbilities(G, card).some(
         ({ ability }) => abilityMatchesPhase(ability, rawPhase)
     );

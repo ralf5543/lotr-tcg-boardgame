@@ -270,6 +270,19 @@ export type AbilityEffect =
               races: string[];
               inFellowship?: boolean;
           };
+          /**
+           * Bonus = value × min(jetons culture sur SELF, jetons culture sur
+           * une carte en jeu au titre donné), plafonné.
+           * « While X [c1] tokens on this card and the same number of [c2]
+           * tokens on [Card Name], … strength +X (limit +N) ».
+           */
+          perMatchingTokensOnNamedCard?: {
+              selfCulture: CardCulture;
+              otherCulture: CardCulture;
+              /** Titre VO (ex. « Final Count »). */
+              otherCardTitle: string;
+              limit?: number;
+          };
       }
     | {
           /** Mot-clé passif (While…) — pas d’expiration de phase. */
@@ -521,6 +534,15 @@ export type AbilityTrigger =
           spotTwilight?: number;
           /** « While you can spot N [culture] tokens » (cartes actives du joueur). */
           spotCultureTokens?: { culture: CultureTokenSpec; count: number };
+          /**
+           * « While you can spot X [c1] tokens on this card and the same number
+           * of [c2] tokens on [Card Name] » — vrai si min(self, other) ≥ 1.
+           */
+          matchingTokensOnNamedCard?: {
+              selfCulture: CardCulture;
+              otherCulture: CardCulture;
+              otherCardTitle: string;
+          };
           /** Adversaire(s) de l’escarmouche (While skirmishing a …). */
           skirmishing?: { target: string[][] };
           /** Attachement porté (While … bears a …). */
