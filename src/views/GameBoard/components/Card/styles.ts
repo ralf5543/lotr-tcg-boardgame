@@ -487,7 +487,7 @@ export const CardContainer = styled.div<CardContainerProps>`
 
             ${CardSubtitle} {
                 font-size: 18px;
-                margin-block-start: 2px;
+                margin-block-start: 4px;
             }
 
             ${CardTypes} {

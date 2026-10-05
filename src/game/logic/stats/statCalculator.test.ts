@@ -310,6 +310,70 @@ describe('While you can spot → strength', () => {
         expect(getCalculatedStrength(withTokens, denizen)).toBe(10);
     });
 
+    it('Assault Denizen : ignore les jetons Ombre (ORC)', () => {
+        const denizen = createMinion({
+            id: '13C159',
+            strength: 9,
+            abilities: [
+                {
+                    id: '13C159:0',
+                    phases: [],
+                    trigger: { type: 'WHILE' },
+                    cost: [],
+                    effects: [
+                        {
+                            type: 'MODIFY_STAT',
+                            stat: 'STRENGTH',
+                            value: 1,
+                            target: 'SELF',
+                            perCultureTokens: { culture: 'FREE_PEOPLES' },
+                        },
+                    ],
+                    source: 'SELF',
+                },
+            ],
+        });
+        const G = createGameState({
+            battlefield: [denizen],
+            players: {
+                '0': createPlayerState('0', {
+                    supportArea: [
+                        createCard({
+                            id: 'garrison',
+                            kind: 'FREE_PEOPLE',
+                            type: 'CONDITION',
+                            subtype: 'SUPPORT-AREA',
+                            culture: 'GONDOR',
+                            cultureTokens: { GONDOR: 2 },
+                        }),
+                        createCard({
+                            id: 'run',
+                            kind: 'FREE_PEOPLE',
+                            type: 'CONDITION',
+                            subtype: 'SUPPORT-AREA',
+                            culture: 'DWARVEN',
+                            cultureTokens: { DWARVEN: 2 },
+                        }),
+                    ],
+                }),
+                '1': createPlayerState('1', {
+                    supportArea: [
+                        createCard({
+                            id: 'always',
+                            kind: 'SHADOW',
+                            type: 'CONDITION',
+                            subtype: 'SUPPORT-AREA',
+                            culture: 'ORC',
+                            cultureTokens: { ORC: 3 },
+                        }),
+                    ],
+                }),
+            },
+        });
+        // 9 + 4 Free Peoples (pas les 3 ORC)
+        expect(getCalculatedStrength(G, denizen)).toBe(13);
+    });
+
     it('Ma hache / Décompte final : +min(jetons croisés), limite +3', () => {
         const gimli = createCompanion({
             id: 'gimli',

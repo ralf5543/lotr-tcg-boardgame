@@ -110,7 +110,7 @@ export const applyDevPreset = (
             setupDevPath(G, 3);
             G.twilightPool = 6;
 
-            // Focus : remove→heal (Sorrow Shared), discard-or-remove, loses→place token.
+            // Focus : remove→heal, loses→place, force par jetons FP / cartes à jeton.
             fpPlayer.fellowshipArea = [
                 {
                     ...clonePresetCard('2C102', 'dev-frodo-ct'),
@@ -120,6 +120,7 @@ export const applyDevPreset = (
                     ...clonePresetCard('0P12', 'dev-gimli-ct'),
                     wounds: 1,
                 },
+                clonePresetCard('13R59', 'dev-aragorn-ct'),
                 clonePresetCard('0P16', 'dev-faramir-ct'),
             ];
             fpPlayer.supportArea = [
@@ -157,7 +158,7 @@ export const applyDevPreset = (
             }
 
             G.statusMessage =
-                '[DEV] Jetons · Sorrow Shared ; loses→token (Secret Folk / Shire Tactics vs Foule) ; Assault Denizen +1/jeton FP spoté. Faramir / Cavern site 9.';
+                '[DEV] Jetons · Aragorn +1/carte Gondor à jeton (Garrison) ; Assault Denizen = 9+4 FP (Garrison 2 + Run 2), pas les 3 ORC Ombre ; Sorrow Shared / loses→token.';
             break;
         }
     }
