@@ -126,26 +126,57 @@ function findInPlayCard(
     return found;
 }
 
+function cardMatchesSkirmishParticipantRef(
+    G: GameState,
+    source: CardState,
+    participant: CardState,
+    target: AbilityTargetRef,
+    yours?: boolean
+): boolean {
+    if (yours && source.kind !== participant.kind) return false;
+    if (target === 'SELF') {
+        return matchCard(participant, source.instanceId || source.id);
+    }
+    if (target === 'BEARER') {
+        const bearer = findBearer(G, source);
+        return Boolean(
+            bearer &&
+                matchCard(participant, bearer.instanceId || bearer.id)
+        );
+    }
+    if (target === 'WINNER' || target === 'SKIRMISHING') return false;
+    if (Array.isArray(target)) return cardMatchesTarget(participant, target);
+    return false;
+}
+
 export function cardMatchesWinsSkirmishWinner(
     G: GameState,
     source: CardState,
     winner: CardState,
     trigger: Extract<AbilityTrigger, { type: 'WINS_SKIRMISH' }>
 ): boolean {
-    if (trigger.yours && source.kind !== winner.kind) return false;
-    const target = trigger.winner;
-    if (target === 'SELF') {
-        return matchCard(winner, source.instanceId || source.id);
-    }
-    if (target === 'BEARER') {
-        const bearer = findBearer(G, source);
-        return Boolean(
-            bearer && matchCard(winner, bearer.instanceId || bearer.id)
-        );
-    }
-    if (target === 'WINNER' || target === 'SKIRMISHING') return false;
-    if (Array.isArray(target)) return cardMatchesTarget(winner, target);
-    return false;
+    return cardMatchesSkirmishParticipantRef(
+        G,
+        source,
+        winner,
+        trigger.winner,
+        trigger.yours
+    );
+}
+
+export function cardMatchesLosesSkirmishLoser(
+    G: GameState,
+    source: CardState,
+    loser: CardState,
+    trigger: Extract<AbilityTrigger, { type: 'LOSES_SKIRMISH' }>
+): boolean {
+    return cardMatchesSkirmishParticipantRef(
+        G,
+        source,
+        loser,
+        trigger.loser,
+        trigger.yours
+    );
 }
 
 export function resolveWinnerTargets(
@@ -164,6 +195,27 @@ export function resolveWinnerTargets(
         if (!winner || winner.isDead) continue;
         if (cardMatchesWinsSkirmishWinner(G, source, winner, trigger)) {
             matches.push(winner);
+        }
+    }
+    return matches;
+}
+
+export function resolveLoserTargets(
+    G: GameState,
+    source: CardState,
+    ability: Ability
+): CardState[] {
+    const event = G.pendingEvent;
+    if (!event || event.type !== 'LOSES_SKIRMISH') return [];
+    const trigger = ability.trigger;
+    if (!trigger || trigger.type !== 'LOSES_SKIRMISH') return [];
+
+    const matches: CardState[] = [];
+    for (const loserId of event.loserIds) {
+        const loser = findInPlayCard(G, loserId);
+        if (!loser || loser.isDead) continue;
+        if (cardMatchesLosesSkirmishLoser(G, source, loser, trigger)) {
+            matches.push(loser);
         }
     }
     return matches;

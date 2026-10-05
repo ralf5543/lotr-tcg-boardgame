@@ -17,6 +17,7 @@ import { getCalculatedStrength } from './stats/statCalculator';
 import {
     requestWounds,
     tryOpenCharacterDies,
+    tryOpenLosesSkirmish,
     tryOpenWinsSkirmish,
 } from '../engine/responseWindow';
 import { clearExpiredTempKeywords } from '../engine/abilities/applyAbilityEffect';
@@ -153,9 +154,17 @@ export const resolveSkirmish = (G: GameState, _ctx?: Ctx) => {
             winnerIds: [companionId],
             skirmishId: skirmish.id,
         };
+        G.pendingLosesSkirmish = {
+            loserIds: minions.map((minion) => minion.instanceId || minion.id),
+            skirmishId: skirmish.id,
+        };
     } else if (minionsStrength > companionStrength) {
         G.pendingWinsSkirmish = {
             winnerIds: minions.map((minion) => minion.instanceId || minion.id),
+            skirmishId: skirmish.id,
+        };
+        G.pendingLosesSkirmish = {
+            loserIds: [companionId],
             skirmishId: skirmish.id,
         };
     }
@@ -231,7 +240,8 @@ export const resolveSkirmish = (G: GameState, _ctx?: Ctx) => {
         G.statusMessage = resultMsg;
     }
     if (tryOpenCharacterDies(G) === 'WAITING') return;
-    tryOpenWinsSkirmish(G);
+    if (tryOpenWinsSkirmish(G) === 'WAITING') return;
+    tryOpenLosesSkirmish(G);
 };
 
 /**

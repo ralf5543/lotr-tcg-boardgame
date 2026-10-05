@@ -529,6 +529,13 @@ export type AbilityTrigger =
           yours?: boolean;
       }
     | {
+          type: 'LOSES_SKIRMISH';
+          loser: AbilityTargetRef;
+          yours?: boolean;
+          /** « … loses a skirmish involving a dunland Man » */
+          involving?: AbilityTargetRef;
+      }
+    | {
           type: 'WHEN_PLAYED';
           /** Si présent : n’applique que si N sites path ont ce mot-clé. */
           spotSiteKeyword?: { keyword: CardKeyword; count: number };
@@ -768,6 +775,15 @@ export interface PendingWinsSkirmishEvent extends PendingWinsSkirmish {
     type: 'WINS_SKIRMISH';
 }
 
+export interface PendingLosesSkirmish {
+    loserIds: string[];
+    skirmishId: string;
+}
+
+export interface PendingLosesSkirmishEvent extends PendingLosesSkirmish {
+    type: 'LOSES_SKIRMISH';
+}
+
 export interface PendingCharacterDiesEvent {
     type: 'CHARACTER_DIES';
     deadCardId: string;
@@ -787,6 +803,7 @@ export interface PendingFellowshipMovesEvent {
 export type PendingEvent =
     | PendingWoundEvent
     | PendingWinsSkirmishEvent
+    | PendingLosesSkirmishEvent
     | PendingCharacterDiesEvent
     | PendingCancelSkirmishEvent
     | PendingFellowshipMovesEvent;
@@ -844,6 +861,7 @@ export interface GameState {
     pendingEvent?: PendingEvent;
     /** Victoire d’escarmouche en attente : s’ouvre après la file de blessures. */
     pendingWinsSkirmish?: PendingWinsSkirmish;
+    pendingLosesSkirmish?: PendingLosesSkirmish;
     /** Morts en attente d’une éventuelle fenêtre CHARACTER_DIES. */
     pendingDeathQueue?: string[];
     responseWindow?: ResponseWindow;

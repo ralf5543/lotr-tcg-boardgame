@@ -39282,6 +39282,43 @@
     "kind": "SHADOW",
     "type": "CONDITION",
     "subtype": "SUPPORT-AREA",
+    "abilities": [
+      {
+        "id": "4U34:0",
+        "phases": [
+          "RESPONSE"
+        ],
+        "trigger": {
+          "type": "LOSES_SKIRMISH",
+          "loser": [
+            [
+              "COMPANION"
+            ],
+            [
+              "ALLY"
+            ]
+          ],
+          "involving": [
+            [
+              "DUNLAND",
+              "MAN"
+            ]
+          ]
+        },
+        "optional": true,
+        "cost": [],
+        "effects": [
+          {
+            "type": "PLACE_CULTURE_TOKEN",
+            "culture": "DUNLAND",
+            "count": 1,
+            "target": "SELF"
+          }
+        ],
+        "source": "SELF",
+        "text": "Each time a companion or ally loses a skirmish involving a dunland Man, you may place a dunland token on this card."
+      }
+    ],
     "culture": "DUNLAND",
     "twilightCost": 2,
     "imageUrl": "/cards_visuals/o_04_034.jpg",
@@ -44875,6 +44912,41 @@
     "kind": "SHADOW",
     "type": "CONDITION",
     "subtype": "SUPPORT-AREA",
+    "abilities": [
+      {
+        "id": "4U148:0",
+        "phases": [
+          "RESPONSE"
+        ],
+        "trigger": {
+          "type": "LOSES_SKIRMISH",
+          "loser": [
+            [
+              "COMPANION"
+            ],
+            [
+              "ALLY"
+            ]
+          ],
+          "involving": [
+            [
+              "URUK-HAI"
+            ]
+          ]
+        },
+        "cost": [],
+        "effects": [
+          {
+            "type": "PLACE_CULTURE_TOKEN",
+            "culture": "ISENGARD",
+            "count": 1,
+            "target": "SELF"
+          }
+        ],
+        "source": "SELF",
+        "text": "Each time a companion or ally loses a skirmish involving an Uruk-hai, place an isengard token on this card."
+      }
+    ],
     "culture": "ISENGARD",
     "twilightCost": 2,
     "imageUrl": "/cards_visuals/o_04_148.jpg",
@@ -48029,6 +48101,43 @@
     "kind": "SHADOW",
     "type": "CONDITION",
     "subtype": "SUPPORT-AREA",
+    "abilities": [
+      {
+        "id": "4U216:0",
+        "phases": [
+          "RESPONSE"
+        ],
+        "trigger": {
+          "type": "LOSES_SKIRMISH",
+          "loser": [
+            [
+              "COMPANION"
+            ],
+            [
+              "ALLY"
+            ]
+          ],
+          "involving": [
+            [
+              "RAIDER",
+              "MAN"
+            ]
+          ]
+        },
+        "optional": true,
+        "cost": [],
+        "effects": [
+          {
+            "type": "PLACE_CULTURE_TOKEN",
+            "culture": "RAIDER",
+            "count": 1,
+            "target": "SELF"
+          }
+        ],
+        "source": "SELF",
+        "text": "Each time a companion or ally loses a skirmish involving a raider Man, you may place a raider token here."
+      }
+    ],
     "culture": "RAIDER",
     "twilightCost": 2,
     "imageUrl": "/cards_visuals/o_04_216.jpg",
@@ -108872,6 +108981,32 @@
         ],
         "source": "SELF",
         "text": "SKIRMISH: Remove a shire token from here to make a shire companion strength +1."
+      },
+      {
+        "id": "12U132:1",
+        "phases": [
+          "RESPONSE"
+        ],
+        "trigger": {
+          "type": "LOSES_SKIRMISH",
+          "loser": [
+            [
+              "SHIRE",
+              "COMPANION"
+            ]
+          ]
+        },
+        "cost": [],
+        "effects": [
+          {
+            "type": "PLACE_CULTURE_TOKEN",
+            "culture": "SHIRE",
+            "count": 1,
+            "target": "SELF"
+          }
+        ],
+        "source": "SELF",
+        "text": "Each time a shire companion loses a skirmish, add a shire token here."
       }
     ],
     "actionPhases": [
@@ -129621,6 +129756,39 @@
     "kind": "SHADOW",
     "type": "CONDITION",
     "subtype": "SUPPORT-AREA",
+    "abilities": [
+      {
+        "id": "15U166:0",
+        "phases": [
+          "RESPONSE"
+        ],
+        "trigger": {
+          "type": "LOSES_SKIRMISH",
+          "loser": [
+            [
+              "COMPANION"
+            ]
+          ],
+          "involving": [
+            [
+              "URUK-HAI",
+              "MINION"
+            ]
+          ]
+        },
+        "cost": [],
+        "effects": [
+          {
+            "type": "PLACE_CULTURE_TOKEN",
+            "culture": "URUK-HAI",
+            "count": 1,
+            "target": "SELF"
+          }
+        ],
+        "source": "SELF",
+        "text": "Each time a companion loses a skirmish involving an urukhai minion, place an urukhai token here."
+      }
+    ],
     "culture": "URUK-HAI",
     "twilightCost": 2,
     "imageUrl": "/cards_visuals/o_15_166.jpg",

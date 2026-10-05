@@ -34,6 +34,7 @@ L’ancien plan sites est **figé** (`.cursor/rules/sites-plan.mdc`, `alwaysAppl
 9. **When-played spot classe → place/add tokens here** ✅ — Chamber of Records, Fortitude… ; refuse mounted / and / or.
 10. **Discard this or remove N jetons → make/heal** ✅ — deux capacités (coûts alternatifs) ; make force/keyword + heal classe ; refuse bearing / skirmishing / reveal / prevent / twilight+either.
 11. **Remove N jetons → heal classe / bearer** ✅ — coût `removeCultureTokens` (from here optionnel) + `HEAL` ; événements standalone (Sorrow Shared) ; refuse « or … another » (Asfaloth complexe).
+12. **Each time loses skirmish → place token** ✅ — trigger `LOSES_SKIRMISH` (+ `involving` optionnel) ; fragment « companion or ally » via `parseArticleOrFilters` ; fenêtre après `WINS_SKIRMISH`.
 
 ## Hors scope / plus tard
 
@@ -42,5 +43,5 @@ L’ancien plan sites est **figé** (`.cursor/rules/sites-plan.mdc`, `alwaysAppl
 - Make strength « minion skirmishing X » (cible skirmishing).
 - Multi-Shadow / >2 joueurs.
 - Répartition multi-cartes d’un reinforce N (v1 = tout sur une carte désignée).
-- Force/discard type Stout généralisé ; each-time loses → place.
+- Force/discard type Stout généralisé.
 - **Cartes en main / initiative** (hors jetons, mais preset) : force « +1 per card in FP hand » (Man of Bree), condition « N or more cards in hand », règle d’initiative (FP ≥ 4 en main). → axe roadmap dédié.

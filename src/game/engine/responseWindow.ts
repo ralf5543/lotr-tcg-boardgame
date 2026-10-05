@@ -12,8 +12,10 @@ import { abilityHasLegalEffectTarget } from './abilities/designation';
 import {
     findBearer,
     forEachInPlayCard,
+    resolveLoserTargets,
     resolveWinnerTargets,
 } from './abilities/resolveCostTarget';
+import { skirmishMatchesInvolving } from './abilities/cancelSkirmish';
 import { cardMatchesTarget } from './validations/matchers';
 import { abilityMatchesPhase } from './abilities/collectAbilities';
 import { getEffectiveVitality } from '../../utils/cardStats';
@@ -83,6 +85,26 @@ export function abilityMatchesTrigger(
         if (ability.trigger.type !== 'WINS_SKIRMISH') return false;
         if (resolveWinnerTargets(G, source, ability).length === 0) {
             return false;
+        }
+        return true;
+    }
+
+    if (event.type === 'LOSES_SKIRMISH') {
+        if (ability.trigger.type !== 'LOSES_SKIRMISH') return false;
+        if (resolveLoserTargets(G, source, ability).length === 0) {
+            return false;
+        }
+        const involving = ability.trigger.involving;
+        if (involving) {
+            const skirmish = (G.skirmishes || []).find(
+                (s) => s.id === event.skirmishId
+            );
+            if (!skirmish) return false;
+            if (
+                !skirmishMatchesInvolving(G, skirmish, source, involving)
+            ) {
+                return false;
+            }
         }
         return true;
     }
@@ -198,6 +220,7 @@ function responseEventIsActive(event: PendingEvent | undefined): boolean {
     if (!event) return false;
     if (event.type === 'ABOUT_TO_WOUND') return event.remaining > 0;
     if (event.type === 'WINS_SKIRMISH') return event.winnerIds.length > 0;
+    if (event.type === 'LOSES_SKIRMISH') return event.loserIds.length > 0;
     if (event.type === 'CHARACTER_DIES') return Boolean(event.deadCardId);
     if (event.type === 'ABOUT_TO_CANCEL_SKIRMISH') {
         return Boolean(event.skirmishId);
@@ -220,6 +243,9 @@ function shadowCanPreventCancel(G: GameState): boolean {
 function responseWindowMessage(G: GameState): string {
     if (G.pendingEvent?.type === 'WINS_SKIRMISH') {
         return 'Un personnage a gagné ce combat. Jouez une réponse ou passez.';
+    }
+    if (G.pendingEvent?.type === 'LOSES_SKIRMISH') {
+        return 'Un personnage a perdu ce combat. Jouez une réponse ou passez.';
     }
     if (G.pendingEvent?.type === 'CHARACTER_DIES') {
         return 'Un personnage est mort. Jouez une réponse ou passez.';
@@ -369,6 +395,7 @@ function processWoundQueue(G: GameState): 'APPLIED' | 'WAITING' {
     closeResponseWindow(G);
     if (tryOpenCharacterDies(G) === 'WAITING') return 'WAITING';
     if (tryOpenWinsSkirmish(G) === 'WAITING') return 'WAITING';
+    if (tryOpenLosesSkirmish(G) === 'WAITING') return 'WAITING';
     tryResumeArcheryAfterResponses(G);
     flushPendingActionYield(G);
     return 'APPLIED';
@@ -453,6 +480,29 @@ export function tryOpenWinsSkirmish(G: GameState): 'APPLIED' | 'WAITING' {
     return 'WAITING';
 }
 
+export function tryOpenLosesSkirmish(G: GameState): 'APPLIED' | 'WAITING' {
+    if (G.responseWindow?.isOpen || G.pendingEvent) {
+        return G.responseWindow?.isOpen ? 'WAITING' : 'APPLIED';
+    }
+    const pending = G.pendingLosesSkirmish;
+    if (!pending || pending.loserIds.length === 0) return 'APPLIED';
+
+    G.pendingLosesSkirmish = undefined;
+    G.pendingEvent = {
+        type: 'LOSES_SKIRMISH',
+        loserIds: pending.loserIds,
+        skirmishId: pending.skirmishId,
+    };
+
+    if (!hasAnyEligibleResponse(G)) {
+        G.pendingEvent = undefined;
+        return 'APPLIED';
+    }
+
+    openResponseWindow(G);
+    return 'WAITING';
+}
+
 /**
  * Each time the fellowship moves… — ouvre une fenêtre de réponse si une
  * capacité éligible est en jeu.
@@ -521,6 +571,7 @@ function concludeOpenResponse(G: GameState): 'APPLIED' | 'WAITING' {
         closeResponseWindow(G);
         if (tryOpenCharacterDies(G) === 'WAITING') return 'WAITING';
         if (tryOpenWinsSkirmish(G) === 'WAITING') return 'WAITING';
+        if (tryOpenLosesSkirmish(G) === 'WAITING') return 'WAITING';
         return processWoundQueue(G);
     }
 

@@ -110,7 +110,7 @@ export const applyDevPreset = (
             setupDevPath(G, 3);
             G.twilightPool = 6;
 
-            // Focus : remove jeton → heal (Sorrow Shared / Gimli blessé) + discard-or-remove.
+            // Focus : remove→heal (Sorrow Shared), discard-or-remove, loses→place token.
             fpPlayer.fellowshipArea = [
                 {
                     ...clonePresetCard('2C102', 'dev-frodo-ct'),
@@ -131,6 +131,7 @@ export const applyDevPreset = (
                     ...clonePresetCard('18U2', 'dev-run-until-found'),
                     cultureTokens: { DWARVEN: 2 },
                 },
+                clonePresetCard('12U132', 'dev-shire-tactics'),
             ];
             fpPlayer.hand = [clonePresetCard('13C7', 'dev-sorrow-shared')];
 
@@ -140,9 +141,10 @@ export const applyDevPreset = (
                         ...clonePresetCard('13U103', 'dev-always-threat'),
                         cultureTokens: { ORC: 3 },
                     },
+                    clonePresetCard('4U34', 'dev-secret-folk'),
                 ];
                 G.battlefield = [
-                    clonePresetCard('11S90', 'dev-man-of-bree'),
+                    clonePresetCard('4U24', 'dev-hillman-rabble'),
                     clonePresetCard('11C98', 'dev-rampaging-easterling'),
                 ];
                 shadowPlayer.hand = [];
@@ -155,7 +157,7 @@ export const applyDevPreset = (
             }
 
             G.statusMessage =
-                '[DEV] Jetons · Sorrow Shared (main, Maneuver) → retire 1 jeton nain, soigne Gimli. Discard/remove + Faramir / Cavern (site 9).';
+                '[DEV] Jetons · Sorrow Shared → jeton nain, soigne Gimli. Escarmouche (Frodo vs Foule des Collines) → réponses loses : Shire Tactics (FP), Peuple Secret (Ombre). Faramir / Cavern site 9.';
             break;
         }
     }

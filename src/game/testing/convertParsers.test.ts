@@ -5045,6 +5045,56 @@ describe('parseAbilities — culture tokens', () => {
         ).toBeUndefined();
     });
 
+    it('parse Secret Folk : companion or ally loses involving dunland Man → place token', () => {
+        const text =
+            'Each time a companion or ally loses a skirmish involving a <symbol>dunland</symbol> Man, you may place a <symbol>dunland</symbol> token on this card.';
+        expect(parseAbilities(text, 'Secret Folk', '4U34')).toEqual(
+            expect.arrayContaining([
+                expect.objectContaining({
+                    phases: ['RESPONSE'],
+                    optional: true,
+                    trigger: {
+                        type: 'LOSES_SKIRMISH',
+                        loser: [['COMPANION'], ['ALLY']],
+                        involving: [['DUNLAND', 'MAN']],
+                    },
+                    effects: [
+                        {
+                            type: 'PLACE_CULTURE_TOKEN',
+                            culture: 'DUNLAND',
+                            count: 1,
+                            target: 'SELF',
+                        },
+                    ],
+                }),
+            ])
+        );
+    });
+
+    it('parse Shire Tactics : shire companion loses → add token here', () => {
+        const text =
+            'Each time a shire companion loses a skirmish, add a <symbol>shire</symbol> token here.';
+        expect(parseAbilities(text, 'Shire Tactics', '12U132')).toEqual(
+            expect.arrayContaining([
+                expect.objectContaining({
+                    phases: ['RESPONSE'],
+                    trigger: {
+                        type: 'LOSES_SKIRMISH',
+                        loser: [['SHIRE', 'COMPANION']],
+                    },
+                    effects: [
+                        {
+                            type: 'PLACE_CULTURE_TOKEN',
+                            culture: 'SHIRE',
+                            count: 1,
+                            target: 'SELF',
+                        },
+                    ],
+                }),
+            ])
+        );
+    });
+
     it('parse Faramir : opponent may not skirmish events/abilities involving him', () => {
         expect(
             parseAbilities(

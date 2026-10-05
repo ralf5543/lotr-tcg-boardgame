@@ -1511,6 +1511,38 @@ function parseWinsSkirmishWinner(
     return yours ? { winner: [filters], yours: true } : { winner: [filters] };
 }
 
+function parseLosesSkirmishLoser(
+    raw: string,
+    cardTitle?: string
+): { loser: 'SELF' | 'BEARER' | string[][]; yours?: boolean } | null {
+    const plain = raw.replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim();
+    if (/^this\b/i.test(plain)) return { loser: 'SELF' };
+    if (/^bearer$/i.test(plain)) return { loser: 'BEARER' };
+    const title = (cardTitle || '').trim();
+    if (title && plain.toLowerCase() === title.toLowerCase()) {
+        return { loser: 'SELF' };
+    }
+    if (/^(another|each)\b/i.test(plain)) return null;
+
+    const yours = /^your\s+/i.test(plain);
+    const withArticle = plain.replace(/^your\s+/i, '').trim();
+    const orDnf = parseArticleOrFilters(withArticle);
+    if (orDnf) {
+        return yours ? { loser: orDnf, yours: true } : { loser: orDnf };
+    }
+
+    const withoutArticle = raw.replace(/^(a|an|the|your)\s+/i, '');
+    const stripped = withoutArticle
+        .replace(/<[^>]+>/g, ' ')
+        .replace(/\s+/g, ' ')
+        .trim();
+    if (/^(another|each)\b/i.test(stripped)) return null;
+
+    const filters = parseClassFilters(withoutArticle);
+    if (filters.length === 0) return null;
+    return yours ? { loser: [filters], yours: true } : { loser: [filters] };
+}
+
 function winsSkirmishCostIsSafe(cost: Record<string, unknown>): boolean {
     const selectors = [
         ...((cost.exert as { target?: unknown }[] | undefined) || []),
@@ -2122,6 +2154,68 @@ function parseEachTimeWinsPlaceCultureTokenAbilities(
                 },
             ],
             source: winnerParsed.winner === 'BEARER' ? 'ATTACHMENT' : 'SELF',
+            text: stripAbilityMarkup(match[0]),
+        });
+    }
+    return found;
+}
+
+/**
+ * Each time [loser] loses a skirmish [involving …], (you may) place/add N [culture] token(s) here/on this card.
+ * (Dunland Rising, Uruk-hai Armory, Raider Camp…)
+ */
+function parseEachTimeLosesPlaceCultureTokenAbilities(
+    text: string,
+    cardTitle?: string,
+    cardId?: string
+): Record<string, unknown>[] {
+    const found: Record<string, unknown>[] = [];
+    const re =
+        /Each time ([\s\S]+?) loses a skirmish(?: involving ([^,]+?))?,?\s*(you may )?(?:place|add) (a|an|one|\d+) ([\s\S]+?) tokens? (?:on this card|here)\.?/gi;
+    let match: RegExpExecArray | null;
+    while ((match = re.exec(text)) !== null) {
+        const loserParsed = parseLosesSkirmishLoser(
+            match[1].trim(),
+            cardTitle
+        );
+        if (!loserParsed) continue;
+        const count = parseCultureTokenCount(match[4]);
+        const culture = parseCultureTokenSpec(match[5]);
+        if (!count || !culture) continue;
+        const optional = Boolean(match[3]);
+        let involving: string[][] | 'SELF' | 'BEARER' | undefined;
+        if (match[2]) {
+            const parsedInvolving = parseNounTarget(
+                match[2].trim(),
+                'SELF',
+                cardTitle
+            );
+            if (!parsedInvolving || typeof parsedInvolving === 'string') {
+                continue;
+            }
+            involving = parsedInvolving;
+        }
+
+        found.push({
+            id: `${cardId || 'ability'}:${found.length}:each-time-lose-token`,
+            phases: ['RESPONSE'],
+            trigger: {
+                type: 'LOSES_SKIRMISH',
+                loser: loserParsed.loser,
+                ...(loserParsed.yours ? { yours: true } : {}),
+                ...(involving ? { involving } : {}),
+            },
+            ...(optional ? { optional: true } : {}),
+            cost: [],
+            effects: [
+                {
+                    type: 'PLACE_CULTURE_TOKEN',
+                    culture,
+                    count,
+                    target: 'SELF',
+                },
+            ],
+            source: 'SELF',
             text: stripAbilityMarkup(match[0]),
         });
     }
@@ -7132,6 +7226,15 @@ export function parseAbilities(
     );
 
     parseEachTimeWinsPlaceCultureTokenAbilities(text, cardTitle, cardId).forEach(
+        (ability) => {
+            abilities.push({
+                ...ability,
+                id: `${cardId || 'ability'}:${abilities.length}`,
+            });
+        }
+    );
+
+    parseEachTimeLosesPlaceCultureTokenAbilities(text, cardTitle, cardId).forEach(
         (ability) => {
             abilities.push({
                 ...ability,
