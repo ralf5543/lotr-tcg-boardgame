@@ -461,11 +461,14 @@ export type AbilityEffect =
           /**
            * Place N jetons de culture sur la cible (même à 0).
            * « place a [culture] token on this card / here ».
+           * `perSpot` : N × cartes matchant (When you play… for each X you spot).
            */
           type: 'PLACE_CULTURE_TOKEN';
           culture: CardCulture;
           count: number;
           target: AbilityTargetRef;
+          /** N × cartes matchant (When you play… for each X you spot). */
+          perSpot?: { target: string[][] };
       }
     | {
           /**

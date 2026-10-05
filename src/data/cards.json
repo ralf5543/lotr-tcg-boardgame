@@ -116142,6 +116142,34 @@
     "kind": "SHADOW",
     "type": "CONDITION",
     "subtype": "SUPPORT-AREA",
+    "abilities": [
+      {
+        "id": "13U94:0",
+        "phases": [],
+        "trigger": {
+          "type": "WHEN_PLAYED"
+        },
+        "cost": [],
+        "effects": [
+          {
+            "type": "PLACE_CULTURE_TOKEN",
+            "culture": "MEN",
+            "count": 1,
+            "target": "SELF",
+            "perSpot": {
+              "target": [
+                [
+                  "MEN",
+                  "ARCHER"
+                ]
+              ]
+            }
+          }
+        ],
+        "source": "SELF",
+        "text": "When you play this, add a men token here for each men archer you spot."
+      }
+    ],
     "culture": "MEN",
     "twilightCost": 0,
     "imageUrl": "/cards_visuals/o_13_094.jpg",
@@ -116607,6 +116635,33 @@
         ],
         "source": "SELF",
         "text": "SKIRMISH: Remove 2 culture tokens from here to make a lurker minion strength +2."
+      },
+      {
+        "id": "13U103:2",
+        "phases": [],
+        "trigger": {
+          "type": "WHEN_PLAYED"
+        },
+        "optional": true,
+        "cost": [],
+        "effects": [
+          {
+            "type": "PLACE_CULTURE_TOKEN",
+            "culture": "ORC",
+            "count": 1,
+            "target": "SELF",
+            "perSpot": {
+              "target": [
+                [
+                  "ORC",
+                  "CONDITION"
+                ]
+              ]
+            }
+          }
+        ],
+        "source": "SELF",
+        "text": "When you play this, you may add an orc token here for each orc condition you can spot."
       }
     ],
     "actionPhases": [
@@ -132051,6 +132106,33 @@
     "kind": "FREE_PEOPLE",
     "type": "CONDITION",
     "subtype": "SUPPORT-AREA",
+    "abilities": [
+      {
+        "id": "17U10:0",
+        "phases": [],
+        "trigger": {
+          "type": "WHEN_PLAYED"
+        },
+        "cost": [],
+        "effects": [
+          {
+            "type": "PLACE_CULTURE_TOKEN",
+            "culture": "ELVEN",
+            "count": 1,
+            "target": "SELF",
+            "perSpot": {
+              "target": [
+                [
+                  "HUNTER"
+                ]
+              ]
+            }
+          }
+        ],
+        "source": "SELF",
+        "text": "When you play this, add an elven token here for each hunter you can spot."
+      }
+    ],
     "culture": "ELVEN",
     "twilightCost": 2,
     "imageUrl": "/cards_visuals/o_17_010.jpg",

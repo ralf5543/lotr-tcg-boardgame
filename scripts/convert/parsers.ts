@@ -4480,6 +4480,52 @@ function parseCultureTokenAbilities(
         });
     }
 
+    // When you play this, (you may) add/place N [culture] tokens here for each [classe] you (can) spot.
+    // (Howdah, Always Threatening…) — refuse wounded / support area / and / or.
+    const placePerSpotWhenPlayedRe =
+        /When you play this(?:\s+(?:minion|possession|condition|companion|artifact|ally|follower))?, (you may )?(?:add|place) (a|an|one|\d+)\s+(<symbol>[^<]+<\/symbol>)\s+tokens? here for each ([\s\S]+?) you(?: can)? spot\.?/gi;
+    while ((match = placePerSpotWhenPlayedRe.exec(text)) !== null) {
+        const eachPlain = stripAbilityMarkup(match[4]);
+        if (
+            /\b(and|or|each|wounded|wound|support|hand|deck|discard|bearing|mounted|other|whose|title)\b/i.test(
+                eachPlain
+            )
+        ) {
+            continue;
+        }
+        const filters = parseClassFilters(match[4]);
+        const count = parseCultureTokenCount(match[2]);
+        const culture = parseCultureTokenSpec(match[3]);
+        if (
+            filters.length === 0 ||
+            !count ||
+            !culture ||
+            culture === 'FREE_PEOPLES' ||
+            culture === 'ANY'
+        ) {
+            continue;
+        }
+        const optional = Boolean(match[1]);
+        found.push({
+            id: `${cardId || 'ability'}:${found.length}:when-played-place-per-spot`,
+            phases: [],
+            trigger: { type: 'WHEN_PLAYED' },
+            ...(optional ? { optional: true } : {}),
+            cost: [],
+            effects: [
+                {
+                    type: 'PLACE_CULTURE_TOKEN',
+                    culture,
+                    count,
+                    target: 'SELF',
+                    perSpot: { target: [filters] },
+                },
+            ],
+            source: 'SELF',
+            text: stripAbilityMarkup(match[0]),
+        });
+    }
+
     // When you play this, (you may) spot [classe] to place/add N [culture] tokens here.
     // (Chamber of Records, Fortitude…) — refuse mounted / and / or / each.
     const spotPlaceWhenPlayedRe =

@@ -436,11 +436,16 @@ function formatEffectBit(
         return 'empêcher cette blessure';
     }
     if (effect.type === 'PLACE_CULTURE_TOKEN') {
-        const n = effect.count || 1;
         const cultureBit =
             effect.culture === 'FREE_PEOPLES'
                 ? 'Peuples Libres'
                 : `<symbol>${String(effect.culture).toLowerCase()}</symbol>`;
+        if (effect.perSpot) {
+            const who = formatFilterList(effect.perSpot.target.flat());
+            const n = effect.count || 1;
+            return `placer ${n} jeton${n > 1 ? 's' : ''} ${cultureBit} ici par ${who} spoté`;
+        }
+        const n = effect.count || 1;
         return `placer ${n} jeton${n > 1 ? 's' : ''} ${cultureBit} ici`;
     }
     if (effect.type === 'REINFORCE_CULTURE_TOKEN') {

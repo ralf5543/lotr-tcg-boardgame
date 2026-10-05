@@ -5252,6 +5252,91 @@ describe('parseAbilities — culture tokens', () => {
             ])
         );
     });
+
+    it('parse Always Threatening / Howdah : when-played add token for each spot', () => {
+        expect(
+            parseAbilities(
+                'When you play this, you may add an <symbol>orc</symbol> token here for each <symbol>orc</symbol> condition you can spot.\n**Skirmish:** Discard this from play or remove 2 tokens from here to make a lurker strength +2.',
+                'Always Threatening',
+                '13U103'
+            )
+        ).toEqual(
+            expect.arrayContaining([
+                expect.objectContaining({
+                    trigger: { type: 'WHEN_PLAYED' },
+                    optional: true,
+                    effects: [
+                        {
+                            type: 'PLACE_CULTURE_TOKEN',
+                            culture: 'ORC',
+                            count: 1,
+                            target: 'SELF',
+                            perSpot: { target: [['ORC', 'CONDITION']] },
+                        },
+                    ],
+                }),
+            ])
+        );
+
+        expect(
+            parseAbilities(
+                'When you play this, add a <symbol>men</symbol> token here for each <symbol>men</symbol> archer you spot.',
+                'Howdah',
+                '13U94'
+            )
+        ).toEqual(
+            expect.arrayContaining([
+                expect.objectContaining({
+                    trigger: { type: 'WHEN_PLAYED' },
+                    effects: [
+                        {
+                            type: 'PLACE_CULTURE_TOKEN',
+                            culture: 'MEN',
+                            count: 1,
+                            target: 'SELF',
+                            perSpot: { target: [['MEN', 'ARCHER']] },
+                        },
+                    ],
+                }),
+            ])
+        );
+    });
+
+    it('refuse when-played place per wounded / support area', () => {
+        expect(
+            parseAbilities(
+                'When you play this, add an <symbol>urukhai</symbol> token here for each wounded companion.',
+                'Weapons of Control',
+                '13U177'
+            )?.some(
+                (a) =>
+                    a.trigger?.type === 'WHEN_PLAYED' &&
+                    a.effects?.some(
+                        (e) =>
+                            e.type === 'PLACE_CULTURE_TOKEN' &&
+                            'perSpot' in e &&
+                            e.perSpot
+                    )
+            )
+        ).toBeFalsy();
+
+        expect(
+            parseAbilities(
+                'When you play this, you may add a <symbol>wraith</symbol> token here for each <symbol>wraith</symbol> card in your support area.',
+                'They Came From Mordor',
+                '13U181'
+            )?.some(
+                (a) =>
+                    a.trigger?.type === 'WHEN_PLAYED' &&
+                    a.effects?.some(
+                        (e) =>
+                            e.type === 'PLACE_CULTURE_TOKEN' &&
+                            'perSpot' in e &&
+                            e.perSpot
+                    )
+            )
+        ).toBeFalsy();
+    });
 });
 
 

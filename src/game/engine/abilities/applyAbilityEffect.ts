@@ -673,9 +673,13 @@ function applyOneEffect(
     }
 
     if (effect.type === 'PLACE_CULTURE_TOKEN') {
-        return (
-            placeCultureTokens(target, effect.culture, effect.count || 1) > 0
-        );
+        let count = effect.count || 1;
+        if (effect.perSpot) {
+            count *= resolveCostTarget(G, source, effect.perSpot.target).length;
+        }
+        // 0 spoté = rien à placer (succès inerte).
+        if (count <= 0) return true;
+        return placeCultureTokens(target, effect.culture, count) > 0;
     }
 
     if (effect.type === 'REMOVE_CULTURE_TOKEN') {

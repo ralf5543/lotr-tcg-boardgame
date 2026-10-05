@@ -169,4 +169,46 @@ describe('culture tokens runtime', () => {
         expect(payAbilityCost(G, source, cost)).toBe(true);
         expect(tokenCountOnCard(source, 'ELVEN')).toBe(0);
     });
+
+    it('PLACE_CULTURE_TOKEN perSpot : 1 jeton par carte spotée', () => {
+        const condition = createCard({
+            id: 'always',
+            kind: 'SHADOW',
+            culture: 'ORC',
+            type: 'CONDITION',
+            subtype: 'SUPPORT-AREA',
+        });
+        const other = createCard({
+            id: 'other-orc',
+            kind: 'SHADOW',
+            culture: 'ORC',
+            type: 'CONDITION',
+            subtype: 'SUPPORT-AREA',
+        });
+        const G = createGameState({
+            players: {
+                '0': createPlayerState('0'),
+                '1': createPlayerState('1', {
+                    supportArea: [condition, other],
+                }),
+            },
+        });
+        const ability: Ability = {
+            id: '13U103:0',
+            text: 'add orc token for each orc condition',
+            cost: [],
+            effects: [
+                {
+                    type: 'PLACE_CULTURE_TOKEN',
+                    culture: 'ORC',
+                    count: 1,
+                    target: 'SELF',
+                    perSpot: { target: [['ORC', 'CONDITION']] },
+                },
+            ],
+        };
+        expect(applyAbilityEffect(G, condition, ability)).toBe(true);
+        // SELF + other = 2 conditions ORC (la source compte aussi une fois en jeu)
+        expect(tokenCountOnCard(condition, 'ORC')).toBe(2);
+    });
 });

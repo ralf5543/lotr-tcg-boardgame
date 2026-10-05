@@ -37,11 +37,13 @@ L’ancien plan sites est **figé** (`.cursor/rules/sites-plan.mdc`, `alwaysAppl
 12. **Each time loses skirmish → place token** ✅ — trigger `LOSES_SKIRMISH` (+ `involving` optionnel) ; fragment « companion or ally » via `parseArticleOrFilters` ; fenêtre après `WINS_SKIRMISH`.
 13. **Force +N for each culture token / card with token** ✅ — `perCultureTokens` (Assault Denizen) ; `perCardWithCultureToken` (Westfarthing, Aragorn) ; refuse Free Peoples card / assigned / title.
 14. **Remove jeton / menace → menace / reinforce** ✅ — `ADD_THREATS` (Sauron’s Might) ; remove threat → reinforce (War Preparations) ; moves + twilight + remove FP → reinforce (Merchant of Westfold) ; refuse deck-bottom / multi-clauses.
+15. **When-played add token for each spot** ✅ — `PLACE_CULTURE_TOKEN.perSpot` (Howdah, Always Threatening…) ; refuse wounded / support area / and / or.
 
 ## Hors scope / plus tard
 
 - Weather no-events, gametext site moderne (reportés sites).
 - Familles complexes (machines Isengard, While spot token avancé : each of your / titre / archery total / cannot take wounds).
+- When-played place per wounded / support area (Weapons of Control, They Came From Mordor).
 - Make strength « minion skirmishing X » (cible skirmishing).
 - Multi-Shadow / >2 joueurs.
 - Répartition multi-cartes d’un reinforce N (v1 = tout sur une carte désignée).
