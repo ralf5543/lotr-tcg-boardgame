@@ -283,6 +283,22 @@ export type AbilityEffect =
               otherCardTitle: string;
               limit?: number;
           };
+          /**
+           * Bonus = value × jetons de culture spotables (cartes actives).
+           * « strength +1 for each Free Peoples culture token you can spot »
+           */
+          perCultureTokens?: {
+              culture: CultureTokenSpec;
+              limit?: number;
+          };
+          /**
+           * Bonus = value × cartes matchant `target` qui portent ≥ 1 jeton.
+           * « strength +1 for each gondor card that has a culture token on it »
+           */
+          perCardWithCultureToken?: {
+              target: string[][];
+              limit?: number;
+          };
       }
     | {
           /** Mot-clé passif (While…) — pas d’expiration de phase. */

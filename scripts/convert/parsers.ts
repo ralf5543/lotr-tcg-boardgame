@@ -3289,6 +3289,109 @@ function parseWhileSpotCultureTokenStrengthAbilities(
 }
 
 /**
+ * « X is strength +N for each [culture] token(s) you can spot »
+ * « X is strength +N for each [culture] card that has a culture token on it »
+ * (Assault Denizen, Westfarthing Businessman, Aragorn…)
+ * Refuse assigned / skirmishing / wound / title / twilight cost.
+ */
+function parseForEachCultureTokenStrengthAbilities(
+    text: string,
+    cardTitle?: string,
+    cardId?: string
+): Record<string, unknown>[] {
+    const found: Record<string, unknown>[] = [];
+    const refuse =
+        /\b(assigned|skirmishing|wound|title|twilight|archery|cannot|except|initiative)\b/i;
+
+    const working = text
+        .replace(/<\/?keyword>/gi, '')
+        .replace(/<br\s*\/?>/gi, ' ')
+        .replace(/\*\*/g, ' ')
+        .replace(/\s+/g, ' ')
+        .trim();
+
+    // … for each [culture] token(s) you can spot
+    const perTokenRe =
+        /(?:^|[.!?]\s*)((?:This (?:minion|companion)|Bearer|[A-ZÀ-ŸÉ][^,.]*?)) is strength \+(\d+) for each ((?:Free Peoples(?:\s+culture)?)|(?:<symbol>[^<]+<\/symbol>)|(?:culture)) tokens? you can spot(?: \(limit \+(\d+)\))?\.?/gi;
+    let match: RegExpExecArray | null;
+    while ((match = perTokenRe.exec(working)) !== null) {
+        if (refuse.test(match[0])) continue;
+        const who = parseWhileStrengthWho(match[1], cardTitle);
+        if (!who) continue;
+        const value = parseInt(match[2], 10);
+        const culture = parseCultureTokenSpec(match[3]);
+        if (!Number.isFinite(value) || value <= 0 || !culture) continue;
+        const limit = match[4] ? parseInt(match[4], 10) : undefined;
+        if (limit !== undefined && (!Number.isFinite(limit) || limit <= 0)) {
+            continue;
+        }
+
+        found.push({
+            id: `${cardId || 'ability'}:${found.length}:for-each-ct`,
+            phases: [],
+            trigger: { type: 'WHILE' },
+            cost: [],
+            effects: [
+                {
+                    type: 'MODIFY_STAT',
+                    stat: 'STRENGTH',
+                    value,
+                    target: who,
+                    perCultureTokens: {
+                        culture,
+                        ...(limit !== undefined ? { limit } : {}),
+                    },
+                },
+            ],
+            source: who === 'BEARER' ? 'ATTACHMENT' : 'SELF',
+            text: stripAbilityMarkup(match[0]),
+        });
+    }
+
+    // … for each [culture] card that has a culture token on it
+    const perCardRe =
+        /(?:^|[.!?]\s*)((?:This (?:minion|companion)|Bearer|[A-ZÀ-ŸÉ][^,.]*?)) is strength \+(\d+) for each ((?:Free Peoples)|(?:<symbol>[^<]+<\/symbol>)) cards? that has a culture token on it\.?/gi;
+    while ((match = perCardRe.exec(working)) !== null) {
+        if (refuse.test(match[0])) continue;
+        const who = parseWhileStrengthWho(match[1], cardTitle);
+        if (!who) continue;
+        const value = parseInt(match[2], 10);
+        if (!Number.isFinite(value) || value <= 0) continue;
+
+        let filters: string[];
+        const cultureSpec = match[3].trim();
+        if (/^Free Peoples$/i.test(stripAbilityMarkup(cultureSpec))) {
+            // Trop large / ambigu pour v1 (toutes cultures FP)
+            continue;
+        }
+        filters = parseClassFilters(cultureSpec);
+        if (filters.length === 0) continue;
+
+        found.push({
+            id: `${cardId || 'ability'}:${found.length}:for-each-card-ct`,
+            phases: [],
+            trigger: { type: 'WHILE' },
+            cost: [],
+            effects: [
+                {
+                    type: 'MODIFY_STAT',
+                    stat: 'STRENGTH',
+                    value,
+                    target: who,
+                    perCardWithCultureToken: {
+                        target: [filters],
+                    },
+                },
+            ],
+            source: who === 'BEARER' ? 'ATTACHMENT' : 'SELF',
+            text: stripAbilityMarkup(match[0]),
+        });
+    }
+
+    return found;
+}
+
+/**
  * While you can spot [classe], each [classe] is strength ±N.
  * Cible classe (string[][]) — pas SELF/BEARER. Refuse skirmishing / of your / …
  */
@@ -7282,6 +7385,15 @@ export function parseAbilities(
     );
 
     parseWhileSpotCultureTokenStrengthAbilities(text, cardTitle, cardId).forEach(
+        (ability) => {
+            abilities.push({
+                ...ability,
+                id: `${cardId || 'ability'}:${abilities.length}`,
+            });
+        }
+    );
+
+    parseForEachCultureTokenStrengthAbilities(text, cardTitle, cardId).forEach(
         (ability) => {
             abilities.push({
                 ...ability,

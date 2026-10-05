@@ -145,7 +145,7 @@ export const applyDevPreset = (
                 ];
                 G.battlefield = [
                     clonePresetCard('4U24', 'dev-hillman-rabble'),
-                    clonePresetCard('11C98', 'dev-rampaging-easterling'),
+                    clonePresetCard('13C159', 'dev-assault-denizen'),
                 ];
                 shadowPlayer.hand = [];
             }
@@ -157,7 +157,7 @@ export const applyDevPreset = (
             }
 
             G.statusMessage =
-                '[DEV] Jetons · Sorrow Shared → jeton nain, soigne Gimli. Escarmouche (Frodo vs Foule des Collines) → réponses loses : Shire Tactics (FP), Peuple Secret (Ombre). Faramir / Cavern site 9.';
+                '[DEV] Jetons · Sorrow Shared ; loses→token (Secret Folk / Shire Tactics vs Foule) ; Assault Denizen +1/jeton FP spoté. Faramir / Cavern site 9.';
             break;
         }
     }

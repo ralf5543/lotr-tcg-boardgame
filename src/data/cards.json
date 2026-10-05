@@ -114485,6 +114485,33 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
+    "abilities": [
+      {
+        "id": "13R59:0",
+        "phases": [],
+        "trigger": {
+          "type": "WHILE"
+        },
+        "cost": [],
+        "effects": [
+          {
+            "type": "MODIFY_STAT",
+            "stat": "STRENGTH",
+            "value": 1,
+            "target": "SELF",
+            "perCardWithCultureToken": {
+              "target": [
+                [
+                  "GONDOR"
+                ]
+              ]
+            }
+          }
+        ],
+        "source": "SELF",
+        "text": "Aragorn is strength +1 for each gondor card that has a culture token on it."
+      }
+    ],
     "culture": "GONDOR",
     "race": "MAN",
     "twilightCost": 4,
@@ -119100,6 +119127,33 @@
     "isUnique": false,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
+    "abilities": [
+      {
+        "id": "13C157:0",
+        "phases": [],
+        "trigger": {
+          "type": "WHILE"
+        },
+        "cost": [],
+        "effects": [
+          {
+            "type": "MODIFY_STAT",
+            "stat": "STRENGTH",
+            "value": 1,
+            "target": "SELF",
+            "perCardWithCultureToken": {
+              "target": [
+                [
+                  "SHIRE"
+                ]
+              ]
+            }
+          }
+        ],
+        "source": "SELF",
+        "text": "This companion is strength +1 for each shire card that has a culture token on it."
+      }
+    ],
     "culture": "SHIRE",
     "race": "HOBBIT",
     "twilightCost": 2,
@@ -119186,6 +119240,29 @@
     "type": "MINION",
     "keywords": [
       "DAMAGE +1"
+    ],
+    "abilities": [
+      {
+        "id": "13C159:0",
+        "phases": [],
+        "trigger": {
+          "type": "WHILE"
+        },
+        "cost": [],
+        "effects": [
+          {
+            "type": "MODIFY_STAT",
+            "stat": "STRENGTH",
+            "value": 1,
+            "target": "SELF",
+            "perCultureTokens": {
+              "culture": "FREE_PEOPLES"
+            }
+          }
+        ],
+        "source": "SELF",
+        "text": ". This minion is strength +1 for each Free Peoples culture token you can spot."
+      }
     ],
     "culture": "URUK-HAI",
     "race": "URUK-HAI",
@@ -120587,6 +120664,33 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
+    "abilities": [
+      {
+        "id": "13O200:0",
+        "phases": [],
+        "trigger": {
+          "type": "WHILE"
+        },
+        "cost": [],
+        "effects": [
+          {
+            "type": "MODIFY_STAT",
+            "stat": "STRENGTH",
+            "value": 1,
+            "target": "SELF",
+            "perCardWithCultureToken": {
+              "target": [
+                [
+                  "GONDOR"
+                ]
+              ]
+            }
+          }
+        ],
+        "source": "SELF",
+        "text": "Aragorn is strength +1 for each gondor card that has a culture token on it."
+      }
+    ],
     "culture": "GONDOR",
     "race": "MAN",
     "twilightCost": 4,
@@ -141437,6 +141541,30 @@
         "MEN",
         "MINION"
       ]
+    ],
+    "abilities": [
+      {
+        "id": "18U64:0",
+        "phases": [],
+        "trigger": {
+          "type": "WHILE"
+        },
+        "cost": [],
+        "effects": [
+          {
+            "type": "MODIFY_STAT",
+            "stat": "STRENGTH",
+            "value": 1,
+            "target": "BEARER",
+            "perCultureTokens": {
+              "culture": "MEN",
+              "limit": 5
+            }
+          }
+        ],
+        "source": "ATTACHMENT",
+        "text": ". Bearer is strength +1 for each men token you can spot (limit +5)."
+      }
     ],
     "culture": "MEN",
     "twilightCost": 2,

@@ -23,6 +23,7 @@ import {
 } from '../../sites';
 import {
     countCultureTokensForPlayer,
+    countSpottedCultureTokens,
     findInPlayCardOwnerId,
     tokenCountOnCard,
 } from '../../cultureTokens';
@@ -68,6 +69,36 @@ function countPerSpot(
     }
     let n = cards.length;
     if (perSpot.limit !== undefined) n = Math.min(n, perSpot.limit);
+    return Math.max(0, n);
+}
+
+function countPerCultureTokens(
+    G: GameState,
+    per: NonNullable<
+        Extract<AbilityEffect, { type: 'MODIFY_STAT' }>['perCultureTokens']
+    >
+): number {
+    let n = countSpottedCultureTokens(G, per.culture);
+    if (per.limit !== undefined) n = Math.min(n, per.limit);
+    return Math.max(0, n);
+}
+
+function countPerCardWithCultureToken(
+    G: GameState,
+    per: NonNullable<
+        Extract<
+            AbilityEffect,
+            { type: 'MODIFY_STAT' }
+        >['perCardWithCultureToken']
+    >
+): number {
+    let n = 0;
+    forEachInPlayCard(G, (card) => {
+        if (card.isDead) return;
+        if (tokenCountOnCard(card, 'ANY') <= 0) return;
+        if (cardMatchesTarget(card, per.target)) n += 1;
+    });
+    if (per.limit !== undefined) n = Math.min(n, per.limit);
     return Math.max(0, n);
 }
 
@@ -155,6 +186,15 @@ function modifyStatMagnitude(
                 source,
                 effect.perMatchingTokensOnNamedCard
             )
+        );
+    }
+    if (effect.perCultureTokens) {
+        return base * countPerCultureTokens(G, effect.perCultureTokens);
+    }
+    if (effect.perCardWithCultureToken) {
+        return (
+            base *
+            countPerCardWithCultureToken(G, effect.perCardWithCultureToken)
         );
     }
     if (effect.perDistinctRace) {

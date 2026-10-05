@@ -5045,6 +5045,58 @@ describe('parseAbilities — culture tokens', () => {
         ).toBeUndefined();
     });
 
+    it('parse Assault Denizen : +1 for each Free Peoples culture token spotted', () => {
+        expect(
+            parseAbilities(
+                '**Damage +1.** This minion is strength +1 for each Free Peoples culture token you can spot.',
+                'Assault Denizen',
+                '13C159'
+            )
+        ).toEqual(
+            expect.arrayContaining([
+                expect.objectContaining({
+                    trigger: { type: 'WHILE' },
+                    effects: [
+                        {
+                            type: 'MODIFY_STAT',
+                            stat: 'STRENGTH',
+                            value: 1,
+                            target: 'SELF',
+                            perCultureTokens: { culture: 'FREE_PEOPLES' },
+                        },
+                    ],
+                }),
+            ])
+        );
+    });
+
+    it('parse Westfarthing Businessman : +1 for each shire card with a token', () => {
+        expect(
+            parseAbilities(
+                'This companion is strength +1 for each <symbol>shire</symbol> card that has a culture token on it.',
+                'Westfarthing Businessman',
+                '13C157'
+            )
+        ).toEqual(
+            expect.arrayContaining([
+                expect.objectContaining({
+                    trigger: { type: 'WHILE' },
+                    effects: [
+                        {
+                            type: 'MODIFY_STAT',
+                            stat: 'STRENGTH',
+                            value: 1,
+                            target: 'SELF',
+                            perCardWithCultureToken: {
+                                target: [['SHIRE']],
+                            },
+                        },
+                    ],
+                }),
+            ])
+        );
+    });
+
     it('parse Secret Folk : companion or ally loses involving dunland Man → place token', () => {
         const text =
             'Each time a companion or ally loses a skirmish involving a <symbol>dunland</symbol> Man, you may place a <symbol>dunland</symbol> token on this card.';

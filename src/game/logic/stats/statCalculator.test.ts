@@ -258,6 +258,58 @@ describe('While you can spot → strength', () => {
         expect(getCalculatedStrength(withToken, defender)).toBe(8);
     });
 
+    it('Assault Denizen : +1 par jeton Free Peoples spoté', () => {
+        const denizen = createMinion({
+            id: '13C159',
+            title: 'Assault Denizen',
+            strength: 8,
+            abilities: [
+                {
+                    id: '13C159:0',
+                    phases: [],
+                    trigger: { type: 'WHILE' },
+                    cost: [],
+                    effects: [
+                        {
+                            type: 'MODIFY_STAT',
+                            stat: 'STRENGTH',
+                            value: 1,
+                            target: 'SELF',
+                            perCultureTokens: { culture: 'FREE_PEOPLES' },
+                        },
+                    ],
+                    source: 'SELF',
+                },
+            ],
+        });
+        const holder = createCard({
+            id: 'garrison',
+            kind: 'FREE_PEOPLE',
+            type: 'CONDITION',
+            subtype: 'SUPPORT-AREA',
+            culture: 'GONDOR',
+            cultureTokens: { GONDOR: 2 },
+        });
+
+        const bare = createGameState({
+            battlefield: [denizen],
+            players: {
+                '0': createPlayerState('0'),
+                '1': createPlayerState('1'),
+            },
+        });
+        expect(getCalculatedStrength(bare, denizen)).toBe(8);
+
+        const withTokens = createGameState({
+            battlefield: [denizen],
+            players: {
+                '0': createPlayerState('0', { supportArea: [holder] }),
+                '1': createPlayerState('1'),
+            },
+        });
+        expect(getCalculatedStrength(withTokens, denizen)).toBe(10);
+    });
+
     it('Ma hache / Décompte final : +min(jetons croisés), limite +3', () => {
         const gimli = createCompanion({
             id: 'gimli',

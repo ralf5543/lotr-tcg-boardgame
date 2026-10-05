@@ -215,6 +215,18 @@ export function countCultureTokensForPlayer(
     );
 }
 
+/** Jetons spotables sur toutes les cartes actives (n’importe quel joueur). */
+export function countSpottedCultureTokens(
+    G: GameState,
+    culture: CultureTokenSpec = 'ANY'
+): number {
+    let sum = 0;
+    visitInPlayCards(G, (card) => {
+        sum += tokenCountOnCard(card, culture);
+    });
+    return sum;
+}
+
 /** Cartes du joueur pouvant recevoir un reinforce de cette spécification. */
 export function getReinforceCandidates(
     G: GameState,
