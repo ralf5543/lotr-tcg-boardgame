@@ -176,7 +176,7 @@ const CursorImageWrapper = styled.div<WrapperProps>`
         display: ${props => props.$state === 'HOVER' ? 'block' : 'none'};
     }
 
-    /* Grab cursor */
+    /* Grab cursor — carte ramassée visible */
     body.is-dragging & {
         top: 15px !important;  
         left: -2px !important;
@@ -185,6 +185,21 @@ const CursorImageWrapper = styled.div<WrapperProps>`
             display: none !important;
         }
         & .cursor-closed {
+            display: block !important;
+        }
+    }
+
+    /* Flèche jaune de ciblage (drag ou désignation plateau) : curseur flèche */
+    body.is-targeting-drag &,
+    body.is-board-targeting-arrow & {
+        top: 18px !important;
+        left: 17px !important;
+
+        & .cursor-closed,
+        & .cursor-open {
+            display: none !important;
+        }
+        & .cursor-arrow {
             display: block !important;
         }
     }

@@ -110,14 +110,17 @@ export const applyDevPreset = (
             setupDevPath(G, 3);
             G.twilightPool = 6;
 
-            // Focus : Discard this or remove N jetons → make / heal (Skirmish).
+            // Focus : remove jeton → heal (Sorrow Shared / Gimli blessé) + discard-or-remove.
             fpPlayer.fellowshipArea = [
                 {
                     ...clonePresetCard('2C102', 'dev-frodo-ct'),
                     attachments: [clonePresetCard('1R1', 'dev-ring-ct')],
                 },
-                clonePresetCard('0P12', 'dev-gimli-ct'), // nain → Run Until Found
-                clonePresetCard('0P16', 'dev-faramir-ct'), // Homme Gondor → Garrison
+                {
+                    ...clonePresetCard('0P12', 'dev-gimli-ct'),
+                    wounds: 1,
+                },
+                clonePresetCard('0P16', 'dev-faramir-ct'),
             ];
             fpPlayer.supportArea = [
                 {
@@ -129,7 +132,7 @@ export const applyDevPreset = (
                     cultureTokens: { DWARVEN: 2 },
                 },
             ];
-            fpPlayer.hand = [];
+            fpPlayer.hand = [clonePresetCard('13C7', 'dev-sorrow-shared')];
 
             if (shadowPlayer) {
                 shadowPlayer.supportArea = [
@@ -138,7 +141,6 @@ export const applyDevPreset = (
                         cultureTokens: { ORC: 3 },
                     },
                 ];
-                // Séides faibles + lurker pour Always Threatening
                 G.battlefield = [
                     clonePresetCard('11S90', 'dev-man-of-bree'),
                     clonePresetCard('11C98', 'dev-rampaging-easterling'),
@@ -153,7 +155,7 @@ export const applyDevPreset = (
             }
 
             G.statusMessage =
-                '[DEV] Jetons · Discard/remove → make. Faramir bloque Ombre sur son combat. Site 9 = Cavern Entrance (capacités Skirmish interdites aux deux).';
+                '[DEV] Jetons · Sorrow Shared (main, Maneuver) → retire 1 jeton nain, soigne Gimli. Discard/remove + Faramir / Cavern (site 9).';
             break;
         }
     }

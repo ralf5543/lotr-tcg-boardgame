@@ -208,7 +208,8 @@ export function getCostDesignationCandidates(
                 tokenCountOnCard(card, removeTokens.culture) >=
                 removeTokens.count
         );
-        if (pool.length <= 1) return [];
+        // Toujours désigner (même 1 carte) : étape halo avant la flèche d’effet.
+        if (pool.length < 1) return [];
         return uniqueCards(pool);
     }
 

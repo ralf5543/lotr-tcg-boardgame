@@ -1208,7 +1208,7 @@ export const GameBoard: React.FC<GameBoardProps> = ({
                     kind: 'SITE_ATTACH',
                     targetableCardIds: siteIds,
                     pendingCard: card,
-                    arrowFromCardId: PENDING_PLAY_ORIGIN_ID,
+                    arrowFromCardId: costTargetId,
                     message: 'Choisissez un site pour y jouer cette carte.',
                     onSelectTarget: (siteId) => {
                         stopTargeting();

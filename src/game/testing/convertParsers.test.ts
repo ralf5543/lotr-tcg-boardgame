@@ -4728,6 +4728,69 @@ describe('parseAbilities — culture tokens', () => {
         ]);
     });
 
+    it('parse remove token → heal classe (phase + événement standalone)', () => {
+        expect(
+            parseAbilities(
+                '<keyword>Skirmish:</keyword> Remove a <symbol>dwarven</symbol> token to heal a Dwarf.',
+                'Aragorn',
+                '0P47'
+            )
+        ).toEqual([
+            {
+                id: '0P47:0',
+                phases: ['SKIRMISH'],
+                cost: [
+                    {
+                        removeCultureTokens: {
+                            culture: 'DWARVEN',
+                            count: 1,
+                        },
+                    },
+                ],
+                effects: [
+                    { type: 'HEAL', count: 1, target: [['DWARF']] },
+                ],
+                source: 'SELF',
+                text: 'SKIRMISH: Remove a dwarven token to heal a Dwarf.',
+            },
+        ]);
+
+        expect(
+            parseAbilities(
+                'Remove a <symbol>dwarven</symbol> token to heal a Dwarf.',
+                'Sorrow Shared',
+                '13C7'
+            )
+        ).toEqual([
+            {
+                id: '13C7:0',
+                phases: [],
+                cost: [
+                    {
+                        removeCultureTokens: {
+                            culture: 'DWARVEN',
+                            count: 1,
+                        },
+                    },
+                ],
+                effects: [
+                    { type: 'HEAL', count: 1, target: [['DWARF']] },
+                ],
+                source: 'SELF',
+                text: 'Remove a dwarven token to heal a Dwarf.',
+            },
+        ]);
+
+        // Asfaloth : clause « or heal … another » → inerte
+        expect(
+            parseAbilities(
+                '<keyword>Skirmish:</keyword> Remove 2 <symbol>elven</symbol> tokens to heal bearer (or heal bearer and heal another Elf if bearer is in a fierce skirmish).',
+                'Asfaloth',
+                '13R10'
+            )
+        ).toBeUndefined();
+    });
+
     it('parse remove twilight to place token here', () => {
         const text =
             '<keyword>Shadow:</keyword> Remove <symbol>twilight3</symbol> to place a <symbol>dunland</symbol> token here.';

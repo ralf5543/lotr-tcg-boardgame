@@ -4632,6 +4632,81 @@ function parseStandaloneSpotReplaceAbilities(
     ];
 }
 
+/**
+ * Événements sans balise de phase (phase = colonne Class) :
+ * « Remove a [culture] token to heal a Dwarf. » (Sorrow Shared…)
+ */
+function parseStandaloneRemoveTokenHealAbilities(
+    text: string,
+    cardTitle?: string,
+    cardId?: string
+): Record<string, unknown>[] {
+    const match = text
+        .replace(/<br\s*\/?>/gi, ' ')
+        .replace(/\s+/g, ' ')
+        .trim()
+        .match(
+            /^Remove (a|an|one|\d+)\s+((?:Free Peoples(?:\s+culture)?)|(?:<symbol>[^<]+<\/symbol>)|(?:culture))\s+tokens?(\s+from here|\s+here)?\s+to heal\s+([\s\S]+)$/i
+        );
+    if (!match) return [];
+
+    const count = parseCultureTokenCount(match[1]);
+    const culture = parseCultureTokenSpec(match[2]);
+    const fromSelf = Boolean(match[3]);
+    const healRaw = match[4].trim();
+    if (!count || !culture) return [];
+
+    const healPlain = healRaw
+        .replace(/<[^>]+>/g, ' ')
+        .replace(/\s+/g, ' ')
+        .trim();
+    if (
+        /\b(and|or|another|each|all|skirmish|wound|exert|spot)\b/i.test(
+            healPlain
+        )
+    ) {
+        return [];
+    }
+
+    let healTarget: 'BEARER' | string[][] | null = null;
+    if (/^bearer\.?$/i.test(healPlain)) {
+        healTarget = 'BEARER';
+    } else {
+        const parsed = parseNounTarget(healRaw, [['']], cardTitle);
+        if (
+            parsed &&
+            Array.isArray(parsed) &&
+            isCharacterishHealTarget(parsed)
+        ) {
+            healTarget = parsed;
+        }
+    }
+    if (!healTarget) return [];
+
+    return [
+        {
+            id: `${cardId || 'ability'}:0`,
+            phases: [],
+            cost: [
+                {
+                    removeCultureTokens: {
+                        culture,
+                        count,
+                        ...(fromSelf ? { from: 'SELF' as const } : {}),
+                    },
+                },
+            ],
+            effects: [{ type: 'HEAL', count: 1, target: healTarget }],
+            source: healTarget === 'BEARER' ? 'ATTACHMENT' : 'SELF',
+            text: stripAbilityMarkup(
+                `Remove ${match[1]} ${stripAbilityMarkup(match[2])} token${count > 1 ? 's' : ''}${fromSelf ? ' from here' : ''} to heal ${healPlain.replace(/\.+$/, '')}.`
+            )
+                .replace(/\s+/g, ' ')
+                .trim(),
+        },
+    ];
+}
+
 /** Effet dont la magnitude est le nombre spoté (X). Fragments sûrs seulement. */
 function parseCountFromSpotEffect(
     remainder: string
@@ -5121,36 +5196,65 @@ export function parseAbilities(
             }
         }
 
-        // « Remove N [culture] tokens from here to heal bearer. »
+        // « Remove N [culture] tokens [from here]? to heal bearer|classe. »
         const removeTokensHeal = body.match(
-            /^Remove (a|an|one|\d+)\s+((?:Free Peoples(?:\s+culture)?)|(?:<symbol>[^<]+<\/symbol>)|(?:culture))\s+tokens? from here to heal bearer\s*\.?$/i
+            /^Remove (a|an|one|\d+)\s+((?:Free Peoples(?:\s+culture)?)|(?:<symbol>[^<]+<\/symbol>)|(?:culture))\s+tokens?(\s+from here|\s+here)?\s+to heal\s+([\s\S]+)$/i
         );
         if (removeTokensHeal) {
             const count = parseCultureTokenCount(removeTokensHeal[1]);
             const culture = parseCultureTokenSpec(removeTokensHeal[2]);
-            if (count && culture) {
-                abilities.push({
-                    id: `${cardId || 'ability'}:${abilities.length}`,
-                    phases,
-                    cost: [
-                        {
-                            removeCultureTokens: {
-                                culture,
-                                count,
-                                from: 'SELF',
-                            },
-                        },
-                    ],
-                    effects: [
-                        { type: 'HEAL', count: 1, target: 'BEARER' },
-                    ],
-                    source: 'ATTACHMENT',
-                    text: stripAbilityMarkup(
-                        `${marker.phase}: ${removeTokensHeal[0]}`
-                    ),
-                });
+            const fromSelf = Boolean(removeTokensHeal[3]);
+            const healRaw = removeTokensHeal[4].trim();
+            if (!count || !culture) return;
+            const healPlain = healRaw
+                .replace(/<[^>]+>/g, ' ')
+                .replace(/\s+/g, ' ')
+                .trim();
+            // Asfaloth « (or heal … another …) », multi-cibles, etc.
+            if (
+                /\b(and|or|another|each|all|skirmish|wound|exert|spot)\b/i.test(
+                    healPlain
+                )
+            ) {
                 return;
             }
+
+            let healTarget: 'BEARER' | string[][] | null = null;
+            if (/^bearer\.?$/i.test(healPlain)) {
+                healTarget = 'BEARER';
+            } else {
+                const parsed = parseNounTarget(healRaw, [['']], cardTitle);
+                if (
+                    parsed &&
+                    Array.isArray(parsed) &&
+                    isCharacterishHealTarget(parsed)
+                ) {
+                    healTarget = parsed;
+                }
+            }
+            if (!healTarget) return;
+
+            abilities.push({
+                id: `${cardId || 'ability'}:${abilities.length}`,
+                phases,
+                cost: [
+                    {
+                        removeCultureTokens: {
+                            culture,
+                            count,
+                            ...(fromSelf ? { from: 'SELF' as const } : {}),
+                        },
+                    },
+                ],
+                effects: [{ type: 'HEAL', count: 1, target: healTarget }],
+                source: healTarget === 'BEARER' ? 'ATTACHMENT' : 'SELF',
+                text: stripAbilityMarkup(
+                    `${marker.phase}: Remove ${removeTokensHeal[1]} ${stripAbilityMarkup(removeTokensHeal[2])} token${count > 1 ? 's' : ''}${fromSelf ? ' from here' : ''} to heal ${healPlain.replace(/\.+$/, '')}.`
+                )
+                    .replace(/\s+/g, ' ')
+                    .trim(),
+            });
+            return;
         }
 
         // « Discard this … or remove N [culture]? tokens [from here] to make/heal … »
@@ -7250,6 +7354,16 @@ export function parseAbilities(
                 });
             }
         );
+        parseStandaloneRemoveTokenHealAbilities(
+            text,
+            cardTitle,
+            cardId
+        ).forEach((ability) => {
+            abilities.push({
+                ...ability,
+                id: `${cardId || 'ability'}:${abilities.length}`,
+            });
+        });
     }
 
     return abilities.length > 0 ? abilities : undefined;

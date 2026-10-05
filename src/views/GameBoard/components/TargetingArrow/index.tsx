@@ -163,6 +163,17 @@ export const BoardTargetingArrow: React.FC = () => {
     const activeHoverId = isDesignating ? hoverId : null;
 
     useEffect(() => {
+        if (isDesignating) {
+            document.body.classList.add('is-board-targeting-arrow');
+        } else {
+            document.body.classList.remove('is-board-targeting-arrow');
+        }
+        return () => {
+            document.body.classList.remove('is-board-targeting-arrow');
+        };
+    }, [isDesignating]);
+
+    useEffect(() => {
         setHoveredTargetId(activeHoverId);
     }, [activeHoverId, setHoveredTargetId]);
 

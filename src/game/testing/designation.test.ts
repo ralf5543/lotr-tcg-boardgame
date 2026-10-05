@@ -1,6 +1,9 @@
 import { describe, expect, it } from 'vitest';
 import {
+    abilityNeedsCostDesignation,
     abilityNeedsDesignation,
+    abilityNeedsEffectDesignation,
+    getCostDesignationCandidates,
     getDesignationCandidates,
     getHandEventDesignationTargetIds,
     isDesignationTargetId,
@@ -356,5 +359,61 @@ describe('designation', () => {
         const ids = getHandEventDesignationTargetIds(G, event, 'maneuver');
         expect(ids).toEqual(expect.arrayContaining(['site-a', 'site-b']));
         expect(abilityNeedsDesignation(G, event, ability)).toBe(false);
+    });
+
+    it('Remove token → heal : même 1 carte à jetons = coût à désigner (pas de flèche depuis la main)', () => {
+        const tokenCard = createCard({
+            id: '18U2',
+            instanceId: 'run-until',
+            kind: 'FREE_PEOPLE',
+            type: 'CONDITION',
+            culture: 'DWARVEN',
+            cultureTokens: { DWARVEN: 2 },
+        });
+        const gimli = createCompanion({
+            id: 'gimli',
+            instanceId: 'gimli',
+            race: 'DWARF',
+            vitality: 3,
+            wounds: 1,
+        });
+        const G = createGameState({
+            players: {
+                '0': createPlayerState('0', {
+                    fellowshipArea: [gimli],
+                    supportArea: [tokenCard],
+                }),
+            },
+        });
+        const ability: Ability = {
+            id: '13C7:0',
+            phases: [],
+            cost: [
+                {
+                    removeCultureTokens: {
+                        culture: 'DWARVEN',
+                        count: 1,
+                    },
+                },
+            ],
+            effects: [{ type: 'HEAL', count: 1, target: [['DWARF']] }],
+            source: 'SELF',
+        };
+        const event = createCard({
+            id: '13C7',
+            kind: 'FREE_PEOPLE',
+            type: 'EVENT',
+            title: 'Sorrow Shared',
+            phases: ['MANEUVER'],
+            abilities: [ability],
+        });
+
+        expect(abilityNeedsCostDesignation(G, event, ability)).toBe(true);
+        expect(getCostDesignationCandidates(G, event, ability)).toHaveLength(1);
+        expect(abilityNeedsEffectDesignation(G, event, ability)).toBe(true);
+        // Coût + effet distincts → pas de flèche pendant le drag (halo après drop)
+        expect(
+            getHandEventDesignationTargetIds(G, event, 'maneuver')
+        ).toEqual([]);
     });
 });

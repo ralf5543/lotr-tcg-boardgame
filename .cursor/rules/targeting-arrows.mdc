@@ -1,5 +1,5 @@
 ---
-description: Homogénéité des flèches de ciblage (effets négatifs carte→carte)
+description: Flèches de ciblage (origine agent→cible) et curseur pendant le drag
 alwaysApply: true
 ---
 
@@ -7,9 +7,27 @@ alwaysApply: true
 
 **Format : Standard (règles modernes).** Voir `.cursor/rules/format-standard.mdc`.
 
-## Règle
+## Principe
 
-Si une **action négative** part d’une carte vers une autre (exhaust, blessure, exert en effet, défausse d’une cible en jeu, etc.), il faut une **flèche de ciblage** depuis la carte agent jusqu’à la cible.
+La **flèche jaune** relie uniquement une **carte agent** (qui « fait » l’effet) à sa **cible d’effet**. Elle ne matérialise pas une étape de coût intermédiaire depuis la main.
+
+## Sortie de main
+
+| Situation | Après le drag hors de la main | Flèche jaune |
+| --- | --- | --- |
+| **Coût à désigner** (retirer des jetons d’une carte, exert un personnage, etc.) | Halo sur les cartes éligibles → **clic** pour payer le coût | Ensuite : **depuis la carte cliquée** (coût / agent) **vers** la cible d’effet. **Pas** de flèche main → carte à jetons / personnage exerté. |
+| **Coût automatique** (add 2 burdens, remove twilight, etc. — pas de choix de carte) | Pas d’étape intermédiaire | Flèche **depuis** la carte sortie de la main (`pendingPlay`) **vers** la cible d’effet. |
+| **Pas de coût / effet direct** (blesser, soigner, libérer un site…) | — | Flèche **depuis** la carte sortie de la main **vers** la cible. |
+
+Exemples :
+- **Sorrow Shared** (retire un jeton nain → soigne un Nain) : drag → halo sur cartes à jetons → clic sur la carte à jetons → **puis** flèche **depuis cette carte** vers le Nain à soigner.
+- **Exert un personnage pour en blesser un autre** : même logique — la flèche part du personnage **exerté**, pas de la carte en main.
+- **Blesser / soigner / libérer** sans désignation de coût : flèche main → cible.
+- **Add 2 burdens pour blesser** : burdens sans choix de carte → flèche main → cible.
+
+## Capacités déjà en jeu
+
+Même pattern : si une **action négative** part d’une carte vers une autre (exhaust, blessure, exert en effet, défausse d’une cible en jeu…), flèche **depuis** l’agent **vers** la cible.
 
 Exemples :
 - Surveillant orque : flèche **depuis** le Surveillant **vers** le compagnon.
@@ -18,8 +36,13 @@ Exemples :
 ## Ce qui n’est pas une trajectoire
 
 - Coût d’exert SELF (pas de désignation).
-- Reinforce / place de jetons, heal, empilement : halo + clic (pas de flèche plateau→plateau), sauf convention déjà établie pour la sortie de main.
+- Reinforce / place de jetons, heal « halo + clic » sans flèche plateau→plateau, **sauf** quand la convention sortie de main ci-dessus s’applique (effet direct depuis la main).
 
 ## Homogénéité
 
-Même pattern pour capacités en jeu et événements (après paiement / choix du coût si besoin). Ne pas faire partir la flèche d’effet depuis `pendingPlay` quand l’agent est une carte en jeu déjà désignée.
+Même pattern pour capacités en jeu et événements (après paiement / choix du coût si besoin). Ne **pas** faire partir la flèche d’effet depuis `pendingPlay` quand l’agent est une carte **en jeu déjà désignée** (coût intermédiaire).
+
+## Curseur pendant le drag (main)
+
+- Tant que la carte « ramassée » est visible sous le pointeur : curseur **poing fermé** (grabbing).
+- Dès que le curseur est assez loin pour **faire disparaître** la carte ramassée et afficher la **flèche jaune** de ciblage : le curseur reprend la forme **flèche** (pointeur), pas le poing fermé.

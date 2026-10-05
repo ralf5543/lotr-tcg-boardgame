@@ -2402,6 +2402,38 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
+    "abilities": [
+      {
+        "id": "0P47:0",
+        "phases": [
+          "SKIRMISH"
+        ],
+        "cost": [
+          {
+            "removeCultureTokens": {
+              "culture": "DWARVEN",
+              "count": 1
+            }
+          }
+        ],
+        "effects": [
+          {
+            "type": "HEAL",
+            "count": 1,
+            "target": [
+              [
+                "DWARF"
+              ]
+            ]
+          }
+        ],
+        "source": "SELF",
+        "text": "SKIRMISH: Remove a dwarven token to heal a Dwarf."
+      }
+    ],
+    "actionPhases": [
+      "SKIRMISH"
+    ],
     "culture": "GONDOR",
     "race": "MAN",
     "signet": "THEODEN",
@@ -61194,6 +61226,38 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
+    "abilities": [
+      {
+        "id": "6R50:0",
+        "phases": [
+          "SKIRMISH"
+        ],
+        "cost": [
+          {
+            "removeCultureTokens": {
+              "culture": "DWARVEN",
+              "count": 1
+            }
+          }
+        ],
+        "effects": [
+          {
+            "type": "HEAL",
+            "count": 1,
+            "target": [
+              [
+                "DWARF"
+              ]
+            ]
+          }
+        ],
+        "source": "SELF",
+        "text": "SKIRMISH: Remove a dwarven token to heal a Dwarf."
+      }
+    ],
+    "actionPhases": [
+      "SKIRMISH"
+    ],
     "culture": "GONDOR",
     "race": "MAN",
     "signet": "THEODEN",
@@ -111926,6 +111990,33 @@
     "isUnique": false,
     "kind": "FREE_PEOPLE",
     "type": "EVENT",
+    "abilities": [
+      {
+        "id": "13C7:0",
+        "phases": [],
+        "cost": [
+          {
+            "removeCultureTokens": {
+              "culture": "DWARVEN",
+              "count": 1
+            }
+          }
+        ],
+        "effects": [
+          {
+            "type": "HEAL",
+            "count": 1,
+            "target": [
+              [
+                "DWARF"
+              ]
+            ]
+          }
+        ],
+        "source": "SELF",
+        "text": "Remove a dwarven token to heal a Dwarf."
+      }
+    ],
     "phases": [
       "MANEUVER"
     ],

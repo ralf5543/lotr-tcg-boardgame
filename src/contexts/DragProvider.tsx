@@ -64,15 +64,26 @@ export const DragProvider: React.FC<{ children: React.ReactNode }> = ({
     const dragOffset = useRef({ x: 0, y: 0 });
 
     useEffect(() => {
-        if (dragged) {
-            document.body.classList.add('is-dragging');
-        } else {
+        if (!dragged) {
             document.body.classList.remove('is-dragging');
+            document.body.classList.remove('is-targeting-drag');
+            return;
+        }
+        const showArrow =
+            Boolean(dragged.designationTargetIds?.length) &&
+            !isOverHandCancel;
+        if (showArrow) {
+            document.body.classList.remove('is-dragging');
+            document.body.classList.add('is-targeting-drag');
+        } else {
+            document.body.classList.add('is-dragging');
+            document.body.classList.remove('is-targeting-drag');
         }
         return () => {
             document.body.classList.remove('is-dragging');
+            document.body.classList.remove('is-targeting-drag');
         };
-    }, [dragged]);
+    }, [dragged, isOverHandCancel]);
 
     const registerTarget = (id: string, element: HTMLElement | null) => {
         if (element) {
