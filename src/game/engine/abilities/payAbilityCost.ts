@@ -8,6 +8,7 @@ import { resolveCostTarget } from './resolveCostTarget';
 import {
     abilityOwnerCanSpotCultureTokens,
     countCultureTokensForPlayer,
+    countSpottedCultureTokens,
     removeCultureTokensForPlayer,
     tokenCountOnCard,
 } from '../../logic/cultureTokens';
@@ -148,9 +149,7 @@ function canPayOption(
         const { culture, count, from } = option.removeCultureTokens;
         if (from === 'SELF') {
             if (tokenCountOnCard(source, culture) < count) return false;
-        } else if (
-            countCultureTokensForPlayer(G, ownerId, culture) < count
-        ) {
+        } else if (countSpottedCultureTokens(G, culture) < count) {
             return false;
         }
     }

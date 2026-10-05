@@ -35,7 +35,7 @@ import {
 import { abilityOwnerPlayerId } from './payAbilityCost';
 import {
     canReinforce,
-    getOwnedInPlayCards,
+    getActiveCardsWithCultureTokens,
     getReinforceCandidates,
     tokenCountOnCard,
 } from '../../logic/cultureTokens';
@@ -201,12 +201,10 @@ export function getCostDesignationCandidates(
             opt.removeCultureTokens.from !== 'SELF'
     )?.removeCultureTokens;
     if (removeTokens) {
-        const ownerId = abilityOwnerPlayerId(G, source);
-        if (!ownerId) return [];
-        const pool = getOwnedInPlayCards(G, ownerId).filter(
-            (card) =>
-                tokenCountOnCard(card, removeTokens.culture) >=
-                removeTokens.count
+        const pool = getActiveCardsWithCultureTokens(
+            G,
+            removeTokens.culture,
+            removeTokens.count
         );
         // Toujours désigner (même 1 carte) : étape halo avant la flèche d’effet.
         if (pool.length < 1) return [];
@@ -282,15 +280,24 @@ export function abilityNeedsEffectDesignation(
 }
 
 /**
- * Effets « trajectoire » (attaque / exhaust…) : flèche plateau → cible.
- * Pas pour reinforce / heal / empilement (halo + clic seulement).
+ * Effets « trajectoire » (dirigés : blessure / exhaust / soin…) : flèche agent → cible.
+ * Pas pour reinforce / place de jetons (neutre : halo + clic seulement).
  */
 export function abilityEffectWantsTargetingArrow(ability: Ability): boolean {
     return (ability.effects || []).some(
         (effect) =>
             effect.type === 'EXHAUST' ||
             effect.type === 'WOUND' ||
-            effect.type === 'EXERT'
+            effect.type === 'EXERT' ||
+            effect.type === 'HEAL'
+    );
+}
+
+/** Désignation d’effet neutre (reinforce…) : jamais de flèche pendant le drag main. */
+function abilityEffectDesignationIsHaloOnly(ability: Ability): boolean {
+    if (abilityEffectWantsTargetingArrow(ability)) return false;
+    return (ability.effects || []).some(
+        (effect) => effect.type === 'REINFORCE_CULTURE_TOKEN'
     );
 }
 
@@ -410,7 +417,8 @@ export function abilityHasLegalEffectTarget(
         if (
             effect.type === 'REMOVE_TWILIGHT' ||
             effect.type === 'REMOVE_BURDENS' ||
-            effect.type === 'REMOVE_THREATS'
+            effect.type === 'REMOVE_THREATS' ||
+            effect.type === 'ADD_THREATS'
         ) {
             continue;
         }
@@ -531,11 +539,22 @@ export function formatDesignationPrompt(
                     item.target === 'WINNER')
         )?.target ?? ability.effects[0]?.target;
 
+    const removeTokensCost = ability.cost?.[0]?.removeCultureTokens;
+    const hasCostDesignation =
+        Array.isArray(costTarget) ||
+        Array.isArray(discardTarget) ||
+        Boolean(removeTokensCost && removeTokensCost.from !== 'SELF');
+
     const useEffect =
-        which === 'effect' ||
-        (which === 'auto' &&
-            !Array.isArray(costTarget) &&
-            !Array.isArray(discardTarget));
+        which === 'effect' || (which === 'auto' && !hasCostDesignation);
+
+    if (
+        (which === 'cost' || (which === 'auto' && hasCostDesignation)) &&
+        removeTokensCost &&
+        removeTokensCost.from !== 'SELF'
+    ) {
+        return 'Choisissez une carte dont retirer un jeton.';
+    }
 
     if (useEffect && effectTarget === 'SKIRMISHING') {
         return 'Choisissez un personnage au combat.';
@@ -687,10 +706,17 @@ export function getHandEventDesignationTargetIds(
     const ability = findEventAbilityForPhase(card, phaseToMatch);
     if (!ability) return [];
 
+    // Coût à désigner (remove jeton, exert…) : jamais de flèche pendant le drag.
+    // Drop → halo coût → clic ; puis flèche seulement si effet dirigé.
+    // Couvre aussi coût-only (Sauron’s Might : remove → add threat).
+    if (abilityNeedsCostDesignation(G, card, ability)) {
+        return [];
+    }
+
+    // Reinforce (etc.) : pas de flèche pendant le drag — le drop ouvre halo + clic.
     if (
-        abilityNeedsCostDesignation(G, card, ability) &&
         abilityNeedsEffectDesignation(G, card, ability) &&
-        !costAndEffectShareHandDesignation(ability)
+        abilityEffectDesignationIsHaloOnly(ability)
     ) {
         return [];
     }

@@ -9,40 +9,49 @@ alwaysApply: true
 
 ## Principe
 
-La **flèche jaune** relie uniquement une **carte agent** (qui « fait » l’effet) à sa **cible d’effet**. Elle ne matérialise pas une étape de coût intermédiaire depuis la main.
+La **flèche jaune** relie une **carte agent** (qui « fait » l’effet) à une **cible d’effet dirigé** — typiquement **néfaste** (blessure, exert, exhaust, défausse d’une cible…) ou **bénéfique** (soin). Elle matérialise une action « d’une carte vers une autre ».
+
+Elle **n’est pas** pour des choix **neutres / logistiques** : reinforce / place de jetons, désignation de site pour replace, etc. Ces cas = **halo + clic** (éventuellement après le drag hors de la main), **sans** flèche qui suit le curseur.
+
+Elle ne matérialise **pas** non plus une étape de **coût** intermédiaire depuis la main.
 
 ## Sortie de main
 
 | Situation | Après le drag hors de la main | Flèche jaune |
 | --- | --- | --- |
-| **Coût à désigner** (retirer des jetons d’une carte, exert un personnage, etc.) | Halo sur les cartes éligibles → **clic** pour payer le coût | Ensuite : **depuis la carte cliquée** (coût / agent) **vers** la cible d’effet. **Pas** de flèche main → carte à jetons / personnage exerté. |
-| **Coût automatique** (add 2 burdens, remove twilight, etc. — pas de choix de carte) | Pas d’étape intermédiaire | Flèche **depuis** la carte sortie de la main (`pendingPlay`) **vers** la cible d’effet. |
-| **Pas de coût / effet direct** (blesser, soigner, libérer un site…) | — | Flèche **depuis** la carte sortie de la main **vers** la cible. |
+| **Coût à désigner** (retirer des jetons d’une carte, exert un personnage, etc.) | Halo sur les cartes éligibles → **clic** pour payer le coût | Ensuite : si l’effet est **dirigé** (blessure / soin…), flèche **depuis la carte cliquée** (coût / agent) **vers** la cible. **Pas** de flèche main → carte à jetons / personnage exerté. |
+| **Coût automatique** + effet dirigé (add 2 burdens pour blesser, etc.) | Pas d’étape intermédiaire | Flèche **depuis** la carte sortie de la main (`pendingPlay`) **vers** la cible d’effet. |
+| **Pas de coût / effet dirigé** (blesser, soigner, libérer un site…) | — | Flèche **depuis** la carte sortie de la main **vers** la cible. |
+| **Effet neutre à désigner** (reinforce un jeton, place sur une carte…) | Halo sur les cartes éligibles (après drop hors main) | **Pas** de flèche. Évite le demi-tour main → zone de soutien (annulation au survol du point de départ). |
 
 Exemples :
-- **Sorrow Shared** (retire un jeton nain → soigne un Nain) : drag → halo sur cartes à jetons → clic sur la carte à jetons → **puis** flèche **depuis cette carte** vers le Nain à soigner.
+- **Sorrow Shared** (retire un jeton nain → soigne un Nain) : drag → halo sur cartes à jetons → clic → **puis** flèche **depuis cette carte** vers le Nain à soigner.
 - **Exert un personnage pour en blesser un autre** : même logique — la flèche part du personnage **exerté**, pas de la carte en main.
 - **Blesser / soigner / libérer** sans désignation de coût : flèche main → cible.
 - **Add 2 burdens pour blesser** : burdens sans choix de carte → flèche main → cible.
+- **War Preparations** (retire une menace → reinforce un jeton orc) : drop hors main → **halo** sur cartes reinforceables → **clic**. Pas de flèche jaune.
 
 ## Capacités déjà en jeu
 
-Même pattern : si une **action négative** part d’une carte vers une autre (exhaust, blessure, exert en effet, défausse d’une cible en jeu…), flèche **depuis** l’agent **vers** la cible.
+Même pattern : si une **action dirigée** part d’une carte vers une autre (exhaust, blessure, exert en effet, soin, défausse d’une cible en jeu…), flèche **depuis** l’agent **vers** la cible.
 
 Exemples :
 - Surveillant orque : flèche **depuis** le Surveillant **vers** le compagnon.
 - Polyvalence de rôdeur : d’abord désigner le rôdeur à affaiblir (halo), **puis** flèche **depuis ce rôdeur** **vers** le séide.
+- Reinforce / place de jetons depuis une capacité en jeu : **halo + clic**, pas de flèche.
 
 ## Ce qui n’est pas une trajectoire
 
 - Coût d’exert SELF (pas de désignation).
-- Reinforce / place de jetons, heal « halo + clic » sans flèche plateau→plateau, **sauf** quand la convention sortie de main ci-dessus s’applique (effet direct depuis la main).
+- **Reinforce / place de jetons** (toujours halo + clic, y compris événements depuis la main).
+- Heal « halo + clic » **plateau→plateau** quand ce n’est pas un effet dirigé depuis une agent-carte (exceptions : convention sortie de main / agent déjà désigné ci-dessus).
 
 ## Homogénéité
 
-Même pattern pour capacités en jeu et événements (après paiement / choix du coût si besoin). Ne **pas** faire partir la flèche d’effet depuis `pendingPlay` quand l’agent est une carte **en jeu déjà désignée** (coût intermédiaire).
+Même pattern pour capacités en jeu et événements (après paiement / choix du coût si besoin). Ne **pas** faire partir la flèche d’effet depuis `pendingPlay` quand l’agent est une carte **en jeu déjà désignée** (coût intermédiaire), ni pour un effet **neutre** (reinforce).
 
 ## Curseur pendant le drag (main)
 
 - Tant que la carte « ramassée » est visible sous le pointeur : curseur **poing fermé** (grabbing).
 - Dès que le curseur est assez loin pour **faire disparaître** la carte ramassée et afficher la **flèche jaune** de ciblage : le curseur reprend la forme **flèche** (pointeur), pas le poing fermé.
+- Si l’effet est **neutre** (reinforce) : pas de flèche → pas de bascule « flèche jaune » pendant le drag.

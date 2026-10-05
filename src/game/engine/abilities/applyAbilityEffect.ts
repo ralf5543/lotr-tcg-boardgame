@@ -435,6 +435,11 @@ export function applyAbilityEffect(
             continue;
         }
 
+        if (effect.type === 'ADD_THREATS') {
+            addThreats(G, effect.count || 0);
+            continue;
+        }
+
         if (effect.type === 'REINFORCE_CULTURE_TOKEN') {
             const ownerId = abilityOwnerPlayerId(G, source);
             if (!ownerId) return false;

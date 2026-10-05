@@ -110,7 +110,9 @@ export const applyDevPreset = (
             setupDevPath(G, 3);
             G.twilightPool = 6;
 
-            // Focus : remove→heal, loses→place, force par jetons FP / cartes à jeton.
+            // Focus : remove→heal / threat / reinforce ; loses→place ; force par jetons.
+            fpPlayer.burdens = 0;
+            fpPlayer.threats = 1;
             fpPlayer.fellowshipArea = [
                 {
                     ...clonePresetCard('2C102', 'dev-frodo-ct'),
@@ -122,6 +124,13 @@ export const applyDevPreset = (
                 },
                 clonePresetCard('13R59', 'dev-aragorn-ct'),
                 clonePresetCard('0P16', 'dev-faramir-ct'),
+                {
+                    // Compagnon Rohan : réponse moves → reinforce.
+                    // Jeton Rohan ici ; coût remove FP = Garrison / Run Until Found
+                    // (ne pas retirer le seul jeton Rohan sinon reinforce inerte).
+                    ...clonePresetCard('13C132', 'dev-merchant-westfold'),
+                    cultureTokens: { ROHAN: 2 },
+                },
             ];
             fpPlayer.supportArea = [
                 {
@@ -148,7 +157,10 @@ export const applyDevPreset = (
                     clonePresetCard('4U24', 'dev-hillman-rabble'),
                     clonePresetCard('13C159', 'dev-assault-denizen'),
                 ];
-                shadowPlayer.hand = [];
+                shadowPlayer.hand = [
+                    clonePresetCard('19P27', 'dev-saurons-might'),
+                    clonePresetCard('18U92', 'dev-war-preparations'),
+                ];
             }
 
             // Site Cavern Entrance (Standard) en dernière case — pour tester
@@ -158,7 +170,7 @@ export const applyDevPreset = (
             }
 
             G.statusMessage =
-                '[DEV] Jetons · Aragorn +1/carte Gondor à jeton (Garrison) ; Assault Denizen = 9+4 FP (Garrison 2 + Run 2), pas les 3 ORC Ombre ; Sorrow Shared / loses→token.';
+                '[DEV] Jetons · Merchant (compagnie, moves→reinforce Rohan) ; Sauron’s Might retire jeton FP adverse ; War Prep ; Aragorn / Assault Denizen.';
             break;
         }
     }

@@ -5,6 +5,7 @@ import {
     countCultureTokensForPlayer,
     getReinforceCandidates,
     placeCultureTokens,
+    removeCultureTokensForPlayer,
     removeCultureTokensFromCard,
     resolveReinforceCulture,
     tokenCountOnCard,
@@ -33,6 +34,29 @@ describe('placeCultureTokens / remove', () => {
         });
         expect(tokenCountOnCard(card, 'FREE_PEOPLES')).toBe(2);
         expect(tokenCountOnCard(card, 'ANY')).toBe(5);
+    });
+
+    it('Shadow peut retirer un jeton Free Peoples sur une carte FP (cartes actives)', () => {
+        const garrison = createCard({
+            id: 'garrison',
+            instanceId: 'garrison',
+            kind: 'FREE_PEOPLE',
+            type: 'CONDITION',
+            culture: 'GONDOR',
+            cultureTokens: { GONDOR: 2 },
+        });
+        const G = createGameState({
+            players: {
+                '0': createPlayerState('0', { supportArea: [garrison] }),
+                '1': createPlayerState('1'),
+            },
+        });
+        expect(
+            removeCultureTokensForPlayer(G, '1', 'FREE_PEOPLES', 1, {
+                targetId: 'garrison',
+            })
+        ).toBe(1);
+        expect(tokenCountOnCard(garrison, 'GONDOR')).toBe(1);
     });
 });
 

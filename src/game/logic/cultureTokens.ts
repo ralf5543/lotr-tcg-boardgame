@@ -227,6 +227,24 @@ export function countSpottedCultureTokens(
     return sum;
 }
 
+/**
+ * Cartes actives portant au moins `minCount` jetons (CR remove / spot) —
+ * tous joueurs, pas seulement le propriétaire de la capacité.
+ */
+export function getActiveCardsWithCultureTokens(
+    G: GameState,
+    culture: CultureTokenSpec,
+    minCount = 1
+): CardState[] {
+    const cards: CardState[] = [];
+    visitInPlayCards(G, (card) => {
+        if (tokenCountOnCard(card, culture) >= minCount) {
+            cards.push(card);
+        }
+    });
+    return cards;
+}
+
 /** Cartes du joueur pouvant recevoir un reinforce de cette spécification. */
 export function getReinforceCandidates(
     G: GameState,
@@ -294,7 +312,7 @@ export function applyReinforce(
     return placed;
 }
 
-/** Retire des jetons depuis SELF ou une carte désignée parmi les éligibles. */
+/** Retire des jetons depuis SELF ou une carte désignée parmi les cartes actives. */
 export function removeCultureTokensForPlayer(
     G: GameState,
     ownerId: string,
@@ -308,9 +326,9 @@ export function removeCultureTokensForPlayer(
         return removeCultureTokensFromCard(options.fromSelf, culture, count);
     }
 
-    const pool = getOwnedInPlayCards(G, ownerId).filter(
-        (card) => tokenCountOnCard(card, culture) > 0
-    );
+    // Remove = cartes actives (tous joueurs) — Sauron’s Might retire un jeton FP adverse.
+    void ownerId;
+    const pool = getActiveCardsWithCultureTokens(G, culture, 1);
     if (pool.length === 0) return 0;
 
     if (options?.targetId) {

@@ -13,6 +13,7 @@ import type { CardSignet } from '../../../../game/types';
 import { FormattedText } from '../../../../utils/FormattedText';
 import { KeywordBadge } from '../KeywordBadge';
 import { useDrag } from '../../../../contexts/DragContext';
+import { useOptionalTargeting } from '../../../../contexts/TargetingContext';
 import {
     useFaction,
     useLocalFaction,
@@ -250,9 +251,15 @@ export const Card: React.FC<CardProps> = ({
 }) => {
     const { setHoveredCard } = useHoverCard();
     const { startDrag } = useDrag();
+    const targeting = useOptionalTargeting();
     const { myPlayerId } = useFaction();
     const localFaction = useLocalFaction();
     const recoilDown = isWoundRecoilDown(card?.kind, localFaction, isOpponent);
+    const cardPickId = card?.instanceId || card?.id;
+    const isDesignationPick =
+        Boolean(cardPickId) &&
+        targeting?.targetingKind === 'DESIGNATION' &&
+        targeting.isCardTargetable(cardPickId!);
 
     const [isTakingDamage, setIsTakingDamage] = useState(false);
     const [isExerting, setIsExerting] = useState(false);
@@ -895,9 +902,15 @@ export const Card: React.FC<CardProps> = ({
                     $culture={card.culture}
                     onPointerDown={(e) => {
                         e.stopPropagation();
+                        // Pendant une désignation, le sceau culture ne doit pas
+                        // avaler le clic (Merchant à renforcer, etc.).
+                        if (isDesignationPick && cardPickId) {
+                            targeting?.selectCard(cardPickId);
+                        }
                     }}
                     onClick={(e) => {
                         e.stopPropagation();
+                        if (isDesignationPick) return;
                         if (!abilityPhaseMatch) return;
                         setIsAbilityMenuOpen((open) => !open);
                     }}

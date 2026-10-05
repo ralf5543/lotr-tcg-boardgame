@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import {
+    abilityEffectWantsTargetingArrow,
     abilityNeedsCostDesignation,
     abilityNeedsDesignation,
     abilityNeedsEffectDesignation,
@@ -162,7 +163,7 @@ describe('designation', () => {
         expect(getDesignationCandidates(G, source, ability)).toHaveLength(1);
     });
 
-    it('event en main : IDs de désignation pour la flèche', () => {
+    it('event en main avec coût à désigner : pas de flèche pendant le drag', () => {
         const G = createGameState({
             players: {
                 '0': createPlayerState('0', {
@@ -187,9 +188,13 @@ describe('designation', () => {
             abilities: [HOBBIT_ABILITY],
         });
 
+        expect(abilityNeedsCostDesignation(G, eventCard, HOBBIT_ABILITY)).toBe(
+            true
+        );
+        // Coût à désigner → halo après drop, pas de flèche pendant le drag
         expect(
             getHandEventDesignationTargetIds(G, eventCard, 'skirmish')
-        ).toContain('frodo');
+        ).toEqual([]);
         expect(
             getHandEventDesignationTargetIds(G, eventCard, 'fellowship')
         ).toEqual([]);
@@ -415,5 +420,109 @@ describe('designation', () => {
         expect(
             getHandEventDesignationTargetIds(G, event, 'maneuver')
         ).toEqual([]);
+    });
+
+    it('War Preparations : reinforce = halo only, pas de flèche pendant le drag main', () => {
+        const orcCondition = createCard({
+            id: 'orc-holder',
+            instanceId: 'orc-holder',
+            kind: 'SHADOW',
+            type: 'CONDITION',
+            culture: 'ORC',
+            cultureTokens: { ORC: 1 },
+        });
+        const G = createGameState({
+            players: {
+                '0': createPlayerState('0', { threats: 1 }),
+                '1': createPlayerState('1', {
+                    supportArea: [orcCondition],
+                }),
+            },
+        });
+        const ability: Ability = {
+            id: '18U92:0',
+            phases: [],
+            cost: [{ removeThreats: 1 }],
+            effects: [
+                {
+                    type: 'REINFORCE_CULTURE_TOKEN',
+                    culture: 'ORC',
+                    count: 1,
+                },
+            ],
+            source: 'SELF',
+        };
+        const event = createCard({
+            id: '18U92',
+            kind: 'SHADOW',
+            type: 'EVENT',
+            title: 'War Preparations',
+            phases: ['SHADOW'],
+            abilities: [ability],
+        });
+
+        expect(abilityNeedsCostDesignation(G, event, ability)).toBe(false);
+        expect(abilityNeedsEffectDesignation(G, event, ability)).toBe(true);
+        expect(abilityEffectWantsTargetingArrow(ability)).toBe(false);
+        expect(getHandEventDesignationTargetIds(G, event, 'shadow')).toEqual(
+            []
+        );
+    });
+
+    it('Sauron’s Might : remove FP token → add threat = pas de flèche pendant le drag', () => {
+        const fpToken = createCard({
+            id: 'garrison',
+            instanceId: 'garrison',
+            kind: 'FREE_PEOPLE',
+            type: 'CONDITION',
+            culture: 'GONDOR',
+            cultureTokens: { GONDOR: 1 },
+        });
+        const frodo = createCompanion({
+            id: 'frodo',
+            instanceId: 'frodo',
+        });
+        const G = createGameState({
+            players: {
+                '0': createPlayerState('0', {
+                    fellowshipArea: [frodo],
+                    supportArea: [fpToken],
+                    threats: 0,
+                }),
+                '1': createPlayerState('1'),
+            },
+        });
+        const ability: Ability = {
+            id: '19P27:0',
+            phases: [],
+            cost: [
+                {
+                    removeCultureTokens: {
+                        culture: 'FREE_PEOPLES',
+                        count: 1,
+                    },
+                },
+            ],
+            effects: [{ type: 'ADD_THREATS', count: 1 }],
+            source: 'SELF',
+        };
+        const event = createCard({
+            id: '19P27',
+            kind: 'SHADOW',
+            type: 'EVENT',
+            title: "Sauron's Might",
+            phases: ['SHADOW'],
+            abilities: [ability],
+        });
+
+        expect(abilityNeedsCostDesignation(G, event, ability)).toBe(true);
+        expect(abilityNeedsEffectDesignation(G, event, ability)).toBe(false);
+        expect(abilityEffectWantsTargetingArrow(ability)).toBe(false);
+        expect(getHandEventDesignationTargetIds(G, event, 'shadow')).toEqual(
+            []
+        );
+        expect(getCostDesignationCandidates(G, event, ability).map((c) => c.instanceId)).toEqual(
+            ['garrison']
+        );
     });
 });

@@ -5045,6 +5045,87 @@ describe('parseAbilities — culture tokens', () => {
         ).toBeUndefined();
     });
 
+    it('parse Sauron’s Might : remove Free Peoples token → add a threat', () => {
+        expect(
+            parseAbilities(
+                'Remove a Free Peoples culture token to add a threat. When you play this event, you may remove <symbol>twilight1</symbol> to place this on the bottom of your draw deck instead of in your discard pile.',
+                "Sauron's Might",
+                '19P27'
+            )
+        ).toEqual(
+            expect.arrayContaining([
+                expect.objectContaining({
+                    cost: [
+                        {
+                            removeCultureTokens: {
+                                culture: 'FREE_PEOPLES',
+                                count: 1,
+                            },
+                        },
+                    ],
+                    effects: [{ type: 'ADD_THREATS', count: 1 }],
+                }),
+            ])
+        );
+    });
+
+    it('parse War Preparations : remove a threat → reinforce orc token', () => {
+        expect(
+            parseAbilities(
+                'Remove a threat to reinforce an <symbol>orc</symbol> token.',
+                'War Preparations',
+                '18U92'
+            )
+        ).toEqual(
+            expect.arrayContaining([
+                expect.objectContaining({
+                    cost: [{ removeThreats: 1 }],
+                    effects: [
+                        {
+                            type: 'REINFORCE_CULTURE_TOKEN',
+                            culture: 'ORC',
+                            count: 1,
+                        },
+                    ],
+                }),
+            ])
+        );
+    });
+
+    it('parse Merchant of Westfold : moves → add twilight + remove FP token → reinforce Rohan', () => {
+        expect(
+            parseAbilities(
+                'Each time the fellowship moves, you may add <symbol>twilight1</symbol> and remove a Free Peoples culture token to reinforce a <symbol>rohan</symbol> token.',
+                'Merchant of Westfold',
+                '13C132'
+            )
+        ).toEqual(
+            expect.arrayContaining([
+                expect.objectContaining({
+                    phases: ['RESPONSE'],
+                    optional: true,
+                    trigger: { type: 'FELLOWSHIP_MOVES' },
+                    cost: [
+                        {
+                            addTwilight: 1,
+                            removeCultureTokens: {
+                                culture: 'FREE_PEOPLES',
+                                count: 1,
+                            },
+                        },
+                    ],
+                    effects: [
+                        {
+                            type: 'REINFORCE_CULTURE_TOKEN',
+                            culture: 'ROHAN',
+                            count: 1,
+                        },
+                    ],
+                }),
+            ])
+        );
+    });
+
     it('parse Assault Denizen : +1 for each Free Peoples culture token spotted', () => {
         expect(
             parseAbilities(

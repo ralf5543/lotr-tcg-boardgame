@@ -454,6 +454,10 @@ export type AbilityEffect =
           count: number;
       }
     | {
+          type: 'ADD_THREATS';
+          count: number;
+      }
+    | {
           /**
            * Place N jetons de culture sur la cible (même à 0).
            * « place a [culture] token on this card / here ».

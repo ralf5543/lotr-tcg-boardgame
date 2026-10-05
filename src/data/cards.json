@@ -117989,6 +117989,36 @@
     "isUnique": false,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
+    "abilities": [
+      {
+        "id": "13C132:0",
+        "phases": [
+          "RESPONSE"
+        ],
+        "trigger": {
+          "type": "FELLOWSHIP_MOVES"
+        },
+        "optional": true,
+        "cost": [
+          {
+            "addTwilight": 1,
+            "removeCultureTokens": {
+              "culture": "FREE_PEOPLES",
+              "count": 1
+            }
+          }
+        ],
+        "effects": [
+          {
+            "type": "REINFORCE_CULTURE_TOKEN",
+            "culture": "ROHAN",
+            "count": 1
+          }
+        ],
+        "source": "SELF",
+        "text": "Each time the fellowship moves, you may add twilight1 and remove a Free Peoples culture token to reinforce a rohan token."
+      }
+    ],
     "culture": "ROHAN",
     "race": "MAN",
     "twilightCost": 2,
@@ -142810,6 +142840,26 @@
     "isUnique": false,
     "kind": "SHADOW",
     "type": "EVENT",
+    "abilities": [
+      {
+        "id": "18U92:0",
+        "phases": [],
+        "cost": [
+          {
+            "removeThreats": 1
+          }
+        ],
+        "effects": [
+          {
+            "type": "REINFORCE_CULTURE_TOKEN",
+            "culture": "ORC",
+            "count": 1
+          }
+        ],
+        "source": "SELF",
+        "text": "Remove a threat to reinforce an orc token."
+      }
+    ],
     "phases": [
       "SHADOW"
     ],
@@ -146094,6 +146144,28 @@
     "isUnique": false,
     "kind": "SHADOW",
     "type": "EVENT",
+    "abilities": [
+      {
+        "id": "19P27:0",
+        "phases": [],
+        "cost": [
+          {
+            "removeCultureTokens": {
+              "culture": "FREE_PEOPLES",
+              "count": 1
+            }
+          }
+        ],
+        "effects": [
+          {
+            "type": "ADD_THREATS",
+            "count": 1
+          }
+        ],
+        "source": "SELF",
+        "text": "Remove a Free Peoples culture token to add a threat."
+      }
+    ],
     "phases": [
       "SHADOW"
     ],
@@ -146108,22 +146180,22 @@
       },
       "fr": {
         "title": "Sauron's Might",
-        "gameText": "Remove a Free Peoples culture token to add a threat.\n When you play this event, you may remove  to place this on the bottom of your draw deck instead of in your discard pile.",
+        "gameText": "Remove a Free Peoples culture token to add a threat.\n When you play this event, you may remove <symbol>twilight1</symbol> to place this on the bottom of your draw deck instead of in your discard pile.",
         "loreText": "One by one, the free lands of Middle-earth fell to the power of the Ring."
       },
       "de": {
         "title": "Sauron's Might",
-        "gameText": "Remove a Free Peoples culture token to add a threat.\n When you play this event, you may remove  to place this on the bottom of your draw deck instead of in your discard pile.",
+        "gameText": "Remove a Free Peoples culture token to add a threat.\n When you play this event, you may remove <symbol>twilight1</symbol> to place this on the bottom of your draw deck instead of in your discard pile.",
         "loreText": "One by one, the free lands of Middle-earth fell to the power of the Ring."
       },
       "it": {
         "title": "Sauron's Might",
-        "gameText": "Remove a Free Peoples culture token to add a threat.\n When you play this event, you may remove  to place this on the bottom of your draw deck instead of in your discard pile.",
+        "gameText": "Remove a Free Peoples culture token to add a threat.\n When you play this event, you may remove <symbol>twilight1</symbol> to place this on the bottom of your draw deck instead of in your discard pile.",
         "loreText": "One by one, the free lands of Middle-earth fell to the power of the Ring."
       },
       "es": {
         "title": "Sauron's Might",
-        "gameText": "Remove a Free Peoples culture token to add a threat.\n When you play this event, you may remove  to place this on the bottom of your draw deck instead of in your discard pile.",
+        "gameText": "Remove a Free Peoples culture token to add a threat.\n When you play this event, you may remove <symbol>twilight1</symbol> to place this on the bottom of your draw deck instead of in your discard pile.",
         "loreText": "One by one, the free lands of Middle-earth fell to the power of the Ring."
       }
     }

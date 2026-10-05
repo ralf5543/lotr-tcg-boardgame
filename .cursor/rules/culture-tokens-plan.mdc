@@ -36,6 +36,7 @@ L’ancien plan sites est **figé** (`.cursor/rules/sites-plan.mdc`, `alwaysAppl
 11. **Remove N jetons → heal classe / bearer** ✅ — coût `removeCultureTokens` (from here optionnel) + `HEAL` ; événements standalone (Sorrow Shared) ; refuse « or … another » (Asfaloth complexe).
 12. **Each time loses skirmish → place token** ✅ — trigger `LOSES_SKIRMISH` (+ `involving` optionnel) ; fragment « companion or ally » via `parseArticleOrFilters` ; fenêtre après `WINS_SKIRMISH`.
 13. **Force +N for each culture token / card with token** ✅ — `perCultureTokens` (Assault Denizen) ; `perCardWithCultureToken` (Westfarthing, Aragorn) ; refuse Free Peoples card / assigned / title.
+14. **Remove jeton / menace → menace / reinforce** ✅ — `ADD_THREATS` (Sauron’s Might) ; remove threat → reinforce (War Preparations) ; moves + twilight + remove FP → reinforce (Merchant of Westfold) ; refuse deck-bottom / multi-clauses.
 
 ## Hors scope / plus tard
 

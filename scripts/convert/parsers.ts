@@ -2111,6 +2111,63 @@ function parseEachTimeTakeControlSiteAbilities(
 }
 
 /**
+ * Each time the fellowship moves, you may add twilightN and remove a [culture] token
+ * to reinforce a [culture] token. (Merchant of Westfold…)
+ */
+function parseEachTimeMovesRemoveTokenReinforceAbilities(
+    text: string,
+    cardId?: string
+): Record<string, unknown>[] {
+    const found: Record<string, unknown>[] = [];
+    const re =
+        /Each time the fellowship moves,\s*you may add\s*<symbol>twilight(\d+)<\/symbol>\s+and remove (a|an|one|\d+)\s+((?:Free Peoples(?:\s+culture)?)|(?:<symbol>[^<]+<\/symbol>)|(?:culture))\s+tokens?\s+to reinforce (a|an|one|\d+)\s+((?:Free Peoples(?:\s+culture)?)|(?:<symbol>[^<]+<\/symbol>)|(?:culture))\s+tokens?\.?/gi;
+    let match: RegExpExecArray | null;
+    while ((match = re.exec(text)) !== null) {
+        const twilight = parseInt(match[1], 10);
+        const removeCount = parseCultureTokenCount(match[2]);
+        const removeCulture = parseCultureTokenSpec(match[3]);
+        const reinforceCount = parseCultureTokenCount(match[4]);
+        const reinforceCulture = parseCultureTokenSpec(match[5]);
+        if (
+            !Number.isFinite(twilight) ||
+            twilight <= 0 ||
+            !removeCount ||
+            !removeCulture ||
+            !reinforceCount ||
+            !reinforceCulture
+        ) {
+            continue;
+        }
+
+        found.push({
+            id: `${cardId || 'ability'}:${found.length}:move-remove-reinforce`,
+            phases: ['RESPONSE'],
+            trigger: { type: 'FELLOWSHIP_MOVES' },
+            optional: true,
+            cost: [
+                {
+                    addTwilight: twilight,
+                    removeCultureTokens: {
+                        culture: removeCulture,
+                        count: removeCount,
+                    },
+                },
+            ],
+            effects: [
+                {
+                    type: 'REINFORCE_CULTURE_TOKEN',
+                    culture: reinforceCulture,
+                    count: reinforceCount,
+                },
+            ],
+            source: 'SELF',
+            text: stripAbilityMarkup(match[0]),
+        });
+    }
+    return found;
+}
+
+/**
  * Each time [winner] wins a skirmish, (you may) place a [culture] token on this card / here.
  * (Stout and Strong, My Axe Is Notched, Final Count… — ~17 cartes.)
  * Même fenêtre RESPONSE que les autres « Each time … wins ».
@@ -4831,6 +4888,88 @@ function parseStandaloneSpotReplaceAbilities(
 
 /**
  * Événements sans balise de phase (phase = colonne Class) :
+ * « Remove a Free Peoples culture token to add a threat. » (Sauron’s Might…)
+ * Refuse toute suite (deck bottom, etc.) : la phrase doit être le gametext utile.
+ */
+function parseStandaloneRemoveTokenAddThreatAbilities(
+    text: string,
+    cardId?: string
+): Record<string, unknown>[] {
+    const firstSentence = text
+        .replace(/<br\s*\/?>/gi, ' ')
+        .replace(/\s+/g, ' ')
+        .trim()
+        .match(
+            /^Remove (a|an|one|\d+)\s+((?:Free Peoples(?:\s+culture)?)|(?:<symbol>[^<]+<\/symbol>)|(?:culture))\s+tokens?\s+to add (a|an|one|\d+)\s+threats?\./i
+        );
+    if (!firstSentence) return [];
+
+    const removeCount = parseCultureTokenCount(firstSentence[1]);
+    const culture = parseCultureTokenSpec(firstSentence[2]);
+    const threatCount = parseCultureTokenCount(firstSentence[3]);
+    if (!removeCount || !culture || !threatCount) return [];
+
+    return [
+        {
+            id: `${cardId || 'ability'}:0:remove-token-threat`,
+            phases: [],
+            cost: [
+                {
+                    removeCultureTokens: {
+                        culture,
+                        count: removeCount,
+                    },
+                },
+            ],
+            effects: [{ type: 'ADD_THREATS', count: threatCount }],
+            source: 'SELF',
+            text: stripAbilityMarkup(firstSentence[0]),
+        },
+    ];
+}
+
+/**
+ * Événements sans balise de phase :
+ * « Remove a threat to reinforce an [culture] token. » (War Preparations…)
+ */
+function parseStandaloneRemoveThreatReinforceAbilities(
+    text: string,
+    cardId?: string
+): Record<string, unknown>[] {
+    const match = text
+        .replace(/<br\s*\/?>/gi, ' ')
+        .replace(/\s+/g, ' ')
+        .trim()
+        .match(
+            /^Remove (a|an|one|\d+)\s+threats?\s+to reinforce (a|an|one|\d+)\s+((?:Free Peoples(?:\s+culture)?)|(?:<symbol>[^<]+<\/symbol>)|(?:culture))\s+tokens?\.?$/i
+        );
+    if (!match) return [];
+
+    const threatCount = parseCultureTokenCount(match[1]);
+    const reinforceCount = parseCultureTokenCount(match[2]);
+    const culture = parseCultureTokenSpec(match[3]);
+    if (!threatCount || !reinforceCount || !culture) return [];
+
+    return [
+        {
+            id: `${cardId || 'ability'}:0:threat-reinforce`,
+            phases: [],
+            cost: [{ removeThreats: threatCount }],
+            effects: [
+                {
+                    type: 'REINFORCE_CULTURE_TOKEN',
+                    culture,
+                    count: reinforceCount,
+                },
+            ],
+            source: 'SELF',
+            text: stripAbilityMarkup(match[0]),
+        },
+    ];
+}
+
+/**
+ * Événements sans balise de phase (phase = colonne Class) :
  * « Remove a [culture] token to heal a Dwarf. » (Sorrow Shared…)
  */
 function parseStandaloneRemoveTokenHealAbilities(
@@ -7328,6 +7467,15 @@ export function parseAbilities(
         }
     );
 
+    parseEachTimeMovesRemoveTokenReinforceAbilities(text, cardId).forEach(
+        (ability) => {
+            abilities.push({
+                ...ability,
+                id: `${cardId || 'ability'}:${abilities.length}`,
+            });
+        }
+    );
+
     parseEachTimeWinsPlaceCultureTokenAbilities(text, cardTitle, cardId).forEach(
         (ability) => {
             abilities.push({
@@ -7579,6 +7727,22 @@ export function parseAbilities(
                 id: `${cardId || 'ability'}:${abilities.length}`,
             });
         });
+        parseStandaloneRemoveTokenAddThreatAbilities(text, cardId).forEach(
+            (ability) => {
+                abilities.push({
+                    ...ability,
+                    id: `${cardId || 'ability'}:${abilities.length}`,
+                });
+            }
+        );
+        parseStandaloneRemoveThreatReinforceAbilities(text, cardId).forEach(
+            (ability) => {
+                abilities.push({
+                    ...ability,
+                    id: `${cardId || 'ability'}:${abilities.length}`,
+                });
+            }
+        );
     }
 
     return abilities.length > 0 ? abilities : undefined;

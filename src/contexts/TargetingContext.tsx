@@ -129,3 +129,6 @@ export const useTargeting = () => {
     if (!ctx) throw new Error('useTargeting must be used within TargetingProvider');
     return ctx;
 };
+
+/** Null hors TargetingProvider (ex. zoom hors plateau). */
+export const useOptionalTargeting = () => useContext(TargetingContext);

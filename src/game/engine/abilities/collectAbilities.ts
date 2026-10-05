@@ -398,6 +398,10 @@ function formatEffectBit(
         const n = effect.count || 0;
         return `retirer ${n} menace${n > 1 ? 's' : ''}`;
     }
+    if (effect.type === 'ADD_THREATS') {
+        const n = effect.count || 0;
+        return `ajouter ${n} menace${n > 1 ? 's' : ''}`;
+    }
     if (effect.type === 'CANCEL_SKIRMISH') {
         if (effect.involving === 'BEARER') {
             return 'annuler une escarmouche impliquant le détenteur';
@@ -438,6 +442,14 @@ function formatEffectBit(
                 ? 'Peuples Libres'
                 : `<symbol>${String(effect.culture).toLowerCase()}</symbol>`;
         return `placer ${n} jeton${n > 1 ? 's' : ''} ${cultureBit} ici`;
+    }
+    if (effect.type === 'REINFORCE_CULTURE_TOKEN') {
+        const n = effect.count || 1;
+        const cultureBit =
+            effect.culture === 'FREE_PEOPLES'
+                ? 'Peuples Libres'
+                : `<symbol>${String(effect.culture).toLowerCase()}</symbol>`;
+        return `renforcer ${n} jeton${n > 1 ? 's' : ''} ${cultureBit}`;
     }
     if (effect.type === 'WEAR_RING') {
         return 'mettre l’Anneau Unique';

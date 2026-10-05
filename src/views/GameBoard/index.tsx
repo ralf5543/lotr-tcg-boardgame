@@ -290,7 +290,11 @@ export const GameBoard: React.FC<GameBoardProps> = ({
                     source.type === 'EVENT'
                         ? PENDING_PLAY_ORIGIN_ID
                         : source.instanceId || source.id;
-            } else if (source.type === 'EVENT' && which === 'auto') {
+            } else if (
+                source.type === 'EVENT' &&
+                which === 'auto' &&
+                abilityEffectWantsTargetingArrow(ability)
+            ) {
                 arrowFromCardId = PENDING_PLAY_ORIGIN_ID;
             }
 

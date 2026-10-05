@@ -523,6 +523,40 @@ describe('formatAbilityLabelParts', () => {
             effect: 'épuiser un Compagnon (sauf le Porteur de l’Anneau)',
         });
     });
+
+    it('Merchant : coût remove FP + effet reinforce Rohan dans la bulle', () => {
+        const ability: Ability = {
+            id: '13C132:0',
+            phases: ['RESPONSE'],
+            cost: [
+                {
+                    addTwilight: 1,
+                    removeCultureTokens: {
+                        culture: 'FREE_PEOPLES',
+                        count: 1,
+                    },
+                },
+            ],
+            effects: [
+                {
+                    type: 'REINFORCE_CULTURE_TOKEN',
+                    culture: 'ROHAN',
+                    count: 1,
+                },
+            ],
+            source: 'SELF',
+        };
+        const merchant = createCompanion({
+            id: '13C132',
+            title: 'Merchant of Westfold',
+            culture: 'ROHAN',
+        });
+        expect(formatAbilityLabelParts(ability, merchant)).toEqual({
+            cost: 'Ajouter <symbol>twilight1</symbol> et Retirer 1 jeton Peuples Libres',
+            effect: 'renforcer 1 jeton <symbol>rohan</symbol>',
+        });
+    });
+
     it('Hache lourde sur Glóin : préfixe le nom de l’attachement', () => {
         const ability: Ability = {
             id: '15U7:0',
