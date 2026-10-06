@@ -37,8 +37,8 @@ export const DockButton = styled.button<{ $isActive?: boolean; $isClose?: boolea
         props.$isClose
             ? '#2d333b'
             : props.$isActive
-            ? '#e2c044'
-            : '#21262d'};
+              ? '#e2c044'
+              : '#21262d'};
     color: ${(props) => (props.$isActive ? '#000' : '#fff')};
     border: 1px solid ${(props) => (props.$isActive ? '#e2c044' : '#444')};
     border-radius: 12px;

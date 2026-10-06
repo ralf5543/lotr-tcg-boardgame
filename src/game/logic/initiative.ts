@@ -17,3 +17,25 @@ export function playerHasInitiative(
     const fpHas = freePeoplesHasInitiative(G);
     return String(playerId) === String(fpId) ? fpHas : !fpHas;
 }
+
+/** Annonce dans le bandeau si l’initiative FP a basculé. */
+export function announceInitiativeIfChanged(
+    G: GameState,
+    hadBefore: boolean
+): void {
+    const hasNow = freePeoplesHasInitiative(G);
+    if (hasNow === hadBefore) return;
+    G.statusMessage = hasNow
+        ? 'Les Peuples Libres gagnent l’initiative.'
+        : 'Les Peuples Libres perdent l’initiative.';
+}
+
+/**
+ * Exécute une mutation qui peut changer la main FP, puis annonce
+ * un éventuel basculement d’initiative.
+ */
+export function withInitiativeWatch(G: GameState, run: () => void): void {
+    const before = freePeoplesHasInitiative(G);
+    run();
+    announceInitiativeIfChanged(G, before);
+}

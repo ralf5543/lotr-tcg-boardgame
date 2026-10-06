@@ -616,6 +616,15 @@ function applyOneEffect(
         ) {
             value = effect.valueIfInitiative;
         }
+        if (effect.valueIfFewerCardsInHand) {
+            const ownerId = abilityOwnerPlayerId(G, source);
+            const handSize = ownerId
+                ? G.players[ownerId]?.hand?.length || 0
+                : 0;
+            if (handSize < effect.valueIfFewerCardsInHand.fewerThan) {
+                value = effect.valueIfFewerCardsInHand.value;
+            }
+        }
         if (effect.bearingBonus) {
             const bears = (target.attachments || []).some((att) =>
                 cardMatchesTarget(att, effect.bearingBonus!.attachment)

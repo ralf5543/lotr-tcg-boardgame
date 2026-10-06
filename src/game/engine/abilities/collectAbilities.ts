@@ -635,7 +635,11 @@ function formatCostLabel(ability: Ability, source: CardState): string {
             `retirer <symbol>twilight${option.removeTwilight}</symbol>`
         );
     }
-    // spotTwilight / spotHand : conditions, pas coûts affichés
+    if (typeof option?.spotBurdens === 'number' && option.spotBurdens > 0) {
+        const n = option.spotBurdens;
+        parts.unshift(`Spotter ${n} fardeau${n > 1 ? 'x' : ''}`);
+    }
+    // spotTwilight / spotHand / spotThreats : conditions, pas coûts affichés
     if (option?.discardFromPlay?.length) {
         const discardTarget = option.discardFromPlay[0]?.target;
         if (discardTarget === 'SELF' || discardTarget === 'BEARER') {

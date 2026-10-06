@@ -27,6 +27,7 @@ import {
     findInPlayCardOwnerId,
     tokenCountOnCard,
 } from '../../cultureTokens';
+import { playerHasInitiative } from '../../initiative';
 
 function matchCard(card: CardState, targetId: string): boolean {
     return card.instanceId === targetId || card.id === targetId;
@@ -98,6 +99,23 @@ function countPerCardWithCultureToken(
         if (tokenCountOnCard(card, 'ANY') <= 0) return;
         if (cardMatchesTarget(card, per.target)) n += 1;
     });
+    if (per.limit !== undefined) n = Math.min(n, per.limit);
+    return Math.max(0, n);
+}
+
+function countPerCardsInHand(
+    G: GameState,
+    source: CardState,
+    per: NonNullable<
+        Extract<AbilityEffect, { type: 'MODIFY_STAT' }>['perCardsInHand']
+    >
+): number {
+    const playerId =
+        per.whose === 'FREE_PEOPLES'
+            ? G.fpPlayerId || '0'
+            : findInPlayCardOwnerId(G, source);
+    if (!playerId) return 0;
+    let n = G.players[playerId]?.hand?.length || 0;
     if (per.limit !== undefined) n = Math.min(n, per.limit);
     return Math.max(0, n);
 }
@@ -196,6 +214,9 @@ function modifyStatMagnitude(
             base *
             countPerCardWithCultureToken(G, effect.perCardWithCultureToken)
         );
+    }
+    if (effect.perCardsInHand) {
+        return base * countPerCardsInHand(G, source, effect.perCardsInHand);
     }
     if (effect.perDistinctRace) {
         return (
@@ -382,6 +403,11 @@ export function whileConditionHolds(
             });
             if (rbWounds < need) return false;
         }
+    }
+
+    if (trigger.hasInitiative) {
+        const ownerId = findInPlayCardOwnerId(G, source);
+        if (!ownerId || !playerHasInitiative(G, ownerId)) return false;
     }
 
     // Prédicats OK, ou WHILE vide (vrai tant que la carte est en jeu).

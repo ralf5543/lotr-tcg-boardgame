@@ -12,6 +12,10 @@ import {
     removeCultureTokensForPlayer,
     tokenCountOnCard,
 } from '../../logic/cultureTokens';
+import {
+    announceInitiativeIfChanged,
+    freePeoplesHasInitiative,
+} from '../../logic/initiative';
 
 const matchCard = (card: CardState | undefined | null, targetId: string) =>
     Boolean(card && (card.instanceId === targetId || card.id === targetId));
@@ -105,6 +109,18 @@ function canPayOption(
 
     if (option.spotTwilight && option.spotTwilight > 0) {
         if ((G.twilightPool || 0) < option.spotTwilight) return false;
+    }
+
+    if (typeof option.spotBurdens === 'number' && option.spotBurdens > 0) {
+        const fpId = G.fpPlayerId || '0';
+        const burdens = G.players[fpId]?.burdens || 0;
+        if (burdens < option.spotBurdens) return false;
+    }
+
+    if (typeof option.spotThreats === 'number' && option.spotThreats > 0) {
+        const fpId = G.fpPlayerId || '0';
+        const threats = G.players[fpId]?.threats || 0;
+        if (threats < option.spotThreats) return false;
     }
 
     if (option.removeThreats && option.removeThreats > 0) {
@@ -229,6 +245,12 @@ export function discardCardsFromHand(
     const unique = [...new Set(cardIds)];
     if (unique.length !== cardIds.length || unique.length === 0) return false;
 
+    const fpId = G.fpPlayerId || '0';
+    const watchInitiative = String(ownerId) === String(fpId);
+    const hadInitiative = watchInitiative
+        ? freePeoplesHasInitiative(G)
+        : false;
+
     const picked: CardState[] = [];
     for (const id of unique) {
         const card = player.hand.find((item) => matchCard(item, id));
@@ -245,6 +267,9 @@ export function discardCardsFromHand(
         const [removed] = player.hand.splice(index, 1);
         if (!removed) return false;
         player.discard.push(removed);
+    }
+    if (watchInitiative) {
+        announceInitiativeIfChanged(G, hadInitiative);
     }
     return true;
 }

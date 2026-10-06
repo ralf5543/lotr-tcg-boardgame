@@ -11,19 +11,19 @@ Document **vivant** : précisé, modifié, complété au fur et à mesure. **Lis
 
 ## Mode de travail
 
-1. **Un plan thématique actif** à la fois (détail, credo, étapes) — aujourd’hui : [`.cursor/rules/culture-tokens-plan.mdc`](culture-tokens-plan.mdc).
+1. **Un plan thématique actif** à la fois (détail, credo, étapes) — aujourd’hui : [`.cursor/rules/hand-initiative-plan.mdc`](hand-initiative-plan.mdc).
 2. **Cette roadmap** = vision d’ensemble + statut des grands axes.
 3. À la bascule : figer / désactiver le plan courant (`alwaysApply: false`), activer le suivant, mettre à jour le statut ici.
 
-Credo transversal (hérités des plans cartes / sites) : **mieux vaut inerte que faux** ; parser = **fragments** sûrs ; exceptions par id en dernier.
+Credo transversal (hérités des plans cartes / sites / jetons) : **mieux vaut inerte que faux** ; parser = **fragments** sûrs ; exceptions par id en dernier.
 
 ## Plan actif
 
 | | |
 | --- | --- |
-| **Chantier** | Tokens de culture |
-| **Plan** | [`culture-tokens-plan.mdc`](culture-tokens-plan.mdc) |
-| **Statut** | **Socle + remove→force** livrés ; familles complexes encore hors scope |
+| **Chantier** | Main / initiative |
+| **Plan** | [`hand-initiative-plan.mdc`](hand-initiative-plan.mdc) |
+| **Statut** | **Étapes 1–5 livrées** — force/main, While initiative, make ±initiative / fewer, preset DEV |
 
 ## Grands axes
 
@@ -31,9 +31,9 @@ Statuts : `en cours` · `à faire` · `plus tard` · `fait` · `pause`
 
 | Axe | Statut | Notes |
 | --- | --- | --- |
-| **Sites** | **fait** | Socle Standard livré. Reportés : weather no-events, gametext site moderne. Reinforce site path → chantier jetons. |
-| **Tokens de culture** | **en cours** | Jetons sur cartes ; place / reinforce / remove / UI ; débloque spot site path → reinforce. |
-| **Main / initiative** | à faire | Force / conditions liées au **nombre de cartes en main** (Man of Bree, « N or more cards in hand ») + règle d’**initiative** (FP ≥ 4 en main). Socle `playerHasInitiative` partiel (Ransacker) ; pas encore While « for each card in hand ». |
+| **Sites** | **fait** | Socle Standard livré. Reportés : weather no-events, gametext site moderne. |
+| **Tokens de culture** | **fait** | Socle + étapes 1–15. Reportés : wounded filter, machines, skirmishing make, etc. Plan figé : [`culture-tokens-plan.mdc`](culture-tokens-plan.mdc). |
+| **Main / initiative** | **en cours** | Étapes 1–5 livrées. Hors scope : discard-from-hand coûts, play from discard if initiative, Glamdring « more cards », etc. |
 | **Création de deck** | à faire | Construction / édition / validation (format Standard, X-list…). |
 | **Affronter un BOT** | à faire | Via boardgame.io (adversaire automatisé). |
 | **Chat** | à faire | Via boardgame.io (table / match). |

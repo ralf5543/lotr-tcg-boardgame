@@ -1,0 +1,42 @@
+---
+description: Plan d’implémentation main / initiative (force par cartes en main, règle d’initiative)
+alwaysApply: true
+---
+
+# Main / initiative — plan et credo
+
+**Format : Standard (règles modernes).** Voir `.cursor/rules/format-standard.mdc`.
+
+Credo : **mieux vaut inerte que faux.** On n’émet un bonus main / initiative que si le fragment est sûr.
+
+**Parser = fragments**, jamais une carte entière. Réutiliser While, phases, `playerHasInitiative`, spotHand. Regex collée sur une phrase unique = trop spécifique : on généralise ou on n’émet rien. Exceptions par id en dernier.
+
+L’ancien plan jetons est **figé** (`.cursor/rules/culture-tokens-plan.mdc`, `alwaysApply: false`). Vision d’ensemble : [`.cursor/rules/roadmap.mdc`](roadmap.mdc).
+
+## Règles papier (rappel)
+
+- **Initiative** : le joueur Peuples Libres l’a s’il a **≥ 4 cartes en main** ; sinon l’Ombre l’a. (Socle déjà : `playerHasInitiative` / `freePeoplesHasInitiative`.)
+- « for each card in your hand » = main du **propriétaire** de la carte source.
+- « for each card in the Free Peoples player's hand » = main FP (souvent un séide qui scale sur la main adverse).
+- Conditions « N or more cards in hand » / « fewer than N cards in hand » = seuil sur la main du joueur concerné.
+
+## Déjà en place (socle partiel)
+
+- `playerHasInitiative` (Ransacker `valueIfInitiative`, tests sites).
+- Coût / condition `spotHand` (ex. discard hand + twilight au start of phase).
+
+## Étapes
+
+1. **Force +N for each card in hand** ✅ — While `MODIFY_STAT` + `perCardsInHand` (Man of Bree = main FP ; Orc Trooper = ta main). Refuse assigned / skirmishing / titre croisé.
+2. **While you have initiative → force SELF** ✅ — Gimli 7C6, Orc Chaser / Pursuer / Stalker. Refuse each / of your / Damage.
+3. **Make / event : +N (or +M if initiative)** ✅ — `valueIfInitiative` (New Strength Came Now, phase-tagged ou standalone). All Save One inerte (Damage +1).
+4. **Fewer / at least N cards in hand** ✅ — `valueIfFewerCardsInHand` (Servants to Saruman). Fragments sûrs seulement.
+5. **Preset DEV + UI** ✅ — preset `HAND_INITIATIVE_TEST` (main FP ≥ 4, Gimli, Man of Bree, Orc Chaser, Servants / New Strength).
+
+## Hors scope / plus tard
+
+- Discard N from hand as cost généralisé (Gimli’s Armor Response, Archery Legolas…).
+- Play from discard if initiative (Gollum 7R58).
+- « more cards in hand than each opponent » (Glamdring).
+- Initiative hors force (mots-clés, play restrictions complexes).
+- Multi-Shadow / >2 joueurs.

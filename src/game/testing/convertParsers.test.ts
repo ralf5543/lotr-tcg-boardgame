@@ -5337,6 +5337,267 @@ describe('parseAbilities — culture tokens', () => {
             )
         ).toBeFalsy();
     });
+
+    it('parse Man of Bree / Orc Trooper : force +1 par carte en main', () => {
+        expect(
+            parseAbilities(
+                "This minion is strength +1 for each card in the Free Peoples player's hand.",
+                'Man of Bree',
+                '11S90'
+            )
+        ).toEqual(
+            expect.arrayContaining([
+                expect.objectContaining({
+                    trigger: { type: 'WHILE' },
+                    effects: [
+                        {
+                            type: 'MODIFY_STAT',
+                            stat: 'STRENGTH',
+                            value: 1,
+                            target: 'SELF',
+                            perCardsInHand: { whose: 'FREE_PEOPLES' },
+                        },
+                    ],
+                }),
+            ])
+        );
+
+        expect(
+            parseAbilities(
+                'For each card in your hand, this minion is strength +1.',
+                'Orc Trooper',
+                '3R99'
+            )
+        ).toEqual(
+            expect.arrayContaining([
+                expect.objectContaining({
+                    trigger: { type: 'WHILE' },
+                    effects: [
+                        {
+                            type: 'MODIFY_STAT',
+                            stat: 'STRENGTH',
+                            value: 1,
+                            target: 'SELF',
+                            perCardsInHand: { whose: 'OWNER' },
+                        },
+                    ],
+                }),
+            ])
+        );
+    });
+
+    it('parse While you have initiative → force SELF', () => {
+        expect(
+            parseAbilities(
+                '**Damage +1.** While you have initiative, Gimli is strength +2.',
+                'Gimli',
+                '7C6'
+            )
+        ).toEqual(
+            expect.arrayContaining([
+                expect.objectContaining({
+                    trigger: { type: 'WHILE', hasInitiative: true },
+                    effects: [
+                        {
+                            type: 'MODIFY_STAT',
+                            stat: 'STRENGTH',
+                            value: 2,
+                            target: 'SELF',
+                        },
+                    ],
+                }),
+            ])
+        );
+
+        expect(
+            parseAbilities(
+                '**Tracker.** The site number of each sauron Orc is –1. While you have initiative, this minion is strength +6.',
+                'Orc Chaser',
+                '7C298'
+            )
+        ).toEqual(
+            expect.arrayContaining([
+                expect.objectContaining({
+                    trigger: { type: 'WHILE', hasInitiative: true },
+                    effects: [
+                        {
+                            type: 'MODIFY_STAT',
+                            stat: 'STRENGTH',
+                            value: 6,
+                            target: 'SELF',
+                        },
+                    ],
+                }),
+            ])
+        );
+    });
+
+    it('refuse While initiative → each / damage keyword', () => {
+        expect(
+            parseAbilities(
+                'While you have initiative, each of your sauron minions is strength +2.',
+                'Flames Within',
+                '10C85'
+            )?.some(
+                (a) =>
+                    a.trigger?.type === 'WHILE' &&
+                    'hasInitiative' in a.trigger &&
+                    a.trigger.hasInitiative
+            )
+        ).toBeFalsy();
+
+        expect(
+            parseAbilities(
+                'While you have initiative, each gollum minion is **damage +1.**',
+                'Unabated in Malice',
+                '10C24'
+            )?.some(
+                (a) =>
+                    a.trigger?.type === 'WHILE' &&
+                    'hasInitiative' in a.trigger &&
+                    a.trigger.hasInitiative
+            )
+        ).toBeFalsy();
+    });
+
+    it('parse Make +N (or +M if initiative)', () => {
+        expect(
+            parseAbilities(
+                'Make a <symbol>raider</symbol> Man strength +3 (or +6 if you have initiative).',
+                'New Strength Came Now',
+                '7C154'
+            )
+        ).toEqual(
+            expect.arrayContaining([
+                expect.objectContaining({
+                    phases: [],
+                    cost: [],
+                    effects: [
+                        expect.objectContaining({
+                            type: 'ADD_TEMP_STAT',
+                            stat: 'STRENGTH',
+                            value: 3,
+                            valueIfInitiative: 6,
+                            target: [['RAIDER', 'MAN']],
+                            expiresAtPhase: 'SKIRMISH',
+                        }),
+                    ],
+                }),
+            ])
+        );
+
+        expect(
+            parseAbilities(
+                '<keyword>Skirmish:</keyword> Make a <symbol>raider</symbol> Man strength +3 (or +6 if you have initiative).',
+                'New Strength Came Now',
+                '7C154b'
+            )
+        ).toEqual(
+            expect.arrayContaining([
+                expect.objectContaining({
+                    phases: ['SKIRMISH'],
+                    effects: [
+                        expect.objectContaining({
+                            type: 'ADD_TEMP_STAT',
+                            value: 3,
+                            valueIfInitiative: 6,
+                        }),
+                    ],
+                }),
+            ])
+        );
+    });
+
+    it('refuse All Save One (initiative + Damage)', () => {
+        expect(
+            parseAbilities(
+                'Make Gandalf strength +2 (or +4 and **Damage +1.** if you have initiative).',
+                'All Save One',
+                '7C31'
+            )?.some(
+                (a) =>
+                    a.effects?.some(
+                        (e) =>
+                            e.type === 'ADD_TEMP_STAT' &&
+                            'valueIfInitiative' in e &&
+                            e.valueIfInitiative != null
+                    )
+            )
+        ).toBeFalsy();
+    });
+
+    it('parse Make +N (or +M if fewer than K in hand)', () => {
+        expect(
+            parseAbilities(
+                '<keyword>Skirmish:</keyword> Make an <symbol>isengard</symbol> Orc strength +2 (or +3 if you have fewer than 3 cards in hand).',
+                'Servants to Saruman',
+                '3C70'
+            )
+        ).toEqual(
+            expect.arrayContaining([
+                expect.objectContaining({
+                    phases: ['SKIRMISH'],
+                    effects: [
+                        expect.objectContaining({
+                            type: 'ADD_TEMP_STAT',
+                            stat: 'STRENGTH',
+                            value: 2,
+                            valueIfFewerCardsInHand: {
+                                fewerThan: 3,
+                                value: 3,
+                            },
+                            target: [['ISENGARD', 'ORC']],
+                        }),
+                    ],
+                }),
+            ])
+        );
+    });
+
+    it('parse Easterling Captain : spot fardeaux + retirer crépuscule → force', () => {
+        expect(
+            parseAbilities(
+                '<keyword>Easterling.</keyword> <keyword>Fierce.</keyword> <keyword>Skirmish:</keyword> Spot 2 burdens and remove <symbol>twilight2</symbol> to make an Easterling strength +2. <keyword>Skirmish:</keyword> Spot 4 burdens and remove <symbol>twilight2</symbol> to make an Easterling strength +3. <keyword>Skirmish:</keyword> Spot 6 burdens and remove <symbol>twilight2</symbol> to make an Easterling strength +4.',
+                'Easterling Captain',
+                '4R225'
+            )
+        ).toEqual([
+            expect.objectContaining({
+                phases: ['SKIRMISH'],
+                cost: [{ spotBurdens: 2, removeTwilight: 2 }],
+                effects: [
+                    expect.objectContaining({
+                        type: 'ADD_TEMP_STAT',
+                        stat: 'STRENGTH',
+                        value: 2,
+                        target: [['EASTERLING']],
+                    }),
+                ],
+            }),
+            expect.objectContaining({
+                phases: ['SKIRMISH'],
+                cost: [{ spotBurdens: 4, removeTwilight: 2 }],
+                effects: [
+                    expect.objectContaining({
+                        type: 'ADD_TEMP_STAT',
+                        value: 3,
+                        target: [['EASTERLING']],
+                    }),
+                ],
+            }),
+            expect.objectContaining({
+                phases: ['SKIRMISH'],
+                cost: [{ spotBurdens: 6, removeTwilight: 2 }],
+                effects: [
+                    expect.objectContaining({
+                        type: 'ADD_TEMP_STAT',
+                        value: 4,
+                        target: [['EASTERLING']],
+                    }),
+                ],
+            }),
+        ]);
+    });
 });
 
 

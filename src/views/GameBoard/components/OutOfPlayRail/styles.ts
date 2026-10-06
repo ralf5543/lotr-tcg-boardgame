@@ -1,4 +1,4 @@
-import styled from 'styled-components';
+import styled, { keyframes, css } from 'styled-components';
 
 export const Rail = styled.aside`
     display: flex;
@@ -93,11 +93,90 @@ export const ThreatDot = styled.img`
 
 export const TwilightSlot = styled.div`
     flex: 0 0 auto;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+`;
+
+export const TwilightBowl = styled.div`
     height: 110px;
     border-radius: 8px;
     background: rgba(15, 23, 42, 0.45);
     border: 1px solid rgba(255, 191, 0, 0.25);
     overflow: hidden;
+`;
+
+const initiativeHaloOn = keyframes`
+    0% {
+        box-shadow: 0 0 0 0 rgba(226, 192, 68, 0.15);
+    }
+    35% {
+        box-shadow:
+            0 0 0 5px rgba(226, 192, 68, 0.55),
+            0 0 22px 6px rgba(226, 192, 68, 0.4);
+    }
+    100% {
+        box-shadow: 0 0 0 0 rgba(226, 192, 68, 0);
+    }
+`;
+
+const initiativeHaloOff = keyframes`
+    0% {
+        box-shadow: 0 0 0 0 rgba(148, 163, 184, 0.12);
+    }
+    35% {
+        box-shadow:
+            0 0 0 5px rgba(148, 163, 184, 0.45),
+            0 0 18px 5px rgba(148, 163, 184, 0.3);
+    }
+    100% {
+        box-shadow: 0 0 0 0 rgba(148, 163, 184, 0);
+    }
+`;
+
+export const InitiativeChip = styled.div<{
+    $mine: boolean;
+    $pulse?: boolean;
+}>`
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    padding: 7px 10px;
+    border-radius: 8px;
+    border: 1px solid ${({ $mine }) => ($mine ? '#e2c044' : '#6b7280')};
+    background: ${({ $mine }) =>
+        $mine
+            ? 'linear-gradient(90deg, rgba(50, 42, 18, 0.95) 0%, rgba(26, 37, 47, 0.85) 100%)'
+            : 'linear-gradient(90deg, rgba(28, 36, 48, 0.95) 0%, rgba(18, 24, 34, 0.9) 100%)'};
+    transition:
+        border-color 0.25s ease,
+        background 0.25s ease,
+        color 0.25s ease;
+
+    ${({ $pulse, $mine }) =>
+        $pulse
+            ? css`
+                  animation: ${$mine ? initiativeHaloOn : initiativeHaloOff}
+                      1s ease-out 1;
+              `
+            : ''}
+`;
+
+export const InitiativeChipLabel = styled.span<{ $mine?: boolean }>`
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: ${({ $mine }) =>
+        $mine ? 'rgba(226, 192, 68, 0.85)' : 'rgba(156, 163, 175, 0.9)'};
+`;
+
+export const InitiativeChipHolder = styled.span<{ $mine?: boolean }>`
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 0.04em;
+    color: ${({ $mine }) => ($mine ? '#f0d978' : '#9ca3af')};
 `;
 
 export const ChatSlot = styled.div`

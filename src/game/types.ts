@@ -243,6 +243,14 @@ export type AbilityEffect =
           limit?: number;
           /** Si tu as l’initiative, utiliser cette valeur à la place de `value`. */
           valueIfInitiative?: number;
+          /**
+           * Si le propriétaire a moins de `fewerThan` cartes en main,
+           * utiliser `value` à la place.
+           */
+          valueIfFewerCardsInHand?: {
+              fewerThan: number;
+              value: number;
+          };
       }
     | {
           /** Modificateur passif (While…) — pas d’expiration de phase. */
@@ -297,6 +305,14 @@ export type AbilityEffect =
            */
           perCardWithCultureToken?: {
               target: string[][];
+              limit?: number;
+          };
+          /**
+           * Bonus = value × cartes en main.
+           * « +1 for each card in your hand » / « in the Free Peoples player's hand »
+           */
+          perCardsInHand?: {
+              whose: 'OWNER' | 'FREE_PEOPLES';
               limit?: number;
           };
       }
@@ -606,6 +622,8 @@ export type AbilityTrigger =
            * — vrai si fardeaux ≥ N OU blessures sur le Porteur ≥ N.
            */
           spotBurdensOrRingBearerWounds?: number;
+          /** « While you have initiative… » — propriétaire de la source. */
+          hasInitiative?: boolean;
       }
     | {
           type: 'CHARACTER_DIES';
@@ -982,7 +1000,7 @@ export interface ArcheryState {
     shadowRemainingWounds: number;
 }
 
-export type DevPresetType = 'CULTURE_TOKENS_TEST';
+export type DevPresetType = 'HAND_INITIATIVE_TEST';
 
 export interface TempKeywordModifier {
     keyword: CardKeyword;

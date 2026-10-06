@@ -1192,6 +1192,59 @@ function parseOrBearingBonus(effectText: string): {
     };
 }
 
+/** « … strength +N (or +M if you have initiative) » — refuse and / keyword. */
+function parseOrInitiativeBonus(effectText: string): {
+    base: string;
+    value: number;
+} | null {
+    const match = effectText
+        .replace(/<\/?keyword>/gi, '')
+        .replace(/\*\*/g, ' ')
+        .replace(/\s+/g, ' ')
+        .trim()
+        .match(
+            /^([\s\S]+?)\s*\(\s*or\s+\+(\d+)\s+if you have initiative\s*\)\s*\.?$/i
+        );
+    if (!match) return null;
+    if (/\b(and|damage|discard|wound|fierce|archer|hunter)\b/i.test(match[0])) {
+        return null;
+    }
+    const value = parseInt(match[2], 10);
+    if (!Number.isFinite(value) || value === 0) return null;
+    return { base: match[1].trim(), value };
+}
+
+/** « … strength +N (or +M if you have fewer than K cards in hand) » */
+function parseOrFewerCardsInHandBonus(effectText: string): {
+    base: string;
+    fewerThan: number;
+    value: number;
+} | null {
+    const match = effectText
+        .replace(/<\/?keyword>/gi, '')
+        .replace(/\*\*/g, ' ')
+        .replace(/\s+/g, ' ')
+        .trim()
+        .match(
+            /^([\s\S]+?)\s*\(\s*or\s+\+(\d+)\s+if you have fewer than\s+(\d+)\s+cards?\s+in hand\s*\)\s*\.?$/i
+        );
+    if (!match) return null;
+    if (/\b(and|damage|discard|wound|fierce|initiative)\b/i.test(match[0])) {
+        return null;
+    }
+    const value = parseInt(match[2], 10);
+    const fewerThan = parseInt(match[3], 10);
+    if (
+        !Number.isFinite(value) ||
+        value === 0 ||
+        !Number.isFinite(fewerThan) ||
+        fewerThan <= 0
+    ) {
+        return null;
+    }
+    return { base: match[1].trim(), fewerThan, value };
+}
+
 function parseMakeTargetAndEffects(
     effectText: string,
     costTarget: 'SELF' | 'BEARER' | string[][],
@@ -1203,8 +1256,16 @@ function parseMakeTargetAndEffects(
       }
     | undefined {
     const bearing = parseOrBearingBonus(effectText);
-    const textToParse = bearing?.base ?? effectText;
+    const initiative = bearing ? null : parseOrInitiativeBonus(effectText);
+    const fewerHand =
+        bearing || initiative
+            ? null
+            : parseOrFewerCardsInHandBonus(effectText);
+    const textToParse =
+        bearing?.base ?? initiative?.base ?? fewerHand?.base ?? effectText;
     if (bearing && bearing.value <= 0) return undefined;
+    if (initiative && initiative.value <= 0) return undefined;
+    if (fewerHand && fewerHand.value <= 0) return undefined;
 
     const effectPlain = textToParse
         .replace(/him or her/gi, 'him')
@@ -1283,6 +1344,45 @@ function parseMakeTargetAndEffects(
         statEffect.bearingBonus = {
             value: bearing.value,
             attachment: bearing.attachment,
+        };
+    }
+
+    if (initiative) {
+        const statEffects = parsed.effects.filter(
+            (effect) => effect.type === 'ADD_TEMP_STAT'
+        );
+        if (statEffects.length !== 1 || parsed.effects.length !== 1) {
+            return undefined;
+        }
+        const statEffect = statEffects[0];
+        if (
+            !statEffect ||
+            statEffect.type !== 'ADD_TEMP_STAT' ||
+            initiative.value <= statEffect.value
+        ) {
+            return undefined;
+        }
+        statEffect.valueIfInitiative = initiative.value;
+    }
+
+    if (fewerHand) {
+        const statEffects = parsed.effects.filter(
+            (effect) => effect.type === 'ADD_TEMP_STAT'
+        );
+        if (statEffects.length !== 1 || parsed.effects.length !== 1) {
+            return undefined;
+        }
+        const statEffect = statEffects[0];
+        if (
+            !statEffect ||
+            statEffect.type !== 'ADD_TEMP_STAT' ||
+            fewerHand.value <= statEffect.value
+        ) {
+            return undefined;
+        }
+        statEffect.valueIfFewerCardsInHand = {
+            fewerThan: fewerHand.fewerThan,
+            value: fewerHand.value,
         };
     }
 
@@ -3449,6 +3549,135 @@ function parseForEachCultureTokenStrengthAbilities(
 }
 
 /**
+ * « While you have initiative, X is strength ±N. »
+ * (Gimli 7C6, Orc Chaser / Pursuer / Stalker…)
+ * Refuse each / of your / damage / discard / Response / multi-clauses.
+ */
+function parseWhileHaveInitiativeStrengthAbilities(
+    text: string,
+    cardTitle?: string,
+    cardId?: string
+): Record<string, unknown>[] {
+    const found: Record<string, unknown>[] = [];
+    const refuse =
+        /\b(each|of your|damage|discard|response|wound|archery|cannot|except|skirmishing|assigned)\b/i;
+
+    const working = text
+        .replace(/<\/?keyword>/gi, '')
+        .replace(/<br\s*\/?>/gi, ' ')
+        .replace(/\*\*/g, ' ')
+        .replace(/\s+/g, ' ')
+        .trim();
+
+    const re =
+        /(?:^|[.!?]\s*)While you have initiative,\s*((?:this (?:minion|companion)|Bearer|[A-ZÀ-ŸÉ][^,.]*?)) is strength\s*([+-]\d+)\.?/gi;
+    let match: RegExpExecArray | null;
+    while ((match = re.exec(working)) !== null) {
+        if (refuse.test(match[0])) continue;
+        const who = parseWhileStrengthWho(match[1], cardTitle);
+        if (!who) continue;
+        const value = parseInt(match[2], 10);
+        if (!Number.isFinite(value) || value === 0) continue;
+
+        found.push({
+            id: `${cardId || 'ability'}:${found.length}:while-initiative`,
+            phases: [],
+            trigger: { type: 'WHILE', hasInitiative: true },
+            cost: [],
+            effects: [
+                {
+                    type: 'MODIFY_STAT',
+                    stat: 'STRENGTH',
+                    value,
+                    target: who,
+                },
+            ],
+            source: who === 'BEARER' ? 'ATTACHMENT' : 'SELF',
+            text: stripAbilityMarkup(match[0]),
+        });
+    }
+    return found;
+}
+
+/**
+ * « X is strength +N for each card in the Free Peoples player's hand »
+ * « For each card in your hand, this minion is strength +N »
+ * « X is strength +N for each card in your hand »
+ * (Man of Bree, Orc Trooper…)
+ */
+function parseForEachCardInHandStrengthAbilities(
+    text: string,
+    cardTitle?: string,
+    cardId?: string
+): Record<string, unknown>[] {
+    const found: Record<string, unknown>[] = [];
+    const refuse =
+        /\b(assigned|skirmishing|wound|title|twilight|archery|cannot|except|initiative|opponent|shadow)\b/i;
+
+    const working = text
+        .replace(/<\/?keyword>/gi, '')
+        .replace(/<br\s*\/?>/gi, ' ')
+        .replace(/\*\*/g, ' ')
+        .replace(/\s+/g, ' ')
+        .trim();
+
+    const push = (
+        whoRaw: string,
+        valueRaw: string,
+        whose: 'OWNER' | 'FREE_PEOPLES',
+        sentence: string
+    ) => {
+        if (refuse.test(sentence)) return;
+        const who = parseWhileStrengthWho(whoRaw, cardTitle);
+        if (!who) return;
+        const value = parseInt(valueRaw, 10);
+        if (!Number.isFinite(value) || value <= 0) return;
+        found.push({
+            id: `${cardId || 'ability'}:${found.length}:for-each-hand`,
+            phases: [],
+            trigger: { type: 'WHILE' },
+            cost: [],
+            effects: [
+                {
+                    type: 'MODIFY_STAT',
+                    stat: 'STRENGTH',
+                    value,
+                    target: who,
+                    perCardsInHand: { whose },
+                },
+            ],
+            source: who === 'BEARER' ? 'ATTACHMENT' : 'SELF',
+            text: stripAbilityMarkup(sentence),
+        });
+    };
+
+    let match: RegExpExecArray | null;
+
+    // This X is strength +N for each card in the Free Peoples player's hand
+    const fpHandRe =
+        /(?:^|[.!?]\s*)((?:This (?:minion|companion)|Bearer|[A-ZÀ-ŸÉ][^,.]*?)) is strength \+(\d+) for each card in the Free Peoples player's hand\.?/gi;
+    while ((match = fpHandRe.exec(working)) !== null) {
+        push(match[1], match[2], 'FREE_PEOPLES', match[0]);
+    }
+
+    // This X is strength +N for each card in your hand
+    const yourHandTailRe =
+        /(?:^|[.!?]\s*)((?:This (?:minion|companion)|Bearer|[A-ZÀ-ŸÉ][^,.]*?)) is strength \+(\d+) for each card in your hand\.?/gi;
+    while ((match = yourHandTailRe.exec(working)) !== null) {
+        push(match[1], match[2], 'OWNER', match[0]);
+    }
+
+    // For each card in your hand, this minion is strength +N
+    const yourHandLeadRe =
+        /(?:^|[.!?]\s*)For each card in your hand,\s*((?:this (?:minion|companion)|Bearer|[A-ZÀ-ŸÉ][^,.]*?)) is strength \+(\d+)\.?/gi;
+    while ((match = yourHandLeadRe.exec(working)) !== null) {
+        push(match[1], match[2], 'OWNER', match[0]);
+    }
+
+    return found;
+}
+
+/**
  * While you can spot [classe], each [classe] is strength ±N.
  * Cible classe (string[][]) — pas SELF/BEARER. Refuse skirmishing / of your / …
  */
@@ -4934,6 +5163,61 @@ function parseStandaloneSpotReplaceAbilities(
 
 /**
  * Événements sans balise de phase (phase = colonne Class) :
+ * « Make a raider Man strength +3 (or +6 if you have initiative). »
+ * (New Strength Came Now…) — refuse and / Damage / named-only complex.
+ */
+function parseStandaloneMakeInitiativeAbilities(
+    text: string,
+    cardId?: string
+): Record<string, unknown>[] {
+    const working = text
+        .replace(/<\/?keyword>/gi, '')
+        .replace(/<br\s*\/?>/gi, ' ')
+        .replace(/\*\*/g, ' ')
+        .replace(/\s+/g, ' ')
+        .trim();
+    const match = working.match(
+        /^Make\s+((?:a|an)\s+.+?\s+strength\s*\+\s*\d+\s*\(\s*or\s*\+\s*\d+\s+if you have initiative\s*\))\.?$/i
+    );
+    if (!match) return [];
+
+    const parsedMake = parseMakeTargetAndEffects(
+        match[1],
+        [['']],
+        'SKIRMISH'
+    );
+    if (
+        !parsedMake ||
+        parsedMake.effects.length === 0 ||
+        !Array.isArray(parsedMake.target)
+    ) {
+        return [];
+    }
+    if (
+        !parsedMake.effects.every(
+            (e) =>
+                e.type === 'ADD_TEMP_STAT' &&
+                'valueIfInitiative' in e &&
+                e.valueIfInitiative != null
+        )
+    ) {
+        return [];
+    }
+
+    return [
+        {
+            id: `${cardId || 'ability'}:0:make-initiative`,
+            phases: [],
+            cost: [],
+            effects: parsedMake.effects,
+            source: 'SELF',
+            text: stripAbilityMarkup(match[0]),
+        },
+    ];
+}
+
+/**
+ * Événements sans balise de phase (phase = colonne Class) :
  * « Remove a Free Peoples culture token to add a threat. » (Sauron’s Might…)
  * Refuse toute suite (deck bottom, etc.) : la phrase doit être le gametext utile.
  */
@@ -5840,6 +6124,79 @@ export function parseAbilities(
                 });
                 return;
             }
+        }
+
+        // « Spot N burdens and remove ⓉX to make an Easterling strength +Y »
+        // (Easterling Captain…) — spotBurdens = condition, removeTwilight = coût.
+        const spotBurdensRemoveTwilightMake = body.match(
+            /^Spot\s+(\d+)\s+burdens?\s+and\s+remove\s+<symbol>twilight(\d+)<\/symbol>\s+to make\s+([\s\S]+)/i
+        );
+        if (spotBurdensRemoveTwilightMake) {
+            const burdens = parseInt(spotBurdensRemoveTwilightMake[1], 10);
+            const twilight = parseInt(spotBurdensRemoveTwilightMake[2], 10);
+            if (
+                !Number.isFinite(burdens) ||
+                burdens <= 0 ||
+                !Number.isFinite(twilight) ||
+                twilight <= 0
+            ) {
+                return;
+            }
+
+            let effectText = spotBurdensRemoveTwilightMake[3];
+            if (/\bfor each\b/i.test(effectText.replace(/<[^>]+>/g, ' '))) {
+                return;
+            }
+            const effectPlainCheck = effectText
+                .replace(/<[^>]+>/g, ' ')
+                .replace(/\s+/g, ' ');
+            if (
+                /\band\b/i.test(
+                    effectPlainCheck.replace(/\(\s*limit\s*\+\d+\s*\)/i, '')
+                )
+            ) {
+                return;
+            }
+
+            const { text: withoutLimit, limit } = stripMakeStatLimit(effectText);
+            effectText = rewriteNamedSelfMakeText(withoutLimit, cardTitle);
+
+            const expiresAtPhase = parseUntilExpiry(effectText, marker.phase);
+            const parsedMake = parseMakeTargetAndEffects(
+                effectText,
+                'SELF',
+                expiresAtPhase
+            );
+            if (!parsedMake || parsedMake.effects.length === 0) return;
+            if (parsedMake.effects.length !== 1) return;
+            const only = parsedMake.effects[0];
+            if (!only || only.type !== 'ADD_TEMP_STAT') return;
+            if (limit !== undefined) {
+                only.limit = limit;
+            }
+            if (!Array.isArray(parsedMake.target)) return;
+
+            const clause =
+                `${marker.phase}: Spot ${burdens} burden${burdens > 1 ? 's' : ''} and remove twilight${twilight} to make ${spotBurdensRemoveTwilightMake[3]}`
+                    .replace(/<[^>]+>/g, '')
+                    .replace(/\s+/g, ' ')
+                    .replace(/\s+\./g, '.')
+                    .trim();
+
+            abilities.push({
+                id: `${cardId || 'ability'}:${abilities.length}`,
+                phases,
+                cost: [
+                    {
+                        spotBurdens: burdens,
+                        removeTwilight: twilight,
+                    },
+                ],
+                effects: parsedMake.effects,
+                source: 'SELF',
+                text: clause,
+            });
+            return;
         }
 
         const removeTwilightMake = body.match(
@@ -7596,6 +7953,24 @@ export function parseAbilities(
         }
     );
 
+    parseForEachCardInHandStrengthAbilities(text, cardTitle, cardId).forEach(
+        (ability) => {
+            abilities.push({
+                ...ability,
+                id: `${cardId || 'ability'}:${abilities.length}`,
+            });
+        }
+    );
+
+    parseWhileHaveInitiativeStrengthAbilities(text, cardTitle, cardId).forEach(
+        (ability) => {
+            abilities.push({
+                ...ability,
+                id: `${cardId || 'ability'}:${abilities.length}`,
+            });
+        }
+    );
+
     parseWhileMatchingTokensOnNamedCardStrengthAbilities(
         text,
         cardTitle,
@@ -7782,6 +8157,14 @@ export function parseAbilities(
             }
         );
         parseStandaloneRemoveThreatReinforceAbilities(text, cardId).forEach(
+            (ability) => {
+                abilities.push({
+                    ...ability,
+                    id: `${cardId || 'ability'}:${abilities.length}`,
+                });
+            }
+        );
+        parseStandaloneMakeInitiativeAbilities(text, cardId).forEach(
             (ability) => {
                 abilities.push({
                     ...ability,

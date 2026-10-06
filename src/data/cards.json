@@ -6894,6 +6894,92 @@
       "EASTERLING",
       "FIERCE"
     ],
+    "abilities": [
+      {
+        "id": "4R225:0",
+        "phases": [
+          "SKIRMISH"
+        ],
+        "cost": [
+          {
+            "spotBurdens": 2,
+            "removeTwilight": 2
+          }
+        ],
+        "effects": [
+          {
+            "type": "ADD_TEMP_STAT",
+            "stat": "STRENGTH",
+            "value": 2,
+            "target": [
+              [
+                "EASTERLING"
+              ]
+            ],
+            "expiresAtPhase": "SKIRMISH"
+          }
+        ],
+        "source": "SELF",
+        "text": "SKIRMISH: Spot 2 burdens and remove twilight2 to make an Easterling strength +2."
+      },
+      {
+        "id": "4R225:1",
+        "phases": [
+          "SKIRMISH"
+        ],
+        "cost": [
+          {
+            "spotBurdens": 4,
+            "removeTwilight": 2
+          }
+        ],
+        "effects": [
+          {
+            "type": "ADD_TEMP_STAT",
+            "stat": "STRENGTH",
+            "value": 3,
+            "target": [
+              [
+                "EASTERLING"
+              ]
+            ],
+            "expiresAtPhase": "SKIRMISH"
+          }
+        ],
+        "source": "SELF",
+        "text": "SKIRMISH: Spot 4 burdens and remove twilight2 to make an Easterling strength +3."
+      },
+      {
+        "id": "4R225:2",
+        "phases": [
+          "SKIRMISH"
+        ],
+        "cost": [
+          {
+            "spotBurdens": 6,
+            "removeTwilight": 2
+          }
+        ],
+        "effects": [
+          {
+            "type": "ADD_TEMP_STAT",
+            "stat": "STRENGTH",
+            "value": 4,
+            "target": [
+              [
+                "EASTERLING"
+              ]
+            ],
+            "expiresAtPhase": "SKIRMISH"
+          }
+        ],
+        "source": "SELF",
+        "text": "SKIRMISH: Spot 6 burdens and remove twilight2 to make an Easterling strength +4."
+      }
+    ],
+    "actionPhases": [
+      "SKIRMISH"
+    ],
     "culture": "RAIDER",
     "race": "MAN",
     "twilightCost": 5,
@@ -35540,7 +35626,39 @@
     "isUnique": false,
     "kind": "SHADOW",
     "type": "EVENT",
+    "abilities": [
+      {
+        "id": "3C70:0",
+        "phases": [
+          "SKIRMISH"
+        ],
+        "cost": [],
+        "effects": [
+          {
+            "type": "ADD_TEMP_STAT",
+            "stat": "STRENGTH",
+            "value": 2,
+            "target": [
+              [
+                "ISENGARD",
+                "ORC"
+              ]
+            ],
+            "expiresAtPhase": "SKIRMISH",
+            "valueIfFewerCardsInHand": {
+              "fewerThan": 3,
+              "value": 3
+            }
+          }
+        ],
+        "source": "SELF",
+        "text": "SKIRMISH: Make an isengard Orc strength +2 (or +3 if you have fewer than 3 cards in hand)."
+      }
+    ],
     "phases": [
+      "SKIRMISH"
+    ],
+    "actionPhases": [
       "SKIRMISH"
     ],
     "culture": "ISENGARD",
@@ -36817,6 +36935,29 @@
     "isUnique": false,
     "kind": "SHADOW",
     "type": "MINION",
+    "abilities": [
+      {
+        "id": "3R99:0",
+        "phases": [],
+        "trigger": {
+          "type": "WHILE"
+        },
+        "cost": [],
+        "effects": [
+          {
+            "type": "MODIFY_STAT",
+            "stat": "STRENGTH",
+            "value": 1,
+            "target": "SELF",
+            "perCardsInHand": {
+              "whose": "OWNER"
+            }
+          }
+        ],
+        "source": "SELF",
+        "text": "For each card in your hand, this minion is strength +1."
+      }
+    ],
     "culture": "SAURON",
     "race": "ORC",
     "twilightCost": 4,
@@ -65046,6 +65187,27 @@
     "keywords": [
       "DAMAGE +1"
     ],
+    "abilities": [
+      {
+        "id": "7C6:0",
+        "phases": [],
+        "trigger": {
+          "type": "WHILE",
+          "hasInitiative": true
+        },
+        "cost": [],
+        "effects": [
+          {
+            "type": "MODIFY_STAT",
+            "stat": "STRENGTH",
+            "value": 2,
+            "target": "SELF"
+          }
+        ],
+        "source": "SELF",
+        "text": ". While you have initiative, Gimli is strength +2."
+      }
+    ],
     "culture": "DWARVEN",
     "race": "DWARF",
     "signet": "THEODEN",
@@ -71589,6 +71751,30 @@
     "isUnique": false,
     "kind": "SHADOW",
     "type": "EVENT",
+    "abilities": [
+      {
+        "id": "7C154:0",
+        "phases": [],
+        "cost": [],
+        "effects": [
+          {
+            "type": "ADD_TEMP_STAT",
+            "stat": "STRENGTH",
+            "value": 3,
+            "target": [
+              [
+                "RAIDER",
+                "MAN"
+              ]
+            ],
+            "expiresAtPhase": "SKIRMISH",
+            "valueIfInitiative": 6
+          }
+        ],
+        "source": "SELF",
+        "text": "Make a raider Man strength +3 (or +6 if you have initiative)."
+      }
+    ],
     "phases": [
       "SKIRMISH"
     ],
@@ -77937,6 +78123,27 @@
     "keywords": [
       "TRACKER"
     ],
+    "abilities": [
+      {
+        "id": "7C298:0",
+        "phases": [],
+        "trigger": {
+          "type": "WHILE",
+          "hasInitiative": true
+        },
+        "cost": [],
+        "effects": [
+          {
+            "type": "MODIFY_STAT",
+            "stat": "STRENGTH",
+            "value": 6,
+            "target": "SELF"
+          }
+        ],
+        "source": "SELF",
+        "text": ". While you have initiative, this minion is strength +6."
+      }
+    ],
     "culture": "SAURON",
     "race": "ORC",
     "twilightCost": 2,
@@ -78146,6 +78353,27 @@
     "keywords": [
       "TRACKER"
     ],
+    "abilities": [
+      {
+        "id": "7C303:0",
+        "phases": [],
+        "trigger": {
+          "type": "WHILE",
+          "hasInitiative": true
+        },
+        "cost": [],
+        "effects": [
+          {
+            "type": "MODIFY_STAT",
+            "stat": "STRENGTH",
+            "value": 5,
+            "target": "SELF"
+          }
+        ],
+        "source": "SELF",
+        "text": ". While you have initiative, this minion is strength +5."
+      }
+    ],
     "culture": "SAURON",
     "race": "ORC",
     "twilightCost": 1,
@@ -78311,6 +78539,27 @@
     "type": "MINION",
     "keywords": [
       "TRACKER"
+    ],
+    "abilities": [
+      {
+        "id": "7U307:0",
+        "phases": [],
+        "trigger": {
+          "type": "WHILE",
+          "hasInitiative": true
+        },
+        "cost": [],
+        "effects": [
+          {
+            "type": "MODIFY_STAT",
+            "stat": "STRENGTH",
+            "value": 8,
+            "target": "SELF"
+          }
+        ],
+        "source": "SELF",
+        "text": ". While you have initiative, this minion is strength +8."
+      }
     ],
     "culture": "SAURON",
     "race": "ORC",
@@ -96662,6 +96911,29 @@
     "isUnique": false,
     "kind": "SHADOW",
     "type": "MINION",
+    "abilities": [
+      {
+        "id": "11S90:0",
+        "phases": [],
+        "trigger": {
+          "type": "WHILE"
+        },
+        "cost": [],
+        "effects": [
+          {
+            "type": "MODIFY_STAT",
+            "stat": "STRENGTH",
+            "value": 1,
+            "target": "SELF",
+            "perCardsInHand": {
+              "whose": "FREE_PEOPLES"
+            }
+          }
+        ],
+        "source": "SELF",
+        "text": "This minion is strength +1 for each card in the Free Peoples player's hand."
+      }
+    ],
     "culture": "MEN",
     "race": "MAN",
     "twilightCost": 2,

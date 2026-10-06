@@ -4,6 +4,10 @@ import type { LotrMoveContext } from '../types';
 import { drawCardsForPlayer } from '../../utils/drawCards';
 import type { GameState } from '../types';
 import { exitStartOf } from '../logic/phaseEntry';
+import {
+    announceInitiativeIfChanged,
+    freePeoplesHasInitiative,
+} from '../logic/initiative';
 
 // Helper pour renvoyer les Suivants en zone de support à la vraie fin de tour
 export const returnAidFollowersToSupport = (G: GameState) => {
@@ -101,6 +105,11 @@ export const discardCardFromHand = (
         return 'INVALID_MOVE';
     }
 
+    const watchInitiative = actingPlayerId === fpPlayerId;
+    const hadInitiative = watchInitiative
+        ? freePeoplesHasInitiative(G)
+        : false;
+
     const [discarded] = player.hand.splice(cardIndex, 1);
     if (!player.discard) player.discard = [];
     player.discard.push(discarded);
@@ -108,6 +117,9 @@ export const discardCardFromHand = (
     player.hasDiscardedInRegroup = true;
 
     G.statusMessage = `${player.profile?.name || `Joueur ${actingPlayerId}`} a défaussé ${discarded.title || discarded.name}.`;
+    if (watchInitiative) {
+        announceInitiativeIfChanged(G, hadInitiative);
+    }
 
     if (player.hand.length <= 8) {
         confirmHandRefill({ G, events, playerID } as LotrMoveContext);
@@ -121,6 +133,12 @@ export const confirmHandRefill = ({ G, events, playerID }: LotrMoveContext) => {
 
     if (!player.discard) player.discard = [];
 
+    const fpPlayerId = G.fpPlayerId || '0';
+    const watchInitiative = actingPlayerId === fpPlayerId;
+    const hadInitiative = watchInitiative
+        ? freePeoplesHasInitiative(G)
+        : false;
+
     while (player.hand.length > 8) {
         const discarded = player.hand.pop();
         if (discarded) player.discard.push(discarded);
@@ -129,6 +147,8 @@ export const confirmHandRefill = ({ G, events, playerID }: LotrMoveContext) => {
     if (player.hand.length < 8) {
         const needed = 8 - player.hand.length;
         drawCardsForPlayer(G, player, needed, false);
+    } else if (watchInitiative) {
+        announceInitiativeIfChanged(G, hadInitiative);
     }
 
     player.hasDiscardedInRegroup = false;

@@ -462,4 +462,111 @@ describe('While you can spot → strength', () => {
         });
         expect(getCalculatedStrength(capped, gimli)).toBe(9); // +3 limite
     });
+
+    it('Man of Bree : +1 par carte en main FP', () => {
+        const bree = createMinion({
+            id: '11S90',
+            title: 'Man of Bree',
+            strength: 8,
+            abilities: [
+                {
+                    id: '11S90:0',
+                    phases: [],
+                    trigger: { type: 'WHILE' },
+                    cost: [],
+                    effects: [
+                        {
+                            type: 'MODIFY_STAT',
+                            stat: 'STRENGTH',
+                            value: 1,
+                            target: 'SELF',
+                            perCardsInHand: { whose: 'FREE_PEOPLES' },
+                        },
+                    ],
+                    source: 'SELF',
+                },
+            ],
+        });
+        const emptyHand = createGameState({
+            battlefield: [bree],
+            players: {
+                '0': createPlayerState('0', { hand: [] }),
+                '1': createPlayerState('1'),
+            },
+        });
+        expect(getCalculatedStrength(emptyHand, bree)).toBe(8);
+
+        const threeCards = createGameState({
+            battlefield: [bree],
+            players: {
+                '0': createPlayerState('0', {
+                    hand: [
+                        createCard({ id: 'h1', type: 'EVENT' }),
+                        createCard({ id: 'h2', type: 'EVENT' }),
+                        createCard({ id: 'h3', type: 'EVENT' }),
+                    ],
+                }),
+                '1': createPlayerState('1'),
+            },
+        });
+        expect(getCalculatedStrength(threeCards, bree)).toBe(11);
+    });
+
+    it('Gimli Faithful Companion : +2 si le propriétaire a l’initiative', () => {
+        const gimli = createCompanion({
+            id: '7C6',
+            title: 'Gimli',
+            strength: 6,
+            abilities: [
+                {
+                    id: '7C6:0',
+                    phases: [],
+                    trigger: { type: 'WHILE', hasInitiative: true },
+                    cost: [],
+                    effects: [
+                        {
+                            type: 'MODIFY_STAT',
+                            stat: 'STRENGTH',
+                            value: 2,
+                            target: 'SELF',
+                        },
+                    ],
+                    source: 'SELF',
+                },
+            ],
+        });
+
+        const noInit = createGameState({
+            fpPlayerId: '0',
+            players: {
+                '0': createPlayerState('0', {
+                    fellowshipArea: [gimli],
+                    hand: [
+                        createCard({ id: 'h1', type: 'EVENT' }),
+                        createCard({ id: 'h2', type: 'EVENT' }),
+                        createCard({ id: 'h3', type: 'EVENT' }),
+                    ],
+                }),
+                '1': createPlayerState('1'),
+            },
+        });
+        expect(getCalculatedStrength(noInit, gimli)).toBe(6);
+
+        const withInit = createGameState({
+            fpPlayerId: '0',
+            players: {
+                '0': createPlayerState('0', {
+                    fellowshipArea: [gimli],
+                    hand: [
+                        createCard({ id: 'h1', type: 'EVENT' }),
+                        createCard({ id: 'h2', type: 'EVENT' }),
+                        createCard({ id: 'h3', type: 'EVENT' }),
+                        createCard({ id: 'h4', type: 'EVENT' }),
+                    ],
+                }),
+                '1': createPlayerState('1'),
+            },
+        });
+        expect(getCalculatedStrength(withInit, gimli)).toBe(8);
+    });
 });

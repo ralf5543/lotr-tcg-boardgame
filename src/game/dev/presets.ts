@@ -105,72 +105,42 @@ export const applyDevPreset = (
     const shadowPlayer = G.players[shadowId];
 
     switch (presetType) {
-        case 'CULTURE_TOKENS_TEST': {
+        case 'HAND_INITIATIVE_TEST': {
             resetBoardForPreset(G);
             setupDevPath(G, 3);
-            G.twilightPool = 6;
+            G.twilightPool = 4;
 
-            // Focus : remove→heal / threat / reinforce ; loses→place ; force par jetons.
-            fpPlayer.burdens = 0;
-            fpPlayer.threats = 1;
+            // FP ≥ 4 en main → initiative FP (Gimli +2). Moins de 4 → Ombre.
             fpPlayer.fellowshipArea = [
                 {
-                    ...clonePresetCard('2C102', 'dev-frodo-ct'),
-                    attachments: [clonePresetCard('1R1', 'dev-ring-ct')],
+                    ...clonePresetCard('2C102', 'dev-frodo-hand'),
+                    attachments: [clonePresetCard('1R1', 'dev-ring-hand')],
                 },
-                {
-                    ...clonePresetCard('0P12', 'dev-gimli-ct'),
-                    wounds: 1,
-                },
-                clonePresetCard('13R59', 'dev-aragorn-ct'),
-                clonePresetCard('0P16', 'dev-faramir-ct'),
-                {
-                    // Compagnon Rohan : réponse moves → reinforce.
-                    // Jeton Rohan ici ; coût remove FP = Garrison / Run Until Found
-                    // (ne pas retirer le seul jeton Rohan sinon reinforce inerte).
-                    ...clonePresetCard('13C132', 'dev-merchant-westfold'),
-                    cultureTokens: { ROHAN: 2 },
-                },
+                clonePresetCard('7C6', 'dev-gimli-init'),
             ];
-            fpPlayer.supportArea = [
-                {
-                    ...clonePresetCard('6C52', 'dev-garrison'),
-                    cultureTokens: { GONDOR: 2 },
-                },
-                {
-                    ...clonePresetCard('18U2', 'dev-run-until-found'),
-                    cultureTokens: { DWARVEN: 2 },
-                },
-                clonePresetCard('12U132', 'dev-shire-tactics'),
+            fpPlayer.burdens = 4;
+            fpPlayer.hand = [
+                clonePresetCard('7C154', 'dev-new-strength'),
+                clonePresetCard('1C3', 'dev-axe-strike'),
+                clonePresetCard('1C4', 'dev-battle-fury'),
+                clonePresetCard('1C5', 'dev-cleaving-blow'),
             ];
-            fpPlayer.hand = [clonePresetCard('13C7', 'dev-sorrow-shared')];
 
             if (shadowPlayer) {
-                shadowPlayer.supportArea = [
-                    {
-                        ...clonePresetCard('13U103', 'dev-always-threat'),
-                        cultureTokens: { ORC: 3 },
-                    },
-                    clonePresetCard('4U34', 'dev-secret-folk'),
-                ];
                 G.battlefield = [
-                    clonePresetCard('4U24', 'dev-hillman-rabble'),
-                    clonePresetCard('13C159', 'dev-assault-denizen'),
+                    clonePresetCard('11S90', 'dev-man-of-bree'),
+                    clonePresetCard('7C298', 'dev-orc-chaser'),
+                    clonePresetCard('3U58', 'dev-isengard-servant'),
+                    clonePresetCard('4R225', 'dev-easterling-captain'),
                 ];
                 shadowPlayer.hand = [
-                    clonePresetCard('19P27', 'dev-saurons-might'),
-                    clonePresetCard('18U92', 'dev-war-preparations'),
+                    clonePresetCard('3C70', 'dev-servants-saruman'),
+                    clonePresetCard('7C154', 'dev-new-strength-sh'),
                 ];
-            }
-
-            // Site Cavern Entrance (Standard) en dernière case — pour tester
-            // « no skirmish special abilities » (téléport site DEV → 9).
-            if (G.path?.[8]) {
-                G.path[8] = clonePresetSite('11S232', fpId, 9);
             }
 
             G.statusMessage =
-                '[DEV] Jetons · Merchant (compagnie, moves→reinforce Rohan) ; Sauron’s Might retire jeton FP adverse ; War Prep ; Aragorn / Assault Denizen.';
+                '[DEV] Main / initiative · FP 4 cartes (initiative) ; Gimli +2 ; Man of Bree scale main FP ; Orc Chaser +6 ; New Strength / Servants en main.';
             break;
         }
     }

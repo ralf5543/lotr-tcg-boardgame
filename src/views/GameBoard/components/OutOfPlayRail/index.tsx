@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import type { CardState } from '../../../../game/types';
 import { TwilightPool } from '../TwilightPool';
 import * as S from './styles';
@@ -14,6 +14,10 @@ interface OutOfPlayRailProps {
     fpIsOpponent: boolean;
     threats: number;
     threatLimit: number;
+    /** Qui détient l’initiative (FP si main FP ≥ 4, sinon Ombre). */
+    initiativeHolder: 'FREE_PEOPLE' | 'SHADOW';
+    /** Vrai si le joueur local a l’initiative (bordure jaune vs grise). */
+    localHasInitiative: boolean;
     myDiscard: CardState[];
     myDeadPile: CardState[];
     opponentDiscard: CardState[];
@@ -91,12 +95,25 @@ export const OutOfPlayRail: React.FC<OutOfPlayRailProps> = ({
     fpIsOpponent,
     threats,
     threatLimit,
+    initiativeHolder,
+    localHasInitiative,
     myDiscard,
     myDeadPile,
     opponentDiscard,
     opponentDeadPile,
     onOpenZone,
 }) => {
+    const holderLabel =
+        initiativeHolder === 'FREE_PEOPLE' ? 'Peuples Libres' : 'Ombre';
+    const prevHolderRef = useRef(initiativeHolder);
+    const [pulseKey, setPulseKey] = useState(0);
+
+    useEffect(() => {
+        if (prevHolderRef.current === initiativeHolder) return;
+        prevHolderRef.current = initiativeHolder;
+        setPulseKey((key) => key + 1);
+    }, [initiativeHolder]);
+
     return (
         <S.Rail>
             <S.PileRow>
@@ -116,7 +133,22 @@ export const OutOfPlayRail: React.FC<OutOfPlayRailProps> = ({
                 />
             </S.PileRow>
             <S.TwilightSlot>
-                <TwilightPool value={twilight} />
+                <S.TwilightBowl>
+                    <TwilightPool value={twilight} />
+                </S.TwilightBowl>
+                <S.InitiativeChip
+                    key={pulseKey}
+                    $mine={localHasInitiative}
+                    $pulse={pulseKey > 0}
+                    title="Le joueur Peuples Libres a l’initiative s’il a au moins 4 cartes en main ; sinon l’Ombre l’a."
+                >
+                    <S.InitiativeChipLabel $mine={localHasInitiative}>
+                        Initiative
+                    </S.InitiativeChipLabel>
+                    <S.InitiativeChipHolder $mine={localHasInitiative}>
+                        {holderLabel}
+                    </S.InitiativeChipHolder>
+                </S.InitiativeChip>
             </S.TwilightSlot>
             <S.PileRow>
                 <PileBlock

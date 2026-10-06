@@ -1,4 +1,13 @@
 import type { GameState, PlayerState } from "../game/types";
+import {
+    announceInitiativeIfChanged,
+    freePeoplesHasInitiative,
+} from "../game/logic/initiative";
+
+const isFreePeoplesPlayer = (G: GameState, player: PlayerState): boolean => {
+    const fpId = G.fpPlayerId || '0';
+    return G.players[fpId] === player;
+};
 
 export const drawCardsForPlayer = (
     G: GameState,
@@ -6,6 +15,11 @@ export const drawCardsForPlayer = (
     count: number,
     isFellowshipPhase: boolean = false
 ): number => {
+    const watchInitiative = isFreePeoplesPlayer(G, player);
+    const hadInitiative = watchInitiative
+        ? freePeoplesHasInitiative(G)
+        : false;
+
     let cardsToDraw = count;
 
     // 🟢 Règle Communauté : 4 cartes max piochées/ajoutées par phase
@@ -29,6 +43,10 @@ export const drawCardsForPlayer = (
         G.fellowshipCardsDrawn = (G.fellowshipCardsDrawn || 0) + drawn;
     }
 
+    if (watchInitiative && drawn > 0) {
+        announceInitiativeIfChanged(G, hadInitiative);
+    }
+
     return drawn;
 };
 
@@ -43,10 +61,17 @@ export const reconcileHand = (G: GameState, player: PlayerState): { drawn: numbe
     } 
     
     if (currentHandSize > TARGET_HAND_SIZE) {
+        const watchInitiative = isFreePeoplesPlayer(G, player);
+        const hadInitiative = watchInitiative
+            ? freePeoplesHasInitiative(G)
+            : false;
         const overflow = currentHandSize - TARGET_HAND_SIZE;
         // On défausse les cartes en trop vers la défausse (discard)
         const discardedCards = player.hand.splice(TARGET_HAND_SIZE, overflow);
         player.discard.push(...discardedCards);
+        if (watchInitiative) {
+            announceInitiativeIfChanged(G, hadInitiative);
+        }
         return { drawn: 0, discarded: overflow };
     }
 

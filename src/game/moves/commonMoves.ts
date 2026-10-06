@@ -23,6 +23,10 @@ import { yieldPriorityAfterAction } from '../engine/actionWindow';
 import { findTargetCard } from '../../utils/cardUtils';
 import { beginMinionAssignment } from '../logic/assignment';
 import {
+    announceInitiativeIfChanged,
+    freePeoplesHasInitiative,
+} from '../logic/initiative';
+import {
     afterResponseResolved,
     flushPendingActionYield,
     flushPendingPhaseAfterResponse,
@@ -346,6 +350,7 @@ export const playCard = (
 
     const fpId = G.fpPlayerId || '0';
     const isFP = actingPlayerId === fpId;
+    const hadInitiative = isFP ? freePeoplesHasInitiative(G) : false;
 
     if (isFP) {
         const cost = Number(card.twilightCost) || 0;
@@ -391,6 +396,7 @@ export const playCard = (
             phase: ctx.phase,
             skipWhenPlayed: playedCard.type === 'EVENT',
         });
+        announceInitiativeIfChanged(G, hadInitiative);
         yieldAfterPlay(G, actingPlayerId, playedCard, wasResponseWindowOpen);
         G.pendingPlay = undefined;
         return;

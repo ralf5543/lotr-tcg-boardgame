@@ -81,6 +81,10 @@ import {
 import { TargetingArrowSyncProvider, useTargetingArrowSync } from './components/TargetingArrow/TargetingArrowSync';
 import { PENDING_PLAY_ORIGIN_ID } from './components/TargetingArrow/sync';
 import { getThreatLimit } from '../../game/logic/threats';
+import {
+    freePeoplesHasInitiative,
+    playerHasInitiative,
+} from '../../game/logic/initiative';
 
 export interface GameBoardProps extends BoardProps<GameState> {
     moves: BoardProps<GameState>['moves'] &
@@ -2043,6 +2047,12 @@ export const GameBoard: React.FC<GameBoardProps> = ({
                         fpIsOpponent={fpPlayerId === oppId}
                         threats={G.players[fpPlayerId]?.threats ?? 0}
                         threatLimit={getThreatLimit(G)}
+                        initiativeHolder={
+                            freePeoplesHasInitiative(G)
+                                ? 'FREE_PEOPLE'
+                                : 'SHADOW'
+                        }
+                        localHasInitiative={playerHasInitiative(G, myId)}
                         myDiscard={me.discard || []}
                         myDeadPile={me.deadPile || []}
                         opponentDiscard={opponent.discard || []}

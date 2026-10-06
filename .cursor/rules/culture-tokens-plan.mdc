@@ -1,11 +1,13 @@
 ---
-description: Plan d’implémentation des jetons de culture (place / reinforce / remove / UI)
-alwaysApply: true
+description: "ARCHIVÉ — Plan jetons de culture (figé ; suite = hand-initiative-plan.mdc)"
+alwaysApply: false
 ---
 
-# Jetons de culture — plan et credo
+# Jetons de culture — plan et credo (archivé)
 
-**Format : Standard (règles modernes).** Voir `.cursor/rules/format-standard.mdc`.
+> **Figé.** Socle jetons + étapes 1–15 livrés. Suite active : [`.cursor/rules/hand-initiative-plan.mdc`](hand-initiative-plan.mdc).
+>
+> **Format : Standard (règles modernes)** — voir [`.cursor/rules/format-standard.mdc`](format-standard.mdc).
 
 Credo : **mieux vaut inerte que faux.** On n’émet place / reinforce / remove que si le fragment est sûr.
 
@@ -21,31 +23,30 @@ L’ancien plan sites est **figé** (`.cursor/rules/sites-plan.mdc`, `alwaysAppl
 - **Remove / spot** : cartes **actives** uniquement.
 - « Free Peoples token » = n’importe quel jeton d’une culture Peuples Libres déjà présent.
 
-## Étapes
+## Étapes (livrées)
 
 1. **Socle modèle** ✅ — `CardState.cultureTokens` ; helpers `cultureTokens.ts` ; effets / coûts.
 2. **Runtime** ✅ — apply / pay / désignation reinforce ; tests.
 3. **UI** ✅ — pastilles sur la carte ; move DEV ; preset `CULTURE_TOKENS_TEST`.
-4. **Parser** ✅ — place / reinforce / remove (fragments sûrs) ; **Exert classe → place/add tokens here** (Last Stand Fellowship, machines Isengard Shadow…).
-5. **When-played spot site path → reinforce** ✅ — 13C83 / 13C164.
-6. **Remove N jetons → force ±N** ✅ — coût `removeCultureTokens` + `ADD_TEMP_STAT` (Glóin, Heavy Axe, Sudden Fury, Last Stand…) ; refuse skirmishing / and Damage / from a machine.
-7. **While spot N jetons culture → force SELF/BEARER** ✅ — trigger `spotCultureTokens` (Elven Defender, Rohirrim Recruit…) ; refuse « each of your », titre, initiative.
-8. **While X jetons ici + même X sur carte nommée → force +X** ✅ — `matchingTokensOnNamedCard` (Ma hache / Décompte final) ; pas d’exception par id.
-9. **When-played spot classe → place/add tokens here** ✅ — Chamber of Records, Fortitude… ; refuse mounted / and / or.
-10. **Discard this or remove N jetons → make/heal** ✅ — deux capacités (coûts alternatifs) ; make force/keyword + heal classe ; refuse bearing / skirmishing / reveal / prevent / twilight+either.
-11. **Remove N jetons → heal classe / bearer** ✅ — coût `removeCultureTokens` (from here optionnel) + `HEAL` ; événements standalone (Sorrow Shared) ; refuse « or … another » (Asfaloth complexe).
-12. **Each time loses skirmish → place token** ✅ — trigger `LOSES_SKIRMISH` (+ `involving` optionnel) ; fragment « companion or ally » via `parseArticleOrFilters` ; fenêtre après `WINS_SKIRMISH`.
-13. **Force +N for each culture token / card with token** ✅ — `perCultureTokens` (Assault Denizen) ; `perCardWithCultureToken` (Westfarthing, Aragorn) ; refuse Free Peoples card / assigned / title.
-14. **Remove jeton / menace → menace / reinforce** ✅ — `ADD_THREATS` (Sauron’s Might) ; remove threat → reinforce (War Preparations) ; moves + twilight + remove FP → reinforce (Merchant of Westfold) ; refuse deck-bottom / multi-clauses.
-15. **When-played add token for each spot** ✅ — `PLACE_CULTURE_TOKEN.perSpot` (Howdah, Always Threatening…) ; refuse wounded / support area / and / or.
+4. **Parser** ✅ — place / reinforce / remove (fragments sûrs) ; **Exert classe → place/add tokens here**.
+5. **When-played spot site path → reinforce** ✅
+6. **Remove N jetons → force ±N** ✅
+7. **While spot N jetons culture → force SELF/BEARER** ✅
+8. **While X jetons ici + même X sur carte nommée → force +X** ✅
+9. **When-played spot classe → place/add tokens here** ✅
+10. **Discard this or remove N jetons → make/heal** ✅
+11. **Remove N jetons → heal classe / bearer** ✅
+12. **Each time loses skirmish → place token** ✅
+13. **Force +N for each culture token / card with token** ✅
+14. **Remove jeton / menace → menace / reinforce** ✅
+15. **When-played add token for each spot** ✅ — refuse wounded / support area.
 
 ## Hors scope / plus tard
 
 - Weather no-events, gametext site moderne (reportés sites).
 - Familles complexes (machines Isengard, While spot token avancé : each of your / titre / archery total / cannot take wounds).
-- When-played place per wounded / support area (Weapons of Control, They Came From Mordor).
+- When-played place per wounded / support area (Weapons of Control, They Came From Mordor) — besoin filtre `WOUNDED` dans les matchers.
 - Make strength « minion skirmishing X » (cible skirmishing).
 - Multi-Shadow / >2 joueurs.
 - Répartition multi-cartes d’un reinforce N (v1 = tout sur une carte désignée).
 - Force/discard type Stout généralisé.
-- **Cartes en main / initiative** (hors jetons, mais preset) : force « +1 per card in FP hand » (Man of Bree), condition « N or more cards in hand », règle d’initiative (FP ≥ 4 en main). → axe roadmap dédié.
