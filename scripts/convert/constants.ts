@@ -145,6 +145,7 @@ export const VALID_TARGET_TYPES = new Set([
     'CONDITION',
     'POSSESSION',
     'ARTIFACT',
+    'EVENT',
     'HAND-WEAPON',
     'RANGED-WEAPON',
     /** Main ou distance (ex. « a Moria weapon »). */

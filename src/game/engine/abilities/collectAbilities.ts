@@ -321,7 +321,10 @@ function formatFilterList(tokens: string[]): string {
         .join(' ');
 }
 
-function formatTargetPhrase(target: AbilityTargetRef | undefined): string | null {
+function formatTargetPhrase(
+    target: AbilityTargetRef | undefined,
+    opts?: { stackFromHand?: boolean }
+): string | null {
     if (!target || target === 'SELF' || target === 'BEARER' || target === 'WINNER') return null;
     if (target === 'SKIRMISHING') return 'un personnage au combat';
     if (Array.isArray(target)) {
@@ -330,12 +333,32 @@ function formatTargetPhrase(target: AbilityTargetRef | undefined): string | null
             target.every((branch) => Array.isArray(branch))
         ) {
             return target
-                .map((branch) => `un ${formatFilterList(branch)}`)
+                .map((branch) =>
+                    formatArticleForFilters(branch, opts?.stackFromHand)
+                )
                 .join(' ou ');
         }
-        return `un ${formatFilterList(target.flat())}`;
+        return formatArticleForFilters(target.flat(), opts?.stackFromHand);
     }
     return null;
+}
+
+/** « une carte <symbol>gondor</symbol> » si culture seule ; sinon « un séide … ». */
+function formatArticleForFilters(
+    tokens: string[],
+    stackFromHand?: boolean
+): string {
+    const { cultures, races, types, other } = partitionFilterTokens(tokens);
+    if (
+        stackFromHand &&
+        cultures.length === 1 &&
+        races.length === 0 &&
+        types.length === 0 &&
+        other.length === 0
+    ) {
+        return `une carte ${cultureSymbol(cultures[0])}`;
+    }
+    return `un ${formatFilterList(tokens)}`;
 }
 
 function translateKeyword(keyword: CardKeyword | string): string {
@@ -540,6 +563,30 @@ function formatEffectBit(
             ? `empiler ${who} sur un site que vous contrôlez`
             : 'empiler ce séide sur un site que vous contrôlez';
     }
+    if (effect.type === 'STACK_ON_SELF') {
+        const who = formatTargetPhrase(effect.target, {
+            stackFromHand: effect.from === 'HAND',
+        });
+        if (effect.from === 'HAND') {
+            return who
+                ? `empiler ${who} depuis la main ici`
+                : 'empiler une carte depuis la main ici';
+        }
+        return who ? `empiler ${who} ici` : 'empiler une carte ici';
+    }
+    if (effect.type === 'TAKE_FROM_STACK') {
+        return 'prendre en main une carte empilée ici';
+    }
+    if (effect.type === 'PLAY_FROM_CARD_STACK') {
+        const who = formatTargetPhrase(effect.target);
+        return `jouer ${who} empilé ici (comme depuis la main)`;
+    }
+    if (effect.type === 'PLAY_FROM_DECK_OR_DISCARD') {
+        const who = formatTargetPhrase(effect.target);
+        return who
+            ? `jouer ${who} depuis la pioche ou la défausse`
+            : 'jouer une carte depuis la pioche ou la défausse';
+    }
     if (effect.type === 'PLAY_FROM_STACK') {
         const who = Array.isArray(effect.target)
             ? formatTargetPhrase(effect.target)
@@ -630,6 +677,10 @@ function formatCostLabel(ability: Ability, source: CardState): string {
         const n = option.removeThreats;
         parts.push(`retirer ${n} menace${n > 1 ? 's' : ''}`);
     }
+    if (option?.addThreats && option.addThreats > 0) {
+        const n = option.addThreats;
+        parts.push(`ajouter ${n} menace${n > 1 ? 's' : ''}`);
+    }
     if (option?.removeTwilight && option.removeTwilight > 0) {
         parts.push(
             `retirer <symbol>twilight${option.removeTwilight}</symbol>`
@@ -639,7 +690,7 @@ function formatCostLabel(ability: Ability, source: CardState): string {
         const n = option.spotBurdens;
         parts.unshift(`Spotter ${n} fardeau${n > 1 ? 'x' : ''}`);
     }
-    // spotTwilight / spotHand / spotThreats : conditions, pas coûts affichés
+    // spotTwilight / spotHand / spotThreats / cannotSpotThreats : conditions, pas coûts affichés
     if (option?.discardFromPlay?.length) {
         const discardTarget = option.discardFromPlay[0]?.target;
         if (discardTarget === 'SELF' || discardTarget === 'BEARER') {

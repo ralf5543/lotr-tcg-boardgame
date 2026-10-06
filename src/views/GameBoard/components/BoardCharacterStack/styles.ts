@@ -120,6 +120,32 @@ export const AttachmentWrapper = styled.div<{ $index?: number }>`
     filter: drop-shadow(0px -3px 3px black);
 `;
 
+/** Miniatures empilées sur une carte support (Web, Narsil…). */
+export const StackedOnCardGrid = styled.div`
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+    position: absolute;
+    inset-inline-end: -8px;
+    inset-block-start: 0;
+    z-index: 3;
+    max-width: 72px;
+    pointer-events: none;
+`;
+
+export const StackedOnCardSlot = styled.div<{ $targetable?: boolean }>`
+    pointer-events: auto;
+    transform: scale(0.55);
+    transform-origin: top right;
+    border-radius: 4px;
+    ${({ $targetable }) =>
+        $targetable &&
+        css`
+            cursor: pointer;
+            filter: drop-shadow(0 0 6px #e2c044);
+        `}
+`;
+
 /* =========================================================
    2. SÉIDES ASSIGNÉS EN COMBAT (Minions)
    ========================================================= */

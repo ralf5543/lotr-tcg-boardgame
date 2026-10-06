@@ -93,6 +93,12 @@ export function cardMatchesCriterion(
         return getEffectiveVitality(c) === 1;
     }
 
+    // « unwounded » : aucune blessure, pas mort.
+    if (critUpper === 'UNWOUNDED') {
+        if (c.isDead) return false;
+        return (c.wounds || 0) === 0;
+    }
+
     if (critUpper.startsWith('SIGNET_')) {
         const wanted = critUpper.slice('SIGNET_'.length);
         return normalize(c.signet || '') === wanted;

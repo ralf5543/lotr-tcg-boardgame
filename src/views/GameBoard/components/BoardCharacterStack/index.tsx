@@ -582,6 +582,55 @@ export const BoardCharacterStack: React.FC<BoardCharacterStackProps> = ({
                         })}
                     </S.AttachmentsContainer>
                 )}
+
+                {/* Cartes empilées sur l’hôte (Web, Fragments de Narsil…) */}
+                {(character.stacked?.length || 0) > 0 && (
+                    <S.StackedOnCardGrid>
+                        {(character.stacked || []).map((stacked) => {
+                            const stackedKey =
+                                stacked.instanceId || stacked.id;
+                            const stackedTargetable =
+                                isCardTargetable(stackedKey) ||
+                                isCardTargetable(stacked.id);
+                            return (
+                                <S.StackedOnCardSlot
+                                    key={stackedKey}
+                                    $targetable={stackedTargetable}
+                                    ref={(el) => {
+                                        registerTarget(stackedKey, el);
+                                        if (
+                                            stacked.id &&
+                                            stacked.id !== stackedKey
+                                        ) {
+                                            registerTarget(stacked.id, el);
+                                        }
+                                    }}
+                                    onPointerDown={(e) => {
+                                        if (!stackedTargetable || e.button !== 0)
+                                            return;
+                                        e.stopPropagation();
+                                        selectCard(
+                                            isCardTargetable(stackedKey)
+                                                ? stackedKey
+                                                : stacked.id
+                                        );
+                                    }}
+                                >
+                                    <Card
+                                        card={stacked}
+                                        size="sm"
+                                        isDraggable={false}
+                                        isDisabled={isDisabled}
+                                        isActionable={stackedTargetable}
+                                        G={G}
+                                        phase={phase}
+                                        playerID={playerID}
+                                    />
+                                </S.StackedOnCardSlot>
+                            );
+                        })}
+                    </S.StackedOnCardGrid>
+                )}
             </S.CharacterStack>
         </S.SkirmishGroup>
     );

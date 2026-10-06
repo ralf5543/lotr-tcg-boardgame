@@ -20,6 +20,8 @@ import {
     countSitesControlledBy,
     isCardStackedOnControlledSite,
     getCurrentSiteIndex,
+    getCurrentSite,
+    getFellowshipCurrentRegion,
 } from '../../sites';
 import {
     countCultureTokensForPlayer,
@@ -410,6 +412,10 @@ export function whileConditionHolds(
         if (!ownerId || !playerHasInitiative(G, ownerId)) return false;
     }
 
+    if (trigger.inRegion != null) {
+        if (getFellowshipCurrentRegion(G) !== trigger.inRegion) return false;
+    }
+
     // Prédicats OK, ou WHILE vide (vrai tant que la carte est en jeu).
     return true;
 }
@@ -535,6 +541,10 @@ export function getWhileStrengthBonus(
                 if (effect.stat !== 'STRENGTH') continue;
                 if (!Array.isArray(effect.target)) continue;
                 if (!cardMatchesTarget(card, effect.target)) continue;
+                if (effect.excludeSource) {
+                    const sourceId = source.instanceId || source.id;
+                    if ((card.instanceId || card.id) === sourceId) continue;
+                }
                 bonus += modifyStatMagnitude(G, source, effect);
             }
         }
@@ -549,6 +559,10 @@ export function getWhileStrengthBonus(
                 if (effect.stat !== 'STRENGTH') continue;
                 if (!Array.isArray(effect.target)) continue;
                 if (!cardMatchesTarget(card, effect.target)) continue;
+                if (effect.excludeSource) {
+                    const sourceId = source.instanceId || source.id;
+                    if ((card.instanceId || card.id) === sourceId) continue;
+                }
                 bonus += modifyStatMagnitude(G, source, effect);
             }
         }
@@ -592,6 +606,20 @@ export function getWhileKeywordRaws(
         }
     });
 
+    // Passifs du site actuel (Window on the West…).
+    const currentSite = getCurrentSite(G);
+    if (currentSite) {
+        for (const ability of currentSite.abilities || []) {
+            if (ability.trigger?.type !== 'WHILE') continue;
+            for (const effect of ability.effects || []) {
+                if (effect.type !== 'MODIFY_KEYWORD') continue;
+                if (!Array.isArray(effect.target)) continue;
+                if (!cardMatchesTarget(card, effect.target)) continue;
+                raw.push(effect.keyword);
+            }
+        }
+    }
+
     // Passifs depuis une pile (Pillager empilé → besiegers fierce).
     forEachStackedOnControlledSite(G, (source) => {
         for (const ability of source.abilities || []) {
@@ -611,8 +639,9 @@ export function getWhileKeywordRaws(
 }
 
 /**
- * Modificateur de coût crépuscule (While SELF TWILIGHT_COST, ex. Olog −2 / empilé).
- * Lu aussi depuis la main (la carte n’est pas encore en jeu).
+ * Modificateur de coût crépuscule :
+ * - While SELF TWILIGHT_COST sur la carte (Olog −2 / empilé) — lu aussi depuis la main ;
+ * - passifs en jeu (Ambition : −1 sur tes événements culture).
  */
 export function getWhileTwilightCostModifier(
     G: GameState,
@@ -629,7 +658,35 @@ export function getWhileTwilightCostModifier(
             mod += modifyStatMagnitude(G, card, effect);
         }
     }
+
+    const cardOwnerId = cardOwnerFromKind(G, card);
+    forEachInPlayCard(G, (source) => {
+        if (source.isDead) return;
+        if (cardOwnerId) {
+            const sourceOwner = findInPlayCardOwnerId(G, source);
+            if (sourceOwner !== cardOwnerId) return;
+        }
+        for (const ability of source.abilities || []) {
+            if (ability.trigger?.type !== 'WHILE') continue;
+            if (!whileConditionHolds(G, source, ability)) continue;
+            for (const effect of ability.effects || []) {
+                if (effect.type !== 'MODIFY_STAT') continue;
+                if (effect.stat !== 'TWILIGHT_COST') continue;
+                if (!Array.isArray(effect.target)) continue;
+                if (!cardMatchesTarget(card, effect.target)) continue;
+                mod += modifyStatMagnitude(G, source, effect);
+            }
+        }
+    });
+
     return mod;
+}
+
+function cardOwnerFromKind(G: GameState, card: CardState): string | null {
+    const fpId = G.fpPlayerId || '0';
+    if (card.kind === 'FREE_PEOPLE') return fpId;
+    if (card.kind === 'SHADOW') return fpId === '0' ? '1' : '0';
+    return null;
 }
 
 /**

@@ -16,6 +16,7 @@ import {
     announceInitiativeIfChanged,
     freePeoplesHasInitiative,
 } from '../../logic/initiative';
+import { addThreats, canAddThreats } from '../../logic/threats';
 
 const matchCard = (card: CardState | undefined | null, targetId: string) =>
     Boolean(card && (card.instanceId === targetId || card.id === targetId));
@@ -123,12 +124,25 @@ function canPayOption(
         if (threats < option.spotThreats) return false;
     }
 
+    if (
+        typeof option.cannotSpotThreats === 'number' &&
+        option.cannotSpotThreats > 0
+    ) {
+        const fpId = G.fpPlayerId || '0';
+        const threats = G.players[fpId]?.threats || 0;
+        if (threats >= option.cannotSpotThreats) return false;
+    }
+
     if (option.removeThreats && option.removeThreats > 0) {
         const fpId = G.fpPlayerId || '0';
         const fpPlayer = G.players[fpId];
         if (!fpPlayer || (fpPlayer.threats || 0) < option.removeThreats) {
             return false;
         }
+    }
+
+    if (option.addThreats && option.addThreats > 0) {
+        if (!canAddThreats(G)) return false;
     }
 
     if (option.spotCultureTokens) {
@@ -205,6 +219,7 @@ function canPayOption(
     }
 
     // addBurdens : toujours payable (on ajoute).
+    // addThreats : vérifié via canAddThreats plus haut.
 
     return true;
 }
@@ -296,6 +311,8 @@ function payOption(
                   )
                 : pickExertTarget(cards, count);
             if (!target) return false;
+            // Affaiblir N fois : vitalité > N (chaque affaiblissement refuse si ≤ 1).
+            if (getEffectiveVitality(target) <= count) return false;
             for (let i = 0; i < count; i += 1) {
                 if (!applyExert(G, target)) return false;
             }
@@ -354,6 +371,11 @@ function payOption(
         const fpPlayer = G.players[fpId];
         if (!fpPlayer) return false;
         fpPlayer.burdens = (fpPlayer.burdens || 0) + option.addBurdens;
+    }
+    if (option.addThreats && option.addThreats > 0) {
+        if (addThreats(G, option.addThreats) < option.addThreats) {
+            return false;
+        }
     }
     if (option.removeThreats && option.removeThreats > 0) {
         const fpId = G.fpPlayerId || '0';

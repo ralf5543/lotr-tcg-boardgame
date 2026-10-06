@@ -569,4 +569,106 @@ describe('While you can spot → strength', () => {
         });
         expect(getCalculatedStrength(withInit, gimli)).toBe(8);
     });
+
+    it('Gandalf Leader of the Company : force selon la région', () => {
+        const gandalf = createCompanion({
+            id: '11S33',
+            title: 'Gandalf',
+            strength: 7,
+            instanceId: 'gandalf',
+            abilities: [
+                {
+                    id: '11S33:0',
+                    phases: [],
+                    trigger: { type: 'WHILE', inRegion: 1 },
+                    cost: [],
+                    effects: [
+                        {
+                            type: 'MODIFY_STAT',
+                            stat: 'STRENGTH',
+                            value: 2,
+                            target: [['COMPANION']],
+                            excludeSource: true,
+                        },
+                    ],
+                    source: 'SELF',
+                },
+                {
+                    id: '11S33:1',
+                    phases: [],
+                    trigger: { type: 'WHILE', inRegion: 2 },
+                    cost: [],
+                    effects: [
+                        {
+                            type: 'MODIFY_STAT',
+                            stat: 'STRENGTH',
+                            value: 1,
+                            target: [['COMPANION']],
+                        },
+                    ],
+                    source: 'SELF',
+                },
+                {
+                    id: '11S33:2',
+                    phases: [],
+                    trigger: { type: 'WHILE', inRegion: 3 },
+                    cost: [],
+                    effects: [
+                        {
+                            type: 'MODIFY_STAT',
+                            stat: 'STRENGTH',
+                            value: 2,
+                            target: 'SELF',
+                        },
+                    ],
+                    source: 'SELF',
+                },
+            ],
+        });
+        const frodo = createCompanion({
+            id: 'frodo',
+            title: 'Frodo',
+            strength: 3,
+            instanceId: 'frodo',
+        });
+
+        const region1 = createGameState({
+            currentSiteIndex: 0,
+            players: {
+                '0': createPlayerState('0', {
+                    fellowshipArea: [gandalf, frodo],
+                    currentSiteIndex: 0,
+                }),
+                '1': createPlayerState('1'),
+            },
+        });
+        expect(getCalculatedStrength(region1, gandalf)).toBe(7); // other only
+        expect(getCalculatedStrength(region1, frodo)).toBe(5); // +2
+
+        const region2 = createGameState({
+            currentSiteIndex: 3,
+            players: {
+                '0': createPlayerState('0', {
+                    fellowshipArea: [gandalf, frodo],
+                    currentSiteIndex: 3,
+                }),
+                '1': createPlayerState('1'),
+            },
+        });
+        expect(getCalculatedStrength(region2, gandalf)).toBe(8); // +1
+        expect(getCalculatedStrength(region2, frodo)).toBe(4); // +1
+
+        const region3 = createGameState({
+            currentSiteIndex: 6,
+            players: {
+                '0': createPlayerState('0', {
+                    fellowshipArea: [gandalf, frodo],
+                    currentSiteIndex: 6,
+                }),
+                '1': createPlayerState('1'),
+            },
+        });
+        expect(getCalculatedStrength(region3, gandalf)).toBe(9); // +2 self
+        expect(getCalculatedStrength(region3, frodo)).toBe(3); // rien
+    });
 });

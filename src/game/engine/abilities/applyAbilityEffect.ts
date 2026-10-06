@@ -7,7 +7,7 @@ import type {
 } from '../../types';
 import type { ModifierScope } from '../../logic/stats/types';
 import { resolveAbilityTarget, forEachInPlayCard, resolveWinnerTargets, resolveCostTarget } from './resolveCostTarget';
-import { requestWounds, requestCancelSkirmish } from '../responseWindow';
+import { requestWounds, requestCancelSkirmish, requestExhaust } from '../responseWindow';
 import { cardMatchesTarget } from '../validations/matchers';
 import { drawCardsForPlayer } from '../../../utils/drawCards';
 import { discardCardFromPlay } from '../../../utils/discardCardFromPlay';
@@ -28,7 +28,6 @@ import {
 } from '../../logic/cultureTokens';
 import { applyHeal } from '../../../utils/applyHeal';
 import { applyExert } from '../../../utils/applyExert';
-import { applyExhaust } from '../../../utils/applyExhaust';
 import { findSkirmishToCancel } from './cancelSkirmish';
 import {
     getReplaceSiteCandidates,
@@ -39,8 +38,17 @@ import {
     liberateSite,
     stackMinionOnControlledSite,
     playStackedMinion,
-    getSitesControlledBy,
 } from '../../logic/sites';
+import {
+    stackCardOnHost,
+    takeStackedCardToHand,
+    playStackedMinionFromCard,
+    getCardsStackedOnHost,
+} from '../../logic/cardStack';
+import {
+    getDeckOrDiscardPlayCandidates,
+    playCardFromDeckOrDiscard,
+} from '../../logic/playFromOutOfPlay';
 import { getWhileTwilightCostModifier } from '../../logic/stats/mechanics/whileModifier';
 import { isSiteReplaceForbidden } from '../../logic/siteReplaceRestrictions';
 import type { CardKeyword } from '../../types';
@@ -112,6 +120,25 @@ export function abilityPlayFromStackEffect(
 export function abilityPlaysOtherFromStack(ability: Ability): boolean {
     const effect = abilityPlayFromStackEffect(ability);
     return Boolean(effect && Array.isArray(effect.target));
+}
+
+export function abilityPlayFromDeckOrDiscardEffect(
+    ability: Ability
+): Extract<
+    Ability['effects'][number],
+    { type: 'PLAY_FROM_DECK_OR_DISCARD' }
+> | null {
+    const effect = (ability.effects || []).find(
+        (item) => item.type === 'PLAY_FROM_DECK_OR_DISCARD'
+    );
+    return effect && effect.type === 'PLAY_FROM_DECK_OR_DISCARD'
+        ? effect
+        : null;
+}
+
+/** Choix pioche/défausse (Captured…) — pas une désignation plateau. */
+export function abilityNeedsDeckOrDiscardPick(ability: Ability): boolean {
+    return Boolean(abilityPlayFromDeckOrDiscardEffect(ability));
 }
 
 /** Sites contrôlés où l’on peut empiler le séide source. */
@@ -345,6 +372,105 @@ export function applyAbilityEffect(
                     siteId
                 )
             ) {
+                return false;
+            }
+            continue;
+        }
+
+        if (effect.type === 'STACK_ON_SELF') {
+            const ownerId = abilityOwnerPlayerId(G, source);
+            if (!ownerId) return false;
+            const cardId = chosenIds[0];
+            if (!cardId) return false;
+
+            let cardToStack: CardState | null = null;
+            if (effect.from === 'HAND') {
+                cardToStack =
+                    (G.players[ownerId]?.hand || []).find(
+                        (c) =>
+                            c &&
+                            (c.instanceId === cardId || c.id === cardId)
+                    ) || null;
+                if (
+                    !cardToStack ||
+                    !cardMatchesTarget(cardToStack, effect.target)
+                ) {
+                    return false;
+                }
+            } else {
+                cardToStack = findTargetCard(G, cardId) as CardState | null;
+                if (
+                    !cardToStack ||
+                    cardToStack.type !== 'MINION' ||
+                    !cardMatchesTarget(cardToStack, effect.target)
+                ) {
+                    return false;
+                }
+            }
+
+            if (
+                !stackCardOnHost(
+                    G,
+                    source,
+                    cardToStack,
+                    effect.from,
+                    ownerId,
+                    effect.maxStacked
+                )
+            ) {
+                return false;
+            }
+            continue;
+        }
+
+        if (effect.type === 'TAKE_FROM_STACK') {
+            const ownerId = abilityOwnerPlayerId(G, source);
+            if (!ownerId) return false;
+            const cardId = chosenIds[0];
+            if (!cardId) return false;
+            if (!takeStackedCardToHand(G, source, cardId, ownerId)) {
+                return false;
+            }
+            continue;
+        }
+
+        if (effect.type === 'PLAY_FROM_CARD_STACK') {
+            const ownerId = abilityOwnerPlayerId(G, source);
+            if (!ownerId) return false;
+            const cardId = chosenIds[0];
+            if (!cardId) return false;
+            const cardToPlay =
+                getCardsStackedOnHost(source, effect.target).find(
+                    (c) => c.instanceId === cardId || c.id === cardId
+                ) || null;
+            if (!cardToPlay) return false;
+            if (
+                playStackedMinionFromCard(G, source, cardToPlay, ownerId) ===
+                null
+            ) {
+                return false;
+            }
+            continue;
+        }
+
+        if (effect.type === 'PLAY_FROM_DECK_OR_DISCARD') {
+            const ownerId = abilityOwnerPlayerId(G, source);
+            if (!ownerId) return false;
+            const cardId = chosenIds[0];
+            if (!cardId) return false;
+            const candidates = getDeckOrDiscardPlayCandidates(
+                G,
+                ownerId,
+                effect.target
+            );
+            if (
+                !candidates.some(
+                    (c) => c.instanceId === cardId || c.id === cardId
+                )
+            ) {
+                return false;
+            }
+            if (!playCardFromDeckOrDiscard(G, ownerId, cardId, effect.target)) {
                 return false;
             }
             continue;
@@ -663,7 +789,7 @@ function applyOneEffect(
     }
 
     if (effect.type === 'EXHAUST') {
-        return applyExhaust(G, target);
+        return requestExhaust(G, target, effect.fpMayPrevent);
     }
 
     if (effect.type === 'HEAL') {

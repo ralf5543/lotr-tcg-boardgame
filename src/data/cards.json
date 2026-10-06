@@ -3168,6 +3168,74 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
+    "abilities": [
+      {
+        "id": "0P70:0",
+        "phases": [],
+        "trigger": {
+          "type": "WHILE",
+          "inRegion": 1
+        },
+        "cost": [],
+        "effects": [
+          {
+            "type": "MODIFY_STAT",
+            "stat": "STRENGTH",
+            "value": 2,
+            "target": [
+              [
+                "COMPANION"
+              ]
+            ],
+            "excludeSource": true
+          }
+        ],
+        "source": "SELF",
+        "text": "While Gandalf is in region 1, each other companion is strength +2"
+      },
+      {
+        "id": "0P70:1",
+        "phases": [],
+        "trigger": {
+          "type": "WHILE",
+          "inRegion": 2
+        },
+        "cost": [],
+        "effects": [
+          {
+            "type": "MODIFY_STAT",
+            "stat": "STRENGTH",
+            "value": 1,
+            "target": [
+              [
+                "COMPANION"
+              ]
+            ]
+          }
+        ],
+        "source": "SELF",
+        "text": "While Gandalf is in region 2, each companion is strength +1"
+      },
+      {
+        "id": "0P70:2",
+        "phases": [],
+        "trigger": {
+          "type": "WHILE",
+          "inRegion": 3
+        },
+        "cost": [],
+        "effects": [
+          {
+            "type": "MODIFY_STAT",
+            "stat": "STRENGTH",
+            "value": 2,
+            "target": "SELF"
+          }
+        ],
+        "source": "SELF",
+        "text": "While Gandalf is in region 3, he is strength +2"
+      }
+    ],
     "culture": "GANDALF",
     "race": "WIZARD",
     "twilightCost": 4,
@@ -5428,7 +5496,47 @@
     "keywords": [
       "SPELL"
     ],
+    "abilities": [
+      {
+        "id": "1R83:0",
+        "phases": [
+          "SKIRMISH"
+        ],
+        "cost": [
+          {
+            "spot": [
+              {
+                "count": 1,
+                "target": [
+                  [
+                    "Gandalf"
+                  ]
+                ]
+              }
+            ]
+          }
+        ],
+        "effects": [
+          {
+            "type": "ADD_TEMP_STAT",
+            "stat": "STRENGTH",
+            "value": -3,
+            "target": [
+              [
+                "MINION"
+              ]
+            ],
+            "expiresAtPhase": "SKIRMISH"
+          }
+        ],
+        "source": "SELF",
+        "text": "SKIRMISH: Spot Gandalf to make a minion strength -3."
+      }
+    ],
     "phases": [
+      "SKIRMISH"
+    ],
+    "actionPhases": [
       "SKIRMISH"
     ],
     "culture": "GANDALF",
@@ -5608,6 +5716,38 @@
         "GONDOR",
         "COMPANION"
       ]
+    ],
+    "abilities": [
+      {
+        "id": "1R114:0",
+        "phases": [
+          "SKIRMISH"
+        ],
+        "cost": [
+          {
+            "discardFromPlay": [
+              {
+                "count": 1,
+                "target": "SELF"
+              }
+            ]
+          }
+        ],
+        "effects": [
+          {
+            "type": "ADD_TEMP_STAT",
+            "stat": "STRENGTH",
+            "value": 2,
+            "target": "BEARER",
+            "expiresAtPhase": "SKIRMISH"
+          }
+        ],
+        "source": "SELF",
+        "text": "SKIRMISH: Discard this to make bearer strength +2."
+      }
+    ],
+    "actionPhases": [
+      "SKIRMISH"
     ],
     "culture": "GONDOR",
     "twilightCost": 1,
@@ -8251,6 +8391,74 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
+    "abilities": [
+      {
+        "id": "11S33:0",
+        "phases": [],
+        "trigger": {
+          "type": "WHILE",
+          "inRegion": 1
+        },
+        "cost": [],
+        "effects": [
+          {
+            "type": "MODIFY_STAT",
+            "stat": "STRENGTH",
+            "value": 2,
+            "target": [
+              [
+                "COMPANION"
+              ]
+            ],
+            "excludeSource": true
+          }
+        ],
+        "source": "SELF",
+        "text": "While Gandalf is in region 1, each other companion is strength +2"
+      },
+      {
+        "id": "11S33:1",
+        "phases": [],
+        "trigger": {
+          "type": "WHILE",
+          "inRegion": 2
+        },
+        "cost": [],
+        "effects": [
+          {
+            "type": "MODIFY_STAT",
+            "stat": "STRENGTH",
+            "value": 1,
+            "target": [
+              [
+                "COMPANION"
+              ]
+            ]
+          }
+        ],
+        "source": "SELF",
+        "text": "While Gandalf is in region 2, each companion is strength +1"
+      },
+      {
+        "id": "11S33:2",
+        "phases": [],
+        "trigger": {
+          "type": "WHILE",
+          "inRegion": 3
+        },
+        "cost": [],
+        "effects": [
+          {
+            "type": "MODIFY_STAT",
+            "stat": "STRENGTH",
+            "value": 2,
+            "target": "SELF"
+          }
+        ],
+        "source": "SELF",
+        "text": "While Gandalf is in region 3, he is strength +2"
+      }
+    ],
     "culture": "GANDALF",
     "race": "WIZARD",
     "twilightCost": 4,
@@ -14256,6 +14464,38 @@
         "ELF"
       ]
     ],
+    "abilities": [
+      {
+        "id": "1R66:0",
+        "phases": [
+          "SKIRMISH"
+        ],
+        "cost": [
+          {
+            "discardFromPlay": [
+              {
+                "count": 1,
+                "target": "SELF"
+              }
+            ]
+          }
+        ],
+        "effects": [
+          {
+            "type": "ADD_TEMP_STAT",
+            "stat": "STRENGTH",
+            "value": 2,
+            "target": "BEARER",
+            "expiresAtPhase": "SKIRMISH"
+          }
+        ],
+        "source": "SELF",
+        "text": "SKIRMISH: Discard this to make bearer strength +2."
+      }
+    ],
+    "actionPhases": [
+      "SKIRMISH"
+    ],
     "culture": "ELVEN",
     "twilightCost": 1,
     "vitality": 1,
@@ -17435,6 +17675,65 @@
     "kind": "SHADOW",
     "type": "CONDITION",
     "subtype": "SUPPORT-AREA",
+    "abilities": [
+      {
+        "id": "1C133:0",
+        "phases": [
+          "SKIRMISH"
+        ],
+        "cost": [
+          {
+            "discardFromPlay": [
+              {
+                "count": 1,
+                "target": "SELF"
+              }
+            ]
+          }
+        ],
+        "effects": [
+          {
+            "type": "ADD_TEMP_STAT",
+            "stat": "STRENGTH",
+            "value": 2,
+            "target": [
+              [
+                "URUK-HAI"
+              ]
+            ],
+            "expiresAtPhase": "SKIRMISH"
+          }
+        ],
+        "source": "SELF",
+        "text": "SKIRMISH: Discard this to make an Uruk-hai strength +2."
+      },
+      {
+        "id": "1C133:1",
+        "phases": [],
+        "trigger": {
+          "type": "WHILE"
+        },
+        "cost": [],
+        "effects": [
+          {
+            "type": "MODIFY_STAT",
+            "stat": "TWILIGHT_COST",
+            "value": -1,
+            "target": [
+              [
+                "ISENGARD",
+                "EVENT"
+              ]
+            ]
+          }
+        ],
+        "source": "SELF",
+        "text": "The twilight cost of your isengard events is -1."
+      }
+    ],
+    "actionPhases": [
+      "SKIRMISH"
+    ],
     "culture": "ISENGARD",
     "twilightCost": 0,
     "imageUrl": "/cards_visuals/o_01_133.jpg",
@@ -26803,6 +27102,38 @@
         "DWARF"
       ]
     ],
+    "abilities": [
+      {
+        "id": "2U4:0",
+        "phases": [
+          "SKIRMISH"
+        ],
+        "cost": [
+          {
+            "discardFromPlay": [
+              {
+                "count": 1,
+                "target": "SELF"
+              }
+            ]
+          }
+        ],
+        "effects": [
+          {
+            "type": "ADD_TEMP_STAT",
+            "stat": "STRENGTH",
+            "value": 1,
+            "target": "BEARER",
+            "expiresAtPhase": "SKIRMISH"
+          }
+        ],
+        "source": "SELF",
+        "text": "SKIRMISH: Discard this to make bearer strength +1."
+      }
+    ],
+    "actionPhases": [
+      "SKIRMISH"
+    ],
     "culture": "DWARVEN",
     "twilightCost": 1,
     "vitality": 1,
@@ -34454,6 +34785,49 @@
     "kind": "FREE_PEOPLE",
     "type": "ARTIFACT",
     "subtype": "SUPPORT-AREA",
+    "abilities": [
+      {
+        "id": "3R44:0",
+        "phases": [
+          "FELLOWSHIP"
+        ],
+        "cost": [],
+        "effects": [
+          {
+            "type": "STACK_ON_SELF",
+            "from": "HAND",
+            "target": [
+              [
+                "GONDOR"
+              ]
+            ]
+          }
+        ],
+        "source": "SELF",
+        "text": "FELLOWSHIP: Stack a gondor card from hand here."
+      },
+      {
+        "id": "3R44:1",
+        "phases": [
+          "FELLOWSHIP"
+        ],
+        "cost": [
+          {
+            "addTwilight": 1
+          }
+        ],
+        "effects": [
+          {
+            "type": "TAKE_FROM_STACK"
+          }
+        ],
+        "source": "SELF",
+        "text": "FELLOWSHIP: Add twilight1 to take a card stacked here into hand."
+      }
+    ],
+    "actionPhases": [
+      "FELLOWSHIP"
+    ],
     "culture": "GONDOR",
     "twilightCost": 1,
     "imageUrl": "/cards_visuals/o_03_044.jpg",
@@ -34536,7 +34910,59 @@
     "isUnique": false,
     "kind": "FREE_PEOPLE",
     "type": "EVENT",
+    "abilities": [
+      {
+        "id": "3U46:0",
+        "phases": [
+          "SKIRMISH"
+        ],
+        "cost": [
+          {
+            "spot": [
+              {
+                "count": 1,
+                "target": [
+                  [
+                    "The Shards of Narsil"
+                  ]
+                ]
+              }
+            ]
+          }
+        ],
+        "effects": [
+          {
+            "type": "ADD_TEMP_STAT",
+            "stat": "STRENGTH",
+            "value": 3,
+            "target": [
+              [
+                "GONDOR",
+                "COMPANION"
+              ]
+            ],
+            "expiresAtPhase": "SKIRMISH"
+          },
+          {
+            "type": "ADD_TEMP_KEYWORD",
+            "keyword": "DAMAGE +1",
+            "target": [
+              [
+                "GONDOR",
+                "COMPANION"
+              ]
+            ],
+            "expiresAtPhase": "SKIRMISH"
+          }
+        ],
+        "source": "SELF",
+        "text": "SKIRMISH: Spot The Shards of Narsil to make a gondor companion strength +3 and damage +1."
+      }
+    ],
     "phases": [
+      "SKIRMISH"
+    ],
+    "actionPhases": [
       "SKIRMISH"
     ],
     "culture": "GONDOR",
@@ -34700,7 +35126,49 @@
     "isUnique": false,
     "kind": "SHADOW",
     "type": "EVENT",
+    "abilities": [
+      {
+        "id": "3R50:0",
+        "phases": [
+          "MANEUVER"
+        ],
+        "cost": [
+          {
+            "spot": [
+              {
+                "count": 1,
+                "target": [
+                  [
+                    "ISENGARD",
+                    "MINION"
+                  ]
+                ],
+                "mode": "DESIGNATION"
+              }
+            ]
+          }
+        ],
+        "effects": [
+          {
+            "type": "EXHAUST",
+            "target": [
+              [
+                "Aragorn"
+              ]
+            ],
+            "fpMayPrevent": {
+              "addBurdens": 2
+            }
+          }
+        ],
+        "source": "SELF",
+        "text": "MANEUVER: Spot an isengard minion to exhaust Aragorn"
+      }
+    ],
     "phases": [
+      "MANEUVER"
+    ],
+    "actionPhases": [
       "MANEUVER"
     ],
     "culture": "ISENGARD",
@@ -36021,7 +36489,48 @@
     "keywords": [
       "SEARCH"
     ],
+    "abilities": [
+      {
+        "id": "3C78:0",
+        "phases": [
+          "SKIRMISH"
+        ],
+        "cost": [
+          {
+            "spot": [
+              {
+                "count": 2,
+                "target": [
+                  [
+                    "SHIRE",
+                    "COMPANION"
+                  ]
+                ]
+              }
+            ]
+          }
+        ],
+        "effects": [
+          {
+            "type": "ADD_TEMP_KEYWORD",
+            "keyword": "DAMAGE +1",
+            "target": [
+              [
+                "MORIA",
+                "MINION"
+              ]
+            ],
+            "expiresAtPhase": "SKIRMISH"
+          }
+        ],
+        "source": "SELF",
+        "text": "SKIRMISH: Spot 2 shire companions to make a moria minion damage +1."
+      }
+    ],
     "phases": [
+      "SKIRMISH"
+    ],
+    "actionPhases": [
       "SKIRMISH"
     ],
     "culture": "MORIA",
@@ -36197,7 +36706,48 @@
     "isUnique": false,
     "kind": "SHADOW",
     "type": "EVENT",
+    "abilities": [
+      {
+        "id": "3U82:0",
+        "phases": [
+          "SKIRMISH"
+        ],
+        "cost": [
+          {
+            "spot": [
+              {
+                "count": 1,
+                "target": [
+                  [
+                    "ISENGARD",
+                    "MINION"
+                  ]
+                ],
+                "mode": "DESIGNATION"
+              }
+            ]
+          }
+        ],
+        "effects": [
+          {
+            "type": "ADD_TEMP_KEYWORD",
+            "keyword": "DAMAGE +1",
+            "target": [
+              [
+                "NAZGÛL"
+              ]
+            ],
+            "expiresAtPhase": "SKIRMISH"
+          }
+        ],
+        "source": "SELF",
+        "text": "SKIRMISH: Spot an isengard minion to make a Nazgûl damage +1."
+      }
+    ],
     "phases": [
+      "SKIRMISH"
+    ],
+    "actionPhases": [
       "SKIRMISH"
     ],
     "culture": "WRAITH",
@@ -49188,6 +49738,43 @@
     "kind": "SHADOW",
     "type": "CONDITION",
     "subtype": "SUPPORT-AREA",
+    "abilities": [
+      {
+        "id": "4R237:0",
+        "phases": [
+          "SKIRMISH"
+        ],
+        "cost": [
+          {
+            "discardFromPlay": [
+              {
+                "count": 1,
+                "target": "SELF"
+              }
+            ]
+          }
+        ],
+        "effects": [
+          {
+            "type": "ADD_TEMP_STAT",
+            "stat": "STRENGTH",
+            "value": 2,
+            "target": [
+              [
+                "RAIDER",
+                "MAN"
+              ]
+            ],
+            "expiresAtPhase": "SKIRMISH"
+          }
+        ],
+        "source": "SELF",
+        "text": "SKIRMISH: Discard this to make a raider Man strength +2."
+      }
+    ],
+    "actionPhases": [
+      "SKIRMISH"
+    ],
     "culture": "RAIDER",
     "twilightCost": 0,
     "imageUrl": "/cards_visuals/o_04_237.jpg",
@@ -50286,6 +50873,43 @@
     "kind": "SHADOW",
     "type": "CONDITION",
     "subtype": "SUPPORT-AREA",
+    "abilities": [
+      {
+        "id": "4R261:0",
+        "phases": [
+          "SKIRMISH"
+        ],
+        "cost": [
+          {
+            "discardFromPlay": [
+              {
+                "count": 1,
+                "target": "SELF"
+              }
+            ]
+          }
+        ],
+        "effects": [
+          {
+            "type": "ADD_TEMP_STAT",
+            "stat": "STRENGTH",
+            "value": 2,
+            "target": [
+              [
+                "RAIDER",
+                "MAN"
+              ]
+            ],
+            "expiresAtPhase": "SKIRMISH"
+          }
+        ],
+        "source": "SELF",
+        "text": "SKIRMISH: Discard this to make a raider Man strength +2."
+      }
+    ],
+    "actionPhases": [
+      "SKIRMISH"
+    ],
     "culture": "RAIDER",
     "twilightCost": 1,
     "imageUrl": "/cards_visuals/o_04_261.jpg",
@@ -58308,6 +58932,31 @@
     "kind": "SHADOW",
     "type": "CONDITION",
     "subtype": "SUPPORT-AREA",
+    "abilities": [
+      {
+        "id": "5U110:0",
+        "phases": [
+          "SHADOW"
+        ],
+        "cost": [],
+        "effects": [
+          {
+            "type": "PLAY_FROM_CARD_STACK",
+            "target": [
+              [
+                "SAURON",
+                "ORC"
+              ]
+            ]
+          }
+        ],
+        "source": "SELF",
+        "text": "SHADOW: Play a sauron Orc stacked here as if played from hand."
+      }
+    ],
+    "actionPhases": [
+      "SHADOW"
+    ],
     "culture": "SAURON",
     "twilightCost": 1,
     "imageUrl": "/cards_visuals/o_05_110.jpg",
@@ -67245,6 +67894,29 @@
     "isUnique": false,
     "kind": "SHADOW",
     "type": "EVENT",
+    "abilities": [
+      {
+        "id": "7C53:0",
+        "phases": [],
+        "cost": [],
+        "effects": [
+          {
+            "type": "PLAY_FROM_DECK_OR_DISCARD",
+            "target": [
+              [
+                "Gollum"
+              ]
+            ]
+          },
+          {
+            "type": "ADD_THREATS",
+            "count": 1
+          }
+        ],
+        "source": "SELF",
+        "text": "Play Gollum from your draw deck or discard pile to add a threat."
+      }
+    ],
     "phases": [
       "SHADOW"
     ],
@@ -69720,6 +70392,34 @@
         "MAN"
       ]
     ],
+    "abilities": [
+      {
+        "id": "7C108:0",
+        "phases": [
+          "SKIRMISH"
+        ],
+        "cost": [
+          {
+            "cannotSpotThreats": 2,
+            "addThreats": 1
+          }
+        ],
+        "effects": [
+          {
+            "type": "ADD_TEMP_STAT",
+            "stat": "STRENGTH",
+            "value": 1,
+            "target": "BEARER",
+            "expiresAtPhase": "SKIRMISH"
+          }
+        ],
+        "source": "ATTACHMENT",
+        "text": "SKIRMISH: If you cannot spot 2 threats, add a threat to make bearer strength +1."
+      }
+    ],
+    "actionPhases": [
+      "SKIRMISH"
+    ],
     "culture": "GONDOR",
     "twilightCost": 1,
     "strength": 2,
@@ -71995,6 +72695,42 @@
     "kind": "SHADOW",
     "type": "CONDITION",
     "subtype": "SUPPORT-AREA",
+    "abilities": [
+      {
+        "id": "7R159:0",
+        "phases": [
+          "SKIRMISH"
+        ],
+        "cost": [
+          {
+            "discardFromPlay": [
+              {
+                "count": 1,
+                "target": "SELF"
+              }
+            ]
+          }
+        ],
+        "effects": [
+          {
+            "type": "ADD_TEMP_STAT",
+            "stat": "STRENGTH",
+            "value": 2,
+            "target": [
+              [
+                "EASTERLING"
+              ]
+            ],
+            "expiresAtPhase": "SKIRMISH"
+          }
+        ],
+        "source": "SELF",
+        "text": "SKIRMISH: Discard this to make an Easterling strength +2."
+      }
+    ],
+    "actionPhases": [
+      "SKIRMISH"
+    ],
     "culture": "RAIDER",
     "twilightCost": 1,
     "imageUrl": "/cards_visuals/o_07_159.jpg",
@@ -73326,6 +74062,33 @@
     "isUnique": false,
     "kind": "SHADOW",
     "type": "MINION",
+    "abilities": [
+      {
+        "id": "7U190:0",
+        "phases": [
+          "SKIRMISH"
+        ],
+        "cost": [
+          {
+            "removeThreats": 1
+          }
+        ],
+        "effects": [
+          {
+            "type": "ADD_TEMP_STAT",
+            "stat": "STRENGTH",
+            "value": 3,
+            "target": "SELF",
+            "expiresAtPhase": "SKIRMISH"
+          }
+        ],
+        "source": "SELF",
+        "text": "SKIRMISH: Remove a threat to make this minion strength +3."
+      }
+    ],
+    "actionPhases": [
+      "SKIRMISH"
+    ],
     "culture": "WRAITH",
     "race": "ORC",
     "twilightCost": 2,
@@ -76485,6 +77248,33 @@
     "isUnique": true,
     "kind": "SHADOW",
     "type": "MINION",
+    "abilities": [
+      {
+        "id": "7U264:0",
+        "phases": [
+          "SKIRMISH"
+        ],
+        "cost": [
+          {
+            "removeThreats": 1
+          }
+        ],
+        "effects": [
+          {
+            "type": "ADD_TEMP_STAT",
+            "stat": "STRENGTH",
+            "value": 1,
+            "target": "SELF",
+            "expiresAtPhase": "SKIRMISH"
+          }
+        ],
+        "source": "SELF",
+        "text": "SKIRMISH: Remove a threat to make Army of Udûn strength +1."
+      }
+    ],
+    "actionPhases": [
+      "SKIRMISH"
+    ],
     "culture": "SAURON",
     "race": "ORC",
     "twilightCost": 9,
@@ -77786,6 +78576,33 @@
     "isUnique": false,
     "kind": "SHADOW",
     "type": "MINION",
+    "abilities": [
+      {
+        "id": "7C290:0",
+        "phases": [
+          "SKIRMISH"
+        ],
+        "cost": [
+          {
+            "removeThreats": 1
+          }
+        ],
+        "effects": [
+          {
+            "type": "ADD_TEMP_STAT",
+            "stat": "STRENGTH",
+            "value": 4,
+            "target": "SELF",
+            "expiresAtPhase": "SKIRMISH"
+          }
+        ],
+        "source": "SELF",
+        "text": "SKIRMISH: Remove a threat to make this minion strength +4."
+      }
+    ],
+    "actionPhases": [
+      "SKIRMISH"
+    ],
     "culture": "SAURON",
     "race": "ORC",
     "twilightCost": 1,
@@ -77828,6 +78645,38 @@
     "isUnique": false,
     "kind": "SHADOW",
     "type": "MINION",
+    "abilities": [
+      {
+        "id": "7C291:0",
+        "phases": [
+          "SKIRMISH"
+        ],
+        "cost": [
+          {
+            "removeThreats": 2
+          }
+        ],
+        "effects": [
+          {
+            "type": "ADD_TEMP_STAT",
+            "stat": "STRENGTH",
+            "value": 6,
+            "target": [
+              [
+                "SAURON",
+                "ORC"
+              ]
+            ],
+            "expiresAtPhase": "SKIRMISH"
+          }
+        ],
+        "source": "SELF",
+        "text": "SKIRMISH: Remove 2 threats to make a sauron Orc strength +6."
+      }
+    ],
+    "actionPhases": [
+      "SKIRMISH"
+    ],
     "culture": "SAURON",
     "race": "ORC",
     "twilightCost": 2,
@@ -77870,6 +78719,38 @@
     "isUnique": false,
     "kind": "SHADOW",
     "type": "MINION",
+    "abilities": [
+      {
+        "id": "7U292:0",
+        "phases": [
+          "SKIRMISH"
+        ],
+        "cost": [
+          {
+            "removeThreats": 3
+          }
+        ],
+        "effects": [
+          {
+            "type": "ADD_TEMP_STAT",
+            "stat": "STRENGTH",
+            "value": 8,
+            "target": [
+              [
+                "SAURON",
+                "MINION"
+              ]
+            ],
+            "expiresAtPhase": "SKIRMISH"
+          }
+        ],
+        "source": "SELF",
+        "text": "SKIRMISH: Remove 3 threats to make a sauron minion strength +8."
+      }
+    ],
+    "actionPhases": [
+      "SKIRMISH"
+    ],
     "culture": "SAURON",
     "race": "ORC",
     "twilightCost": 3,
@@ -80426,6 +81307,33 @@
         "Gandalf"
       ]
     ],
+    "abilities": [
+      {
+        "id": "8R21:0",
+        "phases": [
+          "SKIRMISH"
+        ],
+        "cost": [
+          {
+            "addThreats": 1
+          }
+        ],
+        "effects": [
+          {
+            "type": "ADD_TEMP_STAT",
+            "stat": "STRENGTH",
+            "value": 1,
+            "target": "BEARER",
+            "expiresAtPhase": "SKIRMISH"
+          }
+        ],
+        "source": "ATTACHMENT",
+        "text": "SKIRMISH: Add a threat to make Gandalf strength +1."
+      }
+    ],
+    "actionPhases": [
+      "SKIRMISH"
+    ],
     "culture": "GANDALF",
     "twilightCost": 2,
     "imageUrl": "/cards_visuals/o_08_021.jpg",
@@ -80778,6 +81686,58 @@
     "kind": "SHADOW",
     "type": "POSSESSION",
     "subtype": "SUPPORT-AREA",
+    "abilities": [
+      {
+        "id": "8C30:0",
+        "phases": [
+          "REGROUP"
+        ],
+        "cost": [],
+        "effects": [
+          {
+            "type": "STACK_ON_SELF",
+            "from": "PLAY",
+            "target": [
+              [
+                "ORC",
+                "MINION"
+              ],
+              [
+                "GOLLUM",
+                "MINION"
+              ]
+            ],
+            "maxStacked": 3
+          }
+        ],
+        "source": "SELF",
+        "text": "REGROUP: If there are fewer than 3 cards stacked here, spot your Orc or gollum minion to stack that minion here."
+      },
+      {
+        "id": "8C30:1",
+        "phases": [
+          "SHADOW"
+        ],
+        "cost": [],
+        "effects": [
+          {
+            "type": "PLAY_FROM_CARD_STACK",
+            "target": [
+              [
+                "GOLLUM",
+                "MINION"
+              ]
+            ]
+          }
+        ],
+        "source": "SELF",
+        "text": "SHADOW: Play a gollum minion stacked here as if played from hand."
+      }
+    ],
+    "actionPhases": [
+      "REGROUP",
+      "SHADOW"
+    ],
     "culture": "GOLLUM",
     "twilightCost": 1,
     "imageUrl": "/cards_visuals/o_08_030.jpg",
@@ -82738,6 +83698,43 @@
     "kind": "SHADOW",
     "type": "CONDITION",
     "subtype": "SUPPORT-AREA",
+    "abilities": [
+      {
+        "id": "8U78:0",
+        "phases": [
+          "SKIRMISH"
+        ],
+        "cost": [
+          {
+            "discardFromPlay": [
+              {
+                "count": 1,
+                "target": "SELF"
+              }
+            ]
+          }
+        ],
+        "effects": [
+          {
+            "type": "ADD_TEMP_STAT",
+            "stat": "STRENGTH",
+            "value": 2,
+            "target": [
+              [
+                "WRAITH",
+                "ORC"
+              ]
+            ],
+            "expiresAtPhase": "SKIRMISH"
+          }
+        ],
+        "source": "SELF",
+        "text": "SKIRMISH: Discard this to make a wraith Orc strength +2."
+      }
+    ],
+    "actionPhases": [
+      "SKIRMISH"
+    ],
     "culture": "WRAITH",
     "twilightCost": 3,
     "imageUrl": "/cards_visuals/o_08_078.jpg",
@@ -89771,6 +90768,43 @@
     "kind": "SHADOW",
     "type": "CONDITION",
     "subtype": "SUPPORT-AREA",
+    "abilities": [
+      {
+        "id": "10C52:0",
+        "phases": [
+          "SKIRMISH"
+        ],
+        "cost": [
+          {
+            "discardFromPlay": [
+              {
+                "count": 1,
+                "target": "SELF"
+              }
+            ]
+          }
+        ],
+        "effects": [
+          {
+            "type": "ADD_TEMP_STAT",
+            "stat": "STRENGTH",
+            "value": 2,
+            "target": [
+              [
+                "RAIDER",
+                "MAN"
+              ]
+            ],
+            "expiresAtPhase": "SKIRMISH"
+          }
+        ],
+        "source": "SELF",
+        "text": "SKIRMISH: Discard this to make a raider Man strength +2."
+      }
+    ],
+    "actionPhases": [
+      "SKIRMISH"
+    ],
     "culture": "RAIDER",
     "twilightCost": 1,
     "imageUrl": "/cards_visuals/o_10_052.jpg",
@@ -90276,6 +91310,43 @@
     "kind": "SHADOW",
     "type": "CONDITION",
     "subtype": "SUPPORT-AREA",
+    "abilities": [
+      {
+        "id": "10C64:0",
+        "phases": [
+          "SKIRMISH"
+        ],
+        "cost": [
+          {
+            "discardFromPlay": [
+              {
+                "count": 1,
+                "target": "SELF"
+              }
+            ]
+          }
+        ],
+        "effects": [
+          {
+            "type": "ADD_TEMP_STAT",
+            "stat": "STRENGTH",
+            "value": 2,
+            "target": [
+              [
+                "WRAITH",
+                "MINION"
+              ]
+            ],
+            "expiresAtPhase": "SKIRMISH"
+          }
+        ],
+        "source": "SELF",
+        "text": "SKIRMISH: Discard this to make a wraith minion strength +2."
+      }
+    ],
+    "actionPhases": [
+      "SKIRMISH"
+    ],
     "culture": "WRAITH",
     "twilightCost": 1,
     "imageUrl": "/cards_visuals/o_10_064.jpg",
@@ -94073,6 +95144,31 @@
           }
         ]
       }
+    ],
+    "abilities": [
+      {
+        "id": "11U28:0",
+        "phases": [
+          "REGROUP"
+        ],
+        "cost": [],
+        "effects": [
+          {
+            "type": "STACK_ON_SELF",
+            "from": "HAND",
+            "target": [
+              [
+                "SPELL"
+              ]
+            ]
+          }
+        ],
+        "source": "SELF",
+        "text": "REGROUP: Stack a spell from hand here."
+      }
+    ],
+    "actionPhases": [
+      "REGROUP"
     ],
     "culture": "GANDALF",
     "twilightCost": 1,
@@ -99756,6 +100852,37 @@
         "MAN"
       ]
     ],
+    "abilities": [
+      {
+        "id": "11U149:0",
+        "phases": [
+          "ASSIGNMENT"
+        ],
+        "cost": [
+          {
+            "discardFromPlay": [
+              {
+                "count": 1,
+                "target": "SELF"
+              }
+            ]
+          }
+        ],
+        "effects": [
+          {
+            "type": "ADD_TEMP_KEYWORD",
+            "keyword": "DEFENDER +1",
+            "target": "BEARER",
+            "expiresAtPhase": "REGROUP"
+          }
+        ],
+        "source": "SELF",
+        "text": "ASSIGNMENT: Discard this to make bearer defender +1."
+      }
+    ],
+    "actionPhases": [
+      "ASSIGNMENT"
+    ],
     "culture": "ROHAN",
     "twilightCost": 4,
     "imageUrl": "/cards_visuals/o_11_149.jpg",
@@ -100982,6 +102109,39 @@
     "isUnique": false,
     "kind": "FREE_PEOPLE",
     "type": "EVENT",
+    "abilities": [
+      {
+        "id": "11S176:0",
+        "phases": [],
+        "cost": [
+          {
+            "spot": [
+              {
+                "count": 1,
+                "target": [
+                  [
+                    "MINION"
+                  ]
+                ]
+              }
+            ]
+          }
+        ],
+        "effects": [
+          {
+            "type": "HEAL",
+            "multiFromSpot": true,
+            "target": [
+              [
+                "HOBBIT"
+              ]
+            ]
+          }
+        ],
+        "source": "SELF",
+        "text": "Heal a Hobbit for each minion you spot."
+      }
+    ],
     "phases": [
       "REGROUP"
     ],
@@ -114330,6 +115490,33 @@
         ]
       }
     ],
+    "abilities": [
+      {
+        "id": "13R49:0",
+        "phases": [],
+        "trigger": {
+          "type": "WHEN_PLAYED"
+        },
+        "cost": [],
+        "effects": [
+          {
+            "type": "PLACE_CULTURE_TOKEN",
+            "culture": "GOLLUM",
+            "count": 1,
+            "target": "SELF",
+            "perSpot": {
+              "target": [
+                [
+                  "GOLLUM"
+                ]
+              ]
+            }
+          }
+        ],
+        "source": "SELF",
+        "text": "When you play this, add a gollum token here for each gollum card you can spot."
+      }
+    ],
     "culture": "GOLLUM",
     "twilightCost": 2,
     "imageUrl": "/cards_visuals/o_13_049.jpg",
@@ -115188,6 +116375,33 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
+    "abilities": [
+      {
+        "id": "13C66:0",
+        "phases": [],
+        "trigger": {
+          "type": "WHILE",
+          "bearing": {
+            "target": [
+              [
+                "GONDOR",
+                "POSSESSION"
+              ]
+            ]
+          }
+        },
+        "cost": [],
+        "effects": [
+          {
+            "type": "MODIFY_KEYWORD",
+            "keyword": "DEFENDER +1",
+            "target": "SELF"
+          }
+        ],
+        "source": "SELF",
+        "text": "While Faramir bears a gondor possession, he is defender +1."
+      }
+    ],
     "culture": "GONDOR",
     "race": "MAN",
     "twilightCost": 3,
@@ -122510,6 +123724,43 @@
     "kind": "FREE_PEOPLE",
     "type": "CONDITION",
     "subtype": "SUPPORT-AREA",
+    "abilities": [
+      {
+        "id": "15C10:0",
+        "phases": [
+          "SKIRMISH"
+        ],
+        "cost": [
+          {
+            "discardFromPlay": [
+              {
+                "count": 1,
+                "target": "SELF"
+              }
+            ]
+          }
+        ],
+        "effects": [
+          {
+            "type": "ADD_TEMP_STAT",
+            "stat": "STRENGTH",
+            "value": 2,
+            "target": [
+              [
+                "DWARVEN",
+                "COMPANION"
+              ]
+            ],
+            "expiresAtPhase": "SKIRMISH"
+          }
+        ],
+        "source": "SELF",
+        "text": "SKIRMISH: Discard this to make a dwarven companion strength +2."
+      }
+    ],
+    "actionPhases": [
+      "SKIRMISH"
+    ],
     "culture": "DWARVEN",
     "twilightCost": 1,
     "imageUrl": "/cards_visuals/o_15_010.jpg",
@@ -122766,6 +124017,43 @@
     "kind": "FREE_PEOPLE",
     "type": "CONDITION",
     "subtype": "SUPPORT-AREA",
+    "abilities": [
+      {
+        "id": "15C15:0",
+        "phases": [
+          "SKIRMISH"
+        ],
+        "cost": [
+          {
+            "discardFromPlay": [
+              {
+                "count": 1,
+                "target": "SELF"
+              }
+            ]
+          }
+        ],
+        "effects": [
+          {
+            "type": "ADD_TEMP_STAT",
+            "stat": "STRENGTH",
+            "value": 2,
+            "target": [
+              [
+                "ELVEN",
+                "ELF"
+              ]
+            ],
+            "expiresAtPhase": "SKIRMISH"
+          }
+        ],
+        "source": "SELF",
+        "text": "SKIRMISH: Discard this to make an elven Elf strength +2."
+      }
+    ],
+    "actionPhases": [
+      "SKIRMISH"
+    ],
     "culture": "ELVEN",
     "twilightCost": 1,
     "imageUrl": "/cards_visuals/o_15_015.jpg",
@@ -125210,6 +126498,43 @@
     "kind": "FREE_PEOPLE",
     "type": "CONDITION",
     "subtype": "SUPPORT-AREA",
+    "abilities": [
+      {
+        "id": "15C65:0",
+        "phases": [
+          "SKIRMISH"
+        ],
+        "cost": [
+          {
+            "discardFromPlay": [
+              {
+                "count": 1,
+                "target": "SELF"
+              }
+            ]
+          }
+        ],
+        "effects": [
+          {
+            "type": "ADD_TEMP_STAT",
+            "stat": "STRENGTH",
+            "value": 2,
+            "target": [
+              [
+                "GONDOR",
+                "MAN"
+              ]
+            ],
+            "expiresAtPhase": "SKIRMISH"
+          }
+        ],
+        "source": "SELF",
+        "text": "SKIRMISH: Discard this to make a gondor Man strength +2."
+      }
+    ],
+    "actionPhases": [
+      "SKIRMISH"
+    ],
     "culture": "GONDOR",
     "twilightCost": 1,
     "imageUrl": "/cards_visuals/o_15_065.jpg",
@@ -134908,6 +136233,43 @@
     "kind": "SHADOW",
     "type": "POSSESSION",
     "subtype": "SUPPORT-AREA",
+    "abilities": [
+      {
+        "id": "17C66:0",
+        "phases": [
+          "SKIRMISH"
+        ],
+        "cost": [
+          {
+            "discardFromPlay": [
+              {
+                "count": 1,
+                "target": "SELF"
+              }
+            ]
+          }
+        ],
+        "effects": [
+          {
+            "type": "ADD_TEMP_STAT",
+            "stat": "STRENGTH",
+            "value": 2,
+            "target": [
+              [
+                "MEN",
+                "MAN"
+              ]
+            ],
+            "expiresAtPhase": "SKIRMISH"
+          }
+        ],
+        "source": "SELF",
+        "text": "SKIRMISH: Discard this to make a men Man strength +2."
+      }
+    ],
+    "actionPhases": [
+      "SKIRMISH"
+    ],
     "culture": "MEN",
     "twilightCost": 2,
     "imageUrl": "/cards_visuals/o_17_066.jpg",

@@ -4219,6 +4219,30 @@
     "isUnique": false,
     "kind": "SITE",
     "type": "SITE",
+    "abilities": [
+      {
+        "id": "7U334:0:site-each-kw",
+        "phases": [],
+        "trigger": {
+          "type": "WHILE"
+        },
+        "cost": [],
+        "effects": [
+          {
+            "type": "MODIFY_KEYWORD",
+            "keyword": "DEFENDER +1",
+            "target": [
+              [
+                "GONDOR",
+                "COMPANION"
+              ]
+            ]
+          }
+        ],
+        "source": "SELF",
+        "text": "Each gondor companion is defender +1"
+      }
+    ],
     "twilightCost": 0,
     "siteNumber": 1,
     "siteArrow": "Left",
@@ -7029,6 +7053,31 @@
     "type": "SITE",
     "keywords": [
       "UNDERGROUND"
+    ],
+    "abilities": [
+      {
+        "id": "11S265:0:site-each-kw",
+        "phases": [],
+        "trigger": {
+          "type": "WHILE"
+        },
+        "cost": [],
+        "effects": [
+          {
+            "type": "MODIFY_KEYWORD",
+            "keyword": "DEFENDER +1",
+            "target": [
+              [
+                "GONDOR",
+                "UNWOUNDED",
+                "MAN"
+              ]
+            ]
+          }
+        ],
+        "source": "SELF",
+        "text": "Each unwounded gondor Man is defender +1."
+      }
     ],
     "twilightCost": 2,
     "siteArrow": "Left",

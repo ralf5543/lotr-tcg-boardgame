@@ -87,10 +87,56 @@ export const Grid = styled.div`
     align-content: start;
 `;
 
-export const GridCell = styled.div`
+export const GridCell = styled.div<{
+    $selectable?: boolean;
+    $dimmed?: boolean;
+}>`
     position: relative;
     display: flex;
     justify-content: center;
+    ${({ $selectable }) =>
+        $selectable &&
+        `
+        cursor: pointer;
+        border-radius: 6px;
+        box-shadow: 0 0 0 2px rgba(226, 192, 68, 0.85),
+            0 0 14px rgba(226, 192, 68, 0.45);
+        transition: transform 0.15s ease, box-shadow 0.15s ease;
+        &:hover {
+            transform: scale(1.04);
+            box-shadow: 0 0 0 2px #e2c044,
+                0 0 20px rgba(226, 192, 68, 0.7);
+        }
+    `}
+    ${({ $dimmed }) =>
+        $dimmed &&
+        `
+        opacity: 0.42;
+        filter: grayscale(0.35);
+    `}
+`;
+
+export const Section = styled.section`
+    & + & {
+        margin-top: 28px;
+    }
+`;
+
+export const SectionTitle = styled.h3`
+    display: flex;
+    align-items: baseline;
+    gap: 10px;
+    margin: 0 0 12px;
+    color: #f3e6c0;
+    font-size: 15px;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+`;
+
+export const SectionCount = styled.span`
+    color: rgba(243, 230, 192, 0.55);
+    font-size: 13px;
+    font-weight: 500;
 `;
 
 export const CountBadge = styled.span`

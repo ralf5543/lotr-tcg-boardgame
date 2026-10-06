@@ -295,7 +295,11 @@ export const Hand: React.FC<HandProps> = ({
                               isCardTargetable(cardKey) &&
                               !discardingIds.has(cardKey);
 
-                          return (
+                                      const isDesignationTarget =
+                                          isDesignating &&
+                                          isCardTargetable(cardKey);
+
+                                      return (
                               <S.CardWrapper
                                   key={card.id}
                                   $angle={angle}
@@ -315,12 +319,14 @@ export const Hand: React.FC<HandProps> = ({
                                   $isPlayableEvent={
                                       isPlayableEvent ||
                                       isHandDiscardTarget ||
+                                      isDesignationTarget ||
                                       usesArrowDesignation
                                   }
                                   data-draggable={
                                       !isDiscardPhase &&
                                       isMatchingPlayerRole &&
-                                      !isHandDiscard
+                                      !isHandDiscard &&
+                                      !isDesignating
                                           ? 'true'
                                           : undefined
                                   }
@@ -332,12 +338,18 @@ export const Hand: React.FC<HandProps> = ({
                                       opacity: isHidden ? 0 : undefined,
                                       pointerEvents:
                                           isHidden ||
-                                          isDesignating ||
-                                          discardingIndex !== null
+                                          discardingIndex !== null ||
+                                          (isDesignating &&
+                                              !isDesignationTarget)
                                               ? 'none'
                                               : 'auto',
                                   }}
                                   onClick={(e) => {
+                                      if (isDesignationTarget) {
+                                          e.stopPropagation();
+                                          selectCard(cardKey);
+                                          return;
+                                      }
                                       if (isHandDiscard) {
                                           e.stopPropagation();
                                           if (isHandDiscardTarget) {
@@ -356,7 +368,12 @@ export const Hand: React.FC<HandProps> = ({
                                           return;
                                       }
 
-                                      if (isDesignating) return;
+                                      if (isDesignating) {
+                                          if (isDesignationTarget) {
+                                              e.stopPropagation();
+                                          }
+                                          return;
+                                      }
 
                                       if (
                                           !isMatchingPlayerRole ||

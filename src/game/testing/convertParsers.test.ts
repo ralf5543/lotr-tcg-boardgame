@@ -5460,6 +5460,49 @@ describe('parseAbilities — culture tokens', () => {
         ).toBeFalsy();
     });
 
+    it('parse While in region N → force (Gandalf Leader of the Company)', () => {
+        const text =
+            'While Gandalf is in region 1, each other companion is strength +2. While Gandalf is in region 2, each companion is strength +1. While Gandalf is in region 3, he is strength +2.';
+        const abilities = parseAbilities(text, 'Gandalf', '11S33');
+        expect(abilities).toEqual(
+            expect.arrayContaining([
+                expect.objectContaining({
+                    trigger: { type: 'WHILE', inRegion: 1 },
+                    effects: [
+                        expect.objectContaining({
+                            type: 'MODIFY_STAT',
+                            stat: 'STRENGTH',
+                            value: 2,
+                            target: [['COMPANION']],
+                            excludeSource: true,
+                        }),
+                    ],
+                }),
+                expect.objectContaining({
+                    trigger: { type: 'WHILE', inRegion: 2 },
+                    effects: [
+                        expect.objectContaining({
+                            type: 'MODIFY_STAT',
+                            value: 1,
+                            target: [['COMPANION']],
+                        }),
+                    ],
+                }),
+                expect.objectContaining({
+                    trigger: { type: 'WHILE', inRegion: 3 },
+                    effects: [
+                        expect.objectContaining({
+                            type: 'MODIFY_STAT',
+                            value: 2,
+                            target: 'SELF',
+                        }),
+                    ],
+                }),
+            ])
+        );
+        expect(abilities).toHaveLength(3);
+    });
+
     it('parse Make +N (or +M if initiative)', () => {
         expect(
             parseAbilities(

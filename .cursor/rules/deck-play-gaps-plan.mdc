@@ -1,0 +1,43 @@
+---
+description: Plan d’implémentation trous de mécanismes (jeu réel decks)
+alwaysApply: true
+---
+
+# Jeu réel — trous de mécanismes
+
+**Format : Standard (règles modernes).** Voir `.cursor/rules/format-standard.mdc`.
+
+Credo : **mieux vaut inerte que faux.** Fragments parser + runtime ; pas d’exceptions par id. Cartes-témoins issus des decks Fumeurs/Gollum et Gondor/Uruks.
+
+L’ancien plan main/initiative est **figé** (`.cursor/rules/hand-initiative-plan.mdc`, `alwaysApply: false`). Vision : [`.cursor/rules/roadmap.mdc`](roadmap.mdc).
+
+## Étapes livrées
+
+1. **DISCARD_ALL / effets de masse** ✅ — Sleep Caradhras `1C84`
+2. **While in region N → force** ✅ — Gandalf Leader `11S33`
+3. **Spot → exhaust nommé + prévention fardeaux** ✅ — Can You Protect Me `3R50`
+4. **Skirmish : if cannot spot N threats, add threat → make bearer** ✅ — Knight's Spear `7C108`
+5. **Réduction coût événements culture + discard-self make** ✅ — Saruman's Ambition `1C133`
+
+## Suite (priorité jouabilité decks)
+
+6. **Spot titre nommé → make force + dégâts** ✅ — Still Sharp `3U46` (spot Narsil en jeu ; stack Narsil = étape 10)
+7. **Heal classe for each [classe] you spot** ✅ — Unharmed `11S176`
+8. **Site While : each unwounded [classe] → keyword** ✅ — Window on the West `11S265`
+9. **Site Regroup : exert nommé → play next site** — Mere of Dead Faces `11U246`
+10. **Stack sur possession/condition support + take/play from stack** ✅ — Web `8C30` ; Fragments de Narsil `3R44`
+11. **When played place tokens for named spots + remove/discard make** — Noble Leaders `7R112`
+12. **Gametext site start-of-phase (choix forcé)** — Pelennor Flat `11S254`
+13. **Play from draw deck / discard** ✅ — Captured by the Ring `7C53` (grille pleine pioche+défausse, sélection légale)
+
+## Exceptions (pas de fragment raisonnable)
+
+| Id | Titre | Manque | Notes |
+| --- | --- | --- | --- |
+| `7R43` | Light the Beacons | Choix d’une culture + all unbound companions of that culture (sauf Gandalf) strength +3 ; coût exert ×3 ou ×2 si initiative | Voir [`card-exceptions.mdc`](card-exceptions.mdc) |
+
+## Hors scope / plus tard
+
+- Création de deck, BOT, chat, gagner/perdre
+- Weather no-events et autres reports sites non listés ici
+- Autres cartes inertes des decks non listées ici (Pippin's Armor / Sword, Hidden Knowledge, etc.) — à prioriser au prochain passage

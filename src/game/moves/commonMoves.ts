@@ -26,6 +26,9 @@ import {
     announceInitiativeIfChanged,
     freePeoplesHasInitiative,
 } from '../logic/initiative';
+import { getEffectiveTwilightCost } from '../../utils/roamingDetection';
+import { getWhileTwilightCostModifier } from '../logic/stats/mechanics/whileModifier';
+import { getCurrentSiteIndex } from '../logic/sites';
 import {
     afterResponseResolved,
     flushPendingActionYield,
@@ -403,7 +406,11 @@ export const playCard = (
     }
 
     if (!isFP) {
-        const cost = Number(card.twilightCost) || 0;
+        const cost = getEffectiveTwilightCost(
+            card,
+            getCurrentSiteIndex(G),
+            getWhileTwilightCostModifier(G, card)
+        );
         G.twilightPool -= cost;
         const [playedCard] = player.hand.splice(cardIndex, 1);
 

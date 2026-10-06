@@ -25,16 +25,24 @@ export function findTargetCard(
         const player = G.players[pId];
         if (!player) continue;
 
-        for (const char of player.fellowshipArea || []) {
-            if (match(char)) return char;
-            const attached = char.attachments?.find(match);
-            if (attached) return attached;
-        }
-
         for (const card of player.supportArea || []) {
             if (match(card)) return card;
             const attached = card.attachments?.find(match);
             if (attached) return attached;
+            const stacked = card.stacked?.find(match);
+            if (stacked) return stacked;
+            for (const att of card.attachments || []) {
+                const attStacked = att?.stacked?.find(match);
+                if (attStacked) return attStacked;
+            }
+        }
+
+        for (const char of player.fellowshipArea || []) {
+            if (match(char)) return char;
+            const attached = char.attachments?.find(match);
+            if (attached) return attached;
+            const stacked = char.stacked?.find(match);
+            if (stacked) return stacked;
         }
     }
 

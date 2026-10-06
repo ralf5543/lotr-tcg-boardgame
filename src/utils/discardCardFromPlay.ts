@@ -14,16 +14,53 @@ function removeFromList(
         return removed || null;
     }
     for (const host of list) {
-        if (!host?.attachments) continue;
-        const attachedIndex = host.attachments.findIndex((card) =>
-            matchCard(card, targetId)
-        );
-        if (attachedIndex >= 0) {
-            const [removed] = host.attachments.splice(attachedIndex, 1);
-            return removed || null;
+        if (!host) continue;
+        if (host.attachments) {
+            const attachedIndex = host.attachments.findIndex((card) =>
+                matchCard(card, targetId)
+            );
+            if (attachedIndex >= 0) {
+                const [removed] = host.attachments.splice(attachedIndex, 1);
+                return removed || null;
+            }
+        }
+        if (host.stacked) {
+            const stackedIndex = host.stacked.findIndex((card) =>
+                matchCard(card, targetId)
+            );
+            if (stackedIndex >= 0) {
+                const [removed] = host.stacked.splice(stackedIndex, 1);
+                return removed || null;
+            }
+            for (const att of host.attachments || []) {
+                if (!att?.stacked) continue;
+                const attStackedIndex = att.stacked.findIndex((card) =>
+                    matchCard(card, targetId)
+                );
+                if (attStackedIndex >= 0) {
+                    const [removed] = att.stacked.splice(attStackedIndex, 1);
+                    return removed || null;
+                }
+            }
         }
     }
     return null;
+}
+
+/** Défausse aussi les cartes empilées sur l’hôte (Web, Narsil…). */
+function discardStackedWithHost(
+    G: GameState,
+    host: CardState,
+    ownerId: string
+): void {
+    const stacked = host.stacked;
+    if (!stacked?.length) return;
+    host.stacked = [];
+    const pile = ownerDiscardPile(G, ownerId, host);
+    if (!pile) return;
+    for (const card of stacked) {
+        if (card) pile.push(card);
+    }
 }
 
 function ownerDiscardPile(
@@ -62,6 +99,7 @@ export function discardCardFromPlay(
             removeFromList(player.fellowshipArea, targetId) ||
             removeFromList(player.supportArea, targetId);
         if (!removed) continue;
+        discardStackedWithHost(G, removed, playerId);
         const pile = ownerDiscardPile(G, playerId, removed);
         if (!pile) return false;
         pile.push(removed);
@@ -74,6 +112,7 @@ export function discardCardFromPlay(
         const shadowId = fpId === '0' ? '1' : '0';
         const ownerId =
             fromBattle.kind === 'FREE_PEOPLE' ? fpId : shadowId;
+        discardStackedWithHost(G, fromBattle, ownerId);
         const pile = ownerDiscardPile(G, ownerId, fromBattle);
         if (!pile) return false;
         pile.push(fromBattle);

@@ -525,4 +525,66 @@ describe('designation', () => {
             ['garrison']
         );
     });
+
+    it('Sleep Caradhras : DISCARD_ALL ne demande pas de désignation d’effet (pas de flèche)', () => {
+        const ability: Ability = {
+            id: '1C84:0',
+            phases: ['FELLOWSHIP'],
+            cost: [
+                {
+                    exert: [
+                        { count: 1, target: [['Gandalf']] },
+                    ],
+                },
+            ],
+            effects: [
+                { type: 'DISCARD_ALL', target: [['CONDITION']] },
+            ],
+            source: 'SELF',
+        };
+        const event = createCard({
+            id: '1C84',
+            kind: 'FREE_PEOPLE',
+            type: 'EVENT',
+            title: 'Sleep, Caradhras',
+            abilities: [ability],
+        });
+        const gandalf = createCompanion({
+            id: '11S33',
+            title: 'Gandalf',
+            vitality: 4,
+            instanceId: 'gandalf',
+        });
+        const condition = createCard({
+            id: 'cond',
+            kind: 'SHADOW',
+            type: 'CONDITION',
+            subtype: 'SUPPORT-AREA',
+            instanceId: 'cond-1',
+        });
+        const G = createGameState({
+            players: {
+                '0': createPlayerState('0', {
+                    fellowshipArea: [gandalf],
+                    supportArea: [],
+                }),
+                '1': createPlayerState('1', {
+                    supportArea: [condition],
+                }),
+            },
+        });
+
+        expect(abilityNeedsCostDesignation(G, event, ability)).toBe(true);
+        expect(abilityNeedsEffectDesignation(G, event, ability)).toBe(false);
+        expect(abilityEffectWantsTargetingArrow(ability)).toBe(false);
+        // Drag : coût à désigner → pas de flèche pendant le drag
+        expect(getHandEventDesignationTargetIds(G, event, 'fellowship')).toEqual(
+            []
+        );
+        expect(
+            getCostDesignationCandidates(G, event, ability).map(
+                (c) => c.instanceId
+            )
+        ).toEqual(['gandalf']);
+    });
 });

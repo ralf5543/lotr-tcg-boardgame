@@ -908,6 +908,21 @@ export const GameControls: React.FC<GameControlsProps> = ({
                                 </S.ActionButton>
                             )}
 
+                        {toastConfig.type === 'RESPONSE' &&
+                            G.pendingEvent?.type === 'ABOUT_TO_EXHAUST' && (
+                                <S.ActionButton
+                                    style={{ marginTop: '12px', width: '100%' }}
+                                    onClick={() => {
+                                        moves.preventPendingEffect?.();
+                                    }}
+                                >
+                                    Empêcher (+
+                                    {G.pendingEvent.addBurdens} fardeau
+                                    {G.pendingEvent.addBurdens > 1 ? 'x' : ''}
+                                    )
+                                </S.ActionButton>
+                            )}
+
                         {targetingOnConfirm && (
                             <S.ActionButton
                                 style={{ marginTop: '12px', width: '100%' }}

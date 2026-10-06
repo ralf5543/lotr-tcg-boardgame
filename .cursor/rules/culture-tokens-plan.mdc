@@ -1,11 +1,11 @@
 ---
-description: "ARCHIVÉ — Plan jetons de culture (figé ; suite = hand-initiative-plan.mdc)"
+description: "ARCHIVÉ — Plan jetons de culture (figé ; suite = deck-play-gaps-plan.mdc)"
 alwaysApply: false
 ---
 
 # Jetons de culture — plan et credo (archivé)
 
-> **Figé.** Socle jetons + étapes 1–15 livrés. Suite active : [`.cursor/rules/hand-initiative-plan.mdc`](hand-initiative-plan.mdc).
+> **Figé.** Socle jetons + étapes 1–15 livrés. Suite active : [`.cursor/rules/deck-play-gaps-plan.mdc`](deck-play-gaps-plan.mdc).
 >
 > **Format : Standard (règles modernes)** — voir [`.cursor/rules/format-standard.mdc`](format-standard.mdc).
 

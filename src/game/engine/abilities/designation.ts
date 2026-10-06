@@ -35,10 +35,17 @@ import {
 import { abilityOwnerPlayerId } from './payAbilityCost';
 import {
     canReinforce,
+    findInPlayCardOwnerId,
     getActiveCardsWithCultureTokens,
     getReinforceCandidates,
     tokenCountOnCard,
 } from '../../logic/cultureTokens';
+import {
+    getCardsStackedOnHost,
+    getHandStackCandidates,
+    getPlayStackCandidates,
+} from '../../logic/cardStack';
+import { getDeckOrDiscardPlayCandidates } from '../../logic/playFromOutOfPlay';
 import {
     attachesToSite,
     canAttachToCharacter,
@@ -69,6 +76,42 @@ function candidatesForEffect(
     ability: Ability,
     effect: Ability['effects'][number]
 ): CardState[] {
+    if (effect.type === 'STACK_ON_SELF') {
+        const ownerId = abilityOwnerPlayerId(G, source);
+        if (!ownerId) return [];
+        if (
+            typeof effect.maxStacked === 'number' &&
+            (source.stacked?.length || 0) >= effect.maxStacked
+        ) {
+            return [];
+        }
+        if (effect.from === 'HAND') {
+            return uniqueCards(
+                getHandStackCandidates(G, ownerId, effect.target)
+            );
+        }
+        return uniqueCards(
+            getPlayStackCandidates(G, effect.target).filter(
+                (card) => findInPlayCardOwnerId(G, card) === ownerId
+            )
+        );
+    }
+    if (effect.type === 'TAKE_FROM_STACK') {
+        return uniqueCards(getCardsStackedOnHost(source));
+    }
+    if (effect.type === 'PLAY_FROM_CARD_STACK') {
+        const siteIndex = getCurrentSiteIndex(G);
+        return uniqueCards(
+            getCardsStackedOnHost(source, effect.target).filter((card) => {
+                const cost = getEffectiveTwilightCost(
+                    card,
+                    siteIndex,
+                    getWhileTwilightCostModifier(G, card)
+                );
+                return (G.twilightPool || 0) >= cost;
+            })
+        );
+    }
     if (!('target' in effect)) return [];
     if (effect.target === 'WINNER') {
         return uniqueCards(resolveWinnerTargets(G, source, ability));
@@ -244,8 +287,52 @@ export function getEffectDesignationCandidates(
         return uniqueCards(matches);
     }
 
+    const stackOnSelf = (ability.effects || []).find(
+        (item) => item.type === 'STACK_ON_SELF'
+    );
+    if (stackOnSelf && stackOnSelf.type === 'STACK_ON_SELF') {
+        const matches = candidatesForEffect(G, source, ability, stackOnSelf);
+        if (matches.length < 1) return [];
+        return matches;
+    }
+
+    const takeFromStack = (ability.effects || []).find(
+        (item) => item.type === 'TAKE_FROM_STACK'
+    );
+    if (takeFromStack && takeFromStack.type === 'TAKE_FROM_STACK') {
+        const matches = candidatesForEffect(G, source, ability, takeFromStack);
+        if (matches.length < 1) return [];
+        return matches;
+    }
+
+    const playFromCardStack = (ability.effects || []).find(
+        (item) => item.type === 'PLAY_FROM_CARD_STACK'
+    );
+    if (playFromCardStack && playFromCardStack.type === 'PLAY_FROM_CARD_STACK') {
+        const matches = candidatesForEffect(
+            G,
+            source,
+            ability,
+            playFromCardStack
+        );
+        if (matches.length < 1) return [];
+        return matches;
+    }
+
+    // Pioche / défausse : pas de halo plateau (overlay dédié).
+    if (
+        (ability.effects || []).some(
+            (item) => item.type === 'PLAY_FROM_DECK_OR_DISCARD'
+        )
+    ) {
+        return [];
+    }
+
+    // DISCARD_ALL (et masses) : pas de désignation — on défausse tout d’un coup.
     const effect = (ability.effects || []).find(
         (item) =>
+            item.type !== 'DISCARD_ALL' &&
+            item.type !== 'PLAY_FROM_DECK_OR_DISCARD' &&
             'target' in item &&
             (Array.isArray(item.target) || item.target === 'SKIRMISHING')
     );
@@ -297,7 +384,11 @@ export function abilityEffectWantsTargetingArrow(ability: Ability): boolean {
 function abilityEffectDesignationIsHaloOnly(ability: Ability): boolean {
     if (abilityEffectWantsTargetingArrow(ability)) return false;
     return (ability.effects || []).some(
-        (effect) => effect.type === 'REINFORCE_CULTURE_TOKEN'
+        (effect) =>
+            effect.type === 'REINFORCE_CULTURE_TOKEN' ||
+            effect.type === 'STACK_ON_SELF' ||
+            effect.type === 'TAKE_FROM_STACK' ||
+            effect.type === 'PLAY_FROM_CARD_STACK'
     );
 }
 
@@ -386,6 +477,27 @@ export function abilityHasLegalEffectTarget(
                 continue;
             }
             if (findStackedCardSite(G, source.instanceId || source.id)) {
+                return false;
+            }
+            continue;
+        }
+        if (
+            effect.type === 'STACK_ON_SELF' ||
+            effect.type === 'TAKE_FROM_STACK' ||
+            effect.type === 'PLAY_FROM_CARD_STACK'
+        ) {
+            if (candidatesForEffect(G, source, ability, effect).length < 1) {
+                return false;
+            }
+            continue;
+        }
+        if (effect.type === 'PLAY_FROM_DECK_OR_DISCARD') {
+            const ownerId = abilityOwnerPlayerId(G, source);
+            if (!ownerId) return false;
+            if (
+                getDeckOrDiscardPlayCandidates(G, ownerId, effect.target)
+                    .length < 1
+            ) {
                 return false;
             }
             continue;

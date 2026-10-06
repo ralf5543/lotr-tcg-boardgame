@@ -11,7 +11,7 @@ Document **vivant** : précisé, modifié, complété au fur et à mesure. **Lis
 
 ## Mode de travail
 
-1. **Un plan thématique actif** à la fois (détail, credo, étapes) — aujourd’hui : [`.cursor/rules/hand-initiative-plan.mdc`](hand-initiative-plan.mdc).
+1. **Un plan thématique actif** à la fois (détail, credo, étapes) — aujourd’hui : [`.cursor/rules/deck-play-gaps-plan.mdc`](deck-play-gaps-plan.mdc).
 2. **Cette roadmap** = vision d’ensemble + statut des grands axes.
 3. À la bascule : figer / désactiver le plan courant (`alwaysApply: false`), activer le suivant, mettre à jour le statut ici.
 
@@ -21,9 +21,9 @@ Credo transversal (hérités des plans cartes / sites / jetons) : **mieux vaut i
 
 | | |
 | --- | --- |
-| **Chantier** | Main / initiative |
-| **Plan** | [`hand-initiative-plan.mdc`](hand-initiative-plan.mdc) |
-| **Statut** | **Étapes 1–5 livrées** — force/main, While initiative, make ±initiative / fewer, preset DEV |
+| **Chantier** | Jeu réel — trous de mécanismes |
+| **Plan** | [`deck-play-gaps-plan.mdc`](deck-play-gaps-plan.mdc) |
+| **Statut** | **1–10 + 13** : stack Narsil/Web + Captured OK ; reste Mere, Noble Leaders, Pelennor ; Beacons→exceptions. |
 
 ## Grands axes
 
@@ -31,15 +31,16 @@ Statuts : `en cours` · `à faire` · `plus tard` · `fait` · `pause`
 
 | Axe | Statut | Notes |
 | --- | --- | --- |
-| **Sites** | **fait** | Socle Standard livré. Reportés : weather no-events, gametext site moderne. |
-| **Tokens de culture** | **fait** | Socle + étapes 1–15. Reportés : wounded filter, machines, skirmishing make, etc. Plan figé : [`culture-tokens-plan.mdc`](culture-tokens-plan.mdc). |
-| **Main / initiative** | **en cours** | Étapes 1–5 livrées. Hors scope : discard-from-hand coûts, play from discard if initiative, Glamdring « more cards », etc. |
+| **Sites** | **fait** | Socle Standard livré. Reportés : weather no-events, gametext site moderne (revenu via étape 7 du plan actif). |
+| **Tokens de culture** | **fait** | Socle + étapes 1–15. Plan figé : [`culture-tokens-plan.mdc`](culture-tokens-plan.mdc). |
+| **Main / initiative** | **fait** | Étapes 1–5. Plan figé : [`hand-initiative-plan.mdc`](hand-initiative-plan.mdc). |
+| **Jeu réel / gaps** | **en cours** | Decks Fumeurs & Gondor/Uruks. Plan : [`deck-play-gaps-plan.mdc`](deck-play-gaps-plan.mdc). |
 | **Création de deck** | à faire | Construction / édition / validation (format Standard, X-list…). |
 | **Affronter un BOT** | à faire | Via boardgame.io (adversaire automatisé). |
 | **Chat** | à faire | Via boardgame.io (table / match). |
 | **Gagner / Perdre** | à faire | Conditions de victoire / défaite (Anneau, sites, élimination…). |
 | **Options** | à faire | Préférences joueur (couper le son, etc.). |
 | **Écran de bienvenue** | à faire | Avant le plateau boardgame.io (lobby / menu). |
-| **Exceptions de cartes** | à faire | Cartes trop spécifiques pour le parser — handlers par id, en dernier. Liste vivante : [`card-exceptions.mdc`](card-exceptions.mdc). |
+| **Exceptions de cartes** | à faire | Cartes trop spécifiques — handlers par id, en dernier. Liste : [`card-exceptions.mdc`](card-exceptions.mdc). |
 
 Axes futurs possibles (non listés ici volontairement) : à ajouter quand ils deviennent concrets.

@@ -184,7 +184,11 @@ export interface CostOption {
     removeBurdens?: number;
     addBurdens?: number;
     spotThreats?: number;
+    /** « If you cannot spot N threats » — menaces FP < N. */
+    cannotSpotThreats?: number;
     removeThreats?: number;
+    /** « add a threat » comme coût. */
+    addThreats?: number;
     addTwilight?: number;
     removeTwilight?: number;
     spotTwilight?: number;
@@ -315,6 +319,8 @@ export type AbilityEffect =
               whose: 'OWNER' | 'FREE_PEOPLES';
               limit?: number;
           };
+          /** « each other companion » : exclure la source des bénéficiaires. */
+          excludeSource?: boolean;
       }
     | {
           /** Mot-clé passif (While…) — pas d’expiration de phase. */
@@ -394,6 +400,21 @@ export type AbilityEffect =
       }
     | {
           /**
+           * Empile une carte sur la source (SELF).
+           * `from: 'HAND'` = depuis la main ; `PLAY` = séide du champ.
+           * `maxStacked` : plafond (Web : 3).
+           */
+          type: 'STACK_ON_SELF';
+          from: 'HAND' | 'PLAY';
+          target: string[][];
+          maxStacked?: number;
+      }
+    | {
+          /** Remet en main une carte empilée sur la source. */
+          type: 'TAKE_FROM_STACK';
+      }
+    | {
+          /**
            * Empile un séide sur un site que tu contrôles.
            * Sans `target` : empile la source. Avec filtre (ex. besieger) : désigner le séide.
            * Cibles choisies : `[minionId?, siteId?]` (site seulement si plusieurs contrôlés).
@@ -421,6 +442,23 @@ export type AbilityEffect =
               value: number;
               expiresAtPhase: AbilityEffectExpiry;
           }[];
+      }
+    | {
+          /**
+           * Joue un séide empilé sur la source (Web) comme depuis la main.
+           * Paie le crépuscule effectif.
+           */
+          type: 'PLAY_FROM_CARD_STACK';
+          target: string[][];
+      }
+    | {
+          /**
+           * Joue une carte depuis la pioche ou la défausse (Captured by the Ring…).
+           * Paie le crépuscule ; mélange la pioche après recherche.
+           * Cible choisie : id de la carte dans deck|discard.
+           */
+          type: 'PLAY_FROM_DECK_OR_DISCARD';
+          target: string[][];
       }
     | {
           type: 'DRAW';
@@ -532,6 +570,8 @@ export type AbilityEffect =
           type: 'EXHAUST';
           target: AbilityTargetRef;
           excludeRingBearer?: boolean;
+          /** FP peut ajouter N fardeaux pour empêcher (Can You Protect Me…). */
+          fpMayPrevent?: { addBurdens: number };
       }
     | {
           type: 'ADD_TWILIGHT';
@@ -624,6 +664,11 @@ export type AbilityTrigger =
           spotBurdensOrRingBearerWounds?: number;
           /** « While you have initiative… » — propriétaire de la source. */
           hasInitiative?: boolean;
+          /**
+           * « While [this / Name] is in region N… »
+           * — vrai si la compagnie est en région N (sites 1–3 / 4–6 / 7–9).
+           */
+          inRegion?: 1 | 2 | 3;
       }
     | {
           type: 'CHARACTER_DIES';
@@ -707,6 +752,11 @@ export interface CardState {
 
     // État dynamique en jeu
     attachments?: CardState[];
+    /**
+     * Cartes empilées sur cette carte (Web, Fragments de Narsil…).
+     * Distinct de `site.stacked` (sites contrôlés).
+     */
+    stacked?: CardState[];
     attachedTo?: string | string[];
     phases?: string[];
     wounds?: number;
@@ -837,6 +887,13 @@ export interface PendingCancelSkirmishEvent {
     removeTwilight: number;
 }
 
+/** Exhaust engagé ; le joueur FP peut encore l’empêcher (fardeaux). */
+export interface PendingExhaustEvent {
+    type: 'ABOUT_TO_EXHAUST';
+    targetId: string;
+    addBurdens: number;
+}
+
 export interface PendingFellowshipMovesEvent {
     type: 'FELLOWSHIP_MOVES';
 }
@@ -847,6 +904,7 @@ export type PendingEvent =
     | PendingLosesSkirmishEvent
     | PendingCharacterDiesEvent
     | PendingCancelSkirmishEvent
+    | PendingExhaustEvent
     | PendingFellowshipMovesEvent;
 
 export interface WoundQueueItem {

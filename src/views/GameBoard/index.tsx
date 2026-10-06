@@ -56,11 +56,17 @@ import {
     abilityNeedsSiteExchange,
     abilityNeedsPathThenDeckSite,
     abilityNeedsStackSiteChoice,
+    abilityNeedsDeckOrDiscardPick,
+    abilityPlayFromDeckOrDiscardEffect,
     abilityStacksOtherMinion,
     abilityPlaysOtherFromStack,
     abilityReplaceSiteEffect,
     getStackSiteCandidates,
 } from '../../game/engine/abilities/applyAbilityEffect';
+import {
+    getDeckOrDiscardBrowsePool,
+    getDeckOrDiscardPlayCandidates,
+} from '../../game/logic/playFromOutOfPlay';
 import { getReplaceSiteCandidates, getReplaceablePathSitesInCurrentRegion, getOwnedPathSites } from '../../game/logic/sites';
 import { isSiteReplaceForbidden } from '../../game/logic/siteReplaceRestrictions';
 import { findEventAbilityForPhase } from '../../game/engine/abilities/playEventAbility';
@@ -1065,8 +1071,21 @@ export const GameBoard: React.FC<GameBoardProps> = ({
     const [openOutOfPlayZone, setOpenOutOfPlayZone] =
         useState<OutOfPlayZoneKey | null>(null);
 
+    /** Recherche pioche + défausse (Captured…) — grille pleine, sélection restreinte. */
+    const [deckDiscardPick, setDeckDiscardPick] = useState<{
+        handIndex: number;
+        selectableCardIds: string[];
+        deck: CardState[];
+        discard: CardState[];
+    } | null>(null);
+
+    const closeDeckDiscardPick = useCallback(() => {
+        setDeckDiscardPick(null);
+        moves.cancelPendingPlay?.();
+    }, [moves]);
+
     const outOfPlayOverlay = useMemo(() => {
-        if (!openOutOfPlayZone) return null;
+        if (!openOutOfPlayZone || deckDiscardPick) return null;
 
         switch (openOutOfPlayZone) {
             case 'my-discard':
@@ -1092,7 +1111,14 @@ export const GameBoard: React.FC<GameBoardProps> = ({
             default:
                 return null;
         }
-    }, [openOutOfPlayZone, me.deadPile, me.discard, opponent.deadPile, opponent.discard]);
+    }, [
+        openOutOfPlayZone,
+        deckDiscardPick,
+        me.deadPile,
+        me.discard,
+        opponent.deadPile,
+        opponent.discard,
+    ]);
 
     const { hoveredData } = useHoverCard();
     const currentSiteIndex = G.players['0']?.currentSiteIndex ?? 0;
@@ -1339,6 +1365,38 @@ export const GameBoard: React.FC<GameBoardProps> = ({
                     ) {
                         return;
                     }
+                }
+                if (
+                    eventAbility &&
+                    abilityNeedsDeckOrDiscardPick(eventAbility)
+                ) {
+                    const effect =
+                        abilityPlayFromDeckOrDiscardEffect(eventAbility);
+                    if (!effect) return;
+                    const selectable = getDeckOrDiscardPlayCandidates(
+                        G,
+                        myId,
+                        effect.target,
+                        ctx.phase || 'shadow'
+                    );
+                    if (selectable.length === 0) {
+                        console.warn(
+                            '❌ Aucune carte jouable dans la pioche / défausse.'
+                        );
+                        return;
+                    }
+                    const pool = getDeckOrDiscardBrowsePool(G, myId);
+                    moves.beginPendingPlay?.(
+                        index,
+                        'Parcourez votre pioche et votre défausse, puis choisissez une carte jouable.'
+                    );
+                    setDeckDiscardPick({
+                        handIndex: index,
+                        selectableCardIds: selectable.flatMap(cardTargetIds),
+                        deck: pool.deck,
+                        discard: pool.discard,
+                    });
+                    return;
                 }
                 if (
                     eventAbility &&
@@ -1924,30 +1982,6 @@ export const GameBoard: React.FC<GameBoardProps> = ({
                     <DesignationOverlay G={G} myId={myId} />
                     <BoardTargetingArrow />
                     <RemoteTargetingArrow />
-                    {hoveredData && (
-                        <S.HoveredCardsZone
-                            $orientation={hoveredData.orientation}
-                        >
-                            {hoveredData.orientation === 'landscape' ? (
-                                <SiteCard
-                                    site={hoveredData.card as SiteCardState}
-                                    size="lg"
-                                />
-                            ) : (
-                                <Card
-                                    card={hoveredData.card as CardState}
-                                    size="lg"
-                                    currentSiteIndex={currentSiteIndex}
-                                    isFaceDown={
-                                        hoveredData.card.isOpponent
-                                            ? (hoveredData.card as CardState)
-                                                  ?.isFaceDown
-                                            : false
-                                    }
-                                />
-                            )}
-                        </S.HoveredCardsZone>
-                    )}
                     <PhaseBanner
                         key={canonicalPhaseName(ctx.phase)}
                         phaseName={ctx.phase || ''}
@@ -2092,6 +2126,33 @@ export const GameBoard: React.FC<GameBoardProps> = ({
                             }
                         }}
                     />
+                    {deckDiscardPick && (
+                        <CardZoneOverlay
+                            title="Pioche et défausse"
+                            subtitle="Toutes les cartes sont visibles · seules les cartes jouables sont sélectionnables"
+                            sections={[
+                                {
+                                    title: 'Pioche',
+                                    cards: deckDiscardPick.deck,
+                                },
+                                {
+                                    title: 'Défausse',
+                                    cards: deckDiscardPick.discard,
+                                },
+                            ]}
+                            currentSiteIndex={currentSiteIndex}
+                            selectableCardIds={
+                                deckDiscardPick.selectableCardIds
+                            }
+                            onSelectCard={(cardId) => {
+                                const handIndex = deckDiscardPick.handIndex;
+                                setDeckDiscardPick(null);
+                                moves.playCard?.(handIndex, cardId);
+                                audioService.play('CARD_PLAY');
+                            }}
+                            onClose={closeDeckDiscardPick}
+                        />
+                    )}
                     {outOfPlayOverlay && (
                         <CardZoneOverlay
                             title={outOfPlayOverlay.title}
@@ -2099,6 +2160,30 @@ export const GameBoard: React.FC<GameBoardProps> = ({
                             currentSiteIndex={currentSiteIndex}
                             onClose={() => setOpenOutOfPlayZone(null)}
                         />
+                    )}
+                    {hoveredData && (
+                        <S.HoveredCardsZone
+                            $orientation={hoveredData.orientation}
+                        >
+                            {hoveredData.orientation === 'landscape' ? (
+                                <SiteCard
+                                    site={hoveredData.card as SiteCardState}
+                                    size="lg"
+                                />
+                            ) : (
+                                <Card
+                                    card={hoveredData.card as CardState}
+                                    size="lg"
+                                    currentSiteIndex={currentSiteIndex}
+                                    isFaceDown={
+                                        hoveredData.card.isOpponent
+                                            ? (hoveredData.card as CardState)
+                                                  ?.isFaceDown
+                                            : false
+                                    }
+                                />
+                            )}
+                        </S.HoveredCardsZone>
                     )}
                     <Dock
                         handCount={me.hand?.length || 0}

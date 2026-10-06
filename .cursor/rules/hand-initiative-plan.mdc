@@ -1,11 +1,13 @@
 ---
-description: Plan d’implémentation main / initiative (force par cartes en main, règle d’initiative)
-alwaysApply: true
+description: "ARCHIVÉ — Plan main / initiative (figé ; suite = deck-play-gaps-plan.mdc)"
+alwaysApply: false
 ---
 
-# Main / initiative — plan et credo
+# Main / initiative — plan et credo (archivé)
 
-**Format : Standard (règles modernes).** Voir `.cursor/rules/format-standard.mdc`.
+> **Figé.** Étapes 1–5 livrées. Suite active : [`.cursor/rules/deck-play-gaps-plan.mdc`](deck-play-gaps-plan.mdc).
+>
+> **Format : Standard (règles modernes)** — voir [`.cursor/rules/format-standard.mdc`](format-standard.mdc).
 
 Credo : **mieux vaut inerte que faux.** On n’émet un bonus main / initiative que si le fragment est sûr.
 
@@ -31,7 +33,7 @@ L’ancien plan jetons est **figé** (`.cursor/rules/culture-tokens-plan.mdc`, `
 2. **While you have initiative → force SELF** ✅ — Gimli 7C6, Orc Chaser / Pursuer / Stalker. Refuse each / of your / Damage.
 3. **Make / event : +N (or +M if initiative)** ✅ — `valueIfInitiative` (New Strength Came Now, phase-tagged ou standalone). All Save One inerte (Damage +1).
 4. **Fewer / at least N cards in hand** ✅ — `valueIfFewerCardsInHand` (Servants to Saruman). Fragments sûrs seulement.
-5. **Preset DEV + UI** ✅ — preset `HAND_INITIATIVE_TEST` (main FP ≥ 4, Gimli, Man of Bree, Orc Chaser, Servants / New Strength).
+5. **Preset DEV + UI** ✅ — preset `HAND_INITIATIVE_TEST` remplacé ensuite par `STAT_PULSE_TEST`.
 
 ## Hors scope / plus tard
 
