@@ -15,6 +15,7 @@ import {
 } from '../logic/cultureTokens';
 import { onStartOfFellowshipBegin } from '../logic/startOfFellowship';
 import type { CardCulture } from '../types';
+import { isRingBearerCard } from '../../utils/cardUtils';
 
 /** État de machine de phase : toasters, fenêtres, sous-étapes. */
 function resetPhaseMachine(G: GameState): void {
@@ -78,6 +79,39 @@ export const devMoves = {
         }
 
         G.statusMessage = `[DEV] Menaces ajustées à ${threats}/${limit}.`;
+    },
+
+    /** ±1 blessure : déjà blessé, sinon 1er non–porteur, sinon 1er compagnon. */
+    devAdjustWounds: ({ G }: LotrMoveContext, delta: number) => {
+        const fpId = G.fpPlayerId || '0';
+        const fpPlayer = G.players[fpId];
+        if (!fpPlayer) return;
+        const fellowship = fpPlayer.fellowshipArea || [];
+        const wounded = fellowship.find((c) => (c.wounds || 0) > 0);
+        const nonRingBearer = fellowship.find((c) => !isRingBearerCard(c));
+        const card = wounded || nonRingBearer || fellowship[0];
+        if (!card) {
+            G.statusMessage = '[DEV] Aucun compagnon FP pour les blessures.';
+            return;
+        }
+        const next = Math.max(0, (card.wounds || 0) + delta);
+        card.wounds = next;
+        G.statusMessage = `[DEV] ${card.title || card.id} : ${next} blessure(s).`;
+    },
+
+    /** ±1 crépuscule imprimé du site courant (test pulse badge site). */
+    devAdjustSiteTwilight: ({ G }: LotrMoveContext, delta: number) => {
+        const index =
+            G.players[G.fpPlayerId || '0']?.currentSiteIndex ??
+            G.currentSiteIndex ??
+            0;
+        const site = G.path?.[index];
+        if (!site) {
+            G.statusMessage = '[DEV] Aucun site courant.';
+            return;
+        }
+        site.twilightCost = Math.max(0, (site.twilightCost ?? 0) + delta);
+        G.statusMessage = `[DEV] Site ${index + 1} crépuscule → ${site.twilightCost}.`;
     },
 
     /** ±1 jeton sur la 1ʳᵉ condition zone de soutien FP qui en a (ou la 1ʳᵉ). */

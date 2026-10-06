@@ -1,4 +1,5 @@
 import styled from 'styled-components';
+import { valueChangePulseCss } from '../../styles/valuePulse';
 
 export const PoolContainer = styled.div`
     display: flex;
@@ -23,7 +24,7 @@ export const CompactLabel = styled.span`
     pointer-events: none;
 `;
 
-export const CounterBadge = styled.span`
+export const CounterBadge = styled.span<{ $pulseGen?: number }>`
     background: radial-gradient(circle, grey, black);
     color: #fff;
     border: 1px solid #ffbf00;
@@ -40,6 +41,7 @@ export const CounterBadge = styled.span`
     z-index: 2;
     top: 8px;
     right: 8px;
+    ${({ $pulseGen }) => valueChangePulseCss($pulseGen)}
 `;
 
 export const BowlArea = styled.div`

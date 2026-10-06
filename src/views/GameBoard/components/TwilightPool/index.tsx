@@ -1,5 +1,6 @@
-import React, { useState } from 'react';
+import React from 'react';
 import * as S from './styles';
+import { usePulseOnChange } from '../../hooks/usePulseOnChange';
 
 interface TwilightPoolProps {
     value: number;
@@ -20,13 +21,14 @@ const generateToken = (): PhysicalToken => ({
 });
 
 export const TwilightPool: React.FC<TwilightPoolProps> = ({ value }) => {
-    const [{ tokens, prevValue }, setTokensState] = useState<{
+    const [{ tokens, prevValue }, setTokensState] = React.useState<{
         tokens: PhysicalToken[];
         prevValue: number;
     }>({
         tokens: [],
         prevValue: 0,
     });
+    const counterPulse = usePulseOnChange(value);
 
     if (value !== prevValue) {
         let newTokens = tokens;
@@ -48,7 +50,7 @@ export const TwilightPool: React.FC<TwilightPoolProps> = ({ value }) => {
     return (
         <S.PoolContainer>
             <S.CompactLabel>Crépuscule</S.CompactLabel>
-            <S.CounterBadge>{value}</S.CounterBadge>
+            <S.CounterBadge $pulseGen={counterPulse}>{value}</S.CounterBadge>
             <S.BowlArea>
                 {tokens.map((token) => (
                     <S.TwilightToken

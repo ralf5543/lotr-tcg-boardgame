@@ -1000,7 +1000,7 @@ export interface ArcheryState {
     shadowRemainingWounds: number;
 }
 
-export type DevPresetType = 'HAND_INITIATIVE_TEST';
+export type DevPresetType = 'STAT_PULSE_TEST';
 
 export interface TempKeywordModifier {
     keyword: CardKeyword;

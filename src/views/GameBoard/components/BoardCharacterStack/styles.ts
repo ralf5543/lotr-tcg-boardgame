@@ -42,6 +42,8 @@ export const CardDragTarget = styled.div<{
     $isTargetable?: boolean;
     $isDesignationTarget?: boolean;
     $suppressHoverScale?: boolean;
+    /** Halo rouge individuel : off quand le groupe d’escarmouche gère déjà le survol. */
+    $suppressHoverHalo?: boolean;
     $isDead?: boolean;
 }>`
     position: relative;
@@ -54,7 +56,12 @@ export const CardDragTarget = styled.div<{
             cursor: pointer !important;
         `}
 
-    ${({ $isTargetable, $isDesignationTarget, $suppressHoverScale }) =>
+    ${({
+        $isTargetable,
+        $isDesignationTarget,
+        $suppressHoverScale,
+        $suppressHoverHalo,
+    }) =>
         $isTargetable &&
         !$isDesignationTarget &&
         css`
@@ -63,8 +70,11 @@ export const CardDragTarget = styled.div<{
                 css`
                     transform: scale(1.05);
                 `}
-                filter: drop-shadow(0 0 12px #e74c3c)
-                    drop-shadow(0 0 20px rgba(231, 76, 60, 0.8));
+                ${!$suppressHoverHalo &&
+                css`
+                    filter: drop-shadow(0 0 12px #e74c3c)
+                        drop-shadow(0 0 20px rgba(231, 76, 60, 0.8));
+                `}
             }
         `}
 
@@ -121,6 +131,7 @@ export const AssignedMinionsContainer = styled.div<{
     z-index: 2;
     width: max-content;
     pointer-events: auto;
+    transition: filter 0.2s ease-in-out;
 
     ${({ $portaled, $isOpponent }) =>
         $portaled
@@ -285,15 +296,13 @@ export const SkirmishGroup = styled.div<{
         !$isSelected &&
         css`
             cursor: pointer;
+            /* Uniquement via pairHovered (React) — pas de :hover CSS :
+               les séides sont portailés, sinon le compagnon s’allume avant eux. */
             ${$isPairHovered &&
             css`
                 filter: drop-shadow(red 0px 0px 25px)
                     drop-shadow(red 0px 0px 25px);
             `}
-            &:hover {
-                filter: drop-shadow(red 0px 0px 25px)
-                    drop-shadow(red 0px 0px 25px);
-            }
         `}/*${({ $isSelected }) =>
         $isSelected &&
         css`

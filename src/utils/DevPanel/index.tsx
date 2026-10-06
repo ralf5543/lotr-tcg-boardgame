@@ -10,6 +10,8 @@ export interface DevMoves {
     devSetBurdens?: (amount: number) => void;
     devSetThreats: (amount: number) => void;
     devAdjustCultureTokens?: (delta: number) => void;
+    devAdjustWounds?: (delta: number) => void;
+    devAdjustSiteTwilight?: (delta: number) => void;
     devSetArchery?: (amount: number) => void;
     devSetCurrentSite?: (siteIndex: number) => void;
     devLoadPreset: (presetName: string) => void;
@@ -277,6 +279,42 @@ export const DevPanel: React.FC<DevPanelProps> = ({
                         </S.ButtonGroup>
                     </S.Section>
 
+                    <S.Section>
+                        <S.Label>Blessures (compagnon FP hors porteur)</S.Label>
+                        <S.ButtonGroup>
+                            <S.ActionButton
+                                onClick={() => moves.devAdjustWounds?.(-1)}
+                            >
+                                -1
+                            </S.ActionButton>
+                            <S.ActionButton
+                                onClick={() => moves.devAdjustWounds?.(1)}
+                            >
+                                +1
+                            </S.ActionButton>
+                        </S.ButtonGroup>
+                    </S.Section>
+
+                    <S.Section>
+                        <S.Label>Crépuscule site courant</S.Label>
+                        <S.ButtonGroup>
+                            <S.ActionButton
+                                onClick={() =>
+                                    moves.devAdjustSiteTwilight?.(-1)
+                                }
+                            >
+                                -1
+                            </S.ActionButton>
+                            <S.ActionButton
+                                onClick={() =>
+                                    moves.devAdjustSiteTwilight?.(1)
+                                }
+                            >
+                                +1
+                            </S.ActionButton>
+                        </S.ButtonGroup>
+                    </S.Section>
+
                     {/* 🏹 Archerie Dev Tool */}
                     <S.Section>
                         <S.Label>
@@ -331,10 +369,10 @@ export const DevPanel: React.FC<DevPanelProps> = ({
                         <S.Label>Presets cartes & Déblocage :</S.Label>
                         <S.PresetButton
                             onClick={() =>
-                                moves.devLoadPreset('HAND_INITIATIVE_TEST')
+                                moves.devLoadPreset('STAT_PULSE_TEST')
                             }
                         >
-                            Main / initiative
+                            Pulse stats / jetons
                         </S.PresetButton>
                         <S.GameButton $bgColor="#3498db" onClick={onDrawCard}>
                             🃏 Piocher ({deckCount})

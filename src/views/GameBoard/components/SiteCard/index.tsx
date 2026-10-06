@@ -8,6 +8,7 @@ import { FormattedText } from '../../../../utils/FormattedText';
 import { getCardText } from '../../../../utils/i18n';
 import type { SupportedLanguage } from '../../../../utils/i18n';
 import { getEffectiveSiteKeywords } from '../../../../game/logic/sites';
+import { usePulseOnChange } from '../../hooks/usePulseOnChange';
 
 export interface SiteCardProps {
     site: SiteCardState;
@@ -36,6 +37,7 @@ export const SiteCard: React.FC<SiteCardProps> = ({
         currentLang
     );
     const effectiveKeywords = getEffectiveSiteKeywords(site);
+    const twilightPulse = usePulseOnChange(site.twilightCost);
 
     // Helpers pour extraire facilement les infos p0 / p1
     const p0Data = typeof playersHere?.p0 === 'object' ? playersHere.p0 : null;
@@ -54,7 +56,9 @@ export const SiteCard: React.FC<SiteCardProps> = ({
                 </S.SiteKeywordsContainer>
             )}
             <S.Title $size={size}>{title}</S.Title>
-            <S.TwilightBadge $size={size}>{site.twilightCost}</S.TwilightBadge>
+            <S.TwilightBadge $size={size} $pulseGen={twilightPulse}>
+                {site.twilightCost}
+            </S.TwilightBadge>
 
             {size !== 'sm' && (
                 <S.Text $size={size}>

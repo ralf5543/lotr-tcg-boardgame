@@ -105,42 +105,57 @@ export const applyDevPreset = (
     const shadowPlayer = G.players[shadowId];
 
     switch (presetType) {
-        case 'HAND_INITIATIVE_TEST': {
+        case 'STAT_PULSE_TEST': {
             resetBoardForPreset(G);
             setupDevPath(G, 3);
-            G.twilightPool = 4;
+            G.twilightPool = 2;
 
-            // FP ≥ 4 en main → initiative FP (Gimli +2). Moins de 4 → Ombre.
+            // Frodo : résistance + fardeaux ; Gimli : Damage ; Aragorn : Defender +1 (manœuvre) + blessures.
             fpPlayer.fellowshipArea = [
                 {
-                    ...clonePresetCard('2C102', 'dev-frodo-hand'),
-                    attachments: [clonePresetCard('1R1', 'dev-ring-hand')],
+                    ...clonePresetCard('2C102', 'dev-frodo-pulse'),
+                    attachments: [clonePresetCard('1R1', 'dev-ring-pulse')],
+                    wounds: 0,
                 },
-                clonePresetCard('7C6', 'dev-gimli-init'),
+                {
+                    ...clonePresetCard('1R89', 'dev-aragorn-pulse'),
+                    wounds: 0,
+                },
+                {
+                    ...clonePresetCard('7C6', 'dev-gimli-pulse'),
+                    wounds: 0,
+                },
             ];
-            fpPlayer.burdens = 4;
+            fpPlayer.burdens = 1;
+            // Condition soutien : jetons culture via DEV ±
+            fpPlayer.supportArea = [
+                {
+                    ...clonePresetCard('4R52', 'dev-axe-notched'),
+                    cultureTokens: { DWARVEN: 1 },
+                },
+            ];
             fpPlayer.hand = [
-                clonePresetCard('7C154', 'dev-new-strength'),
-                clonePresetCard('1C3', 'dev-axe-strike'),
-                clonePresetCard('1C4', 'dev-battle-fury'),
-                clonePresetCard('1C5', 'dev-cleaving-blow'),
+                clonePresetCard('7C154', 'dev-new-strength-pulse'),
+                clonePresetCard('1C3', 'dev-axe-strike-pulse'),
+                clonePresetCard('1C9', 'dev-dwarven-axe-pulse'),
             ];
 
             if (shadowPlayer) {
+                // Man of Bree : force scale main FP ; séide Damage pour keyword.
                 G.battlefield = [
-                    clonePresetCard('11S90', 'dev-man-of-bree'),
-                    clonePresetCard('7C298', 'dev-orc-chaser'),
-                    clonePresetCard('3U58', 'dev-isengard-servant'),
-                    clonePresetCard('4R225', 'dev-easterling-captain'),
+                    clonePresetCard('11S90', 'dev-man-of-bree-pulse'),
+                    {
+                        ...clonePresetCard('13U165', 'dev-infiltrator-pulse'),
+                        minionSiteNumber: 2,
+                    },
                 ];
                 shadowPlayer.hand = [
-                    clonePresetCard('3C70', 'dev-servants-saruman'),
-                    clonePresetCard('7C154', 'dev-new-strength-sh'),
+                    clonePresetCard('7C154', 'dev-new-strength-sh-pulse'),
                 ];
             }
 
             G.statusMessage =
-                '[DEV] Main / initiative · FP 4 cartes (initiative) ; Gimli +2 ; Man of Bree scale main FP ; Orc Chaser +6 ; New Strength / Servants en main.';
+                '[DEV] Pulse · Aragorn (manœuvre → Defender +1) ; blessures DEV ; burdens / jetons / crépuscule ; New Strength en main.';
             break;
         }
     }

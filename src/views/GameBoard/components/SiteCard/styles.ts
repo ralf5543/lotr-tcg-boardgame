@@ -1,4 +1,5 @@
 import styled, { css } from 'styled-components';
+import { valueChangePulseCss } from '../../styles/valuePulse';
 
 export type SiteCardSize = 'sm' | 'md' | 'lg';
 
@@ -93,6 +94,7 @@ export const Title = styled.p<{
 
 export const TwilightBadge = styled.span<{
     $size?: 'sm' | 'md' | 'lg';
+    $pulseGen?: number;
 }>`
     position: absolute;
     inset-block-start: 10px;
@@ -110,10 +112,11 @@ export const TwilightBadge = styled.span<{
     align-items: center;
     justify-content: center;
     background-position: 1px;
+    ${({ $pulseGen }) => valueChangePulseCss($pulseGen)}
 
     ${(props) =>
         props.$size === 'lg' &&
-        `
+        css`
         inset-block-start: 18px;
         inset-inline-end: 14px;
         width: 45px;

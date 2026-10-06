@@ -1,4 +1,5 @@
 import styled, { keyframes, css } from 'styled-components';
+import { appearPulseCss } from '../../styles/valuePulse';
 
 export const Rail = styled.aside`
     display: flex;
@@ -89,6 +90,7 @@ export const ThreatDot = styled.img`
     object-fit: contain;
     margin: -3px;
     filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.7));
+    ${appearPulseCss}
 `;
 
 export const TwilightSlot = styled.div`

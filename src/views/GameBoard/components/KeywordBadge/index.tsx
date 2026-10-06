@@ -4,6 +4,7 @@ import { TRANSLATIONS } from '../../../../game/translations';
 import type { CardKeyword } from '../../../../game/types';
 import * as S from './styles';
 import { getKeywordIconPath } from '../../../../utils/getKeywordIconPath';
+import { usePulseOnChange } from '../../hooks/usePulseOnChange';
 
 interface KeywordBadgeProps {
     keyword: CardKeyword;
@@ -20,6 +21,7 @@ export const KeywordBadge: React.FC<KeywordBadgeProps> = ({
     const [isHovered, setIsHovered] = useState(false);
     const [coords, setCoords] = useState<{ top: number; left: number }>({ top: 0, left: 0 });
     const badgeRef = useRef<HTMLSpanElement>(null);
+    const valuePulse = usePulseOnChange(value);
 
     if (hasError) return null;
 
@@ -55,6 +57,7 @@ export const KeywordBadge: React.FC<KeywordBadgeProps> = ({
             <S.BadgeContainer
                 ref={badgeRef}
                 data-cursor="arrow"
+                $pulseGen={valuePulse}
                 onMouseEnter={handleMouseEnter}
                 onMouseLeave={handleMouseLeave}
             >

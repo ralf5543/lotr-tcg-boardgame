@@ -1,4 +1,8 @@
 import styled, { keyframes } from 'styled-components';
+import {
+    appearPulseCss,
+    valueChangePulseCss,
+} from '../../styles/valuePulse';
 
 export const fadeIn = keyframes`
     from {
@@ -11,12 +15,14 @@ export const fadeIn = keyframes`
     }
 `;
 
-export const BadgeContainer = styled.span`
+export const BadgeContainer = styled.span<{ $pulseGen?: number }>`
     position: relative;
     display: inline-flex;
     align-items: center;
     justify-content: center;
     cursor: none;
+    ${({ $pulseGen }) =>
+        $pulseGen ? valueChangePulseCss($pulseGen) : appearPulseCss}
 `;
 
 export const BadgeValue = styled.span`

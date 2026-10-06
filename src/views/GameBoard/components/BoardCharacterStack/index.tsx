@@ -221,6 +221,28 @@ export const BoardCharacterStack: React.FC<BoardCharacterStackProps> = ({
         top: number;
     } | null>(null);
     const [pairHovered, setPairHovered] = useState(false);
+    const pairHoverLeaveTimer = useRef<ReturnType<typeof setTimeout> | null>(
+        null
+    );
+
+    const enterPairHover = () => {
+        if (pairHoverLeaveTimer.current != null) {
+            clearTimeout(pairHoverLeaveTimer.current);
+            pairHoverLeaveTimer.current = null;
+        }
+        setPairHovered(true);
+    };
+
+    /** Délai court : le portail sépare compagnon et séides (gap ~26px). */
+    const leavePairHover = () => {
+        if (pairHoverLeaveTimer.current != null) {
+            clearTimeout(pairHoverLeaveTimer.current);
+        }
+        pairHoverLeaveTimer.current = setTimeout(() => {
+            pairHoverLeaveTimer.current = null;
+            setPairHovered(false);
+        }, 40);
+    };
 
     useLayoutEffect(() => {
         if (assignedMinions.length === 0) {
@@ -264,15 +286,25 @@ export const BoardCharacterStack: React.FC<BoardCharacterStackProps> = ({
         };
     }, [assignedMinions, isOpponent, track, scroller]);
 
+    useLayoutEffect(() => {
+        return () => {
+            if (pairHoverLeaveTimer.current != null) {
+                clearTimeout(pairHoverLeaveTimer.current);
+            }
+        };
+    }, []);
+
+    const showPairHalo = pairHovered && canSelectThisSkirmish;
+
     return (
         <S.SkirmishGroup
             $isSelected={isSelectedSkirmish}
             $isOpponent={isOpponent}
             $isSelectable={canSelectThisSkirmish}
-            $isPairHovered={pairHovered}
+            $isPairHovered={showPairHalo}
             onClick={handleStackClick}
-            onMouseEnter={() => setPairHovered(true)}
-            onMouseLeave={() => setPairHovered(false)}
+            onMouseEnter={enterPairHover}
+            onMouseLeave={leavePairHover}
         >
             <S.CharacterStack $isBeingDragged={isBeingDragged}>
                 {/* 🟢 SÉIDES ASSIGNÉS — hors du CardScroller, collés au compagnon */}
@@ -283,11 +315,11 @@ export const BoardCharacterStack: React.FC<BoardCharacterStackProps> = ({
                     <S.AssignedMinionsContainer
                         $isOpponent={isOpponent}
                         $portaled
-                        $isPairHovered={pairHovered && canSelectThisSkirmish}
+                        $isPairHovered={showPairHalo}
                         className="assigned-minions-group"
                         style={{ left: overlayPos.left, top: overlayPos.top }}
-                        onMouseEnter={() => setPairHovered(true)}
-                        onMouseLeave={() => setPairHovered(false)}
+                        onMouseEnter={enterPairHover}
+                        onMouseLeave={leavePairHover}
                         onClick={handleStackClick}
                     >
                         <S.MinionsPyramid $isOpponent={isOpponent}>
@@ -428,6 +460,7 @@ export const BoardCharacterStack: React.FC<BoardCharacterStackProps> = ({
                     $isTargetable={isTargetable}
                     $isDesignationTarget={isDesignationTarget}
                     $suppressHoverScale={isInCombat}
+                    $suppressHoverHalo={canSelectThisSkirmish}
                     $isDead={isDead}
                     $isDisabled={isDisabled}
                     data-card={JSON.stringify(character)}

@@ -1,4 +1,8 @@
 import styled, { css, keyframes } from 'styled-components';
+import {
+    appearPulseCss,
+    valueChangePulseCss,
+} from '../../styles/valuePulse';
 
 export interface CardContainerProps {
     $culture: string;
@@ -702,7 +706,10 @@ export const CardType = styled.p<{ $type?: string }>`
     ${(props) => isNotCharacter(props.$type) && css``}
 `;
 
-export const TwilightBadge = styled.span<{ $isShadow?: boolean }>`
+export const TwilightBadge = styled.span<{
+    $isShadow?: boolean;
+    $pulseGen?: number;
+}>`
     background-size: contain;
     background-repeat: no-repeat;
     background-position: center;
@@ -720,6 +727,7 @@ export const TwilightBadge = styled.span<{ $isShadow?: boolean }>`
     text-align: center;
     font-family: LOTRIcons;
     z-index: 1;
+    ${({ $pulseGen }) => valueChangePulseCss($pulseGen)}
 `;
 
 export const VisualContainer = styled.figure<{ $type?: string }>`
@@ -883,7 +891,7 @@ export const LoreText = styled.p`
     font-family: DecipherLore;
 `;
 
-export const StrengthBadge = styled.span`
+export const StrengthBadge = styled.span<{ $pulseGen?: number }>`
     background-image: url('interface/icons/icon_strength.png');
     background-size: contain;
     background-repeat: no-repeat;
@@ -902,9 +910,10 @@ export const StrengthBadge = styled.span`
     font-family: LOTRIcons;
     z-index: 1;
     pointer-events: none;
+    ${({ $pulseGen }) => valueChangePulseCss($pulseGen)}
 `;
 
-export const VitalityBadge = styled.span`
+export const VitalityBadge = styled.span<{ $pulseGen?: number }>`
     background-image: url('interface/icons/icon_vitality.png');
     background-size: contain;
     background-repeat: no-repeat;
@@ -923,9 +932,13 @@ export const VitalityBadge = styled.span`
     font-family: LOTRIcons;
     z-index: 1;
     pointer-events: none;
+    ${({ $pulseGen }) => valueChangePulseCss($pulseGen)}
 `;
 
-export const RoamingNumber = styled.span<{ $isRoaming?: boolean }>`
+export const RoamingNumber = styled.span<{
+    $isRoaming?: boolean;
+    $pulseGen?: number;
+}>`
     background-image: url('interface/icons/minion_site_number.webp');
     background-size: contain;
     background-repeat: no-repeat;
@@ -950,6 +963,7 @@ export const RoamingNumber = styled.span<{ $isRoaming?: boolean }>`
                         drop-shadow(0px 0px 5px red)
                         brightness(1.2);
   `}
+    ${({ $pulseGen }) => valueChangePulseCss($pulseGen)}
 `;
 
 export const RoamingBadge = styled.span`
@@ -989,7 +1003,10 @@ export const ResistanceWrapper = styled.div`
     width: 16px;
 `;
 
-export const CardResistance = styled.span<{ $isRingBearer: boolean }>`
+export const CardResistance = styled.span<{
+    $isRingBearer: boolean;
+    $pulseGen?: number;
+}>`
     background-image: ${(props) =>
         props.$isRingBearer
             ? `url(interface/icons/resistance_ring.webp)`
@@ -1011,6 +1028,7 @@ export const CardResistance = styled.span<{ $isRingBearer: boolean }>`
     font-size: 9px;
     font-family: LOTRIcons;
     z-index: 1;
+    ${({ $pulseGen }) => valueChangePulseCss($pulseGen)}
 `;
 
 export const BurdensOrbitalContainer = styled.div`
@@ -1030,7 +1048,8 @@ interface OrbitalTokenProps {
     $size?: number;
 }
 
-export const OrbitalBurdenToken = styled.img<OrbitalTokenProps>`
+/** Slot orbital : conserve la position ; l’image enfant fait le pulse d’apparition. */
+export const OrbitalBurdenSlot = styled.span<OrbitalTokenProps>`
     position: absolute;
     width: ${({ $size = 14 }) => $size}px;
     height: ${({ $size = 14 }) => $size}px;
@@ -1043,7 +1062,14 @@ export const OrbitalBurdenToken = styled.img<OrbitalTokenProps>`
         rotate(-${({ $angle }) => $angle}deg);
 
     transition: transform 0.3s ease-out;
+`;
+
+export const OrbitalBurdenToken = styled.img`
+    width: 100%;
+    height: 100%;
+    display: block;
     filter: drop-shadow(0px 0px 4px rgba(255, 0, 0, 0.8));
+    ${appearPulseCss}
 `;
 
 /** Jetons de culture empilés en bas de la carte (zone soutien). */
@@ -1084,6 +1110,7 @@ export const CultureTokenPip = styled.span<{ $culture: string }>`
         inset -1.5px -2px 3px rgba(0, 0, 0, 0.55),
         0 1px 1px rgba(0, 0, 0, 0.35),
         0 2px 3px rgba(0, 0, 0, 0.28);
+    ${appearPulseCss}
 
     /* Symbole incrusté : ombre interne (pas de halo externe) */
     &::before {
@@ -1199,6 +1226,7 @@ export const WoundsOverlay = styled.div`
 export const WoundToken = styled.img`
     height: fit-content;
     margin-inline-end: 4px;
+    ${appearPulseCss}
 `;
 
 const healGlowPulse = keyframes`

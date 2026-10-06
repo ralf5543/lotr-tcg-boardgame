@@ -45,6 +45,7 @@ import {
     abilityMatchesTrigger,
     responseAbilityStillAvailable,
 } from '../../../../game/engine/responseWindow';
+import { usePulseOnChange } from '../../hooks/usePulseOnChange';
 
 interface CardImageProps {
     imageUrl?: string;
@@ -438,6 +439,35 @@ export const Card: React.FC<CardProps> = ({
         prevWoundsRef.current = currentWounds;
     }, [card?.wounds, card?.instanceId, card?.id]);
 
+    // Pulses avant tout return anticipé (règles des hooks).
+    const pulseOnBoard = size === 'sm' && Boolean(card);
+    const strengthPulse = usePulseOnChange(
+        pulseOnBoard && card ? getEffectiveStrength(card, G) : undefined
+    );
+    const vitalityPulse = usePulseOnChange(
+        pulseOnBoard && card ? getEffectiveVitality(card) : undefined
+    );
+    const resistancePulse = usePulseOnChange(
+        pulseOnBoard && card
+            ? getEffectiveResistance(card, burdens)
+            : undefined
+    );
+    const isRoamingForPulse =
+        Boolean(card) &&
+        typeof currentSiteIndex === 'number' &&
+        card!.kind === 'SHADOW' &&
+        card!.type === 'MINION' &&
+        typeof card!.minionSiteNumber === 'number' &&
+        card!.minionSiteNumber > currentSiteIndex + 1;
+    const roamingPulse = usePulseOnChange(
+        pulseOnBoard && card
+            ? `${card.minionSiteNumber ?? ''}:${isRoamingForPulse ? 1 : 0}`
+            : undefined
+    );
+    const twilightPulse = usePulseOnChange(
+        card && size !== 'sm' ? card.twilightCost : undefined
+    );
+
     if (!card) return null;
 
     const isFaceDown = Boolean(
@@ -702,7 +732,7 @@ export const Card: React.FC<CardProps> = ({
 
             <S.CardHeader>
                 {size !== 'sm' && (
-                    <S.TwilightBadge $isShadow={isShadow}>
+                    <S.TwilightBadge $isShadow={isShadow} $pulseGen={twilightPulse}>
                         {card.twilightCost}
                     </S.TwilightBadge>
                 )}
@@ -788,7 +818,7 @@ export const Card: React.FC<CardProps> = ({
 
             <S.StatsDisplay>
                 {card.strength !== undefined && (
-                    <S.StrengthBadge>
+                    <S.StrengthBadge $pulseGen={strengthPulse}>
                         {card.type === 'POSSESSION' ||
                         card.type === 'ARTIFACT' ||
                         card.type === 'CONDITION' ||
@@ -804,7 +834,7 @@ export const Card: React.FC<CardProps> = ({
                 )}
 
                 {card.vitality !== undefined && (
-                    <S.VitalityBadge>
+                    <S.VitalityBadge $pulseGen={vitalityPulse}>
                         {card.type === 'POSSESSION' ||
                         card.type === 'ARTIFACT' ||
                         card.type === 'CONDITION' ||
@@ -820,7 +850,10 @@ export const Card: React.FC<CardProps> = ({
                 )}
 
                 {card.minionSiteNumber !== undefined && (
-                    <S.RoamingNumber $isRoaming={isRoaming}>
+                    <S.RoamingNumber
+                        $isRoaming={isRoaming}
+                        $pulseGen={roamingPulse}
+                    >
                         {card.minionSiteNumber}
 
                         {isRoaming && size === 'md' && (
@@ -833,7 +866,10 @@ export const Card: React.FC<CardProps> = ({
 
                 {isFreepeopleCharacter && shouldShowResistance && (
                     <S.ResistanceWrapper>
-                        <S.CardResistance $isRingBearer={Boolean(isRingBearer)}>
+                        <S.CardResistance
+                            $isRingBearer={Boolean(isRingBearer)}
+                            $pulseGen={resistancePulse}
+                        >
                             {displayResistance}
                         </S.CardResistance>
 
@@ -843,15 +879,18 @@ export const Card: React.FC<CardProps> = ({
                                 {Array.from({ length: burdens }).map((_, i) => {
                                     const angle = (360 / burdens) * i;
                                     return (
-                                        <S.OrbitalBurdenToken
+                                        <S.OrbitalBurdenSlot
                                             key={i}
                                             $angle={angle}
                                             $radius={22}
                                             $size={32}
-                                            src="/interface/tokens/twilight_token.webp"
-                                            alt="Fardeau"
-                                            title={`${burdens} Fardeau(x)`}
-                                        />
+                                        >
+                                            <S.OrbitalBurdenToken
+                                                src="/interface/tokens/twilight_token.webp"
+                                                alt="Fardeau"
+                                                title={`${burdens} Fardeau(x)`}
+                                            />
+                                        </S.OrbitalBurdenSlot>
                                     );
                                 })}
                             </S.BurdensOrbitalContainer>
