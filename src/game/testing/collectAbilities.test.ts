@@ -151,7 +151,7 @@ describe('formatAbilityLabelParts', () => {
             i18n: { fr: { title: 'Fouilles' } },
         });
         expect(formatAbilityLabelParts(ability, delving)).toEqual({
-            cost: 'Affaiblir un Nain Compagnon',
+            cost: 'Affaiblir un compagnon nain',
             effect: 'piocher 3 cartes',
         });
     });
@@ -281,7 +281,8 @@ describe('formatAbilityLabelParts', () => {
             i18n: { fr: { title: 'Profondeurs Impitoyables' } },
         });
         expect(formatAbilityLabelParts(ability, depths)).toEqual({
-            cost: 'Désigner un séide <symbol>orc</symbol> et Défausser Profondeurs Impitoyables',
+            // spot = condition amont, pas un coût affiché (sauf pipes).
+            cost: 'Défausser Profondeurs Impitoyables',
             effect:
                 'remplacer le site actuel par un site souterrain du deck d’aventure',
         });
@@ -488,13 +489,36 @@ describe('formatAbilityLabelParts', () => {
         };
         const card = createCompanion({ id: 'x', title: 'X' });
         expect(formatAbilityLabelParts(dunland, card)).toEqual({
-            cost: 'Désigner un homme <symbol>dunland</symbol>',
-            effect: 'prendre le contrôle d’un site',
+            cost: '',
+            effect: 'Prendre le contrôle d’un site',
         });
         expect(formatAbilityLabelParts(gondor, card)).toEqual({
             cost: 'Affaiblir un homme <symbol>gondor</symbol>',
             effect: 'piocher 1 carte',
         });
+        // Race orque (pas symbole culture) pour ORC + MINION.
+        expect(
+            formatAbilityLabelParts(
+                {
+                    id: '8C30:0',
+                    phases: ['SHADOW'],
+                    cost: [],
+                    effects: [
+                        {
+                            type: 'STACK_ON_SELF',
+                            from: 'PLAY',
+                            target: [
+                                ['ORC', 'MINION'],
+                                ['GOLLUM', 'MINION'],
+                            ],
+                            maxStacked: 3,
+                        },
+                    ],
+                    source: 'SELF',
+                },
+                card
+            ).effect
+        ).toMatch(/séide orque/);
     });
 
     it('EXHAUST : libellé d’effet après les deux-points', () => {

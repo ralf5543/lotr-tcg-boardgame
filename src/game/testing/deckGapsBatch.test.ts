@@ -1,5 +1,9 @@
 import { describe, expect, it } from 'vitest';
-import { parseAbilities, parseSiteAbilities } from '../../../scripts/convert/parsers';
+import {
+    parseAbilities,
+    parseSiteAbilities,
+    parseToPlayConditions,
+} from '../../../scripts/convert/parsers';
 import { getKeywordValue } from '../engine/keywords/keywordUtils';
 import {
     createCompanion,
@@ -396,6 +400,113 @@ describe('parseAbilities — deck gaps batch 2 (Noble Leaders / Gandalf / Promis
                     phases: ['REGROUP'],
                     effects: [
                         expect.objectContaining({ type: 'PLAY_NEXT_SITE' }),
+                    ],
+                }),
+            ])
+        );
+    });
+
+    it('Threatening Guide : force par menace + wins → add threat', () => {
+        expect(
+            parseAbilities(
+                'Gollum is strength +1 for each threat you can spot. Each time Gollum wins a skirmish, you may add a threat.',
+                'Gollum',
+                '19P10'
+            )
+        ).toEqual(
+            expect.arrayContaining([
+                expect.objectContaining({
+                    trigger: { type: 'WHILE' },
+                    effects: [
+                        expect.objectContaining({
+                            type: 'MODIFY_STAT',
+                            stat: 'STRENGTH',
+                            value: 1,
+                            perThreats: true,
+                        }),
+                    ],
+                }),
+                expect.objectContaining({
+                    trigger: {
+                        type: 'WINS_SKIRMISH',
+                        winner: 'SELF',
+                    },
+                    optional: true,
+                    effects: [{ type: 'ADD_THREATS', count: 1 }],
+                }),
+            ])
+        );
+    });
+
+    it('Ranger\'s Sword : while skirmishing Uruk-hai → bearer +2', () => {
+        expect(
+            parseAbilities(
+                'Bearer must be Aragorn. While skirmishing an Uruk-hai, Aragorn is strength +2.',
+                "Ranger's Sword",
+                '4U132'
+            )
+        ).toEqual(
+            expect.arrayContaining([
+                expect.objectContaining({
+                    trigger: {
+                        type: 'WHILE',
+                        skirmishing: { target: [['URUK-HAI']] },
+                    },
+                    effects: [
+                        {
+                            type: 'MODIFY_STAT',
+                            stat: 'STRENGTH',
+                            value: 2,
+                            target: 'BEARER',
+                        },
+                    ],
+                    source: 'ATTACHMENT',
+                }),
+            ])
+        );
+    });
+
+    it('Anduin Banks : archerie ombre +2 par compagnon au-delà de 4', () => {
+        expect(
+            parseSiteAbilities(
+                '**River.** The minion archery total is +2 for each companion in the fellowship over 4.',
+                '11U227'
+            )
+        ).toEqual(
+            expect.arrayContaining([
+                expect.objectContaining({
+                    effects: [
+                        {
+                            type: 'MODIFY_ARCHERY_TOTAL',
+                            side: 'SHADOW',
+                            value: 2,
+                            perCompanionOver: 4,
+                        },
+                    ],
+                }),
+            ])
+        );
+    });
+
+    it('Let Her Deal With Them : spot Gollum|Sméagol = noms propres', () => {
+        expect(
+            parseToPlayConditions(
+                'To play, spot Gollum or Sméagol. Bearer must be a minion.'
+            )
+        ).toEqual(
+            expect.arrayContaining([
+                expect.objectContaining({
+                    spot: [
+                        expect.objectContaining({
+                            target: [['Gollum']],
+                        }),
+                    ],
+                }),
+                expect.objectContaining({
+                    spot: [
+                        expect.objectContaining({
+                            target: [['Sméagol']],
+                        }),
                     ],
                 }),
             ])

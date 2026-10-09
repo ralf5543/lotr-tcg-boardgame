@@ -337,7 +337,9 @@ export function whileConditionHolds(
     }
 
     if (trigger.skirmishing) {
-        const opponents = getSkirmishOpponents(G, source);
+        // Possession : « while skirmishing » porte sur le porteur (Ranger's Sword…).
+        const fighter = findBearer(G, source) || source;
+        const opponents = getSkirmishOpponents(G, fighter);
         const fpId = G.fpPlayerId || '0';
         const burdens = G.players[fpId]?.burdens || 0;
         if (

@@ -672,12 +672,16 @@ export function parseToPlayConditions(text?: string): any[] | undefined {
                     VALID_RACES.has(finalToken) ||
                     VALID_TARGET_TYPES.has(finalToken) ||
                     VALID_CULTURES.has(finalToken);
-                const isProperName = /^[A-Z][a-zà-ÿ]+/.test(word);
+                // Nom propre (Gollum, Sméagol…) : garder la casse — sinon
+                // GOLLUM culture valide le spot via Web / Promise Keeping.
+                const isProperName = /^[A-ZÀ-Ÿ][a-zà-ÿéèêëàâäùûüôöîïç'’-]+$/u.test(
+                    word
+                );
                 targets.push(
-                    isKnownTarget
-                        ? finalToken
-                        : isProperName
-                          ? word
+                    isProperName
+                        ? word
+                        : isKnownTarget
+                          ? finalToken
                           : finalToken
                 );
             }
@@ -2447,6 +2451,47 @@ function parseEachTimeWinsReinforceAbilities(
  * Each time [winner] wins a skirmish, discard each minion he/she/it is skirmishing.
  * (Boromir Bearer of Council…)
  */
+/**
+ * Each time [winner] wins a skirmish, (you may) add a threat.
+ * (Gollum Threatening Guide…)
+ */
+function parseEachTimeWinsAddThreatAbilities(
+    text: string,
+    cardTitle?: string,
+    cardId?: string
+): Record<string, unknown>[] {
+    const found: Record<string, unknown>[] = [];
+    const re =
+        /Each time ([\s\S]+?) wins a skirmish,\s*(you may )?add (a|an|one|\d+) threats?\.?/gi;
+    let match: RegExpExecArray | null;
+    while ((match = re.exec(text)) !== null) {
+        const winnerParsed = parseWinsSkirmishWinner(
+            match[1].trim(),
+            cardTitle
+        );
+        if (!winnerParsed) continue;
+        const count = parseCultureTokenCount(match[3]);
+        if (!count) continue;
+        const optional = Boolean(match[2]);
+
+        found.push({
+            id: `${cardId || 'ability'}:${found.length}:each-time-win-add-threat`,
+            phases: ['RESPONSE'],
+            trigger: {
+                type: 'WINS_SKIRMISH',
+                winner: winnerParsed.winner,
+                ...(winnerParsed.yours ? { yours: true } : {}),
+            },
+            ...(optional ? { optional: true } : {}),
+            cost: [],
+            effects: [{ type: 'ADD_THREATS', count }],
+            source: winnerParsed.winner === 'BEARER' ? 'ATTACHMENT' : 'SELF',
+            text: stripAbilityMarkup(match[0]),
+        });
+    }
+    return found;
+}
+
 function parseEachTimeWinsDiscardSkirmishingAbilities(
     text: string,
     cardTitle?: string,
@@ -4328,8 +4373,19 @@ function parseWhileSkirmishingStrengthAbilities(
     while ((match = re.exec(text)) !== null) {
         const opponent = parseWhileSkirmishingOpponent(match[1]);
         if (!opponent) continue;
-        const who = parseWhileStrengthWho(match[2], cardTitle);
-        if (!who || who === 'BEARER') continue;
+        let who = parseWhileStrengthWho(match[2], cardTitle);
+        // Possession « Bearer must be Aragorn … Aragorn is strength +N » :
+        // le titre n’est pas Aragorn → BEARER.
+        if (!who) {
+            const rawWho = stripAbilityMarkup(match[2]).replace(/\s+/g, ' ').trim();
+            if (
+                /^[A-ZÀ-ŸÉ]/.test(rawWho) &&
+                !/\b(and|or|each|minion|companion|ally)\b/i.test(rawWho)
+            ) {
+                who = 'BEARER';
+            }
+        }
+        if (!who) continue;
         const value = parseInt(match[3], 10);
         if (!Number.isFinite(value) || value === 0) continue;
 
@@ -4349,7 +4405,7 @@ function parseWhileSkirmishingStrengthAbilities(
                     target: who,
                 },
             ],
-            source: 'SELF',
+            source: who === 'BEARER' ? 'ATTACHMENT' : 'SELF',
             text: stripAbilityMarkup(match[0]),
         });
     }
@@ -5478,7 +5534,56 @@ export function parseSiteAbilities(
             id: `${cardId || 'ability'}:${abilities.length}:site-play-next`,
         });
     });
+    parseSiteArcheryTotalAbilities(text, cardId).forEach((ability) => {
+        abilities.push({
+            ...ability,
+            id: `${cardId || 'ability'}:${abilities.length}:site-archery`,
+        });
+    });
     return abilities.length > 0 ? abilities : undefined;
+}
+
+/**
+ * The minion archery total is +N for each companion in the fellowship over M.
+ * (Anduin Banks…)
+ */
+function parseSiteArcheryTotalAbilities(
+    text: string,
+    cardId?: string
+): Record<string, unknown>[] {
+    const found: Record<string, unknown>[] = [];
+    const re =
+        /The minion archery total is \+(\d+) for each companion in the fellowship over (\d+)\.?/gi;
+    let match: RegExpExecArray | null;
+    while ((match = re.exec(text)) !== null) {
+        const value = parseInt(match[1], 10);
+        const over = parseInt(match[2], 10);
+        if (
+            !Number.isFinite(value) ||
+            value <= 0 ||
+            !Number.isFinite(over) ||
+            over < 0
+        ) {
+            continue;
+        }
+        found.push({
+            id: `${cardId || 'ability'}:${found.length}:site-archery-over`,
+            phases: [],
+            trigger: { type: 'WHILE' },
+            cost: [],
+            effects: [
+                {
+                    type: 'MODIFY_ARCHERY_TOTAL',
+                    side: 'SHADOW',
+                    value,
+                    perCompanionOver: over,
+                },
+            ],
+            source: 'SELF',
+            text: stripAbilityMarkup(match[0]),
+        });
+    }
+    return found;
 }
 
 /**
@@ -5731,6 +5836,33 @@ function parseForEachStrengthAbilities(
                 type: 'WHILE',
                 cannotSpotThreats: cannotSpot,
             },
+            cost: [],
+            effects: [
+                {
+                    type: 'MODIFY_STAT',
+                    stat: 'STRENGTH',
+                    value,
+                    target,
+                    perThreats: true,
+                },
+            ],
+            source: 'SELF',
+            text: stripAbilityMarkup(match[0]),
+        });
+    }
+
+    // X is strength +M for each threat you can spot. (Threatening Guide…)
+    const plainPerThreatRe =
+        /(?:^|[.!?]\s*)((?:This (?:minion|companion)|Bearer|[A-ZÀ-ŸÉ][^,.]*?)) is strength \+(\d+) for (?:each|every) threat(?:s)?(?: you can spot)?\.?/gi;
+    while ((match = plainPerThreatRe.exec(working)) !== null) {
+        if (/While you cannot spot/i.test(match[0])) continue;
+        const target = resolveWho(match[1]);
+        const value = parseInt(match[2], 10);
+        if (!target || !Number.isFinite(value) || value <= 0) continue;
+        found.push({
+            id: `${cardId || 'ability'}:${found.length}:for-each-threat`,
+            phases: [],
+            trigger: { type: 'WHILE' },
             cost: [],
             effects: [
                 {
@@ -10153,6 +10285,15 @@ export function parseAbilities(
     );
 
     parseEachTimeWinsReinforceAbilities(text, cardTitle, cardId).forEach(
+        (ability) => {
+            abilities.push({
+                ...ability,
+                id: `${cardId || 'ability'}:${abilities.length}`,
+            });
+        }
+    );
+
+    parseEachTimeWinsAddThreatAbilities(text, cardTitle, cardId).forEach(
         (ability) => {
             abilities.push({
                 ...ability,

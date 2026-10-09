@@ -112,7 +112,7 @@ export function collectProjectedAbilities(
     host: CardState
 ): { source: CardState; ability: Ability }[] {
     const rows: { source: CardState; ability: Ability }[] = [];
-    forEachInPlayCard(G, (card) => {
+    const consider = (card: CardState) => {
         if ((card.instanceId || card.id) === (host.instanceId || host.id)) {
             return;
         }
@@ -121,7 +121,12 @@ export function collectProjectedAbilities(
                 rows.push({ source: card, ability });
             }
         }
-    });
+    };
+    forEachInPlayCard(G, consider);
+    // Sites du chemin (Mere of Dead Faces → bulle sur Gollum/Sméagol).
+    for (const site of G.path || []) {
+        if (site) consider(site as CardState);
+    }
     return rows;
 }
 
@@ -261,14 +266,10 @@ function partitionFilterTokens(tokens: string[]): {
 
     const cultures = [...unambiguousCultures];
     const races = [...unambiguousRaces];
+    // Mot nu « Orc / Uruk-hai / Wraith » = race (Web : « séide orque »).
+    // Culture uniquement via symbole / jeton non ambigu (SAURON…).
     for (const token of ambiguous) {
-        if (unambiguousCultures.length > 0) {
-            races.push(token);
-        } else if (types.length > 0 || unambiguousRaces.length > 0) {
-            cultures.push(token);
-        } else {
-            races.push(token);
-        }
+        races.push(token);
     }
 
     const classified = new Set([...cultures, ...races, ...types]);
@@ -300,6 +301,20 @@ function formatFilterList(tokens: string[]): string {
         const head = translateCriterionToken(headToken).toLowerCase();
         const kw = suffix.map(translateCriterionToken).join(' ');
         const core = `${head} ${cultureSymbol(cultures[0])}`;
+        return kw ? `${core} ${kw}` : core;
+    }
+
+    // Race + type (sans culture) → « séide orque » (Web), pas « orque séide ».
+    if (
+        cultures.length === 0 &&
+        races.length === 1 &&
+        types.length === 1 &&
+        other.length === 0
+    ) {
+        const typeLabel = translateCriterionToken(types[0]).toLowerCase();
+        const raceLabel = translateCriterionToken(races[0]).toLowerCase();
+        const kw = suffix.map(translateCriterionToken).join(' ');
+        const core = `${typeLabel} ${raceLabel}`;
         return kw ? `${core} ${kw}` : core;
     }
 

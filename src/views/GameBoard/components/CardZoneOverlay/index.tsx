@@ -90,67 +90,59 @@ export const CardZoneOverlay: React.FC<CardZoneOverlayProps> = ({
                 ? '1 carte · ordre : dernière en haut de pile en premier'
                 : `${totalCards} cartes · ordre : dernière en haut de pile en premier`);
 
-    const renderCard = (card: CardState, index: number) => {
-        const pickable = isSelectable(card, selectable);
-        const dimmed = Boolean(selectable) && !pickable;
-
-        return (
-            <S.GridCell
-                key={cardKey(card, index)}
-                $selectable={pickable}
-                $dimmed={dimmed}
-                data-cursor={pickable ? 'arrow' : undefined}
-                data-interactive={pickable ? 'true' : undefined}
-                onClick={(event) => {
-                    if (!pickable || !onSelectCard) return;
-                    event.stopPropagation();
-                    onSelectCard(card.instanceId || card.id);
-                }}
-            >
-                <Card
-                    card={card}
-                    size="md"
-                    currentSiteIndex={currentSiteIndex}
-                    isActionable={pickable}
-                />
-            </S.GridCell>
-        );
-    };
-
     const renderSectionCards = (sectionCards: CardState[]) => {
         if (sectionCards.length === 0) {
             return <S.EmptyState>{emptyMessage}</S.EmptyState>;
         }
 
-        // Sélection : chaque exemplaire visible (parcours papier).
-        // Consultation : regroupement des doublons.
-        if (isPickMode) {
-            return (
-                <S.Grid>
-                    {sectionCards.map((card, index) => renderCard(card, index))}
-                </S.Grid>
-            );
-        }
-
         const grouped = groupCardsForDisplay(sectionCards);
         return (
             <S.Grid>
-                {grouped.map(({ card, count }) => (
-                    <S.GridCell key={card.instanceId || card.id}>
-                        {count > 1 && (
-                            <S.CountBadge
-                                aria-label={`${count} exemplaires`}
-                            >
-                                ×{count}
-                            </S.CountBadge>
-                        )}
-                        <Card
-                            card={card}
-                            size="md"
-                            currentSiteIndex={currentSiteIndex}
-                        />
-                    </S.GridCell>
-                ))}
+                {grouped.map(({ card, count }) => {
+                    // Pick : un exemplaire légal du groupe (unicité / coût…).
+                    const pickCard =
+                        isPickMode && selectable
+                            ? sectionCards.find(
+                                  (c) =>
+                                      c.id === card.id &&
+                                      isSelectable(c, selectable)
+                              ) || card
+                            : card;
+                    const pickable =
+                        isPickMode && isSelectable(pickCard, selectable);
+                    const dimmed = Boolean(isPickMode && selectable && !pickable);
+
+                    return (
+                        <S.GridCell
+                            key={card.instanceId || card.id}
+                            $selectable={pickable}
+                            $dimmed={dimmed}
+                            data-cursor={pickable ? 'arrow' : undefined}
+                            data-interactive={pickable ? 'true' : undefined}
+                            onClick={(event) => {
+                                if (!pickable || !onSelectCard) return;
+                                event.stopPropagation();
+                                onSelectCard(
+                                    pickCard.instanceId || pickCard.id
+                                );
+                            }}
+                        >
+                            {count > 1 && (
+                                <S.CountBadge
+                                    aria-label={`${count} exemplaires`}
+                                >
+                                    ×{count}
+                                </S.CountBadge>
+                            )}
+                            <Card
+                                card={pickCard}
+                                size="md"
+                                currentSiteIndex={currentSiteIndex}
+                                isActionable={pickable}
+                            />
+                        </S.GridCell>
+                    );
+                })}
             </S.Grid>
         );
     };

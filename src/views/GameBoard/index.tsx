@@ -2365,8 +2365,8 @@ export const GameBoard: React.FC<GameBoardProps> = ({
                     />
                     {deckDiscardPick && (
                         <CardZoneOverlay
-                            title="Pioche et défausse"
-                            subtitle="Toutes les cartes sont visibles · seules les cartes jouables sont sélectionnables"
+                            title="Pioche ou défausse"
+                            subtitle="Choisissez une carte jouable dans la pioche ou la défausse"
                             sections={[
                                 {
                                     title: 'Pioche',

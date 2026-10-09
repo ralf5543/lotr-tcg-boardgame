@@ -240,7 +240,8 @@ export function hasSpotCondition(card: CardState): boolean {
 }
 
 /**
- * Évalue si TOUTES les conditions 'spot' de la carte sont actuellement remplies
+ * Halo spot : au moins une option `toPlay` dont les spots sont satisfaits
+ * (OU entre options, comme `checkToPlayConditions` — « spot Gollum or Sméagol »).
  */
 export function isSpotConditionMet(card: CardState, context: ValidationContext): boolean {
     const toPlay = (card as any).toPlay;
@@ -249,23 +250,27 @@ export function isSpotConditionMet(card: CardState, context: ValidationContext):
     const { G, playerID } = context;
     const cardsInPlay = getSpottableCardsInPlay(G, playerID, card);
 
-    // Vérifie chaque option qui contient du spot
-    for (const option of toPlay) {
-        if (option.spot && Array.isArray(option.spot)) {
-            for (const req of option.spot) {
-                const countRequired = req.count || 1;
-                const targetGroups = req.target;
+    const spotOptions = toPlay.filter(
+        (option: { spot?: unknown[] }) =>
+            Array.isArray(option.spot) && option.spot.length > 0
+    );
+    if (spotOptions.length === 0) return false;
 
-                const matchingCount = cardsInPlay.filter((c) =>
-                    cardMatchesTarget(c, targetGroups)
-                ).length;
-
-                if (matchingCount < countRequired) {
-                    return false;
-                }
+    for (const option of spotOptions) {
+        let optionOk = true;
+        for (const req of option.spot) {
+            const countRequired = req.count || 1;
+            const targetGroups = req.target;
+            const matchingCount = cardsInPlay.filter((c) =>
+                cardMatchesTarget(c, targetGroups)
+            ).length;
+            if (matchingCount < countRequired) {
+                optionOk = false;
+                break;
             }
         }
+        if (optionOk) return true;
     }
 
-    return true;
+    return false;
 }

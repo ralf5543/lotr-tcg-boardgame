@@ -443,10 +443,24 @@ describe('parseAbilities — Exert … to make KEYWORD', () => {
         ]);
     });
 
-    it('n’émet rien si le bonus scale (for each)', () => {
+    it('Pippin\'s Sword : exert ×2 → force +1 par compagnon gondor spoté', () => {
         const text =
             'Bearer must be Pippin.  <keyword>Skirmish:</keyword> Exert Pippin twice to make him strength +1 for each <symbol>gondor</symbol> companion you spot.';
-        expect(parseAbilities(text, "Pippin's Sword", '7R114')).toBeUndefined();
+        expect(parseAbilities(text, "Pippin's Sword", '7R114')).toEqual([
+            expect.objectContaining({
+                phases: ['SKIRMISH'],
+                effects: [
+                    expect.objectContaining({
+                        type: 'ADD_TEMP_STAT',
+                        stat: 'STRENGTH',
+                        value: 1,
+                        perSpot: {
+                            target: [['GONDOR', 'COMPANION']],
+                        },
+                    }),
+                ],
+            }),
+        ]);
     });
 
     it('parse un événement : Exert Sam (pas SELF), force +3, ignore la phrase suivante', () => {

@@ -1,5 +1,6 @@
 import type { CardState, GameState } from '../types';
 import { cardMatchesTarget } from '../engine/validations/matchers';
+import { canPlayCard } from '../engine/canPlayCard';
 import { findInPlayCardOwnerId } from './cultureTokens';
 import { getEffectiveTwilightCost } from '../../utils/roamingDetection';
 import { getWhileTwilightCostModifier } from './stats/mechanics/whileModifier';
@@ -112,6 +113,15 @@ export function playStackedMinionFromCard(
     const id = card.instanceId || card.id;
     const index = host.stacked.findIndex((c) => matchCard(c, id));
     if (index < 0) return null;
+
+    const playCheck = canPlayCard(
+        card,
+        { G, ctx: { phase: 'shadow' }, playerID: ownerId },
+        undefined,
+        undefined,
+        { ignorePhase: true }
+    );
+    if (!playCheck.valid) return null;
 
     const cost = getEffectiveTwilightCost(
         card,

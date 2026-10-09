@@ -478,6 +478,16 @@ export type AbilityEffect =
           target: string[][];
       }
     | {
+          /**
+           * Modifie le total d’archerie (site Anduin Banks…).
+           * `perCompanionOver` : +value × max(0, compagnons − seuil).
+           */
+          type: 'MODIFY_ARCHERY_TOTAL';
+          side: 'SHADOW' | 'FREE_PEOPLE';
+          value: number;
+          perCompanionOver?: number;
+      }
+    | {
           type: 'DRAW';
           count: number;
       }

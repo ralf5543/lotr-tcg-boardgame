@@ -1,5 +1,6 @@
 import type { CardState, GameState } from '../types';
 import { getEffectiveKeywords } from '../engine/keywords/keywordUtils';
+import { getCurrentSite } from './sites';
 
 /**
  * Vérifie si une carte possède un mot-clé donné parmi ses mots-clés effectifs.
@@ -20,6 +21,10 @@ export function calculateArcheryTotals(G: GameState) {
     const fpPlayer = G.players[fpId];
 
     let fpTotal = 0;
+    const companionCount = fpPlayer?.fellowshipArea?.filter(
+        (c) => c && c.type === 'COMPANION' && !c.isDead
+    ).length ?? 0;
+
     if (fpPlayer && fpPlayer.fellowshipArea) {
         fpPlayer.fellowshipArea.forEach((companion) => {
             const isArcher = hasKeyword(companion, 'ARCHER');
@@ -39,6 +44,23 @@ export function calculateArcheryTotals(G: GameState) {
                 }
             }
         });
+    }
+
+    // Passifs du site actuel (Anduin Banks…).
+    const site = getCurrentSite(G);
+    for (const ability of site?.abilities || []) {
+        if (ability.trigger?.type !== 'WHILE') continue;
+        for (const effect of ability.effects || []) {
+            if (effect.type !== 'MODIFY_ARCHERY_TOTAL') continue;
+            let bonus = effect.value;
+            if (typeof effect.perCompanionOver === 'number') {
+                bonus =
+                    effect.value *
+                    Math.max(0, companionCount - effect.perCompanionOver);
+            }
+            if (effect.side === 'SHADOW') shadowTotal += bonus;
+            else fpTotal += bonus;
+        }
     }
 
     return { fpTotal, shadowTotal };

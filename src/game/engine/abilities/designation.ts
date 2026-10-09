@@ -51,6 +51,7 @@ import {
     getPlayStackCandidates,
 } from '../../logic/cardStack';
 import { getDeckOrDiscardPlayCandidates } from '../../logic/playFromOutOfPlay';
+import { canPlayCard } from '../canPlayCard';
 import {
     attachesToSite,
     canAttachToCharacter,
@@ -108,15 +109,18 @@ function candidatesForEffect(
         return uniqueCards(getCardsStackedOnHost(source));
     }
     if (effect.type === 'PLAY_FROM_CARD_STACK') {
-        const siteIndex = getCurrentSiteIndex(G);
+        const ownerId = abilityOwnerPlayerId(G, source);
+        if (!ownerId) return [];
         return uniqueCards(
             getCardsStackedOnHost(source, effect.target).filter((card) => {
-                const cost = getEffectiveTwilightCost(
+                // Comme depuis la main : coût, unicité, toPlay…
+                return canPlayCard(
                     card,
-                    siteIndex,
-                    getWhileTwilightCostModifier(G, card)
-                );
-                return (G.twilightPool || 0) >= cost;
+                    { G, ctx: { phase: 'shadow' }, playerID: ownerId },
+                    undefined,
+                    undefined,
+                    { ignorePhase: true }
+                ).valid;
             })
         );
     }

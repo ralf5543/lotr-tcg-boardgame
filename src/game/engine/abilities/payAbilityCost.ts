@@ -45,6 +45,8 @@ export function abilityOwnerPlayerId(
     const fpId = G.fpPlayerId || '0';
     if (source.kind === 'FREE_PEOPLE') return fpId;
     if (source.kind === 'SHADOW') return fpId === '0' ? '1' : '0';
+    // Site (Mere…) : effets « next site » / deck d’aventure = Peuples Libres.
+    if (source.kind === 'SITE' || source.type === 'SITE') return fpId;
     return undefined;
 }
 
