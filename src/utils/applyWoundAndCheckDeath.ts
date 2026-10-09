@@ -39,6 +39,14 @@ export const applyOverwhelmAndCheckDeath = (
     enqueueCharacterDeath(G, card);
 };
 
+export type ApplyWoundOptions = {
+    /**
+     * Affaiblissement : pose un jeton de blessure mais n’est **pas**
+     * « takes a wound » (Promise Keeping, etc.).
+     */
+    fromExert?: boolean;
+};
+
 /**
  * Inflige N blessures dans G, enregistre les identifiants pour l'animation visuelle
  * et marque la carte si le coup est fatal.
@@ -46,7 +54,8 @@ export const applyOverwhelmAndCheckDeath = (
 export const applyWoundAndCheckDeath = (
     G: GameState,
     card: CardState,
-    woundsCount = 1
+    woundsCount = 1,
+    options?: ApplyWoundOptions
 ): boolean => {
     if (!card) return false;
 
@@ -59,6 +68,19 @@ export const applyWoundAndCheckDeath = (
     if (!G.lastWoundedCardIds) G.lastWoundedCardIds = [];
     if (cardId && !G.lastWoundedCardIds.includes(cardId)) {
         G.lastWoundedCardIds.push(cardId);
+    }
+
+    // 2b. Réponses « each time … takes a wound » (Promise Keeping…)
+    // Pas pour un affaiblissement (exert ≠ blessure).
+    if (cardId && woundsCount > 0 && !options?.fromExert) {
+        if (!G.takesWoundQueue) G.takesWoundQueue = [];
+        const skirmishId = G.activeSkirmishId;
+        for (let i = 0; i < woundsCount; i++) {
+            G.takesWoundQueue.push({
+                targetId: cardId,
+                ...(skirmishId ? { skirmishId } : {}),
+            });
+        }
     }
 
     // 3. Calculer la vitalité

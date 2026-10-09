@@ -6,8 +6,19 @@ import type {
     SiteCardState,
 } from '../../types';
 import type { ModifierScope } from '../../logic/stats/types';
-import { resolveAbilityTarget, forEachInPlayCard, resolveWinnerTargets, resolveCostTarget } from './resolveCostTarget';
-import { requestWounds, requestCancelSkirmish, requestExhaust } from '../responseWindow';
+import {
+    resolveAbilityTarget,
+    forEachInPlayCard,
+    resolveWinnerTargets,
+    resolveCostTarget,
+    resolveSkirmishingOpponents,
+} from './resolveCostTarget';
+import {
+    requestWounds,
+    requestCancelSkirmish,
+    requestExhaust,
+    requestForceAssign,
+} from '../responseWindow';
 import { cardMatchesTarget } from '../validations/matchers';
 import { drawCardsForPlayer } from '../../../utils/drawCards';
 import { discardCardFromPlay } from '../../../utils/discardCardFromPlay';
@@ -33,6 +44,7 @@ import {
     getReplaceSiteCandidates,
     replaceCurrentSiteFromDeck,
     replacePathSiteFromDeck,
+    playNextSiteFromDeck,
     getCurrentSiteIndex,
     takeControlOfSite,
     liberateSite,
@@ -48,9 +60,11 @@ import {
 import {
     getDeckOrDiscardPlayCandidates,
     playCardFromDeckOrDiscard,
+    searchDeckCardToDiscard,
 } from '../../logic/playFromOutOfPlay';
 import { getWhileTwilightCostModifier } from '../../logic/stats/mechanics/whileModifier';
 import { isSiteReplaceForbidden } from '../../logic/siteReplaceRestrictions';
+import { afterCardPlayed } from './eachTimeYouPlay';
 import type { CardKeyword } from '../../types';
 
 export function abilityReplaceSiteEffect(
@@ -72,7 +86,10 @@ export function abilityExchangeSiteEffect(
 }
 
 export function abilityNeedsSiteReplace(ability: Ability): boolean {
-    return Boolean(abilityReplaceSiteEffect(ability));
+    return (
+        Boolean(abilityReplaceSiteEffect(ability)) ||
+        (ability.effects || []).some((item) => item.type === 'PLAY_NEXT_SITE')
+    );
 }
 
 export function abilityNeedsSiteExchange(ability: Ability): boolean {
@@ -116,10 +133,30 @@ export function abilityPlayFromStackEffect(
     return effect && effect.type === 'PLAY_FROM_STACK' ? effect : null;
 }
 
+export function abilityPlayFromCardStackEffect(
+    ability: Ability
+): Extract<Ability['effects'][number], { type: 'PLAY_FROM_CARD_STACK' }> | null {
+    const effect = (ability.effects || []).find(
+        (item) => item.type === 'PLAY_FROM_CARD_STACK'
+    );
+    return effect && effect.type === 'PLAY_FROM_CARD_STACK' ? effect : null;
+}
+
+/**
+ * Play from card stack sans coût à désigner (Web / Goblin Swarms Shadow) :
+ * drag direct comme depuis la main — pas de bulle d’action.
+ */
+export function isCostlessPlayFromCardStack(ability: Ability): boolean {
+    if ((ability.cost || []).length > 0) return false;
+    const effect = abilityPlayFromCardStackEffect(ability);
+    return Boolean(effect && Array.isArray(effect.target));
+}
+
 /** Joue un autre séide empilé (filtre), pas la source elle-même. */
 export function abilityPlaysOtherFromStack(ability: Ability): boolean {
-    const effect = abilityPlayFromStackEffect(ability);
-    return Boolean(effect && Array.isArray(effect.target));
+    const siteStack = abilityPlayFromStackEffect(ability);
+    if (siteStack && Array.isArray(siteStack.target)) return true;
+    return Boolean(abilityPlayFromCardStackEffect(ability));
 }
 
 export function abilityPlayFromDeckOrDiscardEffect(
@@ -136,9 +173,24 @@ export function abilityPlayFromDeckOrDiscardEffect(
         : null;
 }
 
+export function abilitySearchDeckToDiscardEffect(
+    ability: Ability
+): Extract<
+    Ability['effects'][number],
+    { type: 'SEARCH_DECK_TO_DISCARD' }
+> | null {
+    const effect = (ability.effects || []).find(
+        (item) => item.type === 'SEARCH_DECK_TO_DISCARD'
+    );
+    return effect && effect.type === 'SEARCH_DECK_TO_DISCARD' ? effect : null;
+}
+
 /** Choix pioche/défausse (Captured…) — pas une désignation plateau. */
 export function abilityNeedsDeckOrDiscardPick(ability: Ability): boolean {
-    return Boolean(abilityPlayFromDeckOrDiscardEffect(ability));
+    return Boolean(
+        abilityPlayFromDeckOrDiscardEffect(ability) ||
+            abilitySearchDeckToDiscardEffect(ability)
+    );
 }
 
 /** Sites contrôlés où l’on peut empiler le séide source. */
@@ -193,11 +245,13 @@ export function applyAbilityEffect(
     source: CardState,
     ability: Ability,
     chosenTargetId?: string | string[],
-    discardedHandIds?: string[]
+    discardedHandIds?: string[],
+    costTargetId?: string | string[]
 ): boolean {
     const effects = ability.effects || [];
     if (effects.length === 0) return false;
     const chosenIds = normalizeChosenIds(chosenTargetId);
+    const costIds = normalizeChosenIds(costTargetId);
 
     for (const effect of effects) {
         if (effect.type === 'PREVENT_WOUND') {
@@ -380,11 +434,24 @@ export function applyAbilityEffect(
         if (effect.type === 'STACK_ON_SELF') {
             const ownerId = abilityOwnerPlayerId(G, source);
             if (!ownerId) return false;
-            const cardId = chosenIds[0];
-            if (!cardId) return false;
 
             let cardToStack: CardState | null = null;
-            if (effect.from === 'HAND') {
+            if (effect.target === 'WINNER') {
+                const matches = resolveWinnerTargets(G, source, ability);
+                const cardId = chosenIds[0];
+                cardToStack = cardId
+                    ? matches.find(
+                          (c) => c.instanceId === cardId || c.id === cardId
+                      ) || null
+                    : matches.length === 1
+                      ? matches[0]
+                      : null;
+                if (!cardToStack || cardToStack.type !== 'MINION') {
+                    return false;
+                }
+            } else if (effect.from === 'HAND') {
+                const cardId = chosenIds[0];
+                if (!cardId) return false;
                 cardToStack =
                     (G.players[ownerId]?.hand || []).find(
                         (c) =>
@@ -398,6 +465,8 @@ export function applyAbilityEffect(
                     return false;
                 }
             } else {
+                const cardId = chosenIds[0];
+                if (!cardId) return false;
                 cardToStack = findTargetCard(G, cardId) as CardState | null;
                 if (
                     !cardToStack ||
@@ -458,10 +527,14 @@ export function applyAbilityEffect(
             if (!ownerId) return false;
             const cardId = chosenIds[0];
             if (!cardId) return false;
+            const attachHost =
+                effect.attachTo === 'SELF' ? source : null;
             const candidates = getDeckOrDiscardPlayCandidates(
                 G,
                 ownerId,
-                effect.target
+                effect.target,
+                'fellowship',
+                attachHost
             );
             if (
                 !candidates.some(
@@ -470,7 +543,35 @@ export function applyAbilityEffect(
             ) {
                 return false;
             }
-            if (!playCardFromDeckOrDiscard(G, ownerId, cardId, effect.target)) {
+            const played = playCardFromDeckOrDiscard(
+                G,
+                ownerId,
+                cardId,
+                effect.target,
+                'fellowship',
+                attachHost
+            );
+            if (!played) return false;
+            afterCardPlayed(G, played, {
+                playerId: ownerId,
+                phase: 'fellowship',
+            });
+            continue;
+        }
+
+        if (effect.type === 'SEARCH_DECK_TO_DISCARD') {
+            const ownerId = abilityOwnerPlayerId(G, source);
+            if (!ownerId) return false;
+            const cardId = chosenIds[0];
+            if (!cardId) return false;
+            if (
+                !searchDeckCardToDiscard(
+                    G,
+                    ownerId,
+                    cardId,
+                    effect.target
+                )
+            ) {
                 return false;
             }
             continue;
@@ -566,6 +667,138 @@ export function applyAbilityEffect(
             continue;
         }
 
+        if (effect.type === 'ADD_BURDENS') {
+            const fpId = G.fpPlayerId || '0';
+            const fp = G.players[fpId];
+            if (!fp) return false;
+            const n = effect.count || 0;
+            if (n > 0) {
+                fp.burdens = (fp.burdens || 0) + n;
+            }
+            continue;
+        }
+
+        if (effect.type === 'CHOOSE_ONE') {
+            // Choix forcé : géré via pendingForcedChoice, pas ici.
+            return false;
+        }
+
+        if (effect.type === 'PLAY_NEXT_SITE') {
+            if (effect.from !== 'SITES_DECK') return false;
+            const ownerId = abilityOwnerPlayerId(G, source);
+            if (!ownerId) return false;
+            const siteId = chosenIds[0];
+            if (!siteId) return false;
+            if (getReplaceSiteCandidates(G, ownerId).length === 0) {
+                return false;
+            }
+            if (!playNextSiteFromDeck(G, ownerId, siteId)) return false;
+            continue;
+        }
+
+        if (effect.type === 'RETURN_TO_HAND') {
+            const pick = chosenIds[0];
+            const target = resolveAbilityTarget(
+                G,
+                source,
+                effect.target,
+                pick
+            );
+            if (!target) return false;
+            if (!returnCardToOwnerHand(G, target)) return false;
+            continue;
+        }
+
+        if (effect.type === 'FORBID_ASSIGN') {
+            const pick = chosenIds[0];
+            const target = resolveAbilityTarget(
+                G,
+                source,
+                effect.target,
+                pick
+            );
+            if (!target) return false;
+            target.forbidAssignUntil = effect.expiresAtPhase;
+            continue;
+        }
+
+        if (effect.type === 'FORCE_ASSIGN') {
+            const companionPick = chosenIds[0];
+            if (!companionPick) return false;
+
+            let minion: CardState | null = null;
+            if (effect.minion === 'SELF') {
+                minion = source;
+            } else if (effect.minion === 'COST_TARGET') {
+                const costId = costIds[0];
+                if (!costId) return false;
+                minion = findTargetCard(G, costId) as CardState | null;
+            } else if (Array.isArray(effect.minion)) {
+                minion = resolveAbilityTarget(
+                    G,
+                    source,
+                    effect.minion,
+                    companionPick
+                );
+            }
+            if (!minion || minion.type !== 'MINION') return false;
+            if (minion.cannotBeAssignedToSkirmish) return false;
+
+            const companion = resolveAbilityTarget(
+                G,
+                source,
+                effect.companion,
+                companionPick
+            );
+            if (!companion || companion.type !== 'COMPANION') return false;
+            if (
+                effect.excludeRingBearer &&
+                isRingBearerCard(companion)
+            ) {
+                return false;
+            }
+            if (!requestForceAssign(G, minion, companion, effect.fpMayPrevent)) {
+                return false;
+            }
+            continue;
+        }
+
+        if (effect.type === 'WOUND' && effect.involving) {
+            const fighters = resolveCostTarget(G, source, effect.involving);
+            const opponents: CardState[] = [];
+            for (const fighter of fighters) {
+                for (const opp of resolveSkirmishingOpponents(G, fighter)) {
+                    if (
+                        !opponents.some(
+                            (o) =>
+                                (o.instanceId || o.id) ===
+                                (opp.instanceId || opp.id)
+                        )
+                    ) {
+                        opponents.push(opp);
+                    }
+                }
+            }
+            const pick = chosenIds[0];
+            const target = pick
+                ? opponents.find(
+                      (c) => c.instanceId === pick || c.id === pick
+                  ) || null
+                : opponents.length === 1
+                  ? opponents[0]
+                  : null;
+            if (!target) return false;
+            let count = effect.count || 1;
+            if (
+                effect.countIfCulture &&
+                target.culture === effect.countIfCulture.culture
+            ) {
+                count = effect.countIfCulture.count;
+            }
+            requestWounds(G, target, count);
+            continue;
+        }
+
         if (effect.type === 'REINFORCE_CULTURE_TOKEN') {
             const ownerId = abilityOwnerPlayerId(G, source);
             if (!ownerId) return false;
@@ -627,9 +860,27 @@ export function applyAbilityEffect(
         }
 
         if (effect.type === 'DISCARD_ALL') {
-            const matches = resolveCostTarget(G, source, effect.target);
+            const matches =
+                effect.target === 'SKIRMISHING'
+                    ? resolveCostTarget(G, source, 'SKIRMISHING')
+                    : resolveCostTarget(G, source, effect.target);
             for (const card of [...matches]) {
                 discardCardFromPlay(G, card);
+            }
+            continue;
+        }
+
+        if (
+            effect.type === 'EXERT' &&
+            effect.all &&
+            (effect.target === 'SKIRMISHING' || Array.isArray(effect.target))
+        ) {
+            const matches = resolveCostTarget(G, source, effect.target);
+            const times = effect.count || 1;
+            for (const card of matches) {
+                for (let i = 0; i < times; i++) {
+                    applyExert(G, card);
+                }
             }
             continue;
         }
@@ -681,6 +932,7 @@ export function applyAbilityEffect(
             continue;
         }
 
+        if (!('target' in effect)) continue;
         const pick = chosenIds[0];
         const target = resolveAbilityTarget(
             G,
@@ -731,6 +983,15 @@ function applyOneEffect(
             value = effect.value * n;
             const cap = effect.perCultureTokensOnSelf.limit;
             if (cap != null) value = Math.min(value, cap);
+            if (value <= 0) return false;
+        }
+        if (effect.perSpot) {
+            const n = resolveCostTarget(
+                G,
+                source,
+                effect.perSpot.target
+            ).filter((c) => !c.isDead).length;
+            value = effect.value * n;
             if (value <= 0) return false;
         }
         if (
@@ -847,6 +1108,30 @@ function countFromSpotCost(
 
 export { countFromSpotCost };
 
+function returnCardToOwnerHand(G: GameState, card: CardState): boolean {
+    const ownerId = abilityOwnerPlayerId(G, card);
+    if (!ownerId) return false;
+    const player = G.players[ownerId];
+    if (!player) return false;
+    // Retirer via défausse puis déplacer vers la main (réutilise la logique de retrait).
+    if (!discardCardFromPlay(G, card)) return false;
+    const pile = player.discard || [];
+    const idx = pile.findIndex(
+        (c) =>
+            c &&
+            ((c.instanceId || c.id) === (card.instanceId || card.id) ||
+                c === card)
+    );
+    if (idx < 0) return false;
+    const [removed] = pile.splice(idx, 1);
+    if (!removed) return false;
+    removed.wounds = 0;
+    removed.isDead = false;
+    if (!player.hand) player.hand = [];
+    player.hand.push(removed);
+    return true;
+}
+
 function makeRingBearer(
     G: GameState,
     newBearer: CardState,
@@ -922,6 +1207,9 @@ export function clearExpiredTempKeywords(
         );
         if (card.tempKeywords.length === 0) {
             delete card.tempKeywords;
+        }
+        if (card.forbidAssignUntil === phase) {
+            delete card.forbidAssignUntil;
         }
     });
 

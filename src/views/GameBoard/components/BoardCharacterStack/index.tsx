@@ -1,4 +1,4 @@
-import React, { useLayoutEffect, useRef, useState } from 'react';
+import React, { useLayoutEffect, useMemo, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 import type { CardState, CardType, GameState } from '../../../../game/types';
 import { Card } from '../Card';
@@ -14,6 +14,16 @@ import { canTransferAid } from '../../../../game/engine/validations/canTransferA
 import { isInPlayCardDraggable } from './isInPlayCardDraggable';
 import { canCompanionBeAssigned } from '../../../../game/logic/assignment';
 import { useAssignedMinionsTrack } from '../PlayerArea/AssignedMinionsTrackContext';
+import { isCostlessPlayFromCardStack } from '../../../../game/engine/abilities/applyAbilityEffect';
+import { abilityMatchesPhase } from '../../../../game/engine/abilities/collectAbilities';
+import {
+    abilityHasLegalEffectTarget,
+    getEffectDesignationCandidates,
+} from '../../../../game/engine/abilities/designation';
+import { canPayAbilityCost } from '../../../../game/engine/abilities/payAbilityCost';
+
+/** Aperçus visibles sur l’hôte ; le reste via pastille ×N → grille. */
+const MAX_STACK_PEEKS = 4;
 
 interface BoardCharacterStackProps {
     character: CardState;
@@ -68,10 +78,48 @@ export const BoardCharacterStack: React.FC<BoardCharacterStackProps> = ({
 }) => {
     const { registerTarget, registerArrowAnchor, activeTargetId, dragged, startDrag, isOverHandCancel } =
         useDrag();
-    const { isCardTargetable, selectCard, targetingKind, hoveredTargetId } = useTargeting();
+    const { isCardTargetable, selectCard, targetingKind, hoveredTargetId } =
+        useTargeting();
     const arrowSync = useTargetingArrowSync();
     const remoteTargetId = arrowSync?.remote?.toCardId;
     const myFaction = useLocalFaction();
+
+    const stackedCards = character.stacked || [];
+    const stackTruncated = stackedCards.length > MAX_STACK_PEEKS;
+    const stackPeeks = stackTruncated
+        ? stackedCards.slice(stackedCards.length - MAX_STACK_PEEKS)
+        : stackedCards;
+    const stackPeekOffset = stackedCards.length - stackPeeks.length;
+
+    /** Play from stack sans coût (Web / Goblin Swarms) : drag comme depuis la main. */
+    const directStackPlay = useMemo(() => {
+        if (!G || !phase || isOpponent) return null;
+        const ability = (character.abilities || []).find(
+            (ab) =>
+                isCostlessPlayFromCardStack(ab) &&
+                abilityMatchesPhase(ab, phase) &&
+                canPayAbilityCost(G, character, ab.cost) &&
+                abilityHasLegalEffectTarget(G, character, ab)
+        );
+        if (!ability) return null;
+        // Même filtre que le runtime (crépuscule inclus) — halo seulement si jouable.
+        const candidates = getEffectDesignationCandidates(
+            G,
+            character,
+            ability
+        );
+        if (candidates.length === 0) return null;
+        return { ability, candidates };
+    }, [G, phase, isOpponent, character]);
+
+    const directStackPlayIds = useMemo(() => {
+        if (!directStackPlay) return null;
+        return new Set(
+            directStackPlay.candidates.flatMap((c) =>
+                [c.instanceId, c.id].filter(Boolean) as string[]
+            )
+        );
+    }, [directStackPlay]);
 
     const cardKey = character.instanceId || character.id;
     const isTargetable =
@@ -583,19 +631,45 @@ export const BoardCharacterStack: React.FC<BoardCharacterStackProps> = ({
                     </S.AttachmentsContainer>
                 )}
 
-                {/* Cartes empilées sur l’hôte (Web, Fragments de Narsil…) */}
-                {(character.stacked?.length || 0) > 0 && (
-                    <S.StackedOnCardGrid>
-                        {(character.stacked || []).map((stacked) => {
+                {/* Cartes empilées sur l’hôte (Web, Narsil, Goblin Swarms…) */}
+                {stackedCards.length > 0 && (
+                    <S.StackedOnCardGrid $count={stackPeeks.length}>
+                        {stackPeeks.map((stacked, peekIdx) => {
+                            const stackIdx = stackPeekOffset + peekIdx;
                             const stackedKey =
                                 stacked.instanceId || stacked.id;
                             const stackedTargetable =
                                 isCardTargetable(stackedKey) ||
                                 isCardTargetable(stacked.id);
+                            const canDirectPlay = Boolean(
+                                directStackPlayIds?.has(stackedKey) ||
+                                    (stacked.id &&
+                                        directStackPlayIds?.has(stacked.id))
+                            );
+                            /** Drag only (main) — désignation clic = flèche. */
+                            const canDragStacked =
+                                targetingKind === 'STACK_PLAY' ||
+                                canDirectPlay;
+                            const stackedHalo =
+                                stackedTargetable || canDirectPlay;
+                            const hostId =
+                                character.instanceId || character.id;
                             return (
                                 <S.StackedOnCardSlot
                                     key={stackedKey}
-                                    $targetable={stackedTargetable}
+                                    $index={peekIdx}
+                                    $targetable={stackedHalo}
+                                    $draggable={canDragStacked}
+                                    data-cursor={
+                                        stackedTargetable && !canDragStacked
+                                            ? 'arrow'
+                                            : undefined
+                                    }
+                                    data-interactive={
+                                        stackedTargetable && !canDragStacked
+                                            ? 'true'
+                                            : undefined
+                                    }
                                     ref={(el) => {
                                         registerTarget(stackedKey, el);
                                         if (
@@ -606,9 +680,20 @@ export const BoardCharacterStack: React.FC<BoardCharacterStackProps> = ({
                                         }
                                     }}
                                     onPointerDown={(e) => {
-                                        if (!stackedTargetable || e.button !== 0)
-                                            return;
+                                        if (e.button !== 0) return;
                                         e.stopPropagation();
+                                        if (!stackedHalo) return;
+                                        if (canDragStacked) {
+                                            startDrag(
+                                                stacked,
+                                                stackIdx,
+                                                e,
+                                                'CARD_STACK',
+                                                'portrait',
+                                                hostId
+                                            );
+                                            return;
+                                        }
                                         selectCard(
                                             isCardTargetable(stackedKey)
                                                 ? stackedKey
@@ -619,9 +704,10 @@ export const BoardCharacterStack: React.FC<BoardCharacterStackProps> = ({
                                     <Card
                                         card={stacked}
                                         size="sm"
-                                        isDraggable={false}
+                                        visualOnly
+                                        isDraggable={canDragStacked}
                                         isDisabled={isDisabled}
-                                        isActionable={stackedTargetable}
+                                        isActionable={stackedHalo}
                                         G={G}
                                         phase={phase}
                                         playerID={playerID}
@@ -629,6 +715,96 @@ export const BoardCharacterStack: React.FC<BoardCharacterStackProps> = ({
                                 </S.StackedOnCardSlot>
                             );
                         })}
+                        {stackTruncated && (
+                            <S.StackedCountBadge
+                                type="button"
+                                aria-label={`${stackedCards.length} cartes empilées — ouvrir la grille`}
+                                title="Voir toute la pile"
+                                onPointerDown={(e) => e.stopPropagation()}
+                                onClick={(e) => {
+                                    e.stopPropagation();
+                                    const hostId =
+                                        character.instanceId || character.id;
+                                    const designationPickIds = stackedCards
+                                        .filter((c) => {
+                                            const key = c.instanceId || c.id;
+                                            return (
+                                                isCardTargetable(key) ||
+                                                isCardTargetable(c.id)
+                                            );
+                                        })
+                                        .flatMap(
+                                            (c) =>
+                                                [c.instanceId, c.id].filter(
+                                                    Boolean
+                                                ) as string[]
+                                        );
+                                    const pickIds =
+                                        designationPickIds.length > 0
+                                            ? designationPickIds
+                                            : directStackPlay
+                                              ? directStackPlay.candidates.flatMap(
+                                                    (c) =>
+                                                        [
+                                                            c.instanceId,
+                                                            c.id,
+                                                        ].filter(
+                                                            Boolean
+                                                        ) as string[]
+                                                )
+                                              : undefined;
+                                    const isPick = Boolean(pickIds?.length);
+                                    window.dispatchEvent(
+                                        new CustomEvent(
+                                            'open-stack-overlay',
+                                            {
+                                                detail: {
+                                                    title: `Empilé sur ${character.title || character.i18n?.fr?.title || 'cette carte'}`,
+                                                    subtitle: isPick
+                                                        ? `${stackedCards.length} carte${stackedCards.length > 1 ? 's' : ''} · choisissez une carte`
+                                                        : undefined,
+                                                    cards: [
+                                                        ...stackedCards,
+                                                    ].reverse(),
+                                                    selectableCardIds:
+                                                        pickIds,
+                                                    onSelectCard: isPick
+                                                        ? (cardId: string) => {
+                                                              if (
+                                                                  targetingKind ===
+                                                                      'STACK_PLAY' ||
+                                                                  targetingKind ===
+                                                                      'DESIGNATION' ||
+                                                                  designationPickIds.length >
+                                                                      0
+                                                              ) {
+                                                                  selectCard(
+                                                                      cardId
+                                                                  );
+                                                                  return;
+                                                              }
+                                                              if (
+                                                                  directStackPlay
+                                                              ) {
+                                                                  onActivateAbility?.(
+                                                                      hostId,
+                                                                      directStackPlay
+                                                                          .ability
+                                                                          .id,
+                                                                      cardId
+                                                                  );
+                                                              }
+                                                          }
+                                                        : undefined,
+                                                },
+                                            }
+                                        )
+                                    );
+                                }}
+                            >
+                                ×{stackedCards.length}
+                            </S.StackedCountBadge>
+                        )}
                     </S.StackedOnCardGrid>
                 )}
             </S.CharacterStack>

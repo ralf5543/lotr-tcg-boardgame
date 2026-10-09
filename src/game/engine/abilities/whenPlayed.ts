@@ -18,6 +18,10 @@ import {
 } from '../../logic/siteReplaceRestrictions';
 import { canExchangeOwnedPathSite, countSitesWithKeyword } from '../../logic/sites';
 import { abilityNeedsEffectDesignation } from './designation';
+import {
+    getDeckOrDiscardPlayCandidates,
+    getDeckSearchToDiscardCandidates,
+} from '../../logic/playFromOutOfPlay';
 
 export function isWhenPlayedAbility(ability: Ability): boolean {
     return ability.trigger?.type === 'WHEN_PLAYED';
@@ -33,6 +37,16 @@ function whenPlayedSpotSiteMet(G: GameState, ability: Ability): boolean {
     );
 }
 
+function whenPlayedExceptStartingMet(
+    card: CardState,
+    ability: Ability
+): boolean {
+    const trigger = ability.trigger;
+    if (!trigger || trigger.type !== 'WHEN_PLAYED') return true;
+    if (!trigger.exceptStartingFellowship) return true;
+    return !card.isStartingMember;
+}
+
 function abilityForPhase(ability: Ability, phase?: string): Ability {
     if (phase === 'fellowship' && !(ability.phases || []).length) {
         return { ...ability, phases: ['FELLOWSHIP'] };
@@ -46,6 +60,42 @@ function canFulfillWhenPlayedEffects(
     ability: Ability
 ): boolean {
     if (!whenPlayedSpotSiteMet(G, ability)) return false;
+    if (!whenPlayedExceptStartingMet(card, ability)) return false;
+
+    const playFromDeck = (ability.effects || []).find(
+        (item) => item.type === 'PLAY_FROM_DECK_OR_DISCARD'
+    );
+    if (playFromDeck && playFromDeck.type === 'PLAY_FROM_DECK_OR_DISCARD') {
+        const ownerId = abilityOwnerPlayerId(G, card);
+        if (!ownerId) return false;
+        const attachHost =
+            playFromDeck.attachTo === 'SELF' ? card : null;
+        // Aucun candidat : inerte — on laisse jouer la carte, toaster n’apparaît pas.
+        return (
+            getDeckOrDiscardPlayCandidates(
+                G,
+                ownerId,
+                playFromDeck.target,
+                'fellowship',
+                attachHost
+            ).length > 0
+        );
+    }
+
+    const searchToDiscard = (ability.effects || []).find(
+        (item) => item.type === 'SEARCH_DECK_TO_DISCARD'
+    );
+    if (searchToDiscard && searchToDiscard.type === 'SEARCH_DECK_TO_DISCARD') {
+        const ownerId = abilityOwnerPlayerId(G, card);
+        if (!ownerId) return false;
+        return (
+            getDeckSearchToDiscardCandidates(
+                G,
+                ownerId,
+                searchToDiscard.target
+            ).length > 0
+        );
+    }
 
     const reinforce = (ability.effects || []).find(
         (item) => item.type === 'REINFORCE_CULTURE_TOKEN'
@@ -143,6 +193,7 @@ export function resolveWhenPlayed(
     for (const ability of card.abilities || []) {
         if (!isWhenPlayedAbility(ability)) continue;
         if (!whenPlayedSpotSiteMet(G, ability)) continue;
+        if (!whenPlayedExceptStartingMet(card, ability)) continue;
 
         if (ability.optional) {
             if (

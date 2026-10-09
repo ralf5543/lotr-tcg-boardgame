@@ -8,8 +8,16 @@ import { applyWoundAndCheckDeath } from '../../utils/applyWoundAndCheckDeath';
 import { applyExhaust } from '../../utils/applyExhaust';
 import { findTargetCard, isRingBearerCard } from '../../utils/cardUtils';
 import { clearActionableFlags } from '../../utils/clearActionableFlags';
-import { canPayAbilityCost } from './abilities/payAbilityCost';
-import { abilityHasLegalEffectTarget } from './abilities/designation';
+import {
+    canPayAbilityCost,
+    payAbilityCost,
+    abilityNeedsHandDiscard,
+} from './abilities/payAbilityCost';
+import {
+    abilityHasLegalEffectTarget,
+    abilityNeedsCostDesignation,
+    abilityNeedsEffectDesignation,
+} from './abilities/designation';
 import {
     findBearer,
     forEachInPlayCard,
@@ -19,7 +27,9 @@ import {
 import { skirmishMatchesInvolving } from './abilities/cancelSkirmish';
 import { cardMatchesTarget } from './validations/matchers';
 import { abilityMatchesPhase } from './abilities/collectAbilities';
+import { applyAbilityEffect } from './abilities/applyAbilityEffect';
 import { getEffectiveVitality } from '../../utils/cardStats';
+import { applyExert } from '../../utils/applyExert';
 import { getEffectiveTwilightCost } from '../../utils/roamingDetection';
 import { getWhileTwilightCostModifier } from '../logic/stats/mechanics/whileModifier';
 import { getCurrentSiteIndex } from '../logic/sites';
@@ -49,7 +59,18 @@ export function markResponseUsed(
     source: CardState,
     ability: Ability
 ): void {
-    if (!G.responseWindow?.isOpen) return;
+    // Peut être appelé avant l’ouverture (auto-résolution obligatoire).
+    if (!G.responseWindow) {
+        G.responseWindow = {
+            isOpen: false,
+            activePlayerId: G.fpPlayerId || '0',
+            title: '',
+            message: '',
+            canPass: true,
+            passesCount: 0,
+            usedResponseKeys: [],
+        };
+    }
     const key = responseKey(source, ability);
     const used = G.responseWindow.usedResponseKeys || [];
     if (used.includes(key)) return;
@@ -127,6 +148,43 @@ export function abilityMatchesTrigger(
         }
         if (Array.isArray(target)) return cardMatchesTarget(dead, target);
         return false;
+    }
+
+    if (event.type === 'TAKES_WOUND') {
+        if (ability.trigger.type !== 'TAKES_WOUND') return false;
+        if (ability.trigger.inSkirmish && !isInSkirmish(G)) return false;
+
+        const wounded = findTargetCard(G, event.targetId) as CardState | null;
+        if (!wounded) return false;
+
+        const target = ability.trigger.target;
+        let targetOk = false;
+        if (target === 'SELF') {
+            targetOk = matchCard(wounded, source.instanceId || source.id);
+        } else if (target === 'BEARER') {
+            const bearer = findBearer(G, source);
+            targetOk = Boolean(
+                bearer && matchCard(bearer, event.targetId)
+            );
+        } else if (Array.isArray(target)) {
+            targetOk = cardMatchesTarget(wounded, target);
+        }
+        if (!targetOk) return false;
+
+        const involving = ability.trigger.involving;
+        if (involving) {
+            const skirmishId = event.skirmishId || G.activeSkirmishId;
+            const skirmish = (G.skirmishes || []).find(
+                (s) => s.id === skirmishId
+            );
+            if (!skirmish) return false;
+            if (
+                !skirmishMatchesInvolving(G, skirmish, source, involving)
+            ) {
+                return false;
+            }
+        }
+        return true;
     }
 
     if (event.type !== 'ABOUT_TO_WOUND') return false;
@@ -223,6 +281,7 @@ function applyWoundOrRingReplacement(
 function responseEventIsActive(event: PendingEvent | undefined): boolean {
     if (!event) return false;
     if (event.type === 'ABOUT_TO_WOUND') return event.remaining > 0;
+    if (event.type === 'TAKES_WOUND') return Boolean(event.targetId);
     if (event.type === 'WINS_SKIRMISH') return event.winnerIds.length > 0;
     if (event.type === 'LOSES_SKIRMISH') return event.loserIds.length > 0;
     if (event.type === 'CHARACTER_DIES') return Boolean(event.deadCardId);
@@ -231,6 +290,9 @@ function responseEventIsActive(event: PendingEvent | undefined): boolean {
     }
     if (event.type === 'ABOUT_TO_EXHAUST') {
         return Boolean(event.targetId);
+    }
+    if (event.type === 'ABOUT_TO_FORCE_ASSIGN') {
+        return Boolean(event.minionId && event.companionId);
     }
     if (event.type === 'FELLOWSHIP_MOVES') return true;
     return false;
@@ -253,12 +315,22 @@ function fpCanPreventExhaust(G: GameState): boolean {
     return event.addBurdens > 0;
 }
 
+function fpCanPreventForceAssign(G: GameState): boolean {
+    const event = G.pendingEvent;
+    if (!event || event.type !== 'ABOUT_TO_FORCE_ASSIGN') return false;
+    const companion = findTargetCard(G, event.companionId) as CardState | null;
+    return Boolean(companion && getEffectiveVitality(companion) > 1);
+}
+
 function responseWindowMessage(G: GameState): string {
     if (G.pendingEvent?.type === 'WINS_SKIRMISH') {
         return 'Un personnage a gagné ce combat. Jouez une réponse ou passez.';
     }
     if (G.pendingEvent?.type === 'LOSES_SKIRMISH') {
         return 'Un personnage a perdu ce combat. Jouez une réponse ou passez.';
+    }
+    if (G.pendingEvent?.type === 'TAKES_WOUND') {
+        return 'Un personnage a pris une blessure. Jouez une réponse ou passez.';
     }
     if (G.pendingEvent?.type === 'CHARACTER_DIES') {
         return 'Un personnage est mort. Jouez une réponse ou passez.';
@@ -347,6 +419,12 @@ export function playerHasEligibleResponse(
         );
     }
 
+    if (G.pendingEvent.type === 'ABOUT_TO_FORCE_ASSIGN') {
+        return (
+            playerID === (G.fpPlayerId || '0') && fpCanPreventForceAssign(G)
+        );
+    }
+
     const player = G.players[playerID];
     if (player?.hand?.some((card) => card && handResponseIsLegal(G, card, playerID))) {
         return true;
@@ -377,6 +455,7 @@ function openResponseWindow(G: GameState): void {
         ? fpId
         : shadowId;
 
+    const priorUsed = G.responseWindow?.usedResponseKeys || [];
     G.responseWindow = {
         isOpen: true,
         activePlayerId,
@@ -384,7 +463,7 @@ function openResponseWindow(G: GameState): void {
         message: responseWindowMessage(G),
         canPass: true,
         passesCount: 0,
-        usedResponseKeys: [],
+        usedResponseKeys: priorUsed,
     };
     G.statusMessage = 'Réponse : jouez une réponse ou passez.';
     clearActionableFlags(G);
@@ -420,11 +499,38 @@ function processWoundQueue(G: GameState): 'APPLIED' | 'WAITING' {
     G.woundQueue = undefined;
     G.pendingEvent = undefined;
     closeResponseWindow(G);
+    if (tryOpenTakesWound(G) === 'WAITING') return 'WAITING';
     if (tryOpenCharacterDies(G) === 'WAITING') return 'WAITING';
     if (tryOpenWinsSkirmish(G) === 'WAITING') return 'WAITING';
     if (tryOpenLosesSkirmish(G) === 'WAITING') return 'WAITING';
     tryResumeArcheryAfterResponses(G);
     flushPendingActionYield(G);
+    return 'APPLIED';
+}
+
+export function tryOpenTakesWound(G: GameState): 'APPLIED' | 'WAITING' {
+    if (G.responseWindow?.isOpen || G.pendingEvent) {
+        return G.responseWindow?.isOpen ? 'WAITING' : 'APPLIED';
+    }
+
+    while (G.takesWoundQueue && G.takesWoundQueue.length > 0) {
+        const next = G.takesWoundQueue.shift()!;
+        G.pendingEvent = {
+            type: 'TAKES_WOUND',
+            targetId: next.targetId,
+            ...(next.skirmishId ? { skirmishId: next.skirmishId } : {}),
+        };
+
+        if (!hasAnyEligibleResponse(G)) {
+            G.pendingEvent = undefined;
+            continue;
+        }
+
+        openResponseWindow(G);
+        return 'WAITING';
+    }
+
+    G.takesWoundQueue = undefined;
     return 'APPLIED';
 }
 
@@ -484,6 +590,30 @@ export function requestWounds(
     return processWoundQueue(G);
 }
 
+/**
+ * Réponses obligatoires sans choix (Boromir : défausse auto des séides…).
+ * Pas de bulle / toaster — on applique puis on laisse les réponses optionnelles.
+ */
+function autoResolveMandatoryResponses(G: GameState): void {
+    const event = G.pendingEvent;
+    if (!event) return;
+
+    forEachInPlayCard(G, (card) => {
+        for (const ability of card.abilities || []) {
+            if (ability.optional) continue;
+            if (!inPlayResponseIsLegal(G, card, ability)) continue;
+            if (abilityNeedsCostDesignation(G, card, ability)) continue;
+            if (abilityNeedsEffectDesignation(G, card, ability)) continue;
+            if (abilityNeedsHandDiscard(ability)) continue;
+            if (!payAbilityCost(G, card, ability.cost)) continue;
+            if (!applyAbilityEffect(G, card, ability)) continue;
+            markResponseUsed(G, card, ability);
+            const title = card.i18n?.fr?.title || card.title || card.id;
+            G.statusMessage = `${title} : effet automatique.`;
+        }
+    });
+}
+
 export function tryOpenWinsSkirmish(G: GameState): 'APPLIED' | 'WAITING' {
     if (G.responseWindow?.isOpen || G.pendingEvent) {
         return G.responseWindow?.isOpen ? 'WAITING' : 'APPLIED';
@@ -498,8 +628,13 @@ export function tryOpenWinsSkirmish(G: GameState): 'APPLIED' | 'WAITING' {
         skirmishId: pending.skirmishId,
     };
 
+    autoResolveMandatoryResponses(G);
+
     if (!hasAnyEligibleResponse(G)) {
         G.pendingEvent = undefined;
+        if (G.responseWindow && !G.responseWindow.isOpen) {
+            G.responseWindow = undefined;
+        }
         return 'APPLIED';
     }
 
@@ -520,6 +655,35 @@ export function tryOpenLosesSkirmish(G: GameState): 'APPLIED' | 'WAITING' {
         loserIds: pending.loserIds,
         skirmishId: pending.skirmishId,
     };
+
+    // Contrainte obligatoire (Worry…) : choix FP immédiat.
+    const forcedBucket: { source: CardState; ability: Ability }[] = [];
+    forEachInPlayCard(G, (card) => {
+        if (forcedBucket.length > 0) return;
+        for (const ability of card.abilities || []) {
+            if (ability.optional) continue;
+            if (!ability.effects?.some((e) => e.type === 'CHOOSE_ONE')) continue;
+            if (!abilityMatchesTrigger(ability, G.pendingEvent, card, G)) {
+                continue;
+            }
+            forcedBucket.push({ source: card, ability });
+            break;
+        }
+    });
+    const forced = forcedBucket[0];
+    if (forced) {
+        const fpId = G.fpPlayerId || '0';
+        G.pendingForcedChoice = {
+            playerId: fpId,
+            sourceInstanceId:
+                forced.source.instanceId || forced.source.id,
+            abilityId: forced.ability.id,
+            skirmishId: pending.skirmishId,
+        };
+        G.statusMessage =
+            'Contrainte : choisissez d’affaiblir le Porteur ou d’ajouter un fardeau.';
+        return 'WAITING';
+    }
 
     if (!hasAnyEligibleResponse(G)) {
         G.pendingEvent = undefined;
@@ -593,9 +757,20 @@ function concludeOpenResponse(G: GameState): 'APPLIED' | 'WAITING' {
         return continueAfterCurrentWound(G);
     }
 
+    if (G.pendingEvent?.type === 'TAKES_WOUND') {
+        G.pendingEvent = undefined;
+        closeResponseWindow(G);
+        if (tryOpenTakesWound(G) === 'WAITING') return 'WAITING';
+        if (tryOpenCharacterDies(G) === 'WAITING') return 'WAITING';
+        if (tryOpenWinsSkirmish(G) === 'WAITING') return 'WAITING';
+        if (tryOpenLosesSkirmish(G) === 'WAITING') return 'WAITING';
+        return processWoundQueue(G);
+    }
+
     if (G.pendingEvent?.type === 'CHARACTER_DIES') {
         G.pendingEvent = undefined;
         closeResponseWindow(G);
+        if (tryOpenTakesWound(G) === 'WAITING') return 'WAITING';
         if (tryOpenCharacterDies(G) === 'WAITING') return 'WAITING';
         if (tryOpenWinsSkirmish(G) === 'WAITING') return 'WAITING';
         if (tryOpenLosesSkirmish(G) === 'WAITING') return 'WAITING';
@@ -621,8 +796,18 @@ function concludeOpenResponse(G: GameState): 'APPLIED' | 'WAITING' {
         return 'APPLIED';
     }
 
+    if (G.pendingEvent?.type === 'ABOUT_TO_FORCE_ASSIGN') {
+        const { minionId, companionId } = G.pendingEvent;
+        G.pendingEvent = undefined;
+        closeResponseWindow(G);
+        applyForceAssign(G, minionId, companionId);
+        flushPendingActionYield(G);
+        return 'APPLIED';
+    }
+
     G.pendingEvent = undefined;
     closeResponseWindow(G);
+    if (tryOpenTakesWound(G) === 'WAITING') return 'WAITING';
     if (tryOpenCharacterDies(G) === 'WAITING') return 'WAITING';
     return processWoundQueue(G);
 }
@@ -809,6 +994,78 @@ export function requestExhaust(
 }
 
 /**
+ * Affectation forcée : si le FP peut empêcher (exert), ouvre la fenêtre ;
+ * sinon assigne tout de suite.
+ */
+export function requestForceAssign(
+    G: GameState,
+    minion: CardState,
+    companion: CardState,
+    fpMayPrevent?: { exert: true }
+): boolean {
+    if (!minion || !companion || companion.isDead) return false;
+    const minionId = minion.instanceId || minion.id;
+    const companionId = companion.instanceId || companion.id;
+    if (!minionId || !companionId) return false;
+
+    if (fpMayPrevent?.exert && getEffectiveVitality(companion) > 1) {
+        G.pendingEvent = {
+            type: 'ABOUT_TO_FORCE_ASSIGN',
+            minionId,
+            companionId,
+        };
+        openResponseWindow(G);
+        G.statusMessage =
+            'Réponse Peuples Libres : affaiblir ce compagnon pour empêcher l’affectation, ou passer.';
+        return true;
+    }
+
+    return applyForceAssign(G, minionId, companionId);
+}
+
+function applyForceAssign(
+    G: GameState,
+    minionId: string,
+    companionId: string
+): boolean {
+    const fpId = G.fpPlayerId || '0';
+    const companion = G.players[fpId]?.fellowshipArea?.find(
+        (c) => c.instanceId === companionId || c.id === companionId
+    );
+    const minion = (G.battlefield || []).find(
+        (c) => c.instanceId === minionId || c.id === minionId
+    );
+    if (!companion || !minion) return false;
+
+    G.skirmishes.forEach((s) => {
+        s.minionIds = s.minionIds.filter(
+            (id) => id !== minionId && id !== (minion.instanceId || minion.id)
+        );
+    });
+    const resolvedCompanionId = companion.instanceId || companion.id;
+    const resolvedMinionId = minion.instanceId || minion.id;
+    const existing = G.skirmishes.find(
+        (s) =>
+            s.companionId === companionId ||
+            s.companionId === resolvedCompanionId
+    );
+    if (existing) {
+        if (!existing.minionIds.includes(resolvedMinionId)) {
+            existing.minionIds.push(resolvedMinionId);
+        }
+    } else {
+        G.skirmishes.push({
+            id: `skirmish_${resolvedCompanionId}`,
+            companionId: resolvedCompanionId,
+            minionIds: [resolvedMinionId],
+        });
+    }
+    G.skirmishes = G.skirmishes.filter((s) => s.minionIds.length > 0);
+    G.statusMessage = `${minion.i18n?.fr?.title || minion.title || 'Séide'} est affecté à ${companion.i18n?.fr?.title || companion.title || 'compagnon'}.`;
+    return true;
+}
+
+/**
  * Empêche l’effet pending (Escape : Ombre −crépuscule ;
  * Can You Protect Me : FP +fardeaux).
  */
@@ -848,6 +1105,21 @@ export function preventPendingEffect(
         G.pendingEvent = undefined;
         closeResponseWindow(G);
         G.statusMessage = `Les Peuples Libres empêchent (+${n} fardeau${n > 1 ? 'x' : ''}).`;
+        flushPendingActionYield(G);
+        return 'APPLIED';
+    }
+
+    if (event.type === 'ABOUT_TO_FORCE_ASSIGN') {
+        if (playerID !== (G.fpPlayerId || '0')) return 'INVALID';
+        const companion = findTargetCard(
+            G,
+            event.companionId
+        ) as CardState | null;
+        if (!companion || !applyExert(G, companion)) return 'INVALID';
+        G.pendingEvent = undefined;
+        closeResponseWindow(G);
+        G.statusMessage =
+            'Les Peuples Libres empêchent l’affectation (compagnon affaibli).';
         flushPendingActionYield(G);
         return 'APPLIED';
     }

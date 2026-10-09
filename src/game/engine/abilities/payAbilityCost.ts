@@ -187,9 +187,16 @@ function canPayOption(
     if (option.discardFromPlay && Array.isArray(option.discardFromPlay)) {
         for (const req of option.discardFromPlay) {
             const count = req.count || 1;
-            const cards = resolveCostTarget(G, source, req.target).filter(
+            let cards = resolveCostTarget(G, source, req.target).filter(
                 (card) => !card.isDead
             );
+            if (req.excludeSource) {
+                const sourceId = source.instanceId || source.id;
+                cards = cards.filter(
+                    (card) =>
+                        card.instanceId !== sourceId && card.id !== sourceId
+                );
+            }
             if (req.target === 'SELF' || req.target === 'BEARER') {
                 const target = cards[0];
                 if (!target) return false;
@@ -327,7 +334,14 @@ function payOption(
     }
     if (option.discardFromPlay && Array.isArray(option.discardFromPlay)) {
         for (const req of option.discardFromPlay) {
-            const cards = resolveCostTarget(G, source, req.target);
+            let cards = resolveCostTarget(G, source, req.target);
+            if (req.excludeSource) {
+                const sourceId = source.instanceId || source.id;
+                cards = cards.filter(
+                    (card) =>
+                        card.instanceId !== sourceId && card.id !== sourceId
+                );
+            }
             if (req.target === 'SELF' || req.target === 'BEARER') {
                 const target = cards[0];
                 if (!target || !discardCardFromPlay(G, target)) return false;

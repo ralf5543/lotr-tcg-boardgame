@@ -61,7 +61,9 @@ export const Battlefield: React.FC<BattlefieldProps> = ({
         isStandardCard(dragged.card) &&
         dragged.card.type === 'MINION' &&
         dragged.card.kind === 'SHADOW' &&
-        (dragged.origin === 'HAND' || dragged.origin === 'SITE_STACK');
+        (dragged.origin === 'HAND' ||
+            dragged.origin === 'SITE_STACK' ||
+            dragged.origin === 'CARD_STACK');
 
     const isHovered = activeTargetId === 'battlefield' && isValidCard;
 

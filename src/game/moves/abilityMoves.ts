@@ -140,13 +140,17 @@ export const activateAbility = (
     const effectTargetId = needsCostDesignation
         ? chosenEffectTargetId
         : chosenTargetId;
+    const costIdForEffect = needsCostDesignation
+        ? chosenTargetId
+        : undefined;
     if (
         !applyAbilityEffect(
             G,
             source,
             ability,
             effectTargetId,
-            discardedHandIds
+            discardedHandIds,
+            costIdForEffect
         )
     ) {
         return 'INVALID_MOVE';

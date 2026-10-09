@@ -7,6 +7,8 @@ type TargetingKind =
     | 'SKIRMISH_SELECT'
     | 'DESIGNATION'
     | 'HAND_DISCARD'
+    /** Choix d’une carte en main (empiler Narsil…) — clic, pas drag « jouer ». */
+    | 'HAND_PICK'
     | 'SITE_REPLACE'
     | 'SITE_REPLACE_PATH'
     | 'SITE_ATTACH'

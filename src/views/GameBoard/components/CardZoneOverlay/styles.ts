@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 
-export const Backdrop = styled.div`
-    position: absolute;
+export const Backdrop = styled.div<{ $viewportFixed?: boolean }>`
+    position: ${({ $viewportFixed }) => ($viewportFixed ? 'fixed' : 'absolute')};
     inset: 0;
     z-index: 1500;
     display: flex;
@@ -54,13 +54,13 @@ export const Subtitle = styled.p`
 
 export const CloseButton = styled.button`
     flex-shrink: 0;
-    width: 36px;
-    height: 36px;
-    border-radius: 8px;
+    width: 52px;
+    height: 52px;
+    border-radius: 10px;
     border: 1px solid rgba(226, 192, 68, 0.45);
     background: rgba(26, 29, 36, 0.85);
     color: #f3e6c4;
-    font-size: 20px;
+    font-size: 32px;
     line-height: 1;
     cursor: pointer;
     transition:

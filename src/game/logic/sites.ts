@@ -6,6 +6,7 @@ import type {
 } from '../types';
 import { getEffectiveTwilightCost } from '../../utils/roamingDetection';
 import { cardMatchesTarget } from '../engine/validations/matchers';
+import { resolveSiteMoveAbilities } from '../engine/abilities/siteMove';
 
 export function getCurrentSiteIndex(G: GameState): number {
     const fpId = G.fpPlayerId || '0';
@@ -586,5 +587,59 @@ export function replaceCurrentSiteFromDeck(
         newSiteId,
         siteKeyword
     );
+}
+
+/**
+ * Pose le prochain site vide du chemin depuis le deck d’aventure
+ * (Mere of Dead Faces…). Avance la compagnie + crépuscule de déplacement.
+ */
+export function playNextSiteFromDeck(
+    G: GameState,
+    ownerId: string,
+    siteId: string
+): boolean {
+    const player = G.players[ownerId];
+    if (!player?.sitesDeck) return false;
+
+    const nextEmptyIndex = (G.path || []).findIndex((slot) => slot === null);
+    if (nextEmptyIndex < 0) return false;
+
+    const deckIndex = player.sitesDeck.findIndex(
+        (s) => s && (s.instanceId === siteId || s.id === siteId)
+    );
+    if (deckIndex < 0) return false;
+    const playedSite = player.sitesDeck[deckIndex];
+    if (!playedSite) return false;
+
+    player.sitesDeck.splice(deckIndex, 1);
+    playedSite.ownerId = ownerId;
+    playedSite.siteNumber = nextEmptyIndex + 1;
+    playedSite.attachments = playedSite.attachments || [];
+    playedSite.stacked = playedSite.stacked || [];
+    G.path[nextEmptyIndex] = playedSite;
+
+    const fpId = G.fpPlayerId || '0';
+    const fpPlayer = G.players[fpId];
+    const previousIndex = fpPlayer?.currentSiteIndex ?? 0;
+    if (fpPlayer) {
+        fpPlayer.currentSiteIndex = nextEmptyIndex;
+    }
+
+    const siteNumber = nextEmptyIndex + 1;
+    const siteCost = Number(playedSite.twilightCost) || 0;
+    const companionsCount = fpPlayer?.fellowshipArea?.length || 0;
+    const addedTwilight =
+        siteCost + companionsCount + getRegionTwilightBonus(siteNumber);
+    G.twilightPool = (G.twilightPool || 0) + addedTwilight;
+
+    const previousSite =
+        previousIndex >= 0 ? (G.path[previousIndex] ?? null) : null;
+    resolveSiteMoveAbilities(G, previousSite, 'MOVES_FROM');
+    resolveSiteMoveAbilities(G, playedSite, 'MOVES_TO');
+
+    G.statusMessage = `La compagnie avance en ${
+        playedSite.name || playedSite.i18n?.fr?.title || 'site'
+    } (+${addedTwilight} Crépuscule).`;
+    return true;
 }
 

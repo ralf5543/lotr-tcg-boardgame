@@ -255,6 +255,8 @@ export type AbilityEffect =
               fewerThan: number;
               value: number;
           };
+          /** Bonus = value × cartes spotées (Pippin's Sword…). */
+          perSpot?: { target: string[][] };
       }
     | {
           /** Modificateur passif (While…) — pas d’expiration de phase. */
@@ -272,8 +274,12 @@ export type AbilityEffect =
               inFellowship?: boolean;
               /** Compter les cartes empilées sur les sites (pas en jeu). */
               stackedOnSites?: boolean;
+              /** « for each other … » : exclure la source. */
+              excludeSource?: boolean;
               limit?: number;
           };
+          /** Bonus = value × menaces FP (Aragorn / Pippin Driven…). */
+          perThreats?: boolean;
           /**
            * Bonus = value × races distinctes listées présentes
            * (ex. Gandalf 1R72 : Hobbit, Dwarf, Elf, Man).
@@ -402,11 +408,12 @@ export type AbilityEffect =
           /**
            * Empile une carte sur la source (SELF).
            * `from: 'HAND'` = depuis la main ; `PLAY` = séide du champ.
+           * `target: 'WINNER'` = vainqueur d’escarmouche (Goblin Swarms…).
            * `maxStacked` : plafond (Web : 3).
            */
           type: 'STACK_ON_SELF';
           from: 'HAND' | 'PLAY';
-          target: string[][];
+          target: string[][] | 'WINNER';
           maxStacked?: number;
       }
     | {
@@ -456,8 +463,18 @@ export type AbilityEffect =
            * Joue une carte depuis la pioche ou la défausse (Captured by the Ring…).
            * Paie le crépuscule ; mélange la pioche après recherche.
            * Cible choisie : id de la carte dans deck|discard.
+           * `attachTo: 'SELF'` : attache sur la source (Gandalf Returned…).
            */
           type: 'PLAY_FROM_DECK_OR_DISCARD';
+          target: string[][];
+          attachTo?: 'SELF';
+      }
+    | {
+          /**
+           * Cherche une carte dans la pioche (filtre) et la place en défausse.
+           * Mélange ensuite la pioche (Long-stemmed Pipe…).
+           */
+          type: 'SEARCH_DECK_TO_DISCARD';
           target: string[][];
       }
     | {
@@ -484,7 +501,8 @@ export type AbilityEffect =
     | {
           /** Défausse toutes les cartes en jeu qui matchent (ex. every condition). */
           type: 'DISCARD_ALL';
-          target: string[][];
+          /** Filtre DNF, ou adversaires d’escarmouche de la source. */
+          target: string[][] | 'SKIRMISHING';
       }
     | {
           type: 'DISCARD_FROM_HAND';
@@ -555,12 +573,55 @@ export type AbilityEffect =
           count: number;
           target: AbilityTargetRef;
           excludeRingBearer?: boolean;
+          /**
+           * Adversaires d’escarmouche d’un personnage nommé (They Stole It :
+           * companion Gollum is skirmishing).
+           */
+          involving?: string[][];
+          /** Blessures ×N si la cible a cette culture. */
+          countIfCulture?: { culture: CardCulture; count: number };
+      }
+    | {
+          /** Renvoie une carte en jeu dans la main de son propriétaire. */
+          type: 'RETURN_TO_HAND';
+          target: AbilityTargetRef;
+      }
+    | {
+          /**
+           * Pose le prochain site du chemin depuis le deck d’aventure
+           * (Mere of Dead Faces…). Cible = id dans sitesDeck.
+           */
+          type: 'PLAY_NEXT_SITE';
+          from: 'SITES_DECK';
+      }
+    | {
+          /**
+           * Interdit l’affectation jusqu’à expiry (Shelob Her Ladyship…).
+           * Désignation d’un compagnon.
+           */
+          type: 'FORBID_ASSIGN';
+          target: AbilityTargetRef;
+          expiresAtPhase: AbilityEffectExpiry;
+      }
+    | {
+          /**
+           * Affectation forcée (Saruman / Orthanc Champion…).
+           * FP peut affaiblir le compagnon pour empêcher.
+           * `COST_TARGET` = séide désigné au coût (spot).
+           */
+          type: 'FORCE_ASSIGN';
+          minion: AbilityTargetRef | 'COST_TARGET';
+          companion: AbilityTargetRef;
+          excludeRingBearer?: boolean;
+          fpMayPrevent?: { exert: true };
       }
     | {
           /** Affaiblir (exert) une cible — effet, pas coût. */
           type: 'EXERT';
           count: number;
           target: AbilityTargetRef;
+          /** Tous les matchs (each minion skirmishing must exert). */
+          all?: boolean;
       }
     | {
           /**
@@ -576,6 +637,22 @@ export type AbilityEffect =
     | {
           type: 'ADD_TWILIGHT';
           count: number;
+      }
+    | {
+          /** Ajoute N fardeaux au joueur FP (contraintes de Porteur alternatif…). */
+          type: 'ADD_BURDENS';
+          count: number;
+      }
+    | {
+          /**
+           * Choix forcé entre N suites d’effets (add 3 burdens or wound twice…).
+           * Runtime : `pendingForcedChoice` + toaster, pas d’auto-application.
+           */
+          type: 'CHOOSE_ONE';
+          options: {
+              label: string;
+              effects: AbilityEffect[];
+          }[];
       }
     | {
           type: 'PREVENT_WOUND';
@@ -603,6 +680,16 @@ export type AbilityTrigger =
           inSkirmish?: boolean;
       }
     | {
+          /**
+           * Après qu’une blessure a réellement été prise (pas fardeaux Anneau).
+           * « during a skirmish » = activeSkirmishId posé (y compris résolution).
+           */
+          type: 'TAKES_WOUND';
+          target: AbilityTargetRef;
+          inSkirmish?: boolean;
+          involving?: AbilityTargetRef;
+      }
+    | {
           type: 'WINS_SKIRMISH';
           winner: AbilityTargetRef;
           yours?: boolean;
@@ -618,6 +705,18 @@ export type AbilityTrigger =
           type: 'WHEN_PLAYED';
           /** Si présent : n’applique que si N sites path ont ce mot-clé. */
           spotSiteKeyword?: { keyword: CardKeyword; count: number };
+          /** Ignore si la carte est membre de la fellowship de départ. */
+          exceptStartingFellowship?: boolean;
+      }
+    | {
+          /**
+           * Début d’un combat précis (selectSkirmish), pas la phase startOfSkirmish.
+           * `involving` : SELF / BEARER / filtre — le combat doit impliquer cette carte.
+           * `whileRingBearer` : uniquement si la source est le Porteur.
+           */
+          type: 'START_OF_SKIRMISH';
+          involving: AbilityTargetRef;
+          whileRingBearer?: boolean;
       }
     | {
           /** Each time you play a [classe]… (la carte jouée matche `played`). */
@@ -644,7 +743,11 @@ export type AbilityTrigger =
               otherCardTitle: string;
           };
           /** Adversaire(s) de l’escarmouche (While skirmishing a …). */
-          skirmishing?: { target: string[][] };
+          skirmishing?: {
+              target: string[][];
+              /** Résistance effective ≤ N (Squad of Uruk-hai…). */
+              resistanceAtMost?: number;
+          };
           /** Attachement porté (While … bears a …). */
           bearing?: { target: string[][] };
           /** Compagnie sur un site portant ce mot-clé (terrains / Sanctuary). */
@@ -664,6 +767,8 @@ export type AbilityTrigger =
           spotBurdensOrRingBearerWounds?: number;
           /** « While you have initiative… » — propriétaire de la source. */
           hasInitiative?: boolean;
+          /** « While you cannot spot N threats… » — menaces FP < N. */
+          cannotSpotThreats?: number;
           /**
            * « While [this / Name] is in region N… »
            * — vrai si la compagnie est en région N (sites 1–3 / 4–6 / 7–9).
@@ -770,6 +875,12 @@ export interface CardState {
     omitFromArcheryTotal?: boolean;
     /** Peu hâtif : un effet d’affectation a autorisé ce personnage à combattre. */
     allowedToSkirmish?: boolean;
+    /** Saruman etc. : ne peut pas être affecté à une escarmouche. */
+    cannotBeAssignedToSkirmish?: boolean;
+    /** Ne peut pas recevoir de blessures d’archerie. */
+    cannotTakeArcheryWounds?: boolean;
+    /** Interdit d’affectation jusqu’à fin de tour / phase (Shelob…). */
+    forbidAssignUntil?: AbilityEffectExpiry;
     name?: string; // Si conservé pour compatibilité ou identification
     isDead?: boolean;
     isOverwhelmed?: boolean;
@@ -857,6 +968,12 @@ export interface PendingWoundEvent {
     remaining: number;
 }
 
+export interface PendingTakesWoundEvent {
+    type: 'TAKES_WOUND';
+    targetId: string;
+    skirmishId?: string;
+}
+
 export interface PendingWinsSkirmish {
     winnerIds: string[];
     skirmishId: string;
@@ -894,17 +1011,26 @@ export interface PendingExhaustEvent {
     addBurdens: number;
 }
 
+/** Affectation forcée ; le compagnon peut s’affaiblir pour empêcher. */
+export interface PendingForceAssignEvent {
+    type: 'ABOUT_TO_FORCE_ASSIGN';
+    minionId: string;
+    companionId: string;
+}
+
 export interface PendingFellowshipMovesEvent {
     type: 'FELLOWSHIP_MOVES';
 }
 
 export type PendingEvent =
     | PendingWoundEvent
+    | PendingTakesWoundEvent
     | PendingWinsSkirmishEvent
     | PendingLosesSkirmishEvent
     | PendingCharacterDiesEvent
     | PendingCancelSkirmishEvent
     | PendingExhaustEvent
+    | PendingForceAssignEvent
     | PendingFellowshipMovesEvent;
 
 export interface WoundQueueItem {
@@ -971,6 +1097,8 @@ export interface GameState {
         strengthBonus?: number;
     };
     woundQueue?: WoundQueueItem[];
+    /** Blessures réellement prises — réponses « each time … takes a wound ». */
+    takesWoundQueue?: { targetId: string; skirmishId?: string }[];
     skirmishes: SkirmishState[];
     archeryState?: ArcheryState;
     assignmentStep?: 'ACTIONS' | 'FP_ASSIGN' | 'SHADOW_ASSIGN' | 'COMPLETED';
@@ -1005,6 +1133,16 @@ export interface GameState {
         sourceInstanceId: string;
         abilityId: string;
         phase?: string;
+    };
+    /**
+     * Choix forcé (contrainte Porteur alternatif en début d’escarmouche…).
+     * Bloque la fenêtre d’actions jusqu’à résolution.
+     */
+    pendingForcedChoice?: {
+        playerId: string;
+        sourceInstanceId: string;
+        abilityId: string;
+        skirmishId: string;
     };
     setupState?: {
         bids: Record<string, number | null>;
@@ -1058,7 +1196,7 @@ export interface ArcheryState {
     shadowRemainingWounds: number;
 }
 
-export type DevPresetType = 'STAT_PULSE_TEST';
+export type DevPresetType = 'STAT_PULSE_TEST' | 'WEB_STACK_TEST';
 
 export interface TempKeywordModifier {
     keyword: CardKeyword;

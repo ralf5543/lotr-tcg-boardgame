@@ -126,6 +126,9 @@ export const assignArcheryWound = (
         if (!minion || minion.isDead || getEffectiveVitality(minion) <= 0) {
             return 'INVALID_MOVE';
         }
+        if (minion.cannotTakeArcheryWounds) {
+            return 'INVALID_MOVE';
+        }
         requestWounds(G, minion, 1);
 
         if (G.archeryWoundsToAssign !== undefined) G.archeryWoundsToAssign -= 1;

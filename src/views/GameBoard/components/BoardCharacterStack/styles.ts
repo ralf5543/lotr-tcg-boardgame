@@ -120,30 +120,97 @@ export const AttachmentWrapper = styled.div<{ $index?: number }>`
     filter: drop-shadow(0px -3px 3px black);
 `;
 
-/** Miniatures empilées sur une carte support (Web, Narsil…). */
-export const StackedOnCardGrid = styled.div`
-    display: flex;
-    flex-wrap: wrap;
-    gap: 4px;
+/**
+ * Miniatures empilées sur une carte support (Web, Narsil, Goblin Swarms…).
+ * À droite, 90°, empilement absolu : chaque carte dépasse ~50 % sous la précédente.
+ * (Le transform CSS ne change pas la boîte de layout → pas de marge négative.)
+ *
+ * Empreinte visuelle ≈ 46×40 px (carte sm 105×146 × scale 0.38, tournée).
+ * Pas = 20 px ≈ moitié de la hauteur visible.
+ */
+const STACK_SLOT_W = 53;
+const STACK_SLOT_H = 80;
+const STACK_STEP = 20;
+
+export const StackedOnCardGrid = styled.div<{ $count: number }>`
     position: absolute;
-    inset-inline-end: -8px;
-    inset-block-start: 0;
+    inset-inline-end: 6px;
+    inset-block-start: 6px;
+    width: ${STACK_SLOT_W}px;
+    height: ${({ $count }) =>
+        Math.max(STACK_SLOT_H, STACK_SLOT_H + ($count - 1) * STACK_STEP)}px;
     z-index: 3;
-    max-width: 72px;
     pointer-events: none;
 `;
 
-export const StackedOnCardSlot = styled.div<{ $targetable?: boolean }>`
+export const StackedOnCardSlot = styled.div<{
+    $targetable?: boolean;
+    $draggable?: boolean;
+    $index?: number;
+}>`
+    position: absolute;
+    inset-inline-end: 0;
+    top: ${({ $index = 0 }) => $index * STACK_STEP}px;
+    width: ${STACK_SLOT_W}px;
+    height: ${STACK_SLOT_H}px;
+    z-index: ${({ $index = 0 }) => $index + 1};
     pointer-events: auto;
-    transform: scale(0.55);
-    transform-origin: top right;
-    border-radius: 4px;
+    overflow: visible;
+    border-radius: 3px;
+
+    /* Carte sm complète, tournée + réduite pour tenir dans le slot */
+    & > * {
+        position: absolute;
+        inset-inline-end: 26px;
+        inset-block-start: 50%;
+        transform: translateY(-50%) rotate(90deg) scale(0.38);
+        transform-origin: center right;
+        filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.75));
+    }
+
     ${({ $targetable }) =>
         $targetable &&
         css`
-            cursor: pointer;
-            filter: drop-shadow(0 0 6px #e2c044);
+            & > * {
+                filter: drop-shadow(0 0 6px #e2c044)
+                    drop-shadow(0 1px 2px rgba(0, 0, 0, 0.75));
+            }
         `}
+
+    ${({ $draggable }) =>
+        $draggable &&
+        css`
+            cursor: grab;
+        `}
+`;
+
+/** Pastille compteur — clic ouvre la grille (piles longues type Goblin Swarms). */
+export const StackedCountBadge = styled.button`
+    position: absolute;
+    inset-inline-end: -4px;
+    inset-block-end: -6px;
+    z-index: 40;
+    min-width: 22px;
+    height: 22px;
+    padding: 0 5px;
+    margin: 0;
+    border-radius: 11px;
+    background: rgba(12, 14, 18, 0.92);
+    border: 1px solid #e2c044;
+    color: #e2c044;
+    font-size: 12px;
+    font-weight: 700;
+    line-height: 20px;
+    text-align: center;
+    pointer-events: auto;
+    cursor: pointer;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.6);
+
+    &:hover {
+        background: rgba(28, 24, 12, 0.96);
+        border-color: #f0d060;
+        color: #f0d060;
+    }
 `;
 
 /* =========================================================

@@ -12,7 +12,7 @@ export const applyExert = (G: GameState, card: CardState): boolean => {
     const currentVitality = getEffectiveVitality(card);
     if (currentVitality <= 1) return false;
 
-    applyWoundAndCheckDeath(G, card, 1);
+    applyWoundAndCheckDeath(G, card, 1, { fromExert: true });
 
     const cardId = card.instanceId || card.id;
     if (!G.lastExertedCardIds) G.lastExertedCardIds = [];

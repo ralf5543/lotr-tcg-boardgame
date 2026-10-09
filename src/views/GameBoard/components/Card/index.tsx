@@ -36,6 +36,7 @@ import {
     abilityHasLegalEffectTarget,
     getDesignationCandidates,
 } from '../../../../game/engine/abilities/designation';
+import { isCostlessPlayFromCardStack } from '../../../../game/engine/abilities/applyAbilityEffect';
 import {
     collectVisibleAbilities,
     formatAbilityLabelParts,
@@ -218,6 +219,11 @@ interface CardProps {
     playerID?: string;
     /** Séide empilé sur un site : halo + clic direct (pas le petit sceau). */
     isStackedOnSite?: boolean;
+    /**
+     * Empilé sur une carte support (Web…) : image seule, pas de stats / mots-clés.
+     * Le zoom (hover) garde le détail complet.
+     */
+    visualOnly?: boolean;
     onActivateAbility?: (
         sourceInstanceId: string,
         abilityId: string,
@@ -248,6 +254,7 @@ export const Card: React.FC<CardProps> = ({
     phase,
     playerID,
     isStackedOnSite = false,
+    visualOnly = false,
     onActivateAbility,
 }) => {
     const { setHoveredCard } = useHoverCard();
@@ -287,9 +294,12 @@ export const Card: React.FC<CardProps> = ({
     );
     const viewerPlayerId = myPlayerId || playerID;
     const viewerOwnsCard = Boolean(card && card.kind === localFaction);
+    // Empilé (visualOnly) : pas de sceau / bulle — on joue par drag, comme la main.
     const visibleAbilities =
-        card && size === 'sm' && !isAttachedCard
-            ? collectVisibleAbilities(G, card)
+        card && size === 'sm' && !isAttachedCard && !visualOnly
+            ? collectVisibleAbilities(G, card).filter(
+                  ({ ability }) => !isCostlessPlayFromCardStack(ability)
+              )
             : [];
     const abilityContext =
         G && viewerPlayerId
@@ -324,6 +334,7 @@ export const Card: React.FC<CardProps> = ({
         size === 'sm' &&
         viewerOwnsCard &&
         !isAttachedCard &&
+        !visualOnly &&
         visibleAbilities.length > 0
     );
     const abilityPhaseMatch = Boolean(
@@ -465,7 +476,7 @@ export const Card: React.FC<CardProps> = ({
             : undefined
     );
     const twilightPulse = usePulseOnChange(
-        card && size !== 'sm' ? card.twilightCost : undefined
+        pulseOnBoard && card ? card.twilightCost : undefined
     );
 
     if (!card) return null;
@@ -590,9 +601,17 @@ export const Card: React.FC<CardProps> = ({
     const hasWounds = (card.wounds || 0) > 0;
 
     const isAttachment = requiresAttachmentTarget(card);
+    /**
+     * Empilé sur support (Narsil…) : même chrome sm que les situations en soutien.
+     * On force seulement les props de rendu — pas le CSS de positionnement de la pile.
+     */
+    const stackedAsSupport =
+        visualOnly &&
+        !['COMPANION', 'ALLY', 'MINION'].includes(card.type);
+    const useAttachmentChrome = isAttachment && !visualOnly;
 
     const attachmentResistance = card.resistance ?? 0;
-    const displayResistance = isAttachment
+    const displayResistance = useAttachmentChrome
         ? attachmentResistance > 0
             ? `+${attachmentResistance}`
             : `${attachmentResistance}`
@@ -600,10 +619,10 @@ export const Card: React.FC<CardProps> = ({
 
     const shouldShowResistance =
         size === 'sm'
-            ? isAttachment
+            ? useAttachmentChrome
                 ? card.resistance !== undefined
                 : true
-            : isAttachment
+            : useAttachmentChrome
               ? card.resistance !== undefined
               : !card.signet;
 
@@ -641,7 +660,7 @@ export const Card: React.FC<CardProps> = ({
             $culture={card.culture}
             $type={card.type}
             $race={card.race}
-            $subtype={card.subtype}
+            $subtype={stackedAsSupport ? 'SUPPORT-AREA' : card.subtype}
             $kind={card.kind}
             $isShadow={isShadow}
             $isPlayable={isPlayable}
@@ -672,7 +691,7 @@ export const Card: React.FC<CardProps> = ({
             data-cursor={stackedDirectPlay ? 'hand' : undefined}
             data-interactive={stackedDirectPlay ? 'true' : undefined}
             data-overwhelmed={card.isOverwhelmed ? 'true' : 'false'}
-            $isAttachment={isAttachment}
+            $isAttachment={useAttachmentChrome}
         >
             {isHealing && (
                 <S.HealOverlay $healGen={healGen} aria-hidden>
@@ -683,7 +702,10 @@ export const Card: React.FC<CardProps> = ({
                     ))}
                 </S.HealOverlay>
             )}
-            {isCharacter && size === 'sm' && effectiveKeywords.length > 0 && (
+            {!visualOnly &&
+                isCharacter &&
+                size === 'sm' &&
+                effectiveKeywords.length > 0 && (
                 <S.KeywordsContainer>
                     {effectiveKeywords.map((kw) => (
                         <KeywordBadge
@@ -696,7 +718,7 @@ export const Card: React.FC<CardProps> = ({
                 </S.KeywordsContainer>
             )}
 
-            {hasWounds && size === 'sm' && (
+            {!visualOnly && hasWounds && size === 'sm' && (
                 <S.WoundsOverlay>
                     {Array.from({ length: card.wounds! }).map((_, i) => (
                         <S.WoundToken
@@ -708,7 +730,8 @@ export const Card: React.FC<CardProps> = ({
                 </S.WoundsOverlay>
             )}
 
-            {size === 'sm' &&
+            {!visualOnly &&
+                size === 'sm' &&
                 card.cultureTokens &&
                 Object.values(card.cultureTokens).some((n) => (n || 0) > 0) && (
                     <S.CultureTokensOverlay
@@ -816,6 +839,7 @@ export const Card: React.FC<CardProps> = ({
                 )}
             </S.TextContainer>
 
+            {!visualOnly && (
             <S.StatsDisplay>
                 {card.strength !== undefined && (
                     <S.StrengthBadge $pulseGen={strengthPulse}>
@@ -902,6 +926,7 @@ export const Card: React.FC<CardProps> = ({
                     <S.CardSignet $signet={card.signet} />
                 )}
             </S.StatsDisplay>
+            )}
 
             {card.type && card.type === 'RING' && size === 'sm' && (
                 <S.AttachmentSubtypeRing

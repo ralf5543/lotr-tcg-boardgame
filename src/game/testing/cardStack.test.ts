@@ -86,6 +86,45 @@ describe('parseAbilities — stack sur carte (Narsil / Web)', () => {
             }),
         ]);
     });
+
+    it('Goblin Swarms : Response stack vainqueur + Shadow play an Orc', () => {
+        expect(
+            parseAbilities(
+                'Plays to your support area.<br><keyword>Response:</keyword> If your <symbol>moria</symbol> Orc wins a skirmish, discard cards and wounds on that Orc and stack that Orc on this condition.  <br><keyword>Shadow:</keyword> Play an Orc stacked here as if played from hand.',
+                'Goblin Swarms',
+                '1R183'
+            )
+        ).toEqual([
+            expect.objectContaining({
+                phases: ['RESPONSE'],
+                trigger: {
+                    type: 'WINS_SKIRMISH',
+                    winner: [['MORIA', 'ORC']],
+                    yours: true,
+                },
+                cost: [],
+                effects: [
+                    {
+                        type: 'STACK_ON_SELF',
+                        from: 'PLAY',
+                        target: 'WINNER',
+                    },
+                ],
+                source: 'SELF',
+            }),
+            expect.objectContaining({
+                phases: ['SHADOW'],
+                cost: [],
+                effects: [
+                    {
+                        type: 'PLAY_FROM_CARD_STACK',
+                        target: [['ORC']],
+                    },
+                ],
+                source: 'SELF',
+            }),
+        ]);
+    });
 });
 
 describe('runtime — stack sur carte', () => {

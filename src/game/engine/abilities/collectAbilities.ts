@@ -564,6 +564,9 @@ function formatEffectBit(
             : 'empiler ce séide sur un site que vous contrôlez';
     }
     if (effect.type === 'STACK_ON_SELF') {
+        if (effect.target === 'WINNER') {
+            return 'empiler le vainqueur ici';
+        }
         const who = formatTargetPhrase(effect.target, {
             stackFromHand: effect.from === 'HAND',
         });
@@ -586,6 +589,12 @@ function formatEffectBit(
         return who
             ? `jouer ${who} depuis la pioche ou la défausse`
             : 'jouer une carte depuis la pioche ou la défausse';
+    }
+    if (effect.type === 'SEARCH_DECK_TO_DISCARD') {
+        const who = formatTargetPhrase(effect.target);
+        return who
+            ? `chercher ${who} dans la pioche et la placer en défausse`
+            : 'chercher une carte dans la pioche et la placer en défausse';
     }
     if (effect.type === 'PLAY_FROM_STACK') {
         const who = Array.isArray(effect.target)

@@ -65,12 +65,14 @@ export function getDeckOrDiscardBrowsePool(
 
 /**
  * Candidats jouables depuis pioche ou défausse (filtre + coût + unicité + toPlay).
+ * `attachHost` : si fourni, valide comme attachement sur cet hôte.
  */
 export function getDeckOrDiscardPlayCandidates(
     G: GameState,
     ownerId: string,
     filter: string[][],
-    phase = 'shadow'
+    phase = 'shadow',
+    attachHost?: CardState | null
 ): CardState[] {
     const player = G.players[ownerId];
     if (!player) return [];
@@ -79,12 +81,16 @@ export function getDeckOrDiscardPlayCandidates(
         (card) => card && cardMatchesTarget(card, filter)
     );
 
+    const hostId = attachHost
+        ? attachHost.instanceId || attachHost.id
+        : undefined;
+
     return pool.filter((card) => {
         const check = canPlayCard(
             card,
             { G, ctx: { phase }, playerID: ownerId },
-            undefined,
-            undefined,
+            hostId,
+            attachHost || undefined,
             { ignorePhase: true }
         );
         return check.valid;
@@ -94,13 +100,15 @@ export function getDeckOrDiscardPlayCandidates(
 /**
  * Joue une carte depuis la pioche ou la défausse (paie le crépuscule effectif).
  * `filter` : doit matcher (effet Captured…). Mélange la pioche après recherche.
+ * `attachHost` : attache sur cet hôte au lieu de l’aire de soutien / champ.
  */
 export function playCardFromDeckOrDiscard(
     G: GameState,
     ownerId: string,
     cardId: string,
     filter?: string[][],
-    phase = 'shadow'
+    phase = 'shadow',
+    attachHost?: CardState | null
 ): CardState | null {
     const found = findInDeckOrDiscard(G, ownerId, cardId);
     if (!found) return null;
@@ -108,11 +116,14 @@ export function playCardFromDeckOrDiscard(
     const { card, source, index } = found;
     if (filter && !cardMatchesTarget(card, filter)) return null;
 
+    const hostId = attachHost
+        ? attachHost.instanceId || attachHost.id
+        : undefined;
     const check = canPlayCard(
         card,
         { G, ctx: { phase }, playerID: ownerId },
-        undefined,
-        undefined,
+        hostId,
+        attachHost || undefined,
         { ignorePhase: true }
     );
     if (!check.valid) return null;
@@ -137,6 +148,13 @@ export function playCardFromDeckOrDiscard(
 
     G.twilightPool = (G.twilightPool || 0) - cost;
 
+    if (attachHost) {
+        if (!attachHost.attachments) attachHost.attachments = [];
+        attachHost.attachments.push(removed);
+        shufflePlayerDeck(G, ownerId);
+        return removed;
+    }
+
     if (removed.type === 'MINION') {
         if (!G.battlefield) G.battlefield = [];
         G.battlefield.push(removed);
@@ -155,6 +173,45 @@ export function playCardFromDeckOrDiscard(
         return null;
     }
 
+    shufflePlayerDeck(G, ownerId);
+    return removed;
+}
+
+/** Candidats pioche matchant le filtre (recherche → défausse, pas « jouer »). */
+export function getDeckSearchToDiscardCandidates(
+    G: GameState,
+    ownerId: string,
+    filter: string[][]
+): CardState[] {
+    const player = G.players[ownerId];
+    if (!player?.deck?.length) return [];
+    return player.deck.filter(
+        (card) => card && cardMatchesTarget(card, filter)
+    );
+}
+
+/**
+ * Place une carte de la pioche en défausse (filtre), puis mélange.
+ * Retourne la carte déplacée ou null.
+ */
+export function searchDeckCardToDiscard(
+    G: GameState,
+    ownerId: string,
+    cardId: string,
+    filter?: string[][]
+): CardState | null {
+    const player = G.players[ownerId];
+    if (!player?.deck) return null;
+    const index = player.deck.findIndex((c) => matchCard(c, cardId));
+    if (index < 0) return null;
+    const card = player.deck[index];
+    if (!card) return null;
+    if (filter && !cardMatchesTarget(card, filter)) return null;
+
+    const [removed] = player.deck.splice(index, 1);
+    if (!removed) return null;
+    if (!player.discard) player.discard = [];
+    player.discard.push(removed);
     shufflePlayerDeck(G, ownerId);
     return removed;
 }

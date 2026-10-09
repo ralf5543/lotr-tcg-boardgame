@@ -7,7 +7,12 @@ import type {
 } from '../../types';
 import { getEffectiveVitality } from '../../../utils/cardStats';
 import { isRingBearerCard } from '../../../utils/cardUtils';
-import { resolveAbilityTarget, resolveCostTarget, resolveWinnerTargets } from './resolveCostTarget';
+import {
+    resolveAbilityTarget,
+    resolveCostTarget,
+    resolveWinnerTargets,
+    resolveSkirmishingOpponents,
+} from './resolveCostTarget';
 import { findEventAbilityForPhase } from './playEventAbility';
 
 import { findSkirmishToCancel } from './cancelSkirmish';
@@ -84,6 +89,9 @@ function candidatesForEffect(
             (source.stacked?.length || 0) >= effect.maxStacked
         ) {
             return [];
+        }
+        if (effect.target === 'WINNER') {
+            return uniqueCards(resolveWinnerTargets(G, source, ability));
         }
         if (effect.from === 'HAND') {
             return uniqueCards(
@@ -227,14 +235,45 @@ export function getCostDesignationCandidates(
         );
     }
 
+    // Spot à désigner uniquement si l’exert est SELF / BEARER
+    // (Saruman : affaiblir soi + désigner un séide). Sinon le spot DESIGNATION
+    // d’événement (Can You Protect Me…) reste géré via la désignation d’effet.
+    const spotWithSelfExert = (ability.cost || []).find((opt) => {
+        const exertSelf = opt.exert?.some(
+            (e) => e.target === 'SELF' || e.target === 'BEARER'
+        );
+        if (!exertSelf) return false;
+        return opt.spot?.some(
+            (s) => Array.isArray(s.target) && s.mode === 'DESIGNATION'
+        );
+    });
+    const spotReq = spotWithSelfExert?.spot?.find(
+        (s) => Array.isArray(s.target) && s.mode === 'DESIGNATION'
+    );
+    if (spotReq && Array.isArray(spotReq.target)) {
+        return uniqueCards(
+            resolveCostTarget(G, source, spotReq.target).filter(
+                (card) => !card.isDead
+            )
+        );
+    }
+
     const discardReq = (ability.cost || [])
         .flatMap((opt) => opt.discardFromPlay || [])
         .find((item) => Array.isArray(item.target));
     if (discardReq && Array.isArray(discardReq.target)) {
+        const sourceId = source.instanceId || source.id;
         return uniqueCards(
-            resolveCostTarget(G, source, discardReq.target).filter(
-                (card) => !card.isDead
-            )
+            resolveCostTarget(G, source, discardReq.target).filter((card) => {
+                if (card.isDead) return false;
+                if (
+                    discardReq.excludeSource &&
+                    (card.instanceId === sourceId || card.id === sourceId)
+                ) {
+                    return false;
+                }
+                return true;
+            })
         );
     }
 
@@ -328,11 +367,72 @@ export function getEffectDesignationCandidates(
         return [];
     }
 
-    // DISCARD_ALL (et masses) : pas de désignation — on défausse tout d’un coup.
+    const forceAssign = (ability.effects || []).find(
+        (item) => item.type === 'FORCE_ASSIGN'
+    );
+    if (forceAssign && forceAssign.type === 'FORCE_ASSIGN') {
+        return candidatesForEffect(G, source, ability, {
+            type: 'WOUND',
+            count: 1,
+            target: forceAssign.companion,
+            excludeRingBearer: forceAssign.excludeRingBearer,
+        });
+    }
+
+    const forbidAssign = (ability.effects || []).find(
+        (item) => item.type === 'FORBID_ASSIGN'
+    );
+    if (forbidAssign && forbidAssign.type === 'FORBID_ASSIGN') {
+        return candidatesForEffect(G, source, ability, {
+            type: 'WOUND',
+            count: 1,
+            target: forbidAssign.target,
+        });
+    }
+
+    const returnHand = (ability.effects || []).find(
+        (item) => item.type === 'RETURN_TO_HAND'
+    );
+    if (returnHand && returnHand.type === 'RETURN_TO_HAND') {
+        return candidatesForEffect(G, source, ability, {
+            type: 'WOUND',
+            count: 1,
+            target: returnHand.target,
+        });
+    }
+
+    const woundInvolving = (ability.effects || []).find(
+        (item) => item.type === 'WOUND' && item.involving
+    );
+    if (woundInvolving && woundInvolving.type === 'WOUND' && woundInvolving.involving) {
+        const fighters = resolveCostTarget(
+            G,
+            source,
+            woundInvolving.involving
+        );
+        const opponents: CardState[] = [];
+        for (const fighter of fighters) {
+            for (const opp of resolveSkirmishingOpponents(G, fighter)) {
+                if (
+                    !opponents.some(
+                        (o) =>
+                            (o.instanceId || o.id) ===
+                            (opp.instanceId || opp.id)
+                    )
+                ) {
+                    opponents.push(opp);
+                }
+            }
+        }
+        return opponents.filter((c) => !c.isDead);
+    }
+
+    // DISCARD_ALL / EXERT all (et masses) : pas de désignation — on applique tout d’un coup.
     const effect = (ability.effects || []).find(
         (item) =>
             item.type !== 'DISCARD_ALL' &&
             item.type !== 'PLAY_FROM_DECK_OR_DISCARD' &&
+            !(item.type === 'EXERT' && item.all) &&
             'target' in item &&
             (Array.isArray(item.target) || item.target === 'SKIRMISHING')
     );
@@ -375,6 +475,8 @@ export function abilityEffectWantsTargetingArrow(ability: Ability): boolean {
         (effect) =>
             effect.type === 'EXHAUST' ||
             effect.type === 'WOUND' ||
+            effect.type === 'FORCE_ASSIGN' ||
+            effect.type === 'FORBID_ASSIGN' ||
             effect.type === 'EXERT' ||
             effect.type === 'HEAL'
     );
@@ -422,6 +524,9 @@ export function abilityHasLegalEffectTarget(
         if (effect.type === 'DISCARD_ALL') {
             continue;
         }
+        if (effect.type === 'CHOOSE_ONE') {
+            continue;
+        }
         if (effect.type === 'DISCARD_FROM_HAND') {
             continue;
         }
@@ -443,6 +548,29 @@ export function abilityHasLegalEffectTarget(
             if (
                 !canReplaceCurrentSite(G, ownerId, effect.siteKeyword)
             ) {
+                return false;
+            }
+            continue;
+        }
+        if (effect.type === 'PLAY_NEXT_SITE') {
+            const ownerId = abilityOwnerPlayerId(G, source);
+            if (!ownerId) return false;
+            if (getReplaceSiteCandidates(G, ownerId).length === 0) {
+                return false;
+            }
+            continue;
+        }
+        if (effect.type === 'FORCE_ASSIGN') {
+            continue;
+        }
+        if (effect.type === 'FORBID_ASSIGN') {
+            if (candidatesForEffect(G, source, ability, effect).length < 1) {
+                return false;
+            }
+            continue;
+        }
+        if (effect.type === 'RETURN_TO_HAND') {
+            if (candidatesForEffect(G, source, ability, effect).length < 1) {
                 return false;
             }
             continue;
@@ -494,9 +622,16 @@ export function abilityHasLegalEffectTarget(
         if (effect.type === 'PLAY_FROM_DECK_OR_DISCARD') {
             const ownerId = abilityOwnerPlayerId(G, source);
             if (!ownerId) return false;
+            const attachHost =
+                effect.attachTo === 'SELF' ? source : null;
             if (
-                getDeckOrDiscardPlayCandidates(G, ownerId, effect.target)
-                    .length < 1
+                getDeckOrDiscardPlayCandidates(
+                    G,
+                    ownerId,
+                    effect.target,
+                    'fellowship',
+                    attachHost
+                ).length < 1
             ) {
                 return false;
             }
@@ -678,6 +813,15 @@ export function formatDesignationPrompt(
         )
     ) {
         return 'Choisissez une carte à renforcer.';
+    }
+    if (
+        useEffect &&
+        (ability.effects || []).some(
+            (item) =>
+                item.type === 'STACK_ON_SELF' && item.from === 'HAND'
+        )
+    ) {
+        return 'Choisissez une carte de votre main à empiler.';
     }
     const target = useEffect
         ? Array.isArray(effectTarget)

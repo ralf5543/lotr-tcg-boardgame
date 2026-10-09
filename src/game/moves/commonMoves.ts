@@ -43,6 +43,10 @@ import {
     acceptPendingWhenPlayed,
     declinePendingWhenPlayed,
 } from '../engine/abilities/whenPlayed';
+import {
+    openSkirmishActionWindow,
+    resolveForcedChoice,
+} from '../engine/abilities/startOfSkirmish';
 import { afterCardPlayed } from '../engine/abilities/eachTimeYouPlay';
 import {
     beginThreatWoundAssignment,
@@ -351,6 +355,33 @@ export const playCard = (
         return 'INVALID_MOVE';
     }
 
+    const toPlayExert = (card.toPlay || []).find((opt) =>
+        opt.exert?.some((r) => Array.isArray(r.target))
+    );
+    if (toPlayExert?.exert?.[0] && Array.isArray(toPlayExert.exert[0].target)) {
+        const costTargetId = Array.isArray(chosenTargetId)
+            ? chosenTargetId[0]
+            : chosenTargetId;
+        if (!costTargetId) {
+            return 'INVALID_MOVE';
+        }
+        const costAsCard = findTargetCard(G, costTargetId) as CardState | null;
+        if (
+            !costAsCard ||
+            costAsCard.type === 'SITE' ||
+            !cardMatchesTarget(costAsCard, toPlayExert.exert[0].target)
+        ) {
+            return 'INVALID_MOVE';
+        }
+        const need = toPlayExert.exert[0].count || 1;
+        if (getEffectiveVitality(costAsCard) <= need) {
+            return 'INVALID_MOVE';
+        }
+        for (let i = 0; i < need; i += 1) {
+            if (!applyExert(G, costAsCard)) return 'INVALID_MOVE';
+        }
+    }
+
     const fpId = G.fpPlayerId || '0';
     const isFP = actingPlayerId === fpId;
     const hadInitiative = isFP ? freePeoplesHasInitiative(G) : false;
@@ -511,6 +542,23 @@ export const resolveWhenPlayedChoice = (
     }
 
     flushPendingActionYield(G);
+};
+
+export const resolveForcedChoiceMove = (
+    { G, playerID }: LotrMoveContext,
+    optionIndex: number
+) => {
+    if (!G.pendingForcedChoice || G.pendingForcedChoice.playerId !== playerID) {
+        return 'INVALID_MOVE';
+    }
+    if (!resolveForcedChoice(G, playerID, optionIndex)) {
+        return 'INVALID_MOVE';
+    }
+    // Ouvre la fenêtre d’actions même si une réponse (blessure) s’ouvre ensuite :
+    // elle reprendra la priorité, puis la fenêtre d’escarmouche restera prête.
+    if (G.activeSkirmishId && !G.actionWindow?.isOpen) {
+        openSkirmishActionWindow(G);
+    }
 };
 
 export const drawCard = (
@@ -717,5 +765,6 @@ export const commonMoves = {
     assignSanctuaryHeal,
     confirmSanctuaryHeals,
     resolveWhenPlayedChoice,
+    resolveForcedChoiceMove,
     ...(process.env.NODE_ENV !== 'production' ? devMoves : {}),
 };

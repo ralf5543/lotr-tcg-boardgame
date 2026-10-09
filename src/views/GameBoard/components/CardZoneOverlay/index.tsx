@@ -25,6 +25,8 @@ export interface CardZoneOverlayProps {
      */
     selectableCardIds?: string[];
     onSelectCard?: (cardId: string) => void;
+    /** Portal hors du plateau (pile empilée) : couvre tout le viewport. */
+    viewportFixed?: boolean;
 }
 
 function cardKey(card: CardState, index: number): string {
@@ -51,6 +53,7 @@ export const CardZoneOverlay: React.FC<CardZoneOverlayProps> = ({
     onClose,
     selectableCardIds,
     onSelectCard,
+    viewportFixed = false,
 }) => {
     const selectable = useMemo(() => {
         if (!selectableCardIds?.length) return null;
@@ -96,6 +99,8 @@ export const CardZoneOverlay: React.FC<CardZoneOverlayProps> = ({
                 key={cardKey(card, index)}
                 $selectable={pickable}
                 $dimmed={dimmed}
+                data-cursor={pickable ? 'arrow' : undefined}
+                data-interactive={pickable ? 'true' : undefined}
                 onClick={(event) => {
                     if (!pickable || !onSelectCard) return;
                     event.stopPropagation();
@@ -152,6 +157,7 @@ export const CardZoneOverlay: React.FC<CardZoneOverlayProps> = ({
 
     return (
         <S.Backdrop
+            $viewportFixed={viewportFixed}
             role="dialog"
             aria-modal="true"
             aria-label={title}

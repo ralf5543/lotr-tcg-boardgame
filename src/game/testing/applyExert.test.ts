@@ -28,6 +28,8 @@ describe('applyExert', () => {
         expect(G.pendingDeadCardIds || []).not.toContain('comp-1');
         expect(G.lastExertedCardIds).toContain(card.instanceId);
         expect(G.lastWoundedCardIds).toContain(card.instanceId);
+        // Affaiblissement ≠ « takes a wound » (Promise Keeping…).
+        expect(G.takesWoundQueue || []).toHaveLength(0);
     });
 
     it('refuse d’exert un personnage à 1 de vitalité restante', () => {

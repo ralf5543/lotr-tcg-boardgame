@@ -30,6 +30,7 @@ import {
     tokenCountOnCard,
 } from '../../cultureTokens';
 import { playerHasInitiative } from '../../initiative';
+import { getEffectiveResistance } from '../../../../utils/cardStats';
 
 function matchCard(card: CardState, targetId: string): boolean {
     return card.instanceId === targetId || card.id === targetId;
@@ -68,6 +69,13 @@ function countPerSpot(
     } else {
         cards = resolveCostTarget(G, source, perSpot.target).filter(
             (card) => !card.isDead
+        );
+    }
+    if (perSpot.excludeSource) {
+        const sourceId = source.instanceId || source.id;
+        cards = cards.filter(
+            (card) =>
+                card.instanceId !== sourceId && card.id !== sourceId
         );
     }
     let n = cards.length;
@@ -233,6 +241,10 @@ function modifyStatMagnitude(
     if (effect.perSpot) {
         return base * countPerSpot(G, source, effect.perSpot);
     }
+    if (effect.perThreats) {
+        const fpId = G.fpPlayerId || '0';
+        return base * Math.max(0, G.players[fpId]?.threats || 0);
+    }
     return base;
 }
 
@@ -289,6 +301,15 @@ export function whileConditionHolds(
         if ((G.twilightPool || 0) < trigger.spotTwilight) return false;
     }
 
+    if (
+        typeof trigger.cannotSpotThreats === 'number' &&
+        trigger.cannotSpotThreats > 0
+    ) {
+        const fpId = G.fpPlayerId || '0';
+        const threats = G.players[fpId]?.threats || 0;
+        if (threats >= trigger.cannotSpotThreats) return false;
+    }
+
     if (trigger.spotCultureTokens) {
         const ownerId = findInPlayCardOwnerId(G, source);
         if (!ownerId) return false;
@@ -317,10 +338,19 @@ export function whileConditionHolds(
 
     if (trigger.skirmishing) {
         const opponents = getSkirmishOpponents(G, source);
+        const fpId = G.fpPlayerId || '0';
+        const burdens = G.players[fpId]?.burdens || 0;
         if (
-            !opponents.some((opp) =>
-                cardMatchesTarget(opp, trigger.skirmishing!.target)
-            )
+            !opponents.some((opp) => {
+                if (!cardMatchesTarget(opp, trigger.skirmishing!.target)) {
+                    return false;
+                }
+                const maxRes = trigger.skirmishing!.resistanceAtMost;
+                if (typeof maxRes === 'number') {
+                    return getEffectiveResistance(opp, burdens) <= maxRes;
+                }
+                return true;
+            })
         ) {
             return false;
         }

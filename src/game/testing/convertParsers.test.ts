@@ -4519,17 +4519,14 @@ describe('parseAbilities — Response wins a skirmish', () => {
         ]);
     });
 
-    it('parse Gollum 7C59 : exert ×2 ou retirer menace → force +2', () => {
+    it('parse Gollum 7C59 : exert ×2 ou retirer menace → force +2 (2 capacités)', () => {
         const text =
             '<keyword>Skirmish:</keyword> Exert Gollum twice or remove a threat to make him strength +2.';
         expect(parseAbilities(text, 'Gollum', '7C59')).toEqual([
             {
                 id: '7C59:0',
                 phases: ['SKIRMISH'],
-                cost: [
-                    { exert: [{ count: 2, target: 'SELF' }] },
-                    { removeThreats: 1 },
-                ],
+                cost: [{ exert: [{ count: 2, target: 'SELF' }] }],
                 effects: [
                     {
                         type: 'ADD_TEMP_STAT',
@@ -4540,9 +4537,23 @@ describe('parseAbilities — Response wins a skirmish', () => {
                     },
                 ],
                 source: 'SELF',
-                text: expect.stringMatching(
-                    /Exert Gollum twice or remove a threat/i
-                ),
+                text: expect.stringMatching(/Exert Gollum twice to make/i),
+            },
+            {
+                id: '7C59:1',
+                phases: ['SKIRMISH'],
+                cost: [{ removeThreats: 1 }],
+                effects: [
+                    {
+                        type: 'ADD_TEMP_STAT',
+                        stat: 'STRENGTH',
+                        value: 2,
+                        target: 'SELF',
+                        expiresAtPhase: 'SKIRMISH',
+                    },
+                ],
+                source: 'SELF',
+                text: expect.stringMatching(/Remove a threat to make/i),
             },
         ]);
     });

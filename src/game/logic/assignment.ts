@@ -7,8 +7,15 @@ export const isFierceMinion = (card: CardState, G?: GameState): boolean =>
 
 /** Peu hâtif : pas d’affectation tant qu’un effet n’a pas autorisé le combat. */
 export const canCompanionBeAssigned = (companion: CardState): boolean => {
+    if (companion.forbidAssignUntil) return false;
     if (getKeywordValue(companion, 'UNHASTY') < 0) return true;
     return Boolean(companion.allowedToSkirmish);
+};
+
+/** Séide qui ne peut jamais être affecté (Saruman Servant…). */
+export const canMinionBeAssigned = (minion: CardState): boolean => {
+    if (minion.cannotBeAssignedToSkirmish) return false;
+    return true;
 };
 
 export const isAssignmentActionWindowOpen = (G: GameState): boolean =>
@@ -86,6 +93,7 @@ export const getUnassignedMinions = (G: GameState): CardState[] => {
     );
 
     return minionCards.filter((c: CardState) => {
+        if (c.cannotBeAssignedToSkirmish) return false;
         // A. Si déjà assigné dans CETTE passe d'assignment en cours -> Exclu
         const isAssignedInCurrentPass = assignedMinionIds.some(
             (id) => id === c.id || id === c.instanceId

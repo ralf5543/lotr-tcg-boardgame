@@ -1093,7 +1093,7 @@
       },
       "fr": {
         "title": "Mine de Mithril",
-        "gameText": "**Souterrain.** Ombre : Retirez <symbol>twilight1</symbol> pour jouer une arme de l’Ombre de votre pile de défausse."
+        "gameText": "**Souterrain.** **Ombre :** Retirez <symbol>twilight1</symbol> pour jouer une arme de l’Ombre de votre pile de défausse."
       },
       "de": {
         "title": "Mithrilmine",
@@ -1204,7 +1204,7 @@
       },
       "fr": {
         "title": "Col de Caradhras",
-        "gameText": "**Montagne.** Ombre : Désignez un séide <symbol>isengard</symbol> pour jouer une carte de climat de votre pioche (limité à une par tour)."
+        "gameText": "**Montagne.** **Ombre :** Désignez un séide <symbol>isengard</symbol> pour jouer une carte de climat de votre pioche (limité à une par tour)."
       },
       "de": {
         "title": "Rothornpass",
@@ -1241,7 +1241,7 @@
       },
       "fr": {
         "title": "Le Pont de Khazad-dûm",
-        "gameText": "**Souterrain.** Ombre : Jouez le Balrog de votre pioche ou de votre main ; le coût crépusculaire du Balrog est de -6."
+        "gameText": "**Souterrain.** **Ombre :** Jouez le Balrog de votre pioche ou de votre main ; le coût crépusculaire du Balrog est de -6."
       },
       "de": {
         "title": "Die Brücke von Khazad-dûm",
@@ -1613,7 +1613,7 @@
       },
       "fr": {
         "title": "Rivages de Nen Hithoel",
-        "gameText": "**Rivière.** Ombre : Désignez 5 séides Orques pour empêcher la compagnie de se déplacer à nouveau ce tour-ci."
+        "gameText": "**Rivière.** **Ombre :** Désignez 5 séides Orques pour empêcher la compagnie de se déplacer à nouveau ce tour-ci."
       },
       "de": {
         "title": "Die Ufer von Nen Hithoel",
@@ -1752,7 +1752,7 @@
       },
       "fr": {
         "title": "Tol Brandir",
-        "gameText": "**Rivière.** Ombre : Jouez jusqu’à 3 traqueurs de votre pile de défausse ; terminez votre phase de l’**Ombre.**"
+        "gameText": "**Rivière.** **Ombre :** Jouez jusqu’à 3 traqueurs de votre pile de défausse ; terminez votre phase de l’**Ombre.**"
       },
       "de": {
         "title": "Tol Brandir",
@@ -2507,7 +2507,7 @@
       },
       "fr": {
         "title": "Estfolde",
-        "gameText": "**Plaine.** Ombre : Désignez 3 traqueurs <symbol>isengard</symbol> pour empêcher la compagnie de bouger à nouveau durant ce tour."
+        "gameText": "**Plaine.** **Ombre :** Désignez 3 traqueurs <symbol>isengard</symbol> pour empêcher la compagnie de bouger à nouveau durant ce tour."
       },
       "de": {
         "title": "Ostfold",
@@ -3138,7 +3138,7 @@
       },
       "fr": {
         "title": "Mur du Gouffre",
-        "gameText": "**Champ de bataille.** Ombre : Jouez Saroumane de votre pioche.",
+        "gameText": "**Champ de bataille.** **Ombre :** Jouez Saroumane de votre pioche.",
         "loreText": "5"
       },
       "de": {
@@ -3529,7 +3529,7 @@
       },
       "fr": {
         "title": "Le Cercle d'Isengard",
-        "gameText": "Ombre : Jouez un séide <symbol>dunland</symbol> pour piochez une carte."
+        "gameText": "**Ombre :** Jouez un séide <symbol>dunland</symbol> pour piochez une carte."
       },
       "de": {
         "title": "Der Ring von Isengart",
@@ -3639,7 +3639,7 @@
       },
       "fr": {
         "title": "Le Balcon d'Orthanc",
-        "gameText": "**Champ de bataille.** Ombre : Jouez Saroumane de votre pile de défausse; son coût crépusculaire est de -2.",
+        "gameText": "**Champ de bataille.** **Ombre :** Jouez Saroumane de votre pile de défausse; son coût crépusculaire est de -2.",
         "loreText": "9"
       },
       "de": {
@@ -3854,7 +3854,7 @@
       },
       "de": {
         "title": "Felsen des Emyn Muil",
-        "gameText": "Gemeinschaft: Spiele einen Gefährten mit dem Frodosiegel, um eine Lastmarke vom Ringträger zu entfernen."
+        "gameText": "**Gemeinschaft:** Spiele einen Gefährten mit dem Frodosiegel, um eine Lastmarke vom Ringträger zu entfernen."
       },
       "it": {
         "title": "Rocce dell'Emyn Muil",
@@ -3888,7 +3888,7 @@
       },
       "de": {
         "title": "Westfold",
-        "gameText": "Gemeinschaft: Strenge Aragorn zweimal an, um einen Gefährten mit dem Aragornsiegel aus deinem Spieldeck zu spielen."
+        "gameText": "**Gemeinschaft:** Strenge Aragorn zweimal an, um einen Gefährten mit dem Aragornsiegel aus deinem Spieldeck zu spielen."
       },
       "it": {
         "title": "Ovestfalda",
@@ -3925,7 +3925,7 @@
       },
       "de": {
         "title": "Meduseld",
-        "gameText": "Zuflucht. Gemeinschaft: Strenge 3 Gefährten mit dem Gandalfsiegel an, um einen nicht-verbundenen Gefährten aus deinem Friedhof zu spielen."
+        "gameText": "Zuflucht. **Gemeinschaft:** Strenge 3 Gefährten mit dem Gandalfsiegel an, um einen nicht-verbundenen Gefährten aus deinem Friedhof zu spielen."
       },
       "it": {
         "title": "Meduseld",
@@ -3958,19 +3958,19 @@
       },
       "fr": {
         "title": "Le Vestibule du Fort le Cor",
-        "gameText": "Sanctuaire. Compagnie : Désignez 3 compagnons possédant le signet Théoden et défaussez votre main pour piocher 4 cartes."
+        "gameText": "Sanctuaire. **Compagnie :** Désignez 3 compagnons possédant le signet Théoden et défaussez votre main pour piocher 4 cartes."
       },
       "de": {
         "title": "Großer Saal der Hornburg",
-        "gameText": "Zuflucht. Gemeinschaft: Entdecke 3 Gefährten mit dem Théodensiegel und lege deine Hand ab, um 4 Karten zu ziehen."
+        "gameText": "Zuflucht. **Gemeinschaft:** Entdecke 3 Gefährten mit dem Théodensiegel und lege deine Hand ab, um 4 Karten zu ziehen."
       },
       "it": {
         "title": "Sala del Trombatorrione",
-        "gameText": "Rifugio. Compagnia: Avvista 3 compagni con il sigillo di Théoden e scarta la tua mano per pescare 4 carte."
+        "gameText": "Rifugio. **Compagnia:** Avvista 3 compagni con il sigillo di Théoden e scarta la tua mano per pescare 4 carte."
       },
       "es": {
         "title": "Salón de cuernavilla",
-        "gameText": "Santuario. Comunidad: Avista 3 compañeros con el sello de Théoden y descarta tu mano para robar 4 cartas."
+        "gameText": "Santuario. **Comunidad:** Avista 3 compañeros con el sello de Théoden y descarta tu mano para robar 4 cartas."
       }
     }
   },
@@ -4030,7 +4030,7 @@
       },
       "de": {
         "title": "Sarumans Laboratorium",
-        "gameText": "Reaktion: Lege 2 Karten aus deiner Hand ab, um zu verhindern, dass dein Diener eine Wunde erleidet."
+        "gameText": "**Reaktion:** Lege 2 Karten aus deiner Hand ab, um zu verhindern, dass dein Diener eine Wunde erleidet."
       },
       "it": {
         "title": "Laboratorio di Saruman",
@@ -6353,6 +6353,43 @@
     "type": "SITE",
     "keywords": [
       "MARSH"
+    ],
+    "abilities": [
+      {
+        "id": "11U246:0:site-play-next",
+        "phases": [
+          "REGROUP"
+        ],
+        "cost": [
+          {
+            "exert": [
+              {
+                "count": 1,
+                "target": [
+                  [
+                    "Gollum"
+                  ],
+                  [
+                    "Sméagol"
+                  ]
+                ],
+                "mode": "DESIGNATION"
+              }
+            ]
+          }
+        ],
+        "effects": [
+          {
+            "type": "PLAY_NEXT_SITE",
+            "from": "SITES_DECK"
+          }
+        ],
+        "source": "SELF",
+        "text": "Regroup: Exert your Gollum or your Sméagol to play the fellowship's next site."
+      }
+    ],
+    "actionPhases": [
+      "REGROUP"
     ],
     "twilightCost": 2,
     "siteArrow": "Left",

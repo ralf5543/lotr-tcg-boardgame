@@ -8,7 +8,8 @@ export type CardOrigin =
     | 'ATTACHMENT'
     | 'BATTLEFIELD'
     | 'SUPPORT_AREA'
-    | 'SITE_STACK';
+    | 'SITE_STACK'
+    | 'CARD_STACK';
 
 /** En coords design (1080), sous ce Y le drop d'événement est un cancel (main / dock). */
 export const HAND_CANCEL_VIRTUAL_Y = 820;

@@ -52,6 +52,8 @@ export const CardWrapper = styled.div<{
     $hasSpot?: boolean;
     $isSpotMet?: boolean;
     $isPlayableEvent?: boolean;
+    /** Désignation / défausse : flèche — grab réservé au drag. */
+    $isClickPick?: boolean;
 }>`
     position: relative;
     margin: 0 -15px;
@@ -70,7 +72,8 @@ export const CardWrapper = styled.div<{
     transform-origin: bottom center;
     z-index: ${(props) => props.$zIndex};
     box-shadow: 0 4px 6px rgba(0, 0, 0, 1);
-    cursor: ${(props) => (props.$isDiscardPhase ? 'pointer' : 'grab')};
+    cursor: ${(props) =>
+        props.$isDiscardPhase || props.$isClickPick ? 'pointer' : 'grab'};
     height: fit-content;
     overflow: hidden;
     border-radius: 4px;

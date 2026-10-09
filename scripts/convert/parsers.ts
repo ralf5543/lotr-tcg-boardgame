@@ -909,6 +909,8 @@ function parseExertSubject(
 } | null {
     let count = 1;
     let body = raw.replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim();
+    // « your Gollum » → propriétaire implicite, on ignore « your ».
+    body = body.replace(/^your\s+/i, '');
 
     const twiceMatch = body.match(/^(.*)\s+twice$/i);
     if (twiceMatch) {
@@ -975,7 +977,27 @@ function parseExertSubject(
         return { target: [filters], count, excludeSource: true };
     }
 
-    // « your » : pas encore.
+    // « Gollum or Sméagol » / « your Gollum or your Sméagol »
+    const orNames = body.match(
+        /^([\p{L}’'\-]+(?:\s+[\p{L}’'\-]+)?)\s+or\s+(?:your\s+)?([\p{L}’'\-]+(?:\s+[\p{L}’'\-]+)?)$/iu
+    );
+    if (orNames) {
+        const a = orNames[1].replace(/^your\s+/i, '').trim();
+        const b = orNames[2].trim();
+        const looksName = (s: string) =>
+            /[a-zà-ÿ]/i.test(s) &&
+            s !== s.toUpperCase() &&
+            !/\b(and|each|minion|companion|character)\b/i.test(s);
+        if (looksName(a) && looksName(b)) {
+            return {
+                target: [[a], [b]],
+                count,
+                mode: 'DESIGNATION',
+            };
+        }
+    }
+
+    // « your » restant (ex. « your other … ») : pas encore.
     if (/^your\b/i.test(body)) return null;
 
     return { target: [[body]], count };
@@ -1511,6 +1533,14 @@ function parseNounTarget(
         return [[plain]];
     }
 
+    // « another pipeweed » → filtres (excludeSource côté coût)
+    const another = plain.match(/^another\s+([\s\S]+)$/i);
+    if (another) {
+        const filters = parseClassFilters(another[1]);
+        if (filters.length === 0) return null;
+        return [filters];
+    }
+
     const article = normalized.match(/^(a|an)\s+([\s\S]+)$/i);
     if (!article) return null;
     const filters = parseClassFilters(article[2]);
@@ -1690,7 +1720,43 @@ function parseWinsSkirmishResponse(
     const winnerParsed = parseWinsSkirmishWinner(match[1].trim(), cardTitle);
     if (!winnerParsed) return null;
 
-    const rest = match[2].trim().replace(/[.\s]+$/g, '');
+    // `<br>` avant le marqueur suivant ne doit pas faire échouer le match de clause.
+    const rest = match[2]
+        .replace(/<br\s*\/?>/gi, ' ')
+        .replace(/\s+/g, ' ')
+        .trim()
+        .replace(/[.\s]+$/g, '');
+
+    // « discard cards and wounds on that Orc and stack that Orc on this condition » (Goblin Swarms…)
+    const stackWinnerOnSelf = rest.match(
+        /^discard cards and wounds on that \w+ and stack that \w+ on this condition\.?$/i
+    );
+    if (stackWinnerOnSelf) {
+        const clause = `RESPONSE: If ${match[1].trim()} wins a skirmish, ${rest}`
+            .replace(/<[^>]+>/g, '')
+            .replace(/\s+/g, ' ')
+            .replace(/\s+\./g, '.')
+            .trim();
+        return {
+            id: `${cardId || 'ability'}:${abilityIndex}`,
+            phases: ['RESPONSE'],
+            trigger: {
+                type: 'WINS_SKIRMISH',
+                winner: winnerParsed.winner,
+                ...(winnerParsed.yours ? { yours: true } : {}),
+            },
+            cost: [],
+            effects: [
+                {
+                    type: 'STACK_ON_SELF',
+                    from: 'PLAY',
+                    target: 'WINNER',
+                },
+            ],
+            source: 'SELF',
+            text: clause,
+        };
+    }
 
     // « wound a companion (except the Ring-bearer) »
     const woundExcept = rest.match(
@@ -2323,6 +2389,371 @@ function parseEachTimeWinsPlaceCultureTokenAbilities(
                 },
             ],
             source: winnerParsed.winner === 'BEARER' ? 'ATTACHMENT' : 'SELF',
+            text: stripAbilityMarkup(match[0]),
+        });
+    }
+    return found;
+}
+
+/**
+ * Each time [winner] wins a skirmish, (you may) reinforce a [culture|Free Peoples] token.
+ * (Gandalf Returned…)
+ */
+function parseEachTimeWinsReinforceAbilities(
+    text: string,
+    cardTitle?: string,
+    cardId?: string
+): Record<string, unknown>[] {
+    const found: Record<string, unknown>[] = [];
+    const re =
+        /Each time ([\s\S]+?) wins a skirmish,\s*(you may )?reinforce (a|an|one|\d+)\s+((?:Free Peoples(?:\s+culture)?)|(?:<symbol>[^<]+<\/symbol>)|(?:culture))\s+tokens?\.?/gi;
+    let match: RegExpExecArray | null;
+    while ((match = re.exec(text)) !== null) {
+        const winnerParsed = parseWinsSkirmishWinner(
+            match[1].trim(),
+            cardTitle
+        );
+        if (!winnerParsed) continue;
+        const count = parseCultureTokenCount(match[3]);
+        const culture = parseCultureTokenSpec(match[4]);
+        if (!count || !culture) continue;
+        const optional = Boolean(match[2]);
+
+        found.push({
+            id: `${cardId || 'ability'}:${found.length}:each-time-win-reinforce`,
+            phases: ['RESPONSE'],
+            trigger: {
+                type: 'WINS_SKIRMISH',
+                winner: winnerParsed.winner,
+                ...(winnerParsed.yours ? { yours: true } : {}),
+            },
+            ...(optional ? { optional: true } : {}),
+            cost: [],
+            effects: [
+                {
+                    type: 'REINFORCE_CULTURE_TOKEN',
+                    culture,
+                    count,
+                },
+            ],
+            source: winnerParsed.winner === 'BEARER' ? 'ATTACHMENT' : 'SELF',
+            text: stripAbilityMarkup(match[0]),
+        });
+    }
+    return found;
+}
+
+/**
+ * Each time [winner] wins a skirmish, discard each minion he/she/it is skirmishing.
+ * (Boromir Bearer of Council…)
+ */
+function parseEachTimeWinsDiscardSkirmishingAbilities(
+    text: string,
+    cardTitle?: string,
+    cardId?: string
+): Record<string, unknown>[] {
+    const found: Record<string, unknown>[] = [];
+    const re =
+        /Each time ([\s\S]+?) wins a skirmish,\s*discard each minion (?:he|she|it|they) (?:is|are) skirmishing\.?/gi;
+    let match: RegExpExecArray | null;
+    while ((match = re.exec(text)) !== null) {
+        const winnerParsed = parseWinsSkirmishWinner(
+            match[1].trim(),
+            cardTitle
+        );
+        if (!winnerParsed) continue;
+
+        found.push({
+            id: `${cardId || 'ability'}:${found.length}:each-time-win-discard-skirmishing`,
+            phases: ['RESPONSE'],
+            trigger: {
+                type: 'WINS_SKIRMISH',
+                winner: winnerParsed.winner,
+                ...(winnerParsed.yours ? { yours: true } : {}),
+            },
+            cost: [],
+            effects: [
+                {
+                    type: 'DISCARD_ALL',
+                    target: 'SKIRMISHING',
+                },
+            ],
+            source: winnerParsed.winner === 'BEARER' ? 'ATTACHMENT' : 'SELF',
+            text: stripAbilityMarkup(match[0]),
+        });
+    }
+    return found;
+}
+
+/**
+ * Each time a companion takes a wound during a skirmish that involved [filtre],
+ * exert a companion. (Promise Keeping…)
+ */
+function parseEachTimeTakesWoundExertAbilities(
+    text: string,
+    cardId?: string
+): Record<string, unknown>[] {
+    const found: Record<string, unknown>[] = [];
+    const re =
+        /Each time (a companion) takes a wound during a skirmish that involved ([\s\S]+?),\s*exert (a companion)\.?/gi;
+    let match: RegExpExecArray | null;
+    while ((match = re.exec(text)) !== null) {
+        const wounded = parseNounTarget(match[1].trim(), [['']]);
+        const involving = parseNounTarget(match[2].trim(), [['']]);
+        const exertTarget = parseNounTarget(match[3].trim(), [['']]);
+        if (
+            !Array.isArray(wounded) ||
+            !Array.isArray(involving) ||
+            !Array.isArray(exertTarget)
+        ) {
+            continue;
+        }
+
+        found.push({
+            id: `${cardId || 'ability'}:${found.length}:takes-wound-exert`,
+            phases: ['RESPONSE'],
+            trigger: {
+                type: 'TAKES_WOUND',
+                target: wounded,
+                inSkirmish: true,
+                involving,
+            },
+            cost: [],
+            effects: [
+                {
+                    type: 'EXERT',
+                    count: 1,
+                    target: exertTarget,
+                },
+            ],
+            source: 'SELF',
+            text: stripAbilityMarkup(match[0]),
+        });
+    }
+    return found;
+}
+
+/**
+ * At the start of each skirmish involving [Gandalf|bearer|him],
+ * each minion skirmishing him/Gandalf must exert. (Shadowfax…)
+ */
+function parseStartOfSkirmishExertOpponentsAbilities(
+    text: string,
+    cardTitle?: string,
+    cardId?: string
+): Record<string, unknown>[] {
+    const found: Record<string, unknown>[] = [];
+    const re =
+        /At the start of each skirmish involving (Gandalf|bearer|him),\s*each minion skirmishing (?:him|Gandalf|bearer) must exert\.?/gi;
+    let match: RegExpExecArray | null;
+    while ((match = re.exec(text)) !== null) {
+        const who = match[1].trim().toLowerCase();
+        let involving: 'SELF' | 'BEARER' | string[][];
+        if (who === 'bearer' || who === 'him') {
+            // Montage : « him » = porteur ; si carte = compagnon nommé, SELF.
+            involving =
+                cardTitle && /^Gandalf$/i.test(cardTitle)
+                    ? 'SELF'
+                    : 'BEARER';
+        } else {
+            involving = [['Gandalf']];
+        }
+
+        found.push({
+            id: `${cardId || 'ability'}:${found.length}:start-skirmish-exert`,
+            phases: [],
+            trigger: {
+                type: 'START_OF_SKIRMISH',
+                involving,
+            },
+            cost: [],
+            effects: [
+                {
+                    type: 'EXERT',
+                    count: 1,
+                    target: 'SKIRMISHING',
+                    all: true,
+                },
+            ],
+            source:
+                involving === 'BEARER' ||
+                (Array.isArray(involving) &&
+                    !(cardTitle && /^Gandalf$/i.test(cardTitle)))
+                    ? 'ATTACHMENT'
+                    : 'SELF',
+            text: stripAbilityMarkup(match[0]),
+        });
+    }
+    return found;
+}
+
+/**
+ * While [Name] is the Ring-bearer, at the start of each skirmish involving him,
+ * add N burdens or wound him twice / add M threats.
+ * (Boromir Bearer of Council, Gimli Bearer of Grudges, Faramir Bearer of Quality…)
+ */
+function parseRingBearerStartOfSkirmishChoiceAbilities(
+    text: string,
+    cardTitle?: string,
+    cardId?: string
+): Record<string, unknown>[] {
+    const found: Record<string, unknown>[] = [];
+
+    const woundRe =
+        /While ([\w’'\-]+) is the Ring-bearer, at the start of each skirmish involving him, add (a|an|one|\d+) burdens? or wound (?:him|her) (twice|(?:\d+) times?)\.?/gi;
+    let match: RegExpExecArray | null;
+    while ((match = woundRe.exec(text)) !== null) {
+        const name = match[1].trim();
+        if (
+            cardTitle &&
+            name.toLowerCase() !== cardTitle.toLowerCase()
+        ) {
+            continue;
+        }
+        const burdens = parseCultureTokenCount(match[2]);
+        const woundRaw = match[3].trim().toLowerCase();
+        const wounds =
+            woundRaw === 'twice'
+                ? 2
+                : parseInt(woundRaw.replace(/\s*times?$/, ''), 10);
+        if (!burdens || !Number.isFinite(wounds) || wounds <= 0) continue;
+
+        found.push({
+            id: `${cardId || 'ability'}:${found.length}:rb-start-choice-wound`,
+            phases: [],
+            trigger: {
+                type: 'START_OF_SKIRMISH',
+                involving: 'SELF',
+                whileRingBearer: true,
+            },
+            cost: [],
+            effects: [
+                {
+                    type: 'CHOOSE_ONE',
+                    options: [
+                        {
+                            label: `Ajouter ${burdens} fardeau${burdens > 1 ? 'x' : ''}`,
+                            effects: [
+                                { type: 'ADD_BURDENS', count: burdens },
+                            ],
+                        },
+                        {
+                            label:
+                                wounds === 2
+                                    ? 'Blesser deux fois'
+                                    : `Blesser ${wounds} fois`,
+                            effects: [
+                                {
+                                    type: 'WOUND',
+                                    count: wounds,
+                                    target: 'SELF',
+                                },
+                            ],
+                        },
+                    ],
+                },
+            ],
+            source: 'SELF',
+            text: stripAbilityMarkup(match[0]),
+        });
+    }
+
+    const threatRe =
+        /While ([\w’'\-]+) is the Ring-bearer, at the start of each skirmish involving him, add (a|an|one|\d+) burdens? or (a|an|one|\d+) threats?\.?/gi;
+    while ((match = threatRe.exec(text)) !== null) {
+        const name = match[1].trim();
+        if (
+            cardTitle &&
+            name.toLowerCase() !== cardTitle.toLowerCase()
+        ) {
+            continue;
+        }
+        const burdens = parseCultureTokenCount(match[2]);
+        const threats = parseCultureTokenCount(match[3]);
+        if (!burdens || !threats) continue;
+
+        found.push({
+            id: `${cardId || 'ability'}:${found.length}:rb-start-choice-threat`,
+            phases: [],
+            trigger: {
+                type: 'START_OF_SKIRMISH',
+                involving: 'SELF',
+                whileRingBearer: true,
+            },
+            cost: [],
+            effects: [
+                {
+                    type: 'CHOOSE_ONE',
+                    options: [
+                        {
+                            label: `Ajouter ${burdens} fardeau${burdens > 1 ? 'x' : ''}`,
+                            effects: [
+                                { type: 'ADD_BURDENS', count: burdens },
+                            ],
+                        },
+                        {
+                            label: `Ajouter ${threats} menace${threats > 1 ? 's' : ''}`,
+                            effects: [
+                                { type: 'ADD_THREATS', count: threats },
+                            ],
+                        },
+                    ],
+                },
+            ],
+            source: 'SELF',
+            text: stripAbilityMarkup(match[0]),
+        });
+    }
+
+    return found;
+}
+
+/**
+ * When you play Gandalf (except in your starting fellowship), you may play a
+ * [culture] possession on him from your draw deck or discard pile.
+ * (Gandalf Returned…)
+ */
+function parseWhenPlayedPlayPossessionFromDeckAbilities(
+    text: string,
+    cardTitle?: string,
+    cardId?: string
+): Record<string, unknown>[] {
+    const found: Record<string, unknown>[] = [];
+    const re =
+        /When you play ([\w’'\-]+(?:\s+[\w’'\-]+)?) \(except in your starting fellowship\), you may play (?:a|an) (<symbol>[^<]+<\/symbol>)\s+possession on him from your draw deck or discard pile\.?/gi;
+    let match: RegExpExecArray | null;
+    while ((match = re.exec(text)) !== null) {
+        const name = match[1].trim();
+        if (
+            cardTitle &&
+            name.toLowerCase() !== cardTitle.toLowerCase() &&
+            !/^this$/i.test(name)
+        ) {
+            // Autoriser « When you play Gandalf » sur la carte Gandalf.
+            if (name.toLowerCase() !== 'gandalf') continue;
+        }
+        const culture = parseCultureTokenSpec(match[2]);
+        if (!culture || culture === 'FREE_PEOPLES' || culture === 'ANY') {
+            continue;
+        }
+
+        found.push({
+            id: `${cardId || 'ability'}:${found.length}:when-played-play-possession-deck`,
+            phases: [],
+            trigger: {
+                type: 'WHEN_PLAYED',
+                exceptStartingFellowship: true,
+            },
+            optional: true,
+            cost: [],
+            effects: [
+                {
+                    type: 'PLAY_FROM_DECK_OR_DISCARD',
+                    target: [[culture, 'POSSESSION']],
+                    attachTo: 'SELF',
+                },
+            ],
+            source: 'SELF',
             text: stripAbilityMarkup(match[0]),
         });
     }
@@ -3925,6 +4356,424 @@ function parseWhileSkirmishingStrengthAbilities(
     return found;
 }
 
+/**
+ * While this minion is skirmishing a character who has resistance N or less,
+ * this minion is Damage +1. (Squad of Uruk-hai…)
+ */
+function parseWhileSkirmishingResistanceKeywordAbilities(
+    text: string,
+    cardId?: string
+): Record<string, unknown>[] {
+    const found: Record<string, unknown>[] = [];
+    const kwTail =
+        '((?:<keyword>[^<]*</keyword>|\\*\\*[^*]+\\*\\*|damage\\s*\\+\\s*\\d+)\\.?)';
+    const re = new RegExp(
+        `While this minion is skirmishing (?:a|an) (?:Free Peoples )?character who has resistance (\\d+) or less,\\s*this minion is\\s+${kwTail}`,
+        'gi'
+    );
+    let match: RegExpExecArray | null;
+    while ((match = re.exec(text)) !== null) {
+        const resistanceAtMost = parseInt(match[1], 10);
+        if (!Number.isFinite(resistanceAtMost) || resistanceAtMost < 0) continue;
+        const grant = parseWhileKeywordGrant(match[2]);
+        if (!grant) continue;
+        found.push({
+            id: `${cardId || 'ability'}:${found.length}:while-skirmish-res`,
+            phases: [],
+            trigger: {
+                type: 'WHILE',
+                skirmishing: {
+                    target: [['CHARACTER']],
+                    resistanceAtMost,
+                },
+            },
+            cost: [],
+            effects: [
+                {
+                    type: 'MODIFY_KEYWORD',
+                    keyword: grant.keyword,
+                    target: 'SELF',
+                },
+            ],
+            source: 'SELF',
+            text: stripAbilityMarkup(match[0]),
+        });
+    }
+    return found;
+}
+
+/**
+ * Each time Gollum or Sméagol is played, add a threat.
+ */
+function parseEachTimeNamedPlayedAddThreatsAbilities(
+    text: string,
+    cardId?: string
+): Record<string, unknown>[] {
+    const found: Record<string, unknown>[] = [];
+    const re =
+        /Each time ([\p{L}’'\-]+(?:\s+[\p{L}’'\-]+)?)\s+or\s+([\p{L}’'\-]+(?:\s+[\p{L}’'\-]+)?) is played,\s*add (a|an|one|\d+) threats?\./giu;
+    let match: RegExpExecArray | null;
+    while ((match = re.exec(text)) !== null) {
+        const a = match[1].trim();
+        const b = match[2].trim();
+        const threatCount = parseBurdenWord(match[3]);
+        if (!threatCount) continue;
+        found.push({
+            id: `${cardId || 'ability'}:${found.length}:each-time-named-play`,
+            phases: [],
+            trigger: {
+                type: 'YOU_PLAY',
+                played: [[a], [b]],
+            },
+            cost: [],
+            effects: [{ type: 'ADD_THREATS', count: threatCount }],
+            source: 'SELF',
+            text: stripAbilityMarkup(match[0]),
+        });
+    }
+    return found;
+}
+
+/**
+ * Regroup: Discard this condition to return Gollum to his owner's hand.
+ */
+function parseDiscardSelfReturnToHandAbilities(
+    text: string,
+    cardId?: string
+): Record<string, unknown>[] {
+    const found: Record<string, unknown>[] = [];
+    const re =
+        /(?:\*\*|<(?:keyword)>)?(Fellowship|Shadow|Maneuver|Archery|Assignment|Skirmish|Regroup):?\s*(?:<\/(?:keyword)>)?(?:\*\*)?\s*Discard this(?:\s+(?:condition|possession|card))?\s+to return ([\w’'\-]+(?:\s+[\w’'\-]+)?) to (?:his|her|its|their) owner[''\u2019]?s hand\./gi;
+    let match: RegExpExecArray | null;
+    while ((match = re.exec(text)) !== null) {
+        const phase = match[1].toUpperCase();
+        const name = match[2].trim();
+        if (!name) continue;
+        found.push({
+            id: `${cardId || 'ability'}:${found.length}:return-hand`,
+            phases: [phase],
+            cost: [
+                {
+                    discardFromPlay: [{ count: 1, target: 'SELF' }],
+                },
+            ],
+            effects: [
+                {
+                    type: 'RETURN_TO_HAND',
+                    target: [[name]],
+                },
+            ],
+            source: 'SELF',
+            text: stripAbilityMarkup(match[0]),
+        });
+    }
+    return found;
+}
+
+/**
+ * Skirmish: Spot Gollum and discard 3 cards from hand to wound a companion
+ * Gollum is skirmishing once (or twice if that companion is a shire companion).
+ */
+function parseSpotDiscardWoundSkirmishingAbilities(
+    text: string,
+    cardId?: string
+): Record<string, unknown>[] {
+    const found: Record<string, unknown>[] = [];
+    const re =
+        /(?:\*\*|<(?:keyword)>)?Skirmish:?\s*(?:<\/(?:keyword)>)?(?:\*\*)?\s*Spot ([\w’'\-]+(?:\s+[\w’'\-]+)?)\s+and discard (\d+|a|one|two|three)\s+cards? from hand to wound a companion \1 is skirmishing once(?:\s*\(or twice if that companion is an? (<symbol>[^<]+<\/symbol>)\s+companion\))?\.?/gi;
+    let match: RegExpExecArray | null;
+    while ((match = re.exec(text)) !== null) {
+        const name = match[1].trim();
+        const discardCount = parseBurdenWord(match[2]);
+        if (!discardCount || !name) continue;
+        const culture = match[3]
+            ? parseCultureTokenSpec(match[3])
+            : undefined;
+        const woundEffect: Record<string, unknown> = {
+            type: 'WOUND',
+            count: 1,
+            target: 'SKIRMISHING',
+            involving: [[name]],
+        };
+        if (culture && typeof culture === 'string') {
+            woundEffect.countIfCulture = { culture, count: 2 };
+        }
+        found.push({
+            id: `${cardId || 'ability'}:${found.length}:spot-discard-wound`,
+            phases: ['SKIRMISH'],
+            cost: [
+                {
+                    spot: [{ count: 1, target: [[name]] }],
+                    discardFromHand: discardCount,
+                },
+            ],
+            effects: [woundEffect],
+            source: 'SELF',
+            text: stripAbilityMarkup(match[0]),
+        });
+    }
+    return found;
+}
+
+/**
+ * When you play Shelob, if you can spot Gollum, you may spot a companion.
+ * That companion cannot be assigned to a skirmish until the end of the turn.
+ */
+function parseWhenPlayedForbidAssignAbilities(
+    text: string,
+    cardId?: string
+): Record<string, unknown>[] {
+    const found: Record<string, unknown>[] = [];
+    const re =
+        /When you play ([\w’'\-]+(?:\s+[\w’'\-]+)?),\s*if you can spot ([\w’'\-]+(?:\s+[\w’'\-]+)?),\s*you may spot a companion\.\s*That companion cannot be assigned to a skirmish until the end of the turn\./gi;
+    let match: RegExpExecArray | null;
+    while ((match = re.exec(text)) !== null) {
+        const spotName = match[2].trim();
+        found.push({
+            id: `${cardId || 'ability'}:${found.length}:when-played-forbid-assign`,
+            phases: [],
+            trigger: { type: 'WHEN_PLAYED' },
+            optional: true,
+            cost: [
+                {
+                    spot: [{ count: 1, target: [[spotName]] }],
+                },
+            ],
+            effects: [
+                {
+                    type: 'FORBID_ASSIGN',
+                    target: [['COMPANION']],
+                    expiresAtPhase: 'TURN_END',
+                },
+            ],
+            source: 'SELF',
+            text: stripAbilityMarkup(match[0]),
+        });
+    }
+    return found;
+}
+
+/**
+ * Assignment: Exert X to assign it / an isengard minion to …
+ * That companion may exert to prevent this.
+ */
+function parseAssignmentForceAssignAbilities(
+    text: string,
+    cardTitle?: string,
+    cardId?: string
+): Record<string, unknown>[] {
+    const found: Record<string, unknown>[] = [];
+    const normalized = text.replace(/<br\s*\/?>/gi, ' ').replace(/\s+/g, ' ');
+    // Exert Self to assign it to an unbound companion.
+    const selfRe =
+        /(?:\*\*|<(?:keyword)>)?Assignment:?\s*(?:<\/(?:keyword)>)?(?:\*\*)?\s*Exert ([\s\S]+?) to assign it to an unbound companion\.\s*That companion may exert to prevent this\./gi;
+    let match: RegExpExecArray | null;
+    while ((match = selfRe.exec(normalized)) !== null) {
+        const subject = parseExertSubject(match[1].trim(), cardTitle, text);
+        if (!subject || subject.target !== 'SELF') continue;
+        found.push({
+            id: `${cardId || 'ability'}:${found.length}:force-assign-self`,
+            phases: ['ASSIGNMENT'],
+            cost: [
+                {
+                    exert: [
+                        {
+                            count: subject.count,
+                            target: 'SELF',
+                        },
+                    ],
+                },
+            ],
+            effects: [
+                {
+                    type: 'FORCE_ASSIGN',
+                    minion: 'SELF',
+                    companion: [['UNBOUND', 'COMPANION']],
+                    fpMayPrevent: { exert: true },
+                },
+            ],
+            source: 'SELF',
+            text: stripAbilityMarkup(match[0]),
+        });
+    }
+
+    // Exert Self to assign an isengard minion to a companion (except the Ring-bearer).
+    // Coût = exert + spot désigné (le séide) ; effet = compagnon.
+    const otherRe =
+        /(?:\*\*|<(?:keyword)>)?Assignment:?\s*(?:<\/(?:keyword)>)?(?:\*\*)?\s*Exert ([\s\S]+?) to assign an (<symbol>[^<]+<\/symbol>)\s+minion to a companion\s*\(except the Ring-bearer\)\.\s*That companion may exert to prevent this\./gi;
+    while ((match = otherRe.exec(normalized)) !== null) {
+        const subject = parseExertSubject(match[1].trim(), cardTitle, text);
+        if (!subject || subject.target !== 'SELF') continue;
+        const culture = parseCultureTokenSpec(match[2]);
+        if (!culture || typeof culture !== 'string') continue;
+        found.push({
+            id: `${cardId || 'ability'}:${found.length}:force-assign-other`,
+            phases: ['ASSIGNMENT'],
+            cost: [
+                {
+                    exert: [
+                        {
+                            count: subject.count,
+                            target: 'SELF',
+                        },
+                    ],
+                    spot: [
+                        {
+                            count: 1,
+                            target: [[culture, 'MINION']],
+                            mode: 'DESIGNATION',
+                        },
+                    ],
+                },
+            ],
+            effects: [
+                {
+                    type: 'FORCE_ASSIGN',
+                    minion: 'COST_TARGET',
+                    companion: [['COMPANION']],
+                    excludeRingBearer: true,
+                    fpMayPrevent: { exert: true },
+                },
+            ],
+            source: 'SELF',
+            text: stripAbilityMarkup(match[0]),
+        });
+    }
+    return found;
+}
+
+/**
+ * Each time a companion or ally loses a skirmish involving an Uruk-hai,
+ * the opponent must choose to either exert the Ring-bearer or add a burden.
+ */
+function parseLosesSkirmishOpponentChooseAbilities(
+    text: string,
+    cardId?: string
+): Record<string, unknown>[] {
+    const found: Record<string, unknown>[] = [];
+    const re =
+        /Each time (?:a |an )?([\s\S]+?) loses a skirmish involving (?:a |an )?([\s\S]+?),\s*the opponent must choose to either exert the Ring-bearer or add a burden\./gi;
+    let match: RegExpExecArray | null;
+    while ((match = re.exec(text)) !== null) {
+        const loserRaw = match[1].trim();
+        const loserFilters =
+            parseArticleOrFilters(
+                /^(a|an)\s+/i.test(loserRaw) ? loserRaw : `a ${loserRaw}`
+            ) ||
+            (() => {
+                const f = parseClassFilters(loserRaw);
+                return f.length ? [f] : null;
+            })();
+        const involvingFilters = parseClassFilters(match[2].trim());
+        if (!loserFilters || involvingFilters.length === 0) continue;
+        found.push({
+            id: `${cardId || 'ability'}:${found.length}:lose-choose`,
+            phases: ['RESPONSE'],
+            trigger: {
+                type: 'LOSES_SKIRMISH',
+                loser: loserFilters,
+                involving: [involvingFilters],
+            },
+            cost: [],
+            effects: [
+                {
+                    type: 'CHOOSE_ONE',
+                    options: [
+                        {
+                            label: 'Affaiblir le Porteur de l’Anneau',
+                            effects: [
+                                {
+                                    type: 'EXERT',
+                                    count: 1,
+                                    target: [['RING-BEARER']],
+                                },
+                            ],
+                        },
+                        {
+                            label: 'Ajouter un fardeau',
+                            effects: [{ type: 'ADD_BURDENS', count: 1 }],
+                        },
+                    ],
+                },
+            ],
+            source: 'SELF',
+            text: stripAbilityMarkup(match[0]),
+        });
+    }
+    return found;
+}
+
+/**
+ * « X may not take wounds during the archery phase and may not be assigned to a skirmish. »
+ */
+export function parseCharacterPlayRestrictions(text: string): {
+    cannotTakeArcheryWounds?: true;
+    cannotBeAssignedToSkirmish?: true;
+} | undefined {
+    const plain = stripAbilityMarkup(text).replace(/\s+/g, ' ');
+    if (
+        !/\bmay not take wounds during the archery phase\b/i.test(plain) ||
+        !/\bmay not be assigned to a skirmish\b/i.test(plain)
+    ) {
+        return undefined;
+    }
+    return {
+        cannotTakeArcheryWounds: true,
+        cannotBeAssignedToSkirmish: true,
+    };
+}
+
+/**
+ * Each time [Name] wins a skirmish, you may remove a burden. (Glamdring…)
+ */
+function parseEachTimeWinsRemoveBurdenAbilities(
+    text: string,
+    cardTitle?: string,
+    cardId?: string
+): Record<string, unknown>[] {
+    const found: Record<string, unknown>[] = [];
+    const re =
+        /Each time ([\s\S]+?) wins a skirmish,\s*you may remove (a|an|one|\d+) burdens?\./gi;
+    let match: RegExpExecArray | null;
+    while ((match = re.exec(text)) !== null) {
+        const winnerParsed = parseWinsSkirmishWinner(
+            match[1].trim(),
+            cardTitle
+        );
+        if (!winnerParsed) continue;
+        const count = parseBurdenWord(match[2]);
+        if (!count) continue;
+        // Porteur nommé (« Bearer must be Gandalf » + « Each time Gandalf wins »)
+        // → BEARER pour que la réponse vive sur l’attachement.
+        const bearerName = parseBearerMustBeName(text);
+        let winner = winnerParsed.winner;
+        if (
+            bearerName &&
+            Array.isArray(winner) &&
+            winner.length === 1 &&
+            winner[0]?.length === 1 &&
+            String(winner[0][0]).toLowerCase() === bearerName.toLowerCase()
+        ) {
+            winner = 'BEARER';
+        }
+        found.push({
+            id: `${cardId || 'ability'}:${found.length}:wins-remove-burden`,
+            phases: ['RESPONSE'],
+            trigger: {
+                type: 'WINS_SKIRMISH',
+                winner,
+                ...(winnerParsed.yours ? { yours: true } : {}),
+            },
+            optional: true,
+            cost: [],
+            effects: [{ type: 'REMOVE_BURDENS', count }],
+            source: winner === 'BEARER' ? 'ATTACHMENT' : 'SELF',
+            text: stripAbilityMarkup(match[0]),
+        });
+    }
+    return found;
+}
+
 /** Classe portée : weapon / possession / mount / follower… */
 function parseWhileBearingClass(raw: string): string[][] | null {
     const cleaned = stripAbilityMarkup(raw)
@@ -4563,6 +5412,42 @@ function parseStartOfPhaseDiscardHandTwilightAbilities(
  * Parse abilities pour Type=SITE.
  * Ne réutilise pas parseAbilities entier : familles élargies une par une.
  */
+/**
+ * Site Regroup: Exert your Gollum or your Sméagol to play the fellowship's next site.
+ */
+function parseSiteRegroupPlayNextSiteAbilities(
+    text: string,
+    cardId?: string
+): Record<string, unknown>[] {
+    const found: Record<string, unknown>[] = [];
+    const re =
+        /(?:\*\*|<(?:keyword)>)?Regroup:?\s*(?:<\/(?:keyword)>)?(?:\*\*)?\s*Exert ([\s\S]+?) to play the fellowship[''\u2019]?s next site\./gi;
+    let match: RegExpExecArray | null;
+    while ((match = re.exec(text)) !== null) {
+        const subject = parseExertSubject(match[1].trim());
+        if (!subject) continue;
+        found.push({
+            id: `${cardId || 'ability'}:${found.length}:site-play-next`,
+            phases: ['REGROUP'],
+            cost: [
+                {
+                    exert: [
+                        {
+                            count: subject.count,
+                            target: subject.target,
+                            ...(subject.mode ? { mode: subject.mode } : {}),
+                        },
+                    ],
+                },
+            ],
+            effects: [{ type: 'PLAY_NEXT_SITE', from: 'SITES_DECK' }],
+            source: 'SELF',
+            text: stripAbilityMarkup(match[0]),
+        });
+    }
+    return found;
+}
+
 export function parseSiteAbilities(
     text: string,
     cardId?: string
@@ -4585,6 +5470,12 @@ export function parseSiteAbilities(
         abilities.push({
             ...ability,
             id: `${cardId || 'ability'}:${abilities.length}:site-each-kw`,
+        });
+    });
+    parseSiteRegroupPlayNextSiteAbilities(text, cardId).forEach((ability) => {
+        abilities.push({
+            ...ability,
+            id: `${cardId || 'ability'}:${abilities.length}:site-play-next`,
         });
     });
     return abilities.length > 0 ? abilities : undefined;
@@ -4637,6 +5528,91 @@ function parseSiteEachKeywordAbilities(
 
 
 /**
+ * Spot Name or Name to make a A, B or C strength +N.
+ * (Hobbitses Are Dead…) — event sans marqueur de phase (phases carte).
+ */
+function parseSpotOrMakeStrengthEventAbilities(
+    text: string,
+    cardId?: string
+): Record<string, unknown>[] {
+    const found: Record<string, unknown>[] = [];
+    const re =
+        /(?:^|[.!?]\s*)Spot\s+([\s\S]+?)\s+to make\s+(a\s+[\s\S]+?)\s+strength\s*\+\s*(\d+)\.?/gi;
+    let match: RegExpExecArray | null;
+    while ((match = re.exec(text)) !== null) {
+        // Ne pas croiser les capacités déjà marquées Fellowship/Skirmish…
+        const before = text.slice(Math.max(0, match.index - 40), match.index);
+        if (
+            /<(?:keyword)>(?:Fellowship|Shadow|Maneuver|Archery|Assignment|Skirmish|Regroup)/i.test(
+                before
+            ) ||
+            /\*\*(?:Fellowship|Shadow|Maneuver|Archery|Assignment|Skirmish|Regroup)/i.test(
+                before
+            )
+        ) {
+            continue;
+        }
+        const spotSubject = parseExertSubject(match[1].trim());
+        if (!spotSubject || !Array.isArray(spotSubject.target)) continue;
+        const value = parseInt(match[3], 10);
+        if (!Number.isFinite(value) || value <= 0) continue;
+
+        const makePlain = stripAbilityMarkup(match[2])
+            .replace(/\s+/g, ' ')
+            .trim();
+        // « a Nazgûl, sauron minion or gollum minion »
+        const article = makePlain.match(/^a\s+(.+)$/i);
+        if (!article) continue;
+        const body = article[1];
+        const parts = body
+            .split(/\s*(?:,|\bor\b)\s*/i)
+            .map((p) => p.trim())
+            .filter(Boolean);
+        if (parts.length < 2) continue;
+        const branches: string[][] = [];
+        for (const part of parts) {
+            const filters = parseClassFilters(part);
+            if (filters.length === 0) {
+                branches.length = 0;
+                break;
+            }
+            branches.push(filters);
+        }
+        if (branches.length < 2) continue;
+
+        found.push({
+            id: `${cardId || 'ability'}:${found.length}:spot-or-make-str`,
+            phases: [],
+            cost: [
+                {
+                    spot: [
+                        {
+                            count: spotSubject.count,
+                            target: spotSubject.target,
+                            ...(spotSubject.mode
+                                ? { mode: spotSubject.mode }
+                                : {}),
+                        },
+                    ],
+                },
+            ],
+            effects: [
+                {
+                    type: 'ADD_TEMP_STAT',
+                    stat: 'STRENGTH',
+                    value,
+                    target: branches,
+                    expiresAtPhase: 'SKIRMISH',
+                },
+            ],
+            source: 'SELF',
+            text: stripAbilityMarkup(match[0]),
+        });
+    }
+    return found;
+}
+
+/**
  * Passifs « X is strength +N for each … you can spot » / « for each of these races ».
  * Trigger WHILE vide (vrai en jeu). Refuse wound/assigned/discarded/control/skirmish.
  */
@@ -4647,7 +5623,7 @@ function parseForEachStrengthAbilities(
 ): Record<string, unknown>[] {
     const found: Record<string, unknown>[] = [];
     const refuse =
-        /\b(wound|assigned|discarded|control|skirmish|twilight|threat|burden|site|bearing|over|less|more than)\b/i;
+        /\b(wound|assigned|discarded|control|skirmish|twilight|burden|site|bearing|over|less|more than)\b/i;
 
     // Source CSV : <keyword>…</keyword>, <br>, <i> rappels. On normalise les
     // frontières de phrase sans toucher aux <symbol> (filtres culture).
@@ -4732,16 +5708,55 @@ function parseForEachStrengthAbilities(
         });
     }
 
+    // While you cannot spot N threats, X is strength +M for each threat [you can spot].
+    const perThreatRe =
+        /(?:^|[.!?]\s*)While you cannot spot\s+(\d+)\s+threats?,\s*((?:This (?:minion|companion)|Bearer|[A-ZÀ-ŸÉ][^,.]*?)) is strength \+(\d+) for (?:each|every) threat(?:s)?(?: you can spot)?\.?/gi;
+    while ((match = perThreatRe.exec(working)) !== null) {
+        const cannotSpot = parseInt(match[1], 10);
+        const target = resolveWho(match[2]);
+        const value = parseInt(match[3], 10);
+        if (
+            !target ||
+            !Number.isFinite(cannotSpot) ||
+            cannotSpot <= 0 ||
+            !Number.isFinite(value) ||
+            value <= 0
+        ) {
+            continue;
+        }
+        found.push({
+            id: `${cardId || 'ability'}:${found.length}:while-cannot-threats-per-threat`,
+            phases: [],
+            trigger: {
+                type: 'WHILE',
+                cannotSpotThreats: cannotSpot,
+            },
+            cost: [],
+            effects: [
+                {
+                    type: 'MODIFY_STAT',
+                    stat: 'STRENGTH',
+                    value,
+                    target,
+                    perThreats: true,
+                },
+            ],
+            source: 'SELF',
+            text: stripAbilityMarkup(match[0]),
+        });
+    }
+
     const eachRe =
         /(?:^|[.!?]\s*)((?:This (?:minion|companion)|Bearer|[A-ZÀ-ŸÉ][^,.]*?)) is strength \+(\d+) for (?:each|every) (other )?(?:a |an )?([^,.]+?) you (?:can )?spot(?: \(limit \+(\d+)\))?\./gi;
     while ((match = eachRe.exec(working)) !== null) {
         if (/for (?:each|every) of these races/i.test(match[0])) continue;
+        if (/\bthreat\b/i.test(match[0])) continue;
         if (refuse.test(match[0])) continue;
         const target = resolveWho(match[1]);
         if (!target) continue;
         const value = parseInt(match[2], 10);
         if (!Number.isFinite(value) || value <= 0) continue;
-        if (match[3]) continue; // « other » : hors scope sûr
+        const excludeSource = Boolean(match[3]);
         const spotRaw = match[4].trim();
         if (/\b(and|or|who|whose|that|with|from|to|may)\b/i.test(spotRaw)) {
             continue;
@@ -4766,6 +5781,7 @@ function parseForEachStrengthAbilities(
                     target,
                     perSpot: {
                         target: [filters],
+                        ...(excludeSource ? { excludeSource: true } : {}),
                         ...(limit !== undefined ? { limit } : {}),
                     },
                 },
@@ -4803,6 +5819,29 @@ function parseCultureTokenCount(raw: string): number | null {
     if (token === 'three') return 3;
     const n = parseInt(token, 10);
     return Number.isFinite(n) && n > 0 ? n : null;
+}
+
+/**
+ * « Aragorn, Boromir, Denethor or Faramir » → [[Aragorn],[Boromir],…]
+ * Noms propres seulement (casse mixte) ; refuse classes / « and » collé.
+ */
+function parseNamedCharacterList(raw: string): string[][] | null {
+    const plain = stripAbilityMarkup(raw)
+        .replace(/\s+/g, ' ')
+        .trim();
+    if (!plain) return null;
+    const parts = plain
+        .split(/\s*(?:,|\bor\b)\s*/i)
+        .map((p) => p.trim())
+        .filter(Boolean);
+    if (parts.length < 2) return null;
+    const named: string[][] = [];
+    for (const part of parts) {
+        if (/\s/.test(part)) return null;
+        if (!/^[A-ZÀ-Ÿ][a-zà-ÿ'’\-]*$/.test(part)) return null;
+        named.push([part]);
+    }
+    return named;
 }
 
 /**
@@ -4945,6 +5984,42 @@ function parseCultureTokenAbilities(
         });
     }
 
+    // When you play this condition, place a [culture] token here for each of the following
+    // characters you can spot: Aragorn, Boromir, Denethor or Faramir. (Noble Leaders…)
+    const placePerNamedWhenPlayedRe =
+        /When you play this(?:\s+(?:condition|possession|minion|companion|artifact|ally|follower))?, place (a|an|one|\d+)\s+(<symbol>[^<]+<\/symbol>)\s+tokens? here for each of the following characters you can spot:\s*([^.]+)\./gi;
+    while ((match = placePerNamedWhenPlayedRe.exec(text)) !== null) {
+        const named = parseNamedCharacterList(match[3]);
+        const count = parseCultureTokenCount(match[1]);
+        const culture = parseCultureTokenSpec(match[2]);
+        if (
+            !named ||
+            !count ||
+            !culture ||
+            culture === 'FREE_PEOPLES' ||
+            culture === 'ANY'
+        ) {
+            continue;
+        }
+        found.push({
+            id: `${cardId || 'ability'}:${found.length}:when-played-place-per-named`,
+            phases: [],
+            trigger: { type: 'WHEN_PLAYED' },
+            cost: [],
+            effects: [
+                {
+                    type: 'PLACE_CULTURE_TOKEN',
+                    culture,
+                    count,
+                    target: 'SELF',
+                    perSpot: { target: named },
+                },
+            ],
+            source: 'SELF',
+            text: stripAbilityMarkup(match[0]),
+        });
+    }
+
     // When you play this, (you may) spot [classe] to place/add N [culture] tokens here.
     // (Chamber of Records, Fortitude…) — refuse mounted / and / or / each.
     const spotPlaceWhenPlayedRe =
@@ -5050,6 +6125,36 @@ function parseWhenPlayedAbilities(
         });
     }
 
+    // When you play this minion, you may spot Saruman to add twilightN.
+    const optionalSpotTwilightRe =
+        /When you play this(?:\s+(?:minion|possession|condition|companion|artifact|ally|follower))?, you may spot ([\s\S]+?) to add <symbol>twilight(\d+)<\/symbol>\./gi;
+    while ((match = optionalSpotTwilightRe.exec(text)) !== null) {
+        if (/\b(and|or|each)\b/i.test(match[1])) continue;
+        const subject = parseExertSubject(match[1].trim());
+        if (!subject) continue;
+        const twilight = parseInt(match[2], 10);
+        if (!Number.isFinite(twilight) || twilight <= 0) continue;
+        found.push({
+            id: `${cardId || 'ability'}:${found.length}:when-played-may-spot-twilight`,
+            phases: [],
+            trigger: { type: 'WHEN_PLAYED' },
+            optional: true,
+            cost: [
+                {
+                    spot: [
+                        {
+                            count: subject.count,
+                            target: subject.target,
+                        },
+                    ],
+                },
+            ],
+            effects: [{ type: 'ADD_TWILIGHT', count: twilight }],
+            source: 'SELF',
+            text: stripAbilityMarkup(match[0]),
+        });
+    }
+
     const optionalDrawRe =
         /When you play this(?:\s+(?:minion|possession|condition|companion|artifact|ally|follower))?, you may draw (a card|\d+ cards?)\./gi;
     while ((match = optionalDrawRe.exec(text)) !== null) {
@@ -5083,6 +6188,33 @@ function parseWhenPlayedAbilities(
             optional: true,
             cost: [],
             effects: [{ type: 'DISCARD_FROM_HAND', count, upTo: true }],
+            source: 'SELF',
+            text: stripAbilityMarkup(match[0]),
+        });
+    }
+
+    // When you play this, you may search your deck for a [culture] card and place it in your discard pile.
+    const searchDeckDiscardRe =
+        /When you play this(?:\s+(?:minion|possession|condition|companion|artifact|ally|follower))?, you may search your (?:draw )?deck for (?:a|an)\s+((?:<symbol>[^<]+<\/symbol>\s*)+)card and place it in your discard pile\.?/gi;
+    while ((match = searchDeckDiscardRe.exec(text)) !== null) {
+        const filters = parseClassFilters(`${match[1]} card`);
+        if (filters.length === 0) continue;
+        if (/\b(and|or|each|may|from)\b/i.test(stripAbilityMarkup(match[1]))) {
+            continue;
+        }
+
+        found.push({
+            id: `${cardId || 'ability'}:${found.length}:when-played-may`,
+            phases: [],
+            trigger: { type: 'WHEN_PLAYED' },
+            optional: true,
+            cost: [],
+            effects: [
+                {
+                    type: 'SEARCH_DECK_TO_DISCARD',
+                    target: [filters],
+                },
+            ],
             source: 'SELF',
             text: stripAbilityMarkup(match[0]),
         });
@@ -6096,6 +7228,8 @@ export function parseAbilities(
                     expiresAtPhase
                 );
                 if (effects && effects.length > 0) {
+                    // Deux capacités distinctes (comme discard-or-remove) :
+                    // le joueur choisit explicitement affaiblir OU menaces.
                     abilities.push({
                         id: `${cardId || 'ability'}:${abilities.length}`,
                         phases,
@@ -6111,12 +7245,24 @@ export function parseAbilities(
                                     },
                                 ],
                             },
-                            { removeThreats: threatCount },
                         ],
                         effects,
                         source:
                             subject.target === 'BEARER' ? 'ATTACHMENT' : 'SELF',
-                        text: `${marker.phase}: Exert ${exertOrThreatMake[1].trim()} or remove ${exertOrThreatMake[2]} threat${threatCount > 1 ? 's' : ''} to make ${exertOrThreatMake[3]}`
+                        text: `${marker.phase}: Exert ${exertOrThreatMake[1].trim()} to make ${exertOrThreatMake[3]}`
+                            .replace(/<[^>]+>/g, '')
+                            .replace(/\s+/g, ' ')
+                            .replace(/\s+\./g, '.')
+                            .trim(),
+                    });
+                    abilities.push({
+                        id: `${cardId || 'ability'}:${abilities.length}`,
+                        phases,
+                        cost: [{ removeThreats: threatCount }],
+                        effects,
+                        source:
+                            subject.target === 'BEARER' ? 'ATTACHMENT' : 'SELF',
+                        text: `${marker.phase}: Remove ${threatCount === 1 ? 'a' : threatCount} threat${threatCount > 1 ? 's' : ''} to make ${exertOrThreatMake[3]}`
                             .replace(/<[^>]+>/g, '')
                             .replace(/\s+/g, ' ')
                             .replace(/\s+\./g, '.')
@@ -6396,6 +7542,117 @@ export function parseAbilities(
                 effects: parsedMake.effects,
                 source: 'SELF',
                 text: `${marker.phase}: Discard this to make ${effectClause}`,
+            });
+            return;
+        }
+
+        // « Remove N [culture]? tokens from here or discard this … to make/heal … »
+        // Ordre inverse de discard-or-remove (Noble Leaders…).
+        const removeOrDiscardToken = body.match(
+            /^Remove\s+(a|an|one|\d+)\s+(?:((?:Free Peoples(?:\s+culture)?)|(?:<symbol>[^<]+<\/symbol>)|(?:culture))\s+)?tokens?(?:\s+from here|\s+here)?\s+or discard this(?:\s+(?:condition|possession|card))?(?:\s+from play)?\s+to\s+([\s\S]+)/i
+        );
+        if (removeOrDiscardToken) {
+            const count = parseCultureTokenCount(removeOrDiscardToken[1]);
+            const cultureRaw = removeOrDiscardToken[2];
+            const culture = cultureRaw
+                ? parseCultureTokenSpec(cultureRaw)
+                : 'ANY';
+            let effectText = removeOrDiscardToken[3].trim();
+            if (!count || !culture) return;
+            const effectPlain = effectText
+                .replace(/<[^>]+>/g, ' ')
+                .replace(/\s+/g, ' ')
+                .trim();
+            if (
+                /\b(reveal|stack|play|discard|cancel|archery|reconcile|spot|exert|wound|prevent|draw|for each|skirmishing|bearing|from your|from his|from her)\b/i.test(
+                    effectPlain
+                )
+            ) {
+                return;
+            }
+
+            let effects: Record<string, unknown>[] | null = null;
+            const healWho = effectText.match(/^heal\s+([\s\S]+)/i);
+            if (healWho) {
+                const healTarget = parseNounTarget(
+                    healWho[1],
+                    [['']],
+                    cardTitle
+                );
+                if (
+                    healTarget &&
+                    Array.isArray(healTarget) &&
+                    isCharacterishHealTarget(healTarget)
+                ) {
+                    effects = [
+                        { type: 'HEAL', count: 1, target: healTarget },
+                    ];
+                }
+            } else {
+                const makeRaw = effectText.match(/^make\s+([\s\S]+)/i);
+                if (makeRaw) {
+                    if (/\bfor each\b/i.test(effectPlain)) return;
+                    const expiresAtPhase = parseUntilExpiry(
+                        makeRaw[1],
+                        marker.phase
+                    );
+                    const parsedMake = parseMakeTargetAndEffects(
+                        makeRaw[1],
+                        'SELF',
+                        expiresAtPhase
+                    );
+                    if (
+                        parsedMake &&
+                        parsedMake.effects.length > 0 &&
+                        parsedMake.effects.every(
+                            (e) =>
+                                e.type === 'ADD_TEMP_STAT' ||
+                                e.type === 'ADD_TEMP_KEYWORD'
+                        )
+                    ) {
+                        effects = parsedMake.effects as Record<
+                            string,
+                            unknown
+                        >[];
+                    }
+                }
+            }
+            if (!effects || effects.length === 0) return;
+
+            const cultureLabel = cultureRaw
+                ? stripAbilityMarkup(cultureRaw)
+                : 'culture';
+            const effectClause = stripAbilityMarkup(effectText)
+                .replace(/\s+/g, ' ')
+                .replace(/\s+\./g, '.')
+                .trim();
+            abilities.push({
+                id: `${cardId || 'ability'}:${abilities.length}`,
+                phases,
+                cost: [
+                    {
+                        removeCultureTokens: {
+                            culture,
+                            count,
+                            from: 'SELF',
+                        },
+                    },
+                ],
+                effects,
+                source: 'SELF',
+                text: `${marker.phase}: Remove ${count} ${cultureLabel} token${count > 1 ? 's' : ''} from here to ${effectClause}`,
+            });
+            abilities.push({
+                id: `${cardId || 'ability'}:${abilities.length}`,
+                phases,
+                cost: [
+                    {
+                        discardFromPlay: [{ count: 1, target: 'SELF' }],
+                    },
+                ],
+                effects,
+                source: 'SELF',
+                text: `${marker.phase}: Discard this to ${effectClause}`,
             });
             return;
         }
@@ -6781,6 +8038,131 @@ export function parseAbilities(
                     .replace(/<[^>]+>/g, '')
                     .replace(/\s+/g, ' ')
                     .replace(/\s+\./g, '.')
+                    .trim(),
+            });
+            return;
+        }
+
+        // Exert X twice to remove N threats. (Aragorn Driven by Need…)
+        const exertRemoveThreats = bodyPlain.match(
+            /^Exert\s+([\s\S]+?)\s+to remove\s+(a|an|one|two|three|\d+)\s+threats?\.?$/i
+        );
+        if (exertRemoveThreats) {
+            if (/\b(and|or)\b/i.test(exertRemoveThreats[1])) return;
+            const subject = parseExertSubject(
+                exertRemoveThreats[1],
+                cardTitle,
+                text
+            );
+            const count = parseBurdenWord(exertRemoveThreats[2]);
+            if (!subject || !count) return;
+
+            abilities.push({
+                id: `${cardId || 'ability'}:${abilities.length}`,
+                phases,
+                cost: [
+                    {
+                        exert: [
+                            {
+                                count: subject.count,
+                                target: subject.target,
+                                ...(subject.mode
+                                    ? { mode: subject.mode }
+                                    : {}),
+                            },
+                        ],
+                    },
+                ],
+                effects: [{ type: 'REMOVE_THREATS', count }],
+                source:
+                    subject.target === 'BEARER' ? 'ATTACHMENT' : 'SELF',
+                text: `${marker.phase}: Exert ${exertRemoveThreats[1].trim()} to remove ${exertRemoveThreats[2]} threat${count > 1 ? 's' : ''}.`
+                    .replace(/<[^>]+>/g, '')
+                    .replace(/\s+/g, ' ')
+                    .trim(),
+            });
+            return;
+        }
+
+        // Exert X twice to make him strength +N for each Y you spot. (Pippin's Sword…)
+        const exertMakePerSpot = bodyPlain.match(
+            /^Exert\s+([\s\S]+?)\s+to make\s+(him|her|it|bearer|this (?:companion|minion)|[\p{L}’'\-]+)\s+strength\s*\+\s*(\d+)\s+for each\s+([\s\S]+?)\s+you(?: can)? spot\.?$/iu
+        );
+        if (exertMakePerSpot) {
+            if (/\b(and|or)\b/i.test(exertMakePerSpot[1])) return;
+            const subject = parseExertSubject(
+                exertMakePerSpot[1],
+                cardTitle,
+                text
+            );
+            if (!subject) return;
+            const whoRaw = exertMakePerSpot[2].trim();
+            let makeTarget: 'SELF' | 'BEARER' | string[][] | null = null;
+            if (/^(him|her|it)$/i.test(whoRaw)) {
+                makeTarget =
+                    subject.target === 'BEARER' || subject.target === 'SELF'
+                        ? subject.target
+                        : 'SELF';
+            } else if (/^bearer$/i.test(whoRaw)) {
+                makeTarget = 'BEARER';
+            } else if (/^this (?:companion|minion)$/i.test(whoRaw)) {
+                makeTarget = 'SELF';
+            } else if (
+                cardTitle &&
+                whoRaw.toLowerCase() === cardTitle.toLowerCase()
+            ) {
+                makeTarget = 'SELF';
+            }
+            if (!makeTarget) return;
+            const value = parseInt(exertMakePerSpot[3], 10);
+            if (!Number.isFinite(value) || value <= 0) return;
+            const spotFilters = parseClassFilters(exertMakePerSpot[4]);
+            if (spotFilters.length === 0) return;
+            if (
+                /\b(and|or|who|whose|that|with|from|to|may)\b/i.test(
+                    exertMakePerSpot[4]
+                )
+            ) {
+                return;
+            }
+            const expiresAtPhase = parseUntilExpiry(
+                bodyPlain,
+                marker.phase
+            );
+
+            abilities.push({
+                id: `${cardId || 'ability'}:${abilities.length}`,
+                phases,
+                cost: [
+                    {
+                        exert: [
+                            {
+                                count: subject.count,
+                                target: subject.target,
+                                ...(subject.mode
+                                    ? { mode: subject.mode }
+                                    : {}),
+                            },
+                        ],
+                    },
+                ],
+                effects: [
+                    {
+                        type: 'ADD_TEMP_STAT',
+                        stat: 'STRENGTH',
+                        value,
+                        target: makeTarget,
+                        expiresAtPhase,
+                        perSpot: { target: [spotFilters] },
+                    },
+                ],
+                source:
+                    subject.target === 'BEARER' || makeTarget === 'BEARER'
+                        ? 'ATTACHMENT'
+                        : 'SELF',
+                text: `${marker.phase}: Exert ${exertMakePerSpot[1].trim()} to make ${whoRaw} strength +${value} for each ${stripAbilityMarkup(exertMakePerSpot[4])} you spot.`
+                    .replace(/<[^>]+>/g, '')
+                    .replace(/\s+/g, ' ')
                     .trim(),
             });
             return;
@@ -7324,9 +8706,9 @@ export function parseAbilities(
             return;
         }
 
-        // « Play a [culture] minion stacked here as if played from hand. » (Web…)
+        // « Play a/an [filtre] stacked here as if played from hand. » (Web / Goblin Swarms…)
         const playFromCardStack = bodyPlain.match(
-            /^Play\s+(a\s+[\s\S]+?)\s+stacked here as if played from hand\.?$/i
+            /^Play\s+((?:a|an)\s+[\s\S]+?)\s+stacked here as if played from hand\.?$/i
         );
         if (playFromCardStack) {
             const filters = parseClassFilters(playFromCardStack[1]);
@@ -8415,19 +9797,33 @@ export function parseAbilities(
             /^Discard\s+([\s\S]+?)\s+to\s+([\s\S]+)/i
         );
         if (discardToMatch) {
+            const discardRaw = discardToMatch[1];
+            const isAnother = /^another\b/i.test(
+                stripAbilityMarkup(discardRaw).trim()
+            );
+            let effectRemainder = discardToMatch[2].trim();
+            // « … Discard this condition. » en fin de clause (Long-stemmed Pipe…)
+            const discardSelfTail =
+                /\.\s*Discard this(?:\s+(?:condition|possession|card))?\s*\.?$/i;
+            const alsoDiscardSelf = discardSelfTail.test(effectRemainder);
+            if (alsoDiscardSelf) {
+                effectRemainder = effectRemainder
+                    .replace(discardSelfTail, '')
+                    .trim();
+            }
             const discardTarget = parseNounTarget(
-                discardToMatch[1],
+                discardRaw,
                 [['']],
                 cardTitle
             );
             const effect = parseDiscardToEffect(
-                discardToMatch[2],
+                effectRemainder,
                 cardTitle
             );
             if (!discardTarget || !effect) return;
 
             const discardToClause =
-                `${marker.phase}: Discard ${discardToMatch[1].trim()} to ${discardToMatch[2]}`
+                `${marker.phase}: Discard ${discardRaw.trim()} to ${effectRemainder}${alsoDiscardSelf ? '. Discard this condition' : ''}`
                     .replace(/<[^>]+>/g, '')
                     .replace(/\s+/g, ' ')
                     .replace(/\s+\./g, '.')
@@ -8440,13 +9836,23 @@ export function parseAbilities(
                           count: 1,
                           target: discardTarget,
                           mode: 'DESIGNATION' as const,
+                          ...(isAnother ? { excludeSource: true } : {}),
                       };
+
+            const effects: Record<string, unknown>[] = [effect];
+            if (alsoDiscardSelf) {
+                effects.push({
+                    type: 'DISCARD',
+                    count: 1,
+                    target: 'SELF',
+                });
+            }
 
             abilities.push({
                 id: `${cardId || 'ability'}:${abilities.length}`,
                 phases,
                 cost: [{ discardFromPlay: [discardCost] }],
-                effects: [effect],
+                effects,
                 source: 'SELF',
                 text: discardToClause,
             });
@@ -8646,12 +10052,78 @@ export function parseAbilities(
         }
     );
 
+    parseSpotOrMakeStrengthEventAbilities(text, cardId).forEach((ability) => {
+        abilities.push({
+            ...ability,
+            id: `${cardId || 'ability'}:${abilities.length}`,
+        });
+    });
+
     parseEachTimeYouPlayAbilities(text, cardId).forEach((ability) => {
         abilities.push({
             ...ability,
             id: `${cardId || 'ability'}:${abilities.length}`,
         });
     });
+
+    parseEachTimeNamedPlayedAddThreatsAbilities(text, cardId).forEach(
+        (ability) => {
+            abilities.push({
+                ...ability,
+                id: `${cardId || 'ability'}:${abilities.length}`,
+            });
+        }
+    );
+
+    parseEachTimeWinsRemoveBurdenAbilities(text, cardTitle, cardId).forEach(
+        (ability) => {
+            abilities.push({
+                ...ability,
+                id: `${cardId || 'ability'}:${abilities.length}`,
+            });
+        }
+    );
+
+    parseDiscardSelfReturnToHandAbilities(text, cardId).forEach((ability) => {
+        abilities.push({
+            ...ability,
+            id: `${cardId || 'ability'}:${abilities.length}`,
+        });
+    });
+
+    parseSpotDiscardWoundSkirmishingAbilities(text, cardId).forEach(
+        (ability) => {
+            abilities.push({
+                ...ability,
+                id: `${cardId || 'ability'}:${abilities.length}`,
+            });
+        }
+    );
+
+    parseWhenPlayedForbidAssignAbilities(text, cardId).forEach((ability) => {
+        abilities.push({
+            ...ability,
+            id: `${cardId || 'ability'}:${abilities.length}`,
+        });
+    });
+
+    parseAssignmentForceAssignAbilities(text, cardTitle, cardId).forEach(
+        (ability) => {
+            abilities.push({
+                ...ability,
+                id: `${cardId || 'ability'}:${abilities.length}`,
+            });
+        }
+    );
+
+    parseLosesSkirmishOpponentChooseAbilities(text, cardId).forEach(
+        (ability) => {
+            abilities.push({
+                ...ability,
+                id: `${cardId || 'ability'}:${abilities.length}`,
+            });
+        }
+    );
 
     parseEachTimeTakeControlSiteAbilities(text, cardTitle, cardId).forEach(
         (ability) => {
@@ -8679,6 +10151,66 @@ export function parseAbilities(
             });
         }
     );
+
+    parseEachTimeWinsReinforceAbilities(text, cardTitle, cardId).forEach(
+        (ability) => {
+            abilities.push({
+                ...ability,
+                id: `${cardId || 'ability'}:${abilities.length}`,
+            });
+        }
+    );
+
+    parseEachTimeWinsDiscardSkirmishingAbilities(
+        text,
+        cardTitle,
+        cardId
+    ).forEach((ability) => {
+        abilities.push({
+            ...ability,
+            id: `${cardId || 'ability'}:${abilities.length}`,
+        });
+    });
+
+    parseEachTimeTakesWoundExertAbilities(text, cardId).forEach((ability) => {
+        abilities.push({
+            ...ability,
+            id: `${cardId || 'ability'}:${abilities.length}`,
+        });
+    });
+
+    parseStartOfSkirmishExertOpponentsAbilities(
+        text,
+        cardTitle,
+        cardId
+    ).forEach((ability) => {
+        abilities.push({
+            ...ability,
+            id: `${cardId || 'ability'}:${abilities.length}`,
+        });
+    });
+
+    parseRingBearerStartOfSkirmishChoiceAbilities(
+        text,
+        cardTitle,
+        cardId
+    ).forEach((ability) => {
+        abilities.push({
+            ...ability,
+            id: `${cardId || 'ability'}:${abilities.length}`,
+        });
+    });
+
+    parseWhenPlayedPlayPossessionFromDeckAbilities(
+        text,
+        cardTitle,
+        cardId
+    ).forEach((ability) => {
+        abilities.push({
+            ...ability,
+            id: `${cardId || 'ability'}:${abilities.length}`,
+        });
+    });
 
     parseEachTimeLosesPlaceCultureTokenAbilities(text, cardTitle, cardId).forEach(
         (ability) => {
@@ -8879,6 +10411,15 @@ export function parseAbilities(
     });
 
     parseWhileSkirmishingStrengthAbilities(text, cardTitle, cardId).forEach(
+        (ability) => {
+            abilities.push({
+                ...ability,
+                id: `${cardId || 'ability'}:${abilities.length}`,
+            });
+        }
+    );
+
+    parseWhileSkirmishingResistanceKeywordAbilities(text, cardId).forEach(
         (ability) => {
             abilities.push({
                 ...ability,

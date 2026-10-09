@@ -33,6 +33,10 @@ import { clearActionableFlags } from '../utils/clearActionableFlags';
 import { clearExpiredTempKeywords } from './engine/abilities/applyAbilityEffect';
 import { onStartOfFellowshipBegin } from './logic/startOfFellowship';
 import { afterCardPlayed } from './engine/abilities/eachTimeYouPlay';
+import {
+    applyStartOfSkirmishTriggers,
+    openSkirmishActionWindow,
+} from './engine/abilities/startOfSkirmish';
 import { shouldSkipPhase } from './logic/stats/mechanics/whileModifier';
 import { enterPhase, exitStartOf } from './logic/phaseEntry';
 
@@ -236,6 +240,7 @@ export const setupGame = ({ random }: { random: any }): GameState => {
         if (!ringBearer.keywords.includes('RING-BEARER')) {
             ringBearer.keywords.push('RING-BEARER');
         }
+        ringBearer.isStartingMember = true;
 
         ringBearer.attachments = [oneRing];
         player.fellowshipArea = [ringBearer];
@@ -247,6 +252,7 @@ export const setupGame = ({ random }: { random: any }): GameState => {
                 `starting-comp-${index}`
             );
             companion.isFaceDown = true;
+            companion.isStartingMember = true;
             player.fellowshipArea.push(companion);
         });
 
@@ -479,6 +485,7 @@ export const LotrGame: Game<GameState> = {
             next: 'fellowship',
             turn: { activePlayers: { value: { '0': 'play', '1': 'play' } } },
             onBegin: ({ G, events }: LotrPhaseContext) => {
+                clearExpiredTempKeywords(G, 'TURN_END');
                 onStartOfFellowshipBegin(G, events);
             },
             onEnd: ({ G }) => {
@@ -1093,9 +1100,13 @@ export const LotrGame: Game<GameState> = {
                         return 'INVALID_MOVE';
                     }
 
-                    if (G.responseWindow?.isOpen || G.pendingEvent) {
+                    if (
+                        G.responseWindow?.isOpen ||
+                        G.pendingEvent ||
+                        G.pendingForcedChoice
+                    ) {
                         G.statusMessage =
-                            'Une réponse est en cours. Attendez la fin avant de choisir un autre combat.';
+                            'Une réponse ou un choix est en cours. Attendez la fin avant de choisir un autre combat.';
                         return 'INVALID_MOVE';
                     }
 
@@ -1107,15 +1118,13 @@ export const LotrGame: Game<GameState> = {
                     }
 
                     G.activeSkirmishId = skirmishId;
-                    G.actionWindow = {
-                        isOpen: true,
-                        activePlayerId: fpId,
-                        title: 'ESCARMOUCHE',
-                        message:
-                            'Phase d’actions de Skirmish : Jouez des cartes/effets ou PASSER.',
-                        canPass: true,
-                        passesCount: 0,
-                    };
+                    const waitingChoice = applyStartOfSkirmishTriggers(
+                        G,
+                        skirmishId
+                    );
+                    if (!waitingChoice) {
+                        openSkirmishActionWindow(G);
+                    }
                 },
 
                 resolveActiveSkirmish: ({ G, ctx }: LotrMoveContext) => {

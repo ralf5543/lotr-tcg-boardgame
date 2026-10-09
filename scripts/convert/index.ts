@@ -22,6 +22,7 @@ import {
     parseAidCost,
     parseAbilities,
     parseSiteAbilities,
+    parseCharacterPlayRestrictions,
     coerceOrphanGameTextAsLore,
 } from './parsers.ts';
 
@@ -147,6 +148,9 @@ async function convert() {
             signet && !isRingbearer ? undefined : rawResistance;
         const toPlayData = parseToPlayConditions(englishText);
         const grantsKeywords = parseGrantsKeywords(englishText);
+        const playRestrictions = isSite
+            ? undefined
+            : parseCharacterPlayRestrictions(englishText);
         const aidCost = type === 'FOLLOWER' ? parseAidCost(englishText) : undefined;
         const abilities = isSite
             ? parseSiteAbilities(englishText, cardId)
@@ -179,6 +183,7 @@ async function convert() {
             attachedTo: attachmentData || undefined,
             requiresControlledSite,
             toPlay: toPlayData,
+            ...(playRestrictions || {}),
             abilities: abilities,
             phases: phases,
             actionPhases:

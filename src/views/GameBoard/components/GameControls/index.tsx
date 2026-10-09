@@ -114,6 +114,7 @@ export const GameControls: React.FC<GameControlsProps> = ({
     const isActionWindowActive = G.actionWindow?.isOpen ?? false;
     const isResponseWindowActive = G.responseWindow?.isOpen ?? false;
     const isWhenPlayedChoiceActive = Boolean(G.pendingWhenPlayed);
+    const isForcedChoiceActive = Boolean(G.pendingForcedChoice);
 
     const isAwaitingSiteActive =
         awaitingSite &&
@@ -130,6 +131,8 @@ export const GameControls: React.FC<GameControlsProps> = ({
         ? currentPlayerId
         : isResponseWindowActive
           ? G.responseWindow!.activePlayerId
+          : isForcedChoiceActive
+            ? G.pendingForcedChoice!.playerId
           : isWhenPlayedChoiceActive
             ? G.pendingWhenPlayed!.playerId
           : isActionWindowActive
@@ -193,6 +196,7 @@ export const GameControls: React.FC<GameControlsProps> = ({
         title: string;
         body: React.ReactNode;
         showPassButton: boolean;
+        forcedOptionLabels?: string[];
         type?:
             | 'BIDDING'
             | 'CHOOSING_FIRST'
@@ -203,6 +207,7 @@ export const GameControls: React.FC<GameControlsProps> = ({
             | 'ASSIGNMENT_PASS'
             | 'RESPONSE'
             | 'WHEN_PLAYED_CHOICE'
+            | 'FORCED_CHOICE'
             | 'STANDARD';
     } = {
         show: false,
@@ -292,6 +297,33 @@ export const GameControls: React.FC<GameControlsProps> = ({
             ),
             showPassButton: false,
             type: 'WHEN_PLAYED_CHOICE',
+        };
+    } else if (isForcedChoiceActive && isMyTurnToAct) {
+        const forcedSource = G.pendingForcedChoice
+            ? (findTargetCard(
+                  G,
+                  G.pendingForcedChoice.sourceInstanceId
+              ) as CardState | null)
+            : null;
+        const forcedAbility = forcedSource?.abilities?.find(
+            (ab) => ab.id === G.pendingForcedChoice?.abilityId
+        );
+        const chooseOne = forcedAbility?.effects?.find(
+            (e) => e.type === 'CHOOSE_ONE'
+        );
+        const optionLabels =
+            chooseOne && chooseOne.type === 'CHOOSE_ONE'
+                ? chooseOne.options.map((o) => o.label)
+                : [];
+        toastConfig = {
+            show: true,
+            title: 'CONTRAINTE DU PORTEUR',
+            body:
+                G.statusMessage ||
+                'Choisissez une option pour commencer ce combat.',
+            showPassButton: false,
+            type: 'FORCED_CHOICE',
+            forcedOptionLabels: optionLabels,
         };
     } else if ((G.threatWoundsToAssign ?? 0) > 0) {
         const remaining = G.threatWoundsToAssign ?? 0;
@@ -384,6 +416,7 @@ export const GameControls: React.FC<GameControlsProps> = ({
         isTargetingActive &&
         (targetingKind === 'DESIGNATION' ||
             targetingKind === 'HAND_DISCARD' ||
+            targetingKind === 'HAND_PICK' ||
             targetingKind === 'SITE_REPLACE' ||
             targetingKind === 'SITE_REPLACE_PATH' ||
             targetingKind === 'SITE_ATTACH' ||
@@ -397,19 +430,21 @@ export const GameControls: React.FC<GameControlsProps> = ({
             title:
                 targetingKind === 'HAND_DISCARD'
                     ? 'DÉFAUSSE'
-                    : targetingKind === 'SITE_REPLACE'
-                      ? 'REMPLACER UN SITE'
-                      : targetingKind === 'SITE_REPLACE_PATH'
+                    : targetingKind === 'HAND_PICK'
+                      ? 'EMPILER'
+                      : targetingKind === 'SITE_REPLACE'
                         ? 'REMPLACER UN SITE'
-                        : targetingKind === 'SITE_ATTACH'
-                          ? 'JOUER SUR UN SITE'
-                          : targetingKind === 'SITE_STACK'
-                            ? 'EMPILER SUR UN SITE'
-                            : targetingKind === 'STACK_PLAY'
-                              ? 'JOUER DEPUIS LA PILE'
-                      : targetingKind === 'SANCTUARY_HEAL'
-                      ? 'SANCTUAIRE'
-                      : 'CHOIX DE CIBLE',
+                        : targetingKind === 'SITE_REPLACE_PATH'
+                          ? 'REMPLACER UN SITE'
+                          : targetingKind === 'SITE_ATTACH'
+                            ? 'JOUER SUR UN SITE'
+                            : targetingKind === 'SITE_STACK'
+                              ? 'EMPILER SUR UN SITE'
+                              : targetingKind === 'STACK_PLAY'
+                                ? 'JOUER DEPUIS LA PILE'
+                                : targetingKind === 'SANCTUARY_HEAL'
+                                  ? 'SANCTUAIRE'
+                                  : 'CHOIX DE CIBLE',
             body: `${targetingMessage} ${
                 targetingKind === 'SANCTUARY_HEAL'
                     ? ''
@@ -890,6 +925,32 @@ export const GameControls: React.FC<GameControlsProps> = ({
                             </>
                         )}
 
+                        {toastConfig.type === 'FORCED_CHOICE' &&
+                            (toastConfig.forcedOptionLabels || []).map(
+                                (label, index) => (
+                                    <S.ActionButton
+                                        key={`forced-${index}`}
+                                        $variant={
+                                            index === 0
+                                                ? undefined
+                                                : 'secondary'
+                                        }
+                                        style={{
+                                            marginTop:
+                                                index === 0 ? '12px' : '8px',
+                                            width: '100%',
+                                        }}
+                                        onClick={() => {
+                                            moves.resolveForcedChoiceMove?.(
+                                                index
+                                            );
+                                        }}
+                                    >
+                                        {label}
+                                    </S.ActionButton>
+                                )
+                            )}
+
                         {toastConfig.type === 'RESPONSE' &&
                             G.pendingEvent?.type ===
                                 'ABOUT_TO_CANCEL_SKIRMISH' && (
@@ -920,6 +981,19 @@ export const GameControls: React.FC<GameControlsProps> = ({
                                     {G.pendingEvent.addBurdens} fardeau
                                     {G.pendingEvent.addBurdens > 1 ? 'x' : ''}
                                     )
+                                </S.ActionButton>
+                            )}
+
+                        {toastConfig.type === 'RESPONSE' &&
+                            G.pendingEvent?.type ===
+                                'ABOUT_TO_FORCE_ASSIGN' && (
+                                <S.ActionButton
+                                    style={{ marginTop: '12px', width: '100%' }}
+                                    onClick={() => {
+                                        moves.preventPendingEffect?.();
+                                    }}
+                                >
+                                    Empêcher (affaiblir ce compagnon)
                                 </S.ActionButton>
                             )}
 

@@ -38,11 +38,13 @@ import {
     costAndEffectShareHandDesignation,
     cardTargetIds,
     formatDesignationPrompt,
+    abilityHasLegalEffectTarget,
     getCostDesignationCandidates,
     getDesignationCandidates,
     getEffectDesignationCandidates,
     getEffectDesignationCount,
     getSiteAttachmentHostIds,
+    getToPlayExertTargetIds,
     isDesignationTargetId,
 } from '../../game/engine/abilities/designation';
 import {
@@ -58,14 +60,19 @@ import {
     abilityNeedsStackSiteChoice,
     abilityNeedsDeckOrDiscardPick,
     abilityPlayFromDeckOrDiscardEffect,
+    abilitySearchDeckToDiscardEffect,
     abilityStacksOtherMinion,
     abilityPlaysOtherFromStack,
+    isCostlessPlayFromCardStack,
+    abilityPlayFromCardStackEffect,
     abilityReplaceSiteEffect,
     getStackSiteCandidates,
 } from '../../game/engine/abilities/applyAbilityEffect';
+import { getCardsStackedOnHost } from '../../game/logic/cardStack';
 import {
     getDeckOrDiscardBrowsePool,
     getDeckOrDiscardPlayCandidates,
+    getDeckSearchToDiscardCandidates,
 } from '../../game/logic/playFromOutOfPlay';
 import { getReplaceSiteCandidates, getReplaceablePathSitesInCurrentRegion, getOwnedPathSites } from '../../game/logic/sites';
 import { isSiteReplaceForbidden } from '../../game/logic/siteReplaceRestrictions';
@@ -73,6 +80,7 @@ import { findEventAbilityForPhase } from '../../game/engine/abilities/playEventA
 import { abilityMatchesPhase } from '../../game/engine/abilities/collectAbilities';
 import { useCardPlayAudio } from '../../hooks/audio/useCardPlayAudio';
 import { useDiscardAudio } from '../../hooks/audio/useDiscardAudio';
+import { useStackAudio } from '../../hooks/audio/useStackAudio';
 import { useArcheryAudio } from '../../hooks/audio/useArcheryAudio';
 import { useWoundAudio } from '../../hooks/audio/useWoundAudio';
 import { useExertAudio } from '../../hooks/audio/useExertAudio';
@@ -233,6 +241,7 @@ export const GameBoard: React.FC<GameBoardProps> = ({
 }) => {
     useCardPlayAudio(G);
     useDiscardAudio(G);
+    useStackAudio(G);
     useArcheryAudio(G);
     useWoundAudio(G);
     useExertAudio(G);
@@ -246,6 +255,7 @@ export const GameBoard: React.FC<GameBoardProps> = ({
         startTargeting,
         stopTargeting,
         targetingKind,
+        targetableCardIds,
         pendingCard,
         abilityId: targetingAbilityId,
         discardedHandIds: targetingDiscardedHandIds,
@@ -308,12 +318,21 @@ export const GameBoard: React.FC<GameBoardProps> = ({
                 arrowFromCardId = PENDING_PLAY_ORIGIN_ID;
             }
 
+            // Empiler depuis la main : même geste que la défausse (clic),
+            // pas DESIGNATION + drag « jouer ».
+            const isHandStackPick = (ability.effects || []).some(
+                (effect) =>
+                    effect.type === 'STACK_ON_SELF' && effect.from === 'HAND'
+            );
+
             startTargeting({
-                kind: 'DESIGNATION',
+                kind: isHandStackPick ? 'HAND_PICK' : 'DESIGNATION',
                 targetableCardIds: candidates.flatMap(cardTargetIds),
                 message: prompt,
                 pendingCard: source.type === 'EVENT' ? source : undefined,
-                arrowFromCardId,
+                arrowFromCardId: isHandStackPick
+                    ? undefined
+                    : arrowFromCardId,
                 onSelectTarget: (cardId) => {
                     // Ne pas stop ici : onChosen peut enchaîner une autre visée
                     // (herbe → compagnon). stop écraserait la nouvelle.
@@ -776,14 +795,34 @@ export const GameBoard: React.FC<GameBoardProps> = ({
                         afterMinionOrDirect(costId, effectId);
                         return;
                     }
-                    stopTargeting();
-                    moves.activateAbility?.(
-                        sourceInstanceId,
-                        abilityId,
-                        costId || effectId,
-                        costId ? [] : undefined,
-                        costId ? effectId : undefined
-                    );
+                    const finishEffect = (handIds?: string[]) => {
+                        stopTargeting();
+                        moves.activateAbility?.(
+                            sourceInstanceId,
+                            abilityId,
+                            costId || effectId,
+                            handIds ?? (costId ? [] : undefined),
+                            costId ? effectId : undefined
+                        );
+                    };
+                    // They Stole It : défausse main après cible d’effet.
+                    if (abilityNeedsHandDiscard(ability)) {
+                        const effectCard = findTargetCard(
+                            G,
+                            effectId
+                        ) as CardState | null;
+                        const need = abilityDiscardFromHandCount(
+                            ability,
+                            effectCard
+                        );
+                        return requestHandDiscard(
+                            source,
+                            ability,
+                            (cardIds) => finishEffect(cardIds),
+                            need
+                        );
+                    }
+                    finishEffect();
                 },
                 undefined,
                 needsCost ? 'effect' : 'auto',
@@ -812,7 +851,8 @@ export const GameBoard: React.FC<GameBoardProps> = ({
         // Play depuis pile d’un *autre* séide : pas de flèche — drag comme Uruk/Dun.
         // Défausse main (Officer / Sapper) : après le drag, quand on connaît la cible
         // (coût 1 si assiégeant, sinon 2).
-        if (playsOtherFromStack) {
+        // Web / Goblin Swarms (PLAY_FROM_CARD_STACK sans coût) : drag direct, pas de bulle.
+        if (playsOtherFromStack && !isCostlessPlayFromCardStack(ability)) {
             const candidates = getEffectDesignationCandidates(
                 G,
                 source,
@@ -824,10 +864,38 @@ export const GameBoard: React.FC<GameBoardProps> = ({
                 targetableCardIds: candidates.flatMap(cardTargetIds),
                 pendingCard: source,
                 abilityId,
+                discardedHandIds,
                 message:
-                    'Faites glisser un séide empilé vers le champ de bataille.',
-                onSelectTarget: () => {
-                    /* complété par drag → battlefield */
+                    'Glissez un séide empilé vers le champ, ou ouvrez ×N pour choisir dans la grille.',
+                onSelectTarget: (stackedId) => {
+                    const stackedCard = findTargetCard(
+                        G,
+                        stackedId
+                    ) as CardState | null;
+                    const finishPlay = (handIds?: string[]) => {
+                        stopTargeting();
+                        moves.activateAbility?.(
+                            source.instanceId || source.id,
+                            abilityId,
+                            stackedId,
+                            handIds
+                        );
+                        audioService.play('CARD_PLAY');
+                    };
+                    if (abilityNeedsHandDiscard(ability) && stackedCard) {
+                        const need = abilityDiscardFromHandCount(
+                            ability,
+                            stackedCard
+                        );
+                        requestHandDiscard(
+                            source,
+                            ability,
+                            (cardIds) => finishPlay(cardIds),
+                            need
+                        );
+                        return;
+                    }
+                    finishPlay(discardedHandIds);
                 },
             });
             return;
@@ -1015,10 +1083,62 @@ export const GameBoard: React.FC<GameBoardProps> = ({
                     return;
                 }
             }
+            if (abilityNeedsDeckOrDiscardPick(ability)) {
+                const searchEffect =
+                    abilitySearchDeckToDiscardEffect(ability);
+                if (searchEffect) {
+                    const selectable = getDeckSearchToDiscardCandidates(
+                        G,
+                        myId,
+                        searchEffect.target
+                    );
+                    if (selectable.length === 0) {
+                        moves.resolveWhenPlayedChoice?.(false);
+                        return;
+                    }
+                    const pool = getDeckOrDiscardBrowsePool(G, myId);
+                    setDeckDiscardPick({
+                        whenPlayed: true,
+                        selectableCardIds:
+                            selectable.flatMap(cardTargetIds),
+                        deck: pool.deck,
+                        discard: [],
+                    });
+                    return;
+                }
+                const effect =
+                    abilityPlayFromDeckOrDiscardEffect(ability);
+                if (!effect) {
+                    moves.resolveWhenPlayedChoice?.(true);
+                    return;
+                }
+                const attachHost =
+                    effect.attachTo === 'SELF' ? source : null;
+                const selectable = getDeckOrDiscardPlayCandidates(
+                    G,
+                    myId,
+                    effect.target,
+                    'fellowship',
+                    attachHost
+                );
+                if (selectable.length === 0) {
+                    moves.resolveWhenPlayedChoice?.(false);
+                    return;
+                }
+                const pool = getDeckOrDiscardBrowsePool(G, myId);
+                setDeckDiscardPick({
+                    whenPlayed: true,
+                    selectableCardIds: selectable.flatMap(cardTargetIds),
+                    deck: pool.deck,
+                    discard: pool.discard,
+                });
+                return;
+            }
             moves.resolveWhenPlayedChoice?.(true);
         },
         [
             G,
+            myId,
             moves,
             requestHandDiscard,
             requestSiteReplace,
@@ -1071,13 +1191,40 @@ export const GameBoard: React.FC<GameBoardProps> = ({
     const [openOutOfPlayZone, setOpenOutOfPlayZone] =
         useState<OutOfPlayZoneKey | null>(null);
 
-    /** Recherche pioche + défausse (Captured…) — grille pleine, sélection restreinte. */
+    /** Recherche pioche + défausse (Captured / Gandalf Returned…) — grille pleine, sélection restreinte. */
     const [deckDiscardPick, setDeckDiscardPick] = useState<{
-        handIndex: number;
+        handIndex?: number;
+        whenPlayed?: boolean;
         selectableCardIds: string[];
         deck: CardState[];
         discard: CardState[];
     } | null>(null);
+
+    /** Pile empilée (Web / Goblin Swarms…) — même overlay que la défausse. */
+    const [stackOverlay, setStackOverlay] = useState<{
+        title: string;
+        subtitle?: string;
+        cards: CardState[];
+        selectableCardIds?: string[];
+        onSelectCard?: (cardId: string) => void;
+    } | null>(null);
+
+    useEffect(() => {
+        const onOpen = (event: Event) => {
+            const detail = (event as CustomEvent).detail as {
+                title: string;
+                subtitle?: string;
+                cards: CardState[];
+                selectableCardIds?: string[];
+                onSelectCard?: (cardId: string) => void;
+            };
+            if (!detail?.cards) return;
+            setOpenOutOfPlayZone(null);
+            setStackOverlay(detail);
+        };
+        window.addEventListener('open-stack-overlay', onOpen);
+        return () => window.removeEventListener('open-stack-overlay', onOpen);
+    }, []);
 
     const closeDeckDiscardPick = useCallback(() => {
         setDeckDiscardPick(null);
@@ -1085,7 +1232,7 @@ export const GameBoard: React.FC<GameBoardProps> = ({
     }, [moves]);
 
     const outOfPlayOverlay = useMemo(() => {
-        if (!openOutOfPlayZone || deckDiscardPick) return null;
+        if (!openOutOfPlayZone || deckDiscardPick || stackOverlay) return null;
 
         switch (openOutOfPlayZone) {
             case 'my-discard':
@@ -1114,6 +1261,7 @@ export const GameBoard: React.FC<GameBoardProps> = ({
     }, [
         openOutOfPlayZone,
         deckDiscardPick,
+        stackOverlay,
         me.deadPile,
         me.discard,
         opponent.deadPile,
@@ -1477,6 +1625,38 @@ export const GameBoard: React.FC<GameBoardProps> = ({
                     targetId === 'supportArea' ||
                     targetId === 'battlefield';
 
+                // Condition support « To play, exert … » (Worry…) :
+                // drop zone → halo sur cibles d’affaiblissement (pas de flèche).
+                if (
+                    card?.subtype === 'SUPPORT-AREA' &&
+                    targetId === 'supportArea' &&
+                    getToPlayExertTargetIds(G, card).length > 0
+                ) {
+                    const validation = canPlayCard(card, {
+                        G,
+                        ctx,
+                        playerID: myId,
+                    });
+                    if (!validation.valid) {
+                        console.warn(
+                            `❌ [canPlayCard] Rejet : ${validation.reason}`
+                        );
+                        return;
+                    }
+                    const costIds = getToPlayExertTargetIds(G, card);
+                    startTargeting({
+                        kind: 'DESIGNATION',
+                        targetableCardIds: costIds,
+                        message: 'Affaiblissez un personnage pour jouer cette carte.',
+                        onSelectTarget: (costId) => {
+                            stopTargeting();
+                            moves.playCard?.(index, costId);
+                            audioService.play('CARD_PLAY');
+                        },
+                    });
+                    return;
+                }
+
                 const targetCard = !isGlobalZone
                     ? findTargetCard(G, targetId)
                     : null;
@@ -1518,7 +1698,7 @@ export const GameBoard: React.FC<GameBoardProps> = ({
                 return;
             }
 
-            if (origin === 'SITE_STACK') {
+            if (origin === 'SITE_STACK' || origin === 'CARD_STACK') {
                 if (cancelled || targetId !== 'battlefield') return;
                 if (!card || card.type !== 'MINION') return;
                 const stackedId = card.instanceId || card.id;
@@ -1561,6 +1741,44 @@ export const GameBoard: React.FC<GameBoardProps> = ({
                     }
                     finishPlay(targetingDiscardedHandIds);
                     return;
+                }
+
+                // Web / Goblin Swarms : drag direct depuis la pile de l’hôte
+                if (origin === 'CARD_STACK' && parentId) {
+                    const host = findTargetCard(
+                        G,
+                        parentId
+                    ) as CardState | null;
+                    const hostAbility = (host?.abilities || []).find(
+                        (ab) =>
+                            isCostlessPlayFromCardStack(ab) &&
+                            abilityMatchesPhase(ab, ctx.phase || '') &&
+                            abilityHasLegalEffectTarget(G, host!, ab)
+                    );
+                    const playEffect = hostAbility
+                        ? abilityPlayFromCardStackEffect(hostAbility)
+                        : null;
+                    const legal =
+                        host &&
+                        hostAbility &&
+                        playEffect &&
+                        getCardsStackedOnHost(host, playEffect.target).some(
+                            (c) =>
+                                c.instanceId === stackedId ||
+                                c.id === stackedId
+                        );
+                    if (legal) {
+                        moves.activateAbility?.(
+                            host!.instanceId || host!.id,
+                            hostAbility!.id,
+                            stackedId
+                        );
+                        audioService.play('CARD_PLAY');
+                        if (soundPath) {
+                            audioService.play(soundPath, { delay: 0.3 });
+                        }
+                        return;
+                    }
                 }
 
                 const ability = (card.abilities || []).find(
@@ -1785,6 +2003,7 @@ export const GameBoard: React.FC<GameBoardProps> = ({
         if (
             targetingKind === 'DESIGNATION' ||
             targetingKind === 'HAND_DISCARD' ||
+            targetingKind === 'HAND_PICK' ||
             targetingKind === 'SANCTUARY_HEAL' ||
             G.sanctuaryHeal
         ) {
@@ -1838,6 +2057,7 @@ export const GameBoard: React.FC<GameBoardProps> = ({
     useEffect(() => {
         if (targetingKind === 'DESIGNATION') return;
         if (targetingKind === 'HAND_DISCARD') return;
+        if (targetingKind === 'HAND_PICK') return;
         if (targetingKind === 'STACK_PLAY') return;
         if (targetingKind === 'SITE_STACK') return;
         if (targetingKind === 'SITE_ATTACH') return;
@@ -1903,6 +2123,7 @@ export const GameBoard: React.FC<GameBoardProps> = ({
             if (
                 targetingKind !== 'DESIGNATION' &&
                 targetingKind !== 'HAND_DISCARD' &&
+                targetingKind !== 'HAND_PICK' &&
                 targetingKind !== 'SITE_REPLACE' &&
                 targetingKind !== 'SITE_STACK' &&
                 targetingKind !== 'STACK_PLAY' &&
@@ -1927,7 +2148,23 @@ export const GameBoard: React.FC<GameBoardProps> = ({
         ) {
             return 'sites';
         }
-        if (targetingKind === 'HAND_DISCARD') return 'hand';
+        if (
+            targetingKind === 'HAND_DISCARD' ||
+            targetingKind === 'HAND_PICK'
+        ) {
+            return 'hand';
+        }
+        // Autre désignation ciblant la main : forcer l’onglet main.
+        if (targetingKind === 'DESIGNATION' && targetableCardIds.length > 0) {
+            const handKeys = new Set(
+                (me.hand || []).flatMap((c) =>
+                    [c.instanceId, c.id].filter(Boolean)
+                ) as string[]
+            );
+            if (targetableCardIds.some((id) => handKeys.has(id))) {
+                return 'hand';
+            }
+        }
 
         const isSetupPhase = ctx.phase === 'setup';
         const auctionWinnerId = G.setupState?.auctionWinnerId || fpPlayerId;
@@ -2145,12 +2382,50 @@ export const GameBoard: React.FC<GameBoardProps> = ({
                                 deckDiscardPick.selectableCardIds
                             }
                             onSelectCard={(cardId) => {
+                                const whenPlayed = deckDiscardPick.whenPlayed;
                                 const handIndex = deckDiscardPick.handIndex;
                                 setDeckDiscardPick(null);
+                                if (whenPlayed) {
+                                    moves.resolveWhenPlayedChoice?.(
+                                        true,
+                                        undefined,
+                                        cardId
+                                    );
+                                    audioService.play('CARD_PLAY');
+                                    return;
+                                }
+                                if (handIndex === undefined) return;
                                 moves.playCard?.(handIndex, cardId);
                                 audioService.play('CARD_PLAY');
                             }}
-                            onClose={closeDeckDiscardPick}
+                            onClose={() => {
+                                if (deckDiscardPick.whenPlayed) {
+                                    setDeckDiscardPick(null);
+                                    moves.resolveWhenPlayedChoice?.(false);
+                                    return;
+                                }
+                                closeDeckDiscardPick();
+                            }}
+                        />
+                    )}
+                    {stackOverlay && (
+                        <CardZoneOverlay
+                            title={stackOverlay.title}
+                            subtitle={stackOverlay.subtitle}
+                            cards={stackOverlay.cards}
+                            currentSiteIndex={currentSiteIndex}
+                            selectableCardIds={stackOverlay.selectableCardIds}
+                            onSelectCard={
+                                stackOverlay.onSelectCard
+                                    ? (cardId) => {
+                                          const select =
+                                              stackOverlay.onSelectCard;
+                                          setStackOverlay(null);
+                                          select?.(cardId);
+                                      }
+                                    : undefined
+                            }
+                            onClose={() => setStackOverlay(null)}
                         />
                     )}
                     {outOfPlayOverlay && (

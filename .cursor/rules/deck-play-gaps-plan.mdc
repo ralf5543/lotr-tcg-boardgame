@@ -24,11 +24,25 @@ L’ancien plan main/initiative est **figé** (`.cursor/rules/hand-initiative-pl
 6. **Spot titre nommé → make force + dégâts** ✅ — Still Sharp `3U46` (spot Narsil en jeu ; stack Narsil = étape 10)
 7. **Heal classe for each [classe] you spot** ✅ — Unharmed `11S176`
 8. **Site While : each unwounded [classe] → keyword** ✅ — Window on the West `11S265`
-9. **Site Regroup : exert nommé → play next site** — Mere of Dead Faces `11U246`
+9. **Site Regroup : exert nommé → play next site** ✅ — Mere of Dead Faces `11U246`
 10. **Stack sur possession/condition support + take/play from stack** ✅ — Web `8C30` ; Fragments de Narsil `3R44`
-11. **When played place tokens for named spots + remove/discard make** — Noble Leaders `7R112`
+11. **When played place tokens for named spots + remove/discard make** ✅ — Noble Leaders `7R112`
 12. **Gametext site start-of-phase (choix forcé)** — Pelennor Flat `11S254`
 13. **Play from draw deck / discard** ✅ — Captured by the Ring `7C53` (grille pleine pioche+défausse, sélection légale)
+14. **When played play possession from deck/discard (attach)** ✅ — Gandalf Returned `17R17` (+ wins → reinforce FP)
+15. **Takes a wound during skirmish (incl. résolution)** ✅ — Promise Keeping `8R24`
+16. **Start of each skirmish → each minion must exert** ✅ — Shadowfax `8R21` / `4R100`
+17. **Wins skirmish → discard each minion skirmishing** ✅ — Boromir Bearer of Council `9R+31`
+18. **RB alternatif : début escarmouche choix forcé** ✅ — Boromir (3 fardeaux / blessure ×2) ; Gimli/Faramir (fardeaux / menaces). Isildur (exert ×3) encore inerte.
+
+## Reste decks (prochain passage)
+
+| Id | Titre | Manque |
+| --- | --- | --- |
+| `7R104` | Hidden Knowledge | Reveal top 5 adversaire + boucle Shadow/FP |
+| `9R+33` | Isildur (RB) | Début escarmouche : 2 fardeaux **ou** exert 3 companions |
+| `7R113` | Pippin's Armor | While spot 3 Gondor Men → max 1 wound / skirmish |
+| `7R61` | Hobbitses Are Dead | 2ᵉ clause : play from discard si initiative (1ʳᵉ OK) |
 
 ## Exceptions (pas de fragment raisonnable)
 
@@ -40,4 +54,4 @@ L’ancien plan main/initiative est **figé** (`.cursor/rules/hand-initiative-pl
 
 - Création de deck, BOT, chat, gagner/perdre
 - Weather no-events et autres reports sites non listés ici
-- Autres cartes inertes des decks non listées ici (Pippin's Armor / Sword, Hidden Knowledge, etc.) — à prioriser au prochain passage
+- Autres cartes inertes des decks non listées ici (Hidden Knowledge, etc.) — à prioriser au prochain passage

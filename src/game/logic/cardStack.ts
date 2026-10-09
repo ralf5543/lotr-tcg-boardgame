@@ -51,6 +51,22 @@ export function stackCardOnHost(
     }
     if (!removed) return false;
 
+    // Règle : empiler = perdre attachements, jetons (blessures, culture…).
+    if (removed.attachments?.length) {
+        const owner =
+            findInPlayCardOwnerId(G, host) || ownerId;
+        const discard = G.players[owner]?.discard;
+        if (discard) {
+            for (const att of removed.attachments) {
+                if (att) discard.push(att);
+            }
+        }
+        removed.attachments = [];
+    }
+    removed.wounds = 0;
+    removed.cultureTokens = undefined;
+    removed.tempKeywords = undefined;
+
     if (!host.stacked) host.stacked = [];
     host.stacked.push(removed);
     return true;

@@ -162,3 +162,317 @@ describe('Window on the West — runtime', () => {
         expect(getKeywordValue(hobbit, 'DEFENDER', G)).toBe(-1);
     });
 });
+
+describe('parseAbilities — deck gaps batch 2 (Noble Leaders / Gandalf / Promise / Shadowfax)', () => {
+    it('Noble Leaders : place per named + remove-or-discard make', () => {
+        const text =
+            'When you play this condition, place a <symbol>gondor</symbol> token here for each of the following characters you can spot: Aragorn, Boromir, Denethor or Faramir. \n<keyword>Skirmish:</keyword> Remove a token from here or discard this condition to make a <symbol>gondor</symbol> companion strength +1 and <keyword>Damage +1.</keyword>';
+        const abs = parseAbilities(text, 'Noble Leaders', '7R112');
+        expect(abs).toEqual(
+            expect.arrayContaining([
+                expect.objectContaining({
+                    trigger: { type: 'WHEN_PLAYED' },
+                    effects: [
+                        expect.objectContaining({
+                            type: 'PLACE_CULTURE_TOKEN',
+                            culture: 'GONDOR',
+                            count: 1,
+                            target: 'SELF',
+                            perSpot: {
+                                target: [
+                                    ['Aragorn'],
+                                    ['Boromir'],
+                                    ['Denethor'],
+                                    ['Faramir'],
+                                ],
+                            },
+                        }),
+                    ],
+                }),
+                expect.objectContaining({
+                    phases: ['SKIRMISH'],
+                    cost: [
+                        {
+                            removeCultureTokens: {
+                                culture: 'ANY',
+                                count: 1,
+                                from: 'SELF',
+                            },
+                        },
+                    ],
+                }),
+                expect.objectContaining({
+                    phases: ['SKIRMISH'],
+                    cost: [
+                        {
+                            discardFromPlay: [
+                                { count: 1, target: 'SELF' },
+                            ],
+                        },
+                    ],
+                }),
+            ])
+        );
+        const makeAb = abs?.find(
+            (a) =>
+                a.phases?.includes('SKIRMISH') &&
+                a.cost?.[0]?.removeCultureTokens
+        );
+        expect(makeAb?.effects).toEqual(
+            expect.arrayContaining([
+                expect.objectContaining({
+                    type: 'ADD_TEMP_STAT',
+                    stat: 'STRENGTH',
+                    value: 1,
+                    target: [['GONDOR', 'COMPANION']],
+                }),
+                expect.objectContaining({
+                    type: 'ADD_TEMP_KEYWORD',
+                    keyword: 'DAMAGE +1',
+                    target: [['GONDOR', 'COMPANION']],
+                }),
+            ])
+        );
+    });
+
+    it('Gandalf Returned : when-played play possession + wins reinforce', () => {
+        const text =
+            'When you play Gandalf (except in your starting fellowship), you may play a <symbol>gandalf</symbol> possession on him from your draw deck or discard pile. \nEach time Gandalf wins a skirmish, you may reinforce a Free Peoples token.';
+        const abs = parseAbilities(text, 'Gandalf', '17R17');
+        expect(abs).toEqual(
+            expect.arrayContaining([
+                expect.objectContaining({
+                    trigger: {
+                        type: 'WHEN_PLAYED',
+                        exceptStartingFellowship: true,
+                    },
+                    optional: true,
+                    effects: [
+                        {
+                            type: 'PLAY_FROM_DECK_OR_DISCARD',
+                            target: [['GANDALF', 'POSSESSION']],
+                            attachTo: 'SELF',
+                        },
+                    ],
+                }),
+                expect.objectContaining({
+                    trigger: {
+                        type: 'WINS_SKIRMISH',
+                        winner: 'SELF',
+                    },
+                    optional: true,
+                    effects: [
+                        {
+                            type: 'REINFORCE_CULTURE_TOKEN',
+                            culture: 'FREE_PEOPLES',
+                            count: 1,
+                        },
+                    ],
+                }),
+            ])
+        );
+    });
+
+    it('Promise Keeping : takes a wound during skirmish involving gollum', () => {
+        expect(
+            parseAbilities(
+                'Each time a companion takes a wound during a skirmish that involved a <symbol>gollum</symbol> minion, exert a companion.',
+                'Promise Keeping',
+                '8R24'
+            )
+        ).toEqual([
+            expect.objectContaining({
+                phases: ['RESPONSE'],
+                trigger: {
+                    type: 'TAKES_WOUND',
+                    target: [['COMPANION']],
+                    inSkirmish: true,
+                    involving: [['GOLLUM', 'MINION']],
+                },
+                effects: [
+                    {
+                        type: 'EXERT',
+                        count: 1,
+                        target: [['COMPANION']],
+                    },
+                ],
+            }),
+        ]);
+    });
+
+    it('Shadowfax : start of skirmish each minion must exert', () => {
+        expect(
+            parseAbilities(
+                'Bearer must be Gandalf. \nAt the start of each skirmish involving Gandalf, each minion skirmishing Gandalf must exert. \n<keyword>Skirmish:</keyword> Add a threat to make Gandalf strength +1.',
+                'Shadowfax',
+                '8R21'
+            )
+        ).toEqual(
+            expect.arrayContaining([
+                expect.objectContaining({
+                    trigger: {
+                        type: 'START_OF_SKIRMISH',
+                        involving: [['Gandalf']],
+                    },
+                    effects: [
+                        {
+                            type: 'EXERT',
+                            count: 1,
+                            target: 'SKIRMISHING',
+                            all: true,
+                        },
+                    ],
+                    source: 'ATTACHMENT',
+                }),
+            ])
+        );
+    });
+
+    it('Boromir Bearer of Council : contrainte RB + wins → discard skirmishing', () => {
+        expect(
+            parseAbilities(
+                'While Boromir is the Ring-bearer, at the start of each skirmish involving him, add 3 burdens or wound him twice. \nEach time Boromir wins a skirmish, discard each minion he is skirmishing.',
+                'Boromir',
+                '9R+31'
+            )
+        ).toEqual(
+            expect.arrayContaining([
+                expect.objectContaining({
+                    trigger: {
+                        type: 'START_OF_SKIRMISH',
+                        involving: 'SELF',
+                        whileRingBearer: true,
+                    },
+                    effects: [
+                        expect.objectContaining({
+                            type: 'CHOOSE_ONE',
+                            options: [
+                                expect.objectContaining({
+                                    effects: [
+                                        {
+                                            type: 'ADD_BURDENS',
+                                            count: 3,
+                                        },
+                                    ],
+                                }),
+                                expect.objectContaining({
+                                    effects: [
+                                        {
+                                            type: 'WOUND',
+                                            count: 2,
+                                            target: 'SELF',
+                                        },
+                                    ],
+                                }),
+                            ],
+                        }),
+                    ],
+                }),
+                expect.objectContaining({
+                    trigger: {
+                        type: 'WINS_SKIRMISH',
+                        winner: 'SELF',
+                    },
+                    effects: [
+                        {
+                            type: 'DISCARD_ALL',
+                            target: 'SKIRMISHING',
+                        },
+                    ],
+                }),
+            ])
+        );
+    });
+
+    it('Mere of Dead Faces : Regroup exert Gollum/Sméagol → play next site', () => {
+        expect(
+            parseSiteAbilities(
+                '**Marsh.** **Regroup:** Exert your Gollum or your Sméagol to play the fellowship\'s next site.',
+                '11U246'
+            )
+        ).toEqual(
+            expect.arrayContaining([
+                expect.objectContaining({
+                    phases: ['REGROUP'],
+                    effects: [
+                        expect.objectContaining({ type: 'PLAY_NEXT_SITE' }),
+                    ],
+                }),
+            ])
+        );
+    });
+
+    it('Glamdring : wins → remove burden ; Squad : resistance Damage', () => {
+        expect(
+            parseAbilities(
+                'Bearer must be Gandalf.\nEach time Gandalf wins a skirmish, you may remove a burden.',
+                'Glamdring',
+                '11R35'
+            )
+        ).toEqual(
+            expect.arrayContaining([
+                expect.objectContaining({
+                    trigger: { type: 'WINS_SKIRMISH', winner: 'BEARER' },
+                    effects: [{ type: 'REMOVE_BURDENS', count: 1 }],
+                    optional: true,
+                }),
+            ])
+        );
+        expect(
+            parseAbilities(
+                '**Damage +1.** While this minion is skirmishing a character who has resistance 4 or less, this minion is **Damage +1.**',
+                'Squad of Uruk-hai',
+                '11C202'
+            )
+        ).toEqual(
+            expect.arrayContaining([
+                expect.objectContaining({
+                    trigger: {
+                        type: 'WHILE',
+                        skirmishing: {
+                            target: [['CHARACTER']],
+                            resistanceAtMost: 4,
+                        },
+                    },
+                }),
+            ])
+        );
+    });
+
+    it('Faramir / Gimli Bearer : add burdens or threats', () => {
+        expect(
+            parseAbilities(
+                'While Faramir is the Ring-bearer, at the start of each skirmish involving him, add 2 burdens or 2 threats.',
+                'Faramir',
+                '17R28'
+            )
+        ).toEqual(
+            expect.arrayContaining([
+                expect.objectContaining({
+                    trigger: {
+                        type: 'START_OF_SKIRMISH',
+                        involving: 'SELF',
+                        whileRingBearer: true,
+                    },
+                    effects: [
+                        expect.objectContaining({
+                            type: 'CHOOSE_ONE',
+                            options: [
+                                expect.objectContaining({
+                                    effects: [
+                                        { type: 'ADD_BURDENS', count: 2 },
+                                    ],
+                                }),
+                                expect.objectContaining({
+                                    effects: [
+                                        { type: 'ADD_THREATS', count: 2 },
+                                    ],
+                                }),
+                            ],
+                        }),
+                    ],
+                }),
+            ])
+        );
+    });
+});
