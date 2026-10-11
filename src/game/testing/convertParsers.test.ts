@@ -4583,7 +4583,8 @@ describe('parseAbilities — Response wins a skirmish', () => {
                 phases: ['RESPONSE'],
                 trigger: {
                     type: 'WINS_SKIRMISH',
-                    winner: [['GOLLUM']],
+                    // Nom propre Gollum (pas culture GOLLUM / symbole).
+                    winner: [['Gollum']],
                 },
                 cost: [],
                 effects: [

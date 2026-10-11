@@ -40,13 +40,17 @@ export const Battlefield: React.FC<BattlefieldProps> = ({
     skirmishes = [],
     lastWoundedCardIds = [],
     pendingDeadCardIds = [],
-    isOpponent = false,
+    isOpponent: isOpponentProp,
     G,
     playerId,
     onActivateAbility,
 }) => {
     const { registerTarget, activeTargetId, dragged } = useDrag();
     const containerRef = useRef<HTMLDivElement | null>(null);
+    // Séides = Ombre : opposants pour le joueur PL (sinon halo Muster visible des deux côtés).
+    const isOpponent =
+        isOpponentProp ??
+        String(playerId) === String(G.fpPlayerId || '0');
 
     useEffect(() => {
         registerTarget('battlefield', containerRef.current);

@@ -1156,6 +1156,34 @@
     "keywords": [
       "UNDERGROUND"
     ],
+    "abilities": [
+      {
+        "id": "1U347:0:site-bearing-hw",
+        "phases": [],
+        "trigger": {
+          "type": "WHILE"
+        },
+        "cost": [],
+        "effects": [
+          {
+            "type": "MODIFY_KEYWORD",
+            "keyword": "DAMAGE +1",
+            "target": [
+              [
+                "CHARACTER"
+              ]
+            ],
+            "bearing": [
+              [
+                "HAND-WEAPON"
+              ]
+            ]
+          }
+        ],
+        "source": "SELF",
+        "text": "Each companion and minion bearing a hand weapon is Damage +1.."
+      }
+    ],
     "twilightCost": 2,
     "siteNumber": 4,
     "siteArrow": "Right",
@@ -1527,6 +1555,25 @@
     "type": "SITE",
     "keywords": [
       "RIVER"
+    ],
+    "abilities": [
+      {
+        "id": "1U357:0:site-archery",
+        "phases": [],
+        "trigger": {
+          "type": "WHILE"
+        },
+        "cost": [],
+        "effects": [
+          {
+            "type": "MODIFY_ARCHERY_TOTAL",
+            "side": "SHADOW",
+            "value": 1
+          }
+        ],
+        "source": "SELF",
+        "text": "the minion archery total is +1"
+      }
     ],
     "twilightCost": 6,
     "siteNumber": 8,
@@ -3448,6 +3495,25 @@
     "type": "SITE",
     "keywords": [
       "BATTLEGROUND"
+    ],
+    "abilities": [
+      {
+        "id": "4U356:0:site-archery",
+        "phases": [],
+        "trigger": {
+          "type": "WHILE"
+        },
+        "cost": [],
+        "effects": [
+          {
+            "type": "MODIFY_ARCHERY_TOTAL",
+            "side": "SHADOW",
+            "value": 2
+          }
+        ],
+        "source": "SELF",
+        "text": "The minion archery total is +2"
+      }
     ],
     "twilightCost": 6,
     "siteNumber": 7,
@@ -5645,6 +5711,23 @@
         ],
         "source": "SELF",
         "text": "The minion archery total is +2 for each companion in the fellowship over 4."
+      },
+      {
+        "id": "11U227:1:site-archery",
+        "phases": [],
+        "trigger": {
+          "type": "WHILE"
+        },
+        "cost": [],
+        "effects": [
+          {
+            "type": "MODIFY_ARCHERY_TOTAL",
+            "side": "SHADOW",
+            "value": 2
+          }
+        ],
+        "source": "SELF",
+        "text": "The minion archery total is +2"
       }
     ],
     "twilightCost": 0,
@@ -6483,6 +6566,34 @@
     "keywords": [
       "UNDERGROUND"
     ],
+    "abilities": [
+      {
+        "id": "11S248:0:site-bearing-hw",
+        "phases": [],
+        "trigger": {
+          "type": "WHILE"
+        },
+        "cost": [],
+        "effects": [
+          {
+            "type": "MODIFY_KEYWORD",
+            "keyword": "DAMAGE +1",
+            "target": [
+              [
+                "CHARACTER"
+              ]
+            ],
+            "bearing": [
+              [
+                "HAND-WEAPON"
+              ]
+            ]
+          }
+        ],
+        "source": "SELF",
+        "text": "Each character bearing a hand weapon is Damage +1."
+      }
+    ],
     "twilightCost": 2,
     "siteArrow": "Right",
     "imageUrl": "/cards_visuals/o_01_347.jpg",
@@ -6554,6 +6665,25 @@
     "type": "SITE",
     "keywords": [
       "RIVER"
+    ],
+    "abilities": [
+      {
+        "id": "11S250:0:site-archery",
+        "phases": [],
+        "trigger": {
+          "type": "WHILE"
+        },
+        "cost": [],
+        "effects": [
+          {
+            "type": "MODIFY_ARCHERY_TOTAL",
+            "side": "SHADOW",
+            "value": -3
+          }
+        ],
+        "source": "SELF",
+        "text": "The minion archery total is –3."
+      }
     ],
     "twilightCost": 3,
     "siteArrow": "Right",

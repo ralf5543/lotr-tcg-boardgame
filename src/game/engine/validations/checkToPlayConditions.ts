@@ -2,6 +2,7 @@
 
 import type { CardState, GameState, PlayerState } from '../../types';
 import { cardMatchesTarget } from './matchers';
+import { getEffectiveVitality } from '../../../utils/cardStats';
 import { countCultureTokensForPlayer } from '../../logic/cultureTokens';
 
 export interface ValidationContext {
@@ -66,7 +67,7 @@ function getSpottableCardsInPlay(G: GameState, playerID: string, card: CardState
 /**
  * Valide une unique option de toPlay (ex: { spot: [...], exert: [...] })
  */
-function validateToPlayOption(
+export function validateToPlayOption(
     option: Record<string, any>,
     card: CardState,
     context: ValidationContext
@@ -80,10 +81,21 @@ function validateToPlayOption(
         for (const req of option.spot) {
             const countRequired = req.count || 1;
             const targetGroups = req.target;
+            const minVit =
+                typeof req.minVitality === 'number'
+                    ? req.minVitality
+                    : undefined;
 
-            const matchingCards = cardsInPlay.filter((c) =>
-                cardMatchesTarget(c, targetGroups)
-            );
+            const matchingCards = cardsInPlay.filter((c) => {
+                if (!cardMatchesTarget(c, targetGroups)) return false;
+                if (
+                    typeof minVit === 'number' &&
+                    getEffectiveVitality(c) < minVit
+                ) {
+                    return false;
+                }
+                return true;
+            });
 
             if (matchingCards.length < countRequired) {
                 return {
@@ -261,9 +273,20 @@ export function isSpotConditionMet(card: CardState, context: ValidationContext):
         for (const req of option.spot) {
             const countRequired = req.count || 1;
             const targetGroups = req.target;
-            const matchingCount = cardsInPlay.filter((c) =>
-                cardMatchesTarget(c, targetGroups)
-            ).length;
+            const minVit =
+                typeof req.minVitality === 'number'
+                    ? req.minVitality
+                    : undefined;
+            const matchingCount = cardsInPlay.filter((c) => {
+                if (!cardMatchesTarget(c, targetGroups)) return false;
+                if (
+                    typeof minVit === 'number' &&
+                    getEffectiveVitality(c) < minVit
+                ) {
+                    return false;
+                }
+                return true;
+            }).length;
             if (matchingCount < countRequired) {
                 optionOk = false;
                 break;

@@ -165,6 +165,8 @@ export interface CostSelector {
     mode?: SpotMode;
     /** « another … » : la source ne compte pas pour le spot / exert. */
     excludeSource?: boolean;
+    /** Spot avec vitalité minimale (Seeing Stone…). */
+    minVitality?: number;
 }
 
 export interface CostOption {
@@ -274,6 +276,11 @@ export type AbilityEffect =
               inFellowship?: boolean;
               /** Compter les cartes empilées sur les sites (pas en jeu). */
               stackedOnSites?: boolean;
+              /**
+               * Compter les cartes empilées sur des hôtes matchant ce filtre
+               * (Shelob : minions stacked on a gollum possession).
+               */
+              stackedOnHost?: string[][];
               /** « for each other … » : exclure la source. */
               excludeSource?: boolean;
               limit?: number;
@@ -333,6 +340,8 @@ export type AbilityEffect =
           type: 'MODIFY_KEYWORD';
           keyword: CardKeyword;
           target: AbilityTargetRef;
+          /** Exige un attachement matchant (Moria Stairway : hand weapon). */
+          bearing?: string[][];
       }
     | {
           /** Passif While : ignorer une phase tant que la condition tient. */

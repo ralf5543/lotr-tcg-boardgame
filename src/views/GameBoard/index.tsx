@@ -2142,12 +2142,12 @@ export const GameBoard: React.FC<GameBoardProps> = ({
         if (
             targetingKind === 'SITE_REPLACE' ||
             targetingKind === 'SITE_REPLACE_PATH' ||
-            targetingKind === 'SITE_ATTACH' ||
             targetingKind === 'SITE_STACK' ||
             targetingKind === 'STACK_PLAY'
         ) {
             return 'sites';
         }
+        // SITE_ATTACH (Spies…) : site déjà sur le chemin — pas l’onglet deck.
         if (
             targetingKind === 'HAND_DISCARD' ||
             targetingKind === 'HAND_PICK'

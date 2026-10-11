@@ -255,10 +255,15 @@ export function getCostDesignationCandidates(
         (s) => Array.isArray(s.target) && s.mode === 'DESIGNATION'
     );
     if (spotReq && Array.isArray(spotReq.target)) {
+        const sourceId = source.instanceId || source.id;
         return uniqueCards(
-            resolveCostTarget(G, source, spotReq.target).filter(
-                (card) => !card.isDead
-            )
+            resolveCostTarget(G, source, spotReq.target).filter((card) => {
+                if (card.isDead) return false;
+                // Saruman : ne peut pas s’assigner lui-même.
+                if ((card.instanceId || card.id) === sourceId) return false;
+                if (card.cannotBeAssignedToSkirmish) return false;
+                return true;
+            })
         );
     }
 
@@ -479,7 +484,7 @@ export function abilityEffectWantsTargetingArrow(ability: Ability): boolean {
         (effect) =>
             effect.type === 'EXHAUST' ||
             effect.type === 'WOUND' ||
-            effect.type === 'FORCE_ASSIGN' ||
+            // FORCE_ASSIGN : affectation logistique → halo + clic, pas flèche.
             effect.type === 'FORBID_ASSIGN' ||
             effect.type === 'EXERT' ||
             effect.type === 'HEAL'

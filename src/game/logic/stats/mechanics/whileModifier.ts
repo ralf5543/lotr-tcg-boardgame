@@ -58,6 +58,20 @@ function countPerSpot(
                 }
             }
         }
+    } else if (perSpot.stackedOnHost) {
+        cards = [];
+        forEachInPlayCard(G, (host) => {
+            if (!cardMatchesTarget(host, perSpot.stackedOnHost!)) return;
+            for (const stacked of host.stacked || []) {
+                if (
+                    stacked &&
+                    !stacked.isDead &&
+                    cardMatchesTarget(stacked, perSpot.target)
+                ) {
+                    cards.push(stacked);
+                }
+            }
+        });
     } else if (perSpot.inFellowship) {
         const fpId = G.fpPlayerId || '0';
         cards = (G.players[fpId]?.fellowshipArea || []).filter(
@@ -638,7 +652,7 @@ export function getWhileKeywordRaws(
         }
     });
 
-    // Passifs du site actuel (Window on the West…).
+    // Passifs du site actuel (Window on the West, Moria Stairway…).
     const currentSite = getCurrentSite(G);
     if (currentSite) {
         for (const ability of currentSite.abilities || []) {
@@ -647,6 +661,13 @@ export function getWhileKeywordRaws(
                 if (effect.type !== 'MODIFY_KEYWORD') continue;
                 if (!Array.isArray(effect.target)) continue;
                 if (!cardMatchesTarget(card, effect.target)) continue;
+                if (effect.bearing) {
+                    const hasBearing = (card.attachments || []).some(
+                        (att) =>
+                            att && cardMatchesTarget(att, effect.bearing!)
+                    );
+                    if (!hasBearing) continue;
+                }
                 raw.push(effect.keyword);
             }
         }

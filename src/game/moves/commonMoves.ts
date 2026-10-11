@@ -26,6 +26,8 @@ import {
     announceInitiativeIfChanged,
     freePeoplesHasInitiative,
 } from '../logic/initiative';
+import { addThreats } from '../logic/threats';
+import { validateToPlayOption } from '../engine/validations/checkToPlayConditions';
 import { getEffectiveTwilightCost } from '../../utils/roamingDetection';
 import { getWhileTwilightCostModifier } from '../logic/stats/mechanics/whileModifier';
 import { getCurrentSiteIndex } from '../logic/sites';
@@ -353,6 +355,15 @@ export const playCard = (
     if (!validation.valid) {
         console.warn(`❌ [playCard] Rejet : ${validation.reason}`);
         return 'INVALID_MOVE';
+    }
+
+    // toPlay : première option valide (Seeing Stone : spot 3 vit. OU spot + menaces).
+    const playContext = { G, ctx, playerID: actingPlayerId };
+    const chosenToPlay = (card.toPlay || []).find(
+        (opt) => validateToPlayOption(opt, card, playContext).valid
+    );
+    if (chosenToPlay?.addThreats && chosenToPlay.addThreats > 0) {
+        addThreats(G, chosenToPlay.addThreats);
     }
 
     const toPlayExert = (card.toPlay || []).find((opt) =>

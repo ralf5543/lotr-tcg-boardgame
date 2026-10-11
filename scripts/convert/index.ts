@@ -90,6 +90,59 @@ async function convert() {
             ).length;
             const newTextLen = (frenchText || englishText).length;
             if (newTextLen <= existingTextLen) continue;
+            // Ligne traduction sans Text EN : ne pas réécraser abilities
+            // parsées depuis l’anglais (Shelob force +3 empilés, etc.).
+            if (!englishText.trim() && existing.abilities?.length) {
+                const langs = ['fr', 'de', 'it', 'es'] as const;
+                for (const lang of langs) {
+                    const titleKey =
+                        lang === 'fr'
+                            ? 'French Title'
+                            : lang === 'de'
+                              ? 'German Title'
+                              : lang === 'it'
+                                ? 'Italian Title'
+                                : 'Spanish Title';
+                    const subKey =
+                        lang === 'fr'
+                            ? 'French Subtitle'
+                            : lang === 'de'
+                              ? 'German Subtitle'
+                              : lang === 'it'
+                                ? 'Italian Subtitle'
+                                : 'Spanish Subtitle';
+                    const textKey =
+                        lang === 'fr'
+                            ? 'French Text'
+                            : lang === 'de'
+                              ? 'German Text'
+                              : lang === 'it'
+                                ? 'Italian Text'
+                                : 'Spanish Text';
+                    const loreKey =
+                        lang === 'fr'
+                            ? 'French Lore'
+                            : lang === 'de'
+                              ? 'German Lore'
+                              : lang === 'it'
+                                ? 'Italian Lore'
+                                : 'Spanish Lore';
+                    if (!(data[textKey] || '').trim() && !(data[titleKey] || '').trim()) {
+                        continue;
+                    }
+                    existing.i18n = existing.i18n || {};
+                    existing.i18n[lang] = buildLangBlock(
+                        data[titleKey],
+                        data[subKey],
+                        ...langTextAndLore(
+                            data[textKey],
+                            data[loreKey],
+                            Boolean(existing.i18n?.en?.gameText?.trim())
+                        )
+                    );
+                }
+                continue;
+            }
         }
 
         const culture = mapCulture(data['Culture']);

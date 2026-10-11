@@ -564,6 +564,21 @@ function formatEffectBit(
     if (effect.type === 'TAKE_CONTROL_SITE') {
         return 'prendre le contrôle d’un site';
     }
+    if (effect.type === 'FORCE_ASSIGN') {
+        const who = formatTargetPhrase(effect.companion);
+        const except = effect.excludeRingBearer
+            ? ' (sauf le Porteur de l’Anneau)'
+            : '';
+        return who
+            ? `assigner un séide à ${who}${except}`
+            : `assigner un séide à un compagnon${except}`;
+    }
+    if (effect.type === 'RETURN_TO_HAND') {
+        const who = formatTargetPhrase(effect.target);
+        return who
+            ? `renvoyer ${who} dans la main de son propriétaire`
+            : 'renvoyer une carte dans la main de son propriétaire';
+    }
     if (effect.type === 'FORCE_CHOOSE_MOVE_AGAIN') {
         return 'obliger les Peuples Libres à se déplacer à nouveau';
     }

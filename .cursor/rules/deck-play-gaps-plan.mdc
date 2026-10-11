@@ -47,6 +47,7 @@ L’ancien plan main/initiative est **figé** (`.cursor/rules/hand-initiative-pl
 | `8R27` | Slippery Sneak | Skirmish menaces=vitalité adversaires + Regroup take gollum discard |
 | `9R27` | Sent Back | Discard skirmishing Wizard + dead pile ; play Wizard malgré dead |
 | `1R124` | Cruel Caradhras | Maneuver : opponent choose exert RB / add burden |
+| `9R38` | Seeing Stone Orthanc | toPlay spot OK ; Regroup choice (threat / discard → twilight|draw) **inerte** |
 
 ## Exceptions (pas de fragment raisonnable)
 

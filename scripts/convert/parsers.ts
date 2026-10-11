@@ -668,22 +668,24 @@ export function parseToPlayConditions(text?: string): any[] | undefined {
                 ) {
                     finalToken = 'MAN';
                 }
-                const isKnownTarget =
+                const isRaceOrType =
                     VALID_RACES.has(finalToken) ||
-                    VALID_TARGET_TYPES.has(finalToken) ||
-                    VALID_CULTURES.has(finalToken);
-                // Nom propre (Gollum, Sméagol…) : garder la casse — sinon
-                // GOLLUM culture valide le spot via Web / Promise Keeping.
+                    VALID_TARGET_TYPES.has(finalToken);
+                const isCulture = VALID_CULTURES.has(finalToken);
+                // Race/type (Man → MAN) avant nom. Culture seule en Title Case
+                // (Gollum) → nom propre, pas culture GOLLUM.
                 const isProperName = /^[A-ZÀ-Ÿ][a-zà-ÿéèêëàâäùûüôöîïç'’-]+$/u.test(
                     word
                 );
-                targets.push(
-                    isProperName
-                        ? word
-                        : isKnownTarget
-                          ? finalToken
-                          : finalToken
-                );
+                if (isRaceOrType) {
+                    targets.push(finalToken);
+                } else if (isProperName) {
+                    targets.push(word);
+                } else if (isCulture) {
+                    targets.push(finalToken);
+                } else {
+                    targets.push(finalToken);
+                }
             }
         }
         return targets;
@@ -875,6 +877,17 @@ function parseClassFilters(raw: string): string[] {
         // Pluriel de race Man (« dunland Men ») — culture Men reste via symbole.
         if (token === 'MEN') token = 'MAN';
         if (!token || FILTER_STOPWORDS.has(token)) continue;
+        // « Gollum » (nom) ≠ culture GOLLUM (symbole). Title Case + culture
+        // seule → nom propre.
+        if (
+            isProperNameToken(word) &&
+            VALID_CULTURES.has(token) &&
+            !VALID_RACES.has(token) &&
+            !VALID_TARGET_TYPES.has(token)
+        ) {
+            filters.push(word);
+            continue;
+        }
         if (isKnownFilterToken(token)) {
             filters.push(token);
             continue;
@@ -2796,6 +2809,111 @@ function parseWhenPlayedPlayPossessionFromDeckAbilities(
                     type: 'PLAY_FROM_DECK_OR_DISCARD',
                     target: [[culture, 'POSSESSION']],
                     attachTo: 'SELF',
+                },
+            ],
+            source: 'SELF',
+            text: stripAbilityMarkup(match[0]),
+        });
+    }
+
+    // Shelob : When you play Shelob, you may play a [gollum] possession from your draw deck.
+    const shelobRe =
+        /When you play ([\w’'\-]+(?:\s+[\w’'\-]+)?),\s*you may play (?:a|an) (<symbol>[^<]+<\/symbol>)\s+possession from your draw deck\.?/gi;
+    while ((match = shelobRe.exec(text)) !== null) {
+        const name = match[1].trim();
+        if (
+            cardTitle &&
+            name.toLowerCase() !== cardTitle.toLowerCase() &&
+            !/^this$/i.test(name)
+        ) {
+            continue;
+        }
+        const culture = parseCultureTokenSpec(match[2]);
+        if (!culture || culture === 'FREE_PEOPLES' || culture === 'ANY') {
+            continue;
+        }
+        found.push({
+            id: `${cardId || 'ability'}:${found.length}:when-played-play-possession-draw`,
+            phases: [],
+            trigger: { type: 'WHEN_PLAYED' },
+            optional: true,
+            cost: [],
+            effects: [
+                {
+                    type: 'PLAY_FROM_DECK_OR_DISCARD',
+                    target: [[culture, 'POSSESSION']],
+                    attachTo: 'SELF',
+                },
+            ],
+            source: 'SELF',
+            text: stripAbilityMarkup(match[0]),
+        });
+    }
+    return found;
+}
+
+/**
+ * X is strength +N for each minion stacked on a [culture] possession.
+ * (Shelob Eater of Light…)
+ */
+function parseStrengthPerMinionStackedOnCulturePossessionAbilities(
+    text: string,
+    cardTitle?: string,
+    cardId?: string
+): Record<string, unknown>[] {
+    const found: Record<string, unknown>[] = [];
+    const working = text
+        .replace(/<\/?keyword>/gi, '')
+        .replace(/<br\s*\/?>/gi, ' ')
+        .replace(/\s+/g, ' ')
+        .trim();
+    const re =
+        /(?:^|[.!?]\s*)((?:This (?:minion|companion)|Bearer|[A-ZÀ-ŸÉ][^,.]*?)) is strength \+(\d+) for each minion stacked on (?:a|an) (<symbol>[^<]+<\/symbol>)\s+possession\.?/gi;
+    let match: RegExpExecArray | null;
+    while ((match = re.exec(working)) !== null) {
+        const who = stripAbilityMarkup(match[1]).replace(/\s+/g, ' ').trim();
+        let target: 'SELF' | 'BEARER' | string[][] | null = null;
+        if (/^this (?:minion|companion)$/i.test(who)) target = 'SELF';
+        else if (/^bearer$/i.test(who)) target = 'BEARER';
+        else if (
+            cardTitle &&
+            who.toLowerCase() === cardTitle.toLowerCase()
+        ) {
+            target = 'SELF';
+        } else if (
+            // Convert peut passer un titre vide — « Shelob is strength… » sur Shelob.
+            /^[A-ZÀ-ŸÉ][a-zà-ÿ]/.test(who) &&
+            !/\b(and|or|each|minion|companion)\b/i.test(who)
+        ) {
+            target = 'SELF';
+        }
+        if (!target) continue;
+        const value = parseInt(match[2], 10);
+        const culture = parseCultureTokenSpec(match[3]);
+        if (
+            !Number.isFinite(value) ||
+            value <= 0 ||
+            !culture ||
+            culture === 'FREE_PEOPLES' ||
+            culture === 'ANY'
+        ) {
+            continue;
+        }
+        found.push({
+            id: `${cardId || 'ability'}:${found.length}:str-per-stacked-on-cult-poss`,
+            phases: [],
+            trigger: { type: 'WHILE' },
+            cost: [],
+            effects: [
+                {
+                    type: 'MODIFY_STAT',
+                    stat: 'STRENGTH',
+                    value,
+                    target,
+                    perSpot: {
+                        target: [['MINION']],
+                        stackedOnHost: [[culture, 'POSSESSION']],
+                    },
                 },
             ],
             source: 'SELF',
@@ -5540,6 +5658,14 @@ export function parseSiteAbilities(
             id: `${cardId || 'ability'}:${abilities.length}:site-archery`,
         });
     });
+    parseSiteBearingHandWeaponKeywordAbilities(text, cardId).forEach(
+        (ability) => {
+            abilities.push({
+                ...ability,
+                id: `${cardId || 'ability'}:${abilities.length}:site-bearing-hw`,
+            });
+        }
+    );
     return abilities.length > 0 ? abilities : undefined;
 }
 
@@ -5552,10 +5678,10 @@ function parseSiteArcheryTotalAbilities(
     cardId?: string
 ): Record<string, unknown>[] {
     const found: Record<string, unknown>[] = [];
-    const re =
+    const overRe =
         /The minion archery total is \+(\d+) for each companion in the fellowship over (\d+)\.?/gi;
     let match: RegExpExecArray | null;
-    while ((match = re.exec(text)) !== null) {
+    while ((match = overRe.exec(text)) !== null) {
         const value = parseInt(match[1], 10);
         const over = parseInt(match[2], 10);
         if (
@@ -5577,6 +5703,69 @@ function parseSiteArcheryTotalAbilities(
                     side: 'SHADOW',
                     value,
                     perCompanionOver: over,
+                },
+            ],
+            source: 'SELF',
+            text: stripAbilityMarkup(match[0]),
+        });
+    }
+    // North Undeep : The minion archery total is –3. (tiret / minus)
+    const flatRe =
+        /The minion archery total is\s*([+−–-])\s*(\d+)\.?/gi;
+    while ((match = flatRe.exec(text)) !== null) {
+        if (/for each companion/i.test(match[0])) continue;
+        const sign = match[1] === '+' ? 1 : -1;
+        const n = parseInt(match[2], 10);
+        if (!Number.isFinite(n) || n <= 0) continue;
+        found.push({
+            id: `${cardId || 'ability'}:${found.length}:site-archery-flat`,
+            phases: [],
+            trigger: { type: 'WHILE' },
+            cost: [],
+            effects: [
+                {
+                    type: 'MODIFY_ARCHERY_TOTAL',
+                    side: 'SHADOW',
+                    value: sign * n,
+                },
+            ],
+            source: 'SELF',
+            text: stripAbilityMarkup(match[0]),
+        });
+    }
+    return found;
+}
+
+/**
+ * Each character bearing a hand weapon is Damage +N.
+ * (Moria Stairway…)
+ */
+function parseSiteBearingHandWeaponKeywordAbilities(
+    text: string,
+    cardId?: string
+): Record<string, unknown>[] {
+    const found: Record<string, unknown>[] = [];
+    const kwTail =
+        '((?:<keyword>[^<]*</keyword>|\\*\\*[^*]+\\*\\*|damage\\s*\\+\\s*\\d+)\\.?)';
+    const re = new RegExp(
+        `Each (?:character|(?:companion and minion)) bearing (?:a )?hand weapons? is\\s+${kwTail}`,
+        'gi'
+    );
+    let match: RegExpExecArray | null;
+    while ((match = re.exec(text)) !== null) {
+        const grant = parseWhileKeywordGrant(match[1]);
+        if (!grant) continue;
+        found.push({
+            id: `${cardId || 'ability'}:${found.length}:site-bearing-hw`,
+            phases: [],
+            trigger: { type: 'WHILE' },
+            cost: [],
+            effects: [
+                {
+                    type: 'MODIFY_KEYWORD',
+                    keyword: grant.keyword,
+                    target: [['CHARACTER']],
+                    bearing: [['HAND-WEAPON']],
                 },
             ],
             source: 'SELF',
@@ -10343,6 +10532,17 @@ export function parseAbilities(
     });
 
     parseWhenPlayedPlayPossessionFromDeckAbilities(
+        text,
+        cardTitle,
+        cardId
+    ).forEach((ability) => {
+        abilities.push({
+            ...ability,
+            id: `${cardId || 'ability'}:${abilities.length}`,
+        });
+    });
+
+    parseStrengthPerMinionStackedOnCulturePossessionAbilities(
         text,
         cardTitle,
         cardId
