@@ -165,6 +165,144 @@ export function buildLangBlock(
     return Object.keys(block).length > 0 ? block : undefined;
 }
 
+/** Libellés de phase FR / EN (typos CSV inclus) → phase moteur. */
+const FR_PHASE_LABEL_TO_PHASE: Record<string, string> = {
+    skirmish: 'SKIRMISH',
+    combat: 'SKIRMISH',
+    maneuver: 'MANEUVER',
+    manoeuvre: 'MANEUVER',
+    fellowship: 'FELLOWSHIP',
+    compagnie: 'FELLOWSHIP',
+    communauté: 'FELLOWSHIP',
+    archery: 'ARCHERY',
+    archerie: 'ARCHERY',
+    archeriet: 'ARCHERY',
+    assignment: 'ASSIGNMENT',
+    affectation: 'ASSIGNMENT',
+    affectationt: 'ASSIGNMENT',
+    regroup: 'REGROUP',
+    regroupement: 'REGROUP',
+    response: 'RESPONSE',
+    réponse: 'RESPONSE',
+    reponse: 'RESPONSE',
+    shadow: 'SHADOW',
+    ombre: 'SHADOW',
+};
+
+type FrPhaseClause = { phase: string; text: string };
+
+/**
+ * Découpe le gametext FR en clauses de phase (bulles d’action).
+ * Conserve `<symbol>` et `**…**` pour FormattedText.
+ */
+export function extractFrPhaseClauses(gameText?: string): FrPhaseClause[] {
+    if (!gameText?.trim()) return [];
+
+    const plain = gameText.replace(/\r/g, '');
+    const markers: { phase: string; index: number }[] = [];
+
+    const boldRe = /\*\*([^*]+?)\s*:?\*\*\s*:?\s*/gi;
+    let match: RegExpExecArray | null;
+    while ((match = boldRe.exec(plain)) !== null) {
+        const key = match[1]
+            .trim()
+            .toLowerCase()
+            .replace(/œ/g, 'oe')
+            .replace(/\.$/, '');
+        const phase = FR_PHASE_LABEL_TO_PHASE[key];
+        if (!phase) continue;
+        markers.push({ phase, index: match.index });
+    }
+
+    // Phase non gras en début de ligne : « Combat : … »
+    const lineRe =
+        /(?:^|\n)\s*(Combat|Skirmish|Manœuvre|Manoeuvre|Maneuver|Compagnie|Communauté|Fellowship|Archerie|Archery|Affectationt?|Assignment|Regroupement|Regroup|Réponse|Response|Ombre|Shadow)\s*:/gi;
+    while ((match = lineRe.exec(plain)) !== null) {
+        const key = match[1]
+            .trim()
+            .toLowerCase()
+            .replace(/œ/g, 'oe');
+        const phase = FR_PHASE_LABEL_TO_PHASE[key];
+        if (!phase) continue;
+        const index = match.index + match[0].indexOf(match[1]);
+        if (markers.some((m) => Math.abs(m.index - index) < 3)) continue;
+        markers.push({ phase, index });
+    }
+
+    markers.sort((a, b) => a.index - b.index);
+
+    return markers.map((marker, i) => {
+        const end =
+            i + 1 < markers.length ? markers[i + 1].index : plain.length;
+        return {
+            phase: marker.phase,
+            text: plain
+                .slice(marker.index, end)
+                .replace(/\s+/g, ' ')
+                .trim(),
+        };
+    });
+}
+
+/**
+ * Attache `textFr` à chaque ability en alignant les clauses de phase du
+ * gametext FR (ordre si plusieurs clauses de même phase). Réutilise la
+ * clause si le parseur a scindé un « ou » en plusieurs abilities.
+ */
+export function attachAbilityTextFr<T extends { phases?: string[]; textFr?: string }>(
+    abilities: T[] | undefined,
+    frenchGameText?: string
+): T[] | undefined {
+    if (!abilities?.length) return abilities;
+
+    const clauses = extractFrPhaseClauses(formatGameText(frenchGameText));
+    if (clauses.length === 0) return abilities;
+
+    const used = new Set<number>();
+
+    for (const ability of abilities) {
+        const phase = (ability.phases || [])[0];
+        if (!phase) continue;
+
+        const unused = clauses
+            .map((clause, index) => ({ clause, index }))
+            .filter(
+                ({ clause, index }) =>
+                    clause.phase === phase && !used.has(index)
+            );
+        if (unused.length > 0) {
+            used.add(unused[0].index);
+            const text = unused[0].clause.text;
+            // CSV FR parfois = copie EN : inutile pour les bulles FR.
+            if (!looksLikeEnglishAbilityClause(text)) {
+                ability.textFr = text;
+            }
+            continue;
+        }
+
+        const reuse = clauses.find((clause) => clause.phase === phase);
+        if (reuse && !looksLikeEnglishAbilityClause(reuse.text)) {
+            ability.textFr = reuse.text;
+        }
+    }
+
+    return abilities;
+}
+
+/** Clause FR absente / non traduite (phase EN + « to » sans « pour »). */
+function looksLikeEnglishAbilityClause(clause: string): boolean {
+    const body = clause.replace(/\*\*/g, ' ');
+    if (/\bpour\b/i.test(body)) return false;
+    if (
+        !/\b(skirmish|maneuver|fellowship|archery|assignment|regroup|response|shadow)\b/i.test(
+            body
+        )
+    ) {
+        return false;
+    }
+    return /\bto\b/i.test(body);
+}
+
 /**
  * Mot-clé Ambush X : `<keyword>Ambush</keyword> <symbol>twilightN</symbol>`
  * (espace optionnel, ex. Southron Invaders).

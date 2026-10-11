@@ -817,7 +817,10 @@ export interface Ability {
     cost: AbilityCost;
     effects: AbilityEffect[];
     source: 'SELF' | 'ATTACHMENT';
+    /** Clause EN (parseur). */
     text?: string;
+    /** Clause FR alignée au convert (bulles) ; fallback = génération depuis le modèle. */
+    textFr?: string;
     omitFromArcheryTotal?: boolean;
     trigger?: AbilityTrigger;
     /** « you may » : choix du joueur (toaster), pas une résolution auto. */

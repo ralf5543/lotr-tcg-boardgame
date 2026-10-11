@@ -772,11 +772,44 @@ function capitalizeLabel(text: string): string {
     return text.charAt(0).toUpperCase() + text.slice(1);
 }
 
-export function formatAbilityLabelParts(
+/** Retire le préfixe de phase (« **Combat :** », « Skirmish: », …). */
+function stripPhasePrefixFromClause(clause: string): string {
+    return clause
+        .replace(/^\*\*[^*]+?\s*:?\*\*\s*:?\s*/i, '')
+        .replace(
+            /^(?:Combat|Skirmish|Manœuvre|Manoeuvre|Maneuver|Compagnie|Communauté|Fellowship|Archerie|Archery|Affectationt?|Assignment|Regroupement|Regroup|Réponse|Response|Ombre|Shadow)\s*:?\s*/i,
+            ''
+        )
+        .trim();
+}
+
+/**
+ * Découpe une clause papier FR en coût / effet (`… pour …`).
+ * Sans « pour » : toute la clause = effet.
+ */
+export function splitStoredAbilityClause(clause: string): {
+    cost: string;
+    effect: string;
+} {
+    const body = stripPhasePrefixFromClause(clause)
+        .replace(/\s+/g, ' ')
+        .replace(/\.$/, '')
+        .trim();
+    if (!body) return { cost: '', effect: '' };
+
+    const pour = body.match(/^(.+?)\s+pour\s+(.+)$/i);
+    if (pour) {
+        return {
+            cost: capitalizeLabel(pour[1].trim()),
+            effect: pour[2].trim(),
+        };
+    }
+    return { cost: '', effect: capitalizeLabel(body) };
+}
+
+function formatAbilityLabelFromAst(
     ability: Ability,
-    source: CardState,
-    /** Carte sur laquelle la bulle est ouverte (porteur, site…). */
-    host?: CardState
+    source: CardState
 ): { cost: string; effect: string } {
     const cost = capitalizeLabel(formatCostLabel(ability, source));
     const effectRaw = (ability.effects || [])
@@ -784,6 +817,30 @@ export function formatAbilityLabelParts(
         .filter(Boolean)
         .join(' et ');
     const effect = cost ? effectRaw : capitalizeLabel(effectRaw);
+    return { cost, effect };
+}
+
+export function formatAbilityLabelParts(
+    ability: Ability,
+    source: CardState,
+    /** Carte sur laquelle la bulle est ouverte (porteur, site…). */
+    host?: CardState
+): { cost: string; effect: string } {
+    // Préférer la clause FR papier (`textFr`) ; sinon génération depuis le modèle.
+    const fromAst = formatAbilityLabelFromAst(ability, source);
+    let cost = fromAst.cost;
+    let effect = fromAst.effect;
+    const stored = ability.textFr?.trim();
+    if (stored) {
+        const fromText = splitStoredAbilityClause(stored);
+        const hasPour = /\spour\s/i.test(stripPhasePrefixFromClause(stored));
+        // Clause sans « pour » alors que le modèle a un coût → garder l’AST
+        // (évite d’avaler le coût dans la ligne d’effet).
+        if (fromText.effect && (hasPour || !fromAst.cost)) {
+            cost = fromText.cost;
+            effect = fromText.effect;
+        }
+    }
 
     // Capacité d’une carte attachée, listée sur le porteur / site → préfixer
     // le nom de l’attachement (Heavy Axe sur Glóin, etc.).

@@ -24,6 +24,8 @@ import {
     parseSiteAbilities,
     parseCharacterPlayRestrictions,
     coerceOrphanGameTextAsLore,
+    attachAbilityTextFr,
+    formatGameText,
 } from './parsers.ts';
 
 function langTextAndLore(
@@ -141,6 +143,12 @@ async function convert() {
                         )
                     );
                 }
+                if (existing.abilities?.length && existing.i18n?.fr?.gameText) {
+                    attachAbilityTextFr(
+                        existing.abilities,
+                        existing.i18n.fr.gameText
+                    );
+                }
                 continue;
             }
         }
@@ -205,9 +213,12 @@ async function convert() {
             ? undefined
             : parseCharacterPlayRestrictions(englishText);
         const aidCost = type === 'FOLLOWER' ? parseAidCost(englishText) : undefined;
-        const abilities = isSite
-            ? parseSiteAbilities(englishText, cardId)
-            : parseAbilities(englishText, titleVO, cardId);
+        const abilities = attachAbilityTextFr(
+            isSite
+                ? parseSiteAbilities(englishText, cardId)
+                : parseAbilities(englishText, titleVO, cardId),
+            formatGameText(frenchText) || frenchText
+        );
 
         // actionPhases = phases d’abilities réellement parsées (hors RESPONSE).
         // Pas de repli sur les mots-clés du texte : sinon bouton « combat » sans capacité.

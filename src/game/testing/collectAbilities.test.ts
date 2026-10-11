@@ -3,6 +3,7 @@ import {
     abilityProjectsOnto,
     collectVisibleAbilities,
     formatAbilityLabelParts,
+    splitStoredAbilityClause,
 } from '../engine/abilities/collectAbilities';
 import {
     createCard,
@@ -13,7 +14,49 @@ import {
 } from './createGameState';
 import type { Ability } from '../types';
 
+describe('splitStoredAbilityClause', () => {
+    it('découpe coût / effet sur « pour » et retire le préfixe de phase', () => {
+        expect(
+            splitStoredAbilityClause(
+                '**Combat :** Affaiblissez Gimli pour lui donner +2 en force.'
+            )
+        ).toEqual({
+            cost: 'Affaiblissez Gimli',
+            effect: 'lui donner +2 en force',
+        });
+    });
+});
+
 describe('formatAbilityLabelParts', () => {
+    it('préfère textFr au libellé généré depuis le modèle', () => {
+        const ability: Ability = {
+            id: '1R13:0',
+            phases: ['SKIRMISH'],
+            cost: [{ exert: [{ count: 1, target: 'SELF' }] }],
+            effects: [
+                {
+                    type: 'ADD_TEMP_STAT',
+                    stat: 'STRENGTH',
+                    value: 2,
+                    target: 'SELF',
+                    expiresAtPhase: 'SKIRMISH',
+                },
+            ],
+            source: 'SELF',
+            textFr:
+                '**Combat :** Affaiblissez Gimli pour lui donner +2 en force.',
+        };
+        const gimli = createCompanion({
+            id: '1R13',
+            title: 'Gimli',
+            i18n: { fr: { title: 'Gimli' } },
+        });
+        expect(formatAbilityLabelParts(ability, gimli)).toEqual({
+            cost: 'Affaiblissez Gimli',
+            effect: 'lui donner +2 en force',
+        });
+    });
+
     it('Aragorn SELF : coût majuscule, mot-clé sans cible', () => {
         const ability: Ability = {
             id: '1R89:0',

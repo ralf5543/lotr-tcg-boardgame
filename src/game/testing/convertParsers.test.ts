@@ -7,6 +7,8 @@ import {
     coerceOrphanGameTextAsLore,
     buildLangBlock,
     formatGameText,
+    attachAbilityTextFr,
+    extractFrPhaseClauses,
 } from '../../../scripts/convert/parsers';
 
 describe('formatGameText', () => {
@@ -5666,6 +5668,60 @@ describe('parseAbilities — culture tokens', () => {
                 ],
             }),
         ]);
+    });
+});
+
+describe('attachAbilityTextFr', () => {
+    it('extrait les clauses de phase FR (typo Affectationt incluse)', () => {
+        const clauses = extractFrPhaseClauses(
+            '**Peu hâtif.** **Affectationt :** Affaiblissez un Hobbit dissocié pour permettre à Sylvebarbe de combattre. **Combat :** Affaiblissez Sylvebarbe pour donner des **dégâts +1** à un Ent.'
+        );
+        expect(clauses).toEqual([
+            {
+                phase: 'ASSIGNMENT',
+                text: '**Affectationt :** Affaiblissez un Hobbit dissocié pour permettre à Sylvebarbe de combattre.',
+            },
+            {
+                phase: 'SKIRMISH',
+                text: '**Combat :** Affaiblissez Sylvebarbe pour donner des **dégâts +1** à un Ent.',
+            },
+        ]);
+    });
+
+    it('aligne textFr sur les abilities par phase (ordre si plusieurs Combat)', () => {
+        const abilities = parseAbilities(
+            '<keyword>Skirmish:</keyword> Spot 2 burdens and remove <symbol>twilight2</symbol> to make an Easterling strength +2. <keyword>Skirmish:</keyword> Spot 4 burdens and remove <symbol>twilight2</symbol> to make an Easterling strength +3.',
+            'Easterling',
+            '4R225'
+        );
+        attachAbilityTextFr(
+            abilities,
+            '**Combat :** Désignez 2 points-fardeau et retirez <symbol>twilight2</symbol> pour donner +2 en force à un **Oriental.** **Combat :** Désignez 4 points-fardeau et retirez <symbol>twilight2</symbol> pour donner +3 en force à un **Oriental.**'
+        );
+        expect(abilities?.[0]?.textFr).toMatch(/2 points-fardeau/);
+        expect(abilities?.[1]?.textFr).toMatch(/4 points-fardeau/);
+    });
+
+    it('réutilise la même clause Réponse si le parseur a scindé un « ou »', () => {
+        const abilities = [
+            { phases: ['RESPONSE'], id: 'a:0' },
+            { phases: ['RESPONSE'], id: 'a:1' },
+        ];
+        attachAbilityTextFr(
+            abilities,
+            '**Réponse :** Si un Homme <symbol>dunland</symbol> est sur le point d’être blessé, retirez <symbol>twilight2</symbol> ou défaussez cette possession pour empêcher cette blessure.'
+        );
+        expect(abilities[0].textFr).toMatch(/Réponse/);
+        expect(abilities[1].textFr).toBe(abilities[0].textFr);
+    });
+
+    it('n’attache pas un textFr si le CSV FR est une copie anglaise', () => {
+        const abilities = [{ phases: ['SKIRMISH'], id: '15U7:0' }];
+        attachAbilityTextFr(
+            abilities,
+            '**Skirmish:** Remove a <symbol>dwarven</symbol> token to make bearer strength +1.'
+        );
+        expect(abilities[0].textFr).toBeUndefined();
     });
 });
 

@@ -356,7 +356,8 @@
           }
         ],
         "source": "SELF",
-        "text": "Assignment: Exert Saruman to assign an isengard minion to a companion (except the Ring-bearer). That companion may exert to prevent this."
+        "text": "Assignment: Exert Saruman to assign an isengard minion to a companion (except the Ring-bearer). That companion may exert to prevent this.",
+        "textFr": "**Affectation :** Affaiblissez Saroumane pour affecter un séide <symbol>isengard</symbol> à un compagnon (excepté le Porteur de l’Anneau). Ce compagnon peut s’affaiblir pour empêrche l'affectation."
       }
     ],
     "actionPhases": [
@@ -433,7 +434,8 @@
           }
         ],
         "source": "SELF",
-        "text": "SKIRMISH: Exert Gimli to make him strength +2."
+        "text": "SKIRMISH: Exert Gimli to make him strength +2.",
+        "textFr": "**Combat :** Affaiblissez Gimli pour lui donner +2 en force."
       }
     ],
     "actionPhases": [
@@ -518,7 +520,8 @@
         ],
         "source": "SELF",
         "text": "ARCHERY: Exert Legolas to wound a minion; Legolas does not add to the fellowship archery total.",
-        "omitFromArcheryTotal": true
+        "omitFromArcheryTotal": true,
+        "textFr": "**Archerie :** Affaiblissez Legolas pour blesser un séide ; Legolas ne s’ajoute pas au total d’archerie de la compagnie."
       }
     ],
     "actionPhases": [
@@ -599,7 +602,8 @@
           }
         ],
         "source": "SELF",
-        "text": "MANEUVER: Exert Aragorn to make him defender +1 until the regroup phase."
+        "text": "MANEUVER: Exert Aragorn to make him defender +1 until the regroup phase.",
+        "textFr": "**Manœuvre :** Affaiblissez Aragorn pour le rendre **défenseur +1** jusqu’à la phase de ralliement."
       }
     ],
     "actionPhases": [
@@ -805,7 +809,8 @@
           }
         ],
         "source": "SELF",
-        "text": "RESPONSE: If an unbound companion is about to take a wound, exert Éowyn and add twilight1 to prevent that wound"
+        "text": "RESPONSE: If an unbound companion is about to take a wound, exert Éowyn and add twilight1 to prevent that wound",
+        "textFr": "**Réponse :** Si un compagnon dissocié est sur le point d’être blessé, affaiblissez Éowyn et ajoutez <symbol>twilight1</symbol> pour empêcher cette blessure."
       }
     ],
     "culture": "ROHAN",
@@ -1061,7 +1066,8 @@
           }
         ],
         "source": "SELF",
-        "text": "ASSIGNMENT: Exert an unbound Hobbit to allow Treebeard to skirmish"
+        "text": "ASSIGNMENT: Exert an unbound Hobbit to allow Treebeard to skirmish",
+        "textFr": "**Affectationt :** Affaiblissez un Hobbit dissocié pour permettre à Sylvebarbe de combattre."
       },
       {
         "id": "0P21:1",
@@ -1091,7 +1097,8 @@
           }
         ],
         "source": "SELF",
-        "text": "SKIRMISH: Exert Treebeard to make an Ent Damage +1.."
+        "text": "SKIRMISH: Exert Treebeard to make an Ent Damage +1..",
+        "textFr": "**Combat :** Affaiblissez Sylvebarbe pour donner des **dégâts +1** à un Ent."
       }
     ],
     "actionPhases": [
@@ -2193,7 +2200,8 @@
         ],
         "source": "ATTACHMENT",
         "text": "ARCHERY: Exert Aragorn to wound a minion; Aragorn does not add to the fellowship archery total.",
-        "omitFromArcheryTotal": true
+        "omitFromArcheryTotal": true,
+        "textFr": "**Archerie :** Affaiblissez Aragorn pour blesser un séide ; Aragorn ne s’ajoute pas au total d’archerie de la compagnie."
       }
     ],
     "actionPhases": [
@@ -2531,7 +2539,8 @@
           }
         ],
         "source": "SELF",
-        "text": "SKIRMISH: Remove a dwarven token to heal a Dwarf."
+        "text": "SKIRMISH: Remove a dwarven token to heal a Dwarf.",
+        "textFr": "**Combat :** Retirez un jeton <symbol>elven</symbol> pour donner –3 en force à un séide qui combat Aragorn."
       }
     ],
     "actionPhases": [
@@ -5180,7 +5189,8 @@
           }
         ],
         "source": "ATTACHMENT",
-        "text": "RESPONSE: If bearer is about to take a wound, he wears The One Ring until the regroup phase."
+        "text": "RESPONSE: If bearer is about to take a wound, he wears The One Ring until the regroup phase.",
+        "textFr": "**Réponse :** Si le détenteur est sur le point de se faire blesser, il met l’Anneau Unique jusqu’à la phase de ralliement. Tant qu’il a l’Anneau Unique au doigt, chaque fois que le Porteur de l’Anneau est sur le point de se faire blesser, ajoutez plutôt 2 points-fardeau."
       }
     ],
     "twilightCost": 0,
@@ -5256,7 +5266,8 @@
           }
         ],
         "source": "SELF",
-        "text": "SKIRMISH: Exert Gimli to make him strength +2."
+        "text": "SKIRMISH: Exert Gimli to make him strength +2.",
+        "textFr": "**Combat :** Affaiblissez Gimli pour lui donner +2 en force."
       }
     ],
     "actionPhases": [
@@ -5467,7 +5478,8 @@
         ],
         "source": "SELF",
         "text": "ARCHERY: Exert Legolas to wound a minion; Legolas does not add to the fellowship archery total.",
-        "omitFromArcheryTotal": true
+        "omitFromArcheryTotal": true,
+        "textFr": "**Archerie :** Affaiblissez Legolas pour blesser un séide ; Legolas ne s’ajoute pas au total d’archerie de la compagnie."
       }
     ],
     "actionPhases": [
@@ -5633,7 +5645,8 @@
           }
         ],
         "source": "SELF",
-        "text": "SKIRMISH: Spot Gandalf to make a minion strength -3."
+        "text": "SKIRMISH: Spot Gandalf to make a minion strength -3.",
+        "textFr": "**Combat :** Désignez Gandalf pour donner à un séide -3 en force."
       }
     ],
     "phases": [
@@ -5708,7 +5721,8 @@
           }
         ],
         "source": "SELF",
-        "text": "MANEUVER: Exert Aragorn to make him defender +1 until the regroup phase."
+        "text": "MANEUVER: Exert Aragorn to make him defender +1 until the regroup phase.",
+        "textFr": "**Manœuvre :** Affaiblissez Aragorn pour le rendre **défenseur +1** jusqu’à la phase de ralliement."
       }
     ],
     "actionPhases": [
@@ -5846,7 +5860,8 @@
           }
         ],
         "source": "SELF",
-        "text": "SKIRMISH: Discard this to make bearer strength +2."
+        "text": "SKIRMISH: Discard this to make bearer strength +2.",
+        "textFr": "**Combat :** Défaussez cette situation pour donner au détenteur +2 en force."
       }
     ],
     "actionPhases": [
@@ -6332,7 +6347,8 @@
           }
         ],
         "source": "ATTACHMENT",
-        "text": "SKIRMISH: Add a burden to wear The One Ring until the regroup phase."
+        "text": "SKIRMISH: Add a burden to wear The One Ring until the regroup phase.",
+        "textFr": "**Combat :** Ajoutez un point-fardeau pour mettre l’Anneau au doigt jusqu’à la phase de ralliement."
       }
     ],
     "actionPhases": [
@@ -7190,7 +7206,8 @@
           }
         ],
         "source": "SELF",
-        "text": "SKIRMISH: Spot 2 burdens and remove twilight2 to make an Easterling strength +2."
+        "text": "SKIRMISH: Spot 2 burdens and remove twilight2 to make an Easterling strength +2.",
+        "textFr": "**Combat :** Désignez 2 points-fardeau et retirez <symbol>twilight2</symbol> pour donner +2 en force à un **Oriental.**"
       },
       {
         "id": "4R225:1",
@@ -7217,7 +7234,8 @@
           }
         ],
         "source": "SELF",
-        "text": "SKIRMISH: Spot 4 burdens and remove twilight2 to make an Easterling strength +3."
+        "text": "SKIRMISH: Spot 4 burdens and remove twilight2 to make an Easterling strength +3.",
+        "textFr": "**Combat :** Désignez 4 points-fardeau et retirez <symbol>twilight2</symbol> pour donner +3 en force à un **Oriental.**"
       },
       {
         "id": "4R225:2",
@@ -7244,7 +7262,8 @@
           }
         ],
         "source": "SELF",
-        "text": "SKIRMISH: Spot 6 burdens and remove twilight2 to make an Easterling strength +4."
+        "text": "SKIRMISH: Spot 6 burdens and remove twilight2 to make an Easterling strength +4.",
+        "textFr": "**Combat :** Désignez 6 points-fardeau et retirez <symbol>twilight2</symbol> pour donner +4 en force à un **Oriental.**"
       }
     ],
     "actionPhases": [
@@ -7313,7 +7332,8 @@
           }
         ],
         "source": "SELF",
-        "text": "RESPONSE: If a dunland Man is about to take a wound, remove twilight2 to prevent that wound"
+        "text": "RESPONSE: If a dunland Man is about to take a wound, remove twilight2 to prevent that wound",
+        "textFr": "**Réponse :** Si un Homme <symbol>dunland</symbol> est sur le point d’être blessé, retirez <symbol>twilight2</symbol> ou défaussez cette possession pour empêcher cette blessure."
       },
       {
         "id": "4R19:1",
@@ -7345,7 +7365,8 @@
           }
         ],
         "source": "SELF",
-        "text": "RESPONSE: If a dunland Man is about to take a wound, discard this possession to prevent that wound"
+        "text": "RESPONSE: If a dunland Man is about to take a wound, discard this possession to prevent that wound",
+        "textFr": "**Réponse :** Si un Homme <symbol>dunland</symbol> est sur le point d’être blessé, retirez <symbol>twilight2</symbol> ou défaussez cette possession pour empêcher cette blessure."
       },
       {
         "id": "4R19:2",
@@ -11651,7 +11672,8 @@
           }
         ],
         "source": "ATTACHMENT",
-        "text": "RESPONSE: If bearer is about to take a wound in a skirmish, he wears The One Ring until the regroup phase."
+        "text": "RESPONSE: If bearer is about to take a wound in a skirmish, he wears The One Ring until the regroup phase.",
+        "textFr": "**Réponse :** Si le détenteur est sur le point de se faire blesser en combat, il met l’Anneau Unique jusqu’à la phase de ralliement. Tant qu’il a l’Anneau Unique au doigt, chaque fois que le Porteur de l’Anneau est sur le point de se faire blesser pendant un combat, ajoutez plutôr un point-fardeau."
       }
     ],
     "twilightCost": 0,
@@ -11727,7 +11749,8 @@
           }
         ],
         "source": "SELF",
-        "text": "SKIRMISH: Make a Dwarf strength +2 (or +3 if bearing a dwarven hand weapon)."
+        "text": "SKIRMISH: Make a Dwarf strength +2 (or +3 if bearing a dwarven hand weapon).",
+        "textFr": "**Combat :** Donnez +2 en force (ou +3 s’il porte une arme de mêlée <symbol>dwarven</symbol>) à un Nain."
       }
     ],
     "phases": [
@@ -11819,7 +11842,8 @@
           }
         ],
         "source": "SELF",
-        "text": "SKIRMISH: Exert a Dwarf to make that Dwarf strength +3 and damage +1."
+        "text": "SKIRMISH: Exert a Dwarf to make that Dwarf strength +3 and damage +1.",
+        "textFr": "**Combat :** Affaiblissez un Nain pour lui donner +3 en force et **dégâts +1.**"
       }
     ],
     "phases": [
@@ -11897,7 +11921,8 @@
           }
         ],
         "source": "SELF",
-        "text": "SKIRMISH: Make a Dwarf strength +2 and Damage +1.."
+        "text": "SKIRMISH: Make a Dwarf strength +2 and Damage +1..",
+        "textFr": "**Combat :** Donnez +2 en force et **dégâts +1** à un Nain."
       }
     ],
     "phases": [
@@ -11973,7 +11998,8 @@
           }
         ],
         "source": "SELF",
-        "text": "FELLOWSHIP: Exert a Dwarf companion to draw 3 cards"
+        "text": "FELLOWSHIP: Exert a Dwarf companion to draw 3 cards",
+        "textFr": "**Compagnie :** Affaiblissez un compagnon Nain pour piocher 3 cartes."
       }
     ],
     "phases": [
@@ -13152,7 +13178,8 @@
           }
         ],
         "source": "SELF",
-        "text": "FELLOWSHIP: Exert Celeborn to heal an elven ally."
+        "text": "FELLOWSHIP: Exert Celeborn to heal an elven ally.",
+        "textFr": "**Compagnie :** Affaiblissez Celeborn pour guérir un allié <symbol>œ</symbol>."
       }
     ],
     "actionPhases": [
@@ -13459,7 +13486,8 @@
           }
         ],
         "source": "SELF",
-        "text": "FELLOWSHIP: Exert Elrond to draw a card"
+        "text": "FELLOWSHIP: Exert Elrond to draw a card",
+        "textFr": "**Compagnie :** Affaiblissez Elrond pour piocher une carte."
       }
     ],
     "actionPhases": [
@@ -14262,7 +14290,8 @@
           }
         ],
         "source": "SELF",
-        "text": "ARCHERY: Exert Orophin to wound an Uruk-hai."
+        "text": "ARCHERY: Exert Orophin to wound an Uruk-hai.",
+        "textFr": "**Archerie :** Affaiblissez Orophin pour blesser un Ourouk-Haï."
       }
     ],
     "actionPhases": [
@@ -14345,7 +14374,8 @@
           }
         ],
         "source": "SELF",
-        "text": "ARCHERY: Exert Rúmil to wound an Orc."
+        "text": "ARCHERY: Exert Rúmil to wound an Orc.",
+        "textFr": "**Archerie :** Affaiblissez Rúmil pour blesser un Orque."
       }
     ],
     "actionPhases": [
@@ -14767,7 +14797,8 @@
           }
         ],
         "source": "SELF",
-        "text": "SKIRMISH: Discard this to make bearer strength +2."
+        "text": "SKIRMISH: Discard this to make bearer strength +2.",
+        "textFr": "**Combat :** Défaussez cette situation pour donner au détenteur +2 en force"
       }
     ],
     "actionPhases": [
@@ -14954,7 +14985,8 @@
           }
         ],
         "source": "SELF",
-        "text": "MANEUVER: Exert Albert Dreary to discard a isengard or moria condition."
+        "text": "MANEUVER: Exert Albert Dreary to discard a isengard or moria condition.",
+        "textFr": "**Manœuvre :** Affaiblissez Albert Morne pour défausser une situation <symbol>isengard</symbol> ou <symbol>moria</symbol>."
       }
     ],
     "actionPhases": [
@@ -15178,7 +15210,8 @@
           }
         ],
         "source": "SELF",
-        "text": "FELLOWSHIP: Discard a pipeweed possession and spot X pipes to remove X burdens."
+        "text": "FELLOWSHIP: Discard a pipeweed possession and spot X pipes to remove X burdens.",
+        "textFr": "**Compagnie :** Défaussez une possession Herbe à Pipe et désignez X pipes pour retirer X points-fardeau."
       }
     ],
     "actionPhases": [
@@ -15307,7 +15340,8 @@
           }
         ],
         "source": "SELF",
-        "text": "RESPONSE: If a companion is about to take a wound, spot Gandalf to prevent that wound"
+        "text": "RESPONSE: If a companion is about to take a wound, spot Gandalf to prevent that wound",
+        "textFr": "**Réponse :** Si un compagnon est sur le point d’être blessé, désignez Gandalf pour empêcher cette blessure."
       }
     ],
     "phases": [
@@ -15672,7 +15706,8 @@
           }
         ],
         "source": "SELF",
-        "text": "FELLOWSHIP: Exert Gandalf to discard every condition."
+        "text": "FELLOWSHIP: Exert Gandalf to discard every condition.",
+        "textFr": "**Compagnie :** Affaiblissez Gandalf pour défausser toutes les situations."
       }
     ],
     "phases": [
@@ -15927,7 +15962,8 @@
         ],
         "source": "ATTACHMENT",
         "text": "ARCHERY: Exert Aragorn to wound a minion; Aragorn does not add to the fellowship archery total.",
-        "omitFromArcheryTotal": true
+        "omitFromArcheryTotal": true,
+        "textFr": "**Archerie :** Affaiblissez Aragorn pour blesser un séide ; Aragorn ne s’ajoute pas au total d’archerie de la compagnie."
       }
     ],
     "actionPhases": [
@@ -16022,7 +16058,8 @@
           }
         ],
         "source": "SELF",
-        "text": "FELLOWSHIP: Discard a pipeweed possession and spot X pipes to heal X companions."
+        "text": "FELLOWSHIP: Discard a pipeweed possession and spot X pipes to heal X companions.",
+        "textFr": "**Compagnie :** Défaussez une possession Herbe à Pipe et désignez X pipes pour guérir X compagnons."
       }
     ],
     "actionPhases": [
@@ -16273,7 +16310,8 @@
           }
         ],
         "source": "SELF",
-        "text": "SKIRMISH: Exert Boromir to make a Hobbit strength +3."
+        "text": "SKIRMISH: Exert Boromir to make a Hobbit strength +3.",
+        "textFr": "**Combat :** Affaiblissez Boromir pour donner à un Hobbit +3 en force."
       }
     ],
     "actionPhases": [
@@ -16361,7 +16399,8 @@
           }
         ],
         "source": "ATTACHMENT",
-        "text": "MANEUVER: Exert Boromir to discard a weather condition."
+        "text": "MANEUVER: Exert Boromir to discard a weather condition.",
+        "textFr": "**Manœuvre :** Affaiblissez Boromir pour défausser une situation de **Climat.**"
       }
     ],
     "actionPhases": [
@@ -16594,7 +16633,8 @@
           }
         ],
         "source": "SELF",
-        "text": "MANEUVER: Make a gondor companion defender +1 until the regroup phase."
+        "text": "MANEUVER: Make a gondor companion defender +1 until the regroup phase.",
+        "textFr": "**Manœuvre :** Rendez un compagnon <symbol>gondor</symbol> **défenseur +1** jusqu’à la phase de ralliement."
       }
     ],
     "phases": [
@@ -16718,7 +16758,8 @@
           }
         ],
         "source": "SELF",
-        "text": "MANEUVER: Exert a gondor character to wound a sauron minion."
+        "text": "MANEUVER: Exert a gondor character to wound a sauron minion.",
+        "textFr": "**Manœuvre :** Affaiblissez un personnage <symbol>gondor</symbol> pour blesser un séide <symbol>sauron</symbol>."
       }
     ],
     "actionPhases": [
@@ -17397,7 +17438,8 @@
           }
         ],
         "source": "SELF",
-        "text": "SKIRMISH: Exert an Uruk-hai to make it strength +3."
+        "text": "SKIRMISH: Exert an Uruk-hai to make it strength +3.",
+        "textFr": "**Combat :** Affaiblissez un Ourouk-Haï pour lui donner +3 en force."
       }
     ],
     "phases": [
@@ -17648,7 +17690,8 @@
           }
         ],
         "source": "SELF",
-        "text": "MANEUVER: Make an Uruk-hai fierce until the regroup phase."
+        "text": "MANEUVER: Make an Uruk-hai fierce until the regroup phase.",
+        "textFr": "**Manœuvre :** Rendez un Ourouk-Haï **acharné** jusqu’à la phase de ralliement."
       }
     ],
     "phases": [
@@ -17726,7 +17769,8 @@
           }
         ],
         "source": "SELF",
-        "text": "SKIRMISH: Make an Uruk-hai strength -1 and damage +1."
+        "text": "SKIRMISH: Make an Uruk-hai strength -1 and damage +1.",
+        "textFr": "**Combat :** Donnez à un Ourouk-Haï -1 en force et des **dégâts +1.**"
       }
     ],
     "phases": [
@@ -17982,7 +18026,8 @@
           }
         ],
         "source": "SELF",
-        "text": "SKIRMISH: Discard this to make an Uruk-hai strength +2."
+        "text": "SKIRMISH: Discard this to make an Uruk-hai strength +2.",
+        "textFr": "**Combat :** Défaussez cette situation pour donner à un Ourouk-Haï +2 en force."
       },
       {
         "id": "1C133:1",
@@ -18209,7 +18254,8 @@
           }
         ],
         "source": "SELF",
-        "text": "SHADOW: Exert a isengard minion to discard all conditions."
+        "text": "SHADOW: Exert a isengard minion to discard all conditions.",
+        "textFr": "Ombre : Affaiblissez un séide <symbol>isengard</symbol> pour défausser toutes les situations."
       }
     ],
     "phases": [
@@ -19129,7 +19175,8 @@
           }
         ],
         "source": "SELF",
-        "text": "SKIRMISH: Remove twilight1 to make this minion strength +1 (limit +3)."
+        "text": "SKIRMISH: Remove twilight1 to make this minion strength +1 (limit +3).",
+        "textFr": "**Combat :** Retirez <symbol>twilight1</symbol> pour donner à ce séide +1 en force (limite de +3)."
       }
     ],
     "actionPhases": [
@@ -19436,7 +19483,8 @@
           }
         ],
         "source": "SELF",
-        "text": "RESPONSE: If your Uruk-hai wins a skirmish, remove twilight3 to make him fierce until the regroup phase"
+        "text": "RESPONSE: If your Uruk-hai wins a skirmish, remove twilight3 to make him fierce until the regroup phase",
+        "textFr": "**Réponse :** Si votre Ourouk-Haï remporte un combat, retirez <symbol>twilight3</symbol> pour le rendre **acharné** jusqu’à la phase de ralliement."
       }
     ],
     "culture": "ISENGARD",
@@ -20086,7 +20134,8 @@
           }
         ],
         "source": "SELF",
-        "text": "RESPONSE: If a moria Orc is about to take a wound, discard this condition to prevent that wound"
+        "text": "RESPONSE: If a moria Orc is about to take a wound, discard this condition to prevent that wound",
+        "textFr": "**Réponse :** Si un Orque <symbol>moria</symbol> est sur le point de prendre une blessure, défaussez cette situation pour empêcher cette blessure."
       },
       {
         "id": "1R173:1",
@@ -20593,7 +20642,8 @@
           }
         ],
         "source": "SELF",
-        "text": "RESPONSE: If your moria Orc wins a skirmish, discard cards and wounds on that Orc and stack that Orc on this condition"
+        "text": "RESPONSE: If your moria Orc wins a skirmish, discard cards and wounds on that Orc and stack that Orc on this condition",
+        "textFr": "**Réponse :** Si votre Orque <symbol>moria</symbol> remporte un combat, défaussez les cartes et les blessures sur cet Orque et empilez cet Orque sur cette situation."
       },
       {
         "id": "1R183:1",
@@ -20612,7 +20662,8 @@
           }
         ],
         "source": "SELF",
-        "text": "SHADOW: Play an Orc stacked here as if played from hand."
+        "text": "SHADOW: Play an Orc stacked here as if played from hand.",
+        "textFr": "**Ombre :** Jouez un Orque empilé ici comme s’il était joué de votre main."
       }
     ],
     "actionPhases": [
@@ -20787,7 +20838,8 @@
           }
         ],
         "source": "SELF",
-        "text": "SKIRMISH: Remove twilight3 to make a moria Orc strength +2."
+        "text": "SKIRMISH: Remove twilight3 to make a moria Orc strength +2.",
+        "textFr": "**Combat :** Retirez <symbol>twilight3</symbol> pour donner à un Orque <symbol>moria</symbol> +2 en force."
       }
     ],
     "actionPhases": [
@@ -20992,7 +21044,8 @@
           }
         ],
         "source": "ATTACHMENT",
-        "text": "SKIRMISH: Exert bearer to make him strength +2."
+        "text": "SKIRMISH: Exert bearer to make him strength +2.",
+        "textFr": "**Combat :** Affaiblissez le détenteur pour lui donner +2 en force."
       }
     ],
     "actionPhases": [
@@ -21337,7 +21390,8 @@
           }
         ],
         "source": "SELF",
-        "text": "SHADOW: Exert your moria Orc to draw 2 cards"
+        "text": "SHADOW: Exert your moria Orc to draw 2 cards",
+        "textFr": "**Ombre :** Affaiblissez votre Orque <symbol>moria</symbol> pour piocher 2 cartes."
       }
     ],
     "phases": [
@@ -22763,7 +22817,8 @@
           }
         ],
         "source": "SELF",
-        "text": "SKIRMISH: Remove twilight1 to make Úlairë Attëa strength +1 (limit +5)."
+        "text": "SKIRMISH: Remove twilight1 to make Úlairë Attëa strength +1 (limit +5).",
+        "textFr": "**Combat :** Retirez <symbol>twilight1</symbol> pour donner à Úlairë Attëa +1 en force (limité à +5)."
       }
     ],
     "actionPhases": [
@@ -23039,7 +23094,8 @@
           }
         ],
         "source": "SELF",
-        "text": "SHADOW: Exert Úlairë Otsëa to make a wraith minion fierce until the regroup phase."
+        "text": "SHADOW: Exert Úlairë Otsëa to make a wraith minion fierce until the regroup phase.",
+        "textFr": "**Ombre :** Affaiblissez Úlairë Ostëa pour rendre un séide <symbol>wraith</symbol> **acharné** jusqu'à la phase de ralliement."
       }
     ],
     "actionPhases": [
@@ -23316,7 +23372,8 @@
           }
         ],
         "source": "SELF",
-        "text": "SHADOW: Spot a sauron Orc to discard an elven condition."
+        "text": "SHADOW: Spot a sauron Orc to discard an elven condition.",
+        "textFr": "**Ombre :** Désignez un Orque <symbol>sauron</symbol> pour défausser une situation <symbol>œ</symbol>."
       }
     ],
     "phases": [
@@ -23626,7 +23683,8 @@
           }
         ],
         "source": "SELF",
-        "text": "RESPONSE: If a sauron Orc wins a skirmish, make that Orc fierce until the regroup phase"
+        "text": "RESPONSE: If a sauron Orc wins a skirmish, make that Orc fierce until the regroup phase",
+        "textFr": "**Réponse :** Si un Orque <symbol>sauron</symbol> remporte un combat, rendez cet Orque **acharné** jusqu’à la phase de ralliement."
       }
     ],
     "phases": [
@@ -24020,7 +24078,8 @@
           }
         ],
         "source": "SELF",
-        "text": "SKIRMISH: Exert a sauron Orc to wound a character he is skirmishing."
+        "text": "SKIRMISH: Exert a sauron Orc to wound a character he is skirmishing.",
+        "textFr": "**Combat :** Affaiblissez un Orque <symbol>sauron</symbol> pour blesser un personage qu’il combat."
       }
     ],
     "phases": [
@@ -24506,7 +24565,8 @@
           }
         ],
         "source": "SELF",
-        "text": "SKIRMISH: Exert this minion to wound a character he is skirmishing."
+        "text": "SKIRMISH: Exert this minion to wound a character he is skirmishing.",
+        "textFr": "**Combat :** Affaiblissez ce séide pour blesser un personnage qu’il combat."
       }
     ],
     "actionPhases": [
@@ -24625,7 +24685,8 @@
           }
         ],
         "source": "ATTACHMENT",
-        "text": "SKIRMISH: Remove twilight1 to make bearer strength +1 (limit +3)."
+        "text": "SKIRMISH: Remove twilight1 to make bearer strength +1 (limit +3).",
+        "textFr": "**Combat :** Retirez <symbol>twilight1</symbol> pour donner au détenteur +1 en force (limité à +3)."
       }
     ],
     "actionPhases": [
@@ -24697,7 +24758,8 @@
           }
         ],
         "source": "SELF",
-        "text": "SKIRMISH: Exert this minion to wound a character it is skirmishing."
+        "text": "SKIRMISH: Exert this minion to wound a character it is skirmishing.",
+        "textFr": "**Combat :** Affaiblissez ce séide pour blesser un personnage qu’il combat."
       }
     ],
     "actionPhases": [
@@ -24768,7 +24830,8 @@
           }
         ],
         "source": "SELF",
-        "text": "SKIRMISH: Exert this minion to wound a character he is skirmishing."
+        "text": "SKIRMISH: Exert this minion to wound a character he is skirmishing.",
+        "textFr": "**Combat :** Affaiblissez ce séide pour blesser un personnage qu’il combat."
       }
     ],
     "actionPhases": [
@@ -24840,7 +24903,8 @@
           }
         ],
         "source": "SELF",
-        "text": "SKIRMISH: Exert this minion to wound a character it is skirmishing."
+        "text": "SKIRMISH: Exert this minion to wound a character it is skirmishing.",
+        "textFr": "**Combat :** Affaiblissez ce séide pour blesser un personnage qu’il combat."
       }
     ],
     "actionPhases": [
@@ -25132,7 +25196,8 @@
           }
         ],
         "source": "SELF",
-        "text": "SKIRMISH: Remove twilight3 to make a sauron Orc strength +1."
+        "text": "SKIRMISH: Remove twilight3 to make a sauron Orc strength +1.",
+        "textFr": "**Combat :** Retirez <symbol>twilight3</symbol> pour donner à un Orque <symbol>sauron</symbol> +1 en force."
       }
     ],
     "actionPhases": [
@@ -25862,7 +25927,8 @@
           }
         ],
         "source": "SELF",
-        "text": "FELLOWSHIP: Discard a pipeweed possession and spot X pipes to remove twilightX."
+        "text": "FELLOWSHIP: Discard a pipeweed possession and spot X pipes to remove twilightX.",
+        "textFr": "**Compagnie :** Défaussez une possession Herbe à Pipe et désignez X pipes pour retirer <symbol>twilightX</symbol>."
       }
     ],
     "actionPhases": [
@@ -25941,7 +26007,8 @@
           }
         ],
         "source": "SELF",
-        "text": "SKIRMISH: Exert a Hobbit to make him strength +3."
+        "text": "SKIRMISH: Exert a Hobbit to make him strength +3.",
+        "textFr": "**Combat :** Affaiblissez un Hobbit pour lui donner +3 en force."
       }
     ],
     "phases": [
@@ -26387,7 +26454,8 @@
           }
         ],
         "source": "SELF",
-        "text": "SKIRMISH: If Merry is not assigned to a skirmish, exert him twice to add his strength to another companion."
+        "text": "SKIRMISH: If Merry is not assigned to a skirmish, exert him twice to add his strength to another companion.",
+        "textFr": "**Combat :** Si Merry n’est pas (ou n’est plus) affecté à un combat, affaiblissez-le deux fois pour ajouter sa force à un autre compagnon."
       }
     ],
     "actionPhases": [
@@ -26779,7 +26847,8 @@
           }
         ],
         "source": "SELF",
-        "text": "FELLOWSHIP: Exert Rosie Cotton to heal Sam."
+        "text": "FELLOWSHIP: Exert Rosie Cotton to heal Sam.",
+        "textFr": "**Compagnie :** Affaiblissez Rose Chaumine pour guérir Sam."
       }
     ],
     "actionPhases": [
@@ -27500,7 +27569,8 @@
           }
         ],
         "source": "SELF",
-        "text": "RESPONSE: If bearer is about to take a wound, discard this possession to prevent that wound"
+        "text": "RESPONSE: If bearer is about to take a wound, discard this possession to prevent that wound",
+        "textFr": "**Réponse :** Si le détenteur est sur le point d’être blessé, défaussez cette possession pour prévenir la blessure."
       }
     ],
     "culture": "DWARVEN",
@@ -27573,7 +27643,8 @@
           }
         ],
         "source": "SELF",
-        "text": "SKIRMISH: Discard this to make bearer strength +1."
+        "text": "SKIRMISH: Discard this to make bearer strength +1.",
+        "textFr": "**Combat :** Défaussez cette situation pour donner +1 en force au détenteur."
       }
     ],
     "actionPhases": [
@@ -28268,7 +28339,8 @@
           }
         ],
         "source": "SELF",
-        "text": "RESPONSE: If an Elf is about to take a wound, discard this condition to prevent that wound"
+        "text": "RESPONSE: If an Elf is about to take a wound, discard this condition to prevent that wound",
+        "textFr": "**Réponse :** Si un Elfe est sur le point d’être blessé, défaussez cette situation pour prévenir la blessure."
       }
     ],
     "culture": "ELVEN",
@@ -28481,7 +28553,8 @@
           }
         ],
         "source": "ATTACHMENT",
-        "text": "SKIRMISH: Exert Gandalf twice to cancel a skirmish involving him"
+        "text": "SKIRMISH: Exert Gandalf twice to cancel a skirmish involving him",
+        "textFr": "**Combat :** Affaiblissez Gandalf deux fois pour annuler un combat auquel il participe."
       }
     ],
     "actionPhases": [
@@ -28854,7 +28927,8 @@
           }
         ],
         "source": "ATTACHMENT",
-        "text": "SKIRMISH: Exert bearer twice to make a minion strength -3."
+        "text": "SKIRMISH: Exert bearer twice to make a minion strength -3.",
+        "textFr": "**Combat :** Affaiblissez le détenteur deux fois pour donner -3 en force à un séide."
       }
     ],
     "actionPhases": [
@@ -29141,7 +29215,8 @@
           }
         ],
         "source": "SELF",
-        "text": "RESPONSE: If a companion is about to take a wound, exert a gondor companion to prevent that wound"
+        "text": "RESPONSE: If a companion is about to take a wound, exert a gondor companion to prevent that wound",
+        "textFr": "**Réponse :** Si un compagnon est sur le point d’être blessé, affaiblissez un compagnon <symbol>gondor</symbol> pour prévenir la blessure."
       }
     ],
     "phases": [
@@ -31139,7 +31214,8 @@
           }
         ],
         "source": "SELF",
-        "text": "RESPONSE: If a twilight Nazgûl is about to take a wound, remove twilight1 to prevent that wound"
+        "text": "RESPONSE: If a twilight Nazgûl is about to take a wound, remove twilight1 to prevent that wound",
+        "textFr": "**Réponse :** Si un Nazgûl crépusculaire est sur le point de recevoir une blessure, retirez <symbol>twilight1</symbol> pour prévenir la blessure."
       }
     ],
     "culture": "WRAITH",
@@ -31906,7 +31982,8 @@
           }
         ],
         "source": "SELF",
-        "text": "MANEUVER: Exert Tower Assassin to wound an ally."
+        "text": "MANEUVER: Exert Tower Assassin to wound an ally.",
+        "textFr": "**Manœuvre :** Affaiblissez ce séide pour blesser un allié."
       }
     ],
     "actionPhases": [
@@ -32461,7 +32538,8 @@
           }
         ],
         "source": "SELF",
-        "text": "RESPONSE: If a Hobbit is about to take a wound, discard this condition to prevent that wound"
+        "text": "RESPONSE: If a Hobbit is about to take a wound, discard this condition to prevent that wound",
+        "textFr": "**Réponse :** Si un Hobbit est sur le point d’être blessé, défaussez cette situation pour prévenir la blessure."
       }
     ],
     "culture": "SHIRE",
@@ -32839,7 +32917,8 @@
           }
         ],
         "source": "SELF",
-        "text": "MANEUVER: Exert Sam twice to make him defender +1 until the regroup phase."
+        "text": "MANEUVER: Exert Sam twice to make him defender +1 until the regroup phase.",
+        "textFr": "**Manœuvre :** Affaiblissez Sam deux fois pour le rendre **défenseur +1** jusqu’à la phase de ralliement."
       }
     ],
     "actionPhases": [
@@ -33283,7 +33362,8 @@
           }
         ],
         "source": "SELF",
-        "text": "RESPONSE: If the Ring-bearer is about to take a wound, discard 3 cards from hand to prevent that wound"
+        "text": "RESPONSE: If the Ring-bearer is about to take a wound, discard 3 cards from hand to prevent that wound",
+        "textFr": "**Réponse :** Si le Porteur de l’Anneau est sur le point d’être blessé, défaussez 3 cartes de votre main pour prévenir la blessure."
       }
     ],
     "culture": "ELVEN",
@@ -34030,7 +34110,8 @@
           }
         ],
         "source": "SELF",
-        "text": "SKIRMISH: Exert Golradir to make an Orc strength -1."
+        "text": "SKIRMISH: Exert Golradir to make an Orc strength -1.",
+        "textFr": "**Combat :** Affaiblissez Golradir pour donner -1 en force à un Orque."
       }
     ],
     "actionPhases": [
@@ -34317,7 +34398,8 @@
           }
         ],
         "source": "SELF",
-        "text": "SKIRMISH: Exert Saelbeth to make an Uruk-hai strength -1."
+        "text": "SKIRMISH: Exert Saelbeth to make an Uruk-hai strength -1.",
+        "textFr": "**Combat :** Affaiblissez Saelbeth pour donner -1 en force à un Ourouk-Haï."
       }
     ],
     "actionPhases": [
@@ -34833,7 +34915,8 @@
           }
         ],
         "source": "SELF",
-        "text": "RESPONSE: If a companion is about to take a wound, spot 4 twilight tokens and exert Gandalf to prevent that wound"
+        "text": "RESPONSE: If a companion is about to take a wound, spot 4 twilight tokens and exert Gandalf to prevent that wound",
+        "textFr": "**Réponse :** Si un compagnon est sur le point d’être blessé, désignez 4 jetons-crépuscule et affaiblissez Gandalf pour prévenir la blessure."
       }
     ],
     "culture": "GANDALF",
@@ -35014,7 +35097,8 @@
           }
         ],
         "source": "SELF",
-        "text": "MANEUVER: Exert a gondor companion to make that companion strength +3 and defender +1 until the regroup phase."
+        "text": "MANEUVER: Exert a gondor companion to make that companion strength +3 and defender +1 until the regroup phase.",
+        "textFr": "**Manœuvre :** Affaiblissez un compagnon <symbol>gondor</symbol> pour donner à ce compagnon +3 en force et le rendre **défenseur +1** jusqu’à la phase de ralliement."
       }
     ],
     "phases": [
@@ -35249,7 +35333,8 @@
           }
         ],
         "source": "SELF",
-        "text": "FELLOWSHIP: Stack a gondor card from hand here."
+        "text": "FELLOWSHIP: Stack a gondor card from hand here.",
+        "textFr": "**Compagnie :** Empilez une carte <symbol>gondor</symbol> de votre main ici."
       },
       {
         "id": "3R44:1",
@@ -35267,7 +35352,8 @@
           }
         ],
         "source": "SELF",
-        "text": "FELLOWSHIP: Add twilight1 to take a card stacked here into hand."
+        "text": "FELLOWSHIP: Add twilight1 to take a card stacked here into hand.",
+        "textFr": "**Compagnie :** Ajoutez <symbol>twilight1</symbol> pour prendre en main une carte empilée ici."
       }
     ],
     "actionPhases": [
@@ -35401,7 +35487,8 @@
           }
         ],
         "source": "SELF",
-        "text": "SKIRMISH: Spot The Shards of Narsil to make a gondor companion strength +3 and damage +1."
+        "text": "SKIRMISH: Spot The Shards of Narsil to make a gondor companion strength +3 and damage +1.",
+        "textFr": "**Combat :** Désignez Les Fragments de Narsil pour donner à un compagnon <symbol>gondor</symbol> +3 en force et des **dégâts +1.**"
       }
     ],
     "phases": [
@@ -35607,7 +35694,8 @@
           }
         ],
         "source": "SELF",
-        "text": "MANEUVER: Spot an isengard minion to exhaust Aragorn"
+        "text": "MANEUVER: Spot an isengard minion to exhaust Aragorn",
+        "textFr": "**Manœuvre :** Désignez un séide <symbol>isengard</symbol> pour épuiser Aragorn. Le joueur des Peuples Libres peut ajouter 2 points-fardeau pour prévenir ceci."
       }
     ],
     "phases": [
@@ -36027,7 +36115,8 @@
           }
         ],
         "source": "SELF",
-        "text": "RESPONSE: If an isengard Orc is about to take a wound, remove twilight2 to prevent that wound"
+        "text": "RESPONSE: If an isengard Orc is about to take a wound, remove twilight2 to prevent that wound",
+        "textFr": "**Réponse :** Si un Orque <symbol>isengard</symbol> est sur le point d’être blessé, retirez <symbol>twilight2</symbol> pour prévenir la blessure."
       }
     ],
     "culture": "ISENGARD",
@@ -36454,7 +36543,8 @@
           }
         ],
         "source": "SELF",
-        "text": "RESPONSE: If an Uruk-hai is about to take a wound, exert Saruman to prevent that wound"
+        "text": "RESPONSE: If an Uruk-hai is about to take a wound, exert Saruman to prevent that wound",
+        "textFr": "**Réponse :** Si un Ourouk-Haï est sur le point d’être blessé, affaiblissez Saroumane pour prévenir la blessure."
       }
     ],
     "culture": "ISENGARD",
@@ -36545,7 +36635,8 @@
           }
         ],
         "source": "SELF",
-        "text": "Assignment: Exert Saruman to assign an isengard minion to a companion (except the Ring-bearer). That companion may exert to prevent this."
+        "text": "Assignment: Exert Saruman to assign an isengard minion to a companion (except the Ring-bearer). That companion may exert to prevent this.",
+        "textFr": "**Affectation :** Affaiblissez Saroumane pour affecter un séide <symbol>isengard</symbol> à un compagnon (excepté le Porteur de l’Anneau). Ce compagnon peut s’affaiblir pour empêrche l'affectation."
       }
     ],
     "actionPhases": [
@@ -36619,7 +36710,8 @@
           }
         ],
         "source": "SELF",
-        "text": "SKIRMISH: Make an isengard Orc strength +2 (or +3 if you have fewer than 3 cards in hand)."
+        "text": "SKIRMISH: Make an isengard Orc strength +2 (or +3 if you have fewer than 3 cards in hand).",
+        "textFr": "**Combat :** Donner à un Orque <symbol>isengard</symbol> +2 en force (ou +3 si vous avez moins de 3 cartes dans votre main)."
       }
     ],
     "phases": [
@@ -37055,7 +37147,8 @@
           }
         ],
         "source": "SELF",
-        "text": "SKIRMISH: Spot 2 shire companions to make a moria minion damage +1."
+        "text": "SKIRMISH: Spot 2 shire companions to make a moria minion damage +1.",
+        "textFr": "**Combat :** Désignez deux compagnons <symbol>shire</symbol> pour donner à un séide <symbol>moria</symbol> des **dégâts +1.**"
       }
     ],
     "phases": [
@@ -37272,7 +37365,8 @@
           }
         ],
         "source": "SELF",
-        "text": "SKIRMISH: Spot an isengard minion to make a Nazgûl damage +1."
+        "text": "SKIRMISH: Spot an isengard minion to make a Nazgûl damage +1.",
+        "textFr": "**Combat :** Désignez un séide <symbol>isengard</symbol> pour donner des **dégâts +1** à un Nazgûl."
       }
     ],
     "phases": [
@@ -38450,7 +38544,8 @@
           }
         ],
         "source": "SELF",
-        "text": "FELLOWSHIP: Discard a pipeweed possession and spot X pipes to heal a companion with the Frodo signet X times."
+        "text": "FELLOWSHIP: Discard a pipeweed possession and spot X pipes to heal a companion with the Frodo signet X times.",
+        "textFr": "**Compagnie :** Défaussez une possession Herbe à pipe et désignez X pipes pour guérir X fois un compagnon possédant le sceau de Frodon."
       }
     ],
     "actionPhases": [
@@ -38935,7 +39030,8 @@
           }
         ],
         "source": "ATTACHMENT",
-        "text": "RESPONSE: If bearer is about to take a wound in a skirmish, he wears The One Ring until the regroup phase."
+        "text": "RESPONSE: If bearer is about to take a wound in a skirmish, he wears The One Ring until the regroup phase.",
+        "textFr": "**Réponse :** Si le détenteur est sur le point de se faire blesser en combat, il met l’Anneau Unique jusqu’à la phase de ralliement. Tant qu’il a l’Anneau Unique au doigt, chaque fois que le Porteur de l’Anneau est sur le point de se faire blesser pendant un point-fardeau."
       }
     ],
     "twilightCost": 0,
@@ -39320,7 +39416,8 @@
         ],
         "source": "SELF",
         "requiresStackedOnControlledSite": true,
-        "text": "SHADOW: If stacked on a site you control, play this minion. Its twilight cost is -2."
+        "text": "SHADOW: If stacked on a site you control, play this minion. Its twilight cost is -2.",
+        "textFr": "**Ombre :** Si ce séide est empilé sur un site que vous contrôlez, jouez-le. Son coût crépusculaire est de -2."
       },
       {
         "id": "4U11:1",
@@ -39958,7 +40055,8 @@
         ],
         "source": "SELF",
         "requiresStackedOnControlledSite": true,
-        "text": "SHADOW: If stacked on a site you control, play this minion. Its twilight cost is -2."
+        "text": "SHADOW: If stacked on a site you control, play this minion. Its twilight cost is -2.",
+        "textFr": "**Ombre :** Si ce séide est empilé sur un site que vous contrôlez, jouez-le. Son coût crépusculaire est de -2."
       },
       {
         "id": "4U24:1",
@@ -40455,7 +40553,8 @@
           }
         ],
         "source": "SELF",
-        "text": "SKIRMISH: Exert Saruman to make a dunland Man strength +2."
+        "text": "SKIRMISH: Exert Saruman to make a dunland Man strength +2.",
+        "textFr": "**Combat :** Affaiblissez Saroumane pour donner +2 en force à un Homme <symbol>dunland</symbol>."
       }
     ],
     "actionPhases": [
@@ -40693,7 +40792,8 @@
           }
         ],
         "source": "SELF",
-        "text": "RESPONSE: If a dunland Man wins a skirmish, make him fierce and strength +4 until the regroup phase"
+        "text": "RESPONSE: If a dunland Man wins a skirmish, make him fierce and strength +4 until the regroup phase",
+        "textFr": "**Réponse :** Si un Homme <symbol>dunland</symbol> remporte un combat, rendez-le **acharné** et donnez-lui +4 en force jusqu’à la phase de ralliement."
       }
     ],
     "phases": [
@@ -40817,7 +40917,8 @@
           }
         ],
         "source": "SELF",
-        "text": "MANEUVER: Spot 3 dunland Men to discard a Free Peoples possession or condition."
+        "text": "MANEUVER: Spot 3 dunland Men to discard a Free Peoples possession or condition.",
+        "textFr": "**Manœuvre :** Désignez 3 Hommes <symbol>dunland</symbol> pour défausser une situation ou une possession des Peuples Libres."
       }
     ],
     "phases": [
@@ -41702,7 +41803,8 @@
           }
         ],
         "source": "SELF",
-        "text": "SKIRMISH: Make an unbound companion strength +1 for each dwarven token here (limit +3). Discard this condition."
+        "text": "SKIRMISH: Make an unbound companion strength +1 for each dwarven token here (limit +3). Discard this condition.",
+        "textFr": "**Combat :** Pour chaque jeton <symbol>dwarven</symbol> qui se trouve ici, donnez +1 en force à un compagnon dissocié (limite de +3). Défaussez cette situation."
       },
       {
         "id": "4U57:1",
@@ -41943,7 +42045,8 @@
           }
         ],
         "source": "SELF",
-        "text": "ARCHERY: Spot 2 Elf companions to discard a condition."
+        "text": "ARCHERY: Spot 2 Elf companions to discard a condition.",
+        "textFr": "**Archerie :** Désignez 2 compagnons Elfes pour défausser une situation."
       }
     ],
     "phases": [
@@ -43530,7 +43633,8 @@
           }
         ],
         "source": "SELF",
-        "text": "FELLOWSHIP: Spot Gandalf to discard all conditions."
+        "text": "FELLOWSHIP: Spot Gandalf to discard all conditions.",
+        "textFr": "**Compagnie :** Désignez Gandalf pour défausser toutes les situations."
       }
     ],
     "phases": [
@@ -44419,7 +44523,8 @@
           }
         ],
         "source": "ATTACHMENT",
-        "text": "SKIRMISH: Exert bearer to cancel a skirmish involving bearer"
+        "text": "SKIRMISH: Exert bearer to cancel a skirmish involving bearer",
+        "textFr": "**Combat :** Affaiblissez le détenteur pour annuler un combat qui implique le détenteur. N’importe quel joueur de l’Ombre peut retirer <symbol>twilight1</symbol> pour empêcher ceci."
       }
     ],
     "actionPhases": [
@@ -46921,7 +47026,8 @@
           }
         ],
         "source": "SELF",
-        "text": "Assignment: Exert Orthanc Champion to assign it to an unbound companion. That companion may exert to prevent this."
+        "text": "Assignment: Exert Orthanc Champion to assign it to an unbound companion. That companion may exert to prevent this.",
+        "textFr": "**Affectation :** Affaiblissez le Champion d’Orthanc pour l’affecter à un compagnon dissocié. Ce compagnon peut s’affaiblir pour empêcher ceci."
       }
     ],
     "actionPhases": [
@@ -47638,7 +47744,8 @@
         ],
         "source": "SELF",
         "requiresStackedOnControlledSite": true,
-        "text": "SHADOW: If stacked on a site you control, play this minion. Its twilight cost is -1."
+        "text": "SHADOW: If stacked on a site you control, play this minion. Its twilight cost is -1.",
+        "textFr": "**Ombre :** Si ce séide est empilé sur un site que vous contrôlez, jouez-le. Son coût crépusculaire est de -1."
       }
     ],
     "actionPhases": [
@@ -48407,7 +48514,8 @@
           }
         ],
         "source": "ATTACHMENT",
-        "text": "MANEUVER: Exert bearer to discard a Free Peoples mount."
+        "text": "MANEUVER: Exert bearer to discard a Free Peoples mount.",
+        "textFr": "**Manœuvre :** Affaiblissez le détenteur pour défausser une monture des Peuples Libres."
       }
     ],
     "actionPhases": [
@@ -48574,7 +48682,8 @@
         ],
         "source": "SELF",
         "requiresStackedOnControlledSite": true,
-        "text": "SHADOW: If stacked on a site you control, play this minion. Its twilight cost is -1."
+        "text": "SHADOW: If stacked on a site you control, play this minion. Its twilight cost is -1.",
+        "textFr": "**Ombre :** Si ce séide est empilé sur un site que vous contrôlez, jouez-le. Son coût crépusculaire est de -1."
       }
     ],
     "actionPhases": [
@@ -48714,7 +48823,8 @@
         ],
         "source": "SELF",
         "requiresStackedOnControlledSite": true,
-        "text": "SHADOW: If stacked on a site you control, play this minion. Its twilight cost is -1."
+        "text": "SHADOW: If stacked on a site you control, play this minion. Its twilight cost is -1.",
+        "textFr": "**Ombre :** Si ce séide est empilé sur un site que vous contrôlez, jouez-le. Son coût crépusculaire est de -1."
       }
     ],
     "actionPhases": [
@@ -50080,7 +50190,8 @@
           }
         ],
         "source": "SELF",
-        "text": "MANEUVER: Discard this and exert a raider Man to exert a Ring-bound companion."
+        "text": "MANEUVER: Discard this and exert a raider Man to exert a Ring-bound companion.",
+        "textFr": "**Manœuvre :** Défaussez cette situation et affaiblissez un Homme <symbol>raider</symbol> pour affaiblir un compagnon **Associé à l’Anneau.**"
       }
     ],
     "actionPhases": [
@@ -50365,7 +50476,8 @@
           }
         ],
         "source": "SELF",
-        "text": "SKIRMISH: Discard this to make a raider Man strength +2."
+        "text": "SKIRMISH: Discard this to make a raider Man strength +2.",
+        "textFr": "**Combat:** Défaussez cette situation pour donner +2 en force à un Homme <symbol>moria</symbol>."
       }
     ],
     "actionPhases": [
@@ -51500,7 +51612,8 @@
           }
         ],
         "source": "SELF",
-        "text": "SKIRMISH: Discard this to make a raider Man strength +2."
+        "text": "SKIRMISH: Discard this to make a raider Man strength +2.",
+        "textFr": "**Combat :** Défaussez cette situation pour donner +2 en force à un Homme <symbol>raider</symbol>."
       }
     ],
     "actionPhases": [
@@ -51985,7 +52098,8 @@
           }
         ],
         "source": "SELF",
-        "text": "RESPONSE: If an unbound companion is about to take a wound, exert Éowyn and add twilight1 to prevent that wound"
+        "text": "RESPONSE: If an unbound companion is about to take a wound, exert Éowyn and add twilight1 to prevent that wound",
+        "textFr": "**Réponse :** Si un compagnon dissocié est sur le point d’être blessé, affaiblissez Éowyn et ajoutez <symbol>twilight1</symbol> pour empêcher cette blessure."
       }
     ],
     "culture": "ROHAN",
@@ -52379,7 +52493,8 @@
           }
         ],
         "source": "SELF",
-        "text": "FELLOWSHIP: Exert Guma to heal a rohan Man."
+        "text": "FELLOWSHIP: Exert Guma to heal a rohan Man.",
+        "textFr": "**Compagnie :** Affaiblissez Guma pour guérir un Homme <symbol>rohan</symbol>."
       }
     ],
     "actionPhases": [
@@ -52600,7 +52715,8 @@
           }
         ],
         "source": "SELF",
-        "text": "SKIRMISH: Exert Hlafwine to make a rohan Man strength +2."
+        "text": "SKIRMISH: Exert Hlafwine to make a rohan Man strength +2.",
+        "textFr": "**Combat :** Affaiblissez Hlafwine pour donner +2 en force à un Homme <symbol>rohan</symbol>."
       }
     ],
     "actionPhases": [
@@ -53525,7 +53641,8 @@
           }
         ],
         "source": "ATTACHMENT",
-        "text": "SKIRMISH: Exert bearer twice to cancel a skirmish involving him"
+        "text": "SKIRMISH: Exert bearer twice to cancel a skirmish involving him",
+        "textFr": "**Combat :** Affaiblissez le détenteur deux fois pour annuler un combat l’impliquant. N’importe quel joueur de l’Ombre peut retirer <symbol>twilight1</symbol> pour empêcher ceci."
       }
     ],
     "actionPhases": [
@@ -53848,7 +53965,8 @@
           }
         ],
         "source": "SELF",
-        "text": "SKIRMISH: Exert Sam to make him strength +3. If Sam wins this skirmish, you may remove a burden."
+        "text": "SKIRMISH: Exert Sam to make him strength +3. If Sam wins this skirmish, you may remove a burden.",
+        "textFr": "**Combat :** Affaiblissez Sam pour lui donner +3 en force. Si Sam remporte ce combat, vous pouvez retirer un point-fardeau."
       }
     ],
     "phases": [
@@ -54546,7 +54664,8 @@
           }
         ],
         "source": "SELF",
-        "text": "SKIRMISH: Discard an unbound Hobbit."
+        "text": "SKIRMISH: Discard an unbound Hobbit.",
+        "textFr": "**Combat :** Défaussez un Hobbit dissocié."
       }
     ],
     "phases": [
@@ -55296,7 +55415,8 @@
           }
         ],
         "source": "SELF",
-        "text": "FELLOWSHIP: Exert Birchseed to heal an unbound Hobbit."
+        "text": "FELLOWSHIP: Exert Birchseed to heal an unbound Hobbit.",
+        "textFr": "**Compagnie :** Affaiblissez Grainedebouleau pour guérir un Hobbit dissocié."
       }
     ],
     "actionPhases": [
@@ -56567,7 +56687,8 @@
           }
         ],
         "source": "SELF",
-        "text": "SHADOW: Exert an Uruk-hai to place an isengard token on this card."
+        "text": "SHADOW: Exert an Uruk-hai to place an isengard token on this card.",
+        "textFr": "**Ombre :** Affaiblissez un Ourouk-Haï pour déposer un jeton <symbol>isengard</symbol> sur cette carte."
       }
     ],
     "actionPhases": [
@@ -56820,7 +56941,8 @@
           }
         ],
         "source": "SELF",
-        "text": "SHADOW: Exert an Uruk-hai to place an isengard token on this card."
+        "text": "SHADOW: Exert an Uruk-hai to place an isengard token on this card.",
+        "textFr": "**Ombre :** Affaiblissez un Ourouk-Haï pour déposer un jeton <symbol>isengard</symbol> sur cette carte."
       }
     ],
     "actionPhases": [
@@ -57211,7 +57333,8 @@
           }
         ],
         "source": "SELF",
-        "text": "SHADOW: Exert an Uruk-hai to place an isengard token on this card."
+        "text": "SHADOW: Exert an Uruk-hai to place an isengard token on this card.",
+        "textFr": "**Ombre :** Affaiblissez un Ourouk-Haï pour déposer un jeton <symbol>isengard</symbol> sur cette carte."
       }
     ],
     "actionPhases": [
@@ -59633,7 +59756,8 @@
           }
         ],
         "source": "SELF",
-        "text": "SHADOW: Play a sauron Orc stacked here as if played from hand."
+        "text": "SHADOW: Play a sauron Orc stacked here as if played from hand.",
+        "textFr": "**Ombre :** Jouez un Orque <symbol>sauron</symbol> empilé ici comme s’il était dans votre main."
       }
     ],
     "actionPhases": [
@@ -60328,7 +60452,8 @@
           }
         ],
         "source": "SELF",
-        "text": "RESPONSE: If a dunland Man is about to take a wound, discard this condition to prevent that wound"
+        "text": "RESPONSE: If a dunland Man is about to take a wound, discard this condition to prevent that wound",
+        "textFr": "**Réponse :** Si un Homme <symbol>dunland</symbol> est sur le point d’être blessé, défaussez cette situation ou retirez un jeton <symbol>dunland</symbol> de cette carte pour"
       },
       {
         "id": "6C1:1",
@@ -60359,7 +60484,8 @@
           }
         ],
         "source": "SELF",
-        "text": "RESPONSE: If a dunland Man is about to take a wound, remove a dunland token from here to prevent that wound"
+        "text": "RESPONSE: If a dunland Man is about to take a wound, remove a dunland token from here to prevent that wound",
+        "textFr": "**Réponse :** Si un Homme <symbol>dunland</symbol> est sur le point d’être blessé, défaussez cette situation ou retirez un jeton <symbol>dunland</symbol> de cette carte pour"
       },
       {
         "id": "6C1:2",
@@ -62055,7 +62181,8 @@
           }
         ],
         "source": "SELF",
-        "text": "RESPONSE: If an unbound Hobbit is about to take a wound, exert Skinbark to prevent that wound"
+        "text": "RESPONSE: If an unbound Hobbit is about to take a wound, exert Skinbark to prevent that wound",
+        "textFr": "**Réponse :** Si un Hobbit dissocié est sur le point d’être blessé, affaiblissez Peaurude pour prevenir cette blessure."
       }
     ],
     "culture": "GANDALF",
@@ -62180,7 +62307,8 @@
           }
         ],
         "source": "SELF",
-        "text": "ASSIGNMENT: Exert an unbound Hobbit to allow Treebeard to skirmish"
+        "text": "ASSIGNMENT: Exert an unbound Hobbit to allow Treebeard to skirmish",
+        "textFr": "**Affectationt :** Affaiblissez un Hobbit dissocié pour permettre à Sylvebarbe de combattre."
       },
       {
         "id": "6C37:1",
@@ -62210,7 +62338,8 @@
           }
         ],
         "source": "SELF",
-        "text": "SKIRMISH: Exert Treebeard to make an Ent Damage +1.."
+        "text": "SKIRMISH: Exert Treebeard to make an Ent Damage +1..",
+        "textFr": "**Combat :** Affaiblissez Sylvebarbe pour donner des **dégâts +1** à un Ent."
       }
     ],
     "actionPhases": [
@@ -62646,7 +62775,8 @@
           }
         ],
         "source": "SELF",
-        "text": "Skirmish: Spot Gollum and discard 3 cards from hand to wound a companion Gollum is skirmishing once (or twice if that companion is a shire companion)."
+        "text": "Skirmish: Spot Gollum and discard 3 cards from hand to wound a companion Gollum is skirmishing once (or twice if that companion is a shire companion).",
+        "textFr": "**Combat :** Défaussez 3 cartes de votre main pour blesser une fois un compagnon que Gollum combat (ou deux fois s’il s’agit d’un compagnon <symbol>shire</symbol>)."
       }
     ],
     "actionPhases": [
@@ -62718,7 +62848,8 @@
           }
         ],
         "source": "SELF",
-        "text": "RESPONSE: If Gollum wins a skirmish, wound a companion (except the Ring-bearer)"
+        "text": "RESPONSE: If Gollum wins a skirmish, wound a companion (except the Ring-bearer)",
+        "textFr": "**Réponse :** Si Gollum gagne un combat, blessez un compagnon (sauf le Porteur de l’Anneau)."
       }
     ],
     "phases": [
@@ -62877,7 +63008,8 @@
           }
         ],
         "source": "SELF",
-        "text": "SKIRMISH: Remove a dwarven token to heal a Dwarf."
+        "text": "SKIRMISH: Remove a dwarven token to heal a Dwarf.",
+        "textFr": "**Combat :** Retirez un jeton <symbol>elven</symbol> pour donner –3 en force à un séide qui combat Aragorn."
       }
     ],
     "actionPhases": [
@@ -63009,7 +63141,8 @@
           }
         ],
         "source": "SELF",
-        "text": "SKIRMISH: Discard this to make a gondor Man strength +1."
+        "text": "SKIRMISH: Discard this to make a gondor Man strength +1.",
+        "textFr": "**Combat :** Défaussez cette situation ou retirez un jeton <symbol>gondor</symbol> de cette carte pour donner +1 en force à un Homme <symbol>gondor</symbol>"
       },
       {
         "id": "6C52:1",
@@ -63040,7 +63173,8 @@
           }
         ],
         "source": "SELF",
-        "text": "SKIRMISH: Remove 1 gondor token from here to make a gondor Man strength +1."
+        "text": "SKIRMISH: Remove 1 gondor token from here to make a gondor Man strength +1.",
+        "textFr": "**Combat :** Défaussez cette situation ou retirez un jeton <symbol>gondor</symbol> de cette carte pour donner +1 en force à un Homme <symbol>gondor</symbol>"
       },
       {
         "id": "6C52:2",
@@ -63360,7 +63494,8 @@
           }
         ],
         "source": "SELF",
-        "text": "SHADOW: Exert an Uruk-hai to place an isengard token on this card."
+        "text": "SHADOW: Exert an Uruk-hai to place an isengard token on this card.",
+        "textFr": "**Ombre :** Affaiblissez un Ourouk-Haï pour déposer un jeton <symbol>isengard</symbol> ici."
       }
     ],
     "actionPhases": [
@@ -65756,7 +65891,8 @@
           }
         ],
         "source": "SELF",
-        "text": "RESPONSE: If an unbound Hobbit is about to take a wound, discard this condition to prevent that wound"
+        "text": "RESPONSE: If an unbound Hobbit is about to take a wound, discard this condition to prevent that wound",
+        "textFr": "**Réponse :** Si un Hobbit dissocié est sur le point d’être blessé, défaussez cette situation ou retirez 1 jeton <symbol>shire</symbol> de cette carte pour prévenir cette blessure."
       },
       {
         "id": "6C111:1",
@@ -65787,7 +65923,8 @@
           }
         ],
         "source": "SELF",
-        "text": "RESPONSE: If an unbound Hobbit is about to take a wound, remove a shire token from here to prevent that wound"
+        "text": "RESPONSE: If an unbound Hobbit is about to take a wound, remove a shire token from here to prevent that wound",
+        "textFr": "**Réponse :** Si un Hobbit dissocié est sur le point d’être blessé, défaussez cette situation ou retirez 1 jeton <symbol>shire</symbol> de cette carte pour prévenir cette blessure."
       },
       {
         "id": "6C111:2",
@@ -66152,7 +66289,8 @@
           }
         ],
         "source": "SELF",
-        "text": "RESPONSE: If an unbound Hobbit is about to take a wound, exert Skinbark to prevent that wound"
+        "text": "RESPONSE: If an unbound Hobbit is about to take a wound, exert Skinbark to prevent that wound",
+        "textFr": "**Réponse :** Si un Hobbit dissocié est sur le point d’être blessé, affaiblissez Peaurude pour prevenir cette blessure."
       }
     ],
     "culture": "GANDALF",
@@ -83018,7 +83156,8 @@
           }
         ],
         "source": "SELF",
-        "text": "SHADOW: Play a gollum minion stacked here as if played from hand."
+        "text": "SHADOW: Play a gollum minion stacked here as if played from hand.",
+        "textFr": "**Shadow:** Play a <symbol>gollum</symbol> minion stacked here as if played from hand."
       }
     ],
     "actionPhases": [
@@ -93850,7 +93989,8 @@
           }
         ],
         "source": "SELF",
-        "text": "REGROUP: Stack this minion on a site you control."
+        "text": "REGROUP: Stack this minion on a site you control.",
+        "textFr": "**Regroup:** Stack this minion on a site you control."
       }
     ],
     "actionPhases": [
@@ -96626,7 +96766,8 @@
           }
         ],
         "source": "SELF",
-        "text": "REGROUP: Stack a spell from hand here."
+        "text": "REGROUP: Stack a spell from hand here.",
+        "textFr": "**Regroup:** Stack a spell from hand here."
       }
     ],
     "actionPhases": [
