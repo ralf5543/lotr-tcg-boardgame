@@ -11,8 +11,9 @@ import {
     createGameState,
     createMinion,
     createPlayerState,
+    createSite,
 } from './createGameState';
-import type { Ability } from '../types';
+import type { Ability, CardState } from '../types';
 
 describe('splitStoredAbilityClause', () => {
     it('découpe coût / effet sur « pour » et retire le préfixe de phase', () => {
@@ -386,6 +387,58 @@ describe('formatAbilityLabelParts', () => {
         expect(formatAbilityLabelParts(ability, card).effect).toBe(
             'Force +1 à un homme <symbol>men</symbol>'
         );
+    });
+
+    it('Mere / Fat One : Gollum nommé ≠ symbole culture', () => {
+        const mere: Ability = {
+            id: '11U246:0',
+            phases: ['REGROUP'],
+            cost: [
+                {
+                    exert: [
+                        {
+                            count: 1,
+                            target: [['Gollum'], ['Sméagol']],
+                            mode: 'DESIGNATION',
+                        },
+                    ],
+                },
+            ],
+            effects: [{ type: 'PLAY_NEXT_SITE', from: 'SITES_DECK' }],
+            source: 'SELF',
+        };
+        const site = createSite({
+            id: '11U246',
+            name: 'Mere of Dead Faces',
+            kind: 'SITE',
+            type: 'SITE',
+        }) as unknown as CardState;
+        expect(formatAbilityLabelParts(mere, site)).toEqual({
+            cost: 'Affaiblir votre Gollum ou votre Sméagol',
+            effect: 'jouer le prochain site de la communauté',
+        });
+
+        const fatOne: Ability = {
+            id: '7R57:1',
+            phases: ['REGROUP'],
+            cost: [
+                {
+                    discardFromPlay: [{ count: 1, target: 'SELF' }],
+                },
+            ],
+            effects: [{ type: 'RETURN_TO_HAND', target: [['Gollum']] }],
+            source: 'SELF',
+        };
+        const condition = createCompanion({
+            id: '7R57',
+            title: 'Fat One Wants It',
+            type: 'CONDITION',
+            i18n: { fr: { title: 'Fat One Wants It' } },
+        });
+        expect(formatAbilityLabelParts(fatOne, condition)).toEqual({
+            cost: 'Défausser Fat One Wants It',
+            effect: 'renvoyer un Gollum dans la main de son propriétaire',
+        });
     });
 
     it('Forests : Ring-bound Man → Homme associé à l’Anneau ; défausse nommée', () => {

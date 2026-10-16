@@ -149,6 +149,7 @@ export const resolveSkirmish = (G: GameState, _ctx?: Ctx) => {
     resultMsg += ` [Total Ombre: ${minionsStrength}]. `;
 
     const companionId = companion.instanceId || companion.id;
+    // CR : égalité = l’Ombre gagne (pas « ni l’un ni l’autre »).
     if (companionStrength > minionsStrength) {
         G.pendingWinsSkirmish = {
             winnerIds: [companionId],
@@ -158,7 +159,7 @@ export const resolveSkirmish = (G: GameState, _ctx?: Ctx) => {
             loserIds: minions.map((minion) => minion.instanceId || minion.id),
             skirmishId: skirmish.id,
         };
-    } else if (minionsStrength > companionStrength) {
+    } else {
         G.pendingWinsSkirmish = {
             winnerIds: minions.map((minion) => minion.instanceId || minion.id),
             skirmishId: skirmish.id,

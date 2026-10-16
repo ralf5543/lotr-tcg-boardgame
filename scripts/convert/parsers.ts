@@ -2955,6 +2955,7 @@ function parseWhenPlayedPlayPossessionFromDeckAbilities(
     }
 
     // Shelob : When you play Shelob, you may play a [gollum] possession from your draw deck.
+    // Pas « on her » → aire de soutien / porteur légal, pas attachTo SELF (Web…).
     const shelobRe =
         /When you play ([\w’'\-]+(?:\s+[\w’'\-]+)?),\s*you may play (?:a|an) (<symbol>[^<]+<\/symbol>)\s+possession from your draw deck\.?/gi;
     while ((match = shelobRe.exec(text)) !== null) {
@@ -2980,13 +2981,77 @@ function parseWhenPlayedPlayPossessionFromDeckAbilities(
                 {
                     type: 'PLAY_FROM_DECK_OR_DISCARD',
                     target: [[culture, 'POSSESSION']],
-                    attachTo: 'SELF',
+                    from: 'DECK',
                 },
             ],
             source: 'SELF',
             text: stripAbilityMarkup(match[0]),
         });
     }
+    return found;
+}
+
+/**
+ * Spot a [culture] companion to reveal the top N of an opponent’s draw deck…
+ * (Hidden Knowledge…)
+ */
+function parseRevealOpponentTopAbilities(
+    text: string,
+    cardId?: string
+): Record<string, unknown>[] {
+    const found: Record<string, unknown>[] = [];
+    const plain = stripAbilityMarkup(text).replace(/\s+/g, ' ').trim();
+    const match = plain.match(
+        /^Spot\s+(?:a|an)\s+(\S+)\s+companion\s+to reveal the top\s+(\d+)\s+cards? of an opponent['’]s draw deck\.\s*For each Shadow card revealed,\s*add\s+(a|an|one|\d+)\s+threats?\.\s*For each Free Peoples card revealed,\s*place\s+(?:a|an)\s+(\S+)\s+token on one of your conditions with\s+(?:a|an)\s+\4\s+token on it\.\s*Shuffle that draw deck\.?$/i
+    );
+    if (!match) return found;
+
+    const spotCulture = parseCultureTokenSpec(match[1]);
+    const placeCulture = parseCultureTokenSpec(match[4]);
+    const count = parseInt(match[2], 10);
+    const threatEach = parseBurdenWord(match[3]);
+    if (
+        !spotCulture ||
+        spotCulture === 'FREE_PEOPLES' ||
+        spotCulture === 'ANY' ||
+        !placeCulture ||
+        placeCulture === 'FREE_PEOPLES' ||
+        placeCulture === 'ANY' ||
+        !Number.isFinite(count) ||
+        count <= 0 ||
+        !threatEach
+    ) {
+        return found;
+    }
+
+    found.push({
+        id: `${cardId || 'ability'}:0:reveal-opponent-top`,
+        phases: ['FELLOWSHIP'],
+        cost: [
+            {
+                spot: [
+                    {
+                        count: 1,
+                        target: [[spotCulture, 'COMPANION']],
+                    },
+                ],
+            },
+        ],
+        effects: [
+            {
+                type: 'REVEAL_OPPONENT_TOP',
+                count,
+                perShadowCard: { type: 'ADD_THREATS', count: threatEach },
+                perFreePeoplesCard: {
+                    type: 'PLACE_CULTURE_TOKEN',
+                    culture: placeCulture,
+                    onConditionWithToken: true,
+                },
+            },
+        ],
+        source: 'SELF',
+        text: stripAbilityMarkup(match[0]),
+    });
     return found;
 }
 
@@ -4747,6 +4812,93 @@ function parseEachTimeNamedPlayedAddThreatsAbilities(
 }
 
 /**
+ * To assign Gollum to a skirmish, the Free Peoples player must make Gollum
+ * strength +3 until the regroup phase or add a burden.
+ * (Mad Thing…) — +3 auto à l’affectation FP (choix fardeau non exposé).
+ */
+function parseToAssignFpMustMakeStrengthAbilities(
+    text: string,
+    cardTitle?: string,
+    cardId?: string
+): Record<string, unknown>[] {
+    const found: Record<string, unknown>[] = [];
+    const re =
+        /To assign ([\p{L}’'\-]+(?:\s+[\p{L}’'\-]+)?)\s+to a skirmish,\s*the Free Peoples player must make (?:him|her|it|\1)\s+strength\s*\+\s*(\d+)\s+until the regroup phase(?:\s+or add a burdens?)?\.?/giu;
+    let match: RegExpExecArray | null;
+    while ((match = re.exec(text)) !== null) {
+        const name = match[1].trim();
+        const value = parseInt(match[2], 10);
+        if (!Number.isFinite(value) || value === 0) continue;
+        const title = (cardTitle || '').trim();
+        if (
+            title &&
+            name.toLowerCase() !== title.toLowerCase() &&
+            !/^this\b/i.test(name)
+        ) {
+            continue;
+        }
+        found.push({
+            id: `${cardId || 'ability'}:${found.length}:when-assigned-str`,
+            phases: [],
+            trigger: { type: 'WHEN_ASSIGNED', by: 'FREE_PEOPLE' },
+            cost: [],
+            effects: [
+                {
+                    type: 'ADD_TEMP_STAT',
+                    stat: 'STRENGTH',
+                    value,
+                    target: 'SELF',
+                    expiresAtPhase: 'REGROUP',
+                },
+            ],
+            source: 'SELF',
+            text: stripAbilityMarkup(match[0]),
+        });
+    }
+    return found;
+}
+
+/**
+ * Skirmish: Discard this condition to discard each minion skirmishing a Wizard.
+ * Place that Wizard in your dead pile.
+ * (Sent Back…)
+ */
+function parseDiscardSelfDiscardMinionsSkirmishingThenDeadPileAbilities(
+    text: string,
+    cardId?: string
+): Record<string, unknown>[] {
+    const found: Record<string, unknown>[] = [];
+    const re =
+        /(?:\*\*|<(?:keyword)>)?(Fellowship|Shadow|Maneuver|Archery|Assignment|Skirmish|Regroup):?\s*(?:<\/(?:keyword)>)?(?:\*\*)?\s*Discard this(?:\s+(?:condition|possession|card))?\s+to discard each minion skirmishing an?\s+([\w’'\-]+(?:\s+[\w’'\-]+)?)\.\s*Place that \2 in your dead pile\./gi;
+    let match: RegExpExecArray | null;
+    while ((match = re.exec(text)) !== null) {
+        const phase = match[1].toUpperCase();
+        const classFilters = parseClassFilters(match[2]);
+        if (classFilters.length === 0) continue;
+        found.push({
+            id: `${cardId || 'ability'}:${found.length}:discard-skirmish-dead`,
+            phases: [phase],
+            cost: [
+                {
+                    discardFromPlay: [{ count: 1, target: 'SELF' }],
+                },
+            ],
+            effects: [
+                {
+                    type: 'DISCARD_ALL',
+                    target: [['MINION']],
+                    skirmishingWith: [classFilters],
+                    thenDeadPileMatching: [classFilters],
+                },
+            ],
+            source: 'SELF',
+            text: stripAbilityMarkup(match[0]),
+        });
+    }
+    return found;
+}
+
+/**
  * Regroup: Discard this condition to return Gollum to his owner's hand.
  */
 function parseDiscardSelfReturnToHandAbilities(
@@ -5760,6 +5912,54 @@ function parseSiteRegroupPlayNextSiteAbilities(
     return found;
 }
 
+/**
+ * At the start of the maneuver phase, the Free Peoples player must add a burden
+ * or discard N cards from hand. (Pelennor Flat…)
+ */
+function parseSiteStartOfManeuverFpChoiceAbilities(
+    text: string,
+    cardId?: string
+): Record<string, unknown>[] {
+    const found: Record<string, unknown>[] = [];
+    const plain = stripAbilityMarkup(text).replace(/\s+/g, ' ').trim();
+    const re =
+        /At the start of the maneuver phase,\s*the Free Peoples player must add a burden or discard (\d+|a|one|two|three)\s+cards? from hand\.?/gi;
+    let match: RegExpExecArray | null;
+    while ((match = re.exec(plain)) !== null) {
+        const discardCount = parseBurdenWord(match[1]);
+        if (!discardCount) continue;
+        found.push({
+            id: `${cardId || 'ability'}:${found.length}:site-start-maneuver-fp`,
+            phases: ['START_OF_MANEUVER'],
+            cost: [],
+            effects: [
+                {
+                    type: 'CHOOSE_ONE',
+                    chooser: 'FREE_PEOPLE',
+                    options: [
+                        {
+                            label: 'Ajouter un fardeau',
+                            effects: [{ type: 'ADD_BURDENS', count: 1 }],
+                        },
+                        {
+                            label: `Défausser ${discardCount} carte${discardCount > 1 ? 's' : ''} de sa main`,
+                            effects: [
+                                {
+                                    type: 'DISCARD_FROM_HAND',
+                                    count: discardCount,
+                                },
+                            ],
+                        },
+                    ],
+                },
+            ],
+            source: 'SELF',
+            text: stripAbilityMarkup(match[0]),
+        });
+    }
+    return found;
+}
+
 export function parseSiteAbilities(
     text: string,
     cardId?: string
@@ -5801,6 +6001,14 @@ export function parseSiteAbilities(
             abilities.push({
                 ...ability,
                 id: `${cardId || 'ability'}:${abilities.length}:site-bearing-hw`,
+            });
+        }
+    );
+    parseSiteStartOfManeuverFpChoiceAbilities(text, cardId).forEach(
+        (ability) => {
+            abilities.push({
+                ...ability,
+                id: `${cardId || 'ability'}:${abilities.length}:site-start-maneuver`,
             });
         }
     );
@@ -7732,6 +7940,73 @@ export function parseAbilities(
             }
         }
 
+        // Slippery Sneak : Add threats = vitality of skirmishing minions to discard self.
+        const addThreatsEqualVitalityDiscard = bodyPlain.match(
+            /^Add a number of threats equal to the total vitality of the minions\s+([\s\S]+?)\s+is skirmishing to discard\s+\1\.?$/i
+        );
+        if (addThreatsEqualVitalityDiscard) {
+            const who = addThreatsEqualVitalityDiscard[1].trim();
+            if (
+                cardTitle &&
+                who.toLowerCase() !== cardTitle.toLowerCase() &&
+                !/^this$/i.test(who)
+            ) {
+                return;
+            }
+            abilities.push({
+                id: `${cardId || 'ability'}:${abilities.length}`,
+                phases,
+                cost: [
+                    {
+                        addThreatsEqualTo: 'SKIRMISHING_MINIONS_VITALITY',
+                    },
+                ],
+                effects: [{ type: 'DISCARD', count: 1, target: 'SELF' }],
+                source: 'SELF',
+                text: `${marker.phase}: ${stripAbilityMarkup(bodyPlain)}`,
+            });
+            return;
+        }
+
+        // Slippery Sneak Regroup : Discard X to take a [culture] minion from discard into hand.
+        const discardTakeMinionHand = body.match(
+            /^Discard\s+([\s\S]+?)\s+to take\s+(?:a|an)\s+(<symbol>[^<]+<\/symbol>)\s+minion from your discard pile into hand\.?/i
+        );
+        if (discardTakeMinionHand) {
+            const who = stripAbilityMarkup(discardTakeMinionHand[1]).trim();
+            if (
+                cardTitle &&
+                who.toLowerCase() !== cardTitle.toLowerCase() &&
+                !/^(this|him|her|it)$/i.test(who)
+            ) {
+                return;
+            }
+            const culture = parseCultureTokenSpec(discardTakeMinionHand[2]);
+            if (!culture || culture === 'FREE_PEOPLES' || culture === 'ANY') {
+                return;
+            }
+            abilities.push({
+                id: `${cardId || 'ability'}:${abilities.length}`,
+                phases,
+                cost: [
+                    {
+                        discardFromPlay: [
+                            { count: 1, target: 'SELF' },
+                        ],
+                    },
+                ],
+                effects: [
+                    {
+                        type: 'TAKE_FROM_DISCARD',
+                        target: [[culture, 'MINION']],
+                    },
+                ],
+                source: 'SELF',
+                text: `${marker.phase}: ${stripAbilityMarkup(body)}`,
+            });
+            return;
+        }
+
         // « Add a threat to make Gandalf strength +1. » (Shadowfax…)
         const addThreatMake = bodyPlain.match(
             /^Add\s+(a|an|one|\d+)\s+threats?\s+to make\s+([\s\S]+)/i
@@ -8623,6 +8898,67 @@ export function parseAbilities(
                     .replace(/<[^>]+>/g, '')
                     .replace(/\s+/g, ' ')
                     .trim(),
+            });
+            return;
+        }
+
+        // Exert X to make the opponent choose to either exert the Ring-bearer or add a burden.
+        // (Cruel Caradhras…)
+        const opponentChooseRbMatch = body.match(
+            /^Exert\s+([\s\S]+?)\s+to make the opponent choose to either exert the Ring-bearer or add a burden\.?$/i
+        );
+        if (opponentChooseRbMatch) {
+            if (/\b(and|or)\b/i.test(opponentChooseRbMatch[1])) return;
+            const subject = parseExertSubject(
+                opponentChooseRbMatch[1],
+                cardTitle,
+                text
+            );
+            if (!subject) return;
+            abilities.push({
+                id: `${cardId || 'ability'}:${abilities.length}`,
+                phases,
+                cost: [
+                    {
+                        exert: [
+                            {
+                                count: subject.count,
+                                target: subject.target,
+                                ...(subject.mode
+                                    ? { mode: subject.mode }
+                                    : {}),
+                            },
+                        ],
+                    },
+                ],
+                effects: [
+                    {
+                        type: 'CHOOSE_ONE',
+                        chooser: 'OPPONENT',
+                        options: [
+                            {
+                                label: 'Affaiblir le Porteur de l’Anneau',
+                                effects: [
+                                    {
+                                        type: 'EXERT',
+                                        count: 1,
+                                        target: [['RING-BEARER']],
+                                    },
+                                ],
+                            },
+                            {
+                                label: 'Ajouter un fardeau',
+                                effects: [
+                                    { type: 'ADD_BURDENS', count: 1 },
+                                ],
+                            },
+                        ],
+                    },
+                ],
+                source: 'SELF',
+                text: stripAbilityMarkup(
+                    `${marker.phase}: Exert ${opponentChooseRbMatch[1].trim()} to make the opponent choose to either exert the Ring-bearer or add a burden.`
+                ),
             });
             return;
         }
@@ -10543,6 +10879,25 @@ export function parseAbilities(
         }
     );
 
+    parseToAssignFpMustMakeStrengthAbilities(text, cardTitle, cardId).forEach(
+        (ability) => {
+            abilities.push({
+                ...ability,
+                id: `${cardId || 'ability'}:${abilities.length}`,
+            });
+        }
+    );
+
+    parseDiscardSelfDiscardMinionsSkirmishingThenDeadPileAbilities(
+        text,
+        cardId
+    ).forEach((ability) => {
+        abilities.push({
+            ...ability,
+            id: `${cardId || 'ability'}:${abilities.length}`,
+        });
+    });
+
     parseDiscardSelfReturnToHandAbilities(text, cardId).forEach((ability) => {
         abilities.push({
             ...ability,
@@ -11015,6 +11370,12 @@ export function parseAbilities(
                 });
             }
         );
+        parseRevealOpponentTopAbilities(text, cardId).forEach((ability) => {
+            abilities.push({
+                ...ability,
+                id: `${cardId || 'ability'}:${abilities.length}`,
+            });
+        });
     }
 
     return abilities.length > 0 ? abilities : undefined;

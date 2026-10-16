@@ -1,4 +1,5 @@
 import type { CardState, GameState } from '../game/types';
+import { reconcileActiveSkirmishAfterLeave } from '../game/logic/skirmishVacated';
 
 const matchCard = (card: CardState | undefined | null, targetId: string) =>
     Boolean(card && (card.instanceId === targetId || card.id === targetId));
@@ -103,6 +104,13 @@ export function discardCardFromPlay(
         const pile = ownerDiscardPile(G, playerId, removed);
         if (!pile) return false;
         pile.push(removed);
+        if (
+            removed.type === 'COMPANION' ||
+            removed.type === 'ALLY' ||
+            removed.type === 'MINION'
+        ) {
+            reconcileActiveSkirmishAfterLeave(G, targetId, 'DISCARD');
+        }
         return true;
     }
 
@@ -116,6 +124,13 @@ export function discardCardFromPlay(
         const pile = ownerDiscardPile(G, ownerId, fromBattle);
         if (!pile) return false;
         pile.push(fromBattle);
+        if (
+            fromBattle.type === 'COMPANION' ||
+            fromBattle.type === 'ALLY' ||
+            fromBattle.type === 'MINION'
+        ) {
+            reconcileActiveSkirmishAfterLeave(G, targetId, 'DISCARD');
+        }
         return true;
     }
 
@@ -155,6 +170,57 @@ export function discardCardFromPlay(
                 return true;
             }
         }
+    }
+
+    return false;
+}
+
+/**
+ * Place une carte en jeu dans la pile de mort de son propriétaire
+ * (Sent Back : Place that Wizard in your dead pile).
+ */
+export function placeCardInDeadPile(G: GameState, card: CardState): boolean {
+    if (!card) return false;
+    const targetId = card.instanceId || card.id;
+    if (!targetId) return false;
+
+    const bury = (
+        removed: CardState,
+        ownerId: string
+    ): boolean => {
+        const owner = G.players[ownerId];
+        if (!owner) return false;
+        if (!owner.deadPile) owner.deadPile = [];
+        removed.isDead = true;
+        discardStackedWithHost(G, removed, ownerId);
+        // Les empilés vont en défausse via discardStackedWithHost ; la carte
+        // elle-même va en pile de mort.
+        owner.deadPile.push(removed);
+        if (
+            removed.type === 'COMPANION' ||
+            removed.type === 'ALLY' ||
+            removed.type === 'MINION'
+        ) {
+            reconcileActiveSkirmishAfterLeave(G, targetId, 'DEATH');
+        }
+        return true;
+    };
+
+    for (const [playerId, player] of Object.entries(G.players || {})) {
+        const removed =
+            removeFromList(player.fellowshipArea, targetId) ||
+            removeFromList(player.supportArea, targetId);
+        if (!removed) continue;
+        return bury(removed, playerId);
+    }
+
+    const fromBattle = removeFromList(G.battlefield, targetId);
+    if (fromBattle) {
+        const fpId = G.fpPlayerId || '0';
+        const shadowId = fpId === '0' ? '1' : '0';
+        const ownerId =
+            fromBattle.kind === 'FREE_PEOPLE' ? fpId : shadowId;
+        return bury(fromBattle, ownerId);
     }
 
     return false;

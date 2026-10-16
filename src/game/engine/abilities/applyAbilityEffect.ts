@@ -21,12 +21,16 @@ import {
 } from '../responseWindow';
 import { cardMatchesTarget } from '../validations/matchers';
 import { drawCardsForPlayer } from '../../../utils/drawCards';
-import { discardCardFromPlay } from '../../../utils/discardCardFromPlay';
+import {
+    discardCardFromPlay,
+    placeCardInDeadPile,
+} from '../../../utils/discardCardFromPlay';
 import { findTargetCard, isRingBearerCard } from '../../../utils/cardUtils';
 import { getCalculatedStrength } from '../../logic/stats/statCalculator';
 import {
     abilityOwnerPlayerId,
     discardCardsFromHand,
+    playNextSiteDeckPlayerId,
 } from './payAbilityCost';
 import { playerHasInitiative } from '../../logic/initiative';
 import { addThreats } from '../../logic/threats';
@@ -45,6 +49,7 @@ import {
     replaceCurrentSiteFromDeck,
     replacePathSiteFromDeck,
     playNextSiteFromDeck,
+    canPlayNextSiteFromDeck,
     getCurrentSiteIndex,
     takeControlOfSite,
     liberateSite,
@@ -61,6 +66,7 @@ import {
     getDeckOrDiscardPlayCandidates,
     playCardFromDeckOrDiscard,
     searchDeckCardToDiscard,
+    shufflePlayerDeck,
 } from '../../logic/playFromOutOfPlay';
 import { getWhileTwilightCostModifier } from '../../logic/stats/mechanics/whileModifier';
 import { isSiteReplaceForbidden } from '../../logic/siteReplaceRestrictions';
@@ -185,11 +191,24 @@ export function abilitySearchDeckToDiscardEffect(
     return effect && effect.type === 'SEARCH_DECK_TO_DISCARD' ? effect : null;
 }
 
+export function abilityTakeFromDiscardEffect(
+    ability: Ability
+): Extract<
+    Ability['effects'][number],
+    { type: 'TAKE_FROM_DISCARD' }
+> | null {
+    const effect = (ability.effects || []).find(
+        (item) => item.type === 'TAKE_FROM_DISCARD'
+    );
+    return effect && effect.type === 'TAKE_FROM_DISCARD' ? effect : null;
+}
+
 /** Choix pioche/défausse (Captured…) — pas une désignation plateau. */
 export function abilityNeedsDeckOrDiscardPick(ability: Ability): boolean {
     return Boolean(
         abilityPlayFromDeckOrDiscardEffect(ability) ||
-            abilitySearchDeckToDiscardEffect(ability)
+            abilitySearchDeckToDiscardEffect(ability) ||
+            abilityTakeFromDiscardEffect(ability)
     );
 }
 
@@ -246,7 +265,9 @@ export function applyAbilityEffect(
     ability: Ability,
     chosenTargetId?: string | string[],
     discardedHandIds?: string[],
-    costTargetId?: string | string[]
+    costTargetId?: string | string[],
+    /** Joueur qui active (deck d’aventure pour PLAY_NEXT_SITE). */
+    actingPlayerId?: string
 ): boolean {
     const effects = ability.effects || [];
     if (effects.length === 0) return false;
@@ -529,12 +550,14 @@ export function applyAbilityEffect(
             if (!cardId) return false;
             const attachHost =
                 effect.attachTo === 'SELF' ? source : null;
+            const from = effect.from || 'DECK_OR_DISCARD';
             const candidates = getDeckOrDiscardPlayCandidates(
                 G,
                 ownerId,
                 effect.target,
-                'fellowship',
-                attachHost
+                'shadow',
+                attachHost,
+                from
             );
             if (
                 !candidates.some(
@@ -548,14 +571,70 @@ export function applyAbilityEffect(
                 ownerId,
                 cardId,
                 effect.target,
-                'fellowship',
-                attachHost
+                'shadow',
+                attachHost,
+                from
             );
             if (!played) return false;
             afterCardPlayed(G, played, {
                 playerId: ownerId,
-                phase: 'fellowship',
+                phase: 'shadow',
             });
+            continue;
+        }
+
+        if (effect.type === 'TAKE_FROM_DISCARD') {
+            const ownerId = abilityOwnerPlayerId(G, source);
+            if (!ownerId) return false;
+            const player = G.players[ownerId];
+            if (!player?.discard) return false;
+            const cardId = chosenIds[0];
+            if (!cardId) return false;
+            const idx = player.discard.findIndex(
+                (c) =>
+                    c &&
+                    (c.instanceId === cardId || c.id === cardId) &&
+                    cardMatchesTarget(c, effect.target)
+            );
+            if (idx < 0) return false;
+            const [taken] = player.discard.splice(idx, 1);
+            if (!taken) return false;
+            if (!player.hand) player.hand = [];
+            player.hand.push(taken);
+            continue;
+        }
+
+        if (effect.type === 'REVEAL_OPPONENT_TOP') {
+            const ownerId = abilityOwnerPlayerId(G, source);
+            if (!ownerId) return false;
+            const opponentId =
+                ownerId === (G.fpPlayerId || '0')
+                    ? Object.keys(G.players).find((id) => id !== ownerId)
+                    : G.fpPlayerId || '0';
+            if (!opponentId) return false;
+            const opp = G.players[opponentId];
+            if (!opp?.deck?.length) return false;
+            const n = Math.min(effect.count || 0, opp.deck.length);
+            if (n <= 0) return false;
+            const revealed = opp.deck.slice(0, n);
+            const sourceId = source.instanceId || source.id;
+            if (!sourceId) return false;
+            G.pendingReveal = {
+                playerId: ownerId,
+                opponentId,
+                sourceInstanceId: sourceId,
+                abilityId: ability.id,
+                cardIds: revealed.map((c) => c.instanceId || c.id),
+                ...(chosenIds[0] ? { conditionId: chosenIds[0] } : {}),
+                ...(effect.perShadowCard
+                    ? { perShadowCard: effect.perShadowCard }
+                    : {}),
+                ...(effect.perFreePeoplesCard
+                    ? { perFreePeoplesCard: effect.perFreePeoplesCard }
+                    : {}),
+            };
+            G.statusMessage =
+                'Cartes révélées : validez pour appliquer menaces / jetons et mélanger.';
             continue;
         }
 
@@ -679,19 +758,49 @@ export function applyAbilityEffect(
         }
 
         if (effect.type === 'CHOOSE_ONE') {
-            // Choix forcé : géré via pendingForcedChoice, pas ici.
-            return false;
+            const sourceId = source.instanceId || source.id;
+            if (!sourceId || G.pendingForcedChoice) return false;
+            const ownerId = abilityOwnerPlayerId(G, source);
+            if (!ownerId) return false;
+            const fpId = G.fpPlayerId || '0';
+            const shadowId = fpId === '0' ? '1' : '0';
+            let chooserId = ownerId;
+            if (effect.chooser === 'FREE_PEOPLE') {
+                chooserId = fpId;
+            } else if (effect.chooser === 'OPPONENT') {
+                chooserId = ownerId === fpId ? shadowId : fpId;
+            }
+            G.pendingForcedChoice = {
+                playerId: chooserId,
+                sourceInstanceId: sourceId,
+                abilityId: ability.id,
+                title: 'CHOIX FORCÉ',
+                message:
+                    G.statusMessage ||
+                    'Choisissez une option pour résoudre cet effet.',
+                options: effect.options.map((o) => ({
+                    label: o.label,
+                    effects: o.effects,
+                })),
+            };
+            G.statusMessage =
+                chooserId === fpId
+                    ? 'Les Peuples Libres doivent choisir une option.'
+                    : 'L’Ombre doit choisir une option.';
+            continue;
         }
 
         if (effect.type === 'PLAY_NEXT_SITE') {
             if (effect.from !== 'SITES_DECK') return false;
-            const ownerId = abilityOwnerPlayerId(G, source);
+            const ownerId = playNextSiteDeckPlayerId(
+                G,
+                source,
+                actingPlayerId
+            );
             if (!ownerId) return false;
             const siteId = chosenIds[0];
             if (!siteId) return false;
-            if (getReplaceSiteCandidates(G, ownerId).length === 0) {
-                return false;
-            }
+            if (!canPlayNextSiteFromDeck(G, ownerId)) return false;
             if (!playNextSiteFromDeck(G, ownerId, siteId)) return false;
             continue;
         }
@@ -860,6 +969,73 @@ export function applyAbilityEffect(
         }
 
         if (effect.type === 'DISCARD_ALL') {
+            if (effect.skirmishingWith) {
+                const involving = resolveCostTarget(
+                    G,
+                    source,
+                    effect.skirmishingWith
+                ).filter((card) => {
+                    const id = card.instanceId || card.id;
+                    if (!id) return false;
+                    return (G.skirmishes || []).some((sk) => {
+                        if (sk.resolved) return false;
+                        if (sk.companionId === id) return true;
+                        const mids =
+                            sk.minionIds ||
+                            (sk.minionId ? [sk.minionId] : []);
+                        return mids.includes(id);
+                    });
+                });
+                const toDiscard: CardState[] = [];
+                for (const host of involving) {
+                    const hostId = host.instanceId || host.id;
+                    if (!hostId) continue;
+                    const sk = (G.skirmishes || []).find((s) => {
+                        if (s.resolved) return false;
+                        if (s.companionId === hostId) return true;
+                        const mids =
+                            s.minionIds ||
+                            (s.minionId ? [s.minionId] : []);
+                        return mids.includes(hostId);
+                    });
+                    if (!sk) continue;
+                    const mids =
+                        sk.minionIds ||
+                        (sk.minionId ? [sk.minionId] : []);
+                    for (const mid of mids) {
+                        const minion = (G.battlefield || []).find(
+                            (c) =>
+                                c &&
+                                !c.isDead &&
+                                (c.instanceId === mid || c.id === mid)
+                        );
+                        if (!minion) continue;
+                        if (
+                            effect.target === 'SKIRMISHING' ||
+                            (Array.isArray(effect.target) &&
+                                cardMatchesTarget(minion, effect.target))
+                        ) {
+                            toDiscard.push(minion);
+                        }
+                    }
+                }
+                for (const card of toDiscard) {
+                    discardCardFromPlay(G, card);
+                }
+                if (effect.thenDeadPileMatching) {
+                    for (const card of involving) {
+                        if (
+                            cardMatchesTarget(
+                                card,
+                                effect.thenDeadPileMatching
+                            )
+                        ) {
+                            placeCardInDeadPile(G, card);
+                        }
+                    }
+                }
+                continue;
+            }
             const matches =
                 effect.target === 'SKIRMISHING'
                     ? resolveCostTarget(G, source, 'SKIRMISHING')

@@ -30,7 +30,9 @@ export const OpponentHand: React.FC<OpponentHandProps> = ({
     hiddenCardId,
 }) => {
     const visibleCards = hiddenCardId
-        ? hand.filter((card) => card.id !== hiddenCardId)
+        ? hand.filter(
+              (card) => (card.instanceId || card.id) !== hiddenCardId
+          )
         : hand;
     const handIdsKey = hand.map((card) => card.id).join('|');
 

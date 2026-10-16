@@ -191,6 +191,11 @@ export interface CostOption {
     removeThreats?: number;
     /** « add a threat » comme coût. */
     addThreats?: number;
+    /**
+     * Coût : ajouter autant de menaces que la vitalité totale des séides
+     * qui escarmouchent la source (Slippery Sneak…). Surplus ignoré (plafond).
+     */
+    addThreatsEqualTo?: 'SKIRMISHING_MINIONS_VITALITY';
     addTwilight?: number;
     removeTwilight?: number;
     spotTwilight?: number;
@@ -473,10 +478,38 @@ export type AbilityEffect =
            * Paie le crépuscule ; mélange la pioche après recherche.
            * Cible choisie : id de la carte dans deck|discard.
            * `attachTo: 'SELF'` : attache sur la source (Gandalf Returned…).
+           * `from: 'DECK'` : pioche seule (Shelob Eater of Light…).
            */
           type: 'PLAY_FROM_DECK_OR_DISCARD';
           target: string[][];
           attachTo?: 'SELF';
+          from?: 'DECK' | 'DISCARD' | 'DECK_OR_DISCARD';
+      }
+    | {
+          /**
+           * Prend une carte de votre défausse en main (filtre).
+           * Désignation si plusieurs (Slippery Sneak…).
+           */
+          type: 'TAKE_FROM_DISCARD';
+          target: string[][];
+      }
+    | {
+          /**
+           * Révèle le dessus de la pioche adverse, puis effets par carte.
+           * Mélange ensuite cette pioche (Hidden Knowledge…).
+           */
+          type: 'REVEAL_OPPONENT_TOP';
+          count: number;
+          perShadowCard?: { type: 'ADD_THREATS'; count: number };
+          /**
+           * Pour chaque carte Peuples Libres : placer un jeton sur une de
+           * vos situations qui a déjà ce jeton.
+           */
+          perFreePeoplesCard?: {
+              type: 'PLACE_CULTURE_TOKEN';
+              culture: CardCulture;
+              onConditionWithToken: true;
+          };
       }
     | {
           /**
@@ -522,6 +555,16 @@ export type AbilityEffect =
           type: 'DISCARD_ALL';
           /** Filtre DNF, ou adversaires d’escarmouche de la source. */
           target: string[][] | 'SKIRMISHING';
+          /**
+           * Défausse les cibles qui escarmouchent une carte matchant ce filtre
+           * (Sent Back : each minion skirmishing a Wizard).
+           */
+          skirmishingWith?: string[][];
+          /**
+           * Après la défausse : place les cartes « with » (toujours en jeu)
+           * dans la pile de mort du propriétaire (Sent Back).
+           */
+          thenDeadPileMatching?: string[][];
       }
     | {
           type: 'DISCARD_FROM_HAND';
@@ -607,8 +650,9 @@ export type AbilityEffect =
       }
     | {
           /**
-           * Pose le prochain site du chemin depuis le deck d’aventure
-           * (Mere of Dead Faces…). Cible = id dans sitesDeck.
+           * Pose / remplace le prochain site hors déplacement (Mere…).
+           * Cible = id dans le sitesDeck du joueur qui active.
+           * Si le prochain est déjà là : remplace (transfert attachés/stack).
            */
           type: 'PLAY_NEXT_SITE';
           from: 'SITES_DECK';
@@ -666,8 +710,10 @@ export type AbilityEffect =
           /**
            * Choix forcé entre N suites d’effets (add 3 burdens or wound twice…).
            * Runtime : `pendingForcedChoice` + toaster, pas d’auto-application.
+           * `chooser` : qui décide (défaut OWNER ; OPPONENT = adversaire de la source).
            */
           type: 'CHOOSE_ONE';
+          chooser?: 'OWNER' | 'OPPONENT' | 'FREE_PEOPLE';
           options: {
               label: string;
               effects: AbilityEffect[];
@@ -726,6 +772,14 @@ export type AbilityTrigger =
           spotSiteKeyword?: { keyword: CardKeyword; count: number };
           /** Ignore si la carte est membre de la fellowship de départ. */
           exceptStartingFellowship?: boolean;
+      }
+    | {
+          /**
+           * À l’affectation (Mad Thing…) : le joueur indiqué assigne ce séide.
+           * Effet auto (ex. force +3 jusqu’au regroupement).
+           */
+          type: 'WHEN_ASSIGNED';
+          by: 'FREE_PEOPLE';
       }
     | {
           /**
@@ -1112,6 +1166,15 @@ export interface GameState {
     /** Morts en attente d’une éventuelle fenêtre CHARACTER_DIES. */
     pendingDeathQueue?: string[];
     responseWindow?: ResponseWindow;
+    /**
+     * Événement de réponse suspendu le temps de résoudre des blessures
+     * créées par une réponse (Tu es un menteur pendant WINS_SKIRMISH…).
+     */
+    suspendedResponse?: {
+        event: PendingEvent;
+        usedResponseKeys: string[];
+        activePlayerId: string;
+    };
     wearingTheOneRing?: {
         expiresAtPhase: AbilityEffectExpiry;
         replaceWoundWithBurdens: number;
@@ -1164,7 +1227,37 @@ export interface GameState {
         playerId: string;
         sourceInstanceId: string;
         abilityId: string;
-        skirmishId: string;
+        skirmishId?: string;
+        /** Titre toaster (site / événement…). */
+        title?: string;
+        message?: string;
+        /** Snapshot des options (événement déjà défaussé, etc.). */
+        options?: {
+            label: string;
+            effects: AbilityEffect[];
+        }[];
+        /** Option choisie en attente de défausse main. */
+        pendingOptionIndex?: number;
+        needsHandDiscard?: number;
+    };
+    /**
+     * Révélation de cartes (Hidden Knowledge…) : grille à valider
+     * avant menaces / jetons / mélange.
+     */
+    pendingReveal?: {
+        playerId: string;
+        opponentId: string;
+        sourceInstanceId: string;
+        abilityId: string;
+        cardIds: string[];
+        /** Situation déjà désignée pour les jetons FP (si plusieurs). */
+        conditionId?: string;
+        perShadowCard?: { type: 'ADD_THREATS'; count: number };
+        perFreePeoplesCard?: {
+            type: 'PLACE_CULTURE_TOKEN';
+            culture: CardCulture;
+            onConditionWithToken: true;
+        };
     };
     setupState?: {
         bids: Record<string, number | null>;
@@ -1218,7 +1311,7 @@ export interface ArcheryState {
     shadowRemainingWounds: number;
 }
 
-export type DevPresetType = 'STAT_PULSE_TEST' | 'WEB_STACK_TEST';
+export type DevPresetType = 'STAT_PULSE_TEST';
 
 export interface TempKeywordModifier {
     keyword: CardKeyword;

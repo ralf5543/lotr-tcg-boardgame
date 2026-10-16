@@ -198,7 +198,7 @@ export function canUseAbility(
                     abilityMatchesPhase(ability, rawPhase) &&
                     abilityMeetsPlayRestrictions(G, card, ability) &&
                     canPayAbilityCost(G, card, ability.cost) &&
-                    abilityHasLegalEffectTarget(G, card, ability)
+                    abilityHasLegalEffectTarget(G, card, ability, pid)
             );
             const attachmentPhaseAbilities = (card.attachments || []).flatMap(
                 (att) =>
@@ -208,7 +208,7 @@ export function canUseAbility(
                                 abilityMatchesPhase(ability, rawPhase) &&
                                 abilityMeetsPlayRestrictions(G, att, ability) &&
                                 canPayAbilityCost(G, att, ability.cost) &&
-                                abilityHasLegalEffectTarget(G, att, ability)
+                                abilityHasLegalEffectTarget(G, att, ability, pid)
                         )
                         .map((ability) => ({ att, ability }))
             );
@@ -236,7 +236,7 @@ export function canUseAbility(
     const hasMatchingAbility = (card.abilities || []).some(
         (ability) =>
             abilityMatchesPhase(ability, rawPhase) &&
-            abilityHasLegalEffectTarget(G, card, ability)
+            abilityHasLegalEffectTarget(G, card, ability, pid)
     );
     if (hasMatchingAbility || projectedForPhase) {
         if (!canActInActionWindow(G, pid)) {

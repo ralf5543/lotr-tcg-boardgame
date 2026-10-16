@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import type { BoardProps } from 'boardgame.io/react';
 import type { CardState, SiteCardState, GameState } from '../../game/types';
 import { Battlefield } from './components/Battlefield';
@@ -61,6 +61,7 @@ import {
     abilityNeedsDeckOrDiscardPick,
     abilityPlayFromDeckOrDiscardEffect,
     abilitySearchDeckToDiscardEffect,
+    abilityTakeFromDiscardEffect,
     abilityStacksOtherMinion,
     abilityPlaysOtherFromStack,
     isCostlessPlayFromCardStack,
@@ -74,10 +75,16 @@ import {
     getDeckOrDiscardPlayCandidates,
     getDeckSearchToDiscardCandidates,
 } from '../../game/logic/playFromOutOfPlay';
-import { getReplaceSiteCandidates, getReplaceablePathSitesInCurrentRegion, getOwnedPathSites } from '../../game/logic/sites';
+import {
+    getReplaceSiteCandidates,
+    getReplaceablePathSitesInCurrentRegion,
+    getOwnedPathSites,
+    getNextSitePathIndex,
+} from '../../game/logic/sites';
 import { isSiteReplaceForbidden } from '../../game/logic/siteReplaceRestrictions';
 import { findEventAbilityForPhase } from '../../game/engine/abilities/playEventAbility';
 import { abilityMatchesPhase } from '../../game/engine/abilities/collectAbilities';
+import { cardMatchesTarget } from '../../game/engine/validations/matchers';
 import { useCardPlayAudio } from '../../hooks/audio/useCardPlayAudio';
 import { useDiscardAudio } from '../../hooks/audio/useDiscardAudio';
 import { useStackAudio } from '../../hooks/audio/useStackAudio';
@@ -355,13 +362,24 @@ export const GameBoard: React.FC<GameBoardProps> = ({
                 return false;
             }
             const effect = abilityReplaceSiteEffect(ability);
-            const ownerId = abilityOwnerPlayerId(G, source);
+            const isPlayNext = (ability.effects || []).some(
+                (item) => item.type === 'PLAY_NEXT_SITE'
+            );
+            // PLAY_NEXT_SITE : deck du joueur qui active (Ombre sur Mere…).
+            const ownerId = isPlayNext
+                ? myId
+                : abilityOwnerPlayerId(G, source);
             if (!ownerId) return false;
+            const nextPathIndex = isPlayNext ? getNextSitePathIndex(G) : -1;
+            const occupyingNext =
+                isPlayNext && nextPathIndex >= 0 && !excludePathSiteId
+                    ? G.path?.[nextPathIndex]?.id
+                    : undefined;
             const candidates = getReplaceSiteCandidates(
                 G,
                 ownerId,
                 effect?.siteKeyword,
-                excludePathSiteId
+                excludePathSiteId || occupyingNext
             );
             if (candidates.length === 0) return false;
             const terrain = effect?.siteKeyword
@@ -376,7 +394,9 @@ export const GameBoard: React.FC<GameBoardProps> = ({
                     ? `Choisissez un site ${terrain} dans votre deck d’aventure.`
                     : abilityNeedsSiteExchange(ability)
                       ? 'Choisissez un site de votre deck d’aventure à échanger.'
-                      : 'Choisissez un site dans votre deck d’aventure.',
+                      : isPlayNext
+                        ? 'Choisissez le prochain site dans votre deck d’aventure.'
+                        : 'Choisissez un site dans votre deck d’aventure.',
                 onSelectTarget: (siteId) => {
                     onChosen(siteId);
                     stopTargeting();
@@ -384,7 +404,7 @@ export const GameBoard: React.FC<GameBoardProps> = ({
             });
             return true;
         },
-        [G, startTargeting, stopTargeting]
+        [G, myId, startTargeting, stopTargeting]
     );
 
     const requestPathThenDeckSite = useCallback(
@@ -664,43 +684,62 @@ export const GameBoard: React.FC<GameBoardProps> = ({
             );
             return;
         }
-        if (
-            chosenTargetId ||
-            (Array.isArray(chosenEffectTargetId)
-                ? chosenEffectTargetId.length
-                : chosenEffectTargetId)
-        ) {
-            moves.activateAbility?.(
-                sourceInstanceId,
-                abilityId,
-                chosenTargetId,
-                discardedHandIds,
-                chosenEffectTargetId
-            );
-            return;
-        }
-        // discardedHandIds seul : on continue le flux (ex. défausse puis STACK_PLAY).
-        if (
-            discardedHandIds?.length &&
-            !abilityPlaysOtherFromStack(ability) &&
-            !abilityNeedsEffectDesignation(G, source, ability) &&
-            !abilityNeedsStackSiteChoice(G, source, ability)
-        ) {
-            moves.activateAbility?.(
-                sourceInstanceId,
-                abilityId,
-                chosenTargetId,
-                discardedHandIds,
-                chosenEffectTargetId
-            );
-            return;
-        }
         const needsCost = abilityNeedsCostDesignation(G, source, ability);
         const needsEffect = abilityNeedsEffectDesignation(G, source, ability);
         const effectNeed = getEffectDesignationCount(G, source, ability);
         const needsStackSite = abilityNeedsStackSiteChoice(G, source, ability);
         const stacksOther = abilityStacksOtherMinion(ability);
         const playsOtherFromStack = abilityPlaysOtherFromStack(ability);
+        const needsSite =
+            abilityNeedsSiteReplace(ability) ||
+            abilityNeedsSiteExchange(ability);
+        const hasPrefillCost = Boolean(chosenTargetId);
+        const hasPrefillEffect = Boolean(
+            Array.isArray(chosenEffectTargetId)
+                ? chosenEffectTargetId.length
+                : chosenEffectTargetId
+        );
+        // Coût prérempli (projection Mere → Gollum) : ne pas court-circuiter
+        // le choix de site / d’effet encore requis.
+        if (hasPrefillCost || hasPrefillEffect) {
+            const stillNeedsSite = needsSite && !hasPrefillEffect;
+            const stillNeedsEffect = needsEffect && !hasPrefillEffect;
+            const stillNeedsStack =
+                needsStackSite && !stacksOther && !hasPrefillEffect;
+            if (
+                !stillNeedsSite &&
+                !stillNeedsEffect &&
+                !stillNeedsStack &&
+                !playsOtherFromStack &&
+                !abilityNeedsDeckOrDiscardPick(ability)
+            ) {
+                moves.activateAbility?.(
+                    sourceInstanceId,
+                    abilityId,
+                    chosenTargetId,
+                    discardedHandIds,
+                    chosenEffectTargetId
+                );
+                return;
+            }
+        }
+        // discardedHandIds seul : on continue le flux (ex. défausse puis STACK_PLAY).
+        if (
+            discardedHandIds?.length &&
+            !playsOtherFromStack &&
+            !needsEffect &&
+            !needsStackSite &&
+            !needsSite
+        ) {
+            moves.activateAbility?.(
+                sourceInstanceId,
+                abilityId,
+                chosenTargetId,
+                discardedHandIds,
+                chosenEffectTargetId
+            );
+            return;
+        }
 
         const commitAbility = (
             costId?: string,
@@ -903,33 +942,10 @@ export const GameBoard: React.FC<GameBoardProps> = ({
         if (needsEffect && requestEffect()) {
             return;
         }
-        if (
-            !needsEffect &&
-            requestDesignation(source, ability, (cardId) => {
-                stopTargeting();
-                moves.activateAbility?.(sourceInstanceId, abilityId, cardId);
-            })
-        ) {
-            return;
-        }
-        if (
-            abilityNeedsHandDiscard(ability) &&
-            requestHandDiscard(source, ability, (cardIds) => {
-                moves.activateAbility?.(
-                    sourceInstanceId,
-                    abilityId,
-                    undefined,
-                    cardIds
-                );
-            })
-        ) {
-            return;
-        }
-        if (
-            abilityNeedsSiteReplace(ability) ||
-            abilityNeedsSiteExchange(ability)
-        ) {
-            if (needsCost) {
+        // Site (Mere…) avant la désignation générique : sinon on active avec
+        // le seul coût et PLAY_NEXT_SITE échoue (rollback → pas d’affaiblissement).
+        if (needsSite) {
+            if (needsCost && !chosenTargetId) {
                 requestDesignation(
                     source,
                     ability,
@@ -951,8 +967,31 @@ export const GameBoard: React.FC<GameBoardProps> = ({
                 source,
                 ability,
                 sourceInstanceId,
-                abilityId
+                abilityId,
+                chosenTargetId
             );
+            return;
+        }
+        if (
+            !needsEffect &&
+            requestDesignation(source, ability, (cardId) => {
+                stopTargeting();
+                moves.activateAbility?.(sourceInstanceId, abilityId, cardId);
+            })
+        ) {
+            return;
+        }
+        if (
+            abilityNeedsHandDiscard(ability) &&
+            requestHandDiscard(source, ability, (cardIds) => {
+                moves.activateAbility?.(
+                    sourceInstanceId,
+                    abilityId,
+                    undefined,
+                    cardIds
+                );
+            })
+        ) {
             return;
         }
         if (needsStackSite && !stacksOther) {
@@ -985,6 +1024,35 @@ export const GameBoard: React.FC<GameBoardProps> = ({
                     );
                 }, ability)
             ) {
+                return;
+            }
+        }
+        if (abilityNeedsDeckOrDiscardPick(ability)) {
+            const take = abilityTakeFromDiscardEffect(ability);
+            if (take) {
+                const discard = G.players[myId]?.discard || [];
+                const selectable = discard.filter(
+                    (c) => c && cardMatchesTarget(c, take.target)
+                );
+                if (selectable.length === 0) return;
+                if (selectable.length === 1) {
+                    const only = selectable[0]!;
+                    moves.activateAbility?.(
+                        sourceInstanceId,
+                        abilityId,
+                        only.instanceId || only.id
+                    );
+                    return;
+                }
+                setDeckDiscardPick({
+                    activate: { sourceInstanceId, abilityId },
+                    selectableCardIds: selectable.flatMap(cardTargetIds),
+                    deck: [],
+                    discard: [...discard],
+                    title: 'Défausse',
+                    subtitle:
+                        'Choisissez un séide à prendre dans votre main.',
+                });
                 return;
             }
         }
@@ -1114,12 +1182,14 @@ export const GameBoard: React.FC<GameBoardProps> = ({
                 }
                 const attachHost =
                     effect.attachTo === 'SELF' ? source : null;
+                const from = effect.from || 'DECK_OR_DISCARD';
                 const selectable = getDeckOrDiscardPlayCandidates(
                     G,
                     myId,
                     effect.target,
-                    'fellowship',
-                    attachHost
+                    'shadow',
+                    attachHost,
+                    from
                 );
                 if (selectable.length === 0) {
                     moves.resolveWhenPlayedChoice?.(false);
@@ -1129,8 +1199,18 @@ export const GameBoard: React.FC<GameBoardProps> = ({
                 setDeckDiscardPick({
                     whenPlayed: true,
                     selectableCardIds: selectable.flatMap(cardTargetIds),
-                    deck: pool.deck,
-                    discard: pool.discard,
+                    deck: from === 'DISCARD' ? [] : pool.deck,
+                    discard: from === 'DECK' ? [] : pool.discard,
+                    title:
+                        from === 'DECK'
+                            ? 'Pioche'
+                            : from === 'DISCARD'
+                              ? 'Défausse'
+                              : undefined,
+                    subtitle:
+                        from === 'DECK'
+                            ? 'Choisissez une possession jouable dans votre pioche.'
+                            : undefined,
                 });
                 return;
             }
@@ -1195,9 +1275,12 @@ export const GameBoard: React.FC<GameBoardProps> = ({
     const [deckDiscardPick, setDeckDiscardPick] = useState<{
         handIndex?: number;
         whenPlayed?: boolean;
+        activate?: { sourceInstanceId: string; abilityId: string };
         selectableCardIds: string[];
         deck: CardState[];
         discard: CardState[];
+        title?: string;
+        subtitle?: string;
     } | null>(null);
 
     /** Pile empilée (Web / Goblin Swarms…) — même overlay que la défausse. */
@@ -1231,8 +1314,88 @@ export const GameBoard: React.FC<GameBoardProps> = ({
         moves.cancelPendingPlay?.();
     }, [moves]);
 
+    /** Révélation (Hidden Knowledge…) : grille des N premières cartes, validation via toaster. */
+    const revealOverlay = useMemo(() => {
+        const pending = G.pendingReveal;
+        if (!pending) return null;
+        const opp = G.players[pending.opponentId];
+        const cards = pending.cardIds
+            .map((id) =>
+                (opp?.deck || []).find(
+                    (c) => c.instanceId === id || c.id === id
+                )
+            )
+            .filter((c): c is CardState => Boolean(c));
+        return {
+            title: 'Cartes révélées',
+            subtitle:
+                'Cinq premières cartes de la pioche adverse. Validez dans le toaster pour appliquer menaces / jetons et mélanger.',
+            cards,
+        };
+    }, [G.pendingReveal, G.players]);
+
+    /** Défausse main pour un choix forcé (Pelennor Flat…). */
+    const forcedHandDiscardKeyRef = useRef<string | null>(null);
+    useEffect(() => {
+        const pending = G.pendingForcedChoice;
+        if (
+            !pending?.needsHandDiscard ||
+            pending.pendingOptionIndex === undefined ||
+            pending.playerId !== myId
+        ) {
+            forcedHandDiscardKeyRef.current = null;
+            return;
+        }
+        const key = `${pending.sourceInstanceId}:${pending.pendingOptionIndex}:${pending.needsHandDiscard}`;
+        if (forcedHandDiscardKeyRef.current === key) return;
+        if (targetingKind === 'HAND_DISCARD') return;
+        forcedHandDiscardKeyRef.current = key;
+
+        const need = pending.needsHandDiscard;
+        const optionIndex = pending.pendingOptionIndex;
+        const source =
+            (findTargetCard(G, pending.sourceInstanceId) as CardState | null) ||
+            ({
+                id: pending.sourceInstanceId,
+                kind: 'SITE',
+                type: 'SITE',
+            } as CardState);
+        const ability = {
+            id: pending.abilityId,
+            phases: [],
+            cost: [],
+            effects: [
+                { type: 'DISCARD_FROM_HAND' as const, count: need },
+            ],
+            source: 'SELF' as const,
+            text: '',
+        };
+        requestHandDiscard(
+            source,
+            ability,
+            (cardIds) => {
+                forcedHandDiscardKeyRef.current = null;
+                moves.resolveForcedChoiceMove?.(optionIndex, cardIds);
+            },
+            need
+        );
+    }, [
+        G.pendingForcedChoice,
+        G,
+        myId,
+        targetingKind,
+        requestHandDiscard,
+        moves,
+    ]);
+
     const outOfPlayOverlay = useMemo(() => {
-        if (!openOutOfPlayZone || deckDiscardPick || stackOverlay) return null;
+        if (
+            !openOutOfPlayZone ||
+            deckDiscardPick ||
+            stackOverlay ||
+            revealOverlay
+        )
+            return null;
 
         switch (openOutOfPlayZone) {
             case 'my-discard':
@@ -1262,6 +1425,7 @@ export const GameBoard: React.FC<GameBoardProps> = ({
         openOutOfPlayZone,
         deckDiscardPick,
         stackOverlay,
+        revealOverlay,
         me.deadPile,
         me.discard,
         opponent.deadPile,
@@ -2255,7 +2419,8 @@ export const GameBoard: React.FC<GameBoardProps> = ({
                         hand={opponent.hand || []}
                         hiddenCardId={
                             G.pendingPlay?.playerId === oppId
-                                ? G.pendingPlay.card.id
+                                ? G.pendingPlay.card.instanceId ||
+                                  G.pendingPlay.card.id
                                 : undefined
                         }
                     />
@@ -2363,19 +2528,43 @@ export const GameBoard: React.FC<GameBoardProps> = ({
                             }
                         }}
                     />
+                    {revealOverlay && (
+                        <CardZoneOverlay
+                            title={revealOverlay.title}
+                            subtitle={revealOverlay.subtitle}
+                            cards={revealOverlay.cards}
+                            currentSiteIndex={currentSiteIndex}
+                            onClose={() => {
+                                /* Validation uniquement via toaster */
+                            }}
+                        />
+                    )}
                     {deckDiscardPick && (
                         <CardZoneOverlay
-                            title="Pioche ou défausse"
-                            subtitle="Choisissez une carte jouable dans la pioche ou la défausse"
+                            title={
+                                deckDiscardPick.title || 'Pioche ou défausse'
+                            }
+                            subtitle={
+                                deckDiscardPick.subtitle ||
+                                'Choisissez une carte jouable dans la pioche ou la défausse'
+                            }
                             sections={[
-                                {
-                                    title: 'Pioche',
-                                    cards: deckDiscardPick.deck,
-                                },
-                                {
-                                    title: 'Défausse',
-                                    cards: deckDiscardPick.discard,
-                                },
+                                ...(deckDiscardPick.deck.length > 0
+                                    ? [
+                                          {
+                                              title: 'Pioche',
+                                              cards: deckDiscardPick.deck,
+                                          },
+                                      ]
+                                    : []),
+                                ...(deckDiscardPick.discard.length > 0
+                                    ? [
+                                          {
+                                              title: 'Défausse',
+                                              cards: deckDiscardPick.discard,
+                                          },
+                                      ]
+                                    : []),
                             ]}
                             currentSiteIndex={currentSiteIndex}
                             selectableCardIds={
@@ -2384,6 +2573,7 @@ export const GameBoard: React.FC<GameBoardProps> = ({
                             onSelectCard={(cardId) => {
                                 const whenPlayed = deckDiscardPick.whenPlayed;
                                 const handIndex = deckDiscardPick.handIndex;
+                                const activate = deckDiscardPick.activate;
                                 setDeckDiscardPick(null);
                                 if (whenPlayed) {
                                     moves.resolveWhenPlayedChoice?.(
@@ -2394,6 +2584,14 @@ export const GameBoard: React.FC<GameBoardProps> = ({
                                     audioService.play('CARD_PLAY');
                                     return;
                                 }
+                                if (activate) {
+                                    moves.activateAbility?.(
+                                        activate.sourceInstanceId,
+                                        activate.abilityId,
+                                        cardId
+                                    );
+                                    return;
+                                }
                                 if (handIndex === undefined) return;
                                 moves.playCard?.(handIndex, cardId);
                                 audioService.play('CARD_PLAY');
@@ -2402,6 +2600,10 @@ export const GameBoard: React.FC<GameBoardProps> = ({
                                 if (deckDiscardPick.whenPlayed) {
                                     setDeckDiscardPick(null);
                                     moves.resolveWhenPlayedChoice?.(false);
+                                    return;
+                                }
+                                if (deckDiscardPick.activate) {
+                                    setDeckDiscardPick(null);
                                     return;
                                 }
                                 closeDeckDiscardPick();
@@ -2462,7 +2664,34 @@ export const GameBoard: React.FC<GameBoardProps> = ({
                     )}
                     <Dock
                         handCount={me.hand?.length || 0}
-                        sitesCount={me.sitesDeck?.length || 0}
+                        sitesCount={(() => {
+                            // Mere (Ombre) : cibles = deck d’aventure FP, pas le nôtre.
+                            if (
+                                targetingKind === 'SITE_REPLACE' &&
+                                targetableCardIds.length > 0
+                            ) {
+                                for (const player of Object.values(
+                                    G.players || {}
+                                )) {
+                                    const deck = player?.sitesDeck || [];
+                                    if (
+                                        deck.some(
+                                            (s) =>
+                                                s &&
+                                                (targetableCardIds.includes(
+                                                    s.instanceId || ''
+                                                ) ||
+                                                    targetableCardIds.includes(
+                                                        s.id
+                                                    ))
+                                        )
+                                    ) {
+                                        return deck.length;
+                                    }
+                                }
+                            }
+                            return me.sitesDeck?.length || 0;
+                        })()}
                         requestedTab={getRequestedTab()}
                         handView={
                             <Hand
@@ -2480,7 +2709,38 @@ export const GameBoard: React.FC<GameBoardProps> = ({
                                 }}
                             />
                         }
-                        sitesView={<SitesPicker sites={me.sitesDeck || []} />}
+                        sitesView={
+                            <SitesPicker
+                                sites={(() => {
+                                    if (
+                                        targetingKind === 'SITE_REPLACE' &&
+                                        targetableCardIds.length > 0
+                                    ) {
+                                        for (const player of Object.values(
+                                            G.players || {}
+                                        )) {
+                                            const deck =
+                                                player?.sitesDeck || [];
+                                            if (
+                                                deck.some(
+                                                    (s) =>
+                                                        s &&
+                                                        (targetableCardIds.includes(
+                                                            s.instanceId || ''
+                                                        ) ||
+                                                            targetableCardIds.includes(
+                                                                s.id
+                                                            ))
+                                                )
+                                            ) {
+                                                return deck;
+                                            }
+                                        }
+                                    }
+                                    return me.sitesDeck || [];
+                                })()}
+                            />
+                        }
                     />
                     </S.BoardContainer>
                 </DragProvider>

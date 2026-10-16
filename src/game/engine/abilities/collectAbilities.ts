@@ -145,7 +145,8 @@ export function collectVisibleAbilities(
         if (
             ability.trigger?.type === 'WHEN_PLAYED' ||
             ability.trigger?.type === 'YOU_PLAY' ||
-            ability.trigger?.type === 'WHILE'
+            ability.trigger?.type === 'WHILE' ||
+            ability.trigger?.type === 'WHEN_ASSIGNED'
         ) {
             return false;
         }
@@ -209,7 +210,20 @@ function cultureSymbol(token: string): string {
     return `<symbol>${token.toLowerCase()}</symbol>`;
 }
 
+/** Nom propre (Gollum, Sméagol…) : casse mixte — pas culture / classe. */
+function isProperNameFilterToken(token: string): boolean {
+    const trim = token.trim();
+    return (
+        trim.length > 0 &&
+        trim !== trim.toUpperCase() &&
+        /[a-zà-ÿ]/i.test(trim)
+    );
+}
+
 function translateCriterionToken(token: string): string {
+    // « Gollum » nu = personnage nommé, pas le symbole culture Gollum.
+    if (isProperNameFilterToken(token)) return token;
+
     const upper = token.toUpperCase();
     if (upper.startsWith('SIGNET_')) {
         const name = upper.slice('SIGNET_'.length);
@@ -252,7 +266,11 @@ function partitionFilterTokens(tokens: string[]): {
     types: string[];
     other: string[];
 } {
-    const upper = tokens.map((token) => token.toUpperCase());
+    const properNames = tokens.filter((token) => isProperNameFilterToken(token));
+    const classTokens = tokens.filter(
+        (token) => !isProperNameFilterToken(token)
+    );
+    const upper = classTokens.map((token) => token.toUpperCase());
     const types = upper.filter((token) => TYPE_TOKENS.has(token));
     const unambiguousCultures = upper.filter(
         (token) => CULTURE_TOKENS.has(token) && !RACE_TOKENS.has(token)
@@ -273,7 +291,10 @@ function partitionFilterTokens(tokens: string[]): {
     }
 
     const classified = new Set([...cultures, ...races, ...types]);
-    const other = upper.filter((token) => !classified.has(token));
+    const other = [
+        ...upper.filter((token) => !classified.has(token)),
+        ...properNames,
+    ];
     return { cultures, races, types, other };
 }
 
@@ -468,6 +489,27 @@ function formatEffectBit(
         return who ? `défausser ${who}` : 'défausser';
     }
     if (effect.type === 'DISCARD_ALL') {
+        if (effect.skirmishingWith) {
+            const withWho = formatFilterList(effect.skirmishingWith.flat());
+            const who =
+                effect.target === 'SKIRMISHING'
+                    ? 'chaque séide'
+                    : `chaque ${formatFilterList(
+                          Array.isArray(effect.target)
+                              ? effect.target.flat()
+                              : []
+                      )}`;
+            const dead = effect.thenDeadPileMatching
+                ? ` et placer ce ${formatFilterList(effect.thenDeadPileMatching.flat())} dans votre pile de mort`
+                : '';
+            return `défausser ${who} escarmouchant un ${withWho}${dead}`;
+        }
+        if (effect.target === 'SKIRMISHING') {
+            return 'défausser chaque séide au combat';
+        }
+        if (Array.isArray(effect.target)) {
+            return `défausser chaque ${formatFilterList(effect.target.flat())}`;
+        }
         return 'défausser toutes les situations';
     }
     if (effect.type === 'PREVENT_WOUND') {
@@ -534,6 +576,9 @@ function formatEffectBit(
         const bit = translateKeyword(effect.keyword);
         const who = formatTargetPhrase(effect.target);
         return who ? `${bit} à ${who}` : bit;
+    }
+    if (effect.type === 'PLAY_NEXT_SITE') {
+        return 'jouer le prochain site de la communauté';
     }
     if (effect.type === 'REPLACE_SITE') {
         if (effect.from === 'SITES_DECK') {
@@ -614,6 +659,12 @@ function formatEffectBit(
         const who = formatTargetPhrase(effect.target);
         return `jouer ${who} empilé ici (comme depuis la main)`;
     }
+    if (effect.type === 'TAKE_FROM_DISCARD') {
+        return 'prendre une carte de la défausse en main';
+    }
+    if (effect.type === 'REVEAL_OPPONENT_TOP') {
+        return `révéler les ${effect.count} premières cartes de la pioche adverse`;
+    }
     if (effect.type === 'PLAY_FROM_DECK_OR_DISCARD') {
         const who = formatTargetPhrase(effect.target);
         return who
@@ -660,6 +711,25 @@ function formatEffectBit(
     return '';
 }
 
+function formatProperOrClassWho(
+    tokens: string[],
+    asDesignation: boolean
+): string {
+    if (tokens.includes('PIPEWEED')) {
+        return asDesignation ? 'une herbe à pipe' : 'herbe à pipe';
+    }
+    const label = formatFilterList(tokens);
+    // Nom propre (Gollum, Sméagol…) : « votre », comme le texte « your … ».
+    if (
+        tokens.length === 1 &&
+        isProperNameCostToken(tokens[0]!)
+    ) {
+        return `votre ${label}`;
+    }
+    if (asDesignation) return `un ${label}`;
+    return label;
+}
+
 function formatCostWho(
     target: CostSelector['target'] | undefined,
     source: CardState,
@@ -667,13 +737,18 @@ function formatCostWho(
 ): string {
     if (target === 'BEARER') return 'le détenteur';
     if (Array.isArray(target)) {
-        const tokens = target.flat();
-        if (tokens.includes('PIPEWEED')) {
-            return asDesignation ? 'une herbe à pipe' : 'herbe à pipe';
+        // DNF : [[Gollum],[Sméagol]] = « votre Gollum ou votre Sméagol »
+        if (
+            target.length > 1 &&
+            target.every((branch) => Array.isArray(branch))
+        ) {
+            return target
+                .map((branch) =>
+                    formatProperOrClassWho(branch.flat(), asDesignation)
+                )
+                .join(' ou ');
         }
-        const label = formatFilterList(tokens);
-        if (asDesignation) return `un ${label}`;
-        return label;
+        return formatProperOrClassWho(target.flat(), asDesignation);
     }
     return source.i18n?.fr?.title || source.title || 'cette carte';
 }
@@ -719,6 +794,11 @@ function formatCostLabel(ability: Ability, source: CardState): string {
     if (option?.addThreats && option.addThreats > 0) {
         const n = option.addThreats;
         parts.push(`ajouter ${n} menace${n > 1 ? 's' : ''}`);
+    }
+    if (option?.addThreatsEqualTo === 'SKIRMISHING_MINIONS_VITALITY') {
+        parts.push(
+            'ajouter autant de menaces que la vitalité des séides au combat'
+        );
     }
     if (option?.removeTwilight && option.removeTwilight > 0) {
         parts.push(

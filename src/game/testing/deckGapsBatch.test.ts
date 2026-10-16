@@ -406,6 +406,62 @@ describe('parseAbilities — deck gaps batch 2 (Noble Leaders / Gandalf / Promis
         );
     });
 
+    it('Mad Thing : To assign → WHEN_ASSIGNED force +3 jusqu’au regroupement', () => {
+        expect(
+            parseAbilities(
+                'To assign Gollum to a skirmish, the Free Peoples player must make Gollum strength +3 until the regroup phase or add a burden.',
+                'Gollum',
+                '10R21'
+            )
+        ).toEqual(
+            expect.arrayContaining([
+                expect.objectContaining({
+                    trigger: { type: 'WHEN_ASSIGNED', by: 'FREE_PEOPLE' },
+                    effects: [
+                        expect.objectContaining({
+                            type: 'ADD_TEMP_STAT',
+                            stat: 'STRENGTH',
+                            value: 3,
+                            target: 'SELF',
+                            expiresAtPhase: 'REGROUP',
+                        }),
+                    ],
+                }),
+            ])
+        );
+    });
+
+    it('Sent Back : Skirmish discard self → discard minions skirmishing Wizard + dead pile', () => {
+        expect(
+            parseAbilities(
+                '**Skirmish:** Discard this condition to discard each minion skirmishing a Wizard. Place that Wizard in your dead pile. \n**Fellowship** or **Regroup:** Play a Wizard (even if another copy of that Wizard is in your dead pile).',
+                'Sent Back',
+                '9R27'
+            )
+        ).toEqual(
+            expect.arrayContaining([
+                expect.objectContaining({
+                    phases: ['SKIRMISH'],
+                    cost: [
+                        {
+                            discardFromPlay: [
+                                { count: 1, target: 'SELF' },
+                            ],
+                        },
+                    ],
+                    effects: [
+                        expect.objectContaining({
+                            type: 'DISCARD_ALL',
+                            target: [['MINION']],
+                            skirmishingWith: [['WIZARD']],
+                            thenDeadPileMatching: [['WIZARD']],
+                        }),
+                    ],
+                }),
+            ])
+        );
+    });
+
     it('Threatening Guide : force par menace + wins → add threat', () => {
         expect(
             parseAbilities(
@@ -585,5 +641,182 @@ describe('parseAbilities — deck gaps batch 2 (Noble Leaders / Gandalf / Promis
                 }),
             ])
         );
+    });
+
+    it('Hidden Knowledge : reveal top 5 + threats + tokens', () => {
+        expect(
+            parseAbilities(
+                'Spot a <symbol>gondor</symbol> companion to reveal the top 5 cards of an opponent’s draw deck. For each Shadow card revealed, add a threat. For each Free Peoples card revealed, place a <symbol>gondor</symbol> token on one of your conditions with a <symbol>gondor</symbol> token on it. Shuffle that draw deck.',
+                'Hidden Knowledge',
+                '7R104'
+            )
+        ).toEqual([
+            expect.objectContaining({
+                phases: ['FELLOWSHIP'],
+                cost: [
+                    {
+                        spot: [
+                            {
+                                count: 1,
+                                target: [['GONDOR', 'COMPANION']],
+                            },
+                        ],
+                    },
+                ],
+                effects: [
+                    {
+                        type: 'REVEAL_OPPONENT_TOP',
+                        count: 5,
+                        perShadowCard: { type: 'ADD_THREATS', count: 1 },
+                        perFreePeoplesCard: {
+                            type: 'PLACE_CULTURE_TOKEN',
+                            culture: 'GONDOR',
+                            onConditionWithToken: true,
+                        },
+                    },
+                ],
+            }),
+        ]);
+    });
+
+    it('Cruel Caradhras : Maneuver exert → adversaire choix RB / fardeau', () => {
+        expect(
+            parseAbilities(
+                '<keyword>Maneuver:</keyword> Exert a <symbol>isengard</symbol> minion to make the opponent choose to either exert the Ring-bearer or add a burden.',
+                'Cruel Caradhras',
+                '1R124'
+            )
+        ).toEqual(
+            expect.arrayContaining([
+                expect.objectContaining({
+                    phases: ['MANEUVER'],
+                    cost: [
+                        {
+                            exert: [
+                                expect.objectContaining({
+                                    count: 1,
+                                    target: [['ISENGARD', 'MINION']],
+                                }),
+                            ],
+                        },
+                    ],
+                    effects: [
+                        expect.objectContaining({
+                            type: 'CHOOSE_ONE',
+                            chooser: 'OPPONENT',
+                            options: [
+                                expect.objectContaining({
+                                    effects: [
+                                        {
+                                            type: 'EXERT',
+                                            count: 1,
+                                            target: [['RING-BEARER']],
+                                        },
+                                    ],
+                                }),
+                                expect.objectContaining({
+                                    effects: [
+                                        { type: 'ADD_BURDENS', count: 1 },
+                                    ],
+                                }),
+                            ],
+                        }),
+                    ],
+                }),
+            ])
+        );
+    });
+
+    it('Pelennor Flat : début Manœuvre choix FP fardeau / défausse 3', () => {
+        expect(
+            parseSiteAbilities(
+                '**Plains.** At the start of the maneuver phase, the Free Peoples player must add a burden or discard 3 cards from hand.',
+                '11S254'
+            )
+        ).toEqual(
+            expect.arrayContaining([
+                expect.objectContaining({
+                    phases: ['START_OF_MANEUVER'],
+                    effects: [
+                        expect.objectContaining({
+                            type: 'CHOOSE_ONE',
+                            chooser: 'FREE_PEOPLE',
+                            options: [
+                                expect.objectContaining({
+                                    effects: [
+                                        { type: 'ADD_BURDENS', count: 1 },
+                                    ],
+                                }),
+                                expect.objectContaining({
+                                    effects: [
+                                        {
+                                            type: 'DISCARD_FROM_HAND',
+                                            count: 3,
+                                        },
+                                    ],
+                                }),
+                            ],
+                        }),
+                    ],
+                }),
+            ])
+        );
+    });
+
+    it('Slippery Sneak : skirmish threats=vitality + regroup take from discard', () => {
+        expect(
+            parseAbilities(
+                '<keyword>Skirmish:</keyword> Add a number of threats equal to the total vitality of the minions Sméagol is skirmishing to discard Sméagol. <keyword>Regroup:</keyword> Discard Sméagol to take a <symbol>gollum</symbol> minion from your discard pile into hand.',
+                'Sméagol',
+                '8R27'
+            )
+        ).toEqual([
+            expect.objectContaining({
+                phases: ['SKIRMISH'],
+                cost: [
+                    {
+                        addThreatsEqualTo: 'SKIRMISHING_MINIONS_VITALITY',
+                    },
+                ],
+                effects: [{ type: 'DISCARD', count: 1, target: 'SELF' }],
+            }),
+            expect.objectContaining({
+                phases: ['REGROUP'],
+                cost: [
+                    {
+                        discardFromPlay: [{ count: 1, target: 'SELF' }],
+                    },
+                ],
+                effects: [
+                    {
+                        type: 'TAKE_FROM_DISCARD',
+                        target: [['GOLLUM', 'MINION']],
+                    },
+                ],
+            }),
+        ]);
+    });
+
+    it('Shelob Eater of Light : when-played play possession from deck (pas attachTo SELF)', () => {
+        const abs = parseAbilities(
+            'When you play Shelob, you may play a <symbol>gollum</symbol> possession from your draw deck. Shelob is strength +3 for each minion stacked on a <symbol>gollum</symbol> possession.',
+            'Shelob',
+            '8R25'
+        );
+        expect(abs).toEqual(
+            expect.arrayContaining([
+                expect.objectContaining({
+                    trigger: { type: 'WHEN_PLAYED' },
+                    effects: [
+                        {
+                            type: 'PLAY_FROM_DECK_OR_DISCARD',
+                            target: [['GOLLUM', 'POSSESSION']],
+                            from: 'DECK',
+                        },
+                    ],
+                }),
+            ])
+        );
+        expect(abs?.[0]?.effects?.[0]).not.toHaveProperty('attachTo');
     });
 });

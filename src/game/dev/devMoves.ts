@@ -22,6 +22,7 @@ function resetPhaseMachine(G: GameState): void {
     G.actionWindow = undefined;
     G.responseWindow = undefined;
     G.pendingEvent = undefined;
+    G.suspendedResponse = undefined;
     G.woundQueue = undefined;
     G.skirmishes = [];
     G.activeSkirmishId = undefined;

@@ -22,6 +22,7 @@ import {
     getReplaceablePathSitesInCurrentRegion,
     getOwnedPathSites,
     canExchangeOwnedPathSite,
+    canPlayNextSiteFromDeck,
     canTakeControlOfASite,
     canLiberateASite,
     getSitesControlledBy,
@@ -37,7 +38,10 @@ import {
     canReplaceSiteInCurrentRegionForPlayer,
     isSiteReplaceForbidden,
 } from '../../logic/siteReplaceRestrictions';
-import { abilityOwnerPlayerId } from './payAbilityCost';
+import {
+    abilityOwnerPlayerId,
+    playNextSiteDeckPlayerId,
+} from './payAbilityCost';
 import {
     canReinforce,
     findInPlayCardOwnerId,
@@ -56,6 +60,7 @@ import {
     attachesToSite,
     canAttachToCharacter,
 } from '../canPlayCard';
+import { cardMatchesTarget } from '../validations/matchers';
 
 export function cardTargetIds(card: CardState): string[] {
     const ids = [card.instanceId, card.id].filter(Boolean);
@@ -370,10 +375,30 @@ export function getEffectDesignationCandidates(
     // Pioche / défausse : pas de halo plateau (overlay dédié).
     if (
         (ability.effects || []).some(
-            (item) => item.type === 'PLAY_FROM_DECK_OR_DISCARD'
+            (item) =>
+                item.type === 'PLAY_FROM_DECK_OR_DISCARD' ||
+                item.type === 'TAKE_FROM_DISCARD'
         )
     ) {
         return [];
+    }
+
+    const revealTop = (ability.effects || []).find(
+        (item) => item.type === 'REVEAL_OPPONENT_TOP'
+    );
+    if (revealTop && revealTop.type === 'REVEAL_OPPONENT_TOP') {
+        const place = revealTop.perFreePeoplesCard;
+        if (!place || place.type !== 'PLACE_CULTURE_TOKEN') return [];
+        const ownerId = abilityOwnerPlayerId(G, source);
+        if (!ownerId) return [];
+        const conditions = (G.players[ownerId]?.supportArea || []).filter(
+            (c) =>
+                c &&
+                c.type === 'CONDITION' &&
+                tokenCountOnCard(c, place.culture) > 0
+        );
+        // Désigner seulement s’il y a plusieurs situations éligibles.
+        return conditions.length > 1 ? conditions : [];
     }
 
     const forceAssign = (ability.effects || []).find(
@@ -441,6 +466,8 @@ export function getEffectDesignationCandidates(
         (item) =>
             item.type !== 'DISCARD_ALL' &&
             item.type !== 'PLAY_FROM_DECK_OR_DISCARD' &&
+            item.type !== 'TAKE_FROM_DISCARD' &&
+            item.type !== 'REVEAL_OPPONENT_TOP' &&
             !(item.type === 'EXERT' && item.all) &&
             'target' in item &&
             (Array.isArray(item.target) || item.target === 'SKIRMISHING')
@@ -523,7 +550,8 @@ export function getEffectDesignationCount(
 export function abilityHasLegalEffectTarget(
     G: GameState,
     source: CardState,
-    ability: Ability
+    ability: Ability,
+    actingPlayerId?: string
 ): boolean {
     for (const effect of ability.effects || []) {
         if (effect.type === 'MAKE_RING_BEARER') {
@@ -531,6 +559,25 @@ export function abilityHasLegalEffectTarget(
             continue;
         }
         if (effect.type === 'DISCARD_ALL') {
+            if (effect.skirmishingWith) {
+                const involving = resolveCostTarget(
+                    G,
+                    source,
+                    effect.skirmishingWith
+                ).filter((card) => {
+                    const id = card.instanceId || card.id;
+                    if (!id) return false;
+                    return (G.skirmishes || []).some((sk) => {
+                        if (sk.resolved) return false;
+                        if (sk.companionId === id) return true;
+                        const mids =
+                            sk.minionIds ||
+                            (sk.minionId ? [sk.minionId] : []);
+                        return mids.includes(id);
+                    });
+                });
+                if (involving.length === 0) return false;
+            }
             continue;
         }
         if (effect.type === 'CHOOSE_ONE') {
@@ -562,9 +609,13 @@ export function abilityHasLegalEffectTarget(
             continue;
         }
         if (effect.type === 'PLAY_NEXT_SITE') {
-            const ownerId = abilityOwnerPlayerId(G, source);
+            const ownerId = playNextSiteDeckPlayerId(
+                G,
+                source,
+                actingPlayerId
+            );
             if (!ownerId) return false;
-            if (getReplaceSiteCandidates(G, ownerId).length === 0) {
+            if (!canPlayNextSiteFromDeck(G, ownerId)) {
                 return false;
             }
             continue;
@@ -638,12 +689,35 @@ export function abilityHasLegalEffectTarget(
                     G,
                     ownerId,
                     effect.target,
-                    'fellowship',
-                    attachHost
+                    'shadow',
+                    attachHost,
+                    effect.from || 'DECK_OR_DISCARD'
                 ).length < 1
             ) {
                 return false;
             }
+            continue;
+        }
+        if (effect.type === 'TAKE_FROM_DISCARD') {
+            const ownerId = abilityOwnerPlayerId(G, source);
+            if (!ownerId) return false;
+            const discard = G.players[ownerId]?.discard || [];
+            const hits = discard.filter(
+                (card) => card && cardMatchesTarget(card, effect.target)
+            );
+            if (hits.length < 1) return false;
+            continue;
+        }
+        if (effect.type === 'REVEAL_OPPONENT_TOP') {
+            const ownerId = abilityOwnerPlayerId(G, source);
+            if (!ownerId) return false;
+            const opponentId =
+                ownerId === (G.fpPlayerId || '0')
+                    ? Object.keys(G.players).find((id) => id !== ownerId)
+                    : G.fpPlayerId || '0';
+            if (!opponentId) return false;
+            const deckLen = G.players[opponentId]?.deck?.length || 0;
+            if (deckLen < 1) return false;
             continue;
         }
         if (effect.type === 'PLAY_FROM_STACK') {
@@ -844,6 +918,29 @@ export function formatDesignationPrompt(
               ? effectTarget
               : null;
     if (!target) return 'Choisissez une cible.';
+    // DNF « your Gollum or your Sméagol »
+    if (
+        target.length > 1 &&
+        target.every((branch) => Array.isArray(branch))
+    ) {
+        const parts = target.map((branch) => {
+            const tokens = branch.flat();
+            if (tokens.includes('PIPEWEED')) return 'une herbe à pipe';
+            const label = tokens
+                .map((token) => {
+                    if (token === 'MINION') return 'séide';
+                    if (token === 'PIPE') return 'pipe';
+                    return token.charAt(0) + token.slice(1).toLowerCase();
+                })
+                .join(' ');
+            const proper =
+                tokens.length === 1 &&
+                /[a-zà-ÿ]/i.test(tokens[0]!) &&
+                tokens[0] !== tokens[0]!.toUpperCase();
+            return proper ? `votre ${label}` : `un ${label}`;
+        });
+        return `Choisissez ${parts.join(' ou ')}.`;
+    }
     const tokens = target.flat();
     if (tokens.includes('PIPEWEED')) {
         return 'Choisissez une herbe à pipe.';
@@ -863,6 +960,10 @@ export function formatDesignationPrompt(
     if (healMulti && useEffect) {
         return 'Choisissez les compagnons à soigner.';
     }
+    const properName =
+        tokens.length === 1 &&
+        /[a-zà-ÿ]/i.test(tokens[0]!) &&
+        tokens[0] !== tokens[0]!.toUpperCase();
     const label = tokens
         .map((token) => {
             if (token === 'MINION') return 'séide';
@@ -870,7 +971,9 @@ export function formatDesignationPrompt(
             return token.charAt(0) + token.slice(1).toLowerCase();
         })
         .join(' ');
-    return `Choisissez un ${label}.`;
+    return properName
+        ? `Choisissez votre ${label}.`
+        : `Choisissez un ${label}.`;
 }
 
 export function isDesignationTargetId(

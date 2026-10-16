@@ -6829,6 +6829,46 @@
     "keywords": [
       "PLAINS"
     ],
+    "abilities": [
+      {
+        "id": "11S254:0:site-start-maneuver",
+        "phases": [
+          "START_OF_MANEUVER"
+        ],
+        "cost": [],
+        "effects": [
+          {
+            "type": "CHOOSE_ONE",
+            "chooser": "FREE_PEOPLE",
+            "options": [
+              {
+                "label": "Ajouter un fardeau",
+                "effects": [
+                  {
+                    "type": "ADD_BURDENS",
+                    "count": 1
+                  }
+                ]
+              },
+              {
+                "label": "Défausser 3 cartes de sa main",
+                "effects": [
+                  {
+                    "type": "DISCARD_FROM_HAND",
+                    "count": 3
+                  }
+                ]
+              }
+            ]
+          }
+        ],
+        "source": "SELF",
+        "text": "At the start of the maneuver phase, the Free Peoples player must add a burden or discard 3 cards from hand."
+      }
+    ],
+    "actionPhases": [
+      "START_OF_MANEUVER"
+    ],
     "twilightCost": 1,
     "siteArrow": "Right",
     "imageUrl": "/cards_visuals/o_07_345.jpg",

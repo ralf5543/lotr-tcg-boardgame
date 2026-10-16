@@ -4,7 +4,10 @@ import { discardCardFromPlay } from '../../../utils/discardCardFromPlay';
 import { getEffectiveVitality } from '../../../utils/cardStats';
 import { findTargetCard } from '../../../utils/cardUtils';
 import { getKeywordValue } from '../keywords/keywordUtils';
-import { resolveCostTarget } from './resolveCostTarget';
+import {
+    resolveCostTarget,
+    resolveSkirmishingOpponents,
+} from './resolveCostTarget';
 import {
     abilityOwnerCanSpotCultureTokens,
     countCultureTokensForPlayer,
@@ -45,9 +48,30 @@ export function abilityOwnerPlayerId(
     const fpId = G.fpPlayerId || '0';
     if (source.kind === 'FREE_PEOPLE') return fpId;
     if (source.kind === 'SHADOW') return fpId === '0' ? '1' : '0';
-    // Site (Mere…) : effets « next site » / deck d’aventure = Peuples Libres.
+    // Site : replace / contrôle = souvent FP ; « play next site » utilise
+    // `playNextSiteDeckPlayerId` (joueur qui active, deck d’aventure).
     if (source.kind === 'SITE' || source.type === 'SITE') return fpId;
     return undefined;
+}
+
+/**
+ * Deck d’aventure pour « play the fellowship's next site » :
+ * le joueur qui active (Ombre sur Mere, FP sur One Good Turn…).
+ */
+export function playNextSiteDeckPlayerId(
+    G: GameState,
+    source: CardState,
+    actingPlayerId?: string
+): string | undefined {
+    if (actingPlayerId != null && actingPlayerId !== '') {
+        return String(actingPlayerId);
+    }
+    // Capacité d’ombre sur site (Mere…) → Ombre ; sinon propriétaire de la carte.
+    if (source.kind === 'SITE' || source.type === 'SITE') {
+        const fpId = G.fpPlayerId || '0';
+        return fpId === '0' ? '1' : '0';
+    }
+    return abilityOwnerPlayerId(G, source);
 }
 
 export function abilityDiscardFromHandCount(
@@ -145,6 +169,12 @@ function canPayOption(
 
     if (option.addThreats && option.addThreats > 0) {
         if (!canAddThreats(G)) return false;
+    }
+    if (option.addThreatsEqualTo === 'SKIRMISHING_MINIONS_VITALITY') {
+        const vitality = resolveSkirmishingOpponents(G, source)
+            .filter((c) => c.type === 'MINION' && !c.isDead)
+            .reduce((sum, c) => sum + getEffectiveVitality(c), 0);
+        if (vitality <= 0) return false;
     }
 
     if (option.spotCultureTokens) {
@@ -392,6 +422,14 @@ function payOption(
         if (addThreats(G, option.addThreats) < option.addThreats) {
             return false;
         }
+    }
+    if (option.addThreatsEqualTo === 'SKIRMISHING_MINIONS_VITALITY') {
+        const vitality = resolveSkirmishingOpponents(G, source)
+            .filter((c) => c.type === 'MINION' && !c.isDead)
+            .reduce((sum, c) => sum + getEffectiveVitality(c), 0);
+        if (vitality <= 0) return false;
+        // Plafond menaces : on ajoute ce qu’on peut (surplus ignoré).
+        addThreats(G, vitality);
     }
     if (option.removeThreats && option.removeThreats > 0) {
         const fpId = G.fpPlayerId || '0';

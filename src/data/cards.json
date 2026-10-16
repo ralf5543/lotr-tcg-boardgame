@@ -7878,7 +7878,7 @@
                 "POSSESSION"
               ]
             ],
-            "attachTo": "SELF"
+            "from": "DECK"
           }
         ],
         "source": "SELF",
@@ -17576,7 +17576,68 @@
       "SPELL",
       "WEATHER"
     ],
+    "abilities": [
+      {
+        "id": "1R124:0",
+        "phases": [
+          "MANEUVER"
+        ],
+        "cost": [
+          {
+            "exert": [
+              {
+                "count": 1,
+                "target": [
+                  [
+                    "ISENGARD",
+                    "MINION"
+                  ]
+                ],
+                "mode": "DESIGNATION"
+              }
+            ]
+          }
+        ],
+        "effects": [
+          {
+            "type": "CHOOSE_ONE",
+            "chooser": "OPPONENT",
+            "options": [
+              {
+                "label": "Affaiblir le Porteur de l’Anneau",
+                "effects": [
+                  {
+                    "type": "EXERT",
+                    "count": 1,
+                    "target": [
+                      [
+                        "RING-BEARER"
+                      ]
+                    ]
+                  }
+                ]
+              },
+              {
+                "label": "Ajouter un fardeau",
+                "effects": [
+                  {
+                    "type": "ADD_BURDENS",
+                    "count": 1
+                  }
+                ]
+              }
+            ]
+          }
+        ],
+        "source": "SELF",
+        "text": "MANEUVER: Exert a isengard minion to make the opponent choose to either exert the Ring-bearer or add a burden.",
+        "textFr": "**Manœuvre :** Affaiblissez un séide <symbol>isengard</symbol> pour obliger l’adversaire à choisir soit d’affaiblir le Porteur de l’Anneau, soit d’ajouter un point-fardeau."
+      }
+    ],
     "phases": [
+      "MANEUVER"
+    ],
+    "actionPhases": [
       "MANEUVER"
     ],
     "culture": "ISENGARD",
@@ -71250,7 +71311,50 @@
     "isUnique": false,
     "kind": "FREE_PEOPLE",
     "type": "EVENT",
+    "abilities": [
+      {
+        "id": "7R104:0",
+        "phases": [
+          "FELLOWSHIP"
+        ],
+        "cost": [
+          {
+            "spot": [
+              {
+                "count": 1,
+                "target": [
+                  [
+                    "GONDOR",
+                    "COMPANION"
+                  ]
+                ]
+              }
+            ]
+          }
+        ],
+        "effects": [
+          {
+            "type": "REVEAL_OPPONENT_TOP",
+            "count": 5,
+            "perShadowCard": {
+              "type": "ADD_THREATS",
+              "count": 1
+            },
+            "perFreePeoplesCard": {
+              "type": "PLACE_CULTURE_TOKEN",
+              "culture": "GONDOR",
+              "onConditionWithToken": true
+            }
+          }
+        ],
+        "source": "SELF",
+        "text": "Spot a gondor companion to reveal the top 5 cards of an opponent’s draw deck. For each Shadow card revealed, add a threat. For each Free Peoples card revealed, place a gondor token on one of your conditions with a gondor token on it. Shuffle that draw deck."
+      }
+    ],
     "phases": [
+      "FELLOWSHIP"
+    ],
+    "actionPhases": [
       "FELLOWSHIP"
     ],
     "culture": "GONDOR",
@@ -82988,6 +83092,61 @@
         "addBurdens": 1
       }
     ],
+    "abilities": [
+      {
+        "id": "8R27:0",
+        "phases": [
+          "SKIRMISH"
+        ],
+        "cost": [
+          {
+            "addThreatsEqualTo": "SKIRMISHING_MINIONS_VITALITY"
+          }
+        ],
+        "effects": [
+          {
+            "type": "DISCARD",
+            "count": 1,
+            "target": "SELF"
+          }
+        ],
+        "source": "SELF",
+        "text": "SKIRMISH: Add a number of threats equal to the total vitality of the minions Sméagol is skirmishing to discard Sméagol."
+      },
+      {
+        "id": "8R27:1",
+        "phases": [
+          "REGROUP"
+        ],
+        "cost": [
+          {
+            "discardFromPlay": [
+              {
+                "count": 1,
+                "target": "SELF"
+              }
+            ]
+          }
+        ],
+        "effects": [
+          {
+            "type": "TAKE_FROM_DISCARD",
+            "target": [
+              [
+                "GOLLUM",
+                "MINION"
+              ]
+            ]
+          }
+        ],
+        "source": "SELF",
+        "text": "REGROUP: Discard Sméagol to take a gollum minion from your discard pile into hand."
+      }
+    ],
+    "actionPhases": [
+      "SKIRMISH",
+      "REGROUP"
+    ],
     "culture": "GOLLUM",
     "signet": "FRODO",
     "twilightCost": 0,
@@ -88555,6 +88714,49 @@
     "kind": "FREE_PEOPLE",
     "type": "CONDITION",
     "subtype": "SUPPORT-AREA",
+    "abilities": [
+      {
+        "id": "9R27:0",
+        "phases": [
+          "SKIRMISH"
+        ],
+        "cost": [
+          {
+            "discardFromPlay": [
+              {
+                "count": 1,
+                "target": "SELF"
+              }
+            ]
+          }
+        ],
+        "effects": [
+          {
+            "type": "DISCARD_ALL",
+            "target": [
+              [
+                "MINION"
+              ]
+            ],
+            "skirmishingWith": [
+              [
+                "WIZARD"
+              ]
+            ],
+            "thenDeadPileMatching": [
+              [
+                "WIZARD"
+              ]
+            ]
+          }
+        ],
+        "source": "SELF",
+        "text": "Skirmish: Discard this condition to discard each minion skirmishing a Wizard. Place that Wizard in your dead pile."
+      }
+    ],
+    "actionPhases": [
+      "SKIRMISH"
+    ],
     "culture": "GANDALF",
     "twilightCost": 2,
     "imageUrl": "/cards_visuals/o_09_027.jpg",
@@ -90912,6 +91114,28 @@
     "isUnique": true,
     "kind": "SHADOW",
     "type": "MINION",
+    "abilities": [
+      {
+        "id": "10R21:0",
+        "phases": [],
+        "trigger": {
+          "type": "WHEN_ASSIGNED",
+          "by": "FREE_PEOPLE"
+        },
+        "cost": [],
+        "effects": [
+          {
+            "type": "ADD_TEMP_STAT",
+            "stat": "STRENGTH",
+            "value": 3,
+            "target": "SELF",
+            "expiresAtPhase": "REGROUP"
+          }
+        ],
+        "source": "SELF",
+        "text": "To assign Gollum to a skirmish, the Free Peoples player must make Gollum strength +3 until the regroup phase or add a burden."
+      }
+    ],
     "culture": "GOLLUM",
     "twilightCost": 2,
     "strength": 5,

@@ -31,6 +31,7 @@ import { getMusterCount } from './logic/musterHelpers';
 import { hasActionableStartOfPhaseCards } from './logic/hasActionableStartOfPhaseCards';
 import { clearActionableFlags } from '../utils/clearActionableFlags';
 import { clearExpiredTempKeywords } from './engine/abilities/applyAbilityEffect';
+import { applyStartOfManeuverSiteTriggers } from './engine/abilities/startOfManeuver';
 import { onStartOfFellowshipBegin } from './logic/startOfFellowship';
 import { afterCardPlayed } from './engine/abilities/eachTimeYouPlay';
 import {
@@ -714,6 +715,9 @@ export const LotrGame: Game<GameState> = {
 
                 G.maneuverStep = 'MANEUVER_START';
 
+                // Site courant (Pelennor Flat…) : choix forcé avant le reste.
+                applyStartOfManeuverSiteTriggers(G);
+
                 const fpDone = !hasActionableStartOfPhaseCards(
                     G.players[fpId],
                     G,
@@ -734,6 +738,12 @@ export const LotrGame: Game<GameState> = {
                         [shadowId]: { isDone: shadowDone },
                     },
                 };
+
+                // Choix forcé de site : on reste en début de phase jusqu’à résolution.
+                if (G.pendingForcedChoice) {
+                    G.actionWindow = undefined;
+                    return;
+                }
 
                 // Si aucune action/capacité de début de phase n'est jouable, on enchaîne immédiatement
                 if (fpDone && shadowDone) {

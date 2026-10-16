@@ -590,8 +590,39 @@ export function replaceCurrentSiteFromDeck(
 }
 
 /**
- * Pose le prochain site vide du chemin depuis le deck d’aventure
- * (Mere of Dead Faces…). Avance la compagnie + crépuscule de déplacement.
+ * Index du « prochain site » de la communauté (emplacement suivant sur le chemin).
+ * −1 si déjà au site 9 (plus de prochain).
+ */
+export function getNextSitePathIndex(G: GameState): number {
+    const current = getCurrentSiteIndex(G);
+    const next = current + 1;
+    if (next < 0 || next > 8) return -1;
+    return next;
+}
+
+/**
+ * Jouer le prochain site hors déplacement (Mere, One Good Turn…).
+ * OK même si le prochain site est déjà posé (remplacement CR).
+ * Deck = joueur qui active (`ownerId`).
+ */
+export function canPlayNextSiteFromDeck(
+    G: GameState,
+    ownerId: string
+): boolean {
+    const nextIndex = getNextSitePathIndex(G);
+    if (nextIndex < 0) return false;
+    const occupying = G.path?.[nextIndex] ?? null;
+    return (
+        getReplaceSiteCandidates(G, ownerId, undefined, occupying?.id)
+            .length > 0
+    );
+}
+
+/**
+ * Pose / remplace le prochain site depuis le deck d’aventure du joueur actif.
+ * Hors déplacement : pas d’avance de compagnie, pas de crépuscule de move.
+ * Si le prochain site est déjà là : remplace (transfert attachés / empilés /
+ * contrôle ; ancien site → deck d’aventure de son propriétaire) — CR / wiki.
  */
 export function playNextSiteFromDeck(
     G: GameState,
@@ -601,45 +632,63 @@ export function playNextSiteFromDeck(
     const player = G.players[ownerId];
     if (!player?.sitesDeck) return false;
 
-    const nextEmptyIndex = (G.path || []).findIndex((slot) => slot === null);
-    if (nextEmptyIndex < 0) return false;
+    const nextIndex = getNextSitePathIndex(G);
+    if (nextIndex < 0) return false;
 
+    const oldSite = G.path?.[nextIndex] ?? null;
     const deckIndex = player.sitesDeck.findIndex(
         (s) => s && (s.instanceId === siteId || s.id === siteId)
     );
     if (deckIndex < 0) return false;
     const playedSite = player.sitesDeck[deckIndex];
     if (!playedSite) return false;
+    if (oldSite && playedSite.id === oldSite.id) return false;
 
     player.sitesDeck.splice(deckIndex, 1);
-    playedSite.ownerId = ownerId;
-    playedSite.siteNumber = nextEmptyIndex + 1;
-    playedSite.attachments = playedSite.attachments || [];
-    playedSite.stacked = playedSite.stacked || [];
-    G.path[nextEmptyIndex] = playedSite;
 
-    const fpId = G.fpPlayerId || '0';
-    const fpPlayer = G.players[fpId];
-    const previousIndex = fpPlayer?.currentSiteIndex ?? 0;
-    if (fpPlayer) {
-        fpPlayer.currentSiteIndex = nextEmptyIndex;
+    const siteNumber = nextIndex + 1;
+    playedSite.ownerId = ownerId;
+    playedSite.siteNumber = siteNumber;
+
+    if (oldSite) {
+        // Transfert des cartes sur / empilées + contrôle (CR « replacing sites »).
+        playedSite.attachments = [...(oldSite.attachments || [])];
+        playedSite.stacked = [...(oldSite.stacked || [])];
+        if (oldSite.controlledBy) {
+            playedSite.controlledBy = oldSite.controlledBy;
+        } else {
+            delete playedSite.controlledBy;
+        }
+
+        const returned: SiteCardState = {
+            ...oldSite,
+            siteNumber: undefined,
+            attachments: [],
+            stacked: [],
+            controlledBy: undefined,
+        };
+        const returnOwnerId = oldSite.ownerId || ownerId;
+        const returnPlayer = G.players[returnOwnerId];
+        if (returnPlayer?.sitesDeck) {
+            returnPlayer.sitesDeck.push(returned);
+        } else {
+            player.sitesDeck.push(returned);
+        }
+
+        G.path[nextIndex] = playedSite;
+        G.statusMessage = `${
+            playedSite.name || playedSite.i18n?.fr?.title || 'Site'
+        } remplace le prochain site du chemin.`;
+        return true;
     }
 
-    const siteNumber = nextEmptyIndex + 1;
-    const siteCost = Number(playedSite.twilightCost) || 0;
-    const companionsCount = fpPlayer?.fellowshipArea?.length || 0;
-    const addedTwilight =
-        siteCost + companionsCount + getRegionTwilightBonus(siteNumber);
-    G.twilightPool = (G.twilightPool || 0) + addedTwilight;
-
-    const previousSite =
-        previousIndex >= 0 ? (G.path[previousIndex] ?? null) : null;
-    resolveSiteMoveAbilities(G, previousSite, 'MOVES_FROM');
-    resolveSiteMoveAbilities(G, playedSite, 'MOVES_TO');
-
-    G.statusMessage = `La compagnie avance en ${
-        playedSite.name || playedSite.i18n?.fr?.title || 'site'
-    } (+${addedTwilight} Crépuscule).`;
+    playedSite.attachments = playedSite.attachments || [];
+    playedSite.stacked = playedSite.stacked || [];
+    delete playedSite.controlledBy;
+    G.path[nextIndex] = playedSite;
+    G.statusMessage = `${
+        playedSite.name || playedSite.i18n?.fr?.title || 'Site'
+    } est posé comme prochain site du chemin.`;
     return true;
 }
 

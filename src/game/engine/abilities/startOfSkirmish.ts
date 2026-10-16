@@ -4,7 +4,7 @@ import { collectCardAbilities } from './collectAbilities';
 import { forEachInPlayCard } from './resolveCostTarget';
 import { skirmishMatchesInvolving } from './cancelSkirmish';
 import { isRingBearerCard } from '../../../utils/cardUtils';
-import { findTargetCard } from '../../../utils/cardUtils';
+import { findForcedChoiceSource } from './startOfManeuver';
 
 function abilityHasChooseOne(ability: Ability): boolean {
     return (ability.effects || []).some((e) => e.type === 'CHOOSE_ONE');
@@ -19,11 +19,20 @@ function openForcedChoice(
     const sourceInstanceId = source.instanceId || source.id;
     if (!sourceInstanceId) return;
     const fpId = G.fpPlayerId || '0';
+    const choose = (ability.effects || []).find((e) => e.type === 'CHOOSE_ONE');
     G.pendingForcedChoice = {
         playerId: fpId,
         sourceInstanceId,
         abilityId: ability.id,
         skirmishId,
+        ...(choose && choose.type === 'CHOOSE_ONE'
+            ? {
+                  options: choose.options.map((o) => ({
+                      label: o.label,
+                      effects: o.effects,
+                  })),
+              }
+            : {}),
     };
     G.statusMessage =
         'Contrainte du Porteur : choisissez une option pour commencer ce combat.';
@@ -77,34 +86,61 @@ export function applyStartOfSkirmishTriggers(
 export function resolveForcedChoice(
     G: GameState,
     playerID: string,
-    optionIndex: number
+    optionIndex: number,
+    discardedHandIds?: string[]
 ): boolean {
     const pending = G.pendingForcedChoice;
     if (!pending || pending.playerId !== playerID) return false;
 
-    const source = findTargetCard(
-        G,
-        pending.sourceInstanceId
-    ) as CardState | null;
+    const source = findForcedChoiceSource(G, pending.sourceInstanceId);
     const ability = source?.abilities?.find((ab) => ab.id === pending.abilityId);
-    if (!source || !ability) {
+    const optionFromSnapshot = pending.options?.[optionIndex];
+    const choose = ability?.effects?.find((e) => e.type === 'CHOOSE_ONE');
+    const option =
+        optionFromSnapshot ||
+        (choose && choose.type === 'CHOOSE_ONE'
+            ? choose.options[optionIndex]
+            : undefined);
+    if (!source || !option) {
         G.pendingForcedChoice = undefined;
         return false;
     }
 
-    const choose = (ability.effects || []).find((e) => e.type === 'CHOOSE_ONE');
-    if (!choose || choose.type !== 'CHOOSE_ONE') {
-        G.pendingForcedChoice = undefined;
-        return false;
+    const needsHand = option.effects.find(
+        (e) => e.type === 'DISCARD_FROM_HAND'
+    );
+    if (
+        needsHand &&
+        needsHand.type === 'DISCARD_FROM_HAND' &&
+        !needsHand.upTo
+    ) {
+        const need = needsHand.count || 0;
+        const handSize = G.players[playerID]?.hand?.length || 0;
+        if (handSize < need && !discardedHandIds) {
+            // Option illégale : pas assez de cartes.
+            return false;
+        }
+        if (!discardedHandIds || discardedHandIds.length !== need) {
+            // Premier clic : mémoriser l’option, l’UI demandera la défausse.
+            G.pendingForcedChoice = {
+                ...pending,
+                pendingOptionIndex: optionIndex,
+                needsHandDiscard: need,
+            };
+            G.statusMessage = `Choisissez ${need} carte${need > 1 ? 's' : ''} de votre main à défausser.`;
+            return true;
+        }
     }
-    const option = choose.options[optionIndex];
-    if (!option) return false;
 
     const synthetic: Ability = {
-        ...ability,
+        id: ability?.id || pending.abilityId,
+        phases: ability?.phases || [],
+        cost: [],
         effects: option.effects,
+        source: ability?.source || 'SELF',
+        text: ability?.text || '',
     };
-    if (!applyAbilityEffect(G, source, synthetic)) {
+    if (!applyAbilityEffect(G, source, synthetic, undefined, discardedHandIds)) {
         return false;
     }
 

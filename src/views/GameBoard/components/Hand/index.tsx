@@ -100,11 +100,14 @@ export const Hand: React.FC<HandProps> = ({
     /** Empiler depuis la main (Narsil…) : même geste que défausse — clic, pas drag. */
     const isHandPick = targetingKind === 'HAND_PICK';
     const isHandClickPick = isHandDiscard || isHandPick;
-    const enginePendingId =
+    const enginePendingKey =
         G.pendingPlay?.playerId === effectivePlayerId
-            ? G.pendingPlay.card.id
+            ? G.pendingPlay.card.instanceId || G.pendingPlay.card.id
             : undefined;
-    const pendingCardId = pendingCard?.id ?? enginePendingId;
+    const pendingCardKey =
+        (pendingCard
+            ? pendingCard.instanceId || pendingCard.id
+            : undefined) ?? enginePendingKey;
 
     const [discardingIndex, setDiscardingIndex] = useState<number | null>(null);
     const [discardingIds, setDiscardingIds] = useState<Set<string>>(
@@ -119,11 +122,12 @@ export const Hand: React.FC<HandProps> = ({
     const prevIdsRef = useRef<Set<string>>(new Set(knownCardIdsCache));
 
     useEffect(() => {
-        const currentIds = new Set(hand.map((c) => c.id));
+        const cardKeyOf = (c: CardState) => c.instanceId || c.id;
+        const currentIds = new Set(hand.map(cardKeyOf));
 
         const addedIds = hand
-            .filter((c) => !prevIdsRef.current.has(c.id))
-            .map((c) => c.id);
+            .filter((c) => !prevIdsRef.current.has(cardKeyOf(c)))
+            .map(cardKeyOf);
 
         if (addedIds.length > 0) {
             // 🔊 Déclenche un son par carte ajoutée avec un décalage de 100ms
@@ -229,21 +233,26 @@ export const Hand: React.FC<HandProps> = ({
                               hand.length
                           );
 
-                          const isBeingDragged = dragged?.card.id === card.id;
-                          const isPendingPlay = pendingCardId === card.id;
-                          const isHidden = isBeingDragged || isPendingPlay;
                           const cardKey = card.instanceId || card.id;
+                          const draggedKey = dragged?.card
+                              ? dragged.card.instanceId || dragged.card.id
+                              : undefined;
+                          const isBeingDragged = Boolean(
+                              draggedKey && draggedKey === cardKey
+                          );
+                          const isPendingPlay = pendingCardKey === cardKey;
+                          const isHidden = isBeingDragged || isPendingPlay;
                           const isDiscarding =
                               discardingIndex === idx ||
                               discardingIds.has(cardKey);
 
-                          const isNewCard = animatingCardIds.has(card.id);
+                          const isNewCard = animatingCardIds.has(cardKey);
 
                           const newCardsList = hand.filter((c) =>
-                              animatingCardIds.has(c.id)
+                              animatingCardIds.has(c.instanceId || c.id)
                           );
                           const staggerIndex = newCardsList.findIndex(
-                              (c) => c.id === card.id
+                              (c) => (c.instanceId || c.id) === cardKey
                           );
 
                           const hasSpot = hasSpotCondition(card);
@@ -314,7 +323,7 @@ export const Hand: React.FC<HandProps> = ({
 
                                       return (
                               <S.CardWrapper
-                                  key={card.id}
+                                  key={cardKey}
                                   $angle={angle}
                                   $translateY={translateY}
                                   $zIndex={zIndex}

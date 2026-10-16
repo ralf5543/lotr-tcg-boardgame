@@ -72,12 +72,20 @@ export function getDeckOrDiscardPlayCandidates(
     ownerId: string,
     filter: string[][],
     phase = 'shadow',
-    attachHost?: CardState | null
+    attachHost?: CardState | null,
+    from: 'DECK' | 'DISCARD' | 'DECK_OR_DISCARD' = 'DECK_OR_DISCARD'
 ): CardState[] {
     const player = G.players[ownerId];
     if (!player) return [];
 
-    const pool = [...(player.deck || []), ...(player.discard || [])].filter(
+    const poolCards =
+        from === 'DECK'
+            ? [...(player.deck || [])]
+            : from === 'DISCARD'
+              ? [...(player.discard || [])]
+              : [...(player.deck || []), ...(player.discard || [])];
+
+    const pool = poolCards.filter(
         (card) => card && cardMatchesTarget(card, filter)
     );
 
@@ -108,10 +116,13 @@ export function playCardFromDeckOrDiscard(
     cardId: string,
     filter?: string[][],
     phase = 'shadow',
-    attachHost?: CardState | null
+    attachHost?: CardState | null,
+    from: 'DECK' | 'DISCARD' | 'DECK_OR_DISCARD' = 'DECK_OR_DISCARD'
 ): CardState | null {
     const found = findInDeckOrDiscard(G, ownerId, cardId);
     if (!found) return null;
+    if (from === 'DECK' && found.source !== 'DECK') return null;
+    if (from === 'DISCARD' && found.source !== 'DISCARD') return null;
 
     const { card, source, index } = found;
     if (filter && !cardMatchesTarget(card, filter)) return null;

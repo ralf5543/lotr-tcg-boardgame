@@ -241,7 +241,7 @@ function responseWoundMessage(G: GameState): string {
     if (G.wearingTheOneRing && pendingWoundIsRingBearer(G)) {
         return 'L’Anneau Unique est porté. Jouez une autre réponse ou passez (fardeaux à la place).';
     }
-    return 'Une carte est sur le point d’être blessée. Jouez une réponse ou passez.';
+    return 'Un personnage est sur le point d’être blessé. Jouez une réponse ou passez.';
 }
 
 function shouldReplaceWoundWithBurdens(
@@ -343,6 +343,9 @@ function responseWindowMessage(G: GameState): string {
         const n = G.pendingEvent.addBurdens;
         return `Un personnage va être épuisé. Ajoutez ${n} fardeau${n > 1 ? 'x' : ''} pour empêcher, ou passez.`;
     }
+    if (G.pendingEvent?.type === 'ABOUT_TO_FORCE_ASSIGN') {
+        return 'Un séide va être affecté à un compagnon. Affaiblissez ce compagnon pour empêcher, ou passez.';
+    }
     if (G.pendingEvent?.type === 'FELLOWSHIP_MOVES') {
         return 'La compagnie s’est déplacée. Jouez une réponse ou passez.';
     }
@@ -398,7 +401,8 @@ function handResponseIsLegal(
     if (isResponseAlreadyUsed(G, card, ability)) return false;
     if (!abilityMatchesTrigger(ability, event, card, G)) return false;
     if (!twilightPayableForEvent(G, card, playerID)) return false;
-    return canPayAbilityCost(G, card, ability.cost);
+    if (!canPayAbilityCost(G, card, ability.cost)) return false;
+    return abilityHasLegalEffectTarget(G, card, ability);
 }
 
 export function playerHasEligibleResponse(
@@ -474,6 +478,46 @@ export function closeResponseWindow(G: GameState): void {
     clearActionableFlags(G);
 }
 
+/**
+ * Met de côté l’événement de réponse courant pour traiter des blessures
+ * engendrées par une réponse (sinon la file reste bloquée jusqu’à la fin
+ * de toutes les réponses WINS — double blessure Liar, etc.).
+ */
+function suspendResponseForNestedWounds(G: GameState): void {
+    const event = G.pendingEvent;
+    if (!event || event.type === 'ABOUT_TO_WOUND') return;
+    G.suspendedResponse = {
+        event,
+        usedResponseKeys: [...(G.responseWindow?.usedResponseKeys || [])],
+        activePlayerId:
+            G.responseWindow?.activePlayerId || String(G.fpPlayerId || '0'),
+    };
+    G.pendingEvent = undefined;
+}
+
+function resumeSuspendedResponse(G: GameState): 'APPLIED' | 'WAITING' {
+    const sus = G.suspendedResponse;
+    if (!sus) return 'APPLIED';
+    G.suspendedResponse = undefined;
+    G.pendingEvent = sus.event;
+    G.responseWindow = {
+        isOpen: false,
+        activePlayerId: sus.activePlayerId,
+        title: '',
+        message: '',
+        canPass: true,
+        passesCount: 0,
+        usedResponseKeys: sus.usedResponseKeys,
+    };
+    if (!hasAnyEligibleResponse(G)) {
+        G.pendingEvent = undefined;
+        closeResponseWindow(G);
+        return 'APPLIED';
+    }
+    openResponseWindow(G);
+    return 'WAITING';
+}
+
 function processWoundQueue(G: GameState): 'APPLIED' | 'WAITING' {
     while (G.woundQueue && G.woundQueue.length > 0) {
         const next = G.woundQueue.shift()!;
@@ -501,6 +545,7 @@ function processWoundQueue(G: GameState): 'APPLIED' | 'WAITING' {
     closeResponseWindow(G);
     if (tryOpenTakesWound(G) === 'WAITING') return 'WAITING';
     if (tryOpenCharacterDies(G) === 'WAITING') return 'WAITING';
+    if (resumeSuspendedResponse(G) === 'WAITING') return 'WAITING';
     if (tryOpenWinsSkirmish(G) === 'WAITING') return 'WAITING';
     if (tryOpenLosesSkirmish(G) === 'WAITING') return 'WAITING';
     tryResumeArcheryAfterResponses(G);
@@ -673,12 +718,23 @@ export function tryOpenLosesSkirmish(G: GameState): 'APPLIED' | 'WAITING' {
     const forced = forcedBucket[0];
     if (forced) {
         const fpId = G.fpPlayerId || '0';
+        const choose = (forced.ability.effects || []).find(
+            (e) => e.type === 'CHOOSE_ONE'
+        );
         G.pendingForcedChoice = {
             playerId: fpId,
             sourceInstanceId:
                 forced.source.instanceId || forced.source.id,
             abilityId: forced.ability.id,
             skirmishId: pending.skirmishId,
+            ...(choose && choose.type === 'CHOOSE_ONE'
+                ? {
+                      options: choose.options.map((o) => ({
+                          label: o.label,
+                          effects: o.effects,
+                      })),
+                  }
+                : {}),
         };
         G.statusMessage =
             'Contrainte : choisissez d’affaiblir le Porteur ou d’ajouter un fardeau.';
@@ -762,6 +818,7 @@ function concludeOpenResponse(G: GameState): 'APPLIED' | 'WAITING' {
         closeResponseWindow(G);
         if (tryOpenTakesWound(G) === 'WAITING') return 'WAITING';
         if (tryOpenCharacterDies(G) === 'WAITING') return 'WAITING';
+        if (resumeSuspendedResponse(G) === 'WAITING') return 'WAITING';
         if (tryOpenWinsSkirmish(G) === 'WAITING') return 'WAITING';
         if (tryOpenLosesSkirmish(G) === 'WAITING') return 'WAITING';
         return processWoundQueue(G);
@@ -772,6 +829,7 @@ function concludeOpenResponse(G: GameState): 'APPLIED' | 'WAITING' {
         closeResponseWindow(G);
         if (tryOpenTakesWound(G) === 'WAITING') return 'WAITING';
         if (tryOpenCharacterDies(G) === 'WAITING') return 'WAITING';
+        if (resumeSuspendedResponse(G) === 'WAITING') return 'WAITING';
         if (tryOpenWinsSkirmish(G) === 'WAITING') return 'WAITING';
         if (tryOpenLosesSkirmish(G) === 'WAITING') return 'WAITING';
         return processWoundQueue(G);
@@ -850,6 +908,19 @@ export function yieldResponsePriorityAfterAction(
     if (!G.responseWindow?.isOpen) return;
     const pid = String(playerID);
     if (String(G.responseWindow.activePlayerId) !== pid) return;
+
+    // Blessures créées par la réponse qui vient d’être jouée (Liar…) :
+    // les appliquer avant d’autres réponses au même événement.
+    if (
+        (G.woundQueue?.length || 0) > 0 &&
+        G.pendingEvent &&
+        G.pendingEvent.type !== 'ABOUT_TO_WOUND'
+    ) {
+        suspendResponseForNestedWounds(G);
+        if (processWoundQueue(G) === 'WAITING') return;
+        if (resumeSuspendedResponse(G) === 'WAITING') return;
+        return;
+    }
 
     const other = otherPlayerId(pid);
     const fpId = G.fpPlayerId || '0';

@@ -115,6 +115,7 @@ export const GameControls: React.FC<GameControlsProps> = ({
     const isResponseWindowActive = G.responseWindow?.isOpen ?? false;
     const isWhenPlayedChoiceActive = Boolean(G.pendingWhenPlayed);
     const isForcedChoiceActive = Boolean(G.pendingForcedChoice);
+    const isRevealActive = Boolean(G.pendingReveal);
 
     const isAwaitingSiteActive =
         awaitingSite &&
@@ -129,6 +130,8 @@ export const GameControls: React.FC<GameControlsProps> = ({
 
     const actingPlayerId = isSetupPhase
         ? currentPlayerId
+        : isRevealActive
+          ? G.pendingReveal!.playerId
         : isResponseWindowActive
           ? G.responseWindow!.activePlayerId
           : isForcedChoiceActive
@@ -275,6 +278,23 @@ export const GameControls: React.FC<GameControlsProps> = ({
             showPassButton: G.responseWindow?.canPass ?? true,
             type: 'RESPONSE',
         };
+    } else if (isResponseWindowActive && !isMyTurnToAct) {
+        const pendingType = G.pendingEvent?.type;
+        const waitingBody =
+            pendingType === 'ABOUT_TO_FORCE_ASSIGN'
+                ? 'Les Peuples Libres décident s’ils empêchent l’affectation…'
+                : pendingType === 'ABOUT_TO_EXHAUST'
+                  ? 'Les Peuples Libres décident s’ils empêchent l’épuisement…'
+                  : pendingType === 'ABOUT_TO_CANCEL_SKIRMISH'
+                    ? 'L’adversaire peut empêcher l’annulation d’escarmouche…'
+                    : 'En attente de la réponse de l’adversaire…';
+        toastConfig = {
+            show: true,
+            title: 'RÉPONSE',
+            body: waitingBody,
+            showPassButton: false,
+            type: 'RESPONSE',
+        };
     } else if (isWhenPlayedChoiceActive && isMyTurnToAct) {
         const whenPlayedSource = G.pendingWhenPlayed
             ? (findTargetCard(
@@ -298,7 +318,11 @@ export const GameControls: React.FC<GameControlsProps> = ({
             showPassButton: false,
             type: 'WHEN_PLAYED_CHOICE',
         };
-    } else if (isForcedChoiceActive && isMyTurnToAct) {
+    } else if (
+        isForcedChoiceActive &&
+        isMyTurnToAct &&
+        !G.pendingForcedChoice?.needsHandDiscard
+    ) {
         const forcedSource = G.pendingForcedChoice
             ? (findTargetCard(
                   G,
@@ -312,18 +336,46 @@ export const GameControls: React.FC<GameControlsProps> = ({
             (e) => e.type === 'CHOOSE_ONE'
         );
         const optionLabels =
-            chooseOne && chooseOne.type === 'CHOOSE_ONE'
+            G.pendingForcedChoice?.options?.map((o) => o.label) ||
+            (chooseOne && chooseOne.type === 'CHOOSE_ONE'
                 ? chooseOne.options.map((o) => o.label)
-                : [];
+                : []);
         toastConfig = {
             show: true,
-            title: 'CONTRAINTE DU PORTEUR',
+            title:
+                G.pendingForcedChoice?.title ||
+                'CHOIX FORCÉ',
             body:
+                G.pendingForcedChoice?.message ||
                 G.statusMessage ||
-                'Choisissez une option pour commencer ce combat.',
+                'Choisissez une option.',
             showPassButton: false,
             type: 'FORCED_CHOICE',
             forcedOptionLabels: optionLabels,
+        };
+    } else if (
+        isForcedChoiceActive &&
+        isMyTurnToAct &&
+        G.pendingForcedChoice?.needsHandDiscard
+    ) {
+        toastConfig = {
+            show: true,
+            title: G.pendingForcedChoice?.title || 'DÉFAUSSE',
+            body:
+                G.statusMessage ||
+                `Défaussez ${G.pendingForcedChoice.needsHandDiscard} carte(s) de votre main.`,
+            showPassButton: false,
+            type: 'FORCED_CHOICE',
+        };
+    } else if (G.pendingReveal && isMyTurnToAct && G.pendingReveal.playerId === currentPlayerId) {
+        toastConfig = {
+            show: true,
+            title: 'RÉVÉLATION',
+            body:
+                G.statusMessage ||
+                'Cartes révélées du dessus de la pioche adverse. Validez pour appliquer les effets.',
+            showPassButton: false,
+            type: 'STANDARD',
         };
     } else if ((G.threatWoundsToAssign ?? 0) > 0) {
         const remaining = G.threatWoundsToAssign ?? 0;
@@ -379,6 +431,7 @@ export const GameControls: React.FC<GameControlsProps> = ({
             type: 'STANDARD',
         };
     } else if (
+        !isResponseWindowActive &&
         ctx.phase === 'assignment' &&
         G.assignmentStep === 'FP_ASSIGN' &&
         currentPlayerId === fpPlayerId
@@ -391,6 +444,7 @@ export const GameControls: React.FC<GameControlsProps> = ({
             type: 'ASSIGNMENT_YIELD',
         };
     } else if (
+        !isResponseWindowActive &&
         ctx.phase === 'assignment' &&
         G.assignmentStep === 'SHADOW_ASSIGN'
     ) {
@@ -536,10 +590,16 @@ export const GameControls: React.FC<GameControlsProps> = ({
         }
 
         if (isResponseWindowActive) {
-            return isMyTurnToAct
-                ? G.responseWindow?.message ||
-                      'Réponse : jouez une réponse ou passez.'
-                : 'En attente de la réponse de l’adversaire…';
+            if (isMyTurnToAct) {
+                return (
+                    G.responseWindow?.message ||
+                    'Réponse : jouez une réponse ou passez.'
+                );
+            }
+            if (G.pendingEvent?.type === 'ABOUT_TO_FORCE_ASSIGN') {
+                return 'L’adversaire décide s’il empêche l’affectation…';
+            }
+            return 'En attente de la réponse de l’adversaire…';
         }
 
         if (isActionWindowActive) {
@@ -949,6 +1009,19 @@ export const GameControls: React.FC<GameControlsProps> = ({
                                         {label}
                                     </S.ActionButton>
                                 )
+                            )}
+
+                        {G.pendingReveal &&
+                            isMyTurnToAct &&
+                            G.pendingReveal.playerId === currentPlayerId && (
+                                <S.ActionButton
+                                    style={{ marginTop: '12px', width: '100%' }}
+                                    onClick={() => {
+                                        moves.confirmPendingRevealMove?.();
+                                    }}
+                                >
+                                    Valider la révélation
+                                </S.ActionButton>
                             )}
 
                         {toastConfig.type === 'RESPONSE' &&

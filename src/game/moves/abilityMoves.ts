@@ -96,8 +96,11 @@ export const activateAbility = (
     }
     if (abilityNeedsSiteReplace(ability)) {
         const effect = abilityReplaceSiteEffect(ability);
+        // Coût désigné (Mere…) : le site est en chosenEffectTargetId, pas le coût.
         const ids = normalizeChosenIds(
-            chosenEffectTargetId ?? chosenTargetId
+            needsCostDesignation
+                ? chosenEffectTargetId
+                : (chosenEffectTargetId ?? chosenTargetId)
         );
         if (effect?.scope === 'REGION') {
             if (ids.length < 2) return 'INVALID_MOVE';
@@ -150,7 +153,8 @@ export const activateAbility = (
             ability,
             effectTargetId,
             discardedHandIds,
-            costIdForEffect
+            costIdForEffect,
+            String(playerID)
         )
     ) {
         return 'INVALID_MOVE';

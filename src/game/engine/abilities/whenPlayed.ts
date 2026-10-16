@@ -76,8 +76,9 @@ function canFulfillWhenPlayedEffects(
                 G,
                 ownerId,
                 playFromDeck.target,
-                'fellowship',
-                attachHost
+                'shadow',
+                attachHost,
+                playFromDeck.from || 'DECK_OR_DISCARD'
             ).length > 0
         );
     }

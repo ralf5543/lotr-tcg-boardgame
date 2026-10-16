@@ -6,6 +6,9 @@ import {
 import { proceedStartOfFellowship } from '../logic/startOfFellowship';
 import { exitStartOf, isPlayPhase } from '../logic/phaseEntry';
 import { resolveSkirmish } from '../logic/skirmish';
+import { reconcileActiveSkirmishAfterLeave } from '../logic/skirmishVacated';
+import { confirmPendingReveal } from '../logic/pendingReveal';
+import { hasActionableStartOfPhaseCards } from '../logic/hasActionableStartOfPhaseCards';
 import { drawCardsForPlayer } from '../../utils/drawCards';
 import { advanceArcheryAssignmentStep } from '../index';
 import { getEffectiveVitality } from '../../utils/cardStats';
@@ -556,19 +559,66 @@ export const resolveWhenPlayedChoice = (
 };
 
 export const resolveForcedChoiceMove = (
-    { G, playerID }: LotrMoveContext,
-    optionIndex: number
+    { G, ctx, events, playerID }: LotrMoveContext,
+    optionIndex: number,
+    discardedHandIds?: string[]
 ) => {
     if (!G.pendingForcedChoice || G.pendingForcedChoice.playerId !== playerID) {
         return 'INVALID_MOVE';
     }
-    if (!resolveForcedChoice(G, playerID, optionIndex)) {
+    if (!resolveForcedChoice(G, playerID, optionIndex, discardedHandIds)) {
         return 'INVALID_MOVE';
+    }
+    // En attente de défausse main : ne pas ouvrir d’autre fenêtre.
+    if (G.pendingForcedChoice?.needsHandDiscard) {
+        return;
+    }
+    // Après choix de site en début de Manœuvre : enchaîner si plus rien à faire.
+    if (
+        ctx.phase === 'startOfManeuver' &&
+        G.maneuverStep === 'MANEUVER_START' &&
+        !G.pendingForcedChoice
+    ) {
+        const fpId = G.fpPlayerId || '0';
+        const shadowId = fpId === '0' ? '1' : '0';
+        const fpDone =
+            G.startOfPhaseState?.players?.[fpId]?.isDone ||
+            !hasActionableStartOfPhaseCards(
+                G.players[fpId],
+                G,
+                fpId,
+                'startOfManeuver'
+            );
+        const shadowDone =
+            G.startOfPhaseState?.players?.[shadowId]?.isDone ||
+            !hasActionableStartOfPhaseCards(
+                G.players[shadowId],
+                G,
+                shadowId,
+                'startOfManeuver'
+            );
+        if (fpDone && shadowDone) {
+            G.startOfPhaseState = undefined;
+            exitStartOf(events, 'maneuver');
+            return;
+        }
+        G.statusMessage =
+            'Phase de Manœuvre : Capacités et effets de début de phase.';
+        return;
     }
     // Ouvre la fenêtre d’actions même si une réponse (blessure) s’ouvre ensuite :
     // elle reprendra la priorité, puis la fenêtre d’escarmouche restera prête.
     if (G.activeSkirmishId && !G.actionWindow?.isOpen) {
         openSkirmishActionWindow(G);
+    }
+};
+
+export const confirmPendingRevealMove = ({
+    G,
+    playerID,
+}: LotrMoveContext) => {
+    if (!confirmPendingReveal(G, playerID ?? '0')) {
+        return 'INVALID_MOVE';
     }
 };
 
@@ -657,10 +707,14 @@ export const cleanupPendingDeaths = ({ G }: LotrMoveContext) => {
         });
     }
 
+    const buriedIds: string[] = [];
+
     G.battlefield = (G.battlefield || []).filter((c) => {
         const remainingVitality = getEffectiveVitality(c);
         const dead = c.isDead || remainingVitality <= 0;
         if (dead) {
+            const id = c.instanceId || c.id;
+            if (id) buriedIds.push(id);
             const shadowPlayer = G.players[shadowId];
             if (shadowPlayer) {
                 if (!shadowPlayer.discard) shadowPlayer.discard = [];
@@ -670,6 +724,15 @@ export const cleanupPendingDeaths = ({ G }: LotrMoveContext) => {
         return !dead;
     });
 
+    for (const dead of killedFpCharacters) {
+        const id = dead.instanceId || dead.id;
+        if (id) buriedIds.push(id);
+    }
+
+    for (const id of buriedIds) {
+        reconcileActiveSkirmishAfterLeave(G, id, 'DEATH');
+    }
+
     if (G.activeSkirmishId) {
         const skirmishIndex = G.skirmishes.findIndex(
             (s) => s.id === G.activeSkirmishId
@@ -677,8 +740,14 @@ export const cleanupPendingDeaths = ({ G }: LotrMoveContext) => {
         const skirmish =
             skirmishIndex !== -1 ? G.skirmishes[skirmishIndex] : undefined;
         // Un exert pendant le combat remplit lastWoundedCardIds : on ne clôture
-        // le combat que s'il a déjà été résolu.
-        if (skirmish?.resolved) {
+        // le combat que s'il a déjà été résolu — et seulement s’il n’y a plus
+        // de réponses WINS/LOSES en attente (mort mid-combat).
+        const responsesPending =
+            G.responseWindow?.isOpen ||
+            Boolean(G.pendingEvent) ||
+            Boolean(G.pendingWinsSkirmish) ||
+            Boolean(G.pendingLosesSkirmish);
+        if (skirmish?.resolved && !responsesPending) {
             G.skirmishes.splice(skirmishIndex, 1);
             G.activeSkirmishId = undefined;
             clearExpiredTempKeywords(G, 'SKIRMISH');
@@ -777,5 +846,6 @@ export const commonMoves = {
     confirmSanctuaryHeals,
     resolveWhenPlayedChoice,
     resolveForcedChoiceMove,
+    confirmPendingRevealMove,
     ...(process.env.NODE_ENV !== 'production' ? devMoves : {}),
 };

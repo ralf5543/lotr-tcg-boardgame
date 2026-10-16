@@ -1,4 +1,4 @@
-import type { LotrMoveContext } from '../types';
+import type { CardState, LotrMoveContext } from '../types';
 import {
     applyAmbushTwilight,
     beginShadowAssignment,
@@ -7,6 +7,7 @@ import {
     getCompanionDefenderCapacity,
     getUnassignedMinions,
 } from '../logic/assignment';
+import { resolveWhenAssigned } from '../engine/abilities/whenAssigned';
 import { getCardText } from '../../utils/i18n';
 
 export const assignMinion = (
@@ -98,6 +99,10 @@ export const assignMinion = (
 
     const ambushAdded = applyAmbushTwilight(G, minionCard, isFP);
 
+    if (isFP && minionCard) {
+        resolveWhenAssigned(G, minionCard as CardState, 'FREE_PEOPLE');
+    }
+
     const compCardState = compCard.card || compCard;
     const minionCardState = minionCard?.card || minionCard;
 
@@ -109,10 +114,23 @@ export const assignMinion = (
         ? getCardText(minionCardState, 'fr').title || 'Le séide'
         : 'Le séide';
 
+    let assignBoost: number | undefined;
+    if (isFP && minionCard) {
+        for (const ab of (minionCard as CardState).abilities || []) {
+            if (ab.trigger?.type !== 'WHEN_ASSIGNED') continue;
+            const boost = ab.effects?.find((e) => e.type === 'ADD_TEMP_STAT');
+            if (boost && boost.type === 'ADD_TEMP_STAT') {
+                assignBoost = boost.value;
+                break;
+            }
+        }
+    }
     G.statusMessage =
         ambushAdded > 0
             ? `${minionName} est assigné à ${compName}. Embuscade : +${ambushAdded} Crépuscule.`
-            : `${minionName} est assigné à ${compName}.`;
+            : assignBoost != null
+              ? `${minionName} est assigné à ${compName} (force +${assignBoost} jusqu’au regroupement).`
+              : `${minionName} est assigné à ${compName}.`;
 
     checkAssignmentProgress(G, ctx, events);
 };
