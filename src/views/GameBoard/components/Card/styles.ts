@@ -467,9 +467,10 @@ export const CardContainer = styled.div<CardContainerProps>`
 
             ${CardTitles} {
                 display: flex;
-                inset-block-start: 25px;
+                inset-block-start: 26px;
                 inset-inline-start: 80px;
                 gap: 4px;
+                position: absolute;
                 ${isNotCharacter(props.$type) &&
                 css`
                     margin-block-start: 0px;
@@ -492,6 +493,11 @@ export const CardContainer = styled.div<CardContainerProps>`
             ${CardSubtitle} {
                 font-size: 18px;
                 margin-block-start: 4px;
+
+                ${isNotCharacter(props.$type) &&
+                css`
+                    margin-block-start: -4px;
+                `}
             }
 
             ${CardTypes} {
@@ -636,7 +642,6 @@ export const CardTitles = styled.div<{ $type?: string }>`
     gap: 2px;
     justify-content: center;
     line-height: 0.7;
-    position: absolute;
     ${(props) =>
         isNotCharacter(props.$type) &&
         css`
