@@ -543,6 +543,10 @@ export type AbilityEffect =
            * N = min(pipes spotées, compagnons blessés) — autant que possible, jusqu’à X.
            */
           multiFromSpot?: boolean;
+          /** Tous les matchs (site Neekerbreekers…). */
+          all?: boolean;
+          /** Résistance effective minimale (inclus). */
+          minResistance?: number;
           target: AbilityTargetRef;
       }
     | {
@@ -635,6 +639,8 @@ export type AbilityEffect =
           count: number;
           target: AbilityTargetRef;
           excludeRingBearer?: boolean;
+          /** Tous les matchs (Crags of Emyn Muil…). */
+          all?: boolean;
           /**
            * Adversaires d’escarmouche d’un personnage nommé (They Stole It :
            * companion Gollum is skirmishing).
@@ -685,6 +691,8 @@ export type AbilityEffect =
           target: AbilityTargetRef;
           /** Tous les matchs (each minion skirmishing must exert). */
           all?: boolean;
+          /** Résistance effective maximale (inclus) — Neekerbreekers « each other ». */
+          maxResistance?: number;
       }
     | {
           /**
@@ -700,6 +708,10 @@ export type AbilityEffect =
     | {
           type: 'ADD_TWILIGHT';
           count: number;
+          /** +count × max(0, compagnons − seuil) (Fortress of Orthanc…). */
+          perCompanionOver?: number;
+          /** +count par carte en jeu matchant (Fangorn Glade — armes PL…). */
+          perInPlay?: string[][];
       }
     | {
           /** Ajoute N fardeaux au joueur FP (contraintes de Porteur alternatif…). */
@@ -855,10 +867,18 @@ export type AbilityTrigger =
     | {
           /** Site : When the fellowship moves to this site… */
           type: 'MOVES_TO';
+          /** Uniquement si le site d’arrivée est dans cette région. */
+          siteRegion?: 1 | 2 | 3;
+          /** Uniquement pendant un déplacement de regroupement. */
+          duringRegroup?: boolean;
       }
     | {
           /** Site : When the fellowship moves from this site… */
           type: 'MOVES_FROM';
+          /** Uniquement si le site quitté est dans cette région. */
+          siteRegion?: 1 | 2 | 3;
+          /** Uniquement pendant un déplacement de regroupement. */
+          duringRegroup?: boolean;
       }
     | {
           /** Each time the fellowship moves… (réponse optionnelle). */
@@ -1311,7 +1331,10 @@ export interface ArcheryState {
     shadowRemainingWounds: number;
 }
 
-export type DevPresetType = 'STAT_PULSE_TEST' | 'SITES_MODERN_SMOKE';
+export type DevPresetType =
+    | 'STAT_PULSE_TEST'
+    | 'SITES_MODERN_SMOKE'
+    | 'SITES_MOVE_WAVE';
 
 export interface TempKeywordModifier {
     keyword: CardKeyword;

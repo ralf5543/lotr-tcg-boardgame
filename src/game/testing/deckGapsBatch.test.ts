@@ -522,6 +522,55 @@ describe('parseAbilities — deck gaps batch 2 (Noble Leaders / Gandalf / Promis
         );
     });
 
+    it('Fortress of Orthanc : +2 crépuscule par compagnon over 5', () => {
+        expect(
+            parseSiteAbilities(
+                '**Battleground.** When the fellowship moves to the site, add <symbol>twilight2</symbol> for each companion over 5.',
+                '11S241'
+            )
+        ).toEqual(
+            expect.arrayContaining([
+                expect.objectContaining({
+                    trigger: { type: 'MOVES_TO' },
+                    effects: [
+                        {
+                            type: 'ADD_TWILIGHT',
+                            count: 2,
+                            perCompanionOver: 5,
+                        },
+                    ],
+                }),
+            ])
+        );
+    });
+
+    it('Crags of Emyn Muil : leave regroup région 2 → wound each companion', () => {
+        expect(
+            parseSiteAbilities(
+                '**Mountain.** If this site is in region 2 when the fellowship moves from it during the regroup phase, wound each companion.',
+                '11S234'
+            )
+        ).toEqual(
+            expect.arrayContaining([
+                expect.objectContaining({
+                    trigger: {
+                        type: 'MOVES_FROM',
+                        duringRegroup: true,
+                        siteRegion: 2,
+                    },
+                    effects: [
+                        {
+                            type: 'WOUND',
+                            count: 1,
+                            all: true,
+                            target: [['COMPANION']],
+                        },
+                    ],
+                }),
+            ])
+        );
+    });
+
     it('Anduin Banks : archerie ombre +2 par compagnon au-delà de 4 (sans doublon flat)', () => {
         const parsed = parseSiteAbilities(
             '**River.** The minion archery total is +2 for each companion in the fellowship over 4.',

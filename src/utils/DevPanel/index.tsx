@@ -381,6 +381,13 @@ export const DevPanel: React.FC<DevPanelProps> = ({
                         >
                             Sites 11+ smoke
                         </S.PresetButton>
+                        <S.PresetButton
+                            onClick={() =>
+                                moves.devLoadPreset('SITES_MOVE_WAVE')
+                            }
+                        >
+                            Sites moves to/from
+                        </S.PresetButton>
                         <S.GameButton $bgColor="#3498db" onClick={onDrawCard}>
                             🃏 Piocher ({deckCount})
                         </S.GameButton>

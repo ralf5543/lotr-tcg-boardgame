@@ -49,27 +49,29 @@ export const advanceCompany = (G: GameState) => {
         G.awaitingSiteSelection = false;
         const siteNumber = nextIndex + 1;
         targetSite.siteNumber = siteNumber;
+
+        // CR : move from → move to → puis crépuscule du déplacement
+        // (ombre du site d’arrivée + région + compagnons).
+        const poolBefore = G.twilightPool || 0;
+        resolveSiteMoveAbilities(G, fromSite, 'MOVES_FROM');
+        resolveSiteMoveAbilities(G, targetSite, 'MOVES_TO');
+        const poolAfterSiteEffects = G.twilightPool || 0;
+
         const siteCost = Number(targetSite.twilightCost) || 0;
         const companionsCount = fpPlayer.fellowshipArea
             ? fpPlayer.fellowshipArea.length
             : 0;
         const regionBonus = getRegionTwilightBonus(siteNumber);
         const totalAdded = siteCost + companionsCount + regionBonus;
-        G.twilightPool += totalAdded;
+        G.twilightPool = poolAfterSiteEffects + totalAdded;
 
-        const poolAfterCost = G.twilightPool;
-        // Crépuscule du move d’abord, puis effets « moves from / to »
-        resolveSiteMoveAbilities(G, fromSite, 'MOVES_FROM');
-        resolveSiteMoveAbilities(G, targetSite, 'MOVES_TO');
-        const poolAfterSiteEffects = G.twilightPool;
-        const siteEffectDelta = poolAfterSiteEffects - poolAfterCost;
-
+        const siteEffectDelta = poolAfterSiteEffects - poolBefore;
         const siteEffectNote =
             siteEffectDelta === 0
                 ? ''
-                : ` puis ${siteEffectDelta > 0 ? '+' : ''}${siteEffectDelta} (effet site)`;
+                : ` effets site ${siteEffectDelta > 0 ? '+' : ''}${siteEffectDelta} ;`;
 
-        G.statusMessage = `La compagnie avance au site ${siteNumber} : ${targetSite.name} (+${totalAdded} crépuscule${siteEffectNote} → ${poolAfterSiteEffects}).`;
+        G.statusMessage = `La compagnie avance au site ${siteNumber} : ${targetSite.name} (${siteEffectNote} +${totalAdded} crépuscule → ${G.twilightPool}).`;
     } else {
         // Départ enregistré ; « moves from / to » se résolvent à la pose du site
         G.awaitingSiteSelection = true;
@@ -182,18 +184,19 @@ export const playSite = (
     }
 
     const siteNumber = targetIndex + 1;
+    const previousSite =
+        targetIndex > 0 ? (G.path[targetIndex - 1] ?? null) : null;
+    // CR : move from → move to → puis crépuscule du déplacement.
+    resolveSiteMoveAbilities(G, previousSite, 'MOVES_FROM');
+    resolveSiteMoveAbilities(G, playedSite, 'MOVES_TO');
+
     const siteCost = Number(playedSite.twilightCost) || 0;
     const companionsCount = fpPlayer?.fellowshipArea
         ? fpPlayer.fellowshipArea.length
         : 0;
     const regionBonus = getRegionTwilightBonus(siteNumber);
     const addedTwilight = siteCost + companionsCount + regionBonus;
-    G.twilightPool += addedTwilight;
-
-    const previousSite =
-        targetIndex > 0 ? (G.path[targetIndex - 1] ?? null) : null;
-    resolveSiteMoveAbilities(G, previousSite, 'MOVES_FROM');
-    resolveSiteMoveAbilities(G, playedSite, 'MOVES_TO');
+    G.twilightPool = (G.twilightPool || 0) + addedTwilight;
 
     Object.keys(G.players).forEach((pId) => {
         const p = G.players[pId];
@@ -205,7 +208,7 @@ export const playSite = (
         }
     });
 
-    G.statusMessage = `Nouveau site révélé ! La compagnie avance en ${playedSite.name} (+${addedTwilight} Crépuscule). Révélation des compagnons.`;
+    G.statusMessage = `Nouveau site révélé ! La compagnie avance en ${playedSite.name} (+${addedTwilight} Crépuscule → ${G.twilightPool}). Révélation des compagnons.`;
 
     if (ctx.phase === 'fellowship') {
         afterFellowshipArrived(G, events, enterPhase('shadow'));

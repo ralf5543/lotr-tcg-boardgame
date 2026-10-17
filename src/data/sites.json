@@ -6007,6 +6007,32 @@
     "keywords": [
       "MOUNTAIN"
     ],
+    "abilities": [
+      {
+        "id": "11S234:0:site-move",
+        "phases": [],
+        "trigger": {
+          "type": "MOVES_FROM",
+          "duringRegroup": true,
+          "siteRegion": 2
+        },
+        "cost": [],
+        "effects": [
+          {
+            "type": "WOUND",
+            "count": 1,
+            "all": true,
+            "target": [
+              [
+                "COMPANION"
+              ]
+            ]
+          }
+        ],
+        "source": "SELF",
+        "text": "If this site is in region 2 when the fellowship moves from it during the regroup phase, wound each companion."
+      }
+    ],
     "twilightCost": 0,
     "siteArrow": "Left",
     "imageUrl": "/cards_visuals/o_11_234.jpg",
@@ -6187,6 +6213,30 @@
     "keywords": [
       "FOREST"
     ],
+    "abilities": [
+      {
+        "id": "11S239:0:site-move",
+        "phases": [],
+        "trigger": {
+          "type": "MOVES_TO"
+        },
+        "cost": [],
+        "effects": [
+          {
+            "type": "ADD_TWILIGHT",
+            "count": 1,
+            "perInPlay": [
+              [
+                "FREE_PEOPLE",
+                "WEAPON"
+              ]
+            ]
+          }
+        ],
+        "source": "SELF",
+        "text": "When the fellowship moves to this site, add twilight1 for each Free Peoples weapon."
+      }
+    ],
     "twilightCost": 0,
     "siteArrow": "Right",
     "imageUrl": "/cards_visuals/o_11_239.jpg",
@@ -6258,6 +6308,25 @@
     "type": "SITE",
     "keywords": [
       "BATTLEGROUND"
+    ],
+    "abilities": [
+      {
+        "id": "11S241:0:site-move",
+        "phases": [],
+        "trigger": {
+          "type": "MOVES_TO"
+        },
+        "cost": [],
+        "effects": [
+          {
+            "type": "ADD_TWILIGHT",
+            "count": 2,
+            "perCompanionOver": 5
+          }
+        ],
+        "source": "SELF",
+        "text": "When the fellowship moves to the site, add twilight2 for each companion over 5."
+      }
     ],
     "twilightCost": 0,
     "siteArrow": "Left",
@@ -6612,6 +6681,42 @@
     "type": "SITE",
     "keywords": [
       "MARSH"
+    ],
+    "abilities": [
+      {
+        "id": "11S249:0:site-move",
+        "phases": [],
+        "trigger": {
+          "type": "MOVES_TO"
+        },
+        "cost": [],
+        "effects": [
+          {
+            "type": "HEAL",
+            "count": 1,
+            "all": true,
+            "minResistance": 5,
+            "target": [
+              [
+                "CHARACTER"
+              ]
+            ]
+          },
+          {
+            "type": "EXERT",
+            "count": 1,
+            "all": true,
+            "maxResistance": 4,
+            "target": [
+              [
+                "CHARACTER"
+              ]
+            ]
+          }
+        ],
+        "source": "SELF",
+        "text": "When the fellowship moves to here, heal each character who has resistance 5 or more and exert each other character."
+      }
     ],
     "twilightCost": 1,
     "siteArrow": "Left",

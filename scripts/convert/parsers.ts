@@ -5757,19 +5757,22 @@ function parseWhileSpotKeywordAbilities(
 
 /**
  * Sites — famille sûre move :
- * « When the fellowship moves to/from this site|here, … »
- * Effets : add/remove twilight fixe ; discard each ally.
- * Refuse may / spot / for each / sanctuary / phase / multi-clause.
+ * « When the fellowship moves to/from this site|here|the site, … »
+ * Auto (sans may / coût) : twilight fixe/scale, discard allies,
+ * heal+exert résistance, wound each companion (regroup + région).
  */
 function parseSiteMoveAbilities(
     text: string,
     cardId?: string
 ): Record<string, unknown>[] {
     const found: Record<string, unknown>[] = [];
-
-    const twilightRe =
-        /When the fellowship moves (to|from) (?:this site|here), (remove|add) <symbol>twilight(\d+)<\/symbol>\./gi;
+    const siteRef = '(?:this site|here|the site)';
     let match: RegExpExecArray | null;
+
+    const twilightRe = new RegExp(
+        `When (?:the|your) fellowship moves (to|from) ${siteRef}, (remove|add) <symbol>twilight(\\d+)<\\/symbol>\\.`,
+        'gi'
+    );
     while ((match = twilightRe.exec(text)) !== null) {
         const sentence = match[0];
         if (
@@ -5800,8 +5803,72 @@ function parseSiteMoveAbilities(
         });
     }
 
-    const discardAlliesRe =
-        /When the fellowship moves (to|from) (?:this site|here), discard each ally(?: from play)?\./gi;
+    // Fortress of Orthanc : add twilightN for each companion over M.
+    const twilightOverRe = new RegExp(
+        `When (?:the|your) fellowship moves (to|from) ${siteRef}, add <symbol>twilight(\\d+)<\\/symbol> for each companion over (\\d+)\\.`,
+        'gi'
+    );
+    while ((match = twilightOverRe.exec(text)) !== null) {
+        const direction =
+            match[1].toLowerCase() === 'to' ? 'MOVES_TO' : 'MOVES_FROM';
+        const count = parseInt(match[2], 10);
+        const over = parseInt(match[3], 10);
+        if (
+            !Number.isFinite(count) ||
+            count <= 0 ||
+            !Number.isFinite(over) ||
+            over < 0
+        ) {
+            continue;
+        }
+        found.push({
+            id: `${cardId || 'ability'}:${found.length}:site-move-over`,
+            phases: [],
+            trigger: { type: direction },
+            cost: [],
+            effects: [
+                {
+                    type: 'ADD_TWILIGHT',
+                    count,
+                    perCompanionOver: over,
+                },
+            ],
+            source: 'SELF',
+            text: stripAbilityMarkup(match[0]),
+        });
+    }
+
+    // Fangorn Glade : add twilightN for each Free Peoples weapon.
+    const twilightWeaponRe = new RegExp(
+        `When (?:the|your) fellowship moves (to|from) ${siteRef}, add <symbol>twilight(\\d+)<\\/symbol> for each Free Peoples weapon\\.`,
+        'gi'
+    );
+    while ((match = twilightWeaponRe.exec(text)) !== null) {
+        const direction =
+            match[1].toLowerCase() === 'to' ? 'MOVES_TO' : 'MOVES_FROM';
+        const count = parseInt(match[2], 10);
+        if (!Number.isFinite(count) || count <= 0) continue;
+        found.push({
+            id: `${cardId || 'ability'}:${found.length}:site-move-weapon`,
+            phases: [],
+            trigger: { type: direction },
+            cost: [],
+            effects: [
+                {
+                    type: 'ADD_TWILIGHT',
+                    count,
+                    perInPlay: [['FREE_PEOPLE', 'WEAPON']],
+                },
+            ],
+            source: 'SELF',
+            text: stripAbilityMarkup(match[0]),
+        });
+    }
+
+    const discardAlliesRe = new RegExp(
+        `When (?:the|your) fellowship moves (to|from) ${siteRef}, discard each ally(?: from play)?\\.`,
+        'gi'
+    );
     while ((match = discardAlliesRe.exec(text)) !== null) {
         const direction =
             match[1].toLowerCase() === 'to' ? 'MOVES_TO' : 'MOVES_FROM';
@@ -5811,6 +5878,70 @@ function parseSiteMoveAbilities(
             trigger: { type: direction },
             cost: [],
             effects: [{ type: 'DISCARD_ALL', target: [['ALLY']] }],
+            source: 'SELF',
+            text: stripAbilityMarkup(match[0]),
+        });
+    }
+
+    // Neekerbreekers’ Bog : heal rés. ≥ N et exert les autres.
+    const healExertResRe = new RegExp(
+        `When (?:the|your) fellowship moves (to|from) ${siteRef}, heal each character who has resistance (\\d+) or more and exert each other character\\.`,
+        'gi'
+    );
+    while ((match = healExertResRe.exec(text)) !== null) {
+        const direction =
+            match[1].toLowerCase() === 'to' ? 'MOVES_TO' : 'MOVES_FROM';
+        const minRes = parseInt(match[2], 10);
+        if (!Number.isFinite(minRes) || minRes < 0) continue;
+        found.push({
+            id: `${cardId || 'ability'}:${found.length}:site-move-res`,
+            phases: [],
+            trigger: { type: direction },
+            cost: [],
+            effects: [
+                {
+                    type: 'HEAL',
+                    count: 1,
+                    all: true,
+                    minResistance: minRes,
+                    target: [['CHARACTER']],
+                },
+                {
+                    type: 'EXERT',
+                    count: 1,
+                    all: true,
+                    maxResistance: Math.max(0, minRes - 1),
+                    target: [['CHARACTER']],
+                },
+            ],
+            source: 'SELF',
+            text: stripAbilityMarkup(match[0]),
+        });
+    }
+
+    // Crags of Emyn Muil : region N + regroup → wound each companion.
+    const cragsRe =
+        /If this site is in region (\d+) when the fellowship moves from (?:it|here|this site) during the regroup phase, wound each companion\./gi;
+    while ((match = cragsRe.exec(text)) !== null) {
+        const region = parseInt(match[1], 10);
+        if (region !== 1 && region !== 2 && region !== 3) continue;
+        found.push({
+            id: `${cardId || 'ability'}:${found.length}:site-move-crags`,
+            phases: [],
+            trigger: {
+                type: 'MOVES_FROM',
+                duringRegroup: true,
+                siteRegion: region,
+            },
+            cost: [],
+            effects: [
+                {
+                    type: 'WOUND',
+                    count: 1,
+                    all: true,
+                    target: [['COMPANION']],
+                },
+            ],
             source: 'SELF',
             text: stripAbilityMarkup(match[0]),
         });

@@ -76,6 +76,23 @@ const SITES_MODERN_SMOKE_DECK = [
     '11S229', // Barazinbar
 ] as const;
 
+/**
+ * Vague moves to/from set 11 (auto).
+ * 1 filler → 2 Fangorn (armes) → 3 Orthanc (compagnons >5) → 4 Neekerbreekers
+ * → 5 Crags (région 2, blessure au leave en Regroup) → 6+ fillers.
+ */
+const SITES_MOVE_WAVE_PATH = [
+    '11S263', // 1 West Gate — départ
+    '11S239', // 2 Fangorn Glade — +1 crépuscule / arme PL
+    '11S241', // 3 Fortress of Orthanc — +2 / compagnon over 5
+    '11S249', // 4 Neekerbreekers’ Bog — heal rés.≥5 / exert autres
+    '11S234', // 5 Crags of Emyn Muil — région 2, wound en Regroup leave
+    '11S250', // 6 North Undeep — arrivée après Crags
+    '11S228', // 7 Confluence
+    '11S232', // 8 Cavern
+    '11S265', // 9 Window
+] as const;
+
 const resetBoardForPreset = (G: GameState): void => {
     const fpId = G.fpPlayerId || '0';
     const fpPlayer = G.players[fpId];
@@ -261,6 +278,55 @@ export const applyDevPreset = (
 
             G.statusMessage =
                 '[DEV] Sites 11+ smoke · Mere en site 8 (pas 9) : téléporte 7→avance ou site 8, Regroup, Gollum ombre / Sméagol FP.';
+            break;
+        }
+        case 'SITES_MOVE_WAVE': {
+            resetBoardForPreset(G);
+            // Départ site 1 → avance Fangorn → Orthanc → Bog ; Crags = téléporte 5 puis Regroup leave.
+            setupDevPath(G, 0, SITES_MOVE_WAVE_PATH);
+            G.twilightPool = 0;
+
+            fpPlayer.fellowshipArea = [
+                {
+                    ...clonePresetCard('2C102', 'dev-move-frodo'),
+                    attachments: [clonePresetCard('1R1', 'dev-move-ring')],
+                    resistance: 10,
+                    wounds: 1,
+                },
+                {
+                    ...clonePresetCard('0P14', 'dev-move-aragorn'),
+                    wounds: 0,
+                },
+                {
+                    ...clonePresetCard('1R13', 'dev-move-gimli'),
+                    attachments: [
+                        // Arme PL pour Fangorn.
+                        clonePresetCard('1R14', 'dev-move-axe'),
+                    ],
+                    wounds: 0,
+                },
+                {
+                    ...clonePresetCard('0P16', 'dev-move-faramir'),
+                    resistance: 3,
+                    wounds: 0,
+                },
+                {
+                    ...clonePresetCard('5C28', 'dev-move-smeagol'),
+                    wounds: 0,
+                },
+                {
+                    ...clonePresetCard('11S33', 'dev-move-gandalf'),
+                    wounds: 0,
+                },
+            ];
+            fpPlayer.burdens = 0;
+            fpPlayer.hand = [
+                clonePresetCard('7C154', 'dev-move-hand-1'),
+                clonePresetCard('1C3', 'dev-move-hand-2'),
+            ];
+
+            G.statusMessage =
+                '[DEV] Moves wave · 6 compagnons + hache (Fangorn/Orthanc) ; Frodo blessé rés.haute / Faramir rés.basse (Bog) ; Crags = site 5 puis Regroup → avancer.';
             break;
         }
     }

@@ -51,7 +51,18 @@ Familles : `archery` · `moves-to` · `moves-from` · `start-fellowship` · `pha
 | `11S265` | Window on the West | passive-while | OK | Smoke ✅ Defender +1 |
 | `18U138` | Sirannon Ruins | keyword-only | OK | River seul |
 
-### Inertes — set 11
+### Vague moves to/from (set 11) — auto
+
+| Id | Titre | Statut | Notes |
+| --- | --- | --- | --- |
+| `11S234` | Crags of Emyn Muil | OK | Smoke ✅ Regroup + région 2 → wound |
+| `11S239` | Fangorn Glade | OK | Smoke ✅ +1 crépuscule / arme PL |
+| `11S241` | Fortress of Orthanc | OK | Smoke ✅ +2 / compagnon over 5 |
+| `11S249` | Neekerbreekers’ Bog | OK | Smoke ✅ heal rés.≥5 + exert autres |
+
+Inertes volontaires (may / choix) : Guardroom, Osgiliath Reclaimed, Valley of the Silverlode, Westemnet Village.
+
+### Inertes — set 11 (hors vague moves auto)
 
 | Id | Titre | Famille |
 | --- | --- | --- |
@@ -59,20 +70,16 @@ Familles : `archery` · `moves-to` · `moves-from` · `start-fellowship` · `pha
 | `11S230` | Buckland Homestead | phase-ability |
 | `11S231` | Caras Galadhon | passive-while |
 | `11S233` | Chamber of Mazarbul | passive-while |
-| `11S234` | Crags of Emyn Muil | moves-from |
 | `11U235` | Dammed Gate-stream | start-fellowship |
 | `11S236` | East Road | passive-while |
 | `11S237` | Ettenmoors | phase-ability |
 | `11S238` | Expanding Marshland | phase-ability |
-| `11S239` | Fangorn Glade | moves-to |
 | `11S240` | Flats of Rohan | passive-while |
-| `11S241` | Fortress of Orthanc | moves-to |
 | `11S242` | Green Dragon Inn | start-fellowship |
 | `11S243` | Harrowdale | passive-while |
 | `11U244` | Heights of Isengard | each-time |
 | `11S245` | Helm's Gate | passive-while |
 | `11S247` | Moria Guardroom | moves-from |
-| `11S249` | Neekerbreekers’ Bog | moves-to |
 | `11S251` | Old Forest Road | start-fellowship |
 | `11S252` | Osgiliath Reclaimed | moves-from |
 | `11S253` | Pelennor Fields | passive-while |
@@ -135,7 +142,8 @@ Familles : `archery` · `moves-to` · `moves-from` · `start-fellowship` · `pha
 0. Gouvernance docs ✅ (ce fichier ; decks en pause ; roadmap)
 1. Inventaire ✅ (ci-dessus)
 2. **Smoke** des 9 parsés ✅ — preset `SITES_MODERN_SMOKE` ; Anduin Banks + Pelennor dual-wait fix
-3. **Prochaine** — vague **moves to/from** (set 11 d’abord) + preset
+3. Vague **moves to/from** set 11 auto ✅ — Orthanc / Fangorn / Bog / Crags ; preset `SITES_MOVE_WAVE`
+   - Ordre CR : **moves from → moves to → crépuscule du déplacement** (pas l’inverse)
 4. Vague **début de fellowship**
 5. Vague **passifs** While/Each/archery/coûts/assignation
 6. Vague **capacités de phase** Shadow/Skirmish/Maneuver/Regroup
