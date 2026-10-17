@@ -573,7 +573,7 @@ export const resolveForcedChoiceMove = (
     if (G.pendingForcedChoice?.needsHandDiscard) {
         return;
     }
-    // Après choix de site en début de Manœuvre : enchaîner si plus rien à faire.
+    // Après choix de site en début de Manœuvre : (re)ouvrir le dual-wait ou enchaîner.
     if (
         ctx.phase === 'startOfManeuver' &&
         G.maneuverStep === 'MANEUVER_START' &&
@@ -581,27 +581,29 @@ export const resolveForcedChoiceMove = (
     ) {
         const fpId = G.fpPlayerId || '0';
         const shadowId = fpId === '0' ? '1' : '0';
-        const fpDone =
-            G.startOfPhaseState?.players?.[fpId]?.isDone ||
-            !hasActionableStartOfPhaseCards(
-                G.players[fpId],
-                G,
-                fpId,
-                'startOfManeuver'
-            );
-        const shadowDone =
-            G.startOfPhaseState?.players?.[shadowId]?.isDone ||
-            !hasActionableStartOfPhaseCards(
-                G.players[shadowId],
-                G,
-                shadowId,
-                'startOfManeuver'
-            );
+        const fpDone = !hasActionableStartOfPhaseCards(
+            G.players[fpId],
+            G,
+            fpId,
+            'startOfManeuver'
+        );
+        const shadowDone = !hasActionableStartOfPhaseCards(
+            G.players[shadowId],
+            G,
+            shadowId,
+            'startOfManeuver'
+        );
         if (fpDone && shadowDone) {
             G.startOfPhaseState = undefined;
             exitStartOf(events, 'maneuver');
             return;
         }
+        G.startOfPhaseState = {
+            players: {
+                [fpId]: { isDone: fpDone },
+                [shadowId]: { isDone: shadowDone },
+            },
+        };
         G.statusMessage =
             'Phase de Manœuvre : Capacités et effets de début de phase.';
         return;

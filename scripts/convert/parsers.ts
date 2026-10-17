@@ -6056,8 +6056,9 @@ function parseSiteArcheryTotalAbilities(
         });
     }
     // North Undeep : The minion archery total is –3. (tiret / minus)
+    // Ne pas matcher le préfixe de « +N for each companion… » (Anduin Banks).
     const flatRe =
-        /The minion archery total is\s*([+−–-])\s*(\d+)\.?/gi;
+        /The minion archery total is\s*([+−–-])\s*(\d+)\.?(?!\s*for each companion)/gi;
     while ((match = flatRe.exec(text)) !== null) {
         if (/for each companion/i.test(match[0])) continue;
         const sign = match[1] === '+' ? 1 : -1;

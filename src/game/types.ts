@@ -1311,7 +1311,7 @@ export interface ArcheryState {
     shadowRemainingWounds: number;
 }
 
-export type DevPresetType = 'STAT_PULSE_TEST';
+export type DevPresetType = 'STAT_PULSE_TEST' | 'SITES_MODERN_SMOKE';
 
 export interface TempKeywordModifier {
     keyword: CardKeyword;

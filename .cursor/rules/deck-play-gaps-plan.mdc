@@ -1,9 +1,11 @@
 ---
-description: Plan d’implémentation trous de mécanismes (jeu réel decks)
-alwaysApply: true
+description: "PAUSE — Plan trous de mécanismes decks (suite = sites-modern-plan.mdc)"
+alwaysApply: false
 ---
 
 # Jeu réel — trous de mécanismes
+
+> **En pause.** Suite active : [`.cursor/rules/sites-modern-plan.mdc`](sites-modern-plan.mdc). Reprendre ici après le chantier sites 11+.
 
 **Format : Standard (règles modernes).** Voir `.cursor/rules/format-standard.mdc`.
 

@@ -522,25 +522,23 @@ describe('parseAbilities — deck gaps batch 2 (Noble Leaders / Gandalf / Promis
         );
     });
 
-    it('Anduin Banks : archerie ombre +2 par compagnon au-delà de 4', () => {
-        expect(
-            parseSiteAbilities(
-                '**River.** The minion archery total is +2 for each companion in the fellowship over 4.',
-                '11U227'
-            )
-        ).toEqual(
-            expect.arrayContaining([
-                expect.objectContaining({
-                    effects: [
-                        {
-                            type: 'MODIFY_ARCHERY_TOTAL',
-                            side: 'SHADOW',
-                            value: 2,
-                            perCompanionOver: 4,
-                        },
-                    ],
-                }),
-            ])
+    it('Anduin Banks : archerie ombre +2 par compagnon au-delà de 4 (sans doublon flat)', () => {
+        const parsed = parseSiteAbilities(
+            '**River.** The minion archery total is +2 for each companion in the fellowship over 4.',
+            '11U227'
+        );
+        expect(parsed).toHaveLength(1);
+        expect(parsed?.[0]).toEqual(
+            expect.objectContaining({
+                effects: [
+                    {
+                        type: 'MODIFY_ARCHERY_TOTAL',
+                        side: 'SHADOW',
+                        value: 2,
+                        perCompanionOver: 4,
+                    },
+                ],
+            })
         );
     });
 

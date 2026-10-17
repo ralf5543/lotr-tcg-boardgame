@@ -258,6 +258,57 @@ export const GameControls: React.FC<GameControlsProps> = ({
             showPassButton: false,
             type: 'MUSTER',
         };
+    } else if (
+        isForcedChoiceActive &&
+        isMyTurnToAct &&
+        !G.pendingForcedChoice?.needsHandDiscard
+    ) {
+        // Avant « début de phase » : sinon Pelennor Flat (etc.) reste invisible
+        // derrière un dual-wait startOfPhase.
+        const forcedSource = G.pendingForcedChoice
+            ? (findTargetCard(
+                  G,
+                  G.pendingForcedChoice.sourceInstanceId
+              ) as CardState | null)
+            : null;
+        const forcedAbility = forcedSource?.abilities?.find(
+            (ab) => ab.id === G.pendingForcedChoice?.abilityId
+        );
+        const chooseOne = forcedAbility?.effects?.find(
+            (e) => e.type === 'CHOOSE_ONE'
+        );
+        const optionLabels =
+            G.pendingForcedChoice?.options?.map((o) => o.label) ||
+            (chooseOne && chooseOne.type === 'CHOOSE_ONE'
+                ? chooseOne.options.map((o) => o.label)
+                : []);
+        toastConfig = {
+            show: true,
+            title:
+                G.pendingForcedChoice?.title ||
+                'CHOIX FORCÉ',
+            body:
+                G.pendingForcedChoice?.message ||
+                G.statusMessage ||
+                'Choisissez une option.',
+            showPassButton: false,
+            type: 'FORCED_CHOICE',
+            forcedOptionLabels: optionLabels,
+        };
+    } else if (
+        isForcedChoiceActive &&
+        isMyTurnToAct &&
+        G.pendingForcedChoice?.needsHandDiscard
+    ) {
+        toastConfig = {
+            show: true,
+            title: G.pendingForcedChoice?.title || 'DÉFAUSSE',
+            body:
+                G.statusMessage ||
+                `Défaussez ${G.pendingForcedChoice.needsHandDiscard} carte(s) de votre main.`,
+            showPassButton: false,
+            type: 'FORCED_CHOICE',
+        };
     } else if (isStartOfPhaseStep && myStartOfPhaseState) {
         toastConfig = {
             show: true,
@@ -317,55 +368,6 @@ export const GameControls: React.FC<GameControlsProps> = ({
             ),
             showPassButton: false,
             type: 'WHEN_PLAYED_CHOICE',
-        };
-    } else if (
-        isForcedChoiceActive &&
-        isMyTurnToAct &&
-        !G.pendingForcedChoice?.needsHandDiscard
-    ) {
-        const forcedSource = G.pendingForcedChoice
-            ? (findTargetCard(
-                  G,
-                  G.pendingForcedChoice.sourceInstanceId
-              ) as CardState | null)
-            : null;
-        const forcedAbility = forcedSource?.abilities?.find(
-            (ab) => ab.id === G.pendingForcedChoice?.abilityId
-        );
-        const chooseOne = forcedAbility?.effects?.find(
-            (e) => e.type === 'CHOOSE_ONE'
-        );
-        const optionLabels =
-            G.pendingForcedChoice?.options?.map((o) => o.label) ||
-            (chooseOne && chooseOne.type === 'CHOOSE_ONE'
-                ? chooseOne.options.map((o) => o.label)
-                : []);
-        toastConfig = {
-            show: true,
-            title:
-                G.pendingForcedChoice?.title ||
-                'CHOIX FORCÉ',
-            body:
-                G.pendingForcedChoice?.message ||
-                G.statusMessage ||
-                'Choisissez une option.',
-            showPassButton: false,
-            type: 'FORCED_CHOICE',
-            forcedOptionLabels: optionLabels,
-        };
-    } else if (
-        isForcedChoiceActive &&
-        isMyTurnToAct &&
-        G.pendingForcedChoice?.needsHandDiscard
-    ) {
-        toastConfig = {
-            show: true,
-            title: G.pendingForcedChoice?.title || 'DÉFAUSSE',
-            body:
-                G.statusMessage ||
-                `Défaussez ${G.pendingForcedChoice.needsHandDiscard} carte(s) de votre main.`,
-            showPassButton: false,
-            type: 'FORCED_CHOICE',
         };
     } else if (G.pendingReveal && isMyTurnToAct && G.pendingReveal.playerId === currentPlayerId) {
         toastConfig = {
@@ -542,6 +544,14 @@ export const GameControls: React.FC<GameControlsProps> = ({
                 return 'Effet de Rassembleur validé. En attente de l’autre joueur...';
             }
             return `Défaussées : ${myMusterState.discardedCount} / ${myMusterState.allowedCount} carte(s). Cliquez sur vos cartes ou validez.`;
+        }
+
+        if (isForcedChoiceActive) {
+            return isMyTurnToAct
+                ? G.pendingForcedChoice?.needsHandDiscard
+                    ? `Défaussez ${G.pendingForcedChoice.needsHandDiscard} carte(s) de votre main.`
+                    : 'Choisissez une option pour le site / l’effet en cours.'
+                : 'L’adversaire doit résoudre un choix forcé…';
         }
 
         if (isStartOfPhaseStep && myStartOfPhaseState) {

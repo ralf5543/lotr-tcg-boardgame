@@ -5711,23 +5711,6 @@
         ],
         "source": "SELF",
         "text": "The minion archery total is +2 for each companion in the fellowship over 4."
-      },
-      {
-        "id": "11U227:1:site-archery",
-        "phases": [],
-        "trigger": {
-          "type": "WHILE"
-        },
-        "cost": [],
-        "effects": [
-          {
-            "type": "MODIFY_ARCHERY_TOTAL",
-            "side": "SHADOW",
-            "value": 2
-          }
-        ],
-        "source": "SELF",
-        "text": "The minion archery total is +2"
       }
     ],
     "twilightCost": 0,

@@ -11,7 +11,7 @@ Document **vivant** : précisé, modifié, complété au fur et à mesure. **Lis
 
 ## Mode de travail
 
-1. **Un plan thématique actif** à la fois (détail, credo, étapes) — aujourd’hui : [`.cursor/rules/deck-play-gaps-plan.mdc`](deck-play-gaps-plan.mdc).
+1. **Un plan thématique actif** à la fois (détail, credo, étapes) — aujourd’hui : [`.cursor/rules/sites-modern-plan.mdc`](sites-modern-plan.mdc).
 2. **Cette roadmap** = vision d’ensemble + statut des grands axes.
 3. À la bascule : figer / désactiver le plan courant (`alwaysApply: false`), activer le suivant, mettre à jour le statut ici.
 
@@ -21,9 +21,9 @@ Credo transversal (hérités des plans cartes / sites / jetons) : **mieux vaut i
 
 | | |
 | --- | --- |
-| **Chantier** | Jeu réel — trous de mécanismes |
-| **Plan** | [`deck-play-gaps-plan.mdc`](deck-play-gaps-plan.mdc) |
-| **Statut** | **1–18** ; playtest reveal / Caradhras / vacante ; Mere + Sent Back combat + libellés Gollum nommé ; reste Armor, Isildur, Sent Back F/R… |
+| **Chantier** | Sites sets 11+ (gametexts Standard / Expanded) |
+| **Plan** | [`sites-modern-plan.mdc`](sites-modern-plan.mdc) |
+| **Statut** | Inventaire 79 ; smoke des 9 parsés ; puis vagues par famille (set 11 d’abord) |
 
 ## Grands axes
 
@@ -31,10 +31,10 @@ Statuts : `en cours` · `à faire` · `plus tard` · `fait` · `pause`
 
 | Axe | Statut | Notes |
 | --- | --- | --- |
-| **Sites** | **fait** | Socle Standard livré. Reportés : weather no-events, gametext site moderne (revenu via étape 7 du plan actif). |
+| **Sites** | **en cours** | Socle Standard livré. Gametexts 11–18 : [`sites-modern-plan.mdc`](sites-modern-plan.mdc). |
 | **Tokens de culture** | **fait** | Socle + étapes 1–15. Plan figé : [`culture-tokens-plan.mdc`](culture-tokens-plan.mdc). |
 | **Main / initiative** | **fait** | Étapes 1–5. Plan figé : [`hand-initiative-plan.mdc`](hand-initiative-plan.mdc). |
-| **Jeu réel / gaps** | **en cours** | Decks Fumeurs & Gondor/Uruks. Plan : [`deck-play-gaps-plan.mdc`](deck-play-gaps-plan.mdc). |
+| **Jeu réel / gaps** | **pause** | Decks Fumeurs & Gondor/Uruks. Plan figé : [`deck-play-gaps-plan.mdc`](deck-play-gaps-plan.mdc). |
 | **Création de deck** | à faire | Construction / édition / validation (format Standard, X-list…). |
 | **Affronter un BOT** | à faire | Via boardgame.io (adversaire automatisé). |
 | **Chat** | à faire | Via boardgame.io (table / match). |

@@ -1,0 +1,149 @@
+---
+description: Plan sites sets 11+ (Standard / Expanded) — inventaire, smoke, fragments
+alwaysApply: true
+---
+
+# Sites sets 11+ — plan et credo
+
+**Format : Standard (règles modernes).** Voir `.cursor/rules/format-standard.mdc`.
+
+Deck d’aventure Expanded / Open / Standard moderne : **uniquement sites sets 11+** (Shadows onward).
+
+Credo : **mieux vaut un site inerte qu’un site faux.** Fragments parser ; pas d’exceptions par id sauf cas extrême ([`card-exceptions.mdc`](card-exceptions.mdc)).
+
+Socle path / keywords / replace / attach / control : livré ([`sites-plan.mdc`](sites-plan.mdc), archivé). Ce plan = **gametexts** des 79 sites 11–18.
+
+Plan decks en pause : [`deck-play-gaps-plan.mdc`](deck-play-gaps-plan.mdc). Vision : [`roadmap.mdc`](roadmap.mdc).
+
+## Approche
+
+1. Inventaire (statut par id)
+2. Smoke des sites déjà parsés + correctifs FAUX
+3. Implémentation par **famille** de mécanique, **set 11 d’abord** dans chaque vague
+4. Preset DEV par vague + test au doute
+
+## Statuts
+
+| Statut | Sens |
+| --- | --- |
+| OK | Parsé + runtime OK, ou keyword-only sans effet |
+| DOUTE | Parsé, à playtester |
+| INERTE | Gametext non émis |
+| FAUX | Parsé incorrect |
+| EXCEPTION | Trop unique pour un fragment sûr |
+
+## Inventaire (79)
+
+Familles : `archery` · `moves-to` · `moves-from` · `start-fellowship` · `phase-ability` · `passive-while` · `each-time` · `keyword-only`
+
+### Parsés / smoke
+
+| Id | Titre | Famille | Statut | Notes |
+| --- | --- | --- | --- | --- |
+| `11U227` | Anduin Banks | archery | OK | Smoke ✅ ; fix doublon flat |
+| `11S228` | Anduin Confluence | moves-to | OK | Smoke ✅ discard allies |
+| `11S232` | Cavern Entrance | passive-while | OK | Smoke ✅ forbid skirmish actions |
+| `11U246` | Mere of Dead Faces | phase-ability | OK | Smoke ✅ ; preset site 8 (illégal en 9) |
+| `11S248` | Moria Stairway | passive-while | OK | Smoke ✅ Damage +1 bearing HW |
+| `11S250` | North Undeep | archery | OK | Smoke ✅ archery −3 |
+| `11S254` | Pelennor Flat | start-phase | OK | Smoke ✅ ; fix dual-wait toaster |
+| `11S263` | West Gate of Moria | moves-from | OK | Smoke ✅ remove twilight 2 |
+| `11S265` | Window on the West | passive-while | OK | Smoke ✅ Defender +1 |
+| `18U138` | Sirannon Ruins | keyword-only | OK | River seul |
+
+### Inertes — set 11
+
+| Id | Titre | Famille |
+| --- | --- | --- |
+| `11S229` | Barazinbar | start-fellowship |
+| `11S230` | Buckland Homestead | phase-ability |
+| `11S231` | Caras Galadhon | passive-while |
+| `11S233` | Chamber of Mazarbul | passive-while |
+| `11S234` | Crags of Emyn Muil | moves-from |
+| `11U235` | Dammed Gate-stream | start-fellowship |
+| `11S236` | East Road | passive-while |
+| `11S237` | Ettenmoors | phase-ability |
+| `11S238` | Expanding Marshland | phase-ability |
+| `11S239` | Fangorn Glade | moves-to |
+| `11S240` | Flats of Rohan | passive-while |
+| `11S241` | Fortress of Orthanc | moves-to |
+| `11S242` | Green Dragon Inn | start-fellowship |
+| `11S243` | Harrowdale | passive-while |
+| `11U244` | Heights of Isengard | each-time |
+| `11S245` | Helm's Gate | passive-while |
+| `11S247` | Moria Guardroom | moves-from |
+| `11S249` | Neekerbreekers’ Bog | moves-to |
+| `11S251` | Old Forest Road | start-fellowship |
+| `11S252` | Osgiliath Reclaimed | moves-from |
+| `11S253` | Pelennor Fields | passive-while |
+| `11S255` | Pinnacle of Zirakzigil | start-fellowship |
+| `11S256` | The Prancing Pony | start-fellowship |
+| `11S257` | Rohan Uplands | passive-while |
+| `11S258` | Slag Mounds | each-time |
+| `11S259` | Stables | start-fellowship |
+| `11S260` | Trollshaw Forest | each-time |
+| `11S261` | Valley of the Silverlode | moves-to |
+| `11S262` | Watch-tower of Cirith Ungol | phase-ability |
+| `11S264` | Westemnet Village | moves-to |
+| `11S266` | Woody-End | phase-ability |
+
+### Inertes — sets 12–18
+
+| Id | Titre | Famille |
+| --- | --- | --- |
+| `12U185` | The Angle | phase-ability |
+| `12U186` | The Bridge of Khazad-dûm | passive-while |
+| `12S187` | Emyn Muil | phase-ability |
+| `12S188` | Hill of Sight | passive-while |
+| `12S189` | Hobbiton Market | moves-from |
+| `12S190` | Northern Pelennor | phase-ability |
+| `12U191` | Shores of Nen Hithoel | phase-ability |
+| `12U192` | Slopes of Orodruin | phase-ability |
+| `12U193` | Starkhorn | each-time |
+| `12U194` | Wold Battlefield | phase-ability |
+| `13U185` | Abandoned Mine Shaft | moves-from |
+| `13S186` | Caves of Aglarond | moves-to |
+| `13U187` | City of Kings | moves-to |
+| `13U188` | Courtyard Parapet | moves-to |
+| `13S189` | Crossroads of the Fallen Kings | moves-to |
+| `13U190` | Doors of Durin | passive-while |
+| `13S191` | Fords of Isen | passive-while |
+| `13S192` | The Great Gates | passive-while |
+| `13U193` | Isenwash | passive-while |
+| `13U194` | Redhorn Pass | passive-while |
+| `15U187` | Anduin River | archery |
+| `15S188` | Breeding pit of Isengard | passive-while |
+| `15S189` | City Gates | moves-to |
+| `15S190` | East Wall of Rohan | start-fellowship |
+| `15S191` | Gate of Mordor | moves-to |
+| `15U192` | Isengard Ruined | each-time |
+| `15R193` | Mount Doom | passive-while |
+| `15S194` | Westfold Village | passive-while |
+| `17U145` | Dol Guldur | phase-ability |
+| `17U146` | Falls of Rauros | moves-to |
+| `17U147` | Imladris | moves-to |
+| `17U148` | Nurn | passive-while |
+| `18U134` | Doorway to Doom | moves-to |
+| `18U135` | Foot of Mount Doom | passive-while |
+| `18U136` | Mithlond | moves-to |
+| `18U137` | Morannon Plains | moves-to |
+| `18U139` | Steward's Tomb | passive-while |
+| `18U140` | Streets of Bree | passive-while |
+
+## Étapes
+
+0. Gouvernance docs ✅ (ce fichier ; decks en pause ; roadmap)
+1. Inventaire ✅ (ci-dessus)
+2. **Smoke** des 9 parsés ✅ — preset `SITES_MODERN_SMOKE` ; Anduin Banks + Pelennor dual-wait fix
+3. **Prochaine** — vague **moves to/from** (set 11 d’abord) + preset
+4. Vague **début de fellowship**
+5. Vague **passifs** While/Each/archery/coûts/assignation
+6. Vague **capacités de phase** Shadow/Skirmish/Maneuver/Regroup
+7. Vague **each-time** + cas durs (Mount Doom, Steward's Tomb, Foot of Mount Doom…)
+
+## Hors scope
+
+- Sites sets 1–10
+- Weather « no skirmish events » sauf si un site 11+ en dépend
+- Multi-Shadow / `siteArrow` alliés
+- Reprise plan decks avant clôture / pause explicite de ce chantier

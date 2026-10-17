@@ -715,8 +715,15 @@ export const LotrGame: Game<GameState> = {
 
                 G.maneuverStep = 'MANEUVER_START';
 
-                // Site courant (Pelennor Flat…) : choix forcé avant le reste.
+                // Site courant (Pelennor Flat…) : choix forcé avant le dual-wait début de phase.
                 applyStartOfManeuverSiteTriggers(G);
+                if (G.pendingForcedChoice) {
+                    // Pas de startOfPhaseState tant que le choix n’est pas résolu
+                    // (sinon les deux joueurs se bloquent en « en attente de l’adversaire »).
+                    G.startOfPhaseState = undefined;
+                    G.actionWindow = undefined;
+                    return;
+                }
 
                 const fpDone = !hasActionableStartOfPhaseCards(
                     G.players[fpId],
@@ -738,12 +745,6 @@ export const LotrGame: Game<GameState> = {
                         [shadowId]: { isDone: shadowDone },
                     },
                 };
-
-                // Choix forcé de site : on reste en début de phase jusqu’à résolution.
-                if (G.pendingForcedChoice) {
-                    G.actionWindow = undefined;
-                    return;
-                }
 
                 // Si aucune action/capacité de début de phase n'est jouable, on enchaîne immédiatement
                 if (fpDone && shadowDone) {
