@@ -29,8 +29,7 @@ import {
     announceInitiativeIfChanged,
     freePeoplesHasInitiative,
 } from '../logic/initiative';
-import { addThreats } from '../logic/threats';
-import { validateToPlayOption } from '../engine/validations/checkToPlayConditions';
+import { applyAutomaticToPlayCosts } from '../logic/applyToPlayCosts';
 import { getEffectiveTwilightCost } from '../../utils/roamingDetection';
 import { getWhileTwilightCostModifier } from '../logic/stats/mechanics/whileModifier';
 import { getCurrentSiteIndex } from '../logic/sites';
@@ -48,6 +47,7 @@ import {
     acceptPendingWhenPlayed,
     declinePendingWhenPlayed,
 } from '../engine/abilities/whenPlayed';
+import { declinePendingSiteStartAbility } from '../logic/siteStartAbility';
 import {
     openSkirmishActionWindow,
     resolveForcedChoice,
@@ -211,6 +211,8 @@ export const attachCard = (
         return 'INVALID_MOVE';
     }
 
+    applyAutomaticToPlayCosts(G, card, actingPlayerId, ctx.phase);
+
     const toPlayExert = (card.toPlay || []).find((opt) =>
         opt.exert?.some((r) => Array.isArray(r.target))
     );
@@ -360,14 +362,8 @@ export const playCard = (
         return 'INVALID_MOVE';
     }
 
-    // toPlay : première option valide (Seeing Stone : spot 3 vit. OU spot + menaces).
-    const playContext = { G, ctx, playerID: actingPlayerId };
-    const chosenToPlay = (card.toPlay || []).find(
-        (opt) => validateToPlayOption(opt, card, playContext).valid
-    );
-    if (chosenToPlay?.addThreats && chosenToPlay.addThreats > 0) {
-        addThreats(G, chosenToPlay.addThreats);
-    }
+    // toPlay automatiques (add burden / threats…) + exert à désigner plus bas.
+    applyAutomaticToPlayCosts(G, card, actingPlayerId, ctx.phase);
 
     const toPlayExert = (card.toPlay || []).find((opt) =>
         opt.exert?.some((r) => Array.isArray(r.target))
@@ -556,6 +552,24 @@ export const resolveWhenPlayedChoice = (
     }
 
     flushPendingActionYield(G);
+};
+
+/** Toaster site début de fellowship : Passer uniquement (Activer = UI → activateAbility). */
+export const resolveSiteStartAbilityChoice = (
+    { G, events, playerID }: LotrMoveContext,
+    accept: boolean
+) => {
+    if (
+        !G.pendingSiteStartAbility ||
+        G.pendingSiteStartAbility.playerId !== playerID
+    ) {
+        return 'INVALID_MOVE';
+    }
+    // Activer : le plateau lance activateAbility ; on ne touche pas au pending ici.
+    if (accept) return;
+    if (!declinePendingSiteStartAbility(G, playerID, events)) {
+        return 'INVALID_MOVE';
+    }
 };
 
 export const resolveForcedChoiceMove = (
@@ -847,6 +861,7 @@ export const commonMoves = {
     assignSanctuaryHeal,
     confirmSanctuaryHeals,
     resolveWhenPlayedChoice,
+    resolveSiteStartAbilityChoice,
     resolveForcedChoiceMove,
     confirmPendingRevealMove,
     ...(process.env.NODE_ENV !== 'production' ? devMoves : {}),

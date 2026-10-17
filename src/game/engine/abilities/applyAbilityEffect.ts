@@ -548,15 +548,23 @@ export function applyAbilityEffect(
             if (!ownerId) return false;
             const cardId = chosenIds[0];
             if (!cardId) return false;
-            const attachHost =
+            const fpId = G.fpPlayerId || '0';
+            const playPhase =
+                ownerId === fpId ? 'fellowship' : 'shadow';
+            let attachHost: CardState | null =
                 effect.attachTo === 'SELF' ? source : null;
+            if (!attachHost && chosenIds[1]) {
+                attachHost =
+                    (findTargetCard(G, chosenIds[1]) as CardState | null) ||
+                    null;
+            }
             const from = effect.from || 'DECK_OR_DISCARD';
             const candidates = getDeckOrDiscardPlayCandidates(
                 G,
                 ownerId,
                 effect.target,
-                'shadow',
-                attachHost,
+                playPhase,
+                effect.attachTo === 'SELF' ? source : null,
                 from
             );
             if (
@@ -571,14 +579,14 @@ export function applyAbilityEffect(
                 ownerId,
                 cardId,
                 effect.target,
-                'shadow',
+                playPhase,
                 attachHost,
                 from
             );
             if (!played) return false;
             afterCardPlayed(G, played, {
                 playerId: ownerId,
-                phase: 'shadow',
+                phase: playPhase,
             });
             continue;
         }
@@ -1086,12 +1094,17 @@ export function applyAbilityEffect(
             continue;
         }
 
-        if (effect.type === 'HEAL' && effect.multiFromSpot) {
-            const spot = countFromSpotCost(G, source, ability);
+        if (
+            effect.type === 'HEAL' &&
+            (effect.multiFromSpot || (effect.multiCount && effect.multiCount > 1))
+        ) {
             const pool = resolveCostTarget(G, source, effect.target).filter(
                 isHealableForMulti
             );
-            const need = Math.min(spot, pool.length);
+            const cap = effect.multiFromSpot
+                ? countFromSpotCost(G, source, ability)
+                : effect.multiCount || 1;
+            const need = Math.min(cap, pool.length);
             if (need <= 0 || chosenIds.length !== need) return false;
             if (new Set(chosenIds).size !== chosenIds.length) return false;
             for (const id of chosenIds) {

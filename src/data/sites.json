@@ -5807,6 +5807,47 @@
     "keywords": [
       "MOUNTAIN"
     ],
+    "abilities": [
+      {
+        "id": "11S229:0:site-start-fp",
+        "phases": [
+          "START_OF_FELLOWSHIP"
+        ],
+        "optional": true,
+        "cost": [
+          {
+            "exert": [
+              {
+                "count": 1,
+                "target": [
+                  [
+                    "DWARF"
+                  ]
+                ],
+                "mode": "DESIGNATION"
+              }
+            ]
+          }
+        ],
+        "effects": [
+          {
+            "type": "PLAY_FROM_DECK_OR_DISCARD",
+            "target": [
+              [
+                "DWARVEN",
+                "POSSESSION"
+              ]
+            ],
+            "from": "DECK"
+          }
+        ],
+        "source": "SELF",
+        "text": "At the start of your fellowship phase, you may exert a Dwarf to play a DWARVEN possession from your draw deck."
+      }
+    ],
+    "actionPhases": [
+      "START_OF_FELLOWSHIP"
+    ],
     "twilightCost": 2,
     "siteArrow": "Right",
     "imageUrl": "/cards_visuals/o_11_229.jpg",
@@ -6068,6 +6109,33 @@
     "type": "SITE",
     "keywords": [
       "MARSH"
+    ],
+    "abilities": [
+      {
+        "id": "11U235:0:site-start-fp",
+        "phases": [
+          "START_OF_FELLOWSHIP"
+        ],
+        "optional": true,
+        "cost": [],
+        "effects": [
+          {
+            "type": "PLAY_FROM_DECK_OR_DISCARD",
+            "target": [
+              [
+                "GOLLUM",
+                "FREE_PEOPLES"
+              ]
+            ],
+            "from": "DECK"
+          }
+        ],
+        "source": "SELF",
+        "text": "At the start of your fellowship phase, you may play a GOLLUM Free Peoples card from your draw deck."
+      }
+    ],
+    "actionPhases": [
+      "START_OF_FELLOWSHIP"
     ],
     "twilightCost": 3,
     "siteArrow": "Left",
@@ -6809,6 +6877,33 @@
     "keywords": [
       "FOREST"
     ],
+    "abilities": [
+      {
+        "id": "11S251:0:site-start-fp",
+        "phases": [
+          "START_OF_FELLOWSHIP"
+        ],
+        "optional": true,
+        "cost": [],
+        "effects": [
+          {
+            "type": "HEAL",
+            "count": 1,
+            "multiCount": 2,
+            "target": [
+              [
+                "ELF"
+              ]
+            ]
+          }
+        ],
+        "source": "SELF",
+        "text": "At the start of your fellowship phase, you may heal 2 Elves."
+      }
+    ],
+    "actionPhases": [
+      "START_OF_FELLOWSHIP"
+    ],
     "twilightCost": 3,
     "siteArrow": "Right",
     "imageUrl": "/cards_visuals/o_11_251.jpg",
@@ -7029,6 +7124,36 @@
     "keywords": [
       "DWELLING"
     ],
+    "abilities": [
+      {
+        "id": "11S256:0:site-start-fp",
+        "phases": [
+          "START_OF_FELLOWSHIP"
+        ],
+        "optional": true,
+        "cost": [
+          {
+            "addBurdens": 1
+          }
+        ],
+        "effects": [
+          {
+            "type": "PLAY_FROM_DECK_OR_DISCARD",
+            "target": [
+              [
+                "RANGER"
+              ]
+            ],
+            "from": "DECK"
+          }
+        ],
+        "source": "SELF",
+        "text": "At the start of your fellowship phase, you may add a burden to play a ranger from your draw deck."
+      }
+    ],
+    "actionPhases": [
+      "START_OF_FELLOWSHIP"
+    ],
     "twilightCost": 3,
     "siteArrow": "Right",
     "imageUrl": "/cards_visuals/o_01_324.jpg",
@@ -7134,6 +7259,48 @@
     "isUnique": false,
     "kind": "SITE",
     "type": "SITE",
+    "abilities": [
+      {
+        "id": "11S259:0:site-start-fp",
+        "phases": [
+          "START_OF_FELLOWSHIP"
+        ],
+        "optional": true,
+        "cost": [
+          {
+            "exert": [
+              {
+                "count": 1,
+                "target": [
+                  [
+                    "ROHAN",
+                    "MAN"
+                  ]
+                ],
+                "mode": "DESIGNATION"
+              }
+            ]
+          }
+        ],
+        "effects": [
+          {
+            "type": "PLAY_FROM_DECK_OR_DISCARD",
+            "target": [
+              [
+                "ROHAN",
+                "MOUNT"
+              ]
+            ],
+            "from": "DECK"
+          }
+        ],
+        "source": "SELF",
+        "text": "At the start of your fellowship phase, you may exert a ROHAN Man to play a ROHAN mount from your draw deck."
+      }
+    ],
+    "actionPhases": [
+      "START_OF_FELLOWSHIP"
+    ],
     "twilightCost": 2,
     "siteArrow": "Right",
     "imageUrl": "/cards_visuals/o_04_339.jpg",

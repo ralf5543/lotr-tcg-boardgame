@@ -20,7 +20,11 @@ import { CardZoneOverlay } from './components/CardZoneOverlay';
 import { Dock } from './components/Dock';
 import { SitesPicker } from './components/SitePicker';
 import { GameControls } from './components/GameControls';
-import { canAttachToCharacter, attachesToSite } from '../../game/engine/canPlayCard';
+import {
+    canAttachToCharacter,
+    attachesToSite,
+    requiresAttachmentTarget,
+} from '../../game/engine/canPlayCard';
 import { PhaseBanner } from './components/PhaseBanner';
 import { canonicalPhaseName } from './canonicalPhaseName';
 import { DevPanel, type DevMoves } from '../../utils/DevPanel';
@@ -71,6 +75,7 @@ import {
 } from '../../game/engine/abilities/applyAbilityEffect';
 import { getCardsStackedOnHost } from '../../game/logic/cardStack';
 import {
+    findLegalAttachmentHosts,
     getDeckOrDiscardBrowsePool,
     getDeckOrDiscardPlayCandidates,
     getDeckSearchToDiscardCandidates,
@@ -809,14 +814,10 @@ export const GameBoard: React.FC<GameBoardProps> = ({
                     ability,
                     effectNeed,
                     (effectIds) => {
-                        stopTargeting();
-                        moves.activateAbility?.(
-                            sourceInstanceId,
-                            abilityId,
-                            costId,
-                            costId ? [] : undefined,
-                            effectIds
-                        );
+                        // Sans coût : les cibles doivent être en 3ᵉ arg
+                        // (chosenTargetId), pas en 5ᵉ — sinon INVALID_MOVE
+                        // et le toaster site recommence.
+                        commitAbility(costId, effectIds);
                     }
                 );
             }
@@ -972,6 +973,99 @@ export const GameBoard: React.FC<GameBoardProps> = ({
             );
             return;
         }
+        // Pioche / défausse avant le coût générique (Barazinbar : exert puis grille).
+        if (abilityNeedsDeckOrDiscardPick(ability)) {
+            const take = abilityTakeFromDiscardEffect(ability);
+            if (take) {
+                const discard = G.players[myId]?.discard || [];
+                const selectable = discard.filter(
+                    (c) => c && cardMatchesTarget(c, take.target)
+                );
+                if (selectable.length === 0) return;
+                if (selectable.length === 1) {
+                    const only = selectable[0]!;
+                    moves.activateAbility?.(
+                        sourceInstanceId,
+                        abilityId,
+                        only.instanceId || only.id
+                    );
+                    return;
+                }
+                setDeckDiscardPick({
+                    activate: { sourceInstanceId, abilityId },
+                    selectableCardIds: selectable.flatMap(cardTargetIds),
+                    deck: [],
+                    discard: [...discard],
+                    title: 'Défausse',
+                    subtitle:
+                        'Choisissez un séide à prendre dans votre main.',
+                });
+                return;
+            }
+            const playEffect = abilityPlayFromDeckOrDiscardEffect(ability);
+            if (playEffect) {
+                const from = playEffect.from || 'DECK_OR_DISCARD';
+                const playPhase =
+                    myId === (G.fpPlayerId || '0')
+                        ? ctx.phase || 'fellowship'
+                        : 'shadow';
+                const attachHost =
+                    playEffect.attachTo === 'SELF' ? source : null;
+                const openDeckPick = (costId?: string) => {
+                    const selectable = getDeckOrDiscardPlayCandidates(
+                        G,
+                        myId,
+                        playEffect.target,
+                        playPhase,
+                        attachHost,
+                        from
+                    );
+                    if (selectable.length === 0) return;
+                    const pool = getDeckOrDiscardBrowsePool(G, myId);
+                    setDeckDiscardPick({
+                        activate: {
+                            sourceInstanceId,
+                            abilityId,
+                            costId,
+                        },
+                        selectableCardIds:
+                            selectable.flatMap(cardTargetIds),
+                        deck: from === 'DISCARD' ? [] : pool.deck,
+                        discard: from === 'DECK' ? [] : pool.discard,
+                        title:
+                            from === 'DECK'
+                                ? 'Pioche'
+                                : from === 'DISCARD'
+                                  ? 'Défausse'
+                                  : 'Pioche ou défausse',
+                        subtitle:
+                            'Choisissez une carte jouable dans votre pioche.',
+                    });
+                };
+                if (needsCost && !chosenTargetId) {
+                    if (
+                        requestDesignation(
+                            source,
+                            ability,
+                            (costId) => {
+                                stopTargeting();
+                                openDeckPick(costId);
+                            },
+                            undefined,
+                            'cost'
+                        )
+                    ) {
+                        return;
+                    }
+                }
+                openDeckPick(
+                    typeof chosenTargetId === 'string'
+                        ? chosenTargetId
+                        : undefined
+                );
+                return;
+            }
+        }
         if (
             !needsEffect &&
             requestDesignation(source, ability, (cardId) => {
@@ -1027,37 +1121,27 @@ export const GameBoard: React.FC<GameBoardProps> = ({
                 return;
             }
         }
-        if (abilityNeedsDeckOrDiscardPick(ability)) {
-            const take = abilityTakeFromDiscardEffect(ability);
-            if (take) {
-                const discard = G.players[myId]?.discard || [];
-                const selectable = discard.filter(
-                    (c) => c && cardMatchesTarget(c, take.target)
-                );
-                if (selectable.length === 0) return;
-                if (selectable.length === 1) {
-                    const only = selectable[0]!;
-                    moves.activateAbility?.(
-                        sourceInstanceId,
-                        abilityId,
-                        only.instanceId || only.id
-                    );
-                    return;
-                }
-                setDeckDiscardPick({
-                    activate: { sourceInstanceId, abilityId },
-                    selectableCardIds: selectable.flatMap(cardTargetIds),
-                    deck: [],
-                    discard: [...discard],
-                    title: 'Défausse',
-                    subtitle:
-                        'Choisissez un séide à prendre dans votre main.',
-                });
-                return;
-            }
-        }
         moves.activateAbility?.(sourceInstanceId, abilityId);
     };
+
+    const handleResolveSiteStartAbilityChoice = useCallback(
+        (accept: boolean) => {
+            if (!accept) {
+                moves.resolveSiteStartAbilityChoice?.(false);
+                return;
+            }
+            const pending = G.pendingSiteStartAbility;
+            if (!pending) return;
+            // Pending reste jusqu’à activateAbility réussi (annulation → toaster revient).
+            handleActivateAbility(
+                pending.siteInstanceId,
+                pending.abilityId
+            );
+        },
+        // handleActivateAbility lit G/moves courants ; pas de useCallback sur lui.
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+        [G.pendingSiteStartAbility, moves]
+    );
 
     const handleResolveWhenPlayedChoice = useCallback(
         (accept: boolean, discardedHandIds?: string[]) => {
@@ -1275,7 +1359,11 @@ export const GameBoard: React.FC<GameBoardProps> = ({
     const [deckDiscardPick, setDeckDiscardPick] = useState<{
         handIndex?: number;
         whenPlayed?: boolean;
-        activate?: { sourceInstanceId: string; abilityId: string };
+        activate?: {
+            sourceInstanceId: string;
+            abilityId: string;
+            costId?: string;
+        };
         selectableCardIds: string[];
         deck: CardState[];
         discard: CardState[];
@@ -2412,6 +2500,8 @@ export const GameBoard: React.FC<GameBoardProps> = ({
                             ...moves,
                             resolveWhenPlayedChoice:
                                 handleResolveWhenPlayedChoice,
+                            resolveSiteStartAbilityChoice:
+                                handleResolveSiteStartAbilityChoice,
                         }}
                     />
 
@@ -2574,6 +2664,10 @@ export const GameBoard: React.FC<GameBoardProps> = ({
                                 const whenPlayed = deckDiscardPick.whenPlayed;
                                 const handIndex = deckDiscardPick.handIndex;
                                 const activate = deckDiscardPick.activate;
+                                const poolCards = [
+                                    ...deckDiscardPick.deck,
+                                    ...deckDiscardPick.discard,
+                                ];
                                 setDeckDiscardPick(null);
                                 if (whenPlayed) {
                                     moves.resolveWhenPlayedChoice?.(
@@ -2585,11 +2679,70 @@ export const GameBoard: React.FC<GameBoardProps> = ({
                                     return;
                                 }
                                 if (activate) {
-                                    moves.activateAbility?.(
-                                        activate.sourceInstanceId,
-                                        activate.abilityId,
-                                        cardId
+                                    const picked = poolCards.find(
+                                        (c) =>
+                                            c &&
+                                            (c.instanceId === cardId ||
+                                                c.id === cardId)
                                     );
+                                    const finishActivate = (
+                                        effectIds: string | string[]
+                                    ) => {
+                                        if (activate.costId) {
+                                            moves.activateAbility?.(
+                                                activate.sourceInstanceId,
+                                                activate.abilityId,
+                                                activate.costId,
+                                                undefined,
+                                                effectIds
+                                            );
+                                        } else {
+                                            moves.activateAbility?.(
+                                                activate.sourceInstanceId,
+                                                activate.abilityId,
+                                                effectIds
+                                            );
+                                        }
+                                        audioService.play('CARD_PLAY');
+                                    };
+                                    if (
+                                        picked &&
+                                        requiresAttachmentTarget(picked)
+                                    ) {
+                                        const hosts = findLegalAttachmentHosts(
+                                            G,
+                                            myId,
+                                            picked,
+                                            ctx.phase || 'fellowship'
+                                        );
+                                        if (hosts.length === 0) return;
+                                        if (hosts.length === 1) {
+                                            const host = hosts[0]!;
+                                            finishActivate([
+                                                cardId,
+                                                host.instanceId || host.id,
+                                            ]);
+                                            return;
+                                        }
+                                        startTargeting({
+                                            kind: 'DESIGNATION',
+                                            targetableCardIds:
+                                                hosts.flatMap(cardTargetIds),
+                                            pendingCard: picked,
+                                            abilityId: activate.abilityId,
+                                            message:
+                                                'Choisissez le porteur de cette carte.',
+                                            onSelectTarget: (hostId) => {
+                                                stopTargeting();
+                                                finishActivate([
+                                                    cardId,
+                                                    hostId,
+                                                ]);
+                                            },
+                                        });
+                                        return;
+                                    }
+                                    finishActivate(cardId);
                                     return;
                                 }
                                 if (handIndex === undefined) return;

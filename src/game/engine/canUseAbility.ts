@@ -56,6 +56,17 @@ export function canUseAbility(
             reason: "Seul le joueur de l'Ombre peut utiliser cette capacité.",
         };
     }
+    // Site : activation directe = Peuples Libres (début de fellowship…).
+    // Ombre : capacités projetées (Mere → Gollum), pas le sceau du site.
+    if (
+        (card.kind === 'SITE' || card.type === 'SITE') &&
+        pid !== fpId
+    ) {
+        return {
+            valid: false,
+            reason: 'Seul le joueur des Peuples Libres active ce site ici.',
+        };
+    }
 
     // Blessures de menaces : rien d’autre tant que le FP n’a pas fini d’assigner.
     if ((G.threatWoundsToAssign ?? 0) > 0) {

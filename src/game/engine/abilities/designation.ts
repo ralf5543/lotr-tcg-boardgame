@@ -530,19 +530,24 @@ function abilityEffectDesignationIsHaloOnly(ability: Ability): boolean {
     );
 }
 
-/** Nombre de cibles d’effet à désigner (1, ou min(X, blessés) si multiFromSpot). */
+/** Nombre de cibles d’effet à désigner (1, ou min(X, blessés) si multi). */
 export function getEffectDesignationCount(
     G: GameState,
     source: CardState,
     ability: Ability
 ): number {
     const heal = (ability.effects || []).find(
-        (item) => item.type === 'HEAL' && item.multiFromSpot
+        (item) =>
+            item.type === 'HEAL' &&
+            (item.multiFromSpot ||
+                (typeof item.multiCount === 'number' && item.multiCount > 1))
     );
     if (heal && heal.type === 'HEAL') {
-        const spot = countFromSpotCost(G, source, ability);
+        const cap = heal.multiFromSpot
+            ? countFromSpotCost(G, source, ability)
+            : heal.multiCount || 1;
         const available = candidatesForEffect(G, source, ability, heal).length;
-        return Math.min(Math.max(0, spot), available);
+        return Math.min(Math.max(0, cap), available);
     }
     return 1;
 }
@@ -684,12 +689,14 @@ export function abilityHasLegalEffectTarget(
             if (!ownerId) return false;
             const attachHost =
                 effect.attachTo === 'SELF' ? source : null;
+            const playPhase =
+                ownerId === (G.fpPlayerId || '0') ? 'fellowship' : 'shadow';
             if (
                 getDeckOrDiscardPlayCandidates(
                     G,
                     ownerId,
                     effect.target,
-                    'shadow',
+                    playPhase,
                     attachHost,
                     effect.from || 'DECK_OR_DISCARD'
                 ).length < 1
@@ -773,7 +780,11 @@ export function abilityHasLegalEffectTarget(
             }
             continue;
         }
-        if (effect.type === 'HEAL' && effect.multiFromSpot) {
+        if (
+            effect.type === 'HEAL' &&
+            (effect.multiFromSpot ||
+                (typeof effect.multiCount === 'number' && effect.multiCount > 1))
+        ) {
             if (candidatesForEffect(G, source, ability, effect).length < 1) {
                 return false;
             }

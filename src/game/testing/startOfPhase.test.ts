@@ -19,7 +19,7 @@ describe('début de phase (startOf*)', () => {
         expect(engine.getG().startOfPhaseState).toBeUndefined();
     });
 
-    it('reste ouvert si une carte a actionPhases, puis avance quand le joueur confirme', () => {
+    it('reste ouvert si une carte a une capacité début de fellowship, puis avance au confirm', () => {
         const engine = createEngineClient({
             startPhase: 'startOfFellowship',
             playerID: '0',
@@ -29,7 +29,22 @@ describe('début de phase (startOf*)', () => {
                         fellowshipArea: [
                             createCompanion({
                                 id: 'comp-1',
-                                actionPhases: ['startOfFellowship'],
+                                actionPhases: ['START_OF_FELLOWSHIP'],
+                                abilities: [
+                                    {
+                                        id: 'comp-1:0:start-fp',
+                                        phases: ['START_OF_FELLOWSHIP'],
+                                        optional: true,
+                                        cost: [],
+                                        effects: [
+                                            {
+                                                type: 'ADD_TWILIGHT',
+                                                count: 1,
+                                            },
+                                        ],
+                                        source: 'SELF',
+                                    },
+                                ],
                             }),
                         ],
                     }),

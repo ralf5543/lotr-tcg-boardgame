@@ -388,6 +388,13 @@ export const DevPanel: React.FC<DevPanelProps> = ({
                         >
                             Sites moves to/from
                         </S.PresetButton>
+                        <S.PresetButton
+                            onClick={() =>
+                                moves.devLoadPreset('SITES_START_FP')
+                            }
+                        >
+                            Sites début fellowship
+                        </S.PresetButton>
                         <S.GameButton $bgColor="#3498db" onClick={onDrawCard}>
                             🃏 Piocher ({deckCount})
                         </S.GameButton>

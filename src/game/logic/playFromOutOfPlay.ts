@@ -1,9 +1,14 @@
 import type { CardState, GameState } from '../types';
 import { cardMatchesTarget } from '../engine/validations/matchers';
-import { canPlayCard } from '../engine/canPlayCard';
+import {
+    canAttachToCharacter,
+    canPlayCard,
+    requiresAttachmentTarget,
+} from '../engine/canPlayCard';
 import { getEffectiveTwilightCost } from '../../utils/roamingDetection';
 import { getWhileTwilightCostModifier } from './stats/mechanics/whileModifier';
 import { getCurrentSiteIndex } from './sites';
+import { applyAutomaticToPlayCosts } from './applyToPlayCosts';
 
 const matchCard = (card: CardState | undefined | null, targetId: string) =>
     Boolean(card && (card.instanceId === targetId || card.id === targetId));
@@ -63,6 +68,48 @@ export function getDeckOrDiscardBrowsePool(
     };
 }
 
+/** Hôtes légaux pour une possession / artefact / situation à attacher. */
+export function findLegalAttachmentHosts(
+    G: GameState,
+    ownerId: string,
+    attachment: CardState,
+    phase = 'fellowship'
+): CardState[] {
+    const fpId = G.fpPlayerId || '0';
+    const isFP = ownerId === fpId;
+    const hosts: CardState[] = [];
+
+    if (isFP) {
+        for (const card of G.players[ownerId]?.fellowshipArea || []) {
+            if (card) hosts.push(card);
+        }
+        for (const card of G.players[ownerId]?.supportArea || []) {
+            if (card && (card.type === 'ALLY' || card.type === 'FOLLOWER')) {
+                hosts.push(card);
+            }
+        }
+    } else {
+        for (const card of G.battlefield || []) {
+            if (card && card.kind === 'SHADOW') hosts.push(card);
+        }
+        for (const card of G.players[ownerId]?.supportArea || []) {
+            if (card) hosts.push(card);
+        }
+    }
+
+    return hosts.filter((host) => {
+        if (!canAttachToCharacter(attachment, host, ownerId)) return false;
+        const hostId = host.instanceId || host.id;
+        return canPlayCard(
+            attachment,
+            { G, ctx: { phase }, playerID: ownerId },
+            hostId,
+            host,
+            { ignorePhase: true }
+        ).valid;
+    });
+}
+
 /**
  * Candidats jouables depuis pioche ou défausse (filtre + coût + unicité + toPlay).
  * `attachHost` : si fourni, valide comme attachement sur cet hôte.
@@ -94,6 +141,9 @@ export function getDeckOrDiscardPlayCandidates(
         : undefined;
 
     return pool.filter((card) => {
+        if (requiresAttachmentTarget(card) && !attachHost) {
+            return findLegalAttachmentHosts(G, ownerId, card, phase).length >= 1;
+        }
         const check = canPlayCard(
             card,
             { G, ctx: { phase }, playerID: ownerId },
@@ -106,9 +156,9 @@ export function getDeckOrDiscardPlayCandidates(
 }
 
 /**
- * Joue une carte depuis la pioche ou la défausse (paie le crépuscule effectif).
- * `filter` : doit matcher (effet Captured…). Mélange la pioche après recherche.
- * `attachHost` : attache sur cet hôte au lieu de l’aire de soutien / champ.
+ * Joue une carte depuis la pioche ou la défausse.
+ * FP : ajoute le crépuscule ; Ombre : le retire.
+ * Compagnons → communauté ; possessions à attacher → hôte (fourni ou unique légal).
  */
 export function playCardFromDeckOrDiscard(
     G: GameState,
@@ -127,24 +177,31 @@ export function playCardFromDeckOrDiscard(
     const { card, source, index } = found;
     if (filter && !cardMatchesTarget(card, filter)) return null;
 
-    const hostId = attachHost
-        ? attachHost.instanceId || attachHost.id
-        : undefined;
+    const fpId = G.fpPlayerId || '0';
+    const isFP = ownerId === fpId;
+
+    let host = attachHost || null;
+    if (requiresAttachmentTarget(card) && !host) {
+        const hosts = findLegalAttachmentHosts(G, ownerId, card, phase);
+        if (hosts.length === 1) {
+            host = hosts[0] || null;
+        } else if (hosts.length === 0) {
+            return null;
+        } else {
+            // Plusieurs hôtes : l’appelant doit passer attachHost.
+            return null;
+        }
+    }
+
+    const hostId = host ? host.instanceId || host.id : undefined;
     const check = canPlayCard(
         card,
         { G, ctx: { phase }, playerID: ownerId },
         hostId,
-        attachHost || undefined,
+        host || undefined,
         { ignorePhase: true }
     );
     if (!check.valid) return null;
-
-    const cost = getEffectiveTwilightCost(
-        card,
-        getCurrentSiteIndex(G),
-        getWhileTwilightCostModifier(G, card)
-    );
-    if ((G.twilightPool || 0) < cost) return null;
 
     const player = G.players[ownerId];
     if (!player) return null;
@@ -157,19 +214,75 @@ export function playCardFromDeckOrDiscard(
     }
     if (!removed) return null;
 
+    const restore = () => {
+        if (source === 'DECK') player.deck!.splice(index, 0, removed!);
+        else player.discard!.splice(index, 0, removed!);
+    };
+
+    const finishPlay = (): CardState => {
+        // « To play, add a burden » (Sméagol…) — une fois la carte en jeu.
+        applyAutomaticToPlayCosts(G, removed!, ownerId, phase);
+        shufflePlayerDeck(G, ownerId);
+        return removed!;
+    };
+
+    if (isFP) {
+        const cost = Number(removed.twilightCost) || 0;
+        G.twilightPool = (G.twilightPool || 0) + cost;
+
+        if (host) {
+            if (!host.attachments) host.attachments = [];
+            host.attachments.push(removed);
+            return finishPlay();
+        }
+
+        if (removed.type === 'COMPANION') {
+            if (!player.fellowshipArea) player.fellowshipArea = [];
+            removed.isFaceDown = false;
+            player.fellowshipArea.push(removed);
+            return finishPlay();
+        }
+
+        if (
+            removed.type === 'ALLY' ||
+            removed.type === 'FOLLOWER' ||
+            removed.type === 'ARTIFACT' ||
+            removed.type === 'CONDITION' ||
+            removed.type === 'POSSESSION'
+        ) {
+            if (!player.supportArea) player.supportArea = [];
+            player.supportArea.push(removed);
+            return finishPlay();
+        }
+
+        restore();
+        G.twilightPool -= cost;
+        return null;
+    }
+
+    const cost = getEffectiveTwilightCost(
+        removed,
+        getCurrentSiteIndex(G),
+        getWhileTwilightCostModifier(G, removed)
+    );
+    if ((G.twilightPool || 0) < cost) {
+        restore();
+        return null;
+    }
     G.twilightPool = (G.twilightPool || 0) - cost;
 
-    if (attachHost) {
-        if (!attachHost.attachments) attachHost.attachments = [];
-        attachHost.attachments.push(removed);
-        shufflePlayerDeck(G, ownerId);
-        return removed;
+    if (host) {
+        if (!host.attachments) host.attachments = [];
+        host.attachments.push(removed);
+        return finishPlay();
     }
 
     if (removed.type === 'MINION') {
         if (!G.battlefield) G.battlefield = [];
         G.battlefield.push(removed);
-    } else if (
+        return finishPlay();
+    }
+    if (
         removed.type === 'CONDITION' ||
         removed.type === 'POSSESSION' ||
         removed.type === 'ARTIFACT' ||
@@ -177,15 +290,12 @@ export function playCardFromDeckOrDiscard(
     ) {
         if (!player.supportArea) player.supportArea = [];
         player.supportArea.push(removed);
-    } else {
-        if (source === 'DECK') player.deck!.splice(index, 0, removed);
-        else player.discard!.splice(index, 0, removed);
-        G.twilightPool += cost;
-        return null;
+        return finishPlay();
     }
 
-    shufflePlayerDeck(G, ownerId);
-    return removed;
+    restore();
+    G.twilightPool += cost;
+    return null;
 }
 
 /** Candidats pioche matchant le filtre (recherche → défausse, pas « jouer »). */

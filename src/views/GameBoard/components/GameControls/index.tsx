@@ -33,6 +33,7 @@ interface GameControlsProps {
             discardedHandIds?: string[],
             chosenTargetId?: string | string[]
         ) => void;
+        resolveSiteStartAbilityChoice?: (accept: boolean) => void;
         confirmMuster?: () => void;
         confirmStartOfPhase?: () => void;
         yieldAssignmentToShadow?: () => void;
@@ -114,6 +115,7 @@ export const GameControls: React.FC<GameControlsProps> = ({
     const isActionWindowActive = G.actionWindow?.isOpen ?? false;
     const isResponseWindowActive = G.responseWindow?.isOpen ?? false;
     const isWhenPlayedChoiceActive = Boolean(G.pendingWhenPlayed);
+    const isSiteStartAbilityActive = Boolean(G.pendingSiteStartAbility);
     const isForcedChoiceActive = Boolean(G.pendingForcedChoice);
     const isRevealActive = Boolean(G.pendingReveal);
 
@@ -136,6 +138,8 @@ export const GameControls: React.FC<GameControlsProps> = ({
           ? G.responseWindow!.activePlayerId
           : isForcedChoiceActive
             ? G.pendingForcedChoice!.playerId
+          : isSiteStartAbilityActive
+            ? G.pendingSiteStartAbility!.playerId
           : isWhenPlayedChoiceActive
             ? G.pendingWhenPlayed!.playerId
           : isActionWindowActive
@@ -206,6 +210,7 @@ export const GameControls: React.FC<GameControlsProps> = ({
             | 'MULLIGAN'
             | 'MUSTER'
             | 'START_OF_PHASE'
+            | 'SITE_START_ABILITY'
             | 'ASSIGNMENT_YIELD'
             | 'ASSIGNMENT_PASS'
             | 'RESPONSE'
@@ -308,6 +313,34 @@ export const GameControls: React.FC<GameControlsProps> = ({
                 `Défaussez ${G.pendingForcedChoice.needsHandDiscard} carte(s) de votre main.`,
             showPassButton: false,
             type: 'FORCED_CHOICE',
+        };
+    } else if (isSiteStartAbilityActive && isMyTurnToAct) {
+        const siteSource = G.pendingSiteStartAbility
+            ? (findTargetCard(
+                  G,
+                  G.pendingSiteStartAbility.siteInstanceId
+              ) as CardState | null)
+            : null;
+        const siteAbility = siteSource?.abilities?.find(
+            (ab) => ab.id === G.pendingSiteStartAbility?.abilityId
+        );
+        const siteClause =
+            siteAbility?.textFr?.trim() ||
+            siteAbility?.text?.trim() ||
+            (siteSource
+                ? getCardText(siteSource, 'fr').gameText
+                : undefined);
+        toastConfig = {
+            show: true,
+            title: 'EFFET DU SITE',
+            body: siteClause ? (
+                <FormattedText text={siteClause} />
+            ) : (
+                G.statusMessage ||
+                'Vous pouvez utiliser l’effet optionnel de ce site.'
+            ),
+            showPassButton: false,
+            type: 'SITE_START_ABILITY',
         };
     } else if (isStartOfPhaseStep && myStartOfPhaseState) {
         toastConfig = {
@@ -988,6 +1021,32 @@ export const GameControls: React.FC<GameControlsProps> = ({
                                     style={{ marginTop: '8px', width: '100%' }}
                                     onClick={() => {
                                         moves.resolveWhenPlayedChoice?.(false);
+                                    }}
+                                >
+                                    Passer
+                                </S.ActionButton>
+                            </>
+                        )}
+
+                        {toastConfig.type === 'SITE_START_ABILITY' && (
+                            <>
+                                <S.ActionButton
+                                    style={{ marginTop: '12px', width: '100%' }}
+                                    onClick={() => {
+                                        moves.resolveSiteStartAbilityChoice?.(
+                                            true
+                                        );
+                                    }}
+                                >
+                                    Activer l’effet
+                                </S.ActionButton>
+                                <S.ActionButton
+                                    $variant="secondary"
+                                    style={{ marginTop: '8px', width: '100%' }}
+                                    onClick={() => {
+                                        moves.resolveSiteStartAbilityChoice?.(
+                                            false
+                                        );
                                     }}
                                 >
                                     Passer

@@ -944,6 +944,9 @@ const FILTER_ALIASES: Record<string, string> = {
     URUKHAI: 'URUK-HAI',
     NAZGUL: 'NAZGÛL',
     RINGBEARER: 'RING-BEARER',
+    ELVES: 'ELF',
+    DWARVES: 'DWARF',
+    HOBBITS: 'HOBBIT',
     RINGBOUND: 'RING-BOUND',
     PIPES: 'PIPE',
     COMPANIONS: 'COMPANION',
@@ -965,7 +968,8 @@ const FILTER_ALIASES: Record<string, string> = {
 };
 
 function normalizeFilterToken(raw: string): string {
-    const upper = raw.replace(/[^a-zA-ZÀ-ÿÛû-]/g, '').toUpperCase();
+    // Garder `_` (FREE_PEOPLES injecté depuis « Free Peoples »).
+    const upper = raw.replace(/[^a-zA-ZÀ-ÿÛû_-]/g, '').toUpperCase();
     return FILTER_ALIASES[upper] || upper;
 }
 
@@ -1009,7 +1013,8 @@ function parseClassFilters(raw: string): string[] {
     segment = segment.replace(/<[^>]+>/g, ' ');
     segment = segment
         .replace(/\bhand\s+weapons?\b/gi, 'HAND-WEAPON')
-        .replace(/\branged\s+weapons?\b/gi, 'RANGED-WEAPON');
+        .replace(/\branged\s+weapons?\b/gi, 'RANGED-WEAPON')
+        .replace(/\bFree\s+Peoples\b/gi, 'FREE_PEOPLES');
     for (const word of segment.split(/\s+/).filter(Boolean)) {
         let token = normalizeFilterToken(word);
         // Pluriel de race Man (« dunland Men ») — culture Men reste via symbole.
@@ -6143,7 +6148,155 @@ export function parseSiteAbilities(
             });
         }
     );
+    parseSiteStartOfFellowshipAbilities(text, cardId).forEach((ability) => {
+        abilities.push({
+            ...ability,
+            id: `${cardId || 'ability'}:${abilities.length}:site-start-fp`,
+        });
+    });
     return abilities.length > 0 ? abilities : undefined;
+}
+
+/**
+ * Début de fellowship (sites) — optional may :
+ * heal N ; play from deck ; add burden / exert → play from deck.
+ * Pas encore : exert N distincts (Green Dragon), pile de mort (Pinnacle).
+ */
+function parseSiteStartOfFellowshipAbilities(
+    text: string,
+    cardId?: string
+): Record<string, unknown>[] {
+    const found: Record<string, unknown>[] = [];
+    // Garder le contenu des <symbol> (cultures) : stripAbilityMarkup les efface.
+    const plain = text
+        .replace(
+            /<symbol>([^<]+)<\/symbol>/gi,
+            (_, content: string) => ` ${String(content).toUpperCase()} `
+        )
+        .replace(/<\/?(?:keyword)[^>]*>/gi, '')
+        .replace(/\*\*/g, '')
+        .replace(/<[^>]+>/g, ' ')
+        .replace(/\s+/g, ' ')
+        .trim();
+
+    const healRe =
+        /At the start of your fellowship phase,\s*you may heal (\d+|a|one|two|three)\s+([^.,]+?)\./gi;
+    let match: RegExpExecArray | null;
+    while ((match = healRe.exec(plain)) !== null) {
+        const n = parseBurdenWord(match[1]);
+        if (!n) continue;
+        const filters = parseClassFilters(match[2]);
+        if (filters.length === 0) continue;
+        found.push({
+            id: `${cardId || 'ability'}:${found.length}:site-start-fp-heal`,
+            phases: ['START_OF_FELLOWSHIP'],
+            optional: true,
+            cost: [],
+            effects: [
+                {
+                    type: 'HEAL',
+                    count: 1,
+                    ...(n > 1 ? { multiCount: n } : {}),
+                    target: [filters],
+                },
+            ],
+            source: 'SELF',
+            text: stripAbilityMarkup(match[0]),
+        });
+    }
+
+    const burdenPlayRe =
+        /At the start of your fellowship phase,\s*you may add a burden to play (?:a|an)\s+(.+?)\s+from your draw deck\.?/gi;
+    while ((match = burdenPlayRe.exec(plain)) !== null) {
+        const filters = parseClassFilters(match[1]);
+        if (filters.length === 0) continue;
+        found.push({
+            id: `${cardId || 'ability'}:${found.length}:site-start-fp-burden-play`,
+            phases: ['START_OF_FELLOWSHIP'],
+            optional: true,
+            cost: [{ addBurdens: 1 }],
+            effects: [
+                {
+                    type: 'PLAY_FROM_DECK_OR_DISCARD',
+                    target: [filters],
+                    from: 'DECK',
+                },
+            ],
+            source: 'SELF',
+            text: stripAbilityMarkup(match[0]),
+        });
+    }
+
+    const exertPlayRe =
+        /At the start of your fellowship phase,\s*you may exert (.+?) to play (?:a|an)\s+(.+?)\s+from your draw deck\.?/gi;
+    while ((match = exertPlayRe.exec(plain)) !== null) {
+        const subject = parseExertSubject(match[1].trim());
+        if (!subject) continue;
+        // « exert 2 Hobbits » = 2 personnages distincts — pas encore (count = blessures).
+        if (
+            subject.count > 1 &&
+            Array.isArray(subject.target)
+        ) {
+            continue;
+        }
+        const playFilters = parseClassFilters(match[2]);
+        if (playFilters.length === 0) continue;
+        found.push({
+            id: `${cardId || 'ability'}:${found.length}:site-start-fp-exert-play`,
+            phases: ['START_OF_FELLOWSHIP'],
+            optional: true,
+            cost: [
+                {
+                    exert: [
+                        {
+                            count: subject.count,
+                            target: subject.target,
+                            ...(subject.mode ? { mode: subject.mode } : {}),
+                            ...(subject.excludeSource
+                                ? { excludeSource: true }
+                                : {}),
+                        },
+                    ],
+                },
+            ],
+            effects: [
+                {
+                    type: 'PLAY_FROM_DECK_OR_DISCARD',
+                    target: [playFilters],
+                    from: 'DECK',
+                },
+            ],
+            source: 'SELF',
+            text: stripAbilityMarkup(match[0]),
+        });
+    }
+
+    const playRe =
+        /At the start of your fellowship phase,\s*you may play (?:a|an)\s+(.+?)\s+from your draw deck\.?/gi;
+    while ((match = playRe.exec(plain)) !== null) {
+        // Éviter de re-matcher les clauses déjà couvertes (burden / exert).
+        const before = plain.slice(Math.max(0, match.index - 40), match.index);
+        if (/\b(exert|burden)\b/i.test(before)) continue;
+        const filters = parseClassFilters(match[1]);
+        if (filters.length === 0) continue;
+        found.push({
+            id: `${cardId || 'ability'}:${found.length}:site-start-fp-play`,
+            phases: ['START_OF_FELLOWSHIP'],
+            optional: true,
+            cost: [],
+            effects: [
+                {
+                    type: 'PLAY_FROM_DECK_OR_DISCARD',
+                    target: [filters],
+                    from: 'DECK',
+                },
+            ],
+            source: 'SELF',
+            text: stripAbilityMarkup(match[0]),
+        });
+    }
+
+    return found;
 }
 
 /**

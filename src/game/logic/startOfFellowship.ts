@@ -1,10 +1,12 @@
 import type { GameState } from '../types';
-import { hasActionableStartOfPhaseCards } from './hasActionableStartOfPhaseCards';
 import {
     beginSanctuaryHeals,
     clearSanctuaryHeals,
 } from './sanctuary';
-import { exitStartOf } from './phaseEntry';
+import {
+    beginOptionalSiteStartAbility,
+    openStartOfFellowshipDualWait,
+} from './siteStartAbility';
 
 type PhaseEvents = {
     setPhase?: (phase: string) => void;
@@ -17,36 +19,12 @@ export const proceedStartOfFellowship = (
 ): void => {
     clearSanctuaryHeals(G);
 
-    const fpId = G.fpPlayerId || '0';
-    const shadowId = fpId === '0' ? '1' : '0';
-
-    const fpDone = !hasActionableStartOfPhaseCards(
-        G.players[fpId],
-        G,
-        fpId,
-        'startOfFellowship'
-    );
-    const shadowDone = !hasActionableStartOfPhaseCards(
-        G.players[shadowId],
-        G,
-        shadowId,
-        'startOfFellowship'
-    );
-
-    G.startOfPhaseState = {
-        players: {
-            [fpId]: { isDone: fpDone },
-            [shadowId]: { isDone: shadowDone },
-        },
-    };
-
-    if (fpDone && shadowDone) {
-        G.startOfPhaseState = undefined;
-        exitStartOf(events, 'fellowship');
-    } else {
-        G.statusMessage =
-            'Début de la phase de compagnie : Capacités spéciales.';
+    // Site optionnel d’abord (toaster Activer / Passer) — pas de sceau sur le site.
+    if (beginOptionalSiteStartAbility(G, 'startOfFellowship')) {
+        return;
     }
+
+    openStartOfFellowshipDualWait(G, events);
 };
 
 export const onStartOfFellowshipBegin = (

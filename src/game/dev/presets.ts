@@ -93,6 +93,25 @@ const SITES_MOVE_WAVE_PATH = [
     '11S265', // 9 Window
 ] as const;
 
+/**
+ * Vague début de fellowship set 11.
+ * 1 filler → 2 Dammed (play Gollum FP) → 3 Old Forest (heal 2 Elves, sanctuaire)
+ * → 4 Prancing Pony (burden → ranger) → 5 Barazinbar (exert Dwarf → possession)
+ * → 6 Stables (exert Rohan Man → mount) → 7–9 fillers.
+ * Inertes volontaires : Green Dragon (2 Hobbits), Pinnacle (dead pile).
+ */
+const SITES_START_FP_PATH = [
+    '11S263', // 1 West Gate — filler
+    '11U235', // 2 Dammed Gate-stream
+    '11S251', // 3 Old Forest Road (+ sanctuaire)
+    '11S256', // 4 The Prancing Pony
+    '11S229', // 5 Barazinbar
+    '11S259', // 6 Stables
+    '11S250', // 7 North Undeep
+    '11S232', // 8 Cavern
+    '11S265', // 9 Window
+] as const;
+
 const resetBoardForPreset = (G: GameState): void => {
     const fpId = G.fpPlayerId || '0';
     const fpPlayer = G.players[fpId];
@@ -327,6 +346,65 @@ export const applyDevPreset = (
 
             G.statusMessage =
                 '[DEV] Moves wave · 6 compagnons + hache (Fangorn/Orthanc) ; Frodo blessé rés.haute / Faramir rés.basse (Bog) ; Crags = site 5 puis Regroup → avancer.';
+            break;
+        }
+        case 'SITES_START_FP': {
+            resetBoardForPreset(G);
+            // Départ site 6 (Stables / sanctuaire) ; téléporte 2–5 pour les autres.
+            setupDevPath(G, 5, SITES_START_FP_PATH);
+            G.twilightPool = 0;
+            fpPlayer.burdens = 0;
+
+            fpPlayer.fellowshipArea = [
+                {
+                    ...clonePresetCard('2C102', 'dev-sfp-frodo'),
+                    attachments: [clonePresetCard('1R1', 'dev-sfp-ring')],
+                    wounds: 0,
+                },
+                {
+                    ...clonePresetCard('1R13', 'dev-sfp-gimli'),
+                    wounds: 0,
+                },
+                {
+                    // 2ᵉ Nain : porteur alternatif (hache ≠ forcément sur l’exerter).
+                    ...clonePresetCard('1C11', 'dev-sfp-farin'),
+                    wounds: 0,
+                },
+                {
+                    ...clonePresetCard('0P17', 'dev-sfp-eowyn'),
+                    wounds: 0,
+                },
+                {
+                    ...clonePresetCard('0P13', 'dev-sfp-legolas'),
+                    wounds: 0,
+                },
+                {
+                    ...clonePresetCard('1R30', 'dev-sfp-arwen'),
+                    wounds: 0,
+                },
+            ];
+            // Allié Homme Rohan : porteur alternatif pour la monture (≠ forcément Éowyn).
+            fpPlayer.supportArea = [
+                {
+                    ...clonePresetCard('4C277', 'dev-sfp-guma'),
+                    wounds: 0,
+                },
+            ];
+            // Pioche : cartes jouables via les sites (Dammed / Pony / Barazinbar / Stables).
+            fpPlayer.deck = [
+                clonePresetCard('5C28', 'dev-sfp-smeagol-deck'),
+                clonePresetCard('0P14', 'dev-sfp-aragorn-deck'),
+                clonePresetCard('1C9', 'dev-sfp-axe-deck'),
+                // Possession aire de soutien (pas d’attache sur le Nain exerté).
+                clonePresetCard('5U8', 'dev-sfp-horn-deck'),
+                clonePresetCard('4C287', 'dev-sfp-mount-deck'),
+                clonePresetCard('7C154', 'dev-sfp-filler-1'),
+                clonePresetCard('1C3', 'dev-sfp-filler-2'),
+            ];
+            fpPlayer.hand = [clonePresetCard('1C8', 'dev-sfp-hand-armor')];
+
+            G.statusMessage =
+                '[DEV] Start FP · site 6 Stables (Éowyn / Guma + monture) ; 2 Dammed ; 3 Old Forest ; 4 Pony ; 5 Barazinbar.';
             break;
         }
     }

@@ -29,6 +29,7 @@ import {
     responseAbilityStillAvailable,
 } from '../engine/responseWindow';
 import { abilityMeetsPlayRestrictions } from '../engine/abilities/abilityRestrictions';
+import { afterSiteStartAbilityResolved } from '../logic/siteStartAbility';
 
 function normalizeChosenIds(chosen?: string | string[]): string[] {
     if (!chosen) return [];
@@ -178,6 +179,14 @@ export const activateAbility = (
     yieldPriorityAfterAction(G, String(playerID));
     const title = source.i18n?.fr?.title || source.title || source.id;
     G.statusMessage = `${title} active une capacité.`;
+
+    // Site début de fellowship : après résolution, dual-wait ou suite de phase.
+    if (
+        G.pendingSiteStartAbility &&
+        G.pendingSiteStartAbility.abilityId === ability.id
+    ) {
+        afterSiteStartAbilityResolved(G, events);
+    }
 };
 
 export const abilityMoves = {

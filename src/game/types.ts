@@ -543,6 +543,11 @@ export type AbilityEffect =
            * N = min(pipes spotées, compagnons blessés) — autant que possible, jusqu’à X.
            */
           multiFromSpot?: boolean;
+          /**
+           * Soigner jusqu’à N cibles distinctes, 1 soin chacune
+           * (Old Forest Road : heal 2 Elves).
+           */
+          multiCount?: number;
           /** Tous les matchs (site Neekerbreekers…). */
           all?: boolean;
           /** Résistance effective minimale (inclus). */
@@ -1240,6 +1245,16 @@ export interface GameState {
         phase?: string;
     };
     /**
+     * Capacité optionnelle du site courant en début de phase
+     * (Dammed Gate-stream… — toaster Activer / Passer, pas de bouton site).
+     */
+    pendingSiteStartAbility?: {
+        playerId: string;
+        siteInstanceId: string;
+        abilityId: string;
+        phase?: string;
+    };
+    /**
      * Choix forcé (contrainte Porteur alternatif en début d’escarmouche…).
      * Bloque la fenêtre d’actions jusqu’à résolution.
      */
@@ -1334,7 +1349,8 @@ export interface ArcheryState {
 export type DevPresetType =
     | 'STAT_PULSE_TEST'
     | 'SITES_MODERN_SMOKE'
-    | 'SITES_MOVE_WAVE';
+    | 'SITES_MOVE_WAVE'
+    | 'SITES_START_FP';
 
 export interface TempKeywordModifier {
     keyword: CardKeyword;

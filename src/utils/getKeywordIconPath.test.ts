@@ -10,6 +10,15 @@ describe('getKeywordIconPath', () => {
         );
     });
 
+    it('conserve le tiret (RING-BOUND.webp, pas RING_BOUND)', () => {
+        expect(getKeywordIconPath('RING-BOUND')).toBe(
+            '/interface/pictos/RING-BOUND.webp'
+        );
+        expect(getKeywordIconPath('ONE-RING')).toBe(
+            '/interface/pictos/ONE-RING.webp'
+        );
+    });
+
     it('reçoit « AMBUSH 1 » depuis getEffectiveKeywords, pas « AMBUSH +1 »', () => {
         const keywords = getEffectiveKeywords(
             createMinion({ keywords: ['AMBUSH 1'] })

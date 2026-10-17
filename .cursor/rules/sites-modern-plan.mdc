@@ -62,32 +62,40 @@ Familles : `archery` · `moves-to` · `moves-from` · `start-fellowship` · `pha
 
 Inertes volontaires (may / choix) : Guardroom, Osgiliath Reclaimed, Valley of the Silverlode, Westemnet Village.
 
-### Inertes — set 11 (hors vague moves auto)
+### Vague début de fellowship (set 11) — optional may
+
+| Id | Titre | Statut | Notes |
+| --- | --- | --- | --- |
+| `11U235` | Dammed Gate-stream | OK | Play Gollum FP depuis pioche |
+| `11S251` | Old Forest Road | OK | Heal 2 Elves |
+| `11S256` | The Prancing Pony | OK | Add burden → play ranger |
+| `11S229` | Barazinbar | OK | Exert Dwarf → dwarven possession |
+| `11S259` | Stables | OK | Exert Rohan Man → Rohan mount |
+| `11S242` | Green Dragon Inn | INERTE | Exert 2 Hobbits distincts |
+| `11S255` | Pinnacle of Zirakzigil | INERTE | Play Wizard from dead pile |
+| `15S190` | East Wall of Rohan | INERTE | Exert 2 hunter companions |
+
+Preset : `SITES_START_FP`.
+
+### Inertes — set 11 (hors vagues livrées)
 
 | Id | Titre | Famille |
 | --- | --- | --- |
-| `11S229` | Barazinbar | start-fellowship |
 | `11S230` | Buckland Homestead | phase-ability |
 | `11S231` | Caras Galadhon | passive-while |
 | `11S233` | Chamber of Mazarbul | passive-while |
-| `11U235` | Dammed Gate-stream | start-fellowship |
 | `11S236` | East Road | passive-while |
 | `11S237` | Ettenmoors | phase-ability |
 | `11S238` | Expanding Marshland | phase-ability |
 | `11S240` | Flats of Rohan | passive-while |
-| `11S242` | Green Dragon Inn | start-fellowship |
 | `11S243` | Harrowdale | passive-while |
 | `11U244` | Heights of Isengard | each-time |
 | `11S245` | Helm's Gate | passive-while |
 | `11S247` | Moria Guardroom | moves-from |
-| `11S251` | Old Forest Road | start-fellowship |
 | `11S252` | Osgiliath Reclaimed | moves-from |
 | `11S253` | Pelennor Fields | passive-while |
-| `11S255` | Pinnacle of Zirakzigil | start-fellowship |
-| `11S256` | The Prancing Pony | start-fellowship |
 | `11S257` | Rohan Uplands | passive-while |
 | `11S258` | Slag Mounds | each-time |
-| `11S259` | Stables | start-fellowship |
 | `11S260` | Trollshaw Forest | each-time |
 | `11S261` | Valley of the Silverlode | moves-to |
 | `11S262` | Watch-tower of Cirith Ungol | phase-ability |
@@ -144,7 +152,9 @@ Inertes volontaires (may / choix) : Guardroom, Osgiliath Reclaimed, Valley of th
 2. **Smoke** des 9 parsés ✅ — preset `SITES_MODERN_SMOKE` ; Anduin Banks + Pelennor dual-wait fix
 3. Vague **moves to/from** set 11 auto ✅ — Orthanc / Fangorn / Bog / Crags ; preset `SITES_MOVE_WAVE`
    - Ordre CR : **moves from → moves to → crépuscule du déplacement** (pas l’inverse)
-4. Vague **début de fellowship**
+4. Vague **début de fellowship** ✅ — preset `SITES_START_FP`
+   - OK : Dammed, Old Forest Road, Prancing Pony, Barazinbar, Stables
+   - Inertes volontaires : Green Dragon / East Wall (exert N distincts), Pinnacle (pile de mort)
 5. Vague **passifs** While/Each/archery/coûts/assignation
 6. Vague **capacités de phase** Shadow/Skirmish/Maneuver/Regroup
 7. Vague **each-time** + cas durs (Mount Doom, Steward's Tomb, Foot of Mount Doom…)

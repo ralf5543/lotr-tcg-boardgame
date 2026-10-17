@@ -113,5 +113,7 @@ export const hasActionableStartOfPhaseCards = (
         });
     }
 
+    // Site courant : toaster dédié (`pendingSiteStartAbility`), pas via dual-wait.
+
     return hasActionable;
 };

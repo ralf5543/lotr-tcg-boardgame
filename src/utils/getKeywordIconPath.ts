@@ -25,16 +25,25 @@ const KEYWORD_ICON_ALIAS: Record<string, string> = {
 };
 
 export const getKeywordIconPath = (keyword: string): string => {
+    // Conserver les tirets des fichiers (RING-BOUND.webp, ONE-RING.webp…).
+    // `\W` les transformait en `_` → 404 → badge invisible.
     const rawSlug = keyword
         .trim()
         .toLowerCase()
         .replace(/[.,]/g, '')
         .replace(/\+/g, 'plus')
-        .replace(/[\s\W]+/g, '_')
+        .replace(/\s+/g, '_')
+        .replace(/[^a-z0-9_+-]+/g, '_')
+        .replace(/_+/g, '_')
+        .replace(/^_|_$/g, '')
         .toUpperCase();
 
-    // On vérifie s'il existe un alias, sinon on prend le slug tel quel
-    const finalName = KEYWORD_ICON_ALIAS[rawSlug] || rawSlug;
+    // Alias en underscore (DAMAGE_PLUS1) même si le slug a un tiret.
+    const aliasKey = rawSlug.replace(/-/g, '_');
+    const finalName =
+        KEYWORD_ICON_ALIAS[aliasKey] ||
+        KEYWORD_ICON_ALIAS[rawSlug] ||
+        rawSlug;
 
     return `/interface/pictos/${finalName}.webp`;
 };
