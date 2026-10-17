@@ -8249,6 +8249,33 @@
     "keywords": [
       "MOUNTAIN"
     ],
+    "abilities": [
+      {
+        "id": "12U193:0:site-each-time",
+        "phases": [
+          "RESPONSE"
+        ],
+        "optional": true,
+        "responsePlayer": "FREE_PEOPLE",
+        "trigger": {
+          "type": "WINS_SKIRMISH",
+          "winner": [
+            [
+              "DWARF"
+            ]
+          ]
+        },
+        "cost": [],
+        "effects": [
+          {
+            "type": "DRAW",
+            "count": 1
+          }
+        ],
+        "source": "SELF",
+        "text": "Each time your Dwarf wins a skirmish, you may draw a card."
+      }
+    ],
     "twilightCost": 3,
     "siteArrow": "Right",
     "imageUrl": "/cards_visuals/o_12_193.jpg",
@@ -8901,6 +8928,23 @@
     "isUnique": false,
     "kind": "SITE",
     "type": "SITE",
+    "abilities": [
+      {
+        "id": "15R193:0:site-mount-doom",
+        "phases": [],
+        "cost": [],
+        "effects": [
+          {
+            "type": "CANNOT_REPLACE_SITE",
+            "player": "ALL",
+            "scope": "SOURCE_REGION",
+            "activeOnPath": true
+          }
+        ],
+        "source": "SELF",
+        "text": "Until the end of the game, sites in this region cannot be replaced."
+      }
+    ],
     "twilightCost": 3,
     "siteArrow": "Left",
     "imageUrl": "/cards_visuals/o_15_193.jpg",
@@ -8936,6 +8980,30 @@
     "type": "SITE",
     "keywords": [
       "PLAINS"
+    ],
+    "abilities": [
+      {
+        "id": "15S194:0:site-hunter-str",
+        "phases": [],
+        "trigger": {
+          "type": "WHILE"
+        },
+        "cost": [],
+        "effects": [
+          {
+            "type": "MODIFY_STAT",
+            "stat": "STRENGTH",
+            "value": 1,
+            "target": [
+              [
+                "HUNTER"
+              ]
+            ]
+          }
+        ],
+        "source": "SELF",
+        "text": "Each hunter character is strength +1."
+      }
     ],
     "twilightCost": 2,
     "siteArrow": "Left",

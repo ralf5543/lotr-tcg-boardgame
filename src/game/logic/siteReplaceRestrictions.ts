@@ -1,4 +1,4 @@
-import type { CardKeyword, GameState } from '../types';
+import type { Ability, CardKeyword, CardState, GameState } from '../types';
 import { forEachInPlayCard } from '../engine/abilities/resolveCostTarget';
 import { whileConditionHolds } from './stats/mechanics/whileModifier';
 import {
@@ -9,8 +9,19 @@ import {
     getSiteRegion,
 } from './sites';
 
+type CannotReplaceEffect = Extract<
+    Ability['effects'][number],
+    { type: 'CANNOT_REPLACE_SITE' }
+>;
+
+function isCannotReplaceEffect(
+    effect: Ability['effects'][number]
+): effect is CannotReplaceEffect {
+    return effect.type === 'CANNOT_REPLACE_SITE';
+}
+
 /**
- * True si un passif While interdit au joueur actif de remplacer
+ * True si un passif interdit au joueur actif de remplacer
  * le site à cet emplacement du chemin.
  */
 export function isSiteReplaceForbidden(
@@ -26,14 +37,32 @@ export function isSiteReplaceForbidden(
     const siteRegion = getSiteRegion(siteNumber);
 
     let forbidden = false;
-    forEachInPlayCard(G, (source) => {
+
+    const consider = (source: CardState, sourcePathIndex?: number) => {
         if (forbidden) return;
         for (const ability of source.abilities || []) {
-            if (ability.trigger?.type !== 'WHILE') continue;
-            if (!whileConditionHolds(G, source, ability)) continue;
             for (const effect of ability.effects || []) {
-                if (effect.type !== 'CANNOT_REPLACE_SITE') continue;
+                if (!isCannotReplaceEffect(effect)) continue;
                 if (effect.player === 'FREE_PEOPLE' && !isFp) continue;
+
+                // Mount Doom : actif dès que le site est sur le chemin
+                // (Legacy Ruling 3 — pas besoin d’y être).
+                if (effect.activeOnPath && effect.scope === 'SOURCE_REGION') {
+                    const srcNum =
+                        source.siteNumber ??
+                        (typeof sourcePathIndex === 'number'
+                            ? sourcePathIndex + 1
+                            : undefined);
+                    if (srcNum == null) continue;
+                    if (siteRegion === getSiteRegion(srcNum)) {
+                        forbidden = true;
+                        return;
+                    }
+                    continue;
+                }
+
+                if (ability.trigger?.type !== 'WHILE') continue;
+                if (!whileConditionHolds(G, source, ability)) continue;
 
                 if (effect.scope === 'ANY') {
                     forbidden = true;
@@ -55,6 +84,11 @@ export function isSiteReplaceForbidden(
                 }
             }
         }
+    };
+
+    forEachInPlayCard(G, consider);
+    (G.path || []).forEach((site, idx) => {
+        if (site) consider(site as CardState, idx);
     });
     return forbidden;
 }

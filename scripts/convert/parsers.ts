@@ -6192,12 +6192,25 @@ export function parseSiteAbilities(
             id: `${cardId || 'ability'}:${abilities.length}:site-each-time`,
         });
     });
+    parseSiteMountDoomAbilities(text, cardId).forEach((ability) => {
+        abilities.push({
+            ...ability,
+            id: `${cardId || 'ability'}:${abilities.length}:site-mount-doom`,
+        });
+    });
+    parseSiteEachHunterStrengthAbilities(text, cardId).forEach((ability) => {
+        abilities.push({
+            ...ability,
+            id: `${cardId || 'ability'}:${abilities.length}:site-hunter-str`,
+        });
+    });
     return abilities.length > 0 ? abilities : undefined;
 }
 
 /**
  * Each time (sites set 11+) :
- * Slag Mounds (companion killed → burden) ; Heights (Gandalf wins → may discard).
+ * Slag Mounds (companion killed → burden) ; Heights (Gandalf wins → may discard) ;
+ * Starkhorn (Dwarf wins → may draw).
  * Inerte volontaire : Trollshaw (may draw on attach — toaster YOU_PLAY).
  */
 function parseSiteEachTimeAbilities(
@@ -6255,6 +6268,103 @@ function parseSiteEachTimeAbilities(
         });
     }
 
+    // Starkhorn : « Each time your Dwarf wins a skirmish, you may draw a card. »
+    // « you » sur site = Peuples Libres (CR).
+    const winsDrawRe =
+        /Each time (?:your\s+)?(.+?)\s+wins a skirmish,\s*you may draw (a|an|one|\d+) cards?\./gi;
+    while ((match = winsDrawRe.exec(text)) !== null) {
+        const filters = parseClassFilters(match[1].trim());
+        if (filters.length === 0) continue;
+        const n = parseBurdenWord(match[2]);
+        if (!n) continue;
+        found.push({
+            id: `${cardId || 'ability'}:${found.length}:site-wins-draw`,
+            phases: ['RESPONSE'],
+            optional: true,
+            responsePlayer: 'FREE_PEOPLE',
+            trigger: {
+                type: 'WINS_SKIRMISH',
+                winner: [filters],
+            },
+            cost: [],
+            effects: [{ type: 'DRAW', count: n }],
+            source: 'SELF',
+            text: stripAbilityMarkup(match[0]),
+        });
+    }
+
+    return found;
+}
+
+/**
+ * Mount Doom : Until the end of the game, sites in this region cannot be replaced.
+ * Actif dès que le site est sur le chemin (Legacy Ruling 3).
+ */
+function parseSiteMountDoomAbilities(
+    text: string,
+    cardId?: string
+): Record<string, unknown>[] {
+    const found: Record<string, unknown>[] = [];
+    const plain = stripAbilityMarkup(text).replace(/\s+/g, ' ').trim();
+    const re =
+        /Until the end of the game,\s*sites in this region cannot be replaced\./gi;
+    let match: RegExpExecArray | null;
+    while ((match = re.exec(plain)) !== null) {
+        found.push({
+            id: `${cardId || 'ability'}:${found.length}:site-mount-doom`,
+            phases: [],
+            cost: [],
+            effects: [
+                {
+                    type: 'CANNOT_REPLACE_SITE',
+                    player: 'ALL',
+                    scope: 'SOURCE_REGION',
+                    activeOnPath: true,
+                },
+            ],
+            source: 'SELF',
+            text: stripAbilityMarkup(match[0]),
+        });
+    }
+    return found;
+}
+
+/**
+ * Westfold Village… : Each hunter character is strength +N.
+ */
+function parseSiteEachHunterStrengthAbilities(
+    text: string,
+    cardId?: string
+): Record<string, unknown>[] {
+    const found: Record<string, unknown>[] = [];
+    const re =
+        /Each hunter (character|companion|minion) is strength ([+-]\d+)\.?/gi;
+    let match: RegExpExecArray | null;
+    while ((match = re.exec(text)) !== null) {
+        const who = match[1].toUpperCase();
+        const value = parseInt(match[2], 10);
+        if (!Number.isFinite(value) || value === 0) continue;
+        const target =
+            who === 'CHARACTER'
+                ? [['HUNTER']]
+                : [['HUNTER', who]];
+        found.push({
+            id: `${cardId || 'ability'}:${found.length}:site-hunter-str`,
+            phases: [],
+            trigger: { type: 'WHILE' },
+            cost: [],
+            effects: [
+                {
+                    type: 'MODIFY_STAT',
+                    stat: 'STRENGTH',
+                    value,
+                    target,
+                },
+            ],
+            source: 'SELF',
+            text: stripAbilityMarkup(match[0]),
+        });
+    }
     return found;
 }
 

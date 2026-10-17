@@ -37,20 +37,20 @@ const clonePresetSite = (
 };
 
 /**
- * Vague each-time set 11.
- * 1 filler → 2 Heights (Gandalf wins → défausse situation)
- * → 3 Slag Mounds (compagnon tué → fardeau, sanctuaire)
- * → … fillers. Trollshaw volontairement inerte.
+ * Vague cas durs / suite each-time.
+ * 1 filler → 2 Starkhorn (Dwarf wins → draw)
+ * → 3 Westfold (hunter +1) → … → 7 Mount Doom (région verrouillée)
+ * Steward's Tomb / Foot volontairement absents (inertes).
  */
-const SITES_EACH_TIME_WAVE_PATH = [
+const SITES_HARD_WAVE_PATH = [
     '11S250', // 1 North Undeep
-    '11U244', // 2 Heights of Isengard
-    '11S258', // 3 Slag Mounds
+    '12U193', // 2 Starkhorn
+    '15S194', // 3 Westfold Village (sanctuaire)
     '11S232', // 4 Cavern
     '11S265', // 5 Window
-    '11S228', // 6 Anduin Confluence
-    '11S263', // 7 West Gate
-    '11S260', // 8 Trollshaw (inerte)
+    '11S228', // 6 Anduin Confluence (sanctuaire)
+    '15R193', // 7 Mount Doom
+    '11S263', // 8 West Gate
     '11S265', // 9 Window
 ] as const;
 
@@ -116,44 +116,48 @@ export const applyDevPreset = (
     const shadowPlayer = G.players[shadowId];
 
     switch (presetType) {
-        case 'SITES_EACH_TIME_WAVE': {
+        case 'SITES_HARD_WAVE': {
             resetBoardForPreset(G);
-            // Départ site 2 (Heights) ; téléporte 3 pour Slag Mounds.
-            setupDevPath(G, 1, SITES_EACH_TIME_WAVE_PATH);
+            // Départ site 2 (Starkhorn) ; téléporte 3 / 7 pour Westfold / Mount Doom.
+            setupDevPath(G, 1, SITES_HARD_WAVE_PATH);
             G.twilightPool = 0;
             fpPlayer.burdens = 0;
 
             fpPlayer.fellowshipArea = [
                 {
-                    ...clonePresetCard('2C102', 'dev-et-frodo'),
-                    attachments: [clonePresetCard('1R1', 'dev-et-ring')],
+                    ...clonePresetCard('2C102', 'dev-hard-frodo'),
+                    attachments: [clonePresetCard('1R1', 'dev-hard-ring')],
                     wounds: 0,
                 },
                 {
-                    // Gandalf companion → Heights.
-                    ...clonePresetCard('1R72', 'dev-et-gandalf'),
+                    // Nain → Starkhorn.
+                    ...clonePresetCard('1R13', 'dev-hard-gimli'),
                     wounds: 0,
                 },
                 {
-                    // Compagnon fragile pour Slag Mounds (tuer → fardeau).
-                    ...clonePresetCard('1C303', 'dev-et-merry'),
-                    vitality: 2,
-                    wounds: 1,
+                    // Hunter → Westfold.
+                    ...clonePresetCard('15S18', 'dev-hard-hunter'),
+                    wounds: 0,
                 },
             ];
-            // Situation à défausser (Heights).
-            fpPlayer.supportArea = [
-                clonePresetCard('1R79', 'dev-et-condition'),
+            fpPlayer.deck = [
+                clonePresetCard('1C11', 'dev-hard-draw-a'),
+                clonePresetCard('1R30', 'dev-hard-draw-b'),
             ];
 
             if (shadowPlayer) {
+                // Sites de deck pour tenter un replace (bloqué par Mount Doom région 3).
+                shadowPlayer.sitesDeck = [
+                    clonePresetSite('11S241', shadowId),
+                    clonePresetSite('11S239', shadowId),
+                ];
                 G.battlefield = [
-                    clonePresetCard('1C266', 'dev-et-orc'),
+                    clonePresetCard('1C266', 'dev-hard-orc'),
                 ];
             }
 
             G.statusMessage =
-                '[DEV] Each-time · 2 Heights (victoire Gandalf → défausse situation) ; 3 Slag Mounds (mort compagnon → fardeau).';
+                '[DEV] Hard · 2 Starkhorn (victoire Nain → pioche) ; 3 Westfold (hunter +1) ; 7 Mount Doom (région verrouillée).';
             break;
         }
     }

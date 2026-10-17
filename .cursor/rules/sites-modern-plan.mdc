@@ -130,6 +130,19 @@ Preset : `SITES_EACH_TIME_WAVE`.
 | `11S264` | Westemnet Village | moves-to |
 | `11S266` | Woody-End | phase-ability |
 
+### Vague cas durs / suite
+
+| Id | Titre | Statut | Notes |
+| --- | --- | --- | --- |
+| `12U193` | Starkhorn | OK | Dwarf wins → may draw (projection vainqueur) |
+| `15S194` | Westfold Village | OK | Hunter strength +1 |
+| `15R193` | Mount Doom | OK | SOURCE_REGION + activeOnPath (Legacy Ruling 3) |
+| `18U139` | Steward's Tomb | INERTE | Forbid heal / prevent / remove burdens |
+| `18U135` | Foot of Mount Doom | INERTE | Discard → removed from game |
+| `15U192` | Isengard Ruined | INERTE | Transfer follower → exert ×2 |
+
+Preset : `SITES_HARD_WAVE`.
+
 ### Inertes — sets 12–18
 
 | Id | Titre | Famille |
@@ -142,7 +155,6 @@ Preset : `SITES_EACH_TIME_WAVE`.
 | `12S190` | Northern Pelennor | phase-ability |
 | `12U191` | Shores of Nen Hithoel | phase-ability |
 | `12U192` | Slopes of Orodruin | phase-ability |
-| `12U193` | Starkhorn | each-time |
 | `12U194` | Wold Battlefield | phase-ability |
 | `13U185` | Abandoned Mine Shaft | moves-from |
 | `13S186` | Caves of Aglarond | moves-to |
@@ -159,8 +171,6 @@ Preset : `SITES_EACH_TIME_WAVE`.
 | `15S190` | East Wall of Rohan | start-fellowship |
 | `15S191` | Gate of Mordor | moves-to |
 | `15U192` | Isengard Ruined | each-time |
-| `15R193` | Mount Doom | passive-while |
-| `15S194` | Westfold Village | passive-while |
 | `17U145` | Dol Guldur | phase-ability |
 | `17U146` | Falls of Rauros | moves-to |
 | `17U147` | Imladris | moves-to |
@@ -191,7 +201,10 @@ Preset : `SITES_EACH_TIME_WAVE`.
 7. Vague **each-time** set 11 ✅ — preset `SITES_EACH_TIME_WAVE`
    - OK : Slag Mounds (mort compagnon → fardeau auto) ; Heights (Gandalf wins → FP défausse situation, projection vainqueur)
    - Inerte volontaire : Trollshaw (may draw on attach)
-8. Cas durs (Mount Doom, Steward's Tomb, Foot of Mount Doom…) + each-time sets 12–18
+8. Vague **cas durs / suite** ✅ — preset `SITES_HARD_WAVE`
+   - OK : Starkhorn (Dwarf wins → draw) ; Westfold (hunter +1) ; Mount Doom (région verrouillée dès pose, Legacy Ruling 3)
+   - Inertes volontaires : Steward's Tomb (forbid heal/prevent/burdens) ; Foot of Mount Doom (RFG instead of discard) ; Isengard Ruined (transfer follower)
+9. Reste inertes sets 12–18 (moves / phase / passifs divers)
 
 ## Hors scope
 

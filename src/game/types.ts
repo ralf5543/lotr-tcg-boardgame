@@ -380,10 +380,13 @@ export type AbilityEffect =
           /**
            * Passif While : le joueur indiqué ne peut pas remplacer
            * le site courant / la région / n’importe quel site.
+           * Mount Doom : `SOURCE_REGION` + `activeOnPath` (Legacy Ruling 3).
            */
           type: 'CANNOT_REPLACE_SITE';
-          player: 'FREE_PEOPLE';
-          scope: 'CURRENT' | 'REGION' | 'ANY';
+          player: 'FREE_PEOPLE' | 'ALL';
+          scope: 'CURRENT' | 'REGION' | 'ANY' | 'SOURCE_REGION';
+          /** Actif dès que le site est sur le chemin (pas seulement site courant). */
+          activeOnPath?: boolean;
       }
     | {
           /**
@@ -1378,7 +1381,7 @@ export interface ArcheryState {
     shadowRemainingWounds: number;
 }
 
-export type DevPresetType = 'SITES_EACH_TIME_WAVE';
+export type DevPresetType = 'SITES_HARD_WAVE';
 
 export interface TempKeywordModifier {
     keyword: CardKeyword;
