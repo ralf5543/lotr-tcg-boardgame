@@ -6186,7 +6186,76 @@ export function parseSiteAbilities(
             id: `${cardId || 'ability'}:${abilities.length}:site-phase`,
         });
     });
+    parseSiteEachTimeAbilities(text, cardId).forEach((ability) => {
+        abilities.push({
+            ...ability,
+            id: `${cardId || 'ability'}:${abilities.length}:site-each-time`,
+        });
+    });
     return abilities.length > 0 ? abilities : undefined;
+}
+
+/**
+ * Each time (sites set 11+) :
+ * Slag Mounds (companion killed → burden) ; Heights (Gandalf wins → may discard).
+ * Inerte volontaire : Trollshaw (may draw on attach — toaster YOU_PLAY).
+ */
+function parseSiteEachTimeAbilities(
+    text: string,
+    cardId?: string
+): Record<string, unknown>[] {
+    const found: Record<string, unknown>[] = [];
+    const plain = stripAbilityMarkup(text).replace(/\s+/g, ' ').trim();
+
+    const killedRe =
+        /Each time a companion is killed,\s*add (a|an|one|\d+) burdens?\./gi;
+    let match: RegExpExecArray | null;
+    while ((match = killedRe.exec(plain)) !== null) {
+        const n = parseBurdenWord(match[1]);
+        if (!n) continue;
+        found.push({
+            id: `${cardId || 'ability'}:${found.length}:site-dies-burden`,
+            phases: ['RESPONSE'],
+            optional: false,
+            trigger: {
+                type: 'CHARACTER_DIES',
+                target: [['COMPANION']],
+            },
+            cost: [],
+            effects: [{ type: 'ADD_BURDENS', count: n }],
+            source: 'SELF',
+            text: stripAbilityMarkup(match[0]),
+        });
+    }
+
+    const heightsRe =
+        /Each time a\s+(.+?)\s+wins a skirmish,\s*the Free Peoples player may discard a condition from play\./gi;
+    while ((match = heightsRe.exec(text)) !== null) {
+        const filters = parseClassFilters(match[1].trim());
+        if (filters.length === 0) continue;
+        found.push({
+            id: `${cardId || 'ability'}:${found.length}:site-wins-discard`,
+            phases: ['RESPONSE'],
+            optional: true,
+            responsePlayer: 'FREE_PEOPLE',
+            trigger: {
+                type: 'WINS_SKIRMISH',
+                winner: [filters],
+            },
+            cost: [],
+            effects: [
+                {
+                    type: 'DISCARD',
+                    count: 1,
+                    target: [['CONDITION']],
+                },
+            ],
+            source: 'SELF',
+            text: stripAbilityMarkup(match[0]),
+        });
+    }
+
+    return found;
 }
 
 /**

@@ -104,6 +104,16 @@ Inertes volontaires (play Nazgûl / play minion –N) : Buckland, Expanding Mars
 
 Preset : `SITES_PHASE_WAVE`.
 
+### Vague each-time (set 11)
+
+| Id | Titre | Statut | Notes |
+| --- | --- | --- | --- |
+| `11S258` | Slag Mounds | OK | Companion killed → +1 fardeau (auto) |
+| `11U244` | Heights of Isengard | OK | Gandalf wins → FP may discard condition ; projection vainqueur |
+| `11S260` | Trollshaw Forest | INERTE | May draw on attach (toaster YOU_PLAY) |
+
+Preset : `SITES_EACH_TIME_WAVE`.
+
 ### Inertes — set 11 (hors vagues livrées)
 
 | Id | Titre | Famille |
@@ -112,11 +122,9 @@ Preset : `SITES_PHASE_WAVE`.
 | `11S233` | Chamber of Mazarbul | passive-while |
 | `11S238` | Expanding Marshland | phase-ability |
 | `11S243` | Harrowdale | passive-while |
-| `11U244` | Heights of Isengard | each-time |
 | `11S247` | Moria Guardroom | moves-from |
 | `11S252` | Osgiliath Reclaimed | moves-from |
 | `11S257` | Rohan Uplands | passive-while |
-| `11S258` | Slag Mounds | each-time |
 | `11S260` | Trollshaw Forest | each-time |
 | `11S261` | Valley of the Silverlode | moves-to |
 | `11S264` | Westemnet Village | moves-to |
@@ -176,11 +184,14 @@ Preset : `SITES_PHASE_WAVE`.
    - Inertes volontaires : Green Dragon / East Wall (exert N distincts), Pinnacle (pile de mort)
 5. Vague **passifs** While/assign/coûts/archerie ✅ — preset `SITES_PASSIVES_WAVE`
    - OK : East Road, Caras, Helm's Gate, Pelennor Fields, Flats, Anduin River (15)
-   - Inertes : Chamber transfer, Harrowdale, Rohan Uplands, each-time set 11
+   - Inertes : Chamber transfer, Harrowdale, Rohan Uplands
 6. Vague **capacités de phase** ✅ — preset `SITES_PHASE_WAVE` ; projection sur cibles (pas de bouton site)
    - OK : Ettenmoors, Watch-tower ; Mere (Ombre → Gollum)
    - Inertes volontaires : Buckland / Marshland / Woody-End (play Nazgûl / –N)
-7. Vague **each-time** + cas durs (Mount Doom, Steward's Tomb, Foot of Mount Doom…)
+7. Vague **each-time** set 11 ✅ — preset `SITES_EACH_TIME_WAVE`
+   - OK : Slag Mounds (mort compagnon → fardeau auto) ; Heights (Gandalf wins → FP défausse situation, projection vainqueur)
+   - Inerte volontaire : Trollshaw (may draw on attach)
+8. Cas durs (Mount Doom, Steward's Tomb, Foot of Mount Doom…) + each-time sets 12–18
 
 ## Hors scope
 

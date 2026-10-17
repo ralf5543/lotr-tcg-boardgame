@@ -26,7 +26,10 @@ import {
 } from './abilities/resolveCostTarget';
 import { skirmishMatchesInvolving } from './abilities/cancelSkirmish';
 import { cardMatchesTarget } from './validations/matchers';
-import { abilityMatchesPhase } from './abilities/collectAbilities';
+import {
+    abilityMatchesPhase,
+    collectProjectedAbilities,
+} from './abilities/collectAbilities';
 import { applyAbilityEffect } from './abilities/applyAbilityEffect';
 import { getEffectiveVitality } from '../../utils/cardStats';
 import { applyExert } from '../../utils/applyExert';
@@ -220,6 +223,32 @@ function cardOwnerId(G: GameState, card: CardState): string | null {
     if (card.kind === 'FREE_PEOPLE') return fpId;
     if (card.kind === 'SHADOW') return shadowId;
     return null;
+}
+
+function currentSiteAsCard(G: GameState): CardState | null {
+    const site = G.path?.[getCurrentSiteIndex(G)];
+    return site ? (site as CardState) : null;
+}
+
+/** Qui peut activer une réponse de site (Heights… → FP). */
+function siteResponsePlayerId(
+    G: GameState,
+    ability: Ability
+): string {
+    const fpId = G.fpPlayerId || '0';
+    if (ability.responsePlayer === 'SHADOW') {
+        return fpId === '0' ? '1' : '0';
+    }
+    return fpId;
+}
+
+function forEachResponseSource(
+    G: GameState,
+    visit: (card: CardState) => void
+): void {
+    forEachInPlayCard(G, visit);
+    const site = currentSiteAsCard(G);
+    if (site) visit(site);
 }
 
 function isInSkirmish(G: GameState): boolean {
@@ -441,8 +470,26 @@ export function playerHasEligibleResponse(
         const legal = (card.abilities || []).some((ability) =>
             inPlayResponseIsLegal(G, card, ability)
         );
-        if (legal) found = true;
+        if (legal) {
+            found = true;
+            return;
+        }
+        // Projection site → vainqueur (Heights…).
+        const projected = collectProjectedAbilities(G, card).some(
+            ({ source, ability }) =>
+                inPlayResponseIsLegal(G, source, ability) &&
+                siteResponsePlayerId(G, ability) === String(playerID)
+        );
+        if (projected) found = true;
     });
+    const site = currentSiteAsCard(G);
+    if (!found && site) {
+        found = (site.abilities || []).some(
+            (ability) =>
+                inPlayResponseIsLegal(G, site, ability) &&
+                siteResponsePlayerId(G, ability) === String(playerID)
+        );
+    }
     return found;
 }
 
@@ -643,7 +690,7 @@ function autoResolveMandatoryResponses(G: GameState): void {
     const event = G.pendingEvent;
     if (!event) return;
 
-    forEachInPlayCard(G, (card) => {
+    forEachResponseSource(G, (card) => {
         for (const ability of card.abilities || []) {
             if (ability.optional) continue;
             if (!inPlayResponseIsLegal(G, card, ability)) continue;
@@ -653,7 +700,11 @@ function autoResolveMandatoryResponses(G: GameState): void {
             if (!payAbilityCost(G, card, ability.cost)) continue;
             if (!applyAbilityEffect(G, card, ability)) continue;
             markResponseUsed(G, card, ability);
-            const title = card.i18n?.fr?.title || card.title || card.id;
+            const title =
+                card.i18n?.fr?.title ||
+                card.title ||
+                (card as { name?: string }).name ||
+                card.id;
             G.statusMessage = `${title} : effet automatique.`;
         }
     });
@@ -793,6 +844,8 @@ export function tryOpenCharacterDies(G: GameState): 'APPLIED' | 'WAITING' {
             type: 'CHARACTER_DIES',
             deadCardId,
         };
+
+        autoResolveMandatoryResponses(G);
 
         if (!hasAnyEligibleResponse(G)) {
             G.pendingEvent = undefined;

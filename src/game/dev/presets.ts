@@ -37,19 +37,20 @@ const clonePresetSite = (
 };
 
 /**
- * Vague capacités de phase set 11.
- * 1 filler → 2 Watch-tower (Maneuver) → 3 Ettenmoors (Skirmish, sanctuaire)
- * → … → 8 Mere (Regroup) → 9 filler.
+ * Vague each-time set 11.
+ * 1 filler → 2 Heights (Gandalf wins → défausse situation)
+ * → 3 Slag Mounds (compagnon tué → fardeau, sanctuaire)
+ * → … fillers. Trollshaw volontairement inerte.
  */
-const SITES_PHASE_WAVE_PATH = [
+const SITES_EACH_TIME_WAVE_PATH = [
     '11S250', // 1 North Undeep
-    '11S262', // 2 Watch-tower of Cirith Ungol
-    '11S237', // 3 Ettenmoors
+    '11U244', // 2 Heights of Isengard
+    '11S258', // 3 Slag Mounds
     '11S232', // 4 Cavern
     '11S265', // 5 Window
-    '11S228', // 6 Anduin Confluence (sanctuaire)
+    '11S228', // 6 Anduin Confluence
     '11S263', // 7 West Gate
-    '11U246', // 8 Mere of Dead Faces
+    '11S260', // 8 Trollshaw (inerte)
     '11S265', // 9 Window
 ] as const;
 
@@ -115,61 +116,44 @@ export const applyDevPreset = (
     const shadowPlayer = G.players[shadowId];
 
     switch (presetType) {
-        case 'SITES_PHASE_WAVE': {
+        case 'SITES_EACH_TIME_WAVE': {
             resetBoardForPreset(G);
-            // Départ site 2 (Watch-tower) ; téléporte 3 / 8 pour Ettenmoors / Mere.
-            setupDevPath(G, 1, SITES_PHASE_WAVE_PATH);
+            // Départ site 2 (Heights) ; téléporte 3 pour Slag Mounds.
+            setupDevPath(G, 1, SITES_EACH_TIME_WAVE_PATH);
             G.twilightPool = 0;
             fpPlayer.burdens = 0;
 
             fpPlayer.fellowshipArea = [
                 {
-                    ...clonePresetCard('2C102', 'dev-phase-frodo'),
-                    attachments: [clonePresetCard('1R1', 'dev-phase-ring')],
+                    ...clonePresetCard('2C102', 'dev-et-frodo'),
+                    attachments: [clonePresetCard('1R1', 'dev-et-ring')],
                     wounds: 0,
                 },
                 {
-                    ...clonePresetCard('0P14', 'dev-phase-aragorn'),
+                    // Gandalf companion → Heights.
+                    ...clonePresetCard('1R72', 'dev-et-gandalf'),
                     wounds: 0,
                 },
                 {
-                    // Gimli : sa capacité + Ettenmoors (2 actions).
-                    ...clonePresetCard('1R13', 'dev-phase-gimli'),
-                    wounds: 0,
-                },
-                {
-                    // Enduring : exclu Ettenmoors (témoin du filtre).
-                    ...clonePresetCard('8R38', 'dev-phase-enduring'),
-                    wounds: 0,
+                    // Compagnon fragile pour Slag Mounds (tuer → fardeau).
+                    ...clonePresetCard('1C303', 'dev-et-merry'),
+                    vitality: 2,
+                    wounds: 1,
                 },
             ];
-            // Main FP : défausse au hasard (Watch-tower).
-            fpPlayer.hand = [
-                clonePresetCard('1C11', 'dev-phase-hand-a'),
-                clonePresetCard('1R30', 'dev-phase-hand-b'),
-                clonePresetCard('0P17', 'dev-phase-hand-c'),
+            // Situation à défausser (Heights).
+            fpPlayer.supportArea = [
+                clonePresetCard('1R79', 'dev-et-condition'),
             ];
 
             if (shadowPlayer) {
-                shadowPlayer.sitesDeck = [
-                    clonePresetSite('11S241', shadowId),
-                    clonePresetSite('11S239', shadowId),
-                ];
                 G.battlefield = [
-                    // Orc culture pour Watch-tower.
-                    clonePresetCard('11C107', 'dev-phase-orc'),
-                    // Gollum pour Mere.
-                    {
-                        ...clonePresetCard('7C59', 'dev-phase-gollum'),
-                        title: 'Gollum',
-                    },
-                    // Séide non-orc pour Ettenmoors (Ombre).
-                    clonePresetCard('11C72', 'dev-phase-easterling'),
+                    clonePresetCard('1C266', 'dev-et-orc'),
                 ];
             }
 
             G.statusMessage =
-                '[DEV] Phase · 2 Watch-tower (Manœuvre) ; 3 Ettenmoors (Combat) ; 8 Mere (Regroup).';
+                '[DEV] Each-time · 2 Heights (victoire Gandalf → défausse situation) ; 3 Slag Mounds (mort compagnon → fardeau).';
             break;
         }
     }

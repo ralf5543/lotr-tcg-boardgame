@@ -1,7 +1,12 @@
 import type { Ability, AbilityTargetRef, CardKeyword, CardState, CostSelector, GameState } from '../../types';
 import { TRANSLATIONS } from '../../translations';
 import { getKeywordValue } from '../keywords/keywordUtils';
-import { forEachInPlayCard, resolveCostTarget } from './resolveCostTarget';
+import {
+    forEachInPlayCard,
+    resolveCostTarget,
+    resolveWinnerTargets,
+} from './resolveCostTarget';
+import { getCurrentSiteIndex } from '../../logic/sites';
 
 export function abilityMatchesPhase(ability: Ability, rawPhase: string): boolean {
     const currentPhase = (rawPhase || '').toUpperCase();
@@ -85,13 +90,20 @@ function abilityMayProjectFromSupport(ability: Ability): boolean {
 }
 
 /**
- * Site : pas de bouton sur le site — projection sur toute cible d’exert
- * désignable (classe ou nom). Hors START_OF_* (toaster).
+ * Site : pas de bouton sur le site — projection sur cible d’exert désignable
+ * (phase) ou sur le vainqueur (réponse WINS_SKIRMISH optionnelle).
  */
 function abilityMayProjectFromSite(ability: Ability): boolean {
-    if (!exertTargetIsOtherCharacter(ability)) return false;
     if (abilityDiscardsSelf(ability)) return false;
+    if (
+        ability.trigger?.type === 'WINS_SKIRMISH' &&
+        ability.optional &&
+        abilityMatchesPhase(ability, 'RESPONSE')
+    ) {
+        return true;
+    }
     if (ability.trigger) return false;
+    if (!exertTargetIsOtherCharacter(ability)) return false;
     const phases = (ability.phases || []).map((p) => p.toUpperCase());
     if (phases.length === 0) return false;
     if (phases.some((p) => p.startsWith('START_OF'))) return false;
@@ -125,6 +137,20 @@ export function abilityProjectsOnto(
     const sourceId = source.instanceId || source.id;
     const hostId = host.instanceId || host.id;
     if (sourceId === hostId) return false;
+
+    if (
+        fromSite &&
+        ability.trigger?.type === 'WINS_SKIRMISH' &&
+        ability.optional
+    ) {
+        // Uniquement le site courant (texte de site = compagnie ici).
+        const cur = G.path?.[getCurrentSiteIndex(G)];
+        if (!cur || (cur.instanceId || cur.id) !== sourceId) return false;
+        return resolveWinnerTargets(G, source, ability).some(
+            (card) => (card.instanceId || card.id) === hostId
+        );
+    }
+
     const exert = ability.cost[0]?.exert?.[0];
     if (!exert) return false;
     return resolveCostTarget(G, source, exert.target).some((card) => {
@@ -158,10 +184,9 @@ export function collectProjectedAbilities(
         }
     };
     forEachInPlayCard(G, consider);
-    // Sites du chemin (Mere of Dead Faces → bulle sur Gollum/Sméagol).
-    for (const site of G.path || []) {
-        if (site) consider(site as CardState);
-    }
+    // Site courant uniquement (texte de site = compagnie ici).
+    const current = G.path?.[getCurrentSiteIndex(G)];
+    if (current) consider(current as CardState);
     return rows;
 }
 

@@ -931,6 +931,11 @@ export interface Ability {
     trigger?: AbilityTrigger;
     /** « you may » : choix du joueur (toaster), pas une résolution auto. */
     optional?: boolean;
+    /**
+     * Réponse de site (« the Free Peoples player may… ») : qui peut l’activer.
+     * Défaut si omis sur un site = FREE_PEOPLE.
+     */
+    responsePlayer?: 'FREE_PEOPLE' | 'SHADOW';
     /** Ex. Merry : seulement s’il n’est pas affecté à une escarmouche. */
     requiresUnassigned?: boolean;
     /**
@@ -1373,7 +1378,7 @@ export interface ArcheryState {
     shadowRemainingWounds: number;
 }
 
-export type DevPresetType = 'SITES_PHASE_WAVE';
+export type DevPresetType = 'SITES_EACH_TIME_WAVE';
 
 export interface TempKeywordModifier {
     keyword: CardKeyword;

@@ -5418,6 +5418,32 @@
     "isUnique": false,
     "kind": "SITE",
     "type": "SITE",
+    "abilities": [
+      {
+        "id": "7U363:0:site-each-time",
+        "phases": [
+          "RESPONSE"
+        ],
+        "optional": false,
+        "trigger": {
+          "type": "CHARACTER_DIES",
+          "target": [
+            [
+              "COMPANION"
+            ]
+          ]
+        },
+        "cost": [],
+        "effects": [
+          {
+            "type": "ADD_BURDENS",
+            "count": 1
+          }
+        ],
+        "source": "SELF",
+        "text": "Each time a companion is killed, add a burden."
+      }
+    ],
     "twilightCost": 9,
     "siteNumber": 9,
     "siteArrow": "Left",
@@ -6679,6 +6705,39 @@
     "keywords": [
       "BATTLEGROUND"
     ],
+    "abilities": [
+      {
+        "id": "11U244:0:site-each-time",
+        "phases": [
+          "RESPONSE"
+        ],
+        "optional": true,
+        "responsePlayer": "FREE_PEOPLE",
+        "trigger": {
+          "type": "WINS_SKIRMISH",
+          "winner": [
+            [
+              "GANDALF",
+              "COMPANION"
+            ]
+          ]
+        },
+        "cost": [],
+        "effects": [
+          {
+            "type": "DISCARD",
+            "count": 1,
+            "target": [
+              [
+                "CONDITION"
+              ]
+            ]
+          }
+        ],
+        "source": "SELF",
+        "text": "Each time a gandalf companion wins a skirmish, the Free Peoples player may discard a condition from play."
+      }
+    ],
     "twilightCost": 3,
     "siteArrow": "Right",
     "imageUrl": "/cards_visuals/o_11_244.jpg",
@@ -7452,6 +7511,32 @@
     "type": "SITE",
     "keywords": [
       "BATTLEGROUND"
+    ],
+    "abilities": [
+      {
+        "id": "11S258:0:site-each-time",
+        "phases": [
+          "RESPONSE"
+        ],
+        "optional": false,
+        "trigger": {
+          "type": "CHARACTER_DIES",
+          "target": [
+            [
+              "COMPANION"
+            ]
+          ]
+        },
+        "cost": [],
+        "effects": [
+          {
+            "type": "ADD_BURDENS",
+            "count": 1
+          }
+        ],
+        "source": "SELF",
+        "text": "Each time a companion is killed, add a burden."
+      }
     ],
     "twilightCost": 1,
     "siteArrow": "Right",
