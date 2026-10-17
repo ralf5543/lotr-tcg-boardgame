@@ -2043,6 +2043,24 @@
       "FOREST",
       "SANCTUARY"
     ],
+    "abilities": [
+      {
+        "id": "3U115:0:site-assign-limit",
+        "phases": [],
+        "trigger": {
+          "type": "WHILE"
+        },
+        "cost": [],
+        "effects": [
+          {
+            "type": "LIMIT_ASSIGN_MINIONS",
+            "count": 1
+          }
+        ],
+        "source": "SELF",
+        "text": "no more than one minion may be assigned to each skirmish."
+      }
+    ],
     "twilightCost": 3,
     "siteNumber": 6,
     "siteArrow": "Left",
@@ -3212,6 +3230,35 @@
     "keywords": [
       "BATTLEGROUND"
     ],
+    "abilities": [
+      {
+        "id": "4U349:0:site-bearing-hw",
+        "phases": [],
+        "trigger": {
+          "type": "WHILE"
+        },
+        "cost": [],
+        "effects": [
+          {
+            "type": "MODIFY_STAT",
+            "stat": "STRENGTH",
+            "value": 2,
+            "target": [
+              [
+                "CHARACTER"
+              ]
+            ],
+            "bearing": [
+              [
+                "HAND-WEAPON"
+              ]
+            ]
+          }
+        ],
+        "source": "SELF",
+        "text": "Each companion and minion bearing a hand weapon is strength +2."
+      }
+    ],
     "twilightCost": 6,
     "siteNumber": 5,
     "siteArrow": "Left",
@@ -3287,6 +3334,25 @@
     "type": "SITE",
     "keywords": [
       "BATTLEGROUND"
+    ],
+    "abilities": [
+      {
+        "id": "4U351:0:site-archery",
+        "phases": [],
+        "trigger": {
+          "type": "WHILE"
+        },
+        "cost": [],
+        "effects": [
+          {
+            "type": "MODIFY_ARCHERY_TOTAL",
+            "side": "FREE_PEOPLE",
+            "value": 1
+          }
+        ],
+        "source": "SELF",
+        "text": "The fellowship archery total is +1."
+      }
     ],
     "twilightCost": 8,
     "siteNumber": 5,
@@ -5920,6 +5986,24 @@
     "keywords": [
       "FOREST"
     ],
+    "abilities": [
+      {
+        "id": "11S231:0:site-assign-limit",
+        "phases": [],
+        "trigger": {
+          "type": "WHILE"
+        },
+        "cost": [],
+        "effects": [
+          {
+            "type": "LIMIT_ASSIGN_MINIONS",
+            "count": 1
+          }
+        ],
+        "source": "SELF",
+        "text": "No more than 1 minion can be assigned to each skirmish."
+      }
+    ],
     "twilightCost": 2,
     "siteArrow": "Left",
     "imageUrl": "/cards_visuals/o_03_115.jpg",
@@ -6173,6 +6257,30 @@
     "keywords": [
       "FOREST"
     ],
+    "abilities": [
+      {
+        "id": "11S236:0:site-each-twilight",
+        "phases": [],
+        "trigger": {
+          "type": "WHILE"
+        },
+        "cost": [],
+        "effects": [
+          {
+            "type": "MODIFY_STAT",
+            "stat": "TWILIGHT_COST",
+            "value": 2,
+            "target": [
+              [
+                "COMPANION"
+              ]
+            ]
+          }
+        ],
+        "source": "SELF",
+        "text": "Each companion is twilight cost +2."
+      }
+    ],
     "twilightCost": 0,
     "siteArrow": "Right",
     "imageUrl": "/cards_visuals/o_01_320.jpg",
@@ -6340,6 +6448,32 @@
     "type": "SITE",
     "keywords": [
       "PLAINS"
+    ],
+    "abilities": [
+      {
+        "id": "11S240:0:site-skirmish-str",
+        "phases": [],
+        "trigger": {
+          "type": "WHILE"
+        },
+        "cost": [],
+        "effects": [
+          {
+            "type": "MODIFY_STAT",
+            "stat": "STRENGTH",
+            "value": 3,
+            "target": [
+              [
+                "UNBOUND",
+                "COMPANION"
+              ]
+            ],
+            "skirmishingMinionsAtLeast": 2
+          }
+        ],
+        "source": "SELF",
+        "text": "Each unbound companion skirmishing more than 1 minion is strength +3."
+      }
     ],
     "twilightCost": 2,
     "siteArrow": "Left",
@@ -6540,6 +6674,35 @@
     "type": "SITE",
     "keywords": [
       "BATTLEGROUND"
+    ],
+    "abilities": [
+      {
+        "id": "11S245:0:site-bearing-hw",
+        "phases": [],
+        "trigger": {
+          "type": "WHILE"
+        },
+        "cost": [],
+        "effects": [
+          {
+            "type": "MODIFY_STAT",
+            "stat": "STRENGTH",
+            "value": 2,
+            "target": [
+              [
+                "CHARACTER"
+              ]
+            ],
+            "bearing": [
+              [
+                "HAND-WEAPON"
+              ]
+            ]
+          }
+        ],
+        "source": "SELF",
+        "text": "Each character bearing a hand weapon is strength +2."
+      }
     ],
     "twilightCost": 2,
     "siteArrow": "Right",
@@ -6975,6 +7138,30 @@
     "type": "SITE",
     "keywords": [
       "PLAINS"
+    ],
+    "abilities": [
+      {
+        "id": "11S253:0:site-gains-ambush",
+        "phases": [],
+        "trigger": {
+          "type": "WHILE"
+        },
+        "cost": [],
+        "effects": [
+          {
+            "type": "MODIFY_KEYWORD",
+            "keyword": "AMBUSH 1",
+            "target": [
+              [
+                "MEN",
+                "MINION"
+              ]
+            ]
+          }
+        ],
+        "source": "SELF",
+        "text": "Each men minion gains ambush twilight1."
+      }
     ],
     "twilightCost": 1,
     "siteArrow": "Left",
@@ -8325,6 +8512,25 @@
     "type": "SITE",
     "keywords": [
       "RIVER"
+    ],
+    "abilities": [
+      {
+        "id": "15U187:0:site-archery",
+        "phases": [],
+        "trigger": {
+          "type": "WHILE"
+        },
+        "cost": [],
+        "effects": [
+          {
+            "type": "MODIFY_ARCHERY_TOTAL",
+            "side": "FREE_PEOPLE",
+            "value": -3
+          }
+        ],
+        "source": "SELF",
+        "text": "The fellowship archery total is –3."
+      }
     ],
     "twilightCost": 0,
     "siteArrow": "Left",

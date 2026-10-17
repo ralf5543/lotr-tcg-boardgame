@@ -36,77 +36,19 @@ const clonePresetSite = (
     } as SiteCardState;
 };
 
-/** Neuf sites Standard — terrains variés (sanctuaire = emplacements 3 & 6). */
-const DEV_PATH_IDS = [
-    '11S263', // 1 West Gate — UNDERGROUND
-    '11S247', // 2 Moria Guardroom — UNDERGROUND
-    '11S237', // 3 Ettenmoors — PLAINS (+ sanctuaire)
-    '11S233', // 4 Chamber of Mazarbul — UNDERGROUND
-    '11S231', // 5 Caras Galadhon — FOREST
-    '11U227', // 6 Anduin Banks — RIVER (+ sanctuaire)
-    '11S241', // 7 Fortress of Orthanc — BATTLEGROUND
-    '11S229', // 8 Barazinbar — MOUNTAIN
-    '11S240', // 9 Flats of Rohan — PLAINS
-] as const;
-
 /**
- * Chemin smoke des 9 sites déjà parsés (sets 11+).
- * 1 West Gate (moves from) → 2 Confluence (moves to) → 3 Pelennor Flat (sanctuaire / début manœuvre)
- * → 4 Cavern Entrance → 5 Stairway → 6 Anduin Banks (sanctuaire / archerie)
- * → 7 North Undeep → 8 Mere (Regroup play next — pas en 9 : plus de « prochain site »)
- * → 9 Window on the West (cible du play next / Defender +1).
+ * Vague passifs set 11 (+ Anduin River 15).
+ * 1 East Road (+2 crépuscule) → 2 Caras (assign ≤1) → 3 Helm's Gate (arme → +2)
+ * → 4 Pelennor Fields (Men ambush) → 5 Flats (unbound ≥2 séides → +3)
+ * → 6 Anduin River (archerie FP −3, sanctuaire) → 7–9 fillers.
  */
-const SITES_MODERN_SMOKE_PATH = [
-    '11S263', // 1 West Gate of Moria — MOVES_FROM
-    '11S228', // 2 Anduin Confluence — MOVES_TO discard allies
-    '11S254', // 3 Pelennor Flat — START_OF_MANEUVER (+ sanctuaire)
-    '11S232', // 4 Cavern Entrance — forbid skirmish abilities
-    '11S248', // 5 Moria Stairway — Damage +1 bearing HW
-    '11U227', // 6 Anduin Banks — archery +2 / companion over 4 (+ sanctuaire)
-    '11S250', // 7 North Undeep — archery −3
-    '11U246', // 8 Mere of Dead Faces — Regroup play next
-    '11S265', // 9 Window on the West — Defender +1 (+ site jouable via Mere)
-] as const;
-
-/** Sites restants pour Mere / play next depuis le deck d’aventure. */
-const SITES_MODERN_SMOKE_DECK = [
-    '11S231', // Caras Galadhon
-    '11S241', // Fortress of Orthanc
-    '11S240', // Flats of Rohan
-    '11S229', // Barazinbar
-] as const;
-
-/**
- * Vague moves to/from set 11 (auto).
- * 1 filler → 2 Fangorn (armes) → 3 Orthanc (compagnons >5) → 4 Neekerbreekers
- * → 5 Crags (région 2, blessure au leave en Regroup) → 6+ fillers.
- */
-const SITES_MOVE_WAVE_PATH = [
-    '11S263', // 1 West Gate — départ
-    '11S239', // 2 Fangorn Glade — +1 crépuscule / arme PL
-    '11S241', // 3 Fortress of Orthanc — +2 / compagnon over 5
-    '11S249', // 4 Neekerbreekers’ Bog — heal rés.≥5 / exert autres
-    '11S234', // 5 Crags of Emyn Muil — région 2, wound en Regroup leave
-    '11S250', // 6 North Undeep — arrivée après Crags
-    '11S228', // 7 Confluence
-    '11S232', // 8 Cavern
-    '11S265', // 9 Window
-] as const;
-
-/**
- * Vague début de fellowship set 11.
- * 1 filler → 2 Dammed (play Gollum FP) → 3 Old Forest (heal 2 Elves, sanctuaire)
- * → 4 Prancing Pony (burden → ranger) → 5 Barazinbar (exert Dwarf → possession)
- * → 6 Stables (exert Rohan Man → mount) → 7–9 fillers.
- * Inertes volontaires : Green Dragon (2 Hobbits), Pinnacle (dead pile).
- */
-const SITES_START_FP_PATH = [
-    '11S263', // 1 West Gate — filler
-    '11U235', // 2 Dammed Gate-stream
-    '11S251', // 3 Old Forest Road (+ sanctuaire)
-    '11S256', // 4 The Prancing Pony
-    '11S229', // 5 Barazinbar
-    '11S259', // 6 Stables
+const SITES_PASSIVES_WAVE_PATH = [
+    '11S236', // 1 East Road
+    '11S231', // 2 Caras Galadhon
+    '11S245', // 3 Helm's Gate
+    '11S253', // 4 Pelennor Fields
+    '11S240', // 5 Flats of Rohan
+    '15U187', // 6 Anduin River (+ sanctuaire)
     '11S250', // 7 North Undeep
     '11S232', // 8 Cavern
     '11S265', // 9 Window
@@ -137,14 +79,15 @@ const resetBoardForPreset = (G: GameState): void => {
             player.discard = [];
             player.fellowshipArea = [];
             player.sitesDeck = [];
+            player.deck = [];
         }
     });
 };
 
 const setupDevPath = (
     G: GameState,
-    startIndex = 3,
-    pathIds: readonly string[] = DEV_PATH_IDS
+    startIndex: number,
+    pathIds: readonly string[]
 ): void => {
     const fpId = G.fpPlayerId || '0';
     const shadowId = fpId === '0' ? '1' : '0';
@@ -173,238 +116,65 @@ export const applyDevPreset = (
     const shadowPlayer = G.players[shadowId];
 
     switch (presetType) {
-        case 'STAT_PULSE_TEST': {
+        case 'SITES_PASSIVES_WAVE': {
             resetBoardForPreset(G);
-            setupDevPath(G, 3);
-            G.twilightPool = 2;
+            // Départ site 1 (East Road) ; téléporte 2–6 pour les autres.
+            setupDevPath(G, 0, SITES_PASSIVES_WAVE_PATH);
+            G.twilightPool = 0;
+            fpPlayer.burdens = 0;
 
-            // Frodo : résistance + fardeaux ; Gimli : Damage ; Aragorn : Defender +1 (manœuvre) + blessures.
             fpPlayer.fellowshipArea = [
                 {
-                    ...clonePresetCard('2C102', 'dev-frodo-pulse'),
-                    attachments: [clonePresetCard('1R1', 'dev-ring-pulse')],
+                    ...clonePresetCard('2C102', 'dev-pass-frodo'),
+                    attachments: [clonePresetCard('1R1', 'dev-pass-ring')],
                     wounds: 0,
                 },
                 {
-                    ...clonePresetCard('1R89', 'dev-aragorn-pulse'),
+                    // Unbound + arme (Helm's Gate / Flats).
+                    ...clonePresetCard('0P14', 'dev-pass-aragorn'),
+                    attachments: [
+                        clonePresetCard('1U112', 'dev-pass-ranger-sword'),
+                    ],
                     wounds: 0,
                 },
                 {
-                    ...clonePresetCard('7C6', 'dev-gimli-pulse'),
+                    // Defender +1 pour tester le plafond Caras (reste 1).
+                    ...clonePresetCard('1R96', 'dev-pass-boromir'),
+                    keywords: [
+                        ...(clonePresetCard('1R96').keywords || []),
+                        'DEFENDER +1',
+                    ],
+                    wounds: 0,
+                },
+                {
+                    ...clonePresetCard('0P13', 'dev-pass-legolas'),
                     wounds: 0,
                 },
             ];
-            fpPlayer.burdens = 1;
-            // Condition soutien : jetons culture via DEV ±
-            fpPlayer.supportArea = [
-                {
-                    ...clonePresetCard('4R52', 'dev-axe-notched'),
-                    cultureTokens: { DWARVEN: 1 },
-                },
-            ];
+            // Compagnons en main : East Road (crépuscule imprimé +2).
             fpPlayer.hand = [
-                clonePresetCard('7C154', 'dev-new-strength-pulse'),
-                clonePresetCard('1C3', 'dev-axe-strike-pulse'),
-                clonePresetCard('1C9', 'dev-dwarven-axe-pulse'),
+                clonePresetCard('1R13', 'dev-pass-hand-gimli'),
+                clonePresetCard('0P17', 'dev-pass-hand-eowyn'),
+                clonePresetCard('1C11', 'dev-pass-hand-farin'),
+                clonePresetCard('1R30', 'dev-pass-hand-arwen'),
             ];
 
             if (shadowPlayer) {
-                // Man of Bree : force scale main FP ; séide Damage pour keyword.
                 G.battlefield = [
-                    clonePresetCard('11S90', 'dev-man-of-bree-pulse'),
+                    // Men → Ambush 1 (Pelennor) ; arme pour Helm's Gate.
                     {
-                        ...clonePresetCard('13U165', 'dev-infiltrator-pulse'),
-                        minionSiteNumber: 2,
+                        ...clonePresetCard('11C72', 'dev-pass-easterling'),
+                        attachments: [
+                            clonePresetCard('11S95', 'dev-pass-poleaxe'),
+                        ],
                     },
-                ];
-                shadowPlayer.hand = [
-                    clonePresetCard('7C154', 'dev-new-strength-sh-pulse'),
-                ];
-            }
-
-            G.statusMessage =
-                '[DEV] Pulse · Aragorn (manœuvre → Defender +1) ; blessures DEV ; burdens / jetons / crépuscule ; New Strength en main.';
-            break;
-        }
-        case 'SITES_MODERN_SMOKE': {
-            resetBoardForPreset(G);
-            // Départ site 1 (West Gate) : move → Confluence (défausse alliés) + remove twilight from.
-            setupDevPath(G, 0, SITES_MODERN_SMOKE_PATH);
-            G.twilightPool = 4;
-
-            fpPlayer.sitesDeck = SITES_MODERN_SMOKE_DECK.map((id, i) => ({
-                ...clonePresetSite(id, fpId),
-                instanceId: `dev-smoke-site-deck-${i}`,
-            }));
-
-            // 5 compagnons → Anduin Banks (+2 archerie) ; Gondor Man pour Window ; Sméagol pour Mere.
-            fpPlayer.fellowshipArea = [
-                {
-                    ...clonePresetCard('2C102', 'dev-smoke-frodo'),
-                    attachments: [clonePresetCard('1R1', 'dev-smoke-ring')],
-                    wounds: 0,
-                },
-                {
-                    ...clonePresetCard('0P14', 'dev-smoke-aragorn'),
-                    wounds: 0,
-                },
-                {
-                    // Skirmish: exert → force +2 (test Cavern Entrance site 4).
-                    ...clonePresetCard('1R13', 'dev-smoke-gimli'),
-                    attachments: [
-                        clonePresetCard('1R14', 'dev-smoke-gimli-axe'),
-                    ],
-                    wounds: 0,
-                },
-                {
-                    ...clonePresetCard('0P16', 'dev-smoke-faramir'),
-                    wounds: 0,
-                },
-                {
-                    ...clonePresetCard('5C28', 'dev-smoke-smeagol'),
-                    wounds: 0,
-                },
-            ];
-            // Alliés à défausser au move vers Confluence (site 2).
-            fpPlayer.supportArea = [
-                clonePresetCard('1U17', 'dev-smoke-grimir'),
-                clonePresetCard('1U27', 'dev-smoke-thrarin'),
-            ];
-            // Main ≥3 pour option défausse Pelennor Flat.
-            fpPlayer.hand = [
-                clonePresetCard('7C154', 'dev-smoke-hand-1'),
-                clonePresetCard('1C3', 'dev-smoke-hand-2'),
-                clonePresetCard('1C9', 'dev-smoke-hand-3'),
-            ];
-            fpPlayer.burdens = 1;
-
-            if (shadowPlayer) {
-                shadowPlayer.sitesDeck = [
-                    clonePresetSite('11S236', shadowId),
-                    clonePresetSite('11S245', shadowId),
-                ].map((site, i) => ({
-                    ...site,
-                    instanceId: `dev-smoke-sh-site-${i}`,
-                }));
-                G.battlefield = [
-                    clonePresetCard('1R127', 'dev-smoke-lurtz'),
-                    // Skirmish: exert → wound (test Cavern Entrance site 4).
-                    clonePresetCard('1C271', 'dev-smoke-orc-soldier'),
-                    // Mere (site 8) : Ombre peut affaiblir « votre » Gollum.
-                    clonePresetCard('5R25', 'dev-smoke-gollum'),
+                    clonePresetCard('11C73', 'dev-pass-harad'),
+                    clonePresetCard('1C266', 'dev-pass-orc'),
                 ];
             }
 
             G.statusMessage =
-                '[DEV] Sites 11+ smoke · Mere en site 8 (pas 9) : téléporte 7→avance ou site 8, Regroup, Gollum ombre / Sméagol FP.';
-            break;
-        }
-        case 'SITES_MOVE_WAVE': {
-            resetBoardForPreset(G);
-            // Départ site 1 → avance Fangorn → Orthanc → Bog ; Crags = téléporte 5 puis Regroup leave.
-            setupDevPath(G, 0, SITES_MOVE_WAVE_PATH);
-            G.twilightPool = 0;
-
-            fpPlayer.fellowshipArea = [
-                {
-                    ...clonePresetCard('2C102', 'dev-move-frodo'),
-                    attachments: [clonePresetCard('1R1', 'dev-move-ring')],
-                    resistance: 10,
-                    wounds: 1,
-                },
-                {
-                    ...clonePresetCard('0P14', 'dev-move-aragorn'),
-                    wounds: 0,
-                },
-                {
-                    ...clonePresetCard('1R13', 'dev-move-gimli'),
-                    attachments: [
-                        // Arme PL pour Fangorn.
-                        clonePresetCard('1R14', 'dev-move-axe'),
-                    ],
-                    wounds: 0,
-                },
-                {
-                    ...clonePresetCard('0P16', 'dev-move-faramir'),
-                    resistance: 3,
-                    wounds: 0,
-                },
-                {
-                    ...clonePresetCard('5C28', 'dev-move-smeagol'),
-                    wounds: 0,
-                },
-                {
-                    ...clonePresetCard('11S33', 'dev-move-gandalf'),
-                    wounds: 0,
-                },
-            ];
-            fpPlayer.burdens = 0;
-            fpPlayer.hand = [
-                clonePresetCard('7C154', 'dev-move-hand-1'),
-                clonePresetCard('1C3', 'dev-move-hand-2'),
-            ];
-
-            G.statusMessage =
-                '[DEV] Moves wave · 6 compagnons + hache (Fangorn/Orthanc) ; Frodo blessé rés.haute / Faramir rés.basse (Bog) ; Crags = site 5 puis Regroup → avancer.';
-            break;
-        }
-        case 'SITES_START_FP': {
-            resetBoardForPreset(G);
-            // Départ site 6 (Stables / sanctuaire) ; téléporte 2–5 pour les autres.
-            setupDevPath(G, 5, SITES_START_FP_PATH);
-            G.twilightPool = 0;
-            fpPlayer.burdens = 0;
-
-            fpPlayer.fellowshipArea = [
-                {
-                    ...clonePresetCard('2C102', 'dev-sfp-frodo'),
-                    attachments: [clonePresetCard('1R1', 'dev-sfp-ring')],
-                    wounds: 0,
-                },
-                {
-                    ...clonePresetCard('1R13', 'dev-sfp-gimli'),
-                    wounds: 0,
-                },
-                {
-                    // 2ᵉ Nain : porteur alternatif (hache ≠ forcément sur l’exerter).
-                    ...clonePresetCard('1C11', 'dev-sfp-farin'),
-                    wounds: 0,
-                },
-                {
-                    ...clonePresetCard('0P17', 'dev-sfp-eowyn'),
-                    wounds: 0,
-                },
-                {
-                    ...clonePresetCard('0P13', 'dev-sfp-legolas'),
-                    wounds: 0,
-                },
-                {
-                    ...clonePresetCard('1R30', 'dev-sfp-arwen'),
-                    wounds: 0,
-                },
-            ];
-            // Allié Homme Rohan : porteur alternatif pour la monture (≠ forcément Éowyn).
-            fpPlayer.supportArea = [
-                {
-                    ...clonePresetCard('4C277', 'dev-sfp-guma'),
-                    wounds: 0,
-                },
-            ];
-            // Pioche : cartes jouables via les sites (Dammed / Pony / Barazinbar / Stables).
-            fpPlayer.deck = [
-                clonePresetCard('5C28', 'dev-sfp-smeagol-deck'),
-                clonePresetCard('0P14', 'dev-sfp-aragorn-deck'),
-                clonePresetCard('1C9', 'dev-sfp-axe-deck'),
-                // Possession aire de soutien (pas d’attache sur le Nain exerté).
-                clonePresetCard('5U8', 'dev-sfp-horn-deck'),
-                clonePresetCard('4C287', 'dev-sfp-mount-deck'),
-                clonePresetCard('7C154', 'dev-sfp-filler-1'),
-                clonePresetCard('1C3', 'dev-sfp-filler-2'),
-            ];
-            fpPlayer.hand = [clonePresetCard('1C8', 'dev-sfp-hand-armor')];
-
-            G.statusMessage =
-                '[DEV] Start FP · site 6 Stables (Éowyn / Guma + monture) ; 2 Dammed ; 3 Old Forest ; 4 Pony ; 5 Barazinbar.';
+                '[DEV] Passifs · 1 East Road (+2 crép. : 4 compagnons en main) ; 2 Caras ; 3 Helm ; 4 Pelennor ; 5 Flats ; 6 Anduin River.';
             break;
         }
     }

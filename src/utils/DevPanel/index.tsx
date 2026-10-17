@@ -369,31 +369,10 @@ export const DevPanel: React.FC<DevPanelProps> = ({
                         <S.Label>Presets cartes & Déblocage :</S.Label>
                         <S.PresetButton
                             onClick={() =>
-                                moves.devLoadPreset('STAT_PULSE_TEST')
+                                moves.devLoadPreset('SITES_PASSIVES_WAVE')
                             }
                         >
-                            Pulse stats / jetons
-                        </S.PresetButton>
-                        <S.PresetButton
-                            onClick={() =>
-                                moves.devLoadPreset('SITES_MODERN_SMOKE')
-                            }
-                        >
-                            Sites 11+ smoke
-                        </S.PresetButton>
-                        <S.PresetButton
-                            onClick={() =>
-                                moves.devLoadPreset('SITES_MOVE_WAVE')
-                            }
-                        >
-                            Sites moves to/from
-                        </S.PresetButton>
-                        <S.PresetButton
-                            onClick={() =>
-                                moves.devLoadPreset('SITES_START_FP')
-                            }
-                        >
-                            Sites début fellowship
+                            Sites passifs
                         </S.PresetButton>
                         <S.GameButton $bgColor="#3498db" onClick={onDrawCard}>
                             🃏 Piocher ({deckCount})

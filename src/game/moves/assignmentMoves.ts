@@ -4,7 +4,8 @@ import {
     beginShadowAssignment,
     canCompanionBeAssigned,
     checkAssignmentProgress,
-    getCompanionDefenderCapacity,
+    getAssignableMinionCapacity,
+    getSiteMaxMinionsPerSkirmish,
     getUnassignedMinions,
 } from '../logic/assignment';
 import { resolveWhenAssigned } from '../engine/abilities/whenAssigned';
@@ -61,11 +62,17 @@ export const assignMinion = (
     const resolvedMinionId =
         (minionCard?.instanceId || minionCard?.id || minionId) as string;
 
-    // 🟢 Capacité dynamique : 1 par défaut, ou (1 + X) si DEFENDER +X
-    const maxCapacity = getCompanionDefenderCapacity(compCard, G);
+    // Capacité : Defender +X, plafonnée par le site (Caras = 1 pour FP et Ombre).
+    const siteCap = getSiteMaxMinionsPerSkirmish(G);
+    const maxCapacity =
+        siteCap != null
+            ? siteCap
+            : isFP
+              ? getAssignableMinionCapacity(compCard, G)
+              : Number.POSITIVE_INFINITY;
 
     if (
-        G.assignmentStep === 'FP_ASSIGN' &&
+        Number.isFinite(maxCapacity) &&
         existingSkirmish &&
         existingSkirmish.minionIds.length >= maxCapacity &&
         !existingSkirmish.minionIds.includes(resolvedMinionId) &&

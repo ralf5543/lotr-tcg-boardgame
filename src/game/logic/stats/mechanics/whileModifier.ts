@@ -614,6 +614,41 @@ export function getWhileStrengthBonus(
         }
     });
 
+    // Passifs du site actuel (Helm's Gate, Flats of Rohan…).
+    const currentSite = getCurrentSite(G);
+    if (currentSite) {
+        for (const ability of currentSite.abilities || []) {
+            if (ability.trigger?.type !== 'WHILE') continue;
+            for (const effect of ability.effects || []) {
+                if (effect.type !== 'MODIFY_STAT') continue;
+                if (effect.stat !== 'STRENGTH') continue;
+                if (!Array.isArray(effect.target)) continue;
+                if (!cardMatchesTarget(card, effect.target)) continue;
+                if (effect.bearing) {
+                    const hasBearing = (card.attachments || []).some(
+                        (att) =>
+                            att && cardMatchesTarget(att, effect.bearing!)
+                    );
+                    if (!hasBearing) continue;
+                }
+                if (typeof effect.skirmishingMinionsAtLeast === 'number') {
+                    const skirmish = findSkirmishForCard(G, cardId);
+                    const minionCount =
+                        skirmish?.minionIds?.length ||
+                        (skirmish?.minionId ? 1 : 0);
+                    if (minionCount < effect.skirmishingMinionsAtLeast) {
+                        continue;
+                    }
+                }
+                bonus += modifyStatMagnitude(
+                    G,
+                    currentSite as CardState,
+                    effect
+                );
+            }
+        }
+    }
+
     return bonus;
 }
 
@@ -731,6 +766,25 @@ export function getWhileTwilightCostModifier(
             }
         }
     });
+
+    // Site courant (East Road : each companion twilight cost +2).
+    const currentSite = getCurrentSite(G);
+    if (currentSite) {
+        for (const ability of currentSite.abilities || []) {
+            if (ability.trigger?.type !== 'WHILE') continue;
+            for (const effect of ability.effects || []) {
+                if (effect.type !== 'MODIFY_STAT') continue;
+                if (effect.stat !== 'TWILIGHT_COST') continue;
+                if (!Array.isArray(effect.target)) continue;
+                if (!cardMatchesTarget(card, effect.target)) continue;
+                mod += modifyStatMagnitude(
+                    G,
+                    currentSite as CardState,
+                    effect
+                );
+            }
+        }
+    }
 
     return mod;
 }

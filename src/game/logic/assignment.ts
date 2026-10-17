@@ -1,6 +1,7 @@
 import type { Ctx } from 'boardgame.io';
 import type { GameState, CardState } from '../types';
 import { getKeywordValue } from '../engine/keywords/keywordUtils';
+import { getCurrentSite } from './sites';
 
 export const isFierceMinion = (card: CardState, G?: GameState): boolean =>
     getKeywordValue(card, 'FIERCE', G) >= 0;
@@ -124,6 +125,39 @@ export const getCompanionDefenderCapacity = (
     return 1 + extraDefender;
 };
 
+/**
+ * Plafond site (Caras Galadhon…) : max séides par combat, ou null.
+ */
+export const getSiteMaxMinionsPerSkirmish = (
+    G: GameState
+): number | null => {
+    const site = getCurrentSite(G);
+    if (!site) return null;
+    for (const ability of site.abilities || []) {
+        if (ability.trigger?.type !== 'WHILE') continue;
+        for (const effect of ability.effects || []) {
+            if (effect.type !== 'LIMIT_ASSIGN_MINIONS') continue;
+            if (typeof effect.count === 'number' && effect.count >= 1) {
+                return effect.count;
+            }
+        }
+    }
+    return null;
+};
+
+/**
+ * Capacité d’affectation effective : Defender +X, plafonné par le site.
+ */
+export const getAssignableMinionCapacity = (
+    companion: CardState,
+    G: GameState
+): number => {
+    const defenderCap = getCompanionDefenderCapacity(companion, G);
+    const siteCap = getSiteMaxMinionsPerSkirmish(G);
+    if (siteCap == null) return defenderCap;
+    return Math.min(defenderCap, siteCap);
+};
+
 type AssignmentEvents = {
     endPhase?: () => void;
     endTurn?: () => void;
@@ -206,7 +240,7 @@ export const checkAssignmentProgress = (
                         s.companionId === comp.instanceId
                 );
                 const assignedCount = skirmish ? skirmish.minionIds.length : 0;
-                const maxCapacity = getCompanionDefenderCapacity(comp, G);
+                const maxCapacity = getAssignableMinionCapacity(comp, G);
                 return assignedCount >= maxCapacity;
             }
         );

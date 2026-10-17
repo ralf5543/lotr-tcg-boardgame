@@ -339,6 +339,13 @@ export type AbilityEffect =
           };
           /** « each other companion » : exclure la source des bénéficiaires. */
           excludeSource?: boolean;
+          /** Exige un attachement matchant (Helm's Gate : hand weapon). */
+          bearing?: string[][];
+          /**
+           * Uniquement si le bénéficiaire combat ≥ N séides
+           * (Flats of Rohan : more than 1 → atLeast 2).
+           */
+          skirmishingMinionsAtLeast?: number;
       }
     | {
           /** Mot-clé passif (While…) — pas d’expiration de phase. */
@@ -347,6 +354,14 @@ export type AbilityEffect =
           target: AbilityTargetRef;
           /** Exige un attachement matchant (Moria Stairway : hand weapon). */
           bearing?: string[][];
+      }
+    | {
+          /**
+           * Site : plafond de séides par combat (Caras Galadhon…).
+           * S’applique FP et Ombre (écrase Defender +X si plus bas).
+           */
+          type: 'LIMIT_ASSIGN_MINIONS';
+          count: number;
       }
     | {
           /** Passif While : ignorer une phase tant que la condition tient. */
@@ -1346,11 +1361,7 @@ export interface ArcheryState {
     shadowRemainingWounds: number;
 }
 
-export type DevPresetType =
-    | 'STAT_PULSE_TEST'
-    | 'SITES_MODERN_SMOKE'
-    | 'SITES_MOVE_WAVE'
-    | 'SITES_START_FP';
+export type DevPresetType = 'SITES_PASSIVES_WAVE';
 
 export interface TempKeywordModifier {
     keyword: CardKeyword;

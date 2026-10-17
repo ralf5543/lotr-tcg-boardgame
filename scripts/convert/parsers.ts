@@ -6154,6 +6154,32 @@ export function parseSiteAbilities(
             id: `${cardId || 'ability'}:${abilities.length}:site-start-fp`,
         });
     });
+    parseSiteEachTwilightCostAbilities(text, cardId).forEach((ability) => {
+        abilities.push({
+            ...ability,
+            id: `${cardId || 'ability'}:${abilities.length}:site-each-twilight`,
+        });
+    });
+    parseSiteGainsAmbushAbilities(text, cardId).forEach((ability) => {
+        abilities.push({
+            ...ability,
+            id: `${cardId || 'ability'}:${abilities.length}:site-gains-ambush`,
+        });
+    });
+    parseSiteAssignLimitAbilities(text, cardId).forEach((ability) => {
+        abilities.push({
+            ...ability,
+            id: `${cardId || 'ability'}:${abilities.length}:site-assign-limit`,
+        });
+    });
+    parseSiteSkirmishingMinionsStrengthAbilities(text, cardId).forEach(
+        (ability) => {
+            abilities.push({
+                ...ability,
+                id: `${cardId || 'ability'}:${abilities.length}:site-skirmish-str`,
+            });
+        }
+    );
     return abilities.length > 0 ? abilities : undefined;
 }
 
@@ -6339,14 +6365,15 @@ function parseSiteArcheryTotalAbilities(
             text: stripAbilityMarkup(match[0]),
         });
     }
-    // North Undeep : The minion archery total is –3. (tiret / minus)
+    // North Undeep / Anduin River : The minion|fellowship archery total is –3.
     // Ne pas matcher le préfixe de « +N for each companion… » (Anduin Banks).
     const flatRe =
-        /The minion archery total is\s*([+−–-])\s*(\d+)\.?(?!\s*for each companion)/gi;
+        /The (minion|fellowship) archery total is\s*([+−–-])\s*(\d+)\.?(?!\s*for each companion)/gi;
     while ((match = flatRe.exec(text)) !== null) {
         if (/for each companion/i.test(match[0])) continue;
-        const sign = match[1] === '+' ? 1 : -1;
-        const n = parseInt(match[2], 10);
+        const side = /^fellowship$/i.test(match[1]) ? 'FREE_PEOPLE' : 'SHADOW';
+        const sign = match[2] === '+' ? 1 : -1;
+        const n = parseInt(match[3], 10);
         if (!Number.isFinite(n) || n <= 0) continue;
         found.push({
             id: `${cardId || 'ability'}:${found.length}:site-archery-flat`,
@@ -6356,7 +6383,7 @@ function parseSiteArcheryTotalAbilities(
             effects: [
                 {
                     type: 'MODIFY_ARCHERY_TOTAL',
-                    side: 'SHADOW',
+                    side,
                     value: sign * n,
                 },
             ],
@@ -6368,8 +6395,8 @@ function parseSiteArcheryTotalAbilities(
 }
 
 /**
- * Each character bearing a hand weapon is Damage +N.
- * (Moria Stairway…)
+ * Each character bearing a hand weapon is Damage +N / strength +N.
+ * (Moria Stairway / Helm's Gate…)
  */
 function parseSiteBearingHandWeaponKeywordAbilities(
     text: string,
@@ -6378,12 +6405,12 @@ function parseSiteBearingHandWeaponKeywordAbilities(
     const found: Record<string, unknown>[] = [];
     const kwTail =
         '((?:<keyword>[^<]*</keyword>|\\*\\*[^*]+\\*\\*|damage\\s*\\+\\s*\\d+)\\.?)';
-    const re = new RegExp(
+    const kwRe = new RegExp(
         `Each (?:character|(?:companion and minion)) bearing (?:a )?hand weapons? is\\s+${kwTail}`,
         'gi'
     );
     let match: RegExpExecArray | null;
-    while ((match = re.exec(text)) !== null) {
+    while ((match = kwRe.exec(text)) !== null) {
         const grant = parseWhileKeywordGrant(match[1]);
         if (!grant) continue;
         found.push({
@@ -6397,6 +6424,181 @@ function parseSiteBearingHandWeaponKeywordAbilities(
                     keyword: grant.keyword,
                     target: [['CHARACTER']],
                     bearing: [['HAND-WEAPON']],
+                },
+            ],
+            source: 'SELF',
+            text: stripAbilityMarkup(match[0]),
+        });
+    }
+    const strRe =
+        /Each (?:character|(?:companion and minion)) bearing (?:a )?hand weapons? is strength ([+-]\d+)\.?/gi;
+    while ((match = strRe.exec(text)) !== null) {
+        const value = parseInt(match[1], 10);
+        if (!Number.isFinite(value) || value === 0) continue;
+        found.push({
+            id: `${cardId || 'ability'}:${found.length}:site-bearing-hw-str`,
+            phases: [],
+            trigger: { type: 'WHILE' },
+            cost: [],
+            effects: [
+                {
+                    type: 'MODIFY_STAT',
+                    stat: 'STRENGTH',
+                    value,
+                    target: [['CHARACTER']],
+                    bearing: [['HAND-WEAPON']],
+                },
+            ],
+            source: 'SELF',
+            text: stripAbilityMarkup(match[0]),
+        });
+    }
+    return found;
+}
+
+/**
+ * Each companion is twilight cost +N. (East Road…)
+ */
+function parseSiteEachTwilightCostAbilities(
+    text: string,
+    cardId?: string
+): Record<string, unknown>[] {
+    const found: Record<string, unknown>[] = [];
+    const re =
+        /Each (companion|minion) is twilight cost ([+-]\d+)\.?/gi;
+    let match: RegExpExecArray | null;
+    while ((match = re.exec(text)) !== null) {
+        const who = match[1].toUpperCase();
+        const value = parseInt(match[2], 10);
+        if (!Number.isFinite(value) || value === 0) continue;
+        found.push({
+            id: `${cardId || 'ability'}:${found.length}:site-each-twilight`,
+            phases: [],
+            trigger: { type: 'WHILE' },
+            cost: [],
+            effects: [
+                {
+                    type: 'MODIFY_STAT',
+                    stat: 'TWILIGHT_COST',
+                    value,
+                    target: [[who]],
+                },
+            ],
+            source: 'SELF',
+            text: stripAbilityMarkup(match[0]),
+        });
+    }
+    return found;
+}
+
+/**
+ * Each [classe] minion gains ambush twilightN. (Pelennor Fields…)
+ */
+function parseSiteGainsAmbushAbilities(
+    text: string,
+    cardId?: string
+): Record<string, unknown>[] {
+    const found: Record<string, unknown>[] = [];
+    const re =
+        /Each\s+([\s\S]+?)\s+gains\s+(?:<keyword>)?Ambush(?:<\/keyword>)?\s*(?:<symbol>)?twilight(\d+)(?:<\/symbol>)?\.?/gi;
+    let match: RegExpExecArray | null;
+    while ((match = re.exec(text)) !== null) {
+        const eachTarget = parseWhileEachClass(match[1]);
+        if (!eachTarget) continue;
+        const n = parseInt(match[2], 10);
+        if (!Number.isFinite(n) || n <= 0 || n > 5) continue;
+        // AMBUSH 4 n’existe pas dans le type — n’émettre que 1/2/3/5.
+        if (n !== 1 && n !== 2 && n !== 3 && n !== 5) continue;
+        found.push({
+            id: `${cardId || 'ability'}:${found.length}:site-gains-ambush`,
+            phases: [],
+            trigger: { type: 'WHILE' },
+            cost: [],
+            effects: [
+                {
+                    type: 'MODIFY_KEYWORD',
+                    keyword: `AMBUSH ${n}`,
+                    target: eachTarget,
+                },
+            ],
+            source: 'SELF',
+            text: stripAbilityMarkup(match[0]),
+        });
+    }
+    return found;
+}
+
+/**
+ * No more than N minion(s) can/may be assigned to each skirmish.
+ * (Caras Galadhon…)
+ */
+function parseSiteAssignLimitAbilities(
+    text: string,
+    cardId?: string
+): Record<string, unknown>[] {
+    const found: Record<string, unknown>[] = [];
+    const re =
+        /No more than (\d+|one) minions? (?:can|may) be assigned to each skirmish\.?/gi;
+    let match: RegExpExecArray | null;
+    while ((match = re.exec(text)) !== null) {
+        const n =
+            /^one$/i.test(match[1]) ? 1 : parseInt(match[1], 10);
+        if (!Number.isFinite(n) || n < 1) continue;
+        found.push({
+            id: `${cardId || 'ability'}:${found.length}:site-assign-limit`,
+            phases: [],
+            trigger: { type: 'WHILE' },
+            cost: [],
+            effects: [
+                {
+                    type: 'LIMIT_ASSIGN_MINIONS',
+                    count: n,
+                },
+            ],
+            source: 'SELF',
+            text: stripAbilityMarkup(match[0]),
+        });
+    }
+    return found;
+}
+
+/**
+ * Each unbound companion skirmishing more than N minion is strength +M.
+ * (Flats of Rohan…)
+ */
+function parseSiteSkirmishingMinionsStrengthAbilities(
+    text: string,
+    cardId?: string
+): Record<string, unknown>[] {
+    const found: Record<string, unknown>[] = [];
+    const re =
+        /Each (unbound companion) skirmishing more than (\d+) minions? is strength ([+-]\d+)\.?/gi;
+    let match: RegExpExecArray | null;
+    while ((match = re.exec(text)) !== null) {
+        const filters = parseClassFilters(match[1]);
+        if (filters.length === 0) continue;
+        const moreThan = parseInt(match[2], 10);
+        const value = parseInt(match[3], 10);
+        if (
+            !Number.isFinite(moreThan) ||
+            moreThan < 0 ||
+            !Number.isFinite(value) ||
+            value === 0
+        ) {
+            continue;
+        }
+        found.push({
+            id: `${cardId || 'ability'}:${found.length}:site-skirmish-str`,
+            phases: [],
+            trigger: { type: 'WHILE' },
+            cost: [],
+            effects: [
+                {
+                    type: 'MODIFY_STAT',
+                    stat: 'STRENGTH',
+                    value,
+                    target: [filters],
+                    skirmishingMinionsAtLeast: moreThan + 1,
                 },
             ],
             source: 'SELF',

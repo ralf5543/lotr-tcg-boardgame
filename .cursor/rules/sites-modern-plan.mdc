@@ -77,23 +77,33 @@ Inertes volontaires (may / choix) : Guardroom, Osgiliath Reclaimed, Valley of th
 
 Preset : `SITES_START_FP`.
 
+### Vague passifs (set 11) — While / assign / coûts / archerie
+
+| Id | Titre | Statut | Notes |
+| --- | --- | --- | --- |
+| `11S236` | East Road | OK | Companion twilight cost +2 |
+| `11S231` | Caras Galadhon | OK | ≤1 séide / combat (FP + Ombre) |
+| `11S245` | Helm's Gate | OK | Bearing HW → strength +2 |
+| `11S253` | Pelennor Fields | OK | Men minion gains Ambush 1 |
+| `11S240` | Flats of Rohan | OK | Unbound + ≥2 séides → strength +3 |
+| `15U187` | Anduin River | OK | Fellowship archery −3 |
+
+Inertes volontaires (trop durs / autre vague) : Chamber of Mazarbul (transfer free), Harrowdale (lose fierce), Rohan Uplands (cannot take archery wounds), each-time (Heights / Slag / Trollshaw).
+
+Preset : `SITES_PASSIVES_WAVE`.
+
 ### Inertes — set 11 (hors vagues livrées)
 
 | Id | Titre | Famille |
 | --- | --- | --- |
 | `11S230` | Buckland Homestead | phase-ability |
-| `11S231` | Caras Galadhon | passive-while |
 | `11S233` | Chamber of Mazarbul | passive-while |
-| `11S236` | East Road | passive-while |
 | `11S237` | Ettenmoors | phase-ability |
 | `11S238` | Expanding Marshland | phase-ability |
-| `11S240` | Flats of Rohan | passive-while |
 | `11S243` | Harrowdale | passive-while |
 | `11U244` | Heights of Isengard | each-time |
-| `11S245` | Helm's Gate | passive-while |
 | `11S247` | Moria Guardroom | moves-from |
 | `11S252` | Osgiliath Reclaimed | moves-from |
-| `11S253` | Pelennor Fields | passive-while |
 | `11S257` | Rohan Uplands | passive-while |
 | `11S258` | Slag Mounds | each-time |
 | `11S260` | Trollshaw Forest | each-time |
@@ -126,7 +136,6 @@ Preset : `SITES_START_FP`.
 | `13S192` | The Great Gates | passive-while |
 | `13U193` | Isenwash | passive-while |
 | `13U194` | Redhorn Pass | passive-while |
-| `15U187` | Anduin River | archery |
 | `15S188` | Breeding pit of Isengard | passive-while |
 | `15S189` | City Gates | moves-to |
 | `15S190` | East Wall of Rohan | start-fellowship |
@@ -155,7 +164,9 @@ Preset : `SITES_START_FP`.
 4. Vague **début de fellowship** ✅ — preset `SITES_START_FP`
    - OK : Dammed, Old Forest Road, Prancing Pony, Barazinbar, Stables
    - Inertes volontaires : Green Dragon / East Wall (exert N distincts), Pinnacle (pile de mort)
-5. Vague **passifs** While/Each/archery/coûts/assignation
+5. Vague **passifs** While/assign/coûts/archerie ✅ — preset `SITES_PASSIVES_WAVE`
+   - OK : East Road, Caras, Helm's Gate, Pelennor Fields, Flats, Anduin River (15)
+   - Inertes : Chamber transfer, Harrowdale, Rohan Uplands, each-time set 11
 6. Vague **capacités de phase** Shadow/Skirmish/Maneuver/Regroup
 7. Vague **each-time** + cas durs (Mount Doom, Steward's Tomb, Foot of Mount Doom…)
 

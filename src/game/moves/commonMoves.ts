@@ -397,7 +397,12 @@ export const playCard = (
     const hadInitiative = isFP ? freePeoplesHasInitiative(G) : false;
 
     if (isFP) {
-        const cost = Number(card.twilightCost) || 0;
+        // Passifs de site (East Road…) + coût imprimé.
+        const cost = getEffectiveTwilightCost(
+            card,
+            getCurrentSiteIndex(G),
+            getWhileTwilightCostModifier(G, card)
+        );
         const [playedCard] = player.hand.splice(cardIndex, 1);
         G.twilightPool += cost;
 
