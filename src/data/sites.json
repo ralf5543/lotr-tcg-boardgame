@@ -8012,6 +8012,30 @@
     "isUnique": false,
     "kind": "SITE",
     "type": "SITE",
+    "abilities": [
+      {
+        "id": "12U186:0:site-named-twilight",
+        "phases": [],
+        "trigger": {
+          "type": "WHILE"
+        },
+        "cost": [],
+        "effects": [
+          {
+            "type": "MODIFY_STAT",
+            "stat": "TWILIGHT_COST",
+            "value": -3,
+            "target": [
+              [
+                "The Balrog"
+              ]
+            ]
+          }
+        ],
+        "source": "SELF",
+        "text": "The Balrog is twilight cost –3."
+      }
+    ],
     "twilightCost": 0,
     "siteArrow": "Left",
     "imageUrl": "/cards_visuals/o_01_349.jpg",
@@ -8113,6 +8137,33 @@
     "type": "SITE",
     "keywords": [
       "DWELLING"
+    ],
+    "abilities": [
+      {
+        "id": "12S189:0:site-move",
+        "phases": [],
+        "trigger": {
+          "type": "MOVES_FROM"
+        },
+        "cost": [],
+        "effects": [
+          {
+            "type": "WOUND",
+            "count": 1,
+            "all": true,
+            "target": [
+              [
+                "MINION"
+              ]
+            ],
+            "excludeKeywords": [
+              "LURKER"
+            ]
+          }
+        ],
+        "source": "SELF",
+        "text": "When the fellowship moves from this site, wound each minion that is not a lurker."
+      }
     ],
     "twilightCost": 2,
     "siteArrow": "Left",

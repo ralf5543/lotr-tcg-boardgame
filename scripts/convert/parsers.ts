@@ -5924,6 +5924,31 @@ function parseSiteMoveAbilities(
         });
     }
 
+    // Hobbiton Market : moves from → wound each minion that is not a lurker.
+    const woundNonLurkerRe = new RegExp(
+        `When (?:the|your) fellowship moves from ${siteRef}, wound each minion that is not a lurker\\.`,
+        'gi'
+    );
+    while ((match = woundNonLurkerRe.exec(text)) !== null) {
+        found.push({
+            id: `${cardId || 'ability'}:${found.length}:site-move-non-lurker`,
+            phases: [],
+            trigger: { type: 'MOVES_FROM' },
+            cost: [],
+            effects: [
+                {
+                    type: 'WOUND',
+                    count: 1,
+                    all: true,
+                    target: [['MINION']],
+                    excludeKeywords: ['LURKER'],
+                },
+            ],
+            source: 'SELF',
+            text: stripAbilityMarkup(match[0]),
+        });
+    }
+
     // Crags of Emyn Muil : region N + regroup → wound each companion.
     const cragsRe =
         /If this site is in region (\d+) when the fellowship moves from (?:it|here|this site) during the regroup phase, wound each companion\./gi;
@@ -6204,6 +6229,12 @@ export function parseSiteAbilities(
             id: `${cardId || 'ability'}:${abilities.length}:site-hunter-str`,
         });
     });
+    parseSiteNamedTwilightCostAbilities(text, cardId).forEach((ability) => {
+        abilities.push({
+            ...ability,
+            id: `${cardId || 'ability'}:${abilities.length}:site-named-twilight`,
+        });
+    });
     return abilities.length > 0 ? abilities : undefined;
 }
 
@@ -6363,6 +6394,51 @@ function parseSiteEachHunterStrengthAbilities(
             ],
             source: 'SELF',
             text: stripAbilityMarkup(match[0]),
+        });
+    }
+    return found;
+}
+
+/**
+ * Bridge of Khazad-dûm : The Balrog is twilight cost –N.
+ * Nom propre uniquement (titre entier, ex. « The Balrog »).
+ */
+function parseSiteNamedTwilightCostAbilities(
+    text: string,
+    cardId?: string
+): Record<string, unknown>[] {
+    const found: Record<string, unknown>[] = [];
+    const plain = stripAbilityMarkup(text)
+        .replace(/\*\*/g, '')
+        .replace(/\s+/g, ' ')
+        .trim();
+    // Titre propre en tête de phrase (pas « Each companion… »).
+    const re =
+        /(?:^|[.]\s+)((?:The\s+)?[A-ZÀ-ŸÉ][A-Za-zÀ-ÿ'’\-]*(?:\s+[A-ZÀ-ŸÉ][A-Za-zÀ-ÿ'’\-]*)*) is twilight cost ([+–\-−]\d+)\.?/g;
+    let match: RegExpExecArray | null;
+    while ((match = re.exec(plain)) !== null) {
+        const name = match[1].trim();
+        if (/^(Each|A|An|Your)\b/.test(name)) continue;
+        if (/\b(companion|minion|character|hunter|orc)\b/i.test(name)) {
+            continue;
+        }
+        const value = parseInt(match[2].replace(/[–−]/g, '-'), 10);
+        if (!Number.isFinite(value) || value === 0) continue;
+        found.push({
+            id: `${cardId || 'ability'}:${found.length}:site-named-twilight`,
+            phases: [],
+            trigger: { type: 'WHILE' },
+            cost: [],
+            effects: [
+                {
+                    type: 'MODIFY_STAT',
+                    stat: 'TWILIGHT_COST',
+                    value,
+                    target: [[name]],
+                },
+            ],
+            source: 'SELF',
+            text: stripAbilityMarkup(match[0]).replace(/^\.\s*/, ''),
         });
     }
     return found;

@@ -5,6 +5,7 @@ import { applyExert } from '../../../utils/applyExert';
 import { applyWoundAndCheckDeath } from '../../../utils/applyWoundAndCheckDeath';
 import { getEffectiveResistance } from '../../../utils/cardStats';
 import { getSiteRegion } from '../../logic/sites';
+import { getKeywordValue } from '../keywords/keywordUtils';
 import { cardMatchesTarget } from '../validations/matchers';
 import { forEachInPlayCard } from './resolveCostTarget';
 
@@ -67,7 +68,11 @@ function fpBurdens(G: GameState): number {
 function collectMatchingCharacters(
     G: GameState,
     target: string[][],
-    opts?: { minResistance?: number; maxResistance?: number }
+    opts?: {
+        minResistance?: number;
+        maxResistance?: number;
+        excludeKeywords?: string[];
+    }
 ): CardState[] {
     const burdens = fpBurdens(G);
     const matches: CardState[] = [];
@@ -76,6 +81,15 @@ function collectMatchingCharacters(
             return;
         }
         if (!cardMatchesTarget(card, target)) return;
+        if (opts?.excludeKeywords?.length) {
+            if (
+                opts.excludeKeywords.some(
+                    (kw) => getKeywordValue(card, kw, G) >= 0
+                )
+            ) {
+                return;
+            }
+        }
         const res = getEffectiveResistance(card, burdens);
         if (
             typeof opts?.minResistance === 'number' &&
@@ -167,7 +181,10 @@ export function resolveSiteMoveAbilities(
             if (effect.type === 'WOUND' && effect.all) {
                 const targets = collectMatchingCharacters(
                     G,
-                    effect.target as string[][]
+                    effect.target as string[][],
+                    {
+                        excludeKeywords: effect.excludeKeywords?.map(String),
+                    }
                 );
                 for (const card of targets) {
                     applyWoundAndCheckDeath(G, card, effect.count || 1);

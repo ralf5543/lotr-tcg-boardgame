@@ -43,10 +43,10 @@ const clonePresetSite = (
  * Steward's Tomb / Foot volontairement absents (inertes).
  */
 const SITES_HARD_WAVE_PATH = [
-    '11S250', // 1 North Undeep
+    '12S189', // 1 Hobbiton Market (moves from → wound non-lurker)
     '12U193', // 2 Starkhorn
     '15S194', // 3 Westfold Village (sanctuaire)
-    '11S232', // 4 Cavern
+    '12U186', // 4 Bridge (Balrog –3)
     '11S265', // 5 Window
     '11S228', // 6 Anduin Confluence (sanctuaire)
     '15R193', // 7 Mount Doom
@@ -157,7 +157,7 @@ export const applyDevPreset = (
             }
 
             G.statusMessage =
-                '[DEV] Hard · 2 Starkhorn (victoire Nain → pioche) ; 3 Westfold (hunter +1) ; 7 Mount Doom (région verrouillée).';
+                '[DEV] Hard · 1 Hobbiton (quitter → blessure) ; 2 Starkhorn ; 3 Westfold ; 4 Bridge (Balrog –3) ; 7 Mount Doom.';
             break;
         }
     }

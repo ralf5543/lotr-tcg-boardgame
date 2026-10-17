@@ -130,6 +130,49 @@ describe('parseSiteAbilities — vague hard / suite', () => {
             )
         ).toBeUndefined();
     });
+
+    it('Bridge : The Balrog twilight –3', () => {
+        expect(
+            parseSiteAbilities(
+                '**Battleground. Underground.** The Balrog is twilight cost –3.',
+                '12U186'
+            )
+        ).toEqual([
+            expect.objectContaining({
+                trigger: { type: 'WHILE' },
+                effects: [
+                    {
+                        type: 'MODIFY_STAT',
+                        stat: 'TWILIGHT_COST',
+                        value: -3,
+                        target: [['The Balrog']],
+                    },
+                ],
+            }),
+        ]);
+    });
+
+    it('Hobbiton : moves from → wound non-lurker', () => {
+        expect(
+            parseSiteAbilities(
+                '**Dwelling.** When the fellowship moves from this site, wound each minion that is not a lurker.',
+                '12S189'
+            )
+        ).toEqual([
+            expect.objectContaining({
+                trigger: { type: 'MOVES_FROM' },
+                effects: [
+                    {
+                        type: 'WOUND',
+                        count: 1,
+                        all: true,
+                        target: [['MINION']],
+                        excludeKeywords: ['LURKER'],
+                    },
+                ],
+            }),
+        ]);
+    });
 });
 
 describe('runtime — Starkhorn / Westfold / Mount Doom', () => {

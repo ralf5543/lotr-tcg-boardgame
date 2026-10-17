@@ -674,6 +674,8 @@ export type AbilityEffect =
           count: number;
           target: AbilityTargetRef;
           excludeRingBearer?: boolean;
+          /** Ex. Hobbiton Market : séides non-lurker. */
+          excludeKeywords?: CardKeyword[];
           /** Tous les matchs (Crags of Emyn Muil…). */
           all?: boolean;
           /**
