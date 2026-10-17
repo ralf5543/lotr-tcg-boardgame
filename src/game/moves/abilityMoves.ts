@@ -61,11 +61,15 @@ export const activateAbility = (
         return 'INVALID_MOVE';
     }
     if (!abilityMeetsPlayRestrictions(G, source, ability)) return 'INVALID_MOVE';
-    if (!canPayAbilityCost(G, source, ability.cost)) return 'INVALID_MOVE';
+    const actorId = String(playerID);
+    if (!canPayAbilityCost(G, source, ability.cost, actorId)) {
+        return 'INVALID_MOVE';
+    }
     const needsCostDesignation = abilityNeedsCostDesignation(
         G,
         source,
-        ability
+        ability,
+        actorId
     );
     const needsEffectDesignation = abilityNeedsEffectDesignation(
         G,
@@ -136,7 +140,8 @@ export const activateAbility = (
             ability.cost,
             chosenTargetId,
             discardedHandIds,
-            needsCostDesignation ? chosenEffectTargetId : chosenTargetId
+            needsCostDesignation ? chosenEffectTargetId : chosenTargetId,
+            actorId
         )
     ) {
         return 'INVALID_MOVE';

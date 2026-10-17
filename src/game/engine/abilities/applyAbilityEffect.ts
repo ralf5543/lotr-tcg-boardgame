@@ -710,13 +710,36 @@ export function applyAbilityEffect(
         }
 
         if (effect.type === 'DISCARD_FROM_HAND') {
-            const ownerId = abilityOwnerPlayerId(G, source);
+            const fpId = G.fpPlayerId || '0';
+            const shadowId = fpId === '0' ? '1' : '0';
+            const whose = effect.whose || 'OWNER';
+            const ownerId =
+                whose === 'FREE_PEOPLES'
+                    ? fpId
+                    : whose === 'SHADOW'
+                      ? shadowId
+                      : abilityOwnerPlayerId(G, source);
             if (!ownerId) return false;
+            const need = effect.count || 0;
+            if (effect.atRandom) {
+                const hand = G.players[ownerId]?.hand || [];
+                if (hand.length < need) return false;
+                const pool = [...hand];
+                const ids: string[] = [];
+                for (let i = 0; i < need; i += 1) {
+                    const idx = Math.floor(Math.random() * pool.length);
+                    const card = pool.splice(idx, 1)[0];
+                    if (!card) return false;
+                    ids.push(card.instanceId || card.id);
+                }
+                if (!discardCardsFromHand(G, ownerId, ids)) return false;
+                continue;
+            }
             if (discardedHandIds === undefined) return false;
             const ids = discardedHandIds;
             if (effect.upTo) {
-                if (ids.length > (effect.count || 0)) return false;
-            } else if (ids.length !== (effect.count || 0)) {
+                if (ids.length > need) return false;
+            } else if (ids.length !== need) {
                 return false;
             }
             if (ids.length > 0 && !discardCardsFromHand(G, ownerId, ids)) {
@@ -1122,6 +1145,16 @@ export function applyAbilityEffect(
         }
 
         if (!('target' in effect)) continue;
+        if (effect.target === 'COST_TARGET') {
+            const costPick = costIds[0] || chosenIds[0];
+            if (!costPick) return false;
+            const costTarget = findTargetCard(G, costPick) as CardState | null;
+            if (!costTarget) return false;
+            if (!applyOneEffect(G, source, ability, effect, costTarget)) {
+                return false;
+            }
+            continue;
+        }
         const pick = chosenIds[0];
         const target = resolveAbilityTarget(
             G,

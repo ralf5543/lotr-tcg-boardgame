@@ -6180,7 +6180,95 @@ export function parseSiteAbilities(
             });
         }
     );
+    parseSitePhaseAbilities(text, cardId).forEach((ability) => {
+        abilities.push({
+            ...ability,
+            id: `${cardId || 'ability'}:${abilities.length}:site-phase`,
+        });
+    });
     return abilities.length > 0 ? abilities : undefined;
+}
+
+/**
+ * Capacités de phase actives sur sites (set 11+) :
+ * Ettenmoors (Skirmish exert → force) ; Watch-tower (Maneuver discard random).
+ * Pas encore : play Nazgûl / play minion –N (Buckland, Woody-End, Marshland…).
+ */
+function parseSitePhaseAbilities(
+    text: string,
+    cardId?: string
+): Record<string, unknown>[] {
+    const found: Record<string, unknown>[] = [];
+
+    const ettenmoorsRe =
+        /(?:\*\*|<(?:keyword)>)?Skirmish:?\s*(?:<\/(?:keyword)>)?(?:\*\*)?\s*Exert your character\s*\(except an enduring character\),?\s*to make it strength \+(\d+)\./gi;
+    let match: RegExpExecArray | null;
+    while ((match = ettenmoorsRe.exec(text)) !== null) {
+        const value = parseInt(match[1], 10);
+        if (!Number.isFinite(value) || value <= 0) continue;
+        found.push({
+            id: `${cardId || 'ability'}:${found.length}:site-phase-skirmish`,
+            phases: ['SKIRMISH'],
+            cost: [
+                {
+                    exert: [
+                        {
+                            count: 1,
+                            target: [['CHARACTER']],
+                            mode: 'DESIGNATION',
+                            excludeKeywords: ['ENDURING'],
+                        },
+                    ],
+                },
+            ],
+            effects: [
+                {
+                    type: 'ADD_TEMP_STAT',
+                    stat: 'STRENGTH',
+                    value,
+                    target: 'COST_TARGET',
+                    expiresAtPhase: 'SKIRMISH',
+                },
+            ],
+            source: 'SELF',
+            text: stripAbilityMarkup(match[0]),
+        });
+    }
+
+    const watchTowerRe =
+        /(?:\*\*|<(?:keyword)>)?Maneuver:?\s*(?:<\/(?:keyword)>)?(?:\*\*)?\s*Exert your\s+(.+?)\s+to discard a card at random from the Free Peoples player's hand\./gi;
+    while ((match = watchTowerRe.exec(text)) !== null) {
+        // parseClassFilters garde les <symbol> ; parseExertSubject les efface.
+        const filters = parseClassFilters(match[1].trim());
+        if (filters.length === 0) continue;
+        found.push({
+            id: `${cardId || 'ability'}:${found.length}:site-phase-maneuver`,
+            phases: ['MANEUVER'],
+            cost: [
+                {
+                    exert: [
+                        {
+                            count: 1,
+                            target: [filters],
+                            mode: 'DESIGNATION',
+                        },
+                    ],
+                },
+            ],
+            effects: [
+                {
+                    type: 'DISCARD_FROM_HAND',
+                    count: 1,
+                    atRandom: true,
+                    whose: 'FREE_PEOPLES',
+                },
+            ],
+            source: 'SELF',
+            text: stripAbilityMarkup(match[0]),
+        });
+    }
+
+    return found;
 }
 
 /**

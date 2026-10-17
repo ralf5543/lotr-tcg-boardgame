@@ -92,13 +92,24 @@ Inertes volontaires (trop durs / autre vague) : Chamber of Mazarbul (transfer fr
 
 Preset : `SITES_PASSIVES_WAVE`.
 
+### Vague capacités de phase (set 11)
+
+| Id | Titre | Statut | Notes |
+| --- | --- | --- | --- |
+| `11S237` | Ettenmoors | OK | Skirmish exert (sauf enduring) → force +2 |
+| `11S262` | Watch-tower of Cirith Ungol | OK | Maneuver exert orc → défausse aléatoire FP |
+| `11U246` | Mere of Dead Faces | OK | déjà smoke ; Ombre → projection Gollum |
+
+Inertes volontaires (play Nazgûl / play minion –N) : Buckland, Expanding Marshland, Woody-End.
+
+Preset : `SITES_PHASE_WAVE`.
+
 ### Inertes — set 11 (hors vagues livrées)
 
 | Id | Titre | Famille |
 | --- | --- | --- |
 | `11S230` | Buckland Homestead | phase-ability |
 | `11S233` | Chamber of Mazarbul | passive-while |
-| `11S237` | Ettenmoors | phase-ability |
 | `11S238` | Expanding Marshland | phase-ability |
 | `11S243` | Harrowdale | passive-while |
 | `11U244` | Heights of Isengard | each-time |
@@ -108,7 +119,6 @@ Preset : `SITES_PASSIVES_WAVE`.
 | `11S258` | Slag Mounds | each-time |
 | `11S260` | Trollshaw Forest | each-time |
 | `11S261` | Valley of the Silverlode | moves-to |
-| `11S262` | Watch-tower of Cirith Ungol | phase-ability |
 | `11S264` | Westemnet Village | moves-to |
 | `11S266` | Woody-End | phase-ability |
 
@@ -167,7 +177,9 @@ Preset : `SITES_PASSIVES_WAVE`.
 5. Vague **passifs** While/assign/coûts/archerie ✅ — preset `SITES_PASSIVES_WAVE`
    - OK : East Road, Caras, Helm's Gate, Pelennor Fields, Flats, Anduin River (15)
    - Inertes : Chamber transfer, Harrowdale, Rohan Uplands, each-time set 11
-6. Vague **capacités de phase** Shadow/Skirmish/Maneuver/Regroup
+6. Vague **capacités de phase** ✅ — preset `SITES_PHASE_WAVE` ; projection sur cibles (pas de bouton site)
+   - OK : Ettenmoors, Watch-tower ; Mere (Ombre → Gollum)
+   - Inertes volontaires : Buckland / Marshland / Woody-End (play Nazgûl / –N)
 7. Vague **each-time** + cas durs (Mount Doom, Steward's Tomb, Foot of Mount Doom…)
 
 ## Hors scope

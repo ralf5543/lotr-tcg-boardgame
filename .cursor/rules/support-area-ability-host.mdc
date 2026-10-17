@@ -22,6 +22,7 @@ Après clic sur la situation (classe) : désignation parmi les cibles légales (
 
 - **Attachement sur un personnage** : le bouton peut vivre sur le porteur (capacités de l’attachement listées via le host) — ce n’est pas de la projection support→compagnon. Libellé : préfixer le nom de l’attachement — [`attachment-ability-label.mdc`](attachment-ability-label.mdc).
 - Coût **SELF / BEARER** : bouton sur la source / le porteur, pas de projection « classe ».
+- **Sites** : **pas** de bouton d’action sur le site. Capacité de phase avec exert désignable → projection sur **chaque** cible éligible (classe ou nom : Watch-tower → orc, Ettenmoors → perso, Mere → Gollum/Sméagol).
 
 ## Implémentation
 

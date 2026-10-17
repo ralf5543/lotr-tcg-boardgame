@@ -34,7 +34,7 @@ import { canPayAbilityCost } from '../../../../game/engine/abilities/payAbilityC
 import { abilityMeetsPlayRestrictions } from '../../../../game/engine/abilities/abilityRestrictions';
 import {
     abilityHasLegalEffectTarget,
-    getDesignationCandidates,
+    getCostDesignationCandidates,
 } from '../../../../game/engine/abilities/designation';
 import { isCostlessPlayFromCardStack } from '../../../../game/engine/abilities/applyAbilityEffect';
 import {
@@ -305,7 +305,36 @@ export const Card: React.FC<CardProps> = ({
         G && viewerPlayerId
             ? { G, ctx: { phase }, playerID: viewerPlayerId }
             : null;
+    const hostKey = card?.instanceId || card?.id;
     const listedAbilities = visibleAbilities.filter(({ source, ability }) => {
+        const sourceKey = source.instanceId || source.id;
+        const isProjected = Boolean(
+            hostKey && sourceKey && hostKey !== sourceKey
+        );
+        // Projection (site → orc…) : l’hôte doit pouvoir payer le coût désigné,
+        // pas seulement « un autre perso éligible quelque part ».
+        const projectedHostCanPayCost = () => {
+            if (!G || !isProjected || !hostKey) return true;
+            const exert = ability.cost?.[0]?.exert?.[0];
+            if (
+                !exert ||
+                exert.target === 'SELF' ||
+                exert.target === 'BEARER' ||
+                !Array.isArray(exert.target)
+            ) {
+                return true;
+            }
+            return getCostDesignationCandidates(
+                G,
+                source,
+                ability,
+                viewerPlayerId
+            ).some(
+                (candidate) =>
+                    (candidate.instanceId || candidate.id) === hostKey
+            );
+        };
+
         if (G?.responseWindow?.isOpen) {
             if (!abilityMatchesPhase(ability, 'RESPONSE')) return false;
             if (!abilityMatchesTrigger(ability, G.pendingEvent, source, G)) {
@@ -313,8 +342,19 @@ export const Card: React.FC<CardProps> = ({
             }
             if (!responseAbilityStillAvailable(G, source, ability)) return false;
             return (
-                canPayAbilityCost(G, source, ability.cost) &&
-                abilityHasLegalEffectTarget(G, source, ability)
+                projectedHostCanPayCost() &&
+                canPayAbilityCost(
+                    G,
+                    source,
+                    ability.cost,
+                    viewerPlayerId
+                ) &&
+                abilityHasLegalEffectTarget(
+                    G,
+                    source,
+                    ability,
+                    viewerPlayerId
+                )
             );
         }
         // Hors fenêtre de réponse : jamais une Response dans la bulle
@@ -322,9 +362,20 @@ export const Card: React.FC<CardProps> = ({
         if (!phase || !abilityMatchesPhase(ability, phase)) return false;
         if (!G) return true;
         return (
+            projectedHostCanPayCost() &&
             abilityMeetsPlayRestrictions(G, source, ability) &&
-            canPayAbilityCost(G, source, ability.cost) &&
-            abilityHasLegalEffectTarget(G, source, ability)
+            canPayAbilityCost(
+                G,
+                source,
+                ability.cost,
+                viewerPlayerId
+            ) &&
+            abilityHasLegalEffectTarget(
+                G,
+                source,
+                ability,
+                viewerPlayerId
+            )
         );
     });
     // Bouton seulement s’il existe une capacité affichable (pas WHEN_PLAYED seul).
@@ -639,11 +690,16 @@ export const Card: React.FC<CardProps> = ({
         const hostId = card.instanceId || card.id;
         const sourceId = source.instanceId || source.id;
         // Ne pré-désigner le porteur que s’il est vraiment une cible de désignation
-        // (ex. exert un Hobbit). Pas pour défausser une herbe à pipe, etc.
-        const passHost = Boolean(
+        // (ex. exert un Hobbit / projection site). Pas pour défausser une herbe à pipe.
+        const hostIsCostTarget = Boolean(
             G &&
             sourceId !== hostId &&
-            getDesignationCandidates(G, source, ability).some(
+            getCostDesignationCandidates(
+                G,
+                source,
+                ability,
+                viewerPlayerId
+            ).some(
                 (candidate) =>
                     (candidate.instanceId || candidate.id) === hostId
             )
@@ -651,7 +707,7 @@ export const Card: React.FC<CardProps> = ({
         onActivateAbility?.(
             sourceId,
             ability.id,
-            passHost ? hostId : undefined
+            hostIsCostTarget ? hostId : undefined
         );
     };
 

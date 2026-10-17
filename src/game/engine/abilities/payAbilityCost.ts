@@ -95,18 +95,51 @@ export function abilityDiscardFromHandEffect(
         (item) => item.type === 'DISCARD_FROM_HAND'
     );
     if (!effect || effect.type !== 'DISCARD_FROM_HAND') return undefined;
+    // Au hasard : pas de choix joueur.
+    if (effect.atRandom) return undefined;
     return { count: effect.count, upTo: effect.upTo };
+}
+
+/**
+ * Site : « your X » = cartes du joueur qui active (pas le propriétaire du site).
+ */
+export function filterCostTargetsForActor(
+    G: GameState,
+    source: CardState,
+    cards: CardState[],
+    actingPlayerId?: string
+): CardState[] {
+    if (!(source.kind === 'SITE' || source.type === 'SITE')) return cards;
+    if (actingPlayerId == null || actingPlayerId === '') return cards;
+    const fpId = String(G.fpPlayerId || '0');
+    const wantKind =
+        String(actingPlayerId) === fpId ? 'FREE_PEOPLE' : 'SHADOW';
+    return cards.filter((c) => c.kind === wantKind);
 }
 
 function canPayOption(
     G: GameState,
     source: CardState,
-    option: AbilityCost[number]
+    option: AbilityCost[number],
+    actingPlayerId?: string
 ): boolean {
     if (option.exert && Array.isArray(option.exert)) {
         for (const req of option.exert) {
             const count = req.count || 1;
-            const cards = resolveCostTarget(G, source, req.target);
+            let cards = filterCostTargetsForActor(
+                G,
+                source,
+                resolveCostTarget(G, source, req.target),
+                actingPlayerId
+            );
+            if (req.excludeKeywords?.length) {
+                cards = cards.filter(
+                    (c) =>
+                        !req.excludeKeywords!.some(
+                            (kw) => getKeywordValue(c, kw, G) >= 0
+                        )
+                );
+            }
             if (cards.length === 0) return false;
             const payable = cards.filter(
                 (c) => getEffectiveVitality(c) > count
@@ -266,10 +299,13 @@ function canPayOption(
 export function canPayAbilityCost(
     G: GameState,
     source: CardState,
-    cost: AbilityCost
+    cost: AbilityCost,
+    actingPlayerId?: string
 ): boolean {
     if (!cost || cost.length === 0) return true;
-    return cost.some((option) => canPayOption(G, source, option));
+    return cost.some((option) =>
+        canPayOption(G, source, option, actingPlayerId)
+    );
 }
 
 function pickExertTarget(
@@ -334,12 +370,26 @@ function payOption(
     option: AbilityCost[number],
     chosenTargetId?: string,
     discardedHandIds?: string[],
-    effectTargetId?: string
+    effectTargetId?: string,
+    actingPlayerId?: string
 ): boolean {
     if (option.exert && Array.isArray(option.exert)) {
         for (const req of option.exert) {
             const count = req.count || 1;
-            const cards = resolveCostTarget(G, source, req.target);
+            let cards = filterCostTargetsForActor(
+                G,
+                source,
+                resolveCostTarget(G, source, req.target),
+                actingPlayerId
+            );
+            if (req.excludeKeywords?.length) {
+                cards = cards.filter(
+                    (c) =>
+                        !req.excludeKeywords!.some(
+                            (kw) => getKeywordValue(c, kw, G) >= 0
+                        )
+                );
+            }
             const isNamed = Array.isArray(req.target);
             const target = isNamed
                 ? pickExertTarget(
@@ -465,10 +515,13 @@ export function payAbilityCost(
     cost: AbilityCost,
     chosenTargetId?: string | string[],
     discardedHandIds?: string[],
-    effectTargetId?: string | string[]
+    effectTargetId?: string | string[],
+    actingPlayerId?: string
 ): boolean {
     if (!cost || cost.length === 0) return true;
-    const option = cost.find((opt) => canPayOption(G, source, opt));
+    const option = cost.find((opt) =>
+        canPayOption(G, source, opt, actingPlayerId)
+    );
     if (!option) return false;
     const costId = Array.isArray(chosenTargetId)
         ? chosenTargetId[0]
@@ -482,10 +535,16 @@ export function payAbilityCost(
         option,
         costId,
         discardedHandIds,
-        effectId
+        effectId,
+        actingPlayerId
     );
 }
 
-export function canPayAbility(G: GameState, source: CardState, ability: Ability): boolean {
-    return canPayAbilityCost(G, source, ability.cost);
+export function canPayAbility(
+    G: GameState,
+    source: CardState,
+    ability: Ability,
+    actingPlayerId?: string
+): boolean {
+    return canPayAbilityCost(G, source, ability.cost, actingPlayerId);
 }

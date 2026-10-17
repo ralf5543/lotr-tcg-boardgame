@@ -286,7 +286,12 @@ export const GameBoard: React.FC<GameBoardProps> = ({
         ): boolean => {
             const candidates =
                 which === 'cost'
-                    ? getCostDesignationCandidates(G, source, ability)
+                    ? getCostDesignationCandidates(
+                          G,
+                          source,
+                          ability,
+                          myId
+                      )
                     : which === 'effect'
                       ? getEffectDesignationCandidates(G, source, ability)
                       : getDesignationCandidates(G, source, ability);
@@ -299,8 +304,12 @@ export const GameBoard: React.FC<GameBoardProps> = ({
             const resolvingEffect =
                 which === 'effect' ||
                 (which === 'auto' &&
-                    getCostDesignationCandidates(G, source, ability)
-                        .length === 0);
+                    getCostDesignationCandidates(
+                        G,
+                        source,
+                        ability,
+                        myId
+                    ).length === 0);
             const resolvingCost = which === 'cost';
 
             /**
@@ -353,7 +362,7 @@ export const GameBoard: React.FC<GameBoardProps> = ({
             });
             return true;
         },
-        [G, moves, startTargeting]
+        [G, moves, myId, startTargeting]
     );
 
     const requestSiteReplace = useCallback(
@@ -689,7 +698,12 @@ export const GameBoard: React.FC<GameBoardProps> = ({
             );
             return;
         }
-        const needsCost = abilityNeedsCostDesignation(G, source, ability);
+        const needsCost = abilityNeedsCostDesignation(
+            G,
+            source,
+            ability,
+            myId
+        );
         const needsEffect = abilityNeedsEffectDesignation(G, source, ability);
         const effectNeed = getEffectDesignationCount(G, source, ability);
         const needsStackSite = abilityNeedsStackSiteChoice(G, source, ability);
@@ -1066,8 +1080,10 @@ export const GameBoard: React.FC<GameBoardProps> = ({
                 return;
             }
         }
+        // Coût déjà choisi (projection site → orc / Gimli…) : ne pas redemander.
         if (
             !needsEffect &&
+            !hasPrefillCost &&
             requestDesignation(source, ability, (cardId) => {
                 stopTargeting();
                 moves.activateAbility?.(sourceInstanceId, abilityId, cardId);

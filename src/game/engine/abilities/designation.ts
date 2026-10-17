@@ -40,6 +40,7 @@ import {
 } from '../../logic/siteReplaceRestrictions';
 import {
     abilityOwnerPlayerId,
+    filterCostTargetsForActor,
     playNextSiteDeckPlayerId,
 } from './payAbilityCost';
 import {
@@ -61,6 +62,7 @@ import {
     canAttachToCharacter,
 } from '../canPlayCard';
 import { cardMatchesTarget } from '../validations/matchers';
+import { getKeywordValue } from '../keywords/keywordUtils';
 
 export function cardTargetIds(card: CardState): string[] {
     const ids = [card.instanceId, card.id].filter(Boolean);
@@ -221,7 +223,8 @@ function candidatesForEffect(
 export function getCostDesignationCandidates(
     G: GameState,
     source: CardState,
-    ability: Ability
+    ability: Ability,
+    actingPlayerId?: string
 ): CardState[] {
     const option = (ability.cost || []).find((opt) => {
         const req = opt.exert?.[0];
@@ -229,18 +232,36 @@ export function getCostDesignationCandidates(
             return false;
         }
         const count = req.count || 1;
-        return resolveCostTarget(G, source, req.target).some(
-            (card) => getEffectiveVitality(card) > count
-        );
+        return filterCostTargetsForActor(
+            G,
+            source,
+            resolveCostTarget(G, source, req.target),
+            actingPlayerId
+        ).some((card) => getEffectiveVitality(card) > count);
     });
 
     const req = option?.exert?.[0];
     if (req && req.target !== 'SELF' && req.target !== 'BEARER') {
         const count = req.count || 1;
         return uniqueCards(
-            resolveCostTarget(G, source, req.target).filter(
-                (card) => getEffectiveVitality(card) > count
-            )
+            filterCostTargetsForActor(
+                G,
+                source,
+                resolveCostTarget(G, source, req.target),
+                actingPlayerId
+            ).filter((card) => {
+                if (getEffectiveVitality(card) <= count) return false;
+                if (req.excludeKeywords?.length) {
+                    if (
+                        req.excludeKeywords.some(
+                            (kw) => getKeywordValue(card, kw, G) >= 0
+                        )
+                    ) {
+                        return false;
+                    }
+                }
+                return true;
+            })
         );
     }
 
@@ -315,6 +336,20 @@ export function getEffectDesignationCandidates(
     source: CardState,
     ability: Ability
 ): CardState[] {
+    // Effet porté par la cible du coût : pas de 2ᵉ désignation.
+    const targeted = (ability.effects || []).filter(
+        (item) => 'target' in item && item.target != null
+    );
+    if (
+        targeted.length > 0 &&
+        targeted.every(
+            (item) =>
+                'target' in item && item.target === 'COST_TARGET'
+        )
+    ) {
+        return [];
+    }
+
     const winnerEffect = (ability.effects || []).find(
         (item) => 'target' in item && item.target === 'WINNER'
     );
@@ -489,9 +524,13 @@ export function getDesignationCandidates(
 export function abilityNeedsCostDesignation(
     G: GameState,
     source: CardState,
-    ability: Ability
+    ability: Ability,
+    actingPlayerId?: string
 ): boolean {
-    return getCostDesignationCandidates(G, source, ability).length >= 1;
+    return (
+        getCostDesignationCandidates(G, source, ability, actingPlayerId)
+            .length >= 1
+    );
 }
 
 export function abilityNeedsEffectDesignation(
@@ -589,6 +628,26 @@ export function abilityHasLegalEffectTarget(
             continue;
         }
         if (effect.type === 'DISCARD_FROM_HAND') {
+            if (effect.atRandom) {
+                const whose = effect.whose || 'OWNER';
+                const fpId = G.fpPlayerId || '0';
+                const shadowId = fpId === '0' ? '1' : '0';
+                const ownerId =
+                    whose === 'FREE_PEOPLES'
+                        ? fpId
+                        : whose === 'SHADOW'
+                          ? shadowId
+                          : abilityOwnerPlayerId(G, source);
+                if (!ownerId) return false;
+                const hand = G.players[ownerId]?.hand || [];
+                if (hand.length < (effect.count || 1)) return false;
+            }
+            continue;
+        }
+        if (
+            'target' in effect &&
+            effect.target === 'COST_TARGET'
+        ) {
             continue;
         }
         if (effect.type === 'REPLACE_SITE') {

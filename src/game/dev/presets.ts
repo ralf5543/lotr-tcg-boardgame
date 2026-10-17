@@ -37,20 +37,19 @@ const clonePresetSite = (
 };
 
 /**
- * Vague passifs set 11 (+ Anduin River 15).
- * 1 East Road (+2 crépuscule) → 2 Caras (assign ≤1) → 3 Helm's Gate (arme → +2)
- * → 4 Pelennor Fields (Men ambush) → 5 Flats (unbound ≥2 séides → +3)
- * → 6 Anduin River (archerie FP −3, sanctuaire) → 7–9 fillers.
+ * Vague capacités de phase set 11.
+ * 1 filler → 2 Watch-tower (Maneuver) → 3 Ettenmoors (Skirmish, sanctuaire)
+ * → … → 8 Mere (Regroup) → 9 filler.
  */
-const SITES_PASSIVES_WAVE_PATH = [
-    '11S236', // 1 East Road
-    '11S231', // 2 Caras Galadhon
-    '11S245', // 3 Helm's Gate
-    '11S253', // 4 Pelennor Fields
-    '11S240', // 5 Flats of Rohan
-    '15U187', // 6 Anduin River (+ sanctuaire)
-    '11S250', // 7 North Undeep
-    '11S232', // 8 Cavern
+const SITES_PHASE_WAVE_PATH = [
+    '11S250', // 1 North Undeep
+    '11S262', // 2 Watch-tower of Cirith Ungol
+    '11S237', // 3 Ettenmoors
+    '11S232', // 4 Cavern
+    '11S265', // 5 Window
+    '11S228', // 6 Anduin Confluence (sanctuaire)
+    '11S263', // 7 West Gate
+    '11U246', // 8 Mere of Dead Faces
     '11S265', // 9 Window
 ] as const;
 
@@ -116,65 +115,61 @@ export const applyDevPreset = (
     const shadowPlayer = G.players[shadowId];
 
     switch (presetType) {
-        case 'SITES_PASSIVES_WAVE': {
+        case 'SITES_PHASE_WAVE': {
             resetBoardForPreset(G);
-            // Départ site 1 (East Road) ; téléporte 2–6 pour les autres.
-            setupDevPath(G, 0, SITES_PASSIVES_WAVE_PATH);
+            // Départ site 2 (Watch-tower) ; téléporte 3 / 8 pour Ettenmoors / Mere.
+            setupDevPath(G, 1, SITES_PHASE_WAVE_PATH);
             G.twilightPool = 0;
             fpPlayer.burdens = 0;
 
             fpPlayer.fellowshipArea = [
                 {
-                    ...clonePresetCard('2C102', 'dev-pass-frodo'),
-                    attachments: [clonePresetCard('1R1', 'dev-pass-ring')],
+                    ...clonePresetCard('2C102', 'dev-phase-frodo'),
+                    attachments: [clonePresetCard('1R1', 'dev-phase-ring')],
                     wounds: 0,
                 },
                 {
-                    // Unbound + arme (Helm's Gate / Flats).
-                    ...clonePresetCard('0P14', 'dev-pass-aragorn'),
-                    attachments: [
-                        clonePresetCard('1U112', 'dev-pass-ranger-sword'),
-                    ],
+                    ...clonePresetCard('0P14', 'dev-phase-aragorn'),
                     wounds: 0,
                 },
                 {
-                    // Defender +1 pour tester le plafond Caras (reste 1).
-                    ...clonePresetCard('1R96', 'dev-pass-boromir'),
-                    keywords: [
-                        ...(clonePresetCard('1R96').keywords || []),
-                        'DEFENDER +1',
-                    ],
+                    // Gimli : sa capacité + Ettenmoors (2 actions).
+                    ...clonePresetCard('1R13', 'dev-phase-gimli'),
                     wounds: 0,
                 },
                 {
-                    ...clonePresetCard('0P13', 'dev-pass-legolas'),
+                    // Enduring : exclu Ettenmoors (témoin du filtre).
+                    ...clonePresetCard('8R38', 'dev-phase-enduring'),
                     wounds: 0,
                 },
             ];
-            // Compagnons en main : East Road (crépuscule imprimé +2).
+            // Main FP : défausse au hasard (Watch-tower).
             fpPlayer.hand = [
-                clonePresetCard('1R13', 'dev-pass-hand-gimli'),
-                clonePresetCard('0P17', 'dev-pass-hand-eowyn'),
-                clonePresetCard('1C11', 'dev-pass-hand-farin'),
-                clonePresetCard('1R30', 'dev-pass-hand-arwen'),
+                clonePresetCard('1C11', 'dev-phase-hand-a'),
+                clonePresetCard('1R30', 'dev-phase-hand-b'),
+                clonePresetCard('0P17', 'dev-phase-hand-c'),
             ];
 
             if (shadowPlayer) {
+                shadowPlayer.sitesDeck = [
+                    clonePresetSite('11S241', shadowId),
+                    clonePresetSite('11S239', shadowId),
+                ];
                 G.battlefield = [
-                    // Men → Ambush 1 (Pelennor) ; arme pour Helm's Gate.
+                    // Orc culture pour Watch-tower.
+                    clonePresetCard('11C107', 'dev-phase-orc'),
+                    // Gollum pour Mere.
                     {
-                        ...clonePresetCard('11C72', 'dev-pass-easterling'),
-                        attachments: [
-                            clonePresetCard('11S95', 'dev-pass-poleaxe'),
-                        ],
+                        ...clonePresetCard('7C59', 'dev-phase-gollum'),
+                        title: 'Gollum',
                     },
-                    clonePresetCard('11C73', 'dev-pass-harad'),
-                    clonePresetCard('1C266', 'dev-pass-orc'),
+                    // Séide non-orc pour Ettenmoors (Ombre).
+                    clonePresetCard('11C72', 'dev-phase-easterling'),
                 ];
             }
 
             G.statusMessage =
-                '[DEV] Passifs · 1 East Road (+2 crép. : 4 compagnons en main) ; 2 Caras ; 3 Helm ; 4 Pelennor ; 5 Flats ; 6 Anduin River.';
+                '[DEV] Phase · 2 Watch-tower (Manœuvre) ; 3 Ettenmoors (Combat) ; 8 Mere (Regroup).';
             break;
         }
     }

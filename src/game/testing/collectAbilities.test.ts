@@ -865,4 +865,121 @@ describe('collectVisibleAbilities — support area vs projection', () => {
             true
         );
     });
+
+    it('Ettenmoors projeté : libellé « ce personnage », pas « un character »', () => {
+        const etten: Ability = {
+            id: '11S237:0:site-phase',
+            phases: ['SKIRMISH'],
+            cost: [
+                {
+                    exert: [
+                        {
+                            count: 1,
+                            target: [['CHARACTER']],
+                            mode: 'DESIGNATION',
+                            excludeKeywords: ['ENDURING'],
+                        },
+                    ],
+                },
+            ],
+            effects: [
+                {
+                    type: 'ADD_TEMP_STAT',
+                    stat: 'STRENGTH',
+                    value: 2,
+                    target: 'COST_TARGET',
+                    expiresAtPhase: 'SKIRMISH',
+                },
+            ],
+            source: 'SELF',
+            text: 'Skirmish: Exert your character (except an enduring character), to make it strength +2.',
+        };
+        const site = {
+            ...createSite({ id: '11S237', kind: 'SITE', type: 'SITE' }),
+            kind: 'SITE' as const,
+            type: 'SITE' as const,
+        } as unknown as CardState;
+        const orc = createMinion({
+            id: 'orc-1',
+            title: 'Barbarous Orc',
+            culture: 'ORC',
+        });
+        expect(formatAbilityLabelParts(etten, site, orc)).toEqual({
+            cost: 'Affaiblir ce personnage',
+            effect: 'force +2',
+        });
+    });
+
+    it('Watch-tower (site, classe) : projection sur l’orc, pas de bouton site', () => {
+        const watchAbility: Ability = {
+            id: '11S262:0:site-phase',
+            phases: ['MANEUVER'],
+            cost: [
+                {
+                    exert: [
+                        {
+                            count: 1,
+                            target: [['ORC', 'MINION']],
+                            mode: 'DESIGNATION',
+                        },
+                    ],
+                },
+            ],
+            effects: [
+                {
+                    type: 'DISCARD_FROM_HAND',
+                    count: 1,
+                    atRandom: true,
+                    whose: 'FREE_PEOPLES',
+                },
+            ],
+            source: 'SELF',
+        };
+        const orc = createMinion({
+            id: 'orc-1',
+            instanceId: 'orc-1',
+            culture: 'ORC',
+            vitality: 2,
+        });
+        const easterling = createMinion({
+            id: 'east-1',
+            instanceId: 'east-1',
+            culture: 'MEN',
+            vitality: 2,
+        });
+        const site = {
+            ...createSite({
+                id: '11S262',
+                instanceId: 'watch-1',
+                abilities: [watchAbility],
+                actionPhases: ['MANEUVER'],
+            }),
+            kind: 'SITE' as const,
+            type: 'SITE' as const,
+        } as unknown as CardState;
+        const path = Array.from({ length: 9 }, (_, i) =>
+            createSite({ id: `p-${i}`, siteNumber: i + 1 })
+        );
+        path[1] = site as unknown as ReturnType<typeof createSite>;
+        const G = createGameState({
+            fpPlayerId: '0',
+            currentSiteIndex: 1,
+            path,
+            battlefield: [orc, easterling],
+            players: {
+                '0': createPlayerState('0', { currentSiteIndex: 1 }),
+                '1': createPlayerState('1', { currentSiteIndex: 1 }),
+            },
+        });
+
+        expect(collectVisibleAbilities(G, site)).toEqual([]);
+        expect(
+            collectVisibleAbilities(G, orc).map((r) => r.ability.id)
+        ).toEqual(['11S262:0:site-phase']);
+        expect(collectVisibleAbilities(G, easterling)).toEqual([]);
+        expect(abilityProjectsOnto(G, site, watchAbility, orc)).toBe(true);
+        expect(abilityProjectsOnto(G, site, watchAbility, easterling)).toBe(
+            false
+        );
+    });
 });

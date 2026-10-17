@@ -56,16 +56,34 @@ export function canUseAbility(
             reason: "Seul le joueur de l'Ombre peut utiliser cette capacité.",
         };
     }
-    // Site : activation directe = Peuples Libres (début de fellowship…).
-    // Ombre : capacités projetées (Mere → Gollum), pas le sceau du site.
-    if (
-        (card.kind === 'SITE' || card.type === 'SITE') &&
-        pid !== fpId
-    ) {
-        return {
-            valid: false,
-            reason: 'Seul le joueur des Peuples Libres active ce site ici.',
-        };
+    // Site : FP par défaut ; Ombre si capacité de phase jouable (Shadow /
+    // Skirmish / Maneuver / Regroup…) — pas le début de fellowship.
+    if (card.kind === 'SITE' || card.type === 'SITE') {
+        if (pid !== fpId) {
+            const shadowUsable = (card.abilities || []).some((ability) => {
+                if (!abilityMatchesPhase(ability, rawPhase)) return false;
+                const phases = (ability.phases || []).map((p) =>
+                    p.toUpperCase()
+                );
+                if (
+                    phases.some(
+                        (p) =>
+                            p === 'START_OF_FELLOWSHIP' ||
+                            p === 'FELLOWSHIP' ||
+                            p === 'START_OF_MANEUVER'
+                    )
+                ) {
+                    return false;
+                }
+                return true;
+            });
+            if (!shadowUsable) {
+                return {
+                    valid: false,
+                    reason: 'Aucune capacité de site utilisable par l’Ombre ici.',
+                };
+            }
+        }
     }
 
     // Blessures de menaces : rien d’autre tant que le FP n’a pas fini d’assigner.
@@ -208,7 +226,7 @@ export function canUseAbility(
                 (ability) =>
                     abilityMatchesPhase(ability, rawPhase) &&
                     abilityMeetsPlayRestrictions(G, card, ability) &&
-                    canPayAbilityCost(G, card, ability.cost) &&
+                    canPayAbilityCost(G, card, ability.cost, pid) &&
                     abilityHasLegalEffectTarget(G, card, ability, pid)
             );
             const attachmentPhaseAbilities = (card.attachments || []).flatMap(
@@ -218,7 +236,7 @@ export function canUseAbility(
                             (ability) =>
                                 abilityMatchesPhase(ability, rawPhase) &&
                                 abilityMeetsPlayRestrictions(G, att, ability) &&
-                                canPayAbilityCost(G, att, ability.cost) &&
+                                canPayAbilityCost(G, att, ability.cost, pid) &&
                                 abilityHasLegalEffectTarget(G, att, ability, pid)
                         )
                         .map((ability) => ({ att, ability }))

@@ -6317,6 +6317,46 @@
     "keywords": [
       "PLAINS"
     ],
+    "abilities": [
+      {
+        "id": "11S237:0:site-phase",
+        "phases": [
+          "SKIRMISH"
+        ],
+        "cost": [
+          {
+            "exert": [
+              {
+                "count": 1,
+                "target": [
+                  [
+                    "CHARACTER"
+                  ]
+                ],
+                "mode": "DESIGNATION",
+                "excludeKeywords": [
+                  "ENDURING"
+                ]
+              }
+            ]
+          }
+        ],
+        "effects": [
+          {
+            "type": "ADD_TEMP_STAT",
+            "stat": "STRENGTH",
+            "value": 2,
+            "target": "COST_TARGET",
+            "expiresAtPhase": "SKIRMISH"
+          }
+        ],
+        "source": "SELF",
+        "text": "Skirmish: Exert your character (except an enduring character), to make it strength +2."
+      }
+    ],
+    "actionPhases": [
+      "SKIRMISH"
+    ],
     "twilightCost": 1,
     "siteArrow": "Left",
     "imageUrl": "/cards_visuals/o_01_331.jpg",
@@ -7596,6 +7636,43 @@
     "type": "SITE",
     "keywords": [
       "MOUNTAIN"
+    ],
+    "abilities": [
+      {
+        "id": "11S262:0:site-phase",
+        "phases": [
+          "MANEUVER"
+        ],
+        "cost": [
+          {
+            "exert": [
+              {
+                "count": 1,
+                "target": [
+                  [
+                    "ORC",
+                    "MINION"
+                  ]
+                ],
+                "mode": "DESIGNATION"
+              }
+            ]
+          }
+        ],
+        "effects": [
+          {
+            "type": "DISCARD_FROM_HAND",
+            "count": 1,
+            "atRandom": true,
+            "whose": "FREE_PEOPLES"
+          }
+        ],
+        "source": "SELF",
+        "text": "Maneuver: Exert your orc minion to discard a card at random from the Free Peoples player's hand."
+      }
+    ],
+    "actionPhases": [
+      "MANEUVER"
     ],
     "twilightCost": 1,
     "siteArrow": "Right",

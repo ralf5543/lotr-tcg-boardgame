@@ -152,7 +152,13 @@ export type CardI18nMap = Partial<
     Record<'fr' | 'en' | 'de' | 'it' | 'es', CardI18nContent>
 >;
 
-export type AbilityTargetToken = 'SELF' | 'BEARER' | 'SKIRMISHING' | 'WINNER';
+export type AbilityTargetToken =
+    | 'SELF'
+    | 'BEARER'
+    | 'SKIRMISHING'
+    | 'WINNER'
+    /** Cible déjà désignée au coût (Ettenmoors : exert → force +2). */
+    | 'COST_TARGET';
 
 /** SELF / BEARER, ou DNF de titres / filtres (ex. `[['Sam']]`). */
 export type AbilityTargetRef = AbilityTargetToken | string[][];
@@ -167,6 +173,8 @@ export interface CostSelector {
     excludeSource?: boolean;
     /** Spot avec vitalité minimale (Seeing Stone…). */
     minVitality?: number;
+    /** « except an enduring character » (Ettenmoors…). */
+    excludeKeywords?: CardKeyword[];
 }
 
 export interface CostOption {
@@ -595,6 +603,10 @@ export type AbilityEffect =
           count: number;
           /** « up to N » : 0 à count, le joueur choisit. */
           upTo?: boolean;
+          /** Défausse au hasard (Watch-tower…). */
+          atRandom?: boolean;
+          /** Main ciblée (défaut = propriétaire de la source). */
+          whose?: 'OWNER' | 'FREE_PEOPLES' | 'SHADOW';
       }
     | {
           type: 'REMOVE_TWILIGHT';
@@ -1361,7 +1373,7 @@ export interface ArcheryState {
     shadowRemainingWounds: number;
 }
 
-export type DevPresetType = 'SITES_PASSIVES_WAVE';
+export type DevPresetType = 'SITES_PHASE_WAVE';
 
 export interface TempKeywordModifier {
     keyword: CardKeyword;

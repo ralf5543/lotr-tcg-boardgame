@@ -1,5 +1,6 @@
 import type { Ability, AbilityTargetRef, CardKeyword, CardState, CostSelector, GameState } from '../../types';
 import { TRANSLATIONS } from '../../translations';
+import { getKeywordValue } from '../keywords/keywordUtils';
 import { forEachInPlayCard, resolveCostTarget } from './resolveCostTarget';
 
 export function abilityMatchesPhase(ability: Ability, rawPhase: string): boolean {
@@ -83,13 +84,37 @@ function abilityMayProjectFromSupport(ability: Ability): boolean {
     return exertTargetIsProperName(ability);
 }
 
+/**
+ * Site : pas de bouton sur le site — projection sur toute cible d’exert
+ * désignable (classe ou nom). Hors START_OF_* (toaster).
+ */
+function abilityMayProjectFromSite(ability: Ability): boolean {
+    if (!exertTargetIsOtherCharacter(ability)) return false;
+    if (abilityDiscardsSelf(ability)) return false;
+    if (ability.trigger) return false;
+    const phases = (ability.phases || []).map((p) => p.toUpperCase());
+    if (phases.length === 0) return false;
+    if (phases.some((p) => p.startsWith('START_OF'))) return false;
+    const exert = ability.cost?.[0]?.exert?.[0];
+    return Boolean(exert && Array.isArray(exert.target));
+}
+
+function isSiteCard(card: CardState): boolean {
+    return card.kind === 'SITE' || card.type === 'SITE';
+}
+
 export function abilityProjectsOnto(
     G: GameState,
     source: CardState,
     ability: Ability,
     host: CardState
 ): boolean {
-    if (!abilityMayProjectFromSupport(ability)) return false;
+    const fromSite = isSiteCard(source);
+    if (fromSite) {
+        if (!abilityMayProjectFromSite(ability)) return false;
+    } else if (!abilityMayProjectFromSupport(ability)) {
+        return false;
+    }
     if (
         source.type === 'COMPANION' ||
         source.type === 'ALLY' ||
@@ -102,9 +127,19 @@ export function abilityProjectsOnto(
     if (sourceId === hostId) return false;
     const exert = ability.cost[0]?.exert?.[0];
     if (!exert) return false;
-    return resolveCostTarget(G, source, exert.target).some(
-        (card) => (card.instanceId || card.id) === hostId
-    );
+    return resolveCostTarget(G, source, exert.target).some((card) => {
+        if ((card.instanceId || card.id) !== hostId) return false;
+        if (exert.excludeKeywords?.length) {
+            if (
+                exert.excludeKeywords.some(
+                    (kw) => getKeywordValue(card, kw, G) >= 0
+                )
+            ) {
+                return false;
+            }
+        }
+        return true;
+    });
 }
 
 export function collectProjectedAbilities(
@@ -133,15 +168,15 @@ export function collectProjectedAbilities(
 /**
  * Capacités affichées sur cette carte :
  * - les siennes (sauf WHEN_PLAYED / YOU_PLAY / WHILE, et sauf celles qui se
- *   projettent sur un nom propre — bouton alors sur le personnage) ;
+ *   projettent — bouton alors sur le personnage) ;
  * - attachements ;
- * - projections (support → nom propre uniquement).
+ * - projections (support → nom propre ; site → cible d’exert désignable).
  */
 export function collectVisibleAbilities(
     G: GameState | undefined,
     card: CardState
 ): { source: CardState; ability: Ability }[] {
-    const own = collectCardAbilities(card).filter(({ ability }) => {
+    const own = collectCardAbilities(card).filter(({ ability, source }) => {
         if (
             ability.trigger?.type === 'WHEN_PLAYED' ||
             ability.trigger?.type === 'YOU_PLAY' ||
@@ -150,7 +185,11 @@ export function collectVisibleAbilities(
         ) {
             return false;
         }
-        // Nom propre : le bouton vit sur le personnage projeté, pas aussi ici.
+        // Site : jamais de bouton d’action sur le site lui-même.
+        if (isSiteCard(source) && abilityMayProjectFromSite(ability)) {
+            return false;
+        }
+        // Nom propre (support) : le bouton vit sur le personnage projeté.
         if (abilityMayProjectFromSupport(ability)) return false;
         return true;
     });
@@ -225,6 +264,8 @@ function translateCriterionToken(token: string): string {
     if (isProperNameFilterToken(token)) return token;
 
     const upper = token.toUpperCase();
+    // Pas de franglais : CHARACTER n’est pas dans TRANSLATIONS.type.
+    if (upper === 'CHARACTER') return 'personnage';
     if (upper.startsWith('SIGNET_')) {
         const name = upper.slice('SIGNET_'.length);
         const pretty = name.charAt(0) + name.slice(1).toLowerCase();
@@ -361,7 +402,15 @@ function formatTargetPhrase(
     target: AbilityTargetRef | undefined,
     opts?: { stackFromHand?: boolean }
 ): string | null {
-    if (!target || target === 'SELF' || target === 'BEARER' || target === 'WINNER') return null;
+    if (
+        !target ||
+        target === 'SELF' ||
+        target === 'BEARER' ||
+        target === 'WINNER' ||
+        target === 'COST_TARGET'
+    ) {
+        return null;
+    }
     if (target === 'SKIRMISHING') return 'un personnage au combat';
     if (Array.isArray(target)) {
         if (
@@ -439,9 +488,18 @@ function formatEffectBit(
     if (effect.type === 'DISCARD_FROM_HAND') {
         const n = effect.count;
         const cards = `${n} carte${n > 1 ? 's' : ''}`;
+        const whose =
+            effect.whose === 'FREE_PEOPLES'
+                ? ' des Peuples Libres'
+                : effect.whose === 'SHADOW'
+                  ? ' de l’Ombre'
+                  : '';
+        if (effect.atRandom) {
+            return `défausser ${cards} au hasard de la main${whose}`;
+        }
         return effect.upTo
-            ? `défausser jusqu’à ${cards} de la main`
-            : `défausser ${cards} de la main`;
+            ? `défausser jusqu’à ${cards} de la main${whose}`
+            : `défausser ${cards} de la main${whose}`;
     }
     if (effect.type === 'REMOVE_TWILIGHT') {
         return effect.countFromSpot
@@ -933,6 +991,20 @@ export function formatAbilityLabelParts(
                 cost: cost ? `${name} — ${cost}` : name,
                 effect,
             };
+        }
+    }
+
+    // Projection site → hôte : coût = cette carte (pas « un personnage » à choisir).
+    if (
+        host &&
+        isSiteCard(source) &&
+        abilityMayProjectFromSite(ability) &&
+        (host.instanceId || host.id) !== (source.instanceId || source.id)
+    ) {
+        const exert = ability.cost?.[0]?.exert?.[0];
+        if (exert && Array.isArray(exert.target)) {
+            cost = 'Affaiblir ce personnage';
+            if (!effect) effect = fromAst.effect;
         }
     }
 
