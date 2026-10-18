@@ -581,7 +581,8 @@ export const resolveSiteStartAbilityChoice = (
 /** Toaster « moves to » en regroupement : Activer applique l’effet, Passer ne fait rien. */
 export const resolveSiteMoveAbilityChoice = (
     { G, events, playerID }: LotrMoveContext,
-    accept: boolean
+    accept: boolean,
+    discardedHandIds?: string[]
 ) => {
     if (
         !G.pendingSiteMoveAbility ||
@@ -590,7 +591,13 @@ export const resolveSiteMoveAbilityChoice = (
         return 'INVALID_MOVE';
     }
     if (
-        !resolvePendingSiteMoveAbility(G, String(playerID), accept, events)
+        !resolvePendingSiteMoveAbility(
+            G,
+            String(playerID),
+            accept,
+            events,
+            discardedHandIds
+        )
     ) {
         return 'INVALID_MOVE';
     }

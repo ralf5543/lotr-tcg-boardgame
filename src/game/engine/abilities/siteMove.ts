@@ -4,7 +4,12 @@ import { applyHeal } from '../../../utils/applyHeal';
 import { applyExert } from '../../../utils/applyExert';
 import { applyWoundAndCheckDeath } from '../../../utils/applyWoundAndCheckDeath';
 import { getEffectiveResistance } from '../../../utils/cardStats';
-import { getSiteRegion, isCurrentSiteSanctuary } from '../../logic/sites';
+import {
+    areBurdenRemovalsForbidden,
+    areHealsForbidden,
+    getSiteRegion,
+    isCurrentSiteSanctuary,
+} from '../../logic/sites';
 import { addThreats } from '../../logic/threats';
 import { getKeywordValue } from '../keywords/keywordUtils';
 import { cardMatchesTarget } from '../validations/matchers';
@@ -196,6 +201,7 @@ export function resolveSiteMoveAbilities(
                 continue;
             }
             if (effect.type === 'REMOVE_BURDENS') {
+                if (areBurdenRemovalsForbidden(G)) continue;
                 const fpId = G.fpPlayerId || '0';
                 const fp = G.players[fpId];
                 const n = effect.count || 0;
@@ -229,6 +235,7 @@ export function resolveSiteMoveAbilities(
                 continue;
             }
             if (effect.type === 'HEAL' && effect.all) {
+                if (areHealsForbidden(G)) continue;
                 const targets = collectMatchingCharacters(
                     G,
                     effect.target as string[][],

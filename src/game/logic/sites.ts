@@ -85,7 +85,12 @@ export function isCurrentSiteSanctuary(G: GameState): boolean {
 
 function currentSiteHasPassiveEffect(
     G: GameState,
-    effectType: 'FORBID_FOLLOWER_TRANSFER' | 'FORBID_CULTURE_TOKEN_CHANGES'
+    effectType:
+        | 'FORBID_FOLLOWER_TRANSFER'
+        | 'FORBID_CULTURE_TOKEN_CHANGES'
+        | 'FORBID_HEAL'
+        | 'FORBID_WOUND_PREVENTION'
+        | 'FORBID_REMOVE_BURDENS'
 ): boolean {
     const site = getCurrentSite(G);
     if (!site?.abilities?.length) return false;
@@ -104,6 +109,21 @@ export function isFollowerTransferForbidden(G: GameState): boolean {
 /** Redhorn Pass : jetons de culture intouchables. */
 export function areCultureTokenChangesForbidden(G: GameState): boolean {
     return currentSiteHasPassiveEffect(G, 'FORBID_CULTURE_TOKEN_CHANGES');
+}
+
+/** Steward's Tomb : blessures non soignables. */
+export function areHealsForbidden(G: GameState): boolean {
+    return currentSiteHasPassiveEffect(G, 'FORBID_HEAL');
+}
+
+/** Steward's Tomb : blessures non prévenables. */
+export function isWoundPreventionForbidden(G: GameState): boolean {
+    return currentSiteHasPassiveEffect(G, 'FORBID_WOUND_PREVENTION');
+}
+
+/** Steward's Tomb : fardeaux non retirables. */
+export function areBurdenRemovalsForbidden(G: GameState): boolean {
+    return currentSiteHasPassiveEffect(G, 'FORBID_REMOVE_BURDENS');
 }
 
 /** Région 1 (sites 1–3), 2 (4–6) ou 3 (7–9). */

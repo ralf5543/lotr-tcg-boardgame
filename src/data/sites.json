@@ -5714,6 +5714,29 @@
     "isUnique": false,
     "kind": "SITE",
     "type": "SITE",
+    "abilities": [
+      {
+        "id": "10U119:0:site-passive-rest",
+        "phases": [],
+        "trigger": {
+          "type": "WHILE"
+        },
+        "cost": [],
+        "effects": [
+          {
+            "type": "FORBID_HEAL"
+          },
+          {
+            "type": "FORBID_WOUND_PREVENTION"
+          },
+          {
+            "type": "FORBID_REMOVE_BURDENS"
+          }
+        ],
+        "source": "SELF",
+        "text": "Wounds cannot be prevented or healed. Burdens cannot be removed."
+      }
+    ],
     "twilightCost": 8,
     "siteNumber": 5,
     "siteArrow": "Left",
@@ -8694,6 +8717,30 @@
     "keywords": [
       "DWELLING"
     ],
+    "abilities": [
+      {
+        "id": "13U188:0:site-move",
+        "phases": [],
+        "optional": true,
+        "responsePlayer": "SHADOW",
+        "trigger": {
+          "type": "MOVES_TO"
+        },
+        "cost": [
+          {
+            "discardFromHand": 2
+          }
+        ],
+        "effects": [
+          {
+            "type": "ADD_BURDENS",
+            "count": 1
+          }
+        ],
+        "source": "SELF",
+        "text": "When the fellowship moves to this site, the first Shadow player may discard 2 cards from hand to add a burden."
+      }
+    ],
     "twilightCost": 0,
     "siteArrow": "Left",
     "imageUrl": "/cards_visuals/o_13_188.jpg",
@@ -9828,6 +9875,29 @@
     "isUnique": false,
     "kind": "SITE",
     "type": "SITE",
+    "abilities": [
+      {
+        "id": "18U139:0:site-passive-rest",
+        "phases": [],
+        "trigger": {
+          "type": "WHILE"
+        },
+        "cost": [],
+        "effects": [
+          {
+            "type": "FORBID_HEAL"
+          },
+          {
+            "type": "FORBID_WOUND_PREVENTION"
+          },
+          {
+            "type": "FORBID_REMOVE_BURDENS"
+          }
+        ],
+        "source": "SELF",
+        "text": "Wounds cannot be prevented or healed. Burdens cannot be removed."
+      }
+    ],
     "twilightCost": 1,
     "imageUrl": "/cards_visuals/o_18_139.jpg",
     "i18n": {

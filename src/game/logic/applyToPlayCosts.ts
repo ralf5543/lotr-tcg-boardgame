@@ -1,6 +1,7 @@
 import type { CardState, CostOption, GameState } from '../types';
 import { validateToPlayOption } from '../engine/validations/checkToPlayConditions';
 import { addThreats } from './threats';
+import { areBurdenRemovalsForbidden } from './sites';
 
 /**
  * Applique les coûts « To play » automatiques de la première option valide
@@ -24,7 +25,12 @@ export function applyAutomaticToPlayCosts(
     if (chosen.addBurdens && chosen.addBurdens > 0 && fpPlayer) {
         fpPlayer.burdens = (fpPlayer.burdens || 0) + chosen.addBurdens;
     }
-    if (chosen.removeBurdens && chosen.removeBurdens > 0 && fpPlayer) {
+    if (
+        chosen.removeBurdens &&
+        chosen.removeBurdens > 0 &&
+        fpPlayer &&
+        !areBurdenRemovalsForbidden(G)
+    ) {
         fpPlayer.burdens = Math.max(
             0,
             (fpPlayer.burdens || 0) - chosen.removeBurdens

@@ -50,7 +50,11 @@ import {
     getReinforceCandidates,
     tokenCountOnCard,
 } from '../../logic/cultureTokens';
-import { areCultureTokenChangesForbidden } from '../../logic/sites';
+import {
+    areBurdenRemovalsForbidden,
+    areCultureTokenChangesForbidden,
+    areHealsForbidden,
+} from '../../logic/sites';
 import { formatAbilityWhoLabel } from './collectAbilities';
 import {
     getCardsStackedOnHost,
@@ -825,6 +829,12 @@ export function abilityHasLegalEffectTarget(
             );
             if ((G.twilightPool || 0) < cost) return false;
             continue;
+        }
+        if (effect.type === 'REMOVE_BURDENS' && areBurdenRemovalsForbidden(G)) {
+            return false;
+        }
+        if (effect.type === 'HEAL' && areHealsForbidden(G)) {
+            return false;
         }
         if (
             effect.type === 'REMOVE_TWILIGHT' ||

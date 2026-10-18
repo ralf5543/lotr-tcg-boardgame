@@ -215,6 +215,10 @@ export const playSite = (
     G.statusMessage = `Nouveau site révélé ! La compagnie avance en ${playedSite.name} (+${addedTwilight} Crépuscule → ${G.twilightPool}). Révélation des compagnons.`;
 
     if (ctx.phase === 'fellowship') {
+        // Site « may » hors regroupement (Courtyard Parapet…) : toaster d’abord.
+        if (beginOptionalSiteMoveAbility(G, enterPhase('shadow'))) {
+            return;
+        }
         afterFellowshipArrived(G, events, enterPhase('shadow'));
     } else if (ctx.phase === 'regroup') {
         G.skirmishes = [];
@@ -235,7 +239,7 @@ export const endFellowshipPhase = ({
     if ((G.threatWoundsToAssign ?? 0) > 0) {
         return 'INVALID_MOVE';
     }
-    if (G.responseWindow?.isOpen || G.pendingEvent) {
+    if (G.responseWindow?.isOpen || G.pendingEvent || G.pendingSiteMoveAbility) {
         return 'INVALID_MOVE';
     }
     const fpId = G.fpPlayerId || '0';
@@ -250,6 +254,9 @@ export const endFellowshipPhase = ({
     advanceCompany(G);
 
     if (!G.awaitingSiteSelection) {
+        if (beginOptionalSiteMoveAbility(G, enterPhase('shadow'))) {
+            return;
+        }
         afterFellowshipArrived(G, events, enterPhase('shadow'));
     }
 };

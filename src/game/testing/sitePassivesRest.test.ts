@@ -7,11 +7,19 @@ import {
 } from '../engine/abilities/designation';
 import { canPayAbilityCost } from '../engine/abilities/payAbilityCost';
 import { canUseAbility } from '../engine/canUseAbility';
+import { applyAbilityEffect } from '../engine/abilities/applyAbilityEffect';
+import { resolveSiteMoveAbilities } from '../engine/abilities/siteMove';
+import { abilityMatchesTrigger, requestWounds } from '../engine/responseWindow';
+import { applyAutomaticToPlayCosts } from '../logic/applyToPlayCosts';
+import { applyHeal } from '../../utils/applyHeal';
 import { canTransferAid } from '../engine/validations/canTransferAid';
 import { applyReinforce } from '../logic/cultureTokens';
 import {
+    areBurdenRemovalsForbidden,
     areCultureTokenChangesForbidden,
+    areHealsForbidden,
     isFollowerTransferForbidden,
+    isWoundPreventionForbidden,
 } from '../logic/sites';
 import type { Ability } from '../types';
 import {
@@ -407,6 +415,205 @@ describe('runtime — passives rest', () => {
         });
         expect(areCultureTokenChangesForbidden(G)).toBe(true);
         expect(applyReinforce(G, '0', 'GONDOR', 1, ['cond'])).toBe(0);
+    });
+
+    describe('Steward’s Tomb', () => {
+        const TOMB_ABILITY: Ability = {
+            id: 'tomb',
+            phases: [],
+            trigger: { type: 'WHILE' },
+            cost: [],
+            effects: [
+                { type: 'FORBID_HEAL' },
+                { type: 'FORBID_WOUND_PREVENTION' },
+                { type: 'FORBID_REMOVE_BURDENS' },
+            ],
+            source: 'SELF',
+        };
+        const PREVENT_ABILITY: Ability = {
+            id: 'prevent',
+            phases: ['RESPONSE'],
+            trigger: {
+                type: 'ABOUT_TO_WOUND',
+                target: [['COMPANION']],
+            },
+            cost: [],
+            effects: [{ type: 'PREVENT_WOUND' }],
+            source: 'SELF',
+        };
+        const HEAL_ABILITY: Ability = {
+            id: 'heal',
+            phases: ['FELLOWSHIP'],
+            cost: [],
+            effects: [{ type: 'HEAL', count: 1, target: 'SELF' }],
+            source: 'SELF',
+        };
+        const REMOVE_BURDENS_ABILITY: Ability = {
+            id: 'rb',
+            phases: ['FELLOWSHIP'],
+            cost: [],
+            effects: [{ type: 'REMOVE_BURDENS', count: 1 }],
+            source: 'SELF',
+        };
+
+        function buildState(withTomb: boolean) {
+            const site = createSite({
+                id: '18U139',
+                siteNumber: 1,
+                abilities: withTomb ? [TOMB_ABILITY] : [],
+            });
+            const hurt = createCompanion({
+                id: 'hurt',
+                title: 'Hurt',
+                vitality: 4,
+                wounds: 2,
+                abilities: [HEAL_ABILITY, PREVENT_ABILITY],
+            });
+            const G = createGameState({
+                currentSiteIndex: 0,
+                path: [site, null, null, null, null, null, null, null, null],
+                players: {
+                    '0': createPlayerState('0', {
+                        currentSiteIndex: 0,
+                        burdens: 3,
+                        fellowshipArea: [hurt],
+                    }),
+                    '1': createPlayerState('1'),
+                },
+            });
+            return { G, hurt };
+        }
+
+        it('expose les trois interdictions', () => {
+            const { G } = buildState(true);
+            expect(areHealsForbidden(G)).toBe(true);
+            expect(isWoundPreventionForbidden(G)).toBe(true);
+            expect(areBurdenRemovalsForbidden(G)).toBe(true);
+
+            const free = buildState(false).G;
+            expect(areHealsForbidden(free)).toBe(false);
+            expect(isWoundPreventionForbidden(free)).toBe(false);
+            expect(areBurdenRemovalsForbidden(free)).toBe(false);
+        });
+
+        it('applyHeal ne soigne rien', () => {
+            const { G, hurt } = buildState(true);
+            expect(applyHeal(G, hurt, 1)).toBe(0);
+            expect(hurt.wounds).toBe(2);
+
+            const free = buildState(false);
+            expect(applyHeal(free.G, free.hurt, 1)).toBe(1);
+            expect(free.hurt.wounds).toBe(1);
+        });
+
+        it('HEAL : capacité non légale et sans effet', () => {
+            const { G, hurt } = buildState(true);
+            expect(abilityHasLegalEffectTarget(G, hurt, HEAL_ABILITY)).toBe(
+                false
+            );
+            expect(applyAbilityEffect(G, hurt, HEAL_ABILITY)).toBe(false);
+            expect(hurt.wounds).toBe(2);
+
+            const free = buildState(false);
+            expect(
+                abilityHasLegalEffectTarget(free.G, free.hurt, HEAL_ABILITY)
+            ).toBe(true);
+        });
+
+        it('REMOVE_BURDENS : sans effet', () => {
+            const { G, hurt } = buildState(true);
+            expect(
+                abilityHasLegalEffectTarget(G, hurt, REMOVE_BURDENS_ABILITY)
+            ).toBe(false);
+            expect(applyAbilityEffect(G, hurt, REMOVE_BURDENS_ABILITY)).toBe(
+                false
+            );
+            expect(G.players['0']?.burdens).toBe(3);
+
+            const free = buildState(false);
+            expect(
+                applyAbilityEffect(free.G, free.hurt, REMOVE_BURDENS_ABILITY)
+            ).toBe(true);
+            expect(free.G.players['0']?.burdens).toBe(2);
+        });
+
+        it('toPlay removeBurdens : fardeaux conservés', () => {
+            const { G } = buildState(true);
+            const card = createCard({
+                id: 'cost-card',
+                kind: 'FREE_PEOPLE',
+                type: 'EVENT',
+                toPlay: [{ removeBurdens: 1 }],
+            });
+            expect(applyAutomaticToPlayCosts(G, card, '0')).toBeNull();
+            expect(G.players['0']?.burdens).toBe(3);
+        });
+
+        it('moves from : REMOVE_BURDENS / HEAL de site sans effet', () => {
+            const { G, hurt } = buildState(true);
+            const other = createSite({
+                id: 'other',
+                abilities: [
+                    {
+                        id: 'o:0',
+                        phases: [],
+                        trigger: { type: 'MOVES_FROM' },
+                        cost: [],
+                        effects: [
+                            { type: 'REMOVE_BURDENS', count: 2 },
+                            {
+                                type: 'HEAL',
+                                all: true,
+                                count: 1,
+                                target: [['COMPANION']],
+                            },
+                        ],
+                        source: 'SELF',
+                    },
+                ],
+            });
+            resolveSiteMoveAbilities(G, other, 'MOVES_FROM');
+            expect(G.players['0']?.burdens).toBe(3);
+            expect(hurt.wounds).toBe(2);
+        });
+
+        it('PREVENT_WOUND : plus légal en ABOUT_TO_WOUND', () => {
+            const { G, hurt } = buildState(true);
+            const event = {
+                type: 'ABOUT_TO_WOUND' as const,
+                targetId: 'hurt',
+                remaining: 1,
+            };
+            expect(abilityMatchesTrigger(PREVENT_ABILITY, event, hurt, G)).toBe(
+                false
+            );
+
+            const free = buildState(false);
+            expect(
+                abilityMatchesTrigger(
+                    PREVENT_ABILITY,
+                    event,
+                    free.hurt,
+                    free.G
+                )
+            ).toBe(true);
+        });
+
+        it('PREVENT_WOUND : applyAbilityEffect refuse, pas de fenêtre de réponse', () => {
+            const { G, hurt } = buildState(true);
+            G.pendingEvent = {
+                type: 'ABOUT_TO_WOUND',
+                targetId: 'hurt',
+                remaining: 1,
+            };
+            expect(applyAbilityEffect(G, hurt, PREVENT_ABILITY)).toBe(false);
+            expect(G.pendingEvent.remaining).toBe(1);
+
+            const { G: G2, hurt: hurt2 } = buildState(true);
+            expect(requestWounds(G2, hurt2, 1)).toBe('APPLIED');
+            expect(hurt2.wounds).toBe(3);
+            expect(G2.responseWindow?.isOpen).toBeFalsy();
+        });
     });
 
     it('Last Stand : toaster FR Homme Gandalf', () => {

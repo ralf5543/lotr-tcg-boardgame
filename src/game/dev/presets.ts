@@ -37,20 +37,19 @@ const clonePresetSite = (
 };
 
 /**
- * Vague may / phase rest (12–18).
- * 1 Emyn Muil (Maneuver fierce) → 2 Caves (may −2 fardeaux) → 3 City of Kings (may draw)
- * → 4 East Wall (début fellowship hunters) → …
+ * Vague Steward / Courtyard (reste inertes).
+ * 1 filler → 2 Courtyard (moves to Ombre) → 3 Steward's Tomb → …
  */
-const SITES_MAY_WAVE_PATH = [
-    '12S187', // 1 Emyn Muil
-    '13S186', // 2 Caves of Aglarond
-    '13U187', // 3 City of Kings (sanctuaire)
-    '15S190', // 4 East Wall of Rohan
-    '11S265', // 5 Window
+const SITES_STEWARD_COURTYARD_PATH = [
+    '11S265', // 1 Window (départ)
+    '13U188', // 2 Courtyard Parapet
+    '18U139', // 3 Steward's Tomb
+    '11S250', // 4 North Undeep
+    '11S263', // 5 West Gate
     '11S228', // 6 Anduin Confluence (sanctuaire)
-    '11S263', // 7 West Gate
-    '11S250', // 8 North Undeep
-    '18U138', // 9 Sirannon
+    '11S241', // 7 Orthanc
+    '18U138', // 8 Sirannon
+    '11S254', // 9 Pelennor Flat
 ] as const;
 
 const resetBoardForPreset = (G: GameState): void => {
@@ -59,7 +58,7 @@ const resetBoardForPreset = (G: GameState): void => {
     if (!fpPlayer) return;
 
     G.twilightPool = 0;
-    fpPlayer.burdens = 0;
+    fpPlayer.burdens = 2;
     fpPlayer.threats = 0;
     G.tempModifiers = [];
     G.battlefield = [];
@@ -117,51 +116,46 @@ export const applyDevPreset = (
     const shadowPlayer = G.players[shadowId];
 
     switch (presetType) {
-        case 'SITES_MAY_WAVE': {
+        case 'SITES_STEWARD_COURTYARD': {
             resetBoardForPreset(G);
-            // Départ East Wall (site 4) → toaster début fellowship ; téléporte 1–3 pour le reste.
-            setupDevPath(G, 3, SITES_MAY_WAVE_PATH);
-            G.twilightPool = 4;
-            fpPlayer.burdens = 3;
+            // Départ Window ; avance → Courtyard (toaster Ombre) ; téléporte site 3 Steward.
+            setupDevPath(G, 0, SITES_STEWARD_COURTYARD_PATH);
+            G.twilightPool = 2;
+            fpPlayer.burdens = 2;
 
             fpPlayer.fellowshipArea = [
                 {
-                    ...clonePresetCard('2C102', 'dev-may-frodo'),
-                    attachments: [clonePresetCard('1R1', 'dev-may-ring')],
-                    wounds: 0,
+                    ...clonePresetCard('2C102', 'dev-sc-frodo'),
+                    attachments: [clonePresetCard('1R1', 'dev-sc-ring')],
+                    wounds: 1,
                 },
                 {
-                    // Hunter ×2 → East Wall (exert 2 chasseurs).
-                    ...clonePresetCard('15S18', 'dev-may-legolas'),
-                    wounds: 0,
+                    ...clonePresetCard('1R13', 'dev-sc-gimli'),
+                    wounds: 1,
                 },
-                {
-                    ...clonePresetCard('17S7', 'dev-may-hunter-2'),
-                    wounds: 0,
-                },
-            ];
-            // City of Kings : piocher ; East Wall : chasseur jouable (pas Legolas, déjà unique en jeu).
-            fpPlayer.deck = [
-                clonePresetCard('15C59', 'dev-may-hunter-deck'),
-                clonePresetCard('1C11', 'dev-may-draw-b'),
             ];
             fpPlayer.hand = [];
+            fpPlayer.deck = [clonePresetCard('1C11', 'dev-sc-draw')];
             fpPlayer.sitesDeck = [clonePresetSite('11S250', fpId)];
 
             if (shadowPlayer) {
-                shadowPlayer.hand = [];
+                // Courtyard : défausser 2 cartes pour +1 fardeau.
+                shadowPlayer.hand = [
+                    clonePresetCard('1C266', 'dev-sc-hand-a'),
+                    clonePresetCard('1C268', 'dev-sc-hand-b'),
+                    clonePresetCard('1C269', 'dev-sc-hand-c'),
+                ];
                 shadowPlayer.sitesDeck = [clonePresetSite('11S263', shadowId)];
                 G.battlefield = [
                     {
-                        // Emyn Muil : séide non fierce → fierce.
-                        ...clonePresetCard('1C266', 'dev-may-orc'),
+                        ...clonePresetCard('1C266', 'dev-sc-orc'),
                         wounds: 0,
                     },
                 ];
             }
 
             G.statusMessage =
-                '[DEV] May wave · départ East Wall (2 chasseurs → play hunter) ; site 1 Emyn Muil ; site 2 Caves ; site 3 City.';
+                '[DEV] Steward/Courtyard · avance site 2 Courtyard (Ombre défausse 2 → fardeau) ; téléporte site 3 Steward (pas de soin / prevent / −fardeaux).';
             break;
         }
     }

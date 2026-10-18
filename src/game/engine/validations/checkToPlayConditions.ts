@@ -4,6 +4,7 @@ import type { CardState, GameState, PlayerState } from '../../types';
 import { cardMatchesTarget } from './matchers';
 import { getEffectiveVitality } from '../../../utils/cardStats';
 import { countCultureTokensForPlayer } from '../../logic/cultureTokens';
+import { areBurdenRemovalsForbidden } from '../../logic/sites';
 
 export interface ValidationContext {
     G: GameState;
@@ -162,6 +163,13 @@ export function validateToPlayOption(
     const burdens = player?.burdens || 0;
     if (typeof option.spotBurdens === 'number' && burdens < option.spotBurdens) {
         return { valid: false, reason: `Fardeaux insuffisants (${burdens}/${option.spotBurdens}).` };
+    }
+    if (
+        typeof option.removeBurdens === 'number' &&
+        option.removeBurdens > 0 &&
+        areBurdenRemovalsForbidden(G)
+    ) {
+        return { valid: false, reason: 'Les fardeaux ne peuvent pas être retirés (site).' };
     }
     if (typeof option.removeBurdens === 'number' && burdens < option.removeBurdens) {
         return { valid: false, reason: `Pas assez de fardeaux à retirer (${burdens}/${option.removeBurdens}).` };

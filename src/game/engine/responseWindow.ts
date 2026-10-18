@@ -35,7 +35,7 @@ import { getEffectiveVitality } from '../../utils/cardStats';
 import { applyExert } from '../../utils/applyExert';
 import { getEffectiveTwilightCost } from '../../utils/roamingDetection';
 import { getWhileTwilightCostModifier } from '../logic/stats/mechanics/whileModifier';
-import { getCurrentSiteIndex } from '../logic/sites';
+import { getCurrentSiteIndex, isWoundPreventionForbidden } from '../logic/sites';
 import { yieldPriorityAfterAction } from './actionWindow';
 import { cancelSkirmish } from './abilities/cancelSkirmish';
 import { enterPhase } from '../logic/phaseEntry';
@@ -193,6 +193,13 @@ export function abilityMatchesTrigger(
     if (event.type !== 'ABOUT_TO_WOUND') return false;
     if (ability.trigger.type !== 'ABOUT_TO_WOUND') return false;
     if (ability.trigger.inSkirmish && !isInSkirmish(G)) return false;
+    // Steward's Tomb : « Wounds cannot be prevented ».
+    if (
+        isWoundPreventionForbidden(G) &&
+        (ability.effects || []).some((e) => e.type === 'PREVENT_WOUND')
+    ) {
+        return false;
+    }
 
     const wounded = findTargetCard(G, event.targetId) as CardState | null;
     if (!wounded) return false;

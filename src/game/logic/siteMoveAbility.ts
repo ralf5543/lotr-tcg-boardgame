@@ -1,8 +1,12 @@
 import type { Ability, CardState, GameState, SiteCardState } from '../types';
 import { applyAbilityEffect } from '../engine/abilities/applyAbilityEffect';
+import {
+    canPayAbilityCost,
+    payAbilityCost,
+} from '../engine/abilities/payAbilityCost';
 import { triggerConditionsMet } from '../engine/abilities/siteMove';
 import { tryOpenFellowshipMoves } from '../engine/responseWindow';
-import { getCurrentSite } from './sites';
+import { areBurdenRemovalsForbidden, getCurrentSite } from './sites';
 
 type PhaseEvents = {
     setPhase?: (phase: string) => void;
@@ -10,6 +14,15 @@ type PhaseEvents = {
 
 function siteInstanceKey(site: SiteCardState): string {
     return (site as SiteCardState & { instanceId?: string }).instanceId || site.id;
+}
+
+/** Joueur qui répond à la capacité (FP par défaut ; Ombre si `responsePlayer`). */
+function responderPlayerId(G: GameState, ability: Ability): string {
+    const fpId = G.fpPlayerId || '0';
+    if (ability.responsePlayer === 'SHADOW') {
+        return fpId === '0' ? '1' : '0';
+    }
+    return fpId;
 }
 
 /** L’effet optionnel peut-il changer quelque chose ? (inerte > faux) */
@@ -25,7 +38,12 @@ function optionalMoveEffectsAreLegal(G: GameState, ability: Ability): boolean {
             continue;
         }
         if (effect.type === 'REMOVE_BURDENS') {
+            if (areBurdenRemovalsForbidden(G)) return false;
             if ((fp.burdens || 0) < 1) return false;
+            continue;
+        }
+        if (effect.type === 'ADD_BURDENS') {
+            // Réponse Ombre : toujours légal (on ajoute).
             continue;
         }
         // Effet non géré ici : on n’ouvre rien.
@@ -34,7 +52,7 @@ function optionalMoveEffectsAreLegal(G: GameState, ability: Ability): boolean {
     return true;
 }
 
-/** Capacité optionnelle « moves to » du site d’arrivée (regroupement). */
+/** Capacité optionnelle « moves to » du site d’arrivée. */
 export function findOptionalSiteMoveAbility(
     G: GameState
 ): { site: SiteCardState; ability: Ability } | null {
@@ -43,16 +61,25 @@ export function findOptionalSiteMoveAbility(
     for (const ability of site.abilities) {
         if (!ability.optional) continue;
         if (ability.trigger?.type !== 'MOVES_TO') continue;
-        if ((ability.cost || []).length > 0) continue;
         if (!triggerConditionsMet(G, site, ability)) continue;
         if (!optionalMoveEffectsAreLegal(G, ability)) continue;
+        if (
+            !canPayAbilityCost(
+                G,
+                site as unknown as CardState,
+                ability.cost,
+                responderPlayerId(G, ability)
+            )
+        ) {
+            continue;
+        }
         return { site, ability };
     }
     return null;
 }
 
 /**
- * Ouvre le toaster « Activer / Passer » après un déplacement de regroupement.
+ * Ouvre le toaster « Activer / Passer » après un déplacement.
  * `nextPhase` : phase à lancer une fois le choix tranché.
  */
 export function beginOptionalSiteMoveAbility(
@@ -63,7 +90,7 @@ export function beginOptionalSiteMoveAbility(
     const found = findOptionalSiteMoveAbility(G);
     if (!found) return false;
     G.pendingSiteMoveAbility = {
-        playerId: G.fpPlayerId || '0',
+        playerId: responderPlayerId(G, found.ability),
         siteInstanceId: siteInstanceKey(found.site),
         abilityId: found.ability.id,
         pendingPhaseAfterSiteMove: nextPhase,
@@ -86,12 +113,13 @@ function resumeAfterSiteMove(
     if (nextPhase) events?.setPhase?.(nextPhase);
 }
 
-/** Passer ou Activer : applique l’effet si accepté, puis reprend le flux. */
+/** Passer ou Activer : paie le coût et applique l’effet si accepté, puis reprend le flux. */
 export function resolvePendingSiteMoveAbility(
     G: GameState,
     playerID: string,
     accept: boolean,
-    events?: PhaseEvents
+    events?: PhaseEvents,
+    discardedHandIds?: string[]
 ): boolean {
     const pending = G.pendingSiteMoveAbility;
     if (!pending || pending.playerId !== playerID) return false;
@@ -108,10 +136,27 @@ export function resolvePendingSiteMoveAbility(
         ) {
             return false;
         }
+        const source = site as unknown as CardState;
+        if (!canPayAbilityCost(G, source, ability.cost, playerID)) {
+            return false;
+        }
+        if (
+            !payAbilityCost(
+                G,
+                source,
+                ability.cost,
+                undefined,
+                discardedHandIds,
+                undefined,
+                playerID
+            )
+        ) {
+            return false;
+        }
         if (
             !applyAbilityEffect(
                 G,
-                site as unknown as CardState,
+                source,
                 ability,
                 undefined,
                 undefined,

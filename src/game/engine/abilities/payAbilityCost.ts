@@ -118,6 +118,22 @@ export function filterCostTargetsForActor(
     return cards.filter((c) => c.kind === wantKind);
 }
 
+/**
+ * Main d’où l’on défausse : sur un site, « from hand » = celle du joueur qui
+ * active (Ombre sur Courtyard Parapet) ; sinon propriétaire de la carte.
+ */
+function discardFromHandPlayerId(
+    G: GameState,
+    source: CardState,
+    actingPlayerId?: string
+): string | undefined {
+    const isSite = source.kind === 'SITE' || source.type === 'SITE';
+    if (isSite && actingPlayerId != null && actingPlayerId !== '') {
+        return String(actingPlayerId);
+    }
+    return abilityOwnerPlayerId(G, source);
+}
+
 function canPayOption(
     G: GameState,
     source: CardState,
@@ -288,7 +304,7 @@ function canPayOption(
     }
 
     if (typeof option.discardFromHand === 'number' && option.discardFromHand > 0) {
-        const ownerId = abilityOwnerPlayerId(G, source);
+        const ownerId = discardFromHandPlayerId(G, source, actingPlayerId);
         if (!ownerId) return false;
         const hand = G.players[ownerId]?.hand || [];
         const rule = option.discardFromHandIfEffectHasKeyword;
@@ -466,7 +482,7 @@ function payOption(
         }
     }
     if (typeof option.discardFromHand === 'number' && option.discardFromHand > 0) {
-        const ownerId = abilityOwnerPlayerId(G, source);
+        const ownerId = discardFromHandPlayerId(G, source, actingPlayerId);
         if (!ownerId) return false;
         const effectCard = effectTargetId
             ? (findTargetCard(G, effectTargetId) as CardState | null)

@@ -127,13 +127,24 @@ describe('parseSiteAbilities — vague hard / suite', () => {
         ]);
     });
 
-    it('laisse Steward’s Tomb inerte', () => {
+    it('Steward’s Tomb : interdit soin, prévention de blessure, retrait de fardeaux', () => {
         expect(
             parseSiteAbilities(
                 'Wounds cannot be prevented or healed. Burdens cannot be removed.',
                 '18U139'
             )
-        ).toBeUndefined();
+        ).toEqual([
+            expect.objectContaining({
+                trigger: { type: 'WHILE' },
+                cost: [],
+                effects: [
+                    { type: 'FORBID_HEAL' },
+                    { type: 'FORBID_WOUND_PREVENTION' },
+                    { type: 'FORBID_REMOVE_BURDENS' },
+                ],
+                source: 'SELF',
+            }),
+        ]);
     });
 
     it('Bridge : The Balrog twilight –3', () => {

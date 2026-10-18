@@ -56,6 +56,9 @@ import {
     stackMinionOnControlledSite,
     playStackedMinion,
     areCultureTokenChangesForbidden,
+    areHealsForbidden,
+    areBurdenRemovalsForbidden,
+    isWoundPreventionForbidden,
 } from '../../logic/sites';
 import {
     stackCardOnHost,
@@ -278,6 +281,7 @@ export function applyAbilityEffect(
 
     for (const effect of effects) {
         if (effect.type === 'PREVENT_WOUND') {
+            if (isWoundPreventionForbidden(G)) return false;
             if (
                 G.pendingEvent?.type !== 'ABOUT_TO_WOUND' ||
                 G.pendingEvent.remaining <= 0
@@ -766,6 +770,7 @@ export function applyAbilityEffect(
         }
 
         if (effect.type === 'REMOVE_BURDENS') {
+            if (areBurdenRemovalsForbidden(G)) return false;
             const fpId = G.fpPlayerId || '0';
             const fpPlayer = G.players[fpId];
             if (!fpPlayer) return false;
@@ -1285,6 +1290,7 @@ function applyOneEffect(
     }
 
     if (effect.type === 'HEAL') {
+        if (areHealsForbidden(G)) return false;
         if (target.isDead) return false;
         const amount = effect.multiFromSpot
             ? 1

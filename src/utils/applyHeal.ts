@@ -1,4 +1,5 @@
 import type { CardState, GameState } from '../game/types';
+import { areHealsForbidden } from '../game/logic/sites';
 
 /** Retire des blessures et marque la carte pour le son / le voile. */
 export const applyHeal = (
@@ -7,6 +8,8 @@ export const applyHeal = (
     amount = 1
 ): number => {
     if (!card || card.isDead || amount <= 0) return 0;
+    // Steward's Tomb : « Wounds cannot be … healed ».
+    if (areHealsForbidden(G)) return 0;
 
     const current = card.wounds || 0;
     if (current <= 0) return 0;

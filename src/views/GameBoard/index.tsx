@@ -576,8 +576,17 @@ export const GameBoard: React.FC<GameBoardProps> = ({
             if (need <= 0) return false;
 
             const fpId = G.fpPlayerId || '0';
+            // Site : main du joueur qui active (Ombre sur Courtyard Parapet).
+            const isSiteSource =
+                source.kind === 'SITE' || source.type === 'SITE';
             const ownerId =
-                source.kind === 'SHADOW' ? (fpId === '0' ? '1' : '0') : fpId;
+                isSiteSource && playerID
+                    ? String(playerID)
+                    : source.kind === 'SHADOW'
+                      ? fpId === '0'
+                          ? '1'
+                          : '0'
+                      : fpId;
 
             const collect = (picked: string[]) => {
                 const remaining = need - picked.length;
@@ -631,7 +640,7 @@ export const GameBoard: React.FC<GameBoardProps> = ({
             collect([]);
             return true;
         },
-        [G, startTargeting, stopTargeting]
+        [G, playerID, startTargeting, stopTargeting]
     );
 
     const requestMultiEffectDesignation = useCallback(
@@ -1293,6 +1302,41 @@ export const GameBoard: React.FC<GameBoardProps> = ({
         },
         // eslint-disable-next-line react-hooks/exhaustive-deps
         [G.responseWindow?.activePlayerId, G.pendingEvent, moves]
+    );
+
+    /** Site « moves to » optionnel : défausse main (Courtyard) avant d’envoyer Activer. */
+    const handleResolveSiteMoveAbilityChoice = useCallback(
+        (accept: boolean, discardedHandIds?: string[]) => {
+            if (!accept) {
+                moves.resolveSiteMoveAbilityChoice?.(false);
+                return;
+            }
+            if (discardedHandIds !== undefined) {
+                moves.resolveSiteMoveAbilityChoice?.(true, discardedHandIds);
+                return;
+            }
+            const pending = G.pendingSiteMoveAbility;
+            if (!pending) return;
+            const source = findTargetCard(
+                G,
+                pending.siteInstanceId
+            ) as CardState | null;
+            const ability = source?.abilities?.find(
+                (ab) => ab.id === pending.abilityId
+            );
+            if (
+                source &&
+                ability &&
+                abilityNeedsHandDiscard(ability) &&
+                requestHandDiscard(source, ability, (cardIds) => {
+                    moves.resolveSiteMoveAbilityChoice?.(true, cardIds);
+                })
+            ) {
+                return;
+            }
+            moves.resolveSiteMoveAbilityChoice?.(true);
+        },
+        [G, moves, requestHandDiscard]
     );
 
     const handleResolveWhenPlayedChoice = useCallback(
@@ -2682,6 +2726,8 @@ export const GameBoard: React.FC<GameBoardProps> = ({
                                 handleResolveSiteStartAbilityChoice,
                             resolveSiteResponseAbilityChoice:
                                 handleResolveSiteResponseAbilityChoice,
+                            resolveSiteMoveAbilityChoice:
+                                handleResolveSiteMoveAbilityChoice,
                         }}
                     />
 

@@ -426,6 +426,18 @@ export type AbilityEffect =
           type: 'FORBID_CULTURE_TOKEN_CHANGES';
       }
     | {
+          /** Steward's Tomb : les blessures ne peuvent pas être soignées. */
+          type: 'FORBID_HEAL';
+      }
+    | {
+          /** Steward's Tomb : les blessures ne peuvent pas être prévenues. */
+          type: 'FORBID_WOUND_PREVENTION';
+      }
+    | {
+          /** Steward's Tomb : les fardeaux ne peuvent pas être retirés. */
+          type: 'FORBID_REMOVE_BURDENS';
+      }
+    | {
           /**
            * Remplace un site du chemin par un site du deck d’aventure.
            * La cible choisie = id du site dans sitesDeck (avant activateAbility).
@@ -1449,7 +1461,7 @@ export interface ArcheryState {
     shadowRemainingWounds: number;
 }
 
-export type DevPresetType = 'SITES_MAY_WAVE';
+export type DevPresetType = 'SITES_STEWARD_COURTYARD';
 
 export interface TempKeywordModifier {
     keyword: CardKeyword;

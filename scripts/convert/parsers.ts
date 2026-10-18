@@ -6197,6 +6197,27 @@ function parseSiteMoveAbilities(
         });
     }
 
+    // Courtyard Parapet : le premier joueur Ombre peut défausser N cartes → fardeau.
+    const optionalShadowDiscardBurdenRe = new RegExp(
+        `When the fellowship moves to ${siteRef}, the first Shadow player may discard (\\d+) cards? from hand to add a burden\\.`,
+        'gi'
+    );
+    while ((match = optionalShadowDiscardBurdenRe.exec(text)) !== null) {
+        const discardCount = parseInt(match[1], 10);
+        if (!Number.isFinite(discardCount) || discardCount <= 0) continue;
+        found.push({
+            id: `${cardId || 'ability'}:${found.length}:site-move-shadow-discard-burden`,
+            phases: [],
+            optional: true,
+            responsePlayer: 'SHADOW',
+            trigger: { type: 'MOVES_TO' },
+            cost: [{ discardFromHand: discardCount }],
+            effects: [{ type: 'ADD_BURDENS', count: 1 }],
+            source: 'SELF',
+            text: stripAbilityMarkup(match[0]),
+        });
+    }
+
     return found;
 }
 
@@ -6962,6 +6983,27 @@ function parseSitePassiveRestAbilities(
             effects: [{ type: 'FORBID_CULTURE_TOKEN_CHANGES' }],
             source: 'SELF',
             text: 'Culture tokens cannot be added, removed, or reinforced.',
+        });
+    }
+
+    // Steward's Tomb
+    if (
+        /Wounds cannot be prevented or healed\.?\s*Burdens cannot be removed\.?/i.test(
+            plain
+        )
+    ) {
+        found.push({
+            id: `${cardId || 'ability'}:${found.length}:site-stewards-tomb`,
+            phases: [],
+            trigger: { type: 'WHILE' },
+            cost: [],
+            effects: [
+                { type: 'FORBID_HEAL' },
+                { type: 'FORBID_WOUND_PREVENTION' },
+                { type: 'FORBID_REMOVE_BURDENS' },
+            ],
+            source: 'SELF',
+            text: 'Wounds cannot be prevented or healed. Burdens cannot be removed.',
         });
     }
 

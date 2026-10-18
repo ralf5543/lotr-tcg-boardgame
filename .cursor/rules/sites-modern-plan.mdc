@@ -139,9 +139,9 @@ Preset : `SITES_EACH_TIME_WAVE`.
 | `15R193` | Mount Doom | OK | SOURCE_REGION + activeOnPath (Legacy Ruling 3) |
 | `12U186` | The Bridge of Khazad-dûm | OK | The Balrog twilight –3 (site courant) |
 | `12S189` | Hobbiton Market | OK | Moves from → wound each non-lurker minion |
-| `18U139` | Steward's Tomb | INERTE | Forbid heal / prevent / remove burdens |
 | `18U135` | Foot of Mount Doom | INERTE | Discard → removed from game |
 | `15U192` | Isengard Ruined | INERTE | Transfer follower → exert ×2 |
+| `18U139` | Steward's Tomb | OK | → vague Steward / Courtyard |
 
 Preset : `SITES_HARD_WAVE`.
 
@@ -155,7 +155,7 @@ Preset : `SITES_HARD_WAVE`.
 | `18U136` | Mithlond | OK | Heal chaque personnage (PL + Ombre) |
 | `17U147` | Imladris | OK | Si sanctuaire → −2 fardeaux |
 
-Inertes volontaires (may / désignation / autre vague) : Caves, City of Kings, Courtyard, Crossroads, Falls of Rauros, Doorway, Morannon Plains.
+Inertes volontaires (may / désignation / autre vague) : Crossroads, Falls of Rauros, Doorway, Morannon Plains.
 
 Preset : `SITES_MOVES_REST`.
 
@@ -183,9 +183,20 @@ Preset : `SITES_PASSIVES_REST`.
 | `13S186` | Caves of Aglarond | OK | Moves to regroup → may −2 fardeaux (toaster) |
 | `13U187` | City of Kings | OK | Moves to regroup → may draw (toaster) |
 
-Inertes volontaires : Dol Guldur (choix PL) ; Angle / Northern Pelennor / Shores / Slopes ; Courtyard (coût main Ombre) ; Crossroads / Falls / Doorway / Morannon ; passifs durs.
+Inertes volontaires : Dol Guldur (choix PL) ; Angle / Northern Pelennor / Shores / Slopes ; Crossroads / Falls / Doorway / Morannon ; passifs durs.
 
 Preset : `SITES_MAY_WAVE`.
+
+### Vague Steward / Courtyard
+
+| Id | Titre | Statut | Notes |
+| --- | --- | --- | --- |
+| `18U139` | Steward's Tomb | OK | Interdit soin, prevent blessure, retrait fardeaux |
+| `13U188` | Courtyard Parapet | OK | Moves to → Ombre may défausse 2 → +1 fardeau (toaster) |
+
+Inertes volontaires : Crossroads (heal / culture) ; Shadow play (Angle / Pelennor / Shores / Slopes) ; passifs durs (Hill / Doors / Breeding / Isenwash / Foot) ; Dol Guldur ; Falls / Doorway / Morannon ; Isengard Ruined.
+
+Preset : `SITES_STEWARD_COURTYARD`.
 
 ### Inertes — sets 12–18 (hors vagues livrées)
 
@@ -196,7 +207,6 @@ Preset : `SITES_MAY_WAVE`.
 | `12S190` | Northern Pelennor | phase-ability |
 | `12U191` | Shores of Nen Hithoel | phase-ability |
 | `12U192` | Slopes of Orodruin | phase-ability |
-| `13U188` | Courtyard Parapet | moves-to |
 | `13S189` | Crossroads of the Fallen Kings | moves-to |
 | `13U190` | Doors of Durin | passive-while |
 | `13U193` | Isenwash | passive-while |
@@ -207,7 +217,6 @@ Preset : `SITES_MAY_WAVE`.
 | `18U134` | Doorway to Doom | moves-to |
 | `18U135` | Foot of Mount Doom | passive-while |
 | `18U137` | Morannon Plains | moves-to |
-| `18U139` | Steward's Tomb | passive-while |
 
 ## Étapes
 
@@ -230,17 +239,20 @@ Preset : `SITES_MAY_WAVE`.
    - Inerte volontaire : Trollshaw (may draw on attach)
 8. Vague **cas durs / suite** ✅ — preset `SITES_HARD_WAVE`
    - OK : Starkhorn ; Westfold ; Mount Doom (Legacy Ruling 3) ; Bridge (Balrog –3) ; Hobbiton (moves from → wound non-lurker)
-   - Inertes volontaires : Steward's Tomb ; Foot of Mount Doom ; Isengard Ruined
+   - Inertes volontaires alors : Steward's Tomb (livré vague 12) ; Foot of Mount Doom ; Isengard Ruined
 9. Vague **moves auto** reste 13–18 ✅ — preset `SITES_MOVES_REST`
    - OK : Mine Shaft ; Gate of Mordor ; City Gates ; Mithlond ; Imladris
-   - Inertes volontaires (may / désignation) : Courtyard / Crossroads / Falls / Doorway / Morannon
+   - Inertes volontaires alors : Courtyard (livré vague 12) ; Crossroads / Falls / Doorway / Morannon
 10. Vague **passifs / phase** reste 12–18 ✅ — preset `SITES_PASSIVES_REST`
     - OK : Fords ; Great Gates ; Nurn ; Streets ; Redhorn ; Wold
     - Inertes volontaires : Hill of Sight ; Doors of Durin ; Breeding pit ; Isenwash
 11. Vague **may / phase** reste ✅ — preset `SITES_MAY_WAVE`
     - OK : Emyn Muil (Maneuver → fierce) ; East Wall (start FP hunters) ; Caves / City of Kings (moves may regroup, toaster)
-    - Inertes volontaires : Dol Guldur (choix condition PL) ; Angle / Pelennor / Shores / Slopes ; Courtyard / Crossroads / Falls / Doorway / Morannon ; passifs durs (Hill / Doors / Breeding / Isenwash / Foot / Steward’s / Isengard Ruined)
-12. Reste inertes 12–18 (Shadow play / passifs durs / moves may coûteux)
+    - Inertes volontaires : Dol Guldur (choix condition PL) ; Angle / Pelennor / Shores / Slopes ; Crossroads / Falls / Doorway / Morannon ; passifs durs
+12. Vague **Steward / Courtyard** ✅ — preset `SITES_STEWARD_COURTYARD`
+    - OK : Steward's Tomb (FORBID heal / prevent / −fardeaux) ; Courtyard (Ombre may défausse 2 → fardeau)
+    - Inertes volontaires : Crossroads ; Shadow play ; passifs durs ; Dol Guldur ; Falls / Doorway / Morannon ; Isengard Ruined
+13. Reste inertes 12–18 (Shadow play / passifs durs / moves may multi)
 
 ## Hors scope
 
