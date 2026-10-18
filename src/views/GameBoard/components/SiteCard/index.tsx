@@ -1,7 +1,6 @@
 import React from 'react';
 import type { SiteCardState } from '../../../../game/types';
 import * as S from './styles';
-import { TRANSLATIONS } from '../../../../game/translations';
 import { TokenPlayer } from '../TokenPlayer';
 import { KeywordBadge } from '../KeywordBadge';
 import { FormattedText } from '../../../../utils/FormattedText';
@@ -9,6 +8,7 @@ import { getCardText } from '../../../../utils/i18n';
 import type { SupportedLanguage } from '../../../../utils/i18n';
 import { getEffectiveSiteKeywords } from '../../../../game/logic/sites';
 import { usePulseOnChange } from '../../hooks/usePulseOnChange';
+import { useImageSrcFallback } from '../../../../utils/useImageSrcFallback';
 
 export interface SiteCardProps {
     site: SiteCardState;
@@ -38,6 +38,8 @@ export const SiteCard: React.FC<SiteCardProps> = ({
     );
     const effectiveKeywords = getEffectiveSiteKeywords(site);
     const twilightPulse = usePulseOnChange(site.twilightCost);
+    const { src: siteImageSrc, onError: onSiteImageError } =
+        useImageSrcFallback(site.imageUrl);
 
     // Helpers pour extraire facilement les infos p0 / p1
     const p0Data = typeof playersHere?.p0 === 'object' ? playersHere.p0 : null;
@@ -84,9 +86,13 @@ export const SiteCard: React.FC<SiteCardProps> = ({
                 </S.Footer>
             )}
 
-            {site.imageUrl && (
+            {siteImageSrc && (
                 <S.VisualContainer $size={size}>
-                    <S.Visual src={site.imageUrl} alt={site.name} />
+                    <S.Visual
+                        src={siteImageSrc}
+                        alt={site.name}
+                        onError={onSiteImageError}
+                    />
                 </S.VisualContainer>
             )}
         </S.Container>

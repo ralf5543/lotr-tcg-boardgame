@@ -26,6 +26,7 @@ import {
 } from '../../../../utils/cardStats';
 import { getCardText } from '../../../../utils/i18n';
 import { isRingBearerCard } from '../../../../utils/cardUtils';
+import { useImageSrcFallback } from '../../../../utils/useImageSrcFallback';
 import type { SupportedLanguage } from '../../../../utils/i18n';
 import { requiresAttachmentTarget } from '../../../../game/engine/canPlayCard';
 import { getEffectiveKeywords } from '../../../../game/engine/keywords/keywordUtils';
@@ -59,14 +60,10 @@ export const CardImage: React.FC<CardImageProps> = ({
     alt,
     draggable = false,
 }) => {
-    const [prevImageUrl, setPrevImageUrl] = useState(imageUrl);
-    const [fallbackSrc, setFallbackSrc] = useState<string | null>(null);
-
-    // Si la prop imageUrl change, on réinitialise le fallback directement pendant le rendu
-    if (imageUrl !== prevImageUrl) {
-        setPrevImageUrl(imageUrl);
-        setFallbackSrc(null);
-    }
+    const { src, onError } = useImageSrcFallback(
+        imageUrl,
+        'interface/lotr_cardback.webp'
+    );
 
     if (!imageUrl) {
         return (
@@ -78,35 +75,12 @@ export const CardImage: React.FC<CardImageProps> = ({
         );
     }
 
-    const handleError = () => {
-        const currentSrc = fallbackSrc || imageUrl;
-        const basePath = currentSrc.replace(/\.(jpg|jpeg|png|webp)$/i, '');
-        const currentExt = currentSrc
-            .slice(currentSrc.lastIndexOf('.'))
-            .toLowerCase();
-
-        const nextExtMap: Record<string, string | null> = {
-            '.jpg': '.webp',
-            '.jpeg': '.webp',
-            '.webp': '.png',
-            '.png': null,
-        };
-
-        const nextExt = nextExtMap[currentExt];
-
-        if (nextExt) {
-            setFallbackSrc(`${basePath}${nextExt}`);
-        } else {
-            setFallbackSrc('interface/lotr_cardback.webp');
-        }
-    };
-
     return (
         <S.Visual
-            src={fallbackSrc ?? imageUrl}
+            src={src}
             alt={alt}
             draggable={draggable}
-            onError={handleError}
+            onError={onError}
         />
     );
 };

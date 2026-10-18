@@ -145,7 +145,21 @@ Preset : `SITES_EACH_TIME_WAVE`.
 
 Preset : `SITES_HARD_WAVE`.
 
-### Inertes — sets 12–18
+### Vague moves auto (reste 13–18)
+
+| Id | Titre | Statut | Notes |
+| --- | --- | --- | --- |
+| `13U185` | Abandoned Mine Shaft | OK | Regroup + hors région 1 → fardeau |
+| `15S191` | Gate of Mordor | OK | +1 crépuscule / culture spotée |
+| `15S189` | City Gates | OK | Menace × compagnons over 4 (×2 si hunter minion) |
+| `18U136` | Mithlond | OK | Heal chaque personnage (PL + Ombre) |
+| `17U147` | Imladris | OK | Si sanctuaire → −2 fardeaux |
+
+Inertes volontaires (may / désignation / autre vague) : Caves, City of Kings, Courtyard, Crossroads, Falls of Rauros, Doorway, Morannon Plains.
+
+Preset : `SITES_MOVES_REST`.
+
+### Inertes — sets 12–18 (hors vagues livrées)
 
 | Id | Titre | Famille |
 | --- | --- | --- |
@@ -156,7 +170,6 @@ Preset : `SITES_HARD_WAVE`.
 | `12U191` | Shores of Nen Hithoel | phase-ability |
 | `12U192` | Slopes of Orodruin | phase-ability |
 | `12U194` | Wold Battlefield | phase-ability |
-| `13U185` | Abandoned Mine Shaft | moves-from |
 | `13S186` | Caves of Aglarond | moves-to |
 | `13U187` | City of Kings | moves-to |
 | `13U188` | Courtyard Parapet | moves-to |
@@ -167,17 +180,13 @@ Preset : `SITES_HARD_WAVE`.
 | `13U193` | Isenwash | passive-while |
 | `13U194` | Redhorn Pass | passive-while |
 | `15S188` | Breeding pit of Isengard | passive-while |
-| `15S189` | City Gates | moves-to |
 | `15S190` | East Wall of Rohan | start-fellowship |
-| `15S191` | Gate of Mordor | moves-to |
 | `15U192` | Isengard Ruined | each-time |
 | `17U145` | Dol Guldur | phase-ability |
 | `17U146` | Falls of Rauros | moves-to |
-| `17U147` | Imladris | moves-to |
 | `17U148` | Nurn | passive-while |
 | `18U134` | Doorway to Doom | moves-to |
 | `18U135` | Foot of Mount Doom | passive-while |
-| `18U136` | Mithlond | moves-to |
 | `18U137` | Morannon Plains | moves-to |
 | `18U139` | Steward's Tomb | passive-while |
 | `18U140` | Streets of Bree | passive-while |
@@ -204,7 +213,10 @@ Preset : `SITES_HARD_WAVE`.
 8. Vague **cas durs / suite** ✅ — preset `SITES_HARD_WAVE`
    - OK : Starkhorn ; Westfold ; Mount Doom (Legacy Ruling 3) ; Bridge (Balrog –3) ; Hobbiton (moves from → wound non-lurker)
    - Inertes volontaires : Steward's Tomb ; Foot of Mount Doom ; Isengard Ruined
-9. Reste inertes sets 12–18 (moves / phase / passifs divers)
+9. Vague **moves auto** reste 13–18 ✅ — preset `SITES_MOVES_REST`
+   - OK : Mine Shaft ; Gate of Mordor ; City Gates ; Mithlond ; Imladris
+   - Inertes volontaires (may / désignation) : Caves / City of Kings / Courtyard / Crossroads / Falls / Doorway / Morannon
+10. Reste inertes 12–18 (phase / passifs / may moves)
 
 ## Hors scope
 

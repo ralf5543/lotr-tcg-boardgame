@@ -53,6 +53,24 @@ const SITES_HARD_WAVE_PATH = [
     '11S265', // 9 Window
 ] as const;
 
+/**
+ * Vague moves auto (reste 13–18).
+ * 1 Mine Shaft (région 1) → 2 City Gates → 3 Gate of Mordor
+ * → 4 Mithlond → 5 filler → 6 Imladris (sanctuaire) → …
+ * (Mine Shaft en R1 : pas de fardeau au départ regroup ; téléporter en R2/3 pour le cas positif.)
+ */
+const SITES_MOVES_REST_PATH = [
+    '13U185', // 1 Abandoned Mine Shaft (région 1)
+    '15S189', // 2 City Gates
+    '15S191', // 3 Gate of Mordor
+    '18U136', // 4 Mithlond
+    '18U138', // 5 Sirannon
+    '17U147', // 6 Imladris (sanctuaire)
+    '11S265', // 7 Window
+    '11S263', // 8 West Gate
+    '11S250', // 9 North Undeep
+] as const;
+
 const resetBoardForPreset = (G: GameState): void => {
     const fpId = G.fpPlayerId || '0';
     const fpPlayer = G.players[fpId];
@@ -180,6 +198,69 @@ export const applyDevPreset = (
 
             G.statusMessage =
                 '[DEV] Hard · Bridge (Balrog main Ombre) ; replace FP/Ombre déjà en jeu ; Mount Doom site 7 ; 2 chasseurs.';
+            break;
+        }
+
+        case 'SITES_MOVES_REST': {
+            resetBoardForPreset(G);
+            // Départ site 1 → avancer vers City Gates / Gate / Mine / Mithlond / Imladris.
+            setupDevPath(G, 0, SITES_MOVES_REST_PATH);
+            G.twilightPool = 0;
+            fpPlayer.burdens = 3;
+            fpPlayer.threats = 0;
+
+            fpPlayer.fellowshipArea = [
+                {
+                    ...clonePresetCard('2C102', 'dev-moves-frodo'),
+                    attachments: [clonePresetCard('1R1', 'dev-moves-ring')],
+                    wounds: 1,
+                },
+                {
+                    ...clonePresetCard('1R89', 'dev-moves-aragorn'),
+                    wounds: 1,
+                },
+                {
+                    ...clonePresetCard('1R13', 'dev-moves-gimli'),
+                    wounds: 1,
+                },
+                {
+                    // 5 compagnons → City Gates = 1 (ou 2) menace.
+                    ...clonePresetCard('15S18', 'dev-moves-legolas'),
+                    wounds: 0,
+                },
+                {
+                    ...clonePresetCard('17S7', 'dev-moves-hunter'),
+                    wounds: 0,
+                },
+            ];
+            fpPlayer.hand = [];
+            fpPlayer.deck = [
+                clonePresetCard('1C11', 'dev-moves-draw-a'),
+            ];
+            fpPlayer.sitesDeck = [
+                clonePresetSite('11S250', fpId),
+            ];
+
+            if (shadowPlayer) {
+                shadowPlayer.hand = [];
+                shadowPlayer.sitesDeck = [
+                    clonePresetSite('11S263', shadowId),
+                ];
+                // Hunter minion → City Gates ×2 ; cultures SHIRE/GONDOR/DWARVEN/ELVEN/MEN.
+                G.battlefield = [
+                    {
+                        ...clonePresetCard('15C83', 'dev-moves-hunter-minion'),
+                        wounds: 1,
+                    },
+                    {
+                        ...clonePresetCard('1C266', 'dev-moves-orc'),
+                        wounds: 1,
+                    },
+                ];
+            }
+
+            G.statusMessage =
+                '[DEV] Moves rest · Mine Shaft site 1 (R1) → City Gates → Gate Mordor → Mithlond → Imladris (sanctuaire).';
             break;
         }
     }

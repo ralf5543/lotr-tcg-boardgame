@@ -4,7 +4,8 @@ import { applyHeal } from '../../../utils/applyHeal';
 import { applyExert } from '../../../utils/applyExert';
 import { applyWoundAndCheckDeath } from '../../../utils/applyWoundAndCheckDeath';
 import { getEffectiveResistance } from '../../../utils/cardStats';
-import { getSiteRegion } from '../../logic/sites';
+import { getSiteRegion, isCurrentSiteSanctuary } from '../../logic/sites';
+import { addThreats } from '../../logic/threats';
 import { getKeywordValue } from '../keywords/keywordUtils';
 import { cardMatchesTarget } from '../validations/matchers';
 import { forEachInPlayCard } from './resolveCostTarget';
@@ -34,7 +35,38 @@ function triggerConditionsMet(
             return false;
         }
     }
+    if (typeof trigger.unlessSiteRegion === 'number') {
+        const siteNumber = site.siteNumber ?? 0;
+        if (
+            !siteNumber ||
+            getSiteRegion(siteNumber) === trigger.unlessSiteRegion
+        ) {
+            return false;
+        }
+    }
+    if (trigger.requiresSanctuary && !isCurrentSiteSanctuary(G)) {
+        return false;
+    }
     return true;
+}
+
+/** Cultures distinctes parmi les cartes en jeu (spot a culture). */
+function countDistinctCulturesInPlay(G: GameState): number {
+    const cultures = new Set<string>();
+    forEachInPlayCard(G, (card) => {
+        const culture = card.culture;
+        if (!culture || culture === 'NONE') return;
+        cultures.add(culture);
+    });
+    return cultures.size;
+}
+
+function canSpotInPlay(G: GameState, target: string[][]): boolean {
+    let found = false;
+    forEachInPlayCard(G, (card) => {
+        if (!found && cardMatchesTarget(card, target)) found = true;
+    });
+    return found;
 }
 
 function discardAllMatching(G: GameState, target: string[][]): void {
@@ -139,6 +171,9 @@ export function resolveSiteMoveAbilities(
                     amount =
                         (effect.count || 0) *
                         countInPlayMatching(G, effect.perInPlay);
+                } else if (effect.perDistinctCulture) {
+                    amount =
+                        (effect.count || 0) * countDistinctCulturesInPlay(G);
                 }
                 if (amount > 0) {
                     G.twilightPool = (G.twilightPool || 0) + amount;
@@ -150,6 +185,43 @@ export function resolveSiteMoveAbilities(
                     0,
                     (G.twilightPool || 0) - (effect.count || 0)
                 );
+                continue;
+            }
+            if (effect.type === 'ADD_BURDENS') {
+                const fpId = G.fpPlayerId || '0';
+                const fp = G.players[fpId];
+                if (fp && (effect.count || 0) > 0) {
+                    fp.burdens = (fp.burdens || 0) + (effect.count || 0);
+                }
+                continue;
+            }
+            if (effect.type === 'REMOVE_BURDENS') {
+                const fpId = G.fpPlayerId || '0';
+                const fp = G.players[fpId];
+                const n = effect.count || 0;
+                if (fp && n > 0) {
+                    fp.burdens = Math.max(0, (fp.burdens || 0) - n);
+                }
+                continue;
+            }
+            if (effect.type === 'ADD_THREATS') {
+                let per = effect.count || 0;
+                if (
+                    effect.countIfSpot &&
+                    canSpotInPlay(G, effect.countIfSpot.target)
+                ) {
+                    per = effect.countIfSpot.count;
+                }
+                let amount = per;
+                if (typeof effect.perCompanionOver === 'number') {
+                    amount =
+                        per *
+                        Math.max(
+                            0,
+                            companionCount(G) - effect.perCompanionOver
+                        );
+                }
+                if (amount > 0) addThreats(G, amount);
                 continue;
             }
             if (effect.type === 'DISCARD_ALL') {

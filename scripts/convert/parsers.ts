@@ -6044,6 +6044,132 @@ function parseSiteMoveAbilities(
         });
     }
 
+    // Abandoned Mine Shaft : not region N + regroup → add a burden.
+    const mineShaftRe =
+        /If this site is not in region (\d+) when the fellowship moves from (?:it|here|this site) during the regroup phase, add a burden\./gi;
+    while ((match = mineShaftRe.exec(text)) !== null) {
+        const region = parseInt(match[1], 10);
+        if (region !== 1 && region !== 2 && region !== 3) continue;
+        found.push({
+            id: `${cardId || 'ability'}:${found.length}:site-move-mine`,
+            phases: [],
+            trigger: {
+                type: 'MOVES_FROM',
+                duringRegroup: true,
+                unlessSiteRegion: region,
+            },
+            cost: [],
+            effects: [{ type: 'ADD_BURDENS', count: 1 }],
+            source: 'SELF',
+            text: stripAbilityMarkup(match[0]),
+        });
+    }
+
+    // Gate of Mordor : twilight × cultures spotées.
+    const twilightCultureRe = new RegExp(
+        `(?:When|Each time) the fellowship moves to ${siteRef}, add <symbol>twilight(\\d+)<\\/symbol> for each culture you can spot\\.`,
+        'gi'
+    );
+    while ((match = twilightCultureRe.exec(text)) !== null) {
+        const count = parseInt(match[1], 10);
+        if (!Number.isFinite(count) || count <= 0) continue;
+        found.push({
+            id: `${cardId || 'ability'}:${found.length}:site-move-culture`,
+            phases: [],
+            trigger: { type: 'MOVES_TO' },
+            cost: [],
+            effects: [
+                {
+                    type: 'ADD_TWILIGHT',
+                    count,
+                    perDistinctCulture: true,
+                },
+            ],
+            source: 'SELF',
+            text: stripAbilityMarkup(match[0]),
+        });
+    }
+
+    // City Gates : threat (or N if hunter minion) × companions over M.
+    const cityGatesRe = new RegExp(
+        `When the [Ff]ellowship moves to ${siteRef}, add a threat \\(or (\\d+) if you can spot a hunter minion\\) for each companion over (\\d+)\\.`,
+        'gi'
+    );
+    while ((match = cityGatesRe.exec(text)) !== null) {
+        const orCount = parseInt(match[1], 10);
+        const over = parseInt(match[2], 10);
+        if (
+            !Number.isFinite(orCount) ||
+            orCount <= 0 ||
+            !Number.isFinite(over) ||
+            over < 0
+        ) {
+            continue;
+        }
+        found.push({
+            id: `${cardId || 'ability'}:${found.length}:site-move-city-gates`,
+            phases: [],
+            trigger: { type: 'MOVES_TO' },
+            cost: [],
+            effects: [
+                {
+                    type: 'ADD_THREATS',
+                    count: 1,
+                    perCompanionOver: over,
+                    countIfSpot: {
+                        target: [['HUNTER', 'MINION']],
+                        count: orCount,
+                    },
+                },
+            ],
+            source: 'SELF',
+            text: stripAbilityMarkup(match[0]),
+        });
+    }
+
+    // Mithlond : each player heals each of his or her characters.
+    const mithlondRe = new RegExp(
+        `When the fellowship moves to ${siteRef}, each player heals each of (?:his or her|their) characters\\.`,
+        'gi'
+    );
+    while ((match = mithlondRe.exec(text)) !== null) {
+        found.push({
+            id: `${cardId || 'ability'}:${found.length}:site-move-mithlond`,
+            phases: [],
+            trigger: { type: 'MOVES_TO' },
+            cost: [],
+            effects: [
+                {
+                    type: 'HEAL',
+                    count: 1,
+                    all: true,
+                    target: [['CHARACTER']],
+                },
+            ],
+            source: 'SELF',
+            text: stripAbilityMarkup(match[0]),
+        });
+    }
+
+    // Imladris : if sanctuary → remove N burdens.
+    const imladrisRe = new RegExp(
+        `When the fellowship moves to ${siteRef}, if it is a sanctuary, remove (\\d+) burdens?\\.`,
+        'gi'
+    );
+    while ((match = imladrisRe.exec(text)) !== null) {
+        const count = parseInt(match[1], 10);
+        if (!Number.isFinite(count) || count <= 0) continue;
+        found.push({
+            id: `${cardId || 'ability'}:${found.length}:site-move-imladris`,
+            phases: [],
+            trigger: { type: 'MOVES_TO', requiresSanctuary: true },
+            cost: [],
+            effects: [{ type: 'REMOVE_BURDENS', count }],
+            source: 'SELF',
+            text: stripAbilityMarkup(match[0]),
+        });
+    }
+
     return found;
 }
 

@@ -634,6 +634,13 @@ export type AbilityEffect =
     | {
           type: 'ADD_THREATS';
           count: number;
+          /** × max(0, compagnons − seuil) (City Gates…). */
+          perCompanionOver?: number;
+          /**
+           * Si une carte matchant est spotée, utiliser `countIfSpot` à la place
+           * de `count` (avant le facteur perCompanionOver).
+           */
+          countIfSpot?: { target: string[][]; count: number };
       }
     | {
           /**
@@ -754,6 +761,8 @@ export type AbilityEffect =
           perCompanionOver?: number;
           /** +count par carte en jeu matchant (Fangorn Glade — armes PL…). */
           perInPlay?: string[][];
+          /** +count × cultures distinctes spotables (Gate of Mordor…). */
+          perDistinctCulture?: boolean;
       }
     | {
           /** Ajoute N fardeaux au joueur FP (contraintes de Porteur alternatif…). */
@@ -916,16 +925,24 @@ export type AbilityTrigger =
           type: 'MOVES_TO';
           /** Uniquement si le site d’arrivée est dans cette région. */
           siteRegion?: 1 | 2 | 3;
+          /** Uniquement si le site n’est PAS dans cette région. */
+          unlessSiteRegion?: 1 | 2 | 3;
           /** Uniquement pendant un déplacement de regroupement. */
           duringRegroup?: boolean;
+          /** Uniquement si le site courant est un sanctuaire (Imladris…). */
+          requiresSanctuary?: boolean;
       }
     | {
           /** Site : When the fellowship moves from this site… */
           type: 'MOVES_FROM';
           /** Uniquement si le site quitté est dans cette région. */
           siteRegion?: 1 | 2 | 3;
+          /** Uniquement si le site n’est PAS dans cette région. */
+          unlessSiteRegion?: 1 | 2 | 3;
           /** Uniquement pendant un déplacement de regroupement. */
           duringRegroup?: boolean;
+          /** Uniquement si le site courant est un sanctuaire. */
+          requiresSanctuary?: boolean;
       }
     | {
           /** Each time the fellowship moves… (réponse optionnelle). */
@@ -1393,7 +1410,7 @@ export interface ArcheryState {
     shadowRemainingWounds: number;
 }
 
-export type DevPresetType = 'SITES_HARD_WAVE';
+export type DevPresetType = 'SITES_HARD_WAVE' | 'SITES_MOVES_REST';
 
 export interface TempKeywordModifier {
     keyword: CardKeyword;

@@ -8445,6 +8445,26 @@
     "keywords": [
       "UNDERGROUND"
     ],
+    "abilities": [
+      {
+        "id": "13U185:0:site-move",
+        "phases": [],
+        "trigger": {
+          "type": "MOVES_FROM",
+          "duringRegroup": true,
+          "unlessSiteRegion": 1
+        },
+        "cost": [],
+        "effects": [
+          {
+            "type": "ADD_BURDENS",
+            "count": 1
+          }
+        ],
+        "source": "SELF",
+        "text": "If this site is not in region 1 when the fellowship moves from here during the regroup phase, add a burden."
+      }
+    ],
     "twilightCost": 0,
     "siteArrow": "Left",
     "imageUrl": "/cards_visuals/o_13_185.jpg",
@@ -8894,6 +8914,34 @@
     "isUnique": false,
     "kind": "SITE",
     "type": "SITE",
+    "abilities": [
+      {
+        "id": "15S189:0:site-move",
+        "phases": [],
+        "trigger": {
+          "type": "MOVES_TO"
+        },
+        "cost": [],
+        "effects": [
+          {
+            "type": "ADD_THREATS",
+            "count": 1,
+            "perCompanionOver": 4,
+            "countIfSpot": {
+              "target": [
+                [
+                  "HUNTER",
+                  "MINION"
+                ]
+              ],
+              "count": 2
+            }
+          }
+        ],
+        "source": "SELF",
+        "text": "When the Fellowship moves to this site, add a threat (or 2 if you can spot a hunter minion) for each companion over 4."
+      }
+    ],
     "twilightCost": 1,
     "siteArrow": "Right",
     "imageUrl": "/cards_visuals/o_15_189.jpg",
@@ -8962,6 +9010,25 @@
     "type": "SITE",
     "keywords": [
       "BATTLEGROUND"
+    ],
+    "abilities": [
+      {
+        "id": "15S191:0:site-move",
+        "phases": [],
+        "trigger": {
+          "type": "MOVES_TO"
+        },
+        "cost": [],
+        "effects": [
+          {
+            "type": "ADD_TWILIGHT",
+            "count": 1,
+            "perDistinctCulture": true
+          }
+        ],
+        "source": "SELF",
+        "text": "Each time the fellowship moves to this site, add twilight1 for each culture you can spot."
+      }
     ],
     "twilightCost": 0,
     "siteArrow": "Left",
@@ -9217,6 +9284,25 @@
     "keywords": [
       "RIVER"
     ],
+    "abilities": [
+      {
+        "id": "17U147:0:site-move",
+        "phases": [],
+        "trigger": {
+          "type": "MOVES_TO",
+          "requiresSanctuary": true
+        },
+        "cost": [],
+        "effects": [
+          {
+            "type": "REMOVE_BURDENS",
+            "count": 2
+          }
+        ],
+        "source": "SELF",
+        "text": "When the fellowship moves to this site, if it is a sanctuary, remove 2 burdens."
+      }
+    ],
     "twilightCost": 3,
     "imageUrl": "/cards_visuals/o_17_147.jpg",
     "i18n": {
@@ -9356,6 +9442,30 @@
     "type": "SITE",
     "keywords": [
       "RIVER"
+    ],
+    "abilities": [
+      {
+        "id": "18U136:0:site-move",
+        "phases": [],
+        "trigger": {
+          "type": "MOVES_TO"
+        },
+        "cost": [],
+        "effects": [
+          {
+            "type": "HEAL",
+            "count": 1,
+            "all": true,
+            "target": [
+              [
+                "CHARACTER"
+              ]
+            ]
+          }
+        ],
+        "source": "SELF",
+        "text": "When the fellowship moves to this site, each player heals each of his or her characters."
+      }
     ],
     "twilightCost": 2,
     "imageUrl": "/cards_visuals/o_18_136.jpg",
