@@ -50,6 +50,8 @@ import {
     getReinforceCandidates,
     tokenCountOnCard,
 } from '../../logic/cultureTokens';
+import { areCultureTokenChangesForbidden } from '../../logic/sites';
+import { formatAbilityWhoLabel } from './collectAbilities';
 import {
     getCardsStackedOnHost,
     getHandStackCandidates,
@@ -833,6 +835,7 @@ export function abilityHasLegalEffectTarget(
             continue;
         }
         if (effect.type === 'REINFORCE_CULTURE_TOKEN') {
+            if (areCultureTokenChangesForbidden(G)) return false;
             const ownerId = abilityOwnerPlayerId(G, source);
             if (!ownerId) return false;
             if (
@@ -870,6 +873,7 @@ export function abilityHasLegalEffectTarget(
                 if (!card || !isHealableCard(card)) return false;
             }
             if (effect.type === 'REMOVE_CULTURE_TOKEN') {
+                if (areCultureTokenChangesForbidden(G)) return false;
                 const card = resolveAbilityTarget(G, source, effect.target);
                 if (
                     !card ||
@@ -880,6 +884,7 @@ export function abilityHasLegalEffectTarget(
                 }
             }
             if (effect.type === 'PLACE_CULTURE_TOKEN') {
+                if (areCultureTokenChangesForbidden(G)) return false;
                 const card = resolveAbilityTarget(G, source, effect.target);
                 if (!card) return false;
             }
@@ -1016,22 +1021,9 @@ export function formatDesignationPrompt(
         target.length > 1 &&
         target.every((branch) => Array.isArray(branch))
     ) {
-        const parts = target.map((branch) => {
-            const tokens = branch.flat();
-            if (tokens.includes('PIPEWEED')) return 'une herbe à pipe';
-            const label = tokens
-                .map((token) => {
-                    if (token === 'MINION') return 'séide';
-                    if (token === 'PIPE') return 'pipe';
-                    return token.charAt(0) + token.slice(1).toLowerCase();
-                })
-                .join(' ');
-            const proper =
-                tokens.length === 1 &&
-                /[a-zà-ÿ]/i.test(tokens[0]!) &&
-                tokens[0] !== tokens[0]!.toUpperCase();
-            return proper ? `votre ${label}` : `un ${label}`;
-        });
+        const parts = target.map((branch) =>
+            formatAbilityWhoLabel(branch.flat(), true)
+        );
         return `Choisissez ${parts.join(' ou ')}.`;
     }
     const tokens = target.flat();
@@ -1053,20 +1045,7 @@ export function formatDesignationPrompt(
     if (healMulti && useEffect) {
         return 'Choisissez les compagnons à soigner.';
     }
-    const properName =
-        tokens.length === 1 &&
-        /[a-zà-ÿ]/i.test(tokens[0]!) &&
-        tokens[0] !== tokens[0]!.toUpperCase();
-    const label = tokens
-        .map((token) => {
-            if (token === 'MINION') return 'séide';
-            if (token === 'PIPE') return 'pipe';
-            return token.charAt(0) + token.slice(1).toLowerCase();
-        })
-        .join(' ');
-    return properName
-        ? `Choisissez votre ${label}.`
-        : `Choisissez un ${label}.`;
+    return `Choisissez ${formatAbilityWhoLabel(tokens, true)}.`;
 }
 
 export function isDesignationTargetId(

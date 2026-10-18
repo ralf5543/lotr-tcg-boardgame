@@ -8409,6 +8409,45 @@
     "isUnique": false,
     "kind": "SITE",
     "type": "SITE",
+    "abilities": [
+      {
+        "id": "12U194:0:site-phase",
+        "phases": [
+          "SKIRMISH"
+        ],
+        "cost": [
+          {
+            "exert": [
+              {
+                "count": 1,
+                "target": [
+                  [
+                    "MAN"
+                  ]
+                ],
+                "mode": "DESIGNATION",
+                "excludeKeywords": [
+                  "ENDURING"
+                ]
+              }
+            ]
+          }
+        ],
+        "effects": [
+          {
+            "type": "ADD_TEMP_KEYWORD",
+            "keyword": "DAMAGE +1",
+            "target": "COST_TARGET",
+            "expiresAtPhase": "REGROUP"
+          }
+        ],
+        "source": "SELF",
+        "text": "Skirmish: Exert your Man (except an enduring Man) to make him or her damage +1."
+      }
+    ],
+    "actionPhases": [
+      "SKIRMISH"
+    ],
     "twilightCost": 2,
     "siteArrow": "Left",
     "imageUrl": "/cards_visuals/o_12_194.jpg",
@@ -8681,6 +8720,31 @@
     "keywords": [
       "RIVER"
     ],
+    "abilities": [
+      {
+        "id": "13S191:0:site-passive-rest",
+        "phases": [],
+        "trigger": {
+          "type": "WHILE"
+        },
+        "cost": [],
+        "effects": [
+          {
+            "type": "MODIFY_STAT",
+            "stat": "STRENGTH",
+            "value": 1,
+            "target": [
+              [
+                "CHARACTER"
+              ]
+            ],
+            "perBorneCards": true
+          }
+        ],
+        "source": "SELF",
+        "text": "Each character is strength +1 for each card borne by that character."
+      }
+    ],
     "twilightCost": 2,
     "siteArrow": "Left",
     "imageUrl": "/cards_visuals/o_13_191.jpg",
@@ -8716,6 +8780,31 @@
     "type": "SITE",
     "keywords": [
       "BATTLEGROUND"
+    ],
+    "abilities": [
+      {
+        "id": "13S192:0:site-passive-rest",
+        "phases": [],
+        "trigger": {
+          "type": "WHILE",
+          "moreCompanionsThanMinions": true
+        },
+        "cost": [],
+        "effects": [
+          {
+            "type": "MODIFY_STAT",
+            "stat": "STRENGTH",
+            "value": 1,
+            "target": [
+              [
+                "MINION"
+              ]
+            ]
+          }
+        ],
+        "source": "SELF",
+        "text": "While a player can spot more companions than minions, each minion is strength +1."
+      }
     ],
     "twilightCost": 0,
     "siteArrow": "Left",
@@ -8789,6 +8878,23 @@
     "type": "SITE",
     "keywords": [
       "MOUNTAIN"
+    ],
+    "abilities": [
+      {
+        "id": "13U194:0:site-passive-rest",
+        "phases": [],
+        "trigger": {
+          "type": "WHILE"
+        },
+        "cost": [],
+        "effects": [
+          {
+            "type": "FORBID_CULTURE_TOKEN_CHANGES"
+          }
+        ],
+        "source": "SELF",
+        "text": "Culture tokens cannot be added, removed, or reinforced."
+      }
     ],
     "twilightCost": 2,
     "siteArrow": "Left",
@@ -9338,6 +9444,33 @@
     "keywords": [
       "PLAINS"
     ],
+    "abilities": [
+      {
+        "id": "17U148:0:site-passive-rest",
+        "phases": [],
+        "trigger": {
+          "type": "WHILE",
+          "controlThisSite": true
+        },
+        "cost": [],
+        "effects": [
+          {
+            "type": "MODIFY_STAT",
+            "stat": "STRENGTH",
+            "value": 1,
+            "target": [
+              [
+                "HUNTER",
+                "MINION"
+              ]
+            ],
+            "ownerIsSiteController": true
+          }
+        ],
+        "source": "SELF",
+        "text": "While you control this site, each of your hunter minions is strength +1."
+      }
+    ],
     "twilightCost": 1,
     "imageUrl": "/cards_visuals/o_17_148.jpg",
     "i18n": {
@@ -9604,6 +9737,23 @@
     "type": "SITE",
     "keywords": [
       "DWELLING"
+    ],
+    "abilities": [
+      {
+        "id": "18U140:0:site-passive-rest",
+        "phases": [],
+        "trigger": {
+          "type": "WHILE"
+        },
+        "cost": [],
+        "effects": [
+          {
+            "type": "FORBID_FOLLOWER_TRANSFER"
+          }
+        ],
+        "source": "SELF",
+        "text": "While the fellowship is at this site, followers cannot be transferred to a character."
+      }
     ],
     "twilightCost": 0,
     "imageUrl": "/cards_visuals/o_18_140.jpg",

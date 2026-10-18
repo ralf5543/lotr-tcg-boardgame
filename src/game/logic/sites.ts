@@ -83,6 +83,29 @@ export function isCurrentSiteSanctuary(G: GameState): boolean {
     return siteHasKeyword(getCurrentSite(G), 'SANCTUARY');
 }
 
+function currentSiteHasPassiveEffect(
+    G: GameState,
+    effectType: 'FORBID_FOLLOWER_TRANSFER' | 'FORBID_CULTURE_TOKEN_CHANGES'
+): boolean {
+    const site = getCurrentSite(G);
+    if (!site?.abilities?.length) return false;
+    return site.abilities.some(
+        (ability) =>
+            ability.trigger?.type === 'WHILE' &&
+            (ability.effects || []).some((effect) => effect.type === effectType)
+    );
+}
+
+/** Streets of Bree : suivants non transférables. */
+export function isFollowerTransferForbidden(G: GameState): boolean {
+    return currentSiteHasPassiveEffect(G, 'FORBID_FOLLOWER_TRANSFER');
+}
+
+/** Redhorn Pass : jetons de culture intouchables. */
+export function areCultureTokenChangesForbidden(G: GameState): boolean {
+    return currentSiteHasPassiveEffect(G, 'FORBID_CULTURE_TOKEN_CHANGES');
+}
+
 /** Région 1 (sites 1–3), 2 (4–6) ou 3 (7–9). */
 export function getSiteRegion(siteNumber: number): 1 | 2 | 3 {
     if (siteNumber <= 3) return 1;

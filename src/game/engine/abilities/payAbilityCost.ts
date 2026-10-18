@@ -15,6 +15,7 @@ import {
     removeCultureTokensForPlayer,
     tokenCountOnCard,
 } from '../../logic/cultureTokens';
+import { areCultureTokenChangesForbidden } from '../../logic/sites';
 import {
     announceInitiativeIfChanged,
     freePeoplesHasInitiative,
@@ -246,6 +247,7 @@ function canPayOption(
     }
 
     if (option.removeCultureTokens) {
+        if (areCultureTokenChangesForbidden(G)) return false;
         const ownerId = abilityOwnerPlayerId(G, source);
         if (!ownerId) return false;
         const { culture, count, from } = option.removeCultureTokens;

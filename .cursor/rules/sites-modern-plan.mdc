@@ -159,6 +159,21 @@ Inertes volontaires (may / désignation / autre vague) : Caves, City of Kings, C
 
 Preset : `SITES_MOVES_REST`.
 
+### Vague passifs / phase (reste 12–18)
+
+| Id | Titre | Statut | Notes |
+| --- | --- | --- | --- |
+| `13S191` | Fords of Isen | OK | +1 force / carte portée |
+| `13S192` | The Great Gates | OK | Plus de compagnons que séides → séides +1 |
+| `17U148` | Nurn | OK | Contrôle → tes hunter minions +1 |
+| `18U140` | Streets of Bree | OK | Interdit transfert suivants |
+| `13U194` | Redhorn Pass | OK | Interdit jetons de culture |
+| `12U194` | Wold Battlefield | OK | Skirmish exert Man (sauf enduring) → damage +1 |
+
+Inertes volontaires (trop durs / may) : Hill of Sight (résistance OR), Doors of Durin (race majoritaire), Breeding pit (premier hunter –2), Isenwash (start regroup may).
+
+Preset : `SITES_PASSIVES_REST`.
+
 ### Inertes — sets 12–18 (hors vagues livrées)
 
 | Id | Titre | Famille |
@@ -169,27 +184,21 @@ Preset : `SITES_MOVES_REST`.
 | `12S190` | Northern Pelennor | phase-ability |
 | `12U191` | Shores of Nen Hithoel | phase-ability |
 | `12U192` | Slopes of Orodruin | phase-ability |
-| `12U194` | Wold Battlefield | phase-ability |
 | `13S186` | Caves of Aglarond | moves-to |
 | `13U187` | City of Kings | moves-to |
 | `13U188` | Courtyard Parapet | moves-to |
 | `13S189` | Crossroads of the Fallen Kings | moves-to |
 | `13U190` | Doors of Durin | passive-while |
-| `13S191` | Fords of Isen | passive-while |
-| `13S192` | The Great Gates | passive-while |
 | `13U193` | Isenwash | passive-while |
-| `13U194` | Redhorn Pass | passive-while |
 | `15S188` | Breeding pit of Isengard | passive-while |
 | `15S190` | East Wall of Rohan | start-fellowship |
 | `15U192` | Isengard Ruined | each-time |
 | `17U145` | Dol Guldur | phase-ability |
 | `17U146` | Falls of Rauros | moves-to |
-| `17U148` | Nurn | passive-while |
 | `18U134` | Doorway to Doom | moves-to |
 | `18U135` | Foot of Mount Doom | passive-while |
 | `18U137` | Morannon Plains | moves-to |
 | `18U139` | Steward's Tomb | passive-while |
-| `18U140` | Streets of Bree | passive-while |
 
 ## Étapes
 
@@ -216,7 +225,10 @@ Preset : `SITES_MOVES_REST`.
 9. Vague **moves auto** reste 13–18 ✅ — preset `SITES_MOVES_REST`
    - OK : Mine Shaft ; Gate of Mordor ; City Gates ; Mithlond ; Imladris
    - Inertes volontaires (may / désignation) : Caves / City of Kings / Courtyard / Crossroads / Falls / Doorway / Morannon
-10. Reste inertes 12–18 (phase / passifs / may moves)
+10. Vague **passifs / phase** reste 12–18 ✅ — preset `SITES_PASSIVES_REST`
+    - OK : Fords ; Great Gates ; Nurn ; Streets ; Redhorn ; Wold
+    - Inertes volontaires : Hill of Sight ; Doors of Durin ; Breeding pit ; Isenwash
+11. Reste inertes 12–18 (phase Shadow / may moves / passifs durs)
 
 ## Hors scope
 

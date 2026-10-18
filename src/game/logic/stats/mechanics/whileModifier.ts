@@ -470,8 +470,49 @@ export function whileConditionHolds(
         if (getFellowshipCurrentRegion(G) !== trigger.inRegion) return false;
     }
 
+    if (trigger.moreCompanionsThanMinions) {
+        const companions = countCompanionsOnBoard(G);
+        const minions = countMinionsOnBoard(G);
+        if (companions <= minions) return false;
+    }
+
+    if (trigger.controlThisSite) {
+        const controller = siteControllerId(G, source);
+        if (controller == null) return false;
+    }
+
     // Prédicats OK, ou WHILE vide (vrai tant que la carte est en jeu).
     return true;
+}
+
+function countCompanionsOnBoard(G: GameState): number {
+    const fpId = G.fpPlayerId || '0';
+    return (G.players[fpId]?.fellowshipArea || []).filter(
+        (c) => c?.type === 'COMPANION'
+    ).length;
+}
+
+function countMinionsOnBoard(G: GameState): number {
+    return (G.battlefield || []).filter((c) => c?.type === 'MINION').length;
+}
+
+/** Contrôleur du site source s’il est sur le chemin ; sinon undefined. */
+function siteControllerId(
+    G: GameState,
+    source: CardState
+): string | undefined {
+    const id = source.instanceId || source.id;
+    if (!id) return undefined;
+    for (const site of G.path || []) {
+        if (!site) continue;
+        if ((site.instanceId || site.id) !== id) continue;
+        if (site.controlledBy == null) return undefined;
+        return String(site.controlledBy);
+    }
+    // Source déjà typée site avec controlledBy (preset / tests).
+    const asSite = source as { controlledBy?: string | number };
+    if (asSite.controlledBy == null) return undefined;
+    return String(asSite.controlledBy);
 }
 
 /** Index du site qui porte cette attache, ou -1. */
@@ -622,16 +663,31 @@ export function getWhileStrengthBonus(
         }
     });
 
-    // Passifs du site actuel (Helm's Gate, Flats of Rohan…).
+    // Passifs du site actuel (Helm's Gate, Flats of Rohan, Fords, Great Gates…).
     const currentSite = getCurrentSite(G);
     if (currentSite) {
         for (const ability of currentSite.abilities || []) {
             if (ability.trigger?.type !== 'WHILE') continue;
+            if (!whileConditionHolds(G, currentSite as CardState, ability)) {
+                continue;
+            }
             for (const effect of ability.effects || []) {
                 if (effect.type !== 'MODIFY_STAT') continue;
                 if (effect.stat !== 'STRENGTH') continue;
                 if (!Array.isArray(effect.target)) continue;
                 if (!cardMatchesTarget(card, effect.target)) continue;
+                if (effect.ownerIsSiteController) {
+                    const controller = siteControllerId(
+                        G,
+                        currentSite as CardState
+                    );
+                    if (
+                        controller == null ||
+                        findInPlayCardOwnerId(G, card) !== controller
+                    ) {
+                        continue;
+                    }
+                }
                 if (effect.bearing) {
                     const hasBearing = (card.attachments || []).some(
                         (att) =>
@@ -648,11 +704,48 @@ export function getWhileStrengthBonus(
                         continue;
                     }
                 }
+                if (effect.perBorneCards) {
+                    const borne = (card.attachments || []).filter(Boolean)
+                        .length;
+                    bonus += (effect.value || 0) * borne;
+                    continue;
+                }
                 bonus += modifyStatMagnitude(
                     G,
                     currentSite as CardState,
                     effect
                 );
+            }
+        }
+    }
+
+    // Sites contrôlés (Nurn…) : actifs même si la compagnie n’y est pas.
+    for (const site of G.path || []) {
+        if (!site || site.controlledBy == null) continue;
+        if (
+            currentSite &&
+            (site.instanceId || site.id) ===
+                (currentSite.instanceId || currentSite.id)
+        ) {
+            // Déjà traité ci-dessus.
+            continue;
+        }
+        for (const ability of site.abilities || []) {
+            if (ability.trigger?.type !== 'WHILE') continue;
+            if (!ability.trigger.controlThisSite) continue;
+            if (!whileConditionHolds(G, site as CardState, ability)) continue;
+            for (const effect of ability.effects || []) {
+                if (effect.type !== 'MODIFY_STAT') continue;
+                if (effect.stat !== 'STRENGTH') continue;
+                if (!Array.isArray(effect.target)) continue;
+                if (!cardMatchesTarget(card, effect.target)) continue;
+                if (effect.ownerIsSiteController) {
+                    const controller = String(site.controlledBy);
+                    if (findInPlayCardOwnerId(G, card) !== controller) {
+                        continue;
+                    }
+                }
+                bonus += modifyStatMagnitude(G, site as CardState, effect);
             }
         }
     }

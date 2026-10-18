@@ -55,6 +55,7 @@ import {
     liberateSite,
     stackMinionOnControlledSite,
     playStackedMinion,
+    areCultureTokenChangesForbidden,
 } from '../../logic/sites';
 import {
     stackCardOnHost,
@@ -1299,6 +1300,7 @@ function applyOneEffect(
     }
 
     if (effect.type === 'PLACE_CULTURE_TOKEN') {
+        if (areCultureTokenChangesForbidden(G)) return false;
         let count = effect.count || 1;
         if (effect.perSpot) {
             count *= resolveCostTarget(G, source, effect.perSpot.target).length;
@@ -1309,6 +1311,7 @@ function applyOneEffect(
     }
 
     if (effect.type === 'REMOVE_CULTURE_TOKEN') {
+        if (areCultureTokenChangesForbidden(G)) return false;
         return (
             removeCultureTokensFromCard(
                 target,

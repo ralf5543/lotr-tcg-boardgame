@@ -359,6 +359,16 @@ export type AbilityEffect =
            * (Flats of Rohan : more than 1 → atLeast 2).
            */
           skirmishingMinionsAtLeast?: number;
+          /**
+           * Bonus = value × cartes attachées au bénéficiaire
+           * (Fords of Isen : for each card borne).
+           */
+          perBorneCards?: boolean;
+          /**
+           * Uniquement les cartes du joueur qui contrôle le site source
+           * (Nurn : your hunter minions).
+           */
+          ownerIsSiteController?: boolean;
       }
     | {
           /** Mot-clé passif (While…) — pas d’expiration de phase. */
@@ -406,6 +416,14 @@ export type AbilityEffect =
           specialAbilities?: boolean;
           /** Uniquement pendant un combat impliquant la source (Faramir). */
           involvingSource?: boolean;
+      }
+    | {
+          /** Streets of Bree : les suivants ne peuvent pas être transférés. */
+          type: 'FORBID_FOLLOWER_TRANSFER';
+      }
+    | {
+          /** Redhorn Pass : jetons de culture intouchables. */
+          type: 'FORBID_CULTURE_TOKEN_CHANGES';
       }
     | {
           /**
@@ -915,6 +933,16 @@ export type AbilityTrigger =
            * — vrai si la compagnie est en région N (sites 1–3 / 4–6 / 7–9).
            */
           inRegion?: 1 | 2 | 3;
+          /**
+           * « While a player can spot more companions than minions… »
+           * (The Great Gates).
+           */
+          moreCompanionsThanMinions?: boolean;
+          /**
+           * « While you control this site… » — source = site contrôlé
+           * (Nurn).
+           */
+          controlThisSite?: boolean;
       }
     | {
           type: 'CHARACTER_DIES';
@@ -1410,7 +1438,7 @@ export interface ArcheryState {
     shadowRemainingWounds: number;
 }
 
-export type DevPresetType = 'SITES_HARD_WAVE' | 'SITES_MOVES_REST';
+export type DevPresetType = 'SITES_PASSIVES_REST';
 
 export interface TempKeywordModifier {
     keyword: CardKeyword;

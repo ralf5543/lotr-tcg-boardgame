@@ -1,5 +1,6 @@
 import type { CardState, SiteCardState, GameState } from '../../types';
 import { canAddThreats } from '../../logic/threats';
+import { isFollowerTransferForbidden } from '../../logic/sites';
 
 export interface AidValidationResult {
     valid: boolean;
@@ -14,6 +15,13 @@ export function canTransferAid(
 ): AidValidationResult {
     if (!follower || follower.type !== 'FOLLOWER') {
         return { valid: false, reason: "La carte n'est pas un Follower." };
+    }
+
+    if (isFollowerTransferForbidden(G)) {
+        return {
+            valid: false,
+            reason: 'Les suivants ne peuvent pas être transférés sur ce site.',
+        };
     }
 
     if (!follower.aidCost) {

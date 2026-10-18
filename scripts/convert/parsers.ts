@@ -6428,6 +6428,12 @@ export function parseSiteAbilities(
             id: `${cardId || 'ability'}:${abilities.length}:site-named-twilight`,
         });
     });
+    parseSitePassiveRestAbilities(text, cardId).forEach((ability) => {
+        abilities.push({
+            ...ability,
+            id: `${cardId || 'ability'}:${abilities.length}:site-passive-rest`,
+        });
+    });
     return abilities.length > 0 ? abilities : undefined;
 }
 
@@ -6713,6 +6719,169 @@ function parseSitePhaseAbilities(
             ],
             source: 'SELF',
             text: stripAbilityMarkup(match[0]),
+        });
+    }
+
+    // Wold Battlefield : Exert your Man (except enduring) → damage +1.
+    const woldRe =
+        /(?:\*\*|<(?:keyword)>)?Skirmish:?\s*(?:<\/(?:keyword)>)?(?:\*\*)?\s*Exert your Man\s*\(except an enduring Man\),?\s*to make him or her\s+(?:\*\*|<(?:keyword)>)?damage\s*\+\s*1\.?(?:\*\*|<\/(?:keyword)>)?/gi;
+    // Aussi « **Plains. Skirmish:** Exert… » (phase dans le même gras).
+    const woldInlineRe =
+        /Skirmish:?\s*(?:\*\*)?\s*Exert your Man\s*\(except an enduring Man\),?\s*to make him or her\s+(?:\*\*)?damage\s*\+\s*1\.?(?:\*\*)?/gi;
+    const pushWold = (raw: string) => {
+        found.push({
+            id: `${cardId || 'ability'}:${found.length}:site-phase-wold`,
+            phases: ['SKIRMISH'],
+            cost: [
+                {
+                    exert: [
+                        {
+                            count: 1,
+                            target: [['MAN']],
+                            mode: 'DESIGNATION',
+                            excludeKeywords: ['ENDURING'],
+                        },
+                    ],
+                },
+            ],
+            effects: [
+                {
+                    type: 'ADD_TEMP_KEYWORD',
+                    keyword: 'DAMAGE +1',
+                    target: 'COST_TARGET',
+                    expiresAtPhase: 'REGROUP',
+                },
+            ],
+            source: 'SELF',
+            text: stripAbilityMarkup(raw),
+        });
+    };
+    while ((match = woldRe.exec(text)) !== null) {
+        pushWold(match[0]);
+    }
+    if (found.every((a) => !String(a.id).includes('site-phase-wold'))) {
+        while ((match = woldInlineRe.exec(text)) !== null) {
+            pushWold(match[0]);
+        }
+    }
+
+    return found;
+}
+
+/**
+ * Passifs sites (reste 12–18) : Fords / Great Gates / Nurn / Streets / Redhorn.
+ */
+function parseSitePassiveRestAbilities(
+    text: string,
+    cardId?: string
+): Record<string, unknown>[] {
+    const found: Record<string, unknown>[] = [];
+    const plain = stripAbilityMarkup(text).replace(/\*\*/g, ' ');
+    let match: RegExpExecArray | null;
+
+    // Fords of Isen
+    const fordsRe =
+        /Each character is strength ([+-]\d+) for each card borne by that character\.?/gi;
+    while ((match = fordsRe.exec(plain)) !== null) {
+        const value = parseInt(match[1], 10);
+        if (!Number.isFinite(value) || value === 0) continue;
+        found.push({
+            id: `${cardId || 'ability'}:${found.length}:site-fords`,
+            phases: [],
+            trigger: { type: 'WHILE' },
+            cost: [],
+            effects: [
+                {
+                    type: 'MODIFY_STAT',
+                    stat: 'STRENGTH',
+                    value,
+                    target: [['CHARACTER']],
+                    perBorneCards: true,
+                },
+            ],
+            source: 'SELF',
+            text: stripAbilityMarkup(match[0]),
+        });
+    }
+
+    // The Great Gates
+    const gatesRe =
+        /While a player can spot more companions than minions, each minion is strength ([+-]\d+)\.?/gi;
+    while ((match = gatesRe.exec(plain)) !== null) {
+        const value = parseInt(match[1], 10);
+        if (!Number.isFinite(value) || value === 0) continue;
+        found.push({
+            id: `${cardId || 'ability'}:${found.length}:site-great-gates`,
+            phases: [],
+            trigger: { type: 'WHILE', moreCompanionsThanMinions: true },
+            cost: [],
+            effects: [
+                {
+                    type: 'MODIFY_STAT',
+                    stat: 'STRENGTH',
+                    value,
+                    target: [['MINION']],
+                },
+            ],
+            source: 'SELF',
+            text: stripAbilityMarkup(match[0]),
+        });
+    }
+
+    // Nurn
+    const nurnRe =
+        /While you control this site, each of your hunter minions is strength ([+-]\d+)\.?/gi;
+    while ((match = nurnRe.exec(plain)) !== null) {
+        const value = parseInt(match[1], 10);
+        if (!Number.isFinite(value) || value === 0) continue;
+        found.push({
+            id: `${cardId || 'ability'}:${found.length}:site-nurn`,
+            phases: [],
+            trigger: { type: 'WHILE', controlThisSite: true },
+            cost: [],
+            effects: [
+                {
+                    type: 'MODIFY_STAT',
+                    stat: 'STRENGTH',
+                    value,
+                    target: [['HUNTER', 'MINION']],
+                    ownerIsSiteController: true,
+                },
+            ],
+            source: 'SELF',
+            text: stripAbilityMarkup(match[0]),
+        });
+    }
+
+    // Streets of Bree
+    if (
+        /While the fellowship is at this site, followers cannot be transferred to a character\.?/i.test(
+            plain
+        )
+    ) {
+        found.push({
+            id: `${cardId || 'ability'}:${found.length}:site-streets`,
+            phases: [],
+            trigger: { type: 'WHILE' },
+            cost: [],
+            effects: [{ type: 'FORBID_FOLLOWER_TRANSFER' }],
+            source: 'SELF',
+            text: 'While the fellowship is at this site, followers cannot be transferred to a character.',
+        });
+    }
+
+    // Redhorn Pass
+    if (
+        /Culture tokens cannot be added, removed, or reinforced\.?/i.test(plain)
+    ) {
+        found.push({
+            id: `${cardId || 'ability'}:${found.length}:site-redhorn`,
+            phases: [],
+            trigger: { type: 'WHILE' },
+            cost: [],
+            effects: [{ type: 'FORBID_CULTURE_TOKEN_CHANGES' }],
+            source: 'SELF',
+            text: 'Culture tokens cannot be added, removed, or reinforced.',
         });
     }
 

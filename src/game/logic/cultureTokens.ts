@@ -4,6 +4,7 @@ import type {
     CultureTokenSpec,
     GameState,
 } from '../types';
+import { areCultureTokenChangesForbidden } from './sites';
 
 /** Cultures Peuples Libres (reinforce « Free Peoples token »). */
 export const FREE_PEOPLES_CULTURES: ReadonlySet<CardCulture> = new Set([
@@ -263,6 +264,7 @@ export function canReinforce(
     count = 1
 ): boolean {
     if (count <= 0) return false;
+    if (areCultureTokenChangesForbidden(G)) return false;
     return getReinforceCandidates(G, ownerId, culture).length > 0;
 }
 
@@ -278,6 +280,7 @@ export function applyReinforce(
     targetIds?: string[]
 ): number {
     if (count <= 0) return 0;
+    if (areCultureTokenChangesForbidden(G)) return 0;
     const candidates = getReinforceCandidates(G, ownerId, culture);
     if (candidates.length === 0) return 0;
 
@@ -321,6 +324,7 @@ export function removeCultureTokensForPlayer(
     options?: { fromSelf?: CardState; targetId?: string }
 ): number {
     if (count <= 0) return 0;
+    if (areCultureTokenChangesForbidden(G)) return 0;
 
     if (options?.fromSelf) {
         return removeCultureTokensFromCard(options.fromSelf, culture, count);

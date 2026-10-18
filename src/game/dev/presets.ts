@@ -37,35 +37,17 @@ const clonePresetSite = (
 };
 
 /**
- * Vague cas durs / suite.
- * 1 Hobbiton → 2 Starkhorn → 3 Westfold → 4 Bridge (Balrog –3)
- * → … → 7 Mount Doom (région verrouillée).
+ * Vague passifs reste 12–18.
+ * Départ Fords (borne) ; téléporte Great Gates / Streets / Redhorn / Wold ;
+ * Nurn contrôlé Ombre hors site courant.
  */
-const SITES_HARD_WAVE_PATH = [
-    '12S189', // 1 Hobbiton Market
-    '12U193', // 2 Starkhorn
-    '15S194', // 3 Westfold Village (sanctuaire)
-    '12U186', // 4 Bridge (Balrog –3)
-    '11S265', // 5 Window
-    '11S228', // 6 Anduin Confluence (sanctuaire)
-    '15R193', // 7 Mount Doom
-    '11S263', // 8 West Gate
-    '11S265', // 9 Window
-] as const;
-
-/**
- * Vague moves auto (reste 13–18).
- * 1 Mine Shaft (région 1) → 2 City Gates → 3 Gate of Mordor
- * → 4 Mithlond → 5 filler → 6 Imladris (sanctuaire) → …
- * (Mine Shaft en R1 : pas de fardeau au départ regroup ; téléporter en R2/3 pour le cas positif.)
- */
-const SITES_MOVES_REST_PATH = [
-    '13U185', // 1 Abandoned Mine Shaft (région 1)
-    '15S189', // 2 City Gates
-    '15S191', // 3 Gate of Mordor
-    '18U136', // 4 Mithlond
-    '18U138', // 5 Sirannon
-    '17U147', // 6 Imladris (sanctuaire)
+const SITES_PASSIVES_REST_PATH = [
+    '13S191', // 1 Fords of Isen
+    '13S192', // 2 The Great Gates
+    '18U140', // 3 Streets of Bree
+    '13U194', // 4 Redhorn Pass
+    '12U194', // 5 Wold Battlefield
+    '17U148', // 6 Nurn (contrôlé Ombre)
     '11S265', // 7 Window
     '11S263', // 8 West Gate
     '11S250', // 9 North Undeep
@@ -133,134 +115,68 @@ export const applyDevPreset = (
     const shadowPlayer = G.players[shadowId];
 
     switch (presetType) {
-        case 'SITES_HARD_WAVE': {
+        case 'SITES_PASSIVES_REST': {
             resetBoardForPreset(G);
-            // Départ site 4 (Bridge) pour tester Balrog –3 ; téléporte 2/3/7.
-            setupDevPath(G, 3, SITES_HARD_WAVE_PATH);
-            // Assez pour jouer le Balrog (12) même hors Bridge ; sur Bridge = 9.
-            G.twilightPool = 12;
+            setupDevPath(G, 0, SITES_PASSIVES_REST_PATH);
+            G.twilightPool = 4;
             fpPlayer.burdens = 0;
 
+            const axe = clonePresetCard('1C9', 'dev-pass-axe');
             fpPlayer.fellowshipArea = [
                 {
-                    ...clonePresetCard('2C102', 'dev-hard-frodo'),
-                    attachments: [clonePresetCard('1R1', 'dev-hard-ring')],
+                    ...clonePresetCard('2C102', 'dev-pass-frodo'),
+                    attachments: [clonePresetCard('1R1', 'dev-pass-ring')],
                     wounds: 0,
                 },
                 {
-                    // Nain → Starkhorn.
-                    ...clonePresetCard('1R13', 'dev-hard-gimli'),
+                    // Homme → Wold ; axe → Fords (+1).
+                    ...clonePresetCard('1R89', 'dev-pass-aragorn'),
+                    attachments: [axe],
                     wounds: 0,
                 },
                 {
-                    // Hunter ×2 → Westfold + coût Legolas (2 chasseurs distincts).
-                    ...clonePresetCard('15S18', 'dev-hard-legolas'),
+                    ...clonePresetCard('1R13', 'dev-pass-gimli'),
                     wounds: 0,
                 },
                 {
-                    ...clonePresetCard('17S7', 'dev-hard-hunter-2'),
+                    // Homme Gandalf → Last Stand (place jetons) pour Redhorn.
+                    ...clonePresetCard('11R30', 'dev-pass-erland'),
                     wounds: 0,
                 },
             ];
-            fpPlayer.deck = [
-                clonePresetCard('1C11', 'dev-hard-draw-a'),
-                clonePresetCard('1R30', 'dev-hard-draw-b'),
-            ];
-            // There’s Another Way déjà en jeu (évite spot Sméagol).
             fpPlayer.supportArea = [
-                clonePresetCard('12C40', 'dev-hard-replace-fp'),
-            ];
-            fpPlayer.hand = [];
-            fpPlayer.sitesDeck = [
-                clonePresetSite('11S250', fpId),
-                clonePresetSite('11S265', fpId),
-                clonePresetSite('11S241', fpId),
-            ];
-
-            if (shadowPlayer) {
-                // Unforgiving Depths déjà en jeu + sites souterrains pour replace.
-                shadowPlayer.supportArea = [
-                    clonePresetCard('13C120', 'dev-hard-replace-sh'),
-                ];
-                shadowPlayer.sitesDeck = [
-                    clonePresetSite('11S248', shadowId), // Moria Stairway (underground)
-                    clonePresetSite('11S263', shadowId),
-                    clonePresetSite('18U138', shadowId),
-                ];
-                shadowPlayer.hand = [
-                    // Bridge : The Balrog twilight –3.
-                    clonePresetCard('2C51', 'dev-hard-balrog'),
-                ];
-                G.battlefield = [
-                    clonePresetCard('1C266', 'dev-hard-orc'),
-                ];
-            }
-
-            G.statusMessage =
-                '[DEV] Hard · Bridge (Balrog main Ombre) ; replace FP/Ombre déjà en jeu ; Mount Doom site 7 ; 2 chasseurs.';
-            break;
-        }
-
-        case 'SITES_MOVES_REST': {
-            resetBoardForPreset(G);
-            // Départ site 1 → avancer vers City Gates / Gate / Mine / Mithlond / Imladris.
-            setupDevPath(G, 0, SITES_MOVES_REST_PATH);
-            G.twilightPool = 0;
-            fpPlayer.burdens = 3;
-            fpPlayer.threats = 0;
-
-            fpPlayer.fellowshipArea = [
+                // Suivant → Streets of Bree (interdit transfert).
+                clonePresetCard('13R46', 'dev-pass-follower'),
+                // Redhorn (site 4) : place / retire jetons bloqués.
                 {
-                    ...clonePresetCard('2C102', 'dev-moves-frodo'),
-                    attachments: [clonePresetCard('1R1', 'dev-moves-ring')],
-                    wounds: 1,
-                },
-                {
-                    ...clonePresetCard('1R89', 'dev-moves-aragorn'),
-                    wounds: 1,
-                },
-                {
-                    ...clonePresetCard('1R13', 'dev-moves-gimli'),
-                    wounds: 1,
-                },
-                {
-                    // 5 compagnons → City Gates = 1 (ou 2) menace.
-                    ...clonePresetCard('15S18', 'dev-moves-legolas'),
-                    wounds: 0,
-                },
-                {
-                    ...clonePresetCard('17S7', 'dev-moves-hunter'),
-                    wounds: 0,
+                    ...clonePresetCard('18U21', 'dev-pass-last-stand'),
+                    cultureTokens: { GANDALF: 3 },
                 },
             ];
             fpPlayer.hand = [];
-            fpPlayer.deck = [
-                clonePresetCard('1C11', 'dev-moves-draw-a'),
-            ];
-            fpPlayer.sitesDeck = [
-                clonePresetSite('11S250', fpId),
-            ];
+            fpPlayer.sitesDeck = [clonePresetSite('11S250', fpId)];
 
             if (shadowPlayer) {
                 shadowPlayer.hand = [];
-                shadowPlayer.sitesDeck = [
-                    clonePresetSite('11S263', shadowId),
-                ];
-                // Hunter minion → City Gates ×2 ; cultures SHIRE/GONDOR/DWARVEN/ELVEN/MEN.
+                shadowPlayer.sitesDeck = [clonePresetSite('11S263', shadowId)];
                 G.battlefield = [
                     {
-                        ...clonePresetCard('15C83', 'dev-moves-hunter-minion'),
-                        wounds: 1,
+                        // Nurn (site 6) : force 8 → 9 si contrôlé ; orc reste 7.
+                        ...clonePresetCard('15C83', 'dev-pass-hunter-minion'),
+                        wounds: 0,
                     },
                     {
-                        ...clonePresetCard('1C266', 'dev-moves-orc'),
-                        wounds: 1,
+                        ...clonePresetCard('1C266', 'dev-pass-orc'),
+                        wounds: 0,
                     },
                 ];
+                // Nurn contrôlé Ombre → hunter +1 même hors site courant.
+                const nurn = G.path[5];
+                if (nurn) nurn.controlledBy = shadowId;
             }
 
             G.statusMessage =
-                '[DEV] Moves rest · Mine Shaft site 1 (R1) → City Gates → Gate Mordor → Mithlond → Imladris (sanctuaire).';
+                '[DEV] Passives rest · site 4 Redhorn (Last Stand jetons) ; site 6 Nurn (hunter 8→9). Téléporte via panneau DEV.';
             break;
         }
     }

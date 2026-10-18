@@ -780,7 +780,8 @@ function formatEffectBit(
     return '';
 }
 
-function formatProperOrClassWho(
+/** Libellé FR d’un filtre cible (bulle / toaster de désignation). */
+export function formatAbilityWhoLabel(
     tokens: string[],
     asDesignation: boolean
 ): string {
@@ -813,11 +814,11 @@ function formatCostWho(
         ) {
             return target
                 .map((branch) =>
-                    formatProperOrClassWho(branch.flat(), asDesignation)
+                    formatAbilityWhoLabel(branch.flat(), asDesignation)
                 )
                 .join(' ou ');
         }
-        return formatProperOrClassWho(target.flat(), asDesignation);
+        return formatAbilityWhoLabel(target.flat(), asDesignation);
     }
     return source.i18n?.fr?.title || source.title || 'cette carte';
 }
