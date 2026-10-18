@@ -137,6 +137,23 @@ describe('parseKeywords / parseGrantsKeywords — Ambush', () => {
         ]);
     });
 
+    it('extrait plusieurs terrains dans un même tag keyword', () => {
+        expect(
+            parseKeywords(
+                '<keyword>Battleground. Underground.</keyword> The Balrog is twilight cost –3.',
+                'The Bridge of Khazad-dûm',
+                'SITE'
+            )
+        ).toEqual(['BATTLEGROUND', 'UNDERGROUND']);
+        expect(
+            parseKeywords(
+                '<keyword>Battleground. Mountain. Underground.</keyword> Until the end of the game, sites in this region cannot be replaced.',
+                'Mount Doom',
+                'SITE'
+            )
+        ).toEqual(['BATTLEGROUND', 'MOUNTAIN', 'UNDERGROUND']);
+    });
+
     it('Strong Arms : confère Plains au site hôte via grantsKeywords', () => {
         expect(
             parseGrantsKeywords(
@@ -239,17 +256,11 @@ describe('parseSiteAbilities — moves to/from twilight', () => {
         ]);
     });
 
-    it('refuse may / spot / for each', () => {
+    it('refuse may / spot (pas le for each weapon déjà supporté)', () => {
         expect(
             parseSiteAbilities(
                 'When the fellowship moves from this site, the Free Peoples player may spot 3 burdens to remove a burden.',
                 '11S252'
-            )
-        ).toBeUndefined();
-        expect(
-            parseSiteAbilities(
-                'When the fellowship moves to this site, add <symbol>twilight1</symbol> for each Free Peoples weapon.',
-                '11S239'
             )
         ).toBeUndefined();
     });
@@ -3493,6 +3504,20 @@ describe('parseAbilities — While / skip archery phase', () => {
                 source: 'SELF',
                 text: expect.stringMatching(/Skip the archery phase/i),
             },
+            {
+                id: '2C51:1',
+                phases: [],
+                trigger: {
+                    type: 'WHILE',
+                    unlessAtSiteKeyword: 'UNDERGROUND',
+                },
+                cost: [],
+                effects: [{ type: 'DISCARD', count: 1, target: 'SELF' }],
+                source: 'SELF',
+                text: expect.stringMatching(
+                    /Discard The Balrog if not underground/i
+                ),
+            },
         ]);
     });
 
@@ -4458,12 +4483,34 @@ describe('parseAbilities — Response wins a skirmish', () => {
         ).toBeUndefined();
     });
 
-    it('n’émet rien pour Le Visible et l’Invisible (Exert 2 Elves)', () => {
+    it('n’émet rien pour Le Visible et l’Invisible (Exert 2 Elves → défausse condition)', () => {
         const text =
             '<keyword>Fellowship:</keyword> Exert 2 Elves to discard a condition.';
         expect(
             parseAbilities(text, 'The Seen and the Unseen', '1C58')
         ).toBeUndefined();
+    });
+
+    it('Legolas : Exert 2 hunter companions → distinctTargets', () => {
+        const text =
+            '<keyword>Regroup:</keyword> Exert 2 hunter companions to draw a card.';
+        expect(parseAbilities(text, 'Legolas', '15S18')).toEqual([
+            expect.objectContaining({
+                cost: [
+                    {
+                        exert: [
+                            {
+                                count: 2,
+                                target: [['HUNTER', 'COMPANION']],
+                                mode: 'DESIGNATION',
+                                distinctTargets: true,
+                            },
+                        ],
+                    },
+                ],
+                effects: [{ type: 'DRAW', count: 1 }],
+            }),
+        ]);
     });
 
     it('parse Sleep Caradhras : défausser toutes les situations', () => {

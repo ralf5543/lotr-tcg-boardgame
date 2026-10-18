@@ -1,0 +1,16 @@
+---
+description: Bugs issus du CSV — corriger la source, pas le convertisseur
+alwaysApply: true
+---
+
+# Source CSV vs convertisseur
+
+**Format : Standard (règles modernes).** Voir `.cursor/rules/format-standard.mdc`.
+
+Quand un défaut vient des **données source** (`src/lotro_card_data.csv` — markup, mots-clés collés, texte faux…) :
+
+1. **Corriger le CSV**, puis relancer `npm run convert`.
+2. **Ne pas** complexifier `scripts/convert/` (parsers, exceptions, heuristiques) pour rattraper une erreur de source.
+3. **En cas de doute** (CSV ou convertisseur ?) → **demander à Ralf avant** de modifier le CSV.
+
+Le convertisseur reste pour des fragments / patterns **génériques et sûrs**, pas pour des rustines par carte ou par markup pourri.

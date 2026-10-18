@@ -169,6 +169,11 @@ export interface CostSelector {
     count: number;
     target: AbilityTargetRef;
     mode?: SpotMode;
+    /**
+     * « Exert 2 hunter companions » : N cibles distinctes (1 affaiblissement chacune).
+     * Absent / false + count>1 = « twice » sur la même carte.
+     */
+    distinctTargets?: boolean;
     /** « another … » : la source ne compte pas pour le spot / exert. */
     excludeSource?: boolean;
     /** Spot avec vitalité minimale (Seeing Stone…). */
@@ -874,6 +879,11 @@ export type AbilityTrigger =
           bearing?: { target: string[][] };
           /** Compagnie sur un site portant ce mot-clé (terrains / Sanctuary). */
           atSiteKeyword?: CardKeyword;
+          /**
+           * Vrai tant que la compagnie n’est PAS sur un site avec ce mot-clé
+           * (« Discard The Balrog if not underground »).
+           */
+          unlessAtSiteKeyword?: CardKeyword;
           /** Spot N sites du chemin avec ce mot-clé. */
           spotSiteKeyword?: { keyword: CardKeyword; count: number };
           /** While no opponent controls a site… */

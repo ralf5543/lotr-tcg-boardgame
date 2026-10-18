@@ -9,6 +9,7 @@ import { useTargeting } from '../../../../contexts/TargetingContext';
 import { findTargetCard } from '../../../../utils/cardUtils';
 import { getCardText } from '../../../../utils/i18n';
 import { FormattedText } from '../../../../utils/FormattedText';
+import { findOptionalSiteResponseAbility } from '../../../../game/engine/responseWindow';
 
 interface GameControlsProps {
     G: GameState;
@@ -34,6 +35,8 @@ interface GameControlsProps {
             chosenTargetId?: string | string[]
         ) => void;
         resolveSiteStartAbilityChoice?: (accept: boolean) => void;
+        /** Réponse site optionnelle (Starkhorn…) : Activer → activateAbility. */
+        resolveSiteResponseAbilityChoice?: (accept: boolean) => void;
         confirmMuster?: () => void;
         confirmStartOfPhase?: () => void;
         yieldAssignmentToShadow?: () => void;
@@ -118,6 +121,14 @@ export const GameControls: React.FC<GameControlsProps> = ({
     const isSiteStartAbilityActive = Boolean(G.pendingSiteStartAbility);
     const isForcedChoiceActive = Boolean(G.pendingForcedChoice);
     const isRevealActive = Boolean(G.pendingReveal);
+    const siteResponseCandidate =
+        isResponseWindowActive && G.responseWindow?.activePlayerId != null
+            ? findOptionalSiteResponseAbility(
+                  G,
+                  String(G.responseWindow.activePlayerId)
+              )
+            : null;
+    const isSiteResponseAbilityActive = Boolean(siteResponseCandidate);
 
     const isAwaitingSiteActive =
         awaitingSite &&
@@ -211,6 +222,7 @@ export const GameControls: React.FC<GameControlsProps> = ({
             | 'MUSTER'
             | 'START_OF_PHASE'
             | 'SITE_START_ABILITY'
+            | 'SITE_RESPONSE_ABILITY'
             | 'ASSIGNMENT_YIELD'
             | 'ASSIGNMENT_PASS'
             | 'RESPONSE'
@@ -351,6 +363,29 @@ export const GameControls: React.FC<GameControlsProps> = ({
                 : 'Vous avez des capacités ou des effets de début de phase disponibles. Activez-les sur vos cartes ou validez.',
             showPassButton: false,
             type: 'START_OF_PHASE',
+        };
+    } else if (
+        isResponseWindowActive &&
+        isMyTurnToAct &&
+        isSiteResponseAbilityActive &&
+        siteResponseCandidate
+    ) {
+        const siteAbility = siteResponseCandidate.ability;
+        const siteClause =
+            siteAbility.textFr?.trim() ||
+            siteAbility.text?.trim() ||
+            getCardText(siteResponseCandidate.site, 'fr').gameText;
+        toastConfig = {
+            show: true,
+            title: 'EFFET DU SITE',
+            body: siteClause ? (
+                <FormattedText text={siteClause} />
+            ) : (
+                G.statusMessage ||
+                'Vous pouvez utiliser l’effet optionnel de ce site.'
+            ),
+            showPassButton: false,
+            type: 'SITE_RESPONSE_ABILITY',
         };
     } else if (isResponseWindowActive && isMyTurnToAct) {
         toastConfig = {
@@ -1045,6 +1080,32 @@ export const GameControls: React.FC<GameControlsProps> = ({
                                     style={{ marginTop: '8px', width: '100%' }}
                                     onClick={() => {
                                         moves.resolveSiteStartAbilityChoice?.(
+                                            false
+                                        );
+                                    }}
+                                >
+                                    Passer
+                                </S.ActionButton>
+                            </>
+                        )}
+
+                        {toastConfig.type === 'SITE_RESPONSE_ABILITY' && (
+                            <>
+                                <S.ActionButton
+                                    style={{ marginTop: '12px', width: '100%' }}
+                                    onClick={() => {
+                                        moves.resolveSiteResponseAbilityChoice?.(
+                                            true
+                                        );
+                                    }}
+                                >
+                                    Activer l’effet
+                                </S.ActionButton>
+                                <S.ActionButton
+                                    $variant="secondary"
+                                    style={{ marginTop: '8px', width: '100%' }}
+                                    onClick={() => {
+                                        moves.resolveSiteResponseAbilityChoice?.(
                                             false
                                         );
                                     }}

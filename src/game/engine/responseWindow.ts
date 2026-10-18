@@ -474,7 +474,7 @@ export function playerHasEligibleResponse(
             found = true;
             return;
         }
-        // Projection site → vainqueur (Heights…).
+        // Projection site → perso uniquement si coût exert (Watch-tower…).
         const projected = collectProjectedAbilities(G, card).some(
             ({ source, ability }) =>
                 inPlayResponseIsLegal(G, source, ability) &&
@@ -491,6 +491,29 @@ export function playerHasEligibleResponse(
         );
     }
     return found;
+}
+
+/**
+ * Réponse optionnelle du site courant sans coût à désigner
+ * (Starkhorn piocher, Heights défausse…) → toaster Activer / Passer,
+ * pas de bulle sur un personnage.
+ */
+export function findOptionalSiteResponseAbility(
+    G: GameState,
+    playerID: string
+): { site: CardState; ability: Ability } | null {
+    const site = currentSiteAsCard(G);
+    if (!site || !G.pendingEvent) return null;
+    const pid = String(playerID);
+    for (const ability of site.abilities || []) {
+        if (!ability.optional) continue;
+        if (!abilityMatchesPhase(ability, 'RESPONSE')) continue;
+        if (siteResponsePlayerId(G, ability) !== pid) continue;
+        if (!inPlayResponseIsLegal(G, site, ability)) continue;
+        if (abilityNeedsCostDesignation(G, site, ability, pid)) continue;
+        return { site, ability };
+    }
+    return null;
 }
 
 function hasAnyEligibleResponse(G: GameState): boolean {

@@ -44,6 +44,7 @@ import {
     formatDesignationPrompt,
     abilityHasLegalEffectTarget,
     getCostDesignationCandidates,
+    getCostDesignationCount,
     getDesignationCandidates,
     getEffectDesignationCandidates,
     getEffectDesignationCount,
@@ -89,6 +90,7 @@ import {
 import { isSiteReplaceForbidden } from '../../game/logic/siteReplaceRestrictions';
 import { findEventAbilityForPhase } from '../../game/engine/abilities/playEventAbility';
 import { abilityMatchesPhase } from '../../game/engine/abilities/collectAbilities';
+import { findOptionalSiteResponseAbility } from '../../game/engine/responseWindow';
 import { cardMatchesTarget } from '../../game/engine/validations/matchers';
 import { useCardPlayAudio } from '../../hooks/audio/useCardPlayAudio';
 import { useDiscardAudio } from '../../hooks/audio/useDiscardAudio';
@@ -679,6 +681,64 @@ export const GameBoard: React.FC<GameBoardProps> = ({
         [G, startTargeting, stopTargeting]
     );
 
+    /** Coût « affaiblir N personnages distincts » (Legolas hunter…). */
+    const requestMultiCostDesignation = useCallback(
+        (
+            source: CardState,
+            ability: NonNullable<CardState['abilities']>[number],
+            need: number,
+            onChosen: (cardIds: string[]) => void
+        ): boolean => {
+            if (need <= 1) return false;
+            const allCandidates = getCostDesignationCandidates(
+                G,
+                source,
+                ability,
+                myId
+            );
+            if (allCandidates.length < need) return false;
+
+            const collect = (picked: string[]) => {
+                const targetableCardIds = allCandidates
+                    .filter((card) => {
+                        const id = card.instanceId || card.id;
+                        return Boolean(id && !picked.includes(id));
+                    })
+                    .flatMap((card) => cardTargetIds(card));
+                const remaining = need - picked.length;
+                startTargeting({
+                    kind: 'DESIGNATION',
+                    targetableCardIds,
+                    selectedCardIds: picked,
+                    message:
+                        picked.length === 0
+                            ? formatDesignationPrompt(ability, 'cost')
+                            : `Encore ${remaining} (${picked.length}/${need}).`,
+                    onSelectTarget: (cardId) => {
+                        const card = allCandidates.find(
+                            (item) =>
+                                item.instanceId === cardId || item.id === cardId
+                        );
+                        const canonical =
+                            card?.instanceId || card?.id || cardId;
+                        if (picked.includes(canonical)) return;
+                        const next = [...picked, canonical];
+                        if (next.length >= need) {
+                            stopTargeting();
+                            queueMicrotask(() => onChosen(next));
+                            return;
+                        }
+                        collect(next);
+                    },
+                });
+            };
+
+            collect([]);
+            return true;
+        },
+        [G, myId, startTargeting, stopTargeting]
+    );
+
     const handleActivateAbility = (
         sourceInstanceId: string,
         abilityId: string,
@@ -888,6 +948,7 @@ export const GameBoard: React.FC<GameBoardProps> = ({
         };
 
         if (needsCost && needsEffect) {
+            // Coût multi-distinct + effet désigné : pas encore (Legolas = DRAW seul).
             if (
                 requestDesignation(
                     source,
@@ -1081,9 +1142,29 @@ export const GameBoard: React.FC<GameBoardProps> = ({
             }
         }
         // Coût déjà choisi (projection site → orc / Gimli…) : ne pas redemander.
+        const costNeed = getCostDesignationCount(ability);
+        if (!needsEffect && !hasPrefillCost && costNeed > 1) {
+            if (
+                requestMultiCostDesignation(
+                    source,
+                    ability,
+                    costNeed,
+                    (costIds) => {
+                        moves.activateAbility?.(
+                            sourceInstanceId,
+                            abilityId,
+                            costIds
+                        );
+                    }
+                )
+            ) {
+                return;
+            }
+        }
         if (
             !needsEffect &&
             !hasPrefillCost &&
+            costNeed <= 1 &&
             requestDesignation(source, ability, (cardId) => {
                 stopTargeting();
                 moves.activateAbility?.(sourceInstanceId, abilityId, cardId);
@@ -1157,6 +1238,25 @@ export const GameBoard: React.FC<GameBoardProps> = ({
         // handleActivateAbility lit G/moves courants ; pas de useCallback sur lui.
         // eslint-disable-next-line react-hooks/exhaustive-deps
         [G.pendingSiteStartAbility, moves]
+    );
+
+    const handleResolveSiteResponseAbilityChoice = useCallback(
+        (accept: boolean) => {
+            if (!accept) {
+                moves.passResponseWindow?.();
+                return;
+            }
+            const activeId = G.responseWindow?.activePlayerId;
+            if (activeId == null) return;
+            const found = findOptionalSiteResponseAbility(G, String(activeId));
+            if (!found) return;
+            handleActivateAbility(
+                found.site.instanceId || found.site.id,
+                found.ability.id
+            );
+        },
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+        [G.responseWindow?.activePlayerId, G.pendingEvent, moves]
     );
 
     const handleResolveWhenPlayedChoice = useCallback(
@@ -2518,6 +2618,8 @@ export const GameBoard: React.FC<GameBoardProps> = ({
                                 handleResolveWhenPlayedChoice,
                             resolveSiteStartAbilityChoice:
                                 handleResolveSiteStartAbilityChoice,
+                            resolveSiteResponseAbilityChoice:
+                                handleResolveSiteResponseAbilityChoice,
                         }}
                     />
 

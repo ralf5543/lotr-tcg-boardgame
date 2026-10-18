@@ -6632,6 +6632,47 @@
     "keywords": [
       "DWELLING"
     ],
+    "abilities": [
+      {
+        "id": "11S242:0:site-start-fp",
+        "phases": [
+          "START_OF_FELLOWSHIP"
+        ],
+        "optional": true,
+        "cost": [
+          {
+            "exert": [
+              {
+                "count": 2,
+                "target": [
+                  [
+                    "HOBBIT"
+                  ]
+                ],
+                "mode": "DESIGNATION",
+                "distinctTargets": true
+              }
+            ]
+          }
+        ],
+        "effects": [
+          {
+            "type": "PLAY_FROM_DECK_OR_DISCARD",
+            "target": [
+              [
+                "HOBBIT"
+              ]
+            ],
+            "from": "DECK"
+          }
+        ],
+        "source": "SELF",
+        "text": "At the start of your fellowship phase, you may exert 2 Hobbits to play a Hobbit from your draw deck."
+      }
+    ],
+    "actionPhases": [
+      "START_OF_FELLOWSHIP"
+    ],
     "twilightCost": 3,
     "siteArrow": "Left",
     "imageUrl": "/cards_visuals/o_01_322.jpg",
@@ -8012,6 +8053,10 @@
     "isUnique": false,
     "kind": "SITE",
     "type": "SITE",
+    "keywords": [
+      "BATTLEGROUND",
+      "UNDERGROUND"
+    ],
     "abilities": [
       {
         "id": "12U186:0:site-named-twilight",
@@ -8102,6 +8147,10 @@
     "isUnique": false,
     "kind": "SITE",
     "type": "SITE",
+    "keywords": [
+      "BATTLEGROUND",
+      "FOREST"
+    ],
     "twilightCost": 1,
     "siteArrow": "Right",
     "imageUrl": "/cards_visuals/o_12_188.jpg",
@@ -8681,6 +8730,10 @@
     "isUnique": false,
     "kind": "SITE",
     "type": "SITE",
+    "keywords": [
+      "BATTLEGROUND",
+      "PLAINS"
+    ],
     "twilightCost": 0,
     "siteArrow": "Left",
     "imageUrl": "/cards_visuals/o_13_193.jpg",
@@ -8979,6 +9032,11 @@
     "isUnique": false,
     "kind": "SITE",
     "type": "SITE",
+    "keywords": [
+      "BATTLEGROUND",
+      "MOUNTAIN",
+      "UNDERGROUND"
+    ],
     "abilities": [
       {
         "id": "15R193:0:site-mount-doom",
@@ -9331,6 +9389,10 @@
     "isUnique": false,
     "kind": "SITE",
     "type": "SITE",
+    "keywords": [
+      "BATTLEGROUND",
+      "PLAINS"
+    ],
     "twilightCost": 1,
     "imageUrl": "/cards_visuals/o_18_137.jpg",
     "i18n": {

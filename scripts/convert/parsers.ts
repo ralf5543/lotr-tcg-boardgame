@@ -464,18 +464,24 @@ export function parseKeywords(
         }
 
         // --- C. Mots-clés standards (<keyword>WORD.</keyword>) ---
+        // Un tag peut en contenir plusieurs : « Battleground. Underground. »
         const regex = /<keyword>([A-Z][^<]*\.)<\/keyword>/g;
         let match;
         while ((match = regex.exec(text)) !== null) {
             if (isGrantedKeywordMarkup(text, match.index)) continue;
-            const rawKw = match[1].slice(0, -1).trim();
-            const upperKw = rawKw.toUpperCase();
+            const parts = match[1]
+                .split(/\./)
+                .map((part) => part.trim())
+                .filter(Boolean);
+            for (const part of parts) {
+                const upperKw = part.toUpperCase();
 
-            // Éviter de dupliquer 'AID'
-            if (upperKw.startsWith('AID')) continue;
+                // Éviter de dupliquer 'AID'
+                if (upperKw.startsWith('AID')) continue;
 
-            if (VALID_KEYWORDS.has(upperKw) && !keywords.includes(upperKw)) {
-                keywords.push(upperKw);
+                if (VALID_KEYWORDS.has(upperKw) && !keywords.includes(upperKw)) {
+                    keywords.push(upperKw);
+                }
             }
         }
     }
@@ -1066,6 +1072,8 @@ function parseExertSubject(
     count: number;
     mode?: 'DESIGNATION';
     excludeSource?: boolean;
+    /** « Exert 2 Elves » = N cartes distinctes (≠ twice sur une seule). */
+    distinctTargets?: boolean;
 } | null {
     let count = 1;
     let body = raw.replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim();
@@ -1091,7 +1099,12 @@ function parseExertSubject(
         if (!n) return null;
         const filters = parseClassFilters(numbered[2]);
         if (filters.length === 0) return null;
-        return { target: [filters], count: n };
+        return {
+            target: [filters],
+            count: n,
+            mode: 'DESIGNATION',
+            distinctTargets: n > 1,
+        };
     }
 
     // « spot X pipes » : X = nombre variable, la classe passe par les filtres connus.
@@ -1161,6 +1174,19 @@ function parseExertSubject(
     if (/^your\b/i.test(body)) return null;
 
     return { target: [[body]], count };
+}
+
+type ParsedExertSubject = NonNullable<ReturnType<typeof parseExertSubject>>;
+
+/** Sélecteur d’exert depuis parseExertSubject (dont distinctTargets). */
+function exertSelectorFromSubject(subject: ParsedExertSubject) {
+    return {
+        count: subject.count,
+        target: subject.target,
+        ...(subject.mode ? { mode: subject.mode } : {}),
+        ...(subject.excludeSource ? { excludeSource: true } : {}),
+        ...(subject.distinctTargets ? { distinctTargets: true } : {}),
+    };
 }
 
 /** `this companion` / `him` / le nom de la carte → SELF. Autre nom → on refuse. */
@@ -3832,6 +3858,47 @@ function parseWhileSkipArcheryAbilities(
             effects: [{ type: 'SKIP_PHASE', phase: 'ARCHERY' }],
             source: 'SELF',
             text: clause,
+        });
+    }
+
+    return found;
+}
+
+/**
+ * Discard The Balrog if not underground.
+ * (SELF si le nom matche le titre de la carte.)
+ */
+function parseDiscardIfNotUndergroundAbilities(
+    text: string,
+    cardTitle?: string,
+    cardId?: string
+): Record<string, unknown>[] {
+    if (!cardTitle) return [];
+    const found: Record<string, unknown>[] = [];
+    const re =
+        /Discard ((?:The\s+)?[\w’'\-]+(?:\s+[\w’'\-]+)?)\s+if not underground\./gi;
+    let match: RegExpExecArray | null;
+    const norm = (s: string) =>
+        s
+            .replace(/^The\s+/i, '')
+            .replace(/['’]/g, "'")
+            .trim()
+            .toLowerCase();
+    const titleNorm = norm(cardTitle);
+
+    while ((match = re.exec(text)) !== null) {
+        if (norm(match[1]) !== titleNorm) continue;
+        found.push({
+            id: `${cardId || 'ability'}:${found.length}:discard-if-not-underground`,
+            phases: [],
+            trigger: {
+                type: 'WHILE',
+                unlessAtSiteKeyword: 'UNDERGROUND',
+            },
+            cost: [],
+            effects: [{ type: 'DISCARD', count: 1, target: 'SELF' }],
+            source: 'SELF',
+            text: stripAbilityMarkup(match[0]),
         });
     }
 
@@ -6601,13 +6668,6 @@ function parseSiteStartOfFellowshipAbilities(
     while ((match = exertPlayRe.exec(plain)) !== null) {
         const subject = parseExertSubject(match[1].trim());
         if (!subject) continue;
-        // « exert 2 Hobbits » = 2 personnages distincts — pas encore (count = blessures).
-        if (
-            subject.count > 1 &&
-            Array.isArray(subject.target)
-        ) {
-            continue;
-        }
         const playFilters = parseClassFilters(match[2]);
         if (playFilters.length === 0) continue;
         found.push({
@@ -6616,16 +6676,7 @@ function parseSiteStartOfFellowshipAbilities(
             optional: true,
             cost: [
                 {
-                    exert: [
-                        {
-                            count: subject.count,
-                            target: subject.target,
-                            ...(subject.mode ? { mode: subject.mode } : {}),
-                            ...(subject.excludeSource
-                                ? { excludeSource: true }
-                                : {}),
-                        },
-                    ],
+                    exert: [exertSelectorFromSubject(subject)],
                 },
             ],
             effects: [
@@ -10055,15 +10106,7 @@ export function parseAbilities(
                 phases,
                 cost: [
                     {
-                        exert: [
-                            {
-                                count: drawSubject.count,
-                                target: drawSubject.target,
-                                ...(drawSubject.mode
-                                    ? { mode: drawSubject.mode }
-                                    : {}),
-                            },
-                        ],
+                        exert: [exertSelectorFromSubject(drawSubject)],
                     },
                 ],
                 effects: [{ type: 'DRAW', count: drawCount }],
@@ -10823,15 +10866,7 @@ export function parseAbilities(
                     phases,
                     cost: [
                         {
-                            exert: [
-                                {
-                                    count: discardSubject.count,
-                                    target: discardSubject.target,
-                                    ...(discardSubject.mode
-                                        ? { mode: discardSubject.mode }
-                                        : {}),
-                                },
-                            ],
+                            exert: [exertSelectorFromSubject(discardSubject)],
                         },
                     ],
                     effects: [
@@ -10873,15 +10908,7 @@ export function parseAbilities(
                 phases,
                 cost: [
                     {
-                        exert: [
-                            {
-                                count: discardSubject.count,
-                                target: discardSubject.target,
-                                ...(discardSubject.mode
-                                    ? { mode: discardSubject.mode }
-                                    : {}),
-                            },
-                        ],
+                        exert: [exertSelectorFromSubject(discardSubject)],
                     },
                 ],
                 effects: [
@@ -12105,6 +12132,15 @@ export function parseAbilities(
             id: `${cardId || 'ability'}:${abilities.length}`,
         });
     });
+
+    parseDiscardIfNotUndergroundAbilities(text, cardTitle, cardId).forEach(
+        (ability) => {
+            abilities.push({
+                ...ability,
+                id: `${cardId || 'ability'}:${abilities.length}`,
+            });
+        }
+    );
 
     parseWhileCannotReplaceSiteAbilities(text, cardId).forEach((ability) => {
         abilities.push({

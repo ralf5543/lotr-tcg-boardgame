@@ -4,13 +4,18 @@ import {
     abilityProjectsOnto,
     collectVisibleAbilities,
 } from '../engine/abilities/collectAbilities';
-import { tryOpenWinsSkirmish } from '../engine/responseWindow';
+import {
+    findOptionalSiteResponseAbility,
+    tryOpenWinsSkirmish,
+} from '../engine/responseWindow';
 import { isSiteReplaceForbidden } from '../logic/siteReplaceRestrictions';
 import { getEffectiveStrength } from '../../utils/cardStats';
 import type { Ability, CardState } from '../types';
+import { advanceCompany } from '../moves/fellowshipMoves';
 import {
     createCompanion,
     createGameState,
+    createMinion,
     createPlayerState,
     createSite,
 } from './createGameState';
@@ -176,7 +181,7 @@ describe('parseSiteAbilities — vague hard / suite', () => {
 });
 
 describe('runtime — Starkhorn / Westfold / Mount Doom', () => {
-    it('Starkhorn : projette sur le Nain vainqueur', () => {
+    it('Starkhorn : ouvre la réponse sans bulle sur le Nain', () => {
         const gimli = createCompanion({
             id: 'gimli',
             instanceId: 'gimli-1',
@@ -221,12 +226,18 @@ describe('runtime — Starkhorn / Westfold / Mount Doom', () => {
         });
 
         expect(tryOpenWinsSkirmish(G)).toBe('WAITING');
+        expect(G.responseWindow?.isOpen).toBe(true);
+        // Pas de bulle sur le Nain : toaster site (coût+effet seulement).
         expect(abilityProjectsOnto(G, site, STARKHORN_ABILITY, gimli)).toBe(
-            true
+            false
         );
         expect(
             collectVisibleAbilities(G, gimli).map((r) => r.ability.id)
-        ).toContain('12U193:0:site-each-time');
+        ).not.toContain('12U193:0:site-each-time');
+        expect(collectVisibleAbilities(G, site)).toEqual([]);
+        expect(findOptionalSiteResponseAbility(G, '0')?.ability.id).toBe(
+            '12U193:0:site-each-time'
+        );
     });
 
     it('Westfold : hunter force +1 sur le site courant', () => {
@@ -301,5 +312,83 @@ describe('runtime — Starkhorn / Westfold / Mount Doom', () => {
         expect(isSiteReplaceForbidden(G, '1', 6)).toBe(true);
         expect(isSiteReplaceForbidden(G, '0', 0)).toBe(false); // site 1
         expect(isSiteReplaceForbidden(G, '0', 2)).toBe(false); // site 3
+    });
+});
+
+const BALROG_DISCARD: Ability = {
+    id: '2C51:discard-if-not-underground',
+    phases: [],
+    trigger: { type: 'WHILE', unlessAtSiteKeyword: 'UNDERGROUND' },
+    cost: [],
+    effects: [{ type: 'DISCARD', count: 1, target: 'SELF' }],
+    source: 'SELF',
+    text: 'Discard The Balrog if not underground.',
+};
+
+describe('runtime — Balrog if not underground', () => {
+    it('reste en jeu sur un site UNDERGROUND, défaussé sinon au déplacement', () => {
+        const balrog = createMinion({
+            id: '2C51',
+            instanceId: 'balrog-1',
+            title: 'The Balrog',
+            culture: 'MORIA',
+            race: 'BALROG',
+            twilightCost: 12,
+            strength: 17,
+            vitality: 5,
+            abilities: [BALROG_DISCARD],
+        });
+        const bridge = createSite({
+            id: '12U186',
+            instanceId: 'bridge',
+            siteNumber: 4,
+            keywords: ['BATTLEGROUND', 'UNDERGROUND'],
+        });
+        const plains = createSite({
+            id: 'plains',
+            instanceId: 'plains',
+            siteNumber: 5,
+            keywords: ['PLAINS'],
+        });
+        const path = Array.from({ length: 9 }, (_, i) =>
+            createSite({ id: `p-${i}`, siteNumber: i + 1 })
+        );
+        path[3] = bridge;
+        path[4] = plains;
+
+        const G = createGameState({
+            fpPlayerId: '0',
+            currentSiteIndex: 3,
+            path,
+            battlefield: [balrog],
+            players: {
+                '0': createPlayerState('0', {
+                    currentSiteIndex: 3,
+                    fellowshipArea: [
+                        createCompanion({
+                            id: 'frodo',
+                            instanceId: 'frodo-1',
+                        }),
+                    ],
+                }),
+                '1': createPlayerState('1', {
+                    currentSiteIndex: 3,
+                    discard: [],
+                }),
+            },
+        });
+
+        // Encore underground → reste.
+        expect(G.battlefield.map((c) => c.instanceId)).toContain('balrog-1');
+
+        advanceCompany(G);
+
+        expect(G.players['0']?.currentSiteIndex).toBe(4);
+        expect(G.battlefield.map((c) => c.instanceId)).not.toContain(
+            'balrog-1'
+        );
+        expect(
+            G.players['1']?.discard?.some((c) => c.instanceId === 'balrog-1')
+        ).toBe(true);
     });
 });

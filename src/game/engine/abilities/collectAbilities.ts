@@ -4,7 +4,6 @@ import { getKeywordValue } from '../keywords/keywordUtils';
 import {
     forEachInPlayCard,
     resolveCostTarget,
-    resolveWinnerTargets,
 } from './resolveCostTarget';
 import { getCurrentSiteIndex } from '../../logic/sites';
 
@@ -90,18 +89,14 @@ function abilityMayProjectFromSupport(ability: Ability): boolean {
 }
 
 /**
- * Site : pas de bouton sur le site — projection sur cible d’exert désignable
- * (phase) ou sur le vainqueur (réponse WINS_SKIRMISH optionnelle).
+ * Site : pas de bouton sur le site — projection uniquement sur cible d’exert
+ * désignable (coût + effet, ex. Ettenmoors / Watch-tower).
+ * Réponse optionnelle sans coût (Starkhorn piocher, Heights défausse…) =
+ * toaster, jamais bulle sur le vainqueur.
  */
 function abilityMayProjectFromSite(ability: Ability): boolean {
     if (abilityDiscardsSelf(ability)) return false;
-    if (
-        ability.trigger?.type === 'WINS_SKIRMISH' &&
-        ability.optional &&
-        abilityMatchesPhase(ability, 'RESPONSE')
-    ) {
-        return true;
-    }
+    // Réponses / triggers : jamais de projection (toaster ou inerte).
     if (ability.trigger) return false;
     if (!exertTargetIsOtherCharacter(ability)) return false;
     const phases = (ability.phases || []).map((p) => p.toUpperCase());
@@ -137,19 +132,6 @@ export function abilityProjectsOnto(
     const sourceId = source.instanceId || source.id;
     const hostId = host.instanceId || host.id;
     if (sourceId === hostId) return false;
-
-    if (
-        fromSite &&
-        ability.trigger?.type === 'WINS_SKIRMISH' &&
-        ability.optional
-    ) {
-        // Uniquement le site courant (texte de site = compagnie ici).
-        const cur = G.path?.[getCurrentSiteIndex(G)];
-        if (!cur || (cur.instanceId || cur.id) !== sourceId) return false;
-        return resolveWinnerTargets(G, source, ability).some(
-            (card) => (card.instanceId || card.id) === hostId
-        );
-    }
 
     const exert = ability.cost[0]?.exert?.[0];
     if (!exert) return false;
@@ -210,9 +192,10 @@ export function collectVisibleAbilities(
         ) {
             return false;
         }
-        // Site : jamais de bouton d’action sur le site lui-même.
-        if (isSiteCard(source) && abilityMayProjectFromSite(ability)) {
-            return false;
+        // Site : jamais de bouton sur le site (projection coût, ou toaster réponse).
+        if (isSiteCard(source)) {
+            if (abilityMayProjectFromSite(ability)) return false;
+            if (abilityMatchesPhase(ability, 'RESPONSE')) return false;
         }
         // Nom propre (support) : le bouton vit sur le personnage projeté.
         if (abilityMayProjectFromSupport(ability)) return false;
@@ -291,6 +274,9 @@ function translateCriterionToken(token: string): string {
     const upper = token.toUpperCase();
     // Pas de franglais : CHARACTER n’est pas dans TRANSLATIONS.type.
     if (upper === 'CHARACTER') return 'personnage';
+    // Filtre « hunter » (sans valeur) — distinct de HUNTER 1/2…
+    if (upper === 'HUNTER') return 'chasseur';
+    if (upper === 'LURKER') return 'rôdeur';
     if (upper.startsWith('SIGNET_')) {
         const name = upper.slice('SIGNET_'.length);
         const pretty = name.charAt(0) + name.slice(1).toLowerCase();
@@ -842,13 +828,18 @@ function formatCostLabel(ability: Ability, source: CardState): string {
     const exert = option?.exert?.[0];
     if (exert) {
         const count = exert.count || 1;
-        const who = formatCostWho(
-            exert.target,
-            source,
-            exert.mode === 'DESIGNATION'
-        );
-        const times = count > 1 ? ` ${count} fois` : '';
-        parts.push(`Affaiblir ${who}${times}`);
+        if (exert.distinctTargets && count > 1 && Array.isArray(exert.target)) {
+            const who = formatFilterList(exert.target.flat());
+            parts.push(`Affaiblir ${count} ${who}`);
+        } else {
+            const who = formatCostWho(
+                exert.target,
+                source,
+                exert.mode === 'DESIGNATION'
+            );
+            const times = count > 1 ? ` ${count} fois` : '';
+            parts.push(`Affaiblir ${who}${times}`);
+        }
     }
     const spot = option?.spot?.[0];
     // « spot » n’est pas un coût à désigner (condition amont), sauf pipes

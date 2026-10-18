@@ -145,7 +145,7 @@ describe('runtime — Slag Mounds / Heights', () => {
         expect(G.players['0']?.burdens).toBe(1);
     });
 
-    it('Heights : projette sur Gandalf vainqueur et ouvre la réponse FP', () => {
+    it('Heights : ouvre la réponse FP sans bulle sur Gandalf', () => {
         const gandalf = createCompanion({
             id: 'gandalf',
             instanceId: 'gandalf-1',
@@ -195,20 +195,17 @@ describe('runtime — Slag Mounds / Heights', () => {
             },
         });
 
-        expect(abilityProjectsOnto(G, site, HEIGHTS_ABILITY, gandalf)).toBe(
-            false
-        );
-        // Pas encore d’événement WINS — projection après ouverture.
         expect(tryOpenWinsSkirmish(G)).toBe('WAITING');
         expect(G.pendingEvent?.type).toBe('WINS_SKIRMISH');
         expect(G.responseWindow?.isOpen).toBe(true);
         expect(G.responseWindow?.activePlayerId).toBe('0');
+        // Toaster site — pas de bulle sur Gandalf ni sur le site.
         expect(abilityProjectsOnto(G, site, HEIGHTS_ABILITY, gandalf)).toBe(
-            true
+            false
         );
         expect(
             collectVisibleAbilities(G, gandalf).map((r) => r.ability.id)
-        ).toContain('11U244:0:site-each-time');
+        ).not.toContain('11U244:0:site-each-time');
         expect(collectVisibleAbilities(G, site)).toEqual([]);
     });
 });

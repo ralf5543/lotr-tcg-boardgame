@@ -71,6 +71,7 @@ import {
 import { getWhileTwilightCostModifier } from '../../logic/stats/mechanics/whileModifier';
 import { isSiteReplaceForbidden } from '../../logic/siteReplaceRestrictions';
 import { afterCardPlayed } from './eachTimeYouPlay';
+import { enforceWhileSelfDiscards } from './enforceWhileDiscard';
 import type { CardKeyword } from '../../types';
 
 export function abilityReplaceSiteEffect(
@@ -330,6 +331,7 @@ export function applyAbilityEffect(
                 ) {
                     return false;
                 }
+                enforceWhileSelfDiscards(G);
                 continue;
             }
 
@@ -365,6 +367,9 @@ export function applyAbilityEffect(
                 ) {
                     return false;
                 }
+                if (pathIndex === getCurrentSiteIndex(G)) {
+                    enforceWhileSelfDiscards(G);
+                }
                 continue;
             }
 
@@ -397,6 +402,9 @@ export function applyAbilityEffect(
                 )
             ) {
                 return false;
+            }
+            if (pathIndex === getCurrentSiteIndex(G)) {
+                enforceWhileSelfDiscards(G);
             }
             continue;
         }

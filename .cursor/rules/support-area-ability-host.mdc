@@ -22,15 +22,23 @@ Après clic sur la situation (classe) : désignation parmi les cibles légales (
 
 - **Attachement sur un personnage** : le bouton peut vivre sur le porteur (capacités de l’attachement listées via le host) — ce n’est pas de la projection support→compagnon. Libellé : préfixer le nom de l’attachement — [`attachment-ability-label.mdc`](attachment-ability-label.mdc).
 - Coût **SELF / BEARER** : bouton sur la source / le porteur, pas de projection « classe ».
-- **Sites** : **pas** de bouton d’action sur le site. Capacité de phase avec exert désignable → projection sur **chaque** cible éligible (classe ou nom : Watch-tower → orc, Ettenmoors → perso, Mere → Gollum/Sméagol).
+- **Sites** : **pas** de bouton d’action sur le site.
+  - Capacité de phase avec **coût exert désignable** → projection sur **chaque** cible éligible (Watch-tower → orc, Ettenmoors → perso, Mere → Gollum/Sméagol).
+  - Réponse optionnelle **sans coût** (Starkhorn piocher, Heights défausse…) → **toaster** Activer / Passer, **jamais** bulle sur le vainqueur / un personnage.
+
+## Règle transversale (bulles sur personnages)
+
+Une bulle d’action sur un personnage = combinaison **coût à payer** (souvent exert désigné) **+ effet**. Pas pour une réponse « you may » pure (piocher, défausser une situation…).
 
 ## Implémentation
 
-- `abilityProjectsOnto` / `collectProjectedAbilities` : ne projeter que si la cible d’exert est un **nom propre** (casse mixte, cf. matchers).
-- Classe / filtres UPPERCASE (`MAN`, `GONDOR`, `COMPANION`…) : **pas** de projection ; le bouton reste sur la carte support.
+- `abilityProjectsOnto` / `collectProjectedAbilities` : ne projeter que si la cible d’exert est un **nom propre** (casse mixte, cf. matchers) — support ; ou coût exert classe depuis un site.
+- Classe / filtres UPPERCASE (`MAN`, `GONDOR`, `COMPANION`…) : **pas** de projection support→perso ; le bouton reste sur la carte support.
+- Site `RESPONSE` optionnelle : `findOptionalSiteResponseAbility` + toaster (pas de projection WINS).
 
 ## Exemples
 
 - **Last Stand** (Fellowship : Exert a Gandalf Man → tokens) → bouton sur Last Stand, pas sur Erland.
 - **Unknown Perils** (Response : exert Gandalf) → projection sur Gandalf OK.
 - **Forests of Ithilien** (discard this + exert Ring-bound Man) → déjà sur la situation (défausse self).
+- **Starkhorn** (Dwarf wins → may draw) → toaster piocher, pas d’action sur le Nain.

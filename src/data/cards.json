@@ -261,6 +261,24 @@
         ],
         "source": "SELF",
         "text": "Skip the archery phase."
+      },
+      {
+        "id": "0P10:1",
+        "phases": [],
+        "trigger": {
+          "type": "WHILE",
+          "unlessAtSiteKeyword": "UNDERGROUND"
+        },
+        "cost": [],
+        "effects": [
+          {
+            "type": "DISCARD",
+            "count": 1,
+            "target": "SELF"
+          }
+        ],
+        "source": "SELF",
+        "text": "Discard The Balrog if not underground."
       }
     ],
     "culture": "MORIA",
@@ -705,6 +723,10 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
+    "keywords": [
+      "RING-BOUND",
+      "RANGER"
+    ],
     "abilities": [
       {
         "id": "0P16:0",
@@ -6183,6 +6205,26 @@
         ]
       }
     ],
+    "abilities": [
+      {
+        "id": "2R52:0",
+        "phases": [],
+        "trigger": {
+          "type": "WHILE",
+          "unlessAtSiteKeyword": "UNDERGROUND"
+        },
+        "cost": [],
+        "effects": [
+          {
+            "type": "DISCARD",
+            "count": 1,
+            "target": "SELF"
+          }
+        ],
+        "source": "SELF",
+        "text": "Discard The Balrog if not underground."
+      }
+    ],
     "culture": "MORIA",
     "race": "BALROG",
     "twilightCost": 14,
@@ -9059,6 +9101,11 @@
     "isUnique": true,
     "kind": "SHADOW",
     "type": "MINION",
+    "keywords": [
+      "DAMAGE +1",
+      "FIERCE",
+      "LURKER"
+    ],
     "culture": "ISENGARD",
     "race": "WIZARD",
     "twilightCost": 4,
@@ -30088,6 +30135,24 @@
         ],
         "source": "SELF",
         "text": "Skip the archery phase."
+      },
+      {
+        "id": "2C51:1",
+        "phases": [],
+        "trigger": {
+          "type": "WHILE",
+          "unlessAtSiteKeyword": "UNDERGROUND"
+        },
+        "cost": [],
+        "effects": [
+          {
+            "type": "DISCARD",
+            "count": 1,
+            "target": "SELF"
+          }
+        ],
+        "source": "SELF",
+        "text": "Discard The Balrog if not underground."
       }
     ],
     "culture": "MORIA",
@@ -37189,7 +37254,8 @@
                     "SHIRE",
                     "COMPANION"
                   ]
-                ]
+                ],
+                "mode": "DESIGNATION"
               }
             ]
           }
@@ -40956,7 +41022,8 @@
                     "DUNLAND",
                     "MAN"
                   ]
-                ]
+                ],
+                "mode": "DESIGNATION"
               }
             ]
           }
@@ -42088,7 +42155,8 @@
                     "ELF",
                     "COMPANION"
                   ]
-                ]
+                ],
+                "mode": "DESIGNATION"
               }
             ]
           }
@@ -44826,6 +44894,10 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
+    "keywords": [
+      "RING-BOUND",
+      "RANGER"
+    ],
     "abilities": [
       {
         "id": "4C117:0",
@@ -89239,7 +89311,8 @@
                     "GONDOR",
                     "MAN"
                   ]
-                ]
+                ],
+                "mode": "DESIGNATION"
               }
             ]
           }
@@ -107587,6 +107660,10 @@
     "isUnique": false,
     "kind": "FREE_PEOPLE",
     "type": "EVENT",
+    "keywords": [
+      "SPELL",
+      "TOIL 3"
+    ],
     "phases": [
       "FELLOWSHIP"
     ],
@@ -108940,6 +109017,10 @@
     "isUnique": true,
     "kind": "SHADOW",
     "type": "MINION",
+    "keywords": [
+      "FIERCE",
+      "TOIL 1"
+    ],
     "culture": "MEN",
     "race": "MAN",
     "twilightCost": 7,
@@ -110232,6 +110313,11 @@
     "isUnique": true,
     "kind": "SHADOW",
     "type": "MINION",
+    "keywords": [
+      "DAMAGE +1",
+      "FIERCE",
+      "TOIL 2"
+    ],
     "culture": "ORC",
     "race": "TROLL",
     "twilightCost": 12,
@@ -112480,6 +112566,10 @@
     "isUnique": false,
     "kind": "SHADOW",
     "type": "MINION",
+    "keywords": [
+      "DAMAGE +1",
+      "MUSTER"
+    ],
     "culture": "URUK-HAI",
     "race": "URUK-HAI",
     "twilightCost": 3,
@@ -112612,6 +112702,10 @@
     "isUnique": false,
     "kind": "SHADOW",
     "type": "MINION",
+    "keywords": [
+      "DAMAGE +1",
+      "MUSTER"
+    ],
     "culture": "URUK-HAI",
     "race": "URUK-HAI",
     "twilightCost": 4,
@@ -114334,6 +114428,10 @@
     "isUnique": true,
     "kind": "SHADOW",
     "type": "MINION",
+    "keywords": [
+      "FIERCE",
+      "TOIL 1"
+    ],
     "culture": "WRAITH",
     "race": "NAZGÛL",
     "twilightCost": 6,
@@ -115153,6 +115251,10 @@
     "isUnique": true,
     "kind": "SHADOW",
     "type": "MINION",
+    "keywords": [
+      "FIERCE",
+      "TOIL 1"
+    ],
     "culture": "WRAITH",
     "race": "NAZGÛL",
     "twilightCost": 6,
@@ -120675,6 +120777,10 @@
     "isUnique": false,
     "kind": "SHADOW",
     "type": "MINION",
+    "keywords": [
+      "DAMAGE +1",
+      "FIERCE"
+    ],
     "toPlay": [
       {
         "spot": [
@@ -122961,6 +123067,10 @@
     "isUnique": false,
     "kind": "SHADOW",
     "type": "MINION",
+    "keywords": [
+      "DAMAGE +1",
+      "LURKER"
+    ],
     "culture": "URUK-HAI",
     "race": "URUK-HAI",
     "twilightCost": 4,
@@ -123427,6 +123537,10 @@
     "isUnique": false,
     "kind": "SHADOW",
     "type": "MINION",
+    "keywords": [
+      "DAMAGE +1",
+      "LURKER"
+    ],
     "culture": "URUK-HAI",
     "race": "URUK-HAI",
     "twilightCost": 4,
@@ -125392,6 +125506,10 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
+    "keywords": [
+      "DAMAGE +1",
+      "HUNTER 3"
+    ],
     "culture": "DWARVEN",
     "race": "DWARF",
     "twilightCost": 2,
@@ -126201,7 +126319,9 @@
                     "HUNTER",
                     "COMPANION"
                   ]
-                ]
+                ],
+                "mode": "DESIGNATION",
+                "distinctTargets": true
               }
             ]
           }
@@ -127919,6 +128039,10 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
+    "keywords": [
+      "RANGER",
+      "HUNTER 1"
+    ],
     "abilities": [
       {
         "id": "15S54:0",
@@ -128003,6 +128127,10 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
+    "keywords": [
+      "RANGER",
+      "HUNTER 2"
+    ],
     "culture": "GONDOR",
     "race": "MAN",
     "twilightCost": 4,
@@ -128102,6 +128230,10 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
+    "keywords": [
+      "RANGER",
+      "HUNTER 1"
+    ],
     "culture": "GONDOR",
     "race": "MAN",
     "twilightCost": 3,
@@ -128190,6 +128322,10 @@
     "isUnique": false,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
+    "keywords": [
+      "RANGER",
+      "HUNTER 1"
+    ],
     "culture": "GONDOR",
     "race": "MAN",
     "twilightCost": 3,
@@ -128266,6 +128402,10 @@
     "isUnique": false,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
+    "keywords": [
+      "RANGER",
+      "HUNTER 1"
+    ],
     "culture": "GONDOR",
     "race": "MAN",
     "twilightCost": 2,
@@ -128354,6 +128494,10 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
+    "keywords": [
+      "RANGER",
+      "HUNTER 1"
+    ],
     "culture": "GONDOR",
     "race": "MAN",
     "twilightCost": 2,
@@ -128401,6 +128545,10 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
+    "keywords": [
+      "RANGER",
+      "HUNTER 1"
+    ],
     "culture": "GONDOR",
     "race": "MAN",
     "twilightCost": 2,
@@ -128648,6 +128796,10 @@
     "isUnique": false,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
+    "keywords": [
+      "RANGER",
+      "HUNTER 1"
+    ],
     "culture": "GONDOR",
     "race": "MAN",
     "twilightCost": 2,
@@ -128724,6 +128876,10 @@
     "isUnique": false,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
+    "keywords": [
+      "RANGER",
+      "HUNTER 1"
+    ],
     "culture": "GONDOR",
     "race": "MAN",
     "twilightCost": 3,
@@ -131199,6 +131355,10 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
+    "keywords": [
+      "VALIANT",
+      "HUNTER 2"
+    ],
     "culture": "ROHAN",
     "race": "MAN",
     "twilightCost": 3,
@@ -131340,6 +131500,10 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
+    "keywords": [
+      "VALIANT",
+      "HUNTER 1"
+    ],
     "toPlay": [
       {
         "spot": [
@@ -132396,6 +132560,10 @@
     "canBeRingbearer": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
+    "keywords": [
+      "RING-BEARER",
+      "RING-BOUND"
+    ],
     "culture": "SHIRE",
     "race": "HOBBIT",
     "twilightCost": 0,
@@ -133055,6 +133223,10 @@
     "isUnique": false,
     "kind": "SHADOW",
     "type": "MINION",
+    "keywords": [
+      "FIERCE",
+      "HUNTER 1"
+    ],
     "culture": "URUK-HAI",
     "race": "URUK-HAI",
     "twilightCost": 4,
@@ -133238,6 +133410,10 @@
     "isUnique": false,
     "kind": "SHADOW",
     "type": "MINION",
+    "keywords": [
+      "FIERCE",
+      "HUNTER 1"
+    ],
     "culture": "URUK-HAI",
     "race": "URUK-HAI",
     "twilightCost": 3,
@@ -133426,6 +133602,10 @@
     "isUnique": true,
     "kind": "SHADOW",
     "type": "MINION",
+    "keywords": [
+      "FIERCE",
+      "HUNTER 1"
+    ],
     "culture": "URUK-HAI",
     "race": "URUK-HAI",
     "twilightCost": 3,
@@ -133630,6 +133810,10 @@
     "isUnique": true,
     "kind": "SHADOW",
     "type": "MINION",
+    "keywords": [
+      "FIERCE",
+      "HUNTER 1"
+    ],
     "abilities": [
       {
         "id": "15U168:0",
@@ -133701,6 +133885,10 @@
     "isUnique": false,
     "kind": "SHADOW",
     "type": "MINION",
+    "keywords": [
+      "FIERCE",
+      "HUNTER 1"
+    ],
     "culture": "URUK-HAI",
     "race": "URUK-HAI",
     "twilightCost": 3,
@@ -133870,6 +134058,10 @@
     "isUnique": true,
     "kind": "SHADOW",
     "type": "MINION",
+    "keywords": [
+      "FIERCE",
+      "HUNTER 3"
+    ],
     "culture": "URUK-HAI",
     "race": "URUK-HAI",
     "twilightCost": 4,
@@ -134695,6 +134887,10 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
+    "keywords": [
+      "RANGER",
+      "HUNTER 2"
+    ],
     "culture": "GONDOR",
     "race": "MAN",
     "twilightCost": 4,
@@ -134742,6 +134938,10 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
+    "keywords": [
+      "RANGER",
+      "HUNTER 1"
+    ],
     "culture": "GONDOR",
     "race": "MAN",
     "twilightCost": 2,
@@ -134789,6 +134989,10 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
+    "keywords": [
+      "VALIANT",
+      "HUNTER 2"
+    ],
     "culture": "ROHAN",
     "race": "MAN",
     "twilightCost": 3,
@@ -136834,6 +137038,10 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
+    "keywords": [
+      "RANGER",
+      "HUNTER 1"
+    ],
     "culture": "GONDOR",
     "race": "MAN",
     "twilightCost": 3,
@@ -136963,6 +137171,10 @@
     "isUnique": false,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
+    "keywords": [
+      "RANGER",
+      "HUNTER 1"
+    ],
     "culture": "GONDOR",
     "race": "MAN",
     "twilightCost": 3,
@@ -137686,6 +137898,10 @@
     "isUnique": true,
     "kind": "SHADOW",
     "type": "MINION",
+    "keywords": [
+      "DAMAGE +1",
+      "FIERCE"
+    ],
     "culture": "MEN",
     "race": "MAN",
     "twilightCost": 8,
@@ -141430,6 +141646,10 @@
     "isUnique": false,
     "kind": "SHADOW",
     "type": "MINION",
+    "keywords": [
+      "FIERCE",
+      "HUNTER 1"
+    ],
     "abilities": [
       {
         "id": "17C126:0",
@@ -141650,6 +141870,10 @@
     "isUnique": false,
     "kind": "SHADOW",
     "type": "MINION",
+    "keywords": [
+      "DAMAGE +1",
+      "HUNTER 2"
+    ],
     "culture": "URUK-HAI",
     "race": "URUK-HAI",
     "twilightCost": 2,
@@ -141737,6 +141961,10 @@
     "isUnique": false,
     "kind": "SHADOW",
     "type": "MINION",
+    "keywords": [
+      "FIERCE",
+      "HUNTER 1"
+    ],
     "culture": "URUK-HAI",
     "race": "URUK-HAI",
     "twilightCost": 4,
@@ -141914,6 +142142,10 @@
     "isUnique": false,
     "kind": "SHADOW",
     "type": "MINION",
+    "keywords": [
+      "DAMAGE +1",
+      "HUNTER 4"
+    ],
     "culture": "URUK-HAI",
     "race": "URUK-HAI",
     "twilightCost": 3,
@@ -144765,6 +144997,10 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
+    "keywords": [
+      "RANGER",
+      "HUNTER 2"
+    ],
     "culture": "GONDOR",
     "race": "MAN",
     "twilightCost": 3,
@@ -148089,6 +148325,10 @@
     "isUnique": true,
     "kind": "SHADOW",
     "type": "MINION",
+    "keywords": [
+      "ARCHER",
+      "DAMAGE +1"
+    ],
     "culture": "URUK-HAI",
     "race": "URUK-HAI",
     "twilightCost": 7,
@@ -148262,6 +148502,10 @@
     "isUnique": true,
     "kind": "SHADOW",
     "type": "MINION",
+    "keywords": [
+      "DAMAGE +1",
+      "HUNTER 1"
+    ],
     "culture": "URUK-HAI",
     "race": "URUK-HAI",
     "twilightCost": 5,
@@ -148940,6 +149184,9 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
+    "keywords": [
+      "DAMAGE +1"
+    ],
     "culture": "DWARVEN",
     "race": "DWARF",
     "twilightCost": 2,
@@ -149161,6 +149408,9 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
+    "keywords": [
+      "ARCHER"
+    ],
     "culture": "ELVEN",
     "race": "ELF",
     "twilightCost": 2,
@@ -149450,6 +149700,9 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
+    "keywords": [
+      "RANGER"
+    ],
     "culture": "GONDOR",
     "race": "MAN",
     "twilightCost": 4,
@@ -149497,6 +149750,9 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
+    "keywords": [
+      "RANGER"
+    ],
     "culture": "GONDOR",
     "race": "MAN",
     "twilightCost": 3,
@@ -149717,6 +149973,10 @@
     "isUnique": true,
     "kind": "SHADOW",
     "type": "MINION",
+    "keywords": [
+      "DAMAGE +2",
+      "FIERCE"
+    ],
     "culture": "MORIA",
     "race": "BALROG",
     "twilightCost": 14,
@@ -150283,6 +150543,10 @@
     "canBeRingbearer": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
+    "keywords": [
+      "RING-BEARER",
+      "RING-BOUND"
+    ],
     "culture": "SHIRE",
     "race": "HOBBIT",
     "twilightCost": 0,
@@ -150566,6 +150830,10 @@
     "isUnique": true,
     "kind": "SHADOW",
     "type": "MINION",
+    "keywords": [
+      "ARCHER",
+      "DAMAGE +1"
+    ],
     "culture": "URUK-HAI",
     "race": "URUK-HAI",
     "twilightCost": 7,

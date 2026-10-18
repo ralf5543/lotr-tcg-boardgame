@@ -392,6 +392,14 @@ export function whileConditionHolds(
         }
     }
 
+    if (trigger.unlessAtSiteKeyword) {
+        if (trigger.unlessAtSiteKeyword === 'SANCTUARY') {
+            if (isCurrentSiteSanctuary(G)) return false;
+        } else if (isAtSiteWithKeyword(G, trigger.unlessAtSiteKeyword)) {
+            return false;
+        }
+    }
+
     if (trigger.spotSiteKeyword) {
         const needed = trigger.spotSiteKeyword.count || 1;
         if (

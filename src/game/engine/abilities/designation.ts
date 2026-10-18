@@ -220,6 +220,15 @@ function candidatesForEffect(
  * Unique nommé : le joueur désigne toujours (même une seule cible), pour pouvoir annuler.
  * 0 → impossible ; ≥1 → halo + flèche (main) ou clic (carte en jeu).
  */
+/** Nombre de cibles de coût à désigner (N distincts, sinon 1). */
+export function getCostDesignationCount(ability: Ability): number {
+    const req = (ability.cost || []).find((opt) => opt.exert?.[0])?.exert?.[0];
+    if (req?.distinctTargets && (req.count || 1) > 1) {
+        return req.count || 1;
+    }
+    return 1;
+}
+
 export function getCostDesignationCandidates(
     G: GameState,
     source: CardState,
@@ -232,17 +241,21 @@ export function getCostDesignationCandidates(
             return false;
         }
         const count = req.count || 1;
-        return filterCostTargetsForActor(
+        const needVitality = req.distinctTargets && count > 1 ? 1 : count;
+        const needCards = req.distinctTargets && count > 1 ? count : 1;
+        const payable = filterCostTargetsForActor(
             G,
             source,
             resolveCostTarget(G, source, req.target),
             actingPlayerId
-        ).some((card) => getEffectiveVitality(card) > count);
+        ).filter((card) => getEffectiveVitality(card) > needVitality);
+        return payable.length >= needCards;
     });
 
     const req = option?.exert?.[0];
     if (req && req.target !== 'SELF' && req.target !== 'BEARER') {
         const count = req.count || 1;
+        const needVitality = req.distinctTargets && count > 1 ? 1 : count;
         return uniqueCards(
             filterCostTargetsForActor(
                 G,
@@ -250,7 +263,7 @@ export function getCostDesignationCandidates(
                 resolveCostTarget(G, source, req.target),
                 actingPlayerId
             ).filter((card) => {
-                if (getEffectiveVitality(card) <= count) return false;
+                if (getEffectiveVitality(card) <= needVitality) return false;
                 if (req.excludeKeywords?.length) {
                     if (
                         req.excludeKeywords.some(
@@ -527,9 +540,10 @@ export function abilityNeedsCostDesignation(
     ability: Ability,
     actingPlayerId?: string
 ): boolean {
+    const need = getCostDesignationCount(ability);
     return (
         getCostDesignationCandidates(G, source, ability, actingPlayerId)
-            .length >= 1
+            .length >= need
     );
 }
 
@@ -954,6 +968,15 @@ export function formatDesignationPrompt(
         removeTokensCost.from !== 'SELF'
     ) {
         return 'Choisissez une carte dont retirer un jeton.';
+    }
+
+    const costNeed = getCostDesignationCount(ability);
+    if (
+        (which === 'cost' || (which === 'auto' && hasCostDesignation)) &&
+        costNeed > 1 &&
+        Array.isArray(costTarget)
+    ) {
+        return `Choisissez ${costNeed} personnages à affaiblir.`;
     }
 
     if (useEffect && effectTarget === 'SKIRMISHING') {

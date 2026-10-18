@@ -3,6 +3,7 @@ import { getRegionTwilightBonus } from '../logic/sites';
 import { resolveSiteMoveAbilities } from '../engine/abilities/siteMove';
 import { tryOpenFellowshipMoves } from '../engine/responseWindow';
 import { enterPhase } from '../logic/phaseEntry';
+import { enforceWhileSelfDiscards } from '../engine/abilities/enforceWhileDiscard';
 
 /** Après un déplacement réel : réponses « each time the fellowship moves ». */
 function afterFellowshipArrived(
@@ -55,6 +56,7 @@ export const advanceCompany = (G: GameState) => {
         const poolBefore = G.twilightPool || 0;
         resolveSiteMoveAbilities(G, fromSite, 'MOVES_FROM');
         resolveSiteMoveAbilities(G, targetSite, 'MOVES_TO');
+        enforceWhileSelfDiscards(G);
         const poolAfterSiteEffects = G.twilightPool || 0;
 
         const siteCost = Number(targetSite.twilightCost) || 0;
@@ -189,6 +191,7 @@ export const playSite = (
     // CR : move from → move to → puis crépuscule du déplacement.
     resolveSiteMoveAbilities(G, previousSite, 'MOVES_FROM');
     resolveSiteMoveAbilities(G, playedSite, 'MOVES_TO');
+    enforceWhileSelfDiscards(G);
 
     const siteCost = Number(playedSite.twilightCost) || 0;
     const companionsCount = fpPlayer?.fellowshipArea

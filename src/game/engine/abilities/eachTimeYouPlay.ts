@@ -4,6 +4,7 @@ import { canPayAbilityCost, payAbilityCost } from './payAbilityCost';
 import { forEachInPlayCard } from './resolveCostTarget';
 import { cardMatchesTarget } from '../validations/matchers';
 import { resolveWhenPlayed } from './whenPlayed';
+import { enforceWhileSelfDiscards } from './enforceWhileDiscard';
 
 export function isYouPlayAbility(ability: Ability): boolean {
     return ability.trigger?.type === 'YOU_PLAY';
@@ -45,4 +46,5 @@ export function afterCardPlayed(
         resolveWhenPlayed(G, card, options);
     }
     resolveEachTimeYouPlay(G, card);
+    enforceWhileSelfDiscards(G);
 }

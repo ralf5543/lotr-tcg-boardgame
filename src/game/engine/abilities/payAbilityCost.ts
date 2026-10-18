@@ -141,10 +141,17 @@ function canPayOption(
                 );
             }
             if (cards.length === 0) return false;
-            const payable = cards.filter(
-                (c) => getEffectiveVitality(c) > count
-            );
-            if (payable.length < 1) return false;
+            if (req.distinctTargets && count > 1) {
+                const payable = cards.filter(
+                    (c) => getEffectiveVitality(c) > 1
+                );
+                if (payable.length < count) return false;
+            } else {
+                const payable = cards.filter(
+                    (c) => getEffectiveVitality(c) > count
+                );
+                if (payable.length < 1) return false;
+            }
         }
     }
 
@@ -325,6 +332,11 @@ function pickExertTarget(
     return undefined;
 }
 
+function normalizeChosenIds(chosen?: string | string[]): string[] {
+    if (!chosen) return [];
+    return Array.isArray(chosen) ? chosen.filter(Boolean) : [chosen];
+}
+
 export function discardCardsFromHand(
     G: GameState,
     ownerId: string,
@@ -368,7 +380,7 @@ function payOption(
     G: GameState,
     source: CardState,
     option: AbilityCost[number],
-    chosenTargetId?: string,
+    chosenTargetId?: string | string[],
     discardedHandIds?: string[],
     effectTargetId?: string,
     actingPlayerId?: string
@@ -390,12 +402,25 @@ function payOption(
                         )
                 );
             }
+            // « Exert 2 hunters » : N cartes distinctes, 1 affaiblissement chacune.
+            if (req.distinctTargets && count > 1) {
+                const ids = normalizeChosenIds(chosenTargetId);
+                if (ids.length !== count) return false;
+                if (new Set(ids).size !== count) return false;
+                for (const id of ids) {
+                    const card = cards.find((c) => matchCard(c, id));
+                    if (!card || getEffectiveVitality(card) <= 1) return false;
+                    if (!applyExert(G, card)) return false;
+                }
+                continue;
+            }
+            const singleId = normalizeChosenIds(chosenTargetId)[0];
             const isNamed = Array.isArray(req.target);
             const target = isNamed
                 ? pickExertTarget(
                       cards,
                       count,
-                      chosenTargetId,
+                      singleId,
                       req.mode === 'DESIGNATION'
                   )
                 : pickExertTarget(cards, count);
@@ -523,17 +548,17 @@ export function payAbilityCost(
         canPayOption(G, source, opt, actingPlayerId)
     );
     if (!option) return false;
-    const costId = Array.isArray(chosenTargetId)
-        ? chosenTargetId[0]
-        : chosenTargetId;
     const effectId = Array.isArray(effectTargetId)
         ? effectTargetId[0]
-        : effectTargetId || costId;
+        : effectTargetId ||
+          (Array.isArray(chosenTargetId)
+              ? chosenTargetId[0]
+              : chosenTargetId);
     return payOption(
         G,
         source,
         option,
-        costId,
+        chosenTargetId,
         discardedHandIds,
         effectId,
         actingPlayerId

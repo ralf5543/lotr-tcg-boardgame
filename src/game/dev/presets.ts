@@ -37,13 +37,12 @@ const clonePresetSite = (
 };
 
 /**
- * Vague cas durs / suite each-time.
- * 1 filler → 2 Starkhorn (Dwarf wins → draw)
- * → 3 Westfold (hunter +1) → … → 7 Mount Doom (région verrouillée)
- * Steward's Tomb / Foot volontairement absents (inertes).
+ * Vague cas durs / suite.
+ * 1 Hobbiton → 2 Starkhorn → 3 Westfold → 4 Bridge (Balrog –3)
+ * → … → 7 Mount Doom (région verrouillée).
  */
 const SITES_HARD_WAVE_PATH = [
-    '12S189', // 1 Hobbiton Market (moves from → wound non-lurker)
+    '12S189', // 1 Hobbiton Market
     '12U193', // 2 Starkhorn
     '15S194', // 3 Westfold Village (sanctuaire)
     '12U186', // 4 Bridge (Balrog –3)
@@ -118,9 +117,10 @@ export const applyDevPreset = (
     switch (presetType) {
         case 'SITES_HARD_WAVE': {
             resetBoardForPreset(G);
-            // Départ site 2 (Starkhorn) ; téléporte 3 / 7 pour Westfold / Mount Doom.
-            setupDevPath(G, 1, SITES_HARD_WAVE_PATH);
-            G.twilightPool = 0;
+            // Départ site 4 (Bridge) pour tester Balrog –3 ; téléporte 2/3/7.
+            setupDevPath(G, 3, SITES_HARD_WAVE_PATH);
+            // Assez pour jouer le Balrog (12) même hors Bridge ; sur Bridge = 9.
+            G.twilightPool = 12;
             fpPlayer.burdens = 0;
 
             fpPlayer.fellowshipArea = [
@@ -135,8 +135,12 @@ export const applyDevPreset = (
                     wounds: 0,
                 },
                 {
-                    // Hunter → Westfold.
-                    ...clonePresetCard('15S18', 'dev-hard-hunter'),
+                    // Hunter ×2 → Westfold + coût Legolas (2 chasseurs distincts).
+                    ...clonePresetCard('15S18', 'dev-hard-legolas'),
+                    wounds: 0,
+                },
+                {
+                    ...clonePresetCard('17S7', 'dev-hard-hunter-2'),
                     wounds: 0,
                 },
             ];
@@ -144,12 +148,30 @@ export const applyDevPreset = (
                 clonePresetCard('1C11', 'dev-hard-draw-a'),
                 clonePresetCard('1R30', 'dev-hard-draw-b'),
             ];
+            // There’s Another Way déjà en jeu (évite spot Sméagol).
+            fpPlayer.supportArea = [
+                clonePresetCard('12C40', 'dev-hard-replace-fp'),
+            ];
+            fpPlayer.hand = [];
+            fpPlayer.sitesDeck = [
+                clonePresetSite('11S250', fpId),
+                clonePresetSite('11S265', fpId),
+                clonePresetSite('11S241', fpId),
+            ];
 
             if (shadowPlayer) {
-                // Sites de deck pour tenter un replace (bloqué par Mount Doom région 3).
+                // Unforgiving Depths déjà en jeu + sites souterrains pour replace.
+                shadowPlayer.supportArea = [
+                    clonePresetCard('13C120', 'dev-hard-replace-sh'),
+                ];
                 shadowPlayer.sitesDeck = [
-                    clonePresetSite('11S241', shadowId),
-                    clonePresetSite('11S239', shadowId),
+                    clonePresetSite('11S248', shadowId), // Moria Stairway (underground)
+                    clonePresetSite('11S263', shadowId),
+                    clonePresetSite('18U138', shadowId),
+                ];
+                shadowPlayer.hand = [
+                    // Bridge : The Balrog twilight –3.
+                    clonePresetCard('2C51', 'dev-hard-balrog'),
                 ];
                 G.battlefield = [
                     clonePresetCard('1C266', 'dev-hard-orc'),
@@ -157,7 +179,7 @@ export const applyDevPreset = (
             }
 
             G.statusMessage =
-                '[DEV] Hard · 1 Hobbiton (quitter → blessure) ; 2 Starkhorn ; 3 Westfold ; 4 Bridge (Balrog –3) ; 7 Mount Doom.';
+                '[DEV] Hard · Bridge (Balrog main Ombre) ; replace FP/Ombre déjà en jeu ; Mount Doom site 7 ; 2 chasseurs.';
             break;
         }
     }
