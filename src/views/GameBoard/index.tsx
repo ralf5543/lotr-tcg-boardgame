@@ -268,6 +268,7 @@ export const GameBoard: React.FC<GameBoardProps> = ({
     const {
         startTargeting,
         stopTargeting,
+        isTargetingActive,
         targetingKind,
         targetableCardIds,
         pendingCard,
@@ -275,6 +276,14 @@ export const GameBoard: React.FC<GameBoardProps> = ({
         discardedHandIds: targetingDiscardedHandIds,
         isCardTargetable,
     } = useTargeting();
+
+    /**
+     * Après « Activer l’effet » du toaster site début de phase : masquer
+     * Activer / Passer pendant désignation + pioche (sinon le toaster revient
+     * entre stopTargeting et l’ouverture de la grille).
+     */
+    const [siteStartFlowActive, setSiteStartFlowActive] = useState(false);
+    const siteStartBridgeRef = useRef(false);
 
     const requestDesignation = useCallback(
         (
@@ -724,6 +733,8 @@ export const GameBoard: React.FC<GameBoardProps> = ({
                         if (picked.includes(canonical)) return;
                         const next = [...picked, canonical];
                         if (next.length >= need) {
+                            // Évite le flash Activer/Passer avant openDeckPick.
+                            siteStartBridgeRef.current = true;
                             stopTargeting();
                             queueMicrotask(() => onChosen(next));
                             return;
@@ -1080,13 +1091,12 @@ export const GameBoard: React.FC<GameBoardProps> = ({
             const playEffect = abilityPlayFromDeckOrDiscardEffect(ability);
             if (playEffect) {
                 const from = playEffect.from || 'DECK_OR_DISCARD';
+                // startOfFellowship / site : jouer comme en fellowship (ignorePhase côté candidats).
                 const playPhase =
-                    myId === (G.fpPlayerId || '0')
-                        ? ctx.phase || 'fellowship'
-                        : 'shadow';
+                    myId === (G.fpPlayerId || '0') ? 'fellowship' : 'shadow';
                 const attachHost =
                     playEffect.attachTo === 'SELF' ? source : null;
-                const openDeckPick = (costId?: string) => {
+                const openDeckPick = (costIds?: string | string[]) => {
                     const selectable = getDeckOrDiscardPlayCandidates(
                         G,
                         myId,
@@ -1095,13 +1105,18 @@ export const GameBoard: React.FC<GameBoardProps> = ({
                         attachHost,
                         from
                     );
-                    if (selectable.length === 0) return;
+                    if (selectable.length === 0) {
+                        siteStartBridgeRef.current = false;
+                        return;
+                    }
                     const pool = getDeckOrDiscardBrowsePool(G, myId);
+                    // Pont anti-flash : stopTargeting → setDeckDiscardPick.
+                    siteStartBridgeRef.current = true;
                     setDeckDiscardPick({
                         activate: {
                             sourceInstanceId,
                             abilityId,
-                            costId,
+                            costId: costIds,
                         },
                         selectableCardIds:
                             selectable.flatMap(cardTargetIds),
@@ -1116,13 +1131,31 @@ export const GameBoard: React.FC<GameBoardProps> = ({
                         subtitle:
                             'Choisissez une carte jouable dans votre pioche.',
                     });
+                    queueMicrotask(() => {
+                        siteStartBridgeRef.current = false;
+                    });
                 };
                 if (needsCost && !chosenTargetId) {
-                    if (
+                    const deckCostNeed = getCostDesignationCount(ability);
+                    if (deckCostNeed > 1) {
+                        if (
+                            requestMultiCostDesignation(
+                                source,
+                                ability,
+                                deckCostNeed,
+                                (costIds) => {
+                                    openDeckPick(costIds);
+                                }
+                            )
+                        ) {
+                            return;
+                        }
+                    } else if (
                         requestDesignation(
                             source,
                             ability,
                             (costId) => {
+                                siteStartBridgeRef.current = true;
                                 stopTargeting();
                                 openDeckPick(costId);
                             },
@@ -1224,12 +1257,15 @@ export const GameBoard: React.FC<GameBoardProps> = ({
     const handleResolveSiteStartAbilityChoice = useCallback(
         (accept: boolean) => {
             if (!accept) {
+                setSiteStartFlowActive(false);
+                siteStartBridgeRef.current = false;
                 moves.resolveSiteStartAbilityChoice?.(false);
                 return;
             }
             const pending = G.pendingSiteStartAbility;
             if (!pending) return;
-            // Pending reste jusqu’à activateAbility réussi (annulation → toaster revient).
+            // Pending reste jusqu’à activateAbility réussi (annulation → toaster).
+            setSiteStartFlowActive(true);
             handleActivateAbility(
                 pending.siteInstanceId,
                 pending.abilityId
@@ -1478,7 +1514,8 @@ export const GameBoard: React.FC<GameBoardProps> = ({
         activate?: {
             sourceInstanceId: string;
             abilityId: string;
-            costId?: string;
+            /** Un ou plusieurs ids (exert N distincts → Green Dragon / East Wall). */
+            costId?: string | string[];
         };
         selectableCardIds: string[];
         deck: CardState[];
@@ -1486,6 +1523,28 @@ export const GameBoard: React.FC<GameBoardProps> = ({
         title?: string;
         subtitle?: string;
     } | null>(null);
+
+    // Fin de flux site start : succès (pending cleared), Échap, ou fermeture grille.
+    useEffect(() => {
+        if (!siteStartFlowActive) return;
+        if (!G.pendingSiteStartAbility) {
+            setSiteStartFlowActive(false);
+            siteStartBridgeRef.current = false;
+            return;
+        }
+        if (
+            !isTargetingActive &&
+            !deckDiscardPick &&
+            !siteStartBridgeRef.current
+        ) {
+            setSiteStartFlowActive(false);
+        }
+    }, [
+        siteStartFlowActive,
+        G.pendingSiteStartAbility,
+        isTargetingActive,
+        deckDiscardPick,
+    ]);
 
     /** Pile empilée (Web / Goblin Swarms…) — même overlay que la défausse. */
     const [stackOverlay, setStackOverlay] = useState<{
@@ -2612,6 +2671,9 @@ export const GameBoard: React.FC<GameBoardProps> = ({
                         playerID={playerID}
                         isMyTurn={ctx.currentPlayer === playerID}
                         awaitingSite={G.awaitingSiteSelection ?? false}
+                        siteStartChoiceLocked={
+                            siteStartFlowActive || Boolean(deckDiscardPick)
+                        }
                         moves={{
                             ...moves,
                             resolveWhenPlayedChoice:
@@ -2806,6 +2868,8 @@ export const GameBoard: React.FC<GameBoardProps> = ({
                                     const finishActivate = (
                                         effectIds: string | string[]
                                     ) => {
+                                        // Pont jusqu’à clear du pending (évite flash Activer/Passer).
+                                        siteStartBridgeRef.current = true;
                                         if (activate.costId) {
                                             moves.activateAbility?.(
                                                 activate.sourceInstanceId,
@@ -2822,6 +2886,9 @@ export const GameBoard: React.FC<GameBoardProps> = ({
                                             );
                                         }
                                         audioService.play('CARD_PLAY');
+                                        queueMicrotask(() => {
+                                            siteStartBridgeRef.current = false;
+                                        });
                                     };
                                     if (
                                         picked &&
@@ -2875,6 +2942,8 @@ export const GameBoard: React.FC<GameBoardProps> = ({
                                 }
                                 if (deckDiscardPick.activate) {
                                     setDeckDiscardPick(null);
+                                    siteStartBridgeRef.current = false;
+                                    setSiteStartFlowActive(false);
                                     return;
                                 }
                                 closeDeckDiscardPick();

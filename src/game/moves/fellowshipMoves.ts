@@ -3,6 +3,7 @@ import { getRegionTwilightBonus } from '../logic/sites';
 import { resolveSiteMoveAbilities } from '../engine/abilities/siteMove';
 import { tryOpenFellowshipMoves } from '../engine/responseWindow';
 import { enterPhase } from '../logic/phaseEntry';
+import { beginOptionalSiteMoveAbility } from '../logic/siteMoveAbility';
 import { enforceWhileSelfDiscards } from '../engine/abilities/enforceWhileDiscard';
 
 /** Après un déplacement réel : réponses « each time the fellowship moves ». */
@@ -218,6 +219,9 @@ export const playSite = (
     } else if (ctx.phase === 'regroup') {
         G.skirmishes = [];
         G.activeSkirmishId = undefined;
+        if (beginOptionalSiteMoveAbility(G, enterPhase('shadow'))) {
+            return;
+        }
         afterFellowshipArrived(G, events, enterPhase('shadow'));
     }
 };

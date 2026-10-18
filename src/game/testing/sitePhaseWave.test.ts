@@ -125,6 +125,51 @@ describe('parseSiteAbilities — vague phase', () => {
         ]);
     });
 
+    it('Emyn Muil : Maneuver remove 2 + exert minion non fierce → FIERCE (COST_TARGET)', () => {
+        // Espace insécable entre « is » et « not » : présent dans le CSV source.
+        const text =
+            '**Mountain. Maneuver:** Remove <symbol>twilight2</symbol> and exert your minion that is\u00a0not fierce to make that minion **fierce** until the regroup phase.';
+        expect(parseSiteAbilities(text, '12S187')).toEqual([
+            expect.objectContaining({
+                phases: ['MANEUVER'],
+                cost: [
+                    {
+                        removeTwilight: 2,
+                        exert: [
+                            {
+                                count: 1,
+                                target: [['MINION']],
+                                mode: 'DESIGNATION',
+                                excludeKeywords: ['FIERCE'],
+                            },
+                        ],
+                    },
+                ],
+                effects: [
+                    {
+                        type: 'ADD_TEMP_KEYWORD',
+                        keyword: 'FIERCE',
+                        target: 'COST_TARGET',
+                        expiresAtPhase: 'REGROUP',
+                    },
+                ],
+                source: 'SELF',
+            }),
+        ]);
+    });
+
+    it('Emyn Muil : refuse si mot-clé exclu ≠ mot-clé donné', () => {
+        const text =
+            '**Mountain. Maneuver:** Remove <symbol>twilight2</symbol> and exert your minion that is not fierce to make that minion **damage** until the regroup phase.';
+        expect(parseSiteAbilities(text, '12S187')).toBeUndefined();
+    });
+
+    it('Dol Guldur reste inerte (choix condition par les Peuples Libres)', () => {
+        const text =
+            '**Regroup:** Exert your minion and remove a threat to make the Free Peoples player discard one of his or her conditions.';
+        expect(parseSiteAbilities(text, '17U145')).toBeUndefined();
+    });
+
     it('laisse Buckland / Woody-End inertes (play Nazgûl)', () => {
         expect(
             parseSiteAbilities(

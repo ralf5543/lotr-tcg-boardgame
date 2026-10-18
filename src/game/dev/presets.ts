@@ -37,20 +37,20 @@ const clonePresetSite = (
 };
 
 /**
- * Vague passifs reste 12–18.
- * Départ Fords (borne) ; téléporte Great Gates / Streets / Redhorn / Wold ;
- * Nurn contrôlé Ombre hors site courant.
+ * Vague may / phase rest (12–18).
+ * 1 Emyn Muil (Maneuver fierce) → 2 Caves (may −2 fardeaux) → 3 City of Kings (may draw)
+ * → 4 East Wall (début fellowship hunters) → …
  */
-const SITES_PASSIVES_REST_PATH = [
-    '13S191', // 1 Fords of Isen
-    '13S192', // 2 The Great Gates
-    '18U140', // 3 Streets of Bree
-    '13U194', // 4 Redhorn Pass
-    '12U194', // 5 Wold Battlefield
-    '17U148', // 6 Nurn (contrôlé Ombre)
-    '11S265', // 7 Window
-    '11S263', // 8 West Gate
-    '11S250', // 9 North Undeep
+const SITES_MAY_WAVE_PATH = [
+    '12S187', // 1 Emyn Muil
+    '13S186', // 2 Caves of Aglarond
+    '13U187', // 3 City of Kings (sanctuaire)
+    '15S190', // 4 East Wall of Rohan
+    '11S265', // 5 Window
+    '11S228', // 6 Anduin Confluence (sanctuaire)
+    '11S263', // 7 West Gate
+    '11S250', // 8 North Undeep
+    '18U138', // 9 Sirannon
 ] as const;
 
 const resetBoardForPreset = (G: GameState): void => {
@@ -69,6 +69,8 @@ const resetBoardForPreset = (G: GameState): void => {
     G.awaitingSiteSelection = false;
     G.archeryState = undefined;
     G.archeryWoundsToAssign = 0;
+    G.pendingSiteMoveAbility = undefined;
+    G.pendingSiteStartAbility = undefined;
 
     Object.keys(G.players).forEach((pId) => {
         const player = G.players[pId];
@@ -115,43 +117,33 @@ export const applyDevPreset = (
     const shadowPlayer = G.players[shadowId];
 
     switch (presetType) {
-        case 'SITES_PASSIVES_REST': {
+        case 'SITES_MAY_WAVE': {
             resetBoardForPreset(G);
-            setupDevPath(G, 0, SITES_PASSIVES_REST_PATH);
+            // Départ East Wall (site 4) → toaster début fellowship ; téléporte 1–3 pour le reste.
+            setupDevPath(G, 3, SITES_MAY_WAVE_PATH);
             G.twilightPool = 4;
-            fpPlayer.burdens = 0;
+            fpPlayer.burdens = 3;
 
-            const axe = clonePresetCard('1C9', 'dev-pass-axe');
             fpPlayer.fellowshipArea = [
                 {
-                    ...clonePresetCard('2C102', 'dev-pass-frodo'),
-                    attachments: [clonePresetCard('1R1', 'dev-pass-ring')],
+                    ...clonePresetCard('2C102', 'dev-may-frodo'),
+                    attachments: [clonePresetCard('1R1', 'dev-may-ring')],
                     wounds: 0,
                 },
                 {
-                    // Homme → Wold ; axe → Fords (+1).
-                    ...clonePresetCard('1R89', 'dev-pass-aragorn'),
-                    attachments: [axe],
+                    // Hunter ×2 → East Wall (exert 2 chasseurs).
+                    ...clonePresetCard('15S18', 'dev-may-legolas'),
                     wounds: 0,
                 },
                 {
-                    ...clonePresetCard('1R13', 'dev-pass-gimli'),
-                    wounds: 0,
-                },
-                {
-                    // Homme Gandalf → Last Stand (place jetons) pour Redhorn.
-                    ...clonePresetCard('11R30', 'dev-pass-erland'),
+                    ...clonePresetCard('17S7', 'dev-may-hunter-2'),
                     wounds: 0,
                 },
             ];
-            fpPlayer.supportArea = [
-                // Suivant → Streets of Bree (interdit transfert).
-                clonePresetCard('13R46', 'dev-pass-follower'),
-                // Redhorn (site 4) : place / retire jetons bloqués.
-                {
-                    ...clonePresetCard('18U21', 'dev-pass-last-stand'),
-                    cultureTokens: { GANDALF: 3 },
-                },
+            // City of Kings : piocher ; East Wall : chasseur jouable (pas Legolas, déjà unique en jeu).
+            fpPlayer.deck = [
+                clonePresetCard('15C59', 'dev-may-hunter-deck'),
+                clonePresetCard('1C11', 'dev-may-draw-b'),
             ];
             fpPlayer.hand = [];
             fpPlayer.sitesDeck = [clonePresetSite('11S250', fpId)];
@@ -161,22 +153,15 @@ export const applyDevPreset = (
                 shadowPlayer.sitesDeck = [clonePresetSite('11S263', shadowId)];
                 G.battlefield = [
                     {
-                        // Nurn (site 6) : force 8 → 9 si contrôlé ; orc reste 7.
-                        ...clonePresetCard('15C83', 'dev-pass-hunter-minion'),
-                        wounds: 0,
-                    },
-                    {
-                        ...clonePresetCard('1C266', 'dev-pass-orc'),
+                        // Emyn Muil : séide non fierce → fierce.
+                        ...clonePresetCard('1C266', 'dev-may-orc'),
                         wounds: 0,
                     },
                 ];
-                // Nurn contrôlé Ombre → hunter +1 même hors site courant.
-                const nurn = G.path[5];
-                if (nurn) nurn.controlledBy = shadowId;
             }
 
             G.statusMessage =
-                '[DEV] Passives rest · site 4 Redhorn (Last Stand jetons) ; site 6 Nurn (hunter 8→9). Téléporte via panneau DEV.';
+                '[DEV] May wave · départ East Wall (2 chasseurs → play hunter) ; site 1 Emyn Muil ; site 2 Caves ; site 3 City.';
             break;
         }
     }

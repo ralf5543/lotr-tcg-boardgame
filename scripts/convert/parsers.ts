@@ -6170,6 +6170,33 @@ function parseSiteMoveAbilities(
         });
     }
 
+    // City of Kings / Caves of Aglarond : regroup → FP may draw / remove burdens.
+    const optionalRegroupRe = new RegExp(
+        `When the fellowship moves to ${siteRef} during the regroup phase, the Free Peoples player may (draw a card|remove (\\d+) burdens?)\\.`,
+        'gi'
+    );
+    while ((match = optionalRegroupRe.exec(text)) !== null) {
+        let effect: Record<string, unknown>;
+        if (/^draw/i.test(match[1])) {
+            effect = { type: 'DRAW', count: 1 };
+        } else {
+            const count = parseInt(match[2], 10);
+            if (!Number.isFinite(count) || count <= 0) continue;
+            effect = { type: 'REMOVE_BURDENS', count };
+        }
+        found.push({
+            id: `${cardId || 'ability'}:${found.length}:site-move-optional`,
+            phases: [],
+            optional: true,
+            responsePlayer: 'FREE_PEOPLE',
+            trigger: { type: 'MOVES_TO', duringRegroup: true },
+            cost: [],
+            effects: [effect],
+            source: 'SELF',
+            text: stripAbilityMarkup(match[0]),
+        });
+    }
+
     return found;
 }
 
@@ -6645,8 +6672,9 @@ function parseSiteNamedTwilightCostAbilities(
 
 /**
  * Capacités de phase actives sur sites (set 11+) :
- * Ettenmoors (Skirmish exert → force) ; Watch-tower (Maneuver discard random).
- * Pas encore : play Nazgûl / play minion –N (Buckland, Woody-End, Marshland…).
+ * Ettenmoors (Skirmish exert → force) ; Watch-tower (Maneuver discard random) ;
+ * Emyn Muil (Maneuver → fierce).
+ * Pas encore : Dol Guldur (choix condition par les PL) ; play Nazgûl / –N.
  */
 function parseSitePhaseAbilities(
     text: string,
@@ -6763,6 +6791,58 @@ function parseSitePhaseAbilities(
         while ((match = woldInlineRe.exec(text)) !== null) {
             pushWold(match[0]);
         }
+    }
+
+    // Emyn Muil : Maneuver: Remove <twilightN> and exert your minion that is
+    // not fierce to make that minion fierce until the regroup phase.
+    const emynRe =
+        /Maneuver:?\s*(?:<\/keyword>)?(?:\*\*)?\s*Remove\s*<symbol>twilight(\d+)<\/symbol>\s+and\s+exert\s+your\s+(.+?)\s+that\s+is\s+not\s+([A-Za-z-]+)\s+to\s+make\s+(?:that|the)\s+[A-Za-z-]+\s+(?:\*\*|<keyword>)?([A-Za-z-]+)(?:\*\*|<\/keyword>)?\s+until\s+the\s+regroup\s+phase\.?/gi;
+    while ((match = emynRe.exec(text)) !== null) {
+        const twilight = parseInt(match[1], 10);
+        if (!Number.isFinite(twilight) || twilight <= 0) continue;
+        const filters = parseClassFilters(match[2].trim());
+        if (filters.length === 0) continue;
+        const excluded = normalizeParsedKeyword(match[3]);
+        const granted = normalizeParsedKeyword(match[4]);
+        // « not fierce … make fierce » : même mot-clé des deux côtés.
+        if (!excluded || !granted || excluded !== granted) continue;
+        found.push({
+            id: `${cardId || 'ability'}:${found.length}:site-phase-maneuver-keyword`,
+            phases: ['MANEUVER'],
+            cost: [
+                {
+                    removeTwilight: twilight,
+                    exert: [
+                        {
+                            count: 1,
+                            target: [filters],
+                            mode: 'DESIGNATION',
+                            excludeKeywords: [excluded],
+                        },
+                    ],
+                },
+            ],
+            effects: [
+                {
+                    type: 'ADD_TEMP_KEYWORD',
+                    keyword: granted,
+                    target: 'COST_TARGET',
+                    expiresAtPhase: 'REGROUP',
+                },
+            ],
+            source: 'SELF',
+            // Garder « twilightN » lisible (stripAbilityMarkup efface le symbole).
+            text: match[0]
+                .replace(/<[^>]+>/g, (tag) =>
+                    /^<symbol>$/i.test(tag) || /^<\/symbol>$/i.test(tag)
+                        ? ''
+                        : ' '
+                )
+                .replace(/\*\*/g, '')
+                .replace(/\s+/g, ' ')
+                .replace(/\s+\./g, '.')
+                .trim(),
+        });
     }
 
     return found;
@@ -6891,7 +6971,8 @@ function parseSitePassiveRestAbilities(
 /**
  * Début de fellowship (sites) — optional may :
  * heal N ; play from deck ; add burden / exert → play from deck.
- * Pas encore : exert N distincts (Green Dragon), pile de mort (Pinnacle).
+ * « your » ou « the » fellowship phase (East Wall). Exert N → distinctTargets.
+ * Pas encore : pile de mort (Pinnacle).
  */
 function parseSiteStartOfFellowshipAbilities(
     text: string,
@@ -6911,7 +6992,7 @@ function parseSiteStartOfFellowshipAbilities(
         .trim();
 
     const healRe =
-        /At the start of your fellowship phase,\s*you may heal (\d+|a|one|two|three)\s+([^.,]+?)\./gi;
+        /At the start of (?:your|the) fellowship phase,\s*you may heal (\d+|a|one|two|three)\s+([^.,]+?)\./gi;
     let match: RegExpExecArray | null;
     while ((match = healRe.exec(plain)) !== null) {
         const n = parseBurdenWord(match[1]);
@@ -6937,7 +7018,7 @@ function parseSiteStartOfFellowshipAbilities(
     }
 
     const burdenPlayRe =
-        /At the start of your fellowship phase,\s*you may add a burden to play (?:a|an)\s+(.+?)\s+from your draw deck\.?/gi;
+        /At the start of (?:your|the) fellowship phase,\s*you may add a burden to play (?:a|an)\s+(.+?)\s+from your draw deck\.?/gi;
     while ((match = burdenPlayRe.exec(plain)) !== null) {
         const filters = parseClassFilters(match[1]);
         if (filters.length === 0) continue;
@@ -6959,7 +7040,7 @@ function parseSiteStartOfFellowshipAbilities(
     }
 
     const exertPlayRe =
-        /At the start of your fellowship phase,\s*you may exert (.+?) to play (?:a|an)\s+(.+?)\s+from your draw deck\.?/gi;
+        /At the start of (?:your|the) fellowship phase,\s*you may exert (.+?) to play (?:a|an)\s+(.+?)\s+from your draw deck\.?/gi;
     while ((match = exertPlayRe.exec(plain)) !== null) {
         const subject = parseExertSubject(match[1].trim());
         if (!subject) continue;
@@ -6987,7 +7068,7 @@ function parseSiteStartOfFellowshipAbilities(
     }
 
     const playRe =
-        /At the start of your fellowship phase,\s*you may play (?:a|an)\s+(.+?)\s+from your draw deck\.?/gi;
+        /At the start of (?:your|the) fellowship phase,\s*you may play (?:a|an)\s+(.+?)\s+from your draw deck\.?/gi;
     while ((match = playRe.exec(plain)) !== null) {
         // Éviter de re-matcher les clauses déjà couvertes (burden / exert).
         const before = plain.slice(Math.max(0, match.index - 40), match.index);

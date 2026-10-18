@@ -7,7 +7,7 @@ import { canonicalPhaseName } from '../../canonicalPhaseName';
 import { BiddingWidget } from '../BiddingWidget';
 import { useTargeting } from '../../../../contexts/TargetingContext';
 import { findTargetCard } from '../../../../utils/cardUtils';
-import { getCardText } from '../../../../utils/i18n';
+import { getAbilityToastClause, getCardText } from '../../../../utils/i18n';
 import { FormattedText } from '../../../../utils/FormattedText';
 import { findOptionalSiteResponseAbility } from '../../../../game/engine/responseWindow';
 
@@ -17,6 +17,11 @@ interface GameControlsProps {
     playerID: string | null;
     statusMessage?: string;
     awaitingSite: boolean;
+    /**
+     * Après « Activer » d’un site début de phase : masquer Activer / Passer
+     * pendant désignation / pioche.
+     */
+    siteStartChoiceLocked?: boolean;
     moves: {
         submitBid?: (amount: number) => void;
         chooseFirstPlayer?: (wantToBeFirst: boolean) => void;
@@ -35,6 +40,7 @@ interface GameControlsProps {
             chosenTargetId?: string | string[]
         ) => void;
         resolveSiteStartAbilityChoice?: (accept: boolean) => void;
+        resolveSiteMoveAbilityChoice?: (accept: boolean) => void;
         /** Réponse site optionnelle (Starkhorn…) : Activer → activateAbility. */
         resolveSiteResponseAbilityChoice?: (accept: boolean) => void;
         confirmMuster?: () => void;
@@ -50,6 +56,7 @@ export const GameControls: React.FC<GameControlsProps> = ({
     ctx,
     playerID,
     awaitingSite,
+    siteStartChoiceLocked = false,
     moves,
     G,
 }) => {
@@ -119,6 +126,7 @@ export const GameControls: React.FC<GameControlsProps> = ({
     const isResponseWindowActive = G.responseWindow?.isOpen ?? false;
     const isWhenPlayedChoiceActive = Boolean(G.pendingWhenPlayed);
     const isSiteStartAbilityActive = Boolean(G.pendingSiteStartAbility);
+    const isSiteMoveAbilityActive = Boolean(G.pendingSiteMoveAbility);
     const isForcedChoiceActive = Boolean(G.pendingForcedChoice);
     const isRevealActive = Boolean(G.pendingReveal);
     const siteResponseCandidate =
@@ -151,6 +159,8 @@ export const GameControls: React.FC<GameControlsProps> = ({
             ? G.pendingForcedChoice!.playerId
           : isSiteStartAbilityActive
             ? G.pendingSiteStartAbility!.playerId
+          : isSiteMoveAbilityActive
+            ? G.pendingSiteMoveAbility!.playerId
           : isWhenPlayedChoiceActive
             ? G.pendingWhenPlayed!.playerId
           : isActionWindowActive
@@ -170,6 +180,7 @@ export const GameControls: React.FC<GameControlsProps> = ({
 
     const isRegroupDecision =
         !threatWoundsPending &&
+        !isSiteMoveAbilityActive &&
         !isActionWindowActive &&
         !isResponseWindowActive &&
         ctx.phase === 'regroup' &&
@@ -222,6 +233,7 @@ export const GameControls: React.FC<GameControlsProps> = ({
             | 'MUSTER'
             | 'START_OF_PHASE'
             | 'SITE_START_ABILITY'
+            | 'SITE_MOVE_ABILITY'
             | 'SITE_RESPONSE_ABILITY'
             | 'ASSIGNMENT_YIELD'
             | 'ASSIGNMENT_PASS'
@@ -336,12 +348,8 @@ export const GameControls: React.FC<GameControlsProps> = ({
         const siteAbility = siteSource?.abilities?.find(
             (ab) => ab.id === G.pendingSiteStartAbility?.abilityId
         );
-        const siteClause =
-            siteAbility?.textFr?.trim() ||
-            siteAbility?.text?.trim() ||
-            (siteSource
-                ? getCardText(siteSource, 'fr').gameText
-                : undefined);
+        const siteClause = getAbilityToastClause(siteAbility, siteSource);
+        // Flux en cours (désignation / pioche) : info seule, plus Activer / Passer.
         toastConfig = {
             show: true,
             title: 'EFFET DU SITE',
@@ -352,7 +360,32 @@ export const GameControls: React.FC<GameControlsProps> = ({
                 'Vous pouvez utiliser l’effet optionnel de ce site.'
             ),
             showPassButton: false,
-            type: 'SITE_START_ABILITY',
+            type: siteStartChoiceLocked
+                ? 'STANDARD'
+                : 'SITE_START_ABILITY',
+        };
+    } else if (isSiteMoveAbilityActive && isMyTurnToAct) {
+        const siteSource = G.pendingSiteMoveAbility
+            ? (findTargetCard(
+                  G,
+                  G.pendingSiteMoveAbility.siteInstanceId
+              ) as CardState | null)
+            : null;
+        const siteAbility = siteSource?.abilities?.find(
+            (ab) => ab.id === G.pendingSiteMoveAbility?.abilityId
+        );
+        const siteClause = getAbilityToastClause(siteAbility, siteSource);
+        toastConfig = {
+            show: true,
+            title: 'EFFET DU SITE',
+            body: siteClause ? (
+                <FormattedText text={siteClause} />
+            ) : (
+                G.statusMessage ||
+                'Vous pouvez utiliser l’effet optionnel de ce site.'
+            ),
+            showPassButton: false,
+            type: 'SITE_MOVE_ABILITY',
         };
     } else if (isStartOfPhaseStep && myStartOfPhaseState) {
         toastConfig = {
@@ -370,11 +403,10 @@ export const GameControls: React.FC<GameControlsProps> = ({
         isSiteResponseAbilityActive &&
         siteResponseCandidate
     ) {
-        const siteAbility = siteResponseCandidate.ability;
-        const siteClause =
-            siteAbility.textFr?.trim() ||
-            siteAbility.text?.trim() ||
-            getCardText(siteResponseCandidate.site, 'fr').gameText;
+        const siteClause = getAbilityToastClause(
+            siteResponseCandidate.ability,
+            siteResponseCandidate.site
+        );
         toastConfig = {
             show: true,
             title: 'EFFET DU SITE',
@@ -661,6 +693,12 @@ export const GameControls: React.FC<GameControlsProps> = ({
             return 'L’adversaire désigne une cible.';
         }
 
+        if (isSiteMoveAbilityActive) {
+            return isMyTurnToAct
+                ? 'Vous pouvez utiliser l’effet du site d’arrivée.'
+                : 'L’adversaire décide d’utiliser l’effet du site…';
+        }
+
         if (isWhenPlayedChoiceActive) {
             return isMyTurnToAct
                 ? 'Vous pouvez activer l’effet optionnel de cette carte.'
@@ -771,6 +809,7 @@ export const GameControls: React.FC<GameControlsProps> = ({
         (isResponseWindowActive ||
             isActionWindowActive ||
             isWhenPlayedChoiceActive ||
+            isSiteMoveAbilityActive ||
             isAwaitingSiteActive ||
             Boolean(G.pendingPlay) ||
             Boolean(G.sanctuaryHeal) ||
@@ -1080,6 +1119,32 @@ export const GameControls: React.FC<GameControlsProps> = ({
                                     style={{ marginTop: '8px', width: '100%' }}
                                     onClick={() => {
                                         moves.resolveSiteStartAbilityChoice?.(
+                                            false
+                                        );
+                                    }}
+                                >
+                                    Passer
+                                </S.ActionButton>
+                            </>
+                        )}
+
+                        {toastConfig.type === 'SITE_MOVE_ABILITY' && (
+                            <>
+                                <S.ActionButton
+                                    style={{ marginTop: '12px', width: '100%' }}
+                                    onClick={() => {
+                                        moves.resolveSiteMoveAbilityChoice?.(
+                                            true
+                                        );
+                                    }}
+                                >
+                                    Activer l’effet
+                                </S.ActionButton>
+                                <S.ActionButton
+                                    $variant="secondary"
+                                    style={{ marginTop: '8px', width: '100%' }}
+                                    onClick={() => {
+                                        moves.resolveSiteMoveAbilityChoice?.(
                                             false
                                         );
                                     }}

@@ -17,7 +17,7 @@ function isSiteMoveTrigger(
     return ability.trigger?.type === direction;
 }
 
-function triggerConditionsMet(
+export function triggerConditionsMet(
     G: GameState,
     site: SiteCardState,
     ability: Ability

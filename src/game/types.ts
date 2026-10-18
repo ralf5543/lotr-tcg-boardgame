@@ -1347,6 +1347,17 @@ export interface GameState {
         phase?: string;
     };
     /**
+     * Capacité optionnelle « When the fellowship moves to this site… »
+     * (City of Kings, Caves of Aglarond — toaster Activer / Passer).
+     */
+    pendingSiteMoveAbility?: {
+        playerId: string;
+        siteInstanceId: string;
+        abilityId: string;
+        /** Phase à lancer après le choix (ex. startOfShadow). */
+        pendingPhaseAfterSiteMove?: string;
+    };
+    /**
      * Choix forcé (contrainte Porteur alternatif en début d’escarmouche…).
      * Bloque la fenêtre d’actions jusqu’à résolution.
      */
@@ -1438,7 +1449,7 @@ export interface ArcheryState {
     shadowRemainingWounds: number;
 }
 
-export type DevPresetType = 'SITES_PASSIVES_REST';
+export type DevPresetType = 'SITES_MAY_WAVE';
 
 export interface TempKeywordModifier {
     keyword: CardKeyword;

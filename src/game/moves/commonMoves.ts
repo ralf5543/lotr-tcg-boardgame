@@ -48,6 +48,7 @@ import {
     declinePendingWhenPlayed,
 } from '../engine/abilities/whenPlayed';
 import { declinePendingSiteStartAbility } from '../logic/siteStartAbility';
+import { resolvePendingSiteMoveAbility } from '../logic/siteMoveAbility';
 import {
     openSkirmishActionWindow,
     resolveForcedChoice,
@@ -577,6 +578,24 @@ export const resolveSiteStartAbilityChoice = (
     }
 };
 
+/** Toaster « moves to » en regroupement : Activer applique l’effet, Passer ne fait rien. */
+export const resolveSiteMoveAbilityChoice = (
+    { G, events, playerID }: LotrMoveContext,
+    accept: boolean
+) => {
+    if (
+        !G.pendingSiteMoveAbility ||
+        G.pendingSiteMoveAbility.playerId !== playerID
+    ) {
+        return 'INVALID_MOVE';
+    }
+    if (
+        !resolvePendingSiteMoveAbility(G, String(playerID), accept, events)
+    ) {
+        return 'INVALID_MOVE';
+    }
+};
+
 export const resolveForcedChoiceMove = (
     { G, ctx, events, playerID }: LotrMoveContext,
     optionIndex: number,
@@ -867,6 +886,7 @@ export const commonMoves = {
     confirmSanctuaryHeals,
     resolveWhenPlayedChoice,
     resolveSiteStartAbilityChoice,
+    resolveSiteMoveAbilityChoice,
     resolveForcedChoiceMove,
     confirmPendingRevealMove,
     ...(process.env.NODE_ENV !== 'production' ? devMoves : {}),

@@ -8114,6 +8114,46 @@
     "isUnique": false,
     "kind": "SITE",
     "type": "SITE",
+    "abilities": [
+      {
+        "id": "12S187:0:site-phase",
+        "phases": [
+          "MANEUVER"
+        ],
+        "cost": [
+          {
+            "removeTwilight": 2,
+            "exert": [
+              {
+                "count": 1,
+                "target": [
+                  [
+                    "MINION"
+                  ]
+                ],
+                "mode": "DESIGNATION",
+                "excludeKeywords": [
+                  "FIERCE"
+                ]
+              }
+            ]
+          }
+        ],
+        "effects": [
+          {
+            "type": "ADD_TEMP_KEYWORD",
+            "keyword": "FIERCE",
+            "target": "COST_TARGET",
+            "expiresAtPhase": "REGROUP"
+          }
+        ],
+        "source": "SELF",
+        "text": "Maneuver: Remove twilight2 and exert your minion that is not fierce to make that minion fierce until the regroup phase."
+      }
+    ],
+    "actionPhases": [
+      "MANEUVER"
+    ],
     "twilightCost": 0,
     "siteArrow": "Left",
     "imageUrl": "/cards_visuals/o_01_360.jpg",
@@ -8124,7 +8164,7 @@
       },
       "fr": {
         "title": "Emyn Muil",
-        "gameText": "**Mountain. Maneuver:** Remove <symbol>twilight2</symbol> and exert your minion that is not fierce to make that minion **fierce** until the regroup phase."
+        "gameText": "**Montagne. Manœuvre:** Retirez <symbol>twilight2</symbol> et affaiblissez votre séide qui n'est pas acharné pour le rendre **acharné** jusqu'à la phase de ralliement."
       },
       "de": {
         "title": "Emyn Muil",
@@ -8540,6 +8580,27 @@
     "keywords": [
       "UNDERGROUND"
     ],
+    "abilities": [
+      {
+        "id": "13S186:0:site-move",
+        "phases": [],
+        "optional": true,
+        "responsePlayer": "FREE_PEOPLE",
+        "trigger": {
+          "type": "MOVES_TO",
+          "duringRegroup": true
+        },
+        "cost": [],
+        "effects": [
+          {
+            "type": "REMOVE_BURDENS",
+            "count": 2
+          }
+        ],
+        "source": "SELF",
+        "text": "When the fellowship moves to this site during the regroup phase, the Free Peoples player may remove 2 burdens."
+      }
+    ],
     "twilightCost": 3,
     "siteArrow": "Right",
     "imageUrl": "/cards_visuals/o_13_186.jpg",
@@ -8575,6 +8636,27 @@
     "type": "SITE",
     "keywords": [
       "BATTLEGROUND"
+    ],
+    "abilities": [
+      {
+        "id": "13U187:0:site-move",
+        "phases": [],
+        "optional": true,
+        "responsePlayer": "FREE_PEOPLE",
+        "trigger": {
+          "type": "MOVES_TO",
+          "duringRegroup": true
+        },
+        "cost": [],
+        "effects": [
+          {
+            "type": "DRAW",
+            "count": 1
+          }
+        ],
+        "source": "SELF",
+        "text": "When the fellowship moves to this site during the regroup phase, the Free Peoples player may draw a card."
+      }
     ],
     "twilightCost": 3,
     "siteArrow": "Right",
@@ -9081,6 +9163,49 @@
     "isUnique": false,
     "kind": "SITE",
     "type": "SITE",
+    "abilities": [
+      {
+        "id": "15S190:0:site-start-fp",
+        "phases": [
+          "START_OF_FELLOWSHIP"
+        ],
+        "optional": true,
+        "cost": [
+          {
+            "exert": [
+              {
+                "count": 2,
+                "target": [
+                  [
+                    "HUNTER",
+                    "COMPANION"
+                  ]
+                ],
+                "mode": "DESIGNATION",
+                "distinctTargets": true
+              }
+            ]
+          }
+        ],
+        "effects": [
+          {
+            "type": "PLAY_FROM_DECK_OR_DISCARD",
+            "target": [
+              [
+                "HUNTER",
+                "COMPANION"
+              ]
+            ],
+            "from": "DECK"
+          }
+        ],
+        "source": "SELF",
+        "text": "At the start of the fellowship phase, you may exert two hunter companions to play a hunter companion from your draw deck."
+      }
+    ],
+    "actionPhases": [
+      "START_OF_FELLOWSHIP"
+    ],
     "twilightCost": 3,
     "siteArrow": "Right",
     "imageUrl": "/cards_visuals/o_15_190.jpg",
@@ -9090,12 +9215,12 @@
         "gameText": "At the start of the fellowship phase, you may exert two hunter companions to play a hunter companion from your draw deck."
       },
       "fr": {
-        "title": "East Wall of Rohan",
-        "gameText": "At the start of the fellowship phase, you may exert two hunter companions to play a hunter companion from your draw deck."
+        "title": "Le Mur Est de Rohan",
+        "gameText": "Au début de la phase de compagnie, vous pouvez affaiblir deux compagnons chasseurs pour jouer un compagnon chasseur de votre pioche."
       },
       "de": {
         "title": "East Wall of Rohan",
-        "gameText": "At the start of the fellowship phase, you may exert two hunter companions to play a hunter companion from your draw deck."
+        "gameText": "Au début de la phase de compagnie, vous pouvez affaiblir deux compagnons chasseurs pour jouer un compagnon chasseur de votre pioche."
       },
       "it": {
         "title": "East Wall of Rohan",

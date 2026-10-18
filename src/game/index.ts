@@ -22,6 +22,7 @@ import {
 import { openAssignmentActionWindow } from './logic/assignment';
 import { advanceCompany } from './moves/fellowshipMoves';
 import { tryOpenFellowshipMoves } from './engine/responseWindow';
+import { beginOptionalSiteMoveAbility } from './logic/siteMoveAbility';
 import { devMoves } from './dev/devMoves';
 import { drawCardsForPlayer } from '../utils/drawCards';
 import { buildDeckFromIds } from '../utils/deckBuilder';
@@ -1268,7 +1269,8 @@ export const LotrGame: Game<GameState> = {
                     if (
                         playerID !== fpId ||
                         (G.movesThisTurn || 0) >= 2 ||
-                        G.regroupStep !== 'FP_DECISION'
+                        G.regroupStep !== 'FP_DECISION' ||
+                        G.pendingSiteMoveAbility
                     ) {
                         return 'INVALID_MOVE';
                     }
@@ -1279,6 +1281,10 @@ export const LotrGame: Game<GameState> = {
                     if (!G.awaitingSiteSelection) {
                         G.skirmishes = [];
                         G.activeSkirmishId = undefined;
+                        // Site d’arrivée « may » (City of Kings…) : toaster avant la suite.
+                        if (beginOptionalSiteMoveAbility(G, 'startOfShadow')) {
+                            return;
+                        }
                         if (tryOpenFellowshipMoves(G) === 'WAITING') {
                             G.pendingPhaseAfterResponse = 'startOfShadow';
                         } else {

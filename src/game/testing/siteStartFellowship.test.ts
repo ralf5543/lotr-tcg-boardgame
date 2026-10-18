@@ -102,10 +102,64 @@ describe('parseSiteAbilities — début de fellowship', () => {
         ]);
     });
 
-    it('Green Dragon (2 Hobbits) reste inerte — multi-exert distinct', () => {
+    it('Green Dragon : exert 2 Hobbits (distincts) → play Hobbit', () => {
         const text =
             '**Dwelling.** At the start of your fellowship phase, you may exert 2 Hobbits to play a Hobbit from your draw deck.';
-        expect(parseSiteAbilities(text, '11S242')).toBeUndefined();
+        expect(parseSiteAbilities(text, '11S242')).toEqual([
+            expect.objectContaining({
+                phases: ['START_OF_FELLOWSHIP'],
+                optional: true,
+                cost: [
+                    {
+                        exert: [
+                            {
+                                count: 2,
+                                target: [['HOBBIT']],
+                                mode: 'DESIGNATION',
+                                distinctTargets: true,
+                            },
+                        ],
+                    },
+                ],
+                effects: [
+                    {
+                        type: 'PLAY_FROM_DECK_OR_DISCARD',
+                        target: [['HOBBIT']],
+                        from: 'DECK',
+                    },
+                ],
+            }),
+        ]);
+    });
+
+    it('East Wall of Rohan : « the fellowship phase » → exert 2 hunters distincts', () => {
+        const text =
+            'At the start of the fellowship phase, you may exert two hunter companions to play a hunter companion from your draw deck.';
+        expect(parseSiteAbilities(text, '15S190')).toEqual([
+            expect.objectContaining({
+                phases: ['START_OF_FELLOWSHIP'],
+                optional: true,
+                cost: [
+                    {
+                        exert: [
+                            {
+                                count: 2,
+                                target: [['HUNTER', 'COMPANION']],
+                                mode: 'DESIGNATION',
+                                distinctTargets: true,
+                            },
+                        ],
+                    },
+                ],
+                effects: [
+                    {
+                        type: 'PLAY_FROM_DECK_OR_DISCARD',
+                        target: [['HUNTER', 'COMPANION']],
+                        from: 'DECK',
+                    },
+                ],
+            }),
+        ]);
     });
 });
 

@@ -56,6 +56,9 @@ export const returnAidFollowersToSupport = (G: GameState) => {
 };
 
 export const endTurnChoice = ({ G }: LotrMoveContext) => {
+    if (G.pendingSiteMoveAbility) {
+        return 'INVALID_MOVE';
+    }
     if (G.forceChooseMoveAgain && (G.movesThisTurn || 0) < 2) {
         return 'INVALID_MOVE';
     }

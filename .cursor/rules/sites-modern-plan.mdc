@@ -71,11 +71,11 @@ Inertes volontaires (may / choix) : Guardroom, Osgiliath Reclaimed, Valley of th
 | `11S256` | The Prancing Pony | OK | Add burden → play ranger |
 | `11S229` | Barazinbar | OK | Exert Dwarf → dwarven possession |
 | `11S259` | Stables | OK | Exert Rohan Man → Rohan mount |
-| `11S242` | Green Dragon Inn | INERTE | Exert 2 Hobbits distincts |
+| `11S242` | Green Dragon Inn | OK | Exert 2 Hobbits distincts (parsés ; playtest) |
 | `11S255` | Pinnacle of Zirakzigil | INERTE | Play Wizard from dead pile |
-| `15S190` | East Wall of Rohan | INERTE | Exert 2 hunter companions |
+| `15S190` | East Wall of Rohan | OK | Exert 2 hunter companions → play hunter (vague may) |
 
-Preset : `SITES_START_FP`.
+Preset : `SITES_START_FP` / `SITES_MAY_WAVE` (East Wall).
 
 ### Vague passifs (set 11) — While / assign / coûts / archerie
 
@@ -174,24 +174,33 @@ Inertes volontaires (trop durs / may) : Hill of Sight (résistance OR), Doors of
 
 Preset : `SITES_PASSIVES_REST`.
 
+### Vague may / phase (reste)
+
+| Id | Titre | Statut | Notes |
+| --- | --- | --- | --- |
+| `12S187` | Emyn Muil | OK | Maneuver −2 crépuscule + exert séide non fierce → fierce |
+| `15S190` | East Wall of Rohan | OK | Start FP : exert 2 chasseurs → play hunter |
+| `13S186` | Caves of Aglarond | OK | Moves to regroup → may −2 fardeaux (toaster) |
+| `13U187` | City of Kings | OK | Moves to regroup → may draw (toaster) |
+
+Inertes volontaires : Dol Guldur (choix PL) ; Angle / Northern Pelennor / Shores / Slopes ; Courtyard (coût main Ombre) ; Crossroads / Falls / Doorway / Morannon ; passifs durs.
+
+Preset : `SITES_MAY_WAVE`.
+
 ### Inertes — sets 12–18 (hors vagues livrées)
 
 | Id | Titre | Famille |
 | --- | --- | --- |
 | `12U185` | The Angle | phase-ability |
-| `12S187` | Emyn Muil | phase-ability |
 | `12S188` | Hill of Sight | passive-while |
 | `12S190` | Northern Pelennor | phase-ability |
 | `12U191` | Shores of Nen Hithoel | phase-ability |
 | `12U192` | Slopes of Orodruin | phase-ability |
-| `13S186` | Caves of Aglarond | moves-to |
-| `13U187` | City of Kings | moves-to |
 | `13U188` | Courtyard Parapet | moves-to |
 | `13S189` | Crossroads of the Fallen Kings | moves-to |
 | `13U190` | Doors of Durin | passive-while |
 | `13U193` | Isenwash | passive-while |
 | `15S188` | Breeding pit of Isengard | passive-while |
-| `15S190` | East Wall of Rohan | start-fellowship |
 | `15U192` | Isengard Ruined | each-time |
 | `17U145` | Dol Guldur | phase-ability |
 | `17U146` | Falls of Rauros | moves-to |
@@ -208,8 +217,8 @@ Preset : `SITES_PASSIVES_REST`.
 3. Vague **moves to/from** set 11 auto ✅ — Orthanc / Fangorn / Bog / Crags ; preset `SITES_MOVE_WAVE`
    - Ordre CR : **moves from → moves to → crépuscule du déplacement** (pas l’inverse)
 4. Vague **début de fellowship** ✅ — preset `SITES_START_FP`
-   - OK : Dammed, Old Forest Road, Prancing Pony, Barazinbar, Stables
-   - Inertes volontaires : Green Dragon / East Wall (exert N distincts), Pinnacle (pile de mort)
+   - OK : Dammed, Old Forest Road, Prancing Pony, Barazinbar, Stables ; Green Dragon / East Wall (exert N distincts) via vague may
+   - Inerte volontaire : Pinnacle (pile de mort)
 5. Vague **passifs** While/assign/coûts/archerie ✅ — preset `SITES_PASSIVES_WAVE`
    - OK : East Road, Caras, Helm's Gate, Pelennor Fields, Flats, Anduin River (15)
    - Inertes : Chamber transfer, Harrowdale, Rohan Uplands
@@ -224,11 +233,14 @@ Preset : `SITES_PASSIVES_REST`.
    - Inertes volontaires : Steward's Tomb ; Foot of Mount Doom ; Isengard Ruined
 9. Vague **moves auto** reste 13–18 ✅ — preset `SITES_MOVES_REST`
    - OK : Mine Shaft ; Gate of Mordor ; City Gates ; Mithlond ; Imladris
-   - Inertes volontaires (may / désignation) : Caves / City of Kings / Courtyard / Crossroads / Falls / Doorway / Morannon
+   - Inertes volontaires (may / désignation) : Courtyard / Crossroads / Falls / Doorway / Morannon
 10. Vague **passifs / phase** reste 12–18 ✅ — preset `SITES_PASSIVES_REST`
     - OK : Fords ; Great Gates ; Nurn ; Streets ; Redhorn ; Wold
     - Inertes volontaires : Hill of Sight ; Doors of Durin ; Breeding pit ; Isenwash
-11. Reste inertes 12–18 (phase Shadow / may moves / passifs durs)
+11. Vague **may / phase** reste ✅ — preset `SITES_MAY_WAVE`
+    - OK : Emyn Muil (Maneuver → fierce) ; East Wall (start FP hunters) ; Caves / City of Kings (moves may regroup, toaster)
+    - Inertes volontaires : Dol Guldur (choix condition PL) ; Angle / Pelennor / Shores / Slopes ; Courtyard / Crossroads / Falls / Doorway / Morannon ; passifs durs (Hill / Doors / Breeding / Isenwash / Foot / Steward’s / Isengard Ruined)
+12. Reste inertes 12–18 (Shadow play / passifs durs / moves may coûteux)
 
 ## Hors scope
 
