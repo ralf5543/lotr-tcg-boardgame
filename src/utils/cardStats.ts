@@ -1,5 +1,6 @@
 import type { CardState, GameState } from '../game/types';
 import { getCalculatedStrength } from '../game/logic/stats/statCalculator';
+import { getWhileResistanceBonus } from '../game/logic/stats/mechanics/whileModifier';
 
 /**
  * 1. Vitalité Maximale (Base + Attachments)
@@ -47,11 +48,12 @@ export const getEffectiveStrength = (card: CardState, G?: GameState): number => 
 };
 
 /**
- * 5. Résistance Effective (Base + Attachments - Burdens)
+ * 5. Résistance Effective (Base + Attachments - Burdens [+ passifs While si G])
  */
 export const getEffectiveResistance = (
     card: CardState,
-    burdens: number = 0
+    burdens: number = 0,
+    G?: GameState
 ): number => {
     if (!card) return 0;
     let resistance = Number(card.resistance) || 6;
@@ -64,6 +66,9 @@ export const getEffectiveResistance = (
     }
     if (card.type === 'COMPANION' || card.type === 'ALLY') {
         resistance -= burdens;
+    }
+    if (G) {
+        resistance += getWhileResistanceBonus(G, card);
     }
     return Math.max(0, resistance);
 };

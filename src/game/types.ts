@@ -369,6 +369,11 @@ export type AbilityEffect =
            * (Nurn : your hunter minions).
            */
           ownerIsSiteController?: boolean;
+          /**
+           * Breeding pit : −N seulement sur le premier hunter minion
+           * joué chaque phase d’Ombre (`hunterMinionPlayedThisShadowPhase`).
+           */
+          firstHunterMinionEachShadowPhase?: boolean;
       }
     | {
           /** Mot-clé passif (While…) — pas d’expiration de phase. */
@@ -955,6 +960,11 @@ export type AbilityTrigger =
            * (Nurn).
            */
           controlThisSite?: boolean;
+          /**
+           * Au moins un sélecteur spoté (OU).
+           * Hill of Sight : 3 minions OU 6 companions.
+           */
+          spotAny?: CostSelector[];
       }
     | {
           type: 'CHARACTER_DIES';
@@ -1269,6 +1279,11 @@ export interface GameState {
      * le joueur FP ne peut pas terminer le tour tant que moves < 2.
      */
     forceChooseMoveAgain?: boolean;
+    /**
+     * Breeding pit of Isengard : un hunter minion a déjà été joué
+     * cette phase d’Ombre (réinitialisé en début d’Ombre).
+     */
+    hunterMinionPlayedThisShadowPhase?: boolean;
     path: (SiteCardState | null)[];
     battlefield: CardState[];
     musterState?: {
@@ -1461,7 +1476,7 @@ export interface ArcheryState {
     shadowRemainingWounds: number;
 }
 
-export type DevPresetType = 'SITES_STEWARD_COURTYARD';
+export type DevPresetType = 'SITES_PASSIVES_HARD';
 
 export interface TempKeywordModifier {
     keyword: CardKeyword;

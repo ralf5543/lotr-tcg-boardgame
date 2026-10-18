@@ -485,7 +485,7 @@ export const Card: React.FC<CardProps> = ({
     );
     const resistancePulse = usePulseOnChange(
         pulseOnBoard && card
-            ? getEffectiveResistance(card, burdens)
+            ? getEffectiveResistance(card, burdens, G)
             : undefined
     );
     const isRoamingForPulse =
@@ -620,7 +620,7 @@ export const Card: React.FC<CardProps> = ({
 
     const effectiveVitality = getEffectiveVitality(card);
     const effectiveStrength = getEffectiveStrength(card, G);
-    const effectiveResistance = getEffectiveResistance(card, burdens);
+    const effectiveResistance = getEffectiveResistance(card, burdens, G);
 
     // 🟢 État permanent : est-ce que la carte a des blessures ?
     const hasWounds = (card.wounds || 0) > 0;

@@ -42,6 +42,14 @@ export function afterCardPlayed(
     card: CardState,
     options?: { playerId?: string; phase?: string; skipWhenPlayed?: boolean }
 ): void {
+    const phase = (options?.phase || '').toLowerCase();
+    if (
+        (phase === 'shadow' || phase === 'startofshadow') &&
+        card.type === 'MINION' &&
+        cardMatchesTarget(card, [['HUNTER', 'MINION']])
+    ) {
+        G.hunterMinionPlayedThisShadowPhase = true;
+    }
     if (!options?.skipWhenPlayed) {
         resolveWhenPlayed(G, card, options);
     }

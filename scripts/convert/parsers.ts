@@ -7007,6 +7007,72 @@ function parseSitePassiveRestAbilities(
         });
     }
 
+    // Breeding pit of Isengard : first hunter minion each Shadow phase −N.
+    const breedingRe =
+        /The twilight cost of the first hunter minion played each Shadow phase is\s*[–\-−](\d+)\.?/gi;
+    while ((match = breedingRe.exec(plain)) !== null) {
+        const value = -parseInt(match[1], 10);
+        if (!Number.isFinite(value) || value >= 0) continue;
+        found.push({
+            id: `${cardId || 'ability'}:${found.length}:site-breeding-pit`,
+            phases: [],
+            trigger: { type: 'WHILE' },
+            cost: [],
+            effects: [
+                {
+                    type: 'MODIFY_STAT',
+                    stat: 'TWILIGHT_COST',
+                    value,
+                    target: [['HUNTER', 'MINION']],
+                    firstHunterMinionEachShadowPhase: true,
+                },
+            ],
+            source: 'SELF',
+            text: stripAbilityMarkup(match[0]),
+        });
+    }
+
+    // Hill of Sight : While spot 3 minions (or 6 companions) → unbound −N resistance.
+    const hillRe =
+        /While you can spot (\d+) minions? \(or (\d+) companions?\),\s*each unbound companion is resistance\s*([+\-–−]\d+)\.?/gi;
+    while ((match = hillRe.exec(plain)) !== null) {
+        const minions = parseInt(match[1], 10);
+        const companions = parseInt(match[2], 10);
+        const value = parseInt(match[3].replace(/[–−]/g, '-'), 10);
+        if (
+            !Number.isFinite(minions) ||
+            minions <= 0 ||
+            !Number.isFinite(companions) ||
+            companions <= 0 ||
+            !Number.isFinite(value) ||
+            value === 0
+        ) {
+            continue;
+        }
+        found.push({
+            id: `${cardId || 'ability'}:${found.length}:site-hill-of-sight`,
+            phases: [],
+            trigger: {
+                type: 'WHILE',
+                spotAny: [
+                    { count: minions, target: [['MINION']] },
+                    { count: companions, target: [['COMPANION']] },
+                ],
+            },
+            cost: [],
+            effects: [
+                {
+                    type: 'MODIFY_STAT',
+                    stat: 'RESISTANCE',
+                    value,
+                    target: [['UNBOUND', 'COMPANION']],
+                },
+            ],
+            source: 'SELF',
+            text: stripAbilityMarkup(match[0]),
+        });
+    }
+
     return found;
 }
 

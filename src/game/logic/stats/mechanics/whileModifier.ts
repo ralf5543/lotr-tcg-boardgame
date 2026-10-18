@@ -350,6 +350,14 @@ export function whileConditionHolds(
         if (cards.length < count) return false;
     }
 
+    if (trigger.spotAny && trigger.spotAny.length > 0) {
+        const anyOk = trigger.spotAny.some((req) => {
+            const count = req.count || 1;
+            return resolveCostTarget(G, source, req.target).length >= count;
+        });
+        if (!anyOk) return false;
+    }
+
     if (trigger.skirmishing) {
         // Possession : « while skirmishing » porte sur le porteur (Ranger's Sword…).
         const fighter = findBearer(G, source) || source;
@@ -878,6 +886,12 @@ export function getWhileTwilightCostModifier(
                 if (effect.stat !== 'TWILIGHT_COST') continue;
                 if (!Array.isArray(effect.target)) continue;
                 if (!cardMatchesTarget(card, effect.target)) continue;
+                if (
+                    effect.firstHunterMinionEachShadowPhase &&
+                    G.hunterMinionPlayedThisShadowPhase
+                ) {
+                    continue;
+                }
                 mod += modifyStatMagnitude(
                     G,
                     currentSite as CardState,
@@ -888,6 +902,54 @@ export function getWhileTwilightCostModifier(
     }
 
     return mod;
+}
+
+/**
+ * Bonus de résistance (While / site) — Hill of Sight, etc.
+ * Même périmètre que la force site + passifs « each » en jeu.
+ */
+export function getWhileResistanceBonus(
+    G: GameState,
+    card: CardState
+): number {
+    let bonus = 0;
+
+    forEachInPlayCard(G, (source) => {
+        for (const ability of source.abilities || []) {
+            if (ability.trigger?.type !== 'WHILE') continue;
+            if (!whileConditionHolds(G, source, ability)) continue;
+            for (const effect of ability.effects || []) {
+                if (effect.type !== 'MODIFY_STAT') continue;
+                if (effect.stat !== 'RESISTANCE') continue;
+                if (!Array.isArray(effect.target)) continue;
+                if (!cardMatchesTarget(card, effect.target)) continue;
+                bonus += modifyStatMagnitude(G, source, effect);
+            }
+        }
+    });
+
+    const currentSite = getCurrentSite(G);
+    if (currentSite) {
+        for (const ability of currentSite.abilities || []) {
+            if (ability.trigger?.type !== 'WHILE') continue;
+            if (!whileConditionHolds(G, currentSite as CardState, ability)) {
+                continue;
+            }
+            for (const effect of ability.effects || []) {
+                if (effect.type !== 'MODIFY_STAT') continue;
+                if (effect.stat !== 'RESISTANCE') continue;
+                if (!Array.isArray(effect.target)) continue;
+                if (!cardMatchesTarget(card, effect.target)) continue;
+                bonus += modifyStatMagnitude(
+                    G,
+                    currentSite as CardState,
+                    effect
+                );
+            }
+        }
+    }
+
+    return bonus;
 }
 
 function cardOwnerFromKind(G: GameState, card: CardState): string | null {

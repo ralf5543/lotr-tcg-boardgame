@@ -523,6 +523,8 @@ export const LotrGame: Game<GameState> = {
             onBegin: ({ G, events }: LotrPhaseContext) => {
                 const fpId = G.fpPlayerId || '0';
                 const shadowId = fpId === '0' ? '1' : '0';
+                // Breeding pit : premier hunter minion de la phase.
+                G.hunterMinionPlayedThisShadowPhase = false;
 
                 const fpDone = !hasActionableStartOfPhaseCards(
                     G.players[fpId],

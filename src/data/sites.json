@@ -8214,6 +8214,49 @@
       "BATTLEGROUND",
       "FOREST"
     ],
+    "abilities": [
+      {
+        "id": "12S188:0:site-passive-rest",
+        "phases": [],
+        "trigger": {
+          "type": "WHILE",
+          "spotAny": [
+            {
+              "count": 3,
+              "target": [
+                [
+                  "MINION"
+                ]
+              ]
+            },
+            {
+              "count": 6,
+              "target": [
+                [
+                  "COMPANION"
+                ]
+              ]
+            }
+          ]
+        },
+        "cost": [],
+        "effects": [
+          {
+            "type": "MODIFY_STAT",
+            "stat": "RESISTANCE",
+            "value": -2,
+            "target": [
+              [
+                "UNBOUND",
+                "COMPANION"
+              ]
+            ]
+          }
+        ],
+        "source": "SELF",
+        "text": "While you can spot 3 minions (or 6 companions), each unbound companion is resistance –2."
+      }
+    ],
     "twilightCost": 1,
     "siteArrow": "Right",
     "imageUrl": "/cards_visuals/o_12_188.jpg",
@@ -9115,6 +9158,32 @@
     "type": "SITE",
     "keywords": [
       "UNDERGROUND"
+    ],
+    "abilities": [
+      {
+        "id": "15S188:0:site-passive-rest",
+        "phases": [],
+        "trigger": {
+          "type": "WHILE"
+        },
+        "cost": [],
+        "effects": [
+          {
+            "type": "MODIFY_STAT",
+            "stat": "TWILIGHT_COST",
+            "value": -2,
+            "target": [
+              [
+                "HUNTER",
+                "MINION"
+              ]
+            ],
+            "firstHunterMinionEachShadowPhase": true
+          }
+        ],
+        "source": "SELF",
+        "text": "The twilight cost of the first hunter minion played each Shadow phase is –2."
+      }
     ],
     "twilightCost": 0,
     "siteArrow": "Left",

@@ -37,13 +37,13 @@ const clonePresetSite = (
 };
 
 /**
- * Vague Steward / Courtyard (reste inertes).
- * 1 filler → 2 Courtyard (moves to Ombre) → 3 Steward's Tomb → …
+ * Vague passifs durs (reste inertes).
+ * 1 Breeding pit → 2 Hill of Sight → …
  */
-const SITES_STEWARD_COURTYARD_PATH = [
-    '11S265', // 1 Window (départ)
-    '13U188', // 2 Courtyard Parapet
-    '18U139', // 3 Steward's Tomb
+const SITES_PASSIVES_HARD_PATH = [
+    '15S188', // 1 Breeding pit of Isengard
+    '12S188', // 2 Hill of Sight
+    '11S265', // 3 Window
     '11S250', // 4 North Undeep
     '11S263', // 5 West Gate
     '11S228', // 6 Anduin Confluence (sanctuaire)
@@ -70,6 +70,7 @@ const resetBoardForPreset = (G: GameState): void => {
     G.archeryWoundsToAssign = 0;
     G.pendingSiteMoveAbility = undefined;
     G.pendingSiteStartAbility = undefined;
+    G.hunterMinionPlayedThisShadowPhase = false;
 
     Object.keys(G.players).forEach((pId) => {
         const player = G.players[pId];
@@ -116,46 +117,47 @@ export const applyDevPreset = (
     const shadowPlayer = G.players[shadowId];
 
     switch (presetType) {
-        case 'SITES_STEWARD_COURTYARD': {
+        case 'SITES_PASSIVES_HARD': {
             resetBoardForPreset(G);
-            // Départ Window ; avance → Courtyard (toaster Ombre) ; téléporte site 3 Steward.
-            setupDevPath(G, 0, SITES_STEWARD_COURTYARD_PATH);
-            G.twilightPool = 2;
-            fpPlayer.burdens = 2;
+            // Site 1 Breeding (premier hunter −2) ; téléporte site 2 Hill (résistance).
+            setupDevPath(G, 0, SITES_PASSIVES_HARD_PATH);
+            G.twilightPool = 8;
+            fpPlayer.burdens = 0;
 
+            // Hill : branche « 6 compagnons » (pas 3 séides) — Frodo ring-bound
+            // ne prend pas le −2 ; les 5 unbound oui.
             fpPlayer.fellowshipArea = [
                 {
-                    ...clonePresetCard('2C102', 'dev-sc-frodo'),
-                    attachments: [clonePresetCard('1R1', 'dev-sc-ring')],
-                    wounds: 1,
+                    ...clonePresetCard('2C102', 'dev-ph-frodo'),
+                    attachments: [clonePresetCard('1R1', 'dev-ph-ring')],
                 },
-                {
-                    ...clonePresetCard('1R13', 'dev-sc-gimli'),
-                    wounds: 1,
-                },
+                clonePresetCard('1R13', 'dev-ph-gimli'),
+                clonePresetCard('1C11', 'dev-ph-farin'),
+                clonePresetCard('1R30', 'dev-ph-arwen'),
+                clonePresetCard('1R50', 'dev-ph-legolas'),
+                clonePresetCard('1R89', 'dev-ph-aragorn'),
             ];
             fpPlayer.hand = [];
-            fpPlayer.deck = [clonePresetCard('1C11', 'dev-sc-draw')];
+            fpPlayer.deck = [];
             fpPlayer.sitesDeck = [clonePresetSite('11S250', fpId)];
 
             if (shadowPlayer) {
-                // Courtyard : défausser 2 cartes pour +1 fardeau.
+                // Breeding : 2 hunters (premier −2, second plein tarif).
                 shadowPlayer.hand = [
-                    clonePresetCard('1C266', 'dev-sc-hand-a'),
-                    clonePresetCard('1C268', 'dev-sc-hand-b'),
-                    clonePresetCard('1C269', 'dev-sc-hand-c'),
+                    clonePresetCard('15C83', 'dev-ph-hunter-a'),
+                    clonePresetCard('15C157', 'dev-ph-hunter-b'),
+                    clonePresetCard('1C266', 'dev-ph-orc'),
                 ];
                 shadowPlayer.sitesDeck = [clonePresetSite('11S263', shadowId)];
+                // Seulement 2 séides → Hill ne passe PAS par la branche minions.
                 G.battlefield = [
-                    {
-                        ...clonePresetCard('1C266', 'dev-sc-orc'),
-                        wounds: 0,
-                    },
+                    clonePresetCard('1C266', 'dev-ph-spot-a'),
+                    clonePresetCard('1C268', 'dev-ph-spot-b'),
                 ];
             }
 
             G.statusMessage =
-                '[DEV] Steward/Courtyard · avance site 2 Courtyard (Ombre défausse 2 → fardeau) ; téléporte site 3 Steward (pas de soin / prevent / −fardeaux).';
+                '[DEV] Passifs durs · site 1 Breeding (Ombre : 1er hunter −2) ; téléporte site 2 Hill (6 compagnons / 2 séides → unbound résistance −2).';
             break;
         }
     }
