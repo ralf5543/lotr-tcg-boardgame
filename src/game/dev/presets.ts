@@ -37,12 +37,12 @@ const clonePresetSite = (
 };
 
 /**
- * Vague passifs durs (reste inertes).
- * 1 Breeding pit → 2 Hill of Sight → …
+ * Vague Doors / Northern Pelennor (reste inertes).
+ * 1 Doors of Durin → 2 Northern Pelennor → …
  */
-const SITES_PASSIVES_HARD_PATH = [
-    '15S188', // 1 Breeding pit of Isengard
-    '12S188', // 2 Hill of Sight
+const SITES_DOORS_PELENNOR_PATH = [
+    '13U190', // 1 Doors of Durin
+    '12S190', // 2 Northern Pelennor
     '11S265', // 3 Window
     '11S250', // 4 North Undeep
     '11S263', // 5 West Gate
@@ -117,47 +117,38 @@ export const applyDevPreset = (
     const shadowPlayer = G.players[shadowId];
 
     switch (presetType) {
-        case 'SITES_PASSIVES_HARD': {
+        case 'SITES_DOORS_PELENNOR': {
             resetBoardForPreset(G);
-            // Site 1 Breeding (premier hunter −2) ; téléporte site 2 Hill (résistance).
-            setupDevPath(G, 0, SITES_PASSIVES_HARD_PATH);
-            G.twilightPool = 8;
+            setupDevPath(G, 0, SITES_DOORS_PELENNOR_PATH);
+            G.twilightPool = 4;
             fpPlayer.burdens = 0;
 
-            // Hill : branche « 6 compagnons » (pas 3 séides) — Frodo ring-bound
-            // ne prend pas le −2 ; les 5 unbound oui.
+            // Doors : 3 Hommes (majorité) + 1 Nain → Hommes −1 force.
             fpPlayer.fellowshipArea = [
                 {
-                    ...clonePresetCard('2C102', 'dev-ph-frodo'),
-                    attachments: [clonePresetCard('1R1', 'dev-ph-ring')],
+                    ...clonePresetCard('2C102', 'dev-dp-frodo'),
+                    attachments: [clonePresetCard('1R1', 'dev-dp-ring')],
                 },
-                clonePresetCard('1R13', 'dev-ph-gimli'),
-                clonePresetCard('1C11', 'dev-ph-farin'),
-                clonePresetCard('1R30', 'dev-ph-arwen'),
-                clonePresetCard('1R50', 'dev-ph-legolas'),
-                clonePresetCard('1R89', 'dev-ph-aragorn'),
+                clonePresetCard('1R89', 'dev-dp-aragorn'),
+                clonePresetCard('1R96', 'dev-dp-boromir'),
+                clonePresetCard('1R13', 'dev-dp-gimli'),
             ];
             fpPlayer.hand = [];
             fpPlayer.deck = [];
             fpPlayer.sitesDeck = [clonePresetSite('11S250', fpId)];
 
             if (shadowPlayer) {
-                // Breeding : 2 hunters (premier −2, second plein tarif).
-                shadowPlayer.hand = [
-                    clonePresetCard('15C83', 'dev-ph-hunter-a'),
-                    clonePresetCard('15C157', 'dev-ph-hunter-b'),
-                    clonePresetCard('1C266', 'dev-ph-orc'),
-                ];
+                shadowPlayer.hand = [];
                 shadowPlayer.sitesDeck = [clonePresetSite('11S263', shadowId)];
-                // Seulement 2 séides → Hill ne passe PAS par la branche minions.
+                // Northern Pelennor : lurker + non-lurker (bulle sur le lurker).
                 G.battlefield = [
-                    clonePresetCard('1C266', 'dev-ph-spot-a'),
-                    clonePresetCard('1C268', 'dev-ph-spot-b'),
+                    clonePresetCard('11C136', 'dev-dp-lurker'),
+                    clonePresetCard('1C266', 'dev-dp-orc'),
                 ];
             }
 
             G.statusMessage =
-                '[DEV] Passifs durs · site 1 Breeding (Ombre : 1er hunter −2) ; téléporte site 2 Hill (6 compagnons / 2 séides → unbound résistance −2).';
+                '[DEV] Doors / Pelennor · site 1 Doors (Hommes majorité → force −1) ; téléporte site 2 Northern Pelennor (Ombre : lurker perd lurker).';
             break;
         }
     }

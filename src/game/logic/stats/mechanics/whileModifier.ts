@@ -500,6 +500,25 @@ function countCompanionsOnBoard(G: GameState): number {
     ).length;
 }
 
+function companionIsMajorityRace(G: GameState, card: CardState): boolean {
+    if (card.type !== 'COMPANION' || !card.race) return false;
+    const fpId = G.fpPlayerId || '0';
+    const companions = (G.players[fpId]?.fellowshipArea || []).filter(
+        (c) => c?.type === 'COMPANION' && !c.isDead
+    );
+    if (companions.length === 0) return false;
+    const counts = new Map<string, number>();
+    for (const c of companions) {
+        if (!c.race) continue;
+        counts.set(c.race, (counts.get(c.race) || 0) + 1);
+    }
+    let max = 0;
+    counts.forEach((n) => {
+        if (n > max) max = n;
+    });
+    return (counts.get(card.race) || 0) === max && max > 0;
+}
+
 function countMinionsOnBoard(G: GameState): number {
     return (G.battlefield || []).filter((c) => c?.type === 'MINION').length;
 }
@@ -711,6 +730,9 @@ export function getWhileStrengthBonus(
                     if (minionCount < effect.skirmishingMinionsAtLeast) {
                         continue;
                     }
+                }
+                if (effect.majorityRaceCompanions) {
+                    if (!companionIsMajorityRace(G, card)) continue;
                 }
                 if (effect.perBorneCards) {
                     const borne = (card.attachments || []).filter(Boolean)

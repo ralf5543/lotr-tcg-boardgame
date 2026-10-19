@@ -170,7 +170,7 @@ Preset : `SITES_MOVES_REST`.
 | `13U194` | Redhorn Pass | OK | Interdit jetons de culture |
 | `12U194` | Wold Battlefield | OK | Skirmish exert Man (sauf enduring) → damage +1 |
 
-Inertes volontaires (trop durs / may) : Doors of Durin (race majoritaire), Isenwash (start regroup may).
+Inertes volontaires (trop durs / may) : Isenwash (start regroup may).
 
 Preset : `SITES_PASSIVES_REST`.
 
@@ -205,20 +205,29 @@ Preset : `SITES_STEWARD_COURTYARD`.
 | `15S188` | Breeding pit of Isengard | OK | Premier hunter minion / phase Ombre crépuscule −2 |
 | `12S188` | Hill of Sight | OK | Spot 3 séides OU 6 compagnons → unbound résistance −2 |
 
-Inertes volontaires : Crossroads ; Shadow play (Angle / Pelennor / Shores / Slopes) ; Doors / Isenwash / Foot ; Dol Guldur ; Falls / Doorway / Morannon ; Isengard Ruined.
+Inertes volontaires alors : Crossroads ; Shadow play ; Doors / Isenwash / Foot ; Dol Guldur ; Falls / Doorway / Morannon ; Isengard Ruined.
 
 Preset : `SITES_PASSIVES_HARD`.
+
+### Vague Doors / Northern Pelennor
+
+| Id | Titre | Statut | Notes |
+| --- | --- | --- | --- |
+| `13U190` | Doors of Durin | OK | Race majoritaire → force −1 (WHILE site) |
+| `12S190` | Northern Pelennor | OK | Ombre : lurker perd lurker jusqu’au regroup (projection) |
+
+Inertes volontaires : Crossroads ; Angle / Shores / Slopes ; Isenwash / Foot ; Dol Guldur ; Falls / Doorway / Morannon ; Isengard Ruined.
+
+Preset : `SITES_DOORS_PELENNOR`.
 
 ### Inertes — sets 12–18 (hors vagues livrées)
 
 | Id | Titre | Famille |
 | --- | --- | --- |
 | `12U185` | The Angle | phase-ability |
-| `12S190` | Northern Pelennor | phase-ability |
 | `12U191` | Shores of Nen Hithoel | phase-ability |
 | `12U192` | Slopes of Orodruin | phase-ability |
 | `13S189` | Crossroads of the Fallen Kings | moves-to |
-| `13U190` | Doors of Durin | passive-while |
 | `13U193` | Isenwash | passive-while |
 | `15U192` | Isengard Ruined | each-time |
 | `17U145` | Dol Guldur | phase-ability |
@@ -254,7 +263,7 @@ Preset : `SITES_PASSIVES_HARD`.
    - Inertes volontaires alors : Courtyard (livré vague 12) ; Crossroads / Falls / Doorway / Morannon
 10. Vague **passifs / phase** reste 12–18 ✅ — preset `SITES_PASSIVES_REST`
     - OK : Fords ; Great Gates ; Nurn ; Streets ; Redhorn ; Wold
-    - Inertes volontaires alors : Hill of Sight / Breeding (livrés vague 13) ; Doors of Durin ; Isenwash
+    - Inertes volontaires alors : Hill of Sight / Breeding (livrés vague 13) ; Doors of Durin (livré vague 14) ; Isenwash
 11. Vague **may / phase** reste ✅ — preset `SITES_MAY_WAVE`
     - OK : Emyn Muil (Maneuver → fierce) ; East Wall (start FP hunters) ; Caves / City of Kings (moves may regroup, toaster)
     - Inertes volontaires : Dol Guldur (choix condition PL) ; Angle / Pelennor / Shores / Slopes ; Crossroads / Falls / Doorway / Morannon ; passifs durs
@@ -263,8 +272,11 @@ Preset : `SITES_PASSIVES_HARD`.
     - Inertes volontaires alors : Crossroads ; Shadow play ; passifs durs ; Dol Guldur ; Falls / Doorway / Morannon ; Isengard Ruined
 13. Vague **passifs durs** ✅ — preset `SITES_PASSIVES_HARD`
     - OK : Breeding pit (1er hunter −2 / phase Ombre) ; Hill of Sight (3 séides OU 6 compagnons → unbound −2 résistance)
-    - Inertes volontaires : Crossroads ; Shadow play ; Doors / Isenwash / Foot ; Dol Guldur ; Falls / Doorway / Morannon ; Isengard Ruined
-14. Reste inertes 12–18 (Shadow play / moves may multi / passifs restants)
+    - Inertes volontaires alors : Crossroads ; Shadow play ; Doors / Isenwash / Foot ; Dol Guldur ; Falls / Doorway / Morannon ; Isengard Ruined
+14. Vague **Doors / Northern Pelennor** ✅ — preset `SITES_DOORS_PELENNOR`
+    - OK : Doors (race majoritaire −1 force) ; Northern Pelennor (lurker perd lurker, projection Ombre)
+    - Inertes volontaires : Crossroads ; Angle / Shores / Slopes ; Isenwash / Foot ; Dol Guldur ; Falls / Doorway / Morannon ; Isengard Ruined
+15. Reste inertes 12–18 (Shadow play / moves may multi / passifs restants)
 
 ## Hors scope
 

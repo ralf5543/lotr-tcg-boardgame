@@ -76,7 +76,12 @@ export function createFollower(overrides: Partial<CardState> = {}): CardState {
 }
 
 export function createSite(
-    overrides: Partial<SiteCardState> = {}
+    overrides: Partial<SiteCardState> & {
+        kind?: string;
+        type?: string;
+        instanceId?: string;
+        actionPhases?: string[];
+    } = {}
 ): SiteCardState {
     return {
         id: 'test-site',
@@ -85,8 +90,11 @@ export function createSite(
         gameText: '',
         ownerId: '0',
         siteNumber: 1,
+        // Pour projection / collectAbilities (isSiteCard).
+        kind: 'SITE',
+        type: 'SITE',
         ...overrides,
-    };
+    } as SiteCardState;
 }
 
 export function createBiddingSetupState(): NonNullable<

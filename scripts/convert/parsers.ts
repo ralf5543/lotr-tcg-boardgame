@@ -6814,6 +6814,37 @@ function parseSitePhaseAbilities(
         }
     }
 
+    // Northern Pelennor : Shadow: Make your lurker minion lose lurker until regroup.
+    const pelennorLurkerRe =
+        /Shadow:?\s*(?:<\/keyword>)?(?:\*\*)?\s*Make your lurker minion lose\s*(?:\*\*|<keyword>)?lurker(?:\*\*|<\/keyword>)?\s*until the regroup phase\.?/gi;
+    while ((match = pelennorLurkerRe.exec(text)) !== null) {
+        found.push({
+            id: `${cardId || 'ability'}:${found.length}:site-phase-lose-lurker`,
+            phases: ['SHADOW'],
+            cost: [
+                {
+                    spot: [
+                        {
+                            count: 1,
+                            target: [['LURKER', 'MINION']],
+                            mode: 'DESIGNATION',
+                        },
+                    ],
+                },
+            ],
+            effects: [
+                {
+                    type: 'SUPPRESS_KEYWORD',
+                    keyword: 'LURKER',
+                    target: 'COST_TARGET',
+                    expiresAtPhase: 'REGROUP',
+                },
+            ],
+            source: 'SELF',
+            text: stripAbilityMarkup(match[0]),
+        });
+    }
+
     // Emyn Muil : Maneuver: Remove <twilightN> and exert your minion that is
     // not fierce to make that minion fierce until the regroup phase.
     const emynRe =
@@ -7066,6 +7097,31 @@ function parseSitePassiveRestAbilities(
                     stat: 'RESISTANCE',
                     value,
                     target: [['UNBOUND', 'COMPANION']],
+                },
+            ],
+            source: 'SELF',
+            text: stripAbilityMarkup(match[0]),
+        });
+    }
+
+    // Doors of Durin : majority race companions strength −1 (until regroup ≈ site WHILE).
+    const doorsRe =
+        /Each companion of a race that has the most companions is strength\s*([+\-–−]\d+)(?:\s+until the regroup phase)?\.?/gi;
+    while ((match = doorsRe.exec(plain)) !== null) {
+        const value = parseInt(match[1].replace(/[–−]/g, '-'), 10);
+        if (!Number.isFinite(value) || value === 0) continue;
+        found.push({
+            id: `${cardId || 'ability'}:${found.length}:site-doors-of-durin`,
+            phases: [],
+            trigger: { type: 'WHILE' },
+            cost: [],
+            effects: [
+                {
+                    type: 'MODIFY_STAT',
+                    stat: 'STRENGTH',
+                    value,
+                    target: [['COMPANION']],
+                    majorityRaceCompanions: true,
                 },
             ],
             source: 'SELF',

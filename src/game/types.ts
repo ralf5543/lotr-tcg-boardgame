@@ -241,6 +241,15 @@ export type AbilityEffect =
           expiresAtPhase: AbilityEffectExpiry;
       }
     | {
+          /**
+           * Perd un mot-clé jusqu’à une phase (Northern Pelennor : lose lurker).
+           */
+          type: 'SUPPRESS_KEYWORD';
+          keyword: CardKeyword;
+          target: AbilityTargetRef;
+          expiresAtPhase: AbilityEffectExpiry;
+      }
+    | {
           type: 'ADD_TEMP_STAT';
           stat: StatType;
           value: number;
@@ -374,6 +383,11 @@ export type AbilityEffect =
            * joué chaque phase d’Ombre (`hunterMinionPlayedThisShadowPhase`).
            */
           firstHunterMinionEachShadowPhase?: boolean;
+          /**
+           * Doors of Durin : uniquement les compagnons d’une race
+           * qui a (à égalité) le plus de compagnons en jeu.
+           */
+          majorityRaceCompanions?: boolean;
       }
     | {
           /** Mot-clé passif (While…) — pas d’expiration de phase. */
@@ -1476,11 +1490,13 @@ export interface ArcheryState {
     shadowRemainingWounds: number;
 }
 
-export type DevPresetType = 'SITES_PASSIVES_HARD';
+export type DevPresetType = 'SITES_DOORS_PELENNOR';
 
 export interface TempKeywordModifier {
     keyword: CardKeyword;
     expiresAtPhase?: AbilityEffectExpiry;
+    /** True = retire le mot-clé (ne l’ajoute pas). */
+    suppress?: boolean;
 }
 
 // Structure du coût d'Aide pour les Followers

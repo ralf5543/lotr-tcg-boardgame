@@ -89,21 +89,38 @@ function abilityMayProjectFromSupport(ability: Ability): boolean {
 }
 
 /**
- * Site : pas de bouton sur le site — projection uniquement sur cible d’exert
- * désignable (coût + effet, ex. Ettenmoors / Watch-tower).
+ * Site : pas de bouton sur le site — projection sur cible désignable
+ * (exert, ou spot DESIGNATION → effet COST_TARGET, ex. Northern Pelennor).
  * Réponse optionnelle sans coût (Starkhorn piocher, Heights défausse…) =
  * toaster, jamais bulle sur le vainqueur.
  */
+function siteDesignateCostTarget(ability: Ability): string[][] | null {
+    const exert = ability.cost?.[0]?.exert?.[0];
+    if (exert && Array.isArray(exert.target)) return exert.target;
+    const hasExert = Boolean(ability.cost?.[0]?.exert?.length);
+    if (hasExert) return null;
+    const spot = ability.cost?.[0]?.spot?.find(
+        (s) => Array.isArray(s.target) && s.mode === 'DESIGNATION'
+    );
+    if (spot && Array.isArray(spot.target)) return spot.target;
+    return null;
+}
+
 function abilityMayProjectFromSite(ability: Ability): boolean {
     if (abilityDiscardsSelf(ability)) return false;
     // Réponses / triggers : jamais de projection (toaster ou inerte).
     if (ability.trigger) return false;
-    if (!exertTargetIsOtherCharacter(ability)) return false;
     const phases = (ability.phases || []).map((p) => p.toUpperCase());
     if (phases.length === 0) return false;
     if (phases.some((p) => p.startsWith('START_OF'))) return false;
-    const exert = ability.cost?.[0]?.exert?.[0];
-    return Boolean(exert && Array.isArray(exert.target));
+    const target = siteDesignateCostTarget(ability);
+    if (!target) return false;
+    // Même garde-fou que l’exert « autre personnage ».
+    return !target.every(
+        (group) =>
+            group.length === 1 &&
+            (group[0] === 'SELF' || group[0] === 'BEARER')
+    );
 }
 
 function isSiteCard(card: CardState): boolean {
@@ -133,11 +150,12 @@ export function abilityProjectsOnto(
     const hostId = host.instanceId || host.id;
     if (sourceId === hostId) return false;
 
+    const designateTarget = siteDesignateCostTarget(ability);
+    if (!designateTarget) return false;
     const exert = ability.cost[0]?.exert?.[0];
-    if (!exert) return false;
-    return resolveCostTarget(G, source, exert.target).some((card) => {
+    return resolveCostTarget(G, source, designateTarget).some((card) => {
         if ((card.instanceId || card.id) !== hostId) return false;
-        if (exert.excludeKeywords?.length) {
+        if (exert?.excludeKeywords?.length) {
             if (
                 exert.excludeKeywords.some(
                     (kw) => getKeywordValue(card, kw, G) >= 0
@@ -646,6 +664,11 @@ function formatEffectBit(
         const who = formatTargetPhrase(effect.target);
         return who ? `${bit} à ${who}` : bit;
     }
+    if (effect.type === 'SUPPRESS_KEYWORD') {
+        const bit = `perdre ${translateKeyword(effect.keyword)}`;
+        const who = formatTargetPhrase(effect.target);
+        return who ? `${bit} (${who})` : bit;
+    }
     if (effect.type === 'PLAY_NEXT_SITE') {
         return 'jouer le prochain site de la communauté';
     }
@@ -1021,6 +1044,9 @@ export function formatAbilityLabelParts(
         const exert = ability.cost?.[0]?.exert?.[0];
         if (exert && Array.isArray(exert.target)) {
             cost = 'Affaiblir ce personnage';
+            if (!effect) effect = fromAst.effect;
+        } else if (siteDesignateCostTarget(ability)) {
+            cost = 'Désigner ce personnage';
             if (!effect) effect = fromAst.effect;
         }
     }

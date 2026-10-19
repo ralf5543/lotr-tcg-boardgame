@@ -284,9 +284,9 @@ export function getCostDesignationCandidates(
         );
     }
 
-    // Spot à désigner uniquement si l’exert est SELF / BEARER
-    // (Saruman : affaiblir soi + désigner un séide). Sinon le spot DESIGNATION
-    // d’événement (Can You Protect Me…) reste géré via la désignation d’effet.
+    // Spot DESIGNATION :
+    // - avec exert SELF/BEARER (Saruman) ;
+    // - ou seul (site Northern Pelennor : désigner le lurker, effet COST_TARGET).
     const spotWithSelfExert = (ability.cost || []).find((opt) => {
         const exertSelf = opt.exert?.some(
             (e) => e.target === 'SELF' || e.target === 'BEARER'
@@ -296,15 +296,26 @@ export function getCostDesignationCandidates(
             (s) => Array.isArray(s.target) && s.mode === 'DESIGNATION'
         );
     });
-    const spotReq = spotWithSelfExert?.spot?.find(
+    const spotOnlyDesignate = (ability.cost || []).find((opt) => {
+        if (opt.exert?.length) return false;
+        return opt.spot?.some(
+            (s) => Array.isArray(s.target) && s.mode === 'DESIGNATION'
+        );
+    });
+    const spotOption = spotWithSelfExert || spotOnlyDesignate;
+    const spotReq = spotOption?.spot?.find(
         (s) => Array.isArray(s.target) && s.mode === 'DESIGNATION'
     );
     if (spotReq && Array.isArray(spotReq.target)) {
         const sourceId = source.instanceId || source.id;
         return uniqueCards(
-            resolveCostTarget(G, source, spotReq.target).filter((card) => {
+            filterCostTargetsForActor(
+                G,
+                source,
+                resolveCostTarget(G, source, spotReq.target),
+                actingPlayerId
+            ).filter((card) => {
                 if (card.isDead) return false;
-                // Saruman : ne peut pas s’assigner lui-même.
                 if ((card.instanceId || card.id) === sourceId) return false;
                 if (card.cannotBeAssignedToSkirmish) return false;
                 return true;

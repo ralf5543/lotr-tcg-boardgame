@@ -56,9 +56,14 @@ export function getEffectiveKeywords(
         });
     }
 
-    // Effets temporaires
+    const suppressed = new Set<string>();
+    // Effets temporaires (gain ou suppression)
     if (card.tempKeywords && card.tempKeywords.length > 0) {
         card.tempKeywords.forEach((mod) => {
+            if (mod.suppress) {
+                suppressed.add(parseKeyword(mod.keyword).key);
+                return;
+            }
             rawList.push(mod.keyword);
         });
     }
@@ -72,6 +77,7 @@ export function getEffectiveKeywords(
 
     rawList.forEach((raw) => {
         const parsed = parseKeyword(raw);
+        if (suppressed.has(parsed.key)) return;
         const currentVal = map.get(parsed.key) ?? 0;
         map.set(parsed.key, currentVal + parsed.value);
     });

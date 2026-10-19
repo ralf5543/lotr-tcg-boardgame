@@ -1204,6 +1204,16 @@ function applyOneEffect(
         return true;
     }
 
+    if (effect.type === 'SUPPRESS_KEYWORD') {
+        if (!target.tempKeywords) target.tempKeywords = [];
+        target.tempKeywords.push({
+            keyword: effect.keyword,
+            expiresAtPhase: effect.expiresAtPhase,
+            suppress: true,
+        });
+        return true;
+    }
+
     if (effect.type === 'ADD_TEMP_STAT') {
         if (!G.tempModifiers) G.tempModifiers = [];
         const targetCardId = target.instanceId || target.id;

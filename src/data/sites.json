@@ -8353,6 +8353,43 @@
     "isUnique": false,
     "kind": "SITE",
     "type": "SITE",
+    "abilities": [
+      {
+        "id": "12S190:0:site-phase",
+        "phases": [
+          "SHADOW"
+        ],
+        "cost": [
+          {
+            "spot": [
+              {
+                "count": 1,
+                "target": [
+                  [
+                    "LURKER",
+                    "MINION"
+                  ]
+                ],
+                "mode": "DESIGNATION"
+              }
+            ]
+          }
+        ],
+        "effects": [
+          {
+            "type": "SUPPRESS_KEYWORD",
+            "keyword": "LURKER",
+            "target": "COST_TARGET",
+            "expiresAtPhase": "REGROUP"
+          }
+        ],
+        "source": "SELF",
+        "text": "Shadow: Make your lurker minion lose lurker until the regroup phase."
+      }
+    ],
+    "actionPhases": [
+      "SHADOW"
+    ],
     "twilightCost": 1,
     "siteArrow": "Right",
     "imageUrl": "/cards_visuals/o_12_190.jpg",
@@ -8855,6 +8892,31 @@
     "type": "SITE",
     "keywords": [
       "MARSH"
+    ],
+    "abilities": [
+      {
+        "id": "13U190:0:site-passive-rest",
+        "phases": [],
+        "trigger": {
+          "type": "WHILE"
+        },
+        "cost": [],
+        "effects": [
+          {
+            "type": "MODIFY_STAT",
+            "stat": "STRENGTH",
+            "value": -1,
+            "target": [
+              [
+                "COMPANION"
+              ]
+            ],
+            "majorityRaceCompanions": true
+          }
+        ],
+        "source": "SELF",
+        "text": "Each companion of a race that has the most companions is strength –1 until the regroup phase."
+      }
     ],
     "twilightCost": 0,
     "siteArrow": "Left",
