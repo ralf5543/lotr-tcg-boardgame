@@ -63,6 +63,7 @@ export const endTurnChoice = ({ G }: LotrMoveContext) => {
         return 'INVALID_MOVE';
     }
     G.forceChooseMoveAgain = false;
+    // preventMoveAgain n’empêche pas de finir le tour.
 
     // 🟢 Renvoyer les Suivants en support-area seulement quand le FP choisit de finir son tour
     returnAidFollowersToSupport(G);
@@ -157,10 +158,11 @@ export const confirmHandRefill = ({ G, events, playerID }: LotrMoveContext) => {
     player.hasDiscardedInRegroup = false;
 
     if (G.regroupStep === 'SHADOW_REFILL') {
-        if ((G.movesThisTurn || 0) >= 2) {
+        if ((G.movesThisTurn || 0) >= 2 || G.preventMoveAgain) {
             G.regroupStep = 'FP_REFILL';
-            G.statusMessage =
-                'Limite de déplacement atteinte (2/2). Reconstitution de la main des Peuples Libres.';
+            G.statusMessage = G.preventMoveAgain
+                ? 'Déplacement supplémentaire empêché (site). Reconstitution de la main des Peuples Libres.'
+                : 'Limite de déplacement atteinte (2/2). Reconstitution de la main des Peuples Libres.';
         } else {
             G.regroupStep = 'FP_DECISION';
             G.statusMessage =
@@ -188,6 +190,7 @@ export const confirmHandRefill = ({ G, events, playerID }: LotrMoveContext) => {
         G.twilightPool = 0;
         G.movesThisTurn = 0;
         G.forceChooseMoveAgain = false;
+        G.preventMoveAgain = false;
         G.skirmishes = [];
         G.activeSkirmishId = undefined;
         G.regroupStep = undefined;

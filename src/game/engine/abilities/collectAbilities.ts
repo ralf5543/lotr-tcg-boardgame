@@ -99,10 +99,14 @@ function siteDesignateCostTarget(ability: Ability): string[][] | null {
     if (exert && Array.isArray(exert.target)) return exert.target;
     const hasExert = Boolean(ability.cost?.[0]?.exert?.length);
     if (hasExert) return null;
-    const spot = ability.cost?.[0]?.spot?.find(
+    const spotDesignate = ability.cost?.[0]?.spot?.find(
         (s) => Array.isArray(s.target) && s.mode === 'DESIGNATION'
     );
-    if (spot && Array.isArray(spot.target)) return spot.target;
+    if (spotDesignate && Array.isArray(spotDesignate.target)) {
+        return spotDesignate.target;
+    }
+    // Spot condition sans DESIGNATION (Shores…) : pas de projection —
+    // toaster de phase (sitePhaseAbility), jamais bulle sur chaque Orque.
     return null;
 }
 
@@ -153,7 +157,14 @@ export function abilityProjectsOnto(
     const designateTarget = siteDesignateCostTarget(ability);
     if (!designateTarget) return false;
     const exert = ability.cost[0]?.exert?.[0];
-    return resolveCostTarget(G, source, designateTarget).some((card) => {
+    const spotReq = ability.cost[0]?.spot?.find((s) =>
+        Array.isArray(s.target)
+    );
+    const pool = resolveCostTarget(G, source, designateTarget);
+    if (spotReq && (spotReq.count || 1) > 0 && pool.length < (spotReq.count || 1)) {
+        return false;
+    }
+    return pool.some((card) => {
         if ((card.instanceId || card.id) !== hostId) return false;
         if (exert?.excludeKeywords?.length) {
             if (
@@ -210,10 +221,9 @@ export function collectVisibleAbilities(
         ) {
             return false;
         }
-        // Site : jamais de bouton sur le site (projection coût, ou toaster réponse).
+        // Site : jamais de bouton sur le site (projection, toaster moves/phase/réponse).
         if (isSiteCard(source)) {
-            if (abilityMayProjectFromSite(ability)) return false;
-            if (abilityMatchesPhase(ability, 'RESPONSE')) return false;
+            return false;
         }
         // Nom propre (support) : le bouton vit sur le personnage projeté.
         if (abilityMayProjectFromSupport(ability)) return false;
@@ -716,6 +726,9 @@ function formatEffectBit(
             ? `renvoyer ${who} dans la main de son propriétaire`
             : 'renvoyer une carte dans la main de son propriétaire';
     }
+    if (effect.type === 'PREVENT_MOVE_AGAIN') {
+        return 'empêcher la compagnie d’avancer à nouveau ce tour';
+    }
     if (effect.type === 'FORCE_CHOOSE_MOVE_AGAIN') {
         return 'obliger les Peuples Libres à se déplacer à nouveau';
     }
@@ -1045,8 +1058,13 @@ export function formatAbilityLabelParts(
         if (exert && Array.isArray(exert.target)) {
             cost = 'Affaiblir ce personnage';
             if (!effect) effect = fromAst.effect;
-        } else if (siteDesignateCostTarget(ability)) {
+        } else if (
+            ability.cost?.[0]?.spot?.some((s) => s.mode === 'DESIGNATION')
+        ) {
             cost = 'Désigner ce personnage';
+            if (!effect) effect = fromAst.effect;
+        } else if (siteDesignateCostTarget(ability)) {
+            // Spot condition (Shores) : le coût reste celui de l’AST (« Spotter… »).
             if (!effect) effect = fromAst.effect;
         }
     }

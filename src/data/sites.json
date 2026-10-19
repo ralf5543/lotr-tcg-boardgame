@@ -7540,6 +7540,29 @@
     "keywords": [
       "PLAINS"
     ],
+    "abilities": [
+      {
+        "id": "11S257:0:site-passive-rest",
+        "phases": [],
+        "trigger": {
+          "type": "WHILE"
+        },
+        "cost": [],
+        "effects": [
+          {
+            "type": "FORBID_ARCHERY_WOUNDS",
+            "target": [
+              [
+                "URUK-HAI",
+                "MINION"
+              ]
+            ]
+          }
+        ],
+        "source": "SELF",
+        "text": "During the archery phase, urukhai minions cannot take wounds."
+      }
+    ],
     "twilightCost": 1,
     "siteArrow": "Right",
     "imageUrl": "/cards_visuals/o_11_257.jpg",
@@ -7749,6 +7772,33 @@
     "keywords": [
       "DWELLING",
       "RIVER"
+    ],
+    "abilities": [
+      {
+        "id": "11S261:0:site-move",
+        "phases": [],
+        "optional": true,
+        "responsePlayer": "FREE_PEOPLE",
+        "trigger": {
+          "type": "MOVES_TO"
+        },
+        "cost": [],
+        "effects": [
+          {
+            "type": "HEAL",
+            "count": 1,
+            "all": true,
+            "target": [
+              [
+                "HOBBIT",
+                "COMPANION"
+              ]
+            ]
+          }
+        ],
+        "source": "SELF",
+        "text": "When your fellowship moves to this site, you may heal each Hobbit companion."
+      }
     ],
     "twilightCost": 3,
     "siteArrow": "Right",
@@ -8423,6 +8473,41 @@
     "isUnique": false,
     "kind": "SITE",
     "type": "SITE",
+    "abilities": [
+      {
+        "id": "12U191:0:site-phase",
+        "phases": [
+          "SHADOW"
+        ],
+        "optional": true,
+        "responsePlayer": "SHADOW",
+        "cost": [
+          {
+            "spot": [
+              {
+                "count": 5,
+                "target": [
+                  [
+                    "ORC",
+                    "MINION"
+                  ]
+                ]
+              }
+            ]
+          }
+        ],
+        "effects": [
+          {
+            "type": "PREVENT_MOVE_AGAIN"
+          }
+        ],
+        "source": "SELF",
+        "text": "Shadow: Spot 5 orc Orcs to prevent the fellowship from moving again this turn."
+      }
+    ],
+    "actionPhases": [
+      "SHADOW"
+    ],
     "twilightCost": 1,
     "siteArrow": "Right",
     "imageUrl": "/cards_visuals/o_01_359.jpg",

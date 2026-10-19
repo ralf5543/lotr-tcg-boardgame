@@ -35,7 +35,11 @@ import { getEffectiveVitality } from '../../utils/cardStats';
 import { applyExert } from '../../utils/applyExert';
 import { getEffectiveTwilightCost } from '../../utils/roamingDetection';
 import { getWhileTwilightCostModifier } from '../logic/stats/mechanics/whileModifier';
-import { getCurrentSiteIndex, isWoundPreventionForbidden } from '../logic/sites';
+import {
+    canCardTakeWound,
+    getCurrentSiteIndex,
+    isWoundPreventionForbidden,
+} from '../logic/sites';
 import { yieldPriorityAfterAction } from './actionWindow';
 import { cancelSkirmish } from './abilities/cancelSkirmish';
 import { enterPhase } from '../logic/phaseEntry';
@@ -702,6 +706,12 @@ export function requestWounds(
     count = 1
 ): 'APPLIED' | 'WAITING' {
     if (!card || count <= 0) return 'APPLIED';
+
+    // Cible invalide (Uplands, etc.) : ne pas enfiler — l’appelant doit déjà
+    // avoir refusé l’action (canCardTakeWound / candidats de désignation).
+    if (!canCardTakeWound(G, card)) {
+        return 'APPLIED';
+    }
 
     const item = { targetId: card.instanceId || card.id, count };
     if (!G.woundQueue) G.woundQueue = [];

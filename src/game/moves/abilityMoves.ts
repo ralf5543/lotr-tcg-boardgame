@@ -17,8 +17,10 @@ import { abilityMatchesPhase } from '../engine/abilities/collectAbilities';
 import { yieldPriorityAfterAction } from '../engine/actionWindow';
 import { findTargetCard } from '../../utils/cardUtils';
 import {
+    abilityHasLegalEffectTarget,
     abilityNeedsCostDesignation,
     abilityNeedsEffectDesignation,
+    getEffectDesignationCandidates,
     getEffectDesignationCount,
 } from '../engine/abilities/designation';
 import {
@@ -65,6 +67,10 @@ export const activateAbility = (
     if (!canPayAbilityCost(G, source, ability.cost, actorId)) {
         return 'INVALID_MOVE';
     }
+    // Cible d’effet invalide (ex. blessure impossible) → pas de paiement de coût.
+    if (!abilityHasLegalEffectTarget(G, source, ability, actorId)) {
+        return 'INVALID_MOVE';
+    }
     const needsCostDesignation = abilityNeedsCostDesignation(
         G,
         source,
@@ -95,6 +101,18 @@ export const activateAbility = (
         ) {
             return 'INVALID_MOVE';
         }
+        const effectCandidates = getEffectDesignationCandidates(
+            G,
+            source,
+            ability
+        );
+        const effectIds = provided.slice(0, need);
+        const allLegal = effectIds.every((id) =>
+            effectCandidates.some(
+                (c) => c.instanceId === id || c.id === id
+            )
+        );
+        if (!allLegal) return 'INVALID_MOVE';
     }
     if (abilityNeedsHandDiscard(ability) && !discardedHandIds?.length) {
         return 'INVALID_MOVE';

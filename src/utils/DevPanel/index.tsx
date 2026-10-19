@@ -369,10 +369,10 @@ export const DevPanel: React.FC<DevPanelProps> = ({
                         <S.Label>Presets cartes & Déblocage :</S.Label>
                         <S.PresetButton
                             onClick={() =>
-                                moves.devLoadPreset('SITES_DOORS_PELENNOR')
+                                moves.devLoadPreset('SITES_VALLEY_SHORES')
                             }
                         >
-                            Sites Doors / Pelennor
+                            Sites Valley / Shores
                         </S.PresetButton>
                         <S.GameButton $bgColor="#3498db" onClick={onDrawCard}>
                             🃏 Piocher ({deckCount})

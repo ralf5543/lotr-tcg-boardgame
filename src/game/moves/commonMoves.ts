@@ -50,6 +50,10 @@ import {
 import { declinePendingSiteStartAbility } from '../logic/siteStartAbility';
 import { resolvePendingSiteMoveAbility } from '../logic/siteMoveAbility';
 import {
+    beginOptionalSitePhaseAbility,
+    resolvePendingSitePhaseAbility,
+} from '../logic/sitePhaseAbility';
+import {
     openSkirmishActionWindow,
     resolveForcedChoice,
 } from '../engine/abilities/startOfSkirmish';
@@ -499,6 +503,12 @@ export const playCard = (
             phase: ctx.phase,
             skipWhenPlayed: playedCard.type === 'EVENT',
         });
+        if (
+            playedCard.type === 'MINION' &&
+            (ctx.phase || '').toLowerCase() === 'shadow'
+        ) {
+            beginOptionalSitePhaseAbility(G);
+        }
         yieldAfterPlay(G, actingPlayerId, playedCard, wasResponseWindowOpen);
         G.pendingPlay = undefined;
     }
@@ -599,6 +609,22 @@ export const resolveSiteMoveAbilityChoice = (
             discardedHandIds
         )
     ) {
+        return 'INVALID_MOVE';
+    }
+};
+
+/** Toaster capacité de phase de site (Shores…) : une offre par phase d’Ombre. */
+export const resolveSitePhaseAbilityChoice = (
+    { G, playerID }: LotrMoveContext,
+    accept: boolean
+) => {
+    if (
+        !G.pendingSitePhaseAbility ||
+        G.pendingSitePhaseAbility.playerId !== playerID
+    ) {
+        return 'INVALID_MOVE';
+    }
+    if (!resolvePendingSitePhaseAbility(G, String(playerID), accept)) {
         return 'INVALID_MOVE';
     }
 };
@@ -894,6 +920,7 @@ export const commonMoves = {
     resolveWhenPlayedChoice,
     resolveSiteStartAbilityChoice,
     resolveSiteMoveAbilityChoice,
+    resolveSitePhaseAbilityChoice,
     resolveForcedChoiceMove,
     confirmPendingRevealMove,
     ...(process.env.NODE_ENV !== 'production' ? devMoves : {}),

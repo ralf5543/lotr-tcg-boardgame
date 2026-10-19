@@ -6,7 +6,11 @@ import {
 } from '../engine/abilities/payAbilityCost';
 import { triggerConditionsMet } from '../engine/abilities/siteMove';
 import { tryOpenFellowshipMoves } from '../engine/responseWindow';
-import { areBurdenRemovalsForbidden, getCurrentSite } from './sites';
+import {
+    areBurdenRemovalsForbidden,
+    areHealsForbidden,
+    getCurrentSite,
+} from './sites';
 
 type PhaseEvents = {
     setPhase?: (phase: string) => void;
@@ -44,6 +48,23 @@ function optionalMoveEffectsAreLegal(G: GameState, ability: Ability): boolean {
         }
         if (effect.type === 'ADD_BURDENS') {
             // Réponse Ombre : toujours légal (on ajoute).
+            continue;
+        }
+        if (effect.type === 'HEAL' && effect.all && Array.isArray(effect.target)) {
+            if (areHealsForbidden(G)) return false;
+            const wounded = (fp.fellowshipArea || []).some(
+                (c) =>
+                    c &&
+                    !c.isDead &&
+                    (c.wounds || 0) > 0 &&
+                    // Filtre grossier : Hobbit / companion — le match fin est à l’apply.
+                    (effect.target as string[][]).some((group) =>
+                        group.includes('HOBBIT')
+                            ? c.race === 'HOBBIT'
+                            : c.type === 'COMPANION'
+                    )
+            );
+            if (!wounded) return false;
             continue;
         }
         // Effet non géré ici : on n’ouvre rien.

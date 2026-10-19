@@ -37,14 +37,14 @@ const clonePresetSite = (
 };
 
 /**
- * Vague Doors / Northern Pelennor (reste inertes).
- * 1 Doors of Durin → 2 Northern Pelennor → …
+ * Vague Valley / Uplands / Shores.
+ * 1 filler → 2 Valley (moves to heal Hobbits) → 3 Uplands → 4 Shores → …
  */
-const SITES_DOORS_PELENNOR_PATH = [
-    '13U190', // 1 Doors of Durin
-    '12S190', // 2 Northern Pelennor
-    '11S265', // 3 Window
-    '11S250', // 4 North Undeep
+const SITES_VALLEY_SHORES_PATH = [
+    '11S265', // 1 Window (départ)
+    '11S261', // 2 Valley of the Silverlode
+    '11S257', // 3 Rohan Uplands
+    '12U191', // 4 Shores of Nen Hithoel
     '11S263', // 5 West Gate
     '11S228', // 6 Anduin Confluence (sanctuaire)
     '11S241', // 7 Orthanc
@@ -70,7 +70,10 @@ const resetBoardForPreset = (G: GameState): void => {
     G.archeryWoundsToAssign = 0;
     G.pendingSiteMoveAbility = undefined;
     G.pendingSiteStartAbility = undefined;
+    G.pendingSitePhaseAbility = undefined;
+    G.sitePhaseAbilityOfferedThisPhase = false;
     G.hunterMinionPlayedThisShadowPhase = false;
+    G.preventMoveAgain = false;
 
     Object.keys(G.players).forEach((pId) => {
         const player = G.players[pId];
@@ -117,38 +120,46 @@ export const applyDevPreset = (
     const shadowPlayer = G.players[shadowId];
 
     switch (presetType) {
-        case 'SITES_DOORS_PELENNOR': {
+        case 'SITES_VALLEY_SHORES': {
             resetBoardForPreset(G);
-            setupDevPath(G, 0, SITES_DOORS_PELENNOR_PATH);
-            G.twilightPool = 4;
+            setupDevPath(G, 0, SITES_VALLEY_SHORES_PATH);
+            G.twilightPool = 6;
             fpPlayer.burdens = 0;
 
-            // Doors : 3 Hommes (majorité) + 1 Nain → Hommes −1 force.
             fpPlayer.fellowshipArea = [
                 {
-                    ...clonePresetCard('2C102', 'dev-dp-frodo'),
-                    attachments: [clonePresetCard('1R1', 'dev-dp-ring')],
+                    ...clonePresetCard('2C102', 'dev-vs-frodo'),
+                    attachments: [clonePresetCard('1R1', 'dev-vs-ring')],
+                    wounds: 1,
                 },
-                clonePresetCard('1R89', 'dev-dp-aragorn'),
-                clonePresetCard('1R96', 'dev-dp-boromir'),
-                clonePresetCard('1R13', 'dev-dp-gimli'),
+                {
+                    ...clonePresetCard('1C306', 'dev-vs-pippin'),
+                    wounds: 1,
+                },
+                clonePresetCard('1R13', 'dev-vs-gimli'),
+                // Archerie FP → tester Uplands (Uruk immunisé, Orques non).
+                clonePresetCard('1R50', 'dev-vs-legolas'),
             ];
             fpPlayer.hand = [];
-            fpPlayer.deck = [];
+            fpPlayer.deck = [clonePresetCard('1C11', 'dev-vs-draw')];
             fpPlayer.sitesDeck = [clonePresetSite('11S250', fpId)];
 
             if (shadowPlayer) {
                 shadowPlayer.hand = [];
                 shadowPlayer.sitesDeck = [clonePresetSite('11S263', shadowId)];
-                // Northern Pelennor : lurker + non-lurker (bulle sur le lurker).
+                // Shores : 5 Orques ; Uplands : 1 Uruk (ne prend pas d’archerie).
                 G.battlefield = [
-                    clonePresetCard('11C136', 'dev-dp-lurker'),
-                    clonePresetCard('1C266', 'dev-dp-orc'),
+                    clonePresetCard('1C266', 'dev-vs-orc-a'),
+                    clonePresetCard('1C268', 'dev-vs-orc-b'),
+                    clonePresetCard('1C271', 'dev-vs-orc-c'),
+                    clonePresetCard('11C136', 'dev-vs-orc-d'),
+                    clonePresetCard('11C113', 'dev-vs-orc-e'),
+                    clonePresetCard('1C146', 'dev-vs-uruk'),
                 ];
             }
 
             G.statusMessage =
-                '[DEV] Doors / Pelennor · site 1 Doors (Hommes majorité → force −1) ; téléporte site 2 Northern Pelennor (Ombre : lurker perd lurker).';
+                '[DEV] Valley / Uplands / Shores · avance site 2 Valley (toaster heal Hobbits) ; téléporte 3 Uplands + Legolas (Uruk immunisé archerie) ; 4 Shores → phase Ombre (toaster Spot 5, une fois).';
             break;
         }
     }

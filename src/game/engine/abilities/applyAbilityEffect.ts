@@ -59,6 +59,7 @@ import {
     areHealsForbidden,
     areBurdenRemovalsForbidden,
     isWoundPreventionForbidden,
+    canCardTakeWound,
 } from '../../logic/sites';
 import {
     stackCardOnHost,
@@ -424,6 +425,27 @@ export function applyAbilityEffect(
         if (effect.type === 'FORCE_CHOOSE_MOVE_AGAIN') {
             if ((G.movesThisTurn || 0) < 2) {
                 G.forceChooseMoveAgain = true;
+            }
+            continue;
+        }
+
+        if (effect.type === 'PREVENT_MOVE_AGAIN') {
+            G.preventMoveAgain = true;
+            continue;
+        }
+
+        if (
+            effect.type === 'HEAL' &&
+            effect.all &&
+            Array.isArray(effect.target)
+        ) {
+            if (areHealsForbidden(G)) return false;
+            const matches = resolveCostTarget(G, source, effect.target).filter(
+                (card) => !card.isDead && (card.wounds || 0) > 0
+            );
+            // Aucun blessé : succès inerte (Valley si Hobbits sains).
+            for (const card of matches) {
+                applyHeal(G, card, effect.count || 1);
             }
             continue;
         }
@@ -942,6 +964,7 @@ export function applyAbilityEffect(
                   ? opponents[0]
                   : null;
             if (!target) return false;
+            if (!canCardTakeWound(G, target)) return false;
             let count = effect.count || 1;
             if (
                 effect.countIfCulture &&
@@ -1283,6 +1306,7 @@ function applyOneEffect(
     }
 
     if (effect.type === 'WOUND') {
+        if (!canCardTakeWound(G, target)) return false;
         requestWounds(G, target, effect.count || 1);
         return true;
     }

@@ -1,4 +1,5 @@
 import type { GameState, CardState } from '../game/types';
+import { canCardTakeWound } from '../game/logic/sites';
 import { getEffectiveVitality } from './cardStats';
 
 function enqueueCharacterDeath(G: GameState, card: CardState): void {
@@ -58,6 +59,11 @@ export const applyWoundAndCheckDeath = (
     options?: ApplyWoundOptions
 ): boolean => {
     if (!card) return false;
+
+    // Affaiblissement ≠ « takes a wound » (Uplands, etc. ne bloquent pas l’exert).
+    if (!options?.fromExert && !canCardTakeWound(G, card)) {
+        return false;
+    }
 
     // 1. Infliger les blessures sur la carte
     card.wounds = (card.wounds || 0) + woundsCount;

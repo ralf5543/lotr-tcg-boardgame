@@ -54,6 +54,7 @@ import {
     areBurdenRemovalsForbidden,
     areCultureTokenChangesForbidden,
     areHealsForbidden,
+    canCardTakeWound,
 } from '../../logic/sites';
 import { formatAbilityWhoLabel } from './collectAbilities';
 import {
@@ -200,6 +201,11 @@ function candidatesForEffect(
     }
     if (effect.type === 'WOUND' && effect.excludeRingBearer) {
         matches = matches.filter((card) => !isRingBearerCard(card));
+    }
+    if (effect.type === 'WOUND') {
+        // Cible invalide (ex. Uplands / archerie) → absente des candidats ;
+        // abilityHasLegalEffectTarget / halo refusent l’action entière.
+        return matches.filter((card) => canCardTakeWound(G, card));
     }
     if (effect.type === 'EXHAUST' && effect.excludeRingBearer) {
         matches = matches.filter((card) => !isRingBearerCard(card));
@@ -523,7 +529,7 @@ export function getEffectDesignationCandidates(
                 }
             }
         }
-        return opponents.filter((c) => !c.isDead);
+        return opponents.filter((c) => canCardTakeWound(G, c));
     }
 
     // DISCARD_ALL / EXERT all (et masses) : pas de désignation — on applique tout d’un coup.
@@ -889,6 +895,10 @@ export function abilityHasLegalEffectTarget(
         }
         if (!('target' in effect)) continue;
         if (effect.target === 'SELF' || effect.target === 'BEARER') {
+            if (effect.type === 'WOUND') {
+                const card = resolveAbilityTarget(G, source, effect.target);
+                if (!card || !canCardTakeWound(G, card)) return false;
+            }
             if (effect.type === 'HEAL') {
                 const card = resolveAbilityTarget(G, source, effect.target);
                 if (!card || !isHealableCard(card)) return false;

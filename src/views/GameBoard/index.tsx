@@ -86,6 +86,7 @@ import {
     getReplaceablePathSitesInCurrentRegion,
     getOwnedPathSites,
     getNextSitePathIndex,
+    canCardTakeWound,
 } from '../../game/logic/sites';
 import { isSiteReplaceForbidden } from '../../game/logic/siteReplaceRestrictions';
 import { findEventAbilityForPhase } from '../../game/engine/abilities/playEventAbility';
@@ -2436,9 +2437,22 @@ export const GameBoard: React.FC<GameBoardProps> = ({
                 },
             });
         } else if (step === 'SHADOW_ASSIGN') {
+            // Uplands etc. : pas de halo sur les séides immunisés (toutes blessures d’archerie).
             const validTargets = (G.battlefield || [])
-                .filter((c) => c && c.kind === 'SHADOW' && c.type === 'MINION')
-                .map((c) => c.id);
+                .filter(
+                    (c) =>
+                        c &&
+                        c.kind === 'SHADOW' &&
+                        c.type === 'MINION' &&
+                        !c.isDead &&
+                        canCardTakeWound(G, c)
+                )
+                .flatMap((c) =>
+                    [c.instanceId, c.id].filter(
+                        (id, index, ids): id is string =>
+                            Boolean(id) && ids.indexOf(id) === index
+                    )
+                );
 
             startTargeting({
                 kind: 'ARCHERY',

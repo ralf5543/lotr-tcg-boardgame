@@ -101,6 +101,38 @@ function currentSiteHasPassiveEffect(
     );
 }
 
+/** Rohan Uplands : pas de blessures d’archerie sur les cibles du passif. */
+export function cannotTakeArcheryWoundsFromSite(
+    G: GameState,
+    card: CardState
+): boolean {
+    if (card.cannotTakeArcheryWounds) return true;
+    const site = getCurrentSite(G);
+    if (!site?.abilities?.length) return false;
+    for (const ability of site.abilities) {
+        if (ability.trigger?.type !== 'WHILE') continue;
+        for (const effect of ability.effects || []) {
+            if (effect.type !== 'FORBID_ARCHERY_WOUNDS') continue;
+            if (cardMatchesTarget(card, effect.target)) return true;
+        }
+    }
+    return false;
+}
+
+/**
+ * Une blessure peut-elle être infligée à cette carte **maintenant** ?
+ * Si non → la carte n’est pas une cible légale : effet / capacité / événement
+ * ne peuvent pas être joués vers elle (CR : cible invalide = action illégale).
+ */
+export function canCardTakeWound(G: GameState, card: CardState): boolean {
+    if (!card || card.isDead) return false;
+    // Phase d’archerie (fenêtre ACTIONS → assignation) : immunités site / carte.
+    if (G.archeryState && cannotTakeArcheryWoundsFromSite(G, card)) {
+        return false;
+    }
+    return true;
+}
+
 /** Streets of Bree : suivants non transférables. */
 export function isFollowerTransferForbidden(G: GameState): boolean {
     return currentSiteHasPassiveEffect(G, 'FORBID_FOLLOWER_TRANSFER');

@@ -23,6 +23,7 @@ import { openAssignmentActionWindow } from './logic/assignment';
 import { advanceCompany } from './moves/fellowshipMoves';
 import { tryOpenFellowshipMoves } from './engine/responseWindow';
 import { beginOptionalSiteMoveAbility } from './logic/siteMoveAbility';
+import { beginOptionalSitePhaseAbility } from './logic/sitePhaseAbility';
 import { devMoves } from './dev/devMoves';
 import { drawCardsForPlayer } from '../utils/drawCards';
 import { buildDeckFromIds } from '../utils/deckBuilder';
@@ -573,9 +574,13 @@ export const LotrGame: Game<GameState> = {
 
             onBegin: ({ G }: LotrPhaseContext) => {
                 G.actionWindow = undefined;
+                G.sitePhaseAbilityOfferedThisPhase = false;
+                G.pendingSitePhaseAbility = undefined;
 
                 const shadowId = G.fpPlayerId === '0' ? '1' : '0';
                 G.statusMessage = `Phase d'Ombre : Joueur Ombre (${shadowId}), jouez vos Séides/Soutiens. Crépuscule disponible : ${G.twilightPool}`;
+                // Shores : Spot déjà vrai (preset / 5 Orques en jeu) → toaster immédiat.
+                beginOptionalSitePhaseAbility(G);
             },
 
             moves: {
@@ -646,6 +651,9 @@ export const LotrGame: Game<GameState> = {
                         playerId: String(playerID),
                         phase: ctx.phase || 'shadow',
                     });
+                    if (playedCard.type === 'MINION') {
+                        beginOptionalSitePhaseAbility(G);
+                    }
 
                     const wasRoaming = isMinionRoaming(card, fpSiteIndex);
                     G.statusMessage = `L'Ombre joue ${card.name || card.title} (${effectiveCost} Crépuscule${wasRoaming ? ' dont +2 Errance' : ''}).`;
@@ -691,6 +699,9 @@ export const LotrGame: Game<GameState> = {
 
                 endShadowPhase: ({ G, events, playerID }: LotrMoveContext) => {
                     if ((G.threatWoundsToAssign ?? 0) > 0) {
+                        return 'INVALID_MOVE';
+                    }
+                    if (G.pendingSitePhaseAbility) {
                         return 'INVALID_MOVE';
                     }
                     const shadowId = G.fpPlayerId === '0' ? '1' : '0';
@@ -1271,6 +1282,7 @@ export const LotrGame: Game<GameState> = {
                     if (
                         playerID !== fpId ||
                         (G.movesThisTurn || 0) >= 2 ||
+                        G.preventMoveAgain ||
                         G.regroupStep !== 'FP_DECISION' ||
                         G.pendingSiteMoveAbility
                     ) {

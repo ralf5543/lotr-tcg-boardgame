@@ -6197,6 +6197,32 @@ function parseSiteMoveAbilities(
         });
     }
 
+    // Valley of the Silverlode : may heal each Hobbit companion.
+    const valleyHealHobbitsRe = new RegExp(
+        `When (?:your|the) fellowship moves to ${siteRef}, you may heal each Hobbit companion\\.`,
+        'gi'
+    );
+    while ((match = valleyHealHobbitsRe.exec(text)) !== null) {
+        found.push({
+            id: `${cardId || 'ability'}:${found.length}:site-move-heal-hobbits`,
+            phases: [],
+            optional: true,
+            responsePlayer: 'FREE_PEOPLE',
+            trigger: { type: 'MOVES_TO' },
+            cost: [],
+            effects: [
+                {
+                    type: 'HEAL',
+                    count: 1,
+                    all: true,
+                    target: [['HOBBIT', 'COMPANION']],
+                },
+            ],
+            source: 'SELF',
+            text: stripAbilityMarkup(match[0]),
+        });
+    }
+
     // Courtyard Parapet : le premier joueur Ombre peut défausser N cartes → fardeau.
     const optionalShadowDiscardBurdenRe = new RegExp(
         `When the fellowship moves to ${siteRef}, the first Shadow player may discard (\\d+) cards? from hand to add a burden\\.`,
@@ -6814,6 +6840,39 @@ function parseSitePhaseAbilities(
         }
     }
 
+    // Shores of Nen Hithoel : Shadow: Spot 5 orc Orcs → prevent move again.
+    const shoresRe =
+        /Shadow:?\s*(?:<\/keyword>)?(?:\*\*)?\s*Spot\s+(\d+)\s+((?:<symbol>[^<]+<\/symbol>\s*)+)Orcs?\s+to prevent the fellowship from moving again this turn\.?/gi;
+    while ((match = shoresRe.exec(text)) !== null) {
+        const count = parseInt(match[1], 10);
+        if (!Number.isFinite(count) || count <= 0) continue;
+        // Le symbole suffit (évite ORC×2 via « Orc » collé après).
+        const filters = parseClassFilters(match[2].trim());
+        if (filters.length === 0) continue;
+        if (!filters.includes('ORC')) filters.push('ORC');
+        if (!filters.includes('MINION')) filters.push('MINION');
+        found.push({
+            id: `${cardId || 'ability'}:${found.length}:site-phase-prevent-move`,
+            phases: ['SHADOW'],
+            // Toaster Ombre (pas de projection) — entorse UX, voir sitePhaseAbility.
+            optional: true,
+            responsePlayer: 'SHADOW',
+            cost: [
+                {
+                    spot: [
+                        {
+                            count,
+                            target: [filters],
+                        },
+                    ],
+                },
+            ],
+            effects: [{ type: 'PREVENT_MOVE_AGAIN' }],
+            source: 'SELF',
+            text: stripAbilityMarkup(match[0]),
+        });
+    }
+
     // Northern Pelennor : Shadow: Make your lurker minion lose lurker until regroup.
     const pelennorLurkerRe =
         /Shadow:?\s*(?:<\/keyword>)?(?:\*\*)?\s*Make your lurker minion lose\s*(?:\*\*|<keyword>)?lurker(?:\*\*|<\/keyword>)?\s*until the regroup phase\.?/gi;
@@ -7097,6 +7156,29 @@ function parseSitePassiveRestAbilities(
                     stat: 'RESISTANCE',
                     value,
                     target: [['UNBOUND', 'COMPANION']],
+                },
+            ],
+            source: 'SELF',
+            text: stripAbilityMarkup(match[0]),
+        });
+    }
+
+    // Rohan Uplands : during archery, [culture] minions cannot take wounds.
+    const uplandsArcheryRe =
+        /During the archery phase,\s*((?:<symbol>[^<]+<\/symbol>\s*)+)minions cannot take wounds\.?/gi;
+    while ((match = uplandsArcheryRe.exec(text)) !== null) {
+        const filters = parseClassFilters(match[1].trim());
+        if (filters.length === 0) continue;
+        if (!filters.includes('MINION')) filters.push('MINION');
+        found.push({
+            id: `${cardId || 'ability'}:${found.length}:site-forbid-archery`,
+            phases: [],
+            trigger: { type: 'WHILE' },
+            cost: [],
+            effects: [
+                {
+                    type: 'FORBID_ARCHERY_WOUNDS',
+                    target: [filters],
                 },
             ],
             source: 'SELF',

@@ -41,6 +41,7 @@ interface GameControlsProps {
         ) => void;
         resolveSiteStartAbilityChoice?: (accept: boolean) => void;
         resolveSiteMoveAbilityChoice?: (accept: boolean) => void;
+        resolveSitePhaseAbilityChoice?: (accept: boolean) => void;
         /** Réponse site optionnelle (Starkhorn…) : Activer → activateAbility. */
         resolveSiteResponseAbilityChoice?: (accept: boolean) => void;
         confirmMuster?: () => void;
@@ -127,6 +128,7 @@ export const GameControls: React.FC<GameControlsProps> = ({
     const isWhenPlayedChoiceActive = Boolean(G.pendingWhenPlayed);
     const isSiteStartAbilityActive = Boolean(G.pendingSiteStartAbility);
     const isSiteMoveAbilityActive = Boolean(G.pendingSiteMoveAbility);
+    const isSitePhaseAbilityActive = Boolean(G.pendingSitePhaseAbility);
     const isForcedChoiceActive = Boolean(G.pendingForcedChoice);
     const isRevealActive = Boolean(G.pendingReveal);
     const siteResponseCandidate =
@@ -161,6 +163,8 @@ export const GameControls: React.FC<GameControlsProps> = ({
             ? G.pendingSiteStartAbility!.playerId
           : isSiteMoveAbilityActive
             ? G.pendingSiteMoveAbility!.playerId
+          : isSitePhaseAbilityActive
+            ? G.pendingSitePhaseAbility!.playerId
           : isWhenPlayedChoiceActive
             ? G.pendingWhenPlayed!.playerId
           : isActionWindowActive
@@ -214,6 +218,7 @@ export const GameControls: React.FC<GameControlsProps> = ({
 
     const isShadowAction =
         !threatWoundsPending &&
+        !isSitePhaseAbilityActive &&
         !isActionWindowActive &&
         !isResponseWindowActive &&
         ctx.phase === 'shadow' &&
@@ -234,6 +239,7 @@ export const GameControls: React.FC<GameControlsProps> = ({
             | 'START_OF_PHASE'
             | 'SITE_START_ABILITY'
             | 'SITE_MOVE_ABILITY'
+            | 'SITE_PHASE_ABILITY'
             | 'SITE_RESPONSE_ABILITY'
             | 'ASSIGNMENT_YIELD'
             | 'ASSIGNMENT_PASS'
@@ -386,6 +392,29 @@ export const GameControls: React.FC<GameControlsProps> = ({
             ),
             showPassButton: false,
             type: 'SITE_MOVE_ABILITY',
+        };
+    } else if (isSitePhaseAbilityActive && isMyTurnToAct) {
+        const siteSource = G.pendingSitePhaseAbility
+            ? (findTargetCard(
+                  G,
+                  G.pendingSitePhaseAbility.siteInstanceId
+              ) as CardState | null)
+            : null;
+        const siteAbility = siteSource?.abilities?.find(
+            (ab) => ab.id === G.pendingSitePhaseAbility?.abilityId
+        );
+        const siteClause = getAbilityToastClause(siteAbility, siteSource);
+        toastConfig = {
+            show: true,
+            title: 'EFFET DU SITE',
+            body: siteClause ? (
+                <FormattedText text={siteClause} />
+            ) : (
+                G.statusMessage ||
+                'Vous pouvez utiliser l’effet optionnel de ce site.'
+            ),
+            showPassButton: false,
+            type: 'SITE_PHASE_ABILITY',
         };
     } else if (isStartOfPhaseStep && myStartOfPhaseState) {
         toastConfig = {
@@ -699,6 +728,12 @@ export const GameControls: React.FC<GameControlsProps> = ({
                 : 'L’adversaire décide d’utiliser l’effet du site…';
         }
 
+        if (isSitePhaseAbilityActive) {
+            return isMyTurnToAct
+                ? 'Vous pouvez utiliser l’effet du site (Ombre).'
+                : 'L’Ombre décide d’utiliser l’effet du site…';
+        }
+
         if (isWhenPlayedChoiceActive) {
             return isMyTurnToAct
                 ? 'Vous pouvez activer l’effet optionnel de cette carte.'
@@ -810,6 +845,7 @@ export const GameControls: React.FC<GameControlsProps> = ({
             isActionWindowActive ||
             isWhenPlayedChoiceActive ||
             isSiteMoveAbilityActive ||
+            isSitePhaseAbilityActive ||
             isAwaitingSiteActive ||
             Boolean(G.pendingPlay) ||
             Boolean(G.sanctuaryHeal) ||
@@ -1145,6 +1181,32 @@ export const GameControls: React.FC<GameControlsProps> = ({
                                     style={{ marginTop: '8px', width: '100%' }}
                                     onClick={() => {
                                         moves.resolveSiteMoveAbilityChoice?.(
+                                            false
+                                        );
+                                    }}
+                                >
+                                    Passer
+                                </S.ActionButton>
+                            </>
+                        )}
+
+                        {toastConfig.type === 'SITE_PHASE_ABILITY' && (
+                            <>
+                                <S.ActionButton
+                                    style={{ marginTop: '12px', width: '100%' }}
+                                    onClick={() => {
+                                        moves.resolveSitePhaseAbilityChoice?.(
+                                            true
+                                        );
+                                    }}
+                                >
+                                    Activer l’effet
+                                </S.ActionButton>
+                                <S.ActionButton
+                                    $variant="secondary"
+                                    style={{ marginTop: '8px', width: '100%' }}
+                                    onClick={() => {
+                                        moves.resolveSitePhaseAbilityChoice?.(
                                             false
                                         );
                                     }}

@@ -449,6 +449,18 @@ export type AbilityEffect =
           type: 'FORBID_HEAL';
       }
     | {
+          /**
+           * Rohan Uplands : pendant l’archerie, les cibles matchant
+           * ne peuvent pas prendre de blessures d’archerie.
+           */
+          type: 'FORBID_ARCHERY_WOUNDS';
+          target: string[][];
+      }
+    | {
+          /** Shores of Nen Hithoel : pas de 2ᵉ déplacement ce tour. */
+          type: 'PREVENT_MOVE_AGAIN';
+      }
+    | {
           /** Steward's Tomb : les blessures ne peuvent pas être prévenues. */
           type: 'FORBID_WOUND_PREVENTION';
       }
@@ -1298,6 +1310,11 @@ export interface GameState {
      * cette phase d’Ombre (réinitialisé en début d’Ombre).
      */
     hunterMinionPlayedThisShadowPhase?: boolean;
+    /**
+     * Shores of Nen Hithoel : la compagnie ne peut plus avancer
+     * ce tour (réinitialisé en fin de tour).
+     */
+    preventMoveAgain?: boolean;
     path: (SiteCardState | null)[];
     battlefield: CardState[];
     musterState?: {
@@ -1399,6 +1416,17 @@ export interface GameState {
         pendingPhaseAfterSiteMove?: string;
     };
     /**
+     * Capacité de phase de site en toaster (Shores of Nen Hithoel…).
+     * Une offre par phase d’Ombre dès que le Spot est vrai.
+     */
+    pendingSitePhaseAbility?: {
+        playerId: string;
+        siteInstanceId: string;
+        abilityId: string;
+    };
+    /** Toaster site phase déjà tranché (Activer ou Passer) ce tour d’Ombre. */
+    sitePhaseAbilityOfferedThisPhase?: boolean;
+    /**
      * Choix forcé (contrainte Porteur alternatif en début d’escarmouche…).
      * Bloque la fenêtre d’actions jusqu’à résolution.
      */
@@ -1490,7 +1518,7 @@ export interface ArcheryState {
     shadowRemainingWounds: number;
 }
 
-export type DevPresetType = 'SITES_DOORS_PELENNOR';
+export type DevPresetType = 'SITES_VALLEY_SHORES';
 
 export interface TempKeywordModifier {
     keyword: CardKeyword;
