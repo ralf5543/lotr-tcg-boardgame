@@ -8541,6 +8541,34 @@
     "isUnique": false,
     "kind": "SITE",
     "type": "SITE",
+    "abilities": [
+      {
+        "id": "12U192:0:site-phase",
+        "phases": [
+          "SHADOW"
+        ],
+        "optional": true,
+        "responsePlayer": "SHADOW",
+        "cost": [
+          {
+            "removeTwilight": 2,
+            "discardFromHand": 2,
+            "discardFromHandKind": "FREE_PEOPLE"
+          }
+        ],
+        "effects": [
+          {
+            "type": "DRAW",
+            "count": 1
+          }
+        ],
+        "source": "SELF",
+        "text": "Shadow: Remove twilight2 and discard 2 Free Peoples cards from hand to draw a card."
+      }
+    ],
+    "actionPhases": [
+      "SHADOW"
+    ],
     "twilightCost": 1,
     "siteArrow": "Right",
     "imageUrl": "/cards_visuals/o_12_192.jpg",
@@ -9586,6 +9614,33 @@
     "type": "SITE",
     "keywords": [
       "BATTLEGROUND"
+    ],
+    "abilities": [
+      {
+        "id": "15U192:0:site-each-time",
+        "phases": [
+          "RESPONSE"
+        ],
+        "optional": true,
+        "responsePlayer": "SHADOW",
+        "trigger": {
+          "type": "FOLLOWER_TRANSFERRED"
+        },
+        "cost": [],
+        "effects": [
+          {
+            "type": "EXERT",
+            "count": 2,
+            "target": [
+              [
+                "COMPANION"
+              ]
+            ]
+          }
+        ],
+        "source": "SELF",
+        "text": "Each time a follower is transfered to a character, the first Shadow player may exert a companion twice."
+      }
     ],
     "twilightCost": 1,
     "siteArrow": "Right",

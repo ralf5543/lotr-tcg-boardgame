@@ -89,6 +89,13 @@ export function abilityNeedsHandDiscard(ability: Ability): boolean {
     return abilityDiscardFromHandCount(ability) > 0;
 }
 
+/** Filtre optionnel : défausser seulement des cartes FP / Ombre. */
+export function abilityDiscardFromHandKind(
+    ability: Ability
+): 'FREE_PEOPLE' | 'SHADOW' | undefined {
+    return ability.cost?.[0]?.discardFromHandKind;
+}
+
 export function abilityDiscardFromHandEffect(
     ability: Ability
 ): { count: number; upTo?: boolean } | undefined {
@@ -307,12 +314,16 @@ function canPayOption(
         const ownerId = discardFromHandPlayerId(G, source, actingPlayerId);
         if (!ownerId) return false;
         const hand = G.players[ownerId]?.hand || [];
+        const kind = option.discardFromHandKind;
+        const eligible = kind
+            ? hand.filter((card) => card && card.kind === kind)
+            : hand;
         const rule = option.discardFromHandIfEffectHasKeyword;
         // Sans cible : assez pour le minimum possible (réduction si mot-clé).
         const need = rule
             ? Math.min(option.discardFromHand, rule.count)
             : option.discardFromHand;
-        if (hand.length < need) return false;
+        if (eligible.length < need) return false;
     }
 
     // addBurdens : toujours payable (on ajoute).
@@ -450,6 +461,33 @@ function payOption(
             }
         }
     }
+    // Défausse main avant crépuscule : valider (kind / nombre) avant tout paiement.
+    if (typeof option.discardFromHand === 'number' && option.discardFromHand > 0) {
+        const ownerId = discardFromHandPlayerId(G, source, actingPlayerId);
+        if (!ownerId) return false;
+        const effectCard = effectTargetId
+            ? (findTargetCard(G, effectTargetId) as CardState | null)
+            : null;
+        const rule = option.discardFromHandIfEffectHasKeyword;
+        const need =
+            rule && effectCard && cardHasKeyword(effectCard, rule.keyword)
+                ? rule.count
+                : option.discardFromHand;
+        if (!discardedHandIds || discardedHandIds.length !== need) {
+            return false;
+        }
+        const kind = option.discardFromHandKind;
+        if (kind) {
+            const hand = G.players[ownerId]?.hand || [];
+            for (const id of discardedHandIds) {
+                const card = hand.find(
+                    (c) => c && (c.instanceId === id || c.id === id)
+                );
+                if (!card || card.kind !== kind) return false;
+            }
+        }
+        if (!discardCardsFromHand(G, ownerId, discardedHandIds)) return false;
+    }
     if (option.addTwilight && option.addTwilight > 0) {
         G.twilightPool = (G.twilightPool || 0) + option.addTwilight;
     }
@@ -480,22 +518,6 @@ function payOption(
                 return false;
             }
         }
-    }
-    if (typeof option.discardFromHand === 'number' && option.discardFromHand > 0) {
-        const ownerId = discardFromHandPlayerId(G, source, actingPlayerId);
-        if (!ownerId) return false;
-        const effectCard = effectTargetId
-            ? (findTargetCard(G, effectTargetId) as CardState | null)
-            : null;
-        const rule = option.discardFromHandIfEffectHasKeyword;
-        const need =
-            rule && effectCard && cardHasKeyword(effectCard, rule.keyword)
-                ? rule.count
-                : option.discardFromHand;
-        if (!discardedHandIds || discardedHandIds.length !== need) {
-            return false;
-        }
-        if (!discardCardsFromHand(G, ownerId, discardedHandIds)) return false;
     }
     if (option.discardEntireHand) {
         const ownerId = abilityOwnerPlayerId(G, source);

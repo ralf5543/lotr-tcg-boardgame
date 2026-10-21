@@ -29,6 +29,20 @@ export function isSitePhaseToasterAbility(ability: Ability): boolean {
     const phases = (ability.phases || []).map((p) => p.toUpperCase());
     if (!phases.includes('SHADOW')) return false;
     if (ability.trigger) return false;
+
+    // Slopes : −crépuscule + défausse main → pioche (coût sans spot / exert).
+    const hasDraw = (ability.effects || []).some((e) => e.type === 'DRAW');
+    if (hasDraw) {
+        const cost = ability.cost?.[0];
+        return Boolean(
+            cost &&
+                typeof cost.removeTwilight === 'number' &&
+                cost.removeTwilight > 0 &&
+                typeof cost.discardFromHand === 'number' &&
+                cost.discardFromHand > 0
+        );
+    }
+
     const hasPrevent = (ability.effects || []).some(
         (e) => e.type === 'PREVENT_MOVE_AGAIN'
     );
@@ -56,8 +70,12 @@ export function findOptionalSitePhaseAbility(
     if (!site?.abilities?.length) return null;
 
     const shadowId = shadowPlayerId(G);
+    const shadow = G.players[shadowId];
     for (const ability of site.abilities) {
         if (!isSitePhaseToasterAbility(ability)) continue;
+        // DRAW : pioche Ombre — il faut au moins une carte en pioche.
+        const draws = (ability.effects || []).some((e) => e.type === 'DRAW');
+        if (draws && (!shadow?.deck || shadow.deck.length === 0)) continue;
         if (
             !canPayAbilityCost(
                 G,
@@ -91,13 +109,11 @@ export function beginOptionalSitePhaseAbility(G: GameState): boolean {
 export function resolvePendingSitePhaseAbility(
     G: GameState,
     playerID: string,
-    accept: boolean
+    accept: boolean,
+    discardedHandIds?: string[]
 ): boolean {
     const pending = G.pendingSitePhaseAbility;
     if (!pending || pending.playerId !== playerID) return false;
-
-    // Une seule offre par phase d’Ombre, Activer ou Passer.
-    G.sitePhaseAbilityOfferedThisPhase = true;
 
     if (accept) {
         const site = getCurrentSite(G);
@@ -109,12 +125,10 @@ export function resolvePendingSitePhaseAbility(
             !ability ||
             siteInstanceKey(site) !== pending.siteInstanceId
         ) {
-            G.pendingSitePhaseAbility = undefined;
             return false;
         }
         const source = site as unknown as CardState;
         if (!canPayAbilityCost(G, source, ability.cost, playerID)) {
-            G.pendingSitePhaseAbility = undefined;
             return false;
         }
         if (
@@ -123,12 +137,11 @@ export function resolvePendingSitePhaseAbility(
                 source,
                 ability.cost,
                 undefined,
-                undefined,
+                discardedHandIds,
                 undefined,
                 playerID
             )
         ) {
-            G.pendingSitePhaseAbility = undefined;
             return false;
         }
         if (
@@ -142,7 +155,6 @@ export function resolvePendingSitePhaseAbility(
                 playerID
             )
         ) {
-            G.pendingSitePhaseAbility = undefined;
             return false;
         }
         G.statusMessage = `${site.name || 'Le site'} : effet appliqué.`;
@@ -150,6 +162,8 @@ export function resolvePendingSitePhaseAbility(
         G.statusMessage = 'Ombre : effet du site décliné.';
     }
 
+    // Une seule offre par phase d’Ombre, Activer ou Passer (Shores / Slopes).
+    G.sitePhaseAbilityOfferedThisPhase = true;
     G.pendingSitePhaseAbility = undefined;
     return true;
 }

@@ -300,12 +300,17 @@ export function applyAbilityEffect(
 
         if (effect.type === 'DRAW') {
             const fpId = G.fpPlayerId || '0';
+            // Site Ombre (Slopes…) : le joueur qui active pioche.
+            // Sinon : propriétaire de la carte (Ombre → Ombre, FP → FP).
             const ownerId =
-                source.kind === 'SHADOW'
-                    ? fpId === '0'
-                        ? '1'
-                        : '0'
-                    : fpId;
+                actingPlayerId &&
+                (source.kind === 'SITE' || source.type === 'SITE')
+                    ? actingPlayerId
+                    : source.kind === 'SHADOW'
+                      ? fpId === '0'
+                          ? '1'
+                          : '0'
+                      : fpId;
             const player = G.players[ownerId];
             if (!player) return false;
             const isFellowship = (ability.phases || []).some(

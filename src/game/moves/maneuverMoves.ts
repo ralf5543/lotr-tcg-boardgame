@@ -4,6 +4,41 @@ import { findTargetCard } from '../../utils/cardUtils';
 import { hasActionableStartOfPhaseCards } from '../logic/hasActionableStartOfPhaseCards';
 import { addThreats } from '../logic/threats';
 import { exitStartOf } from '../logic/phaseEntry';
+import { beginOptionalSiteFollowerTransferAbility } from '../logic/siteFollowerTransferAbility';
+
+/** Fin du début de manœuvre si plus d’actions et pas de toaster site. */
+export function tryExitStartOfManeuver(
+    G: LotrMoveContext['G'],
+    events: LotrMoveContext['events']
+): void {
+    if (G.pendingSiteFollowerTransfer) return;
+
+    const fpId = G.fpPlayerId || '0';
+    const shadowId = fpId === '0' ? '1' : '0';
+
+    const fpDone =
+        G.startOfPhaseState?.players?.[fpId]?.isDone ||
+        !hasActionableStartOfPhaseCards(
+            G.players[fpId],
+            G,
+            fpId,
+            'startOfManeuver'
+        );
+
+    const shadowDone =
+        G.startOfPhaseState?.players?.[shadowId]?.isDone ||
+        !hasActionableStartOfPhaseCards(
+            G.players[shadowId],
+            G,
+            shadowId,
+            'startOfManeuver'
+        );
+
+    if (fpDone && shadowDone) {
+        G.startOfPhaseState = undefined;
+        exitStartOf(events, 'maneuver');
+    }
+}
 
 export const transferAid = (
     { G, ctx, events, playerID }: LotrMoveContext,
@@ -14,6 +49,11 @@ export const transferAid = (
         ctx.phase !== 'startOfManeuver' ||
         G.maneuverStep !== 'MANEUVER_START'
     ) {
+        return 'INVALID_MOVE';
+    }
+
+    // Bloqué tant que l’Ombre répond au site (Isengard Ruined).
+    if (G.pendingSiteFollowerTransfer) {
         return 'INVALID_MOVE';
     }
 
@@ -88,31 +128,9 @@ export const transferAid = (
         G.startOfPhaseState.players[playerID].isDone = true;
     }
 
-    const fpId = G.fpPlayerId || '0';
-    const shadowId = fpId === '0' ? '1' : '0';
-
-    const fpDone =
-        G.startOfPhaseState?.players?.[fpId]?.isDone ||
-        !hasActionableStartOfPhaseCards(
-            G.players[fpId],
-            G,
-            fpId,
-            'startOfManeuver'
-        );
-
-    const shadowDone =
-        G.startOfPhaseState?.players?.[shadowId]?.isDone ||
-        !hasActionableStartOfPhaseCards(
-            G.players[shadowId],
-            G,
-            shadowId,
-            'startOfManeuver'
-        );
-
-    if (fpDone && shadowDone) {
-        G.startOfPhaseState = undefined;
-        exitStartOf(events, 'maneuver');
-    }
+    // Isengard Ruined : Ombre may exert ×2 avant de quitter le début de manœuvre.
+    beginOptionalSiteFollowerTransferAbility(G);
+    tryExitStartOfManeuver(G, events);
 };
 
 export const maneuverMoves = {

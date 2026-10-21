@@ -188,6 +188,11 @@ export interface CostOption {
     discardFromPlay?: CostSelector[];
     discardFromHand?: number;
     /**
+     * Filtre de kind sur les cartes défaussées de la main
+     * (Slopes : Free Peoples cards from hand).
+     */
+    discardFromHandKind?: 'FREE_PEOPLE' | 'SHADOW';
+    /**
      * Si la cible d’effet a ce mot-clé, défausser `count` au lieu de
      * `discardFromHand` (Garrison / Sapper : 1 si assiégeant).
      */
@@ -1007,6 +1012,10 @@ export type AbilityTrigger =
           target: AbilityTargetRef;
       }
     | {
+          /** Site : Each time a follower is transferred to a character… */
+          type: 'FOLLOWER_TRANSFERRED';
+      }
+    | {
           /** Site : When the fellowship moves to this site… */
           type: 'MOVES_TO';
           /** Uniquement si le site d’arrivée est dans cette région. */
@@ -1441,6 +1450,14 @@ export interface GameState {
     /** Toaster site phase déjà tranché (Activer ou Passer) ce tour d’Ombre. */
     sitePhaseAbilityOfferedThisPhase?: boolean;
     /**
+     * Isengard Ruined : après transfert de suivant, Ombre may exert ×2.
+     */
+    pendingSiteFollowerTransfer?: {
+        playerId: string;
+        siteInstanceId: string;
+        abilityId: string;
+    };
+    /**
      * Doorway to Doom : chaque joueur assigne N blessures à ses personnages.
      */
     pendingSiteCharacterWounds?: {
@@ -1542,7 +1559,7 @@ export interface ArcheryState {
     shadowRemainingWounds: number;
 }
 
-export type DevPresetType = 'SITES_DOORWAY_CROSSROADS';
+export type DevPresetType = 'SITES_SLOPES_RUINED';
 
 export interface TempKeywordModifier {
     keyword: CardKeyword;

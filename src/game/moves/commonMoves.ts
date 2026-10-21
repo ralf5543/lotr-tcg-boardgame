@@ -54,6 +54,8 @@ import {
     resolvePendingSitePhaseAbility,
 } from '../logic/sitePhaseAbility';
 import { assignSiteCharacterWound } from '../logic/siteMoveCharacterWounds';
+import { resolvePendingSiteFollowerTransferAbility } from '../logic/siteFollowerTransferAbility';
+import { tryExitStartOfManeuver } from './maneuverMoves';
 import {
     openSkirmishActionWindow,
     resolveForcedChoice,
@@ -616,10 +618,11 @@ export const resolveSiteMoveAbilityChoice = (
     }
 };
 
-/** Toaster capacité de phase de site (Shores…) : une offre par phase d’Ombre. */
+/** Toaster capacité de phase de site (Shores / Slopes…) : une offre par phase d’Ombre. */
 export const resolveSitePhaseAbilityChoice = (
     { G, playerID }: LotrMoveContext,
-    accept: boolean
+    accept: boolean,
+    discardedHandIds?: string[]
 ) => {
     if (
         !G.pendingSitePhaseAbility ||
@@ -627,9 +630,42 @@ export const resolveSitePhaseAbilityChoice = (
     ) {
         return 'INVALID_MOVE';
     }
-    if (!resolvePendingSitePhaseAbility(G, String(playerID), accept)) {
+    if (
+        !resolvePendingSitePhaseAbility(
+            G,
+            String(playerID),
+            accept,
+            discardedHandIds
+        )
+    ) {
         return 'INVALID_MOVE';
     }
+};
+
+/** Isengard Ruined : après transfert de suivant — Activer (cible) / Passer. */
+export const resolveSiteFollowerTransferAbilityChoice = (
+    { G, events, playerID }: LotrMoveContext,
+    accept: boolean,
+    chosenTargetId?: string
+) => {
+    if (
+        !G.pendingSiteFollowerTransfer ||
+        G.pendingSiteFollowerTransfer.playerId !== playerID
+    ) {
+        return 'INVALID_MOVE';
+    }
+    if (
+        !resolvePendingSiteFollowerTransferAbility(
+            G,
+            String(playerID),
+            accept,
+            chosenTargetId,
+            events
+        )
+    ) {
+        return 'INVALID_MOVE';
+    }
+    tryExitStartOfManeuver(G, events);
 };
 
 /** Doorway to Doom : assigner une blessure à un de ses personnages. */
@@ -941,6 +977,7 @@ export const commonMoves = {
     resolveSiteStartAbilityChoice,
     resolveSiteMoveAbilityChoice,
     resolveSitePhaseAbilityChoice,
+    resolveSiteFollowerTransferAbilityChoice,
     assignSiteCharacterWound: assignSiteCharacterWoundMove,
     resolveForcedChoiceMove,
     confirmPendingRevealMove,

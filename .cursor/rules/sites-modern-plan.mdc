@@ -238,9 +238,20 @@ Preset : `SITES_VALLEY_SHORES` (remplacé par `SITES_DOORWAY_CROSSROADS`).
 | `13S189` | Crossroads of the Fallen Kings | OK | Regroup may → heal 1 compagnon / culture (désignation) |
 | `18U137` | Morannon Plains | OK | eachPlayerMay reinforce (toaster FP puis Ombre ; désignation carte) |
 
-Inertes volontaires : Angle / Slopes ; Isenwash / Foot ; Dol Guldur ; Falls ; Isengard Ruined.
+Inertes volontaires alors : Angle / Slopes ; Isenwash / Foot ; Dol Guldur ; Falls ; Isengard Ruined.
 
-Preset : `SITES_DOORWAY_CROSSROADS` (playtest).
+Preset : `SITES_DOORWAY_CROSSROADS`.
+
+### Vague Slopes / Isengard Ruined
+
+| Id | Titre | Statut | Notes |
+| --- | --- | --- | --- |
+| `12U192` | Slopes of Orodruin | OK* | *Entorse UX : toaster 1× / phase Ombre (−2 crépuscule + défausse 2 FP → pioche). Voir § Exceptions UX. |
+| `15U192` | Isengard Ruined | OK | Transfert suivant → Ombre may exert compagnon ×2 (toaster + désignation) |
+
+Inertes volontaires : Angle ; Isenwash / Foot ; Dol Guldur ; Falls.
+
+Preset : `SITES_SLOPES_RUINED` (playtest).
 
 ### Exceptions UX (toaster / hors schéma)
 
@@ -251,15 +262,14 @@ En attendant : **entorses UX assumées** plutôt que des bulles absurdes — doc
 | Id | Titre | Entorse | Notes |
 | --- | --- | --- | --- |
 | `12U191` | Shores of Nen Hithoel | Toaster dès Spot 5 Orques ; Passer = plus d’offre cette phase Ombre | CR papier = action Ombre libre tant que Spot ; on n’offre qu’une fenêtre. `sitePhaseAbility.ts` |
+| `12U192` | Slopes of Orodruin | Toaster 1× / phase Ombre (Activer ou Passer) | CR = action Ombre répétable ; une fenêtre. Même module. |
 
 ### Inertes — sets 12–18 (hors vagues livrées)
 
 | Id | Titre | Famille |
 | --- | --- | --- |
 | `12U185` | The Angle | phase-ability |
-| `12U192` | Slopes of Orodruin | phase-ability |
 | `13U193` | Isenwash | passive-while |
-| `15U192` | Isengard Ruined | each-time |
 | `17U145` | Dol Guldur | phase-ability |
 | `17U146` | Falls of Rauros | moves-to |
 | `18U135` | Foot of Mount Doom | passive-while |
@@ -306,10 +316,12 @@ En attendant : **entorses UX assumées** plutôt que des bulles absurdes — doc
     - Inertes volontaires alors : Crossroads ; Angle / Shores / Slopes ; Isenwash / Foot ; Dol Guldur ; Falls / Doorway / Morannon ; Isengard Ruined
 15. Vague **Valley / Uplands / Shores** ✅ — preset `SITES_VALLEY_SHORES`
     - OK : Valley (heal Hobbits) ; Uplands (`canCardTakeWound`) ; Shores (toaster Spot 5, entorse UX — § Exceptions UX)
-16. Vague **Doorway / Crossroads / Morannon** — preset `SITES_DOORWAY_CROSSROADS` (playtest)
-    - OK parse/runtime : Doorway (assignation FP→Ombre) ; Crossroads (regroup heal / culture) ; Morannon (reinforce each player)
-    - Inertes volontaires : Angle / Slopes ; Isenwash / Foot ; Dol Guldur ; Falls ; Isengard Ruined
-17. Reste inertes 12–18 (Shadow play / moves may multi / passifs restants)
+16. Vague **Doorway / Crossroads / Morannon** ✅ — preset `SITES_DOORWAY_CROSSROADS`
+    - OK : Doorway (assignation FP→Ombre) ; Crossroads (regroup heal / culture) ; Morannon (reinforce each player)
+17. Vague **Slopes / Isengard Ruined** — preset `SITES_SLOPES_RUINED` (playtest)
+    - OK parse/runtime : Slopes (toaster Ombre −crépuscule + défausse FP → pioche) ; Ruined (transfert → exert ×2)
+    - Inertes volontaires : Angle ; Isenwash / Foot ; Dol Guldur ; Falls
+18. Reste inertes 12–18 (Shadow play / moves may multi / passifs restants)
 
 ## Hors scope
 

@@ -42,6 +42,10 @@ interface GameControlsProps {
         resolveSiteStartAbilityChoice?: (accept: boolean) => void;
         resolveSiteMoveAbilityChoice?: (accept: boolean) => void;
         resolveSitePhaseAbilityChoice?: (accept: boolean) => void;
+        resolveSiteFollowerTransferAbilityChoice?: (
+            accept: boolean,
+            chosenTargetId?: string
+        ) => void;
         /** Réponse site optionnelle (Starkhorn…) : Activer → activateAbility. */
         resolveSiteResponseAbilityChoice?: (accept: boolean) => void;
         confirmMuster?: () => void;
@@ -130,6 +134,9 @@ export const GameControls: React.FC<GameControlsProps> = ({
     const isSiteStartAbilityActive = Boolean(G.pendingSiteStartAbility);
     const isSiteMoveAbilityActive = Boolean(G.pendingSiteMoveAbility);
     const isSitePhaseAbilityActive = Boolean(G.pendingSitePhaseAbility);
+    const isSiteFollowerTransferActive = Boolean(
+        G.pendingSiteFollowerTransfer
+    );
     const isForcedChoiceActive = Boolean(G.pendingForcedChoice);
     const isRevealActive = Boolean(G.pendingReveal);
     const siteResponseCandidate =
@@ -168,6 +175,8 @@ export const GameControls: React.FC<GameControlsProps> = ({
             ? G.pendingSiteMoveAbility!.playerId
           : isSitePhaseAbilityActive
             ? G.pendingSitePhaseAbility!.playerId
+          : isSiteFollowerTransferActive
+            ? G.pendingSiteFollowerTransfer!.playerId
           : isWhenPlayedChoiceActive
             ? G.pendingWhenPlayed!.playerId
           : isActionWindowActive
@@ -251,6 +260,8 @@ export const GameControls: React.FC<GameControlsProps> = ({
             /** Après Activer : désignation (reinforce / heal…) — Passer = refuser l’effet. */
             | 'SITE_MOVE_DESIGNATION'
             | 'SITE_PHASE_ABILITY'
+            | 'SITE_FOLLOWER_TRANSFER'
+            | 'SITE_FOLLOWER_TRANSFER_DESIGNATION'
             | 'SITE_RESPONSE_ABILITY'
             | 'ASSIGNMENT_YIELD'
             | 'ASSIGNMENT_PASS'
@@ -434,6 +445,37 @@ export const GameControls: React.FC<GameControlsProps> = ({
             ),
             showPassButton: false,
             type: 'SITE_PHASE_ABILITY',
+        };
+    } else if (isSiteFollowerTransferActive && isMyTurnToAct && !isTargetingActive) {
+        const siteSource = G.pendingSiteFollowerTransfer
+            ? (findTargetCard(
+                  G,
+                  G.pendingSiteFollowerTransfer.siteInstanceId
+              ) as CardState | null)
+            : null;
+        const siteAbility = siteSource?.abilities?.find(
+            (ab) => ab.id === G.pendingSiteFollowerTransfer?.abilityId
+        );
+        const siteClause = getAbilityToastClause(siteAbility, siteSource);
+        toastConfig = {
+            show: true,
+            title: 'EFFET DU SITE',
+            body: siteClause ? (
+                <FormattedText text={siteClause} />
+            ) : (
+                G.statusMessage ||
+                'Vous pouvez affaiblir un compagnon après le transfert.'
+            ),
+            showPassButton: false,
+            type: 'SITE_FOLLOWER_TRANSFER',
+        };
+    } else if (isSiteFollowerTransferActive && !isMyTurnToAct) {
+        toastConfig = {
+            show: true,
+            title: 'EFFET DU SITE',
+            body: 'L’adversaire décide d’utiliser l’effet du site…',
+            showPassButton: false,
+            type: 'STANDARD',
         };
     } else if (isStartOfPhaseStep && myStartOfPhaseState) {
         toastConfig = {
@@ -642,6 +684,19 @@ export const GameControls: React.FC<GameControlsProps> = ({
             body: targetingMessage || 'Choisissez une cible.',
             showPassButton: false,
             type: 'SITE_MOVE_DESIGNATION',
+        };
+    } else if (
+        isSiteFollowerTransferActive &&
+        isMyTurnToAct &&
+        isTargetingActive &&
+        targetingKind === 'DESIGNATION'
+    ) {
+        toastConfig = {
+            show: true,
+            title: 'EFFET DU SITE',
+            body: targetingMessage || 'Choisissez un compagnon à affaiblir.',
+            showPassButton: false,
+            type: 'SITE_FOLLOWER_TRANSFER_DESIGNATION',
         };
     } else if (
         isTargetingActive &&
@@ -1292,6 +1347,48 @@ export const GameControls: React.FC<GameControlsProps> = ({
                                     Passer
                                 </S.ActionButton>
                             </>
+                        )}
+
+                        {toastConfig.type === 'SITE_FOLLOWER_TRANSFER' && (
+                            <>
+                                <S.ActionButton
+                                    style={{ marginTop: '12px', width: '100%' }}
+                                    onClick={() => {
+                                        moves.resolveSiteFollowerTransferAbilityChoice?.(
+                                            true
+                                        );
+                                    }}
+                                >
+                                    Activer l’effet
+                                </S.ActionButton>
+                                <S.ActionButton
+                                    $variant="secondary"
+                                    style={{ marginTop: '8px', width: '100%' }}
+                                    onClick={() => {
+                                        moves.resolveSiteFollowerTransferAbilityChoice?.(
+                                            false
+                                        );
+                                    }}
+                                >
+                                    Passer
+                                </S.ActionButton>
+                            </>
+                        )}
+
+                        {toastConfig.type ===
+                            'SITE_FOLLOWER_TRANSFER_DESIGNATION' && (
+                            <S.ActionButton
+                                $variant="secondary"
+                                style={{ marginTop: '12px', width: '100%' }}
+                                onClick={() => {
+                                    stopTargeting();
+                                    moves.resolveSiteFollowerTransferAbilityChoice?.(
+                                        false
+                                    );
+                                }}
+                            >
+                                Passer
+                            </S.ActionButton>
                         )}
 
                         {toastConfig.type === 'SITE_RESPONSE_ABILITY' && (

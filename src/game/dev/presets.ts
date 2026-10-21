@@ -37,19 +37,19 @@ const clonePresetSite = (
 };
 
 /**
- * Vague Doorway / Crossroads / Morannon.
- * 1 filler → 2 Doorway (blessures) → 3 Crossroads (regroup heal) → 4 Morannon (reinforce) → …
+ * Vague Slopes / Isengard Ruined.
+ * 1 filler → 2 Slopes (Ombre −2 crépuscule + défausse 2 FP → pioche) → 3 Ruined (transfert → exert ×2) → …
  */
-const SITES_DOORWAY_CROSSROADS_PATH = [
+const SITES_SLOPES_RUINED_PATH = [
     '11S265', // 1 Window (départ)
-    '18U134', // 2 Doorway to Doom
-    '13S189', // 3 Crossroads of the Fallen Kings
-    '18U137', // 4 Morannon Plains
-    '11S263', // 5 West Gate
-    '11S228', // 6 Anduin Confluence (sanctuaire)
-    '11S241', // 7 Orthanc
-    '18U138', // 8 Sirannon
-    '11S254', // 9 Pelennor Flat
+    '12U192', // 2 Slopes of Orodruin
+    '15U192', // 3 Isengard Ruined
+    '11S263', // 4 West Gate
+    '11S228', // 5 Anduin Confluence
+    '11S241', // 6 Orthanc (sanctuaire)
+    '18U138', // 7 Sirannon
+    '11S254', // 8 Pelennor Flat
+    '11S250', // 9 North Undeep
 ] as const;
 
 const resetBoardForPreset = (G: GameState): void => {
@@ -71,6 +71,7 @@ const resetBoardForPreset = (G: GameState): void => {
     G.pendingSiteMoveAbility = undefined;
     G.pendingSiteStartAbility = undefined;
     G.pendingSitePhaseAbility = undefined;
+    G.pendingSiteFollowerTransfer = undefined;
     G.pendingSiteCharacterWounds = undefined;
     G.sitePhaseAbilityOfferedThisPhase = false;
     G.hunterMinionPlayedThisShadowPhase = false;
@@ -121,72 +122,48 @@ export const applyDevPreset = (
     const shadowPlayer = G.players[shadowId];
 
     switch (presetType) {
-        case 'SITES_DOORWAY_CROSSROADS': {
+        case 'SITES_SLOPES_RUINED': {
             resetBoardForPreset(G);
-            setupDevPath(G, 0, SITES_DOORWAY_CROSSROADS_PATH);
+            setupDevPath(G, 0, SITES_SLOPES_RUINED_PATH);
             G.twilightPool = 4;
             fpPlayer.burdens = 0;
 
-            // 2 cultures blessées (Crossroads) + assez de persos (Doorway ×2).
-            // Morannon : 1 situation FP + 1 Ombre avec jetons (restent après le tour).
+            // Compagnons avec vitalité pour exert ×2 (Ruined).
             fpPlayer.fellowshipArea = [
                 {
-                    ...clonePresetCard('2C102', 'dev-dc-frodo'),
-                    attachments: [clonePresetCard('1R1', 'dev-dc-ring')],
-                    wounds: 1,
+                    ...clonePresetCard('2C102', 'dev-sr-frodo'),
+                    attachments: [clonePresetCard('1R1', 'dev-sr-ring')],
                 },
-                {
-                    ...clonePresetCard('1C306', 'dev-dc-pippin'),
-                    wounds: 1,
-                },
-                {
-                    ...clonePresetCard('1R13', 'dev-dc-gimli'),
-                    wounds: 1,
-                },
-                {
-                    ...clonePresetCard('1R72', 'dev-dc-aragorn'),
-                    wounds: 1,
-                },
+                clonePresetCard('1R72', 'dev-sr-aragorn'),
+                clonePresetCard('1R13', 'dev-sr-gimli'),
             ];
-            // 2 situations à jetons → choix de reinforce Morannon.
+            // Suivant FP → transfert début de manœuvre (Ruined).
             fpPlayer.supportArea = [
-                {
-                    ...clonePresetCard('4R52', 'dev-dc-axe'),
-                    cultureTokens: { DWARVEN: 1 },
-                },
-                {
-                    ...clonePresetCard('4R69', 'dev-dc-final'),
-                    cultureTokens: { ELVEN: 1 },
-                },
+                clonePresetCard('13R46', 'dev-sr-follower'),
             ];
             fpPlayer.hand = [];
-            fpPlayer.deck = [clonePresetCard('1C11', 'dev-dc-draw')];
+            fpPlayer.deck = [clonePresetCard('1C11', 'dev-sr-fp-draw')];
             fpPlayer.sitesDeck = [clonePresetSite('11S250', fpId)];
 
             if (shadowPlayer) {
-                shadowPlayer.hand = [];
-                shadowPlayer.sitesDeck = [clonePresetSite('11S263', shadowId)];
-                // 2 situations Ombre → même choix de reinforce que le FP.
-                shadowPlayer.supportArea = [
-                    {
-                        ...clonePresetCard('11R123', 'dev-dc-hordes'),
-                        cultureTokens: { ORC: 1 },
-                    },
-                    {
-                        ...clonePresetCard('1C133', 'dev-dc-ambition'),
-                        cultureTokens: { ISENGARD: 1 },
-                    },
+                // Slopes : 2 cartes FP en main Ombre + crépuscule + pioche.
+                shadowPlayer.hand = [
+                    clonePresetCard('1C306', 'dev-sr-fp-hand-a'),
+                    clonePresetCard('1C11', 'dev-sr-fp-hand-b'),
+                    clonePresetCard('1C266', 'dev-sr-sh-hand'),
                 ];
-                // ≥2 séides (Doorway) — pas de jetons ici (partent en fin de tour).
+                shadowPlayer.deck = [
+                    clonePresetCard('1C268', 'dev-sr-sh-draw'),
+                ];
+                shadowPlayer.sitesDeck = [clonePresetSite('11S263', shadowId)];
+                shadowPlayer.supportArea = [];
                 G.battlefield = [
-                    clonePresetCard('1C266', 'dev-dc-orc-a'),
-                    clonePresetCard('1C268', 'dev-dc-orc-b'),
-                    clonePresetCard('1C271', 'dev-dc-orc-c'),
+                    clonePresetCard('1C271', 'dev-sr-orc'),
                 ];
             }
 
             G.statusMessage =
-                '[DEV] Doorway / Crossroads / Morannon · site 2 Doorway (blessures) ; regroup site 3 Crossroads (heal / culture) ; site 4 Morannon (reinforce : choisir My Axe / Final Count, puis Goblin Hordes).';
+                '[DEV] Slopes / Ruined · site 2 Slopes (Ombre : −2 crépuscule + défausse 2 cartes FP → pioche) ; site 3 Ruined (transfert suivant → Ombre may exert ×2).';
             break;
         }
     }

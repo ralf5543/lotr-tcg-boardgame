@@ -55,6 +55,7 @@ import {
 import {
     abilityDiscardFromHandCount,
     abilityDiscardFromHandEffect,
+    abilityDiscardFromHandKind,
     abilityNeedsHandDiscard,
     abilityOwnerPlayerId,
 } from '../../game/engine/abilities/payAbilityCost';
@@ -597,11 +598,13 @@ export const GameBoard: React.FC<GameBoardProps> = ({
                           : '0'
                       : fpId;
 
+            const kindFilter = abilityDiscardFromHandKind(ability);
             const collect = (picked: string[]) => {
                 const remaining = need - picked.length;
                 const hand = G.players[ownerId]?.hand || [];
                 const targetableCardIds = hand
                     .filter((card) => {
+                        if (kindFilter && card.kind !== kindFilter) return false;
                         const id = card.instanceId || card.id;
                         return Boolean(id && !picked.includes(id));
                     })
@@ -1346,6 +1349,99 @@ export const GameBoard: React.FC<GameBoardProps> = ({
         [G.responseWindow?.activePlayerId, G.pendingEvent, moves]
     );
 
+    /** Site phase Ombre (Shores / Slopes) : Activer → défausse main si besoin. */
+    const handleResolveSitePhaseAbilityChoice = useCallback(
+        (accept: boolean, discardedHandIds?: string[]) => {
+            if (!accept) {
+                moves.resolveSitePhaseAbilityChoice?.(false);
+                return;
+            }
+            if (discardedHandIds !== undefined) {
+                moves.resolveSitePhaseAbilityChoice?.(true, discardedHandIds);
+                return;
+            }
+            const pending = G.pendingSitePhaseAbility;
+            if (!pending) return;
+            const source = findTargetCard(
+                G,
+                pending.siteInstanceId
+            ) as CardState | null;
+            const ability = source?.abilities?.find(
+                (ab) => ab.id === pending.abilityId
+            );
+            if (
+                source &&
+                ability &&
+                abilityNeedsHandDiscard(ability) &&
+                requestHandDiscard(source, ability, (cardIds) => {
+                    moves.resolveSitePhaseAbilityChoice?.(true, cardIds);
+                })
+            ) {
+                return;
+            }
+            moves.resolveSitePhaseAbilityChoice?.(true);
+        },
+        [G, moves, requestHandDiscard]
+    );
+
+    /** Isengard Ruined : Activer → désigner un compagnon à affaiblir ×2. */
+    const handleResolveSiteFollowerTransferAbilityChoice = useCallback(
+        (accept: boolean, chosenTargetId?: string) => {
+            if (!accept) {
+                stopTargeting();
+                setHoveredCard(null);
+                moves.resolveSiteFollowerTransferAbilityChoice?.(false);
+                return;
+            }
+            if (chosenTargetId !== undefined) {
+                stopTargeting();
+                setHoveredCard(null);
+                moves.resolveSiteFollowerTransferAbilityChoice?.(
+                    true,
+                    chosenTargetId
+                );
+                return;
+            }
+            const pending = G.pendingSiteFollowerTransfer;
+            if (!pending) return;
+            const source = findTargetCard(
+                G,
+                pending.siteInstanceId
+            ) as CardState | null;
+            const ability = source?.abilities?.find(
+                (ab) => ab.id === pending.abilityId
+            );
+            if (
+                source &&
+                ability &&
+                requestDesignation(
+                    source,
+                    ability,
+                    (cardId) => {
+                        stopTargeting();
+                        setHoveredCard(null);
+                        moves.resolveSiteFollowerTransferAbilityChoice?.(
+                            true,
+                            cardId
+                        );
+                    },
+                    undefined,
+                    'effect'
+                )
+            ) {
+                return;
+            }
+            moves.resolveSiteFollowerTransferAbilityChoice?.(true);
+        },
+        [
+            G,
+            moves,
+            requestDesignation,
+            stopTargeting,
+            setHoveredCard,
+        ]
+    );
+
     /** Site « moves to » optionnel : défausse main (Courtyard) / soin par culture avant Activer. */
     const handleResolveSiteMoveAbilityChoice = useCallback(
         (
@@ -1454,18 +1550,32 @@ export const GameBoard: React.FC<GameBoardProps> = ({
         ]
     );
 
-    /** Coupe le halo si le pending site move n’est plus à moi (ou a disparu). */
+    /**
+     * Halo site (Morannon / Crossroads / Ruined) : couper seulement si un
+     * pending site existe pour l’adversaire. Ne pas toucher aux autres
+     * DESIGNATION (sinon Activer Ruined → halo immédiatement tué).
+     */
     useEffect(() => {
-        const pending = G.pendingSiteMoveAbility;
-        const mine =
-            Boolean(pending) &&
-            String(pending!.playerId) === String(myId);
-        if (!mine && targetingKind === 'DESIGNATION') {
+        if (targetingKind !== 'DESIGNATION') return;
+
+        const movePending = G.pendingSiteMoveAbility;
+        const followerPending = G.pendingSiteFollowerTransfer;
+        const moveMine =
+            Boolean(movePending) &&
+            String(movePending!.playerId) === String(myId);
+        const followerMine =
+            Boolean(followerPending) &&
+            String(followerPending!.playerId) === String(myId);
+
+        if (moveMine || followerMine) return;
+
+        if (movePending || followerPending) {
             stopTargeting();
             setHoveredCard(null);
         }
     }, [
         G.pendingSiteMoveAbility,
+        G.pendingSiteFollowerTransfer,
         myId,
         targetingKind,
         stopTargeting,
@@ -2938,6 +3048,10 @@ export const GameBoard: React.FC<GameBoardProps> = ({
                                 handleResolveSiteResponseAbilityChoice,
                             resolveSiteMoveAbilityChoice:
                                 handleResolveSiteMoveAbilityChoice,
+                            resolveSitePhaseAbilityChoice:
+                                handleResolveSitePhaseAbilityChoice,
+                            resolveSiteFollowerTransferAbilityChoice:
+                                handleResolveSiteFollowerTransferAbilityChoice,
                         }}
                     />
 

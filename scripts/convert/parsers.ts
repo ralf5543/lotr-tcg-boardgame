@@ -6676,6 +6676,30 @@ function parseSiteEachTimeAbilities(
         });
     }
 
+    // Isengard Ruined : each time a follower is transferred → Shadow may exert companion ×2.
+    // CSV : typo « transfered » — on accepte les deux orthographes (pas de rustine CSV).
+    const ruinedRe =
+        /Each time a follower is transferr?ed to a character,\s*the first Shadow player may exert a companion twice\./gi;
+    while ((match = ruinedRe.exec(text)) !== null) {
+        found.push({
+            id: `${cardId || 'ability'}:${found.length}:site-follower-transfer`,
+            phases: ['RESPONSE'],
+            optional: true,
+            responsePlayer: 'SHADOW',
+            trigger: { type: 'FOLLOWER_TRANSFERRED' },
+            cost: [],
+            effects: [
+                {
+                    type: 'EXERT',
+                    count: 2,
+                    target: [['COMPANION']],
+                },
+            ],
+            source: 'SELF',
+            text: stripAbilityMarkup(match[0]),
+        });
+    }
+
     return found;
 }
 
@@ -6947,6 +6971,38 @@ function parseSitePhaseAbilities(
                 },
             ],
             effects: [{ type: 'PREVENT_MOVE_AGAIN' }],
+            source: 'SELF',
+            text: stripAbilityMarkup(match[0]),
+        });
+    }
+
+    // Slopes of Orodruin : Shadow: Remove N twilight and discard N FP cards from hand → draw.
+    const slopesDrawRe =
+        /Shadow:?\s*(?:<\/keyword>)?(?:\*\*)?\s*Remove\s+(?:<symbol>twilight(\d+)<\/symbol>|(\d+)\s+twilight)\s+and discard\s+(\d+)\s+Free Peoples cards? from hand to draw a card\.?/gi;
+    while ((match = slopesDrawRe.exec(text)) !== null) {
+        const twilight = parseInt(match[1] || match[2], 10);
+        const discardCount = parseInt(match[3], 10);
+        if (
+            !Number.isFinite(twilight) ||
+            twilight <= 0 ||
+            !Number.isFinite(discardCount) ||
+            discardCount <= 0
+        ) {
+            continue;
+        }
+        found.push({
+            id: `${cardId || 'ability'}:${found.length}:site-phase-slopes`,
+            phases: ['SHADOW'],
+            optional: true,
+            responsePlayer: 'SHADOW',
+            cost: [
+                {
+                    removeTwilight: twilight,
+                    discardFromHand: discardCount,
+                    discardFromHandKind: 'FREE_PEOPLE',
+                },
+            ],
+            effects: [{ type: 'DRAW', count: 1 }],
             source: 'SELF',
             text: stripAbilityMarkup(match[0]),
         });
