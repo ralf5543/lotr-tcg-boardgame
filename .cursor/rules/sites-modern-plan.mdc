@@ -226,9 +226,21 @@ Preset : `SITES_DOORS_PELENNOR`.
 | `11S257` | Rohan Uplands | OK | WHILE : Uruk-hai immunisés archerie (`canCardTakeWound`) |
 | `12U191` | Shores of Nen Hithoel | OK* | *Entorse UX : toaster Ombre dès Spot 5 (1× / phase) — pas de bulles sur les Orques. Voir § Exceptions UX. |
 
-Inertes volontaires : Crossroads ; Angle / Slopes ; Isenwash / Foot ; Dol Guldur ; Falls / Doorway / Morannon ; Isengard Ruined.
+Inertes volontaires alors : Crossroads ; Angle / Slopes ; Isenwash / Foot ; Dol Guldur ; Falls / Doorway / Morannon ; Isengard Ruined.
 
-Preset : `SITES_VALLEY_SHORES`.
+Preset : `SITES_VALLEY_SHORES` (remplacé par `SITES_DOORWAY_CROSSROADS`).
+
+### Vague Doorway / Crossroads / Morannon
+
+| Id | Titre | Statut | Notes |
+| --- | --- | --- | --- |
+| `18U134` | Doorway to Doom | OK | Moves to → chaque joueur assigne 2 blessures (`pendingSiteCharacterWounds`) |
+| `13S189` | Crossroads of the Fallen Kings | OK | Regroup may → heal 1 compagnon / culture (désignation) |
+| `18U137` | Morannon Plains | OK | eachPlayerMay reinforce (toaster FP puis Ombre ; désignation carte) |
+
+Inertes volontaires : Angle / Slopes ; Isenwash / Foot ; Dol Guldur ; Falls ; Isengard Ruined.
+
+Preset : `SITES_DOORWAY_CROSSROADS` (playtest).
 
 ### Exceptions UX (toaster / hors schéma)
 
@@ -246,14 +258,11 @@ En attendant : **entorses UX assumées** plutôt que des bulles absurdes — doc
 | --- | --- | --- |
 | `12U185` | The Angle | phase-ability |
 | `12U192` | Slopes of Orodruin | phase-ability |
-| `13S189` | Crossroads of the Fallen Kings | moves-to |
 | `13U193` | Isenwash | passive-while |
 | `15U192` | Isengard Ruined | each-time |
 | `17U145` | Dol Guldur | phase-ability |
 | `17U146` | Falls of Rauros | moves-to |
-| `18U134` | Doorway to Doom | moves-to |
 | `18U135` | Foot of Mount Doom | passive-while |
-| `18U137` | Morannon Plains | moves-to |
 
 ## Étapes
 
@@ -295,10 +304,12 @@ En attendant : **entorses UX assumées** plutôt que des bulles absurdes — doc
 14. Vague **Doors / Northern Pelennor** ✅ — preset `SITES_DOORS_PELENNOR`
     - OK : Doors (race majoritaire −1 force) ; Northern Pelennor (lurker perd lurker, projection Ombre)
     - Inertes volontaires alors : Crossroads ; Angle / Shores / Slopes ; Isenwash / Foot ; Dol Guldur ; Falls / Doorway / Morannon ; Isengard Ruined
-15. Vague **Valley / Uplands / Shores** — preset `SITES_VALLEY_SHORES` (playtest)
+15. Vague **Valley / Uplands / Shores** ✅ — preset `SITES_VALLEY_SHORES`
     - OK : Valley (heal Hobbits) ; Uplands (`canCardTakeWound`) ; Shores (toaster Spot 5, entorse UX — § Exceptions UX)
-    - Inertes volontaires : Crossroads ; Angle / Slopes ; Isenwash / Foot ; Dol Guldur ; Falls / Doorway / Morannon ; Isengard Ruined
-16. Reste inertes 12–18 (Shadow play / moves may multi / passifs restants)
+16. Vague **Doorway / Crossroads / Morannon** — preset `SITES_DOORWAY_CROSSROADS` (playtest)
+    - OK parse/runtime : Doorway (assignation FP→Ombre) ; Crossroads (regroup heal / culture) ; Morannon (reinforce each player)
+    - Inertes volontaires : Angle / Slopes ; Isenwash / Foot ; Dol Guldur ; Falls ; Isengard Ruined
+17. Reste inertes 12–18 (Shadow play / moves may multi / passifs restants)
 
 ## Hors scope
 

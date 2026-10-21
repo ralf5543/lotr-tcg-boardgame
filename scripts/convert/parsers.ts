@@ -6127,6 +6127,85 @@ function parseSiteMoveAbilities(
         });
     }
 
+    // Doorway to Doom : each player wounds N of his or her characters.
+    const doorwayWoundRe = new RegExp(
+        `When the fellowship moves to ${siteRef}, each player wounds (\\d+|two|three) of (?:his or her|their) characters\\.`,
+        'gi'
+    );
+    while ((match = doorwayWoundRe.exec(text)) !== null) {
+        const raw = match[1].toLowerCase();
+        const count =
+            raw === 'two' ? 2 : raw === 'three' ? 3 : parseInt(raw, 10);
+        if (!Number.isFinite(count) || count <= 0) continue;
+        found.push({
+            id: `${cardId || 'ability'}:${found.length}:site-move-doorway-wound`,
+            phases: [],
+            trigger: { type: 'MOVES_TO' },
+            cost: [],
+            effects: [
+                {
+                    type: 'WOUND',
+                    count,
+                    eachOwner: true,
+                    target: [['CHARACTER']],
+                },
+            ],
+            source: 'SELF',
+            text: stripAbilityMarkup(match[0]),
+        });
+    }
+
+    // Crossroads : regroup → FP may heal a companion of each culture.
+    const crossroadsHealRe = new RegExp(
+        `When the fellowship moves to ${siteRef} during the regroup phase, the Free Peoples player may heal a companion of each culture\\.`,
+        'gi'
+    );
+    while ((match = crossroadsHealRe.exec(text)) !== null) {
+        found.push({
+            id: `${cardId || 'ability'}:${found.length}:site-move-crossroads`,
+            phases: [],
+            optional: true,
+            responsePlayer: 'FREE_PEOPLE',
+            trigger: { type: 'MOVES_TO', duringRegroup: true },
+            cost: [],
+            effects: [
+                {
+                    type: 'HEAL',
+                    count: 1,
+                    onePerCulture: true,
+                    target: [['COMPANION']],
+                },
+            ],
+            source: 'SELF',
+            text: stripAbilityMarkup(match[0]),
+        });
+    }
+
+    // Morannon Plains : each player may reinforce a culture token.
+    const morannonReinforceRe = new RegExp(
+        `When the fellowship moves to ${siteRef}, each player may reinforce a culture token\\.`,
+        'gi'
+    );
+    while ((match = morannonReinforceRe.exec(text)) !== null) {
+        found.push({
+            id: `${cardId || 'ability'}:${found.length}:site-move-morannon`,
+            phases: [],
+            optional: true,
+            eachPlayerMay: true,
+            trigger: { type: 'MOVES_TO' },
+            cost: [],
+            effects: [
+                {
+                    type: 'REINFORCE_CULTURE_TOKEN',
+                    culture: 'ANY',
+                    count: 1,
+                },
+            ],
+            source: 'SELF',
+            text: stripAbilityMarkup(match[0]),
+        });
+    }
+
     // Mithlond : each player heals each of his or her characters.
     const mithlondRe = new RegExp(
         `When the fellowship moves to ${siteRef}, each player heals each of (?:his or her|their) characters\\.`,

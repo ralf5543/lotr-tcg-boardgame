@@ -317,6 +317,13 @@ export function canPlayCard(
         };
     }
 
+    if (context.G.pendingSiteCharacterWounds) {
+        return {
+            valid: false,
+            reason: 'Assignez d’abord les blessures du site.',
+        };
+    }
+
     // 1. Phase et rôle des joueurs
     if (!options?.ignorePhase) {
         const phaseCheck = checkPhases(card, context);

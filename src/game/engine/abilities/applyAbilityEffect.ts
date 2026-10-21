@@ -450,6 +450,37 @@ export function applyAbilityEffect(
             continue;
         }
 
+        if (
+            effect.type === 'HEAL' &&
+            effect.onePerCulture &&
+            Array.isArray(effect.target)
+        ) {
+            if (areHealsForbidden(G)) return false;
+            const matches = resolveCostTarget(G, source, effect.target).filter(
+                (card) => !card.isDead && (card.wounds || 0) > 0
+            );
+            const cultureCount = new Set(
+                matches
+                    .map((card) => card.culture)
+                    .filter((c): c is NonNullable<typeof c> => Boolean(c))
+            ).size;
+            if (cultureCount <= 0) continue;
+            // Désignation obligatoire : exactement 1 compagnon par culture blessée.
+            if (chosenIds.length !== cultureCount) return false;
+            if (new Set(chosenIds).size !== chosenIds.length) return false;
+            const seen = new Set<string>();
+            for (const id of chosenIds) {
+                const card =
+                    matches.find(
+                        (c) => c.instanceId === id || c.id === id
+                    ) || null;
+                if (!card?.culture || seen.has(card.culture)) return false;
+                seen.add(card.culture);
+                applyHeal(G, card, effect.count || 1);
+            }
+            continue;
+        }
+
         if (effect.type === 'LIBERATE_SITE') {
             const ownerId = abilityOwnerPlayerId(G, source);
             if (!ownerId) return false;
@@ -977,7 +1008,9 @@ export function applyAbilityEffect(
         }
 
         if (effect.type === 'REINFORCE_CULTURE_TOKEN') {
-            const ownerId = abilityOwnerPlayerId(G, source);
+            // Site (Morannon) : le joueur qui active, pas le propriétaire du site.
+            const ownerId =
+                actingPlayerId || abilityOwnerPlayerId(G, source);
             if (!ownerId) return false;
             const count = effect.count || 1;
             const candidates = getReinforceCandidates(
@@ -987,7 +1020,17 @@ export function applyAbilityEffect(
             );
             // Aucun candidat : reinforce inerte (CR) — succès sans placer.
             if (candidates.length === 0) continue;
-            // Toujours exiger une désignation (≥ 1 cible).
+            // Une seule cible : pas de désignation obligatoire (toaster site).
+            if (chosenIds.length === 0 && candidates.length === 1) {
+                const placed = applyReinforce(
+                    G,
+                    ownerId,
+                    effect.culture,
+                    count
+                );
+                if (placed < count) return false;
+                continue;
+            }
             if (chosenIds.length === 0) {
                 return false;
             }

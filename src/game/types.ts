@@ -642,6 +642,11 @@ export type AbilityEffect =
           multiCount?: number;
           /** Tous les matchs (site Neekerbreekers…). */
           all?: boolean;
+          /**
+           * Crossroads : soigner un compagnon blessé **par culture**
+           * (désignation : exactement 1 cible par culture présente).
+           */
+          onePerCulture?: boolean;
           /** Résistance effective minimale (inclus). */
           minResistance?: number;
           target: AbilityTargetRef;
@@ -751,6 +756,11 @@ export type AbilityEffect =
           excludeKeywords?: CardKeyword[];
           /** Tous les matchs (Crags of Emyn Muil…). */
           all?: boolean;
+          /**
+           * Doorway to Doom : chaque joueur blesse N de **ses** personnages
+           * (désignation séquentielle FP puis Ombre).
+           */
+          eachOwner?: boolean;
           /**
            * Adversaires d’escarmouche d’un personnage nommé (They Stole It :
            * companion Gollum is skirmishing).
@@ -1039,6 +1049,10 @@ export interface Ability {
     trigger?: AbilityTrigger;
     /** « you may » : choix du joueur (toaster), pas une résolution auto. */
     optional?: boolean;
+    /**
+     * Morannon etc. : chaque joueur peut (toaster FP puis Ombre).
+     */
+    eachPlayerMay?: boolean;
     /**
      * Réponse de site (« the Free Peoples player may… ») : qui peut l’activer.
      * Défaut si omis sur un site = FREE_PEOPLE.
@@ -1427,6 +1441,16 @@ export interface GameState {
     /** Toaster site phase déjà tranché (Activer ou Passer) ce tour d’Ombre. */
     sitePhaseAbilityOfferedThisPhase?: boolean;
     /**
+     * Doorway to Doom : chaque joueur assigne N blessures à ses personnages.
+     */
+    pendingSiteCharacterWounds?: {
+        playerId: string;
+        remaining: number;
+        /** Joueurs suivants (après le courant). */
+        queue: string[];
+        pendingPhaseAfter?: string;
+    };
+    /**
      * Choix forcé (contrainte Porteur alternatif en début d’escarmouche…).
      * Bloque la fenêtre d’actions jusqu’à résolution.
      */
@@ -1518,7 +1542,7 @@ export interface ArcheryState {
     shadowRemainingWounds: number;
 }
 
-export type DevPresetType = 'SITES_VALLEY_SHORES';
+export type DevPresetType = 'SITES_DOORWAY_CROSSROADS';
 
 export interface TempKeywordModifier {
     keyword: CardKeyword;

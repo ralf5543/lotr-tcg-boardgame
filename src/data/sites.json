@@ -8942,6 +8942,33 @@
     "keywords": [
       "FOREST"
     ],
+    "abilities": [
+      {
+        "id": "13S189:0:site-move",
+        "phases": [],
+        "optional": true,
+        "responsePlayer": "FREE_PEOPLE",
+        "trigger": {
+          "type": "MOVES_TO",
+          "duringRegroup": true
+        },
+        "cost": [],
+        "effects": [
+          {
+            "type": "HEAL",
+            "count": 1,
+            "onePerCulture": true,
+            "target": [
+              [
+                "COMPANION"
+              ]
+            ]
+          }
+        ],
+        "source": "SELF",
+        "text": "When the fellowship moves to this site during the regroup phase, the Free Peoples player may heal a companion of each culture."
+      }
+    ],
     "twilightCost": 3,
     "siteArrow": "Right",
     "imageUrl": "/cards_visuals/o_13_189.jpg",
@@ -9894,6 +9921,30 @@
     "keywords": [
       "MOUNTAIN"
     ],
+    "abilities": [
+      {
+        "id": "18U134:0:site-move",
+        "phases": [],
+        "trigger": {
+          "type": "MOVES_TO"
+        },
+        "cost": [],
+        "effects": [
+          {
+            "type": "WOUND",
+            "count": 2,
+            "eachOwner": true,
+            "target": [
+              [
+                "CHARACTER"
+              ]
+            ]
+          }
+        ],
+        "source": "SELF",
+        "text": "When the fellowship moves to this site, each player wounds two of his or her characters."
+      }
+    ],
     "twilightCost": 1,
     "imageUrl": "/cards_visuals/o_18_134.jpg",
     "i18n": {
@@ -10023,6 +10074,27 @@
     "keywords": [
       "BATTLEGROUND",
       "PLAINS"
+    ],
+    "abilities": [
+      {
+        "id": "18U137:0:site-move",
+        "phases": [],
+        "optional": true,
+        "eachPlayerMay": true,
+        "trigger": {
+          "type": "MOVES_TO"
+        },
+        "cost": [],
+        "effects": [
+          {
+            "type": "REINFORCE_CULTURE_TOKEN",
+            "culture": "ANY",
+            "count": 1
+          }
+        ],
+        "source": "SELF",
+        "text": "When the fellowship moves to this site, each player may reinforce a culture token."
+      }
     ],
     "twilightCost": 1,
     "imageUrl": "/cards_visuals/o_18_137.jpg",

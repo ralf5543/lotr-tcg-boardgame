@@ -4,6 +4,7 @@ import { resolveSiteMoveAbilities } from '../engine/abilities/siteMove';
 import { tryOpenFellowshipMoves } from '../engine/responseWindow';
 import { enterPhase } from '../logic/phaseEntry';
 import { beginOptionalSiteMoveAbility } from '../logic/siteMoveAbility';
+import { beginSiteMoveCharacterWoundsIfNeeded } from '../logic/siteMoveCharacterWounds';
 import { enforceWhileSelfDiscards } from '../engine/abilities/enforceWhileDiscard';
 
 /** Après un déplacement réel : réponses « each time the fellowship moves ». */
@@ -215,18 +216,26 @@ export const playSite = (
     G.statusMessage = `Nouveau site révélé ! La compagnie avance en ${playedSite.name} (+${addedTwilight} Crépuscule → ${G.twilightPool}). Révélation des compagnons.`;
 
     if (ctx.phase === 'fellowship') {
-        // Site « may » hors regroupement (Courtyard Parapet…) : toaster d’abord.
-        if (beginOptionalSiteMoveAbility(G, enterPhase('shadow'))) {
+        const next = enterPhase('shadow');
+        if (beginSiteMoveCharacterWoundsIfNeeded(G, next)) {
             return;
         }
-        afterFellowshipArrived(G, events, enterPhase('shadow'));
+        // Site « may » hors regroupement (Courtyard / Morannon…) : toaster d’abord.
+        if (beginOptionalSiteMoveAbility(G, next)) {
+            return;
+        }
+        afterFellowshipArrived(G, events, next);
     } else if (ctx.phase === 'regroup') {
         G.skirmishes = [];
         G.activeSkirmishId = undefined;
-        if (beginOptionalSiteMoveAbility(G, enterPhase('shadow'))) {
+        const next = enterPhase('shadow');
+        if (beginSiteMoveCharacterWoundsIfNeeded(G, next)) {
             return;
         }
-        afterFellowshipArrived(G, events, enterPhase('shadow'));
+        if (beginOptionalSiteMoveAbility(G, next)) {
+            return;
+        }
+        afterFellowshipArrived(G, events, next);
     }
 };
 
@@ -239,7 +248,12 @@ export const endFellowshipPhase = ({
     if ((G.threatWoundsToAssign ?? 0) > 0) {
         return 'INVALID_MOVE';
     }
-    if (G.responseWindow?.isOpen || G.pendingEvent || G.pendingSiteMoveAbility) {
+    if (
+        G.responseWindow?.isOpen ||
+        G.pendingEvent ||
+        G.pendingSiteMoveAbility ||
+        G.pendingSiteCharacterWounds
+    ) {
         return 'INVALID_MOVE';
     }
     const fpId = G.fpPlayerId || '0';
@@ -254,10 +268,14 @@ export const endFellowshipPhase = ({
     advanceCompany(G);
 
     if (!G.awaitingSiteSelection) {
-        if (beginOptionalSiteMoveAbility(G, enterPhase('shadow'))) {
+        const next = enterPhase('shadow');
+        if (beginSiteMoveCharacterWoundsIfNeeded(G, next)) {
             return;
         }
-        afterFellowshipArrived(G, events, enterPhase('shadow'));
+        if (beginOptionalSiteMoveAbility(G, next)) {
+            return;
+        }
+        afterFellowshipArrived(G, events, next);
     }
 };
 

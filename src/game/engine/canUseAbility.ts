@@ -94,6 +94,13 @@ export function canUseAbility(
         };
     }
 
+    if (G.pendingSiteCharacterWounds) {
+        return {
+            valid: false,
+            reason: 'Assignez d’abord les blessures du site.',
+        };
+    }
+
     if (isResponseWindowOpen(G)) {
         if (!canActInActionWindow(G, pid)) {
             return {

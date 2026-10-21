@@ -53,6 +53,7 @@ import {
     beginOptionalSitePhaseAbility,
     resolvePendingSitePhaseAbility,
 } from '../logic/sitePhaseAbility';
+import { assignSiteCharacterWound } from '../logic/siteMoveCharacterWounds';
 import {
     openSkirmishActionWindow,
     resolveForcedChoice,
@@ -592,7 +593,8 @@ export const resolveSiteStartAbilityChoice = (
 export const resolveSiteMoveAbilityChoice = (
     { G, events, playerID }: LotrMoveContext,
     accept: boolean,
-    discardedHandIds?: string[]
+    discardedHandIds?: string[],
+    chosenEffectTargetIds?: string[]
 ) => {
     if (
         !G.pendingSiteMoveAbility ||
@@ -606,7 +608,8 @@ export const resolveSiteMoveAbilityChoice = (
             String(playerID),
             accept,
             events,
-            discardedHandIds
+            discardedHandIds,
+            chosenEffectTargetIds
         )
     ) {
         return 'INVALID_MOVE';
@@ -625,6 +628,23 @@ export const resolveSitePhaseAbilityChoice = (
         return 'INVALID_MOVE';
     }
     if (!resolvePendingSitePhaseAbility(G, String(playerID), accept)) {
+        return 'INVALID_MOVE';
+    }
+};
+
+/** Doorway to Doom : assigner une blessure à un de ses personnages. */
+export const assignSiteCharacterWoundMove = (
+    { G, events, playerID }: LotrMoveContext,
+    targetCardId: string
+) => {
+    if (
+        !assignSiteCharacterWound(
+            G,
+            String(playerID),
+            targetCardId,
+            events
+        )
+    ) {
         return 'INVALID_MOVE';
     }
 };
@@ -921,6 +941,7 @@ export const commonMoves = {
     resolveSiteStartAbilityChoice,
     resolveSiteMoveAbilityChoice,
     resolveSitePhaseAbilityChoice,
+    assignSiteCharacterWound: assignSiteCharacterWoundMove,
     resolveForcedChoiceMove,
     confirmPendingRevealMove,
     ...(process.env.NODE_ENV !== 'production' ? devMoves : {}),

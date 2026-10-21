@@ -23,6 +23,7 @@ import { openAssignmentActionWindow } from './logic/assignment';
 import { advanceCompany } from './moves/fellowshipMoves';
 import { tryOpenFellowshipMoves } from './engine/responseWindow';
 import { beginOptionalSiteMoveAbility } from './logic/siteMoveAbility';
+import { beginSiteMoveCharacterWoundsIfNeeded } from './logic/siteMoveCharacterWounds';
 import { beginOptionalSitePhaseAbility } from './logic/sitePhaseAbility';
 import { devMoves } from './dev/devMoves';
 import { drawCardsForPlayer } from '../utils/drawCards';
@@ -1284,7 +1285,8 @@ export const LotrGame: Game<GameState> = {
                         (G.movesThisTurn || 0) >= 2 ||
                         G.preventMoveAgain ||
                         G.regroupStep !== 'FP_DECISION' ||
-                        G.pendingSiteMoveAbility
+                        G.pendingSiteMoveAbility ||
+                        G.pendingSiteCharacterWounds
                     ) {
                         return 'INVALID_MOVE';
                     }
@@ -1295,6 +1297,14 @@ export const LotrGame: Game<GameState> = {
                     if (!G.awaitingSiteSelection) {
                         G.skirmishes = [];
                         G.activeSkirmishId = undefined;
+                        if (
+                            beginSiteMoveCharacterWoundsIfNeeded(
+                                G,
+                                'startOfShadow'
+                            )
+                        ) {
+                            return;
+                        }
                         // Site d’arrivée « may » (City of Kings…) : toaster avant la suite.
                         if (beginOptionalSiteMoveAbility(G, 'startOfShadow')) {
                             return;

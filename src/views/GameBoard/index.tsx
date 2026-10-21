@@ -110,6 +110,7 @@ import {
 import { TargetingArrowSyncProvider, useTargetingArrowSync } from './components/TargetingArrow/TargetingArrowSync';
 import { PENDING_PLAY_ORIGIN_ID } from './components/TargetingArrow/sync';
 import { getThreatLimit } from '../../game/logic/threats';
+import { livingSiteWoundTargets } from '../../game/logic/siteMoveCharacterWounds';
 import {
     freePeoplesHasInitiative,
     playerHasInitiative,
@@ -154,6 +155,7 @@ export interface GameBoardProps extends BoardProps<GameState> {
             ) => void;
             assignArcheryWound?: (cardId: string) => void;
             assignThreatWound?: (cardId: string) => void;
+            assignSiteCharacterWound?: (cardId: string) => void;
         };
 }
 
@@ -277,6 +279,7 @@ export const GameBoard: React.FC<GameBoardProps> = ({
         discardedHandIds: targetingDiscardedHandIds,
         isCardTargetable,
     } = useTargeting();
+    const { hoveredData, setHoveredCard } = useHoverCard();
 
     /**
      * Après « Activer l’effet » du toaster site début de phase : masquer
@@ -305,7 +308,12 @@ export const GameBoard: React.FC<GameBoardProps> = ({
                           myId
                       )
                     : which === 'effect'
-                      ? getEffectDesignationCandidates(G, source, ability)
+                      ? getEffectDesignationCandidates(
+                            G,
+                            source,
+                            ability,
+                            myId
+                        )
                       : getDesignationCandidates(G, source, ability);
             if (candidates.length === 0) return false;
             const prompt = formatDesignationPrompt(ability, which);
@@ -659,11 +667,34 @@ export const GameBoard: React.FC<GameBoardProps> = ({
             );
             if (allCandidates.length < need) return false;
 
+            const onePerCulture = (ability.effects || []).some(
+                (effect) => effect.type === 'HEAL' && effect.onePerCulture
+            );
+
             const collect = (picked: string[]) => {
+                const pickedCultures = new Set(
+                    picked
+                        .map((id) => {
+                            const card = allCandidates.find(
+                                (item) =>
+                                    item.instanceId === id || item.id === id
+                            );
+                            return card?.culture;
+                        })
+                        .filter((c): c is NonNullable<typeof c> => Boolean(c))
+                );
                 const targetableCardIds = allCandidates
                     .filter((card) => {
                         const id = card.instanceId || card.id;
-                        return Boolean(id && !picked.includes(id));
+                        if (!id || picked.includes(id)) return false;
+                        if (
+                            onePerCulture &&
+                            card.culture &&
+                            pickedCultures.has(card.culture)
+                        ) {
+                            return false;
+                        }
+                        return true;
                     })
                     .flatMap((card) => cardTargetIds(card));
                 const remaining = need - picked.length;
@@ -671,10 +702,13 @@ export const GameBoard: React.FC<GameBoardProps> = ({
                     kind: 'DESIGNATION',
                     targetableCardIds,
                     selectedCardIds: picked,
-                    message:
-                        picked.length === 0
-                            ? `Choisissez ${need} compagnon${need > 1 ? 's' : ''} à soigner.`
-                            : `Encore ${remaining} compagnon${remaining > 1 ? 's' : ''} (${picked.length}/${need}).`,
+                    message: onePerCulture
+                        ? picked.length === 0
+                            ? `Choisissez un compagnon blessé de chaque culture (${need}).`
+                            : `Encore ${remaining} culture${remaining > 1 ? 's' : ''} (${picked.length}/${need}).`
+                        : picked.length === 0
+                          ? `Choisissez ${need} compagnon${need > 1 ? 's' : ''} à soigner.`
+                          : `Encore ${remaining} compagnon${remaining > 1 ? 's' : ''} (${picked.length}/${need}).`,
                     onSelectTarget: (cardId) => {
                         const card = allCandidates.find(
                             (item) =>
@@ -683,6 +717,13 @@ export const GameBoard: React.FC<GameBoardProps> = ({
                         const canonical =
                             card?.instanceId || card?.id || cardId;
                         if (picked.includes(canonical)) return;
+                        if (
+                            onePerCulture &&
+                            card?.culture &&
+                            pickedCultures.has(card.culture)
+                        ) {
+                            return;
+                        }
                         const next = [...picked, canonical];
                         if (next.length >= need) {
                             stopTargeting();
@@ -1305,11 +1346,23 @@ export const GameBoard: React.FC<GameBoardProps> = ({
         [G.responseWindow?.activePlayerId, G.pendingEvent, moves]
     );
 
-    /** Site « moves to » optionnel : défausse main (Courtyard) avant d’envoyer Activer. */
+    /** Site « moves to » optionnel : défausse main (Courtyard) / soin par culture avant Activer. */
     const handleResolveSiteMoveAbilityChoice = useCallback(
-        (accept: boolean, discardedHandIds?: string[]) => {
+        (
+            accept: boolean,
+            discardedHandIds?: string[],
+            chosenEffectTargetIds?: string[]
+        ) => {
             if (!accept) {
                 moves.resolveSiteMoveAbilityChoice?.(false);
+                return;
+            }
+            if (chosenEffectTargetIds !== undefined) {
+                moves.resolveSiteMoveAbilityChoice?.(
+                    true,
+                    discardedHandIds,
+                    chosenEffectTargetIds
+                );
                 return;
             }
             if (discardedHandIds !== undefined) {
@@ -1335,10 +1388,89 @@ export const GameBoard: React.FC<GameBoardProps> = ({
             ) {
                 return;
             }
+            if (source && ability) {
+                // Crossroads : Activer → désigner 1 compagnon blessé / culture.
+                const onePerCulture = (ability.effects || []).some(
+                    (effect) =>
+                        effect.type === 'HEAL' && effect.onePerCulture
+                );
+                if (onePerCulture) {
+                    const need = getEffectDesignationCount(G, source, ability);
+                    if (
+                        need >= 1 &&
+                        requestMultiEffectDesignation(
+                            source,
+                            ability,
+                            need,
+                            (effectIds) => {
+                                moves.resolveSiteMoveAbilityChoice?.(
+                                    true,
+                                    undefined,
+                                    effectIds
+                                );
+                            }
+                        )
+                    ) {
+                        return;
+                    }
+                }
+                // Morannon : Activer → halo sur carte à renforcer (jeton).
+                const reinforce = (ability.effects || []).some(
+                    (effect) => effect.type === 'REINFORCE_CULTURE_TOKEN'
+                );
+                if (
+                    reinforce &&
+                    requestDesignation(
+                        source,
+                        ability,
+                        (cardId) => {
+                            // requestDesignation ne stoppe pas (chaînage possible) ;
+                            // ici la désignation est terminale → couper le halo.
+                            stopTargeting();
+                            setHoveredCard(null);
+                            moves.resolveSiteMoveAbilityChoice?.(
+                                true,
+                                undefined,
+                                [cardId]
+                            );
+                        },
+                        undefined,
+                        'effect'
+                    )
+                ) {
+                    return;
+                }
+            }
             moves.resolveSiteMoveAbilityChoice?.(true);
         },
-        [G, moves, requestHandDiscard]
+        [
+            G,
+            moves,
+            requestHandDiscard,
+            requestMultiEffectDesignation,
+            requestDesignation,
+            stopTargeting,
+            setHoveredCard,
+        ]
     );
+
+    /** Coupe le halo si le pending site move n’est plus à moi (ou a disparu). */
+    useEffect(() => {
+        const pending = G.pendingSiteMoveAbility;
+        const mine =
+            Boolean(pending) &&
+            String(pending!.playerId) === String(myId);
+        if (!mine && targetingKind === 'DESIGNATION') {
+            stopTargeting();
+            setHoveredCard(null);
+        }
+    }, [
+        G.pendingSiteMoveAbility,
+        myId,
+        targetingKind,
+        stopTargeting,
+        setHoveredCard,
+    ]);
 
     const handleResolveWhenPlayedChoice = useCallback(
         (accept: boolean, discardedHandIds?: string[]) => {
@@ -1740,7 +1872,6 @@ export const GameBoard: React.FC<GameBoardProps> = ({
         opponent.discard,
     ]);
 
-    const { hoveredData } = useHoverCard();
     const currentSiteIndex = G.players['0']?.currentSiteIndex ?? 0;
 
     // 🟢 1. GESTION GLOBALE DE LA TEMPORISATION DE FIN DE PHASE
@@ -2532,6 +2663,71 @@ export const GameBoard: React.FC<GameBoardProps> = ({
         G.players,
         G.responseWindow,
         G.pendingEvent,
+        moves,
+        startTargeting,
+        stopTargeting,
+        targetingKind,
+    ]);
+
+    // 🟢 4c. Doorway to Doom — blessures site (FP puis Ombre)
+    useEffect(() => {
+        if (
+            targetingKind === 'DESIGNATION' ||
+            targetingKind === 'HAND_DISCARD' ||
+            targetingKind === 'HAND_PICK' ||
+            targetingKind === 'SANCTUARY_HEAL' ||
+            G.sanctuaryHeal ||
+            (G.threatWoundsToAssign ?? 0) > 0
+        ) {
+            return;
+        }
+
+        const pending = G.pendingSiteCharacterWounds;
+        if (
+            !pending ||
+            pending.remaining <= 0 ||
+            G.responseWindow?.isOpen ||
+            G.pendingEvent
+        ) {
+            if (targetingKind === 'SITE_CHARACTER_WOUND') stopTargeting();
+            return;
+        }
+
+        // Seul le joueur assignant voit les halos (l’autre attend).
+        if (String(playerID) !== String(pending.playerId)) {
+            if (targetingKind === 'SITE_CHARACTER_WOUND') stopTargeting();
+            return;
+        }
+
+        const validTargets = livingSiteWoundTargets(G, pending.playerId).flatMap(
+            (c) =>
+                [c.instanceId, c.id].filter(
+                    (id, index, ids): id is string =>
+                        Boolean(id) && ids.indexOf(id) === index
+                )
+        );
+
+        startTargeting({
+            kind: 'SITE_CHARACTER_WOUND',
+            targetableCardIds: validTargets,
+            message:
+                pending.remaining === 1
+                    ? 'Site : cliquez sur un de vos personnages pour lui assigner 1 blessure.'
+                    : `Site : cliquez sur un de vos personnages (${pending.remaining} blessures restantes).`,
+            onSelectTarget: (cardId) => {
+                moves.assignSiteCharacterWound?.(cardId);
+            },
+        });
+    }, [
+        G.pendingSiteCharacterWounds,
+        G.threatWoundsToAssign,
+        G.sanctuaryHeal,
+        G.responseWindow,
+        G.pendingEvent,
+        G.players,
+        G.battlefield,
+        G.fpPlayerId,
+        playerID,
         moves,
         startTargeting,
         stopTargeting,

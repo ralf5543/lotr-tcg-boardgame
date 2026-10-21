@@ -370,7 +370,9 @@ export function getCostDesignationCandidates(
 export function getEffectDesignationCandidates(
     G: GameState,
     source: CardState,
-    ability: Ability
+    ability: Ability,
+    /** Joueur qui active (Morannon : owner du site ≠ joueur qui reinforce). */
+    actingPlayerId?: string
 ): CardState[] {
     // Effet porté par la cible du coût : pas de 2ᵉ désignation.
     const targeted = (ability.effects || []).filter(
@@ -399,7 +401,8 @@ export function getEffectDesignationCandidates(
         (item) => item.type === 'REINFORCE_CULTURE_TOKEN'
     );
     if (reinforce && reinforce.type === 'REINFORCE_CULTURE_TOKEN') {
-        const ownerId = abilityOwnerPlayerId(G, source);
+        const ownerId =
+            actingPlayerId || abilityOwnerPlayerId(G, source);
         if (!ownerId) return [];
         const matches = getReinforceCandidates(
             G,
@@ -532,7 +535,8 @@ export function getEffectDesignationCandidates(
         return opponents.filter((c) => canCardTakeWound(G, c));
     }
 
-    // DISCARD_ALL / EXERT all (et masses) : pas de désignation — on applique tout d’un coup.
+    // DISCARD_ALL / EXERT all / HEAL all : pas de désignation — on applique tout d’un coup.
+    // HEAL onePerCulture : désignation (1 compagnon blessé par culture).
     const effect = (ability.effects || []).find(
         (item) =>
             item.type !== 'DISCARD_ALL' &&
@@ -540,6 +544,7 @@ export function getEffectDesignationCandidates(
             item.type !== 'TAKE_FROM_DISCARD' &&
             item.type !== 'REVEAL_OPPONENT_TOP' &&
             !(item.type === 'EXERT' && item.all) &&
+            !(item.type === 'HEAL' && item.all && !item.onePerCulture) &&
             'target' in item &&
             (Array.isArray(item.target) || item.target === 'SKIRMISHING')
     );
@@ -612,6 +617,23 @@ export function getEffectDesignationCount(
     source: CardState,
     ability: Ability
 ): number {
+    const onePerCulture = (ability.effects || []).find(
+        (item) => item.type === 'HEAL' && item.onePerCulture
+    );
+    if (onePerCulture && onePerCulture.type === 'HEAL') {
+        const available = candidatesForEffect(
+            G,
+            source,
+            ability,
+            onePerCulture
+        );
+        const cultures = new Set(
+            available
+                .map((card) => card.culture)
+                .filter((c): c is NonNullable<typeof c> => Boolean(c))
+        );
+        return cultures.size;
+    }
     const heal = (ability.effects || []).find(
         (item) =>
             item.type === 'HEAL' &&
@@ -885,12 +907,16 @@ export function abilityHasLegalEffectTarget(
         }
         if (
             effect.type === 'HEAL' &&
-            (effect.multiFromSpot ||
+            (effect.onePerCulture ||
+                effect.multiFromSpot ||
                 (typeof effect.multiCount === 'number' && effect.multiCount > 1))
         ) {
             if (candidatesForEffect(G, source, ability, effect).length < 1) {
                 return false;
             }
+            continue;
+        }
+        if (effect.type === 'HEAL' && effect.all) {
             continue;
         }
         if (!('target' in effect)) continue;
@@ -1071,10 +1097,19 @@ export function formatDesignationPrompt(
         return `Choisissez un compagnon au sceau ${label}.`;
     }
     const healMulti = (ability.effects || []).some(
-        (item) => item.type === 'HEAL' && item.multiFromSpot
+        (item) =>
+            item.type === 'HEAL' &&
+            (item.multiFromSpot ||
+                item.onePerCulture ||
+                (typeof item.multiCount === 'number' && item.multiCount > 1))
     );
     if (healMulti && useEffect) {
-        return 'Choisissez les compagnons à soigner.';
+        const onePer = (ability.effects || []).some(
+            (item) => item.type === 'HEAL' && item.onePerCulture
+        );
+        return onePer
+            ? 'Choisissez un compagnon blessé de chaque culture.'
+            : 'Choisissez les compagnons à soigner.';
     }
     return `Choisissez ${formatAbilityWhoLabel(tokens, true)}.`;
 }

@@ -4,6 +4,8 @@ import type { CardState } from '../game/types';
 type TargetingKind =
     | 'ARCHERY'
     | 'THREAT_WOUND'
+    /** Doorway to Doom : chaque joueur assigne N blessures à ses personnages. */
+    | 'SITE_CHARACTER_WOUND'
     | 'SKIRMISH_SELECT'
     | 'DESIGNATION'
     | 'HAND_DISCARD'

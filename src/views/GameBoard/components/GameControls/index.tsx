@@ -68,6 +68,7 @@ export const GameControls: React.FC<GameControlsProps> = ({
         onConfirm: targetingOnConfirm,
         confirmLabel: targetingConfirmLabel,
         requestConfirm,
+        stopTargeting,
     } = useTargeting();
 
     if (!G || !ctx) return null;
@@ -159,6 +160,8 @@ export const GameControls: React.FC<GameControlsProps> = ({
           ? G.responseWindow!.activePlayerId
           : isForcedChoiceActive
             ? G.pendingForcedChoice!.playerId
+          : G.pendingSiteCharacterWounds
+            ? G.pendingSiteCharacterWounds.playerId
           : isSiteStartAbilityActive
             ? G.pendingSiteStartAbility!.playerId
           : isSiteMoveAbilityActive
@@ -181,9 +184,11 @@ export const GameControls: React.FC<GameControlsProps> = ({
 
     // 🟢 2. ÉTAPE DE REGROUPEMENT SPÉCIFIQUE
     const threatWoundsPending = (G.threatWoundsToAssign ?? 0) > 0;
+    const siteCharacterWoundsPending = Boolean(G.pendingSiteCharacterWounds);
 
     const isRegroupDecision =
         !threatWoundsPending &&
+        !siteCharacterWoundsPending &&
         !isSiteMoveAbilityActive &&
         !isActionWindowActive &&
         !isResponseWindowActive &&
@@ -193,6 +198,7 @@ export const GameControls: React.FC<GameControlsProps> = ({
 
     const isShadowRefill =
         !threatWoundsPending &&
+        !siteCharacterWoundsPending &&
         !isActionWindowActive &&
         !isResponseWindowActive &&
         ctx.phase === 'regroup' &&
@@ -201,6 +207,7 @@ export const GameControls: React.FC<GameControlsProps> = ({
 
     const isFpRefill =
         !threatWoundsPending &&
+        !siteCharacterWoundsPending &&
         !isActionWindowActive &&
         !isResponseWindowActive &&
         ctx.phase === 'regroup' &&
@@ -210,6 +217,7 @@ export const GameControls: React.FC<GameControlsProps> = ({
     // 🟢 3. AUTRES ACTIONS STANDARD DE PHASE
     const isFellowshipAction =
         !threatWoundsPending &&
+        !siteCharacterWoundsPending &&
         !isActionWindowActive &&
         !isResponseWindowActive &&
         !isAwaitingSiteActive &&
@@ -218,6 +226,7 @@ export const GameControls: React.FC<GameControlsProps> = ({
 
     const isShadowAction =
         !threatWoundsPending &&
+        !siteCharacterWoundsPending &&
         !isSitePhaseAbilityActive &&
         !isActionWindowActive &&
         !isResponseWindowActive &&
@@ -239,6 +248,8 @@ export const GameControls: React.FC<GameControlsProps> = ({
             | 'START_OF_PHASE'
             | 'SITE_START_ABILITY'
             | 'SITE_MOVE_ABILITY'
+            /** Après Activer : désignation (reinforce / heal…) — Passer = refuser l’effet. */
+            | 'SITE_MOVE_DESIGNATION'
             | 'SITE_PHASE_ABILITY'
             | 'SITE_RESPONSE_ABILITY'
             | 'ASSIGNMENT_YIELD'
@@ -370,7 +381,7 @@ export const GameControls: React.FC<GameControlsProps> = ({
                 ? 'STANDARD'
                 : 'SITE_START_ABILITY',
         };
-    } else if (isSiteMoveAbilityActive && isMyTurnToAct) {
+    } else if (isSiteMoveAbilityActive && isMyTurnToAct && !isTargetingActive) {
         const siteSource = G.pendingSiteMoveAbility
             ? (findTargetCard(
                   G,
@@ -392,6 +403,14 @@ export const GameControls: React.FC<GameControlsProps> = ({
             ),
             showPassButton: false,
             type: 'SITE_MOVE_ABILITY',
+        };
+    } else if (isSiteMoveAbilityActive && !isMyTurnToAct) {
+        toastConfig = {
+            show: true,
+            title: 'EFFET DU SITE',
+            body: 'L’adversaire décide d’utiliser l’effet du site…',
+            showPassButton: false,
+            type: 'STANDARD',
         };
     } else if (isSitePhaseAbilityActive && isMyTurnToAct) {
         const siteSource = G.pendingSitePhaseAbility
@@ -520,6 +539,18 @@ export const GameControls: React.FC<GameControlsProps> = ({
             showPassButton: false,
             type: 'STANDARD',
         };
+    } else if (G.pendingSiteCharacterWounds) {
+        const pending = G.pendingSiteCharacterWounds;
+        const isAssigner = String(currentPlayerId) === String(pending.playerId);
+        toastConfig = {
+            show: true,
+            title: 'BLESSURES DU SITE',
+            body: isAssigner
+                ? `Assignez ${pending.remaining} blessure(s) à vos personnages.`
+                : 'L’adversaire assigne les blessures du site…',
+            showPassButton: false,
+            type: 'STANDARD',
+        };
     } else if (isActionWindowActive && isMyTurnToAct) {
         toastConfig = {
             show: true,
@@ -597,7 +628,22 @@ export const GameControls: React.FC<GameControlsProps> = ({
                   };
     }
 
+    // Désignation après Activer (Morannon reinforce, Crossroads heal…) :
+    // même famille de toaster que Activer/Passer, pas un « CHOIX DE CIBLE » à part.
     if (
+        isSiteMoveAbilityActive &&
+        isMyTurnToAct &&
+        isTargetingActive &&
+        targetingKind === 'DESIGNATION'
+    ) {
+        toastConfig = {
+            show: true,
+            title: 'EFFET DU SITE',
+            body: targetingMessage || 'Choisissez une cible.',
+            showPassButton: false,
+            type: 'SITE_MOVE_DESIGNATION',
+        };
+    } else if (
         isTargetingActive &&
         (targetingKind === 'DESIGNATION' ||
             targetingKind === 'HAND_DISCARD' ||
@@ -704,11 +750,19 @@ export const GameControls: React.FC<GameControlsProps> = ({
                 : 'Les Peuples Libres assignent les blessures des menaces...';
         }
 
+        if (G.pendingSiteCharacterWounds) {
+            const pending = G.pendingSiteCharacterWounds;
+            return String(currentPlayerId) === String(pending.playerId)
+                ? `Assignez ${pending.remaining} blessure(s) du site à vos personnages.`
+                : 'L’adversaire assigne les blessures du site…';
+        }
+
         if (
             isTargetingActive &&
             (targetingKind === 'DESIGNATION' ||
                 targetingKind === 'HAND_DISCARD' ||
-                targetingKind === 'SANCTUARY_HEAL')
+                targetingKind === 'SANCTUARY_HEAL' ||
+                targetingKind === 'SITE_CHARACTER_WOUND')
         ) {
             return (
                 targetingMessage ||
@@ -723,6 +777,16 @@ export const GameControls: React.FC<GameControlsProps> = ({
         }
 
         if (isSiteMoveAbilityActive) {
+            if (
+                isMyTurnToAct &&
+                isTargetingActive &&
+                targetingKind === 'DESIGNATION'
+            ) {
+                return (
+                    targetingMessage ||
+                    'Cliquez sur une carte pour appliquer l’effet du site.'
+                );
+            }
             return isMyTurnToAct
                 ? 'Vous pouvez utiliser l’effet du site d’arrivée.'
                 : 'L’adversaire décide d’utiliser l’effet du site…';
@@ -850,6 +914,7 @@ export const GameControls: React.FC<GameControlsProps> = ({
             Boolean(G.pendingPlay) ||
             Boolean(G.sanctuaryHeal) ||
             (G.threatWoundsToAssign ?? 0) > 0 ||
+            Boolean(G.pendingSiteCharacterWounds) ||
             ctx.phase === 'archery' ||
             ctx.phase === 'assignment' ||
             isTargetingActive);
@@ -1188,6 +1253,19 @@ export const GameControls: React.FC<GameControlsProps> = ({
                                     Passer
                                 </S.ActionButton>
                             </>
+                        )}
+
+                        {toastConfig.type === 'SITE_MOVE_DESIGNATION' && (
+                            <S.ActionButton
+                                $variant="secondary"
+                                style={{ marginTop: '12px', width: '100%' }}
+                                onClick={() => {
+                                    stopTargeting();
+                                    moves.resolveSiteMoveAbilityChoice?.(false);
+                                }}
+                            >
+                                Passer
+                            </S.ActionButton>
                         )}
 
                         {toastConfig.type === 'SITE_PHASE_ABILITY' && (

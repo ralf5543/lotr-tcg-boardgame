@@ -8,9 +8,11 @@ import { triggerConditionsMet } from '../engine/abilities/siteMove';
 import { tryOpenFellowshipMoves } from '../engine/responseWindow';
 import {
     areBurdenRemovalsForbidden,
+    areCultureTokenChangesForbidden,
     areHealsForbidden,
     getCurrentSite,
 } from './sites';
+import { canReinforce } from './cultureTokens';
 
 type PhaseEvents = {
     setPhase?: (phase: string) => void;
@@ -20,13 +22,43 @@ function siteInstanceKey(site: SiteCardState): string {
     return (site as SiteCardState & { instanceId?: string }).instanceId || site.id;
 }
 
+/** Premier joueur légal pour un reinforce eachPlayerMay (FP puis Ombre). */
+function firstEachPlayerMayResponder(
+    G: GameState,
+    ability: Ability
+): string | null {
+    const reinforce = (ability.effects || []).find(
+        (e) => e.type === 'REINFORCE_CULTURE_TOKEN'
+    );
+    if (!reinforce || reinforce.type !== 'REINFORCE_CULTURE_TOKEN') {
+        return null;
+    }
+    const fpId = G.fpPlayerId || '0';
+    const shId = shadowPlayerId(G);
+    if (canReinforce(G, fpId, reinforce.culture, reinforce.count || 1)) {
+        return fpId;
+    }
+    if (canReinforce(G, shId, reinforce.culture, reinforce.count || 1)) {
+        return shId;
+    }
+    return null;
+}
+
 /** Joueur qui répond à la capacité (FP par défaut ; Ombre si `responsePlayer`). */
 function responderPlayerId(G: GameState, ability: Ability): string {
     const fpId = G.fpPlayerId || '0';
+    if (ability.eachPlayerMay) {
+        return firstEachPlayerMayResponder(G, ability) || fpId;
+    }
     if (ability.responsePlayer === 'SHADOW') {
         return fpId === '0' ? '1' : '0';
     }
     return fpId;
+}
+
+function shadowPlayerId(G: GameState): string {
+    const fpId = G.fpPlayerId || '0';
+    return fpId === '0' ? '1' : '0';
 }
 
 /** L’effet optionnel peut-il changer quelque chose ? (inerte > faux) */
@@ -50,7 +82,11 @@ function optionalMoveEffectsAreLegal(G: GameState, ability: Ability): boolean {
             // Réponse Ombre : toujours légal (on ajoute).
             continue;
         }
-        if (effect.type === 'HEAL' && effect.all && Array.isArray(effect.target)) {
+        if (
+            effect.type === 'HEAL' &&
+            (effect.all || effect.onePerCulture) &&
+            Array.isArray(effect.target)
+        ) {
             if (areHealsForbidden(G)) return false;
             const wounded = (fp.fellowshipArea || []).some(
                 (c) =>
@@ -67,6 +103,25 @@ function optionalMoveEffectsAreLegal(G: GameState, ability: Ability): boolean {
             if (!wounded) return false;
             continue;
         }
+        if (effect.type === 'REINFORCE_CULTURE_TOKEN') {
+            if (areCultureTokenChangesForbidden(G)) return false;
+            // Légalité globale : au moins un joueur peut reinforce (eachPlayerMay).
+            const shadowId = shadowPlayerId(G);
+            const fpOk = canReinforce(
+                G,
+                fpId,
+                effect.culture,
+                effect.count || 1
+            );
+            const shOk = canReinforce(
+                G,
+                shadowId,
+                effect.culture,
+                effect.count || 1
+            );
+            if (!fpOk && !shOk) return false;
+            continue;
+        }
         // Effet non géré ici : on n’ouvre rien.
         return false;
     }
@@ -75,7 +130,8 @@ function optionalMoveEffectsAreLegal(G: GameState, ability: Ability): boolean {
 
 /** Capacité optionnelle « moves to » du site d’arrivée. */
 export function findOptionalSiteMoveAbility(
-    G: GameState
+    G: GameState,
+    forPlayerId?: string
 ): { site: SiteCardState; ability: Ability } | null {
     const site = getCurrentSite(G);
     if (!site?.abilities?.length) return null;
@@ -84,12 +140,31 @@ export function findOptionalSiteMoveAbility(
         if (ability.trigger?.type !== 'MOVES_TO') continue;
         if (!triggerConditionsMet(G, site, ability)) continue;
         if (!optionalMoveEffectsAreLegal(G, ability)) continue;
+        const playerId = forPlayerId || responderPlayerId(G, ability);
+        // eachPlayerMay : n’offrir que si CE joueur a un reinforce légal.
+        if (ability.eachPlayerMay) {
+            const reinforce = (ability.effects || []).find(
+                (e) => e.type === 'REINFORCE_CULTURE_TOKEN'
+            );
+            if (
+                reinforce &&
+                reinforce.type === 'REINFORCE_CULTURE_TOKEN' &&
+                !canReinforce(
+                    G,
+                    playerId,
+                    reinforce.culture,
+                    reinforce.count || 1
+                )
+            ) {
+                continue;
+            }
+        }
         if (
             !canPayAbilityCost(
                 G,
                 site as unknown as CardState,
                 ability.cost,
-                responderPlayerId(G, ability)
+                playerId
             )
         ) {
             continue;
@@ -99,25 +174,38 @@ export function findOptionalSiteMoveAbility(
     return null;
 }
 
+function openPendingSiteMove(
+    G: GameState,
+    site: SiteCardState,
+    ability: Ability,
+    playerId: string,
+    nextPhase?: string
+): void {
+    G.pendingSiteMoveAbility = {
+        playerId,
+        siteInstanceId: siteInstanceKey(site),
+        abilityId: ability.id,
+        pendingPhaseAfterSiteMove: nextPhase,
+    };
+    G.statusMessage =
+        'Déplacement : vous pouvez utiliser l’effet du site d’arrivée.';
+}
+
 /**
  * Ouvre le toaster « Activer / Passer » après un déplacement.
  * `nextPhase` : phase à lancer une fois le choix tranché.
  */
 export function beginOptionalSiteMoveAbility(
     G: GameState,
-    nextPhase?: string
+    nextPhase?: string,
+    forPlayerId?: string
 ): boolean {
     if (G.pendingSiteMoveAbility) return true;
-    const found = findOptionalSiteMoveAbility(G);
+    const found = findOptionalSiteMoveAbility(G, forPlayerId);
     if (!found) return false;
-    G.pendingSiteMoveAbility = {
-        playerId: responderPlayerId(G, found.ability),
-        siteInstanceId: siteInstanceKey(found.site),
-        abilityId: found.ability.id,
-        pendingPhaseAfterSiteMove: nextPhase,
-    };
-    G.statusMessage =
-        'Déplacement : vous pouvez utiliser l’effet du site d’arrivée.';
+    const playerId =
+        forPlayerId || responderPlayerId(G, found.ability);
+    openPendingSiteMove(G, found.site, found.ability, playerId, nextPhase);
     return true;
 }
 
@@ -140,7 +228,8 @@ export function resolvePendingSiteMoveAbility(
     playerID: string,
     accept: boolean,
     events?: PhaseEvents,
-    discardedHandIds?: string[]
+    discardedHandIds?: string[],
+    chosenEffectTargetIds?: string[]
 ): boolean {
     const pending = G.pendingSiteMoveAbility;
     if (!pending || pending.playerId !== playerID) return false;
@@ -179,7 +268,7 @@ export function resolvePendingSiteMoveAbility(
                 G,
                 source,
                 ability,
-                undefined,
+                chosenEffectTargetIds,
                 undefined,
                 undefined,
                 playerID
@@ -191,7 +280,18 @@ export function resolvePendingSiteMoveAbility(
     }
 
     const nextPhase = pending.pendingPhaseAfterSiteMove;
+    const abilityId = pending.abilityId;
     G.pendingSiteMoveAbility = undefined;
+
+    // Morannon : après le FP, proposer à l’Ombre si encore légal.
+    const site = getCurrentSite(G);
+    const ability = site?.abilities?.find((ab) => ab.id === abilityId);
+    if (ability?.eachPlayerMay && playerID === (G.fpPlayerId || '0')) {
+        if (beginOptionalSiteMoveAbility(G, nextPhase, shadowPlayerId(G))) {
+            return true;
+        }
+    }
+
     resumeAfterSiteMove(G, events, nextPhase);
     return true;
 }

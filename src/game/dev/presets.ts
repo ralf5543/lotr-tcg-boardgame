@@ -37,14 +37,14 @@ const clonePresetSite = (
 };
 
 /**
- * Vague Valley / Uplands / Shores.
- * 1 filler → 2 Valley (moves to heal Hobbits) → 3 Uplands → 4 Shores → …
+ * Vague Doorway / Crossroads / Morannon.
+ * 1 filler → 2 Doorway (blessures) → 3 Crossroads (regroup heal) → 4 Morannon (reinforce) → …
  */
-const SITES_VALLEY_SHORES_PATH = [
+const SITES_DOORWAY_CROSSROADS_PATH = [
     '11S265', // 1 Window (départ)
-    '11S261', // 2 Valley of the Silverlode
-    '11S257', // 3 Rohan Uplands
-    '12U191', // 4 Shores of Nen Hithoel
+    '18U134', // 2 Doorway to Doom
+    '13S189', // 3 Crossroads of the Fallen Kings
+    '18U137', // 4 Morannon Plains
     '11S263', // 5 West Gate
     '11S228', // 6 Anduin Confluence (sanctuaire)
     '11S241', // 7 Orthanc
@@ -71,6 +71,7 @@ const resetBoardForPreset = (G: GameState): void => {
     G.pendingSiteMoveAbility = undefined;
     G.pendingSiteStartAbility = undefined;
     G.pendingSitePhaseAbility = undefined;
+    G.pendingSiteCharacterWounds = undefined;
     G.sitePhaseAbilityOfferedThisPhase = false;
     G.hunterMinionPlayedThisShadowPhase = false;
     G.preventMoveAgain = false;
@@ -120,46 +121,72 @@ export const applyDevPreset = (
     const shadowPlayer = G.players[shadowId];
 
     switch (presetType) {
-        case 'SITES_VALLEY_SHORES': {
+        case 'SITES_DOORWAY_CROSSROADS': {
             resetBoardForPreset(G);
-            setupDevPath(G, 0, SITES_VALLEY_SHORES_PATH);
-            G.twilightPool = 6;
+            setupDevPath(G, 0, SITES_DOORWAY_CROSSROADS_PATH);
+            G.twilightPool = 4;
             fpPlayer.burdens = 0;
 
+            // 2 cultures blessées (Crossroads) + assez de persos (Doorway ×2).
+            // Morannon : 1 situation FP + 1 Ombre avec jetons (restent après le tour).
             fpPlayer.fellowshipArea = [
                 {
-                    ...clonePresetCard('2C102', 'dev-vs-frodo'),
-                    attachments: [clonePresetCard('1R1', 'dev-vs-ring')],
+                    ...clonePresetCard('2C102', 'dev-dc-frodo'),
+                    attachments: [clonePresetCard('1R1', 'dev-dc-ring')],
                     wounds: 1,
                 },
                 {
-                    ...clonePresetCard('1C306', 'dev-vs-pippin'),
+                    ...clonePresetCard('1C306', 'dev-dc-pippin'),
                     wounds: 1,
                 },
-                clonePresetCard('1R13', 'dev-vs-gimli'),
-                // Archerie FP → tester Uplands (Uruk immunisé, Orques non).
-                clonePresetCard('1R50', 'dev-vs-legolas'),
+                {
+                    ...clonePresetCard('1R13', 'dev-dc-gimli'),
+                    wounds: 1,
+                },
+                {
+                    ...clonePresetCard('1R72', 'dev-dc-aragorn'),
+                    wounds: 1,
+                },
+            ];
+            // 2 situations à jetons → choix de reinforce Morannon.
+            fpPlayer.supportArea = [
+                {
+                    ...clonePresetCard('4R52', 'dev-dc-axe'),
+                    cultureTokens: { DWARVEN: 1 },
+                },
+                {
+                    ...clonePresetCard('4R69', 'dev-dc-final'),
+                    cultureTokens: { ELVEN: 1 },
+                },
             ];
             fpPlayer.hand = [];
-            fpPlayer.deck = [clonePresetCard('1C11', 'dev-vs-draw')];
+            fpPlayer.deck = [clonePresetCard('1C11', 'dev-dc-draw')];
             fpPlayer.sitesDeck = [clonePresetSite('11S250', fpId)];
 
             if (shadowPlayer) {
                 shadowPlayer.hand = [];
                 shadowPlayer.sitesDeck = [clonePresetSite('11S263', shadowId)];
-                // Shores : 5 Orques ; Uplands : 1 Uruk (ne prend pas d’archerie).
+                // 2 situations Ombre → même choix de reinforce que le FP.
+                shadowPlayer.supportArea = [
+                    {
+                        ...clonePresetCard('11R123', 'dev-dc-hordes'),
+                        cultureTokens: { ORC: 1 },
+                    },
+                    {
+                        ...clonePresetCard('1C133', 'dev-dc-ambition'),
+                        cultureTokens: { ISENGARD: 1 },
+                    },
+                ];
+                // ≥2 séides (Doorway) — pas de jetons ici (partent en fin de tour).
                 G.battlefield = [
-                    clonePresetCard('1C266', 'dev-vs-orc-a'),
-                    clonePresetCard('1C268', 'dev-vs-orc-b'),
-                    clonePresetCard('1C271', 'dev-vs-orc-c'),
-                    clonePresetCard('11C136', 'dev-vs-orc-d'),
-                    clonePresetCard('11C113', 'dev-vs-orc-e'),
-                    clonePresetCard('1C146', 'dev-vs-uruk'),
+                    clonePresetCard('1C266', 'dev-dc-orc-a'),
+                    clonePresetCard('1C268', 'dev-dc-orc-b'),
+                    clonePresetCard('1C271', 'dev-dc-orc-c'),
                 ];
             }
 
             G.statusMessage =
-                '[DEV] Valley / Uplands / Shores · avance site 2 Valley (toaster heal Hobbits) ; téléporte 3 Uplands + Legolas (Uruk immunisé archerie) ; 4 Shores → phase Ombre (toaster Spot 5, une fois).';
+                '[DEV] Doorway / Crossroads / Morannon · site 2 Doorway (blessures) ; regroup site 3 Crossroads (heal / culture) ; site 4 Morannon (reinforce : choisir My Axe / Final Count, puis Goblin Hordes).';
             break;
         }
     }

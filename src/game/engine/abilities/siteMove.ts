@@ -257,6 +257,10 @@ export function resolveSiteMoveAbilities(
                 }
                 continue;
             }
+            if (effect.type === 'WOUND' && effect.eachOwner) {
+                // Doorway : désignation séquentielle — beginSiteMoveCharacterWoundsIfNeeded.
+                continue;
+            }
             if (effect.type === 'WOUND' && effect.all) {
                 const targets = collectMatchingCharacters(
                     G,
