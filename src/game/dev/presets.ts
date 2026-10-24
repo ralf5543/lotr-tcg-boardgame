@@ -37,19 +37,19 @@ const clonePresetSite = (
 };
 
 /**
- * Vague Slopes / Isengard Ruined.
- * 1 filler → 2 Slopes (Ombre −2 crépuscule + défausse 2 FP → pioche) → 3 Ruined (transfert → exert ×2) → …
+ * Vague Isenwash.
+ * 1 filler → 2 Isenwash (début regroup : Ombre exert séide → exert compagnon) → …
  */
-const SITES_SLOPES_RUINED_PATH = [
+const SITES_ISENWASH_PATH = [
     '11S265', // 1 Window (départ)
-    '12U192', // 2 Slopes of Orodruin
-    '15U192', // 3 Isengard Ruined
-    '11S263', // 4 West Gate
-    '11S228', // 5 Anduin Confluence
-    '11S241', // 6 Orthanc (sanctuaire)
-    '18U138', // 7 Sirannon
-    '11S254', // 8 Pelennor Flat
-    '11S250', // 9 North Undeep
+    '13U193', // 2 Isenwash
+    '11S263', // 3 West Gate
+    '11S228', // 4 Anduin Confluence
+    '11S241', // 5 Orthanc
+    '18U138', // 6 Sirannon (sanctuaire)
+    '11S254', // 7 Pelennor Flat
+    '11S250', // 8 North Undeep
+    '11S232', // 9 Cavern Entrance
 ] as const;
 
 const resetBoardForPreset = (G: GameState): void => {
@@ -122,48 +122,38 @@ export const applyDevPreset = (
     const shadowPlayer = G.players[shadowId];
 
     switch (presetType) {
-        case 'SITES_SLOPES_RUINED': {
+        case 'SITES_ISENWASH': {
             resetBoardForPreset(G);
-            setupDevPath(G, 0, SITES_SLOPES_RUINED_PATH);
-            G.twilightPool = 4;
+            // Déjà sur Isenwash pour enchaîner jusqu’au regroupement.
+            setupDevPath(G, 1, SITES_ISENWASH_PATH);
+            G.twilightPool = 2;
             fpPlayer.burdens = 0;
 
-            // Compagnons avec vitalité pour exert ×2 (Ruined).
             fpPlayer.fellowshipArea = [
                 {
-                    ...clonePresetCard('2C102', 'dev-sr-frodo'),
-                    attachments: [clonePresetCard('1R1', 'dev-sr-ring')],
+                    ...clonePresetCard('2C102', 'dev-iw-frodo'),
+                    attachments: [clonePresetCard('1R1', 'dev-iw-ring')],
                 },
-                clonePresetCard('1R72', 'dev-sr-aragorn'),
-                clonePresetCard('1R13', 'dev-sr-gimli'),
-            ];
-            // Suivant FP → transfert début de manœuvre (Ruined).
-            fpPlayer.supportArea = [
-                clonePresetCard('13R46', 'dev-sr-follower'),
+                clonePresetCard('1R72', 'dev-iw-aragorn'),
+                clonePresetCard('1R13', 'dev-iw-gimli'),
             ];
             fpPlayer.hand = [];
-            fpPlayer.deck = [clonePresetCard('1C11', 'dev-sr-fp-draw')];
+            fpPlayer.deck = [clonePresetCard('1C11', 'dev-iw-fp-draw')];
             fpPlayer.sitesDeck = [clonePresetSite('11S250', fpId)];
 
             if (shadowPlayer) {
-                // Slopes : 2 cartes FP en main Ombre + crépuscule + pioche.
-                shadowPlayer.hand = [
-                    clonePresetCard('1C306', 'dev-sr-fp-hand-a'),
-                    clonePresetCard('1C11', 'dev-sr-fp-hand-b'),
-                    clonePresetCard('1C266', 'dev-sr-sh-hand'),
-                ];
-                shadowPlayer.deck = [
-                    clonePresetCard('1C268', 'dev-sr-sh-draw'),
-                ];
+                shadowPlayer.hand = [];
                 shadowPlayer.sitesDeck = [clonePresetSite('11S263', shadowId)];
                 shadowPlayer.supportArea = [];
+                // Séide exertable (vitalité ≥ 2) pour Isenwash.
                 G.battlefield = [
-                    clonePresetCard('1C271', 'dev-sr-orc'),
+                    clonePresetCard('1C266', 'dev-iw-orc'),
+                    clonePresetCard('1C268', 'dev-iw-orc-b'),
                 ];
             }
 
             G.statusMessage =
-                '[DEV] Slopes / Ruined · site 2 Slopes (Ombre : −2 crépuscule + défausse 2 cartes FP → pioche) ; site 3 Ruined (transfert suivant → Ombre may exert ×2).';
+                '[DEV] Isenwash · site 2 : avancer jusqu’au regroupement → toaster Ombre (exert séide → exert compagnon).';
             break;
         }
     }

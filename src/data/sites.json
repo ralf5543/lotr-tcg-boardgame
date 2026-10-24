@@ -9217,6 +9217,47 @@
       "BATTLEGROUND",
       "PLAINS"
     ],
+    "abilities": [
+      {
+        "id": "13U193:0:site-start-regroup",
+        "phases": [
+          "START_OF_REGROUP"
+        ],
+        "optional": true,
+        "responsePlayer": "SHADOW",
+        "cost": [
+          {
+            "exert": [
+              {
+                "count": 1,
+                "target": [
+                  [
+                    "MINION"
+                  ]
+                ],
+                "mode": "DESIGNATION"
+              }
+            ]
+          }
+        ],
+        "effects": [
+          {
+            "type": "EXERT",
+            "count": 1,
+            "target": [
+              [
+                "COMPANION"
+              ]
+            ]
+          }
+        ],
+        "source": "SELF",
+        "text": "At the start of the regroup phase, each Shadow player may exert a minion to exert a companion."
+      }
+    ],
+    "actionPhases": [
+      "START_OF_REGROUP"
+    ],
     "twilightCost": 0,
     "siteArrow": "Left",
     "imageUrl": "/cards_visuals/o_13_193.jpg",

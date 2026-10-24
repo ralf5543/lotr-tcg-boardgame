@@ -1559,7 +1559,7 @@ export interface ArcheryState {
     shadowRemainingWounds: number;
 }
 
-export type DevPresetType = 'SITES_SLOPES_RUINED';
+export type DevPresetType = 'SITES_ISENWASH';
 
 export interface TempKeywordModifier {
     keyword: CardKeyword;

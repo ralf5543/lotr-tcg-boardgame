@@ -392,6 +392,14 @@ export const GameControls: React.FC<GameControlsProps> = ({
                 ? 'STANDARD'
                 : 'SITE_START_ABILITY',
         };
+    } else if (isSiteStartAbilityActive && !isMyTurnToAct) {
+        toastConfig = {
+            show: true,
+            title: 'EFFET DU SITE',
+            body: 'L’adversaire décide d’utiliser l’effet du site…',
+            showPassButton: false,
+            type: 'STANDARD',
+        };
     } else if (isSiteMoveAbilityActive && isMyTurnToAct && !isTargetingActive) {
         const siteSource = G.pendingSiteMoveAbility
             ? (findTargetCard(

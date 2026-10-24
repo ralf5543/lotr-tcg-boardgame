@@ -6525,6 +6525,12 @@ export function parseSiteAbilities(
             id: `${cardId || 'ability'}:${abilities.length}:site-start-fp`,
         });
     });
+    parseSiteStartOfRegroupAbilities(text, cardId).forEach((ability) => {
+        abilities.push({
+            ...ability,
+            id: `${cardId || 'ability'}:${abilities.length}:site-start-regroup`,
+        });
+    });
     parseSiteEachTwilightCostAbilities(text, cardId).forEach((ability) => {
         abilities.push({
             ...ability,
@@ -7473,6 +7479,50 @@ function parseSiteStartOfFellowshipAbilities(
         });
     }
 
+    return found;
+}
+
+/**
+ * Isenwash : At the start of the regroup phase, each Shadow player may
+ * exert a minion to exert a companion.
+ */
+function parseSiteStartOfRegroupAbilities(
+    text: string,
+    cardId?: string
+): Record<string, unknown>[] {
+    const found: Record<string, unknown>[] = [];
+    const plain = stripAbilityMarkup(text).replace(/\s+/g, ' ').trim();
+    const isenwashRe =
+        /At the start of the regroup phase,\s*each Shadow player may exert a minion to exert a companion\.?/gi;
+    let match: RegExpExecArray | null;
+    while ((match = isenwashRe.exec(plain)) !== null) {
+        found.push({
+            id: `${cardId || 'ability'}:${found.length}:site-start-regroup-isenwash`,
+            phases: ['START_OF_REGROUP'],
+            optional: true,
+            responsePlayer: 'SHADOW',
+            cost: [
+                {
+                    exert: [
+                        {
+                            count: 1,
+                            target: [['MINION']],
+                            mode: 'DESIGNATION',
+                        },
+                    ],
+                },
+            ],
+            effects: [
+                {
+                    type: 'EXERT',
+                    count: 1,
+                    target: [['COMPANION']],
+                },
+            ],
+            source: 'SELF',
+            text: stripAbilityMarkup(match[0]),
+        });
+    }
     return found;
 }
 

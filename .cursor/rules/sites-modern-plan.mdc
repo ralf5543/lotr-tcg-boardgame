@@ -249,9 +249,19 @@ Preset : `SITES_DOORWAY_CROSSROADS`.
 | `12U192` | Slopes of Orodruin | OK* | *Entorse UX : toaster 1× / phase Ombre (−2 crépuscule + défausse 2 FP → pioche). Voir § Exceptions UX. |
 | `15U192` | Isengard Ruined | OK | Transfert suivant → Ombre may exert compagnon ×2 (toaster + désignation) |
 
-Inertes volontaires : Angle ; Isenwash / Foot ; Dol Guldur ; Falls.
+Inertes volontaires alors : Angle ; Isenwash / Foot ; Dol Guldur ; Falls.
 
-Preset : `SITES_SLOPES_RUINED` (playtest).
+Preset : `SITES_SLOPES_RUINED`.
+
+### Vague Isenwash
+
+| Id | Titre | Statut | Notes |
+| --- | --- | --- | --- |
+| `13U193` | Isenwash | OK | Start regroup : Ombre may exert séide → exert compagnon (toaster + désignation) |
+
+Inertes volontaires : Angle ; Foot ; Dol Guldur ; Falls.
+
+Preset : `SITES_ISENWASH` (playtest).
 
 ### Exceptions UX (toaster / hors schéma)
 
@@ -269,7 +279,6 @@ En attendant : **entorses UX assumées** plutôt que des bulles absurdes — doc
 | Id | Titre | Famille |
 | --- | --- | --- |
 | `12U185` | The Angle | phase-ability |
-| `13U193` | Isenwash | passive-while |
 | `17U145` | Dol Guldur | phase-ability |
 | `17U146` | Falls of Rauros | moves-to |
 | `18U135` | Foot of Mount Doom | passive-while |
@@ -318,10 +327,12 @@ En attendant : **entorses UX assumées** plutôt que des bulles absurdes — doc
     - OK : Valley (heal Hobbits) ; Uplands (`canCardTakeWound`) ; Shores (toaster Spot 5, entorse UX — § Exceptions UX)
 16. Vague **Doorway / Crossroads / Morannon** ✅ — preset `SITES_DOORWAY_CROSSROADS`
     - OK : Doorway (assignation FP→Ombre) ; Crossroads (regroup heal / culture) ; Morannon (reinforce each player)
-17. Vague **Slopes / Isengard Ruined** — preset `SITES_SLOPES_RUINED` (playtest)
-    - OK parse/runtime : Slopes (toaster Ombre −crépuscule + défausse FP → pioche) ; Ruined (transfert → exert ×2)
-    - Inertes volontaires : Angle ; Isenwash / Foot ; Dol Guldur ; Falls
-18. Reste inertes 12–18 (Shadow play / moves may multi / passifs restants)
+17. Vague **Slopes / Isengard Ruined** ✅ — preset `SITES_SLOPES_RUINED`
+    - OK : Slopes (toaster Ombre −crépuscule + défausse FP → pioche) ; Ruined (transfert → exert ×2)
+18. Vague **Isenwash** — preset `SITES_ISENWASH` (playtest)
+    - OK parse/runtime : début regroup Ombre exert séide → exert compagnon
+    - Inertes volontaires : Angle ; Foot ; Dol Guldur ; Falls
+19. Reste inertes 12–18 (Shadow play / RFG / choix condition PL)
 
 ## Hors scope
 
