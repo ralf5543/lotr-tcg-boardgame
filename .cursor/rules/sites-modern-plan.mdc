@@ -257,11 +257,21 @@ Preset : `SITES_SLOPES_RUINED`.
 
 | Id | Titre | Statut | Notes |
 | --- | --- | --- | --- |
-| `13U193` | Isenwash | OK | Start regroup : Ombre may exert séide → exert compagnon (toaster + désignation) |
+| `13U193` | Isenwash | OK | Start regroup : Ombre may exert séide → exert compagnon (répétable jusqu’à Passer) |
 
-Inertes volontaires : Angle ; Foot ; Dol Guldur ; Falls.
+Inertes volontaires alors : Angle ; Foot ; Dol Guldur ; Falls.
 
-Preset : `SITES_ISENWASH` (playtest).
+Preset : `SITES_ISENWASH`.
+
+### Vague Dol Guldur
+
+| Id | Titre | Statut | Notes |
+| --- | --- | --- | --- |
+| `17U145` | Dol Guldur | OK | Regroup : exert séide + −1 menace → FP défausse une situation (désignation) |
+
+Inertes volontaires : Angle ; Foot ; Falls.
+
+Preset : `SITES_DOL_GULDUR`.
 
 ### Exceptions UX (toaster / hors schéma)
 
@@ -279,7 +289,6 @@ En attendant : **entorses UX assumées** plutôt que des bulles absurdes — doc
 | Id | Titre | Famille |
 | --- | --- | --- |
 | `12U185` | The Angle | phase-ability |
-| `17U145` | Dol Guldur | phase-ability |
 | `17U146` | Falls of Rauros | moves-to |
 | `18U135` | Foot of Mount Doom | passive-while |
 
@@ -329,10 +338,12 @@ En attendant : **entorses UX assumées** plutôt que des bulles absurdes — doc
     - OK : Doorway (assignation FP→Ombre) ; Crossroads (regroup heal / culture) ; Morannon (reinforce each player)
 17. Vague **Slopes / Isengard Ruined** ✅ — preset `SITES_SLOPES_RUINED`
     - OK : Slopes (toaster Ombre −crépuscule + défausse FP → pioche) ; Ruined (transfert → exert ×2)
-18. Vague **Isenwash** — preset `SITES_ISENWASH` (playtest)
-    - OK parse/runtime : début regroup Ombre exert séide → exert compagnon
-    - Inertes volontaires : Angle ; Foot ; Dol Guldur ; Falls
-19. Reste inertes 12–18 (Shadow play / RFG / choix condition PL)
+18. Vague **Isenwash** ✅ — preset `SITES_ISENWASH`
+    - OK : début regroup Ombre exert séide → exert compagnon (répétable)
+19. Vague **Dol Guldur** ✅ — preset `SITES_DOL_GULDUR`
+    - OK parse/runtime : Regroup exert + −menace → FP défausse situation
+    - Inertes volontaires : Angle ; Foot ; Falls (RFG / play Nazgûl)
+20. Reste inertes 12–18 (Angle / RFG) + inertes set 11 volontaires
 
 ## Hors scope
 

@@ -39,6 +39,7 @@ import {
 } from '../../../../game/engine/abilities/designation';
 import { isCostlessPlayFromCardStack } from '../../../../game/engine/abilities/applyAbilityEffect';
 import {
+    abilityProjectsOnto,
     collectVisibleAbilities,
     formatAbilityLabelParts,
     abilityMatchesPhase,
@@ -665,18 +666,22 @@ export const Card: React.FC<CardProps> = ({
         const sourceId = source.instanceId || source.id;
         // Ne pré-désigner le porteur que s’il est vraiment une cible de désignation
         // (ex. exert un Hobbit / projection site). Pas pour défausser une herbe à pipe.
+        // Projection (site / nom propre) : l’hôte EST la cible du coût par
+        // construction — ne pas dépendre du joueur « qui regarde » la carte
+        // (filtre acteur), sinon on redemande de choisir un séide (Dol Guldur).
         const hostIsCostTarget = Boolean(
             G &&
             sourceId !== hostId &&
-            getCostDesignationCandidates(
-                G,
-                source,
-                ability,
-                viewerPlayerId
-            ).some(
-                (candidate) =>
-                    (candidate.instanceId || candidate.id) === hostId
-            )
+            (abilityProjectsOnto(G, source, ability, card) ||
+                getCostDesignationCandidates(
+                    G,
+                    source,
+                    ability,
+                    viewerPlayerId
+                ).some(
+                    (candidate) =>
+                        (candidate.instanceId || candidate.id) === hostId
+                ))
         );
         onActivateAbility?.(
             sourceId,

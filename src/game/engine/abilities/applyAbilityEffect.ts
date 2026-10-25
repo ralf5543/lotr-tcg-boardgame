@@ -1240,6 +1240,24 @@ export function applyAbilityEffect(
             }
             continue;
         }
+        // Dol Guldur : coût déjà payé → le FP désigne ensuite (`pendingFpDiscard`).
+        if (
+            effect.type === 'DISCARD' &&
+            effect.chooser === 'FREE_PEOPLE' &&
+            chosenIds.length === 0
+        ) {
+            const sourceId = source.instanceId || source.id;
+            if (!sourceId || G.pendingFpDiscard) return false;
+            const fpId = G.fpPlayerId || '0';
+            G.pendingFpDiscard = {
+                playerId: fpId,
+                sourceInstanceId: sourceId,
+                abilityId: ability.id,
+            };
+            G.statusMessage =
+                'Peuples Libres : défaussez une de vos situations.';
+            continue;
+        }
         const pick = chosenIds[0];
         const target = resolveAbilityTarget(
             G,

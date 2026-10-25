@@ -137,6 +137,7 @@ export const GameControls: React.FC<GameControlsProps> = ({
     const isSiteFollowerTransferActive = Boolean(
         G.pendingSiteFollowerTransfer
     );
+    const isFpDiscardActive = Boolean(G.pendingFpDiscard);
     const isForcedChoiceActive = Boolean(G.pendingForcedChoice);
     const isRevealActive = Boolean(G.pendingReveal);
     const siteResponseCandidate =
@@ -177,6 +178,8 @@ export const GameControls: React.FC<GameControlsProps> = ({
             ? G.pendingSitePhaseAbility!.playerId
           : isSiteFollowerTransferActive
             ? G.pendingSiteFollowerTransfer!.playerId
+          : isFpDiscardActive
+            ? G.pendingFpDiscard!.playerId
           : isWhenPlayedChoiceActive
             ? G.pendingWhenPlayed!.playerId
           : isActionWindowActive
@@ -262,6 +265,7 @@ export const GameControls: React.FC<GameControlsProps> = ({
             | 'SITE_PHASE_ABILITY'
             | 'SITE_FOLLOWER_TRANSFER'
             | 'SITE_FOLLOWER_TRANSFER_DESIGNATION'
+            | 'FP_DISCARD'
             | 'SITE_RESPONSE_ABILITY'
             | 'ASSIGNMENT_YIELD'
             | 'ASSIGNMENT_PASS'
@@ -482,6 +486,24 @@ export const GameControls: React.FC<GameControlsProps> = ({
             show: true,
             title: 'EFFET DU SITE',
             body: 'L’adversaire décide d’utiliser l’effet du site…',
+            showPassButton: false,
+            type: 'STANDARD',
+        };
+    } else if (isFpDiscardActive && isMyTurnToAct) {
+        toastConfig = {
+            show: true,
+            title: 'EFFET DU SITE',
+            body:
+                G.statusMessage ||
+                'Défaussez une de vos situations.',
+            showPassButton: false,
+            type: 'FP_DISCARD',
+        };
+    } else if (isFpDiscardActive && !isMyTurnToAct) {
+        toastConfig = {
+            show: true,
+            title: 'EFFET DU SITE',
+            body: 'Les Peuples Libres choisissent une situation à défausser…',
             showPassButton: false,
             type: 'STANDARD',
         };

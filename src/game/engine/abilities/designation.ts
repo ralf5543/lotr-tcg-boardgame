@@ -537,6 +537,7 @@ export function getEffectDesignationCandidates(
 
     // DISCARD_ALL / EXERT all / HEAL all : pas de désignation — on applique tout d’un coup.
     // HEAL onePerCulture : désignation (1 compagnon blessé par culture).
+    // DISCARD chooser FREE_PEOPLE : pending dédié (pas de halo Ombre).
     const effect = (ability.effects || []).find(
         (item) =>
             item.type !== 'DISCARD_ALL' &&
@@ -545,10 +546,24 @@ export function getEffectDesignationCandidates(
             item.type !== 'REVEAL_OPPONENT_TOP' &&
             !(item.type === 'EXERT' && item.all) &&
             !(item.type === 'HEAL' && item.all && !item.onePerCulture) &&
+            !(item.type === 'DISCARD' && item.chooser === 'FREE_PEOPLE') &&
             'target' in item &&
             (Array.isArray(item.target) || item.target === 'SKIRMISHING')
     );
     if (!effect) return [];
+    return candidatesForEffect(G, source, ability, effect);
+}
+
+/** Cibles pour `pendingFpDiscard` (Dol Guldur…). */
+export function getFpDiscardCandidates(
+    G: GameState,
+    source: CardState,
+    ability: Ability
+): CardState[] {
+    const effect = (ability.effects || []).find(
+        (item) => item.type === 'DISCARD' && item.chooser === 'FREE_PEOPLE'
+    );
+    if (!effect || effect.type !== 'DISCARD') return [];
     return candidatesForEffect(G, source, ability, effect);
 }
 

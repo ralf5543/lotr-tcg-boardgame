@@ -48,6 +48,7 @@ import {
     getDesignationCandidates,
     getEffectDesignationCandidates,
     getEffectDesignationCount,
+    getFpDiscardCandidates,
     getSiteAttachmentHostIds,
     getToPlayExertTargetIds,
     isDesignationTargetId,
@@ -1560,26 +1561,70 @@ export const GameBoard: React.FC<GameBoardProps> = ({
 
         const movePending = G.pendingSiteMoveAbility;
         const followerPending = G.pendingSiteFollowerTransfer;
+        const fpDiscardPending = G.pendingFpDiscard;
         const moveMine =
             Boolean(movePending) &&
             String(movePending!.playerId) === String(myId);
         const followerMine =
             Boolean(followerPending) &&
             String(followerPending!.playerId) === String(myId);
+        const fpDiscardMine =
+            Boolean(fpDiscardPending) &&
+            String(fpDiscardPending!.playerId) === String(myId);
 
-        if (moveMine || followerMine) return;
+        if (moveMine || followerMine || fpDiscardMine) return;
 
-        if (movePending || followerPending) {
+        if (movePending || followerPending || fpDiscardPending) {
             stopTargeting();
             setHoveredCard(null);
         }
     }, [
         G.pendingSiteMoveAbility,
         G.pendingSiteFollowerTransfer,
+        G.pendingFpDiscard,
         myId,
         targetingKind,
         stopTargeting,
         setHoveredCard,
+    ]);
+
+    /** Dol Guldur : dès que le pending FP s’ouvre, halo sur les situations. */
+    useEffect(() => {
+        const pending = G.pendingFpDiscard;
+        if (!pending || String(pending.playerId) !== String(myId)) return;
+        if (isTargetingActive) return;
+
+        const source = findTargetCard(
+            G,
+            pending.sourceInstanceId
+        ) as CardState | null;
+        const ability = source?.abilities?.find(
+            (ab) => ab.id === pending.abilityId
+        );
+        if (!source || !ability) return;
+
+        const candidates = getFpDiscardCandidates(G, source, ability);
+        if (candidates.length === 0) return;
+
+        startTargeting({
+            kind: 'DESIGNATION',
+            targetableCardIds: candidates.flatMap(cardTargetIds),
+            message: 'Défaussez une de vos situations.',
+            onSelectTarget: (cardId) => {
+                stopTargeting();
+                setHoveredCard(null);
+                moves.resolveFpDiscardChoice?.(cardId);
+            },
+        });
+    }, [
+        G.pendingFpDiscard,
+        G,
+        myId,
+        isTargetingActive,
+        startTargeting,
+        stopTargeting,
+        setHoveredCard,
+        moves,
     ]);
 
     const handleResolveWhenPlayedChoice = useCallback(

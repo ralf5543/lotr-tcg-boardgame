@@ -37,16 +37,16 @@ const clonePresetSite = (
 };
 
 /**
- * Vague Isenwash.
- * 1 filler → 2 Isenwash (début regroup : Ombre exert séide → exert compagnon) → …
+ * Vague Dol Guldur.
+ * 1 filler → 2 Dol Guldur (Regroup : exert séide + −menace → FP défausse situation) → …
  */
-const SITES_ISENWASH_PATH = [
-    '11S265', // 1 Window (départ)
-    '13U193', // 2 Isenwash
+const SITES_DOL_GULDUR_PATH = [
+    '11S265', // 1 Window
+    '17U145', // 2 Dol Guldur
     '11S263', // 3 West Gate
     '11S228', // 4 Anduin Confluence
     '11S241', // 5 Orthanc
-    '18U138', // 6 Sirannon (sanctuaire)
+    '18U138', // 6 Sirannon
     '11S254', // 7 Pelennor Flat
     '11S250', // 8 North Undeep
     '11S232', // 9 Cavern Entrance
@@ -72,6 +72,7 @@ const resetBoardForPreset = (G: GameState): void => {
     G.pendingSiteStartAbility = undefined;
     G.pendingSitePhaseAbility = undefined;
     G.pendingSiteFollowerTransfer = undefined;
+    G.pendingFpDiscard = undefined;
     G.pendingSiteCharacterWounds = undefined;
     G.sitePhaseAbilityOfferedThisPhase = false;
     G.hunterMinionPlayedThisShadowPhase = false;
@@ -122,38 +123,41 @@ export const applyDevPreset = (
     const shadowPlayer = G.players[shadowId];
 
     switch (presetType) {
-        case 'SITES_ISENWASH': {
+        case 'SITES_DOL_GULDUR': {
             resetBoardForPreset(G);
-            // Déjà sur Isenwash pour enchaîner jusqu’au regroupement.
-            setupDevPath(G, 1, SITES_ISENWASH_PATH);
+            setupDevPath(G, 1, SITES_DOL_GULDUR_PATH);
             G.twilightPool = 2;
             fpPlayer.burdens = 0;
+            fpPlayer.threats = 2;
 
             fpPlayer.fellowshipArea = [
                 {
-                    ...clonePresetCard('2C102', 'dev-iw-frodo'),
-                    attachments: [clonePresetCard('1R1', 'dev-iw-ring')],
+                    ...clonePresetCard('2C102', 'dev-dg-frodo'),
+                    attachments: [clonePresetCard('1R1', 'dev-dg-ring')],
                 },
-                clonePresetCard('1R72', 'dev-iw-aragorn'),
-                clonePresetCard('1R13', 'dev-iw-gimli'),
+                clonePresetCard('1R72', 'dev-dg-aragorn'),
+            ];
+            // 2 situations → choix de défausse.
+            fpPlayer.supportArea = [
+                clonePresetCard('4R52', 'dev-dg-axe'),
+                clonePresetCard('4R69', 'dev-dg-final'),
             ];
             fpPlayer.hand = [];
-            fpPlayer.deck = [clonePresetCard('1C11', 'dev-iw-fp-draw')];
+            fpPlayer.deck = [clonePresetCard('1C11', 'dev-dg-draw')];
             fpPlayer.sitesDeck = [clonePresetSite('11S250', fpId)];
 
             if (shadowPlayer) {
                 shadowPlayer.hand = [];
                 shadowPlayer.sitesDeck = [clonePresetSite('11S263', shadowId)];
                 shadowPlayer.supportArea = [];
-                // Séide exertable (vitalité ≥ 2) pour Isenwash.
                 G.battlefield = [
-                    clonePresetCard('1C266', 'dev-iw-orc'),
-                    clonePresetCard('1C268', 'dev-iw-orc-b'),
+                    clonePresetCard('1C266', 'dev-dg-orc'),
+                    clonePresetCard('1C268', 'dev-dg-orc-b'),
                 ];
             }
 
             G.statusMessage =
-                '[DEV] Isenwash · site 2 : avancer jusqu’au regroupement → toaster Ombre (exert séide → exert compagnon).';
+                '[DEV] Dol Guldur · site 2 : phase Regroup → bulle sur séide (exert + −1 menace) → FP défausse une situation (My Axe / Final Count).';
             break;
         }
     }

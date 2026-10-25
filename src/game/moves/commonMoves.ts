@@ -55,6 +55,7 @@ import {
 } from '../logic/sitePhaseAbility';
 import { assignSiteCharacterWound } from '../logic/siteMoveCharacterWounds';
 import { resolvePendingSiteFollowerTransferAbility } from '../logic/siteFollowerTransferAbility';
+import { resolvePendingFpDiscard } from '../logic/fpDiscardAbility';
 import { tryExitStartOfManeuver } from './maneuverMoves';
 import {
     openSkirmishActionWindow,
@@ -642,6 +643,24 @@ export const resolveSitePhaseAbilityChoice = (
     }
 };
 
+/** Dol Guldur : FP désigne une situation à défausser. */
+export const resolveFpDiscardChoice = (
+    { G, playerID }: LotrMoveContext,
+    chosenTargetId: string
+) => {
+    if (
+        !G.pendingFpDiscard ||
+        G.pendingFpDiscard.playerId !== playerID
+    ) {
+        return 'INVALID_MOVE';
+    }
+    if (
+        !resolvePendingFpDiscard(G, String(playerID), chosenTargetId)
+    ) {
+        return 'INVALID_MOVE';
+    }
+};
+
 /** Isengard Ruined : après transfert de suivant — Activer (cible) / Passer. */
 export const resolveSiteFollowerTransferAbilityChoice = (
     { G, events, playerID }: LotrMoveContext,
@@ -978,6 +997,7 @@ export const commonMoves = {
     resolveSiteMoveAbilityChoice,
     resolveSitePhaseAbilityChoice,
     resolveSiteFollowerTransferAbilityChoice,
+    resolveFpDiscardChoice,
     assignSiteCharacterWound: assignSiteCharacterWoundMove,
     resolveForcedChoiceMove,
     confirmPendingRevealMove,

@@ -164,12 +164,6 @@ describe('parseSiteAbilities — vague phase', () => {
         expect(parseSiteAbilities(text, '12S187')).toBeUndefined();
     });
 
-    it('Dol Guldur reste inerte (choix condition par les Peuples Libres)', () => {
-        const text =
-            '**Regroup:** Exert your minion and remove a threat to make the Free Peoples player discard one of his or her conditions.';
-        expect(parseSiteAbilities(text, '17U145')).toBeUndefined();
-    });
-
     it('laisse Buckland / Woody-End inertes (play Nazgûl)', () => {
         expect(
             parseSiteAbilities(

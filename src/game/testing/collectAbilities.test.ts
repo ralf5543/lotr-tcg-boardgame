@@ -242,7 +242,7 @@ describe('formatAbilityLabelParts', () => {
         });
         expect(formatAbilityLabelParts(ability, cloak)).toEqual({
             cost: 'Affaiblir le détenteur',
-            effect: 'défausser un climat Situation',
+            effect: 'défausser une situation climat',
         });
     });
 

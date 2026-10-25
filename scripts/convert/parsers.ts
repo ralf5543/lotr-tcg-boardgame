@@ -7014,6 +7014,40 @@ function parseSitePhaseAbilities(
         });
     }
 
+    // Dol Guldur : Regroup: Exert your minion and remove a threat → FP discard condition.
+    const dolGuldurRe =
+        /Regroup:?\s*(?:<\/keyword>)?(?:\*\*)?\s*Exert your minion and remove a threat to make the Free Peoples player discard one of his or her conditions\.?/gi;
+    while ((match = dolGuldurRe.exec(text)) !== null) {
+        found.push({
+            id: `${cardId || 'ability'}:${found.length}:site-phase-dol-guldur`,
+            phases: ['REGROUP'],
+            optional: true,
+            responsePlayer: 'SHADOW',
+            cost: [
+                {
+                    exert: [
+                        {
+                            count: 1,
+                            target: [['MINION']],
+                            mode: 'DESIGNATION',
+                        },
+                    ],
+                    removeThreats: 1,
+                },
+            ],
+            effects: [
+                {
+                    type: 'DISCARD',
+                    count: 1,
+                    target: [['CONDITION', 'FREE_PEOPLE']],
+                    chooser: 'FREE_PEOPLE',
+                },
+            ],
+            source: 'SELF',
+            text: stripAbilityMarkup(match[0]),
+        });
+    }
+
     // Northern Pelennor : Shadow: Make your lurker minion lose lurker until regroup.
     const pelennorLurkerRe =
         /Shadow:?\s*(?:<\/keyword>)?(?:\*\*)?\s*Make your lurker minion lose\s*(?:\*\*|<keyword>)?lurker(?:\*\*|<\/keyword>)?\s*until the regroup phase\.?/gi;

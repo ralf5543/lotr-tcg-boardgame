@@ -9831,6 +9831,50 @@
     "isUnique": false,
     "kind": "SITE",
     "type": "SITE",
+    "abilities": [
+      {
+        "id": "17U145:0:site-phase",
+        "phases": [
+          "REGROUP"
+        ],
+        "optional": true,
+        "responsePlayer": "SHADOW",
+        "cost": [
+          {
+            "exert": [
+              {
+                "count": 1,
+                "target": [
+                  [
+                    "MINION"
+                  ]
+                ],
+                "mode": "DESIGNATION"
+              }
+            ],
+            "removeThreats": 1
+          }
+        ],
+        "effects": [
+          {
+            "type": "DISCARD",
+            "count": 1,
+            "target": [
+              [
+                "CONDITION",
+                "FREE_PEOPLE"
+              ]
+            ],
+            "chooser": "FREE_PEOPLE"
+          }
+        ],
+        "source": "SELF",
+        "text": "Regroup: Exert your minion and remove a threat to make the Free Peoples player discard one of his or her conditions."
+      }
+    ],
+    "actionPhases": [
+      "REGROUP"
+    ],
     "twilightCost": 0,
     "imageUrl": "/cards_visuals/o_17_145.jpg",
     "i18n": {

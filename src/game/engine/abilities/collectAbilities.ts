@@ -300,6 +300,9 @@ function translateCriterionToken(token: string): string {
     if (isProperNameFilterToken(token)) return token;
 
     const upper = token.toUpperCase();
+    // Camps (filtres de cible) : jamais de jeton brut « free_people ».
+    if (upper === 'FREE_PEOPLE') return 'des Peuples Libres';
+    if (upper === 'SHADOW') return 'de l’Ombre';
     // Pas de franglais : CHARACTER n’est pas dans TRANSLATIONS.type.
     if (upper === 'CHARACTER') return 'personnage';
     // Filtre « hunter » (sans valeur) — distinct de HUNTER 1/2…
@@ -582,6 +585,18 @@ function formatEffectBit(
         return who ? `guérir ${who}` : 'guérir';
     }
     if (effect.type === 'DISCARD') {
+        const flat = Array.isArray(effect.target)
+            ? effect.target.flat()
+            : [];
+        // « condition » = situation en français (féminin).
+        if (flat.includes('WEATHER')) return 'défausser une situation climat';
+        if (flat.includes('CONDITION') && flat.includes('FREE_PEOPLE')) {
+            return 'défausser une situation des Peuples Libres';
+        }
+        if (flat.includes('CONDITION') && flat.includes('SHADOW')) {
+            return 'défausser une situation de l’Ombre';
+        }
+        if (flat.includes('CONDITION')) return 'défausser une situation';
         const who = formatTargetPhrase(effect.target);
         return who ? `défausser ${who}` : 'défausser';
     }
@@ -1056,7 +1071,32 @@ export function formatAbilityLabelParts(
     ) {
         const exert = ability.cost?.[0]?.exert?.[0];
         if (exert && Array.isArray(exert.target)) {
-            cost = 'Affaiblir ce personnage';
+            // Garder les autres coûts de la même option (Dol Guldur : menace).
+            const option = ability.cost?.[0];
+            const extra: string[] = [];
+            if (option?.removeThreats && option.removeThreats > 0) {
+                const n = option.removeThreats;
+                extra.push(`retirer ${n} menace${n > 1 ? 's' : ''}`);
+            }
+            if (option?.addThreats && option.addThreats > 0) {
+                const n = option.addThreats;
+                extra.push(`ajouter ${n} menace${n > 1 ? 's' : ''}`);
+            }
+            if (option?.addBurdens && option.addBurdens > 0) {
+                const n = option.addBurdens;
+                extra.push(`ajouter ${n} fardeau${n > 1 ? 'x' : ''}`);
+            }
+            if (option?.addTwilight && option.addTwilight > 0) {
+                extra.push(
+                    `ajouter <symbol>twilight${option.addTwilight}</symbol>`
+                );
+            }
+            if (option?.removeTwilight && option.removeTwilight > 0) {
+                extra.push(
+                    `retirer <symbol>twilight${option.removeTwilight}</symbol>`
+                );
+            }
+            cost = ['Affaiblir ce personnage', ...extra].join(' et ');
             if (!effect) effect = fromAst.effect;
         } else if (
             ability.cost?.[0]?.spot?.some((s) => s.mode === 'DESIGNATION')

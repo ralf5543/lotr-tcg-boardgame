@@ -660,6 +660,11 @@ export type AbilityEffect =
           type: 'DISCARD';
           count: number;
           target: AbilityTargetRef;
+          /**
+           * Dol Guldur… : le joueur FP désigne la cible après paiement du coût
+           * (`pendingFpDiscard`).
+           */
+          chooser?: 'FREE_PEOPLE';
       }
     | {
           /** Défausse toutes les cartes en jeu qui matchent (ex. every condition). */
@@ -1458,6 +1463,14 @@ export interface GameState {
         abilityId: string;
     };
     /**
+     * Après coût Ombre (Dol Guldur…) : FP doit désigner une situation à défausser.
+     */
+    pendingFpDiscard?: {
+        playerId: string;
+        sourceInstanceId: string;
+        abilityId: string;
+    };
+    /**
      * Doorway to Doom : chaque joueur assigne N blessures à ses personnages.
      */
     pendingSiteCharacterWounds?: {
@@ -1559,7 +1572,7 @@ export interface ArcheryState {
     shadowRemainingWounds: number;
 }
 
-export type DevPresetType = 'SITES_ISENWASH';
+export type DevPresetType = 'SITES_DOL_GULDUR';
 
 export interface TempKeywordModifier {
     keyword: CardKeyword;
