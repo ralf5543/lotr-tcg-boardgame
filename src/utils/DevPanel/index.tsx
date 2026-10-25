@@ -14,7 +14,6 @@ export interface DevMoves {
     devAdjustSiteTwilight?: (delta: number) => void;
     devSetArchery?: (amount: number) => void;
     devSetCurrentSite?: (siteIndex: number) => void;
-    devLoadPreset: (presetName: string) => void;
     devForceEndPhase: () => void;
 }
 
@@ -364,26 +363,8 @@ export const DevPanel: React.FC<DevPanelProps> = ({
                         </S.SessionLink>
                     </S.Section>
 
-                    {/* Preset de cartes */}
                     <S.Section>
-                        <S.Label>Presets cartes & Déblocage :</S.Label>
-                        <S.PresetButton
-                            onClick={() =>
-                                moves.devLoadPreset('SITES_DOL_GULDUR')
-                            }
-                        >
-                            Sites Dol Guldur
-                        </S.PresetButton>
-                        <S.PresetButton
-                            onClick={() => moves.devLoadPreset('SITES_FALLS')}
-                        >
-                            Sites Falls of Rauros
-                        </S.PresetButton>
-                        <S.PresetButton
-                            onClick={() => moves.devLoadPreset('SITES_FOOT')}
-                        >
-                            Sites Foot of Mount Doom
-                        </S.PresetButton>
+                        <S.Label>Cartes :</S.Label>
                         <S.GameButton $bgColor="#3498db" onClick={onDrawCard}>
                             🃏 Piocher ({deckCount})
                         </S.GameButton>

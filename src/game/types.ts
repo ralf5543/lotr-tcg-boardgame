@@ -1598,11 +1598,6 @@ export interface ArcheryState {
     shadowRemainingWounds: number;
 }
 
-export type DevPresetType =
-    | 'SITES_DOL_GULDUR'
-    | 'SITES_FALLS'
-    | 'SITES_FOOT';
-
 export interface TempKeywordModifier {
     keyword: CardKeyword;
     expiresAtPhase?: AbilityEffectExpiry;

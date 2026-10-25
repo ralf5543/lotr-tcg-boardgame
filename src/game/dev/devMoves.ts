@@ -1,10 +1,8 @@
 import type {
     LotrMoveContext,
     LotrPhaseContext,
-    DevPresetType,
     GameState,
 } from '../types';
-import { applyDevPreset } from './presets';
 import { clearActionableFlags } from '../../utils/clearActionableFlags';
 import { addThreats, getThreatLimit } from '../logic/threats';
 import {
@@ -205,18 +203,6 @@ export const devMoves = {
         if (events) {
             events.setActivePlayers?.({ value: { '0': 'play', '1': 'play' } });
             events.endPhase?.();
-        }
-    },
-
-    devLoadPreset: (
-        { G, events }: LotrPhaseContext,
-        presetType: DevPresetType
-    ) => {
-        resetPhaseMachine(G);
-        applyDevPreset(G, presetType);
-        events?.setPhase?.('startOfFellowship');
-        if (!G.sanctuaryHeal) {
-            onStartOfFellowshipBegin(G, events);
         }
     },
 };

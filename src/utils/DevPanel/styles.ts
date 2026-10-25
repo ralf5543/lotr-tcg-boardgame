@@ -150,21 +150,6 @@ export const ActionButton = styled.button`
     }
 `;
 
-export const PresetButton = styled.button`
-    width: 100%;
-    padding: 6px;
-    background-color: #1e1b4b;
-    color: #c7d2fe;
-    border: 1px solid #3730a3;
-    border-radius: 4px;
-    cursor: pointer;
-    text-align: left;
-
-    &:hover {
-        background-color: #312e81;
-    }
-`;
-
 export const GameButton = styled.button<{ $bgColor: string }>`
     background-color: ${(props) => props.$bgColor};
     color: white;
