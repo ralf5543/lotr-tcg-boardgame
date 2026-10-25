@@ -6,8 +6,10 @@ import * as S from './styles';
 export type OutOfPlayZoneKey =
     | 'opponent-discard'
     | 'opponent-cemetery'
+    | 'opponent-removed'
     | 'my-discard'
-    | 'my-cemetery';
+    | 'my-cemetery'
+    | 'my-removed';
 
 interface OutOfPlayRailProps {
     twilight: number;
@@ -20,8 +22,10 @@ interface OutOfPlayRailProps {
     localHasInitiative: boolean;
     myDiscard: CardState[];
     myDeadPile: CardState[];
+    myRemovedFromGame: CardState[];
     opponentDiscard: CardState[];
     opponentDeadPile: CardState[];
+    opponentRemovedFromGame: CardState[];
     onOpenZone: (zone: OutOfPlayZoneKey) => void;
 }
 
@@ -90,6 +94,30 @@ const PileBlock: React.FC<{
     );
 };
 
+/** Pile compacte « retirées du jeu » — affichée seulement si non vide. */
+const RemovedBlock: React.FC<{
+    owner: 'adverse' | 'toi';
+    count: number;
+    onOpen: () => void;
+}> = ({ owner, count, onOpen }) => {
+    if (count <= 0) return null;
+    const ownerPrefix = owner === 'adverse' ? 'Adv. ' : '';
+    return (
+        <S.PileRow>
+            <S.RemovedBlock
+                type="button"
+                onClick={onOpen}
+                aria-label={`${ownerPrefix}Cartes retirées du jeu, ${count} cartes`}
+            >
+                <S.PileLabel>
+                    {ownerPrefix}
+                    Retirées du jeu · {count}
+                </S.PileLabel>
+            </S.RemovedBlock>
+        </S.PileRow>
+    );
+};
+
 export const OutOfPlayRail: React.FC<OutOfPlayRailProps> = ({
     twilight,
     fpIsOpponent,
@@ -99,8 +127,10 @@ export const OutOfPlayRail: React.FC<OutOfPlayRailProps> = ({
     localHasInitiative,
     myDiscard,
     myDeadPile,
+    myRemovedFromGame,
     opponentDiscard,
     opponentDeadPile,
+    opponentRemovedFromGame,
     onOpenZone,
 }) => {
     const holderLabel =
@@ -132,6 +162,11 @@ export const OutOfPlayRail: React.FC<OutOfPlayRailProps> = ({
                     onOpen={() => onOpenZone('opponent-cemetery')}
                 />
             </S.PileRow>
+            <RemovedBlock
+                owner="adverse"
+                count={opponentRemovedFromGame.length}
+                onOpen={() => onOpenZone('opponent-removed')}
+            />
             <S.TwilightSlot>
                 <S.TwilightBowl>
                     <TwilightPool value={twilight} />
@@ -166,6 +201,11 @@ export const OutOfPlayRail: React.FC<OutOfPlayRailProps> = ({
                     onOpen={() => onOpenZone('my-cemetery')}
                 />
             </S.PileRow>
+            <RemovedBlock
+                owner="toi"
+                count={myRemovedFromGame.length}
+                onOpen={() => onOpenZone('my-removed')}
+            />
             <S.ChatSlot>Journal / chat (plus tard)</S.ChatSlot>
         </S.Rail>
     );

@@ -143,6 +143,7 @@ export function createPlayerState(
         hand: [],
         discard: [],
         deadPile: [],
+        removedFromGame: [],
         fellowshipArea: [],
         supportArea: [],
         sitesDeck: [],

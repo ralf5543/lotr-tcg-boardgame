@@ -592,6 +592,13 @@ export type AbilityEffect =
       }
     | {
           /**
+           * Le joueur des Peuples Libres place une carte de sa pile de mort
+           * hors jeu (retirée du jeu) — Falls of Rauros.
+           */
+          type: 'REMOVE_DEAD_PILE_CARD_FROM_GAME';
+      }
+    | {
+          /**
            * Révèle le dessus de la pioche adverse, puis effets par carte.
            * Mélange ensuite cette pioche (Hidden Knowledge…).
            */
@@ -1175,6 +1182,8 @@ export interface PlayerState {
     hand: CardState[];
     discard: CardState[];
     deadPile: CardState[];
+    /** Cartes retirées du jeu (hors partie). */
+    removedFromGame: CardState[];
     fellowshipArea: CardState[];
     supportArea: CardState[];
     currentSiteIndex: number;
@@ -1471,6 +1480,16 @@ export interface GameState {
         abilityId: string;
     };
     /**
+     * Falls of Rauros : le FP place une carte de sa pile de mort hors jeu.
+     */
+    pendingDeadPileRemoval?: {
+        playerId: string;
+        siteInstanceId: string;
+        abilityId: string;
+        /** Phase à lancer après le choix. */
+        pendingPhaseAfter?: string;
+    };
+    /**
      * Doorway to Doom : chaque joueur assigne N blessures à ses personnages.
      */
     pendingSiteCharacterWounds?: {
@@ -1572,7 +1591,7 @@ export interface ArcheryState {
     shadowRemainingWounds: number;
 }
 
-export type DevPresetType = 'SITES_DOL_GULDUR';
+export type DevPresetType = 'SITES_DOL_GULDUR' | 'SITES_FALLS';
 
 export interface TempKeywordModifier {
     keyword: CardKeyword;

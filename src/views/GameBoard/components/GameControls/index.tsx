@@ -138,6 +138,7 @@ export const GameControls: React.FC<GameControlsProps> = ({
         G.pendingSiteFollowerTransfer
     );
     const isFpDiscardActive = Boolean(G.pendingFpDiscard);
+    const isDeadPileRemovalActive = Boolean(G.pendingDeadPileRemoval);
     const isForcedChoiceActive = Boolean(G.pendingForcedChoice);
     const isRevealActive = Boolean(G.pendingReveal);
     const siteResponseCandidate =
@@ -180,6 +181,8 @@ export const GameControls: React.FC<GameControlsProps> = ({
             ? G.pendingSiteFollowerTransfer!.playerId
           : isFpDiscardActive
             ? G.pendingFpDiscard!.playerId
+          : isDeadPileRemovalActive
+            ? G.pendingDeadPileRemoval!.playerId
           : isWhenPlayedChoiceActive
             ? G.pendingWhenPlayed!.playerId
           : isActionWindowActive
@@ -266,6 +269,7 @@ export const GameControls: React.FC<GameControlsProps> = ({
             | 'SITE_FOLLOWER_TRANSFER'
             | 'SITE_FOLLOWER_TRANSFER_DESIGNATION'
             | 'FP_DISCARD'
+            | 'DEAD_PILE_REMOVAL'
             | 'SITE_RESPONSE_ABILITY'
             | 'ASSIGNMENT_YIELD'
             | 'ASSIGNMENT_PASS'
@@ -504,6 +508,24 @@ export const GameControls: React.FC<GameControlsProps> = ({
             show: true,
             title: 'EFFET DU SITE',
             body: 'Les Peuples Libres choisissent une situation à défausser…',
+            showPassButton: false,
+            type: 'STANDARD',
+        };
+    } else if (isDeadPileRemovalActive && isMyTurnToAct) {
+        toastConfig = {
+            show: true,
+            title: 'EFFET DU SITE',
+            body:
+                G.statusMessage ||
+                'Placez une carte de votre pile de mort hors jeu.',
+            showPassButton: false,
+            type: 'DEAD_PILE_REMOVAL',
+        };
+    } else if (isDeadPileRemovalActive && !isMyTurnToAct) {
+        toastConfig = {
+            show: true,
+            title: 'EFFET DU SITE',
+            body: 'Les Peuples Libres placent une carte de leur pile de mort hors jeu…',
             showPassButton: false,
             type: 'STANDARD',
         };

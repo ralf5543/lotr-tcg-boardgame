@@ -9910,6 +9910,25 @@
     "keywords": [
       "RIVER"
     ],
+    "abilities": [
+      {
+        "id": "17U146:0:site-move",
+        "phases": [],
+        "optional": false,
+        "trigger": {
+          "type": "MOVES_TO",
+          "siteRegion": 2
+        },
+        "cost": [],
+        "effects": [
+          {
+            "type": "REMOVE_DEAD_PILE_CARD_FROM_GAME"
+          }
+        ],
+        "source": "SELF",
+        "text": "When the Fellowship moves to this site in region 2, the Free Peoples player places a card from the dead pile out of play."
+      }
+    ],
     "twilightCost": 3,
     "imageUrl": "/cards_visuals/o_17_146.jpg",
     "i18n": {

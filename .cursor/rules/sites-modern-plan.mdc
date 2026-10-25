@@ -269,9 +269,19 @@ Preset : `SITES_ISENWASH`.
 | --- | --- | --- | --- |
 | `17U145` | Dol Guldur | OK | Regroup : exert séide + −1 menace → FP défausse une situation (désignation) |
 
-Inertes volontaires : Angle ; Foot ; Falls.
-
 Preset : `SITES_DOL_GULDUR`.
+
+### Vague Falls of Rauros (retiré du jeu)
+
+| Id | Titre | Statut | Notes |
+| --- | --- | --- | --- |
+| `17U146` | Falls of Rauros | OK | Moves to région 2 → FP place un mort hors jeu (zone `removedFromGame`, grille de choix ; pile de mort vide = rien) |
+
+Socle : zone « retiré du jeu » (`PlayerState.removedFromGame`) + piles « Retirées du jeu » dans le rail (visibles si non vides). Réutilisable par Foot of Mount Doom.
+
+Inertes volontaires : Angle ; Foot.
+
+Preset : `SITES_FALLS` (playtest).
 
 ### Exceptions UX (toaster / hors schéma)
 
@@ -289,7 +299,6 @@ En attendant : **entorses UX assumées** plutôt que des bulles absurdes — doc
 | Id | Titre | Famille |
 | --- | --- | --- |
 | `12U185` | The Angle | phase-ability |
-| `17U146` | Falls of Rauros | moves-to |
 | `18U135` | Foot of Mount Doom | passive-while |
 
 ## Étapes
@@ -342,8 +351,11 @@ En attendant : **entorses UX assumées** plutôt que des bulles absurdes — doc
     - OK : début regroup Ombre exert séide → exert compagnon (répétable)
 19. Vague **Dol Guldur** ✅ — preset `SITES_DOL_GULDUR`
     - OK parse/runtime : Regroup exert + −menace → FP défausse situation
-    - Inertes volontaires : Angle ; Foot ; Falls (RFG / play Nazgûl)
-20. Reste inertes 12–18 (Angle / RFG) + inertes set 11 volontaires
+    - Inertes volontaires alors : Angle ; Foot ; Falls
+20. Vague **Falls of Rauros** — preset `SITES_FALLS` (playtest)
+    - OK parse/runtime : zone retiré du jeu créée ; moves to région 2 → FP retire un mort (choix obligatoire, grille)
+    - Inertes volontaires : Angle ; Foot
+21. Reste inertes 12–18 (Angle / Foot) + inertes set 11 volontaires
 
 ## Hors scope
 

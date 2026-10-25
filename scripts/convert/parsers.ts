@@ -6044,6 +6044,27 @@ function parseSiteMoveAbilities(
         });
     }
 
+    // Falls of Rauros : moves to, région N → le FP place une carte de sa
+    // pile de mort hors jeu (obligatoire, choix FP à l’arrivée).
+    const fallsRaurosRe = new RegExp(
+        `When (?:the|your) Fellowship moves to ${siteRef} in region (\\d+), the Free Peoples player places a card from the dead pile out of play\\.`,
+        'gi'
+    );
+    while ((match = fallsRaurosRe.exec(text)) !== null) {
+        const region = parseInt(match[1], 10);
+        if (region !== 1 && region !== 2 && region !== 3) continue;
+        found.push({
+            id: `${cardId || 'ability'}:${found.length}:site-move-dead-pile-rfg`,
+            phases: [],
+            optional: false,
+            trigger: { type: 'MOVES_TO', siteRegion: region },
+            cost: [],
+            effects: [{ type: 'REMOVE_DEAD_PILE_CARD_FROM_GAME' }],
+            source: 'SELF',
+            text: stripAbilityMarkup(match[0]),
+        });
+    }
+
     // Abandoned Mine Shaft : not region N + regroup → add a burden.
     const mineShaftRe =
         /If this site is not in region (\d+) when the fellowship moves from (?:it|here|this site) during the regroup phase, add a burden\./gi;

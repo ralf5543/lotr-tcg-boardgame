@@ -56,6 +56,7 @@ import {
 import { assignSiteCharacterWound } from '../logic/siteMoveCharacterWounds';
 import { resolvePendingSiteFollowerTransferAbility } from '../logic/siteFollowerTransferAbility';
 import { resolvePendingFpDiscard } from '../logic/fpDiscardAbility';
+import { resolveDeadPileRemoval } from '../logic/siteDeadPileRemoval';
 import { tryExitStartOfManeuver } from './maneuverMoves';
 import {
     openSkirmishActionWindow,
@@ -661,6 +662,29 @@ export const resolveFpDiscardChoice = (
     }
 };
 
+/** Falls of Rauros : le FP place une carte de sa pile de mort hors jeu. */
+export const resolveDeadPileRemovalChoice = (
+    { G, events, playerID }: LotrMoveContext,
+    chosenCardId: string
+) => {
+    if (
+        !G.pendingDeadPileRemoval ||
+        G.pendingDeadPileRemoval.playerId !== playerID
+    ) {
+        return 'INVALID_MOVE';
+    }
+    if (
+        !resolveDeadPileRemoval(
+            G,
+            String(playerID),
+            chosenCardId,
+            events
+        )
+    ) {
+        return 'INVALID_MOVE';
+    }
+};
+
 /** Isengard Ruined : après transfert de suivant — Activer (cible) / Passer. */
 export const resolveSiteFollowerTransferAbilityChoice = (
     { G, events, playerID }: LotrMoveContext,
@@ -998,6 +1022,7 @@ export const commonMoves = {
     resolveSitePhaseAbilityChoice,
     resolveSiteFollowerTransferAbilityChoice,
     resolveFpDiscardChoice,
+    resolveDeadPileRemovalChoice,
     assignSiteCharacterWound: assignSiteCharacterWoundMove,
     resolveForcedChoiceMove,
     confirmPendingRevealMove,

@@ -74,6 +74,40 @@ export const PileLabel = styled.span`
     white-space: pre-line;
 `;
 
+export const RemovedBlock = styled.button`
+    width: 192px;
+    height: 40px;
+    border-radius: 6px;
+    border: 2px solid #5b6b7c;
+    background: linear-gradient(180deg, #232b36 0%, #11161d 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 4px 6px;
+    box-shadow: inset 0 0 14px rgba(0, 0, 0, 0.5);
+    pointer-events: auto;
+    cursor: pointer;
+    font: inherit;
+    color: inherit;
+    transition:
+        border-color 0.15s ease,
+        box-shadow 0.15s ease,
+        transform 0.15s ease;
+
+    &:hover {
+        border-color: #9fb4c8;
+        box-shadow:
+            inset 0 0 14px rgba(0, 0, 0, 0.5),
+            0 0 10px rgba(159, 180, 200, 0.25);
+        transform: translateY(-1px);
+    }
+
+    &:focus-visible {
+        outline: 2px solid #9fb4c8;
+        outline-offset: 2px;
+    }
+`;
+
 export const ThreatDots = styled.div`
     position: absolute;
     inset: 10px 6px 34px;

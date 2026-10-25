@@ -5,6 +5,7 @@ import { tryOpenFellowshipMoves } from '../engine/responseWindow';
 import { enterPhase } from '../logic/phaseEntry';
 import { beginOptionalSiteMoveAbility } from '../logic/siteMoveAbility';
 import { beginSiteMoveCharacterWoundsIfNeeded } from '../logic/siteMoveCharacterWounds';
+import { beginDeadPileRemovalIfNeeded } from '../logic/siteDeadPileRemoval';
 import { enforceWhileSelfDiscards } from '../engine/abilities/enforceWhileDiscard';
 
 /** Après un déplacement réel : réponses « each time the fellowship moves ». */
@@ -220,6 +221,9 @@ export const playSite = (
         if (beginSiteMoveCharacterWoundsIfNeeded(G, next)) {
             return;
         }
+        if (beginDeadPileRemovalIfNeeded(G, next)) {
+            return;
+        }
         // Site « may » hors regroupement (Courtyard / Morannon…) : toaster d’abord.
         if (beginOptionalSiteMoveAbility(G, next)) {
             return;
@@ -230,6 +234,9 @@ export const playSite = (
         G.activeSkirmishId = undefined;
         const next = enterPhase('shadow');
         if (beginSiteMoveCharacterWoundsIfNeeded(G, next)) {
+            return;
+        }
+        if (beginDeadPileRemovalIfNeeded(G, next)) {
             return;
         }
         if (beginOptionalSiteMoveAbility(G, next)) {
@@ -252,7 +259,8 @@ export const endFellowshipPhase = ({
         G.responseWindow?.isOpen ||
         G.pendingEvent ||
         G.pendingSiteMoveAbility ||
-        G.pendingSiteCharacterWounds
+        G.pendingSiteCharacterWounds ||
+        G.pendingDeadPileRemoval
     ) {
         return 'INVALID_MOVE';
     }
@@ -270,6 +278,9 @@ export const endFellowshipPhase = ({
     if (!G.awaitingSiteSelection) {
         const next = enterPhase('shadow');
         if (beginSiteMoveCharacterWoundsIfNeeded(G, next)) {
+            return;
+        }
+        if (beginDeadPileRemovalIfNeeded(G, next)) {
             return;
         }
         if (beginOptionalSiteMoveAbility(G, next)) {

@@ -52,6 +52,22 @@ const SITES_DOL_GULDUR_PATH = [
     '11S232', // 9 Cavern Entrance
 ] as const;
 
+/**
+ * Vague Falls of Rauros.
+ * Départ site 3 → arrivée site 4 (région 2) Falls → FP retire un mort du jeu.
+ */
+const SITES_FALLS_PATH = [
+    '11S265', // 1 Window
+    '11S228', // 2 Anduin Confluence
+    '11S263', // 3 West Gate (départ)
+    '17U146', // 4 Falls of Rauros (région 2)
+    '11S241', // 5 Orthanc
+    '18U138', // 6 Sirannon
+    '11S254', // 7 Pelennor Flat
+    '11S250', // 8 North Undeep
+    '11S232', // 9 Cavern Entrance
+] as const;
+
 const resetBoardForPreset = (G: GameState): void => {
     const fpId = G.fpPlayerId || '0';
     const fpPlayer = G.players[fpId];
@@ -73,6 +89,7 @@ const resetBoardForPreset = (G: GameState): void => {
     G.pendingSitePhaseAbility = undefined;
     G.pendingSiteFollowerTransfer = undefined;
     G.pendingFpDiscard = undefined;
+    G.pendingDeadPileRemoval = undefined;
     G.pendingSiteCharacterWounds = undefined;
     G.sitePhaseAbilityOfferedThisPhase = false;
     G.hunterMinionPlayedThisShadowPhase = false;
@@ -84,6 +101,8 @@ const resetBoardForPreset = (G: GameState): void => {
             player.hand = [];
             player.supportArea = [];
             player.discard = [];
+            player.deadPile = [];
+            player.removedFromGame = [];
             player.fellowshipArea = [];
             player.sitesDeck = [];
             player.deck = [];
@@ -158,6 +177,40 @@ export const applyDevPreset = (
 
             G.statusMessage =
                 '[DEV] Dol Guldur · site 2 : phase Regroup → bulle sur séide (exert + −1 menace) → FP défausse une situation (My Axe / Final Count).';
+            break;
+        }
+
+        case 'SITES_FALLS': {
+            resetBoardForPreset(G);
+            setupDevPath(G, 2, SITES_FALLS_PATH);
+            fpPlayer.burdens = 0;
+            fpPlayer.threats = 0;
+
+            fpPlayer.fellowshipArea = [
+                {
+                    ...clonePresetCard('2C102', 'dev-falls-frodo'),
+                    attachments: [clonePresetCard('1R1', 'dev-falls-ring')],
+                },
+                clonePresetCard('1R13', 'dev-falls-gimli'),
+            ];
+            // 2 morts → le FP choisit lequel retirer du jeu à Falls.
+            fpPlayer.deadPile = [
+                clonePresetCard('1R72', 'dev-falls-gandalf-dead'),
+                clonePresetCard('1R96', 'dev-falls-boromir-dead'),
+            ];
+            fpPlayer.hand = [];
+            fpPlayer.deck = [clonePresetCard('1C11', 'dev-falls-draw')];
+            fpPlayer.sitesDeck = [clonePresetSite('11S250', fpId)];
+
+            if (shadowPlayer) {
+                shadowPlayer.hand = [];
+                shadowPlayer.sitesDeck = [clonePresetSite('11S263', shadowId)];
+                shadowPlayer.supportArea = [];
+                G.battlefield = [];
+            }
+
+            G.statusMessage =
+                '[DEV] Falls of Rauros · site 3 → Fin de Communauté → arrivée site 4 (région 2) : choisissez un mort (Gandalf / Boromir) à retirer du jeu.';
             break;
         }
     }

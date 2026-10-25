@@ -24,6 +24,7 @@ import { advanceCompany } from './moves/fellowshipMoves';
 import { tryOpenFellowshipMoves } from './engine/responseWindow';
 import { beginOptionalSiteMoveAbility } from './logic/siteMoveAbility';
 import { beginSiteMoveCharacterWoundsIfNeeded } from './logic/siteMoveCharacterWounds';
+import { beginDeadPileRemovalIfNeeded } from './logic/siteDeadPileRemoval';
 import { beginOptionalSitePhaseAbility } from './logic/sitePhaseAbility';
 import { beginOptionalSiteStartAbility } from './logic/siteStartAbility';
 import { devMoves } from './dev/devMoves';
@@ -124,6 +125,7 @@ const createInitialPlayer = (playerId: string): PlayerState => {
                 } as CardState,
             ],*/
             deadPile: [],
+            removedFromGame: [],
             fellowshipArea: [],
             supportArea: [],
             sitesDeck,
@@ -143,6 +145,7 @@ const createInitialPlayer = (playerId: string): PlayerState => {
         hand: [],
         discard: [],
         deadPile: [],
+        removedFromGame: [],
         fellowshipArea: [],
         supportArea: [],
         sitesDeck,
@@ -1292,7 +1295,8 @@ export const LotrGame: Game<GameState> = {
                         G.preventMoveAgain ||
                         G.regroupStep !== 'FP_DECISION' ||
                         G.pendingSiteMoveAbility ||
-                        G.pendingSiteCharacterWounds
+                        G.pendingSiteCharacterWounds ||
+                        G.pendingDeadPileRemoval
                     ) {
                         return 'INVALID_MOVE';
                     }
@@ -1308,6 +1312,11 @@ export const LotrGame: Game<GameState> = {
                                 G,
                                 'startOfShadow'
                             )
+                        ) {
+                            return;
+                        }
+                        if (
+                            beginDeadPileRemovalIfNeeded(G, 'startOfShadow')
                         ) {
                             return;
                         }

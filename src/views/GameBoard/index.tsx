@@ -1820,6 +1820,7 @@ export const GameBoard: React.FC<GameBoardProps> = ({
         hand: [],
         discard: [],
         deadPile: [],
+        removedFromGame: [],
         fellowshipArea: [],
         supportArea: [],
         sitesDeck: [],
@@ -1830,6 +1831,7 @@ export const GameBoard: React.FC<GameBoardProps> = ({
         hand: [],
         discard: [],
         deadPile: [],
+        removedFromGame: [],
         fellowshipArea: [],
         supportArea: [],
         sitesDeck: [],
@@ -1886,6 +1888,41 @@ export const GameBoard: React.FC<GameBoardProps> = ({
         selectableCardIds?: string[];
         onSelectCard?: (cardId: string) => void;
     } | null>(null);
+
+    /** Falls of Rauros : grille de choix dans la pile de mort (choix obligatoire). */
+    const openDeadPileRemovalPick = useCallback(() => {
+        const pending = G.pendingDeadPileRemoval;
+        if (!pending || String(pending.playerId) !== String(myId)) return;
+        const candidates = me.deadPile || [];
+        if (candidates.length === 0) return;
+        setOpenOutOfPlayZone(null);
+        setStackOverlay({
+            title: 'Falls of Rauros',
+            subtitle:
+                'Placez une carte de votre pile de mort hors jeu (retirée du jeu).',
+            cards: candidates,
+            selectableCardIds: candidates.map(
+                (c) => c.instanceId || c.id
+            ),
+            onSelectCard: (cardId) => {
+                moves.resolveDeadPileRemovalChoice?.(cardId);
+            },
+        });
+    }, [G.pendingDeadPileRemoval, me.deadPile, myId, moves]);
+
+    const deadPileRemovalKeyRef = useRef<string | null>(null);
+    useEffect(() => {
+        const pending = G.pendingDeadPileRemoval;
+        if (!pending) {
+            deadPileRemovalKeyRef.current = null;
+            return;
+        }
+        if (String(pending.playerId) !== String(myId)) return;
+        const key = `${pending.siteInstanceId}:${pending.abilityId}`;
+        if (deadPileRemovalKeyRef.current === key) return;
+        deadPileRemovalKeyRef.current = key;
+        openDeadPileRemovalPick();
+    }, [G.pendingDeadPileRemoval, myId, openDeadPileRemovalPick]);
 
     useEffect(() => {
         const onOpen = (event: Event) => {
@@ -2013,6 +2050,16 @@ export const GameBoard: React.FC<GameBoardProps> = ({
                     title: 'Cimetière adverse',
                     cards: opponent.deadPile || [],
                 };
+            case 'my-removed':
+                return {
+                    title: 'Mes cartes retirées du jeu',
+                    cards: me.removedFromGame || [],
+                };
+            case 'opponent-removed':
+                return {
+                    title: 'Cartes adverses retirées du jeu',
+                    cards: opponent.removedFromGame || [],
+                };
             default:
                 return null;
         }
@@ -2023,8 +2070,10 @@ export const GameBoard: React.FC<GameBoardProps> = ({
         revealOverlay,
         me.deadPile,
         me.discard,
+        me.removedFromGame,
         opponent.deadPile,
         opponent.discard,
+        opponent.removedFromGame,
     ]);
 
     const currentSiteIndex = G.players['0']?.currentSiteIndex ?? 0;
@@ -3176,9 +3225,27 @@ export const GameBoard: React.FC<GameBoardProps> = ({
                         localHasInitiative={playerHasInitiative(G, myId)}
                         myDiscard={me.discard || []}
                         myDeadPile={me.deadPile || []}
+                        myRemovedFromGame={me.removedFromGame || []}
                         opponentDiscard={opponent.discard || []}
                         opponentDeadPile={opponent.deadPile || []}
-                        onOpenZone={setOpenOutOfPlayZone}
+                        opponentRemovedFromGame={
+                            opponent.removedFromGame || []
+                        }
+                        onOpenZone={(zone) => {
+                            // Choix Falls en attente : le cimetière rouvre le choix.
+                            if (
+                                zone === 'my-cemetery' &&
+                                G.pendingDeadPileRemoval &&
+                                String(
+                                    G.pendingDeadPileRemoval.playerId
+                                ) === String(myId) &&
+                                (me.deadPile || []).length > 0
+                            ) {
+                                openDeadPileRemovalPick();
+                                return;
+                            }
+                            setOpenOutOfPlayZone(zone);
+                        }}
                     />
                     </S.BoardColumns>
 

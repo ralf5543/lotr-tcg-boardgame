@@ -51,6 +51,7 @@ function resetPhaseMachine(G: GameState): void {
     G.pendingSitePhaseAbility = undefined;
     G.pendingSiteFollowerTransfer = undefined;
     G.pendingFpDiscard = undefined;
+    G.pendingDeadPileRemoval = undefined;
     G.sitePhaseAbilityOfferedThisPhase = false;
     G.pendingForcedChoice = undefined;
     G.pendingReveal = undefined;
