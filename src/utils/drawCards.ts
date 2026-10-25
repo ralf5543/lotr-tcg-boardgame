@@ -3,6 +3,7 @@ import {
     announceInitiativeIfChanged,
     freePeoplesHasInitiative,
 } from "../game/logic/initiative";
+import { placeCardIntoDiscardPile } from "../game/logic/sites";
 
 const isFreePeoplesPlayer = (G: GameState, player: PlayerState): boolean => {
     const fpId = G.fpPlayerId || '0';
@@ -66,9 +67,19 @@ export const reconcileHand = (G: GameState, player: PlayerState): { drawn: numbe
             ? freePeoplesHasInitiative(G)
             : false;
         const overflow = currentHandSize - TARGET_HAND_SIZE;
-        // On défausse les cartes en trop vers la défausse (discard)
+        // On défausse les cartes en trop (Foot of Mount Doom : retirées du jeu)
         const discardedCards = player.hand.splice(TARGET_HAND_SIZE, overflow);
-        player.discard.push(...discardedCards);
+        const ownerId = Object.keys(G.players || {}).find(
+            (id) => G.players[id] === player
+        );
+        if (ownerId) {
+            for (const card of discardedCards) {
+                placeCardIntoDiscardPile(G, ownerId, card);
+            }
+        } else {
+            if (!player.discard) player.discard = [];
+            player.discard.push(...discardedCards);
+        }
         if (watchInitiative) {
             announceInitiativeIfChanged(G, hadInitiative);
         }

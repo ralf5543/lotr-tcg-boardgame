@@ -4,7 +4,11 @@ import { canPlayCard } from '../engine/canPlayCard';
 import { findInPlayCardOwnerId } from './cultureTokens';
 import { getEffectiveTwilightCost } from '../../utils/roamingDetection';
 import { getWhileTwilightCostModifier } from './stats/mechanics/whileModifier';
-import { detachCardFromBattlefield, getCurrentSiteIndex } from './sites';
+import {
+    detachCardFromBattlefield,
+    getCurrentSiteIndex,
+    placeCardIntoDiscardPile,
+} from './sites';
 
 const matchCard = (card: CardState | undefined | null, targetId: string) =>
     Boolean(card && (card.instanceId === targetId || card.id === targetId));
@@ -56,11 +60,8 @@ export function stackCardOnHost(
     if (removed.attachments?.length) {
         const owner =
             findInPlayCardOwnerId(G, host) || ownerId;
-        const discard = G.players[owner]?.discard;
-        if (discard) {
-            for (const att of removed.attachments) {
-                if (att) discard.push(att);
-            }
+        for (const att of removed.attachments) {
+            if (att) placeCardIntoDiscardPile(G, owner, att);
         }
         removed.attachments = [];
     }

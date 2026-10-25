@@ -10139,6 +10139,23 @@
     "keywords": [
       "MOUNTAIN"
     ],
+    "abilities": [
+      {
+        "id": "18U135:0:site-passive-rest",
+        "phases": [],
+        "trigger": {
+          "type": "WHILE"
+        },
+        "cost": [],
+        "effects": [
+          {
+            "type": "REMOVE_FROM_GAME_INSTEAD_OF_DISCARD"
+          }
+        ],
+        "source": "SELF",
+        "text": "Each card that is about to be placed into the discard pile is removed from the game instead."
+      }
+    ],
     "twilightCost": 2,
     "imageUrl": "/cards_visuals/o_18_135.jpg",
     "i18n": {

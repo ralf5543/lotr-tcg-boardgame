@@ -279,9 +279,17 @@ Preset : `SITES_DOL_GULDUR`.
 
 Socle : zone « retiré du jeu » (`PlayerState.removedFromGame`) + piles « Retirées du jeu » dans le rail (visibles si non vides). Réutilisable par Foot of Mount Doom.
 
-Inertes volontaires : Angle ; Foot.
+Preset : `SITES_FALLS`.
 
-Preset : `SITES_FALLS` (playtest).
+### Vague Foot of Mount Doom
+
+| Id | Titre | Statut | Notes |
+| --- | --- | --- | --- |
+| `18U135` | Foot of Mount Doom | OK | Site courant : toute carte « à défausser » est retirée du jeu (les 16 points de défausse branchés sur `discardDestinationPile` ; morts de compagnons = pile de mort, inchangée) |
+
+Inerte volontaire : Angle (dernier des sets 12–18).
+
+Preset : `SITES_FOOT` (playtest).
 
 ### Exceptions UX (toaster / hors schéma)
 
@@ -299,7 +307,6 @@ En attendant : **entorses UX assumées** plutôt que des bulles absurdes — doc
 | Id | Titre | Famille |
 | --- | --- | --- |
 | `12U185` | The Angle | phase-ability |
-| `18U135` | Foot of Mount Doom | passive-while |
 
 ## Étapes
 
@@ -352,10 +359,12 @@ En attendant : **entorses UX assumées** plutôt que des bulles absurdes — doc
 19. Vague **Dol Guldur** ✅ — preset `SITES_DOL_GULDUR`
     - OK parse/runtime : Regroup exert + −menace → FP défausse situation
     - Inertes volontaires alors : Angle ; Foot ; Falls
-20. Vague **Falls of Rauros** — preset `SITES_FALLS` (playtest)
+20. Vague **Falls of Rauros** ✅ — preset `SITES_FALLS`
     - OK parse/runtime : zone retiré du jeu créée ; moves to région 2 → FP retire un mort (choix obligatoire, grille)
-    - Inertes volontaires : Angle ; Foot
-21. Reste inertes 12–18 (Angle / Foot) + inertes set 11 volontaires
+21. Vague **Foot of Mount Doom** — preset `SITES_FOOT` (playtest)
+    - OK parse/runtime : défausse → retiré du jeu tant que Foot est le site courant (tous les points de défausse branchés)
+    - Inerte volontaire : Angle (dernier 12–18)
+22. Reste inerte 12–18 (Angle) + inertes set 11 volontaires
 
 ## Hors scope
 

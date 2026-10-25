@@ -1,5 +1,6 @@
 import type { CardState, GameState } from '../game/types';
 import { reconcileActiveSkirmishAfterLeave } from '../game/logic/skirmishVacated';
+import { discardDestinationPile } from '../game/logic/sites';
 
 const matchCard = (card: CardState | undefined | null, targetId: string) =>
     Boolean(card && (card.instanceId === targetId || card.id === targetId));
@@ -71,16 +72,15 @@ function ownerDiscardPile(
 ): CardState[] | null {
     const player = G.players[ownerId];
     if (player) {
-        if (!player.discard) player.discard = [];
-        return player.discard;
+        // Foot of Mount Doom : la destination devient les retirées du jeu.
+        return discardDestinationPile(G, ownerId);
     }
     const fpId = G.fpPlayerId || '0';
     const shadowId = fpId === '0' ? '1' : '0';
     const fallbackId = card.kind === 'FREE_PEOPLE' ? fpId : shadowId;
     const fallback = G.players[fallbackId];
     if (!fallback) return null;
-    if (!fallback.discard) fallback.discard = [];
-    return fallback.discard;
+    return discardDestinationPile(G, fallbackId);
 }
 
 /**

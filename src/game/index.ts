@@ -25,6 +25,7 @@ import { tryOpenFellowshipMoves } from './engine/responseWindow';
 import { beginOptionalSiteMoveAbility } from './logic/siteMoveAbility';
 import { beginSiteMoveCharacterWoundsIfNeeded } from './logic/siteMoveCharacterWounds';
 import { beginDeadPileRemovalIfNeeded } from './logic/siteDeadPileRemoval';
+import { placeCardIntoDiscardPile } from './logic/sites';
 import { beginOptionalSitePhaseAbility } from './logic/sitePhaseAbility';
 import { beginOptionalSiteStartAbility } from './logic/siteStartAbility';
 import { devMoves } from './dev/devMoves';
@@ -956,9 +957,7 @@ export const LotrGame: Game<GameState> = {
                     if (dead) {
                         const shadowPlayer = G.players[shadowId];
                         if (shadowPlayer) {
-                            if (!shadowPlayer.discard)
-                                shadowPlayer.discard = [];
-                            shadowPlayer.discard.push(c);
+                            placeCardIntoDiscardPile(G, shadowId, c);
                         }
                     }
                     return !dead;

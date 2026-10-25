@@ -379,6 +379,11 @@ export const DevPanel: React.FC<DevPanelProps> = ({
                         >
                             Sites Falls of Rauros
                         </S.PresetButton>
+                        <S.PresetButton
+                            onClick={() => moves.devLoadPreset('SITES_FOOT')}
+                        >
+                            Sites Foot of Mount Doom
+                        </S.PresetButton>
                         <S.GameButton $bgColor="#3498db" onClick={onDrawCard}>
                             🃏 Piocher ({deckCount})
                         </S.GameButton>

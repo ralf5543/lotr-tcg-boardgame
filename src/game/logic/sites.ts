@@ -91,6 +91,7 @@ function currentSiteHasPassiveEffect(
         | 'FORBID_HEAL'
         | 'FORBID_WOUND_PREVENTION'
         | 'FORBID_REMOVE_BURDENS'
+        | 'REMOVE_FROM_GAME_INSTEAD_OF_DISCARD'
 ): boolean {
     const site = getCurrentSite(G);
     if (!site?.abilities?.length) return false;
@@ -156,6 +157,42 @@ export function isWoundPreventionForbidden(G: GameState): boolean {
 /** Steward's Tomb : fardeaux non retirables. */
 export function areBurdenRemovalsForbidden(G: GameState): boolean {
     return currentSiteHasPassiveEffect(G, 'FORBID_REMOVE_BURDENS');
+}
+
+/** Foot of Mount Doom : la défausse est remplacée par le retrait du jeu. */
+export function isDiscardReplacedByRemoval(G: GameState): boolean {
+    return currentSiteHasPassiveEffect(
+        G,
+        'REMOVE_FROM_GAME_INSTEAD_OF_DISCARD'
+    );
+}
+
+/**
+ * Pile où doit atterrir une carte « à défausser » pour ce joueur :
+ * les cartes retirées du jeu si Foot of Mount Doom est le site courant,
+ * sinon sa défausse.
+ */
+export function discardDestinationPile(
+    G: GameState,
+    playerId: string
+): CardState[] {
+    const player = G.players[playerId];
+    if (!player) return [];
+    if (isDiscardReplacedByRemoval(G)) {
+        if (!player.removedFromGame) player.removedFromGame = [];
+        return player.removedFromGame;
+    }
+    if (!player.discard) player.discard = [];
+    return player.discard;
+}
+
+/** Place une carte dans la pile de destination d’une défausse (voir ci-dessus). */
+export function placeCardIntoDiscardPile(
+    G: GameState,
+    playerId: string,
+    card: CardState
+): void {
+    discardDestinationPile(G, playerId).push(card);
 }
 
 /** Région 1 (sites 1–3), 2 (4–6) ou 3 (7–9). */
@@ -283,8 +320,7 @@ export function discardSiteAttachments(
                   : fpId;
         const player = G.players[ownerId];
         if (!player) continue;
-        if (!player.discard) player.discard = [];
-        player.discard.push(att as CardState);
+        placeCardIntoDiscardPile(G, ownerId, att as CardState);
     }
     site.attachments = [];
 }
@@ -310,8 +346,7 @@ export function discardSiteStacked(
                   : shadowId;
         const player = G.players[ownerId];
         if (!player) continue;
-        if (!player.discard) player.discard = [];
-        player.discard.push(card);
+        placeCardIntoDiscardPile(G, ownerId, card);
     }
     site.stacked = [];
 }
@@ -409,8 +444,7 @@ export function detachCardFromBattlefield(
                   : shadowId;
         const player = G.players[ownerId];
         if (!player) continue;
-        if (!player.discard) player.discard = [];
-        player.discard.push(att);
+        placeCardIntoDiscardPile(G, ownerId, att);
     }
     removed.attachments = [];
     return removed;

@@ -32,7 +32,10 @@ import {
 import { applyAutomaticToPlayCosts } from '../logic/applyToPlayCosts';
 import { getEffectiveTwilightCost } from '../../utils/roamingDetection';
 import { getWhileTwilightCostModifier } from '../logic/stats/mechanics/whileModifier';
-import { getCurrentSiteIndex } from '../logic/sites';
+import {
+    getCurrentSiteIndex,
+    placeCardIntoDiscardPile,
+} from '../logic/sites';
 import {
     afterResponseResolved,
     flushPendingActionYield,
@@ -439,8 +442,7 @@ export const playCard = (
                 G.twilightPool -= cost;
                 return 'INVALID_MOVE';
             }
-            if (!player.discard) player.discard = [];
-            player.discard.push(playedCard);
+            placeCardIntoDiscardPile(G, actingPlayerId, playedCard);
             G.statusMessage = `${playedCard.title} est joué (+${cost} Crépuscule).`;
         } else {
             console.warn(
@@ -492,8 +494,7 @@ export const playCard = (
                 G.twilightPool += cost;
                 return 'INVALID_MOVE';
             }
-            if (!player.discard) player.discard = [];
-            player.discard.push(playedCard);
+            placeCardIntoDiscardPile(G, actingPlayerId, playedCard);
             G.statusMessage = `${playedCard.title} est joué (-${cost} Crépuscule).`;
         } else {
             console.warn(
@@ -889,8 +890,7 @@ export const cleanupPendingDeaths = ({ G }: LotrMoveContext) => {
             if (id) buriedIds.push(id);
             const shadowPlayer = G.players[shadowId];
             if (shadowPlayer) {
-                if (!shadowPlayer.discard) shadowPlayer.discard = [];
-                shadowPlayer.discard.push(c);
+                placeCardIntoDiscardPile(G, shadowId, c);
             }
         }
         return !dead;

@@ -68,6 +68,22 @@ const SITES_FALLS_PATH = [
     '11S232', // 9 Cavern Entrance
 ] as const;
 
+/**
+ * Vague Foot of Mount Doom : compagnie déjà sur le site (site 5).
+ * Toute défausse (main, jeu, séides en fin de tour…) retire du jeu.
+ */
+const SITES_FOOT_PATH = [
+    '11S265', // 1 Window
+    '11S228', // 2 Anduin Confluence
+    '11S263', // 3 West Gate
+    '11S241', // 4 Orthanc
+    '18U135', // 5 Foot of Mount Doom (courant)
+    '18U138', // 6 Sirannon
+    '11S254', // 7 Pelennor Flat
+    '11S250', // 8 North Undeep
+    '11S232', // 9 Cavern Entrance
+] as const;
+
 const resetBoardForPreset = (G: GameState): void => {
     const fpId = G.fpPlayerId || '0';
     const fpPlayer = G.players[fpId];
@@ -211,6 +227,50 @@ export const applyDevPreset = (
 
             G.statusMessage =
                 '[DEV] Falls of Rauros · site 3 → Fin de Communauté → arrivée site 4 (région 2) : choisissez un mort (Gandalf / Boromir) à retirer du jeu.';
+            break;
+        }
+
+        case 'SITES_FOOT': {
+            resetBoardForPreset(G);
+            setupDevPath(G, 4, SITES_FOOT_PATH);
+            fpPlayer.burdens = 0;
+            fpPlayer.threats = 0;
+
+            fpPlayer.fellowshipArea = [
+                {
+                    ...clonePresetCard('2C102', 'dev-foot-frodo'),
+                    attachments: [clonePresetCard('1R1', 'dev-foot-ring')],
+                },
+                clonePresetCard('1R13', 'dev-foot-gimli'),
+            ];
+            fpPlayer.supportArea = [
+                clonePresetCard('4R52', 'dev-foot-axe'),
+            ];
+            // Delving (affaiblir Gimli → piocher 3) : l’événement joué doit
+            // finir retiré du jeu. Le reste : défausse de regroupement.
+            fpPlayer.hand = [
+                clonePresetCard('1C6', 'dev-foot-delving'),
+                clonePresetCard('1R72', 'dev-foot-gandalf'),
+                clonePresetCard('4R69', 'dev-foot-final'),
+            ];
+            fpPlayer.deck = [
+                clonePresetCard('1C11', 'dev-foot-draw-1'),
+                clonePresetCard('1C11', 'dev-foot-draw-2'),
+                clonePresetCard('1C11', 'dev-foot-draw-3'),
+                clonePresetCard('1C11', 'dev-foot-draw-4'),
+            ];
+            fpPlayer.sitesDeck = [clonePresetSite('11S250', fpId)];
+
+            if (shadowPlayer) {
+                shadowPlayer.hand = [clonePresetCard('1C266', 'dev-foot-orc-hand')];
+                shadowPlayer.sitesDeck = [clonePresetSite('11S263', shadowId)];
+                shadowPlayer.supportArea = [];
+                // Séide balayé en fin de tour → doit être retiré du jeu.
+                G.battlefield = [clonePresetCard('1C268', 'dev-foot-orc')];
+            }
+
+            G.statusMessage =
+                '[DEV] Foot of Mount Doom · vous êtes sur Foot (site 5) : jouez Delving (affaiblissez Gimli, piochez 3) → l’événement doit finir en « Retirées du jeu » (rail à droite), pas en défausse. Idem défausse de regroupement et séide en fin de tour.';
             break;
         }
     }

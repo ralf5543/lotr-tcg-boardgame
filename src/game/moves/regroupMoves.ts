@@ -8,6 +8,7 @@ import {
     announceInitiativeIfChanged,
     freePeoplesHasInitiative,
 } from '../logic/initiative';
+import { placeCardIntoDiscardPile } from '../logic/sites';
 
 // Helper pour renvoyer les Suivants en zone de support à la vraie fin de tour
 export const returnAidFollowersToSupport = (G: GameState) => {
@@ -115,8 +116,7 @@ export const discardCardFromHand = (
         : false;
 
     const [discarded] = player.hand.splice(cardIndex, 1);
-    if (!player.discard) player.discard = [];
-    player.discard.push(discarded);
+    if (discarded) placeCardIntoDiscardPile(G, actingPlayerId, discarded);
 
     player.hasDiscardedInRegroup = true;
 
@@ -145,7 +145,7 @@ export const confirmHandRefill = ({ G, events, playerID }: LotrMoveContext) => {
 
     while (player.hand.length > 8) {
         const discarded = player.hand.pop();
-        if (discarded) player.discard.push(discarded);
+        if (discarded) placeCardIntoDiscardPile(G, actingPlayerId, discarded);
     }
 
     if (player.hand.length < 8) {
@@ -180,9 +180,8 @@ export const confirmHandRefill = ({ G, events, playerID }: LotrMoveContext) => {
         const shadowPlayer = G.players[shadowId];
 
         if (shadowPlayer) {
-            if (!shadowPlayer.discard) shadowPlayer.discard = [];
             (G.battlefield || []).forEach((minion: any) => {
-                shadowPlayer.discard.push(minion);
+                placeCardIntoDiscardPile(G, shadowId, minion);
             });
         }
 
@@ -247,8 +246,7 @@ export const discardForMuster = (
     // Clic en main = Défausse pour le Ralliement
     const [discardedCard] = player.hand.splice(cardIndex, 1);
     if (discardedCard) {
-        if (!player.discard) player.discard = [];
-        player.discard.push(discardedCard);
+        placeCardIntoDiscardPile(G, playerID, discardedCard);
         musterState.discardedCount += 1;
         G.statusMessage = `Ralliement (${musterState.discardedCount}/${musterState.allowedCount}) : Carte défaussée.`;
     }

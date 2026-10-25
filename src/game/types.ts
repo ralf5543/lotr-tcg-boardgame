@@ -475,6 +475,13 @@ export type AbilityEffect =
       }
     | {
           /**
+           * Foot of Mount Doom : chaque carte sur le point d’être placée
+           * dans une pile de défausse est retirée du jeu à la place.
+           */
+          type: 'REMOVE_FROM_GAME_INSTEAD_OF_DISCARD';
+      }
+    | {
+          /**
            * Remplace un site du chemin par un site du deck d’aventure.
            * La cible choisie = id du site dans sitesDeck (avant activateAbility).
            */
@@ -1591,7 +1598,10 @@ export interface ArcheryState {
     shadowRemainingWounds: number;
 }
 
-export type DevPresetType = 'SITES_DOL_GULDUR' | 'SITES_FALLS';
+export type DevPresetType =
+    | 'SITES_DOL_GULDUR'
+    | 'SITES_FALLS'
+    | 'SITES_FOOT';
 
 export interface TempKeywordModifier {
     keyword: CardKeyword;

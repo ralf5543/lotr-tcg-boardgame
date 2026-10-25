@@ -15,7 +15,10 @@ import {
     removeCultureTokensForPlayer,
     tokenCountOnCard,
 } from '../../logic/cultureTokens';
-import { areCultureTokenChangesForbidden } from '../../logic/sites';
+import {
+    areCultureTokenChangesForbidden,
+    placeCardIntoDiscardPile,
+} from '../../logic/sites';
 import {
     announceInitiativeIfChanged,
     freePeoplesHasInitiative,
@@ -389,7 +392,6 @@ export function discardCardsFromHand(
         picked.push(card);
     }
 
-    if (!player.discard) player.discard = [];
     for (const card of picked) {
         const index = player.hand.findIndex((item) =>
             matchCard(item, card.instanceId || card.id)
@@ -397,7 +399,7 @@ export function discardCardsFromHand(
         if (index < 0) return false;
         const [removed] = player.hand.splice(index, 1);
         if (!removed) return false;
-        player.discard.push(removed);
+        placeCardIntoDiscardPile(G, ownerId, removed);
     }
     if (watchInitiative) {
         announceInitiativeIfChanged(G, hadInitiative);

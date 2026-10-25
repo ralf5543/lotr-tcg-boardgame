@@ -7293,6 +7293,23 @@ function parseSitePassiveRestAbilities(
         });
     }
 
+    // Foot of Mount Doom : défausse → retiré du jeu.
+    if (
+        /Each card that is about to be placed into the discard pile is removed from the game instead\.?/i.test(
+            plain
+        )
+    ) {
+        found.push({
+            id: `${cardId || 'ability'}:${found.length}:site-foot-mount-doom`,
+            phases: [],
+            trigger: { type: 'WHILE' },
+            cost: [],
+            effects: [{ type: 'REMOVE_FROM_GAME_INSTEAD_OF_DISCARD' }],
+            source: 'SELF',
+            text: 'Each card that is about to be placed into the discard pile is removed from the game instead.',
+        });
+    }
+
     // Breeding pit of Isengard : first hunter minion each Shadow phase −N.
     const breedingRe =
         /The twilight cost of the first hunter minion played each Shadow phase is\s*[–\-−](\d+)\.?/gi;

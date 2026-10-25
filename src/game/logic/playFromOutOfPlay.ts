@@ -7,7 +7,7 @@ import {
 } from '../engine/canPlayCard';
 import { getEffectiveTwilightCost } from '../../utils/roamingDetection';
 import { getWhileTwilightCostModifier } from './stats/mechanics/whileModifier';
-import { getCurrentSiteIndex } from './sites';
+import { getCurrentSiteIndex, placeCardIntoDiscardPile } from './sites';
 import { applyAutomaticToPlayCosts } from './applyToPlayCosts';
 
 const matchCard = (card: CardState | undefined | null, targetId: string) =>
@@ -331,8 +331,7 @@ export function searchDeckCardToDiscard(
 
     const [removed] = player.deck.splice(index, 1);
     if (!removed) return null;
-    if (!player.discard) player.discard = [];
-    player.discard.push(removed);
+    placeCardIntoDiscardPile(G, ownerId, removed);
     shufflePlayerDeck(G, ownerId);
     return removed;
 }
