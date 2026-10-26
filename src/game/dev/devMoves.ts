@@ -12,8 +12,6 @@ import {
     tokenCountOnCard,
 } from '../logic/cultureTokens';
 import { onStartOfFellowshipBegin } from '../logic/startOfFellowship';
-import { applyDevPreset } from './presets';
-import type { DevPresetType } from '../types';
 import type { CardCulture } from '../types';
 import { isRingBearerCard } from '../../utils/cardUtils';
 
@@ -197,19 +195,6 @@ export const devMoves = {
 
         // setPhase ne rejoue pas onBegin si on est déjà sur cette phase.
         if (targetPhase === 'startOfFellowship' && !G.sanctuaryHeal) {
-            onStartOfFellowshipBegin(G, events);
-        }
-    },
-
-    /** Charge un terrain de playtest DEV (vague en cours, cf. presets.ts). */
-    devLoadPreset: (
-        { G, events }: LotrPhaseContext,
-        presetType: DevPresetType
-    ) => {
-        resetPhaseMachine(G);
-        applyDevPreset(G, presetType);
-        events?.setPhase?.('startOfFellowship');
-        if (!G.sanctuaryHeal) {
             onStartOfFellowshipBegin(G, events);
         }
     },

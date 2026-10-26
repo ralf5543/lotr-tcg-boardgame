@@ -1624,13 +1624,6 @@ export interface ArcheryState {
     shadowRemainingWounds: number;
 }
 
-/** Presets DEV de playtest (panneau de test, vague en cours). */
-export type DevPresetType =
-    | 'SITES_ANGLE'
-    | 'SITES_BUCKLAND'
-    | 'SITES_MARSHLAND'
-    | 'SITES_WOODY_END';
-
 export interface TempKeywordModifier {
     keyword: CardKeyword;
     expiresAtPhase?: AbilityEffectExpiry;

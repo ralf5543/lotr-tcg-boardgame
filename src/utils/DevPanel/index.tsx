@@ -15,8 +15,6 @@ export interface DevMoves {
     devSetArchery?: (amount: number) => void;
     devSetCurrentSite?: (siteIndex: number) => void;
     devForceEndPhase: () => void;
-    /** Presets de playtest de la vague en cours (famille « Shadow: play… »). */
-    devLoadPreset?: (presetName: string) => void;
 }
 
 export interface DevPanelProps {
@@ -372,50 +370,6 @@ export const DevPanel: React.FC<DevPanelProps> = ({
                         </S.GameButton>
                     </S.Section>
 
-                    {/* Presets de playtest : vague famille « Shadow: play… » */}
-                    <S.Section>
-                        <S.Label>
-                            Presets sites (famille « Shadow: play… ») :
-                            <br />
-                            <span style={{ opacity: 0.75, fontWeight: 400 }}>
-                                Site 5 courant. Après chargement, sauter en
-                                « shadow » : le toaster du site apparaît côté
-                                Ombre.
-                            </span>
-                        </S.Label>
-                        <S.ButtonGroup>
-                            <S.ActionButton
-                                onClick={() =>
-                                    moves.devLoadPreset?.('SITES_ANGLE')
-                                }
-                            >
-                                The Angle (2 modes)
-                            </S.ActionButton>
-                            <S.ActionButton
-                                onClick={() =>
-                                    moves.devLoadPreset?.('SITES_BUCKLAND')
-                                }
-                            >
-                                Buckland (désignation)
-                            </S.ActionButton>
-                        </S.ButtonGroup>
-                        <S.ButtonGroup>
-                            <S.ActionButton
-                                onClick={() =>
-                                    moves.devLoadPreset?.('SITES_MARSHLAND')
-                                }
-                            >
-                                Marshland (−3)
-                            </S.ActionButton>
-                            <S.ActionButton
-                                onClick={() =>
-                                    moves.devLoadPreset?.('SITES_WOODY_END')
-                                }
-                            >
-                                Woody-End (défausse)
-                            </S.ActionButton>
-                        </S.ButtonGroup>
-                    </S.Section>
                 </S.PanelContent>
             )}
         </S.PanelContainer>
