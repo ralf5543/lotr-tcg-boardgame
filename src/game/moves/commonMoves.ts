@@ -55,6 +55,7 @@ import { resolvePendingSiteMoveAbility } from '../logic/siteMoveAbility';
 import {
     beginOptionalSitePhaseAbility,
     resolvePendingSitePhaseAbility,
+    resolvePendingSitePhaseDesignation,
 } from '../logic/sitePhaseAbility';
 import { assignSiteCharacterWound } from '../logic/siteMoveCharacterWounds';
 import { resolvePendingSiteFollowerTransferAbility } from '../logic/siteFollowerTransferAbility';
@@ -621,11 +622,13 @@ export const resolveSiteMoveAbilityChoice = (
     }
 };
 
-/** Toaster capacité de phase de site (Shores / Slopes…) : une offre par phase d’Ombre. */
+/** Toaster capacité de phase de site (Shores / Slopes / famille « play… »). */
 export const resolveSitePhaseAbilityChoice = (
     { G, playerID }: LotrMoveContext,
     accept: boolean,
-    discardedHandIds?: string[]
+    discardedHandIds?: string[],
+    chosenTargetId?: string,
+    chosenAbilityId?: string
 ) => {
     if (
         !G.pendingSitePhaseAbility ||
@@ -638,7 +641,31 @@ export const resolveSitePhaseAbilityChoice = (
             G,
             String(playerID),
             accept,
-            discardedHandIds
+            discardedHandIds,
+            chosenTargetId,
+            chosenAbilityId
+        )
+    ) {
+        return 'INVALID_MOVE';
+    }
+};
+
+/** Buckland : l’Ombre désigne la situation à défausser après avoir joué. */
+export const resolveSitePhaseDesignationChoice = (
+    { G, playerID }: LotrMoveContext,
+    chosenTargetId: string
+) => {
+    if (
+        !G.pendingSitePhaseDesignation ||
+        G.pendingSitePhaseDesignation.playerId !== playerID
+    ) {
+        return 'INVALID_MOVE';
+    }
+    if (
+        !resolvePendingSitePhaseDesignation(
+            G,
+            String(playerID),
+            chosenTargetId
         )
     ) {
         return 'INVALID_MOVE';
@@ -1020,6 +1047,7 @@ export const commonMoves = {
     resolveSiteStartAbilityChoice,
     resolveSiteMoveAbilityChoice,
     resolveSitePhaseAbilityChoice,
+    resolveSitePhaseDesignationChoice,
     resolveSiteFollowerTransferAbilityChoice,
     resolveFpDiscardChoice,
     resolveDeadPileRemovalChoice,

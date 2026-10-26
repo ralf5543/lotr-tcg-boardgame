@@ -105,7 +105,7 @@ export function findLegalAttachmentHosts(
             { G, ctx: { phase }, playerID: ownerId },
             hostId,
             host,
-            { ignorePhase: true }
+            { ignorePhase: true, ignoreTwilightPool: true }
         ).valid;
     });
 }
@@ -149,10 +149,146 @@ export function getDeckOrDiscardPlayCandidates(
             { G, ctx: { phase }, playerID: ownerId },
             hostId,
             attachHost || undefined,
-            { ignorePhase: true }
+            { ignorePhase: true, ignoreTwilightPool: true }
         );
         return check.valid;
     });
+}
+
+/** Coût crépuscule effectif d’une carte jouée par l’Ombre, réduction déduite. */
+function shadowPlayCost(G: GameState, card: CardState, twilightReduce = 0): number {
+    const cost = getEffectiveTwilightCost(
+        card,
+        getCurrentSiteIndex(G),
+        getWhileTwilightCostModifier(G, card)
+    );
+    return Math.max(0, cost - (twilightReduce || 0));
+}
+
+/** Cartes de la main que le joueur peut jouer via une capacité « play… ». */
+export function getHandPlayCandidates(
+    G: GameState,
+    ownerId: string,
+    filter: string[][],
+    phase = 'shadow',
+    twilightReduce = 0
+): CardState[] {
+    const player = G.players[ownerId];
+    if (!player?.hand) return [];
+    const fpId = G.fpPlayerId || '0';
+    const pool = (G.twilightPool || 0);
+
+    return player.hand.filter((card) => {
+        if (!card || !cardMatchesTarget(card, filter)) return false;
+        const check = canPlayCard(
+            card,
+            { G, ctx: { phase }, playerID: ownerId },
+            undefined,
+            undefined,
+            { ignorePhase: true, ignoreTwilightPool: true }
+        );
+        if (!check.valid) return false;
+        if (ownerId !== fpId) {
+            return shadowPlayCost(G, card, twilightReduce) <= pool;
+        }
+        return true;
+    });
+}
+
+/**
+ * Joue une carte depuis la main du joueur (capacité « play… » d’un site).
+ * Ombre : paie le coût effectif (− réduction) ; FP : ajoute le crépuscule.
+ */
+export function playCardFromHand(
+    G: GameState,
+    ownerId: string,
+    cardId: string,
+    filter?: string[][],
+    phase = 'shadow',
+    twilightReduce = 0
+): CardState | null {
+    const player = G.players[ownerId];
+    if (!player?.hand) return null;
+    const index = player.hand.findIndex((c) => matchCard(c, cardId));
+    if (index < 0) return null;
+    const card = player.hand[index];
+    if (!card) return null;
+    if (filter && !cardMatchesTarget(card, filter)) return null;
+
+    const check = canPlayCard(
+        card,
+        { G, ctx: { phase }, playerID: ownerId },
+        undefined,
+        undefined,
+        { ignorePhase: true, ignoreTwilightPool: true }
+    );
+    if (!check.valid) return null;
+
+    const fpId = G.fpPlayerId || '0';
+    const isFP = ownerId === fpId;
+    const [removed] = player.hand.splice(index, 1);
+    if (!removed) return null;
+    const restore = () => {
+        player.hand.splice(index, 0, removed);
+    };
+
+    const finishPlay = (): CardState => {
+        applyAutomaticToPlayCosts(G, removed, ownerId, phase);
+        return removed;
+    };
+
+    if (isFP) {
+        const cost = Number(removed.twilightCost) || 0;
+        G.twilightPool = (G.twilightPool || 0) + cost;
+
+        if (removed.type === 'COMPANION') {
+            if (!player.fellowshipArea) player.fellowshipArea = [];
+            removed.isFaceDown = false;
+            player.fellowshipArea.push(removed);
+            return finishPlay();
+        }
+        if (
+            removed.type === 'ALLY' ||
+            removed.type === 'FOLLOWER' ||
+            removed.type === 'ARTIFACT' ||
+            removed.type === 'CONDITION' ||
+            removed.type === 'POSSESSION'
+        ) {
+            if (!player.supportArea) player.supportArea = [];
+            player.supportArea.push(removed);
+            return finishPlay();
+        }
+        restore();
+        G.twilightPool -= cost;
+        return null;
+    }
+
+    const cost = shadowPlayCost(G, removed, twilightReduce);
+    if ((G.twilightPool || 0) < cost) {
+        restore();
+        return null;
+    }
+    G.twilightPool = (G.twilightPool || 0) - cost;
+
+    if (removed.type === 'MINION') {
+        if (!G.battlefield) G.battlefield = [];
+        G.battlefield.push(removed);
+        return finishPlay();
+    }
+    if (
+        removed.type === 'CONDITION' ||
+        removed.type === 'POSSESSION' ||
+        removed.type === 'ARTIFACT' ||
+        removed.type === 'FOLLOWER'
+    ) {
+        if (!player.supportArea) player.supportArea = [];
+        player.supportArea.push(removed);
+        return finishPlay();
+    }
+
+    restore();
+    G.twilightPool += cost;
+    return null;
 }
 
 /**
@@ -199,7 +335,7 @@ export function playCardFromDeckOrDiscard(
         { G, ctx: { phase }, playerID: ownerId },
         hostId,
         host || undefined,
-        { ignorePhase: true }
+        { ignorePhase: true, ignoreTwilightPool: true }
     );
     if (!check.valid) return null;
 

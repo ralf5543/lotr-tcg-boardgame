@@ -10,6 +10,43 @@ import { findTargetCard } from '../../../../utils/cardUtils';
 import { getAbilityToastClause, getCardText } from '../../../../utils/i18n';
 import { FormattedText } from '../../../../utils/FormattedText';
 import { findOptionalSiteResponseAbility } from '../../../../game/engine/responseWindow';
+import { getEligibleSitePhaseAbilities } from '../../../../game/logic/sitePhaseAbility';
+
+/** Libellé court d'un mode de capacité de site « play… » (boutons du toaster). */
+function sitePhaseModeLabel(ability: any): string {
+    const bits: string[] = [];
+    const cost = ability?.cost?.[0] || {};
+    (cost.spot || []).forEach((s: any) => {
+        const target = (s.target?.[0] || []).join(' ').toLowerCase();
+        bits.push(
+            `Désignez ${s.count} ${target === 'companion' ? 'compagnon(s)' : target}`
+        );
+    });
+    if (cost.discardFromHand)
+        bits.push(`défausser ${cost.discardFromHand} carte(s)`);
+    if (cost.removeBurdens)
+        bits.push(
+            `retirer ${cost.removeBurdens} fardeau(x)`
+        );
+    (ability?.effects || []).forEach((e: any) => {
+        if (e.type === 'PLAY_FROM_HAND' || e.type === 'PLAY_FROM_DECK_OR_DISCARD') {
+            const target = (e.target?.[0] || []).join(' ').toLowerCase();
+            bits.push(
+                target === 'nazgul'
+                    ? 'jouer un Nazgûl'
+                    : target === 'minion'
+                      ? 'jouer un séide'
+                      : `jouer ${target}`
+            );
+        } else if (e.type === 'DRAW') {
+            bits.push(`piocher ${e.count} carte(s)`);
+        } else if (e.type === 'DISCARD') {
+            bits.push('défausser une situation');
+        }
+    });
+    if (bits.length === 0) return 'Activer l’effet';
+    return bits.join(' · ').replace(/^./, (c: string) => c.toUpperCase());
+}
 
 interface GameControlsProps {
     G: GameState;
@@ -41,7 +78,12 @@ interface GameControlsProps {
         ) => void;
         resolveSiteStartAbilityChoice?: (accept: boolean) => void;
         resolveSiteMoveAbilityChoice?: (accept: boolean) => void;
-        resolveSitePhaseAbilityChoice?: (accept: boolean) => void;
+        resolveSitePhaseAbilityChoice?: (
+            accept: boolean,
+            discardedHandIds?: string[],
+            chosenTargetId?: string,
+            chosenAbilityId?: string
+        ) => void;
         resolveSiteFollowerTransferAbilityChoice?: (
             accept: boolean,
             chosenTargetId?: string
@@ -139,6 +181,12 @@ export const GameControls: React.FC<GameControlsProps> = ({
     );
     const isFpDiscardActive = Boolean(G.pendingFpDiscard);
     const isDeadPileRemovalActive = Boolean(G.pendingDeadPileRemoval);
+    const isSitePhaseDesignationActive = Boolean(
+        G.pendingSitePhaseDesignation
+    );
+    const sitePhaseModes = isSitePhaseAbilityActive
+        ? getEligibleSitePhaseAbilities(G)
+        : [];
     const isForcedChoiceActive = Boolean(G.pendingForcedChoice);
     const isRevealActive = Boolean(G.pendingReveal);
     const siteResponseCandidate =
@@ -177,6 +225,8 @@ export const GameControls: React.FC<GameControlsProps> = ({
             ? G.pendingSiteMoveAbility!.playerId
           : isSitePhaseAbilityActive
             ? G.pendingSitePhaseAbility!.playerId
+          : isSitePhaseDesignationActive
+            ? G.pendingSitePhaseDesignation!.playerId
           : isSiteFollowerTransferActive
             ? G.pendingSiteFollowerTransfer!.playerId
           : isFpDiscardActive
@@ -266,6 +316,7 @@ export const GameControls: React.FC<GameControlsProps> = ({
             /** Après Activer : désignation (reinforce / heal…) — Passer = refuser l’effet. */
             | 'SITE_MOVE_DESIGNATION'
             | 'SITE_PHASE_ABILITY'
+            | 'SITE_PHASE_DESIGNATION'
             | 'SITE_FOLLOWER_TRANSFER'
             | 'SITE_FOLLOWER_TRANSFER_DESIGNATION'
             | 'FP_DISCARD'
@@ -508,6 +559,23 @@ export const GameControls: React.FC<GameControlsProps> = ({
             show: true,
             title: 'EFFET DU SITE',
             body: 'Les Peuples Libres choisissent une situation à défausser…',
+            showPassButton: false,
+            type: 'STANDARD',
+        };
+    } else if (isSitePhaseDesignationActive && isMyTurnToAct) {
+        toastConfig = {
+            show: true,
+            title: 'EFFET DU SITE',
+            body:
+                G.statusMessage || 'Défaussez une situation en jeu.',
+            showPassButton: false,
+            type: 'SITE_PHASE_DESIGNATION',
+        };
+    } else if (isSitePhaseDesignationActive && !isMyTurnToAct) {
+        toastConfig = {
+            show: true,
+            title: 'EFFET DU SITE',
+            body: 'L’Ombre choisit une situation à défausser…',
             showPassButton: false,
             type: 'STANDARD',
         };
@@ -903,6 +971,12 @@ export const GameControls: React.FC<GameControlsProps> = ({
             return isMyTurnToAct
                 ? 'Vous pouvez utiliser l’effet du site (Ombre).'
                 : 'L’Ombre décide d’utiliser l’effet du site…';
+        }
+
+        if (isSitePhaseDesignationActive) {
+            return isMyTurnToAct
+                ? 'Défaussez une situation en jeu.'
+                : 'L’Ombre choisit une situation à défausser…';
         }
 
         if (isWhenPlayedChoiceActive) {
@@ -1377,16 +1451,41 @@ export const GameControls: React.FC<GameControlsProps> = ({
 
                         {toastConfig.type === 'SITE_PHASE_ABILITY' && (
                             <>
-                                <S.ActionButton
-                                    style={{ marginTop: '12px', width: '100%' }}
-                                    onClick={() => {
-                                        moves.resolveSitePhaseAbilityChoice?.(
-                                            true
-                                        );
-                                    }}
-                                >
-                                    Activer l’effet
-                                </S.ActionButton>
+                                {sitePhaseModes.length > 1 ? (
+                                    sitePhaseModes.map((mode) => (
+                                        <S.ActionButton
+                                            key={mode.ability.id}
+                                            style={{
+                                                marginTop: '12px',
+                                                width: '100%',
+                                            }}
+                                            onClick={() => {
+                                                moves.resolveSitePhaseAbilityChoice?.(
+                                                    true,
+                                                    undefined,
+                                                    undefined,
+                                                    mode.ability.id
+                                                );
+                                            }}
+                                        >
+                                            {sitePhaseModeLabel(mode.ability)}
+                                        </S.ActionButton>
+                                    ))
+                                ) : (
+                                    <S.ActionButton
+                                        style={{
+                                            marginTop: '12px',
+                                            width: '100%',
+                                        }}
+                                        onClick={() => {
+                                            moves.resolveSitePhaseAbilityChoice?.(
+                                                true
+                                            );
+                                        }}
+                                    >
+                                        Activer l’effet
+                                    </S.ActionButton>
+                                )}
                                 <S.ActionButton
                                     $variant="secondary"
                                     style={{ marginTop: '8px', width: '100%' }}

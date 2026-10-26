@@ -31,6 +31,8 @@ export interface ValidationResult {
 
 export interface ValidationOptions {
     ignorePhase?: boolean;
+    /** Le pool est contrôlé par l’appelant (réduction de coût, ex. Marshland). */
+    ignoreTwilightPool?: boolean;
 }
 
 /* ==========================================================================
@@ -372,8 +374,10 @@ export function canPlayCard(
     }
 
     // 2. Coût en crépuscule
-    const twilightCheck = checkTwilightCost(card, context);
-    if (!twilightCheck.valid) return twilightCheck;
+    if (!options?.ignoreTwilightPool) {
+        const twilightCheck = checkTwilightCost(card, context);
+        if (!twilightCheck.valid) return twilightCheck;
+    }
 
     // 3. Unicité
     const uniquenessCheck = checkUniqueness(card, context);

@@ -82,7 +82,9 @@ import {
     getDeckOrDiscardBrowsePool,
     getDeckOrDiscardPlayCandidates,
     getDeckSearchToDiscardCandidates,
+    getHandPlayCandidates,
 } from '../../game/logic/playFromOutOfPlay';
+import { getSitePhaseDesignationCandidates } from '../../game/logic/sitePhaseAbility';
 import {
     getReplaceSiteCandidates,
     getReplaceablePathSitesInCurrentRegion,
@@ -1350,15 +1352,30 @@ export const GameBoard: React.FC<GameBoardProps> = ({
         [G.responseWindow?.activePlayerId, G.pendingEvent, moves]
     );
 
-    /** Site phase Ombre (Shores / Slopes) : Activer → défausse main si besoin. */
+    /** Site phase Ombre (Shores / Slopes / famille « play… ») : Activer → choix si besoin. */
     const handleResolveSitePhaseAbilityChoice = useCallback(
-        (accept: boolean, discardedHandIds?: string[]) => {
+        (
+            accept: boolean,
+            discardedHandIds?: string[],
+            chosenTargetId?: string,
+            chosenAbilityId?: string
+        ) => {
             if (!accept) {
+                stopTargeting();
+                setHoveredCard(null);
                 moves.resolveSitePhaseAbilityChoice?.(false);
                 return;
             }
-            if (discardedHandIds !== undefined) {
-                moves.resolveSitePhaseAbilityChoice?.(true, discardedHandIds);
+            if (
+                discardedHandIds !== undefined ||
+                chosenTargetId !== undefined
+            ) {
+                moves.resolveSitePhaseAbilityChoice?.(
+                    true,
+                    discardedHandIds,
+                    chosenTargetId,
+                    chosenAbilityId
+                );
                 return;
             }
             const pending = G.pendingSitePhaseAbility;
@@ -1367,22 +1384,94 @@ export const GameBoard: React.FC<GameBoardProps> = ({
                 G,
                 pending.siteInstanceId
             ) as CardState | null;
+            const abilityId = chosenAbilityId || pending.abilityId;
             const ability = source?.abilities?.find(
-                (ab) => ab.id === pending.abilityId
+                (ab) => ab.id === abilityId
             );
+            if (!source || !ability) return;
+
+            // Famille « play… » : choisir la carte à jouer (main ou défausse).
+            const myZones = G.players?.[myId];
+            const playFromHand = (ability.effects || []).find(
+                (e) => e.type === 'PLAY_FROM_HAND'
+            );
+            if (playFromHand && playFromHand.type === 'PLAY_FROM_HAND') {
+                const candidates = getHandPlayCandidates(
+                    G,
+                    myId,
+                    playFromHand.target,
+                    'shadow',
+                    playFromHand.twilightReduce || 0
+                );
+                if (candidates.length === 0) return;
+                // La main est sous les yeux : halo + clic sur la carte à jouer
+                // (DESIGNATION = halo visible ; HAND_PICK n’en affiche pas).
+                startTargeting({
+                    kind: 'DESIGNATION',
+                    targetableCardIds: candidates.flatMap(cardTargetIds),
+                    message: 'Choisissez la carte à jouer dans votre main.',
+                    onSelectTarget: (cardId) => {
+                        stopTargeting();
+                        setHoveredCard(null);
+                        moves.resolveSitePhaseAbilityChoice?.(
+                            true,
+                            undefined,
+                            cardId,
+                            abilityId
+                        );
+                        audioService.play('CARD_PLAY');
+                    },
+                });
+                return;
+            }
+            const playFromZone = abilityPlayFromDeckOrDiscardEffect(ability);
+            if (playFromZone) {
+                const candidates = getDeckOrDiscardPlayCandidates(
+                    G,
+                    myId,
+                    playFromZone.target,
+                    'shadow',
+                    null,
+                    playFromZone.from || 'DECK_OR_DISCARD'
+                );
+                if (candidates.length === 0) return;
+                const from = playFromZone.from || 'DECK_OR_DISCARD';
+                setDeckDiscardPick({
+                    sitePhasePick: { abilityId },
+                    selectableCardIds: candidates.flatMap(cardTargetIds),
+                    deck: from === 'DISCARD' ? [] : myZones?.deck || [],
+                    discard:
+                        from === 'DECK' ? [] : myZones?.discard || [],
+                    title:
+                        from === 'DISCARD'
+                            ? 'Votre défausse'
+                            : 'Pioche ou défausse',
+                    subtitle: 'Choisissez la carte à jouer.',
+                });
+                return;
+            }
+
             if (
-                source &&
-                ability &&
                 abilityNeedsHandDiscard(ability) &&
                 requestHandDiscard(source, ability, (cardIds) => {
-                    moves.resolveSitePhaseAbilityChoice?.(true, cardIds);
+                    moves.resolveSitePhaseAbilityChoice?.(
+                        true,
+                        cardIds,
+                        undefined,
+                        chosenAbilityId
+                    );
                 })
             ) {
                 return;
             }
-            moves.resolveSitePhaseAbilityChoice?.(true);
+            moves.resolveSitePhaseAbilityChoice?.(
+                true,
+                undefined,
+                undefined,
+                chosenAbilityId
+            );
         },
-        [G, moves, requestHandDiscard]
+        [G, moves, requestHandDiscard, myId, startTargeting, stopTargeting, setHoveredCard]
     );
 
     /** Isengard Ruined : Activer → désigner un compagnon à affaiblir ×2. */
@@ -1562,6 +1651,7 @@ export const GameBoard: React.FC<GameBoardProps> = ({
         const movePending = G.pendingSiteMoveAbility;
         const followerPending = G.pendingSiteFollowerTransfer;
         const fpDiscardPending = G.pendingFpDiscard;
+        const phaseDesignationPending = G.pendingSitePhaseDesignation;
         const moveMine =
             Boolean(movePending) &&
             String(movePending!.playerId) === String(myId);
@@ -1571,10 +1661,19 @@ export const GameBoard: React.FC<GameBoardProps> = ({
         const fpDiscardMine =
             Boolean(fpDiscardPending) &&
             String(fpDiscardPending!.playerId) === String(myId);
+        const phaseDesignationMine =
+            Boolean(phaseDesignationPending) &&
+            String(phaseDesignationPending!.playerId) === String(myId);
 
-        if (moveMine || followerMine || fpDiscardMine) return;
+        if (moveMine || followerMine || fpDiscardMine || phaseDesignationMine)
+            return;
 
-        if (movePending || followerPending || fpDiscardPending) {
+        if (
+            movePending ||
+            followerPending ||
+            fpDiscardPending ||
+            phaseDesignationPending
+        ) {
             stopTargeting();
             setHoveredCard(null);
         }
@@ -1582,6 +1681,7 @@ export const GameBoard: React.FC<GameBoardProps> = ({
         G.pendingSiteMoveAbility,
         G.pendingSiteFollowerTransfer,
         G.pendingFpDiscard,
+        G.pendingSitePhaseDesignation,
         myId,
         targetingKind,
         stopTargeting,
@@ -1618,6 +1718,36 @@ export const GameBoard: React.FC<GameBoardProps> = ({
         });
     }, [
         G.pendingFpDiscard,
+        G,
+        myId,
+        isTargetingActive,
+        startTargeting,
+        stopTargeting,
+        setHoveredCard,
+        moves,
+    ]);
+
+    /** Buckland : Nazgûl joué → halo sur les situations à défausser. */
+    useEffect(() => {
+        const pending = G.pendingSitePhaseDesignation;
+        if (!pending || String(pending.playerId) !== String(myId)) return;
+        if (isTargetingActive) return;
+
+        const candidates = getSitePhaseDesignationCandidates(G);
+        if (candidates.length === 0) return;
+
+        startTargeting({
+            kind: 'DESIGNATION',
+            targetableCardIds: candidates.flatMap(cardTargetIds),
+            message: 'Défaussez une situation en jeu.',
+            onSelectTarget: (cardId) => {
+                stopTargeting();
+                setHoveredCard(null);
+                moves.resolveSitePhaseDesignationChoice?.(cardId);
+            },
+        });
+    }, [
+        G.pendingSitePhaseDesignation,
         G,
         myId,
         isTargetingActive,
@@ -1845,6 +1975,8 @@ export const GameBoard: React.FC<GameBoardProps> = ({
     const [deckDiscardPick, setDeckDiscardPick] = useState<{
         handIndex?: number;
         whenPlayed?: boolean;
+        /** Famille sites « Shadow: play… » : carte à jouer depuis la défausse/pioche (toaster du site). */
+        sitePhasePick?: { abilityId?: string };
         activate?: {
             sourceInstanceId: string;
             abilityId: string;
@@ -3326,11 +3458,23 @@ export const GameBoard: React.FC<GameBoardProps> = ({
                                 const whenPlayed = deckDiscardPick.whenPlayed;
                                 const handIndex = deckDiscardPick.handIndex;
                                 const activate = deckDiscardPick.activate;
+                                const sitePhasePick =
+                                    deckDiscardPick.sitePhasePick;
                                 const poolCards = [
                                     ...deckDiscardPick.deck,
                                     ...deckDiscardPick.discard,
                                 ];
                                 setDeckDiscardPick(null);
+                                if (sitePhasePick) {
+                                    moves.resolveSitePhaseAbilityChoice?.(
+                                        true,
+                                        undefined,
+                                        cardId,
+                                        sitePhasePick.abilityId
+                                    );
+                                    audioService.play('CARD_PLAY');
+                                    return;
+                                }
                                 if (whenPlayed) {
                                     moves.resolveWhenPlayedChoice?.(
                                         true,

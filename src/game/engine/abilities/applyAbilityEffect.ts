@@ -69,7 +69,9 @@ import {
 } from '../../logic/cardStack';
 import {
     getDeckOrDiscardPlayCandidates,
+    getHandPlayCandidates,
     playCardFromDeckOrDiscard,
+    playCardFromHand,
     searchDeckCardToDiscard,
     shufflePlayerDeck,
 } from '../../logic/playFromOutOfPlay';
@@ -280,7 +282,12 @@ export function applyAbilityEffect(
     const chosenIds = normalizeChosenIds(chosenTargetId);
     const costIds = normalizeChosenIds(costTargetId);
 
-    for (const effect of effects) {
+    for (
+        let effectIndex = 0;
+        effectIndex < effects.length;
+        effectIndex += 1
+    ) {
+        const effect = effects[effectIndex]!;
         if (effect.type === 'PREVENT_WOUND') {
             if (isWoundPreventionForbidden(G)) return false;
             if (
@@ -614,8 +621,55 @@ export function applyAbilityEffect(
             continue;
         }
 
+        if (effect.type === 'PLAY_FROM_HAND') {
+            // Site : le joueur qui active joue depuis SA main (pas le FP par défaut).
+            const ownerId =
+                (source.kind === 'SITE' || source.type === 'SITE') &&
+                actingPlayerId
+                    ? actingPlayerId
+                    : abilityOwnerPlayerId(G, source);
+            if (!ownerId) return false;
+            const cardId = chosenIds[0];
+            if (!cardId) return false;
+            const fpId = G.fpPlayerId || '0';
+            const playPhase =
+                ownerId === fpId ? 'fellowship' : 'shadow';
+            const candidates = getHandPlayCandidates(
+                G,
+                ownerId,
+                effect.target,
+                playPhase,
+                effect.twilightReduce || 0
+            );
+            if (
+                !candidates.some(
+                    (c) => c.instanceId === cardId || c.id === cardId
+                )
+            ) {
+                return false;
+            }
+            const played = playCardFromHand(
+                G,
+                ownerId,
+                cardId,
+                effect.target,
+                playPhase,
+                effect.twilightReduce || 0
+            );
+            if (!played) return false;
+            afterCardPlayed(G, played, {
+                playerId: ownerId,
+                phase: playPhase,
+            });
+            continue;
+        }
+
         if (effect.type === 'PLAY_FROM_DECK_OR_DISCARD') {
-            const ownerId = abilityOwnerPlayerId(G, source);
+            const ownerId =
+                (source.kind === 'SITE' || source.type === 'SITE') &&
+                actingPlayerId
+                    ? actingPlayerId
+                    : abilityOwnerPlayerId(G, source);
             if (!ownerId) return false;
             const cardId = chosenIds[0];
             if (!cardId) return false;
@@ -1257,6 +1311,41 @@ export function applyAbilityEffect(
             G.statusMessage =
                 'Peuples Libres : défaussez une de vos situations.';
             continue;
+        }
+        // Famille sites « Shadow: play… » (Buckland…) : la carte jouée est
+        // en jeu (effets précédents), il reste cette désignation au joueur
+        // qui active. Reportée dans `pendingSitePhaseDesignation`.
+        // Le chosenTargetId reçu visait l’effet « jouer » (pas cette cible) :
+        // on ne reporte que si aucun choix ne désigne déjà un candidat ici.
+        if (
+            effect.type === 'DISCARD' &&
+            !effect.chooser &&
+            (source.kind === 'SITE' || source.type === 'SITE') &&
+            Array.isArray(effect.target) &&
+            actingPlayerId &&
+            effectIndex === effects.length - 1 &&
+            !G.pendingSitePhaseDesignation
+        ) {
+            const candidates = resolveCostTarget(G, source, effect.target);
+            const chosenIsCandidate = chosenIds.some((id) =>
+                candidates.some(
+                    (c) => c.instanceId === id || c.id === id
+                )
+            );
+            if (!chosenIsCandidate) {
+                const sourceId = source.instanceId || source.id;
+                if (!sourceId) return false;
+                if (candidates.length === 0) return false;
+                G.pendingSitePhaseDesignation = {
+                    playerId: actingPlayerId,
+                    siteInstanceId: sourceId,
+                    abilityId: ability.id,
+                    effectIndex,
+                };
+                G.statusMessage =
+                    'Ombre : défaussez une situation en jeu.';
+                continue;
+            }
         }
         const pick = chosenIds[0];
         const target = resolveAbilityTarget(

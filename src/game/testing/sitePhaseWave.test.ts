@@ -164,19 +164,20 @@ describe('parseSiteAbilities — vague phase', () => {
         expect(parseSiteAbilities(text, '12S187')).toBeUndefined();
     });
 
-    it('laisse Buckland / Woody-End inertes (play Nazgûl)', () => {
+    it('Buckland / Woody-End : parsés par la vague famille « Shadow: play… »', () => {
+        // Voir siteShadowPlayFamily.test.ts pour le parse et le runtime.
         expect(
             parseSiteAbilities(
                 '**Dwelling.** **Shadow:** Play a Nazgûl to discard a condition from play.',
                 '11S230'
             )
-        ).toBeUndefined();
+        ).toHaveLength(1);
         expect(
             parseSiteAbilities(
                 '**Forest.****Shadow:** Remove a burden to play a Nazgûl from your discard pile.',
                 '11S266'
             )
-        ).toBeUndefined();
+        ).toHaveLength(1);
     });
 });
 

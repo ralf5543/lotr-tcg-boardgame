@@ -5999,6 +5999,40 @@
     "keywords": [
       "DWELLING"
     ],
+    "abilities": [
+      {
+        "id": "11S230:0:site-phase",
+        "phases": [
+          "SHADOW"
+        ],
+        "responsePlayer": "SHADOW",
+        "cost": [],
+        "effects": [
+          {
+            "type": "PLAY_FROM_HAND",
+            "target": [
+              [
+                "NAZGUL"
+              ]
+            ]
+          },
+          {
+            "type": "DISCARD",
+            "count": 1,
+            "target": [
+              [
+                "CONDITION"
+              ]
+            ]
+          }
+        ],
+        "source": "SELF",
+        "text": "Shadow: Play a Nazgûl to discard a condition from play."
+      }
+    ],
+    "actionPhases": [
+      "SHADOW"
+    ],
     "twilightCost": 0,
     "siteArrow": "Left",
     "imageUrl": "/cards_visuals/o_11_230.jpg",
@@ -6441,6 +6475,34 @@
     "type": "SITE",
     "keywords": [
       "MARSH"
+    ],
+    "abilities": [
+      {
+        "id": "11S238:0:site-phase",
+        "phases": [
+          "SHADOW"
+        ],
+        "responsePlayer": "SHADOW",
+        "requiresMinionsPlusTwilightAtMost": 3,
+        "cost": [],
+        "effects": [
+          {
+            "type": "PLAY_FROM_HAND",
+            "target": [
+              [
+                "MINION"
+              ]
+            ],
+            "twilightReduce": 3
+          }
+        ],
+        "source": "SELF",
+        "text": "Shadow: If the total number of minions and twilight tokens is 3 or fewer, play a minion at twilight cost –3.",
+        "textFr": "**Shadow:** If the total number of minions and twilight tokens is 3 or fewer, play a minion at twilight cost –3."
+      }
+    ],
+    "actionPhases": [
+      "SHADOW"
     ],
     "twilightCost": 1,
     "siteArrow": "Right",
@@ -8060,6 +8122,36 @@
     "keywords": [
       "FOREST"
     ],
+    "abilities": [
+      {
+        "id": "11S266:0:site-phase",
+        "phases": [
+          "SHADOW"
+        ],
+        "responsePlayer": "SHADOW",
+        "cost": [
+          {
+            "removeBurdens": 1
+          }
+        ],
+        "effects": [
+          {
+            "type": "PLAY_FROM_DECK_OR_DISCARD",
+            "from": "DISCARD",
+            "target": [
+              [
+                "NAZGUL"
+              ]
+            ]
+          }
+        ],
+        "source": "SELF",
+        "text": "Shadow: Remove a burden to play a Nazgûl from your discard pile."
+      }
+    ],
+    "actionPhases": [
+      "SHADOW"
+    ],
     "twilightCost": 0,
     "siteArrow": "Left",
     "imageUrl": "/cards_visuals/o_11_266.jpg",
@@ -8093,6 +8185,66 @@
     "isUnique": false,
     "kind": "SITE",
     "type": "SITE",
+    "abilities": [
+      {
+        "id": "12U185:0:site-phase",
+        "phases": [
+          "SHADOW"
+        ],
+        "responsePlayer": "SHADOW",
+        "cost": [],
+        "effects": [
+          {
+            "type": "PLAY_FROM_HAND",
+            "target": [
+              [
+                "NAZGUL"
+              ]
+            ]
+          },
+          {
+            "type": "DRAW",
+            "count": 1
+          }
+        ],
+        "source": "SELF",
+        "text": "Shadow: Play a Nazgûl (or spot 6 companions and discard 2 cards from hand) to draw a card."
+      },
+      {
+        "id": "12U185:1:site-phase",
+        "phases": [
+          "SHADOW"
+        ],
+        "responsePlayer": "SHADOW",
+        "cost": [
+          {
+            "spot": [
+              {
+                "count": 6,
+                "target": [
+                  [
+                    "COMPANION"
+                  ]
+                ],
+                "mode": "CONDITION"
+              }
+            ],
+            "discardFromHand": 2
+          }
+        ],
+        "effects": [
+          {
+            "type": "DRAW",
+            "count": 1
+          }
+        ],
+        "source": "SELF",
+        "text": "Shadow: Play a Nazgûl (or spot 6 companions and discard 2 cards from hand) to draw a card."
+      }
+    ],
+    "actionPhases": [
+      "SHADOW"
+    ],
     "twilightCost": 0,
     "siteArrow": "Left",
     "imageUrl": "/cards_visuals/o_12_185.jpg",

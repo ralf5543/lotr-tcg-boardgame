@@ -591,6 +591,16 @@ export type AbilityEffect =
       }
     | {
           /**
+           * Joue une carte depuis la main du joueur qui active (famille
+           * sites « Shadow: play… » : The Angle, Buckland, Marshland).
+           * Paie le coût crépuscule effectif (− twilightReduce, min 0).
+           */
+          type: 'PLAY_FROM_HAND';
+          target: string[][];
+          twilightReduce?: number;
+      }
+    | {
+          /**
            * Prend une carte de votre défausse en main (filtre).
            * Désignation si plusieurs (Slippery Sneak…).
            */
@@ -1089,6 +1099,11 @@ export interface Ability {
     /** Ex. Merry : seulement s’il n’est pas affecté à une escarmouche. */
     requiresUnassigned?: boolean;
     /**
+     * Expanding Marshland : activable seulement si
+     * (séides en jeu + jetons de crépuscule) ≤ cette valeur.
+     */
+    requiresMinionsPlusTwilightAtMost?: number;
+    /**
      * Capacité utilisable seulement si la carte est empilée
      * sur un site contrôlé par son propriétaire (play from stack).
      */
@@ -1468,6 +1483,17 @@ export interface GameState {
         siteInstanceId: string;
         abilityId: string;
     };
+    /**
+     * Famille sites « Shadow: play… » (Buckland…) : la carte (Nazgûl) est
+     * jouée, il reste un effet désigné à choisir par le joueur qui active.
+     */
+    pendingSitePhaseDesignation?: {
+        playerId: string;
+        siteInstanceId: string;
+        abilityId: string;
+        /** Index du premier effet restant à appliquer. */
+        effectIndex: number;
+    };
     /** Toaster site phase déjà tranché (Activer ou Passer) ce tour d’Ombre. */
     sitePhaseAbilityOfferedThisPhase?: boolean;
     /**
@@ -1597,6 +1623,13 @@ export interface ArcheryState {
     fpRemainingWounds: number;
     shadowRemainingWounds: number;
 }
+
+/** Presets DEV de playtest (panneau de test, vague en cours). */
+export type DevPresetType =
+    | 'SITES_ANGLE'
+    | 'SITES_BUCKLAND'
+    | 'SITES_MARSHLAND'
+    | 'SITES_WOODY_END';
 
 export interface TempKeywordModifier {
     keyword: CardKeyword;

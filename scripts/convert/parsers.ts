@@ -7100,6 +7100,142 @@ function parseSitePhaseAbilities(
         });
     }
 
+    // Famille « Shadow: play… » : jouer une carte fait partie de l’action.
+    const shadowPlayPrefix = 'Shadow:?\\s*(?:<\\/keyword>)?(?:\\*\\*)?\\s*';
+
+    // The Angle : jouer un Nazgûl (ou repérer N compagnons et défausser
+    // M cartes de ta main) pour piocher. Deux modes = deux capacités.
+    const angleRe = new RegExp(
+        `${shadowPlayPrefix}Play a Nazg(?:û|u)l \\(or spot (\\d+) companions and discard (\\d+) cards? from hand\\) to draw (a|an|one|two|\\d+) cards?\\.`,
+        'gi'
+    );
+    while ((match = angleRe.exec(text)) !== null) {
+        const spotCount = parseInt(match[1], 10);
+        const discardCount = parseInt(match[2], 10);
+        const drawCount = parseBurdenWord(match[3]);
+        if (
+            !Number.isFinite(spotCount) ||
+            spotCount <= 0 ||
+            !Number.isFinite(discardCount) ||
+            discardCount <= 0 ||
+            !drawCount
+        ) {
+            continue;
+        }
+        const text = stripAbilityMarkup(match[0]);
+        found.push({
+            id: `${cardId || 'ability'}:${found.length}:site-phase-angle-play`,
+            phases: ['SHADOW'],
+            responsePlayer: 'SHADOW',
+            cost: [],
+            effects: [
+                { type: 'PLAY_FROM_HAND', target: [['NAZGUL']] },
+                { type: 'DRAW', count: drawCount },
+            ],
+            source: 'SELF',
+            text,
+        });
+        found.push({
+            id: `${cardId || 'ability'}:${found.length}:site-phase-angle-discard`,
+            phases: ['SHADOW'],
+            responsePlayer: 'SHADOW',
+            cost: [
+                {
+                    spot: [
+                        {
+                            count: spotCount,
+                            target: [['COMPANION']],
+                            mode: 'CONDITION',
+                        },
+                    ],
+                    discardFromHand: discardCount,
+                },
+            ],
+            effects: [{ type: 'DRAW', count: drawCount }],
+            source: 'SELF',
+            text,
+        });
+    }
+
+    // Buckland Homestead : jouer un Nazgûl pour défausser une situation en jeu.
+    const bucklandRe = new RegExp(
+        `${shadowPlayPrefix}Play a Nazg(?:û|u)l to discard a condition from play\\.`,
+        'gi'
+    );
+    while ((match = bucklandRe.exec(text)) !== null) {
+        found.push({
+            id: `${cardId || 'ability'}:${found.length}:site-phase-buckland`,
+            phases: ['SHADOW'],
+            responsePlayer: 'SHADOW',
+            cost: [],
+            effects: [
+                { type: 'PLAY_FROM_HAND', target: [['NAZGUL']] },
+                { type: 'DISCARD', count: 1, target: [['CONDITION']] },
+            ],
+            source: 'SELF',
+            text: stripAbilityMarkup(match[0]),
+        });
+    }
+
+    // Expanding Marshland : si (séides + crépuscule) ≤ N, jouer un séide à −M.
+    const marshlandRe = new RegExp(
+        `${shadowPlayPrefix}If the total number of minions and twilight tokens is (\\d+) or fewer, play a minion at twilight cost\\s*[-–—−](\\d+)\\.`,
+        'gi'
+    );
+    while ((match = marshlandRe.exec(text)) !== null) {
+        const maxTotal = parseInt(match[1], 10);
+        const reduce = parseInt(match[2], 10);
+        if (
+            !Number.isFinite(maxTotal) ||
+            maxTotal < 0 ||
+            !Number.isFinite(reduce) ||
+            reduce <= 0
+        ) {
+            continue;
+        }
+        found.push({
+            id: `${cardId || 'ability'}:${found.length}:site-phase-marshland`,
+            phases: ['SHADOW'],
+            responsePlayer: 'SHADOW',
+            requiresMinionsPlusTwilightAtMost: maxTotal,
+            cost: [],
+            effects: [
+                {
+                    type: 'PLAY_FROM_HAND',
+                    target: [['MINION']],
+                    twilightReduce: reduce,
+                },
+            ],
+            source: 'SELF',
+            text: stripAbilityMarkup(match[0]),
+        });
+    }
+
+    // Woody-End : retirer N fardeau(x) pour jouer un Nazgûl depuis la défausse.
+    const woodyEndRe = new RegExp(
+        `${shadowPlayPrefix}Remove (a|an|one|two|\\d+) burdens? to play a Nazg(?:û|u)l from your discard pile\\.`,
+        'gi'
+    );
+    while ((match = woodyEndRe.exec(text)) !== null) {
+        const burdens = parseBurdenWord(match[1]);
+        if (!burdens) continue;
+        found.push({
+            id: `${cardId || 'ability'}:${found.length}:site-phase-woody-end`,
+            phases: ['SHADOW'],
+            responsePlayer: 'SHADOW',
+            cost: [{ removeBurdens: burdens }],
+            effects: [
+                {
+                    type: 'PLAY_FROM_DECK_OR_DISCARD',
+                    from: 'DISCARD',
+                    target: [['NAZGUL']],
+                },
+            ],
+            source: 'SELF',
+            text: stripAbilityMarkup(match[0]),
+        });
+    }
+
     // Emyn Muil : Maneuver: Remove <twilightN> and exert your minion that is
     // not fierce to make that minion fierce until the regroup phase.
     const emynRe =

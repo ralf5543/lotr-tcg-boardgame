@@ -16,6 +16,7 @@ import {
     tokenCountOnCard,
 } from '../../logic/cultureTokens';
 import {
+    areBurdenRemovalsForbidden,
     areCultureTokenChangesForbidden,
     placeCardIntoDiscardPile,
 } from '../../logic/sites';
@@ -230,6 +231,15 @@ function canPayOption(
         const fpId = G.fpPlayerId || '0';
         const fpPlayer = G.players[fpId];
         if (!fpPlayer || (fpPlayer.threats || 0) < option.removeThreats) {
+            return false;
+        }
+    }
+
+    if (option.removeBurdens && option.removeBurdens > 0) {
+        if (areBurdenRemovalsForbidden(G)) return false;
+        const fpId = G.fpPlayerId || '0';
+        const fpPlayer = G.players[fpId];
+        if (!fpPlayer || (fpPlayer.burdens || 0) < option.removeBurdens) {
             return false;
         }
     }
@@ -555,6 +565,15 @@ function payOption(
             return false;
         }
         fpPlayer.threats -= option.removeThreats;
+    }
+    if (option.removeBurdens && option.removeBurdens > 0) {
+        if (areBurdenRemovalsForbidden(G)) return false;
+        const fpId = G.fpPlayerId || '0';
+        const fpPlayer = G.players[fpId];
+        if (!fpPlayer || (fpPlayer.burdens || 0) < option.removeBurdens) {
+            return false;
+        }
+        fpPlayer.burdens -= option.removeBurdens;
     }
     if (option.removeCultureTokens) {
         const ownerId = abilityOwnerPlayerId(G, source);

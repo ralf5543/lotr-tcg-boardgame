@@ -118,15 +118,14 @@ Preset : `SITES_EACH_TIME_WAVE`.
 
 | Id | Titre | Famille |
 | --- | --- | --- |
-| `11S230` | Buckland Homestead | phase-ability |
 | `11S233` | Chamber of Mazarbul | passive-while |
-| `11S238` | Expanding Marshland | phase-ability |
 | `11S243` | Harrowdale | passive-while |
 | `11S247` | Moria Guardroom | moves-from |
 | `11S252` | Osgiliath Reclaimed | moves-from |
 | `11S260` | Trollshaw Forest | each-time |
 | `11S264` | Westemnet Village | moves-to |
-| `11S266` | Woody-End | phase-ability |
+
+(Buckland / Expanding Marshland / Woody-End : livrés par la vague famille « Shadow: play… », cf. ci-dessous.)
 
 ### Vague cas durs / suite
 
@@ -287,9 +286,22 @@ Preset : `SITES_FALLS`.
 | --- | --- | --- | --- |
 | `18U135` | Foot of Mount Doom | OK | Site courant : toute carte « à défausser » est retirée du jeu (les 16 points de défausse branchés sur `discardDestinationPile` ; morts de compagnons = pile de mort, inchangée) |
 
-Inerte volontaire : Angle (dernier des sets 12–18).
+Inerte volontaire alors : Angle (dernier des sets 12–18 — livré par la vague suivante).
 
 Preset : `SITES_FOOT` (playtest).
+
+### Vague famille « Shadow: play… » (dernier 12–18 + set 11)
+
+| Id | Titre | Statut | Notes |
+| --- | --- | --- | --- |
+| `12U185` | The Angle | OK | Toaster Ombre, **2 modes** (boutons distincts) : jouer un Nazgûl → piocher ; ou repérer 6 compagnons + défausser 2 → piocher. Ré-offert après chaque activation (action répétable) ; Passer ferme pour la phase |
+| `11S230` | Buckland Homestead | OK | Jouer un Nazgûl (halo sur les Nazgûls de la main, pas de fenêtre) → désignation reportée (halo sur toutes les situations en jeu) |
+| `11S238` | Expanding Marshland | OK | Non offert si séides en jeu + crépuscule > 3 ; séide joué à −3 (pool contrôlé par le socle, `ignoreTwilightPool`) |
+| `11S266` | Woody-End | OK | Coût : retirer 1 fardeau (respecte Steward's Tomb) → Nazgûl choisi dans la défausse (grille) |
+
+Socle : effet `PLAY_FROM_HAND` (+ réduction), `getHandPlayCandidates`/`playCardFromHand` dans `playFromOutOfPlay.ts`, `canPlayCard` option `ignoreTwilightPool` (la capacité contrôle le pool), coût `removeBurdens` payable en coût de capacité, désignation d’effet reportée (`pendingSitePhaseDesignation`).
+
+Presets : `SITES_ANGLE` / `SITES_BUCKLAND` / `SITES_MARSHLAND` / `SITES_WOODY_END` (playtest).
 
 ### Exceptions UX (toaster / hors schéma)
 
@@ -304,9 +316,7 @@ En attendant : **entorses UX assumées** plutôt que des bulles absurdes — doc
 
 ### Inertes — sets 12–18 (hors vagues livrées)
 
-| Id | Titre | Famille |
-| --- | --- | --- |
-| `12U185` | The Angle | phase-ability |
+Aucun : The Angle était le dernier (vague famille « Shadow: play… »).
 
 ## Étapes
 
@@ -364,7 +374,10 @@ En attendant : **entorses UX assumées** plutôt que des bulles absurdes — doc
 21. Vague **Foot of Mount Doom** — preset `SITES_FOOT` (playtest)
     - OK parse/runtime : défausse → retiré du jeu tant que Foot est le site courant (tous les points de défausse branchés)
     - Inerte volontaire : Angle (dernier 12–18)
-22. Reste inerte 12–18 (Angle) + inertes set 11 volontaires
+22. Vague **famille « Shadow: play… »** — presets `SITES_ANGLE` / `SITES_BUCKLAND` / `SITES_MARSHLAND` / `SITES_WOODY_END` (playtest)
+    - OK parse/runtime : The Angle (dernier 12–18, 2 modes) ; Buckland (désignation reportée) ; Expanding Marshland (−3) ; Woody-End (fardeau → Nazgûl de la défausse)
+    - Socle réutilisable : `PLAY_FROM_HAND`, désignation reportée, `ignoreTwilightPool`
+23. Reste : inertes set 11 volontaires (Chamber of Mazarbul, Harrowdale, Moria Guardroom, Osgiliath Reclaimed, Trollshaw Forest, Westemnet Village, Pinnacle of Zirakzigil)
 
 ## Hors scope
 
