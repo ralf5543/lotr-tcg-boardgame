@@ -41,7 +41,7 @@ L’ancien plan main/initiative est **figé** (`.cursor/rules/hand-initiative-pl
 
 | Id | Titre | Manque |
 | --- | --- | --- |
-| `9R+33` | Isildur (RB) | ✅ Début escarmouche : 2 fardeaux **ou** exert 3 companions (choix forcé + désignation de 3 compagnons distincts ; option exercer refusée si < 3 exerçables) — en playtest. Reste inerte : 2ᵉ clause (While Isildur porte l’Anneau ou un artefact, chaque chevalier Gondor force +1) |
+| `9R+33` | Isildur (RB) | ✅ Début escarmouche : 2 fardeaux **ou** exert 3 companions (choix forcé + désignation de 3 compagnons distincts ; option exercer refusée si < 3 exerçables) — en playtest, preset DEV `DECK_GAPS_ISILDUR` (panneau de développement). Reste inerte : 2ᵉ clause (While Isildur porte l’Anneau ou un artefact, chaque chevalier Gondor force +1) |
 | `7R113` | Pippin's Armor | While spot 3 Gondor Men → max 1 wound / skirmish |
 | `7R61` | Hobbitses Are Dead | 2ᵉ clause : play from discard si initiative (1ʳᵉ OK) |
 | `7R63` | Let Her Deal With Them | Spot noms OK ; clause initiative → play from discard **inerte** |

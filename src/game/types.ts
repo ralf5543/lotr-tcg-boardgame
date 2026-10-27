@@ -1677,6 +1677,9 @@ export interface LotrMoveContext extends FnContext<GameState> {
     playerID: string;
 }
 
+/** Presets DEV de playtest (panneau de test, vague en cours). */
+export type DevPresetType = 'DECK_GAPS_ISILDUR';
+
 export interface ArcheryState {
     step?: 'ACTIONS' | 'FP_ASSIGN' | 'SHADOW_ASSIGN' | 'COMPLETE';
     fpTotal: number;

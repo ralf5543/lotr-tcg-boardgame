@@ -15,6 +15,8 @@ export interface DevMoves {
     devSetArchery?: (amount: number) => void;
     devSetCurrentSite?: (siteIndex: number) => void;
     devForceEndPhase: () => void;
+    /** Presets de playtest de la vague en cours (trous decks : Isildur). */
+    devLoadPreset?: (presetName: string) => void;
 }
 
 export interface DevPanelProps {
@@ -368,6 +370,27 @@ export const DevPanel: React.FC<DevPanelProps> = ({
                         <S.GameButton $bgColor="#3498db" onClick={onDrawCard}>
                             🃏 Piocher ({deckCount})
                         </S.GameButton>
+                    </S.Section>
+
+                    {/* Preset de playtest : trous decks — Isildur Porteur */}
+                    <S.Section>
+                        <S.Label>
+                            Preset decks (Isildur) :
+                            <br />
+                            <span style={{ opacity: 0.75, fontWeight: 400 }}>
+                                Isildur Porteur + 3 compagnons, 4 fardeaux,
+                                2 séides en main Ombre : assigne un séide à
+                                Isildur et teste les deux options du choix
+                                forcé, un combat par option.
+                            </span>
+                        </S.Label>
+                        <S.ActionButton
+                            onClick={() =>
+                                moves.devLoadPreset?.('DECK_GAPS_ISILDUR')
+                            }
+                        >
+                            Isildur Porteur (9R+33)
+                        </S.ActionButton>
                     </S.Section>
 
                 </S.PanelContent>

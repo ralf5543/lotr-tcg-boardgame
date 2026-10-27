@@ -17,6 +17,8 @@ Document **vivant** : précisé, modifié, complété au fur et à mesure. **Lis
 
 Credo transversal (hérités des plans cartes / sites / jetons) : **mieux vaut inerte que faux** ; parser = **fragments** sûrs ; exceptions par id en dernier.
 
+**Playtest : toujours un preset DEV** — chaque nouvelle vague / carte testée a son preset dans le panneau de développement (`src/game/dev/presets.ts`, bouton dédié), avec les cartes à tester déjà en place et le scénario écrit dans le message de statut. Le preset est retiré une fois le test validé.
+
 ## Plan actif
 
 | | |

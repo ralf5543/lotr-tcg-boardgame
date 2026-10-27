@@ -10,6 +10,8 @@ import {
     createMinion,
     createPlayerState,
 } from './createGameState';
+import { applyDevPreset } from '../dev/presets';
+import { isRingBearerCard } from '../../utils/cardUtils';
 
 const ISILDUR_ABILITY: Ability = {
     id: '9R+33:0:rb-start-choice-exert',
@@ -152,6 +154,25 @@ describe('Isildur RB — début d’escarmouche', () => {
         expect(G.pendingForcedChoice).toBeDefined();
         expect(resolveForcedChoice(G, '0', 0)).toBe(true);
         expect(G.players['0']?.burdens).toBe(3);
+    });
+
+    it('preset DEV : Isildur Porteur, 3 compagnons, 2 séides pour 2 combats', () => {
+        const G = createGameState();
+        applyDevPreset(G, 'DECK_GAPS_ISILDUR');
+
+        const fellowship = G.players['0']?.fellowshipArea || [];
+        expect(fellowship.map((c) => c.id)).toEqual([
+            '9R+33',
+            '1R89',
+            '1R13',
+            '1C311',
+        ]);
+        expect(isRingBearerCard(fellowship[0])).toBe(true);
+        expect(fellowship[0]?.abilities?.length).toBeGreaterThan(0);
+        expect(G.players['0']?.burdens).toBe(4);
+        expect(G.players['1']?.hand).toHaveLength(2);
+        expect(G.path).toHaveLength(9);
+        expect(G.currentSiteIndex).toBe(0);
     });
 
     it('désignations en double refusées', () => {
