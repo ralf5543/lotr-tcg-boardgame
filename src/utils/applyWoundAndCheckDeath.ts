@@ -1,5 +1,9 @@
 import type { GameState, CardState } from '../game/types';
 import { canCardTakeWound } from '../game/logic/sites';
+import {
+    getSkirmishWoundLimit,
+    skirmishWoundsTaken,
+} from '../game/logic/skirmishWoundLimit';
 import { getEffectiveVitality } from './cardStats';
 
 function enqueueCharacterDeath(G: GameState, card: CardState): void {
@@ -65,8 +69,27 @@ export const applyWoundAndCheckDeath = (
         return false;
     }
 
+    // Plafond par escarmouche (Armure de Pippin) : tronquer au reste
+    // autorisé. Un affaiblissement n’est pas « prendre une blessure ».
+    if (!options?.fromExert && woundsCount > 0) {
+        const limit = getSkirmishWoundLimit(G, card);
+        if (limit !== null && G.activeSkirmishId) {
+            const already = skirmishWoundsTaken(card, G.activeSkirmishId);
+            const allowed = Math.max(0, limit - already);
+            if (allowed <= 0) return false;
+            woundsCount = Math.min(woundsCount, allowed);
+        }
+    }
+
     // 1. Infliger les blessures sur la carte
     card.wounds = (card.wounds || 0) + woundsCount;
+    if (!options?.fromExert && woundsCount > 0 && G.activeSkirmishId) {
+        const already = skirmishWoundsTaken(card, G.activeSkirmishId);
+        card.skirmishWounds = {
+            skirmishId: G.activeSkirmishId,
+            count: already + woundsCount,
+        };
+    }
 
     const cardId = card.instanceId || card.id;
 

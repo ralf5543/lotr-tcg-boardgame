@@ -483,6 +483,16 @@ export type AbilityEffect =
           target: string[][];
       }
     | {
+          /**
+           * Armure de Pippin : le bénéficiaire ne peut pas prendre plus
+           * de `max` blessures dans une même escarmouche (passif lu par
+           * `skirmishWoundLimit`, appliqué au point central des blessures).
+           */
+          type: 'LIMIT_WOUNDS_IN_SKIRMISH';
+          max: number;
+          target: AbilityTargetRef;
+      }
+    | {
           /** Shores of Nen Hithoel : pas de 2ᵉ déplacement ce tour. */
           type: 'PREVENT_MOVE_AGAIN';
       }
@@ -1202,6 +1212,12 @@ export interface CardState {
     phases?: string[];
     wounds?: number;
     /**
+     * Blessures réellement prises dans l’escarmouche active
+     * (plafond « pas plus de N blessures dans une escarmouche »).
+     * Remis à zéro dès que l’identifiant d’escarmouche change.
+     */
+    skirmishWounds?: { skirmishId: string; count: number };
+    /**
      * Jetons de culture sur cette carte (CR : place / reinforce / remove).
      * Une culture dominante par carte en pratique.
      */
@@ -1678,7 +1694,7 @@ export interface LotrMoveContext extends FnContext<GameState> {
 }
 
 /** Presets DEV de playtest (panneau de test, vague en cours). */
-export type DevPresetType = 'DECK_GAPS_ISILDUR';
+export type DevPresetType = 'DECK_GAPS_PIPPIN';
 
 export interface ArcheryState {
     step?: 'ACTIONS' | 'FP_ASSIGN' | 'SHADOW_ASSIGN' | 'COMPLETE';

@@ -4129,6 +4129,61 @@ function parseSiteForbidSkirmishAbilities(
 }
 
 /**
+ * While you can spot N [classe], [bearer] may take no more than M wounds
+ * in a skirmish. (Armure de Pippin.)
+ */
+function parseWhileSpotWoundLimitAbilities(
+    text: string,
+    cardTitle?: string,
+    cardId?: string
+): Record<string, unknown>[] {
+    const found: Record<string, unknown>[] = [];
+    const re =
+        /While you can spot ((?:a|an|\d+) [^,.]+), ([^,]+?) may take no more than (a|an|one|\d+) wounds? in a skirmish\.?/gi;
+    let match: RegExpExecArray | null;
+    while ((match = re.exec(text)) !== null) {
+        const spot = parseWhileSpotSubject(match[1]);
+        if (!spot) continue;
+        let who = parseWhileStrengthWho(match[2], cardTitle);
+        if (!who) {
+            const bearerName = parseBearerMustBeName(text);
+            const whoPlain = stripAbilityMarkup(match[2])
+                .replace(/\s+/g, ' ')
+                .trim();
+            if (
+                bearerName &&
+                whoPlain.toLowerCase() === bearerName.toLowerCase()
+            ) {
+                who = 'BEARER';
+            }
+        }
+        if (!who) continue;
+        const max = parseCultureTokenCount(match[3]);
+        if (!max || max <= 0) continue;
+
+        found.push({
+            id: `${cardId || 'ability'}:${found.length}:while-spot-wound-limit`,
+            phases: [],
+            trigger: {
+                type: 'WHILE',
+                spot: [{ count: spot.count, target: spot.target }],
+            },
+            cost: [],
+            effects: [
+                {
+                    type: 'LIMIT_WOUNDS_IN_SKIRMISH',
+                    max,
+                    target: who,
+                },
+            ],
+            source: who === 'BEARER' ? 'ATTACHMENT' : 'SELF',
+            text: stripAbilityMarkup(match[0]),
+        });
+    }
+    return found;
+}
+
+/**
  * While no opponent controls a site, [bearer|self] is strength ±N.
  */
 function parseWhileNoOpponentControlsStrengthAbilities(
@@ -13338,6 +13393,15 @@ export function parseAbilities(
             id: `${cardId || 'ability'}:${abilities.length}`,
         });
     });
+
+    parseWhileSpotWoundLimitAbilities(text, cardTitle, cardId).forEach(
+        (ability) => {
+            abilities.push({
+                ...ability,
+                id: `${cardId || 'ability'}:${abilities.length}`,
+            });
+        }
+    );
 
     parseWhileSpotStrengthAbilities(text, cardTitle, cardId).forEach(
         (ability) => {

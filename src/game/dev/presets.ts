@@ -121,7 +121,7 @@ const neutralPath: readonly string[] = [
 
 /**
  * Applique le preset DEV de playtest (zones vidées / chemin Standard).
- * Vague en cours : trous de mécanismes decks — Isildur Porteur.
+ * Vague en cours : trous de mécanismes decks — Armure de Pippin.
  */
 export const applyDevPreset = (
     G: GameState,
@@ -135,52 +135,53 @@ export const applyDevPreset = (
     const shadowPlayer = G.players[shadowId];
 
     switch (presetType) {
-        case 'DECK_GAPS_ISILDUR': {
+        case 'DECK_GAPS_PIPPIN': {
             resetBoardForPreset(G);
             setupDevPath(G, 0, neutralPath);
             G.twilightPool = 6;
-            // 4 fardeaux : l’option fardeaux doit se voir (4 → 6).
-            fpPlayer.burdens = 4;
+            fpPlayer.burdens = 2;
             fpPlayer.fellowshipArea = [
                 {
-                    // Isildur Porteur de l’Anneau (9R+33, la carte testée).
-                    ...clonePresetCard('9R+33', 'dev-isildur'),
-                    attachments: [clonePresetCard('1R1', 'dev-isildur-ring')],
+                    ...clonePresetCard('2C102', 'dev-pippin-frodo'),
+                    attachments: [
+                        clonePresetCard('1R1', 'dev-pippin-ring'),
+                    ],
                 },
                 {
-                    // Blessé d’entrée : cible du soin de Boromir (11R57)
-                    // quand il gagnera son escarmouche.
-                    ...clonePresetCard('1R89', 'dev-isildur-aragorn'),
-                    wounds: 1,
+                    // Pippin porte son Armure (7R113, la carte testée).
+                    ...clonePresetCard('7R324', 'dev-pippin'),
+                    attachments: [
+                        clonePresetCard('7R113', 'dev-pippin-armor'),
+                    ],
                 },
-                clonePresetCard('1R13', 'dev-isildur-gimli'),
-                clonePresetCard('1C311', 'dev-isildur-sam'),
-                // Boromir, chevalier du Gondor : force 7 → 8 tant
-                // qu’Isildur porte l’Anneau Unique (2ᵉ clause).
-                clonePresetCard('11R57', 'dev-isildur-boromir'),
+                // Trois Hommes du Gondor repérables : condition remplie.
+                clonePresetCard('1R89', 'dev-pippin-aragorn'),
+                clonePresetCard('11R57', 'dev-pippin-boromir'),
+                clonePresetCard('5C35', 'dev-pippin-knight'),
             ];
             fpPlayer.deck = [
-                clonePresetCard('1C306', 'dev-isildur-draw-1'),
-                clonePresetCard('1C306', 'dev-isildur-draw-2'),
-                clonePresetCard('1C306', 'dev-isildur-draw-3'),
+                clonePresetCard('1C306', 'dev-pippin-draw-1'),
+                clonePresetCard('1C306', 'dev-pippin-draw-2'),
+                clonePresetCard('1C306', 'dev-pippin-draw-3'),
             ];
             fpPlayer.sitesDeck = [clonePresetSite('11S250', fpId)];
             if (shadowPlayer) {
-                // Deux séides : de quoi refaire un 2ᵉ combat contre Isildur
-                // pour tester l’autre option.
+                // Uruk Sauvage : force 5, Dégâts +1 (coût 2). Contre
+                // Pippin (force 3) : victoire de l’Ombre sans submersion,
+                // donc 2 blessures attendues → 1 seule avec l’Armure.
                 shadowPlayer.hand = [
-                    clonePresetCard('1C266', 'dev-isildur-orc-1'),
-                    clonePresetCard('1C268', 'dev-isildur-orc-2'),
+                    clonePresetCard('1C151', 'dev-pippin-uruk-1'),
+                    clonePresetCard('1C151', 'dev-pippin-uruk-2'),
                 ];
                 shadowPlayer.deck = [
-                    clonePresetCard('1C266', 'dev-isildur-shadow-draw-1'),
+                    clonePresetCard('1C266', 'dev-pippin-shadow-draw-1'),
                 ];
                 shadowPlayer.sitesDeck = [
                     clonePresetSite('11S263', shadowId),
                 ];
             }
             G.statusMessage =
-                '[DEV] Isildur Porteur (9R+33) · 4 fardeaux, crépuscule 6 · D’abord, la 2ᵉ clause : Boromir (chevalier du Gondor) doit être à force 8 (7 + 1) tant qu’Isildur porte l’Anneau Unique ; les autres compagnons ne changent pas. Ensuite, avancez jusqu’à l’Ombre, jouez un séide et assignez-le à Isildur : au début de son escarmouche, choix forcé — « Ajouter 2 fardeaux » (4 → 6) ou « Affaiblir 3 compagnons » (désignez 3 compagnons distincts, Isildur compris si vous voulez). Avec le 2ᵉ séide, assignez Boromir et faites-lui gagner son escarmouche : en réponse, il peut soigner un compagnon du Gondor (Aragorn commence avec 1 blessure). Cas limite (moins de 3 compagnons affaiblissables → option « Affaiblir » refusée) couvert par les tests automatiques.';
+                '[DEV] Armure de Pippin (7R113) · crépuscule 6 · Trois Hommes du Gondor sont repérables (Aragorn, Boromir, Chevalier du Gondor), la condition est remplie. Avancez jusqu’à l’Ombre, jouez un Uruk Sauvage et assignez-le à Pippin : il perd (force 3 contre 5) et devrait prendre 2 blessures (Dégâts +1) — l’Armure limite à 1 seule. Assignez le 2ᵉ Uruk à Pippin dans la même phase : nouvelle escarmouche, le plafond repart — 1 blessure de plus (2 au total). Cas couverts par les tests automatiques : moins de 3 Hommes repérés, hors escarmouche, affaiblissement qui ne compte pas.';
             break;
         }
     }

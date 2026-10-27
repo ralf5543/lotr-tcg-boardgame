@@ -71989,6 +71989,36 @@
         "Pippin"
       ]
     ],
+    "abilities": [
+      {
+        "id": "7R113:0",
+        "phases": [],
+        "trigger": {
+          "type": "WHILE",
+          "spot": [
+            {
+              "count": 3,
+              "target": [
+                [
+                  "GONDOR",
+                  "MAN"
+                ]
+              ]
+            }
+          ]
+        },
+        "cost": [],
+        "effects": [
+          {
+            "type": "LIMIT_WOUNDS_IN_SKIRMISH",
+            "max": 1,
+            "target": "BEARER"
+          }
+        ],
+        "source": "ATTACHMENT",
+        "text": "While you can spot 3 gondor Men, Pippin may take no more than 1 wound in a skirmish."
+      }
+    ],
     "culture": "GONDOR",
     "twilightCost": 0,
     "strength": 2,

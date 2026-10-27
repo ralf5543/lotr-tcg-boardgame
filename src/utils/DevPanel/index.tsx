@@ -15,7 +15,7 @@ export interface DevMoves {
     devSetArchery?: (amount: number) => void;
     devSetCurrentSite?: (siteIndex: number) => void;
     devForceEndPhase: () => void;
-    /** Presets de playtest de la vague en cours (trous decks : Isildur). */
+    /** Presets de playtest de la vague en cours (trous decks : Armure de Pippin). */
     devLoadPreset?: (presetName: string) => void;
 }
 
@@ -372,24 +372,24 @@ export const DevPanel: React.FC<DevPanelProps> = ({
                         </S.GameButton>
                     </S.Section>
 
-                    {/* Preset de playtest : trous decks — Isildur Porteur */}
+                    {/* Preset de playtest : trous decks — Armure de Pippin */}
                     <S.Section>
                         <S.Label>
-                            Preset decks (Isildur) :
+                            Preset decks (Armure de Pippin) :
                             <br />
                             <span style={{ opacity: 0.75, fontWeight: 400 }}>
-                                Isildur Porteur + 3 compagnons, 4 fardeaux,
-                                2 séides en main Ombre : assigne un séide à
-                                Isildur et teste les deux options du choix
-                                forcé, un combat par option.
+                                Pippin avec son Armure et 3 Hommes du Gondor
+                                repérables, 2 Uruks Sauvages (Dégâts +1) en
+                                main Ombre : Pippin perd mais ne doit prendre
+                                qu’une blessure par escarmouche, deux fois.
                             </span>
                         </S.Label>
                         <S.ActionButton
                             onClick={() =>
-                                moves.devLoadPreset?.('DECK_GAPS_ISILDUR')
+                                moves.devLoadPreset?.('DECK_GAPS_PIPPIN')
                             }
                         >
-                            Isildur Porteur (9R+33)
+                            Armure de Pippin (7R113)
                         </S.ActionButton>
                     </S.Section>
 

@@ -7,6 +7,10 @@ import type {
 import { getEffectiveTwilightCost } from '../../utils/roamingDetection';
 import { cardMatchesTarget } from '../engine/validations/matchers';
 import { resolveSiteMoveAbilities } from '../engine/abilities/siteMove';
+import {
+    getSkirmishWoundLimit,
+    skirmishWoundsTaken,
+} from './skirmishWoundLimit';
 
 export function getCurrentSiteIndex(G: GameState): number {
     const fpId = G.fpPlayerId || '0';
@@ -129,6 +133,15 @@ export function canCardTakeWound(G: GameState, card: CardState): boolean {
     if (!card || card.isDead) return false;
     // Phase d’archerie (fenêtre ACTIONS → assignation) : immunités site / carte.
     if (G.archeryState && cannotTakeArcheryWoundsFromSite(G, card)) {
+        return false;
+    }
+    // Plafond par escarmouche (Armure de Pippin) : déjà atteint → plus
+    // aucune blessure n’est légale sur cette carte dans ce combat.
+    const limit = getSkirmishWoundLimit(G, card);
+    if (
+        limit !== null &&
+        skirmishWoundsTaken(card, G.activeSkirmishId) >= limit
+    ) {
         return false;
     }
     return true;
