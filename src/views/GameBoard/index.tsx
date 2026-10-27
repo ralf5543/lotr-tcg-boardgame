@@ -1166,7 +1166,13 @@ export const GameBoard: React.FC<GameBoardProps> = ({
                         siteStartBridgeRef.current = false;
                         return;
                     }
-                    const pool = getDeckOrDiscardBrowsePool(G, myId);
+                    const pool =
+                        from === 'DEAD_PILE'
+                            ? {
+                                  deck: [] as CardState[],
+                                  discard: [] as CardState[],
+                              }
+                            : getDeckOrDiscardBrowsePool(G, myId);
                     // Pont anti-flash : stopTargeting → setDeckDiscardPick.
                     siteStartBridgeRef.current = true;
                     setDeckDiscardPick({
@@ -1179,14 +1185,22 @@ export const GameBoard: React.FC<GameBoardProps> = ({
                             selectable.flatMap(cardTargetIds),
                         deck: from === 'DISCARD' ? [] : pool.deck,
                         discard: from === 'DECK' ? [] : pool.discard,
+                        deadPile:
+                            from === 'DEAD_PILE'
+                                ? [...(G.players[myId]?.deadPile || [])]
+                                : undefined,
                         title:
-                            from === 'DECK'
-                                ? 'Pioche'
-                                : from === 'DISCARD'
-                                  ? 'Défausse'
-                                  : 'Pioche ou défausse',
+                            from === 'DEAD_PILE'
+                                ? 'Pile de mort'
+                                : from === 'DECK'
+                                  ? 'Pioche'
+                                  : from === 'DISCARD'
+                                    ? 'Défausse'
+                                    : 'Pioche ou défausse',
                         subtitle:
-                            'Choisissez une carte jouable dans votre pioche.',
+                            from === 'DEAD_PILE'
+                                ? 'Choisissez un personnage à jouer depuis votre pile de mort.'
+                                : 'Choisissez une carte jouable dans votre pioche.',
                     });
                     queueMicrotask(() => {
                         siteStartBridgeRef.current = false;
@@ -1986,6 +2000,8 @@ export const GameBoard: React.FC<GameBoardProps> = ({
         selectableCardIds: string[];
         deck: CardState[];
         discard: CardState[];
+        /** Pinnacle : grille sur la pile de mort (activation depuis un site). */
+        deadPile?: CardState[];
         title?: string;
         subtitle?: string;
     } | null>(null);
@@ -3449,6 +3465,15 @@ export const GameBoard: React.FC<GameBoardProps> = ({
                                           },
                                       ]
                                     : []),
+                                ...(deckDiscardPick.deadPile &&
+                                deckDiscardPick.deadPile.length > 0
+                                    ? [
+                                          {
+                                              title: 'Pile de mort',
+                                              cards: deckDiscardPick.deadPile,
+                                          },
+                                      ]
+                                    : []),
                             ]}
                             currentSiteIndex={currentSiteIndex}
                             selectableCardIds={
@@ -3463,6 +3488,7 @@ export const GameBoard: React.FC<GameBoardProps> = ({
                                 const poolCards = [
                                     ...deckDiscardPick.deck,
                                     ...deckDiscardPick.discard,
+                                    ...(deckDiscardPick.deadPile || []),
                                 ];
                                 setDeckDiscardPick(null);
                                 if (sitePhasePick) {

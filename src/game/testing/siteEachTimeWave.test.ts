@@ -88,13 +88,22 @@ describe('parseSiteAbilities — vague each-time', () => {
         ]);
     });
 
-    it('laisse Trollshaw inerte (may draw on attach)', () => {
+    it('Trollshaw : YOU_PLAY optionnel sur compagnon', () => {
         expect(
             parseSiteAbilities(
                 '**Forest.** Each time you play an artifact or possession on your companion, you may draw a card.',
                 '11S260'
             )
-        ).toBeUndefined();
+        ).toEqual([
+            expect.objectContaining({
+                optional: true,
+                trigger: expect.objectContaining({
+                    type: 'YOU_PLAY',
+                    onCompanion: true,
+                }),
+                effects: [{ type: 'DRAW', count: 1 }],
+            }),
+        ]);
     });
 });
 

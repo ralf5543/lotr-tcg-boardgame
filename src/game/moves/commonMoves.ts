@@ -52,6 +52,7 @@ import {
 } from '../engine/abilities/whenPlayed';
 import { declinePendingSiteStartAbility } from '../logic/siteStartAbility';
 import { resolvePendingSiteMoveAbility } from '../logic/siteMoveAbility';
+import { resumeSiteDepartureContinuation } from '../logic/siteDeparture';
 import {
     beginOptionalSitePhaseAbility,
     resolvePendingSitePhaseAbility,
@@ -608,6 +609,9 @@ export const resolveSiteMoveAbilityChoice = (
     ) {
         return 'INVALID_MOVE';
     }
+    const departureContinuation = G.pendingSiteMoveAbility?.fromDeparture
+        ? G.pendingSiteDepartureContinuation
+        : undefined;
     if (
         !resolvePendingSiteMoveAbility(
             G,
@@ -619,6 +623,12 @@ export const resolveSiteMoveAbilityChoice = (
         )
     ) {
         return 'INVALID_MOVE';
+    }
+    if (departureContinuation) {
+        resumeSiteDepartureContinuation(
+            { G, events, playerID: String(playerID) } as LotrMoveContext,
+            departureContinuation
+        );
     }
 };
 

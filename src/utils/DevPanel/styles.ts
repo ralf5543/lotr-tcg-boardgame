@@ -30,6 +30,11 @@ export const ToggleButton = styled.button`
 export const PanelContent = styled.div`
     margin-top: 8px;
     width: 320px;
+    /* Ne jamais dépasser l’écran : le bouton de fermeture (au-dessus)
+       doit rester visible, le contenu défile à l’intérieur. */
+    max-height: calc(100dvh - 72px);
+    overflow-y: auto;
+    overscroll-behavior: contain;
     background-color: #0f172a;
     color: #f8fafc;
     padding: 16px;

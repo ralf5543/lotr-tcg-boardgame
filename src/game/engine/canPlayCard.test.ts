@@ -328,6 +328,28 @@ describe('canPlayCard', () => {
         expect(result.reason).toMatch(/morts/i);
     });
 
+    it('autorise la carte unique jouée DEPUIS la pile des morts (elle-même)', () => {
+        // Pinnacle of Zirakzigil : le Wizard mort est la carte jouée,
+        // pas une autre copie — le contrôle d’unicité ne doit pas bloquer.
+        const dead = createCompanion({
+            id: 'aragorn-dead',
+            instanceId: 'aragorn-dead',
+            title: 'Aragorn',
+            isUnique: true,
+        });
+        const result = canPlayCard(dead, {
+            G: createGameState({
+                players: {
+                    '0': createPlayerState('0', { deadPile: [dead] }),
+                },
+            }),
+            ctx: { phase: 'fellowship' },
+            playerID: '0',
+        });
+
+        expect(result.valid).toBe(true);
+    });
+
     it('refuse un séide unique déjà en jeu', () => {
         const result = canPlayCard(
             createMinion({

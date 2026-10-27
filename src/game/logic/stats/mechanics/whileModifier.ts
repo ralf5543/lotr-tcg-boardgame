@@ -858,6 +858,67 @@ export function getWhileKeywordRaws(
 }
 
 /**
+ * Suppressions de mots-clés par les passifs While (cartes en jeu + site
+ * courant). Harrowdale : un séide en combat contre un compagnon Rohan
+ * perd Fierce (et ne peut pas le gagner tant que le passif tient).
+ */
+export function getWhileKeywordSuppressions(
+    G: GameState,
+    card: CardState
+): Set<string> {
+    const suppressed = new Set<string>();
+    const cardId = card.instanceId || card.id;
+
+    const collect = (source: CardState, abilities: Ability[]) => {
+        for (const ability of abilities) {
+            if (ability.trigger?.type !== 'WHILE') continue;
+            // Harrowdale : la condition « skirmishing » porte sur le
+            // bénéficiaire (le séide qui perd Fierce), pas sur la source —
+            // whileConditionHolds la lit depuis la source (un site ne
+            // combat pas), donc on la vérifie ici contre `card`.
+            const hostedByEffect = (ability.effects || []).some(
+                (e) => e.type === 'MODIFY_KEYWORD' && e.skirmishingHostedByEffect
+            );
+            if (hostedByEffect) {
+                if (ability.trigger?.type !== 'WHILE') continue;
+                const target = ability.trigger.skirmishing?.target;
+                if (!target) continue;
+                const opponents = getSkirmishOpponents(G, card);
+                if (
+                    !opponents.some((opp) => cardMatchesTarget(opp, target))
+                ) {
+                    continue;
+                }
+            } else if (!whileConditionHolds(G, source, ability)) {
+                continue;
+            }
+            for (const effect of ability.effects || []) {
+                if (effect.type !== 'MODIFY_KEYWORD') continue;
+                if (!effect.suppress) continue;
+                if (!Array.isArray(effect.target)) continue;
+                if (!cardMatchesTarget(card, effect.target)) continue;
+                suppressed.add(String(effect.keyword).toUpperCase());
+            }
+        }
+    };
+
+    forEachInPlayCard(G, (source) => {
+        if ((source.instanceId || source.id) === cardId) return;
+        collect(source, source.abilities || []);
+    });
+
+    const currentSite = getCurrentSite(G);
+    if (currentSite) {
+        collect(
+            currentSite as unknown as CardState,
+            currentSite.abilities || []
+        );
+    }
+
+    return suppressed;
+}
+
+/**
  * Modificateur de coût crépuscule :
  * - While SELF TWILIGHT_COST sur la carte (Olog −2 / empilé) — lu aussi depuis la main ;
  * - passifs en jeu (Ambition : −1 sur tes événements culture).

@@ -472,7 +472,9 @@ export const GameControls: React.FC<GameControlsProps> = ({
         const siteClause = getAbilityToastClause(siteAbility, siteSource);
         toastConfig = {
             show: true,
-            title: 'EFFET DU SITE',
+            title: G.pendingSiteMoveAbility?.fromDeparture
+                ? 'EFFET DU SITE QUITTÉ'
+                : 'EFFET DU SITE',
             body: siteClause ? (
                 <FormattedText text={siteClause} />
             ) : (
@@ -663,13 +665,14 @@ export const GameControls: React.FC<GameControlsProps> = ({
                   G.pendingWhenPlayed.sourceInstanceId
               ) as CardState | null)
             : null;
+        const fromSite = Boolean(G.pendingWhenPlayed?.fromSite);
         // Même défaut que Card (`currentLang = 'fr'`) tant qu’il n’y a pas de sélecteur global.
         const localizedGameText = whenPlayedSource
             ? getCardText(whenPlayedSource, 'fr').gameText
             : undefined;
         toastConfig = {
             show: true,
-            title: 'QUAND VOUS JOUEZ',
+            title: fromSite ? 'EFFET DU SITE' : 'QUAND VOUS JOUEZ',
             body: localizedGameText ? (
                 <FormattedText text={localizedGameText} />
             ) : (

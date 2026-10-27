@@ -12,6 +12,7 @@ import {
     areHealsForbidden,
     getCurrentSite,
 } from './sites';
+import { resolveCostTarget } from '../engine/abilities/resolveCostTarget';
 import { canReinforce } from './cultureTokens';
 
 type PhaseEvents = {
@@ -103,6 +104,29 @@ function optionalMoveEffectsAreLegal(G: GameState, ability: Ability): boolean {
             if (!wounded) return false;
             continue;
         }
+        // Moria Guardroom : DRAW conditionné par un coût « désigner X »
+        // (spot en mode DESIGNATION dans le coût). Ne pas renvoyer au
+        // ciblage « effet » : le moteur paie le coût sans chosenId et ne
+        // vérifie le jeton qu’à la fin.
+        if (
+            (ability.cost || []).some((option) =>
+                (option.spot || []).some(
+                    (req) =>
+                        req.mode === 'DESIGNATION' && Array.isArray(req.target)
+                )
+            )
+        ) {
+            continue;
+        }
+        // Osgiliath : REMOVE_BURDENS conditionné par un coût « désigner
+        // N fardeaux » (spotBurdens dans le coût).
+        if (
+            (ability.cost || []).some(
+                (option) => typeof option.spotBurdens === 'number'
+            )
+        ) {
+            continue;
+        }
         if (effect.type === 'REINFORCE_CULTURE_TOKEN') {
             if (areCultureTokenChangesForbidden(G)) return false;
             // Légalité globale : au moins un joueur peut reinforce (eachPlayerMay).
@@ -179,16 +203,19 @@ function openPendingSiteMove(
     site: SiteCardState,
     ability: Ability,
     playerId: string,
-    nextPhase?: string
+    nextPhase?: string,
+    fromDeparture = false
 ): void {
     G.pendingSiteMoveAbility = {
         playerId,
         siteInstanceId: siteInstanceKey(site),
         abilityId: ability.id,
         pendingPhaseAfterSiteMove: nextPhase,
+        fromDeparture: fromDeparture || undefined,
     };
-    G.statusMessage =
-        'Déplacement : vous pouvez utiliser l’effet du site d’arrivée.';
+    G.statusMessage = fromDeparture
+        ? 'Déplacement : vous pouvez utiliser l’effet du site que vous quittez.'
+        : 'Déplacement : vous pouvez utiliser l’effet du site d’arrivée.';
 }
 
 /**
@@ -235,7 +262,12 @@ export function resolvePendingSiteMoveAbility(
     if (!pending || pending.playerId !== playerID) return false;
 
     if (accept) {
-        const site = getCurrentSite(G);
+        // Site quitté : le site source n’est plus courant — le retrouver sur le chemin.
+        const site = pending.fromDeparture
+            ? ((G.path || []).find(
+                  (s) => s && siteInstanceKey(s) === pending.siteInstanceId
+              ) ?? null)
+            : getCurrentSite(G);
         const ability = site?.abilities?.find(
             (ab) => ab.id === pending.abilityId
         );
@@ -281,7 +313,16 @@ export function resolvePendingSiteMoveAbility(
 
     const nextPhase = pending.pendingPhaseAfterSiteMove;
     const abilityId = pending.abilityId;
+    const wasDeparture = Boolean(pending.fromDeparture);
     G.pendingSiteMoveAbility = undefined;
+
+    // Site quitté : le déplacement n’a PAS encore eu lieu (il est suspendu).
+    // La continuation est exécutée par l’appelant (move) — ici on ne fait
+    // que libérer le pending ; les fenêtres d’arrivée viendront après.
+    if (wasDeparture) {
+        G.pendingSiteMoveAbility = undefined;
+        return true;
+    }
 
     // Morannon : après le FP, proposer à l’Ombre si encore légal.
     const site = getCurrentSite(G);
@@ -294,4 +335,79 @@ export function resolvePendingSiteMoveAbility(
 
     resumeAfterSiteMove(G, events, nextPhase);
     return true;
+}
+
+
+/**
+ * Capacité optionnelle « moves from » du site que la compagnie quitte
+ * (Moria Guardroom, Osgiliath Reclaimed).
+ * À appeler AVANT le déplacement : le coût « désigner » se vérifie sur
+ * l’état courant, l’effet s’appliquera après le déplacement.
+ */
+export function findOptionalSiteDepartureAbility(
+    G: GameState
+): { site: SiteCardState; ability: Ability } | null {
+    const site = getCurrentSite(G);
+    if (!site?.abilities?.length) return null;
+    for (const ability of site.abilities) {
+        if (!ability.optional) continue;
+        if (ability.trigger?.type !== 'MOVES_FROM') continue;
+        if (!triggerConditionsMet(G, site, ability)) continue;
+        if (!optionalMoveEffectsAreLegal(G, ability)) continue;
+        const playerId = responderPlayerId(G, ability);
+        if (
+            !canPayAbilityCost(
+                G,
+                site as unknown as CardState,
+                ability.cost,
+                playerId
+            )
+        ) {
+            continue;
+        }
+        return { site, ability };
+    }
+    return null;
+}
+
+/**
+ * Ouvre le toaster du site quitté. Le déplacement doit être suspendu tant
+ * que le pending existe (les moves de déplacement le refusent).
+ * `nextPhase` : phase à lancer une fois arrivé (ex. startOfShadow).
+ */
+export function beginOptionalSiteDepartureAbility(
+    G: GameState,
+    nextPhase?: string
+): boolean {
+    if (G.pendingSiteMoveAbility) return true;
+    // Reprise d’un déplacement suspendu : la fenêtre a déjà été résolue.
+    if (G.pendingSiteDepartureContinuation) return false;
+    const found = findOptionalSiteDepartureAbility(G);
+    if (!found) return false;
+    openPendingSiteMove(
+        G,
+        found.site,
+        found.ability,
+        responderPlayerId(G, found.ability),
+        nextPhase,
+        true
+    );
+    return true;
+}
+
+/** Candidats du coût « désigner » d’une capacité de site (coût ou effet). */
+export function getSiteMoveCostDesignationCandidates(
+    G: GameState,
+    ability: Ability,
+    site: SiteCardState
+): CardState[] {
+    const source = site as unknown as CardState;
+    for (const option of ability.cost || []) {
+        for (const req of option.spot || []) {
+            if (req.mode === 'DESIGNATION' && Array.isArray(req.target)) {
+                return resolveCostTarget(G, source, req.target);
+            }
+        }
+    }
+    return [];
 }

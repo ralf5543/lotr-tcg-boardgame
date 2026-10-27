@@ -6176,6 +6176,86 @@ function parseSiteMoveAbilities(
         });
     }
 
+    // Westemnet Village : le FP blesse un compagnon pour chaque allié en jeu
+    // (assignation par le FP, comme Doorway mais compagnons seuls).
+    const westemnetWoundRe = new RegExp(
+        `When the fellowship moves to ${siteRef}, the Free Peoples player wounds a companion for each ally\\.`,
+        'gi'
+    );
+    while ((match = westemnetWoundRe.exec(text)) !== null) {
+        found.push({
+            id: `${cardId || 'ability'}:${found.length}:site-move-westemnet-wound`,
+            phases: [],
+            trigger: { type: 'MOVES_TO' },
+            cost: [],
+            effects: [
+                {
+                    type: 'WOUND',
+                    count: 1,
+                    perAlly: true,
+                    target: [['COMPANION']],
+                },
+            ],
+            source: 'SELF',
+            text: stripAbilityMarkup(match[0]),
+        });
+    }
+
+    // Moria Guardroom : moves from → tu peux désigner un Nain pour piocher N.
+    const guardroomRe = new RegExp(
+        `When your fellowship moves from ${siteRef}, you may spot (?:a|an) ([A-Za-z-]+) to draw (\\d+) cards?\\.`,
+        'gi'
+    );
+    while ((match = guardroomRe.exec(text)) !== null) {
+        const drawCount = parseInt(match[2], 10);
+        if (!Number.isFinite(drawCount) || drawCount <= 0) continue;
+        const raceFilters = parseClassFilters(match[1].trim());
+        if (raceFilters.length === 0) continue;
+        found.push({
+            id: `${cardId || 'ability'}:${found.length}:site-move-guardroom-draw`,
+            phases: [],
+            optional: true,
+            responsePlayer: 'FREE_PEOPLE',
+            trigger: { type: 'MOVES_FROM' },
+            cost: [
+                {
+                    spot: [
+                        {
+                            count: 1,
+                            target: [raceFilters],
+                            mode: 'DESIGNATION',
+                        },
+                    ],
+                },
+            ],
+            effects: [{ type: 'DRAW', count: drawCount }],
+            source: 'SELF',
+            text: stripAbilityMarkup(match[0]),
+        });
+    }
+
+    // Osgiliath Reclaimed : moves from → tu peux désigner N fardeaux pour
+    // en retirer un.
+    const osgiliathRe = new RegExp(
+        `When the fellowship moves from ${siteRef}, the Free Peoples player may spot (\\d+) burdens? to remove (?:a|one) burden\\.`,
+        'gi'
+    );
+    while ((match = osgiliathRe.exec(text)) !== null) {
+        const spotBurdens = parseInt(match[1], 10);
+        if (!Number.isFinite(spotBurdens) || spotBurdens <= 0) continue;
+        found.push({
+            id: `${cardId || 'ability'}:${found.length}:site-move-osgiliath-burdens`,
+            phases: [],
+            optional: true,
+            responsePlayer: 'FREE_PEOPLE',
+            trigger: { type: 'MOVES_FROM' },
+            cost: [{ spotBurdens }],
+            effects: [{ type: 'REMOVE_BURDENS', count: 1 }],
+            source: 'SELF',
+            text: stripAbilityMarkup(match[0]),
+        });
+    }
+
     // Crossroads : regroup → FP may heal a companion of each culture.
     const crossroadsHealRe = new RegExp(
         `When the fellowship moves to ${siteRef} during the regroup phase, the Free Peoples player may heal a companion of each culture\\.`,
@@ -6621,7 +6701,7 @@ export function parseSiteAbilities(
  * Each time (sites set 11+) :
  * Slag Mounds (companion killed → burden) ; Heights (Gandalf wins → may discard) ;
  * Starkhorn (Dwarf wins → may draw).
- * Inerte volontaire : Trollshaw (may draw on attach — toaster YOU_PLAY).
+ * Trollshaw : YOU_PLAY optionnel « on your companion ».
  */
 function parseSiteEachTimeAbilities(
     text: string,
@@ -6630,9 +6710,40 @@ function parseSiteEachTimeAbilities(
     const found: Record<string, unknown>[] = [];
     const plain = stripAbilityMarkup(text).replace(/\s+/g, ' ').trim();
 
+    let match: RegExpExecArray | null;
+
+    // Trollshaw Forest : « Each time you play an artifact or possession on
+    // your companion, you may draw a card. »
+    const youPlayDrawRe =
+        /Each time you play (?:a|an)\s+(.+?)\s+on your companion,\s*you may draw (a|an|one|\d+) cards?\./gi;
+    while ((match = youPlayDrawRe.exec(plain)) !== null) {
+        const playedRaw = match[1].trim();
+        const playedFilters = playedRaw
+            .split(/\s+or\s+/i)
+            .map((part) => parseClassFilters(part.trim()))
+            .filter((filters) => filters.length > 0);
+        if (playedFilters.length === 0) continue;
+        const n = parseBurdenWord(match[2]);
+        if (!n) continue;
+        found.push({
+            id: `${cardId || 'ability'}:${found.length}:site-you-play-draw`,
+            phases: ['RESPONSE'],
+            optional: true,
+            responsePlayer: 'FREE_PEOPLE',
+            trigger: {
+                type: 'YOU_PLAY',
+                played: playedFilters,
+                onCompanion: true,
+            },
+            cost: [],
+            effects: [{ type: 'DRAW', count: n }],
+            source: 'SELF',
+            text: stripAbilityMarkup(match[0]),
+        });
+    }
+
     const killedRe =
         /Each time a companion is killed,\s*add (a|an|one|\d+) burdens?\./gi;
-    let match: RegExpExecArray | null;
     while ((match = killedRe.exec(plain)) !== null) {
         const n = parseBurdenWord(match[1]);
         if (!n) continue;
@@ -7376,6 +7487,68 @@ function parseSitePassiveRestAbilities(
         });
     }
 
+    // Chamber of Mazarbul : « The Free Peoples player may transfer Free
+    // Peoples artifacts and possessions at no twilight cost. »
+    if (
+        /The Free Peoples player may transfer Free Peoples artifacts and possessions at no twilight cost\.?/i.test(
+            plain
+        )
+    ) {
+        found.push({
+            id: `${cardId || 'ability'}:${found.length}:site-chamber`,
+            phases: [],
+            trigger: { type: 'WHILE' },
+            cost: [],
+            effects: [
+                {
+                    type: 'FREE_FP_ATTACHMENT_TRANSFER',
+                    target: [['ARTIFACT'], ['POSSESSION']],
+                },
+            ],
+            source: 'SELF',
+            text: 'The Free Peoples player may transfer Free Peoples artifacts and possessions at no twilight cost.',
+        });
+    }
+
+    // Harrowdale : « Until the regroup phase, each minion skirmishing a
+    // <culture> companion loses <keyword> and cannot gain <keyword>. »
+    // En Standard, « jusqu’au regroupement » = tant qu’on est sur le site :
+    // le tour acharné se rejoue à chaque site. Passif de suppression
+    // conditionnelle, lu au calcul des mots-clés.
+    const harrowdaleRe =
+        /Until the regroup phase,\s*each minion skirmishing a\s+(.+?)\s+companion loses\s+([A-Za-z-]+)\s+and cannot gain\s+([A-Za-z-]+)\.?/gi;
+    while ((match = harrowdaleRe.exec(plain)) !== null) {
+        const loseKw = match[2].trim().toUpperCase();
+        const gainKw = match[3].trim().toUpperCase();
+        if (!loseKw || loseKw !== gainKw) continue;
+        // Filtre d’adversaire : culture / race en MAJUSCULES (les filtres
+        // de culture du convertisseur sont normalisés en capitales).
+        const opponentFilters = parseClassFilters(match[1].trim()).map(
+            (filter) => filter.toUpperCase()
+        );
+        if (opponentFilters.length === 0) continue;
+        found.push({
+            id: `${cardId || 'ability'}:${found.length}:site-harrowdale`,
+            phases: [],
+            trigger: {
+                type: 'WHILE',
+                skirmishing: { target: [opponentFilters] },
+            },
+            cost: [],
+            effects: [
+                {
+                    type: 'MODIFY_KEYWORD',
+                    keyword: loseKw,
+                    target: [['MINION']],
+                    suppress: true,
+                    skirmishingHostedByEffect: true,
+                },
+            ],
+            source: 'SELF',
+            text: stripAbilityMarkup(match[0]),
+        });
+    }
+
     // Streets of Bree
     if (
         /While the fellowship is at this site, followers cannot be transferred to a character\.?/i.test(
@@ -7627,6 +7800,36 @@ function parseSiteStartOfFellowshipAbilities(
                     type: 'PLAY_FROM_DECK_OR_DISCARD',
                     target: [filters],
                     from: 'DECK',
+                },
+            ],
+            source: 'SELF',
+            text: stripAbilityMarkup(match[0]),
+        });
+    }
+
+    // Pinnacle of Zirakzigil : début de FP — exercer N compagnons (distincts)
+    // pour jouer un personnage d’une race donnée depuis la pile de mort.
+    const deadPilePlayRe =
+        /At the start of (?:your|the) fellowship phase,\s*you may exert (.+?) to play (?:a|an)\s+(.+?)\s+from your dead pile\.?/gi;
+    while ((match = deadPilePlayRe.exec(plain)) !== null) {
+        const subject = parseExertSubject(match[1].trim());
+        if (!subject) continue;
+        const playFilters = parseClassFilters(match[2]);
+        if (playFilters.length === 0) continue;
+        found.push({
+            id: `${cardId || 'ability'}:${found.length}:site-start-fp-dead-pile-play`,
+            phases: ['START_OF_FELLOWSHIP'],
+            optional: true,
+            cost: [
+                {
+                    exert: [exertSelectorFromSubject(subject)],
+                },
+            ],
+            effects: [
+                {
+                    type: 'PLAY_FROM_DECK_OR_DISCARD',
+                    target: [playFilters],
+                    from: 'DEAD_PILE',
                 },
             ],
             source: 'SELF',

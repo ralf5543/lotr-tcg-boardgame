@@ -240,10 +240,21 @@ export function acceptPendingWhenPlayed(
     const pending = G.pendingWhenPlayed;
     if (!pending || pending.playerId !== playerID) return false;
 
-    const source = findTargetCard(
+    let source = findTargetCard(
         G,
         pending.sourceInstanceId
     ) as CardState | null;
+    // Trollshaw : la source est le site courant (clé = instanceId ou id sur le chemin).
+    if ((!source || !source.abilities?.length) && pending.fromSite) {
+        const site = (G.path || []).find(
+            (s) =>
+                s &&
+                ((s as { instanceId?: string }).instanceId ===
+                    pending.sourceInstanceId ||
+                    s.id === pending.sourceInstanceId)
+        );
+        source = (site as unknown as CardState) || null;
+    }
     const ability = source?.abilities?.find(
         (ab) => ab.id === pending.abilityId
     );
@@ -258,7 +269,7 @@ export function acceptPendingWhenPlayed(
         ability,
         pending.phase,
         discardedHandIds,
-        chosenTargetId
+        Array.isArray(chosenTargetId) ? chosenTargetId[0] : chosenTargetId
     );
     if (!applied) return false;
     G.pendingWhenPlayed = undefined;

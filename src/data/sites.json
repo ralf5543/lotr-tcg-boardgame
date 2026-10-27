@@ -6179,6 +6179,31 @@
     "keywords": [
       "UNDERGROUND"
     ],
+    "abilities": [
+      {
+        "id": "11S233:0:site-passive-rest",
+        "phases": [],
+        "trigger": {
+          "type": "WHILE"
+        },
+        "cost": [],
+        "effects": [
+          {
+            "type": "FREE_FP_ATTACHMENT_TRANSFER",
+            "target": [
+              [
+                "ARTIFACT"
+              ],
+              [
+                "POSSESSION"
+              ]
+            ]
+          }
+        ],
+        "source": "SELF",
+        "text": "The Free Peoples player may transfer Free Peoples artifacts and possessions at no twilight cost."
+      }
+    ],
     "twilightCost": 2,
     "siteArrow": "Right",
     "imageUrl": "/cards_visuals/o_11_233.jpg",
@@ -6795,6 +6820,38 @@
       "PLAINS",
       "FIERCE"
     ],
+    "abilities": [
+      {
+        "id": "11S243:0:site-passive-rest",
+        "phases": [],
+        "trigger": {
+          "type": "WHILE",
+          "skirmishing": {
+            "target": [
+              [
+                "ROHAN"
+              ]
+            ]
+          }
+        },
+        "cost": [],
+        "effects": [
+          {
+            "type": "MODIFY_KEYWORD",
+            "keyword": "FIERCE",
+            "target": [
+              [
+                "MINION"
+              ]
+            ],
+            "suppress": true,
+            "skirmishingHostedByEffect": true
+          }
+        ],
+        "source": "SELF",
+        "text": "Until the regroup phase, each minion skirmishing a rohan companion loses fierce and cannot gain Fierce."
+      }
+    ],
     "twilightCost": 3,
     "siteArrow": "Right",
     "imageUrl": "/cards_visuals/o_11_243.jpg",
@@ -7037,6 +7094,40 @@
     "type": "SITE",
     "keywords": [
       "UNDERGROUND"
+    ],
+    "abilities": [
+      {
+        "id": "11S247:0:site-move",
+        "phases": [],
+        "optional": true,
+        "responsePlayer": "FREE_PEOPLE",
+        "trigger": {
+          "type": "MOVES_FROM"
+        },
+        "cost": [
+          {
+            "spot": [
+              {
+                "count": 1,
+                "target": [
+                  [
+                    "DWARF"
+                  ]
+                ],
+                "mode": "DESIGNATION"
+              }
+            ]
+          }
+        ],
+        "effects": [
+          {
+            "type": "DRAW",
+            "count": 2
+          }
+        ],
+        "source": "SELF",
+        "text": "When your fellowship moves from this site, you may spot a Dwarf to draw 2 cards."
+      }
     ],
     "twilightCost": 3,
     "siteArrow": "Left",
@@ -7328,6 +7419,30 @@
     "keywords": [
       "BATTLEGROUND"
     ],
+    "abilities": [
+      {
+        "id": "11S252:0:site-move",
+        "phases": [],
+        "optional": true,
+        "responsePlayer": "FREE_PEOPLE",
+        "trigger": {
+          "type": "MOVES_FROM"
+        },
+        "cost": [
+          {
+            "spotBurdens": 3
+          }
+        ],
+        "effects": [
+          {
+            "type": "REMOVE_BURDENS",
+            "count": 1
+          }
+        ],
+        "source": "SELF",
+        "text": "When the fellowship moves from this site, the Free Peoples player may spot 3 burdens to remove a burden."
+      }
+    ],
     "twilightCost": 2,
     "siteArrow": "Right",
     "imageUrl": "/cards_visuals/o_11_252.jpg",
@@ -7499,6 +7614,47 @@
     "type": "SITE",
     "keywords": [
       "MOUNTAIN"
+    ],
+    "abilities": [
+      {
+        "id": "11S255:0:site-start-fp",
+        "phases": [
+          "START_OF_FELLOWSHIP"
+        ],
+        "optional": true,
+        "cost": [
+          {
+            "exert": [
+              {
+                "count": 3,
+                "target": [
+                  [
+                    "COMPANION"
+                  ]
+                ],
+                "mode": "DESIGNATION",
+                "distinctTargets": true
+              }
+            ]
+          }
+        ],
+        "effects": [
+          {
+            "type": "PLAY_FROM_DECK_OR_DISCARD",
+            "target": [
+              [
+                "WIZARD"
+              ]
+            ],
+            "from": "DEAD_PILE"
+          }
+        ],
+        "source": "SELF",
+        "text": "At the start of your fellowship phase, you may exert 3 companions to play a Wizard from your dead pile."
+      }
+    ],
+    "actionPhases": [
+      "START_OF_FELLOWSHIP"
     ],
     "twilightCost": 3,
     "siteArrow": "Right",
@@ -7798,6 +7954,37 @@
     "keywords": [
       "FOREST"
     ],
+    "abilities": [
+      {
+        "id": "11S260:0:site-each-time",
+        "phases": [
+          "RESPONSE"
+        ],
+        "optional": true,
+        "responsePlayer": "FREE_PEOPLE",
+        "trigger": {
+          "type": "YOU_PLAY",
+          "played": [
+            [
+              "ARTIFACT"
+            ],
+            [
+              "POSSESSION"
+            ]
+          ],
+          "onCompanion": true
+        },
+        "cost": [],
+        "effects": [
+          {
+            "type": "DRAW",
+            "count": 1
+          }
+        ],
+        "source": "SELF",
+        "text": "Each time you play an artifact or possession on your companion, you may draw a card."
+      }
+    ],
     "twilightCost": 3,
     "siteArrow": "Left",
     "imageUrl": "/cards_visuals/o_01_334.jpg",
@@ -8024,6 +8211,30 @@
     "type": "SITE",
     "keywords": [
       "DWELLING"
+    ],
+    "abilities": [
+      {
+        "id": "11S264:0:site-move",
+        "phases": [],
+        "trigger": {
+          "type": "MOVES_TO"
+        },
+        "cost": [],
+        "effects": [
+          {
+            "type": "WOUND",
+            "count": 1,
+            "perAlly": true,
+            "target": [
+              [
+                "COMPANION"
+              ]
+            ]
+          }
+        ],
+        "source": "SELF",
+        "text": "When the fellowship moves to this site, the Free Peoples player wounds a companion for each ally."
+      }
     ],
     "twilightCost": 2,
     "siteArrow": "Left",

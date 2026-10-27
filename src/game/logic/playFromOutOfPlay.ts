@@ -25,7 +25,7 @@ export function shufflePlayerDeck(G: GameState, ownerId: string): void {
     }
 }
 
-export type DeckOrDiscardSource = 'DECK' | 'DISCARD';
+export type DeckOrDiscardSource = 'DECK' | 'DISCARD' | 'DEAD_PILE';
 
 export function findInDeckOrDiscard(
     G: GameState,
@@ -47,6 +47,14 @@ export function findInDeckOrDiscard(
     if (discardIndex >= 0) {
         const card = player.discard![discardIndex];
         if (card) return { card, source: 'DISCARD', index: discardIndex };
+    }
+
+    const deadIndex = (player.deadPile || []).findIndex((c) =>
+        matchCard(c, cardId)
+    );
+    if (deadIndex >= 0) {
+        const card = player.deadPile![deadIndex];
+        if (card) return { card, source: 'DEAD_PILE', index: deadIndex };
     }
 
     return null;
@@ -120,17 +128,12 @@ export function getDeckOrDiscardPlayCandidates(
     filter: string[][],
     phase = 'shadow',
     attachHost?: CardState | null,
-    from: 'DECK' | 'DISCARD' | 'DECK_OR_DISCARD' = 'DECK_OR_DISCARD'
+    from: PlayFromSource = 'DECK_OR_DISCARD'
 ): CardState[] {
     const player = G.players[ownerId];
     if (!player) return [];
 
-    const poolCards =
-        from === 'DECK'
-            ? [...(player.deck || [])]
-            : from === 'DISCARD'
-              ? [...(player.discard || [])]
-              : [...(player.deck || []), ...(player.discard || [])];
+    const poolCards = getPlayFromPool(G, ownerId, from);
 
     const pool = poolCards.filter(
         (card) => card && cardMatchesTarget(card, filter)
@@ -153,6 +156,32 @@ export function getDeckOrDiscardPlayCandidates(
         );
         return check.valid;
     });
+}
+
+export type PlayFromSource =
+    | 'DECK'
+    | 'DISCARD'
+    | 'DECK_OR_DISCARD'
+    | 'DEAD_PILE';
+
+/** Pile(s) d’où une carte peut être jouée (pioche / défausse / pile de mort). */
+export function getPlayFromPool(
+    G: GameState,
+    ownerId: string,
+    from: PlayFromSource
+): CardState[] {
+    const player = G.players[ownerId];
+    if (!player) return [];
+    switch (from) {
+        case 'DECK':
+            return [...(player.deck || [])];
+        case 'DISCARD':
+            return [...(player.discard || [])];
+        case 'DEAD_PILE':
+            return [...(player.deadPile || [])];
+        default:
+            return [...(player.deck || []), ...(player.discard || [])];
+    }
 }
 
 /** Coût crépuscule effectif d’une carte jouée par l’Ombre, réduction déduite. */
@@ -303,12 +332,13 @@ export function playCardFromDeckOrDiscard(
     filter?: string[][],
     phase = 'shadow',
     attachHost?: CardState | null,
-    from: 'DECK' | 'DISCARD' | 'DECK_OR_DISCARD' = 'DECK_OR_DISCARD'
+    from: PlayFromSource = 'DECK_OR_DISCARD'
 ): CardState | null {
     const found = findInDeckOrDiscard(G, ownerId, cardId);
     if (!found) return null;
     if (from === 'DECK' && found.source !== 'DECK') return null;
     if (from === 'DISCARD' && found.source !== 'DISCARD') return null;
+    if (from === 'DEAD_PILE' && found.source !== 'DEAD_PILE') return null;
 
     const { card, source, index } = found;
     if (filter && !cardMatchesTarget(card, filter)) return null;
@@ -345,14 +375,23 @@ export function playCardFromDeckOrDiscard(
     let removed: CardState | undefined;
     if (source === 'DECK') {
         [removed] = player.deck!.splice(index, 1);
-    } else {
+    } else if (source === 'DISCARD') {
         [removed] = player.discard!.splice(index, 1);
+    } else {
+        [removed] = player.deadPile!.splice(index, 1);
+        // Ressuscité : la carte n’est plus morte.
+        if (removed) {
+            removed.isDead = false;
+            removed.wounds = 0;
+        }
     }
     if (!removed) return null;
 
     const restore = () => {
         if (source === 'DECK') player.deck!.splice(index, 0, removed!);
-        else player.discard!.splice(index, 0, removed!);
+        else if (source === 'DISCARD')
+            player.discard!.splice(index, 0, removed!);
+        else player.deadPile!.splice(index, 0, removed!);
     };
 
     const finishPlay = (): CardState => {

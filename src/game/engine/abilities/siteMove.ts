@@ -257,8 +257,12 @@ export function resolveSiteMoveAbilities(
                 }
                 continue;
             }
-            if (effect.type === 'WOUND' && effect.eachOwner) {
-                // Doorway : désignation séquentielle — beginSiteMoveCharacterWoundsIfNeeded.
+            if (
+                effect.type === 'WOUND' &&
+                (effect.eachOwner || effect.perAlly)
+            ) {
+                // Doorway / Westemnet : assignation par le joueur —
+                // beginSiteMoveCharacterWoundsIfNeeded.
                 continue;
             }
             if (effect.type === 'WOUND' && effect.all) {

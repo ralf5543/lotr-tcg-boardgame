@@ -282,9 +282,20 @@ function checkUniqueness(
 
     if (playerID && G.players?.[playerID]?.deadPile) {
         const activePlayerDeadPile = G.players[playerID].deadPile;
-        const existsInDeadPile = activePlayerDeadPile.some(
-            (c) => c && getCardTitle(c) === cardTitle
-        );
+        const existsInDeadPile = activePlayerDeadPile.some((c) => {
+            if (!c || getCardTitle(c) !== cardTitle) return false;
+            // La carte elle-même, jouée DEPUIS la pile de mort (Pinnacle…) :
+            // ce n’est pas « une autre copie », le contrôle ne s’applique pas.
+            if (c === card) return false;
+            if (
+                c.instanceId &&
+                card.instanceId &&
+                c.instanceId === card.instanceId
+            ) {
+                return false;
+            }
+            return true;
+        });
 
         if (existsInDeadPile) {
             return {

@@ -114,18 +114,19 @@ Preset : `SITES_PHASE_WAVE`.
 
 Preset : `SITES_EACH_TIME_WAVE`.
 
-### Inertes — set 11 (hors vagues livrées)
+### Vague derniers sites du set 11 (playtest)
 
-| Id | Titre | Famille |
-| --- | --- | --- |
-| `11S233` | Chamber of Mazarbul | passive-while |
-| `11S243` | Harrowdale | passive-while |
-| `11S247` | Moria Guardroom | moves-from |
-| `11S252` | Osgiliath Reclaimed | moves-from |
-| `11S260` | Trollshaw Forest | each-time |
-| `11S264` | Westemnet Village | moves-to |
+| Id | Titre | Statut | Notes |
+| --- | --- | --- | --- |
+| `11S264` | Westemnet Village | OK | Moves to : 1 blessure par allié, assignée aux **compagnons** seuls (pending Doorway, `perAlly` + `companionsOnly`) |
+| `11S247` | Moria Guardroom | OK | Moves **from** optionnel : toaster « site quitté » **avant** le départ (désigner un Nain → piocher 2) ; déplacement suspendu puis repris (`pendingSiteDepartureContinuation`) |
+| `11S252` | Osgiliath Reclaimed | OK | Moves from optionnel : désigner 3 fardeaux → −1 fardeau (même socle) |
+| `11S255` | Pinnacle of Zirakzigil | OK | Début de fellowship : exercer 3 compagnons **distincts** → jouer un Wizard depuis la **pile de mort** (`from: 'DEAD_PILE'` + grille pile de mort) |
+| `11S260` | Trollshaw Forest | OK | YOU_PLAY optionnel « sur ton compagnon » (porteur = compagnon) → toaster piocher (`pendingWhenPlayed.fromSite`) |
+| `11S243` | Harrowdale | OK | Passif de **suppression** : séide en combat contre un compagnon Rohan perd Fierce (`MODIFY_KEYWORD suppress`, condition portée par le bénéficiaire) |
+| `11S233` | Chamber of Mazarbul | OK | Transfert FP d’artefact/possession **gratuit** au site courant (`FREE_FP_ATTACHMENT_TRANSFER`, lu par le move de transfert ; « may » = glisser optionnel) |
 
-(Buckland / Expanding Marshland / Woody-End : livrés par la vague famille « Shadow: play… », cf. ci-dessous.)
+Preset : `SITES_SET11_RESTANTS` — un seul parcours, les 7 sites se succèdent sur le chemin (1 Pinnacle → 2 Trollshaw → 3 Chamber → 4 Westemnet → 5 Guardroom → 6 Osgiliath → 7 Harrowdale), playtest en avançant de site en site.
 
 ### Vague cas durs / suite
 
@@ -377,7 +378,10 @@ Aucun : The Angle était le dernier (vague famille « Shadow: play… »).
 22. Vague **famille « Shadow: play… »** — presets `SITES_ANGLE` / `SITES_BUCKLAND` / `SITES_MARSHLAND` / `SITES_WOODY_END` (playtest)
     - OK parse/runtime : The Angle (dernier 12–18, 2 modes) ; Buckland (désignation reportée) ; Expanding Marshland (−3) ; Woody-End (fardeau → Nazgûl de la défausse)
     - Socle réutilisable : `PLAY_FROM_HAND`, désignation reportée, `ignoreTwilightPool`
-23. Reste : inertes set 11 volontaires (Chamber of Mazarbul, Harrowdale, Moria Guardroom, Osgiliath Reclaimed, Trollshaw Forest, Westemnet Village, Pinnacle of Zirakzigil)
+23. Vague **derniers sites du set 11** — preset unique `SITES_SET11_RESTANTS` (parcours 1→7, playtest)
+    - OK parse/runtime : Westemnet (blessure / allié, compagnons seuls) ; Guardroom + Osgiliath (moves-from optionnels, déplacement suspendu/repris) ; Pinnacle (exercer 3 distincts → Wizard de la pile de mort) ; Trollshaw (YOU_PLAY sur compagnon → piocher) ; Harrowdale (suppression Fierce conditionnelle) ; Chamber (transfert FP gratuit)
+    - Socle réutilisable : `pendingSiteDepartureContinuation`, `from: 'DEAD_PILE'`, `getWhileKeywordSuppressions`, `FREE_FP_ATTACHMENT_TRANSFER`, `pendingWhenPlayed.fromSite`
+24. Reste : **aucun site 11–18 inerte**. Chantier sites clos après validation ; bascule roadmap à décider.
 
 ## Hors scope
 

@@ -1,4 +1,5 @@
 import type { LotrMoveContext } from '../types';
+import { isFreeFpAttachmentTransfer } from '../logic/siteTransfer';
 
 export interface TransferPayload {
     attachmentId: string;
@@ -76,7 +77,13 @@ export const transferAttachment = (
         return 'INVALID_MOVE';
     }
 
-    const cost = Number(movedAttachment.twilightCost) || 0;
+    const rawCost = Number(movedAttachment.twilightCost) || 0;
+    // Chamber of Mazarbul : transfert FP gratuit (artefact / possession).
+    const cost =
+        movedAttachment.kind !== 'SHADOW' &&
+        isFreeFpAttachmentTransfer(G, movedAttachment)
+            ? 0
+            : rawCost;
 
     if (movedAttachment.kind === 'SHADOW') {
         if (G.twilightPool < cost) return 'INVALID_MOVE';

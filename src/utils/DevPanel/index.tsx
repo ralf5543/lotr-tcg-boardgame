@@ -15,6 +15,8 @@ export interface DevMoves {
     devSetArchery?: (amount: number) => void;
     devSetCurrentSite?: (siteIndex: number) => void;
     devForceEndPhase: () => void;
+    /** Presets de playtest de la vague en cours (derniers sites du set 11). */
+    devLoadPreset?: (presetName: string) => void;
 }
 
 export interface DevPanelProps {
@@ -368,6 +370,26 @@ export const DevPanel: React.FC<DevPanelProps> = ({
                         <S.GameButton $bgColor="#3498db" onClick={onDrawCard}>
                             🃏 Piocher ({deckCount})
                         </S.GameButton>
+                    </S.Section>
+
+                    {/* Preset de playtest : derniers sites du set 11 */}
+                    <S.Section>
+                        <S.Label>
+                            Preset sites (set 11, restants) :
+                            <br />
+                            <span style={{ opacity: 0.75, fontWeight: 400 }}>
+                                Un seul parcours : les 7 sites se succèdent
+                                (1 Pinnacle → 7 Harrowdale), avance de site en
+                                site pour tout tester.
+                            </span>
+                        </S.Label>
+                        <S.ActionButton
+                            onClick={() =>
+                                moves.devLoadPreset?.('SITES_SET11_RESTANTS')
+                            }
+                        >
+                            Parcours set 11 (7 sites)
+                        </S.ActionButton>
                     </S.Section>
 
                 </S.PanelContent>

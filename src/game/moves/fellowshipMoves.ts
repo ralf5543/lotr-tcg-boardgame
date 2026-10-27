@@ -3,13 +3,16 @@ import { getRegionTwilightBonus } from '../logic/sites';
 import { resolveSiteMoveAbilities } from '../engine/abilities/siteMove';
 import { tryOpenFellowshipMoves } from '../engine/responseWindow';
 import { enterPhase } from '../logic/phaseEntry';
-import { beginOptionalSiteMoveAbility } from '../logic/siteMoveAbility';
+import {
+    beginOptionalSiteDepartureAbility,
+    beginOptionalSiteMoveAbility,
+} from '../logic/siteMoveAbility';
 import { beginSiteMoveCharacterWoundsIfNeeded } from '../logic/siteMoveCharacterWounds';
 import { beginDeadPileRemovalIfNeeded } from '../logic/siteDeadPileRemoval';
 import { enforceWhileSelfDiscards } from '../engine/abilities/enforceWhileDiscard';
 
 /** Après un déplacement réel : réponses « each time the fellowship moves ». */
-function afterFellowshipArrived(
+export function afterFellowshipArrived(
     G: GameState,
     events?: { setPhase?: (phase: string) => void },
     nextPhase?: string
@@ -273,6 +276,12 @@ export const endFellowshipPhase = ({
         );
         return 'INVALID_MOVE';
     }
+    // Site quitté : fenêtre optionnelle (Guardroom / Osgiliath) avant le départ.
+    if (beginOptionalSiteDepartureAbility(G, 'startOfShadow')) {
+        G.pendingSiteDepartureContinuation = { kind: 'END_FELLOWSHIP_PHASE' };
+        return;
+    }
+
     advanceCompany(G);
 
     if (!G.awaitingSiteSelection) {

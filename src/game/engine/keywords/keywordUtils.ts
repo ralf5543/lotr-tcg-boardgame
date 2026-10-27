@@ -1,5 +1,8 @@
 import type { CardState, CardKeyword, GameState } from '../../types';
-import { getWhileKeywordRaws } from '../../logic/stats/mechanics/whileModifier';
+import {
+    getWhileKeywordRaws,
+    getWhileKeywordSuppressions,
+} from '../../logic/stats/mechanics/whileModifier';
 
 export interface ParsedKeyword {
     raw: CardKeyword | string;
@@ -70,6 +73,11 @@ export function getEffectiveKeywords(
 
     if (G) {
         rawList.push(...getWhileKeywordRaws(G, card));
+        // Passifs de suppression (Harrowdale…) : « perd X et ne peut pas
+        // gagner X » — masque le mot-clé imprimé comme les gains temporaires.
+        for (const key of getWhileKeywordSuppressions(G, card)) {
+            suppressed.add(key);
+        }
     }
 
     // Cumul des valeurs par mot-clé

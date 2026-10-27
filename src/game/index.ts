@@ -21,6 +21,7 @@ import {
 } from './logic/skirmish';
 import { openAssignmentActionWindow } from './logic/assignment';
 import { advanceCompany } from './moves/fellowshipMoves';
+import { beginOptionalSiteDepartureAbility } from './logic/siteMoveAbility';
 import { tryOpenFellowshipMoves } from './engine/responseWindow';
 import { beginOptionalSiteMoveAbility } from './logic/siteMoveAbility';
 import { beginSiteMoveCharacterWoundsIfNeeded } from './logic/siteMoveCharacterWounds';
@@ -1298,6 +1299,14 @@ export const LotrGame: Game<GameState> = {
                         G.pendingDeadPileRemoval
                     ) {
                         return 'INVALID_MOVE';
+                    }
+
+                    // Site quitté : fenêtre optionnelle avant le départ.
+                    if (beginOptionalSiteDepartureAbility(G, 'startOfShadow')) {
+                        G.pendingSiteDepartureContinuation = {
+                            kind: 'MOVE_NEXT_SITE',
+                        };
+                        return;
                     }
 
                     advanceCompany(G);

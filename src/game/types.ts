@@ -401,6 +401,18 @@ export type AbilityEffect =
           target: AbilityTargetRef;
           /** Exige un attachement matchant (Moria Stairway : hand weapon). */
           bearing?: string[][];
+          /**
+           * Suppression au lieu d’ajout (Harrowdale : un séide en combat
+           * contre un compagnon Rohan perd Fierce et ne peut pas le gagner).
+           * Lu dans `getEffectiveKeywords` via `getWhileKeywordSuppressions`.
+           */
+          suppress?: boolean;
+          /**
+           * Harrowdale : le déclencheur `skirmishing` décrit le combat du
+           * **bénéficiaire** de l’effet (le séide), pas celui de la source
+           * (le site ne combat pas). Voir `getWhileKeywordSuppressions`.
+           */
+          skirmishingHostedByEffect?: boolean;
       }
     | {
           /**
@@ -444,6 +456,15 @@ export type AbilityEffect =
     | {
           /** Streets of Bree : les suivants ne peuvent pas être transférés. */
           type: 'FORBID_FOLLOWER_TRANSFER';
+      }
+    | {
+          /**
+           * Chamber of Mazarbul : le FP peut transférer ses artefacts et
+           * possessions sans coût de crépuscule (lecture dans le move
+           * de transfert, pas d’application d’effet).
+           */
+          type: 'FREE_FP_ATTACHMENT_TRANSFER';
+          target: string[][];
       }
     | {
           /** Redhorn Pass : jetons de culture intouchables. */
@@ -587,7 +608,7 @@ export type AbilityEffect =
           type: 'PLAY_FROM_DECK_OR_DISCARD';
           target: string[][];
           attachTo?: 'SELF';
-          from?: 'DECK' | 'DISCARD' | 'DECK_OR_DISCARD';
+          from?: 'DECK' | 'DISCARD' | 'DECK_OR_DISCARD' | 'DEAD_PILE';
       }
     | {
           /**
@@ -796,6 +817,12 @@ export type AbilityEffect =
            */
           eachOwner?: boolean;
           /**
+           * Westemnet Village : N = nombre d’alliés en jeu ; le FP assigne
+           * lui-même ces blessures à ses compagnons (même pending Doorway,
+           * mais `companionsOnly` et pas de passage à l’Ombre).
+           */
+          perAlly?: boolean;
+          /**
            * Adversaires d’escarmouche d’un personnage nommé (They Stole It :
            * companion Gollum is skirmishing).
            */
@@ -963,6 +990,11 @@ export type AbilityTrigger =
           /** Each time you play a [classe]… (la carte jouée matche `played`). */
           type: 'YOU_PLAY';
           played: string[][];
+          /**
+           * Trollshaw : « on your companion » — la carte jouée doit être
+           * attachée à un compagnon au moment du déclenchement.
+           */
+          onCompanion?: boolean;
       }
     | {
           /**
@@ -1452,6 +1484,11 @@ export interface GameState {
         sourceInstanceId: string;
         abilityId: string;
         phase?: string;
+        /**
+         * Trollshaw Forest : la source est un **site** (pas une carte en jeu).
+         * `sourceInstanceId` porte alors la clé du site sur le chemin.
+         */
+        fromSite?: boolean;
     };
     /**
      * Capacité optionnelle du site courant en début de phase
@@ -1473,7 +1510,21 @@ export interface GameState {
         abilityId: string;
         /** Phase à lancer après le choix (ex. startOfShadow). */
         pendingPhaseAfterSiteMove?: string;
+        /**
+         * Moria Guardroom / Osgiliath Reclaimed : effet optionnel du site
+         * **quitté** (déclenché AVANT le déplacement, pas à l’arrivée).
+         * Le site source n’est plus le site courant au moment du choix.
+         */
+        fromDeparture?: boolean;
     };
+    /**
+     * Déplacement suspendu pendant le choix du site **quitté** : la suite
+     * à reprendre quand le choix (Activer / Passer) est résolu.
+     */
+    pendingSiteDepartureContinuation?:
+        | { kind: 'PLAY_SITE'; siteId: string; targetIndex: number }
+        | { kind: 'END_FELLOWSHIP_PHASE' }
+        | { kind: 'MOVE_NEXT_SITE' };
     /**
      * Capacité de phase de site en toaster (Shores of Nen Hithoel…).
      * Une offre par phase d’Ombre dès que le Spot est vrai.
@@ -1531,6 +1582,8 @@ export interface GameState {
         /** Joueurs suivants (après le courant). */
         queue: string[];
         pendingPhaseAfter?: string;
+        /** Westemnet : seules les cartes COMPANION sont ciblables. */
+        companionsOnly?: boolean;
     };
     /**
      * Choix forcé (contrainte Porteur alternatif en début d’escarmouche…).
@@ -1623,6 +1676,9 @@ export interface ArcheryState {
     fpRemainingWounds: number;
     shadowRemainingWounds: number;
 }
+
+/** Presets DEV de playtest (panneau de test, vague en cours). */
+export type DevPresetType = 'SITES_SET11_RESTANTS';
 
 export interface TempKeywordModifier {
     keyword: CardKeyword;

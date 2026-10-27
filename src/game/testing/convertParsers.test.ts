@@ -256,13 +256,20 @@ describe('parseSiteAbilities — moves to/from twilight', () => {
         ]);
     });
 
-    it('refuse may / spot (pas le for each weapon déjà supporté)', () => {
+    it('émet Osgiliath : moves from optionnel (spot 3 fardeaux → −1)', () => {
         expect(
             parseSiteAbilities(
                 'When the fellowship moves from this site, the Free Peoples player may spot 3 burdens to remove a burden.',
                 '11S252'
             )
-        ).toBeUndefined();
+        ).toEqual([
+            expect.objectContaining({
+                optional: true,
+                trigger: { type: 'MOVES_FROM' },
+                cost: [{ spotBurdens: 3 }],
+                effects: [{ type: 'REMOVE_BURDENS', count: 1 }],
+            }),
+        ]);
     });
 
     it('émet discard each ally à l’arrivée (11S228)', () => {
