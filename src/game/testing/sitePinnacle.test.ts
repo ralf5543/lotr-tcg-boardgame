@@ -104,16 +104,38 @@ describe('Pinnacle : proposition', () => {
     });
 });
 
-describe('Pinnacle : preset réel (vraies cartes)', () => {
-    it('le parcours DEV ouvre la fenêtre : Gandalf unique mort est un candidat légal', async () => {
-        const { applyDevPreset } = await import('../dev/presets');
-        const { createPlayerState: createPlayer } = await import(
-            './createGameState'
-        );
-        const fp = createPlayer('0');
-        const sh = createPlayer('1');
+describe('Pinnacle : vraies cartes (régression unicité)', () => {
+    it('Gandalf unique dans la pile de mort est un candidat légal', async () => {
+        const { getCardById } = await import('../cardsData');
+        const realCard = (id: string, instanceId: string) => {
+            const card = getCardById(id);
+            if (!card) throw new Error(`Carte introuvable : ${id}`);
+            return { ...card, instanceId };
+        };
+        const realSite = getCardById('11S255');
+        if (!realSite) throw new Error('Site introuvable : 11S255');
+        const site = createSite({
+            id: '11S255',
+            name: 'Pinnacle of Zirakzigil',
+            abilities: realSite.abilities as never,
+        });
+        const fp = createPlayerState('0', {
+            deadPile: [realCard('1R72', 'gandalf-mort')],
+            fellowshipArea: [
+                realCard('2C102', 'frodon'),
+                realCard('1R89', 'aragorn'),
+                realCard('1R13', 'gimli'),
+                realCard('1C311', 'sam'),
+                realCard('11S146', 'eowyn'),
+            ] as never,
+        });
+        const sh = createPlayerState('1');
         const g = createGameState({ players: { '0': fp, '1': sh } });
-        applyDevPreset(g, 'SITES_SET11_RESTANTS');
+        g.path = [
+            site,
+            createSite({ id: '11S228', name: 'Anduin Confluence' }),
+        ];
+        fp.currentSiteIndex = 0;
 
         // Régression : canPlayCard refusait Gandalf au motif qu’un unique
         // « Gandalf » est dans la pile de mort — c’est lui-même.

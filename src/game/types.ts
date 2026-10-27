@@ -1677,9 +1677,6 @@ export interface ArcheryState {
     shadowRemainingWounds: number;
 }
 
-/** Presets DEV de playtest (panneau de test, vague en cours). */
-export type DevPresetType = 'SITES_SET11_RESTANTS';
-
 export interface TempKeywordModifier {
     keyword: CardKeyword;
     expiresAtPhase?: AbilityEffectExpiry;
