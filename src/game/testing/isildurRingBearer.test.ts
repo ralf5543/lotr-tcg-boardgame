@@ -12,6 +12,8 @@ import {
 } from './createGameState';
 import { applyDevPreset } from '../dev/presets';
 import { isRingBearerCard } from '../../utils/cardUtils';
+import { getCalculatedStrength } from '../logic/stats/statCalculator';
+import { createCard } from './createGameState';
 
 const ISILDUR_ABILITY: Ability = {
     id: '9R+33:0:rb-start-choice-exert',
@@ -166,13 +168,120 @@ describe('Isildur RB — début d’escarmouche', () => {
             '1R89',
             '1R13',
             '1C311',
+            '11R57',
         ]);
         expect(isRingBearerCard(fellowship[0])).toBe(true);
         expect(fellowship[0]?.abilities?.length).toBeGreaterThan(0);
+        // Boromir, chevalier du Gondor : 7 + 1 (Isildur porte l’Anneau).
+        expect(getCalculatedStrength(G, fellowship[4])).toBe(8);
+        // Aragorn n’est pas chevalier : aucun bonus.
+        expect(getCalculatedStrength(G, fellowship[1])).toBe(
+            fellowship[1]?.strength
+        );
         expect(G.players['0']?.burdens).toBe(4);
         expect(G.players['1']?.hand).toHaveLength(2);
         expect(G.path).toHaveLength(9);
         expect(G.currentSiteIndex).toBe(0);
+    });
+
+    it('2ᵉ clause : chevalier du Gondor force +1 si Isildur porte l’Anneau ou un artefact', () => {
+        const knightAbility: Ability = {
+            id: '9R+33:1:while-bearing-ring-artifact',
+            phases: [],
+            trigger: {
+                type: 'WHILE',
+                bearing: { target: [['RING'], ['ARTIFACT']] },
+            },
+            cost: [],
+            effects: [
+                {
+                    type: 'MODIFY_STAT',
+                    stat: 'STRENGTH',
+                    value: 1,
+                    target: [['GONDOR', 'KNIGHT']],
+                },
+            ],
+            source: 'SELF',
+            text: 'While Isildur bears The One Ring or an artifact, each Gondor knight is strength +1.',
+        };
+        const ring = createCard({
+            id: 'ring',
+            kind: 'FREE_PEOPLE',
+            type: 'RING',
+        });
+        const artifact = createCard({
+            id: 'artifact',
+            kind: 'FREE_PEOPLE',
+            type: 'ARTIFACT',
+        });
+        const knight = () =>
+            createCompanion({
+                id: 'knight',
+                title: 'Chevalier',
+                strength: 6,
+                keywords: ['KNIGHT'],
+            });
+        const nonKnight = () =>
+            createCompanion({ id: 'sam', title: 'Sam', strength: 3 });
+
+        const withRing = createGameState({
+            players: {
+                '0': createPlayerState('0', {
+                    fellowshipArea: [
+                        {
+                            ...isildurCompanion(),
+                            abilities: [knightAbility],
+                            attachments: [ring],
+                        },
+                        knight(),
+                        nonKnight(),
+                    ],
+                }),
+                '1': createPlayerState('1'),
+            },
+        });
+        const fellowshipRing = withRing.players['0']?.fellowshipArea || [];
+        expect(getCalculatedStrength(withRing, fellowshipRing[1])).toBe(7);
+        // Pas chevalier : aucun bonus.
+        expect(getCalculatedStrength(withRing, fellowshipRing[2])).toBe(3);
+
+        const withArtifact = createGameState({
+            players: {
+                '0': createPlayerState('0', {
+                    fellowshipArea: [
+                        {
+                            ...isildurCompanion(),
+                            abilities: [knightAbility],
+                            attachments: [artifact],
+                        },
+                        knight(),
+                    ],
+                }),
+                '1': createPlayerState('1'),
+            },
+        });
+        const fellowshipArtifact =
+            withArtifact.players['0']?.fellowshipArea || [];
+        expect(
+            getCalculatedStrength(withArtifact, fellowshipArtifact[1])
+        ).toBe(7);
+
+        const bare = createGameState({
+            players: {
+                '0': createPlayerState('0', {
+                    fellowshipArea: [
+                        {
+                            ...isildurCompanion(),
+                            abilities: [knightAbility],
+                        },
+                        knight(),
+                    ],
+                }),
+                '1': createPlayerState('1'),
+            },
+        });
+        const fellowshipBare = bare.players['0']?.fellowshipArea || [];
+        expect(getCalculatedStrength(bare, fellowshipBare[1])).toBe(6);
     });
 
     it('désignations en double refusées', () => {

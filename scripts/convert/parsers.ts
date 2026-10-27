@@ -5384,6 +5384,59 @@ function parseWhileBearingClass(raw: string): string[][] | null {
 }
 
 /**
+ * While [Name] bears The One Ring or an artifact, each [classe] is strength ±N.
+ * (Isildur Bearer of Heirlooms : chevaliers du Gondor +1.)
+ */
+function parseWhileBearingRingOrArtifactGroupAbilities(
+    text: string,
+    cardTitle?: string,
+    cardId?: string
+): Record<string, unknown>[] {
+    const found: Record<string, unknown>[] = [];
+    const re =
+        /While ([\w’'\-]+) bears The One Ring or an? ([^,]+), each ([\s\S]+?) is strength ([+-]\d+)\.?/gi;
+    let match: RegExpExecArray | null;
+    while ((match = re.exec(text)) !== null) {
+        const name = match[1].trim();
+        if (
+            cardTitle &&
+            name.toLowerCase() !== cardTitle.toLowerCase()
+        ) {
+            continue;
+        }
+        // Pour l’instant : uniquement « artifact » (type de carte).
+        if (!/^artifact$/i.test(stripAbilityMarkup(match[2]).trim())) {
+            continue;
+        }
+        const eachTarget = parseWhileEachClass(match[3]);
+        if (!eachTarget) continue;
+        const value = parseInt(match[4], 10);
+        if (!Number.isFinite(value) || value === 0) continue;
+
+        found.push({
+            id: `${cardId || 'ability'}:${found.length}:while-bearing-ring-artifact`,
+            phases: [],
+            trigger: {
+                type: 'WHILE',
+                bearing: { target: [['RING'], ['ARTIFACT']] },
+            },
+            cost: [],
+            effects: [
+                {
+                    type: 'MODIFY_STAT',
+                    stat: 'STRENGTH',
+                    value,
+                    target: eachTarget,
+                },
+            ],
+            source: 'SELF',
+            text: stripAbilityMarkup(match[0]),
+        });
+    }
+    return found;
+}
+
+/**
  * While [self] bears / is bearing a [classe], [self] is strength ±N | Damage | fierce.
  */
 function parseWhileBearingAbilities(
@@ -13390,6 +13443,17 @@ export function parseAbilities(
     );
 
     parseWhileBearingAbilities(text, cardTitle, cardId).forEach((ability) => {
+        abilities.push({
+            ...ability,
+            id: `${cardId || 'ability'}:${abilities.length}`,
+        });
+    });
+
+    parseWhileBearingRingOrArtifactGroupAbilities(
+        text,
+        cardTitle,
+        cardId
+    ).forEach((ability) => {
         abilities.push({
             ...ability,
             id: `${cardId || 'ability'}:${abilities.length}`,

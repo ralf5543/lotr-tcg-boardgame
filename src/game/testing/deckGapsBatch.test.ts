@@ -693,7 +693,7 @@ describe('parseAbilities — deck gaps batch 2 (Noble Leaders / Gandalf / Promis
     it('Isildur Bearer of Heirlooms : add burdens or exert 3 companions', () => {
         expect(
             parseAbilities(
-                'While Isildur is the Ring-bearer, at the start of each skirmish involving him, add 2 burdens or exert 3 companions.',
+                'While Isildur is the Ring-bearer, at the start of each skirmish involving him, add 2 burdens or exert 3 companions. \nWhile Isildur bears The One Ring or an artifact, each <symbol>gondor</symbol> knight is strength +1.',
                 'Isildur',
                 '9R+33'
             )
@@ -726,6 +726,22 @@ describe('parseAbilities — deck gaps batch 2 (Noble Leaders / Gandalf / Promis
                                 }),
                             ],
                         }),
+                    ],
+                }),
+                expect.objectContaining({
+                    trigger: {
+                        type: 'WHILE',
+                        bearing: {
+                            target: [['RING'], ['ARTIFACT']],
+                        },
+                    },
+                    effects: [
+                        {
+                            type: 'MODIFY_STAT',
+                            stat: 'STRENGTH',
+                            value: 1,
+                            target: [['GONDOR', 'KNIGHT']],
+                        },
                     ],
                 }),
             ])
