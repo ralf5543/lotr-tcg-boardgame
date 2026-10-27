@@ -5362,6 +5362,72 @@ function parseEachTimeWinsRemoveBurdenAbilities(
     return found;
 }
 
+/**
+ * Each time [Name|bearer] wins a skirmish, (you may) heal a [classe].
+ * (Boromir 11R57 : soigner un compagnon du Gondor.)
+ * Formes sûres seulement : pas de « another », pas d’alternative (« or »),
+ * pas de condition — ces variantes restent inertes plutôt que fausses.
+ */
+function parseEachTimeWinsHealAbilities(
+    text: string,
+    cardTitle?: string,
+    cardId?: string
+): Record<string, unknown>[] {
+    const found: Record<string, unknown>[] = [];
+    // Capture bornée à la phrase : sinon « loses … » avant « wins … »
+    // (Isildur 18R54) avale le vrai déclencheur.
+    const re =
+        /Each time ([^.]+?) wins a skirmish,\s*(you may )?heal (?:a|an) ([^.]+?)\./gi;
+    let match: RegExpExecArray | null;
+    while ((match = re.exec(text)) !== null) {
+        const winnerParsed = parseWinsSkirmishWinner(
+            match[1].trim(),
+            cardTitle
+        );
+        if (!winnerParsed) continue;
+        const healRaw = match[3].trim();
+        const healPlain = stripAbilityMarkup(healRaw)
+            .replace(/\s+/g, ' ')
+            .trim();
+        if (
+            /\b(and|or|another|each|all|once|twice|if|when|except)\b/i.test(
+                healPlain
+            )
+        ) {
+            continue;
+        }
+        const healTarget = parseWhileEachClass(healRaw);
+        if (!healTarget) continue;
+
+        const bearerName = parseBearerMustBeName(text);
+        let winner = winnerParsed.winner;
+        if (
+            bearerName &&
+            Array.isArray(winner) &&
+            winner.length === 1 &&
+            winner[0]?.length === 1 &&
+            String(winner[0][0]).toLowerCase() === bearerName.toLowerCase()
+        ) {
+            winner = 'BEARER';
+        }
+        found.push({
+            id: `${cardId || 'ability'}:${found.length}:wins-heal`,
+            phases: ['RESPONSE'],
+            trigger: {
+                type: 'WINS_SKIRMISH',
+                winner,
+                ...(winnerParsed.yours ? { yours: true } : {}),
+            },
+            ...(match[2] ? { optional: true } : {}),
+            cost: [],
+            effects: [{ type: 'HEAL', count: 1, target: healTarget }],
+            source: winner === 'BEARER' ? 'ATTACHMENT' : 'SELF',
+            text: stripAbilityMarkup(match[0]),
+        });
+    }
+    return found;
+}
+
 /** Classe portée : weapon / possession / mount / follower… */
 function parseWhileBearingClass(raw: string): string[][] | null {
     const cleaned = stripAbilityMarkup(raw)
@@ -13051,6 +13117,15 @@ export function parseAbilities(
     );
 
     parseEachTimeWinsRemoveBurdenAbilities(text, cardTitle, cardId).forEach(
+        (ability) => {
+            abilities.push({
+                ...ability,
+                id: `${cardId || 'ability'}:${abilities.length}`,
+            });
+        }
+    );
+
+    parseEachTimeWinsHealAbilities(text, cardTitle, cardId).forEach(
         (ability) => {
             abilities.push({
                 ...ability,

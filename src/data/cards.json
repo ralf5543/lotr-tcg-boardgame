@@ -3420,6 +3420,34 @@
     "keywords": [
       "KNIGHT"
     ],
+    "abilities": [
+      {
+        "id": "0P71:0",
+        "phases": [
+          "RESPONSE"
+        ],
+        "trigger": {
+          "type": "WINS_SKIRMISH",
+          "winner": "SELF"
+        },
+        "optional": true,
+        "cost": [],
+        "effects": [
+          {
+            "type": "HEAL",
+            "count": 1,
+            "target": [
+              [
+                "GONDOR",
+                "COMPANION"
+              ]
+            ]
+          }
+        ],
+        "source": "SELF",
+        "text": "Each time Boromir wins a skirmish, you may heal a gondor companion."
+      }
+    ],
     "culture": "GONDOR",
     "race": "MAN",
     "twilightCost": 3,
@@ -8807,6 +8835,34 @@
     "type": "COMPANION",
     "keywords": [
       "KNIGHT"
+    ],
+    "abilities": [
+      {
+        "id": "11R57:0",
+        "phases": [
+          "RESPONSE"
+        ],
+        "trigger": {
+          "type": "WINS_SKIRMISH",
+          "winner": "SELF"
+        },
+        "optional": true,
+        "cost": [],
+        "effects": [
+          {
+            "type": "HEAL",
+            "count": 1,
+            "target": [
+              [
+                "GONDOR",
+                "COMPANION"
+              ]
+            ]
+          }
+        ],
+        "source": "SELF",
+        "text": "Each time Boromir wins a skirmish, you may heal a gondor companion."
+      }
     ],
     "culture": "GONDOR",
     "race": "MAN",
@@ -118794,6 +118850,36 @@
     "kind": "FREE_PEOPLE",
     "type": "CONDITION",
     "subtype": "SUPPORT-AREA",
+    "abilities": [
+      {
+        "id": "13U72:0",
+        "phases": [
+          "RESPONSE"
+        ],
+        "trigger": {
+          "type": "WINS_SKIRMISH",
+          "winner": [
+            [
+              "Isildur"
+            ]
+          ]
+        },
+        "cost": [],
+        "effects": [
+          {
+            "type": "HEAL",
+            "count": 1,
+            "target": [
+              [
+                "MAN"
+              ]
+            ]
+          }
+        ],
+        "source": "SELF",
+        "text": "Each time Isildur wins a skirmish, heal a Man."
+      }
+    ],
     "culture": "GONDOR",
     "twilightCost": 2,
     "imageUrl": "/cards_visuals/o_13_072.jpg",
@@ -145352,6 +145438,32 @@
     "type": "COMPANION",
     "keywords": [
       "KNIGHT"
+    ],
+    "abilities": [
+      {
+        "id": "18R54:0",
+        "phases": [
+          "RESPONSE"
+        ],
+        "trigger": {
+          "type": "WINS_SKIRMISH",
+          "winner": "SELF"
+        },
+        "cost": [],
+        "effects": [
+          {
+            "type": "HEAL",
+            "count": 1,
+            "target": [
+              [
+                "COMPANION"
+              ]
+            ]
+          }
+        ],
+        "source": "SELF",
+        "text": "Each time Isildur wins a skirmish, heal a companion."
+      }
     ],
     "culture": "GONDOR",
     "race": "MAN",

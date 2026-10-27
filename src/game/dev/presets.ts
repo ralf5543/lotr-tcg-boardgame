@@ -147,7 +147,12 @@ export const applyDevPreset = (
                     ...clonePresetCard('9R+33', 'dev-isildur'),
                     attachments: [clonePresetCard('1R1', 'dev-isildur-ring')],
                 },
-                clonePresetCard('1R89', 'dev-isildur-aragorn'),
+                {
+                    // Blessé d’entrée : cible du soin de Boromir (11R57)
+                    // quand il gagnera son escarmouche.
+                    ...clonePresetCard('1R89', 'dev-isildur-aragorn'),
+                    wounds: 1,
+                },
                 clonePresetCard('1R13', 'dev-isildur-gimli'),
                 clonePresetCard('1C311', 'dev-isildur-sam'),
                 // Boromir, chevalier du Gondor : force 7 → 8 tant
@@ -175,7 +180,7 @@ export const applyDevPreset = (
                 ];
             }
             G.statusMessage =
-                '[DEV] Isildur Porteur (9R+33) · 4 fardeaux, crépuscule 6 · D’abord, la 2ᵉ clause : Boromir (chevalier du Gondor) doit être à force 8 (7 + 1) tant qu’Isildur porte l’Anneau Unique ; les autres compagnons ne changent pas. Ensuite, avancez jusqu’à l’Ombre, jouez un séide et assignez-le à Isildur : au début de son escarmouche, choix forcé — « Ajouter 2 fardeaux » (4 → 6) ou « Affaiblir 3 compagnons » (désignez 3 compagnons distincts, Isildur compris si vous voulez). Refaites un combat avec le 2ᵉ séide pour l’autre option. Cas limite (moins de 3 compagnons affaiblissables → option « Affaiblir » refusée) couvert par les tests automatiques.';
+                '[DEV] Isildur Porteur (9R+33) · 4 fardeaux, crépuscule 6 · D’abord, la 2ᵉ clause : Boromir (chevalier du Gondor) doit être à force 8 (7 + 1) tant qu’Isildur porte l’Anneau Unique ; les autres compagnons ne changent pas. Ensuite, avancez jusqu’à l’Ombre, jouez un séide et assignez-le à Isildur : au début de son escarmouche, choix forcé — « Ajouter 2 fardeaux » (4 → 6) ou « Affaiblir 3 compagnons » (désignez 3 compagnons distincts, Isildur compris si vous voulez). Avec le 2ᵉ séide, assignez Boromir et faites-lui gagner son escarmouche : en réponse, il peut soigner un compagnon du Gondor (Aragorn commence avec 1 blessure). Cas limite (moins de 3 compagnons affaiblissables → option « Affaiblir » refusée) couvert par les tests automatiques.';
             break;
         }
     }
