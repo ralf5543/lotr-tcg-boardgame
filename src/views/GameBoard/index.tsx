@@ -676,6 +676,13 @@ export const GameBoard: React.FC<GameBoardProps> = ({
             const onePerCulture = (ability.effects || []).some(
                 (effect) => effect.type === 'HEAL' && effect.onePerCulture
             );
+            const isExertMulti = (ability.effects || []).some(
+                (effect) =>
+                    effect.type === 'EXERT' &&
+                    typeof effect.multiCount === 'number' &&
+                    effect.multiCount > 1
+            );
+            const multiVerb = isExertMulti ? 'à exercer' : 'à soigner';
 
             const collect = (picked: string[]) => {
                 const pickedCultures = new Set(
@@ -713,7 +720,7 @@ export const GameBoard: React.FC<GameBoardProps> = ({
                             ? `Choisissez un compagnon blessé de chaque culture (${need}).`
                             : `Encore ${remaining} culture${remaining > 1 ? 's' : ''} (${picked.length}/${need}).`
                         : picked.length === 0
-                          ? `Choisissez ${need} compagnon${need > 1 ? 's' : ''} à soigner.`
+                          ? `Choisissez ${need} compagnon${need > 1 ? 's' : ''} ${multiVerb}.`
                           : `Encore ${remaining} compagnon${remaining > 1 ? 's' : ''} (${picked.length}/${need}).`,
                     onSelectTarget: (cardId) => {
                         const card = allCandidates.find(
@@ -2165,6 +2172,58 @@ export const GameBoard: React.FC<GameBoardProps> = ({
         myId,
         targetingKind,
         requestHandDiscard,
+        moves,
+    ]);
+
+    /** Désignation plateau (exercer N compagnons) pour un choix forcé (Isildur RB…). */
+    const forcedExertKeyRef = useRef<string | null>(null);
+    useEffect(() => {
+        const pending = G.pendingForcedChoice;
+        if (
+            !pending?.needsExertTargets ||
+            pending.pendingOptionIndex === undefined ||
+            pending.playerId !== myId
+        ) {
+            forcedExertKeyRef.current = null;
+            return;
+        }
+        const key = `${pending.sourceInstanceId}:${pending.pendingOptionIndex}:${pending.needsExertTargets}`;
+        if (forcedExertKeyRef.current === key) return;
+        if (targetingKind === 'DESIGNATION') return;
+        forcedExertKeyRef.current = key;
+
+        const need = pending.needsExertTargets;
+        const optionIndex = pending.pendingOptionIndex;
+        const source = findTargetCard(
+            G,
+            pending.sourceInstanceId
+        ) as CardState | null;
+        if (!source) return;
+        const ability = {
+            id: pending.abilityId,
+            phases: [],
+            cost: [],
+            effects: [
+                {
+                    type: 'EXERT' as const,
+                    count: 1,
+                    multiCount: need,
+                    target: [['COMPANION']] as string[][],
+                },
+            ],
+            source: 'SELF' as const,
+            text: '',
+        };
+        requestMultiEffectDesignation(source, ability, need, (cardIds) => {
+            forcedExertKeyRef.current = null;
+            moves.resolveForcedChoiceMove?.(optionIndex, undefined, cardIds);
+        });
+    }, [
+        G.pendingForcedChoice,
+        G,
+        myId,
+        targetingKind,
+        requestMultiEffectDesignation,
         moves,
     ]);
 

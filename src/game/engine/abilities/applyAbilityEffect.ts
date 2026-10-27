@@ -43,6 +43,7 @@ import {
 } from '../../logic/cultureTokens';
 import { applyHeal } from '../../../utils/applyHeal';
 import { applyExert } from '../../../utils/applyExert';
+import { getEffectiveVitality } from '../../../utils/cardStats';
 import { findSkirmishToCancel } from './cancelSkirmish';
 import {
     getReplaceSiteCandidates,
@@ -1252,6 +1253,36 @@ export function applyAbilityEffect(
             if (!target) return false;
             if (!applyOneEffect(G, source, ability, effect, target)) {
                 return false;
+            }
+            continue;
+        }
+
+        if (
+            effect.type === 'EXERT' &&
+            effect.multiCount &&
+            effect.multiCount > 1
+        ) {
+            // N compagnons distincts, 1 exercice chacun (Isildur RB…).
+            const pool = resolveCostTarget(G, source, effect.target).filter(
+                (card) =>
+                    Boolean(card) &&
+                    !card.isDead &&
+                    getEffectiveVitality(card) > (effect.count || 1)
+            );
+            const need = effect.multiCount;
+            if (pool.length < need) return false;
+            if (chosenIds.length !== need) return false;
+            if (new Set(chosenIds).size !== chosenIds.length) return false;
+            for (const id of chosenIds) {
+                const target =
+                    pool.find(
+                        (card) =>
+                            card.instanceId === id || card.id === id
+                    ) || null;
+                if (!target) return false;
+                if (!applyOneEffect(G, source, ability, effect, target)) {
+                    return false;
+                }
             }
             continue;
         }

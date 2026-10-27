@@ -1,9 +1,11 @@
 ---
-description: Plan sites sets 11+ (Standard / Expanded) — inventaire, smoke, fragments
-alwaysApply: true
+description: "ARCHIVÉ — Plan sites sets 11+ (figé ; suite = deck-play-gaps-plan.mdc)"
+alwaysApply: false
 ---
 
-# Sites sets 11+ — plan et credo
+# Sites sets 11+ — plan et credo (archivé)
+
+> **Figé.** Tous les sites des sets 11 à 18 ont été testés et validés — aucun site 11–18 inerte. Suite active : [`.cursor/rules/deck-play-gaps-plan.mdc`](deck-play-gaps-plan.mdc).
 
 **Format : Standard (règles modernes).** Voir `.cursor/rules/format-standard.mdc`.
 
@@ -381,7 +383,7 @@ Aucun : The Angle était le dernier (vague famille « Shadow: play… »).
 23. Vague **derniers sites du set 11** — preset unique `SITES_SET11_RESTANTS` (parcours 1→7, playtest)
     - OK parse/runtime : Westemnet (blessure / allié, compagnons seuls) ; Guardroom + Osgiliath (moves-from optionnels, déplacement suspendu/repris) ; Pinnacle (exercer 3 distincts → Wizard de la pile de mort) ; Trollshaw (YOU_PLAY sur compagnon → piocher) ; Harrowdale (suppression Fierce conditionnelle) ; Chamber (transfert FP gratuit)
     - Socle réutilisable : `pendingSiteDepartureContinuation`, `from: 'DEAD_PILE'`, `getWhileKeywordSuppressions`, `FREE_FP_ATTACHMENT_TRANSFER`, `pendingWhenPlayed.fromSite`
-24. Reste : **aucun site 11–18 inerte**. Chantier sites clos après validation ; bascule roadmap à décider.
+24. Reste : **aucun site 11–18 inerte**. Chantier sites **clos et validé** (tests des sets 11 à 18 terminés) ; bascule vers [`deck-play-gaps-plan.mdc`](deck-play-gaps-plan.mdc).
 
 ## Hors scope
 

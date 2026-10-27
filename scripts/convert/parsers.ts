@@ -2885,6 +2885,58 @@ function parseRingBearerStartOfSkirmishChoiceAbilities(
         });
     }
 
+    const exertCompanionsRe =
+        /While ([\w’'\-]+) is the Ring-bearer, at the start of each skirmish involving him, add (a|an|one|\d+) burdens? or exert (a|an|one|\d+) companions?\.?/gi;
+    while ((match = exertCompanionsRe.exec(text)) !== null) {
+        const name = match[1].trim();
+        if (
+            cardTitle &&
+            name.toLowerCase() !== cardTitle.toLowerCase()
+        ) {
+            continue;
+        }
+        const burdens = parseCultureTokenCount(match[2]);
+        const companions = parseCultureTokenCount(match[3]);
+        if (!burdens || !companions) continue;
+
+        found.push({
+            id: `${cardId || 'ability'}:${found.length}:rb-start-choice-exert`,
+            phases: [],
+            trigger: {
+                type: 'START_OF_SKIRMISH',
+                involving: 'SELF',
+                whileRingBearer: true,
+            },
+            cost: [],
+            effects: [
+                {
+                    type: 'CHOOSE_ONE',
+                    options: [
+                        {
+                            label: `Ajouter ${burdens} fardeau${burdens > 1 ? 'x' : ''}`,
+                            effects: [
+                                { type: 'ADD_BURDENS', count: burdens },
+                            ],
+                        },
+                        {
+                            label: `Exercer ${companions} compagnon${companions > 1 ? 's' : ''}`,
+                            effects: [
+                                {
+                                    type: 'EXERT',
+                                    count: 1,
+                                    multiCount: companions,
+                                    target: [['COMPANION']],
+                                },
+                            ],
+                        },
+                    ],
+                },
+            ],
+            source: 'SELF',
+            text: stripAbilityMarkup(match[0]),
+        });
+    }
+
     const threatRe =
         /While ([\w’'\-]+) is the Ring-bearer, at the start of each skirmish involving him, add (a|an|one|\d+) burdens? or (a|an|one|\d+) threats?\.?/gi;
     while ((match = threatRe.exec(text)) !== null) {

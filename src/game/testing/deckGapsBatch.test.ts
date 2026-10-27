@@ -690,6 +690,48 @@ describe('parseAbilities — deck gaps batch 2 (Noble Leaders / Gandalf / Promis
         );
     });
 
+    it('Isildur Bearer of Heirlooms : add burdens or exert 3 companions', () => {
+        expect(
+            parseAbilities(
+                'While Isildur is the Ring-bearer, at the start of each skirmish involving him, add 2 burdens or exert 3 companions.',
+                'Isildur',
+                '9R+33'
+            )
+        ).toEqual(
+            expect.arrayContaining([
+                expect.objectContaining({
+                    trigger: {
+                        type: 'START_OF_SKIRMISH',
+                        involving: 'SELF',
+                        whileRingBearer: true,
+                    },
+                    effects: [
+                        expect.objectContaining({
+                            type: 'CHOOSE_ONE',
+                            options: [
+                                expect.objectContaining({
+                                    effects: [
+                                        { type: 'ADD_BURDENS', count: 2 },
+                                    ],
+                                }),
+                                expect.objectContaining({
+                                    effects: [
+                                        {
+                                            type: 'EXERT',
+                                            count: 1,
+                                            multiCount: 3,
+                                            target: [['COMPANION']],
+                                        },
+                                    ],
+                                }),
+                            ],
+                        }),
+                    ],
+                }),
+            ])
+        );
+    });
+
     it('Hidden Knowledge : reveal top 5 + threats + tokens', () => {
         expect(
             parseAbilities(

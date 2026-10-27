@@ -89237,6 +89237,51 @@
     "canBeRingbearer": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
+    "abilities": [
+      {
+        "id": "9R+33:0",
+        "phases": [],
+        "trigger": {
+          "type": "START_OF_SKIRMISH",
+          "involving": "SELF",
+          "whileRingBearer": true
+        },
+        "cost": [],
+        "effects": [
+          {
+            "type": "CHOOSE_ONE",
+            "options": [
+              {
+                "label": "Ajouter 2 fardeaux",
+                "effects": [
+                  {
+                    "type": "ADD_BURDENS",
+                    "count": 2
+                  }
+                ]
+              },
+              {
+                "label": "Exercer 3 compagnons",
+                "effects": [
+                  {
+                    "type": "EXERT",
+                    "count": 1,
+                    "multiCount": 3,
+                    "target": [
+                      [
+                        "COMPANION"
+                      ]
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        ],
+        "source": "SELF",
+        "text": "While Isildur is the Ring-bearer, at the start of each skirmish involving him, add 2 burdens or exert 3 companions."
+      }
+    ],
     "culture": "GONDOR",
     "race": "MAN",
     "twilightCost": 3,

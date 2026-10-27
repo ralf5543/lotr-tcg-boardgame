@@ -1,9 +1,13 @@
 import type { Ability, CardState, GameState } from '../../types';
 import { applyAbilityEffect } from './applyAbilityEffect';
 import { collectCardAbilities } from './collectAbilities';
-import { forEachInPlayCard } from './resolveCostTarget';
+import {
+    forEachInPlayCard,
+    resolveCostTarget,
+} from './resolveCostTarget';
 import { skirmishMatchesInvolving } from './cancelSkirmish';
 import { isRingBearerCard } from '../../../utils/cardUtils';
+import { getEffectiveVitality } from '../../../utils/cardStats';
 import { findForcedChoiceSource } from './startOfManeuver';
 
 function abilityHasChooseOne(ability: Ability): boolean {
@@ -87,7 +91,8 @@ export function resolveForcedChoice(
     G: GameState,
     playerID: string,
     optionIndex: number,
-    discardedHandIds?: string[]
+    discardedHandIds?: string[],
+    exertTargetIds?: string[]
 ): boolean {
     const pending = G.pendingForcedChoice;
     if (!pending || pending.playerId !== playerID) return false;
@@ -104,6 +109,39 @@ export function resolveForcedChoice(
     if (!source || !option) {
         G.pendingForcedChoice = undefined;
         return false;
+    }
+
+    const needsExert = option.effects.find(
+        (e) =>
+            e.type === 'EXERT' &&
+            typeof e.multiCount === 'number' &&
+            e.multiCount > 1
+    );
+    if (needsExert && needsExert.type === 'EXERT') {
+        const need = needsExert.multiCount || 0;
+        const pool = resolveCostTarget(G, source, needsExert.target).filter(
+            (card) =>
+                Boolean(card) &&
+                !card.isDead &&
+                getEffectiveVitality(card) > (needsExert.count || 1)
+        );
+        if (pool.length < need) {
+            // Option illégale : pas assez de compagnons exerçables.
+            return false;
+        }
+        if (!exertTargetIds || exertTargetIds.length !== need) {
+            // Premier clic : mémoriser l’option, l’UI demandera la désignation.
+            G.pendingForcedChoice = {
+                ...pending,
+                pendingOptionIndex: optionIndex,
+                needsExertTargets: need,
+            };
+            G.statusMessage = `Choisissez ${need} compagnons à exercer.`;
+            return true;
+        }
+        if (new Set(exertTargetIds).size !== exertTargetIds.length) {
+            return false;
+        }
     }
 
     const needsHand = option.effects.find(
@@ -140,7 +178,15 @@ export function resolveForcedChoice(
         source: ability?.source || 'SELF',
         text: ability?.text || '',
     };
-    if (!applyAbilityEffect(G, source, synthetic, undefined, discardedHandIds)) {
+    if (
+        !applyAbilityEffect(
+            G,
+            source,
+            synthetic,
+            exertTargetIds,
+            discardedHandIds
+        )
+    ) {
         return false;
     }
 

@@ -377,7 +377,8 @@ export const GameControls: React.FC<GameControlsProps> = ({
     } else if (
         isForcedChoiceActive &&
         isMyTurnToAct &&
-        !G.pendingForcedChoice?.needsHandDiscard
+        !G.pendingForcedChoice?.needsHandDiscard &&
+        !G.pendingForcedChoice?.needsExertTargets
     ) {
         // Avant « début de phase » : sinon Pelennor Flat (etc.) reste invisible
         // derrière un dual-wait startOfPhase.
@@ -414,14 +415,21 @@ export const GameControls: React.FC<GameControlsProps> = ({
     } else if (
         isForcedChoiceActive &&
         isMyTurnToAct &&
-        G.pendingForcedChoice?.needsHandDiscard
+        (G.pendingForcedChoice?.needsHandDiscard ||
+            G.pendingForcedChoice?.needsExertTargets)
     ) {
         toastConfig = {
             show: true,
-            title: G.pendingForcedChoice?.title || 'DÉFAUSSE',
+            title:
+                G.pendingForcedChoice?.title ||
+                (G.pendingForcedChoice?.needsExertTargets
+                    ? 'EXERCER'
+                    : 'DÉFAUSSE'),
             body:
                 G.statusMessage ||
-                `Défaussez ${G.pendingForcedChoice.needsHandDiscard} carte(s) de votre main.`,
+                (G.pendingForcedChoice?.needsExertTargets
+                    ? `Choisissez ${G.pendingForcedChoice.needsExertTargets} compagnons à exercer.`
+                    : `Défaussez ${G.pendingForcedChoice.needsHandDiscard} carte(s) de votre main.`),
             showPassButton: false,
             type: 'FORCED_CHOICE',
         };
@@ -901,9 +909,11 @@ export const GameControls: React.FC<GameControlsProps> = ({
 
         if (isForcedChoiceActive) {
             return isMyTurnToAct
-                ? G.pendingForcedChoice?.needsHandDiscard
-                    ? `Défaussez ${G.pendingForcedChoice.needsHandDiscard} carte(s) de votre main.`
-                    : 'Choisissez une option pour le site / l’effet en cours.'
+                ? G.pendingForcedChoice?.needsExertTargets
+                    ? `Choisissez ${G.pendingForcedChoice.needsExertTargets} compagnons à exercer.`
+                    : G.pendingForcedChoice?.needsHandDiscard
+                      ? `Défaussez ${G.pendingForcedChoice.needsHandDiscard} carte(s) de votre main.`
+                      : 'Choisissez une option pour le site / l’effet en cours.'
                 : 'L’adversaire doit résoudre un choix forcé…';
         }
 

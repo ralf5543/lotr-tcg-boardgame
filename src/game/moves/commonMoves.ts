@@ -769,16 +769,28 @@ export const assignSiteCharacterWoundMove = (
 export const resolveForcedChoiceMove = (
     { G, ctx, events, playerID }: LotrMoveContext,
     optionIndex: number,
-    discardedHandIds?: string[]
+    discardedHandIds?: string[],
+    exertTargetIds?: string[]
 ) => {
     if (!G.pendingForcedChoice || G.pendingForcedChoice.playerId !== playerID) {
         return 'INVALID_MOVE';
     }
-    if (!resolveForcedChoice(G, playerID, optionIndex, discardedHandIds)) {
+    if (
+        !resolveForcedChoice(
+            G,
+            playerID,
+            optionIndex,
+            discardedHandIds,
+            exertTargetIds
+        )
+    ) {
         return 'INVALID_MOVE';
     }
-    // En attente de défausse main : ne pas ouvrir d’autre fenêtre.
-    if (G.pendingForcedChoice?.needsHandDiscard) {
+    // En attente de défausse main / désignation : ne pas ouvrir d’autre fenêtre.
+    if (
+        G.pendingForcedChoice?.needsHandDiscard ||
+        G.pendingForcedChoice?.needsExertTargets
+    ) {
         return;
     }
     // Après choix de site en début de Manœuvre : (re)ouvrir le dual-wait ou enchaîner.
