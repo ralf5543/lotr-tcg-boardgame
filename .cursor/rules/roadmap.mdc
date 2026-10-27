@@ -19,6 +19,8 @@ Credo transversal (hérités des plans cartes / sites / jetons) : **mieux vaut i
 
 **Playtest : toujours un preset DEV** — chaque nouvelle vague / carte testée a son preset dans le panneau de développement (`src/game/dev/presets.ts`, bouton dédié), avec les cartes à tester déjà en place et le scénario écrit dans le message de statut. Le preset est retiré une fois le test validé.
 
+**Langue des textes affichés** : français intégral ou anglais intégral, jamais de mélange ni de calque (terminologie du jeu en français : *exert* = **affaiblir**, *burden* = **fardeau**, *wound* = **blessure**…).
+
 ## Plan actif
 
 | | |

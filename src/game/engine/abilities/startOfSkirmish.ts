@@ -136,7 +136,7 @@ export function resolveForcedChoice(
                 pendingOptionIndex: optionIndex,
                 needsExertTargets: need,
             };
-            G.statusMessage = `Choisissez ${need} compagnons à exercer.`;
+            G.statusMessage = `Choisissez ${need} compagnons à affaiblir.`;
             return true;
         }
         if (new Set(exertTargetIds).size !== exertTargetIds.length) {

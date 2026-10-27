@@ -2919,7 +2919,7 @@ function parseRingBearerStartOfSkirmishChoiceAbilities(
                             ],
                         },
                         {
-                            label: `Exercer ${companions} compagnon${companions > 1 ? 's' : ''}`,
+                            label: `Affaiblir ${companions} compagnon${companions > 1 ? 's' : ''}`,
                             effects: [
                                 {
                                     type: 'EXERT',
@@ -7859,7 +7859,7 @@ function parseSiteStartOfFellowshipAbilities(
         });
     }
 
-    // Pinnacle of Zirakzigil : début de FP — exercer N compagnons (distincts)
+    // Pinnacle of Zirakzigil : début de FP — affaiblir N compagnons (distincts)
     // pour jouer un personnage d’une race donnée depuis la pile de mort.
     const deadPilePlayRe =
         /At the start of (?:your|the) fellowship phase,\s*you may exert (.+?) to play (?:a|an)\s+(.+?)\s+from your dead pile\.?/gi;

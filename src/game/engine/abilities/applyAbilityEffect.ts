@@ -1262,7 +1262,7 @@ export function applyAbilityEffect(
             effect.multiCount &&
             effect.multiCount > 1
         ) {
-            // N compagnons distincts, 1 exercice chacun (Isildur RB…).
+            // N compagnons distincts, 1 affaiblissement chacun (Isildur RB…).
             const pool = resolveCostTarget(G, source, effect.target).filter(
                 (card) =>
                     Boolean(card) &&

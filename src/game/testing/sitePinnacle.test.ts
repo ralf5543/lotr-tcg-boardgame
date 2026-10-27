@@ -1,6 +1,6 @@
 /**
  * Pinnacle of Zirakzigil (11S255) : début de fellowship —
- * exercer 3 compagnons distincts pour jouer un Wizard depuis
+ * affaiblir 3 compagnons distincts pour jouer un Wizard depuis
  * la pile de mort.
  */
 

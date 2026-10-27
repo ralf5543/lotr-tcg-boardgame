@@ -873,9 +873,9 @@ export type AbilityEffect =
           /** Tous les matchs (each minion skirmishing must exert). */
           all?: boolean;
           /**
-           * Exercer N cibles distinctes, 1 fois chacune
+           * Affaiblir N cibles distinctes, 1 fois chacune
            * (Isildur RB : « exert 3 companions » dans un choix forcé).
-           * `count` reste le nombre d’exercices par cible (1).
+           * `count` reste le nombre d’affaiblissements par cible (1).
            */
           multiCount?: number;
           /** Résistance effective maximale (inclus) — Neekerbreekers « each other ». */
@@ -1611,7 +1611,7 @@ export interface GameState {
         /** Option choisie en attente de défausse main. */
         pendingOptionIndex?: number;
         needsHandDiscard?: number;
-        /** Option choisie en attente de N cibles à exercer (désignation plateau). */
+        /** Option choisie en attente de N cibles à affaiblir (désignation plateau). */
         needsExertTargets?: number;
     };
     /**

@@ -682,7 +682,7 @@ export const GameBoard: React.FC<GameBoardProps> = ({
                     typeof effect.multiCount === 'number' &&
                     effect.multiCount > 1
             );
-            const multiVerb = isExertMulti ? 'à exercer' : 'à soigner';
+            const multiVerb = isExertMulti ? 'à affaiblir' : 'à soigner';
 
             const collect = (picked: string[]) => {
                 const pickedCultures = new Set(
@@ -2175,7 +2175,7 @@ export const GameBoard: React.FC<GameBoardProps> = ({
         moves,
     ]);
 
-    /** Désignation plateau (exercer N compagnons) pour un choix forcé (Isildur RB…). */
+    /** Désignation plateau (affaiblir N compagnons) pour un choix forcé (Isildur RB…). */
     const forcedExertKeyRef = useRef<string | null>(null);
     useEffect(() => {
         const pending = G.pendingForcedChoice;

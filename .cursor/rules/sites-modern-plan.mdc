@@ -123,7 +123,7 @@ Preset : `SITES_EACH_TIME_WAVE`.
 | `11S264` | Westemnet Village | OK | Moves to : 1 blessure par allié, assignée aux **compagnons** seuls (pending Doorway, `perAlly` + `companionsOnly`) |
 | `11S247` | Moria Guardroom | OK | Moves **from** optionnel : toaster « site quitté » **avant** le départ (désigner un Nain → piocher 2) ; déplacement suspendu puis repris (`pendingSiteDepartureContinuation`) |
 | `11S252` | Osgiliath Reclaimed | OK | Moves from optionnel : désigner 3 fardeaux → −1 fardeau (même socle) |
-| `11S255` | Pinnacle of Zirakzigil | OK | Début de fellowship : exercer 3 compagnons **distincts** → jouer un Wizard depuis la **pile de mort** (`from: 'DEAD_PILE'` + grille pile de mort) |
+| `11S255` | Pinnacle of Zirakzigil | OK | Début de fellowship : affaiblir 3 compagnons **distincts** → jouer un Wizard depuis la **pile de mort** (`from: 'DEAD_PILE'` + grille pile de mort) |
 | `11S260` | Trollshaw Forest | OK | YOU_PLAY optionnel « sur ton compagnon » (porteur = compagnon) → toaster piocher (`pendingWhenPlayed.fromSite`) |
 | `11S243` | Harrowdale | OK | Passif de **suppression** : séide en combat contre un compagnon Rohan perd Fierce (`MODIFY_KEYWORD suppress`, condition portée par le bénéficiaire) |
 | `11S233` | Chamber of Mazarbul | OK | Transfert FP d’artefact/possession **gratuit** au site courant (`FREE_FP_ATTACHMENT_TRANSFER`, lu par le move de transfert ; « may » = glisser optionnel) |
@@ -381,7 +381,7 @@ Aucun : The Angle était le dernier (vague famille « Shadow: play… »).
     - OK parse/runtime : The Angle (dernier 12–18, 2 modes) ; Buckland (désignation reportée) ; Expanding Marshland (−3) ; Woody-End (fardeau → Nazgûl de la défausse)
     - Socle réutilisable : `PLAY_FROM_HAND`, désignation reportée, `ignoreTwilightPool`
 23. Vague **derniers sites du set 11** — preset unique `SITES_SET11_RESTANTS` (parcours 1→7, playtest)
-    - OK parse/runtime : Westemnet (blessure / allié, compagnons seuls) ; Guardroom + Osgiliath (moves-from optionnels, déplacement suspendu/repris) ; Pinnacle (exercer 3 distincts → Wizard de la pile de mort) ; Trollshaw (YOU_PLAY sur compagnon → piocher) ; Harrowdale (suppression Fierce conditionnelle) ; Chamber (transfert FP gratuit)
+    - OK parse/runtime : Westemnet (blessure / allié, compagnons seuls) ; Guardroom + Osgiliath (moves-from optionnels, déplacement suspendu/repris) ; Pinnacle (affaiblir 3 distincts → Wizard de la pile de mort) ; Trollshaw (YOU_PLAY sur compagnon → piocher) ; Harrowdale (suppression Fierce conditionnelle) ; Chamber (transfert FP gratuit)
     - Socle réutilisable : `pendingSiteDepartureContinuation`, `from: 'DEAD_PILE'`, `getWhileKeywordSuppressions`, `FREE_FP_ATTACHMENT_TRANSFER`, `pendingWhenPlayed.fromSite`
 24. Reste : **aucun site 11–18 inerte**. Chantier sites **clos et validé** (tests des sets 11 à 18 terminés) ; bascule vers [`deck-play-gaps-plan.mdc`](deck-play-gaps-plan.mdc).
 

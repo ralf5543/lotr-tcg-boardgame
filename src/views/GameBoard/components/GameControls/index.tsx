@@ -423,12 +423,12 @@ export const GameControls: React.FC<GameControlsProps> = ({
             title:
                 G.pendingForcedChoice?.title ||
                 (G.pendingForcedChoice?.needsExertTargets
-                    ? 'EXERCER'
+                    ? 'AFFAIBLIR'
                     : 'DÉFAUSSE'),
             body:
                 G.statusMessage ||
                 (G.pendingForcedChoice?.needsExertTargets
-                    ? `Choisissez ${G.pendingForcedChoice.needsExertTargets} compagnons à exercer.`
+                    ? `Choisissez ${G.pendingForcedChoice.needsExertTargets} compagnons à affaiblir.`
                     : `Défaussez ${G.pendingForcedChoice.needsHandDiscard} carte(s) de votre main.`),
             showPassButton: false,
             type: 'FORCED_CHOICE',
@@ -910,7 +910,7 @@ export const GameControls: React.FC<GameControlsProps> = ({
         if (isForcedChoiceActive) {
             return isMyTurnToAct
                 ? G.pendingForcedChoice?.needsExertTargets
-                    ? `Choisissez ${G.pendingForcedChoice.needsExertTargets} compagnons à exercer.`
+                    ? `Choisissez ${G.pendingForcedChoice.needsExertTargets} compagnons à affaiblir.`
                     : G.pendingForcedChoice?.needsHandDiscard
                       ? `Défaussez ${G.pendingForcedChoice.needsHandDiscard} carte(s) de votre main.`
                       : 'Choisissez une option pour le site / l’effet en cours.'

@@ -31,7 +31,7 @@ const ISILDUR_ABILITY: Ability = {
                     effects: [{ type: 'ADD_BURDENS', count: 2 }],
                 },
                 {
-                    label: 'Exercer 3 compagnons',
+                    label: 'Affaiblir 3 compagnons',
                     effects: [
                         {
                             type: 'EXERT',
@@ -97,7 +97,7 @@ describe('Isildur RB — début d’escarmouche', () => {
         expect(G.pendingForcedChoice).toBeUndefined();
     });
 
-    it('option fardeaux : +2 fardeaux, aucun exercice', () => {
+    it('option fardeaux : +2 fardeaux, aucun affaiblissement', () => {
         const isildur = isildurCompanion();
         const G = stateWithFellowship([isildur]);
         applyStartOfSkirmishTriggers(G, 'sk-1');
@@ -108,7 +108,7 @@ describe('Isildur RB — début d’escarmouche', () => {
         expect(isildur.wounds || 0).toBe(0);
     });
 
-    it('option exercer : demande 3 désignations, puis exerce 3 compagnons distincts', () => {
+    it('option affaiblir : demande 3 désignations, puis affaiblit 3 compagnons distincts', () => {
         const isildur = isildurCompanion();
         const aragorn = createCompanion({ id: 'aragorn', title: 'Aragorn' });
         const legolas = createCompanion({ id: 'legolas', title: 'Legolas' });
@@ -139,7 +139,7 @@ describe('Isildur RB — début d’escarmouche', () => {
         expect(isildur.wounds || 0).toBe(0);
     });
 
-    it('option exercer refusée si moins de 3 compagnons exerçables', () => {
+    it('option affaiblir refusée si moins de 3 compagnons affaiblissables', () => {
         const isildur = isildurCompanion();
         const exhausted = createCompanion({
             id: 'fatigue',
