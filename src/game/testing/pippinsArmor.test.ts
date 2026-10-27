@@ -10,8 +10,6 @@ import {
     createMinion,
     createPlayerState,
 } from './createGameState';
-import { applyDevPreset } from '../dev/presets';
-
 const TEXT =
     'Bearer must be Pippin. \nWhile you can spot 3 <symbol>gondor</symbol> Men, Pippin may take no more than 1 wound in a skirmish.';
 
@@ -128,28 +126,6 @@ describe('Armure de Pippin 7R113 — plafond de blessures par escarmouche', () =
         ];
         applyWoundAndCheckDeath(G, pippin, 1);
         expect(pippin.wounds).toBe(2);
-    });
-
-    it('preset DEV : Pippin avec Armure, 3 Hommes du Gondor, 2 Uruks Dégâts +1', () => {
-        const G = createGameState();
-        applyDevPreset(G, 'DECK_GAPS_PIPPIN');
-
-        const fellowship = G.players['0']?.fellowshipArea || [];
-        expect(fellowship.map((c) => c.id)).toEqual([
-            '2C102',
-            '7R324',
-            '1R89',
-            '11R57',
-            '5C35',
-        ]);
-        const pippin = fellowship[1];
-        expect(pippin?.attachments?.[0]?.id).toBe('7R113');
-        expect(pippin?.attachments?.[0]?.abilities?.length).toBeGreaterThan(0);
-        expect(G.players['1']?.hand.map((c) => c.id)).toEqual([
-            '1C151',
-            '1C151',
-        ]);
-        expect(G.path).toHaveLength(9);
     });
 
     it('un affaiblissement ne compte pas comme blessure prise', () => {

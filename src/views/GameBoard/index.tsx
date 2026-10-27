@@ -83,6 +83,7 @@ import {
     getDeckOrDiscardPlayCandidates,
     getDeckSearchToDiscardCandidates,
     getHandPlayCandidates,
+    getPlayableFromDiscardCards,
 } from '../../game/logic/playFromOutOfPlay';
 import { getSitePhaseDesignationCandidates } from '../../game/logic/sitePhaseAbility';
 import {
@@ -387,6 +388,82 @@ export const GameBoard: React.FC<GameBoardProps> = ({
             return true;
         },
         [G, moves, myId, startTargeting]
+    );
+
+    /**
+     * Jouer une carte depuis sa défausse (clause « initiative ») :
+     * mêmes désignations que depuis la main, puis move dédié.
+     */
+    const handlePlayFromDiscard = useCallback(
+        (card: CardState) => {
+            const cardId = card.instanceId || card.id;
+            const commit = (chosen?: string | string[]) => {
+                stopTargeting();
+                moves.playCardFromDiscard?.(cardId, chosen);
+                audioService.play('CARD_PLAY');
+            };
+
+            if (card.type === 'EVENT') {
+                const ability = findEventAbilityForPhase(
+                    card,
+                    ctx.phase || ''
+                );
+                if (
+                    ability &&
+                    abilityNeedsCostDesignation(G, card, ability) &&
+                    abilityNeedsEffectDesignation(G, card, ability) &&
+                    !costAndEffectShareHandDesignation(ability) &&
+                    requestDesignation(
+                        card,
+                        ability,
+                        (costId) => {
+                            requestDesignation(
+                                card,
+                                ability,
+                                (effectId) => commit([costId, effectId]),
+                                undefined,
+                                'effect',
+                                costId
+                            );
+                        },
+                        undefined,
+                        'cost'
+                    )
+                ) {
+                    return;
+                }
+                if (
+                    ability &&
+                    requestDesignation(card, ability, (chosenId) =>
+                        commit(chosenId)
+                    )
+                ) {
+                    return;
+                }
+                commit();
+                return;
+            }
+
+            if (requiresAttachmentTarget(card)) {
+                const hosts = findLegalAttachmentHosts(
+                    G,
+                    myId,
+                    card,
+                    ctx.phase || ''
+                );
+                if (hosts.length === 0) return;
+                startTargeting({
+                    kind: 'DESIGNATION',
+                    targetableCardIds: hosts.flatMap(cardTargetIds),
+                    message: 'Choisissez le porteur de cette carte.',
+                    onSelectTarget: (hostId) => commit(hostId),
+                });
+                return;
+            }
+
+            commit();
+        },
+        [G, ctx.phase, moves, myId, requestDesignation, startTargeting, stopTargeting]
     );
 
     const requestSiteReplace = useCallback(
@@ -3686,6 +3763,32 @@ export const GameBoard: React.FC<GameBoardProps> = ({
                             title={outOfPlayOverlay.title}
                             cards={outOfPlayOverlay.cards}
                             currentSiteIndex={currentSiteIndex}
+                            selectableCardIds={
+                                openOutOfPlayZone === 'my-discard'
+                                    ? getPlayableFromDiscardCards(
+                                          G,
+                                          myId,
+                                          ctx.phase || ''
+                                      ).flatMap(cardTargetIds)
+                                    : undefined
+                            }
+                            onSelectCard={
+                                openOutOfPlayZone === 'my-discard'
+                                    ? (cardId) => {
+                                          const picked = (
+                                              me.discard || []
+                                          ).find(
+                                              (c) =>
+                                                  c &&
+                                                  (c.instanceId === cardId ||
+                                                      c.id === cardId)
+                                          );
+                                          if (!picked) return;
+                                          setOpenOutOfPlayZone(null);
+                                          handlePlayFromDiscard(picked);
+                                      }
+                                    : undefined
+                            }
                             onClose={() => setOpenOutOfPlayZone(null)}
                         />
                     )}

@@ -15,7 +15,13 @@ import { getEffectiveVitality } from '../../utils/cardStats';
 import { applyExert } from '../../utils/applyExert';
 import { devMoves } from '../dev/devMoves';
 import { playSite } from './fellowshipMoves';
-import { canPlayCard, attachesToSite } from '../engine/canPlayCard';
+import {
+    canPlayCard,
+    attachesToSite,
+    canAttachToCharacter,
+    requiresAttachmentTarget,
+} from '../engine/canPlayCard';
+import { canPlayCardFromDiscard } from '../logic/playFromOutOfPlay';
 import { cardMatchesTarget } from '../engine/validations/matchers';
 import {
     applyEventAbility,
@@ -520,6 +526,136 @@ export const playCard = (
         yieldAfterPlay(G, actingPlayerId, playedCard, wasResponseWindowOpen);
         G.pendingPlay = undefined;
     }
+};
+
+/**
+ * Jouer une carte depuis sa propre défausse (clause « initiative » 7R61/7R63).
+ * Suit le même chemin qu’un jeu depuis la main : coût, résolution, puis
+ * destination (défausse, ou sous la pioche si la carte le dit).
+ */
+export const playCardFromDiscard = (
+    { G, ctx, playerID }: LotrMoveContext,
+    cardId: string,
+    chosenTargetId?: string | string[]
+) => {
+    const actingPlayerId = playerID ?? ctx.currentPlayer ?? '0';
+    const wasResponseWindowOpen = isResponseWindowOpen(G);
+    const player = G.players[actingPlayerId];
+    if (!player) return 'INVALID_MOVE';
+
+    const discardIndex = (player.discard || []).findIndex(
+        (c) => c && (c.instanceId === cardId || c.id === cardId)
+    );
+    if (discardIndex < 0) return 'INVALID_MOVE';
+    const card = player.discard![discardIndex]!;
+
+    const discardCheck = canPlayCardFromDiscard(
+        G,
+        actingPlayerId,
+        card,
+        ctx.phase || ''
+    );
+    if (!discardCheck.valid) {
+        console.warn(`❌ [playCardFromDiscard] Rejet : ${discardCheck.reason}`);
+        return 'INVALID_MOVE';
+    }
+
+    const isAttachment = card.type !== 'EVENT' && requiresAttachmentTarget(card);
+    let hostCard: CardState | SiteCardState | null = null;
+    if (isAttachment) {
+        const hostId = Array.isArray(chosenTargetId)
+            ? chosenTargetId[0]
+            : chosenTargetId;
+        if (!hostId) return 'INVALID_MOVE';
+        hostCard = findTargetCard(G, hostId);
+        if (!hostCard || !canAttachToCharacter(card, hostCard, actingPlayerId)) {
+            return 'INVALID_MOVE';
+        }
+        // « Limit 1 per bearer » (7R63).
+        const text = card.i18n?.en?.gameText || card.gameText || '';
+        if (
+            /limit\s*1\s*per\s*bearer/i.test(text) &&
+            ((hostCard as CardState).attachments || []).some(
+                (a) => a && a.id === card.id
+            )
+        ) {
+            return 'INVALID_MOVE';
+        }
+        const validation = canPlayCard(
+            card,
+            { G, ctx, playerID: actingPlayerId },
+            hostId,
+            hostCard
+        );
+        if (!validation.valid) return 'INVALID_MOVE';
+    }
+
+    applyAutomaticToPlayCosts(G, card, actingPlayerId, ctx.phase);
+
+    const fpId = G.fpPlayerId || '0';
+    const isFP = actingPlayerId === fpId;
+    const hadInitiative = isFP ? freePeoplesHasInitiative(G) : false;
+    const cost = getEffectiveTwilightCost(
+        card,
+        getCurrentSiteIndex(G),
+        getWhileTwilightCostModifier(G, card)
+    );
+
+    const [playedCard] = player.discard!.splice(discardIndex, 1);
+    const restore = () => {
+        player.discard!.splice(discardIndex, 0, playedCard);
+    };
+    if (isFP) {
+        G.twilightPool += cost;
+    } else {
+        G.twilightPool -= cost;
+    }
+    const refund = () => {
+        if (isFP) {
+            G.twilightPool -= cost;
+        } else {
+            G.twilightPool += cost;
+        }
+    };
+
+    if (playedCard.type === 'EVENT') {
+        if (!applyEventAbility(G, playedCard, ctx.phase || '', chosenTargetId)) {
+            restore();
+            refund();
+            return 'INVALID_MOVE';
+        }
+        if (playedCard.playFromDiscard?.underDeckInsteadOfDiscard) {
+            if (!player.deck) player.deck = [];
+            player.deck.push(playedCard);
+            G.statusMessage = `${playedCard.title} est joué depuis la défausse, puis placé sous la pioche.`;
+        } else {
+            placeCardIntoDiscardPile(G, actingPlayerId, playedCard);
+            G.statusMessage = `${playedCard.title} est joué depuis la défausse.`;
+        }
+    } else if (isAttachment && hostCard) {
+        if (!(hostCard as CardState).attachments) {
+            (hostCard as CardState).attachments = [];
+        }
+        (hostCard as CardState).attachments!.push(playedCard);
+        const hostName =
+            (hostCard as CardState).title ||
+            (hostCard as CardState).i18n?.fr?.title ||
+            'sa cible';
+        G.statusMessage = `${playedCard.title} est joué depuis la défausse et attaché à ${hostName}.`;
+    } else {
+        restore();
+        refund();
+        return 'INVALID_MOVE';
+    }
+
+    afterCardPlayed(G, playedCard, {
+        playerId: actingPlayerId,
+        phase: ctx.phase,
+        skipWhenPlayed: playedCard.type === 'EVENT',
+    });
+    announceInitiativeIfChanged(G, hadInitiative);
+    yieldAfterPlay(G, actingPlayerId, playedCard, wasResponseWindowOpen);
+    G.pendingPlay = undefined;
 };
 
 export const applyWound = (
@@ -1056,6 +1192,7 @@ export const commonMoves = {
     beginPendingPlay,
     cancelPendingPlay,
     playCard,
+    playCardFromDiscard,
     playSite,
     applyWound,
     drawCard,

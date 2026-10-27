@@ -9,6 +9,7 @@ import { getEffectiveTwilightCost } from '../../utils/roamingDetection';
 import { getWhileTwilightCostModifier } from './stats/mechanics/whileModifier';
 import { getCurrentSiteIndex, placeCardIntoDiscardPile } from './sites';
 import { applyAutomaticToPlayCosts } from './applyToPlayCosts';
+import { playerHasInitiative } from './initiative';
 
 const matchCard = (card: CardState | undefined | null, targetId: string) =>
     Boolean(card && (card.instanceId === targetId || card.id === targetId));
@@ -483,6 +484,54 @@ export function getDeckSearchToDiscardCandidates(
     if (!player?.deck?.length) return [];
     return player.deck.filter(
         (card) => card && cardMatchesTarget(card, filter)
+    );
+}
+
+/**
+ * Une carte peut-elle être jouée depuis la défausse de son propriétaire ?
+ * (clause « If you have initiative…, you may play this card from your
+ * discard pile » — 7R61 / 7R63). Le reste suit les règles normales de jeu.
+ */
+export function canPlayCardFromDiscard(
+    G: GameState,
+    playerId: string,
+    card: CardState,
+    phase: string
+): { valid: boolean; reason?: string } {
+    const spec = card.playFromDiscard;
+    if (!spec) {
+        return {
+            valid: false,
+            reason: 'Cette carte ne peut pas être jouée depuis la défausse.',
+        };
+    }
+    if (spec.requiresInitiative && !playerHasInitiative(G, playerId)) {
+        return {
+            valid: false,
+            reason: 'Vous n’avez pas l’initiative.',
+        };
+    }
+    if (spec.phase && (phase || '').toUpperCase() !== spec.phase) {
+        return {
+            valid: false,
+            reason: 'Cette carte ne peut être jouée depuis la défausse que pendant la phase d’Ombre.',
+        };
+    }
+    return canPlayCard(card, { G, ctx: { phase }, playerID: playerId });
+}
+
+/** Cartes de la défausse du joueur jouables tout de suite depuis celle-ci. */
+export function getPlayableFromDiscardCards(
+    G: GameState,
+    playerId: string,
+    phase: string
+): CardState[] {
+    const player = G.players[playerId];
+    if (!player) return [];
+    return (player.discard || []).filter(
+        (card) =>
+            card &&
+            canPlayCardFromDiscard(G, playerId, card, phase).valid
     );
 }
 

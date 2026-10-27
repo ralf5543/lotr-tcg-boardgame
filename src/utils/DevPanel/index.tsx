@@ -372,24 +372,26 @@ export const DevPanel: React.FC<DevPanelProps> = ({
                         </S.GameButton>
                     </S.Section>
 
-                    {/* Preset de playtest : trous decks — Armure de Pippin */}
+                    {/* Preset de playtest : trous decks — jouer depuis la défausse */}
                     <S.Section>
                         <S.Label>
-                            Preset decks (Armure de Pippin) :
+                            Preset decks (défausse + initiative) :
                             <br />
                             <span style={{ opacity: 0.75, fontWeight: 400 }}>
-                                Pippin avec son Armure et 3 Hommes du Gondor
-                                repérables, 2 Uruks Sauvages (Dégâts +1) en
-                                main Ombre : Pippin perd mais ne doit prendre
-                                qu’une blessure par escarmouche, deux fois.
+                                Les deux cartes testées sont dans la défausse
+                                de l’Ombre, qui a l’initiative : « Qu’elle
+                                s’en occupe » sur le Nazgûl en phase d’Ombre,
+                                puis « Les Hobbits sont morts » pendant son
+                                escarmouche — l’événement finit sous la
+                                pioche, pas dans la défausse.
                             </span>
                         </S.Label>
                         <S.ActionButton
                             onClick={() =>
-                                moves.devLoadPreset?.('DECK_GAPS_PIPPIN')
+                                moves.devLoadPreset?.('DECK_GAPS_HOBBITSES')
                             }
                         >
-                            Armure de Pippin (7R113)
+                            Défausse + initiative (7R61 / 7R63)
                         </S.ActionButton>
                     </S.Section>
 

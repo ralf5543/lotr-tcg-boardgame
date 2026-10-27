@@ -41,10 +41,10 @@ L’ancien plan main/initiative est **figé** (`.cursor/rules/hand-initiative-pl
 
 | Id | Titre | Manque |
 | --- | --- | --- |
-| `9R+33` | Isildur (RB) | ✅ Texte complet — Début escarmouche : 2 fardeaux **ou** affaiblir 3 compagnons (choix forcé + désignation de 3 compagnons distincts ; option « affaiblir » refusée si moins de 3 compagnons affaiblissables) ; tant qu’Isildur porte l’Anneau Unique ou un artefact, chaque chevalier du Gondor a force +1 (passif). En playtest, preset DEV `DECK_GAPS_ISILDUR` (panneau de développement) |
-| `7R113` | Pippin's Armor | ✅ Tant que 3 Hommes du Gondor sont repérables, Pippin ne prend pas plus d’1 blessure par escarmouche (nouvel effet passif `LIMIT_WOUNDS_IN_SKIRMISH`, compteur par escarmouche au point central des blessures ; l’affaiblissement ne compte pas). En playtest, preset DEV `DECK_GAPS_PIPPIN` (panneau de développement) |
-| `7R61` | Hobbitses Are Dead | 2ᵉ clause : play from discard si initiative (1ʳᵉ OK) |
-| `7R63` | Let Her Deal With Them | Spot noms OK ; clause initiative → play from discard **inerte** |
+| `9R+33` | Isildur (RB) | ✅ Texte complet — Début escarmouche : 2 fardeaux **ou** affaiblir 3 compagnons (choix forcé + désignation de 3 compagnons distincts ; option « affaiblir » refusée si moins de 3 compagnons affaiblissables) ; tant qu’Isildur porte l’Anneau Unique ou un artefact, chaque chevalier du Gondor a force +1 (passif). Validé par Ralf, preset DEV retiré |
+| `7R113` | Pippin's Armor | ✅ Validé par Ralf — tant que 3 Hommes du Gondor sont repérables, Pippin ne prend pas plus d’1 blessure par escarmouche (nouvel effet passif `LIMIT_WOUNDS_IN_SKIRMISH`, compteur par escarmouche au point central des blessures ; l’affaiblissement ne compte pas). Preset DEV retiré après validation (cas « moins de 3 Hommes » couvert par les tests automatiques) |
+| `7R61` | Hobbitses Are Dead | ✅ Texte complet — jouer depuis la défausse si initiative (sélection dans l’écran de défausse, mêmes désignations que depuis la main), puis l’événement part **sous la pioche** au lieu de la défausse. En playtest, preset DEV `DECK_GAPS_HOBBITSES` |
+| `7R63` | Let Her Deal With Them | ✅ Texte complet — même famille : jouable depuis la défausse si initiative, **phase d’Ombre seulement**, attachée au séide désigné (limite 1 par porteur). Socle générique : champ `playFromDiscard` analysé + `canPlayCardFromDiscard` / `getPlayableFromDiscardCards` + move `playCardFromDiscard` |
 | `9R27` | Sent Back | Combat ✅ (défausse séides + Wizard → pile de mort) ; Fellowship/Regroup play Wizard malgré dead **inerte** |
 | `9R38` | Seeing Stone Orthanc | toPlay spot OK ; Regroup choice (threat / discard → twilight|draw) **inerte** |
 

@@ -69410,6 +69410,10 @@
     "isUnique": false,
     "kind": "SHADOW",
     "type": "EVENT",
+    "playFromDiscard": {
+      "requiresInitiative": true,
+      "underDeckInsteadOfDiscard": true
+    },
     "abilities": [
       {
         "id": "7R61:0",
@@ -69540,6 +69544,10 @@
         "MINION"
       ]
     ],
+    "playFromDiscard": {
+      "requiresInitiative": true,
+      "phase": "SHADOW"
+    },
     "toPlay": [
       {
         "spot": [

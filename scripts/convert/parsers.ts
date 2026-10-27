@@ -680,6 +680,30 @@ export function parseRequiresControlledSite(text?: string): boolean {
 }
 
 /**
+ * « If you have initiative (during the Shadow phase), you may play this
+ * event/condition from your discard pile (; place it under your draw deck
+ * instead of discarding it) » (7R61 / 7R63).
+ */
+export function parsePlayFromDiscard(text?: string):
+    | {
+          requiresInitiative: true;
+          phase?: string;
+          underDeckInsteadOfDiscard?: boolean;
+      }
+    | undefined {
+    if (!text) return undefined;
+    const match = text.match(
+        /If you have initiative(?:\s+during the\s+(\w+)\s+phase)?,\s+you may play this\s+(?:event|condition|card)\s+from your discard pile(;?\s*place it under your draw deck instead of discarding it)?/i
+    );
+    if (!match) return undefined;
+    return {
+        requiresInitiative: true,
+        ...(match[1] ? { phase: match[1].toUpperCase() } : {}),
+        ...(match[2] ? { underDeckInsteadOfDiscard: true } : {}),
+    };
+}
+
+/**
  * Analyse les conditions requises pour jouer une carte ("To play, ...").
  */
 export function parseToPlayConditions(text?: string): any[] | undefined {

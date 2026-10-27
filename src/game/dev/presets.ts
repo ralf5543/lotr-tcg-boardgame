@@ -121,7 +121,8 @@ const neutralPath: readonly string[] = [
 
 /**
  * Applique le preset DEV de playtest (zones vidées / chemin Standard).
- * Vague en cours : trous de mécanismes decks — Armure de Pippin.
+ * Vague en cours : trous de mécanismes decks — jouer depuis la défausse
+ * si initiative (7R61 / 7R63).
  */
 export const applyDevPreset = (
     G: GameState,
@@ -135,53 +136,51 @@ export const applyDevPreset = (
     const shadowPlayer = G.players[shadowId];
 
     switch (presetType) {
-        case 'DECK_GAPS_PIPPIN': {
+        case 'DECK_GAPS_HOBBITSES': {
             resetBoardForPreset(G);
             setupDevPath(G, 0, neutralPath);
-            G.twilightPool = 6;
+            // Assez pour Gollum (2) + un Nazgûl (6) + les deux cartes (1 + 1).
+            G.twilightPool = 14;
             fpPlayer.burdens = 2;
             fpPlayer.fellowshipArea = [
                 {
-                    ...clonePresetCard('2C102', 'dev-pippin-frodo'),
+                    ...clonePresetCard('2C102', 'dev-hobbitses-frodo'),
                     attachments: [
-                        clonePresetCard('1R1', 'dev-pippin-ring'),
+                        clonePresetCard('1R1', 'dev-hobbitses-ring'),
                     ],
                 },
-                {
-                    // Pippin porte son Armure (7R113, la carte testée).
-                    ...clonePresetCard('7R324', 'dev-pippin'),
-                    attachments: [
-                        clonePresetCard('7R113', 'dev-pippin-armor'),
-                    ],
-                },
-                // Trois Hommes du Gondor repérables : condition remplie.
-                clonePresetCard('1R89', 'dev-pippin-aragorn'),
-                clonePresetCard('11R57', 'dev-pippin-boromir'),
-                clonePresetCard('5C35', 'dev-pippin-knight'),
+                clonePresetCard('1R89', 'dev-hobbitses-aragorn'),
             ];
+            // Main des Peuples Libres vide (moins de 4 cartes) :
+            // l’initiative est donc côté Ombre.
             fpPlayer.deck = [
-                clonePresetCard('1C306', 'dev-pippin-draw-1'),
-                clonePresetCard('1C306', 'dev-pippin-draw-2'),
-                clonePresetCard('1C306', 'dev-pippin-draw-3'),
+                clonePresetCard('1C306', 'dev-hobbitses-draw-1'),
+                clonePresetCard('1C306', 'dev-hobbitses-draw-2'),
             ];
             fpPlayer.sitesDeck = [clonePresetSite('11S250', fpId)];
             if (shadowPlayer) {
-                // Uruk Sauvage : force 5, Dégâts +1 (coût 2). Contre
-                // Pippin (force 3) : victoire de l’Ombre sans submersion,
-                // donc 2 blessures attendues → 1 seule avec l’Armure.
                 shadowPlayer.hand = [
-                    clonePresetCard('1C151', 'dev-pippin-uruk-1'),
-                    clonePresetCard('1C151', 'dev-pippin-uruk-2'),
+                    clonePresetCard('7R58', 'dev-hobbitses-gollum'),
+                    clonePresetCard('7R210', 'dev-hobbitses-nazgul'),
                 ];
+                // Les deux cartes testées, déjà dans la défausse.
+                shadowPlayer.discard = [
+                    clonePresetCard('7R61', 'dev-hobbitses-event'),
+                    clonePresetCard('7R63', 'dev-hobbitses-condition'),
+                ];
+                // Cartes neutres : après le jeu de 7R61, celui-ci doit
+                // être la dernière carte (sous la pioche), pas en défausse.
                 shadowPlayer.deck = [
-                    clonePresetCard('1C266', 'dev-pippin-shadow-draw-1'),
+                    clonePresetCard('1C266', 'dev-hobbitses-shadow-draw-1'),
+                    clonePresetCard('1C266', 'dev-hobbitses-shadow-draw-2'),
+                    clonePresetCard('1C266', 'dev-hobbitses-shadow-draw-3'),
                 ];
                 shadowPlayer.sitesDeck = [
                     clonePresetSite('11S263', shadowId),
                 ];
             }
             G.statusMessage =
-                '[DEV] Armure de Pippin (7R113) · crépuscule 6 · Trois Hommes du Gondor sont repérables (Aragorn, Boromir, Chevalier du Gondor), la condition est remplie. Avancez jusqu’à l’Ombre, jouez un Uruk Sauvage et assignez-le à Pippin : il perd (force 3 contre 5) et devrait prendre 2 blessures (Dégâts +1) — l’Armure limite à 1 seule. Assignez le 2ᵉ Uruk à Pippin dans la même phase : nouvelle escarmouche, le plafond repart — 1 blessure de plus (2 au total). Cas couverts par les tests automatiques : moins de 3 Hommes repérés, hors escarmouche, affaiblissement qui ne compte pas.';
+                '[DEV] Les Hobbits sont morts (7R61) + Qu’elle s’en occupe (7R63) · crépuscule 14 · La main des Peuples Libres a moins de 4 cartes : l’initiative est côté Ombre. Les deux cartes testées sont déjà dans la défausse de l’Ombre (cliquez sur « Défausse » en bas à droite). 1) Phase d’Ombre : jouez Gollum et le Nazgûl depuis la main, puis ouvrez votre défausse — « Qu’elle s’en occupe » est sélectionnable : jouez-la sur le Nazgûl (il gagne Dégâts +1). 2) Affectation puis escarmouche Nazgûl contre Aragorn : rouvrez la défausse — « Les Hobbits sont morts » est sélectionnable : repérez Gollum, puis désignez le Nazgûl (force +2 pendant cette escarmouche). Après résolution, l’événement n’est plus dans la défausse : il est sous la pioche de l’Ombre (dernière carte de la pioche). Sans initiative (main des Peuples Libres de 4 cartes ou plus), aucune des deux cartes n’est sélectionnable dans la défausse.';
             break;
         }
     }

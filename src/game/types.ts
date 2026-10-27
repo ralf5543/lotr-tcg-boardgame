@@ -1244,6 +1244,17 @@ export interface CardState {
      * Pose uniquement si `site.controlledBy ===` joueur actif.
      */
     requiresControlledSite?: boolean;
+    /**
+     * « If you have initiative…, you may play this card from your discard pile »
+     * (7R61 / 7R63). `phase` restreint la fenêtre (ex. 'SHADOW') ;
+     * `underDeckInsteadOfDiscard` : après résolution, la carte part sous la
+     * pioche au lieu de rester dans la défausse.
+     */
+    playFromDiscard?: {
+        requiresInitiative?: boolean;
+        phase?: string;
+        underDeckInsteadOfDiscard?: boolean;
+    };
 }
 
 export interface PlayerProfile {
@@ -1694,7 +1705,7 @@ export interface LotrMoveContext extends FnContext<GameState> {
 }
 
 /** Presets DEV de playtest (panneau de test, vague en cours). */
-export type DevPresetType = 'DECK_GAPS_PIPPIN';
+export type DevPresetType = 'DECK_GAPS_HOBBITSES';
 
 export interface ArcheryState {
     step?: 'ACTIONS' | 'FP_ASSIGN' | 'SHADOW_ASSIGN' | 'COMPLETE';
