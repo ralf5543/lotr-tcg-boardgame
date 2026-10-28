@@ -812,7 +812,11 @@ export const GameControls: React.FC<GameControlsProps> = ({
         toastConfig = {
             show: true,
             title: 'EFFET DU SITE',
-            body: targetingMessage || 'Choisissez une cible.',
+            body: (
+                <FormattedText
+                    text={targetingMessage || 'Choisissez une cible.'}
+                />
+            ),
             showPassButton: false,
             type: 'SITE_MOVE_DESIGNATION',
         };
@@ -825,7 +829,14 @@ export const GameControls: React.FC<GameControlsProps> = ({
         toastConfig = {
             show: true,
             title: 'EFFET DU SITE',
-            body: targetingMessage || 'Choisissez un compagnon à affaiblir.',
+            body: (
+                <FormattedText
+                    text={
+                        targetingMessage ||
+                        'Choisissez un compagnon à affaiblir.'
+                    }
+                />
+            ),
             showPassButton: false,
             type: 'SITE_FOLLOWER_TRANSFER_DESIGNATION',
         };
@@ -862,11 +873,14 @@ export const GameControls: React.FC<GameControlsProps> = ({
                                 : targetingKind === 'SANCTUARY_HEAL'
                                   ? 'SANCTUAIRE'
                                   : 'CHOIX DE CIBLE',
-            body: `${targetingMessage} ${
-                targetingKind === 'SANCTUARY_HEAL'
-                    ? ''
-                    : 'Échap pour annuler.'
-            }`.trim(),
+            body: (
+                <>
+                    <FormattedText text={targetingMessage} />
+                    {targetingKind === 'SANCTUARY_HEAL'
+                        ? null
+                        : ' Échap pour annuler.'}
+                </>
+            ),
             showPassButton: false,
             type: 'STANDARD',
         };

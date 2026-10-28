@@ -160,11 +160,11 @@ export const applyDevPreset = (
             fpPlayer.sitesDeck = [clonePresetSite('11S250', fpId)];
             if (shadowPlayer) {
                 shadowPlayer.hand = [
-                    clonePresetCard('7R58', 'dev-hobbitses-gollum'),
                     clonePresetCard('7R210', 'dev-hobbitses-nazgul'),
                 ];
-                // Les deux cartes testées, déjà dans la défausse.
+                // Gollum (7R58) + les deux cartes testées, déjà dans la défausse.
                 shadowPlayer.discard = [
+                    clonePresetCard('7R58', 'dev-hobbitses-gollum'),
                     clonePresetCard('7R61', 'dev-hobbitses-event'),
                     clonePresetCard('7R63', 'dev-hobbitses-condition'),
                 ];
@@ -180,7 +180,7 @@ export const applyDevPreset = (
                 ];
             }
             G.statusMessage =
-                '[DEV] Les Hobbits sont morts (7R61) + Qu’elle s’en occupe (7R63) · crépuscule 14 · La main des Peuples Libres a moins de 4 cartes : l’initiative est côté Ombre. Les deux cartes testées sont déjà dans la défausse de l’Ombre (cliquez sur « Défausse » en bas à droite). 1) Phase d’Ombre : jouez Gollum et le Nazgûl depuis la main, puis ouvrez votre défausse — « Qu’elle s’en occupe » est sélectionnable : jouez-la sur le Nazgûl (il gagne Dégâts +1). 2) Affectation puis escarmouche Nazgûl contre Aragorn : rouvrez la défausse — « Les Hobbits sont morts » est sélectionnable : repérez Gollum, puis désignez le Nazgûl (force +2 pendant cette escarmouche). Après résolution, l’événement n’est plus dans la défausse : il est sous la pioche de l’Ombre (dernière carte de la pioche). Sans initiative (main des Peuples Libres de 4 cartes ou plus), aucune des deux cartes n’est sélectionnable dans la défausse.';
+                '[DEV] Les Hobbits sont morts (7R61) + Qu’elle s’en occupe (7R63) + Gollum (7R58) · crépuscule 14 · La main des Peuples Libres a moins de 4 cartes : l’initiative est côté Ombre. Gollum et les deux cartes testées sont déjà dans la défausse de l’Ombre (cliquez sur « Défausse » en bas à droite). 1) Phase d’Ombre : jouez le Nazgûl depuis la main, puis ouvrez votre défausse — Gollum est sélectionnable (même clause initiative) : jouez-le sur le champ. Ensuite « Qu’elle s’en occupe » : posez-la sur le Nazgûl (Dégâts +1). 2) Affectation puis escarmouche Nazgûl contre Aragorn : rouvrez la défausse — « Les Hobbits sont morts » est sélectionnable : cliquez le Nazgûl (Gollum déjà en jeu est repéré automatiquement, force +2). Après résolution, l’événement n’est plus dans la défausse : il est sous la pioche de l’Ombre (dernière carte). Sans initiative, aucune de ces cartes n’est sélectionnable dans la défausse.';
             break;
         }
     }

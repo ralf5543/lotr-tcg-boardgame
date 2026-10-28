@@ -1246,7 +1246,7 @@ export interface CardState {
     requiresControlledSite?: boolean;
     /**
      * « If you have initiative…, you may play this card from your discard pile »
-     * (7R61 / 7R63). `phase` restreint la fenêtre (ex. 'SHADOW') ;
+     * (7R61 / 7R63 / Gollum 7R58). `phase` restreint la fenêtre (ex. 'SHADOW') ;
      * `underDeckInsteadOfDiscard` : après résolution, la carte part sous la
      * pioche au lieu de rester dans la défausse.
      */

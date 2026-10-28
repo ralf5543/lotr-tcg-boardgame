@@ -378,12 +378,13 @@ export const DevPanel: React.FC<DevPanelProps> = ({
                             Preset decks (défausse + initiative) :
                             <br />
                             <span style={{ opacity: 0.75, fontWeight: 400 }}>
-                                Les deux cartes testées sont dans la défausse
-                                de l’Ombre, qui a l’initiative : « Qu’elle
-                                s’en occupe » sur le Nazgûl en phase d’Ombre,
-                                puis « Les Hobbits sont morts » pendant son
-                                escarmouche — l’événement finit sous la
-                                pioche, pas dans la défausse.
+                                Gollum (7R58), « Qu’elle s’en occupe » et
+                                « Les Hobbits sont morts » sont dans la
+                                défausse de l’Ombre, qui a l’initiative.
+                                Jouez Gollum depuis la défausse, posez la
+                                situation sur le Nazgûl, puis l’événement
+                                pendant l’escarmouche (clic direct sur le
+                                séide) — il finit sous la pioche.
                             </span>
                         </S.Label>
                         <S.ActionButton

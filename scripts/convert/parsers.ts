@@ -693,7 +693,7 @@ export function parsePlayFromDiscard(text?: string):
     | undefined {
     if (!text) return undefined;
     const match = text.match(
-        /If you have initiative(?:\s+during the\s+(\w+)\s+phase)?,\s+you may play this\s+(?:event|condition|card)\s+from your discard pile(;?\s*place it under your draw deck instead of discarding it)?/i
+        /If you have initiative(?:\s+during the\s+(\w+)\s+phase)?,\s+you may play this(?:\s+\w+)?\s+from your discard pile(;?\s*place it under your draw deck instead of discarding it)?/i
     );
     if (!match) return undefined;
     return {
@@ -8578,9 +8578,8 @@ function parseSpotOrMakeStrengthEventAbilities(
                         {
                             count: spotSubject.count,
                             target: spotSubject.target,
-                            ...(spotSubject.mode
-                                ? { mode: spotSubject.mode }
-                                : {}),
+                            // Repérer Gollum / Sméagol = condition, pas une
+                            // désignation (le clic va au séide à renforcer).
                         },
                     ],
                 },

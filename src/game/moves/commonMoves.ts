@@ -642,6 +642,13 @@ export const playCardFromDiscard = (
             (hostCard as CardState).i18n?.fr?.title ||
             'sa cible';
         G.statusMessage = `${playedCard.title} est joué depuis la défausse et attaché à ${hostName}.`;
+    } else if (playedCard.type === 'MINION' && !isFP) {
+        if (!G.battlefield) G.battlefield = [];
+        G.battlefield.push(playedCard);
+        G.statusMessage = `${playedCard.title} entre sur le champ de bataille depuis la défausse.`;
+        if ((ctx.phase || '').toLowerCase() === 'shadow') {
+            beginOptionalSitePhaseAbility(G);
+        }
     } else {
         restore();
         refund();

@@ -69225,6 +69225,10 @@
     "isUnique": true,
     "kind": "SHADOW",
     "type": "MINION",
+    "playFromDiscard": {
+      "requiresInitiative": true,
+      "phase": "SHADOW"
+    },
     "culture": "GOLLUM",
     "twilightCost": 2,
     "strength": 5,
@@ -69430,8 +69434,7 @@
                   [
                     "Sméagol"
                   ]
-                ],
-                "mode": "DESIGNATION"
+                ]
               }
             ]
           }

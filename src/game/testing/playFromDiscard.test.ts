@@ -7,6 +7,10 @@ import {
 } from '../logic/playFromOutOfPlay';
 import { playCardFromDiscard } from '../moves/commonMoves';
 import { getCalculatedStrength } from '../logic/stats/statCalculator';
+import {
+    abilityNeedsCostDesignation,
+    abilityNeedsEffectDesignation,
+} from '../engine/abilities/designation';
 import { applyDevPreset } from '../dev/presets';
 import type { CardState } from '../types';
 import {
@@ -22,6 +26,8 @@ const EVENT_TEXT =
     'Spot Gollum or Sméagol to make a Nazgûl, <symbol>sauron</symbol> minion or <symbol>gollum</symbol> minion strength +2. If you have initiative, you may play this event from your discard pile; place it under your draw deck instead of discarding it.';
 const CONDITION_TEXT =
     'To play, spot Gollum or Sméagol. Bearer must be a minion. Limit 1 per bearer. Bearer is Damage +1. If you have initiative during the Shadow phase, you may play this condition from your discard pile.';
+const GOLLUM_TEXT =
+    'If you have initiative during the Shadow phase, you may play this minion from your discard pile.';
 
 const realCard = (id: string, instanceId: string): CardState => {
     const card = getCardById(id);
@@ -84,6 +90,10 @@ describe('Jouer depuis la défausse si initiative (7R61 / 7R63)', () => {
             requiresInitiative: true,
             phase: 'SHADOW',
         });
+        expect(parsePlayFromDiscard(GOLLUM_TEXT)).toEqual({
+            requiresInitiative: true,
+            phase: 'SHADOW',
+        });
         expect(
             parsePlayFromDiscard('You may play this event from your discard pile.')
         ).toBeUndefined();
@@ -95,6 +105,12 @@ describe('Jouer depuis la défausse si initiative (7R61 / 7R63)', () => {
             requiresInitiative: true,
             phase: 'SHADOW',
         });
+        expect(getCardById('7R58')?.playFromDiscard).toEqual({
+            requiresInitiative: true,
+            phase: 'SHADOW',
+        });
+        const eventAbility = getCardById('7R61')?.abilities?.[0];
+        expect(eventAbility?.cost?.[0]?.spot?.[0]?.mode).toBeUndefined();
     });
 
     it('initiative côté Ombre : l’événement est jouable depuis la défausse en escarmouche', () => {
@@ -124,12 +140,19 @@ describe('Jouer depuis la défausse si initiative (7R61 / 7R63)', () => {
         ).toBe(false);
     });
 
+    it('7R61 : repérer Gollum est automatique, seul le séide se désigne', () => {
+        const { G, event } = baseState(3);
+        const ability = event.abilities![0];
+        expect(abilityNeedsCostDesignation(G, event, ability)).toBe(false);
+        expect(abilityNeedsEffectDesignation(G, event, ability)).toBe(true);
+    });
+
     it('move 7R61 : Nazgûl +2, événement sous la pioche, crépuscule payé', () => {
         const { G, nazgul } = baseState(3);
         const result = playCardFromDiscard(
             { G, ctx: { phase: 'skirmish', currentPlayer: '1' }, playerID: '1' } as never,
             'event-61',
-            ['gollum', 'nazgul']
+            'nazgul'
         );
         expect(result).not.toBe('INVALID_MOVE');
         expect(getCalculatedStrength(G, nazgul)).toBe(14);
@@ -149,7 +172,7 @@ describe('Jouer depuis la défausse si initiative (7R61 / 7R63)', () => {
         const result = playCardFromDiscard(
             { G, ctx: { phase: 'skirmish', currentPlayer: '1' }, playerID: '1' } as never,
             'event-61',
-            ['gollum', 'nazgul']
+            'nazgul'
         );
         expect(result).toBe('INVALID_MOVE');
         expect(G.players['1']!.discard.map((c) => c.id)).toEqual([
@@ -175,14 +198,38 @@ describe('Jouer depuis la défausse si initiative (7R61 / 7R63)', () => {
         expect(G.twilightPool).toBe(9);
     });
 
-    it('preset DEV : défausse Ombre avec les deux cartes, initiative Ombre', () => {
+    it('move 7R58 : Gollum joué depuis la défausse sur le champ', () => {
+        const gollum = realCard('7R58', 'gollum-58');
+        const G = createGameState({
+            twilightPool: 10,
+            players: {
+                '0': createPlayerState('0'),
+                '1': createPlayerState('1', { discard: [gollum] }),
+            },
+        });
+        const result = playCardFromDiscard(
+            { G, ctx: { phase: 'shadow', currentPlayer: '1' }, playerID: '1' } as never,
+            'gollum-58'
+        );
+        expect(result).not.toBe('INVALID_MOVE');
+        expect(G.battlefield?.map((c) => c.id)).toEqual(['7R58']);
+        expect(G.players['1']!.discard).toEqual([]);
+        // Coût imprimé 2 + errance (site 3, chemin encore au site 1).
+        expect(G.twilightPool).toBe(6);
+    });
+
+    it('preset DEV : défausse Ombre avec Gollum + les deux cartes, initiative Ombre', () => {
         const G = createGameState();
         applyDevPreset(G, 'DECK_GAPS_HOBBITSES');
 
         const shadow = G.players['1']!;
-        expect(shadow.discard.map((c) => c.id)).toEqual(['7R61', '7R63']);
-        expect(shadow.discard[0]?.playFromDiscard).toBeTruthy();
-        expect(shadow.hand.map((c) => c.id)).toEqual(['7R58', '7R210']);
+        expect(shadow.discard.map((c) => c.id)).toEqual([
+            '7R58',
+            '7R61',
+            '7R63',
+        ]);
+        expect(shadow.discard.every((c) => c.playFromDiscard)).toBe(true);
+        expect(shadow.hand.map((c) => c.id)).toEqual(['7R210']);
         expect((G.players['0']!.hand || []).length).toBeLessThan(4);
         expect(G.path).toHaveLength(9);
     });
