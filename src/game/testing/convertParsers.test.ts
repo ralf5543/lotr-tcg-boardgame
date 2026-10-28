@@ -5777,6 +5777,29 @@ describe('attachAbilityTextFr', () => {
         );
         expect(abilities[0].textFr).toBeUndefined();
     });
+
+    it('ignore le connecteur « or / ou » d’une double phase (Fellowship or Regroup)', () => {
+        expect(
+            extractFrPhaseClauses(
+                '**Fellowship** or **Regroup:** Play a Wizard (even if another copy of that Wizard is in your dead pile).'
+            )
+        ).toEqual([
+            {
+                phase: 'REGROUP',
+                text: '**Regroup:** Play a Wizard (even if another copy of that Wizard is in your dead pile).',
+            },
+        ]);
+        expect(
+            extractFrPhaseClauses(
+                '**Compagnie** ou **Regroupement :** Jouez un Magicien (même si une autre copie de ce Magicien est dans votre pile de mort).'
+            )
+        ).toEqual([
+            {
+                phase: 'REGROUP',
+                text: '**Regroupement :** Jouez un Magicien (même si une autre copie de ce Magicien est dans votre pile de mort).',
+            },
+        ]);
+    });
 });
 
 

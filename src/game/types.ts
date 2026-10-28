@@ -629,6 +629,11 @@ export type AbilityEffect =
           type: 'PLAY_FROM_HAND';
           target: string[][];
           twilightReduce?: number;
+          /**
+           * Sent Back : jouer même si une autre copie unique est
+           * dans votre pile de mort (l’unicité en jeu reste).
+           */
+          ignoreDeadPile?: boolean;
       }
     | {
           /**
@@ -1705,7 +1710,7 @@ export interface LotrMoveContext extends FnContext<GameState> {
 }
 
 /** Presets DEV de playtest (panneau de test, vague en cours). */
-export type DevPresetType = 'DECK_GAPS_HOBBITSES';
+export type DevPresetType = 'DECK_GAPS_SENT_BACK';
 
 export interface ArcheryState {
     step?: 'ACTIONS' | 'FP_ASSIGN' | 'SHADOW_ASSIGN' | 'COMPLETE';

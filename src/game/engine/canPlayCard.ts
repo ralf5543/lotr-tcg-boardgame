@@ -33,6 +33,11 @@ export interface ValidationOptions {
     ignorePhase?: boolean;
     /** Le pool est contrôlé par l’appelant (réduction de coût, ex. Marshland). */
     ignoreTwilightPool?: boolean;
+    /**
+     * Sent Back : jouer une copie unique depuis la main même si une autre
+     * est dans la pile de mort. L’unicité en jeu reste.
+     */
+    ignoreDeadPileUniqueness?: boolean;
 }
 
 /* ==========================================================================
@@ -202,7 +207,8 @@ const getCardTitle = (c?: CardState | SiteCardState | null): string => {
 
 function checkUniqueness(
     card: CardState,
-    context: ValidationContext
+    context: ValidationContext,
+    options?: ValidationOptions
 ): ValidationResult {
     if (!card.isUnique) return { valid: true };
 
@@ -280,7 +286,11 @@ function checkUniqueness(
         }
     }
 
-    if (playerID && G.players?.[playerID]?.deadPile) {
+    if (
+        !options?.ignoreDeadPileUniqueness &&
+        playerID &&
+        G.players?.[playerID]?.deadPile
+    ) {
         const activePlayerDeadPile = G.players[playerID].deadPile;
         const existsInDeadPile = activePlayerDeadPile.some((c) => {
             if (!c || getCardTitle(c) !== cardTitle) return false;
@@ -391,7 +401,7 @@ export function canPlayCard(
     }
 
     // 3. Unicité
-    const uniquenessCheck = checkUniqueness(card, context);
+    const uniquenessCheck = checkUniqueness(card, context, options);
     if (!uniquenessCheck.valid) return uniquenessCheck;
 
     // 4. Conditions prérequis "To Play" (spot, exert, burdens, discard...)

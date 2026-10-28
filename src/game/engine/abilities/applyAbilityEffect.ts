@@ -635,12 +635,16 @@ export function applyAbilityEffect(
             const fpId = G.fpPlayerId || '0';
             const playPhase =
                 ownerId === fpId ? 'fellowship' : 'shadow';
+            const playOpts = {
+                ignoreDeadPileUniqueness: Boolean(effect.ignoreDeadPile),
+            };
             const candidates = getHandPlayCandidates(
                 G,
                 ownerId,
                 effect.target,
                 playPhase,
-                effect.twilightReduce || 0
+                effect.twilightReduce || 0,
+                playOpts
             );
             if (
                 !candidates.some(
@@ -655,7 +659,8 @@ export function applyAbilityEffect(
                 cardId,
                 effect.target,
                 playPhase,
-                effect.twilightReduce || 0
+                effect.twilightReduce || 0,
+                playOpts
             );
             if (!played) return false;
             afterCardPlayed(G, played, {

@@ -372,27 +372,25 @@ export const DevPanel: React.FC<DevPanelProps> = ({
                         </S.GameButton>
                     </S.Section>
 
-                    {/* Preset de playtest : trous decks — jouer depuis la défausse */}
+                    {/* Preset de playtest : trous decks — Sent Back */}
                     <S.Section>
                         <S.Label>
-                            Preset decks (défausse + initiative) :
+                            Preset decks (Renvoyé) :
                             <br />
                             <span style={{ opacity: 0.75, fontWeight: 400 }}>
-                                Gollum (7R58), « Qu’elle s’en occupe » et
-                                « Les Hobbits sont morts » sont dans la
-                                défausse de l’Ombre, qui a l’initiative.
-                                Jouez Gollum depuis la défausse, posez la
-                                situation sur le Nazgûl, puis l’événement
-                                pendant l’escarmouche (clic direct sur le
-                                séide) — il finit sous la pioche.
+                                Renvoyé est en jeu, un Gandalf en main, un
+                                autre dans la pile de mort. Cliquez la
+                                situation puis Gandalf : il rejoint malgré
+                                l’unicité. Un glisser depuis la main reste
+                                refusé.
                             </span>
                         </S.Label>
                         <S.ActionButton
                             onClick={() =>
-                                moves.devLoadPreset?.('DECK_GAPS_HOBBITSES')
+                                moves.devLoadPreset?.('DECK_GAPS_SENT_BACK')
                             }
                         >
-                            Défausse + initiative (7R61 / 7R63)
+                            Renvoyé (9R27)
                         </S.ActionButton>
                     </S.Section>
 

@@ -62,7 +62,10 @@ import {
     getHandStackCandidates,
     getPlayStackCandidates,
 } from '../../logic/cardStack';
-import { getDeckOrDiscardPlayCandidates } from '../../logic/playFromOutOfPlay';
+import {
+    getDeckOrDiscardPlayCandidates,
+    getHandPlayCandidates,
+} from '../../logic/playFromOutOfPlay';
 import { canPlayCard } from '../canPlayCard';
 import {
     attachesToSite,
@@ -446,6 +449,27 @@ export function getEffectDesignationCandidates(
         return matches;
     }
 
+    const playFromHand = (ability.effects || []).find(
+        (item) => item.type === 'PLAY_FROM_HAND'
+    );
+    if (playFromHand && playFromHand.type === 'PLAY_FROM_HAND') {
+        const ownerId =
+            actingPlayerId || abilityOwnerPlayerId(G, source);
+        if (!ownerId) return [];
+        const playPhase =
+            ownerId === (G.fpPlayerId || '0') ? 'fellowship' : 'shadow';
+        const matches = getHandPlayCandidates(
+            G,
+            ownerId,
+            playFromHand.target,
+            playPhase,
+            playFromHand.twilightReduce || 0,
+            { ignoreDeadPileUniqueness: Boolean(playFromHand.ignoreDeadPile) }
+        );
+        if (matches.length < 1) return [];
+        return uniqueCards(matches);
+    }
+
     // Pioche / défausse : pas de halo plateau (overlay dédié).
     if (
         (ability.effects || []).some(
@@ -542,6 +566,7 @@ export function getEffectDesignationCandidates(
         (item) =>
             item.type !== 'DISCARD_ALL' &&
             item.type !== 'PLAY_FROM_DECK_OR_DISCARD' &&
+            item.type !== 'PLAY_FROM_HAND' &&
             item.type !== 'TAKE_FROM_DISCARD' &&
             item.type !== 'REVEAL_OPPONENT_TOP' &&
             !(item.type === 'EXERT' && item.all) &&
@@ -817,6 +842,30 @@ export function abilityHasLegalEffectTarget(
             }
             continue;
         }
+        if (effect.type === 'PLAY_FROM_HAND') {
+            const ownerId =
+                actingPlayerId || abilityOwnerPlayerId(G, source);
+            if (!ownerId) return false;
+            const playPhase =
+                ownerId === (G.fpPlayerId || '0') ? 'fellowship' : 'shadow';
+            if (
+                getHandPlayCandidates(
+                    G,
+                    ownerId,
+                    effect.target,
+                    playPhase,
+                    effect.twilightReduce || 0,
+                    {
+                        ignoreDeadPileUniqueness: Boolean(
+                            effect.ignoreDeadPile
+                        ),
+                    }
+                ).length < 1
+            ) {
+                return false;
+            }
+            continue;
+        }
         if (effect.type === 'PLAY_FROM_DECK_OR_DISCARD') {
             const ownerId = abilityOwnerPlayerId(G, source);
             if (!ownerId) return false;
@@ -1075,6 +1124,12 @@ export function formatDesignationPrompt(
         )
     ) {
         return 'Choisissez une carte de votre main à empiler.';
+    }
+    if (
+        useEffect &&
+        (ability.effects || []).some((item) => item.type === 'PLAY_FROM_HAND')
+    ) {
+        return 'Choisissez la carte à jouer dans votre main.';
     }
     const target = useEffect
         ? Array.isArray(effectTarget)

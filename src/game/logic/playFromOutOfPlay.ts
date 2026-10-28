@@ -195,13 +195,18 @@ function shadowPlayCost(G: GameState, card: CardState, twilightReduce = 0): numb
     return Math.max(0, cost - (twilightReduce || 0));
 }
 
+export type HandPlayOpts = {
+    ignoreDeadPileUniqueness?: boolean;
+};
+
 /** Cartes de la main que le joueur peut jouer via une capacité « play… ». */
 export function getHandPlayCandidates(
     G: GameState,
     ownerId: string,
     filter: string[][],
     phase = 'shadow',
-    twilightReduce = 0
+    twilightReduce = 0,
+    playOpts?: HandPlayOpts
 ): CardState[] {
     const player = G.players[ownerId];
     if (!player?.hand) return [];
@@ -215,7 +220,11 @@ export function getHandPlayCandidates(
             { G, ctx: { phase }, playerID: ownerId },
             undefined,
             undefined,
-            { ignorePhase: true, ignoreTwilightPool: true }
+            {
+                ignorePhase: true,
+                ignoreTwilightPool: true,
+                ignoreDeadPileUniqueness: playOpts?.ignoreDeadPileUniqueness,
+            }
         );
         if (!check.valid) return false;
         if (ownerId !== fpId) {
@@ -235,7 +244,8 @@ export function playCardFromHand(
     cardId: string,
     filter?: string[][],
     phase = 'shadow',
-    twilightReduce = 0
+    twilightReduce = 0,
+    playOpts?: HandPlayOpts
 ): CardState | null {
     const player = G.players[ownerId];
     if (!player?.hand) return null;
@@ -250,7 +260,11 @@ export function playCardFromHand(
         { G, ctx: { phase }, playerID: ownerId },
         undefined,
         undefined,
-        { ignorePhase: true, ignoreTwilightPool: true }
+        {
+            ignorePhase: true,
+            ignoreTwilightPool: true,
+            ignoreDeadPileUniqueness: playOpts?.ignoreDeadPileUniqueness,
+        }
     );
     if (!check.valid) return null;
 

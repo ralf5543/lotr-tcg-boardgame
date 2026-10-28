@@ -11,7 +11,6 @@ import {
     abilityNeedsCostDesignation,
     abilityNeedsEffectDesignation,
 } from '../engine/abilities/designation';
-import { applyDevPreset } from '../dev/presets';
 import type { CardState } from '../types';
 import {
     createCard,
@@ -216,21 +215,5 @@ describe('Jouer depuis la défausse si initiative (7R61 / 7R63)', () => {
         expect(G.players['1']!.discard).toEqual([]);
         // Coût imprimé 2 + errance (site 3, chemin encore au site 1).
         expect(G.twilightPool).toBe(6);
-    });
-
-    it('preset DEV : défausse Ombre avec Gollum + les deux cartes, initiative Ombre', () => {
-        const G = createGameState();
-        applyDevPreset(G, 'DECK_GAPS_HOBBITSES');
-
-        const shadow = G.players['1']!;
-        expect(shadow.discard.map((c) => c.id)).toEqual([
-            '7R58',
-            '7R61',
-            '7R63',
-        ]);
-        expect(shadow.discard.every((c) => c.playFromDiscard)).toBe(true);
-        expect(shadow.hand.map((c) => c.id)).toEqual(['7R210']);
-        expect((G.players['0']!.hand || []).length).toBeLessThan(4);
-        expect(G.path).toHaveLength(9);
     });
 });

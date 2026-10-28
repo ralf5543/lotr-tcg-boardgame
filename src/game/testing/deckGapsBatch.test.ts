@@ -458,6 +458,16 @@ describe('parseAbilities — deck gaps batch 2 (Noble Leaders / Gandalf / Promis
                         }),
                     ],
                 }),
+                expect.objectContaining({
+                    phases: ['FELLOWSHIP', 'REGROUP'],
+                    effects: [
+                        expect.objectContaining({
+                            type: 'PLAY_FROM_HAND',
+                            target: [['WIZARD']],
+                            ignoreDeadPile: true,
+                        }),
+                    ],
+                }),
             ])
         );
     });

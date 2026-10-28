@@ -785,6 +785,15 @@ function formatEffectBit(
     if (effect.type === 'REVEAL_OPPONENT_TOP') {
         return `révéler les ${effect.count} premières cartes de la pioche adverse`;
     }
+    if (effect.type === 'PLAY_FROM_HAND') {
+        const who = formatTargetPhrase(effect.target);
+        const dead = effect.ignoreDeadPile
+            ? ' (même si une autre copie est dans votre pile de mort)'
+            : '';
+        return who
+            ? `jouer ${who} depuis la main${dead}`
+            : `jouer une carte depuis la main${dead}`;
+    }
     if (effect.type === 'PLAY_FROM_DECK_OR_DISCARD') {
         const who = formatTargetPhrase(effect.target);
         return who

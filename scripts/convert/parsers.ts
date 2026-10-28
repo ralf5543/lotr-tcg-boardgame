@@ -231,17 +231,29 @@ export function extractFrPhaseClauses(gameText?: string): FrPhaseClause[] {
 
     markers.sort((a, b) => a.index - b.index);
 
-    return markers.map((marker, i) => {
-        const end =
-            i + 1 < markers.length ? markers[i + 1].index : plain.length;
-        return {
-            phase: marker.phase,
-            text: plain
+    return markers
+        .map((marker, i) => {
+            const end =
+                i + 1 < markers.length ? markers[i + 1].index : plain.length;
+            const text = plain
                 .slice(marker.index, end)
                 .replace(/\s+/g, ' ')
-                .trim(),
-        };
-    });
+                .trim();
+            // « **Fellowship** or **Regroup:** … » : le premier marqueur
+            // n’est pas une clause, juste le « ou » vers la suivante.
+            const afterLabel = text
+                .replace(/^\*\*[^*]+?\s*:?\*\*\s*:?\s*/i, '')
+                .replace(
+                    /^(?:Combat|Skirmish|Manœuvre|Manoeuvre|Maneuver|Compagnie|Communauté|Fellowship|Archerie|Archery|Affectationt?|Assignment|Regroupement|Regroup|Réponse|Response|Ombre|Shadow)\s*:?\s*/i,
+                    ''
+                )
+                .trim();
+            if (/^ou$/i.test(afterLabel) || /^or$/i.test(afterLabel)) {
+                return null;
+            }
+            return { phase: marker.phase, text };
+        })
+        .filter((clause): clause is FrPhaseClause => clause !== null);
 }
 
 /**
@@ -5052,6 +5064,46 @@ function parseToAssignFpMustMakeStrengthAbilities(
                     value,
                     target: 'SELF',
                     expiresAtPhase: 'REGROUP',
+                },
+            ],
+            source: 'SELF',
+            text: stripAbilityMarkup(match[0]),
+        });
+    }
+    return found;
+}
+
+/**
+ * Fellowship or Regroup: Play a Wizard (even if another copy of that Wizard
+ * is in your dead pile). (Sent Back…)
+ */
+function parsePlayFromHandDespiteDeadPileAbilities(
+    text: string,
+    cardId?: string
+): Record<string, unknown>[] {
+    const found: Record<string, unknown>[] = [];
+    const phaseTok =
+        '(?:\\*\\*|<(?:keyword)>)(Fellowship|Shadow|Maneuver|Archery|Assignment|Skirmish|Regroup):?(?:\\s*</(?:keyword)>)?(?:\\*\\*)?';
+    const re = new RegExp(
+        `${phaseTok}\\s+or\\s+${phaseTok}\\s*Play an?\\s+(.+?)\\s+\\(even if another copy of that \\3 is in your dead pile\\)`,
+        'gi'
+    );
+    let match: RegExpExecArray | null;
+    while ((match = re.exec(text)) !== null) {
+        const phases = [match[1], match[2]]
+            .filter(Boolean)
+            .map((p) => p!.toUpperCase());
+        const filters = parseClassFilters(match[3] || '');
+        if (phases.length === 0 || filters.length === 0) continue;
+        found.push({
+            id: `${cardId || 'ability'}:${found.length}:play-hand-dead`,
+            phases,
+            cost: [],
+            effects: [
+                {
+                    type: 'PLAY_FROM_HAND',
+                    target: [filters],
+                    ignoreDeadPile: true,
                 },
             ],
             source: 'SELF',
@@ -13230,6 +13282,15 @@ export function parseAbilities(
             id: `${cardId || 'ability'}:${abilities.length}`,
         });
     });
+
+    parsePlayFromHandDespiteDeadPileAbilities(text, cardId).forEach(
+        (ability) => {
+            abilities.push({
+                ...ability,
+                id: `${cardId || 'ability'}:${abilities.length}`,
+            });
+        }
+    );
 
     parseDiscardSelfReturnToHandAbilities(text, cardId).forEach((ability) => {
         abilities.push({

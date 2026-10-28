@@ -121,8 +121,8 @@ const neutralPath: readonly string[] = [
 
 /**
  * Applique le preset DEV de playtest (zones vidées / chemin Standard).
- * Vague en cours : trous de mécanismes decks — jouer depuis la défausse
- * si initiative (7R61 / 7R63).
+ * Vague en cours : trous de mécanismes decks — Sent Back (jouer un
+ * Magicien malgré la pile de mort).
  */
 export const applyDevPreset = (
     G: GameState,
@@ -136,51 +136,50 @@ export const applyDevPreset = (
     const shadowPlayer = G.players[shadowId];
 
     switch (presetType) {
-        case 'DECK_GAPS_HOBBITSES': {
+        case 'DECK_GAPS_SENT_BACK': {
             resetBoardForPreset(G);
             setupDevPath(G, 0, neutralPath);
-            // Assez pour Gollum (2) + un Nazgûl (6) + les deux cartes (1 + 1).
-            G.twilightPool = 14;
+            G.twilightPool = 0;
             fpPlayer.burdens = 2;
             fpPlayer.fellowshipArea = [
                 {
-                    ...clonePresetCard('2C102', 'dev-hobbitses-frodo'),
+                    ...clonePresetCard('2C102', 'dev-sentback-frodo'),
                     attachments: [
-                        clonePresetCard('1R1', 'dev-hobbitses-ring'),
+                        clonePresetCard('1R1', 'dev-sentback-ring'),
                     ],
                 },
-                clonePresetCard('1R89', 'dev-hobbitses-aragorn'),
+                clonePresetCard('1R89', 'dev-sentback-aragorn'),
             ];
-            // Main des Peuples Libres vide (moins de 4 cartes) :
-            // l’initiative est donc côté Ombre.
+            // Renvoyé déjà en jeu. Un Gandalf en main, un autre en pile
+            // de mort : le glisser-déposer depuis la main est refusé ;
+            // la capacité de Renvoyé, elle, passe.
+            fpPlayer.supportArea = [
+                clonePresetCard('9R27', 'dev-sentback-condition'),
+            ];
+            fpPlayer.hand = [
+                clonePresetCard('1R72', 'dev-sentback-gandalf-hand'),
+            ];
+            fpPlayer.deadPile = [
+                clonePresetCard('4C90', 'dev-sentback-gandalf-dead'),
+            ];
             fpPlayer.deck = [
-                clonePresetCard('1C306', 'dev-hobbitses-draw-1'),
-                clonePresetCard('1C306', 'dev-hobbitses-draw-2'),
+                clonePresetCard('1C306', 'dev-sentback-draw-1'),
+                clonePresetCard('1C306', 'dev-sentback-draw-2'),
             ];
             fpPlayer.sitesDeck = [clonePresetSite('11S250', fpId)];
             if (shadowPlayer) {
                 shadowPlayer.hand = [
-                    clonePresetCard('7R210', 'dev-hobbitses-nazgul'),
+                    clonePresetCard('1C151', 'dev-sentback-uruk'),
                 ];
-                // Gollum (7R58) + les deux cartes testées, déjà dans la défausse.
-                shadowPlayer.discard = [
-                    clonePresetCard('7R58', 'dev-hobbitses-gollum'),
-                    clonePresetCard('7R61', 'dev-hobbitses-event'),
-                    clonePresetCard('7R63', 'dev-hobbitses-condition'),
-                ];
-                // Cartes neutres : après le jeu de 7R61, celui-ci doit
-                // être la dernière carte (sous la pioche), pas en défausse.
                 shadowPlayer.deck = [
-                    clonePresetCard('1C266', 'dev-hobbitses-shadow-draw-1'),
-                    clonePresetCard('1C266', 'dev-hobbitses-shadow-draw-2'),
-                    clonePresetCard('1C266', 'dev-hobbitses-shadow-draw-3'),
+                    clonePresetCard('1C266', 'dev-sentback-shadow-draw-1'),
                 ];
                 shadowPlayer.sitesDeck = [
                     clonePresetSite('11S263', shadowId),
                 ];
             }
             G.statusMessage =
-                '[DEV] Les Hobbits sont morts (7R61) + Qu’elle s’en occupe (7R63) + Gollum (7R58) · crépuscule 14 · La main des Peuples Libres a moins de 4 cartes : l’initiative est côté Ombre. Gollum et les deux cartes testées sont déjà dans la défausse de l’Ombre (cliquez sur « Défausse » en bas à droite). 1) Phase d’Ombre : jouez le Nazgûl depuis la main, puis ouvrez votre défausse — Gollum est sélectionnable (même clause initiative) : jouez-le sur le champ. Ensuite « Qu’elle s’en occupe » : posez-la sur le Nazgûl (Dégâts +1). 2) Affectation puis escarmouche Nazgûl contre Aragorn : rouvrez la défausse — « Les Hobbits sont morts » est sélectionnable : cliquez le Nazgûl (Gollum déjà en jeu est repéré automatiquement, force +2). Après résolution, l’événement n’est plus dans la défausse : il est sous la pioche de l’Ombre (dernière carte). Sans initiative, aucune de ces cartes n’est sélectionnable dans la défausse.';
+                '[DEV] Renvoyé (9R27) · Un Gandalf est dans votre pile de mort, un autre en main. En Communauté (ou au Regroupement) : glisser Gandalf depuis la main vers la communauté est refusé (unicité). Cliquez la situation Renvoyé, puis Gandalf en main : il rejoint malgré la pile de mort (+4 crépuscule). La clause d’escarmouche (défausse des séides au combat contre un Magicien, puis le Magicien va à la pile de mort) est déjà validée.';
             break;
         }
     }
