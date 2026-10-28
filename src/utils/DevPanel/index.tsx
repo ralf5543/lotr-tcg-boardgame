@@ -15,7 +15,7 @@ export interface DevMoves {
     devSetArchery?: (amount: number) => void;
     devSetCurrentSite?: (siteIndex: number) => void;
     devForceEndPhase: () => void;
-    /** Presets de playtest de la vague en cours (trous decks : Capitaine ourouk). */
+    /** Presets de playtest de la vague en cours (trous decks : Lieutenant d’Orthanc). */
     devLoadPreset?: (presetName: string) => void;
 }
 
@@ -372,25 +372,24 @@ export const DevPanel: React.FC<DevPanelProps> = ({
                         </S.GameButton>
                     </S.Section>
 
-                    {/* Preset de playtest : trous decks — Capitaine ourouk */}
+                    {/* Preset de playtest : trous decks — Lieutenant d’Orthanc */}
                     <S.Section>
                         <S.Label>
-                            Preset decks (Capitaine ourouk) :
+                            Preset decks (Lieutenant d’Orthanc) :
                             <br />
                             <span style={{ opacity: 0.75, fontWeight: 400 }}>
-                                Capitaine en jeu, Ourouk en défausse. Ombre :
-                                crépuscule + affaiblir → jouer depuis la
-                                défausse.
+                                Manœuvre : affaiblir le Lieutenant → rendre
+                                un autre Ourouk acharné (pas soi).
                             </span>
                         </S.Label>
                         <S.ActionButton
                             onClick={() =>
                                 moves.devLoadPreset?.(
-                                    'DECK_GAPS_URUK_CAPTAIN'
+                                    'DECK_GAPS_LIEUTENANT_ORTHANC'
                                 )
                             }
                         >
-                            Capitaine ourouk (2R46)
+                            Lieutenant Orthanc (4R158)
                         </S.ActionButton>
                     </S.Section>
 

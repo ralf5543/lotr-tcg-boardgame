@@ -244,6 +244,8 @@ export type AbilityEffect =
           keyword: CardKeyword;
           target: AbilityTargetRef;
           expiresAtPhase: AbilityEffectExpiry;
+          /** « another … » : exclure la source des cibles. */
+          excludeSource?: boolean;
       }
     | {
           /**
@@ -1727,7 +1729,7 @@ export interface LotrMoveContext extends FnContext<GameState> {
 }
 
 /** Presets DEV de playtest (panneau de test, vague en cours). */
-export type DevPresetType = 'DECK_GAPS_URUK_CAPTAIN';
+export type DevPresetType = 'DECK_GAPS_LIEUTENANT_ORTHANC';
 
 export interface ArcheryState {
     step?: 'ACTIONS' | 'FP_ASSIGN' | 'SHADOW_ASSIGN' | 'COMPLETE';

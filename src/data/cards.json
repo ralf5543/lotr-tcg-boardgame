@@ -46937,6 +46937,43 @@
     "keywords": [
       "DAMAGE +1"
     ],
+    "abilities": [
+      {
+        "id": "4R158:0",
+        "phases": [
+          "MANEUVER"
+        ],
+        "cost": [
+          {
+            "exert": [
+              {
+                "count": 1,
+                "target": "SELF"
+              }
+            ]
+          }
+        ],
+        "effects": [
+          {
+            "type": "ADD_TEMP_KEYWORD",
+            "keyword": "FIERCE",
+            "target": [
+              [
+                "URUK-HAI"
+              ]
+            ],
+            "expiresAtPhase": "REGROUP",
+            "excludeSource": true
+          }
+        ],
+        "source": "SELF",
+        "text": "MANEUVER: Exert Lieutenant of Orthanc to make another Uruk-hai fierce until the regroup phase.",
+        "textFr": "**Manœuvre :** Affaiblissez le Lieutenant d’Orthanc pour rendre un autre Ourouk-Haï **acharné** jusqu’à la phase de ralliement."
+      }
+    ],
+    "actionPhases": [
+      "MANEUVER"
+    ],
     "culture": "ISENGARD",
     "race": "URUK-HAI",
     "twilightCost": 7,
@@ -48157,6 +48194,44 @@
     "keywords": [
       "DAMAGE +1"
     ],
+    "abilities": [
+      {
+        "id": "4C184:0",
+        "phases": [
+          "SKIRMISH"
+        ],
+        "cost": [
+          {
+            "exert": [
+              {
+                "count": 1,
+                "target": "SELF"
+              }
+            ]
+          }
+        ],
+        "effects": [
+          {
+            "type": "ADD_TEMP_STAT",
+            "stat": "STRENGTH",
+            "value": 2,
+            "target": [
+              [
+                "URUK-HAI"
+              ]
+            ],
+            "expiresAtPhase": "SKIRMISH",
+            "excludeSource": true
+          }
+        ],
+        "source": "SELF",
+        "text": "SKIRMISH: Exert this minion at a battleground to make another Uruk-hai strength +2.",
+        "textFr": "**Combat :** Affaiblissez ce séide à un champ de bataille pour donner +2 en force à un autre Ourouk-Haï."
+      }
+    ],
+    "actionPhases": [
+      "SKIRMISH"
+    ],
     "culture": "ISENGARD",
     "race": "URUK-HAI",
     "twilightCost": 4,
@@ -48476,6 +48551,44 @@
     "type": "MINION",
     "keywords": [
       "DAMAGE +1"
+    ],
+    "abilities": [
+      {
+        "id": "4C191:0",
+        "phases": [
+          "SKIRMISH"
+        ],
+        "cost": [
+          {
+            "exert": [
+              {
+                "count": 1,
+                "target": "SELF"
+              }
+            ]
+          }
+        ],
+        "effects": [
+          {
+            "type": "ADD_TEMP_STAT",
+            "stat": "STRENGTH",
+            "value": 1,
+            "target": [
+              [
+                "URUK-HAI"
+              ]
+            ],
+            "expiresAtPhase": "SKIRMISH",
+            "excludeSource": true
+          }
+        ],
+        "source": "SELF",
+        "text": "SKIRMISH: Exert this minion at a battleground to make another Uruk-hai strength +1.",
+        "textFr": "**Combat :** Affaiblissez ce séide à un champ de bataille pour donner +1 en force à un autre Ourouk-Haï."
+      }
+    ],
+    "actionPhases": [
+      "SKIRMISH"
     ],
     "culture": "ISENGARD",
     "race": "URUK-HAI",
@@ -98047,6 +98160,43 @@
     "type": "MINION",
     "keywords": [
       "LURKER"
+    ],
+    "abilities": [
+      {
+        "id": "11R42:0",
+        "phases": [
+          "SKIRMISH"
+        ],
+        "cost": [
+          {
+            "exert": [
+              {
+                "count": 2,
+                "target": "SELF"
+              }
+            ]
+          }
+        ],
+        "effects": [
+          {
+            "type": "ADD_TEMP_STAT",
+            "stat": "STRENGTH",
+            "value": 2,
+            "target": [
+              [
+                "MINION"
+              ]
+            ],
+            "expiresAtPhase": "SKIRMISH",
+            "excludeSource": true
+          }
+        ],
+        "source": "SELF",
+        "text": "SKIRMISH: Exert Gollum twice to make another minion strength +2."
+      }
+    ],
+    "actionPhases": [
+      "SKIRMISH"
     ],
     "culture": "GOLLUM",
     "twilightCost": 2,

@@ -194,7 +194,8 @@ function candidatesForEffect(
         });
     }
     if (
-        effect.type === 'ADD_TEMP_STAT' &&
+        (effect.type === 'ADD_TEMP_STAT' ||
+            effect.type === 'ADD_TEMP_KEYWORD') &&
         effect.excludeSource
     ) {
         const sourceId = source.instanceId || source.id;

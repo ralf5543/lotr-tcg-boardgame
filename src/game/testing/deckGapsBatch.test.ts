@@ -472,6 +472,30 @@ describe('parseAbilities — deck gaps batch 2 (Noble Leaders / Gandalf / Promis
         );
     });
 
+    it('Lieutenant of Orthanc : affaiblir → autre Ourouk acharné', () => {
+        expect(
+            parseAbilities(
+                '<keyword>Maneuver:</keyword> Exert Lieutenant of Orthanc to make another Uruk-hai <keyword>fierce</keyword> until the regroup phase.',
+                'Lieutenant of Orthanc',
+                '4R158'
+            )
+        ).toEqual(
+            expect.arrayContaining([
+                expect.objectContaining({
+                    phases: ['MANEUVER'],
+                    effects: [
+                        expect.objectContaining({
+                            type: 'ADD_TEMP_KEYWORD',
+                            keyword: 'FIERCE',
+                            target: [['URUK-HAI']],
+                            excludeSource: true,
+                        }),
+                    ],
+                }),
+            ])
+        );
+    });
+
     it('Uruk Captain : crépuscule + affaiblir → Ourouk depuis la défausse', () => {
         expect(
             parseAbilities(

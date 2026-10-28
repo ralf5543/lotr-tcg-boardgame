@@ -7,7 +7,6 @@ import {
     canPayAbilityCost,
     payAbilityCost,
 } from '../engine/abilities/payAbilityCost';
-import { applyDevPreset } from '../dev/presets';
 import type { Ability, CardState } from '../types';
 import {
     createCompanion,
@@ -104,11 +103,4 @@ describe('Uruk Captain 2R46 — Ourouk depuis la défausse', () => {
         expect(G.battlefield.map((c) => c.instanceId)).toContain('uruk');
     });
 
-    it('preset DEV : Capitaine + Ourouk en défausse', () => {
-        const G = createGameState();
-        applyDevPreset(G, 'DECK_GAPS_URUK_CAPTAIN');
-        expect(G.battlefield.map((c) => c.id)).toEqual(['2R46']);
-        expect(G.players['1']!.discard.map((c) => c.id)).toEqual(['11C195']);
-        expect(G.twilightPool).toBe(6);
-    });
 });

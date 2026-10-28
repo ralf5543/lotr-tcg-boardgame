@@ -121,8 +121,8 @@ const neutralPath: readonly string[] = [
 
 /**
  * Applique le preset DEV de playtest (zones vidées / chemin Standard).
- * Vague en cours : trous de mécanismes decks — Capitaine ourouk
- * (crépuscule + affaiblir → Ourouk depuis la défausse).
+ * Vague en cours : trous de mécanismes decks — Lieutenant d’Orthanc
+ * (affaiblir → autre Ourouk acharné).
  */
 export const applyDevPreset = (
     G: GameState,
@@ -136,30 +136,27 @@ export const applyDevPreset = (
     const shadowPlayer = G.players[shadowId];
 
     switch (presetType) {
-        case 'DECK_GAPS_URUK_CAPTAIN': {
+        case 'DECK_GAPS_LIEUTENANT_ORTHANC': {
             resetBoardForPreset(G);
             setupDevPath(G, 0, neutralPath);
-            G.twilightPool = 6;
+            G.twilightPool = 8;
             fpPlayer.burdens = 2;
             fpPlayer.fellowshipArea = [
                 {
-                    ...clonePresetCard('2C102', 'dev-captain-frodo'),
+                    ...clonePresetCard('2C102', 'dev-lieut-frodo'),
                     attachments: [
-                        clonePresetCard('1R1', 'dev-captain-ring'),
+                        clonePresetCard('1R1', 'dev-lieut-ring'),
                     ],
                 },
-                clonePresetCard('1R89', 'dev-captain-aragorn'),
+                clonePresetCard('1R89', 'dev-lieut-aragorn'),
             ];
             fpPlayer.hand = [];
             fpPlayer.deck = [];
             fpPlayer.sitesDeck = [clonePresetSite('11S250', fpId)];
             if (shadowPlayer) {
-                // Capitaine en jeu ; Murderous Uruk (3 crépuscule) en défausse.
                 G.battlefield = [
-                    clonePresetCard('2R46', 'dev-uruk-captain'),
-                ];
-                shadowPlayer.discard = [
-                    clonePresetCard('11C195', 'dev-uruk-discard'),
+                    clonePresetCard('4R158', 'dev-lieutenant'),
+                    clonePresetCard('11C195', 'dev-lieut-uruk'),
                 ];
                 shadowPlayer.hand = [];
                 shadowPlayer.deck = [];
@@ -168,7 +165,7 @@ export const applyDevPreset = (
                 ];
             }
             G.statusMessage =
-                '[DEV] Capitaine ourouk (2R46) · En jeu, 6 crépuscule, Murderous Uruk en défausse. Phase Ombre (onglet Ombre) : cliquez le Capitaine → retirer 1 crépuscule + affaiblir pour jouer l’Ourouk de la défausse. Sans Ourouk en défausse / sans crépuscule / Capitaine déjà épuisé → pas d’action.';
+                '[DEV] Lieutenant d’Orthanc (4R158) · Lieutenant + Murderous Uruk en jeu. Phase Manœuvre : cliquez le Lieutenant → affaiblir → désigner l’autre Ourouk (pas soi) pour Acharné jusqu’au ralliement. Un seul Ourouk → pas de cible « another ».';
             break;
         }
     }

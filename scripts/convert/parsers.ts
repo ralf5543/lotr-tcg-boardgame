@@ -1564,14 +1564,18 @@ function parseMakeTargetAndEffects(
     if (!parsed) {
         const split = splitClassAndMakeRemainder(textToParse);
         if (!split) return undefined;
-        const article = split.classRaw.match(/^(a|an)\s+(.+)$/i);
-        if (!article) return undefined;
+        const another = split.classRaw.match(/^another\s+(.+)$/i);
+        const article = another
+            ? null
+            : split.classRaw.match(/^(a|an)\s+(.+)$/i);
+        const classBody = another?.[1] || article?.[2];
+        if (!classBody) return undefined;
         if (
-            /\b(and|or|each|skirmishing|that|your|another)\b/i.test(article[2])
+            /\b(and|or|each|skirmishing|that|your|another)\b/i.test(classBody)
         ) {
             return undefined;
         }
-        const filters = parseClassFilters(article[2]);
+        const filters = parseClassFilters(classBody);
         if (filters.length === 0) return undefined;
         const effects = parseMakeEffectsFromRemainder(
             split.remainder,
@@ -1579,7 +1583,17 @@ function parseMakeTargetAndEffects(
             expiresAtPhase
         );
         if (!effects) return undefined;
-        parsed = { target: [filters], effects };
+        parsed = {
+            target: [filters],
+            effects: another
+                ? effects.map((effect) =>
+                      effect.type === 'ADD_TEMP_KEYWORD' ||
+                      effect.type === 'ADD_TEMP_STAT'
+                          ? { ...effect, excludeSource: true }
+                          : effect
+                  )
+                : effects,
+        };
     }
 
     if (bearing) {
