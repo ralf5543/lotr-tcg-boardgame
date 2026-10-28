@@ -372,25 +372,26 @@ export const DevPanel: React.FC<DevPanelProps> = ({
                         </S.GameButton>
                     </S.Section>
 
-                    {/* Preset de playtest : trous decks — Sent Back */}
+                    {/* Preset de playtest : trous decks — Pierre voyante */}
                     <S.Section>
                         <S.Label>
-                            Preset decks (Renvoyé) :
+                            Preset decks (Pierre voyante) :
                             <br />
                             <span style={{ opacity: 0.75, fontWeight: 400 }}>
-                                Renvoyé est en jeu, un Gandalf en main, un
-                                autre dans la pile de mort. Cliquez la
-                                situation puis Gandalf : il rejoint malgré
-                                l’unicité. Un glisser depuis la main reste
-                                refusé.
+                                Artefact en soutien. Au Ralliement : cliquez
+                                la Pierre, choisissez le coût (menace ou
+                                défausse) puis l’effet (crépuscule ou
+                                pioche).
                             </span>
                         </S.Label>
                         <S.ActionButton
                             onClick={() =>
-                                moves.devLoadPreset?.('DECK_GAPS_SENT_BACK')
+                                moves.devLoadPreset?.(
+                                    'DECK_GAPS_SEEING_STONE'
+                                )
                             }
                         >
-                            Renvoyé (9R27)
+                            Pierre voyante (9R38)
                         </S.ActionButton>
                     </S.Section>
 

@@ -305,6 +305,7 @@ export const GameControls: React.FC<GameControlsProps> = ({
         body: React.ReactNode;
         showPassButton: boolean;
         forcedOptionLabels?: string[];
+        cancelableChoice?: boolean;
         type?:
             | 'BIDDING'
             | 'CHOOSING_FIRST'
@@ -411,6 +412,7 @@ export const GameControls: React.FC<GameControlsProps> = ({
             showPassButton: false,
             type: 'FORCED_CHOICE',
             forcedOptionLabels: optionLabels,
+            cancelableChoice: Boolean(G.pendingForcedChoice?.cancelable),
         };
     } else if (
         isForcedChoiceActive &&
@@ -1231,6 +1233,11 @@ export const GameControls: React.FC<GameControlsProps> = ({
                             <>
                                 {(G.movesThisTurn || 0) < 2 && (
                                     <S.ActionButton
+                                        $variant={
+                                            G.forceChooseMoveAgain
+                                                ? undefined
+                                                : 'choice'
+                                        }
                                         onClick={() => moves.moveNextSite?.()}
                                     >
                                         Avancer au site 🏕️
@@ -1238,7 +1245,7 @@ export const GameControls: React.FC<GameControlsProps> = ({
                                 )}
                                 {!G.forceChooseMoveAgain && (
                                     <S.ActionButton
-                                        $variant="secondary"
+                                        $variant="choice"
                                         onClick={() => moves.endTurnChoice?.()}
                                     >
                                         Terminer le tour 🏁
@@ -1290,6 +1297,7 @@ export const GameControls: React.FC<GameControlsProps> = ({
                                     }}
                                 >
                                     <S.ActionButton
+                                        $variant="choice"
                                         onClick={() =>
                                             moves.chooseFirstPlayer?.(true)
                                         }
@@ -1297,7 +1305,7 @@ export const GameControls: React.FC<GameControlsProps> = ({
                                         Jouer Premier (Peuples Libres)
                                     </S.ActionButton>
                                     <S.ActionButton
-                                        $variant="secondary"
+                                        $variant="choice"
                                         onClick={() =>
                                             moves.chooseFirstPlayer?.(false)
                                         }
@@ -1318,6 +1326,7 @@ export const GameControls: React.FC<GameControlsProps> = ({
                                     }}
                                 >
                                     <S.ActionButton
+                                        $variant="choice"
                                         onClick={() =>
                                             moves.submitMulliganChoice?.(false)
                                         }
@@ -1325,7 +1334,7 @@ export const GameControls: React.FC<GameControlsProps> = ({
                                         Garder ma main
                                     </S.ActionButton>
                                     <S.ActionButton
-                                        $variant="secondary"
+                                        $variant="choice"
                                         onClick={() =>
                                             moves.submitMulliganChoice?.(true)
                                         }
@@ -1482,6 +1491,7 @@ export const GameControls: React.FC<GameControlsProps> = ({
                                     sitePhaseModes.map((mode) => (
                                         <S.ActionButton
                                             key={mode.ability.id}
+                                            $variant="choice"
                                             style={{
                                                 marginTop: '12px',
                                                 width: '100%',
@@ -1600,11 +1610,7 @@ export const GameControls: React.FC<GameControlsProps> = ({
                                 (label, index) => (
                                     <S.ActionButton
                                         key={`forced-${index}`}
-                                        $variant={
-                                            index === 0
-                                                ? undefined
-                                                : 'secondary'
-                                        }
+                                        $variant="choice"
                                         style={{
                                             marginTop:
                                                 index === 0 ? '12px' : '8px',
@@ -1616,9 +1622,21 @@ export const GameControls: React.FC<GameControlsProps> = ({
                                             );
                                         }}
                                     >
-                                        {label}
+                                        <FormattedText text={label} />
                                     </S.ActionButton>
                                 )
+                            )}
+                        {toastConfig.type === 'FORCED_CHOICE' &&
+                            toastConfig.cancelableChoice && (
+                                <S.ActionButton
+                                    $variant="secondary"
+                                    style={{ marginTop: '8px', width: '100%' }}
+                                    onClick={() => {
+                                        moves.cancelForcedChoiceMove?.();
+                                    }}
+                                >
+                                    Annuler
+                                </S.ActionButton>
                             )}
 
                         {G.pendingReveal &&

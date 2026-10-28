@@ -70,6 +70,7 @@ import { resolvePendingFpDiscard } from '../logic/fpDiscardAbility';
 import { resolveDeadPileRemoval } from '../logic/siteDeadPileRemoval';
 import { tryExitStartOfManeuver } from './maneuverMoves';
 import {
+    cancelForcedChoice,
     openSkirmishActionWindow,
     resolveForcedChoice,
 } from '../engine/abilities/startOfSkirmish';
@@ -918,6 +919,7 @@ export const resolveForcedChoiceMove = (
     if (!G.pendingForcedChoice || G.pendingForcedChoice.playerId !== playerID) {
         return 'INVALID_MOVE';
     }
+    const actingPlayerId = G.pendingForcedChoice.actingPlayerId;
     if (
         !resolveForcedChoice(
             G,
@@ -975,6 +977,19 @@ export const resolveForcedChoiceMove = (
     // elle reprendra la priorité, puis la fenêtre d’escarmouche restera prête.
     if (G.activeSkirmishId && !G.actionWindow?.isOpen) {
         openSkirmishActionWindow(G);
+        return;
+    }
+    if (actingPlayerId) {
+        yieldPriorityAfterAction(G, actingPlayerId);
+    }
+};
+
+export const cancelForcedChoiceMove = ({
+    G,
+    playerID,
+}: LotrMoveContext) => {
+    if (!cancelForcedChoice(G, playerID)) {
+        return 'INVALID_MOVE';
     }
 };
 
@@ -1219,6 +1234,7 @@ export const commonMoves = {
     resolveDeadPileRemovalChoice,
     assignSiteCharacterWound: assignSiteCharacterWoundMove,
     resolveForcedChoiceMove,
+    cancelForcedChoiceMove,
     confirmPendingRevealMove,
     ...(process.env.NODE_ENV !== 'production' ? devMoves : {}),
 };

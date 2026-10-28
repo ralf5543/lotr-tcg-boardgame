@@ -121,8 +121,8 @@ const neutralPath: readonly string[] = [
 
 /**
  * Applique le preset DEV de playtest (zones vidées / chemin Standard).
- * Vague en cours : trous de mécanismes decks — Sent Back (jouer un
- * Magicien malgré la pile de mort).
+ * Vague en cours : trous de mécanismes decks — Pierre voyante d’Orthanc
+ * (choix menace / défausse → crépuscule / pioche).
  */
 export const applyDevPreset = (
     G: GameState,
@@ -136,50 +136,43 @@ export const applyDevPreset = (
     const shadowPlayer = G.players[shadowId];
 
     switch (presetType) {
-        case 'DECK_GAPS_SENT_BACK': {
+        case 'DECK_GAPS_SEEING_STONE': {
             resetBoardForPreset(G);
             setupDevPath(G, 0, neutralPath);
-            G.twilightPool = 0;
+            G.twilightPool = 4;
             fpPlayer.burdens = 2;
+            fpPlayer.threats = 0;
             fpPlayer.fellowshipArea = [
                 {
-                    ...clonePresetCard('2C102', 'dev-sentback-frodo'),
+                    ...clonePresetCard('2C102', 'dev-orthanc-frodo'),
                     attachments: [
-                        clonePresetCard('1R1', 'dev-sentback-ring'),
+                        clonePresetCard('1R1', 'dev-orthanc-ring'),
                     ],
                 },
-                clonePresetCard('1R89', 'dev-sentback-aragorn'),
+                clonePresetCard('1R89', 'dev-orthanc-aragorn'),
             ];
-            // Renvoyé déjà en jeu. Un Gandalf en main, un autre en pile
-            // de mort : le glisser-déposer depuis la main est refusé ;
-            // la capacité de Renvoyé, elle, passe.
             fpPlayer.supportArea = [
-                clonePresetCard('9R27', 'dev-sentback-condition'),
+                clonePresetCard('9R38', 'dev-orthanc-stone'),
             ];
-            fpPlayer.hand = [
-                clonePresetCard('1R72', 'dev-sentback-gandalf-hand'),
-            ];
-            fpPlayer.deadPile = [
-                clonePresetCard('4C90', 'dev-sentback-gandalf-dead'),
-            ];
+            fpPlayer.hand = [];
             fpPlayer.deck = [
-                clonePresetCard('1C306', 'dev-sentback-draw-1'),
-                clonePresetCard('1C306', 'dev-sentback-draw-2'),
+                clonePresetCard('1C306', 'dev-orthanc-draw-1'),
+                clonePresetCard('1C306', 'dev-orthanc-draw-2'),
             ];
             fpPlayer.sitesDeck = [clonePresetSite('11S250', fpId)];
             if (shadowPlayer) {
                 shadowPlayer.hand = [
-                    clonePresetCard('1C151', 'dev-sentback-uruk'),
+                    clonePresetCard('1C151', 'dev-orthanc-uruk'),
                 ];
                 shadowPlayer.deck = [
-                    clonePresetCard('1C266', 'dev-sentback-shadow-draw-1'),
+                    clonePresetCard('1C266', 'dev-orthanc-shadow-draw-1'),
                 ];
                 shadowPlayer.sitesDeck = [
                     clonePresetSite('11S263', shadowId),
                 ];
             }
             G.statusMessage =
-                '[DEV] Renvoyé (9R27) · Un Gandalf est dans votre pile de mort, un autre en main. En Communauté (ou au Regroupement) : glisser Gandalf depuis la main vers la communauté est refusé (unicité). Cliquez la situation Renvoyé, puis Gandalf en main : il rejoint malgré la pile de mort (+4 crépuscule). La clause d’escarmouche (défausse des séides au combat contre un Magicien, puis le Magicien va à la pile de mort) est déjà validée.';
+                '[DEV] Pierre voyante d’Orthanc (9R38) · Artefact en soutien, 4 crépuscule, 0 menace (plafond 2). Passez au Ralliement (bouton regroup), cliquez l’artefact : deux coûts (ajouter une menace, ou défausser l’artefact), puis toaster pour l’effet (retirer 2 crépuscule, ou piocher). Si les menaces sont au plafond, seule la défausse reste.';
             break;
         }
     }

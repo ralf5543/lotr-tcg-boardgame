@@ -927,9 +927,12 @@ export type AbilityEffect =
            * Choix forcé entre N suites d’effets (add 3 burdens or wound twice…).
            * Runtime : `pendingForcedChoice` + toaster, pas d’auto-application.
            * `chooser` : qui décide (défaut OWNER ; OPPONENT = adversaire de la source).
+           * Aussi : choix d’effet après un coût d’une capacité activée (Seeing Stone…).
            */
           type: 'CHOOSE_ONE';
           chooser?: 'OWNER' | 'OPPONENT' | 'FREE_PEOPLE';
+          title?: string;
+          message?: string;
           options: {
               label: string;
               effects: AbilityEffect[];
@@ -1645,6 +1648,20 @@ export interface GameState {
         needsHandDiscard?: number;
         /** Option choisie en attente de N cibles à affaiblir (désignation plateau). */
         needsExertTargets?: number;
+        /**
+         * Joueur qui a activé la capacité (pas forcément le chooser).
+         * Après résolution : lui cède la priorité.
+         */
+        actingPlayerId?: string;
+        /**
+         * Choix d’effet d’une capacité optionnelle : Échap / Annuler
+         * abandonne sans payer le coût.
+         */
+        cancelable?: boolean;
+        /** Coût reporté jusqu’au choix d’effet (si `cancelable`). */
+        unpaidCost?: AbilityCost;
+        costChosenTargetId?: string | string[];
+        costDiscardedHandIds?: string[];
     };
     /**
      * Révélation de cartes (Hidden Knowledge…) : grille à valider
@@ -1710,7 +1727,7 @@ export interface LotrMoveContext extends FnContext<GameState> {
 }
 
 /** Presets DEV de playtest (panneau de test, vague en cours). */
-export type DevPresetType = 'DECK_GAPS_SENT_BACK';
+export type DevPresetType = 'DECK_GAPS_SEEING_STONE';
 
 export interface ArcheryState {
     step?: 'ACTIONS' | 'FP_ASSIGN' | 'SHADOW_ASSIGN' | 'COMPLETE';

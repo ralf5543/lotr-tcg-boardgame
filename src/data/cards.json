@@ -89780,6 +89780,96 @@
         "addThreats": 2
       }
     ],
+    "abilities": [
+      {
+        "id": "9R38:0",
+        "phases": [
+          "REGROUP"
+        ],
+        "cost": [
+          {
+            "addThreats": 1
+          }
+        ],
+        "effects": [
+          {
+            "type": "CHOOSE_ONE",
+            "title": "CHOISISSEZ",
+            "message": "Choisissez un effet.",
+            "options": [
+              {
+                "label": "Retirer <symbol>twilight2</symbol>",
+                "effects": [
+                  {
+                    "type": "REMOVE_TWILIGHT",
+                    "count": 2
+                  }
+                ]
+              },
+              {
+                "label": "Piocher une carte",
+                "effects": [
+                  {
+                    "type": "DRAW",
+                    "count": 1
+                  }
+                ]
+              }
+            ]
+          }
+        ],
+        "source": "SELF",
+        "text": "Regroup: Add a threat or discard this artifact to remove twilight2 or draw a card"
+      },
+      {
+        "id": "9R38:1",
+        "phases": [
+          "REGROUP"
+        ],
+        "cost": [
+          {
+            "discardFromPlay": [
+              {
+                "count": 1,
+                "target": "SELF"
+              }
+            ]
+          }
+        ],
+        "effects": [
+          {
+            "type": "CHOOSE_ONE",
+            "title": "CHOISISSEZ",
+            "message": "Choisissez un effet.",
+            "options": [
+              {
+                "label": "Retirer <symbol>twilight2</symbol>",
+                "effects": [
+                  {
+                    "type": "REMOVE_TWILIGHT",
+                    "count": 2
+                  }
+                ]
+              },
+              {
+                "label": "Piocher une carte",
+                "effects": [
+                  {
+                    "type": "DRAW",
+                    "count": 1
+                  }
+                ]
+              }
+            ]
+          }
+        ],
+        "source": "SELF",
+        "text": "Regroup: Add a threat or discard this artifact to remove twilight2 or draw a card"
+      }
+    ],
+    "actionPhases": [
+      "REGROUP"
+    ],
     "culture": "GONDOR",
     "twilightCost": 0,
     "imageUrl": "/cards_visuals/o_09_038.jpg",

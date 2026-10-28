@@ -472,6 +472,56 @@ describe('parseAbilities — deck gaps batch 2 (Noble Leaders / Gandalf / Promis
         );
     });
 
+    it('Seeing Stone of Orthanc : menace ou défausse, puis crépuscule ou pioche', () => {
+        expect(
+            parseAbilities(
+                '<keyword>Regroup:</keyword> Add a threat or discard this artifact to remove <symbol>twilight2</symbol> or draw a card.',
+                'Seeing Stone of Orthanc',
+                '9R38'
+            )
+        ).toEqual(
+            expect.arrayContaining([
+                expect.objectContaining({
+                    phases: ['REGROUP'],
+                    cost: [{ addThreats: 1 }],
+                    effects: [
+                        expect.objectContaining({
+                            type: 'CHOOSE_ONE',
+                            options: [
+                                expect.objectContaining({
+                                    effects: [
+                                        {
+                                            type: 'REMOVE_TWILIGHT',
+                                            count: 2,
+                                        },
+                                    ],
+                                }),
+                                expect.objectContaining({
+                                    effects: [{ type: 'DRAW', count: 1 }],
+                                }),
+                            ],
+                        }),
+                    ],
+                }),
+                expect.objectContaining({
+                    phases: ['REGROUP'],
+                    cost: [
+                        {
+                            discardFromPlay: [
+                                { count: 1, target: 'SELF' },
+                            ],
+                        },
+                    ],
+                    effects: [
+                        expect.objectContaining({
+                            type: 'CHOOSE_ONE',
+                        }),
+                    ],
+                }),
+            ])
+        );
+    });
+
     it('Threatening Guide : force par menace + wins → add threat', () => {
         expect(
             parseAbilities(

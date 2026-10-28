@@ -1,5 +1,6 @@
 import type { Ability, CardState, GameState } from '../../types';
 import { applyAbilityEffect } from './applyAbilityEffect';
+import { payAbilityCost } from './payAbilityCost';
 import { collectCardAbilities } from './collectAbilities';
 import {
     forEachInPlayCard,
@@ -170,6 +171,22 @@ export function resolveForcedChoice(
         }
     }
 
+    if (pending.unpaidCost && pending.unpaidCost.length > 0) {
+        if (
+            !payAbilityCost(
+                G,
+                source,
+                pending.unpaidCost,
+                pending.costChosenTargetId,
+                pending.costDiscardedHandIds,
+                undefined,
+                pending.actingPlayerId
+            )
+        ) {
+            return false;
+        }
+    }
+
     const synthetic: Ability = {
         id: ability?.id || pending.abilityId,
         phases: ability?.phases || [],
@@ -194,6 +211,20 @@ export function resolveForcedChoice(
     if (G.pendingEvent?.type === 'LOSES_SKIRMISH') {
         G.pendingEvent = undefined;
     }
+    return true;
+}
+
+/** Annule un choix d’effet optionnel (Échap) : le coût n’a pas encore été payé. */
+export function cancelForcedChoice(
+    G: GameState,
+    playerID: string
+): boolean {
+    const pending = G.pendingForcedChoice;
+    if (!pending?.cancelable || pending.playerId !== playerID) {
+        return false;
+    }
+    G.pendingForcedChoice = undefined;
+    G.statusMessage = 'Action annulée.';
     return true;
 }
 

@@ -161,6 +161,7 @@ export interface GameBoardProps extends BoardProps<GameState> {
             assignArcheryWound?: (cardId: string) => void;
             assignThreatWound?: (cardId: string) => void;
             assignSiteCharacterWound?: (cardId: string) => void;
+            cancelForcedChoiceMove?: () => void;
         };
 }
 
@@ -3289,6 +3290,14 @@ export const GameBoard: React.FC<GameBoardProps> = ({
         const onKeyDown = (event: KeyboardEvent) => {
             if (event.key !== 'Escape') return;
             const isMine = G.pendingPlay?.playerId === myId;
+            const canCancelChoice =
+                G.pendingForcedChoice?.cancelable &&
+                G.pendingForcedChoice.playerId === myId;
+            if (canCancelChoice) {
+                stopTargeting();
+                moves.cancelForcedChoiceMove?.();
+                return;
+            }
             if (
                 targetingKind !== 'DESIGNATION' &&
                 targetingKind !== 'HAND_DISCARD' &&
@@ -3304,7 +3313,14 @@ export const GameBoard: React.FC<GameBoardProps> = ({
         };
         window.addEventListener('keydown', onKeyDown);
         return () => window.removeEventListener('keydown', onKeyDown);
-    }, [targetingKind, stopTargeting, G.pendingPlay, myId, moves]);
+    }, [
+        targetingKind,
+        stopTargeting,
+        G.pendingPlay,
+        G.pendingForcedChoice,
+        myId,
+        moves,
+    ]);
 
     // Détermination de l'onglet prioritaire selon le state du jeu
     const getRequestedTab = (): 'hand' | 'sites' | null => {

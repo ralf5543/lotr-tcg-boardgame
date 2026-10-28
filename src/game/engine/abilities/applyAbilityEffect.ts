@@ -937,8 +937,9 @@ export function applyAbilityEffect(
                 playerId: chooserId,
                 sourceInstanceId: sourceId,
                 abilityId: ability.id,
-                title: 'CHOIX FORCÉ',
+                title: effect.title || 'CHOIX FORCÉ',
                 message:
+                    effect.message ||
                     G.statusMessage ||
                     'Choisissez une option pour résoudre cet effet.',
                 options: effect.options.map((o) => ({
@@ -947,9 +948,10 @@ export function applyAbilityEffect(
                 })),
             };
             G.statusMessage =
-                chooserId === fpId
+                effect.message ||
+                (chooserId === fpId
                     ? 'Les Peuples Libres doivent choisir une option.'
-                    : 'L’Ombre doit choisir une option.';
+                    : 'L’Ombre doit choisir une option.');
             continue;
         }
 

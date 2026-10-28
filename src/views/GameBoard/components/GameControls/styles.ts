@@ -1,4 +1,4 @@
-import styled, { keyframes } from 'styled-components';
+import styled, { css, keyframes } from 'styled-components';
 
 export const slideDown = keyframes`
     from { transform: translate(-50%, -20px); opacity: 0; }
@@ -78,25 +78,63 @@ export const ActionGroup = styled.div`
     padding-left: 15px;
 `;
 
-export const ActionButton = styled.button<{ $variant?: 'primary' | 'secondary' }>`
+/**
+ * Toaster / bandeau :
+ * - `primary` (défaut) : valider, activer, enchaîner — or plein
+ * - `choice` : options équivalentes (ni valider ni refuser) — or en contour
+ * - `secondary` : passer, annuler, décliner — rouge
+ */
+export const ActionButton = styled.button<{
+    $variant?: 'primary' | 'choice' | 'secondary';
+}>`
     background: ${(props) =>
         props.$variant === 'secondary'
-            ? 'rgba(239, 68, 68, 0.2)'
-            : 'linear-gradient(180deg, #c1a054 0%, #9a7b32 100%)'};
-    color: ${(props) => (props.$variant === 'secondary' ? '#fca5a5' : '#0d0e12')};
+            ? 'rgba(239, 68, 68, 0.18)'
+            : props.$variant === 'choice'
+              ? 'rgba(193, 160, 84, 0.22)'
+              : 'linear-gradient(180deg, #c1a054 0%, #9a7b32 100%)'};
+    color: ${(props) =>
+        props.$variant === 'secondary'
+            ? '#fca5a5'
+            : props.$variant === 'choice'
+              ? '#e8d5a3'
+              : '#0d0e12'};
     border: 1px solid
-        ${(props) => (props.$variant === 'secondary' ? '#ef4444' : '#e2c044')};
+        ${(props) =>
+            props.$variant === 'secondary'
+                ? '#ef4444'
+                : props.$variant === 'choice'
+                  ? '#c1a054'
+                  : '#e2c044'};
     padding: 6px 14px;
     border-radius: 6px;
     font-size: 12px;
     font-weight: 700;
     cursor: pointer;
-    transition: all 0.15s ease;
+    transition:
+        transform 0.15s ease,
+        filter 0.15s ease,
+        box-shadow 0.15s ease,
+        background 0.15s ease,
+        border-color 0.15s ease;
 
     &:hover {
         transform: translateY(-1px);
-        filter: brightness(1.1);
-        box-shadow: 0 4px 12px rgba(193, 160, 84, 0.3);
+        filter: brightness(1.08);
+        ${(props) =>
+            props.$variant === 'secondary'
+                ? css`
+                      box-shadow: 0 4px 12px rgba(239, 68, 68, 0.28);
+                  `
+                : props.$variant === 'choice'
+                  ? css`
+                        background: rgba(193, 160, 84, 0.34);
+                        border-color: #e2c044;
+                        box-shadow: 0 4px 12px rgba(193, 160, 84, 0.3);
+                    `
+                  : css`
+                        box-shadow: 0 4px 12px rgba(193, 160, 84, 0.3);
+                    `}
     }
 
     &:active {

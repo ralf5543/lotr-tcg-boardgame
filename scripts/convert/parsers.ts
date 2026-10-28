@@ -5074,6 +5074,69 @@ function parseToAssignFpMustMakeStrengthAbilities(
 }
 
 /**
+ * Phase: Add a threat or discard this artifact to remove twilightN or draw a card.
+ * (Seeing Stone of Orthanc…) Deux capacités : un coût chacun, même choix d’effet.
+ */
+function parseAddThreatOrDiscardSelfThenChooseAbilities(
+    text: string,
+    cardId?: string
+): Record<string, unknown>[] {
+    const found: Record<string, unknown>[] = [];
+    const phaseTok =
+        '(?:\\*\\*|<(?:keyword)>)(Fellowship|Shadow|Maneuver|Archery|Assignment|Skirmish|Regroup):?(?:\\s*</(?:keyword)>)?(?:\\*\\*)?';
+    const re = new RegExp(
+        `${phaseTok}\\s*Add\\s+(a|an|one|\\d+)\\s+threats?\\s+or discard this(?:\\s+(?:artifact|possession|condition|card))?\\s+to\\s+remove\\s+(?:<symbol>)?twilight(\\d+)(?:</symbol>)?\\s+or draw a card`,
+        'gi'
+    );
+    let match: RegExpExecArray | null;
+    while ((match = re.exec(text)) !== null) {
+        const phase = match[1]?.toUpperCase();
+        const threats = parseBurdenWord(match[2] || '');
+        const twilight = parseInt(match[3] || '', 10);
+        if (!phase || !threats || !Number.isFinite(twilight) || twilight < 0) {
+            continue;
+        }
+        const choose = {
+            type: 'CHOOSE_ONE',
+            title: 'CHOISISSEZ',
+            message: 'Choisissez un effet.',
+            options: [
+                {
+                    label: `Retirer <symbol>twilight${twilight}</symbol>`,
+                    effects: [{ type: 'REMOVE_TWILIGHT', count: twilight }],
+                },
+                {
+                    label: 'Piocher une carte',
+                    effects: [{ type: 'DRAW', count: 1 }],
+                },
+            ],
+        };
+        const clause = stripAbilityMarkup(match[0]);
+        found.push({
+            id: `${cardId || 'ability'}:${found.length}:threat-choose`,
+            phases: [phase],
+            cost: [{ addThreats: threats }],
+            effects: [choose],
+            source: 'SELF',
+            text: clause,
+        });
+        found.push({
+            id: `${cardId || 'ability'}:${found.length}:discard-choose`,
+            phases: [phase],
+            cost: [
+                {
+                    discardFromPlay: [{ count: 1, target: 'SELF' }],
+                },
+            ],
+            effects: [choose],
+            source: 'SELF',
+            text: clause,
+        });
+    }
+    return found;
+}
+
+/**
  * Fellowship or Regroup: Play a Wizard (even if another copy of that Wizard
  * is in your dead pile). (Sent Back…)
  */
@@ -13284,6 +13347,15 @@ export function parseAbilities(
     });
 
     parsePlayFromHandDespiteDeadPileAbilities(text, cardId).forEach(
+        (ability) => {
+            abilities.push({
+                ...ability,
+                id: `${cardId || 'ability'}:${abilities.length}`,
+            });
+        }
+    );
+
+    parseAddThreatOrDiscardSelfThenChooseAbilities(text, cardId).forEach(
         (ability) => {
             abilities.push({
                 ...ability,

@@ -527,6 +527,16 @@ function formatEffectBit(
     if (effect.type === 'DRAW') {
         return `piocher ${effect.count} carte${effect.count > 1 ? 's' : ''}`;
     }
+    if (effect.type === 'CHOOSE_ONE') {
+        return effect.options
+            .map((option) => {
+                const label = option.label.trim();
+                if (!label) return '';
+                return label.charAt(0).toLowerCase() + label.slice(1);
+            })
+            .filter(Boolean)
+            .join(' ou ');
+    }
     if (effect.type === 'DISCARD_FROM_HAND') {
         const n = effect.count;
         const cards = `${n} carte${n > 1 ? 's' : ''}`;

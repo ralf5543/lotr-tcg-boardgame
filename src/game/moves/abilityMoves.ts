@@ -150,8 +150,18 @@ export const activateAbility = (
     }
     const wasResponseWindowOpen = isResponseWindowOpen(G);
     const isResponseAbility = abilityMatchesPhase(ability, 'RESPONSE');
+    const chooseOne = (ability.effects || []).find(
+        (effect) => effect.type === 'CHOOSE_ONE'
+    );
+    const delayCostUntilChoice =
+        chooseOne?.type === 'CHOOSE_ONE' &&
+        (!chooseOne.chooser || chooseOne.chooser === 'OWNER');
 
-    if (
+    if (delayCostUntilChoice) {
+        if (!canPayAbilityCost(G, source, ability.cost, actorId)) {
+            return 'INVALID_MOVE';
+        }
+    } else if (
         !payAbilityCost(
             G,
             source,
@@ -196,6 +206,17 @@ export const activateAbility = (
 
     if (isResponseWindowOpen(G) && !wasResponseWindowOpen) {
         pauseActionYieldForResponses(G, String(playerID));
+        return;
+    }
+
+    if (G.pendingForcedChoice) {
+        G.pendingForcedChoice.actingPlayerId = String(playerID);
+        if (delayCostUntilChoice) {
+            G.pendingForcedChoice.cancelable = true;
+            G.pendingForcedChoice.unpaidCost = ability.cost;
+            G.pendingForcedChoice.costChosenTargetId = chosenTargetId;
+            G.pendingForcedChoice.costDiscardedHandIds = discardedHandIds;
+        }
         return;
     }
 
