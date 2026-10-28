@@ -121,8 +121,8 @@ const neutralPath: readonly string[] = [
 
 /**
  * Applique le preset DEV de playtest (zones vidées / chemin Standard).
- * Vague en cours : trous de mécanismes decks — Pierre voyante d’Orthanc
- * (choix menace / défausse → crépuscule / pioche).
+ * Vague en cours : trous de mécanismes decks — Capitaine ourouk
+ * (crépuscule + affaiblir → Ourouk depuis la défausse).
  */
 export const applyDevPreset = (
     G: GameState,
@@ -136,43 +136,39 @@ export const applyDevPreset = (
     const shadowPlayer = G.players[shadowId];
 
     switch (presetType) {
-        case 'DECK_GAPS_SEEING_STONE': {
+        case 'DECK_GAPS_URUK_CAPTAIN': {
             resetBoardForPreset(G);
             setupDevPath(G, 0, neutralPath);
-            G.twilightPool = 4;
+            G.twilightPool = 6;
             fpPlayer.burdens = 2;
-            fpPlayer.threats = 0;
             fpPlayer.fellowshipArea = [
                 {
-                    ...clonePresetCard('2C102', 'dev-orthanc-frodo'),
+                    ...clonePresetCard('2C102', 'dev-captain-frodo'),
                     attachments: [
-                        clonePresetCard('1R1', 'dev-orthanc-ring'),
+                        clonePresetCard('1R1', 'dev-captain-ring'),
                     ],
                 },
-                clonePresetCard('1R89', 'dev-orthanc-aragorn'),
-            ];
-            fpPlayer.supportArea = [
-                clonePresetCard('9R38', 'dev-orthanc-stone'),
+                clonePresetCard('1R89', 'dev-captain-aragorn'),
             ];
             fpPlayer.hand = [];
-            fpPlayer.deck = [
-                clonePresetCard('1C306', 'dev-orthanc-draw-1'),
-                clonePresetCard('1C306', 'dev-orthanc-draw-2'),
-            ];
+            fpPlayer.deck = [];
             fpPlayer.sitesDeck = [clonePresetSite('11S250', fpId)];
             if (shadowPlayer) {
-                shadowPlayer.hand = [
-                    clonePresetCard('1C151', 'dev-orthanc-uruk'),
+                // Capitaine en jeu ; Murderous Uruk (3 crépuscule) en défausse.
+                G.battlefield = [
+                    clonePresetCard('2R46', 'dev-uruk-captain'),
                 ];
-                shadowPlayer.deck = [
-                    clonePresetCard('1C266', 'dev-orthanc-shadow-draw-1'),
+                shadowPlayer.discard = [
+                    clonePresetCard('11C195', 'dev-uruk-discard'),
                 ];
+                shadowPlayer.hand = [];
+                shadowPlayer.deck = [];
                 shadowPlayer.sitesDeck = [
                     clonePresetSite('11S263', shadowId),
                 ];
             }
             G.statusMessage =
-                '[DEV] Pierre voyante d’Orthanc (9R38) · Artefact en soutien, 4 crépuscule, 0 menace (plafond 2). Passez au Ralliement (bouton regroup), cliquez l’artefact : deux coûts (ajouter une menace, ou défausser l’artefact), puis toaster pour l’effet (retirer 2 crépuscule, ou piocher). Si les menaces sont au plafond, seule la défausse reste.';
+                '[DEV] Capitaine ourouk (2R46) · En jeu, 6 crépuscule, Murderous Uruk en défausse. Phase Ombre (onglet Ombre) : cliquez le Capitaine → retirer 1 crépuscule + affaiblir pour jouer l’Ourouk de la défausse. Sans Ourouk en défausse / sans crépuscule / Capitaine déjà épuisé → pas d’action.';
             break;
         }
     }

@@ -29928,6 +29928,42 @@
     "keywords": [
       "DAMAGE +1"
     ],
+    "abilities": [
+      {
+        "id": "2R46:0",
+        "phases": [
+          "SHADOW"
+        ],
+        "cost": [
+          {
+            "removeTwilight": 1,
+            "exert": [
+              {
+                "count": 1,
+                "target": "SELF"
+              }
+            ]
+          }
+        ],
+        "effects": [
+          {
+            "type": "PLAY_FROM_DECK_OR_DISCARD",
+            "from": "DISCARD",
+            "target": [
+              [
+                "URUK-HAI"
+              ]
+            ]
+          }
+        ],
+        "source": "SELF",
+        "text": "Shadow: Remove twilight1 and exert Uruk Captain to play an Uruk-hai from your discard pile.",
+        "textFr": "Ombre : Retirez <symbol>twilight1</symbol> et affaiblissez Capitaine Ourouk pour jouer un Ourouk-Haï de votre pile de défausse."
+      }
+    ],
+    "actionPhases": [
+      "SHADOW"
+    ],
     "culture": "ISENGARD",
     "race": "URUK-HAI",
     "twilightCost": 3,
@@ -59989,6 +60025,36 @@
     "canBeRingbearer": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
+    "abilities": [
+      {
+        "id": "5U111:0",
+        "phases": [
+          "FELLOWSHIP"
+        ],
+        "cost": [
+          {
+            "addBurdens": 1
+          }
+        ],
+        "effects": [
+          {
+            "type": "PLAY_FROM_DECK_OR_DISCARD",
+            "from": "DISCARD",
+            "target": [
+              [
+                "Sméagol"
+              ]
+            ]
+          }
+        ],
+        "source": "SELF",
+        "text": "Fellowship: Add a burden to play Sméagol from your discard pile.",
+        "textFr": "**Compagnie :** Ajoutez un point-fardeau pour jouer Sméagol de votre pile de défausse."
+      }
+    ],
+    "actionPhases": [
+      "FELLOWSHIP"
+    ],
     "culture": "SHIRE",
     "race": "HOBBIT",
     "signet": "ARAGORN",
@@ -105353,6 +105419,34 @@
       "DAMAGE +1",
       "MUSTER"
     ],
+    "abilities": [
+      {
+        "id": "11R194:0",
+        "phases": [],
+        "trigger": {
+          "type": "WHILE"
+        },
+        "cost": [],
+        "effects": [
+          {
+            "type": "MODIFY_STAT",
+            "stat": "STRENGTH",
+            "value": 3,
+            "target": "SELF",
+            "perSpot": {
+              "target": [
+                [
+                  "EXHAUSTED",
+                  "COMPANION"
+                ]
+              ]
+            }
+          }
+        ],
+        "source": "SELF",
+        "text": ". Lurtz is strength +3 for each exhausted companion you can spot."
+      }
+    ],
     "culture": "URUK-HAI",
     "race": "URUK-HAI",
     "twilightCost": 7,
@@ -105364,31 +105458,31 @@
       "en": {
         "title": "Lurtz",
         "subtitle": "Minion of the White Wizard",
-        "gameText": "**Archer.** **Damage +1.** **Muster.** (At the start of the regroup phase, you may discard a card from hand to draw a card.) Lurtz is strength +3 for each exhausted companion you can spot.",
+        "gameText": "**Archer.** **Damage +1.** **Muster.** <i>(At the start of the regroup phase, you may discard a card from hand to draw a card.)</i>\nLurtz is strength +3 for each exhausted companion you can spot.",
         "loreText": "Saruman bred this ruthless commander, whose brutality matched his own ambition, to track the Nine Walkers."
       },
       "fr": {
         "title": "Lurtz",
         "subtitle": "Minion of the White Wizard",
-        "gameText": "**Archer.** **Damage +1.** **Muster.** (At the start of the regroup phase, you may discard a card from hand to draw a card.) Lurtz is strength +3 for each exhausted companion you can spot.",
+        "gameText": "**Archer.** **Damage +1.** **Muster.** <i>(At the start of the regroup phase, you may discard a card from hand to draw a card.)</i>\nLurtz is strength +3 for each exhausted companion you can spot.",
         "loreText": "Saruman bred this ruthless commander, whose brutality matched his own ambition, to track the Nine Walkers."
       },
       "de": {
         "title": "Lurtz",
         "subtitle": "Diener des Weißen Zauberers",
-        "gameText": "**Bogenschütze.** **Schaden +1.** **Appell.** Für jeden erschöpften Gefährten, den du entdecken kannst, erhält Lurtz Stärke +3.",
+        "gameText": "**Bogenschütze.** **Schaden +1.** **Appell.**\nFür jeden erschöpften Gefährten, den du entdecken kannst, erhält Lurtz Stärke +3.",
         "loreText": "Um die Gemeinschaft zu jagen, züchtete Saruman einen gnadenlosen Anführer, dessen Brutalität seinem eigenen Ehrgeiz gleichkam."
       },
       "it": {
         "title": "Lurtz",
         "subtitle": "Minion of the White Wizard",
-        "gameText": "**Archer.** **Damage +1.** **Muster.** (At the start of the regroup phase, you may discard a card from hand to draw a card.) Lurtz is strength +3 for each exhausted companion you can spot.",
+        "gameText": "**Archer.** **Damage +1.** **Muster.** <i>(At the start of the regroup phase, you may discard a card from hand to draw a card.)</i> \nLurtz is strength +3 for each exhausted companion you can spot.",
         "loreText": "Saruman bred this ruthless commander, whose brutality matched his own ambition, to track the Nine Walkers."
       },
       "es": {
         "title": "Lurtz",
         "subtitle": "Minion of the White Wizard",
-        "gameText": "**Archer.** **Damage +1.** **Muster.** (At the start of the regroup phase, you may discard a card from hand to draw a card.) Lurtz is strength +3 for each exhausted companion you can spot.",
+        "gameText": "**Archer.** **Damage +1.** **Muster.** <i>(At the start of the regroup phase, you may discard a card from hand to draw a card.)</i> \nLurtz is strength +3 for each exhausted companion you can spot.",
         "loreText": "Saruman bred this ruthless commander, whose brutality matched his own ambition, to track the Nine Walkers."
       }
     }

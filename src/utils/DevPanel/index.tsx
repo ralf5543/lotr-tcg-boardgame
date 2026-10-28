@@ -15,7 +15,7 @@ export interface DevMoves {
     devSetArchery?: (amount: number) => void;
     devSetCurrentSite?: (siteIndex: number) => void;
     devForceEndPhase: () => void;
-    /** Presets de playtest de la vague en cours (trous decks : Armure de Pippin). */
+    /** Presets de playtest de la vague en cours (trous decks : Capitaine ourouk). */
     devLoadPreset?: (presetName: string) => void;
 }
 
@@ -372,26 +372,25 @@ export const DevPanel: React.FC<DevPanelProps> = ({
                         </S.GameButton>
                     </S.Section>
 
-                    {/* Preset de playtest : trous decks — Pierre voyante */}
+                    {/* Preset de playtest : trous decks — Capitaine ourouk */}
                     <S.Section>
                         <S.Label>
-                            Preset decks (Pierre voyante) :
+                            Preset decks (Capitaine ourouk) :
                             <br />
                             <span style={{ opacity: 0.75, fontWeight: 400 }}>
-                                Artefact en soutien. Au Ralliement : cliquez
-                                la Pierre, choisissez le coût (menace ou
-                                défausse) puis l’effet (crépuscule ou
-                                pioche).
+                                Capitaine en jeu, Ourouk en défausse. Ombre :
+                                crépuscule + affaiblir → jouer depuis la
+                                défausse.
                             </span>
                         </S.Label>
                         <S.ActionButton
                             onClick={() =>
                                 moves.devLoadPreset?.(
-                                    'DECK_GAPS_SEEING_STONE'
+                                    'DECK_GAPS_URUK_CAPTAIN'
                                 )
                             }
                         >
-                            Pierre voyante (9R38)
+                            Capitaine ourouk (2R46)
                         </S.ActionButton>
                     </S.Section>
 

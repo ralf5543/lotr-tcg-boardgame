@@ -5074,6 +5074,105 @@ function parseToAssignFpMustMakeStrengthAbilities(
 }
 
 /**
+ * Phase: Remove twilightN and exert X to play a CLASS from your discard pile.
+ * (Uruk Captain…)
+ */
+function parseRemoveTwilightExertPlayFromDiscardAbilities(
+    text: string,
+    cardTitle?: string,
+    cardId?: string
+): Record<string, unknown>[] {
+    const found: Record<string, unknown>[] = [];
+    const phaseTok =
+        '(?:\\*\\*|<(?:keyword)>)(Fellowship|Shadow|Maneuver|Archery|Assignment|Skirmish|Regroup):?(?:\\s*</(?:keyword)>)?(?:\\*\\*)?';
+    const re = new RegExp(
+        `${phaseTok}\\s*Remove\\s+<symbol>twilight(\\d+)<\\/symbol>\\s+and\\s+exert\\s+(.+?)\\s+to play\\s+(?:a|an)\\s+(.+?)\\s+from your discard pile\\.`,
+        'gi'
+    );
+    let match: RegExpExecArray | null;
+    while ((match = re.exec(text)) !== null) {
+        const phase = match[1]?.toUpperCase();
+        const twilight = parseInt(match[2] || '', 10);
+        if (!phase || !Number.isFinite(twilight) || twilight <= 0) continue;
+        const subject = parseExertSubject(
+            match[3].trim(),
+            cardTitle,
+            text
+        );
+        if (!subject) continue;
+        // Coût : SELF / BEARER seulement (pas de désignation d’exert).
+        if (subject.target !== 'SELF' && subject.target !== 'BEARER') {
+            continue;
+        }
+        const filters = parseClassFilters(match[4].trim());
+        if (filters.length === 0) continue;
+        found.push({
+            id: `${cardId || 'ability'}:${found.length}:twilight-exert-play-discard`,
+            phases: [phase],
+            cost: [
+                {
+                    removeTwilight: twilight,
+                    exert: [exertSelectorFromSubject(subject)],
+                },
+            ],
+            effects: [
+                {
+                    type: 'PLAY_FROM_DECK_OR_DISCARD',
+                    from: 'DISCARD',
+                    target: [filters],
+                },
+            ],
+            source: 'SELF',
+            text: stripAbilityMarkup(match[0]),
+        });
+    }
+    return found;
+}
+
+/**
+ * Phase: Add a burden to play Named from your discard pile.
+ * (Frodo Master of the Precious…) Nom propre uniquement — pas « a Man ».
+ */
+function parseAddBurdenPlayNamedFromDiscardAbilities(
+    text: string,
+    cardId?: string
+): Record<string, unknown>[] {
+    const found: Record<string, unknown>[] = [];
+    const phaseTok =
+        '(?:\\*\\*|<(?:keyword)>)(Fellowship|Shadow|Maneuver|Archery|Assignment|Skirmish|Regroup):?(?:\\s*</(?:keyword)>)?(?:\\*\\*)?';
+    const nameTok =
+        '([A-ZÀ-Ÿ][a-zà-ÿéèêëàâäùûüôöîïç\'’-]+)';
+    const re = new RegExp(
+        `${phaseTok}\\s*Add\\s+(a|an|one|\\d+)\\s+burdens?\\s+to play\\s+${nameTok}\\s+from your discard pile\\.`,
+        'gi'
+    );
+    let match: RegExpExecArray | null;
+    while ((match = re.exec(text)) !== null) {
+        const phase = match[1]?.toUpperCase();
+        const burdens = parseBurdenWord(match[2] || '');
+        const name = (match[3] || '').trim();
+        if (!phase || !burdens || !name || !isProperNameToken(name)) {
+            continue;
+        }
+        found.push({
+            id: `${cardId || 'ability'}:${found.length}:burden-play-discard`,
+            phases: [phase],
+            cost: [{ addBurdens: burdens }],
+            effects: [
+                {
+                    type: 'PLAY_FROM_DECK_OR_DISCARD',
+                    from: 'DISCARD',
+                    target: [[name]],
+                },
+            ],
+            source: 'SELF',
+            text: stripAbilityMarkup(match[0]),
+        });
+    }
+    return found;
+}
+
+/**
  * Phase: Add a threat or discard this artifact to remove twilightN or draw a card.
  * (Seeing Stone of Orthanc…) Deux capacités : un coût chacun, même choix d’effet.
  */
@@ -8730,8 +8829,11 @@ function parseForEachStrengthAbilities(
 
     // Source CSV : <keyword>…</keyword>, <br>, <i> rappels. On normalise les
     // frontières de phrase sans toucher aux <symbol> (filtres culture).
+    // Les rappels Muster / Archerie entre parenthèses (hors <i>) cassent
+    // sinon le découpage « . Lurtz is strength… ».
     const working = text
         .replace(/<i>[\s\S]*?<\/i>/gi, ' ')
+        .replace(/\(\s*At the start of[^)]*\)/gi, ' ')
         .replace(/<\/?keyword>/gi, '')
         .replace(/<br\s*\/?>/gi, ' ')
         .replace(/\*\*/g, ' ')
@@ -13363,6 +13465,26 @@ export function parseAbilities(
             });
         }
     );
+
+    parseAddBurdenPlayNamedFromDiscardAbilities(text, cardId).forEach(
+        (ability) => {
+            abilities.push({
+                ...ability,
+                id: `${cardId || 'ability'}:${abilities.length}`,
+            });
+        }
+    );
+
+    parseRemoveTwilightExertPlayFromDiscardAbilities(
+        text,
+        cardTitle,
+        cardId
+    ).forEach((ability) => {
+        abilities.push({
+            ...ability,
+            id: `${cardId || 'ability'}:${abilities.length}`,
+        });
+    });
 
     parseDiscardSelfReturnToHandAbilities(text, cardId).forEach((ability) => {
         abilities.push({

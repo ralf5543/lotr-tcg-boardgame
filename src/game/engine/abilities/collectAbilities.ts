@@ -806,9 +806,17 @@ function formatEffectBit(
     }
     if (effect.type === 'PLAY_FROM_DECK_OR_DISCARD') {
         const who = formatTargetPhrase(effect.target);
+        const from =
+            effect.from === 'DISCARD'
+                ? 'la défausse'
+                : effect.from === 'DECK'
+                  ? 'la pioche'
+                  : effect.from === 'DEAD_PILE'
+                    ? 'la pile de mort'
+                    : 'la pioche ou la défausse';
         return who
-            ? `jouer ${who} depuis la pioche ou la défausse`
-            : 'jouer une carte depuis la pioche ou la défausse';
+            ? `jouer ${who} depuis ${from}`
+            : `jouer une carte depuis ${from}`;
     }
     if (effect.type === 'SEARCH_DECK_TO_DISCARD') {
         const who = formatTargetPhrase(effect.target);

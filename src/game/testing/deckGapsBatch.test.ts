@@ -472,6 +472,84 @@ describe('parseAbilities — deck gaps batch 2 (Noble Leaders / Gandalf / Promis
         );
     });
 
+    it('Uruk Captain : crépuscule + affaiblir → Ourouk depuis la défausse', () => {
+        expect(
+            parseAbilities(
+                '<keyword>Shadow:</keyword> Remove <symbol>twilight1</symbol> and exert Uruk Captain to play an Uruk-hai from your discard pile.',
+                'Uruk Captain',
+                '2R46'
+            )
+        ).toEqual(
+            expect.arrayContaining([
+                expect.objectContaining({
+                    phases: ['SHADOW'],
+                    cost: [
+                        {
+                            removeTwilight: 1,
+                            exert: [{ count: 1, target: 'SELF' }],
+                        },
+                    ],
+                    effects: [
+                        {
+                            type: 'PLAY_FROM_DECK_OR_DISCARD',
+                            from: 'DISCARD',
+                            target: [['URUK-HAI']],
+                        },
+                    ],
+                }),
+            ])
+        );
+    });
+
+    it('Lurtz : +3 force pour chaque compagnon épuisé (malgré rappel Muster)', () => {
+        expect(
+            parseAbilities(
+                '<keyword>Archer.</keyword> <keyword>Damage +1.</keyword> <keyword>Muster.</keyword> (At the start of the regroup phase, you may discard a card from hand to draw a card.) Lurtz is strength +3 for each exhausted companion you can spot.',
+                'Lurtz',
+                '11R194'
+            )
+        ).toEqual(
+            expect.arrayContaining([
+                expect.objectContaining({
+                    trigger: { type: 'WHILE' },
+                    effects: [
+                        expect.objectContaining({
+                            type: 'MODIFY_STAT',
+                            value: 3,
+                            perSpot: {
+                                target: [['EXHAUSTED', 'COMPANION']],
+                            },
+                        }),
+                    ],
+                }),
+            ])
+        );
+    });
+
+    it('Frodo Master of the Precious : fardeau → Sméagol depuis la défausse', () => {
+        expect(
+            parseAbilities(
+                '<keyword>Ring-bearer (resistance 10).</keyword> <br><keyword>Fellowship:</keyword> Add a burden to play Sméagol from your discard pile.',
+                'Frodo',
+                '5U111'
+            )
+        ).toEqual(
+            expect.arrayContaining([
+                expect.objectContaining({
+                    phases: ['FELLOWSHIP'],
+                    cost: [{ addBurdens: 1 }],
+                    effects: [
+                        expect.objectContaining({
+                            type: 'PLAY_FROM_DECK_OR_DISCARD',
+                            from: 'DISCARD',
+                            target: [['Sméagol']],
+                        }),
+                    ],
+                }),
+            ])
+        );
+    });
+
     it('Seeing Stone of Orthanc : menace ou défausse, puis crépuscule ou pioche', () => {
         expect(
             parseAbilities(

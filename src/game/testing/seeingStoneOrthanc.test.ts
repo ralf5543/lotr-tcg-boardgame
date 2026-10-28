@@ -8,7 +8,6 @@ import {
     payAbilityCost,
 } from '../engine/abilities/payAbilityCost';
 import { resolveForcedChoice } from '../engine/abilities/startOfSkirmish';
-import { applyDevPreset } from '../dev/presets';
 import type { Ability, CardState } from '../types';
 import { createEngineClient } from './createEngineClient';
 import {
@@ -163,17 +162,6 @@ describe('Seeing Stone of Orthanc 9R38 — menace ou défausse, puis crépuscule
         expect(canPayAbilityCost(G, stone, discard.cost)).toBe(true);
     });
 
-    it('preset DEV : Pierre en soutien, 4 crépuscule, 0 menace, pioche', () => {
-        const G = createGameState();
-        applyDevPreset(G, 'DECK_GAPS_SEEING_STONE');
-        const fp = G.players['0']!;
-        expect(fp.supportArea.map((c) => c.id)).toEqual(['9R38']);
-        expect(fp.fellowshipArea.map((c) => c.id)).toEqual(['2C102', '1R89']);
-        expect(G.twilightPool).toBe(4);
-        expect(fp.threats).toBe(0);
-        expect(fp.deck).toHaveLength(2);
-        expect(G.path).toHaveLength(9);
-    });
 });
 
 describe('Seeing Stone 9R38 — fenêtre de ralliement', () => {
