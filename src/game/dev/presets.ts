@@ -121,8 +121,8 @@ const neutralPath: readonly string[] = [
 
 /**
  * Applique le preset DEV de playtest (zones vidées / chemin Standard).
- * Vague en cours : trous de mécanismes decks — Épée de Lurtz
- * (victoire → 2 cartes du dessus de la pioche FP en défausse).
+ * Vague en cours : trous de mécanismes decks — Incited
+ * (compagnon perd → affaiblir Gollum → reprendre une carte Gollum).
  */
 export const applyDevPreset = (
     G: GameState,
@@ -136,34 +136,32 @@ export const applyDevPreset = (
     const shadowPlayer = G.players[shadowId];
 
     switch (presetType) {
-        case 'DECK_GAPS_LURTZ_SWORD': {
+        case 'DECK_GAPS_INCITED': {
             resetBoardForPreset(G);
             setupDevPath(G, 0, neutralPath);
-            G.twilightPool = 10;
+            G.twilightPool = 8;
             fpPlayer.burdens = 0;
             fpPlayer.fellowshipArea = [
                 {
-                    ...clonePresetCard('2C102', 'dev-lurtzsw-frodo'),
+                    ...clonePresetCard('2C102', 'dev-incited-frodo'),
                     attachments: [
-                        clonePresetCard('1R1', 'dev-lurtzsw-ring'),
+                        clonePresetCard('1R1', 'dev-incited-ring'),
                     ],
                 },
             ];
             fpPlayer.hand = [];
-            fpPlayer.deck = [
-                clonePresetCard('1C84', 'dev-lurtzsw-mill-1'),
-                clonePresetCard('7C108', 'dev-lurtzsw-mill-2'),
-                clonePresetCard('7C86', 'dev-lurtzsw-mill-3'),
-            ];
+            fpPlayer.deck = [];
             fpPlayer.sitesDeck = [clonePresetSite('11S250', fpId)];
             if (shadowPlayer) {
                 G.battlefield = [
-                    {
-                        ...clonePresetCard('11R194', 'dev-lurtzsw-lurtz'),
-                        attachments: [
-                            clonePresetCard('2R43', 'dev-lurtzsw-sword'),
-                        ],
-                    },
+                    clonePresetCard('7C59', 'dev-incited-gollum'),
+                ];
+                shadowPlayer.supportArea = [
+                    clonePresetCard('11R44', 'dev-incited-cond'),
+                ];
+                shadowPlayer.discard = [
+                    clonePresetCard('8C30', 'dev-incited-web'),
+                    clonePresetCard('7R61', 'dev-incited-hobbitses'),
                 ];
                 shadowPlayer.hand = [];
                 shadowPlayer.deck = [];
@@ -172,7 +170,7 @@ export const applyDevPreset = (
                 ];
             }
             G.statusMessage =
-                '[DEV] Épée de Lurtz (2R43) · Assignez Lurtz vs Frodon : Lurtz gagne → 2 cartes du dessus de la pioche FP partent en défausse (auto). Damage +1 inchangé.';
+                '[DEV] Incited (11R44) · Assignez Gollum vs Frodon : Frodon perd → Activer Incited → affaiblir Gollum → reprendre Web ou Hobbitses Are Dead depuis la défausse.';
             break;
         }
     }

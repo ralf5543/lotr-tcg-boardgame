@@ -3320,6 +3320,84 @@ function parseStrengthPerMinionStackedOnCulturePossessionAbilities(
 }
 
 /**
+ * Each time [loser] loses a skirmish, you may exert [name] to take a [culture]
+ * card/minion/… into hand from discard. (Incited…)
+ */
+function parseEachTimeLosesExertTakeFromDiscardAbilities(
+    text: string,
+    cardTitle?: string,
+    cardId?: string
+): Record<string, unknown>[] {
+    const found: Record<string, unknown>[] = [];
+    const re =
+        /Each time ([\s\S]+?) loses a skirmish,\s*you may exert ([\s\S]+?) to take (?:a|an)\s+(<symbol>[^<]+<\/symbol>)\s+(card|minion|possession|condition|event)s?\s+(?:into hand from your discard pile|from your discard pile into hand)\.?/gi;
+    let match: RegExpExecArray | null;
+    while ((match = re.exec(text)) !== null) {
+        const loserParsed = parseLosesSkirmishLoser(
+            match[1].trim(),
+            cardTitle
+        );
+        if (!loserParsed) continue;
+        const subject = parseExertSubject(
+            match[2].trim(),
+            cardTitle,
+            text
+        );
+        if (!subject) continue;
+        if (!winsSkirmishCostIsSafe({ exert: [subject] })) continue;
+        const culture = parseCultureTokenSpec(match[3]);
+        if (
+            !culture ||
+            culture === 'FREE_PEOPLES' ||
+            culture === 'ANY'
+        ) {
+            continue;
+        }
+        const typeWord = match[4].toLowerCase();
+        const typeToken =
+            typeWord === 'card'
+                ? null
+                : typeWord === 'minion'
+                  ? 'MINION'
+                  : typeWord === 'possession'
+                    ? 'POSSESSION'
+                    : typeWord === 'condition'
+                      ? 'CONDITION'
+                      : typeWord === 'event'
+                        ? 'EVENT'
+                        : null;
+        if (typeWord !== 'card' && !typeToken) continue;
+        const target: string[][] = typeToken
+            ? [[culture, typeToken]]
+            : [[culture]];
+        found.push({
+            id: `${cardId || 'ability'}:${found.length}:lose-exert-take-discard`,
+            phases: ['RESPONSE'],
+            optional: true,
+            trigger: {
+                type: 'LOSES_SKIRMISH',
+                loser: loserParsed.loser,
+                ...(loserParsed.yours ? { yours: true } : {}),
+            },
+            cost: [
+                {
+                    exert: [exertSelectorFromSubject(subject)],
+                },
+            ],
+            effects: [
+                {
+                    type: 'TAKE_FROM_DISCARD',
+                    target,
+                },
+            ],
+            source: 'SELF',
+            text: stripAbilityMarkup(match[0]),
+        });
+    }
+    return found;
+}
+
+/**
  * Each time [loser] loses a skirmish [involving …], (you may) place/add N [culture] token(s) here/on this card.
  * (Dunland Rising, Uruk-hai Armory, Raider Camp…)
  */
@@ -13886,6 +13964,17 @@ export function parseAbilities(
     });
 
     parseStrengthPerMinionStackedOnCulturePossessionAbilities(
+        text,
+        cardTitle,
+        cardId
+    ).forEach((ability) => {
+        abilities.push({
+            ...ability,
+            id: `${cardId || 'ability'}:${abilities.length}`,
+        });
+    });
+
+    parseEachTimeLosesExertTakeFromDiscardAbilities(
         text,
         cardTitle,
         cardId

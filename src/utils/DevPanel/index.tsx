@@ -372,24 +372,24 @@ export const DevPanel: React.FC<DevPanelProps> = ({
                         </S.GameButton>
                     </S.Section>
 
-                    {/* Preset de playtest : trous decks — Épée de Lurtz */}
+                    {/* Preset de playtest : trous decks — Incited */}
                     <S.Section>
                         <S.Label>
-                            Preset decks (Épée de Lurtz) :
+                            Preset decks (Incited) :
                             <br />
                             <span style={{ opacity: 0.75, fontWeight: 400 }}>
-                                Victoire de Lurtz → 2 cartes du dessus
-                                de la pioche FP en défausse.
+                                Compagnon perd → affaiblir Gollum →
+                                reprendre une carte Gollum.
                             </span>
                         </S.Label>
                         <S.ActionButton
                             onClick={() =>
                                 moves.devLoadPreset?.(
-                                    'DECK_GAPS_LURTZ_SWORD'
+                                    'DECK_GAPS_INCITED'
                                 )
                             }
                         >
-                            Épée de Lurtz (2R43)
+                            Incited (11R44)
                         </S.ActionButton>
                     </S.Section>
 

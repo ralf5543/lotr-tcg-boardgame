@@ -98517,6 +98517,49 @@
     "kind": "SHADOW",
     "type": "CONDITION",
     "subtype": "SUPPORT-AREA",
+    "abilities": [
+      {
+        "id": "11R44:0",
+        "phases": [
+          "RESPONSE"
+        ],
+        "optional": true,
+        "trigger": {
+          "type": "LOSES_SKIRMISH",
+          "loser": [
+            [
+              "COMPANION"
+            ]
+          ]
+        },
+        "cost": [
+          {
+            "exert": [
+              {
+                "count": 1,
+                "target": [
+                  [
+                    "Gollum"
+                  ]
+                ]
+              }
+            ]
+          }
+        ],
+        "effects": [
+          {
+            "type": "TAKE_FROM_DISCARD",
+            "target": [
+              [
+                "GOLLUM"
+              ]
+            ]
+          }
+        ],
+        "source": "SELF",
+        "text": "Each time a companion loses a skirmish, you may exert Gollum to take a gollum card into hand from your discard pile."
+      }
+    ],
     "culture": "GOLLUM",
     "twilightCost": 1,
     "imageUrl": "/cards_visuals/o_11_044.jpg",

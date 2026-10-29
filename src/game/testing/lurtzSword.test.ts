@@ -1,7 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { parseAbilities } from '../../../scripts/convert/parsers';
 import { getCardById } from '../cardsData';
-import { applyDevPreset } from '../dev/presets';
 import { tryOpenWinsSkirmish } from '../engine/responseWindow';
 import type { CardState } from '../types';
 import {
@@ -121,12 +120,4 @@ describe("Lurtz's Sword 2R43 — moulin pioche FP", () => {
         ]);
     });
 
-    it('preset DEV : Lurtz + épée + pioche FP', () => {
-        const G = createGameState();
-        applyDevPreset(G, 'DECK_GAPS_LURTZ_SWORD');
-        const lurtz = G.battlefield[0];
-        expect(lurtz?.id).toBe('11R194');
-        expect(lurtz?.attachments?.map((a) => a.id)).toEqual(['2R43']);
-        expect(G.players['0']!.deck.length).toBe(3);
-    });
 });

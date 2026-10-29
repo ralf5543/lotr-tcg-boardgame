@@ -1201,33 +1201,83 @@ export const GameBoard: React.FC<GameBoardProps> = ({
             );
             return;
         }
-        // Pioche / défausse avant le coût générique (Barazinbar : exert puis grille).
+        // Pioche / défausse avant le coût générique (Barazinbar / Incited : exert puis grille).
         if (abilityNeedsDeckOrDiscardPick(ability)) {
             const take = abilityTakeFromDiscardEffect(ability);
             if (take) {
-                const discard = G.players[myId]?.discard || [];
-                const selectable = discard.filter(
-                    (c) => c && cardMatchesTarget(c, take.target)
-                );
-                if (selectable.length === 0) return;
-                if (selectable.length === 1) {
-                    const only = selectable[0]!;
-                    moves.activateAbility?.(
-                        sourceInstanceId,
-                        abilityId,
-                        only.instanceId || only.id
+                const openTakePick = (costIds?: string | string[]) => {
+                    const discard = G.players[myId]?.discard || [];
+                    const selectable = discard.filter(
+                        (c) => c && cardMatchesTarget(c, take.target)
                     );
-                    return;
+                    if (selectable.length === 0) return;
+                    const finish = (effectId: string) => {
+                        if (costIds) {
+                            moves.activateAbility?.(
+                                sourceInstanceId,
+                                abilityId,
+                                costIds,
+                                undefined,
+                                effectId
+                            );
+                        } else {
+                            moves.activateAbility?.(
+                                sourceInstanceId,
+                                abilityId,
+                                effectId
+                            );
+                        }
+                    };
+                    if (selectable.length === 1) {
+                        const only = selectable[0]!;
+                        finish(only.instanceId || only.id);
+                        return;
+                    }
+                    setDeckDiscardPick({
+                        activate: {
+                            sourceInstanceId,
+                            abilityId,
+                            costId: costIds,
+                        },
+                        selectableCardIds: selectable.flatMap(cardTargetIds),
+                        deck: [],
+                        discard: [...discard],
+                        title: 'Défausse',
+                        subtitle:
+                            'Choisissez une carte à prendre dans votre main.',
+                    });
+                };
+                if (needsCost && !chosenTargetId) {
+                    const takeCostNeed = getCostDesignationCount(ability);
+                    if (takeCostNeed > 1) {
+                        if (
+                            requestMultiCostDesignation(
+                                source,
+                                ability,
+                                takeCostNeed,
+                                (costIds) => {
+                                    openTakePick(costIds);
+                                }
+                            )
+                        ) {
+                            return;
+                        }
+                    } else if (
+                        requestDesignation(
+                            source,
+                            ability,
+                            (costId) => {
+                                stopTargeting();
+                                openTakePick(costId);
+                            },
+                            undefined,
+                            'cost'
+                        )
+                    ) {
+                        return;
+                    }
                 }
-                setDeckDiscardPick({
-                    activate: { sourceInstanceId, abilityId },
-                    selectableCardIds: selectable.flatMap(cardTargetIds),
-                    deck: [],
-                    discard: [...discard],
-                    title: 'Défausse',
-                    subtitle:
-                        'Choisissez un séide à prendre dans votre main.',
-                });
+                openTakePick(chosenTargetId);
                 return;
             }
             const playEffect = abilityPlayFromDeckOrDiscardEffect(ability);
