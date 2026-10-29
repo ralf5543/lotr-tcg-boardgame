@@ -27,6 +27,7 @@ import { beginOptionalSiteMoveAbility } from './logic/siteMoveAbility';
 import { beginSiteMoveCharacterWoundsIfNeeded } from './logic/siteMoveCharacterWounds';
 import { beginDeadPileRemovalIfNeeded } from './logic/siteDeadPileRemoval';
 import { placeCardIntoDiscardPile } from './logic/sites';
+import { getMoveLimit } from './logic/moveLimit';
 import { beginOptionalSitePhaseAbility } from './logic/sitePhaseAbility';
 import { beginOptionalSiteStartAbility } from './logic/siteStartAbility';
 import { devMoves } from './dev/devMoves';
@@ -1291,7 +1292,7 @@ export const LotrGame: Game<GameState> = {
 
                     if (
                         playerID !== fpId ||
-                        (G.movesThisTurn || 0) >= 2 ||
+                        (G.movesThisTurn || 0) >= getMoveLimit(G) ||
                         G.preventMoveAgain ||
                         G.regroupStep !== 'FP_DECISION' ||
                         G.pendingSiteMoveAbility ||

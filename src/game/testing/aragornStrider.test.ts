@@ -1,7 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { parseAbilities } from '../../../scripts/convert/parsers';
 import { getCardById } from '../cardsData';
-import { applyDevPreset } from '../dev/presets';
 import { tryOpenFellowshipMoves } from '../engine/responseWindow';
 import type { Ability } from '../types';
 import {
@@ -74,14 +73,4 @@ describe('Aragorn Strider 11R54 — déplacement → +1 crépuscule', () => {
         expect(G.statusMessage).toMatch(/Aragorn/i);
     });
 
-    it('preset DEV : Frodon + Aragorn Strider', () => {
-        const G = createGameState();
-        applyDevPreset(G, 'DECK_GAPS_ARAGORN_STRIDER');
-        const titles = (G.players['0']!.fellowshipArea || []).map(
-            (c) => c.id
-        );
-        expect(titles).toContain('11R54');
-        expect(titles).toContain('2C102');
-        expect(G.twilightPool).toBe(0);
-    });
 });

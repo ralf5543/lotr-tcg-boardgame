@@ -372,23 +372,23 @@ export const DevPanel: React.FC<DevPanelProps> = ({
                         </S.GameButton>
                     </S.Section>
 
-                    {/* Preset de playtest : trous decks — Aragorn Strider */}
+                    {/* Preset de playtest : trous decks — Voix du Traître */}
                     <S.Section>
                         <S.Label>
-                            Preset decks (Aragorn Strider) :
+                            Preset decks (Voix du Traître) :
                             <br />
                             <span style={{ opacity: 0.75, fontWeight: 400 }}>
-                                Déplacement → +1 crépuscule automatique.
+                                Porteur épuisé → limite de déplacement −1.
                             </span>
                         </S.Label>
                         <S.ActionButton
                             onClick={() =>
                                 moves.devLoadPreset?.(
-                                    'DECK_GAPS_ARAGORN_STRIDER'
+                                    'DECK_GAPS_TRAITORS_VOICE'
                                 )
                             }
                         >
-                            Aragorn Strider (11R54)
+                            Voix du Traître (1U142)
                         </S.ActionButton>
                     </S.Section>
 

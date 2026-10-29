@@ -34,6 +34,7 @@ import {
 } from './payAbilityCost';
 import { playerHasInitiative } from '../../logic/initiative';
 import { addThreats } from '../../logic/threats';
+import { getMoveLimit } from '../../logic/moveLimit';
 import {
     applyReinforce,
     getReinforceCandidates,
@@ -437,7 +438,7 @@ export function applyAbilityEffect(
         }
 
         if (effect.type === 'FORCE_CHOOSE_MOVE_AGAIN') {
-            if ((G.movesThisTurn || 0) < 2) {
+            if ((G.movesThisTurn || 0) < getMoveLimit(G)) {
                 G.forceChooseMoveAgain = true;
             }
             continue;

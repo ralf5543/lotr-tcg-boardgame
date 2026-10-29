@@ -18832,6 +18832,26 @@
         ]
       }
     ],
+    "abilities": [
+      {
+        "id": "1U142:0",
+        "phases": [],
+        "trigger": {
+          "type": "WHILE",
+          "ringBearerExhaustedOrSpotBurdens": 5
+        },
+        "cost": [],
+        "effects": [
+          {
+            "type": "MODIFY_MOVE_LIMIT",
+            "value": -1,
+            "min": 1
+          }
+        ],
+        "source": "SELF",
+        "text": "While the Ring-bearer is exhausted or you can spot 5 burdens, the move limit for this turn is -1 (to a minimum of 1)."
+      }
+    ],
     "culture": "ISENGARD",
     "twilightCost": 2,
     "imageUrl": "/cards_visuals/o_01_142.jpg",

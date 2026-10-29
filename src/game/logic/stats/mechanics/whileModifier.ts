@@ -30,7 +30,10 @@ import {
     tokenCountOnCard,
 } from '../../cultureTokens';
 import { playerHasInitiative } from '../../initiative';
-import { getEffectiveResistance } from '../../../../utils/cardStats';
+import {
+    getEffectiveResistance,
+    getEffectiveVitality,
+} from '../../../../utils/cardStats';
 
 function matchCard(card: CardState, targetId: string): boolean {
     return card.instanceId === targetId || card.id === targetId;
@@ -466,6 +469,28 @@ export function whileConditionHolds(
                 }
             });
             if (rbWounds < need) return false;
+        }
+    }
+
+    if (
+        trigger.ringBearerExhaustedOrSpotBurdens &&
+        trigger.ringBearerExhaustedOrSpotBurdens > 0
+    ) {
+        const need = trigger.ringBearerExhaustedOrSpotBurdens;
+        const fpId = G.fpPlayerId || '0';
+        const burdens = G.players[fpId]?.burdens || 0;
+        if (burdens < need) {
+            let rbExhausted = false;
+            forEachInPlayCard(G, (card) => {
+                if (
+                    isRingBearerCard(card) &&
+                    !card.isDead &&
+                    getEffectiveVitality(card) === 1
+                ) {
+                    rbExhausted = true;
+                }
+            });
+            if (!rbExhausted) return false;
         }
     }
 

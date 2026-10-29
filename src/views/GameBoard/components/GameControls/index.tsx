@@ -11,6 +11,7 @@ import { getAbilityToastClause, getCardText } from '../../../../utils/i18n';
 import { FormattedText } from '../../../../utils/FormattedText';
 import { findOptionalSiteResponseAbility } from '../../../../game/engine/responseWindow';
 import { getEligibleSitePhaseAbilities } from '../../../../game/logic/sitePhaseAbility';
+import { movesRemainThisTurn } from '../../../../game/logic/moveLimit';
 
 /** Libellé court d'un mode de capacité de site « play… » (boutons du toaster). */
 function sitePhaseModeLabel(ability: any): string {
@@ -1231,7 +1232,7 @@ export const GameControls: React.FC<GameControlsProps> = ({
                         {/* Regroup Step 2: FP Choix Ré-avancer / Fin */}
                         {isRegroupDecision && (
                             <>
-                                {(G.movesThisTurn || 0) < 2 && (
+                                {movesRemainThisTurn(G) && (
                                     <S.ActionButton
                                         $variant={
                                             G.forceChooseMoveAgain

@@ -515,6 +515,15 @@ export type AbilityEffect =
           type: 'PREVENT_MOVE_AGAIN';
       }
     | {
+          /**
+           * Passif While : modifie la limite de déplacement du tour
+           * (Voix du Traître : −1, minimum 1).
+           */
+          type: 'MODIFY_MOVE_LIMIT';
+          value: number;
+          min?: number;
+      }
+    | {
           /** Steward's Tomb : les blessures ne peuvent pas être prévenues. */
           type: 'FORBID_WOUND_PREVENTION';
       }
@@ -1099,6 +1108,11 @@ export type AbilityTrigger =
            * — vrai si fardeaux ≥ N OU blessures sur le Porteur ≥ N.
            */
           spotBurdensOrRingBearerWounds?: number;
+          /**
+           * « While the Ring-bearer is exhausted or you can spot N burdens »
+           * (Voix du Traître…).
+           */
+          ringBearerExhaustedOrSpotBurdens?: number;
           /** « While you have initiative… » — propriétaire de la source. */
           hasInitiative?: boolean;
           /** « While you cannot spot N threats… » — menaces FP < N. */
@@ -1759,7 +1773,7 @@ export interface LotrMoveContext extends FnContext<GameState> {
 }
 
 /** Presets DEV de playtest (panneau de test, vague en cours). */
-export type DevPresetType = 'DECK_GAPS_ARAGORN_STRIDER';
+export type DevPresetType = 'DECK_GAPS_TRAITORS_VOICE';
 
 export interface ArcheryState {
     step?: 'ACTIONS' | 'FP_ASSIGN' | 'SHADOW_ASSIGN' | 'COMPLETE';

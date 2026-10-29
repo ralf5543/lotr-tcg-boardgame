@@ -9,6 +9,7 @@ import {
     freePeoplesHasInitiative,
 } from '../logic/initiative';
 import { placeCardIntoDiscardPile } from '../logic/sites';
+import { getMoveLimit, movesRemainThisTurn } from '../logic/moveLimit';
 
 // Helper pour renvoyer les Suivants en zone de support à la vraie fin de tour
 export const returnAidFollowersToSupport = (G: GameState) => {
@@ -60,7 +61,7 @@ export const endTurnChoice = ({ G }: LotrMoveContext) => {
     if (G.pendingSiteMoveAbility) {
         return 'INVALID_MOVE';
     }
-    if (G.forceChooseMoveAgain && (G.movesThisTurn || 0) < 2) {
+    if (G.forceChooseMoveAgain && movesRemainThisTurn(G)) {
         return 'INVALID_MOVE';
     }
     G.forceChooseMoveAgain = false;
@@ -158,11 +159,12 @@ export const confirmHandRefill = ({ G, events, playerID }: LotrMoveContext) => {
     player.hasDiscardedInRegroup = false;
 
     if (G.regroupStep === 'SHADOW_REFILL') {
-        if ((G.movesThisTurn || 0) >= 2 || G.preventMoveAgain) {
+        const moveLimit = getMoveLimit(G);
+        if ((G.movesThisTurn || 0) >= moveLimit || G.preventMoveAgain) {
             G.regroupStep = 'FP_REFILL';
             G.statusMessage = G.preventMoveAgain
                 ? 'Déplacement supplémentaire empêché (site). Reconstitution de la main des Peuples Libres.'
-                : 'Limite de déplacement atteinte (2/2). Reconstitution de la main des Peuples Libres.';
+                : `Limite de déplacement atteinte (${moveLimit}/${moveLimit}). Reconstitution de la main des Peuples Libres.`;
         } else {
             G.regroupStep = 'FP_DECISION';
             G.statusMessage =

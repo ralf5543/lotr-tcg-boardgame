@@ -121,8 +121,8 @@ const neutralPath: readonly string[] = [
 
 /**
  * Applique le preset DEV de playtest (zones vidées / chemin Standard).
- * Vague en cours : trous de mécanismes decks — Aragorn Strider
- * (chaque déplacement → +1 crépuscule, automatique).
+ * Vague en cours : trous de mécanismes decks — Voix du Traître
+ * (Porteur épuisé / 5 fardeaux → limite de déplacement −1).
  */
 export const applyDevPreset = (
     G: GameState,
@@ -136,25 +136,28 @@ export const applyDevPreset = (
     const shadowPlayer = G.players[shadowId];
 
     switch (presetType) {
-        case 'DECK_GAPS_ARAGORN_STRIDER': {
+        case 'DECK_GAPS_TRAITORS_VOICE': {
             resetBoardForPreset(G);
             setupDevPath(G, 0, neutralPath);
-            G.twilightPool = 0;
+            G.twilightPool = 5;
             fpPlayer.burdens = 0;
-            fpPlayer.fellowshipArea = [
-                {
-                    ...clonePresetCard('2C102', 'dev-strider-frodo'),
-                    attachments: [
-                        clonePresetCard('1R1', 'dev-strider-ring'),
-                    ],
-                },
-                clonePresetCard('11R54', 'dev-strider-aragorn'),
-            ];
+            // Frodon 4 + Anneau +1 → vit. 5 ; 4 blessures = épuisé.
+            const frodo = {
+                ...clonePresetCard('2C102', 'dev-tv-frodo'),
+                wounds: 4,
+                attachments: [clonePresetCard('1R1', 'dev-tv-ring')],
+            };
+            fpPlayer.fellowshipArea = [frodo];
             fpPlayer.hand = [];
             fpPlayer.deck = [];
             fpPlayer.sitesDeck = [clonePresetSite('11S250', fpId)];
             if (shadowPlayer) {
-                G.battlefield = [];
+                G.battlefield = [
+                    clonePresetCard('1R143', 'dev-tv-troop'),
+                ];
+                shadowPlayer.supportArea = [
+                    clonePresetCard('1U142', 'dev-tv-voice'),
+                ];
                 shadowPlayer.hand = [];
                 shadowPlayer.deck = [];
                 shadowPlayer.sitesDeck = [
@@ -162,7 +165,7 @@ export const applyDevPreset = (
                 ];
             }
             G.statusMessage =
-                '[DEV] Aragorn, Strider (11R54) · Déplacez la compagnie (Fellowship ou Regroup) : +1 crépuscule automatique d’Aragorn, en plus du coût de déplacement. Ranger inchangé.';
+                '[DEV] Voix du Traître (1U142) · Frodon est épuisé → limite de déplacement = 1. Déplacez une fois en Fellowship : au Regroup, pas de 2ᵉ avance. (Variante : soigner Frodon + mettre 5 fardeaux → même plafond.)';
             break;
         }
     }

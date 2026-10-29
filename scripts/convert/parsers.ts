@@ -2525,6 +2525,54 @@ function parseEachTimeTakeControlSiteAbilities(
 }
 
 /**
+ * While the Ring-bearer is exhausted or you can spot N burdens,
+ * the move limit for this turn is -X (to a minimum of Y). (Traitor's Voice…)
+ */
+function parseWhileRingBearerExhaustedOrBurdensMoveLimitAbilities(
+    text: string,
+    cardId?: string
+): Record<string, unknown>[] {
+    const found: Record<string, unknown>[] = [];
+    const re =
+        /While the Ring-bearer is exhausted or you can spot (\d+) burdens?,\s*the move limit for this turn is -(\d+)\s*\(\s*to a minimum of (\d+)\s*\)\.?/gi;
+    let match: RegExpExecArray | null;
+    while ((match = re.exec(text)) !== null) {
+        const burdens = parseInt(match[1], 10);
+        const reduce = parseInt(match[2], 10);
+        const min = parseInt(match[3], 10);
+        if (
+            !Number.isFinite(burdens) ||
+            burdens <= 0 ||
+            !Number.isFinite(reduce) ||
+            reduce <= 0 ||
+            !Number.isFinite(min) ||
+            min < 1
+        ) {
+            continue;
+        }
+        found.push({
+            id: `${cardId || 'ability'}:${found.length}:while-rb-exhaust-burdens-move`,
+            phases: [],
+            trigger: {
+                type: 'WHILE',
+                ringBearerExhaustedOrSpotBurdens: burdens,
+            },
+            cost: [],
+            effects: [
+                {
+                    type: 'MODIFY_MOVE_LIMIT',
+                    value: -reduce,
+                    min,
+                },
+            ],
+            source: 'SELF',
+            text: stripAbilityMarkup(match[0]),
+        });
+    }
+    return found;
+}
+
+/**
  * Each time the fellowship moves, add twilightN. (Aragorn Strider… — forcé)
  */
 function parseEachTimeMovesAddTwilightAbilities(
@@ -13891,6 +13939,16 @@ export function parseAbilities(
             });
         }
     );
+
+    parseWhileRingBearerExhaustedOrBurdensMoveLimitAbilities(
+        text,
+        cardId
+    ).forEach((ability) => {
+        abilities.push({
+            ...ability,
+            id: `${cardId || 'ability'}:${abilities.length}`,
+        });
+    });
 
     parseEachTimeMovesAddTwilightAbilities(text, cardId).forEach(
         (ability) => {
