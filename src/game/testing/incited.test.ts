@@ -1,7 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { parseAbilities } from '../../../scripts/convert/parsers';
 import { getCardById } from '../cardsData';
-import { applyDevPreset } from '../dev/presets';
 import { applyAbilityEffect } from '../engine/abilities/applyAbilityEffect';
 import { canUseAbility } from '../engine/canUseAbility';
 import { payAbilityCost } from '../engine/abilities/payAbilityCost';
@@ -178,14 +177,4 @@ describe('Incited 11R44 — perdante → affaiblir Gollum → reprendre Gollum',
         ).toBe(true);
     });
 
-    it('preset DEV : Incited + Gollum + défausse Gollum', () => {
-        const G = createGameState();
-        applyDevPreset(G, 'DECK_GAPS_INCITED');
-        expect(G.battlefield[0]?.id).toBe('7C59');
-        expect(G.players['1']!.supportArea?.[0]?.id).toBe('11R44');
-        expect(G.players['1']!.discard?.map((c) => c.id).sort()).toEqual([
-            '7R61',
-            '8C30',
-        ]);
-    });
 });

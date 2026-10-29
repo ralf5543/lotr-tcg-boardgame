@@ -121,8 +121,8 @@ const neutralPath: readonly string[] = [
 
 /**
  * Applique le preset DEV de playtest (zones vidées / chemin Standard).
- * Vague en cours : trous de mécanismes decks — Incited
- * (compagnon perd → affaiblir Gollum → reprendre une carte Gollum).
+ * Vague en cours : trous de mécanismes decks — Aragorn Strider
+ * (chaque déplacement → +1 crépuscule, automatique).
  */
 export const applyDevPreset = (
     G: GameState,
@@ -136,33 +136,25 @@ export const applyDevPreset = (
     const shadowPlayer = G.players[shadowId];
 
     switch (presetType) {
-        case 'DECK_GAPS_INCITED': {
+        case 'DECK_GAPS_ARAGORN_STRIDER': {
             resetBoardForPreset(G);
             setupDevPath(G, 0, neutralPath);
-            G.twilightPool = 8;
+            G.twilightPool = 0;
             fpPlayer.burdens = 0;
             fpPlayer.fellowshipArea = [
                 {
-                    ...clonePresetCard('2C102', 'dev-incited-frodo'),
+                    ...clonePresetCard('2C102', 'dev-strider-frodo'),
                     attachments: [
-                        clonePresetCard('1R1', 'dev-incited-ring'),
+                        clonePresetCard('1R1', 'dev-strider-ring'),
                     ],
                 },
+                clonePresetCard('11R54', 'dev-strider-aragorn'),
             ];
             fpPlayer.hand = [];
             fpPlayer.deck = [];
             fpPlayer.sitesDeck = [clonePresetSite('11S250', fpId)];
             if (shadowPlayer) {
-                G.battlefield = [
-                    clonePresetCard('7C59', 'dev-incited-gollum'),
-                ];
-                shadowPlayer.supportArea = [
-                    clonePresetCard('11R44', 'dev-incited-cond'),
-                ];
-                shadowPlayer.discard = [
-                    clonePresetCard('8C30', 'dev-incited-web'),
-                    clonePresetCard('7R61', 'dev-incited-hobbitses'),
-                ];
+                G.battlefield = [];
                 shadowPlayer.hand = [];
                 shadowPlayer.deck = [];
                 shadowPlayer.sitesDeck = [
@@ -170,7 +162,7 @@ export const applyDevPreset = (
                 ];
             }
             G.statusMessage =
-                '[DEV] Incited (11R44) · Assignez Gollum vs Frodon : Frodon perd → Activer Incited → affaiblir Gollum → reprendre Web ou Hobbitses Are Dead depuis la défausse.';
+                '[DEV] Aragorn, Strider (11R54) · Déplacez la compagnie (Fellowship ou Regroup) : +1 crépuscule automatique d’Aragorn, en plus du coût de déplacement. Ranger inchangé.';
             break;
         }
     }

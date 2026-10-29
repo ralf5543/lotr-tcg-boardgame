@@ -8786,6 +8786,26 @@
     "keywords": [
       "RANGER"
     ],
+    "abilities": [
+      {
+        "id": "11R54:0",
+        "phases": [
+          "RESPONSE"
+        ],
+        "trigger": {
+          "type": "FELLOWSHIP_MOVES"
+        },
+        "cost": [],
+        "effects": [
+          {
+            "type": "ADD_TWILIGHT",
+            "count": 1
+          }
+        ],
+        "source": "SELF",
+        "text": "Each time the fellowship moves, add twilight1."
+      }
+    ],
     "culture": "GONDOR",
     "race": "MAN",
     "twilightCost": 1,
@@ -37792,6 +37812,26 @@
     "kind": "SHADOW",
     "type": "CONDITION",
     "subtype": "SUPPORT-AREA",
+    "abilities": [
+      {
+        "id": "3U83:0",
+        "phases": [
+          "RESPONSE"
+        ],
+        "trigger": {
+          "type": "FELLOWSHIP_MOVES"
+        },
+        "cost": [],
+        "effects": [
+          {
+            "type": "ADD_TWILIGHT",
+            "count": 1
+          }
+        ],
+        "source": "SELF",
+        "text": "Each time the fellowship moves, add twilight1"
+      }
+    ],
     "culture": "WRAITH",
     "twilightCost": 2,
     "imageUrl": "/cards_visuals/o_03_083.jpg",
@@ -38651,6 +38691,26 @@
             ]
           }
         ]
+      }
+    ],
+    "abilities": [
+      {
+        "id": "3R102:0",
+        "phases": [
+          "RESPONSE"
+        ],
+        "trigger": {
+          "type": "FELLOWSHIP_MOVES"
+        },
+        "cost": [],
+        "effects": [
+          {
+            "type": "ADD_TWILIGHT",
+            "count": 1
+          }
+        ],
+        "source": "SELF",
+        "text": "Each time the fellowship moves, add twilight1"
       }
     ],
     "culture": "SAURON",
@@ -116341,6 +116401,26 @@
     "kind": "FREE_PEOPLE",
     "type": "CONDITION",
     "subtype": "SUPPORT-AREA",
+    "abilities": [
+      {
+        "id": "13U3:0",
+        "phases": [
+          "RESPONSE"
+        ],
+        "trigger": {
+          "type": "FELLOWSHIP_MOVES"
+        },
+        "cost": [],
+        "effects": [
+          {
+            "type": "ADD_TWILIGHT",
+            "count": 2
+          }
+        ],
+        "source": "SELF",
+        "text": "Each time the fellowship moves, add twilight2."
+      }
+    ],
     "culture": "DWARVEN",
     "twilightCost": 0,
     "imageUrl": "/cards_visuals/o_13_003.jpg",
@@ -130543,6 +130623,26 @@
             ]
           }
         ]
+      }
+    ],
+    "abilities": [
+      {
+        "id": "15U88:0",
+        "phases": [
+          "RESPONSE"
+        ],
+        "trigger": {
+          "type": "FELLOWSHIP_MOVES"
+        },
+        "cost": [],
+        "effects": [
+          {
+            "type": "ADD_TWILIGHT",
+            "count": 1
+          }
+        ],
+        "source": "SELF",
+        "text": "Each time the fellowship moves, add twilight1."
       }
     ],
     "culture": "MEN",
@@ -150945,6 +151045,26 @@
     "type": "CONDITION",
     "keywords": [
       "WEATHER"
+    ],
+    "abilities": [
+      {
+        "id": "19P17:0",
+        "phases": [
+          "RESPONSE"
+        ],
+        "trigger": {
+          "type": "FELLOWSHIP_MOVES"
+        },
+        "cost": [],
+        "effects": [
+          {
+            "type": "ADD_TWILIGHT",
+            "count": 1
+          }
+        ],
+        "source": "SELF",
+        "text": "Each time the fellowship moves, add twilight1"
+      }
     ],
     "culture": "ISENGARD",
     "twilightCost": 0,

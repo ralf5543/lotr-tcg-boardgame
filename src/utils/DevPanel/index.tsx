@@ -372,24 +372,23 @@ export const DevPanel: React.FC<DevPanelProps> = ({
                         </S.GameButton>
                     </S.Section>
 
-                    {/* Preset de playtest : trous decks — Incited */}
+                    {/* Preset de playtest : trous decks — Aragorn Strider */}
                     <S.Section>
                         <S.Label>
-                            Preset decks (Incited) :
+                            Preset decks (Aragorn Strider) :
                             <br />
                             <span style={{ opacity: 0.75, fontWeight: 400 }}>
-                                Compagnon perd → affaiblir Gollum →
-                                reprendre une carte Gollum.
+                                Déplacement → +1 crépuscule automatique.
                             </span>
                         </S.Label>
                         <S.ActionButton
                             onClick={() =>
                                 moves.devLoadPreset?.(
-                                    'DECK_GAPS_INCITED'
+                                    'DECK_GAPS_ARAGORN_STRIDER'
                                 )
                             }
                         >
-                            Incited (11R44)
+                            Aragorn Strider (11R54)
                         </S.ActionButton>
                     </S.Section>
 

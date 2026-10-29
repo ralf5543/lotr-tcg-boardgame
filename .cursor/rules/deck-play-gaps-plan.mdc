@@ -56,7 +56,8 @@ L’ancien plan main/initiative est **figé** (`.cursor/rules/hand-initiative-pl
 | `11C198` | Patrol of Uruk-hai | ✅ Validé par Ralf — While combat un perso FP résistance ≤5 → `FORBID_WOUNDS` ; Épée inactive vs Patrouille (autre Ourouk encore blessable). Preset DEV retiré après validation |
 | `1R143` | Troop of Uruk-hai | ✅ Validé par Ralf — pas de bonus de force des armes (`SUPPRESS_WEAPON_STRENGTH` : +imprimé, +temp type Knight’s Spear, While d’arme) ; autres effets d’arme (blesser…) inchangés. Preset DEV retiré après validation |
 | `2R43` | Lurtz's Sword | ✅ Validé par Ralf — victoire → FP défausse les 2 cartes du dessus de sa pioche (`DISCARD_TOP_OF_DECK`). Pioche visible sur le rail (verso + compteur). Preset DEV retiré après validation |
-| `11R44` | Incited | Chaque fois qu’un compagnon perd une escarmouche, vous pouvez affaiblir Gollum pour reprendre une carte Gollum depuis la défausse (`LOSES_SKIRMISH` + exert nommé + `TAKE_FROM_DISCARD`). En playtest, preset DEV `DECK_GAPS_INCITED` |
+| `11R44` | Incited | ✅ Validé par Ralf — compagnon perd → affaiblir Gollum → reprendre une carte Gollum (`LOSES_SKIRMISH` + exert nommé + `TAKE_FROM_DISCARD`). Preset DEV retiré après validation |
+| `11R54` | Aragorn, Strider | Chaque déplacement → +1 crépuscule forcé (`FELLOWSHIP_MOVES` + `ADD_TWILIGHT`, auto). En playtest, preset DEV `DECK_GAPS_ARAGORN_STRIDER` |
 
 Livré (playtest) : Hidden Knowledge `7R104` (grille révélation + valider) ; Slippery Sneak `8R27` ; escarmouche vacante (mort→gagnant / défausse→pas) ; Cruel Caradhras `1R124` ; Pelennor Flat `11S254` ; Shelob when-played possession ; toaster Orthanc (boutons cohérents).
 

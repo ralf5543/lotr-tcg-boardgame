@@ -2525,6 +2525,33 @@ function parseEachTimeTakeControlSiteAbilities(
 }
 
 /**
+ * Each time the fellowship moves, add twilightN. (Aragorn Strider… — forcé)
+ */
+function parseEachTimeMovesAddTwilightAbilities(
+    text: string,
+    cardId?: string
+): Record<string, unknown>[] {
+    const found: Record<string, unknown>[] = [];
+    const re =
+        /Each time the fellowship moves,\s*add\s*<symbol>twilight(\d+)<\/symbol>\.?/gi;
+    let match: RegExpExecArray | null;
+    while ((match = re.exec(text)) !== null) {
+        const twilight = parseInt(match[1], 10);
+        if (!Number.isFinite(twilight) || twilight <= 0) continue;
+        found.push({
+            id: `${cardId || 'ability'}:${found.length}:move-add-twilight`,
+            phases: ['RESPONSE'],
+            trigger: { type: 'FELLOWSHIP_MOVES' },
+            cost: [],
+            effects: [{ type: 'ADD_TWILIGHT', count: twilight }],
+            source: 'SELF',
+            text: stripAbilityMarkup(match[0]),
+        });
+    }
+    return found;
+}
+
+/**
  * Each time the fellowship moves, you may add twilightN and remove a [culture] token
  * to reinforce a [culture] token. (Merchant of Westfold…)
  */
@@ -13857,6 +13884,15 @@ export function parseAbilities(
     );
 
     parseEachTimeTakeControlSiteAbilities(text, cardTitle, cardId).forEach(
+        (ability) => {
+            abilities.push({
+                ...ability,
+                id: `${cardId || 'ability'}:${abilities.length}`,
+            });
+        }
+    );
+
+    parseEachTimeMovesAddTwilightAbilities(text, cardId).forEach(
         (ability) => {
             abilities.push({
                 ...ability,

@@ -842,8 +842,8 @@ export function tryOpenLosesSkirmish(G: GameState): 'APPLIED' | 'WAITING' {
 }
 
 /**
- * Each time the fellowship moves… — ouvre une fenêtre de réponse si une
- * capacité éligible est en jeu.
+ * Each time the fellowship moves… — effets forcés d’abord (Aragorn Strider…),
+ * puis fenêtre si une réponse optionnelle reste éligible.
  */
 export function tryOpenFellowshipMoves(G: GameState): 'APPLIED' | 'WAITING' {
     if (G.responseWindow?.isOpen || G.pendingEvent) {
@@ -852,8 +852,13 @@ export function tryOpenFellowshipMoves(G: GameState): 'APPLIED' | 'WAITING' {
 
     G.pendingEvent = { type: 'FELLOWSHIP_MOVES' };
 
+    autoResolveMandatoryResponses(G);
+
     if (!hasAnyEligibleResponse(G)) {
         G.pendingEvent = undefined;
+        if (G.responseWindow && !G.responseWindow.isOpen) {
+            G.responseWindow = undefined;
+        }
         return 'APPLIED';
     }
 
