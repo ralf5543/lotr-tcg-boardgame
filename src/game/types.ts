@@ -495,6 +495,22 @@ export type AbilityEffect =
           target: AbilityTargetRef;
       }
     | {
+          /**
+           * Immunité aux blessures tant que le While tient
+           * (Patrol of Uruk-hai, Easterling Polearm…).
+           */
+          type: 'FORBID_WOUNDS';
+          target: AbilityTargetRef;
+      }
+    | {
+          /**
+           * Les cibles n’obtiennent pas le bonus de force des armes
+           * (Troop of Uruk-hai : personnages au combat contre la source).
+           */
+          type: 'SUPPRESS_WEAPON_STRENGTH';
+          target: AbilityTargetRef;
+      }
+    | {
           /** Shores of Nen Hithoel : pas de 2ᵉ déplacement ce tour. */
           type: 'PREVENT_MOVE_AGAIN';
       }
@@ -745,6 +761,15 @@ export type AbilityEffect =
           thenDeadPileMatching?: string[][];
       }
     | {
+          /**
+           * Défausse les N cartes du dessus de la pioche
+           * (Lurtz’s Sword, Uruk Rager…).
+           */
+          type: 'DISCARD_TOP_OF_DECK';
+          count: number;
+          whose: 'FREE_PEOPLES' | 'SHADOW' | 'OWNER' | 'OPPONENT';
+      }
+    | {
           type: 'DISCARD_FROM_HAND';
           count: number;
           /** « up to N » : 0 à count, le joueur choisit. */
@@ -824,6 +849,11 @@ export type AbilityEffect =
           count: number;
           target: AbilityTargetRef;
           excludeRingBearer?: boolean;
+          /**
+           * DNF : restreint les adversaires d’escarmouche
+           * (`target: 'SKIRMISHING'` — Blade of Gondor, Poêle…).
+           */
+          match?: string[][];
           /** Ex. Hobbiton Market : séides non-lurker. */
           excludeKeywords?: CardKeyword[];
           /** Tous les matchs (Crags of Emyn Muil…). */
@@ -1729,7 +1759,7 @@ export interface LotrMoveContext extends FnContext<GameState> {
 }
 
 /** Presets DEV de playtest (panneau de test, vague en cours). */
-export type DevPresetType = 'DECK_GAPS_LIEUTENANT_ORTHANC';
+export type DevPresetType = 'DECK_GAPS_LURTZ_SWORD';
 
 export interface ArcheryState {
     step?: 'ACTIONS' | 'FP_ASSIGN' | 'SHADOW_ASSIGN' | 'COMPLETE';

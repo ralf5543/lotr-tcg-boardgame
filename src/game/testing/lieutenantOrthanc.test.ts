@@ -7,7 +7,6 @@ import {
     canPayAbilityCost,
     payAbilityCost,
 } from '../engine/abilities/payAbilityCost';
-import { applyDevPreset } from '../dev/presets';
 import { getEffectiveKeywords } from '../engine/keywords/keywordUtils';
 import type { Ability, CardState } from '../types';
 import {
@@ -116,9 +115,4 @@ describe('Lieutenant of Orthanc 4R158 — autre Ourouk acharné', () => {
         ).toBe(false);
     });
 
-    it('preset DEV : Lieutenant + autre Ourouk', () => {
-        const G = createGameState();
-        applyDevPreset(G, 'DECK_GAPS_LIEUTENANT_ORTHANC');
-        expect(G.battlefield.map((c) => c.id)).toEqual(['4R158', '11C195']);
-    });
 });

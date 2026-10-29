@@ -472,6 +472,134 @@ describe('parseAbilities — deck gaps batch 2 (Noble Leaders / Gandalf / Promis
         );
     });
 
+    it("Lurtz's Sword : victoire → moulin pioche FP ×2", () => {
+        expect(
+            parseAbilities(
+                'Bearer must be Lurtz. Each time Lurtz wins a skirmish, the Free Peoples player must discard the top 2 cards of his or her draw deck.',
+                "Lurtz's Sword",
+                '2R43'
+            )
+        ).toEqual(
+            expect.arrayContaining([
+                expect.objectContaining({
+                    trigger: {
+                        type: 'WINS_SKIRMISH',
+                        winner: 'BEARER',
+                    },
+                    effects: [
+                        {
+                            type: 'DISCARD_TOP_OF_DECK',
+                            count: 2,
+                            whose: 'FREE_PEOPLES',
+                        },
+                    ],
+                    source: 'ATTACHMENT',
+                }),
+            ])
+        );
+    });
+
+    it('Troop of Uruk-hai : pas de bonus de force des armes', () => {
+        expect(
+            parseAbilities(
+                '<keyword>Damage +1.</keyword>. A character skirmishing this minion does not gain strength bonuses from weapons.',
+                'Troop of Uruk-hai',
+                '1R143'
+            )
+        ).toEqual(
+            expect.arrayContaining([
+                expect.objectContaining({
+                    effects: [
+                        {
+                            type: 'SUPPRESS_WEAPON_STRENGTH',
+                            target: 'SKIRMISHING',
+                        },
+                    ],
+                }),
+            ])
+        );
+    });
+
+    it('Patrol of Uruk-hai : While res≤5 → FORBID_WOUNDS', () => {
+        expect(
+            parseAbilities(
+                '<keyword>Damage +1.</keyword> While this minion is skirmishing a Free Peoples character who has resistance 5 or less, this minion cannot take wounds.',
+                'Patrol of Uruk-hai',
+                '11C198'
+            )
+        ).toEqual(
+            expect.arrayContaining([
+                expect.objectContaining({
+                    trigger: {
+                        type: 'WHILE',
+                        skirmishing: {
+                            target: [['CHARACTER']],
+                            resistanceAtMost: 5,
+                        },
+                    },
+                    effects: [
+                        { type: 'FORBID_WOUNDS', target: 'SELF' },
+                    ],
+                }),
+            ])
+        );
+    });
+
+    it('Blade of Gondor : affaiblir → blesser Orque/Ourouk au combat', () => {
+        expect(
+            parseAbilities(
+                'Bearer must be Boromir. <keyword>Skirmish:</keyword> Exert Boromir to wound an Orc or Uruk-hai he is skirmishing.',
+                'Blade of Gondor',
+                '1R95'
+            )
+        ).toEqual(
+            expect.arrayContaining([
+                expect.objectContaining({
+                    phases: ['SKIRMISH'],
+                    cost: [{ exert: [{ count: 1, target: 'BEARER' }] }],
+                    effects: [
+                        {
+                            type: 'WOUND',
+                            count: 1,
+                            target: 'SKIRMISHING',
+                            match: [['ORC'], ['URUK-HAI']],
+                        },
+                    ],
+                    source: 'ATTACHMENT',
+                }),
+            ])
+        );
+    });
+
+    it('Orthanc Berserker : 5 fardeaux + affaiblir ×2 → épuiser compagnon', () => {
+        expect(
+            parseAbilities(
+                '<keyword>Maneuver:</keyword> Spot 5 burdens and exert Orthanc Berserker twice to exhaust a companion (except the Ring-bearer).',
+                'Orthanc Berserker',
+                '3R66'
+            )
+        ).toEqual(
+            expect.arrayContaining([
+                expect.objectContaining({
+                    phases: ['MANEUVER'],
+                    cost: [
+                        {
+                            spotBurdens: 5,
+                            exert: [{ count: 2, target: 'SELF' }],
+                        },
+                    ],
+                    effects: [
+                        {
+                            type: 'EXHAUST',
+                            target: [['COMPANION']],
+                            excludeRingBearer: true,
+                        },
+                    ],
+                }),
+            ])
+        );
+    });
+
     it('Lieutenant of Orthanc : affaiblir → autre Ourouk acharné', () => {
         expect(
             parseAbilities(

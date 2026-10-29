@@ -3523,6 +3523,8 @@ export const GameBoard: React.FC<GameBoardProps> = ({
                                 : 'SHADOW'
                         }
                         localHasInitiative={playerHasInitiative(G, myId)}
+                        myDeckCount={(me.deck || []).length}
+                        opponentDeckCount={(opponent.deck || []).length}
                         myDiscard={me.discard || []}
                         myDeadPile={me.deadPile || []}
                         myRemovedFromGame={me.removedFromGame || []}

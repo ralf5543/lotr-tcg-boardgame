@@ -15,7 +15,7 @@ export interface DevMoves {
     devSetArchery?: (amount: number) => void;
     devSetCurrentSite?: (siteIndex: number) => void;
     devForceEndPhase: () => void;
-    /** Presets de playtest de la vague en cours (trous decks : Lieutenant d’Orthanc). */
+    /** Presets de playtest de la vague en cours (trous decks : Épée de Lurtz). */
     devLoadPreset?: (presetName: string) => void;
 }
 
@@ -372,24 +372,24 @@ export const DevPanel: React.FC<DevPanelProps> = ({
                         </S.GameButton>
                     </S.Section>
 
-                    {/* Preset de playtest : trous decks — Lieutenant d’Orthanc */}
+                    {/* Preset de playtest : trous decks — Épée de Lurtz */}
                     <S.Section>
                         <S.Label>
-                            Preset decks (Lieutenant d’Orthanc) :
+                            Preset decks (Épée de Lurtz) :
                             <br />
                             <span style={{ opacity: 0.75, fontWeight: 400 }}>
-                                Manœuvre : affaiblir le Lieutenant → rendre
-                                un autre Ourouk acharné (pas soi).
+                                Victoire de Lurtz → 2 cartes du dessus
+                                de la pioche FP en défausse.
                             </span>
                         </S.Label>
                         <S.ActionButton
                             onClick={() =>
                                 moves.devLoadPreset?.(
-                                    'DECK_GAPS_LIEUTENANT_ORTHANC'
+                                    'DECK_GAPS_LURTZ_SWORD'
                                 )
                             }
                         >
-                            Lieutenant Orthanc (4R158)
+                            Épée de Lurtz (2R43)
                         </S.ActionButton>
                     </S.Section>
 

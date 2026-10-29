@@ -61,6 +61,7 @@ import {
     areBurdenRemovalsForbidden,
     isWoundPreventionForbidden,
     canCardTakeWound,
+    placeCardIntoDiscardPile,
 } from '../../logic/sites';
 import {
     stackCardOnHost,
@@ -830,6 +831,7 @@ export function applyAbilityEffect(
                 G.tempModifiers.push({
                     id: `${ability.id}:stack-play:${G.tempModifiers.length}`,
                     sourceCardTitle: source.i18n?.fr?.title || source.title,
+                    sourceCardId: source.instanceId || source.id,
                     targetCardId,
                     stat: grant.stat,
                     value: grant.value,
@@ -901,6 +903,30 @@ export function applyAbilityEffect(
 
         if (effect.type === 'REMOVE_THREATS') {
             addThreats(G, -(effect.count || 0));
+            continue;
+        }
+
+        if (effect.type === 'DISCARD_TOP_OF_DECK') {
+            const fpId = G.fpPlayerId || '0';
+            const shadowId = fpId === '0' ? '1' : '0';
+            const ownerId = abilityOwnerPlayerId(G, source);
+            let playerId: string | undefined;
+            if (effect.whose === 'FREE_PEOPLES') playerId = fpId;
+            else if (effect.whose === 'SHADOW') playerId = shadowId;
+            else if (effect.whose === 'OWNER') playerId = ownerId || undefined;
+            else if (effect.whose === 'OPPONENT') {
+                playerId = ownerId === fpId ? shadowId : fpId;
+            }
+            if (!playerId) return false;
+            const player = G.players[playerId];
+            if (!player) return false;
+            if (!player.deck) player.deck = [];
+            const need = effect.count || 0;
+            for (let i = 0; i < need; i += 1) {
+                const card = player.deck.shift();
+                if (!card) break;
+                placeCardIntoDiscardPile(G, playerId, card);
+            }
             continue;
         }
 
@@ -1489,6 +1515,7 @@ function applyOneEffect(
         G.tempModifiers.push({
             id: `${ability.id}:${G.tempModifiers.length}`,
             sourceCardTitle: source.i18n?.fr?.title || source.title,
+            sourceCardId: source.instanceId || source.id,
             targetCardId,
             stat: effect.stat,
             value,
@@ -1499,6 +1526,12 @@ function applyOneEffect(
     }
 
     if (effect.type === 'WOUND') {
+        if (
+            effect.match &&
+            !cardMatchesTarget(target, effect.match)
+        ) {
+            return false;
+        }
         if (!canCardTakeWound(G, target)) return false;
         requestWounds(G, target, effect.count || 1);
         return true;

@@ -2763,6 +2763,66 @@ function parseEachTimeWinsDiscardSkirmishingAbilities(
 }
 
 /**
+ * Each time X wins a skirmish, the Free Peoples player must discard
+ * the top N card(s) of his or her draw deck.
+ * (Lurtz’s Sword, Uruk Rager, Uruk-hai Sword…)
+ * Pas « make an opponent discard » (Nobody Tosses a Dwarf — optionnel).
+ */
+function parseEachTimeWinsFpDiscardTopDeckAbilities(
+    text: string,
+    cardTitle?: string,
+    cardId?: string
+): Record<string, unknown>[] {
+    const found: Record<string, unknown>[] = [];
+    const re =
+        /Each time ([\s\S]+?) wins a skirmish,\s*the Free Peoples player must discard the top (?:(\d+)\s+cards?|card) of (?:his or her|their) draw deck\.?/gi;
+    let match: RegExpExecArray | null;
+    while ((match = re.exec(text)) !== null) {
+        const winnerParsed = parseWinsSkirmishWinner(
+            match[1].trim(),
+            cardTitle
+        );
+        if (!winnerParsed) continue;
+        const count = match[2] ? parseInt(match[2], 10) : 1;
+        if (!Number.isFinite(count) || count <= 0) continue;
+
+        // « Bearer must be Lurtz » + « Each time Lurtz wins » → BEARER
+        const bearerName = parseBearerMustBeName(text);
+        let winner = winnerParsed.winner;
+        if (
+            bearerName &&
+            Array.isArray(winner) &&
+            winner.length === 1 &&
+            winner[0]?.length === 1 &&
+            String(winner[0][0]).toLowerCase() === bearerName.toLowerCase()
+        ) {
+            winner = 'BEARER';
+        }
+
+        found.push({
+            id: `${cardId || 'ability'}:${found.length}:each-time-win-fp-mill`,
+            phases: ['RESPONSE'],
+            trigger: {
+                type: 'WINS_SKIRMISH',
+                winner,
+                ...(winnerParsed.yours ? { yours: true } : {}),
+            },
+            cost: [],
+            effects: [
+                {
+                    type: 'DISCARD_TOP_OF_DECK',
+                    count,
+                    whose: 'FREE_PEOPLES',
+                },
+            ],
+            source: winner === 'BEARER' ? 'ATTACHMENT' : 'SELF',
+            text: stripAbilityMarkup(match[0]),
+        });
+    }
+    return found;
+}
+
+/**
  * Each time a companion takes a wound during a skirmish that involved [filtre],
  * exert a companion. (Promise Keeping…)
  */
@@ -5009,6 +5069,82 @@ function parseWhileSkirmishingResistanceKeywordAbilities(
 }
 
 /**
+ * While this minion is skirmishing a (Free Peoples) character who has
+ * resistance N or less, this minion cannot take wounds. (Patrol of Uruk-hai…)
+ */
+function parseWhileSkirmishingResistanceForbidWoundsAbilities(
+    text: string,
+    cardId?: string
+): Record<string, unknown>[] {
+    const found: Record<string, unknown>[] = [];
+    const re =
+        /While this minion is skirmishing (?:a|an) (?:Free Peoples )?character who has resistance (\d+) or less,\s*this minion cannot take wounds\.?/gi;
+    let match: RegExpExecArray | null;
+    while ((match = re.exec(text)) !== null) {
+        const resistanceAtMost = parseInt(match[1], 10);
+        if (!Number.isFinite(resistanceAtMost) || resistanceAtMost < 0) continue;
+        found.push({
+            id: `${cardId || 'ability'}:${found.length}:while-skirmish-res-forbid-wounds`,
+            phases: [],
+            trigger: {
+                type: 'WHILE',
+                skirmishing: {
+                    target: [['CHARACTER']],
+                    resistanceAtMost,
+                },
+            },
+            cost: [],
+            effects: [
+                {
+                    type: 'FORBID_WOUNDS',
+                    target: 'SELF',
+                },
+            ],
+            source: 'SELF',
+            text: stripAbilityMarkup(match[0]),
+        });
+    }
+    return found;
+}
+
+/**
+ * A/Each character skirmishing this minion does not gain / loses all
+ * strength bonuses from weapons. (Troop of Uruk-hai, Uruk-hai Troop…)
+ * Refuse clauses avec « and loses all damage » (Mithril-coat).
+ */
+function parseSkirmishingSuppressWeaponStrengthAbilities(
+    text: string,
+    cardId?: string
+): Record<string, unknown>[] {
+    const found: Record<string, unknown>[] = [];
+    const re =
+        /(?:A|Each) characters? skirmishing this minion (?:does not gain|loses all) strength bonuses from weapons\.?/gi;
+    let match: RegExpExecArray | null;
+    while ((match = re.exec(text)) !== null) {
+        const after = text
+            .slice(match.index + match[0].length)
+            .replace(/^\s+/, '')
+            .slice(0, 40);
+        if (/^and\s+loses\s+all\s+damage/i.test(after)) continue;
+        found.push({
+            id: `${cardId || 'ability'}:${found.length}:suppress-weapon-str`,
+            phases: [],
+            trigger: { type: 'WHILE' },
+            cost: [],
+            effects: [
+                {
+                    type: 'SUPPRESS_WEAPON_STRENGTH',
+                    target: 'SKIRMISHING',
+                },
+            ],
+            source: 'SELF',
+            text: stripAbilityMarkup(match[0]),
+        });
+    }
+    return found;
+}
+
+/**
  * Each time Gollum or Sméagol is played, add a threat.
  */
 function parseEachTimeNamedPlayedAddThreatsAbilities(
@@ -5134,6 +5270,59 @@ function parseRemoveTwilightExertPlayFromDiscardAbilities(
                     type: 'PLAY_FROM_DECK_OR_DISCARD',
                     from: 'DISCARD',
                     target: [filters],
+                },
+            ],
+            source: 'SELF',
+            text: stripAbilityMarkup(match[0]),
+        });
+    }
+    return found;
+}
+
+/**
+ * Phase: Spot N burdens and exert X twice to exhaust a companion
+ * (except the Ring-bearer). (Orthanc Berserker…)
+ */
+function parseSpotBurdensExertExhaustCompanionAbilities(
+    text: string,
+    cardTitle?: string,
+    cardId?: string
+): Record<string, unknown>[] {
+    const found: Record<string, unknown>[] = [];
+    const phaseTok =
+        '(?:\\*\\*|<(?:keyword)>)(Fellowship|Shadow|Maneuver|Archery|Assignment|Skirmish|Regroup):?(?:\\s*</(?:keyword)>)?(?:\\*\\*)?';
+    const re = new RegExp(
+        `${phaseTok}\\s*Spot\\s+(\\d+)\\s+burdens?\\s+and\\s+exert\\s+(.+?)\\s+to exhaust\\s+(?:a|an)\\s+companion\\s*\\(\\s*except the Ring-bearer\\s*\\)\\.?`,
+        'gi'
+    );
+    let match: RegExpExecArray | null;
+    while ((match = re.exec(text)) !== null) {
+        const phase = match[1]?.toUpperCase();
+        const burdens = parseInt(match[2] || '', 10);
+        if (!phase || !Number.isFinite(burdens) || burdens <= 0) continue;
+        const subject = parseExertSubject(
+            match[3].trim(),
+            cardTitle,
+            text
+        );
+        if (!subject) continue;
+        if (subject.target !== 'SELF' && subject.target !== 'BEARER') {
+            continue;
+        }
+        found.push({
+            id: `${cardId || 'ability'}:${found.length}:spot-burdens-exhaust`,
+            phases: [phase],
+            cost: [
+                {
+                    spotBurdens: burdens,
+                    exert: [exertSelectorFromSubject(subject)],
+                },
+            ],
+            effects: [
+                {
+                    type: 'EXHAUST',
+                    target: [['COMPANION']],
+                    excludeRingBearer: true,
                 },
             ],
             source: 'SELF',
@@ -13316,22 +13505,58 @@ export function parseAbilities(
         const woundSubject = parseExertSubject(woundMatch[1], cardTitle, text);
         if (!woundSubject) return;
 
-        const woundClause = woundMatch[2]
+        const woundClauseRaw = woundMatch[2]
             .split(';')[0]
-            .replace(/<[^>]+>/g, ' ')
             .replace(/\s+/g, ' ')
             .trim()
             .replace(/\.$/, '');
+        const woundClause = woundClauseRaw
+            .replace(/<[^>]+>/g, ' ')
+            .replace(/\s+/g, ' ')
+            .trim();
 
         const skirmishingWound =
             /^(?:a|an) character(?: that)? (?:he or she|he|she|it|this \w+|bearer) is skirmishing$/i.test(
                 woundClause
             );
 
+        // « an Orc or Uruk-hai he is skirmishing » / « an Orc he or she is… »
+        const skirmishingClassMatch = woundClauseRaw.match(
+            /^(?:a|an)\s+([\s\S]+?)\s+(?:he or she|he|she|it|this \w+|bearer) is skirmishing$/i
+        );
+
         let woundTarget: 'SELF' | 'BEARER' | 'SKIRMISHING' | string[][] | null =
             null;
+        let skirmishMatch: string[][] | undefined;
         if (skirmishingWound) {
             woundTarget = 'SKIRMISHING';
+        } else if (skirmishingClassMatch) {
+            const classRaw = skirmishingClassMatch[1].trim();
+            const classPlain = classRaw
+                .replace(/<[^>]+>/g, ' ')
+                .replace(/\s+/g, ' ')
+                .trim();
+            // « character » déjà couvert ; refuse conditions / twice / bearing…
+            if (
+                /^character$/i.test(classPlain) ||
+                /\b(if|that|who|whose|bearing|with|from|except)\b/i.test(
+                    classPlain
+                )
+            ) {
+                return;
+            }
+            const withArticle = /^(a|an)\s+/i.test(classRaw)
+                ? classRaw
+                : `a ${classRaw}`;
+            const dnf =
+                parseArticleOrFilters(withArticle) ||
+                (() => {
+                    const filters = parseClassFilters(classRaw);
+                    return filters.length > 0 ? [filters] : null;
+                })();
+            if (!dnf) return;
+            woundTarget = 'SKIRMISHING';
+            skirmishMatch = dnf;
         } else {
             const woundArticle = woundClause.match(/^(a|an|the)\s+(.+)$/i);
             if (!woundArticle) return;
@@ -13371,6 +13596,7 @@ export function parseAbilities(
                     type: 'WOUND',
                     count: 1,
                     target: woundTarget,
+                    ...(skirmishMatch ? { match: skirmishMatch } : {}),
                 },
             ],
             source: woundSource,
@@ -13500,6 +13726,17 @@ export function parseAbilities(
         });
     });
 
+    parseSpotBurdensExertExhaustCompanionAbilities(
+        text,
+        cardTitle,
+        cardId
+    ).forEach((ability) => {
+        abilities.push({
+            ...ability,
+            id: `${cardId || 'ability'}:${abilities.length}`,
+        });
+    });
+
     parseDiscardSelfReturnToHandAbilities(text, cardId).forEach((ability) => {
         abilities.push({
             ...ability,
@@ -13587,6 +13824,17 @@ export function parseAbilities(
     );
 
     parseEachTimeWinsDiscardSkirmishingAbilities(
+        text,
+        cardTitle,
+        cardId
+    ).forEach((ability) => {
+        abilities.push({
+            ...ability,
+            id: `${cardId || 'ability'}:${abilities.length}`,
+        });
+    });
+
+    parseEachTimeWinsFpDiscardTopDeckAbilities(
         text,
         cardTitle,
         cardId
@@ -13856,6 +14104,25 @@ export function parseAbilities(
     });
 
     parseWhileSkirmishingStrengthAbilities(text, cardTitle, cardId).forEach(
+        (ability) => {
+            abilities.push({
+                ...ability,
+                id: `${cardId || 'ability'}:${abilities.length}`,
+            });
+        }
+    );
+
+    parseWhileSkirmishingResistanceForbidWoundsAbilities(
+        text,
+        cardId
+    ).forEach((ability) => {
+        abilities.push({
+            ...ability,
+            id: `${cardId || 'ability'}:${abilities.length}`,
+        });
+    });
+
+    parseSkirmishingSuppressWeaponStrengthAbilities(text, cardId).forEach(
         (ability) => {
             abilities.push({
                 ...ability,

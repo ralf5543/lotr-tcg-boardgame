@@ -121,8 +121,8 @@ const neutralPath: readonly string[] = [
 
 /**
  * Applique le preset DEV de playtest (zones vidées / chemin Standard).
- * Vague en cours : trous de mécanismes decks — Lieutenant d’Orthanc
- * (affaiblir → autre Ourouk acharné).
+ * Vague en cours : trous de mécanismes decks — Épée de Lurtz
+ * (victoire → 2 cartes du dessus de la pioche FP en défausse).
  */
 export const applyDevPreset = (
     G: GameState,
@@ -136,27 +136,34 @@ export const applyDevPreset = (
     const shadowPlayer = G.players[shadowId];
 
     switch (presetType) {
-        case 'DECK_GAPS_LIEUTENANT_ORTHANC': {
+        case 'DECK_GAPS_LURTZ_SWORD': {
             resetBoardForPreset(G);
             setupDevPath(G, 0, neutralPath);
-            G.twilightPool = 8;
-            fpPlayer.burdens = 2;
+            G.twilightPool = 10;
+            fpPlayer.burdens = 0;
             fpPlayer.fellowshipArea = [
                 {
-                    ...clonePresetCard('2C102', 'dev-lieut-frodo'),
+                    ...clonePresetCard('2C102', 'dev-lurtzsw-frodo'),
                     attachments: [
-                        clonePresetCard('1R1', 'dev-lieut-ring'),
+                        clonePresetCard('1R1', 'dev-lurtzsw-ring'),
                     ],
                 },
-                clonePresetCard('1R89', 'dev-lieut-aragorn'),
             ];
             fpPlayer.hand = [];
-            fpPlayer.deck = [];
+            fpPlayer.deck = [
+                clonePresetCard('1C84', 'dev-lurtzsw-mill-1'),
+                clonePresetCard('7C108', 'dev-lurtzsw-mill-2'),
+                clonePresetCard('7C86', 'dev-lurtzsw-mill-3'),
+            ];
             fpPlayer.sitesDeck = [clonePresetSite('11S250', fpId)];
             if (shadowPlayer) {
                 G.battlefield = [
-                    clonePresetCard('4R158', 'dev-lieutenant'),
-                    clonePresetCard('11C195', 'dev-lieut-uruk'),
+                    {
+                        ...clonePresetCard('11R194', 'dev-lurtzsw-lurtz'),
+                        attachments: [
+                            clonePresetCard('2R43', 'dev-lurtzsw-sword'),
+                        ],
+                    },
                 ];
                 shadowPlayer.hand = [];
                 shadowPlayer.deck = [];
@@ -165,7 +172,7 @@ export const applyDevPreset = (
                 ];
             }
             G.statusMessage =
-                '[DEV] Lieutenant d’Orthanc (4R158) · Lieutenant + Murderous Uruk en jeu. Phase Manœuvre : cliquez le Lieutenant → affaiblir → désigner l’autre Ourouk (pas soi) pour Acharné jusqu’au ralliement. Un seul Ourouk → pas de cible « another ».';
+                '[DEV] Épée de Lurtz (2R43) · Assignez Lurtz vs Frodon : Lurtz gagne → 2 cartes du dessus de la pioche FP partent en défausse (auto). Damage +1 inchangé.';
             break;
         }
     }

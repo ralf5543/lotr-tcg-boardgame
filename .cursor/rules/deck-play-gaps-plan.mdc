@@ -50,7 +50,12 @@ L’ancien plan main/initiative est **figé** (`.cursor/rules/hand-initiative-pl
 | `5U111` | Frodo, Master of the Precious | ✅ Validé par Ralf — Fellowship : +1 fardeau → jouer Sméagol depuis la défausse (`PLAY_FROM_DECK_OR_DISCARD` + toPlay Sméagol). Preset DEV retiré après validation |
 | `11R194` | Lurtz, Minion of the White Wizard | ✅ Validé par Ralf — force +3 par compagnon épuisé (`perSpot` EXHAUSTED COMPANION) ; rappel Muster en `<i>` + `<br>` dans le CSV. Preset DEV retiré après validation |
 | `2R46` | Uruk Captain | ✅ Validé par Ralf — Ombre : −1 crépuscule + affaiblir → jouer un Ourouk depuis la défausse. Preset DEV retiré après validation |
-| `4R158` | Lieutenant of Orthanc | Manœuvre : affaiblir → rendre un autre Ourouk **acharné** jusqu’au ralliement (`excludeSource`). En playtest, preset DEV `DECK_GAPS_LIEUTENANT_ORTHANC` |
+| `4R158` | Lieutenant of Orthanc | ✅ Validé par Ralf — Manœuvre : affaiblir → autre Ourouk **acharné** (`excludeSource`). Preset DEV retiré après validation |
+| `3R66` | Orthanc Berserker | ✅ Validé par Ralf — Manœuvre : 5 fardeaux + affaiblir ×2 → épuiser un compagnon (sauf Porteur) ; flèche de ciblage agent → cible. Preset DEV retiré après validation |
+| `1R95` | Blade of Gondor | ✅ Validé par Ralf — Combat : affaiblir Boromir → blesser un Orque ou Ourouk qu’il combat (`SKIRMISHING` + `match` DNF) ; flèche agent → cible. Preset DEV retiré après validation |
+| `11C198` | Patrol of Uruk-hai | ✅ Validé par Ralf — While combat un perso FP résistance ≤5 → `FORBID_WOUNDS` ; Épée inactive vs Patrouille (autre Ourouk encore blessable). Preset DEV retiré après validation |
+| `1R143` | Troop of Uruk-hai | ✅ Validé par Ralf — pas de bonus de force des armes (`SUPPRESS_WEAPON_STRENGTH` : +imprimé, +temp type Knight’s Spear, While d’arme) ; autres effets d’arme (blesser…) inchangés. Preset DEV retiré après validation |
+| `2R43` | Lurtz's Sword | Victoire → FP défausse les 2 cartes du dessus de sa pioche (`DISCARD_TOP_OF_DECK`). En playtest, preset DEV `DECK_GAPS_LURTZ_SWORD` |
 
 Livré (playtest) : Hidden Knowledge `7R104` (grille révélation + valider) ; Slippery Sneak `8R27` ; escarmouche vacante (mort→gagnant / défausse→pas) ; Cruel Caradhras `1R124` ; Pelennor Flat `11S254` ; Shelob when-played possession ; toaster Orthanc (boutons cohérents).
 

@@ -11,6 +11,7 @@ import {
     getSkirmishWoundLimit,
     skirmishWoundsTaken,
 } from './skirmishWoundLimit';
+import { cardCannotTakeWoundsWhile } from './stats/mechanics/whileModifier';
 
 export function getCurrentSiteIndex(G: GameState): number {
     const fpId = G.fpPlayerId || '0';
@@ -133,6 +134,10 @@ export function canCardTakeWound(G: GameState, card: CardState): boolean {
     if (!card || card.isDead) return false;
     // Phase d’archerie (fenêtre ACTIONS → assignation) : immunités site / carte.
     if (G.archeryState && cannotTakeArcheryWoundsFromSite(G, card)) {
+        return false;
+    }
+    // While « cannot take wounds » (Patrouille ourouke…).
+    if (cardCannotTakeWoundsWhile(G, card)) {
         return false;
     }
     // Plafond par escarmouche (Armure de Pippin) : déjà atteint → plus

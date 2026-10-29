@@ -501,6 +501,12 @@ function formatEffectBit(
 ): string {
     if (effect.type === 'WOUND') {
         if (effect.target === 'SKIRMISHING') {
+            if (effect.match) {
+                const who = effect.match
+                    .map((branch) => formatFilterList(branch))
+                    .join(' ou ');
+                return `blesser un ${who} au combat`;
+            }
             return 'blesser un personnage au combat';
         }
         if (Array.isArray(effect.target)) {
@@ -536,6 +542,10 @@ function formatEffectBit(
             })
             .filter(Boolean)
             .join(' ou ');
+    }
+    if (effect.type === 'DISCARD_TOP_OF_DECK') {
+        const n = effect.count || 1;
+        return `défausser les ${n} carte${n > 1 ? 's' : ''} du dessus de la pioche`;
     }
     if (effect.type === 'DISCARD_FROM_HAND') {
         const n = effect.count;

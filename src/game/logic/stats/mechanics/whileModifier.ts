@@ -637,12 +637,16 @@ function localBeneficiaryMatches(
  */
 export function getWhileStrengthBonus(
     G: GameState,
-    card: CardState
+    card: CardState,
+    options?: { suppressWeaponSources?: boolean }
 ): number {
     const cardId = card.instanceId || card.id;
     let bonus = 0;
+    const suppressWeapons = Boolean(options?.suppressWeaponSources);
 
     forEachWhileOnCard(G, card, (source, ability) => {
+        // Troop of Uruk-hai : pas de +force depuis une arme attachée.
+        if (suppressWeapons && isWeaponAttachment(source)) return;
         for (const effect of ability.effects || []) {
             if (effect.type !== 'MODIFY_STAT') continue;
             if (effect.stat !== 'STRENGTH') continue;
@@ -1066,4 +1070,105 @@ export function shouldSkipPhase(
     forEachInPlayCard(G, visit);
     forEachSiteAttachment(G, visit);
     return skip;
+}
+
+function forbidWoundsCoversCard(
+    G: GameState,
+    source: CardState,
+    effect: AbilityEffect,
+    card: CardState
+): boolean {
+    if (effect.type !== 'FORBID_WOUNDS') return false;
+    if (effect.target === 'SELF') {
+        return (source.instanceId || source.id) === (card.instanceId || card.id);
+    }
+    if (effect.target === 'BEARER') {
+        const bearer = findBearer(G, source);
+        return Boolean(
+            bearer &&
+                (bearer.instanceId || bearer.id) ===
+                    (card.instanceId || card.id)
+        );
+    }
+    if (Array.isArray(effect.target)) {
+        return cardMatchesTarget(card, effect.target);
+    }
+    return false;
+}
+
+function isWeaponAttachment(att: CardState): boolean {
+    const subtype = String(att.subtype || '').toUpperCase();
+    return subtype === 'HAND-WEAPON' || subtype === 'RANGED-WEAPON';
+}
+
+/**
+ * True si un adversaire d’escarmouche (ou son attachement) annule les
+ * bonus de force des armes sur `card` (Troop of Uruk-hai…).
+ */
+export function isWeaponStrengthSuppressed(
+    G: GameState,
+    card: CardState
+): boolean {
+    if (!card || card.isDead) return false;
+    const opponents = getSkirmishOpponents(G, card);
+    for (const opp of opponents) {
+        const sources = [opp, ...(opp.attachments || []).filter(Boolean)];
+        for (const source of sources) {
+            for (const ability of source.abilities || []) {
+                if (ability.trigger?.type !== 'WHILE') continue;
+                if (!whileConditionHolds(G, source, ability)) continue;
+                for (const effect of ability.effects || []) {
+                    if (effect.type !== 'SUPPRESS_WEAPON_STRENGTH') continue;
+                    if (effect.target === 'SKIRMISHING') return true;
+                    if (
+                        Array.isArray(effect.target) &&
+                        cardMatchesTarget(card, effect.target)
+                    ) {
+                        return true;
+                    }
+                }
+            }
+        }
+    }
+    return false;
+}
+
+export { isWeaponAttachment };
+
+/**
+ * True si un passif While actif interdit les blessures sur cette carte
+ * (Patrol of Uruk-hai, etc.).
+ */
+export function cardCannotTakeWoundsWhile(
+    G: GameState,
+    card: CardState
+): boolean {
+    if (!card || card.isDead) return false;
+    let forbidden = false;
+    const visit = (source: CardState) => {
+        if (forbidden) return;
+        for (const ability of source.abilities || []) {
+            if (ability.trigger?.type !== 'WHILE') continue;
+            if (
+                !(ability.effects || []).some(
+                    (effect) => effect.type === 'FORBID_WOUNDS'
+                )
+            ) {
+                continue;
+            }
+            if (!whileConditionHolds(G, source, ability)) continue;
+            for (const effect of ability.effects || []) {
+                if (forbidWoundsCoversCard(G, source, effect, card)) {
+                    forbidden = true;
+                    return;
+                }
+            }
+        }
+    };
+    // Source = la carte elle-même + ses attachements (Polearm…).
+    visit(card);
+    for (const att of card.attachments || []) {
+        if (att) visit(att);
+    }
+    return forbidden;
 }

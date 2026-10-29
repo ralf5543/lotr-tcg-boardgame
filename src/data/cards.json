@@ -16344,6 +16344,45 @@
         "Boromir"
       ]
     ],
+    "abilities": [
+      {
+        "id": "1R95:0",
+        "phases": [
+          "SKIRMISH"
+        ],
+        "cost": [
+          {
+            "exert": [
+              {
+                "count": 1,
+                "target": "BEARER"
+              }
+            ]
+          }
+        ],
+        "effects": [
+          {
+            "type": "WOUND",
+            "count": 1,
+            "target": "SKIRMISHING",
+            "match": [
+              [
+                "ORC"
+              ],
+              [
+                "URUK-HAI"
+              ]
+            ]
+          }
+        ],
+        "source": "ATTACHMENT",
+        "text": "SKIRMISH: Exert Boromir to wound an Orc or Uruk-hai he is skirmishing.",
+        "textFr": "**Combat :** Affaiblissez Boromir pour blesser un Orque ou Ourouk-Haï qu’il combat."
+      }
+    ],
+    "actionPhases": [
+      "SKIRMISH"
+    ],
     "culture": "GONDOR",
     "twilightCost": 1,
     "strength": 2,
@@ -18814,6 +18853,24 @@
     "keywords": [
       "DAMAGE +1"
     ],
+    "abilities": [
+      {
+        "id": "1R143:0",
+        "phases": [],
+        "trigger": {
+          "type": "WHILE"
+        },
+        "cost": [],
+        "effects": [
+          {
+            "type": "SUPPRESS_WEAPON_STRENGTH",
+            "target": "SKIRMISHING"
+          }
+        ],
+        "source": "SELF",
+        "text": "A character skirmishing this minion does not gain strength bonuses from weapons."
+      }
+    ],
     "culture": "ISENGARD",
     "race": "URUK-HAI",
     "twilightCost": 5,
@@ -19181,6 +19238,28 @@
     "type": "MINION",
     "keywords": [
       "DAMAGE +1"
+    ],
+    "abilities": [
+      {
+        "id": "1C150:0",
+        "phases": [
+          "RESPONSE"
+        ],
+        "trigger": {
+          "type": "WINS_SKIRMISH",
+          "winner": "SELF"
+        },
+        "cost": [],
+        "effects": [
+          {
+            "type": "DISCARD_TOP_OF_DECK",
+            "count": 2,
+            "whose": "FREE_PEOPLES"
+          }
+        ],
+        "source": "SELF",
+        "text": "Each time this minion wins a skirmish, the Free Peoples player must discard the top 2 cards of his or her draw deck."
+      }
     ],
     "culture": "ISENGARD",
     "race": "URUK-HAI",
@@ -19694,6 +19773,28 @@
       [
         "URUK-HAI"
       ]
+    ],
+    "abilities": [
+      {
+        "id": "1C160:0",
+        "phases": [
+          "RESPONSE"
+        ],
+        "trigger": {
+          "type": "WINS_SKIRMISH",
+          "winner": "BEARER"
+        },
+        "cost": [],
+        "effects": [
+          {
+            "type": "DISCARD_TOP_OF_DECK",
+            "count": 1,
+            "whose": "FREE_PEOPLES"
+          }
+        ],
+        "source": "ATTACHMENT",
+        "text": "Each time bearer wins a skirmish, the Free Peoples player must discard the top card of his or her draw deck."
+      }
     ],
     "culture": "ISENGARD",
     "twilightCost": 1,
@@ -29791,6 +29892,28 @@
         "Lurtz"
       ]
     ],
+    "abilities": [
+      {
+        "id": "2R43:0",
+        "phases": [
+          "RESPONSE"
+        ],
+        "trigger": {
+          "type": "WINS_SKIRMISH",
+          "winner": "BEARER"
+        },
+        "cost": [],
+        "effects": [
+          {
+            "type": "DISCARD_TOP_OF_DECK",
+            "count": 2,
+            "whose": "FREE_PEOPLES"
+          }
+        ],
+        "source": "ATTACHMENT",
+        "text": "Each time Lurtz wins a skirmish, the Free Peoples player must discard the top 2 cards of his or her draw deck."
+      }
+    ],
     "culture": "ISENGARD",
     "twilightCost": 1,
     "strength": 2,
@@ -36633,6 +36756,42 @@
     "keywords": [
       "DAMAGE +1"
     ],
+    "abilities": [
+      {
+        "id": "3R66:0",
+        "phases": [
+          "MANEUVER"
+        ],
+        "cost": [
+          {
+            "spotBurdens": 5,
+            "exert": [
+              {
+                "count": 2,
+                "target": "SELF"
+              }
+            ]
+          }
+        ],
+        "effects": [
+          {
+            "type": "EXHAUST",
+            "target": [
+              [
+                "COMPANION"
+              ]
+            ],
+            "excludeRingBearer": true
+          }
+        ],
+        "source": "SELF",
+        "text": "Maneuver: Spot 5 burdens and exert Orthanc Berserker twice to exhaust a companion (except the Ring-bearer).",
+        "textFr": "**Manœuvre :** Désignez 5 points-fardeau et affaiblissez Fou Furieux d’Orthanc deux fois pour épuiser un compagnon (excepté le Porteur de l’Anneau)."
+      }
+    ],
+    "actionPhases": [
+      "MANEUVER"
+    ],
     "culture": "ISENGARD",
     "race": "URUK-HAI",
     "twilightCost": 5,
@@ -38813,6 +38972,42 @@
       [
         "HOBBIT"
       ]
+    ],
+    "abilities": [
+      {
+        "id": "3C108:0",
+        "phases": [
+          "SKIRMISH"
+        ],
+        "cost": [
+          {
+            "exert": [
+              {
+                "count": 1,
+                "target": "BEARER"
+              }
+            ]
+          }
+        ],
+        "effects": [
+          {
+            "type": "WOUND",
+            "count": 1,
+            "target": "SKIRMISHING",
+            "match": [
+              [
+                "ORC"
+              ]
+            ]
+          }
+        ],
+        "source": "ATTACHMENT",
+        "text": "SKIRMISH: Exert bearer to wound an Orc he or she is skirmishing.",
+        "textFr": "**Combat :** Affaiblissez le détenteur pour blesser un Orque qu’il combat."
+      }
+    ],
+    "actionPhases": [
+      "SKIRMISH"
     ],
     "culture": "SHIRE",
     "twilightCost": 0,
@@ -55938,6 +56133,42 @@
     "type": "COMPANION",
     "keywords": [
       "UNHASTY"
+    ],
+    "abilities": [
+      {
+        "id": "5R19:0",
+        "phases": [
+          "SKIRMISH"
+        ],
+        "cost": [
+          {
+            "exert": [
+              {
+                "count": 1,
+                "target": "SELF"
+              }
+            ]
+          }
+        ],
+        "effects": [
+          {
+            "type": "WOUND",
+            "count": 1,
+            "target": "SKIRMISHING",
+            "match": [
+              [
+                "ISENGARD",
+                "MINION"
+              ]
+            ]
+          }
+        ],
+        "source": "SELF",
+        "text": "SKIRMISH: Exert Lindenroot to wound an isengard minion he is skirmishing."
+      }
+    ],
+    "actionPhases": [
+      "SKIRMISH"
     ],
     "culture": "GANDALF",
     "race": "ENT",
@@ -105800,6 +106031,32 @@
     "keywords": [
       "DAMAGE +1"
     ],
+    "abilities": [
+      {
+        "id": "11C198:0",
+        "phases": [],
+        "trigger": {
+          "type": "WHILE",
+          "skirmishing": {
+            "target": [
+              [
+                "CHARACTER"
+              ]
+            ],
+            "resistanceAtMost": 5
+          }
+        },
+        "cost": [],
+        "effects": [
+          {
+            "type": "FORBID_WOUNDS",
+            "target": "SELF"
+          }
+        ],
+        "source": "SELF",
+        "text": "While this minion is skirmishing a Free Peoples character who has resistance 5 or less, this minion cannot take wounds."
+      }
+    ],
     "culture": "URUK-HAI",
     "race": "URUK-HAI",
     "twilightCost": 4,
@@ -114190,6 +114447,24 @@
     "type": "MINION",
     "keywords": [
       "DAMAGE +1"
+    ],
+    "abilities": [
+      {
+        "id": "12R157:0",
+        "phases": [],
+        "trigger": {
+          "type": "WHILE"
+        },
+        "cost": [],
+        "effects": [
+          {
+            "type": "SUPPRESS_WEAPON_STRENGTH",
+            "target": "SKIRMISHING"
+          }
+        ],
+        "source": "SELF",
+        "text": "Each character skirmishing this minion loses all strength bonuses from weapons."
+      }
     ],
     "culture": "URUK-HAI",
     "race": "URUK-HAI",
@@ -130738,6 +131013,41 @@
     "isUnique": true,
     "kind": "SHADOW",
     "type": "MINION",
+    "abilities": [
+      {
+        "id": "15U98:0",
+        "phases": [
+          "SKIRMISH"
+        ],
+        "cost": [
+          {
+            "exert": [
+              {
+                "count": 1,
+                "target": "SELF"
+              }
+            ]
+          }
+        ],
+        "effects": [
+          {
+            "type": "WOUND",
+            "count": 1,
+            "target": "SKIRMISHING",
+            "match": [
+              [
+                "COMPANION"
+              ]
+            ]
+          }
+        ],
+        "source": "SELF",
+        "text": "SKIRMISH: Exert this minion to wound a companion it is skirmishing."
+      }
+    ],
+    "actionPhases": [
+      "SKIRMISH"
+    ],
     "culture": "ORC",
     "race": "ORC",
     "twilightCost": 5,
@@ -131636,6 +131946,41 @@
     "isUnique": false,
     "kind": "SHADOW",
     "type": "MINION",
+    "abilities": [
+      {
+        "id": "15C116:0",
+        "phases": [
+          "SKIRMISH"
+        ],
+        "cost": [
+          {
+            "exert": [
+              {
+                "count": 1,
+                "target": "SELF"
+              }
+            ]
+          }
+        ],
+        "effects": [
+          {
+            "type": "WOUND",
+            "count": 1,
+            "target": "SKIRMISHING",
+            "match": [
+              [
+                "COMPANION"
+              ]
+            ]
+          }
+        ],
+        "source": "SELF",
+        "text": "SKIRMISH: Exert this minion to wound a companion it is skirmishing."
+      }
+    ],
+    "actionPhases": [
+      "SKIRMISH"
+    ],
     "culture": "ORC",
     "race": "ORC",
     "twilightCost": 3,
@@ -131790,6 +132135,41 @@
     "isUnique": false,
     "kind": "SHADOW",
     "type": "MINION",
+    "abilities": [
+      {
+        "id": "15C120:0",
+        "phases": [
+          "SKIRMISH"
+        ],
+        "cost": [
+          {
+            "exert": [
+              {
+                "count": 1,
+                "target": "SELF"
+              }
+            ]
+          }
+        ],
+        "effects": [
+          {
+            "type": "WOUND",
+            "count": 1,
+            "target": "SKIRMISHING",
+            "match": [
+              [
+                "COMPANION"
+              ]
+            ]
+          }
+        ],
+        "source": "SELF",
+        "text": "SKIRMISH: Exert this minion to wound a companion it is skirmishing."
+      }
+    ],
+    "actionPhases": [
+      "SKIRMISH"
+    ],
     "culture": "ORC",
     "race": "ORC",
     "twilightCost": 4,

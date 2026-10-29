@@ -32,7 +32,11 @@ import {
     getStackedMinionsOnControlledSites,
 } from '../../logic/sites';
 import { getEffectiveTwilightCost } from '../../../utils/roamingDetection';
-import { getWhileTwilightCostModifier } from '../../logic/stats/mechanics/whileModifier';
+import {
+    getWhileTwilightCostModifier,
+    isWeaponAttachment,
+    isWeaponStrengthSuppressed,
+} from '../../logic/stats/mechanics/whileModifier';
 import {
     canReplaceCurrentSite,
     canReplaceSiteInCurrentRegionForPlayer,
@@ -205,6 +209,11 @@ function candidatesForEffect(
     }
     if (effect.type === 'WOUND' && effect.excludeRingBearer) {
         matches = matches.filter((card) => !isRingBearerCard(card));
+    }
+    if (effect.type === 'WOUND' && effect.match) {
+        matches = matches.filter((card) =>
+            cardMatchesTarget(card, effect.match!)
+        );
     }
     if (effect.type === 'WOUND') {
         // Cible invalide (ex. Uplands / archerie) → absente des candidats ;
@@ -1015,6 +1024,24 @@ export function abilityHasLegalEffectTarget(
                     .filter((mod) => mod.id.startsWith(`${ability.id}:`))
                     .reduce((sum, mod) => sum + mod.value, 0);
                 if (used + effect.value > effect.limit) return false;
+            }
+            // Troop of Uruk-hai : une arme ne peut pas donner de +force.
+            if (
+                effect.type === 'ADD_TEMP_STAT' &&
+                effect.stat === 'STRENGTH' &&
+                isWeaponAttachment(source)
+            ) {
+                const beneficiary = resolveAbilityTarget(
+                    G,
+                    source,
+                    effect.target
+                );
+                if (
+                    beneficiary &&
+                    isWeaponStrengthSuppressed(G, beneficiary)
+                ) {
+                    return false;
+                }
             }
             if (
                 effect.type === 'ADD_TEMP_STAT' &&

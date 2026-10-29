@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import type { CardState } from '../../../../game/types';
+import { usePulseOnChange } from '../../hooks/usePulseOnChange';
 import { TwilightPool } from '../TwilightPool';
 import * as S from './styles';
 
@@ -20,6 +21,9 @@ interface OutOfPlayRailProps {
     initiativeHolder: 'FREE_PEOPLE' | 'SHADOW';
     /** Vrai si le joueur local a l’initiative (bordure jaune vs grise). */
     localHasInitiative: boolean;
+    /** Taille de la pioche (face cachée — pas de consultation). */
+    myDeckCount: number;
+    opponentDeckCount: number;
     myDiscard: CardState[];
     myDeadPile: CardState[];
     myRemovedFromGame: CardState[];
@@ -34,6 +38,34 @@ const threatLabel = (count: number): string =>
 
 const pileCountLabel = (count: number): string =>
     count > 0 ? `\n${count}` : '';
+
+/** Pioche : verso + compteur, non cliquable. */
+const DeckBlock: React.FC<{
+    owner: 'adverse' | 'toi';
+    count: number;
+}> = ({ owner, count }) => {
+    const pulseGen = usePulseOnChange(count);
+    const ownerPrefix = owner === 'adverse' ? 'Adv. ' : '';
+    const empty = count <= 0;
+
+    return (
+        <S.DeckBlock
+            $empty={empty}
+            $pulseGen={pulseGen}
+            aria-label={`${ownerPrefix}Pioche${empty ? ', vide' : `, ${count} cartes`} (non consultable)`}
+            title="Pioche — face cachée, non consultable"
+        >
+            {!empty && (
+                <S.DeckBack src="interface/lotr_cardback.webp" alt="" />
+            )}
+            <S.PileLabel>
+                {ownerPrefix}
+                Pioche
+                {`\n${count}`}
+            </S.PileLabel>
+        </S.DeckBlock>
+    );
+};
 
 const PileBlock: React.FC<{
     variant: 'discard' | 'cemetery';
@@ -125,6 +157,8 @@ export const OutOfPlayRail: React.FC<OutOfPlayRailProps> = ({
     threatLimit,
     initiativeHolder,
     localHasInitiative,
+    myDeckCount,
+    opponentDeckCount,
     myDiscard,
     myDeadPile,
     myRemovedFromGame,
@@ -147,6 +181,7 @@ export const OutOfPlayRail: React.FC<OutOfPlayRailProps> = ({
     return (
         <S.Rail>
             <S.PileRow>
+                <DeckBlock owner="adverse" count={opponentDeckCount} />
                 <PileBlock
                     variant="discard"
                     owner="adverse"
@@ -186,6 +221,7 @@ export const OutOfPlayRail: React.FC<OutOfPlayRailProps> = ({
                 </S.InitiativeChip>
             </S.TwilightSlot>
             <S.PileRow>
+                <DeckBlock owner="toi" count={myDeckCount} />
                 <PileBlock
                     variant="discard"
                     owner="toi"

@@ -1,5 +1,8 @@
 import styled, { keyframes, css } from 'styled-components';
-import { appearPulseCss } from '../../styles/valuePulse';
+import {
+    appearPulseCss,
+    valueChangePulseCss,
+} from '../../styles/valuePulse';
 
 export const Rail = styled.aside`
     display: flex;
@@ -17,16 +20,29 @@ export const Rail = styled.aside`
 
 export const PileRow = styled.div`
     display: flex;
-    gap: 8px;
+    gap: 6px;
     justify-content: center;
     flex-shrink: 0;
 `;
 
-export const PileBlock = styled.button<{ $variant: 'discard' | 'cemetery' }>`
+/** Trois piles côte à côte dans 240px : un peu plus étroites qu’avant. */
+const pileBox = css`
     position: relative;
-    width: 92px;
-    height: 128px;
+    width: 72px;
+    height: 104px;
     border-radius: 6px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-end;
+    padding: 5px 3px;
+    box-shadow: inset 0 0 18px rgba(0, 0, 0, 0.45);
+    font: inherit;
+    color: inherit;
+`;
+
+export const PileBlock = styled.button<{ $variant: 'discard' | 'cemetery' }>`
+    ${pileBox}
     border: 2px solid
         ${({ $variant }) =>
             $variant === 'cemetery' ? '#8b1e1e' : '#8a6a32'};
@@ -34,16 +50,8 @@ export const PileBlock = styled.button<{ $variant: 'discard' | 'cemetery' }>`
         $variant === 'cemetery'
             ? 'linear-gradient(180deg, #3a1515 0%, #1a0b0b 100%)'
             : 'linear-gradient(180deg, #3d3218 0%, #1c160c 100%)'};
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: flex-end;
-    padding: 6px 4px;
-    box-shadow: inset 0 0 18px rgba(0, 0, 0, 0.45);
     pointer-events: auto;
     cursor: pointer;
-    font: inherit;
-    color: inherit;
     transition:
         border-color 0.15s ease,
         box-shadow 0.15s ease,
@@ -63,19 +71,48 @@ export const PileBlock = styled.button<{ $variant: 'discard' | 'cemetery' }>`
     }
 `;
 
+/**
+ * Pioche : face cachée, non cliquable (on ne consulte pas le contenu).
+ * Compteur seul — signal de taille / moulin.
+ */
+export const DeckBlock = styled.div<{ $empty?: boolean; $pulseGen?: number }>`
+    ${pileBox}
+    border: 2px solid #3d5a7a;
+    background: linear-gradient(180deg, #1a3048 0%, #0c1520 100%);
+    opacity: ${({ $empty }) => ($empty ? 0.45 : 1)};
+    overflow: hidden;
+    pointer-events: none;
+    ${({ $pulseGen }) => valueChangePulseCss($pulseGen)}
+`;
+
+export const DeckBack = styled.img`
+    position: absolute;
+    inset: 4px 4px 28px;
+    width: calc(100% - 8px);
+    height: calc(100% - 32px);
+    object-fit: cover;
+    border-radius: 3px;
+    opacity: 0.88;
+    pointer-events: none;
+`;
+
 export const PileLabel = styled.span`
-    font-size: 10px;
+    position: relative;
+    z-index: 1;
+    font-size: 9px;
     font-weight: 700;
-    letter-spacing: 0.06em;
+    letter-spacing: 0.05em;
     text-transform: uppercase;
     color: #f3e6c4;
     text-align: center;
-    line-height: 1.2;
+    line-height: 1.15;
     white-space: pre-line;
 `;
 
 export const RemovedBlock = styled.button`
-    width: 192px;
+    width: 100%;
+    max-width: 228px;
+    align-self: center;
     height: 40px;
     border-radius: 6px;
     border: 2px solid #5b6b7c;
@@ -110,7 +147,7 @@ export const RemovedBlock = styled.button`
 
 export const ThreatDots = styled.div`
     position: absolute;
-    inset: 10px 6px 34px;
+    inset: 8px 4px 30px;
     display: flex;
     flex-wrap: wrap;
     align-content: flex-start;
@@ -119,8 +156,8 @@ export const ThreatDots = styled.div`
 `;
 
 export const ThreatDot = styled.img`
-    width: 24px;
-    height: 24px;
+    width: 20px;
+    height: 20px;
     object-fit: contain;
     margin: -3px;
     filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.7));

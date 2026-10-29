@@ -5,6 +5,8 @@ export type ModifierScope = 'SKIRMISH' | 'PHASE' | 'TURN' | 'PERMANENT';
 export interface StatModifier {
     id: string;
     sourceCardTitle?: string; // ex: "Épée d'Elendil", "Attaque surprise"
+    /** Carte qui a posé le modificateur (arme → Troop of Uruk-hai). */
+    sourceCardId?: string;
     targetCardId: string;
     stat: StatType;
     value: number;
