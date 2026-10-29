@@ -76026,6 +76026,40 @@
         ],
         "source": "SELF",
         "text": "SKIRMISH: Remove a threat to make this minion strength +3."
+      },
+      {
+        "id": "7U190:1",
+        "phases": [],
+        "trigger": {
+          "type": "WHEN_PLAYED"
+        },
+        "optional": true,
+        "cost": [
+          {
+            "spot": [
+              {
+                "count": 1,
+                "target": [
+                  [
+                    "NAZGÛL"
+                  ]
+                ],
+                "mode": "DESIGNATION"
+              }
+            ]
+          }
+        ],
+        "effects": [
+          {
+            "type": "ADD_THREATS",
+            "count": 2,
+            "fpMayPrevent": {
+              "woundRingBearer": true
+            }
+          }
+        ],
+        "source": "SELF",
+        "text": "When you play this minion, you may spot a Nazgûl to add 2 threats. The Free Peoples player may wound the Ring–bearer to prevent this."
       }
     ],
     "actionPhases": [

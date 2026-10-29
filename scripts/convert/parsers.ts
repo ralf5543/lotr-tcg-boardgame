@@ -9713,6 +9713,46 @@ function parseWhenPlayedAbilities(
         });
     }
 
+    // When you play this minion, you may spot a Nazgûl to add N threats.
+    // The Free Peoples player may wound the Ring-bearer to prevent this.
+    // (Morgul Destroyer…)
+    const optionalSpotThreatsPreventRe =
+        /When you play this(?:\s+(?:minion|possession|condition|companion|artifact|ally|follower))?, you may spot ([\s\S]+?) to add (\d+) threats?\.\s*The Free Peoples player may wound the Ring[\u2013\u2014\-]?bearer to prevent this\.?/gi;
+    while ((match = optionalSpotThreatsPreventRe.exec(text)) !== null) {
+        if (/\b(and|or|each)\b/i.test(match[1])) continue;
+        const subject = parseExertSubject(match[1].trim());
+        if (!subject) continue;
+        if (!winsSkirmishCostIsSafe({ spot: [subject] })) continue;
+        const threats = parseInt(match[2], 10);
+        if (!Number.isFinite(threats) || threats <= 0) continue;
+        found.push({
+            id: `${cardId || 'ability'}:${found.length}:when-played-may-spot-threats-prevent`,
+            phases: [],
+            trigger: { type: 'WHEN_PLAYED' },
+            optional: true,
+            cost: [
+                {
+                    spot: [
+                        {
+                            count: subject.count,
+                            target: subject.target,
+                            ...(subject.mode ? { mode: subject.mode } : {}),
+                        },
+                    ],
+                },
+            ],
+            effects: [
+                {
+                    type: 'ADD_THREATS',
+                    count: threats,
+                    fpMayPrevent: { woundRingBearer: true },
+                },
+            ],
+            source: 'SELF',
+            text: stripAbilityMarkup(match[0]),
+        });
+    }
+
     // When you play this minion, you may spot Saruman to add twilightN.
     const optionalSpotTwilightRe =
         /When you play this(?:\s+(?:minion|possession|condition|companion|artifact|ally|follower))?, you may spot ([\s\S]+?) to add <symbol>twilight(\d+)<\/symbol>\./gi;

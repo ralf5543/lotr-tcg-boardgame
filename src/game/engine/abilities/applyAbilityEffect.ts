@@ -18,6 +18,7 @@ import {
     requestCancelSkirmish,
     requestExhaust,
     requestForceAssign,
+    requestAddThreats,
 } from '../responseWindow';
 import { cardMatchesTarget } from '../validations/matchers';
 import { drawCardsForPlayer } from '../../../utils/drawCards';
@@ -932,7 +933,19 @@ export function applyAbilityEffect(
         }
 
         if (effect.type === 'ADD_THREATS') {
-            addThreats(G, effect.count || 0);
+            if (effect.fpMayPrevent?.woundRingBearer) {
+                if (
+                    !requestAddThreats(
+                        G,
+                        effect.count || 0,
+                        effect.fpMayPrevent
+                    )
+                ) {
+                    return false;
+                }
+            } else {
+                addThreats(G, effect.count || 0);
+            }
             continue;
         }
 

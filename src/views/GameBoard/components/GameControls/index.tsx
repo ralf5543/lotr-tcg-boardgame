@@ -659,9 +659,11 @@ export const GameControls: React.FC<GameControlsProps> = ({
                 ? 'Les Peuples Libres décident s’ils empêchent l’affectation…'
                 : pendingType === 'ABOUT_TO_EXHAUST'
                   ? 'Les Peuples Libres décident s’ils empêchent l’épuisement…'
-                  : pendingType === 'ABOUT_TO_CANCEL_SKIRMISH'
-                    ? 'L’adversaire peut empêcher l’annulation d’escarmouche…'
-                    : 'En attente de la réponse de l’adversaire…';
+                  : pendingType === 'ABOUT_TO_ADD_THREATS'
+                    ? 'Les Peuples Libres décident s’ils empêchent les menaces…'
+                    : pendingType === 'ABOUT_TO_CANCEL_SKIRMISH'
+                      ? 'L’adversaire peut empêcher l’annulation d’escarmouche…'
+                      : 'En attente de la réponse de l’adversaire…';
         toastConfig = {
             show: true,
             title: 'RÉPONSE',
@@ -1696,6 +1698,19 @@ export const GameControls: React.FC<GameControlsProps> = ({
                                     }}
                                 >
                                     Empêcher (affaiblir ce compagnon)
+                                </S.ActionButton>
+                            )}
+
+                        {toastConfig.type === 'RESPONSE' &&
+                            G.pendingEvent?.type ===
+                                'ABOUT_TO_ADD_THREATS' && (
+                                <S.ActionButton
+                                    style={{ marginTop: '12px', width: '100%' }}
+                                    onClick={() => {
+                                        moves.preventPendingEffect?.();
+                                    }}
+                                >
+                                    Empêcher (blesser le Porteur)
                                 </S.ActionButton>
                             )}
 

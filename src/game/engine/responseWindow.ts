@@ -43,6 +43,7 @@ import {
 import { yieldPriorityAfterAction } from './actionWindow';
 import { cancelSkirmish } from './abilities/cancelSkirmish';
 import { enterPhase } from '../logic/phaseEntry';
+import { addThreats } from '../logic/threats';
 
 const matchCard = (card: CardState, targetId: string): boolean =>
     card.instanceId === targetId || card.id === targetId;
@@ -331,6 +332,9 @@ function responseEventIsActive(event: PendingEvent | undefined): boolean {
     if (event.type === 'ABOUT_TO_EXHAUST') {
         return Boolean(event.targetId);
     }
+    if (event.type === 'ABOUT_TO_ADD_THREATS') {
+        return (event.count || 0) > 0;
+    }
     if (event.type === 'ABOUT_TO_FORCE_ASSIGN') {
         return Boolean(event.minionId && event.companionId);
     }
@@ -362,6 +366,22 @@ function fpCanPreventForceAssign(G: GameState): boolean {
     return Boolean(companion && getEffectiveVitality(companion) > 1);
 }
 
+function findLivingRingBearer(G: GameState): CardState | null {
+    let found: CardState | null = null;
+    forEachInPlayCard(G, (card) => {
+        if (found) return;
+        if (isRingBearerCard(card) && !card.isDead) found = card;
+    });
+    return found;
+}
+
+function fpCanPreventAddThreats(G: GameState): boolean {
+    const event = G.pendingEvent;
+    if (!event || event.type !== 'ABOUT_TO_ADD_THREATS') return false;
+    const rb = findLivingRingBearer(G);
+    return Boolean(rb && canCardTakeWound(G, rb));
+}
+
 function responseWindowMessage(G: GameState): string {
     if (G.pendingEvent?.type === 'WINS_SKIRMISH') {
         return 'Un personnage a gagné ce combat. Jouez une réponse ou passez.';
@@ -385,6 +405,10 @@ function responseWindowMessage(G: GameState): string {
     }
     if (G.pendingEvent?.type === 'ABOUT_TO_FORCE_ASSIGN') {
         return 'Un séide va être affecté à un compagnon. Affaiblissez ce compagnon pour empêcher, ou passez.';
+    }
+    if (G.pendingEvent?.type === 'ABOUT_TO_ADD_THREATS') {
+        const n = G.pendingEvent.count;
+        return `${n} menace${n > 1 ? 's' : ''} ${n > 1 ? 'vont' : 'va'} être ajoutée${n > 1 ? 's' : ''}. Blessez le Porteur pour empêcher, ou passez.`;
     }
     if (G.pendingEvent?.type === 'FELLOWSHIP_MOVES') {
         return 'La compagnie s’est déplacée. Jouez une réponse ou passez.';
@@ -466,6 +490,12 @@ export function playerHasEligibleResponse(
     if (G.pendingEvent.type === 'ABOUT_TO_FORCE_ASSIGN') {
         return (
             playerID === (G.fpPlayerId || '0') && fpCanPreventForceAssign(G)
+        );
+    }
+
+    if (G.pendingEvent.type === 'ABOUT_TO_ADD_THREATS') {
+        return (
+            playerID === (G.fpPlayerId || '0') && fpCanPreventAddThreats(G)
         );
     }
 
@@ -961,6 +991,15 @@ function concludeOpenResponse(G: GameState): 'APPLIED' | 'WAITING' {
         return 'APPLIED';
     }
 
+    if (G.pendingEvent?.type === 'ABOUT_TO_ADD_THREATS') {
+        const count = G.pendingEvent.count;
+        G.pendingEvent = undefined;
+        closeResponseWindow(G);
+        addThreats(G, count);
+        flushPendingActionYield(G);
+        return 'APPLIED';
+    }
+
     G.pendingEvent = undefined;
     closeResponseWindow(G);
     if (tryOpenTakesWound(G) === 'WAITING') return 'WAITING';
@@ -1293,7 +1332,47 @@ export function preventPendingEffect(
         return 'APPLIED';
     }
 
+    if (event.type === 'ABOUT_TO_ADD_THREATS') {
+        if (playerID !== (G.fpPlayerId || '0')) return 'INVALID';
+        const rb = findLivingRingBearer(G);
+        if (!rb || !canCardTakeWound(G, rb)) return 'INVALID';
+        applyWoundAndCheckDeath(G, rb, 1);
+        G.pendingEvent = undefined;
+        closeResponseWindow(G);
+        G.statusMessage =
+            'Les Peuples Libres empêchent les menaces (Porteur blessé).';
+        flushPendingActionYield(G);
+        return 'APPLIED';
+    }
+
     return 'INVALID';
+}
+
+/**
+ * Ajout de menaces : si le FP peut blesser le Porteur pour empêcher,
+ * ouvre la fenêtre ; sinon ajoute tout de suite.
+ */
+export function requestAddThreats(
+    G: GameState,
+    count: number,
+    fpMayPrevent?: { woundRingBearer: true }
+): boolean {
+    if (count <= 0) return false;
+    if (
+        fpMayPrevent?.woundRingBearer &&
+        (() => {
+            const rb = findLivingRingBearer(G);
+            return Boolean(rb && canCardTakeWound(G, rb));
+        })()
+    ) {
+        G.pendingEvent = { type: 'ABOUT_TO_ADD_THREATS', count };
+        openResponseWindow(G);
+        G.statusMessage =
+            'Réponse Peuples Libres : blesser le Porteur pour empêcher les menaces, ou passer.';
+        return true;
+    }
+    addThreats(G, count);
+    return true;
 }
 
 function livingBattlefieldMinions(G: GameState): CardState[] {

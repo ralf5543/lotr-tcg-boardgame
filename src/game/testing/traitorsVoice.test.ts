@@ -1,7 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { parseAbilities } from '../../../scripts/convert/parsers';
 import { getCardById } from '../cardsData';
-import { applyDevPreset } from '../dev/presets';
 import { getMoveLimit } from '../logic/moveLimit';
 import type { Ability } from '../types';
 import {
@@ -98,10 +97,4 @@ describe("Voix du Traître 1U142 — limite de déplacement −1", () => {
         expect(getMoveLimit(G)).toBe(1);
     });
 
-    it('preset DEV : Frodon épuisé + Voix + Ourouk', () => {
-        const G = createGameState();
-        applyDevPreset(G, 'DECK_GAPS_TRAITORS_VOICE');
-        expect(G.players['1']!.supportArea?.[0]?.id).toBe('1U142');
-        expect(getMoveLimit(G)).toBe(1);
-    });
 });

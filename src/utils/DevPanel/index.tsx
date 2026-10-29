@@ -372,23 +372,24 @@ export const DevPanel: React.FC<DevPanelProps> = ({
                         </S.GameButton>
                     </S.Section>
 
-                    {/* Preset de playtest : trous decks — Voix du Traître */}
+                    {/* Preset de playtest : trous decks — Morgul Destroyer */}
                     <S.Section>
                         <S.Label>
-                            Preset decks (Voix du Traître) :
+                            Preset decks (Morgul Destroyer) :
                             <br />
                             <span style={{ opacity: 0.75, fontWeight: 400 }}>
-                                Porteur épuisé → limite de déplacement −1.
+                                Pose → +2 menaces ; FP peut blesser le
+                                Porteur.
                             </span>
                         </S.Label>
                         <S.ActionButton
                             onClick={() =>
                                 moves.devLoadPreset?.(
-                                    'DECK_GAPS_TRAITORS_VOICE'
+                                    'DECK_GAPS_MORGUL_DESTROYER'
                                 )
                             }
                         >
-                            Voix du Traître (1U142)
+                            Morgul Destroyer (7U190)
                         </S.ActionButton>
                     </S.Section>
 

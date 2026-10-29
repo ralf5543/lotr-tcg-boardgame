@@ -121,8 +121,8 @@ const neutralPath: readonly string[] = [
 
 /**
  * Applique le preset DEV de playtest (zones vidées / chemin Standard).
- * Vague en cours : trous de mécanismes decks — Voix du Traître
- * (Porteur épuisé / 5 fardeaux → limite de déplacement −1).
+ * Vague en cours : trous de mécanismes decks — Morgul Destroyer
+ * (when-played : spot Nazgûl → +2 menaces ; FP peut blesser le Porteur).
  */
 export const applyDevPreset = (
     G: GameState,
@@ -136,36 +136,35 @@ export const applyDevPreset = (
     const shadowPlayer = G.players[shadowId];
 
     switch (presetType) {
-        case 'DECK_GAPS_TRAITORS_VOICE': {
+        case 'DECK_GAPS_MORGUL_DESTROYER': {
             resetBoardForPreset(G);
             setupDevPath(G, 0, neutralPath);
-            G.twilightPool = 5;
+            G.twilightPool = 8;
             fpPlayer.burdens = 0;
-            // Frodon 4 + Anneau +1 → vit. 5 ; 4 blessures = épuisé.
-            const frodo = {
-                ...clonePresetCard('2C102', 'dev-tv-frodo'),
-                wounds: 4,
-                attachments: [clonePresetCard('1R1', 'dev-tv-ring')],
-            };
-            fpPlayer.fellowshipArea = [frodo];
+            fpPlayer.threats = 0;
+            fpPlayer.fellowshipArea = [
+                {
+                    ...clonePresetCard('2C102', 'dev-md-frodo'),
+                    attachments: [clonePresetCard('1R1', 'dev-md-ring')],
+                },
+            ];
             fpPlayer.hand = [];
             fpPlayer.deck = [];
             fpPlayer.sitesDeck = [clonePresetSite('11S250', fpId)];
             if (shadowPlayer) {
                 G.battlefield = [
-                    clonePresetCard('1R143', 'dev-tv-troop'),
+                    clonePresetCard('0P43', 'dev-md-nazgul'),
                 ];
-                shadowPlayer.supportArea = [
-                    clonePresetCard('1U142', 'dev-tv-voice'),
+                shadowPlayer.hand = [
+                    clonePresetCard('7U190', 'dev-md-destroyer'),
                 ];
-                shadowPlayer.hand = [];
                 shadowPlayer.deck = [];
                 shadowPlayer.sitesDeck = [
                     clonePresetSite('11S263', shadowId),
                 ];
             }
             G.statusMessage =
-                '[DEV] Voix du Traître (1U142) · Frodon est épuisé → limite de déplacement = 1. Déplacez une fois en Fellowship : au Regroup, pas de 2ᵉ avance. (Variante : soigner Frodon + mettre 5 fardeaux → même plafond.)';
+                '[DEV] Morgul Destroyer (7U190) · Jouez le Destroyer (Ombre) : Activer → repérer le Nazgûl → FP Empêcher (blesser Frodon) ou Passer (+2 menaces). Combat : −1 menace → force +3.';
             break;
         }
     }

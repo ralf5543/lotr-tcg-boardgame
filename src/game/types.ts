@@ -813,6 +813,11 @@ export type AbilityEffect =
            * de `count` (avant le facteur perCompanionOver).
            */
           countIfSpot?: { target: string[][]; count: number };
+          /**
+           * Le joueur des Peuples Libres peut blesser le Porteur pour empêcher
+           * (Morgul Destroyer…).
+           */
+          fpMayPrevent?: { woundRingBearer: true };
       }
     | {
           /**
@@ -1423,6 +1428,12 @@ export interface PendingCancelSkirmishEvent {
     removeTwilight: number;
 }
 
+/** Menaces sur le point d’être ajoutées ; le FP peut blesser le Porteur. */
+export interface PendingAddThreatsEvent {
+    type: 'ABOUT_TO_ADD_THREATS';
+    count: number;
+}
+
 /** Exhaust engagé ; le joueur FP peut encore l’empêcher (fardeaux). */
 export interface PendingExhaustEvent {
     type: 'ABOUT_TO_EXHAUST';
@@ -1448,6 +1459,7 @@ export type PendingEvent =
     | PendingLosesSkirmishEvent
     | PendingCharacterDiesEvent
     | PendingCancelSkirmishEvent
+    | PendingAddThreatsEvent
     | PendingExhaustEvent
     | PendingForceAssignEvent
     | PendingFellowshipMovesEvent;
@@ -1773,7 +1785,7 @@ export interface LotrMoveContext extends FnContext<GameState> {
 }
 
 /** Presets DEV de playtest (panneau de test, vague en cours). */
-export type DevPresetType = 'DECK_GAPS_TRAITORS_VOICE';
+export type DevPresetType = 'DECK_GAPS_MORGUL_DESTROYER';
 
 export interface ArcheryState {
     step?: 'ACTIONS' | 'FP_ASSIGN' | 'SHADOW_ASSIGN' | 'COMPLETE';
