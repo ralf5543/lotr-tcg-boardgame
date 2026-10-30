@@ -1,9 +1,11 @@
 import type {
+    AbilityEffect,
     AbilityTargetRef,
     CardState,
     GameState,
     SkirmishState,
 } from '../../types';
+import { getEffectiveVitality } from '../../../utils/cardStats';
 import { cardMatchesTarget } from '../validations/matchers';
 import {
     findBearer,
@@ -104,6 +106,48 @@ export function findSkirmishToCancel(
     }
     if (matches.length === 1) return matches[0];
     return null;
+}
+
+/**
+ * Vitalité du personnage > somme des vitalités des séides de son escarmouche
+ * (Sneaking! — « more vitality than the minion or minions »).
+ */
+export function hasMoreVitalityThanSkirmishingMinions(
+    G: GameState,
+    character: CardState
+): boolean {
+    if (character.isDead) return false;
+    const skirmish = findSkirmishToCancel(G, character, 'SELF');
+    if (!skirmish) return false;
+    const minionIds =
+        skirmish.minionIds ||
+        (skirmish.minionId ? [skirmish.minionId] : []);
+    if (minionIds.length === 0) return false;
+    let minionVitality = 0;
+    for (const minionId of minionIds) {
+        const minion = findInPlayById(G, minionId);
+        if (!minion || minion.isDead) continue;
+        minionVitality += getEffectiveVitality(minion);
+    }
+    return getEffectiveVitality(character) > minionVitality;
+}
+
+/** Condition Sneaking! sur une option CHOOSE_ONE (via son CANCEL_SKIRMISH). */
+export function chooseOneOptionMeetsVitalityGate(
+    G: GameState,
+    source: CardState,
+    option: {
+        effects: AbilityEffect[];
+        requiresMoreVitalityThanSkirmishingMinions?: boolean;
+    }
+): boolean {
+    if (!option.requiresMoreVitalityThanSkirmishingMinions) return true;
+    const cancel = option.effects.find((e) => e.type === 'CANCEL_SKIRMISH');
+    if (!cancel || cancel.type !== 'CANCEL_SKIRMISH') return false;
+    const involving = resolveInvolvingCards(G, source, cancel.involving);
+    return involving.some((card) =>
+        hasMoreVitalityThanSkirmishingMinions(G, card)
+    );
 }
 
 /** Annule sans vainqueur ni blessures. Les personnages restent en jeu. */

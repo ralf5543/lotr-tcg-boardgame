@@ -3,6 +3,7 @@ import { parseAbilities } from '../../../scripts/convert/parsers';
 import { getCardById } from '../cardsData';
 import { applyDevPreset } from '../dev/presets';
 import { applyAbilityEffect } from '../engine/abilities/applyAbilityEffect';
+import { formatAbilityLabelParts } from '../engine/abilities/collectAbilities';
 import { canPayAbilityCost, payAbilityCost } from '../engine/abilities/payAbilityCost';
 import { abilityHasLegalEffectTarget } from '../engine/abilities/designation';
 import { getEffectiveStrength } from '../../utils/cardStats';
@@ -119,6 +120,28 @@ describe('Wandering Hillman 15U94', () => {
         expect(getEffectiveStrength(hillman, withStrong)).toBe(11);
     });
 
+    it('bulles FR : fardeaux et menaces avec coût', () => {
+        const hillman = createMinion({
+            id: '15U94',
+            instanceId: 'hill',
+            abilities: getCardById('15U94')?.abilities,
+        });
+        const burdens = (hillman.abilities || []).find(
+            (ab) => ab.cost?.[0]?.removeBurdens === 2
+        )!;
+        const threats = (hillman.abilities || []).find(
+            (ab) => ab.cost?.[0]?.removeThreats === 2
+        )!;
+        expect(formatAbilityLabelParts(burdens, hillman)).toEqual({
+            cost: 'Retirer 2 fardeaux',
+            effect: 'prendre le contrôle d’un site',
+        });
+        expect(formatAbilityLabelParts(threats, hillman)).toEqual({
+            cost: 'Retirer 2 menaces',
+            effect: 'prendre le contrôle d’un site',
+        });
+    });
+
     it('Manœuvre : retirer 2 fardeaux → contrôle un site', () => {
         const hillman = createMinion({
             id: '15U94',
@@ -163,11 +186,4 @@ describe('Wandering Hillman 15U94', () => {
         expect(G.path[0]?.controlledBy).toBe('1');
     });
 
-    it('preset DEV', () => {
-        const G = createGameState();
-        applyDevPreset(G, 'DECK_GAPS_HILLMAN');
-        expect(G.battlefield[0]?.id).toBe('15U94');
-        expect(G.players['0']!.burdens).toBe(2);
-        expect(G.players['0']!.threats).toBe(2);
-    });
 });

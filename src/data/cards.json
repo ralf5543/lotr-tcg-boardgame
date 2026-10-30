@@ -70557,6 +70557,52 @@
     "keywords": [
       "STEALTH"
     ],
+    "abilities": [
+      {
+        "id": "7R73:0",
+        "phases": [],
+        "cost": [],
+        "effects": [
+          {
+            "type": "CHOOSE_ONE",
+            "title": "CHOISISSEZ",
+            "message": "Soigner ou annuler l’escarmouche ?",
+            "options": [
+              {
+                "label": "Soigner Sméagol",
+                "effects": [
+                  {
+                    "type": "HEAL",
+                    "count": 1,
+                    "target": [
+                      [
+                        "Sméagol"
+                      ]
+                    ]
+                  }
+                ]
+              },
+              {
+                "label": "Annuler l’escarmouche de Sméagol",
+                "effects": [
+                  {
+                    "type": "CANCEL_SKIRMISH",
+                    "involving": [
+                      [
+                        "Sméagol"
+                      ]
+                    ]
+                  }
+                ],
+                "requiresMoreVitalityThanSkirmishingMinions": true
+              }
+            ]
+          }
+        ],
+        "source": "SELF",
+        "text": "Heal Sméagol (or cancel Sméagol’s skirmish if he has more vitality than the minion or minions he is skirmishing)."
+      }
+    ],
     "phases": [
       "SKIRMISH"
     ],

@@ -15,7 +15,10 @@ import {
 } from './resolveCostTarget';
 import { findEventAbilityForPhase } from './playEventAbility';
 
-import { findSkirmishToCancel } from './cancelSkirmish';
+import {
+    chooseOneOptionMeetsVitalityGate,
+    findSkirmishToCancel,
+} from './cancelSkirmish';
 import { countFromSpotCost, abilityReplaceSiteEffect, abilityExchangeSiteEffect } from './applyAbilityEffect';
 import {
     getReplaceSiteCandidates,
@@ -734,6 +737,35 @@ export function abilityHasLegalEffectTarget(
             continue;
         }
         if (effect.type === 'CHOOSE_ONE') {
+            const anyLegal = effect.options.some((option) => {
+                if (!chooseOneOptionMeetsVitalityGate(G, source, option)) {
+                    return false;
+                }
+                for (const optEffect of option.effects) {
+                    if (optEffect.type === 'CANCEL_SKIRMISH') {
+                        if (
+                            !findSkirmishToCancel(
+                                G,
+                                source,
+                                optEffect.involving
+                            )
+                        ) {
+                            return false;
+                        }
+                    }
+                    if (optEffect.type === 'HEAL') {
+                        if (areHealsForbidden(G)) return false;
+                        const targets = resolveCostTarget(
+                            G,
+                            source,
+                            optEffect.target
+                        ).filter(isHealableCard);
+                        if (targets.length === 0) return false;
+                    }
+                }
+                return true;
+            });
+            if (!anyLegal) return false;
             continue;
         }
         if (effect.type === 'DISCARD_FROM_HAND') {

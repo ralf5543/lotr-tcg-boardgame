@@ -950,6 +950,10 @@ function formatCostLabel(ability: Ability, source: CardState): string {
             `ajouter ${n} fardeau${n > 1 ? 'x' : ''}`
         );
     }
+    if (option?.removeBurdens && option.removeBurdens > 0) {
+        const n = option.removeBurdens;
+        parts.push(`retirer ${n} fardeau${n > 1 ? 'x' : ''}`);
+    }
     if (option?.removeThreats && option.removeThreats > 0) {
         const n = option.removeThreats;
         parts.push(`retirer ${n} menace${n > 1 ? 's' : ''}`);

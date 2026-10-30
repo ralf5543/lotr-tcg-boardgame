@@ -121,8 +121,8 @@ const neutralPath: readonly string[] = [
 
 /**
  * Applique le preset DEV de playtest (zones vidées / chemin Standard).
- * Vague en cours : Wandering Hillman — While compagnon force ≥10 → +3 ;
- * Manœuvre : 2 fardeaux ou 2 menaces → contrôler un site.
+ * Vague en cours : Sneaking! — soigner Sméagol ou annuler son escarmouche
+ * s’il a plus de vitalité que les séides au combat.
  */
 export const applyDevPreset = (
     G: GameState,
@@ -136,27 +136,29 @@ export const applyDevPreset = (
     const shadowPlayer = G.players[shadowId];
 
     switch (presetType) {
-        case 'DECK_GAPS_HILLMAN': {
+        case 'DECK_GAPS_SNEAKING': {
             resetBoardForPreset(G);
-            // Site 2 déjà posé → site 1 contrôlable par l’Ombre.
-            setupDevPath(G, 1, neutralPath);
+            setupDevPath(G, 0, neutralPath);
             G.twilightPool = 4;
-            fpPlayer.burdens = 2;
-            fpPlayer.threats = 2;
-            // Gandalf force 10 imprimée → déclenche le While (+3).
+            fpPlayer.burdens = 0;
+            // Sméagol vit 4 − 1 blessure = 3 ; Orque vit 2 → soin et annulation OK.
+            const smeagol = {
+                ...clonePresetCard('8R27', 'dev-sneak-smeagol'),
+                wounds: 1,
+            };
             fpPlayer.fellowshipArea = [
                 {
-                    ...clonePresetCard('1C290', 'dev-hill-frodo'),
-                    attachments: [clonePresetCard('1R1', 'dev-hill-ring')],
+                    ...clonePresetCard('1C290', 'dev-sneak-frodo'),
+                    attachments: [clonePresetCard('1R1', 'dev-sneak-ring')],
                 },
-                clonePresetCard('6R30', 'dev-hill-gandalf'),
+                smeagol,
             ];
-            fpPlayer.hand = [];
+            fpPlayer.hand = [clonePresetCard('7R73', 'dev-sneaking')];
             fpPlayer.deck = [];
             fpPlayer.sitesDeck = [clonePresetSite('11S250', fpId)];
             if (shadowPlayer) {
                 G.battlefield = [
-                    clonePresetCard('15U94', 'dev-hillman'),
+                    clonePresetCard('1C261', 'dev-sneak-orc'),
                 ];
                 shadowPlayer.hand = [];
                 shadowPlayer.deck = [];
@@ -165,7 +167,7 @@ export const applyDevPreset = (
                 ];
             }
             G.statusMessage =
-                '[DEV] Wandering Hillman (15U94) · Gandalf force 10 → Hillman +3. Phase Manœuvre Ombre : bulle « Retirer 2 fardeaux » ou « Retirer 2 menaces » → contrôler le site 1.';
+                '[DEV] Sneaking! (7R73) · Assignez Sméagol vs l’Orque, ouvrez le combat : jouez Sneaking! → choix soigner Sméagol ou annuler l’escarmouche (vit. 3 > 2).';
             break;
         }
     }

@@ -61,7 +61,8 @@ L’ancien plan main/initiative est **figé** (`.cursor/rules/hand-initiative-pl
 | `1U142` | Traitor's Voice / Voix du Traître | ✅ Validé par Ralf — Porteur épuisé ou 5 fardeaux → limite de déplacement −1 (min 1) via `MODIFY_MOVE_LIMIT` / `getMoveLimit`. Preset DEV retiré après validation |
 | `7U190` | Morgul Destroyer | ✅ Validé par Ralf — when-played spot Nazgûl → +2 menaces ; FP peut blesser le Porteur (`fpMayPrevent.woundRingBearer`) ; toaster Empêcher réservé au joueur actif. Preset DEV retiré après validation |
 | `10C24` | Unabated in Malice | ✅ Validé par Ralf — While initiative → chaque séide Gollum Damage +1 ; Combat : défausse → force +1 par culture (`perDistinctCulture` ; FP+Ombre en jeu, pas les empilées ni les sites). Preset DEV retiré après validation |
-| `15U94` | Wandering Hillman | While compagnon force ≥10 → +3 ; Manœuvre : 2 fardeaux **ou** 2 menaces → contrôler un site. En playtest, preset DEV `DECK_GAPS_HILLMAN` |
+| `15U94` | Wandering Hillman | ✅ Validé par Ralf — While compagnon force ≥10 → +3 ; Manœuvre : 2 fardeaux **ou** 2 menaces → contrôler un site (libellé `removeBurdens` corrigé). Preset DEV retiré après validation |
+| `7R73` | Sneaking! | Stealth · Combat : soigner Sméagol **ou** annuler son escarmouche s’il a plus de vitalité que les séides au combat (`CHOOSE_ONE`). En playtest, preset DEV `DECK_GAPS_SNEAKING` |
 
 Livré (playtest) : Hidden Knowledge `7R104` (grille révélation + valider) ; Slippery Sneak `8R27` ; escarmouche vacante (mort→gagnant / défausse→pas) ; Cruel Caradhras `1R124` ; Pelennor Flat `11S254` ; Shelob when-played possession ; toaster Orthanc (boutons cohérents).
 

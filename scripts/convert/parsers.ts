@@ -10268,6 +10268,77 @@ function parseStandaloneMakeInitiativeAbilities(
     ];
 }
 
+/**
+ * Événements sans balise de phase (phase = colonne Class) :
+ * « Heal Name (or cancel Name's skirmish if he has more vitality than the
+ * minion or minions he is skirmishing). » (Sneaking!…)
+ */
+function parseStandaloneHealOrCancelSkirmishAbilities(
+    text: string,
+    cardId?: string
+): Record<string, unknown>[] {
+    const plain = text
+        .replace(/<br\s*\/?>/gi, ' ')
+        .replace(/\s+/g, ' ')
+        .trim();
+    // Ignore le mot-clé Stealth en tête (`**` ou `<keyword>`).
+    const body = plain
+        .replace(
+            /^(?:\*\*|<(?:keyword)>)?Stealth\.?(?:\*\*|<\/(?:keyword)>)?\s*/i,
+            ''
+        )
+        .trim();
+    const match = body.match(
+        /^Heal\s+([\p{L}][\p{L}'’\-]*)\s+\(or cancel \1[''’]?s skirmish if (?:he|she|it) has more vitality than the minion or minions (?:he|she|it) is skirmishing\)\.?$/iu
+    );
+    if (!match) return [];
+    const rawName = match[1].trim();
+    if (!rawName || /\b(and|or|each|a|an)\b/i.test(rawName)) return [];
+    // Nom propre : casse mixte pour le matcher titre.
+    const titleFilter =
+        rawName.charAt(0).toUpperCase() + rawName.slice(1);
+
+    return [
+        {
+            id: `${cardId || 'ability'}:0:heal-or-cancel`,
+            phases: [],
+            cost: [],
+            effects: [
+                {
+                    type: 'CHOOSE_ONE',
+                    title: 'CHOISISSEZ',
+                    message:
+                        'Soigner ou annuler l’escarmouche ?',
+                    options: [
+                        {
+                            label: `Soigner ${titleFilter}`,
+                            effects: [
+                                {
+                                    type: 'HEAL',
+                                    count: 1,
+                                    target: [[titleFilter]],
+                                },
+                            ],
+                        },
+                        {
+                            label: `Annuler l’escarmouche de ${titleFilter}`,
+                            effects: [
+                                {
+                                    type: 'CANCEL_SKIRMISH',
+                                    involving: [[titleFilter]],
+                                },
+                            ],
+                            requiresMoreVitalityThanSkirmishingMinions: true,
+                        },
+                    ],
+                },
+            ],
+            source: 'SELF',
+            text: stripAbilityMarkup(body),
+        },
+    ];
+}
+
 /** Événements sans balise de phase (phase = colonne Class) :
  * « Heal a Hobbit for each minion you spot. » (Unharmed…)
  */
@@ -14643,6 +14714,14 @@ export function parseAbilities(
                 id: `${cardId || 'ability'}:${abilities.length}`,
             });
         });
+        parseStandaloneHealOrCancelSkirmishAbilities(text, cardId).forEach(
+            (ability) => {
+                abilities.push({
+                    ...ability,
+                    id: `${cardId || 'ability'}:${abilities.length}`,
+                });
+            }
+        );
         parseStandaloneHealForEachSpotAbilities(text, cardId).forEach(
             (ability) => {
                 abilities.push({

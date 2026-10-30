@@ -372,24 +372,24 @@ export const DevPanel: React.FC<DevPanelProps> = ({
                         </S.GameButton>
                     </S.Section>
 
-                    {/* Preset de playtest : trous decks — Wandering Hillman */}
+                    {/* Preset de playtest : trous decks — Sneaking! */}
                     <S.Section>
                         <S.Label>
-                            Preset decks (Wandering Hillman) :
+                            Preset decks (Sneaking!) :
                             <br />
                             <span style={{ opacity: 0.75, fontWeight: 400 }}>
-                                Compagnon force ≥10 → +3 ; Manœuvre
-                                fardeaux/menaces → contrôler un site.
+                                Combat : soigner Sméagol ou annuler
+                                l’escarmouche (vitalité).
                             </span>
                         </S.Label>
                         <S.ActionButton
                             onClick={() =>
                                 moves.devLoadPreset?.(
-                                    'DECK_GAPS_HILLMAN'
+                                    'DECK_GAPS_SNEAKING'
                                 )
                             }
                         >
-                            Wandering Hillman (15U94)
+                            Sneaking! (7R73)
                         </S.ActionButton>
                     </S.Section>
 

@@ -47,7 +47,10 @@ import {
 import { applyHeal } from '../../../utils/applyHeal';
 import { applyExert } from '../../../utils/applyExert';
 import { getEffectiveVitality } from '../../../utils/cardStats';
-import { findSkirmishToCancel } from './cancelSkirmish';
+import {
+    chooseOneOptionMeetsVitalityGate,
+    findSkirmishToCancel,
+} from './cancelSkirmish';
 import {
     getReplaceSiteCandidates,
     replaceCurrentSiteFromDeck,
@@ -974,6 +977,63 @@ export function applyAbilityEffect(
             } else if (effect.chooser === 'OPPONENT') {
                 chooserId = ownerId === fpId ? shadowId : fpId;
             }
+
+            const legalOptions = effect.options.filter((option) => {
+                if (!chooseOneOptionMeetsVitalityGate(G, source, option)) {
+                    return false;
+                }
+                for (const optEffect of option.effects) {
+                    if (optEffect.type === 'CANCEL_SKIRMISH') {
+                        if (
+                            !findSkirmishToCancel(
+                                G,
+                                source,
+                                optEffect.involving
+                            )
+                        ) {
+                            return false;
+                        }
+                    }
+                    if (optEffect.type === 'HEAL') {
+                        if (areHealsForbidden(G)) return false;
+                        const targets = resolveCostTarget(
+                            G,
+                            source,
+                            optEffect.target
+                        ).filter(
+                            (card) =>
+                                !card.isDead && (card.wounds || 0) > 0
+                        );
+                        if (targets.length === 0) return false;
+                    }
+                }
+                return true;
+            });
+            if (legalOptions.length === 0) return false;
+
+            // Une seule option légale → appliquer sans toaster.
+            if (legalOptions.length === 1) {
+                const only = legalOptions[0]!;
+                const nested: Ability = {
+                    ...ability,
+                    effects: only.effects,
+                };
+                if (
+                    !applyAbilityEffect(
+                        G,
+                        source,
+                        nested,
+                        chosenTargetId,
+                        discardedHandIds,
+                        costTargetId,
+                        actingPlayerId
+                    )
+                ) {
+                    return false;
+                }
+                continue;
+            }
+
             G.pendingForcedChoice = {
                 playerId: chooserId,
                 sourceInstanceId: sourceId,
@@ -983,7 +1043,7 @@ export function applyAbilityEffect(
                     effect.message ||
                     G.statusMessage ||
                     'Choisissez une option pour résoudre cet effet.',
-                options: effect.options.map((o) => ({
+                options: legalOptions.map((o) => ({
                     label: o.label,
                     effects: o.effects,
                 })),

@@ -984,6 +984,12 @@ export type AbilityEffect =
           options: {
               label: string;
               effects: AbilityEffect[];
+              /**
+               * Option légale seulement si le personnage du CANCEL_SKIRMISH
+               * a plus de vitalité que la somme des séides de son escarmouche
+               * (Sneaking!…).
+               */
+              requiresMoreVitalityThanSkirmishingMinions?: boolean;
           }[];
       }
     | {
@@ -1792,7 +1798,7 @@ export interface LotrMoveContext extends FnContext<GameState> {
 }
 
 /** Presets DEV de playtest (panneau de test, vague en cours). */
-export type DevPresetType = 'DECK_GAPS_HILLMAN';
+export type DevPresetType = 'DECK_GAPS_SNEAKING';
 
 export interface ArcheryState {
     step?: 'ACTIONS' | 'FP_ASSIGN' | 'SHADOW_ASSIGN' | 'COMPLETE';
