@@ -1,7 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { parseAbilities } from '../../../scripts/convert/parsers';
 import { getCardById } from '../cardsData';
-import { applyDevPreset } from '../dev/presets';
 import { applyAbilityEffect } from '../engine/abilities/applyAbilityEffect';
 import { getWhileKeywordRaws } from '../logic/stats/mechanics/whileModifier';
 import { getKeywordValue } from '../engine/keywords/keywordUtils';
@@ -185,9 +184,4 @@ describe('Unabated in Malice 10C24', () => {
         expect(G.tempModifiers?.some((m) => m.value === 3)).toBe(true);
     });
 
-    it('preset DEV', () => {
-        const G = createGameState();
-        applyDevPreset(G, 'DECK_GAPS_UNABATED');
-        expect(G.players['1']!.supportArea?.[0]?.id).toBe('10C24');
-    });
 });

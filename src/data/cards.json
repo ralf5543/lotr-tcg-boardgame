@@ -130702,6 +130702,34 @@
     "isUnique": true,
     "kind": "SHADOW",
     "type": "MINION",
+    "abilities": [
+      {
+        "id": "15R87:0",
+        "phases": [],
+        "trigger": {
+          "type": "WHILE",
+          "spotMinStrength": {
+            "target": [
+              [
+                "COMPANION"
+              ]
+            ],
+            "min": 12
+          }
+        },
+        "cost": [],
+        "effects": [
+          {
+            "type": "MODIFY_STAT",
+            "stat": "STRENGTH",
+            "value": 5,
+            "target": "SELF"
+          }
+        ],
+        "source": "SELF",
+        "text": "While you can spot a companion of strength 12 or more, this minion is strength +5."
+      }
+    ],
     "culture": "MEN",
     "race": "MAN",
     "twilightCost": 5,
@@ -131115,6 +131143,73 @@
         ]
       }
     ],
+    "abilities": [
+      {
+        "id": "15U94:0",
+        "phases": [
+          "MANEUVER"
+        ],
+        "cost": [
+          {
+            "removeBurdens": 2
+          }
+        ],
+        "effects": [
+          {
+            "type": "TAKE_CONTROL_SITE"
+          }
+        ],
+        "source": "SELF",
+        "text": "MANEUVER: Remove 2 burdens to take control of a site."
+      },
+      {
+        "id": "15U94:1",
+        "phases": [
+          "MANEUVER"
+        ],
+        "cost": [
+          {
+            "removeThreats": 2
+          }
+        ],
+        "effects": [
+          {
+            "type": "TAKE_CONTROL_SITE"
+          }
+        ],
+        "source": "SELF",
+        "text": "MANEUVER: Remove 2 threats to take control of a site."
+      },
+      {
+        "id": "15U94:2",
+        "phases": [],
+        "trigger": {
+          "type": "WHILE",
+          "spotMinStrength": {
+            "target": [
+              [
+                "COMPANION"
+              ]
+            ],
+            "min": 10
+          }
+        },
+        "cost": [],
+        "effects": [
+          {
+            "type": "MODIFY_STAT",
+            "stat": "STRENGTH",
+            "value": 3,
+            "target": "SELF"
+          }
+        ],
+        "source": "SELF",
+        "text": "While you can spot a companion of strength 10 or more, this minion is strength +3."
+      }
+    ],
+    "actionPhases": [
+      "MANEUVER"
+    ],
     "culture": "MEN",
     "race": "MAN",
     "twilightCost": 3,
@@ -131429,6 +131524,34 @@
     "isUnique": false,
     "kind": "SHADOW",
     "type": "MINION",
+    "abilities": [
+      {
+        "id": "15C100:0",
+        "phases": [],
+        "trigger": {
+          "type": "WHILE",
+          "spotMinStrength": {
+            "target": [
+              [
+                "COMPANION"
+              ]
+            ],
+            "min": 12
+          }
+        },
+        "cost": [],
+        "effects": [
+          {
+            "type": "MODIFY_STAT",
+            "stat": "STRENGTH",
+            "value": 5,
+            "target": "SELF"
+          }
+        ],
+        "source": "SELF",
+        "text": "While you can spot a companion of strength 12 or more, this minion is strength +5."
+      }
+    ],
     "culture": "ORC",
     "race": "ORC",
     "twilightCost": 3,
@@ -131471,6 +131594,34 @@
     "isUnique": false,
     "kind": "SHADOW",
     "type": "MINION",
+    "abilities": [
+      {
+        "id": "15C101:0",
+        "phases": [],
+        "trigger": {
+          "type": "WHILE",
+          "spotMinStrength": {
+            "target": [
+              [
+                "COMPANION"
+              ]
+            ],
+            "min": 10
+          }
+        },
+        "cost": [],
+        "effects": [
+          {
+            "type": "MODIFY_STAT",
+            "stat": "STRENGTH",
+            "value": 3,
+            "target": "SELF"
+          }
+        ],
+        "source": "SELF",
+        "text": "While you can spot a companion of strength 10 or more, this minion is strength +3."
+      }
+    ],
     "culture": "ORC",
     "race": "ORC",
     "twilightCost": 3,
@@ -131669,6 +131820,34 @@
     "isUnique": false,
     "kind": "SHADOW",
     "type": "MINION",
+    "abilities": [
+      {
+        "id": "15C105:0",
+        "phases": [],
+        "trigger": {
+          "type": "WHILE",
+          "spotMinStrength": {
+            "target": [
+              [
+                "COMPANION"
+              ]
+            ],
+            "min": 13
+          }
+        },
+        "cost": [],
+        "effects": [
+          {
+            "type": "MODIFY_STAT",
+            "stat": "STRENGTH",
+            "value": 7,
+            "target": "SELF"
+          }
+        ],
+        "source": "SELF",
+        "text": "While you can spot a companion of strength 13 or more, this minion is strength +7."
+      }
+    ],
     "culture": "ORC",
     "race": "ORC",
     "twilightCost": 3,
@@ -135432,6 +135611,34 @@
     "keywords": [
       "DAMAGE +1"
     ],
+    "abilities": [
+      {
+        "id": "15U175:0",
+        "phases": [],
+        "trigger": {
+          "type": "WHILE",
+          "spotMinStrength": {
+            "target": [
+              [
+                "COMPANION"
+              ]
+            ],
+            "min": 10
+          }
+        },
+        "cost": [],
+        "effects": [
+          {
+            "type": "MODIFY_STAT",
+            "stat": "STRENGTH",
+            "value": 2,
+            "target": "SELF"
+          }
+        ],
+        "source": "SELF",
+        "text": "While you can spot a companion of strength 10 or more, this minion is strength +2."
+      }
+    ],
     "culture": "URUK-HAI",
     "race": "URUK-HAI",
     "twilightCost": 3,
@@ -135566,6 +135773,34 @@
     "type": "MINION",
     "keywords": [
       "DAMAGE +1"
+    ],
+    "abilities": [
+      {
+        "id": "15C178:0",
+        "phases": [],
+        "trigger": {
+          "type": "WHILE",
+          "spotMinStrength": {
+            "target": [
+              [
+                "COMPANION"
+              ]
+            ],
+            "min": 12
+          }
+        },
+        "cost": [],
+        "effects": [
+          {
+            "type": "MODIFY_STAT",
+            "stat": "STRENGTH",
+            "value": 4,
+            "target": "SELF"
+          }
+        ],
+        "source": "SELF",
+        "text": "While you can spot a companion of strength 12 or more, this minion is strength +4."
+      }
     ],
     "culture": "URUK-HAI",
     "race": "URUK-HAI",
@@ -140916,6 +141151,34 @@
     "isUnique": false,
     "kind": "SHADOW",
     "type": "MINION",
+    "abilities": [
+      {
+        "id": "17U88:0",
+        "phases": [],
+        "trigger": {
+          "type": "WHILE",
+          "spotMinStrength": {
+            "target": [
+              [
+                "COMPANION"
+              ]
+            ],
+            "min": 12
+          }
+        },
+        "cost": [],
+        "effects": [
+          {
+            "type": "MODIFY_STAT",
+            "stat": "STRENGTH",
+            "value": 4,
+            "target": "SELF"
+          }
+        ],
+        "source": "SELF",
+        "text": "While you can spot a companion of strength 12 or more, this minion is strength +4."
+      }
+    ],
     "culture": "ORC",
     "race": "ORC",
     "twilightCost": 4,

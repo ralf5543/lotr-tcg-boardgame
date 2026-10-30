@@ -372,24 +372,24 @@ export const DevPanel: React.FC<DevPanelProps> = ({
                         </S.GameButton>
                     </S.Section>
 
-                    {/* Preset de playtest : trous decks — Unabated in Malice */}
+                    {/* Preset de playtest : trous decks — Wandering Hillman */}
                     <S.Section>
                         <S.Label>
-                            Preset decks (Unabated in Malice) :
+                            Preset decks (Wandering Hillman) :
                             <br />
                             <span style={{ opacity: 0.75, fontWeight: 400 }}>
-                                Initiative → Damage +1 ; Combat défausse
-                                → +force / culture.
+                                Compagnon force ≥10 → +3 ; Manœuvre
+                                fardeaux/menaces → contrôler un site.
                             </span>
                         </S.Label>
                         <S.ActionButton
                             onClick={() =>
                                 moves.devLoadPreset?.(
-                                    'DECK_GAPS_UNABATED'
+                                    'DECK_GAPS_HILLMAN'
                                 )
                             }
                         >
-                            Unabated in Malice (10C24)
+                            Wandering Hillman (15U94)
                         </S.ActionButton>
                     </S.Section>
 

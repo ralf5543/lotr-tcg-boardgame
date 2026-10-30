@@ -32,8 +32,15 @@ import {
 import { playerHasInitiative } from '../../initiative';
 import {
     getEffectiveResistance,
+    getEffectiveStrength,
     getEffectiveVitality,
 } from '../../../../utils/cardStats';
+
+/**
+ * Évite la récursion : calculer la force d’un compagnon pour
+ * `spotMinStrength` re-parcourt les While (dont celui du Hillman).
+ */
+let spotMinStrengthGuard = false;
 
 function matchCard(card: CardState, targetId: string): boolean {
     return card.instanceId === targetId || card.id === targetId;
@@ -497,6 +504,29 @@ export function whileConditionHolds(
     if (trigger.hasInitiative) {
         const ownerId = findInPlayCardOwnerId(G, source);
         if (!ownerId || !playerHasInitiative(G, ownerId)) return false;
+    }
+
+    if (trigger.spotMinStrength) {
+        const min = trigger.spotMinStrength.min;
+        const target = trigger.spotMinStrength.target;
+        if (!Number.isFinite(min) || min < 0 || !target?.length) {
+            return false;
+        }
+        // Pendant un calcul de force déjà en cours : ne pas
+        // re-déclencher (sinon boucle Hillman ↔ compagnon).
+        if (spotMinStrengthGuard) return false;
+        let found = false;
+        spotMinStrengthGuard = true;
+        try {
+            forEachInPlayCard(G, (card) => {
+                if (found || card.isDead) return;
+                if (!cardMatchesTarget(card, target)) return;
+                if (getEffectiveStrength(card, G) >= min) found = true;
+            });
+        } finally {
+            spotMinStrengthGuard = false;
+        }
+        if (!found) return false;
     }
 
     if (trigger.inRegion != null) {

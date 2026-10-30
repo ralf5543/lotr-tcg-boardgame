@@ -121,8 +121,8 @@ const neutralPath: readonly string[] = [
 
 /**
  * Applique le preset DEV de playtest (zones vidées / chemin Standard).
- * Vague en cours : Unabated in Malice — initiative → Damage +1 Gollum ;
- * Combat : défausse → force +1 / culture.
+ * Vague en cours : Wandering Hillman — While compagnon force ≥10 → +3 ;
+ * Manœuvre : 2 fardeaux ou 2 menaces → contrôler un site.
  */
 export const applyDevPreset = (
     G: GameState,
@@ -136,28 +136,27 @@ export const applyDevPreset = (
     const shadowPlayer = G.players[shadowId];
 
     switch (presetType) {
-        case 'DECK_GAPS_UNABATED': {
+        case 'DECK_GAPS_HILLMAN': {
             resetBoardForPreset(G);
-            setupDevPath(G, 0, neutralPath);
-            G.twilightPool = 6;
-            fpPlayer.burdens = 0;
-            // Main FP < 4 → Ombre a l’initiative (Damage +1).
+            // Site 2 déjà posé → site 1 contrôlable par l’Ombre.
+            setupDevPath(G, 1, neutralPath);
+            G.twilightPool = 4;
+            fpPlayer.burdens = 2;
+            fpPlayer.threats = 2;
+            // Gandalf force 10 imprimée → déclenche le While (+3).
             fpPlayer.fellowshipArea = [
                 {
-                    ...clonePresetCard('2C102', 'dev-una-frodo'),
-                    attachments: [clonePresetCard('1R1', 'dev-una-ring')],
+                    ...clonePresetCard('1C290', 'dev-hill-frodo'),
+                    attachments: [clonePresetCard('1R1', 'dev-hill-ring')],
                 },
-                clonePresetCard('8R27', 'dev-una-smeagol'),
+                clonePresetCard('6R30', 'dev-hill-gandalf'),
             ];
             fpPlayer.hand = [];
             fpPlayer.deck = [];
             fpPlayer.sitesDeck = [clonePresetSite('11S250', fpId)];
             if (shadowPlayer) {
                 G.battlefield = [
-                    clonePresetCard('7C59', 'dev-una-gollum'),
-                ];
-                shadowPlayer.supportArea = [
-                    clonePresetCard('10C24', 'dev-una-cond'),
+                    clonePresetCard('15U94', 'dev-hillman'),
                 ];
                 shadowPlayer.hand = [];
                 shadowPlayer.deck = [];
@@ -166,7 +165,7 @@ export const applyDevPreset = (
                 ];
             }
             G.statusMessage =
-                '[DEV] Unabated in Malice (10C24) · Ombre a l’initiative → Gollum Damage +1. Assignez Gollum vs Frodon : bulle Combat sur Unabated → défausse la situation → Gollum force +1 par culture spotée (SHIRE+GOLLUM au moins).';
+                '[DEV] Wandering Hillman (15U94) · Gandalf force 10 → Hillman +3. Phase Manœuvre Ombre : bulle « Retirer 2 fardeaux » ou « Retirer 2 menaces » → contrôler le site 1.';
             break;
         }
     }

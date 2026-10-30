@@ -4486,6 +4486,62 @@ function parseWhileNoOpponentControlsStrengthAbilities(
 }
 
 /**
+ * While you can spot a companion of strength N or more, this minion is strength ±M.
+ * (Wandering Hillman…) — fragment dédié avant le spot-classe générique.
+ */
+function parseWhileSpotMinStrengthAbilities(
+    text: string,
+    cardTitle?: string,
+    cardId?: string
+): Record<string, unknown>[] {
+    const found: Record<string, unknown>[] = [];
+    const re =
+        /While you can spot (?:a|an) (companion|minion|character|ally) of strength (\d+) or more,\s*([^,]+?) is strength ([+-]\d+)\./gi;
+    let match: RegExpExecArray | null;
+    while ((match = re.exec(text)) !== null) {
+        const sentence = match[0];
+        if (
+            /\b(and|or|each|may|fierce|damage|archery|discard|wound|heal|draw)\b/i.test(
+                sentence.replace(/\bof strength \d+ or more\b/i, '')
+            )
+        ) {
+            continue;
+        }
+        const classKey = match[1].toUpperCase();
+        const min = parseInt(match[2], 10);
+        const who = parseWhileStrengthWho(match[3], cardTitle);
+        const value = parseInt(match[4], 10);
+        if (!who) continue;
+        if (!Number.isFinite(min) || min < 0) continue;
+        if (!Number.isFinite(value) || value === 0) continue;
+
+        found.push({
+            id: `${cardId || 'ability'}:${found.length}:while-spot-min-str`,
+            phases: [],
+            trigger: {
+                type: 'WHILE',
+                spotMinStrength: {
+                    target: [[classKey]],
+                    min,
+                },
+            },
+            cost: [],
+            effects: [
+                {
+                    type: 'MODIFY_STAT',
+                    stat: 'STRENGTH',
+                    value,
+                    target: who,
+                },
+            ],
+            source: who === 'BEARER' ? 'ATTACHMENT' : 'SELF',
+            text: stripAbilityMarkup(sentence),
+        });
+    }
+    return found;
+}
+
+/**
  * While you can spot [classe|crépuscule], [self/bearer] is strength ±N.
  * Passif uniquement — refuse each / and fierce / for each / etc.
  */
@@ -10875,6 +10931,44 @@ export function parseAbilities(
             }
         }
 
+        // Remove N burdens or N threats to take control of a site.
+        // (Wandering Hillman…) — deux bulles distinctes, comme exert-or-threat.
+        const removeBurdensOrThreatsControl = bodyPlain.match(
+            /^Remove\s+(a|an|one|two|three|\d+)\s+burdens?\s+or\s+(a|an|one|two|three|\d+)\s+threats?\s+to (?:take )?control(?: of)? a site\.?$/i
+        );
+        if (removeBurdensOrThreatsControl) {
+            const burdenCount = parseBurdenWord(
+                removeBurdensOrThreatsControl[1]
+            );
+            const threatCount = parseBurdenWord(
+                removeBurdensOrThreatsControl[2]
+            );
+            if (burdenCount && threatCount) {
+                const effects = [{ type: 'TAKE_CONTROL_SITE' }];
+                abilities.push({
+                    id: `${cardId || 'ability'}:${abilities.length}`,
+                    phases,
+                    cost: [{ removeBurdens: burdenCount }],
+                    effects,
+                    source: 'SELF',
+                    text: `${marker.phase}: Remove ${burdenCount === 1 ? 'a' : burdenCount} burden${burdenCount > 1 ? 's' : ''} to take control of a site.`
+                        .replace(/\s+/g, ' ')
+                        .trim(),
+                });
+                abilities.push({
+                    id: `${cardId || 'ability'}:${abilities.length}`,
+                    phases,
+                    cost: [{ removeThreats: threatCount }],
+                    effects,
+                    source: 'SELF',
+                    text: `${marker.phase}: Remove ${threatCount === 1 ? 'a' : threatCount} threat${threatCount > 1 ? 's' : ''} to take control of a site.`
+                        .replace(/\s+/g, ' ')
+                        .trim(),
+                });
+                return;
+            }
+        }
+
         // Exert X twice or remove a threat to make him strength +N
         // (avant makeMatch : sinon « Exert … or remove … to make » est mangé)
         const exertOrThreatMake = bodyPlain.match(
@@ -14275,6 +14369,15 @@ export function parseAbilities(
     );
 
     parseForEachCardInHandStrengthAbilities(text, cardTitle, cardId).forEach(
+        (ability) => {
+            abilities.push({
+                ...ability,
+                id: `${cardId || 'ability'}:${abilities.length}`,
+            });
+        }
+    );
+
+    parseWhileSpotMinStrengthAbilities(text, cardTitle, cardId).forEach(
         (ability) => {
             abilities.push({
                 ...ability,

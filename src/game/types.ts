@@ -1122,6 +1122,11 @@ export type AbilityTrigger =
           ringBearerExhaustedOrSpotBurdens?: number;
           /** « While you have initiative… » — propriétaire de la source. */
           hasInitiative?: boolean;
+          /**
+           * « While you can spot a companion of strength N or more… »
+           * (Wandering Hillman…). Force effective ; garde anti-récursion.
+           */
+          spotMinStrength?: { target: string[][]; min: number };
           /** « While you cannot spot N threats… » — menaces FP < N. */
           cannotSpotThreats?: number;
           /**
@@ -1787,7 +1792,7 @@ export interface LotrMoveContext extends FnContext<GameState> {
 }
 
 /** Presets DEV de playtest (panneau de test, vague en cours). */
-export type DevPresetType = 'DECK_GAPS_UNABATED';
+export type DevPresetType = 'DECK_GAPS_HILLMAN';
 
 export interface ArcheryState {
     step?: 'ACTIONS' | 'FP_ASSIGN' | 'SHADOW_ASSIGN' | 'COMPLETE';
