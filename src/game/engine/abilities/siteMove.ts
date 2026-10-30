@@ -56,7 +56,7 @@ export function triggerConditionsMet(
 }
 
 /** Cultures distinctes parmi les cartes en jeu (spot a culture). */
-function countDistinctCulturesInPlay(G: GameState): number {
+export function countDistinctCulturesInPlay(G: GameState): number {
     const cultures = new Set<string>();
     forEachInPlayCard(G, (card) => {
         const culture = card.culture;

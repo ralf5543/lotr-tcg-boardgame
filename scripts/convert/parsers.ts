@@ -4851,6 +4851,52 @@ function parseWhileHaveInitiativeStrengthAbilities(
 }
 
 /**
+ * While you have initiative, each [classe] is Damage +N | fierce.
+ * (Unabated in Malice…) — pas « of your » / and / archer.
+ */
+function parseWhileHaveInitiativeEachKeywordAbilities(
+    text: string,
+    cardId?: string
+): Record<string, unknown>[] {
+    const found: Record<string, unknown>[] = [];
+    const kwTail =
+        '((?:<keyword>[^<]*</keyword>|\\*\\*[^*]+\\*\\*|damage\\s*\\+\\s*\\d+|fierce)\\.?)';
+    const re = new RegExp(
+        `While you have initiative,\\s*each ([^,]+?) is ${kwTail}`,
+        'gi'
+    );
+    let match: RegExpExecArray | null;
+    while ((match = re.exec(text)) !== null) {
+        if (/\bof your\b/i.test(match[0])) continue;
+        const eachTarget = parseWhileEachClass(match[1]);
+        if (!eachTarget) continue;
+        const grant = parseWhileKeywordGrant(match[2]);
+        if (!grant) continue;
+        const after = stripAbilityMarkup(
+            text.slice(match.index + match[0].length)
+        ).trim();
+        if (/^and\b/i.test(after)) continue;
+
+        found.push({
+            id: `${cardId || 'ability'}:${found.length}:while-init-each-kw`,
+            phases: [],
+            trigger: { type: 'WHILE', hasInitiative: true },
+            cost: [],
+            effects: [
+                {
+                    type: 'MODIFY_KEYWORD',
+                    keyword: grant.keyword,
+                    target: eachTarget,
+                },
+            ],
+            source: 'SELF',
+            text: stripAbilityMarkup(match[0]),
+        });
+    }
+    return found;
+}
+
+/**
  * « While [Name|this] is in region N, [each other companion|each companion|he] is strength ±X. »
  * (Gandalf Leader of the Company 11S33…)
  * Refuse damage / discard / skirmishing / multi-clauses hors modèle.
@@ -11185,6 +11231,41 @@ export function parseAbilities(
             return;
         }
 
+        // « Discard this … to make a [classe] strength +N for each culture you can spot. »
+        // (Unabated in Malice…)
+        const discardSelfMakePerCulture = body.match(
+            /^Discard this(?:\s+(?:condition|possession|card))?(?:\s+from play)?\s+to make\s+(?:a|an)\s+([\s\S]+?)\s+strength\s*\+(\d+)\s+for each culture you can spot\.?/i
+        );
+        if (discardSelfMakePerCulture) {
+            const filters = parseClassFilters(discardSelfMakePerCulture[1]);
+            if (filters.length === 0) return;
+            const value = parseInt(discardSelfMakePerCulture[2], 10);
+            if (!Number.isFinite(value) || value <= 0) return;
+            const expiresAtPhase = parseUntilExpiry(body, marker.phase);
+            abilities.push({
+                id: `${cardId || 'ability'}:${abilities.length}`,
+                phases,
+                cost: [
+                    {
+                        discardFromPlay: [{ count: 1, target: 'SELF' }],
+                    },
+                ],
+                effects: [
+                    {
+                        type: 'ADD_TEMP_STAT',
+                        stat: 'STRENGTH',
+                        value,
+                        target: [filters],
+                        expiresAtPhase,
+                        perDistinctCulture: true,
+                    },
+                ],
+                source: 'SELF',
+                text: `${marker.phase}: ${stripAbilityMarkup(body)}`,
+            });
+            return;
+        }
+
         // « Discard this condition to make an Uruk-hai strength +2. » (Saruman's Ambition…)
         const discardSelfMake = body.match(
             /^Discard this(?:\s+(?:condition|possession|card))?(?:\s+from play)?\s+to make\s+([\s\S]+)/i
@@ -14203,6 +14284,14 @@ export function parseAbilities(
     );
 
     parseWhileHaveInitiativeStrengthAbilities(text, cardTitle, cardId).forEach(
+        (ability) => {
+            abilities.push({
+                ...ability,
+                id: `${cardId || 'ability'}:${abilities.length}`,
+            });
+        }
+    );
+    parseWhileHaveInitiativeEachKeywordAbilities(text, cardId).forEach(
         (ability) => {
             abilities.push({
                 ...ability,

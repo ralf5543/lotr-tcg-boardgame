@@ -82664,6 +82664,30 @@
     "kind": "FREE_PEOPLE",
     "type": "CONDITION",
     "subtype": "SUPPORT-AREA",
+    "abilities": [
+      {
+        "id": "8C1:0",
+        "phases": [],
+        "trigger": {
+          "type": "WHILE",
+          "hasInitiative": true
+        },
+        "cost": [],
+        "effects": [
+          {
+            "type": "MODIFY_KEYWORD",
+            "keyword": "DAMAGE +1",
+            "target": [
+              [
+                "DWARF"
+              ]
+            ]
+          }
+        ],
+        "source": "SELF",
+        "text": "While you have initiative, each Dwarf is Damage +1.."
+      }
+    ],
     "culture": "DWARVEN",
     "twilightCost": 1,
     "imageUrl": "/cards_visuals/o_08_001.jpg",
@@ -92192,6 +92216,67 @@
     "kind": "SHADOW",
     "type": "CONDITION",
     "subtype": "SUPPORT-AREA",
+    "abilities": [
+      {
+        "id": "10C24:0",
+        "phases": [
+          "SKIRMISH"
+        ],
+        "cost": [
+          {
+            "discardFromPlay": [
+              {
+                "count": 1,
+                "target": "SELF"
+              }
+            ]
+          }
+        ],
+        "effects": [
+          {
+            "type": "ADD_TEMP_STAT",
+            "stat": "STRENGTH",
+            "value": 1,
+            "target": [
+              [
+                "GOLLUM",
+                "MINION"
+              ]
+            ],
+            "expiresAtPhase": "SKIRMISH",
+            "perDistinctCulture": true
+          }
+        ],
+        "source": "SELF",
+        "text": "SKIRMISH: Discard this condition to make a gollum minion strength +1 for each culture you can spot."
+      },
+      {
+        "id": "10C24:1",
+        "phases": [],
+        "trigger": {
+          "type": "WHILE",
+          "hasInitiative": true
+        },
+        "cost": [],
+        "effects": [
+          {
+            "type": "MODIFY_KEYWORD",
+            "keyword": "DAMAGE +1",
+            "target": [
+              [
+                "GOLLUM",
+                "MINION"
+              ]
+            ]
+          }
+        ],
+        "source": "SELF",
+        "text": "While you have initiative, each gollum minion is damage +1."
+      }
+    ],
+    "actionPhases": [
+      "SKIRMISH"
+    ],
     "culture": "GOLLUM",
     "twilightCost": 0,
     "imageUrl": "/cards_visuals/o_10_024.jpg",

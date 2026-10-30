@@ -1655,7 +1655,10 @@ export const GameControls: React.FC<GameControlsProps> = ({
                                 </S.ActionButton>
                             )}
 
+                        {/* Empêcher : uniquement pour le joueur actif de la fenêtre
+                            (pas le toaster « en attente » de l’adversaire). */}
                         {toastConfig.type === 'RESPONSE' &&
+                            isMyTurnToAct &&
                             G.pendingEvent?.type ===
                                 'ABOUT_TO_CANCEL_SKIRMISH' && (
                                 <S.ActionButton
@@ -1674,6 +1677,7 @@ export const GameControls: React.FC<GameControlsProps> = ({
                             )}
 
                         {toastConfig.type === 'RESPONSE' &&
+                            isMyTurnToAct &&
                             G.pendingEvent?.type === 'ABOUT_TO_EXHAUST' && (
                                 <S.ActionButton
                                     style={{ marginTop: '12px', width: '100%' }}
@@ -1689,6 +1693,7 @@ export const GameControls: React.FC<GameControlsProps> = ({
                             )}
 
                         {toastConfig.type === 'RESPONSE' &&
+                            isMyTurnToAct &&
                             G.pendingEvent?.type ===
                                 'ABOUT_TO_FORCE_ASSIGN' && (
                                 <S.ActionButton
@@ -1702,6 +1707,7 @@ export const GameControls: React.FC<GameControlsProps> = ({
                             )}
 
                         {toastConfig.type === 'RESPONSE' &&
+                            isMyTurnToAct &&
                             G.pendingEvent?.type ===
                                 'ABOUT_TO_ADD_THREATS' && (
                                 <S.ActionButton

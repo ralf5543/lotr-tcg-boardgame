@@ -372,24 +372,24 @@ export const DevPanel: React.FC<DevPanelProps> = ({
                         </S.GameButton>
                     </S.Section>
 
-                    {/* Preset de playtest : trous decks — Morgul Destroyer */}
+                    {/* Preset de playtest : trous decks — Unabated in Malice */}
                     <S.Section>
                         <S.Label>
-                            Preset decks (Morgul Destroyer) :
+                            Preset decks (Unabated in Malice) :
                             <br />
                             <span style={{ opacity: 0.75, fontWeight: 400 }}>
-                                Pose → +2 menaces ; FP peut blesser le
-                                Porteur.
+                                Initiative → Damage +1 ; Combat défausse
+                                → +force / culture.
                             </span>
                         </S.Label>
                         <S.ActionButton
                             onClick={() =>
                                 moves.devLoadPreset?.(
-                                    'DECK_GAPS_MORGUL_DESTROYER'
+                                    'DECK_GAPS_UNABATED'
                                 )
                             }
                         >
-                            Morgul Destroyer (7U190)
+                            Unabated in Malice (10C24)
                         </S.ActionButton>
                     </S.Section>
 

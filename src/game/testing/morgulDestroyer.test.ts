@@ -1,7 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { parseAbilities } from '../../../scripts/convert/parsers';
 import { getCardById } from '../cardsData';
-import { applyDevPreset } from '../dev/presets';
 import { applyAbilityEffect } from '../engine/abilities/applyAbilityEffect';
 import {
     passResponseWindow,
@@ -155,10 +154,4 @@ describe('Morgul Destroyer 7U190 — when-played menaces + prévention', () => {
         expect(frodo2.wounds || 0).toBe(1);
     });
 
-    it('preset DEV : Destroyer en main + Nazgûl en jeu', () => {
-        const G = createGameState();
-        applyDevPreset(G, 'DECK_GAPS_MORGUL_DESTROYER');
-        expect(G.players['1']!.hand?.[0]?.id).toBe('7U190');
-        expect(G.battlefield.some((c) => c.race === 'NAZGÛL')).toBe(true);
-    });
 });

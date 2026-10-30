@@ -121,8 +121,8 @@ const neutralPath: readonly string[] = [
 
 /**
  * Applique le preset DEV de playtest (zones vidées / chemin Standard).
- * Vague en cours : trous de mécanismes decks — Morgul Destroyer
- * (when-played : spot Nazgûl → +2 menaces ; FP peut blesser le Porteur).
+ * Vague en cours : Unabated in Malice — initiative → Damage +1 Gollum ;
+ * Combat : défausse → force +1 / culture.
  */
 export const applyDevPreset = (
     G: GameState,
@@ -136,35 +136,37 @@ export const applyDevPreset = (
     const shadowPlayer = G.players[shadowId];
 
     switch (presetType) {
-        case 'DECK_GAPS_MORGUL_DESTROYER': {
+        case 'DECK_GAPS_UNABATED': {
             resetBoardForPreset(G);
             setupDevPath(G, 0, neutralPath);
-            G.twilightPool = 8;
+            G.twilightPool = 6;
             fpPlayer.burdens = 0;
-            fpPlayer.threats = 0;
+            // Main FP < 4 → Ombre a l’initiative (Damage +1).
             fpPlayer.fellowshipArea = [
                 {
-                    ...clonePresetCard('2C102', 'dev-md-frodo'),
-                    attachments: [clonePresetCard('1R1', 'dev-md-ring')],
+                    ...clonePresetCard('2C102', 'dev-una-frodo'),
+                    attachments: [clonePresetCard('1R1', 'dev-una-ring')],
                 },
+                clonePresetCard('8R27', 'dev-una-smeagol'),
             ];
             fpPlayer.hand = [];
             fpPlayer.deck = [];
             fpPlayer.sitesDeck = [clonePresetSite('11S250', fpId)];
             if (shadowPlayer) {
                 G.battlefield = [
-                    clonePresetCard('0P43', 'dev-md-nazgul'),
+                    clonePresetCard('7C59', 'dev-una-gollum'),
                 ];
-                shadowPlayer.hand = [
-                    clonePresetCard('7U190', 'dev-md-destroyer'),
+                shadowPlayer.supportArea = [
+                    clonePresetCard('10C24', 'dev-una-cond'),
                 ];
+                shadowPlayer.hand = [];
                 shadowPlayer.deck = [];
                 shadowPlayer.sitesDeck = [
                     clonePresetSite('11S263', shadowId),
                 ];
             }
             G.statusMessage =
-                '[DEV] Morgul Destroyer (7U190) · Jouez le Destroyer (Ombre) : Activer → repérer le Nazgûl → FP Empêcher (blesser Frodon) ou Passer (+2 menaces). Combat : −1 menace → force +3.';
+                '[DEV] Unabated in Malice (10C24) · Ombre a l’initiative → Gollum Damage +1. Assignez Gollum vs Frodon : bulle Combat sur Unabated → défausse la situation → Gollum force +1 par culture spotée (SHIRE+GOLLUM au moins).';
             break;
         }
     }

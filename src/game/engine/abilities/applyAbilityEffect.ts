@@ -36,6 +36,7 @@ import {
 import { playerHasInitiative } from '../../logic/initiative';
 import { addThreats } from '../../logic/threats';
 import { getMoveLimit } from '../../logic/moveLimit';
+import { countDistinctCulturesInPlay } from './siteMove';
 import {
     applyReinforce,
     getReinforceCandidates,
@@ -1494,6 +1495,10 @@ function applyOneEffect(
                 effect.perSpot.target
             ).filter((c) => !c.isDead).length;
             value = effect.value * n;
+            if (value <= 0) return false;
+        }
+        if (effect.perDistinctCulture) {
+            value = effect.value * countDistinctCulturesInPlay(G);
             if (value <= 0) return false;
         }
         if (

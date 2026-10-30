@@ -293,6 +293,8 @@ export type AbilityEffect =
           };
           /** Bonus = value × cartes spotées (Pippin's Sword…). */
           perSpot?: { target: string[][] };
+          /** Bonus = value × cultures distinctes spotées (Unabated…). */
+          perDistinctCulture?: boolean;
       }
     | {
           /** Modificateur passif (While…) — pas d’expiration de phase. */
@@ -1785,7 +1787,7 @@ export interface LotrMoveContext extends FnContext<GameState> {
 }
 
 /** Presets DEV de playtest (panneau de test, vague en cours). */
-export type DevPresetType = 'DECK_GAPS_MORGUL_DESTROYER';
+export type DevPresetType = 'DECK_GAPS_UNABATED';
 
 export interface ArcheryState {
     step?: 'ACTIONS' | 'FP_ASSIGN' | 'SHADOW_ASSIGN' | 'COMPLETE';

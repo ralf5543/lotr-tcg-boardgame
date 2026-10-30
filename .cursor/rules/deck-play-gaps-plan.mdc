@@ -59,7 +59,8 @@ L’ancien plan main/initiative est **figé** (`.cursor/rules/hand-initiative-pl
 | `11R44` | Incited | ✅ Validé par Ralf — compagnon perd → affaiblir Gollum → reprendre une carte Gollum (`LOSES_SKIRMISH` + exert nommé + `TAKE_FROM_DISCARD`). Preset DEV retiré après validation |
 | `11R54` | Aragorn, Strider | ✅ Validé par Ralf — chaque déplacement → +1 crépuscule forcé (`FELLOWSHIP_MOVES` + `ADD_TWILIGHT`, auto ; les fragments existants ne couvraient que les « you may… »). Preset DEV retiré après validation |
 | `1U142` | Traitor's Voice / Voix du Traître | ✅ Validé par Ralf — Porteur épuisé ou 5 fardeaux → limite de déplacement −1 (min 1) via `MODIFY_MOVE_LIMIT` / `getMoveLimit`. Preset DEV retiré après validation |
-| `7U190` | Morgul Destroyer | When-played : spot Nazgûl → +2 menaces ; FP peut blesser le Porteur pour empêcher (`ADD_THREATS` + `fpMayPrevent.woundRingBearer`). Combat déjà OK. En playtest, preset DEV `DECK_GAPS_MORGUL_DESTROYER` |
+| `7U190` | Morgul Destroyer | ✅ Validé par Ralf — when-played spot Nazgûl → +2 menaces ; FP peut blesser le Porteur (`fpMayPrevent.woundRingBearer`) ; toaster Empêcher réservé au joueur actif. Preset DEV retiré après validation |
+| `10C24` | Unabated in Malice | While initiative → chaque séide Gollum Damage +1 ; Combat : défausse → force +1 par culture (`perDistinctCulture`). En playtest, preset DEV `DECK_GAPS_UNABATED` |
 
 Livré (playtest) : Hidden Knowledge `7R104` (grille révélation + valider) ; Slippery Sneak `8R27` ; escarmouche vacante (mort→gagnant / défausse→pas) ; Cruel Caradhras `1R124` ; Pelennor Flat `11S254` ; Shelob when-played possession ; toaster Orthanc (boutons cohérents).
 

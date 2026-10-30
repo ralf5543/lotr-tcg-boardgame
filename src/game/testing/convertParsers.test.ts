@@ -5514,7 +5514,7 @@ describe('parseAbilities — culture tokens', () => {
         );
     });
 
-    it('refuse While initiative → each / damage keyword', () => {
+    it('refuse While initiative → each of your (possessif)', () => {
         expect(
             parseAbilities(
                 'While you have initiative, each of your sauron minions is strength +2.',
@@ -5527,19 +5527,29 @@ describe('parseAbilities — culture tokens', () => {
                     a.trigger.hasInitiative
             )
         ).toBeFalsy();
+    });
 
+    it('parse Unabated : While initiative → each gollum Damage +1', () => {
         expect(
             parseAbilities(
-                'While you have initiative, each gollum minion is **damage +1.**',
+                'While you have initiative, each <symbol>gollum</symbol> minion is **damage +1.**',
                 'Unabated in Malice',
                 '10C24'
-            )?.some(
-                (a) =>
-                    a.trigger?.type === 'WHILE' &&
-                    'hasInitiative' in a.trigger &&
-                    a.trigger.hasInitiative
             )
-        ).toBeFalsy();
+        ).toEqual(
+            expect.arrayContaining([
+                expect.objectContaining({
+                    trigger: { type: 'WHILE', hasInitiative: true },
+                    effects: [
+                        {
+                            type: 'MODIFY_KEYWORD',
+                            keyword: 'DAMAGE +1',
+                            target: [['GOLLUM', 'MINION']],
+                        },
+                    ],
+                }),
+            ])
+        );
     });
 
     it('parse While in region N → force (Gandalf Leader of the Company)', () => {
