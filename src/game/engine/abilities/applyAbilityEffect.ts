@@ -766,6 +766,9 @@ export function applyAbilityEffect(
             const sourceId = source.instanceId || source.id;
             if (!sourceId) return false;
             G.pendingReveal = {
+                zone: 'DECK_TOP',
+                viewerId: ownerId,
+                subjectPlayerId: opponentId,
                 playerId: ownerId,
                 opponentId,
                 sourceInstanceId: sourceId,
@@ -781,6 +784,43 @@ export function applyAbilityEffect(
             };
             G.statusMessage =
                 'Cartes révélées : validez pour appliquer menaces / jetons et mélanger.';
+            continue;
+        }
+
+        if (effect.type === 'REVEAL_HAND') {
+            const ownerId = abilityOwnerPlayerId(G, source);
+            if (!ownerId) return false;
+            const opponentId =
+                ownerId === (G.fpPlayerId || '0')
+                    ? Object.keys(G.players).find((id) => id !== ownerId)
+                    : G.fpPlayerId || '0';
+            if (!opponentId) return false;
+            const subjectPlayerId =
+                effect.whose === 'OPPONENT' ? opponentId : ownerId;
+            const viewerId =
+                effect.whose === 'OPPONENT' ? ownerId : opponentId;
+            const subject = G.players[subjectPlayerId];
+            if (!subject) return false;
+            const sourceId = source.instanceId || source.id;
+            if (!sourceId) return false;
+            const hand = subject.hand || [];
+            G.pendingReveal = {
+                zone: 'HAND',
+                viewerId,
+                subjectPlayerId,
+                playerId: viewerId,
+                opponentId: subjectPlayerId,
+                sourceInstanceId: sourceId,
+                abilityId: ability.id,
+                cardIds: hand.map((c) => c.instanceId || c.id).filter(Boolean),
+                ...(effect.aftermath
+                    ? { aftermath: effect.aftermath }
+                    : {}),
+            };
+            G.statusMessage =
+                viewerId === ownerId
+                    ? 'Main adverse révélée : consultez les cartes puis validez.'
+                    : 'Votre main est révélée : l’adversaire consulte…';
             continue;
         }
 

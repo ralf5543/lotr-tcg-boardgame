@@ -568,6 +568,26 @@ function formatEffectBit(
             ? 'placer les cartes Ombre de votre main sous votre pioche'
             : 'placer les cartes Peuples Libres de votre main sous votre pioche';
     }
+    if (effect.type === 'REVEAL_HAND') {
+        const parts: string[] = [
+            effect.whose === 'OPPONENT'
+                ? 'révéler la main adverse'
+                : 'révéler votre main',
+        ];
+        if (effect.aftermath?.putHandUnderDeck === 'SHADOW') {
+            parts.push(
+                'placer les cartes Ombre sous votre pioche'
+            );
+        } else if (effect.aftermath?.putHandUnderDeck === 'FREE_PEOPLE') {
+            parts.push(
+                'placer les cartes Peuples Libres sous votre pioche'
+            );
+        }
+        if (effect.aftermath?.discardSource) {
+            parts.push('défausser cette carte');
+        }
+        return parts.join(' ; ');
+    }
     if (effect.type === 'REMOVE_TWILIGHT') {
         return effect.countFromSpot
             ? 'retirer <symbol>twilightX</symbol>'

@@ -3,6 +3,7 @@ import { parseAbilities } from '../../../scripts/convert/parsers';
 import { getCardById } from '../cardsData';
 import { applyDevPreset } from '../dev/presets';
 import { applyAbilityEffect } from '../engine/abilities/applyAbilityEffect';
+import { confirmPendingReveal } from '../logic/pendingReveal';
 import { getEffectiveStrength } from '../../utils/cardStats';
 import type { Ability } from '../types';
 import {
@@ -17,7 +18,7 @@ const CSV_TEXT =
     'While Gollum is at a mountain, river, or underground site, he is strength +2. <br><keyword>Regroup:</keyword> Spot Gollum to reveal your hand. Place all Shadow cards revealed beneath your draw deck. Discard this condition.';
 
 describe('Slippery as Fishes 9R+29', () => {
-    it('analyse CSV : While multi-terrains + Regroup main sous pioche', () => {
+    it('analyse CSV : While multi-terrains + Regroup révélation de main', () => {
         const parsed = parseAbilities(
             CSV_TEXT,
             'Slippery as Fishes',
@@ -53,8 +54,14 @@ describe('Slippery as Fishes 9R+29', () => {
                         },
                     ],
                     effects: [
-                        { type: 'PUT_HAND_UNDER_DECK', kind: 'SHADOW' },
-                        { type: 'DISCARD', count: 1, target: 'SELF' },
+                        {
+                            type: 'REVEAL_HAND',
+                            whose: 'SELF',
+                            aftermath: {
+                                putHandUnderDeck: 'SHADOW',
+                                discardSource: true,
+                            },
+                        },
                     ],
                 }),
             ])
@@ -134,7 +141,7 @@ describe('Slippery as Fishes 9R+29', () => {
         expect(getEffectiveStrength(gollum, onPlains)).toBe(5);
     });
 
-    it('Regroup : Ombre sous pioche + défausse la situation', () => {
+    it('Regroup : pose pendingReveal (main), confirm → Ombre sous pioche + défausse', () => {
         const condition = {
             ...getCardById('9R+29')!,
             instanceId: 'fish',
@@ -153,13 +160,18 @@ describe('Slippery as Fishes 9R+29', () => {
             instanceId: 'orc-hand',
             kind: 'SHADOW',
         });
+        const fpCard = createCompanion({
+            id: '1C290',
+            instanceId: 'fp-hand',
+            kind: 'FREE_PEOPLE',
+        });
         const G = createGameState({
             fpPlayerId: '0',
             players: {
                 '0': createPlayerState('0'),
                 '1': createPlayerState('1', {
                     supportArea: [condition],
-                    hand: [shadowCard],
+                    hand: [shadowCard, fpCard],
                     deck: [],
                 }),
             },
@@ -167,13 +179,78 @@ describe('Slippery as Fishes 9R+29', () => {
         });
 
         expect(applyAbilityEffect(G, condition, ability)).toBe(true);
-        expect(G.players['1']!.hand).toHaveLength(0);
+        expect(G.pendingReveal).toEqual(
+            expect.objectContaining({
+                zone: 'HAND',
+                viewerId: '0',
+                subjectPlayerId: '1',
+                cardIds: expect.arrayContaining(['orc-hand', 'fp-hand']),
+                aftermath: {
+                    putHandUnderDeck: 'SHADOW',
+                    discardSource: true,
+                },
+            })
+        );
+        // Pas encore déplacé avant validation.
+        expect(G.players['1']!.hand).toHaveLength(2);
+        expect(
+            G.players['1']!.supportArea?.some((c) => c.instanceId === 'fish')
+        ).toBe(true);
+
+        expect(confirmPendingReveal(G, '1')).toBe(false);
+        expect(confirmPendingReveal(G, '0')).toBe(true);
+        expect(G.pendingReveal).toBeUndefined();
+        expect(G.players['1']!.hand.map((c) => c.instanceId)).toEqual([
+            'fp-hand',
+        ]);
         expect(G.players['1']!.deck.map((c) => c.instanceId)).toEqual([
             'orc-hand',
         ]);
         expect(
             G.players['1']!.supportArea?.some((c) => c.instanceId === 'fish')
         ).toBe(false);
+        expect(
+            G.players['1']!.discard?.some((c) => c.instanceId === 'fish')
+        ).toBe(true);
+    });
+
+    it('Regroup : main sans Ombre → révélation + défausse, rien sous pioche', () => {
+        const condition = {
+            ...getCardById('9R+29')!,
+            instanceId: 'fish',
+        };
+        const ability = (condition.abilities || []).find((ab) =>
+            ab.phases?.includes('REGROUP')
+        ) as Ability;
+        const gollum = createMinion({
+            id: '7C59',
+            instanceId: 'gollum',
+            title: 'Gollum',
+            i18n: { en: { title: 'Gollum' }, fr: { title: 'Gollum' } },
+        });
+        const G = createGameState({
+            fpPlayerId: '0',
+            players: {
+                '0': createPlayerState('0'),
+                '1': createPlayerState('1', {
+                    supportArea: [condition],
+                    hand: [
+                        createCompanion({
+                            id: '1C290',
+                            instanceId: 'only-fp',
+                            kind: 'FREE_PEOPLE',
+                        }),
+                    ],
+                    deck: [],
+                }),
+            },
+            battlefield: [gollum],
+        });
+
+        expect(applyAbilityEffect(G, condition, ability)).toBe(true);
+        expect(confirmPendingReveal(G, '0')).toBe(true);
+        expect(G.players['1']!.hand).toHaveLength(1);
+        expect(G.players['1']!.deck).toHaveLength(0);
         expect(
             G.players['1']!.discard?.some((c) => c.instanceId === 'fish')
         ).toBe(true);

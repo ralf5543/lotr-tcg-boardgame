@@ -213,7 +213,7 @@ export const GameControls: React.FC<GameControlsProps> = ({
     const actingPlayerId = isSetupPhase
         ? currentPlayerId
         : isRevealActive
-          ? G.pendingReveal!.playerId
+          ? G.pendingReveal!.viewerId || G.pendingReveal!.playerId
         : isResponseWindowActive
           ? G.responseWindow!.activePlayerId
           : isForcedChoiceActive
@@ -695,16 +695,34 @@ export const GameControls: React.FC<GameControlsProps> = ({
             showPassButton: false,
             type: 'WHEN_PLAYED_CHOICE',
         };
-    } else if (G.pendingReveal && isMyTurnToAct && G.pendingReveal.playerId === currentPlayerId) {
-        toastConfig = {
-            show: true,
-            title: 'RÉVÉLATION',
-            body:
-                G.statusMessage ||
-                'Cartes révélées du dessus de la pioche adverse. Validez pour appliquer les effets.',
-            showPassButton: false,
-            type: 'STANDARD',
-        };
+    } else if (G.pendingReveal) {
+        const revealViewer =
+            G.pendingReveal.viewerId || G.pendingReveal.playerId;
+        const revealZone = G.pendingReveal.zone || 'DECK_TOP';
+        if (isMyTurnToAct && revealViewer === currentPlayerId) {
+            toastConfig = {
+                show: true,
+                title: 'RÉVÉLATION',
+                body:
+                    revealZone === 'HAND'
+                        ? 'Main révélée. Consultez les cartes puis validez.'
+                        : G.statusMessage ||
+                          'Cartes révélées du dessus de la pioche adverse. Validez pour appliquer les effets.',
+                showPassButton: false,
+                type: 'STANDARD',
+            };
+        } else {
+            toastConfig = {
+                show: true,
+                title: 'RÉVÉLATION',
+                body:
+                    revealZone === 'HAND'
+                        ? 'L’adversaire consulte votre main…'
+                        : 'L’adversaire consulte les cartes révélées…',
+                showPassButton: false,
+                type: 'STANDARD',
+            };
+        }
     } else if ((G.threatWoundsToAssign ?? 0) > 0) {
         const remaining = G.threatWoundsToAssign ?? 0;
         toastConfig = {
@@ -1644,7 +1662,9 @@ export const GameControls: React.FC<GameControlsProps> = ({
 
                         {G.pendingReveal &&
                             isMyTurnToAct &&
-                            G.pendingReveal.playerId === currentPlayerId && (
+                            (G.pendingReveal.viewerId ||
+                                G.pendingReveal.playerId) ===
+                                currentPlayerId && (
                                 <S.ActionButton
                                     style={{ marginTop: '12px', width: '100%' }}
                                     onClick={() => {

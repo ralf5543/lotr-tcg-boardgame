@@ -699,6 +699,18 @@ export type AbilityEffect =
       }
     | {
           /**
+           * Révèle une main (grille + validation UI), puis effets différés.
+           * Slippery as Fishes… ; base pour Sting / Alive and Unspoiled…
+           */
+          type: 'REVEAL_HAND';
+          whose: 'SELF' | 'OPPONENT';
+          aftermath?: {
+              putHandUnderDeck?: 'SHADOW' | 'FREE_PEOPLE';
+              discardSource?: boolean;
+          };
+      }
+    | {
+          /**
            * Cherche une carte dans la pioche (filtre) et la place en défausse.
            * Mélange ensuite la pioche (Long-stemmed Pipe…).
            */
@@ -1747,11 +1759,24 @@ export interface GameState {
         costDiscardedHandIds?: string[];
     };
     /**
-     * Révélation de cartes (Hidden Knowledge…) : grille à valider
-     * avant menaces / jetons / mélange.
+     * Révélation de cartes (Hidden Knowledge, Slippery as Fishes…) :
+     * grille à valider avant effets différés.
      */
     pendingReveal?: {
+        zone: 'DECK_TOP' | 'HAND';
+        /** Qui voit et doit valider. */
+        viewerId: string;
+        /** Propriétaire des cartes révélées. */
+        subjectPlayerId: string;
+        /**
+         * Alias historique = viewerId (Hidden Knowledge / UI).
+         * @deprecated préférer viewerId
+         */
         playerId: string;
+        /**
+         * Alias historique = subjectPlayerId pour DECK_TOP.
+         * @deprecated préférer subjectPlayerId
+         */
         opponentId: string;
         sourceInstanceId: string;
         abilityId: string;
@@ -1763,6 +1788,11 @@ export interface GameState {
             type: 'PLACE_CULTURE_TOKEN';
             culture: CardCulture;
             onConditionWithToken: true;
+        };
+        /** Effets après validation (révélation de main). */
+        aftermath?: {
+            putHandUnderDeck?: 'SHADOW' | 'FREE_PEOPLE';
+            discardSource?: boolean;
         };
     };
     setupState?: {
@@ -1810,9 +1840,7 @@ export interface LotrMoveContext extends FnContext<GameState> {
 }
 
 /** Presets DEV de playtest (panneau de test, vague en cours). */
-export type DevPresetType =
-    | 'DECK_GAPS_FRODO_SIGNET'
-    | 'DECK_GAPS_SLIPPERY_FISHES';
+export type DevPresetType = 'DECK_GAPS_SLIPPERY_FISHES';
 
 export interface ArcheryState {
     step?: 'ACTIONS' | 'FP_ASSIGN' | 'SHADOW_ASSIGN' | 'COMPLETE';

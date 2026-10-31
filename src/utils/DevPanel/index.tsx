@@ -372,34 +372,14 @@ export const DevPanel: React.FC<DevPanelProps> = ({
                         </S.GameButton>
                     </S.Section>
 
-                    {/* Retest Frodon sceau (corrigé pendant Sneaking!) */}
-                    <S.Section>
-                        <S.Label>
-                            Retest Frodon sceau (1C290) :
-                            <br />
-                            <span style={{ opacity: 0.75, fontWeight: 400 }}>
-                                Affaiblir Sam → soigner Frodon.
-                            </span>
-                        </S.Label>
-                        <S.ActionButton
-                            onClick={() =>
-                                moves.devLoadPreset?.(
-                                    'DECK_GAPS_FRODO_SIGNET'
-                                )
-                            }
-                        >
-                            Frodon sceau (1C290)
-                        </S.ActionButton>
-                    </S.Section>
-
                     {/* Preset de playtest : trous decks — Slippery as Fishes */}
                     <S.Section>
                         <S.Label>
                             Preset decks (Slippery as Fishes) :
                             <br />
                             <span style={{ opacity: 0.75, fontWeight: 400 }}>
-                                Souterrain → Gollum +2 ; Regroup main Ombre
-                                sous pioche.
+                                Souterrain → Gollum +2 ; Regroup → révélation
+                                de main (Valider côté PL).
                             </span>
                         </S.Label>
                         <S.ActionButton

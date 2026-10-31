@@ -789,6 +789,9 @@ export function abilityHasLegalEffectTarget(
         if (effect.type === 'PUT_HAND_UNDER_DECK') {
             continue;
         }
+        if (effect.type === 'REVEAL_HAND') {
+            continue;
+        }
         if (effect.type === 'DISCARD_FROM_HAND') {
             if (effect.atRandom) {
                 const whose = effect.whose || 'OWNER';

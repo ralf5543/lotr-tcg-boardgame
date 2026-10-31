@@ -11089,8 +11089,14 @@ export function parseAbilities(
                     },
                 ],
                 effects: [
-                    { type: 'PUT_HAND_UNDER_DECK', kind: 'SHADOW' },
-                    { type: 'DISCARD', count: 1, target: 'SELF' },
+                    {
+                        type: 'REVEAL_HAND',
+                        whose: 'SELF',
+                        aftermath: {
+                            putHandUnderDeck: 'SHADOW',
+                            discardSource: true,
+                        },
+                    },
                 ],
                 source: 'SELF',
                 text: `${marker.phase}: Spot ${name} to reveal your hand. Place all Shadow cards revealed beneath your draw deck. Discard this condition.`

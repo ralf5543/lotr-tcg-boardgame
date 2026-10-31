@@ -2229,25 +2229,41 @@ export const GameBoard: React.FC<GameBoardProps> = ({
         moves.cancelPendingPlay?.();
     }, [moves]);
 
-    /** Révélation (Hidden Knowledge…) : grille des N premières cartes, validation via toaster. */
+    /** Révélation (Hidden Knowledge / main…) : grille, validation via toaster. */
     const revealOverlay = useMemo(() => {
         const pending = G.pendingReveal;
         if (!pending) return null;
-        const opp = G.players[pending.opponentId];
+        const zone = pending.zone || 'DECK_TOP';
+        const subjectId = pending.subjectPlayerId || pending.opponentId;
+        const subject = G.players[subjectId];
+        const pile =
+            zone === 'HAND' ? subject?.hand || [] : subject?.deck || [];
         const cards = pending.cardIds
             .map((id) =>
-                (opp?.deck || []).find(
-                    (c) => c.instanceId === id || c.id === id
-                )
+                pile.find((c) => c.instanceId === id || c.id === id)
             )
             .filter((c): c is CardState => Boolean(c));
+        const iAmViewer =
+            (pending.viewerId || pending.playerId) === myId;
+        const iAmSubject = subjectId === myId;
+        if (zone === 'HAND') {
+            return {
+                title: iAmSubject
+                    ? 'Votre main est révélée'
+                    : 'Main adverse révélée',
+                subtitle: iAmViewer
+                    ? 'Consultez les cartes puis validez dans le toaster.'
+                    : 'L’adversaire consulte votre main…',
+                cards,
+            };
+        }
         return {
             title: 'Cartes révélées',
             subtitle:
-                'Cinq premières cartes de la pioche adverse. Validez dans le toaster pour appliquer menaces / jetons et mélanger.',
+                'Cartes du dessus de la pioche adverse. Validez dans le toaster pour appliquer menaces / jetons et mélanger.',
             cards,
         };
-    }, [G.pendingReveal, G.players]);
+    }, [G.pendingReveal, G.players, myId]);
 
     /** Défausse main pour un choix forcé (Pelennor Flat…). */
     const forcedHandDiscardKeyRef = useRef<string | null>(null);
