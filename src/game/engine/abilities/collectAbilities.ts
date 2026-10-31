@@ -689,6 +689,12 @@ function formatEffectBit(
     if (effect.type === 'PREVENT_WOUND') {
         return 'empêcher cette blessure';
     }
+    if (effect.type === 'FORBID_WOUNDS') {
+        const who = formatTargetPhrase(effect.target);
+        return who
+            ? `empêcher toutes les blessures à ${who}`
+            : 'empêcher toutes les blessures';
+    }
     if (effect.type === 'PLACE_CULTURE_TOKEN') {
         const cultureBit =
             effect.culture === 'FREE_PEOPLES'

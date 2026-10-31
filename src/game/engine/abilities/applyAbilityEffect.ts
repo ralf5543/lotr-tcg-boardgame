@@ -1168,6 +1168,19 @@ export function applyAbilityEffect(
             continue;
         }
 
+        if (effect.type === 'FORBID_WOUNDS' && effect.expiresAtPhase) {
+            const pick = chosenIds[0];
+            const target = resolveAbilityTarget(
+                G,
+                source,
+                effect.target,
+                pick
+            );
+            if (!target) return false;
+            target.forbidWoundsUntil = effect.expiresAtPhase;
+            continue;
+        }
+
         if (effect.type === 'FORCE_ASSIGN') {
             const companionPick = chosenIds[0];
             if (!companionPick) return false;
@@ -1889,6 +1902,9 @@ export function clearExpiredTempKeywords(
         }
         if (card.forbidAssignUntil === phase) {
             delete card.forbidAssignUntil;
+        }
+        if (card.forbidWoundsUntil === phase) {
+            delete card.forbidWoundsUntil;
         }
     });
 

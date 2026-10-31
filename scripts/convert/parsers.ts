@@ -12385,6 +12385,64 @@ export function parseAbilities(
             return;
         }
 
+        // « Exert Gandalf to prevent all wounds to Faramir. » (Faramir…)
+        const preventAllWoundsMatch = body.match(
+            /^Exert\s+([\s\S]+?)\s+to prevent all wounds to\s+([\s\S]+)/i
+        );
+        if (preventAllWoundsMatch) {
+            if (/\b(and|or)\b/i.test(preventAllWoundsMatch[1])) return;
+            const subject = parseExertSubject(
+                preventAllWoundsMatch[1],
+                cardTitle,
+                text
+            );
+            if (!subject) return;
+            const woundTarget = parseNounTarget(
+                preventAllWoundsMatch[2],
+                subject.target,
+                cardTitle
+            );
+            if (
+                !woundTarget ||
+                !isCharacterishHealTarget(woundTarget)
+            ) {
+                return;
+            }
+            if (
+                effectTargetConflictsWithCost(subject.target, woundTarget)
+            ) {
+                return;
+            }
+            const expiresAtPhase =
+                parseUntilExpiry(body, marker.phase) || 'REGROUP';
+            const preventClause =
+                `${marker.phase}: Exert ${preventAllWoundsMatch[1].trim()} to prevent all wounds to ${preventAllWoundsMatch[2]}`
+                    .replace(/<[^>]+>/g, '')
+                    .replace(/\s+/g, ' ')
+                    .replace(/\s+\./g, '.')
+                    .trim();
+            abilities.push({
+                id: `${cardId || 'ability'}:${abilities.length}`,
+                phases,
+                cost: [
+                    {
+                        exert: [exertSelectorFromSubject(subject)],
+                    },
+                ],
+                effects: [
+                    {
+                        type: 'FORBID_WOUNDS',
+                        target: woundTarget,
+                        expiresAtPhase,
+                    },
+                ],
+                source:
+                    subject.target === 'BEARER' ? 'ATTACHMENT' : 'SELF',
+                text: preventClause,
+            });
+            return;
+        }
+
         const makeMatch = body.match(
             /^Exert\s+([\s\S]+?)\s+to make\s+([\s\S]+)/i
         );
@@ -12654,6 +12712,42 @@ export function parseAbilities(
                 source:
                     drawSubject.target === 'BEARER' ? 'ATTACHMENT' : 'SELF',
                 text: drawClause,
+            });
+            return;
+        }
+
+        // « Play a rohan Man to heal Faramir. » (Faramir…)
+        const playToHealMatch = body.match(
+            /^Play an?\s+([\s\S]+?)\s+to heal\s+([\s\S]+)/i
+        );
+        if (playToHealMatch) {
+            const playFilters = parseClassFilters(playToHealMatch[1].trim());
+            if (playFilters.length === 0) return;
+            const healTarget = parseNounTarget(
+                playToHealMatch[2],
+                [['']],
+                cardTitle
+            );
+            if (!healTarget || !isCharacterishHealTarget(healTarget)) return;
+            const playHealClause =
+                `${marker.phase}: Play a ${stripAbilityMarkup(playToHealMatch[1]).trim()} to heal ${playToHealMatch[2]}`
+                    .replace(/<[^>]+>/g, '')
+                    .replace(/\s+/g, ' ')
+                    .replace(/\s+\./g, '.')
+                    .trim();
+            abilities.push({
+                id: `${cardId || 'ability'}:${abilities.length}`,
+                phases,
+                cost: [],
+                effects: [
+                    {
+                        type: 'PLAY_FROM_HAND',
+                        target: [playFilters],
+                    },
+                    { type: 'HEAL', count: 1, target: healTarget },
+                ],
+                source: 'SELF',
+                text: playHealClause,
             });
             return;
         }

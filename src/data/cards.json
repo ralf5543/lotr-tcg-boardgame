@@ -66790,6 +66790,41 @@
       "RING-BOUND",
       "RANGER"
     ],
+    "abilities": [
+      {
+        "id": "6P121:0",
+        "phases": [
+          "FELLOWSHIP"
+        ],
+        "cost": [],
+        "effects": [
+          {
+            "type": "PLAY_FROM_HAND",
+            "target": [
+              [
+                "RANGER"
+              ]
+            ]
+          },
+          {
+            "type": "HEAL",
+            "count": 1,
+            "target": [
+              [
+                "RING-BOUND",
+                "COMPANION"
+              ]
+            ]
+          }
+        ],
+        "source": "SELF",
+        "text": "FELLOWSHIP: Play a ranger to heal a Ring-bound companion.",
+        "textFr": "**Compagnie :** Jouez un rôdeur pour guérir un compagnon associé à l’Anneau."
+      }
+    ],
+    "actionPhases": [
+      "FELLOWSHIP"
+    ],
     "culture": "GONDOR",
     "race": "MAN",
     "signet": "GANDALF",
@@ -71359,6 +71394,31 @@
       {
         "id": "7R91:0",
         "phases": [
+          "FELLOWSHIP"
+        ],
+        "cost": [],
+        "effects": [
+          {
+            "type": "PLAY_FROM_HAND",
+            "target": [
+              [
+                "ROHAN",
+                "MAN"
+              ]
+            ]
+          },
+          {
+            "type": "HEAL",
+            "count": 1,
+            "target": "SELF"
+          }
+        ],
+        "source": "SELF",
+        "text": "FELLOWSHIP: Play a rohan Man to heal Faramir."
+      },
+      {
+        "id": "7R91:1",
+        "phases": [
           "SKIRMISH"
         ],
         "cost": [
@@ -71387,9 +71447,39 @@
         ],
         "source": "SELF",
         "text": "SKIRMISH: Exert Faramir to make an unbound Hobbit strength +2."
+      },
+      {
+        "id": "7R91:2",
+        "phases": [
+          "SKIRMISH"
+        ],
+        "cost": [
+          {
+            "exert": [
+              {
+                "count": 1,
+                "target": [
+                  [
+                    "Gandalf"
+                  ]
+                ]
+              }
+            ]
+          }
+        ],
+        "effects": [
+          {
+            "type": "FORBID_WOUNDS",
+            "target": "SELF",
+            "expiresAtPhase": "SKIRMISH"
+          }
+        ],
+        "source": "SELF",
+        "text": "SKIRMISH: Exert Gandalf to prevent all wounds to Faramir."
       }
     ],
     "actionPhases": [
+      "FELLOWSHIP",
       "SKIRMISH"
     ],
     "culture": "GONDOR",

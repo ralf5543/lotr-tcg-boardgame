@@ -118,7 +118,7 @@ const neutralPath: readonly string[] = [
 
 /**
  * Applique le preset DEV de playtest (zones vidées / chemin Standard).
- * Vague Roll of Thunder (Spot Gandalf → défausser possession/artefact Ombre).
+ * Vague Faramir Wizard’s Pupil (jouer Homme Rohan → soin ; empêcher blessures).
  */
 export const applyDevPreset = (
     G: GameState,
@@ -132,39 +132,28 @@ export const applyDevPreset = (
     const shadowPlayer = G.players[shadowId];
 
     switch (presetType) {
-        case 'DECK_GAPS_ROLL_OF_THUNDER': {
+        case 'DECK_GAPS_FARAMIR_PUPIL': {
             resetBoardForPreset(G);
             setupDevPath(G, 0, neutralPath);
-            G.twilightPool = 4;
+            G.twilightPool = 5;
             fpPlayer.burdens = 0;
+            const faramir = {
+                ...clonePresetCard('7R91', 'dev-faramir'),
+                wounds: 1,
+            };
             fpPlayer.fellowshipArea = [
                 {
-                    ...clonePresetCard('5U111', 'dev-rot-frodo'),
-                    attachments: [clonePresetCard('4R1', 'dev-rot-ring')],
+                    ...clonePresetCard('5U111', 'dev-faramir-frodo'),
+                    attachments: [clonePresetCard('4R1', 'dev-faramir-ring')],
                 },
-                clonePresetCard('8R15', 'dev-rot-gandalf'),
+                faramir,
+                clonePresetCard('8R15', 'dev-faramir-gandalf'),
             ];
-            fpPlayer.hand = [clonePresetCard('4U99', 'dev-rot-event')];
-            fpPlayer.supportArea = [
-                // Possession FP (ne doit PAS être ciblable).
-                clonePresetCard('1U91', 'dev-rot-fp-pipe'),
-            ];
+            // Homme Rohan en main pour la capacité Communauté.
+            fpPlayer.hand = [clonePresetCard('4C265', 'dev-faramir-rider')];
             fpPlayer.deck = [];
             fpPlayer.sitesDeck = [clonePresetSite('11S250', fpId)];
             if (shadowPlayer) {
-                shadowPlayer.supportArea = [
-                    // Situation Ombre (ne doit PAS être ciblable).
-                    clonePresetCard('10C24', 'dev-rot-sh-cond'),
-                    // Artefact Isengard en aire de soutien.
-                    clonePresetCard('3R67', 'dev-rot-palantir'),
-                ];
-                // Possession Ombre attachée à un séide.
-                const lurtz = clonePresetCard('11R194', 'dev-rot-lurtz');
-                lurtz.attachments = [
-                    clonePresetCard('2R43', 'dev-rot-lurtz-sword'),
-                ];
-                shadowPlayer.fellowshipArea = [];
-                G.battlefield = [lurtz];
                 shadowPlayer.hand = [];
                 shadowPlayer.deck = [];
                 shadowPlayer.sitesDeck = [
@@ -172,7 +161,7 @@ export const applyDevPreset = (
                 ];
             }
             G.statusMessage =
-                '[DEV] Roll of Thunder (4U99) · Communauté / Manœuvre : Spot Gandalf (condition) → drop → halo + clic sur l’épée de Lurtz ou le Palantír (pas la situation, pas une possession FP).';
+                '[DEV] Faramir (7R91) · Communauté : bulle → halo Homme Rohan en main → soigne Faramir. Combat : affaiblir Gandalf (halo) → Faramir immunisé aux blessures jusqu’à fin d’escarmouche. Aussi : affaiblir Faramir → Hobbit dissocié +2.';
             break;
         }
     }

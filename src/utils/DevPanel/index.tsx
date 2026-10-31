@@ -372,24 +372,24 @@ export const DevPanel: React.FC<DevPanelProps> = ({
                         </S.GameButton>
                     </S.Section>
 
-                    {/* Preset de playtest : trous decks — Roll of Thunder */}
+                    {/* Preset de playtest : trous decks — Faramir */}
                     <S.Section>
                         <S.Label>
-                            Preset decks (Roll of Thunder) :
+                            Preset decks (Faramir) :
                             <br />
                             <span style={{ opacity: 0.75, fontWeight: 400 }}>
-                                Spot Gandalf → halo : épée Lurtz ou
-                                Palantír Orthanc.
+                                Communauté : Homme Rohan → soin. Combat :
+                                Gandalf → immunité blessures.
                             </span>
                         </S.Label>
                         <S.ActionButton
                             onClick={() =>
                                 moves.devLoadPreset?.(
-                                    'DECK_GAPS_ROLL_OF_THUNDER'
+                                    'DECK_GAPS_FARAMIR_PUPIL'
                                 )
                             }
                         >
-                            Roll of Thunder (4U99)
+                            Faramir Wizard’s Pupil (7R91)
                         </S.ActionButton>
                     </S.Section>
 

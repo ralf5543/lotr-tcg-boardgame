@@ -140,6 +140,10 @@ export function canCardTakeWound(G: GameState, card: CardState): boolean {
     if (cardCannotTakeWoundsWhile(G, card)) {
         return false;
     }
+    // Capacité activée « prevent all wounds » jusqu’à une phase (Faramir…).
+    if (card.forbidWoundsUntil) {
+        return false;
+    }
     // Plafond par escarmouche (Armure de Pippin) : déjà atteint → plus
     // aucune blessure n’est légale sur cette carte dans ce combat.
     const limit = getSkirmishWoundLimit(G, card);

@@ -498,11 +498,13 @@ export type AbilityEffect =
       }
     | {
           /**
-           * Immunité aux blessures tant que le While tient
-           * (Patrol of Uruk-hai, Easterling Polearm…).
+           * Immunité aux blessures :
+           * - passif While (Patrol of Uruk-hai, Easterling Polearm…) ;
+           * - capacité activée jusqu’à une phase (Faramir : prevent all wounds).
            */
           type: 'FORBID_WOUNDS';
           target: AbilityTargetRef;
+          expiresAtPhase?: AbilityEffectExpiry;
       }
     | {
           /**
@@ -1329,6 +1331,8 @@ export interface CardState {
     cannotTakeArcheryWounds?: boolean;
     /** Interdit d’affectation jusqu’à fin de tour / phase (Shelob…). */
     forbidAssignUntil?: AbilityEffectExpiry;
+    /** Immunité aux blessures jusqu’à une phase (Faramir / prevent all wounds…). */
+    forbidWoundsUntil?: AbilityEffectExpiry;
     name?: string; // Si conservé pour compatibilité ou identification
     isDead?: boolean;
     isOverwhelmed?: boolean;
@@ -1840,7 +1844,7 @@ export interface LotrMoveContext extends FnContext<GameState> {
 }
 
 /** Presets DEV de playtest (panneau de test, vague en cours). */
-export type DevPresetType = 'DECK_GAPS_ROLL_OF_THUNDER';
+export type DevPresetType = 'DECK_GAPS_FARAMIR_PUPIL';
 
 export interface ArcheryState {
     step?: 'ACTIONS' | 'FP_ASSIGN' | 'SHADOW_ASSIGN' | 'COMPLETE';

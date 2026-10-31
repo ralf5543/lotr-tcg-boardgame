@@ -395,12 +395,28 @@ describe('parseAbilities — Exert … to make KEYWORD', () => {
         });
     });
 
-    it('parse Faramir : Exert SELF, Hobbit dissocié force +2 (autre cible)', () => {
+    it('parse Faramir : jouer Homme Rohan → soin ; force Hobbit ; empêcher blessures', () => {
         const text =
             '<keyword>Ranger.</keyword> <br><keyword>Fellowship:</keyword> Play a <symbol>rohan</symbol> Man to heal Faramir. <br><keyword>Skirmish:</keyword> Exert Faramir to make an unbound Hobbit strength +2. <br><keyword>Skirmish:</keyword> Exert Gandalf to prevent all wounds to Faramir.';
         expect(parseAbilities(text, 'Faramir', '7R91')).toEqual([
             {
                 id: '7R91:0',
+                phases: ['FELLOWSHIP'],
+                cost: [],
+                effects: [
+                    {
+                        type: 'PLAY_FROM_HAND',
+                        target: [['ROHAN', 'MAN']],
+                    },
+                    { type: 'HEAL', count: 1, target: 'SELF' },
+                ],
+                source: 'SELF',
+                text: expect.stringMatching(
+                    /FELLOWSHIP: Play a rohan Man to heal Faramir/i
+                ),
+            },
+            {
+                id: '7R91:1',
                 phases: ['SKIRMISH'],
                 cost: [{ exert: [{ count: 1, target: 'SELF' }] }],
                 effects: [
@@ -415,6 +431,28 @@ describe('parseAbilities — Exert … to make KEYWORD', () => {
                 source: 'SELF',
                 text: expect.stringMatching(
                     /SKIRMISH: Exert Faramir to make an unbound Hobbit strength \+2/i
+                ),
+            },
+            {
+                id: '7R91:2',
+                phases: ['SKIRMISH'],
+                cost: [
+                    {
+                        exert: [
+                            { count: 1, target: [['Gandalf']] },
+                        ],
+                    },
+                ],
+                effects: [
+                    {
+                        type: 'FORBID_WOUNDS',
+                        target: 'SELF',
+                        expiresAtPhase: 'SKIRMISH',
+                    },
+                ],
+                source: 'SELF',
+                text: expect.stringMatching(
+                    /SKIRMISH: Exert Gandalf to prevent all wounds to Faramir/i
                 ),
             },
         ]);
