@@ -62,7 +62,8 @@ L’ancien plan main/initiative est **figé** (`.cursor/rules/hand-initiative-pl
 | `7U190` | Morgul Destroyer | ✅ Validé par Ralf — when-played spot Nazgûl → +2 menaces ; FP peut blesser le Porteur (`fpMayPrevent.woundRingBearer`) ; toaster Empêcher réservé au joueur actif. Preset DEV retiré après validation |
 | `10C24` | Unabated in Malice | ✅ Validé par Ralf — While initiative → chaque séide Gollum Damage +1 ; Combat : défausse → force +1 par culture (`perDistinctCulture` ; FP+Ombre en jeu, pas les empilées ni les sites). Preset DEV retiré après validation |
 | `15U94` | Wandering Hillman | ✅ Validé par Ralf — While compagnon force ≥10 → +3 ; Manœuvre : 2 fardeaux **ou** 2 menaces → contrôler un site (libellé `removeBurdens` corrigé). Preset DEV retiré après validation |
-| `7R73` | Sneaking! | Stealth · Combat : soigner Sméagol **ou** annuler son escarmouche s’il a plus de vitalité que les séides au combat (`CHOOSE_ONE`). En playtest, preset DEV `DECK_GAPS_SNEAKING` |
+| `7R73` | Sneaking! | ✅ Validé par Ralf — Combat : soigner Sméagol **ou** annuler son escarmouche si plus de vitalité que les séides (`CHOOSE_ONE`). Au passage : Frodon `1C290` (sceau) réparé (`SIGNET_*` dans les filtres + `excludeSource` sur exert). Preset DEV retiré après validation |
+| `9R+29` | Slippery as Fishes | While Gollum sur montagne/rivière/souterrain → +2 ; Regroup : Spot Gollum → cartes Ombre de la main sous la pioche + défausse. En playtest, preset DEV `DECK_GAPS_SLIPPERY_FISHES` |
 
 Livré (playtest) : Hidden Knowledge `7R104` (grille révélation + valider) ; Slippery Sneak `8R27` ; escarmouche vacante (mort→gagnant / défausse→pas) ; Cruel Caradhras `1R124` ; Pelennor Flat `11S254` ; Shelob when-played possession ; toaster Orthanc (boutons cohérents).
 

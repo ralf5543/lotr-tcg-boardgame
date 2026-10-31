@@ -848,6 +848,37 @@ export function applyAbilityEffect(
             continue;
         }
 
+        if (effect.type === 'PUT_HAND_UNDER_DECK') {
+            const ownerId = abilityOwnerPlayerId(G, source);
+            if (!ownerId) return false;
+            const player = G.players[ownerId];
+            if (!player) return false;
+            if (!player.deck) player.deck = [];
+            if (!player.hand) player.hand = [];
+            const kind = effect.kind;
+            const moved: CardState[] = [];
+            player.hand = player.hand.filter((card) => {
+                if (!card || card.kind !== kind) return true;
+                moved.push(card);
+                return false;
+            });
+            if (moved.length > 0) {
+                player.deck.push(...moved);
+                const names = moved
+                    .map(
+                        (c) =>
+                            c.i18n?.fr?.title ||
+                            c.title ||
+                            c.id
+                    )
+                    .join(', ');
+                G.statusMessage = `Main révélée : ${names} placée${moved.length > 1 ? 's' : ''} sous la pioche.`;
+            } else {
+                G.statusMessage = 'Main révélée : aucune carte Ombre.';
+            }
+            continue;
+        }
+
         if (effect.type === 'DISCARD_FROM_HAND') {
             const fpId = G.fpPlayerId || '0';
             const shadowId = fpId === '0' ? '1' : '0';

@@ -563,6 +563,11 @@ function formatEffectBit(
             ? `défausser jusqu’à ${cards} de la main${whose}`
             : `défausser ${cards} de la main${whose}`;
     }
+    if (effect.type === 'PUT_HAND_UNDER_DECK') {
+        return effect.kind === 'SHADOW'
+            ? 'placer les cartes Ombre de votre main sous votre pioche'
+            : 'placer les cartes Peuples Libres de votre main sous votre pioche';
+    }
     if (effect.type === 'REMOVE_TWILIGHT') {
         return effect.countFromSpot
             ? 'retirer <symbol>twilightX</symbol>'

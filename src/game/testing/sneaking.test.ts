@@ -1,7 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { parseAbilities } from '../../../scripts/convert/parsers';
 import { getCardById } from '../cardsData';
-import { applyDevPreset } from '../dev/presets';
 import { applyAbilityEffect } from '../engine/abilities/applyAbilityEffect';
 import { abilityHasLegalEffectTarget } from '../engine/abilities/designation';
 import { resolveForcedChoice } from '../engine/abilities/startOfSkirmish';
@@ -159,12 +158,4 @@ describe('Sneaking! 7R73', () => {
         expect(G.skirmishes).toHaveLength(1);
     });
 
-    it('preset DEV', () => {
-        const G = createGameState();
-        applyDevPreset(G, 'DECK_GAPS_SNEAKING');
-        expect(G.players['0']!.hand[0]?.id).toBe('7R73');
-        expect(G.players['0']!.fellowshipArea.some((c) => c.id === '8R27')).toBe(
-            true
-        );
-    });
 });

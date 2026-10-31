@@ -160,6 +160,13 @@ function canPayOption(
                 resolveCostTarget(G, source, req.target),
                 actingPlayerId
             );
+            if (req.excludeSource) {
+                const sourceId = source.instanceId || source.id;
+                cards = cards.filter(
+                    (card) =>
+                        card.instanceId !== sourceId && card.id !== sourceId
+                );
+            }
             if (req.excludeKeywords?.length) {
                 cards = cards.filter(
                     (c) =>
@@ -435,6 +442,13 @@ function payOption(
                 resolveCostTarget(G, source, req.target),
                 actingPlayerId
             );
+            if (req.excludeSource) {
+                const sourceId = source.instanceId || source.id;
+                cards = cards.filter(
+                    (card) =>
+                        card.instanceId !== sourceId && card.id !== sourceId
+                );
+            }
             if (req.excludeKeywords?.length) {
                 cards = cards.filter(
                     (c) =>

@@ -372,24 +372,24 @@ export const DevPanel: React.FC<DevPanelProps> = ({
                         </S.GameButton>
                     </S.Section>
 
-                    {/* Preset de playtest : trous decks — Sneaking! */}
+                    {/* Preset de playtest : trous decks — Slippery as Fishes */}
                     <S.Section>
                         <S.Label>
-                            Preset decks (Sneaking!) :
+                            Preset decks (Slippery as Fishes) :
                             <br />
                             <span style={{ opacity: 0.75, fontWeight: 400 }}>
-                                Combat : soigner Sméagol ou annuler
-                                l’escarmouche (vitalité).
+                                Souterrain → Gollum +2 ; Regroup main Ombre
+                                sous pioche.
                             </span>
                         </S.Label>
                         <S.ActionButton
                             onClick={() =>
                                 moves.devLoadPreset?.(
-                                    'DECK_GAPS_SNEAKING'
+                                    'DECK_GAPS_SLIPPERY_FISHES'
                                 )
                             }
                         >
-                            Sneaking! (7R73)
+                            Slippery as Fishes (9R+29)
                         </S.ActionButton>
                     </S.Section>
 

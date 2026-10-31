@@ -1035,11 +1035,21 @@ function isProperNameToken(word: string): boolean {
     return /^[A-ZÀ-ŸÉ][a-zà-ÿ]/.test(word);
 }
 
+/**
+ * « (who has|with) the Frodo signet » → jeton SIGNET_FRODO (filtres de classe).
+ */
+function collapseSignetPhrases(raw: string): string {
+    return raw.replace(
+        /\b(?:who has|with) the (\w+) signet\b/gi,
+        (_m, name: string) => ` SIGNET_${String(name).toUpperCase()} `
+    );
+}
+
 /** Filtres de classe : uniquement tokens connus (ou nom propre). Reste inconnu → []. */
 function parseClassFilters(raw: string): string[] {
     const filters: string[] = [];
     let unknown = false;
-    let segment = raw.replace(
+    let segment = collapseSignetPhrases(raw).replace(
         /<(symbol|keyword)>(.*?)<\/\1>/gi,
         (_, _tag, content) => {
             const token = normalizeFilterToken(String(content || ''));
@@ -1183,7 +1193,12 @@ function parseExertSubject(
     if (anotherMatch) {
         const filters = parseClassFilters(anotherMatch[1]);
         if (filters.length === 0) return null;
-        return { target: [filters], count, excludeSource: true };
+        return {
+            target: [filters],
+            count,
+            mode: 'DESIGNATION',
+            excludeSource: true,
+        };
     }
 
     // « Gollum or Sméagol » / « your Gollum or your Sméagol »
@@ -3758,10 +3773,61 @@ function parseWhileAtSiteStrengthAbilities(
         }
     }
 
+    // « While Gollum is at a mountain, river, or underground site, he is strength +2. »
+    const namedMultiRe =
+        /While ([A-ZÀ-ŸÉ][^,]+?) is at an? ((?:[\w-]+(?:,\s*)?)+(?:or\s+[\w-]+)) site, ([^,]+?) is strength ([+-]\d+)\./gi;
+    let match: RegExpExecArray | null;
+    while ((match = namedMultiRe.exec(text)) !== null) {
+        const sentence = match[0];
+        if (
+            /\b(and|each|may|fierce|damage|archery|discard|wound|heal|draw|this minion|this companion|the fellowship|bearer)\b/i.test(
+                sentence.replace(
+                    /\bat an? (?:[\w-]+(?:,\s*)?)+(?:or\s+[\w-]+) site\b/i,
+                    ''
+                )
+            )
+        ) {
+            continue;
+        }
+        const atName = stripAbilityMarkup(match[1]).replace(/\s+/g, ' ').trim();
+        const terrains = match[2]
+            .split(/,|\bor\b/i)
+            .map((t) => parseSiteLocationKeyword(t.trim()))
+            .filter((t): t is string => Boolean(t));
+        if (!atName || terrains.length < 2) continue;
+        const value = parseInt(match[4], 10);
+        if (!Number.isFinite(value) || value === 0) continue;
+
+        const title = (cardTitle || '').trim();
+        const isSelf =
+            title && atName.toLowerCase() === title.toLowerCase();
+        const who = isSelf
+            ? parseWhileStrengthWho(match[3], cardTitle)
+            : null;
+        const target = isSelf ? who : [[atName]];
+        if (!target || (isSelf && !who)) continue;
+
+        found.push({
+            id: `${cardId || 'ability'}:${found.length}:while-at-site-multi`,
+            phases: [],
+            trigger: { type: 'WHILE', atSiteKeywords: terrains },
+            cost: [],
+            effects: [
+                {
+                    type: 'MODIFY_STAT',
+                    stat: 'STRENGTH',
+                    value,
+                    target,
+                },
+            ],
+            source: 'SELF',
+            text: stripAbilityMarkup(sentence),
+        });
+    }
+
     // « While Úlairë Nertëa is at a forest site, he is strength +2. »
     const namedRe =
         /While ([A-ZÀ-ŸÉ][^,]+?) is at an? ([^,]+?) site, ([^,]+?) is strength ([+-]\d+)\./gi;
-    let match: RegExpExecArray | null;
     while ((match = namedRe.exec(text)) !== null) {
         const sentence = match[0];
         if (
@@ -11002,6 +11068,38 @@ export function parseAbilities(
             }
         }
 
+        // Spot Name to reveal your hand. Place all Shadow cards revealed
+        // beneath your draw deck. Discard this condition. (Slippery as Fishes…)
+        const revealShadowUnderDeck = bodyPlain.match(
+            /^Spot\s+([A-ZÀ-ŸÉ][\p{L}'’\-]*)\s+to reveal your hand\.\s*Place all Shadow cards revealed beneath your draw deck\.\s*Discard this condition\.?$/iu
+        );
+        if (revealShadowUnderDeck) {
+            const name = revealShadowUnderDeck[1].trim();
+            abilities.push({
+                id: `${cardId || 'ability'}:${abilities.length}`,
+                phases,
+                cost: [
+                    {
+                        spot: [
+                            {
+                                count: 1,
+                                target: [[name]],
+                            },
+                        ],
+                    },
+                ],
+                effects: [
+                    { type: 'PUT_HAND_UNDER_DECK', kind: 'SHADOW' },
+                    { type: 'DISCARD', count: 1, target: 'SELF' },
+                ],
+                source: 'SELF',
+                text: `${marker.phase}: Spot ${name} to reveal your hand. Place all Shadow cards revealed beneath your draw deck. Discard this condition.`
+                    .replace(/\s+/g, ' ')
+                    .trim(),
+            });
+            return;
+        }
+
         // Remove N burdens or N threats to take control of a site.
         // (Wandering Hillman…) — deux bulles distinctes, comme exert-or-threat.
         const removeBurdensOrThreatsControl = bodyPlain.match(
@@ -12472,15 +12570,7 @@ export function parseAbilities(
                 phases,
                 cost: [
                     {
-                        exert: [
-                            {
-                                count: healSubject.count,
-                                target: healSubject.target,
-                                ...(healSubject.mode
-                                    ? { mode: healSubject.mode }
-                                    : {}),
-                            },
-                        ],
+                        exert: [exertSelectorFromSubject(healSubject)],
                     },
                 ],
                 effects: [{ type: 'HEAL', count: 1, target: healTarget }],

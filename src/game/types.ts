@@ -791,6 +791,14 @@ export type AbilityEffect =
           whose?: 'OWNER' | 'FREE_PEOPLES' | 'SHADOW';
       }
     | {
+          /**
+           * Place sous la pioche les cartes de la main du propriétaire
+           * filtrées par camp (Slippery as Fishes…).
+           */
+          type: 'PUT_HAND_UNDER_DECK';
+          kind: 'SHADOW' | 'FREE_PEOPLE';
+      }
+    | {
           type: 'REMOVE_TWILIGHT';
           count?: number;
           /** X = nombre de cartes du spot du coût (pipes). */
@@ -1103,6 +1111,10 @@ export type AbilityTrigger =
           bearing?: { target: string[][] };
           /** Compagnie sur un site portant ce mot-clé (terrains / Sanctuary). */
           atSiteKeyword?: CardKeyword;
+          /**
+           * Au moins un des terrains (Slippery as Fishes : mountain, river or underground).
+           */
+          atSiteKeywords?: CardKeyword[];
           /**
            * Vrai tant que la compagnie n’est PAS sur un site avec ce mot-clé
            * (« Discard The Balrog if not underground »).
@@ -1798,7 +1810,7 @@ export interface LotrMoveContext extends FnContext<GameState> {
 }
 
 /** Presets DEV de playtest (panneau de test, vague en cours). */
-export type DevPresetType = 'DECK_GAPS_SNEAKING';
+export type DevPresetType = 'DECK_GAPS_SLIPPERY_FISHES';
 
 export interface ArcheryState {
     step?: 'ACTIONS' | 'FP_ASSIGN' | 'SHADOW_ASSIGN' | 'COMPLETE';

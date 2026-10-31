@@ -271,12 +271,22 @@ export function getCostDesignationCandidates(
         const count = req.count || 1;
         const needVitality = req.distinctTargets && count > 1 ? 1 : count;
         const needCards = req.distinctTargets && count > 1 ? count : 1;
-        const payable = filterCostTargetsForActor(
+        const sourceId = source.instanceId || source.id;
+        let pool = filterCostTargetsForActor(
             G,
             source,
             resolveCostTarget(G, source, req.target),
             actingPlayerId
-        ).filter((card) => getEffectiveVitality(card) > needVitality);
+        );
+        if (req.excludeSource) {
+            pool = pool.filter(
+                (card) =>
+                    card.instanceId !== sourceId && card.id !== sourceId
+            );
+        }
+        const payable = pool.filter(
+            (card) => getEffectiveVitality(card) > needVitality
+        );
         return payable.length >= needCards;
     });
 
@@ -284,6 +294,7 @@ export function getCostDesignationCandidates(
     if (req && req.target !== 'SELF' && req.target !== 'BEARER') {
         const count = req.count || 1;
         const needVitality = req.distinctTargets && count > 1 ? 1 : count;
+        const sourceId = source.instanceId || source.id;
         return uniqueCards(
             filterCostTargetsForActor(
                 G,
@@ -291,6 +302,13 @@ export function getCostDesignationCandidates(
                 resolveCostTarget(G, source, req.target),
                 actingPlayerId
             ).filter((card) => {
+                if (req.excludeSource) {
+                    if (
+                        (card.instanceId || card.id) === sourceId
+                    ) {
+                        return false;
+                    }
+                }
                 if (getEffectiveVitality(card) <= needVitality) return false;
                 if (req.excludeKeywords?.length) {
                     if (
@@ -766,6 +784,9 @@ export function abilityHasLegalEffectTarget(
                 return true;
             });
             if (!anyLegal) return false;
+            continue;
+        }
+        if (effect.type === 'PUT_HAND_UNDER_DECK') {
             continue;
         }
         if (effect.type === 'DISCARD_FROM_HAND') {

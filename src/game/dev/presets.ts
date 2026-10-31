@@ -103,26 +103,23 @@ const setupDevPath = (
     G.currentSiteIndex = startIndex;
 };
 
-/**
- * Chemin neutre : effets sans rapport avec le test (aucun allié,
- * aucune arme à main, 4 compagnons seulement).
- */
-const neutralPath: readonly string[] = [
-    '18U138', // 1 Sirannon Ruins (inerte)
-    '11S228', // 2 Anduin Confluence (défenseur alliés : aucun)
-    '11S263', // 3 West Gate of Moria (retire du crépuscule)
-    '11S265', // 4 Window on the West (Defender +1)
-    '11S250', // 5 North Undeep (archerie)
-    '11S248', // 6 Moria Stairway (Damage si arme à main : aucune)
-    '11S241', // 7 Fortress of Orthanc (+crépuscule si > 5 compagnons : non)
-    '15U187', // 8 Anduin River (archerie)
-    '11S232', // 9 Cavern Entrance
+/** Site 1 = souterrain (While Gollum +2). */
+const mountainPath: readonly string[] = [
+    '11S248', // 1 Moria Stairway (underground)
+    '11S228', // 2 Anduin Confluence
+    '11S263', // 3 West Gate of Moria
+    '11S265', // 4 Window on the West
+    '11S250', // 5 North Undeep
+    '18U138', // 6
+    '11S241', // 7
+    '15U187', // 8
+    '11S232', // 9
 ] as const;
 
 /**
  * Applique le preset DEV de playtest (zones vidées / chemin Standard).
- * Vague en cours : Sneaking! — soigner Sméagol ou annuler son escarmouche
- * s’il a plus de vitalité que les séides au combat.
+ * Vague en cours : Slippery as Fishes — Gollum +2 sur montagne/rivière/
+ * souterrain ; Regroup : révéler main → Ombre sous pioche + défausse.
  */
 export const applyDevPreset = (
     G: GameState,
@@ -136,38 +133,40 @@ export const applyDevPreset = (
     const shadowPlayer = G.players[shadowId];
 
     switch (presetType) {
-        case 'DECK_GAPS_SNEAKING': {
+        case 'DECK_GAPS_SLIPPERY_FISHES': {
             resetBoardForPreset(G);
-            setupDevPath(G, 0, neutralPath);
+            setupDevPath(G, 0, mountainPath);
             G.twilightPool = 4;
             fpPlayer.burdens = 0;
-            // Sméagol vit 4 − 1 blessure = 3 ; Orque vit 2 → soin et annulation OK.
-            const smeagol = {
-                ...clonePresetCard('8R27', 'dev-sneak-smeagol'),
-                wounds: 1,
-            };
             fpPlayer.fellowshipArea = [
                 {
-                    ...clonePresetCard('1C290', 'dev-sneak-frodo'),
-                    attachments: [clonePresetCard('1R1', 'dev-sneak-ring')],
+                    ...clonePresetCard('5U111', 'dev-fish-frodo'),
+                    attachments: [clonePresetCard('4R1', 'dev-fish-ring')],
                 },
-                smeagol,
             ];
-            fpPlayer.hand = [clonePresetCard('7R73', 'dev-sneaking')];
+            fpPlayer.hand = [];
             fpPlayer.deck = [];
             fpPlayer.sitesDeck = [clonePresetSite('11S250', fpId)];
             if (shadowPlayer) {
                 G.battlefield = [
-                    clonePresetCard('1C261', 'dev-sneak-orc'),
+                    clonePresetCard('7C59', 'dev-fish-gollum'),
                 ];
-                shadowPlayer.hand = [];
-                shadowPlayer.deck = [];
+                shadowPlayer.supportArea = [
+                    clonePresetCard('9R+29', 'dev-fish-cond'),
+                ];
+                shadowPlayer.hand = [
+                    clonePresetCard('1C261', 'dev-fish-hand-orc'),
+                    clonePresetCard('10C24', 'dev-fish-hand-una'),
+                ];
+                shadowPlayer.deck = [
+                    clonePresetCard('1C191', 'dev-fish-deck'),
+                ];
                 shadowPlayer.sitesDeck = [
                     clonePresetSite('11S263', shadowId),
                 ];
             }
             G.statusMessage =
-                '[DEV] Sneaking! (7R73) · Assignez Sméagol vs l’Orque, ouvrez le combat : jouez Sneaking! → choix soigner Sméagol ou annuler l’escarmouche (vit. 3 > 2).';
+                '[DEV] Slippery as Fishes (9R+29) · Site souterrain → Gollum force +2. Regroupement Ombre : bulle Spot Gollum → cartes Ombre de la main sous la pioche, situation défaussée.';
             break;
         }
     }

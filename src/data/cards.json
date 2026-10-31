@@ -26092,6 +26092,44 @@
     "canBeRingbearer": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
+    "abilities": [
+      {
+        "id": "1C290:0",
+        "phases": [
+          "FELLOWSHIP"
+        ],
+        "cost": [
+          {
+            "exert": [
+              {
+                "count": 1,
+                "target": [
+                  [
+                    "COMPANION",
+                    "SIGNET_FRODO"
+                  ]
+                ],
+                "mode": "DESIGNATION",
+                "excludeSource": true
+              }
+            ]
+          }
+        ],
+        "effects": [
+          {
+            "type": "HEAL",
+            "count": 1,
+            "target": "SELF"
+          }
+        ],
+        "source": "SELF",
+        "text": "FELLOWSHIP: Exert another companion who has the Frodo signet to heal Frodo.",
+        "textFr": "**Compagnie :** Affaiblissez un autre compagnon qui a le sceau Frodon pour guérir Frodon."
+      }
+    ],
+    "actionPhases": [
+      "FELLOWSHIP"
+    ],
     "culture": "SHIRE",
     "race": "HOBBIT",
     "signet": "FRODO",
@@ -89655,6 +89693,71 @@
     "kind": "SHADOW",
     "type": "CONDITION",
     "subtype": "SUPPORT-AREA",
+    "abilities": [
+      {
+        "id": "9R+29:0",
+        "phases": [
+          "REGROUP"
+        ],
+        "cost": [
+          {
+            "spot": [
+              {
+                "count": 1,
+                "target": [
+                  [
+                    "Gollum"
+                  ]
+                ]
+              }
+            ]
+          }
+        ],
+        "effects": [
+          {
+            "type": "PUT_HAND_UNDER_DECK",
+            "kind": "SHADOW"
+          },
+          {
+            "type": "DISCARD",
+            "count": 1,
+            "target": "SELF"
+          }
+        ],
+        "source": "SELF",
+        "text": "REGROUP: Spot Gollum to reveal your hand. Place all Shadow cards revealed beneath your draw deck. Discard this condition."
+      },
+      {
+        "id": "9R+29:1",
+        "phases": [],
+        "trigger": {
+          "type": "WHILE",
+          "atSiteKeywords": [
+            "MOUNTAIN",
+            "RIVER",
+            "UNDERGROUND"
+          ]
+        },
+        "cost": [],
+        "effects": [
+          {
+            "type": "MODIFY_STAT",
+            "stat": "STRENGTH",
+            "value": 2,
+            "target": [
+              [
+                "Gollum"
+              ]
+            ]
+          }
+        ],
+        "source": "SELF",
+        "text": "While Gollum is at a mountain, river, or underground site, he is strength +2."
+      }
+    ],
+    "actionPhases": [
+      "REGROUP"
+    ],
     "culture": "GOLLUM",
     "twilightCost": 1,
     "imageUrl": "/cards_visuals/o_09_029.jpg",
@@ -141774,7 +141877,8 @@
                     "ROHAN",
                     "MAN"
                   ]
-                ]
+                ],
+                "mode": "DESIGNATION"
               }
             ],
             "addTwilight": 2
@@ -146231,7 +146335,8 @@
                     "GONDOR",
                     "MAN"
                   ]
-                ]
+                ],
+                "mode": "DESIGNATION"
               }
             ]
           }

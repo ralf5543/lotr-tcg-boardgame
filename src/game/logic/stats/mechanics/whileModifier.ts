@@ -410,6 +410,14 @@ export function whileConditionHolds(
         }
     }
 
+    if (trigger.atSiteKeywords && trigger.atSiteKeywords.length > 0) {
+        const anyOk = trigger.atSiteKeywords.some((kw) => {
+            if (kw === 'SANCTUARY') return isCurrentSiteSanctuary(G);
+            return isAtSiteWithKeyword(G, kw);
+        });
+        if (!anyOk) return false;
+    }
+
     if (trigger.unlessAtSiteKeyword) {
         if (trigger.unlessAtSiteKeyword === 'SANCTUARY') {
             if (isCurrentSiteSanctuary(G)) return false;
