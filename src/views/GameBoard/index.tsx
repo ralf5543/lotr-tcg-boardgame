@@ -98,6 +98,11 @@ import { findEventAbilityForPhase } from '../../game/engine/abilities/playEventA
 import { abilityMatchesPhase } from '../../game/engine/abilities/collectAbilities';
 import { findOptionalSiteResponseAbility } from '../../game/engine/responseWindow';
 import { cardMatchesTarget } from '../../game/engine/validations/matchers';
+import {
+    getToilAmount,
+    getToilCandidates,
+    getTwilightCostWithToil,
+} from '../../game/logic/toil';
 import { useCardPlayAudio } from '../../hooks/audio/useCardPlayAudio';
 import { useDiscardAudio } from '../../hooks/audio/useDiscardAudio';
 import { useStackAudio } from '../../hooks/audio/useStackAudio';
@@ -127,7 +132,8 @@ export interface GameBoardProps extends BoardProps<GameState> {
             confirmEndPhase?: () => void;
             playCard: (
                 index: number,
-                chosenTargetId?: string | string[]
+                chosenTargetId?: string | string[],
+                toilExertIds?: string[]
             ) => void;
             beginPendingPlay?: (index: number, prompt: string) => void;
             cancelPendingPlay?: () => void;
@@ -760,7 +766,17 @@ export const GameBoard: React.FC<GameBoardProps> = ({
                     typeof effect.multiCount === 'number' &&
                     effect.multiCount > 1
             );
-            const multiVerb = isExertMulti ? 'à affaiblir' : 'à soigner';
+            const isDiscardMulti = (ability.effects || []).some(
+                (effect) =>
+                    effect.type === 'DISCARD' &&
+                    !effect.chooser &&
+                    (effect.count || 1) > 1
+            );
+            const multiNoun = isDiscardMulti
+                ? `situation${need > 1 ? 's' : ''} à défausser`
+                : isExertMulti
+                  ? `compagnon${need > 1 ? 's' : ''} à affaiblir`
+                  : `compagnon${need > 1 ? 's' : ''} à soigner`;
 
             const collect = (picked: string[]) => {
                 const pickedCultures = new Set(
@@ -798,8 +814,8 @@ export const GameBoard: React.FC<GameBoardProps> = ({
                             ? `Choisissez un compagnon blessé de chaque culture (${need}).`
                             : `Encore ${remaining} culture${remaining > 1 ? 's' : ''} (${picked.length}/${need}).`
                         : picked.length === 0
-                          ? `Choisissez ${need} compagnon${need > 1 ? 's' : ''} ${multiVerb}.`
-                          : `Encore ${remaining} compagnon${remaining > 1 ? 's' : ''} (${picked.length}/${need}).`,
+                          ? `Choisissez ${need} ${multiNoun}.`
+                          : `Encore ${remaining} (${picked.length}/${need}).`,
                     onSelectTarget: (cardId) => {
                         const card = allCandidates.find(
                             (item) =>
@@ -830,6 +846,64 @@ export const GameBoard: React.FC<GameBoardProps> = ({
             return true;
         },
         [G, startTargeting, stopTargeting]
+    );
+
+    /**
+     * Éreintement (Toil) : halo optionnel sur compagnons/séides de la culture,
+     * Valider pour enchaîner (0 à N affaiblissements).
+     */
+    const requestToilExert = useCallback(
+        (
+            card: CardState,
+            onChosen: (toilExertIds: string[]) => void
+        ): boolean => {
+            const amount = getToilAmount(card);
+            if (amount <= 0) return false;
+            const candidates = getToilCandidates(G, myId, card);
+            if (candidates.length === 0) return false;
+
+            const baseCost = getTwilightCostWithToil(G, card, 0);
+            const collect = (picked: string[]) => {
+                const reduced = getTwilightCostWithToil(G, card, picked.length);
+                const targetableCardIds = candidates
+                    .filter((c) => {
+                        const id = c.instanceId || c.id;
+                        return Boolean(id && !picked.includes(id));
+                    })
+                    .flatMap((c) => cardTargetIds(c));
+                const commit = () => {
+                    // stop d’abord, puis enchaîner (sinon stopTargeting
+                    // annule le halo « 2 situations » lancé par onChosen).
+                    stopTargeting();
+                    queueMicrotask(() => onChosen(picked));
+                };
+                startTargeting({
+                    kind: 'DESIGNATION',
+                    targetableCardIds,
+                    selectedCardIds: picked,
+                    upTo: true,
+                    onConfirm: commit,
+                    confirmLabel: 'Valider l’éreintement',
+                    message:
+                        picked.length === 0
+                            ? `Éreintement ${amount} : affaiblissez des personnages de la même culture (−${amount} crépuscule chacun). Coût actuel ${baseCost}. Validez pour continuer (ou sans affaiblir).`
+                            : `${picked.length} affaibli${picked.length > 1 ? 's' : ''} → coût ${reduced} (base ${baseCost}). Validez ou continuez.`,
+                    onSelectTarget: (cardId) => {
+                        const match = candidates.find(
+                            (item) =>
+                                item.instanceId === cardId || item.id === cardId
+                        );
+                        const canonical =
+                            match?.instanceId || match?.id || cardId;
+                        if (picked.includes(canonical)) return;
+                        collect([...picked, canonical]);
+                    },
+                });
+            };
+            collect([]);
+            return true;
+        },
+        [G, myId, startTargeting, stopTargeting]
     );
 
     /** Coût « affaiblir N personnages distincts » (Legolas hunter…). */
@@ -2704,54 +2778,130 @@ export const GameBoard: React.FC<GameBoardProps> = ({
                     });
                     return;
                 }
-                if (
-                    eventAbility &&
-                    abilityNeedsCostDesignation(G, card, eventAbility) &&
-                    abilityNeedsEffectDesignation(G, card, eventAbility) &&
-                    !costAndEffectShareHandDesignation(eventAbility) &&
-                    requestDesignation(
+                const finishEventPlay = (
+                    chosen?: string | string[],
+                    toilIds?: string[]
+                ) => {
+                    stopTargeting();
+                    moves.playCard?.(index, chosen, toilIds);
+                    audioService.play('CARD_PLAY');
+                };
+
+                const requestEventEffectThenPlay = (toilIds: string[]) => {
+                    if (!eventAbility) {
+                        finishEventPlay(undefined, toilIds);
+                        return;
+                    }
+                    const effectNeed = getEffectDesignationCount(
+                        G,
                         card,
-                        eventAbility,
-                        (costId) => {
+                        eventAbility
+                    );
+                    // Défausse ×N : autant que possible (min(N, dispo)).
+                    // 0 dispo → jouer sans cible ; 1 → désignation simple ;
+                    // 2+ jusqu’au plafond → multi.
+                    if (effectNeed > 1) {
+                        if (
+                            !requestMultiEffectDesignation(
+                                card,
+                                eventAbility,
+                                effectNeed,
+                                (effectIds) => {
+                                    if (effectIds.length !== effectNeed) {
+                                        return;
+                                    }
+                                    finishEventPlay(effectIds, toilIds);
+                                }
+                            )
+                        ) {
+                            console.warn(
+                                `❌ Impossible de désigner ${effectNeed} cibles.`
+                            );
+                        }
+                        return;
+                    }
+                    if (effectNeed === 1) {
+                        if (
                             requestDesignation(
                                 card,
                                 eventAbility,
-                                (effectId) => {
-                                    stopTargeting();
-                                    moves.playCard(index, [costId, effectId]);
-                                    audioService.play('CARD_PLAY');
-                                },
+                                (chosenId) =>
+                                    finishEventPlay(chosenId, toilIds),
                                 index,
-                                'effect',
-                                costId
-                            );
-                        },
-                        index,
-                        'cost'
-                    )
-                ) {
-                    return;
-                }
+                                'effect'
+                            )
+                        ) {
+                            return;
+                        }
+                        finishEventPlay(undefined, toilIds);
+                        return;
+                    }
+                    // effectNeed === 0 : aucune situation → effet vide OK.
+                    if (
+                        (eventAbility.effects || []).some(
+                            (item) =>
+                                item.type === 'DISCARD' &&
+                                !item.chooser &&
+                                Array.isArray(item.target) &&
+                                (item.count || 1) > 1
+                        )
+                    ) {
+                        finishEventPlay(undefined, toilIds);
+                        return;
+                    }
+                    if (
+                        abilityNeedsCostDesignation(G, card, eventAbility) &&
+                        abilityNeedsEffectDesignation(G, card, eventAbility) &&
+                        !costAndEffectShareHandDesignation(eventAbility) &&
+                        requestDesignation(
+                            card,
+                            eventAbility,
+                            (costId) => {
+                                requestDesignation(
+                                    card,
+                                    eventAbility,
+                                    (effectId) => {
+                                        finishEventPlay(
+                                            [costId, effectId],
+                                            toilIds
+                                        );
+                                    },
+                                    index,
+                                    'effect',
+                                    costId
+                                );
+                            },
+                            index,
+                            'cost'
+                        )
+                    ) {
+                        return;
+                    }
+                    if (
+                        requestDesignation(
+                            card,
+                            eventAbility,
+                            (chosenId) =>
+                                finishEventPlay(chosenId, toilIds),
+                            index
+                        )
+                    ) {
+                        return;
+                    }
+                    finishEventPlay(undefined, toilIds);
+                };
+
                 if (
                     eventAbility &&
-                    requestDesignation(
-                        card,
-                        eventAbility,
-                        (chosenId) => {
-                            stopTargeting();
-                            moves.playCard(index, chosenId);
-                            audioService.play('CARD_PLAY');
-                        },
-                        index
+                    getToilAmount(card) > 0 &&
+                    getToilCandidates(G, myId, card).length > 0 &&
+                    requestToilExert(card, (toilIds) =>
+                        requestEventEffectThenPlay(toilIds)
                     )
                 ) {
                     return;
                 }
-
-                if (typeof moves.playCard === 'function') {
-                    moves.playCard(index);
-                    audioService.play('CARD_PLAY');
-                }
+                requestEventEffectThenPlay([]);
                 return;
             }
 

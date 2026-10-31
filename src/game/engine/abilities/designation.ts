@@ -678,7 +678,11 @@ function abilityEffectDesignationIsHaloOnly(ability: Ability): boolean {
             effect.type === 'REINFORCE_CULTURE_TOKEN' ||
             effect.type === 'STACK_ON_SELF' ||
             effect.type === 'TAKE_FROM_STACK' ||
-            effect.type === 'PLAY_FROM_CARD_STACK'
+            effect.type === 'PLAY_FROM_CARD_STACK' ||
+            // Multi-défausse : halo + clics successifs (pas de flèche drag).
+            (effect.type === 'DISCARD' &&
+                !effect.chooser &&
+                (effect.count || 1) > 1)
     );
 }
 
@@ -726,7 +730,15 @@ export function getEffectDesignationCount(
             (item.count || 1) > 1
     );
     if (discardMulti && discardMulti.type === 'DISCARD') {
-        return discardMulti.count || 1;
+        // CR : autant que possible, ignorer le reste (New-awakened…).
+        const cap = discardMulti.count || 1;
+        const available = candidatesForEffect(
+            G,
+            source,
+            ability,
+            discardMulti
+        ).length;
+        return Math.min(Math.max(0, cap), available);
     }
     return 1;
 }
@@ -1062,12 +1074,7 @@ export function abilityHasLegalEffectTarget(
             Array.isArray(effect.target) &&
             (effect.count || 1) > 1
         ) {
-            if (
-                candidatesForEffect(G, source, ability, effect).length <
-                (effect.count || 1)
-            ) {
-                return false;
-            }
+            // Effet partiel OK (0 ou 1 cible) — CR « as much as you can ».
             continue;
         }
         if (effect.type === 'HEAL' && effect.all) {
@@ -1298,9 +1305,9 @@ export function formatDesignationPrompt(
     if (discardMulti && discardMulti.type === 'DISCARD' && useEffect) {
         const n = discardMulti.count || 1;
         if (tokens.includes('CONDITION')) {
-            return `Choisissez ${n} situations à défausser.`;
+            return `Choisissez ${n} situation${n > 1 ? 's' : ''} à défausser (autant que possible).`;
         }
-        return `Choisissez ${n} cibles à défausser.`;
+        return `Choisissez ${n} cible${n > 1 ? 's' : ''} à défausser (autant que possible).`;
     }
     return `Choisissez ${formatAbilityWhoLabel(tokens, true)}.`;
 }
@@ -1407,6 +1414,14 @@ export function getHandEventDesignationTargetIds(
     // Drop → halo coût → clic ; puis flèche seulement si effet dirigé.
     // Couvre aussi coût-only (Sauron’s Might : remove → add threat).
     if (abilityNeedsCostDesignation(G, card, ability)) {
+        return [];
+    }
+
+    // Multi-cibles d’effet (défausse ×2, soins multi…) : halo après drop.
+    if (
+        abilityNeedsEffectDesignation(G, card, ability) &&
+        getEffectDesignationCount(G, card, ability) > 1
+    ) {
         return [];
     }
 

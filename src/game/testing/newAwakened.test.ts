@@ -1,12 +1,18 @@
 import { describe, expect, it } from 'vitest';
 import { parseAbilities } from '../../../scripts/convert/parsers';
 import { getCardById } from '../cardsData';
-import { applyDevPreset } from '../dev/presets';
 import { applyAbilityEffect } from '../engine/abilities/applyAbilityEffect';
 import {
     abilityHasLegalEffectTarget,
+    abilityNeedsCostDesignation,
     getEffectDesignationCount,
+    getHandEventDesignationTargetIds,
 } from '../engine/abilities/designation';
+import {
+    getToilAmount,
+    getToilCandidates,
+    getTwilightCostWithToil,
+} from '../logic/toil';
 import type { Ability } from '../types';
 import {
     createCompanion,
@@ -26,10 +32,10 @@ describe('New-awakened 11U38', () => {
                     cost: [
                         {
                             spot: [
-                                expect.objectContaining({
+                                {
                                     count: 1,
                                     target: [['GANDALF', 'WIZARD']],
-                                }),
+                                },
                             ],
                         },
                     ],
@@ -43,6 +49,7 @@ describe('New-awakened 11U38', () => {
                 }),
             ])
         );
+        expect(parsed?.[0]?.cost?.[0]?.spot?.[0]?.mode).toBeUndefined();
         expect(
             getCardById('11U38')?.abilities?.some(
                 (ab) =>
@@ -52,7 +59,7 @@ describe('New-awakened 11U38', () => {
         ).toBe(true);
     });
 
-    it('applique : défausse exactement 2 situations désignées', () => {
+    it('3 situations : défausse 2 au choix', () => {
         const event = {
             ...getCardById('11U38')!,
             instanceId: 'awakened',
@@ -96,7 +103,11 @@ describe('New-awakened 11U38', () => {
         });
 
         expect(getEffectDesignationCount(G, event, ability)).toBe(2);
+        expect(abilityNeedsCostDesignation(G, event, ability)).toBe(false);
         expect(abilityHasLegalEffectTarget(G, event, ability)).toBe(true);
+        expect(
+            getHandEventDesignationTargetIds(G, event, 'fellowship')
+        ).toEqual([]);
         expect(
             applyAbilityEffect(G, event, ability, ['cond-a', 'cond-b'])
         ).toBe(true);
@@ -109,13 +120,9 @@ describe('New-awakened 11U38', () => {
         expect(
             G.players['1']!.supportArea?.some((c) => c.instanceId === 'cond-c')
         ).toBe(true);
-        expect(
-            G.players['0']!.discard?.some((c) => c.instanceId === 'cond-a') ||
-                G.players['1']!.discard?.some((c) => c.instanceId === 'cond-a')
-        ).toBe(true);
     });
 
-    it('refuse s’il y a moins de 2 situations', () => {
+    it('1 situation : jouable, défausse celle-là (autant que possible)', () => {
         const event = {
             ...getCardById('11U38')!,
             instanceId: 'awakened',
@@ -140,19 +147,77 @@ describe('New-awakened 11U38', () => {
                             type: 'CONDITION',
                         },
                     ],
+                    hand: [event],
                 }),
                 '1': createPlayerState('1'),
             },
         });
-        expect(abilityHasLegalEffectTarget(G, event, ability)).toBe(false);
+        expect(abilityHasLegalEffectTarget(G, event, ability)).toBe(true);
+        expect(getEffectDesignationCount(G, event, ability)).toBe(1);
+        expect(applyAbilityEffect(G, event, ability, ['only'])).toBe(true);
+        expect(
+            G.players['0']!.supportArea?.some((c) => c.instanceId === 'only')
+        ).toBe(false);
     });
 
-    it('preset DEV', () => {
-        const G = createGameState();
-        applyDevPreset(G, 'DECK_GAPS_NEW_AWAKENED');
-        expect(G.players['0']!.hand?.[0]?.id).toBe('11U38');
-        expect(
-            G.players['0']!.fellowshipArea?.some((c) => c.id === '8R15')
-        ).toBe(true);
+    it('0 situation : jouable, effet vide', () => {
+        const event = {
+            ...getCardById('11U38')!,
+            instanceId: 'awakened',
+        };
+        const ability = (event.abilities || [])[0] as Ability;
+        const G = createGameState({
+            fpPlayerId: '0',
+            players: {
+                '0': createPlayerState('0', {
+                    fellowshipArea: [
+                        createCompanion({
+                            id: '8R15',
+                            instanceId: 'gandalf',
+                            culture: 'GANDALF',
+                            race: 'WIZARD',
+                        }),
+                    ],
+                    hand: [event],
+                }),
+                '1': createPlayerState('1'),
+            },
+        });
+        expect(abilityHasLegalEffectTarget(G, event, ability)).toBe(true);
+        expect(getEffectDesignationCount(G, event, ability)).toBe(0);
+        expect(applyAbilityEffect(G, event, ability)).toBe(true);
     });
+
+    it('Éreintement 2 : chaque compagnon Gandalf affaibli réduit de 2', () => {
+        const event = {
+            ...getCardById('11U38')!,
+            instanceId: 'awakened',
+        };
+        expect(getToilAmount(event)).toBe(2);
+        const gandalf = createCompanion({
+            id: '8R15',
+            instanceId: 'gandalf',
+            culture: 'GANDALF',
+            race: 'WIZARD',
+            vitality: 4,
+            wounds: 0,
+        });
+        const G = createGameState({
+            fpPlayerId: '0',
+            players: {
+                '0': createPlayerState('0', {
+                    fellowshipArea: [gandalf],
+                    hand: [event],
+                }),
+                '1': createPlayerState('1'),
+            },
+        });
+        expect(getToilCandidates(G, '0', event).map((c) => c.instanceId)).toEqual([
+            'gandalf',
+        ]);
+        expect(getTwilightCostWithToil(G, event, 0)).toBe(6);
+        expect(getTwilightCostWithToil(G, event, 1)).toBe(4);
+        expect(getTwilightCostWithToil(G, event, 2)).toBe(2);
+    });
+
 });

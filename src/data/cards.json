@@ -23658,8 +23658,7 @@
                     "SAURON",
                     "ORC"
                   ]
-                ],
-                "mode": "DESIGNATION"
+                ]
               }
             ]
           }
@@ -41411,7 +41410,51 @@
     "isUnique": false,
     "kind": "SHADOW",
     "type": "EVENT",
+    "abilities": [
+      {
+        "id": "4R39:0",
+        "phases": [
+          "MANEUVER"
+        ],
+        "cost": [
+          {
+            "spot": [
+              {
+                "count": 3,
+                "target": [
+                  [
+                    "DUNLAND",
+                    "MAN"
+                  ]
+                ]
+              }
+            ]
+          }
+        ],
+        "effects": [
+          {
+            "type": "DISCARD",
+            "count": 1,
+            "target": [
+              [
+                "FREE_PEOPLES",
+                "POSSESSION"
+              ],
+              [
+                "CONDITION"
+              ]
+            ]
+          }
+        ],
+        "source": "SELF",
+        "text": "MANEUVER: Spot 3 dunland Men to discard a Free Peoples possession or condition.",
+        "textFr": "**Manœuvre :** Désignez 3 Hommes <symbol>dunland</symbol> pour défausser une situation ou une possession des Peuples Libres."
+      }
+    ],
     "phases": [
+      "MANEUVER"
+    ],
+    "actionPhases": [
       "MANEUVER"
     ],
     "culture": "DUNLAND",
@@ -42515,8 +42558,7 @@
                     "ELF",
                     "COMPANION"
                   ]
-                ],
-                "mode": "DESIGNATION"
+                ]
               }
             ]
           }
@@ -44406,7 +44448,52 @@
     "isUnique": false,
     "kind": "FREE_PEOPLE",
     "type": "EVENT",
+    "abilities": [
+      {
+        "id": "4U99:0",
+        "phases": [
+          "FELLOWSHIP",
+          "MANEUVER"
+        ],
+        "cost": [
+          {
+            "spot": [
+              {
+                "count": 1,
+                "target": [
+                  [
+                    "Gandalf"
+                  ]
+                ]
+              }
+            ]
+          }
+        ],
+        "effects": [
+          {
+            "type": "DISCARD",
+            "count": 1,
+            "target": [
+              [
+                "SHADOW",
+                "POSSESSION"
+              ],
+              [
+                "SHADOW",
+                "ARTIFACT"
+              ]
+            ]
+          }
+        ],
+        "source": "SELF",
+        "text": "MANEUVER: Spot Gandalf to discard a Shadow possession or Shadow artifact."
+      }
+    ],
     "phases": [
+      "FELLOWSHIP",
+      "MANEUVER"
+    ],
+    "actionPhases": [
       "FELLOWSHIP",
       "MANEUVER"
     ],
@@ -98448,8 +98535,7 @@
                     "GANDALF",
                     "WIZARD"
                   ]
-                ],
-                "mode": "DESIGNATION"
+                ]
               }
             ]
           }
@@ -100016,8 +100102,7 @@
                     "MAN",
                     "MINION"
                   ]
-                ],
-                "mode": "DESIGNATION"
+                ]
               }
             ]
           }
@@ -102438,8 +102523,7 @@
                     "ORC",
                     "MINION"
                   ]
-                ],
-                "mode": "DESIGNATION"
+                ]
               }
             ]
           }
@@ -112778,8 +112862,7 @@
                     "ROHAN",
                     "MAN"
                   ]
-                ],
-                "mode": "DESIGNATION"
+                ]
               }
             ]
           }
@@ -132728,8 +132811,7 @@
                     "ORC",
                     "MINION"
                   ]
-                ],
-                "mode": "DESIGNATION"
+                ]
               }
             ]
           }

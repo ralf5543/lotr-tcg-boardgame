@@ -39,6 +39,10 @@ import { applyAutomaticToPlayCosts } from '../logic/applyToPlayCosts';
 import { getEffectiveTwilightCost } from '../../utils/roamingDetection';
 import { getWhileTwilightCostModifier } from '../logic/stats/mechanics/whileModifier';
 import {
+    applyToilExerts,
+    getTwilightCostWithToil,
+} from '../logic/toil';
+import {
     getCurrentSiteIndex,
     placeCardIntoDiscardPile,
 } from '../logic/sites';
@@ -363,7 +367,9 @@ function yieldAfterPlay(
 export const playCard = (
     { G, ctx, playerID }: LotrMoveContext,
     cardIndex: number,
-    chosenTargetId?: string | string[]
+    chosenTargetId?: string | string[],
+    /** Affaiblissements pour Éreintement (Toil), optionnels. */
+    toilExertIds?: string[]
 ) => {
     const actingPlayerId = playerID ?? ctx.currentPlayer ?? '0';
     const wasResponseWindowOpen = isResponseWindowOpen(G);
@@ -419,11 +425,14 @@ export const playCard = (
     const hadInitiative = isFP ? freePeoplesHasInitiative(G) : false;
 
     if (isFP) {
-        // Passifs de site (East Road…) + coût imprimé.
-        const cost = getEffectiveTwilightCost(
+        // Éreintement avant paiement (réduit le crépuscule ajouté).
+        if (!applyToilExerts(G, actingPlayerId, card, toilExertIds)) {
+            return 'INVALID_MOVE';
+        }
+        const cost = getTwilightCostWithToil(
+            G,
             card,
-            getCurrentSiteIndex(G),
-            getWhileTwilightCostModifier(G, card)
+            (toilExertIds || []).length
         );
         const [playedCard] = player.hand.splice(cardIndex, 1);
         G.twilightPool += cost;
@@ -473,11 +482,17 @@ export const playCard = (
     }
 
     if (!isFP) {
-        const cost = getEffectiveTwilightCost(
+        if (!applyToilExerts(G, actingPlayerId, card, toilExertIds)) {
+            return 'INVALID_MOVE';
+        }
+        const cost = getTwilightCostWithToil(
+            G,
             card,
-            getCurrentSiteIndex(G),
-            getWhileTwilightCostModifier(G, card)
+            (toilExertIds || []).length
         );
+        if ((G.twilightPool || 0) < cost) {
+            return 'INVALID_MOVE';
+        }
         G.twilightPool -= cost;
         const [playedCard] = player.hand.splice(cardIndex, 1);
 

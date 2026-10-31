@@ -372,24 +372,24 @@ export const DevPanel: React.FC<DevPanelProps> = ({
                         </S.GameButton>
                     </S.Section>
 
-                    {/* Preset de playtest : trous decks — New-awakened */}
+                    {/* Preset de playtest : trous decks — Roll of Thunder */}
                     <S.Section>
                         <S.Label>
-                            Preset decks (New-awakened) :
+                            Preset decks (Roll of Thunder) :
                             <br />
                             <span style={{ opacity: 0.75, fontWeight: 400 }}>
-                                Communauté : Spot Magicien → défausser 2
-                                situations.
+                                Communauté / Manœuvre : Spot Gandalf →
+                                défausser possession ou artefact Ombre.
                             </span>
                         </S.Label>
                         <S.ActionButton
                             onClick={() =>
                                 moves.devLoadPreset?.(
-                                    'DECK_GAPS_NEW_AWAKENED'
+                                    'DECK_GAPS_ROLL_OF_THUNDER'
                                 )
                             }
                         >
-                            New-awakened (11U38)
+                            Roll of Thunder (4U99)
                         </S.ActionButton>
                     </S.Section>
 

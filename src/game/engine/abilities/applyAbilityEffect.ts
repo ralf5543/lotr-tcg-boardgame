@@ -1499,11 +1499,14 @@ export function applyAbilityEffect(
             Array.isArray(effect.target) &&
             (effect.count || 1) > 1
         ) {
+            // CR : autant que possible jusqu’au compte imprimé.
             const pool = resolveCostTarget(G, source, effect.target).filter(
                 (card) => Boolean(card) && !card.isDead
             );
-            const need = effect.count || 1;
-            if (pool.length < need) return false;
+            const need = Math.min(effect.count || 1, pool.length);
+            if (need === 0) {
+                continue;
+            }
             if (chosenIds.length !== need) return false;
             if (new Set(chosenIds).size !== chosenIds.length) return false;
             for (const id of chosenIds) {

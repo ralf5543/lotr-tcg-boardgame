@@ -118,7 +118,7 @@ const neutralPath: readonly string[] = [
 
 /**
  * Applique le preset DEV de playtest (zones vidées / chemin Standard).
- * Vague New-awakened (Spot Wizard → défausser 2 situations).
+ * Vague Roll of Thunder (Spot Gandalf → défausser possession/artefact Ombre).
  */
 export const applyDevPreset = (
     G: GameState,
@@ -132,31 +132,37 @@ export const applyDevPreset = (
     const shadowPlayer = G.players[shadowId];
 
     switch (presetType) {
-        case 'DECK_GAPS_NEW_AWAKENED': {
+        case 'DECK_GAPS_ROLL_OF_THUNDER': {
             resetBoardForPreset(G);
             setupDevPath(G, 0, neutralPath);
-            // Coût imprimé 6 (Toil non simulé ici).
-            G.twilightPool = 8;
+            G.twilightPool = 4;
             fpPlayer.burdens = 0;
             fpPlayer.fellowshipArea = [
                 {
-                    ...clonePresetCard('5U111', 'dev-awake-frodo'),
-                    attachments: [clonePresetCard('4R1', 'dev-awake-ring')],
+                    ...clonePresetCard('5U111', 'dev-rot-frodo'),
+                    attachments: [clonePresetCard('4R1', 'dev-rot-ring')],
                 },
-                // Magicien Gandalf du deck Fumeurs (8R15).
-                clonePresetCard('8R15', 'dev-awake-gandalf'),
+                clonePresetCard('8R15', 'dev-rot-gandalf'),
             ];
-            fpPlayer.hand = [clonePresetCard('11U38', 'dev-awake-event')];
+            fpPlayer.hand = [clonePresetCard('4U99', 'dev-rot-event')];
             fpPlayer.supportArea = [
-                clonePresetCard('4R300', 'dev-awake-fp-cond'),
+                // Possession FP (ne doit PAS être ciblable).
+                clonePresetCard('1U91', 'dev-rot-fp-pipe'),
             ];
             fpPlayer.deck = [];
             fpPlayer.sitesDeck = [clonePresetSite('11S250', fpId)];
             if (shadowPlayer) {
                 shadowPlayer.supportArea = [
-                    clonePresetCard('10C24', 'dev-awake-sh-cond-a'),
-                    clonePresetCard('1R120', 'dev-awake-sh-cond-b'),
+                    clonePresetCard('10C24', 'dev-rot-sh-cond'),
                 ];
+                // Possession Ombre attachée à un séide.
+                const lurtz = clonePresetCard('11R194', 'dev-rot-lurtz');
+                lurtz.attachments = [
+                    clonePresetCard('2R43', 'dev-rot-lurtz-sword'),
+                ];
+                shadowPlayer.fellowshipArea = [];
+                // Les séides vont sur le champ / support selon le type — minion en jeu via battlefield.
+                G.battlefield = [lurtz];
                 shadowPlayer.hand = [];
                 shadowPlayer.deck = [];
                 shadowPlayer.sitesDeck = [
@@ -164,7 +170,7 @@ export const applyDevPreset = (
                 ];
             }
             G.statusMessage =
-                '[DEV] New-awakened (11U38) · Phase Communauté : jouer l’événement (crépuscule 6) → désigner le Magicien Gandalf → désigner 2 situations à défausser. Toil non simulé.';
+                '[DEV] Roll of Thunder (4U99) · Communauté ou Manœuvre : Spot Gandalf (condition) → flèche vers une possession ou un artefact de l’Ombre (pas une situation, pas une possession FP).';
             break;
         }
     }

@@ -10,9 +10,7 @@ import {
     abilityMatchesTrigger,
     isResponseWindowOpen,
 } from './responseWindow';
-import { getEffectiveTwilightCost } from '../../utils/roamingDetection';
-import { getWhileTwilightCostModifier } from '../logic/stats/mechanics/whileModifier';
-import { getCurrentSiteIndex } from '../logic/sites';
+import { getMinimumTwilightCostWithToil } from '../logic/toil';
 
 /* ==========================================================================
    TYPES & INTERFACES
@@ -175,10 +173,11 @@ function checkTwilightCost(
     const fpPlayerId = G.fpPlayerId || '0';
 
     if (playerID !== fpPlayerId && card.kind === 'SHADOW') {
-        const cost = getEffectiveTwilightCost(
-            card,
-            getCurrentSiteIndex(G),
-            getWhileTwilightCostModifier(G, card)
+        // Éreintement : seuil = coût mini (tous les affaiblissements possibles).
+        const cost = getMinimumTwilightCostWithToil(
+            G,
+            playerID || '',
+            card
         );
         if ((G.twilightPool || 0) < cost) {
             return {

@@ -128,6 +128,22 @@ export function applyEventAbility(
         return applyAbilityEffect(G, card, ability, effectTargetId);
     }
 
+    // Multi-défausse : au plus le compte imprimé ; le détail (autant que
+    // possible) est validé dans applyAbilityEffect.
+    const discardMulti = (ability.effects || []).find(
+        (item) =>
+            item.type === 'DISCARD' &&
+            !item.chooser &&
+            Array.isArray(item.target) &&
+            (item.count || 1) > 1
+    );
+    if (discardMulti && discardMulti.type === 'DISCARD') {
+        const max = discardMulti.count || 1;
+        if (ids.length > max || new Set(ids).size !== ids.length) {
+            return false;
+        }
+    }
+
     // Coût seul / effet seul / replace REGION ([path, deck]) / pas de cible
     const costTargetId = ids[0];
     if (!payAbilityCost(G, card, ability.cost, costTargetId)) return false;

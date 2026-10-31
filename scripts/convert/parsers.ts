@@ -2350,6 +2350,9 @@ function parseCountedDiscardTarget(
     }
     const count = parseBurdenWord(numbered[1]);
     if (!count) return null;
+    // « a Shadow possession or Shadow artifact » (DNF) avant le refus du « or ».
+    const dnf = parseArticleOrFilters(plain);
+    if (dnf) return { count, target: dnf };
     const noun = numbered[2].trim();
     if (
         /\b(and|or|each|every|all|may|from|twice|times|up to|except|stacked|borne)\b/i.test(
@@ -10260,6 +10263,7 @@ function parseStandaloneSpotDiscardAbilities(
             cardTitle
         );
         if (!discardParsed) continue;
+        // Spot = condition (existence), pas une désignation à cliquer.
         found.push({
             id: `${cardId || 'ability'}:${found.length}:spot-discard`,
             phases: [],
@@ -10269,9 +10273,6 @@ function parseStandaloneSpotDiscardAbilities(
                         {
                             count: spotSubject.count,
                             target: spotSubject.target,
-                            ...(spotSubject.mode
-                                ? { mode: spotSubject.mode }
-                                : {}),
                         },
                     ],
                 },
@@ -13746,6 +13747,7 @@ export function parseAbilities(
                     .replace(/\s+\./g, '.')
                     .trim();
 
+            // Spot = condition (existence), pas une désignation à cliquer.
             abilities.push({
                 id: `${cardId || 'ability'}:${abilities.length}`,
                 phases,
@@ -13755,9 +13757,6 @@ export function parseAbilities(
                             {
                                 count: spotSubject.count,
                                 target: spotSubject.target,
-                                ...(spotSubject.mode
-                                    ? { mode: spotSubject.mode }
-                                    : {}),
                             },
                         ],
                     },

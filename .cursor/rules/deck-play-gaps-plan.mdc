@@ -64,7 +64,8 @@ L’ancien plan main/initiative est **figé** (`.cursor/rules/hand-initiative-pl
 | `15U94` | Wandering Hillman | ✅ Validé par Ralf — While compagnon force ≥10 → +3 ; Manœuvre : 2 fardeaux **ou** 2 menaces → contrôler un site (libellé `removeBurdens` corrigé). Preset DEV retiré après validation |
 | `7R73` | Sneaking! | ✅ Validé par Ralf — Combat : soigner Sméagol **ou** annuler son escarmouche si plus de vitalité que les séides (`CHOOSE_ONE`). Au passage : Frodon `1C290` (sceau) réparé (`SIGNET_*` dans les filtres + `excludeSource` sur exert). Preset DEV retiré après validation |
 | `9R+29` | Slippery as Fishes | ✅ Validé par Ralf — While Gollum sur montagne/rivière/souterrain → +2 ; Regroup : Spot Gollum → **révéler la main** (grille + Valider côté adversaire) → cartes Ombre sous la pioche + défausse. Preset DEV retiré après validation |
-| `11U38` | New-awakened | Spell / Toil 2 (Toil non simulé) ; Spot Magicien Gandalf → défausser **2** situations (multi-DISCARD). En playtest, preset DEV `DECK_GAPS_NEW_AWAKENED` |
+| `11U38` | New-awakened | ✅ Validé par Ralf — Spell / Toil 2 ; Spot Magicien Gandalf → défausser jusqu’à 2 situations (autant que possible, camps mélangés ; jouable à 0/1). Preset DEV retiré après validation |
+| `4U99` | Roll of Thunder | Communauté ou Manœuvre : Spot Gandalf → défausser une possession ou un artefact de l’Ombre. En playtest, preset DEV `DECK_GAPS_ROLL_OF_THUNDER` |
 
 Livré (playtest) : Hidden Knowledge `7R104` (grille révélation + valider) ; Slippery Sneak `8R27` ; escarmouche vacante (mort→gagnant / défausse→pas) ; Cruel Caradhras `1R124` ; Pelennor Flat `11S254` ; Shelob when-played possession ; toaster Orthanc (boutons cohérents).
 
