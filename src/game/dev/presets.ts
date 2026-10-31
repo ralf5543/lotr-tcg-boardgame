@@ -103,6 +103,18 @@ const setupDevPath = (
     G.currentSiteIndex = startIndex;
 };
 
+const neutralPath: readonly string[] = [
+    '18U138', // 1
+    '11S228', // 2
+    '11S263', // 3
+    '11S265', // 4
+    '11S250', // 5
+    '11S248', // 6
+    '11S241', // 7
+    '15U187', // 8
+    '11S232', // 9
+] as const;
+
 /** Site 1 = souterrain (While Gollum +2). */
 const mountainPath: readonly string[] = [
     '11S248', // 1 Moria Stairway (underground)
@@ -118,8 +130,7 @@ const mountainPath: readonly string[] = [
 
 /**
  * Applique le preset DEV de playtest (zones vidées / chemin Standard).
- * Vague en cours : Slippery as Fishes — Gollum +2 sur montagne/rivière/
- * souterrain ; Regroup : révéler main → Ombre sous pioche + défausse.
+ * Retest Frodon sceau + vague Slippery as Fishes.
  */
 export const applyDevPreset = (
     G: GameState,
@@ -133,6 +144,36 @@ export const applyDevPreset = (
     const shadowPlayer = G.players[shadowId];
 
     switch (presetType) {
+        case 'DECK_GAPS_FRODO_SIGNET': {
+            resetBoardForPreset(G);
+            setupDevPath(G, 0, neutralPath);
+            G.twilightPool = 0;
+            fpPlayer.burdens = 0;
+            // Frodon 1C290 blessé + Sam au sceau Frodon à affaiblir.
+            fpPlayer.fellowshipArea = [
+                {
+                    ...clonePresetCard('1C290', 'dev-signet-frodo'),
+                    wounds: 1,
+                    attachments: [
+                        clonePresetCard('1R1', 'dev-signet-ring'),
+                    ],
+                },
+                clonePresetCard('1R310', 'dev-signet-sam'),
+            ];
+            fpPlayer.hand = [];
+            fpPlayer.deck = [];
+            fpPlayer.sitesDeck = [clonePresetSite('11S250', fpId)];
+            if (shadowPlayer) {
+                shadowPlayer.hand = [];
+                shadowPlayer.deck = [];
+                shadowPlayer.sitesDeck = [
+                    clonePresetSite('11S263', shadowId),
+                ];
+            }
+            G.statusMessage =
+                '[DEV] Frodon (1C290) · Phase Communauté : bulle sur Frodon → désigner Sam (sceau Frodon) à affaiblir → soigne Frodon. Frodon lui-même ne doit pas être désignable.';
+            break;
+        }
         case 'DECK_GAPS_SLIPPERY_FISHES': {
             resetBoardForPreset(G);
             setupDevPath(G, 0, mountainPath);

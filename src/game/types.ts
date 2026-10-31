@@ -1810,7 +1810,9 @@ export interface LotrMoveContext extends FnContext<GameState> {
 }
 
 /** Presets DEV de playtest (panneau de test, vague en cours). */
-export type DevPresetType = 'DECK_GAPS_SLIPPERY_FISHES';
+export type DevPresetType =
+    | 'DECK_GAPS_FRODO_SIGNET'
+    | 'DECK_GAPS_SLIPPERY_FISHES';
 
 export interface ArcheryState {
     step?: 'ACTIONS' | 'FP_ASSIGN' | 'SHADOW_ASSIGN' | 'COMPLETE';
