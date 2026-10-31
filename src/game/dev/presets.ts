@@ -67,6 +67,7 @@ const resetBoardForPreset = (G: GameState): void => {
     G.pendingSiteCharacterWounds = undefined;
     G.pendingWhenPlayed = undefined;
     G.pendingSiteDepartureContinuation = undefined;
+    G.pendingReveal = undefined;
     G.sitePhaseAbilityOfferedThisPhase = false;
     G.hunterMinionPlayedThisShadowPhase = false;
     G.preventMoveAgain = false;
@@ -103,14 +104,13 @@ const setupDevPath = (
     G.currentSiteIndex = startIndex;
 };
 
-/** Site 1 = souterrain (While Gollum +2). */
-const mountainPath: readonly string[] = [
-    '11S248', // 1 Moria Stairway (underground)
-    '11S228', // 2 Anduin Confluence
-    '11S263', // 3 West Gate of Moria
-    '11S265', // 4 Window on the West
-    '11S250', // 5 North Undeep
-    '18U138', // 6
+const neutralPath: readonly string[] = [
+    '18U138', // 1
+    '11S228', // 2
+    '11S263', // 3
+    '11S265', // 4
+    '11S250', // 5
+    '11S248', // 6
     '11S241', // 7
     '15U187', // 8
     '11S232', // 9
@@ -118,7 +118,7 @@ const mountainPath: readonly string[] = [
 
 /**
  * Applique le preset DEV de playtest (zones vidées / chemin Standard).
- * Vague Slippery as Fishes (révélation de main).
+ * Vague New-awakened (Spot Wizard → défausser 2 situations).
  */
 export const applyDevPreset = (
     G: GameState,
@@ -132,40 +132,39 @@ export const applyDevPreset = (
     const shadowPlayer = G.players[shadowId];
 
     switch (presetType) {
-        case 'DECK_GAPS_SLIPPERY_FISHES': {
+        case 'DECK_GAPS_NEW_AWAKENED': {
             resetBoardForPreset(G);
-            setupDevPath(G, 0, mountainPath);
-            G.twilightPool = 4;
+            setupDevPath(G, 0, neutralPath);
+            // Coût imprimé 6 (Toil non simulé ici).
+            G.twilightPool = 8;
             fpPlayer.burdens = 0;
             fpPlayer.fellowshipArea = [
                 {
-                    ...clonePresetCard('5U111', 'dev-fish-frodo'),
-                    attachments: [clonePresetCard('4R1', 'dev-fish-ring')],
+                    ...clonePresetCard('5U111', 'dev-awake-frodo'),
+                    attachments: [clonePresetCard('4R1', 'dev-awake-ring')],
                 },
+                // Magicien Gandalf du deck Fumeurs (8R15).
+                clonePresetCard('8R15', 'dev-awake-gandalf'),
             ];
-            fpPlayer.hand = [];
+            fpPlayer.hand = [clonePresetCard('11U38', 'dev-awake-event')];
+            fpPlayer.supportArea = [
+                clonePresetCard('4R300', 'dev-awake-fp-cond'),
+            ];
             fpPlayer.deck = [];
             fpPlayer.sitesDeck = [clonePresetSite('11S250', fpId)];
             if (shadowPlayer) {
-                G.battlefield = [
-                    clonePresetCard('7C59', 'dev-fish-gollum'),
-                ];
                 shadowPlayer.supportArea = [
-                    clonePresetCard('9R+29', 'dev-fish-cond'),
+                    clonePresetCard('10C24', 'dev-awake-sh-cond-a'),
+                    clonePresetCard('1R120', 'dev-awake-sh-cond-b'),
                 ];
-                shadowPlayer.hand = [
-                    clonePresetCard('1C261', 'dev-fish-hand-orc'),
-                    clonePresetCard('10C24', 'dev-fish-hand-una'),
-                ];
-                shadowPlayer.deck = [
-                    clonePresetCard('1C191', 'dev-fish-deck'),
-                ];
+                shadowPlayer.hand = [];
+                shadowPlayer.deck = [];
                 shadowPlayer.sitesDeck = [
                     clonePresetSite('11S263', shadowId),
                 ];
             }
             G.statusMessage =
-                '[DEV] Slippery as Fishes (9R+29) · Site souterrain → Gollum force +2. Regroupement Ombre : bulle Spot Gollum → grille de la main (révélation) → Valider côté Peuples Libres → cartes Ombre sous la pioche, situation défaussée.';
+                '[DEV] New-awakened (11U38) · Phase Communauté : jouer l’événement (crépuscule 6) → désigner le Magicien Gandalf → désigner 2 situations à défausser. Toil non simulé.';
             break;
         }
     }

@@ -41411,52 +41411,7 @@
     "isUnique": false,
     "kind": "SHADOW",
     "type": "EVENT",
-    "abilities": [
-      {
-        "id": "4R39:0",
-        "phases": [
-          "MANEUVER"
-        ],
-        "cost": [
-          {
-            "spot": [
-              {
-                "count": 3,
-                "target": [
-                  [
-                    "DUNLAND",
-                    "MAN"
-                  ]
-                ],
-                "mode": "DESIGNATION"
-              }
-            ]
-          }
-        ],
-        "effects": [
-          {
-            "type": "DISCARD",
-            "count": 1,
-            "target": [
-              [
-                "FREE_PEOPLES",
-                "POSSESSION"
-              ],
-              [
-                "CONDITION"
-              ]
-            ]
-          }
-        ],
-        "source": "SELF",
-        "text": "MANEUVER: Spot 3 dunland Men to discard a Free Peoples possession or condition.",
-        "textFr": "**Manœuvre :** Désignez 3 Hommes <symbol>dunland</symbol> pour défausser une situation ou une possession des Peuples Libres."
-      }
-    ],
     "phases": [
-      "MANEUVER"
-    ],
-    "actionPhases": [
       "MANEUVER"
     ],
     "culture": "DUNLAND",
@@ -44134,46 +44089,7 @@
     "keywords": [
       "SPELL"
     ],
-    "abilities": [
-      {
-        "id": "4R92:0",
-        "phases": [
-          "FELLOWSHIP"
-        ],
-        "cost": [
-          {
-            "spot": [
-              {
-                "count": 1,
-                "target": [
-                  [
-                    "Gandalf"
-                  ]
-                ]
-              }
-            ]
-          }
-        ],
-        "effects": [
-          {
-            "type": "DISCARD",
-            "count": 1,
-            "target": [
-              [
-                "CONDITION"
-              ]
-            ]
-          }
-        ],
-        "source": "SELF",
-        "text": "FELLOWSHIP: Spot Gandalf to discard all conditions.",
-        "textFr": "**Compagnie :** Désignez Gandalf pour défausser toutes les situations."
-      }
-    ],
     "phases": [
-      "FELLOWSHIP"
-    ],
-    "actionPhases": [
       "FELLOWSHIP"
     ],
     "culture": "GANDALF",
@@ -44490,52 +44406,7 @@
     "isUnique": false,
     "kind": "FREE_PEOPLE",
     "type": "EVENT",
-    "abilities": [
-      {
-        "id": "4U99:0",
-        "phases": [
-          "FELLOWSHIP",
-          "MANEUVER"
-        ],
-        "cost": [
-          {
-            "spot": [
-              {
-                "count": 1,
-                "target": [
-                  [
-                    "Gandalf"
-                  ]
-                ]
-              }
-            ]
-          }
-        ],
-        "effects": [
-          {
-            "type": "DISCARD",
-            "count": 1,
-            "target": [
-              [
-                "SHADOW",
-                "POSSESSION"
-              ],
-              [
-                "SHADOW",
-                "ARTIFACT"
-              ]
-            ]
-          }
-        ],
-        "source": "SELF",
-        "text": "MANEUVER: Spot Gandalf to discard a Shadow possession or Shadow artifact."
-      }
-    ],
     "phases": [
-      "FELLOWSHIP",
-      "MANEUVER"
-    ],
-    "actionPhases": [
       "FELLOWSHIP",
       "MANEUVER"
     ],
@@ -98563,6 +98434,41 @@
       "SPELL",
       "TOIL 2"
     ],
+    "abilities": [
+      {
+        "id": "11U38:0",
+        "phases": [],
+        "cost": [
+          {
+            "spot": [
+              {
+                "count": 1,
+                "target": [
+                  [
+                    "GANDALF",
+                    "WIZARD"
+                  ]
+                ],
+                "mode": "DESIGNATION"
+              }
+            ]
+          }
+        ],
+        "effects": [
+          {
+            "type": "DISCARD",
+            "count": 2,
+            "target": [
+              [
+                "CONDITION"
+              ]
+            ]
+          }
+        ],
+        "source": "SELF",
+        "text": "Spot a gandalf Wizard to discard 2 conditions from play"
+      }
+    ],
     "phases": [
       "FELLOWSHIP"
     ],
@@ -100095,6 +100001,41 @@
     "type": "EVENT",
     "keywords": [
       "TOIL 2"
+    ],
+    "abilities": [
+      {
+        "id": "11C71:0",
+        "phases": [],
+        "cost": [
+          {
+            "spot": [
+              {
+                "count": 1,
+                "target": [
+                  [
+                    "MAN",
+                    "MINION"
+                  ]
+                ],
+                "mode": "DESIGNATION"
+              }
+            ]
+          }
+        ],
+        "effects": [
+          {
+            "type": "DISCARD",
+            "count": 1,
+            "target": [
+              [
+                "POSSESSION"
+              ]
+            ]
+          }
+        ],
+        "source": "SELF",
+        "text": "Spot a men minion to discard a possession from play"
+      }
     ],
     "phases": [
       "SKIRMISH"
@@ -102483,6 +102424,41 @@
     "isUnique": false,
     "kind": "SHADOW",
     "type": "EVENT",
+    "abilities": [
+      {
+        "id": "11U118:0",
+        "phases": [],
+        "cost": [
+          {
+            "spot": [
+              {
+                "count": 2,
+                "target": [
+                  [
+                    "ORC",
+                    "MINION"
+                  ]
+                ],
+                "mode": "DESIGNATION"
+              }
+            ]
+          }
+        ],
+        "effects": [
+          {
+            "type": "DISCARD",
+            "count": 1,
+            "target": [
+              [
+                "CONDITION"
+              ]
+            ]
+          }
+        ],
+        "source": "SELF",
+        "text": "Spot 2 orc minions to discard a condition from play"
+      }
+    ],
     "phases": [
       "SHADOW"
     ],
@@ -112788,6 +112764,41 @@
     "isUnique": false,
     "kind": "FREE_PEOPLE",
     "type": "EVENT",
+    "abilities": [
+      {
+        "id": "12C114:0",
+        "phases": [],
+        "cost": [
+          {
+            "spot": [
+              {
+                "count": 1,
+                "target": [
+                  [
+                    "ROHAN",
+                    "MAN"
+                  ]
+                ],
+                "mode": "DESIGNATION"
+              }
+            ]
+          }
+        ],
+        "effects": [
+          {
+            "type": "DISCARD",
+            "count": 1,
+            "target": [
+              [
+                "POSSESSION"
+              ]
+            ]
+          }
+        ],
+        "source": "SELF",
+        "text": "Spot a rohan Man to discard a possession from play"
+      }
+    ],
     "phases": [
       "REGROUP"
     ],
@@ -132703,6 +132714,42 @@
     "isUnique": false,
     "kind": "SHADOW",
     "type": "EVENT",
+    "abilities": [
+      {
+        "id": "15R119:0",
+        "phases": [],
+        "cost": [
+          {
+            "spot": [
+              {
+                "count": 2,
+                "target": [
+                  [
+                    "ORC",
+                    "MINION"
+                  ]
+                ],
+                "mode": "DESIGNATION"
+              }
+            ]
+          }
+        ],
+        "effects": [
+          {
+            "type": "DISCARD",
+            "count": 1,
+            "target": [
+              [
+                "FREE_PEOPLES",
+                "CONDITION"
+              ]
+            ]
+          }
+        ],
+        "source": "SELF",
+        "text": "Spot 2 orc minions to discard a Free Peoples condition"
+      }
+    ],
     "phases": [
       "SHADOW"
     ],

@@ -1,7 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { parseAbilities } from '../../../scripts/convert/parsers';
 import { getCardById } from '../cardsData';
-import { applyDevPreset } from '../dev/presets';
 import { applyAbilityEffect } from '../engine/abilities/applyAbilityEffect';
 import { confirmPendingReveal } from '../logic/pendingReveal';
 import { getEffectiveStrength } from '../../utils/cardStats';
@@ -256,10 +255,4 @@ describe('Slippery as Fishes 9R+29', () => {
         ).toBe(true);
     });
 
-    it('preset DEV', () => {
-        const G = createGameState();
-        applyDevPreset(G, 'DECK_GAPS_SLIPPERY_FISHES');
-        expect(G.players['1']!.supportArea?.[0]?.id).toBe('9R+29');
-        expect(G.battlefield[0]?.id).toBe('7C59');
-    });
 });

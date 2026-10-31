@@ -1493,6 +1493,33 @@ export function applyAbilityEffect(
             continue;
         }
 
+        if (
+            effect.type === 'DISCARD' &&
+            !effect.chooser &&
+            Array.isArray(effect.target) &&
+            (effect.count || 1) > 1
+        ) {
+            const pool = resolveCostTarget(G, source, effect.target).filter(
+                (card) => Boolean(card) && !card.isDead
+            );
+            const need = effect.count || 1;
+            if (pool.length < need) return false;
+            if (chosenIds.length !== need) return false;
+            if (new Set(chosenIds).size !== chosenIds.length) return false;
+            for (const id of chosenIds) {
+                const target =
+                    pool.find(
+                        (card) =>
+                            card.instanceId === id || card.id === id
+                    ) || null;
+                if (!target) return false;
+                if (!applyOneEffect(G, source, ability, effect, target)) {
+                    return false;
+                }
+            }
+            continue;
+        }
+
         if (!('target' in effect)) continue;
         if (effect.target === 'COST_TARGET') {
             const costPick = costIds[0] || chosenIds[0];

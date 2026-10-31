@@ -372,24 +372,24 @@ export const DevPanel: React.FC<DevPanelProps> = ({
                         </S.GameButton>
                     </S.Section>
 
-                    {/* Preset de playtest : trous decks — Slippery as Fishes */}
+                    {/* Preset de playtest : trous decks — New-awakened */}
                     <S.Section>
                         <S.Label>
-                            Preset decks (Slippery as Fishes) :
+                            Preset decks (New-awakened) :
                             <br />
                             <span style={{ opacity: 0.75, fontWeight: 400 }}>
-                                Souterrain → Gollum +2 ; Regroup → révélation
-                                de main (Valider côté PL).
+                                Communauté : Spot Magicien → défausser 2
+                                situations.
                             </span>
                         </S.Label>
                         <S.ActionButton
                             onClick={() =>
                                 moves.devLoadPreset?.(
-                                    'DECK_GAPS_SLIPPERY_FISHES'
+                                    'DECK_GAPS_NEW_AWAKENED'
                                 )
                             }
                         >
-                            Slippery as Fishes (9R+29)
+                            New-awakened (11U38)
                         </S.ActionButton>
                     </S.Section>
 

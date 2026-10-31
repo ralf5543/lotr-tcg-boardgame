@@ -2316,10 +2316,51 @@ function preventAbilitySource(
 
 function parseBurdenWord(raw: string): number | null {
     const token = raw.trim().toLowerCase();
-    if (token === 'a' || token === 'one') return 1;
+    if (token === 'a' || token === 'an' || token === 'one') return 1;
     if (token === 'two') return 2;
+    if (token === 'three') return 3;
     const n = parseInt(token, 10);
     return Number.isFinite(n) && n > 0 ? n : null;
+}
+
+/**
+ * « a condition » / « 2 conditions from play » → count + DNF.
+ * Refuse every/all (DISCARD_ALL) et les « and/or » complexes.
+ */
+function parseCountedDiscardTarget(
+    raw: string,
+    cardTitle?: string
+): { count: number; target: string[][] } | null {
+    if (isDiscardEveryAll(raw)) return null;
+    const cleaned = raw
+        .replace(/<br\s*\/?>/gi, ' ')
+        .replace(/\s+/g, ' ')
+        .trim()
+        .replace(/[.\s]+$/, '')
+        .replace(/\s+from play$/i, '')
+        .trim();
+    const plain = cleaned.replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim();
+    if (!plain) return null;
+
+    const numbered = plain.match(/^(a|an|one|two|three|\d+)\s+(.+)$/i);
+    if (!numbered) {
+        const legacy = parseNounTarget(raw, [['']], cardTitle);
+        if (Array.isArray(legacy)) return { count: 1, target: legacy };
+        return null;
+    }
+    const count = parseBurdenWord(numbered[1]);
+    if (!count) return null;
+    const noun = numbered[2].trim();
+    if (
+        /\b(and|or|each|every|all|may|from|twice|times|up to|except|stacked|borne)\b/i.test(
+            noun
+        )
+    ) {
+        return null;
+    }
+    const filters = parseClassFilters(noun);
+    if (filters.length === 0) return null;
+    return { count, target: [filters] };
 }
 
 function stripAbilityMarkup(text: string): string {
@@ -10185,6 +10226,75 @@ function parseExchangeSiteEffect(
     return null;
 }
 
+/**
+ * Événements sans balise de phase (phase = colonne Class) :
+ * « Spot a [gandalf] Wizard to discard 2 conditions from play. »
+ * (New-awakened…) — après Spell / Toil / rappel entre parenthèses.
+ */
+function parseStandaloneSpotDiscardAbilities(
+    text: string,
+    cardTitle?: string,
+    cardId?: string
+): Record<string, unknown>[] {
+    const found: Record<string, unknown>[] = [];
+    const re =
+        /(?:^|[.!?]\s*|\)\s*)Spot\s+([\s\S]+?)\s+to discard\s+([\s\S]+?)(?:\.|$)/gi;
+    let match: RegExpExecArray | null;
+    while ((match = re.exec(text)) !== null) {
+        const before = text.slice(Math.max(0, match.index - 40), match.index);
+        if (
+            /<(?:keyword)>(?:Fellowship|Shadow|Maneuver|Archery|Assignment|Skirmish|Regroup)/i.test(
+                before
+            ) ||
+            /\*\*(?:Fellowship|Shadow|Maneuver|Archery|Assignment|Skirmish|Regroup)/i.test(
+                before
+            )
+        ) {
+            continue;
+        }
+        if (/\b(and|or)\b/i.test(match[1])) continue;
+        const spotSubject = parseExertSubject(match[1].trim(), cardTitle, text);
+        if (!spotSubject) continue;
+        const discardParsed = parseCountedDiscardTarget(
+            match[2].trim(),
+            cardTitle
+        );
+        if (!discardParsed) continue;
+        found.push({
+            id: `${cardId || 'ability'}:${found.length}:spot-discard`,
+            phases: [],
+            cost: [
+                {
+                    spot: [
+                        {
+                            count: spotSubject.count,
+                            target: spotSubject.target,
+                            ...(spotSubject.mode
+                                ? { mode: spotSubject.mode }
+                                : {}),
+                        },
+                    ],
+                },
+            ],
+            effects: [
+                {
+                    type: 'DISCARD',
+                    count: discardParsed.count,
+                    target: discardParsed.target,
+                },
+            ],
+            source: 'SELF',
+            text: stripAbilityMarkup(
+                `Spot ${match[1].trim()} to discard ${match[2].trim()}`
+            )
+                .replace(/\s+/g, ' ')
+                .replace(/[.\s]+$/u, '')
+                .trim(),
+        });
+    }
+    return found;
+}
+
 /** Événements sans balise de phase : Spot X to add twilightN and exchange … */
 function parseStandaloneSpotTwilightExchangeAbilities(
     text: string,
@@ -13623,12 +13733,11 @@ export function parseAbilities(
                 text
             );
             if (!spotSubject) return;
-            const discardTarget = parseNounTarget(
+            const discardParsed = parseCountedDiscardTarget(
                 spotDiscardMatch[2],
-                [['']],
                 cardTitle
             );
-            if (!discardTarget || !Array.isArray(discardTarget)) return;
+            if (!discardParsed) return;
 
             const spotDiscardClause =
                 `${marker.phase}: Spot ${spotDiscardMatch[1].trim()} to discard ${spotDiscardMatch[2]}`
@@ -13654,7 +13763,11 @@ export function parseAbilities(
                     },
                 ],
                 effects: [
-                    { type: 'DISCARD', count: 1, target: discardTarget },
+                    {
+                        type: 'DISCARD',
+                        count: discardParsed.count,
+                        target: discardParsed.target,
+                    },
                 ],
                 source: 'SELF',
                 text: spotDiscardClause,
@@ -14782,6 +14895,14 @@ export function parseAbilities(
     );
 
     if (markers.length === 0) {
+        parseStandaloneSpotDiscardAbilities(text, cardTitle, cardId).forEach(
+            (ability) => {
+                abilities.push({
+                    ...ability,
+                    id: `${cardId || 'ability'}:${abilities.length}`,
+                });
+            }
+        );
         parseStandaloneSpotTwilightExchangeAbilities(
             text,
             cardTitle,

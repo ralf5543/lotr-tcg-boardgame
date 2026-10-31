@@ -718,6 +718,16 @@ export function getEffectDesignationCount(
         const available = candidatesForEffect(G, source, ability, heal).length;
         return Math.min(Math.max(0, cap), available);
     }
+    const discardMulti = (ability.effects || []).find(
+        (item) =>
+            item.type === 'DISCARD' &&
+            !item.chooser &&
+            Array.isArray(item.target) &&
+            (item.count || 1) > 1
+    );
+    if (discardMulti && discardMulti.type === 'DISCARD') {
+        return discardMulti.count || 1;
+    }
     return 1;
 }
 
@@ -1046,6 +1056,20 @@ export function abilityHasLegalEffectTarget(
             }
             continue;
         }
+        if (
+            effect.type === 'DISCARD' &&
+            !effect.chooser &&
+            Array.isArray(effect.target) &&
+            (effect.count || 1) > 1
+        ) {
+            if (
+                candidatesForEffect(G, source, ability, effect).length <
+                (effect.count || 1)
+            ) {
+                return false;
+            }
+            continue;
+        }
         if (effect.type === 'HEAL' && effect.all) {
             continue;
         }
@@ -1264,6 +1288,19 @@ export function formatDesignationPrompt(
         return onePer
             ? 'Choisissez un compagnon blessé de chaque culture.'
             : 'Choisissez les compagnons à soigner.';
+    }
+    const discardMulti = (ability.effects || []).find(
+        (item) =>
+            item.type === 'DISCARD' &&
+            !item.chooser &&
+            (item.count || 1) > 1
+    );
+    if (discardMulti && discardMulti.type === 'DISCARD' && useEffect) {
+        const n = discardMulti.count || 1;
+        if (tokens.includes('CONDITION')) {
+            return `Choisissez ${n} situations à défausser.`;
+        }
+        return `Choisissez ${n} cibles à défausser.`;
     }
     return `Choisissez ${formatAbilityWhoLabel(tokens, true)}.`;
 }

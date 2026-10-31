@@ -633,17 +633,34 @@ function formatEffectBit(
         const flat = Array.isArray(effect.target)
             ? effect.target.flat()
             : [];
+        const n = effect.count || 1;
+        const many = n > 1;
         // « condition » = situation en français (féminin).
-        if (flat.includes('WEATHER')) return 'défausser une situation climat';
+        if (flat.includes('WEATHER')) {
+            return many
+                ? `défausser ${n} situations climat`
+                : 'défausser une situation climat';
+        }
         if (flat.includes('CONDITION') && flat.includes('FREE_PEOPLE')) {
-            return 'défausser une situation des Peuples Libres';
+            return many
+                ? `défausser ${n} situations des Peuples Libres`
+                : 'défausser une situation des Peuples Libres';
         }
         if (flat.includes('CONDITION') && flat.includes('SHADOW')) {
-            return 'défausser une situation de l’Ombre';
+            return many
+                ? `défausser ${n} situations de l’Ombre`
+                : 'défausser une situation de l’Ombre';
         }
-        if (flat.includes('CONDITION')) return 'défausser une situation';
+        if (flat.includes('CONDITION')) {
+            return many
+                ? `défausser ${n} situations`
+                : 'défausser une situation';
+        }
         const who = formatTargetPhrase(effect.target);
-        return who ? `défausser ${who}` : 'défausser';
+        if (who) {
+            return many ? `défausser ${n}× ${who}` : `défausser ${who}`;
+        }
+        return many ? `défausser ${n} cartes` : 'défausser';
     }
     if (effect.type === 'DISCARD_ALL') {
         if (effect.skirmishingWith) {
