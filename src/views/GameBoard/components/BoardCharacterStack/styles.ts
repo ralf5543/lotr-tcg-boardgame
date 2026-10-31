@@ -112,12 +112,33 @@ export const AttachmentsContainer = styled.div`
     aspect-ratio: 1 / 1.33;
 `;
 
-export const AttachmentWrapper = styled.div<{ $index?: number }>`
+export const AttachmentWrapper = styled.div<{
+    $index?: number;
+    $isDesignationTarget?: boolean;
+    $aimFaction?: Faction;
+}>`
     flex: 1;
     pointer-events: auto; /* Permet d'interagir avec les cartes attachées si besoin (hover, inspection) */
     border: 1px solid black;
     border-radius: 6px;
     filter: drop-shadow(0px -3px 3px black);
+    ${({ $isDesignationTarget }) =>
+        $isDesignationTarget &&
+        css`
+            cursor: pointer !important;
+            filter: drop-shadow(0 0 8px rgba(226, 192, 68, 0.85))
+                drop-shadow(0 0 16px rgba(226, 192, 68, 0.45))
+                drop-shadow(0px -3px 3px black);
+            outline: 2px solid rgba(226, 192, 68, 0.9);
+            z-index: 4;
+        `}
+    ${({ $isDesignationTarget, $aimFaction }) =>
+        $isDesignationTarget &&
+        css`
+            &:hover {
+                ${targetedHover($aimFaction || 'FREE_PEOPLE')}
+            }
+        `}
 `;
 
 /**

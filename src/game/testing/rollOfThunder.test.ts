@@ -5,6 +5,7 @@ import { applyDevPreset } from '../dev/presets';
 import { applyAbilityEffect } from '../engine/abilities/applyAbilityEffect';
 import {
     abilityHasLegalEffectTarget,
+    getEffectDesignationCandidates,
     getHandEventDesignationTargetIds,
 } from '../engine/abilities/designation';
 import type { Ability } from '../types';
@@ -117,16 +118,10 @@ describe('Roll of Thunder 4U99', () => {
         });
 
         expect(abilityHasLegalEffectTarget(G, event, ability)).toBe(true);
-        // Spot Gandalf = condition ; désignation = possession/artefact Ombre.
+        // Défausse = halo après drop (pas de flèche pendant le drag).
         expect(
             getHandEventDesignationTargetIds(G, event, 'fellowship')
-        ).toEqual(expect.arrayContaining(['sword']));
-        expect(
-            getHandEventDesignationTargetIds(G, event, 'fellowship')
-        ).not.toContain('pipe');
-        expect(
-            getHandEventDesignationTargetIds(G, event, 'fellowship')
-        ).not.toContain('cond');
+        ).toEqual([]);
         expect(applyAbilityEffect(G, event, ability, ['sword'])).toBe(true);
         expect(G.battlefield[0]?.attachments?.length ?? 0).toBe(0);
         expect(
@@ -181,13 +176,22 @@ describe('Roll of Thunder 4U99', () => {
         expect(abilityHasLegalEffectTarget(G, event, ability)).toBe(false);
     });
 
-    it('preset DEV', () => {
+    it('preset DEV : épée + Palantír ciblables, situation non', () => {
         const G = createGameState();
         applyDevPreset(G, 'DECK_GAPS_ROLL_OF_THUNDER');
-        expect(G.players['0']!.hand?.[0]?.id).toBe('4U99');
-        expect(
-            G.players['0']!.fellowshipArea?.some((c) => c.id === '8R15')
-        ).toBe(true);
+        const event = G.players['0']!.hand![0]!;
+        const ability = (event.abilities || [])[0] as Ability;
+        expect(event.id).toBe('4U99');
         expect(G.battlefield?.[0]?.attachments?.[0]?.id).toBe('2R43');
+        expect(
+            G.players['1']!.supportArea?.some((c) => c.id === '3R67')
+        ).toBe(true);
+        expect(abilityHasLegalEffectTarget(G, event, ability)).toBe(true);
+        const ids = getEffectDesignationCandidates(G, event, ability).map(
+            (c) => c.id
+        );
+        expect(ids).toEqual(expect.arrayContaining(['2R43', '3R67']));
+        expect(ids).not.toContain('10C24');
+        expect(ids).not.toContain('1U91');
     });
 });

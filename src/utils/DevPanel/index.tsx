@@ -378,8 +378,8 @@ export const DevPanel: React.FC<DevPanelProps> = ({
                             Preset decks (Roll of Thunder) :
                             <br />
                             <span style={{ opacity: 0.75, fontWeight: 400 }}>
-                                Communauté / Manœuvre : Spot Gandalf →
-                                défausser possession ou artefact Ombre.
+                                Spot Gandalf → halo : épée Lurtz ou
+                                Palantír Orthanc.
                             </span>
                         </S.Label>
                         <S.ActionButton

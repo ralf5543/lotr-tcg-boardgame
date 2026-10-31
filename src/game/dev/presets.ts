@@ -153,7 +153,10 @@ export const applyDevPreset = (
             fpPlayer.sitesDeck = [clonePresetSite('11S250', fpId)];
             if (shadowPlayer) {
                 shadowPlayer.supportArea = [
+                    // Situation Ombre (ne doit PAS être ciblable).
                     clonePresetCard('10C24', 'dev-rot-sh-cond'),
+                    // Artefact Isengard en aire de soutien.
+                    clonePresetCard('3R67', 'dev-rot-palantir'),
                 ];
                 // Possession Ombre attachée à un séide.
                 const lurtz = clonePresetCard('11R194', 'dev-rot-lurtz');
@@ -161,7 +164,6 @@ export const applyDevPreset = (
                     clonePresetCard('2R43', 'dev-rot-lurtz-sword'),
                 ];
                 shadowPlayer.fellowshipArea = [];
-                // Les séides vont sur le champ / support selon le type — minion en jeu via battlefield.
                 G.battlefield = [lurtz];
                 shadowPlayer.hand = [];
                 shadowPlayer.deck = [];
@@ -170,7 +172,7 @@ export const applyDevPreset = (
                 ];
             }
             G.statusMessage =
-                '[DEV] Roll of Thunder (4U99) · Communauté ou Manœuvre : Spot Gandalf (condition) → flèche vers une possession ou un artefact de l’Ombre (pas une situation, pas une possession FP).';
+                '[DEV] Roll of Thunder (4U99) · Communauté / Manœuvre : Spot Gandalf (condition) → drop → halo + clic sur l’épée de Lurtz ou le Palantír (pas la situation, pas une possession FP).';
             break;
         }
     }

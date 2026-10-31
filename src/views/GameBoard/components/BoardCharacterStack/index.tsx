@@ -460,32 +460,96 @@ export const BoardCharacterStack: React.FC<BoardCharacterStackProps> = ({
                                         minion.attachments.length > 0 && (
                                             <S.AttachmentsContainer className="attachments-group">
                                                 {minion.attachments.map(
-                                                    (attachment, attachIdx) => (
-                                                        <S.AttachmentWrapper
-                                                            key={
-                                                                attachment.instanceId ||
+                                                    (attachment, attachIdx) => {
+                                                        const attKey =
+                                                            attachment.instanceId ||
+                                                            attachment.id;
+                                                        const attTargetable =
+                                                            isCardTargetable(
+                                                                attKey
+                                                            ) ||
+                                                            isCardTargetable(
                                                                 attachment.id
-                                                            }
-                                                            $index={attachIdx}
-                                                        >
-                                                            <Card
-                                                                card={
-                                                                    attachment
+                                                            );
+                                                        const attDesignation =
+                                                            (attTargetable &&
+                                                                (targetingKind ===
+                                                                    'DESIGNATION' ||
+                                                                    targetingKind ===
+                                                                        'SANCTUARY_HEAL')) ||
+                                                            isDragDesignationCandidate(
+                                                                attKey,
+                                                                attachment.id
+                                                            );
+                                                        return (
+                                                            <S.AttachmentWrapper
+                                                                key={attKey}
+                                                                $index={
+                                                                    attachIdx
                                                                 }
-                                                                size="sm"
-                                                                isDisabled={
-                                                                    isDisabled
+                                                                $isDesignationTarget={
+                                                                    attDesignation
                                                                 }
-                                                                isActionable={
-                                                                    isActionable
+                                                                $aimFaction={
+                                                                    myFaction
                                                                 }
-                                                                isDraggable={
-                                                                    false
-                                                                }
-                                                                G={G}
-                                                            />
-                                                        </S.AttachmentWrapper>
-                                                    )
+                                                                ref={(el) => {
+                                                                    registerTarget(
+                                                                        attKey,
+                                                                        el
+                                                                    );
+                                                                    if (
+                                                                        attachment.id &&
+                                                                        attachment.id !==
+                                                                            attKey
+                                                                    ) {
+                                                                        registerTarget(
+                                                                            attachment.id,
+                                                                            el
+                                                                        );
+                                                                    }
+                                                                }}
+                                                                onPointerDown={(
+                                                                    e
+                                                                ) => {
+                                                                    if (
+                                                                        !attTargetable ||
+                                                                        (targetingKind !==
+                                                                            'DESIGNATION' &&
+                                                                            targetingKind !==
+                                                                                'SANCTUARY_HEAL')
+                                                                    ) {
+                                                                        return;
+                                                                    }
+                                                                    e.stopPropagation();
+                                                                    selectCard(
+                                                                        isCardTargetable(
+                                                                            attKey
+                                                                        )
+                                                                            ? attKey
+                                                                            : attachment.id
+                                                                    );
+                                                                }}
+                                                            >
+                                                                <Card
+                                                                    card={
+                                                                        attachment
+                                                                    }
+                                                                    size="sm"
+                                                                    isDisabled={
+                                                                        isDisabled
+                                                                    }
+                                                                    isActionable={
+                                                                        isActionable
+                                                                    }
+                                                                    isDraggable={
+                                                                        false
+                                                                    }
+                                                                    G={G}
+                                                                />
+                                                            </S.AttachmentWrapper>
+                                                        );
+                                                    }
                                                 )}
                                             </S.AttachmentsContainer>
                                         )}
@@ -582,24 +646,63 @@ export const BoardCharacterStack: React.FC<BoardCharacterStackProps> = ({
                 {character.attachments && character.attachments.length > 0 && (
                     <S.AttachmentsContainer className="attachments-group">
                         {character.attachments.map((attachment, attachIdx) => {
+                            const attKey =
+                                attachment.instanceId || attachment.id;
+                            const attTargetable =
+                                isCardTargetable(attKey) ||
+                                isCardTargetable(attachment.id);
+                            const attDesignation =
+                                (attTargetable &&
+                                    (targetingKind === 'DESIGNATION' ||
+                                        targetingKind ===
+                                            'SANCTUARY_HEAL')) ||
+                                isDragDesignationCandidate(
+                                    attKey,
+                                    attachment.id
+                                );
                             const canDragAttachment = isInPlayCardDraggable({
                                 card: attachment,
                                 phase,
                                 isOpponent,
                                 isDisabled,
-                                isTargetable,
+                                isTargetable: attTargetable || isTargetable,
                                 isFpOwner,
                                 isAttachment: true,
                             });
 
                             return (
                                 <S.AttachmentWrapper
-                                    key={attachment.id}
+                                    key={attKey}
                                     $index={attachIdx}
+                                    $isDesignationTarget={attDesignation}
+                                    $aimFaction={myFaction}
                                     data-draggable={
                                         canDragAttachment ? 'true' : undefined
                                     }
+                                    ref={(el) => {
+                                        registerTarget(attKey, el);
+                                        if (
+                                            attachment.id &&
+                                            attachment.id !== attKey
+                                        ) {
+                                            registerTarget(attachment.id, el);
+                                        }
+                                    }}
                                     onPointerDown={(e) => {
+                                        if (
+                                            attTargetable &&
+                                            (targetingKind === 'DESIGNATION' ||
+                                                targetingKind ===
+                                                    'SANCTUARY_HEAL')
+                                        ) {
+                                            e.stopPropagation();
+                                            selectCard(
+                                                isCardTargetable(attKey)
+                                                    ? attKey
+                                                    : attachment.id
+                                            );
+                                            return;
+                                        }
                                         if (
                                             !canDragAttachment ||
                                             e.button !== 0

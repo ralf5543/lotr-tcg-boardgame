@@ -670,7 +670,7 @@ export function abilityEffectWantsTargetingArrow(ability: Ability): boolean {
     );
 }
 
-/** Désignation d’effet neutre (reinforce…) : jamais de flèche pendant le drag main. */
+/** Désignation d’effet neutre (reinforce / défausse de carte…) : jamais de flèche pendant le drag main. */
 function abilityEffectDesignationIsHaloOnly(ability: Ability): boolean {
     if (abilityEffectWantsTargetingArrow(ability)) return false;
     return (ability.effects || []).some(
@@ -679,10 +679,9 @@ function abilityEffectDesignationIsHaloOnly(ability: Ability): boolean {
             effect.type === 'STACK_ON_SELF' ||
             effect.type === 'TAKE_FROM_STACK' ||
             effect.type === 'PLAY_FROM_CARD_STACK' ||
-            // Multi-défausse : halo + clics successifs (pas de flèche drag).
-            (effect.type === 'DISCARD' &&
-                !effect.chooser &&
-                (effect.count || 1) > 1)
+            // Défausse d’une carte en jeu : choix logistique → halo + clic
+            // (pas de trajectoire « attaque », même à 1 cible).
+            (effect.type === 'DISCARD' && !effect.chooser)
     );
 }
 

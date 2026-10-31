@@ -9,9 +9,9 @@ alwaysApply: true
 
 ## Principe
 
-La **flèche jaune** relie une **carte agent** (qui « fait » l’effet) à une **cible d’effet dirigé** — typiquement **néfaste** (blessure, exert, exhaust, défausse d’une cible…) ou **bénéfique** (soin). Elle matérialise une action « d’une carte vers une autre ».
+La **flèche jaune** relie une **carte agent** (qui « fait » l’effet) à une **cible d’effet dirigé** — typiquement **néfaste** (blessure, exert, exhaust) ou **bénéfique** (soin). Elle matérialise une action « d’une carte vers une autre ».
 
-Elle **n’est pas** pour des choix **neutres / logistiques** : reinforce / place de jetons, désignation de site pour replace, etc. Ces cas = **halo + clic** (éventuellement après le drag hors de la main), **sans** flèche qui suit le curseur.
+Elle **n’est pas** pour des choix **neutres / logistiques** : reinforce / place de jetons, **défausse d’une carte en jeu** (possession, situation, artefact…), désignation de site pour replace, etc. Ces cas = **halo + clic** (éventuellement après le drag hors de la main), **sans** flèche qui suit le curseur.
 
 Elle ne matérialise **pas** non plus une étape de **coût** intermédiaire depuis la main.
 
@@ -33,17 +33,18 @@ Exemples :
 
 ## Capacités déjà en jeu
 
-Même pattern : si une **action dirigée** part d’une carte vers une autre (exhaust, blessure, exert en effet, soin, défausse d’une cible en jeu…), flèche **depuis** l’agent **vers** la cible.
+Même pattern : si une **action dirigée** part d’une carte vers une autre (exhaust, blessure, exert en effet, soin), flèche **depuis** l’agent **vers** la cible.
 
 Exemples :
 - Surveillant orque : flèche **depuis** le Surveillant **vers** le compagnon.
 - Polyvalence de rôdeur : d’abord désigner le rôdeur à affaiblir (halo), **puis** flèche **depuis ce rôdeur** **vers** le séide.
-- Reinforce / place de jetons depuis une capacité en jeu : **halo + clic**, pas de flèche.
+- Reinforce / place de jetons / défausse d’une carte en jeu depuis une capacité : **halo + clic**, pas de flèche.
 
 ## Ce qui n’est pas une trajectoire
 
 - Coût d’exert SELF (pas de désignation).
 - **Reinforce / place de jetons** (toujours halo + clic, y compris événements depuis la main).
+- **Défausse d’une carte en jeu** (possession, situation, artefact, séide… — halo + clic, y compris depuis la main).
 - Heal « halo + clic » **plateau→plateau** quand ce n’est pas un effet dirigé depuis une agent-carte (exceptions : convention sortie de main / agent déjà désigné ci-dessus).
 
 ## Homogénéité
