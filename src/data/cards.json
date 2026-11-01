@@ -105598,6 +105598,40 @@
     "keywords": [
       "DAMAGE +1"
     ],
+    "abilities": [
+      {
+        "id": "11R179:0",
+        "phases": [
+          "RESPONSE"
+        ],
+        "trigger": {
+          "type": "ABOUT_TO_USE_ABILITY",
+          "sourceTarget": [
+            [
+              "COMPANION"
+            ]
+          ],
+          "resistanceAtMost": 5
+        },
+        "cost": [
+          {
+            "exert": [
+              {
+                "count": 1,
+                "target": "SELF"
+              }
+            ]
+          }
+        ],
+        "effects": [
+          {
+            "type": "CANCEL_ABILITY_EFFECT"
+          }
+        ],
+        "source": "SELF",
+        "text": "Response: If a special ability of a companion who has resistance 5 or less is used, exert this minion to cancel its effect."
+      }
+    ],
     "culture": "URUK-HAI",
     "race": "URUK-HAI",
     "twilightCost": 3,

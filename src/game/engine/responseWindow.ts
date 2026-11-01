@@ -31,7 +31,10 @@ import {
     collectProjectedAbilities,
 } from './abilities/collectAbilities';
 import { applyAbilityEffect } from './abilities/applyAbilityEffect';
-import { getEffectiveVitality } from '../../utils/cardStats';
+import {
+    getEffectiveResistance,
+    getEffectiveVitality,
+} from '../../utils/cardStats';
 import { applyExert } from '../../utils/applyExert';
 import { getEffectiveTwilightCost } from '../../utils/roamingDetection';
 import { getWhileTwilightCostModifier } from '../logic/stats/mechanics/whileModifier';
@@ -155,11 +158,11 @@ export function abilityMatchesTrigger(
         } else if (trigger.usedBy === 'SHADOW') {
             if (String(event.actingPlayerId) === String(fpId)) return false;
         }
+        const usedSource = findTargetCard(
+            G,
+            event.sourceInstanceId
+        ) as CardState | null;
         if (trigger.abilityPhases && trigger.abilityPhases.length > 0) {
-            const usedSource = findTargetCard(
-                G,
-                event.sourceInstanceId
-            ) as CardState | null;
             const usedAbility = usedSource?.abilities?.find(
                 (ab) => ab.id === event.abilityId
             );
@@ -171,6 +174,36 @@ export function abilityMatchesTrigger(
                 String(p).toUpperCase()
             );
             if (!wanted.some((phase) => phases.includes(phase))) {
+                return false;
+            }
+        }
+        if (trigger.sourceTarget != null) {
+            if (!usedSource) return false;
+            if (trigger.sourceTarget === 'SELF') {
+                if (
+                    !matchCard(
+                        usedSource,
+                        source.instanceId || source.id
+                    )
+                ) {
+                    return false;
+                }
+            } else if (Array.isArray(trigger.sourceTarget)) {
+                if (!cardMatchesTarget(usedSource, trigger.sourceTarget)) {
+                    return false;
+                }
+            } else {
+                return false;
+            }
+        }
+        if (typeof trigger.resistanceAtMost === 'number') {
+            if (!usedSource) return false;
+            const burdens =
+                G.players[G.fpPlayerId || '0']?.burdens || 0;
+            if (
+                getEffectiveResistance(usedSource, burdens, G) >
+                trigger.resistanceAtMost
+            ) {
                 return false;
             }
         }

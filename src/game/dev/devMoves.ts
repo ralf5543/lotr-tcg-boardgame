@@ -208,9 +208,9 @@ export const devMoves = {
     ) => {
         resetPhaseMachine(G);
         applyDevPreset(G, presetType);
-        // Final Strike : Manœuvre pour tester l’annulation (puis Ombre à la main).
-        if (presetType === 'DECK_GAPS_FINAL_STRIKE') {
-            events?.setPhase?.('maneuver');
+        // Brawling Uruk : Communauté pour tester Frodon (rés. ≤5).
+        if (presetType === 'DECK_GAPS_BRAWLING_URUK') {
+            events?.setPhase?.('fellowship');
             return;
         }
         events?.setPhase?.('startOfFellowship');

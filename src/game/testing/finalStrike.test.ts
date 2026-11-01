@@ -1,7 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { parseAbilities } from '../../../scripts/convert/parsers';
 import { getCardById } from '../cardsData';
-import { applyDevPreset } from '../dev/presets';
 import { applyAbilityEffect } from '../engine/abilities/applyAbilityEffect';
 import { abilityMeetsPlayRestrictions } from '../engine/abilities/abilityRestrictions';
 import { formatAbilityLabelParts } from '../engine/abilities/collectAbilities';
@@ -258,20 +257,4 @@ describe('Final Strike 10U20', () => {
         expect(G.pendingEvent).toBeUndefined();
     });
 
-    it('preset DEV : site 9 + Final Strike + Gollum + Albert', () => {
-        const G = createGameState();
-        applyDevPreset(G, 'DECK_GAPS_FINAL_STRIKE');
-        expect(G.currentSiteIndex).toBe(8);
-        expect(
-            G.players['1']!.supportArea?.some((c) => c.id === '10U20')
-        ).toBe(true);
-        expect(G.battlefield?.[0]?.id).toBe('7C59');
-        expect(
-            G.players['0']!.fellowshipArea?.some((c) => c.id === '1R69')
-        ).toBe(true);
-        expect(
-            G.players['0']!.fellowshipArea?.some((c) => c.id === '1R50')
-        ).toBe(true);
-        expect(siteHasKeyword(G.path![8]!, 'MOUNTAIN', G)).toBe(true);
-    });
 });

@@ -5836,6 +5836,42 @@ function parseCancelFpManeuverOrArcheryAbilityResponses(
 }
 
 /**
+ * Response: If a special ability of a companion who has resistance N or less
+ * is used, exert this minion to cancel its effect. (Brawling Uruk…)
+ */
+function parseCancelCompanionResistanceAbilityResponses(
+    text: string,
+    cardId?: string
+): Record<string, unknown>[] {
+    const found: Record<string, unknown>[] = [];
+    const re =
+        /(?:\*\*|<(?:keyword)>)Response:?(?:\s*<\/(?:keyword)>)?(?:\*\*)?\s*If a special ability of a companion who has resistance (\d+) or less is used,\s*exert this minion to cancel its effect\./gi;
+    let match: RegExpExecArray | null;
+    while ((match = re.exec(text)) !== null) {
+        const maxRes = parseInt(match[1] || '', 10);
+        if (!Number.isFinite(maxRes) || maxRes < 0) continue;
+        found.push({
+            id: `${cardId || 'ability'}:${found.length}:cancel-companion-res`,
+            phases: ['RESPONSE'],
+            trigger: {
+                type: 'ABOUT_TO_USE_ABILITY',
+                sourceTarget: [['COMPANION']],
+                resistanceAtMost: maxRes,
+            },
+            cost: [
+                {
+                    exert: [{ count: 1, target: 'SELF' }],
+                },
+            ],
+            effects: [{ type: 'CANCEL_ABILITY_EFFECT' }],
+            source: 'SELF',
+            text: stripAbilityMarkup(match[0]),
+        });
+    }
+    return found;
+}
+
+/**
  * Phase: If the fellowship is at any site N, play Named from your discard pile.
  * (Final Strike…)
  */
@@ -14619,6 +14655,15 @@ export function parseAbilities(
     );
 
     parseCancelFpManeuverOrArcheryAbilityResponses(text, cardId).forEach(
+        (ability) => {
+            abilities.push({
+                ...ability,
+                id: `${cardId || 'ability'}:${abilities.length}`,
+            });
+        }
+    );
+
+    parseCancelCompanionResistanceAbilityResponses(text, cardId).forEach(
         (ability) => {
             abilities.push({
                 ...ability,

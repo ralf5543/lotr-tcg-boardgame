@@ -372,24 +372,24 @@ export const DevPanel: React.FC<DevPanelProps> = ({
                         </S.GameButton>
                     </S.Section>
 
-                    {/* Preset de playtest : trous decks — Final Strike */}
+                    {/* Preset de playtest : trous decks — Brawling Uruk */}
                     <S.Section>
                         <S.Label>
-                            Preset decks (Final Strike) :
+                            Preset decks (Brawling Uruk) :
                             <br />
                             <span style={{ opacity: 0.75, fontWeight: 400 }}>
-                                Site 9 montagne · Albert (Manœuvre) / Legolas (Archerie) →
-                                Response annuler · puis Ombre Gollum.
+                                Frodon rés. 5 → annuler · Albert rés. 6 → pas de
+                                fenêtre · Haethen rés. 5 (Combat) → annuler.
                             </span>
                         </S.Label>
                         <S.ActionButton
                             onClick={() =>
                                 moves.devLoadPreset?.(
-                                    'DECK_GAPS_FINAL_STRIKE'
+                                    'DECK_GAPS_BRAWLING_URUK'
                                 )
                             }
                         >
-                            Final Strike (10U20)
+                            Brawling Uruk (11R179)
                         </S.ActionButton>
                     </S.Section>
 

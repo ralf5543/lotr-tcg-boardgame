@@ -67,7 +67,8 @@ L’ancien plan main/initiative est **figé** (`.cursor/rules/hand-initiative-pl
 | `11U38` | New-awakened | ✅ Validé par Ralf — Spell / Toil 2 ; Spot Magicien Gandalf → défausser jusqu’à 2 situations (autant que possible, camps mélangés ; jouable à 0/1). Preset DEV retiré après validation |
 | `4U99` | Roll of Thunder | ✅ Validé par Ralf — Spot Gandalf → défausser possession/artefact Ombre (halo + clic, attachements ciblables). Preset DEV retiré après validation |
 | `7R91` | Faramir, Wizard's Pupil | ✅ Validé par Ralf — Communauté : jouer un Homme Rohan → soigner Faramir ; Combat : affaiblir Gandalf → empêcher toutes les blessures (escarmouche) ; + force Hobbit. Projection support ne masque plus les capacités compagnon à coût nom propre ; nom propre unique = pas d’étape de ciblage ; libellés sans « votre » / « un » devant les titres. Preset DEV retiré après validation |
-| `10U20` | Final Strike | Texte complet en playtest — site 9 = montagne (`GRANT_SITE_KEYWORD`) ; Ombre : jouer Gollum depuis la défausse ; Response : affaiblir Gollum → annuler capacité Manœuvre/Archerie FP (`ABOUT_TO_USE_ABILITY`). Preset DEV `DECK_GAPS_FINAL_STRIKE` |
+| `10U20` | Final Strike | ✅ Validé par Ralf — site 9 = montagne (`GRANT_SITE_KEYWORD`) ; Ombre : jouer Gollum depuis la défausse ; Response : affaiblir Gollum → annuler capacité Manœuvre/Archerie FP (`ABOUT_TO_USE_ABILITY`). Preset DEV retiré après validation |
+| `11R179` | Brawling Uruk | Response : capacité spéciale d’un compagnon résistance ≤5 → affaiblir ce séide → annuler (`ABOUT_TO_USE_ABILITY` + `sourceTarget` COMPANION + `resistanceAtMost`). En playtest, preset DEV `DECK_GAPS_BRAWLING_URUK` |
 
 Livré (playtest) : Hidden Knowledge `7R104` (grille révélation + valider) ; Slippery Sneak `8R27` ; escarmouche vacante (mort→gagnant / défausse→pas) ; Cruel Caradhras `1R124` ; Pelennor Flat `11S254` ; Shelob when-played possession ; toaster Orthanc (boutons cohérents).
 

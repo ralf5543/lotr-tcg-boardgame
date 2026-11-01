@@ -118,7 +118,7 @@ const neutralPath: readonly string[] = [
 
 /**
  * Applique le preset DEV de playtest (zones vidées / chemin Standard).
- * Vague Final Strike (montagne site 9 ; Ombre Gollum ; Response annuler).
+ * Vague Brawling Uruk (annuler capacité compagnon résistance ≤5).
  */
 export const applyDevPreset = (
     G: GameState,
@@ -132,36 +132,32 @@ export const applyDevPreset = (
     const shadowPlayer = G.players[shadowId];
 
     switch (presetType) {
-        case 'DECK_GAPS_FINAL_STRIKE': {
+        case 'DECK_GAPS_BRAWLING_URUK': {
             resetBoardForPreset(G);
-            // Site 9 (index 8) : montagne + Ombre jouable.
-            setupDevPath(G, 8, neutralPath);
-            G.twilightPool = 4;
-            fpPlayer.burdens = 0;
-            // Albert (Manœuvre) + Legolas Vertefeuille (Archerie) pour tester l’annulation.
+            setupDevPath(G, 3, neutralPath);
+            G.twilightPool = 2;
+            // Frodon rés. 10 − 5 fardeaux = 5 → Response OK.
+            // Albert rés. 6 (défaut) → Response refusée.
+            // Haethen rés. 5 → Response OK (Combat).
+            fpPlayer.burdens = 5;
             fpPlayer.fellowshipArea = [
                 {
-                    ...clonePresetCard('5U111', 'dev-fs-frodo'),
-                    attachments: [clonePresetCard('4R1', 'dev-fs-ring')],
+                    ...clonePresetCard('5U111', 'dev-bu-frodo'),
+                    attachments: [clonePresetCard('4R1', 'dev-bu-ring')],
                 },
-                clonePresetCard('8R15', 'dev-fs-gandalf'),
-                clonePresetCard('1R69', 'dev-fs-albert'),
-                clonePresetCard('1R50', 'dev-fs-legolas'),
+                clonePresetCard('1R69', 'dev-bu-albert'),
+                clonePresetCard('12R116', 'dev-bu-haethen'),
             ];
             fpPlayer.hand = [];
             fpPlayer.deck = [];
             fpPlayer.sitesDeck = [];
-            // Situation Isengard défaussable par Albert.
-            fpPlayer.supportArea = [];
+            fpPlayer.discard = [clonePresetCard('7C59', 'dev-bu-smeagol')];
             if (shadowPlayer) {
                 shadowPlayer.supportArea = [
-                    clonePresetCard('10U20', 'dev-final-strike'),
-                    clonePresetCard('1C133', 'dev-fs-ambition'),
+                    clonePresetCard('1C133', 'dev-bu-ambition'),
                 ];
-                // Gollum en jeu pour la Response ; aussi en défausse après mort
-                // pour retester « jouer depuis la défausse ».
                 G.battlefield = [
-                    clonePresetCard('7C59', 'dev-fs-gollum'),
+                    clonePresetCard('11R179', 'dev-brawling-uruk'),
                 ];
                 shadowPlayer.discard = [];
                 shadowPlayer.hand = [];
@@ -169,7 +165,7 @@ export const applyDevPreset = (
                 shadowPlayer.sitesDeck = [];
             }
             G.statusMessage =
-                '[DEV] Final Strike (10U20) · Site 9 = montagne (badge). Manœuvre Albert / Archerie Legolas → fenêtre Response → affaiblir Gollum pour annuler. Ombre : tuer Gollum puis Final Strike → le rejouer depuis la défausse.';
+                '[DEV] Brawling Uruk (11R179) · Frodon (rés. 5 avec 5 fardeaux) Communauté → Response annuler. Albert (rés. 6) Manœuvre → pas de fenêtre. Haethen (rés. 5) Combat → Response.';
             break;
         }
     }

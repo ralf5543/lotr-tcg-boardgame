@@ -1063,6 +1063,13 @@ export type AbilityTrigger =
           usedBy?: 'FREE_PEOPLE' | 'SHADOW';
           /** Phases de la capacité (MANEUVER, ARCHERY…). */
           abilityPhases?: string[];
+          /**
+           * La source de la capacité doit matcher (ex. COMPANION).
+           * Brawling Uruk : « special ability of a companion… ».
+           */
+          sourceTarget?: AbilityTargetRef;
+          /** Résistance effective max de la source (Brawling Uruk ≤5). */
+          resistanceAtMost?: number;
       }
     | {
           /**
@@ -1889,7 +1896,7 @@ export interface LotrMoveContext extends FnContext<GameState> {
 }
 
 /** Presets DEV de playtest (panneau de test, vague en cours). */
-export type DevPresetType = 'DECK_GAPS_FINAL_STRIKE';
+export type DevPresetType = 'DECK_GAPS_BRAWLING_URUK';
 
 export interface ArcheryState {
     step?: 'ACTIONS' | 'FP_ASSIGN' | 'SHADOW_ASSIGN' | 'COMPLETE';
