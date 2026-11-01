@@ -73,6 +73,8 @@ const resetBoardForPreset = (G: GameState): void => {
     G.pendingWhenPlayed = undefined;
     G.pendingSiteDepartureContinuation = undefined;
     G.pendingReveal = undefined;
+    G.pendingPutsOnTheOneRing = false;
+    G.wearingTheOneRing = undefined;
     G.sitePhaseAbilityOfferedThisPhase = false;
     G.hunterMinionPlayedThisShadowPhase = false;
     G.preventMoveAgain = false;
@@ -123,7 +125,7 @@ const neutralPath: readonly string[] = [
 
 /**
  * Applique le preset DEV de playtest (zones vidées / chemin Standard).
- * Vague Alive and Unspoiled (révélation aléatoire + défausse optionnelle).
+ * Vague Uruk Spy (réponse à l’enfilage de l’Anneau).
  */
 export const applyDevPreset = (
     G: GameState,
@@ -137,45 +139,48 @@ export const applyDevPreset = (
     const shadowPlayer = G.players[shadowId];
 
     switch (presetType) {
-        case 'DECK_GAPS_ALIVE_AND_UNSPOILED': {
+        case 'DECK_GAPS_URUK_SPY': {
             resetBoardForPreset(G);
             setupDevPath(G, 3, neutralPath);
-            G.twilightPool = 5;
-            // 3 fardeaux → révéler 3 cartes au hasard parmi 5 en main.
-            fpPlayer.burdens = 3;
+            G.twilightPool = 0;
+            fpPlayer.burdens = 1;
+            // Anneau 4R1 : Combat — +1 fardeau pour porter l’Anneau.
             fpPlayer.fellowshipArea = [
                 {
-                    ...clonePresetCard('5U111', 'dev-aau-frodo'),
-                    attachments: [clonePresetCard('4R1', 'dev-aau-ring')],
+                    ...clonePresetCard('5U111', 'dev-spy-frodo'),
+                    attachments: [clonePresetCard('4R1', 'dev-spy-ring')],
+                    wounds: 0,
                 },
-                clonePresetCard('8R15', 'dev-aau-gandalf'),
             ];
-            fpPlayer.hand = [
-                clonePresetCard('1C84', 'dev-aau-hand-1'),
-                clonePresetCard('3R50', 'dev-aau-hand-2'),
-                clonePresetCard('7C108', 'dev-aau-hand-3'),
-                clonePresetCard('11S176', 'dev-aau-hand-4'),
-                clonePresetCard('4U99', 'dev-aau-hand-5'),
-            ];
+            fpPlayer.hand = [];
             fpPlayer.deck = [];
             fpPlayer.sitesDeck = [];
             if (shadowPlayer) {
-                // Alive and Unspoiled déjà en soutien ; Uruk pour rejouer le coût toPlay.
-                shadowPlayer.supportArea = [
-                    clonePresetCard('1R120', 'dev-alive-unspoiled'),
+                // 2 séides Isengard → défausse 2 du dessus ; fardeaux = cartes Ombre.
+                // 2 séides culture Isengard (Brawling Uruk = culture URUK-HAI ≠ Isengard).
+                const spy = clonePresetCard('1R155', 'dev-uruk-spy');
+                const warrior = clonePresetCard('1C156', 'dev-spy-warrior');
+                G.battlefield = [spy, warrior];
+                G.skirmishes = [
+                    {
+                        id: 'dev-spy-skirmish',
+                        companionId: 'dev-spy-frodo',
+                        minionIds: ['dev-uruk-spy'],
+                    },
                 ];
-                G.battlefield = [
-                    clonePresetCard('11R179', 'dev-aau-uruk'),
-                ];
-                shadowPlayer.hand = [
-                    clonePresetCard('1R120', 'dev-aau-alive-hand'),
-                ];
+                G.activeSkirmishId = 'dev-spy-skirmish';
+                shadowPlayer.hand = [];
+                shadowPlayer.supportArea = [];
                 shadowPlayer.discard = [];
-                shadowPlayer.deck = [];
+                shadowPlayer.deck = [
+                    clonePresetCard('1C133', 'dev-spy-deck-1'), // Ombre
+                    clonePresetCard('1C84', 'dev-spy-deck-2'), // FP Sleep Caradhras
+                    clonePresetCard('2R43', 'dev-spy-deck-3'), // Ombre
+                ];
                 shadowPlayer.sitesDeck = [];
             }
             G.statusMessage =
-                '[DEV] Alive and Unspoiled (1R120) · Ombre : −3 crépuscule → révéler 3 cartes au hasard de la main FP → cliquer pour défausser ou valider sans. Aussi en main Ombre pour retester le coût « affaiblir un Ourouk ».';
+                '[DEV] Uruk Spy (1R155) · Combat : Frodon (+1 fardeau) porte l’Anneau → Response Espion : affaiblir → défausse 2 du dessus (2 Isengard) → +1 fardeau par carte Ombre défaussée.';
             break;
         }
     }

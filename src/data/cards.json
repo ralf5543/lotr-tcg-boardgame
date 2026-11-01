@@ -19581,6 +19581,46 @@
     "isUnique": false,
     "kind": "SHADOW",
     "type": "MINION",
+    "abilities": [
+      {
+        "id": "1R155:0",
+        "phases": [
+          "RESPONSE"
+        ],
+        "trigger": {
+          "type": "PUTS_ON_THE_ONE_RING"
+        },
+        "cost": [
+          {
+            "exert": [
+              {
+                "count": 1,
+                "target": "SELF"
+              }
+            ]
+          }
+        ],
+        "effects": [
+          {
+            "type": "DISCARD_TOP_OF_DECK",
+            "count": 1,
+            "whose": "OWNER",
+            "perSpot": {
+              "target": [
+                [
+                  "ISENGARD",
+                  "MINION"
+                ]
+              ]
+            },
+            "addBurdenPerShadowDiscarded": true
+          }
+        ],
+        "source": "SELF",
+        "text": "Response: If the Ring-bearer puts on The One Ring, exert this minion. Discard a card from the top of your draw deck for each isengard minion you spot. Add a burden for each Shadow card discarded in this way.",
+        "textFr": "**Réponse :** Si le Porteur de l’Anneau met l’Anneau Unique, affaiblissez ce séide. Défaussez une carte du dessus de votre pioche pour chaque séide <symbol>isengard</symbol> que vous désignez. Ajoutez un point-fardeau pour chaque carte de l’Ombre defaussée de cette manière."
+      }
+    ],
     "culture": "ISENGARD",
     "race": "URUK-HAI",
     "twilightCost": 2,

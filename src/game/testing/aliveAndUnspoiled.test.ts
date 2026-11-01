@@ -1,7 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { parseAbilities } from '../../../scripts/convert/parsers';
 import { getCardById } from '../cardsData';
-import { applyDevPreset } from '../dev/presets';
 import { applyAbilityEffect } from '../engine/abilities/applyAbilityEffect';
 import { formatAbilityLabelParts } from '../engine/abilities/collectAbilities';
 import { payAbilityCost } from '../engine/abilities/payAbilityCost';
@@ -165,14 +164,4 @@ describe('Alive and Unspoiled 1R120', () => {
         expect(G.players['0']!.discard || []).toHaveLength(0);
     });
 
-    it('preset DEV : Alive and Unspoiled + 3 fardeaux + main FP', () => {
-        const G = createGameState();
-        applyDevPreset(G, 'DECK_GAPS_ALIVE_AND_UNSPOILED');
-        expect(
-            G.players['1']!.supportArea?.some((c) => c.id === '1R120')
-        ).toBe(true);
-        expect(G.players['0']!.burdens).toBe(3);
-        expect(G.players['0']!.hand).toHaveLength(5);
-        expect(G.twilightPool).toBe(5);
-    });
 });

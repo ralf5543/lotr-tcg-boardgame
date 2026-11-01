@@ -562,6 +562,19 @@ function formatEffectBit(
             .join(' ou ');
     }
     if (effect.type === 'DISCARD_TOP_OF_DECK') {
+        if (effect.perSpot) {
+            const who = formatFilterList(effect.perSpot.target.flat());
+            const base =
+                'défausser une carte du dessus de la pioche pour chaque ' +
+                who;
+            if (effect.addBurdenPerShadowDiscarded) {
+                return (
+                    base +
+                    ' ; ajouter un fardeau pour chaque carte Ombre ainsi défaussée'
+                );
+            }
+            return base;
+        }
         const n = effect.count || 1;
         return `défausser les ${n} carte${n > 1 ? 's' : ''} du dessus de la pioche`;
     }

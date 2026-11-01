@@ -5836,6 +5836,46 @@ function parseCancelFpManeuverOrArcheryAbilityResponses(
 }
 
 /**
+ * Response: If the Ring-bearer puts on The One Ring, exert this minion.
+ * Discard a card from the top of your draw deck for each Isengard minion
+ * you spot. Add a burden for each Shadow card discarded in this way.
+ * (Uruk Spy…)
+ */
+function parsePutsOnRingDiscardPerIsengardResponses(
+    text: string,
+    cardId?: string
+): Record<string, unknown>[] {
+    const found: Record<string, unknown>[] = [];
+    const re =
+        /(?:\*\*|<(?:keyword)>)Response:?(?:\s*<\/(?:keyword)>)?(?:\*\*)?\s*If the Ring-bearer puts on The One Ring,\s*exert this minion\.\s*Discard a card from the top of your draw deck for each\s*(?:<symbol>)?isengard(?:<\/symbol>)?\s*minion you spot\.\s*Add a burden for each Shadow card discarded in this way\./gi;
+    let match: RegExpExecArray | null;
+    while ((match = re.exec(text)) !== null) {
+        found.push({
+            id: `${cardId || 'ability'}:${found.length}:puts-on-ring-discard`,
+            phases: ['RESPONSE'],
+            trigger: { type: 'PUTS_ON_THE_ONE_RING' },
+            cost: [
+                {
+                    exert: [{ count: 1, target: 'SELF' }],
+                },
+            ],
+            effects: [
+                {
+                    type: 'DISCARD_TOP_OF_DECK',
+                    count: 1,
+                    whose: 'OWNER',
+                    perSpot: { target: [['ISENGARD', 'MINION']] },
+                    addBurdenPerShadowDiscarded: true,
+                },
+            ],
+            source: 'SELF',
+            text: stripAbilityMarkup(match[0]),
+        });
+    }
+    return found;
+}
+
+/**
  * Response: If a special ability of a companion who has resistance N or less
  * is used, exert this minion to cancel its effect. (Brawling Uruk…)
  */
@@ -14694,6 +14734,15 @@ export function parseAbilities(
     );
 
     parseCancelCompanionResistanceAbilityResponses(text, cardId).forEach(
+        (ability) => {
+            abilities.push({
+                ...ability,
+                id: `${cardId || 'ability'}:${abilities.length}`,
+            });
+        }
+    );
+
+    parsePutsOnRingDiscardPerIsengardResponses(text, cardId).forEach(
         (ability) => {
             abilities.push({
                 ...ability,

@@ -55,6 +55,8 @@ function resetPhaseMachine(G: GameState): void {
     G.sitePhaseAbilityOfferedThisPhase = false;
     G.pendingForcedChoice = undefined;
     G.pendingReveal = undefined;
+    G.pendingPutsOnTheOneRing = false;
+    G.wearingTheOneRing = undefined;
     G.pendingDeathQueue = undefined;
     clearActionableFlags(G);
 }
@@ -208,9 +210,9 @@ export const devMoves = {
     ) => {
         resetPhaseMachine(G);
         applyDevPreset(G, presetType);
-        // Alive and Unspoiled : phase Ombre.
-        if (presetType === 'DECK_GAPS_ALIVE_AND_UNSPOILED') {
-            events?.setPhase?.('shadow');
+        // Uruk Spy : Combat (porter l’Anneau via 4R1).
+        if (presetType === 'DECK_GAPS_URUK_SPY') {
+            events?.setPhase?.('skirmish');
             return;
         }
         events?.setPhase?.('startOfFellowship');

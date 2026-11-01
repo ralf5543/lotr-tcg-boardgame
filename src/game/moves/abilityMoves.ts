@@ -30,6 +30,7 @@ import {
     flushPendingPhaseAfterResponse,
     requestAboutToUseAbility,
     responseAbilityStillAvailable,
+    tryOpenPutsOnTheOneRing,
 } from '../engine/responseWindow';
 import { abilityMeetsPlayRestrictions } from '../engine/abilities/abilityRestrictions';
 import { afterSiteStartAbilityResolved } from '../logic/siteStartAbility';
@@ -234,6 +235,12 @@ export const activateAbility = (
     }
 
     if (isResponseWindowOpen(G) && !wasResponseWindowOpen) {
+        pauseActionYieldForResponses(G, String(playerID));
+        return;
+    }
+
+    // Porter l’Anneau hors d’une fenêtre déjà ouverte (ex. Combat : fardeau).
+    if (tryOpenPutsOnTheOneRing(G) === 'WAITING') {
         pauseActionYieldForResponses(G, String(playerID));
         return;
     }

@@ -797,11 +797,18 @@ export type AbilityEffect =
     | {
           /**
            * Défausse les N cartes du dessus de la pioche
-           * (Lurtz’s Sword, Uruk Rager…).
+           * (Lurtz’s Sword, Uruk Rager, Uruk Spy…).
            */
           type: 'DISCARD_TOP_OF_DECK';
           count: number;
           whose: 'FREE_PEOPLES' | 'SHADOW' | 'OWNER' | 'OPPONENT';
+          /** Multiplie `count` par le nombre de cartes matchant en jeu. */
+          perSpot?: { target: string[][] };
+          /**
+           * Après la défausse : +1 fardeau par carte Ombre ainsi défaussée
+           * (Uruk Spy…).
+           */
+          addBurdenPerShadowDiscarded?: boolean;
       }
     | {
           type: 'DISCARD_FROM_HAND';
@@ -1258,6 +1265,13 @@ export type AbilityTrigger =
     | {
           /** Each time the fellowship moves… (réponse optionnelle). */
           type: 'FELLOWSHIP_MOVES';
+      }
+    | {
+          /**
+           * Après que le Porteur a mis l’Anneau Unique
+           * (Uruk Spy…).
+           */
+          type: 'PUTS_ON_THE_ONE_RING';
       };
 
 export interface Ability {
@@ -1539,6 +1553,11 @@ export interface PendingFellowshipMovesEvent {
     type: 'FELLOWSHIP_MOVES';
 }
 
+/** Le Porteur vient de mettre l’Anneau Unique (Uruk Spy…). */
+export interface PendingPutsOnTheOneRingEvent {
+    type: 'PUTS_ON_THE_ONE_RING';
+}
+
 /**
  * Capacité spéciale sur le point de résoudre son effet (coût déjà payé).
  * Passer → apply ; Response CANCEL_ABILITY_EFFECT → jeter sans appliquer.
@@ -1564,6 +1583,7 @@ export type PendingEvent =
     | PendingExhaustEvent
     | PendingForceAssignEvent
     | PendingFellowshipMovesEvent
+    | PendingPutsOnTheOneRingEvent
     | PendingUseAbilityEvent;
 
 export interface WoundQueueItem {
@@ -1648,6 +1668,11 @@ export interface GameState {
         onlyInSkirmish?: boolean;
         strengthBonus?: number;
     };
+    /**
+     * File : le Porteur vient de mettre l’Anneau — ouvrir les réponses
+     * `PUTS_ON_THE_ONE_RING` dès que l’événement courant est clos.
+     */
+    pendingPutsOnTheOneRing?: boolean;
     woundQueue?: WoundQueueItem[];
     /** Blessures réellement prises — réponses « each time … takes a wound ». */
     takesWoundQueue?: { targetId: string; skirmishId?: string }[];
@@ -1906,7 +1931,7 @@ export interface LotrMoveContext extends FnContext<GameState> {
 }
 
 /** Presets DEV de playtest (panneau de test, vague en cours). */
-export type DevPresetType = 'DECK_GAPS_ALIVE_AND_UNSPOILED';
+export type DevPresetType = 'DECK_GAPS_URUK_SPY';
 
 export interface ArcheryState {
     step?: 'ACTIONS' | 'FP_ASSIGN' | 'SHADOW_ASSIGN' | 'COMPLETE';

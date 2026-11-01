@@ -1047,11 +1047,30 @@ export function applyAbilityEffect(
             const player = G.players[playerId];
             if (!player) return false;
             if (!player.deck) player.deck = [];
-            const need = effect.count || 0;
+            let need = effect.count || 0;
+            if (effect.perSpot) {
+                need *= resolveCostTarget(
+                    G,
+                    source,
+                    effect.perSpot.target
+                ).filter((c) => !c.isDead).length;
+            }
+            if (need <= 0) continue;
+            let shadowDiscarded = 0;
             for (let i = 0; i < need; i += 1) {
                 const card = player.deck.shift();
                 if (!card) break;
+                if (card.kind === 'SHADOW') shadowDiscarded += 1;
                 placeCardIntoDiscardPile(G, playerId, card);
+            }
+            if (
+                effect.addBurdenPerShadowDiscarded &&
+                shadowDiscarded > 0
+            ) {
+                const fp = G.players[fpId];
+                if (fp) {
+                    fp.burdens = (fp.burdens || 0) + shadowDiscarded;
+                }
             }
             continue;
         }
@@ -1377,6 +1396,8 @@ export function applyAbilityEffect(
                     ? { strengthBonus: effect.strengthBonus }
                     : {}),
             };
+            // Réponses « puts on The One Ring » (Uruk Spy…) après l’événement courant.
+            G.pendingPutsOnTheOneRing = true;
             continue;
         }
 

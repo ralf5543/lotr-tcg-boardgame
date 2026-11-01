@@ -15,7 +15,7 @@ export interface DevMoves {
     devSetArchery?: (amount: number) => void;
     devSetCurrentSite?: (siteIndex: number) => void;
     devForceEndPhase: () => void;
-    /** Presets de playtest de la vague en cours (trous decks : Épée de Lurtz). */
+    /** Presets de playtest de la vague en cours (trous decks : Uruk Spy). */
     devLoadPreset?: (presetName: string) => void;
 }
 
@@ -372,24 +372,24 @@ export const DevPanel: React.FC<DevPanelProps> = ({
                         </S.GameButton>
                     </S.Section>
 
-                    {/* Preset de playtest : trous decks — Alive and Unspoiled */}
+                    {/* Preset de playtest : trous decks — Uruk Spy */}
                     <S.Section>
                         <S.Label>
-                            Preset decks (Alive and Unspoiled) :
+                            Preset decks (Uruk Spy) :
                             <br />
                             <span style={{ opacity: 0.75, fontWeight: 400 }}>
-                                Ombre −3 crépuscule · 3 fardeaux → 3 cartes au
-                                hasard · clic pour défausser ou valider sans.
+                                Combat : Frodon porte l’Anneau → Response Espion
+                                (affaiblir → défausse / fardeaux).
                             </span>
                         </S.Label>
                         <S.ActionButton
                             onClick={() =>
                                 moves.devLoadPreset?.(
-                                    'DECK_GAPS_ALIVE_AND_UNSPOILED'
+                                    'DECK_GAPS_URUK_SPY'
                                 )
                             }
                         >
-                            Alive and Unspoiled (1R120)
+                            Uruk Spy (1R155)
                         </S.ActionButton>
                     </S.Section>
 

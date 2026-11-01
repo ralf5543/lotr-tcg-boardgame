@@ -149,6 +149,10 @@ export function abilityMatchesTrigger(
         return ability.trigger.type === 'FELLOWSHIP_MOVES';
     }
 
+    if (event.type === 'PUTS_ON_THE_ONE_RING') {
+        return ability.trigger.type === 'PUTS_ON_THE_ONE_RING';
+    }
+
     if (event.type === 'ABOUT_TO_USE_ABILITY') {
         if (ability.trigger.type !== 'ABOUT_TO_USE_ABILITY') return false;
         const trigger = ability.trigger;
@@ -403,6 +407,7 @@ function responseEventIsActive(event: PendingEvent | undefined): boolean {
         return Boolean(event.minionId && event.companionId);
     }
     if (event.type === 'FELLOWSHIP_MOVES') return true;
+    if (event.type === 'PUTS_ON_THE_ONE_RING') return true;
     if (event.type === 'ABOUT_TO_USE_ABILITY') {
         return Boolean(event.sourceInstanceId && event.abilityId);
     }
@@ -479,6 +484,9 @@ function responseWindowMessage(G: GameState): string {
     }
     if (G.pendingEvent?.type === 'FELLOWSHIP_MOVES') {
         return 'La compagnie s’est déplacée. Jouez une réponse ou passez.';
+    }
+    if (G.pendingEvent?.type === 'PUTS_ON_THE_ONE_RING') {
+        return 'Le Porteur a mis l’Anneau Unique. Jouez une réponse ou passez.';
     }
     if (G.pendingEvent?.type === 'ABOUT_TO_USE_ABILITY') {
         return 'Une capacité spéciale va se résoudre. Jouez une réponse ou passez.';
@@ -729,6 +737,7 @@ function processWoundQueue(G: GameState): 'APPLIED' | 'WAITING' {
     if (resumeSuspendedResponse(G) === 'WAITING') return 'WAITING';
     if (tryOpenWinsSkirmish(G) === 'WAITING') return 'WAITING';
     if (tryOpenLosesSkirmish(G) === 'WAITING') return 'WAITING';
+    if (tryOpenPutsOnTheOneRing(G) === 'WAITING') return 'WAITING';
     tryResumeArcheryAfterResponses(G);
     flushPendingActionYield(G);
     return 'APPLIED';
@@ -966,6 +975,30 @@ export function tryOpenFellowshipMoves(G: GameState): 'APPLIED' | 'WAITING' {
     return 'WAITING';
 }
 
+/**
+ * Après que le Porteur a mis l’Anneau Unique (Uruk Spy…).
+ * Appelé dès que l’événement / la fenêtre courante est clos.
+ */
+export function tryOpenPutsOnTheOneRing(
+    G: GameState
+): 'APPLIED' | 'WAITING' {
+    if (!G.pendingPutsOnTheOneRing) return 'APPLIED';
+    if (G.responseWindow?.isOpen || G.pendingEvent) {
+        return G.responseWindow?.isOpen ? 'WAITING' : 'APPLIED';
+    }
+
+    G.pendingPutsOnTheOneRing = false;
+    G.pendingEvent = { type: 'PUTS_ON_THE_ONE_RING' };
+
+    if (!hasAnyEligibleResponse(G)) {
+        G.pendingEvent = undefined;
+        return 'APPLIED';
+    }
+
+    openResponseWindow(G);
+    return 'WAITING';
+}
+
 export function notifyCharacterDied(G: GameState, card: CardState): void {
     const id = card.instanceId || card.id;
     if (!id) return;
@@ -1019,6 +1052,7 @@ function concludeOpenResponse(G: GameState): 'APPLIED' | 'WAITING' {
         if (resumeSuspendedResponse(G) === 'WAITING') return 'WAITING';
         if (tryOpenWinsSkirmish(G) === 'WAITING') return 'WAITING';
         if (tryOpenLosesSkirmish(G) === 'WAITING') return 'WAITING';
+        if (tryOpenPutsOnTheOneRing(G) === 'WAITING') return 'WAITING';
         return processWoundQueue(G);
     }
 
@@ -1030,6 +1064,7 @@ function concludeOpenResponse(G: GameState): 'APPLIED' | 'WAITING' {
         if (resumeSuspendedResponse(G) === 'WAITING') return 'WAITING';
         if (tryOpenWinsSkirmish(G) === 'WAITING') return 'WAITING';
         if (tryOpenLosesSkirmish(G) === 'WAITING') return 'WAITING';
+        if (tryOpenPutsOnTheOneRing(G) === 'WAITING') return 'WAITING';
         return processWoundQueue(G);
     }
 
@@ -1095,6 +1130,14 @@ function concludeOpenResponse(G: GameState): 'APPLIED' | 'WAITING' {
                 source.omitFromArcheryTotal = true;
             }
         }
+        if (tryOpenPutsOnTheOneRing(G) === 'WAITING') return 'WAITING';
+        flushPendingActionYield(G);
+        return 'APPLIED';
+    }
+
+    if (G.pendingEvent?.type === 'PUTS_ON_THE_ONE_RING') {
+        G.pendingEvent = undefined;
+        closeResponseWindow(G);
         flushPendingActionYield(G);
         return 'APPLIED';
     }
@@ -1103,6 +1146,7 @@ function concludeOpenResponse(G: GameState): 'APPLIED' | 'WAITING' {
     closeResponseWindow(G);
     if (tryOpenTakesWound(G) === 'WAITING') return 'WAITING';
     if (tryOpenCharacterDies(G) === 'WAITING') return 'WAITING';
+    if (tryOpenPutsOnTheOneRing(G) === 'WAITING') return 'WAITING';
     return processWoundQueue(G);
 }
 
