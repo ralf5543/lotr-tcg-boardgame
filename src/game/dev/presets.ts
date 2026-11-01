@@ -138,7 +138,7 @@ export const applyDevPreset = (
             setupDevPath(G, 8, neutralPath);
             G.twilightPool = 4;
             fpPlayer.burdens = 0;
-            // Albert Dreary : Manœuvre pour tester l’annulation.
+            // Albert (Manœuvre) + Legolas Vertefeuille (Archerie) pour tester l’annulation.
             fpPlayer.fellowshipArea = [
                 {
                     ...clonePresetCard('5U111', 'dev-fs-frodo'),
@@ -146,6 +146,7 @@ export const applyDevPreset = (
                 },
                 clonePresetCard('8R15', 'dev-fs-gandalf'),
                 clonePresetCard('1R69', 'dev-fs-albert'),
+                clonePresetCard('1R50', 'dev-fs-legolas'),
             ];
             fpPlayer.hand = [];
             fpPlayer.deck = [];
@@ -168,7 +169,7 @@ export const applyDevPreset = (
                 shadowPlayer.sitesDeck = [];
             }
             G.statusMessage =
-                '[DEV] Final Strike (10U20) · Site 9 = montagne (badge). Manœuvre : Albert → fenêtre Response → affaiblir Gollum pour annuler. Ombre : tuer Gollum puis Final Strike → le rejouer depuis la défausse.';
+                '[DEV] Final Strike (10U20) · Site 9 = montagne (badge). Manœuvre Albert / Archerie Legolas → fenêtre Response → affaiblir Gollum pour annuler. Ombre : tuer Gollum puis Final Strike → le rejouer depuis la défausse.';
             break;
         }
     }

@@ -269,6 +269,9 @@ describe('Final Strike 10U20', () => {
         expect(
             G.players['0']!.fellowshipArea?.some((c) => c.id === '1R69')
         ).toBe(true);
+        expect(
+            G.players['0']!.fellowshipArea?.some((c) => c.id === '1R50')
+        ).toBe(true);
         expect(siteHasKeyword(G.path![8]!, 'MOUNTAIN', G)).toBe(true);
     });
 });

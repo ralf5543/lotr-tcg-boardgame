@@ -378,8 +378,8 @@ export const DevPanel: React.FC<DevPanelProps> = ({
                             Preset decks (Final Strike) :
                             <br />
                             <span style={{ opacity: 0.75, fontWeight: 400 }}>
-                                Site 9 montagne · Manœuvre Albert →
-                                annuler · Ombre Gollum.
+                                Site 9 montagne · Albert (Manœuvre) / Legolas (Archerie) →
+                                Response annuler · puis Ombre Gollum.
                             </span>
                         </S.Label>
                         <S.ActionButton
