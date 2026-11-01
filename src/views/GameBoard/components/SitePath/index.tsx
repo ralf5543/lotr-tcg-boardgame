@@ -305,6 +305,7 @@ export const SitePath: React.FC<SitePathProps> = ({
                         site={site}
                         size="sm"
                         playersHere={playersHere}
+                        G={G}
                     />
                 ) : (
                     <S.EmptySlotContent $isNextEmpty={isNextEmpty}>

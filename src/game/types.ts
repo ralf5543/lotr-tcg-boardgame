@@ -1031,6 +1031,20 @@ export type AbilityEffect =
     | {
           type: 'MAKE_RING_BEARER';
           resistance: number;
+      }
+    | {
+          /**
+           * Passif While : confère un terrain à un site du chemin
+           * (Final Strike : site 9 = montagne ; Suffered Much Loss : tous).
+           */
+          type: 'GRANT_SITE_KEYWORD';
+          keyword: CardKeyword;
+          /** Emplacement Standard 1–9 ; omis = tout le chemin. */
+          siteNumber?: number;
+      }
+    | {
+          /** Annule l’effet d’une capacité en cours (coût déjà payé). */
+          type: 'CANCEL_ABILITY_EFFECT';
       };
 
 export type AbilityTrigger =
@@ -1038,6 +1052,17 @@ export type AbilityTrigger =
           type: 'ABOUT_TO_WOUND';
           target: AbilityTargetRef;
           inSkirmish?: boolean;
+      }
+    | {
+          /**
+           * Sur le point d’appliquer l’effet d’une capacité spéciale
+           * (coût déjà payé). Final Strike / Brawling Uruk…
+           */
+          type: 'ABOUT_TO_USE_ABILITY';
+          /** Qui active la capacité ciblée. */
+          usedBy?: 'FREE_PEOPLE' | 'SHADOW';
+          /** Phases de la capacité (MANEUVER, ARCHERY…). */
+          abilityPhases?: string[];
       }
     | {
           /**
@@ -1498,6 +1523,20 @@ export interface PendingFellowshipMovesEvent {
     type: 'FELLOWSHIP_MOVES';
 }
 
+/**
+ * Capacité spéciale sur le point de résoudre son effet (coût déjà payé).
+ * Passer → apply ; Response CANCEL_ABILITY_EFFECT → jeter sans appliquer.
+ */
+export interface PendingUseAbilityEvent {
+    type: 'ABOUT_TO_USE_ABILITY';
+    sourceInstanceId: string;
+    abilityId: string;
+    actingPlayerId: string;
+    effectTargetId?: string | string[];
+    discardedHandIds?: string[];
+    costChosenTargetId?: string | string[];
+}
+
 export type PendingEvent =
     | PendingWoundEvent
     | PendingTakesWoundEvent
@@ -1508,7 +1547,8 @@ export type PendingEvent =
     | PendingAddThreatsEvent
     | PendingExhaustEvent
     | PendingForceAssignEvent
-    | PendingFellowshipMovesEvent;
+    | PendingFellowshipMovesEvent
+    | PendingUseAbilityEvent;
 
 export interface WoundQueueItem {
     targetId: string;

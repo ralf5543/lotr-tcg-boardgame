@@ -6,12 +6,16 @@ import type {
 } from '../types';
 import { getEffectiveTwilightCost } from '../../utils/roamingDetection';
 import { cardMatchesTarget } from '../engine/validations/matchers';
+import { forEachInPlayCard } from '../engine/abilities/resolveCostTarget';
 import { resolveSiteMoveAbilities } from '../engine/abilities/siteMove';
 import {
     getSkirmishWoundLimit,
     skirmishWoundsTaken,
 } from './skirmishWoundLimit';
-import { cardCannotTakeWoundsWhile } from './stats/mechanics/whileModifier';
+import {
+    cardCannotTakeWoundsWhile,
+    whileConditionHolds,
+} from './stats/mechanics/whileModifier';
 
 export function getCurrentSiteIndex(G: GameState): number {
     const fpId = G.fpPlayerId || '0';
@@ -25,8 +29,55 @@ export function getCurrentSite(G: GameState): SiteCardState | null {
     return site ?? null;
 }
 
+/** Évite la re-entrée whileConditionHolds → isAtSiteWithKeyword → ici. */
+let grantSiteKeywordGuard = false;
+
+function siteNumberOnPath(G: GameState, site: SiteCardState): number | null {
+    if (typeof site.siteNumber === 'number') return site.siteNumber;
+    const idx = (G.path || []).findIndex(
+        (entry) =>
+            entry &&
+            ((entry.instanceId && entry.instanceId === site.instanceId) ||
+                entry === site ||
+                (entry.id === site.id && entry.ownerId === site.ownerId))
+    );
+    return idx >= 0 ? idx + 1 : null;
+}
+
+/**
+ * Terrains conférés par des situations en jeu
+ * (« Any site 9 is a mountain », « Each site … is a battleground »).
+ */
+function addGrantedSiteKeywords(
+    G: GameState,
+    site: SiteCardState,
+    found: Set<CardKeyword>
+): void {
+    if (grantSiteKeywordGuard) return;
+    grantSiteKeywordGuard = true;
+    try {
+        forEachInPlayCard(G, (card) => {
+            for (const ability of card.abilities || []) {
+                if (ability.trigger?.type !== 'WHILE') continue;
+                if (!whileConditionHolds(G, card, ability)) continue;
+                for (const effect of ability.effects || []) {
+                    if (effect.type !== 'GRANT_SITE_KEYWORD') continue;
+                    if (typeof effect.siteNumber === 'number') {
+                        const num = siteNumberOnPath(G, site);
+                        if (num !== effect.siteNumber) continue;
+                    }
+                    if (effect.keyword) found.add(effect.keyword);
+                }
+            }
+        });
+    } finally {
+        grantSiteKeywordGuard = false;
+    }
+}
+
 export function getEffectiveSiteKeywords(
-    site: SiteCardState | null | undefined
+    site: SiteCardState | null | undefined,
+    G?: GameState
 ): CardKeyword[] {
     if (!site) return [];
     const found = new Set<CardKeyword>();
@@ -40,14 +91,18 @@ export function getEffectiveSiteKeywords(
             if (kw) found.add(kw);
         }
     }
+    if (G) {
+        addGrantedSiteKeywords(G, site, found);
+    }
     return Array.from(found);
 }
 
 export function siteHasKeyword(
     site: SiteCardState | null | undefined,
-    keyword: CardKeyword
+    keyword: CardKeyword,
+    G?: GameState
 ): boolean {
-    return getEffectiveSiteKeywords(site).includes(keyword);
+    return getEffectiveSiteKeywords(site, G).includes(keyword);
 }
 
 /** La compagnie est-elle sur un site portant ce mot-clé ? */
@@ -55,7 +110,7 @@ export function isAtSiteWithKeyword(
     G: GameState,
     keyword: CardKeyword
 ): boolean {
-    return siteHasKeyword(getCurrentSite(G), keyword);
+    return siteHasKeyword(getCurrentSite(G), keyword, G);
 }
 
 /**
@@ -75,7 +130,7 @@ export function countSitesWithKeyword(
     keyword: CardKeyword
 ): number {
     return (G.path || []).filter(
-        (site) => site !== null && siteHasKeyword(site, keyword)
+        (site) => site !== null && siteHasKeyword(site, keyword, G)
     ).length;
 }
 
@@ -85,7 +140,7 @@ export function isCurrentSiteSanctuary(G: GameState): boolean {
     // (la carte y « gagne » Sanctuary tant qu’elle est à cet emplacement).
     if (index === 2 || index === 5) return true;
     // Sites pré-Shadows : mot-clé imprimé éventuel
-    return siteHasKeyword(getCurrentSite(G), 'SANCTUARY');
+    return siteHasKeyword(getCurrentSite(G), 'SANCTUARY', G);
 }
 
 function currentSiteHasPassiveEffect(

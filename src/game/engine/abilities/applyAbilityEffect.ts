@@ -308,6 +308,19 @@ export function applyAbilityEffect(
             continue;
         }
 
+        if (effect.type === 'CANCEL_ABILITY_EFFECT') {
+            if (G.pendingEvent?.type !== 'ABOUT_TO_USE_ABILITY') {
+                return false;
+            }
+            G.pendingEvent = undefined;
+            continue;
+        }
+
+        // Passif While uniquement (lu via getEffectiveSiteKeywords).
+        if (effect.type === 'GRANT_SITE_KEYWORD') {
+            continue;
+        }
+
         if (effect.type === 'ADD_TWILIGHT') {
             G.twilightPool = (G.twilightPool || 0) + (effect.count || 0);
             continue;

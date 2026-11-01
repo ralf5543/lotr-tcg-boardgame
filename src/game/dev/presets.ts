@@ -118,7 +118,7 @@ const neutralPath: readonly string[] = [
 
 /**
  * Applique le preset DEV de playtest (zones vidées / chemin Standard).
- * Vague Final Strike (site 9 → jouer Gollum depuis la défausse).
+ * Vague Final Strike (montagne site 9 ; Ombre Gollum ; Response annuler).
  */
 export const applyDevPreset = (
     G: GameState,
@@ -134,34 +134,41 @@ export const applyDevPreset = (
     switch (presetType) {
         case 'DECK_GAPS_FINAL_STRIKE': {
             resetBoardForPreset(G);
-            // Site 9 (index 8) : condition Ombre jouable.
+            // Site 9 (index 8) : montagne + Ombre jouable.
             setupDevPath(G, 8, neutralPath);
             G.twilightPool = 4;
             fpPlayer.burdens = 0;
+            // Albert Dreary : Manœuvre pour tester l’annulation.
             fpPlayer.fellowshipArea = [
                 {
                     ...clonePresetCard('5U111', 'dev-fs-frodo'),
                     attachments: [clonePresetCard('4R1', 'dev-fs-ring')],
                 },
                 clonePresetCard('8R15', 'dev-fs-gandalf'),
+                clonePresetCard('1R69', 'dev-fs-albert'),
             ];
             fpPlayer.hand = [];
             fpPlayer.deck = [];
             fpPlayer.sitesDeck = [];
+            // Situation Isengard défaussable par Albert.
+            fpPlayer.supportArea = [];
             if (shadowPlayer) {
                 shadowPlayer.supportArea = [
                     clonePresetCard('10U20', 'dev-final-strike'),
+                    clonePresetCard('1C133', 'dev-fs-ambition'),
                 ];
-                // Gollum en défausse à jouer via Final Strike.
-                shadowPlayer.discard = [
+                // Gollum en jeu pour la Response ; aussi en défausse après mort
+                // pour retester « jouer depuis la défausse ».
+                G.battlefield = [
                     clonePresetCard('7C59', 'dev-fs-gollum'),
                 ];
+                shadowPlayer.discard = [];
                 shadowPlayer.hand = [];
                 shadowPlayer.deck = [];
                 shadowPlayer.sitesDeck = [];
             }
             G.statusMessage =
-                '[DEV] Final Strike (10U20) · Site 9. Ombre : bulle sur Final Strike → jouer Gollum depuis la défausse. (Montagne site 9 + Response annuler capacité = inertes.)';
+                '[DEV] Final Strike (10U20) · Site 9 = montagne (badge). Manœuvre : Albert → fenêtre Response → affaiblir Gollum pour annuler. Ombre : tuer Gollum puis Final Strike → le rejouer depuis la défausse.';
             break;
         }
     }

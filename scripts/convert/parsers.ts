@@ -5754,8 +5754,90 @@ function parseAddBurdenPlayNamedFromDiscardAbilities(
 }
 
 /**
+ * « Any site N is a mountain/forest/… »
+ * (Final Strike…) Passif While → GRANT_SITE_KEYWORD.
+ */
+function parseAnySiteIsKeywordAbilities(
+    text: string,
+    cardId?: string
+): Record<string, unknown>[] {
+    const found: Record<string, unknown>[] = [];
+    const re =
+        /Any site\s+(\d+)\s+is\s+(?:a\s+|an\s+)?(?:\*\*)?(?:<keyword>)?([A-Za-z][A-Za-z-]*)\.?(?:\*\*)?(?:<\/keyword>)?/gi;
+    let match: RegExpExecArray | null;
+    while ((match = re.exec(text)) !== null) {
+        const siteNumber = parseInt(match[1] || '', 10);
+        const rawKw = (match[2] || '').trim().toUpperCase();
+        if (
+            !Number.isFinite(siteNumber) ||
+            siteNumber < 1 ||
+            siteNumber > 9 ||
+            !VALID_KEYWORDS.has(rawKw)
+        ) {
+            continue;
+        }
+        found.push({
+            id: `${cardId || 'ability'}:${found.length}:any-site-keyword`,
+            phases: [],
+            cost: [],
+            trigger: { type: 'WHILE' },
+            effects: [
+                {
+                    type: 'GRANT_SITE_KEYWORD',
+                    keyword: rawKw,
+                    siteNumber,
+                },
+            ],
+            source: 'SELF',
+            text: stripAbilityMarkup(match[0]),
+        });
+    }
+    return found;
+}
+
+/**
+ * Response: If the Free Peoples player uses a maneuver or archery special
+ * ability, exert Named to cancel its effect. (Final Strike…)
+ */
+function parseCancelFpManeuverOrArcheryAbilityResponses(
+    text: string,
+    cardId?: string
+): Record<string, unknown>[] {
+    const found: Record<string, unknown>[] = [];
+    const nameTok =
+        '([A-ZÀ-Ÿ][a-zà-ÿéèêëàâäùûüôöîïç\'’-]+)';
+    const re = new RegExp(
+        `(?:\\*\\*|<(?:keyword)>)Response:?(?:\\s*</(?:keyword)>)?(?:\\*\\*)?\\s*If the Free Peoples player uses a maneuver or archery special ability,\\s*exert\\s+${nameTok}\\s+to cancel its effect\\.`,
+        'gi'
+    );
+    let match: RegExpExecArray | null;
+    while ((match = re.exec(text)) !== null) {
+        const name = (match[1] || '').trim();
+        if (!name || !isProperNameToken(name)) continue;
+        found.push({
+            id: `${cardId || 'ability'}:${found.length}:cancel-fp-maneuver-archery`,
+            phases: ['RESPONSE'],
+            trigger: {
+                type: 'ABOUT_TO_USE_ABILITY',
+                usedBy: 'FREE_PEOPLE',
+                abilityPhases: ['MANEUVER', 'ARCHERY'],
+            },
+            cost: [
+                {
+                    exert: [{ count: 1, target: [[name]] }],
+                },
+            ],
+            effects: [{ type: 'CANCEL_ABILITY_EFFECT' }],
+            source: 'SELF',
+            text: stripAbilityMarkup(match[0]),
+        });
+    }
+    return found;
+}
+
+/**
  * Phase: If the fellowship is at any site N, play Named from your discard pile.
- * (Final Strike…) Montagne site 9 / Response annuler = hors fragment (inertes).
+ * (Final Strike…)
  */
 function parseAtSitePlayNamedFromDiscardAbilities(
     text: string,
@@ -14520,7 +14602,23 @@ export function parseAbilities(
         }
     );
 
+    parseAnySiteIsKeywordAbilities(text, cardId).forEach((ability) => {
+        abilities.push({
+            ...ability,
+            id: `${cardId || 'ability'}:${abilities.length}`,
+        });
+    });
+
     parseAtSitePlayNamedFromDiscardAbilities(text, cardId).forEach(
+        (ability) => {
+            abilities.push({
+                ...ability,
+                id: `${cardId || 'ability'}:${abilities.length}`,
+            });
+        }
+    );
+
+    parseCancelFpManeuverOrArcheryAbilityResponses(text, cardId).forEach(
         (ability) => {
             abilities.push({
                 ...ability,

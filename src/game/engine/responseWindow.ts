@@ -146,6 +146,37 @@ export function abilityMatchesTrigger(
         return ability.trigger.type === 'FELLOWSHIP_MOVES';
     }
 
+    if (event.type === 'ABOUT_TO_USE_ABILITY') {
+        if (ability.trigger.type !== 'ABOUT_TO_USE_ABILITY') return false;
+        const trigger = ability.trigger;
+        const fpId = G.fpPlayerId || '0';
+        if (trigger.usedBy === 'FREE_PEOPLE') {
+            if (String(event.actingPlayerId) !== String(fpId)) return false;
+        } else if (trigger.usedBy === 'SHADOW') {
+            if (String(event.actingPlayerId) === String(fpId)) return false;
+        }
+        if (trigger.abilityPhases && trigger.abilityPhases.length > 0) {
+            const usedSource = findTargetCard(
+                G,
+                event.sourceInstanceId
+            ) as CardState | null;
+            const usedAbility = usedSource?.abilities?.find(
+                (ab) => ab.id === event.abilityId
+            );
+            if (!usedAbility) return false;
+            const phases = (usedAbility.phases || []).map((p) =>
+                String(p).toUpperCase()
+            );
+            const wanted = trigger.abilityPhases.map((p) =>
+                String(p).toUpperCase()
+            );
+            if (!wanted.some((phase) => phases.includes(phase))) {
+                return false;
+            }
+        }
+        return true;
+    }
+
     if (event.type === 'CHARACTER_DIES') {
         if (ability.trigger.type !== 'CHARACTER_DIES') return false;
         const dead = findTargetCard(G, event.deadCardId) as CardState | null;
@@ -339,6 +370,9 @@ function responseEventIsActive(event: PendingEvent | undefined): boolean {
         return Boolean(event.minionId && event.companionId);
     }
     if (event.type === 'FELLOWSHIP_MOVES') return true;
+    if (event.type === 'ABOUT_TO_USE_ABILITY') {
+        return Boolean(event.sourceInstanceId && event.abilityId);
+    }
     return false;
 }
 
@@ -412,6 +446,9 @@ function responseWindowMessage(G: GameState): string {
     }
     if (G.pendingEvent?.type === 'FELLOWSHIP_MOVES') {
         return 'La compagnie s’est déplacée. Jouez une réponse ou passez.';
+    }
+    if (G.pendingEvent?.type === 'ABOUT_TO_USE_ABILITY') {
+        return 'Une capacité spéciale va se résoudre. Jouez une réponse ou passez.';
     }
     return responseWoundMessage(G);
 }
@@ -1000,6 +1037,35 @@ function concludeOpenResponse(G: GameState): 'APPLIED' | 'WAITING' {
         return 'APPLIED';
     }
 
+    if (G.pendingEvent?.type === 'ABOUT_TO_USE_ABILITY') {
+        const pending = G.pendingEvent;
+        G.pendingEvent = undefined;
+        closeResponseWindow(G);
+        const source = findTargetCard(
+            G,
+            pending.sourceInstanceId
+        ) as CardState | null;
+        const ability = source?.abilities?.find(
+            (ab) => ab.id === pending.abilityId
+        );
+        if (source && ability) {
+            applyAbilityEffect(
+                G,
+                source,
+                ability,
+                pending.effectTargetId,
+                pending.discardedHandIds,
+                pending.costChosenTargetId,
+                pending.actingPlayerId
+            );
+            if (ability.omitFromArcheryTotal) {
+                source.omitFromArcheryTotal = true;
+            }
+        }
+        flushPendingActionYield(G);
+        return 'APPLIED';
+    }
+
     G.pendingEvent = undefined;
     closeResponseWindow(G);
     if (tryOpenTakesWound(G) === 'WAITING') return 'WAITING';
@@ -1116,6 +1182,16 @@ export function afterResponseResolved(
             markResponseUsed(G, source, ability);
         }
     }
+    // Annulation de capacité : pending déjà vidé par l’effet → clôturer.
+    const cancelledAbility = (ability.effects || []).some(
+        (effect) => effect.type === 'CANCEL_ABILITY_EFFECT'
+    );
+    if (cancelledAbility && !G.pendingEvent) {
+        closeResponseWindow(G);
+        flushPendingActionYield(G);
+        G.statusMessage = 'Capacité annulée.';
+        return;
+    }
     yieldResponsePriorityAfterAction(G, playerID);
 }
 
@@ -1171,6 +1247,45 @@ export function requestCancelSkirmish(
     }
 
     return cancelSkirmish(G, skirmishId);
+}
+
+/**
+ * Capacité spéciale sur le point de résoudre : ouvre une fenêtre s’il existe
+ * une réponse ABOUT_TO_USE_ABILITY éligible. Sinon retourne false (appliquer
+ * l’effet tout de suite).
+ */
+export function requestAboutToUseAbility(
+    G: GameState,
+    source: CardState,
+    ability: Ability,
+    actingPlayerId: string,
+    effectTargetId?: string | string[],
+    discardedHandIds?: string[],
+    costChosenTargetId?: string | string[]
+): boolean {
+    const sourceId = source.instanceId || source.id;
+    if (!sourceId || !ability.id) return false;
+    // Événements / réponses : pas de re-fenêtre.
+    if (source.type === 'EVENT') return false;
+    if (abilityMatchesPhase(ability, 'RESPONSE')) return false;
+
+    G.pendingEvent = {
+        type: 'ABOUT_TO_USE_ABILITY',
+        sourceInstanceId: sourceId,
+        abilityId: ability.id,
+        actingPlayerId,
+        effectTargetId,
+        discardedHandIds,
+        costChosenTargetId,
+    };
+    if (!hasAnyEligibleResponse(G)) {
+        G.pendingEvent = undefined;
+        return false;
+    }
+    openResponseWindow(G);
+    G.statusMessage =
+        'Une capacité spéciale va se résoudre. Jouez une réponse ou passez.';
+    return true;
 }
 
 /**

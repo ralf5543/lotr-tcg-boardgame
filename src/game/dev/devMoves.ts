@@ -208,9 +208,9 @@ export const devMoves = {
     ) => {
         resetPhaseMachine(G);
         applyDevPreset(G, presetType);
-        // Final Strike : phase Ombre pour activer la situation.
+        // Final Strike : Manœuvre pour tester l’annulation (puis Ombre à la main).
         if (presetType === 'DECK_GAPS_FINAL_STRIKE') {
-            events?.setPhase?.('shadow');
+            events?.setPhase?.('maneuver');
             return;
         }
         events?.setPhase?.('startOfFellowship');

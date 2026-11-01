@@ -28,6 +28,7 @@ import {
     isResponseWindowOpen,
     pauseActionYieldForResponses,
     flushPendingPhaseAfterResponse,
+    requestAboutToUseAbility,
     responseAbilityStillAvailable,
 } from '../engine/responseWindow';
 import { abilityMeetsPlayRestrictions } from '../engine/abilities/abilityRestrictions';
@@ -188,6 +189,26 @@ export const activateAbility = (
         : chosenEffectTargetId
           ? chosenTargetId
           : undefined;
+
+    // Capacité spéciale : coût payé → fenêtre « about to use » si réponse.
+    if (
+        !wasResponseWindowOpen &&
+        !isResponseAbility &&
+        !delayCostUntilChoice &&
+        requestAboutToUseAbility(
+            G,
+            source,
+            ability,
+            actorId,
+            effectTargetId,
+            discardedHandIds,
+            costIdForEffect
+        )
+    ) {
+        pauseActionYieldForResponses(G, actorId);
+        return;
+    }
+
     if (
         !applyAbilityEffect(
             G,

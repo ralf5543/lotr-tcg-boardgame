@@ -707,6 +707,30 @@ function formatEffectBit(
     if (effect.type === 'PREVENT_WOUND') {
         return 'empêcher cette blessure';
     }
+    if (effect.type === 'CANCEL_ABILITY_EFFECT') {
+        return 'annuler la capacité';
+    }
+    if (effect.type === 'GRANT_SITE_KEYWORD') {
+        const kw = String(effect.keyword || '').toLowerCase();
+        const terrain =
+            kw === 'mountain'
+                ? 'montagne'
+                : kw === 'forest'
+                  ? 'forêt'
+                  : kw === 'battleground'
+                    ? 'champ de bataille'
+                    : kw === 'river'
+                      ? 'rivière'
+                      : kw === 'underground'
+                        ? 'souterrain'
+                        : kw === 'plains'
+                          ? 'plaine'
+                          : kw;
+        if (typeof effect.siteNumber === 'number') {
+            return `le site ${effect.siteNumber} est une ${terrain}`;
+        }
+        return `chaque site du chemin est une ${terrain}`;
+    }
     if (effect.type === 'FORBID_WOUNDS') {
         const who = formatTargetPhrase(effect.target);
         return who

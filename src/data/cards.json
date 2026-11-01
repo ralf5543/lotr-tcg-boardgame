@@ -92181,6 +92181,23 @@
     "abilities": [
       {
         "id": "10U20:0",
+        "phases": [],
+        "cost": [],
+        "trigger": {
+          "type": "WHILE"
+        },
+        "effects": [
+          {
+            "type": "GRANT_SITE_KEYWORD",
+            "keyword": "MOUNTAIN",
+            "siteNumber": 9
+          }
+        ],
+        "source": "SELF",
+        "text": "Any site 9 is a mountain."
+      },
+      {
+        "id": "10U20:1",
         "phases": [
           "SHADOW"
         ],
@@ -92199,6 +92216,41 @@
         ],
         "source": "SELF",
         "text": "Shadow: If the fellowship is at any site 9, play Gollum from your discard pile."
+      },
+      {
+        "id": "10U20:2",
+        "phases": [
+          "RESPONSE"
+        ],
+        "trigger": {
+          "type": "ABOUT_TO_USE_ABILITY",
+          "usedBy": "FREE_PEOPLE",
+          "abilityPhases": [
+            "MANEUVER",
+            "ARCHERY"
+          ]
+        },
+        "cost": [
+          {
+            "exert": [
+              {
+                "count": 1,
+                "target": [
+                  [
+                    "Gollum"
+                  ]
+                ]
+              }
+            ]
+          }
+        ],
+        "effects": [
+          {
+            "type": "CANCEL_ABILITY_EFFECT"
+          }
+        ],
+        "source": "SELF",
+        "text": "Response: If the Free Peoples player uses a maneuver or archery special ability, exert Gollum to cancel its effect."
       }
     ],
     "actionPhases": [

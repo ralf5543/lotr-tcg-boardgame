@@ -1,5 +1,5 @@
 import React from 'react';
-import type { SiteCardState } from '../../../../game/types';
+import type { GameState, SiteCardState } from '../../../../game/types';
 import * as S from './styles';
 import { TokenPlayer } from '../TokenPlayer';
 import { KeywordBadge } from '../KeywordBadge';
@@ -21,6 +21,8 @@ export interface SiteCardProps {
     className?: string;
     style?: React.CSSProperties;
     currentLang?: SupportedLanguage;
+    /** Pour terrains conférés depuis l’aire de soutien (Final Strike…). */
+    G?: GameState;
 }
 
 export const SiteCard: React.FC<SiteCardProps> = ({
@@ -30,13 +32,14 @@ export const SiteCard: React.FC<SiteCardProps> = ({
     className,
     style,
     currentLang = 'fr',
+    G,
 }) => {
 
     const { title, gameText } = getCardText(
         site,
         currentLang
     );
-    const effectiveKeywords = getEffectiveSiteKeywords(site);
+    const effectiveKeywords = getEffectiveSiteKeywords(site, G);
     const twilightPulse = usePulseOnChange(site.twilightCost);
     const { src: siteImageSrc, onError: onSiteImageError } =
         useImageSrcFallback(site.imageUrl);
