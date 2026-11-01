@@ -700,12 +700,17 @@ export const GameControls: React.FC<GameControlsProps> = ({
             G.pendingReveal.viewerId || G.pendingReveal.playerId;
         const revealZone = G.pendingReveal.zone || 'DECK_TOP';
         if (isMyTurnToAct && revealViewer === currentPlayerId) {
+            const mayDiscard = Boolean(
+                G.pendingReveal?.aftermath?.mayDiscardOne
+            );
             toastConfig = {
                 show: true,
                 title: 'RÉVÉLATION',
                 body:
                     revealZone === 'HAND'
-                        ? 'Main révélée. Consultez les cartes puis validez.'
+                        ? mayDiscard
+                            ? 'Cartes révélées. Cliquez-en une pour la défausser, ou validez sans défausser.'
+                            : 'Main révélée. Consultez les cartes puis validez.'
                         : G.statusMessage ||
                           'Cartes révélées du dessus de la pioche adverse. Validez pour appliquer les effets.',
                 showPassButton: false,
@@ -1671,7 +1676,9 @@ export const GameControls: React.FC<GameControlsProps> = ({
                                         moves.confirmPendingRevealMove?.();
                                     }}
                                 >
-                                    Valider la révélation
+                                    {G.pendingReveal.aftermath?.mayDiscardOne
+                                        ? 'Valider sans défausser'
+                                        : 'Valider la révélation'}
                                 </S.ActionButton>
                             )}
 

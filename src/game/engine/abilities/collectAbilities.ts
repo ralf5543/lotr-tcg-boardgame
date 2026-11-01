@@ -587,11 +587,20 @@ function formatEffectBit(
             : 'placer les cartes Peuples Libres de votre main sous votre pioche';
     }
     if (effect.type === 'REVEAL_HAND') {
-        const parts: string[] = [
-            effect.whose === 'OPPONENT'
-                ? 'révéler la main adverse'
-                : 'révéler votre main',
-        ];
+        const parts: string[] = [];
+        if (effect.countEqualToBurdens && effect.whose === 'OPPONENT') {
+            parts.push(
+                effect.random
+                    ? 'révéler X cartes au hasard de la main adverse (X = fardeaux)'
+                    : 'révéler X cartes de la main adverse (X = fardeaux)'
+            );
+        } else {
+            parts.push(
+                effect.whose === 'OPPONENT'
+                    ? 'révéler la main adverse'
+                    : 'révéler votre main'
+            );
+        }
         if (effect.aftermath?.putHandUnderDeck === 'SHADOW') {
             parts.push(
                 'placer les cartes Ombre sous votre pioche'
@@ -600,6 +609,9 @@ function formatEffectBit(
             parts.push(
                 'placer les cartes Peuples Libres sous votre pioche'
             );
+        }
+        if (effect.aftermath?.mayDiscardOne) {
+            parts.push('vous pouvez défausser 1 carte révélée');
         }
         if (effect.aftermath?.discardSource) {
             parts.push('défausser cette carte');

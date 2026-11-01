@@ -1008,11 +1008,11 @@ export const cancelForcedChoiceMove = ({
     }
 };
 
-export const confirmPendingRevealMove = ({
-    G,
-    playerID,
-}: LotrMoveContext) => {
-    if (!confirmPendingReveal(G, playerID ?? '0')) {
+export const confirmPendingRevealMove = (
+    { G, playerID }: LotrMoveContext,
+    discardCardId?: string
+) => {
+    if (!confirmPendingReveal(G, playerID ?? '0', discardCardId)) {
         return 'INVALID_MOVE';
     }
 };

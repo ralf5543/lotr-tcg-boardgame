@@ -2325,15 +2325,28 @@ export const GameBoard: React.FC<GameBoardProps> = ({
         const iAmViewer =
             (pending.viewerId || pending.playerId) === myId;
         const iAmSubject = subjectId === myId;
+        const mayDiscardOne =
+            zone === 'HAND' &&
+            Boolean(pending.aftermath?.mayDiscardOne) &&
+            iAmViewer &&
+            cards.length > 0;
         if (zone === 'HAND') {
             return {
                 title: iAmSubject
                     ? 'Votre main est révélée'
                     : 'Main adverse révélée',
                 subtitle: iAmViewer
-                    ? 'Consultez les cartes puis validez dans le toaster.'
+                    ? mayDiscardOne
+                        ? 'Cliquez une carte pour la défausser, ou validez sans défausser dans le toaster.'
+                        : 'Consultez les cartes puis validez dans le toaster.'
                     : 'L’adversaire consulte votre main…',
                 cards,
+                mayDiscardOne,
+                selectableCardIds: mayDiscardOne
+                    ? cards
+                          .map((c) => c.instanceId || c.id)
+                          .filter(Boolean)
+                    : undefined,
             };
         }
         return {
@@ -2341,6 +2354,8 @@ export const GameBoard: React.FC<GameBoardProps> = ({
             subtitle:
                 'Cartes du dessus de la pioche adverse. Validez dans le toaster pour appliquer menaces / jetons et mélanger.',
             cards,
+            mayDiscardOne: false,
+            selectableCardIds: undefined,
         };
     }, [G.pendingReveal, G.players, myId]);
 
@@ -3809,6 +3824,18 @@ export const GameBoard: React.FC<GameBoardProps> = ({
                             subtitle={revealOverlay.subtitle}
                             cards={revealOverlay.cards}
                             currentSiteIndex={currentSiteIndex}
+                            selectableCardIds={
+                                revealOverlay.selectableCardIds
+                            }
+                            onSelectCard={
+                                revealOverlay.mayDiscardOne
+                                    ? (cardId) => {
+                                          moves.confirmPendingRevealMove?.(
+                                              cardId
+                                          );
+                                      }
+                                    : undefined
+                            }
                             onClose={() => {
                                 /* Validation uniquement via toaster */
                             }}

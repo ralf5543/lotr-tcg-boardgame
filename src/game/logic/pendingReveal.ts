@@ -7,6 +7,7 @@ import {
 import { shufflePlayerDeck } from './playFromOutOfPlay';
 import { findTargetCard } from '../../utils/cardUtils';
 import { discardCardFromPlay } from '../../utils/discardCardFromPlay';
+import { discardCardsFromHand } from '../engine/abilities/payAbilityCost';
 
 function putHandUnderDeck(
     G: GameState,
@@ -32,10 +33,12 @@ function putHandUnderDeck(
 /**
  * Après validation UI de `pendingReveal` : menaces / jetons / mélange
  * (pioche) ou sous-pioche + défausse source (main).
+ * `discardCardId` : défausse optionnelle d’une carte révélée (Alive and Unspoiled…).
  */
 export function confirmPendingReveal(
     G: GameState,
-    playerID: string
+    playerID: string,
+    discardCardId?: string
 ): boolean {
     const pending = G.pendingReveal;
     if (!pending) return false;
@@ -47,6 +50,27 @@ export function confirmPendingReveal(
 
     if (zone === 'HAND') {
         const aftermath = pending.aftermath;
+        if (discardCardId) {
+            if (!aftermath?.mayDiscardOne) return false;
+            if (!pending.cardIds.includes(discardCardId)) return false;
+            if (!discardCardsFromHand(G, subjectId, [discardCardId])) {
+                return false;
+            }
+            const discarded = findTargetCard(G, discardCardId) as CardState | null;
+            // La carte est déjà en défausse ; retrouver le nom via la pile.
+            const inDiscard = (G.players[subjectId]?.discard || []).find(
+                (c) => c.instanceId === discardCardId || c.id === discardCardId
+            );
+            const name =
+                inDiscard?.i18n?.fr?.title ||
+                inDiscard?.title ||
+                discarded?.i18n?.fr?.title ||
+                discarded?.title ||
+                discardCardId;
+            G.statusMessage = `Carte révélée défaussée : ${name}.`;
+            G.pendingReveal = undefined;
+            return true;
+        }
         let moved: CardState[] = [];
         if (aftermath?.putHandUnderDeck) {
             moved = putHandUnderDeck(
@@ -61,7 +85,9 @@ export function confirmPendingReveal(
                 discardCardFromPlay(G, source as CardState);
             }
         }
-        if (moved.length > 0) {
+        if (aftermath?.mayDiscardOne) {
+            G.statusMessage = 'Révélation validée sans défausse.';
+        } else if (moved.length > 0) {
             const names = moved
                 .map(
                     (c) =>

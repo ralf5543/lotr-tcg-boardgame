@@ -816,7 +816,40 @@ export function applyAbilityEffect(
             if (!subject) return false;
             const sourceId = source.instanceId || source.id;
             if (!sourceId) return false;
-            const hand = subject.hand || [];
+            const hand = [...(subject.hand || [])];
+            let picked = hand;
+            if (effect.countEqualToBurdens) {
+                const burdens =
+                    G.players[G.fpPlayerId || '0']?.burdens || 0;
+                const count = Math.max(0, Math.min(burdens, hand.length));
+                if (effect.random) {
+                    // Fisher–Yates partiel
+                    for (let i = hand.length - 1; i > 0; i -= 1) {
+                        const j = Math.floor(Math.random() * (i + 1));
+                        const tmp = hand[i]!;
+                        hand[i] = hand[j]!;
+                        hand[j] = tmp;
+                    }
+                    picked = hand.slice(0, count);
+                } else {
+                    picked = hand.slice(0, count);
+                }
+            } else if (effect.random && hand.length > 1) {
+                for (let i = hand.length - 1; i > 0; i -= 1) {
+                    const j = Math.floor(Math.random() * (i + 1));
+                    const tmp = hand[i]!;
+                    hand[i] = hand[j]!;
+                    hand[j] = tmp;
+                }
+                picked = hand;
+            }
+            const cardIds = picked
+                .map((c) => c.instanceId || c.id)
+                .filter(Boolean) as string[];
+            if (cardIds.length === 0) {
+                G.statusMessage = 'Aucune carte révélée.';
+                continue;
+            }
             G.pendingReveal = {
                 zone: 'HAND',
                 viewerId,
@@ -825,14 +858,17 @@ export function applyAbilityEffect(
                 opponentId: subjectPlayerId,
                 sourceInstanceId: sourceId,
                 abilityId: ability.id,
-                cardIds: hand.map((c) => c.instanceId || c.id).filter(Boolean),
+                cardIds,
                 ...(effect.aftermath
                     ? { aftermath: effect.aftermath }
                     : {}),
             };
+            const mayDiscard = Boolean(effect.aftermath?.mayDiscardOne);
             G.statusMessage =
                 viewerId === ownerId
-                    ? 'Main adverse révélée : consultez les cartes puis validez.'
+                    ? mayDiscard
+                        ? 'Cartes révélées : cliquez-en une pour la défausser, ou validez sans défausser.'
+                        : 'Main adverse révélée : consultez les cartes puis validez.'
                     : 'Votre main est révélée : l’adversaire consulte…';
             continue;
         }

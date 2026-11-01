@@ -17527,6 +17527,36 @@
         ]
       }
     ],
+    "abilities": [
+      {
+        "id": "1R120:0",
+        "phases": [
+          "SHADOW"
+        ],
+        "cost": [
+          {
+            "removeTwilight": 3
+          }
+        ],
+        "effects": [
+          {
+            "type": "REVEAL_HAND",
+            "whose": "OPPONENT",
+            "countEqualToBurdens": true,
+            "random": true,
+            "aftermath": {
+              "mayDiscardOne": true
+            }
+          }
+        ],
+        "source": "SELF",
+        "text": "SHADOW: Remove twilight3 and spot X burdens to make the Free Peoples player reveal X cards at random from hand. You may discard 1 revealed card.",
+        "textFr": "**Ombre :** Retirez <symbol>twilight3</symbol> et désignez X points-fardeau pour obliger le joueur des Peuples Libres à révéler X cartes de sa main au hasard. Vous pouvez défausser 1 carte révélée."
+      }
+    ],
+    "actionPhases": [
+      "SHADOW"
+    ],
     "culture": "ISENGARD",
     "twilightCost": 2,
     "imageUrl": "/cards_visuals/o_01_120.jpg",

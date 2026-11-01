@@ -372,24 +372,24 @@ export const DevPanel: React.FC<DevPanelProps> = ({
                         </S.GameButton>
                     </S.Section>
 
-                    {/* Preset de playtest : trous decks — Brawling Uruk */}
+                    {/* Preset de playtest : trous decks — Alive and Unspoiled */}
                     <S.Section>
                         <S.Label>
-                            Preset decks (Brawling Uruk) :
+                            Preset decks (Alive and Unspoiled) :
                             <br />
                             <span style={{ opacity: 0.75, fontWeight: 400 }}>
-                                Frodon rés. 5 → annuler · Albert rés. 6 → pas de
-                                fenêtre · Haethen rés. 5 (Combat) → annuler.
+                                Ombre −3 crépuscule · 3 fardeaux → 3 cartes au
+                                hasard · clic pour défausser ou valider sans.
                             </span>
                         </S.Label>
                         <S.ActionButton
                             onClick={() =>
                                 moves.devLoadPreset?.(
-                                    'DECK_GAPS_BRAWLING_URUK'
+                                    'DECK_GAPS_ALIVE_AND_UNSPOILED'
                                 )
                             }
                         >
-                            Brawling Uruk (11R179)
+                            Alive and Unspoiled (1R120)
                         </S.ActionButton>
                     </S.Section>
 

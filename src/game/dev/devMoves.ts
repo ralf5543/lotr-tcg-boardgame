@@ -208,9 +208,9 @@ export const devMoves = {
     ) => {
         resetPhaseMachine(G);
         applyDevPreset(G, presetType);
-        // Brawling Uruk : Communauté pour tester Frodon (rés. ≤5).
-        if (presetType === 'DECK_GAPS_BRAWLING_URUK') {
-            events?.setPhase?.('fellowship');
+        // Alive and Unspoiled : phase Ombre.
+        if (presetType === 'DECK_GAPS_ALIVE_AND_UNSPOILED') {
+            events?.setPhase?.('shadow');
             return;
         }
         events?.setPhase?.('startOfFellowship');

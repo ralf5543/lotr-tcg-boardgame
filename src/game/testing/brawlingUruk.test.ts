@@ -1,7 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { parseAbilities } from '../../../scripts/convert/parsers';
 import { getCardById } from '../cardsData';
-import { applyDevPreset } from '../dev/presets';
 import { applyAbilityEffect } from '../engine/abilities/applyAbilityEffect';
 import { formatAbilityLabelParts } from '../engine/abilities/collectAbilities';
 import { payAbilityCost } from '../engine/abilities/payAbilityCost';
@@ -164,19 +163,4 @@ describe('Brawling Uruk 11R179', () => {
         expect(G.pendingEvent).toBeUndefined();
     });
 
-    it('preset DEV : Brawling Uruk + Frodon 5 fardeaux + Albert + Haethen', () => {
-        const G = createGameState();
-        applyDevPreset(G, 'DECK_GAPS_BRAWLING_URUK');
-        expect(G.battlefield?.[0]?.id).toBe('11R179');
-        expect(G.players['0']!.burdens).toBe(5);
-        expect(
-            G.players['0']!.fellowshipArea?.some((c) => c.id === '5U111')
-        ).toBe(true);
-        expect(
-            G.players['0']!.fellowshipArea?.some((c) => c.id === '1R69')
-        ).toBe(true);
-        expect(
-            G.players['0']!.fellowshipArea?.some((c) => c.id === '12R116')
-        ).toBe(true);
-    });
 });

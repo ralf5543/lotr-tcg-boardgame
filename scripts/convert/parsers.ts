@@ -11399,6 +11399,36 @@ export function parseAbilities(
             return;
         }
 
+        // Remove twilightN and spot X burdens to make the Free Peoples player
+        // reveal X cards at random from hand. You may discard 1 revealed card.
+        // (Alive and Unspoiled…)
+        const revealFpRandomBurdens = bodyPlain.match(
+            /^Remove\s+(?:<symbol>)?twilight(\d+)(?:<\/symbol>)?\s+and spot X burdens to make the Free Peoples player reveal X cards at random from hand\.\s*You may discard 1 revealed card\.?$/i
+        );
+        if (revealFpRandomBurdens) {
+            const twilight = parseInt(revealFpRandomBurdens[1] || '', 10);
+            if (!Number.isFinite(twilight) || twilight <= 0) return;
+            abilities.push({
+                id: `${cardId || 'ability'}:${abilities.length}`,
+                phases,
+                cost: [{ removeTwilight: twilight }],
+                effects: [
+                    {
+                        type: 'REVEAL_HAND',
+                        whose: 'OPPONENT',
+                        countEqualToBurdens: true,
+                        random: true,
+                        aftermath: { mayDiscardOne: true },
+                    },
+                ],
+                source: 'SELF',
+                text: `${marker.phase}: Remove twilight${twilight} and spot X burdens to make the Free Peoples player reveal X cards at random from hand. You may discard 1 revealed card.`
+                    .replace(/\s+/g, ' ')
+                    .trim(),
+            });
+            return;
+        }
+
         // Remove N burdens or N threats to take control of a site.
         // (Wandering Hillman…) — deux bulles distinctes, comme exert-or-threat.
         const removeBurdensOrThreatsControl = bodyPlain.match(

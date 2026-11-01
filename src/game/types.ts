@@ -702,13 +702,22 @@ export type AbilityEffect =
     | {
           /**
            * Révèle une main (grille + validation UI), puis effets différés.
-           * Slippery as Fishes… ; base pour Sting / Alive and Unspoiled…
+           * Slippery as Fishes… ; Alive and Unspoiled…
            */
           type: 'REVEAL_HAND';
           whose: 'SELF' | 'OPPONENT';
+          /**
+           * Nombre de cartes = fardeaux du Porteur (Alive and Unspoiled…).
+           * Omis = toute la main.
+           */
+          countEqualToBurdens?: boolean;
+          /** Tirage aléatoire (sinon ordre de la main). */
+          random?: boolean;
           aftermath?: {
               putHandUnderDeck?: 'SHADOW' | 'FREE_PEOPLE';
               discardSource?: boolean;
+              /** Après révélation : défausser au plus 1 carte révélée (optionnel). */
+              mayDiscardOne?: boolean;
           };
       }
     | {
@@ -1849,6 +1858,7 @@ export interface GameState {
         aftermath?: {
             putHandUnderDeck?: 'SHADOW' | 'FREE_PEOPLE';
             discardSource?: boolean;
+            mayDiscardOne?: boolean;
         };
     };
     setupState?: {
@@ -1896,7 +1906,7 @@ export interface LotrMoveContext extends FnContext<GameState> {
 }
 
 /** Presets DEV de playtest (panneau de test, vague en cours). */
-export type DevPresetType = 'DECK_GAPS_BRAWLING_URUK';
+export type DevPresetType = 'DECK_GAPS_ALIVE_AND_UNSPOILED';
 
 export interface ArcheryState {
     step?: 'ACTIONS' | 'FP_ASSIGN' | 'SHADOW_ASSIGN' | 'COMPLETE';

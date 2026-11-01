@@ -118,7 +118,7 @@ const neutralPath: readonly string[] = [
 
 /**
  * Applique le preset DEV de playtest (zones vidées / chemin Standard).
- * Vague Brawling Uruk (annuler capacité compagnon résistance ≤5).
+ * Vague Alive and Unspoiled (révélation aléatoire + défausse optionnelle).
  */
 export const applyDevPreset = (
     G: GameState,
@@ -132,40 +132,45 @@ export const applyDevPreset = (
     const shadowPlayer = G.players[shadowId];
 
     switch (presetType) {
-        case 'DECK_GAPS_BRAWLING_URUK': {
+        case 'DECK_GAPS_ALIVE_AND_UNSPOILED': {
             resetBoardForPreset(G);
             setupDevPath(G, 3, neutralPath);
-            G.twilightPool = 2;
-            // Frodon rés. 10 − 5 fardeaux = 5 → Response OK.
-            // Albert rés. 6 (défaut) → Response refusée.
-            // Haethen rés. 5 → Response OK (Combat).
-            fpPlayer.burdens = 5;
+            G.twilightPool = 5;
+            // 3 fardeaux → révéler 3 cartes au hasard parmi 5 en main.
+            fpPlayer.burdens = 3;
             fpPlayer.fellowshipArea = [
                 {
-                    ...clonePresetCard('5U111', 'dev-bu-frodo'),
-                    attachments: [clonePresetCard('4R1', 'dev-bu-ring')],
+                    ...clonePresetCard('5U111', 'dev-aau-frodo'),
+                    attachments: [clonePresetCard('4R1', 'dev-aau-ring')],
                 },
-                clonePresetCard('1R69', 'dev-bu-albert'),
-                clonePresetCard('12R116', 'dev-bu-haethen'),
+                clonePresetCard('8R15', 'dev-aau-gandalf'),
             ];
-            fpPlayer.hand = [];
+            fpPlayer.hand = [
+                clonePresetCard('1C84', 'dev-aau-hand-1'),
+                clonePresetCard('3R50', 'dev-aau-hand-2'),
+                clonePresetCard('7C108', 'dev-aau-hand-3'),
+                clonePresetCard('11S176', 'dev-aau-hand-4'),
+                clonePresetCard('4U99', 'dev-aau-hand-5'),
+            ];
             fpPlayer.deck = [];
             fpPlayer.sitesDeck = [];
-            fpPlayer.discard = [clonePresetCard('7C59', 'dev-bu-smeagol')];
             if (shadowPlayer) {
+                // Alive and Unspoiled déjà en soutien ; Uruk pour rejouer le coût toPlay.
                 shadowPlayer.supportArea = [
-                    clonePresetCard('1C133', 'dev-bu-ambition'),
+                    clonePresetCard('1R120', 'dev-alive-unspoiled'),
                 ];
                 G.battlefield = [
-                    clonePresetCard('11R179', 'dev-brawling-uruk'),
+                    clonePresetCard('11R179', 'dev-aau-uruk'),
+                ];
+                shadowPlayer.hand = [
+                    clonePresetCard('1R120', 'dev-aau-alive-hand'),
                 ];
                 shadowPlayer.discard = [];
-                shadowPlayer.hand = [];
                 shadowPlayer.deck = [];
                 shadowPlayer.sitesDeck = [];
             }
             G.statusMessage =
-                '[DEV] Brawling Uruk (11R179) · Frodon (rés. 5 avec 5 fardeaux) Communauté → Response annuler. Albert (rés. 6) Manœuvre → pas de fenêtre. Haethen (rés. 5) Combat → Response.';
+                '[DEV] Alive and Unspoiled (1R120) · Ombre : −3 crépuscule → révéler 3 cartes au hasard de la main FP → cliquer pour défausser ou valider sans. Aussi en main Ombre pour retester le coût « affaiblir un Ourouk ».';
             break;
         }
     }
