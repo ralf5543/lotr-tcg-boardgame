@@ -311,10 +311,22 @@ export const PlayerArea: React.FC<PlayerAreaProps> = ({
         const draggedCard = dragged?.card as CardState | undefined;
         const isEventDrag = draggedCard?.type === 'EVENT';
 
+        const draggedIsSupportArea =
+            draggedCard?.subtype === 'SUPPORT-AREA';
+        const hoverHitsSupport =
+            activeTargetId === 'supportArea' ||
+            (Boolean(activeTargetId) &&
+                draggedIsSupportArea &&
+                (supportArea || []).some(
+                    (c) =>
+                        c &&
+                        (c.instanceId === activeTargetId ||
+                            c.id === activeTargetId)
+                ));
         const isSupportTargeted =
             !isOpponent &&
             !isEventDrag &&
-            activeTargetId === 'supportArea' &&
+            hoverHitsSupport &&
             dragged?.orientation === 'portrait' &&
             (draggedCard
                 ? canPlayCard(

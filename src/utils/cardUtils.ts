@@ -7,6 +7,25 @@ export function isRingBearerCard(card: CardState | null | undefined): boolean {
     return (card.attachments || []).some((att) => att?.type === 'RING');
 }
 
+/** True si `cardId` désigne une carte (ou attachement) de l’aire de soutien. */
+export function isCardInSupportArea(
+    G: GameState,
+    cardId: string | null | undefined
+): boolean {
+    if (!G?.players || !cardId) return false;
+    const match = (c: CardState | undefined | null) =>
+        Boolean(c && (c.instanceId === cardId || c.id === cardId));
+    for (const player of Object.values(G.players)) {
+        if (!player) continue;
+        for (const card of player.supportArea || []) {
+            if (match(card)) return true;
+            if ((card.attachments || []).some(match)) return true;
+            if ((card.stacked || []).some(match)) return true;
+        }
+    }
+    return false;
+}
+
 /**
  * Recherche une carte par son ID dynamique dans l'ensemble des zones du jeu
  */

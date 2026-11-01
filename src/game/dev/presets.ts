@@ -46,6 +46,11 @@ const resetBoardForPreset = (G: GameState): void => {
     const fpPlayer = G.players[fpId];
     if (!fpPlayer) return;
 
+    // Sortir du setup (encheres…) pour que le preset soit jouable tout de suite.
+    if (G.setupState) {
+        G.setupState.step = 'COMPLETE';
+    }
+
     G.twilightPool = 0;
     fpPlayer.burdens = 2;
     fpPlayer.threats = 0;

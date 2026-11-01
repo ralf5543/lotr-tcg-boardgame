@@ -32,7 +32,10 @@ import { useFaction } from '../../contexts/FactionContext';
 import { FactionProvider } from '../../contexts/FactionProvider';
 import { useTargeting } from '../../contexts/TargetingContext';
 import { audioService } from '../../services/audioService';
-import { findTargetCard } from '../../utils/cardUtils';
+import {
+    findTargetCard,
+    isCardInSupportArea,
+} from '../../utils/cardUtils';
 import { getSanctuaryHealCandidates, SANCTUARY_HEAL_LIMIT } from '../../game/logic/sanctuary';
 import { canPlayCard } from '../../game/engine/canPlayCard';
 import {
@@ -2948,52 +2951,81 @@ export const GameBoard: React.FC<GameBoardProps> = ({
             }
 
             if (origin === 'HAND') {
-                const isGlobalZone =
-                    targetId === 'fellowshipArea' ||
-                    targetId === 'supportArea' ||
-                    targetId === 'battlefield';
-
-                // Condition support « To play, exert … » (Worry…) :
-                // drop zone → halo sur cibles d’affaiblissement (pas de flèche).
+                // Hit-test : les cartes déjà en soutien « mangent » la zone.
+                // Une carte SUPPORT-AREA droppée dessus = poser en soutien.
+                let playTargetId = targetId as string | undefined;
                 if (
                     card?.subtype === 'SUPPORT-AREA' &&
-                    targetId === 'supportArea' &&
-                    getToPlayExertTargetIds(G, card).length > 0
+                    playTargetId &&
+                    playTargetId !== 'supportArea' &&
+                    playTargetId !== 'fellowshipArea' &&
+                    playTargetId !== 'battlefield' &&
+                    isCardInSupportArea(G, playTargetId)
                 ) {
-                    const validation = canPlayCard(card, {
-                        G,
-                        ctx,
-                        playerID: myId,
-                    });
-                    if (!validation.valid) {
-                        console.warn(
-                            `❌ [canPlayCard] Rejet : ${validation.reason}`
-                        );
-                        return;
-                    }
+                    playTargetId = 'supportArea';
+                }
+
+                const isGlobalZone =
+                    playTargetId === 'fellowshipArea' ||
+                    playTargetId === 'supportArea' ||
+                    playTargetId === 'battlefield';
+
+                // Condition support « To play, exert … » (Alive / Worry…) :
+                // — drop sur une cible d’affaiblissement → jouer tout de suite ;
+                // — drop soutien / champ de bataille → halo (pas de flèche).
+                if (card?.subtype === 'SUPPORT-AREA') {
                     const costIds = getToPlayExertTargetIds(G, card);
-                    startTargeting({
-                        kind: 'DESIGNATION',
-                        targetableCardIds: costIds,
-                        message: 'Affaiblissez un personnage pour jouer cette carte.',
-                        onSelectTarget: (costId) => {
-                            stopTargeting();
-                            moves.playCard?.(index, costId);
+                    if (costIds.length > 0) {
+                        const validation = canPlayCard(card, {
+                            G,
+                            ctx,
+                            playerID: myId,
+                        });
+                        if (!validation.valid) {
+                            console.warn(
+                                `❌ [canPlayCard] Rejet : ${validation.reason}`
+                            );
+                            return;
+                        }
+
+                        const droppedOnCost =
+                            Boolean(playTargetId) &&
+                            costIds.includes(playTargetId!);
+                        if (droppedOnCost) {
+                            moves.playCard?.(index, playTargetId);
                             audioService.play('CARD_PLAY');
-                        },
-                    });
-                    return;
+                            return;
+                        }
+
+                        const startCostDesignation =
+                            playTargetId === 'supportArea' ||
+                            playTargetId === 'battlefield';
+                        if (startCostDesignation) {
+                            startTargeting({
+                                kind: 'DESIGNATION',
+                                targetableCardIds: costIds,
+                                message:
+                                    'Affaiblissez un personnage pour jouer cette carte.',
+                                onSelectTarget: (costId) => {
+                                    stopTargeting();
+                                    moves.playCard?.(index, costId);
+                                    audioService.play('CARD_PLAY');
+                                },
+                            });
+                            return;
+                        }
+                    }
                 }
 
                 const targetCard = !isGlobalZone
-                    ? findTargetCard(G, targetId)
+                    ? findTargetCard(G, playTargetId || '')
                     : null;
 
                 // L'engine vérifie absolument tout (phase, coût, unicité, validité zone/cible)
                 const validation = canPlayCard(
                     card,
                     { G, ctx, playerID: myId },
-                    targetId,
+                    playTargetId,
                     targetCard
                 );
 
@@ -3007,10 +3039,10 @@ export const GameBoard: React.FC<GameBoardProps> = ({
                 // Exécution du Move approprié
                 if (targetCard) {
                     if (typeof moves.attachCard === 'function') {
-                        moves.attachCard(index, targetId);
+                        moves.attachCard(index, playTargetId);
                     }
                 } else if (
-                    targetId === 'battlefield' &&
+                    playTargetId === 'battlefield' &&
                     card?.kind === 'SHADOW'
                 ) {
                     if (typeof moves.playShadowCard === 'function') {
