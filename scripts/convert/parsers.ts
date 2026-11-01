@@ -301,16 +301,29 @@ export function attachAbilityTextFr<T extends { phases?: string[]; textFr?: stri
     return abilities;
 }
 
-/** Clause FR absente / non traduite (phase EN + « to » sans « pour »). */
+/**
+ * Clause FR absente / non traduite (CSV = copie EN).
+ * Ex. Final Strike : « Shadow: If the fellowship… play Gollum from… »
+ * (pas de « to », mais phase EN + tournure anglaise).
+ */
 function looksLikeEnglishAbilityClause(clause: string): boolean {
     const body = clause.replace(/\*\*/g, ' ');
     if (/\bpour\b/i.test(body)) return false;
+    // Phase FR explicite → garder la clause.
     if (
-        !/\b(skirmish|maneuver|fellowship|archery|assignment|regroup|response|shadow)\b/i.test(
+        /\b(ombre|compagnie|communauté|manœuvre|manoeuvre|archerie|affectation|regroupement|réponse|combat)\b/i.test(
             body
         )
     ) {
         return false;
+    }
+    // Phase EN restante (CSV non traduit) → ignorer pour textFr.
+    if (
+        /\b(skirmish|maneuver|fellowship|archery|assignment|regroup|response|shadow)\b/i.test(
+            body
+        )
+    ) {
+        return true;
     }
     return /\bto\b/i.test(body);
 }
@@ -5726,6 +5739,57 @@ function parseAddBurdenPlayNamedFromDiscardAbilities(
             id: `${cardId || 'ability'}:${found.length}:burden-play-discard`,
             phases: [phase],
             cost: [{ addBurdens: burdens }],
+            effects: [
+                {
+                    type: 'PLAY_FROM_DECK_OR_DISCARD',
+                    from: 'DISCARD',
+                    target: [[name]],
+                },
+            ],
+            source: 'SELF',
+            text: stripAbilityMarkup(match[0]),
+        });
+    }
+    return found;
+}
+
+/**
+ * Phase: If the fellowship is at any site N, play Named from your discard pile.
+ * (Final Strike…) Montagne site 9 / Response annuler = hors fragment (inertes).
+ */
+function parseAtSitePlayNamedFromDiscardAbilities(
+    text: string,
+    cardId?: string
+): Record<string, unknown>[] {
+    const found: Record<string, unknown>[] = [];
+    const phaseTok =
+        '(?:\\*\\*|<(?:keyword)>)(Fellowship|Shadow|Maneuver|Archery|Assignment|Skirmish|Regroup):?(?:\\s*</(?:keyword)>)?(?:\\*\\*)?';
+    const nameTok =
+        '([A-ZÀ-Ÿ][a-zà-ÿéèêëàâäùûüôöîïç\'’-]+)';
+    const re = new RegExp(
+        `${phaseTok}\\s*If the fellowship is at any site\\s+(\\d+)\\s*,\\s*play\\s+${nameTok}\\s+from your discard pile\\.`,
+        'gi'
+    );
+    let match: RegExpExecArray | null;
+    while ((match = re.exec(text)) !== null) {
+        const phase = match[1]?.toUpperCase();
+        const siteNumber = parseInt(match[2] || '', 10);
+        const name = (match[3] || '').trim();
+        if (
+            !phase ||
+            !Number.isFinite(siteNumber) ||
+            siteNumber < 1 ||
+            siteNumber > 9 ||
+            !name ||
+            !isProperNameToken(name)
+        ) {
+            continue;
+        }
+        found.push({
+            id: `${cardId || 'ability'}:${found.length}:at-site-play-discard`,
+            phases: [phase],
+            cost: [],
+            requiresAtSiteNumber: siteNumber,
             effects: [
                 {
                     type: 'PLAY_FROM_DECK_OR_DISCARD',
@@ -14448,6 +14512,15 @@ export function parseAbilities(
     );
 
     parseAddBurdenPlayNamedFromDiscardAbilities(text, cardId).forEach(
+        (ability) => {
+            abilities.push({
+                ...ability,
+                id: `${cardId || 'ability'}:${abilities.length}`,
+            });
+        }
+    );
+
+    parseAtSitePlayNamedFromDiscardAbilities(text, cardId).forEach(
         (ability) => {
             abilities.push({
                 ...ability,

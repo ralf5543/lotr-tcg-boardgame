@@ -1,5 +1,7 @@
 import type { Ability, CardState, GameState } from '../../types';
 import {
+    getCurrentSite,
+    getCurrentSiteIndex,
     isCardStackedOnControlledSite,
 } from '../../logic/sites';
 import { abilityOwnerPlayerId } from './payAbilityCost';
@@ -22,6 +24,13 @@ export function isAssignedToSkirmish(
     });
 }
 
+/** Numéro de site courant (1–9), Standard. */
+function getCurrentSiteNumber(G: GameState): number {
+    const site = getCurrentSite(G);
+    if (site?.siteNumber != null) return site.siteNumber;
+    return getCurrentSiteIndex(G) + 1;
+}
+
 /** Restrictions hors coût / cible (ex. « not assigned to a skirmish »). */
 export function abilityMeetsPlayRestrictions(
     G: GameState,
@@ -29,6 +38,13 @@ export function abilityMeetsPlayRestrictions(
     ability: Ability
 ): boolean {
     if (ability.requiresUnassigned && isAssignedToSkirmish(G, source)) {
+        return false;
+    }
+    if (
+        typeof ability.requiresAtSiteNumber === 'number' &&
+        ability.requiresAtSiteNumber > 0 &&
+        getCurrentSiteNumber(G) !== ability.requiresAtSiteNumber
+    ) {
         return false;
     }
     if (ability.requiresStackedOnControlledSite) {

@@ -208,6 +208,11 @@ export const devMoves = {
     ) => {
         resetPhaseMachine(G);
         applyDevPreset(G, presetType);
+        // Final Strike : phase Ombre pour activer la situation.
+        if (presetType === 'DECK_GAPS_FINAL_STRIKE') {
+            events?.setPhase?.('shadow');
+            return;
+        }
         events?.setPhase?.('startOfFellowship');
         if (!G.sanctuaryHeal) {
             onStartOfFellowshipBegin(G, events);

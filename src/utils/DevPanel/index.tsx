@@ -372,24 +372,24 @@ export const DevPanel: React.FC<DevPanelProps> = ({
                         </S.GameButton>
                     </S.Section>
 
-                    {/* Preset de playtest : trous decks — Faramir */}
+                    {/* Preset de playtest : trous decks — Final Strike */}
                     <S.Section>
                         <S.Label>
-                            Preset decks (Faramir) :
+                            Preset decks (Final Strike) :
                             <br />
                             <span style={{ opacity: 0.75, fontWeight: 400 }}>
-                                Communauté : Homme Rohan → soin. Combat :
-                                Gandalf → immunité blessures.
+                                Site 9 · Ombre : jouer Gollum depuis la
+                                défausse.
                             </span>
                         </S.Label>
                         <S.ActionButton
                             onClick={() =>
                                 moves.devLoadPreset?.(
-                                    'DECK_GAPS_FARAMIR_PUPIL'
+                                    'DECK_GAPS_FINAL_STRIKE'
                                 )
                             }
                         >
-                            Faramir Wizard’s Pupil (7R91)
+                            Final Strike (10U20)
                         </S.ActionButton>
                     </S.Section>
 

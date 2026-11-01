@@ -6522,8 +6522,7 @@
           }
         ],
         "source": "SELF",
-        "text": "Shadow: If the total number of minions and twilight tokens is 3 or fewer, play a minion at twilight cost –3.",
-        "textFr": "**Shadow:** If the total number of minions and twilight tokens is 3 or fewer, play a minion at twilight cost –3."
+        "text": "Shadow: If the total number of minions and twilight tokens is 3 or fewer, play a minion at twilight cost –3."
       }
     ],
     "actionPhases": [

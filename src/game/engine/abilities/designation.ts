@@ -633,6 +633,74 @@ export function getDesignationCandidates(
     return getEffectDesignationCandidates(G, source, ability);
 }
 
+/**
+ * Nom propre (casse mixte, ex. « Gandalf ») — pas une classe UPPERCASE.
+ * Même critère que collectAbilities / matchers.
+ */
+function isProperNameToken(token: string): boolean {
+    const trim = token.trim();
+    const upper = trim.toUpperCase();
+    return (
+        trim !== upper &&
+        !/^bearer$/i.test(trim) &&
+        /[a-zà-ÿ]/i.test(trim)
+    );
+}
+
+/** Filtre DNF uniquement des noms propres (« Gandalf », « Gollum or Sméagol »). */
+function dnfIsProperNameOnly(target: string[][]): boolean {
+    return (
+        target.length > 0 &&
+        target.every(
+            (group) =>
+                group.length > 0 &&
+                group.every((token) => isProperNameToken(token))
+        )
+    );
+}
+
+/**
+ * Coût : affaiblir un personnage nommé (pas « un Homme », pas multi distinct).
+ * Une seule cible possible → pas d’étape de ciblage.
+ */
+function costExertIsProperNameOnly(ability: Ability): boolean {
+    const req = (ability.cost || []).find((opt) => {
+        const e = opt.exert?.[0];
+        return Boolean(e && Array.isArray(e.target));
+    })?.exert?.[0];
+    if (!req || !Array.isArray(req.target)) return false;
+    if (req.distinctTargets && (req.count || 1) > 1) return false;
+    return dnfIsProperNameOnly(req.target);
+}
+
+/**
+ * Effet : blessure / exhaust / affaiblir un personnage nommé.
+ * (« soigner Aragorn », « force +2 à Gandalf » restent à désigner si besoin).
+ */
+function effectAttackIsProperNameOnly(ability: Ability): boolean {
+    return (ability.effects || []).some((effect) => {
+        if (
+            effect.type !== 'WOUND' &&
+            effect.type !== 'EXHAUST' &&
+            effect.type !== 'EXERT'
+        ) {
+            return false;
+        }
+        if (effect.type === 'EXERT' && effect.all) return false;
+        if (
+            effect.type === 'EXERT' &&
+            effect.multiCount &&
+            effect.multiCount > 1
+        ) {
+            return false;
+        }
+        if (!('target' in effect) || !Array.isArray(effect.target)) {
+            return false;
+        }
+        return dnfIsProperNameOnly(effect.target);
+    });
+}
+
 export function abilityNeedsCostDesignation(
     G: GameState,
     source: CardState,
@@ -640,10 +708,22 @@ export function abilityNeedsCostDesignation(
     actingPlayerId?: string
 ): boolean {
     const need = getCostDesignationCount(ability);
-    return (
-        getCostDesignationCandidates(G, source, ability, actingPlayerId)
-            .length >= need
+    const candidates = getCostDesignationCandidates(
+        G,
+        source,
+        ability,
+        actingPlayerId
     );
+    if (candidates.length < need) return false;
+    // « Affaiblir Gandalf » : une seule cible → paiement direct.
+    if (
+        need === 1 &&
+        candidates.length === 1 &&
+        costExertIsProperNameOnly(ability)
+    ) {
+        return false;
+    }
+    return true;
 }
 
 export function abilityNeedsEffectDesignation(
@@ -651,22 +731,28 @@ export function abilityNeedsEffectDesignation(
     source: CardState,
     ability: Ability
 ): boolean {
-    return getEffectDesignationCandidates(G, source, ability).length >= 1;
+    const candidates = getEffectDesignationCandidates(G, source, ability);
+    if (candidates.length < 1) return false;
+    // « Blesser Aragorn » : une seule cible → résolution directe.
+    if (
+        candidates.length === 1 &&
+        effectAttackIsProperNameOnly(ability)
+    ) {
+        return false;
+    }
+    return true;
 }
 
 /**
- * Effets « trajectoire » (dirigés : blessure / exhaust / soin…) : flèche agent → cible.
- * Pas pour reinforce / place de jetons (neutre : halo + clic seulement).
+ * Flèche jaune = attaque directe personnage → personnage
+ * (blessure, exhaust, exert en effet). Rien d’autre.
  */
 export function abilityEffectWantsTargetingArrow(ability: Ability): boolean {
     return (ability.effects || []).some(
         (effect) =>
             effect.type === 'EXHAUST' ||
             effect.type === 'WOUND' ||
-            // FORCE_ASSIGN : affectation logistique → halo + clic, pas flèche.
-            effect.type === 'FORBID_ASSIGN' ||
-            effect.type === 'EXERT' ||
-            effect.type === 'HEAL'
+            effect.type === 'EXERT'
     );
 }
 
@@ -1257,7 +1343,7 @@ export function formatDesignationPrompt(
               ? effectTarget
               : null;
     if (!target) return 'Choisissez une cible.';
-    // DNF « your Gollum or your Sméagol »
+    // DNF « Gollum or Sméagol »
     if (
         target.length > 1 &&
         target.every((branch) => Array.isArray(branch))

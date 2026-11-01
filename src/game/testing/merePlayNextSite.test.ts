@@ -28,9 +28,9 @@ const MERE_ABILITY: Ability = {
 };
 
 describe('Mere of Dead Faces — PLAY_NEXT_SITE', () => {
-    it('toaster : votre Gollum ou votre Sméagol', () => {
+    it('toaster : Gollum ou Sméagol', () => {
         expect(formatDesignationPrompt(MERE_ABILITY, 'cost')).toBe(
-            'Choisissez votre Gollum ou votre Sméagol.'
+            'Choisissez Gollum ou Sméagol.'
         );
     });
 

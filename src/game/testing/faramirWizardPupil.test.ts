@@ -1,10 +1,11 @@
 import { describe, expect, it } from 'vitest';
 import { parseAbilities } from '../../../scripts/convert/parsers';
 import { getCardById } from '../cardsData';
-import { applyDevPreset } from '../dev/presets';
 import { applyAbilityEffect } from '../engine/abilities/applyAbilityEffect';
+import { collectVisibleAbilities } from '../engine/abilities/collectAbilities';
 import {
     abilityHasLegalEffectTarget,
+    abilityNeedsCostDesignation,
     getCostDesignationCandidates,
     getEffectDesignationCandidates,
 } from '../engine/abilities/designation';
@@ -73,6 +74,37 @@ describe('Faramir Wizard’s Pupil 7R91', () => {
         ).toBe(true);
     });
 
+    it('bulle Faramir : capacité « affaiblir Gandalf » listée (pas avalée par la projection support)', () => {
+        const faramir = {
+            ...getCardById('7R91')!,
+            instanceId: 'faramir',
+        };
+        const gandalf = createCompanion({
+            id: '8R15',
+            instanceId: 'gandalf',
+            title: 'Gandalf',
+            culture: 'GANDALF',
+            race: 'WIZARD',
+            i18n: { en: { title: 'Gandalf' }, fr: { title: 'Gandalf' } },
+        });
+        const G = createGameState({
+            fpPlayerId: '0',
+            players: {
+                '0': createPlayerState('0', {
+                    fellowshipArea: [faramir, gandalf],
+                }),
+                '1': createPlayerState('1'),
+            },
+        });
+        const ids = collectVisibleAbilities(G, faramir).map(
+            (r) => r.ability.id
+        );
+        expect(ids).toContain('7R91:2');
+        expect(
+            collectVisibleAbilities(G, gandalf).map((r) => r.ability.id)
+        ).not.toContain('7R91:2');
+    });
+
     it('Combat : affaiblir Gandalf → Faramir ne prend plus de blessures', () => {
         const faramir = {
             ...getCardById('7R91')!,
@@ -106,22 +138,13 @@ describe('Faramir Wizard’s Pupil 7R91', () => {
                 (c) => c.instanceId
             )
         ).toEqual(['gandalf']);
-        expect(payAbilityCost(G, faramir, ability.cost, 'gandalf')).toBe(true);
+        // Nom propre unique : pas d’étape halo — paiement sans id choisi.
+        expect(abilityNeedsCostDesignation(G, faramir, ability)).toBe(false);
+        expect(payAbilityCost(G, faramir, ability.cost)).toBe(true);
         expect(applyAbilityEffect(G, faramir, ability)).toBe(true);
         expect(faramir.forbidWoundsUntil).toBe('SKIRMISH');
         expect(canCardTakeWound(G, faramir)).toBe(false);
         expect(canCardTakeWound(G, gandalf)).toBe(true);
     });
 
-    it('preset DEV', () => {
-        const G = createGameState();
-        applyDevPreset(G, 'DECK_GAPS_FARAMIR_PUPIL');
-        expect(
-            G.players['0']!.fellowshipArea?.some((c) => c.id === '7R91')
-        ).toBe(true);
-        expect(
-            G.players['0']!.fellowshipArea?.some((c) => c.id === '8R15')
-        ).toBe(true);
-        expect(G.players['0']!.hand?.[0]?.id).toBe('4C265');
-    });
 });

@@ -1254,6 +1254,11 @@ export interface Ability {
      * sur un site contrôlé par son propriétaire (play from stack).
      */
     requiresStackedOnControlledSite?: boolean;
+    /**
+     * Capacité utilisable seulement si la communauté est au site N
+     * (chemin Standard 1–9 ; Final Strike…).
+     */
+    requiresAtSiteNumber?: number;
 }
 
 export interface CardState {
@@ -1844,7 +1849,7 @@ export interface LotrMoveContext extends FnContext<GameState> {
 }
 
 /** Presets DEV de playtest (panneau de test, vague en cours). */
-export type DevPresetType = 'DECK_GAPS_FARAMIR_PUPIL';
+export type DevPresetType = 'DECK_GAPS_FINAL_STRIKE';
 
 export interface ArcheryState {
     step?: 'ACTIONS' | 'FP_ASSIGN' | 'SHADOW_ASSIGN' | 'COMPLETE';

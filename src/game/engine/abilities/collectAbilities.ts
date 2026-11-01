@@ -225,8 +225,17 @@ export function collectVisibleAbilities(
         if (isSiteCard(source)) {
             return false;
         }
-        // Nom propre (support) : le bouton vit sur le personnage projeté.
-        if (abilityMayProjectFromSupport(ability)) return false;
+        // Nom propre depuis une situation support : bouton sur le personnage
+        // projeté (Périls inconnus → Gandalf). Pas pour un compagnon/séide
+        // qui a lui-même le texte (Faramir : affaiblir Gandalf → reste sur Faramir).
+        if (
+            abilityMayProjectFromSupport(ability) &&
+            source.type !== 'COMPANION' &&
+            source.type !== 'ALLY' &&
+            source.type !== 'MINION'
+        ) {
+            return false;
+        }
         return true;
     });
     if (!G) return own;
@@ -475,6 +484,14 @@ function formatArticleForFilters(
     tokens: string[],
     stackFromHand?: boolean
 ): string {
+    // Nom propre (Gandalf, Gollum…) : titre seul — pas « un Gandalf »
+    // (unicité : une seule copie en jeu).
+    if (
+        tokens.length > 0 &&
+        tokens.every((token) => isProperNameCostToken(token))
+    ) {
+        return formatFilterList(tokens);
+    }
     const { cultures, races, types, other } = partitionFilterTokens(tokens);
     if (
         stackFromHand &&
@@ -510,7 +527,8 @@ function formatEffectBit(
             return 'blesser un personnage au combat';
         }
         if (Array.isArray(effect.target)) {
-            return `blesser un ${formatFilterList(effect.target.flat())}`;
+            const who = formatTargetPhrase(effect.target);
+            return who ? `blesser ${who}` : 'blesser';
         }
         return 'blesser';
     }
@@ -925,12 +943,13 @@ export function formatAbilityWhoLabel(
         return asDesignation ? 'une herbe à pipe' : 'herbe à pipe';
     }
     const label = formatFilterList(tokens);
-    // Nom propre (Gollum, Sméagol…) : « votre », comme le texte « your … ».
+    // Nom propre (Gandalf, Gollum…) : le titre seul — pas « votre »
+    // (le texte dit souvent « Exert Gandalf », pas « your Gandalf »).
     if (
         tokens.length === 1 &&
         isProperNameCostToken(tokens[0]!)
     ) {
-        return `votre ${label}`;
+        return label;
     }
     if (asDesignation) return `un ${label}`;
     return label;
@@ -943,7 +962,7 @@ function formatCostWho(
 ): string {
     if (target === 'BEARER') return 'le détenteur';
     if (Array.isArray(target)) {
-        // DNF : [[Gollum],[Sméagol]] = « votre Gollum ou votre Sméagol »
+        // DNF : [[Gollum],[Sméagol]] = « Gollum ou Sméagol »
         if (
             target.length > 1 &&
             target.every((branch) => Array.isArray(branch))
@@ -1107,10 +1126,19 @@ function formatAbilityLabelFromAst(
     source: CardState
 ): { cost: string; effect: string } {
     const cost = capitalizeLabel(formatCostLabel(ability, source));
-    const effectRaw = (ability.effects || [])
+    let effectRaw = (ability.effects || [])
         .map((effect) => formatEffectBit(effect, source))
         .filter(Boolean)
         .join(' et ');
+    if (
+        typeof ability.requiresAtSiteNumber === 'number' &&
+        ability.requiresAtSiteNumber > 0
+    ) {
+        const siteBit = `si au site ${ability.requiresAtSiteNumber}`;
+        effectRaw = effectRaw
+            ? `${siteBit}, ${effectRaw}`
+            : siteBit;
+    }
     const effect = cost ? effectRaw : capitalizeLabel(effectRaw);
     return { cost, effect };
 }

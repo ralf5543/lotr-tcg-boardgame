@@ -20,6 +20,7 @@ Après clic sur la situation (classe) : désignation parmi les cibles légales (
 
 ## Hors scope de cette règle
 
+- **Personnage (compagnon / séide / allié)** dont le texte dit « affaiblir Gandalf » (etc.) : le bouton reste **sur ce personnage**, pas projeté sur Gandalf (Faramir Wizard’s Pupil…). La projection nom propre ne concerne que l’**aire de soutien**.
 - **Attachement sur un personnage** : le bouton peut vivre sur le porteur (capacités de l’attachement listées via le host) — ce n’est pas de la projection support→compagnon. Libellé : préfixer le nom de l’attachement — [`attachment-ability-label.mdc`](attachment-ability-label.mdc).
 - Coût **SELF / BEARER** : bouton sur la source / le porteur, pas de projection « classe ».
 - **Sites** : **pas** de bouton d’action sur le site.

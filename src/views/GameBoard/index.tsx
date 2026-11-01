@@ -635,12 +635,14 @@ export const GameBoard: React.FC<GameBoardProps> = ({
             const effect = abilityReplaceSiteEffect(ability);
             const commit = (targetIds: string | string[]) => {
                 stopTargeting();
+                // Site toujours en 5ᵉ arg : si le coût est auto (Gandalf /
+                // Gollum unique), arg3 vide → pas de confusion site/coût.
                 moves.activateAbility?.(
                     sourceInstanceId,
                     abilityId,
-                    costId || targetIds,
+                    costId,
                     undefined,
-                    costId ? targetIds : undefined
+                    targetIds
                 );
             };
 
@@ -1474,7 +1476,10 @@ export const GameBoard: React.FC<GameBoardProps> = ({
                 return;
             }
         }
+        // needsCost : sinon un nom propre unique (Gandalf…) a encore des
+        // candidats et on rouvrait le halo à tort.
         if (
+            needsCost &&
             !needsEffect &&
             !hasPrefillCost &&
             costNeed <= 1 &&

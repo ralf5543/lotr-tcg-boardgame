@@ -118,7 +118,7 @@ const neutralPath: readonly string[] = [
 
 /**
  * Applique le preset DEV de playtest (zones vidées / chemin Standard).
- * Vague Faramir Wizard’s Pupil (jouer Homme Rohan → soin ; empêcher blessures).
+ * Vague Final Strike (site 9 → jouer Gollum depuis la défausse).
  */
 export const applyDevPreset = (
     G: GameState,
@@ -132,36 +132,36 @@ export const applyDevPreset = (
     const shadowPlayer = G.players[shadowId];
 
     switch (presetType) {
-        case 'DECK_GAPS_FARAMIR_PUPIL': {
+        case 'DECK_GAPS_FINAL_STRIKE': {
             resetBoardForPreset(G);
-            setupDevPath(G, 0, neutralPath);
-            G.twilightPool = 5;
+            // Site 9 (index 8) : condition Ombre jouable.
+            setupDevPath(G, 8, neutralPath);
+            G.twilightPool = 4;
             fpPlayer.burdens = 0;
-            const faramir = {
-                ...clonePresetCard('7R91', 'dev-faramir'),
-                wounds: 1,
-            };
             fpPlayer.fellowshipArea = [
                 {
-                    ...clonePresetCard('5U111', 'dev-faramir-frodo'),
-                    attachments: [clonePresetCard('4R1', 'dev-faramir-ring')],
+                    ...clonePresetCard('5U111', 'dev-fs-frodo'),
+                    attachments: [clonePresetCard('4R1', 'dev-fs-ring')],
                 },
-                faramir,
-                clonePresetCard('8R15', 'dev-faramir-gandalf'),
+                clonePresetCard('8R15', 'dev-fs-gandalf'),
             ];
-            // Homme Rohan en main pour la capacité Communauté.
-            fpPlayer.hand = [clonePresetCard('4C265', 'dev-faramir-rider')];
+            fpPlayer.hand = [];
             fpPlayer.deck = [];
-            fpPlayer.sitesDeck = [clonePresetSite('11S250', fpId)];
+            fpPlayer.sitesDeck = [];
             if (shadowPlayer) {
+                shadowPlayer.supportArea = [
+                    clonePresetCard('10U20', 'dev-final-strike'),
+                ];
+                // Gollum en défausse à jouer via Final Strike.
+                shadowPlayer.discard = [
+                    clonePresetCard('7C59', 'dev-fs-gollum'),
+                ];
                 shadowPlayer.hand = [];
                 shadowPlayer.deck = [];
-                shadowPlayer.sitesDeck = [
-                    clonePresetSite('11S263', shadowId),
-                ];
+                shadowPlayer.sitesDeck = [];
             }
             G.statusMessage =
-                '[DEV] Faramir (7R91) · Communauté : bulle → halo Homme Rohan en main → soigne Faramir. Combat : affaiblir Gandalf (halo) → Faramir immunisé aux blessures jusqu’à fin d’escarmouche. Aussi : affaiblir Faramir → Hobbit dissocié +2.';
+                '[DEV] Final Strike (10U20) · Site 9. Ombre : bulle sur Final Strike → jouer Gollum depuis la défausse. (Montagne site 9 + Response annuler capacité = inertes.)';
             break;
         }
     }

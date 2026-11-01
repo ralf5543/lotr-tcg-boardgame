@@ -414,7 +414,7 @@ describe('formatAbilityLabelParts', () => {
             type: 'SITE',
         }) as unknown as CardState;
         expect(formatAbilityLabelParts(mere, site)).toEqual({
-            cost: 'Affaiblir votre Gollum ou votre Sméagol',
+            cost: 'Affaiblir Gollum ou Sméagol',
             effect: 'jouer le prochain site de la communauté',
         });
 
@@ -437,7 +437,7 @@ describe('formatAbilityLabelParts', () => {
         });
         expect(formatAbilityLabelParts(fatOne, condition)).toEqual({
             cost: 'Défausser Fat One Wants It',
-            effect: 'renvoyer un Gollum dans la main de son propriétaire',
+            effect: 'renvoyer Gollum dans la main de son propriétaire',
         });
     });
 

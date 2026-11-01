@@ -166,20 +166,28 @@ export const activateAbility = (
             G,
             source,
             ability.cost,
+            // Coût auto (nom propre unique) : l’arg 3 peut quand même être
+            // fourni comme indice ; la cible d’effet reste en 5ᵉ arg.
             chosenTargetId,
             discardedHandIds,
-            needsCostDesignation ? chosenEffectTargetId : chosenTargetId,
+            needsCostDesignation
+                ? chosenEffectTargetId
+                : (chosenEffectTargetId ?? chosenTargetId),
             actorId
         )
     ) {
         return 'INVALID_MOVE';
     }
+    // Si le 5ᵉ arg est présent, c’est la cible d’effet — même quand le coût
+    // nom propre a été résolu sans désignation (Mere : site en 5ᵉ).
     const effectTargetId = needsCostDesignation
         ? chosenEffectTargetId
-        : chosenTargetId;
+        : (chosenEffectTargetId ?? chosenTargetId);
     const costIdForEffect = needsCostDesignation
         ? chosenTargetId
-        : undefined;
+        : chosenEffectTargetId
+          ? chosenTargetId
+          : undefined;
     if (
         !applyAbilityEffect(
             G,

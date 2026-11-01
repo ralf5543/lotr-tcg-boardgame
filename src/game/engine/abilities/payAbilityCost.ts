@@ -376,8 +376,9 @@ function pickExertTarget(
             (c) => c.instanceId === chosenTargetId || c.id === chosenTargetId
         );
     }
-    if (requireChoice) return undefined;
+    // Une seule cible possible : pas de choix (même si mode DESIGNATION).
     if (payable.length === 1) return payable[0];
+    if (requireChoice) return undefined;
     return undefined;
 }
 

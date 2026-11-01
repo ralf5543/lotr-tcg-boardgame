@@ -84162,8 +84162,7 @@
           }
         ],
         "source": "SELF",
-        "text": "SHADOW: Play a gollum minion stacked here as if played from hand.",
-        "textFr": "**Shadow:** Play a <symbol>gollum</symbol> minion stacked here as if played from hand."
+        "text": "SHADOW: Play a gollum minion stacked here as if played from hand."
       }
     ],
     "actionPhases": [
@@ -92179,6 +92178,32 @@
     "kind": "SHADOW",
     "type": "CONDITION",
     "subtype": "SUPPORT-AREA",
+    "abilities": [
+      {
+        "id": "10U20:0",
+        "phases": [
+          "SHADOW"
+        ],
+        "cost": [],
+        "requiresAtSiteNumber": 9,
+        "effects": [
+          {
+            "type": "PLAY_FROM_DECK_OR_DISCARD",
+            "from": "DISCARD",
+            "target": [
+              [
+                "Gollum"
+              ]
+            ]
+          }
+        ],
+        "source": "SELF",
+        "text": "Shadow: If the fellowship is at any site 9, play Gollum from your discard pile."
+      }
+    ],
+    "actionPhases": [
+      "SHADOW"
+    ],
     "culture": "GOLLUM",
     "twilightCost": 1,
     "imageUrl": "/cards_visuals/o_10_020.jpg",
@@ -95377,8 +95402,7 @@
           }
         ],
         "source": "SELF",
-        "text": "REGROUP: Stack this minion on a site you control.",
-        "textFr": "**Regroup:** Stack this minion on a site you control."
+        "text": "REGROUP: Stack this minion on a site you control."
       }
     ],
     "actionPhases": [
@@ -98154,8 +98178,7 @@
           }
         ],
         "source": "SELF",
-        "text": "REGROUP: Stack a spell from hand here.",
-        "textFr": "**Regroup:** Stack a spell from hand here."
+        "text": "REGROUP: Stack a spell from hand here."
       }
     ],
     "actionPhases": [

@@ -95,6 +95,38 @@ describe('designation', () => {
         const candidates = getDesignationCandidates(G, event, SAM_ABILITY);
         expect(candidates).toHaveLength(1);
         expect(candidates[0]?.id).toBe('1C311');
+        // Coût « affaiblir Sam » : unique → pas d’étape ; effet buff Sam → encore désigné.
+        expect(abilityNeedsCostDesignation(G, event, SAM_ABILITY)).toBe(false);
+        expect(abilityNeedsEffectDesignation(G, event, SAM_ABILITY)).toBe(true);
+    });
+
+    it('blesser un nom propre unique : pas de désignation', () => {
+        const aragorn = createCompanion({
+            id: 'aragorn',
+            instanceId: 'aragorn',
+            title: 'Aragorn',
+            vitality: 4,
+        });
+        const G = createGameState({
+            players: {
+                '0': createPlayerState('0', {
+                    fellowshipArea: [aragorn],
+                }),
+            },
+        });
+        const ability: Ability = {
+            id: 'wound-aragorn:0',
+            phases: ['MANEUVER'],
+            cost: [],
+            effects: [{ type: 'WOUND', count: 1, target: [['Aragorn']] }],
+            source: 'SELF',
+        };
+        const source = createCompanion({ id: 'src', title: 'Source' });
+        expect(
+            getDesignationCandidates(G, source, ability).map((c) => c.instanceId)
+        ).toEqual(['aragorn']);
+        expect(abilityNeedsEffectDesignation(G, source, ability)).toBe(false);
+        expect(abilityNeedsDesignation(G, source, ability)).toBe(false);
     });
 
     it('un Hobbit : le joueur doit quand même désigner', () => {
@@ -574,10 +606,11 @@ describe('designation', () => {
             },
         });
 
-        expect(abilityNeedsCostDesignation(G, event, ability)).toBe(true);
+        // Affaiblir Gandalf (nom propre unique) : pas d’étape de ciblage.
+        expect(abilityNeedsCostDesignation(G, event, ability)).toBe(false);
         expect(abilityNeedsEffectDesignation(G, event, ability)).toBe(false);
         expect(abilityEffectWantsTargetingArrow(ability)).toBe(false);
-        // Drag : coût à désigner → pas de flèche pendant le drag
+        // Pas de désignation → pas de flèche pendant le drag (effet de masse).
         expect(getHandEventDesignationTargetIds(G, event, 'fellowship')).toEqual(
             []
         );
