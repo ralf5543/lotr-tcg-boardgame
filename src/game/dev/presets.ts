@@ -21,75 +21,46 @@ const clonePresetSite = (
     siteNumber?: number
 ): SiteCardState => {
     const card = getCardById(id);
-    if (!card) {
+    if (!card || card.type !== 'SITE') {
         throw new Error(`[DEV] Site introuvable pour le preset : ${id}`);
     }
-    const title = card.i18n?.en?.title || card.title || id;
     return {
         ...card,
-        id: card.id,
-        instanceId: `dev-site-${id}-${siteNumber ?? 'deck'}`,
-        name: title,
-        twilightCost: card.twilightCost ?? 0,
-        gameText: card.i18n?.en?.gameText || '',
+        instanceId: `dev-site-${siteNumber || id}`,
         ownerId,
-        siteNumber,
-        imageUrl: card.imageUrl,
-        keywords: card.keywords,
-        abilities: card.abilities,
-        attachments: [],
-    } as SiteCardState;
+        siteNumber: siteNumber || card.siteNumber,
+        twilightCost: card.twilightCost ?? 0,
+    };
 };
 
 const resetBoardForPreset = (G: GameState): void => {
-    const fpId = G.fpPlayerId || '0';
-    const fpPlayer = G.players[fpId];
-    if (!fpPlayer) return;
-
-    // Sortir du setup (encheres…) pour que le preset soit jouable tout de suite.
-    if (G.setupState) {
-        G.setupState.step = 'COMPLETE';
-    }
-
-    G.twilightPool = 0;
-    fpPlayer.burdens = 2;
-    fpPlayer.threats = 0;
-    G.tempModifiers = [];
     G.battlefield = [];
     G.skirmishes = [];
     G.activeSkirmishId = undefined;
+    G.twilightPool = 0;
+    G.tempModifiers = undefined;
+    G.tempMoveLimitMods = undefined;
+    G.pendingForcedChoice = undefined;
+    G.pendingPlay = undefined;
+    G.pendingEvent = undefined;
+    G.responseWindow = undefined;
     G.actionWindow = undefined;
-    G.awaitingSiteSelection = false;
-    G.archeryState = undefined;
-    G.archeryWoundsToAssign = 0;
-    G.pendingSiteMoveAbility = undefined;
-    G.pendingSiteStartAbility = undefined;
-    G.pendingSitePhaseAbility = undefined;
-    G.pendingSitePhaseDesignation = undefined;
-    G.pendingSiteFollowerTransfer = undefined;
-    G.pendingFpDiscard = undefined;
-    G.pendingDeadPileRemoval = undefined;
-    G.pendingSiteCharacterWounds = undefined;
-    G.pendingWhenPlayed = undefined;
-    G.pendingSiteDepartureContinuation = undefined;
-    G.pendingReveal = undefined;
-    G.pendingPutsOnTheOneRing = false;
     G.wearingTheOneRing = undefined;
-    G.sitePhaseAbilityOfferedThisPhase = false;
-    G.hunterMinionPlayedThisShadowPhase = false;
-    G.preventMoveAgain = false;
-
-    Object.keys(G.players).forEach((pId) => {
-        const player = G.players[pId];
+    if (G.setupState) {
+        G.setupState.step = 'COMPLETE';
+    }
+    Object.values(G.players).forEach((player) => {
         if (player) {
             player.hand = [];
-            player.supportArea = [];
             player.discard = [];
             player.deadPile = [];
             player.removedFromGame = [];
             player.fellowshipArea = [];
+            player.supportArea = [];
             player.sitesDeck = [];
             player.deck = [];
+            player.burdens = 0;
+            player.threats = 0;
         }
     });
 };
@@ -125,7 +96,7 @@ const neutralPath: readonly string[] = [
 
 /**
  * Applique le preset DEV de playtest (zones vidées / chemin Standard).
- * Vague Uruk Spy (réponse à l’enfilage de l’Anneau).
+ * Vague Light the Beacons (choix de culture + exert variable).
  */
 export const applyDevPreset = (
     G: GameState,
@@ -139,48 +110,44 @@ export const applyDevPreset = (
     const shadowPlayer = G.players[shadowId];
 
     switch (presetType) {
-        case 'DECK_GAPS_URUK_SPY': {
+        case 'DECK_GAPS_LIGHT_THE_BEACONS': {
             resetBoardForPreset(G);
             setupDevPath(G, 3, neutralPath);
-            G.twilightPool = 0;
-            fpPlayer.burdens = 1;
-            // Anneau 4R1 : Combat — +1 fardeau pour porter l’Anneau.
+            G.twilightPool = 10;
+            fpPlayer.burdens = 0;
+            // Porteur (Frodon) + Gandalf (vitalité 4) + Faramir (Gondor) + Merry (Comté).
+            // Sans RING-BOUND → dissociés (sauf le Porteur).
             fpPlayer.fellowshipArea = [
                 {
-                    ...clonePresetCard('5U111', 'dev-spy-frodo'),
-                    attachments: [clonePresetCard('4R1', 'dev-spy-ring')],
-                    wounds: 0,
+                    ...clonePresetCard('1C290', 'dev-beacon-frodo'),
+                    keywords: ['RING-BEARER', 'RING-BOUND'],
+                    attachments: [clonePresetCard('4R1', 'dev-beacon-ring')],
                 },
+                clonePresetCard('8R15', 'dev-beacon-gandalf'),
+                clonePresetCard('7R91', 'dev-beacon-faramir'),
+                clonePresetCard('1R302', 'dev-beacon-merry'),
             ];
-            fpPlayer.hand = [];
+            // Après jeu de l’événement, 4 cartes restent → initiative (exert ×2).
+            // Retirer 1 pad avant de jouer pour tester ×3.
+            fpPlayer.hand = [
+                clonePresetCard('7R43', 'dev-beacons'),
+                clonePresetCard('1C84', 'dev-beacon-pad1'),
+                clonePresetCard('1C84', 'dev-beacon-pad2'),
+                clonePresetCard('1C84', 'dev-beacon-pad3'),
+                clonePresetCard('1C84', 'dev-beacon-pad4'),
+            ];
             fpPlayer.deck = [];
             fpPlayer.sitesDeck = [];
+            fpPlayer.supportArea = [];
             if (shadowPlayer) {
-                // 2 séides Isengard → défausse 2 du dessus ; fardeaux = cartes Ombre.
-                // 2 séides culture Isengard (Brawling Uruk = culture URUK-HAI ≠ Isengard).
-                const spy = clonePresetCard('1R155', 'dev-uruk-spy');
-                const warrior = clonePresetCard('1C156', 'dev-spy-warrior');
-                G.battlefield = [spy, warrior];
-                G.skirmishes = [
-                    {
-                        id: 'dev-spy-skirmish',
-                        companionId: 'dev-spy-frodo',
-                        minionIds: ['dev-uruk-spy'],
-                    },
-                ];
-                G.activeSkirmishId = 'dev-spy-skirmish';
                 shadowPlayer.hand = [];
                 shadowPlayer.supportArea = [];
                 shadowPlayer.discard = [];
-                shadowPlayer.deck = [
-                    clonePresetCard('1C133', 'dev-spy-deck-1'), // Ombre
-                    clonePresetCard('1C84', 'dev-spy-deck-2'), // FP Sleep Caradhras
-                    clonePresetCard('2R43', 'dev-spy-deck-3'), // Ombre
-                ];
+                shadowPlayer.deck = [];
                 shadowPlayer.sitesDeck = [];
             }
             G.statusMessage =
-                '[DEV] Uruk Spy (1R155) · Combat : Frodon (+1 fardeau) porte l’Anneau → Response Espion : affaiblir → défausse 2 du dessus (2 Isengard) → +1 fardeau par carte Ombre défaussée.';
+                '[DEV] Light the Beacons (7R43) · Manœuvre : jouer l’événement (5 cartes → 4 = initiative, exert ×2) ; défausse un pad d’abord pour ×3. Puis choisir Gondor ou Comté → force +3 aux dissociés.';
             break;
         }
     }

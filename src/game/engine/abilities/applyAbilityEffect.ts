@@ -467,6 +467,17 @@ export function applyAbilityEffect(
             continue;
         }
 
+        if (effect.type === 'MODIFY_MOVE_LIMIT' && effect.expiresAtPhase) {
+            if (!G.tempMoveLimitMods) G.tempMoveLimitMods = [];
+            G.tempMoveLimitMods.push({
+                id: `${ability.id}:move-limit:${G.tempMoveLimitMods.length}`,
+                value: effect.value || 0,
+                ...(typeof effect.min === 'number' ? { min: effect.min } : {}),
+                expiresAtPhase: effect.expiresAtPhase,
+            });
+            continue;
+        }
+
         if (
             effect.type === 'HEAL' &&
             effect.all &&
@@ -658,13 +669,16 @@ export function applyAbilityEffect(
             const playOpts = {
                 ignoreDeadPileUniqueness: Boolean(effect.ignoreDeadPile),
             };
+            const attachHost =
+                effect.attachTo === 'SELF' ? source : null;
             const candidates = getHandPlayCandidates(
                 G,
                 ownerId,
                 effect.target,
                 playPhase,
                 effect.twilightReduce || 0,
-                playOpts
+                playOpts,
+                attachHost
             );
             if (
                 !candidates.some(
@@ -680,7 +694,8 @@ export function applyAbilityEffect(
                 effect.target,
                 playPhase,
                 effect.twilightReduce || 0,
-                playOpts
+                playOpts,
+                attachHost
             );
             if (!played) return false;
             afterCardPlayed(G, played, {
@@ -1494,6 +1509,23 @@ export function applyAbilityEffect(
             continue;
         }
 
+        // « all unbound companions of one culture… » — masse, pas de désignation.
+        if (
+            effect.type === 'ADD_TEMP_STAT' &&
+            effect.all &&
+            Array.isArray(effect.target)
+        ) {
+            const matches = resolveCostTarget(G, source, effect.target).filter(
+                (card) => !card.isDead
+            );
+            for (const card of matches) {
+                if (!applyOneEffect(G, source, ability, effect, card)) {
+                    return false;
+                }
+            }
+            continue;
+        }
+
         if (effect.type === 'MAKE_RING_BEARER') {
             if (!makeRingBearer(G, source, effect.resistance)) {
                 return false;
@@ -1984,6 +2016,15 @@ export function clearExpiredTempKeywords(
         );
         if (G.tempModifiers.length === 0) {
             delete G.tempModifiers;
+        }
+    }
+
+    if (G.tempMoveLimitMods && G.tempMoveLimitMods.length > 0) {
+        G.tempMoveLimitMods = G.tempMoveLimitMods.filter(
+            (mod) => mod.expiresAtPhase !== phase
+        );
+        if (G.tempMoveLimitMods.length === 0) {
+            delete G.tempMoveLimitMods;
         }
     }
 

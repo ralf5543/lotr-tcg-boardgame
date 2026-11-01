@@ -8,7 +8,6 @@ import {
     tryOpenPutsOnTheOneRing,
     passResponseWindow,
 } from '../engine/responseWindow';
-import { applyDevPreset } from '../dev/presets';
 import type { CardState } from '../types';
 import {
     createGameState,
@@ -126,15 +125,4 @@ describe('Uruk Spy 1R155', () => {
         expect(passResponseWindow(G, '1')).not.toBe('INVALID');
     });
 
-    it('preset DEV : Uruk Spy + Anneau + escarmouche', () => {
-        const G = createGameState();
-        applyDevPreset(G, 'DECK_GAPS_URUK_SPY');
-        expect(G.battlefield?.some((c) => c.id === '1R155')).toBe(true);
-        expect(G.activeSkirmishId).toBe('dev-spy-skirmish');
-        expect(
-            G.players['0']!.fellowshipArea?.[0]?.attachments?.some(
-                (a) => a.id === '4R1'
-            )
-        ).toBe(true);
-    });
 });

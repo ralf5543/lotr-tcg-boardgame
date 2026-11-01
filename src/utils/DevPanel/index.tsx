@@ -15,7 +15,7 @@ export interface DevMoves {
     devSetArchery?: (amount: number) => void;
     devSetCurrentSite?: (siteIndex: number) => void;
     devForceEndPhase: () => void;
-    /** Presets de playtest de la vague en cours (trous decks : Uruk Spy). */
+    /** Presets de playtest de la vague en cours (trous decks : Elendil). */
     devLoadPreset?: (presetName: string) => void;
 }
 
@@ -372,24 +372,24 @@ export const DevPanel: React.FC<DevPanelProps> = ({
                         </S.GameButton>
                     </S.Section>
 
-                    {/* Preset de playtest : trous decks — Uruk Spy */}
+                    {/* Preset de playtest : trous decks — Light the Beacons */}
                     <S.Section>
                         <S.Label>
-                            Preset decks (Uruk Spy) :
+                            Preset decks (Light the Beacons) :
                             <br />
                             <span style={{ opacity: 0.75, fontWeight: 400 }}>
-                                Combat : Frodon porte l’Anneau → Response Espion
-                                (affaiblir → défausse / fardeaux).
+                                Manœuvre : jouer l’événement → affaiblir Gandalf
+                                ×2/×3 → choisir une culture → force +3.
                             </span>
                         </S.Label>
                         <S.ActionButton
                             onClick={() =>
                                 moves.devLoadPreset?.(
-                                    'DECK_GAPS_URUK_SPY'
+                                    'DECK_GAPS_LIGHT_THE_BEACONS'
                                 )
                             }
                         >
-                            Uruk Spy (1R155)
+                            Light the Beacons (7R43)
                         </S.ActionButton>
                     </S.Section>
 

@@ -489,13 +489,16 @@ export function getEffectDesignationCandidates(
         if (!ownerId) return [];
         const playPhase =
             ownerId === (G.fpPlayerId || '0') ? 'fellowship' : 'shadow';
+        const attachHost =
+            playFromHand.attachTo === 'SELF' ? source : null;
         const matches = getHandPlayCandidates(
             G,
             ownerId,
             playFromHand.target,
             playPhase,
             playFromHand.twilightReduce || 0,
-            { ignoreDeadPileUniqueness: Boolean(playFromHand.ignoreDeadPile) }
+            { ignoreDeadPileUniqueness: Boolean(playFromHand.ignoreDeadPile) },
+            attachHost
         );
         if (matches.length < 1) return [];
         return uniqueCards(matches);
@@ -602,6 +605,7 @@ export function getEffectDesignationCandidates(
             item.type !== 'REVEAL_OPPONENT_TOP' &&
             !(item.type === 'EXERT' && item.all) &&
             !(item.type === 'HEAL' && item.all && !item.onePerCulture) &&
+            !(item.type === 'ADD_TEMP_STAT' && item.all) &&
             !(item.type === 'DISCARD' && item.chooser === 'FREE_PEOPLE') &&
             'target' in item &&
             (Array.isArray(item.target) || item.target === 'SKIRMISHING')
@@ -1021,6 +1025,8 @@ export function abilityHasLegalEffectTarget(
             if (!ownerId) return false;
             const playPhase =
                 ownerId === (G.fpPlayerId || '0') ? 'fellowship' : 'shadow';
+            const attachHost =
+                effect.attachTo === 'SELF' ? source : null;
             if (
                 getHandPlayCandidates(
                     G,
@@ -1032,7 +1038,8 @@ export function abilityHasLegalEffectTarget(
                         ignoreDeadPileUniqueness: Boolean(
                             effect.ignoreDeadPile
                         ),
-                    }
+                    },
+                    attachHost
                 ).length < 1
             ) {
                 return false;
@@ -1163,6 +1170,9 @@ export function abilityHasLegalEffectTarget(
             continue;
         }
         if (effect.type === 'HEAL' && effect.all) {
+            continue;
+        }
+        if (effect.type === 'ADD_TEMP_STAT' && effect.all) {
             continue;
         }
         if (!('target' in effect)) continue;

@@ -1,4 +1,11 @@
-import type { Ability, AbilityCost, CardKeyword, CardState, GameState } from '../../types';
+import type {
+    Ability,
+    AbilityCost,
+    CardKeyword,
+    CardState,
+    CostSelector,
+    GameState,
+} from '../../types';
 import { applyExert } from '../../../utils/applyExert';
 import { discardCardFromPlay } from '../../../utils/discardCardFromPlay';
 import { getEffectiveVitality } from '../../../utils/cardStats';
@@ -23,8 +30,28 @@ import {
 import {
     announceInitiativeIfChanged,
     freePeoplesHasInitiative,
+    playerHasInitiative,
 } from '../../logic/initiative';
 import { addThreats, canAddThreats } from '../../logic/threats';
+
+/** Compte d’exert effectif (initiative peut baisser le nombre). */
+export function effectiveExertCount(
+    G: GameState,
+    source: CardState,
+    req: CostSelector
+): number {
+    const base = req.count || 1;
+    if (
+        typeof req.countIfInitiative === 'number' &&
+        req.countIfInitiative > 0
+    ) {
+        const ownerId = abilityOwnerPlayerId(G, source);
+        if (ownerId && playerHasInitiative(G, ownerId)) {
+            return req.countIfInitiative;
+        }
+    }
+    return base;
+}
 
 const matchCard = (card: CardState | undefined | null, targetId: string) =>
     Boolean(card && (card.instanceId === targetId || card.id === targetId));
@@ -153,7 +180,7 @@ function canPayOption(
 ): boolean {
     if (option.exert && Array.isArray(option.exert)) {
         for (const req of option.exert) {
-            const count = req.count || 1;
+            const count = effectiveExertCount(G, source, req);
             let cards = filterCostTargetsForActor(
                 G,
                 source,
@@ -436,7 +463,7 @@ function payOption(
 ): boolean {
     if (option.exert && Array.isArray(option.exert)) {
         for (const req of option.exert) {
-            const count = req.count || 1;
+            const count = effectiveExertCount(G, source, req);
             let cards = filterCostTargetsForActor(
                 G,
                 source,

@@ -70,7 +70,9 @@ L’ancien plan main/initiative est **figé** (`.cursor/rules/hand-initiative-pl
 | `10U20` | Final Strike | ✅ Validé par Ralf — site 9 = montagne (`GRANT_SITE_KEYWORD`) ; Ombre : jouer Gollum depuis la défausse ; Response : affaiblir Gollum → annuler capacité Manœuvre/Archerie FP (`ABOUT_TO_USE_ABILITY`). Preset DEV retiré après validation |
 | `11R179` | Brawling Uruk | ✅ Validé par Ralf — Response : capacité spéciale d’un compagnon résistance ≤5 → affaiblir ce séide → annuler (`ABOUT_TO_USE_ABILITY` + `sourceTarget` COMPANION + `resistanceAtMost`). Preset DEV retiré après validation |
 | `1R120` | Alive and Unspoiled | ✅ Validé par Ralf — Ombre : −3 crépuscule + spot X fardeaux → révéler X cartes au hasard de la main FP ; vous pouvez défausser 1 carte révélée (`REVEAL_HAND` + `countEqualToBurdens` + `mayDiscardOne`). Drop depuis la main : sur la cible d’affaiblissement (toPlay) ou soutien / champ de bataille → halo. Preset DEV retiré après validation |
-| `1R155` | Uruk Spy | Response : Porteur met l’Anneau → affaiblir ce séide → défausser le dessus de la pioche par séide Isengard repéré → +1 fardeau par carte Ombre ainsi défaussée (`PUTS_ON_THE_ONE_RING` + `DISCARD_TOP_OF_DECK` perSpot + `addBurdenPerShadowDiscarded`). En playtest, preset DEV `DECK_GAPS_URUK_SPY` |
+| `1R155` | Uruk Spy | ✅ Validé par Ralf — Response : Porteur met l’Anneau → affaiblir ce séide → défausser le dessus de la pioche par séide Isengard repéré → +1 fardeau par carte Ombre ainsi défaussée (`PUTS_ON_THE_ONE_RING` + `DISCARD_TOP_OF_DECK` perSpot + `addBurdenPerShadowDiscarded`). Preset DEV retiré après validation |
+| `9R+32` | Elendil, The Tall | ✅ Validé par Ralf — Communauté : jouer un artefact sur Elendil → limite de déplacement +1 ce tour (`PLAY_FROM_HAND` attachTo SELF + `MODIFY_MOVE_LIMIT` TURN_END) ; Regroupement : défausser un artefact Gondor → libérer un site. Preset DEV retiré après validation |
+| `7R43` | Light the Beacons | Exception par id — Manœuvre : affaiblir Gandalf ×3 (ou ×2 si initiative) → choisir une culture → tous les compagnons dissociés de cette culture force +3 jusqu’au regroupement (`countIfInitiative` + `CHOOSE_ONE` + `ADD_TEMP_STAT` all). En playtest, preset DEV `DECK_GAPS_LIGHT_THE_BEACONS` |
 
 Livré (playtest) : Hidden Knowledge `7R104` (grille révélation + valider) ; Slippery Sneak `8R27` ; escarmouche vacante (mort→gagnant / défausse→pas) ; Cruel Caradhras `1R124` ; Pelennor Flat `11S254` ; Shelob when-played possession ; toaster Orthanc (boutons cohérents).
 
@@ -80,7 +82,7 @@ Repéré pendant le test Isildur (hors liste) : Boromir `11R57` / `0P71` était 
 
 | Id | Titre | Manque | Notes |
 | --- | --- | --- | --- |
-| `7R43` | Light the Beacons | Choix d’une culture + all unbound companions of that culture (sauf Gandalf) strength +3 ; coût exert ×3 ou ×2 si initiative | Voir [`card-exceptions.mdc`](card-exceptions.mdc) |
+| `7R43` | Light the Beacons | ✅ Exception livrée — en playtest (`DECK_GAPS_LIGHT_THE_BEACONS`) | Voir [`card-exceptions.mdc`](card-exceptions.mdc) |
 
 ## Hors scope / plus tard
 

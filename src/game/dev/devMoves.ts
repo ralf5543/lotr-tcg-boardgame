@@ -210,9 +210,9 @@ export const devMoves = {
     ) => {
         resetPhaseMachine(G);
         applyDevPreset(G, presetType);
-        // Uruk Spy : Combat (porter l’Anneau via 4R1).
-        if (presetType === 'DECK_GAPS_URUK_SPY') {
-            events?.setPhase?.('skirmish');
+        // Light the Beacons : Manœuvre (événement).
+        if (presetType === 'DECK_GAPS_LIGHT_THE_BEACONS') {
+            events?.setPhase?.('maneuver');
             return;
         }
         events?.setPhase?.('startOfFellowship');

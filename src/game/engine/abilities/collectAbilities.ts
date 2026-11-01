@@ -879,6 +879,11 @@ function formatEffectBit(
     if (effect.type === 'PREVENT_MOVE_AGAIN') {
         return 'empêcher la compagnie d’avancer à nouveau ce tour';
     }
+    if (effect.type === 'MODIFY_MOVE_LIMIT') {
+        const n = effect.value || 0;
+        const sign = n >= 0 ? `+${n}` : `${n}`;
+        return `limite de déplacement ${sign}`;
+    }
     if (effect.type === 'FORCE_CHOOSE_MOVE_AGAIN') {
         return 'obliger les Peuples Libres à se déplacer à nouveau';
     }
@@ -925,9 +930,10 @@ function formatEffectBit(
         const dead = effect.ignoreDeadPile
             ? ' (même si une autre copie est dans votre pile de mort)'
             : '';
+        const onSelf = effect.attachTo === 'SELF' ? ' sur lui' : '';
         return who
-            ? `jouer ${who} depuis la main${dead}`
-            : `jouer une carte depuis la main${dead}`;
+            ? `jouer ${who} depuis la main${onSelf}${dead}`
+            : `jouer une carte depuis la main${onSelf}${dead}`;
     }
     if (effect.type === 'PLAY_FROM_DECK_OR_DISCARD') {
         const who = formatTargetPhrase(effect.target);
@@ -1043,7 +1049,13 @@ function formatCostLabel(ability: Ability, source: CardState): string {
                 exert.mode === 'DESIGNATION'
             );
             const times = count > 1 ? ` ${count} fois` : '';
-            parts.push(`Affaiblir ${who}${times}`);
+            const initAlt =
+                typeof exert.countIfInitiative === 'number' &&
+                exert.countIfInitiative > 0 &&
+                exert.countIfInitiative !== count
+                    ? ` (ou ${exert.countIfInitiative} si initiative)`
+                    : '';
+            parts.push(`Affaiblir ${who}${times}${initAlt}`);
         }
     }
     const spot = option?.spot?.[0];
@@ -1174,8 +1186,20 @@ function formatAbilityLabelFromAst(
     ability: Ability,
     source: CardState
 ): { cost: string; effect: string } {
-    const cost = capitalizeLabel(formatCostLabel(ability, source));
-    let effectRaw = (ability.effects || [])
+    let cost = capitalizeLabel(formatCostLabel(ability, source));
+    const effects = ability.effects || [];
+    // « Play X to Y » (Elendil, Faramir…) : jouer depuis la main = coût jaune,
+    // le reste = effet après « : ».
+    let effectBits = effects;
+    if (
+        !cost &&
+        effects.length >= 2 &&
+        effects[0]?.type === 'PLAY_FROM_HAND'
+    ) {
+        cost = capitalizeLabel(formatEffectBit(effects[0], source));
+        effectBits = effects.slice(1);
+    }
+    let effectRaw = effectBits
         .map((effect) => formatEffectBit(effect, source))
         .filter(Boolean)
         .join(' et ');

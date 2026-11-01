@@ -12968,6 +12968,50 @@ export function parseAbilities(
             return;
         }
 
+        // « Play an artifact on Elendil to make the move limit +1 for this turn. »
+        const playArtifactMoveLimitMatch = bodyPlain.match(
+            /^Play an?\s+artifact\s+on\s+([\s\S]+?)\s+to make the move limit \+(\d+)\s+for this turn\.?$/i
+        );
+        if (playArtifactMoveLimitMatch) {
+            const onName = stripAbilityMarkup(
+                playArtifactMoveLimitMatch[1]
+            ).trim();
+            if (
+                !onName ||
+                onName.toLowerCase() !== (cardTitle || '').toLowerCase()
+            ) {
+                return;
+            }
+            const bonus = parseInt(playArtifactMoveLimitMatch[2] || '', 10);
+            if (!Number.isFinite(bonus) || bonus <= 0) return;
+            const clause =
+                `${marker.phase}: Play an artifact on ${onName} to make the move limit +${bonus} for this turn.`
+                    .replace(/<[^>]+>/g, '')
+                    .replace(/\s+/g, ' ')
+                    .replace(/\s+\./g, '.')
+                    .trim();
+            abilities.push({
+                id: `${cardId || 'ability'}:${abilities.length}`,
+                phases,
+                cost: [],
+                effects: [
+                    {
+                        type: 'PLAY_FROM_HAND',
+                        target: [['ARTIFACT']],
+                        attachTo: 'SELF',
+                    },
+                    {
+                        type: 'MODIFY_MOVE_LIMIT',
+                        value: bonus,
+                        expiresAtPhase: 'TURN_END',
+                    },
+                ],
+                source: 'SELF',
+                text: clause,
+            });
+            return;
+        }
+
         // « Play a rohan Man to heal Faramir. » (Faramir…)
         const playToHealMatch = body.match(
             /^Play an?\s+([\s\S]+?)\s+to heal\s+([\s\S]+)/i

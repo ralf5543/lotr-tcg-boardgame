@@ -90093,6 +90093,31 @@
       {
         "id": "9R+32:0",
         "phases": [
+          "FELLOWSHIP"
+        ],
+        "cost": [],
+        "effects": [
+          {
+            "type": "PLAY_FROM_HAND",
+            "target": [
+              [
+                "ARTIFACT"
+              ]
+            ],
+            "attachTo": "SELF"
+          },
+          {
+            "type": "MODIFY_MOVE_LIMIT",
+            "value": 1,
+            "expiresAtPhase": "TURN_END"
+          }
+        ],
+        "source": "SELF",
+        "text": "FELLOWSHIP: Play an artifact on Elendil to make the move limit +1 for this turn."
+      },
+      {
+        "id": "9R+32:1",
+        "phases": [
           "REGROUP"
         ],
         "cost": [
@@ -90121,6 +90146,7 @@
       }
     ],
     "actionPhases": [
+      "FELLOWSHIP",
       "REGROUP"
     ],
     "culture": "GONDOR",

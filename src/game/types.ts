@@ -174,6 +174,11 @@ export interface CostSelector {
      * Absent / false + count>1 = « twice » sur la même carte.
      */
     distinctTargets?: boolean;
+    /**
+     * « three times (or twice if you have initiative) » — si le proprio
+     * a l’initiative, ce compte remplace `count`.
+     */
+    countIfInitiative?: number;
     /** « another … » : la source ne compte pas pour le spot / exert. */
     excludeSource?: boolean;
     /** Spot avec vitalité minimale (Seeing Stone…). */
@@ -277,6 +282,11 @@ export type AbilityEffect =
               /** Plafond du bonus total (pas le plafond multi-activations). */
               limit?: number;
           };
+          /**
+           * Tous les matchs (Light the Beacons : chaque compagnon dissocié
+           * de la culture choisie). Pas de désignation.
+           */
+          all?: boolean;
           /** « another companion » : exclure la source des cibles. */
           excludeSource?: boolean;
           /** Plafond cumulé des bonus de cette capacité (ex. limit +5). */
@@ -520,12 +530,15 @@ export type AbilityEffect =
       }
     | {
           /**
-           * Passif While : modifie la limite de déplacement du tour
-           * (Voix du Traître : −1, minimum 1).
+           * Modifie la limite de déplacement du tour
+           * (Voix du Traître While : −1, min 1 ;
+           * Elendil activé : +1 jusqu’à fin de tour).
            */
           type: 'MODIFY_MOVE_LIMIT';
           value: number;
           min?: number;
+          /** Absent = passif While ; sinon bonus / malus temporaire. */
+          expiresAtPhase?: AbilityEffectExpiry;
       }
     | {
           /** Steward's Tomb : les blessures ne peuvent pas être prévenues. */
@@ -665,6 +678,10 @@ export type AbilityEffect =
            * dans votre pile de mort (l’unicité en jeu reste).
            */
           ignoreDeadPile?: boolean;
+          /**
+           * Attache sur la source (Elendil : jouer un artefact sur lui).
+           */
+          attachTo?: 'SELF';
       }
     | {
           /**
@@ -1610,6 +1627,16 @@ export interface GameState {
     twilightPool: number;
     currentSiteIndex?: number;
     tempModifiers?: StatModifier[];
+    /**
+     * Bonus / malus de limite de déplacement temporaires
+     * (Elendil : +1 jusqu’à fin de tour).
+     */
+    tempMoveLimitMods?: {
+        id: string;
+        value: number;
+        min?: number;
+        expiresAtPhase: AbilityEffectExpiry;
+    }[];
     currentSite?: number;
     movesThisTurn?: number;
     /**
@@ -1931,7 +1958,7 @@ export interface LotrMoveContext extends FnContext<GameState> {
 }
 
 /** Presets DEV de playtest (panneau de test, vague en cours). */
-export type DevPresetType = 'DECK_GAPS_URUK_SPY';
+export type DevPresetType = 'DECK_GAPS_LIGHT_THE_BEACONS';
 
 export interface ArcheryState {
     step?: 'ACTIONS' | 'FP_ASSIGN' | 'SHADOW_ASSIGN' | 'COMPLETE';

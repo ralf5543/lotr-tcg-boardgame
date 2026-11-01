@@ -19,7 +19,8 @@ function forEachSiteAttachment(
 
 /**
  * Limite de déplacement effective ce tour (min 1).
- * Passifs While `MODIFY_MOVE_LIMIT` (Voix du Traître…).
+ * Passifs While `MODIFY_MOVE_LIMIT` (Voix du Traître…)
+ * + mods temporaires (Elendil…).
  */
 export function getMoveLimit(G: GameState): number {
     let delta = 0;
@@ -41,6 +42,13 @@ export function getMoveLimit(G: GameState): number {
 
     forEachInPlayCard(G, visit);
     forEachSiteAttachment(G, visit);
+
+    for (const mod of G.tempMoveLimitMods || []) {
+        delta += mod.value || 0;
+        if (typeof mod.min === 'number') {
+            floor = Math.max(floor, mod.min);
+        }
+    }
 
     return Math.max(floor, BASE_MOVE_LIMIT + delta);
 }

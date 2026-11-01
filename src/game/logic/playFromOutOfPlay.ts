@@ -206,7 +206,8 @@ export function getHandPlayCandidates(
     filter: string[][],
     phase = 'shadow',
     twilightReduce = 0,
-    playOpts?: HandPlayOpts
+    playOpts?: HandPlayOpts,
+    attachHost?: CardState | null
 ): CardState[] {
     const player = G.players[ownerId];
     if (!player?.hand) return [];
@@ -215,11 +216,20 @@ export function getHandPlayCandidates(
 
     return player.hand.filter((card) => {
         if (!card || !cardMatchesTarget(card, filter)) return false;
+        if (attachHost) {
+            if (!canAttachToCharacter(card, attachHost, ownerId)) return false;
+        } else if (requiresAttachmentTarget(card)) {
+            // Sans hôte : les attachements seuls ne sont pas candidats.
+            return false;
+        }
+        const hostId = attachHost
+            ? attachHost.instanceId || attachHost.id
+            : undefined;
         const check = canPlayCard(
             card,
             { G, ctx: { phase }, playerID: ownerId },
-            undefined,
-            undefined,
+            hostId,
+            attachHost || undefined,
             {
                 ignorePhase: true,
                 ignoreTwilightPool: true,
@@ -245,7 +255,8 @@ export function playCardFromHand(
     filter?: string[][],
     phase = 'shadow',
     twilightReduce = 0,
-    playOpts?: HandPlayOpts
+    playOpts?: HandPlayOpts,
+    attachHost?: CardState | null
 ): CardState | null {
     const player = G.players[ownerId];
     if (!player?.hand) return null;
@@ -255,11 +266,16 @@ export function playCardFromHand(
     if (!card) return null;
     if (filter && !cardMatchesTarget(card, filter)) return null;
 
+    let host = attachHost || null;
+    if (host && !canAttachToCharacter(card, host, ownerId)) return null;
+    if (requiresAttachmentTarget(card) && !host) return null;
+
+    const hostId = host ? host.instanceId || host.id : undefined;
     const check = canPlayCard(
         card,
         { G, ctx: { phase }, playerID: ownerId },
-        undefined,
-        undefined,
+        hostId,
+        host || undefined,
         {
             ignorePhase: true,
             ignoreTwilightPool: true,
@@ -284,6 +300,12 @@ export function playCardFromHand(
     if (isFP) {
         const cost = Number(removed.twilightCost) || 0;
         G.twilightPool = (G.twilightPool || 0) + cost;
+
+        if (host) {
+            if (!host.attachments) host.attachments = [];
+            host.attachments.push(removed);
+            return finishPlay();
+        }
 
         if (removed.type === 'COMPANION') {
             if (!player.fellowshipArea) player.fellowshipArea = [];
@@ -313,6 +335,12 @@ export function playCardFromHand(
         return null;
     }
     G.twilightPool = (G.twilightPool || 0) - cost;
+
+    if (host) {
+        if (!host.attachments) host.attachments = [];
+        host.attachments.push(removed);
+        return finishPlay();
+    }
 
     if (removed.type === 'MINION') {
         if (!G.battlefield) G.battlefield = [];
