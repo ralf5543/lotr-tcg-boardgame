@@ -1874,6 +1874,15 @@ export interface GameState {
         unpaidCost?: AbilityCost;
         costChosenTargetId?: string | string[];
         costDiscardedHandIds?: string[];
+        /**
+         * Événement joué avec choix annulable : à l’Annuler, retirer de la
+         * défausse, rendre en main, et appliquer `twilightDelta` au pool.
+         */
+        cancelRestoreEvent?: {
+            playerId: string;
+            /** FP a ajouté le coût → delta négatif ; Ombre a retiré → delta positif. */
+            twilightDelta: number;
+        };
     };
     /**
      * Révélation de cartes (Hidden Knowledge, Slippery as Fishes…) :

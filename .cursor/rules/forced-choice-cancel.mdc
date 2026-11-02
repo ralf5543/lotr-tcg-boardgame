@@ -1,0 +1,29 @@
+---
+description: Toaster CHOOSE_ONE — toujours un bouton Annuler (coût reporté)
+alwaysApply: true
+---
+
+# Choix forcé (`CHOOSE_ONE`) — Annuler
+
+**Format : Standard (règles modernes).** Voir `.cursor/rules/format-standard.mdc`.
+
+## Règle
+
+Quand le joueur **choisit** parmi des options d’effet (`CHOOSE_ONE`, toi / OWNER) — capacité en jeu **ou** événement — le toaster a **toujours** un bouton **Annuler** (et Échap).
+
+| | |
+| --- | --- |
+| **Avant le choix** | Le coût de la capacité / événement **n’est pas encore payé** (`unpaidCost`). |
+| **Annuler** | Rien n’est payé ; l’état revient (événement → main + remboursement crépuscule si besoin). |
+| **Après le choix** | On paie le coût, puis on résout l’option. |
+
+## Implémentation
+
+- Capacités en jeu : `activateAbility` → `delayCostUntilChoice` → `pendingForcedChoice.cancelable`.
+- Événements : `applyEventAbility` même logique ; `playCard` pose `cancelRestoreEvent` (main + crépuscule).
+- UI : `cancelableChoice` → bouton Annuler / `cancelForcedChoiceMove`.
+
+## Hors scope
+
+- Choix **forcé adversaire** (`chooser: 'OPPONENT'` / Free Peoples imposé) : pas d’Annuler (obligation de règles).
+- Désignation de cibles après option déjà choisie (`needsExertTargets` / défausse main) : pas un second Annuler magique — le choix d’option est déjà acté.

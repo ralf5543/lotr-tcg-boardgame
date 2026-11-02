@@ -3,7 +3,11 @@ import { getCardById } from '../cardsData';
 import { applyDevPreset } from '../dev/presets';
 import { applyAbilityEffect } from '../engine/abilities/applyAbilityEffect';
 import { formatAbilityLabelParts } from '../engine/abilities/collectAbilities';
-import { resolveForcedChoice } from '../engine/abilities/startOfSkirmish';
+import {
+    cancelForcedChoice,
+    resolveForcedChoice,
+} from '../engine/abilities/startOfSkirmish';
+import { applyEventAbility } from '../engine/abilities/playEventAbility';
 import { canPayAbilityCost, payAbilityCost } from '../engine/abilities/payAbilityCost';
 import { getCalculatedStrength } from '../logic/stats/statCalculator';
 import type { Ability, CardState } from '../types';
@@ -71,8 +75,8 @@ describe('Light the Beacons 7R43', () => {
                     // 3 cartes → pas d’initiative après jeu
                     hand: [
                         beacons,
-                        realCard('1C84', 'pad1'),
-                        realCard('1C84', 'pad2'),
+                        realCard('1C305', 'pad1'),
+                        realCard('1C305', 'pad2'),
                     ],
                 }),
                 '1': createPlayerState('1'),
@@ -120,10 +124,10 @@ describe('Light the Beacons 7R43', () => {
                     ],
                     hand: [
                         beacons,
-                        realCard('1C84', 'a'),
-                        realCard('1C84', 'b'),
-                        realCard('1C84', 'c'),
-                        realCard('1C84', 'd'),
+                        realCard('1C305', 'a'),
+                        realCard('1C305', 'b'),
+                        realCard('1C305', 'c'),
+                        realCard('1C305', 'd'),
                     ],
                 }),
                 '1': createPlayerState('1'),
@@ -138,6 +142,52 @@ describe('Light the Beacons 7R43', () => {
         expect(gandalf.wounds || gandalf.tokens?.wound || 0).toBe(2);
     });
 
+    it('événement : coût reporté, Annuler rend la carte et le crépuscule', () => {
+        const beacons = realCard('7R43', 'beacons');
+        const gandalf = realCard('8R15', 'gandalf');
+        const G = createGameState({
+            fpPlayerId: '0',
+            twilightPool: 0,
+            players: {
+                '0': createPlayerState('0', {
+                    fellowshipArea: [
+                        {
+                            ...realCard('1C290', 'frodo'),
+                            keywords: ['RING-BEARER', 'RING-BOUND'],
+                        },
+                        gandalf,
+                        realCard('7R91', 'faramir'),
+                    ],
+                    hand: [
+                        realCard('1C305', 'a'),
+                        realCard('1C305', 'b'),
+                        realCard('1C305', 'c'),
+                        realCard('1C305', 'd'),
+                    ],
+                    discard: [],
+                }),
+                '1': createPlayerState('1'),
+            },
+        });
+        // Comme playCard : crépuscule déjà payé, événement en défausse.
+        G.twilightPool = 3;
+        G.players['0']!.discard = [beacons];
+        expect(applyEventAbility(G, beacons, 'maneuver')).toBe(true);
+        expect(G.pendingForcedChoice?.cancelable).toBe(true);
+        expect(G.pendingForcedChoice?.unpaidCost).toBeTruthy();
+        expect(gandalf.wounds || 0).toBe(0);
+
+        G.pendingForcedChoice!.cancelRestoreEvent = {
+            playerId: '0',
+            twilightDelta: -3,
+        };
+        expect(cancelForcedChoice(G, '0')).toBe(true);
+        expect(G.pendingForcedChoice).toBeUndefined();
+        expect(G.players['0']!.hand?.some((c) => c.id === '7R43')).toBe(true);
+        expect(G.players['0']!.discard).toHaveLength(0);
+        expect(G.twilightPool).toBe(0);
+    });
+
     it('preset DEV : Beacons en main + Gandalf + Faramir + Merry', () => {
         const G = createGameState();
         applyDevPreset(G, 'DECK_GAPS_LIGHT_THE_BEACONS');
@@ -146,5 +196,6 @@ describe('Light the Beacons 7R43', () => {
             G.players['0']!.fellowshipArea?.some((c) => c.id === '8R15')
         ).toBe(true);
         expect(G.players['0']!.hand).toHaveLength(5);
+        expect(G.players['0']!.hand?.every((c) => c.id !== '1C84')).toBe(true);
     });
 });

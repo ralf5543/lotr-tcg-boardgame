@@ -146,6 +146,28 @@ export function applyEventAbility(
 
     // Coût seul / effet seul / replace REGION ([path, deck]) / pas de cible
     const costTargetId = ids[0];
+
+    // Même règle que activateAbility : CHOOSE_ONE (toi) → coût reporté + Annuler.
+    const chooseOne = (ability.effects || []).find(
+        (effect) => effect.type === 'CHOOSE_ONE'
+    );
+    const delayCostUntilChoice =
+        chooseOne?.type === 'CHOOSE_ONE' &&
+        (!chooseOne.chooser || chooseOne.chooser === 'OWNER');
+
+    if (delayCostUntilChoice) {
+        if (!canPayAbilityCost(G, card, ability.cost)) return false;
+        if (!applyAbilityEffect(G, card, ability, chosenTargetId)) {
+            return false;
+        }
+        if (G.pendingForcedChoice) {
+            G.pendingForcedChoice.cancelable = true;
+            G.pendingForcedChoice.unpaidCost = ability.cost;
+            G.pendingForcedChoice.costChosenTargetId = costTargetId;
+        }
+        return true;
+    }
+
     if (!payAbilityCost(G, card, ability.cost, costTargetId)) return false;
     return applyAbilityEffect(G, card, ability, chosenTargetId);
 }

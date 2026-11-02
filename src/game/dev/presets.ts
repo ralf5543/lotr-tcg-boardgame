@@ -128,13 +128,14 @@ export const applyDevPreset = (
                 clonePresetCard('1R302', 'dev-beacon-merry'),
             ];
             // Après jeu de l’événement, 4 cartes restent → initiative (exert ×2).
+            // Pads = possessions (pas Sleep Caradhras : événement Communauté).
             // Retirer 1 pad avant de jouer pour tester ×3.
             fpPlayer.hand = [
                 clonePresetCard('7R43', 'dev-beacons'),
-                clonePresetCard('1C84', 'dev-beacon-pad1'),
-                clonePresetCard('1C84', 'dev-beacon-pad2'),
-                clonePresetCard('1C84', 'dev-beacon-pad3'),
-                clonePresetCard('1C84', 'dev-beacon-pad4'),
+                clonePresetCard('1C305', 'dev-beacon-pad1'),
+                clonePresetCard('1C305', 'dev-beacon-pad2'),
+                clonePresetCard('1C305', 'dev-beacon-pad3'),
+                clonePresetCard('1C305', 'dev-beacon-pad4'),
             ];
             fpPlayer.deck = [];
             fpPlayer.sitesDeck = [];

@@ -223,6 +223,32 @@ export function cancelForcedChoice(
     if (!pending?.cancelable || pending.playerId !== playerID) {
         return false;
     }
+
+    const restore = pending.cancelRestoreEvent;
+    if (restore) {
+        const player = G.players[restore.playerId];
+        if (player) {
+            const discard = player.discard || [];
+            const idx = discard.findIndex(
+                (c) =>
+                    c &&
+                    (c.instanceId === pending.sourceInstanceId ||
+                        c.id === pending.sourceInstanceId)
+            );
+            if (idx >= 0) {
+                const [card] = discard.splice(idx, 1);
+                if (card) {
+                    if (!player.hand) player.hand = [];
+                    player.hand.push(card);
+                }
+            }
+            G.twilightPool = Math.max(
+                0,
+                (G.twilightPool || 0) + restore.twilightDelta
+            );
+        }
+    }
+
     G.pendingForcedChoice = undefined;
     G.statusMessage = 'Action annulée.';
     return true;

@@ -361,6 +361,11 @@ function yieldAfterPlay(
         return;
     }
 
+    // Choix d’effet en cours (Beacons, etc.) : ne pas céder la priorité.
+    if (G.pendingForcedChoice) {
+        return;
+    }
+
     yieldPriorityAfterAction(G, playerID);
 }
 
@@ -461,6 +466,13 @@ export const playCard = (
                 return 'INVALID_MOVE';
             }
             placeCardIntoDiscardPile(G, actingPlayerId, playedCard);
+            if (G.pendingForcedChoice?.cancelable) {
+                G.pendingForcedChoice.actingPlayerId = actingPlayerId;
+                G.pendingForcedChoice.cancelRestoreEvent = {
+                    playerId: actingPlayerId,
+                    twilightDelta: -cost,
+                };
+            }
             G.statusMessage = `${playedCard.title} est joué (+${cost} Crépuscule).`;
         } else {
             console.warn(
@@ -519,6 +531,13 @@ export const playCard = (
                 return 'INVALID_MOVE';
             }
             placeCardIntoDiscardPile(G, actingPlayerId, playedCard);
+            if (G.pendingForcedChoice?.cancelable) {
+                G.pendingForcedChoice.actingPlayerId = actingPlayerId;
+                G.pendingForcedChoice.cancelRestoreEvent = {
+                    playerId: actingPlayerId,
+                    twilightDelta: cost,
+                };
+            }
             G.statusMessage = `${playedCard.title} est joué (-${cost} Crépuscule).`;
         } else {
             console.warn(
