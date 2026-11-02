@@ -1,7 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { parseAbilities } from '../../../scripts/convert/parsers';
 import { getCardById } from '../cardsData';
-import { applyDevPreset } from '../dev/presets';
 import { applyAbilityEffect } from '../engine/abilities/applyAbilityEffect';
 import {
     abilityHasLegalEffectTarget,
@@ -176,22 +175,61 @@ describe('Roll of Thunder 4U99', () => {
         expect(abilityHasLegalEffectTarget(G, event, ability)).toBe(false);
     });
 
-    it('preset DEV : épée + Palantír ciblables, situation non', () => {
-        const G = createGameState();
-        applyDevPreset(G, 'DECK_GAPS_ROLL_OF_THUNDER');
-        const event = G.players['0']!.hand![0]!;
+    it('cibles : épée + Palantír ciblables, situation non', () => {
+        const event = {
+            ...getCardById('4U99')!,
+            instanceId: 'rot',
+        };
         const ability = (event.abilities || [])[0] as Ability;
-        expect(event.id).toBe('4U99');
-        expect(G.battlefield?.[0]?.attachments?.[0]?.id).toBe('2R43');
-        expect(
-            G.players['1']!.supportArea?.some((c) => c.id === '3R67')
-        ).toBe(true);
+        const sword = {
+            ...getCardById('2R43')!,
+            instanceId: 'sword',
+            type: 'POSSESSION' as const,
+            kind: 'SHADOW' as const,
+        };
+        const lurtz = {
+            ...getCardById('11R194')!,
+            instanceId: 'lurtz',
+            type: 'MINION' as const,
+            kind: 'SHADOW' as const,
+            attachments: [sword],
+        };
+        const palantir = {
+            ...getCardById('3R67')!,
+            instanceId: 'palantir',
+            type: 'ARTIFACT' as const,
+            kind: 'SHADOW' as const,
+        };
+        const unabated = {
+            ...getCardById('10C24')!,
+            instanceId: 'cond',
+            type: 'CONDITION' as const,
+            kind: 'SHADOW' as const,
+        };
+        const G = createGameState({
+            fpPlayerId: '0',
+            players: {
+                '0': createPlayerState('0', {
+                    fellowshipArea: [
+                        createCompanion({
+                            id: '8R15',
+                            instanceId: 'gandalf',
+                            title: 'Gandalf',
+                        }),
+                    ],
+                    hand: [event],
+                }),
+                '1': createPlayerState('1', {
+                    supportArea: [palantir, unabated],
+                }),
+            },
+            battlefield: [lurtz],
+        });
         expect(abilityHasLegalEffectTarget(G, event, ability)).toBe(true);
         const ids = getEffectDesignationCandidates(G, event, ability).map(
             (c) => c.id
         );
         expect(ids).toEqual(expect.arrayContaining(['2R43', '3R67']));
         expect(ids).not.toContain('10C24');
-        expect(ids).not.toContain('1U91');
     });
 });
