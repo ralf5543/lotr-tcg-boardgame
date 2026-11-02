@@ -372,27 +372,6 @@ export const DevPanel: React.FC<DevPanelProps> = ({
                         </S.GameButton>
                     </S.Section>
 
-                    {/* Preset de playtest : trous decks — Light the Beacons */}
-                    <S.Section>
-                        <S.Label>
-                            Preset decks (Light the Beacons) :
-                            <br />
-                            <span style={{ opacity: 0.75, fontWeight: 400 }}>
-                                Manœuvre : jouer l’événement → affaiblir Gandalf
-                                ×2/×3 → choisir une culture → force +3.
-                            </span>
-                        </S.Label>
-                        <S.ActionButton
-                            onClick={() =>
-                                moves.devLoadPreset?.(
-                                    'DECK_GAPS_LIGHT_THE_BEACONS'
-                                )
-                            }
-                        >
-                            Light the Beacons (7R43)
-                        </S.ActionButton>
-                    </S.Section>
-
                 </S.PanelContent>
             )}
         </S.PanelContainer>

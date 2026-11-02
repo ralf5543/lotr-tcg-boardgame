@@ -1,6 +1,5 @@
 import { describe, expect, it } from 'vitest';
 import { getCardById } from '../cardsData';
-import { applyDevPreset } from '../dev/presets';
 import { applyAbilityEffect } from '../engine/abilities/applyAbilityEffect';
 import { formatAbilityLabelParts } from '../engine/abilities/collectAbilities';
 import {
@@ -188,14 +187,4 @@ describe('Light the Beacons 7R43', () => {
         expect(G.twilightPool).toBe(0);
     });
 
-    it('preset DEV : Beacons en main + Gandalf + Faramir + Merry', () => {
-        const G = createGameState();
-        applyDevPreset(G, 'DECK_GAPS_LIGHT_THE_BEACONS');
-        expect(G.players['0']!.hand?.some((c) => c.id === '7R43')).toBe(true);
-        expect(
-            G.players['0']!.fellowshipArea?.some((c) => c.id === '8R15')
-        ).toBe(true);
-        expect(G.players['0']!.hand).toHaveLength(5);
-        expect(G.players['0']!.hand?.every((c) => c.id !== '1C84')).toBe(true);
-    });
 });

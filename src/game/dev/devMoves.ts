@@ -210,11 +210,6 @@ export const devMoves = {
     ) => {
         resetPhaseMachine(G);
         applyDevPreset(G, presetType);
-        // Light the Beacons : Manœuvre (événement).
-        if (presetType === 'DECK_GAPS_LIGHT_THE_BEACONS') {
-            events?.setPhase?.('maneuver');
-            return;
-        }
         events?.setPhase?.('startOfFellowship');
         if (!G.sanctuaryHeal) {
             onStartOfFellowshipBegin(G, events);
