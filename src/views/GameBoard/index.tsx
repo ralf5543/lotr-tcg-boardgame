@@ -27,6 +27,7 @@ import {
 } from '../../game/engine/canPlayCard';
 import { PhaseBanner } from './components/PhaseBanner';
 import { canonicalPhaseName } from './canonicalPhaseName';
+import { GameEndOverlay } from './components/GameEndOverlay';
 import { DevPanel, type DevMoves } from '../../utils/DevPanel';
 import { useFaction } from '../../contexts/FactionContext';
 import { FactionProvider } from '../../contexts/FactionProvider';
@@ -3676,6 +3677,15 @@ export const GameBoard: React.FC<GameBoardProps> = ({
                         key={canonicalPhaseName(ctx.phase)}
                         phaseName={ctx.phase || ''}
                     />
+                    {G.gameResult && (
+                        <GameEndOverlay
+                            result={G.gameResult}
+                            viewerPlayerId={myId}
+                            onDismiss={() =>
+                                moves.dismissGameEndOverlay?.()
+                            }
+                        />
+                    )}
                     <DevPanel
                         G={G}
                         ctx={ctx}

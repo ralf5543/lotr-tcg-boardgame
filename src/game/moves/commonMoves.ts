@@ -36,6 +36,7 @@ import {
     freePeoplesHasInitiative,
 } from '../logic/initiative';
 import { applyAutomaticToPlayCosts } from '../logic/applyToPlayCosts';
+import { checkRingBearerKilledLoss } from '../logic/gameEnd';
 import { getEffectiveTwilightCost } from '../../utils/roamingDetection';
 import { getWhileTwilightCostModifier } from '../logic/stats/mechanics/whileModifier';
 import {
@@ -1174,6 +1175,9 @@ export const cleanupPendingDeaths = ({ G }: LotrMoveContext) => {
     if (killedFpCharacters.length > 0) {
         beginThreatWoundAssignment(G);
     }
+
+    // Après enterrement : Porteur mort sans relève → Ombre gagne.
+    checkRingBearerKilledLoss(G);
 };
 
 export const assignThreatWound = (

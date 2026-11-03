@@ -1627,9 +1627,25 @@ export interface ResponseWindow {
     usedResponseKeys?: string[];
 }
 
+/** Issue de la partie (2 joueurs). Une fois posé, les coups de jeu sont gelés. */
+export interface GameResult {
+    winnerSide: 'FREE_PEOPLES' | 'SHADOW';
+    reason: 'CORRUPTION' | 'RING_BEARER_KILLED' | 'SITE_NINE';
+    winnerPlayerId: string;
+    winnerName: string;
+    ringBearerName: string;
+    ringBearerIsFemale?: boolean;
+    /** Phrase narrative (Porteur + cause). Titre = selon le joueur qui regarde. */
+    detail: string;
+    /** Voile fermé : plateau visible mais toujours figé. */
+    overlayDismissed?: boolean;
+}
+
 export interface GameState {
     fpPlayerId: string;
     twilightPool: number;
+    /** Fin de partie — si défini, plus de coups (hors dismiss overlay / DEV). */
+    gameResult?: GameResult;
     currentSiteIndex?: number;
     tempModifiers?: StatModifier[];
     /**

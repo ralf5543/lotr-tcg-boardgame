@@ -1,0 +1,59 @@
+---
+description: ARCHIVÉ — Plan gagner / perdre (figé ; socle livré, UX visuelle plus tard)
+alwaysApply: false
+---
+
+# Gagner / Perdre
+
+> **Plan figé** (socle validé). Suite éventuelle : effets « corrupt » explicites, embellisement overlay. Ancien actif après decks ([`.cursor/rules/deck-play-gaps-plan.mdc`](deck-play-gaps-plan.mdc)).
+
+**Format : Standard (règles modernes).** Voir `.cursor/rules/format-standard.mdc`.
+
+Credo : **mieux vaut inerte que faux** ; checks centraux, pas de rustines par carte. UX sobre (confort > spectacle). Vision : [`.cursor/rules/roadmap.mdc`](roadmap.mdc).
+
+## Règles papier (2 joueurs)
+
+| Issue | Qui gagne | Quand |
+| --- | --- | --- |
+| **Site 9** | Peuples Libres | Compagnie au site 9 **et** le Porteur a survécu à toutes les escarmouches → **pas** de phase de regroupement ; la partie s’arrête |
+| **Corruption** | Ombre | Résistance effective du Porteur ≤ 0 (fardeaux, etc.) — immédiat |
+| **Mort du Porteur** | Ombre | Porteur tué (blessures / submersion), **après** réponses (Sam, etc.) si aucune relève |
+| **Effet « corrupt »** | Ombre | Cartes qui corrompent sans regarder la résistance (plus tard ; fragments / exceptions) |
+
+Hors scope v1 : multi-joueurs (dernier survivant), remplacement de sites d’un perdant.
+
+## Mécanique (cible)
+
+1. `G.gameResult?: { winnerSide: 'FREE_PEOPLES' \| 'SHADOW'; reason: ... }` — une fois posé, plus de coups de jeu (inspection OK).
+2. Point central `evaluateGameEnd(G)` / `applyGameEndIfNeeded(G)` appelé :
+   - après changement de fardeaux / résistance ;
+   - après résolution mort (file `CHARACTER_DIES` close, Porteur toujours mort) ;
+   - en fin d’escarmouches / entrée regroupement **si** `currentSiteIndex === 8` (site 9) → victoire FP, **sans** ouvrir le regroupement.
+3. Réutiliser `getEffectiveResistance`, `isRingBearerCard`, file de mort existante.
+
+## UX (à trancher / itérer)
+
+**Proposition retenue pour v1** (modifiable) :
+
+- Voile plein plateau, discret (pas de confettis / glow).
+- Titre : « Vous remportez la partie » pour le gagnant ; « {Nom} remporte la partie » pour l’adversaire.
+- Sous-titre narratif avec le Porteur actuel : destruction de l’Anneau / corruption / mort (accord de genre via `isFemale`).
+- Actions : **Nouvelle partie** (reset match) · **Regarder le plateau** (ferme le voile, plateau figé).
+- Pendant la partie : **pas** d’alerte intrusive ; le compteur fardeaux / résistance carte suffit. Eventuel message de statut une fois au site 9 en escarmouche (« Survivez pour gagner »).
+
+À éviter v1 : toaster seul, redirection auto, écran de stats lourd.
+
+## Étapes
+
+1. **Socle état + gel des coups** ✅ — `gameResult`, `wrapMovesAgainstGameEnd`
+2. **Corruption** ✅ — `checkCorruptionLoss` après coups (fardeaux)
+3. **Mort du Porteur** ✅ — `checkRingBearerKilledLoss` après `cleanupPendingDeaths` (réponses Sam OK)
+4. **Victoire site 9** ✅ — `checkSiteNineWin` en entrée `startOfRegroup`
+5. **Overlay fin de partie** ✅ — Validé par Ralf (Vous / nom adversaire + récit Porteur ; embellisement visuel plus tard). Presets DEV retirés
+6. **Effets corrupt** explicites — si decks le demandent ; sinon plus tard
+
+## Hors scope / plus tard
+
+- Création de deck, BOT, chat
+- Cartes « corrupt the Ring-bearer » hors résistance
+- Relance / lobby propre (écran de bienvenue)

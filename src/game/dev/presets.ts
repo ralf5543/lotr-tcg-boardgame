@@ -2,7 +2,7 @@ import type { DevPresetType, GameState } from '../types';
 
 /**
  * Applique le preset DEV de playtest (vague en cours).
- * Aucun preset actif — communauté de départ / réductions SF clos.
+ * Aucun preset actif — fin de partie (gagner / perdre) validée.
  */
 export const applyDevPreset = (
     _G: GameState,

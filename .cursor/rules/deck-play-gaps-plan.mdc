@@ -1,11 +1,11 @@
 ---
-description: Plan trous de mécanismes decks — jeu réel (Standard)
-alwaysApply: true
+description: ARCHIVÉ — Plan trous decks (figé ; suite = win-lose-plan.mdc)
+alwaysApply: false
 ---
 
 # Jeu réel — trous de mécanismes
 
-> **Plan actif.** Réactivé après la clôture du chantier sites 11+ ([`.cursor/rules/sites-modern-plan.mdc`](sites-modern-plan.mdc), figé).
+> **Plan figé.** Suite : [`.cursor/rules/win-lose-plan.mdc`](win-lose-plan.mdc). Ancien actif après sites 11+ ([`.cursor/rules/sites-modern-plan.mdc`](sites-modern-plan.mdc)).
 
 **Format : Standard (règles modernes).** Voir `.cursor/rules/format-standard.mdc`.
 

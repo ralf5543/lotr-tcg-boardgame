@@ -49,6 +49,12 @@ import {
 } from './engine/abilities/startOfSkirmish';
 import { shouldSkipPhase } from './logic/stats/mechanics/whileModifier';
 import { enterPhase, exitStartOf } from './logic/phaseEntry';
+import { checkSiteNineWin } from './logic/gameEnd';
+import { wrapMovesAgainstGameEnd } from './moves/guardGameEnd';
+
+const guardedDevMoves = wrapMovesAgainstGameEnd(
+    devMoves as Parameters<typeof wrapMovesAgainstGameEnd>[0]
+);
 
 function hasLivingMinionsOnBattlefield(G: GameState): boolean {
     return (G.battlefield || []).some((c) => {
@@ -332,7 +338,7 @@ export const LotrGame: Game<GameState> = {
 
     // 1. MOVES GLOBAUX : Disponibles dans TOUTES les phases du jeu
     moves: {
-        ...devMoves,
+        ...guardedDevMoves,
         ...allMoves,
     },
 
@@ -344,7 +350,7 @@ export const LotrGame: Game<GameState> = {
                 activePlayers: { value: { '0': 'play', '1': 'play' } },
             },
             moves: {
-                ...devMoves,
+                ...guardedDevMoves,
 
                 submitBid: (
                     { G, playerID, random }: LotrMoveContext,
@@ -1202,6 +1208,11 @@ export const LotrGame: Game<GameState> = {
                 G.isFierceAssignment = false;
 
                 clearExpiredTempKeywords(G, 'REGROUP');
+
+                // Site 9 + Porteur vivant → victoire FP, pas de regroupement.
+                if (checkSiteNineWin(G)) {
+                    return;
+                }
 
                 // Site optionnel d’abord (Isenwash…) — toaster avant muster / dual-wait.
                 if (beginOptionalSiteStartAbility(G, 'startOfRegroup')) {
