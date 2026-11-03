@@ -1367,6 +1367,11 @@ export interface CardState {
 
     // Mots-clés qu'une carte confère à son porteur lorsqu'elle est attachée (ex: un Arc qui donne 'ARCHER')
     grantsKeywords?: CardKeyword[];
+    /**
+     * « When … is in your starting fellowship, twilight cost is -N »
+     * Compte pour le plafond de construction (max 4), pas pour le pool.
+     */
+    startingFellowshipTwilightReduce?: number;
 
     // Statistiques & Coûts
     twilightCost?: number;

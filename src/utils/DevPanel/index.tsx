@@ -15,7 +15,7 @@ export interface DevMoves {
     devSetArchery?: (amount: number) => void;
     devSetCurrentSite?: (siteIndex: number) => void;
     devForceEndPhase: () => void;
-    /** Presets de playtest de la vague en cours (trous decks : Elendil). */
+    /** Presets de playtest de la vague en cours. */
     devLoadPreset?: (presetName: string) => void;
 }
 

@@ -41,6 +41,7 @@ import { clearActionableFlags } from '../utils/clearActionableFlags';
 import { clearExpiredTempKeywords } from './engine/abilities/applyAbilityEffect';
 import { applyStartOfManeuverSiteTriggers } from './engine/abilities/startOfManeuver';
 import { onStartOfFellowshipBegin } from './logic/startOfFellowship';
+import { revealAndPlayStartingFellowships } from './logic/startingFellowship';
 import { afterCardPlayed } from './engine/abilities/eachTimeYouPlay';
 import {
     applyStartOfSkirmishTriggers,
@@ -435,11 +436,9 @@ export const LotrGame: Game<GameState> = {
                     } as typeof G.path[0];
                     G.awaitingSiteSelection = false;
 
-                    Object.values(G.players).forEach((p) => {
-                        p?.fellowshipArea?.forEach((card) => {
-                            card.isFaceDown = false;
-                        });
-                    });
+                    // Compagnons de départ FP (sauf Porteur) = joués :
+                    // toPlay + when-played ; coût crépuscule hors pool (plafond construction).
+                    revealAndPlayStartingFellowships(G);
 
                     Object.values(G.players).forEach((player) => {
                         if (player) {
@@ -449,7 +448,7 @@ export const LotrGame: Game<GameState> = {
 
                     G.setupState.step = 'MULLIGAN';
                     G.statusMessage =
-                        'Site 1 posé et Compagnies révélées ! Choisissez de garder votre main ou de faire un Mulligan.';
+                        'Site 1 posé ; compagnie de départ jouée (sans crépuscule au pool). Mulligan : garder ou piocher une nouvelle main.';
                 },
 
                 submitMulliganChoice: (

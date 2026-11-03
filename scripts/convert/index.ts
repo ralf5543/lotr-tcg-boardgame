@@ -14,6 +14,7 @@ import {
     parseStat,
     buildLangBlock,
     parseGrantsKeywords,
+    parseStartingFellowshipTwilightReduce,
     parseKeywords,
     parseClassAndPhases,
     parseAttachedTo,
@@ -210,6 +211,9 @@ async function convert() {
             signet && !isRingbearer ? undefined : rawResistance;
         const toPlayData = parseToPlayConditions(englishText);
         const grantsKeywords = parseGrantsKeywords(englishText);
+        const startingFellowshipTwilightReduce = isSite
+            ? undefined
+            : parseStartingFellowshipTwilightReduce(englishText, titleVO);
         const playRestrictions = isSite
             ? undefined
             : parseCharacterPlayRestrictions(englishText);
@@ -245,6 +249,7 @@ async function convert() {
             keywords: keywords,
             aidCost: aidCost,
             grantsKeywords: grantsKeywords,
+            startingFellowshipTwilightReduce,
             attachedTo: attachmentData || undefined,
             requiresControlledSite,
             playFromDiscard: parsePlayFromDiscard(englishText),

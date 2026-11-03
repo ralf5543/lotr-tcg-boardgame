@@ -37,10 +37,13 @@ export const loadAndValidateDeck = (playerId: string) => {
         );
     }*/
 
-    // Vérification du coût des compagnons de départ (max 4)
+    // Vérification du coût des compagnons de départ (max 4), réductions SF incluses.
     const totalStartingCost = config.startingCompanionIds.reduce((sum, id) => {
         const card = CARDS_DATABASE.find((c) => c.id === id);
-        return sum + (card?.twilightCost ?? 0);
+        if (!card) return sum;
+        const printed = Number(card.twilightCost) || 0;
+        const reduce = Number(card.startingFellowshipTwilightReduce) || 0;
+        return sum + Math.max(0, printed - reduce);
     }, 0);
 
     if (totalStartingCost > 4) {

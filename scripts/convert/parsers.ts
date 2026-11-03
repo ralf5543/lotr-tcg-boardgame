@@ -372,6 +372,50 @@ function isGrantedKeywordMarkup(text: string, matchIndex: number): boolean {
 /**
  * Extrait les mots-clés octroyés au porteur par une carte d'attachement ou de suivant.
  */
+/**
+ * « When [Name|this companion] is in your starting fellowship, his twilight cost is -N. »
+ * Formes sûres seulement — refuse « and you can spot… », « each other… ».
+ */
+export function parseStartingFellowshipTwilightReduce(
+    text?: string,
+    cardTitle?: string
+): number | undefined {
+    if (!text) return undefined;
+    const plain = stripAbilityMarkup(text)
+        .replace(/[−–—―\uFFFD]/g, '-')
+        .replace(/\s+/g, ' ')
+        .trim();
+    if (!plain) return undefined;
+    // Variantes trop spécifiques → inerte.
+    if (/\bstarting fellowship\b.+\band you can spot\b/i.test(plain)) {
+        return undefined;
+    }
+    if (/\beach other\b.+\bin your starting fellowship\b/i.test(plain)) {
+        return undefined;
+    }
+
+    const patterns = [
+        /(?:When|If)\s+([\s\S]+?)\s+is in your starting fellowship,\s*(?:his|her|its)\s+twilight cost is\s*-\s*(\d+)\.?/i,
+        /(?:When|If)\s+([\s\S]+?)\s+is in your starting fellowship,\s*(?:he|she|it)\s+is twilight cost\s*-\s*(\d+)\.?/i,
+    ];
+
+    for (const re of patterns) {
+        const match = plain.match(re);
+        if (!match) continue;
+        const subject = (match[1] || '').trim();
+        const n = parseInt(match[2] || '', 10);
+        if (!Number.isFinite(n) || n <= 0) continue;
+        if (/^this(?:\s+companion)?$/i.test(subject)) return n;
+        if (
+            cardTitle &&
+            subject.toLowerCase() === cardTitle.toLowerCase()
+        ) {
+            return n;
+        }
+    }
+    return undefined;
+}
+
 export function parseGrantsKeywords(text?: string): string[] | undefined {
     if (!text) return undefined;
 

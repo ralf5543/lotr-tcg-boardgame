@@ -2864,6 +2864,7 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
+    "startingFellowshipTwilightReduce": 2,
     "culture": "ELVEN",
     "race": "ELF",
     "twilightCost": 4,
@@ -7880,6 +7881,7 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
+    "startingFellowshipTwilightReduce": 2,
     "culture": "GANDALF",
     "race": "WIZARD",
     "signet": "ARAGORN",
@@ -45992,6 +45994,7 @@
       "RING-BOUND",
       "RANGER"
     ],
+    "startingFellowshipTwilightReduce": 1,
     "culture": "GONDOR",
     "race": "MAN",
     "twilightCost": 3,
@@ -52512,6 +52515,7 @@
     "isUnique": false,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
+    "startingFellowshipTwilightReduce": 1,
     "culture": "ROHAN",
     "race": "MAN",
     "twilightCost": 3,
@@ -66860,6 +66864,7 @@
       "RING-BOUND",
       "RANGER"
     ],
+    "startingFellowshipTwilightReduce": 1,
     "abilities": [
       {
         "id": "6P121:0",
@@ -77718,6 +77723,7 @@
     "isUnique": false,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
+    "startingFellowshipTwilightReduce": 1,
     "culture": "ROHAN",
     "race": "MAN",
     "twilightCost": 3,
@@ -89016,6 +89022,7 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
+    "startingFellowshipTwilightReduce": 2,
     "culture": "ELVEN",
     "race": "ELF",
     "twilightCost": 4,
@@ -91862,6 +91869,7 @@
     "isFemale": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
+    "startingFellowshipTwilightReduce": 3,
     "culture": "ELVEN",
     "race": "ELF",
     "twilightCost": 3,
@@ -130042,6 +130050,7 @@
       "RANGER",
       "HUNTER 1"
     ],
+    "startingFellowshipTwilightReduce": 1,
     "culture": "GONDOR",
     "race": "MAN",
     "twilightCost": 2,
@@ -147062,6 +147071,7 @@
       "RANGER",
       "HUNTER 2"
     ],
+    "startingFellowshipTwilightReduce": 1,
     "culture": "GONDOR",
     "race": "MAN",
     "twilightCost": 3,

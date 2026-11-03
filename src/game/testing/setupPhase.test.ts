@@ -67,6 +67,8 @@ describe('mise en place', () => {
                             createCompanion({
                                 id: 'rb-0',
                                 isFaceDown: true,
+                                keywords: ['RING-BEARER'],
+                                twilightCost: 0,
                             }),
                         ],
                         deck: deck('p0', 8),
@@ -76,6 +78,8 @@ describe('mise en place', () => {
                             createCompanion({
                                 id: 'rb-1',
                                 isFaceDown: true,
+                                keywords: ['RING-BEARER'],
+                                twilightCost: 0,
                             }),
                         ],
                         deck: deck('p1', 8),

@@ -73,6 +73,8 @@ L’ancien plan main/initiative est **figé** (`.cursor/rules/hand-initiative-pl
 | `1R155` | Uruk Spy | ✅ Validé par Ralf — Response : Porteur met l’Anneau → affaiblir ce séide → défausser le dessus de la pioche par séide Isengard repéré → +1 fardeau par carte Ombre ainsi défaussée (`PUTS_ON_THE_ONE_RING` + `DISCARD_TOP_OF_DECK` perSpot + `addBurdenPerShadowDiscarded`). Preset DEV retiré après validation |
 | `9R+32` | Elendil, The Tall | ✅ Validé par Ralf — Communauté : jouer un artefact sur Elendil → limite de déplacement +1 ce tour (`PLAY_FROM_HAND` attachTo SELF + `MODIFY_MOVE_LIMIT` TURN_END) ; Regroupement : défausser un artefact Gondor → libérer un site. Preset DEV retiré après validation |
 | `7R43` | Light the Beacons | ✅ Validé par Ralf — exception par id : Manœuvre affaiblir Gandalf ×3 (ou ×2 si initiative) → choisir une culture → tous les compagnons dissociés de cette culture force +3 jusqu’au regroupement (`countIfInitiative` + `CHOOSE_ONE` + `ADD_TEMP_STAT` all ; Annuler / coût reporté). Preset DEV retiré après validation |
+| — | Communauté de départ | ✅ Validé par Ralf — pose site 1 : compagnons FP (sauf Porteur) joués → toPlay + when-played ; coût crépuscule **hors pool** (plafond 4 = construction). Témoin Fumeurs : Sméagol fardeau, pool 0. Preset retiré |
+| — | Réductions SF | ✅ Clos — `startingFellowshipTwilightReduce` pour le plafond (tests : Galadriel/Glorfindel/Elite Rider 10→4). Validation construction réelle = axe création de deck. Preset retiré |
 
 Livré (playtest) : Hidden Knowledge `7R104` (grille révélation + valider) ; Slippery Sneak `8R27` ; escarmouche vacante (mort→gagnant / défausse→pas) ; Cruel Caradhras `1R124` ; Pelennor Flat `11S254` ; Shelob when-played possession ; toaster Orthanc (boutons cohérents).
 

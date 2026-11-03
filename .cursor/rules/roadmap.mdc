@@ -27,7 +27,7 @@ Credo transversal (hérités des plans cartes / sites / jetons) : **mieux vaut i
 | --- | --- |
 | **Chantier** | Jeu réel — trous de mécanismes (decks) |
 | **Plan** | [`deck-play-gaps-plan.mdc`](deck-play-gaps-plan.mdc) |
-| **Statut** | Decks Fumeurs / Gondor-Ourouks nets (Beacons clos) — reste éventuel : Gandalf `8R15` crépuscule communauté de départ |
+| **Statut** | Decks Fumeurs / Gondor-Ourouks + communauté de départ clos — prochain trou ou bascule d’axe |
 
 ## Grands axes
 
