@@ -56,7 +56,6 @@ export const GlobalStyles = createGlobalStyle`
   body {
     font-family: 'DecipherRegular', serif;
     line-height: 1.2;
-    cursor: none;
   }
 
   button {
@@ -71,7 +70,18 @@ export const GlobalStyles = createGlobalStyle`
     display: inline-block;
   }
 
-  html, body, button, a, [data-draggable="true"], *, *::before, *::after {
+  /* Curseur custom (jeu) : masque le curseur système.
+     Écrans hors plateau (ex. création de decks) : body.native-cursor. */
+  body:not(.native-cursor),
+  body:not(.native-cursor) *,
+  body:not(.native-cursor) *::before,
+  body:not(.native-cursor) *::after {
     cursor: none !important;
+  }
+
+  body.native-cursor button,
+  body.native-cursor a,
+  body.native-cursor [role="button"] {
+    cursor: pointer;
   }
 `;

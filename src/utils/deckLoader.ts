@@ -1,56 +1,29 @@
-import deckP0 from '../game/decks/fumeurs-gollum-threats.json';
-//import deckP0 from '../game/decks/gondor-uruks.json';
-//import deckP0 from '../game/decks/test-dev.json';
-//import deckP1 from '../game/decks/test-dev.json';
-//import deckP1 from '../game/decks/test-dev.json';
-import deckP1 from '../game/decks/gondor-uruks.json';
-import { CARDS_DATABASE } from '../game/cardsData';
+import type { DeckConfig } from '../decks/types';
+import { loadSeedDeckForPlayer } from '../decks/deckStorage';
+import { getCardById } from '../game/cardsData';
 
-export interface DeckConfig {
-    id: string;
-    name: string;
-    ringBearerId: string;
-    oneRingId: string;
-    startingCompanionIds: string[];
-    freePeople: string[];
-    shadow: string[];
-    siteIds: string[];
-}
+export type { DeckConfig } from '../decks/types';
 
-export const DECKS: Record<string, DeckConfig> = {
-    '0': deckP0 as DeckConfig,
-    '1': deckP1 as DeckConfig,
-};
+/**
+ * Fallback setup sans setupData : seeds JSON uniquement.
+ * Les decks du builder arrivent via createMatch → setupData.decks.
+ */
+export const loadAndValidateDeck = (playerId: string): DeckConfig => {
+    const config = loadSeedDeckForPlayer(playerId);
 
-export const loadAndValidateDeck = (playerId: string) => {
-    const config = DECKS[playerId] || DECKS['0'];
-
-    const totalFP = config.freePeople.length + config.startingCompanionIds.length;
-    const totalShadow = config.shadow.length;
-
-    // Vérification de l'équité 50/50
-    /*if (totalFP !== totalShadow) {
-        console.warn(
-            `[DECK WARNING] Joueur ${playerId} : ` +
-            `Total FP (${totalFP} = ${config.freePeople.length} pioche + ${config.startingCompanionIds.length} départ) ` +
-            `!= Total Ombre (${totalShadow}) !`
-        );
-    }*/
-
-    // Vérification du coût des compagnons de départ (max 4), réductions SF incluses.
+    // Vérification coût départ (max 4) — log soft, la vraie UX est dans le builder.
     const totalStartingCost = config.startingCompanionIds.reduce((sum, id) => {
-        const card = CARDS_DATABASE.find((c) => c.id === id);
+        const card = getCardById(id);
         if (!card) return sum;
         const printed = Number(card.twilightCost) || 0;
         const reduce = Number(card.startingFellowshipTwilightReduce) || 0;
         return sum + Math.max(0, printed - reduce);
     }, 0);
 
-    if (totalStartingCost > 4) {
-        /*console.warn(
-            `[DECK WARNING] Joueur ${playerId} : ` +
-            `Coût des compagnons de départ (${totalStartingCost}) > 4 !`
-        );*/
+    if (totalStartingCost > 4 && import.meta.env.DEV) {
+        console.warn(
+            `[DECK] Joueur ${playerId} : coût départ ${totalStartingCost} > 4`
+        );
     }
 
     return config;

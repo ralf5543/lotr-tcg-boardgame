@@ -8,7 +8,10 @@ import type {
     SiteCardState,
 } from './types';
 import { CARDS_DATABASE } from './cardsData';
-import { loadAndValidateDeck } from '../utils/deckLoader';
+import {
+    loadAndValidateDeck,
+    type DeckConfig,
+} from '../utils/deckLoader';
 import {
     isMinionRoaming,
     getEffectiveTwilightCost,
@@ -100,9 +103,11 @@ const createCardInstance = (
     };
 };
 
-const createInitialPlayer = (playerId: string): PlayerState => {
+const createInitialPlayer = (
+    playerId: string,
+    deckConfig: DeckConfig
+): PlayerState => {
     const isP0 = playerId === '0';
-    const deckConfig = loadAndValidateDeck(playerId);
     const fullDeckIds = [...deckConfig.freePeople, ...deckConfig.shadow];
 
     // Chargement dynamique des sites depuis siteIds via buildDeckFromIds
@@ -231,17 +236,27 @@ export const advanceArcheryAssignmentStep = (G: GameState, events: any) => {
     }
 };
 
-export const setupGame = ({ random }: { random: any }): GameState => {
+type SetupData = {
+    decks?: Partial<Record<string, DeckConfig>>;
+};
+
+export const setupGame = (
+    { random }: { random: any },
+    setupData?: SetupData
+): GameState => {
+    const deckFor = (pId: string) =>
+        setupData?.decks?.[pId] || loadAndValidateDeck(pId);
+
     const players: Record<string, PlayerState> = {
-        '0': createInitialPlayer('0'),
-        '1': createInitialPlayer('1'),
+        '0': createInitialPlayer('0', deckFor('0')),
+        '1': createInitialPlayer('1', deckFor('1')),
     };
 
     Object.keys(players).forEach((pId) => {
         const player = players[pId];
         if (!player || !player.deck) return;
 
-        const deckConfig = loadAndValidateDeck(pId);
+        const deckConfig = deckFor(pId);
 
         const ringBearer = createCardInstance(
             deckConfig.ringBearerId,
@@ -327,6 +342,7 @@ export function initStandardRegroup(G: GameState, fpId: string) {
 }
 
 export const LotrGame: Game<GameState> = {
+    name: 'lotr',
     setup: setupGame,
 
     events: {

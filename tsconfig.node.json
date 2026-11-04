@@ -24,6 +24,7 @@
   },
   "include": [
     "vite.config.ts",
+    "vite.decksApi.ts",
     "server.ts",
     "src/**/*.ts",
     "src/**/*.d.ts"

@@ -355,6 +355,15 @@ export const DevPanel: React.FC<DevPanelProps> = ({
                             <S.ActionButton onClick={handleHardReset}>
                                 Reset partie 🔄
                             </S.ActionButton>
+                            <S.ActionButton
+                                onClick={() => {
+                                    const url = new URL(window.location.href);
+                                    url.searchParams.set('view', 'decks');
+                                    window.location.href = url.toString();
+                                }}
+                            >
+                                Decks
+                            </S.ActionButton>
                         </S.ButtonGroup>
                         <S.SessionLink
                             href={`?player=1&match=${currentMatchId}`}

@@ -1,0 +1,35 @@
+---
+description: Plan création de deck — builder + validation Standard
+alwaysApply: true
+---
+
+# Création de deck
+
+> **Plan actif.** Suite de gagner/perdre ([`.cursor/rules/win-lose-plan.mdc`](win-lose-plan.mdc), figé).
+
+**Format : Standard (règles modernes).** Voir `.cursor/rules/format-standard.mdc`.
+
+Pool large ; sites **11–18** ; X-list structurelle (`src/decks/formatRules.ts`, vide en v1). Vision : [`.cursor/rules/roadmap.mdc`](roadmap.mdc).
+
+## Décisions v1
+
+- Entrée : `?view=decks` (pas d’écran d’accueil complet).
+- **Source de vérité** : fichiers JSON dans `src/game/decks/` (un deck = un fichier).
+- **API DEV** : middleware Vite (`vite.decksApi.ts`) — `GET/POST /api/decks`, `GET/PUT/DELETE /api/decks/:id`.
+- Sélection joueur 0 / 1 : `localStorage` (`lotr.selectedDecks`) uniquement.
+- Partie : `POST /games/lotr/create` avec `setupData.decks` (SocketIO) ; fallback seeds si pas de setupData.
+- Sauver toujours (écrit le JSON) ; badge **Jouable** seulement si `validateDeck.ok`.
+
+## Modules
+
+| | |
+| --- | --- |
+| `src/decks/validateDeck.ts` | Règles construction |
+| `src/decks/deckStorage.ts` | CRUD via API + sélection |
+| `vite.decksApi.ts` | Écriture fichiers DEV |
+| `src/views/DeckBuilder/` | UI éditeur |
+| `src/utils/deckLoader.ts` | Fallback seeds sync |
+
+## Hors v1
+
+- Accueil, BOT, import/export fichier manuel, X-list remplie, multi-formats, stockage en ligne

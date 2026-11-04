@@ -11,7 +11,7 @@ Document **vivant** : précisé, modifié, complété au fur et à mesure. **Lis
 
 ## Mode de travail
 
-1. **Un plan thématique actif** à la fois (détail, credo, étapes) — aucun pour l’instant (gagner/perdre clos).
+1. **Un plan thématique actif** à la fois (détail, credo, étapes) — aujourd’hui : [`.cursor/rules/deck-builder-plan.mdc`](deck-builder-plan.mdc).
 2. **Cette roadmap** = vision d’ensemble + statut des grands axes.
 3. À la bascule : figer / désactiver le plan courant (`alwaysApply: false`), activer le suivant, mettre à jour le statut ici.
 
@@ -25,9 +25,9 @@ Credo transversal (hérités des plans cartes / sites / jetons) : **mieux vaut i
 
 | | |
 | --- | --- |
-| **Chantier** | — |
-| **Plan** | — |
-| **Statut** | Gagner/perdre clos — prochain axe à choisir (création de deck, BOT, bienvenue…) |
+| **Chantier** | Création de deck |
+| **Plan** | [`deck-builder-plan.mdc`](deck-builder-plan.mdc) |
+| **Statut** | Builder `?view=decks` + validation Standard + sélection P0/P1 |
 
 ## Grands axes
 
@@ -39,7 +39,7 @@ Statuts : `en cours` · `à faire` · `plus tard` · `fait` · `pause`
 | **Tokens de culture** | **fait** | Socle + étapes 1–15. Plan figé : [`culture-tokens-plan.mdc`](culture-tokens-plan.mdc). |
 | **Main / initiative** | **fait** | Étapes 1–5. Plan figé : [`hand-initiative-plan.mdc`](hand-initiative-plan.mdc). |
 | **Jeu réel / gaps** | **fait** | Decks Fumeurs & Gondor/Uruks + communauté de départ. Plan figé : [`deck-play-gaps-plan.mdc`](deck-play-gaps-plan.mdc). |
-| **Création de deck** | à faire | Construction / édition / validation (format Standard, X-list…). |
+| **Création de deck** | **en cours** | Builder + validation + JSON dans `src/game/decks/`. Plan : [`deck-builder-plan.mdc`](deck-builder-plan.mdc). |
 | **Affronter un BOT** | à faire | Via boardgame.io (adversaire automatisé). |
 | **Chat** | à faire | Via boardgame.io (table / match). |
 | **Gagner / Perdre** | **fait** | Site 9 / corruption / mort Porteur + overlay. Plan : [`win-lose-plan.mdc`](win-lose-plan.mdc) (embellisement plus tard). |

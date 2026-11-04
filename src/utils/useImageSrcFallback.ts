@@ -1,8 +1,9 @@
 import { useState } from 'react';
 
 /**
- * Chaîne de repli pour les visuels carte / site :
- * .jpg → .webp → .png → (optionnel) image de secours.
+ * Chaîne de repli pour les visuels carte / site.
+ * Beaucoup de scans n’existent qu’en .png alors que le JSON pointe en .jpg :
+ * .jpg → .png → .webp → (optionnel) image de secours.
  */
 export function useImageSrcFallback(
     imageUrl: string | undefined,
@@ -28,16 +29,16 @@ export function useImageSrcFallback(
             .toLowerCase();
 
         const nextExtMap: Record<string, string | null> = {
-            '.jpg': '.webp',
-            '.jpeg': '.webp',
-            '.webp': '.png',
-            '.png': null,
+            '.jpg': '.png',
+            '.jpeg': '.png',
+            '.png': '.webp',
+            '.webp': null,
         };
 
         const nextExt = nextExtMap[currentExt];
         if (nextExt) {
             setFallbackSrc(`${basePath}${nextExt}`);
-        } else if (ultimateFallback) {
+        } else if (ultimateFallback && currentSrc !== ultimateFallback) {
             setFallbackSrc(ultimateFallback);
         }
     };

@@ -4,6 +4,7 @@ import { Client } from 'boardgame.io/react';
 import { Local, SocketIO } from 'boardgame.io/multiplayer';
 import { LotrGame } from './game';
 import { GameBoard } from './views/GameBoard';
+import { DeckBuilder } from './views/DeckBuilder';
 import { HoverCardProvider } from './contexts/HoverCardProvider';
 import { CustomAssetCursor } from './views/GameBoard/components/CustomCursor';
 import { DragProvider } from './contexts/DragProvider';
@@ -30,13 +31,21 @@ function App() {
     const [scale, setScale] = useState(1);
     const containerRef = useRef<HTMLDivElement>(null);
 
-    const [{ myPlayerId, currentMatchId }] = useState(() => {
+    const [{ myPlayerId, currentMatchId, view }] = useState(() => {
         const searchParams = new URLSearchParams(window.location.search);
         return {
             myPlayerId: searchParams.get('player') || '0',
             currentMatchId: searchParams.get('match') || 'default',
+            view: searchParams.get('view') || '',
         };
     });
+
+    // Écran decks : curseur système (pas le curseur custom du plateau).
+    useEffect(() => {
+        if (view !== 'decks') return;
+        document.body.classList.add('native-cursor');
+        return () => document.body.classList.remove('native-cursor');
+    }, [view]);
 
     // GESTION GLOBALE DES SONS DE CLIC SUR TOUS LES BOUTONS
     useEffect(() => {
@@ -82,6 +91,22 @@ function App() {
         handleResize();
         return () => window.removeEventListener('resize', handleResize);
     }, []);
+
+    if (view === 'decks') {
+        return (
+            <ScreenViewport>
+                <FactionProvider myPlayerId={myPlayerId}>
+                    <HoverCardProvider>
+                        <DragProvider>
+                            <ScaledView ref={containerRef} $scale={scale}>
+                                <DeckBuilder />
+                            </ScaledView>
+                        </DragProvider>
+                    </HoverCardProvider>
+                </FactionProvider>
+            </ScreenViewport>
+        );
+    }
 
     if (!myPlayerId) {
         return <div>Chargement de la session du joueur...</div>;

@@ -1360,6 +1360,8 @@ export interface CardState {
     aidCost?: AidCost;
     isUnique: boolean;
     isFemale?: boolean;
+    /** Peut être choisi comme Porteur (icône résistance anneau, etc.). */
+    canBeRingbearer?: boolean;
     // Mots-clés temporaires gagnés via une capacité
     tempKeywords?: TempKeywordModifier[];
     isActionable?: boolean;
