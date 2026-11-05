@@ -736,7 +736,10 @@ export const BoardCharacterStack: React.FC<BoardCharacterStackProps> = ({
 
                 {/* Cartes empilées sur l’hôte (Web, Narsil, Goblin Swarms…) */}
                 {stackedCards.length > 0 && (
-                    <S.StackedOnCardGrid $count={stackPeeks.length}>
+                    <S.StackedOnCardGrid
+                        className="stacked-on-host"
+                        $count={stackPeeks.length}
+                    >
                         {stackPeeks.map((stacked, peekIdx) => {
                             const stackIdx = stackPeekOffset + peekIdx;
                             const stackedKey =

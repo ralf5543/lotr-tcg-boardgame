@@ -27,6 +27,50 @@ export function isCardInSupportArea(
 }
 
 /**
+ * Siège propriétaire d’une carte en jeu (aire de soutien / communauté / attachements).
+ * Champ de bataille → joueur Ombre actuel. Sites → undefined (partagés).
+ */
+export function findInPlayCardOwnerId(
+    G: GameState,
+    card: CardState | null | undefined
+): string | undefined {
+    if (!G?.players || !card) return undefined;
+    const match = (c: CardState | undefined | null) =>
+        Boolean(
+            c &&
+                (c === card ||
+                    (c.instanceId &&
+                        card.instanceId &&
+                        c.instanceId === card.instanceId) ||
+                    (c.instanceId || c.id) === (card.instanceId || card.id))
+        );
+
+    for (const pId of Object.keys(G.players)) {
+        const player = G.players[pId];
+        if (!player) continue;
+        for (const zone of [player.supportArea, player.fellowshipArea]) {
+            for (const c of zone || []) {
+                if (match(c)) return pId;
+                if ((c.attachments || []).some(match)) return pId;
+                if ((c.stacked || []).some(match)) return pId;
+                for (const att of c.attachments || []) {
+                    if ((att?.stacked || []).some(match)) return pId;
+                }
+            }
+        }
+    }
+
+    for (const char of G.battlefield || []) {
+        if (match(char) || (char.attachments || []).some(match)) {
+            const fpId = G.fpPlayerId || '0';
+            return fpId === '0' ? '1' : '0';
+        }
+    }
+
+    return undefined;
+}
+
+/**
  * Recherche une carte par son ID dynamique dans l'ensemble des zones du jeu
  */
 export function findTargetCard(

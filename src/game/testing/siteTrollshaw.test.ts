@@ -150,4 +150,46 @@ describe('Trollshaw : proposition', () => {
         afterCardPlayed(g, sword, { playerId: '0', phase: 'fellowship' });
         expect(g.pendingWhenPlayed?.fromSite).toBe(true);
     });
+
+    it('limite de 4 pioches Communauté : pas de fenêtre si déjà 4', () => {
+        const sword = createCard({
+            id: 'sword',
+            instanceId: 'sword-5',
+            type: 'POSSESSION',
+            kind: 'FREE_PEOPLE',
+        });
+        const g = stateOn(trollshaw(), {
+            deckCount: 6,
+            fellowship: [companionWith(sword)],
+        });
+        g.fellowshipCardsDrawn = 4;
+        maybeOfferSiteYouPlayResponse(g, sword, {
+            playerId: '0',
+            phase: 'fellowship',
+        });
+        expect(g.pendingWhenPlayed).toBeUndefined();
+    });
+
+    it('limite de 4 : Activer ne dépasse pas fellowshipCardsDrawn', () => {
+        const sword = createCard({
+            id: 'sword',
+            instanceId: 'sword-6',
+            type: 'POSSESSION',
+            kind: 'FREE_PEOPLE',
+        });
+        const g = stateOn(trollshaw(), {
+            deckCount: 6,
+            fellowship: [companionWith(sword)],
+        });
+        g.fellowshipCardsDrawn = 3;
+        maybeOfferSiteYouPlayResponse(g, sword, {
+            playerId: '0',
+            phase: 'fellowship',
+        });
+        expect(g.pendingWhenPlayed?.fromSite).toBe(true);
+        const handBefore = g.players['0'].hand?.length ?? 0;
+        expect(acceptPendingWhenPlayed(g, '0')).toBe(true);
+        expect((g.players['0'].hand?.length ?? 0) - handBefore).toBe(1);
+        expect(g.fellowshipCardsDrawn).toBe(4);
+    });
 });

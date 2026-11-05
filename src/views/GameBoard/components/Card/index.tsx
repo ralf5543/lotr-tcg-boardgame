@@ -268,7 +268,9 @@ export const Card: React.FC<CardProps> = ({
             card.type === 'RING')
     );
     const viewerPlayerId = myPlayerId || playerID;
-    const viewerOwnsCard = Boolean(card && card.kind === localFaction);
+    // Propriété = zone (isOpponent), pas kind === faction active :
+    // sinon en Ombre on « possède » les situations Ombre adverses.
+    const viewerOwnsCard = Boolean(card && !isOpponent);
     // Empilé (visualOnly) : pas de sceau / bulle — on joue par drag, comme la main.
     const visibleAbilities =
         card && size === 'sm' && !isAttachedCard && !visualOnly

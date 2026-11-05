@@ -17,6 +17,12 @@ import {
     type DraggedCardData,
     HAND_CANCEL_VIRTUAL_Y,
 } from './DragContext';
+import {
+    isGlobalZoneId,
+    isNestedOnHostElement,
+    pickHitTargetId,
+    type HitCandidate,
+} from './pickHitTargetId';
 
 const getXScale = (): number => {
     const scaledBoard = document.querySelector('[class*="ScaledView"]');
@@ -109,15 +115,14 @@ export const DragProvider: React.FC<{ children: React.ReactNode }> = ({
         clientY: number,
         allowedIds?: string[]
     ): string | null => {
-        let detectedCompanionId: string | null = null;
-        let detectedZoneId: string | null = null;
-        const restrictToDesignation = Boolean(allowedIds?.length);
         // Situation / possession d’aire de soutien : les cartes déjà posées
         // ne doivent pas « manger » la zone (sinon pas de halo / pas de pose).
         const preferSupportZone =
             dragged?.origin === 'HAND' &&
             (dragged.card as { subtype?: string } | undefined)?.subtype ===
                 'SUPPORT-AREA';
+
+        const candidates: HitCandidate[] = [];
 
         targetsRef.current.forEach((targetEl, id) => {
             if (!targetEl) return;
@@ -132,34 +137,19 @@ export const DragProvider: React.FC<{ children: React.ReactNode }> = ({
 
             if (!isCursorInside) return;
 
-            const isGlobalZone =
-                id === 'fellowshipArea' ||
-                id === 'sitePath' ||
-                id === 'supportArea' ||
-                id === 'battlefield';
-
-            if (restrictToDesignation) {
-                if (!isGlobalZone && allowedIds!.includes(id)) {
-                    detectedCompanionId = id;
-                }
-                return;
-            }
-
-            if (isGlobalZone) {
-                detectedZoneId = id;
-            } else {
-                detectedCompanionId = id;
-            }
+            const isZone = isGlobalZoneId(id);
+            candidates.push({
+                id,
+                isZone,
+                isNestedOnHost: !isZone && isNestedOnHostElement(targetEl),
+                area: Math.max(1, rect.width * rect.height),
+            });
         });
 
-        if (
-            preferSupportZone &&
-            detectedZoneId === 'supportArea'
-        ) {
-            return 'supportArea';
-        }
-
-        return detectedCompanionId || detectedZoneId || null;
+        return pickHitTargetId(candidates, {
+            allowedIds,
+            preferSupportZone,
+        });
     };
 
     const getTargetVirtualCenter = (

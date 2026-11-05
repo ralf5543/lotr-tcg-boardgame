@@ -3,6 +3,8 @@ import styled from 'styled-components';
 import { Client } from 'boardgame.io/react';
 import { Local, SocketIO } from 'boardgame.io/multiplayer';
 import { LotrGame } from './game';
+import { isBotMatchFromUrl } from './game/bot';
+import { SoloBotMatch } from './game/bot/SoloBotMatch';
 import { GameBoard } from './views/GameBoard';
 import { DeckBuilder } from './views/DeckBuilder';
 import { HoverCardProvider } from './contexts/HoverCardProvider';
@@ -12,13 +14,15 @@ import { FactionProvider } from './contexts/FactionProvider';
 import { TargetingProvider } from './contexts/TargetingContext';
 import { audioService } from './services/audioService';
 
+const humanMultiplayer = import.meta.env.DEV
+    ? SocketIO({ server: `http://${window.location.hostname}:8000` })
+    : Local();
+
 const LotrClient = Client({
     game: LotrGame,
     board: GameBoard,
     numPlayers: 2,
-    multiplayer: import.meta.env.DEV
-        ? SocketIO({ server: `http://${window.location.hostname}:8000` })
-        : Local(),
+    multiplayer: humanMultiplayer,
     debug: false,
 });
 
@@ -31,12 +35,14 @@ function App() {
     const [scale, setScale] = useState(1);
     const containerRef = useRef<HTMLDivElement>(null);
 
-    const [{ myPlayerId, currentMatchId, view }] = useState(() => {
+    const [{ myPlayerId, currentMatchId, view, isBotMatch }] = useState(() => {
         const searchParams = new URLSearchParams(window.location.search);
+        const bot = isBotMatchFromUrl(window.location.search);
         return {
-            myPlayerId: searchParams.get('player') || '0',
+            myPlayerId: bot ? '0' : searchParams.get('player') || '0',
             currentMatchId: searchParams.get('match') || 'default',
             view: searchParams.get('view') || '',
+            isBotMatch: bot,
         };
     });
 
@@ -69,6 +75,7 @@ function App() {
             if (event.data?.type === 'NEW_MATCH') {
                 const url = new URL(window.location.href);
                 url.searchParams.set('match', event.data.matchId);
+                url.searchParams.delete('bot');
                 window.location.href = url.toString();
             }
         };
@@ -119,13 +126,16 @@ function App() {
                     <DragProvider>
                         <TargetingProvider>
                             <ScaledView ref={containerRef} $scale={scale}>
-                                <LotrClient
-                                    matchID={currentMatchId}
-                                    playerID={myPlayerId}
-                                />
+                                {isBotMatch ? (
+                                    <SoloBotMatch matchID={currentMatchId} />
+                                ) : (
+                                    <LotrClient
+                                        matchID={currentMatchId}
+                                        playerID={myPlayerId}
+                                    />
+                                )}
                             </ScaledView>
                         </TargetingProvider>
-                        {/* Le curseur reste ici en dehors de ScaledView */}
                         <CustomAssetCursor />
                     </DragProvider>
                 </HoverCardProvider>

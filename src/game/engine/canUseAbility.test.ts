@@ -36,6 +36,58 @@ describe('canUseAbility', () => {
         ).toBe(false);
     });
 
+    it('refuse d’activer une situation Ombre dans le soutien adverse', () => {
+        const alive = createCard({
+            id: '1R120',
+            instanceId: 'alive-opp',
+            kind: 'SHADOW',
+            type: 'CONDITION',
+            subtype: 'SUPPORT-AREA',
+            actionPhases: ['shadow'],
+            abilities: [
+                {
+                    id: '1R120:0',
+                    phases: ['SHADOW'],
+                    cost: [{ removeTwilight: 3 }],
+                    effects: [
+                        {
+                            type: 'REVEAL_HAND',
+                            whose: 'OPPONENT',
+                            countEqualToBurdens: true,
+                            random: true,
+                        },
+                    ],
+                    source: 'SELF',
+                },
+            ],
+        });
+        // Siège 0 = PL : la situation est restée chez lui après inversion.
+        // Siège 1 = Ombre ne doit pas pouvoir l’activer.
+        const G = createGameState({
+            fpPlayerId: '0',
+            twilightPool: 5,
+            players: {
+                '0': createGameState().players['0']!,
+                '1': createGameState().players['1']!,
+            },
+        });
+        G.players['0'] = {
+            ...G.players['0']!,
+            supportArea: [alive],
+        };
+
+        expect(
+            canUseAbility(alive, {
+                G,
+                ctx: { phase: 'shadow' },
+                playerID: '1',
+            })
+        ).toEqual({
+            valid: false,
+            reason: 'Cette carte appartient à l’adversaire.',
+        });
+    });
+
     it('refuse toute capacité pendant l’assignation des blessures de menaces', () => {
         const card = createCompanion({
             id: 'comp',

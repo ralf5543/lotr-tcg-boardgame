@@ -74,13 +74,20 @@ export function maybeOfferSiteYouPlayResponse(
         if (!canPayAbilityCost(G, site as unknown as CardState, ability.cost)) {
             continue;
         }
-        // Pioche vide : effet impossible → pas de fenêtre (mieux vaut inerte).
+        // Pioche vide / limite de 4 en Communauté → pas de fenêtre.
         const drawCount = (ability.effects || []).reduce(
             (sum, e) => sum + (e.type === 'DRAW' ? e.count || 0 : 0),
             0
         );
-        if (drawCount > 0 && (G.players[fpId]?.deck?.length || 0) <= 0) {
-            continue;
+        if (drawCount > 0) {
+            if ((G.players[fpId]?.deck?.length || 0) <= 0) continue;
+            const phase = (options?.phase || '').toLowerCase();
+            if (
+                phase === 'fellowship' &&
+                (G.fellowshipCardsDrawn || 0) >= 4
+            ) {
+                continue;
+            }
         }
 
         const siteKey = (site as { instanceId?: string }).instanceId || site.id;

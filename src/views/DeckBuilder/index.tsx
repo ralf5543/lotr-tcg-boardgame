@@ -12,6 +12,7 @@ import {
     saveDeck,
 } from '../../decks/deckStorage';
 import { createMatchWithSelectedDecks } from '../../decks/startMatch';
+import { prepareBotMatch } from '../../decks/startBotMatch';
 import { validateDeck } from '../../decks/validateDeck';
 import { startingCompanionTwilightCost } from '../../decks/validateDeck';
 import {
@@ -40,7 +41,17 @@ import * as S from './styles';
 function goToBoard(matchId?: string) {
     const url = new URL(window.location.href);
     url.searchParams.delete('view');
+    url.searchParams.delete('bot');
     if (matchId) url.searchParams.set('match', matchId);
+    window.location.href = url.toString();
+}
+
+function goToBotBoard(matchId: string) {
+    const url = new URL(window.location.href);
+    url.searchParams.delete('view');
+    url.searchParams.set('match', matchId);
+    url.searchParams.set('bot', '1');
+    url.searchParams.set('player', '0');
     window.location.href = url.toString();
 }
 
@@ -577,6 +588,25 @@ export const DeckBuilder: React.FC = () => {
         }
     };
 
+    const playVsBot = async () => {
+        setBusy(true);
+        try {
+            await saveDeck(draft);
+            assignDeckToPlayer('0', draft.id);
+            await refreshList();
+            const matchID = await prepareBotMatch();
+            goToBotBoard(matchID);
+        } catch (err) {
+            console.error(err);
+            window.alert(
+                err instanceof Error
+                    ? err.message
+                    : 'Impossible de lancer la partie contre le BOT.'
+            );
+            setBusy(false);
+        }
+    };
+
     const fpCounts = countIds(draft.freePeople);
     const shadowCounts = countIds(draft.shadow);
     const startCounts = countIds(draft.startingCompanionIds);
@@ -632,6 +662,14 @@ export const DeckBuilder: React.FC = () => {
                     onClick={() => playAs('1')}
                 >
                     Jouer (joueur 1)
+                </S.Button>
+                <S.Button
+                    type="button"
+                    $primary
+                    disabled={busy}
+                    onClick={playVsBot}
+                >
+                    Affronter un BOT
                 </S.Button>
                 <S.Button type="button" onClick={() => goToBoard()}>
                     Retour partie

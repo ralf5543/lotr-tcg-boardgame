@@ -1,6 +1,7 @@
 // src/game/engine/canUseAbility.ts
 
 import type { CardState, GameState } from '../types';
+import { findInPlayCardOwnerId } from '../../utils/cardUtils';
 import { getKeywordValue } from './keywords/keywordUtils';
 import { canActInActionWindow } from './actionWindow';
 import {
@@ -55,6 +56,17 @@ export function canUseAbility(
             valid: false,
             reason: "Seul le joueur de l'Ombre peut utiliser cette capacité.",
         };
+    }
+    // Propriétaire de zone : pas activer la situation Ombre adverse
+    // (reste en jeu après inversion des rôles).
+    if (card.kind !== 'SITE' && card.type !== 'SITE') {
+        const ownerId = findInPlayCardOwnerId(G, card);
+        if (ownerId != null && String(ownerId) !== pid) {
+            return {
+                valid: false,
+                reason: 'Cette carte appartient à l’adversaire.',
+            };
+        }
     }
     // Site : FP par défaut ; Ombre si capacité de phase jouable (Shadow /
     // Skirmish / Maneuver / Regroup…) — pas le début de fellowship.

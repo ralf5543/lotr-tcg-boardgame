@@ -12,6 +12,8 @@ import {
     loadAndValidateDeck,
     type DeckConfig,
 } from '../utils/deckLoader';
+import { enumerateBotMoves } from './bot/enumerateBotMoves';
+import { peekBotMatchDecks } from './bot/botMatchSetup';
 import {
     isMinionRoaming,
     getEffectiveTwilightCost,
@@ -50,10 +52,19 @@ import {
     applyStartOfSkirmishTriggers,
     openSkirmishActionWindow,
 } from './engine/abilities/startOfSkirmish';
+import { canPlayCard } from './engine/canPlayCard';
+import { applyAutomaticToPlayCosts } from './logic/applyToPlayCosts';
 import { shouldSkipPhase } from './logic/stats/mechanics/whileModifier';
 import { enterPhase, exitStartOf } from './logic/phaseEntry';
 import { checkSiteNineWin } from './logic/gameEnd';
 import { wrapMovesAgainstGameEnd } from './moves/guardGameEnd';
+
+/** Coût toPlay.exert à désigner → playCard, pas playShadowCard. */
+function shadowCardNeedsDesignatedExert(card: CardState): boolean {
+    return (card.toPlay || []).some((opt) =>
+        opt.exert?.some((r) => Array.isArray(r.target))
+    );
+}
 
 const guardedDevMoves = wrapMovesAgainstGameEnd(
     devMoves as Parameters<typeof wrapMovesAgainstGameEnd>[0]
@@ -244,8 +255,12 @@ export const setupGame = (
     { random }: { random: any },
     setupData?: SetupData
 ): GameState => {
+    // Local + BOT : pas de setupData serveur → decks stashed (sessionStorage).
+    const botDecks = peekBotMatchDecks();
     const deckFor = (pId: string) =>
-        setupData?.decks?.[pId] || loadAndValidateDeck(pId);
+        setupData?.decks?.[pId] ||
+        botDecks?.[pId as '0' | '1'] ||
+        loadAndValidateDeck(pId);
 
     const players: Record<string, PlayerState> = {
         '0': createInitialPlayer('0', deckFor('0')),
@@ -344,6 +359,10 @@ export function initStandardRegroup(G: GameState, fpId: string) {
 export const LotrGame: Game<GameState> = {
     name: 'lotr',
     setup: setupGame,
+
+    ai: {
+        enumerate: enumerateBotMoves,
+    },
 
     events: {
         endPhase: true,
@@ -550,6 +569,7 @@ export const LotrGame: Game<GameState> = {
 
         startOfShadow: {
             next: 'shadow',
+            turn: { activePlayers: { value: { '0': 'play', '1': 'play' } } },
             onBegin: ({ G, events }: LotrPhaseContext) => {
                 const fpId = G.fpPlayerId || '0';
                 const shadowId = fpId === '0' ? '1' : '0';
@@ -588,6 +608,7 @@ export const LotrGame: Game<GameState> = {
             onEnd: ({ G }) => {
                 clearActionableFlags(G);
             },
+            moves: allMoves,
         },
 
         shadow: {
@@ -638,6 +659,26 @@ export const LotrGame: Game<GameState> = {
                         }
                     }
 
+                    // Spot / unicité / toPlay — même règles que l’UI (canPlayCard).
+                    const validation = canPlayCard(card, {
+                        G,
+                        ctx,
+                        playerID: String(playerID),
+                    });
+                    if (!validation.valid) {
+                        console.warn(
+                            `❌ [playShadowCard] Rejet : ${validation.reason}`
+                        );
+                        return 'INVALID_MOVE';
+                    }
+                    // Affaiblissement à désigner : playCard(index, cible).
+                    if (shadowCardNeedsDesignatedExert(card)) {
+                        console.warn(
+                            '❌ [playShadowCard] Coût d’affaiblissement à désigner : utiliser playCard.'
+                        );
+                        return 'INVALID_MOVE';
+                    }
+
                     // 🟢 2. VÉRIFICATION DU COÛT
                     const fpId = G.fpPlayerId || '0';
                     const fpSiteIndex = G.players[fpId]?.currentSiteIndex || 0;
@@ -653,6 +694,13 @@ export const LotrGame: Game<GameState> = {
                         );
                         return 'INVALID_MOVE';
                     }
+
+                    applyAutomaticToPlayCosts(
+                        G,
+                        card,
+                        String(playerID),
+                        ctx.phase
+                    );
 
                     // 🟢 3. RETRAIT DE LA MAIN & PAIEMENT
                     const [playedCard] = player.hand.splice(cardIndex, 1);
@@ -1181,6 +1229,11 @@ export const LotrGame: Game<GameState> = {
 
                 resolveActiveSkirmish: ({ G, ctx }: LotrMoveContext) => {
                     if (!G.activeSkirmishId) return 'INVALID_MOVE';
+                    const active = (G.skirmishes || []).find(
+                        (s) => s.id === G.activeSkirmishId
+                    );
+                    // Déjà résolu : ne pas re-appliquer blessures / réponses.
+                    if (active?.resolved) return 'INVALID_MOVE';
                     resolveSkirmish(G, ctx);
                 },
 

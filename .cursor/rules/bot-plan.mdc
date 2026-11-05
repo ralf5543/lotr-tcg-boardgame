@@ -1,0 +1,78 @@
+---
+description: Plan affronter un BOT — playtest solo (siège 1)
+alwaysApply: true
+---
+
+# Affronter un BOT (playtest)
+
+> **Plan actif.** Suite de création de deck ([`.cursor/rules/deck-builder-plan.mdc`](deck-builder-plan.mdc), figé).
+
+**Format : Standard (règles modernes).** Voir `.cursor/rules/format-standard.mdc`.
+
+Vision : [`.cursor/rules/roadmap.mdc`](roadmap.mdc).
+
+## Objectif
+
+Jouer **seul** pour tester un deck / des mécaniques. Le BOT n’est pas un adversaire fort : bête = OK. Le vrai jeu reste entre humains.
+
+## Décisions v1
+
+- **Toi** = siège 0 ; **BOT** = siège 1 (chaque siège a les deux decks ; les rôles PL / Ombre s’inversent comme d’habitude).
+- Entrée : bouton **« Affronter un BOT »** dans le deck builder. Deck courant → siège 0 ; deck déjà choisi pour le siège 1 (ou seed) → BOT.
+- Match solo : **un seul client** (`SoloBotMatch`, pas de multi Local) — coups BOT via `MAKE_MOVE` siège 1. Parties à deux humains : SocketIO inchangé.
+- Decks du match BOT : `sessionStorage` (`lotr.botSetupDecks`) lu par `setupGame`.
+- BOT via `enumerateBotMoves` + tick dans `SoloBotMatch`.
+
+## Comportement
+
+Priorité : **ne jamais bloquer**, exercer le socle.
+
+1. Débloquer les pendings qui le concernent (choix forcé, toasters → passer, fenêtres → passer).
+2. Mise en place : enchère 0 / mulligan non / site de départ.
+3. Ombre : jouer séides/conditions **légaux** (`canPlayCard` : spot, unicité, coût), terminer la phase.
+4. Peuples Libres : jouer compagnons / soutiens / attachements simples, puis fin de phase (déplacement inclus).
+5. Assignment : PL et Ombre affectent naïvement (1ʳᵉ cible) ; escarmouche : résoudre une fois, puis `cleanupPendingDeaths` (jamais re-resolve).
+6. Capacités rares : **passer**.
+
+## Modules
+
+| | |
+| --- | --- |
+| `src/game/bot/isBotToAct.ts` | Tour logique du BOT |
+| `src/game/bot/enumerateBotMoves.ts` | Liste de coups |
+| `src/game/bot/PlaytestBot.ts` | Classe boardgame.io |
+| `src/game/bot/botMatchSetup.ts` | Decks sessionStorage |
+| `src/decks/startBotMatch.ts` | Lancement depuis le builder |
+
+## Étapes
+
+1. **Socle match solo** — Local + BOT siège 1, humain 0, decks sessionStorage
+2. **Enumerate déblocage** — setup / fenêtres / fin de phase
+3. **Enumerate jeu** — Ombre (séides) / PL / assignment / escarmouche naïfs
+4. **Bouton deck builder** — « Affronter un BOT »
+5. **Playtest** — tests vitest `botPlaytest` + `botLocalMatch` (mise en place → fellowship)
+
+### Blocages connus (v1, OK pour playtest)
+
+- Capacités rares / toasters complexes : passer ou ignorer
+- `pendingSitePhaseDesignation` / transfert de suivant site : peu couverts
+- BOT en PL : joue le premier compagnon/soutien/attachement légal, ignore les événements ; au regroupement un déplacement si quota OK
+- Coups fantômes `___botWait` quand ce n’est pas son tour (activePlayers 0+1)
+
+## Plus tard — heuristiques (pas une IA)
+
+Fichier dédié (ex. `src/game/bot/heuristics.ts`) lu par `enumerateBotMoves` :
+
+- **Affectation** : préférer compagnons plus forts / éviter le Porteur
+- **Déplacement** : règles simples (crépuscule, danger) au lieu d’avancer dès que légal
+- **Priorité de jeu** : séides cheap, uniques après spot…
+- **Events combat** : encore plus tard (ciblage / fenêtres)
+
+Commencer par 3–4 conseils max (affectation + déplacement).
+
+## Hors v1
+
+- BOT intelligent / difficulté
+- Choisir son siège (BOT en 0)
+- Accueil / lobby
+- Chat, multi-BOT, BOT sur SocketIO

@@ -1,11 +1,11 @@
 ---
-description: Plan création de deck — builder + validation Standard
-alwaysApply: true
+description: ARCHIVÉ — Plan création de deck (figé ; suite = bot-plan.mdc)
+alwaysApply: false
 ---
 
 # Création de deck
 
-> **Plan actif.** Suite de gagner/perdre ([`.cursor/rules/win-lose-plan.mdc`](win-lose-plan.mdc), figé).
+> **Plan figé.** Suite : [`bot-plan.mdc`](bot-plan.mdc). Ancien actif après gagner/perdre ([`.cursor/rules/win-lose-plan.mdc`](win-lose-plan.mdc)).
 
 **Format : Standard (règles modernes).** Voir `.cursor/rules/format-standard.mdc`.
 
@@ -30,6 +30,7 @@ Pool large ; sites **11–18** ; X-list structurelle (`src/decks/formatRules.ts`
 | `src/views/DeckBuilder/` | UI éditeur |
 | `src/utils/deckLoader.ts` | Fallback seeds sync |
 
-## Hors v1
+## Hors v1 (traité ailleurs ou plus tard)
 
-- Accueil, BOT, import/export fichier manuel, X-list remplie, multi-formats, stockage en ligne
+- Accueil, import/export fichier manuel, X-list remplie, multi-formats, stockage en ligne
+- BOT → [`bot-plan.mdc`](bot-plan.mdc)

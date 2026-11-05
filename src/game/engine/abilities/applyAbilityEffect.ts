@@ -341,9 +341,15 @@ export function applyAbilityEffect(
                       : fpId;
             const player = G.players[ownerId];
             if (!player) return false;
-            const isFellowship = (ability.phases || []).some(
-                (phase) => phase.toUpperCase() === 'FELLOWSHIP'
-            );
+            // Limite de 4 = pendant la phase Communauté (CR), pas seulement
+            // si ability.phases contient FELLOWSHIP (Trollshaw = YOU_PLAY).
+            const pendingPhase = (
+                G.pendingWhenPlayed?.phase || ''
+            ).toLowerCase();
+            const isFellowship =
+                (ability.phases || []).some(
+                    (phase) => phase.toUpperCase() === 'FELLOWSHIP'
+                ) || pendingPhase === 'fellowship';
             drawCardsForPlayer(G, player, effect.count || 0, isFellowship);
             continue;
         }
