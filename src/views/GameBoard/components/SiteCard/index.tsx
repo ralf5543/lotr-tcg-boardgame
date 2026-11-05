@@ -9,6 +9,7 @@ import type { SupportedLanguage } from '../../../../utils/i18n';
 import { getEffectiveSiteKeywords } from '../../../../game/logic/sites';
 import { usePulseOnChange } from '../../hooks/usePulseOnChange';
 import { useImageSrcFallback } from '../../../../utils/useImageSrcFallback';
+import { getCollectorNumber } from '../../../../utils/cardUtils';
 
 export interface SiteCardProps {
     site: SiteCardState;
@@ -53,6 +54,11 @@ export const SiteCard: React.FC<SiteCardProps> = ({
 
     return (
         <S.Container $size={size} className={className} style={style}>
+            {size === 'lg' && getCollectorNumber(site) && (
+                <S.SiteIdBadge aria-hidden>
+                    {getCollectorNumber(site)}
+                </S.SiteIdBadge>
+            )}
             {effectiveKeywords.length > 0 && size === 'sm' && (
                 <S.SiteKeywordsContainer>
                     {effectiveKeywords.map((kw) => (

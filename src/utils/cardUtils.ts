@@ -1,5 +1,30 @@
 import type { GameState, CardState, SiteCardState } from '../game/types';
 
+/**
+ * Numéro de collection imprimé (`4R158`), jamais l’id d’instance en jeu
+ * (`p0-4R158-32-gj8b8`).
+ */
+export function getCollectorNumber(
+    card: { id: string; printedId?: string } | null | undefined
+): string {
+    if (!card) return '';
+    if (card.printedId) return card.printedId;
+
+    const id = card.id;
+    // Deck : p0-4R158-12-abc12 (index + hash)
+    const fromDeck = id.match(
+        /^p[01]-(.+?)-\d+-[a-z0-9]+$/i
+    );
+    if (fromDeck?.[1]) return fromDeck[1];
+    // Setup : p0-4R158-ringbearer | onering | starting-comp-0
+    const fromSetup = id.match(
+        /^p[01]-(.+?)-(?:ringbearer|onering|starting-comp-\d+)$/i
+    );
+    if (fromSetup?.[1]) return fromSetup[1];
+
+    return id;
+}
+
 /** Porteur désigné (mot-clé) ou compagnon qui a l’Anneau Unique attaché. */
 export function isRingBearerCard(card: CardState | null | undefined): boolean {
     if (!card) return false;

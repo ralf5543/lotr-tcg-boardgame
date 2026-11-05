@@ -1336,6 +1336,11 @@ export interface Ability {
 export interface CardState {
     id: string;
     instanceId: string;
+    /**
+     * Numéro de collection imprimé (ex. `4R158`), conservé quand `id`
+     * est mangé en instance unique (`p0-4R158-32-abc12`).
+     */
+    printedId?: string;
 
     // Objet de traductions multi-langues
     i18n?: CardI18nMap;
@@ -1468,6 +1473,8 @@ export interface PlayerState {
 export interface SiteCardState {
     siteNumber?: number;
     id: string;
+    /** Numéro de collection imprimé (ex. `11S243`) — voir `CardState.printedId`. */
+    printedId?: string;
     /** Affichage legacy ; souvent synonyme de title issu du JSON. */
     name: string;
     twilightCost: number;

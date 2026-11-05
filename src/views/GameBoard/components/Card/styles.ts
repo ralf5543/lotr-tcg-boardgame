@@ -471,6 +471,7 @@ export const CardContainer = styled.div<CardContainerProps>`
                 inset-inline-start: 80px;
                 gap: 4px;
                 position: absolute;
+                margin-block-start: 0;
                 ${isNotCharacter(props.$type) &&
                 css`
                     margin-block-start: 0px;
@@ -640,7 +641,7 @@ export const CardTitles = styled.div<{ $type?: string }>`
     font-variant: small-caps;
     z-index: 2;
     gap: 2px;
-    justify-content: center;
+    margin-block-start: 3.5px;
     line-height: 0.7;
     ${(props) =>
         isNotCharacter(props.$type) &&
@@ -650,6 +651,8 @@ export const CardTitles = styled.div<{ $type?: string }>`
             writing-mode: sideways-lr;
             line-height: 0.8;
             text-align: end;   
+            margin-block-start: 0;
+            justify-content: center;
         `}
 `;
 
@@ -1479,4 +1482,20 @@ export const AbilityBubbleItem = styled.button`
     span.ability-bubble-cost {
         color: #e2c044;
     }
+`;
+
+/** Numéro de carte (id) — visible en lg seulement ; CSS à affiner. */
+export const CardIdBadge = styled.span`
+    position: absolute;
+    inset-block-end: 33px;
+    inset-inline-end: 28px;
+    z-index: 20;
+    color: black;
+    font-size: 10px;
+    font-weight: 700;
+    font-variant: small-caps;
+    letter-spacing: 0.04em;
+    line-height: 1.2;
+    pointer-events: none;
+    white-space: nowrap;
 `;

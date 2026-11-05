@@ -25,7 +25,10 @@ import {
     getEffectiveResistance,
 } from '../../../../utils/cardStats';
 import { getCardText } from '../../../../utils/i18n';
-import { isRingBearerCard } from '../../../../utils/cardUtils';
+import {
+    getCollectorNumber,
+    isRingBearerCard,
+} from '../../../../utils/cardUtils';
 import { useImageSrcFallback } from '../../../../utils/useImageSrcFallback';
 import type { SupportedLanguage } from '../../../../utils/i18n';
 import { requiresAttachmentTarget } from '../../../../game/engine/canPlayCard';
@@ -730,6 +733,11 @@ export const Card: React.FC<CardProps> = ({
             data-overwhelmed={card.isOverwhelmed ? 'true' : 'false'}
             $isAttachment={useAttachmentChrome}
         >
+            {size === 'lg' && getCollectorNumber(card) && (
+                <S.CardIdBadge aria-hidden>
+                    {getCollectorNumber(card)}
+                </S.CardIdBadge>
+            )}
             {isHealing && (
                 <S.HealOverlay $healGen={healGen} aria-hidden>
                     <S.HealGlow />

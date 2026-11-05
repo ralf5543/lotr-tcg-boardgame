@@ -25,6 +25,8 @@ export const buildDeckFromIds = (cardIds: string[], playerId: string): CardState
         if (baseCard) {
             deck.push({
                 ...baseCard,
+                // Numéro de collection JSON (4R158) — distinct de l’id d’instance.
+                printedId: baseCard.printedId || baseCard.id,
                 // ID unique de l'instance en jeu (ex: p0-19P38-0-abc12)
                 id: `p${playerId}-${baseCard.id}-${index}-${Math.random().toString(36).substring(2, 7)}`,
                 isFaceDown: false,

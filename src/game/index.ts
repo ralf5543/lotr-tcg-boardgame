@@ -109,6 +109,7 @@ const createCardInstance = (
     }
     return {
         ...baseCard,
+        printedId: baseCard.printedId || baseCard.id,
         id: `p${playerId}-${baseCard.id}-${suffix}`,
         isFaceDown: false,
     };
