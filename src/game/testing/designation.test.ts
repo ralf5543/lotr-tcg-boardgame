@@ -234,7 +234,7 @@ describe('designation', () => {
         expect(isDesignationTargetId(['frodo'], 'sam')).toBe(false);
     });
 
-    it('Make a Dwarf sans coût : flèche même s’il n’y a qu’un Nain', () => {
+    it('Make a Dwarf sans coût : buff = halo après drop, pas de flèche pendant le drag', () => {
         const G = createGameState({
             players: {
                 '0': createPlayerState('0', {
@@ -276,8 +276,9 @@ describe('designation', () => {
 
         expect(abilityNeedsDesignation(G, event, ability)).toBe(true);
         expect(getDesignationCandidates(G, event, ability)).toHaveLength(1);
-        expect(getHandEventDesignationTargetIds(G, event, 'skirmish')).toContain(
-            'gimli'
+        expect(abilityEffectWantsTargetingArrow(ability)).toBe(false);
+        expect(getHandEventDesignationTargetIds(G, event, 'skirmish')).toEqual(
+            []
         );
     });
 
@@ -321,12 +322,72 @@ describe('designation', () => {
         expect(getDesignationCandidates(G, event, heal).map((c) => c.id)).toEqual(
             ['frodo']
         );
-        expect(getHandEventDesignationTargetIds(G, event, 'skirmish')).toContain(
-            'frodo'
+        // Soin = pas d’attaque → pas de flèche pendant le drag.
+        expect(abilityEffectWantsTargetingArrow(heal)).toBe(false);
+        expect(getHandEventDesignationTargetIds(G, event, 'skirmish')).toEqual(
+            []
         );
-        expect(
-            getHandEventDesignationTargetIds(G, event, 'skirmish')
-        ).not.toContain('sam');
+    });
+
+    it('Still Sharp (spot Narsil → buff) : pas de flèche pendant le drag', () => {
+        const ability: Ability = {
+            id: '3U46:0',
+            phases: ['SKIRMISH'],
+            cost: [
+                {
+                    spot: [
+                        {
+                            count: 1,
+                            target: [['The Shards of Narsil']],
+                        },
+                    ],
+                },
+            ],
+            effects: [
+                {
+                    type: 'ADD_TEMP_STAT',
+                    stat: 'STRENGTH',
+                    value: 3,
+                    target: [['GONDOR', 'COMPANION']],
+                    expiresAtPhase: 'SKIRMISH',
+                },
+            ],
+            source: 'SELF',
+        };
+        const narsil = createCard({
+            id: '3R44',
+            instanceId: 'narsil-1',
+            kind: 'FREE_PEOPLE',
+            type: 'POSSESSION',
+            title: 'The Shards of Narsil',
+        });
+        const aragorn = createCompanion({
+            id: 'aragorn',
+            instanceId: 'aragorn-1',
+            culture: 'GONDOR',
+        });
+        const G = createGameState({
+            players: {
+                '0': createPlayerState('0', {
+                    fellowshipArea: [aragorn],
+                    supportArea: [narsil],
+                }),
+                '1': createPlayerState('1'),
+            },
+        });
+        const event = createCard({
+            id: '3U46',
+            kind: 'FREE_PEOPLE',
+            type: 'EVENT',
+            title: 'Still Sharp',
+            phases: ['SKIRMISH'],
+            abilities: [ability],
+        });
+        expect(abilityNeedsEffectDesignation(G, event, ability)).toBe(true);
+        expect(abilityEffectWantsTargetingArrow(ability)).toBe(false);
+        expect(getHandEventDesignationTargetIds(G, event, 'skirmish')).toEqual(
+            []
+        );
     });
 
     it('Traveled Leader : flèche sur les sites path de la région courante', () => {

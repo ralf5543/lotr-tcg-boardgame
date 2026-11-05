@@ -18,7 +18,7 @@ Jouer **seul** pour tester un deck / des mécaniques. Le BOT n’est pas un adve
 ## Décisions v1
 
 - **Toi** = siège 0 ; **BOT** = siège 1 (chaque siège a les deux decks ; les rôles PL / Ombre s’inversent comme d’habitude).
-- Entrée : bouton **« Affronter un BOT »** dans le deck builder. Deck courant → siège 0 ; deck déjà choisi pour le siège 1 (ou seed) → BOT.
+- Entrée : bouton **« Affronter un BOT »** dans le deck builder. Deck courant → siège 0 ; deck attribué au siège 1 (« Ce deck → BOT », résumé dans la liste) → BOT.
 - Match solo : **un seul client** (`SoloBotMatch`, pas de multi Local) — coups BOT via `MAKE_MOVE` siège 1. Parties à deux humains : SocketIO inchangé.
 - Decks du match BOT : `sessionStorage` (`lotr.botSetupDecks`) lu par `setupGame`.
 - BOT via `enumerateBotMoves` + tick dans `SoloBotMatch`.

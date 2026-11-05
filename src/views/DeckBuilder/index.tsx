@@ -302,7 +302,13 @@ export const DeckBuilder: React.FC = () => {
     const [loadError, setLoadError] = useState<string | null>(null);
     const [draft, setDraft] = useState<DeckConfig | null>(null);
     const [issuesOpen, setIssuesOpen] = useState(false);
+    const [seatDecks, setSeatDecks] = useState(() => getSelectedDeckIds());
     const { hoveredData, setHoveredCard } = useHoverCard();
+
+    const refreshSeatDecks = () => setSeatDecks(getSelectedDeckIds());
+
+    const deckNameById = (id: string) =>
+        decks.find((d) => d.id === id)?.name || 'Deck manquant';
 
     const refreshList = async (): Promise<DeckConfig[]> => {
         const list = await listDecks();
@@ -569,11 +575,31 @@ export const DeckBuilder: React.FC = () => {
         }
     };
 
+    const assignSeat = async (playerId: '0' | '1') => {
+        if (!draft) return;
+        setBusy(true);
+        try {
+            await saveDeck(draft);
+            assignDeckToPlayer(playerId, draft.id);
+            await refreshList();
+            refreshSeatDecks();
+        } catch (err) {
+            window.alert(
+                err instanceof Error
+                    ? err.message
+                    : 'Impossible d’attribuer ce deck.'
+            );
+        } finally {
+            setBusy(false);
+        }
+    };
+
     const playAs = async (playerId: '0' | '1') => {
         setBusy(true);
         try {
             await saveDeck(draft);
             assignDeckToPlayer(playerId, draft.id);
+            refreshSeatDecks();
             await refreshList();
             const matchID = await createMatchWithSelectedDecks();
             goToBoard(matchID);
@@ -592,7 +618,9 @@ export const DeckBuilder: React.FC = () => {
         setBusy(true);
         try {
             await saveDeck(draft);
+            // Deck ouvert → siège 0 (toi) ; le BOT garde le deck déjà attribué au siège 1.
             assignDeckToPlayer('0', draft.id);
+            refreshSeatDecks();
             await refreshList();
             const matchID = await prepareBotMatch();
             goToBotBoard(matchID);
@@ -679,9 +707,45 @@ export const DeckBuilder: React.FC = () => {
             <S.Body>
             <S.Side>
                 <S.SideLabel>Decks</S.SideLabel>
+                <S.SeatSummary>
+                    <S.SeatRow>
+                        <S.SeatRole>Toi</S.SeatRole>
+                        <S.SeatDeckName title={deckNameById(seatDecks['0'])}>
+                            {deckNameById(seatDecks['0'])}
+                        </S.SeatDeckName>
+                    </S.SeatRow>
+                    <S.SeatRow>
+                        <S.SeatRole>BOT</S.SeatRole>
+                        <S.SeatDeckName title={deckNameById(seatDecks['1'])}>
+                            {deckNameById(seatDecks['1'])}
+                        </S.SeatDeckName>
+                    </S.SeatRow>
+                    <S.SeatActions>
+                        <S.Button
+                            type="button"
+                            $compact
+                            disabled={busy || !draft}
+                            onClick={() => assignSeat('0')}
+                        >
+                            Ce deck → toi
+                        </S.Button>
+                        <S.Button
+                            type="button"
+                            $compact
+                            disabled={busy || !draft}
+                            onClick={() => assignSeat('1')}
+                        >
+                            Ce deck → BOT
+                        </S.Button>
+                    </S.SeatActions>
+                </S.SeatSummary>
                 <S.DeckList>
                     {decks.map((d) => {
                         const v = validateDeck(d);
+                        const roles = [
+                            d.id === seatDecks['0'] ? 'toi' : null,
+                            d.id === seatDecks['1'] ? 'BOT' : null,
+                        ].filter(Boolean);
                         return (
                             <S.DeckItem
                                 key={d.id}
@@ -695,6 +759,9 @@ export const DeckBuilder: React.FC = () => {
                                         d.startingCompanionIds.length}
                                     /{d.shadow.length} · {d.siteIds.length}{' '}
                                     sites
+                                    {roles.length > 0
+                                        ? ` · ${roles.join(' · ')}`
+                                        : ''}
                                 </S.DeckMeta>
                             </S.DeckItem>
                         );

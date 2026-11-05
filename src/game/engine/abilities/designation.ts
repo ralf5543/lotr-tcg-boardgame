@@ -961,6 +961,36 @@ export function abilityHasLegalEffectTarget(
             continue;
         }
         if (effect.type === 'FORCE_ASSIGN') {
+            // Séide (coût spot DESIGNATION / SELF) + compagnon cible.
+            if (effect.minion === 'COST_TARGET') {
+                if (
+                    getCostDesignationCandidates(
+                        G,
+                        source,
+                        ability,
+                        actingPlayerId
+                    ).length < 1
+                ) {
+                    return false;
+                }
+            } else if (effect.minion === 'SELF') {
+                if (
+                    source.type !== 'MINION' ||
+                    source.cannotBeAssignedToSkirmish
+                ) {
+                    return false;
+                }
+            }
+            if (
+                getEffectDesignationCandidates(
+                    G,
+                    source,
+                    ability,
+                    actingPlayerId
+                ).length < 1
+            ) {
+                return false;
+            }
             continue;
         }
         if (effect.type === 'FORBID_ASSIGN') {
@@ -1280,6 +1310,9 @@ export function formatDesignationPrompt(
 ): string {
     const costTarget = ability.cost[0]?.exert?.[0]?.target;
     const discardTarget = ability.cost[0]?.discardFromPlay?.[0]?.target;
+    const spotDesignateTarget = ability.cost[0]?.spot?.find(
+        (s) => Array.isArray(s.target) && s.mode === 'DESIGNATION'
+    )?.target;
     const effectTarget =
         ability.effects.find(
             (item) =>
@@ -1287,16 +1320,30 @@ export function formatDesignationPrompt(
                 (Array.isArray(item.target) ||
                     item.target === 'SKIRMISHING' ||
                     item.target === 'WINNER')
-        )?.target ?? ability.effects[0]?.target;
+        )?.target ??
+        (ability.effects.find((item) => item.type === 'FORCE_ASSIGN') as
+            | { companion?: unknown }
+            | undefined)?.companion ??
+        ability.effects[0]?.target;
 
     const removeTokensCost = ability.cost?.[0]?.removeCultureTokens;
     const hasCostDesignation =
         Array.isArray(costTarget) ||
         Array.isArray(discardTarget) ||
+        Array.isArray(spotDesignateTarget) ||
         Boolean(removeTokensCost && removeTokensCost.from !== 'SELF');
 
     const useEffect =
         which === 'effect' || (which === 'auto' && !hasCostDesignation);
+
+    if (
+        (which === 'cost' || (which === 'auto' && hasCostDesignation)) &&
+        Array.isArray(spotDesignateTarget) &&
+        !Array.isArray(costTarget)
+    ) {
+        const tokens = spotDesignateTarget.flat();
+        return `Choisissez ${formatAbilityWhoLabel(tokens, true)}.`;
+    }
 
     if (
         (which === 'cost' || (which === 'auto' && hasCostDesignation)) &&
@@ -1520,16 +1567,23 @@ export function getHandEventDesignationTargetIds(
         return [];
     }
 
-    // Reinforce (etc.) : pas de flèche pendant le drag — le drop ouvre halo + clic.
+    // Effet non-attaque (buff, soin, reinforce, défausse…) : pas de flèche
+    // pendant le drag — le drop ouvre halo + clic (cf. targeting-arrows).
     if (
         abilityNeedsEffectDesignation(G, card, ability) &&
-        abilityEffectDesignationIsHaloOnly(ability)
+        !abilityEffectWantsTargetingArrow(ability)
     ) {
         return [];
     }
 
-    if (abilityNeedsDesignation(G, card, ability)) {
-        return getDesignationCandidates(G, card, ability).flatMap(cardTargetIds);
+    // Attaque directe (blessure / exhaust / exert) : flèche main → cible.
+    if (
+        abilityNeedsDesignation(G, card, ability) &&
+        abilityEffectWantsTargetingArrow(ability)
+    ) {
+        return getDesignationCandidates(G, card, ability).flatMap(
+            cardTargetIds
+        );
     }
 
     const pathIds = getPathThenDeckSiteTargetIds(G, card, ability);

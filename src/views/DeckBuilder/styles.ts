@@ -103,6 +103,44 @@ export const SideLabel = styled.div`
     opacity: 0.55;
 `;
 
+/** Qui joue quel deck (humain siège 0 / BOT siège 1). */
+export const SeatSummary = styled.div`
+    padding: 0 12px 10px;
+    font-size: 1.05rem;
+    line-height: 1.45;
+    opacity: 0.85;
+`;
+
+export const SeatRow = styled.div`
+    display: flex;
+    align-items: baseline;
+    gap: 8px;
+    min-width: 0;
+`;
+
+export const SeatRole = styled.span`
+    flex-shrink: 0;
+    width: 2.6em;
+    font-size: 0.95rem;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    opacity: 0.55;
+`;
+
+export const SeatDeckName = styled.span`
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+`;
+
+export const SeatActions = styled.div`
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-top: 8px;
+`;
+
 export const DeckList = styled.ul`
     list-style: none;
     margin: 0;
