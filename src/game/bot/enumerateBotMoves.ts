@@ -1,11 +1,6 @@
 import type { Ctx } from 'boardgame.io';
 import type { CardState, GameState } from '../types';
-import {
-    canCompanionBeAssigned,
-    getAssignableMinionCapacity,
-    getSiteMaxMinionsPerSkirmish,
-    getUnassignedMinions,
-} from '../logic/assignment';
+import { getUnassignedMinions } from '../logic/assignment';
 import { canCardTakeWound } from '../logic/sites';
 import { getEffectiveVitality } from '../../utils/cardStats';
 import { getMoveLimit } from '../logic/moveLimit';
@@ -17,49 +12,21 @@ import {
     requiresAttachmentTarget,
 } from '../engine/canPlayCard';
 import { getToPlayExertTargetIds } from '../engine/abilities/designation';
+import {
+    mayPlayAnotherCompanion,
+    pickActionWindowMove,
+    pickAssignmentByStrength,
+    pickNextSkirmishId,
+    pickSanctuaryHealTargetId,
+    pickWearRingResponse,
+    shouldBotMoveAgain,
+} from './heuristics';
 import { fpPlayerId, isBotToAct, shadowPlayerId } from './isBotToAct';
 
 /** Format attendu par boardgame.io `game.ai.enumerate`. */
 export type BotMoveSpec = { move: string; args?: unknown[] };
 
-function skirmishMinionCount(G: GameState, companion: CardState): number {
-    const id = companion.instanceId || companion.id;
-    const skirmish = (G.skirmishes || []).find(
-        (s) =>
-            s.companionId === id ||
-            s.companionId === companion.id ||
-            s.companionId === companion.instanceId
-    );
-    return skirmish?.minionIds.length ?? 0;
-}
-
-/**
- * Compagnon avec encore de la place (capacité FP / plafond site pour l’Ombre).
- * Sinon null → yield / pass, pas un assignMinion qui boucle en INVALID.
- */
-function companionWithFreeSlotId(
-    G: GameState,
-    forFreePeoples: boolean
-): string | null {
-    const fp = fpPlayerId(G);
-    const comps = (G.players[fp]?.fellowshipArea || []).filter(
-        (c) => canCompanionBeAssigned(c) && !c.isDead
-    );
-    const siteCap = getSiteMaxMinionsPerSkirmish(G);
-
-    for (const c of comps) {
-        const assigned = skirmishMinionCount(G, c);
-        const max = forFreePeoples
-            ? getAssignableMinionCapacity(c, G)
-            : siteCap == null
-              ? Number.POSITIVE_INFINITY
-              : siteCap;
-        if (assigned < max) {
-            return c.instanceId || c.id;
-        }
-    }
-    return null;
-}
+type SpecWithCost = { spec: BotMoveSpec; cost: number };
 
 function livingMinions(G: GameState): CardState[] {
     return (G.battlefield || []).filter(
@@ -89,7 +56,15 @@ function shadowPlayMoves(
     if (!player?.hand) return [];
     const context = { G, ctx, playerID };
     const hosts = G.battlefield || [];
-    const specs: BotMoveSpec[] = [];
+    const ranked: SpecWithCost[] = [];
+
+    const push = (spec: BotMoveSpec, card: CardState) => {
+        ranked.push({
+            spec,
+            // B8 : cheap d’abord.
+            cost: card.twilightCost ?? 0,
+        });
+    };
 
     player.hand.forEach((card, index) => {
         if (!card || card.kind !== 'SHADOW') return;
@@ -100,10 +75,13 @@ function shadowPlayMoves(
                 const hostId = host.instanceId || host.id;
                 if (!canAttachToCharacter(card, host, playerID)) continue;
                 if (!canPlayCard(card, context, hostId, host).valid) continue;
-                specs.push({
-                    move: 'attachCard',
-                    args: [index, hostId],
-                });
+                push(
+                    {
+                        move: 'attachCard',
+                        args: [index, hostId],
+                    },
+                    card
+                );
                 return;
             }
             return;
@@ -115,7 +93,7 @@ function shadowPlayMoves(
         if (hasDesignatedExertCost(card)) {
             const costId = getToPlayExertTargetIds(G, card)[0];
             if (!costId) return;
-            specs.push({ move: 'playCard', args: [index, costId] });
+            push({ move: 'playCard', args: [index, costId] }, card);
             return;
         }
 
@@ -126,11 +104,12 @@ function shadowPlayMoves(
             canDropInSupportArea(card)
         ) {
             // playShadowCard : coût d’errance / battlefield ; validé côté move.
-            specs.push({ move: 'playShadowCard', args: [index] });
+            push({ move: 'playShadowCard', args: [index] }, card);
         }
     });
 
-    return specs;
+    ranked.sort((a, b) => a.cost - b.cost);
+    return ranked.map((r) => r.spec);
 }
 
 function hasDesignatedExertCost(card: CardState): boolean {
@@ -181,6 +160,10 @@ function fellowshipPlayMoves(
             card.type !== 'COMPANION' &&
             !canDropInSupportArea(card)
         ) {
+            return;
+        }
+        // B6 : plafond soft 5 compagnons (sauf blessures hors Porteur).
+        if (card.type === 'COMPANION' && !mayPlayAnotherCompanion(G)) {
             return;
         }
         if (!canPlayCard(card, context).valid) return;
@@ -255,11 +238,26 @@ export function enumerateBotMoves(
     }
 
     if (G.responseWindow?.isOpen && G.responseWindow.activePlayerId === playerID) {
+        // A4 : Anneau seulement si ça évite la mort du Porteur.
+        const wear = pickWearRingResponse(G);
+        if (wear) {
+            moves.push({
+                move: 'activateAbility',
+                args: [wear.sourceInstanceId, wear.abilityId],
+            });
+            return moves;
+        }
         moves.push({ move: 'passResponseWindow', args: [] });
         return moves;
     }
 
     if (G.actionWindow?.isOpen && G.actionWindow.activePlayerId === playerID) {
+        // A5/C10 escarmouche ; C9 light manœuvre/archerie.
+        const action = pickActionWindowMove(G, playerID, phase);
+        if (action) {
+            moves.push({ move: action.move, args: action.args });
+            return moves;
+        }
         moves.push({ move: 'passActionWindow', args: [] });
         return moves;
     }
@@ -317,7 +315,13 @@ export function enumerateBotMoves(
     }
 
     if (G.sanctuaryHeal && playerID === fp) {
-        moves.push({ move: 'confirmSanctuaryHeals', args: [] });
+        // A3 : soigner (Porteur en dernier), puis confirmer s’il n’y a plus rien.
+        const healId = pickSanctuaryHealTargetId(G);
+        if (healId && (G.sanctuaryHeal.remaining ?? 0) > 0) {
+            moves.push({ move: 'assignSanctuaryHeal', args: [healId] });
+        } else {
+            moves.push({ move: 'confirmSanctuaryHeals', args: [] });
+        }
         return moves;
     }
 
@@ -351,32 +355,27 @@ export function enumerateBotMoves(
         }
     }
 
-    // --- Assignment (uniquement en phase assignment : FP_ASSIGN fantôme sinon) ---
+    // --- Assignment (heuristique A1 : forces) ---
     if (phase === 'assignment') {
         if (G.assignmentStep === 'FP_ASSIGN' && playerID === fp) {
-            const unassigned = getUnassignedMinions(G);
-            const companionId = companionWithFreeSlotId(G, true);
-            // Naïf : le PL affecte tant qu’il reste de la place ; sinon cède à l’Ombre.
-            if (unassigned.length > 0 && companionId) {
-                const m = unassigned[0]!;
+            const pick = pickAssignmentByStrength(G, true);
+            if (pick) {
                 moves.push({
                     move: 'assignMinion',
-                    args: [m.instanceId || m.id, companionId],
+                    args: [pick.minionId, pick.companionId],
                 });
-            } else if (unassigned.length > 0) {
+            } else if (getUnassignedMinions(G).length > 0) {
                 moves.push({ move: 'yieldAssignmentToShadow', args: [] });
             }
             return moves;
         }
 
         if (G.assignmentStep === 'SHADOW_ASSIGN' && playerID === shadow) {
-            const unassigned = getUnassignedMinions(G);
-            const companionId = companionWithFreeSlotId(G, false);
-            if (unassigned.length > 0 && companionId) {
-                const m = unassigned[0]!;
+            const pick = pickAssignmentByStrength(G, false);
+            if (pick) {
                 moves.push({
                     move: 'assignMinion',
-                    args: [m.instanceId || m.id, companionId],
+                    args: [pick.minionId, pick.companionId],
                 });
             } else {
                 moves.push({ move: 'passShadowAssignment', args: [] });
@@ -444,11 +443,10 @@ export function enumerateBotMoves(
             }
             return moves;
         }
-        const next = (G.skirmishes || []).find(
-            (s) => s.minionIds.length > 0 && !s.resolved
-        );
-        if (next) {
-            moves.push({ move: 'selectSkirmish', args: [next.id] });
+        // B8 : combats déjà gagnés (marge) d’abord.
+        const nextId = pickNextSkirmishId(G);
+        if (nextId) {
+            moves.push({ move: 'selectSkirmish', args: [nextId] });
             return moves;
         }
         moves.push({ move: 'endSkirmishPhase', args: [] });
@@ -482,7 +480,8 @@ export function enumerateBotMoves(
                 !G.pendingSiteMoveAbility &&
                 !G.pendingSiteCharacterWounds &&
                 !G.pendingDeadPileRemoval;
-            if (canMove) {
+            // A2 : ne double-déplace que si le ratio séides/compagnons est OK.
+            if (canMove && shouldBotMoveAgain(G)) {
                 moves.push({ move: 'moveNextSite', args: [] });
             } else {
                 moves.push({ move: 'endTurnChoice', args: [] });

@@ -31,7 +31,7 @@ Priorité : **ne jamais bloquer**, exercer le socle.
 2. Mise en place : enchère 0 / mulligan non / site de départ.
 3. Ombre : jouer séides/conditions **légaux** (`canPlayCard` : spot, unicité, coût), terminer la phase.
 4. Peuples Libres : jouer compagnons / soutiens / attachements simples, puis fin de phase (déplacement inclus).
-5. Assignment : PL et Ombre affectent naïvement (1ʳᵉ cible) ; escarmouche : résoudre une fois, puis `cleanupPendingDeaths` (jamais re-resolve).
+5. Assignment : heuristique A1 (forces) ; escarmouche : résoudre une fois, puis `cleanupPendingDeaths`.
 6. Capacités rares : **passer**.
 
 ## Modules
@@ -40,35 +40,52 @@ Priorité : **ne jamais bloquer**, exercer le socle.
 | --- | --- |
 | `src/game/bot/isBotToAct.ts` | Tour logique du BOT |
 | `src/game/bot/enumerateBotMoves.ts` | Liste de coups |
+| `src/game/bot/heuristics.ts` | Conseils (affectation, plus tard déplacement…) |
 | `src/game/bot/PlaytestBot.ts` | Classe boardgame.io |
 | `src/game/bot/botMatchSetup.ts` | Decks sessionStorage |
 | `src/decks/startBotMatch.ts` | Lancement depuis le builder |
 
-## Étapes
+## Étapes socle (fait)
 
-1. **Socle match solo** — Local + BOT siège 1, humain 0, decks sessionStorage
-2. **Enumerate déblocage** — setup / fenêtres / fin de phase
-3. **Enumerate jeu** — Ombre (séides) / PL / assignment / escarmouche naïfs
-4. **Bouton deck builder** — « Affronter un BOT »
-5. **Playtest** — tests vitest `botPlaytest` + `botLocalMatch` (mise en place → fellowship)
+1. Socle match solo — Local + BOT siège 1
+2. Enumerate déblocage / Ombre / PL / assignment / escarmouche
+3. Bouton deck builder + playtest
 
 ### Blocages connus (v1, OK pour playtest)
 
 - Capacités rares / toasters complexes : passer ou ignorer
 - `pendingSitePhaseDesignation` / transfert de suivant site : peu couverts
-- BOT en PL : joue le premier compagnon/soutien/attachement légal, ignore les événements ; au regroupement un déplacement si quota OK
+- BOT en PL : joue le premier compagnon/soutien/attachement légal, ignore les événements ; au regroupement avance si quota OK
 - Coups fantômes `___botWait` quand ce n’est pas son tour (activePlayers 0+1)
 
-## Plus tard — heuristiques (pas une IA)
+## Heuristiques (pas une IA)
 
-Fichier dédié (ex. `src/game/bot/heuristics.ts`) lu par `enumerateBotMoves` :
+Fichier : [`src/game/bot/heuristics.ts`](../../src/game/bot/heuristics.ts).
 
-- **Affectation** : préférer compagnons plus forts / éviter le Porteur
-- **Déplacement** : règles simples (crépuscule, danger) au lieu d’avancer dès que légal
-- **Priorité de jeu** : séides cheap, uniques après spot…
-- **Events combat** : encore plus tard (ciblage / fenêtres)
+### Vague A — fait
 
-Commencer par 3–4 conseils max (affectation + déplacement).
+| | Conseil | Statut |
+| --- | --- | --- |
+| **A1** | Affectation par force (gagner le max ; Porteur PL en dernier) | **fait** |
+| **A2** | Double déplacement : stop si séides ≥ ~⅔ des compagnons ; site 9 → seuil ⅘ | **fait** |
+| **A3** | Sanctuaire : soigner le Porteur en dernier | **fait** |
+| **A4** | Anneau : jamais, sauf pour éviter la mort (auto) | **fait** |
+| **A5** | Escarmouche : boost force (capa / event) seulement si ça retourne un combat perdu | **fait** |
+
+### Vague B — fait
+
+| | Conseil | Statut |
+| --- | --- | --- |
+| **B6** | Ne pas dépasser 5 compagnons sauf si ≥ 5 blessures hors Porteur | **fait** |
+| **B7** | Affectation : prendre en compte boosts jouables en main / capa en jeu | **fait** |
+| **B8** | Ombre : séides cheap / légaux d’abord ; escarmouche : combats sûrs d’abord | **fait** |
+
+### Vague C — fait (périmètre raisonnable)
+
+| | Conseil | Statut |
+| --- | --- | --- |
+| **C9** | Manœuvre / archerie : blessure mortelle greedy (pas de vrai chaînage multi-phases) | **fait** (light) |
+| **C10** | Escarmouche : malus / blessure mortelle + ciblage si ça retourne le combat | **fait** |
 
 ## Hors v1
 
