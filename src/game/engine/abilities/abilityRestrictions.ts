@@ -5,10 +5,22 @@ import {
     isCardStackedOnControlledSite,
 } from '../../logic/sites';
 import { abilityOwnerPlayerId } from './payAbilityCost';
+import { findBearer } from './resolveCostTarget';
 import {
     isSkirmishActionForbidden,
     isSkirmishSpecialAbility,
 } from '../../logic/skirmishActionRestrictions';
+
+function cardTitleOf(card: CardState): string {
+    return (
+        card.title ||
+        card.i18n?.en?.title ||
+        card.i18n?.fr?.title ||
+        ''
+    )
+        .trim()
+        .toLowerCase();
+}
 
 export function isAssignedToSkirmish(
     G: GameState,
@@ -40,10 +52,33 @@ export function abilityMeetsPlayRestrictions(
     if (ability.requiresUnassigned && isAssignedToSkirmish(G, source)) {
         return false;
     }
+    if (ability.requiresBearerTitles && ability.requiresBearerTitles.length > 0) {
+        const bearer = findBearer(G, source) || source;
+        const title = cardTitleOf(bearer);
+        const ok = ability.requiresBearerTitles.some(
+            (t) => t.trim().toLowerCase() === title
+        );
+        if (!ok) return false;
+    }
     if (
         typeof ability.requiresAtSiteNumber === 'number' &&
         ability.requiresAtSiteNumber > 0 &&
         getCurrentSiteNumber(G) !== ability.requiresAtSiteNumber
+    ) {
+        return false;
+    }
+    const siteNumber = getCurrentSiteNumber(G);
+    if (
+        typeof ability.requiresAtSiteNumberAtMost === 'number' &&
+        ability.requiresAtSiteNumberAtMost > 0 &&
+        siteNumber > ability.requiresAtSiteNumberAtMost
+    ) {
+        return false;
+    }
+    if (
+        typeof ability.requiresAtSiteNumberAtLeast === 'number' &&
+        ability.requiresAtSiteNumberAtLeast > 0 &&
+        siteNumber < ability.requiresAtSiteNumberAtLeast
     ) {
         return false;
     }

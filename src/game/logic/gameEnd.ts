@@ -143,12 +143,19 @@ export function checkCorruptionLoss(G: GameState): boolean {
  */
 export function checkRingBearerKilledLoss(G: GameState): boolean {
     if (G.gameResult) return false;
-    // Setup / enchères : pas encore de vraie partie.
-    if (G.setupState && G.setupState.step !== 'COMPLETE') return false;
-    if (findLivingRingBearer(G)) return false;
     const player = fpPlayer(G);
+    const fellowship = player?.fellowshipArea || [];
+    const deadPile = player?.deadPile || [];
+    // Setup / enchères : pas encore de vraie partie — sauf si une communauté
+    // (ou pile de mort) est déjà là (preset DEV chargé pendant le setup).
+    if (G.setupState && G.setupState.step !== 'COMPLETE') {
+        const hasAnyone =
+            fellowship.length > 0 || deadPile.length > 0;
+        if (!hasAnyone) return false;
+    }
+    if (findLivingRingBearer(G)) return false;
     // Pas de communauté du tout = pas encore posée.
-    if (!player?.fellowshipArea?.length && !(player?.deadPile || []).length) {
+    if (!fellowship.length && !deadPile.length) {
         return false;
     }
     return setGameResult(G, 'SHADOW', 'RING_BEARER_KILLED');
@@ -163,13 +170,28 @@ export function checkSiteNineWin(G: GameState): boolean {
 }
 
 /**
- * Fin de partie « continue » après un coup (corruption).
- * Mort du Porteur : uniquement après enterrement (`cleanupPendingDeaths`),
- * pour laisser les réponses (Sam, etc.). Site 9 : entrée regroupement.
+ * Fin de partie après un coup : corruption, puis mort du Porteur.
+ * On attend la fenêtre CHARACTER_DIES (relève Sam…), mais pas les autres
+ * réponses (WINS / Épée Blême…) — si le Porteur est déjà mort sans relève,
+ * la partie est finie.
  */
 export function applyGameEndIfNeeded(G: GameState): boolean {
     if (G.gameResult) return true;
-    return checkCorruptionLoss(G);
+    if (checkCorruptionLoss(G)) return true;
+    // Relève encore possible (Sam…).
+    if (G.pendingEvent?.type === 'CHARACTER_DIES') return false;
+    if (
+        G.responseWindow?.isOpen &&
+        G.pendingEvent?.type === 'CHARACTER_DIES'
+    ) {
+        return false;
+    }
+    // Porteur mort sans relève : conclure même si une autre fenêtre est ouverte
+    // (ex. réponse d’escarmouche du vainqueur après la mort).
+    if (!findLivingRingBearer(G)) {
+        return checkRingBearerKilledLoss(G);
+    }
+    return false;
 }
 
 export function dismissGameEndOverlay(G: GameState): void {

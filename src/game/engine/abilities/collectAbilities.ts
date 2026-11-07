@@ -661,6 +661,16 @@ function formatEffectBit(
             ? `annuler une escarmouche impliquant ${who}`
             : 'annuler une escarmouche';
     }
+    if (effect.type === 'SET_OVERWHELM_FACTOR') {
+        const who = formatTargetPhrase(effect.target);
+        const factor = effect.factor || 3;
+        const base = who
+            ? `empêcher ${who} d’être submergé`
+            : 'empêcher d’être submergé';
+        return factor === 3
+            ? `${base} sauf si sa force est triplée`
+            : `${base} (seuil ×${factor})`;
+    }
     if (effect.type === 'HEAL') {
         if (effect.multiFromSpot) {
             return 'guérir X compagnons';
@@ -732,6 +742,12 @@ function formatEffectBit(
     if (effect.type === 'PREVENT_WOUND') {
         return 'empêcher cette blessure';
     }
+    if (effect.type === 'PREVENT_DISCARD') {
+        return 'empêcher cette défausse';
+    }
+    if (effect.type === 'PREVENT_BURDEN') {
+        return 'empêcher ce point-fardeau';
+    }
     if (effect.type === 'CANCEL_ABILITY_EFFECT') {
         return 'annuler la capacité';
     }
@@ -789,6 +805,15 @@ function formatEffectBit(
     if (effect.type === 'MAKE_RING_BEARER') {
         return `devenir Porteur de l’Anneau (résistance ${effect.resistance})`;
     }
+    if (effect.type === 'BECOME_MINION') {
+        const fierce = (effect.keywords || []).includes('FIERCE')
+            ? 'fierce '
+            : '';
+        return `devenir un séide ${fierce}(force ${effect.strength}, vitalité ${effect.vitality}) jusqu’au regroupement`;
+    }
+    if (effect.type === 'CLEAR_CULTURE_TOKENS') {
+        return 'retirer tous les jetons ici';
+    }
     if (effect.type === 'ALLOW_SKIRMISH') {
         const who = source.i18n?.fr?.title || source.title || 'ce personnage';
         return `permettre à ${who} de combattre`;
@@ -842,6 +867,9 @@ function formatEffectBit(
                     return `remplacer un site de la région actuelle par un site ${terrain} du deck d’aventure`;
                 }
                 return 'remplacer un site de la région actuelle par un site du deck d’aventure';
+            }
+            if (effect.scope === 'OPPONENT') {
+                return 'remplacer un site adverse par un site du même numéro de votre deck d’aventure';
             }
             if (effect.scope === 'CURRENT') {
                 if (effect.siteKeyword) {
@@ -1208,6 +1236,24 @@ function formatAbilityLabelFromAst(
         ability.requiresAtSiteNumber > 0
     ) {
         const siteBit = `si au site ${ability.requiresAtSiteNumber}`;
+        effectRaw = effectRaw
+            ? `${siteBit}, ${effectRaw}`
+            : siteBit;
+    }
+    if (
+        typeof ability.requiresAtSiteNumberAtMost === 'number' &&
+        ability.requiresAtSiteNumberAtMost > 0
+    ) {
+        const siteBit = `aux sites 1 à ${ability.requiresAtSiteNumberAtMost}`;
+        effectRaw = effectRaw
+            ? `${siteBit}, ${effectRaw}`
+            : siteBit;
+    }
+    if (
+        typeof ability.requiresAtSiteNumberAtLeast === 'number' &&
+        ability.requiresAtSiteNumberAtLeast > 0
+    ) {
+        const siteBit = `à partir du site ${ability.requiresAtSiteNumberAtLeast}`;
         effectRaw = effectRaw
             ? `${siteBit}, ${effectRaw}`
             : siteBit;

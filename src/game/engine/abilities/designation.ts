@@ -12,6 +12,7 @@ import {
     resolveCostTarget,
     resolveWinnerTargets,
     resolveSkirmishingOpponents,
+    findBearer,
 } from './resolveCostTarget';
 import { findEventAbilityForPhase } from './playEventAbility';
 
@@ -19,11 +20,17 @@ import {
     chooseOneOptionMeetsVitalityGate,
     findSkirmishToCancel,
 } from './cancelSkirmish';
-import { countFromSpotCost, abilityReplaceSiteEffect, abilityExchangeSiteEffect } from './applyAbilityEffect';
+import {
+    countFromSpotCost,
+    abilityReplaceSiteEffect,
+    abilityExchangeSiteEffect,
+    charactersSkirmishingWith,
+} from './applyAbilityEffect';
 import {
     getReplaceSiteCandidates,
     getReplaceablePathSitesInCurrentRegion,
     getOwnedPathSites,
+    getOpponentPathSites,
     canExchangeOwnedPathSite,
     canPlayNextSiteFromDeck,
     canTakeControlOfASite,
@@ -42,6 +49,7 @@ import {
 } from '../../logic/stats/mechanics/whileModifier';
 import {
     canReplaceCurrentSite,
+    canReplaceOpponentPathSiteForPlayer,
     canReplaceSiteInCurrentRegionForPlayer,
     isSiteReplaceForbidden,
 } from '../../logic/siteReplaceRestrictions';
@@ -152,6 +160,26 @@ function candidatesForEffect(
     if (effect.target === 'WINNER') {
         return uniqueCards(resolveWinnerTargets(G, source, ability));
     }
+    // Cantëa : armes portées par les adversaires d’escarmouche.
+    if (
+        effect.type === 'DISCARD' &&
+        effect.borneBy === 'SKIRMISHING' &&
+        Array.isArray(effect.target)
+    ) {
+        const hosts = resolveSkirmishingOpponents(G, source).filter(
+            (c) => c && !c.isDead
+        );
+        const weapons: CardState[] = [];
+        for (const host of hosts) {
+            for (const att of host.attachments || []) {
+                if (!att || att.isDead) continue;
+                if (cardMatchesTarget(att, effect.target)) {
+                    weapons.push(att);
+                }
+            }
+        }
+        return uniqueCards(weapons);
+    }
     let matches = uniqueCards(resolveCostTarget(G, source, effect.target));
     if (effect.type === 'STACK_ON_CONTROLLED_SITE') {
         const sourceId = source.instanceId || source.id;
@@ -205,9 +233,18 @@ function candidatesForEffect(
             effect.type === 'ADD_TEMP_KEYWORD') &&
         effect.excludeSource
     ) {
+        const excludeIds = new Set<string>();
         const sourceId = source.instanceId || source.id;
+        if (sourceId) excludeIds.add(sourceId);
+        // Attachement : « another companion » exclut le porteur, pas seulement
+        // la carte attachée (Sting…).
+        const bearer = findBearer(G, source);
+        if (bearer) {
+            const bearerId = bearer.instanceId || bearer.id;
+            if (bearerId) excludeIds.add(bearerId);
+        }
         matches = matches.filter(
-            (card) => (card.instanceId || card.id) !== sourceId
+            (card) => !excludeIds.has(card.instanceId || card.id)
         );
     }
     if (effect.type === 'WOUND' && effect.excludeRingBearer) {
@@ -429,6 +466,21 @@ export function getEffectDesignationCandidates(
         const matches = candidatesForEffect(G, source, ability, winnerEffect);
         if (matches.length <= 1) return [];
         return matches;
+    }
+
+    const transferSelf = (ability.effects || []).find(
+        (item) => item.type === 'TRANSFER_SELF'
+    );
+    if (transferSelf && transferSelf.type === 'TRANSFER_SELF') {
+        if (transferSelf.attachTo === 'SKIRMISHING_WITH') {
+            const filter = transferSelf.skirmishingWith;
+            if (!filter) return [];
+            const matches = charactersSkirmishingWith(G, filter);
+            if (matches.length < 1) return [];
+            return uniqueCards(matches);
+        }
+        // SKIRMISH_LOSER : un seul perdant typique → pas de désignation.
+        return [];
     }
 
     const reinforce = (ability.effects || []).find(
@@ -769,6 +821,7 @@ function abilityEffectDesignationIsHaloOnly(ability: Ability): boolean {
             effect.type === 'STACK_ON_SELF' ||
             effect.type === 'TAKE_FROM_STACK' ||
             effect.type === 'PLAY_FROM_CARD_STACK' ||
+            effect.type === 'TRANSFER_SELF' ||
             // Défausse d’une carte en jeu : choix logistique → halo + clic
             // (pas de trajectoire « attaque », même à 1 cible).
             (effect.type === 'DISCARD' && !effect.chooser)
@@ -816,11 +869,22 @@ export function getEffectDesignationCount(
             item.type === 'DISCARD' &&
             !item.chooser &&
             Array.isArray(item.target) &&
-            (item.count || 1) > 1
+            ((item.count || 1) > 1 || Boolean(item.countIfSpot))
     );
     if (discardMulti && discardMulti.type === 'DISCARD') {
         // CR : autant que possible, ignorer le reste (New-awakened…).
-        const cap = discardMulti.count || 1;
+        // Enquëa : 2 si spot N situations FP, sinon 1.
+        let cap = discardMulti.count || 1;
+        if (discardMulti.countIfSpot) {
+            const spotted = resolveCostTarget(
+                G,
+                source,
+                discardMulti.countIfSpot.target
+            ).filter((c) => c && !c.isDead).length;
+            if (spotted >= discardMulti.countIfSpot.min) {
+                cap = discardMulti.countIfSpot.count;
+            }
+        }
         const available = candidatesForEffect(
             G,
             source,
@@ -841,6 +905,47 @@ export function abilityHasLegalEffectTarget(
     for (const effect of ability.effects || []) {
         if (effect.type === 'MAKE_RING_BEARER') {
             if (isRingBearerCard(source)) return false;
+            continue;
+        }
+        if (effect.type === 'BECOME_MINION') {
+            if (source.type !== 'CONDITION' || source.animatedMinion) {
+                return false;
+            }
+            continue;
+        }
+        if (effect.type === 'CLEAR_CULTURE_TOKENS') {
+            continue;
+        }
+        if (effect.type === 'TRANSFER_SELF') {
+            const ownerId = abilityOwnerPlayerId(G, source);
+            if (!ownerId) return false;
+            const player = G.players[ownerId];
+            if (!player) return false;
+            const sourceId = source.instanceId || source.id;
+            const inSupport = (player.supportArea || []).some(
+                (c) => c && (c.instanceId || c.id) === sourceId
+            );
+            const inDiscard = (player.discard || []).some(
+                (c) => c && (c.instanceId || c.id) === sourceId
+            );
+            const zoneOk =
+                (effect.from.includes('SUPPORT') && inSupport) ||
+                (effect.from.includes('DISCARD') && inDiscard);
+            if (!zoneOk) return false;
+            if (effect.attachTo === 'SKIRMISHING_WITH') {
+                const filter = effect.skirmishingWith;
+                if (!filter) return false;
+                if (charactersSkirmishingWith(G, filter).length < 1) {
+                    return false;
+                }
+            } else if (effect.attachTo === 'SKIRMISH_LOSER') {
+                if (
+                    !(G.pendingLosesSkirmish?.loserIds?.length) &&
+                    G.pendingEvent?.type !== 'WINS_SKIRMISH'
+                ) {
+                    return false;
+                }
+            }
             continue;
         }
         if (effect.type === 'DISCARD_ALL') {
@@ -932,6 +1037,18 @@ export function abilityHasLegalEffectTarget(
             if (effect.scope === 'REGION') {
                 if (
                     !canReplaceSiteInCurrentRegionForPlayer(
+                        G,
+                        ownerId,
+                        effect.siteKeyword
+                    )
+                ) {
+                    return false;
+                }
+                continue;
+            }
+            if (effect.scope === 'OPPONENT') {
+                if (
+                    !canReplaceOpponentPathSiteForPlayer(
                         G,
                         ownerId,
                         effect.siteKeyword
@@ -1152,8 +1269,13 @@ export function abilityHasLegalEffectTarget(
         if (
             effect.type === 'REMOVE_TWILIGHT' ||
             effect.type === 'REMOVE_BURDENS' ||
+            effect.type === 'ADD_BURDENS' ||
             effect.type === 'REMOVE_THREATS' ||
-            effect.type === 'ADD_THREATS'
+            effect.type === 'ADD_THREATS' ||
+            effect.type === 'PREVENT_WOUND' ||
+            effect.type === 'PREVENT_DISCARD' ||
+            effect.type === 'PREVENT_BURDEN' ||
+            effect.type === 'CANCEL_ABILITY_EFFECT'
         ) {
             continue;
         }
@@ -1485,9 +1607,19 @@ export function getPathThenDeckSiteTargetIds(
     }
 
     const effect = abilityReplaceSiteEffect(ability);
-    if (!effect || effect.scope !== 'REGION') return [];
+    if (
+        !effect ||
+        (effect.scope !== 'REGION' && effect.scope !== 'OPPONENT')
+    ) {
+        return [];
+    }
 
-    return getReplaceablePathSitesInCurrentRegion(G)
+    const pathSites =
+        effect.scope === 'OPPONENT'
+            ? getOpponentPathSites(G, ownerId)
+            : getReplaceablePathSitesInCurrentRegion(G);
+
+    return pathSites
         .filter(
             ({ site, pathIndex }) =>
                 !isSiteReplaceForbidden(G, ownerId, pathIndex) &&
@@ -1549,7 +1681,7 @@ export function getHandEventDesignationTargetIds(
     phase?: string
 ): string[] {
     const phaseToMatch = G.responseWindow?.isOpen ? 'RESPONSE' : phase || '';
-    const ability = findEventAbilityForPhase(card, phaseToMatch);
+    const ability = findEventAbilityForPhase(card, phaseToMatch, G);
     if (!ability) return [];
 
     // Coût à désigner (remove jeton, exert…) : jamais de flèche pendant le drag.

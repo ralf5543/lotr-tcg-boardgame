@@ -4,6 +4,7 @@ import { whileConditionHolds } from './stats/mechanics/whileModifier';
 import {
     getCurrentSiteIndex,
     getFellowshipCurrentRegion,
+    getOpponentPathSites,
     getReplaceSiteCandidates,
     getReplaceablePathSitesInCurrentRegion,
     getSiteRegion,
@@ -112,6 +113,20 @@ export function canReplaceSiteInCurrentRegionForPlayer(
     siteKeyword?: CardKeyword
 ): boolean {
     return getReplaceablePathSitesInCurrentRegion(G).some(
+        ({ site, pathIndex }) =>
+            !isSiteReplaceForbidden(G, ownerId, pathIndex) &&
+            getReplaceSiteCandidates(G, ownerId, siteKeyword, site.id)
+                .length > 0
+    );
+}
+
+/** Replace OPPONENT légal : site adverse path + candidat deck. */
+export function canReplaceOpponentPathSiteForPlayer(
+    G: GameState,
+    ownerId: string,
+    siteKeyword?: CardKeyword
+): boolean {
+    return getOpponentPathSites(G, ownerId).some(
         ({ site, pathIndex }) =>
             !isSiteReplaceForbidden(G, ownerId, pathIndex) &&
             getReplaceSiteCandidates(G, ownerId, siteKeyword, site.id)

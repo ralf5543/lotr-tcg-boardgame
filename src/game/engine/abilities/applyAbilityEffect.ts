@@ -12,6 +12,7 @@ import {
     resolveWinnerTargets,
     resolveCostTarget,
     resolveSkirmishingOpponents,
+    findBearer,
 } from './resolveCostTarget';
 import {
     requestWounds,
@@ -19,6 +20,9 @@ import {
     requestExhaust,
     requestForceAssign,
     requestAddThreats,
+    requestAddBurdens,
+    requestDiscardFromPlay,
+    tryOpenHealResponse,
 } from '../responseWindow';
 import { cardMatchesTarget } from '../validations/matchers';
 import { drawCardsForPlayer } from '../../../utils/drawCards';
@@ -118,10 +122,12 @@ export function abilityNeedsSiteExchange(ability: Ability): boolean {
     return Boolean(abilityExchangeSiteEffect(ability));
 }
 
-/** Replace REGION ou exchange : 1ʳᵉ cible path, 2ᵉ deck. */
+/** Replace REGION / OPPONENT ou exchange : 1ʳᵉ cible path, 2ᵉ deck. */
 export function abilityNeedsPathThenDeckSite(ability: Ability): boolean {
     const replace = abilityReplaceSiteEffect(ability);
-    if (replace?.scope === 'REGION') return true;
+    if (replace?.scope === 'REGION' || replace?.scope === 'OPPONENT') {
+        return true;
+    }
     return abilityNeedsSiteExchange(ability);
 }
 
@@ -308,6 +314,28 @@ export function applyAbilityEffect(
             continue;
         }
 
+        if (effect.type === 'PREVENT_DISCARD') {
+            if (G.pendingEvent?.type !== 'ABOUT_TO_DISCARD') {
+                return false;
+            }
+            G.pendingEvent = undefined;
+            continue;
+        }
+
+        if (effect.type === 'PREVENT_BURDEN') {
+            if (
+                G.pendingEvent?.type !== 'ABOUT_TO_ADD_BURDEN' ||
+                G.pendingEvent.count <= 0
+            ) {
+                return false;
+            }
+            G.pendingEvent.count -= 1;
+            if (G.pendingEvent.count <= 0) {
+                G.pendingEvent = undefined;
+            }
+            continue;
+        }
+
         if (effect.type === 'CANCEL_ABILITY_EFFECT') {
             if (G.pendingEvent?.type !== 'ABOUT_TO_USE_ABILITY') {
                 return false;
@@ -380,7 +408,7 @@ export function applyAbilityEffect(
                 continue;
             }
 
-            if (effect.scope === 'REGION') {
+            if (effect.scope === 'REGION' || effect.scope === 'OPPONENT') {
                 const pathSiteId = chosenIds[0];
                 const deckSiteId = chosenIds[1];
                 if (!pathSiteId || !deckSiteId) return false;
@@ -391,6 +419,10 @@ export function applyAbilityEffect(
                 }
                 const oldSite = G.path[pathIndex];
                 if (!oldSite) return false;
+                if (effect.scope === 'OPPONENT') {
+                    const siteOwner = oldSite.ownerId || '';
+                    if (!siteOwner || siteOwner === ownerId) return false;
+                }
                 if (
                     getReplaceSiteCandidates(
                         G,
@@ -494,8 +526,13 @@ export function applyAbilityEffect(
                 (card) => !card.isDead && (card.wounds || 0) > 0
             );
             // Aucun blessé : succès inerte (Valley si Hobbits sains).
+            const byFreePeoples =
+                source.kind === 'FREE_PEOPLE' ||
+                (source.kind !== 'SHADOW' &&
+                    abilityOwnerPlayerId(G, source) ===
+                        (G.fpPlayerId || '0'));
             for (const card of matches) {
-                applyHeal(G, card, effect.count || 1);
+                applyHeal(G, card, effect.count || 1, { byFreePeoples });
             }
             continue;
         }
@@ -518,6 +555,11 @@ export function applyAbilityEffect(
             // Désignation obligatoire : exactement 1 compagnon par culture blessée.
             if (chosenIds.length !== cultureCount) return false;
             if (new Set(chosenIds).size !== chosenIds.length) return false;
+            const byFreePeoples =
+                source.kind === 'FREE_PEOPLE' ||
+                (source.kind !== 'SHADOW' &&
+                    abilityOwnerPlayerId(G, source) ===
+                        (G.fpPlayerId || '0'));
             const seen = new Set<string>();
             for (const id of chosenIds) {
                 const card =
@@ -526,7 +568,7 @@ export function applyAbilityEffect(
                     ) || null;
                 if (!card?.culture || seen.has(card.culture)) return false;
                 seen.add(card.culture);
-                applyHeal(G, card, effect.count || 1);
+                applyHeal(G, card, effect.count || 1, { byFreePeoples });
             }
             continue;
         }
@@ -781,6 +823,39 @@ export function applyAbilityEffect(
             if (!taken) return false;
             if (!player.hand) player.hand = [];
             player.hand.push(taken);
+            continue;
+        }
+
+        if (effect.type === 'TRANSFER_NAMED_CARD') {
+            if (
+                !applyTransferNamedCard(
+                    G,
+                    source,
+                    effect.cardTitle,
+                    effect.from,
+                    effect.attachTo,
+                    Boolean(effect.limitOnePerCharacter)
+                )
+            ) {
+                return false;
+            }
+            continue;
+        }
+
+        if (effect.type === 'TRANSFER_SELF') {
+            if (
+                !applyTransferSelf(
+                    G,
+                    source,
+                    effect.from,
+                    effect.attachTo,
+                    effect.skirmishingWith,
+                    Boolean(effect.limitOnePerCharacter),
+                    chosenIds[0]
+                )
+            ) {
+                return false;
+            }
             continue;
         }
 
@@ -1119,7 +1194,12 @@ export function applyAbilityEffect(
             if (!fp) return false;
             const n = effect.count || 0;
             if (n > 0) {
-                fp.burdens = (fp.burdens || 0) + n;
+                // Fardeaux causés par une carte Ombre → fenêtre Tolman.
+                if (source.kind === 'SHADOW') {
+                    requestAddBurdens(G, n, { byShadowCard: true });
+                } else {
+                    fp.burdens = (fp.burdens || 0) + n;
+                }
             }
             continue;
         }
@@ -1474,7 +1554,9 @@ export function applyAbilityEffect(
                     }
                 }
                 for (const card of toDiscard) {
-                    discardCardFromPlay(G, card);
+                    requestDiscardFromPlay(G, card, {
+                        byShadowCard: source.kind === 'SHADOW',
+                    });
                 }
                 if (effect.thenDeadPileMatching) {
                     for (const card of involving) {
@@ -1495,7 +1577,9 @@ export function applyAbilityEffect(
                     ? resolveCostTarget(G, source, 'SKIRMISHING')
                     : resolveCostTarget(G, source, effect.target);
             for (const card of [...matches]) {
-                discardCardFromPlay(G, card);
+                requestDiscardFromPlay(G, card, {
+                    byShadowCard: source.kind === 'SHADOW',
+                });
             }
             continue;
         }
@@ -1510,6 +1594,23 @@ export function applyAbilityEffect(
             for (const card of matches) {
                 for (let i = 0; i < times; i++) {
                     applyExert(G, card);
+                }
+            }
+            continue;
+        }
+
+        if (
+            effect.type === 'SUPPRESS_KEYWORD' &&
+            effect.all &&
+            (effect.target === 'SKIRMISHING' || Array.isArray(effect.target))
+        ) {
+            const matches = resolveCostTarget(G, source, effect.target).filter(
+                (card) => card && !card.isDead
+            );
+            if (matches.length === 0) return false;
+            for (const card of matches) {
+                if (!applyOneEffect(G, source, ability, effect, card)) {
+                    return false;
                 }
             }
             continue;
@@ -1536,6 +1637,23 @@ export function applyAbilityEffect(
             if (!makeRingBearer(G, source, effect.resistance)) {
                 return false;
             }
+            continue;
+        }
+
+        if (effect.type === 'BECOME_MINION') {
+            if (!becomeMinionFromCondition(G, source, effect)) {
+                return false;
+            }
+            continue;
+        }
+
+        if (effect.type === 'CLEAR_CULTURE_TOKENS') {
+            const target =
+                effect.target === 'SELF'
+                    ? source
+                    : resolveAbilityTarget(G, source, effect.target);
+            if (!target) return false;
+            target.cultureTokens = {};
             continue;
         }
 
@@ -1670,7 +1788,7 @@ export function applyAbilityEffect(
                 abilityId: ability.id,
             };
             G.statusMessage =
-                'Peuples Libres : défaussez une de vos situations.';
+                'Peuples Libres : défaussez une possession ou une situation.';
             continue;
         }
         // Famille sites « Shadow: play… » (Buckland…) : la carte jouée est
@@ -1720,6 +1838,9 @@ export function applyAbilityEffect(
             return false;
         }
     }
+    if (G.pendingHealQueue?.length) {
+        tryOpenHealResponse(G);
+    }
     return true;
 }
 
@@ -1750,6 +1871,15 @@ function applyOneEffect(
             expiresAtPhase: effect.expiresAtPhase,
             suppress: true,
         });
+        return true;
+    }
+
+    if (effect.type === 'SET_OVERWHELM_FACTOR') {
+        if (!effect.factor || effect.factor < 2) return false;
+        target.tempOverwhelmFactor = {
+            factor: effect.factor,
+            expiresAtPhase: effect.expiresAtPhase,
+        };
         return true;
     }
 
@@ -1833,6 +1963,13 @@ function applyOneEffect(
         ) {
             return false;
         }
+        if (effect.burdenIfRingBearer && isRingBearerCard(target)) {
+            const fpId = G.fpPlayerId || '0';
+            const fp = G.players[fpId];
+            if (!fp) return false;
+            fp.burdens = (fp.burdens || 0) + (effect.count || 1);
+            return true;
+        }
         if (!canCardTakeWound(G, target)) return false;
         requestWounds(G, target, effect.count || 1);
         return true;
@@ -1858,11 +1995,18 @@ function applyOneEffect(
             : effect.countFromSpot
               ? countFromSpotCost(G, source, ability)
               : effect.count || 1;
-        applyHeal(G, target, amount);
+        const byFreePeoples =
+            source.kind === 'FREE_PEOPLE' ||
+            (source.kind !== 'SHADOW' &&
+                abilityOwnerPlayerId(G, source) === (G.fpPlayerId || '0'));
+        applyHeal(G, target, amount, { byFreePeoples });
         return true;
     }
 
     if (effect.type === 'DISCARD') {
+        if (source.kind === 'SHADOW') {
+            return requestDiscardFromPlay(G, target, { byShadowCard: true });
+        }
         return discardCardFromPlay(G, target);
     }
 
@@ -1874,7 +2018,9 @@ function applyOneEffect(
         }
         // 0 spoté = rien à placer (succès inerte).
         if (count <= 0) return true;
-        return placeCultureTokens(target, effect.culture, count) > 0;
+        const placed = placeCultureTokens(target, effect.culture, count) > 0;
+        if (placed) enforceWhileSelfDiscards(G);
+        return placed;
     }
 
     if (effect.type === 'REMOVE_CULTURE_TOKEN') {
@@ -1894,6 +2040,282 @@ function applyOneEffect(
     }
 
     return false;
+}
+
+function cardTitleMatches(card: CardState, wantedTitle: string): boolean {
+    const wanted = wantedTitle.trim().toLowerCase();
+    if (!wanted) return false;
+    const titles = [
+        card.title,
+        card.i18n?.en?.title,
+        card.i18n?.fr?.title,
+        (card as { name?: string }).name,
+    ];
+    return titles.some(
+        (t) => typeof t === 'string' && t.trim().toLowerCase() === wanted
+    );
+}
+
+/**
+ * Morgul Blade : défausse déjà payée en coût → sortir Blade Tip du soutien
+ * ou de la défausse et l’attacher au compagnon escarmouché par le porteur.
+ */
+function applyTransferNamedCard(
+    G: GameState,
+    source: CardState,
+    cardTitle: string,
+    from: Array<'SUPPORT' | 'DISCARD'>,
+    attachTo: 'BEARER_SKIRMISHING_COMPANION',
+    limitOnePerCharacter: boolean
+): boolean {
+    if (attachTo !== 'BEARER_SKIRMISHING_COMPANION') return false;
+
+    const ownerId = abilityOwnerPlayerId(G, source);
+    if (!ownerId) return false;
+    const player = G.players[ownerId];
+    if (!player) return false;
+
+    const bearer = findBearer(G, source) || source;
+    const opponents = resolveSkirmishingOpponents(G, bearer).filter(
+        (c) => c && !c.isDead && c.type === 'COMPANION'
+    );
+    if (opponents.length === 0) {
+        G.statusMessage =
+            'Aucun compagnon n’escarmouche le porteur pour le transfert.';
+        return false;
+    }
+    const host = opponents[0]!;
+
+    if (limitOnePerCharacter) {
+        const already = (host.attachments || []).some((att) =>
+            att ? cardTitleMatches(att, cardTitle) : false
+        );
+        if (already) {
+            G.statusMessage = `Limite 1 : ${cardTitle} est déjà sur ce personnage.`;
+            return false;
+        }
+    }
+
+    let moved: CardState | null = null;
+    for (const zone of from) {
+        if (zone === 'SUPPORT' && player.supportArea?.length) {
+            const idx = player.supportArea.findIndex(
+                (c) => c && cardTitleMatches(c, cardTitle)
+            );
+            if (idx >= 0) {
+                moved = player.supportArea.splice(idx, 1)[0] || null;
+                break;
+            }
+        }
+        if (zone === 'DISCARD' && player.discard?.length) {
+            const idx = player.discard.findIndex(
+                (c) => c && cardTitleMatches(c, cardTitle)
+            );
+            if (idx >= 0) {
+                moved = player.discard.splice(idx, 1)[0] || null;
+                break;
+            }
+        }
+    }
+    if (!moved) {
+        G.statusMessage = `${cardTitle} introuvable en soutien ou défausse.`;
+        return false;
+    }
+
+    if (!host.attachments) host.attachments = [];
+    host.attachments.push(moved);
+    const hostName =
+        host.i18n?.fr?.title || host.title || 'le compagnon';
+    G.statusMessage = `${cardTitle} est transféré sur ${hostName}.`;
+    return true;
+}
+
+function resolveSkirmishLoserHosts(G: GameState): CardState[] {
+    const pending = G.pendingLosesSkirmish;
+    if (pending?.loserIds?.length) {
+        return pending.loserIds
+            .map((id) => findTargetCard(G, id) as CardState | null)
+            .filter((c): c is CardState => Boolean(c && !c.isDead));
+    }
+    const event = G.pendingEvent;
+    if (event?.type === 'WINS_SKIRMISH' && event.skirmishId) {
+        const skirmish = (G.skirmishes || []).find(
+            (s) => s.id === event.skirmishId
+        );
+        if (!skirmish) return [];
+        const winnerIds = new Set(event.winnerIds);
+        const fpId = G.fpPlayerId || '0';
+        const companion = (G.players[fpId]?.fellowshipArea || []).find(
+            (c) =>
+                (c.instanceId || c.id) === skirmish.companionId && !c.isDead
+        );
+        const minionIds =
+            skirmish.minionIds ||
+            (skirmish.minionId ? [skirmish.minionId] : []);
+        const minions = (G.battlefield || []).filter(
+            (c) =>
+                !c.isDead &&
+                minionIds.includes(c.instanceId || c.id || '')
+        );
+        const all = [
+            ...(companion ? [companion] : []),
+            ...minions,
+        ];
+        return all.filter((c) => {
+            const id = c.instanceId || c.id;
+            return id ? !winnerIds.has(id) : false;
+        });
+    }
+    return [];
+}
+
+/** Personnages du combat actif qui escarmouchent une carte matchant le filtre. */
+export function charactersSkirmishingWith(
+    G: GameState,
+    filter: string[][]
+): CardState[] {
+    if (!G.activeSkirmishId) return [];
+    const skirmish = (G.skirmishes || []).find(
+        (s) => s.id === G.activeSkirmishId
+    );
+    if (!skirmish || skirmish.resolved) return [];
+    const fpId = G.fpPlayerId || '0';
+    const companion = (G.players[fpId]?.fellowshipArea || []).find(
+        (c) =>
+            (c.instanceId || c.id) === skirmish.companionId && !c.isDead
+    );
+    const minionIds =
+        skirmish.minionIds ||
+        (skirmish.minionId ? [skirmish.minionId] : []);
+    const minions = (G.battlefield || []).filter(
+        (c) =>
+            !c.isDead && minionIds.includes(c.instanceId || c.id || '')
+    );
+    const fighters = [
+        ...(companion ? [companion] : []),
+        ...minions,
+    ];
+    return fighters.filter((char) => {
+        const opps = fighters.filter(
+            (other) =>
+                (other.instanceId || other.id) !==
+                (char.instanceId || char.id)
+        );
+        return opps.some((opp) => cardMatchesTarget(opp, filter));
+    });
+}
+
+/**
+ * Éclat de Lame / Sauron’s Gaze : sortir cette carte du soutien (ou défausse)
+ * et l’attacher au perdant / à un personnage désigné.
+ */
+function applyTransferSelf(
+    G: GameState,
+    source: CardState,
+    from: Array<'SUPPORT' | 'DISCARD'>,
+    attachTo: 'SKIRMISH_LOSER' | 'SKIRMISHING_WITH',
+    skirmishingWith: string[][] | undefined,
+    limitOnePerCharacter: boolean,
+    chosenTargetId?: string
+): boolean {
+    const ownerId = abilityOwnerPlayerId(G, source);
+    if (!ownerId) return false;
+    const player = G.players[ownerId];
+    if (!player) return false;
+
+    const sourceId = source.instanceId || source.id;
+    const sourceTitle =
+        source.i18n?.fr?.title ||
+        source.i18n?.en?.title ||
+        source.title ||
+        'cette carte';
+
+    let hosts: CardState[] = [];
+    if (attachTo === 'SKIRMISH_LOSER') {
+        hosts = resolveSkirmishLoserHosts(G);
+        if (hosts.length === 0) {
+            G.statusMessage = 'Aucun perdant pour le transfert.';
+            return false;
+        }
+    } else if (attachTo === 'SKIRMISHING_WITH') {
+        if (!skirmishingWith || skirmishingWith.length === 0) return false;
+        hosts = charactersSkirmishingWith(G, skirmishingWith);
+        if (hosts.length === 0) {
+            G.statusMessage =
+                'Aucun personnage n’escarmouche la classe indiquée.';
+            return false;
+        }
+    } else {
+        return false;
+    }
+
+    let host: CardState | null = null;
+    if (chosenTargetId) {
+        host =
+            hosts.find(
+                (c) =>
+                    c.instanceId === chosenTargetId || c.id === chosenTargetId
+            ) || null;
+    } else if (hosts.length === 1) {
+        host = hosts[0]!;
+    }
+    if (!host) {
+        G.statusMessage = 'Désignez le personnage pour le transfert.';
+        return false;
+    }
+
+    if (limitOnePerCharacter) {
+        const already = (host.attachments || []).some(
+            (att) =>
+                att &&
+                (att.instanceId === sourceId ||
+                    att.id === source.id ||
+                    cardTitleMatches(att, sourceTitle) ||
+                    (source.i18n?.en?.title &&
+                        cardTitleMatches(att, source.i18n.en.title)))
+        );
+        if (already) {
+            G.statusMessage = `Limite 1 : ${sourceTitle} est déjà sur ce personnage.`;
+            return false;
+        }
+    }
+
+    let moved: CardState | null = null;
+    for (const zone of from) {
+        if (zone === 'SUPPORT' && player.supportArea?.length) {
+            const idx = player.supportArea.findIndex(
+                (c) =>
+                    c &&
+                    ((c.instanceId || c.id) === sourceId || c === source)
+            );
+            if (idx >= 0) {
+                moved = player.supportArea.splice(idx, 1)[0] || null;
+                break;
+            }
+        }
+        if (zone === 'DISCARD' && player.discard?.length) {
+            const idx = player.discard.findIndex(
+                (c) =>
+                    c &&
+                    ((c.instanceId || c.id) === sourceId || c === source)
+            );
+            if (idx >= 0) {
+                moved = player.discard.splice(idx, 1)[0] || null;
+                break;
+            }
+        }
+    }
+    if (!moved) {
+        G.statusMessage = `${sourceTitle} introuvable en soutien ou défausse.`;
+        return false;
+    }
+
+    if (!host.attachments) host.attachments = [];
+    host.attachments.push(moved);
+    const hostName =
+        host.i18n?.fr?.title || host.title || 'le personnage';
+    G.statusMessage = `${sourceTitle} est transféré sur ${hostName}.`;
+    return true;
 }
 
 function countFromSpotCost(
@@ -1932,6 +2354,32 @@ function returnCardToOwnerHand(G: GameState, card: CardState): boolean {
     return true;
 }
 
+function findCardIncludingDeadPile(
+    G: GameState,
+    cardId: string
+): CardState | null {
+    const inPlay = findTargetCard(G, cardId) as CardState | null;
+    if (inPlay) return inPlay;
+    for (const player of Object.values(G.players)) {
+        if (!player) continue;
+        for (const card of player.deadPile || []) {
+            if (!card) continue;
+            if (card.instanceId === cardId || card.id === cardId) {
+                return card;
+            }
+        }
+    }
+    return null;
+}
+
+function stripRingBearerKeyword(card: CardState): void {
+    if (!card.keywords?.includes('RING-BEARER')) return;
+    // Nouvelle référence (Immer / tableaux gelés du JSON).
+    card.keywords = card.keywords.filter(
+        (keyword) => keyword !== 'RING-BEARER'
+    );
+}
+
 function makeRingBearer(
     G: GameState,
     newBearer: CardState,
@@ -1940,50 +2388,75 @@ function makeRingBearer(
     if (!newBearer || newBearer.isDead) return false;
     if (isRingBearerCard(newBearer)) return false;
 
-    forEachInPlayCard(G, (card) => {
-        if (!card.keywords?.includes('RING-BEARER')) return;
-        card.keywords = card.keywords.filter(
-            (keyword) => keyword !== 'RING-BEARER'
-        );
-    });
-
-    if (!newBearer.keywords) newBearer.keywords = [];
-    if (!newBearer.keywords.includes('RING-BEARER')) {
-        newBearer.keywords.push('RING-BEARER');
-    }
-    newBearer.resistance = resistance;
-
     const deadId =
         G.pendingEvent?.type === 'CHARACTER_DIES'
             ? G.pendingEvent.deadCardId
             : undefined;
-    const dead = deadId
-        ? (findTargetCard(G, deadId) as CardState | null)
-        : null;
+    const dead = deadId ? findCardIncludingDeadPile(G, deadId) : null;
+
+    // Sam / relève : seulement si le mort était le Porteur (mot-clé ou Anneau).
+    if (dead && !isRingBearerCard(dead)) {
+        return false;
+    }
+
+    forEachInPlayCard(G, (card) => {
+        stripRingBearerKeyword(card);
+    });
+    // Porteur déjà enterré : retirer le mot-clé aussi.
+    for (const player of Object.values(G.players)) {
+        if (!player) continue;
+        for (const card of player.deadPile || []) {
+            if (card) stripRingBearerKeyword(card);
+        }
+    }
+
+    // Transférer RING-BEARER sur le nouveau Porteur (copie mutable).
+    newBearer.keywords = [
+        ...(newBearer.keywords || []).filter((k) => k !== 'RING-BEARER'),
+        'RING-BEARER',
+    ];
+    newBearer.resistance = resistance;
+
+    // Le nouveau Porteur ne porte pas l’Anneau (wearing).
+    delete G.wearingTheOneRing;
 
     const ringSources: CardState[] = [];
-    if (dead?.attachments?.length) ringSources.push(dead);
-    forEachInPlayCard(G, (card) => {
-        if (card === newBearer || card === dead) return;
-        if (card.attachments?.some((att) => att.type === 'RING')) {
-            ringSources.push(card);
+    const pushHost = (host: CardState | null | undefined) => {
+        if (!host || host === newBearer || ringSources.includes(host)) return;
+        if (host.attachments?.some((att) => att?.type === 'RING')) {
+            ringSources.push(host);
         }
+    };
+    pushHost(dead);
+    forEachInPlayCard(G, (card) => {
+        pushHost(card);
     });
+    for (const player of Object.values(G.players)) {
+        if (!player) continue;
+        for (const card of player.deadPile || []) {
+            pushHost(card);
+        }
+    }
 
-    if (!newBearer.attachments) newBearer.attachments = [];
+    const transferredRings: CardState[] = [];
     for (const host of ringSources) {
         const kept: CardState[] = [];
         for (const att of host.attachments || []) {
-            if (att.type === 'RING') {
-                newBearer.attachments.push(att);
-            } else {
+            if (att?.type === 'RING') {
+                transferredRings.push(att);
+            } else if (att) {
                 kept.push(att);
             }
         }
         host.attachments = kept;
     }
+    // Nouvelle référence d’attachements pour l’UI / Immer.
+    newBearer.attachments = [
+        ...(newBearer.attachments || []),
+        ...transferredRings,
+    ];
 
-    // Nouveau Porteur : les fardeaux du joueur FP repartent à zéro.
+    // Relève Sam (et assimilés) : les points-fardeau du Porteur tombé repartent.
     const fpId = G.fpPlayerId || '0';
     const fpPlayer = G.players[fpId];
     if (fpPlayer) {
@@ -1992,8 +2465,110 @@ function makeRingBearer(
 
     const name =
         newBearer.i18n?.fr?.title || newBearer.title || 'Ce personnage';
-    G.statusMessage = `${name} devient le Porteur de l’Anneau (résistance ${resistance}).`;
+    const hasRing = newBearer.attachments.some((att) => att?.type === 'RING');
+    G.statusMessage = hasRing
+        ? `${name} devient le Porteur de l’Anneau (résistance ${resistance}) et reçoit l’Anneau Unique.`
+        : `${name} devient le Porteur de l’Anneau (résistance ${resistance}).`;
     return true;
+}
+
+function becomeMinionFromCondition(
+    G: GameState,
+    source: CardState,
+    effect: Extract<Ability['effects'][number], { type: 'BECOME_MINION' }>
+): boolean {
+    if (source.animatedMinion) return false;
+    if (source.type !== 'CONDITION') return false;
+    const ownerId = abilityOwnerPlayerId(G, source);
+    if (!ownerId) return false;
+    const player = G.players[ownerId];
+    if (!player?.supportArea) return false;
+    const sourceId = source.instanceId || source.id;
+    const idx = player.supportArea.findIndex(
+        (card) => card && (card.instanceId || card.id) === sourceId
+    );
+    if (idx < 0) return false;
+
+    // Attachements déjà portés → défausse (notes wiki A Shadow Rises).
+    for (const att of [...(source.attachments || [])]) {
+        if (att) placeCardIntoDiscardPile(G, ownerId, att);
+    }
+    source.attachments = [];
+
+    player.supportArea.splice(idx, 1);
+
+    source.animatedMinion = {
+        expiresAtPhase: effect.expiresAtPhase,
+        savedType: 'CONDITION',
+        savedStrength: source.strength,
+        savedVitality: source.vitality,
+        savedKeywords: [...(source.keywords || [])],
+        stillCondition: effect.stillCondition !== false,
+        cannotBearCards: Boolean(effect.cannotBearCards),
+    };
+    source.type = 'MINION';
+    source.strength = effect.strength;
+    source.vitality = effect.vitality;
+    source.wounds = 0;
+    if (effect.culture) source.culture = effect.culture;
+    const keywords = new Set(source.keywords || []);
+    for (const kw of effect.keywords || []) keywords.add(kw);
+    source.keywords = [...keywords];
+
+    if (!G.battlefield) G.battlefield = [];
+    G.battlefield.push(source);
+
+    const name =
+        source.i18n?.fr?.title || source.title || source.i18n?.en?.title || 'La situation';
+    G.statusMessage = `${name} devient un séide (force ${effect.strength}, vitalité ${effect.vitality}).`;
+    return true;
+}
+
+/** Fin d’animation : séide → situation en soutien (début de regroupement). */
+function revertAnimatedMinions(G: GameState, phase: AbilityEffectExpiry): void {
+    const toRevert: CardState[] = [];
+    for (const card of G.battlefield || []) {
+        if (!card?.animatedMinion) continue;
+        if (card.animatedMinion.expiresAtPhase !== phase) continue;
+        toRevert.push(card);
+    }
+    if (toRevert.length === 0) return;
+
+    G.battlefield = (G.battlefield || []).filter(
+        (card) => !toRevert.includes(card)
+    );
+
+    for (const card of toRevert) {
+        const anim = card.animatedMinion!;
+        const ownerId = abilityOwnerPlayerId(G, card) ||
+            (card.kind === 'SHADOW'
+                ? Object.keys(G.players).find((id) => id !== (G.fpPlayerId || '0'))
+                : G.fpPlayerId || '0');
+
+        if (card.isDead || getEffectiveVitality(card) <= 0) {
+            if (ownerId) placeCardIntoDiscardPile(G, ownerId, card);
+            delete card.animatedMinion;
+            continue;
+        }
+
+        card.type = anim.savedType;
+        if (anim.savedStrength != null) card.strength = anim.savedStrength;
+        else delete card.strength;
+        if (anim.savedVitality != null) card.vitality = anim.savedVitality;
+        else delete card.vitality;
+        card.keywords = [...(anim.savedKeywords || [])];
+        card.wounds = 0;
+        delete card.isDead;
+        delete card.isOverwhelmed;
+        delete card.animatedMinion;
+
+        if (ownerId && G.players[ownerId]) {
+            if (!G.players[ownerId]!.supportArea) {
+                G.players[ownerId]!.supportArea = [];
+            }
+            G.players[ownerId]!.supportArea!.push(card);
+        }
+    }
 }
 
 export function clearExpiredTempKeywords(
@@ -2013,6 +2588,9 @@ export function clearExpiredTempKeywords(
         }
         if (card.forbidWoundsUntil === phase) {
             delete card.forbidWoundsUntil;
+        }
+        if (card.tempOverwhelmFactor?.expiresAtPhase === phase) {
+            delete card.tempOverwhelmFactor;
         }
     });
 
@@ -2036,5 +2614,16 @@ export function clearExpiredTempKeywords(
 
     if (phase === 'REGROUP') {
         delete G.wearingTheOneRing;
+        revertAnimatedMinions(G, phase);
+        // « At the start of the regroup phase, remove all tokens from here »
+        // (A Shadow Rises et famille BECOME_MINION).
+        forEachInPlayCard(G, (card) => {
+            const clears = (card.abilities || []).some((ability) =>
+                (ability.effects || []).some(
+                    (effect) => effect.type === 'BECOME_MINION'
+                )
+            );
+            if (clears) card.cultureTokens = {};
+        });
     }
 }

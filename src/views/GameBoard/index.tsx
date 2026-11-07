@@ -232,7 +232,7 @@ const PendingPlayOnDrag: React.FC<{
         if (G.pendingPlay?.playerId === myId) return;
         const card = dragged.card as CardState;
         if (card.type === 'EVENT') {
-            const ability = findEventAbilityForPhase(card, phase || '');
+            const ability = findEventAbilityForPhase(card, phase || '', G);
             moves.beginPendingPlay?.(
                 dragged.index,
                 ability
@@ -417,7 +417,8 @@ export const GameBoard: React.FC<GameBoardProps> = ({
             if (card.type === 'EVENT') {
                 const ability = findEventAbilityForPhase(
                     card,
-                    ctx.phase || ''
+                    ctx.phase || '',
+                    G
                 );
                 if (
                     ability &&
@@ -1941,7 +1942,7 @@ export const GameBoard: React.FC<GameBoardProps> = ({
         startTargeting({
             kind: 'DESIGNATION',
             targetableCardIds: candidates.flatMap(cardTargetIds),
-            message: 'Défaussez une de vos situations.',
+            message: 'Défaussez une possession ou une situation.',
             onSelectTarget: (cardId) => {
                 stopTargeting();
                 setHoveredCard(null);
@@ -2101,6 +2102,37 @@ export const GameBoard: React.FC<GameBoardProps> = ({
                             selectable.flatMap(cardTargetIds),
                         deck: pool.deck,
                         discard: [],
+                    });
+                    return;
+                }
+                const takeEffect = abilityTakeFromDiscardEffect(ability);
+                if (takeEffect) {
+                    const discard = G.players[myId]?.discard || [];
+                    const selectable = discard.filter(
+                        (c) =>
+                            c && cardMatchesTarget(c, takeEffect.target)
+                    );
+                    if (selectable.length === 0) {
+                        moves.resolveWhenPlayedChoice?.(false);
+                        return;
+                    }
+                    if (selectable.length === 1) {
+                        const only = selectable[0]!;
+                        moves.resolveWhenPlayedChoice?.(
+                            true,
+                            undefined,
+                            only.instanceId || only.id
+                        );
+                        return;
+                    }
+                    setDeckDiscardPick({
+                        whenPlayed: true,
+                        selectableCardIds: selectable.flatMap(cardTargetIds),
+                        deck: [],
+                        discard: [...discard],
+                        title: 'Défausse',
+                        subtitle:
+                            'Choisissez une carte à prendre dans votre main.',
                     });
                     return;
                 }
@@ -2684,7 +2716,8 @@ export const GameBoard: React.FC<GameBoardProps> = ({
 
                     const eventAbility = findEventAbilityForPhase(
                         card,
-                        ctx.phase || ''
+                        ctx.phase || '',
+                        G
                     );
 
                     // Event REGION replace / exchange : flèche → site path, puis picker deck
@@ -2753,7 +2786,8 @@ export const GameBoard: React.FC<GameBoardProps> = ({
 
                 const eventAbility = findEventAbilityForPhase(
                     card,
-                    ctx.phase || ''
+                    ctx.phase || '',
+                    G
                 );
                 if (
                     eventAbility &&

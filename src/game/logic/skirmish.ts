@@ -174,6 +174,7 @@ export const resolveSkirmish = (G: GameState, _ctx?: Ctx) => {
     if (companionStrength > minionsStrength) {
         resultMsg += `Victoire de ${companionName} ! `;
 
+        // Submersion séides : ×2 par défaut (pas d’effet « ×3 » côté séide ici).
         const isMinionsOverwhelmed =
             minionsStrength > 0
                 ? companionStrength >= 2 * minionsStrength
@@ -199,9 +200,16 @@ export const resolveSkirmish = (G: GameState, _ctx?: Ctx) => {
     else {
         resultMsg += `Victoire de l'Ombre ! `;
 
+        // Everyone Knows etc. : seuil temporaire (×3) sur le compagnon.
+        const companionOverwhelmFactor =
+            companion.tempOverwhelmFactor?.factor &&
+            companion.tempOverwhelmFactor.factor > 0
+                ? companion.tempOverwhelmFactor.factor
+                : 2;
         const isCompanionOverwhelmed =
             companionStrength > 0
-                ? minionsStrength >= 2 * companionStrength
+                ? minionsStrength >=
+                  companionOverwhelmFactor * companionStrength
                 : minionsStrength > 0;
 
         if (isCompanionOverwhelmed) {

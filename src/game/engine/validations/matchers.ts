@@ -93,6 +93,17 @@ export function cardMatchesCriterion(
         return getEffectiveVitality(c) === 1;
     }
 
+    // « not exhausted » / neither is exhausted — vitalité restante > 1.
+    if (critUpper === 'NOT_EXHAUSTED') {
+        if (c.isDead) return false;
+        const typeOk =
+            c.type === 'COMPANION' ||
+            c.type === 'ALLY' ||
+            c.type === 'MINION';
+        if (!typeOk) return false;
+        return getEffectiveVitality(c) > 1;
+    }
+
     // « unwounded » : aucune blessure, pas mort.
     if (critUpper === 'UNWOUNDED') {
         if (c.isDead) return false;
@@ -119,6 +130,14 @@ export function cardMatchesCriterion(
 
     // Type (COMPANION, MINION, ALLY, POSSESSION, CONDITION, etc.)
     if (c.type && normalize(c.type) === critUpper) return true;
+    // A Shadow Rises : séide animé qui « is still a condition ».
+    if (
+        critUpper === 'CONDITION' &&
+        c.animatedMinion?.stillCondition &&
+        normalize(c.type) === 'MINION'
+    ) {
+        return true;
+    }
 
     // Kind (SHADOW / FREE_PEOPLE) — ex. « Shadow possession »
     if (c.kind && normalize(c.kind) === critUpper) return true;

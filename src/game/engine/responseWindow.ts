@@ -18,6 +18,7 @@ import {
     abilityNeedsCostDesignation,
     abilityNeedsEffectDesignation,
 } from './abilities/designation';
+import { abilityMeetsPlayRestrictions } from './abilities/abilityRestrictions';
 import {
     findBearer,
     forEachInPlayCard,
@@ -51,6 +52,7 @@ import {
     otherPlayerId,
     playerDisplayName,
 } from '../logic/playerName';
+import { discardCardFromPlay } from '../../utils/discardCardFromPlay';
 
 const matchCard = (card: CardState, targetId: string): boolean =>
     card.instanceId === targetId || card.id === targetId;
@@ -267,6 +269,44 @@ export function abilityMatchesTrigger(
         return true;
     }
 
+    if (event.type === 'ABOUT_TO_DISCARD') {
+        if (ability.trigger.type !== 'ABOUT_TO_DISCARD') return false;
+        if (ability.trigger.byShadowCard && !event.byShadowCard) return false;
+        const discarded = findTargetCard(G, event.targetId) as CardState | null;
+        if (!discarded) return false;
+        const target = ability.trigger.target;
+        if (target === 'SELF') {
+            return matchCard(discarded, source.instanceId || source.id);
+        }
+        if (Array.isArray(target)) {
+            return cardMatchesTarget(discarded, target);
+        }
+        return false;
+    }
+
+    if (event.type === 'ABOUT_TO_ADD_BURDEN') {
+        if (ability.trigger.type !== 'ABOUT_TO_ADD_BURDEN') return false;
+        if (ability.trigger.byShadowCard && !event.byShadowCard) return false;
+        return event.count > 0;
+    }
+
+    if (event.type === 'HEAL') {
+        if (ability.trigger.type !== 'HEAL') return false;
+        if (ability.trigger.byFreePeoples && !event.byFreePeoples) {
+            return false;
+        }
+        const healed = findTargetCard(G, event.targetId) as CardState | null;
+        if (!healed) return false;
+        const target = ability.trigger.target;
+        if (target === 'SELF') {
+            return matchCard(healed, source.instanceId || source.id);
+        }
+        if (Array.isArray(target)) {
+            return cardMatchesTarget(healed, target);
+        }
+        return false;
+    }
+
     if (event.type !== 'ABOUT_TO_WOUND') return false;
     if (ability.trigger.type !== 'ABOUT_TO_WOUND') return false;
     if (ability.trigger.inSkirmish && !isInSkirmish(G)) return false;
@@ -407,6 +447,15 @@ function responseEventIsActive(event: PendingEvent | undefined): boolean {
     if (event.type === 'ABOUT_TO_FORCE_ASSIGN') {
         return Boolean(event.minionId && event.companionId);
     }
+    if (event.type === 'ABOUT_TO_ADD_BURDEN') {
+        return (event.count || 0) > 0;
+    }
+    if (event.type === 'ABOUT_TO_DISCARD') {
+        return Boolean(event.targetId);
+    }
+    if (event.type === 'HEAL') {
+        return Boolean(event.targetId);
+    }
     if (event.type === 'FELLOWSHIP_MOVES') return true;
     if (event.type === 'PUTS_ON_THE_ONE_RING') return true;
     if (event.type === 'ABOUT_TO_USE_ABILITY') {
@@ -483,6 +532,16 @@ function responseWindowMessage(G: GameState): string {
         const n = G.pendingEvent.count;
         return `${n} menace${n > 1 ? 's' : ''} ${n > 1 ? 'vont' : 'va'} être ajoutée${n > 1 ? 's' : ''}. Blessez le Porteur pour empêcher, ou passez.`;
     }
+    if (G.pendingEvent?.type === 'ABOUT_TO_ADD_BURDEN') {
+        const n = G.pendingEvent.count;
+        return `${n} point${n > 1 ? 's' : ''}-fardeau ${n > 1 ? 'vont' : 'va'} être ajouté${n > 1 ? 's' : ''}. Jouez une réponse ou passez.`;
+    }
+    if (G.pendingEvent?.type === 'ABOUT_TO_DISCARD') {
+        return 'Une carte va être défaussée. Jouez une réponse ou passez.';
+    }
+    if (G.pendingEvent?.type === 'HEAL') {
+        return 'Un personnage a été soigné. Jouez une réponse ou passez.';
+    }
     if (G.pendingEvent?.type === 'FELLOWSHIP_MOVES') {
         return 'La compagnie s’est déplacée. Jouez une réponse ou passez.';
     }
@@ -508,6 +567,7 @@ function inPlayResponseIsLegal(
     if (isResponseAlreadyUsed(G, source, ability)) return false;
     if (abilityWearsTheOneRing(ability) && G.wearingTheOneRing) return false;
     if (!abilityMatchesTrigger(ability, event, source, G)) return false;
+    if (!abilityMeetsPlayRestrictions(G, source, ability)) return false;
     if (!canPayAbilityCost(G, source, ability.cost)) return false;
     return abilityHasLegalEffectTarget(G, source, ability);
 }
@@ -1028,6 +1088,10 @@ export function tryOpenCharacterDies(G: GameState): 'APPLIED' | 'WAITING' {
 
         if (!hasAnyEligibleResponse(G)) {
             G.pendingEvent = undefined;
+            // Stub créé par markResponseUsed pendant l’auto-résolution.
+            if (G.responseWindow && !G.responseWindow.isOpen) {
+                G.responseWindow = undefined;
+            }
             continue;
         }
 
@@ -1036,6 +1100,9 @@ export function tryOpenCharacterDies(G: GameState): 'APPLIED' | 'WAITING' {
     }
 
     G.pendingDeathQueue = undefined;
+    if (G.responseWindow && !G.responseWindow.isOpen) {
+        G.responseWindow = undefined;
+    }
     return 'APPLIED';
 }
 
@@ -1102,6 +1169,34 @@ function concludeOpenResponse(G: GameState): 'APPLIED' | 'WAITING' {
         G.pendingEvent = undefined;
         closeResponseWindow(G);
         addThreats(G, count);
+        flushPendingActionYield(G);
+        return 'APPLIED';
+    }
+
+    if (G.pendingEvent?.type === 'ABOUT_TO_ADD_BURDEN') {
+        const count = G.pendingEvent.count;
+        G.pendingEvent = undefined;
+        closeResponseWindow(G);
+        if (count > 0) addFpBurdens(G, count);
+        if (resumeSuspendedResponse(G) === 'WAITING') return 'WAITING';
+        flushPendingActionYield(G);
+        return 'APPLIED';
+    }
+
+    if (G.pendingEvent?.type === 'ABOUT_TO_DISCARD') {
+        const targetId = G.pendingEvent.targetId;
+        G.pendingEvent = undefined;
+        closeResponseWindow(G);
+        const card = findTargetCard(G, targetId) as CardState | null;
+        if (card) discardCardFromPlay(G, card);
+        flushPendingActionYield(G);
+        return 'APPLIED';
+    }
+
+    if (G.pendingEvent?.type === 'HEAL') {
+        G.pendingEvent = undefined;
+        closeResponseWindow(G);
+        if (tryOpenHealResponse(G) === 'WAITING') return 'WAITING';
         flushPendingActionYield(G);
         return 'APPLIED';
     }
@@ -1246,26 +1341,54 @@ export function afterResponseResolved(
 ): void {
     if (!G.responseWindow?.isOpen) return;
     if (source) {
-        // Chaque blessure = une occurrence distincte. Une PREVENT_WOUND peut
-        // être rejouée tant qu’il reste des blessures (et que le coût est payable).
+        // Chaque blessure / fardeau = une occurrence distincte.
         const isPreventWound = (ability.effects || []).some(
             (effect) => effect.type === 'PREVENT_WOUND'
         );
         const woundsStillPending =
             G.pendingEvent?.type === 'ABOUT_TO_WOUND' &&
             G.pendingEvent.remaining > 0;
-        if (!(isPreventWound && woundsStillPending)) {
+        const isPreventBurden = (ability.effects || []).some(
+            (effect) => effect.type === 'PREVENT_BURDEN'
+        );
+        const burdensStillPending =
+            G.pendingEvent?.type === 'ABOUT_TO_ADD_BURDEN' &&
+            G.pendingEvent.count > 0;
+        if (
+            !(isPreventWound && woundsStillPending) &&
+            !(isPreventBurden && burdensStillPending)
+        ) {
             markResponseUsed(G, source, ability);
         }
     }
-    // Annulation de capacité : pending déjà vidé par l’effet → clôturer.
+    // Annulation / empêchement : pending déjà vidé par l’effet → clôturer.
     const cancelledAbility = (ability.effects || []).some(
-        (effect) => effect.type === 'CANCEL_ABILITY_EFFECT'
+        (effect) =>
+            effect.type === 'CANCEL_ABILITY_EFFECT' ||
+            effect.type === 'PREVENT_DISCARD' ||
+            effect.type === 'PREVENT_BURDEN'
     );
     if (cancelledAbility && !G.pendingEvent) {
         closeResponseWindow(G);
+        G.statusMessage =
+            (ability.effects || []).some((e) => e.type === 'PREVENT_DISCARD')
+                ? 'Défausse empêchée.'
+                : (ability.effects || []).some(
+                        (e) => e.type === 'PREVENT_BURDEN'
+                    )
+                  ? 'Point-fardeau empêché.'
+                  : 'Capacité annulée.';
+        if (resumeSuspendedResponse(G) === 'WAITING') return;
         flushPendingActionYield(G);
-        G.statusMessage = 'Capacité annulée.';
+        return;
+    }
+    // PREVENT_BURDEN partiel : encore des fardeaux → priorité au même joueur.
+    if (
+        (ability.effects || []).some((e) => e.type === 'PREVENT_BURDEN') &&
+        G.pendingEvent?.type === 'ABOUT_TO_ADD_BURDEN' &&
+        G.pendingEvent.count > 0
+    ) {
+        yieldResponsePriorityAfterAction(G, playerID);
         return;
     }
     yieldResponsePriorityAfterAction(G, playerID);
@@ -1564,6 +1687,105 @@ export function requestAddThreats(
     }
     addThreats(G, count);
     return true;
+}
+
+/**
+ * Ajout de fardeaux : ouvre ABOUT_TO_ADD_BURDEN s’il existe une réponse
+ * (Tolman…), sinon ajoute tout de suite.
+ */
+export function requestAddBurdens(
+    G: GameState,
+    count: number,
+    options?: { byShadowCard?: boolean }
+): boolean {
+    if (count <= 0) return false;
+    const byShadow = Boolean(options?.byShadowCard);
+    // Pendant une autre réponse (ex. HEAL → Enquëa) : suspendre pour Tolman.
+    if (
+        byShadow &&
+        G.pendingEvent &&
+        G.pendingEvent.type !== 'ABOUT_TO_ADD_BURDEN'
+    ) {
+        suspendResponseForNestedWounds(G);
+    } else if (G.responseWindow?.isOpen || G.pendingEvent) {
+        addFpBurdens(G, count);
+        return true;
+    }
+    G.pendingEvent = {
+        type: 'ABOUT_TO_ADD_BURDEN',
+        count,
+        ...(byShadow ? { byShadowCard: true } : {}),
+    };
+    if (!hasAnyEligibleResponse(G)) {
+        G.pendingEvent = undefined;
+        addFpBurdens(G, count);
+        if (resumeSuspendedResponse(G) === 'WAITING') return true;
+        return true;
+    }
+    openResponseWindow(G);
+    G.statusMessage =
+        'Réponse : empêcher l’ajout de point-fardeau ou passer.';
+    return true;
+}
+
+/**
+ * Défausse depuis le jeu : ouvre ABOUT_TO_DISCARD s’il existe une réponse
+ * (Scouring…), sinon défausse tout de suite.
+ */
+export function requestDiscardFromPlay(
+    G: GameState,
+    card: CardState,
+    options?: { byShadowCard?: boolean }
+): boolean {
+    if (!card) return false;
+    const targetId = card.instanceId || card.id;
+    if (!targetId) return false;
+    if (G.responseWindow?.isOpen || G.pendingEvent) {
+        return discardCardFromPlay(G, card);
+    }
+    G.pendingEvent = {
+        type: 'ABOUT_TO_DISCARD',
+        targetId,
+        ...(options?.byShadowCard ? { byShadowCard: true } : {}),
+    };
+    if (!hasAnyEligibleResponse(G)) {
+        G.pendingEvent = undefined;
+        return discardCardFromPlay(G, card);
+    }
+    openResponseWindow(G);
+    G.statusMessage = 'Réponse : empêcher la défausse ou passer.';
+    return true;
+}
+
+/**
+ * Après un soin réel (file `pendingHealQueue`) : ouvre HEAL s’il existe
+ * une réponse (Enquëa…).
+ */
+export function tryOpenHealResponse(G: GameState): 'APPLIED' | 'WAITING' {
+    while (G.pendingHealQueue && G.pendingHealQueue.length > 0) {
+        if (G.responseWindow?.isOpen || G.pendingEvent) {
+            return 'WAITING';
+        }
+        const next = G.pendingHealQueue.shift()!;
+        const healed = findTargetCard(G, next.targetId) as CardState | null;
+        if (!healed || healed.isDead) continue;
+
+        G.pendingEvent = {
+            type: 'HEAL',
+            targetId: next.targetId,
+            ...(next.byFreePeoples !== false ? { byFreePeoples: true } : {}),
+        };
+        if (!hasAnyEligibleResponse(G)) {
+            G.pendingEvent = undefined;
+            continue;
+        }
+        openResponseWindow(G);
+        G.statusMessage =
+            'Réponse Ombre : un compagnon a été soigné. Jouez une réponse ou passez.';
+        return 'WAITING';
+    }
+    G.pendingHealQueue = undefined;
+    return 'APPLIED';
 }
 
 function livingBattlefieldMinions(G: GameState): CardState[] {

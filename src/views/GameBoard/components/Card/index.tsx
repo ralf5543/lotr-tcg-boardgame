@@ -487,7 +487,7 @@ export const Card: React.FC<CardProps> = ({
         pulseOnBoard && card ? getEffectiveStrength(card, G) : undefined
     );
     const vitalityPulse = usePulseOnChange(
-        pulseOnBoard && card ? getEffectiveVitality(card) : undefined
+        pulseOnBoard && card ? getEffectiveVitality(card, G) : undefined
     );
     const resistancePulse = usePulseOnChange(
         pulseOnBoard && card
@@ -624,7 +624,7 @@ export const Card: React.FC<CardProps> = ({
         typeof card.minionSiteNumber === 'number' &&
         card.minionSiteNumber > currentSiteIndex + 1;
 
-    const effectiveVitality = getEffectiveVitality(card);
+    const effectiveVitality = getEffectiveVitality(card, G);
     const effectiveStrength = getEffectiveStrength(card, G);
     const effectiveResistance = getEffectiveResistance(card, burdens, G);
 

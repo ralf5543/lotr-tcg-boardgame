@@ -7,6 +7,7 @@ import {
     beginOptionalSiteStartAbility,
     openStartOfFellowshipDualWait,
 } from './siteStartAbility';
+import { applyStartOfFellowshipTriggers } from '../engine/abilities/startOfFellowship';
 
 type PhaseEvents = {
     setPhase?: (phase: string) => void;
@@ -18,6 +19,9 @@ export const proceedStartOfFellowship = (
     events?: PhaseEvents
 ): void => {
     clearSanctuaryHeals(G);
+
+    // Éclat de Lame etc. : blessure / fardeau auto avant les actions optionnelles.
+    applyStartOfFellowshipTriggers(G);
 
     // Site optionnel d’abord (toaster Activer / Passer) — pas de sceau sur le site.
     if (beginOptionalSiteStartAbility(G, 'startOfFellowship')) {

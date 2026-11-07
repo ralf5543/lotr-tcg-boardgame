@@ -64,6 +64,7 @@ import {
     pauseActionYieldForResponses,
     preventPendingEffect as resolvePreventPending,
     requestWounds,
+    tryOpenHealResponse,
 } from '../engine/responseWindow';
 import {
     acceptPendingWhenPlayed,
@@ -272,7 +273,15 @@ export const attachCard = (
         }
     }
 
-    const cost = Number(card.twilightCost) || 0;
+    const hostAsCard =
+        targetCard && targetCard.type !== 'SITE'
+            ? (targetCard as CardState)
+            : null;
+    const cost = getEffectiveTwilightCost(
+        card,
+        getCurrentSiteIndex(G),
+        getWhileTwilightCostModifier(G, card, hostAsCard)
+    );
     const fpId = G.fpPlayerId || '0';
     const isFP = actingPlayerId === fpId;
 
@@ -672,7 +681,13 @@ export const playCardFromDiscard = (
     const cost = getEffectiveTwilightCost(
         card,
         getCurrentSiteIndex(G),
-        getWhileTwilightCostModifier(G, card)
+        getWhileTwilightCostModifier(
+            G,
+            card,
+            hostCard && hostCard.type !== 'SITE'
+                ? (hostCard as CardState)
+                : null
+        )
     );
 
     const [playedCard] = player.discard!.splice(discardIndex, 1);
@@ -1260,6 +1275,7 @@ export const assignSanctuaryHeal = (
     const fpId = G.fpPlayerId || '0';
     if (playerID !== fpId) return 'INVALID_MOVE';
     if (!applySanctuaryHealToCard(G, cardId)) return 'INVALID_MOVE';
+    tryOpenHealResponse(G);
 
     if (sanctuaryHealsFinished(G)) {
         proceedStartOfFellowship(G, events);

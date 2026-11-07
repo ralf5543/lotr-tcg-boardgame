@@ -319,7 +319,7 @@ export function getRegionTwilightBonus(siteNumber: number): number {
 
 /**
  * Sites du deck d’aventure éligibles pour un remplacement
- * (filtre terrain optionnel ; exclut le même id que le site remplacé).
+ * (filtre terrain optionnel ; jamais un id déjà présent sur le chemin).
  */
 export function getReplaceSiteCandidates(
     G: GameState,
@@ -329,9 +329,15 @@ export function getReplaceSiteCandidates(
 ): SiteCardState[] {
     const player = G.players[ownerId];
     if (!player?.sitesDeck?.length) return [];
+    const pathIds = new Set(
+        (G.path || [])
+            .map((site) => site?.id)
+            .filter((id): id is string => Boolean(id))
+    );
+    if (excludeSiteId) pathIds.add(excludeSiteId);
     return player.sitesDeck.filter((site) => {
         if (!site) return false;
-        if (excludeSiteId && site.id === excludeSiteId) return false;
+        if (pathIds.has(site.id)) return false;
         if (siteKeyword && !siteHasKeyword(site, siteKeyword)) return false;
         return true;
     });
@@ -355,6 +361,35 @@ export function canReplaceSiteInCurrentRegion(
     siteKeyword?: CardKeyword
 ): boolean {
     return getReplaceablePathSitesInCurrentRegion(G).some(
+        ({ site }) =>
+            getReplaceSiteCandidates(G, ownerId, siteKeyword, site.id)
+                .length > 0
+    );
+}
+
+/** Sites du path dont le propriétaire n’est pas `ownerId` (Nelya…). */
+export function getOpponentPathSites(
+    G: GameState,
+    ownerId: string
+): { site: SiteCardState; pathIndex: number }[] {
+    const found: { site: SiteCardState; pathIndex: number }[] = [];
+    for (let i = 0; i < 9; i++) {
+        const site = G.path[i];
+        if (!site) continue;
+        const siteOwner = site.ownerId || '';
+        if (!siteOwner || siteOwner === ownerId) continue;
+        found.push({ site, pathIndex: i });
+    }
+    return found;
+}
+
+/** Au moins une paire (site adverse path, site deck) pour REPLACE OPPONENT. */
+export function canReplaceOpponentPathSite(
+    G: GameState,
+    ownerId: string,
+    siteKeyword?: CardKeyword
+): boolean {
+    return getOpponentPathSites(G, ownerId).some(
         ({ site }) =>
             getReplaceSiteCandidates(G, ownerId, siteKeyword, site.id)
                 .length > 0

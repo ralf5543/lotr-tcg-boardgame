@@ -13,6 +13,7 @@ export type CardKeyword =
     | 'BATTLEGROUND'
     | 'BESIEGER'
     | 'CORSAIR'
+    | 'DAMAGE'
     | 'DAMAGE +1'
     | 'DAMAGE +2'
     | 'DAMAGE +3'
@@ -233,6 +234,15 @@ export interface CostOption {
         count: number;
         from?: 'SELF';
     };
+    /**
+     * Placer N jetons (coût). `on: 'SELF'` = « here » / « on this card »
+     * (Scouring of the Shire…).
+     */
+    placeCultureTokens?: {
+        culture: CardCulture;
+        count: number;
+        on?: 'SELF';
+    };
     /** « if you have N or more cards in hand » */
     spotHand?: number;
     /** « discard your hand » — toute la main. */
@@ -254,12 +264,15 @@ export type AbilityEffect =
       }
     | {
           /**
-           * Perd un mot-clé jusqu’à une phase (Northern Pelennor : lose lurker).
+           * Perd un mot-clé jusqu’à une phase (Northern Pelennor : lose lurker ;
+           * Mithril : chaque séide escarmouché perd Fierce).
            */
           type: 'SUPPRESS_KEYWORD';
           keyword: CardKeyword;
           target: AbilityTargetRef;
           expiresAtPhase: AbilityEffectExpiry;
+          /** Tous les matchs (pas une seule désignation). */
+          all?: boolean;
       }
     | {
           type: 'ADD_TEMP_STAT';
@@ -380,6 +393,11 @@ export type AbilityEffect =
           };
           /** « each other companion » : exclure la source des bénéficiaires. */
           excludeSource?: boolean;
+          /**
+           * Bonus = value × max(0, vitalité effective − seuil)
+           * (Everyone Knows : +1 for each vitality over 3).
+           */
+          perVitalityOver?: number;
           /** Exige un attachement matchant (Helm's Gate : hand weapon). */
           bearing?: string[][];
           /**
@@ -407,6 +425,11 @@ export type AbilityEffect =
            * qui a (à égalité) le plus de compagnons en jeu.
            */
           majorityRaceCompanions?: boolean;
+          /**
+           * Frodo : −N seulement pour les cartes jouées **sur** cet hôte
+           * (`SELF` = la source du While doit être l’hôte d’attachement).
+           */
+          playedOn?: 'SELF';
       }
     | {
           /** Mot-clé passif (While…) — pas d’expiration de phase. */
@@ -427,6 +450,11 @@ export type AbilityEffect =
            * (le site ne combat pas). Voir `getWhileKeywordSuppressions`.
            */
           skirmishingHostedByEffect?: boolean;
+          /**
+           * Mithril-coat : séides en combat contre le **porteur** de la source
+           * (attachement) perdent ce mot-clé.
+           */
+          skirmishingBearerOfSource?: boolean;
       }
     | {
           /**
@@ -561,8 +589,12 @@ export type AbilityEffect =
            * La cible choisie = id du site dans sitesDeck (avant activateAbility).
            */
           type: 'REPLACE_SITE';
-          /** Site où se trouve la compagnie, ou tout site de la région courante. */
-          scope: 'CURRENT' | 'REGION';
+          /**
+           * CURRENT = site de la compagnie ;
+           * REGION = un site de la région courante ;
+           * OPPONENT = un site adverse du chemin (Nelya…) → path puis deck.
+           */
+          scope: 'CURRENT' | 'REGION' | 'OPPONENT';
           from: 'SITES_DECK';
           /** Filtre terrain optionnel (underground, plains…). */
           siteKeyword?: CardKeyword;
@@ -794,6 +826,54 @@ export type AbilityEffect =
            * (`pendingFpDiscard`).
            */
           chooser?: 'FREE_PEOPLE';
+          /**
+           * Cantëa : arme **portée** par un personnage que la source
+           * escarmouche (filtre sur l’hôte, pas sur la zone).
+           */
+          borneBy?: 'SKIRMISHING';
+          /**
+           * Enquëa : si tu peux spotter `min` cartes matchant `target`,
+           * défausse `count` au lieu du compte de base.
+           */
+          countIfSpot?: {
+              target: string[][];
+              min: number;
+              count: number;
+          };
+      }
+    | {
+          /**
+           * Transfère une carte nommée depuis l’aire de soutien / défausse
+           * du propriétaire vers un compagnon que le porteur de la source
+           * escarmouche (Morgul Blade → Blade Tip).
+           */
+          type: 'TRANSFER_NAMED_CARD';
+          cardTitle: string;
+          from: Array<'SUPPORT' | 'DISCARD'>;
+          attachTo: 'BEARER_SKIRMISHING_COMPANION';
+          /** « Limit 1 per character » sur la carte transférée. */
+          limitOnePerCharacter?: boolean;
+      }
+    | {
+          /**
+           * Transfère **cette** carte (soutien → personnage).
+           * Éclat de Lame (perdant) / Sauron’s Gaze (désigné).
+           */
+          type: 'TRANSFER_SELF';
+          from: Array<'SUPPORT' | 'DISCARD'>;
+          attachTo: 'SKIRMISH_LOSER' | 'SKIRMISHING_WITH';
+          /** Obligatoire si `attachTo: 'SKIRMISHING_WITH'` (ex. Nazgûl). */
+          skirmishingWith?: string[][];
+          limitOnePerCharacter?: boolean;
+      }
+    | {
+          /**
+           * Passif : le joueur indiqué ne peut pas utiliser les capacités
+           * spéciales du porteur (Sauron’s Gaze).
+           */
+          type: 'FORBID_SPECIAL_ABILITIES';
+          target: 'BEARER';
+          who: 'FREE_PEOPLE';
       }
     | {
           /** Défausse toutes les cartes en jeu qui matchent (ex. every condition). */
@@ -916,10 +996,26 @@ export type AbilityEffect =
           shadowMayPrevent?: { removeTwilight: number };
       }
     | {
+          /**
+           * Change le seuil de submersion jusqu’à une phase
+           * (Everyone Knows : ×3 au lieu de ×2).
+           */
+          type: 'SET_OVERWHELM_FACTOR';
+          target: AbilityTargetRef;
+          /** Force adverse ≥ factor × force pour submerger (défaut règles = 2). */
+          factor: number;
+          expiresAtPhase: AbilityEffectExpiry;
+      }
+    | {
           type: 'WOUND';
           count: number;
           target: AbilityTargetRef;
           excludeRingBearer?: boolean;
+          /**
+           * Éclat de Lame : si la cible est le Porteur, ajoute un
+           * point-fardeau à la place de la blessure.
+           */
+          burdenIfRingBearer?: boolean;
           /**
            * DNF : restreint les adversaires d’escarmouche
            * (`target: 'SKIRMISHING'` — Blade of Gondor, Poêle…).
@@ -1051,6 +1147,14 @@ export type AbilityEffect =
           type: 'PREVENT_WOUND';
       }
     | {
+          /** Empêche la défausse en cours (ABOUT_TO_DISCARD). */
+          type: 'PREVENT_DISCARD';
+      }
+    | {
+          /** Empêche un fardeau en cours d’ajout (ABOUT_TO_ADD_BURDEN). */
+          type: 'PREVENT_BURDEN';
+      }
+    | {
           type: 'WEAR_RING';
           expiresAtPhase: AbilityEffectExpiry;
           replaceWoundWithBurdens: number;
@@ -1064,6 +1168,26 @@ export type AbilityEffect =
     | {
           type: 'MAKE_RING_BEARER';
           resistance: number;
+      }
+    | {
+          /**
+           * A Shadow Rises : cette condition devient un séide (force / vitalité /
+           * mots-clés) jusqu’au début du regroupement ; reste aussi une situation.
+           * Déplacée du soutien vers le champ de bataille.
+           */
+          type: 'BECOME_MINION';
+          strength: number;
+          vitality: number;
+          keywords?: CardKeyword[];
+          culture?: CardCulture;
+          cannotBearCards?: boolean;
+          expiresAtPhase: AbilityEffectExpiry;
+          stillCondition?: boolean;
+      }
+    | {
+          /** Retire tous les jetons de culture de la cible (souvent SELF). */
+          type: 'CLEAR_CULTURE_TOKENS';
+          target: AbilityTargetRef;
       }
     | {
           /**
@@ -1085,6 +1209,31 @@ export type AbilityTrigger =
           type: 'ABOUT_TO_WOUND';
           target: AbilityTargetRef;
           inSkirmish?: boolean;
+      }
+    | {
+          /**
+           * Carte sur le point d’être défaussée (Scouring…).
+           * `byShadowCard` : seulement si la cause est une carte Ombre.
+           */
+          type: 'ABOUT_TO_DISCARD';
+          target: AbilityTargetRef;
+          byShadowCard?: boolean;
+      }
+    | {
+          /**
+           * Fardeaux sur le point d’être ajoutés (Tolman Cotton…).
+           * `byShadowCard` : seulement si la cause est une carte Ombre.
+           */
+          type: 'ABOUT_TO_ADD_BURDEN';
+          byShadowCard?: boolean;
+      }
+    | {
+          /**
+           * Après un soin réel (Enquëa…). `byFreePeoples` = le joueur PL soigne.
+           */
+          type: 'HEAL';
+          target: AbilityTargetRef;
+          byFreePeoples?: boolean;
       }
     | {
           /**
@@ -1152,6 +1301,13 @@ export type AbilityTrigger =
           whileRingBearer?: boolean;
       }
     | {
+          /**
+           * Début de phase Communauté (Éclat de Lame : blesser le porteur).
+           * Auto-appliqué, pas une fenêtre d’actions.
+           */
+          type: 'START_OF_FELLOWSHIP';
+      }
+    | {
           /** Each time you play a [classe]… (la carte jouée matche `played`). */
           type: 'YOU_PLAY';
           played: string[][];
@@ -1171,6 +1327,11 @@ export type AbilityTrigger =
           spotTwilight?: number;
           /** « While you can spot N [culture] tokens » (cartes actives du joueur). */
           spotCultureTokens?: { culture: CultureTokenSpec; count: number };
+          /**
+           * « When there are N [culture] tokens here » (Scouring…) —
+           * jetons sur la source elle-même.
+           */
+          tokensOnSelf?: { culture: CardCulture; count: number };
           /**
            * « While you can spot X [c1] tokens on this card and the same number
            * of [c2] tokens on [Card Name] » — vrai si min(self, other) ≥ 1.
@@ -1331,6 +1492,21 @@ export interface Ability {
      * (chemin Standard 1–9 ; Final Strike…).
      */
     requiresAtSiteNumber?: number;
+    /**
+     * Capacité utilisable seulement si le site courant ≤ N
+     * (Hobbit Intuition : sites 1 à 4).
+     */
+    requiresAtSiteNumberAtMost?: number;
+    /**
+     * Capacité utilisable seulement si le site courant ≥ N
+     * (Hobbit Intuition : tout autre site → 5+).
+     */
+    requiresAtSiteNumberAtLeast?: number;
+    /**
+     * Attachement : activable seulement si le porteur a l’un de ces titres
+     * (Sting : Bilbo ou Frodo…).
+     */
+    requiresBearerTitles?: string[];
 }
 
 export interface CardState {
@@ -1379,6 +1555,11 @@ export interface CardState {
      * Compte pour le plafond de construction (max 4), pas pour le pool.
      */
     startingFellowshipTwilightReduce?: number;
+    /**
+     * « This weapon may be borne in addition to 1 other hand weapon »
+     * (Morgul Blade…) — autorise 2 armes de mêlée sur le même porteur.
+     */
+    allowsExtraHandWeapon?: boolean;
 
     // Statistiques & Coûts
     twilightCost?: number;
@@ -1395,6 +1576,11 @@ export interface CardState {
      * Distinct de `site.stacked` (sites contrôlés).
      */
     stacked?: CardState[];
+    /**
+     * Rempli à la défausse d’un attachement : id du porteur d’où la carte
+     * vient d’être retirée (Morgul Blade → encore trouver le séide).
+     */
+    detachedFromHostId?: string;
     attachedTo?: string | string[];
     phases?: string[];
     wounds?: number;
@@ -1422,6 +1608,27 @@ export interface CardState {
     forbidAssignUntil?: AbilityEffectExpiry;
     /** Immunité aux blessures jusqu’à une phase (Faramir / prevent all wounds…). */
     forbidWoundsUntil?: AbilityEffectExpiry;
+    /**
+     * Seuil de submersion temporaire (Everyone Knows : factor 3).
+     * Défaut règles = 2 (force adverse ≥ 2 × force).
+     */
+    tempOverwhelmFactor?: {
+        factor: number;
+        expiresAtPhase: AbilityEffectExpiry;
+    };
+    /**
+     * Condition animée en séide (A Shadow Rises…) jusqu’à `expiresAtPhase`.
+     * Snapshot pour restaurer le type / les stats au regroupement.
+     */
+    animatedMinion?: {
+        expiresAtPhase: AbilityEffectExpiry;
+        savedType: CardState['type'];
+        savedStrength?: number;
+        savedVitality?: number;
+        savedKeywords?: CardKeyword[];
+        stillCondition?: boolean;
+        cannotBearCards?: boolean;
+    };
     name?: string; // Si conservé pour compatibilité ou identification
     isDead?: boolean;
     isOverwhelmed?: boolean;
@@ -1566,6 +1773,27 @@ export interface PendingAddThreatsEvent {
     count: number;
 }
 
+/** Fardeaux sur le point d’être ajoutés (réponses type Tolman). */
+export interface PendingAddBurdenEvent {
+    type: 'ABOUT_TO_ADD_BURDEN';
+    count: number;
+    byShadowCard?: boolean;
+}
+
+/** Carte sur le point d’être défaussée (réponses type Scouring). */
+export interface PendingDiscardEvent {
+    type: 'ABOUT_TO_DISCARD';
+    targetId: string;
+    byShadowCard?: boolean;
+}
+
+/** Soin réel effectué (réponses type Enquëa). */
+export interface PendingHealEvent {
+    type: 'HEAL';
+    targetId: string;
+    byFreePeoples?: boolean;
+}
+
 /** Exhaust engagé ; le joueur FP peut encore l’empêcher (fardeaux). */
 export interface PendingExhaustEvent {
     type: 'ABOUT_TO_EXHAUST';
@@ -1611,6 +1839,9 @@ export type PendingEvent =
     | PendingCharacterDiesEvent
     | PendingCancelSkirmishEvent
     | PendingAddThreatsEvent
+    | PendingAddBurdenEvent
+    | PendingDiscardEvent
+    | PendingHealEvent
     | PendingExhaustEvent
     | PendingForceAssignEvent
     | PendingFellowshipMovesEvent
@@ -1746,6 +1977,8 @@ export interface GameState {
     woundQueue?: WoundQueueItem[];
     /** Blessures réellement prises — réponses « each time … takes a wound ». */
     takesWoundQueue?: { targetId: string; skirmishId?: string }[];
+    /** Soins réels — réponses « each time the Free Peoples player heals… ». */
+    pendingHealQueue?: { targetId: string; byFreePeoples?: boolean }[];
     skirmishes: SkirmishState[];
     archeryState?: ArcheryState;
     assignmentStep?: 'ACTIONS' | 'FP_ASSIGN' | 'SHADOW_ASSIGN' | 'COMPLETED';
@@ -2009,8 +2242,9 @@ export interface LotrMoveContext extends FnContext<GameState> {
     playerID: string;
 }
 
-/** Presets DEV de playtest (panneau de test, vague en cours). */
-export type DevPresetType = never;
+/** Presets DEV de playtest (vague hobbits / Nazgûl — cartes encore inertes). */
+/** Identifiant de preset DEV (vide tant qu’aucune vague n’en a besoin). */
+export type DevPresetType = string;
 
 export interface ArcheryState {
     step?: 'ACTIONS' | 'FP_ASSIGN' | 'SHADOW_ASSIGN' | 'COMPLETE';

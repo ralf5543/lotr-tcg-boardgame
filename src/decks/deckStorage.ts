@@ -8,6 +8,8 @@ const SELECTED_KEY = 'lotr.selectedDecks';
 
 export const SEED_DECK_FUMEURS_ID = 'fumeurs-gollum-threats';
 export const SEED_DECK_GONDOR_ID = 'gondor-uruks';
+/** Deck playtest en cours (hobbits / Nazgûl) — défaut des deux camps. */
+export const PLAYTEST_DECK_HOBBITS_ID = 'deck-1793993637649';
 
 const LEGACY_SELECTED_IDS: Record<string, string> = {
     'seed-fumeurs-gollum': SEED_DECK_FUMEURS_ID,
@@ -175,20 +177,29 @@ export async function createEmptyDeck(
 
 export function getSelectedDeckIds(): SelectedDecks {
     if (typeof localStorage === 'undefined') {
-        return { '0': SEED_DECK_FUMEURS_ID, '1': SEED_DECK_GONDOR_ID };
+        return {
+            '0': PLAYTEST_DECK_HOBBITS_ID,
+            '1': PLAYTEST_DECK_HOBBITS_ID,
+        };
     }
     try {
         const raw = localStorage.getItem(SELECTED_KEY);
         if (!raw) {
-            return { '0': SEED_DECK_FUMEURS_ID, '1': SEED_DECK_GONDOR_ID };
+            return {
+                '0': PLAYTEST_DECK_HOBBITS_ID,
+                '1': PLAYTEST_DECK_HOBBITS_ID,
+            };
         }
         const parsed = JSON.parse(raw) as SelectedDecks;
         return {
-            '0': mapLegacyId(parsed['0'] || SEED_DECK_FUMEURS_ID),
-            '1': mapLegacyId(parsed['1'] || SEED_DECK_GONDOR_ID),
+            '0': mapLegacyId(parsed['0'] || PLAYTEST_DECK_HOBBITS_ID),
+            '1': mapLegacyId(parsed['1'] || PLAYTEST_DECK_HOBBITS_ID),
         };
     } catch {
-        return { '0': SEED_DECK_FUMEURS_ID, '1': SEED_DECK_GONDOR_ID };
+        return {
+            '0': PLAYTEST_DECK_HOBBITS_ID,
+            '1': PLAYTEST_DECK_HOBBITS_ID,
+        };
     }
 }
 

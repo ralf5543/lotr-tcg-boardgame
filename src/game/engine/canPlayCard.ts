@@ -135,13 +135,15 @@ export const canAttachToCharacter = (
 
     // 2. Vérification de la limite de subtype (t minuscule)
     const target = targetCard as CardState;
+    // A Shadow Rises animé : « cannot bear other cards ».
+    if (target.animatedMinion?.cannotBearCards) return false;
     const newSubtype =
         (attachment as any).subtype ||
         (attachment as any).subType ||
         (attachment as any).itemClass;
 
     if (newSubtype && target.attachments && target.attachments.length > 0) {
-        const hasSameSubtype = target.attachments.some((existing) => {
+        const sameSubtypeAttachments = target.attachments.filter((existing) => {
             const existingSubtype =
                 (existing as any).subtype ||
                 (existing as any).subType ||
@@ -149,7 +151,18 @@ export const canAttachToCharacter = (
             return existingSubtype === newSubtype;
         });
 
-        if (hasSameSubtype) {
+        if (sameSubtypeAttachments.length > 0) {
+            // Morgul Blade… : 2 armes de mêlée max si l’une autorise l’extra.
+            if (newSubtype === 'HAND-WEAPON') {
+                const allowsExtra =
+                    Boolean(attachment.allowsExtraHandWeapon) ||
+                    sameSubtypeAttachments.some((att) =>
+                        Boolean(att?.allowsExtraHandWeapon)
+                    );
+                if (allowsExtra && sameSubtypeAttachments.length < 2) {
+                    return true;
+                }
+            }
             return false;
         }
     }

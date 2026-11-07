@@ -1,9 +1,9 @@
 import type { Ability, CardState } from '../../../types';
 import type { CardException } from './types';
-import { exception2C114 } from './cards/2C114';
 import { exception7R43 } from './cards/7R43';
 
-const EXCEPTIONS: CardException[] = [exception2C114, exception7R43];
+/** Sam « If Frodo dies… » : fragment parser (plus d’exception 2C114). */
+const EXCEPTIONS: CardException[] = [exception7R43];
 
 export const EXCEPTION_REGISTRY: Record<string, CardException> =
     Object.fromEntries(

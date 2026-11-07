@@ -23,6 +23,10 @@ function removeFromList(
             );
             if (attachedIndex >= 0) {
                 const [removed] = host.attachments.splice(attachedIndex, 1);
+                if (removed) {
+                    removed.detachedFromHostId =
+                        host.instanceId || host.id;
+                }
                 return removed || null;
             }
         }

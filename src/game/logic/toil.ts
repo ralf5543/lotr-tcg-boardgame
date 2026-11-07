@@ -72,12 +72,13 @@ export function getToilCandidates(
 export function getTwilightCostWithToil(
     G: GameState,
     card: CardState,
-    toilExertCount: number
+    toilExertCount: number,
+    host?: CardState | null
 ): number {
     const base = getEffectiveTwilightCost(
         card,
         getCurrentSiteIndex(G),
-        getWhileTwilightCostModifier(G, card)
+        getWhileTwilightCostModifier(G, card, host)
     );
     const amount = getToilAmount(card);
     if (!amount || toilExertCount <= 0) return Math.max(0, base);

@@ -8,6 +8,7 @@ import {
     abilityNeedsEffectDesignation,
     costAndEffectShareHandDesignation,
 } from './designation';
+import { abilityMeetsPlayRestrictions } from './abilityRestrictions';
 import { isResponseWindowOpen } from '../responseWindow';
 
 function abilityPhaseToMatch(G: GameState, rawPhase: string): string {
@@ -31,14 +32,21 @@ function eventAbilityMatchesPhase(
     return true;
 }
 
+/**
+ * Première capacité d’événement jouable pour la phase.
+ * Si `G` est fourni, respecte aussi les restrictions de site / assignation.
+ */
 export function findEventAbilityForPhase(
     card: CardState,
-    rawPhase: string
+    rawPhase: string,
+    G?: GameState
 ): Ability | undefined {
     if (card.type !== 'EVENT' || !card.abilities?.length) return undefined;
-    return card.abilities.find((ability) =>
-        eventAbilityMatchesPhase(card, ability, rawPhase)
-    );
+    return card.abilities.find((ability) => {
+        if (!eventAbilityMatchesPhase(card, ability, rawPhase)) return false;
+        if (G && !abilityMeetsPlayRestrictions(G, card, ability)) return false;
+        return true;
+    });
 }
 
 /**
@@ -62,7 +70,8 @@ export function canPayEventAbility(
 
     const ability = findEventAbilityForPhase(
         card,
-        abilityPhaseToMatch(G, rawPhase)
+        abilityPhaseToMatch(G, rawPhase),
+        G
     );
     if (!ability) {
         return {
@@ -99,7 +108,8 @@ export function applyEventAbility(
 
     const ability = findEventAbilityForPhase(
         card,
-        abilityPhaseToMatch(G, rawPhase)
+        abilityPhaseToMatch(G, rawPhase),
+        G
     );
     if (!ability) return false;
 

@@ -16,6 +16,8 @@ import { applyDevPreset } from './presets';
 import type { DevPresetType } from '../types';
 import type { CardCulture } from '../types';
 import { isRingBearerCard } from '../../utils/cardUtils';
+import { applyHeal } from '../../utils/applyHeal';
+import { tryOpenHealResponse } from '../engine/responseWindow';
 
 /** État de machine de phase : toasters, fenêtres, sous-étapes. */
 function resetPhaseMachine(G: GameState): void {
@@ -104,6 +106,17 @@ export const devMoves = {
         const card = wounded || nonRingBearer || fellowship[0];
         if (!card) {
             G.statusMessage = '[DEV] Aucun compagnon FP pour les blessures.';
+            return;
+        }
+        // Soin DEV = vrai soin (file HEAL → Enquëa…), pas un simple compteur.
+        if (delta < 0) {
+            const removed = applyHeal(G, card, Math.abs(delta), {
+                byFreePeoples: true,
+            });
+            if (removed > 0) {
+                tryOpenHealResponse(G);
+            }
+            G.statusMessage = `[DEV] ${card.title || card.id} : ${card.wounds || 0} blessure(s).`;
             return;
         }
         const next = Math.max(0, (card.wounds || 0) + delta);

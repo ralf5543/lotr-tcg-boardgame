@@ -227,7 +227,8 @@ function matchingTokensOnNamedCardCount(
 function modifyStatMagnitude(
     G: GameState,
     source: CardState,
-    effect: Extract<AbilityEffect, { type: 'MODIFY_STAT' }>
+    effect: Extract<AbilityEffect, { type: 'MODIFY_STAT' }>,
+    beneficiary?: CardState
 ): number {
     const base = effect.value || 0;
     if (effect.perMatchingTokensOnNamedCard) {
@@ -268,6 +269,15 @@ function modifyStatMagnitude(
     if (effect.perThreats) {
         const fpId = G.fpPlayerId || '0';
         return base * Math.max(0, G.players[fpId]?.threats || 0);
+    }
+    // Everyone Knows : +1 par point de vitalité au-delà du seuil.
+    if (
+        typeof effect.perVitalityOver === 'number' &&
+        effect.perVitalityOver >= 0 &&
+        beneficiary
+    ) {
+        const vit = getEffectiveVitality(beneficiary, G);
+        return base * Math.max(0, vit - effect.perVitalityOver);
     }
     return base;
 }
@@ -343,6 +353,11 @@ export function whileConditionHolds(
             trigger.spotCultureTokens.culture
         );
         if (have < (trigger.spotCultureTokens.count || 1)) return false;
+    }
+
+    if (trigger.tokensOnSelf) {
+        const have = tokenCountOnCard(source, trigger.tokensOnSelf.culture);
+        if (have < (trigger.tokensOnSelf.count || 1)) return false;
     }
 
     if (trigger.matchingTokensOnNamedCard) {
@@ -694,6 +709,17 @@ function localBeneficiaryMatches(
     return Boolean(beneficiary && matchCard(beneficiary, cardId));
 }
 
+/** « bearing a hand weapon / follower » sur l’effet MODIFY_STAT. */
+function cardBearsMatching(
+    card: CardState,
+    bearing: string[][] | undefined
+): boolean {
+    if (!bearing || bearing.length === 0) return true;
+    return (card.attachments || []).some(
+        (att) => att && cardMatchesTarget(att, bearing)
+    );
+}
+
 /**
  * Bonus de force issus des passifs While sur la carte (ou ses attachements),
  * plus les « each [classe] » portés par n’importe quelle carte en jeu.
@@ -717,7 +743,7 @@ export function getWhileStrengthBonus(
             if (!localBeneficiaryMatches(G, source, effect.target, cardId)) {
                 continue;
             }
-            bonus += modifyStatMagnitude(G, source, effect);
+            bonus += modifyStatMagnitude(G, source, effect, card);
         }
     });
 
@@ -730,11 +756,12 @@ export function getWhileStrengthBonus(
                 if (effect.stat !== 'STRENGTH') continue;
                 if (!Array.isArray(effect.target)) continue;
                 if (!cardMatchesTarget(card, effect.target)) continue;
+                if (!cardBearsMatching(card, effect.bearing)) continue;
                 if (effect.excludeSource) {
                     const sourceId = source.instanceId || source.id;
                     if ((card.instanceId || card.id) === sourceId) continue;
                 }
-                bonus += modifyStatMagnitude(G, source, effect);
+                bonus += modifyStatMagnitude(G, source, effect, card);
             }
         }
     });
@@ -748,11 +775,12 @@ export function getWhileStrengthBonus(
                 if (effect.stat !== 'STRENGTH') continue;
                 if (!Array.isArray(effect.target)) continue;
                 if (!cardMatchesTarget(card, effect.target)) continue;
+                if (!cardBearsMatching(card, effect.bearing)) continue;
                 if (effect.excludeSource) {
                     const sourceId = source.instanceId || source.id;
                     if ((card.instanceId || card.id) === sourceId) continue;
                 }
-                bonus += modifyStatMagnitude(G, source, effect);
+                bonus += modifyStatMagnitude(G, source, effect, card);
             }
         }
     });
@@ -810,7 +838,8 @@ export function getWhileStrengthBonus(
                 bonus += modifyStatMagnitude(
                     G,
                     currentSite as CardState,
-                    effect
+                    effect,
+                    card
                 );
             }
         }
@@ -842,7 +871,12 @@ export function getWhileStrengthBonus(
                         continue;
                     }
                 }
-                bonus += modifyStatMagnitude(G, site as CardState, effect);
+                bonus += modifyStatMagnitude(
+                    G,
+                    site as CardState,
+                    effect,
+                    card
+                );
             }
         }
     }
@@ -946,6 +980,10 @@ export function getWhileKeywordSuppressions(
             const hostedByEffect = (ability.effects || []).some(
                 (e) => e.type === 'MODIFY_KEYWORD' && e.skirmishingHostedByEffect
             );
+            const vsBearer = (ability.effects || []).some(
+                (e) =>
+                    e.type === 'MODIFY_KEYWORD' && e.skirmishingBearerOfSource
+            );
             if (hostedByEffect) {
                 if (ability.trigger?.type !== 'WHILE') continue;
                 const target = ability.trigger.skirmishing?.target;
@@ -953,6 +991,18 @@ export function getWhileKeywordSuppressions(
                 const opponents = getSkirmishOpponents(G, card);
                 if (
                     !opponents.some((opp) => cardMatchesTarget(opp, target))
+                ) {
+                    continue;
+                }
+            } else if (vsBearer) {
+                const bearer = findBearer(G, source);
+                if (!bearer) continue;
+                const opponents = getSkirmishOpponents(G, card);
+                const bearerId = bearer.instanceId || bearer.id;
+                if (
+                    !opponents.some(
+                        (opp) => (opp.instanceId || opp.id) === bearerId
+                    )
                 ) {
                     continue;
                 }
@@ -964,7 +1014,9 @@ export function getWhileKeywordSuppressions(
                 if (!effect.suppress) continue;
                 if (!Array.isArray(effect.target)) continue;
                 if (!cardMatchesTarget(card, effect.target)) continue;
-                suppressed.add(String(effect.keyword).toUpperCase());
+                // Mot-clé valué (DAMAGE +1) : clé = DAMAGE.
+                const kw = String(effect.keyword).toUpperCase().split(/\s+/)[0];
+                if (kw) suppressed.add(kw);
             }
         }
     };
@@ -988,11 +1040,13 @@ export function getWhileKeywordSuppressions(
 /**
  * Modificateur de coût crépuscule :
  * - While SELF TWILIGHT_COST sur la carte (Olog −2 / empilé) — lu aussi depuis la main ;
- * - passifs en jeu (Ambition : −1 sur tes événements culture).
+ * - passifs en jeu (Ambition : −1 sur tes événements culture) ;
+ * - « played on » (Frodo) : seulement si `host` est fourni et match la source.
  */
 export function getWhileTwilightCostModifier(
     G: GameState,
-    card: CardState
+    card: CardState,
+    host?: CardState | null
 ): number {
     let mod = 0;
     for (const ability of card.abilities || []) {
@@ -1021,6 +1075,11 @@ export function getWhileTwilightCostModifier(
                 if (effect.stat !== 'TWILIGHT_COST') continue;
                 if (!Array.isArray(effect.target)) continue;
                 if (!cardMatchesTarget(card, effect.target)) continue;
+                if (effect.playedOn === 'SELF') {
+                    if (!host) continue;
+                    const sourceId = source.instanceId || source.id;
+                    if (!sourceId || !matchCard(host, sourceId)) continue;
+                }
                 mod += modifyStatMagnitude(G, source, effect);
             }
         }
@@ -1036,6 +1095,7 @@ export function getWhileTwilightCostModifier(
                 if (effect.stat !== 'TWILIGHT_COST') continue;
                 if (!Array.isArray(effect.target)) continue;
                 if (!cardMatchesTarget(card, effect.target)) continue;
+                if (effect.playedOn === 'SELF') continue;
                 if (
                     effect.firstHunterMinionEachShadowPhase &&
                     G.hunterMinionPlayedThisShadowPhase
@@ -1073,6 +1133,7 @@ export function getWhileResistanceBonus(
                 if (effect.stat !== 'RESISTANCE') continue;
                 if (!Array.isArray(effect.target)) continue;
                 if (!cardMatchesTarget(card, effect.target)) continue;
+                if (!cardBearsMatching(card, effect.bearing)) continue;
                 bonus += modifyStatMagnitude(G, source, effect);
             }
         }
@@ -1090,6 +1151,7 @@ export function getWhileResistanceBonus(
                 if (effect.stat !== 'RESISTANCE') continue;
                 if (!Array.isArray(effect.target)) continue;
                 if (!cardMatchesTarget(card, effect.target)) continue;
+                if (!cardBearsMatching(card, effect.bearing)) continue;
                 bonus += modifyStatMagnitude(
                     G,
                     currentSite as CardState,
@@ -1098,6 +1160,33 @@ export function getWhileResistanceBonus(
             }
         }
     }
+
+    return bonus;
+}
+
+/**
+ * Bonus de vitalité max (While en jeu) — Little Golden Flower, etc.
+ */
+export function getWhileVitalityBonus(
+    G: GameState,
+    card: CardState
+): number {
+    let bonus = 0;
+
+    forEachInPlayCard(G, (source) => {
+        for (const ability of source.abilities || []) {
+            if (ability.trigger?.type !== 'WHILE') continue;
+            if (!whileConditionHolds(G, source, ability)) continue;
+            for (const effect of ability.effects || []) {
+                if (effect.type !== 'MODIFY_STAT') continue;
+                if (effect.stat !== 'VITALITY') continue;
+                if (!Array.isArray(effect.target)) continue;
+                if (!cardMatchesTarget(card, effect.target)) continue;
+                if (!cardBearsMatching(card, effect.bearing)) continue;
+                bonus += modifyStatMagnitude(G, source, effect);
+            }
+        }
+    });
 
     return bonus;
 }

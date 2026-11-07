@@ -6,6 +6,7 @@ import type {
     CostSelector,
     GameState,
 } from '../../types';
+import { findTargetCard } from '../../../utils/cardUtils';
 import { cardMatchesTarget } from '../validations/matchers';
 
 const matchCard = (c: CardState | undefined | null, targetId: string) =>
@@ -53,6 +54,15 @@ export function findBearer(
             found = bearer;
         }
     });
+
+    // Après défausse du coût : l’attachement n’est plus sur l’hôte.
+    if (!found && attachment.detachedFromHostId) {
+        found =
+            (findTargetCard(
+                G,
+                attachment.detachedFromHostId
+            ) as CardState | null) || null;
+    }
 
     return found;
 }

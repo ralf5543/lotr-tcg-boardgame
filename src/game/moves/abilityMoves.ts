@@ -127,7 +127,10 @@ export const activateAbility = (
                 ? chosenEffectTargetId
                 : (chosenEffectTargetId ?? chosenTargetId)
         );
-        if (effect?.scope === 'REGION') {
+        if (
+            effect?.scope === 'REGION' ||
+            effect?.scope === 'OPPONENT'
+        ) {
             if (ids.length < 2) return 'INVALID_MOVE';
         } else if (ids.length < 1) {
             return 'INVALID_MOVE';

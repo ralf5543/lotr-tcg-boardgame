@@ -1698,6 +1698,44 @@
         "The Witch-king"
       ]
     ],
+    "abilities": [
+      {
+        "id": "0P31:0",
+        "phases": [
+          "RESPONSE"
+        ],
+        "optional": true,
+        "trigger": {
+          "type": "WINS_SKIRMISH",
+          "winner": "BEARER"
+        },
+        "cost": [
+          {
+            "exert": [
+              {
+                "count": 1,
+                "target": "BEARER"
+              }
+            ]
+          }
+        ],
+        "effects": [
+          {
+            "type": "DISCARD",
+            "count": 1,
+            "target": [
+              [
+                "FREE_PEOPLES",
+                "CONDITION"
+              ]
+            ]
+          }
+        ],
+        "source": "ATTACHMENT",
+        "text": "RESPONSE: If The Witch-king wins a skirmish, exert him to discard a Free Peoples condition",
+        "textFr": "**Réponse :** Si le Roi-Sorcier remporte un combat, affaiblissez-le pour défausser une situation des Peuples Libres."
+      }
+    ],
     "culture": "WRAITH",
     "twilightCost": 2,
     "strength": 3,
@@ -2275,6 +2313,7 @@
         "The Balrog"
       ]
     ],
+    "allowsExtraHandWeapon": true,
     "culture": "MORIA",
     "twilightCost": 1,
     "strength": 3,
@@ -3871,6 +3910,39 @@
     "keywords": [
       "FIERCE"
     ],
+    "abilities": [
+      {
+        "id": "0P81:0",
+        "phases": [],
+        "trigger": {
+          "type": "WHEN_PLAYED"
+        },
+        "optional": true,
+        "cost": [
+          {
+            "exert": [
+              {
+                "count": 1,
+                "target": "SELF"
+              }
+            ]
+          }
+        ],
+        "effects": [
+          {
+            "type": "TAKE_FROM_DISCARD",
+            "target": [
+              [
+                "WRAITH",
+                "EVENT"
+              ]
+            ]
+          }
+        ],
+        "source": "SELF",
+        "text": "When you play Úlairë Toldëa, you may exert him to take a wraith event from your discard pile into hand."
+      }
+    ],
     "culture": "WRAITH",
     "race": "NAZGÛL",
     "twilightCost": 6,
@@ -4022,6 +4094,70 @@
       [
         "Bilbo, Frodo, or Sam"
       ]
+    ],
+    "abilities": [
+      {
+        "id": "0P84:0",
+        "phases": [
+          "MANEUVER"
+        ],
+        "cost": [
+          {
+            "exert": [
+              {
+                "count": 1,
+                "target": "BEARER"
+              }
+            ]
+          }
+        ],
+        "effects": [
+          {
+            "type": "ADD_TEMP_STAT",
+            "stat": "RESISTANCE",
+            "value": 2,
+            "target": [
+              [
+                "COMPANION"
+              ]
+            ],
+            "expiresAtPhase": "REGROUP",
+            "excludeSource": true
+          }
+        ],
+        "source": "ATTACHMENT",
+        "requiresBearerTitles": [
+          "Bilbo",
+          "Frodo"
+        ],
+        "text": "MANEUVER: If bearer is Bilbo or Frodo, exert him to make another companion resistance +2 until the regroup phase."
+      },
+      {
+        "id": "0P84:1",
+        "phases": [
+          "RESPONSE"
+        ],
+        "optional": true,
+        "requiresBearerTitles": [
+          "Sam"
+        ],
+        "trigger": {
+          "type": "WINS_SKIRMISH",
+          "winner": "BEARER"
+        },
+        "cost": [],
+        "effects": [
+          {
+            "type": "REMOVE_BURDENS",
+            "count": 1
+          }
+        ],
+        "source": "ATTACHMENT",
+        "text": "If bearer is Sam, each time he wins a skirmish, you may remove a burden."
+      }
+    ],
+    "actionPhases": [
+      "MANEUVER"
     ],
     "culture": "SHIRE",
     "twilightCost": 1,
@@ -4289,6 +4425,61 @@
         "RING-BOUND",
         "HOBBIT"
       ]
+    ],
+    "abilities": [
+      {
+        "id": "0P94:0",
+        "phases": [],
+        "trigger": {
+          "type": "WHILE"
+        },
+        "cost": [],
+        "effects": [
+          {
+            "type": "MODIFY_KEYWORD",
+            "keyword": "DAMAGE",
+            "target": [
+              [
+                "MINION"
+              ]
+            ],
+            "suppress": true,
+            "skirmishingBearerOfSource": true
+          }
+        ],
+        "source": "ATTACHMENT",
+        "text": "Each minion skirmishing bearer loses all damage bonuses."
+      },
+      {
+        "id": "0P94:1",
+        "phases": [
+          "SKIRMISH"
+        ],
+        "cost": [
+          {
+            "exert": [
+              {
+                "count": 1,
+                "target": "BEARER"
+              }
+            ]
+          }
+        ],
+        "effects": [
+          {
+            "type": "SUPPRESS_KEYWORD",
+            "keyword": "FIERCE",
+            "target": "SKIRMISHING",
+            "all": true,
+            "expiresAtPhase": "REGROUP"
+          }
+        ],
+        "source": "ATTACHMENT",
+        "text": "Skirmish: Exert bearer to make each minion he is skirmishing lose fierce and unable to gain fierce until the regroup phase."
+      }
+    ],
+    "actionPhases": [
+      "SKIRMISH"
     ],
     "culture": "SHIRE",
     "twilightCost": 2,
@@ -6126,6 +6317,34 @@
     "keywords": [
       "FIERCE"
     ],
+    "abilities": [
+      {
+        "id": "1R237:0",
+        "phases": [],
+        "trigger": {
+          "type": "WHILE"
+        },
+        "cost": [],
+        "effects": [
+          {
+            "type": "MODIFY_STAT",
+            "stat": "STRENGTH",
+            "value": 2,
+            "target": "SELF",
+            "perSpot": {
+              "target": [
+                [
+                  "NAZGÛL"
+                ]
+              ],
+              "excludeSource": true
+            }
+          }
+        ],
+        "source": "SELF",
+        "text": ". For each other Nazgûl you can spot, The Witch-king is strength +2."
+      }
+    ],
     "culture": "WRAITH",
     "race": "NAZGÛL",
     "twilightCost": 8,
@@ -6173,6 +6392,33 @@
     "isUnique": false,
     "kind": "SHADOW",
     "type": "MINION",
+    "abilities": [
+      {
+        "id": "1R256:0",
+        "phases": [],
+        "trigger": {
+          "type": "WHILE"
+        },
+        "cost": [],
+        "effects": [
+          {
+            "type": "MODIFY_STAT",
+            "stat": "STRENGTH",
+            "value": 1,
+            "target": "SELF",
+            "perSpot": {
+              "target": [
+                [
+                  "COMPANION"
+                ]
+              ]
+            }
+          }
+        ],
+        "source": "SELF",
+        "text": "For each companion you can spot, this minion is strength +1."
+      }
+    ],
     "culture": "SAURON",
     "race": "ORC",
     "twilightCost": 5,
@@ -6304,6 +6550,38 @@
     "type": "COMPANION",
     "keywords": [
       "RING-BOUND"
+    ],
+    "abilities": [
+      {
+        "id": "2C102:0",
+        "phases": [],
+        "trigger": {
+          "type": "WHILE"
+        },
+        "cost": [],
+        "effects": [
+          {
+            "type": "MODIFY_STAT",
+            "stat": "TWILIGHT_COST",
+            "value": -1,
+            "target": [
+              [
+                "ARTIFACT"
+              ],
+              [
+                "POSSESSION"
+              ],
+              [
+                "SHIRE",
+                "TALE"
+              ]
+            ],
+            "playedOn": "SELF"
+          }
+        ],
+        "source": "SELF",
+        "text": "The cost of each artifact, possession, and shire tale played on Frodo is -1."
+      }
     ],
     "culture": "SHIRE",
     "race": "HOBBIT",
@@ -8484,6 +8762,30 @@
     "abilities": [
       {
         "id": "10P122:0",
+        "phases": [
+          "RESPONSE"
+        ],
+        "optional": false,
+        "trigger": {
+          "type": "CHARACTER_DIES",
+          "target": [
+            [
+              "Frodo"
+            ]
+          ]
+        },
+        "cost": [],
+        "effects": [
+          {
+            "type": "MAKE_RING_BEARER",
+            "resistance": 5
+          }
+        ],
+        "source": "SELF",
+        "text": "RESPONSE: If Frodo dies, make Sam the Ring-bearer (resistance 5)."
+      },
+      {
+        "id": "10P122:1",
         "phases": [],
         "trigger": {
           "type": "WHILE"
@@ -10380,6 +10682,32 @@
     "keywords": [
       "RING-BOUND"
     ],
+    "abilities": [
+      {
+        "id": "0W13:0",
+        "phases": [
+          "RESPONSE"
+        ],
+        "optional": false,
+        "trigger": {
+          "type": "CHARACTER_DIES",
+          "target": [
+            [
+              "Frodo"
+            ]
+          ]
+        },
+        "cost": [],
+        "effects": [
+          {
+            "type": "MAKE_RING_BEARER",
+            "resistance": 5
+          }
+        ],
+        "source": "SELF",
+        "text": "RESPONSE: If Frodo dies, make Sam the Ring-bearer (resistance 5)."
+      }
+    ],
     "culture": "SHIRE",
     "race": "HOBBIT",
     "twilightCost": 2,
@@ -11081,6 +11409,39 @@
     "kind": "SHADOW",
     "type": "CONDITION",
     "subtype": "SUPPORT-AREA",
+    "abilities": [
+      {
+        "id": "0W30:0",
+        "phases": [
+          "MANEUVER"
+        ],
+        "optional": true,
+        "cost": [
+          {
+            "removeTwilight": 5
+          }
+        ],
+        "effects": [
+          {
+            "type": "BECOME_MINION",
+            "strength": 10,
+            "vitality": 3,
+            "keywords": [
+              "FIERCE"
+            ],
+            "culture": "WRAITH",
+            "cannotBearCards": true,
+            "expiresAtPhase": "REGROUP",
+            "stillCondition": true
+          }
+        ],
+        "source": "SELF",
+        "text": "Maneuver: Remove twilight5 to make this condition a fierce wraith minion until the start of the regroup phase that has 10 strength and 3 vitality, and cannot bear other cards. This card is still a condition."
+      }
+    ],
+    "actionPhases": [
+      "MANEUVER"
+    ],
     "culture": "WRAITH",
     "twilightCost": 0,
     "imageUrl": "/cards_visuals/o_11_216.jpg",
@@ -20101,6 +20462,35 @@
     "isUnique": true,
     "kind": "SHADOW",
     "type": "MINION",
+    "abilities": [
+      {
+        "id": "1R163:0",
+        "phases": [],
+        "trigger": {
+          "type": "WHILE"
+        },
+        "cost": [],
+        "effects": [
+          {
+            "type": "MODIFY_STAT",
+            "stat": "STRENGTH",
+            "value": 1,
+            "target": "SELF",
+            "perSpot": {
+              "target": [
+                [
+                  "MORIA",
+                  "ORC"
+                ]
+              ],
+              "excludeSource": true
+            }
+          }
+        ],
+        "source": "SELF",
+        "text": "For each other moria Orc you can spot, Ancient Chieftain is strength +1."
+      }
+    ],
     "culture": "MORIA",
     "race": "ORC",
     "twilightCost": 4,
@@ -22217,6 +22607,36 @@
     "kind": "SHADOW",
     "type": "CONDITION",
     "subtype": "SUPPORT-AREA",
+    "abilities": [
+      {
+        "id": "1U207:0",
+        "phases": [
+          "SKIRMISH"
+        ],
+        "cost": [],
+        "effects": [
+          {
+            "type": "TRANSFER_SELF",
+            "from": [
+              "SUPPORT"
+            ],
+            "attachTo": "SKIRMISHING_WITH",
+            "skirmishingWith": [
+              [
+                "NAZGÛL"
+              ]
+            ],
+            "limitOnePerCharacter": true
+          }
+        ],
+        "source": "SELF",
+        "text": "Skirmish: Transfer this condition from your support area to a character skirmishing a Nazgûl.",
+        "textFr": "**Combat :** Transférez cette situation de votre aire de soutien à un personnage combattant un Nazgûl. Les points-fardeau et les blessures ne peuvent pas être retirés du détenteur."
+      }
+    ],
+    "actionPhases": [
+      "SKIRMISH"
+    ],
     "culture": "WRAITH",
     "twilightCost": 1,
     "imageUrl": "/cards_visuals/o_01_207.jpg",
@@ -22322,6 +22742,55 @@
     "kind": "SHADOW",
     "type": "CONDITION",
     "subtype": "SUPPORT-AREA",
+    "abilities": [
+      {
+        "id": "1U209:0",
+        "phases": [
+          "RESPONSE"
+        ],
+        "trigger": {
+          "type": "WINS_SKIRMISH",
+          "winner": [
+            [
+              "NAZGÛL"
+            ]
+          ],
+          "yours": true
+        },
+        "cost": [],
+        "effects": [
+          {
+            "type": "TRANSFER_SELF",
+            "from": [
+              "SUPPORT"
+            ],
+            "attachTo": "SKIRMISH_LOSER",
+            "limitOnePerCharacter": true
+          }
+        ],
+        "source": "SELF",
+        "text": "RESPONSE: If your Nazgûl wins a skirmish, transfer this condition from your support area to the losing character. Limit 1 per character.",
+        "textFr": "**Réponse :** Si votre Nazgûl remporte un combat, transférez cette situation de votre aire de soutien au personnage perdant. Limité à 1 par personnage. Blessez le détenteur au début de chaque phase de compagnie. (Si le détenteur est le **Porteur de l'Anneau**, ajoutez plutôt un point-fardeau.)"
+      },
+      {
+        "id": "1U209:1",
+        "phases": [],
+        "trigger": {
+          "type": "START_OF_FELLOWSHIP"
+        },
+        "cost": [],
+        "effects": [
+          {
+            "type": "WOUND",
+            "count": 1,
+            "target": "BEARER",
+            "burdenIfRingBearer": true
+          }
+        ],
+        "source": "ATTACHMENT",
+        "text": "Wound bearer at the start of each fellowship phase. (If bearer is the Ring-bearer, add a burden instead.)"
+      }
+    ],
     "culture": "WRAITH",
     "twilightCost": 0,
     "imageUrl": "/cards_visuals/o_01_209.jpg",
@@ -22611,6 +23080,43 @@
         "NAZGÛL"
       ]
     ],
+    "allowsExtraHandWeapon": true,
+    "abilities": [
+      {
+        "id": "1R216:0",
+        "phases": [
+          "SKIRMISH"
+        ],
+        "cost": [
+          {
+            "discardFromPlay": [
+              {
+                "count": 1,
+                "target": "SELF"
+              }
+            ]
+          }
+        ],
+        "effects": [
+          {
+            "type": "TRANSFER_NAMED_CARD",
+            "cardTitle": "Blade Tip",
+            "from": [
+              "SUPPORT",
+              "DISCARD"
+            ],
+            "attachTo": "BEARER_SKIRMISHING_COMPANION",
+            "limitOnePerCharacter": true
+          }
+        ],
+        "source": "SELF",
+        "text": "Skirmish: Discard this possession to transfer Blade Tip from your support area or discard pile to a companion bearer is skirmishing.",
+        "textFr": "**Combat :** Défaussez cette possession pour transférer Éclat de Lame de votre aire de soutien ou de votre pile de défausse à un compagnon que le détenteur combat."
+      }
+    ],
+    "actionPhases": [
+      "SKIRMISH"
+    ],
     "culture": "WRAITH",
     "twilightCost": 1,
     "strength": 1,
@@ -22820,6 +23326,44 @@
       [
         "The Witch-king"
       ]
+    ],
+    "abilities": [
+      {
+        "id": "1R221:0",
+        "phases": [
+          "RESPONSE"
+        ],
+        "optional": true,
+        "trigger": {
+          "type": "WINS_SKIRMISH",
+          "winner": "BEARER"
+        },
+        "cost": [
+          {
+            "exert": [
+              {
+                "count": 1,
+                "target": "BEARER"
+              }
+            ]
+          }
+        ],
+        "effects": [
+          {
+            "type": "DISCARD",
+            "count": 1,
+            "target": [
+              [
+                "FREE_PEOPLES",
+                "CONDITION"
+              ]
+            ]
+          }
+        ],
+        "source": "ATTACHMENT",
+        "text": "RESPONSE: If The Witch-king wins a skirmish, exert him to discard a Free Peoples condition",
+        "textFr": "**Réponse :** Si le Roi-Sorcier remporte un combat, affaiblissez-le pour défausser une situation des Peuples Libres."
+      }
     ],
     "culture": "WRAITH",
     "twilightCost": 2,
@@ -23251,6 +23795,42 @@
     "keywords": [
       "FIERCE"
     ],
+    "abilities": [
+      {
+        "id": "1R230:0",
+        "phases": [
+          "SKIRMISH"
+        ],
+        "cost": [
+          {
+            "exert": [
+              {
+                "count": 1,
+                "target": "SELF"
+              }
+            ]
+          }
+        ],
+        "effects": [
+          {
+            "type": "DISCARD",
+            "count": 1,
+            "target": [
+              [
+                "WEAPON"
+              ]
+            ],
+            "borneBy": "SKIRMISHING"
+          }
+        ],
+        "source": "SELF",
+        "text": "SKIRMISH: Exert Úlairë Cantëa to discard a weapon borne by a character he is skirmishing.",
+        "textFr": "**Combat :** Affaiblissez Úlairë Cantëa pour défausser une arme portée par un personnage qu’il combat."
+      }
+    ],
+    "actionPhases": [
+      "SKIRMISH"
+    ],
     "culture": "WRAITH",
     "race": "NAZGÛL",
     "twilightCost": 5,
@@ -23347,6 +23927,37 @@
     "type": "MINION",
     "keywords": [
       "FIERCE"
+    ],
+    "abilities": [
+      {
+        "id": "1U233:0",
+        "phases": [
+          "SHADOW"
+        ],
+        "cost": [
+          {
+            "exert": [
+              {
+                "count": 1,
+                "target": "SELF"
+              }
+            ]
+          }
+        ],
+        "effects": [
+          {
+            "type": "REPLACE_SITE",
+            "scope": "OPPONENT",
+            "from": "SITES_DECK"
+          }
+        ],
+        "source": "SELF",
+        "text": "SHADOW: Exert Úlairë Nelya and spot an opponent's site to replace it with your site of the same number",
+        "textFr": "Ombre : Affaiblissez Úlairë Nelya et désignez un site d’un adversaire pour le remplacer par votre version du même site."
+      }
+    ],
+    "actionPhases": [
+      "SHADOW"
     ],
     "culture": "WRAITH",
     "race": "NAZGÛL",
@@ -24587,6 +25198,35 @@
     "isUnique": true,
     "kind": "SHADOW",
     "type": "MINION",
+    "abilities": [
+      {
+        "id": "1R259:0",
+        "phases": [],
+        "trigger": {
+          "type": "WHILE"
+        },
+        "cost": [],
+        "effects": [
+          {
+            "type": "MODIFY_STAT",
+            "stat": "STRENGTH",
+            "value": 1,
+            "target": "SELF",
+            "perSpot": {
+              "target": [
+                [
+                  "SAURON",
+                  "ORC"
+                ]
+              ],
+              "excludeSource": true
+            }
+          }
+        ],
+        "source": "SELF",
+        "text": "For each other sauron Orc you can spot, Morgul Warden is strength +1."
+      }
+    ],
     "culture": "SAURON",
     "race": "ORC",
     "twilightCost": 3,
@@ -26555,7 +27195,57 @@
     "keywords": [
       "STEALTH"
     ],
+    "abilities": [
+      {
+        "id": "1C296:0",
+        "phases": [
+          "SKIRMISH"
+        ],
+        "cost": [],
+        "requiresAtSiteNumberAtMost": 4,
+        "effects": [
+          {
+            "type": "CANCEL_SKIRMISH",
+            "involving": [
+              [
+                "HOBBIT"
+              ]
+            ]
+          }
+        ],
+        "source": "SELF",
+        "text": "SKIRMISH: At sites 1 to 4, cancel a skirmish involving a Hobbit.",
+        "textFr": "**Combat :** Aux sites 1 à 4, annulez un combat impliquant un Hobbit. À n’importe quel autre site, donnez à un Hobbit +3 en force."
+      },
+      {
+        "id": "1C296:1",
+        "phases": [
+          "SKIRMISH"
+        ],
+        "cost": [],
+        "requiresAtSiteNumberAtLeast": 5,
+        "effects": [
+          {
+            "type": "ADD_TEMP_STAT",
+            "stat": "STRENGTH",
+            "value": 3,
+            "target": [
+              [
+                "HOBBIT"
+              ]
+            ],
+            "expiresAtPhase": "SKIRMISH"
+          }
+        ],
+        "source": "SELF",
+        "text": "SKIRMISH: At any other site, make a Hobbit strength +3.",
+        "textFr": "**Combat :** Aux sites 1 à 4, annulez un combat impliquant un Hobbit. À n’importe quel autre site, donnez à un Hobbit +3 en force."
+      }
+    ],
     "phases": [
+      "SKIRMISH"
+    ],
+    "actionPhases": [
       "SKIRMISH"
     ],
     "culture": "SHIRE",
@@ -26641,7 +27331,57 @@
     "keywords": [
       "STEALTH"
     ],
+    "abilities": [
+      {
+        "id": "1C298:0",
+        "phases": [
+          "SKIRMISH"
+        ],
+        "cost": [],
+        "requiresAtSiteNumberAtMost": 5,
+        "effects": [
+          {
+            "type": "CANCEL_SKIRMISH",
+            "involving": [
+              [
+                "HOBBIT"
+              ]
+            ]
+          }
+        ],
+        "source": "SELF",
+        "text": "SKIRMISH: At sites 1 to 5, cancel a skirmish involving a Hobbit.",
+        "textFr": "**Combat :** Aux sites 1 à 5, annulez un combat impliquant un Hobbit. À n’importe quel autre site, donnez à un Hobbit +2 en force."
+      },
+      {
+        "id": "1C298:1",
+        "phases": [
+          "SKIRMISH"
+        ],
+        "cost": [],
+        "requiresAtSiteNumberAtLeast": 6,
+        "effects": [
+          {
+            "type": "ADD_TEMP_STAT",
+            "stat": "STRENGTH",
+            "value": 2,
+            "target": [
+              [
+                "HOBBIT"
+              ]
+            ],
+            "expiresAtPhase": "SKIRMISH"
+          }
+        ],
+        "source": "SELF",
+        "text": "SKIRMISH: At any other site, make a Hobbit strength +2.",
+        "textFr": "**Combat :** Aux sites 1 à 5, annulez un combat impliquant un Hobbit. À n’importe quel autre site, donnez à un Hobbit +2 en force."
+      }
+    ],
     "phases": [
+      "SKIRMISH"
+    ],
+    "actionPhases": [
       "SKIRMISH"
     ],
     "culture": "SHIRE",
@@ -27317,6 +28057,33 @@
     "keywords": [
       "RING-BOUND"
     ],
+    "abilities": [
+      {
+        "id": "1R310:0",
+        "phases": [
+          "RESPONSE"
+        ],
+        "optional": false,
+        "trigger": {
+          "type": "CHARACTER_DIES",
+          "target": [
+            [
+              "Frodo"
+            ]
+          ]
+        },
+        "cost": [],
+        "effects": [
+          {
+            "type": "MAKE_RING_BEARER",
+            "resistance": 5
+          }
+        ],
+        "source": "SELF",
+        "text": "RESPONSE: If Frodo dies, make Sam the Ring-bearer (resistance 5).",
+        "textFr": "**Réponse :** Si Frodon meurt, faites de Sam le **Porteur de l’Anneau (résistance 5).**"
+      }
+    ],
     "culture": "SHIRE",
     "race": "HOBBIT",
     "signet": "FRODO",
@@ -27366,6 +28133,33 @@
     "type": "COMPANION",
     "keywords": [
       "RING-BOUND"
+    ],
+    "abilities": [
+      {
+        "id": "1C311:0",
+        "phases": [
+          "RESPONSE"
+        ],
+        "optional": false,
+        "trigger": {
+          "type": "CHARACTER_DIES",
+          "target": [
+            [
+              "Frodo"
+            ]
+          ]
+        },
+        "cost": [],
+        "effects": [
+          {
+            "type": "MAKE_RING_BEARER",
+            "resistance": 5
+          }
+        ],
+        "source": "SELF",
+        "text": "RESPONSE: If Frodo dies, make Sam the Ring-bearer (resistance 5).",
+        "textFr": "**Réponse :** Si Frodon meurt, faites de Sam le **Porteur de l’Anneau (résistance 5).**"
+      }
     ],
     "culture": "SHIRE",
     "race": "HOBBIT",
@@ -27693,6 +28487,44 @@
         "HOBBIT",
         "COMPANION"
       ]
+    ],
+    "abilities": [
+      {
+        "id": "1C317:0",
+        "phases": [
+          "MANEUVER"
+        ],
+        "cost": [
+          {
+            "discardFromPlay": [
+              {
+                "count": 1,
+                "target": "SELF"
+              }
+            ]
+          }
+        ],
+        "effects": [
+          {
+            "type": "ADD_TEMP_STAT",
+            "stat": "STRENGTH",
+            "value": 2,
+            "target": [
+              [
+                "HOBBIT",
+                "COMPANION"
+              ]
+            ],
+            "expiresAtPhase": "REGROUP",
+            "all": true
+          }
+        ],
+        "source": "SELF",
+        "text": "MANEUVER: Discard this to make each Hobbit companion strength +2 until the regroup phase."
+      }
+    ],
+    "actionPhases": [
+      "MANEUVER"
     ],
     "culture": "SHIRE",
     "twilightCost": 1,
@@ -28234,6 +29066,35 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
+    "abilities": [
+      {
+        "id": "2R7:0",
+        "phases": [],
+        "trigger": {
+          "type": "WHILE"
+        },
+        "cost": [],
+        "effects": [
+          {
+            "type": "MODIFY_STAT",
+            "stat": "STRENGTH",
+            "value": 1,
+            "target": "SELF",
+            "perSpot": {
+              "target": [
+                [
+                  "DWARVEN",
+                  "TALE"
+                ]
+              ],
+              "limit": 4
+            }
+          }
+        ],
+        "source": "SELF",
+        "text": "For each dwarven tale you can spot, Glóin is strength +1 (limit +4)."
+      }
+    ],
     "culture": "DWARVEN",
     "race": "DWARF",
     "twilightCost": 2,
@@ -28381,6 +29242,7 @@
         "DWARF"
       ]
     ],
+    "allowsExtraHandWeapon": true,
     "culture": "DWARVEN",
     "twilightCost": 0,
     "strength": 1,
@@ -29513,6 +30375,7 @@
         "MAN"
       ]
     ],
+    "allowsExtraHandWeapon": true,
     "culture": "GONDOR",
     "twilightCost": 0,
     "strength": 1,
@@ -30440,6 +31303,7 @@
         "The Balrog"
       ]
     ],
+    "allowsExtraHandWeapon": true,
     "culture": "MORIA",
     "twilightCost": 1,
     "strength": 3,
@@ -33300,6 +34164,53 @@
     "kind": "FREE_PEOPLE",
     "type": "CONDITION",
     "subtype": "SUPPORT-AREA",
+    "abilities": [
+      {
+        "id": "2R112:0",
+        "phases": [],
+        "trigger": {
+          "type": "WHILE",
+          "spot": [
+            {
+              "count": 1,
+              "target": [
+                [
+                  "Frodo",
+                  "NOT_EXHAUSTED"
+                ]
+              ]
+            },
+            {
+              "count": 1,
+              "target": [
+                [
+                  "Sam",
+                  "NOT_EXHAUSTED"
+                ]
+              ]
+            }
+          ]
+        },
+        "cost": [],
+        "effects": [
+          {
+            "type": "MODIFY_STAT",
+            "stat": "STRENGTH",
+            "value": 1,
+            "target": [
+              [
+                "Frodo"
+              ],
+              [
+                "Sam"
+              ]
+            ]
+          }
+        ],
+        "source": "SELF",
+        "text": "While you can spot Frodo and Sam and neither is exhausted, each is strength +1."
+      }
+    ],
     "culture": "SHIRE",
     "twilightCost": 0,
     "imageUrl": "/cards_visuals/o_02_112.jpg",
@@ -33409,6 +34320,31 @@
         "source": "SELF",
         "text": "MANEUVER: Exert Sam twice to make him defender +1 until the regroup phase.",
         "textFr": "**Manœuvre :** Affaiblissez Sam deux fois pour le rendre **défenseur +1** jusqu’à la phase de ralliement."
+      },
+      {
+        "id": "2C114:1",
+        "phases": [
+          "RESPONSE"
+        ],
+        "optional": false,
+        "trigger": {
+          "type": "CHARACTER_DIES",
+          "target": [
+            [
+              "Frodo"
+            ]
+          ]
+        },
+        "cost": [],
+        "effects": [
+          {
+            "type": "MAKE_RING_BEARER",
+            "resistance": 5
+          }
+        ],
+        "source": "SELF",
+        "text": "RESPONSE: If Frodo dies, make Sam the Ring-bearer (resistance 5).",
+        "textFr": "**Réponse :** Si Frodon meurt, faites de Sam le **Porteur de l’Anneau (résistance de 5).**"
       }
     ],
     "actionPhases": [
@@ -36025,7 +36961,49 @@
     "isUnique": false,
     "kind": "FREE_PEOPLE",
     "type": "EVENT",
+    "abilities": [
+      {
+        "id": "3U47:0",
+        "phases": [
+          "MANEUVER"
+        ],
+        "cost": [
+          {
+            "exert": [
+              {
+                "count": 1,
+                "target": [
+                  [
+                    "Aragorn"
+                  ]
+                ]
+              }
+            ]
+          }
+        ],
+        "effects": [
+          {
+            "type": "ADD_TEMP_KEYWORD",
+            "keyword": "DAMAGE +1",
+            "target": [
+              [
+                "COMPANION",
+                "SIGNET_ARAGORN"
+              ]
+            ],
+            "expiresAtPhase": "REGROUP",
+            "all": true
+          }
+        ],
+        "source": "SELF",
+        "text": "MANEUVER: Exert Aragorn to make each companion with the Aragorn signet Damage +1. until the regroup phase.",
+        "textFr": "**Manœuvre :** Affaiblissez Aragorn pour donner à chaque compagnon possédant le sceau d’Aragorn des **dégâts +1** jusqu’à la phase de ralliement."
+      }
+    ],
     "phases": [
+      "MANEUVER"
+    ],
+    "actionPhases": [
       "MANEUVER"
     ],
     "culture": "GONDOR",
@@ -38420,6 +39398,34 @@
     "isUnique": false,
     "kind": "SHADOW",
     "type": "MINION",
+    "abilities": [
+      {
+        "id": "3C94:0",
+        "phases": [],
+        "trigger": {
+          "type": "WHILE"
+        },
+        "cost": [],
+        "effects": [
+          {
+            "type": "MODIFY_STAT",
+            "stat": "STRENGTH",
+            "value": 1,
+            "target": "SELF",
+            "perSpot": {
+              "target": [
+                [
+                  "SAURON",
+                  "CONDITION"
+                ]
+              ]
+            }
+          }
+        ],
+        "source": "SELF",
+        "text": "For each sauron condition you can spot, this minion is strength +1."
+      }
+    ],
     "culture": "SAURON",
     "race": "ORC",
     "twilightCost": 2,
@@ -65410,6 +66416,41 @@
         "NAZGÛL"
       ]
     ],
+    "abilities": [
+      {
+        "id": "6R85:0",
+        "phases": [
+          "RESPONSE"
+        ],
+        "requiresBearerTitles": [
+          "Úlairë Toldëa"
+        ],
+        "trigger": {
+          "type": "WINS_SKIRMISH",
+          "winner": "BEARER"
+        },
+        "cost": [],
+        "effects": [
+          {
+            "type": "DISCARD",
+            "count": 1,
+            "target": [
+              [
+                "FREE_PEOPLES",
+                "POSSESSION"
+              ],
+              [
+                "FREE_PEOPLES",
+                "CONDITION"
+              ]
+            ],
+            "chooser": "FREE_PEOPLE"
+          }
+        ],
+        "source": "ATTACHMENT",
+        "text": "While bearer is Úlairë Toldëa, each time he wins a skirmish the Free Peoples player must discard a Free Peoples possession or Free Peoples condition."
+      }
+    ],
     "culture": "WRAITH",
     "twilightCost": 2,
     "strength": 2,
@@ -66248,6 +67289,35 @@
     "type": "MINION",
     "keywords": [
       "FIERCE"
+    ],
+    "abilities": [
+      {
+        "id": "6R103:0",
+        "phases": [],
+        "trigger": {
+          "type": "WHILE"
+        },
+        "cost": [],
+        "effects": [
+          {
+            "type": "MODIFY_STAT",
+            "stat": "STRENGTH",
+            "value": 1,
+            "target": "SELF",
+            "perSpot": {
+              "target": [
+                [
+                  "SAURON",
+                  "MINION"
+                ]
+              ],
+              "excludeSource": true
+            }
+          }
+        ],
+        "source": "SELF",
+        "text": ". For each other sauron minion you can spot, this minion is strength +1."
+      }
     ],
     "culture": "SAURON",
     "race": "TROLL",
@@ -67240,6 +68310,35 @@
     "type": "MINION",
     "keywords": [
       "FIERCE"
+    ],
+    "abilities": [
+      {
+        "id": "6R128:0",
+        "phases": [],
+        "trigger": {
+          "type": "WHILE"
+        },
+        "cost": [],
+        "effects": [
+          {
+            "type": "MODIFY_STAT",
+            "stat": "STRENGTH",
+            "value": 1,
+            "target": "SELF",
+            "perSpot": {
+              "target": [
+                [
+                  "SAURON",
+                  "MINION"
+                ]
+              ],
+              "excludeSource": true
+            }
+          }
+        ],
+        "source": "SELF",
+        "text": ". For each other sauron minion you can spot, this minion is strength +1."
+      }
     ],
     "culture": "SAURON",
     "race": "TROLL",
@@ -75632,6 +76731,35 @@
     "kind": "SHADOW",
     "type": "CONDITION",
     "subtype": "SUPPORT-AREA",
+    "abilities": [
+      {
+        "id": "7R177:0",
+        "phases": [
+          "SKIRMISH"
+        ],
+        "cost": [],
+        "effects": [
+          {
+            "type": "TRANSFER_SELF",
+            "from": [
+              "SUPPORT"
+            ],
+            "attachTo": "SKIRMISHING_WITH",
+            "skirmishingWith": [
+              [
+                "NAZGÛL"
+              ]
+            ],
+            "limitOnePerCharacter": true
+          }
+        ],
+        "source": "SELF",
+        "text": "Skirmish: Transfer this condition from your support area to a character skirmishing a Nazgûl."
+      }
+    ],
+    "actionPhases": [
+      "SKIRMISH"
+    ],
     "culture": "WRAITH",
     "twilightCost": 2,
     "imageUrl": "/cards_visuals/o_07_177.jpg",
@@ -75665,6 +76793,32 @@
     "isUnique": false,
     "kind": "SHADOW",
     "type": "EVENT",
+    "abilities": [
+      {
+        "id": "7U178:0",
+        "phases": [],
+        "cost": [
+          {
+            "discardFromHand": 3
+          }
+        ],
+        "effects": [
+          {
+            "type": "ADD_TEMP_STAT",
+            "stat": "STRENGTH",
+            "value": 3,
+            "target": [
+              [
+                "NAZGÛL"
+              ]
+            ],
+            "expiresAtPhase": "SKIRMISH"
+          }
+        ],
+        "source": "SELF",
+        "text": "Discard 3 cards from hand to make a Nazgûl strength +3"
+      }
+    ],
     "phases": [
       "SKIRMISH"
     ],
@@ -77051,6 +78205,35 @@
     "kind": "SHADOW",
     "type": "CONDITION",
     "subtype": "SUPPORT-AREA",
+    "abilities": [
+      {
+        "id": "7C209:0",
+        "phases": [
+          "SKIRMISH"
+        ],
+        "cost": [],
+        "effects": [
+          {
+            "type": "TRANSFER_SELF",
+            "from": [
+              "SUPPORT"
+            ],
+            "attachTo": "SKIRMISHING_WITH",
+            "skirmishingWith": [
+              [
+                "NAZGÛL"
+              ]
+            ],
+            "limitOnePerCharacter": true
+          }
+        ],
+        "source": "SELF",
+        "text": "Skirmish: Transfer this condition from your support area to a character skirmishing a Nazgûl."
+      }
+    ],
+    "actionPhases": [
+      "SKIRMISH"
+    ],
     "culture": "WRAITH",
     "twilightCost": 1,
     "imageUrl": "/cards_visuals/o_07_209.jpg",
@@ -81257,6 +82440,34 @@
     "isUnique": false,
     "kind": "SHADOW",
     "type": "MINION",
+    "abilities": [
+      {
+        "id": "7C297:0",
+        "phases": [],
+        "trigger": {
+          "type": "WHILE"
+        },
+        "cost": [],
+        "effects": [
+          {
+            "type": "MODIFY_STAT",
+            "stat": "STRENGTH",
+            "value": 1,
+            "target": "SELF",
+            "perSpot": {
+              "target": [
+                [
+                  "SAURON",
+                  "CONDITION"
+                ]
+              ]
+            }
+          }
+        ],
+        "source": "SELF",
+        "text": "For each sauron condition you can spot, this minion is strength +1."
+      }
+    ],
     "culture": "SAURON",
     "race": "ORC",
     "twilightCost": 2,
@@ -81929,6 +83140,36 @@
     "type": "MINION",
     "keywords": [
       "BESIEGER"
+    ],
+    "abilities": [
+      {
+        "id": "7R311:0",
+        "phases": [
+          "SKIRMISH"
+        ],
+        "cost": [
+          {
+            "discardFromHand": 2
+          }
+        ],
+        "effects": [
+          {
+            "type": "ADD_TEMP_KEYWORD",
+            "keyword": "FIERCE",
+            "target": [
+              [
+                "BESIEGER"
+              ]
+            ],
+            "expiresAtPhase": "REGROUP"
+          }
+        ],
+        "source": "SELF",
+        "text": "SKIRMISH: Discard 2 cards from hand to make a besieger fierce until the regroup phase."
+      }
+    ],
+    "actionPhases": [
+      "SKIRMISH"
     ],
     "culture": "SAURON",
     "race": "ORC",
@@ -91303,6 +92544,66 @@
     "keywords": [
       "TALE"
     ],
+    "abilities": [
+      {
+        "id": "9R50:0",
+        "phases": [
+          "SKIRMISH"
+        ],
+        "cost": [
+          {
+            "discardFromPlay": [
+              {
+                "count": 1,
+                "target": "SELF"
+              }
+            ]
+          }
+        ],
+        "effects": [
+          {
+            "type": "SET_OVERWHELM_FACTOR",
+            "target": [
+              [
+                "UNBOUND",
+                "HOBBIT"
+              ]
+            ],
+            "factor": 3,
+            "expiresAtPhase": "SKIRMISH"
+          }
+        ],
+        "source": "SELF",
+        "text": "SKIRMISH: Prevent an unbound Hobbit from being overwhelmed unless strength is tripled. Discard this condition."
+      },
+      {
+        "id": "9R50:1",
+        "phases": [],
+        "trigger": {
+          "type": "WHILE"
+        },
+        "cost": [],
+        "effects": [
+          {
+            "type": "MODIFY_STAT",
+            "stat": "STRENGTH",
+            "value": 1,
+            "target": [
+              [
+                "UNBOUND",
+                "HOBBIT"
+              ]
+            ],
+            "perVitalityOver": 3
+          }
+        ],
+        "source": "SELF",
+        "text": "Each unbound Hobbit is strength +1 for each vitality over 3 he or she has."
+      }
+    ],
+    "actionPhases": [
+      "SKIRMISH"
+    ],
     "culture": "SHIRE",
     "twilightCost": 1,
     "imageUrl": "/cards_visuals/o_09_050.jpg",
@@ -99631,6 +100932,31 @@
         "MAN"
       ]
     ],
+    "abilities": [
+      {
+        "id": "11U55:0",
+        "phases": [],
+        "trigger": {
+          "type": "WHILE"
+        },
+        "cost": [],
+        "effects": [
+          {
+            "type": "MODIFY_KEYWORD",
+            "keyword": "DAMAGE",
+            "target": [
+              [
+                "MINION"
+              ]
+            ],
+            "suppress": true,
+            "skirmishingBearerOfSource": true
+          }
+        ],
+        "source": "ATTACHMENT",
+        "text": "Each minion skirmishing bearer loses all damage bonuses."
+      }
+    ],
     "culture": "GONDOR",
     "twilightCost": 2,
     "imageUrl": "/cards_visuals/o_11_055.jpg",
@@ -105378,6 +106704,70 @@
         "Bilbo, Frodo, or Sam"
       ]
     ],
+    "abilities": [
+      {
+        "id": "11R173:0",
+        "phases": [
+          "MANEUVER"
+        ],
+        "cost": [
+          {
+            "exert": [
+              {
+                "count": 1,
+                "target": "BEARER"
+              }
+            ]
+          }
+        ],
+        "effects": [
+          {
+            "type": "ADD_TEMP_STAT",
+            "stat": "RESISTANCE",
+            "value": 2,
+            "target": [
+              [
+                "COMPANION"
+              ]
+            ],
+            "expiresAtPhase": "REGROUP",
+            "excludeSource": true
+          }
+        ],
+        "source": "ATTACHMENT",
+        "requiresBearerTitles": [
+          "Bilbo",
+          "Frodo"
+        ],
+        "text": "MANEUVER: If bearer is Bilbo or Frodo, exert him to make another companion resistance +2 until the regroup phase."
+      },
+      {
+        "id": "11R173:1",
+        "phases": [
+          "RESPONSE"
+        ],
+        "optional": true,
+        "requiresBearerTitles": [
+          "Sam"
+        ],
+        "trigger": {
+          "type": "WINS_SKIRMISH",
+          "winner": "BEARER"
+        },
+        "cost": [],
+        "effects": [
+          {
+            "type": "REMOVE_BURDENS",
+            "count": 1
+          }
+        ],
+        "source": "ATTACHMENT",
+        "text": "If bearer is Sam, each time he wins a skirmish, you may remove a burden."
+      }
+    ],
+    "actionPhases": [
+      "MANEUVER"
+    ],
     "culture": "SHIRE",
     "twilightCost": 1,
     "strength": 2,
@@ -107608,6 +108998,39 @@
     "kind": "SHADOW",
     "type": "CONDITION",
     "subtype": "SUPPORT-AREA",
+    "abilities": [
+      {
+        "id": "11R216:0",
+        "phases": [
+          "MANEUVER"
+        ],
+        "optional": true,
+        "cost": [
+          {
+            "removeTwilight": 5
+          }
+        ],
+        "effects": [
+          {
+            "type": "BECOME_MINION",
+            "strength": 10,
+            "vitality": 3,
+            "keywords": [
+              "FIERCE"
+            ],
+            "culture": "WRAITH",
+            "cannotBearCards": true,
+            "expiresAtPhase": "REGROUP",
+            "stillCondition": true
+          }
+        ],
+        "source": "SELF",
+        "text": "Maneuver: Remove twilight5 to make this condition a fierce wraith minion until the start of the regroup phase that has 10 strength and 3 vitality, and cannot bear other cards. This card is still a condition."
+      }
+    ],
+    "actionPhases": [
+      "MANEUVER"
+    ],
     "culture": "WRAITH",
     "twilightCost": 0,
     "imageUrl": "/cards_visuals/o_11_216.jpg",
@@ -108198,6 +109621,31 @@
       [
         "DWARF"
       ]
+    ],
+    "abilities": [
+      {
+        "id": "12U2:0",
+        "phases": [],
+        "trigger": {
+          "type": "WHILE"
+        },
+        "cost": [],
+        "effects": [
+          {
+            "type": "MODIFY_KEYWORD",
+            "keyword": "DAMAGE",
+            "target": [
+              [
+                "MINION"
+              ]
+            ],
+            "suppress": true,
+            "skirmishingBearerOfSource": true
+          }
+        ],
+        "source": "ATTACHMENT",
+        "text": "Each minion skirmishing bearer loses all damage bonuses."
+      }
     ],
     "culture": "DWARVEN",
     "twilightCost": 0,
@@ -113829,6 +115277,53 @@
     "kind": "FREE_PEOPLE",
     "type": "CONDITION",
     "subtype": "SUPPORT-AREA",
+    "abilities": [
+      {
+        "id": "12R128:0",
+        "phases": [],
+        "trigger": {
+          "type": "WHILE",
+          "spot": [
+            {
+              "count": 1,
+              "target": [
+                [
+                  "Frodo",
+                  "NOT_EXHAUSTED"
+                ]
+              ]
+            },
+            {
+              "count": 1,
+              "target": [
+                [
+                  "Sam",
+                  "NOT_EXHAUSTED"
+                ]
+              ]
+            }
+          ]
+        },
+        "cost": [],
+        "effects": [
+          {
+            "type": "MODIFY_STAT",
+            "stat": "STRENGTH",
+            "value": 1,
+            "target": [
+              [
+                "Frodo"
+              ],
+              [
+                "Sam"
+              ]
+            ]
+          }
+        ],
+        "source": "SELF",
+        "text": "While you can spot Frodo and Sam and neither is exhausted, each is strength +1."
+      }
+    ],
     "culture": "SHIRE",
     "twilightCost": 0,
     "imageUrl": "/cards_visuals/o_12_128.jpg",
@@ -114094,6 +115589,46 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
+    "abilities": [
+      {
+        "id": "12S133:0",
+        "phases": [
+          "RESPONSE"
+        ],
+        "trigger": {
+          "type": "ABOUT_TO_ADD_BURDEN",
+          "byShadowCard": true
+        },
+        "cost": [
+          {
+            "spot": [
+              {
+                "count": 1,
+                "target": [
+                  [
+                    "HOBBIT"
+                  ]
+                ],
+                "excludeSource": true
+              }
+            ],
+            "exert": [
+              {
+                "count": 1,
+                "target": "SELF"
+              }
+            ]
+          }
+        ],
+        "effects": [
+          {
+            "type": "PREVENT_BURDEN"
+          }
+        ],
+        "source": "SELF",
+        "text": "RESPONSE: If a burden is about to be added by a Shadow card, spot another Hobbit and exert Tolman Cotton to prevent that"
+      }
+    ],
     "culture": "SHIRE",
     "race": "HOBBIT",
     "twilightCost": 2,
@@ -115662,6 +117197,35 @@
     "kind": "SHADOW",
     "type": "CONDITION",
     "subtype": "SUPPORT-AREA",
+    "abilities": [
+      {
+        "id": "12U166:0",
+        "phases": [
+          "SKIRMISH"
+        ],
+        "cost": [],
+        "effects": [
+          {
+            "type": "TRANSFER_SELF",
+            "from": [
+              "SUPPORT"
+            ],
+            "attachTo": "SKIRMISHING_WITH",
+            "skirmishingWith": [
+              [
+                "NAZGÛL"
+              ]
+            ],
+            "limitOnePerCharacter": true
+          }
+        ],
+        "source": "SELF",
+        "text": "Skirmish: Transfer this condition from your support area to a character skirmishing a Nazgûl."
+      }
+    ],
+    "actionPhases": [
+      "SKIRMISH"
+    ],
     "culture": "WRAITH",
     "twilightCost": 0,
     "imageUrl": "/cards_visuals/o_12_166.jpg",
@@ -115790,6 +117354,52 @@
     "kind": "SHADOW",
     "type": "CONDITION",
     "subtype": "SUPPORT-AREA",
+    "abilities": [
+      {
+        "id": "12R169:0",
+        "phases": [
+          "SKIRMISH"
+        ],
+        "cost": [],
+        "effects": [
+          {
+            "type": "TRANSFER_SELF",
+            "from": [
+              "SUPPORT"
+            ],
+            "attachTo": "SKIRMISHING_WITH",
+            "skirmishingWith": [
+              [
+                "NAZGÛL"
+              ]
+            ],
+            "limitOnePerCharacter": true
+          }
+        ],
+        "source": "SELF",
+        "text": "Skirmish: Transfer this condition from your support area to a character skirmishing a Nazgûl."
+      },
+      {
+        "id": "12R169:1",
+        "phases": [],
+        "trigger": {
+          "type": "WHILE"
+        },
+        "cost": [],
+        "effects": [
+          {
+            "type": "FORBID_SPECIAL_ABILITIES",
+            "target": "BEARER",
+            "who": "FREE_PEOPLE"
+          }
+        ],
+        "source": "ATTACHMENT",
+        "text": "The Free Peoples player cannot use bearer’s special abilities."
+      }
+    ],
+    "actionPhases": [
+      "SKIRMISH"
+    ],
     "culture": "WRAITH",
     "twilightCost": 1,
     "imageUrl": "/cards_visuals/o_12_169.jpg",
@@ -116265,6 +117875,39 @@
     "type": "MINION",
     "keywords": [
       "FIERCE"
+    ],
+    "abilities": [
+      {
+        "id": "12U180:0",
+        "phases": [],
+        "trigger": {
+          "type": "WHEN_PLAYED"
+        },
+        "optional": true,
+        "cost": [
+          {
+            "exert": [
+              {
+                "count": 1,
+                "target": "SELF"
+              }
+            ]
+          }
+        ],
+        "effects": [
+          {
+            "type": "TAKE_FROM_DISCARD",
+            "target": [
+              [
+                "WRAITH",
+                "EVENT"
+              ]
+            ]
+          }
+        ],
+        "source": "SELF",
+        "text": "When you play Úlairë Toldëa, you may exert him to take a wraith event from your discard pile into hand."
+      }
     ],
     "culture": "WRAITH",
     "race": "NAZGÛL",
@@ -124257,6 +125900,61 @@
         "HOBBIT"
       ]
     ],
+    "abilities": [
+      {
+        "id": "13R153:0",
+        "phases": [],
+        "trigger": {
+          "type": "WHILE"
+        },
+        "cost": [],
+        "effects": [
+          {
+            "type": "MODIFY_KEYWORD",
+            "keyword": "DAMAGE",
+            "target": [
+              [
+                "MINION"
+              ]
+            ],
+            "suppress": true,
+            "skirmishingBearerOfSource": true
+          }
+        ],
+        "source": "ATTACHMENT",
+        "text": "Each minion skirmishing bearer loses all damage bonuses."
+      },
+      {
+        "id": "13R153:1",
+        "phases": [
+          "SKIRMISH"
+        ],
+        "cost": [
+          {
+            "exert": [
+              {
+                "count": 1,
+                "target": "BEARER"
+              }
+            ]
+          }
+        ],
+        "effects": [
+          {
+            "type": "SUPPRESS_KEYWORD",
+            "keyword": "FIERCE",
+            "target": "SKIRMISHING",
+            "all": true,
+            "expiresAtPhase": "REGROUP"
+          }
+        ],
+        "source": "ATTACHMENT",
+        "text": "Skirmish: Exert bearer to make each minion he is skirmishing lose fierce and unable to gain fierce until the regroup phase."
+      }
+    ],
+    "actionPhases": [
+      "SKIRMISH"
+    ],
     "culture": "SHIRE",
     "twilightCost": 2,
     "imageUrl": "/cards_visuals/o_13_153.jpg",
@@ -129071,6 +130769,44 @@
           }
         ]
       }
+    ],
+    "abilities": [
+      {
+        "id": "15R40:0",
+        "phases": [
+          "SKIRMISH"
+        ],
+        "cost": [
+          {
+            "discardFromPlay": [
+              {
+                "count": 1,
+                "target": "SELF"
+              }
+            ]
+          }
+        ],
+        "effects": [
+          {
+            "type": "ADD_TEMP_STAT",
+            "stat": "STRENGTH",
+            "value": 1,
+            "target": [
+              [
+                "RING-BOUND",
+                "COMPANION"
+              ]
+            ],
+            "expiresAtPhase": "REGROUP",
+            "all": true
+          }
+        ],
+        "source": "SELF",
+        "text": "SKIRMISH: Discard this to make each Ring-bound companion strength +1 until the regroup phase."
+      }
+    ],
+    "actionPhases": [
+      "SKIRMISH"
     ],
     "culture": "GOLLUM",
     "twilightCost": 2,
@@ -134794,6 +136530,85 @@
     "kind": "FREE_PEOPLE",
     "type": "CONDITION",
     "subtype": "SUPPORT-AREA",
+    "abilities": [
+      {
+        "id": "15R148:0",
+        "phases": [],
+        "trigger": {
+          "type": "WHILE"
+        },
+        "cost": [],
+        "effects": [
+          {
+            "type": "MODIFY_STAT",
+            "stat": "VITALITY",
+            "value": 1,
+            "target": [
+              [
+                "HOBBIT"
+              ]
+            ],
+            "bearing": [
+              [
+                "HAND-WEAPON"
+              ]
+            ]
+          }
+        ],
+        "source": "SELF",
+        "text": "Each Hobbit bearing a hand weapon is vitality +1."
+      },
+      {
+        "id": "15R148:1",
+        "phases": [],
+        "trigger": {
+          "type": "WHILE"
+        },
+        "cost": [],
+        "effects": [
+          {
+            "type": "MODIFY_STAT",
+            "stat": "RESISTANCE",
+            "value": 1,
+            "target": [
+              [
+                "HOBBIT"
+              ]
+            ],
+            "bearing": [
+              [
+                "FOLLOWER"
+              ]
+            ]
+          }
+        ],
+        "source": "SELF",
+        "text": "Each Hobbit bearing a follower is resistance +1."
+      },
+      {
+        "id": "15R148:2",
+        "phases": [],
+        "trigger": {
+          "type": "WHILE"
+        },
+        "cost": [],
+        "effects": [
+          {
+            "type": "MODIFY_STAT",
+            "stat": "STRENGTH",
+            "value": 1,
+            "target": [
+              [
+                "UNWOUNDED",
+                "HOBBIT"
+              ]
+            ]
+          }
+        ],
+        "source": "SELF",
+        "text": "Each unwounded Hobbit is strength +1."
+      }
+    ],
     "culture": "SHIRE",
     "twilightCost": 3,
     "imageUrl": "/cards_visuals/o_15_148.jpg",
@@ -136469,6 +138284,33 @@
     "kind": "SHADOW",
     "type": "CONDITION",
     "subtype": "SUPPORT-AREA",
+    "abilities": [
+      {
+        "id": "15R180:0",
+        "phases": [],
+        "trigger": {
+          "type": "WHILE"
+        },
+        "cost": [],
+        "effects": [
+          {
+            "type": "MODIFY_STAT",
+            "stat": "STRENGTH",
+            "value": 1,
+            "target": [
+              [
+                "UNWOUNDED",
+                "URUK-HAI",
+                "HUNTER",
+                "MINION"
+              ]
+            ]
+          }
+        ],
+        "source": "SELF",
+        "text": "Each unwounded hunter urukhai minion is strength +1."
+      }
+    ],
     "culture": "URUK-HAI",
     "twilightCost": 2,
     "imageUrl": "/cards_visuals/o_15_180.jpg",
@@ -144385,6 +146227,76 @@
     "keywords": [
       "FIERCE"
     ],
+    "abilities": [
+      {
+        "id": "17R140:0",
+        "phases": [
+          "MANEUVER"
+        ],
+        "cost": [
+          {
+            "exert": [
+              {
+                "count": 2,
+                "target": "SELF"
+              }
+            ]
+          }
+        ],
+        "effects": [
+          {
+            "type": "DISCARD",
+            "count": 1,
+            "target": [
+              [
+                "CONDITION"
+              ]
+            ],
+            "countIfSpot": {
+              "target": [
+                [
+                  "FREE_PEOPLES",
+                  "CONDITION"
+                ]
+              ],
+              "min": 5,
+              "count": 2
+            }
+          }
+        ],
+        "source": "SELF",
+        "text": "MANEUVER: Exert Úlairë Enquëa twice to discard a condition (or two conditions if you can spot 5 Free Peoples player's conditions)."
+      },
+      {
+        "id": "17R140:1",
+        "phases": [
+          "RESPONSE"
+        ],
+        "optional": true,
+        "responsePlayer": "SHADOW",
+        "trigger": {
+          "type": "HEAL",
+          "target": [
+            [
+              "COMPANION"
+            ]
+          ],
+          "byFreePeoples": true
+        },
+        "cost": [],
+        "effects": [
+          {
+            "type": "ADD_BURDENS",
+            "count": 1
+          }
+        ],
+        "source": "SELF",
+        "text": "Each time the Free Peoples player heals a companion, you may add a burden."
+      }
+    ],
+    "actionPhases": [
+      "MANEUVER"
+    ],
     "culture": "WRAITH",
     "race": "NAZGÛL",
     "twilightCost": 6,
@@ -150144,6 +152056,65 @@
     "subtype": "SUPPORT-AREA",
     "keywords": [
       "TALE"
+    ],
+    "abilities": [
+      {
+        "id": "18R112:0",
+        "phases": [
+          "RESPONSE"
+        ],
+        "trigger": {
+          "type": "ABOUT_TO_DISCARD",
+          "target": [
+            [
+              "SHIRE",
+              "CONDITION"
+            ],
+            [
+              "SHIRE",
+              "POSSESSION"
+            ]
+          ],
+          "byShadowCard": true
+        },
+        "cost": [
+          {
+            "placeCultureTokens": {
+              "culture": "SHIRE",
+              "count": 1,
+              "on": "SELF"
+            }
+          }
+        ],
+        "effects": [
+          {
+            "type": "PREVENT_DISCARD"
+          }
+        ],
+        "source": "SELF",
+        "text": "RESPONSE: If a shire condition or shire possession is about to be discarded from play by a Shadow card, add a shire token here to prevent that"
+      },
+      {
+        "id": "18R112:1",
+        "phases": [],
+        "trigger": {
+          "type": "WHILE",
+          "tokensOnSelf": {
+            "culture": "SHIRE",
+            "count": 4
+          }
+        },
+        "cost": [],
+        "effects": [
+          {
+            "type": "DISCARD",
+            "count": 1,
+            "target": "SELF"
+          }
+        ],
+        "source": "SELF",
+        "text": "When there are 4 shire tokens here, discard this condition from play."
+      }
     ],
     "culture": "SHIRE",
     "twilightCost": 0,

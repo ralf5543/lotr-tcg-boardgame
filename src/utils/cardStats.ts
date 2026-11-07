@@ -1,11 +1,14 @@
 import type { CardState, GameState } from '../game/types';
 import { getCalculatedStrength } from '../game/logic/stats/statCalculator';
-import { getWhileResistanceBonus } from '../game/logic/stats/mechanics/whileModifier';
+import {
+    getWhileResistanceBonus,
+    getWhileVitalityBonus,
+} from '../game/logic/stats/mechanics/whileModifier';
 
 /**
- * 1. Vitalité Maximale (Base + Attachments)
+ * 1. Vitalité Maximale (Base + Attachments [+ passifs While si G])
  */
-export const getMaxVitality = (card: CardState): number => {
+export const getMaxVitality = (card: CardState, G?: GameState): number => {
     let max = Number(card.vitality) || 0;
     if (card.attachments) {
         card.attachments.forEach((att) => {
@@ -14,16 +17,22 @@ export const getMaxVitality = (card: CardState): number => {
             }
         });
     }
+    if (G) {
+        max += getWhileVitalityBonus(G, card);
+    }
     return max;
 };
 
 /**
  * 2. Vitalité Effective / PV restants (Max - Wounds)
  */
-export const getEffectiveVitality = (card: CardState): number => {
+export const getEffectiveVitality = (
+    card: CardState,
+    G?: GameState
+): number => {
     if (!card) return 0;
     const wounds = Number(card.wounds) || 0;
-    return Math.max(0, getMaxVitality(card) - wounds);
+    return Math.max(0, getMaxVitality(card, G) - wounds);
 };
 
 /**
@@ -69,6 +78,14 @@ export const getEffectiveResistance = (
     }
     if (G) {
         resistance += getWhileResistanceBonus(G, card);
+        const cardId = card.instanceId || card.id;
+        if (cardId && G.tempModifiers) {
+            for (const mod of G.tempModifiers) {
+                if (mod.targetCardId !== cardId) continue;
+                if (mod.stat !== 'RESISTANCE') continue;
+                resistance += mod.value;
+            }
+        }
     }
     return Math.max(0, resistance);
 };

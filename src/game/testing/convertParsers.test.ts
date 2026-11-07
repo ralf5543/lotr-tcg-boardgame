@@ -344,16 +344,21 @@ describe('parseAbilities — Exert … to make KEYWORD', () => {
 
     it('parse Exert twice (Sam)', () => {
         const abilities = parseAbilities(SAM_TEXT, 'Sam', '2C114');
-        expect(abilities).toHaveLength(1);
-        expect(abilities?.[0]).toMatchObject({
-            phases: ['MANEUVER'],
-            cost: [{ exert: [{ count: 2, target: 'SELF' }] }],
-            effects: [{
-                type: 'ADD_TEMP_KEYWORD',
-                keyword: 'DEFENDER +1',
-                expiresAtPhase: 'REGROUP',
-            }],
-        });
+        expect(abilities).toEqual(
+            expect.arrayContaining([
+                expect.objectContaining({
+                    phases: ['MANEUVER'],
+                    cost: [{ exert: [{ count: 2, target: 'SELF' }] }],
+                    effects: [
+                        expect.objectContaining({
+                            type: 'ADD_TEMP_KEYWORD',
+                            keyword: 'DEFENDER +1',
+                            expiresAtPhase: 'REGROUP',
+                        }),
+                    ],
+                }),
+            ])
+        );
     });
 
     it('parse Gimli : Skirmish, exert SELF, force +2 jusqu’à la fin d’escarmouche', () => {
@@ -750,6 +755,315 @@ describe('parseAbilities — Fortitude / Oath Sworn (culture tokens)', () => {
 });
 
 describe('parseAbilities — While exhausted / Each time place token / Arod', () => {
+    it('parse Sting : Manœuvre Bilbo/Frodo + réponse Sam wins → remove burden', () => {
+        const text =
+            'Bearer must be Bilbo, Frodo, or Sam. <keyword>Maneuver:</keyword> If bearer is Bilbo or Frodo, exert him to make another companion resistance +2 until the regroup phase. If bearer is Sam, each time he wins a skirmish, you may remove a burden.';
+        expect(parseAbilities(text, 'Sting', '11R173')).toEqual(
+            expect.arrayContaining([
+                expect.objectContaining({
+                    phases: ['MANEUVER'],
+                    requiresBearerTitles: ['Bilbo', 'Frodo'],
+                    cost: [
+                        {
+                            exert: [{ count: 1, target: 'BEARER' }],
+                        },
+                    ],
+                    effects: [
+                        expect.objectContaining({
+                            type: 'ADD_TEMP_STAT',
+                            stat: 'RESISTANCE',
+                            value: 2,
+                            target: [['COMPANION']],
+                            excludeSource: true,
+                            expiresAtPhase: 'REGROUP',
+                        }),
+                    ],
+                    source: 'ATTACHMENT',
+                }),
+                expect.objectContaining({
+                    phases: ['RESPONSE'],
+                    optional: true,
+                    requiresBearerTitles: ['Sam'],
+                    trigger: {
+                        type: 'WINS_SKIRMISH',
+                        winner: 'BEARER',
+                    },
+                    effects: [{ type: 'REMOVE_BURDENS', count: 1 }],
+                    source: 'ATTACHMENT',
+                }),
+            ])
+        );
+    });
+
+    it('parse Little Golden Flower : bearing / unwounded stats', () => {
+        const text =
+            'Each Hobbit bearing a hand weapon is vitality +1. Each Hobbit bearing a follower is resistance +1. Each unwounded Hobbit is strength +1.';
+        expect(parseAbilities(text, 'Little Golden Flower', '15R148')).toEqual(
+            expect.arrayContaining([
+                expect.objectContaining({
+                    effects: [
+                        {
+                            type: 'MODIFY_STAT',
+                            stat: 'VITALITY',
+                            value: 1,
+                            target: [['HOBBIT']],
+                            bearing: [['HAND-WEAPON']],
+                        },
+                    ],
+                }),
+                expect.objectContaining({
+                    effects: [
+                        {
+                            type: 'MODIFY_STAT',
+                            stat: 'RESISTANCE',
+                            value: 1,
+                            target: [['HOBBIT']],
+                            bearing: [['FOLLOWER']],
+                        },
+                    ],
+                }),
+                expect.objectContaining({
+                    effects: [
+                        {
+                            type: 'MODIFY_STAT',
+                            stat: 'STRENGTH',
+                            value: 1,
+                            target: [['UNWOUNDED', 'HOBBIT']],
+                        },
+                    ],
+                }),
+            ])
+        );
+    });
+
+    it('parse Morgul Blade : discard to transfer Blade Tip', () => {
+        const text =
+            'Bearer must be a Nazgûl. This weapon may be borne in addition to 1 other hand weapon. <keyword>Skirmish:</keyword> Discard this possession to transfer Blade Tip from your support area or discard pile to a companion bearer is skirmishing.';
+        expect(parseAbilities(text, 'Morgul Blade', '1R216')).toEqual([
+            expect.objectContaining({
+                phases: ['SKIRMISH'],
+                cost: [
+                    {
+                        discardFromPlay: [{ count: 1, target: 'SELF' }],
+                    },
+                ],
+                effects: [
+                    {
+                        type: 'TRANSFER_NAMED_CARD',
+                        cardTitle: 'Blade Tip',
+                        from: ['SUPPORT', 'DISCARD'],
+                        attachTo: 'BEARER_SKIRMISHING_COMPANION',
+                        limitOnePerCharacter: true,
+                    },
+                ],
+            }),
+        ]);
+    });
+
+    it('parse Blade Tip : réponse transfert + blessure début de compagnie', () => {
+        const text =
+            '<keyword>Response:</keyword> If your Nazgûl wins a skirmish, transfer this condition from your support area to the losing character. Limit 1 per character.  Wound bearer at the start of each fellowship phase. (If bearer is the Ring-bearer, add a burden instead.)';
+        expect(parseAbilities(text, 'Blade Tip', '1U209')).toEqual(
+            expect.arrayContaining([
+                expect.objectContaining({
+                    phases: ['RESPONSE'],
+                    trigger: {
+                        type: 'WINS_SKIRMISH',
+                        winner: [['NAZGÛL']],
+                        yours: true,
+                    },
+                    effects: [
+                        {
+                            type: 'TRANSFER_SELF',
+                            from: ['SUPPORT'],
+                            attachTo: 'SKIRMISH_LOSER',
+                            limitOnePerCharacter: true,
+                        },
+                    ],
+                }),
+                expect.objectContaining({
+                    trigger: { type: 'START_OF_FELLOWSHIP' },
+                    effects: [
+                        {
+                            type: 'WOUND',
+                            count: 1,
+                            target: 'BEARER',
+                            burdenIfRingBearer: true,
+                        },
+                    ],
+                }),
+            ])
+        );
+    });
+
+    it('parse Sauron’s Gaze : transfert + interdit capacités FP', () => {
+        const text =
+            '<keyword>Skirmish:</keyword> Transfer this condition from your support area to a character skirmishing a Nazgûl. The Free Peoples player cannot use bearer’s special abilities.';
+        expect(parseAbilities(text, "Sauron's Gaze", '12R169')).toEqual(
+            expect.arrayContaining([
+                expect.objectContaining({
+                    phases: ['SKIRMISH'],
+                    effects: [
+                        {
+                            type: 'TRANSFER_SELF',
+                            from: ['SUPPORT'],
+                            attachTo: 'SKIRMISHING_WITH',
+                            skirmishingWith: [['NAZGÛL']],
+                            limitOnePerCharacter: true,
+                        },
+                    ],
+                }),
+                expect.objectContaining({
+                    trigger: { type: 'WHILE' },
+                    effects: [
+                        {
+                            type: 'FORBID_SPECIAL_ABILITIES',
+                            target: 'BEARER',
+                            who: 'FREE_PEOPLE',
+                        },
+                    ],
+                }),
+            ])
+        );
+    });
+
+    it('parse Cantëa : Combat défausse arme portée par l’adversaire', () => {
+        const text =
+            '<keyword>Fierce.</keyword>  <br><keyword>Skirmish:</keyword> Exert Úlairë Cantëa to discard a weapon borne by a character he is skirmishing.';
+        expect(parseAbilities(text, 'Úlairë Cantëa', '1R230')).toEqual([
+            expect.objectContaining({
+                phases: ['SKIRMISH'],
+                cost: [{ exert: [{ count: 1, target: 'SELF' }] }],
+                effects: [
+                    {
+                        type: 'DISCARD',
+                        count: 1,
+                        target: [['WEAPON']],
+                        borneBy: 'SKIRMISHING',
+                    },
+                ],
+            }),
+        ]);
+    });
+
+    it('parse Enquëa : soin PL → fardeau + Manœuvre défausse situation', () => {
+        const text =
+            "<keyword>Fierce.</keyword> Each time the Free Peoples player heals a companion, you may add a burden.<br><keyword>Maneuver:</keyword> Exert Úlairë Enquëa twice to discard a condition (or two conditions if you can spot 5 Free Peoples player's conditions).";
+        expect(parseAbilities(text, 'Úlairë Enquëa', '17R140')).toEqual(
+            expect.arrayContaining([
+                expect.objectContaining({
+                    phases: ['RESPONSE'],
+                    optional: true,
+                    responsePlayer: 'SHADOW',
+                    trigger: {
+                        type: 'HEAL',
+                        target: [['COMPANION']],
+                        byFreePeoples: true,
+                    },
+                    effects: [{ type: 'ADD_BURDENS', count: 1 }],
+                }),
+                expect.objectContaining({
+                    phases: ['MANEUVER'],
+                    cost: [{ exert: [{ count: 2, target: 'SELF' }] }],
+                    effects: [
+                        {
+                            type: 'DISCARD',
+                            count: 1,
+                            target: [['CONDITION']],
+                            countIfSpot: {
+                                target: [['FREE_PEOPLES', 'CONDITION']],
+                                min: 5,
+                                count: 2,
+                            },
+                        },
+                    ],
+                }),
+            ])
+        );
+    });
+
+    it('parse Mithril-coat : perte Damage + suppress Fierce', () => {
+        const text =
+            'Bearer must be a Ring-bound Hobbit. Each minion skirmishing bearer loses all damage bonuses.<br><keyword>Skirmish:</keyword> Exert bearer to make each minion he is skirmishing lose <keyword>fierce</keyword> and unable to gain fierce until the regroup phase.';
+        expect(parseAbilities(text, 'Mithril-coat', '0P94')).toEqual(
+            expect.arrayContaining([
+                expect.objectContaining({
+                    trigger: { type: 'WHILE' },
+                    effects: [
+                        {
+                            type: 'MODIFY_KEYWORD',
+                            keyword: 'DAMAGE',
+                            target: [['MINION']],
+                            suppress: true,
+                            skirmishingBearerOfSource: true,
+                        },
+                    ],
+                }),
+                expect.objectContaining({
+                    phases: ['SKIRMISH'],
+                    cost: [{ exert: [{ count: 1, target: 'BEARER' }] }],
+                    effects: [
+                        {
+                            type: 'SUPPRESS_KEYWORD',
+                            keyword: 'FIERCE',
+                            target: 'SKIRMISHING',
+                            all: true,
+                            expiresAtPhase: 'REGROUP',
+                        },
+                    ],
+                }),
+            ])
+        );
+    });
+
+    it('parse A Promise : spot Frodo and Sam neither exhausted → each +1', () => {
+        const text =
+            'While you can spot Frodo and Sam and neither is exhausted, each is strength +1.';
+        expect(parseAbilities(text, 'A Promise', '12R128')).toEqual([
+            expect.objectContaining({
+                trigger: {
+                    type: 'WHILE',
+                    spot: [
+                        { count: 1, target: [['Frodo', 'NOT_EXHAUSTED']] },
+                        { count: 1, target: [['Sam', 'NOT_EXHAUSTED']] },
+                    ],
+                },
+                effects: [
+                    {
+                        type: 'MODIFY_STAT',
+                        stat: 'STRENGTH',
+                        value: 1,
+                        target: [['Frodo'], ['Sam']],
+                    },
+                ],
+            }),
+        ]);
+    });
+
+    it('parse Witch-king : For each other Nazgûl you can spot → strength +2', () => {
+        const text =
+            '<keyword>Fierce.</keyword> For each other Nazgûl you can spot, The Witch-king is strength +2.';
+        expect(parseAbilities(text, 'The Witch-king', '1R237')).toEqual(
+            expect.arrayContaining([
+                expect.objectContaining({
+                    trigger: { type: 'WHILE' },
+                    effects: [
+                        expect.objectContaining({
+                            type: 'MODIFY_STAT',
+                            stat: 'STRENGTH',
+                            value: 2,
+                            target: 'SELF',
+                            perSpot: {
+                                target: [['NAZGÛL']],
+                                excludeSource: true,
+                            },
+                        }),
+                    ],
+                }),
+            ])
+        );
+    });
+
     it('parse Bloodthirsty Uruk : While spot exhausted companion, strength +3', () => {
         const text =
             '<keyword>Damage +1.</keyword> While you can spot an exhausted companion, this minion is strength +3.';
@@ -4308,10 +4622,26 @@ describe('parseAbilities — Response wins a skirmish', () => {
         ).toBeUndefined();
     });
 
-    it('n’émet pas la réponse Sam si Frodo meurt (exception étape 6)', () => {
+    it('parse Sam : réponse si Frodo meurt → Porteur (résistance 5)', () => {
         const abilities = parseAbilities(SAM_TEXT, 'Sam', '2C114');
-        expect(abilities).toHaveLength(1);
-        expect(abilities?.[0]?.phases).toEqual(['MANEUVER']);
+        expect(abilities).toEqual(
+            expect.arrayContaining([
+                expect.objectContaining({
+                    phases: ['RESPONSE'],
+                    optional: false,
+                    trigger: {
+                        type: 'CHARACTER_DIES',
+                        target: [['Frodo']],
+                    },
+                    effects: [
+                        {
+                            type: 'MAKE_RING_BEARER',
+                            resistance: 5,
+                        },
+                    ],
+                }),
+            ])
+        );
     });
 
     it('parse Coup de Hache : +2, ou +3 si arme de mêlée naine', () => {
@@ -5084,6 +5414,37 @@ describe('parseAbilities — culture tokens', () => {
                 ],
                 source: 'SELF',
                 text: 'SKIRMISH: Remove 2 culture tokens from here to make a lurker minion strength +2.',
+            },
+        ]);
+
+        // There and Back Again (1C317) — each = tous les matchs, pas une désignation.
+        expect(
+            parseAbilities(
+                '<keyword>Tale.</keyword>  Bearer must be a Hobbit companion. <br><keyword>Maneuver:</keyword> Discard this condition to make each Hobbit companion strength +2 until the regroup phase.',
+                'There and Back Again',
+                '1C317'
+            )
+        ).toEqual([
+            {
+                id: '1C317:0',
+                phases: ['MANEUVER'],
+                cost: [
+                    {
+                        discardFromPlay: [{ count: 1, target: 'SELF' }],
+                    },
+                ],
+                effects: [
+                    {
+                        type: 'ADD_TEMP_STAT',
+                        stat: 'STRENGTH',
+                        value: 2,
+                        target: [['HOBBIT', 'COMPANION']],
+                        expiresAtPhase: 'REGROUP',
+                        all: true,
+                    },
+                ],
+                source: 'SELF',
+                text: 'MANEUVER: Discard this to make each Hobbit companion strength +2 until the regroup phase.',
             },
         ]);
 

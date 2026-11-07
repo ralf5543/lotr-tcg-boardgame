@@ -32,3 +32,4 @@ Voir [`sites-modern-plan.mdc`](sites-modern-plan.mdc) § Exceptions UX. Ex. `12U
 | 4R52 / 4R69 | My Axe Is Notched / Final Count | While X jetons ici + même X sur carte nommée → `matchingTokensOnNamedCard` / `perMatchingTokensOnNamedCard` |
 | 0P16 / 4C117 | Faramir | `FORBID_SKIRMISH_ACTIONS` (adversaire, involving source) |
 | 11S232 / 4U355 | Cavern Entrance | même effet (ALL ; 11S232 = abilities only, 4U355 = events+abilities) |
+| 10P122 / 2C114 / Sam | If Frodo dies → Ring-bearer | Fragment RESPONSE `MAKE_RING_BEARER` (plus d’exception `2C114`) |

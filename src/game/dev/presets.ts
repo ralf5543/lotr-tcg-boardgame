@@ -1,12 +1,12 @@
 import type { DevPresetType, GameState } from '../types';
 
 /**
- * Applique le preset DEV de playtest (vague en cours).
- * Aucun preset actif — fin de partie (gagner / perdre) validée.
+ * Presets DEV de la vague hobbits / Nazgûl : retirés (deck validé).
+ * Réintroduire un case ici dès qu’une nouvelle vague a besoin d’un terrain.
  */
 export const applyDevPreset = (
-    _G: GameState,
-    _presetType: DevPresetType
+    G: GameState,
+    presetType: DevPresetType
 ): void => {
-    // Pas de preset DEV en cours.
+    G.statusMessage = `[DEV] Aucun preset actif (« ${presetType} »).`;
 };

@@ -3,6 +3,10 @@ import { getCalculatedStrength } from './statCalculator';
 import { getEnduringStrengthBonus } from './mechanics/enduringModifier';
 import { getHunterStrengthBonus } from './mechanics/hunterModifier';
 import {
+    getEffectiveResistance,
+    getEffectiveVitality,
+} from '../../../utils/cardStats';
+import {
     createCard,
     createCompanion,
     createGameState,
@@ -109,6 +113,33 @@ describe('tempModifiers', () => {
         });
 
         expect(getCalculatedStrength(G, companion)).toBe(7);
+    });
+
+    it('Sting : résistance +2 via tempModifiers', () => {
+        const companion = createCompanion({
+            id: 'sam-1',
+            resistance: 5,
+        });
+        const G = createGameState({
+            players: {
+                '0': createPlayerState('0', {
+                    fellowshipArea: [companion],
+                    burdens: 0,
+                }),
+            },
+            tempModifiers: [
+                {
+                    id: 'sting-1',
+                    targetCardId: 'sam-1',
+                    stat: 'RESISTANCE',
+                    value: 2,
+                    scope: 'PHASE',
+                    expiresAtPhase: 'REGROUP',
+                },
+            ],
+        });
+
+        expect(getEffectiveResistance(companion, 0, G)).toBe(7);
     });
 });
 
@@ -670,5 +701,200 @@ describe('While you can spot → strength', () => {
         });
         expect(getCalculatedStrength(region3, gandalf)).toBe(9); // +2 self
         expect(getCalculatedStrength(region3, frodo)).toBe(3); // rien
+    });
+
+    it('Little Golden Flower : vit / rés / force selon attachements', () => {
+        const flower = createCard({
+            id: '15R148',
+            title: 'Little Golden Flower',
+            type: 'CONDITION',
+            kind: 'FREE_PEOPLE',
+            culture: 'SHIRE',
+            abilities: [
+                {
+                    id: '15R148:0',
+                    phases: [],
+                    trigger: { type: 'WHILE' },
+                    cost: [],
+                    effects: [
+                        {
+                            type: 'MODIFY_STAT',
+                            stat: 'VITALITY',
+                            value: 1,
+                            target: [['HOBBIT']],
+                            bearing: [['HAND-WEAPON']],
+                        },
+                    ],
+                    source: 'SELF',
+                },
+                {
+                    id: '15R148:1',
+                    phases: [],
+                    trigger: { type: 'WHILE' },
+                    cost: [],
+                    effects: [
+                        {
+                            type: 'MODIFY_STAT',
+                            stat: 'RESISTANCE',
+                            value: 1,
+                            target: [['HOBBIT']],
+                            bearing: [['FOLLOWER']],
+                        },
+                    ],
+                    source: 'SELF',
+                },
+                {
+                    id: '15R148:2',
+                    phases: [],
+                    trigger: { type: 'WHILE' },
+                    cost: [],
+                    effects: [
+                        {
+                            type: 'MODIFY_STAT',
+                            stat: 'STRENGTH',
+                            value: 1,
+                            target: [['UNWOUNDED', 'HOBBIT']],
+                        },
+                    ],
+                    source: 'SELF',
+                },
+            ],
+        });
+        const sword = createCard({
+            id: 'sword',
+            type: 'POSSESSION',
+            subtype: 'HAND-WEAPON',
+            instanceId: 'sword',
+        });
+        const follower = createCard({
+            id: 'follower',
+            type: 'FOLLOWER',
+            instanceId: 'follower',
+        });
+        const armed = createCompanion({
+            id: 'frodo',
+            title: 'Frodo',
+            race: 'HOBBIT',
+            strength: 3,
+            vitality: 4,
+            resistance: 10,
+            attachments: [sword],
+            instanceId: 'frodo',
+        });
+        const withFollower = createCompanion({
+            id: 'sam',
+            title: 'Sam',
+            race: 'HOBBIT',
+            strength: 3,
+            vitality: 4,
+            resistance: 5,
+            attachments: [follower],
+            instanceId: 'sam',
+        });
+        const wounded = createCompanion({
+            id: 'pippin',
+            title: 'Pippin',
+            race: 'HOBBIT',
+            strength: 3,
+            vitality: 4,
+            wounds: 1,
+            instanceId: 'pippin',
+        });
+
+        const G = createGameState({
+            players: {
+                '0': createPlayerState('0', {
+                    fellowshipArea: [armed, withFollower, wounded],
+                    supportArea: [flower],
+                }),
+            },
+        });
+
+        expect(getCalculatedStrength(G, armed)).toBe(4);
+        expect(getEffectiveVitality(armed, G)).toBe(5);
+        expect(getEffectiveResistance(withFollower, 0, G)).toBe(6);
+        expect(getCalculatedStrength(G, withFollower)).toBe(4);
+        expect(getCalculatedStrength(G, wounded)).toBe(3);
+    });
+
+    it('A Promise : +1 Frodo et Sam tant qu’aucun n’est épuisé', () => {
+        const promise = createCard({
+            id: '12R128',
+            title: 'A Promise',
+            type: 'CONDITION',
+            kind: 'FREE_PEOPLE',
+            culture: 'SHIRE',
+            abilities: [
+                {
+                    id: '12R128:0',
+                    phases: [],
+                    trigger: {
+                        type: 'WHILE',
+                        spot: [
+                            { count: 1, target: [['Frodo', 'NOT_EXHAUSTED']] },
+                            { count: 1, target: [['Sam', 'NOT_EXHAUSTED']] },
+                        ],
+                    },
+                    cost: [],
+                    effects: [
+                        {
+                            type: 'MODIFY_STAT',
+                            stat: 'STRENGTH',
+                            value: 1,
+                            target: [['Frodo'], ['Sam']],
+                        },
+                    ],
+                    source: 'SELF',
+                },
+            ],
+        });
+        const frodo = createCompanion({
+            id: '2C102',
+            title: 'Frodo',
+            strength: 3,
+            vitality: 4,
+            wounds: 0,
+            instanceId: 'frodo',
+        });
+        const sam = createCompanion({
+            id: '10P122',
+            title: 'Sam',
+            strength: 3,
+            vitality: 4,
+            wounds: 0,
+            instanceId: 'sam',
+        });
+        const merry = createCompanion({
+            id: '1C303',
+            title: 'Merry',
+            strength: 3,
+            vitality: 3,
+            instanceId: 'merry',
+        });
+
+        const ok = createGameState({
+            players: {
+                '0': createPlayerState('0', {
+                    fellowshipArea: [frodo, sam, merry],
+                    supportArea: [promise],
+                }),
+            },
+        });
+        expect(getCalculatedStrength(ok, frodo)).toBe(4);
+        expect(getCalculatedStrength(ok, sam)).toBe(4);
+        expect(getCalculatedStrength(ok, merry)).toBe(3);
+
+        const samExhausted = { ...sam, wounds: 3 };
+        const broken = createGameState({
+            players: {
+                '0': createPlayerState('0', {
+                    fellowshipArea: [frodo, samExhausted, merry],
+                    supportArea: [promise],
+                }),
+            },
+        });
+        expect(getCalculatedStrength(broken, frodo)).toBe(3);
+        expect(getCalculatedStrength(broken, samExhausted)).toBe(3);
+        expect(getCalculatedStrength(broken, merry)).toBe(3);
     });
 });

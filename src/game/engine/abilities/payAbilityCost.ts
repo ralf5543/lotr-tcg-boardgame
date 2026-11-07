@@ -19,9 +19,11 @@ import {
     abilityOwnerCanSpotCultureTokens,
     countCultureTokensForPlayer,
     countSpottedCultureTokens,
+    placeCultureTokens,
     removeCultureTokensForPlayer,
     tokenCountOnCard,
 } from '../../logic/cultureTokens';
+import { enforceWhileSelfDiscards } from './enforceWhileDiscard';
 import {
     areBurdenRemovalsForbidden,
     areCultureTokenChangesForbidden,
@@ -326,6 +328,12 @@ function canPayOption(
         } else if (countSpottedCultureTokens(G, culture) < count) {
             return false;
         }
+    }
+
+    if (option.placeCultureTokens) {
+        if (areCultureTokenChangesForbidden(G)) return false;
+        if (option.placeCultureTokens.on !== 'SELF') return false;
+        // Toujours payable (on place sur SELF).
     }
 
     if (option.discardFromPlay && Array.isArray(option.discardFromPlay)) {
@@ -633,6 +641,12 @@ function payOption(
                   : undefined
         );
         if (removed < count) return false;
+    }
+    if (option.placeCultureTokens) {
+        if (option.placeCultureTokens.on !== 'SELF') return false;
+        const { culture, count } = option.placeCultureTokens;
+        if (placeCultureTokens(source, culture, count) < count) return false;
+        enforceWhileSelfDiscards(G);
     }
     return true;
 }

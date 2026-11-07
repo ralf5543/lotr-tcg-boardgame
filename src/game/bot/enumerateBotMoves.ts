@@ -11,7 +11,11 @@ import {
     canPlayCard,
     requiresAttachmentTarget,
 } from '../engine/canPlayCard';
-import { getToPlayExertTargetIds } from '../engine/abilities/designation';
+import {
+    getFpDiscardCandidates,
+    getToPlayExertTargetIds,
+} from '../engine/abilities/designation';
+import { findTargetCard } from '../../utils/cardUtils';
 import {
     mayPlayAnotherCompanion,
     pickActionWindowMove,
@@ -234,6 +238,29 @@ export function enumerateBotMoves(
             move: 'resolveSiteFollowerTransferAbilityChoice',
             args: [false],
         });
+        return moves;
+    }
+
+    // Dol Guldur (épée / site…) : FP doit défausser possession ou situation.
+    if (G.pendingFpDiscard?.playerId === playerID) {
+        const pending = G.pendingFpDiscard;
+        const source = findTargetCard(
+            G,
+            pending.sourceInstanceId
+        ) as CardState | null;
+        const ability = source?.abilities?.find(
+            (ab) => ab.id === pending.abilityId
+        );
+        const target =
+            source && ability
+                ? getFpDiscardCandidates(G, source, ability)[0]
+                : undefined;
+        if (target) {
+            moves.push({
+                move: 'resolveFpDiscardChoice',
+                args: [target.instanceId || target.id],
+            });
+        }
         return moves;
     }
 

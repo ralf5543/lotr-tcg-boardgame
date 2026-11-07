@@ -19,6 +19,7 @@ import {
     parseClassAndPhases,
     parseAttachedTo,
     parseRequiresControlledSite,
+    parseAllowsExtraHandWeapon,
     parsePlayFromDiscard,
     parseToPlayConditions,
     parseAidCost,
@@ -193,6 +194,8 @@ async function convert() {
         const attachmentData = parseAttachedTo(englishText, type);
         const requiresControlledSite =
             parseRequiresControlledSite(englishText) || undefined;
+        const allowsExtraHandWeapon =
+            parseAllowsExtraHandWeapon(englishText) || undefined;
 
         const computedStrength = parseStat(data['Strength'], data['Top Text']);
         const computedVitality = parseStat(
@@ -252,6 +255,7 @@ async function convert() {
             startingFellowshipTwilightReduce,
             attachedTo: attachmentData || undefined,
             requiresControlledSite,
+            allowsExtraHandWeapon,
             playFromDiscard: parsePlayFromDiscard(englishText),
             toPlay: toPlayData,
             ...(playRestrictions || {}),

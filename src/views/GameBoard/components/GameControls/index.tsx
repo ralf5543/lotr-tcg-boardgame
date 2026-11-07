@@ -567,18 +567,18 @@ export const GameControls: React.FC<GameControlsProps> = ({
     } else if (isFpDiscardActive && isMyTurnToAct) {
         toastConfig = {
             show: true,
-            title: 'EFFET DU SITE',
+            title: 'DÉFAUSSE',
             body:
                 G.statusMessage ||
-                'Défaussez une de vos situations.',
+                'Défaussez une possession ou une situation.',
             showPassButton: false,
             type: 'FP_DISCARD',
         };
     } else if (isFpDiscardActive && !isMyTurnToAct) {
         toastConfig = {
             show: true,
-            title: 'EFFET DU SITE',
-            body: 'Les Peuples Libres choisissent une situation à défausser…',
+            title: 'DÉFAUSSE',
+            body: 'Les Peuples Libres choisissent une possession ou une situation à défausser…',
             showPassButton: false,
             type: 'STANDARD',
         };

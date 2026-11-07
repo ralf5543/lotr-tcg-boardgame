@@ -5,7 +5,8 @@ import { areHealsForbidden } from '../game/logic/sites';
 export const applyHeal = (
     G: GameState,
     card: CardState,
-    amount = 1
+    amount = 1,
+    options?: { byFreePeoples?: boolean }
 ): number => {
     if (!card || card.isDead || amount <= 0) return 0;
     // Steward's Tomb : « Wounds cannot be … healed ».
@@ -23,6 +24,13 @@ export const applyHeal = (
         if (!G.lastHealedCardIds.includes(cardId)) {
             G.lastHealedCardIds.push(cardId);
         }
+        // File pour réponses « each time … heals » (Enquëa…).
+        // Traitée hors cycle applyHeal ↔ responseWindow.
+        if (!G.pendingHealQueue) G.pendingHealQueue = [];
+        G.pendingHealQueue.push({
+            targetId: cardId,
+            byFreePeoples: options?.byFreePeoples !== false,
+        });
     }
 
     return removed;

@@ -16,6 +16,7 @@ import {
     isResponseWindowOpen,
     responseAbilityStillAvailable,
 } from './responseWindow';
+import { areBearerSpecialAbilitiesForbidden } from '../logic/specialAbilityRestrictions';
 export interface ValidationContext {
     G: GameState;
     ctx: { phase?: string; currentPlayer?: string };
@@ -96,6 +97,15 @@ export function canUseAbility(
                 };
             }
         }
+    }
+
+    // Sauron’s Gaze : pas de capacités spéciales du porteur pour le FP.
+    if (areBearerSpecialAbilitiesForbidden(G, card, pid)) {
+        return {
+            valid: false,
+            reason:
+                'Le joueur des Peuples Libres ne peut pas utiliser les capacités spéciales de ce porteur.',
+        };
     }
 
     // Blessures de menaces : rien d’autre tant que le FP n’a pas fini d’assigner.

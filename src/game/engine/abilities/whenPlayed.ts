@@ -11,9 +11,11 @@ import {
     payAbilityCost,
 } from './payAbilityCost';
 import { findTargetCard } from '../../../utils/cardUtils';
+import { cardMatchesTarget } from '../validations/matchers';
 import { pauseActionYieldForResponses } from '../responseWindow';
 import {
     canReplaceCurrentSite,
+    canReplaceOpponentPathSiteForPlayer,
     canReplaceSiteInCurrentRegionForPlayer,
 } from '../../logic/siteReplaceRestrictions';
 import { canExchangeOwnedPathSite, countSitesWithKeyword } from '../../logic/sites';
@@ -109,6 +111,18 @@ function canFulfillWhenPlayedEffects(
         return true;
     }
 
+    const takeFromDiscard = (ability.effects || []).find(
+        (item) => item.type === 'TAKE_FROM_DISCARD'
+    );
+    if (takeFromDiscard && takeFromDiscard.type === 'TAKE_FROM_DISCARD') {
+        const ownerId = abilityOwnerPlayerId(G, card);
+        if (!ownerId) return false;
+        const discard = G.players[ownerId]?.discard || [];
+        return discard.some(
+            (c) => c && cardMatchesTarget(c, takeFromDiscard.target)
+        );
+    }
+
     if (abilityNeedsSiteExchange(ability)) {
         const ownerId = abilityOwnerPlayerId(G, card);
         if (!ownerId) return false;
@@ -121,6 +135,13 @@ function canFulfillWhenPlayedEffects(
     if (!ownerId) return false;
     if (effect.scope === 'REGION') {
         return canReplaceSiteInCurrentRegionForPlayer(
+            G,
+            ownerId,
+            effect.siteKeyword
+        );
+    }
+    if (effect.scope === 'OPPONENT') {
+        return canReplaceOpponentPathSiteForPlayer(
             G,
             ownerId,
             effect.siteKeyword

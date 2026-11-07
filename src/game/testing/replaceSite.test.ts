@@ -4,6 +4,7 @@ import {
     getCurrentSite,
     getFellowshipCurrentRegion,
     getPathSitesInRegion,
+    getReplaceSiteCandidates,
     replaceCurrentSiteFromDeck,
     replacePathSiteFromDeck,
     canReplaceSiteInCurrentRegion,
@@ -95,6 +96,38 @@ describe('replacePathSiteFromDeck', () => {
         expect(G.players['0']?.sitesDeck.some((s) => s.id === 'plains-1')).toBe(
             true
         );
+    });
+});
+
+describe('getReplaceSiteCandidates', () => {
+    it('exclut tout id déjà présent sur le chemin (Nelya…)', () => {
+        const onPath = createSite({
+            id: '11S263',
+            instanceId: 'path-263',
+            siteNumber: 3,
+            ownerId: '0',
+        });
+        const twinInDeck = createSite({
+            id: '11S263',
+            instanceId: 'deck-263',
+            ownerId: '1',
+        });
+        const fresh = createSite({
+            id: '11U227',
+            instanceId: 'deck-227',
+            ownerId: '1',
+        });
+        const G = createGameState({
+            path: [null, null, onPath, null, null, null, null, null, null],
+            players: {
+                '0': createPlayerState('0'),
+                '1': createPlayerState('1', {
+                    sitesDeck: [twinInDeck, fresh],
+                }),
+            },
+        });
+        const ids = getReplaceSiteCandidates(G, '1').map((s) => s.id);
+        expect(ids).toEqual(['11U227']);
     });
 });
 
