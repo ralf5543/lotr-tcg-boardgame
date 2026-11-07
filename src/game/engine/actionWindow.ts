@@ -1,4 +1,5 @@
 import type { GameState } from '../types';
+import { otherPlayerId, playerDisplayName } from '../logic/playerName';
 
 export function canActInActionWindow(
     G: GameState,
@@ -24,12 +25,11 @@ export function yieldPriorityAfterAction(
     const pid = String(playerID);
     if (String(G.actionWindow.activePlayerId) !== pid) return;
 
-    const otherPlayer = pid === '0' ? '1' : '0';
-    const fpId = G.fpPlayerId || '0';
+    const otherPlayer = otherPlayerId(pid);
     G.actionWindow = {
         ...G.actionWindow,
         activePlayerId: otherPlayer,
         passesCount: 0,
-        message: `Au tour du joueur ${otherPlayer === fpId ? 'FP' : 'Ombre'} d’agir ou de passer.`,
+        message: `Au tour de ${playerDisplayName(G, otherPlayer)} d’agir ou de passer.`,
     };
 }

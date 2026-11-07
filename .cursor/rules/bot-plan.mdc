@@ -1,11 +1,11 @@
 ---
-description: Plan affronter un BOT — playtest solo (siège 1)
-alwaysApply: true
+description: ARCHIVÉ — Plan affronter un BOT (figé ; suite = chat-plan.mdc)
+alwaysApply: false
 ---
 
 # Affronter un BOT (playtest)
 
-> **Plan actif.** Suite de création de deck ([`.cursor/rules/deck-builder-plan.mdc`](deck-builder-plan.mdc), figé).
+> **Plan figé.** Suite : [`chat-plan.mdc`](chat-plan.mdc). Ancien actif après création de deck ([`.cursor/rules/deck-builder-plan.mdc`](deck-builder-plan.mdc)).
 
 **Format : Standard (règles modernes).** Voir `.cursor/rules/format-standard.mdc`.
 
@@ -28,7 +28,7 @@ Jouer **seul** pour tester un deck / des mécaniques. Le BOT n’est pas un adve
 Priorité : **ne jamais bloquer**, exercer le socle.
 
 1. Débloquer les pendings qui le concernent (choix forcé, toasters → passer, fenêtres → passer).
-2. Mise en place : enchère 0 / mulligan non / site de départ.
+2. Mise en place : enchère 0–3 (aléatoire) / mulligan non / site de départ.
 3. Ombre : jouer séides/conditions **légaux** (`canPlayCard` : spot, unicité, coût), terminer la phase.
 4. Peuples Libres : jouer compagnons / soutiens / attachements simples, puis fin de phase (déplacement inclus).
 5. Assignment : heuristique A1 (forces) ; escarmouche : résoudre une fois, puis `cleanupPendingDeaths`.

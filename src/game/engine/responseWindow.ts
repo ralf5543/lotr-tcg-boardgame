@@ -47,6 +47,10 @@ import { yieldPriorityAfterAction } from './actionWindow';
 import { cancelSkirmish } from './abilities/cancelSkirmish';
 import { enterPhase } from '../logic/phaseEntry';
 import { addThreats } from '../logic/threats';
+import {
+    otherPlayerId,
+    playerDisplayName,
+} from '../logic/playerName';
 
 const matchCard = (card: CardState, targetId: string): boolean =>
     card.instanceId === targetId || card.id === targetId;
@@ -293,9 +297,6 @@ function isResponseAbility(ability: Ability): boolean {
     return abilityMatchesPhase(ability, 'RESPONSE');
 }
 
-function otherPlayerId(playerID: string): string {
-    return playerID === '0' ? '1' : '0';
-}
 
 function cardOwnerId(G: GameState, card: CardState): string | null {
     const fpId = G.fpPlayerId || '0';
@@ -1169,14 +1170,13 @@ export function passResponseWindow(
         return concludeOpenResponse(G);
     }
 
-    const fpId = G.fpPlayerId || '0';
     G.responseWindow = {
         ...G.responseWindow,
         activePlayerId: other,
         passesCount: currentPasses,
-        message: `Au tour du joueur ${other === fpId ? 'FP' : 'Ombre'} de répondre ou de passer.`,
+        message: `Au tour de ${playerDisplayName(G, other)} de répondre ou de passer.`,
     };
-    G.statusMessage = `Au tour du joueur ${other === fpId ? 'FP' : 'Ombre'} de répondre ou de passer.`;
+    G.statusMessage = `Au tour de ${playerDisplayName(G, other)} de répondre ou de passer.`;
     clearActionableFlags(G);
     return 'WAITING';
 }
@@ -1203,16 +1203,15 @@ export function yieldResponsePriorityAfterAction(
     }
 
     const other = otherPlayerId(pid);
-    const fpId = G.fpPlayerId || '0';
 
     if (playerHasEligibleResponse(G, other)) {
         G.responseWindow = {
             ...G.responseWindow,
             activePlayerId: other,
             passesCount: 0,
-            message: `Au tour du joueur ${other === fpId ? 'FP' : 'Ombre'} de répondre ou de passer.`,
+            message: `Au tour de ${playerDisplayName(G, other)} de répondre ou de passer.`,
         };
-        G.statusMessage = `Au tour du joueur ${other === fpId ? 'FP' : 'Ombre'} de répondre ou de passer.`;
+        G.statusMessage = `Au tour de ${playerDisplayName(G, other)} de répondre ou de passer.`;
         clearActionableFlags(G);
         return;
     }

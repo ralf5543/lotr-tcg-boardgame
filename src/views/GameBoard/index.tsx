@@ -3826,6 +3826,14 @@ export const GameBoard: React.FC<GameBoardProps> = ({
                             }
                             setOpenOutOfPlayZone(zone);
                         }}
+                        journalLog={G.journalLog}
+                        myPlayerId={myId}
+                        playerNames={{
+                            '0': G.players['0']?.profile?.name || 'Joueur 0',
+                            '1': G.players['1']?.profile?.name || 'Joueur 1',
+                        }}
+                        chatMessages={chatMessages}
+                        sendChatMessage={sendChatMessage}
                     />
                     </S.BoardColumns>
 

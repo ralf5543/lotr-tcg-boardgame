@@ -48,7 +48,11 @@ describe('BOT playtest — isBotToAct / enumerate', () => {
         });
         expect(isBotToAct(G, ctx('setup'), '1')).toBe(true);
         const moves = enumerateBotMoves(G, ctx('setup'), '1');
-        expect(moves[0]).toEqual({ move: 'submitBid', args: [0] });
+        expect(moves[0]?.move).toBe('submitBid');
+        const bid = moves[0]?.args?.[0];
+        expect(typeof bid).toBe('number');
+        expect(bid).toBeGreaterThanOrEqual(0);
+        expect(bid).toBeLessThanOrEqual(3);
     });
 
     it('phase Ombre : endShadowPhase si rien de jouable', () => {

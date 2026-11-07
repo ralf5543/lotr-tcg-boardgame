@@ -5,8 +5,8 @@ export const slideDown = keyframes`
     to { transform: translate(-50%, 0); opacity: 1; }
 `;
 
-export const slideInRight = keyframes`
-    from { transform: translateX(120%); opacity: 0; }
+export const slideInLeft = keyframes`
+    from { transform: translateX(-120%); opacity: 0; }
     to { transform: translateX(0); opacity: 1; }
 `;
 
@@ -145,7 +145,7 @@ export const ActionButton = styled.button<{
 export const ToastWidget = styled.div`
     position: fixed;
     bottom: 25px;
-    right: 25px;
+    left: 25px;
     width: 320px;
     background: rgba(15, 23, 42, 0.95);
     border: 1px solid #c1a054;
@@ -156,7 +156,7 @@ export const ToastWidget = styled.div`
     z-index: 9999;
     cursor: pointer;
     backdrop-filter: blur(6px);
-    animation: ${slideInRight} 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+    animation: ${slideInLeft} 0.35s cubic-bezier(0.16, 1, 0.3, 1);
 
     &:hover {
         border-color: #e2c044;

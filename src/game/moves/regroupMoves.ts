@@ -10,6 +10,16 @@ import {
 } from '../logic/initiative';
 import { placeCardIntoDiscardPile } from '../logic/sites';
 import { getMoveLimit, movesRemainThisTurn } from '../logic/moveLimit';
+import {
+    otherPlayerId,
+    playerDisplayName,
+} from '../logic/playerName';
+import {
+    appendActorJournal,
+    appendJournal,
+    appendSideRolesJournal,
+    formatSideRolesStatus,
+} from '../logic/journal';
 
 // Helper pour renvoyer les Suivants en zone de support à la vraie fin de tour
 export const returnAidFollowersToSupport = (G: GameState) => {
@@ -121,7 +131,13 @@ export const discardCardFromHand = (
 
     player.hasDiscardedInRegroup = true;
 
-    G.statusMessage = `${player.profile?.name || `Joueur ${actingPlayerId}`} a défaussé ${discarded.title || discarded.name}.`;
+    const cardName = discarded.title || discarded.name;
+    const name = playerDisplayName(G, actingPlayerId);
+    appendActorJournal(G, actingPlayerId, {
+        vous: `Vous avez défaussé ${cardName}.`,
+        named: `${name} a défaussé ${cardName}.`,
+    });
+    G.statusMessage = `${name} a défaussé ${cardName}.`;
     if (watchInitiative) {
         announceInitiativeIfChanged(G, hadInitiative);
     }
@@ -210,7 +226,12 @@ export const confirmHandRefill = ({ G, events, playerID }: LotrMoveContext) => {
             );
         }
 
-        G.statusMessage = `Nouveau tour ! Le joueur ${nextFpPlayerId} devient les Peuples Libres.`;
+        appendSideRolesJournal(G, nextFpPlayerId, {
+            prefix: 'Nouveau tour !',
+        });
+        G.statusMessage = formatSideRolesStatus(G, nextFpPlayerId, {
+            prefix: 'Nouveau tour !',
+        });
 
         events?.endTurn?.({ next: nextFpPlayerId });
         // Sanctuaire + capacités « début de compagnie » (ne pas sauter vers fellowship)
@@ -250,7 +271,9 @@ export const discardForMuster = (
     if (discardedCard) {
         placeCardIntoDiscardPile(G, playerID, discardedCard);
         musterState.discardedCount += 1;
-        G.statusMessage = `Ralliement (${musterState.discardedCount}/${musterState.allowedCount}) : Carte défaussée.`;
+        const musterDiscardLine = `Ralliement (${musterState.discardedCount}/${musterState.allowedCount}) : carte défaussée.`;
+        appendJournal(G, musterDiscardLine);
+        G.statusMessage = musterDiscardLine;
     }
 };
 
@@ -291,7 +314,12 @@ export const confirmMuster = ({
     const shadowDone = G.musterState.players[shadowId]?.isDone ?? true;
 
     if (!fpDone || !shadowDone) {
-        G.statusMessage = `Joueur ${pId} a validé. En attente de l'adversaire...`;
+        const name = playerDisplayName(G, pId);
+        appendActorJournal(G, pId, {
+            vous: 'Vous avez validé votre ralliement.',
+            named: `${name} a validé son ralliement.`,
+        });
+        G.statusMessage = `${name} a validé son ralliement. En attente de ${playerDisplayName(G, otherPlayerId(pId))}…`;
         return;
     }
 

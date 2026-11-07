@@ -49,6 +49,17 @@ import { onStartOfFellowshipBegin } from './logic/startOfFellowship';
 import { revealAndPlayStartingFellowships } from './logic/startingFellowship';
 import { afterCardPlayed } from './engine/abilities/eachTimeYouPlay';
 import {
+    otherPlayerId,
+    playerDisplayName,
+} from './logic/playerName';
+import {
+    appendActorJournal,
+    appendJournal,
+    appendSideRolesJournal,
+    formatPointsFardeau,
+    formatSideRolesStatus,
+} from './logic/journal';
+import {
     applyStartOfSkirmishTriggers,
     openSkirmishActionWindow,
 } from './engine/abilities/startOfSkirmish';
@@ -205,7 +216,7 @@ export const advanceArcheryAssignmentStep = (G: GameState, events: any) => {
 
         if (G.archeryState.fpRemainingWounds > 0) {
             G.archeryState.step = 'FP_ASSIGN';
-            G.statusMessage = `Phase d'Archerie : Le joueur des Peuples Libres doit attribuer ${G.archeryState.fpRemainingWounds} blessure(s) d'archerie à ses compagnons.`;
+            G.statusMessage = `Phase d'Archerie : ${playerDisplayName(G, G.fpPlayerId || '0')} doit attribuer ${G.archeryState.fpRemainingWounds} blessure(s) d'archerie à ses compagnons.`;
             return;
         }
         // Si les FP n'ont pas de blessures à subir, on passe directement à l'Ombre
@@ -223,7 +234,7 @@ export const advanceArcheryAssignmentStep = (G: GameState, events: any) => {
             G.archeryState.shadowRemainingWounds > 0 &&
             G.battlefield.length > 0
         ) {
-            G.statusMessage = `Phase d'Archerie : Le joueur de l'Ombre (${shadowId}) doit attribuer ${G.archeryState.shadowRemainingWounds} blessure(s) d'archerie à ses séides.`;
+            G.statusMessage = `Phase d'Archerie : ${playerDisplayName(G, shadowId)} doit attribuer ${G.archeryState.shadowRemainingWounds} blessure(s) d'archerie à ses séides.`;
             return;
         }
     }
@@ -313,7 +324,9 @@ export const setupGame = (
         twilightPool: 0,
         currentSiteIndex: 0,
         movesThisTurn: 0,
-        statusMessage: 'Phase de mise en place : Misez vos fardeaux.',
+        statusMessage:
+            'Phase de mise en place : Misez vos points-fardeau.',
+        journalLog: [],
         awaitingSiteSelection: false,
         skirmishes: [],
         activeSkirmishId: undefined,
@@ -412,6 +425,14 @@ export const LotrGame: Game<GameState> = {
                     const bid0 = G.setupState.bids['0'];
                     const bid1 = G.setupState.bids['1'];
 
+                    const points = formatPointsFardeau(validBid);
+                    const name = playerDisplayName(G, pId);
+                    // Toujours journaliser la mise (y compris celle qui clôt l’enchère).
+                    appendActorJournal(G, pId, {
+                        vous: `Vous avez misé ${points}.`,
+                        named: `${name} a misé ${points}.`,
+                    });
+
                     if (
                         bid0 !== null &&
                         bid0 !== undefined &&
@@ -428,9 +449,15 @@ export const LotrGame: Game<GameState> = {
                         }
 
                         G.setupState.step = 'CHOOSING_FIRST';
-                        G.statusMessage = `Mises : Joueur 0 (${bid0}) - Joueur 1 (${bid1}). Le Joueur ${G.setupState.auctionWinnerId} gagne l'enchère.`;
+                        const winnerId = G.setupState.auctionWinnerId || '0';
+                        const winnerName = playerDisplayName(G, winnerId);
+                        appendActorJournal(G, winnerId, {
+                            vous: 'Vous gagnez l’enchère.',
+                            named: `${winnerName} gagne l’enchère.`,
+                        });
+                        G.statusMessage = `${playerDisplayName(G, '0')} (${formatPointsFardeau(bid0)}) — ${playerDisplayName(G, '1')} (${formatPointsFardeau(bid1)}). ${winnerName} gagne l'enchère.`;
                     } else {
-                        G.statusMessage = `Joueur ${pId} a misé ${validBid} fardeau(x). En attente de l'adversaire...`;
+                        G.statusMessage = `${name} a misé ${points}. En attente de ${playerDisplayName(G, otherPlayerId(pId))}…`;
                     }
                 },
 
@@ -449,11 +476,14 @@ export const LotrGame: Game<GameState> = {
 
                     G.fpPlayerId = wantToBeFirst ? winnerId : otherId;
 
-                    const fpBurdens = G.players[G.fpPlayerId]?.burdens ?? 0;
-
                     G.setupState.step = 'AWAITING_SITE';
                     G.awaitingSiteSelection = true;
-                    G.statusMessage = `Le Joueur ${G.fpPlayerId} est les Peuples Libres et commence avec ${fpBurdens} fardeau(x) ! Posez le site 1.`;
+                    appendSideRolesJournal(G, G.fpPlayerId || '0');
+                    G.statusMessage = formatSideRolesStatus(
+                        G,
+                        G.fpPlayerId || '0',
+                        { suffix: 'Posez le site 1.' }
+                    );
                 },
 
                 selectStartingSite: (
@@ -489,6 +519,10 @@ export const LotrGame: Game<GameState> = {
                     });
 
                     G.setupState.step = 'MULLIGAN';
+                    appendJournal(
+                        G,
+                        'Site 1 posé ; compagnie de départ jouée (sans crépuscule au pool).'
+                    );
                     G.statusMessage =
                         'Site 1 posé ; compagnie de départ jouée (sans crépuscule au pool). Mulligan : garder ou piocher une nouvelle main.';
                 },
@@ -521,13 +555,32 @@ export const LotrGame: Game<GameState> = {
                     const m0 = G.setupState.mulligans['0'];
                     const m1 = G.setupState.mulligans['1'];
 
+                    const name = playerDisplayName(G, pId);
+                    appendActorJournal(
+                        G,
+                        pId,
+                        doMulligan
+                            ? {
+                                  vous: 'Vous avez fait un mulligan.',
+                                  named: `${name} a fait un mulligan.`,
+                              }
+                            : {
+                                  vous: 'Vous avez gardé votre main.',
+                                  named: `${name} a gardé sa main.`,
+                              }
+                    );
+
                     if (m0 !== null && m1 !== null) {
                         G.setupState.step = 'COMPLETE';
+                        appendJournal(G, 'Mise en place terminée. Début de la partie.');
                         G.statusMessage =
                             'Mise en place terminée ! Début de la partie.';
                         events?.setPhase?.('startOfFellowship');
                     } else {
-                        G.statusMessage = `Le joueur ${pId} a validé son choix. En attente de l'adversaire...`;
+                        const live = doMulligan
+                            ? `${name} a fait un mulligan.`
+                            : `${name} a gardé sa main.`;
+                        G.statusMessage = `${live} En attente de ${playerDisplayName(G, otherPlayerId(pId))}…`;
                     }
                 },
             },
@@ -734,7 +787,9 @@ export const LotrGame: Game<GameState> = {
                     }
 
                     const wasRoaming = isMinionRoaming(card, fpSiteIndex);
-                    G.statusMessage = `L'Ombre joue ${card.name || card.title} (${effectiveCost} Crépuscule${wasRoaming ? ' dont +2 Errance' : ''}).`;
+                    const shadowPlayLine = `L'Ombre joue ${card.name || card.title} (${effectiveCost} Crépuscule${wasRoaming ? ' dont +2 Errance' : ''}).`;
+                    appendJournal(G, shadowPlayLine);
+                    G.statusMessage = shadowPlayLine;
                 },
 
                 attachShadowCard: (
@@ -772,7 +827,9 @@ export const LotrGame: Game<GameState> = {
                         phase: ctx.phase || 'shadow',
                     });
 
-                    G.statusMessage = `L'Ombre attache ${attachmentCard.name} à ${targetMinion.name}.`;
+                    const shadowAttachLine = `L'Ombre attache ${attachmentCard.name} à ${targetMinion.name}.`;
+                    appendJournal(G, shadowAttachLine);
+                    G.statusMessage = shadowAttachLine;
                 },
 
                 endShadowPhase: ({ G, events, playerID }: LotrMoveContext) => {

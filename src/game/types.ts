@@ -1650,6 +1650,13 @@ export interface GameResult {
     overlayDismissed?: boolean;
 }
 
+/** Entrée de journal — `vous` si le spectateur est `actorId`. */
+export type JournalEntry = {
+    actorId?: string;
+    vous?: string;
+    named: string;
+};
+
 export interface GameState {
     fpPlayerId: string;
     twilightPool: number;
@@ -1701,6 +1708,12 @@ export interface GameState {
     isFierceAssignment?: boolean;
     pendingFierceAssignment?: boolean;
     statusMessage: string;
+    /**
+     * Journal de partie (faits passés). Pas de consignes ni d’« en attente ».
+     * Le fil chat UI lit ceci + les messages joueur.
+     * `actorId` + `vous` : le client local affiche « Vous … ».
+     */
+    journalLog?: JournalEntry[];
     activeSkirmishId?: string;
     actionWindow?: ActionWindow;
     pendingEvent?: PendingEvent;

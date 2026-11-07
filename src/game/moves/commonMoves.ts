@@ -38,6 +38,14 @@ import {
 import { applyAutomaticToPlayCosts } from '../logic/applyToPlayCosts';
 import { checkRingBearerKilledLoss } from '../logic/gameEnd';
 import { getEffectiveTwilightCost } from '../../utils/roamingDetection';
+import {
+    otherPlayerId,
+    playerDisplayName,
+} from '../logic/playerName';
+import {
+    appendActorJournal,
+    appendJournal,
+} from '../logic/journal';
 import { getWhileTwilightCostModifier } from '../logic/stats/mechanics/whileModifier';
 import {
     applyToilExerts,
@@ -144,7 +152,12 @@ export const confirmStartOfPhase = ({
             exitStartOf(events, targetPhase);
         }
     } else {
-        G.statusMessage = `Joueur ${playerID} a terminé ses actions de début de phase. En attente de l'adversaire...`;
+        const name = playerDisplayName(G, playerID);
+        appendActorJournal(G, playerID, {
+            vous: 'Vous avez terminé vos actions de début de phase.',
+            named: `${name} a terminé ses actions de début de phase.`,
+        });
+        G.statusMessage = `${name} a terminé ses actions de début de phase. En attente de ${playerDisplayName(G, otherPlayerId(String(playerID ?? '0')))}…`;
     }
 };
 
@@ -199,12 +212,11 @@ export const passActionWindow = ({
                 'Ombre : Vous pouvez défausser 1 carte, puis validez votre main à 8 cartes.';
         }
     } else {
-        const fpId = G.fpPlayerId || '0';
         G.actionWindow = {
             ...G.actionWindow,
             activePlayerId: otherPlayer,
             passesCount: currentPasses,
-            message: `Au tour du joueur ${otherPlayer === fpId ? 'FP' : 'Ombre'} d’agir ou de passer.`,
+            message: `Au tour de ${playerDisplayName(G, otherPlayer)} d’agir ou de passer.`,
         };
     }
 };
@@ -280,7 +292,9 @@ export const attachCard = (
             (targetCard as CardState).i18n?.fr?.title ||
             (targetCard as SiteCardState).name ||
             'cible';
-        G.statusMessage = `${attachedCard.title || attachedCard.i18n?.fr?.title || 'Carte'} est attaché à ${hostName} (${sign}${cost} Crépuscule).`;
+        const attachLine = `${attachedCard.title || attachedCard.i18n?.fr?.title || 'Carte'} est attaché à ${hostName} (${sign}${cost} Crépuscule).`;
+        appendJournal(G, attachLine);
+        G.statusMessage = attachLine;
     }
 
     afterCardPlayed(G, attachedCard, {
@@ -447,7 +461,11 @@ export const playCard = (
             if (!player.fellowshipArea) player.fellowshipArea = [];
             playedCard.isFaceDown = false;
             player.fellowshipArea.push(playedCard);
-            G.statusMessage = `${playedCard.title} rejoint la Communauté (+${cost} Crépuscule).`;
+            {
+                const __line = `${playedCard.title} rejoint la Communauté (+${cost} Crépuscule).`;
+                appendJournal(G, __line);
+                G.statusMessage = __line;
+            }
         } else if (
             [
                 'ALLY',
@@ -459,7 +477,11 @@ export const playCard = (
         ) {
             if (!player.supportArea) player.supportArea = [];
             player.supportArea.push(playedCard);
-            G.statusMessage = `${playedCard.title} rejoint l'aire de soutien (+${cost} Crépuscule).`;
+            {
+                const __line = `${playedCard.title} rejoint l'aire de soutien (+${cost} Crépuscule).`;
+                appendJournal(G, __line);
+                G.statusMessage = __line;
+            }
         } else if (playedCard.type === 'EVENT') {
             if (!applyEventAbility(G, playedCard, ctx.phase || '', chosenTargetId)) {
                 player.hand.splice(cardIndex, 0, playedCard);
@@ -474,7 +496,11 @@ export const playCard = (
                     twilightDelta: -cost,
                 };
             }
-            G.statusMessage = `${playedCard.title} est joué (+${cost} Crépuscule).`;
+            {
+                const __line = `${playedCard.title} est joué (+${cost} Crépuscule).`;
+                appendJournal(G, __line);
+                G.statusMessage = __line;
+            }
         } else {
             console.warn(
                 `❌ [playCard] Type de carte inconnu/non géré pour FP: ${playedCard.type}`
@@ -512,7 +538,11 @@ export const playCard = (
         if (playedCard.type === 'MINION') {
             if (!G.battlefield) G.battlefield = [];
             G.battlefield.push(playedCard);
-            G.statusMessage = `${playedCard.title} entre sur le champ de bataille (-${cost} Crépuscule).`;
+            {
+                const __line = `${playedCard.title} entre sur le champ de bataille (-${cost} Crépuscule).`;
+                appendJournal(G, __line);
+                G.statusMessage = __line;
+            }
         } else if (
             [
                 'ALLY',
@@ -524,7 +554,11 @@ export const playCard = (
         ) {
             if (!player.supportArea) player.supportArea = [];
             player.supportArea.push(playedCard);
-            G.statusMessage = `${playedCard.title} rejoint l'aire de soutien de l'Ombre (-${cost} Crépuscule).`;
+            {
+                const __line = `${playedCard.title} rejoint l'aire de soutien de l'Ombre (-${cost} Crépuscule).`;
+                appendJournal(G, __line);
+                G.statusMessage = __line;
+            }
         } else if (playedCard.type === 'EVENT') {
             if (!applyEventAbility(G, playedCard, ctx.phase || '', chosenTargetId)) {
                 player.hand.splice(cardIndex, 0, playedCard);
@@ -539,7 +573,11 @@ export const playCard = (
                     twilightDelta: cost,
                 };
             }
-            G.statusMessage = `${playedCard.title} est joué (-${cost} Crépuscule).`;
+            {
+                const __line = `${playedCard.title} est joué (-${cost} Crépuscule).`;
+                appendJournal(G, __line);
+                G.statusMessage = __line;
+            }
         } else {
             console.warn(
                 `❌ [playCard] Type de carte inconnu/non géré pour Ombre: ${playedCard.type}`

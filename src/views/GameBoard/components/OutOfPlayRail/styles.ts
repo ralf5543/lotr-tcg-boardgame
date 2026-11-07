@@ -254,16 +254,109 @@ export const InitiativeChipHolder = styled.span<{ $mine?: boolean }>`
 
 export const ChatSlot = styled.div`
     flex: 1 1 0;
-    min-height: 72px;
+    min-height: 120px;
+    min-width: 0;
     border-radius: 8px;
-    border: 1px dashed rgba(148, 163, 184, 0.55);
-    background: rgba(30, 41, 59, 0.55);
-    color: #94a3b8;
+    border: 1px solid rgba(148, 163, 184, 0.35);
+    background: rgba(15, 23, 36, 0.72);
+    color: #cbd5e1;
     display: flex;
-    align-items: center;
-    justify-content: center;
-    text-align: center;
-    font-size: 12px;
-    font-style: italic;
+    flex-direction: column;
+    overflow: hidden;
+    pointer-events: auto;
+`;
+
+export const ChatFeed = styled.div`
+    flex: 1 1 0;
+    min-height: 0;
+    overflow-y: auto;
+    overflow-x: hidden;
+    padding: 8px 8px 4px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    scrollbar-width: thin;
+    scrollbar-color: rgba(148, 163, 184, 0.45) transparent;
+`;
+
+export const ChatEmpty = styled.p`
+    margin: auto 0;
     padding: 8px;
+    text-align: center;
+    font-size: 11px;
+    font-style: italic;
+    color: #64748b;
+`;
+
+export const ChatEntry = styled.div<{ $kind: 'journal' | 'chat' }>`
+    font-size: ${({ $kind }) => ($kind === 'journal' ? '10px' : '11px')};
+    line-height: 1.35;
+    color: ${({ $kind }) =>
+        $kind === 'journal' ? '#94a3b8' : '#e2e8f0'};
+    font-style: ${({ $kind }) => ($kind === 'journal' ? 'italic' : 'normal')};
+    word-break: break-word;
+`;
+
+export const ChatSender = styled.span<{ $mine?: boolean }>`
+    display: inline;
+    font-weight: 700;
+    font-style: normal;
+    letter-spacing: 0.02em;
+    color: ${({ $mine }) => ($mine ? '#e2c044' : '#93c5fd')};
+    margin-right: 4px;
+`;
+
+export const ChatForm = styled.form`
+    flex-shrink: 0;
+    display: flex;
+    gap: 4px;
+    padding: 6px;
+    border-top: 1px solid rgba(148, 163, 184, 0.25);
+`;
+
+export const ChatInput = styled.input`
+    flex: 1 1 0;
+    min-width: 0;
+    height: 28px;
+    border-radius: 5px;
+    border: 1px solid rgba(148, 163, 184, 0.4);
+    background: rgba(15, 23, 36, 0.9);
+    color: #f1f5f9;
+    font: inherit;
+    font-size: 11px;
+    padding: 0 8px;
+
+    &::placeholder {
+        color: #64748b;
+    }
+
+    &:focus {
+        outline: none;
+        border-color: rgba(226, 192, 68, 0.7);
+    }
+`;
+
+export const ChatSend = styled.button`
+    flex-shrink: 0;
+    height: 28px;
+    padding: 0 10px;
+    border-radius: 5px;
+    border: 1px solid rgba(226, 192, 68, 0.55);
+    background: rgba(226, 192, 68, 0.15);
+    color: #f0d978;
+    font: inherit;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    cursor: pointer;
+
+    &:disabled {
+        opacity: 0.4;
+        cursor: default;
+    }
+
+    &:not(:disabled):hover {
+        background: rgba(226, 192, 68, 0.28);
+    }
 `;

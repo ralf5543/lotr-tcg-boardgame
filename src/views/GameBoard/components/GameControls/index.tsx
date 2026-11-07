@@ -12,6 +12,11 @@ import { FormattedText } from '../../../../utils/FormattedText';
 import { findOptionalSiteResponseAbility } from '../../../../game/engine/responseWindow';
 import { getEligibleSitePhaseAbilities } from '../../../../game/logic/sitePhaseAbility';
 import { movesRemainThisTurn } from '../../../../game/logic/moveLimit';
+import {
+    otherPlayerId,
+    playerDisplayName,
+} from '../../../../game/logic/playerName';
+import { formatPointsFardeau } from '../../../../game/logic/journal';
 
 /** Libellé court d'un mode de capacité de site « play… » (boutons du toaster). */
 function sitePhaseModeLabel(ability: any): string {
@@ -121,6 +126,8 @@ export const GameControls: React.FC<GameControlsProps> = ({
     if (!G || !ctx) return null;
 
     const currentPlayerId = playerID ?? '0';
+    const opponentPlayerId = otherPlayerId(currentPlayerId);
+    const opponentName = playerDisplayName(G, opponentPlayerId);
 
     // 🟢 RÔLES DYNAMIQUES
     const fpPlayerId = G.fpPlayerId || '0';
@@ -342,7 +349,7 @@ export const GameControls: React.FC<GameControlsProps> = ({
         toastConfig = {
             show: true,
             title: 'ENCHÈRE DE FARDEAUX',
-            body: 'Misez des fardeaux pour déterminer qui choisira le premier joueur.',
+            body: 'Misez des points-fardeau pour déterminer qui choisira le premier joueur.',
             showPassButton: false,
             type: 'BIDDING',
         };
@@ -352,7 +359,7 @@ export const GameControls: React.FC<GameControlsProps> = ({
             title: 'CHOIX DU PREMIER JOUEUR',
             body: isAuctionWinner
                 ? "Vous avez gagné l'enchère ! Choisissez votre camp."
-                : "L'adversaire choisit qui prend les Peuples Libres...",
+                : `${opponentName} choisit qui prend les Peuples Libres…`,
             showPassButton: false,
             type: 'CHOOSING_FIRST',
         };
@@ -361,7 +368,7 @@ export const GameControls: React.FC<GameControlsProps> = ({
             show: true,
             title: 'PHASE DE MULLIGAN',
             body: hasMadeMulliganChoice
-                ? "En attente du choix de l'adversaire..."
+                ? `En attente du choix de ${opponentName}…`
                 : 'Examinez votre main de 8 cartes. Voulez-vous la garder ou faire un Mulligan ?',
             showPassButton: false,
             type: 'MULLIGAN',
@@ -371,7 +378,7 @@ export const GameControls: React.FC<GameControlsProps> = ({
             show: true,
             title: 'PHASE DE RALLIEMENT (MUSTER)',
             body: myMusterState.isDone
-                ? "En attente de l'adversaire..."
+                ? `En attente de ${opponentName}…`
                 : `Vous avez ${myMusterState.allowedCount} carte(s) avec Rassembleur. Vous pouvez défausser jusqu'à ${myMusterState.allowedCount} carte(s) pour en piocher autant.`,
             showPassButton: false,
             type: 'MUSTER',
@@ -466,7 +473,7 @@ export const GameControls: React.FC<GameControlsProps> = ({
         toastConfig = {
             show: true,
             title: 'EFFET DU SITE',
-            body: 'L’adversaire décide d’utiliser l’effet du site…',
+            body: `${opponentName} décide d’utiliser l’effet du site…`,
             showPassButton: false,
             type: 'STANDARD',
         };
@@ -499,7 +506,7 @@ export const GameControls: React.FC<GameControlsProps> = ({
         toastConfig = {
             show: true,
             title: 'EFFET DU SITE',
-            body: 'L’adversaire décide d’utiliser l’effet du site…',
+            body: `${opponentName} décide d’utiliser l’effet du site…`,
             showPassButton: false,
             type: 'STANDARD',
         };
@@ -553,7 +560,7 @@ export const GameControls: React.FC<GameControlsProps> = ({
         toastConfig = {
             show: true,
             title: 'EFFET DU SITE',
-            body: 'L’adversaire décide d’utiliser l’effet du site…',
+            body: `${opponentName} décide d’utiliser l’effet du site…`,
             showPassButton: false,
             type: 'STANDARD',
         };
@@ -615,7 +622,7 @@ export const GameControls: React.FC<GameControlsProps> = ({
             show: true,
             title: 'DÉBUT DE PHASE',
             body: myStartOfPhaseState.isDone
-                ? "Vos actions de début de phase sont validées. En attente de l'adversaire..."
+                ? `Vos actions de début de phase sont validées. En attente de ${opponentName}…`
                 : 'Vous avez des capacités ou des effets de début de phase disponibles. Activez-les sur vos cartes ou validez.',
             showPassButton: false,
             type: 'START_OF_PHASE',
@@ -662,8 +669,8 @@ export const GameControls: React.FC<GameControlsProps> = ({
                   : pendingType === 'ABOUT_TO_ADD_THREATS'
                     ? 'Les Peuples Libres décident s’ils empêchent les menaces…'
                     : pendingType === 'ABOUT_TO_CANCEL_SKIRMISH'
-                      ? 'L’adversaire peut empêcher l’annulation d’escarmouche…'
-                      : 'En attente de la réponse de l’adversaire…';
+                      ? `${opponentName} peut empêcher l’annulation d’escarmouche…`
+                      : `En attente de la réponse de ${opponentName}…`;
         toastConfig = {
             show: true,
             title: 'RÉPONSE',
@@ -722,8 +729,8 @@ export const GameControls: React.FC<GameControlsProps> = ({
                 title: 'RÉVÉLATION',
                 body:
                     revealZone === 'HAND'
-                        ? 'L’adversaire consulte votre main…'
-                        : 'L’adversaire consulte les cartes révélées…',
+                        ? `${opponentName} consulte votre main…`
+                        : `${opponentName} consulte les cartes révélées…`,
                 showPassButton: false,
                 type: 'STANDARD',
             };
@@ -748,7 +755,7 @@ export const GameControls: React.FC<GameControlsProps> = ({
             title: 'BLESSURES DU SITE',
             body: isAssigner
                 ? `Assignez ${pending.remaining} blessure(s) à vos personnages.`
-                : 'L’adversaire assigne les blessures du site…',
+                : `${opponentName} assigne les blessures du site…`,
             showPassButton: false,
             type: 'STANDARD',
         };
@@ -916,7 +923,7 @@ export const GameControls: React.FC<GameControlsProps> = ({
         toastConfig = {
             show: true,
             title: 'CARTE EN COURS',
-            body: 'L’adversaire désigne une cible.',
+            body: `${opponentName} désigne une cible.`,
             showPassButton: false,
             type: 'STANDARD',
         };
@@ -926,14 +933,14 @@ export const GameControls: React.FC<GameControlsProps> = ({
     const getInstructionText = (): string => {
         if (isBiddingStep) {
             return hasAlreadyBid
-                ? `Votre mise (${currentBid} fardeau${currentBid! > 1 ? 'x' : ''}) est enregistrée.`
-                : 'Choisissez le nombre de fardeaux que vous êtes prêt à miser.';
+                ? `Votre mise (${formatPointsFardeau(currentBid ?? 0)}) est enregistrée.`
+                : 'Choisissez le nombre de points-fardeau que vous êtes prêt à miser.';
         }
 
         if (isChoosingFirstStep) {
             return isAuctionWinner
                 ? "Vous avez remporté l'enchère ! Choisissez votre camp."
-                : "L'adversaire détermine l'ordre des joueurs...";
+                : `${opponentName} détermine l'ordre des joueurs…`;
         }
 
         if (isMulliganStep) {
@@ -944,7 +951,7 @@ export const GameControls: React.FC<GameControlsProps> = ({
 
         if (isMusterStep && myMusterState) {
             if (myMusterState.isDone) {
-                return 'Effet de Rassembleur validé. En attente de l’autre joueur...';
+                return `Effet de Rassembleur validé. En attente de ${opponentName}…`;
             }
             return `Défaussées : ${myMusterState.discardedCount} / ${myMusterState.allowedCount} carte(s). Cliquez sur vos cartes ou validez.`;
         }
@@ -956,12 +963,12 @@ export const GameControls: React.FC<GameControlsProps> = ({
                     : G.pendingForcedChoice?.needsHandDiscard
                       ? `Défaussez ${G.pendingForcedChoice.needsHandDiscard} carte(s) de votre main.`
                       : 'Choisissez une option pour le site / l’effet en cours.'
-                : 'L’adversaire doit résoudre un choix forcé…';
+                : `${opponentName} doit résoudre un choix forcé…`;
         }
 
         if (isStartOfPhaseStep && myStartOfPhaseState) {
             if (myStartOfPhaseState.isDone) {
-                return 'Étape validée. En attente de l’autre joueur...';
+                return `Étape validée. En attente de ${opponentName}…`;
             }
             return 'Cliquez sur vos cartes brillantes pour déclencher leurs effets, ou validez.';
         }
@@ -984,7 +991,7 @@ export const GameControls: React.FC<GameControlsProps> = ({
             const pending = G.pendingSiteCharacterWounds;
             return String(currentPlayerId) === String(pending.playerId)
                 ? `Assignez ${pending.remaining} blessure(s) du site à vos personnages.`
-                : 'L’adversaire assigne les blessures du site…';
+                : `${opponentName} assigne les blessures du site…`;
         }
 
         if (
@@ -1003,7 +1010,7 @@ export const GameControls: React.FC<GameControlsProps> = ({
         }
 
         if (G.pendingPlay && G.pendingPlay.playerId !== currentPlayerId) {
-            return 'L’adversaire désigne une cible.';
+            return `${opponentName} désigne une cible.`;
         }
 
         if (isSiteMoveAbilityActive) {
@@ -1019,7 +1026,7 @@ export const GameControls: React.FC<GameControlsProps> = ({
             }
             return isMyTurnToAct
                 ? 'Vous pouvez utiliser l’effet du site d’arrivée.'
-                : 'L’adversaire décide d’utiliser l’effet du site…';
+                : `${opponentName} décide d’utiliser l’effet du site…`;
         }
 
         if (isSitePhaseAbilityActive) {
@@ -1037,7 +1044,7 @@ export const GameControls: React.FC<GameControlsProps> = ({
         if (isWhenPlayedChoiceActive) {
             return isMyTurnToAct
                 ? 'Vous pouvez activer l’effet optionnel de cette carte.'
-                : 'L’adversaire décide d’un effet optionnel…';
+                : `${opponentName} décide d’un effet optionnel…`;
         }
 
         if (isResponseWindowActive) {
@@ -1048,15 +1055,15 @@ export const GameControls: React.FC<GameControlsProps> = ({
                 );
             }
             if (G.pendingEvent?.type === 'ABOUT_TO_FORCE_ASSIGN') {
-                return 'L’adversaire décide s’il empêche l’affectation…';
+                return `${opponentName} décide s’il empêche l’affectation…`;
             }
-            return 'En attente de la réponse de l’adversaire…';
+            return `En attente de la réponse de ${opponentName}…`;
         }
 
         if (isActionWindowActive) {
             return isMyTurnToAct
                 ? 'Une fenêtre d’action est ouverte : Jouez une carte/effet ou passez.'
-                : `En attente de la réaction de l'adversaire...`;
+                : `En attente de la réaction de ${opponentName}…`;
         }
 
         if (isAwaitingSiteActive) {
@@ -1155,10 +1162,16 @@ export const GameControls: React.FC<GameControlsProps> = ({
             ctx.phase === 'assignment' ||
             isTargetingActive);
 
-    const bannerMessage = preferLocalInstruction
-        ? instructionText!
-        : currentNarrativeLog;
+    // Toaster ouvert = source live (décision / attente). Le bandeau
+    // garde seulement phase + joueur actif — pas de double récit.
+    const showBannerNarrative = !toastConfig.show;
+    const bannerMessage = showBannerNarrative
+        ? preferLocalInstruction
+            ? instructionText!
+            : currentNarrativeLog
+        : null;
     const bannerSubMessage =
+        showBannerNarrative &&
         instructionText &&
         instructionText !== bannerMessage &&
         !preferLocalInstruction
@@ -1197,13 +1210,13 @@ export const GameControls: React.FC<GameControlsProps> = ({
                         <S.PlayerBadge $isCurrentPlayer={isMyTurnToAct}>
                             Joueur actif :{' '}
                             <strong>
-                                {actingPlayer?.profile?.name ||
-                                    `Joueur ${actingPlayerId}`}
+                                {playerDisplayName(G, actingPlayerId)}
                             </strong>
                         </S.PlayerBadge>
                     </S.InfoGroup>
 
-                    {/* Zone de Texte : consigne locale ou récit partagé */}
+                    {/* Zone de Texte : consigne locale ou récit partagé
+                        (masquée quand un toaster porte l’info live). */}
                     <div
                         style={{
                             flex: 1,
@@ -1211,7 +1224,9 @@ export const GameControls: React.FC<GameControlsProps> = ({
                             padding: '0 12px',
                         }}
                     >
-                        <S.MessageText>{bannerMessage}</S.MessageText>
+                        {bannerMessage && (
+                            <S.MessageText>{bannerMessage}</S.MessageText>
+                        )}
                         {bannerSubMessage && (
                             <div
                                 style={{
@@ -1309,6 +1324,7 @@ export const GameControls: React.FC<GameControlsProps> = ({
                                     moves.submitBid?.(amount)
                                 }
                                 isWaitingForOpponent={hasAlreadyBid}
+                                opponentName={opponentName}
                             />
                         )}
 

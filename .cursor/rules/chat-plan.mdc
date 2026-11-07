@@ -1,0 +1,63 @@
+---
+description: Plan chat + journal entre joueurs (actif)
+alwaysApply: true
+---
+
+# Chat + journal (match)
+
+> **Plan actif.** Suite de affronter un BOT ([`.cursor/rules/bot-plan.mdc`](bot-plan.mdc), figé).
+
+**Format : Standard (règles modernes).** Voir `.cursor/rules/format-standard.mdc`.
+
+Vision : [`.cursor/rules/roadmap.mdc`](roadmap.mdc).
+
+## Objectif
+
+Parler pendant la partie (SocketIO) et voir un **journal** des messages de statut dans le même panneau — pour juger le confort avant d’éventuellement séparer.
+
+## Répartition des infos (validée)
+
+| Endroit | Rôle | Contenu |
+| --- | --- | --- |
+| **Bandeau haut** | Orientation | Phase + joueur actif (**nom**). Récit / consigne **seulement s’il n’y a pas de toaster**. |
+| **Toaster** | Live décision / attente | Titre + consigne + boutons, ou « En attente de **{nom}**… ». Source live quand ouvert. Emplacement : **bas gauche**. |
+| **Chat** | Archive + discussion | `G.journalLog` (faits) + messages joueur. Spectateur local : **Vous** (conjugaison) ; sinon le nom. |
+
+Règle : **une fois en live**, **une fois en historique** — pas trois fois la même phrase.
+
+Journal = **ce qui s’est passé** uniquement. Pas de consignes (« Misez… ») ni d’« En attente de … ».
+
+## Décisions v1
+
+- Emplacement chat : `ChatSlot` du rail hors-jeu (`OutOfPlayRail`).
+- **Même fil** : `appendJournal` → `G.journalLog` + messages joueur.
+- `statusMessage` = live (bandeau si pas de toaster) — **ne nourrit plus** le journal.
+- Canal chat : `sendChatMessage` / `chatMessages` boardgame.io ; payload `{ type: 'PLAYER_CHAT', text }` (exclure `TARGETING_ARROW`).
+- Entrées acteur : `{ actorId, vous, named }` → `formatJournalEntry` côté client.
+- Fardeaux d’enchère : **point-fardeau** / **points-fardeau**.
+- Visible aussi en match BOT.
+
+## Modules
+
+| | |
+| --- | --- |
+| `src/game/chat/playerChat.ts` | Type / filtre payload chat joueur |
+| `src/game/logic/playerName.ts` | `playerDisplayName` / `otherPlayerId` |
+| `src/game/logic/journal.ts` | `appendJournal` / `formatPointsFardeau` |
+| `src/views/GameBoard/components/OutOfPlayRail/` | UI fil + saisie (`ChatSlot`) |
+| `src/views/GameBoard/components/GameControls/` | Bandeau + toaster (bas gauche) |
+
+## Étapes
+
+1. Socle filtré + UI chat/journal dans le rail — **fait**
+2. Noms + dédoublonnage bandeau / toaster + toaster bas gauche — **fait**
+3. Journal = faits (`journalLog`) — **en cours** (setup + jeux de cartes branchés ; élargir au fur et à mesure)
+4. Playtest SocketIO 2 onglets
+5. Ajuster densité selon ressenti
+
+## Hors v1
+
+- Couvrir **tous** les faits moteur via `appendJournal` (encore des statusMessage instructifs seuls)
+- Avatars dans le fil de chat
+- Modération, historique persistant, sons de notif
+- Canal sync séparé pour les flèches (décharger le chat)

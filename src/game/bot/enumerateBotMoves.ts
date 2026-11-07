@@ -266,7 +266,9 @@ export function enumerateBotMoves(
     if (phase === 'setup' && G.setupState) {
         const step = G.setupState.step;
         if (step === 'BIDDING') {
-            moves.push({ move: 'submitBid', args: [0] });
+            // 0–3 points-fardeau (aléatoire) — assez pour varier, pas suicidaire.
+            const bid = Math.floor(Math.random() * 4);
+            moves.push({ move: 'submitBid', args: [bid] });
             return moves;
         }
         if (step === 'CHOOSING_FIRST') {

@@ -166,6 +166,7 @@ export function createGameState(overrides: Partial<GameState> = {}): GameState {
         currentSiteIndex: 0,
         movesThisTurn: 0,
         statusMessage: '',
+        journalLog: [],
         awaitingSiteSelection: false,
         skirmishes: [],
         path: [...EMPTY_PATH],

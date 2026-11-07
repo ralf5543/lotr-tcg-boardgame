@@ -1,23 +1,28 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
+import { formatPointsFardeau } from '../../../../game/logic/journal';
 
 interface BiddingWidgetProps {
     currentBid: number | null;
     onSubmitBid: (amount: number) => void;
     isWaitingForOpponent: boolean;
+    opponentName?: string;
 }
 
 export const BiddingWidget: React.FC<BiddingWidgetProps> = ({
     currentBid,
     onSubmitBid,
     isWaitingForOpponent,
+    opponentName,
 }) => {
     const [selectedBid, setSelectedBid] = useState<number>(0);
 
     if (isWaitingForOpponent) {
         return (
             <WaitingState>
-                Mise enregistrée : <strong>{currentBid} fardeau{currentBid! > 1 ? 'x' : ''}</strong>. En attente de l'adversaire...
+                Mise enregistrée :{' '}
+                <strong>{formatPointsFardeau(currentBid ?? 0)}</strong>
+                {opponentName ? `. En attente de ${opponentName}…` : '.'}
             </WaitingState>
         );
     }
@@ -41,7 +46,7 @@ export const BiddingWidget: React.FC<BiddingWidgetProps> = ({
             </ControlsGroup>
 
             <SubmitButton onClick={() => onSubmitBid(selectedBid)}>
-                Miser {selectedBid} fardeau{selectedBid > 1 ? 'x' : ''}
+                Miser {formatPointsFardeau(selectedBid)}
             </SubmitButton>
         </WidgetBox>
     );

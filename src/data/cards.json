@@ -88851,7 +88851,6 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "POSSESSION",
-    "subtype": "ROPE",
     "attachedTo": [
       [
         "ELF"

@@ -1,5 +1,13 @@
 import type { LotrMoveContext } from '../types';
 import { drawCardsForPlayer } from '../../utils/drawCards';
+import {
+    otherPlayerId,
+    playerDisplayName,
+} from '../logic/playerName';
+import {
+    appendActorJournal,
+    appendJournal,
+} from '../logic/journal';
 
 export const submitMulliganChoice = (
     { G, events, playerID }: LotrMoveContext,
@@ -30,15 +38,34 @@ export const submitMulliganChoice = (
     const m0 = G.setupState.mulligans['0'];
     const m1 = G.setupState.mulligans['1'];
 
+    const name = playerDisplayName(G, pId);
+    appendActorJournal(
+        G,
+        pId,
+        doMulligan
+            ? {
+                  vous: 'Vous avez fait un mulligan.',
+                  named: `${name} a fait un mulligan.`,
+              }
+            : {
+                  vous: 'Vous avez gardé votre main.',
+                  named: `${name} a gardé sa main.`,
+              }
+    );
+
     if (m0 !== null && m1 !== null) {
         G.setupState.step = 'COMPLETE';
+        appendJournal(G, 'Mise en place terminée. Début de la partie.');
         G.statusMessage = 'Mise en place terminée ! Début de la partie.';
 
         if (events?.setPhase) {
             events.setPhase('startOfFellowship');
         }
     } else {
-        G.statusMessage = `Le joueur ${pId} a validé sa main. En attente de l'adversaire...`;
+        const live = doMulligan
+            ? `${name} a fait un mulligan.`
+            : `${name} a gardé sa main.`;
+        G.statusMessage = `${live} En attente de ${playerDisplayName(G, otherPlayerId(pId))}…`;
     }
 };
 

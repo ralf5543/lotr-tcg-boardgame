@@ -1,5 +1,12 @@
 import React, { useEffect, useRef, useState } from 'react';
 import type { CardState } from '../../../../game/types';
+import {
+    listPlayerChatMessages,
+    makePlayerChatPayload,
+    type ChatLike,
+} from '../../../../game/chat/playerChat';
+import type { JournalEntry } from '../../../../game/types';
+import { formatJournalEntry } from '../../../../game/logic/journal';
 import { usePulseOnChange } from '../../hooks/usePulseOnChange';
 import { TwilightPool } from '../TwilightPool';
 import * as S from './styles';
@@ -11,6 +18,18 @@ export type OutOfPlayZoneKey =
     | 'my-discard'
     | 'my-cemetery'
     | 'my-removed';
+
+type FeedEntry =
+    | { kind: 'journal'; key: string; text: string }
+    | {
+          kind: 'chat';
+          key: string;
+          text: string;
+          senderName: string;
+          mine: boolean;
+      };
+
+const MAX_FEED = 80;
 
 interface OutOfPlayRailProps {
     twilight: number;
@@ -31,6 +50,13 @@ interface OutOfPlayRailProps {
     opponentDeadPile: CardState[];
     opponentRemovedFromGame: CardState[];
     onOpenZone: (zone: OutOfPlayZoneKey) => void;
+    /** Faits passés (pas consignes / attentes). */
+    journalLog?: JournalEntry[];
+    myPlayerId?: string;
+    /** Noms de profil par id de siège (`0` / `1`). */
+    playerNames?: Record<string, string>;
+    chatMessages?: ChatLike[];
+    sendChatMessage?: (payload: unknown) => void;
 }
 
 const threatLabel = (count: number): string =>
@@ -166,17 +192,91 @@ export const OutOfPlayRail: React.FC<OutOfPlayRailProps> = ({
     opponentDeadPile,
     opponentRemovedFromGame,
     onOpenZone,
+    journalLog,
+    myPlayerId,
+    playerNames,
+    chatMessages,
+    sendChatMessage,
 }) => {
     const holderLabel =
         initiativeHolder === 'FREE_PEOPLE' ? 'Peuples Libres' : 'Ombre';
     const prevHolderRef = useRef(initiativeHolder);
     const [pulseKey, setPulseKey] = useState(0);
+    const [feed, setFeed] = useState<FeedEntry[]>([]);
+    const [draft, setDraft] = useState('');
+    const seenChatIdsRef = useRef<Set<string>>(new Set());
+    const seenJournalLenRef = useRef(0);
+    const feedEndRef = useRef<HTMLDivElement>(null);
 
     useEffect(() => {
         if (prevHolderRef.current === initiativeHolder) return;
         prevHolderRef.current = initiativeHolder;
         setPulseKey((key) => key + 1);
     }, [initiativeHolder]);
+
+    useEffect(() => {
+        const log = journalLog ?? [];
+        if (log.length < seenJournalLenRef.current) {
+            seenJournalLenRef.current = 0;
+            seenChatIdsRef.current = new Set();
+            setFeed([]);
+        }
+        if (log.length === seenJournalLenRef.current) return;
+        const additions: FeedEntry[] = log
+            .slice(seenJournalLenRef.current)
+            .map((entry, index) => ({
+                kind: 'journal' as const,
+                key: `journal-${seenJournalLenRef.current + index}`,
+                text: formatJournalEntry(entry, myPlayerId),
+            }));
+        seenJournalLenRef.current = log.length;
+        if (!additions.length) return;
+        setFeed((prev) => {
+            const next = [...prev, ...additions];
+            return next.length > MAX_FEED ? next.slice(-MAX_FEED) : next;
+        });
+    }, [journalLog, myPlayerId]);
+
+    useEffect(() => {
+        const playerChats = listPlayerChatMessages(chatMessages);
+        if (!playerChats.length) return;
+        const additions: FeedEntry[] = [];
+        for (const message of playerChats) {
+            if (seenChatIdsRef.current.has(message.id)) continue;
+            seenChatIdsRef.current.add(message.id);
+            const mine =
+                Boolean(myPlayerId) && message.sender === myPlayerId;
+            const senderName =
+                playerNames?.[message.sender]?.trim() ||
+                `Joueur ${message.sender}`;
+            additions.push({
+                kind: 'chat',
+                key: message.id,
+                text: message.text,
+                senderName,
+                mine,
+            });
+        }
+        if (!additions.length) return;
+        setFeed((prev) => {
+            const next = [...prev, ...additions];
+            return next.length > MAX_FEED ? next.slice(-MAX_FEED) : next;
+        });
+    }, [chatMessages, myPlayerId, playerNames]);
+
+    useEffect(() => {
+        feedEndRef.current?.scrollIntoView({ block: 'end' });
+    }, [feed]);
+
+    const canSend = Boolean(sendChatMessage);
+    const handleSubmit = (event: React.FormEvent) => {
+        event.preventDefault();
+        if (!canSend) return;
+        const payload = makePlayerChatPayload(draft);
+        if (!payload) return;
+        sendChatMessage?.(payload);
+        setDraft('');
+    };
 
     return (
         <S.Rail>
@@ -242,7 +342,48 @@ export const OutOfPlayRail: React.FC<OutOfPlayRailProps> = ({
                 count={myRemovedFromGame.length}
                 onOpen={() => onOpenZone('my-removed')}
             />
-            <S.ChatSlot>Journal / chat (plus tard)</S.ChatSlot>
+            <S.ChatSlot>
+                <S.ChatFeed aria-live="polite" aria-label="Journal et chat">
+                    {feed.length === 0 ? (
+                        <S.ChatEmpty>Journal et chat de la partie</S.ChatEmpty>
+                    ) : (
+                        feed.map((entry) =>
+                            entry.kind === 'journal' ? (
+                                <S.ChatEntry key={entry.key} $kind="journal">
+                                    {entry.text}
+                                </S.ChatEntry>
+                            ) : (
+                                <S.ChatEntry key={entry.key} $kind="chat">
+                                    <S.ChatSender $mine={entry.mine}>
+                                        {entry.mine ? 'Vous' : entry.senderName}
+                                    </S.ChatSender>
+                                    {entry.text}
+                                </S.ChatEntry>
+                            )
+                        )
+                    )}
+                    <div ref={feedEndRef} />
+                </S.ChatFeed>
+                <S.ChatForm onSubmit={handleSubmit}>
+                    <S.ChatInput
+                        type="text"
+                        value={draft}
+                        onChange={(event) => setDraft(event.target.value)}
+                        placeholder={
+                            canSend ? 'Écrire…' : 'Chat indisponible'
+                        }
+                        disabled={!canSend}
+                        maxLength={400}
+                        aria-label="Message de chat"
+                    />
+                    <S.ChatSend
+                        type="submit"
+                        disabled={!canSend || !draft.trim()}
+                    >
+                        Envoyer
+                    </S.ChatSend>
+                </S.ChatForm>
+            </S.ChatSlot>
         </S.Rail>
     );
 };

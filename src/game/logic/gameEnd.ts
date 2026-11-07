@@ -2,19 +2,15 @@ import type { CardState, GameResult, GameState } from '../types';
 import { isRingBearerCard } from '../../utils/cardUtils';
 import { getEffectiveResistance, getEffectiveVitality } from '../../utils/cardStats';
 import { getCardText } from '../../utils/i18n';
+import { otherPlayerId, playerDisplayName } from './playerName';
+import { appendActorJournal } from './journal';
 
 function fpPlayer(G: GameState) {
     return G.players[G.fpPlayerId || '0'];
 }
 
 function shadowPlayerId(G: GameState): string {
-    const fpId = G.fpPlayerId || '0';
-    return fpId === '0' ? '1' : '0';
-}
-
-function playerDisplayName(G: GameState, playerId: string): string {
-    const name = G.players[playerId]?.profile?.name?.trim();
-    return name || `Joueur ${playerId}`;
+    return otherPlayerId(G.fpPlayerId || '0');
 }
 
 function ringBearerDisplayName(card: CardState | null): string {
@@ -123,6 +119,10 @@ function setGameResult(
         overlayDismissed: false,
     };
     // Barre partagée : nom du gagnant (pas « Vous », les deux camps voient le même texte).
+    appendActorJournal(G, winnerPlayerId, {
+        vous: `Vous remportez la partie. ${detail}`,
+        named: `${winnerName} remporte la partie. ${detail}`,
+    });
     G.statusMessage = `${winnerName} remporte la partie. ${detail}`;
     return true;
 }
