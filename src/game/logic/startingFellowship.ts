@@ -2,6 +2,7 @@ import type { CardState, GameState } from '../types';
 import { isRingBearerCard } from '../../utils/cardUtils';
 import { afterCardPlayed } from '../engine/abilities/eachTimeYouPlay';
 import { applyAutomaticToPlayCosts } from './applyToPlayCosts';
+import { appendCardPlayedJournal } from './journal';
 
 /**
  * Coût crépuscule compté pour la **limite de construction** (max 4).
@@ -42,6 +43,7 @@ export function revealAndPlayStartingFellowships(G: GameState): void {
                 playerId: fpId,
                 phase: 'fellowship',
             });
+            appendCardPlayedJournal(G, fpId, card);
         }
     }
 }

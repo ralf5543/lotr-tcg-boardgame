@@ -68,15 +68,22 @@ describe('BOT playtest — match Local', () => {
             if (G.setupState.auctionWinnerId === '0') {
                 human.moves.chooseFirstPlayer?.(true);
             } else {
-                await botTick(bot);
+                // Scénario déterministe : l’humain joue les PL
+                // (en prod le BOT tire à 50/50).
+                bot.moves.chooseFirstPlayer?.(false);
             }
             await new Promise((r) => setTimeout(r, 80));
         }
 
         G = human.getState()?.G as GameState;
         if (G?.setupState?.step === 'AWAITING_SITE') {
-            const site = G.players['0']?.sitesDeck?.[0];
-            human.moves.selectStartingSite?.(site);
+            const fpId = String(G.fpPlayerId || '0');
+            if (fpId === '0') {
+                const site = G.players['0']?.sitesDeck?.[0];
+                human.moves.selectStartingSite?.(site);
+            } else {
+                await botTick(bot);
+            }
             await new Promise((r) => setTimeout(r, 80));
         }
 

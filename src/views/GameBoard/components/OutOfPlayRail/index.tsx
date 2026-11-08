@@ -1,12 +1,14 @@
 import React, { useEffect, useRef, useState } from 'react';
-import type { CardState } from '../../../../game/types';
+import type { CardState, JournalEntry, SiteCardState } from '../../../../game/types';
 import {
     listPlayerChatMessages,
     makePlayerChatPayload,
     type ChatLike,
 } from '../../../../game/chat/playerChat';
-import type { JournalEntry } from '../../../../game/types';
 import { formatJournalEntry } from '../../../../game/logic/journal';
+import { getCardById } from '../../../../game/cardsData';
+import { useHoverCard } from '../../../../contexts/HoverCardContext';
+import { useImageSrcFallback } from '../../../../utils/useImageSrcFallback';
 import { usePulseOnChange } from '../../hooks/usePulseOnChange';
 import { TwilightPool } from '../TwilightPool';
 import * as S from './styles';
@@ -20,7 +22,7 @@ export type OutOfPlayZoneKey =
     | 'my-removed';
 
 type FeedEntry =
-    | { kind: 'journal'; key: string; text: string }
+    | { kind: 'journal'; key: string; text: string; entry: JournalEntry }
     | {
           kind: 'chat';
           key: string;
@@ -176,6 +178,95 @@ const RemovedBlock: React.FC<{
     );
 };
 
+const JournalCardThumb: React.FC<{
+    imageUrl?: string;
+    landscape?: boolean;
+}> = ({ imageUrl, landscape }) => {
+    const { src, onError } = useImageSrcFallback(
+        imageUrl,
+        'interface/lotr_cardback.webp'
+    );
+    if (!src) return null;
+    if (landscape) {
+        return (
+            <S.JournalThumbSiteWrap>
+                <S.JournalThumbSite src={src} alt="" onError={onError} />
+            </S.JournalThumbSiteWrap>
+        );
+    }
+    return <S.JournalThumb src={src} alt="" onError={onError} />;
+};
+
+const JournalPlayEntry: React.FC<{
+    entry: JournalEntry;
+    text: string;
+    myPlayerId?: string;
+}> = ({ entry, text, myPlayerId }) => {
+    const { setHoveredCard } = useHoverCard();
+    const played = entry.playedCard;
+    if (!played) {
+        return <>{text}</>;
+    }
+
+    const mine =
+        entry.actorId != null &&
+        myPlayerId != null &&
+        String(entry.actorId) === String(myPlayerId);
+    const namedActor =
+        entry.named.match(/^(.*?)\s+a joué\s+/i)?.[1]?.trim() || '';
+    const actorLabel = mine ? 'Vous' : namedActor || text;
+    const verb = mine ? 'avez joué' : 'a joué';
+    const landscape = played.orientation === 'landscape';
+
+    const resolveHoverCard = (): CardState | SiteCardState | null => {
+        const fromDb = getCardById(played.catalogId);
+        if (fromDb) return fromDb;
+        if (!played.imageUrl && !played.catalogId) return null;
+        return {
+            id: played.catalogId || 'journal-card',
+            instanceId: `journal-${played.catalogId || 'card'}`,
+            imageUrl: played.imageUrl,
+            kind: landscape ? 'SITE' : 'FREE_PEOPLE',
+            type: landscape ? 'SITE' : 'COMPANION',
+            culture: 'GONDOR',
+            set: 0,
+            rarity: '',
+            isUnique: false,
+            title: played.label,
+            name: played.label,
+        } as CardState & SiteCardState;
+    };
+
+    return (
+        <S.JournalPlayRow>
+            {entry.actorAvatar ? (
+                <S.JournalAvatar src={entry.actorAvatar} alt="" />
+            ) : null}
+            <S.JournalActor>{actorLabel}</S.JournalActor>
+            <span>{verb}</span>
+            <S.JournalCardLink
+                type="button"
+                onMouseEnter={() => {
+                    const card = resolveHoverCard();
+                    if (card) {
+                        setHoveredCard(
+                            card,
+                            landscape ? 'landscape' : 'portrait'
+                        );
+                    }
+                }}
+                onMouseLeave={() => setHoveredCard(null)}
+            >
+                {played.label}
+            </S.JournalCardLink>
+            <JournalCardThumb
+                imageUrl={played.imageUrl}
+                landscape={landscape}
+            />
+        </S.JournalPlayRow>
+    );
+};
+
 export const OutOfPlayRail: React.FC<OutOfPlayRailProps> = ({
     twilight,
     fpIsOpponent,
@@ -224,11 +315,18 @@ export const OutOfPlayRail: React.FC<OutOfPlayRailProps> = ({
         if (log.length === seenJournalLenRef.current) return;
         const additions: FeedEntry[] = log
             .slice(seenJournalLenRef.current)
-            .map((entry, index) => ({
-                kind: 'journal' as const,
-                key: `journal-${seenJournalLenRef.current + index}`,
-                text: formatJournalEntry(entry, myPlayerId),
-            }));
+            .map((entry, index) => {
+                const normalized =
+                    typeof entry === 'string'
+                        ? ({ named: entry } as JournalEntry)
+                        : entry;
+                return {
+                    kind: 'journal' as const,
+                    key: `journal-${seenJournalLenRef.current + index}`,
+                    text: formatJournalEntry(normalized, myPlayerId),
+                    entry: normalized,
+                };
+            });
         seenJournalLenRef.current = log.length;
         if (!additions.length) return;
         setFeed((prev) => {
@@ -350,7 +448,15 @@ export const OutOfPlayRail: React.FC<OutOfPlayRailProps> = ({
                         feed.map((entry) =>
                             entry.kind === 'journal' ? (
                                 <S.ChatEntry key={entry.key} $kind="journal">
-                                    {entry.text}
+                                    {entry.entry.playedCard ? (
+                                        <JournalPlayEntry
+                                            entry={entry.entry}
+                                            text={entry.text}
+                                            myPlayerId={myPlayerId}
+                                        />
+                                    ) : (
+                                        entry.text
+                                    )}
                                 </S.ChatEntry>
                             ) : (
                                 <S.ChatEntry key={entry.key} $kind="chat">

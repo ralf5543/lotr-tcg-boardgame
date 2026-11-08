@@ -18,7 +18,7 @@ export const SitespathContainer = styled.section`
     justify-content: space-around;
     position: absolute;
     inset-block: 20px;
-    inset-inline-start: 20px;
+    inset-inline-end: 20px;
     background: rgba(26, 37, 47, 0.5);
     border-radius: 8px;
     width: 300px;

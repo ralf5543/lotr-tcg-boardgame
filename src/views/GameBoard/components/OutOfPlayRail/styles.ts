@@ -297,6 +297,86 @@ export const ChatEntry = styled.div<{ $kind: 'journal' | 'chat' }>`
     word-break: break-word;
 `;
 
+export const JournalPlayRow = styled.div`
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 4px 6px;
+    font-style: normal;
+    line-height: 1.35;
+`;
+
+export const JournalAvatar = styled.img`
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    object-fit: cover;
+    flex-shrink: 0;
+`;
+
+export const JournalActor = styled.span`
+    font-weight: 700;
+    color: #cbd5e1;
+`;
+
+export const JournalCardLink = styled.button`
+    appearance: none;
+    margin: 0;
+    padding: 0;
+    border: none;
+    background: none;
+    font: inherit;
+    font-weight: 700;
+    font-style: normal;
+    color: #e2c044;
+    cursor: pointer;
+    text-align: left;
+    text-decoration: underline;
+    text-decoration-color: rgba(226, 192, 68, 0.35);
+    text-underline-offset: 2px;
+
+    &:hover {
+        color: #f0d978;
+        text-decoration-color: rgba(240, 217, 120, 0.7);
+    }
+`;
+
+export const JournalThumb = styled.img`
+    height: 1.55em;
+    width: auto;
+    aspect-ratio: 4 / 3;
+    object-fit: cover;
+    object-position: center;
+    border-radius: 2px;
+    flex-shrink: 0;
+    background: #222;
+    vertical-align: middle;
+`;
+
+export const JournalThumbSiteWrap = styled.span`
+    position: relative;
+    height: 1.55em;
+    width: auto;
+    aspect-ratio: 1.39 / 1;
+    flex-shrink: 0;
+    overflow: hidden;
+    border-radius: 2px;
+    background: #222;
+    container-type: size;
+`;
+
+export const JournalThumbSite = styled.img`
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: 100cqh;
+    height: 100cqw;
+    object-fit: cover;
+    object-position: center;
+    transform-origin: center center;
+    transform: translate(-50%, -50%) rotate(90deg);
+`;
+
 export const ChatSender = styled.span<{ $mine?: boolean }>`
     display: inline;
     font-weight: 700;

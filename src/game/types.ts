@@ -1881,11 +1881,24 @@ export interface GameResult {
     overlayDismissed?: boolean;
 }
 
+/** Carte citée dans le journal (lien + vignette + zoom au survol). */
+export type JournalCardRef = {
+    /** Id catalogue (`printedId` / `id` source). */
+    catalogId: string;
+    label: string;
+    imageUrl?: string;
+    orientation?: 'portrait' | 'landscape';
+};
+
 /** Entrée de journal — `vous` si le spectateur est `actorId`. */
 export type JournalEntry = {
     actorId?: string;
+    /** Avatar du joueur au moment du fait (snapshot). */
+    actorAvatar?: string;
     vous?: string;
     named: string;
+    /** Si présent : rendu riche « a joué » + lien carte. */
+    playedCard?: JournalCardRef;
 };
 
 export interface GameState {

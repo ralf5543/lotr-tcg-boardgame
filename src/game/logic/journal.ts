@@ -1,4 +1,9 @@
-import type { GameState, JournalEntry } from '../types';
+import {
+    catalogCardId,
+    displayFullName,
+    isSiteCard,
+} from '../../decks/cardMeta';
+import type { CardState, GameState, JournalEntry, SiteCardState } from '../types';
 import { otherPlayerId, playerDisplayName } from './playerName';
 
 const JOURNAL_CAP = 200;
@@ -9,6 +14,15 @@ function pushEntry(G: GameState, entry: JournalEntry): void {
     if (G.journalLog.length > JOURNAL_CAP) {
         G.journalLog = G.journalLog.slice(-JOURNAL_CAP);
     }
+}
+
+function actorAvatarUrl(
+    G: GameState,
+    actorId: string | null | undefined
+): string | undefined {
+    if (actorId == null || actorId === '') return undefined;
+    const url = G.players[String(actorId)]?.profile?.avatar?.trim();
+    return url || undefined;
 }
 
 /** Ligne neutre (pas de « Vous »). */
@@ -25,21 +39,61 @@ export function appendJournal(G: GameState, text: string): void {
 export function appendActorJournal(
     G: GameState,
     actorId: string | null | undefined,
-    forms: { vous: string; named: string }
+    forms: { vous: string; named: string },
+    extras?: Pick<JournalEntry, 'playedCard' | 'actorAvatar'>
 ): void {
     const vous = forms.vous.trim();
     const named = forms.named.trim();
     if (!named) return;
     const id = actorId != null ? String(actorId) : '';
     if (!id) {
-        pushEntry(G, { named });
+        pushEntry(G, { named, ...extras });
         return;
     }
     pushEntry(G, {
         actorId: id,
         vous: vous || named,
         named,
+        actorAvatar: extras?.actorAvatar ?? actorAvatarUrl(G, id),
+        playedCard: extras?.playedCard,
     });
+}
+
+/**
+ * « {nom} a joué {carte} » — entrée riche (avatar + lien + vignette côté UI).
+ */
+export function appendCardPlayedJournal(
+    G: GameState,
+    actorId: string | null | undefined,
+    card: CardState | SiteCardState | null | undefined
+): void {
+    if (!card) return;
+    const asCard = card as CardState;
+    const label = displayFullName(asCard, catalogCardId(asCard));
+    if (!label) return;
+    const name = playerDisplayName(G, actorId);
+    const raw = card as CardState & SiteCardState & { type?: string; kind?: string };
+    const site =
+        isSiteCard(asCard) ||
+        raw.type === 'SITE' ||
+        raw.kind === 'SITE' ||
+        Boolean(raw.siteNumber != null && !raw.culture);
+    appendActorJournal(
+        G,
+        actorId,
+        {
+            vous: `Vous avez joué ${label}.`,
+            named: `${name} a joué ${label}.`,
+        },
+        {
+            playedCard: {
+                catalogId: catalogCardId(asCard),
+                label,
+                imageUrl: asCard.imageUrl || raw.imageUrl,
+                orientation: site ? 'landscape' : 'portrait',
+            },
+        }
+    );
 }
 
 /** Texte à afficher pour le joueur local. */

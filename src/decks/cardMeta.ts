@@ -12,17 +12,34 @@ export function isSiteCard(card: CardState): boolean {
 
 export function displayTitle(card: CardState | undefined, id?: string): string {
     if (!card) return id || '?';
+    const siteName = (card as CardState & { name?: string }).name;
     return (
         card.i18n?.fr?.title ||
         card.i18n?.en?.title ||
         card.title ||
-        card.id
+        siteName ||
+        card.id ||
+        id ||
+        '?'
     );
 }
 
 export function displaySubtitle(card: CardState | undefined): string {
     if (!card) return '';
     return card.i18n?.fr?.subtitle || card.i18n?.en?.subtitle || card.subtitle || '';
+}
+
+/** Titre complet journal / listes : « Aragorn, Poussé par le besoin ». */
+export function displayFullName(card: CardState | undefined, id?: string): string {
+    const title = displayTitle(card, id);
+    const sub = displaySubtitle(card);
+    return sub ? `${title}, ${sub}` : title;
+}
+
+/** Id catalogue pour lookup (hover, base), pas l’instance plateau. */
+export function catalogCardId(card: CardState | undefined): string {
+    if (!card) return '';
+    return String(card.printedId || card.id || '');
 }
 
 export type CatalogFilterKey =

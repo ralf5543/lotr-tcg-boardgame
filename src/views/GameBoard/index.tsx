@@ -3655,12 +3655,10 @@ export const GameBoard: React.FC<GameBoardProps> = ({
         }
 
         const isSetupPhase = ctx.phase === 'setup';
-        const auctionWinnerId = G.setupState?.auctionWinnerId || fpPlayerId;
 
+        // Site 1 : le joueur Peuples Libres pose (pas forcément le gagnant d’enchère).
         if (isSetupPhase && G.setupState?.step === 'AWAITING_SITE') {
-            if (myId === auctionWinnerId) {
-                return 'sites';
-            }
+            if (isLocalFP) return 'sites';
             return null;
         }
 
@@ -3668,8 +3666,11 @@ export const GameBoard: React.FC<GameBoardProps> = ({
             return 'hand';
         }
 
+        // Sites suivants : l’Ombre pose.
         if (G.awaitingSiteSelection) {
-            if (isLocalShadow) {
+            const nextEmpty = G.path.findIndex((slot) => slot === null);
+            const placerIsFp = nextEmpty === 0;
+            if (placerIsFp ? isLocalFP : isLocalShadow) {
                 return 'sites';
             }
             return null;
@@ -3772,6 +3773,51 @@ export const GameBoard: React.FC<GameBoardProps> = ({
                     />
 
                     <S.BoardColumns>
+                    <OutOfPlayRail
+                        twilight={G.twilightPool}
+                        fpIsOpponent={fpPlayerId === oppId}
+                        threats={G.players[fpPlayerId]?.threats ?? 0}
+                        threatLimit={getThreatLimit(G)}
+                        initiativeHolder={
+                            freePeoplesHasInitiative(G)
+                                ? 'FREE_PEOPLE'
+                                : 'SHADOW'
+                        }
+                        localHasInitiative={playerHasInitiative(G, myId)}
+                        myDeckCount={(me.deck || []).length}
+                        opponentDeckCount={(opponent.deck || []).length}
+                        myDiscard={me.discard || []}
+                        myDeadPile={me.deadPile || []}
+                        myRemovedFromGame={me.removedFromGame || []}
+                        opponentDiscard={opponent.discard || []}
+                        opponentDeadPile={opponent.deadPile || []}
+                        opponentRemovedFromGame={
+                            opponent.removedFromGame || []
+                        }
+                        onOpenZone={(zone) => {
+                            // Choix Falls en attente : le cimetière rouvre le choix.
+                            if (
+                                zone === 'my-cemetery' &&
+                                G.pendingDeadPileRemoval &&
+                                String(
+                                    G.pendingDeadPileRemoval.playerId
+                                ) === String(myId) &&
+                                (me.deadPile || []).length > 0
+                            ) {
+                                openDeadPileRemovalPick();
+                                return;
+                            }
+                            setOpenOutOfPlayZone(zone);
+                        }}
+                        journalLog={G.journalLog}
+                        myPlayerId={myId}
+                        playerNames={{
+                            '0': G.players['0']?.profile?.name || 'Joueur 0',
+                            '1': G.players['1']?.profile?.name || 'Joueur 1',
+                        }}
+                        chatMessages={chatMessages}
+                        sendChatMessage={sendChatMessage}
+                    />
                     <S.BoardPlayColumn>
                     {/* ==================== 1. ADVERSAIRE ==================== */}
                     <PlayerArea
@@ -3824,51 +3870,6 @@ export const GameBoard: React.FC<GameBoardProps> = ({
                         onActivateAbility={handleActivateAbility}
                     />
                     </S.BoardPlayColumn>
-                    <OutOfPlayRail
-                        twilight={G.twilightPool}
-                        fpIsOpponent={fpPlayerId === oppId}
-                        threats={G.players[fpPlayerId]?.threats ?? 0}
-                        threatLimit={getThreatLimit(G)}
-                        initiativeHolder={
-                            freePeoplesHasInitiative(G)
-                                ? 'FREE_PEOPLE'
-                                : 'SHADOW'
-                        }
-                        localHasInitiative={playerHasInitiative(G, myId)}
-                        myDeckCount={(me.deck || []).length}
-                        opponentDeckCount={(opponent.deck || []).length}
-                        myDiscard={me.discard || []}
-                        myDeadPile={me.deadPile || []}
-                        myRemovedFromGame={me.removedFromGame || []}
-                        opponentDiscard={opponent.discard || []}
-                        opponentDeadPile={opponent.deadPile || []}
-                        opponentRemovedFromGame={
-                            opponent.removedFromGame || []
-                        }
-                        onOpenZone={(zone) => {
-                            // Choix Falls en attente : le cimetière rouvre le choix.
-                            if (
-                                zone === 'my-cemetery' &&
-                                G.pendingDeadPileRemoval &&
-                                String(
-                                    G.pendingDeadPileRemoval.playerId
-                                ) === String(myId) &&
-                                (me.deadPile || []).length > 0
-                            ) {
-                                openDeadPileRemovalPick();
-                                return;
-                            }
-                            setOpenOutOfPlayZone(zone);
-                        }}
-                        journalLog={G.journalLog}
-                        myPlayerId={myId}
-                        playerNames={{
-                            '0': G.players['0']?.profile?.name || 'Joueur 0',
-                            '1': G.players['1']?.profile?.name || 'Joueur 1',
-                        }}
-                        chatMessages={chatMessages}
-                        sendChatMessage={sendChatMessage}
-                    />
                     </S.BoardColumns>
 
                     {/* ==================== SITE PATH ==================== */}

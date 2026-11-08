@@ -6,7 +6,7 @@ export const BoardContainer = styled.div<{ $faction: 'FREE_PEOPLE' | 'SHADOW' | 
     flex-direction: column;
     position: relative;
     padding: 20px;
-    padding-inline-start: 340px;
+    padding-inline-end: 340px;
     background-size: cover;
     background-repeat: no-repeat;
     background-image: ${(props) => {
@@ -21,7 +21,7 @@ export const BoardContainer = styled.div<{ $faction: 'FREE_PEOPLE' | 'SHADOW' | 
 
 export const BoardColumns = styled.div`
     display: grid;
-    grid-template-columns: 1fr 240px;
+    grid-template-columns: 240px 1fr;
     gap: 12px;
     flex: 1;
     min-height: 0;

@@ -299,8 +299,9 @@ export function enumerateBotMoves(
             return moves;
         }
         if (step === 'CHOOSING_FIRST') {
-            // Humain reste PL en premier tour si le BOT gagne l’enchère.
-            moves.push({ move: 'chooseFirstPlayer', args: [false] });
+            // Une fois sur deux : le BOT commence (Peuples Libres).
+            const wantToBeFirst = Math.random() < 0.5;
+            moves.push({ move: 'chooseFirstPlayer', args: [wantToBeFirst] });
             return moves;
         }
         if (step === 'AWAITING_SITE' && playerID === fp) {

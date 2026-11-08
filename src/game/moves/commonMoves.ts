@@ -44,8 +44,9 @@ import {
 } from '../logic/playerName';
 import {
     appendActorJournal,
-    appendJournal,
+    appendCardPlayedJournal,
 } from '../logic/journal';
+import { displayFullName } from '../../decks/cardMeta';
 import { getWhileTwilightCostModifier } from '../logic/stats/mechanics/whileModifier';
 import {
     applyToilExerts,
@@ -295,15 +296,8 @@ export const attachCard = (
     if (targetCard) {
         if (!targetCard.attachments) targetCard.attachments = [];
         targetCard.attachments.push(attachedCard);
-        const sign = isFP ? '+' : '-';
-        const hostName =
-            (targetCard as CardState).title ||
-            (targetCard as CardState).i18n?.fr?.title ||
-            (targetCard as SiteCardState).name ||
-            'cible';
-        const attachLine = `${attachedCard.title || attachedCard.i18n?.fr?.title || 'Carte'} est attaché à ${hostName} (${sign}${cost} Crépuscule).`;
-        appendJournal(G, attachLine);
-        G.statusMessage = attachLine;
+        appendCardPlayedJournal(G, actingPlayerId, attachedCard);
+        G.statusMessage = `${playerDisplayName(G, actingPlayerId)} a joué ${displayFullName(attachedCard)}.`;
     }
 
     afterCardPlayed(G, attachedCard, {
@@ -470,11 +464,8 @@ export const playCard = (
             if (!player.fellowshipArea) player.fellowshipArea = [];
             playedCard.isFaceDown = false;
             player.fellowshipArea.push(playedCard);
-            {
-                const __line = `${playedCard.title} rejoint la Communauté (+${cost} Crépuscule).`;
-                appendJournal(G, __line);
-                G.statusMessage = __line;
-            }
+            appendCardPlayedJournal(G, actingPlayerId, playedCard);
+            G.statusMessage = `${playerDisplayName(G, actingPlayerId)} a joué ${displayFullName(playedCard)}.`;
         } else if (
             [
                 'ALLY',
@@ -486,11 +477,8 @@ export const playCard = (
         ) {
             if (!player.supportArea) player.supportArea = [];
             player.supportArea.push(playedCard);
-            {
-                const __line = `${playedCard.title} rejoint l'aire de soutien (+${cost} Crépuscule).`;
-                appendJournal(G, __line);
-                G.statusMessage = __line;
-            }
+            appendCardPlayedJournal(G, actingPlayerId, playedCard);
+            G.statusMessage = `${playerDisplayName(G, actingPlayerId)} a joué ${displayFullName(playedCard)}.`;
         } else if (playedCard.type === 'EVENT') {
             if (!applyEventAbility(G, playedCard, ctx.phase || '', chosenTargetId)) {
                 player.hand.splice(cardIndex, 0, playedCard);
@@ -505,11 +493,8 @@ export const playCard = (
                     twilightDelta: -cost,
                 };
             }
-            {
-                const __line = `${playedCard.title} est joué (+${cost} Crépuscule).`;
-                appendJournal(G, __line);
-                G.statusMessage = __line;
-            }
+            appendCardPlayedJournal(G, actingPlayerId, playedCard);
+            G.statusMessage = `${playerDisplayName(G, actingPlayerId)} a joué ${displayFullName(playedCard)}.`;
         } else {
             console.warn(
                 `❌ [playCard] Type de carte inconnu/non géré pour FP: ${playedCard.type}`
@@ -547,11 +532,8 @@ export const playCard = (
         if (playedCard.type === 'MINION') {
             if (!G.battlefield) G.battlefield = [];
             G.battlefield.push(playedCard);
-            {
-                const __line = `${playedCard.title} entre sur le champ de bataille (-${cost} Crépuscule).`;
-                appendJournal(G, __line);
-                G.statusMessage = __line;
-            }
+            appendCardPlayedJournal(G, actingPlayerId, playedCard);
+            G.statusMessage = `${playerDisplayName(G, actingPlayerId)} a joué ${displayFullName(playedCard)}.`;
         } else if (
             [
                 'ALLY',
@@ -563,11 +545,8 @@ export const playCard = (
         ) {
             if (!player.supportArea) player.supportArea = [];
             player.supportArea.push(playedCard);
-            {
-                const __line = `${playedCard.title} rejoint l'aire de soutien de l'Ombre (-${cost} Crépuscule).`;
-                appendJournal(G, __line);
-                G.statusMessage = __line;
-            }
+            appendCardPlayedJournal(G, actingPlayerId, playedCard);
+            G.statusMessage = `${playerDisplayName(G, actingPlayerId)} a joué ${displayFullName(playedCard)}.`;
         } else if (playedCard.type === 'EVENT') {
             if (!applyEventAbility(G, playedCard, ctx.phase || '', chosenTargetId)) {
                 player.hand.splice(cardIndex, 0, playedCard);
@@ -582,11 +561,8 @@ export const playCard = (
                     twilightDelta: cost,
                 };
             }
-            {
-                const __line = `${playedCard.title} est joué (-${cost} Crépuscule).`;
-                appendJournal(G, __line);
-                G.statusMessage = __line;
-            }
+            appendCardPlayedJournal(G, actingPlayerId, playedCard);
+            G.statusMessage = `${playerDisplayName(G, actingPlayerId)} a joué ${displayFullName(playedCard)}.`;
         } else {
             console.warn(
                 `❌ [playCard] Type de carte inconnu/non géré pour Ombre: ${playedCard.type}`

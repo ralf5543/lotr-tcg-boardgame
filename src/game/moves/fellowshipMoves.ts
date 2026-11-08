@@ -1,4 +1,4 @@
-import type { GameState, LotrMoveContext } from '../types';
+import type { CardState, GameState, LotrMoveContext } from '../types';
 import { getRegionTwilightBonus } from '../logic/sites';
 import { resolveSiteMoveAbilities } from '../engine/abilities/siteMove';
 import { tryOpenFellowshipMoves } from '../engine/responseWindow';
@@ -10,6 +10,9 @@ import {
 import { beginSiteMoveCharacterWoundsIfNeeded } from '../logic/siteMoveCharacterWounds';
 import { beginDeadPileRemovalIfNeeded } from '../logic/siteDeadPileRemoval';
 import { enforceWhileSelfDiscards } from '../engine/abilities/enforceWhileDiscard';
+import { appendCardPlayedJournal } from '../logic/journal';
+import { displayFullName } from '../../decks/cardMeta';
+import { playerDisplayName } from '../logic/playerName';
 
 /** Après un déplacement réel : réponses « each time the fellowship moves ». */
 export function afterFellowshipArrived(
@@ -183,6 +186,7 @@ export const playSite = (
     playedSite.ownerId = playerID;
     playedSite.siteNumber = targetIndex + 1;
     G.path[targetIndex] = playedSite;
+    appendCardPlayedJournal(G, playerID, playedSite);
 
     G.awaitingSiteSelection = false;
     const fpPlayer = G.players[fpId];
@@ -217,7 +221,7 @@ export const playSite = (
         }
     });
 
-    G.statusMessage = `Nouveau site révélé ! La compagnie avance en ${playedSite.name} (+${addedTwilight} Crépuscule → ${G.twilightPool}). Révélation des compagnons.`;
+    G.statusMessage = `${playerDisplayName(G, playerID)} a joué ${displayFullName(playedSite as CardState)}.`;
 
     if (ctx.phase === 'fellowship') {
         const next = enterPhase('shadow');

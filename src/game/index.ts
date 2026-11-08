@@ -14,10 +14,7 @@ import {
 } from '../utils/deckLoader';
 import { enumerateBotMoves } from './bot/enumerateBotMoves';
 import { peekBotMatchDecks } from './bot/botMatchSetup';
-import {
-    isMinionRoaming,
-    getEffectiveTwilightCost,
-} from '../utils/roamingDetection';
+import { getEffectiveTwilightCost } from '../utils/roamingDetection';
 import { getWhileTwilightCostModifier } from './logic/stats/mechanics/whileModifier';
 import {
     resolveSkirmish,
@@ -54,11 +51,13 @@ import {
 } from './logic/playerName';
 import {
     appendActorJournal,
+    appendCardPlayedJournal,
     appendJournal,
     appendSideRolesJournal,
     formatPointsFardeau,
     formatSideRolesStatus,
 } from './logic/journal';
+import { displayFullName } from '../decks/cardMeta';
 import {
     applyStartOfSkirmishTriggers,
     openSkirmishActionWindow,
@@ -508,6 +507,8 @@ export const LotrGame: Game<GameState> = {
                     } as typeof G.path[0];
                     G.awaitingSiteSelection = false;
 
+                    appendCardPlayedJournal(G, playerID, siteCard);
+
                     // Compagnons de départ FP (sauf Porteur) = joués :
                     // toPlay + when-played ; coût crépuscule hors pool (plafond construction).
                     revealAndPlayStartingFellowships(G);
@@ -519,12 +520,8 @@ export const LotrGame: Game<GameState> = {
                     });
 
                     G.setupState.step = 'MULLIGAN';
-                    appendJournal(
-                        G,
-                        'Site 1 posé ; compagnie de départ jouée (sans crépuscule au pool).'
-                    );
                     G.statusMessage =
-                        'Site 1 posé ; compagnie de départ jouée (sans crépuscule au pool). Mulligan : garder ou piocher une nouvelle main.';
+                        'Mulligan : garder ou piocher une nouvelle main.';
                 },
 
                 submitMulliganChoice: (
@@ -786,10 +783,8 @@ export const LotrGame: Game<GameState> = {
                         beginOptionalSitePhaseAbility(G);
                     }
 
-                    const wasRoaming = isMinionRoaming(card, fpSiteIndex);
-                    const shadowPlayLine = `L'Ombre joue ${card.name || card.title} (${effectiveCost} Crépuscule${wasRoaming ? ' dont +2 Errance' : ''}).`;
-                    appendJournal(G, shadowPlayLine);
-                    G.statusMessage = shadowPlayLine;
+                    appendCardPlayedJournal(G, String(playerID), playedCard);
+                    G.statusMessage = `${playerDisplayName(G, String(playerID))} a joué ${displayFullName(playedCard)}.`;
                 },
 
                 attachShadowCard: (
@@ -827,9 +822,8 @@ export const LotrGame: Game<GameState> = {
                         phase: ctx.phase || 'shadow',
                     });
 
-                    const shadowAttachLine = `L'Ombre attache ${attachmentCard.name} à ${targetMinion.name}.`;
-                    appendJournal(G, shadowAttachLine);
-                    G.statusMessage = shadowAttachLine;
+                    appendCardPlayedJournal(G, String(playerID), attachmentCard);
+                    G.statusMessage = `${playerDisplayName(G, String(playerID))} a joué ${displayFullName(attachmentCard)}.`;
                 },
 
                 endShadowPhase: ({ G, events, playerID }: LotrMoveContext) => {

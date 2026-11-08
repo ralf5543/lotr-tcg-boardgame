@@ -5,8 +5,8 @@ export const slideDown = keyframes`
     to { transform: translate(-50%, 0); opacity: 1; }
 `;
 
-export const slideInLeft = keyframes`
-    from { transform: translateX(-120%); opacity: 0; }
+export const slideInRight = keyframes`
+    from { transform: translateX(120%); opacity: 0; }
     to { transform: translateX(0); opacity: 1; }
 `;
 
@@ -145,18 +145,19 @@ export const ActionButton = styled.button<{
 export const ToastWidget = styled.div`
     position: fixed;
     bottom: 25px;
-    left: 25px;
+    /* À droite de la zone de jeu, hors colonne sites (~340px). */
+    right: 60px;
     width: 320px;
     background: rgba(15, 23, 42, 0.95);
     border: 1px solid #c1a054;
-    border-left: 4px solid #e2c044;
+    border-right: 4px solid #e2c044;
     border-radius: 8px;
     padding: 12px 16px;
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.7);
     z-index: 9999;
     cursor: pointer;
     backdrop-filter: blur(6px);
-    animation: ${slideInLeft} 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+    animation: ${slideInRight} 0.35s cubic-bezier(0.16, 1, 0.3, 1);
 
     &:hover {
         border-color: #e2c044;
