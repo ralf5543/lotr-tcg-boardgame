@@ -234,6 +234,28 @@ export const StackedCountBadge = styled.button`
     }
 `;
 
+/**
+ * Empilement visuel de copies identiques (aire de soutien).
+ * Bandeau titre support sm ≈ 35px à gauche → peek un peu en-dessous.
+ */
+export const SUPPORT_DUPLICATE_PEEK_PX = 28;
+
+export const SupportDuplicateStack = styled.div<{ $underCount: number }>`
+    position: relative;
+    /* Place réservée aux copies qui dépassent à gauche du dessus. */
+    padding-inline-start: ${({ $underCount }) =>
+        $underCount > 0 ? $underCount * SUPPORT_DUPLICATE_PEEK_PX : 0}px;
+`;
+
+/** Copie décorative sous la carte active ; $index 0 = la plus à gauche (fond). */
+export const SupportDuplicateLayer = styled.div<{ $index: number }>`
+    position: absolute;
+    inset-block-start: 0;
+    inset-inline-start: ${({ $index }) => $index * SUPPORT_DUPLICATE_PEEK_PX}px;
+    z-index: ${({ $index }) => $index};
+    pointer-events: none;
+`;
+
 /* =========================================================
    2. SÉIDES ASSIGNÉS EN COMBAT (Minions)
    ========================================================= */

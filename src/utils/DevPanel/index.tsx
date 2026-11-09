@@ -342,6 +342,24 @@ export const DevPanel: React.FC<DevPanelProps> = ({
                         </S.ButtonGroup>
                     </S.Section>
 
+                    <S.Section>
+                        <S.Label>Preset playtest :</S.Label>
+                        <S.ButtonGroup>
+                            <S.ActionButton
+                                onClick={() =>
+                                    moves.devLoadPreset?.('SUPPORT_STACK')
+                                }
+                                title="Empilement visuel aire de soutien"
+                            >
+                                Empilement soutien
+                            </S.ActionButton>
+                        </S.ButtonGroup>
+                        <S.Hint>
+                            Copies non uniques vides → fan ; avec jetons /
+                            cartes empilées → carte seule.
+                        </S.Hint>
+                    </S.Section>
+
                     {/* Session / debug UI */}
                     <S.Section>
                         <S.Label>Session :</S.Label>

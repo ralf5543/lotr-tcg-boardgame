@@ -10,6 +10,7 @@ import * as S from './styles';
 import { useDrag } from '../../../../contexts/DragContext';
 import { BoardCharacterStack } from '../BoardCharacterStack';
 import { canPlayCard } from '../../../../game/engine/canPlayCard';
+import { groupSupportAreaForDisplay } from '../../../../game/logic/supportAreaStack';
 import { useFaction } from '../../../../contexts/FactionContext';
 import { audioService } from '../../../../services/audioService';
 import { AssignedMinionsTrackContext } from './AssignedMinionsTrackContext';
@@ -339,11 +340,12 @@ export const PlayerArea: React.FC<PlayerAreaProps> = ({
                 : false);
 
         // 🟢 Separation automatique FP (gauche) / Ombre (droite)
-        const fpSupportCards = supportArea.filter(
-            (card) => card.kind === 'FREE_PEOPLE'
+        // + empilement visuel des copies non uniques sans état stocké.
+        const fpSupportGroups = groupSupportAreaForDisplay(
+            supportArea.filter((card) => card.kind === 'FREE_PEOPLE')
         );
-        const shadowSupportCards = supportArea.filter(
-            (card) => card.kind === 'SHADOW'
+        const shadowSupportGroups = groupSupportAreaForDisplay(
+            supportArea.filter((card) => card.kind === 'SHADOW')
         );
 
         return (
@@ -361,8 +363,13 @@ export const PlayerArea: React.FC<PlayerAreaProps> = ({
                 <S.SupportSplitLayout>
                     {/* Sous-zone GAUCHE : Peuples Libres */}
                     <S.SupportSubZone $align="left">
-                        {fpSupportCards.map((card, cardIdx) => {
+                        {fpSupportGroups.map((group, groupIdx) => {
+                            const card = group.cards[0]!;
                             const cardId = card.instanceId || card.id;
+                            const supportIndex = supportArea.findIndex(
+                                (c) =>
+                                    (c.instanceId || c.id) === cardId
+                            );
                             const isWounded = Boolean(
                                 G?.lastWoundedCardIds?.includes(cardId) ||
                                 (card.wounds && card.wounds > 0)
@@ -373,12 +380,19 @@ export const PlayerArea: React.FC<PlayerAreaProps> = ({
                             const shouldBeFaceDown = isOpponent
                                 ? (card.isFaceDown ?? false)
                                 : false;
+                            const dupIds = group.cards.map(
+                                (c) => c.instanceId || c.id
+                            );
 
                             return (
                                 <BoardCharacterStack
-                                    key={card.id}
+                                    key={group.key}
                                     character={card}
-                                    index={cardIdx}
+                                    index={
+                                        supportIndex >= 0
+                                            ? supportIndex
+                                            : groupIdx
+                                    }
                                     isOpponent={isOpponent}
                                     isFaceDown={shouldBeFaceDown}
                                     burdens={playerBurdens}
@@ -388,13 +402,17 @@ export const PlayerArea: React.FC<PlayerAreaProps> = ({
                                     phase={phase}
                                     onActivateAbility={onActivateAbility}
                                     isDead={isDead}
+                                    duplicateCount={group.cards.length}
+                                    duplicateInstanceIds={dupIds}
                                     onStartDrag={(e) => {
                                         if (isOpponent || e.button !== 0)
                                             return;
                                         e.stopPropagation();
                                         startDrag(
                                             card,
-                                            cardIdx,
+                                            supportIndex >= 0
+                                                ? supportIndex
+                                                : groupIdx,
                                             e,
                                             'SUPPORT_AREA',
                                             'portrait'
@@ -407,8 +425,13 @@ export const PlayerArea: React.FC<PlayerAreaProps> = ({
 
                     {/* Sous-zone DROITE : Ombre */}
                     <S.SupportSubZone $align="right">
-                        {shadowSupportCards.map((card, cardIdx) => {
+                        {shadowSupportGroups.map((group, groupIdx) => {
+                            const card = group.cards[0]!;
                             const cardId = card.instanceId || card.id;
+                            const supportIndex = supportArea.findIndex(
+                                (c) =>
+                                    (c.instanceId || c.id) === cardId
+                            );
                             const isWounded = Boolean(
                                 G?.lastWoundedCardIds?.includes(cardId) ||
                                 (card.wounds && card.wounds > 0)
@@ -419,12 +442,19 @@ export const PlayerArea: React.FC<PlayerAreaProps> = ({
                             const shouldBeFaceDown = isOpponent
                                 ? (card.isFaceDown ?? false)
                                 : false;
+                            const dupIds = group.cards.map(
+                                (c) => c.instanceId || c.id
+                            );
 
                             return (
                                 <BoardCharacterStack
-                                    key={card.id}
+                                    key={group.key}
                                     character={card}
-                                    index={cardIdx}
+                                    index={
+                                        supportIndex >= 0
+                                            ? supportIndex
+                                            : groupIdx
+                                    }
                                     isOpponent={isOpponent}
                                     isFaceDown={shouldBeFaceDown}
                                     burdens={playerBurdens}
@@ -434,13 +464,17 @@ export const PlayerArea: React.FC<PlayerAreaProps> = ({
                                     phase={phase}
                                     onActivateAbility={onActivateAbility}
                                     isDead={isDead}
+                                    duplicateCount={group.cards.length}
+                                    duplicateInstanceIds={dupIds}
                                     onStartDrag={(e) => {
                                         if (isOpponent || e.button !== 0)
                                             return;
                                         e.stopPropagation();
                                         startDrag(
                                             card,
-                                            cardIdx,
+                                            supportIndex >= 0
+                                                ? supportIndex
+                                                : groupIdx,
                                             e,
                                             'SUPPORT_AREA',
                                             'portrait'

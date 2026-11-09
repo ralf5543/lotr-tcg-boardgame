@@ -4,6 +4,7 @@ import type { CardState, CardType, GameState } from '../../../../game/types';
 import { Card } from '../Card';
 import * as S from './styles';
 import { useDrag } from '../../../../contexts/DragContext';
+import { useHoverCard } from '../../../../contexts/HoverCardContext';
 import { useLocalFaction } from '../../../../contexts/FactionContext';
 import { useTargeting } from '../../../../contexts/TargetingContext';
 import { useTargetingArrowSync } from '../TargetingArrow/TargetingArrowSync';
@@ -46,6 +47,12 @@ interface BoardCharacterStackProps {
     isFaceDown: boolean;
     G: GameState;
     playerID: string;
+    /**
+     * Copies identiques (aire de soutien) : pile visuelle décalée à gauche +
+     * enregistrement de ciblage pour chaque instanceId du groupe.
+     */
+    duplicateCount?: number;
+    duplicateInstanceIds?: string[];
     onActivateAbility?: (
         sourceInstanceId: string,
         abilityId: string,
@@ -74,10 +81,13 @@ export const BoardCharacterStack: React.FC<BoardCharacterStackProps> = ({
     isDisabled = false,
     burdens = 0,
     isFaceDown = false,
+    duplicateCount = 1,
+    duplicateInstanceIds,
     onActivateAbility,
 }) => {
     const { registerTarget, registerArrowAnchor, activeTargetId, dragged, startDrag, isOverHandCancel } =
         useDrag();
+    const { setHoveredCard } = useHoverCard();
     const { isCardTargetable, selectCard, targetingKind, hoveredTargetId } =
         useTargeting();
     const arrowSync = useTargetingArrowSync();
@@ -123,7 +133,9 @@ export const BoardCharacterStack: React.FC<BoardCharacterStackProps> = ({
 
     const cardKey = character.instanceId || character.id;
     const isTargetable =
-        isCardTargetable(cardKey) || isCardTargetable(character.id);
+        isCardTargetable(cardKey) ||
+        isCardTargetable(character.id) ||
+        (duplicateInstanceIds || []).some((id) => isCardTargetable(id));
     const isInCombat = assignedMinions.length > 0;
     const dragDesignationIds = dragged?.designationTargetIds;
     const isDragDesignating =
@@ -565,82 +577,140 @@ export const BoardCharacterStack: React.FC<BoardCharacterStackProps> = ({
                 )}
 
                 {/* CARTE PRINCIPALE (Compagnon ou Séide solo) */}
-                <S.CardDragTarget
-                    $isOpponent={isOpponent}
-                    $isTargeted={isTargeted}
-                    $aimFaction={aimFaction}
-                    $isTargetable={isTargetable}
-                    $isDesignationTarget={isDesignationTarget}
-                    $suppressHoverScale={isInCombat}
-                    $suppressHoverHalo={canSelectThisSkirmish}
-                    $isDead={isDead}
-                    $isDisabled={isDisabled}
-                    data-card={JSON.stringify(character)}
-                    data-draggable={canDragCharacter ? 'true' : undefined}
-                    ref={(el) => {
-                        companionAnchorRef.current = el;
-                        const id = character.instanceId || character.id;
-                        registerTarget(id, el);
-                        registerArrowAnchor(id, el);
-                        if (
-                            character.id &&
-                            character.id !== id
-                        ) {
-                            registerTarget(character.id, el);
-                            registerArrowAnchor(character.id, el);
-                        }
-                    }}
-                    onPointerDown={(e) => {
-                        // 🎯 Si c'est ciblable, on déclenche directement la sélection au clic
-                        if (isTargetable) {
-                            e.stopPropagation();
-                            selectCard(
-                                isCardTargetable(cardKey)
-                                    ? cardKey
-                                    : character.id
-                            );
-                            return;
-                        }
-
-                        if (!canDragCharacter || e.button !== 0) return;
-
-                        if (onStartDrag) {
-                            onStartDrag(e);
-                        } else {
-                            startDrag(
-                                character,
-                                index,
-                                e,
-                                'BATTLEFIELD',
-                                'portrait'
-                            );
-                        }
-                    }}
-                    onClick={(e) => {
-                        // pointerDown assigne déjà (menaces / flèches) : ne pas laisser
-                        // le clic remonter au groupe et démarrer un combat.
-                        if (isTargetable) e.stopPropagation();
-                    }}
+                <S.SupportDuplicateStack
+                    $underCount={Math.max(0, duplicateCount - 1)}
+                    onMouseEnter={
+                        duplicateCount > 1
+                            ? () => setHoveredCard(character)
+                            : undefined
+                    }
+                    onMouseLeave={
+                        duplicateCount > 1
+                            ? () => setHoveredCard(null)
+                            : undefined
+                    }
                 >
-                    {isDead && <S.DeathPicto src="/interface/UI/skull.webp" />}
-                    <Card
-                        card={character}
-                        size="sm"
-                        isDraggable={canDragCharacter}
-                        currentSiteIndex={currentSiteIndex}
-                        isWounded={isWounded}
-                        isDead={isDead}
-                        isDisabled={isDisabled}
-                        isActionable={isActionable}
-                        isOpponent={isOpponent}
-                        burdens={burdens}
-                        isFaceDown={isFaceDown}
-                        G={G}
-                        phase={phase}
-                        playerID={playerID}
-                        onActivateAbility={onActivateAbility}
-                    />
-                </S.CardDragTarget>
+                    {duplicateCount > 1 &&
+                        Array.from(
+                            { length: duplicateCount - 1 },
+                            (_, i) => (
+                                <S.SupportDuplicateLayer
+                                    key={`support-dup-${character.instanceId || character.id}-${i}`}
+                                    $index={i}
+                                    aria-hidden
+                                >
+                                    <Card
+                                        card={character}
+                                        size="sm"
+                                        visualOnly
+                                        suppressHover
+                                        isDisabled={isDisabled}
+                                        isOpponent={isOpponent}
+                                        G={G}
+                                    />
+                                </S.SupportDuplicateLayer>
+                            )
+                        )}
+                    <S.CardDragTarget
+                        $isOpponent={isOpponent}
+                        $isTargeted={isTargeted}
+                        $aimFaction={aimFaction}
+                        $isTargetable={isTargetable}
+                        $isDesignationTarget={isDesignationTarget}
+                        $suppressHoverScale={isInCombat}
+                        $suppressHoverHalo={canSelectThisSkirmish}
+                        $isDead={isDead}
+                        $isDisabled={isDisabled}
+                        style={
+                            duplicateCount > 1
+                                ? { zIndex: duplicateCount + 1 }
+                                : undefined
+                        }
+                        data-card={JSON.stringify(character)}
+                        data-draggable={canDragCharacter ? 'true' : undefined}
+                        ref={(el) => {
+                            companionAnchorRef.current = el;
+                            const id = character.instanceId || character.id;
+                            registerTarget(id, el);
+                            registerArrowAnchor(id, el);
+                            if (
+                                character.id &&
+                                character.id !== id
+                            ) {
+                                registerTarget(character.id, el);
+                                registerArrowAnchor(character.id, el);
+                            }
+                            // Groupe de copies soutien : chaque instance reste ciblable.
+                            for (const dupId of duplicateInstanceIds || []) {
+                                if (
+                                    !dupId ||
+                                    dupId === id ||
+                                    dupId === character.id
+                                )
+                                    continue;
+                                registerTarget(dupId, el);
+                                registerArrowAnchor(dupId, el);
+                            }
+                        }}
+                        onPointerDown={(e) => {
+                            // 🎯 Si c'est ciblable, on déclenche directement la sélection au clic
+                            if (isTargetable) {
+                                e.stopPropagation();
+                                const pickId =
+                                    [
+                                        cardKey,
+                                        character.id,
+                                        ...(duplicateInstanceIds || []),
+                                    ].find(
+                                        (id) => id && isCardTargetable(id)
+                                    ) || cardKey;
+                                selectCard(pickId);
+                                return;
+                            }
+
+                            if (!canDragCharacter || e.button !== 0) return;
+
+                            if (onStartDrag) {
+                                onStartDrag(e);
+                            } else {
+                                startDrag(
+                                    character,
+                                    index,
+                                    e,
+                                    'BATTLEFIELD',
+                                    'portrait'
+                                );
+                            }
+                        }}
+                        onClick={(e) => {
+                            // pointerDown assigne déjà (menaces / flèches) : ne pas laisser
+                            // le clic remonter au groupe et démarrer un combat.
+                            if (isTargetable) e.stopPropagation();
+                        }}
+                    >
+                        {isDead && (
+                            <S.DeathPicto src="/interface/UI/skull.webp" />
+                        )}
+                        <Card
+                            card={character}
+                            size="sm"
+                            isDraggable={canDragCharacter}
+                            currentSiteIndex={currentSiteIndex}
+                            isWounded={isWounded}
+                            isDead={isDead}
+                            isDisabled={isDisabled}
+                            isActionable={isActionable}
+                            isOpponent={isOpponent}
+                            burdens={burdens}
+                            isFaceDown={isFaceDown}
+                            G={G}
+                            phase={phase}
+                            playerID={playerID}
+                            suppressHover={duplicateCount > 1}
+                            onActivateAbility={onActivateAbility}
+                        />
+                    </S.CardDragTarget>
+                </S.SupportDuplicateStack>
 
                 {/* ATTACHEMENTS CLASSIQUES */}
                 {character.attachments && character.attachments.length > 0 && (

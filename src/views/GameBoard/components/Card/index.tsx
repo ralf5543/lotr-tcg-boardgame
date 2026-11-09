@@ -202,6 +202,11 @@ interface CardProps {
      * Le zoom (hover) garde le détail complet.
      */
     visualOnly?: boolean;
+    /**
+     * Survol géré par le parent (ex. pile visuelle soutien) :
+     * ne pas poser / retirer le zoom depuis cette carte.
+     */
+    suppressHover?: boolean;
     onActivateAbility?: (
         sourceInstanceId: string,
         abilityId: string,
@@ -233,6 +238,7 @@ export const Card: React.FC<CardProps> = ({
     playerID,
     isStackedOnSite = false,
     visualOnly = false,
+    suppressHover = false,
     onActivateAbility,
 }) => {
     const { setHoveredCard } = useHoverCard();
@@ -547,11 +553,13 @@ export const Card: React.FC<CardProps> = ({
     const isRingBearer = isRingBearerProp ?? isRingBearerCard(card);
 
     const handleMouseEnter = () => {
-        if (size !== 'lg') setHoveredCard(card);
+        if (suppressHover || size === 'lg') return;
+        setHoveredCard(card);
     };
 
     const handleMouseLeave = () => {
-        if (size !== 'lg') setHoveredCard(null);
+        if (suppressHover || size === 'lg') return;
+        setHoveredCard(null);
     };
 
     const handleDragStart = (e: React.DragEvent) => {
