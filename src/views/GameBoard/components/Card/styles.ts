@@ -368,6 +368,23 @@ export const CardContainer = styled.div<CardContainerProps>`
                     height: 30px;
                     font-size: 16px;
                 }
+                ${ResistanceWrapper} {
+                    position: static;
+                    width: 25px;
+                    height: 30px;
+                    aspect-ratio: auto;
+                    inset: auto;
+                }
+                ${CardResistance} {
+                    position: static;
+                    translate: none;
+                    inset: auto;
+                    width: 25px;
+                    height: 30px;
+                    font-size: 16px;
+                    background-position: center;
+                    background-size: 27px;
+                }
             `}
 
             /* ======------ Small RING card override ------====== */

@@ -642,11 +642,15 @@ export const Card: React.FC<CardProps> = ({
     const useAttachmentChrome = isAttachment && !visualOnly;
 
     const attachmentResistance = card.resistance ?? 0;
+    // Plateau (sm) : résistance effective. Zoom (lg) : valeur imprimée seule
+    // (comme force / vitalité) — pas les attachements / fardeaux / modifs.
     const displayResistance = useAttachmentChrome
         ? attachmentResistance > 0
             ? `+${attachmentResistance}`
             : `${attachmentResistance}`
-        : effectiveResistance;
+        : size === 'sm'
+          ? effectiveResistance
+          : card.resistance;
 
     const shouldShowResistance =
         size === 'sm'
@@ -655,7 +659,7 @@ export const Card: React.FC<CardProps> = ({
                 : true
             : useAttachmentChrome
               ? card.resistance !== undefined
-              : !card.signet;
+              : !card.signet && card.resistance !== undefined;
 
     const shouldShowSignet = Boolean(card.signet);
 
@@ -933,10 +937,14 @@ export const Card: React.FC<CardProps> = ({
                     </S.RoamingNumber>
                 )}
 
-                {isFreepeopleCharacter && shouldShowResistance && (
+                {(isFreepeopleCharacter || useAttachmentChrome) &&
+                    shouldShowResistance &&
+                    displayResistance !== undefined && (
                     <S.ResistanceWrapper>
                         <S.CardResistance
-                            $isRingBearer={Boolean(isRingBearer)}
+                            $isRingBearer={
+                                Boolean(isRingBearer) && !useAttachmentChrome
+                            }
                             $pulseGen={resistancePulse}
                         >
                             {displayResistance}
