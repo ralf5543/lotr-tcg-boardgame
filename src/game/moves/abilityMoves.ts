@@ -15,6 +15,7 @@ import {
 } from '../engine/abilities/payAbilityCost';
 import { abilityMatchesPhase } from '../engine/abilities/collectAbilities';
 import { yieldPriorityAfterAction } from '../engine/actionWindow';
+import { appendAbilityUsedJournal } from '../logic/journal';
 import { findTargetCard } from '../../utils/cardUtils';
 import {
     abilityHasLegalEffectTarget,
@@ -232,18 +233,21 @@ export const activateAbility = (
     }
 
     if (wasResponseWindowOpen && isResponseAbility) {
+        appendAbilityUsedJournal(G, source, ability, effectTargetId);
         afterResponseResolved(G, String(playerID), ability, source);
         flushPendingPhaseAfterResponse(G, events);
         return;
     }
 
     if (isResponseWindowOpen(G) && !wasResponseWindowOpen) {
+        appendAbilityUsedJournal(G, source, ability, effectTargetId);
         pauseActionYieldForResponses(G, String(playerID));
         return;
     }
 
     // Porter l’Anneau hors d’une fenêtre déjà ouverte (ex. Combat : fardeau).
     if (tryOpenPutsOnTheOneRing(G) === 'WAITING') {
+        appendAbilityUsedJournal(G, source, ability, effectTargetId);
         pauseActionYieldForResponses(G, String(playerID));
         return;
     }
@@ -260,6 +264,7 @@ export const activateAbility = (
     }
 
     yieldPriorityAfterAction(G, String(playerID));
+    appendAbilityUsedJournal(G, source, ability, effectTargetId);
     const title = source.i18n?.fr?.title || source.title || source.id;
     G.statusMessage = `${title} active une capacité.`;
 

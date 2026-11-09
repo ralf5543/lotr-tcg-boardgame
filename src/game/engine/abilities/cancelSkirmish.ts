@@ -11,6 +11,8 @@ import {
     findBearer,
     forEachInPlayCard,
 } from './resolveCostTarget';
+import { displayTitle } from '../../../decks/cardMeta';
+import { appendJournal } from '../../logic/journal';
 
 const matchId = (card: CardState, targetId: string) =>
     card.instanceId === targetId || card.id === targetId;
@@ -156,10 +158,7 @@ export function cancelSkirmish(G: GameState, skirmishId: string): boolean {
     if (idx === -1) return false;
 
     const companion = findInPlayById(G, G.skirmishes[idx].companionId);
-    const name =
-        companion?.i18n?.fr?.title ||
-        companion?.title ||
-        'ce personnage';
+    const name = companion ? displayTitle(companion) : 'ce personnage';
 
     G.skirmishes.splice(idx, 1);
     if (G.activeSkirmishId === skirmishId) {
@@ -167,6 +166,8 @@ export function cancelSkirmish(G: GameState, skirmishId: string): boolean {
         G.actionWindow = undefined;
     }
     clearSkirmishTemps(G);
-    G.statusMessage = `Escarmouche annulée (${name}).`;
+    const line = `Combat annulé (${name}).`;
+    appendJournal(G, line);
+    G.statusMessage = line;
     return true;
 }

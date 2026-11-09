@@ -72,12 +72,17 @@ describe('A Shadow Rises (11R216)', () => {
         expect(G.battlefield[0]?.keywords).toContain('FIERCE');
         expect(G.battlefield[0]?.animatedMinion?.stillCondition).toBe(true);
 
+        // Blessures / jetons pris pendant l’animation.
+        G.battlefield[0]!.wounds = 2;
+        G.battlefield[0]!.cultureTokens = { WRAITH: 3 };
+
         clearExpiredTempKeywords(G, 'REGROUP');
         expect(G.battlefield).toHaveLength(0);
         expect(G.players['1']?.supportArea).toHaveLength(1);
         const back = G.players['1']!.supportArea![0]!;
         expect(back.type).toBe('CONDITION');
         expect(back.animatedMinion).toBeUndefined();
+        expect(back.wounds).toBe(0);
         expect(back.cultureTokens).toEqual({});
     });
 });

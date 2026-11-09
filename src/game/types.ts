@@ -1899,6 +1899,10 @@ export type JournalEntry = {
     named: string;
     /** Si présent : rendu riche « a joué » + lien carte. */
     playedCard?: JournalCardRef;
+    /** Marqueur de phase (style distinct dans le fil). */
+    kind?: 'phase';
+    /** Clé TRANSLATIONS.phase : FELLOWSHIP, SHADOW… */
+    phaseKey?: string;
 };
 
 export interface GameState {
@@ -2255,7 +2259,6 @@ export interface LotrMoveContext extends FnContext<GameState> {
     playerID: string;
 }
 
-/** Presets DEV de playtest (vague hobbits / Nazgûl — cartes encore inertes). */
 /** Identifiant de preset DEV (vide tant qu’aucune vague n’en a besoin). */
 export type DevPresetType = string;
 

@@ -836,6 +836,12 @@ function formatEffectBit(
             const scale = `${stat} +${effect.value} par jeton ${cultureBit} ici${lim != null ? ` (limite +${lim})` : ''}`;
             return who ? `${scale} à ${who}` : scale;
         }
+        if (effect.perSpot) {
+            const spotted = formatFilterList(effect.perSpot.target.flat());
+            const sign = effect.value > 0 ? '+' : '';
+            const scale = `${stat} ${sign}${effect.value} par ${spotted} désigné`;
+            return who ? `${scale} à ${who}` : scale;
+        }
         const bit = effect.valueFromSourceStat
             ? `ajouter sa ${stat}`
             : (() => {

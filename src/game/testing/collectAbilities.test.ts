@@ -111,6 +111,33 @@ describe('formatAbilityLabelParts', () => {
         });
     });
 
+    it("Pippin's Sword : force +1 par compagnon gondor désigné", () => {
+        const ability: Ability = {
+            id: '7R114:0',
+            phases: ['SKIRMISH'],
+            cost: [{ exert: [{ count: 2, target: [['Pippin']] }] }],
+            effects: [
+                {
+                    type: 'ADD_TEMP_STAT',
+                    stat: 'STRENGTH',
+                    value: 1,
+                    target: [['Pippin']],
+                    perSpot: { target: [['GONDOR', 'COMPANION']] },
+                    expiresAtPhase: 'SKIRMISH',
+                },
+            ],
+            source: 'SELF',
+        };
+        const sword = createCard({
+            id: '7R114',
+            title: "Pippin's Sword",
+            i18n: { fr: { title: 'Épée de Pippin' } },
+        });
+        expect(formatAbilityLabelParts(ability, sword).effect).toMatch(
+            /force \+1 par compagnon <symbol>gondor<\/symbol> désigné/i
+        );
+    });
+
     it('Sylvebarbe Affectation : coût désigné + permettre de combattre', () => {
         const ability: Ability = {
             id: '0P21:0',

@@ -32,6 +32,7 @@ import {
     collectProjectedAbilities,
 } from './abilities/collectAbilities';
 import { applyAbilityEffect } from './abilities/applyAbilityEffect';
+import { appendAbilityUsedJournal } from '../logic/journal';
 import {
     getEffectiveResistance,
     getEffectiveVitality,
@@ -1225,6 +1226,12 @@ function concludeOpenResponse(G: GameState): 'APPLIED' | 'WAITING' {
             if (ability.omitFromArcheryTotal) {
                 source.omitFromArcheryTotal = true;
             }
+            appendAbilityUsedJournal(
+                G,
+                source,
+                ability,
+                pending.effectTargetId
+            );
         }
         if (tryOpenPutsOnTheOneRing(G) === 'WAITING') return 'WAITING';
         flushPendingActionYield(G);

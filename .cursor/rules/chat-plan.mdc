@@ -27,6 +27,8 @@ Règle : **une fois en live**, **une fois en historique** — pas trois fois la 
 
 Journal = **ce qui s’est passé** uniquement. Pas de consignes (« Misez… ») ni d’« En attente de … ».
 
+**Exception de timing** : enchère de fardeaux — les mises ne sont journalisées **qu’à la révélation** (les deux ont misé), jamais à la 1ʳᵉ mise seule.
+
 ## Décisions v1
 
 - Emplacement chat : `ChatSlot` du rail hors-jeu (`OutOfPlayRail`).
@@ -51,9 +53,10 @@ Journal = **ce qui s’est passé** uniquement. Pas de consignes (« Misez… »
 
 1. Socle filtré + UI chat/journal dans le rail — **fait**
 2. Noms + dédoublonnage bandeau / toaster + toaster bas droite — **fait**
-3. Journal = faits (`journalLog`) — **en cours** (setup + jeux de cartes branchés ; élargir au fur et à mesure)
-4. Playtest SocketIO 2 onglets
-5. Ajuster densité selon ressenti
+3. Journal = faits (`journalLog`) — **en cours** (setup, jeux de cartes, défausse, phases, combats, capacités, décision regroup ; élargir au fur et à mesure)
+4. Onglets Journal / Chat dans le rail — **fait**
+5. Playtest SocketIO 2 onglets
+6. Ajuster densité selon ressenti
 
 ## Hors v1
 
@@ -61,3 +64,4 @@ Journal = **ce qui s’est passé** uniquement. Pas de consignes (« Misez… »
 - Avatars dans le fil de chat
 - Modération, historique persistant, sons de notif
 - Canal sync séparé pour les flèches (décharger le chat)
+- Phrases de combat plus riches pour les noms de classe (orque de…)

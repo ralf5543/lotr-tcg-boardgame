@@ -14,9 +14,9 @@ import {
     otherPlayerId,
     playerDisplayName,
 } from '../logic/playerName';
+import { displayTitle } from '../../decks/cardMeta';
 import {
     appendActorJournal,
-    appendJournal,
     appendSideRolesJournal,
     formatSideRolesStatus,
 } from '../logic/journal';
@@ -80,6 +80,13 @@ export const endTurnChoice = ({ G }: LotrMoveContext) => {
     // 🟢 Renvoyer les Suivants en support-area seulement quand le FP choisit de finir son tour
     returnAidFollowersToSupport(G);
 
+    const fpId = G.fpPlayerId || '0';
+    const name = playerDisplayName(G, fpId);
+    appendActorJournal(G, fpId, {
+        vous: 'Vous avez décidé de vous arrêter.',
+        named: `${name} a décidé de s’arrêter.`,
+    });
+
     G.regroupStep = 'FP_REFILL';
     G.statusMessage =
         'Peuples Libres : Ajustez votre main à 8 cartes et validez pour terminer le tour.';
@@ -131,7 +138,8 @@ export const discardCardFromHand = (
 
     player.hasDiscardedInRegroup = true;
 
-    const cardName = discarded.title || discarded.name;
+    // CR : les cartes défaussées sont visibles de tous (une par une).
+    const cardName = displayTitle(discarded);
     const name = playerDisplayName(G, actingPlayerId);
     appendActorJournal(G, actingPlayerId, {
         vous: `Vous avez défaussé ${cardName}.`,
@@ -271,9 +279,13 @@ export const discardForMuster = (
     if (discardedCard) {
         placeCardIntoDiscardPile(G, playerID, discardedCard);
         musterState.discardedCount += 1;
-        const musterDiscardLine = `Ralliement (${musterState.discardedCount}/${musterState.allowedCount}) : carte défaussée.`;
-        appendJournal(G, musterDiscardLine);
-        G.statusMessage = musterDiscardLine;
+        const cardName = displayTitle(discardedCard);
+        const name = playerDisplayName(G, playerID);
+        appendActorJournal(G, playerID, {
+            vous: `Vous avez défaussé ${cardName} (ralliement ${musterState.discardedCount}/${musterState.allowedCount}).`,
+            named: `${name} a défaussé ${cardName} (ralliement ${musterState.discardedCount}/${musterState.allowedCount}).`,
+        });
+        G.statusMessage = `${name} a défaussé ${cardName} (ralliement ${musterState.discardedCount}/${musterState.allowedCount}).`;
     }
 };
 

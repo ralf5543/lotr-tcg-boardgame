@@ -4,10 +4,10 @@ import {
     getEffectiveStrength,
     getEffectiveVitality,
 } from '../../utils/cardStats';
-import { getCardText } from '../../utils/i18n';
+import { displayTitle } from '../../decks/cardMeta';
 import {
-    applyWoundAndCheckDeath,
     applyOverwhelmAndCheckDeath,
+    applyWoundAndCheckDeath,
 } from '../../utils/applyWoundAndCheckDeath';
 import {
     getKeywordValue,
@@ -21,20 +21,22 @@ import {
     tryOpenWinsSkirmish,
 } from '../engine/responseWindow';
 import { clearExpiredTempKeywords } from '../engine/abilities/applyAbilityEffect';
+import {
+    appendJournal,
+    formatBlessuresCount,
+    formatPointsFardeau,
+} from './journal';
 
-/**
- * Helper interne pour extraire proprement le nom d'une carte dans la langue par défaut (FR).
- */
-const getCardName = (cardObj: any, fallback: string): string => {
-    if (!cardObj) return fallback;
-    const cardState = cardObj.card || cardObj;
-    return (
-        getCardText(cardState, 'fr').title ||
-        cardState.title ||
-        cardState.name ||
-        fallback
-    );
-};
+/** Titre seul (pas de sous-titre) pour le journal de combat. */
+const getCardName = (card: CardState | null | undefined, fallback: string): string =>
+    (card ? displayTitle(card) : '') || fallback;
+
+function joinNames(names: string[]): string {
+    if (names.length === 0) return 'un adversaire';
+    if (names.length === 1) return names[0];
+    if (names.length === 2) return `${names[0]} et ${names[1]}`;
+    return `${names.slice(0, -1).join(', ')} et ${names[names.length - 1]}`;
+}
 
 /**
  * Vérifie s'il reste au moins un séide en vie sur le plateau ayant le mot-clé FIERCE.
@@ -126,6 +128,8 @@ export const resolveSkirmish = (G: GameState, _ctx?: Ctx) => {
     }
 
     const companionName = getCardName(companion, 'Le compagnon');
+    const minionNames = minions.map((m) => getCardName(m, 'un séide'));
+    const minionsLabel = joinNames(minionNames);
 
     const companionStrength = getCalculatedStrength(G, companion);
 
@@ -138,15 +142,6 @@ export const resolveSkirmish = (G: GameState, _ctx?: Ctx) => {
     G.lastExertedCardIds = [];
     G.pendingDeadCardIds = [];
     skirmish.resolved = true;
-
-    const minionsSummary = minions
-        .map(
-            (m) => `${getCardName(m, 'Un séide')} (${getCardTotalStrength(m)})`
-        )
-        .join(', ');
-
-    let resultMsg = `Résolution : ${companionName} (${companionStrength}) vs ${minionsSummary}`;
-    resultMsg += ` [Total Ombre: ${minionsStrength}]. `;
 
     const companionId = companion.instanceId || companion.id;
     // CR : égalité = l’Ombre gagne (pas « ni l’un ni l’autre »).
@@ -170,9 +165,11 @@ export const resolveSkirmish = (G: GameState, _ctx?: Ctx) => {
         };
     }
 
+    const journalLines: string[] = [];
+
     // ⚔️ CAS 1 : VICTOIRE DU COMPAGNON
     if (companionStrength > minionsStrength) {
-        resultMsg += `Victoire de ${companionName} ! `;
+        journalLines.push(`${companionName} a vaincu ${minionsLabel}.`);
 
         // Submersion séides : ×2 par défaut (pas d’effet « ×3 » côté séide ici).
         const isMinionsOverwhelmed =
@@ -183,22 +180,30 @@ export const resolveSkirmish = (G: GameState, _ctx?: Ctx) => {
         const woundsToApply = 1 + getDamageBonus(companion, G);
 
         minions.forEach((minion) => {
+            const minionName = getCardName(minion, 'Un séide');
             if (isMinionsOverwhelmed) {
                 applyOverwhelmAndCheckDeath(G, minion);
+                journalLines.push(`${minionName} est submergé et meurt.`);
             } else {
                 requestWounds(G, minion, woundsToApply);
+                if (!G.responseWindow?.isOpen) {
+                    const died = Boolean(minion.isDead);
+                    journalLines.push(
+                        died
+                            ? `${minionName} prend ${formatBlessuresCount(woundsToApply)} et meurt.`
+                            : `${minionName} prend ${formatBlessuresCount(woundsToApply)}.`
+                    );
+                }
             }
         });
-
-        if (isMinionsOverwhelmed) {
-            resultMsg += `Les séides sont SUBMERGÉS !`;
-        } else if (woundsToApply > 1) {
-            resultMsg += `(Chaque séide subit ${woundsToApply} blessures via DAMAGE +${woundsToApply - 1})`;
-        }
     }
     // ⚔️ CAS 2 : VICTOIRE DE L'OMBRE (ou Égalité)
     else {
-        resultMsg += `Victoire de l'Ombre ! `;
+        journalLines.push(
+            minionNames.length > 1
+                ? `${minionsLabel} ont vaincu ${companionName}.`
+                : `${minionsLabel} a vaincu ${companionName}.`
+        );
 
         // Everyone Knows etc. : seuil temporaire (×3) sur le compagnon.
         const companionOverwhelmFactor =
@@ -214,39 +219,40 @@ export const resolveSkirmish = (G: GameState, _ctx?: Ctx) => {
 
         if (isCompanionOverwhelmed) {
             applyOverwhelmAndCheckDeath(G, companion);
-            resultMsg += `${companionName} est SUBMERGÉ et tué sur le coup !`;
+            journalLines.push(`${companionName} est submergé et meurt.`);
         } else {
             const damageBonus = getDamageBonus(minions, G);
             const woundsToApply = 1 + damageBonus;
 
             requestWounds(G, companion, woundsToApply);
 
-            const damageText =
-                damageBonus > 0
-                    ? ` (${woundsToApply} blessures incluant DAMAGE +${damageBonus})`
-                    : '';
             const waiting = Boolean(G.responseWindow?.isOpen);
             const tookWound = (G.lastWoundedCardIds || []).includes(
                 companionId
             );
             const burdensInstead =
                 !waiting && Boolean(G.wearingTheOneRing) && !tookWound;
-            if (waiting) {
-                resultMsg += `${companionName} est sur le point de subir ${woundsToApply} blessure${woundsToApply > 1 ? 's' : ''}${damageText}.`;
-            } else if (burdensInstead) {
+            if (!waiting && burdensInstead) {
                 const each = G.wearingTheOneRing!.replaceWoundWithBurdens;
                 const total = each * woundsToApply;
-                resultMsg += `${companionName} porte l’Anneau Unique : ${total} fardeau${total > 1 ? 's' : ''} à la place.`;
-            } else {
-                resultMsg += `${companionName} subit ${woundsToApply} blessure${woundsToApply > 1 ? 's' : ''}${damageText}${
-                    companion.isDead ? ' et meurt' : ''
-                }.`;
+                journalLines.push(
+                    `${companionName} porte l’Anneau Unique : ${formatPointsFardeau(total)} à la place.`
+                );
+            } else if (!waiting) {
+                journalLines.push(
+                    companion.isDead
+                        ? `${companionName} prend ${formatBlessuresCount(woundsToApply)} et meurt.`
+                        : `${companionName} prend ${formatBlessuresCount(woundsToApply)}.`
+                );
             }
         }
     }
 
-    if (!G.responseWindow?.isOpen) {
-        G.statusMessage = resultMsg;
+    for (const line of journalLines) {
+        appendJournal(G, line);
+    }
+    if (!G.responseWindow?.isOpen && journalLines.length > 0) {
+        G.statusMessage = journalLines.join(' ');
     }
     if (tryOpenCharacterDies(G) === 'WAITING') return;
     if (tryOpenWinsSkirmish(G) === 'WAITING') return;

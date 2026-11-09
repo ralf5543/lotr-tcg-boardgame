@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import { Client } from 'boardgame.io/client';
 import { LotrGame } from '../index';
 import { GameBoard } from '../../views/GameBoard';
+import type { ChatLike } from '../chat/playerChat';
 import { enumerateBotMoves } from './enumerateBotMoves';
 import { isBotToAct, pendingNamedActor } from './isBotToAct';
 import type { GameState } from '../types';
@@ -16,12 +17,16 @@ type BotClient = ReturnType<typeof Client>;
  * Partie solo sans multiplayer Local : un seul client, coups appliqués
  * tout de suite. Le BOT joue via MAKE_MOVE en tant que siège 1 sans
  * basculer l’UI (qui reste joueur 0).
+ *
+ * Chat : sans transport multiplayer, `client.chatMessages` reste vide —
+ * on garde un fil local (utile pour tester l’UI journal / chat).
  */
 export function SoloBotMatch({ matchID }: { matchID: string }) {
     const clientRef = useRef<BotClient | null>(null);
     const busyRef = useRef(false);
     const lastWarnAt = useRef(0);
     const [, setRev] = useState(0);
+    const [localChat, setLocalChat] = useState<ChatLike[]>([]);
 
     useEffect(() => {
         const client = Client({
@@ -157,8 +162,20 @@ export function SoloBotMatch({ matchID }: { matchID: string }) {
             unsub();
             client.stop();
             clientRef.current = null;
+            setLocalChat([]);
         };
     }, [matchID]);
+
+    const sendChatMessage = (payload: unknown) => {
+        setLocalChat((prev) => [
+            ...prev,
+            {
+                id: `solo-chat-${Date.now()}-${prev.length}`,
+                sender: HUMAN_ID,
+                payload,
+            },
+        ]);
+    };
 
     const client = clientRef.current;
     const state = client?.getState();
@@ -179,8 +196,8 @@ export function SoloBotMatch({ matchID }: { matchID: string }) {
             undo={client.undo}
             redo={client.redo}
             log={client.log}
-            sendChatMessage={client.sendChatMessage}
-            chatMessages={client.chatMessages}
+            sendChatMessage={sendChatMessage}
+            chatMessages={localChat}
         />
     );
 }

@@ -31,7 +31,20 @@ type FeedEntry =
           mine: boolean;
       };
 
+type FeedTab = 'journal' | 'chat';
+
 const MAX_FEED = 80;
+
+const PHASE_ICON: Record<string, string> = {
+    FELLOWSHIP: 'interface/icons/phase_fellowship.webp',
+    SHADOW: 'interface/icons/phase_shadow.webp',
+    MANEUVER: 'interface/icons/phase_maneuver.webp',
+    ARCHERY: 'interface/icons/phase_archery.webp',
+    ASSIGNMENT: 'interface/icons/phase_assignment.webp',
+    SKIRMISH: 'interface/icons/phase_skirmish.webp',
+    REGROUP: 'interface/icons/phase_regroup.webp',
+    SETUP: 'interface/icons/phase_setup.webp',
+};
 
 interface OutOfPlayRailProps {
     twilight: number;
@@ -294,6 +307,7 @@ export const OutOfPlayRail: React.FC<OutOfPlayRailProps> = ({
     const prevHolderRef = useRef(initiativeHolder);
     const [pulseKey, setPulseKey] = useState(0);
     const [feed, setFeed] = useState<FeedEntry[]>([]);
+    const [feedTab, setFeedTab] = useState<FeedTab>('journal');
     const [draft, setDraft] = useState('');
     const seenChatIdsRef = useRef<Set<string>>(new Set());
     const seenJournalLenRef = useRef(0);
@@ -364,7 +378,12 @@ export const OutOfPlayRail: React.FC<OutOfPlayRailProps> = ({
 
     useEffect(() => {
         feedEndRef.current?.scrollIntoView({ block: 'end' });
-    }, [feed]);
+    }, [feed, feedTab]);
+
+    const visibleFeed =
+        feedTab === 'chat'
+            ? feed.filter((entry) => entry.kind === 'chat')
+            : feed;
 
     const canSend = Boolean(sendChatMessage);
     const handleSubmit = (event: React.FormEvent) => {
@@ -441,23 +460,75 @@ export const OutOfPlayRail: React.FC<OutOfPlayRailProps> = ({
                 onOpen={() => onOpenZone('my-removed')}
             />
             <S.ChatSlot>
-                <S.ChatFeed aria-live="polite" aria-label="Journal et chat">
-                    {feed.length === 0 ? (
-                        <S.ChatEmpty>Journal et chat de la partie</S.ChatEmpty>
+                <S.ChatTabs role="tablist" aria-label="Filtrer le journal">
+                    <S.ChatTab
+                        type="button"
+                        role="tab"
+                        aria-selected={feedTab === 'journal'}
+                        $active={feedTab === 'journal'}
+                        onClick={() => setFeedTab('journal')}
+                    >
+                        Journal
+                    </S.ChatTab>
+                    <S.ChatTab
+                        type="button"
+                        role="tab"
+                        aria-selected={feedTab === 'chat'}
+                        $active={feedTab === 'chat'}
+                        onClick={() => setFeedTab('chat')}
+                    >
+                        Chat
+                    </S.ChatTab>
+                </S.ChatTabs>
+                <S.ChatFeed
+                    aria-live="polite"
+                    aria-label={
+                        feedTab === 'chat'
+                            ? 'Messages de chat'
+                            : 'Journal de la partie'
+                    }
+                >
+                    {visibleFeed.length === 0 ? (
+                        <S.ChatEmpty>
+                            {feedTab === 'chat'
+                                ? 'Aucun message de chat'
+                                : 'Journal de la partie'}
+                        </S.ChatEmpty>
                     ) : (
-                        feed.map((entry) =>
+                        visibleFeed.map((entry) =>
                             entry.kind === 'journal' ? (
-                                <S.ChatEntry key={entry.key} $kind="journal">
-                                    {entry.entry.playedCard ? (
-                                        <JournalPlayEntry
-                                            entry={entry.entry}
-                                            text={entry.text}
-                                            myPlayerId={myPlayerId}
-                                        />
-                                    ) : (
-                                        entry.text
-                                    )}
-                                </S.ChatEntry>
+                                entry.entry.kind === 'phase' ? (
+                                    <S.ChatEntry key={entry.key} $kind="phase">
+                                        <S.JournalPhaseRow>
+                                            {entry.entry.phaseKey &&
+                                            PHASE_ICON[entry.entry.phaseKey] ? (
+                                                <S.JournalPhaseIcon
+                                                    src={
+                                                        PHASE_ICON[
+                                                            entry.entry.phaseKey
+                                                        ]
+                                                    }
+                                                    alt=""
+                                                />
+                                            ) : null}
+                                            <S.JournalPhaseLabel>
+                                                {entry.text}
+                                            </S.JournalPhaseLabel>
+                                        </S.JournalPhaseRow>
+                                    </S.ChatEntry>
+                                ) : (
+                                    <S.ChatEntry key={entry.key} $kind="journal">
+                                        {entry.entry.playedCard ? (
+                                            <JournalPlayEntry
+                                                entry={entry.entry}
+                                                text={entry.text}
+                                                myPlayerId={myPlayerId}
+                                            />
+                                        ) : (
+                                            entry.text
+                                        )}
+                                    </S.ChatEntry>
+                                )
                             ) : (
                                 <S.ChatEntry key={entry.key} $kind="chat">
                                     <S.ChatSender $mine={entry.mine}>

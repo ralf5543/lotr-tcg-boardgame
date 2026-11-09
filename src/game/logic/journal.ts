@@ -1,9 +1,19 @@
 import {
     catalogCardId,
     displayFullName,
+    displayTitle,
     isSiteCard,
 } from '../../decks/cardMeta';
-import type { CardState, GameState, JournalEntry, SiteCardState } from '../types';
+import type {
+    Ability,
+    CardState,
+    GameState,
+    JournalEntry,
+    SiteCardState,
+} from '../types';
+import { findTargetCard } from '../../utils/cardUtils';
+import { formatAbilityLabelParts } from '../engine/abilities/collectAbilities';
+import { TRANSLATIONS } from '../translations';
 import { otherPlayerId, playerDisplayName } from './playerName';
 
 const JOURNAL_CAP = 200;
@@ -168,4 +178,120 @@ export function formatSideRolesStatus(
         ? ` ${options.suffix.trim()}`
         : '';
     return `${prefix}${playerDisplayName(G, fpId)} joue les Peuples Libres. ${playerDisplayName(G, shadowId)} joue l’Ombre.${suffix}`;
+}
+
+/** `startOfFellowship` / `fellowship` → clé FELLOWSHIP + libellé FR. */
+export function resolvePhaseJournalMeta(phase?: string | null): {
+    phaseKey: string;
+    label: string;
+} | null {
+    if (!phase) return null;
+    const canonical = phase.replace(/^startOf/i, '').toLowerCase();
+    const phaseKey = canonical.toUpperCase();
+    const label =
+        TRANSLATIONS.phase[phaseKey as keyof typeof TRANSLATIONS.phase] ||
+        phaseKey;
+    if (!label) return null;
+    return { phaseKey, label };
+}
+
+/** Marqueur de phase dans le fil (une ligne, style dédié côté UI). */
+export function appendPhaseJournal(
+    G: GameState,
+    phase?: string | null
+): void {
+    const meta = resolvePhaseJournalMeta(phase);
+    if (!meta) return;
+    pushEntry(G, {
+        kind: 'phase',
+        phaseKey: meta.phaseKey,
+        named: `Phase ${meta.label}`,
+    });
+}
+
+const STAT_FR: Record<string, string> = {
+    STRENGTH: 'force',
+    VITALITY: 'vitalité',
+    RESISTANCE: 'résistance',
+    TWILIGHT_COST: 'crépuscule',
+};
+
+const PHASE_ABILITY_FR: Record<string, string> = {
+    FELLOWSHIP: 'compagnie',
+    SHADOW: 'ombre',
+    MANEUVER: 'manœuvre',
+    ARCHERY: 'archerie',
+    ASSIGNMENT: 'affectation',
+    SKIRMISH: 'combat',
+    REGROUP: 'ralliement',
+    RESPONSE: 'réponse',
+};
+
+function firstChosenId(
+    chosen?: string | string[] | null
+): string | undefined {
+    if (!chosen) return undefined;
+    if (Array.isArray(chosen)) return chosen.find(Boolean);
+    return chosen || undefined;
+}
+
+/**
+ * Journal d’une capacité en jeu — phrase riche si le modèle est simple
+ * (affaiblir → bonus de force), sinon repli générique.
+ */
+export function appendAbilityUsedJournal(
+    G: GameState,
+    source: CardState,
+    ability: Ability,
+    effectTargetId?: string | string[] | null
+): void {
+    const sourceName = displayTitle(source);
+    if (!sourceName) return;
+
+    const exert = ability.cost?.[0]?.exert?.[0];
+    const tempStat = (ability.effects || []).find(
+        (effect) => effect.type === 'ADD_TEMP_STAT'
+    );
+    const chosenId = firstChosenId(effectTargetId);
+    const effectTarget = chosenId
+        ? (findTargetCard(G, chosenId) as CardState | null)
+        : null;
+
+    if (exert && tempStat && tempStat.type === 'ADD_TEMP_STAT') {
+        const stat = STAT_FR[tempStat.stat] || tempStat.stat.toLowerCase();
+        const sign = tempStat.value > 0 ? '+' : '';
+        const bonus = `${sign}${tempStat.value} en ${stat}`;
+        const targetLabel = effectTarget
+            ? displayTitle(effectTarget)
+            : null;
+        if (targetLabel) {
+            appendJournal(
+                G,
+                `${sourceName} s’est affaibli pour donner ${bonus} à ${targetLabel}.`
+            );
+            return;
+        }
+        const parts = formatAbilityLabelParts(ability, source);
+        if (parts.effect) {
+            appendJournal(
+                G,
+                `${sourceName} s’est affaibli pour ${parts.effect}.`
+            );
+            return;
+        }
+    }
+
+    const phaseKey = (ability.phases?.[0] || '').toUpperCase();
+    const phaseBit = PHASE_ABILITY_FR[phaseKey]
+        ? ` de ${PHASE_ABILITY_FR[phaseKey]}`
+        : '';
+    appendJournal(G, `${sourceName} a utilisé une compétence${phaseBit}.`);
+}
+
+/** « une / deux / N blessure(s) ». */
+export function formatBlessuresCount(count: number): string {
+    const n = Math.max(0, Math.floor(Number(count) || 0));
+    if (n === 1) return 'une blessure';
+    if (n === 2) return 'deux blessures';
+    return `${n} blessure${n > 1 ? 's' : ''}`;
 }

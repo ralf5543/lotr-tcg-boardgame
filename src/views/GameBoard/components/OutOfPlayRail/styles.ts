@@ -266,6 +266,36 @@ export const ChatSlot = styled.div`
     pointer-events: auto;
 `;
 
+export const ChatTabs = styled.div`
+    flex-shrink: 0;
+    display: flex;
+    gap: 0;
+    border-bottom: 1px solid rgba(148, 163, 184, 0.25);
+`;
+
+export const ChatTab = styled.button<{ $active?: boolean }>`
+    flex: 1 1 0;
+    appearance: none;
+    margin: 0;
+    padding: 6px 4px;
+    border: none;
+    border-bottom: 2px solid
+        ${({ $active }) => ($active ? '#e2c044' : 'transparent')};
+    background: ${({ $active }) =>
+        $active ? 'rgba(226, 192, 68, 0.08)' : 'transparent'};
+    color: ${({ $active }) => ($active ? '#f0d978' : '#94a3b8')};
+    font: inherit;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    cursor: pointer;
+
+    &:hover {
+        color: #e2e8f0;
+    }
+`;
+
 export const ChatFeed = styled.div`
     flex: 1 1 0;
     min-height: 0;
@@ -288,13 +318,45 @@ export const ChatEmpty = styled.p`
     color: #64748b;
 `;
 
-export const ChatEntry = styled.div<{ $kind: 'journal' | 'chat' }>`
-    font-size: ${({ $kind }) => ($kind === 'journal' ? '10px' : '11px')};
+export const ChatEntry = styled.div<{ $kind: 'journal' | 'chat' | 'phase' }>`
+    font-size: ${({ $kind }) =>
+        $kind === 'phase' ? '10px' : $kind === 'journal' ? '10px' : '11px'};
     line-height: 1.35;
     color: ${({ $kind }) =>
-        $kind === 'journal' ? '#94a3b8' : '#e2e8f0'};
+        $kind === 'phase'
+            ? '#e2c044'
+            : $kind === 'journal'
+              ? '#94a3b8'
+              : '#e2e8f0'};
     font-style: ${({ $kind }) => ($kind === 'journal' ? 'italic' : 'normal')};
+    font-weight: ${({ $kind }) => ($kind === 'phase' ? 700 : 400)};
+    letter-spacing: ${({ $kind }) =>
+        $kind === 'phase' ? '0.03em' : 'normal'};
     word-break: break-word;
+`;
+
+export const JournalPhaseRow = styled.div`
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 3px 0 3px 6px;
+    border-left: 2px solid rgba(226, 192, 68, 0.75);
+`;
+
+export const JournalPhaseIcon = styled.img`
+    width: 14px;
+    height: 14px;
+    object-fit: contain;
+    flex-shrink: 0;
+    opacity: 0.9;
+`;
+
+export const JournalPhaseLabel = styled.span`
+    text-transform: uppercase;
+    font-size: 9px;
+    font-weight: 800;
+    letter-spacing: 0.06em;
+    color: #f0d978;
 `;
 
 export const JournalPlayRow = styled.div`

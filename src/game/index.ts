@@ -53,6 +53,7 @@ import {
     appendActorJournal,
     appendCardPlayedJournal,
     appendJournal,
+    appendPhaseJournal,
     appendSideRolesJournal,
     formatPointsFardeau,
     formatSideRolesStatus,
@@ -423,14 +424,7 @@ export const LotrGame: Game<GameState> = {
 
                     const bid0 = G.setupState.bids['0'];
                     const bid1 = G.setupState.bids['1'];
-
-                    const points = formatPointsFardeau(validBid);
                     const name = playerDisplayName(G, pId);
-                    // Toujours journaliser la mise (y compris celle qui clôt l’enchère).
-                    appendActorJournal(G, pId, {
-                        vous: `Vous avez misé ${points}.`,
-                        named: `${name} a misé ${points}.`,
-                    });
 
                     if (
                         bid0 !== null &&
@@ -450,13 +444,26 @@ export const LotrGame: Game<GameState> = {
                         G.setupState.step = 'CHOOSING_FIRST';
                         const winnerId = G.setupState.auctionWinnerId || '0';
                         const winnerName = playerDisplayName(G, winnerId);
+                        // Confidentialité : les mises ne sont révélées
+                        // dans le journal qu’une fois les deux posées.
+                        const name0 = playerDisplayName(G, '0');
+                        const name1 = playerDisplayName(G, '1');
+                        appendActorJournal(G, '0', {
+                            vous: `Vous avez misé ${formatPointsFardeau(bid0)}.`,
+                            named: `${name0} a misé ${formatPointsFardeau(bid0)}.`,
+                        });
+                        appendActorJournal(G, '1', {
+                            vous: `Vous avez misé ${formatPointsFardeau(bid1)}.`,
+                            named: `${name1} a misé ${formatPointsFardeau(bid1)}.`,
+                        });
                         appendActorJournal(G, winnerId, {
                             vous: 'Vous gagnez l’enchère.',
                             named: `${winnerName} gagne l’enchère.`,
                         });
-                        G.statusMessage = `${playerDisplayName(G, '0')} (${formatPointsFardeau(bid0)}) — ${playerDisplayName(G, '1')} (${formatPointsFardeau(bid1)}). ${winnerName} gagne l'enchère.`;
+                        G.statusMessage = `${name0} (${formatPointsFardeau(bid0)}) — ${name1} (${formatPointsFardeau(bid1)}). ${winnerName} gagne l'enchère.`;
                     } else {
-                        G.statusMessage = `${name} a misé ${points}. En attente de ${playerDisplayName(G, otherPlayerId(pId))}…`;
+                        // Pas de montant dans le message partagé (secret jusqu’à révélation).
+                        G.statusMessage = `${name} a misé. En attente de ${playerDisplayName(G, otherPlayerId(pId))}…`;
                     }
                 },
 
@@ -588,6 +595,7 @@ export const LotrGame: Game<GameState> = {
             turn: { activePlayers: { value: { '0': 'play', '1': 'play' } } },
             onBegin: ({ G, events }: LotrPhaseContext) => {
                 clearExpiredTempKeywords(G, 'TURN_END');
+                appendPhaseJournal(G, 'fellowship');
                 onStartOfFellowshipBegin(G, events);
             },
             onEnd: ({ G }) => {
@@ -622,6 +630,7 @@ export const LotrGame: Game<GameState> = {
             next: 'shadow',
             turn: { activePlayers: { value: { '0': 'play', '1': 'play' } } },
             onBegin: ({ G, events }: LotrPhaseContext) => {
+                appendPhaseJournal(G, 'shadow');
                 const fpId = G.fpPlayerId || '0';
                 const shadowId = fpId === '0' ? '1' : '0';
                 // Breeding pit : premier hunter minion de la phase.
@@ -853,6 +862,7 @@ export const LotrGame: Game<GameState> = {
             next: 'maneuver',
             turn: { activePlayers: { value: { '0': 'play', '1': 'play' } } },
             onBegin: ({ G, events }: LotrPhaseContext) => {
+                appendPhaseJournal(G, 'maneuver');
                 const fpId = G.fpPlayerId || '0';
                 const shadowId = fpId === '0' ? '1' : '0';
 
@@ -958,6 +968,7 @@ export const LotrGame: Game<GameState> = {
                     return;
                 }
 
+                appendPhaseJournal(G, 'archery');
                 const fpId = G.fpPlayerId || '0';
                 const shadowId = fpId === '0' ? '1' : '0';
 
@@ -1102,6 +1113,7 @@ export const LotrGame: Game<GameState> = {
         startOfAssignment: {
             next: 'assignment',
             onBegin: ({ G, events }: LotrPhaseContext) => {
+                appendPhaseJournal(G, 'assignment');
                 const fpId = G.fpPlayerId || '0';
                 const shadowId = fpId === '0' ? '1' : '0';
 
@@ -1160,6 +1172,7 @@ export const LotrGame: Game<GameState> = {
         startOfSkirmish: {
             next: 'skirmish',
             onBegin: ({ G, events }: LotrPhaseContext) => {
+                appendPhaseJournal(G, 'skirmish');
                 const fpId = G.fpPlayerId || '0';
                 const shadowId = fpId === '0' ? '1' : '0';
 
@@ -1322,6 +1335,7 @@ export const LotrGame: Game<GameState> = {
             next: 'regroup',
             turn: { activePlayers: { value: { '0': 'play', '1': 'play' } } },
             onBegin: ({ G, events }: LotrPhaseContext) => {
+                appendPhaseJournal(G, 'regroup');
                 const fpId = G.fpPlayerId || '0';
                 const shadowId = fpId === '0' ? '1' : '0';
 
@@ -1432,6 +1446,12 @@ export const LotrGame: Game<GameState> = {
                     ) {
                         return 'INVALID_MOVE';
                     }
+
+                    const moverName = playerDisplayName(G, fpId);
+                    appendActorJournal(G, fpId, {
+                        vous: 'Vous avez décidé d’avancer de nouveau.',
+                        named: `${moverName} a décidé d’avancer de nouveau.`,
+                    });
 
                     // Site quitté : fenêtre optionnelle avant le départ.
                     if (beginOptionalSiteDepartureAbility(G, 'startOfShadow')) {

@@ -653,9 +653,7 @@ export const GameControls: React.FC<GameControlsProps> = ({
         toastConfig = {
             show: true,
             title: G.responseWindow?.title || 'RÉPONSE',
-            body:
-                G.responseWindow?.message ||
-                'Voulez-vous jouer une réponse ou passer ?',
+            body: 'À votre tour de répondre ou de passer.',
             showPassButton: G.responseWindow?.canPass ?? true,
             type: 'RESPONSE',
         };
@@ -763,9 +761,9 @@ export const GameControls: React.FC<GameControlsProps> = ({
         toastConfig = {
             show: true,
             title: G.actionWindow?.title || 'À VOTRE TOUR DE RÉAGIR',
-            body:
-                G.actionWindow?.message ||
-                'Voulez-vous jouer une carte / un effet ou passer ?',
+            // Message moteur = « Au tour de {nom}… » (vue partagée) ;
+            // côté local on parle à la 2ᵉ personne.
+            body: 'À votre tour d’agir ou de passer.',
             showPassButton: G.actionWindow?.canPass ?? true,
             type: 'STANDARD',
         };
@@ -1049,10 +1047,7 @@ export const GameControls: React.FC<GameControlsProps> = ({
 
         if (isResponseWindowActive) {
             if (isMyTurnToAct) {
-                return (
-                    G.responseWindow?.message ||
-                    'Réponse : jouez une réponse ou passez.'
-                );
+                return 'À votre tour de répondre ou de passer.';
             }
             if (G.pendingEvent?.type === 'ABOUT_TO_FORCE_ASSIGN') {
                 return `${opponentName} décide s’il empêche l’affectation…`;
@@ -1062,7 +1057,7 @@ export const GameControls: React.FC<GameControlsProps> = ({
 
         if (isActionWindowActive) {
             return isMyTurnToAct
-                ? 'Une fenêtre d’action est ouverte : Jouez une carte/effet ou passez.'
+                ? 'À votre tour d’agir ou de passer.'
                 : `En attente de la réaction de ${opponentName}…`;
         }
 
