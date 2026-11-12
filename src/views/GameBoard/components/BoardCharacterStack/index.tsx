@@ -304,47 +304,58 @@ export const BoardCharacterStack: React.FC<BoardCharacterStackProps> = ({
         }, 40);
     };
 
+    // Ids stables : éviter de relancer place() à chaque nouveau tableau filter().
+    const assignedMinionKey = assignedMinions
+        .map((m) => m.instanceId || m.id)
+        .join('|');
+
     useLayoutEffect(() => {
-        if (assignedMinions.length === 0) {
-            setOverlayPos(null);
+        if (!assignedMinionKey) {
+            setOverlayPos((prev) => (prev === null ? prev : null));
             return;
         }
+        let raf = 0;
         const place = () => {
             const layer = track;
             const anchor = companionAnchorRef.current;
-            if (!layer || !anchor) return false;
+            if (!layer || !anchor) return;
             const lr = layer.getBoundingClientRect();
             const ar = anchor.getBoundingClientRect();
             const scale = lr.width / Math.max(layer.offsetWidth, 1);
-            const left = (ar.left + ar.width / 2 - lr.left) / scale;
-            const top = isOpponent
-                ? (ar.bottom - lr.top) / scale + 26
-                : (ar.top - lr.top) / scale - 26;
+            // Arrondi : les sous-pixels + scale CSS faisaient osciller setState.
+            const left = Math.round(
+                (ar.left + ar.width / 2 - lr.left) / scale
+            );
+            const top = Math.round(
+                isOpponent
+                    ? (ar.bottom - lr.top) / scale + 26
+                    : (ar.top - lr.top) / scale - 26
+            );
             setOverlayPos((prev) => {
-                if (
-                    prev &&
-                    Math.abs(prev.left - left) < 0.5 &&
-                    Math.abs(prev.top - top) < 0.5
-                ) {
+                if (prev && prev.left === left && prev.top === top) {
                     return prev;
                 }
                 return { left, top };
             });
-            return true;
+        };
+        const schedulePlace = () => {
+            if (raf) cancelAnimationFrame(raf);
+            raf = requestAnimationFrame(place);
         };
 
         place();
-        const ro = new ResizeObserver(place);
-        if (track) ro.observe(track);
+        const ro = new ResizeObserver(schedulePlace);
+        // Ne pas observer `track` : l’overlay y est porté → feedback ResizeObserver.
         if (companionAnchorRef.current) ro.observe(companionAnchorRef.current);
-        scroller?.addEventListener('scroll', place, { passive: true });
-        window.addEventListener('resize', place);
+        scroller?.addEventListener('scroll', schedulePlace, { passive: true });
+        window.addEventListener('resize', schedulePlace);
         return () => {
+            if (raf) cancelAnimationFrame(raf);
             ro.disconnect();
-            scroller?.removeEventListener('scroll', place);
-            window.removeEventListener('resize', place);
+            scroller?.removeEventListener('scroll', schedulePlace);
+            window.removeEventListener('resize', schedulePlace);
         };
-    }, [assignedMinions, isOpponent, track, scroller]);
+    }, [assignedMinionKey, isOpponent, track, scroller]);
 
     useLayoutEffect(() => {
         return () => {

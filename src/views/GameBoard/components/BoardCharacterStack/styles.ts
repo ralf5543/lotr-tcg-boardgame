@@ -1,7 +1,11 @@
 import styled, { css } from 'styled-components';
 import type { Faction } from '../../../../contexts/FactionContext';
 
-const targetedHover = (faction: Faction = 'FREE_PEOPLE') => css`
+/** Halo de ciblage. Sans scale en combat : sinon l’overlay séides boucle (Promise Keeping…). */
+const targetedHover = (
+    faction: Faction = 'FREE_PEOPLE',
+    opts?: { scale?: boolean }
+) => css`
     ${faction === 'SHADOW'
         ? css`
               border-color: #e23b3b !important;
@@ -19,7 +23,10 @@ const targetedHover = (faction: Faction = 'FREE_PEOPLE') => css`
                   0 0 45px rgba(226, 192, 68, 0.8),
                   0 0 70px rgba(226, 192, 68, 0.4);
           `}
-    transform: scale(1.08);
+    ${opts?.scale !== false &&
+    css`
+        transform: scale(1.08);
+    `}
     z-index: 10;
 `;
 
@@ -78,7 +85,12 @@ export const CardDragTarget = styled.div<{
             }
         `}
 
-    ${({ $isDesignationTarget, $isTargeted, $aimFaction }) =>
+    ${({
+        $isDesignationTarget,
+        $isTargeted,
+        $aimFaction,
+        $suppressHoverScale,
+    }) =>
         $isDesignationTarget &&
         !$isTargeted &&
         css`
@@ -88,12 +100,15 @@ export const CardDragTarget = styled.div<{
             outline: 2px solid rgba(226, 192, 68, 0.9);
             border-radius: 8px;
             &:hover {
-                ${targetedHover($aimFaction || 'FREE_PEOPLE')}
+                ${targetedHover($aimFaction || 'FREE_PEOPLE', {
+                    scale: !$suppressHoverScale,
+                })}
             }
         `}
 
-    ${({ $isTargeted, $aimFaction }) =>
-        $isTargeted && targetedHover($aimFaction)}
+    ${({ $isTargeted, $aimFaction, $suppressHoverScale }) =>
+        $isTargeted &&
+        targetedHover($aimFaction, { scale: !$suppressHoverScale })}
 `;
 
 /* =========================================================
@@ -374,7 +389,12 @@ export const MinionWrapper = styled.div<{
             }
         `}
 
-    ${({ $isDesignationTarget, $isTargeted, $aimFaction }) =>
+    ${({
+        $isDesignationTarget,
+        $isTargeted,
+        $aimFaction,
+        $suppressHoverScale,
+    }) =>
         $isDesignationTarget &&
         !$isTargeted &&
         css`
@@ -384,12 +404,15 @@ export const MinionWrapper = styled.div<{
             outline: 2px solid rgba(226, 192, 68, 0.9);
             border-radius: 8px;
             &:hover {
-                ${targetedHover($aimFaction || 'FREE_PEOPLE')}
+                ${targetedHover($aimFaction || 'FREE_PEOPLE', {
+                    scale: !$suppressHoverScale,
+                })}
             }
         `}
 
-    ${({ $isTargeted, $aimFaction }) =>
-        $isTargeted && targetedHover($aimFaction)}
+    ${({ $isTargeted, $aimFaction, $suppressHoverScale }) =>
+        $isTargeted &&
+        targetedHover($aimFaction, { scale: !$suppressHoverScale })}
 `;
 
 /* =========================================================
