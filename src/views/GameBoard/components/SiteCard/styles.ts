@@ -193,21 +193,20 @@ export const SiteKeywordsContainer = styled.div`
     gap: 5px;
 `;
 
-/** Numéro de site (id) — visible en lg seulement ; CSS à affiner. */
+
 export const SiteIdBadge = styled.span`
     position: absolute;
-    inset-block-end: 10px;
-    inset-inline-start: 12px;
+    inset-block-end: 24px;
+    inset-inline-start: 11px;
     z-index: 20;
     padding: 2px 6px;
-    border: 2px solid blue;
     color: #0a0a0a;
-    background: rgba(255, 255, 255, 0.75);
-    font-size: 14px;
+    font-size: 8px;
     font-weight: 700;
     font-variant: small-caps;
     letter-spacing: 0.04em;
     line-height: 1.2;
     pointer-events: none;
     white-space: nowrap;
+    rotate: 90deg;
 `;
