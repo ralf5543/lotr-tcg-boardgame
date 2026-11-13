@@ -6,6 +6,7 @@ import {
 } from '../../logic/sites';
 import { abilityOwnerPlayerId } from './payAbilityCost';
 import { findBearer } from './resolveCostTarget';
+import { cardMatchesTarget } from '../validations/matchers';
 import {
     isSkirmishActionForbidden,
     isSkirmishSpecialAbility,
@@ -59,6 +60,29 @@ export function abilityMeetsPlayRestrictions(
             (t) => t.trim().toLowerCase() === title
         );
         if (!ok) return false;
+    }
+    if (
+        ability.requiresBearerFilters &&
+        ability.requiresBearerFilters.length > 0
+    ) {
+        const bearer = findBearer(G, source) || source;
+        if (!cardMatchesTarget(bearer, ability.requiresBearerFilters)) {
+            return false;
+        }
+    }
+    if (
+        ability.requiresDiscardMatching &&
+        ability.requiresDiscardMatching.count > 0
+    ) {
+        const ownerId = abilityOwnerPlayerId(G, source);
+        if (!ownerId) return false;
+        const discard = G.players[ownerId]?.discard || [];
+        const n = discard.filter(
+            (c) =>
+                c &&
+                cardMatchesTarget(c, ability.requiresDiscardMatching!.target)
+        ).length;
+        if (n < ability.requiresDiscardMatching.count) return false;
     }
     if (
         typeof ability.requiresAtSiteNumber === 'number' &&

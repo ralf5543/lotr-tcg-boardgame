@@ -27,6 +27,7 @@ import {
     countCultureTokensForPlayer,
     countSpottedCultureTokens,
     findInPlayCardOwnerId,
+    FREE_PEOPLES_CULTURES,
     tokenCountOnCard,
 } from '../../cultureTokens';
 import { playerHasInitiative } from '../../initiative';
@@ -294,7 +295,37 @@ function modifyStatMagnitude(
         const vit = getEffectiveVitality(beneficiary, G);
         return base * Math.max(0, vit - effect.perVitalityOver);
     }
+    // Agents of Orthanc : +N par culture FP au-delà du seuil.
+    if (
+        typeof effect.perDistinctFpCultureOver === 'number' &&
+        effect.perDistinctFpCultureOver >= 0
+    ) {
+        return (
+            base *
+            Math.max(
+                0,
+                countDistinctFpCulturesInPlay(G) -
+                    effect.perDistinctFpCultureOver
+            )
+        );
+    }
     return base;
+}
+
+/** Cultures Peuples Libres distinctes parmi les cartes en jeu. */
+export function countDistinctFpCulturesInPlay(G: GameState): number {
+    const cultures = new Set<string>();
+    forEachInPlayCard(G, (card) => {
+        const culture = card.culture;
+        if (
+            culture &&
+            culture !== 'NONE' &&
+            FREE_PEOPLES_CULTURES.has(culture as CardCulture)
+        ) {
+            cultures.add(culture);
+        }
+    });
+    return cultures.size;
 }
 
 function skirmishInvolves(skirmish: SkirmishState, cardId: string): boolean {
@@ -917,6 +948,21 @@ export function getWhileKeywordRaws(
     const cardId = card.instanceId || card.id;
     const raw: string[] = [];
 
+    const pushKeyword = (
+        effect: Extract<AbilityEffect, { type: 'MODIFY_KEYWORD' }>
+    ) => {
+        const times =
+            typeof effect.perDistinctFpCultureOver === 'number' &&
+            effect.perDistinctFpCultureOver >= 0
+                ? Math.max(
+                      0,
+                      countDistinctFpCulturesInPlay(G) -
+                          effect.perDistinctFpCultureOver
+                  )
+                : 1;
+        for (let i = 0; i < times; i++) raw.push(effect.keyword);
+    };
+
     forEachWhileOnCard(G, card, (source, ability) => {
         for (const effect of ability.effects || []) {
             if (effect.type !== 'MODIFY_KEYWORD') continue;
@@ -924,7 +970,7 @@ export function getWhileKeywordRaws(
             if (!localBeneficiaryMatches(G, source, effect.target, cardId)) {
                 continue;
             }
-            raw.push(effect.keyword);
+            pushKeyword(effect);
         }
     });
 
@@ -936,7 +982,7 @@ export function getWhileKeywordRaws(
                 if (effect.type !== 'MODIFY_KEYWORD') continue;
                 if (!Array.isArray(effect.target)) continue;
                 if (!cardMatchesTarget(card, effect.target)) continue;
-                raw.push(effect.keyword);
+                pushKeyword(effect);
             }
         }
     });

@@ -320,7 +320,11 @@ export type AbilityEffect =
               value: number;
           };
           /** Bonus = value × cartes spotées (Pippin's Sword…). */
-          perSpot?: { target: string[][] };
+          perSpot?: {
+              target: string[][];
+              /** « who has resistance N or more ». */
+              minResistance?: number;
+          };
           /** Bonus = value × cultures distinctes spotées (Unabated…). */
           perDistinctCulture?: boolean;
       }
@@ -408,6 +412,11 @@ export type AbilityEffect =
            * (Everyone Knows : +1 for each vitality over 3).
            */
           perVitalityOver?: number;
+          /**
+           * Bonus = value × max(0, cultures FP distinctes spotées − seuil)
+           * (Agents of Orthanc : over 2).
+           */
+          perDistinctFpCultureOver?: number;
           /** Exige un attachement matchant (Helm's Gate : hand weapon). */
           bearing?: string[][];
           /**
@@ -448,6 +457,11 @@ export type AbilityEffect =
           target: AbilityTargetRef;
           /** Exige un attachement matchant (Moria Stairway : hand weapon). */
           bearing?: string[][];
+          /**
+           * Répéter le mot-clé × max(0, cultures FP − seuil)
+           * (Agents of Orthanc : Damage +1 for each … over 2).
+           */
+          perDistinctFpCultureOver?: number;
           /**
            * Suppression au lieu d’ajout (Harrowdale : un séide en combat
            * contre un compagnon Rohan perd Fierce et ne peut pas le gagner).
@@ -1517,6 +1531,19 @@ export interface Ability {
      * (Sting : Bilbo ou Frodo…).
      */
     requiresBearerTitles?: string[];
+    /**
+     * « If bearer is an unbound Hobbit… » — le porteur doit matcher
+     * au moins une branche (OU de ET).
+     */
+    requiresBearerFilters?: string[][];
+    /**
+     * « If there are N or more [filtres] cards in your discard pile »
+     * (Chance Observation…).
+     */
+    requiresDiscardMatching?: {
+        count: number;
+        target: string[][];
+    };
 }
 
 export interface CardState {

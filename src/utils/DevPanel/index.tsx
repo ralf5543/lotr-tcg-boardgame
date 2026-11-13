@@ -355,10 +355,20 @@ export const DevPanel: React.FC<DevPanelProps> = ({
                             >
                                 Hobbits/Isengard v1
                             </S.ActionButton>
+                            <S.ActionButton
+                                onClick={() =>
+                                    moves.devLoadPreset?.(
+                                        'HOBBITS_ISENGARD_W2'
+                                    )
+                                }
+                                title="Deck Hobbits / Isengard — vague 2 (Salt, events, Agents)"
+                            >
+                                Hobbits/Isengard v2
+                            </S.ActionButton>
                         </S.ButtonGroup>
                         <S.Hint>
-                            Hobbits/Isengard v1 : Sam, Comfort, Maggot, Merry,
-                            Gríma, Traître.
+                            v1 : passifs · v2 : Salt, Sworn, Chance, Men Will
+                            Fall, Agents.
                         </S.Hint>
                     </S.Section>
 

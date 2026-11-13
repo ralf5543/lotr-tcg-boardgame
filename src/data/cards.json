@@ -48562,7 +48562,53 @@
     "isUnique": false,
     "kind": "SHADOW",
     "type": "EVENT",
+    "abilities": [
+      {
+        "id": "4U161:0",
+        "phases": [
+          "SKIRMISH"
+        ],
+        "cost": [
+          {
+            "spot": [
+              {
+                "count": 1,
+                "target": [
+                  [
+                    "Saruman"
+                  ],
+                  [
+                    "ISENGARD",
+                    "MAN"
+                  ]
+                ]
+              }
+            ]
+          }
+        ],
+        "effects": [
+          {
+            "type": "ADD_TEMP_STAT",
+            "stat": "STRENGTH",
+            "value": -2,
+            "target": [
+              [
+                "UNBOUND",
+                "COMPANION"
+              ]
+            ],
+            "expiresAtPhase": "SKIRMISH"
+          }
+        ],
+        "source": "SELF",
+        "text": "SKIRMISH: Spot Saruman or an isengard Man to make an unbound companion strength -2.",
+        "textFr": "**Combat :** Désignez Saroumane ou un Homme <symbol>isengard</symbol> pour donner -2 en force à un compagnon dissocié."
+      }
+    ],
     "phases": [
+      "SKIRMISH"
+    ],
+    "actionPhases": [
       "SKIRMISH"
     ],
     "culture": "ISENGARD",
@@ -55298,6 +55344,36 @@
         "RING-BOUND",
         "HOBBIT"
       ]
+    ],
+    "abilities": [
+      {
+        "id": "4C298:0",
+        "phases": [
+          "FELLOWSHIP"
+        ],
+        "cost": [
+          {
+            "discardFromPlay": [
+              {
+                "count": 1,
+                "target": "SELF"
+              }
+            ]
+          }
+        ],
+        "effects": [
+          {
+            "type": "REMOVE_BURDENS",
+            "count": 1
+          }
+        ],
+        "source": "SELF",
+        "text": "FELLOWSHIP: Discard this to remove a burden.",
+        "textFr": "**Compagnie :** Défaussez cette possession pour retirer un point-fardeau."
+      }
+    ],
+    "actionPhases": [
+      "FELLOWSHIP"
     ],
     "culture": "SHIRE",
     "twilightCost": 1,
@@ -65254,6 +65330,33 @@
     "isUnique": false,
     "kind": "SHADOW",
     "type": "MINION",
+    "abilities": [
+      {
+        "id": "6R57:0",
+        "phases": [],
+        "trigger": {
+          "type": "WHILE"
+        },
+        "cost": [],
+        "effects": [
+          {
+            "type": "MODIFY_STAT",
+            "stat": "STRENGTH",
+            "value": 2,
+            "target": "SELF",
+            "perDistinctFpCultureOver": 2
+          },
+          {
+            "type": "MODIFY_KEYWORD",
+            "keyword": "DAMAGE +1",
+            "target": "SELF",
+            "perDistinctFpCultureOver": 2
+          }
+        ],
+        "source": "SELF",
+        "text": "This minion is strength +2 and Damage +1. for each Free Peoples culture that you can spot over 2."
+      }
+    ],
     "culture": "ISENGARD",
     "race": "MAN",
     "twilightCost": 5,
@@ -97874,6 +97977,43 @@
     "isUnique": false,
     "kind": "FREE_PEOPLE",
     "type": "EVENT",
+    "abilities": [
+      {
+        "id": "10C106:0",
+        "phases": [],
+        "cost": [],
+        "requiresDiscardMatching": {
+          "count": 4,
+          "target": [
+            [
+              "SHIRE"
+            ]
+          ]
+        },
+        "effects": [
+          {
+            "type": "ADD_TEMP_STAT",
+            "stat": "STRENGTH",
+            "value": 1,
+            "target": [
+              [
+                "HOBBIT"
+              ]
+            ],
+            "expiresAtPhase": "SKIRMISH",
+            "perSpot": {
+              "target": [
+                [
+                  "HOBBIT"
+                ]
+              ]
+            }
+          }
+        ],
+        "source": "SELF",
+        "text": "If there are 4 or more shire cards in your discard pile, make a Hobbit strength +1 for each Hobbit you can spot"
+      }
+    ],
     "phases": [
       "SKIRMISH"
     ],
@@ -106760,6 +106900,68 @@
         "HOBBIT"
       ]
     ],
+    "abilities": [
+      {
+        "id": "11R171:0",
+        "phases": [
+          "FELLOWSHIP"
+        ],
+        "cost": [
+          {
+            "discardFromPlay": [
+              {
+                "count": 1,
+                "target": "SELF"
+              }
+            ]
+          }
+        ],
+        "effects": [
+          {
+            "type": "REMOVE_BURDENS",
+            "count": 1
+          }
+        ],
+        "source": "SELF",
+        "text": "FELLOWSHIP: Discard this to remove a burden."
+      },
+      {
+        "id": "11R171:1",
+        "phases": [
+          "SKIRMISH"
+        ],
+        "cost": [
+          {
+            "discardFromPlay": [
+              {
+                "count": 1,
+                "target": "SELF"
+              }
+            ]
+          }
+        ],
+        "effects": [
+          {
+            "type": "SET_OVERWHELM_FACTOR",
+            "target": "BEARER",
+            "factor": 3,
+            "expiresAtPhase": "SKIRMISH"
+          }
+        ],
+        "source": "ATTACHMENT",
+        "requiresBearerFilters": [
+          [
+            "UNBOUND",
+            "HOBBIT"
+          ]
+        ],
+        "text": "SKIRMISH: If bearer is an unbound Hobbit, discard this to prevent bearer from being overwhelmed unless strength is tripled."
+      }
+    ],
+    "actionPhases": [
+      "FELLOWSHIP",
+      "SKIRMISH"
+    ],
     "culture": "SHIRE",
     "twilightCost": 1,
     "resistance": 2,
@@ -106982,6 +107184,36 @@
     "isUnique": false,
     "kind": "FREE_PEOPLE",
     "type": "EVENT",
+    "abilities": [
+      {
+        "id": "11S174:0",
+        "phases": [],
+        "cost": [],
+        "effects": [
+          {
+            "type": "ADD_TEMP_STAT",
+            "stat": "STRENGTH",
+            "value": 1,
+            "target": [
+              [
+                "HOBBIT"
+              ]
+            ],
+            "expiresAtPhase": "SKIRMISH",
+            "perSpot": {
+              "target": [
+                [
+                  "COMPANION"
+                ]
+              ],
+              "minResistance": 7
+            }
+          }
+        ],
+        "source": "SELF",
+        "text": "Make a Hobbit strength +1 for each companion who has resistance 7 or more"
+      }
+    ],
     "phases": [
       "SKIRMISH"
     ],

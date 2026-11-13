@@ -48,6 +48,7 @@ import {
     removeCultureTokensFromCard,
     tokenCountOnCard,
 } from '../../logic/cultureTokens';
+import { getEffectiveResistance } from '../../../utils/cardStats';
 import { applyHeal } from '../../../utils/applyHeal';
 import { applyExert } from '../../../utils/applyExert';
 import { getEffectiveVitality } from '../../../utils/cardStats';
@@ -1901,11 +1902,21 @@ function applyOneEffect(
             if (value <= 0) return false;
         }
         if (effect.perSpot) {
-            const n = resolveCostTarget(
+            let spotted = resolveCostTarget(
                 G,
                 source,
                 effect.perSpot.target
-            ).filter((c) => !c.isDead).length;
+            ).filter((c) => !c.isDead);
+            if (
+                typeof effect.perSpot.minResistance === 'number' &&
+                effect.perSpot.minResistance > 0
+            ) {
+                const minRes = effect.perSpot.minResistance;
+                spotted = spotted.filter(
+                    (c) => getEffectiveResistance(c, G) >= minRes
+                );
+            }
+            const n = spotted.length;
             value = effect.value * n;
             if (value <= 0) return false;
         }

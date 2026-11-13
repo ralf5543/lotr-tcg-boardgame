@@ -1279,6 +1279,26 @@ function parseExertSubject(
         }
     }
 
+    // « Saruman or an isengard Man » (Men Will Fall…)
+    const orNameOrClass = body.match(
+        /^([\p{L}’'\-]+(?:\s+[\p{L}’'\-]+)?)\s+or\s+(?:a|an)\s+(.+)$/iu
+    );
+    if (orNameOrClass) {
+        const name = orNameOrClass[1].replace(/^your\s+/i, '').trim();
+        const filters = parseClassFilters(orNameOrClass[2]);
+        const looksName =
+            /[a-zà-ÿ]/i.test(name) &&
+            name !== name.toUpperCase() &&
+            !/\b(and|each|minion|companion|character)\b/i.test(name);
+        if (looksName && filters.length > 0) {
+            return {
+                target: [[name], filters],
+                count,
+                mode: 'DESIGNATION',
+            };
+        }
+    }
+
     // « your » restant (ex. « your other … ») : pas encore.
     if (/^your\b/i.test(body)) return null;
 
@@ -10767,6 +10787,62 @@ function parseEachVitalityOverStrengthAbilities(
 }
 
 /**
+ * « This minion is strength +N and Damage +1 for each Free Peoples culture
+ * that you can spot over M. » (Agents of Orthanc…)
+ */
+function parseFpCultureOverStrengthAbilities(
+    text: string,
+    cardId?: string
+): Record<string, unknown>[] {
+    const working = text
+        .replace(/<\/?keyword>/gi, '')
+        .replace(/<br\s*\/?>/gi, ' ')
+        .replace(/\*\*/g, ' ')
+        .replace(/\s+/g, ' ')
+        .trim();
+    const re =
+        /(?:^|[.!?]\s*)This minion is strength \+(\d+) and Damage \+1\.?\s*for each Free Peoples culture that you can spot over (\d+)\.?/gi;
+    const found: Record<string, unknown>[] = [];
+    let match: RegExpExecArray | null;
+    while ((match = re.exec(working)) !== null) {
+        const value = parseInt(match[1], 10);
+        const over = parseInt(match[2], 10);
+        if (
+            !Number.isFinite(value) ||
+            value <= 0 ||
+            !Number.isFinite(over) ||
+            over < 0
+        ) {
+            continue;
+        }
+        found.push({
+            id: `${cardId || 'ability'}:${found.length}:fp-culture-over`,
+            phases: [],
+            trigger: { type: 'WHILE' },
+            cost: [],
+            effects: [
+                {
+                    type: 'MODIFY_STAT',
+                    stat: 'STRENGTH',
+                    value,
+                    target: 'SELF',
+                    perDistinctFpCultureOver: over,
+                },
+                {
+                    type: 'MODIFY_KEYWORD',
+                    keyword: 'DAMAGE +1',
+                    target: 'SELF',
+                    perDistinctFpCultureOver: over,
+                },
+            ],
+            source: 'SELF',
+            text: stripAbilityMarkup(match[0]),
+        });
+    }
+    return found;
+}
+
+/**
  * Passifs « X is strength +N for each … you can spot » / « for each of these races ».
  * Trigger WHILE vide (vrai en jeu). Refuse wound/assigned/discarded/control/skirmish.
  */
@@ -11907,6 +11983,128 @@ function parseStandaloneSpotReplaceAbilities(
             effects: [effect],
             source: 'SELF',
             text: plain,
+        },
+    ];
+}
+
+/**
+ * « Make a Hobbit strength +1 for each companion who has resistance 7 or more. »
+ * (Sworn Companion…) — event sans marqueur de phase.
+ */
+function parseStandaloneMakePerMinResistanceAbilities(
+    text: string,
+    cardId?: string
+): Record<string, unknown>[] {
+    const working = text
+        .replace(/<\/?keyword>/gi, '')
+        .replace(/<br\s*\/?>/gi, ' ')
+        .replace(/\*\*/g, ' ')
+        .replace(/\s+/g, ' ')
+        .trim();
+    const match = working.match(
+        /^Make\s+(?:a|an)\s+([\s\S]+?)\s+strength\s*\+\s*(\d+)\s+for each\s+([\s\S]+?)\s+who has resistance\s+(\d+)\s+or more\.?$/i
+    );
+    if (!match) return [];
+    const targetFilters = parseClassFilters(match[1]);
+    const perFilters = parseClassFilters(match[3]);
+    const value = parseInt(match[2], 10);
+    const minResistance = parseInt(match[4], 10);
+    if (
+        targetFilters.length === 0 ||
+        perFilters.length === 0 ||
+        !Number.isFinite(value) ||
+        value <= 0 ||
+        !Number.isFinite(minResistance) ||
+        minResistance <= 0
+    ) {
+        return [];
+    }
+    return [
+        {
+            id: `${cardId || 'ability'}:0:make-per-min-res`,
+            phases: [],
+            cost: [],
+            effects: [
+                {
+                    type: 'ADD_TEMP_STAT',
+                    stat: 'STRENGTH',
+                    value,
+                    target: [targetFilters],
+                    expiresAtPhase: 'SKIRMISH',
+                    perSpot: {
+                        target: [perFilters],
+                        minResistance,
+                    },
+                },
+            ],
+            source: 'SELF',
+            text: stripAbilityMarkup(match[0])
+                .replace(/\s+/g, ' ')
+                .replace(/[.\s]+$/u, '')
+                .trim(),
+        },
+    ];
+}
+
+/**
+ * « If there are 4 or more shire cards in your discard pile, make a Hobbit
+ * strength +1 for each Hobbit you can spot. » (Chance Observation…)
+ */
+function parseStandaloneDiscardCountMakePerSpotAbilities(
+    text: string,
+    cardId?: string
+): Record<string, unknown>[] {
+    const working = text
+        .replace(/<\/?keyword>/gi, '')
+        .replace(/<br\s*\/?>/gi, ' ')
+        .replace(/<symbol>([^<]+)<\/symbol>/gi, '$1 ')
+        .replace(/\*\*/g, ' ')
+        .replace(/\s+/g, ' ')
+        .trim();
+    const match = working.match(
+        /^If there are (\d+) or more\s+([\s\S]+?)\s+cards? in your discard pile,\s*make\s+(?:a|an)\s+([\s\S]+?)\s+strength\s*\+\s*(\d+)\s+for each\s+([\s\S]+?)\s+you can spot\.?$/i
+    );
+    if (!match) return [];
+    const discardCount = parseInt(match[1], 10);
+    const discardFilters = parseClassFilters(match[2]);
+    const targetFilters = parseClassFilters(match[3]);
+    const value = parseInt(match[4], 10);
+    const perFilters = parseClassFilters(match[5]);
+    if (
+        !Number.isFinite(discardCount) ||
+        discardCount <= 0 ||
+        discardFilters.length === 0 ||
+        targetFilters.length === 0 ||
+        !Number.isFinite(value) ||
+        value <= 0 ||
+        perFilters.length === 0
+    ) {
+        return [];
+    }
+    return [
+        {
+            id: `${cardId || 'ability'}:0:discard-count-make-per-spot`,
+            phases: [],
+            cost: [],
+            requiresDiscardMatching: {
+                count: discardCount,
+                target: [discardFilters],
+            },
+            effects: [
+                {
+                    type: 'ADD_TEMP_STAT',
+                    stat: 'STRENGTH',
+                    value,
+                    target: [targetFilters],
+                    expiresAtPhase: 'SKIRMISH',
+                    perSpot: { target: [perFilters] },
+                },
+            ],
+            source: 'SELF',
+            text: stripAbilityMarkup(match[0])
+                .replace(/\s+/g, ' ')
+                .replace(/[.\s]+$/u, '')
+                .trim(),
         },
     ];
 }
@@ -13312,6 +13510,28 @@ export function parseAbilities(
                 ],
                 source: 'SELF',
                 text: `${marker.phase}: ${stripAbilityMarkup(body)}`,
+            });
+            return;
+        }
+
+        // « Discard this possession to remove a burden. » (Salt from the Shire…)
+        const discardSelfRemoveBurden = body.match(
+            /^Discard this(?:\s+(?:condition|possession|card))?(?:\s+from play)?\s+to remove\s+(a|an|one|\d+)\s+burdens?\.?/i
+        );
+        if (discardSelfRemoveBurden) {
+            const count = parseBurdenWord(discardSelfRemoveBurden[1]) || 1;
+            if (count <= 0) return;
+            abilities.push({
+                id: `${cardId || 'ability'}:${abilities.length}`,
+                phases,
+                cost: [
+                    {
+                        discardFromPlay: [{ count: 1, target: 'SELF' }],
+                    },
+                ],
+                effects: [{ type: 'REMOVE_BURDENS', count }],
+                source: 'SELF',
+                text: `${marker.phase}: Discard this to remove ${count === 1 ? 'a burden' : `${count} burdens`}.`,
             });
             return;
         }
@@ -15778,17 +15998,27 @@ export function parseAbilities(
         }
 
         // Spot X to make Y strength +N [and Damage +1] (Still Sharp…)
+        // « Spot Saruman or an isengard Man… » (Men Will Fall) : OR via parseExertSubject.
         const spotMakeMatch = body.match(
             /^Spot\s+([\s\S]+?)\s+to make\s+([\s\S]+)/i
         );
         if (spotMakeMatch) {
-            if (/\b(and|or)\b/i.test(spotMakeMatch[1])) return;
+            if (/\band\b/i.test(spotMakeMatch[1])) return;
             const spotSubject = parseExertSubject(
                 spotMakeMatch[1],
                 cardTitle,
                 text
             );
             if (!spotSubject) return;
+            if (
+                /\bor\b/i.test(spotMakeMatch[1]) &&
+                !(
+                    Array.isArray(spotSubject.target) &&
+                    spotSubject.target.length >= 2
+                )
+            ) {
+                return;
+            }
             let effectText = spotMakeMatch[2].trim();
             const effectPlain = effectText
                 .replace(/<[^>]+>/g, ' ')
@@ -15828,6 +16058,11 @@ export function parseAbilities(
                     .replace(/\s+\./g, '.')
                     .trim();
 
+            // Spot multi-branche (Saruman or an isengard Man) = condition
+            // d’existence, pas une désignation.
+            const spotIsOrBranches =
+                Array.isArray(spotSubject.target) &&
+                spotSubject.target.length >= 2;
             abilities.push({
                 id: `${cardId || 'ability'}:${abilities.length}`,
                 phases,
@@ -15837,7 +16072,7 @@ export function parseAbilities(
                             {
                                 count: spotSubject.count,
                                 target: spotSubject.target,
-                                ...(spotSubject.mode
+                                ...(!spotIsOrBranches && spotSubject.mode
                                     ? { mode: spotSubject.mode }
                                     : {}),
                             },
@@ -16190,6 +16425,46 @@ export function parseAbilities(
             return;
         }
 
+        // Salt : If bearer is an unbound Hobbit, discard this to prevent
+        // him/her from being overwhelmed unless strength is tripled.
+        const discardPreventOverwhelmBearer = body.match(
+            /^If bearer is ((?:a|an)\s+[\s\S]+?),\s*discard this(?:\s+(?:condition|possession|card))?(?:\s+from play)?\s+to prevent (?:him or her|him|her|bearer|it)\s+from being overwhelmed unless (?:his or her|his|her|its|their)\s+strength is tripled\.?/i
+        );
+        if (discardPreventOverwhelmBearer) {
+            const filters = parseClassFilters(
+                discardPreventOverwhelmBearer[1].replace(/^(a|an)\s+/i, '')
+            );
+            if (filters.length > 0) {
+                const expiresAtPhase = parseUntilExpiry(
+                    `until the ${marker.phase} phase`,
+                    marker.phase
+                );
+                abilities.push({
+                    id: `${cardId || 'ability'}:${abilities.length}`,
+                    phases,
+                    cost: [
+                        {
+                            discardFromPlay: [
+                                { count: 1, target: 'SELF' },
+                            ],
+                        },
+                    ],
+                    effects: [
+                        {
+                            type: 'SET_OVERWHELM_FACTOR',
+                            target: 'BEARER',
+                            factor: 3,
+                            expiresAtPhase,
+                        },
+                    ],
+                    source: 'ATTACHMENT',
+                    requiresBearerFilters: [filters],
+                    text: `${marker.phase}: If bearer is ${stripAbilityMarkup(discardPreventOverwhelmBearer[1]).trim()}, discard this to prevent bearer from being overwhelmed unless strength is tripled.`,
+                });
+            }
+            return;
+        }
+
         // Everyone Knows : Prevent an unbound Hobbit from being overwhelmed
         // unless … tripled. Discard this condition.
         const preventOverwhelm = body.match(
@@ -16429,6 +16704,13 @@ export function parseAbilities(
             });
         }
     );
+
+    parseFpCultureOverStrengthAbilities(text, cardId).forEach((ability) => {
+        abilities.push({
+            ...ability,
+            id: `${cardId || 'ability'}:${abilities.length}`,
+        });
+    });
 
     parseForEachStrengthAbilities(text, cardTitle, cardId).forEach(
         (ability) => {
@@ -17348,6 +17630,22 @@ export function parseAbilities(
             }
         );
         parseStandaloneMakeInitiativeAbilities(text, cardId).forEach(
+            (ability) => {
+                abilities.push({
+                    ...ability,
+                    id: `${cardId || 'ability'}:${abilities.length}`,
+                });
+            }
+        );
+        parseStandaloneMakePerMinResistanceAbilities(text, cardId).forEach(
+            (ability) => {
+                abilities.push({
+                    ...ability,
+                    id: `${cardId || 'ability'}:${abilities.length}`,
+                });
+            }
+        );
+        parseStandaloneDiscardCountMakePerSpotAbilities(text, cardId).forEach(
             (ability) => {
                 abilities.push({
                     ...ability,
