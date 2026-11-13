@@ -21,6 +21,7 @@ describe('appendCardPlayedJournal', () => {
         appendCardPlayedJournal(G, '0', aragorn!);
         const entry = G.journalLog![G.journalLog!.length - 1];
         expect(entry.playedCard?.label).toBe(label);
+        expect(entry.playedCard?.showThumb).toBe(true);
         expect(entry.actorAvatar).toBe('avatars/avatar_p0.webp');
         expect(formatJournalEntry(entry, '1')).toBe(`Tom a joué ${label}.`);
         expect(formatJournalEntry(entry, '0')).toBe(`Vous avez joué ${label}.`);

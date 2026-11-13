@@ -225,11 +225,25 @@ const JournalPlayEntry: React.FC<{
         entry.actorId != null &&
         myPlayerId != null &&
         String(entry.actorId) === String(myPlayerId);
-    const namedActor =
-        entry.named.match(/^(.*?)\s+a joué\s+/i)?.[1]?.trim() || '';
-    const actorLabel = mine ? 'Vous' : namedActor || text;
-    const verb = mine ? 'avez joué' : 'a joué';
+    const usedMatch = entry.named.match(
+        /^(.*?)\s+(a utilisé|a joué|avez joué)\s+/i
+    );
+    const namedActor = usedMatch?.[1]?.trim() || '';
+    const rawVerb = (usedMatch?.[2] || 'a joué').toLowerCase();
+    const isUsed = rawVerb.includes('utilisé');
+    const actorLabel = isUsed
+        ? namedActor || text
+        : mine
+          ? 'Vous'
+          : namedActor || text;
+    const verb = isUsed
+        ? 'a utilisé'
+        : mine
+          ? 'avez joué'
+          : 'a joué';
     const landscape = played.orientation === 'landscape';
+    // Vignette : cartes jouées seulement (pas les compétences).
+    const showThumb = played.showThumb !== false;
 
     const resolveHoverCard = (): CardState | SiteCardState | null => {
         const fromDb = getCardById(played.catalogId);
@@ -252,7 +266,7 @@ const JournalPlayEntry: React.FC<{
 
     return (
         <S.JournalPlayRow>
-            {entry.actorAvatar ? (
+            {!isUsed && entry.actorAvatar ? (
                 <S.JournalAvatar src={entry.actorAvatar} alt="" />
             ) : null}
             <S.JournalActor>{actorLabel}</S.JournalActor>
@@ -272,10 +286,12 @@ const JournalPlayEntry: React.FC<{
             >
                 {played.label}
             </S.JournalCardLink>
-            <JournalCardThumb
-                imageUrl={played.imageUrl}
-                landscape={landscape}
-            />
+            {showThumb ? (
+                <JournalCardThumb
+                    imageUrl={played.imageUrl}
+                    landscape={landscape}
+                />
+            ) : null}
         </S.JournalPlayRow>
     );
 };

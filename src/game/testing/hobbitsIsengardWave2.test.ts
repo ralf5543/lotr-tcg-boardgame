@@ -3,8 +3,10 @@ import { getCardById } from '../cardsData';
 import { getEffectiveStrength } from '../../utils/cardStats';
 import { getKeywordValue } from '../engine/keywords/keywordUtils';
 import { parseAbilities } from '../../../scripts/convert/parsers';
+import { applyEventAbility } from '../engine/abilities/playEventAbility';
 import {
     createCompanion,
+    createGameState,
     createMinion,
     createPlayerState,
 } from './createGameState';
@@ -152,6 +154,50 @@ describe('Hobbits / Isengard vague 2 — parse', () => {
 });
 
 describe('Hobbits / Isengard vague 2 — runtime', () => {
+    it('Sworn Companion : +1 par compagnon résistance ≥7 après ciblage', () => {
+        const sworn = {
+            ...getCardById('11S174')!,
+            instanceId: 'sworn',
+        };
+        const frodo = createCompanion({
+            id: 'frodo',
+            instanceId: 'frodo',
+            title: 'Frodo',
+            race: 'HOBBIT',
+            resistance: 10,
+            ringBearer: true,
+            strength: 3,
+        });
+        const sam = createCompanion({
+            id: 'sam',
+            instanceId: 'sam',
+            title: 'Sam',
+            race: 'HOBBIT',
+            resistance: 10,
+            strength: 3,
+        });
+        const low = createCompanion({
+            id: 'low',
+            instanceId: 'low',
+            title: 'Weak',
+            race: 'HOBBIT',
+            resistance: 4,
+            strength: 3,
+        });
+        const G = createGameState({
+            players: {
+                '0': createPlayerState('0', {
+                    fellowshipArea: [frodo, sam, low],
+                    burdens: 0,
+                }),
+                '1': createPlayerState('1'),
+            },
+        });
+        expect(applyEventAbility(G, sworn, 'skirmish', 'low')).toBe(true);
+        // Frodo + Sam (≥7) → +2 ; Weak lui-même <7 → pas compté
+        expect(getEffectiveStrength(low, G)).toBe(5);
+    });
+
     it('Agents : 3 cultures FP → +2 force et Damage +1', () => {
         const agentsCard = getCardById('6R57')!;
         const agents = createMinion({

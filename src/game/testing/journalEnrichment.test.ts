@@ -85,4 +85,39 @@ describe('journal défausse / phase / capacité', () => {
             'Faramir s’est affaibli pour donner +2 en force à Pippin.'
         );
     });
+
+    it('capacité d’attachement : le porteur a utilisé la possession', () => {
+        const G = createGameState();
+        const salt = {
+            ...getCardById('11R171')!,
+            instanceId: 'salt-1',
+        };
+        const merry = createCompanion({
+            id: '11C168',
+            instanceId: 'merry-1',
+            title: 'Merry',
+            i18n: { fr: { title: 'Merry' }, en: { title: 'Merry' } },
+            attachments: [salt],
+        });
+        G.players['0']!.fellowshipArea = [merry];
+
+        const ability: Ability = {
+            id: '11R171:0',
+            phases: ['FELLOWSHIP'],
+            cost: [{ discardFromPlay: [{ count: 1, target: 'SELF' }] }],
+            effects: [{ type: 'REMOVE_BURDENS', count: 1 }],
+            source: 'SELF',
+        };
+
+        appendAbilityUsedJournal(G, salt, ability);
+        const entry = G.journalLog![G.journalLog!.length - 1];
+        expect(entry.named).toMatch(
+            new RegExp(
+                `^${displayTitle(merry)} a utilisé .+\\.$`
+            )
+        );
+        expect(entry.playedCard?.catalogId).toBe('11R171');
+        expect(entry.playedCard?.showThumb).toBe(false);
+        expect(entry.playedCard?.label).toBeTruthy();
+    });
 });

@@ -342,36 +342,6 @@ export const DevPanel: React.FC<DevPanelProps> = ({
                         </S.ButtonGroup>
                     </S.Section>
 
-                    <S.Section>
-                        <S.Label>Preset playtest :</S.Label>
-                        <S.ButtonGroup>
-                            <S.ActionButton
-                                onClick={() =>
-                                    moves.devLoadPreset?.(
-                                        'HOBBITS_ISENGARD_W1'
-                                    )
-                                }
-                                title="Deck Hobbits / Isengard — vague 1 (passifs)"
-                            >
-                                Hobbits/Isengard v1
-                            </S.ActionButton>
-                            <S.ActionButton
-                                onClick={() =>
-                                    moves.devLoadPreset?.(
-                                        'HOBBITS_ISENGARD_W2'
-                                    )
-                                }
-                                title="Deck Hobbits / Isengard — vague 2 (Salt, events, Agents)"
-                            >
-                                Hobbits/Isengard v2
-                            </S.ActionButton>
-                        </S.ButtonGroup>
-                        <S.Hint>
-                            v1 : passifs · v2 : Salt, Sworn, Chance, Men Will
-                            Fall, Agents.
-                        </S.Hint>
-                    </S.Section>
-
                     {/* Session / debug UI */}
                     <S.Section>
                         <S.Label>Session :</S.Label>

@@ -8,11 +8,13 @@ import type {
     Ability,
     CardState,
     GameState,
+    JournalCardRef,
     JournalEntry,
     SiteCardState,
 } from '../types';
 import { findTargetCard } from '../../utils/cardUtils';
 import { formatAbilityLabelParts } from '../engine/abilities/collectAbilities';
+import { findBearer } from '../engine/abilities/resolveCostTarget';
 import { TRANSLATIONS } from '../translations';
 import { otherPlayerId, playerDisplayName } from './playerName';
 
@@ -101,9 +103,24 @@ export function appendCardPlayedJournal(
                 label,
                 imageUrl: asCard.imageUrl || raw.imageUrl,
                 orientation: site ? 'landscape' : 'portrait',
+                showThumb: true,
             },
         }
     );
+}
+
+/** Réf. journal pour une carte mentionnée (lien ; vignette optionnelle). */
+function journalCardRef(
+    card: CardState,
+    options?: { showThumb?: boolean }
+): JournalCardRef {
+    return {
+        catalogId: catalogCardId(card),
+        label: displayFullName(card, catalogCardId(card)) || displayTitle(card),
+        imageUrl: card.imageUrl,
+        orientation: 'portrait',
+        showThumb: options?.showThumb !== false,
+    };
 }
 
 /** Texte à afficher pour le joueur local. */
@@ -277,6 +294,28 @@ export function appendAbilityUsedJournal(
                 G,
                 `${sourceName} s’est affaibli pour ${parts.effect}.`
             );
+            return;
+        }
+    }
+
+    // Possession / situation / artefact attaché → « Merry a utilisé Salt… »
+    // Lien carte, sans vignette (compétence ≠ carte jouée).
+    const bearer = findBearer(G, source);
+    const isAttachedSupport =
+        Boolean(bearer) &&
+        (ability.source === 'ATTACHMENT' ||
+            source.type === 'POSSESSION' ||
+            source.type === 'CONDITION' ||
+            source.type === 'ARTIFACT' ||
+            source.type === 'THE_ONE_RING');
+    if (isAttachedSupport && bearer) {
+        const bearerName = displayTitle(bearer);
+        if (bearerName) {
+            const card = journalCardRef(source, { showThumb: false });
+            pushEntry(G, {
+                named: `${bearerName} a utilisé ${card.label}.`,
+                playedCard: card,
+            });
             return;
         }
     }

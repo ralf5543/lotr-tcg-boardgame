@@ -1925,6 +1925,11 @@ export type JournalCardRef = {
     label: string;
     imageUrl?: string;
     orientation?: 'portrait' | 'landscape';
+    /**
+     * Vignette dans le fil : oui pour une carte **jouée**,
+     * non pour une compétence (lien seul). Défaut = true.
+     */
+    showThumb?: boolean;
 };
 
 /** Entrée de journal — `vous` si le spectateur est `actorId`. */
@@ -1934,7 +1939,10 @@ export type JournalEntry = {
     actorAvatar?: string;
     vous?: string;
     named: string;
-    /** Si présent : rendu riche « a joué » + lien carte. */
+    /**
+     * Si présent : rendu riche avec lien carte
+     * (« a joué » / « a utilisé »). Vignette selon `showThumb`.
+     */
     playedCard?: JournalCardRef;
     /** Marqueur de phase (style distinct dans le fil). */
     kind?: 'phase';

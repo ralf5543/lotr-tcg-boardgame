@@ -1912,8 +1912,10 @@ function applyOneEffect(
                 effect.perSpot.minResistance > 0
             ) {
                 const minRes = effect.perSpot.minResistance;
+                const fpId = G.fpPlayerId || '0';
+                const burdens = G.players[fpId]?.burdens || 0;
                 spotted = spotted.filter(
-                    (c) => getEffectiveResistance(c, G) >= minRes
+                    (c) => getEffectiveResistance(c, burdens, G) >= minRes
                 );
             }
             const n = spotted.length;
