@@ -102,21 +102,8 @@ const setupDevPath = (
     G.currentSiteIndex = startIndex;
 };
 
-const neutralPath: readonly string[] = [
-    '18U138',
-    '11S228',
-    '11S263',
-    '11S265',
-    '11S250',
-    '11S248',
-    '11S241',
-    '15U187',
-    '11S232',
-] as const;
-
 /**
- * Preset DEV : empilement visuel de l’aire de soutien
- * (copies non uniques vides → ×N ; état stocké → carte seule).
+ * Presets DEV playtest (deck Hobbits / Isengard, etc.).
  */
 export const applyDevPreset = (
     G: GameState,
@@ -130,48 +117,62 @@ export const applyDevPreset = (
     const shadowPlayer = G.players[shadowId];
 
     switch (presetType) {
-        case 'SUPPORT_STACK': {
+        case 'HOBBITS_ISENGARD_W1': {
+            // Vague 1 — passifs : Sam, Comfort, Maggot, Merry, Gríma Son, Rohirrim Traitor.
             resetBoardForPreset(G);
-            setupDevPath(G, 0, neutralPath);
-            G.twilightPool = 4;
-            fpPlayer.burdens = 1;
+            setupDevPath(G, 0, [
+                '18U140', // dwelling — Maggot +4
+                '11S249',
+                '11S264',
+                '12U194',
+                '11S252',
+                '17U147',
+                '11S242',
+                '11S261',
+                '18U138',
+            ]);
+            G.twilightPool = 5;
+            fpPlayer.burdens = 0;
+            const merry = {
+                ...clonePresetCard('11C168', 'dev-hi-merry'),
+                attachments: [
+                    clonePresetCard('6U61', 'dev-hi-desertion'),
+                ],
+            };
+            const maggot = clonePresetCard('0P93', 'dev-hi-maggot');
+            const orc = clonePresetCard('1C174', 'dev-hi-orc');
             fpPlayer.fellowshipArea = [
                 {
-                    ...clonePresetCard('1R289', 'dev-stack-frodo'),
+                    ...clonePresetCard('11S164', 'dev-hi-frodo'),
                     attachments: [
-                        clonePresetCard('1R1', 'dev-stack-ring'),
+                        clonePresetCard('1C2', 'dev-hi-ring'),
                     ],
                 },
-                clonePresetCard('1R89', 'dev-stack-aragorn'),
+                clonePresetCard('11U172', 'dev-hi-sam'),
+                maggot,
+                merry,
             ];
-            // Fan = copies vides. Dès qu’il y a jetons / cartes empilées → seule.
             fpPlayer.supportArea = [
-                clonePresetCard('1C20', 'dev-ltc-1'),
-                clonePresetCard('1C20', 'dev-ltc-2'),
-                clonePresetCard('1C20', 'dev-ltc-3'),
-                clonePresetCard('18U21', 'dev-ls-empty-1'),
-                clonePresetCard('18U21', 'dev-ls-empty-2'),
+                clonePresetCard('12S125', 'dev-hi-comfort'),
+            ];
+            // Maggot (unbound) assigné → Merry +2 (pas Frodon : ring-bound).
+            G.skirmishes = [
                 {
-                    ...clonePresetCard('18U21', 'dev-ls-tokened'),
-                    cultureTokens: { GANDALF: 2 },
+                    id: 'dev-hi-sk',
+                    companionId: maggot.instanceId || maggot.id,
+                    minionIds: [orc.instanceId || orc.id],
                 },
             ];
             if (shadowPlayer) {
-                shadowPlayer.supportArea = [
-                    clonePresetCard('8C30', 'dev-web-1'),
-                    clonePresetCard('8C30', 'dev-web-2'),
-                    {
-                        ...clonePresetCard('8C30', 'dev-web-stacked'),
-                        stacked: [
-                            clonePresetCard('1C174', 'dev-web-orc'),
-                        ],
-                    },
-                    clonePresetCard('1C133', 'dev-ambition-1'),
-                    clonePresetCard('1C133', 'dev-ambition-2'),
+                shadowPlayer.supportArea = [];
+                G.battlefield = [
+                    orc,
+                    clonePresetCard('4C153', 'dev-hi-grima'),
+                    clonePresetCard('6C72', 'dev-hi-traitor'),
                 ];
             }
             G.statusMessage =
-                '[DEV] Empilement soutien · copies vides = fan ; dès qu’il y a du stock = seule. FP : 3× Let Them Come! (fan), 2× Last Stand vides (fan) + 1 Last Stand avec 2 jetons (seule). Ombre : 2× Web vides (fan) + 1 Web avec orque empilé (seule), 2× Ambition (fan). Relancer le preset.';
+                '[DEV] Hobbits/Isengard vague 1 · Sam +1 rés. ; Comfort +1 rés. unbound ; Maggot +4 dwelling ; Merry +2 (Maggot assigné) ; Desertion sur Merry → Gríma −1 / Traître +2. Relancer le preset.';
             break;
         }
         default:

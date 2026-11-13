@@ -3812,6 +3812,31 @@
     "keywords": [
       "RING-BOUND"
     ],
+    "abilities": [
+      {
+        "id": "0P78:0",
+        "phases": [],
+        "trigger": {
+          "type": "WHILE"
+        },
+        "cost": [],
+        "effects": [
+          {
+            "type": "MODIFY_STAT",
+            "stat": "RESISTANCE",
+            "value": 1,
+            "target": [
+              [
+                "COMPANION"
+              ]
+            ],
+            "excludeSource": true
+          }
+        ],
+        "source": "SELF",
+        "text": ". Each other companion is resistance +1."
+      }
+    ],
     "culture": "SHIRE",
     "race": "HOBBIT",
     "twilightCost": 2,
@@ -4372,6 +4397,30 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
+    "abilities": [
+      {
+        "id": "0P93:0",
+        "phases": [],
+        "trigger": {
+          "type": "WHILE",
+          "atSiteKeywords": [
+            "DWELLING",
+            "FOREST"
+          ]
+        },
+        "cost": [],
+        "effects": [
+          {
+            "type": "MODIFY_STAT",
+            "stat": "STRENGTH",
+            "value": 4,
+            "target": "SELF"
+          }
+        ],
+        "source": "SELF",
+        "text": "While Farmer Maggot is at a dwelling or forest site, he is strength +4."
+      }
+    ],
     "culture": "SHIRE",
     "race": "HOBBIT",
     "twilightCost": 1,
@@ -48082,6 +48131,40 @@
     "isUnique": true,
     "kind": "SHADOW",
     "type": "MINION",
+    "abilities": [
+      {
+        "id": "4C153:0",
+        "phases": [],
+        "trigger": {
+          "type": "WHILE"
+        },
+        "cost": [],
+        "effects": [
+          {
+            "type": "MODIFY_STAT",
+            "stat": "STRENGTH",
+            "value": -1,
+            "target": [
+              [
+                "UNBOUND",
+                "COMPANION"
+              ],
+              [
+                "ALLY"
+              ]
+            ],
+            "bearing": [
+              [
+                "SHADOW",
+                "CONDITION"
+              ]
+            ]
+          }
+        ],
+        "source": "SELF",
+        "text": "Each unbound companion (or ally) bearing a Shadow condition is strength -1."
+      }
+    ],
     "culture": "ISENGARD",
     "race": "MAN",
     "twilightCost": 2,
@@ -65846,6 +65929,42 @@
     "isUnique": false,
     "kind": "SHADOW",
     "type": "MINION",
+    "abilities": [
+      {
+        "id": "6C72:0",
+        "phases": [],
+        "trigger": {
+          "type": "WHILE",
+          "spot": [
+            {
+              "count": 1,
+              "target": [
+                [
+                  "COMPANION"
+                ]
+              ],
+              "bearing": [
+                [
+                  "ISENGARD",
+                  "CONDITION"
+                ]
+              ]
+            }
+          ]
+        },
+        "cost": [],
+        "effects": [
+          {
+            "type": "MODIFY_STAT",
+            "stat": "STRENGTH",
+            "value": 2,
+            "target": "SELF"
+          }
+        ],
+        "source": "SELF",
+        "text": "While you can spot a companion bearing an isengard condition, this minion is strength +2."
+      }
+    ],
     "culture": "ISENGARD",
     "race": "MAN",
     "twilightCost": 2,
@@ -91089,33 +91208,6 @@
         ],
         "source": "SELF",
         "text": "REGROUP: Spot Gollum to reveal your hand. Place all Shadow cards revealed beneath your draw deck. Discard this condition."
-      },
-      {
-        "id": "9R+29:1",
-        "phases": [],
-        "trigger": {
-          "type": "WHILE",
-          "atSiteKeywords": [
-            "MOUNTAIN",
-            "RIVER",
-            "UNDERGROUND"
-          ]
-        },
-        "cost": [],
-        "effects": [
-          {
-            "type": "MODIFY_STAT",
-            "stat": "STRENGTH",
-            "value": 2,
-            "target": [
-              [
-                "Gollum"
-              ]
-            ]
-          }
-        ],
-        "source": "SELF",
-        "text": "While Gollum is at a mountain, river, or underground site, he is strength +2."
       }
     ],
     "actionPhases": [
@@ -106237,6 +106329,30 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
+    "abilities": [
+      {
+        "id": "11U163:0",
+        "phases": [],
+        "trigger": {
+          "type": "WHILE",
+          "atSiteKeywords": [
+            "DWELLING",
+            "FOREST"
+          ]
+        },
+        "cost": [],
+        "effects": [
+          {
+            "type": "MODIFY_STAT",
+            "stat": "STRENGTH",
+            "value": 4,
+            "target": "SELF"
+          }
+        ],
+        "source": "SELF",
+        "text": "While Farmer Maggot is at a dwelling or forest site, he is strength +4."
+      }
+    ],
     "culture": "SHIRE",
     "race": "HOBBIT",
     "twilightCost": 1,
@@ -106470,6 +106586,36 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
+    "abilities": [
+      {
+        "id": "11C168:0",
+        "phases": [],
+        "trigger": {
+          "type": "WHILE"
+        },
+        "cost": [],
+        "effects": [
+          {
+            "type": "MODIFY_STAT",
+            "stat": "STRENGTH",
+            "value": 2,
+            "target": "SELF",
+            "perSpot": {
+              "target": [
+                [
+                  "UNBOUND",
+                  "COMPANION"
+                ]
+              ],
+              "assignedToSkirmish": true,
+              "excludeSource": true
+            }
+          }
+        ],
+        "source": "SELF",
+        "text": "For each other unbound companion assigned to a skirmish, Merry is strength +2."
+      }
+    ],
     "culture": "SHIRE",
     "race": "HOBBIT",
     "twilightCost": 1,
@@ -106650,6 +106796,31 @@
     "type": "COMPANION",
     "keywords": [
       "RING-BOUND"
+    ],
+    "abilities": [
+      {
+        "id": "11U172:0",
+        "phases": [],
+        "trigger": {
+          "type": "WHILE"
+        },
+        "cost": [],
+        "effects": [
+          {
+            "type": "MODIFY_STAT",
+            "stat": "RESISTANCE",
+            "value": 1,
+            "target": [
+              [
+                "COMPANION"
+              ]
+            ],
+            "excludeSource": true
+          }
+        ],
+        "source": "SELF",
+        "text": ". Each other companion is resistance +1."
+      }
     ],
     "culture": "SHIRE",
     "race": "HOBBIT",
@@ -115150,6 +115321,41 @@
     "kind": "FREE_PEOPLE",
     "type": "CONDITION",
     "subtype": "SUPPORT-AREA",
+    "abilities": [
+      {
+        "id": "12S125:0",
+        "phases": [],
+        "trigger": {
+          "type": "WHILE",
+          "spot": [
+            {
+              "count": 1,
+              "target": [
+                [
+                  "HOBBIT"
+                ]
+              ]
+            }
+          ]
+        },
+        "cost": [],
+        "effects": [
+          {
+            "type": "MODIFY_STAT",
+            "stat": "RESISTANCE",
+            "value": 1,
+            "target": [
+              [
+                "UNBOUND",
+                "COMPANION"
+              ]
+            ]
+          }
+        ],
+        "source": "SELF",
+        "text": "While you can spot a Hobbit, each unbound companion is resistance +1."
+      }
+    ],
     "culture": "SHIRE",
     "twilightCost": 1,
     "imageUrl": "/cards_visuals/o_12_125.jpg",
@@ -116323,6 +116529,42 @@
     "kind": "SHADOW",
     "type": "CONDITION",
     "subtype": "SUPPORT-AREA",
+    "abilities": [
+      {
+        "id": "12U148:0",
+        "phases": [],
+        "trigger": {
+          "type": "WHILE",
+          "spot": [
+            {
+              "count": 1,
+              "target": [
+                [
+                  "URUK-HAI",
+                  "MINION"
+                ]
+              ]
+            }
+          ]
+        },
+        "cost": [],
+        "effects": [
+          {
+            "type": "MODIFY_STAT",
+            "stat": "RESISTANCE",
+            "value": -1,
+            "target": [
+              [
+                "UNBOUND",
+                "COMPANION"
+              ]
+            ]
+          }
+        ],
+        "source": "SELF",
+        "text": "While you can spot an urukhai minion, each unbound companion is resistance –1"
+      }
+    ],
     "culture": "URUK-HAI",
     "twilightCost": 0,
     "imageUrl": "/cards_visuals/o_12_148.jpg",

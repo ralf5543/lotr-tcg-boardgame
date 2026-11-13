@@ -6212,3 +6212,125 @@ describe('attachAbilityTextFr', () => {
 });
 
 
+
+describe('Hobbits / Isengard vague 1 — passifs', () => {
+    it('Merry Loyal Companion : +2 par autre unbound assigné', () => {
+        const abs =
+            parseAbilities(
+                'For each other unbound companion assigned to a skirmish, Merry is strength +2.',
+                'Merry',
+                '11C168'
+            ) || [];
+        expect(abs).toHaveLength(1);
+        expect(abs[0]!.effects[0]).toMatchObject({
+            type: 'MODIFY_STAT',
+            stat: 'STRENGTH',
+            value: 2,
+            target: 'SELF',
+            perSpot: {
+                target: [['UNBOUND', 'COMPANION']],
+                assignedToSkirmish: true,
+                excludeSource: true,
+            },
+        });
+    });
+
+    it('Sam Steadfast Friend : each other companion resistance +1', () => {
+        const abs =
+            parseAbilities(
+                '<keyword>Ring-bound.</keyword> Each other companion is resistance +1.',
+                'Sam',
+                '11U172'
+            ) || [];
+        expect(abs).toHaveLength(1);
+        expect(abs[0]!.effects[0]).toMatchObject({
+            type: 'MODIFY_STAT',
+            stat: 'RESISTANCE',
+            value: 1,
+            target: [['COMPANION']],
+            excludeSource: true,
+        });
+    });
+
+    it('Measure of Comfort : spot Hobbit → unbound resistance +1', () => {
+        const abs =
+            parseAbilities(
+                'While you can spot a Hobbit, each unbound companion is resistance +1.',
+                'Measure of Comfort',
+                '12S125'
+            ) || [];
+        expect(abs).toHaveLength(1);
+        expect(abs[0]!.trigger).toMatchObject({
+            type: 'WHILE',
+            spot: [{ count: 1, target: [['HOBBIT']] }],
+        });
+        expect(abs[0]!.effects[0]).toMatchObject({
+            type: 'MODIFY_STAT',
+            stat: 'RESISTANCE',
+            value: 1,
+            target: [['UNBOUND', 'COMPANION']],
+        });
+    });
+
+    it('Farmer Maggot : dwelling or forest → strength +4', () => {
+        const abs =
+            parseAbilities(
+                'While Farmer Maggot is at a dwelling or forest site, he is strength +4.',
+                'Farmer Maggot',
+                '0P93'
+            ) || [];
+        expect(abs).toHaveLength(1);
+        expect(abs[0]!.trigger).toMatchObject({
+            type: 'WHILE',
+            atSiteKeywords: ['DWELLING', 'FOREST'],
+        });
+        expect(abs[0]!.effects[0]).toMatchObject({
+            type: 'MODIFY_STAT',
+            stat: 'STRENGTH',
+            value: 4,
+            target: 'SELF',
+        });
+    });
+
+    it('Gríma Son of Galmód : unbound bearing Shadow condition −1', () => {
+        const abs =
+            parseAbilities(
+                "Each unbound companion (or ally) bearing a Shadow condition is strength -1.",
+                'Gríma',
+                '4C153'
+            ) || [];
+        expect(abs).toHaveLength(1);
+        expect(abs[0]!.effects[0]).toMatchObject({
+            type: 'MODIFY_STAT',
+            stat: 'STRENGTH',
+            value: -1,
+            bearing: [['SHADOW', 'CONDITION']],
+        });
+    });
+
+    it('Rohirrim Traitor : spot companion bearing isengard condition → +2', () => {
+        const abs =
+            parseAbilities(
+                'While you can spot a companion bearing an <symbol>isengard</symbol> condition, this minion is strength +2.',
+                'Rohirrim Traitor',
+                '6C72'
+            ) || [];
+        expect(abs).toHaveLength(1);
+        expect(abs[0]!.trigger).toMatchObject({
+            type: 'WHILE',
+            spot: [
+                {
+                    count: 1,
+                    target: [['COMPANION']],
+                    bearing: [['ISENGARD', 'CONDITION']],
+                },
+            ],
+        });
+        expect(abs[0]!.effects[0]).toMatchObject({
+            type: 'MODIFY_STAT',
+            stat: 'STRENGTH',
+            value: 2,
+            target: 'SELF',
+        });
+    });
+});

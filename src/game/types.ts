@@ -186,6 +186,11 @@ export interface CostSelector {
     minVitality?: number;
     /** « except an enduring character » (Ettenmoors…). */
     excludeKeywords?: CardKeyword[];
+    /**
+     * « spot a companion bearing an isengard condition » —
+     * la cible doit porter au moins un attachement matchant.
+     */
+    bearing?: string[][];
 }
 
 export interface CostOption {
@@ -340,6 +345,11 @@ export type AbilityEffect =
                * (Shelob : minions stacked on a gollum possession).
                */
               stackedOnHost?: string[][];
+              /**
+               * « assigned to a skirmish » — compagnons déjà en escarmouche
+               * (présents comme companionId dans G.skirmishes).
+               */
+              assignedToSkirmish?: boolean;
               /** « for each other … » : exclure la source. */
               excludeSource?: boolean;
               limit?: number;

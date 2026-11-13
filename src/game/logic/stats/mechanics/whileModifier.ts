@@ -95,6 +95,21 @@ function countPerSpot(
             (card) => !card.isDead
         );
     }
+    if (perSpot.assignedToSkirmish) {
+        const assignedIds = new Set(
+            (G.skirmishes || [])
+                .map((s) => s.companionId)
+                .filter((id): id is string => Boolean(id))
+        );
+        cards = cards.filter((card) => {
+            const id = card.instanceId || card.id;
+            return (
+                assignedIds.has(id) ||
+                (card.id ? assignedIds.has(card.id) : false) ||
+                (card.instanceId ? assignedIds.has(card.instanceId) : false)
+            );
+        });
+    }
     if (perSpot.excludeSource) {
         const sourceId = source.instanceId || source.id;
         cards = cards.filter(
@@ -371,7 +386,14 @@ export function whileConditionHolds(
 
     for (const req of trigger.spot || []) {
         const count = req.count || 1;
-        const cards = resolveCostTarget(G, source, req.target);
+        let cards = resolveCostTarget(G, source, req.target);
+        if (req.bearing && req.bearing.length > 0) {
+            cards = cards.filter((card) =>
+                (card.attachments || []).some(
+                    (att) => att && cardMatchesTarget(att, req.bearing!)
+                )
+            );
+        }
         if (cards.length < count) return false;
     }
 
@@ -1134,6 +1156,10 @@ export function getWhileResistanceBonus(
                 if (!Array.isArray(effect.target)) continue;
                 if (!cardMatchesTarget(card, effect.target)) continue;
                 if (!cardBearsMatching(card, effect.bearing)) continue;
+                if (effect.excludeSource) {
+                    const sourceId = source.instanceId || source.id;
+                    if ((card.instanceId || card.id) === sourceId) continue;
+                }
                 bonus += modifyStatMagnitude(G, source, effect);
             }
         }
@@ -1152,6 +1178,11 @@ export function getWhileResistanceBonus(
                 if (!Array.isArray(effect.target)) continue;
                 if (!cardMatchesTarget(card, effect.target)) continue;
                 if (!cardBearsMatching(card, effect.bearing)) continue;
+                if (effect.excludeSource) {
+                    const sourceId =
+                        currentSite.instanceId || currentSite.id;
+                    if ((card.instanceId || card.id) === sourceId) continue;
+                }
                 bonus += modifyStatMagnitude(
                     G,
                     currentSite as CardState,

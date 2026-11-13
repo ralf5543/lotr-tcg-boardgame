@@ -347,16 +347,18 @@ export const DevPanel: React.FC<DevPanelProps> = ({
                         <S.ButtonGroup>
                             <S.ActionButton
                                 onClick={() =>
-                                    moves.devLoadPreset?.('SUPPORT_STACK')
+                                    moves.devLoadPreset?.(
+                                        'HOBBITS_ISENGARD_W1'
+                                    )
                                 }
-                                title="Empilement visuel aire de soutien"
+                                title="Deck Hobbits / Isengard — vague 1 (passifs)"
                             >
-                                Empilement soutien
+                                Hobbits/Isengard v1
                             </S.ActionButton>
                         </S.ButtonGroup>
                         <S.Hint>
-                            Copies non uniques vides → fan ; avec jetons /
-                            cartes empilées → carte seule.
+                            Hobbits/Isengard v1 : Sam, Comfort, Maggot, Merry,
+                            Gríma, Traître.
                         </S.Hint>
                     </S.Section>
 

@@ -4168,15 +4168,20 @@ function parseWhileAtSiteStrengthAbilities(
     }
 
     // « While Gollum is at a mountain, river, or underground site, he is strength +2. »
-    const namedMultiRe =
-        /While ([A-ZÀ-ŸÉ][^,]+?) is at an? ((?:[\w-]+(?:,\s*)?)+(?:or\s+[\w-]+)) site, ([^,]+?) is strength ([+-]\d+)\./gi;
+    // « While Farmer Maggot is at a dwelling or forest site, he is strength +4. »
+    const multiTerrain =
+        '[\\w-]+(?:\\s*,\\s*[\\w-]+)*(?:\\s+or\\s+[\\w-]+)+';
+    const namedMultiRe = new RegExp(
+        `While ([A-ZÀ-ŸÉ][^,]+?) is at an? (${multiTerrain}) site, ([^,]+?) is strength ([+-]\\d+)\\.`,
+        'gi'
+    );
     let match: RegExpExecArray | null;
     while ((match = namedMultiRe.exec(text)) !== null) {
         const sentence = match[0];
         if (
             /\b(and|each|may|fierce|damage|archery|discard|wound|heal|draw|this minion|this companion|the fellowship|bearer)\b/i.test(
                 sentence.replace(
-                    /\bat an? (?:[\w-]+(?:,\s*)?)+(?:or\s+[\w-]+) site\b/i,
+                    new RegExp(`\\bat an? (?:${multiTerrain}) site\\b`, 'i'),
                     ''
                 )
             )
@@ -5607,6 +5612,239 @@ function parseWhileSpotEachStrengthAbilities(
                 },
             ],
             source: 'SELF',
+            text: stripAbilityMarkup(match[0]),
+        });
+    }
+    return found;
+}
+
+/**
+ * « For each other unbound companion assigned to a skirmish, Merry is strength +N. »
+ * (Merry Loyal Companion…)
+ */
+function parseForEachOtherUnboundAssignedStrengthAbilities(
+    text: string,
+    cardTitle?: string,
+    cardId?: string
+): Record<string, unknown>[] {
+    const found: Record<string, unknown>[] = [];
+    const re =
+        /(?:^|[.!?]\s*)For each other unbound companion assigned to a skirmish,\s*((?:this companion|[A-ZÀ-ŸÉ][^,.]*?)) is strength \+(\d+)\.?/gi;
+    const plain = text
+        .replace(/<\/?keyword>/gi, '')
+        .replace(/<\/?symbol>/gi, '')
+        .replace(/<br\s*\/?>/gi, ' ')
+        .replace(/\*\*/g, ' ')
+        .replace(/\s+/g, ' ')
+        .trim();
+    let match: RegExpExecArray | null;
+    while ((match = re.exec(plain)) !== null) {
+        const whoRaw = stripAbilityMarkup(match[1]).replace(/\s+/g, ' ').trim();
+        const title = (cardTitle || '').trim();
+        let target: 'SELF' | null = null;
+        if (/^this companion$/i.test(whoRaw)) target = 'SELF';
+        else if (
+            title &&
+            whoRaw.toLowerCase() === title.toLowerCase()
+        ) {
+            target = 'SELF';
+        }
+        if (!target) continue;
+        const value = parseInt(match[2], 10);
+        if (!Number.isFinite(value) || value <= 0) continue;
+        found.push({
+            id: `${cardId || 'ability'}:${found.length}:per-other-unbound-assigned`,
+            phases: [],
+            trigger: { type: 'WHILE' },
+            cost: [],
+            effects: [
+                {
+                    type: 'MODIFY_STAT',
+                    stat: 'STRENGTH',
+                    value,
+                    target: 'SELF',
+                    perSpot: {
+                        target: [['UNBOUND', 'COMPANION']],
+                        assignedToSkirmish: true,
+                        excludeSource: true,
+                    },
+                },
+            ],
+            source: 'SELF',
+            text: stripAbilityMarkup(match[0]),
+        });
+    }
+    return found;
+}
+
+/**
+ * « Each other companion is resistance +N. » (Sam Steadfast Friend…)
+ */
+function parseEachOtherCompanionResistanceAbilities(
+    text: string,
+    cardId?: string
+): Record<string, unknown>[] {
+    const found: Record<string, unknown>[] = [];
+    const re =
+        /(?:^|[.!?]\s*)Each other companion is resistance\s*([+-]\d+)\.?/gi;
+    const plain = text
+        .replace(/<\/?keyword>/gi, '')
+        .replace(/<\/?symbol>/gi, '')
+        .replace(/<br\s*\/?>/gi, ' ')
+        .replace(/\*\*/g, ' ')
+        .replace(/\s+/g, ' ')
+        .trim();
+    let match: RegExpExecArray | null;
+    while ((match = re.exec(plain)) !== null) {
+        const value = parseInt(match[1], 10);
+        if (!Number.isFinite(value) || value === 0) continue;
+        found.push({
+            id: `${cardId || 'ability'}:${found.length}:each-other-res`,
+            phases: [],
+            trigger: { type: 'WHILE' },
+            cost: [],
+            effects: [
+                {
+                    type: 'MODIFY_STAT',
+                    stat: 'RESISTANCE',
+                    value,
+                    target: [['COMPANION']],
+                    excludeSource: true,
+                },
+            ],
+            source: 'SELF',
+            text: stripAbilityMarkup(match[0]),
+        });
+    }
+    return found;
+}
+
+/**
+ * « While you can spot a Hobbit, each unbound companion is resistance +N. »
+ * (Measure of Comfort…)
+ */
+function parseWhileSpotEachUnboundResistanceAbilities(
+    text: string,
+    cardId?: string
+): Record<string, unknown>[] {
+    const found: Record<string, unknown>[] = [];
+    const re =
+        /While you can spot ((?:a|an|\d+) [^,.]+),\s*each unbound companion is resistance\s*([+\-–−]\d+)\.?/gi;
+    let match: RegExpExecArray | null;
+    while ((match = re.exec(text)) !== null) {
+        const spot = parseWhileSpotSubject(match[1]);
+        if (!spot) continue;
+        const value = parseInt(match[2].replace(/[–−]/g, '-'), 10);
+        if (!Number.isFinite(value) || value === 0) continue;
+        found.push({
+            id: `${cardId || 'ability'}:${found.length}:while-spot-unbound-res`,
+            phases: [],
+            trigger: {
+                type: 'WHILE',
+                spot: [{ count: spot.count, target: spot.target }],
+            },
+            cost: [],
+            effects: [
+                {
+                    type: 'MODIFY_STAT',
+                    stat: 'RESISTANCE',
+                    value,
+                    target: [['UNBOUND', 'COMPANION']],
+                },
+            ],
+            source: 'SELF',
+            text: stripAbilityMarkup(match[0]),
+        });
+    }
+    return found;
+}
+
+/**
+ * « Each unbound companion (or ally) bearing a Shadow condition is strength -N. »
+ * (Gríma Son of Galmód…)
+ */
+function parseEachUnboundBearingShadowConditionStrengthAbilities(
+    text: string,
+    cardId?: string
+): Record<string, unknown>[] {
+    const found: Record<string, unknown>[] = [];
+    const re =
+        /(?:^|[.!?]\s*)Each unbound companion \(or ally\) bearing a Shadow condition is strength\s*([+-]\d+)\.?/gi;
+    const plain = text
+        .replace(/<\/?keyword>/gi, '')
+        .replace(/<\/?symbol>/gi, '')
+        .replace(/<br\s*\/?>/gi, ' ')
+        .replace(/\*\*/g, ' ')
+        .replace(/\s+/g, ' ')
+        .trim();
+    let match: RegExpExecArray | null;
+    while ((match = re.exec(plain)) !== null) {
+        const value = parseInt(match[1], 10);
+        if (!Number.isFinite(value) || value === 0) continue;
+        found.push({
+            id: `${cardId || 'ability'}:${found.length}:unbound-bearing-shadow-str`,
+            phases: [],
+            trigger: { type: 'WHILE' },
+            cost: [],
+            effects: [
+                {
+                    type: 'MODIFY_STAT',
+                    stat: 'STRENGTH',
+                    value,
+                    target: [['UNBOUND', 'COMPANION'], ['ALLY']],
+                    bearing: [['SHADOW', 'CONDITION']],
+                },
+            ],
+            source: 'SELF',
+            text: stripAbilityMarkup(match[0]),
+        });
+    }
+    return found;
+}
+
+/**
+ * « While you can spot a companion bearing an isengard condition, this minion is strength +N. »
+ * (Rohirrim Traitor…)
+ */
+function parseWhileSpotCompanionBearingConditionStrengthAbilities(
+    text: string,
+    cardTitle?: string,
+    cardId?: string
+): Record<string, unknown>[] {
+    const found: Record<string, unknown>[] = [];
+    const re =
+        /While you can spot (?:a|an) companion bearing an? ((?:<symbol>[^<]+<\/symbol>|[A-Za-z-]+)) condition,\s*([^,]+?) is strength ([+-]\d+)\./gi;
+    let match: RegExpExecArray | null;
+    while ((match = re.exec(text)) !== null) {
+        const cultureFilters = parseClassFilters(match[1].trim());
+        if (cultureFilters.length === 0) continue;
+        const who = parseWhileStrengthWho(match[2], cardTitle);
+        if (!who) continue;
+        const value = parseInt(match[3], 10);
+        if (!Number.isFinite(value) || value === 0) continue;
+        found.push({
+            id: `${cardId || 'ability'}:${found.length}:while-spot-bearing-cond`,
+            phases: [],
+            trigger: {
+                type: 'WHILE',
+                spot: [
+                    {
+                        count: 1,
+                        target: [['COMPANION']],
+                        bearing: [[...cultureFilters, 'CONDITION']],
+                    },
+                ],
+            },
+            cost: [],
+            effects: [
+                {
+                    type: 'MODIFY_STAT',
+                    stat: 'STRENGTH',
+                    value,
+                    target: who,
+                },
+            ],
+            source: who === 'BEARER' ? 'ATTACHMENT' : 'SELF',
             text: stripAbilityMarkup(match[0]),
         });
     }
@@ -16781,6 +17019,56 @@ export function parseAbilities(
     });
 
     parseWhileSpotEachStrengthAbilities(text, cardId).forEach((ability) => {
+        abilities.push({
+            ...ability,
+            id: `${cardId || 'ability'}:${abilities.length}`,
+        });
+    });
+
+    parseForEachOtherUnboundAssignedStrengthAbilities(
+        text,
+        cardTitle,
+        cardId
+    ).forEach((ability) => {
+        abilities.push({
+            ...ability,
+            id: `${cardId || 'ability'}:${abilities.length}`,
+        });
+    });
+
+    parseEachOtherCompanionResistanceAbilities(text, cardId).forEach(
+        (ability) => {
+            abilities.push({
+                ...ability,
+                id: `${cardId || 'ability'}:${abilities.length}`,
+            });
+        }
+    );
+
+    parseWhileSpotEachUnboundResistanceAbilities(text, cardId).forEach(
+        (ability) => {
+            abilities.push({
+                ...ability,
+                id: `${cardId || 'ability'}:${abilities.length}`,
+            });
+        }
+    );
+
+    parseEachUnboundBearingShadowConditionStrengthAbilities(
+        text,
+        cardId
+    ).forEach((ability) => {
+        abilities.push({
+            ...ability,
+            id: `${cardId || 'ability'}:${abilities.length}`,
+        });
+    });
+
+    parseWhileSpotCompanionBearingConditionStrengthAbilities(
+        text,
+        cardTitle,
+        cardId
+    ).forEach((ability) => {
         abilities.push({
             ...ability,
             id: `${cardId || 'ability'}:${abilities.length}`,
