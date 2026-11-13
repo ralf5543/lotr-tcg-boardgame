@@ -327,6 +327,11 @@ export type AbilityEffect =
           };
           /** Bonus = value × cultures distinctes spotées (Unabated…). */
           perDistinctCulture?: boolean;
+          /**
+           * Bonus = value × cartes du coût spot
+           * (A Task Now to Be Done : résistance +X).
+           */
+          countFromSpot?: boolean;
       }
     | {
           /** Modificateur passif (While…) — pas d’expiration de phase. */
@@ -1018,6 +1023,8 @@ export type AbilityEffect =
           involving: AbilityTargetRef;
           /** Ombre peut retirer N crépuscule pour empêcher l’effet (Escape, etc.). */
           shadowMayPrevent?: { removeTwilight: number };
+          /** « cancel a fierce skirmish » (Filibert…). */
+          requiresFierce?: boolean;
       }
     | {
           /**

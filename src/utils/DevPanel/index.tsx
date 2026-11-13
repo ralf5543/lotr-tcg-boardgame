@@ -342,6 +342,25 @@ export const DevPanel: React.FC<DevPanelProps> = ({
                         </S.ButtonGroup>
                     </S.Section>
 
+                    <S.Section>
+                        <S.Label>Preset playtest :</S.Label>
+                        <S.ButtonGroup>
+                            <S.ActionButton
+                                onClick={() =>
+                                    moves.devLoadPreset?.(
+                                        'HOBBITS_ISENGARD_W3'
+                                    )
+                                }
+                                title="Deck Hobbits / Isengard — vague 3"
+                            >
+                                Hobbits/Isengard v3
+                            </S.ActionButton>
+                        </S.ButtonGroup>
+                        <S.Hint>
+                            v3 : Phial, Task Now, Filibert, Simple Living.
+                        </S.Hint>
+                    </S.Section>
+
                     {/* Session / debug UI */}
                     <S.Section>
                         <S.Label>Session :</S.Label>

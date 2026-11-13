@@ -5438,6 +5438,62 @@ function parseWhileHaveInitiativeEachKeywordAbilities(
 }
 
 /**
+ * « While bearer is in region N, bearer gains muster. »
+ * « While bearer is in region N, each of your shire companions gains muster. »
+ * « While bearer is in region N, each character gains muster. »
+ * (Phial of Galadriel…)
+ */
+function parseWhileBearerInRegionMusterAbilities(
+    text: string,
+    cardId?: string
+): Record<string, unknown>[] {
+    const found: Record<string, unknown>[] = [];
+    const working = text
+        .replace(/<\/?keyword>/gi, '')
+        .replace(/<symbol>([^<]+)<\/symbol>/gi, '$1 ')
+        .replace(/<br\s*\/?>/gi, ' ')
+        .replace(/\*\*/g, ' ')
+        .replace(/\s+/g, ' ')
+        .trim();
+    const re =
+        /While bearer is in region\s+([123]),\s*((?:bearer|each of your [\s\S]+?|each character))\s+gains?\s+muster\.?/gi;
+    let match: RegExpExecArray | null;
+    while ((match = re.exec(working)) !== null) {
+        const region = parseInt(match[1], 10) as 1 | 2 | 3;
+        if (region !== 1 && region !== 2 && region !== 3) continue;
+        const whoRaw = stripAbilityMarkup(match[2]).replace(/\s+/g, ' ').trim();
+        let target: 'BEARER' | string[][] | null = null;
+        if (/^bearer$/i.test(whoRaw)) {
+            target = 'BEARER';
+        } else if (/^each character$/i.test(whoRaw)) {
+            target = [['CHARACTER']];
+        } else {
+            const ofYour = whoRaw.match(/^each of your\s+(.+)$/i);
+            if (!ofYour) continue;
+            const filters = parseClassFilters(ofYour[1]);
+            if (filters.length === 0) continue;
+            target = [filters];
+        }
+        found.push({
+            id: `${cardId || 'ability'}:${found.length}:while-bearer-region-muster`,
+            phases: [],
+            trigger: { type: 'WHILE', inRegion: region },
+            cost: [],
+            effects: [
+                {
+                    type: 'MODIFY_KEYWORD',
+                    keyword: 'MUSTER',
+                    target,
+                },
+            ],
+            source: 'ATTACHMENT',
+            text: stripAbilityMarkup(match[0]),
+        });
+    }
+    return found;
+}
+
+/**
  * « While [Name|this] is in region N, [each other companion|each companion|he] is strength ±X. »
  * (Gandalf Leader of the Company 11S33…)
  * Refuse damage / discard / skirmishing / multi-clauses hors modèle.
@@ -11988,6 +12044,105 @@ function parseStandaloneSpotReplaceAbilities(
 }
 
 /**
+ * « Spot X Hobbits to make an unbound Hobbit resistance +X. »
+ * (A Task Now to Be Done…) — event sans marqueur de phase.
+ */
+function parseStandaloneSpotXMakeResistanceAbilities(
+    text: string,
+    cardTitle?: string,
+    cardId?: string
+): Record<string, unknown>[] {
+    const working = text
+        .replace(/<\/?keyword>/gi, '')
+        .replace(/<br\s*\/?>/gi, ' ')
+        .replace(/\*\*/g, ' ')
+        .replace(/\s+/g, ' ')
+        .trim();
+    const match = working.match(
+        /^Spot\s+X\s+([\s\S]+?)\s+to make\s+(?:a|an)\s+([\s\S]+?)\s+resistance\s*\+\s*X\.?$/i
+    );
+    if (!match) return [];
+    if (/\b(and|or)\b/i.test(match[1])) return [];
+    const spotSubject = parseExertSubject(`X ${match[1]}`, cardTitle, text);
+    if (!spotSubject || !Array.isArray(spotSubject.target)) return [];
+    const filters = parseClassFilters(match[2]);
+    if (filters.length === 0) return [];
+    return [
+        {
+            id: `${cardId || 'ability'}:0:spot-x-res`,
+            phases: [],
+            cost: [
+                {
+                    spot: [
+                        {
+                            count: 1,
+                            target: spotSubject.target,
+                        },
+                    ],
+                },
+            ],
+            effects: [
+                {
+                    type: 'ADD_TEMP_STAT',
+                    stat: 'RESISTANCE',
+                    value: 1,
+                    target: [filters],
+                    expiresAtPhase: 'SKIRMISH',
+                    countFromSpot: true,
+                },
+            ],
+            source: 'SELF',
+            text: stripAbilityMarkup(match[0])
+                .replace(/\s+/g, ' ')
+                .replace(/[.\s]+$/u, '')
+                .trim(),
+        },
+    ];
+}
+
+/**
+ * « Response: If you play a shire event, discard this condition to heal each Hobbit. »
+ * (Simple Living…)
+ */
+function parseResponsePlayDiscardHealEachAbilities(
+    text: string,
+    cardId?: string
+): Record<string, unknown>[] {
+    const re =
+        /(?:\*\*|<(?:keyword)>)Response:?(?:\s*<\/(?:keyword)>)?(?:\*\*)?\s*If you play\s+(?:a|an)\s+([\s\S]+?),\s*discard this(?:\s+(?:condition|possession|card))?\s+to heal each\s+([^.]+)\.?/gi;
+    const found: Record<string, unknown>[] = [];
+    let match: RegExpExecArray | null;
+    while ((match = re.exec(text)) !== null) {
+        const playedFilters = parseClassFilters(match[1]);
+        const healFilters = parseClassFilters(match[2]);
+        if (playedFilters.length === 0 || healFilters.length === 0) continue;
+        if (/\b(and|or|who|whose|from)\b/i.test(match[2])) continue;
+        found.push({
+            id: `${cardId || 'ability'}:${found.length}:resp-play-discard-heal`,
+            phases: ['RESPONSE'],
+            optional: true,
+            trigger: { type: 'YOU_PLAY', played: [playedFilters] },
+            cost: [
+                {
+                    discardFromPlay: [{ count: 1, target: 'SELF' }],
+                },
+            ],
+            effects: [
+                {
+                    type: 'HEAL',
+                    count: 1,
+                    target: [healFilters],
+                    all: true,
+                },
+            ],
+            source: 'SELF',
+            text: stripAbilityMarkup(match[0]),
+        });
+    }
+    return found;
+}
+
+/**
  * « Make a Hobbit strength +1 for each companion who has resistance 7 or more. »
  * (Sworn Companion…) — event sans marqueur de phase.
  */
@@ -16504,8 +16659,9 @@ export function parseAbilities(
             return;
         }
 
+        // Filibert : cancel a fierce skirmish involving that Hobbit.
         const cancelSkirmishMatch = body.match(
-            /^Exert\s+([\s\S]+?)\s+to cancel a skirmish involving\s+([\s\S]+)/i
+            /^Exert\s+([\s\S]+?)\s+to cancel a\s+(fierce\s+)?skirmish involving\s+([\s\S]+)/i
         );
         if (cancelSkirmishMatch) {
             if (/\b(and|or)\b/i.test(cancelSkirmishMatch[1])) return;
@@ -16516,7 +16672,8 @@ export function parseAbilities(
             );
             if (!subject) return;
 
-            const involvingChunk = cancelSkirmishMatch[2];
+            const requiresFierce = Boolean(cancelSkirmishMatch[2]);
+            const involvingChunk = cancelSkirmishMatch[3];
             const involvingSentence = involvingChunk.split(/\./)[0] || '';
             const leftoverAfterDot = involvingChunk
                 .slice(involvingSentence.length)
@@ -16524,18 +16681,30 @@ export function parseAbilities(
                 .trim();
             if (!isOnlyShadowPreventClause(leftoverAfterDot)) return;
 
-            const involving = parseCancelInvolving(
-                involvingSentence,
-                subject.target,
-                cardTitle
-            );
+            const involvingPlain = stripAbilityMarkup(involvingSentence)
+                .replace(/[.\s]+$/, '')
+                .trim();
+            let involving: 'SELF' | 'BEARER' | 'COST_TARGET' | string[][] | null =
+                null;
+            if (
+                /^that\b/i.test(involvingPlain) &&
+                Array.isArray(subject.target)
+            ) {
+                involving = 'COST_TARGET';
+            } else {
+                involving = parseCancelInvolving(
+                    involvingSentence,
+                    subject.target,
+                    cardTitle
+                );
+            }
             if (!involving) return;
 
             const shadowMayPrevent =
                 parseShadowMayPrevent(leftoverAfterDot) || undefined;
 
             const cancelClause =
-                `${marker.phase}: Exert ${cancelSkirmishMatch[1].trim()} to cancel a skirmish involving ${involvingSentence.trim()}`
+                `${marker.phase}: Exert ${cancelSkirmishMatch[1].trim()} to cancel a${requiresFierce ? ' fierce' : ''} skirmish involving ${involvingSentence.trim()}`
                     .replace(/<[^>]+>/g, '')
                     .replace(/\s+/g, ' ')
                     .replace(/\s+\./g, '.')
@@ -16561,6 +16730,7 @@ export function parseAbilities(
                     {
                         type: 'CANCEL_SKIRMISH',
                         involving,
+                        ...(requiresFierce ? { requiresFierce: true } : {}),
                         ...(shadowMayPrevent
                             ? { shadowMayPrevent }
                             : {}),
@@ -16711,6 +16881,22 @@ export function parseAbilities(
             id: `${cardId || 'ability'}:${abilities.length}`,
         });
     });
+
+    parseWhileBearerInRegionMusterAbilities(text, cardId).forEach((ability) => {
+        abilities.push({
+            ...ability,
+            id: `${cardId || 'ability'}:${abilities.length}`,
+        });
+    });
+
+    parseResponsePlayDiscardHealEachAbilities(text, cardId).forEach(
+        (ability) => {
+            abilities.push({
+                ...ability,
+                id: `${cardId || 'ability'}:${abilities.length}`,
+            });
+        }
+    );
 
     parseForEachStrengthAbilities(text, cardTitle, cardId).forEach(
         (ability) => {
@@ -17645,6 +17831,16 @@ export function parseAbilities(
                 });
             }
         );
+        parseStandaloneSpotXMakeResistanceAbilities(
+            text,
+            cardTitle,
+            cardId
+        ).forEach((ability) => {
+            abilities.push({
+                ...ability,
+                id: `${cardId || 'ability'}:${abilities.length}`,
+            });
+        });
         parseStandaloneDiscardCountMakePerSpotAbilities(text, cardId).forEach(
             (ability) => {
                 abilities.push({

@@ -112,7 +112,74 @@ export const applyDevPreset = (
     G: GameState,
     presetType: DevPresetType
 ): void => {
+    const fpId = G.fpPlayerId || '0';
+    const fpPlayer = G.players[fpId];
+    if (!fpPlayer) return;
+
+    const shadowId = fpId === '0' ? '1' : '0';
+    const shadowPlayer = G.players[shadowId];
+
     switch (presetType) {
+        case 'HOBBITS_ISENGARD_W3': {
+            // Vague 3 — Phial, Task Now, Filibert, Simple Living.
+            resetBoardForPreset(G);
+            setupDevPath(G, 0, [
+                '18U140',
+                '11S249',
+                '11S264',
+                '12U194',
+                '11S252',
+                '17U147',
+                '11S242',
+                '11S261',
+                '18U138',
+            ]);
+            G.twilightPool = 4;
+            fpPlayer.burdens = 0;
+            const merry = clonePresetCard('11C168', 'dev-hi3-merry');
+            const phial = clonePresetCard('13R155', 'dev-hi3-phial');
+            const frodo = {
+                ...clonePresetCard('11S164', 'dev-hi3-frodo'),
+                attachments: [
+                    clonePresetCard('1C2', 'dev-hi3-ring'),
+                    phial,
+                ],
+            };
+            const fierceOrc = {
+                ...clonePresetCard('1C174', 'dev-hi3-orc'),
+                keywords: [
+                    ...((clonePresetCard('1C174').keywords as string[]) || []),
+                    'FIERCE',
+                ],
+            };
+            fpPlayer.fellowshipArea = [
+                frodo,
+                clonePresetCard('11U172', 'dev-hi3-sam'),
+                merry,
+                clonePresetCard('2C101', 'dev-hi3-filibert'),
+            ];
+            fpPlayer.supportArea = [
+                clonePresetCard('12U130', 'dev-hi3-simple'),
+            ];
+            fpPlayer.hand = [
+                clonePresetCard('11U175', 'dev-hi3-task'),
+                clonePresetCard('11S174', 'dev-hi3-sworn'),
+            ];
+            G.skirmishes = [
+                {
+                    id: 'dev-hi3-sk',
+                    companionId: merry.instanceId || merry.id,
+                    minionIds: [fierceOrc.instanceId || fierceOrc.id],
+                },
+            ];
+            G.activeSkirmishId = 'dev-hi3-sk';
+            if (shadowPlayer) {
+                G.battlefield = [fierceOrc];
+            }
+            G.statusMessage =
+                '[DEV] Hobbits/Isengard vague 3 · Phial (région 1 → Muster Frodon) ; Task Now / Sworn en main ; Filibert vs Orque Féroce sur Merry ; Simple Living en soutien (jouer Sworn → soigner). Relancer le preset.';
+            break;
+        }
         default:
             G.statusMessage = `[DEV] Aucun preset actif (« ${presetType} »).`;
             break;

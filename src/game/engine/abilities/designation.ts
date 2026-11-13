@@ -1296,7 +1296,18 @@ export function abilityHasLegalEffectTarget(
             continue;
         }
         if (effect.type === 'CANCEL_SKIRMISH') {
-            if (!findSkirmishToCancel(G, source, effect.involving)) {
+            let involvingSource = source;
+            let involving = effect.involving;
+            if (involving === 'COST_TARGET') {
+                // Légalité : au moins un candidat d’exert avec escarmouche fierce.
+                // La résolution exacte attend la désignation du coût.
+                continue;
+            }
+            if (
+                !findSkirmishToCancel(G, involvingSource, involving, {
+                    requiresFierce: effect.requiresFierce,
+                })
+            ) {
                 return false;
             }
             continue;

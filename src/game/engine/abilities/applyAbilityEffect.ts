@@ -1468,10 +1468,23 @@ export function applyAbilityEffect(
         }
 
         if (effect.type === 'CANCEL_SKIRMISH') {
+            let involvingSource = source;
+            let involving = effect.involving;
+            if (involving === 'COST_TARGET') {
+                const costPick = costIds[0] || chosenIds[0];
+                if (!costPick) return false;
+                const costCard = findTargetCard(G, costPick) as CardState | null;
+                if (!costCard) return false;
+                involvingSource = costCard;
+                involving = 'SELF';
+            }
             const skirmish = findSkirmishToCancel(
                 G,
-                source,
-                effect.involving
+                involvingSource,
+                involving,
+                {
+                    requiresFierce: effect.requiresFierce,
+                }
             );
             if (!skirmish) return false;
             if (
@@ -1920,6 +1933,10 @@ function applyOneEffect(
             }
             const n = spotted.length;
             value = effect.value * n;
+            if (value <= 0) return false;
+        }
+        if (effect.countFromSpot) {
+            value = effect.value * countFromSpotCost(G, source, ability);
             if (value <= 0) return false;
         }
         if (effect.perDistinctCulture) {

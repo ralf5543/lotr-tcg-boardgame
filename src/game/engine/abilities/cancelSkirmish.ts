@@ -11,6 +11,7 @@ import {
     findBearer,
     forEachInPlayCard,
 } from './resolveCostTarget';
+import { getKeywordValue } from '../keywords/keywordUtils';
 import { displayTitle } from '../../../decks/cardMeta';
 import { appendJournal } from '../../logic/journal';
 
@@ -88,6 +89,19 @@ export function skirmishMatchesInvolving(
     );
 }
 
+function skirmishHasFierceMinion(
+    G: GameState,
+    skirmish: SkirmishState
+): boolean {
+    const minionIds =
+        skirmish.minionIds ||
+        (skirmish.minionId ? [skirmish.minionId] : []);
+    return minionIds.some((minionId) => {
+        const minion = findInPlayById(G, minionId);
+        return Boolean(minion && getKeywordValue(minion, 'FIERCE', G) >= 0);
+    });
+}
+
 /**
  * Escarmouche à annuler : l’active si elle matche, sinon l’unique match.
  * Plusieurs matchs hors active → indécidable (inerte / pas légal).
@@ -95,12 +109,17 @@ export function skirmishMatchesInvolving(
 export function findSkirmishToCancel(
     G: GameState,
     source: CardState,
-    involving: AbilityTargetRef
+    involving: AbilityTargetRef,
+    opts?: { requiresFierce?: boolean }
 ): SkirmishState | null {
     const open = (G.skirmishes || []).filter((s) => !s.resolved);
-    const matches = open.filter((s) =>
-        skirmishMatchesInvolving(G, s, source, involving)
-    );
+    const matches = open.filter((s) => {
+        if (!skirmishMatchesInvolving(G, s, source, involving)) return false;
+        if (opts?.requiresFierce && !skirmishHasFierceMinion(G, s)) {
+            return false;
+        }
+        return true;
+    });
     if (matches.length === 0) return null;
     if (G.activeSkirmishId) {
         const active = matches.find((s) => s.id === G.activeSkirmishId);

@@ -33772,6 +33772,43 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "ALLY",
+    "abilities": [
+      {
+        "id": "2C101:0",
+        "phases": [
+          "SKIRMISH"
+        ],
+        "cost": [
+          {
+            "exert": [
+              {
+                "count": 2,
+                "target": [
+                  [
+                    "HOBBIT",
+                    "COMPANION"
+                  ]
+                ],
+                "mode": "DESIGNATION"
+              }
+            ]
+          }
+        ],
+        "effects": [
+          {
+            "type": "CANCEL_SKIRMISH",
+            "involving": "COST_TARGET",
+            "requiresFierce": true
+          }
+        ],
+        "source": "SELF",
+        "text": "SKIRMISH: Exert a Hobbit companion twice to cancel a fierce skirmish involving that Hobbit",
+        "textFr": "**Combat :** Affaiblissez un compagnon Hobbit deux fois pour annuler un combat **acharné** impliquant ce Hobbit."
+      }
+    ],
+    "actionPhases": [
+      "SKIRMISH"
+    ],
     "culture": "SHIRE",
     "race": "HOBBIT",
     "twilightCost": 1,
@@ -107255,6 +107292,43 @@
     "isUnique": false,
     "kind": "FREE_PEOPLE",
     "type": "EVENT",
+    "abilities": [
+      {
+        "id": "11U175:0",
+        "phases": [],
+        "cost": [
+          {
+            "spot": [
+              {
+                "count": 1,
+                "target": [
+                  [
+                    "HOBBIT"
+                  ]
+                ]
+              }
+            ]
+          }
+        ],
+        "effects": [
+          {
+            "type": "ADD_TEMP_STAT",
+            "stat": "RESISTANCE",
+            "value": 1,
+            "target": [
+              [
+                "UNBOUND",
+                "HOBBIT"
+              ]
+            ],
+            "expiresAtPhase": "SKIRMISH",
+            "countFromSpot": true
+          }
+        ],
+        "source": "SELF",
+        "text": "Spot X Hobbits to make an unbound Hobbit resistance +X"
+      }
+    ],
     "phases": [
       "SKIRMISH"
     ],
@@ -115849,6 +115923,48 @@
     "kind": "FREE_PEOPLE",
     "type": "CONDITION",
     "subtype": "SUPPORT-AREA",
+    "abilities": [
+      {
+        "id": "12U130:0",
+        "phases": [
+          "RESPONSE"
+        ],
+        "optional": true,
+        "trigger": {
+          "type": "YOU_PLAY",
+          "played": [
+            [
+              "SHIRE",
+              "EVENT"
+            ]
+          ]
+        },
+        "cost": [
+          {
+            "discardFromPlay": [
+              {
+                "count": 1,
+                "target": "SELF"
+              }
+            ]
+          }
+        ],
+        "effects": [
+          {
+            "type": "HEAL",
+            "count": 1,
+            "target": [
+              [
+                "HOBBIT"
+              ]
+            ],
+            "all": true
+          }
+        ],
+        "source": "SELF",
+        "text": "Response: If you play a shire event, discard this condition to heal each Hobbit."
+      }
+    ],
     "culture": "SHIRE",
     "twilightCost": 1,
     "imageUrl": "/cards_visuals/o_12_130.jpg",
@@ -126530,6 +126646,71 @@
         "RING-BOUND",
         "HOBBIT"
       ]
+    ],
+    "abilities": [
+      {
+        "id": "13R155:0",
+        "phases": [],
+        "trigger": {
+          "type": "WHILE",
+          "inRegion": 1
+        },
+        "cost": [],
+        "effects": [
+          {
+            "type": "MODIFY_KEYWORD",
+            "keyword": "MUSTER",
+            "target": "BEARER"
+          }
+        ],
+        "source": "ATTACHMENT",
+        "text": "While bearer is in region 1, bearer gains muster."
+      },
+      {
+        "id": "13R155:1",
+        "phases": [],
+        "trigger": {
+          "type": "WHILE",
+          "inRegion": 2
+        },
+        "cost": [],
+        "effects": [
+          {
+            "type": "MODIFY_KEYWORD",
+            "keyword": "MUSTER",
+            "target": [
+              [
+                "SHIRE",
+                "COMPANION"
+              ]
+            ]
+          }
+        ],
+        "source": "ATTACHMENT",
+        "text": "While bearer is in region 2, each of your shire companions gains muster."
+      },
+      {
+        "id": "13R155:2",
+        "phases": [],
+        "trigger": {
+          "type": "WHILE",
+          "inRegion": 3
+        },
+        "cost": [],
+        "effects": [
+          {
+            "type": "MODIFY_KEYWORD",
+            "keyword": "MUSTER",
+            "target": [
+              [
+                "CHARACTER"
+              ]
+            ]
+          }
+        ],
+        "source": "ATTACHMENT",
+        "text": "While bearer is in region 3, each character gains muster."
+      }
     ],
     "culture": "SHIRE",
     "twilightCost": 0,
