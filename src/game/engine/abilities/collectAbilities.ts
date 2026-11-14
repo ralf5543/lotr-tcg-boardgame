@@ -865,6 +865,9 @@ function formatEffectBit(
             : '';
         return `devenir un séide ${fierce}(force ${effect.strength}, vitalité ${effect.vitality}) jusqu’au regroupement`;
     }
+    if (effect.type === 'SUPPRESS_CHARACTER_PLAY_RESTRICTIONS') {
+        return 'ignorer les restrictions d’affectation / archerie jusqu’au regroupement';
+    }
     if (effect.type === 'CLEAR_CULTURE_TOKENS') {
         return 'retirer tous les jetons ici';
     }
@@ -1033,9 +1036,12 @@ function formatEffectBit(
                   : effect.from === 'DEAD_PILE'
                     ? 'la pile de mort'
                     : 'la pioche ou la défausse';
+        const reduce = effect.twilightReduce || 0;
+        const reduceBit =
+            reduce > 0 ? ` (−${reduce} crépuscule)` : '';
         return who
-            ? `jouer ${who} depuis ${from}`
-            : `jouer une carte depuis ${from}`;
+            ? `jouer ${who} depuis ${from}${reduceBit}`
+            : `jouer une carte depuis ${from}${reduceBit}`;
     }
     if (effect.type === 'SEARCH_DECK_TO_DISCARD') {
         const who = formatTargetPhrase(effect.target);

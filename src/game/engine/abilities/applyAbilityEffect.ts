@@ -796,7 +796,8 @@ export function applyAbilityEffect(
                 effect.target,
                 playPhase,
                 attachHost,
-                from
+                from,
+                effect.twilightReduce || 0
             );
             if (!played) return false;
             afterCardPlayed(G, played, {
@@ -1374,7 +1375,12 @@ export function applyAbilityEffect(
                 );
             }
             if (!minion || minion.type !== 'MINION') return false;
-            if (minion.cannotBeAssignedToSkirmish) return false;
+            if (
+                minion.cannotBeAssignedToSkirmish &&
+                !minion.suppressCharacterPlayRestrictionsUntil
+            ) {
+                return false;
+            }
 
             const companion = resolveAbilityTarget(
                 G,
@@ -1673,6 +1679,19 @@ export function applyAbilityEffect(
                     : resolveAbilityTarget(G, source, effect.target);
             if (!target) return false;
             target.cultureTokens = {};
+            continue;
+        }
+
+        if (effect.type === 'SUPPRESS_CHARACTER_PLAY_RESTRICTIONS') {
+            const target =
+                effect.target === 'SELF'
+                    ? source
+                    : effect.target === 'BEARER'
+                      ? findBearer(G, source)
+                      : resolveAbilityTarget(G, source, effect.target);
+            if (!target) return false;
+            target.suppressCharacterPlayRestrictionsUntil =
+                effect.expiresAtPhase;
             continue;
         }
 
@@ -2660,6 +2679,9 @@ export function clearExpiredTempKeywords(
         }
         if (card.forbidWoundsUntil === phase) {
             delete card.forbidWoundsUntil;
+        }
+        if (card.suppressCharacterPlayRestrictionsUntil === phase) {
+            delete card.suppressCharacterPlayRestrictionsUntil;
         }
         if (card.tempOverwhelmFactor?.expiresAtPhase === phase) {
             delete card.tempOverwhelmFactor;

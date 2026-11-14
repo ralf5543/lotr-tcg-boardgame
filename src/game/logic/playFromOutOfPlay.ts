@@ -375,7 +375,8 @@ export function playCardFromDeckOrDiscard(
     filter?: string[][],
     phase = 'shadow',
     attachHost?: CardState | null,
-    from: PlayFromSource = 'DECK_OR_DISCARD'
+    from: PlayFromSource = 'DECK_OR_DISCARD',
+    twilightReduce = 0
 ): CardState | null {
     const found = findInDeckOrDiscard(G, ownerId, cardId);
     if (!found) return null;
@@ -478,11 +479,7 @@ export function playCardFromDeckOrDiscard(
         return null;
     }
 
-    const cost = getEffectiveTwilightCost(
-        removed,
-        getCurrentSiteIndex(G),
-        getWhileTwilightCostModifier(G, removed)
-    );
+    const cost = shadowPlayCost(G, removed, twilightReduce);
     if ((G.twilightPool || 0) < cost) {
         restore();
         return null;

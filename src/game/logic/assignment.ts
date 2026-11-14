@@ -15,7 +15,12 @@ export const canCompanionBeAssigned = (companion: CardState): boolean => {
 
 /** Séide qui ne peut jamais être affecté (Saruman Servant…). */
 export const canMinionBeAssigned = (minion: CardState): boolean => {
-    if (minion.cannotBeAssignedToSkirmish) return false;
+    if (
+        minion.cannotBeAssignedToSkirmish &&
+        !minion.suppressCharacterPlayRestrictionsUntil
+    ) {
+        return false;
+    }
     return true;
 };
 
@@ -94,7 +99,7 @@ export const getUnassignedMinions = (G: GameState): CardState[] => {
     );
 
     return minionCards.filter((c: CardState) => {
-        if (c.cannotBeAssignedToSkirmish) return false;
+        if (!canMinionBeAssigned(c)) return false;
         // A. Si déjà assigné dans CETTE passe d'assignment en cours -> Exclu
         const isAssignedInCurrentPass = assignedMinionIds.some(
             (id) => id === c.id || id === c.instanceId

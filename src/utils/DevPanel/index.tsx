@@ -348,17 +348,17 @@ export const DevPanel: React.FC<DevPanelProps> = ({
                             <S.ActionButton
                                 onClick={() =>
                                     moves.devLoadPreset?.(
-                                        'HOBBITS_ISENGARD_W7'
+                                        'HOBBITS_ISENGARD_W8'
                                     )
                                 }
-                                title="Deck Hobbits / Isengard — vague 7"
+                                title="Deck Hobbits / Isengard — vague 8"
                             >
-                                Hobbits/Isengard v7
+                                Hobbits/Isengard v8
                             </S.ActionButton>
                         </S.ButtonGroup>
                         <S.Hint>
-                            v7 : Saruman Lurker — tester depuis l’onglet Ombre
-                            (?player=1) ; skirmish +2 / soin à la mort.
+                            v8 : Fell Voice, Saruman TTT, Staff, Throne —
+                            tester depuis l’onglet Ombre (?player=1).
                         </S.Hint>
                     </S.Section>
 

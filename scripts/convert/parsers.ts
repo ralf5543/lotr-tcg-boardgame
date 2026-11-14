@@ -7023,6 +7023,165 @@ function parseRemoveTwilightExertPlayFromDiscardAbilities(
 }
 
 /**
+ * Phase: Exert X to play [named | a class] from your discard pile.
+ * Optional « Its twilight cost is -N. » (A Fell Voice… / Saruman Staff…).
+ */
+function parseExertPlayFromDiscardAbilities(
+    text: string,
+    cardTitle?: string,
+    cardId?: string
+): Record<string, unknown>[] {
+    const found: Record<string, unknown>[] = [];
+    const phaseTok =
+        '(?:\\*\\*|<(?:keyword)>)(Fellowship|Shadow|Maneuver|Archery|Assignment|Skirmish|Regroup):?(?:\\s*</(?:keyword)>)?(?:\\*\\*)?';
+    const reduceTok =
+        '(?:\\s*Its twilight cost is\\s*-\\s*(\\d+)\\.)?';
+    const classRe = new RegExp(
+        `${phaseTok}\\s*Exert\\s+(.+?)\\s+to play\\s+(?:a|an)\\s+(.+?)\\s+from your discard pile\\.${reduceTok}`,
+        'gi'
+    );
+    let match: RegExpExecArray | null;
+    while ((match = classRe.exec(text)) !== null) {
+        const phase = match[1]?.toUpperCase();
+        if (!phase) continue;
+        const subject = parseExertSubject(match[2].trim(), cardTitle, text);
+        if (!subject) continue;
+        const filters = parseClassFilters(match[3].trim());
+        if (filters.length === 0) continue;
+        const reduce = match[4] ? parseInt(match[4], 10) : 0;
+        if (match[4] && (!Number.isFinite(reduce) || reduce <= 0)) continue;
+        found.push({
+            id: `${cardId || 'ability'}:${found.length}:exert-play-discard`,
+            phases: [phase],
+            cost: [{ exert: [exertSelectorFromSubject(subject)] }],
+            effects: [
+                {
+                    type: 'PLAY_FROM_DECK_OR_DISCARD',
+                    from: 'DISCARD',
+                    target: [filters],
+                    ...(reduce > 0 ? { twilightReduce: reduce } : {}),
+                },
+            ],
+            source: 'SELF',
+            text: stripAbilityMarkup(match[0]),
+        });
+    }
+
+    const nameTok =
+        "([A-ZÀ-Ÿ][\\p{L}’'\\-]*(?:\\s+[A-ZÀ-Ÿ][\\p{L}’'\\-]*)*)";
+    const namedRe = new RegExp(
+        `${phaseTok}\\s*Exert\\s+(.+?)\\s+to play\\s+${nameTok}\\s+from your discard pile\\.${reduceTok}`,
+        'giu'
+    );
+    while ((match = namedRe.exec(text)) !== null) {
+        const phase = match[1]?.toUpperCase();
+        if (!phase) continue;
+        const subject = parseExertSubject(match[2].trim(), cardTitle, text);
+        if (!subject) continue;
+        const name = (match[3] || '').trim().replace(/[’']/g, "'");
+        if (!name || !isProperNameToken(name.split(/\s+/)[0] || '')) continue;
+        // Éviter de re-matcher les clauses « a/an … » déjà prises.
+        if (/^(a|an)$/i.test(name.split(/\s+/)[0] || '')) continue;
+        const reduce = match[4] ? parseInt(match[4], 10) : 0;
+        if (match[4] && (!Number.isFinite(reduce) || reduce <= 0)) continue;
+        found.push({
+            id: `${cardId || 'ability'}:${found.length}:exert-play-named-discard`,
+            phases: [phase],
+            cost: [{ exert: [exertSelectorFromSubject(subject)] }],
+            effects: [
+                {
+                    type: 'PLAY_FROM_DECK_OR_DISCARD',
+                    from: 'DISCARD',
+                    target: [[name]],
+                    ...(reduce > 0 ? { twilightReduce: reduce } : {}),
+                },
+            ],
+            source: 'SELF',
+            text: stripAbilityMarkup(match[0]),
+        });
+    }
+    return found;
+}
+
+/**
+ * Maneuver: Make the first sentence of Name's game text not apply until regroup.
+ * (Saruman's Staff… — restrictions d’affectation / archerie.)
+ */
+function parseSuppressPlayRestrictionsAbilities(
+    text: string,
+    cardId?: string
+): Record<string, unknown>[] {
+    const found: Record<string, unknown>[] = [];
+    const re =
+        /(?:\*\*|<(?:keyword)>)?Maneuver:?\s*(?:<\/(?:keyword)>)?(?:\*\*)?\s*Make the first sentence of ([\p{L}’'\-]+(?:\s+[\p{L}’'\-]+)?)['’]s game text not apply until the regroup phase\.?/giu;
+    let match: RegExpExecArray | null;
+    while ((match = re.exec(text)) !== null) {
+        const name = match[1].trim();
+        if (!name || !isProperNameToken(name.split(/\s+/)[0] || '')) continue;
+        found.push({
+            id: `${cardId || 'ability'}:${found.length}:suppress-play-restrictions`,
+            phases: ['MANEUVER'],
+            cost: [],
+            effects: [
+                {
+                    type: 'SUPPRESS_CHARACTER_PLAY_RESTRICTIONS',
+                    target: 'BEARER',
+                    expiresAtPhase: 'REGROUP',
+                },
+            ],
+            source: 'SELF',
+            text: stripAbilityMarkup(match[0]),
+        });
+    }
+    return found;
+}
+
+/**
+ * Each [classe] is strength +N and damage +M. (Throne of Isengard…)
+ */
+function parseWhileEachStrengthAndDamageAbilities(
+    text: string,
+    cardId?: string
+): Record<string, unknown>[] {
+    const found: Record<string, unknown>[] = [];
+    // Pas de [.\\n] dans la classe : sinon « Each time … Each Wizard is strength »
+    // avale toute la phrase précédente.
+    const re =
+        /Each\s+([^.\n]+?)\s+is strength\s*([+-]\d+)\s+and\s+(?:\*\*|<keyword>)?damage\s*\+\s*(\d+)\.?(?:\*\*|<\/keyword>)?/gi;
+    let match: RegExpExecArray | null;
+    while ((match = re.exec(text)) !== null) {
+        const eachTarget = parseWhileEachClass(match[1]);
+        if (!eachTarget) continue;
+        const strength = parseInt(match[2], 10);
+        const damage = parseInt(match[3], 10);
+        if (!Number.isFinite(strength) || strength === 0) continue;
+        if (!Number.isFinite(damage) || damage <= 0 || damage > 4) continue;
+        found.push({
+            id: `${cardId || 'ability'}:${found.length}:while-each-str-damage`,
+            phases: [],
+            trigger: { type: 'WHILE' },
+            cost: [],
+            effects: [
+                {
+                    type: 'MODIFY_STAT',
+                    stat: 'STRENGTH',
+                    value: strength,
+                    target: eachTarget,
+                },
+                {
+                    type: 'MODIFY_KEYWORD',
+                    keyword: `DAMAGE +${damage}`,
+                    target: eachTarget,
+                },
+            ],
+            source: 'SELF',
+            text: stripAbilityMarkup(match[0]),
+        });
+    }
+    return found;
+}
+
+/**
  * Phase: Spot N burdens and exert X twice to exhaust a companion
  * (except the Ring-bearer). (Orthanc Berserker…)
  */
@@ -11923,6 +12082,28 @@ function parseWhenPlayedAbilities(
             optional: true,
             cost: [],
             effects: [{ type: 'DISCARD_FROM_HAND', count, upTo: true }],
+            source: 'SELF',
+            text: stripAbilityMarkup(match[0]),
+        });
+    }
+
+    // When you play [this|Name], you may discard a condition. (Saruman TTT…)
+    const optionalDiscardConditionRe =
+        /When you play (this(?:\s+(?:minion|possession|condition|companion|artifact|ally|follower))?|[\p{L}’'\-]+(?:\s+[\p{L}’'\-]+)?),\s*you may discard a condition\.?/giu;
+    while ((match = optionalDiscardConditionRe.exec(text)) !== null) {
+        found.push({
+            id: `${cardId || 'ability'}:${found.length}:when-played-may-discard-condition`,
+            phases: [],
+            trigger: { type: 'WHEN_PLAYED' },
+            optional: true,
+            cost: [],
+            effects: [
+                {
+                    type: 'DISCARD',
+                    count: 1,
+                    target: [['CONDITION']],
+                },
+            ],
             source: 'SELF',
             text: stripAbilityMarkup(match[0]),
         });
@@ -17433,6 +17614,31 @@ export function parseAbilities(
             id: `${cardId || 'ability'}:${abilities.length}`,
         });
     });
+
+    parseExertPlayFromDiscardAbilities(text, cardTitle, cardId).forEach(
+        (ability) => {
+            abilities.push({
+                ...ability,
+                id: `${cardId || 'ability'}:${abilities.length}`,
+            });
+        }
+    );
+
+    parseSuppressPlayRestrictionsAbilities(text, cardId).forEach((ability) => {
+        abilities.push({
+            ...ability,
+            id: `${cardId || 'ability'}:${abilities.length}`,
+        });
+    });
+
+    parseWhileEachStrengthAndDamageAbilities(text, cardId).forEach(
+        (ability) => {
+            abilities.push({
+                ...ability,
+                id: `${cardId || 'ability'}:${abilities.length}`,
+            });
+        }
+    );
 
     parseSpotBurdensExertExhaustCompanionAbilities(
         text,

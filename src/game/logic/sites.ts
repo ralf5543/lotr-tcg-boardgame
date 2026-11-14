@@ -167,7 +167,12 @@ export function cannotTakeArcheryWoundsFromSite(
     G: GameState,
     card: CardState
 ): boolean {
-    if (card.cannotTakeArcheryWounds) return true;
+    if (
+        card.cannotTakeArcheryWounds &&
+        !card.suppressCharacterPlayRestrictionsUntil
+    ) {
+        return true;
+    }
     const site = getCurrentSite(G);
     if (!site?.abilities?.length) return false;
     for (const ability of site.abilities) {

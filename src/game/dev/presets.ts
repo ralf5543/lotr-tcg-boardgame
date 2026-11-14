@@ -126,8 +126,8 @@ export const applyDevPreset = (
     const shadowPlayer = G.players[shadowId];
 
     switch (presetType) {
-        case 'HOBBITS_ISENGARD_W7': {
-            // Saruman Lurker : skirmish (+2 Ourouk) + soin optionnel à la mort.
+        case 'HOBBITS_ISENGARD_W8': {
+            // Fell Voice / Saruman TTT / Staff / Throne.
             resetBoardForPreset(G);
             setupDevPath(G, 0, [
                 '18U140',
@@ -140,34 +140,27 @@ export const applyDevPreset = (
                 '11S261',
                 '18U138',
             ]);
-            G.twilightPool = 4;
+            G.twilightPool = 3;
             fpPlayer.burdens = 0;
             const frodo = {
-                ...clonePresetCard('11S164', 'dev-hi7-frodo'),
-                attachments: [clonePresetCard('1C2', 'dev-hi7-ring')],
+                ...clonePresetCard('11S164', 'dev-hi8-frodo'),
+                attachments: [clonePresetCard('1C2', 'dev-hi8-ring')],
             };
-            const merry = clonePresetCard('11C168', 'dev-hi7-merry');
-            const saruman = {
-                ...clonePresetCard('12S144', 'dev-hi7-saruman'),
-                wounds: 1,
-            };
-            const uruk = clonePresetCard('4C187', 'dev-hi7-uruk');
-            fpPlayer.fellowshipArea = [frodo, merry];
+            const gandalf = clonePresetCard('1R72', 'dev-hi8-gandalf');
+            const saruman = clonePresetCard('4R173', 'dev-hi8-saruman');
+            const fell = clonePresetCard('3R52', 'dev-hi8-fell');
+            const throne = clonePresetCard('17R39', 'dev-hi8-throne');
+            const staff = clonePresetCard('4R174', 'dev-hi8-staff');
+            const urgency = clonePresetCard('19P17', 'dev-hi8-urgency');
+            fpPlayer.fellowshipArea = [frodo, gandalf];
             if (shadowPlayer) {
-                shadowPlayer.supportArea = [];
-                G.battlefield = [saruman, uruk];
+                shadowPlayer.supportArea = [fell, throne];
+                shadowPlayer.discard = [staff, urgency];
+                G.battlefield = [saruman];
             }
-            G.skirmishes = [
-                {
-                    id: 'dev-hi7-sk',
-                    companionId: merry.instanceId || merry.id,
-                    minionIds: [uruk.instanceId || uruk.id],
-                },
-            ];
-            G.activeSkirmishId = 'dev-hi7-sk';
             G.statusMessage =
-                '[DEV] Hobbits/Isengard vague 7 · Saruman (Lurker, hors combat, 1 blessure) : onglet Ombre → sceau +2 à l’Ourouk ; tuer Merry → toaster soin. Relancer le preset.';
-            return { startPhase: 'skirmish' };
+                '[DEV] Hobbits/Isengard vague 8 · Onglet Ombre (?player=1) : Throne (+3 / damage Magicien) ; Fell Voice → Urgency défausse ; Saruman → Staff défausse ; Staff manœuvre → assignable. Relancer le preset.';
+            return { startPhase: 'shadow' };
         }
         default:
             G.statusMessage = `[DEV] Aucun preset actif (« ${presetType} »).`;

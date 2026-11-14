@@ -52,7 +52,12 @@ export const assignMinion = (
 
     if (!compCard) return 'INVALID_MOVE';
     if (!canCompanionBeAssigned(compCard)) return 'INVALID_MOVE';
-    if (minionCard?.cannotBeAssignedToSkirmish) return 'INVALID_MOVE';
+    if (
+        minionCard?.cannotBeAssignedToSkirmish &&
+        !minionCard.suppressCharacterPlayRestrictionsUntil
+    ) {
+        return 'INVALID_MOVE';
+    }
 
     const existingSkirmish = G.skirmishes.find(
         (s) =>

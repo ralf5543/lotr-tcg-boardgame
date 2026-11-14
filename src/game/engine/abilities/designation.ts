@@ -449,7 +449,12 @@ export function getCostDesignationCandidates(
             ).filter((card) => {
                 if (card.isDead) return false;
                 if ((card.instanceId || card.id) === sourceId) return false;
-                if (card.cannotBeAssignedToSkirmish) return false;
+                if (
+                    card.cannotBeAssignedToSkirmish &&
+                    !card.suppressCharacterPlayRestrictionsUntil
+                ) {
+                    return false;
+                }
                 return true;
             })
         );
@@ -1152,7 +1157,8 @@ export function abilityHasLegalEffectTarget(
             } else if (effect.minion === 'SELF') {
                 if (
                     source.type !== 'MINION' ||
-                    source.cannotBeAssignedToSkirmish
+                    (source.cannotBeAssignedToSkirmish &&
+                        !source.suppressCharacterPlayRestrictionsUntil)
                 ) {
                     return false;
                 }

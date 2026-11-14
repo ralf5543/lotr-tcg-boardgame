@@ -724,6 +724,11 @@ export type AbilityEffect =
           target: string[][];
           attachTo?: 'SELF';
           from?: 'DECK' | 'DISCARD' | 'DECK_OR_DISCARD' | 'DEAD_PILE';
+          /**
+           * Coût crépuscule = coût effectif − twilightReduce (min 0).
+           * (A Fell Voice… : weather −2)
+           */
+          twilightReduce?: number;
       }
     | {
           /**
@@ -1253,6 +1258,15 @@ export type AbilityEffect =
     | {
           /** Annule l’effet d’une capacité en cours (coût déjà payé). */
           type: 'CANCEL_ABILITY_EFFECT';
+      }
+    | {
+          /**
+           * Bâton de Saroumane : ignore cannotBeAssigned / cannotTakeArchery
+           * sur la cible jusqu’à expiresAtPhase.
+           */
+          type: 'SUPPRESS_CHARACTER_PLAY_RESTRICTIONS';
+          target: AbilityTargetRef;
+          expiresAtPhase: AbilityEffectExpiry;
       };
 
 export type AbilityTrigger =
@@ -1688,6 +1702,11 @@ export interface CardState {
     cannotBeAssignedToSkirmish?: boolean;
     /** Ne peut pas recevoir de blessures d’archerie. */
     cannotTakeArcheryWounds?: boolean;
+    /**
+     * Bâton de Saroumane : la 1ʳᵉ phrase (restrictions) ne s’applique plus
+     * jusqu’à cette phase.
+     */
+    suppressCharacterPlayRestrictionsUntil?: AbilityEffectExpiry;
     /** Interdit d’affectation jusqu’à fin de tour / phase (Shelob…). */
     forbidAssignUntil?: AbilityEffectExpiry;
     /** Immunité aux blessures jusqu’à une phase (Faramir / prevent all wounds…). */

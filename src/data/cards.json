@@ -6598,6 +6598,41 @@
     "abilities": [
       {
         "id": "2R52:0",
+        "phases": [
+          "SHADOW"
+        ],
+        "cost": [
+          {
+            "exert": [
+              {
+                "count": 1,
+                "target": [
+                  [
+                    "The Balrog and remove twilight2"
+                  ]
+                ]
+              }
+            ]
+          }
+        ],
+        "effects": [
+          {
+            "type": "PLAY_FROM_DECK_OR_DISCARD",
+            "from": "DISCARD",
+            "target": [
+              [
+                "MORIA",
+                "ORC"
+              ]
+            ]
+          }
+        ],
+        "source": "SELF",
+        "text": "Shadow: Exert The Balrog and remove twilight2 to play a moria Orc from your discard pile.",
+        "textFr": "Ombre : Affaiblissez Le Balrog et retirez <symbol>twilight2</symbol> pour jouer un Orque <symbol>moria</symbol> de votre pile de défausse."
+      },
+      {
+        "id": "2R52:1",
         "phases": [],
         "trigger": {
           "type": "WHILE",
@@ -6614,6 +6649,9 @@
         "source": "SELF",
         "text": "Discard The Balrog if not underground."
       }
+    ],
+    "actionPhases": [
+      "SHADOW"
     ],
     "culture": "MORIA",
     "race": "BALROG",
@@ -7151,6 +7189,63 @@
     "type": "MINION",
     "cannotTakeArcheryWounds": true,
     "cannotBeAssignedToSkirmish": true,
+    "abilities": [
+      {
+        "id": "4R173:0",
+        "phases": [],
+        "trigger": {
+          "type": "WHEN_PLAYED"
+        },
+        "optional": true,
+        "cost": [],
+        "effects": [
+          {
+            "type": "DISCARD",
+            "count": 1,
+            "target": [
+              [
+                "CONDITION"
+              ]
+            ]
+          }
+        ],
+        "source": "SELF",
+        "text": "When you play Saruman, you may discard a condition."
+      },
+      {
+        "id": "4R173:1",
+        "phases": [
+          "SHADOW"
+        ],
+        "cost": [
+          {
+            "exert": [
+              {
+                "count": 1,
+                "target": "SELF"
+              }
+            ]
+          }
+        ],
+        "effects": [
+          {
+            "type": "PLAY_FROM_DECK_OR_DISCARD",
+            "from": "DISCARD",
+            "target": [
+              [
+                "Saruman's Staff"
+              ]
+            ]
+          }
+        ],
+        "source": "SELF",
+        "text": "Shadow: Exert Saruman to play Saruman’s Staff from your discard pile.",
+        "textFr": "**Ombre :** Affaiblissez Saroumane pour jouer Le Bâton de Saroumane de votre pile de défauss"
+      }
+    ],
+    "actionPhases": [
+      "SHADOW"
+    ],
     "culture": "ISENGARD",
     "race": "WIZARD",
     "twilightCost": 4,
@@ -32543,6 +32638,39 @@
     "keywords": [
       "DAMAGE +1"
     ],
+    "abilities": [
+      {
+        "id": "2R73:0",
+        "phases": [],
+        "trigger": {
+          "type": "WHILE"
+        },
+        "cost": [],
+        "effects": [
+          {
+            "type": "MODIFY_STAT",
+            "stat": "STRENGTH",
+            "value": 2,
+            "target": [
+              [
+                "TENTACLE"
+              ]
+            ]
+          },
+          {
+            "type": "MODIFY_KEYWORD",
+            "keyword": "DAMAGE +1",
+            "target": [
+              [
+                "TENTACLE"
+              ]
+            ]
+          }
+        ],
+        "source": "SELF",
+        "text": "Each tentacle is strength +2 and damage +1."
+      }
+    ],
     "culture": "MORIA",
     "race": "CREATURE",
     "twilightCost": 4,
@@ -37514,6 +37642,48 @@
     "kind": "SHADOW",
     "type": "CONDITION",
     "subtype": "SUPPORT-AREA",
+    "abilities": [
+      {
+        "id": "3R52:0",
+        "phases": [
+          "SHADOW"
+        ],
+        "cost": [
+          {
+            "exert": [
+              {
+                "count": 1,
+                "target": [
+                  [
+                    "Saruman"
+                  ]
+                ]
+              }
+            ]
+          }
+        ],
+        "effects": [
+          {
+            "type": "PLAY_FROM_DECK_OR_DISCARD",
+            "from": "DISCARD",
+            "target": [
+              [
+                "ISENGARD",
+                "WEATHER",
+                "CONDITION"
+              ]
+            ],
+            "twilightReduce": 2
+          }
+        ],
+        "source": "SELF",
+        "text": "Shadow: Exert Saruman to play an isengard weather condition from your discard pile. Its twilight cost is -2.",
+        "textFr": "**Ombre :** Affaiblissez Saroumane pour jouer une situation de climat <symbol>isengard</symbol> de votre pile de défausse. Son coût crépusculaire est de -2."
+      }
+    ],
+    "actionPhases": [
+      "SHADOW"
+    ],
     "culture": "ISENGARD",
     "twilightCost": 1,
     "imageUrl": "/cards_visuals/o_03_052.jpg",
@@ -49441,6 +49611,28 @@
         "Saruman"
       ]
     ],
+    "abilities": [
+      {
+        "id": "4R174:0",
+        "phases": [
+          "MANEUVER"
+        ],
+        "cost": [],
+        "effects": [
+          {
+            "type": "SUPPRESS_CHARACTER_PLAY_RESTRICTIONS",
+            "target": "BEARER",
+            "expiresAtPhase": "REGROUP"
+          }
+        ],
+        "source": "SELF",
+        "text": "Maneuver: Make the first sentence of Saruman’s game text not apply until the regroup phase.",
+        "textFr": "**Manœuvre :** Ignorez la première phrase du descriptif de Saroumane jusqu’à la phase de ralliement."
+      }
+    ],
+    "actionPhases": [
+      "MANEUVER"
+    ],
     "culture": "ISENGARD",
     "twilightCost": 2,
     "strength": 2,
@@ -55425,6 +55617,47 @@
     "kind": "FREE_PEOPLE",
     "type": "CONDITION",
     "subtype": "SUPPORT-AREA",
+    "abilities": [
+      {
+        "id": "4R294:0",
+        "phases": [
+          "FELLOWSHIP"
+        ],
+        "cost": [
+          {
+            "exert": [
+              {
+                "count": 1,
+                "target": [
+                  [
+                    "ROHAN",
+                    "MAN"
+                  ]
+                ],
+                "mode": "DESIGNATION"
+              }
+            ]
+          }
+        ],
+        "effects": [
+          {
+            "type": "PLAY_FROM_DECK_OR_DISCARD",
+            "from": "DISCARD",
+            "target": [
+              [
+                "HAND-WEAPON"
+              ]
+            ]
+          }
+        ],
+        "source": "SELF",
+        "text": "Fellowship: Exert a rohan Man to play a hand weapon from your discard pile.",
+        "textFr": "**Compagnie :** Affaiblissez un Homme <symbol>rohan</symbol> pour jouer une arme de mêlée de votre pile de défausse."
+      }
+    ],
+    "actionPhases": [
+      "FELLOWSHIP"
+    ],
     "culture": "ROHAN",
     "twilightCost": 1,
     "imageUrl": "/cards_visuals/o_04_294.jpg",
@@ -57873,6 +58106,45 @@
     "kind": "SHADOW",
     "type": "CONDITION",
     "subtype": "SUPPORT-AREA",
+    "abilities": [
+      {
+        "id": "5U22:0",
+        "phases": [
+          "SHADOW"
+        ],
+        "cost": [
+          {
+            "exert": [
+              {
+                "count": 1,
+                "target": [
+                  [
+                    "Gollum twice and discard this condition"
+                  ]
+                ]
+              }
+            ]
+          }
+        ],
+        "effects": [
+          {
+            "type": "PLAY_FROM_DECK_OR_DISCARD",
+            "from": "DISCARD",
+            "target": [
+              [
+                "MINION"
+              ]
+            ]
+          }
+        ],
+        "source": "SELF",
+        "text": "Shadow: Exert Gollum twice and discard this condition to play a minion from your discard pile.",
+        "textFr": "**Ombre :** Affaiblissez Gollum deux fois et défaussez cette situation pour jouer un séide de votre pile de défausse."
+      }
+    ],
+    "actionPhases": [
+      "SHADOW"
+    ],
     "culture": "GOLLUM",
     "twilightCost": 1,
     "imageUrl": "/cards_visuals/o_05_022.jpg",
@@ -58605,7 +58877,48 @@
     "isUnique": false,
     "kind": "FREE_PEOPLE",
     "type": "EVENT",
+    "abilities": [
+      {
+        "id": "5C40:0",
+        "phases": [
+          "FELLOWSHIP"
+        ],
+        "cost": [
+          {
+            "exert": [
+              {
+                "count": 1,
+                "target": [
+                  [
+                    "KNIGHT"
+                  ]
+                ],
+                "mode": "DESIGNATION"
+              }
+            ]
+          }
+        ],
+        "effects": [
+          {
+            "type": "PLAY_FROM_DECK_OR_DISCARD",
+            "from": "DISCARD",
+            "target": [
+              [
+                "GONDOR",
+                "FORTIFICATION"
+              ]
+            ]
+          }
+        ],
+        "source": "SELF",
+        "text": "Fellowship: Exert a knight to play a gondor fortification from your discard pile.",
+        "textFr": "**Compagnie :** Affaiblissez un chevalier pour jouer une fortification <symbol>gondor</symbol> de votre pile de défausse."
+      }
+    ],
     "phases": [
+      "FELLOWSHIP"
+    ],
+    "actionPhases": [
       "FELLOWSHIP"
     ],
     "culture": "GONDOR",
@@ -59395,6 +59708,42 @@
     "type": "MINION",
     "cannotTakeArcheryWounds": true,
     "cannotBeAssignedToSkirmish": true,
+    "abilities": [
+      {
+        "id": "5R56:0",
+        "phases": [
+          "SHADOW"
+        ],
+        "cost": [
+          {
+            "exert": [
+              {
+                "count": 1,
+                "target": "SELF"
+              }
+            ]
+          }
+        ],
+        "effects": [
+          {
+            "type": "PLAY_FROM_DECK_OR_DISCARD",
+            "from": "DISCARD",
+            "target": [
+              [
+                "ISENGARD",
+                "POSSESSION"
+              ]
+            ]
+          }
+        ],
+        "source": "SELF",
+        "text": "Shadow: Exert Saruman to play an isengard possession from your discard pile.",
+        "textFr": "**Ombre :** Affaiblissez Saroumane pour jouer une possession <symbol>isengard</symbol> de votre pile de défausse."
+      }
+    ],
+    "actionPhases": [
+      "SHADOW"
+    ],
     "culture": "ISENGARD",
     "race": "WIZARD",
     "twilightCost": 4,
@@ -60594,6 +60943,46 @@
     "type": "ALLY",
     "keywords": [
       "VILLAGER"
+    ],
+    "abilities": [
+      {
+        "id": "5C81:0",
+        "phases": [
+          "FELLOWSHIP"
+        ],
+        "cost": [
+          {
+            "exert": [
+              {
+                "count": 1,
+                "target": [
+                  [
+                    "Ecglaf and spot 2 valiant Men"
+                  ]
+                ]
+              }
+            ]
+          }
+        ],
+        "effects": [
+          {
+            "type": "PLAY_FROM_DECK_OR_DISCARD",
+            "from": "DISCARD",
+            "target": [
+              [
+                "ROHAN",
+                "POSSESSION"
+              ]
+            ]
+          }
+        ],
+        "source": "SELF",
+        "text": "Fellowship: Exert Ecglaf and spot 2 valiant Men to play a rohan possession from your discard pile.",
+        "textFr": "**Compagnie :** Affaiblissez Ecglaf et désignez 2 Hommes vaillants pour jouer une possession <symbol>rohan</symbol> de votre pile de défausse."
+      }
+    ],
+    "actionPhases": [
+      "FELLOWSHIP"
     ],
     "culture": "ROHAN",
     "race": "MAN",
@@ -124834,6 +125223,41 @@
     "isUnique": false,
     "kind": "SHADOW",
     "type": "MINION",
+    "abilities": [
+      {
+        "id": "13U110:0",
+        "phases": [
+          "REGROUP"
+        ],
+        "cost": [
+          {
+            "exert": [
+              {
+                "count": 1,
+                "target": "SELF"
+              }
+            ]
+          }
+        ],
+        "effects": [
+          {
+            "type": "PLAY_FROM_DECK_OR_DISCARD",
+            "from": "DISCARD",
+            "target": [
+              [
+                "ORC",
+                "TROLL"
+              ]
+            ]
+          }
+        ],
+        "source": "SELF",
+        "text": "Regroup: Exert this minion to play an orc Troll from your discard pile."
+      }
+    ],
+    "actionPhases": [
+      "REGROUP"
+    ],
     "culture": "ORC",
     "race": "ORC",
     "twilightCost": 2,
@@ -142458,6 +142882,39 @@
     "kind": "SHADOW",
     "type": "ARTIFACT",
     "subtype": "SUPPORT-AREA",
+    "abilities": [
+      {
+        "id": "17R39:0",
+        "phases": [],
+        "trigger": {
+          "type": "WHILE"
+        },
+        "cost": [],
+        "effects": [
+          {
+            "type": "MODIFY_STAT",
+            "stat": "STRENGTH",
+            "value": 3,
+            "target": [
+              [
+                "WIZARD"
+              ]
+            ]
+          },
+          {
+            "type": "MODIFY_KEYWORD",
+            "keyword": "DAMAGE +1",
+            "target": [
+              [
+                "WIZARD"
+              ]
+            ]
+          }
+        ],
+        "source": "SELF",
+        "text": "Each Wizard is strength +3 and damage +1."
+      }
+    ],
     "culture": "ISENGARD",
     "twilightCost": 2,
     "imageUrl": "/cards_visuals/o_17_039.jpg",
@@ -142839,6 +143296,41 @@
     "isUnique": true,
     "kind": "SHADOW",
     "type": "MINION",
+    "abilities": [
+      {
+        "id": "17S48:0",
+        "phases": [
+          "SKIRMISH"
+        ],
+        "cost": [
+          {
+            "exert": [
+              {
+                "count": 1,
+                "target": "SELF"
+              }
+            ]
+          }
+        ],
+        "effects": [
+          {
+            "type": "PLAY_FROM_DECK_OR_DISCARD",
+            "from": "DISCARD",
+            "target": [
+              [
+                "MEN",
+                "POSSESSION"
+              ]
+            ]
+          }
+        ],
+        "source": "SELF",
+        "text": "Skirmish: Exert Saruman to play a men possession from your discard pile."
+      }
+    ],
+    "actionPhases": [
+      "SKIRMISH"
+    ],
     "culture": "MEN",
     "race": "WIZARD",
     "twilightCost": 4,
@@ -144634,6 +145126,41 @@
     "isUnique": true,
     "kind": "SHADOW",
     "type": "MINION",
+    "abilities": [
+      {
+        "id": "17R87:0",
+        "phases": [
+          "SHADOW"
+        ],
+        "cost": [
+          {
+            "exert": [
+              {
+                "count": 1,
+                "target": "BEARER"
+              }
+            ]
+          }
+        ],
+        "effects": [
+          {
+            "type": "PLAY_FROM_DECK_OR_DISCARD",
+            "from": "DISCARD",
+            "target": [
+              [
+                "ORC",
+                "MOUNT"
+              ]
+            ]
+          }
+        ],
+        "source": "SELF",
+        "text": "Shadow: Exert bearer to play an orc mount from your discard pile."
+      }
+    ],
+    "actionPhases": [
+      "SHADOW"
+    ],
     "culture": "ORC",
     "race": "ORC",
     "twilightCost": 3,
