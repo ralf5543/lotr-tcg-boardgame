@@ -1,4 +1,5 @@
 import type { GameState } from '../types';
+import { maybeOfferLoseInitiativeResponse } from '../engine/abilities/loseInitiative';
 
 /**
  * Initiative (King block) : le FP l’a s’il a ≥ 4 cartes en main ;
@@ -28,6 +29,9 @@ export function announceInitiativeIfChanged(
     G.statusMessage = hasNow
         ? 'Les Peuples Libres gagnent l’initiative.'
         : 'Les Peuples Libres perdent l’initiative.';
+    if (hadBefore && !hasNow) {
+        maybeOfferLoseInitiativeResponse(G);
+    }
 }
 
 /**

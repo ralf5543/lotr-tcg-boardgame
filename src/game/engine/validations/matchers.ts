@@ -130,6 +130,23 @@ export function cardMatchesCriterion(
 
     // Type (COMPANION, MINION, ALLY, POSSESSION, CONDITION, etc.)
     if (c.type && normalize(c.type) === critUpper) return true;
+
+    // Phase d’événement (SKIRMISH, REGROUP…) — Bilbo : « shire skirmish event »
+    const EVENT_PHASES = new Set([
+        'FELLOWSHIP',
+        'SHADOW',
+        'MANEUVER',
+        'ARCHERY',
+        'ASSIGNMENT',
+        'SKIRMISH',
+        'REGROUP',
+    ]);
+    if (EVENT_PHASES.has(critUpper)) {
+        const phases = ((c as CardState & { phases?: string[] }).phases || []).map(
+            (p) => normalize(p)
+        );
+        if (phases.includes(critUpper)) return true;
+    }
     // A Shadow Rises : séide animé qui « is still a condition ».
     if (
         critUpper === 'CONDITION' &&

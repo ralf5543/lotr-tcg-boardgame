@@ -1292,28 +1292,8 @@ export const GameBoard: React.FC<GameBoardProps> = ({
                         (c) => c && cardMatchesTarget(c, take.target)
                     );
                     if (selectable.length === 0) return;
-                    const finish = (effectId: string) => {
-                        if (costIds) {
-                            moves.activateAbility?.(
-                                sourceInstanceId,
-                                abilityId,
-                                costIds,
-                                undefined,
-                                effectId
-                            );
-                        } else {
-                            moves.activateAbility?.(
-                                sourceInstanceId,
-                                abilityId,
-                                effectId
-                            );
-                        }
-                    };
-                    if (selectable.length === 1) {
-                        const only = selectable[0]!;
-                        finish(only.instanceId || only.id);
-                        return;
-                    }
+                    // Toujours ouvrir la grille (même 1 carte) — le joueur
+                    // confirme ce qu’il reprend (Bilbo…).
                     setDeckDiscardPick({
                         activate: {
                             sourceInstanceId,
@@ -2116,15 +2096,7 @@ export const GameBoard: React.FC<GameBoardProps> = ({
                         moves.resolveWhenPlayedChoice?.(false);
                         return;
                     }
-                    if (selectable.length === 1) {
-                        const only = selectable[0]!;
-                        moves.resolveWhenPlayedChoice?.(
-                            true,
-                            undefined,
-                            only.instanceId || only.id
-                        );
-                        return;
-                    }
+                    // Toujours ouvrir la grille (même 1 carte) — Bilbo, etc.
                     setDeckDiscardPick({
                         whenPlayed: true,
                         selectableCardIds: selectable.flatMap(cardTargetIds),

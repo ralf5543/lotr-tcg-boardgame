@@ -784,6 +784,15 @@ export const resolveWhenPlayedChoice = (
     }
 
     flushPendingActionYield(G);
+    // Bilbo (début de combat) : rouvrir la fenêtre d’escarmouche après le toaster.
+    if (
+        G.activeSkirmishId &&
+        !G.actionWindow?.isOpen &&
+        !G.pendingWhenPlayed &&
+        !G.pendingForcedChoice
+    ) {
+        openSkirmishActionWindow(G);
+    }
 };
 
 /** Toaster site début de fellowship : Passer uniquement (Activer = UI → activateAbility). */

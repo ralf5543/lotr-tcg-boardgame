@@ -1487,6 +1487,13 @@ export type AbilityTrigger =
       }
     | {
           /**
+           * Each time you lose initiative… (A Light in His Mind…).
+           * Toaster via pendingWhenPlayed quand l’initiative FP bascule à faux.
+           */
+          type: 'LOSE_INITIATIVE';
+      }
+    | {
+          /**
            * Après que le Porteur a mis l’Anneau Unique
            * (Uruk Spy…).
            */

@@ -98289,6 +98289,39 @@
     "kind": "FREE_PEOPLE",
     "type": "CONDITION",
     "subtype": "SUPPORT-AREA",
+    "abilities": [
+      {
+        "id": "10U108:0",
+        "phases": [],
+        "optional": true,
+        "trigger": {
+          "type": "LOSE_INITIATIVE"
+        },
+        "cost": [
+          {
+            "spot": [
+              {
+                "count": 2,
+                "target": [
+                  [
+                    "SHIRE",
+                    "COMPANION"
+                  ]
+                ]
+              }
+            ]
+          }
+        ],
+        "effects": [
+          {
+            "type": "REMOVE_BURDENS",
+            "count": 1
+          }
+        ],
+        "source": "SELF",
+        "text": "Each time you lose initiative, you may spot 2 shire companions to remove a burden."
+      }
+    ],
     "culture": "SHIRE",
     "twilightCost": 0,
     "imageUrl": "/cards_visuals/o_10_108.jpg",
@@ -115568,6 +115601,41 @@
     "type": "COMPANION",
     "keywords": [
       "RING-BOUND"
+    ],
+    "abilities": [
+      {
+        "id": "12R119:0",
+        "phases": [],
+        "optional": true,
+        "trigger": {
+          "type": "START_OF_SKIRMISH",
+          "involving": "SELF"
+        },
+        "cost": [
+          {
+            "exert": [
+              {
+                "count": 1,
+                "target": "SELF"
+              }
+            ]
+          }
+        ],
+        "effects": [
+          {
+            "type": "TAKE_FROM_DISCARD",
+            "target": [
+              [
+                "SHIRE",
+                "EVENT",
+                "SKIRMISH"
+              ]
+            ]
+          }
+        ],
+        "source": "SELF",
+        "text": "At the start of each skirmish involving Bilbo, you may exert him to take a shire skirmish event into hand from your discard pile."
+      }
     ],
     "culture": "SHIRE",
     "race": "HOBBIT",

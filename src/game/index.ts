@@ -1268,7 +1268,8 @@ export const LotrGame: Game<GameState> = {
                     if (
                         G.responseWindow?.isOpen ||
                         G.pendingEvent ||
-                        G.pendingForcedChoice
+                        G.pendingForcedChoice ||
+                        G.pendingWhenPlayed
                     ) {
                         G.statusMessage =
                             'Une réponse ou un choix est en cours. Attendez la fin avant de choisir un autre combat.';

@@ -1,6 +1,10 @@
 import type { Ability, CardState, GameState } from '../../types';
 import { applyAbilityEffect } from './applyAbilityEffect';
-import { payAbilityCost } from './payAbilityCost';
+import {
+    abilityOwnerPlayerId,
+    canPayAbilityCost,
+    payAbilityCost,
+} from './payAbilityCost';
 import { collectCardAbilities } from './collectAbilities';
 import {
     forEachInPlayCard,
@@ -10,6 +14,8 @@ import { skirmishMatchesInvolving } from './cancelSkirmish';
 import { isRingBearerCard } from '../../../utils/cardUtils';
 import { getEffectiveVitality } from '../../../utils/cardStats';
 import { findForcedChoiceSource } from './startOfManeuver';
+import { abilityHasLegalEffectTarget } from './designation';
+import { pauseActionYieldForResponses } from '../responseWindow';
 
 function abilityHasChooseOne(ability: Ability): boolean {
     return (ability.effects || []).some((e) => e.type === 'CHOOSE_ONE');
@@ -80,11 +86,42 @@ export function applyStartOfSkirmishTriggers(
                 }
                 continue;
             }
+            // Bilbo… : optionnel → toaster Activer / Passer (pendingWhenPlayed).
+            if (ability.optional) {
+                if (G.pendingWhenPlayed) continue;
+                const ownerId = abilityOwnerPlayerId(G, source);
+                if (!ownerId) continue;
+                if (!canPayAbilityCost(G, source, ability.cost, ownerId)) {
+                    continue;
+                }
+                if (
+                    !abilityHasLegalEffectTarget(
+                        G,
+                        source,
+                        ability,
+                        ownerId
+                    )
+                ) {
+                    continue;
+                }
+                const sourceId = source.instanceId || source.id;
+                if (!sourceId) continue;
+                G.pendingWhenPlayed = {
+                    playerId: ownerId,
+                    sourceInstanceId: sourceId,
+                    abilityId: ability.id,
+                    phase: 'skirmish',
+                };
+                G.statusMessage =
+                    'Vous pouvez activer l’effet optionnel de cette carte.';
+                pauseActionYieldForResponses(G, ownerId);
+                continue;
+            }
             applyAbilityEffect(G, source, ability);
         }
     });
 
-    return Boolean(G.pendingForcedChoice);
+    return Boolean(G.pendingForcedChoice || G.pendingWhenPlayed);
 }
 
 /** Applique l’option choisie d’un `pendingForcedChoice`. */

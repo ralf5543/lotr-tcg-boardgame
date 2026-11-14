@@ -348,17 +348,17 @@ export const DevPanel: React.FC<DevPanelProps> = ({
                             <S.ActionButton
                                 onClick={() =>
                                     moves.devLoadPreset?.(
-                                        'HOBBITS_ISENGARD_W4'
+                                        'HOBBITS_ISENGARD_W5'
                                     )
                                 }
-                                title="Deck Hobbits / Isengard — vague 4"
+                                title="Deck Hobbits / Isengard — vague 5"
                             >
-                                Hobbits/Isengard v4
+                                Hobbits/Isengard v5
                             </S.ActionButton>
                         </S.ButtonGroup>
                         <S.Hint>
-                            v4 : Crouched Down, Aragorn (move), Frodo (Muster
-                            regroup) — atterrit en combat.
+                            v5 : Bilbo (cliquer le combat → événement Shire),
+                            Light in His Mind (perdre initiative → fardeau).
                         </S.Hint>
                     </S.Section>
 

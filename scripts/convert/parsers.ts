@@ -1085,7 +1085,15 @@ function isKnownFilterToken(token: string): boolean {
         // État (While / spot) — pas un mot-clé imprimé
         token === 'EXHAUSTED' ||
         token === 'NOT_EXHAUSTED' ||
-        token === 'UNWOUNDED'
+        token === 'UNWOUNDED' ||
+        // Phase d’événement (Bilbo : « shire skirmish event »)
+        token === 'FELLOWSHIP' ||
+        token === 'SHADOW' ||
+        token === 'MANEUVER' ||
+        token === 'ARCHERY' ||
+        token === 'ASSIGNMENT' ||
+        token === 'SKIRMISH' ||
+        token === 'REGROUP'
     );
 }
 
@@ -3559,6 +3567,107 @@ function parseStartOfSkirmishExertOpponentsAbilities(
                     !(cardTitle && /^Gandalf$/i.test(cardTitle)))
                     ? 'ATTACHMENT'
                     : 'SELF',
+            text: stripAbilityMarkup(match[0]),
+        });
+    }
+    return found;
+}
+
+/**
+ * Bilbo : At the start of each skirmish involving Name, you may exert him
+ * to take a [culture] skirmish event into hand from your discard pile.
+ */
+function parseStartOfSkirmishExertTakeSkirmishEventAbilities(
+    text: string,
+    cardTitle?: string,
+    cardId?: string
+): Record<string, unknown>[] {
+    const found: Record<string, unknown>[] = [];
+    const re =
+        /At the start of each skirmish involving ([\p{L}’'\-]+),\s*you may exert (?:him|her|it|\1)\s+to take (?:a|an)\s+(<symbol>[^<]+<\/symbol>)\s+skirmish event\s+(?:into hand from your\s+discard pile|from your\s+discard pile into hand)\.?/giu;
+    let match: RegExpExecArray | null;
+    while ((match = re.exec(text)) !== null) {
+        const name = match[1].trim();
+        const title = (cardTitle || '').trim();
+        if (
+            title &&
+            name.toLowerCase() !== title.toLowerCase()
+        ) {
+            continue;
+        }
+        const culture = parseCultureTokenSpec(match[2]);
+        if (
+            !culture ||
+            culture === 'FREE_PEOPLES' ||
+            culture === 'ANY'
+        ) {
+            continue;
+        }
+        found.push({
+            id: `${cardId || 'ability'}:${found.length}:start-skirmish-take-event`,
+            phases: [],
+            optional: true,
+            trigger: {
+                type: 'START_OF_SKIRMISH',
+                involving: 'SELF',
+            },
+            cost: [
+                {
+                    exert: [
+                        {
+                            count: 1,
+                            target: 'SELF',
+                        },
+                    ],
+                },
+            ],
+            effects: [
+                {
+                    type: 'TAKE_FROM_DISCARD',
+                    target: [[culture, 'EVENT', 'SKIRMISH']],
+                },
+            ],
+            source: 'SELF',
+            text: stripAbilityMarkup(match[0]),
+        });
+    }
+    return found;
+}
+
+/**
+ * A Light in His Mind : Each time you lose initiative, you may spot
+ * N [culture] companions to remove a burden.
+ */
+function parseLoseInitiativeSpotRemoveBurdenAbilities(
+    text: string,
+    cardId?: string
+): Record<string, unknown>[] {
+    const found: Record<string, unknown>[] = [];
+    const re =
+        /Each time you lose initiative,\s*you may spot ((?:a|an|one|two|\d+)\s+[\s\S]+?)\s+to remove (a|an|one|\d+) burdens?\.?/gi;
+    let match: RegExpExecArray | null;
+    while ((match = re.exec(text)) !== null) {
+        const spot = parseExertSubject(match[1].trim());
+        if (!spot || !Array.isArray(spot.target)) continue;
+        const count = parseBurdenWord(match[2]);
+        if (!count || count <= 0) continue;
+        found.push({
+            id: `${cardId || 'ability'}:${found.length}:lose-init-remove-burden`,
+            phases: [],
+            optional: true,
+            trigger: { type: 'LOSE_INITIATIVE' },
+            cost: [
+                {
+                    spot: [
+                        {
+                            count: spot.count,
+                            target: spot.target,
+                        },
+                    ],
+                },
+            ],
+            effects: [{ type: 'REMOVE_BURDENS', count }],
+            source: 'SELF',
             text: stripAbilityMarkup(match[0]),
         });
     }
@@ -17385,6 +17494,26 @@ export function parseAbilities(
             id: `${cardId || 'ability'}:${abilities.length}`,
         });
     });
+
+    parseStartOfSkirmishExertTakeSkirmishEventAbilities(
+        text,
+        cardTitle,
+        cardId
+    ).forEach((ability) => {
+        abilities.push({
+            ...ability,
+            id: `${cardId || 'ability'}:${abilities.length}`,
+        });
+    });
+
+    parseLoseInitiativeSpotRemoveBurdenAbilities(text, cardId).forEach(
+        (ability) => {
+            abilities.push({
+                ...ability,
+                id: `${cardId || 'ability'}:${abilities.length}`,
+            });
+        }
+    );
 
     parseRingBearerStartOfSkirmishChoiceAbilities(
         text,
