@@ -108,14 +108,11 @@ export const setupDevPath = (
 
 /** Phase boardgame.io où atterrir après le load (défaut : Compagnie). */
 export type DevPresetLoad = {
-    /** Ex. `skirmish`, `startOfFellowship`, `assignment`… */
     startPhase: string;
 };
 
 /**
- * Presets DEV playtest (deck Hobbits / Isengard, etc.).
- * Renvoie la phase d’atterrissage pour `devLoadPreset` (ne pas forcer
- * Compagnie si le scénario est déjà en combat / salve acharnée).
+ * Presets DEV playtest. Renvoie la phase d’atterrissage pour `devLoadPreset`.
  */
 export const applyDevPreset = (
     G: GameState,
@@ -125,66 +122,7 @@ export const applyDevPreset = (
     const fpPlayer = G.players[fpId];
     if (!fpPlayer) return { startPhase: 'startOfFellowship' };
 
-    const shadowId = fpId === '0' ? '1' : '0';
-    const shadowPlayer = G.players[shadowId];
-
     switch (presetType) {
-        case 'HOBBITS_ISENGARD_W3': {
-            // Vague 3 — Phial, Task Now, Filibert (allié), Simple Living.
-            // Atterrit en combat / salve acharnée pour Filibert.
-            resetBoardForPreset(G);
-            setupDevPath(G, 0, [
-                '18U140',
-                '11S249',
-                '11S264',
-                '12U194',
-                '11S252',
-                '17U147',
-                '11S242',
-                '11S261',
-                '18U138',
-            ]);
-            G.twilightPool = 0;
-            fpPlayer.burdens = 0;
-            const merry = clonePresetCard('11C168', 'dev-hi3-merry');
-            const sam = {
-                ...clonePresetCard('11U172', 'dev-hi3-sam'),
-                wounds: 1,
-            };
-            const phial = clonePresetCard('13R155', 'dev-hi3-phial');
-            const frodo = {
-                ...clonePresetCard('11S164', 'dev-hi3-frodo'),
-                attachments: [
-                    clonePresetCard('1C2', 'dev-hi3-ring'),
-                    phial,
-                ],
-            };
-            const fierceUruk = clonePresetCard('4C190', 'dev-hi3-uruk');
-            fpPlayer.fellowshipArea = [frodo, sam, merry];
-            fpPlayer.supportArea = [
-                clonePresetCard('2C101', 'dev-hi3-filibert'),
-                clonePresetCard('12U130', 'dev-hi3-simple'),
-            ];
-            fpPlayer.hand = [
-                clonePresetCard('11U175', 'dev-hi3-task'),
-                clonePresetCard('11S174', 'dev-hi3-sworn'),
-            ];
-            G.skirmishes = [
-                {
-                    id: 'dev-hi3-sk',
-                    companionId: merry.instanceId || merry.id,
-                    minionIds: [fierceUruk.instanceId || fierceUruk.id],
-                },
-            ];
-            G.activeSkirmishId = 'dev-hi3-sk';
-            G.isFierceAssignment = true;
-            if (shadowPlayer) {
-                G.battlefield = [fierceUruk];
-            }
-            G.statusMessage =
-                '[DEV] Hobbits/Isengard vague 3 · déjà en combat (salve acharnée). Filibert : affaiblir Merry ×2 → annule. Phial (Muster) ; Task/Sworn + Simple Living (Sam blessé). Relancer le preset.';
-            return { startPhase: 'skirmish' };
-        }
         default:
             G.statusMessage = `[DEV] Aucun preset actif (« ${presetType} »).`;
             return { startPhase: 'startOfFellowship' };

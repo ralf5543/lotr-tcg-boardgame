@@ -40,6 +40,16 @@ function langTextAndLore(
     return [coerced.gameText, coerced.lore];
 }
 
+/** « 2T & 8T » / « 1 » → `["2T","8T"]` / `["1"]`. */
+function parseAllyHomeSites(raw: string | undefined): string[] | undefined {
+    if (!raw || !String(raw).trim()) return undefined;
+    const sites = String(raw)
+        .split(/\s*&\s*/)
+        .map((s) => s.trim())
+        .filter(Boolean);
+    return sites.length > 0 ? sites : undefined;
+}
+
 async function convert() {
     console.log('🔄 Lecture et traitement du CSV des cartes...');
 
@@ -277,7 +287,7 @@ async function convert() {
                 data['Minion Site Number'] !== ''
                     ? parseInt(data['Minion Site Number'], 10)
                     : undefined,
-            allyHomeSites: data['Ally Home Sites'] || undefined,
+            home: parseAllyHomeSites(data['Ally Home Sites']),
             siteNumber:
                 data['Site Number'] !== ''
                     ? parseInt(data['Site Number'], 10)

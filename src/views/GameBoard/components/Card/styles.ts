@@ -731,6 +731,22 @@ export const CardType = styled.p<{ $type?: string }>`
     ${(props) => isNotCharacter(props.$type) && css``}
 `;
 
+/** Glyphe tour (`` ` ``) pour demeure d’allié « nT ». */
+export const HomeTowerMark = styled.span`
+    font-family: DecipherRegular, serif;
+    font-variant: normal;
+    text-transform: none;
+    font-size: 20px;
+    line-height: 1;
+`;
+
+/** « & » entre demeures (white-space: pre — le flex mange sinon l’espace). */
+export const HomeSitesJoin = styled.span`
+    white-space: pre;
+    font-variant: normal;
+    text-transform: none;
+`;
+
 export const TwilightBadge = styled.span<{
     $isShadow?: boolean;
     $pulseGen?: number;

@@ -1615,6 +1615,11 @@ export interface CardState {
     vitality?: number;
     resistance?: number;
     minionSiteNumber?: number;
+    /**
+     * Demeure(s) d’allié (CSV « Ally Home Sites ») — ex. `["1"]`, `["4T"]`,
+     * `["2T","8T"]` (CSV « 2T & 8T »). Affichage carte ; règles film à part.
+     */
+    home?: string[];
     signet?: CardSignet;
 
     // État dynamique en jeu

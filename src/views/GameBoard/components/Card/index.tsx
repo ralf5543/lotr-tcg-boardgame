@@ -53,6 +53,46 @@ import {
 } from '../../../../game/engine/responseWindow';
 import { usePulseOnChange } from '../../hooks/usePulseOnChange';
 
+/** Demeure « 2T » : T → glyphe tour `` ` `` (DecipherRegular). */
+function renderAllyHomeSite(site: string, keyPrefix: string): React.ReactNode {
+    const nodes: React.ReactNode[] = [];
+    let i = 0;
+    let key = 0;
+    while (i < site.length) {
+        const ch = site[i]!;
+        if (ch === 'T' || ch === 't') {
+            nodes.push(
+                <S.HomeTowerMark key={`${keyPrefix}-t-${key++}`}>
+                    {'`'}
+                </S.HomeTowerMark>
+            );
+            i += 1;
+            continue;
+        }
+        let j = i + 1;
+        while (j < site.length && site[j] !== 'T' && site[j] !== 't') {
+            j += 1;
+        }
+        nodes.push(
+            <React.Fragment key={`${keyPrefix}-s-${key++}`}>
+                {site.slice(i, j)}
+            </React.Fragment>
+        );
+        i = j;
+    }
+    return nodes;
+}
+
+/** `["2T","8T"]` → « 2` & 8` ». */
+function renderAllyHomeValue(homes: string[]): React.ReactNode {
+    return homes.map((site, index) => (
+        <React.Fragment key={`home-${index}`}>
+            {index > 0 ? <S.HomeSitesJoin>{' & '}</S.HomeSitesJoin> : null}
+            {renderAllyHomeSite(site, `h${index}`)}
+        </React.Fragment>
+    ));
+}
+
 interface CardImageProps {
     imageUrl?: string;
     alt: string;
@@ -874,6 +914,13 @@ export const Card: React.FC<CardProps> = ({
                         <S.CardType>
                             <S.Separator>•</S.Separator>
                             {translatedSubtype}
+                        </S.CardType>
+                    )}
+                    {card.home && card.home.length > 0 && (
+                        <S.CardType>
+                            <S.Separator>•</S.Separator>
+                            {currentLang === 'fr' ? 'Demeure' : 'Home'}{' '}
+                            {renderAllyHomeValue(card.home)}
                         </S.CardType>
                     )}
                     {card.race && (

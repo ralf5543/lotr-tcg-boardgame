@@ -2815,7 +2815,9 @@
     "twilightCost": 5,
     "strength": 14,
     "vitality": 9,
-    "allyHomeSites": "2",
+    "home": [
+      "2"
+    ],
     "imageUrl": "/cards_visuals/o_09_052.jpg",
     "i18n": {
       "en": {
@@ -2861,7 +2863,9 @@
     "twilightCost": 3,
     "strength": 4,
     "vitality": 6,
-    "allyHomeSites": "2",
+    "home": [
+      "2"
+    ],
     "imageUrl": "/cards_visuals/o_09_051.jpg",
     "i18n": {
       "en": {
@@ -7193,7 +7197,10 @@
     "twilightCost": 4,
     "strength": 12,
     "vitality": 4,
-    "allyHomeSites": "2T & 8T",
+    "home": [
+      "2T",
+      "8T"
+    ],
     "imageUrl": "/cards_visuals/o_04_103.jpg",
     "i18n": {
       "en": {
@@ -12995,7 +13002,9 @@
     "twilightCost": 1,
     "strength": 3,
     "vitality": 3,
-    "allyHomeSites": "3",
+    "home": [
+      "3"
+    ],
     "imageUrl": "/cards_visuals/o_01_017.jpg",
     "i18n": {
       "en": {
@@ -13408,7 +13417,9 @@
     "twilightCost": 1,
     "strength": 4,
     "vitality": 2,
-    "allyHomeSites": "3",
+    "home": [
+      "3"
+    ],
     "imageUrl": "/cards_visuals/o_01_027.jpg",
     "i18n": {
       "en": {
@@ -13725,7 +13736,9 @@
     "twilightCost": 2,
     "strength": 6,
     "vitality": 3,
-    "allyHomeSites": "6",
+    "home": [
+      "6"
+    ],
     "imageUrl": "/cards_visuals/o_01_034.jpg",
     "i18n": {
       "en": {
@@ -14033,7 +14046,9 @@
     "twilightCost": 4,
     "strength": 8,
     "vitality": 4,
-    "allyHomeSites": "3",
+    "home": [
+      "3"
+    ],
     "imageUrl": "/cards_visuals/o_01_040.jpg",
     "i18n": {
       "en": {
@@ -14266,7 +14281,9 @@
     "twilightCost": 3,
     "strength": 3,
     "vitality": 3,
-    "allyHomeSites": "6",
+    "home": [
+      "6"
+    ],
     "imageUrl": "/cards_visuals/o_01_045.jpg",
     "i18n": {
       "en": {
@@ -14837,7 +14854,9 @@
     "twilightCost": 2,
     "strength": 3,
     "vitality": 3,
-    "allyHomeSites": "6",
+    "home": [
+      "6"
+    ],
     "imageUrl": "/cards_visuals/o_01_056.jpg",
     "i18n": {
       "en": {
@@ -14921,7 +14940,9 @@
     "twilightCost": 2,
     "strength": 3,
     "vitality": 3,
-    "allyHomeSites": "6",
+    "home": [
+      "6"
+    ],
     "imageUrl": "/cards_visuals/o_01_057.jpg",
     "i18n": {
       "en": {
@@ -15047,7 +15068,9 @@
     "twilightCost": 2,
     "strength": 5,
     "vitality": 2,
-    "allyHomeSites": "3",
+    "home": [
+      "3"
+    ],
     "imageUrl": "/cards_visuals/o_01_060.jpg",
     "i18n": {
       "en": {
@@ -15384,7 +15407,9 @@
     "twilightCost": 2,
     "strength": 5,
     "vitality": 2,
-    "allyHomeSites": "6",
+    "home": [
+      "6"
+    ],
     "imageUrl": "/cards_visuals/o_01_067.jpg",
     "i18n": {
       "en": {
@@ -15532,7 +15557,9 @@
     "twilightCost": 1,
     "strength": 3,
     "vitality": 3,
-    "allyHomeSites": "1",
+    "home": [
+      "1"
+    ],
     "imageUrl": "/cards_visuals/o_01_069.jpg",
     "i18n": {
       "en": {
@@ -15579,7 +15606,9 @@
     "twilightCost": 0,
     "strength": 1,
     "vitality": 2,
-    "allyHomeSites": "1",
+    "home": [
+      "1"
+    ],
     "imageUrl": "/cards_visuals/o_01_070.jpg",
     "i18n": {
       "en": {
@@ -16077,7 +16106,9 @@
     "twilightCost": 1,
     "strength": 2,
     "vitality": 2,
-    "allyHomeSites": "3",
+    "home": [
+      "3"
+    ],
     "imageUrl": "/cards_visuals/o_01_080.jpg",
     "i18n": {
       "en": {
@@ -26586,7 +26617,9 @@
     "twilightCost": 2,
     "strength": 2,
     "vitality": 3,
-    "allyHomeSites": "3",
+    "home": [
+      "3"
+    ],
     "imageUrl": "/cards_visuals/o_01_284.jpg",
     "i18n": {
       "en": {
@@ -26677,7 +26710,9 @@
     "twilightCost": 1,
     "strength": 2,
     "vitality": 2,
-    "allyHomeSites": "2",
+    "home": [
+      "2"
+    ],
     "imageUrl": "/cards_visuals/o_01_286.jpg",
     "i18n": {
       "en": {
@@ -26760,7 +26795,9 @@
     "twilightCost": 1,
     "strength": 2,
     "vitality": 3,
-    "allyHomeSites": "1",
+    "home": [
+      "1"
+    ],
     "imageUrl": "/cards_visuals/o_01_288.jpg",
     "i18n": {
       "en": {
@@ -26943,7 +26980,9 @@
     "twilightCost": 1,
     "strength": 2,
     "vitality": 2,
-    "allyHomeSites": "1",
+    "home": [
+      "1"
+    ],
     "imageUrl": "/cards_visuals/o_01_291.jpg",
     "i18n": {
       "en": {
@@ -27204,7 +27243,9 @@
     "twilightCost": 1,
     "strength": 2,
     "vitality": 2,
-    "allyHomeSites": "1",
+    "home": [
+      "1"
+    ],
     "imageUrl": "/cards_visuals/o_01_295.jpg",
     "i18n": {
       "en": {
@@ -27340,7 +27381,9 @@
     "twilightCost": 1,
     "strength": 2,
     "vitality": 2,
-    "allyHomeSites": "1",
+    "home": [
+      "1"
+    ],
     "imageUrl": "/cards_visuals/o_01_297.jpg",
     "i18n": {
       "en": {
@@ -27582,7 +27625,9 @@
     "twilightCost": 1,
     "strength": 2,
     "vitality": 2,
-    "allyHomeSites": "1",
+    "home": [
+      "1"
+    ],
     "imageUrl": "/cards_visuals/o_01_301.jpg",
     "i18n": {
       "en": {
@@ -28062,7 +28107,9 @@
     "twilightCost": 1,
     "strength": 1,
     "vitality": 2,
-    "allyHomeSites": "1",
+    "home": [
+      "1"
+    ],
     "imageUrl": "/cards_visuals/o_01_309.jpg",
     "i18n": {
       "en": {
@@ -29807,7 +29854,9 @@
     "twilightCost": 2,
     "strength": 5,
     "vitality": 2,
-    "allyHomeSites": "3",
+    "home": [
+      "3"
+    ],
     "imageUrl": "/cards_visuals/o_02_021.jpg",
     "i18n": {
       "en": {
@@ -29982,7 +30031,9 @@
     "twilightCost": 1,
     "strength": 4,
     "vitality": 2,
-    "allyHomeSites": "3",
+    "home": [
+      "3"
+    ],
     "imageUrl": "/cards_visuals/o_02_024.jpg",
     "i18n": {
       "en": {
@@ -30043,7 +30094,9 @@
     "twilightCost": 1,
     "strength": 4,
     "vitality": 2,
-    "allyHomeSites": "3",
+    "home": [
+      "3"
+    ],
     "imageUrl": "/cards_visuals/o_02_025.jpg",
     "i18n": {
       "en": {
@@ -33543,7 +33596,9 @@
     "twilightCost": 2,
     "strength": 2,
     "vitality": 3,
-    "allyHomeSites": "1",
+    "home": [
+      "1"
+    ],
     "imageUrl": "/cards_visuals/o_02_096.jpg",
     "i18n": {
       "en": {
@@ -33814,7 +33869,9 @@
     "twilightCost": 1,
     "strength": 1,
     "vitality": 2,
-    "allyHomeSites": "1",
+    "home": [
+      "1"
+    ],
     "imageUrl": "/cards_visuals/o_02_101.jpg",
     "i18n": {
       "en": {
@@ -35057,7 +35114,9 @@
     "twilightCost": 2,
     "strength": 3,
     "vitality": 3,
-    "allyHomeSites": "6",
+    "home": [
+      "6"
+    ],
     "imageUrl": "/cards_visuals/o_03_010.jpg",
     "i18n": {
       "en": {
@@ -35148,7 +35207,9 @@
     "twilightCost": 2,
     "strength": 3,
     "vitality": 3,
-    "allyHomeSites": "6",
+    "home": [
+      "6"
+    ],
     "imageUrl": "/cards_visuals/o_03_012.jpg",
     "i18n": {
       "en": {
@@ -35229,7 +35290,9 @@
     "twilightCost": 4,
     "strength": 8,
     "vitality": 4,
-    "allyHomeSites": "3",
+    "home": [
+      "3"
+    ],
     "imageUrl": "/cards_visuals/o_03_013.jpg",
     "i18n": {
       "en": {
@@ -35290,7 +35353,9 @@
     "twilightCost": 2,
     "strength": 5,
     "vitality": 2,
-    "allyHomeSites": "3",
+    "home": [
+      "3"
+    ],
     "imageUrl": "/cards_visuals/o_03_014.jpg",
     "i18n": {
       "en": {
@@ -35418,7 +35483,9 @@
     "twilightCost": 3,
     "strength": 3,
     "vitality": 3,
-    "allyHomeSites": "6",
+    "home": [
+      "6"
+    ],
     "imageUrl": "/cards_visuals/o_03_017.jpg",
     "i18n": {
       "en": {
@@ -35479,7 +35546,9 @@
     "twilightCost": 2,
     "strength": 5,
     "vitality": 2,
-    "allyHomeSites": "3",
+    "home": [
+      "3"
+    ],
     "imageUrl": "/cards_visuals/o_03_018.jpg",
     "i18n": {
       "en": {
@@ -35634,7 +35703,9 @@
     "twilightCost": 2,
     "strength": 4,
     "vitality": 3,
-    "allyHomeSites": "3",
+    "home": [
+      "3"
+    ],
     "imageUrl": "/cards_visuals/o_03_020.jpg",
     "i18n": {
       "en": {
@@ -35922,7 +35993,9 @@
     "twilightCost": 2,
     "strength": 4,
     "vitality": 3,
-    "allyHomeSites": "3",
+    "home": [
+      "3"
+    ],
     "imageUrl": "/cards_visuals/o_03_025.jpg",
     "i18n": {
       "en": {
@@ -40375,7 +40448,9 @@
     "twilightCost": 1,
     "strength": 2,
     "vitality": 2,
-    "allyHomeSites": "1",
+    "home": [
+      "1"
+    ],
     "imageUrl": "/cards_visuals/o_03_110.jpg",
     "i18n": {
       "en": {
@@ -40422,7 +40497,9 @@
     "twilightCost": 1,
     "strength": 1,
     "vitality": 2,
-    "allyHomeSites": "1",
+    "home": [
+      "1"
+    ],
     "imageUrl": "/cards_visuals/o_03_111.jpg",
     "i18n": {
       "en": {
@@ -45792,7 +45869,10 @@
     "twilightCost": 4,
     "strength": 12,
     "vitality": 4,
-    "allyHomeSites": "2T & 8T",
+    "home": [
+      "2T",
+      "8T"
+    ],
     "imageUrl": "/cards_visuals/o_04_104.jpg",
     "i18n": {
       "en": {
@@ -53513,7 +53593,10 @@
     "twilightCost": 1,
     "strength": 3,
     "vitality": 2,
-    "allyHomeSites": "3T & 6T",
+    "home": [
+      "3T",
+      "6T"
+    ],
     "imageUrl": "/cards_visuals/o_04_262.jpg",
     "i18n": {
       "en": {
@@ -54358,7 +54441,9 @@
     "twilightCost": 1,
     "strength": 4,
     "vitality": 2,
-    "allyHomeSites": "4T",
+    "home": [
+      "4T"
+    ],
     "imageUrl": "/cards_visuals/o_04_277.jpg",
     "i18n": {
       "en": {
@@ -54580,7 +54665,9 @@
     "twilightCost": 1,
     "strength": 4,
     "vitality": 2,
-    "allyHomeSites": "4T",
+    "home": [
+      "4T"
+    ],
     "imageUrl": "/cards_visuals/o_04_281.jpg",
     "i18n": {
       "en": {
@@ -54802,7 +54889,9 @@
     "twilightCost": 1,
     "strength": 4,
     "vitality": 2,
-    "allyHomeSites": "4T",
+    "home": [
+      "4T"
+    ],
     "imageUrl": "/cards_visuals/o_04_285.jpg",
     "i18n": {
       "en": {
@@ -55254,7 +55343,9 @@
     "twilightCost": 1,
     "strength": 4,
     "vitality": 2,
-    "allyHomeSites": "4T",
+    "home": [
+      "4T"
+    ],
     "imageUrl": "/cards_visuals/o_04_295.jpg",
     "i18n": {
       "en": {
@@ -60381,7 +60472,9 @@
     "twilightCost": 1,
     "strength": 4,
     "vitality": 2,
-    "allyHomeSites": "4T",
+    "home": [
+      "4T"
+    ],
     "imageUrl": "/cards_visuals/o_05_081.jpg",
     "i18n": {
       "en": {
@@ -60884,7 +60977,9 @@
     "twilightCost": 1,
     "strength": 4,
     "vitality": 2,
-    "allyHomeSites": "4T",
+    "home": [
+      "4T"
+    ],
     "imageUrl": "/cards_visuals/o_05_092.jpg",
     "i18n": {
       "en": {
@@ -63117,7 +63212,9 @@
     "twilightCost": 4,
     "strength": 8,
     "vitality": 4,
-    "allyHomeSites": "3",
+    "home": [
+      "3"
+    ],
     "imageUrl": "/cards_visuals/o_06_015.jpg",
     "i18n": {
       "en": {
@@ -63259,7 +63356,9 @@
     "twilightCost": 3,
     "strength": 3,
     "vitality": 3,
-    "allyHomeSites": "6",
+    "home": [
+      "6"
+    ],
     "imageUrl": "/cards_visuals/o_06_018.jpg",
     "i18n": {
       "en": {
@@ -73205,7 +73304,9 @@
     "twilightCost": 1,
     "strength": 6,
     "vitality": 1,
-    "allyHomeSites": "3T",
+    "home": [
+      "3T"
+    ],
     "imageUrl": "/cards_visuals/o_07_097.jpg",
     "i18n": {
       "en": {
@@ -79046,7 +79147,9 @@
     "twilightCost": 1,
     "strength": 4,
     "vitality": 2,
-    "allyHomeSites": "3T",
+    "home": [
+      "3T"
+    ],
     "imageUrl": "/cards_visuals/o_07_222.jpg",
     "i18n": {
       "en": {
@@ -79794,7 +79897,9 @@
     "twilightCost": 1,
     "strength": 4,
     "vitality": 2,
-    "allyHomeSites": "3T",
+    "home": [
+      "3T"
+    ],
     "imageUrl": "/cards_visuals/o_07_239.jpg",
     "i18n": {
       "en": {
@@ -80151,7 +80256,9 @@
     "twilightCost": 1,
     "strength": 4,
     "vitality": 2,
-    "allyHomeSites": "3T",
+    "home": [
+      "3T"
+    ],
     "imageUrl": "/cards_visuals/o_07_247.jpg",
     "i18n": {
       "en": {
@@ -92879,7 +92986,9 @@
     "twilightCost": 3,
     "strength": 4,
     "vitality": 6,
-    "allyHomeSites": "2",
+    "home": [
+      "2"
+    ],
     "imageUrl": "/cards_visuals/o_09_051.jpg",
     "i18n": {
       "en": {
@@ -92982,7 +93091,9 @@
     "twilightCost": 5,
     "strength": 14,
     "vitality": 9,
-    "allyHomeSites": "2",
+    "home": [
+      "2"
+    ],
     "imageUrl": "/cards_visuals/o_09_052.jpg",
     "i18n": {
       "en": {
