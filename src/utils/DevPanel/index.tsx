@@ -348,17 +348,17 @@ export const DevPanel: React.FC<DevPanelProps> = ({
                             <S.ActionButton
                                 onClick={() =>
                                     moves.devLoadPreset?.(
-                                        'HOBBITS_ISENGARD_W5'
+                                        'HOBBITS_ISENGARD_W7'
                                     )
                                 }
-                                title="Deck Hobbits / Isengard — vague 5"
+                                title="Deck Hobbits / Isengard — vague 7"
                             >
-                                Hobbits/Isengard v5
+                                Hobbits/Isengard v7
                             </S.ActionButton>
                         </S.ButtonGroup>
                         <S.Hint>
-                            v5 : Bilbo (cliquer le combat → événement Shire),
-                            Light in His Mind (perdre initiative → fardeau).
+                            v7 : Saruman Lurker — tester depuis l’onglet Ombre
+                            (?player=1) ; skirmish +2 / soin à la mort.
                         </S.Hint>
                     </S.Section>
 

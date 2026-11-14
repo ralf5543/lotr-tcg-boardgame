@@ -9,7 +9,8 @@ import { useTargeting } from '../../../../contexts/TargetingContext';
 import { findTargetCard } from '../../../../utils/cardUtils';
 import { getAbilityToastClause, getCardText } from '../../../../utils/i18n';
 import { FormattedText } from '../../../../utils/FormattedText';
-import { findOptionalSiteResponseAbility } from '../../../../game/engine/responseWindow';
+import { findOptionalToasterResponseAbility } from '../../../../game/engine/responseWindow';
+import { formatAbilityLabelParts } from '../../../../game/engine/abilities/collectAbilities';
 import { getEligibleSitePhaseAbilities } from '../../../../game/logic/sitePhaseAbility';
 import { movesRemainThisTurn } from '../../../../game/logic/moveLimit';
 import {
@@ -197,14 +198,16 @@ export const GameControls: React.FC<GameControlsProps> = ({
         : [];
     const isForcedChoiceActive = Boolean(G.pendingForcedChoice);
     const isRevealActive = Boolean(G.pendingReveal);
-    const siteResponseCandidate =
+    const optionalResponseCandidate =
         isResponseWindowActive && G.responseWindow?.activePlayerId != null
-            ? findOptionalSiteResponseAbility(
+            ? findOptionalToasterResponseAbility(
                   G,
                   String(G.responseWindow.activePlayerId)
               )
             : null;
-    const isSiteResponseAbilityActive = Boolean(siteResponseCandidate);
+    const isOptionalResponseToasterActive = Boolean(
+        optionalResponseCandidate
+    );
 
     const isAwaitingSiteActive =
         awaitingSite &&
@@ -330,7 +333,7 @@ export const GameControls: React.FC<GameControlsProps> = ({
             | 'SITE_FOLLOWER_TRANSFER_DESIGNATION'
             | 'FP_DISCARD'
             | 'DEAD_PILE_REMOVAL'
-            | 'SITE_RESPONSE_ABILITY'
+            | 'OPTIONAL_RESPONSE_ABILITY'
             | 'ASSIGNMENT_YIELD'
             | 'ASSIGNMENT_PASS'
             | 'RESPONSE'
@@ -630,24 +633,28 @@ export const GameControls: React.FC<GameControlsProps> = ({
     } else if (
         isResponseWindowActive &&
         isMyTurnToAct &&
-        isSiteResponseAbilityActive &&
-        siteResponseCandidate
+        isOptionalResponseToasterActive &&
+        optionalResponseCandidate
     ) {
-        const siteClause = getAbilityToastClause(
-            siteResponseCandidate.ability,
-            siteResponseCandidate.site
-        );
+        const { source, ability } = optionalResponseCandidate;
+        const isSiteSource =
+            source.kind === 'SITE' || source.type === 'SITE';
+        const parts = formatAbilityLabelParts(ability, source);
+        const shortClause = [parts.cost, parts.effect]
+            .filter(Boolean)
+            .join(' : ');
+        const siteClause = getAbilityToastClause(ability, source);
+        const bodyText =
+            shortClause ||
+            siteClause ||
+            G.statusMessage ||
+            'Vous pouvez utiliser cet effet optionnel.';
         toastConfig = {
             show: true,
-            title: 'EFFET DU SITE',
-            body: siteClause ? (
-                <FormattedText text={siteClause} />
-            ) : (
-                G.statusMessage ||
-                'Vous pouvez utiliser l’effet optionnel de ce site.'
-            ),
+            title: isSiteSource ? 'EFFET DU SITE' : 'RÉPONSE',
+            body: <FormattedText text={bodyText} />,
             showPassButton: false,
-            type: 'SITE_RESPONSE_ABILITY',
+            type: 'OPTIONAL_RESPONSE_ABILITY',
         };
     } else if (isResponseWindowActive && isMyTurnToAct) {
         toastConfig = {
@@ -1616,7 +1623,7 @@ export const GameControls: React.FC<GameControlsProps> = ({
                             </S.ActionButton>
                         )}
 
-                        {toastConfig.type === 'SITE_RESPONSE_ABILITY' && (
+                        {toastConfig.type === 'OPTIONAL_RESPONSE_ABILITY' && (
                             <>
                                 <S.ActionButton
                                     style={{ marginTop: '12px', width: '100%' }}

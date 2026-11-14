@@ -1036,6 +1036,16 @@ export type AbilityEffect =
       }
     | {
           /**
+           * Pippin : remplace le compagnon désigné dans son combat
+           * (la source devient `companionId` de l’escarmouche).
+           */
+          type: 'REPLACE_IN_SKIRMISH';
+          target: AbilityTargetRef;
+          /** Résistance du désigné < résistance de la source. */
+          lessResistanceThanSource?: boolean;
+      }
+    | {
+          /**
            * Change le seuil de submersion jusqu’à une phase
            * (Everyone Knows : ×3 au lieu de ×2).
            */
@@ -1330,6 +1340,14 @@ export type AbilityTrigger =
            */
           type: 'WHEN_ASSIGNED';
           by: 'FREE_PEOPLE';
+      }
+    | {
+          /**
+           * Unferth : chaque fois que le FP assigne un compagnon/allié
+           * à un séide matchant `to`, ce personnage est affaibli.
+           */
+          type: 'WHEN_FP_ASSIGNS_TO';
+          to: string[][];
       }
     | {
           /**

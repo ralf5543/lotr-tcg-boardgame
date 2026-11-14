@@ -8,7 +8,10 @@ import {
     getSiteMaxMinionsPerSkirmish,
     getUnassignedMinions,
 } from '../logic/assignment';
-import { resolveWhenAssigned } from '../engine/abilities/whenAssigned';
+import {
+    resolveWhenAssigned,
+    resolveWhenFpAssignsTo,
+} from '../engine/abilities/whenAssigned';
 import { getCardText } from '../../utils/i18n';
 
 export const assignMinion = (
@@ -108,6 +111,11 @@ export const assignMinion = (
 
     if (isFP && minionCard) {
         resolveWhenAssigned(G, minionCard as CardState, 'FREE_PEOPLE');
+        resolveWhenFpAssignsTo(
+            G,
+            (compCard.card || compCard) as CardState,
+            minionCard as CardState
+        );
     }
 
     const compCardState = compCard.card || compCard;

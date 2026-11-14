@@ -126,8 +126,8 @@ export const applyDevPreset = (
     const shadowPlayer = G.players[shadowId];
 
     switch (presetType) {
-        case 'HOBBITS_ISENGARD_W5': {
-            // Bilbo (début combat → événement Shire), Light (perdre initiative → fardeau).
+        case 'HOBBITS_ISENGARD_W7': {
+            // Saruman Lurker : skirmish (+2 Ourouk) + soin optionnel à la mort.
             resetBoardForPreset(G);
             setupDevPath(G, 0, [
                 '18U140',
@@ -140,42 +140,33 @@ export const applyDevPreset = (
                 '11S261',
                 '18U138',
             ]);
-            G.twilightPool = 0;
-            fpPlayer.burdens = 2;
+            G.twilightPool = 4;
+            fpPlayer.burdens = 0;
             const frodo = {
-                ...clonePresetCard('11S164', 'dev-hi5-frodo'),
-                attachments: [clonePresetCard('1C2', 'dev-hi5-ring')],
+                ...clonePresetCard('11S164', 'dev-hi7-frodo'),
+                attachments: [clonePresetCard('1C2', 'dev-hi7-ring')],
             };
-            const bilbo = clonePresetCard('12R119', 'dev-hi5-bilbo');
-            const merry = clonePresetCard('11C168', 'dev-hi5-merry');
-            const light = clonePresetCard('10U108', 'dev-hi5-light');
-            const crouched = clonePresetCard('11C162', 'dev-hi5-crouched');
-            const chance = clonePresetCard('10C106', 'dev-hi5-chance');
-            const sworn = clonePresetCard('11S174', 'dev-hi5-sworn-disc');
-            const uruk = clonePresetCard('4C187', 'dev-hi5-uruk');
-            fpPlayer.fellowshipArea = [frodo, bilbo, merry];
-            fpPlayer.supportArea = [light];
-            // 3 en main : Bilbo reprend un événement → 4 (gagne init.) → jouer → 3 (perd) → Light.
-            fpPlayer.hand = [
-                clonePresetCard('11S174', 'dev-hi5-hand-a'),
-                clonePresetCard('11S174', 'dev-hi5-hand-b'),
-                clonePresetCard('10C106', 'dev-hi5-hand-c'),
-            ];
-            // Plusieurs événements Shire combat → choix visible dans la défausse.
-            fpPlayer.discard = [crouched, chance, sworn];
+            const merry = clonePresetCard('11C168', 'dev-hi7-merry');
+            const saruman = {
+                ...clonePresetCard('12S144', 'dev-hi7-saruman'),
+                wounds: 1,
+            };
+            const uruk = clonePresetCard('4C187', 'dev-hi7-uruk');
+            fpPlayer.fellowshipArea = [frodo, merry];
             if (shadowPlayer) {
-                G.battlefield = [uruk];
+                shadowPlayer.supportArea = [];
+                G.battlefield = [saruman, uruk];
             }
             G.skirmishes = [
                 {
-                    id: 'dev-hi5-sk',
-                    companionId: bilbo.instanceId || bilbo.id,
+                    id: 'dev-hi7-sk',
+                    companionId: merry.instanceId || merry.id,
                     minionIds: [uruk.instanceId || uruk.id],
                 },
             ];
-            // Pas d’activeSkirmishId : cliquer le combat déclenche le toaster Bilbo.
+            G.activeSkirmishId = 'dev-hi7-sk';
             G.statusMessage =
-                '[DEV] Hobbits/Isengard vague 5 · Cliquer Bilbo vs Uruk → toaster (affaiblir → choisir un événement Shire dans la défausse) ; puis jouer une carte → perte d’initiative → toaster Light (retirer un fardeau). Relancer le preset.';
+                '[DEV] Hobbits/Isengard vague 7 · Saruman (Lurker, hors combat, 1 blessure) : onglet Ombre → sceau +2 à l’Ourouk ; tuer Merry → toaster soin. Relancer le preset.';
             return { startPhase: 'skirmish' };
         }
         default:

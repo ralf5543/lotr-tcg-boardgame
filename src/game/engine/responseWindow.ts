@@ -29,6 +29,7 @@ import { skirmishMatchesInvolving } from './abilities/cancelSkirmish';
 import { cardMatchesTarget } from './validations/matchers';
 import {
     abilityMatchesPhase,
+    abilityUsesResponseToaster,
     collectProjectedAbilities,
 } from './abilities/collectAbilities';
 import { applyAbilityEffect } from './abilities/applyAbilityEffect';
@@ -675,26 +676,59 @@ export function playerHasEligibleResponse(
 }
 
 /**
- * Réponse optionnelle du site courant sans coût à désigner
- * (Starkhorn piocher, Heights défausse…) → toaster Activer / Passer,
- * pas de bulle sur un personnage.
+ * Première réponse optionnelle « toaster » légale (site ou carte en jeu).
+ * Starkhorn piocher, Saruman soin… — Activer / Passer, pas de bulle.
+ * Voir `.cursor/rules/support-area-ability-host.mdc`.
  */
+export function findOptionalToasterResponseAbility(
+    G: GameState,
+    playerID: string
+): { source: CardState; ability: Ability } | null {
+    if (!G.pendingEvent) return null;
+    const pid = String(playerID);
+
+    const site = currentSiteAsCard(G);
+    if (site) {
+        for (const ability of site.abilities || []) {
+            if (!abilityUsesResponseToaster(ability)) continue;
+            if (siteResponsePlayerId(G, ability) !== pid) continue;
+            if (!inPlayResponseIsLegal(G, site, ability)) continue;
+            if (abilityNeedsCostDesignation(G, site, ability, pid)) continue;
+            return { source: site, ability };
+        }
+    }
+
+    let found: { source: CardState; ability: Ability } | null = null;
+    forEachInPlayCard(G, (card) => {
+        if (found) return;
+        if (cardOwnerId(G, card) !== pid) return;
+        for (const ability of card.abilities || []) {
+            if (!abilityUsesResponseToaster(ability)) continue;
+            if (!inPlayResponseIsLegal(G, card, ability)) continue;
+            if (abilityNeedsCostDesignation(G, card, ability, pid)) continue;
+            found = { source: card, ability };
+            return;
+        }
+    });
+    return found;
+}
+
+/** Alias site-only (tests Starkhorn…). */
 export function findOptionalSiteResponseAbility(
     G: GameState,
     playerID: string
 ): { site: CardState; ability: Ability } | null {
+    const found = findOptionalToasterResponseAbility(G, playerID);
+    if (!found) return null;
     const site = currentSiteAsCard(G);
-    if (!site || !G.pendingEvent) return null;
-    const pid = String(playerID);
-    for (const ability of site.abilities || []) {
-        if (!ability.optional) continue;
-        if (!abilityMatchesPhase(ability, 'RESPONSE')) continue;
-        if (siteResponsePlayerId(G, ability) !== pid) continue;
-        if (!inPlayResponseIsLegal(G, site, ability)) continue;
-        if (abilityNeedsCostDesignation(G, site, ability, pid)) continue;
-        return { site, ability };
+    if (
+        !site ||
+        (found.source.instanceId || found.source.id) !==
+            (site.instanceId || site.id)
+    ) {
+        return null;
     }
-    return null;
+    return { site: found.source, ability: found.ability };
 }
 
 function hasAnyEligibleResponse(G: GameState): boolean {

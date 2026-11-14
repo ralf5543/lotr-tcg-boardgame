@@ -29,13 +29,17 @@ Après clic sur la situation (classe) : désignation parmi les cibles légales (
 
 ## Règle transversale (bulles sur personnages)
 
-Une bulle d’action sur un personnage = combinaison **coût à payer** (souvent exert désigné) **+ effet**. Pas pour une réponse « you may » pure (piocher, défausser une situation…).
+Une bulle d’action sur un personnage = combinaison **coût à payer** (souvent exert désigné) **+ effet**.
+
+**Réponse optionnelle sans coût** (« you may » pur : piocher, soigner, défausser une situation…) → **toujours toaster** Activer / Passer — site **ou** personnage (Saruman soin à la mort, Starkhorn…). **Pas** de sceau / bulle.
+
+Réponse **avec** coût (exert Gandalf, défausse self…) → bulle / projection comme d’habitude.
 
 ## Implémentation
 
 - `abilityProjectsOnto` / `collectProjectedAbilities` : ne projeter que si la cible d’exert est un **nom propre** (casse mixte, cf. matchers) — support ; ou coût exert classe depuis un site.
 - Classe / filtres UPPERCASE (`MAN`, `GONDOR`, `COMPANION`…) : **pas** de projection support→perso ; le bouton reste sur la carte support.
-- Site `RESPONSE` optionnelle : `findOptionalSiteResponseAbility` + toaster (pas de projection WINS).
+- `abilityUsesResponseToaster` + `findOptionalToasterResponseAbility` : toaster (sites et cartes en jeu) ; exclus de `collectVisibleAbilities`.
 
 ## Exemples
 
@@ -43,3 +47,4 @@ Une bulle d’action sur un personnage = combinaison **coût à payer** (souvent
 - **Unknown Perils** (Response : exert Gandalf) → projection sur Gandalf OK.
 - **Forests of Ithilien** (discard this + exert Ring-bound Man) → déjà sur la situation (défausse self).
 - **Starkhorn** (Dwarf wins → may draw) → toaster piocher, pas d’action sur le Nain.
+- **Saruman** (companion killed → may heal Saruman) → toaster soin, pas de bulle « guérir ».

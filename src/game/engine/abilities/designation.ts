@@ -5,7 +5,10 @@ import type {
     GameState,
     SiteCardState,
 } from '../../types';
-import { getEffectiveVitality } from '../../../utils/cardStats';
+import {
+    getEffectiveResistance,
+    getEffectiveVitality,
+} from '../../../utils/cardStats';
 import { isRingBearerCard } from '../../../utils/cardUtils';
 import {
     resolveAbilityTarget,
@@ -276,6 +279,28 @@ function candidatesForEffect(
     }
     if (effect.type === 'HEAL') {
         return matches.filter(isHealableCard);
+    }
+    if (effect.type === 'REPLACE_IN_SKIRMISH') {
+        const sourceId = source.instanceId || source.id;
+        const fpId = G.fpPlayerId || '0';
+        const burdens = G.players[fpId]?.burdens || 0;
+        const sourceRes = getEffectiveResistance(source, burdens, G);
+        return matches.filter((card) => {
+            if (card.isDead) return false;
+            const id = card.instanceId || card.id;
+            if (!id || id === sourceId) return false;
+            // Doit être le compagnon d’un combat non résolu.
+            const inFight = (G.skirmishes || []).some(
+                (sk) => !sk.resolved && sk.companionId === id
+            );
+            if (!inFight) return false;
+            if (effect.lessResistanceThanSource) {
+                if (getEffectiveResistance(card, burdens, G) >= sourceRes) {
+                    return false;
+                }
+            }
+            return true;
+        });
     }
     return matches.filter((card) => !card.isDead);
 }
@@ -852,6 +877,7 @@ function abilityEffectDesignationIsHaloOnly(ability: Ability): boolean {
             effect.type === 'TAKE_FROM_STACK' ||
             effect.type === 'PLAY_FROM_CARD_STACK' ||
             effect.type === 'TRANSFER_SELF' ||
+            effect.type === 'REPLACE_IN_SKIRMISH' ||
             // Défausse d’une carte en jeu : choix logistique → halo + clic
             // (pas de trajectoire « attaque », même à 1 cible).
             (effect.type === 'DISCARD' && !effect.chooser)

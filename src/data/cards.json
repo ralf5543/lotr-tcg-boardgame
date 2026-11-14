@@ -4579,6 +4579,68 @@
     "keywords": [
       "LURKER"
     ],
+    "abilities": [
+      {
+        "id": "0P95:0",
+        "phases": [
+          "SKIRMISH"
+        ],
+        "cost": [
+          {
+            "exert": [
+              {
+                "count": 1,
+                "target": "SELF"
+              }
+            ]
+          }
+        ],
+        "effects": [
+          {
+            "type": "ADD_TEMP_STAT",
+            "stat": "STRENGTH",
+            "value": 2,
+            "target": [
+              [
+                "URUK-HAI",
+                "MINION"
+              ]
+            ],
+            "expiresAtPhase": "SKIRMISH"
+          }
+        ],
+        "source": "SELF",
+        "text": "SKIRMISH: Exert Saruman to make an urukhai minion strength +2."
+      },
+      {
+        "id": "0P95:1",
+        "phases": [
+          "RESPONSE"
+        ],
+        "optional": true,
+        "trigger": {
+          "type": "CHARACTER_DIES",
+          "target": [
+            [
+              "COMPANION"
+            ]
+          ]
+        },
+        "cost": [],
+        "effects": [
+          {
+            "type": "HEAL",
+            "count": 1,
+            "target": "SELF"
+          }
+        ],
+        "source": "SELF",
+        "text": "Each time a companion is killed, you may heal Saruman."
+      }
+    ],
+    "actionPhases": [
+      "SKIRMISH"
+    ],
     "culture": "URUK-HAI",
     "race": "WIZARD",
     "twilightCost": 4,
@@ -49509,6 +49571,31 @@
     "isUnique": true,
     "kind": "SHADOW",
     "type": "MINION",
+    "abilities": [
+      {
+        "id": "4C178:0",
+        "phases": [],
+        "trigger": {
+          "type": "WHEN_FP_ASSIGNS_TO",
+          "to": [
+            [
+              "ISENGARD",
+              "MAN"
+            ]
+          ]
+        },
+        "cost": [],
+        "effects": [
+          {
+            "type": "EXERT",
+            "count": 1,
+            "target": "SELF"
+          }
+        ],
+        "source": "SELF",
+        "text": "Each time the Free Peoples player assigns a companion or ally to an isengard Man, that companion or ally must exert."
+      }
+    ],
     "culture": "ISENGARD",
     "race": "MAN",
     "twilightCost": 2,
@@ -107121,6 +107208,33 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
+    "abilities": [
+      {
+        "id": "11R170:0",
+        "phases": [
+          "SKIRMISH"
+        ],
+        "requiresUnassigned": true,
+        "cost": [],
+        "effects": [
+          {
+            "type": "REPLACE_IN_SKIRMISH",
+            "target": [
+              [
+                "UNBOUND",
+                "COMPANION"
+              ]
+            ],
+            "lessResistanceThanSource": true
+          }
+        ],
+        "source": "SELF",
+        "text": "SKIRMISH: If Pippin is not assigned to a skirmish, spot an unbound companion who has less resistance than Pippin to have Pippin replace him or her in a skirmish."
+      }
+    ],
+    "actionPhases": [
+      "SKIRMISH"
+    ],
     "culture": "SHIRE",
     "race": "HOBBIT",
     "twilightCost": 1,
@@ -116941,6 +117055,68 @@
     "type": "MINION",
     "keywords": [
       "LURKER"
+    ],
+    "abilities": [
+      {
+        "id": "12S144:0",
+        "phases": [
+          "SKIRMISH"
+        ],
+        "cost": [
+          {
+            "exert": [
+              {
+                "count": 1,
+                "target": "SELF"
+              }
+            ]
+          }
+        ],
+        "effects": [
+          {
+            "type": "ADD_TEMP_STAT",
+            "stat": "STRENGTH",
+            "value": 2,
+            "target": [
+              [
+                "URUK-HAI",
+                "MINION"
+              ]
+            ],
+            "expiresAtPhase": "SKIRMISH"
+          }
+        ],
+        "source": "SELF",
+        "text": "SKIRMISH: Exert Saruman to make an urukhai minion strength +2."
+      },
+      {
+        "id": "12S144:1",
+        "phases": [
+          "RESPONSE"
+        ],
+        "optional": true,
+        "trigger": {
+          "type": "CHARACTER_DIES",
+          "target": [
+            [
+              "COMPANION"
+            ]
+          ]
+        },
+        "cost": [],
+        "effects": [
+          {
+            "type": "HEAL",
+            "count": 1,
+            "target": "SELF"
+          }
+        ],
+        "source": "SELF",
+        "text": "Each time a companion is killed, you may heal Saruman."
+      }
+    ],
+    "actionPhases": [
+      "SKIRMISH"
     ],
     "culture": "URUK-HAI",
     "race": "WIZARD",

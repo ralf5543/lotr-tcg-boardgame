@@ -100,7 +100,7 @@ import {
 import { isSiteReplaceForbidden } from '../../game/logic/siteReplaceRestrictions';
 import { findEventAbilityForPhase } from '../../game/engine/abilities/playEventAbility';
 import { abilityMatchesPhase } from '../../game/engine/abilities/collectAbilities';
-import { findOptionalSiteResponseAbility } from '../../game/engine/responseWindow';
+import { findOptionalToasterResponseAbility } from '../../game/engine/responseWindow';
 import { cardMatchesTarget } from '../../game/engine/validations/matchers';
 import {
     getToilAmount,
@@ -1554,10 +1554,13 @@ export const GameBoard: React.FC<GameBoardProps> = ({
             }
             const activeId = G.responseWindow?.activePlayerId;
             if (activeId == null) return;
-            const found = findOptionalSiteResponseAbility(G, String(activeId));
+            const found = findOptionalToasterResponseAbility(
+                G,
+                String(activeId)
+            );
             if (!found) return;
             handleActivateAbility(
-                found.site.instanceId || found.site.id,
+                found.source.instanceId || found.source.id,
                 found.ability.id
             );
         },

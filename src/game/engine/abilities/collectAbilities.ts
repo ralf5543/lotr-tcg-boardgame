@@ -208,6 +208,42 @@ export function collectProjectedAbilities(
  * - attachements ;
  * - projections (support → nom propre ; site → cible d’exert désignable).
  */
+/**
+ * Coût « à payer » (exert, défausse, jetons…) — hors spot informatif.
+ * Absent + optional RESPONSE → toaster Activer / Passer, pas de bulle.
+ * Voir `.cursor/rules/support-area-ability-host.mdc`.
+ */
+export function abilityHasPaymentCost(ability: Ability): boolean {
+    for (const option of ability.cost || []) {
+        if (!option) continue;
+        if (option.exert && option.exert.length > 0) return true;
+        if (option.discardFromPlay && option.discardFromPlay.length > 0) {
+            return true;
+        }
+        if (option.discardFromHand) return true;
+        if (option.removeCultureTokens) return true;
+        if (option.removeThreats || option.addThreats) return true;
+        if (option.addBurdens || option.removeBurdens) return true;
+        if (option.addTwilight || option.removeTwilight) return true;
+        if (
+            option.spot?.some(
+                (s) => Array.isArray(s.target) && s.mode === 'DESIGNATION'
+            )
+        ) {
+            return true;
+        }
+    }
+    return false;
+}
+
+/** Réponse optionnelle sans coût → toaster, jamais bulle sur un personnage. */
+export function abilityUsesResponseToaster(ability: Ability): boolean {
+    if (!ability.optional) return false;
+    if (!abilityMatchesPhase(ability, 'RESPONSE')) return false;
+    if (abilityHasPaymentCost(ability)) return false;
+    return true;
+}
+
 export function collectVisibleAbilities(
     G: GameState | undefined,
     card: CardState
@@ -223,6 +259,10 @@ export function collectVisibleAbilities(
         }
         // Site : jamais de bouton sur le site (projection, toaster moves/phase/réponse).
         if (isSiteCard(source)) {
+            return false;
+        }
+        // Réponse optionnelle sans coût (« you may ») → toaster, pas de bulle.
+        if (abilityUsesResponseToaster(ability)) {
             return false;
         }
         // Nom propre depuis une situation support : bouton sur le personnage
@@ -661,6 +701,13 @@ function formatEffectBit(
             ? `annuler une escarmouche impliquant ${who}`
             : 'annuler une escarmouche';
     }
+    if (effect.type === 'REPLACE_IN_SKIRMISH') {
+        const who = formatTargetPhrase(effect.target) || 'un personnage';
+        const resist = effect.lessResistanceThanSource
+            ? ' de moindre résistance'
+            : '';
+        return `remplacer ${who}${resist} dans un combat`;
+    }
     if (effect.type === 'SET_OVERWHELM_FACTOR') {
         const who = formatTargetPhrase(effect.target);
         const factor = effect.factor || 3;
@@ -678,6 +725,13 @@ function formatEffectBit(
         if (effect.countFromSpot) {
             const who = formatTargetPhrase(effect.target);
             return who ? `guérir ${who} X fois` : 'guérir X fois';
+        }
+        if (effect.target === 'SELF' || effect.target === 'BEARER') {
+            const name =
+                source.i18n?.fr?.title ||
+                source.title ||
+                source.i18n?.en?.title;
+            return name ? `guérir ${name}` : 'guérir';
         }
         const who = formatTargetPhrase(effect.target);
         return who ? `guérir ${who}` : 'guérir';

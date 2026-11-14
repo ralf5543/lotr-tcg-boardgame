@@ -2014,6 +2014,39 @@ function applyOneEffect(
         return true;
     }
 
+    if (effect.type === 'REPLACE_IN_SKIRMISH') {
+        const sourceId = source.instanceId || source.id;
+        const targetId = target.instanceId || target.id;
+        if (!sourceId || !targetId || sourceId === targetId) return false;
+        // La source ne doit pas déjà être en combat.
+        const sourceBusy = (G.skirmishes || []).some((sk) => {
+            if (sk.resolved) return false;
+            if (sk.companionId === sourceId) return true;
+            const mids =
+                sk.minionIds || (sk.minionId ? [sk.minionId] : []);
+            return mids.includes(sourceId);
+        });
+        if (sourceBusy) return false;
+        const skirmish = (G.skirmishes || []).find(
+            (sk) => !sk.resolved && sk.companionId === targetId
+        );
+        if (!skirmish) return false;
+        if (effect.lessResistanceThanSource) {
+            const fpId = G.fpPlayerId || '0';
+            const burdens = G.players[fpId]?.burdens || 0;
+            const sourceRes = getEffectiveResistance(source, burdens, G);
+            const targetRes = getEffectiveResistance(target, burdens, G);
+            if (targetRes >= sourceRes) return false;
+        }
+        skirmish.companionId = sourceId;
+        const sourceName =
+            source.title || source.i18n?.fr?.title || 'le compagnon';
+        const targetName =
+            target.title || target.i18n?.fr?.title || 'le compagnon';
+        G.statusMessage = `${sourceName} remplace ${targetName} dans le combat.`;
+        return true;
+    }
+
     if (effect.type === 'EXERT') {
         const times = effect.count || 1;
         for (let i = 0; i < times; i++) {

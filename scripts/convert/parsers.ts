@@ -6832,6 +6832,94 @@ function parseEachTimeNamedPlayedAddThreatsAbilities(
 }
 
 /**
+ * Saruman (Lurker) : Each time a companion is killed, you may heal Name.
+ */
+function parseCompanionKilledHealAbilities(
+    text: string,
+    cardTitle?: string,
+    cardId?: string
+): Record<string, unknown>[] {
+    const found: Record<string, unknown>[] = [];
+    const re =
+        /Each time a companion is killed,\s*you may heal ([\p{L}’'\-]+)\.?/giu;
+    let match: RegExpExecArray | null;
+    while ((match = re.exec(text)) !== null) {
+        const name = match[1].trim();
+        const title = (cardTitle || '').trim();
+        if (
+            title &&
+            name.toLowerCase() !== title.toLowerCase() &&
+            !/^(him|her|it|this)$/i.test(name)
+        ) {
+            continue;
+        }
+        found.push({
+            id: `${cardId || 'ability'}:${found.length}:dies-heal`,
+            phases: ['RESPONSE'],
+            optional: true,
+            trigger: {
+                type: 'CHARACTER_DIES',
+                target: [['COMPANION']],
+            },
+            cost: [],
+            effects: [
+                {
+                    type: 'HEAL',
+                    count: 1,
+                    target: 'SELF',
+                },
+            ],
+            source: 'SELF',
+            text: stripAbilityMarkup(match[0]),
+        });
+    }
+    return found;
+}
+
+/**
+ * Unferth : Each time the Free Peoples player assigns a companion or ally
+ * to an [culture] Man, that companion or ally must exert.
+ */
+function parseWhenFpAssignsToExertAbilities(
+    text: string,
+    cardId?: string
+): Record<string, unknown>[] {
+    const found: Record<string, unknown>[] = [];
+    const re =
+        /Each time the Free Peoples player assigns a companion or ally to an\s+(<symbol>[^<]+<\/symbol>)\s+Man,\s*that companion or ally must exert\.?/gi;
+    let match: RegExpExecArray | null;
+    while ((match = re.exec(text)) !== null) {
+        const culture = parseCultureTokenSpec(match[1]);
+        if (
+            !culture ||
+            culture === 'FREE_PEOPLES' ||
+            culture === 'ANY'
+        ) {
+            continue;
+        }
+        found.push({
+            id: `${cardId || 'ability'}:${found.length}:fp-assign-exert`,
+            phases: [],
+            trigger: {
+                type: 'WHEN_FP_ASSIGNS_TO',
+                to: [[culture, 'MAN']],
+            },
+            cost: [],
+            effects: [
+                {
+                    type: 'EXERT',
+                    count: 1,
+                    target: 'SELF',
+                },
+            ],
+            source: 'SELF',
+            text: stripAbilityMarkup(match[0]),
+        });
+    }
+    return found;
+}
+
+/**
  * To assign Gollum to a skirmish, the Free Peoples player must make Gollum
  * strength +3 until the regroup phase or add a burden.
  * (Mad Thing…) — +3 auto à l’affectation FP (choix fardeau non exposé).
@@ -13359,6 +13447,40 @@ export function parseAbilities(
             }
         }
 
+        // Pippin : If Name is not assigned…, spot an unbound companion who has
+        // less resistance than Name to have Name replace him or her in a skirmish.
+        const replaceInSkirmishMatch = bodyPlain.match(
+            /^If\s+([\s\S]+?)\s+is not assigned to a skirmish,\s*spot\s+(?:a|an)\s+([\s\S]+?)\s+who has less resistance than \1\s+to have \1 replace him or her in a skirmish\.?$/i
+        );
+        if (replaceInSkirmishMatch) {
+            const who = replaceInSkirmishMatch[1].trim();
+            const title = (cardTitle || '').trim();
+            const whoIsSelf =
+                /^(this|he|she|it)$/i.test(who) ||
+                (title && who.toLowerCase() === title.toLowerCase());
+            const filters = parseClassFilters(replaceInSkirmishMatch[2]);
+            if (whoIsSelf && filters.length > 0) {
+                abilities.push({
+                    id: `${cardId || 'ability'}:${abilities.length}`,
+                    phases,
+                    requiresUnassigned: true,
+                    cost: [],
+                    effects: [
+                        {
+                            type: 'REPLACE_IN_SKIRMISH',
+                            target: [filters],
+                            lessResistanceThanSource: true,
+                        },
+                    ],
+                    source: 'SELF',
+                    text: stripAbilityMarkup(
+                        `${marker.phase}: ${replaceInSkirmishMatch[0]}`
+                    ),
+                });
+                return;
+            }
+        }
+
         // Phase : If X is not assigned…, exert him|X N to add his strength to another companion.
         const addOwnStrengthMatch = bodyPlain.match(
             /^If\s+([\s\S]+?)\s+is not assigned to a skirmish,\s*exert\s+([\s\S]+?)\s+to add (?:his|her|its) strength to another companion\.?$/i
@@ -14802,7 +14924,9 @@ export function parseAbilities(
             }
         }
 
-        const makeMatch = body.match(
+        // Premier segment avant <br> : évite d’avaler « Each time… » (Saruman).
+        const makeBody = body.split(/<br\s*\/?>/i)[0].trim();
+        const makeMatch = makeBody.match(
             /^Exert\s+([\s\S]+?)\s+to make\s+([\s\S]+)/i
         );
         if (makeMatch) {
@@ -17186,6 +17310,22 @@ export function parseAbilities(
     );
 
     parseEachTimeWinsHealAbilities(text, cardTitle, cardId).forEach(
+        (ability) => {
+            abilities.push({
+                ...ability,
+                id: `${cardId || 'ability'}:${abilities.length}`,
+            });
+        }
+    );
+
+    parseWhenFpAssignsToExertAbilities(text, cardId).forEach((ability) => {
+        abilities.push({
+            ...ability,
+            id: `${cardId || 'ability'}:${abilities.length}`,
+        });
+    });
+
+    parseCompanionKilledHealAbilities(text, cardTitle, cardId).forEach(
         (ability) => {
             abilities.push({
                 ...ability,
