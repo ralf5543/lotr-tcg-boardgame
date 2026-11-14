@@ -135,7 +135,7 @@ describe('Sam Porteur — mort → fin de partie (chemin playtest)', () => {
         expect(engine.getG().gameResult?.reason).toBe('RING_BEARER_KILLED');
     });
 
-    it('Sam mort isDead en communauté (pas encore enterré) → applyGameEndIfNeeded', () => {
+    it('Sam mort isDead en Compagnie (pas encore enterré) → applyGameEndIfNeeded', () => {
         const ring = {
             ...getCardById('11R1')!,
             instanceId: 'ring',

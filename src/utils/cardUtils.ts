@@ -52,7 +52,7 @@ export function isCardInSupportArea(
 }
 
 /**
- * Siège propriétaire d’une carte en jeu (aire de soutien / communauté / attachements).
+ * Siège propriétaire d’une carte en jeu (aire de soutien / Compagnie / attachements).
  * Champ de bataille → joueur Ombre actuel. Sites → undefined (partagés).
  */
 export function findInPlayCardOwnerId(

@@ -370,7 +370,7 @@ export function applyAbilityEffect(
                       : fpId;
             const player = G.players[ownerId];
             if (!player) return false;
-            // Limite de 4 = pendant la phase Communauté (CR), pas seulement
+            // Limite de 4 = pendant la phase de compagnie (CR), pas seulement
             // si ability.phases contient FELLOWSHIP (Trollshaw = YOU_PLAY).
             const pendingPhase = (
                 G.pendingWhenPlayed?.phase || ''
@@ -1229,7 +1229,10 @@ export function applyAbilityEffect(
                             !findSkirmishToCancel(
                                 G,
                                 source,
-                                optEffect.involving
+                                optEffect.involving,
+                                {
+                                    requiresFierce: optEffect.requiresFierce,
+                                }
                             )
                         ) {
                             return false;

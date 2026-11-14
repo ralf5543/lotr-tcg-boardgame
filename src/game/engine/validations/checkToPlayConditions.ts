@@ -37,7 +37,7 @@ function getSpottableCardsInPlay(G: GameState, playerID: string, card: CardState
         collect(player.supportArea);
         return cards;
     } else {
-        // 2. Pour l'Ombre (SHADOW) : on peut spotté nos Minions ET la communauté active adverse
+        // 2. Pour l'Ombre (SHADOW) : on peut spotté nos Minions ET la Compagnie active adverse
         Object.values(G.players || {}).forEach((player: PlayerState) => {
             const collect = (list?: CardState[]) => {
                 if (!list) return;

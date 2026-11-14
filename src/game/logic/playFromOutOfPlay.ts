@@ -366,7 +366,7 @@ export function playCardFromHand(
 /**
  * Joue une carte depuis la pioche ou la défausse.
  * FP : ajoute le crépuscule ; Ombre : le retire.
- * Compagnons → communauté ; possessions à attacher → hôte (fourni ou unique légal).
+ * Compagnons → Compagnie ; possessions à attacher → hôte (fourni ou unique légal).
  */
 export function playCardFromDeckOrDiscard(
     G: GameState,

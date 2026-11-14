@@ -41,6 +41,57 @@ export function resolveEachTimeYouPlay(
 }
 
 /**
+ * Réponse optionnelle « Each time / If you play… » sur une carte déjà en jeu
+ * (Simple Living…) → toaster Activer / Passer via pendingWhenPlayed.
+ */
+export function maybeOfferInPlayYouPlayResponse(
+    G: GameState,
+    playedCard: CardState,
+    options?: { playerId?: string; phase?: string }
+): void {
+    if (G.pendingWhenPlayed) return;
+    const playedId = playedCard.instanceId || playedCard.id;
+    const ownerId =
+        options?.playerId ||
+        (playedCard.kind === 'SHADOW'
+            ? G.fpPlayerId === '0'
+                ? '1'
+                : '0'
+            : G.fpPlayerId || '0');
+
+    forEachInPlayCard(G, (source) => {
+        if (G.pendingWhenPlayed) return;
+        if ((source.instanceId || source.id) === playedId) return;
+        if (source.kind !== playedCard.kind) return;
+
+        for (const ability of source.abilities || []) {
+            if (!isYouPlayAbility(ability) || !ability.optional) continue;
+            const trigger = ability.trigger;
+            if (!trigger || trigger.type !== 'YOU_PLAY') continue;
+            if (!cardMatchesTarget(playedCard, trigger.played)) continue;
+            if (trigger.onCompanion) {
+                const bearer = findBearer(G, playedCard);
+                if (!bearer || bearer.type !== 'COMPANION') continue;
+            }
+            if (!canPayAbilityCost(G, source, ability.cost)) continue;
+
+            const sourceId = source.instanceId || source.id;
+            if (!sourceId) continue;
+            G.pendingWhenPlayed = {
+                playerId: ownerId,
+                sourceInstanceId: sourceId,
+                abilityId: ability.id,
+                phase: options?.phase,
+            };
+            G.statusMessage =
+                'Vous pouvez activer l’effet optionnel de cette carte.';
+            pauseActionYieldForResponses(G, ownerId);
+            return;
+        }
+    });
+}
+
+/**
  * Trollshaw Forest : réponse optionnelle du site courant quand le FP joue
  * un artefact / possession **sur un compagnon** → toaster « vous pouvez
  * piocher » (pendingWhenPlayed marqué fromSite).
@@ -74,7 +125,7 @@ export function maybeOfferSiteYouPlayResponse(
         if (!canPayAbilityCost(G, site as unknown as CardState, ability.cost)) {
             continue;
         }
-        // Pioche vide / limite de 4 en Communauté → pas de fenêtre.
+        // Pioche vide / limite de 4 en phase de compagnie → pas de fenêtre.
         const drawCount = (ability.effects || []).reduce(
             (sum, e) => sum + (e.type === 'DRAW' ? e.count || 0 : 0),
             0
@@ -122,6 +173,7 @@ export function afterCardPlayed(
         resolveWhenPlayed(G, card, options);
     }
     resolveEachTimeYouPlay(G, card);
+    maybeOfferInPlayYouPlayResponse(G, card, options);
     maybeOfferSiteYouPlayResponse(G, card, options);
     enforceWhileSelfDiscards(G);
 }

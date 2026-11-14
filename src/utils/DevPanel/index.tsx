@@ -139,7 +139,7 @@ export const DevPanel: React.FC<DevPanelProps> = ({
                             <br />
                             <span style={{ opacity: 0.75, fontWeight: 400 }}>
                                 Boutons = téléport (aucun crépuscule / effet
-                                move). Vrai avance : Fin de Communauté ou
+                                move). Vrai avance : Fin de Compagnie ou
                                 Regroup.
                             </span>
                         </S.Label>
@@ -357,7 +357,7 @@ export const DevPanel: React.FC<DevPanelProps> = ({
                             </S.ActionButton>
                         </S.ButtonGroup>
                         <S.Hint>
-                            v3 : Phial, Task Now, Filibert, Simple Living.
+                            v3 : atterrit en combat (salve acharnée) — Filibert, Phial, Task/Sworn, Simple Living.
                         </S.Hint>
                     </S.Section>
 

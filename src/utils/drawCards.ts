@@ -23,7 +23,7 @@ export const drawCardsForPlayer = (
 
     let cardsToDraw = count;
 
-    // 🟢 Règle Communauté : 4 cartes max piochées/ajoutées par phase
+    // Règle phase de compagnie : 4 cartes max piochées/ajoutées par phase
     if (isFellowshipPhase) {
         const remainingAllowed = Math.max(0, 4 - (G.fellowshipCardsDrawn || 0));
         cardsToDraw = Math.min(cardsToDraw, remainingAllowed);

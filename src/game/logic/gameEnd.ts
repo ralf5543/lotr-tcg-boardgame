@@ -23,7 +23,7 @@ function ringBearerDisplayName(card: CardState | null): string {
     );
 }
 
-/** Porteur vivant encore en aire de communauté. */
+/** Porteur vivant encore en aire de Compagnie. */
 export function findLivingRingBearer(G: GameState): CardState | null {
     const player = fpPlayer(G);
     for (const card of player?.fellowshipArea || []) {
@@ -138,7 +138,7 @@ export function checkCorruptionLoss(G: GameState): boolean {
 }
 
 /**
- * Mort du Porteur : plus aucun Porteur vivant en communauté
+ * Mort du Porteur : plus aucun Porteur vivant en Compagnie
  * (après réponses Sam / etc. et enterrement).
  */
 export function checkRingBearerKilledLoss(G: GameState): boolean {
@@ -146,7 +146,7 @@ export function checkRingBearerKilledLoss(G: GameState): boolean {
     const player = fpPlayer(G);
     const fellowship = player?.fellowshipArea || [];
     const deadPile = player?.deadPile || [];
-    // Setup / enchères : pas encore de vraie partie — sauf si une communauté
+    // Setup / enchères : pas encore de vraie partie — sauf si une Compagnie
     // (ou pile de mort) est déjà là (preset DEV chargé pendant le setup).
     if (G.setupState && G.setupState.step !== 'COMPLETE') {
         const hasAnyone =
@@ -154,7 +154,7 @@ export function checkRingBearerKilledLoss(G: GameState): boolean {
         if (!hasAnyone) return false;
     }
     if (findLivingRingBearer(G)) return false;
-    // Pas de communauté du tout = pas encore posée.
+    // Pas de Compagnie du tout = pas encore posée.
     if (!fellowship.length && !deadPile.length) {
         return false;
     }

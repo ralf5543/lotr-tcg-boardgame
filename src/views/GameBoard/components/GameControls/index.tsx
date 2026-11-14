@@ -1242,7 +1242,7 @@ export const GameControls: React.FC<GameControlsProps> = ({
                             <S.ActionButton
                                 onClick={() => moves.endFellowshipPhase?.()}
                             >
-                                Fin de Communauté ➔
+                                Fin de Compagnie ➔
                             </S.ActionButton>
                         )}
 

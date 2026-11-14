@@ -83,7 +83,7 @@ describe('playShadowCard', () => {
 });
 
 describe('playCard', () => {
-    it('pose un compagnon en Communauté et ajoute du Crépuscule', () => {
+    it('pose un compagnon en Compagnie et ajoute du Crépuscule', () => {
         const companion = createCompanion({
             id: 'boromir',
             title: 'Boromir',
@@ -108,7 +108,7 @@ describe('playCard', () => {
         expect(engine.getG().players['0']?.hand).toHaveLength(0);
     });
 
-    it('refuse un compagnon hors phase de Communauté', () => {
+    it('refuse un compagnon hors phase de compagnie', () => {
         const companion = createCompanion({ id: 'boromir', twilightCost: 2 });
 
         const engine = createEngineClient({

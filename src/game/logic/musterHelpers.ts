@@ -19,7 +19,7 @@ export function getMusterCount(G: GameState, playerId: string): number {
     let count = 0;
     const isFP = playerId === G.fpPlayerId;
 
-    // 1. Peuples Libres (Zone de Communauté)
+    // 1. Peuples Libres (aire de Compagnie)
     if (isFP) {
         (player.fellowshipArea || []).forEach((card: CardState) => {
             if (cardHasMuster(card)) count++;

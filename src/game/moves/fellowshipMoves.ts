@@ -100,7 +100,7 @@ export const revealCompanion = (
 
     if (!fpPlayer || !fpPlayer.fellowshipArea) {
         console.warn(
-            '❌ [moves.revealCompanion] Zone de communauté introuvable.'
+            '❌ [moves.revealCompanion] Aire de Compagnie introuvable.'
         );
         return 'INVALID_MOVE';
     }
@@ -123,7 +123,7 @@ export const revealCompanion = (
         return 'INVALID_MOVE';
     }
 
-    G.statusMessage = `Une carte de la Communauté a été révélée !`;
+    G.statusMessage = `Une carte de la Compagnie a été révélée !`;
 };
 
 export const playSite = (

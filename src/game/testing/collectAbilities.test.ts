@@ -442,7 +442,7 @@ describe('formatAbilityLabelParts', () => {
         }) as unknown as CardState;
         expect(formatAbilityLabelParts(mere, site)).toEqual({
             cost: 'Affaiblir Gollum ou Sméagol',
-            effect: 'jouer le prochain site de la communauté',
+            effect: 'jouer le prochain site de la Compagnie',
         });
 
         const fatOne: Ability = {

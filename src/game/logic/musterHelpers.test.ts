@@ -9,7 +9,7 @@ import {
 } from '../testing/createGameState';
 
 describe('getMusterCount', () => {
-    it('compte les compagnons MUSTER de la Communauté active', () => {
+    it('compte les compagnons MUSTER de la Compagnie active', () => {
         const G = createGameState({
             players: {
                 '0': createPlayerState('0', {

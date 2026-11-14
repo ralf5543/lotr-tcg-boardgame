@@ -434,7 +434,7 @@ export function canPlayCard(
             if (!canDropInFellowship(card.type)) {
                 return {
                     valid: false,
-                    reason: 'Seuls les Compagnons vont dans la zone Communauté.',
+                    reason: 'Seuls les compagnons vont dans l’aire de Compagnie.',
                 };
             }
         } else if (targetId === 'supportArea') {

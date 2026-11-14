@@ -155,7 +155,7 @@ describe('Pinnacle : vraies cartes (régression unicité)', () => {
 });
 
 describe('Pinnacle : jeu depuis la pile de mort', () => {
-    it('candidats filtrés WIZARD ; le jeu déplace la carte en communauté et la « ressuscite »', () => {
+    it('candidats filtrés WIZARD ; le jeu déplace la carte en Compagnie et la « ressuscite »', () => {
         const dead = wizard('gandalf-dead3');
         (dead as { race?: string }).race = 'WIZARD';
         (dead as { wounds: number }).wounds = 3;

@@ -7,7 +7,7 @@ import {
 } from '../game/testing/createGameState';
 
 describe('drawCardsForPlayer', () => {
-    it('plafonne à 4 cartes pendant la phase de Communauté', () => {
+    it('plafonne à 4 cartes pendant la phase de compagnie', () => {
         const player = createPlayerState('0', {
             deck: Array.from({ length: 10 }, (_, i) =>
                 createCard({ id: `d-${i}` })

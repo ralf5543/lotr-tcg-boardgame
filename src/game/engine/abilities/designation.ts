@@ -294,12 +294,35 @@ export function getCostDesignationCount(ability: Ability): number {
     return 1;
 }
 
+/**
+ * Filibert etc. : coût d’exert = la même carte que « involving that X »
+ * du CANCEL_SKIRMISH → halo seulement sur les personnages déjà en escarmouche
+ * (et salve acharnée si `requiresFierce`).
+ */
+function mustBeInCancelableSkirmish(
+    G: GameState,
+    ability: Ability
+): ((card: CardState) => boolean) | null {
+    const cancel = (ability.effects || []).find(
+        (e) => e.type === 'CANCEL_SKIRMISH' && e.involving === 'COST_TARGET'
+    );
+    if (!cancel || cancel.type !== 'CANCEL_SKIRMISH') return null;
+    return (card) =>
+        Boolean(
+            findSkirmishToCancel(G, card, 'SELF', {
+                requiresFierce: cancel.requiresFierce,
+            })
+        );
+}
+
 export function getCostDesignationCandidates(
     G: GameState,
     source: CardState,
     ability: Ability,
     actingPlayerId?: string
 ): CardState[] {
+    const inCancelableSkirmish = mustBeInCancelableSkirmish(G, ability);
+
     const option = (ability.cost || []).find((opt) => {
         const req = opt.exert?.[0];
         if (!req || req.target === 'SELF' || req.target === 'BEARER') {
@@ -321,9 +344,13 @@ export function getCostDesignationCandidates(
                     card.instanceId !== sourceId && card.id !== sourceId
             );
         }
-        const payable = pool.filter(
-            (card) => getEffectiveVitality(card) > needVitality
-        );
+        const payable = pool.filter((card) => {
+            if (getEffectiveVitality(card) <= needVitality) return false;
+            if (inCancelableSkirmish && !inCancelableSkirmish(card)) {
+                return false;
+            }
+            return true;
+        });
         return payable.length >= needCards;
     });
 
@@ -355,6 +382,9 @@ export function getCostDesignationCandidates(
                     ) {
                         return false;
                     }
+                }
+                if (inCancelableSkirmish && !inCancelableSkirmish(card)) {
+                    return false;
                 }
                 return true;
             })
@@ -981,7 +1011,10 @@ export function abilityHasLegalEffectTarget(
                             !findSkirmishToCancel(
                                 G,
                                 source,
-                                optEffect.involving
+                                optEffect.involving,
+                                {
+                                    requiresFierce: optEffect.requiresFierce,
+                                }
                             )
                         ) {
                             return false;
@@ -1299,8 +1332,20 @@ export function abilityHasLegalEffectTarget(
             let involvingSource = source;
             let involving = effect.involving;
             if (involving === 'COST_TARGET') {
-                // Légalité : au moins un candidat d’exert avec escarmouche fierce.
-                // La résolution exacte attend la désignation du coût.
+                // Combat acharné = 2ᵉ salve ; halo = mêmes cibles que l’annulation.
+                if (effect.requiresFierce && !G.isFierceAssignment) {
+                    return false;
+                }
+                if (
+                    getCostDesignationCandidates(
+                        G,
+                        source,
+                        ability,
+                        actingPlayerId
+                    ).length < 1
+                ) {
+                    return false;
+                }
                 continue;
             }
             if (

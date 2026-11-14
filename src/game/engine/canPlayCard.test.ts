@@ -21,7 +21,7 @@ function stubEventAbility(phase: string): Ability {
 }
 
 describe('canPlayCard', () => {
-    it('refuse une carte FP hors phase de Communauté', () => {
+    it('refuse une carte FP hors phase de compagnie', () => {
         const result = canPlayCard(createCompanion({ id: 'comp' }), {
             G: createGameState(),
             ctx: { phase: 'shadow' },
@@ -29,7 +29,7 @@ describe('canPlayCard', () => {
         });
 
         expect(result.valid).toBe(false);
-        expect(result.reason).toMatch(/Communauté/i);
+        expect(result.reason).toMatch(/compagnie/i);
     });
 
     it('refuse de jouer pendant l’assignation des blessures de menaces', () => {
@@ -397,7 +397,7 @@ describe('canPlayCard', () => {
         expect(result.valid).toBe(false);
     });
 
-    it('autorise un Allié en soutien, pas en Communauté', () => {
+    it('autorise un Allié en soutien, pas en Compagnie', () => {
         const ally = createCard({
             id: 'ally',
             kind: 'FREE_PEOPLE',

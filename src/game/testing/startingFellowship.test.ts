@@ -18,7 +18,7 @@ const realCard = (id: string, instanceId: string): CardState => {
     return { ...card, instanceId, isStartingMember: true, isFaceDown: true };
 };
 
-describe('Communauté de départ — jouer (hors pool)', () => {
+describe('Compagnie de départ — jouer (hors pool)', () => {
     it('parse : Gandalf / this companion ; refuse and you can spot', () => {
         expect(
             parseStartingFellowshipTwilightReduce(

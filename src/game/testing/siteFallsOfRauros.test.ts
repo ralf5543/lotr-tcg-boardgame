@@ -160,7 +160,7 @@ describe('resolveDeadPileRemoval', () => {
 });
 
 describe('runtime — Falls of Rauros', () => {
-    it('fin de Communauté → choix FP → la partie continue vers l’Ombre', () => {
+    it('fin de Compagnie → choix FP → la partie continue vers l’Ombre', () => {
         const falls = fallsSite(4);
         const start = createSite({
             id: 'start-site',

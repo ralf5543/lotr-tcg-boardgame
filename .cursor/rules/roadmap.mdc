@@ -17,7 +17,9 @@ Document **vivant** : précisé, modifié, complété au fur et à mesure. **Lis
 
 Credo transversal (hérités des plans cartes / sites / jetons) : **mieux vaut inerte que faux** ; parser = **fragments** sûrs ; exceptions par id en dernier.
 
-**Playtest : toujours un preset DEV** — chaque nouvelle vague / carte testée a son preset dans le panneau de développement (`src/game/dev/presets.ts`, bouton dédié), avec les cartes à tester déjà en place et le scénario écrit dans le message de statut. Le preset est retiré une fois le test validé.
+**Playtest : toujours un preset DEV** — chaque nouvelle vague / carte testée a son preset dans le panneau de développement (`src/game/dev/presets.ts`, bouton dédié), avec les cartes à tester déjà en place et le scénario écrit dans le message de statut. Le preset est retiré une fois le test validé. `devLoadPreset` atterrit sur la phase renvoyée par le preset (défaut : Compagnie) — un preset combat / salve acharnée doit donc demander `skirmish` (etc.), sinon l’affectation pré-posée est inutilisable.
+
+**Libellé FR** : phase = **Compagnie** (« Phase de compagnie ») ; le groupe / l’aire / la compagnie de départ = aussi **Compagnie** — jamais « Communauté » (calque).
 
 **Langue des textes affichés** : français intégral ou anglais intégral, jamais de mélange ni de calque (terminologie du jeu en français : *exert* = **affaiblir**, *burden* = **point-fardeau** / **points-fardeau**, *wound* = **blessure**…).
 
@@ -38,7 +40,7 @@ Statuts : `en cours` · `à faire` · `plus tard` · `fait` · `pause`
 | **Sites** | **fait** | Sets 11–18 tous testés et validés — aucun site 11–18 inerte. Plan figé : [`sites-modern-plan.mdc`](sites-modern-plan.mdc). |
 | **Tokens de culture** | **fait** | Socle + étapes 1–15. Plan figé : [`culture-tokens-plan.mdc`](culture-tokens-plan.mdc). |
 | **Main / initiative** | **fait** | Étapes 1–5. Plan figé : [`hand-initiative-plan.mdc`](hand-initiative-plan.mdc). |
-| **Jeu réel / gaps** | **fait** | Decks Fumeurs & Gondor/Uruks + communauté de départ. Plan figé : [`deck-play-gaps-plan.mdc`](deck-play-gaps-plan.mdc). |
+| **Jeu réel / gaps** | **fait** | Decks Fumeurs & Gondor/Uruks + compagnie de départ. Plan figé : [`deck-play-gaps-plan.mdc`](deck-play-gaps-plan.mdc). |
 | **Création de deck** | **fait** | Builder + validation + JSON dans `src/game/decks/`. Plan figé : [`deck-builder-plan.mdc`](deck-builder-plan.mdc). |
 | **Affronter un BOT** | **fait** | Playtest solo Local + BOT siège 1 + heuristiques A–C. Plan figé : [`bot-plan.mdc`](bot-plan.mdc). |
 | **Chat** | **en cours** | Fil partagé journal + chat joueur (boardgame.io). Plan : [`chat-plan.mdc`](chat-plan.mdc). |

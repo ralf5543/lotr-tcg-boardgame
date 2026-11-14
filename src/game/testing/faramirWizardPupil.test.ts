@@ -36,7 +36,7 @@ describe('Faramir Wizard’s Pupil 7R91', () => {
         );
     });
 
-    it('Communauté : jouer Homme Rohan depuis la main → soigne Faramir', () => {
+    it('Compagnie : jouer Homme Rohan depuis la main → soigne Faramir', () => {
         const faramir = {
             ...getCardById('7R91')!,
             instanceId: 'faramir',

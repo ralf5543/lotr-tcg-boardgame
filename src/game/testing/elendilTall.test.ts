@@ -51,7 +51,7 @@ describe('Elendil The Tall 9R+32', () => {
         );
     });
 
-    it('Communauté : jouer Narsil sur Elendil → limite 3', () => {
+    it('Compagnie : jouer Narsil sur Elendil → limite 3', () => {
         const elendil = {
             ...realCard('9R+32', 'elendil'),
             abilities: parseAbilities(CSV_TEXT, 'Elendil', '9R+32') || [],

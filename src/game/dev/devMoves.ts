@@ -18,6 +18,7 @@ import type { CardCulture } from '../types';
 import { isRingBearerCard } from '../../utils/cardUtils';
 import { applyHeal } from '../../utils/applyHeal';
 import { tryOpenHealResponse } from '../engine/responseWindow';
+import { openSkirmishActionWindow } from '../engine/abilities/startOfSkirmish';
 
 /** État de machine de phase : toasters, fenêtres, sous-étapes. */
 function resetPhaseMachine(G: GameState): void {
@@ -216,16 +217,22 @@ export const devMoves = {
         }
     },
 
-    /** Charge un terrain de playtest DEV (vague en cours, cf. presets.ts). */
+    /**
+     * Charge un terrain de playtest DEV (vague en cours, cf. presets.ts).
+     * Phase d’atterrissage = celle renvoyée par le preset (défaut Compagnie).
+     */
     devLoadPreset: (
         { G, events }: LotrPhaseContext,
         presetType: DevPresetType
     ) => {
         resetPhaseMachine(G);
-        applyDevPreset(G, presetType);
-        events?.setPhase?.('startOfFellowship');
-        if (!G.sanctuaryHeal) {
+        const { startPhase } = applyDevPreset(G, presetType);
+        events?.setPhase?.(startPhase);
+        if (startPhase === 'startOfFellowship' && !G.sanctuaryHeal) {
             onStartOfFellowshipBegin(G, events);
+        }
+        if (startPhase === 'skirmish' && G.activeSkirmishId) {
+            openSkirmishActionWindow(G);
         }
     },
 

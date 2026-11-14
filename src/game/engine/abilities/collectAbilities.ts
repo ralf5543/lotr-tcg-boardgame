@@ -861,7 +861,7 @@ function formatEffectBit(
         return who ? `${bit} (${who})` : bit;
     }
     if (effect.type === 'PLAY_NEXT_SITE') {
-        return 'jouer le prochain site de la communauté';
+        return 'jouer le prochain site de la Compagnie';
     }
     if (effect.type === 'REPLACE_SITE') {
         if (effect.from === 'SITES_DECK') {

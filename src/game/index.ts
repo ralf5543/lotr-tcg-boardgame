@@ -619,7 +619,7 @@ export const LotrGame: Game<GameState> = {
                 G.regroupStep = undefined;
                 G.statusMessage = G.lastHealedCardIds?.length
                     ? 'Sanctuaire : les compagnons blessés sont soignés.'
-                    : 'Phase de Communauté : Jouez vos compagnons et soutiens.';
+                    : 'Phase de compagnie : Jouez vos compagnons et soutiens.';
             },
             moves: {
                 ...allMoves,

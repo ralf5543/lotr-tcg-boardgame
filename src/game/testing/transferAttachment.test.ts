@@ -93,7 +93,7 @@ describe('transferAttachment', () => {
         expect(engine.getG().twilightPool).toBe(1);
     });
 
-    it('refuse le transfert vers le même hôte, et hors phase de Communauté', () => {
+    it('refuse le transfert vers le même hôte, et hors phase de compagnie', () => {
         const sword = createCard({
             id: 'sword',
             kind: 'FREE_PEOPLE',

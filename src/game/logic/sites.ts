@@ -811,7 +811,7 @@ export function replaceCurrentSiteFromDeck(
 }
 
 /**
- * Index du « prochain site » de la communauté (emplacement suivant sur le chemin).
+ * Index du « prochain site » de la Compagnie (emplacement suivant sur le chemin).
  * −1 si déjà au site 9 (plus de prochain).
  */
 export function getNextSitePathIndex(G: GameState): number {

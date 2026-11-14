@@ -65,7 +65,7 @@ describe('invariant : pas de setPhase direct vers une phase jouable', () => {
 });
 
 describe('transitions critiques passent par startOf (capacité jouable)', () => {
-    it('fin de Communauté → startOfShadow si capacité début d’Ombre', () => {
+    it('fin de Compagnie → startOfShadow si capacité début d’Ombre', () => {
         const engine = createEngineClient({
             startPhase: 'fellowship',
             playerID: '0',

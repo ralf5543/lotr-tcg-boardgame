@@ -110,7 +110,7 @@ export function checkPhases(
         if (card.kind === 'FREE_PEOPLE' && currentPhase !== 'FELLOWSHIP') {
             return {
                 valid: false,
-                reason: 'Les cartes Peuples Libres se jouent en phase de Communauté (Fellowship).',
+                reason: 'Les cartes Peuples Libres se jouent en phase de compagnie.',
             };
         }
 

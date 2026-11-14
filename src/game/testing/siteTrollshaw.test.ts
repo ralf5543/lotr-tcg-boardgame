@@ -151,7 +151,7 @@ describe('Trollshaw : proposition', () => {
         expect(g.pendingWhenPlayed?.fromSite).toBe(true);
     });
 
-    it('limite de 4 pioches Communauté : pas de fenêtre si déjà 4', () => {
+    it('limite de 4 pioches en phase de compagnie : pas de fenêtre si déjà 4', () => {
         const sword = createCard({
             id: 'sword',
             instanceId: 'sword-5',

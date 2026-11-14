@@ -1023,7 +1023,11 @@ export type AbilityEffect =
           involving: AbilityTargetRef;
           /** Ombre peut retirer N crépuscule pour empêcher l’effet (Escape, etc.). */
           shadowMayPrevent?: { removeTwilight: number };
-          /** « cancel a fierce skirmish » (Filibert…). */
+          /**
+           * « cancel a fierce skirmish » (Filibert…) :
+           * uniquement pendant la 2ᵉ salve d’affectation (`isFierceAssignment`),
+           * pas un combat de 1ʳᵉ salve contre un séide FIERCE.
+           */
           requiresFierce?: boolean;
       }
     | {
@@ -1333,7 +1337,7 @@ export type AbilityTrigger =
       }
     | {
           /**
-           * Début de phase Communauté (Éclat de Lame : blesser le porteur).
+           * Début de phase de compagnie (Éclat de Lame : blesser le porteur).
            * Auto-appliqué, pas une fenêtre d’actions.
            */
           type: 'START_OF_FELLOWSHIP';
@@ -1519,7 +1523,7 @@ export interface Ability {
      */
     requiresStackedOnControlledSite?: boolean;
     /**
-     * Capacité utilisable seulement si la communauté est au site N
+     * Capacité utilisable seulement si la Compagnie est au site N
      * (chemin Standard 1–9 ; Final Strike…).
      */
     requiresAtSiteNumber?: number;

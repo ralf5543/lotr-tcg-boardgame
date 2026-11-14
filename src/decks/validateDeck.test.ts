@@ -28,7 +28,7 @@ describe('validateDeck', () => {
         expect(result.errors.some((e) => e.code === 'BALANCE')).toBe(true);
     });
 
-    it('plafond communauté de départ (réductions SF)', () => {
+    it('plafond compagnie de départ (réductions SF)', () => {
         const gandalf = getCardById('8R15')!;
         expect(startingCompanionTwilightCost(gandalf)).toBe(2);
 

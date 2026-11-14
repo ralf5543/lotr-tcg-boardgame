@@ -113,7 +113,7 @@ describe('Sent Back 9R27 — jouer un Magicien malgré la pile de mort', () => {
         ).toEqual([]);
     });
 
-    it('avec ignoreDeadPile : Gandalf en main est un candidat, puis rejoint la communauté', () => {
+    it('avec ignoreDeadPile : Gandalf en main est un candidat, puis rejoint la Compagnie', () => {
         const { G, sentBack, gandalfHand } = stateWithSentBack();
         expect(
             getHandPlayCandidates(G, '0', [['WIZARD']], 'fellowship', 0, {
@@ -144,7 +144,7 @@ describe('Sent Back 9R27 — jouer un Magicien malgré la pile de mort', () => {
         expect(G.twilightPool).toBe(4);
     });
 
-    it('unicité en jeu : un Gandalf déjà en communauté bloque encore', () => {
+    it('unicité en jeu : un Gandalf déjà en Compagnie bloque encore', () => {
         const { G, sentBack, gandalfHand } = stateWithSentBack();
         G.players['0']!.fellowshipArea.push(
             realCard('4C90', 'gandalf-already-in-play')

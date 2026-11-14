@@ -12,7 +12,7 @@ const cards = (prefix: string, count: number) =>
         createCard({ id: `${prefix}-${i}` })
     );
 
-describe('fin de Communauté', () => {
+describe('fin de Compagnie', () => {
     it('avance la compagnie et passe à l’Ombre si le site est déjà posé', () => {
         const engine = createEngineClient({
             startPhase: 'fellowship',
@@ -108,8 +108,8 @@ describe('fin de Communauté', () => {
     });
 });
 
-describe('pioche et ordre de la Communauté', () => {
-    it('plafonne la pioche à 4 cartes en phase de Communauté', () => {
+describe('pioche et ordre de la Compagnie', () => {
+    it('plafonne la pioche à 4 cartes en phase de compagnie', () => {
         const engine = createEngineClient({
             startPhase: 'fellowship',
             playerID: '0',
@@ -130,7 +130,7 @@ describe('pioche et ordre de la Communauté', () => {
         expect(engine.getG().fellowshipCardsDrawn).toBe(4);
     });
 
-    it('réordonne la Communauté', () => {
+    it('réordonne la Compagnie', () => {
         const engine = createEngineClient({
             startPhase: 'fellowship',
             playerID: '0',
