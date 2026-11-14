@@ -1351,6 +1351,8 @@ export function abilityHasLegalEffectTarget(
             if (
                 !findSkirmishToCancel(G, involvingSource, involving, {
                     requiresFierce: effect.requiresFierce,
+                    requiresMinionStrengthLessThanCompanionResistance:
+                        effect.requiresMinionStrengthLessThanCompanionResistance,
                 })
             ) {
                 return false;

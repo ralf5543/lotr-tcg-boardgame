@@ -1487,6 +1487,8 @@ export function applyAbilityEffect(
                 involving,
                 {
                     requiresFierce: effect.requiresFierce,
+                    requiresMinionStrengthLessThanCompanionResistance:
+                        effect.requiresMinionStrengthLessThanCompanionResistance,
                 }
             );
             if (!skirmish) return false;
@@ -1996,15 +1998,19 @@ function applyOneEffect(
         ) {
             return false;
         }
+        const woundCount = effect.countFromSpot
+            ? countFromSpotCost(G, source, ability)
+            : effect.count || 1;
+        if (woundCount <= 0) return false;
         if (effect.burdenIfRingBearer && isRingBearerCard(target)) {
             const fpId = G.fpPlayerId || '0';
             const fp = G.players[fpId];
             if (!fp) return false;
-            fp.burdens = (fp.burdens || 0) + (effect.count || 1);
+            fp.burdens = (fp.burdens || 0) + woundCount;
             return true;
         }
         if (!canCardTakeWound(G, target)) return false;
-        requestWounds(G, target, effect.count || 1);
+        requestWounds(G, target, woundCount);
         return true;
     }
 

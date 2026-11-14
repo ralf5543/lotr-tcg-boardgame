@@ -344,7 +344,22 @@ export const DevPanel: React.FC<DevPanelProps> = ({
 
                     <S.Section>
                         <S.Label>Preset playtest :</S.Label>
-                        <S.Hint>Aucun preset actif (vague suivante à venir).</S.Hint>
+                        <S.ButtonGroup>
+                            <S.ActionButton
+                                onClick={() =>
+                                    moves.devLoadPreset?.(
+                                        'HOBBITS_ISENGARD_W4'
+                                    )
+                                }
+                                title="Deck Hobbits / Isengard — vague 4"
+                            >
+                                Hobbits/Isengard v4
+                            </S.ActionButton>
+                        </S.ButtonGroup>
+                        <S.Hint>
+                            v4 : Crouched Down, Aragorn (move), Frodo (Muster
+                            regroup) — atterrit en combat.
+                        </S.Hint>
                     </S.Section>
 
                     {/* Session / debug UI */}

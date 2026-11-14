@@ -122,7 +122,51 @@ export const applyDevPreset = (
     const fpPlayer = G.players[fpId];
     if (!fpPlayer) return { startPhase: 'startOfFellowship' };
 
+    const shadowId = fpId === '0' ? '1' : '0';
+    const shadowPlayer = G.players[shadowId];
+
     switch (presetType) {
+        case 'HOBBITS_ISENGARD_W4': {
+            // Aragorn (blessure au move), Crouched Down, Frodo (Muster regroup).
+            resetBoardForPreset(G);
+            setupDevPath(G, 0, [
+                '18U140',
+                '11S249',
+                '11S264',
+                '12U194',
+                '11S252',
+                '17U147',
+                '11S242',
+                '11S261',
+                '18U138',
+            ]);
+            G.twilightPool = 0;
+            fpPlayer.burdens = 0;
+            const frodo = {
+                ...clonePresetCard('11S164', 'dev-hi4-frodo'),
+                attachments: [clonePresetCard('1C2', 'dev-hi4-ring')],
+            };
+            const merry = clonePresetCard('11C168', 'dev-hi4-merry');
+            const aragorn = clonePresetCard('4P364', 'dev-hi4-aragorn');
+            // Uruk Foot Soldier str 5 ; Merry résistance ~9 → Crouched OK.
+            const footSoldier = clonePresetCard('4C187', 'dev-hi4-uruk');
+            fpPlayer.fellowshipArea = [frodo, merry, aragorn];
+            fpPlayer.hand = [clonePresetCard('11C162', 'dev-hi4-crouched')];
+            if (shadowPlayer) {
+                G.battlefield = [footSoldier];
+            }
+            G.skirmishes = [
+                {
+                    id: 'dev-hi4-sk',
+                    companionId: merry.instanceId || merry.id,
+                    minionIds: [footSoldier.instanceId || footSoldier.id],
+                },
+            ];
+            G.activeSkirmishId = 'dev-hi4-sk';
+            G.statusMessage =
+                '[DEV] Hobbits/Isengard vague 4 · Crouched Down en main (Merry vs Uruk str 5 < résist.) ; Aragorn : réponse au déplacement → blesser × Hobbits unbound ; Frodo : début Regroupement → Muster. Relancer le preset.';
+            return { startPhase: 'skirmish' };
+        }
         default:
             G.statusMessage = `[DEV] Aucun preset actif (« ${presetType} »).`;
             return { startPhase: 'startOfFellowship' };

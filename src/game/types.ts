@@ -1025,10 +1025,14 @@ export type AbilityEffect =
           shadowMayPrevent?: { removeTwilight: number };
           /**
            * « cancel a fierce skirmish » (Filibert…) :
-           * uniquement pendant la 2ᵉ salve d’affectation (`isFierceAssignment`),
-           * pas un combat de 1ʳᵉ salve contre un séide FIERCE.
+           * uniquement pendant la 2ᵉ salve d’affectation (`isFierceAssignment`).
            */
           requiresFierce?: boolean;
+          /**
+           * Crouched Down : force du séide < résistance du compagnon
+           * du filtre `involving`.
+           */
+          requiresMinionStrengthLessThanCompanionResistance?: boolean;
       }
     | {
           /**
@@ -1044,6 +1048,8 @@ export type AbilityEffect =
     | {
           type: 'WOUND';
           count: number;
+          /** Aragorn 4P364 : N = Hobbits unbound spotés. */
+          countFromSpot?: boolean;
           target: AbilityTargetRef;
           excludeRingBearer?: boolean;
           /**

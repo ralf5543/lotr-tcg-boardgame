@@ -2769,6 +2769,143 @@ function parseEachTimeYouPlayAbilities(
  * Each time this minion wins a skirmish / the fellowship moves,
  * you may spot another X to take control of a site.
  */
+/**
+ * Aragorn 4P364 : Each time the fellowship moves, you may wound a minion
+ * for each unbound Hobbit you spot.
+ */
+function parseEachTimeMovesWoundPerSpotAbilities(
+    text: string,
+    cardId?: string
+): Record<string, unknown>[] {
+    const re =
+        /Each time the fellowship moves,\s*you may wound (?:a|an) ([\s\S]+?) for each ([\s\S]+?) you spot\.?/gi;
+    const found: Record<string, unknown>[] = [];
+    let match: RegExpExecArray | null;
+    while ((match = re.exec(text)) !== null) {
+        if (/\b(and|or|may|from|except)\b/i.test(match[1])) continue;
+        if (/\b(and|or|may|from|except)\b/i.test(match[2])) continue;
+        const woundFilters = parseClassFilters(match[1]);
+        const spotFilters = parseClassFilters(match[2]);
+        if (woundFilters.length === 0 || spotFilters.length === 0) continue;
+        found.push({
+            id: `${cardId || 'ability'}:${found.length}:move-wound-per-spot`,
+            phases: ['RESPONSE'],
+            trigger: { type: 'FELLOWSHIP_MOVES' },
+            optional: true,
+            cost: [
+                {
+                    spot: [
+                        {
+                            count: 1,
+                            target: [spotFilters],
+                        },
+                    ],
+                },
+            ],
+            effects: [
+                {
+                    type: 'WOUND',
+                    count: 1,
+                    countFromSpot: true,
+                    target: [woundFilters],
+                },
+            ],
+            source: 'SELF',
+            text: stripAbilityMarkup(match[0]),
+        });
+    }
+    return found;
+}
+
+/**
+ * Frodo 11S164 : At the start of the regroup phase, you may exert Name
+ * to make him gain muster until the end of the regroup phase.
+ */
+function parseStartOfRegroupExertGainMusterAbilities(
+    text: string,
+    cardTitle?: string,
+    cardId?: string
+): Record<string, unknown>[] {
+    const re =
+        /At the start of the regroup phase,\s*you may exert ([\s\S]+?) to make (?:him|her|it) gain\s*(?:\*\*|<(?:keyword)>)muster(?:\*\*|<\/(?:keyword)>)\s*until the end of the regroup phase\.?/gi;
+    const found: Record<string, unknown>[] = [];
+    let match: RegExpExecArray | null;
+    while ((match = re.exec(text)) !== null) {
+        const subject = parseExertSubject(match[1].trim(), cardTitle, text);
+        if (!subject) continue;
+        found.push({
+            id: `${cardId || 'ability'}:${found.length}:regroup-muster`,
+            phases: ['START_OF_REGROUP'],
+            optional: true,
+            cost: [
+                {
+                    exert: [
+                        {
+                            count: subject.count,
+                            target: subject.target,
+                            ...(subject.mode ? { mode: subject.mode } : {}),
+                        },
+                    ],
+                },
+            ],
+            effects: [
+                {
+                    type: 'ADD_TEMP_KEYWORD',
+                    keyword: 'MUSTER',
+                    target:
+                        subject.target === 'SELF' ? 'SELF' : subject.target,
+                    expiresAtPhase: 'REGROUP',
+                },
+            ],
+            source: 'SELF',
+            text: stripAbilityMarkup(match[0]),
+        });
+    }
+    return found;
+}
+
+/**
+ * Crouched Down : Stealth. Cancel a skirmish involving a Hobbit and a minion
+ * whose strength is lower than that Hobbit's resistance.
+ */
+function parseStandaloneCancelSkirmishWeakerMinionAbilities(
+    text: string,
+    cardId?: string
+): Record<string, unknown>[] {
+    const plain = text
+        .replace(/<br\s*\/?>/gi, ' ')
+        .replace(/\s+/g, ' ')
+        .trim();
+    const body = plain
+        .replace(
+            /^(?:\*\*|<(?:keyword)>)?Stealth\.?(?:\*\*|<\/(?:keyword)>)?\s*/i,
+            ''
+        )
+        .trim();
+    const match = body.match(
+        /^Cancel a skirmish involving (?:a|an) ([\s\S]+?) and (?:a|an) minion whose strength is lower than that \1[''’]?s resistance\.?$/i
+    );
+    if (!match) return [];
+    const filters = parseClassFilters(match[1]);
+    if (filters.length === 0) return [];
+    return [
+        {
+            id: `${cardId || 'ability'}:0:cancel-weaker-minion`,
+            phases: [],
+            cost: [],
+            effects: [
+                {
+                    type: 'CANCEL_SKIRMISH',
+                    involving: [filters],
+                    requiresMinionStrengthLessThanCompanionResistance: true,
+                },
+            ],
+            source: 'SELF',
+            text: stripAbilityMarkup(body),
+        },
+    ];
+}
+
 function parseEachTimeTakeControlSiteAbilities(
     text: string,
     cardTitle?: string,
@@ -17101,6 +17238,35 @@ export function parseAbilities(
     );
 
     parseEachTimeTakeControlSiteAbilities(text, cardTitle, cardId).forEach(
+        (ability) => {
+            abilities.push({
+                ...ability,
+                id: `${cardId || 'ability'}:${abilities.length}`,
+            });
+        }
+    );
+
+    parseEachTimeMovesWoundPerSpotAbilities(text, cardId).forEach(
+        (ability) => {
+            abilities.push({
+                ...ability,
+                id: `${cardId || 'ability'}:${abilities.length}`,
+            });
+        }
+    );
+
+    parseStartOfRegroupExertGainMusterAbilities(
+        text,
+        cardTitle,
+        cardId
+    ).forEach((ability) => {
+        abilities.push({
+            ...ability,
+            id: `${cardId || 'ability'}:${abilities.length}`,
+        });
+    });
+
+    parseStandaloneCancelSkirmishWeakerMinionAbilities(text, cardId).forEach(
         (ability) => {
             abilities.push({
                 ...ability,

@@ -13,6 +13,10 @@ import {
 } from './resolveCostTarget';
 import { displayTitle } from '../../../decks/cardMeta';
 import { appendJournal } from '../../logic/journal';
+import {
+    getEffectiveResistance,
+    getEffectiveStrength,
+} from '../../../utils/cardStats';
 
 const matchId = (card: CardState, targetId: string) =>
     card.instanceId === targetId || card.id === targetId;
@@ -88,26 +92,64 @@ export function skirmishMatchesInvolving(
     );
 }
 
+function skirmishHasMinionWeakerThanCompanionResistance(
+    G: GameState,
+    skirmish: SkirmishState,
+    source: CardState,
+    involving: AbilityTargetRef
+): boolean {
+    const companions = resolveInvolvingCards(G, source, involving).filter(
+        (card) => skirmishHasParticipant(skirmish, card)
+    );
+    if (companions.length === 0) return false;
+    const burdens = G.players[G.fpPlayerId || '0']?.burdens || 0;
+    const minionIds =
+        skirmish.minionIds ||
+        (skirmish.minionId ? [skirmish.minionId] : []);
+    return companions.some((companion) => {
+        const resistance = getEffectiveResistance(companion, burdens, G);
+        return minionIds.some((minionId) => {
+            const minion = findInPlayById(G, minionId);
+            if (!minion || minion.isDead) return false;
+            return getEffectiveStrength(minion, G) < resistance;
+        });
+    });
+}
+
 /**
  * Escarmouche à annuler : l’active si elle matche, sinon l’unique match.
  * Plusieurs matchs hors active → indécidable (inerte / pas légal).
  *
- * `requiresFierce` = combat **acharné** (2ᵉ salve d’affectation,
- * `G.isFierceAssignment`) — pas « séide avec FIERCE » en 1ʳᵉ salve.
+ * `requiresFierce` = combat **acharné** (`G.isFierceAssignment`).
  */
 export function findSkirmishToCancel(
     G: GameState,
     source: CardState,
     involving: AbilityTargetRef,
-    opts?: { requiresFierce?: boolean }
+    opts?: {
+        requiresFierce?: boolean;
+        requiresMinionStrengthLessThanCompanionResistance?: boolean;
+    }
 ): SkirmishState | null {
     if (opts?.requiresFierce && !G.isFierceAssignment) {
         return null;
     }
     const open = (G.skirmishes || []).filter((s) => !s.resolved);
-    const matches = open.filter((s) =>
-        skirmishMatchesInvolving(G, s, source, involving)
-    );
+    const matches = open.filter((s) => {
+        if (!skirmishMatchesInvolving(G, s, source, involving)) return false;
+        if (
+            opts?.requiresMinionStrengthLessThanCompanionResistance &&
+            !skirmishHasMinionWeakerThanCompanionResistance(
+                G,
+                s,
+                source,
+                involving
+            )
+        ) {
+            return false;
+        }
+        return true;
+    });
     if (matches.length === 0) return null;
     if (G.activeSkirmishId) {
         const active = matches.find((s) => s.id === G.activeSkirmishId);
