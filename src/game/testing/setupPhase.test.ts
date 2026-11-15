@@ -22,12 +22,31 @@ describe('mise en place', () => {
 
         engine.moves.submitBid(15);
         expect(engine.getG().setupState?.bids['0']).toBe(10);
-        expect(engine.getG().players['0']?.burdens).toBe(10);
+        // Pas encore de fardeaux visibles (secret jusqu’à la 2ᵉ mise).
+        expect(engine.getG().players['0']?.burdens).toBe(0);
 
         engine.updatePlayerID('1');
         engine.moves.submitBid(-3);
         expect(engine.getG().setupState?.bids['1']).toBe(0);
+        expect(engine.getG().players['0']?.burdens).toBe(10);
         expect(engine.getG().players['1']?.burdens).toBe(0);
+    });
+
+    it('n’applique les fardeaux qu’à la révélation des deux mises', () => {
+        const engine = createEngineClient({
+            startPhase: 'setup',
+            G: { setupState: createBiddingSetupState() },
+        });
+
+        engine.moves.submitBid(4);
+        expect(engine.getG().players['0']?.burdens).toBe(0);
+        expect(engine.getG().players['1']?.burdens).toBe(0);
+
+        engine.updatePlayerID('1');
+        engine.moves.submitBid(2);
+        expect(engine.getG().players['0']?.burdens).toBe(4);
+        expect(engine.getG().players['1']?.burdens).toBe(2);
+        expect(engine.getG().setupState?.step).toBe('CHOOSING_FIRST');
     });
 
     it('donne le choix du premier joueur au gagnant de l’enchère', () => {

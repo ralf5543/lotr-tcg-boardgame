@@ -418,10 +418,6 @@ export const LotrGame: Game<GameState> = {
                     if (!G.setupState.bids) G.setupState.bids = {};
                     G.setupState.bids[pId] = validBid;
 
-                    if (G.players && G.players[pId]) {
-                        G.players[pId].burdens = validBid;
-                    }
-
                     const bid0 = G.setupState.bids['0'];
                     const bid1 = G.setupState.bids['1'];
                     const name = playerDisplayName(G, pId);
@@ -440,6 +436,11 @@ export const LotrGame: Game<GameState> = {
                             G.setupState.auctionWinnerId =
                                 random.Die(2) === 1 ? '0' : '1';
                         }
+
+                        // Fardeaux / résistance : seulement à la révélation
+                        // (sinon l’adversaire lit la mise via les stats).
+                        if (G.players['0']) G.players['0'].burdens = bid0;
+                        if (G.players['1']) G.players['1'].burdens = bid1;
 
                         G.setupState.step = 'CHOOSING_FIRST';
                         const winnerId = G.setupState.auctionWinnerId || '0';
