@@ -5,6 +5,9 @@ import { applyAbilityEffect } from '../engine/abilities/applyAbilityEffect';
 import { getKeywordValue } from '../engine/keywords/keywordUtils';
 import { getCalculatedStrength } from '../logic/stats/statCalculator';
 import { playCardFromDeckOrDiscard } from '../logic/playFromOutOfPlay';
+import { afterCardPlayed } from '../engine/abilities/eachTimeYouPlay';
+import { acceptPendingWhenPlayed } from '../engine/abilities/whenPlayed';
+import { isFierceMinion } from '../logic/assignment';
 import {
     createCard,
     createCompanion,
@@ -93,6 +96,20 @@ describe('Hobbits / Isengard vague 8 — parse', () => {
                             target: [['WIZARD']],
                         }),
                     ]),
+                }),
+                expect.objectContaining({
+                    trigger: {
+                        type: 'YOU_PLAY',
+                        played: [['Saruman']],
+                    },
+                    effects: [
+                        expect.objectContaining({
+                            type: 'ADD_TEMP_KEYWORD',
+                            keyword: 'FIERCE',
+                            target: [['MINION']],
+                            expiresAtPhase: 'REGROUP',
+                        }),
+                    ],
                 }),
             ])
         );
@@ -184,6 +201,64 @@ describe('Hobbits / Isengard vague 8 — runtime', () => {
         expect(G.twilightPool).toBe(1);
         expect(
             G.players['1']?.supportArea?.some((c) => c.instanceId === 'weather')
+        ).toBe(true);
+    });
+
+    it('Throne : jouer Saruman → séide désigné fierce jusqu’au regroupement', () => {
+        const throneAbs =
+            getCardById('17R39')?.abilities ||
+            parseAbilities(THRONE_TEXT, 'Throne of Isengard', '17R39') ||
+            [];
+        const throne = createCard({
+            id: '17R39',
+            instanceId: 'throne',
+            kind: 'SHADOW',
+            type: 'CONDITION',
+            culture: 'ISENGARD',
+            abilities: throneAbs as never,
+        });
+        const uruk = createMinion({
+            id: '4C187',
+            instanceId: 'uruk',
+            title: 'Uruk Foot Soldier',
+            culture: 'ISENGARD',
+            race: 'URUK-HAI',
+            keywords: [],
+        });
+        const saruman = createMinion({
+            id: '4R173',
+            instanceId: 'saruman',
+            title: 'Saruman',
+            race: 'WIZARD',
+            culture: 'ISENGARD',
+        });
+        const G = createGameState({
+            players: {
+                '0': createPlayerState('0'),
+                '1': createPlayerState('1', {
+                    supportArea: [throne],
+                }),
+            },
+            battlefield: [uruk, saruman],
+        });
+
+        expect(isFierceMinion(uruk, G)).toBe(false);
+        afterCardPlayed(G, saruman, { playerId: '1', phase: 'shadow' });
+
+        // Pas de when-played optionnel sur ce stub → Throne direct ou file.
+        const pending = G.pendingWhenPlayed || G.pendingYouPlayQueue?.[0];
+        expect(pending?.sourceInstanceId).toBe('throne');
+        if (G.pendingYouPlayQueue?.length && !G.pendingWhenPlayed) {
+            G.pendingWhenPlayed = G.pendingYouPlayQueue.shift();
+        }
+        expect(
+            acceptPendingWhenPlayed(G, '1', undefined, 'uruk')
+        ).toBe(true);
+        expect(isFierceMinion(uruk, G)).toBe(true);
+        expect(
+            (uruk.tempKeywords || []).some(
+                (k) => k.keyword === 'FIERCE' && k.expiresAtPhase === 'REGROUP'
+            )
         ).toBe(true);
     });
 

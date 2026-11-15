@@ -252,6 +252,25 @@ export function resolveWhenPlayed(
     }
 }
 
+/** Après un pendingWhenPlayed : enfiler le YOU_PLAY en attente (Throne…). */
+export function flushPendingYouPlayQueue(G: GameState): void {
+    if (G.pendingWhenPlayed) return;
+    const next = G.pendingYouPlayQueue?.shift();
+    if (!next) {
+        if (G.pendingYouPlayQueue && G.pendingYouPlayQueue.length === 0) {
+            delete G.pendingYouPlayQueue;
+        }
+        return;
+    }
+    if (G.pendingYouPlayQueue && G.pendingYouPlayQueue.length === 0) {
+        delete G.pendingYouPlayQueue;
+    }
+    G.pendingWhenPlayed = next;
+    G.statusMessage =
+        'Désignez la cible de l’effet déclenché (jouer une carte).';
+    pauseActionYieldForResponses(G, next.playerId);
+}
+
 export function acceptPendingWhenPlayed(
     G: GameState,
     playerID: string,
@@ -294,6 +313,7 @@ export function acceptPendingWhenPlayed(
     );
     if (!applied) return false;
     G.pendingWhenPlayed = undefined;
+    flushPendingYouPlayQueue(G);
     return true;
 }
 
@@ -305,5 +325,6 @@ export function declinePendingWhenPlayed(
     if (!pending || pending.playerId !== playerID) return false;
     G.pendingWhenPlayed = undefined;
     G.statusMessage = 'Effet optionnel refusé.';
+    flushPendingYouPlayQueue(G);
     return true;
 }

@@ -69,6 +69,7 @@ export const resetBoardForPreset = (G: GameState): void => {
     G.pendingDeadPileRemoval = undefined;
     G.pendingSiteCharacterWounds = undefined;
     G.pendingWhenPlayed = undefined;
+    G.pendingYouPlayQueue = undefined;
     G.pendingSiteDepartureContinuation = undefined;
     G.sitePhaseAbilityOfferedThisPhase = false;
     G.hunterMinionPlayedThisShadowPhase = false;
@@ -140,7 +141,7 @@ export const applyDevPreset = (
                 '11S261',
                 '18U138',
             ]);
-            G.twilightPool = 3;
+            G.twilightPool = 8;
             fpPlayer.burdens = 0;
             const frodo = {
                 ...clonePresetCard('11S164', 'dev-hi8-frodo'),
@@ -151,15 +152,22 @@ export const applyDevPreset = (
             const fell = clonePresetCard('3R52', 'dev-hi8-fell');
             const throne = clonePresetCard('17R39', 'dev-hi8-throne');
             const staff = clonePresetCard('4R174', 'dev-hi8-staff');
-            const urgency = clonePresetCard('19P17', 'dev-hi8-urgency');
+            // Climat « Plays on a site » (pas Urgency en soutien).
+            const snows = clonePresetCard('1C138', 'dev-hi8-snows');
+            // Situation FP à défausser au jeu de Saruman (when-played).
+            const fpCondition = clonePresetCard('1C20', 'dev-hi8-fp-cond');
+            // Séide non acharné pour Throne (« That minion is fierce »).
+            const uruk = clonePresetCard('1R155', 'dev-hi8-uruk');
             fpPlayer.fellowshipArea = [frodo, gandalf];
+            fpPlayer.supportArea = [fpCondition];
             if (shadowPlayer) {
+                shadowPlayer.hand = [saruman];
                 shadowPlayer.supportArea = [fell, throne];
-                shadowPlayer.discard = [staff, urgency];
-                G.battlefield = [saruman];
+                shadowPlayer.discard = [staff, snows];
+                G.battlefield = [uruk];
             }
             G.statusMessage =
-                '[DEV] Hobbits/Isengard vague 8 · Onglet Ombre (?player=1) : Throne (+3 / damage Magicien) ; Fell Voice → Urgency défausse ; Saruman → Staff défausse ; Staff manœuvre → assignable. Relancer le preset.';
+                '[DEV] Hobbits/Isengard vague 8 · Onglet Ombre (?player=1) : jouer Saruman → défausse / Throne ; Fell Voice → Neiges puis site ; Staff. Relancer le preset.';
             return { startPhase: 'shadow' };
         }
         default:

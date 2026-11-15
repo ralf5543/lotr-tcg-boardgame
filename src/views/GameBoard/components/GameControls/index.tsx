@@ -7,7 +7,7 @@ import { canonicalPhaseName } from '../../canonicalPhaseName';
 import { BiddingWidget } from '../BiddingWidget';
 import { useTargeting } from '../../../../contexts/TargetingContext';
 import { findTargetCard } from '../../../../utils/cardUtils';
-import { getAbilityToastClause, getCardText } from '../../../../utils/i18n';
+import { getAbilityToastClause } from '../../../../utils/i18n';
 import { FormattedText } from '../../../../utils/FormattedText';
 import { findOptionalToasterResponseAbility } from '../../../../game/engine/responseWindow';
 import { formatAbilityLabelParts } from '../../../../game/engine/abilities/collectAbilities';
@@ -690,16 +690,28 @@ export const GameControls: React.FC<GameControlsProps> = ({
                   G.pendingWhenPlayed.sourceInstanceId
               ) as CardState | null)
             : null;
+        const whenPlayedAbility = whenPlayedSource?.abilities?.find(
+            (ab) => ab.id === G.pendingWhenPlayed?.abilityId
+        );
         const fromSite = Boolean(G.pendingWhenPlayed?.fromSite);
-        // Même défaut que Card (`currentLang = 'fr'`) tant qu’il n’y a pas de sélecteur global.
-        const localizedGameText = whenPlayedSource
-            ? getCardText(whenPlayedSource, 'fr').gameText
-            : undefined;
+        const isEachTime =
+            whenPlayedAbility?.trigger?.type === 'YOU_PLAY' ||
+            /\beach time\b/i.test(whenPlayedAbility?.text || '');
+        // Clause de l’ability seule (pas tout le gametext) — textFr ou alignement EN→FR.
+        const clause = getAbilityToastClause(
+            whenPlayedAbility,
+            whenPlayedSource,
+            'fr'
+        );
         toastConfig = {
             show: true,
-            title: fromSite ? 'EFFET DU SITE' : 'QUAND VOUS JOUEZ',
-            body: localizedGameText ? (
-                <FormattedText text={localizedGameText} />
+            title: fromSite
+                ? 'EFFET DU SITE'
+                : isEachTime
+                  ? 'CHAQUE FOIS'
+                  : 'QUAND VOUS JOUEZ',
+            body: clause ? (
+                <FormattedText text={clause} />
             ) : (
                 G.statusMessage ||
                 'Vous pouvez activer l’effet optionnel de cette carte.'

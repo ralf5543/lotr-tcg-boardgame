@@ -1,6 +1,7 @@
-import type { CardState, GameState } from '../types';
+import type { CardState, GameState, SiteCardState } from '../types';
 import { cardMatchesTarget } from '../engine/validations/matchers';
 import {
+    attachesToSite,
     canAttachToCharacter,
     canPlayCard,
     requiresAttachmentTarget,
@@ -77,6 +78,22 @@ export function getDeckOrDiscardBrowsePool(
     };
 }
 
+/** Sites du chemin où cette carte (Plays on a site…) peut être posée. */
+export function findLegalSiteAttachmentHosts(
+    G: GameState,
+    ownerId: string,
+    attachment: CardState
+): SiteCardState[] {
+    if (!attachesToSite(attachment)) return [];
+    const hosts: SiteCardState[] = [];
+    for (const site of G.path || []) {
+        if (!site) continue;
+        if (!canAttachToCharacter(attachment, site, ownerId)) continue;
+        hosts.push(site);
+    }
+    return hosts;
+}
+
 /** Hôtes légaux pour une possession / artefact / situation à attacher. */
 export function findLegalAttachmentHosts(
     G: GameState,
@@ -84,6 +101,13 @@ export function findLegalAttachmentHosts(
     attachment: CardState,
     phase = 'fellowship'
 ): CardState[] {
+    // Climats / Strong Arms… : hôtes = sites du chemin.
+    if (attachesToSite(attachment)) {
+        return findLegalSiteAttachmentHosts(G, ownerId, attachment).map(
+            (site) => site as unknown as CardState
+        );
+    }
+
     const fpId = G.fpPlayerId || '0';
     const isFP = ownerId === fpId;
     const hosts: CardState[] = [];

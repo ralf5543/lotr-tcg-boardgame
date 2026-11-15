@@ -2731,6 +2731,50 @@ function findWhileWearingOnCard(
 }
 
 /**
+ * Each time you play Name, spot a minion. That minion is fierce until regroup.
+ * (Throne of Isengard…)
+ */
+function parseEachTimeYouPlaySpotMinionFierceAbilities(
+    text: string,
+    cardId?: string
+): Record<string, unknown>[] {
+    const found: Record<string, unknown>[] = [];
+    const re =
+        /Each time you play ([\p{L}’'\-]+(?:\s+[\p{L}’'\-]+)?),\s*spot (?:a|an) minion\.\s*That minion is\s*(?:\*\*|<keyword>)?fierce(?:\*\*|<\/keyword>)?\s*until the start of the regroup phase\.?/giu;
+    let match: RegExpExecArray | null;
+    while ((match = re.exec(text)) !== null) {
+        const name = match[1].trim().replace(/[’']/g, "'");
+        if (!name || !isProperNameToken(name.split(/\s+/)[0] || '')) continue;
+        found.push({
+            id: `${cardId || 'ability'}:${found.length}:you-play-spot-fierce`,
+            phases: [],
+            trigger: { type: 'YOU_PLAY', played: [[name]] },
+            cost: [
+                {
+                    spot: [
+                        {
+                            count: 1,
+                            target: [['MINION']],
+                        },
+                    ],
+                },
+            ],
+            effects: [
+                {
+                    type: 'ADD_TEMP_KEYWORD',
+                    keyword: 'FIERCE',
+                    target: [['MINION']],
+                    expiresAtPhase: 'REGROUP',
+                },
+            ],
+            source: 'SELF',
+            text: stripAbilityMarkup(match[0]),
+        });
+    }
+    return found;
+}
+
+/**
  * Each time you play a [classe], add twilight N.
  * Requis, pas de « you may », pas de complément (during, on, here…).
  */
@@ -17471,6 +17515,15 @@ export function parseAbilities(
             id: `${cardId || 'ability'}:${abilities.length}`,
         });
     });
+
+    parseEachTimeYouPlaySpotMinionFierceAbilities(text, cardId).forEach(
+        (ability) => {
+            abilities.push({
+                ...ability,
+                id: `${cardId || 'ability'}:${abilities.length}`,
+            });
+        }
+    );
 
     parseEachTimeNamedPlayedAddThreatsAbilities(text, cardId).forEach(
         (ability) => {

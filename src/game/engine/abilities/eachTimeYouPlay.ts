@@ -8,9 +8,37 @@ import { enforceWhileSelfDiscards } from './enforceWhileDiscard';
 import { pauseActionYieldForResponses } from '../responseWindow';
 import { findBearer } from './resolveCostTarget';
 import { getCurrentSite } from '../../logic/sites';
+import { abilityNeedsEffectDesignation } from './designation';
+import { abilityOwnerPlayerId } from './payAbilityCost';
 
 export function isYouPlayAbility(ability: Ability): boolean {
     return ability.trigger?.type === 'YOU_PLAY';
+}
+
+function queueOrOfferYouPlayPending(
+    G: GameState,
+    source: CardState,
+    ability: Ability,
+    playerId: string,
+    phase?: string
+): void {
+    const sourceInstanceId = source.instanceId || source.id;
+    if (!sourceInstanceId) return;
+    const entry = {
+        playerId,
+        sourceInstanceId,
+        abilityId: ability.id,
+        phase,
+    };
+    if (G.pendingWhenPlayed) {
+        if (!G.pendingYouPlayQueue) G.pendingYouPlayQueue = [];
+        G.pendingYouPlayQueue.push(entry);
+        return;
+    }
+    G.pendingWhenPlayed = entry;
+    G.statusMessage =
+        'Désignez la cible de l’effet déclenché (jouer une carte).';
+    pauseActionYieldForResponses(G, playerId);
 }
 
 /**
@@ -19,10 +47,19 @@ export function isYouPlayAbility(ability: Ability): boolean {
  */
 export function resolveEachTimeYouPlay(
     G: GameState,
-    playedCard: CardState
+    playedCard: CardState,
+    options?: { playerId?: string; phase?: string }
 ): void {
     const playedId = playedCard.instanceId || playedCard.id;
     const playedKind = playedCard.kind;
+    const ownerId =
+        options?.playerId ||
+        abilityOwnerPlayerId(G, playedCard) ||
+        (playedCard.kind === 'SHADOW'
+            ? G.fpPlayerId === '0'
+                ? '1'
+                : '0'
+            : G.fpPlayerId || '0');
 
     forEachInPlayCard(G, (source) => {
         if ((source.instanceId || source.id) === playedId) return;
@@ -34,6 +71,19 @@ export function resolveEachTimeYouPlay(
             if (!trigger || trigger.type !== 'YOU_PLAY') continue;
             if (!cardMatchesTarget(playedCard, trigger.played)) continue;
             if (!canPayAbilityCost(G, source, ability.cost)) continue;
+
+            // Throne… : désigner le séide à rendre fierce.
+            if (abilityNeedsEffectDesignation(G, source, ability)) {
+                queueOrOfferYouPlayPending(
+                    G,
+                    source,
+                    ability,
+                    ownerId,
+                    options?.phase
+                );
+                continue;
+            }
+
             if (!payAbilityCost(G, source, ability.cost)) continue;
             applyAbilityEffect(G, source, ability);
         }
@@ -172,7 +222,7 @@ export function afterCardPlayed(
     if (!options?.skipWhenPlayed) {
         resolveWhenPlayed(G, card, options);
     }
-    resolveEachTimeYouPlay(G, card);
+    resolveEachTimeYouPlay(G, card, options);
     maybeOfferInPlayYouPlayResponse(G, card, options);
     maybeOfferSiteYouPlayResponse(G, card, options);
     enforceWhileSelfDiscards(G);

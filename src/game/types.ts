@@ -2148,6 +2148,16 @@ export interface GameState {
         fromSite?: boolean;
     };
     /**
+     * YOU_PLAY qui nécessitent une désignation pendant qu’un autre
+     * pendingWhenPlayed est déjà ouvert (Throne après when-played Saruman…).
+     */
+    pendingYouPlayQueue?: {
+        playerId: string;
+        sourceInstanceId: string;
+        abilityId: string;
+        phase?: string;
+    }[];
+    /**
      * Capacité optionnelle du site courant en début de phase
      * (Dammed Gate-stream… — toaster Activer / Passer, pas de bouton site).
      */

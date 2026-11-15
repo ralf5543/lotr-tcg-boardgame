@@ -1396,7 +1396,11 @@ export const GameBoard: React.FC<GameBoardProps> = ({
                         subtitle:
                             from === 'DEAD_PILE'
                                 ? 'Choisissez un personnage à jouer depuis votre pile de mort.'
-                                : 'Choisissez une carte jouable dans votre pioche.',
+                                : from === 'DISCARD'
+                                  ? 'Choisissez une carte jouable dans votre défausse.'
+                                  : from === 'DECK'
+                                    ? 'Choisissez une carte jouable dans votre pioche.'
+                                    : 'Choisissez une carte jouable dans votre pioche ou votre défausse.',
                     });
                     queueMicrotask(() => {
                         siteStartBridgeRef.current = false;
@@ -4008,6 +4012,38 @@ export const GameBoard: React.FC<GameBoardProps> = ({
                                         picked &&
                                         requiresAttachmentTarget(picked)
                                     ) {
+                                        if (attachesToSite(picked)) {
+                                            const siteIds =
+                                                getSiteAttachmentHostIds(
+                                                    G,
+                                                    picked,
+                                                    myId
+                                                );
+                                            if (siteIds.length === 0) return;
+                                            if (siteIds.length === 1) {
+                                                finishActivate([
+                                                    cardId,
+                                                    siteIds[0]!,
+                                                ]);
+                                                return;
+                                            }
+                                            startTargeting({
+                                                kind: 'SITE_ATTACH',
+                                                targetableCardIds: siteIds,
+                                                pendingCard: picked,
+                                                abilityId: activate.abilityId,
+                                                message:
+                                                    'Choisissez un site pour y jouer cette carte.',
+                                                onSelectTarget: (siteId) => {
+                                                    stopTargeting();
+                                                    finishActivate([
+                                                        cardId,
+                                                        siteId,
+                                                    ]);
+                                                },
+                                            });
+                                            return;
+                                        }
                                         const hosts = findLegalAttachmentHosts(
                                             G,
                                             myId,
