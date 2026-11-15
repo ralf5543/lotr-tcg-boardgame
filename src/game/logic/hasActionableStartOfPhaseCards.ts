@@ -2,6 +2,12 @@ import type { GameState, PlayerState, CardState } from '../types';
 import { canTransferAid } from '../engine/validations/canTransferAid';
 import { canUseAbility } from '../engine/canUseAbility';
 
+/** Pose le flag UI uniquement hors rendu React (G figé / Object.freeze). */
+function setActionableFlag(card: CardState, value: boolean): void {
+    if (Object.isFrozen(card)) return;
+    card.isActionable = value;
+}
+
 export const hasActionableStartOfPhaseCards = (
     player: PlayerState,
     G: GameState,
@@ -26,12 +32,12 @@ export const hasActionableStartOfPhaseCards = (
     const evaluateCard = (
         card: CardState,
         belongsToPlayer: boolean,
-        location: string
+        _location: string
     ): boolean => {
         if (!belongsToPlayer) {
-            card.isActionable = false;
+            setActionableFlag(card, false);
             if (card.attachments) {
-                card.attachments.forEach((att) => (att.isActionable = false));
+                card.attachments.forEach((att) => setActionableFlag(att, false));
             }
             return false;
         }
@@ -58,7 +64,7 @@ export const hasActionableStartOfPhaseCards = (
             cardCanAct = true;
         }
 
-        card.isActionable = cardCanAct;
+        setActionableFlag(card, cardCanAct);
 
         // 3. Évaluation des attachements du personnage
         if (card.attachments && card.attachments.length > 0) {
@@ -78,7 +84,7 @@ export const hasActionableStartOfPhaseCards = (
                     attCanAct = canUseAbility(att, context).valid;
                 }
 
-                att.isActionable = attCanAct;
+                setActionableFlag(att, attCanAct);
                 if (attCanAct) cardCanAct = true;
             });
         }

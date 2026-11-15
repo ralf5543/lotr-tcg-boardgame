@@ -3,7 +3,7 @@ import { parseAbilities } from '../../../scripts/convert/parsers';
 import { getCardById } from '../cardsData';
 import { applyAbilityEffect } from '../engine/abilities/applyAbilityEffect';
 import {
-    abilityUsesResponseToaster,
+    abilityIsCostlessOptionalResponse,
     collectVisibleAbilities,
     formatAbilityLabelParts,
 } from '../engine/abilities/collectAbilities';
@@ -193,16 +193,16 @@ describe('Hobbits / Isengard vague 7 — runtime', () => {
         expect(parts.effect.length).toBeGreaterThan(0);
     });
 
-    it('Saruman soin à la mort : toaster (pas de bulle), libellé avec le nom', () => {
+    it('Saruman soin à la mort : bulle + toaster générique (pas Activer site)', () => {
         const card = getCardById('12S144');
         const heal = card?.abilities?.find(
             (a) => a.trigger?.type === 'CHARACTER_DIES'
         );
         expect(heal).toBeTruthy();
-        expect(abilityUsesResponseToaster(heal!)).toBe(true);
+        expect(abilityIsCostlessOptionalResponse(heal!)).toBe(true);
         expect(
-            collectVisibleAbilities(undefined, card!).every(
-                (row) => row.ability.id !== heal!.id
+            collectVisibleAbilities(undefined, card!).some(
+                (row) => row.ability.id === heal!.id
             )
         ).toBe(true);
         const parts = formatAbilityLabelParts(heal!, card!);
@@ -239,8 +239,11 @@ describe('Hobbits / Isengard vague 7 — runtime', () => {
                 passesCount: 0,
             },
         });
-        const found = findOptionalToasterResponseAbility(G, '1');
-        expect(found?.ability.id).toBe(heal!.id);
-        expect(found?.source.instanceId).toBe('saruman');
+        expect(findOptionalToasterResponseAbility(G, '1')).toBeNull();
+        expect(
+            collectVisibleAbilities(G, saruman).some(
+                (row) => row.ability.id === heal!.id
+            )
+        ).toBe(true);
     });
 });

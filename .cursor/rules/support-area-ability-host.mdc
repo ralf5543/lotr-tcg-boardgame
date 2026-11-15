@@ -27,24 +27,27 @@ Après clic sur la situation (classe) : désignation parmi les cibles légales (
   - Capacité de phase avec **coût exert désignable** → projection sur **chaque** cible éligible (Watch-tower → orc, Ettenmoors → perso, Mere → Gollum/Sméagol).
   - Réponse optionnelle **sans coût** (Starkhorn piocher, Heights défausse…) → **toaster** Activer / Passer, **jamais** bulle sur le vainqueur / un personnage.
 
-## Règle transversale (bulles sur personnages)
+## Règle transversale (réponses)
 
-Une bulle d’action sur un personnage = combinaison **coût à payer** (souvent exert désigné) **+ effet**.
+Fenêtre de réponse homogène :
 
-**Réponse optionnelle sans coût** (« you may » pur : piocher, soigner, défausser une situation…) → **toujours toaster** Activer / Passer — site **ou** personnage (Saruman soin à la mort, Starkhorn…). **Pas** de sceau / bulle.
-
-Réponse **avec** coût (exert Gandalf, défausse self…) → bulle / projection comme d’habitude.
+| Source | UI |
+| --- | --- |
+| **Carte en jeu / main** (avec ou sans coût) | Toaster **générique** (contexte court + Passer) + **halo / bulle** (ou halo main) |
+| **Site** sans coût (Starkhorn…) | Toaster **Activer / Passer** (pas de bulle site ni sur le vainqueur) |
+| **Empêcher** (règle : crépuscule, fardeaux, etc.) | Boutons **Empêcher** dédiés dans le toaster |
 
 ## Implémentation
 
 - `abilityProjectsOnto` / `collectProjectedAbilities` : ne projeter que si la cible d’exert est un **nom propre** (casse mixte, cf. matchers) — support ; ou coût exert classe depuis un site.
 - Classe / filtres UPPERCASE (`MAN`, `GONDOR`, `COMPANION`…) : **pas** de projection support→perso ; le bouton reste sur la carte support.
-- `abilityUsesResponseToaster` + `findOptionalToasterResponseAbility` : toaster (sites et cartes en jeu) ; exclus de `collectVisibleAbilities`.
+- `abilityUsesResponseToaster(ability, source)` + `findOptionalToasterResponseAbility` : **sites seulement** ; cartes en jeu restent dans `collectVisibleAbilities`.
 
 ## Exemples
 
 - **Last Stand** (Fellowship : Exert a Gandalf Man → tokens) → bouton sur Last Stand, pas sur Erland.
 - **Unknown Perils** (Response : exert Gandalf) → projection sur Gandalf OK.
 - **Forests of Ithilien** (discard this + exert Ring-bound Man) → déjà sur la situation (défausse self).
-- **Starkhorn** (Dwarf wins → may draw) → toaster piocher, pas d’action sur le Nain.
-- **Saruman** (companion killed → may heal Saruman) → toaster soin, pas de bulle « guérir ».
+- **Starkhorn** (Dwarf wins → may draw) → toaster Activer, pas d’action sur le Nain.
+- **Saruman** (companion killed → may heal Saruman) → bulle sur Saruman + toaster générique.
+- **Anneau Unique** → bulle sur le Porteur (libellé préfixé) + toaster générique.

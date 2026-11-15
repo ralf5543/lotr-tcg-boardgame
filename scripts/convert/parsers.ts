@@ -1310,6 +1310,13 @@ function parseExertSubject(
     // « your » restant (ex. « your other … ») : pas encore.
     if (/^your\b/i.test(body)) return null;
 
+    // « Wizard » / « Man » sans article (souvent après `(?:a|an)?` consommé
+    // par le regex appelant) → filtres connus, pas un nom propre brut.
+    const classFilters = parseClassFilters(body);
+    if (classFilters.length > 0) {
+        return { target: [classFilters], count, mode: 'DESIGNATION' };
+    }
+
     return { target: [[body]], count };
 }
 
@@ -3416,7 +3423,7 @@ function parseBecomeMinionConditionAbilities(
 
     // Pallando Deceived : début de manœuvre, affaiblir un Magicien → séide Wizard.
     const startManeuverRe =
-        /At the start of the maneuver phase,\s*you may exert (?:a |an )?([\s\S]+?) to make this condition a\s+(?:<keyword>)?fierce(?:<\/keyword>)?\s+(\w+)\s+minion until the start of the regroup phase that has (\d+) strength and (\d+) vitality,\s*and cannot take wounds or bear other cards\.\s*This card is still a condition\.?/gi;
+        /At the start of the maneuver phase,\s*you may exert ((?:a |an )?[\s\S]+?) to make this condition a\s+(?:<keyword>)?fierce(?:<\/keyword>)?\s+(\w+)\s+minion until the start of the regroup phase that has (\d+) strength and (\d+) vitality,\s*and cannot take wounds or bear other cards\.\s*This card is still a condition\.?/gi;
     while ((match = startManeuverRe.exec(text)) !== null) {
         const subject = parseExertSubject(match[1].trim(), undefined, text);
         if (!subject) continue;
@@ -13662,6 +13669,9 @@ export function parseAbilities(
                 abilities.push({
                     id: `${cardId || 'ability'}:${abilities.length}`,
                     phases: ['RESPONSE'],
+                    // CR : réponse spéciale optionnelle, sans coût → toaster
+                    // (pas de bulle + toaster générique).
+                    optional: true,
                     trigger: {
                         type: 'ABOUT_TO_WOUND',
                         target: 'BEARER',

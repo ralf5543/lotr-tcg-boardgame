@@ -1227,6 +1227,7 @@ describe('parseAbilities — Response prevent wound', () => {
             {
                 id: '1R1:0',
                 phases: ['RESPONSE'],
+                optional: true,
                 trigger: {
                     type: 'ABOUT_TO_WOUND',
                     target: 'BEARER',
@@ -1254,6 +1255,7 @@ describe('parseAbilities — Response prevent wound', () => {
             {
                 id: '1C2:0',
                 phases: ['RESPONSE'],
+                optional: true,
                 trigger: {
                     type: 'ABOUT_TO_WOUND',
                     target: 'BEARER',
@@ -1281,6 +1283,7 @@ describe('parseAbilities — Response prevent wound', () => {
             {
                 id: '11R1:0',
                 phases: ['RESPONSE'],
+                optional: true,
                 trigger: {
                     type: 'ABOUT_TO_WOUND',
                     target: 'BEARER',

@@ -5533,6 +5533,7 @@
         "phases": [
           "RESPONSE"
         ],
+        "optional": true,
         "trigger": {
           "type": "ABOUT_TO_WOUND",
           "target": "BEARER"
@@ -5983,7 +5984,8 @@
                   [
                     "Gandalf"
                   ]
-                ]
+                ],
+                "mode": "DESIGNATION"
               }
             ]
           }
@@ -9215,6 +9217,7 @@
         "phases": [
           "RESPONSE"
         ],
+        "optional": true,
         "trigger": {
           "type": "ABOUT_TO_WOUND",
           "target": "BEARER"
@@ -12445,6 +12448,7 @@
         "phases": [
           "RESPONSE"
         ],
+        "optional": true,
         "trigger": {
           "type": "ABOUT_TO_WOUND",
           "target": "BEARER",
@@ -16502,7 +16506,8 @@
                   [
                     "Gandalf"
                   ]
-                ]
+                ],
+                "mode": "DESIGNATION"
               }
             ]
           }
@@ -22469,9 +22474,11 @@
                 "count": 1,
                 "target": [
                   [
-                    "moria Orc"
+                    "MORIA",
+                    "ORC"
                   ]
-                ]
+                ],
+                "mode": "DESIGNATION"
               }
             ]
           }
@@ -36768,7 +36775,8 @@
                   [
                     "Gandalf"
                   ]
-                ]
+                ],
+                "mode": "DESIGNATION"
               }
             ]
           }
@@ -37414,7 +37422,8 @@
                   [
                     "Aragorn"
                   ]
-                ]
+                ],
+                "mode": "DESIGNATION"
               }
             ]
           }
@@ -37705,7 +37714,8 @@
                   [
                     "Saruman"
                   ]
-                ]
+                ],
+                "mode": "DESIGNATION"
               }
             ]
           }
@@ -41108,6 +41118,7 @@
         "phases": [
           "RESPONSE"
         ],
+        "optional": true,
         "trigger": {
           "type": "ABOUT_TO_WOUND",
           "target": "BEARER",
@@ -56329,7 +56340,8 @@
                   [
                     "Sam"
                   ]
-                ]
+                ],
+                "mode": "DESIGNATION"
               }
             ]
           }
@@ -69393,6 +69405,7 @@
         "phases": [
           "RESPONSE"
         ],
+        "optional": true,
         "trigger": {
           "type": "ABOUT_TO_WOUND",
           "target": "BEARER",
@@ -73641,7 +73654,8 @@
                   [
                     "Gandalf"
                   ]
-                ]
+                ],
+                "mode": "DESIGNATION"
               }
             ]
           }
@@ -95808,9 +95822,10 @@
                 "count": 1,
                 "target": [
                   [
-                    "Southron"
+                    "SOUTHRON"
                   ]
-                ]
+                ],
+                "mode": "DESIGNATION"
               }
             ]
           }
@@ -95822,7 +95837,7 @@
             "value": 1,
             "target": [
               [
-                "Southron"
+                "SOUTHRON"
               ]
             ],
             "expiresAtPhase": "SKIRMISH"
@@ -99375,6 +99390,7 @@
         "phases": [
           "RESPONSE"
         ],
+        "optional": true,
         "trigger": {
           "type": "ABOUT_TO_WOUND",
           "target": "BEARER",
@@ -101509,7 +101525,8 @@
                   [
                     "Gollum"
                   ]
-                ]
+                ],
+                "mode": "DESIGNATION"
               }
             ]
           }
@@ -123874,9 +123891,10 @@
                 "count": 1,
                 "target": [
                   [
-                    "Wizard"
+                    "WIZARD"
                   ]
-                ]
+                ],
+                "mode": "DESIGNATION"
               }
             ]
           }
@@ -130406,6 +130424,7 @@
         "phases": [
           "RESPONSE"
         ],
+        "optional": true,
         "trigger": {
           "type": "ABOUT_TO_WOUND",
           "target": "BEARER",

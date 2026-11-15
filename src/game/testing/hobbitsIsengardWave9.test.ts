@@ -5,6 +5,17 @@ import { applyAbilityEffect } from '../engine/abilities/applyAbilityEffect';
 import { getCalculatedStrength } from '../logic/stats/statCalculator';
 import { canCardTakeWound } from '../logic/sites';
 import { stackCardOnHost } from '../logic/cardStack';
+import {
+    abilityIsCostlessOptionalResponse,
+    collectVisibleAbilities,
+} from '../engine/abilities/collectAbilities';
+import {
+    findOptionalToasterResponseAbility,
+    requestWounds,
+    tryOpenLosesSkirmish,
+} from '../engine/responseWindow';
+import { canUseAbility } from '../engine/canUseAbility';
+import { activateAbility } from '../moves/abilityMoves';
 import type { Ability, CardState } from '../types';
 import {
     createCard,
@@ -122,6 +133,17 @@ describe('Hobbits / Isengard vague 9 — parse', () => {
                 expect.objectContaining({
                     phases: ['START_OF_MANEUVER'],
                     optional: true,
+                    cost: [
+                        {
+                            exert: [
+                                {
+                                    count: 1,
+                                    target: [['WIZARD']],
+                                    mode: 'DESIGNATION',
+                                },
+                            ],
+                        },
+                    ],
                     effects: [
                         expect.objectContaining({
                             type: 'BECOME_MINION',
@@ -296,5 +318,197 @@ describe('Hobbits / Isengard vague 9 — runtime', () => {
             const card = getCardById(id);
             expect(card?.abilities?.length, id).toBeGreaterThan(0);
         }
+    });
+
+    it('Pallando converti : coût exert WIZARD (pas Wizard nom)', () => {
+        const cost = getCardById('13U79')?.abilities?.[0]?.cost?.[0]?.exert?.[0];
+        expect(cost?.target).toEqual([['WIZARD']]);
+    });
+
+    it('Contes Pervertis : fenêtre Ombre + bulle après perte de combat', () => {
+        const base = getCardById('6U75')!;
+        const twisted = {
+            ...base,
+            instanceId: 'twisted',
+            abilities: base.abilities,
+        };
+        const merry = createCompanion({
+            id: 'merry',
+            instanceId: 'merry',
+            attachments: [
+                createCard({
+                    id: 'sword',
+                    type: 'POSSESSION',
+                    kind: 'FREE_PEOPLE',
+                    instanceId: 'sword',
+                }),
+            ],
+        });
+        const grima = createMinion({
+            id: 'grima',
+            instanceId: 'grima',
+            culture: 'ISENGARD',
+            race: 'MAN',
+        });
+        const G = createGameState({
+            skirmishes: [
+                {
+                    id: 'sk',
+                    companionId: 'merry',
+                    minionIds: ['grima'],
+                    resolved: true,
+                },
+            ],
+            battlefield: [grima],
+            players: {
+                '0': createPlayerState('0', { fellowshipArea: [merry] }),
+                '1': createPlayerState('1', { supportArea: [twisted] }),
+            },
+            pendingLosesSkirmish: {
+                loserIds: ['merry'],
+                skirmishId: 'sk',
+            },
+        });
+        expect(tryOpenLosesSkirmish(G)).toBe('WAITING');
+        expect(G.responseWindow?.activePlayerId).toBe('1');
+        // Carte en jeu : bulle, pas toaster Activer (réservé aux sites).
+        expect(findOptionalToasterResponseAbility(G, '1')).toBeNull();
+        expect(
+            collectVisibleAbilities(G, twisted).some(
+                (r) => r.source.instanceId === 'twisted'
+            )
+        ).toBe(true);
+    });
+
+    it('Anneau Unique : réponse optionnelle → bulle sur le Porteur, toaster générique', () => {
+        const ring = getCardById('1C2')!;
+        const wear = ring.abilities?.find(
+            (a) => a.trigger?.type === 'ABOUT_TO_WOUND'
+        );
+        expect(wear?.optional).toBe(true);
+        expect(abilityIsCostlessOptionalResponse(wear!)).toBe(true);
+
+        const ringCard = {
+            ...ring,
+            instanceId: 'ring',
+            abilities: ring.abilities,
+        };
+        const frodo = createCompanion({
+            id: 'frodo',
+            instanceId: 'frodo',
+            keywords: ['RING-BEARER'],
+            attachments: [ringCard],
+        });
+        const G = createGameState({
+            activeSkirmishId: 'sk',
+            skirmishes: [
+                {
+                    id: 'sk',
+                    companionId: 'frodo',
+                    minionIds: ['orc'],
+                },
+            ],
+            battlefield: [
+                createMinion({ id: 'orc', instanceId: 'orc' }),
+            ],
+            players: {
+                '0': createPlayerState('0', { fellowshipArea: [frodo] }),
+                '1': createPlayerState('1'),
+            },
+        });
+        expect(requestWounds(G, frodo, 1)).toBe('WAITING');
+        expect(G.pendingEvent?.type).toBe('ABOUT_TO_WOUND');
+        expect(findOptionalToasterResponseAbility(G, '0')).toBeNull();
+        expect(
+            collectVisibleAbilities(G, frodo).some(
+                (r) =>
+                    r.source.instanceId === 'ring' &&
+                    r.ability.id === wear!.id
+            )
+        ).toBe(true);
+        expect(G.responseWindow?.message).toMatch(/Frodo|blessure/i);
+    });
+
+    it('Pallando : activable en startOfManeuver avec Magicien', () => {
+        const base = getCardById('13U79')!;
+        const pallando = {
+            ...base,
+            instanceId: 'pallando',
+            abilities: base.abilities,
+            actionPhases: base.actionPhases,
+        };
+        const gandalf = createCompanion({
+            id: 'gandalf',
+            instanceId: 'gandalf',
+            culture: 'GANDALF',
+            race: 'WIZARD',
+            vitality: 4,
+        });
+        const G = createGameState({
+            players: {
+                '0': createPlayerState('0', { fellowshipArea: [gandalf] }),
+                '1': createPlayerState('1', { supportArea: [pallando] }),
+            },
+        });
+        expect(
+            canUseAbility(pallando, {
+                G,
+                ctx: { phase: 'startOfManeuver' },
+                playerID: '1',
+            }).valid
+        ).toBe(true);
+    });
+
+    it('Pallando activé : plus d’action → isDone auto (début de manœuvre)', () => {
+        const base = getCardById('13U79')!;
+        const ability = base.abilities!.find((a) =>
+            a.phases?.includes('START_OF_MANEUVER')
+        )!;
+        const pallando = {
+            ...base,
+            instanceId: 'pallando',
+            abilities: base.abilities,
+            actionPhases: base.actionPhases,
+        };
+        const gandalf = createCompanion({
+            id: 'gandalf',
+            instanceId: 'gandalf',
+            culture: 'GANDALF',
+            race: 'WIZARD',
+            vitality: 4,
+            wounds: 0,
+        });
+        const G = createGameState({
+            maneuverStep: 'MANEUVER_START',
+            startOfPhaseState: {
+                players: {
+                    '0': { isDone: true },
+                    '1': { isDone: false },
+                },
+            },
+            players: {
+                '0': createPlayerState('0', { fellowshipArea: [gandalf] }),
+                '1': createPlayerState('1', { supportArea: [pallando] }),
+            },
+        });
+        const result = activateAbility(
+            {
+                G,
+                ctx: { phase: 'startOfManeuver' } as never,
+                playerID: '1',
+                events: { setPhase: () => undefined },
+            } as never,
+            'pallando',
+            ability.id,
+            'gandalf'
+        );
+        expect(result).not.toBe('INVALID_MOVE');
+        expect(G.battlefield.some((c) => c.instanceId === 'pallando')).toBe(
+            true
+        );
+        // Plus d’action Ombre → marqué terminé (et dual-wait peut enchaîner).
+        expect(
+            G.startOfPhaseState?.players?.['1']?.isDone ?? true
+        ).toBe(true);
     });
 });

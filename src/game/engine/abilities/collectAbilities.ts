@@ -91,8 +91,8 @@ function abilityMayProjectFromSupport(ability: Ability): boolean {
 /**
  * Site : pas de bouton sur le site — projection sur cible désignable
  * (exert, ou spot DESIGNATION → effet COST_TARGET, ex. Northern Pelennor).
- * Réponse optionnelle sans coût (Starkhorn piocher, Heights défausse…) =
- * toaster, jamais bulle sur le vainqueur.
+ * Réponse optionnelle sans coût site (Starkhorn…) = toaster Activer, jamais
+ * bulle sur le vainqueur. Cartes en jeu = bulle + toaster générique.
  */
 function siteDesignateCostTarget(ability: Ability): string[][] | null {
     const exert = ability.cost?.[0]?.exert?.[0];
@@ -210,7 +210,6 @@ export function collectProjectedAbilities(
  */
 /**
  * Coût « à payer » (exert, défausse, jetons…) — hors spot informatif.
- * Absent + optional RESPONSE → toaster Activer / Passer, pas de bulle.
  * Voir `.cursor/rules/support-area-ability-host.mdc`.
  */
 export function abilityHasPaymentCost(ability: Ability): boolean {
@@ -236,12 +235,25 @@ export function abilityHasPaymentCost(ability: Ability): boolean {
     return false;
 }
 
-/** Réponse optionnelle sans coût → toaster, jamais bulle sur un personnage. */
-export function abilityUsesResponseToaster(ability: Ability): boolean {
+/** Réponse optionnelle « you may » sans coût de paiement. */
+export function abilityIsCostlessOptionalResponse(ability: Ability): boolean {
     if (!ability.optional) return false;
     if (!abilityMatchesPhase(ability, 'RESPONSE')) return false;
     if (abilityHasPaymentCost(ability)) return false;
     return true;
+}
+
+/**
+ * Toaster Activer / Passer : uniquement les réponses optionnelles sans coût
+ * d’un **site** (pas de bulle sur le site). Cartes en jeu → bulle + toaster
+ * générique (« Jouez une réponse ou passez »).
+ */
+export function abilityUsesResponseToaster(
+    ability: Ability,
+    source: CardState
+): boolean {
+    if (!abilityIsCostlessOptionalResponse(ability)) return false;
+    return isSiteCard(source);
 }
 
 export function collectVisibleAbilities(
@@ -259,10 +271,6 @@ export function collectVisibleAbilities(
         }
         // Site : jamais de bouton sur le site (projection, toaster moves/phase/réponse).
         if (isSiteCard(source)) {
-            return false;
-        }
-        // Réponse optionnelle sans coût (« you may ») → toaster, pas de bulle.
-        if (abilityUsesResponseToaster(ability)) {
             return false;
         }
         // Nom propre depuis une situation support : bouton sur le personnage

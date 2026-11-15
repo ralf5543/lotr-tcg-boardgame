@@ -35,10 +35,55 @@ import {
 } from '../engine/responseWindow';
 import { abilityMeetsPlayRestrictions } from '../engine/abilities/abilityRestrictions';
 import { afterSiteStartAbilityResolved } from '../logic/siteStartAbility';
+import { hasActionableStartOfPhaseCards } from '../logic/hasActionableStartOfPhaseCards';
+import { tryExitStartOfManeuver } from './maneuverMoves';
+import { exitStartOf } from '../logic/phaseEntry';
 
 function normalizeChosenIds(chosen?: string | string[]): string[] {
     if (!chosen) return [];
     return Array.isArray(chosen) ? chosen.filter(Boolean) : [chosen];
+}
+
+/**
+ * Après une capacité en startOf* : si plus rien d’activable pour ce joueur,
+ * marquer isDone (comme transferAid) et enchaîner si l’adversaire a fini.
+ */
+function syncStartOfPhaseAfterAbility(
+    G: LotrMoveContext['G'],
+    ctx: LotrMoveContext['ctx'],
+    events: LotrMoveContext['events'],
+    playerID: string
+): void {
+    const phase = ctx.phase || '';
+    if (!phase.startsWith('startOf')) return;
+    if (!G.startOfPhaseState?.players?.[playerID]) return;
+
+    const remaining = hasActionableStartOfPhaseCards(
+        G.players[playerID],
+        G,
+        playerID,
+        phase
+    );
+    if (remaining) return;
+
+    G.startOfPhaseState.players[playerID].isDone = true;
+
+    if (phase === 'startOfManeuver') {
+        tryExitStartOfManeuver(G, events);
+        return;
+    }
+
+    const fpId = G.fpPlayerId || '0';
+    const shadowId = fpId === '0' ? '1' : '0';
+    const fpDone = G.startOfPhaseState.players[fpId]?.isDone;
+    const shadowDone = G.startOfPhaseState.players[shadowId]?.isDone;
+    if (!fpDone || !shadowDone) return;
+
+    G.startOfPhaseState = undefined;
+    const targetPhase = phase
+        .replace(/^startOf/, '')
+        .replace(/^./, (str) => str.toLowerCase());
+    exitStartOf(events, targetPhase);
 }
 
 export const activateAbility = (
@@ -275,6 +320,8 @@ export const activateAbility = (
     ) {
         afterSiteStartAbilityResolved(G, events);
     }
+
+    syncStartOfPhaseAfterAbility(G, ctx, events, String(playerID));
 };
 
 export const abilityMoves = {

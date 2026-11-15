@@ -506,12 +506,30 @@ function fpCanPreventAddThreats(G: GameState): boolean {
     return Boolean(rb && canCardTakeWound(G, rb));
 }
 
+function aboutToWoundToastMessage(G: GameState): string {
+    const event = G.pendingEvent;
+    if (!event || event.type !== 'ABOUT_TO_WOUND') {
+        return 'Un personnage va prendre une blessure. Jouez une réponse ou passez.';
+    }
+    const target = findTargetCard(G, event.targetId) as CardState | null;
+    const name =
+        target?.i18n?.fr?.title ||
+        target?.title ||
+        (target as { name?: string } | null)?.name ||
+        'Un personnage';
+    const n = event.remaining || 1;
+    return `${name} va prendre ${n} blessure${n > 1 ? 's' : ''}. Jouez une réponse ou passez.`;
+}
+
 function responseWindowMessage(G: GameState): string {
     if (G.pendingEvent?.type === 'WINS_SKIRMISH') {
         return 'Un personnage a gagné ce combat. Jouez une réponse ou passez.';
     }
     if (G.pendingEvent?.type === 'LOSES_SKIRMISH') {
         return 'Un personnage a perdu ce combat. Jouez une réponse ou passez.';
+    }
+    if (G.pendingEvent?.type === 'ABOUT_TO_WOUND') {
+        return aboutToWoundToastMessage(G);
     }
     if (G.pendingEvent?.type === 'TAKES_WOUND') {
         return 'Un personnage a pris une blessure. Jouez une réponse ou passez.';
@@ -676,8 +694,8 @@ export function playerHasEligibleResponse(
 }
 
 /**
- * Première réponse optionnelle « toaster » légale (site ou carte en jeu).
- * Starkhorn piocher, Saruman soin… — Activer / Passer, pas de bulle.
+ * Première réponse optionnelle « toaster Activer » légale — **sites seulement**
+ * (Starkhorn, Heights…). Cartes en jeu : bulle + toaster générique.
  * Voir `.cursor/rules/support-area-ability-host.mdc`.
  */
 export function findOptionalToasterResponseAbility(
@@ -688,29 +706,16 @@ export function findOptionalToasterResponseAbility(
     const pid = String(playerID);
 
     const site = currentSiteAsCard(G);
-    if (site) {
-        for (const ability of site.abilities || []) {
-            if (!abilityUsesResponseToaster(ability)) continue;
-            if (siteResponsePlayerId(G, ability) !== pid) continue;
-            if (!inPlayResponseIsLegal(G, site, ability)) continue;
-            if (abilityNeedsCostDesignation(G, site, ability, pid)) continue;
-            return { source: site, ability };
-        }
-    }
+    if (!site) return null;
 
-    let found: { source: CardState; ability: Ability } | null = null;
-    forEachInPlayCard(G, (card) => {
-        if (found) return;
-        if (cardOwnerId(G, card) !== pid) return;
-        for (const ability of card.abilities || []) {
-            if (!abilityUsesResponseToaster(ability)) continue;
-            if (!inPlayResponseIsLegal(G, card, ability)) continue;
-            if (abilityNeedsCostDesignation(G, card, ability, pid)) continue;
-            found = { source: card, ability };
-            return;
-        }
-    });
-    return found;
+    for (const ability of site.abilities || []) {
+        if (!abilityUsesResponseToaster(ability, site)) continue;
+        if (siteResponsePlayerId(G, ability) !== pid) continue;
+        if (!inPlayResponseIsLegal(G, site, ability)) continue;
+        if (abilityNeedsCostDesignation(G, site, ability, pid)) continue;
+        return { source: site, ability };
+    }
+    return null;
 }
 
 /** Alias site-only (tests Starkhorn…). */

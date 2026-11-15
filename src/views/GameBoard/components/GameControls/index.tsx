@@ -13,6 +13,7 @@ import { findOptionalToasterResponseAbility } from '../../../../game/engine/resp
 import { formatAbilityLabelParts } from '../../../../game/engine/abilities/collectAbilities';
 import { getEligibleSitePhaseAbilities } from '../../../../game/logic/sitePhaseAbility';
 import { movesRemainThisTurn } from '../../../../game/logic/moveLimit';
+import { hasActionableStartOfPhaseCards } from '../../../../game/logic/hasActionableStartOfPhaseCards';
 import {
     otherPlayerId,
     playerDisplayName,
@@ -171,6 +172,16 @@ export const GameControls: React.FC<GameControlsProps> = ({
     const myStartOfPhaseState = isStartOfPhaseStep
         ? G.startOfPhaseState?.players?.[currentPlayerId]
         : null;
+    const startOfPhaseHasActions =
+        Boolean(isStartOfPhaseStep) &&
+        Boolean(myStartOfPhaseState) &&
+        !myStartOfPhaseState?.isDone &&
+        hasActionableStartOfPhaseCards(
+            G.players[currentPlayerId],
+            G,
+            currentPlayerId,
+            ctx.phase || ''
+        );
 
     const targetSiteIdx =
         G.players[fpPlayerId]?.currentSiteIndex ?? G.currentSiteIndex ?? 0;
@@ -625,8 +636,10 @@ export const GameControls: React.FC<GameControlsProps> = ({
             show: true,
             title: 'DÉBUT DE PHASE',
             body: myStartOfPhaseState.isDone
-                ? `Vos actions de début de phase sont validées. En attente de ${opponentName}…`
-                : 'Vous avez des capacités ou des effets de début de phase disponibles. Activez-les sur vos cartes ou validez.',
+                ? `En attente de ${opponentName}…`
+                : startOfPhaseHasActions
+                  ? 'Activez vos effets de début de phase sur vos cartes, ou validez.'
+                  : 'Plus d’action disponible. Validez pour continuer.',
             showPassButton: false,
             type: 'START_OF_PHASE',
         };
@@ -660,7 +673,9 @@ export const GameControls: React.FC<GameControlsProps> = ({
         toastConfig = {
             show: true,
             title: G.responseWindow?.title || 'RÉPONSE',
-            body: 'À votre tour de répondre ou de passer.',
+            body:
+                G.responseWindow?.message ||
+                'À votre tour de répondre ou de passer.',
             showPassButton: G.responseWindow?.canPass ?? true,
             type: 'RESPONSE',
         };
@@ -985,9 +1000,11 @@ export const GameControls: React.FC<GameControlsProps> = ({
 
         if (isStartOfPhaseStep && myStartOfPhaseState) {
             if (myStartOfPhaseState.isDone) {
-                return `Étape validée. En attente de ${opponentName}…`;
+                return `En attente de ${opponentName}…`;
             }
-            return 'Cliquez sur vos cartes brillantes pour déclencher leurs effets, ou validez.';
+            return startOfPhaseHasActions
+                ? 'Activez vos effets de début de phase sur vos cartes, ou validez.'
+                : 'Plus d’action disponible. Validez pour continuer.';
         }
 
         if (G.sanctuaryHeal) {
