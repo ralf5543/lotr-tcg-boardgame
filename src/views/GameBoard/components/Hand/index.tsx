@@ -6,11 +6,8 @@ import { useDrag } from '../../../../contexts/DragContext';
 import { useFaction } from '../../../../contexts/FactionContext';
 import { useTargeting } from '../../../../contexts/TargetingContext';
 import { audioService } from '../../../../services/audioService';
-import { canPlayCard, attachesToSite } from '../../../../game/engine/canPlayCard';
-import {
-    getHandEventDesignationTargetIds,
-    getToPlayExertTargetIds,
-} from '../../../../game/engine/abilities/designation';
+import { canPlayCard } from '../../../../game/engine/canPlayCard';
+import { getHandEventDesignationTargetIds } from '../../../../game/engine/abilities/designation';
 import {
     hasSpotCondition,
     isSpotConditionMet,
@@ -274,30 +271,17 @@ export const Hand: React.FC<HandProps> = ({
                                   playerID: effectivePlayerId,
                               }).valid;
 
-                          const siteAttachExertIds =
-                              !isDiscardPhase &&
-                              isMatchingPlayerRole &&
-                              attachesToSite(card) &&
-                              canPlayCard(card, {
-                                  G,
-                                  ctx: { phase },
-                                  playerID: effectivePlayerId,
-                              }).valid
-                                  ? getToPlayExertTargetIds(G, card)
-                                  : [];
-
-                          // toPlay.exert (Worry…) : coût → halo après drop, PAS de flèche pendant le drag.
-                          // siteAttachExertIds : flèche main → séide encore (chaîne coût→site) ;
-                          // les events filtrés par getHandEventDesignationTargetIds.
+                          // Flèche pendant le drag = attaque seulement
+                          // (blessure / exhaust / exert en effet). Coût toPlay,
+                          // pose sur site (Tempête conjurée…), replace site…
+                          // → pas de flèche (halo après drop).
                           const designationTargetIds = isPlayableEvent
                               ? getHandEventDesignationTargetIds(
                                     G,
                                     card,
                                     phase
                                 )
-                              : siteAttachExertIds.length > 0
-                                ? siteAttachExertIds
-                                : undefined;
+                              : undefined;
 
                           const usesArrowDesignation =
                               Boolean(designationTargetIds?.length);

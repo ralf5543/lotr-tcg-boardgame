@@ -1839,11 +1839,12 @@ export function costAndEffectShareHandDesignation(ability: Ability): boolean {
 }
 
 /**
- * Cibles pour drag d’event depuis la main (flèche + halo).
- * Inclut désignation classique et sites path pour replace REGION / exchange.
+ * Cibles pour drag d’event depuis la main **avec flèche jaune**.
+ * Uniquement attaque (blessure / exhaust / exert en effet).
  *
- * Coût + effet sur des cibles différentes (ex. exert ranger → exhaust minion) :
- * pas de flèche-main — le drop déclenche la chaîne TargetingContext.
+ * Pas de flèche (retour []) : coût à désigner, buff / soin / reinforce /
+ * défausse, pose / replace / exchange de site — halo après drop.
+ * Voir `.cursor/rules/targeting-arrows.mdc`.
  */
 export function getHandEventDesignationTargetIds(
     G: GameState,
@@ -1888,9 +1889,7 @@ export function getHandEventDesignationTargetIds(
         );
     }
 
-    const pathIds = getPathThenDeckSiteTargetIds(G, card, ability);
-    if (pathIds.length > 0) return [...new Set(pathIds)];
-
+    // Sites (replace / exchange) : désignation = halo après drop, pas de flèche.
     return [];
 }
 

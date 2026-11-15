@@ -7,6 +7,7 @@ import {
     getCostDesignationCandidates,
     getDesignationCandidates,
     getHandEventDesignationTargetIds,
+    getPathThenDeckSiteTargetIds,
     isDesignationTargetId,
 } from '../engine/abilities/designation';
 import type { Ability } from '../types';
@@ -390,7 +391,7 @@ describe('designation', () => {
         );
     });
 
-    it('Traveled Leader : flèche sur les sites path de la région courante', () => {
+    it('Traveled Leader : sites path sans flèche pendant le drag', () => {
         const site1 = createSite({
             id: 'site-a',
             siteNumber: 1,
@@ -454,9 +455,14 @@ describe('designation', () => {
             abilities: [ability],
         });
 
-        const ids = getHandEventDesignationTargetIds(G, event, 'maneuver');
-        expect(ids).toEqual(expect.arrayContaining(['site-a', 'site-b']));
+        // Site replace : pas de flèche pendant le drag (halo après drop).
+        expect(getHandEventDesignationTargetIds(G, event, 'maneuver')).toEqual(
+            []
+        );
         expect(abilityNeedsDesignation(G, event, ability)).toBe(false);
+        expect(
+            getPathThenDeckSiteTargetIds(G, event, ability)
+        ).toEqual(expect.arrayContaining(['site-a', 'site-b']));
     });
 
     it('Remove token → heal : même 1 carte à jetons = coût à désigner (pas de flèche depuis la main)', () => {

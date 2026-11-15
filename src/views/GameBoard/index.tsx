@@ -53,6 +53,7 @@ import {
     getEffectDesignationCandidates,
     getEffectDesignationCount,
     getFpDiscardCandidates,
+    getPathThenDeckSiteTargetIds,
     getSiteAttachmentHostIds,
     getToPlayExertTargetIds,
     isDesignationTargetId,
@@ -245,12 +246,8 @@ const PendingPlayOnDrag: React.FC<{
             );
             return;
         }
-        if (attachesToSite(card)) {
-            moves.beginPendingPlay?.(
-                dragged.index,
-                'Affaiblissez un séide, puis choisissez un site.'
-            );
-        }
+        // Site-attach (Tempête…): pas de flèche pendant le drag — pending
+        // ouvert au drop (halo coût / site).
     }, [
         dragged,
         isOverHandCancel,
@@ -2620,19 +2617,11 @@ export const GameBoard: React.FC<GameBoardProps> = ({
 
             const { index, origin, card, parentId } = draggedCard;
 
-            // Condition « Plays on a site » avec coût exert : flèche séide → puis site
-            if (
-                origin === 'HAND' &&
-                card &&
-                attachesToSite(card) &&
-                draggedCard.designationTargetIds?.length
-            ) {
+            // Condition « Plays on a site » (Tempête conjurée, Neiges…) :
+            // coût exert = halo + clic ; site = halo + clic. Jamais de flèche.
+            if (origin === 'HAND' && card && attachesToSite(card)) {
                 if (cancelled) {
                     moves.cancelPendingPlay?.();
-                    return;
-                }
-                const designationIds = draggedCard.designationTargetIds;
-                if (!isDesignationTargetId(designationIds, targetId)) {
                     return;
                 }
                 const validation = canPlayCard(card, {
@@ -2652,18 +2641,80 @@ export const GameBoard: React.FC<GameBoardProps> = ({
                     moves.cancelPendingPlay?.();
                     return;
                 }
-                const costTargetId = targetId as string;
+                const costIds = getToPlayExertTargetIds(G, card);
+
+                const finishAttach = (
+                    siteId: string,
+                    costTargetId?: string
+                ) => {
+                    stopTargeting();
+                    moves.attachCard?.(index, siteId, costTargetId);
+                    moves.cancelPendingPlay?.();
+                    audioService.play('CARD_PLAY');
+                };
+
+                const startSitePick = (costTargetId?: string) => {
+                    if (siteIds.length === 1) {
+                        finishAttach(siteIds[0]!, costTargetId);
+                        return;
+                    }
+                    startTargeting({
+                        kind: 'SITE_ATTACH',
+                        targetableCardIds: siteIds,
+                        pendingCard: card,
+                        message:
+                            'Choisissez un site pour y jouer cette carte.',
+                        onSelectTarget: (siteId) =>
+                            finishAttach(siteId, costTargetId),
+                    });
+                };
+
+                if (costIds.length === 0) {
+                    if (
+                        targetId &&
+                        isDesignationTargetId(siteIds, targetId)
+                    ) {
+                        finishAttach(targetId as string);
+                        return;
+                    }
+                    startSitePick();
+                    return;
+                }
+
+                // Drop sur un site → d’abord affaiblir, puis poser là.
+                if (targetId && isDesignationTargetId(siteIds, targetId)) {
+                    const preselectedSite = targetId as string;
+                    moves.beginPendingPlay?.(
+                        index,
+                        'Affaiblissez un séide pour jouer cette carte.'
+                    );
+                    startTargeting({
+                        kind: 'DESIGNATION',
+                        targetableCardIds: costIds,
+                        message:
+                            'Affaiblissez un séide pour jouer cette carte.',
+                        onSelectTarget: (costId) =>
+                            finishAttach(preselectedSite, costId),
+                    });
+                    return;
+                }
+
+                // Drop sur le coût → puis choisir le site.
+                if (targetId && isDesignationTargetId(costIds, targetId)) {
+                    startSitePick(targetId as string);
+                    return;
+                }
+
+                // Drop ailleurs → halo coût, puis site.
+                moves.beginPendingPlay?.(
+                    index,
+                    'Affaiblissez un séide, puis choisissez un site.'
+                );
                 startTargeting({
-                    kind: 'SITE_ATTACH',
-                    targetableCardIds: siteIds,
-                    pendingCard: card,
-                    arrowFromCardId: costTargetId,
-                    message: 'Choisissez un site pour y jouer cette carte.',
-                    onSelectTarget: (siteId) => {
-                        stopTargeting();
-                        moves.attachCard?.(index, siteId, costTargetId);
-                        moves.cancelPendingPlay?.();
-                    },
+                    kind: 'DESIGNATION',
+                    targetableCardIds: costIds,
+                    message: 'Affaiblissez un séide pour jouer cette carte.',
+                    onSelectTarget: (costId) => startSitePick(costId),
                 });
                 return;
             }
@@ -2768,6 +2819,68 @@ export const GameBoard: React.FC<GameBoardProps> = ({
                     ctx.phase || '',
                     G
                 );
+                // Replace / exchange path : halo site (pas de flèche pendant le drag).
+                if (
+                    eventAbility &&
+                    abilityNeedsPathThenDeckSite(eventAbility)
+                ) {
+                    const pathIds = getPathThenDeckSiteTargetIds(
+                        G,
+                        card,
+                        eventAbility
+                    );
+                    if (pathIds.length === 0) return;
+                    const openDeckPicker = (pathSiteId: string) => {
+                        const pathSite = (G.path || []).find(
+                            (site) =>
+                                site &&
+                                (site.instanceId === pathSiteId ||
+                                    site.id === pathSiteId)
+                        );
+                        if (
+                            requestSiteReplace(
+                                card,
+                                eventAbility,
+                                (deckSiteId) => {
+                                    stopTargeting();
+                                    moves.playCard?.(index, [
+                                        pathSiteId,
+                                        deckSiteId,
+                                    ]);
+                                    audioService.play('CARD_PLAY');
+                                },
+                                pathSite?.id || pathSiteId
+                            )
+                        ) {
+                            return;
+                        }
+                    };
+                    if (
+                        targetId &&
+                        isDesignationTargetId(pathIds, targetId)
+                    ) {
+                        openDeckPicker(targetId as string);
+                        return;
+                    }
+                    moves.beginPendingPlay?.(
+                        index,
+                        abilityNeedsSiteExchange(eventAbility)
+                            ? 'Choisissez un de vos sites du chemin à échanger.'
+                            : 'Choisissez un site de la région actuelle à remplacer.'
+                    );
+                    startTargeting({
+                        kind: 'SITE_ATTACH',
+                        targetableCardIds: pathIds,
+                        pendingCard: card,
+                        message: abilityNeedsSiteExchange(eventAbility)
+                            ? 'Choisissez un de vos sites du chemin à échanger.'
+                            : 'Choisissez un site de la région actuelle à remplacer.',
+                        onSelectTarget: (pathSiteId) => {
+                            openDeckPicker(pathSiteId);
+                        },
+                    });
+                    return;
+                }
                 if (
                     eventAbility &&
                     abilityNeedsSiteReplace(eventAbility) &&
