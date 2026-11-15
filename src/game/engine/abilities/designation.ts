@@ -91,6 +91,7 @@ import {
 } from '../canPlayCard';
 import { cardMatchesTarget } from '../validations/matchers';
 import { getKeywordValue } from '../keywords/keywordUtils';
+import { getCalculatedStrength } from '../../logic/stats/statCalculator';
 
 export function cardTargetIds(card: CardState): string[] {
     const ids = [card.instanceId, card.id].filter(Boolean);
@@ -134,8 +135,16 @@ function candidatesForEffect(
                 getHandStackCandidates(G, ownerId, effect.target)
             );
         }
+        const playCandidates = getPlayStackCandidates(G, effect.target);
+        const wantsPossession = effect.target.some((branch) =>
+            branch.some((token) => String(token).toUpperCase() === 'POSSESSION')
+        );
+        // Twisted Tales : n’importe quelle possession en jeu (souvent FP).
+        if (wantsPossession) {
+            return uniqueCards(playCandidates);
+        }
         return uniqueCards(
-            getPlayStackCandidates(G, effect.target).filter(
+            playCandidates.filter(
                 (card) => findInPlayCardOwnerId(G, card) === ownerId
             )
         );
@@ -440,6 +449,10 @@ export function getCostDesignationCandidates(
     );
     if (spotReq && Array.isArray(spotReq.target)) {
         const sourceId = source.instanceId || source.id;
+        const bearer =
+            spotReq.lessStrengthThanBearer || spotReq.minAttachments
+                ? findBearer(G, source)
+                : null;
         return uniqueCards(
             filterCostTargetsForActor(
                 G,
@@ -454,6 +467,21 @@ export function getCostDesignationCandidates(
                     !card.suppressCharacterPlayRestrictionsUntil
                 ) {
                     return false;
+                }
+                if (
+                    typeof spotReq.minAttachments === 'number' &&
+                    (card.attachments?.length || 0) < spotReq.minAttachments
+                ) {
+                    return false;
+                }
+                if (spotReq.lessStrengthThanBearer) {
+                    if (!bearer) return false;
+                    if (
+                        getCalculatedStrength(G, card) >=
+                        getCalculatedStrength(G, bearer)
+                    ) {
+                        return false;
+                    }
                 }
                 return true;
             })
@@ -649,11 +677,33 @@ export function getEffectDesignationCandidates(
         (item) => item.type === 'FORCE_ASSIGN'
     );
     if (forceAssign && forceAssign.type === 'FORCE_ASSIGN') {
+        // Desertion : compagnon = porteur — pas de désignation d’effet.
+        if (forceAssign.companion === 'BEARER') {
+            return [];
+        }
         return candidatesForEffect(G, source, ability, {
             type: 'WOUND',
             count: 1,
             target: forceAssign.companion,
             excludeRingBearer: forceAssign.excludeRingBearer,
+        });
+    }
+
+    const returnAtts = (ability.effects || []).find(
+        (item) => item.type === 'RETURN_ATTACHMENTS_TO_HAND'
+    );
+    if (returnAtts && returnAtts.type === 'RETURN_ATTACHMENTS_TO_HAND') {
+        if (
+            returnAtts.host === 'COST_TARGET' ||
+            returnAtts.host === 'BEARER' ||
+            returnAtts.host === 'SELF'
+        ) {
+            return [];
+        }
+        return candidatesForEffect(G, source, ability, {
+            type: 'WOUND',
+            count: 1,
+            target: returnAtts.host,
         });
     }
 
@@ -1163,7 +1213,37 @@ export function abilityHasLegalEffectTarget(
                     return false;
                 }
             }
-            if (
+            if (effect.companion === 'BEARER') {
+                if (!findBearer(G, source)) return false;
+            } else if (
+                getEffectDesignationCandidates(
+                    G,
+                    source,
+                    ability,
+                    actingPlayerId
+                ).length < 1
+            ) {
+                return false;
+            }
+            continue;
+        }
+        if (effect.type === 'RETURN_ATTACHMENTS_TO_HAND') {
+            if (effect.host === 'COST_TARGET') {
+                if (
+                    getCostDesignationCandidates(
+                        G,
+                        source,
+                        ability,
+                        actingPlayerId
+                    ).length < 1
+                ) {
+                    return false;
+                }
+            } else if (effect.host === 'BEARER') {
+                if (!findBearer(G, source)) return false;
+            } else if (effect.host === 'SELF') {
+                // ok
+            } else if (
                 getEffectDesignationCandidates(
                     G,
                     source,

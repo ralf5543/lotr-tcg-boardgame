@@ -7140,6 +7140,54 @@
     "isUnique": true,
     "kind": "SHADOW",
     "type": "MINION",
+    "abilities": [
+      {
+        "id": "4R154:0",
+        "phases": [
+          "MANEUVER"
+        ],
+        "cost": [
+          {
+            "exert": [
+              {
+                "count": 1,
+                "target": "SELF"
+              }
+            ],
+            "spot": [
+              {
+                "count": 1,
+                "target": [
+                  [
+                    "UNBOUND",
+                    "COMPANION"
+                  ]
+                ],
+                "mode": "DESIGNATION",
+                "minAttachments": 3
+              }
+            ]
+          }
+        ],
+        "effects": [
+          {
+            "type": "RETURN_ATTACHMENTS_TO_HAND",
+            "host": "COST_TARGET",
+            "filter": [
+              [
+                "FREE_PEOPLES"
+              ]
+            ]
+          }
+        ],
+        "source": "SELF",
+        "text": "Maneuver: Exert Gríma and spot an unbound companion bearing 3 or more cards to return each Free Peoples card that companion bears to its owner’s hand.",
+        "textFr": "**Manœuvre :** Affaiblissez Grima et désignez un compagnon dissocié détenant 3 cartes ou plus pour retourner chacune des cartes des Peuples Libres détenues par ce compagnon dans la main de son propriétaire."
+      }
+    ],
+    "actionPhases": [
+      "MANEUVER"
+    ],
     "culture": "ISENGARD",
     "race": "MAN",
     "twilightCost": 2,
@@ -66237,6 +66285,48 @@
         ]
       }
     ],
+    "abilities": [
+      {
+        "id": "6U61:0",
+        "phases": [
+          "ASSIGNMENT"
+        ],
+        "cost": [
+          {
+            "spot": [
+              {
+                "count": 1,
+                "target": [
+                  [
+                    "ISENGARD",
+                    "MINION"
+                  ]
+                ],
+                "mode": "DESIGNATION",
+                "lessStrengthThanBearer": true
+              }
+            ]
+          }
+        ],
+        "effects": [
+          {
+            "type": "FORCE_ASSIGN",
+            "minion": "COST_TARGET",
+            "companion": "BEARER"
+          },
+          {
+            "type": "DISCARD",
+            "target": "SELF"
+          }
+        ],
+        "source": "SELF",
+        "text": "Assignment: Assign an isengard minion with less strength than bearer to skirmish bearer. Discard this condition.",
+        "textFr": "**Affectationt :** Affectez un séide <symbol>isengard</symbol> (moins fort que le détenteur) au combat du détenteur. Défaussez cette situation."
+      }
+    ],
+    "actionPhases": [
+      "ASSIGNMENT"
+    ],
     "culture": "ISENGARD",
     "twilightCost": 1,
     "strength": -1,
@@ -66849,6 +66939,46 @@
     "kind": "SHADOW",
     "type": "CONDITION",
     "subtype": "SUPPORT-AREA",
+    "abilities": [
+      {
+        "id": "6U75:0",
+        "phases": [
+          "RESPONSE"
+        ],
+        "optional": true,
+        "trigger": {
+          "type": "LOSES_SKIRMISH",
+          "loser": [
+            [
+              "COMPANION"
+            ],
+            [
+              "ALLY"
+            ]
+          ],
+          "involving": [
+            [
+              "ISENGARD",
+              "MAN"
+            ]
+          ]
+        },
+        "cost": [],
+        "effects": [
+          {
+            "type": "STACK_ON_SELF",
+            "from": "PLAY",
+            "target": [
+              [
+                "POSSESSION"
+              ]
+            ]
+          }
+        ],
+        "source": "SELF",
+        "text": "Each time a companion or ally loses a skirmish involving an isengard Man, you may spot a possession to stack that possession here."
+      }
+    ],
     "culture": "ISENGARD",
     "twilightCost": 2,
     "imageUrl": "/cards_visuals/o_06_075.jpg",
@@ -121713,6 +121843,35 @@
       "type": "TWILIGHT",
       "amount": 2
     },
+    "abilities": [
+      {
+        "id": "13R38:0",
+        "phases": [],
+        "trigger": {
+          "type": "WHILE",
+          "spot": [
+            {
+              "count": 2,
+              "target": [
+                [
+                  "GANDALF",
+                  "COMPANION"
+                ]
+              ]
+            }
+          ]
+        },
+        "cost": [],
+        "effects": [
+          {
+            "type": "SUPPRESS_POSSESSION_STRENGTH",
+            "target": "SKIRMISHING"
+          }
+        ],
+        "source": "SELF",
+        "text": "While you can spot 2 gandalf companions, minions skirmishing bearer do not gain strength bonuses from possessions."
+      }
+    ],
     "culture": "GANDALF",
     "twilightCost": 2,
     "resistance": 2,
@@ -123701,6 +123860,49 @@
     "kind": "SHADOW",
     "type": "CONDITION",
     "subtype": "SUPPORT-AREA",
+    "abilities": [
+      {
+        "id": "13U79:0",
+        "phases": [
+          "START_OF_MANEUVER"
+        ],
+        "optional": true,
+        "cost": [
+          {
+            "exert": [
+              {
+                "count": 1,
+                "target": [
+                  [
+                    "Wizard"
+                  ]
+                ]
+              }
+            ]
+          }
+        ],
+        "effects": [
+          {
+            "type": "BECOME_MINION",
+            "strength": 10,
+            "vitality": 1,
+            "keywords": [
+              "FIERCE"
+            ],
+            "race": "WIZARD",
+            "cannotBearCards": true,
+            "cannotTakeWounds": true,
+            "expiresAtPhase": "REGROUP",
+            "stillCondition": true
+          }
+        ],
+        "source": "SELF",
+        "text": "At the start of the maneuver phase, you may exert a Wizard to make this condition a fierce Wizard minion until the start of the regroup phase that has 10 strength and 1 vitality, and cannot take wounds or bear other cards. This card is still a condition."
+      }
+    ],
+    "actionPhases": [
+      "START_OF_MANEUVER"
+    ],
     "culture": "ISENGARD",
     "twilightCost": 3,
     "imageUrl": "/cards_visuals/o_13_079.jpg",

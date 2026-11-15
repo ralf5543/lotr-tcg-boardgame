@@ -204,6 +204,10 @@ export function canCardTakeWound(G: GameState, card: CardState): boolean {
     if (card.forbidWoundsUntil) {
         return false;
     }
+    // Condition animée (Pallando Deceived…) : cannot take wounds.
+    if (card.animatedMinion?.cannotTakeWounds) {
+        return false;
+    }
     // Plafond par escarmouche (Armure de Pippin) : déjà atteint → plus
     // aucune blessure n’est légale sur cette carte dans ce combat.
     const limit = getSkirmishWoundLimit(G, card);

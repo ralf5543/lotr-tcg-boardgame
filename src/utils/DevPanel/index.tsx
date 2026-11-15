@@ -355,10 +355,20 @@ export const DevPanel: React.FC<DevPanelProps> = ({
                             >
                                 Hobbits/Isengard v8
                             </S.ActionButton>
+                            <S.ActionButton
+                                onClick={() =>
+                                    moves.devLoadPreset?.(
+                                        'HOBBITS_ISENGARD_W9'
+                                    )
+                                }
+                                title="Deck Hobbits / Isengard — vague 9"
+                            >
+                                Hobbits/Isengard v9
+                            </S.ActionButton>
                         </S.ButtonGroup>
                         <S.Hint>
-                            v8 : Fell Voice, Saruman TTT, Staff, Throne —
-                            tester depuis l’onglet Ombre (?player=1).
+                            v9 : Désertion, Contes, Gríma, Pallando, Radagast —
+                            manœuvre / affectation.
                         </S.Hint>
                     </S.Section>
 

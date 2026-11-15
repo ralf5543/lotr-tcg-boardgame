@@ -191,6 +191,16 @@ export interface CostSelector {
      * la cible doit porter au moins un attachement matchant.
      */
     bearing?: string[][];
+    /**
+     * « bearing N or more cards » (Gríma Wormtongue…) —
+     * nombre mini d’attachements sur la cible.
+     */
+    minAttachments?: number;
+    /**
+     * « minion with less strength than bearer » (Desertion…) —
+     * force calculée < force du porteur de la source.
+     */
+    lessStrengthThanBearer?: boolean;
 }
 
 export interface CostOption {
@@ -579,6 +589,14 @@ export type AbilityEffect =
            * (Troop of Uruk-hai : personnages au combat contre la source).
            */
           type: 'SUPPRESS_WEAPON_STRENGTH';
+          target: AbilityTargetRef;
+      }
+    | {
+          /**
+           * Les cibles n’obtiennent pas le bonus de force des possessions
+           * (Radagast Tender of Beasts : séides vs porteur).
+           */
+          type: 'SUPPRESS_POSSESSION_STRENGTH';
           target: AbilityTargetRef;
       }
     | {
@@ -1107,6 +1125,16 @@ export type AbilityEffect =
       }
     | {
           /**
+           * Remet en main les attachements du hôte (Gríma Wormtongue…).
+           * `host` = compagnon désigné (souvent COST_TARGET).
+           * `filter` = ex. Free Peoples cards only.
+           */
+          type: 'RETURN_ATTACHMENTS_TO_HAND';
+          host: AbilityTargetRef;
+          filter?: string[][];
+      }
+    | {
+          /**
            * Pose / remplace le prochain site hors déplacement (Mere…).
            * Cible = id dans le sitesDeck du joueur qui active.
            * Si le prochain est déjà là : remplace (transfert attachés/stack).
@@ -1236,7 +1264,11 @@ export type AbilityEffect =
           vitality: number;
           keywords?: CardKeyword[];
           culture?: CardCulture;
+          /** Race imprimée du séide animé (Pallando Deceived : Wizard). */
+          race?: string;
           cannotBearCards?: boolean;
+          /** Pallando / Radagast Deceived : ne peut pas prendre de blessures. */
+          cannotTakeWounds?: boolean;
           expiresAtPhase: AbilityEffectExpiry;
           stillCondition?: boolean;
       }
@@ -1729,8 +1761,10 @@ export interface CardState {
         savedStrength?: number;
         savedVitality?: number;
         savedKeywords?: CardKeyword[];
+        savedRace?: string;
         stillCondition?: boolean;
         cannotBearCards?: boolean;
+        cannotTakeWounds?: boolean;
     };
     name?: string; // Si conservé pour compatibilité ou identification
     isDead?: boolean;

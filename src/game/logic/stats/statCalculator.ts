@@ -5,6 +5,7 @@ import {
     getWhileStrengthBonus,
     isWeaponAttachment,
     isWeaponStrengthSuppressed,
+    isPossessionStrengthSuppressed,
 } from './mechanics/whileModifier';
 import { isRingBearerCard } from '../../../utils/cardUtils';
 
@@ -17,12 +18,17 @@ export function getCalculatedStrength(G?: GameState, card?: CardState): number {
 
     const cardId = card.instanceId || card.id;
     const suppressWeapons = Boolean(G && isWeaponStrengthSuppressed(G, card));
+    const suppressPossessions = Boolean(
+        G && isPossessionStrengthSuppressed(G, card)
+    );
 
     // 1. Force de base + Attachments
     let totalStrength = Number(card.strength) || 0;
     if (card.attachments) {
         card.attachments.forEach((att) => {
             if (!att?.strength) return;
+            // Radagast : aucune possession ne donne de force.
+            if (suppressPossessions && att.type === 'POSSESSION') return;
             // Troop of Uruk-hai : pas de bonus de force des armes.
             if (suppressWeapons && isWeaponAttachment(att)) return;
             totalStrength += Number(att.strength);

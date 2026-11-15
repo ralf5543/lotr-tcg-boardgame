@@ -12,9 +12,12 @@ import { getEffectiveVitality } from '../../../utils/cardStats';
 import { findTargetCard } from '../../../utils/cardUtils';
 import { getKeywordValue } from '../keywords/keywordUtils';
 import {
+    findBearer,
     resolveCostTarget,
     resolveSkirmishingOpponents,
 } from './resolveCostTarget';
+import { getCalculatedStrength } from '../../logic/stats/statCalculator';
+import { cardMatchesTarget } from '../validations/matchers';
 import {
     abilityOwnerCanSpotCultureTokens,
     countCultureTokensForPlayer,
@@ -228,6 +231,27 @@ function canPayOption(
                 cards = cards.filter(
                     (card) =>
                         card.instanceId !== sourceId && card.id !== sourceId
+                );
+            }
+            if (typeof req.minAttachments === 'number') {
+                cards = cards.filter(
+                    (card) =>
+                        (card.attachments?.length || 0) >= req.minAttachments!
+                );
+            }
+            if (req.lessStrengthThanBearer) {
+                const bearer = findBearer(G, source);
+                if (!bearer) return false;
+                const bearerStr = getCalculatedStrength(G, bearer);
+                cards = cards.filter(
+                    (card) => getCalculatedStrength(G, card) < bearerStr
+                );
+            }
+            if (req.bearing && req.bearing.length > 0) {
+                cards = cards.filter((card) =>
+                    (card.attachments || []).some(
+                        (att) => att && cardMatchesTarget(att, req.bearing!)
+                    )
                 );
             }
             if (cards.length < count) return false;

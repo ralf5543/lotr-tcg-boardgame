@@ -29,7 +29,7 @@ export function removeCardFromHand(
 
 /**
  * Empile une carte sur l’hôte (aire de soutien).
- * `from: 'HAND'` : retire de la main ; `PLAY` : séide du champ.
+ * `from: 'HAND'` : retire de la main ; `PLAY` : séide du champ ou possession en jeu.
  */
 export function stackCardOnHost(
     G: GameState,
@@ -50,9 +50,12 @@ export function stackCardOnHost(
     let removed: CardState | null = null;
     if (from === 'HAND') {
         removed = removeCardFromHand(G, ownerId, card.instanceId || card.id);
-    } else {
-        if (card.type !== 'MINION') return false;
+    } else if (card.type === 'MINION') {
         removed = detachCardFromBattlefield(G, card);
+    } else if (card.type === 'POSSESSION') {
+        removed = detachPossessionFromHost(G, card);
+    } else {
+        return false;
     }
     if (!removed) return false;
 
@@ -162,10 +165,72 @@ export function getHandStackCandidates(
 }
 
 /** Séides en jeu (champ) éligibles à empiler sur l’hôte. */
+/** Détache une possession de son porteur (empilement Twisted Tales…). */
+function detachPossessionFromHost(
+    G: GameState,
+    possession: CardState
+): CardState | null {
+    const possessionId = possession.instanceId || possession.id;
+    if (!possessionId) return null;
+    let removed: CardState | null = null;
+    forEachInPlayCardForDetach(G, (host) => {
+        if (removed || !host.attachments?.length) return;
+        const idx = host.attachments.findIndex(
+            (att) =>
+                att &&
+                (att.instanceId === possessionId || att.id === possessionId)
+        );
+        if (idx < 0) return;
+        const [att] = host.attachments.splice(idx, 1);
+        if (att) {
+            delete att.attachedTo;
+            delete att.attachedViaAid;
+            removed = att;
+        }
+    });
+    return removed;
+}
+
+function forEachInPlayCardForDetach(
+    G: GameState,
+    visit: (card: CardState) => void
+): void {
+    for (const player of Object.values(G.players || {})) {
+        if (!player) continue;
+        for (const card of player.fellowshipArea || []) {
+            if (card) visit(card);
+        }
+        for (const card of player.supportArea || []) {
+            if (card) visit(card);
+        }
+    }
+    for (const card of G.battlefield || []) {
+        if (card) visit(card);
+    }
+}
+
 export function getPlayStackCandidates(
     G: GameState,
     filter: string[][]
 ): CardState[] {
+    const wantsPossession = filter.some((branch) =>
+        branch.some((token) => token.toUpperCase() === 'POSSESSION')
+    );
+    if (wantsPossession) {
+        const found: CardState[] = [];
+        forEachInPlayCardForDetach(G, (host) => {
+            for (const att of host.attachments || []) {
+                if (
+                    att &&
+                    att.type === 'POSSESSION' &&
+                    cardMatchesTarget(att, filter)
+                ) {
+                    found.push(att);
+                }
+            }
+        });
+        return found;
+    }
     return (G.battlefield || []).filter(
         (card) =>
             card &&

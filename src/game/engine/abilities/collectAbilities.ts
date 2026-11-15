@@ -863,7 +863,14 @@ function formatEffectBit(
         const fierce = (effect.keywords || []).includes('FIERCE')
             ? 'fierce '
             : '';
-        return `devenir un séide ${fierce}(force ${effect.strength}, vitalité ${effect.vitality}) jusqu’au regroupement`;
+        const race = effect.race ? `${effect.race.toLowerCase()} ` : '';
+        return `devenir un séide ${fierce}${race}(force ${effect.strength}, vitalité ${effect.vitality}) jusqu’au regroupement`;
+    }
+    if (effect.type === 'RETURN_ATTACHMENTS_TO_HAND') {
+        return 'retourner les attachements Peuples Libres en main';
+    }
+    if (effect.type === 'SUPPRESS_POSSESSION_STRENGTH') {
+        return 'annuler la force des possessions adverses';
     }
     if (effect.type === 'SUPPRESS_CHARACTER_PLAY_RESTRICTIONS') {
         return 'ignorer les restrictions d’affectation / archerie jusqu’au regroupement';

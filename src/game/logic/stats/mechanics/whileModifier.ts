@@ -1334,9 +1334,10 @@ function isWeaponAttachment(att: CardState): boolean {
  * True si un adversaire d’escarmouche (ou son attachement) annule les
  * bonus de force des armes sur `card` (Troop of Uruk-hai…).
  */
-export function isWeaponStrengthSuppressed(
+function isStrengthBonusSuppressed(
     G: GameState,
-    card: CardState
+    card: CardState,
+    effectType: 'SUPPRESS_WEAPON_STRENGTH' | 'SUPPRESS_POSSESSION_STRENGTH'
 ): boolean {
     if (!card || card.isDead) return false;
     const opponents = getSkirmishOpponents(G, card);
@@ -1347,7 +1348,7 @@ export function isWeaponStrengthSuppressed(
                 if (ability.trigger?.type !== 'WHILE') continue;
                 if (!whileConditionHolds(G, source, ability)) continue;
                 for (const effect of ability.effects || []) {
-                    if (effect.type !== 'SUPPRESS_WEAPON_STRENGTH') continue;
+                    if (effect.type !== effectType) continue;
                     if (effect.target === 'SKIRMISHING') return true;
                     if (
                         Array.isArray(effect.target) &&
@@ -1360,6 +1361,24 @@ export function isWeaponStrengthSuppressed(
         }
     }
     return false;
+}
+
+export function isWeaponStrengthSuppressed(
+    G: GameState,
+    card: CardState
+): boolean {
+    return isStrengthBonusSuppressed(G, card, 'SUPPRESS_WEAPON_STRENGTH');
+}
+
+/**
+ * True si un adversaire d’escarmouche (ou son attachement) annule les
+ * bonus de force des possessions sur `card` (Radagast Tender of Beasts…).
+ */
+export function isPossessionStrengthSuppressed(
+    G: GameState,
+    card: CardState
+): boolean {
+    return isStrengthBonusSuppressed(G, card, 'SUPPRESS_POSSESSION_STRENGTH');
 }
 
 export { isWeaponAttachment };

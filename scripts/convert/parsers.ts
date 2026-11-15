@@ -2015,7 +2015,10 @@ function parseLosesSkirmishLoser(
 
     const yours = /^your\s+/i.test(plain);
     const withArticle = plain.replace(/^your\s+/i, '').trim();
-    const orDnf = parseArticleOrFilters(withArticle);
+    // parseArticleOrFilters exige « a/an … or … »
+    const orDnf = parseArticleOrFilters(
+        /^(a|an)\s+/i.test(withArticle) ? withArticle : `a ${withArticle}`
+    );
     if (orDnf) {
         return yours ? { loser: orDnf, yours: true } : { loser: orDnf };
     }
@@ -3402,6 +3405,56 @@ function parseBecomeMinionConditionAbilities(
                     keywords: /fierce/i.test(match[0]) ? ['FIERCE'] : [],
                     culture,
                     cannotBearCards: cannotBear,
+                    expiresAtPhase: 'REGROUP',
+                    stillCondition: true,
+                },
+            ],
+            source: 'SELF',
+            text: stripAbilityMarkup(match[0]),
+        });
+    }
+
+    // Pallando Deceived : début de manœuvre, affaiblir un Magicien → séide Wizard.
+    const startManeuverRe =
+        /At the start of the maneuver phase,\s*you may exert (?:a |an )?([\s\S]+?) to make this condition a\s+(?:<keyword>)?fierce(?:<\/keyword>)?\s+(\w+)\s+minion until the start of the regroup phase that has (\d+) strength and (\d+) vitality,\s*and cannot take wounds or bear other cards\.\s*This card is still a condition\.?/gi;
+    while ((match = startManeuverRe.exec(text)) !== null) {
+        const subject = parseExertSubject(match[1].trim(), undefined, text);
+        if (!subject) continue;
+        const raceRaw = match[2].trim().toUpperCase();
+        const strength = parseInt(match[3], 10);
+        const vitality = parseInt(match[4], 10);
+        if (
+            !Number.isFinite(strength) ||
+            !Number.isFinite(vitality) ||
+            strength < 1 ||
+            vitality < 1
+        ) {
+            continue;
+        }
+        found.push({
+            id: `${cardId || 'ability'}:${found.length}:become-minion-start`,
+            phases: ['START_OF_MANEUVER'],
+            optional: true,
+            cost: [
+                {
+                    exert: [
+                        {
+                            count: subject.count,
+                            target: subject.target,
+                            ...(subject.mode ? { mode: subject.mode } : {}),
+                        },
+                    ],
+                },
+            ],
+            effects: [
+                {
+                    type: 'BECOME_MINION',
+                    strength,
+                    vitality,
+                    keywords: ['FIERCE'],
+                    race: raceRaw,
+                    cannotBearCards: true,
+                    cannotTakeWounds: true,
                     expiresAtPhase: 'REGROUP',
                     stillCondition: true,
                 },
@@ -6844,6 +6897,56 @@ function parseSkirmishingSuppressWeaponStrengthAbilities(
 }
 
 /**
+ * While you can spot N [culture] companions, minions skirmishing bearer
+ * do not gain strength bonuses from possessions. (Radagast Tender of Beasts…)
+ */
+function parseWhileSpotSuppressPossessionStrengthAbilities(
+    text: string,
+    cardId?: string
+): Record<string, unknown>[] {
+    const found: Record<string, unknown>[] = [];
+    const re =
+        /While you can spot (\d+)\s+(<symbol>[^<]+<\/symbol>)\s+companions?,\s*minions skirmishing bearer do not gain strength bonuses from possessions\.?/gi;
+    let match: RegExpExecArray | null;
+    while ((match = re.exec(text)) !== null) {
+        const count = parseInt(match[1], 10);
+        const culture = parseCultureTokenSpec(match[2]);
+        if (
+            !Number.isFinite(count) ||
+            count < 1 ||
+            !culture ||
+            culture === 'FREE_PEOPLES' ||
+            culture === 'ANY'
+        ) {
+            continue;
+        }
+        found.push({
+            id: `${cardId || 'ability'}:${found.length}:suppress-poss-str`,
+            phases: [],
+            trigger: {
+                type: 'WHILE',
+                spot: [
+                    {
+                        count,
+                        target: [[culture, 'COMPANION']],
+                    },
+                ],
+            },
+            cost: [],
+            effects: [
+                {
+                    type: 'SUPPRESS_POSSESSION_STRENGTH',
+                    target: 'SKIRMISHING',
+                },
+            ],
+            source: 'SELF',
+            text: stripAbilityMarkup(match[0]),
+        });
+    }
+    return found;
+}
+
+/**
  * Each time Gollum or Sméagol is played, add a threat.
  */
 function parseEachTimeNamedPlayedAddThreatsAbilities(
@@ -7872,6 +7975,138 @@ function parseAssignmentForceAssignAbilities(
                     companion: [['COMPANION']],
                     excludeRingBearer: true,
                     fpMayPrevent: { exert: true },
+                },
+            ],
+            source: 'SELF',
+            text: stripAbilityMarkup(match[0]),
+        });
+    }
+
+    // Desertion : Assign an [culture] minion with less strength than bearer
+    // to skirmish bearer. Discard this condition.
+    const desertionRe =
+        /(?:\*\*|<(?:keyword)>)?Assignment:?\s*(?:<\/(?:keyword)>)?(?:\*\*)?\s*Assign an (<symbol>[^<]+<\/symbol>)\s+minion with less strength than bearer to skirmish bearer\.\s*Discard this condition\.?/gi;
+    while ((match = desertionRe.exec(normalized)) !== null) {
+        const culture = parseCultureTokenSpec(match[1]);
+        if (!culture || typeof culture !== 'string') continue;
+        found.push({
+            id: `${cardId || 'ability'}:${found.length}:force-assign-desertion`,
+            phases: ['ASSIGNMENT'],
+            cost: [
+                {
+                    spot: [
+                        {
+                            count: 1,
+                            target: [[culture, 'MINION']],
+                            mode: 'DESIGNATION',
+                            lessStrengthThanBearer: true,
+                        },
+                    ],
+                },
+            ],
+            effects: [
+                {
+                    type: 'FORCE_ASSIGN',
+                    minion: 'COST_TARGET',
+                    companion: 'BEARER',
+                },
+                { type: 'DISCARD', target: 'SELF' },
+            ],
+            source: 'SELF',
+            text: stripAbilityMarkup(match[0]),
+        });
+    }
+    return found;
+}
+
+/**
+ * Each time a companion or ally loses a skirmish involving an [culture] Man,
+ * you may spot a possession to stack that possession here. (Twisted Tales…)
+ */
+function parseLosesSkirmishStackPossessionAbilities(
+    text: string,
+    cardId?: string
+): Record<string, unknown>[] {
+    const found: Record<string, unknown>[] = [];
+    const re =
+        /Each time (?:a |an )?([\s\S]+?) loses a skirmish involving (?:a |an )?(<symbol>[^<]+<\/symbol>)\s+Man,\s*you may spot a possession to stack that possession here\.?/gi;
+    let match: RegExpExecArray | null;
+    while ((match = re.exec(text)) !== null) {
+        const loserParsed = parseLosesSkirmishLoser(match[1].trim());
+        if (!loserParsed || loserParsed.loser === 'SELF' || loserParsed.loser === 'BEARER') {
+            continue;
+        }
+        const culture = parseCultureTokenSpec(match[2]);
+        if (!culture || typeof culture !== 'string') continue;
+        found.push({
+            id: `${cardId || 'ability'}:${found.length}:lose-stack-poss`,
+            phases: ['RESPONSE'],
+            optional: true,
+            trigger: {
+                type: 'LOSES_SKIRMISH',
+                loser: loserParsed.loser,
+                involving: [[culture, 'MAN']],
+            },
+            cost: [],
+            effects: [
+                {
+                    type: 'STACK_ON_SELF',
+                    from: 'PLAY',
+                    target: [['POSSESSION']],
+                },
+            ],
+            source: 'SELF',
+            text: stripAbilityMarkup(match[0]),
+        });
+    }
+    return found;
+}
+
+/**
+ * Maneuver: Exert [name] and spot an unbound companion bearing N or more cards
+ * to return each Free Peoples card that companion bears to its owner's hand.
+ * (Gríma Wormtongue…)
+ */
+function parseManeuverReturnAttachmentsAbilities(
+    text: string,
+    cardTitle?: string,
+    cardId?: string
+): Record<string, unknown>[] {
+    const found: Record<string, unknown>[] = [];
+    const re =
+        /(?:\*\*|<(?:keyword)>)?Maneuver:?\s*(?:<\/(?:keyword)>)?(?:\*\*)?\s*Exert ([\s\S]+?) and spot an unbound companion bearing (\d+) or more cards to return each Free Peoples card that companion bears to its owner[''\u2019]?s hand\.?/gi;
+    let match: RegExpExecArray | null;
+    while ((match = re.exec(text)) !== null) {
+        const subject = parseExertSubject(match[1].trim(), cardTitle, text);
+        if (!subject || subject.target !== 'SELF') continue;
+        const minAttachments = parseInt(match[2], 10);
+        if (!Number.isFinite(minAttachments) || minAttachments < 1) continue;
+        found.push({
+            id: `${cardId || 'ability'}:${found.length}:return-fp-atts`,
+            phases: ['MANEUVER'],
+            cost: [
+                {
+                    exert: [
+                        {
+                            count: subject.count,
+                            target: 'SELF',
+                        },
+                    ],
+                    spot: [
+                        {
+                            count: 1,
+                            target: [['UNBOUND', 'COMPANION']],
+                            mode: 'DESIGNATION',
+                            minAttachments,
+                        },
+                    ],
+                },
+            ],
+            effects: [
+                {
+                    type: 'RETURN_ATTACHMENTS_TO_HAND',
+                    host: 'COST_TARGET',
+                    filter: [['FREE_PEOPLES']],
                 },
             ],
             source: 'SELF',
@@ -17736,6 +17971,24 @@ export function parseAbilities(
         }
     );
 
+    parseLosesSkirmishStackPossessionAbilities(text, cardId).forEach(
+        (ability) => {
+            abilities.push({
+                ...ability,
+                id: `${cardId || 'ability'}:${abilities.length}`,
+            });
+        }
+    );
+
+    parseManeuverReturnAttachmentsAbilities(text, cardTitle, cardId).forEach(
+        (ability) => {
+            abilities.push({
+                ...ability,
+                id: `${cardId || 'ability'}:${abilities.length}`,
+            });
+        }
+    );
+
     parseLosesSkirmishOpponentChooseAbilities(text, cardId).forEach(
         (ability) => {
             abilities.push({
@@ -18356,6 +18609,15 @@ export function parseAbilities(
     });
 
     parseSkirmishingSuppressWeaponStrengthAbilities(text, cardId).forEach(
+        (ability) => {
+            abilities.push({
+                ...ability,
+                id: `${cardId || 'ability'}:${abilities.length}`,
+            });
+        }
+    );
+
+    parseWhileSpotSuppressPossessionStrengthAbilities(text, cardId).forEach(
         (ability) => {
             abilities.push({
                 ...ability,

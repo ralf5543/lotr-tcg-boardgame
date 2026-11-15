@@ -650,8 +650,13 @@ export function applyAbilityEffect(
                 cardToStack = findTargetCard(G, cardId) as CardState | null;
                 if (
                     !cardToStack ||
-                    cardToStack.type !== 'MINION' ||
                     !cardMatchesTarget(cardToStack, effect.target)
+                ) {
+                    return false;
+                }
+                if (
+                    cardToStack.type !== 'MINION' &&
+                    cardToStack.type !== 'POSSESSION'
                 ) {
                     return false;
                 }
@@ -1356,9 +1361,6 @@ export function applyAbilityEffect(
         }
 
         if (effect.type === 'FORCE_ASSIGN') {
-            const companionPick = chosenIds[0];
-            if (!companionPick) return false;
-
             let minion: CardState | null = null;
             if (effect.minion === 'SELF') {
                 minion = source;
@@ -1371,7 +1373,7 @@ export function applyAbilityEffect(
                     G,
                     source,
                     effect.minion,
-                    companionPick
+                    chosenIds[0]
                 );
             }
             if (!minion || minion.type !== 'MINION') return false;
@@ -1382,12 +1384,19 @@ export function applyAbilityEffect(
                 return false;
             }
 
-            const companion = resolveAbilityTarget(
-                G,
-                source,
-                effect.companion,
-                companionPick
-            );
+            let companion: CardState | null = null;
+            if (effect.companion === 'BEARER') {
+                companion = findBearer(G, source);
+            } else {
+                const companionPick = chosenIds[0];
+                if (!companionPick) return false;
+                companion = resolveAbilityTarget(
+                    G,
+                    source,
+                    effect.companion,
+                    companionPick
+                );
+            }
             if (!companion || companion.type !== 'COMPANION') return false;
             if (
                 effect.excludeRingBearer &&
@@ -1397,6 +1406,39 @@ export function applyAbilityEffect(
             }
             if (!requestForceAssign(G, minion, companion, effect.fpMayPrevent)) {
                 return false;
+            }
+            continue;
+        }
+
+        if (effect.type === 'RETURN_ATTACHMENTS_TO_HAND') {
+            let host: CardState | null = null;
+            if (effect.host === 'COST_TARGET') {
+                const costId = costIds[0] || chosenIds[0];
+                if (!costId) return false;
+                host = findTargetCard(G, costId) as CardState | null;
+            } else if (effect.host === 'BEARER') {
+                host = findBearer(G, source);
+            } else if (effect.host === 'SELF') {
+                host = source;
+            } else {
+                host = resolveAbilityTarget(
+                    G,
+                    source,
+                    effect.host,
+                    chosenIds[0]
+                );
+            }
+            if (!host) return false;
+            const atts = [...(host.attachments || [])].filter(Boolean);
+            for (const att of atts) {
+                if (!att) continue;
+                if (
+                    effect.filter &&
+                    !cardMatchesTarget(att, effect.filter)
+                ) {
+                    continue;
+                }
+                if (!returnCardToOwnerHand(G, att)) return false;
             }
             continue;
         }
@@ -2594,14 +2636,17 @@ function becomeMinionFromCondition(
         savedStrength: source.strength,
         savedVitality: source.vitality,
         savedKeywords: [...(source.keywords || [])],
+        savedRace: source.race,
         stillCondition: effect.stillCondition !== false,
         cannotBearCards: Boolean(effect.cannotBearCards),
+        cannotTakeWounds: Boolean(effect.cannotTakeWounds),
     };
     source.type = 'MINION';
     source.strength = effect.strength;
     source.vitality = effect.vitality;
     source.wounds = 0;
     if (effect.culture) source.culture = effect.culture;
+    if (effect.race) source.race = effect.race;
     const keywords = new Set(source.keywords || []);
     for (const kw of effect.keywords || []) keywords.add(kw);
     source.keywords = [...keywords];
@@ -2648,6 +2693,8 @@ function revertAnimatedMinions(G: GameState, phase: AbilityEffectExpiry): void {
         if (anim.savedVitality != null) card.vitality = anim.savedVitality;
         else delete card.vitality;
         card.keywords = [...(anim.savedKeywords || [])];
+        if (anim.savedRace != null) card.race = anim.savedRace;
+        else delete card.race;
         card.wounds = 0;
         delete card.isDead;
         delete card.isOverwhelmed;

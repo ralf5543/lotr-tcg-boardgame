@@ -170,6 +170,61 @@ export const applyDevPreset = (
                 '[DEV] Hobbits/Isengard vague 8 · Onglet Ombre (?player=1) : jouer Saruman → défausse / Throne ; Fell Voice → Neiges puis site ; Staff. Relancer le preset.';
             return { startPhase: 'shadow' };
         }
+        case 'HOBBITS_ISENGARD_W9': {
+            // Desertion / Twisted Tales / Gríma / Pallando / Radagast.
+            resetBoardForPreset(G);
+            setupDevPath(G, 0, [
+                '18U140',
+                '11S249',
+                '11S264',
+                '12U194',
+                '11S252',
+                '17U147',
+                '11S242',
+                '11S261',
+                '18U138',
+            ]);
+            G.twilightPool = 6;
+            fpPlayer.burdens = 0;
+            const frodo = {
+                ...clonePresetCard('11S164', 'dev-hi9-frodo'),
+                attachments: [clonePresetCard('1C2', 'dev-hi9-ring')],
+            };
+            const sword = clonePresetCard('1C299', 'dev-hi9-sword');
+            const sting = clonePresetCard('1R313', 'dev-hi9-sting');
+            const map = clonePresetCard('1R318', 'dev-hi9-map');
+            const desertion = clonePresetCard('6U61', 'dev-hi9-desertion');
+            // Merry 3 + épées − Désertion → force > 4 pour affecter Gríma (4).
+            const merry = {
+                ...clonePresetCard('1R302', 'dev-hi9-merry'),
+                attachments: [sword, sting, map, desertion],
+            };
+            for (const att of merry.attachments) {
+                att.attachedTo = merry.id;
+            }
+            const gandalf = clonePresetCard('1R72', 'dev-hi9-gandalf');
+            const radagastFollower = clonePresetCard(
+                '13R38',
+                'dev-hi9-rad-follower'
+            );
+            const radagastBrown = clonePresetCard('0P53', 'dev-hi9-rad-brown');
+            gandalf.attachments = [radagastFollower];
+            radagastFollower.attachedTo = gandalf.id;
+            radagastFollower.attachedViaAid = true;
+            const grima = clonePresetCard('4R154', 'dev-hi9-grima');
+            const pallando = clonePresetCard('13U79', 'dev-hi9-pallando');
+            const twisted = clonePresetCard('6U75', 'dev-hi9-twisted');
+            // Homme Isengard force 4 — Merry (souvent plus fort avec attachements).
+            const weakMan = clonePresetCard('4C153', 'dev-hi9-weak-man');
+            fpPlayer.fellowshipArea = [frodo, merry, gandalf, radagastBrown];
+            if (shadowPlayer) {
+                shadowPlayer.supportArea = [pallando, twisted];
+                G.battlefield = [grima, weakMan];
+            }
+            G.statusMessage =
+                '[DEV] Hobbits/Isengard vague 9 · Désertion (affectation), Contes (empiler possession), Gríma (3 attachements Merry), Pallando (début manœuvre), Radagast (2 Magicien). Relancer le preset.';
+            return { startPhase: 'maneuver' };
+        }
         default:
             G.statusMessage = `[DEV] Aucun preset actif (« ${presetType} »).`;
             return { startPhase: 'startOfFellowship' };
