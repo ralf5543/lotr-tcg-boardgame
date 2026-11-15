@@ -12,6 +12,7 @@ import {
     resolveWhenAssigned,
     resolveWhenFpAssignsTo,
 } from '../engine/abilities/whenAssigned';
+import { appendJournal } from '../logic/journal';
 import { getCardText } from '../../utils/i18n';
 
 export const assignMinion = (
@@ -145,12 +146,14 @@ export const assignMinion = (
             }
         }
     }
-    G.statusMessage =
+    const assignLine =
         ambushAdded > 0
             ? `${minionName} est assigné à ${compName}. Embuscade : +${ambushAdded} Crépuscule.`
             : assignBoost != null
               ? `${minionName} est assigné à ${compName} (force +${assignBoost} jusqu’au regroupement).`
               : `${minionName} est assigné à ${compName}.`;
+    appendJournal(G, assignLine);
+    G.statusMessage = assignLine;
 
     checkAssignmentProgress(G, ctx, events);
 };
@@ -168,6 +171,10 @@ export const yieldAssignmentToShadow = ({
         return 'INVALID_MOVE';
     }
 
+    appendJournal(
+        G,
+        'Les Peuples Libres laissent l’Ombre affecter les séides restants.'
+    );
     beginShadowAssignment(
         G,
         events,
@@ -187,9 +194,14 @@ export const passShadowAssignment = ({
 
     G.assignmentStep = 'COMPLETED';
     const leftover = getUnassignedMinions(G).length;
+    const passLine =
+        leftover > 0
+            ? `L’Ombre laisse ${leftover} séide${leftover > 1 ? 's' : ''} hors combat.`
+            : 'Affectation terminée.';
+    appendJournal(G, passLine);
     G.statusMessage =
         leftover > 0
-            ? `L’Ombre laisse ${leftover} séide${leftover > 1 ? 's' : ''} hors combat. Début des combats !`
+            ? `${passLine} Début des combats !`
             : 'Affectation terminée. Début des combats !';
     events?.endPhase?.();
 };

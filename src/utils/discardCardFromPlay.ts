@@ -1,4 +1,6 @@
 import type { CardState, GameState } from '../game/types';
+import { displayTitle } from '../decks/cardMeta';
+import { appendJournal } from '../game/logic/journal';
 import { reconcileActiveSkirmishAfterLeave } from '../game/logic/skirmishVacated';
 import { discardDestinationPile } from '../game/logic/sites';
 
@@ -87,6 +89,12 @@ function ownerDiscardPile(
     return discardDestinationPile(G, fallbackId);
 }
 
+function journalDiscard(G: GameState, discarded: CardState): void {
+    const name = displayTitle(discarded);
+    if (!name) return;
+    appendJournal(G, `${name} est défaussé.`);
+}
+
 /**
  * Défausse une carte déjà en jeu (zone de soutien, compagnie, champ de bataille,
  * ou attachement). Pas la pile de mort : c’est une défausse, pas une mort.
@@ -115,6 +123,7 @@ export function discardCardFromPlay(
         ) {
             reconcileActiveSkirmishAfterLeave(G, targetId, 'DISCARD');
         }
+        journalDiscard(G, removed);
         return true;
     }
 
@@ -135,6 +144,7 @@ export function discardCardFromPlay(
         ) {
             reconcileActiveSkirmishAfterLeave(G, targetId, 'DISCARD');
         }
+        journalDiscard(G, fromBattle);
         return true;
     }
 
@@ -154,6 +164,7 @@ export function discardCardFromPlay(
                 const pile = ownerDiscardPile(G, ownerId, removed);
                 if (!pile) return false;
                 pile.push(removed);
+                journalDiscard(G, removed);
                 return true;
             }
         }
@@ -171,6 +182,7 @@ export function discardCardFromPlay(
                 const pile = ownerDiscardPile(G, ownerId, removed);
                 if (!pile) return false;
                 pile.push(removed);
+                journalDiscard(G, removed);
                 return true;
             }
         }
