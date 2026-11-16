@@ -4226,7 +4226,7 @@
       },
       "fr": {
         "title": "Le Palais d'Edoras",
-        "gameText": "Le coût crépusculaire de chaque possession <symbol>rohan</symbol> est de ?1."
+        "gameText": "Le coût crépusculaire de chaque possession <symbol>rohan</symbol> est de –1."
       },
       "de": {
         "title": "Hallen in Edoras",
@@ -4420,7 +4420,7 @@
       },
       "fr": {
         "title": "La Tente du Roi",
-        "gameText": "**Ombre :** Si l'Ombre a l'initiative, désignez votre séide pour donner ?1 à la limite de déplacement pour ce tour."
+        "gameText": "**Ombre :** Si l'Ombre a l'initiative, désignez votre séide pour donner –1 à la limite de déplacement pour ce tour."
       },
       "de": {
         "title": "Das Zelt des Königs",
@@ -4784,7 +4784,7 @@
       },
       "fr": {
         "title": "La Mesa du Pelennor",
-        "gameText": "**Plaine.** Au début de la phase de man?uvre, le joueur des Peuples Libres doit défausser sa main ou ajouter 2 points-fardeau."
+        "gameText": "**Plaine.** Au début de la phase de manœuvre, le joueur des Peuples Libres doit défausser sa main ou ajouter 2 points-fardeau."
       },
       "de": {
         "title": "Die Tiefebene des Pelennor",
@@ -5154,7 +5154,7 @@
       },
       "fr": {
         "title": "Le Capitole en Ruines",
-        "gameText": "**Rivière.** **Ombre :** Désignez votre séide et 6 compagnons pour donner ?1 à la limite de déplacement pour ce tour."
+        "gameText": "**Rivière.** **Ombre :** Désignez votre séide et 6 compagnons pour donner –1 à la limite de déplacement pour ce tour."
       },
       "de": {
         "title": "Zerstörte Hauptstadt",
@@ -5256,7 +5256,7 @@
       },
       "fr": {
         "title": "Morgulduin",
-        "gameText": "**Ombre :** Retirez 2 menaces pour jouer un Nazgûl de votre pile de défausse. Son coût crépusculaire est de ?2."
+        "gameText": "**Ombre :** Retirez 2 menaces pour jouer un Nazgûl de votre pile de défausse. Son coût crépusculaire est de –2."
       },
       "de": {
         "title": "Morgulduin",
@@ -6525,7 +6525,7 @@
         ],
         "source": "SELF",
         "text": "Shadow: If the total number of minions and twilight tokens is 3 or fewer, play a minion at twilight cost –3.",
-        "textFr": "**Ombre :** Si le nombre total de séides et de jetons-crépuscule est 3 ou moins, jouez un séide au coût crépusculaire de ?3."
+        "textFr": "**Ombre :** Si le nombre total de séides et de jetons-crépuscule est 3 ou moins, jouez un séide au coût crépusculaire de –3."
       }
     ],
     "actionPhases": [
@@ -6541,7 +6541,7 @@
       },
       "fr": {
         "title": "Marécages Expansifs",
-        "gameText": "**Marais.** **Ombre :** Si le nombre total de séides et de jetons-crépuscule est 3 ou moins, jouez un séide au coût crépusculaire de ?3."
+        "gameText": "**Marais.** **Ombre :** Si le nombre total de séides et de jetons-crépuscule est 3 ou moins, jouez un séide au coût crépusculaire de –3."
       },
       "de": {
         "title": "Ausgedehnte Moore",
@@ -7332,7 +7332,7 @@
       },
       "fr": {
         "title": "Méandre du Nord",
-        "gameText": "**Rivière.** Le total d'archerie des séides est de ?3."
+        "gameText": "**Rivière.** Le total d'archerie des séides est de –3."
       },
       "de": {
         "title": "Nördliche Untiefe",
@@ -7591,7 +7591,7 @@
       },
       "fr": {
         "title": "La Mesa du Pelennor",
-        "gameText": "**Plaines.** Au début de la phase de man?uvre, le joueur des Peuples Libres doit ajouter un point-fardeau ou défausser 3 cartes de sa main."
+        "gameText": "**Plaines.** Au début de la phase de manœuvre, le joueur des Peuples Libres doit ajouter un point-fardeau ou défausser 3 cartes de sa main."
       },
       "de": {
         "title": "Ebene des Pelennor",
@@ -8118,7 +8118,8 @@
           }
         ],
         "source": "SELF",
-        "text": "Maneuver: Exert your orc minion to discard a card at random from the Free Peoples player's hand."
+        "text": "Maneuver: Exert your orc minion to discard a card at random from the Free Peoples player's hand.",
+        "textFr": "**Manœuvre :** Affaiblissez votre séide <symbol>orc</symbol> pour défausser une carte au hasard de la main du joueur des Peuples Libres."
       }
     ],
     "actionPhases": [
@@ -8134,7 +8135,7 @@
       },
       "fr": {
         "title": "La Tour de Garde de Cirith Ungol",
-        "gameText": "**Montagne.** **Man?uvre :** Affaiblissez votre séide <symbol>orc</symbol> pour défausser une carte au hasard de la main du joueur des Peuples Libres."
+        "gameText": "**Montagne.** **Manœuvre :** Affaiblissez votre séide <symbol>orc</symbol> pour défausser une carte au hasard de la main du joueur des Peuples Libres."
       },
       "de": {
         "title": "Wachtturm von Cirith Ungol",
@@ -8532,7 +8533,7 @@
       },
       "fr": {
         "title": "Le Pont de Khazad-dûm",
-        "gameText": "**Champ de bataille.** **Souterrain.** Le coût crépusculaire du Balrog est de ?3."
+        "gameText": "**Champ de bataille.** **Souterrain.** Le coût crépusculaire du Balrog est de –3."
       },
       "de": {
         "title": "Die Brücke von Khazad-dûm",
@@ -8685,7 +8686,7 @@
       },
       "fr": {
         "title": "La Colline de la Vue",
-        "gameText": "**Champ de bataille.** **Forêt.** Tant que vous pouvez désigner 3 séides (ou 6 compagnons), la résistance de chaque compagnon dissocié est de ?2."
+        "gameText": "**Champ de bataille.** **Forêt.** Tant que vous pouvez désigner 3 séides (ou 6 compagnons), la résistance de chaque compagnon dissocié est de –2."
       },
       "de": {
         "title": "Berg des Auges",
@@ -9440,7 +9441,7 @@
       },
       "fr": {
         "title": "Les Portes de Durin",
-        "gameText": "**Marais.** Chaque compagnon de chaque race qui a le plus de compagnons a ?1 en force."
+        "gameText": "**Marais.** Chaque compagnon de chaque race qui a le plus de compagnons a –1 en force."
       },
       "de": {
         "title": "Durins Tor",
@@ -9747,8 +9748,8 @@
         "gameText": "**River.** The fellowship archery total is –3."
       },
       "fr": {
-        "title": "Anduin River",
-        "gameText": "**Rivière.** Le total d'archerie de la compagnie est de ?3."
+        "title": "Fleuve Anduin",
+        "gameText": "**Rivière.** Le total d'archerie de la compagnie est de –3."
       },
       "de": {
         "title": "Anduin River",
@@ -9809,8 +9810,8 @@
         "gameText": "**Underground.** The twilight cost of the first hunter minion played each Shadow phase is –2."
       },
       "fr": {
-        "title": "Breeding pit of Isengard",
-        "gameText": "**Souterrain.** Le coût crépusculaire du premier séide chasseur joué à chaque phase de l'Ombre est de ?2."
+        "title": "Fosse d'élevage d'Isengard",
+        "gameText": "**Souterrain.** Le coût crépusculaire du premier séide chasseur joué à chaque phase de l'Ombre est de –2."
       },
       "de": {
         "title": "Breeding pit of Isengard",
@@ -9870,7 +9871,7 @@
         "gameText": "When the Fellowship moves to this site, add a threat (or 2 if you can spot a hunter minion) for each companion over 4."
       },
       "fr": {
-        "title": "City Gates",
+        "title": "Portes de la Cité",
         "gameText": "Quand la compagnie se déplace vers ce site, ajoutez une menace (ou 2 si vous pouvez désigner un séide chasseur) pour chaque compagnon au-delà de 4."
       },
       "de": {
@@ -10001,7 +10002,7 @@
         "gameText": "**Battleground.** Each time the fellowship moves to this site, add <symbol>twilight1</symbol> for each culture you can spot."
       },
       "fr": {
-        "title": "Gate of Mordor",
+        "title": "Porte du Mordor",
         "gameText": "**Champ de bataille.** Chaque fois que la compagnie se déplace vers ce site, ajoutez <symbol>twilight1</symbol> pour chaque culture que vous pouvez désigner."
       },
       "de": {
@@ -10064,7 +10065,7 @@
         "gameText": "**Battleground.** Each time a follower is transfered to a character, the first Shadow player may exert a companion twice."
       },
       "fr": {
-        "title": "Isengard Ruined",
+        "title": "L'Isengard en Ruines",
         "gameText": "**Champ de bataille.** Chaque fois qu'un suivant est transféré à un personnage, le premier joueur de l'Ombre peut affaiblir un compagnon deux fois."
       },
       "de": {
@@ -10119,7 +10120,7 @@
         "gameText": "**Battleground. Mountain. Underground.** Until the end of the game, sites in this region cannot be replaced."
       },
       "fr": {
-        "title": "Mount Doom",
+        "title": "Montagne du Destin",
         "gameText": "**Champ de bataille.** **Montagne.** **Souterrain.** Jusqu'à la fin de la partie les sites de la région contenant ce site ne peuvent pas être remplacés."
       },
       "de": {
@@ -10179,7 +10180,7 @@
         "gameText": "**Plains.** Each hunter character is strength +1."
       },
       "fr": {
-        "title": "Westfold Village",
+        "title": "Village de l'Ouestfolde",
         "gameText": "**Plaines.** Chaque personnage chasseur a +1 en force."
       },
       "de": {
@@ -10309,7 +10310,7 @@
         "gameText": "**River.** When the Fellowship moves to this site in region 2, the Free Peoples player places a card from the dead pile out of play."
       },
       "fr": {
-        "title": "Falls of Rauros",
+        "title": "Chutes du Rauros",
         "gameText": "**Rivière.** Quand la compagnie arrive à ce site en région 2, le joueur des Peuples Libres retire une carte du cimetière de la partie."
       },
       "de": {
@@ -10484,7 +10485,7 @@
         "gameText": "**Mountain.** When the fellowship moves to this site, each player wounds two of his or her characters."
       },
       "fr": {
-        "title": "Doorway to Doom",
+        "title": "Seuil du Destin",
         "gameText": "**Montagne.** Quand la compagnie arrive à ce site, chaque joueur doit blesser deux de ses personnages."
       },
       "de": {
@@ -10536,7 +10537,7 @@
         "gameText": "**Mountain.** Each card that is about to be placed into the discard pile is removed from the game instead."
       },
       "fr": {
-        "title": "Foot of Mount Doom",
+        "title": "Pieds de la Montagne du Destin",
         "gameText": "**Montagne.** Chaque carte sur le point d'être placée dans la pile de défausse est plutôt retirée de la partie."
       },
       "de": {
@@ -10652,7 +10653,7 @@
         "gameText": "**Battleground. Plains.** When the fellowship moves to this site, each player may reinforce a culture token."
       },
       "fr": {
-        "title": "Morannon Plains",
+        "title": "Plaines du Morannon",
         "gameText": "**Champ de bataille.** **Plaines.** Quand la compagnie arrive à ce site, chaque joueur peut renforcer un jeton de culture."
       },
       "de": {
@@ -10687,7 +10688,7 @@
         "gameText": "**River.**"
       },
       "fr": {
-        "title": "Sirannon Ruins",
+        "title": "Ruines du Sirannon",
         "gameText": "**Rivière.**"
       },
       "de": {
@@ -10742,7 +10743,7 @@
         "gameText": "Wounds cannot be prevented or healed. Burdens cannot be removed."
       },
       "fr": {
-        "title": "Steward's Tomb",
+        "title": "Tombe de l'Intendant",
         "gameText": "Les blessures ne peuvent pas être empêchées ni guéries.\nLes points-fardeau ne peuvent pas être retirés."
       },
       "de": {
@@ -10794,7 +10795,7 @@
         "gameText": "**Dwelling.** While the fellowship is at this site, followers cannot be transferred to a character."
       },
       "fr": {
-        "title": "Streets of Bree",
+        "title": "Rues de Bree",
         "gameText": "**Résidence.** Tant que la compagnie se trouve sur ce site, les suivants ne peuvent pas être transférés à un personnage."
       },
       "de": {
