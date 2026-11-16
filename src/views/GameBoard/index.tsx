@@ -118,6 +118,7 @@ import { useHealAudio } from '../../hooks/audio/useHealAudio';
 import { useAssignmentAudio } from '../../hooks/audio/useAssignmentAudio';
 import { useSkirmishAudio } from '../../hooks/audio/useSkirmishAudio';
 import { useSiteControlAudio } from '../../hooks/audio/useSiteControlAudio';
+import { playTargetingArrowHitSound } from '../../hooks/audio/targetingArrowHitSound';
 import {
     BoardTargetingArrow,
     RemoteTargetingArrow,
@@ -388,9 +389,12 @@ export const GameBoard: React.FC<GameBoardProps> = ({
                     ? undefined
                     : arrowFromCardId,
                 onSelectTarget: (cardId) => {
-                    // Aragorn Pieds-Ailés (4P364) : impact de flèche à la blessure.
-                    if (arrowFromCardId && source.id === '4P364') {
-                        audioService.play('ARROW_IMPACT');
+                    if (arrowFromCardId) {
+                        playTargetingArrowHitSound({
+                            sourceId: source.id,
+                            abilityPhases: ability.phases,
+                            gamePhase: ctx.phase,
+                        });
                     }
                     // Ne pas stop ici : onChosen peut enchaîner une autre visée
                     // (herbe → compagnon). stop écraserait la nouvelle.
@@ -399,7 +403,7 @@ export const GameBoard: React.FC<GameBoardProps> = ({
             });
             return true;
         },
-        [G, moves, myId, startTargeting]
+        [G, moves, myId, startTargeting, ctx.phase]
     );
 
     /**
@@ -2814,6 +2818,16 @@ export const GameBoard: React.FC<GameBoardProps> = ({
                     if (typeof moves.playCard === 'function') {
                         moves.playCard(index, targetId);
                         audioService.play('CARD_PLAY');
+                        if (
+                            eventAbility &&
+                            abilityEffectWantsTargetingArrow(eventAbility)
+                        ) {
+                            playTargetingArrowHitSound({
+                                sourceId: card.id,
+                                abilityPhases: eventAbility.phases,
+                                gamePhase: ctx.phase,
+                            });
+                        }
                     }
                     return;
                 }

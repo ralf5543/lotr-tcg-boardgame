@@ -342,41 +342,6 @@ export const DevPanel: React.FC<DevPanelProps> = ({
                         </S.ButtonGroup>
                     </S.Section>
 
-                    {/* Presets playtest (fixes en cours) */}
-                    <S.Section>
-                        <S.Label>Preset playtest :</S.Label>
-                        <S.ButtonGroup>
-                            <S.ActionButton
-                                onClick={() =>
-                                    moves.devLoadPreset?.('FIX_FRODO_MUSTER')
-                                }
-                                title="Frodon → Muster en début de ralliement"
-                            >
-                                Frodon Muster
-                            </S.ActionButton>
-                            <S.ActionButton
-                                onClick={() =>
-                                    moves.devLoadPreset?.('FIX_WIZARD_STORM')
-                                }
-                                title="Tempête conjurée : avance + Annuler"
-                            >
-                                Tempête
-                            </S.ActionButton>
-                            <S.ActionButton
-                                onClick={() =>
-                                    moves.devLoadPreset?.('FIX_DESERTION')
-                                }
-                                title="Désertion : affectation Ombre"
-                            >
-                                Désertion
-                            </S.ActionButton>
-                        </S.ButtonGroup>
-                        <S.Hint>
-                            Scénario dans le bandeau de statut. Ombre =
-                            ouvrir l’onglet ?player=1.
-                        </S.Hint>
-                    </S.Section>
-
                     {/* Session / debug UI */}
                     <S.Section>
                         <S.Label>Session :</S.Label>

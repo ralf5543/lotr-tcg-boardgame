@@ -2,16 +2,13 @@ import { useEffect, useRef } from 'react';
 import type { GameState } from '../../game/types';
 import { audioService } from '../../services/audioService';
 
-const ARCHERY_AUDIO_STEPS = new Set([
-    'ACTIONS',
-    'FP_ASSIGN',
-    'SHADOW_ASSIGN',
-    'COMPLETE',
-]);
+/** Assignation des tirs uniquement — les capacités à flèche jouent via
+ * `playTargetingArrowHitSound` (évite un double ARROW_IMPACT). */
+const ARCHERY_AUDIO_STEPS = new Set(['FP_ASSIGN', 'SHADOW_ASSIGN', 'COMPLETE']);
 
 /**
- * Pendant la phase d’archerie, toute blessure d’archerie (assignation ou capacité)
- * déclenche le son de flèche. Un affaiblissement (exert) n’en déclenche pas.
+ * Pendant l’assignation d’archerie, chaque blessure assignée déclenche
+ * le son de flèche. Un affaiblissement (exert) n’en déclenche pas.
  * Le cri de blessure reste à 0,3 s via useWoundAudio.
  *
  * La dernière flèche d’Ombre termine souvent la phase dans le même update
