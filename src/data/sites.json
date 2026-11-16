@@ -4191,8 +4191,8 @@
         "gameText": "**Fellowship:** Spot a Dwarf to play a <symbol>dwarven</symbol> condition from your draw deck (limit once per turn)."
       },
       "fr": {
-        "title": "Dunharrow Plateau",
-        "gameText": "**Fellowship:** Spot a Dwarf to play a <symbol>dwarven</symbol> condition from your draw deck (limit once per turn)."
+        "title": "Le Plateau de Dunharrow",
+        "gameText": "**Compagnie :** Désignez un Nain pour jouer une situation <symbol>dwarven</symbol> de votre pioche (limite d'une fois par tour)."
       },
       "de": {
         "title": "Die Hochebene von Dunharg",
@@ -4225,8 +4225,8 @@
         "gameText": "The twilight cost of each <symbol>rohan</symbol> possession is –1."
       },
       "fr": {
-        "title": "Edoras Hall",
-        "gameText": "The twilight cost of each <symbol>rohan</symbol> possession is –1."
+        "title": "Le Palais d'Edoras",
+        "gameText": "Le coût crépusculaire de chaque possession <symbol>rohan</symbol> est de ?1."
       },
       "de": {
         "title": "Hallen in Edoras",
@@ -4259,8 +4259,8 @@
         "gameText": "**Fellowship:** Spot Gandalf to add <symbol>twilight2</symbol>. Each player may draw a card."
       },
       "fr": {
-        "title": "Isengard Ruined",
-        "gameText": "**Fellowship:** Spot Gandalf to add <symbol>twilight2</symbol>. Each player may draw a card."
+        "title": "L'Isengard en Ruines",
+        "gameText": "**Compagnie :** Désignez Gandalf et ajoutez <symbol>twilight2</symbol>. Chaque joueur peut piocher une carte."
       },
       "de": {
         "title": "Zerstörtes Isengart",
@@ -4293,8 +4293,8 @@
         "gameText": "**Fellowship:** Exert an Elf to make the twilight cost of each condition and possession +2 until the end of the turn."
       },
       "fr": {
-        "title": "Rohirrim Road",
-        "gameText": "**Fellowship:** Exert an Elf to make the twilight cost of each condition and possession +2 until the end of the turn."
+        "title": "Route Rohirrim",
+        "gameText": "**Compagnie :** Affaiblissez un Elfe pour ajouter 2 au coût crépusculaire de chaque situation et possession jusqu'à fin du tour."
       },
       "de": {
         "title": "Eine Straße in Rohan",
@@ -4327,8 +4327,8 @@
         "gameText": "When the fellowship moves from this site, the Free Peoples player may spot 3 Hobbits to remove <symbol>twilight2</symbol>."
       },
       "fr": {
-        "title": "Sleeping Quarters",
-        "gameText": "When the fellowship moves from this site, the Free Peoples player may spot 3 Hobbits to remove <symbol>twilight2</symbol>."
+        "title": "Quartiers de Nuit",
+        "gameText": "Quand la compagnie quitte ce site, le joueur des Peuples Libres peut désigner 3 Hobbits pour retirer <symbol>twilight2</symbol>."
       },
       "de": {
         "title": "Schlafräume",
@@ -4385,8 +4385,8 @@
         "gameText": "Each <symbol>gondor</symbol> companion is defender +1 until the end of the turn."
       },
       "fr": {
-        "title": "Steps of Edoras",
-        "gameText": "Each <symbol>gondor</symbol> companion is defender +1 until the end of the turn."
+        "title": "L'Escalier d'Edoras",
+        "gameText": "Chaque compagnon <symbol>gondor</symbol> est **défenseur +1** jusqu'à la fin du tour."
       },
       "de": {
         "title": "Treppen in Edoras",
@@ -4419,8 +4419,8 @@
         "gameText": "**Shadow:** If the Shadow has initiative, spot your minion to make the move limit for this turn –1."
       },
       "fr": {
-        "title": "King's Tent",
-        "gameText": "**Shadow:** If the Shadow has initiative, spot your minion to make the move limit for this turn –1."
+        "title": "La Tente du Roi",
+        "gameText": "**Ombre :** Si l'Ombre a l'initiative, désignez votre séide pour donner ?1 à la limite de déplacement pour ce tour."
       },
       "de": {
         "title": "Das Zelt des Königs",
@@ -4456,8 +4456,8 @@
         "gameText": "**Plains.** If the Shadow has initiative, minions are not roaming."
       },
       "fr": {
-        "title": "Rohirrim Camp",
-        "gameText": "**Plains.** If the Shadow has initiative, minions are not roaming."
+        "title": "Campement Rohirrim",
+        "gameText": "**Plaine.** Si l'Ombre a l'initiative, les séides ne sont pas errants."
       },
       "de": {
         "title": "Das Lager der Rohirrim",
@@ -4493,8 +4493,8 @@
         "gameText": "**Plains.** If the Shadow has initiative, the Shadow number of this site is +3."
       },
       "fr": {
-        "title": "West Road",
-        "gameText": "**Plains.** If the Shadow has initiative, the Shadow number of this site is +3."
+        "title": "La Route de l'Ouest",
+        "gameText": "**Plaine.** Si l'Ombre a l'initiative, la puissance de l'Ombre de ce site est de +3."
       },
       "de": {
         "title": "Die Weststraße",
@@ -4530,8 +4530,8 @@
         "gameText": "**Sanctuary.** **Fellowship:** If you cannot spot 3 threats, add a threat to heal a companion."
       },
       "fr": {
-        "title": "Beacon of Minas Tirith",
-        "gameText": "**Sanctuary.** **Fellowship:** If you cannot spot 3 threats, add a threat to heal a companion."
+        "title": "Le Signal de Minas Tirith",
+        "gameText": "**Sanctuaire.** **Compagnie :** Si vous ne pouvez pas désigner 3 menaces, ajoutez une menace pour guérir un compagnon."
       },
       "de": {
         "title": "Leuchtfeuer von Minas Tirith",
@@ -4567,8 +4567,8 @@
         "gameText": "**Sanctuary.** **Fellowship:** If you cannot spot 3 threats, add a threat to draw a card."
       },
       "fr": {
-        "title": "Hall of the Kings",
-        "gameText": "**Sanctuary.** **Fellowship:** If you cannot spot 3 threats, add a threat to draw a card."
+        "title": "Le Palais des Rois",
+        "gameText": "**Sanctuaire.** **Compagnie :** Si vous ne pouvez pas désigner 3 menaces, ajoutez une menace pour piocher une carte."
       },
       "de": {
         "title": "Die Halle der Könige",
@@ -4604,8 +4604,8 @@
         "gameText": "**Sanctuary.** **Fellowship:** If you cannot spot 3 threats, add 3 threats to make the move limit for this turn +1."
       },
       "fr": {
-        "title": "Tower of Ecthelion",
-        "gameText": "**Sanctuary.** **Fellowship:** If you cannot spot 3 threats, add 3 threats to make the move limit for this turn +1."
+        "title": "La Tour d'Ecthelion",
+        "gameText": "**Sanctuaire.** **Compagnie :** Si vous ne pouvez pas désigner 3 menaces, ajoutez 3 menaces pour donner +1 à la limite de déplacement pour ce tour."
       },
       "de": {
         "title": "Der Turm von Ecthelion",
@@ -4641,8 +4641,8 @@
         "gameText": "**River.** **Skirmish:** Spot your minion and remove a burden to make that minion strength +2."
       },
       "fr": {
-        "title": "Anduin Banks",
-        "gameText": "**River.** **Skirmish:** Spot your minion and remove a burden to make that minion strength +2."
+        "title": "Berges de l'Anduin",
+        "gameText": "**Rivière.** **Combat :** Désignez votre séide et retirez un point-fardeau pour donner +2 en force à ce séide."
       },
       "de": {
         "title": "Die Flussufer des Anduin",
@@ -4675,7 +4675,7 @@
         "gameText": "**Skirmish:** Spot your minion and remove 2 burdens to make that minion **Damage +1.**."
       },
       "fr": {
-        "title": "Osgiliath Fallen",
+        "title": "Osgiliath Déchue",
         "gameText": "**Skirmish:** Spot your minion and remove 2 burdens to make that minion damage +1."
       },
       "de": {
@@ -4712,8 +4712,8 @@
         "gameText": "**Plains.** **Archery:** Spot your minion and remove 3 burdens to make the minion archery total +3."
       },
       "fr": {
-        "title": "Pelennor Plain",
-        "gameText": "**Plains.** **Archery:** Spot your minion and remove 3 burdens to make the minion archery total +3."
+        "title": "La Plaine du Pelennor",
+        "gameText": "**Plaine.** **Archerie :** Désignez votre séide et retirez 3 points-fardeau pour ajouter 3 au total d'archerie des séides."
       },
       "de": {
         "title": "Die Pelennor-Ebene",
@@ -4746,8 +4746,8 @@
         "gameText": "When the fellowship moves to this site, add 3 threats. When the fellowship moves from this site, remove 3 threats."
       },
       "fr": {
-        "title": "City Gates",
-        "gameText": "When the fellowship moves to this site, add 3 threats. When the fellowship moves from this site, remove 3 threats."
+        "title": "Les Portes de la Ville",
+        "gameText": "Quand la compagnie se déplace jusqu'à ce site, ajoutez 3 menaces. Quand la compagnie quitte ce site, retirez 3 menaces."
       },
       "de": {
         "title": "Die Stadttore",
@@ -4783,8 +4783,8 @@
         "gameText": "**Plains.** At the start of the maneuver phase, the Free Peoples player must discard his or her hand or add 2 burdens."
       },
       "fr": {
-        "title": "Pelennor Flat",
-        "gameText": "**Plains.** At the start of the maneuver phase, the Free Peoples player must discard his or her hand or add 2 burdens."
+        "title": "La Mesa du Pelennor",
+        "gameText": "**Plaine.** Au début de la phase de man?uvre, le joueur des Peuples Libres doit défausser sa main ou ajouter 2 points-fardeau."
       },
       "de": {
         "title": "Die Tiefebene des Pelennor",
@@ -4820,8 +4820,8 @@
         "gameText": "**Sanctuary.** If the fellowship moves from this site during the regroup phase, heal Gandalf three times."
       },
       "fr": {
-        "title": "Minas Tirith Fifth Circle",
-        "gameText": "**Sanctuary.** If the fellowship moves from this site during the regroup phase, heal Gandalf three times."
+        "title": "Cinquième Cercle de Minas Tirith",
+        "gameText": "**Sanctuaire.** Si la compagnie quitte ce site durant la phase de ralliement, guérissez Gandalf 3 fois."
       },
       "de": {
         "title": "Fünfter Ring von Minas Tirith",
@@ -4857,8 +4857,8 @@
         "gameText": "**Sanctuary.** If the fellowship moves from this site during the regroup phase, wound each companion."
       },
       "fr": {
-        "title": "Minas Tirith First Circle",
-        "gameText": "**Sanctuary.** If the fellowship moves from this site during the regroup phase, wound each companion."
+        "title": "Premier Cercle de Minas Tirith",
+        "gameText": "**Sanctuaire.** Si la compagnie quitte ce site durant la phase de ralliement, blessez chaque compagnon."
       },
       "de": {
         "title": "Erster Ring von Minas Tirith",
@@ -4894,8 +4894,8 @@
         "gameText": "**Sanctuary.** If the fellowship moves from this site during the regroup phase, heal each <symbol>rohan</symbol> companion."
       },
       "fr": {
-        "title": "Minas Tirith Fourth Circle",
-        "gameText": "**Sanctuary.** If the fellowship moves from this site during the regroup phase, heal each <symbol>rohan</symbol> companion."
+        "title": "Quatrième Cercle de Minas Tirith",
+        "gameText": "**Sanctuaire.** Si la compagnie quitte ce site durant la phase de ralliement, guérissez chaque compagnon <symbol>rohan</symbol>."
       },
       "de": {
         "title": "Vierter Ring von Minas Tirith",
@@ -4931,8 +4931,8 @@
         "gameText": "**Sanctuary.** If the fellowship moves from this site during the regroup phase, heal each <symbol>dwarven</symbol> companion."
       },
       "fr": {
-        "title": "Minas Tirith Second Circle",
-        "gameText": "**Sanctuary.** If the fellowship moves from this site during the regroup phase, heal each <symbol>dwarven</symbol> companion."
+        "title": "Deuxième Cercle de Minas Tirith",
+        "gameText": "**Sanctuaire.** Si la compagnie quitte ce site durant la phase de ralliement, guérissez chaque compagnon <symbol>dwarven</symbol>."
       },
       "de": {
         "title": "Zweiter Ring von Minas Tirith",
@@ -4968,8 +4968,8 @@
         "gameText": "**Sanctuary.** If the fellowship moves from this site during the regroup phase, heal each <symbol>elven</symbol> companion."
       },
       "fr": {
-        "title": "Minas Tirith Seventh Circle",
-        "gameText": "**Sanctuary.** If the fellowship moves from this site during the regroup phase, heal each <symbol>elven</symbol> companion."
+        "title": "Septième Cercle de Minas Tirith",
+        "gameText": "**Sanctuaire.** Si la compagnie quitte ce site durant la phase de ralliement, guérissez chaque compagnon <symbol>elven</symbol>."
       },
       "de": {
         "title": "Siebenter Ring von Minas Tirith",
@@ -5005,8 +5005,8 @@
         "gameText": "**Sanctuary.** If the fellowship moves from this site during the regroup phase, heal each <symbol>gondor</symbol> companion."
       },
       "fr": {
-        "title": "Minas Tirith Sixth Circle",
-        "gameText": "**Sanctuary.** If the fellowship moves from this site during the regroup phase, heal each <symbol>gondor</symbol> companion."
+        "title": "Sixième Cercle de Minas Tirith",
+        "gameText": "**Sanctuaire.** Si la compagnie quitte ce site durant la phase de ralliement, guérissez chaque compagnon <symbol>gondor</symbol>."
       },
       "de": {
         "title": "Sechster Ring von Minas Tirith",
@@ -5042,8 +5042,8 @@
         "gameText": "**Sanctuary.** If the fellowship moves from this site during the regroup phase, heal each Hobbit companion."
       },
       "fr": {
-        "title": "Minas Tirith Third Circle",
-        "gameText": "**Sanctuary.** If the fellowship moves from this site during the regroup phase, heal each Hobbit companion."
+        "title": "Troisième Cercle de Minas Tirith",
+        "gameText": "**Sanctuaire.** Si la compagnie quitte ce site durant la phase de ralliement, guérissez chaque compagnon Hobbit."
       },
       "de": {
         "title": "Dritter Ring von Minas Tirith",
@@ -5079,8 +5079,8 @@
         "gameText": "**River.** **Shadow:** Exert 2 minions and spot 6 companions to draw 2 cards."
       },
       "fr": {
-        "title": "Osgiliath Crossing",
-        "gameText": "**River.** **Shadow:** Exert 2 minions and spot 6 companions to draw 2 cards."
+        "title": "Le Croisement d'Osgiliath",
+        "gameText": "**Ombre :** Affaiblissez 2 séides et désignez 6 compagnons pour piocher 2 cartes."
       },
       "de": {
         "title": "Furt von Osgiliath",
@@ -5116,8 +5116,8 @@
         "gameText": "**Plains.** **Shadow:** Exert a minion and spot 6 companions to add <symbol>twilight1</symbol>."
       },
       "fr": {
-        "title": "Pelennor Grassland",
-        "gameText": "**Plains.** **Shadow:** Exert a minion and spot 6 companions to add <symbol>twilight1</symbol>."
+        "title": "Les Prairies du Pelennor",
+        "gameText": "**Plaine.** **Ombre :** Affaiblissez un séide et désignez 6 compagnons pour ajouter <symbol>twilight1</symbol>."
       },
       "de": {
         "title": "Die Pelennor Steppe",
@@ -5153,8 +5153,8 @@
         "gameText": "**River.** **Shadow:** Spot your minion and 6 companions to make the move limit for this turn –1."
       },
       "fr": {
-        "title": "Ruined Capitol",
-        "gameText": "**River.** **Shadow:** Spot your minion and 6 companions to make the move limit for this turn –1."
+        "title": "Le Capitole en Ruines",
+        "gameText": "**Rivière.** **Ombre :** Désignez votre séide et 6 compagnons pour donner ?1 à la limite de déplacement pour ce tour."
       },
       "de": {
         "title": "Zerstörte Hauptstadt",
@@ -5187,8 +5187,8 @@
         "gameText": "**Shadow:** Spot 2 <symbol>raider</symbol> Men and remove a threat to add <symbol>twilight2</symbol>."
       },
       "fr": {
-        "title": "Cross Roads",
-        "gameText": "**Shadow:** Spot 2 <symbol>raider</symbol> Men and remove a threat to add <symbol>twilight2</symbol>."
+        "title": "Croisée des Chemins",
+        "gameText": "**Ombre :** Désignez 2 Hommes <symbol>raider</symbol> et retirez une menace pour ajouter <symbol>twilight2</symbol>."
       },
       "de": {
         "title": "Der Scheideweg",
@@ -5221,8 +5221,8 @@
         "gameText": "**Skirmish:** Spot your <symbol>sauron</symbol> minion and remove 2 threats to make your <symbol>sauron</symbol> minion strength +3."
       },
       "fr": {
-        "title": "Morgul Vale",
-        "gameText": "**Skirmish:** Spot your <symbol>sauron</symbol> minion and remove 2 threats to make your <symbol>sauron</symbol> minion strength +3."
+        "title": "La Vallée de Morgul",
+        "gameText": "**Combat :** Désignez votre séide <symbol>sauron</symbol> et retirez 2 menaces pour donner +3 en force à votre séide <symbol>sauron</symbol>."
       },
       "de": {
         "title": "Morgultal",
@@ -5256,7 +5256,7 @@
       },
       "fr": {
         "title": "Morgulduin",
-        "gameText": "**Shadow:** Remove 2 threats to play a Nazgûl from your discard pile. His twilight cost is -2."
+        "gameText": "**Ombre :** Retirez 2 menaces pour jouer un Nazgûl de votre pile de défausse. Son coût crépusculaire est de ?2."
       },
       "de": {
         "title": "Morgulduin",
@@ -5289,8 +5289,8 @@
         "gameText": "**Shadow:** Remove 2 threats and play Gollum from your discard pile to add 2 burdens."
       },
       "fr": {
-        "title": "Northern Ithilien",
-        "gameText": "**Shadow:** Remove 2 threats and play Gollum from your discard pile to add 2 burdens."
+        "title": "L'Ithilien Septentrional",
+        "gameText": "**Ombre :** Retirez 2 menaces et jouez Gollum de votre pile de défausse pour ajouter 2 points-fardeau."
       },
       "de": {
         "title": "Nördliches Ithilien",
@@ -5327,7 +5327,7 @@
       },
       "fr": {
         "title": "Dagorlad",
-        "gameText": "**Plains.** When the fellowship moves to this site, add 3 threats."
+        "gameText": "**Plaine.** Quand la compagnie se déplace vers ce site, ajoutez 3 menaces."
       },
       "de": {
         "title": "Dargoland",
@@ -5360,8 +5360,8 @@
         "gameText": "**Shadow:** Remove a threat and spot your minion to draw a card."
       },
       "fr": {
-        "title": "Haunted Pass",
-        "gameText": "**Shadow:** Remove a threat and spot your minion to draw a card."
+        "title": "Col Hanté",
+        "gameText": "**Ombre :** Retirez une menace et désignez votre séide pour piocher une carte."
       },
       "de": {
         "title": "Verfluchter Pass",
@@ -5395,7 +5395,7 @@
       },
       "fr": {
         "title": "Narchost",
-        "gameText": "**Shadow:** Spot 8 burdens to make the Ring-bearer wear The One Ring until the regroup phase."
+        "gameText": "**Ombre :** Désignez 8 points-fardeau pour forcer le Porteur de l'Anneau à passer l'Anneau à son doigt jusqu'à la phase de ralliement."
       },
       "de": {
         "title": "Narchost",
@@ -5454,8 +5454,8 @@
         "gameText": "Each time a companion is killed, add a burden."
       },
       "fr": {
-        "title": "Slag Mounds",
-        "gameText": "Each time a companion is killed, add a burden."
+        "title": "Buttes de Scories",
+        "gameText": "Chaque fois qu'un compagnon est tué, ajoutez un point-fardeau."
       },
       "de": {
         "title": "Schlackehügel",
@@ -5493,8 +5493,8 @@
         "loreText": "She should not die.... At least she should not die alone, unaided."
       },
       "fr": {
-        "title": "The Dimholt",
-        "gameText": "**Sanctuary.** **Underground.** **Fellowship:** Add 3 threats to play an enduring companion from your draw deck.",
+        "title": "Le Dimholt",
+        "gameText": "**Sanctuaire.** **Souterrain.** **Compagnie :** Ajoutez 3 menaces pour jouer un compagnon pugnace de votre pioche.",
         "loreText": "She should not die.... At least she should not die alone, unaided."
       },
       "de": {
@@ -5534,8 +5534,8 @@
         "loreText": "He said: Who are you? I still did not answer, but it hurt me horribly; and he pressed me, so I said: A hobbit."
       },
       "fr": {
-        "title": "City of the Dead",
-        "gameText": "**Underground.** **Shadow:** Remove 2 burdens to play an enduring minion from your draw deck or discard pile.",
+        "title": "La Ville des Morts",
+        "gameText": "**Souterrain.** **Ombre :** Retirez 2 points-fardeau pour jouer un séide pugnace de votre pioche ou de votre pile de défausse.",
         "loreText": "He said: Who are you? I still did not answer, but it hurt me horribly; and he pressed me, so I said: A hobbit."
       },
       "de": {
@@ -5572,8 +5572,8 @@
         "loreText": "You're in the service of the Steward of Gondor now. You'll do as you're told."
       },
       "fr": {
-        "title": "Crashed Gate",
-        "gameText": "At the start of the regroup phase, the Free Peoples player must add 3 threats or choose an opponent who may take control of a site.",
+        "title": "Porte Effondrée",
+        "gameText": "Au début de la phase de ralliement, le joueur des Peuples Libres doit ajouter 3 menaces ou choisir un adversaire qui peut prendre le contrôle d'un site.",
         "loreText": "You're in the service of the Steward of Gondor now. You'll do as you're told."
       },
       "de": {
@@ -5613,8 +5613,8 @@
         "loreText": "No such anguish had Shelob ever known, or dreamed of knowing...."
       },
       "fr": {
-        "title": "Osgiliath Channel",
-        "gameText": "**River.** **Regroup:** Spot your minion and 6 companions to make the Free Peoples player choose to move again this turn.",
+        "title": "Le Canal d'Osgiliath",
+        "gameText": "**Rivière.** **Ralliement :** Désignez votre séide et 6 compagnons pour forcer le joueur des Peuples Libres à se déplacer à nouveau ce tour-ci.",
         "loreText": "No such anguish had Shelob ever known, or dreamed of knowing...."
       },
       "de": {
@@ -5653,8 +5653,8 @@
         "gameText": "**Sanctuary.** **Fellowship:** If you cannot spot 2 threats, add a threat to play a fortification from your draw deck."
       },
       "fr": {
-        "title": "Base of Mindolluin",
-        "gameText": "**Sanctuary.** **Fellowship:** If you cannot spot 2 threats, add a threat to play a fortification from your draw deck."
+        "title": "Base de Mindolluin",
+        "gameText": "**Sanctuaire.** **Compagnie :** Si vous ne pouvez pas désigner 2 menaces, ajoutez une menace pour jouer une fortification de votre pioche."
       },
       "de": {
         "title": "Fuß des Mindolluin",
@@ -5690,8 +5690,8 @@
         "gameText": "**Plains.** **Shadow:** Exert a minion and remove a burden to make the Free Peoples player discard one of his or her conditions."
       },
       "fr": {
-        "title": "Pelennor Prairie",
-        "gameText": "**Plains.** **Shadow:** Exert a minion and remove a burden to make the Free Peoples player discard one of his or her conditions."
+        "title": "Prairie du Pelennor",
+        "gameText": "**Plaines.** **Ombre :** Affaiblissez un séide et retirez un point-fardeau pour forcer le joueur des Peuples Libres à défausser une de ses situations."
       },
       "de": {
         "title": "Pelennor Grasland",
@@ -5747,8 +5747,8 @@
         "gameText": "Wounds cannot be prevented or healed. Burdens cannot be removed."
       },
       "fr": {
-        "title": "Steward's Tomb",
-        "gameText": "Wounds cannot be prevented or healed. Burdens cannot be removed."
+        "title": "La Tombe de l'Intendant",
+        "gameText": "Les blessures ne peuvent pas être empêchées ni guéries.\nLes points-fardeau ne peuvent pas être retirés."
       },
       "de": {
         "title": "Gruft der Truchsesse",
@@ -5781,8 +5781,8 @@
         "gameText": "**Skirmish:** Spot your <symbol>wraith</symbol> Orc and remove 2 threats to make that <symbol>wraith</symbol> Orc strength +3."
       },
       "fr": {
-        "title": "Watchers of Cirith Ungol",
-        "gameText": "**Skirmish:** Spot your <symbol>wraith</symbol> Orc and remove 2 threats to make that <symbol>wraith</symbol> Orc strength +3."
+        "title": "Guetteurs de Cirith Ungol",
+        "gameText": "**Combat :** Désignez votre Orque <symbol>wraith</symbol> et retirez 2 menaces pour donner +3 en force à cet Orque <symbol>wraith</symbol>."
       },
       "de": {
         "title": "Wachtürme von Cirith Ungol",
@@ -5837,8 +5837,8 @@
         "gameText": "**River.** The minion archery total is +2 for each companion in the fellowship over 4."
       },
       "fr": {
-        "title": "Anduin Banks",
-        "gameText": "**River.** The minion archery total is +2 for each companion in the fellowship over 4."
+        "title": "Berges de l'Anduin",
+        "gameText": "**Rivière.** Le total d'archerie des séides est de +2 pour chaque compagnon au delà de 4."
       },
       "de": {
         "title": "Die Ufer des Anduin",
@@ -5895,8 +5895,8 @@
         "gameText": "**River.** When the fellowship moves to this site, discard each ally from play."
       },
       "fr": {
-        "title": "Anduin Confluence",
-        "gameText": "**River.** When the fellowship moves to this site, discard each ally from play."
+        "title": "Confluent de l'Anduin",
+        "gameText": "**Rivière.** Quand la compagnie se déplace jusqu'à ce site, défaussez chaque allié en jeu."
       },
       "de": {
         "title": "Der Zusammenfluss des Anduin",
@@ -5973,7 +5973,7 @@
       },
       "fr": {
         "title": "Barazinbar",
-        "gameText": "**Mountain.** At the start of your fellowship phase, you may exert a Dwarf to play a <symbol>dwarven</symbol> possession from your draw deck."
+        "gameText": "**Montagne.** Au début de votre phase de compagnie, vous pouvez affaiblir un Nain pour jouer une possession <symbol>dwarven</symbol> de votre pioche."
       },
       "de": {
         "title": "Barazinbar",
@@ -6027,7 +6027,8 @@
           }
         ],
         "source": "SELF",
-        "text": "Shadow: Play a Nazgûl to discard a condition from play."
+        "text": "Shadow: Play a Nazgûl to discard a condition from play.",
+        "textFr": "**Ombre :** Jouez un Nazgûl pour défausser une situation en jeu."
       }
     ],
     "actionPhases": [
@@ -6042,8 +6043,8 @@
         "gameText": "**Dwelling.** **Shadow:** Play a Nazgûl to discard a condition from play."
       },
       "fr": {
-        "title": "Buckland Homestead",
-        "gameText": "**Dwelling.** **Shadow:** Play a Nazgûl to discard a condition from play."
+        "title": "Habitation du Pays de Bouc",
+        "gameText": "**Résidence.** **Ombre :** Jouez un Nazgûl pour défausser une situation en jeu."
       },
       "de": {
         "title": "Gehöft in Bockland",
@@ -6097,7 +6098,7 @@
       },
       "fr": {
         "title": "Caras Galadhon",
-        "gameText": "**Forest.** No more than 1 minion can be assigned to each skirmish."
+        "gameText": "**Forêt.** Un seul séide peut être affecté à chaque combat."
       },
       "de": {
         "title": "Caras Galadhon",
@@ -6152,8 +6153,8 @@
         "gameText": "**Underground.** Skirmish special abilities cannot be used."
       },
       "fr": {
-        "title": "Cavern Entrance",
-        "gameText": "**Underground.** Skirmish special abilities cannot be used."
+        "title": "Entrée de Caverne",
+        "gameText": "**Souterrain.** Les capacités spéciales de combat ne peuvent pas être utilisées."
       },
       "de": {
         "title": "Höhleneingang",
@@ -6213,8 +6214,8 @@
         "gameText": "**Underground.** The Free Peoples player may transfer Free Peoples artifacts and possessions at no twilight cost."
       },
       "fr": {
-        "title": "Chamber of Mazarbul",
-        "gameText": "**Underground.** The Free Peoples player may transfer Free Peoples artifacts and possessions at no twilight cost."
+        "title": "La Chambre de Mazarbul",
+        "gameText": "**Souterrain.** Le joueur des Peuples Libres peut transférer des artefacts et des possessions des Peuples Libres sans coût crépusculaire."
       },
       "de": {
         "title": "Die Kammer von Mazarbul",
@@ -6275,8 +6276,8 @@
         "gameText": "**Mountain.** If this site is in region 2 when the fellowship moves from it during the regroup phase, wound each companion."
       },
       "fr": {
-        "title": "Crags of Emyn Muil",
-        "gameText": "**Mountain.** If this site is in region 2 when the fellowship moves from it during the regroup phase, wound each companion."
+        "title": "Les Pics d'Emyn Muil",
+        "gameText": "**Montagne.** Si ce site est dans la région 2 et que la compagnie le quitte pendant la phase de ralliement, blessez chaque compagnon."
       },
       "de": {
         "title": "Schluchten des Emyn Muil",
@@ -6338,8 +6339,8 @@
         "gameText": "**Marsh.** At the start of your fellowship phase, you may play a <symbol>gollum</symbol> Free Peoples card from your draw deck."
       },
       "fr": {
-        "title": "Dammed Gate-stream",
-        "gameText": "**Marsh.** At the start of your fellowship phase, you may play a <symbol>gollum</symbol> Free Peoples card from your draw deck."
+        "title": "Cascade Condamnée de la Porte",
+        "gameText": "**Marais.** Au début de votre phase de compagnie, vous pouvez jouer une carte <symbol>gollum</symbol> des Peuples Libres de votre pioche."
       },
       "de": {
         "title": "Gestauter Torbach",
@@ -6398,8 +6399,8 @@
         "gameText": "**Forest.** Each companion is twilight cost +2."
       },
       "fr": {
-        "title": "East Road",
-        "gameText": "**Forest.** Each companion is twilight cost +2."
+        "title": "Route de l'Est",
+        "gameText": "**Forêt.** Le coût crépusculaire de chaque compagnon est de +2."
       },
       "de": {
         "title": "Die Oststrasse",
@@ -6459,7 +6460,8 @@
           }
         ],
         "source": "SELF",
-        "text": "Skirmish: Exert your character (except an enduring character), to make it strength +2."
+        "text": "Skirmish: Exert your character (except an enduring character), to make it strength +2.",
+        "textFr": "**Combat :** Affaiblissez votre personnage (sauf un personnage pugnace) pour lui donner +2 en force."
       }
     ],
     "actionPhases": [
@@ -6474,8 +6476,8 @@
         "gameText": "**Plains.** **Skirmish:** Exert your character (except an enduring character), to make it strength +2."
       },
       "fr": {
-        "title": "Ettenmoors",
-        "gameText": "**Plains.** **Skirmish:** Exert your character (except an enduring character), to make it strength +2."
+        "title": "Landes d'Etten",
+        "gameText": "**Plaines.** **Combat :** Affaiblissez votre personnage (sauf un personnage pugnace) pour lui donner +2 en force."
       },
       "de": {
         "title": "Ettenöden",
@@ -6522,7 +6524,8 @@
           }
         ],
         "source": "SELF",
-        "text": "Shadow: If the total number of minions and twilight tokens is 3 or fewer, play a minion at twilight cost –3."
+        "text": "Shadow: If the total number of minions and twilight tokens is 3 or fewer, play a minion at twilight cost –3.",
+        "textFr": "**Ombre :** Si le nombre total de séides et de jetons-crépuscule est 3 ou moins, jouez un séide au coût crépusculaire de ?3."
       }
     ],
     "actionPhases": [
@@ -6537,8 +6540,8 @@
         "gameText": "**Marsh.** **Shadow:** If the total number of minions and twilight tokens is 3 or fewer, play a minion at twilight cost –3."
       },
       "fr": {
-        "title": "Expanding Marshland",
-        "gameText": "**Marsh.** **Shadow:** If the total number of minions and twilight tokens is 3 or fewer, play a minion at twilight cost –3."
+        "title": "Marécages Expansifs",
+        "gameText": "**Marais.** **Ombre :** Si le nombre total de séides et de jetons-crépuscule est 3 ou moins, jouez un séide au coût crépusculaire de ?3."
       },
       "de": {
         "title": "Ausgedehnte Moore",
@@ -6597,8 +6600,8 @@
         "gameText": "**Forest.** When the fellowship moves to this site, add <symbol>twilight1</symbol> for each Free Peoples weapon."
       },
       "fr": {
-        "title": "Fangorn Glade",
-        "gameText": "**Forest.** When the fellowship moves to this site, add <symbol>twilight1</symbol> for each Free Peoples weapon."
+        "title": "La Clairière de Fangorn",
+        "gameText": "**Forêt.** Quand la compagnie se déplace jusqu'à ce site, ajoutez <symbol>twilight1</symbol> pour chaque arme des Peuples Libres."
       },
       "de": {
         "title": "Lichtung in Fangorn",
@@ -6659,8 +6662,8 @@
         "gameText": "**Plains.** Each unbound companion skirmishing more than 1 minion is strength +3."
       },
       "fr": {
-        "title": "Flats of Rohan",
-        "gameText": "**Plains.** Each unbound companion skirmishing more than 1 minion is strength +3."
+        "title": "Les Mesas de Rohan",
+        "gameText": "**Plaines.** Chaque compagnon dissocié qui combat plus d'un séide a +3 en force."
       },
       "de": {
         "title": "Grasflächen von Rohan",
@@ -6714,8 +6717,8 @@
         "gameText": "**Battleground.** When the fellowship moves to the site, add <symbol>twilight2</symbol> for each companion over 5."
       },
       "fr": {
-        "title": "Fortress of Orthanc",
-        "gameText": "**Battleground.** When the fellowship moves to the site, add <symbol>twilight2</symbol> for each companion over 5."
+        "title": "La Forteresse d'Orthanc",
+        "gameText": "**Champ de bataille.** Quand la compagnie se déplace jusqu'à ce site, ajoutez <symbol>twilight2</symbol> pour chaque compagnon au delà de 5."
       },
       "de": {
         "title": "Die Festung von Orthanc",
@@ -6791,8 +6794,8 @@
         "gameText": "**Dwelling.** At the start of your fellowship phase, you may exert 2 Hobbits to play a Hobbit from your draw deck."
       },
       "fr": {
-        "title": "Green Dragon Inn",
-        "gameText": "**Dwelling.** At the start of your fellowship phase, you may exert 2 Hobbits to play a Hobbit from your draw deck."
+        "title": "Auberge du Dragon Vert",
+        "gameText": "**Résidence.** Au début de votre phase de compagnie, vous pouvez affaiblir 2 Hobbits pour jouer un Hobbit de votre pioche."
       },
       "de": {
         "title": "Der Grüne Drache",
@@ -6861,7 +6864,7 @@
       },
       "fr": {
         "title": "Harrowdale",
-        "gameText": "**Plains.** Until the regroup phase, each minion skirmishing a <symbol>rohan</symbol> companion loses fierce and cannot gain **Fierce.**"
+        "gameText": "**Plaines.** Jusqu'à la phase de ralliement, chaque séide qui combat un compagnon <symbol>rohan</symbol> perd acharné et ne peut pas acquérir acharné."
       },
       "de": {
         "title": "Hargtal",
@@ -6929,8 +6932,8 @@
         "gameText": "**Battleground.** Each time a <symbol>gandalf</symbol> companion wins a skirmish, the Free Peoples player may discard a condition from play."
       },
       "fr": {
-        "title": "Heights of Isengard",
-        "gameText": "**Battleground.** Each time a <symbol>gandalf</symbol> companion wins a skirmish, the Free Peoples player may discard a condition from play."
+        "title": "Les Hauteurs de l'Isengard",
+        "gameText": "**Champ de bataille.** Chaque fois qu'un compagnon <symbol>gandalf</symbol> gagne un combat, le joueur des Peuples Libres peut défausser une situation en jeu."
       },
       "de": {
         "title": "Anhöhen von Isengart",
@@ -6994,8 +6997,8 @@
         "gameText": "**Battleground.** Each character bearing a hand weapon is strength +2."
       },
       "fr": {
-        "title": "Helm's Gate",
-        "gameText": "**Battleground.** Each character bearing a hand weapon is strength +2."
+        "title": "La Porte de Helm",
+        "gameText": "**Champ de bataille.** Chaque personnage qui détient une arme de mêlée a +2 en force."
       },
       "de": {
         "title": "Helms Tor",
@@ -7067,8 +7070,8 @@
         "gameText": "**Marsh.** **Regroup:** Exert your Gollum or your Sméagol to play the fellowship's next site."
       },
       "fr": {
-        "title": "Mere of Dead Faces",
-        "gameText": "**Marsh.** **Regroup:** Exert your Gollum or your Sméagol to play the fellowship's next site."
+        "title": "L'Étang des Visages Morts",
+        "gameText": "**Marais.** **Ralliement :** Affaiblissez votre Gollum ou votre Sméagol pour jouer le prochain site de la compagnie."
       },
       "de": {
         "title": "Pfuhl der Toten Gesichter",
@@ -7137,8 +7140,8 @@
         "gameText": "**Underground.** When your fellowship moves from this site, you may spot a Dwarf to draw 2 cards."
       },
       "fr": {
-        "title": "Moria Guardroom",
-        "gameText": "**Underground.** When your fellowship moves from this site, you may spot a Dwarf to draw 2 cards."
+        "title": "Salle de Garde de la Moria",
+        "gameText": "**Souterrain.** Quand votre compagnie quitte ce site, vous pouvez désigner un Nain pour piocher 2 cartes."
       },
       "de": {
         "title": "Moria Wachstube",
@@ -7201,8 +7204,8 @@
         "gameText": "**Underground.** Each character bearing a hand weapon is **Damage +1.**"
       },
       "fr": {
-        "title": "Moria Stairway",
-        "gameText": "**Underground.** Each character bearing a hand weapon is **Damage +1.**"
+        "title": "Escalier de la Moria",
+        "gameText": "**Souterrain.** Chaque personnage qui détient une arme de mêlée inflige des **dégâts +1.**"
       },
       "de": {
         "title": "Die Treppen von Moria",
@@ -7274,7 +7277,7 @@
       },
       "fr": {
         "title": "Neekerbreekers' Bog",
-        "gameText": "**Marsh.** When the fellowship moves to here, heal each character who has resistance 5 or more and exert each other character."
+        "gameText": "**Marais.** Quand la compagnie se déplace jusqu'ici, guérissez chaque personnage de résistance 5 ou plus et affaiblissez chaque autre personnage."
       },
       "de": {
         "title": "Zirperkirper-Moor",
@@ -7328,8 +7331,8 @@
         "gameText": "**River.** The minion archery total is –3."
       },
       "fr": {
-        "title": "North Undeep",
-        "gameText": "**River.** The minion archery total is –3."
+        "title": "Méandre du Nord",
+        "gameText": "**Rivière.** Le total d'archerie des séides est de ?3."
       },
       "de": {
         "title": "Nördliche Untiefe",
@@ -7391,8 +7394,8 @@
         "gameText": "**Forest.** At the start of your fellowship phase, you may heal 2 Elves."
       },
       "fr": {
-        "title": "Old Forest Road",
-        "gameText": "**Forest.** At the start of your fellowship phase, you may heal 2 Elves."
+        "title": "La Route de la Vieille Forêt",
+        "gameText": "**Forêt.** Au début de votre phase de compagnie, vous pouvez guérir 2 Elfes."
       },
       "de": {
         "title": "Alte Waldstraße",
@@ -7451,8 +7454,8 @@
         "gameText": "**Battleground.** When the fellowship moves from this site, the Free Peoples player may spot 3 burdens to remove a burden."
       },
       "fr": {
-        "title": "Osgiliath Reclaimed",
-        "gameText": "**Battleground.** When the fellowship moves from this site, the Free Peoples player may spot 3 burdens to remove a burden."
+        "title": "Osgiliath Revendiquée",
+        "gameText": "**Champ de bataille.** Quand la compagnie quitte ce site, le joueur des Peuples Libres peut désigner 3 points-fardeau pour retirer un point-fardeau."
       },
       "de": {
         "title": "Das zurückgeforderte Osgiliath",
@@ -7511,8 +7514,8 @@
         "gameText": "**Plains.** Each <symbol>men</symbol> minion gains ambush <symbol>twilight1</symbol>."
       },
       "fr": {
-        "title": "Pelennor Fields",
-        "gameText": "**Plains.** Each <symbol>men</symbol> minion gains ambush <symbol>twilight1</symbol>."
+        "title": "Les Champs du Pelennor",
+        "gameText": "**Plaines.** Chaque séide <symbol>men</symbol> acquiert **embuscade** <symbol>twilight1</symbol>."
       },
       "de": {
         "title": "Pelennor-Felder",
@@ -7587,8 +7590,8 @@
         "gameText": "**Plains.** At the start of the maneuver phase, the Free Peoples player must add a burden or discard 3 cards from hand."
       },
       "fr": {
-        "title": "Pelennor Flat",
-        "gameText": "**Plains.** At the start of the maneuver phase, the Free Peoples player must add a burden or discard 3 cards from hand."
+        "title": "La Mesa du Pelennor",
+        "gameText": "**Plaines.** Au début de la phase de man?uvre, le joueur des Peuples Libres doit ajouter un point-fardeau ou défausser 3 cartes de sa main."
       },
       "de": {
         "title": "Ebene des Pelennor",
@@ -7664,8 +7667,8 @@
         "gameText": "**Mountain.** At the start of your fellowship phase, you may exert 3 companions to play a Wizard from your dead pile."
       },
       "fr": {
-        "title": "Pinnacle of Zirakzigil",
-        "gameText": "**Mountain.** At the start of your fellowship phase, you may exert 3 companions to play a Wizard from your dead pile."
+        "title": "La Cime de Zirakzigil",
+        "gameText": "**Montagne.** Au début de votre phase de compagnie, vous pouvez affaiblir 3 compagnons pour jouer un Magicien de votre cimetière."
       },
       "de": {
         "title": "Die Spitze von Zirakzigil",
@@ -7730,8 +7733,8 @@
         "gameText": "**Dwelling.** At the start of your fellowship phase, you may add a burden to play a ranger from your draw deck."
       },
       "fr": {
-        "title": "The Prancing Pony",
-        "gameText": "**Dwelling.** At the start of your fellowship phase, you may add a burden to play a ranger from your draw deck."
+        "title": "Le Poney Fringant",
+        "gameText": "**Résidence.** Au début de votre phase de compagnie, vous pouvez ajouter un point-fardeau pour jouer un rôdeur de votre pioche."
       },
       "de": {
         "title": "Zum tänzelnden Pony",
@@ -7789,8 +7792,8 @@
         "gameText": "**Plains.** During the archery phase, <symbol>urukhai</symbol> minions cannot take wounds."
       },
       "fr": {
-        "title": "Rohan Uplands",
-        "gameText": "**Plains.** During the archery phase, <symbol>urukhai</symbol> minions cannot take wounds."
+        "title": "Le Haut Pays de Rohan",
+        "gameText": "**Plaines.** Pendant la phase d'archerie, les séides <symbol>urukhai</symbol> ne peuvent pas être blessés."
       },
       "de": {
         "title": "Hochland von Rohan",
@@ -7851,8 +7854,8 @@
         "gameText": "**Battleground.** Each time a companion is killed, add a burden."
       },
       "fr": {
-        "title": "Slag Mounds",
-        "gameText": "**Battleground.** Each time a companion is killed, add a burden."
+        "title": "Buttes de Scories",
+        "gameText": "**Champ de bataille.** Chaque fois qu'un compagnon est tué, ajoutez un point-fardeau."
       },
       "de": {
         "title": "Schlackenhügel",
@@ -7926,8 +7929,8 @@
         "gameText": "At the start of your fellowship phase, you may exert a <symbol>rohan</symbol> Man to play a <symbol>rohan</symbol> mount from your draw deck."
       },
       "fr": {
-        "title": "Stables",
-        "gameText": "At the start of your fellowship phase, you may exert a <symbol>rohan</symbol> Man to play a <symbol>rohan</symbol> mount from your draw deck."
+        "title": "Écuries",
+        "gameText": "Au début de votre phase de compagnie, vous pouvez affaiblir un Homme <symbol>rohan</symbol> pour jouer une monture <symbol>rohan</symbol> de votre pioche."
       },
       "de": {
         "title": "Ställe",
@@ -7993,8 +7996,8 @@
         "gameText": "**Forest.** Each time you play an artifact or possession on your companion, you may draw a card."
       },
       "fr": {
-        "title": "Trollshaw Forest",
-        "gameText": "**Forest.** Each time you play an artifact or possession on your companion, you may draw a card."
+        "title": "Forêt du Bosquet des Trolls",
+        "gameText": "**Forêt.** Chaque fois que vous jouez un artefact ou une possession sur votre compagnon, vous pouvez piocher une carte."
       },
       "de": {
         "title": "Trollhöhenwälder",
@@ -8057,8 +8060,8 @@
         "gameText": "**Dwelling.** **River.** When your fellowship moves to this site, you may heal each Hobbit companion."
       },
       "fr": {
-        "title": "Valley of the Silverlode",
-        "gameText": "**Dwelling.** **River.** When your fellowship moves to this site, you may heal each Hobbit companion."
+        "title": "Vallée du Cours d'Argent",
+        "gameText": "**Résidence.** **Rivière.** Quand votre compagnie se déplace jusqu'à ce site, vous pouvez guérir chaque compagnon Hobbit."
       },
       "de": {
         "title": "Tal des Silberlauf",
@@ -8130,8 +8133,8 @@
         "gameText": "**Mountain.****Maneuver:** Exert your <symbol>orc</symbol> minion to discard a card at random from the Free Peoples player's hand."
       },
       "fr": {
-        "title": "Watch-tower of Cirith Ungol",
-        "gameText": "**Mountain.****Maneuver:** Exert your <symbol>orc</symbol> minion to discard a card at random from the Free Peoples player's hand."
+        "title": "La Tour de Garde de Cirith Ungol",
+        "gameText": "**Montagne.** **Man?uvre :** Affaiblissez votre séide <symbol>orc</symbol> pour défausser une carte au hasard de la main du joueur des Peuples Libres."
       },
       "de": {
         "title": "Wachtturm von Cirith Ungol",
@@ -8184,8 +8187,8 @@
         "gameText": "**Underground.** When the fellowship moves from this site, remove <symbol>twilight2</symbol>."
       },
       "fr": {
-        "title": "West Gate of Moria",
-        "gameText": "**Underground.** When the fellowship moves from this site, remove <symbol>twilight2</symbol>."
+        "title": "La Porte Ouest de la Moria",
+        "gameText": "**Souterrain.** Quand la compagnie quitte ce site, retirez <symbol>twilight2</symbol>."
       },
       "de": {
         "title": "Das Westtor von Moria",
@@ -8244,8 +8247,8 @@
         "gameText": "**Dwelling.** When the fellowship moves to this site, the Free Peoples player wounds a companion for each ally."
       },
       "fr": {
-        "title": "Westemnet Village",
-        "gameText": "**Dwelling.** When the fellowship moves to this site, the Free Peoples player wounds a companion for each ally."
+        "title": "Le Village de l'Ouestemnet",
+        "gameText": "**Résidence.** Quand la compagnie se déplace jusqu'à ce site, le joueur des Peuples Libres blesse un compagnon pour chaque allié."
       },
       "de": {
         "title": "Dorf in Westemnet",
@@ -8305,8 +8308,8 @@
         "gameText": "**Underground.** Each unwounded <symbol>gondor</symbol> Man is **defender +1. **"
       },
       "fr": {
-        "title": "Window on the West",
-        "gameText": "**Underground.** Each unwounded <symbol>gondor</symbol> Man is **defender +1. **"
+        "title": "La Fenêtre sur l'Ouest",
+        "gameText": "**Souterrain.** Chaque Homme <symbol>gondor</symbol> qui n'est pas blessé est **défenseur +1.**"
       },
       "de": {
         "title": "Fenster nach Westen",
@@ -8356,7 +8359,8 @@
           }
         ],
         "source": "SELF",
-        "text": "Shadow: Remove a burden to play a Nazgûl from your discard pile."
+        "text": "Shadow: Remove a burden to play a Nazgûl from your discard pile.",
+        "textFr": "**Ombre :** Retirez un point-fardeau pour jouer un Nazgûl de votre pile de défausse."
       }
     ],
     "actionPhases": [
@@ -8371,8 +8375,8 @@
         "gameText": "**Forest.****Shadow:** Remove a burden to play a Nazgûl from your discard pile."
       },
       "fr": {
-        "title": "Woody-End",
-        "gameText": "**Forest.****Shadow:** Remove a burden to play a Nazgûl from your discard pile."
+        "title": "Bout-des-Bois",
+        "gameText": "**Forêt.** **Ombre :** Retirez un point-fardeau pour jouer un Nazgûl de votre pile de défausse."
       },
       "de": {
         "title": "Waldende",
@@ -8418,7 +8422,8 @@
           }
         ],
         "source": "SELF",
-        "text": "Shadow: Play a Nazgûl (or spot 6 companions and discard 2 cards from hand) to draw a card."
+        "text": "Shadow: Play a Nazgûl (or spot 6 companions and discard 2 cards from hand) to draw a card.",
+        "textFr": "**Ombre :** Jouez un Nazgûl (ou désignez 6 compagnons et défaussez 2 cartes de votre main) pour piocher une carte."
       },
       {
         "id": "12U185:1:site-phase",
@@ -8449,7 +8454,8 @@
           }
         ],
         "source": "SELF",
-        "text": "Shadow: Play a Nazgûl (or spot 6 companions and discard 2 cards from hand) to draw a card."
+        "text": "Shadow: Play a Nazgûl (or spot 6 companions and discard 2 cards from hand) to draw a card.",
+        "textFr": "**Ombre :** Jouez un Nazgûl (ou désignez 6 compagnons et défaussez 2 cartes de votre main) pour piocher une carte."
       }
     ],
     "actionPhases": [
@@ -8464,8 +8470,8 @@
         "gameText": "**Forest. Shadow:** Play a Nazgûl (or spot 6 companions and discard 2 cards from hand) to draw a card."
       },
       "fr": {
-        "title": "The Angle",
-        "gameText": "**Forest. Shadow:** Play a Nazgûl (or spot 6 companions and discard 2 cards from hand) to draw a card."
+        "title": "L'Angle",
+        "gameText": "**Forêt.** **Ombre :** Jouez un Nazgûl (ou désignez 6 compagnons et défaussez 2 cartes de votre main) pour piocher une carte."
       },
       "de": {
         "title": "Der Winkel",
@@ -8525,8 +8531,8 @@
         "gameText": "**Battleground. Underground.** The Balrog is twilight cost –3."
       },
       "fr": {
-        "title": "The Bridge of Khazad-dûm",
-        "gameText": "**Battleground. Underground.** The Balrog is twilight cost –3."
+        "title": "Le Pont de Khazad-dûm",
+        "gameText": "**Champ de bataille.** **Souterrain.** Le coût crépusculaire du Balrog est de ?3."
       },
       "de": {
         "title": "Die Brücke von Khazad-dûm",
@@ -8678,8 +8684,8 @@
         "gameText": "**Battleground. Forest.** While you can spot 3 minions (or 6 companions), each unbound companion is resistance –2."
       },
       "fr": {
-        "title": "Hill of Sight",
-        "gameText": "**Battleground. Forest.** While you can spot 3 minions (or 6 companions), each unbound companion is resistance –2."
+        "title": "La Colline de la Vue",
+        "gameText": "**Champ de bataille.** **Forêt.** Tant que vous pouvez désigner 3 séides (ou 6 compagnons), la résistance de chaque compagnon dissocié est de ?2."
       },
       "de": {
         "title": "Berg des Auges",
@@ -8741,8 +8747,8 @@
         "gameText": "**Dwelling.** When the fellowship moves from this site, wound each minion that is not a lurker."
       },
       "fr": {
-        "title": "Hobbiton Market",
-        "gameText": "**Dwelling.** When the fellowship moves from this site, wound each minion that is not a lurker."
+        "title": "Le Marché de Hobbitebourg",
+        "gameText": "**Résidence.** Quand la compagnie quitte ce site, blessez chaque séide qui n'est pas embusqué."
       },
       "de": {
         "title": "Marktplatz in Hobbingen",
@@ -8796,7 +8802,8 @@
           }
         ],
         "source": "SELF",
-        "text": "Shadow: Make your lurker minion lose lurker until the regroup phase."
+        "text": "Shadow: Make your lurker minion lose lurker until the regroup phase.",
+        "textFr": "**Ombre :** Faites perdre **\"embusqué**\" à votre séide embusqué jusqu'à la phase de ralliement."
       }
     ],
     "actionPhases": [
@@ -8811,8 +8818,8 @@
         "gameText": "**Battleground. Plains. Shadow:** Make your lurker minion lose **lurker** until the regroup phase."
       },
       "fr": {
-        "title": "Northern Pelennor",
-        "gameText": "**Battleground. Plains. Shadow:** Make your lurker minion lose **lurker** until the regroup phase."
+        "title": "Pelennor Septentrional",
+        "gameText": "**Champ de bataille.** **Plaines.** **Ombre :** Faites perdre **\"embusqué**\" à votre séide embusqué jusqu'à la phase de ralliement."
       },
       "de": {
         "title": "Nördlicher Pelennor",
@@ -8864,7 +8871,8 @@
           }
         ],
         "source": "SELF",
-        "text": "Shadow: Spot 5 orc Orcs to prevent the fellowship from moving again this turn."
+        "text": "Shadow: Spot 5 orc Orcs to prevent the fellowship from moving again this turn.",
+        "textFr": "**Ombre :** Désignez 5 Orques <symbol>orc</symbol> pour empêcher la compagnie de se déplacer à nouveau pendant ce tour-ci."
       }
     ],
     "actionPhases": [
@@ -8879,8 +8887,8 @@
         "gameText": "**River. Shadow:** Spot 5 <symbol>orc</symbol> Orcs to prevent the fellowship from moving again this turn."
       },
       "fr": {
-        "title": "Shores of Nen Hithoel",
-        "gameText": "**River. Shadow:** Spot 5 <symbol>orc</symbol> Orcs to prevent the fellowship from moving again this turn."
+        "title": "Rivages de Nen Hithoel",
+        "gameText": "**Rivière.** **Ombre :** Désignez 5 Orques <symbol>orc</symbol> pour empêcher la compagnie de se déplacer à nouveau pendant ce tour-ci."
       },
       "de": {
         "title": "Die Ufer von Nen Hithoel",
@@ -8925,7 +8933,8 @@
           }
         ],
         "source": "SELF",
-        "text": "Shadow: Remove twilight2 and discard 2 Free Peoples cards from hand to draw a card."
+        "text": "Shadow: Remove twilight2 and discard 2 Free Peoples cards from hand to draw a card.",
+        "textFr": "**Ombre :** Retirez <symbol>twilight2</symbol> et défaussez 2 cartes des Peuples Libres de votre main pour piocher une carte."
       }
     ],
     "actionPhases": [
@@ -8940,8 +8949,8 @@
         "gameText": "**Mountain. Shadow:** Remove <symbol>twilight2</symbol> and discard 2 Free Peoples cards from hand to draw a card."
       },
       "fr": {
-        "title": "Slopes of Orodruin",
-        "gameText": "**Mountain. Shadow:** Remove <symbol>twilight2</symbol> and discard 2 Free Peoples cards from hand to draw a card."
+        "title": "Pentes de l'Orodruin",
+        "gameText": "**Montagne.** **Ombre :** Retirez <symbol>twilight2</symbol> et défaussez 2 cartes des Peuples Libres de votre main pour piocher une carte."
       },
       "de": {
         "title": "Die Hänge des Orodruin",
@@ -9004,7 +9013,7 @@
       },
       "fr": {
         "title": "Starkhorn",
-        "gameText": "**Mountain.** Each time your Dwarf wins a skirmish, you may draw a card."
+        "gameText": "**Montagne.** Chaque fois que votre Nain gagne un combat, vous pouvez piocher une carte."
       },
       "de": {
         "title": "Starkhorn",
@@ -9060,7 +9069,8 @@
           }
         ],
         "source": "SELF",
-        "text": "Skirmish: Exert your Man (except an enduring Man) to make him or her damage +1."
+        "text": "Skirmish: Exert your Man (except an enduring Man) to make him or her damage +1.",
+        "textFr": "**Combat :** Affaiblissez votre Homme (sauf un Homme pugnace) pour qu'il inflige des **dégâts +1.**"
       }
     ],
     "actionPhases": [
@@ -9075,8 +9085,8 @@
         "gameText": "**Plains. Skirmish:** Exert your Man (except an enduring Man) to make him or her **damage +1.**"
       },
       "fr": {
-        "title": "Wold Battlefield",
-        "gameText": "**Plains. Skirmish:** Exert your Man (except an enduring Man) to make him or her **damage +1.**"
+        "title": "Champ de Bataille du Plateau",
+        "gameText": "**Plaines.** **Combat :** Affaiblissez votre Homme (sauf un Homme pugnace) pour qu'il inflige des **dégâts +1.**"
       },
       "de": {
         "title": "Schlachtfeld im Ödland",
@@ -9131,8 +9141,8 @@
         "gameText": "**Underground.** If this site is not in region 1 when the fellowship moves from here during the regroup phase, add a burden."
       },
       "fr": {
-        "title": "Abandoned Mine Shaft",
-        "gameText": "**Underground.** If this site is not in region 1 when the fellowship moves from here during the regroup phase, add a burden."
+        "title": "Tunnel de Mine Abandonné",
+        "gameText": "**Souterrain.** Si ce site n'est pas dans la région 1 quand la compagnie le quitte durant la phase de ralliement, ajoutez un point-fardeau."
       },
       "de": {
         "title": "Stillgelegte Mine",
@@ -9188,8 +9198,8 @@
         "gameText": "**Underground.** When the fellowship moves to this site during the regroup phase, the Free Peoples player may remove 2 burdens."
       },
       "fr": {
-        "title": "Caves of Aglarond",
-        "gameText": "**Underground.** When the fellowship moves to this site during the regroup phase, the Free Peoples player may remove 2 burdens."
+        "title": "Les Cavernes d'Aglarond",
+        "gameText": "**Souterrain.** Quand la compagnie se déplace jusqu'à ce site durant la phase de ralliement, le joueur des Peuples Libres peut retirer 2 points-fardeau."
       },
       "de": {
         "title": "Die Höhlen von Aglarond",
@@ -9245,8 +9255,8 @@
         "gameText": "**Battleground.** When the fellowship moves to this site during the regroup phase, the Free Peoples player may draw a card."
       },
       "fr": {
-        "title": "City of Kings",
-        "gameText": "**Battleground.** When the fellowship moves to this site during the regroup phase, the Free Peoples player may draw a card."
+        "title": "La Cité des Rois",
+        "gameText": "**Champ de bataille.** Quand la compagnie se déplace jusqu'à ce site durant la phase de ralliement, le joueur des Peuples Libres peut piocher une carte."
       },
       "de": {
         "title": "Die Stadt der Könige",
@@ -9305,8 +9315,8 @@
         "gameText": "**Dwelling.** When the fellowship moves to this site, the first Shadow player may discard 2 cards from hand to add a burden."
       },
       "fr": {
-        "title": "Courtyard Parapet",
-        "gameText": "**Dwelling.** When the fellowship moves to this site, the first Shadow player may discard 2 cards from hand to add a burden."
+        "title": "Parapet de la Cour Intérieure",
+        "gameText": "**Résidence.** Quand la compagnie se déplace jusqu'à ce site, le premier joueur de l'Ombre peut défausser 2 cartes de sa main pour ajouter un point-fardeau."
       },
       "de": {
         "title": "Schloßhofbrüstung",
@@ -9368,8 +9378,8 @@
         "gameText": "**Forest.** When the fellowship moves to this site during the regroup phase, the Free Peoples player may heal a companion of each culture."
       },
       "fr": {
-        "title": "Crossroads of the Fallen Kings",
-        "gameText": "**Forest.** When the fellowship moves to this site during the regroup phase, the Free Peoples player may heal a companion of each culture."
+        "title": "La Croisée des Chemins des Rois Déchus",
+        "gameText": "**Forêt.** Quand la compagnie se déplace jusqu'à ce site durant la phase de ralliement, le joueur des Peuples Libres peut guérir un compagnon de chaque culture."
       },
       "de": {
         "title": "Scheideweg der gefallenen Könige",
@@ -9429,8 +9439,8 @@
         "gameText": "**Marsh.** Each companion of a race that has the most companions is strength –1 until the regroup phase."
       },
       "fr": {
-        "title": "Doors of Durin",
-        "gameText": "**Marsh.** Each companion of a race that has the most companions is strength –1 until the regroup phase."
+        "title": "Les Portes de Durin",
+        "gameText": "**Marais.** Chaque compagnon de chaque race qui a le plus de compagnons a ?1 en force."
       },
       "de": {
         "title": "Durins Tor",
@@ -9490,8 +9500,8 @@
         "gameText": "**River.** Each character is strength +1 for each card borne by that character."
       },
       "fr": {
-        "title": "Fords of Isen",
-        "gameText": "**River.** Each character is strength +1 for each card borne by that character."
+        "title": "Les Gués de l'Isen",
+        "gameText": "**Rivière.** Chaque personnage a +1 en force pour chaque carte qu'il détient."
       },
       "de": {
         "title": "Die Furten des Isen",
@@ -9551,8 +9561,8 @@
         "gameText": "**Battleground.** While a player can spot more companions than minions, each minion is strength +1."
       },
       "fr": {
-        "title": "The Great Gates",
-        "gameText": "**Battleground.** While a player can spot more companions than minions, each minion is strength +1."
+        "title": "Les Grandes Portes",
+        "gameText": "**Champ de bataille.** Tant qu'un joueur peut désigner plus de compagnons que de séides, chaque séide a +1 en force."
       },
       "de": {
         "title": "Das Große Tor",
@@ -9630,7 +9640,7 @@
       },
       "fr": {
         "title": "Isenwash",
-        "gameText": "**Battleground. Plains.** At the start of the regroup phase, each Shadow player may exert a minion to exert a companion."
+        "gameText": "**Champ de bataille.** **Plaines.** Au début de la phase de ralliement, chaque joueur de l'Ombre peut affaiblir un séide pour affaiblir un compagnon."
       },
       "de": {
         "title": "Flussbett des Isen",
@@ -9682,8 +9692,8 @@
         "gameText": "**Mountain.** Culture tokens cannot be added, removed, or reinforced."
       },
       "fr": {
-        "title": "Redhorn Pass",
-        "gameText": "**Mountain.** Culture tokens cannot be added, removed, or reinforced."
+        "title": "La Porte de Rubicorne",
+        "gameText": "**Montagne.** Les jetons de culture ne peuvent pas être ajoutés, retirés ni renforcés."
       },
       "de": {
         "title": "Rothornpass",
@@ -9738,7 +9748,7 @@
       },
       "fr": {
         "title": "Anduin River",
-        "gameText": "**River.** The fellowship archery total is –3."
+        "gameText": "**Rivière.** Le total d'archerie de la compagnie est de ?3."
       },
       "de": {
         "title": "Anduin River",
@@ -9800,7 +9810,7 @@
       },
       "fr": {
         "title": "Breeding pit of Isengard",
-        "gameText": "**Underground.** The twilight cost of the first hunter minion played each Shadow phase is –2."
+        "gameText": "**Souterrain.** Le coût crépusculaire du premier séide chasseur joué à chaque phase de l'Ombre est de ?2."
       },
       "de": {
         "title": "Breeding pit of Isengard",
@@ -9861,7 +9871,7 @@
       },
       "fr": {
         "title": "City Gates",
-        "gameText": "When the Fellowship moves to this site, add a threat (or 2 if you can spot a hunter minion) for each companion over 4."
+        "gameText": "Quand la compagnie se déplace vers ce site, ajoutez une menace (ou 2 si vous pouvez désigner un séide chasseur) pour chaque compagnon au-delà de 4."
       },
       "de": {
         "title": "City Gates",
@@ -9992,7 +10002,7 @@
       },
       "fr": {
         "title": "Gate of Mordor",
-        "gameText": "**Battleground.** Each time the fellowship moves to this site, add <symbol>twilight1</symbol> for each culture you can spot."
+        "gameText": "**Champ de bataille.** Chaque fois que la compagnie se déplace vers ce site, ajoutez <symbol>twilight1</symbol> pour chaque culture que vous pouvez désigner."
       },
       "de": {
         "title": "Gate of Mordor",
@@ -10055,7 +10065,7 @@
       },
       "fr": {
         "title": "Isengard Ruined",
-        "gameText": "**Battleground.** Each time a follower is transfered to a character, the first Shadow player may exert a companion twice."
+        "gameText": "**Champ de bataille.** Chaque fois qu'un suivant est transféré à un personnage, le premier joueur de l'Ombre peut affaiblir un compagnon deux fois."
       },
       "de": {
         "title": "Isengard Ruined",
@@ -10110,7 +10120,7 @@
       },
       "fr": {
         "title": "Mount Doom",
-        "gameText": "**Battleground. Mountain. Underground.** Until the end of the game, sites in this region cannot be replaced."
+        "gameText": "**Champ de bataille.** **Montagne.** **Souterrain.** Jusqu'à la fin de la partie les sites de la région contenant ce site ne peuvent pas être remplacés."
       },
       "de": {
         "title": "Mount Doom",
@@ -10170,7 +10180,7 @@
       },
       "fr": {
         "title": "Westfold Village",
-        "gameText": "**Plains.** Each hunter character is strength +1."
+        "gameText": "**Plaines.** Chaque personnage chasseur a +1 en force."
       },
       "de": {
         "title": "Westfold Village",
@@ -10246,7 +10256,7 @@
       },
       "fr": {
         "title": "Dol Guldur",
-        "gameText": "**Regroup:** Exert your minion and remove a threat to make the Free Peoples player discard one of his or her conditions."
+        "gameText": "**Ralliement :** Affaiblissez votre séide et retirez une menace pour obliger le joueur des Peuples Libres à défausser une de ses situations."
       },
       "de": {
         "title": "Dol Guldur",
@@ -10300,7 +10310,7 @@
       },
       "fr": {
         "title": "Falls of Rauros",
-        "gameText": "**River.** When the Fellowship moves to this site in region 2, the Free Peoples player places a card from the dead pile out of play."
+        "gameText": "**Rivière.** Quand la compagnie arrive à ce site en région 2, le joueur des Peuples Libres retire une carte du cimetière de la partie."
       },
       "de": {
         "title": "Falls of Rauros",
@@ -10354,7 +10364,7 @@
       },
       "fr": {
         "title": "Imladris",
-        "gameText": "**River.** When the fellowship moves to this site, if it is a sanctuary, remove 2 burdens."
+        "gameText": "**Rivière.** Quand la compagnie arrive à ce site, si c'est un sanctuaire, retirez 2 points-fardeau."
       },
       "de": {
         "title": "Imladris",
@@ -10416,7 +10426,7 @@
       },
       "fr": {
         "title": "Nurn",
-        "gameText": "**Plains.** While you control this site, each of your hunter minions is strength +1."
+        "gameText": "**Plaines.** Tant que vous contrôlez ce site, chacun de vos séides chasseurs a +1 en force."
       },
       "de": {
         "title": "Nurn",
@@ -10475,7 +10485,7 @@
       },
       "fr": {
         "title": "Doorway to Doom",
-        "gameText": "**Mountain.** When the fellowship moves to this site, each player wounds two of his or her characters."
+        "gameText": "**Montagne.** Quand la compagnie arrive à ce site, chaque joueur doit blesser deux de ses personnages."
       },
       "de": {
         "title": "Doorway to Doom",
@@ -10527,7 +10537,7 @@
       },
       "fr": {
         "title": "Foot of Mount Doom",
-        "gameText": "**Mountain.** Each card that is about to be placed into the discard pile is removed from the game instead."
+        "gameText": "**Montagne.** Chaque carte sur le point d'être placée dans la pile de défausse est plutôt retirée de la partie."
       },
       "de": {
         "title": "Foot of Mount Doom",
@@ -10586,7 +10596,7 @@
       },
       "fr": {
         "title": "Mithlond",
-        "gameText": "**River.** When the fellowship moves to this site, each player heals each of his or her characters."
+        "gameText": "**Rivière.** Quand la compagnie arrive à ce site, chaque joueur doit guérir chacun de ses personnages."
       },
       "de": {
         "title": "Mithlond",
@@ -10643,7 +10653,7 @@
       },
       "fr": {
         "title": "Morannon Plains",
-        "gameText": "**Battleground. Plains.** When the fellowship moves to this site, each player may reinforce a culture token."
+        "gameText": "**Champ de bataille.** **Plaines.** Quand la compagnie arrive à ce site, chaque joueur peut renforcer un jeton de culture."
       },
       "de": {
         "title": "Morannon Plains",
@@ -10678,7 +10688,7 @@
       },
       "fr": {
         "title": "Sirannon Ruins",
-        "gameText": "**River.**"
+        "gameText": "**Rivière.**"
       },
       "de": {
         "title": "Sirannon Ruins",
@@ -10733,7 +10743,7 @@
       },
       "fr": {
         "title": "Steward's Tomb",
-        "gameText": "Wounds cannot be prevented or healed. Burdens cannot be removed."
+        "gameText": "Les blessures ne peuvent pas être empêchées ni guéries.\nLes points-fardeau ne peuvent pas être retirés."
       },
       "de": {
         "title": "Steward's Tomb",
@@ -10785,7 +10795,7 @@
       },
       "fr": {
         "title": "Streets of Bree",
-        "gameText": "**Dwelling.** While the fellowship is at this site, followers cannot be transferred to a character."
+        "gameText": "**Résidence.** Tant que la compagnie se trouve sur ce site, les suivants ne peuvent pas être transférés à un personnage."
       },
       "de": {
         "title": "Streets of Bree",
