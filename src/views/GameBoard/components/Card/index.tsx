@@ -317,8 +317,8 @@ export const Card: React.FC<CardProps> = ({
             card.type === 'RING')
     );
     const viewerPlayerId = myPlayerId || playerID;
-    // Propriété = zone (isOpponent), pas kind === faction active :
-    // sinon en Ombre on « possède » les situations Ombre adverses.
+    // Propriété = zone (isOpponent), sauf capacités d’une source dont le kind
+    // est celui du joueur (Désertion Ombre sur compagnon adverse…).
     const viewerOwnsCard = Boolean(card && !isOpponent);
     // Empilé (visualOnly) : pas de sceau / bulle — on joue par drag, comme la main.
     const visibleAbilities =
@@ -386,7 +386,9 @@ export const Card: React.FC<CardProps> = ({
         // Hors fenêtre de réponse : jamais une Response dans la bulle
         if (abilityMatchesPhase(ability, 'RESPONSE')) return false;
         if (!phase || !abilityMatchesPhase(ability, phase)) return false;
-        if (!G) return true;
+        if (!G || !abilityContext) return true;
+        // Source (attachement) ou hôte : le joueur doit pouvoir activer la source.
+        if (!canUseAbility(source, abilityContext).valid) return false;
         return (
             projectedHostCanPayCost() &&
             abilityMeetsPlayRestrictions(G, source, ability) &&
@@ -404,15 +406,15 @@ export const Card: React.FC<CardProps> = ({
             )
         );
     });
-    // Bouton seulement s’il existe une capacité affichable (pas WHEN_PLAYED seul).
-    // Le halo dépend de la phase / payabilité (`abilityPhaseMatch`).
+    // Bouton si on possède la zone, ou si une capacité listée est activable
+    // depuis une source « à soi » sur un hôte adverse (Désertion…).
     const showAbilityButton = Boolean(
         card &&
         size === 'sm' &&
-        viewerOwnsCard &&
         !isAttachedCard &&
         !visualOnly &&
-        visibleAbilities.length > 0
+        visibleAbilities.length > 0 &&
+        (viewerOwnsCard || listedAbilities.length > 0)
     );
     const abilityPhaseMatch = Boolean(
         card &&
@@ -422,7 +424,9 @@ export const Card: React.FC<CardProps> = ({
         (G?.responseWindow?.isOpen
             ? String(G.responseWindow.activePlayerId) ===
               String(viewerPlayerId)
-            : canUseAbility(card, abilityContext).valid)
+            : listedAbilities.some(({ source }) =>
+                  canUseAbility(source, abilityContext).valid
+              ))
     );
 
     /** Empilé jouable : clic sur la mini-carte (le sceau est trop petit après scale). */

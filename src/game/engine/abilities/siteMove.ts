@@ -146,137 +146,144 @@ function collectMatchingCharacters(
 }
 
 /**
- * Applique les abilities site déclenchées par un déplacement (fragments sûrs).
- * Uniquement effets sans coût ni optionnel.
+ * Applique les effets d’une ability de déplacement (site ou attachement).
+ */
+function applySiteMoveAbilityEffects(
+    G: GameState,
+    ability: Ability
+): void {
+    for (const effect of ability.effects || []) {
+        if (effect.type === 'ADD_TWILIGHT') {
+            let amount = effect.count || 0;
+            if (typeof effect.perCompanionOver === 'number') {
+                amount =
+                    (effect.count || 0) *
+                    Math.max(0, companionCount(G) - effect.perCompanionOver);
+            } else if (effect.perInPlay) {
+                amount =
+                    (effect.count || 0) *
+                    countInPlayMatching(G, effect.perInPlay);
+            } else if (effect.perDistinctCulture) {
+                amount =
+                    (effect.count || 0) * countDistinctCulturesInPlay(G);
+            }
+            if (amount > 0) {
+                G.twilightPool = (G.twilightPool || 0) + amount;
+            }
+            continue;
+        }
+        if (effect.type === 'REMOVE_TWILIGHT' && !effect.countFromSpot) {
+            G.twilightPool = Math.max(
+                0,
+                (G.twilightPool || 0) - (effect.count || 0)
+            );
+            continue;
+        }
+        if (effect.type === 'ADD_BURDENS') {
+            const fpId = G.fpPlayerId || '0';
+            const fp = G.players[fpId];
+            if (fp && (effect.count || 0) > 0) {
+                fp.burdens = (fp.burdens || 0) + (effect.count || 0);
+            }
+            continue;
+        }
+        if (effect.type === 'REMOVE_BURDENS') {
+            if (areBurdenRemovalsForbidden(G)) continue;
+            const fpId = G.fpPlayerId || '0';
+            const fp = G.players[fpId];
+            const n = effect.count || 0;
+            if (fp && n > 0) {
+                fp.burdens = Math.max(0, (fp.burdens || 0) - n);
+            }
+            continue;
+        }
+        if (effect.type === 'ADD_THREATS') {
+            let per = effect.count || 0;
+            if (
+                effect.countIfSpot &&
+                canSpotInPlay(G, effect.countIfSpot.target)
+            ) {
+                per = effect.countIfSpot.count;
+            }
+            let amount = per;
+            if (typeof effect.perCompanionOver === 'number') {
+                amount =
+                    per *
+                    Math.max(0, companionCount(G) - effect.perCompanionOver);
+            }
+            if (amount > 0) addThreats(G, amount);
+            continue;
+        }
+        if (effect.type === 'DISCARD_ALL') {
+            discardAllMatching(G, effect.target);
+            continue;
+        }
+        if (effect.type === 'HEAL' && effect.all) {
+            if (areHealsForbidden(G)) continue;
+            const targets = collectMatchingCharacters(
+                G,
+                effect.target as string[][],
+                { minResistance: effect.minResistance }
+            );
+            for (const card of targets) {
+                applyHeal(G, card, effect.count || 1);
+            }
+            continue;
+        }
+        if (effect.type === 'EXERT' && effect.all) {
+            const targets = collectMatchingCharacters(
+                G,
+                effect.target as string[][],
+                { maxResistance: effect.maxResistance }
+            );
+            for (const card of targets) {
+                applyExert(G, card);
+            }
+            continue;
+        }
+        if (effect.type === 'WOUND' && (effect.eachOwner || effect.perAlly)) {
+            // Doorway / Westemnet : assignation par le joueur —
+            // beginSiteMoveCharacterWoundsIfNeeded.
+            continue;
+        }
+        if (effect.type === 'WOUND' && effect.all) {
+            const targets = collectMatchingCharacters(
+                G,
+                effect.target as string[][],
+                {
+                    excludeKeywords: effect.excludeKeywords?.map(String),
+                }
+            );
+            for (const card of targets) {
+                applyWoundAndCheckDeath(G, card, effect.count || 1);
+            }
+        }
+    }
+}
+
+/**
+ * Applique les abilities site (+ attachements site) déclenchées par un
+ * déplacement. Uniquement effets sans coût ni optionnel.
  */
 export function resolveSiteMoveAbilities(
     G: GameState,
     site: SiteCardState | null | undefined,
     direction: 'MOVES_TO' | 'MOVES_FROM'
 ): void {
-    if (!site?.abilities?.length) return;
+    if (!site) return;
 
-    for (const ability of site.abilities) {
-        if (!isSiteMoveTrigger(ability, direction)) continue;
-        if (ability.optional) continue;
-        if ((ability.cost || []).length > 0) continue;
-        if (!triggerConditionsMet(G, site, ability)) continue;
+    const sources: { abilities?: Ability[] }[] = [
+        site,
+        ...((site.attachments || []).filter(Boolean) as CardState[]),
+    ];
 
-        for (const effect of ability.effects || []) {
-            if (effect.type === 'ADD_TWILIGHT') {
-                let amount = effect.count || 0;
-                if (typeof effect.perCompanionOver === 'number') {
-                    amount =
-                        (effect.count || 0) *
-                        Math.max(
-                            0,
-                            companionCount(G) - effect.perCompanionOver
-                        );
-                } else if (effect.perInPlay) {
-                    amount =
-                        (effect.count || 0) *
-                        countInPlayMatching(G, effect.perInPlay);
-                } else if (effect.perDistinctCulture) {
-                    amount =
-                        (effect.count || 0) * countDistinctCulturesInPlay(G);
-                }
-                if (amount > 0) {
-                    G.twilightPool = (G.twilightPool || 0) + amount;
-                }
-                continue;
-            }
-            if (effect.type === 'REMOVE_TWILIGHT' && !effect.countFromSpot) {
-                G.twilightPool = Math.max(
-                    0,
-                    (G.twilightPool || 0) - (effect.count || 0)
-                );
-                continue;
-            }
-            if (effect.type === 'ADD_BURDENS') {
-                const fpId = G.fpPlayerId || '0';
-                const fp = G.players[fpId];
-                if (fp && (effect.count || 0) > 0) {
-                    fp.burdens = (fp.burdens || 0) + (effect.count || 0);
-                }
-                continue;
-            }
-            if (effect.type === 'REMOVE_BURDENS') {
-                if (areBurdenRemovalsForbidden(G)) continue;
-                const fpId = G.fpPlayerId || '0';
-                const fp = G.players[fpId];
-                const n = effect.count || 0;
-                if (fp && n > 0) {
-                    fp.burdens = Math.max(0, (fp.burdens || 0) - n);
-                }
-                continue;
-            }
-            if (effect.type === 'ADD_THREATS') {
-                let per = effect.count || 0;
-                if (
-                    effect.countIfSpot &&
-                    canSpotInPlay(G, effect.countIfSpot.target)
-                ) {
-                    per = effect.countIfSpot.count;
-                }
-                let amount = per;
-                if (typeof effect.perCompanionOver === 'number') {
-                    amount =
-                        per *
-                        Math.max(
-                            0,
-                            companionCount(G) - effect.perCompanionOver
-                        );
-                }
-                if (amount > 0) addThreats(G, amount);
-                continue;
-            }
-            if (effect.type === 'DISCARD_ALL') {
-                discardAllMatching(G, effect.target);
-                continue;
-            }
-            if (effect.type === 'HEAL' && effect.all) {
-                if (areHealsForbidden(G)) continue;
-                const targets = collectMatchingCharacters(
-                    G,
-                    effect.target as string[][],
-                    { minResistance: effect.minResistance }
-                );
-                for (const card of targets) {
-                    applyHeal(G, card, effect.count || 1);
-                }
-                continue;
-            }
-            if (effect.type === 'EXERT' && effect.all) {
-                const targets = collectMatchingCharacters(
-                    G,
-                    effect.target as string[][],
-                    { maxResistance: effect.maxResistance }
-                );
-                for (const card of targets) {
-                    applyExert(G, card);
-                }
-                continue;
-            }
-            if (
-                effect.type === 'WOUND' &&
-                (effect.eachOwner || effect.perAlly)
-            ) {
-                // Doorway / Westemnet : assignation par le joueur —
-                // beginSiteMoveCharacterWoundsIfNeeded.
-                continue;
-            }
-            if (effect.type === 'WOUND' && effect.all) {
-                const targets = collectMatchingCharacters(
-                    G,
-                    effect.target as string[][],
-                    {
-                        excludeKeywords: effect.excludeKeywords?.map(String),
-                    }
-                );
-                for (const card of targets) {
-                    applyWoundAndCheckDeath(G, card, effect.count || 1);
-                }
-            }
+    for (const source of sources) {
+        for (const ability of source.abilities || []) {
+            if (!isSiteMoveTrigger(ability, direction)) continue;
+            if (ability.optional) continue;
+            if ((ability.cost || []).length > 0) continue;
+            if (!triggerConditionsMet(G, site, ability)) continue;
+            applySiteMoveAbilityEffects(G, ability);
         }
     }
 }

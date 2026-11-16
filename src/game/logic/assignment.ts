@@ -37,6 +37,7 @@ function clearAllowedToSkirmish(G: GameState): void {
 /** Fenêtre d’actions d’affectation (FP d’abord), avant d’attribuer les séides. */
 export const openAssignmentActionWindow = (G: GameState): void => {
     const fpId = G.fpPlayerId || '0';
+    const keepDevStatus = G.statusMessage?.startsWith('[DEV]');
     clearAllowedToSkirmish(G);
     G.assignmentStep = 'ACTIONS';
     G.actionWindow = {
@@ -48,7 +49,9 @@ export const openAssignmentActionWindow = (G: GameState): void => {
         canPass: true,
         passesCount: 0,
     };
-    G.statusMessage = 'Affectation : Ouverture de la fenêtre d’action.';
+    if (!keepDevStatus) {
+        G.statusMessage = 'Affectation : Ouverture de la fenêtre d’action.';
+    }
 };
 
 /** Après deux passes : le FP attribue, ou on saute s’il n’y a plus de séide. */

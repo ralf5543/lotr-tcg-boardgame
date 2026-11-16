@@ -350,6 +350,7 @@ export const GameControls: React.FC<GameControlsProps> = ({
             | 'RESPONSE'
             | 'WHEN_PLAYED_CHOICE'
             | 'FORCED_CHOICE'
+            | 'TARGETING_CANCEL'
             | 'STANDARD';
     } = {
         show: false,
@@ -949,7 +950,15 @@ export const GameControls: React.FC<GameControlsProps> = ({
                 </>
             ),
             showPassButton: false,
-            type: 'STANDARD',
+            // SITE_ATTACH / désignation de coût : bouton Annuler explicite
+            // (Tempête conjurée…), en plus d’Échap.
+            type:
+                targetingKind === 'SITE_ATTACH' ||
+                targetingKind === 'DESIGNATION' ||
+                targetingKind === 'SITE_REPLACE' ||
+                targetingKind === 'SITE_REPLACE_PATH'
+                    ? 'TARGETING_CANCEL'
+                    : 'STANDARD',
         };
     } else if (G.pendingPlay && G.pendingPlay.playerId !== currentPlayerId) {
         toastConfig = {
@@ -1808,6 +1817,20 @@ export const GameControls: React.FC<GameControlsProps> = ({
                                 {targetingConfirmLabel || 'Valider'}
                             </S.ActionButton>
                         )}
+
+                        {toastConfig.type === 'TARGETING_CANCEL' &&
+                            isMyTurnToAct && (
+                                <S.ActionButton
+                                    $variant="secondary"
+                                    style={{ marginTop: '8px', width: '100%' }}
+                                    onClick={() => {
+                                        stopTargeting();
+                                        moves.cancelPendingPlay?.();
+                                    }}
+                                >
+                                    Annuler
+                                </S.ActionButton>
+                            )}
 
                         {/* ACTION PASSER STANDARD */}
                         {toastConfig.showPassButton && (

@@ -31572,6 +31572,30 @@
         ]
       }
     ],
+    "abilities": [
+      {
+        "id": "2U48:0",
+        "phases": [],
+        "trigger": {
+          "type": "MOVES_FROM"
+        },
+        "cost": [],
+        "effects": [
+          {
+            "type": "EXERT",
+            "count": 1,
+            "all": true,
+            "target": [
+              [
+                "COMPANION"
+              ]
+            ]
+          }
+        ],
+        "source": "SELF",
+        "text": "When the fellowship moves from this site, every companion must exert."
+      }
+    ],
     "culture": "ISENGARD",
     "twilightCost": 2,
     "imageUrl": "/cards_visuals/o_02_048.jpg",

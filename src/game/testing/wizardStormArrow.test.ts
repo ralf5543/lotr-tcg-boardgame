@@ -18,11 +18,12 @@ describe('Tempête conjurée (Wizard Storm) — pas de flèche', () => {
         const card = getCardById('2U48')!;
         expect(attachesToSite(card)).toBe(true);
         expect(card.toPlay?.[0]?.exert?.[0]).toBeTruthy();
-        // Pas d’ability d’attaque jouable depuis la main.
+        // Pas d’ability d’attaque jouable depuis la main (les triggers
+        // MOVES_FROM auto n’entrent pas dans le drag).
         expect(
-            (card.abilities || []).every(
-                (a) => !abilityEffectWantsTargetingArrow(a)
-            )
+            (card.abilities || [])
+                .filter((a) => !a.trigger)
+                .every((a) => !abilityEffectWantsTargetingArrow(a))
         ).toBe(true);
     });
 

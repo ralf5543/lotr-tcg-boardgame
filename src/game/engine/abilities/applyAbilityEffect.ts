@@ -30,7 +30,11 @@ import {
     discardCardFromPlay,
     placeCardInDeadPile,
 } from '../../../utils/discardCardFromPlay';
-import { findTargetCard, isRingBearerCard } from '../../../utils/cardUtils';
+import {
+    findInPlayCardOwnerId,
+    findTargetCard,
+    isRingBearerCard,
+} from '../../../utils/cardUtils';
 import { getCalculatedStrength } from '../../logic/stats/statCalculator';
 import {
     abilityOwnerPlayerId,
@@ -40,6 +44,7 @@ import {
 import { playerHasInitiative } from '../../logic/initiative';
 import { addThreats } from '../../logic/threats';
 import { getMoveLimit } from '../../logic/moveLimit';
+import { syncMusterStateAfterGain } from '../../logic/musterHelpers';
 import { countDistinctCulturesInPlay } from './siteMove';
 import {
     applyReinforce,
@@ -1941,6 +1946,12 @@ function applyOneEffect(
             keyword: effect.keyword,
             expiresAtPhase: effect.expiresAtPhase,
         });
+        // Frodon Protégé… : muster gagné après le comptage initial.
+        if (String(effect.keyword || '').toUpperCase().startsWith('MUSTER')) {
+            const ownerId =
+                findInPlayCardOwnerId(G, target) || G.fpPlayerId || '0';
+            syncMusterStateAfterGain(G, ownerId);
+        }
         return true;
     }
 

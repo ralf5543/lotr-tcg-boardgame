@@ -355,9 +355,21 @@ export const setupGame = (
 };
 
 export function initStandardRegroup(G: GameState, fpId: string) {
+    const keepDevStatus = G.statusMessage?.startsWith('[DEV]');
+    const keepFpDecision = G.regroupStep === 'FP_DECISION';
+    const devStatus = keepDevStatus ? G.statusMessage : undefined;
+
+    if (keepFpDecision) {
+        // Preset DEV déjà en « avancer / rester » — ne pas rouvrir l’action window.
+        G.actionWindow = undefined;
+        if (devStatus) G.statusMessage = devStatus;
+        return;
+    }
+
     G.regroupStep = 'ACTION_WINDOW';
-    G.statusMessage =
-        'Phase de Regroupement : Jouer des cartes/effets de regroupement.';
+    G.statusMessage = keepDevStatus
+        ? (devStatus as string)
+        : 'Phase de Regroupement : Jouer des cartes/effets de regroupement.';
 
     G.actionWindow = {
         isOpen: true,
@@ -1340,6 +1352,8 @@ export const LotrGame: Game<GameState> = {
                 appendPhaseJournal(G, 'regroup');
                 const fpId = G.fpPlayerId || '0';
                 const shadowId = fpId === '0' ? '1' : '0';
+                const keepDevStatus = G.statusMessage?.startsWith('[DEV]');
+                const devStatus = keepDevStatus ? G.statusMessage : undefined;
 
                 // Fin du dernier combat : on lève le grisage FIERCE du Battlefield
                 G.isFierceAssignment = false;
@@ -1407,8 +1421,11 @@ export const LotrGame: Game<GameState> = {
                     G.startOfPhaseState = undefined;
                     exitStartOf(events, 'regroup');
                 } else if (!hasMusterToProcess) {
-                    G.statusMessage =
-                        'Phase de Regroupement : Étape initiale (Capacités).';
+                    G.statusMessage = keepDevStatus
+                        ? (devStatus as string)
+                        : 'Phase de Regroupement : Étape initiale (Capacités).';
+                } else if (keepDevStatus && devStatus) {
+                    G.statusMessage = devStatus;
                 }
             },
             onEnd: ({ G }) => {

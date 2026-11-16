@@ -58,15 +58,22 @@ export function canUseAbility(
             reason: "Seul le joueur de l'Ombre peut utiliser cette capacité.",
         };
     }
-    // Propriétaire de zone : pas activer la situation Ombre adverse
-    // (reste en jeu après inversion des rôles).
+    // Propriétaire de zone : pas activer la situation adverse dans *sa*
+    // zone. Exception : attachement / condition Ombre sur un hôte FP
+    // (Désertion…) — le kind règle déjà qui peut l’activer.
     if (card.kind !== 'SITE' && card.type !== 'SITE') {
-        const ownerId = findInPlayCardOwnerId(G, card);
-        if (ownerId != null && String(ownerId) !== pid) {
-            return {
-                valid: false,
-                reason: 'Cette carte appartient à l’adversaire.',
-            };
+        const zoneOwnerId = findInPlayCardOwnerId(G, card);
+        if (zoneOwnerId != null && String(zoneOwnerId) !== pid) {
+            const shadowId = fpId === '0' ? '1' : '0';
+            const crossFactionAttach =
+                (card.kind === 'SHADOW' && pid === shadowId) ||
+                (card.kind === 'FREE_PEOPLE' && pid === fpId);
+            if (!crossFactionAttach) {
+                return {
+                    valid: false,
+                    reason: 'Cette carte appartient à l’adversaire.',
+                };
+            }
         }
     }
     // Site : FP par défaut ; Ombre si capacité de phase jouable (Shadow /

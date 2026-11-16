@@ -8895,6 +8895,28 @@ function parseWhileAtAttachedSiteAbilities(
         });
     }
 
+    // Wizard Storm / Neiges… : moves from this site → every companion must exert.
+    const moveExertRe =
+        /When the fellowship moves from this site,\s*every companion must exert\.?/gi;
+    while ((match = moveExertRe.exec(text)) !== null) {
+        found.push({
+            id: `${cardId || 'ability'}:${found.length}:move-from-exert`,
+            phases: [],
+            trigger: { type: 'MOVES_FROM' },
+            cost: [],
+            effects: [
+                {
+                    type: 'EXERT',
+                    count: 1,
+                    all: true,
+                    target: [['COMPANION']],
+                },
+            ],
+            source: 'SELF',
+            text: stripAbilityMarkup(match[0]),
+        });
+    }
+
     return found;
 }
 

@@ -388,6 +388,10 @@ export const GameBoard: React.FC<GameBoardProps> = ({
                     ? undefined
                     : arrowFromCardId,
                 onSelectTarget: (cardId) => {
+                    // Aragorn Pieds-Ailés (4P364) : impact de flèche à la blessure.
+                    if (arrowFromCardId && source.id === '4P364') {
+                        audioService.play('ARROW_IMPACT');
+                    }
                     // Ne pas stop ici : onChosen peut enchaîner une autre visée
                     // (herbe → compagnon). stop écraserait la nouvelle.
                     onChosen(cardId);
@@ -3698,6 +3702,8 @@ export const GameBoard: React.FC<GameBoardProps> = ({
                 targetingKind !== 'HAND_DISCARD' &&
                 targetingKind !== 'HAND_PICK' &&
                 targetingKind !== 'SITE_REPLACE' &&
+                targetingKind !== 'SITE_REPLACE_PATH' &&
+                targetingKind !== 'SITE_ATTACH' &&
                 targetingKind !== 'SITE_STACK' &&
                 targetingKind !== 'STACK_PLAY' &&
                 !isMine
