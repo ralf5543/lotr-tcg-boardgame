@@ -349,12 +349,12 @@ export const DevPanel: React.FC<DevPanelProps> = ({
                             <S.ActionButton
                                 onClick={() =>
                                     moves.devLoadPreset?.(
-                                        'RANGERS_RED_WRATH'
+                                        'RANGERS_WHIRLING_STRIKE'
                                     )
                                 }
-                                title="Courroux Sanguinaire : affaiblir pillard → blesser ×2"
+                                title="Coup Tourbillonnant : blesser compagnon/allié vs Homme pillard"
                             >
-                                Courroux Sanguinaire
+                                Coup Tourbillonnant
                             </S.ActionButton>
                         </S.ButtonGroup>
                     </S.Section>

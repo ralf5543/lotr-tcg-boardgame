@@ -54607,7 +54607,47 @@
     "isUnique": false,
     "kind": "SHADOW",
     "type": "EVENT",
+    "abilities": [
+      {
+        "id": "4C260:0",
+        "phases": [
+          "SKIRMISH"
+        ],
+        "cost": [],
+        "effects": [
+          {
+            "type": "WOUND",
+            "count": 1,
+            "target": [
+              [
+                "CHARACTER"
+              ]
+            ],
+            "involving": [
+              [
+                "RAIDER",
+                "MAN"
+              ]
+            ],
+            "match": [
+              [
+                "COMPANION"
+              ],
+              [
+                "ALLY"
+              ]
+            ]
+          }
+        ],
+        "source": "SELF",
+        "text": "Skirmish: Wound a companion or ally skirmishing a raider Man.",
+        "textFr": "**Combat :** Blessez un compagnon ou un allié combattant un Homme <symbol>raider</symbol>."
+      }
+    ],
     "phases": [
+      "SKIRMISH"
+    ],
+    "actionPhases": [
       "SKIRMISH"
     ],
     "culture": "RAIDER",

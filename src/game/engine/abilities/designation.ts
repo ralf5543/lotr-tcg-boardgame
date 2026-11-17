@@ -1482,23 +1482,37 @@ export function abilityHasLegalEffectTarget(
             }
             continue;
         }
-        if (effect.type === 'WOUND' && effect.involving === 'COST_TARGET') {
-            // Au moins un candidat de coût avec un adversaire blessable.
-            const costCards = getCostDesignationCandidates(
-                G,
-                source,
-                ability,
-                actingPlayerId
-            );
-            const anyOpp = costCards.some((fighter) =>
-                resolveSkirmishingOpponents(G, fighter).some(
-                    (opp) =>
-                        canCardTakeWound(G, opp) &&
-                        (!effect.match ||
-                            cardMatchesTarget(opp, effect.match))
-                )
-            );
-            if (!anyOpp) return false;
+        if (effect.type === 'WOUND' && effect.involving) {
+            if (effect.involving === 'COST_TARGET') {
+                // Au moins un candidat de coût avec un adversaire blessable.
+                const costCards = getCostDesignationCandidates(
+                    G,
+                    source,
+                    ability,
+                    actingPlayerId
+                );
+                const anyOpp = costCards.some((fighter) =>
+                    resolveSkirmishingOpponents(G, fighter).some(
+                        (opp) =>
+                            canCardTakeWound(G, opp) &&
+                            (!effect.match ||
+                                cardMatchesTarget(opp, effect.match))
+                    )
+                );
+                if (!anyOpp) return false;
+                continue;
+            }
+            // Involving classe (Coup Tourbillonnant…) : halo = adversaires.
+            if (
+                getEffectDesignationCandidates(
+                    G,
+                    source,
+                    ability,
+                    actingPlayerId
+                ).length < 1
+            ) {
+                return false;
+            }
             continue;
         }
         if (effect.type === 'CANCEL_SKIRMISH') {

@@ -13245,6 +13245,57 @@ function parseStandaloneDiscardCountMakePerSpotAbilities(
 }
 
 /**
+ * Skirmish: Wound a companion or ally skirmishing a raider Man.
+ * (Whirling Strike / Coup Tourbillonnant…) — pas de coût, involving = classe.
+ */
+function parseWoundTargetSkirmishingClassAbilities(
+    text: string,
+    cardId?: string
+): Record<string, unknown>[] {
+    const found: Record<string, unknown>[] = [];
+    const re =
+        /(?:\*\*|<(?:keyword)>)?(Fellowship|Shadow|Maneuver|Archery|Assignment|Skirmish|Regroup):?\s*(?:<\/(?:keyword)>)?(?:\*\*)?\s*Wound\s+((?:a|an)\s+.+?)\s+skirmishing\s+((?:a|an)\s+[^.\n]+)\.?/gi;
+    let match: RegExpExecArray | null;
+    while ((match = re.exec(text)) !== null) {
+        const phase = match[1].toUpperCase();
+        const victimRaw = match[2].trim().replace(/[.\s]+$/g, '');
+        const involvingRaw = match[3].trim().replace(/[.\s]+$/g, '');
+        // « companion he is skirmishing » → autre fragment (exert / spot).
+        if (
+            /\b(he|she|it|bearer|this\s+\w+)\s+is\b/i.test(victimRaw) ||
+            /\b(he|she|it|bearer)\b/i.test(involvingRaw)
+        ) {
+            continue;
+        }
+        const matchFilters =
+            parseArticleOrFilters(victimRaw) ||
+            (() => {
+                const f = parseClassFilters(victimRaw);
+                return f.length ? [f] : null;
+            })();
+        const involvingFilters = parseClassFilters(involvingRaw);
+        if (!matchFilters || involvingFilters.length === 0) continue;
+        found.push({
+            id: `${cardId || 'ability'}:${found.length}:wound-skirmishing-class`,
+            phases: [phase],
+            cost: [],
+            effects: [
+                {
+                    type: 'WOUND',
+                    count: 1,
+                    target: [['CHARACTER']],
+                    involving: [involvingFilters],
+                    match: matchFilters,
+                },
+            ],
+            source: 'SELF',
+            text: stripAbilityMarkup(match[0]),
+        });
+    }
+    return found;
+}
+
+/**
  * Événements sans balise de phase (phase = colonne Class) :
  * « Exert a raider Man to wound a companion he is skirmishing twice. »
  * (Red Wrath / Courroux Sanguinaire…)
@@ -18843,6 +18894,15 @@ export function parseAbilities(
     );
 
     parseTransferSelfSkirmishingWithAbilities(text, cardId).forEach(
+        (ability) => {
+            abilities.push({
+                ...ability,
+                id: `${cardId || 'ability'}:${abilities.length}`,
+            });
+        }
+    );
+
+    parseWoundTargetSkirmishingClassAbilities(text, cardId).forEach(
         (ability) => {
             abilities.push({
                 ...ability,
