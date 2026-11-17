@@ -4853,20 +4853,88 @@ describe('parseAbilities — Response wins a skirmish', () => {
         ]);
     });
 
-    it('n’émet rien pour La Vengeance de Gondor (deux désignations)', () => {
+    it('La Vengeance de Gondor : affaiblir rôdeur → défausser séide', () => {
         const text =
             '<keyword>Regroup:</keyword> Exert a ranger companion to discard a minion.';
-        expect(
-            parseAbilities(text, "Gondor's Vengeance", '1C106')
-        ).toBeUndefined();
+        expect(parseAbilities(text, "Gondor's Vengeance", '1C106')).toEqual([
+            expect.objectContaining({
+                phases: ['REGROUP'],
+                cost: [
+                    {
+                        exert: [
+                            {
+                                count: 1,
+                                target: [['RANGER', 'COMPANION']],
+                                mode: 'DESIGNATION',
+                            },
+                        ],
+                    },
+                ],
+                effects: [
+                    {
+                        type: 'DISCARD',
+                        count: 1,
+                        target: [['MINION']],
+                    },
+                ],
+            }),
+        ]);
     });
 
-    it('n’émet rien pour Le Visible et l’Invisible (Exert 2 Elves → défausse condition)', () => {
+    it('Que Sont-Ils ? : spot rôdeur → défausser séide errant', () => {
+        const text =
+            '<keyword>Maneuver:</keyword> Spot a ranger to discard a roaming minion.';
+        expect(parseAbilities(text, 'What Are They?', '1C119')).toEqual([
+            expect.objectContaining({
+                phases: ['MANEUVER'],
+                cost: [
+                    {
+                        spot: [
+                            {
+                                count: 1,
+                                target: [['RANGER']],
+                            },
+                        ],
+                    },
+                ],
+                effects: [
+                    {
+                        type: 'DISCARD',
+                        count: 1,
+                        target: [['ROAMING', 'MINION']],
+                    },
+                ],
+            }),
+        ]);
+    });
+
+    it('Le Visible et l’Invisible : Exert 2 Elves → défausse condition', () => {
         const text =
             '<keyword>Fellowship:</keyword> Exert 2 Elves to discard a condition.';
-        expect(
-            parseAbilities(text, 'The Seen and the Unseen', '1C58')
-        ).toBeUndefined();
+        expect(parseAbilities(text, 'The Seen and the Unseen', '1C58')).toEqual([
+            expect.objectContaining({
+                phases: ['FELLOWSHIP'],
+                cost: [
+                    {
+                        exert: [
+                            expect.objectContaining({
+                                count: 2,
+                                target: [['ELF']],
+                                mode: 'DESIGNATION',
+                                distinctTargets: true,
+                            }),
+                        ],
+                    },
+                ],
+                effects: [
+                    {
+                        type: 'DISCARD',
+                        count: 1,
+                        target: [['CONDITION']],
+                    },
+                ],
+            }),
+        ]);
     });
 
     it('Legolas : Exert 2 hunter companions → distinctTargets', () => {

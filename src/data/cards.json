@@ -8048,7 +8048,7 @@
     "i18n": {
       "en": {
         "title": "Hides",
-        "gameText": "When you play this possession, you may draw a card. \n**Response: **If a <symbol>dunland</symbol> Man is about to take a wound, remove <symbol>twilight2</symbol> or discard this possession to prevent that wound.",
+        "gameText": "When you play this possession, you may draw a card. \n**Response:**If a <symbol>dunland</symbol> Man is about to take a wound, remove <symbol>twilight2</symbol> or discard this possession to prevent that wound.",
         "loreText": "Only heavy animal skins armored the Dunlendings."
       },
       "fr": {
@@ -9821,7 +9821,7 @@
       "de": {
         "title": "Saruman",
         "subtitle": "Der Vielfarbige",
-        "gameText": "**Schaden +1. Erbittert. Schleicher. **<i>(Kämpfe mit Schleichern dürfen erst nach allen anderen abgehandelt werden.)</i>\nNenne eine Kultur, wenn du Saruman spielst. Alle Gefährten der genannten Kultur erhalten Stärke -1.",
+        "gameText": "**Schaden +1. Erbittert. Schleicher.**<i>(Kämpfe mit Schleichern dürfen erst nach allen anderen abgehandelt werden.)</i>\nNenne eine Kultur, wenn du Saruman spielst. Alle Gefährten der genannten Kultur erhalten Stärke -1.",
         "loreText": "Weiß! höhnte er. Das ist für den Anfang gut."
       },
       "it": {
@@ -15240,7 +15240,48 @@
     "isUnique": false,
     "kind": "FREE_PEOPLE",
     "type": "EVENT",
+    "abilities": [
+      {
+        "id": "1C58:0",
+        "phases": [
+          "FELLOWSHIP"
+        ],
+        "cost": [
+          {
+            "exert": [
+              {
+                "count": 2,
+                "target": [
+                  [
+                    "ELF"
+                  ]
+                ],
+                "mode": "DESIGNATION",
+                "distinctTargets": true
+              }
+            ]
+          }
+        ],
+        "effects": [
+          {
+            "type": "DISCARD",
+            "count": 1,
+            "target": [
+              [
+                "CONDITION"
+              ]
+            ]
+          }
+        ],
+        "source": "SELF",
+        "text": "FELLOWSHIP: Exert 2 Elves to discard a condition.",
+        "textFr": "**Compagnie :** Affaiblissez 2 Elfes pour défausser une situation."
+      }
+    ],
     "phases": [
+      "FELLOWSHIP"
+    ],
+    "actionPhases": [
       "FELLOWSHIP"
     ],
     "culture": "ELVEN",
@@ -15455,7 +15496,54 @@
     "isUnique": false,
     "kind": "FREE_PEOPLE",
     "type": "EVENT",
+    "abilities": [
+      {
+        "id": "1U63:0",
+        "phases": [
+          "MANEUVER"
+        ],
+        "cost": [
+          {
+            "exert": [
+              {
+                "count": 1,
+                "target": [
+                  [
+                    "ELF"
+                  ]
+                ],
+                "mode": "DESIGNATION"
+              }
+            ]
+          }
+        ],
+        "effects": [
+          {
+            "type": "DISCARD",
+            "count": 1,
+            "target": [
+              [
+                "SAURON",
+                "MINION",
+                "SAURON",
+                "CONDITION"
+              ],
+              [
+                "SAURON",
+                "POSSESSION"
+              ]
+            ]
+          }
+        ],
+        "source": "SELF",
+        "text": "MANEUVER: Exert an Elf to discard a sauron minion, a sauron condition, or a sauron possession.",
+        "textFr": "**Manœuvre :** Affaiblissez un Elfe pour défausser un séide <symbol>sauron</symbol>, une situation <symbol>sauron</symbol>, ou une possession <symbol>sauron</symbol>."
+      }
+    ],
     "phases": [
+      "MANEUVER"
+    ],
+    "actionPhases": [
       "MANEUVER"
     ],
     "culture": "ELVEN",
@@ -16429,7 +16517,7 @@
       },
       "de": {
         "title": "Fragen, die einer Antwort bedürfen",
-        "gameText": "**Zauberspruch.****Gemeinschaft.** Wenn der Einfluss weniger als <symbol>twilight3</symbol> beträgt, entdecke Gandalf, um dir die obersten 4 Karten deines Spieldecks anzuschauen. Nimm 2 davon in deine Hand und lege die übrigen ab.",
+        "gameText": "**Zauberspruch.** **Gemeinschaft.** Wenn der Einfluss weniger als <symbol>twilight3</symbol> beträgt, entdecke Gandalf, um dir die obersten 4 Karten deines Spieldecks anzuschauen. Nimm 2 davon in deine Hand und lege die übrigen ab.",
         "loreText": "...aber ich habe etwas gehört, ...um das ich mich kümmern muss."
       },
       "it": {
@@ -17544,7 +17632,51 @@
     "isUnique": false,
     "kind": "FREE_PEOPLE",
     "type": "EVENT",
+    "abilities": [
+      {
+        "id": "1C104:0",
+        "phases": [
+          "MANEUVER"
+        ],
+        "cost": [
+          {
+            "exert": [
+              {
+                "count": 1,
+                "target": [
+                  [
+                    "RANGER"
+                  ]
+                ],
+                "mode": "DESIGNATION"
+              }
+            ]
+          }
+        ],
+        "effects": [
+          {
+            "type": "ADD_TEMP_STAT",
+            "stat": "STRENGTH",
+            "value": -3,
+            "target": [
+              [
+                "ROAMING",
+                "MINION"
+              ]
+            ],
+            "expiresAtPhase": "REGROUP",
+            "all": true
+          }
+        ],
+        "source": "SELF",
+        "text": "MANEUVER: Exert a ranger to make each roaming minion strength -3 until the regroup phase.",
+        "textFr": "**Manœuvre :** Affaiblissez un rôdeur pour donner à chaque séide errant -3 en force jusqu’à la phase de ralliement."
+      }
+    ],
     "phases": [
+      "MANEUVER"
+    ],
+    "actionPhases": [
       "MANEUVER"
     ],
     "culture": "GONDOR",
@@ -17666,7 +17798,47 @@
     "isUnique": false,
     "kind": "FREE_PEOPLE",
     "type": "EVENT",
+    "abilities": [
+      {
+        "id": "1C106:0",
+        "phases": [
+          "REGROUP"
+        ],
+        "cost": [
+          {
+            "exert": [
+              {
+                "count": 1,
+                "target": [
+                  [
+                    "RANGER",
+                    "COMPANION"
+                  ]
+                ],
+                "mode": "DESIGNATION"
+              }
+            ]
+          }
+        ],
+        "effects": [
+          {
+            "type": "DISCARD",
+            "count": 1,
+            "target": [
+              [
+                "MINION"
+              ]
+            ]
+          }
+        ],
+        "source": "SELF",
+        "text": "REGROUP: Exert a ranger companion to discard a minion."
+      }
+    ],
     "phases": [
+      "REGROUP"
+    ],
+    "actionPhases": [
       "REGROUP"
     ],
     "culture": "GONDOR",
@@ -18172,7 +18344,47 @@
     "isUnique": false,
     "kind": "FREE_PEOPLE",
     "type": "EVENT",
+    "abilities": [
+      {
+        "id": "1C119:0",
+        "phases": [
+          "MANEUVER"
+        ],
+        "cost": [
+          {
+            "spot": [
+              {
+                "count": 1,
+                "target": [
+                  [
+                    "RANGER"
+                  ]
+                ]
+              }
+            ]
+          }
+        ],
+        "effects": [
+          {
+            "type": "DISCARD",
+            "count": 1,
+            "target": [
+              [
+                "ROAMING",
+                "MINION"
+              ]
+            ]
+          }
+        ],
+        "source": "SELF",
+        "text": "MANEUVER: Spot a ranger to discard a roaming minion.",
+        "textFr": "**Manœuvre :** Désignez un rôdeur pour défausser un séide errant."
+      }
+    ],
     "phases": [
+      "MANEUVER"
+    ],
+    "actionPhases": [
       "MANEUVER"
     ],
     "culture": "GONDOR",
@@ -19160,7 +19372,7 @@
       },
       "es": {
         "title": "La Helada de Saruman",
-        "gameText": "**Hechizo.****Clima.** Para jugarlo, esfuerza un siervo <symbol>isengard</symbol>. Se juega en un sitio. Límite 1 por sitio. Cada Hobbit en este sitio es fuerza -2. Descarta esta condición al final del turno.",
+        "gameText": "**Hechizo.** **Clima.** Para jugarlo, esfuerza un siervo <symbol>isengard</symbol>. Se juega en un sitio. Límite 1 por sitio. Cada Hobbit en este sitio es fuerza -2. Descarta esta condición al final del turno.",
         "loreText": "Los débiles y pequeños sufren primero por la poderosa hechicería del Mago Blanco."
       }
     }
@@ -23247,7 +23459,47 @@
     "keywords": [
       "SEARCH"
     ],
+    "abilities": [
+      {
+        "id": "1R212:0",
+        "phases": [
+          "MANEUVER"
+        ],
+        "cost": [
+          {
+            "exert": [
+              {
+                "count": 1,
+                "target": [
+                  [
+                    "NAZGÛL"
+                  ]
+                ],
+                "mode": "DESIGNATION"
+              }
+            ]
+          }
+        ],
+        "effects": [
+          {
+            "type": "DISCARD",
+            "count": 1,
+            "target": [
+              [
+                "ALLY"
+              ]
+            ]
+          }
+        ],
+        "source": "SELF",
+        "text": "MANEUVER: Exert your Nazgûl to discard an ally.",
+        "textFr": "**Manœuvre :** Affaiblissez votre Nazgûl pour défausser un allié."
+      }
+    ],
     "phases": [
+      "MANEUVER"
+    ],
+    "actionPhases": [
       "MANEUVER"
     ],
     "culture": "WRAITH",
@@ -26484,7 +26736,49 @@
     "isUnique": false,
     "kind": "SHADOW",
     "type": "EVENT",
+    "abilities": [
+      {
+        "id": "1C277:0",
+        "phases": [
+          "SHADOW"
+        ],
+        "cost": [
+          {
+            "exert": [
+              {
+                "count": 1,
+                "target": [
+                  [
+                    "SAURON",
+                    "ORC"
+                  ]
+                ],
+                "mode": "DESIGNATION"
+              }
+            ]
+          }
+        ],
+        "effects": [
+          {
+            "type": "DISCARD",
+            "count": 1,
+            "target": [
+              [
+                "FREE_PEOPLES",
+                "CONDITION"
+              ]
+            ]
+          }
+        ],
+        "source": "SELF",
+        "text": "SHADOW: Exert a sauron Orc to discard a Free Peoples condition.",
+        "textFr": "**Ombre :** Affaiblissez un Orque <symbol>sauron</symbol> pour défausser une situation des Peuples Libres."
+      }
+    ],
     "phases": [
+      "SHADOW"
+    ],
+    "actionPhases": [
       "SHADOW"
     ],
     "culture": "SAURON",
@@ -31962,6 +32256,41 @@
     "abilities": [
       {
         "id": "2U56:0",
+        "phases": [
+          "MANEUVER"
+        ],
+        "cost": [
+          {
+            "exert": [
+              {
+                "count": 1,
+                "target": [
+                  [
+                    "BALROG"
+                  ]
+                ],
+                "mode": "DESIGNATION"
+              }
+            ]
+          }
+        ],
+        "effects": [
+          {
+            "type": "DISCARD",
+            "count": 1,
+            "target": [
+              [
+                "RANGED-WEAPON"
+              ]
+            ]
+          }
+        ],
+        "source": "SELF",
+        "text": "MANEUVER: Exert The Balrog to discard a ranged weapon.",
+        "textFr": "**Manœuvre :** Affaiblissez Le Balrog pour défausser une arme de portée."
+      },
+      {
+        "id": "2U56:1",
         "phases": [],
         "trigger": {
           "type": "WHILE",
@@ -31986,6 +32315,9 @@
         "source": "SELF",
         "text": "While you can spot The Balrog, skip the archery phase."
       }
+    ],
+    "actionPhases": [
+      "MANEUVER"
     ],
     "culture": "MORIA",
     "twilightCost": 0,
@@ -33112,7 +33444,50 @@
     "isUnique": false,
     "kind": "SHADOW",
     "type": "EVENT",
+    "abilities": [
+      {
+        "id": "2R80:0",
+        "phases": [
+          "MANEUVER"
+        ],
+        "cost": [
+          {
+            "exert": [
+              {
+                "count": 1,
+                "target": [
+                  [
+                    "Witch-king"
+                  ]
+                ],
+                "mode": "DESIGNATION"
+              }
+            ]
+          }
+        ],
+        "effects": [
+          {
+            "type": "DISCARD",
+            "count": 1,
+            "target": [
+              [
+                "TALE"
+              ],
+              [
+                "WEAPON"
+              ]
+            ]
+          }
+        ],
+        "source": "SELF",
+        "text": "MANEUVER: Exert The Witch-king to discard a tale or weapon.",
+        "textFr": "**Manœuvre :** Affaiblissez le Roi-Sorcier pour défausser un récit ou une arme."
+      }
+    ],
     "phases": [
+      "MANEUVER"
+    ],
+    "actionPhases": [
       "MANEUVER"
     ],
     "culture": "WRAITH",
@@ -35084,6 +35459,47 @@
     "kind": "FREE_PEOPLE",
     "type": "CONDITION",
     "subtype": "SUPPORT-AREA",
+    "abilities": [
+      {
+        "id": "3U4:0",
+        "phases": [
+          "REGROUP"
+        ],
+        "cost": [
+          {
+            "exert": [
+              {
+                "count": 1,
+                "target": [
+                  [
+                    "DWARF",
+                    "ALLY"
+                  ]
+                ],
+                "mode": "DESIGNATION"
+              }
+            ]
+          }
+        ],
+        "effects": [
+          {
+            "type": "HEAL",
+            "count": 1,
+            "target": [
+              [
+                "DWARF",
+                "COMPANION"
+              ]
+            ]
+          }
+        ],
+        "source": "SELF",
+        "text": "REGROUP: Exert a Dwarf ally to heal a Dwarf companion."
+      }
+    ],
+    "actionPhases": [
+      "REGROUP"
+    ],
     "culture": "DWARVEN",
     "twilightCost": 2,
     "imageUrl": "/cards_visuals/o_03_004.jpg",
@@ -36354,7 +36770,53 @@
     "isUnique": false,
     "kind": "FREE_PEOPLE",
     "type": "EVENT",
+    "abilities": [
+      {
+        "id": "3U26:0",
+        "phases": [
+          "FELLOWSHIP",
+          "MANEUVER"
+        ],
+        "cost": [
+          {
+            "exert": [
+              {
+                "count": 1,
+                "target": [
+                  [
+                    "ELF"
+                  ]
+                ],
+                "mode": "DESIGNATION"
+              }
+            ]
+          }
+        ],
+        "effects": [
+          {
+            "type": "DISCARD",
+            "count": 1,
+            "target": [
+              [
+                "ISENGARD",
+                "POSSESSION"
+              ],
+              [
+                "ISENGARD",
+                "ARTIFACT"
+              ]
+            ]
+          }
+        ],
+        "source": "SELF",
+        "text": "MANEUVER: Exert an Elf to discard an isengard possession or isengard artifact."
+      }
+    ],
     "phases": [
+      "FELLOWSHIP",
+      "MANEUVER"
+    ],
+    "actionPhases": [
       "FELLOWSHIP",
       "MANEUVER"
     ],
@@ -42706,7 +43168,7 @@
       "en": {
         "title": "Saruman",
         "subtitle": "Rabble-rouser",
-        "gameText": "Saruman may not be assigned to a skirmish.  \nEach time the fellowship moves, the Free Peoples player must exert a companion for each <symbol>dunland</symbol> Man you can spot.  **Skirmish: **Exert Saruman to make a <symbol>dunland</symbol> Man strength +2."
+        "gameText": "Saruman may not be assigned to a skirmish.  \nEach time the fellowship moves, the Free Peoples player must exert a companion for each <symbol>dunland</symbol> Man you can spot.  **Skirmish:**Exert Saruman to make a <symbol>dunland</symbol> Man strength +2."
       },
       "fr": {
         "title": "Saroumane",
@@ -43286,7 +43748,7 @@
     "i18n": {
       "en": {
         "title": "Courtesy of My Hall",
-        "gameText": "When you play this condition, stack a card from your discard pile here.  \n**Fellowship: **Discard a Free Peoples card stacked here to heal a Dwarf.",
+        "gameText": "When you play this condition, stack a card from your discard pile here.  \n**Fellowship:**Discard a Free Peoples card stacked here to heal a Dwarf.",
         "loreText": "Now my guests, come!... Come and take such refreshment as haste allows."
       },
       "fr": {
@@ -43976,7 +44438,7 @@
     "i18n": {
       "en": {
         "title": "Stout and Strong",
-        "gameText": "Each time a Dwarf wins a skirmish, you may place a <symbol>dwarven</symbol> token on this card.  \n**Skirmish: **Make an unbound companion strength +1 for each <symbol>dwarven</symbol> token here (limit +3). Discard this condition.",
+        "gameText": "Each time a Dwarf wins a skirmish, you may place a <symbol>dwarven</symbol> token on this card.  \n**Skirmish:**Make an unbound companion strength +1 for each <symbol>dwarven</symbol> token here (limit +3). Discard this condition.",
         "loreText": "Never did I see an axe so wielded."
       },
       "fr": {
@@ -45292,7 +45754,7 @@
     "i18n": {
       "en": {
         "title": "Strength of Arms",
-        "gameText": "Each time an Elf wins a skirmish, you may place an <symbol>elven</symbol> token on this card.  \n**Skirmish: **Make a minion skirmishing an Elf strength -1 for each <symbol>elven</symbol> token here (limit -3). Discard this condition.",
+        "gameText": "Each time an Elf wins a skirmish, you may place an <symbol>elven</symbol> token on this card.  \n**Skirmish:**Make a minion skirmishing an Elf strength -1 for each <symbol>elven</symbol> token here (limit -3). Discard this condition.",
         "loreText": "Elvish weapons were more than a match for the Uruks."
       },
       "fr": {
@@ -45932,7 +46394,7 @@
     "i18n": {
       "en": {
         "title": "Keep Your Forked Tongue",
-        "gameText": "**Skirmish: **Spot Gandalf and 3 twilight tokens to prevent all wounds to a companion who has the Gandalf signet.",
+        "gameText": "**Skirmish:**Spot Gandalf and 3 twilight tokens to prevent all wounds to a companion who has the Gandalf signet.",
         "loreText": "A witless worm you have become."
       },
       "fr": {
@@ -46666,7 +47128,48 @@
     "isUnique": false,
     "kind": "FREE_PEOPLE",
     "type": "EVENT",
+    "abilities": [
+      {
+        "id": "4C113:0",
+        "phases": [
+          "SKIRMISH"
+        ],
+        "cost": [
+          {
+            "exert": [
+              {
+                "count": 1,
+                "target": [
+                  [
+                    "RING-BOUND",
+                    "MAN"
+                  ]
+                ],
+                "mode": "DESIGNATION"
+              }
+            ]
+          }
+        ],
+        "effects": [
+          {
+            "type": "CANCEL_SKIRMISH",
+            "involving": [
+              [
+                "ROAMING",
+                "MINION"
+              ]
+            ]
+          }
+        ],
+        "source": "SELF",
+        "text": "SKIRMISH: Exert a Ring-bound Man to cancel a skirmish involving a roaming minion",
+        "textFr": "**Combat :** Affaiblissez un Homme associé à l’Anneau pour annuler un combat qui implique un séide errant."
+      }
+    ],
     "phases": [
+      "SKIRMISH"
+    ],
+    "actionPhases": [
       "SKIRMISH"
     ],
     "culture": "GONDOR",
@@ -47146,6 +47649,7 @@
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
     "keywords": [
+      "RING-BOUND",
       "RANGER"
     ],
     "culture": "GONDOR",
@@ -47157,7 +47661,7 @@
     "i18n": {
       "en": {
         "title": "Gondorian Ranger",
-        "gameText": "**Ring-bound. ****Ranger.**  \nThe site number of each minion assigned to skirmish a Ring-bound Man is +2.",
+        "gameText": "**Ring-bound.** **Ranger.**  \nThe site number of each minion assigned to skirmish a Ring-bound Man is +2.",
         "loreText": "Green gauntlets covered their hands, and their faces were hooded and masked with green, except for their eyes, which were very keen and bright."
       },
       "fr": {
@@ -47874,7 +48378,7 @@
     "i18n": {
       "en": {
         "title": "Attack on Helm's Deep",
-        "gameText": "**Shadow:** Play an Uruk-hai to place an <symbol>isengard</symbol> token on this card.  \n**Regroup: **Remove 3 <symbol>isengard</symbol> tokens from this card and discard an Uruk-hai to take control of a site.",
+        "gameText": "**Shadow:** Play an Uruk-hai to place an <symbol>isengard</symbol> token on this card.  \n**Regroup:**Remove 3 <symbol>isengard</symbol> tokens from this card and discard an Uruk-hai to take control of a site.",
         "loreText": "Ten thousand strong at least...."
       },
       "fr": {
@@ -48507,7 +49011,7 @@
       },
       "de": {
         "title": "Elite Armbrustschützen",
-        "gameText": "**Bogenschütze.****Schaden +1.**\n**Fernkampf:** Strenge diesen Diener an, um den Freie Völker Spieler zu zwingen, einen nicht-verbundenen Gefährten zu verwunden; dieser Diener zählt dann nicht zum Fernkampfwert der Diener.",
+        "gameText": "**Bogenschütze.** **Schaden +1.**\n**Fernkampf:** Strenge diesen Diener an, um den Freie Völker Spieler zu zwingen, einen nicht-verbundenen Gefährten zu verwunden; dieser Diener zählt dann nicht zum Fernkampfwert der Diener.",
         "loreText": "Die besten Schützen wurden für den entscheidenden Angriff in Reserve gehalten."
       },
       "it": {
@@ -48774,6 +49278,9 @@
     "isUnique": false,
     "kind": "SHADOW",
     "type": "CONDITION",
+    "keywords": [
+      "SPELL"
+    ],
     "attachedTo": [
       [
         "FREE",
@@ -48815,7 +49322,7 @@
     "i18n": {
       "en": {
         "title": "Leechcraft",
-        "gameText": "**Spell. ** To play, exert Saruman or an <symbol>isengard</symbol> Man.  \nPlays on a Free Peoples Man.  \nSpecial abilities in bearer’s game text may not be used.",
+        "gameText": "**Spell.** To play, exert Saruman or an <symbol>isengard</symbol> Man.  \nPlays on a Free Peoples Man.  \nSpecial abilities in bearer’s game text may not be used.",
         "loreText": "Your leechcraft ere long would have had me walking on all fours like a beast."
       },
       "fr": {
@@ -49097,7 +49604,7 @@
     "i18n": {
       "en": {
         "title": "Men Will Fall",
-        "gameText": "**Skirmish: **Spot Saruman or an <symbol>isengard</symbol> Man to make an unbound companion strength -2.",
+        "gameText": "**Skirmish:**Spot Saruman or an <symbol>isengard</symbol> Man to make an unbound companion strength -2.",
         "loreText": "The Ring of Barahir. So, Gandalf Greyhame thinks he has found Isildur's heir, the Lost King of Gondor... Fool! That line was broken years ago."
       },
       "fr": {
@@ -49263,7 +49770,7 @@
     "i18n": {
       "en": {
         "title": "Orthanc Champion",
-        "gameText": "**Damage +1.**  \n**Assignment: **Exert Orthanc Champion to assign it to an unbound companion.  \nThat companion may exert to prevent this.",
+        "gameText": "**Damage +1.**  \n**Assignment:**Exert Orthanc Champion to assign it to an unbound companion.  \nThat companion may exert to prevent this.",
         "loreText": "A warrior trained in single combat, he tore a swath through the defenders."
       },
       "fr": {
@@ -49295,6 +49802,9 @@
     "isUnique": false,
     "kind": "SHADOW",
     "type": "MINION",
+    "keywords": [
+      "DAMAGE +1"
+    ],
     "culture": "ISENGARD",
     "race": "URUK-HAI",
     "twilightCost": 2,
@@ -49305,7 +49815,7 @@
     "i18n": {
       "en": {
         "title": "Orthanc Warrior",
-        "gameText": "**Damage +1. **",
+        "gameText": "**Damage +1.**",
         "loreText": "The Uruk-hai bred by Saruman are stronger and more fell than Orcs of Mordor."
       },
       "fr": {
@@ -51350,6 +51860,9 @@
     "isUnique": false,
     "kind": "SHADOW",
     "type": "MINION",
+    "keywords": [
+      "DAMAGE +1"
+    ],
     "culture": "ISENGARD",
     "race": "URUK-HAI",
     "twilightCost": 5,
@@ -51360,7 +51873,7 @@
     "i18n": {
       "en": {
         "title": "Uruk-hai Mob",
-        "gameText": "**Damage +1. ** \nThe twilight cost of this minion is -1 for each site you control.",
+        "gameText": "**Damage +1.** \nThe twilight cost of this minion is -1 for each site you control.",
         "loreText": "Let the fighting Uruk-hai do the work, as usual."
       },
       "fr": {
@@ -51437,6 +51950,9 @@
     "isUnique": false,
     "kind": "SHADOW",
     "type": "MINION",
+    "keywords": [
+      "DAMAGE +1"
+    ],
     "culture": "ISENGARD",
     "race": "URUK-HAI",
     "twilightCost": 4,
@@ -51447,7 +51963,7 @@
     "i18n": {
       "en": {
         "title": "Uruk-hai Raiding Party",
-        "gameText": "**Damage +1. **",
+        "gameText": "**Damage +1.**",
         "loreText": "Bands of Uruks crossed the plains of Rohan."
       },
       "fr": {
@@ -52021,15 +52537,15 @@
       },
       "fr": {
         "title": "Légion du Désert",
-        "gameText": "**Suderon.** **Embuscade** <symbol>twilight1</symbol>.**** Tant que vous pouvez désigner 4 points-fardeau, ce séide a +5 en force. Tant que vous pouvez désigner 5 points-fardeau, ce séide est **acharné.**\nTant que vous pouvez désigner 6 points-fardeau, ce séide inflige des **dégâts +1.**"
+        "gameText": "**Suderon.** **Embuscade** <symbol>twilight1</symbol>. Tant que vous pouvez désigner 4 points-fardeau, ce séide a +5 en force. Tant que vous pouvez désigner 5 points-fardeau, ce séide est **acharné.**\nTant que vous pouvez désigner 6 points-fardeau, ce séide inflige des **dégâts +1.**"
       },
       "de": {
         "title": "Wüstenlegion",
-        "gameText": "**Südländer** **Hinterhalt** <symbol>twilight1</symbol>.****\nSolange du 4 lastmarken entdecken kannst, erhält dieser diener stärke +5.\nSolange du 5 lastmarken entdecken kannst, ist dieser diener **erbittert.**\nSolange du 6 lastmarken entdecken kannst, erhält dieser diener **schaden +1.**"
+        "gameText": "**Südländer** **Hinterhalt** <symbol>twilight1</symbol>.\nSolange du 4 lastmarken entdecken kannst, erhält dieser diener stärke +5.\nSolange du 5 lastmarken entdecken kannst, ist dieser diener **erbittert.**\nSolange du 6 lastmarken entdecken kannst, erhält dieser diener **schaden +1.**"
       },
       "it": {
         "title": "Legione del Deserto",
-        "gameText": "**Sudrone.**\n**Imboscata** <symbol>twilight1</symbol>.**** Mentre puoi avvistare 4 segnalini fardello, aggiungi +5 alla forza di questo servitore. Mentre puoi avvistare 5 segnalini fardello, questo servitore è **Feroce.**\nMentre puoi avvistare 6 segnalini fardello, questo servitore ha Danno +"
+        "gameText": "**Sudrone.**\n**Imboscata** <symbol>twilight1</symbol>. Mentre puoi avvistare 4 segnalini fardello, aggiungi +5 alla forza di questo servitore. Mentre puoi avvistare 5 segnalini fardello, questo servitore è **Feroce.**\nMentre puoi avvistare 6 segnalini fardello, questo servitore ha Danno +"
       },
       "es": {
         "title": "Legión Del Desierto",
@@ -52328,7 +52844,7 @@
       },
       "fr": {
         "title": "Infantrie Orientale",
-        "gameText": "**Oriental.**\nTant que vous pouvez désigner trois points-fardeau, ce séide est **acharné** et inflige des .****",
+        "gameText": "**Oriental.**\nTant que vous pouvez désigner trois points-fardeau, ce séide est **acharné** et inflige des **dégâts +1.**",
         "loreText": "Quelquefois appelés Hommes du Rhûn, les Orientaux haïssaient le Gondor à cause de ses richesses."
       },
       "de": {
@@ -52463,7 +52979,7 @@
       },
       "fr": {
         "title": "Fantassin Oriental",
-        "gameText": "**Oriental.**\nTant que vous pouvez désigner trois points-fardeau, ce séide est **acharné** et inflige des .****",
+        "gameText": "**Oriental.**\nTant que vous pouvez désigner trois points-fardeau, ce séide est **acharné** et inflige des **dégâts +1.**",
         "loreText": "Des soldats orientaux entraînés formaient des rangs d'haches et de lances pour charger contre les chevaliers du Gondor."
       },
       "de": {
@@ -53068,7 +53584,7 @@
     "i18n": {
       "en": {
         "title": "Rapid Fire",
-        "gameText": "**Archery: **Exert a <symbol>raider</symbol> archer to make the minion archery total +1 for each burden (limit +5).",
+        "gameText": "**Archery:**Exert a <symbol>raider</symbol> archer to make the minion archery total +1 for each burden (limit +5).",
         "loreText": "Wars between the southern kingdoms taught speed and precision to the archers of the Haradrim."
       },
       "fr": {
@@ -53392,17 +53908,17 @@
       },
       "fr": {
         "title": "Commandant Suderon",
-        "gameText": "**Suderon.** **Embuscade** <symbol>twilight1</symbol>.**** **Affectation :** Désignez 6 compagnons pour affecter ce séide au Porteur de l’Anneau.\nLe joueur des Peuples Libres peut défausser un compagnon dissocié pour empêcher ceci.",
+        "gameText": "**Suderon.** **Embuscade** <symbol>twilight1</symbol>. **Affectation :** Désignez 6 compagnons pour affecter ce séide au Porteur de l’Anneau.\nLe joueur des Peuples Libres peut défausser un compagnon dissocié pour empêcher ceci.",
         "loreText": "Presqu'aussi mauvais que des Orques, et beaucoup plus grands."
       },
       "de": {
         "title": "Anführer der Südländer",
-        "gameText": "**Südländer.** **Hinterhalt** <symbol>twilight1</symbol>.****\n**Zuweisung:** Entdecke 6 Gefährten, um diesen Diener dem Ringträger zuzuweisen. Der Freie Völker Spieler darf einen nicht-verbundenen Gefährten ablegen, um dies zu verhindern.",
+        "gameText": "**Südländer.** **Hinterhalt** <symbol>twilight1</symbol>.\n**Zuweisung:** Entdecke 6 Gefährten, um diesen Diener dem Ringträger zuzuweisen. Der Freie Völker Spieler darf einen nicht-verbundenen Gefährten ablegen, um dies zu verhindern.",
         "loreText": "Fast so schlimm wie Orks, und viel größer."
       },
       "it": {
         "title": "Comandante Sudrone",
-        "gameText": "**Sudrone.**\n**Imboscata** <symbol>twilight1</symbol>.**** \n**Assegnazione:** Avvista 6 compagni per assegnare questo servitore al Portatore dell’Anello.\nIl giocatore dei Popoli Liberi può scartare un compagno Non Legato per prevenire questo effetto.",
+        "gameText": "**Sudrone.**\n**Imboscata** <symbol>twilight1</symbol>. \n**Assegnazione:** Avvista 6 compagni per assegnare questo servitore al Portatore dell’Anello.\nIl giocatore dei Popoli Liberi può scartare un compagno Non Legato per prevenire questo effetto.",
         "loreText": "Quasi cattivi come gli Orchi, e molto più grandi."
       },
       "es": {
@@ -53483,17 +53999,17 @@
       },
       "fr": {
         "title": "Combattant Suderon",
-        "gameText": "**Suderon.** **Embuscade** <symbol>twilight1</symbol>.****\n**Manœuvre :** Affaiblissez ce séide et désignez 5 compagnons pour obliger le joueur des Peuples Libres à affaiblir un compagnon.",
+        "gameText": "**Suderon.** **Embuscade** <symbol>twilight1</symbol>.\n**Manœuvre :** Affaiblissez ce séide et désignez 5 compagnons pour obliger le joueur des Peuples Libres à affaiblir un compagnon.",
         "loreText": "...ils viennent du Sud au-delà du bout du Grand Fleuve..."
       },
       "de": {
         "title": "Südlandkämpfer",
-        "gameText": "**Südländer.** **Hinterhalt** <symbol>twilight1</symbol>.****\n**Manöver:** Strenge diesen Diener an und entdecke 5 Gefährten, um den Freie Völker Spieler zu zwingen, einen Gefährten anzustrengen.",
+        "gameText": "**Südländer.** **Hinterhalt** <symbol>twilight1</symbol>.\n**Manöver:** Strenge diesen Diener an und entdecke 5 Gefährten, um den Freie Völker Spieler zu zwingen, einen Gefährten anzustrengen.",
         "loreText": "... sie sind aus dem Süden gekommen, jenseits vom Ende des Großen Stroms...."
       },
       "it": {
         "title": "Combattente Sudrone",
-        "gameText": "**Sudrone.**\n**Imboscata** <symbol>twilight1</symbol>.**** **Manovra:** Sforza questo servitore e avvista 5 compagni per far sforzare un compagno al giocatore dei Popoli Liberi.",
+        "gameText": "**Sudrone.**\n**Imboscata** <symbol>twilight1</symbol>. **Manovra:** Sforza questo servitore e avvista 5 compagni per far sforzare un compagno al giocatore dei Popoli Liberi.",
         "loreText": "...sono venuti dal Sud, dalle terre al di là della fine del Grande Fiume..."
       },
       "es": {
@@ -53529,12 +54045,12 @@
       },
       "fr": {
         "title": "Éclaireur Suderon",
-        "gameText": "**Suderon.** **Embuscade** <symbol>twilight2</symbol>.****",
+        "gameText": "**Suderon.** **Embuscade** <symbol>twilight2</symbol>.",
         "loreText": "Ils ont un aspect féroce. Ils ont les yeux noirs, de longs cheveux noirs, et des boucles d'or aux oreilles..."
       },
       "de": {
         "title": "Späher der Südländer",
-        "gameText": "**Südländer.** **Hinterhalt** <symbol>twilight2</symbol>.****",
+        "gameText": "**Südländer.** **Hinterhalt** <symbol>twilight2</symbol>.",
         "loreText": "Sie haben schwarze Augen und langes schwarzes Haar und goldene Ringe in den Ohren...."
       },
       "it": {
@@ -53620,12 +54136,12 @@
       },
       "fr": {
         "title": "Soldat Suderon",
-        "gameText": "**Suderon.** **Embuscade** <symbol>twilight2</symbol>.****",
+        "gameText": "**Suderon.** **Embuscade** <symbol>twilight2</symbol>.",
         "loreText": "Les royaumes d'Harad livrent des guerres sans nombre et entraînent des milliers de guerriers."
       },
       "de": {
         "title": "Südlandsoldat",
-        "gameText": "**Südländer.**Hinterhalt <symbol>twilight2</symbol>.****",
+        "gameText": "**Südländer.**Hinterhalt <symbol>twilight2</symbol>.",
         "loreText": "Die Königreiche von Harad lagen ständig im Krieg und bildeten Tausende von Kriegern aus."
       },
       "it": {
@@ -53721,19 +54237,19 @@
     "i18n": {
       "en": {
         "title": "Southron Troop",
-        "gameText": "**Southron.** **Archer.** **Ambush** <symbol>twilight1</symbol>.**** To play, spot a Southron.\n**Assignment:** Spot 7 companions to assign this minion to the Ring-bearer. The Free Peoples player may make you discard a companion (except the Ring-bearer) to prevent this."
+        "gameText": "**Southron.** **Archer.** **Ambush** <symbol>twilight1</symbol>. To play, spot a Southron.\n**Assignment:** Spot 7 companions to assign this minion to the Ring-bearer. The Free Peoples player may make you discard a companion (except the Ring-bearer) to prevent this."
       },
       "fr": {
         "title": "Troupes Suderones",
-        "gameText": "**Suderon.** **Archer.** **Embuscade** <symbol>twilight1</symbol>.**** Pour jouer, désignez un Suderon.\n**Affectation :** Désignez 7 compagnons pour affecter ce séide au Porteur de l’Anneau. Le joueur des Peuples Libres peut vous obliger à défausser un compagnon (excepté le Porteur de l’Anneau) pour prévenir ceci."
+        "gameText": "**Suderon.** **Archer.** **Embuscade** <symbol>twilight1</symbol>. Pour jouer, désignez un Suderon.\n**Affectation :** Désignez 7 compagnons pour affecter ce séide au Porteur de l’Anneau. Le joueur des Peuples Libres peut vous obliger à défausser un compagnon (excepté le Porteur de l’Anneau) pour prévenir ceci."
       },
       "de": {
         "title": "Südländerschar",
-        "gameText": "**Südländer.** **Bogenschütze.** **Hinterhalt** <symbol>twilight1</symbol>.**** Entdecke einen Südländer, um diesen Diener zu spielen.\n**Zuweisung:** Entdecke 7 Gefährten, um diesen Diener dem Ringträger zuzuweisen. Der Freie Völker Spieler darf dich einen Gefährten (außer den Ringträger) ablegen lassen, um dies zu verhindern."
+        "gameText": "**Südländer.** **Bogenschütze.** **Hinterhalt** <symbol>twilight1</symbol>. Entdecke einen Südländer, um diesen Diener zu spielen.\n**Zuweisung:** Entdecke 7 Gefährten, um diesen Diener dem Ringträger zuzuweisen. Der Freie Völker Spieler darf dich einen Gefährten (außer den Ringträger) ablegen lassen, um dies zu verhindern."
       },
       "it": {
         "title": "Truppa di Sudroni",
-        "gameText": "**Sudrone.**\n**Arciere.**\n**Imboscata** <symbol>twilight1</symbol>.**** Per giocarla, avvista un **Sudrone.**\n**Assegnazione:** Avvista 7 compagni per assegnare questo servitore al Portatore dell’Anello.\nIl giocatore dei Popoli Liberi può farti scartare un compagno (tranne il Portatore dell’Anello) per prevenire questo efferto."
+        "gameText": "**Sudrone.**\n**Arciere.**\n**Imboscata** <symbol>twilight1</symbol>. Per giocarla, avvista un **Sudrone.**\n**Assegnazione:** Avvista 7 compagni per assegnare questo servitore al Portatore dell’Anello.\nIl giocatore dei Popoli Liberi può farti scartare un compagno (tranne il Portatore dell’Anello) per prevenire questo efferto."
       },
       "es": {
         "title": "Tropa Sureña",
@@ -53772,12 +54288,12 @@
       },
       "de": {
         "title": "Erfahrene Südländer",
-        "gameText": "**Südländer.****Hinterhalt** <symbol>twilight1</symbol>.\n**Manöver:** Strenge diesen Diener an und entdecke 6 Gefährten, um den Freie Völker Spieler zu zwingen, 2 Gefährten anzustrengen.",
+        "gameText": "**Südländer.** **Hinterhalt** <symbol>twilight1</symbol>.\n**Manöver:** Strenge diesen Diener an und entdecke 6 Gefährten, um den Freie Völker Spieler zu zwingen, 2 Gefährten anzustrengen.",
         "loreText": "Flüchtig sah er schwärzliche Menschen..., die in einiger Entfernung den Hang hinunterrannten...."
       },
       "it": {
         "title": "Veterani Sudroni",
-        "gameText": "**Sudrone.****Imboscata** <symbol>twilight1</symbol>.\n**Manovra:** Sforza questo servitore e avvista 6 compagni per far sforzare 2 compagni al giocatore dei Popoli Liberi.",
+        "gameText": "**Sudrone.** **Imboscata** <symbol>twilight1</symbol>.\n**Manovra:** Sforza questo servitore e avvista 6 compagni per far sforzare 2 compagni al giocatore dei Popoli Liberi.",
         "loreText": "...intravide degli Uomini di carnagione scura... scendere di corsa il pendio..."
       },
       "es": {
@@ -53818,7 +54334,7 @@
       },
       "de": {
         "title": "Südlandnomade",
-        "gameText": "**Südländer.****Hinterhalt** <symbol>twilight1</symbol>.\n**Zuweisung:** Strenge diesen Diener an und entdecke 5 Gefährten, um diesen Diener dem Ringträger zuzuweisen. Der Freie Völker Spieler darf den Einfluss um <symbol>twilight4</symbol> erhöhen, um dies zu verhindern.",
+        "gameText": "**Südländer.** **Hinterhalt** <symbol>twilight1</symbol>.\n**Zuweisung:** Strenge diesen Diener an und entdecke 5 Gefährten, um diesen Diener dem Ringträger zuzuweisen. Der Freie Völker Spieler darf den Einfluss um <symbol>twilight4</symbol> erhöhen, um dies zu verhindern.",
         "loreText": "Einige Südländer kannten keine Loyalität und kämpften für die Seite, die sie bezahlte."
       },
       "it": {
@@ -55554,7 +56070,7 @@
       },
       "fr": {
         "title": "Epée de Rohan",
-        "gameText": "Le détenteur doit être un Homme <symbol>rohan</symbol>. Lorsque le détenteur combat un Ourouk-Haï, il inflige des **.**",
+        "gameText": "Le détenteur doit être un Homme <symbol>rohan</symbol>. Lorsque le détenteur combat un Ourouk-Haï, il inflige des **dégâts +1.**",
         "loreText": "C'est une bonne épée Haleth, fils de Hama... il y a toujours de l'espoir."
       },
       "de": {
@@ -56080,7 +56596,7 @@
     "i18n": {
       "en": {
         "title": "Escape",
-        "gameText": "**Stealth.** Bearer must be an unbound Hobbit.  Limit 1 per character.  \n**Skirmish: **Exert bearer twice to cancel a skirmish involving him.  \nAny Shadow player may remove <symbol>twilight1</symbol> to prevent this.",
+        "gameText": "**Stealth.** Bearer must be an unbound Hobbit.  Limit 1 per character.  \n**Skirmish:**Exert bearer twice to cancel a skirmish involving him.  \nAny Shadow player may remove <symbol>twilight1</symbol> to prevent this.",
         "loreText": "Suddenly Merry and Pippin realized that without moving they were now outside the circle...."
       },
       "fr": {
@@ -59546,15 +60062,15 @@
       },
       "fr": {
         "title": "Horde Infecte",
-        "gameText": "**Chevaucheur de ouargue.** \nTant que Horde Infecte n’est pas épuisée, elle est **acharné**e. \nTant que Horde Infecte a au moins 3 de vitalité, elle a **embuscade** <symbol>twilight1</symbol>.****\nTant que Horde Infecte a au moins 4 de vitalité, elle inflige des **dégâts +1.**"
+        "gameText": "**Chevaucheur de ouargue.** \nTant que Horde Infecte n’est pas épuisée, elle est **acharné**e. \nTant que Horde Infecte a au moins 3 de vitalité, elle a **embuscade** <symbol>twilight1</symbol>.\nTant que Horde Infecte a au moins 4 de vitalité, elle inflige des **dégâts +1.**"
       },
       "de": {
         "title": "Abscheuliche Horde",
-        "gameText": "**Wargreiter.**\nSolange die Abscheuliche Horde nicht erschöpft ist, ist sie **erbittert.**\nSolange die Abscheuliche Horde mindestens Vitalität 3 hat, erhält sie **Hinterhalt** <symbol>twilight1</symbol>.****\nSolange die Abscheuliche Horde mindestens Vitalität 4 hat, erhält sie **schaden +1.**"
+        "gameText": "**Wargreiter.**\nSolange die Abscheuliche Horde nicht erschöpft ist, ist sie **erbittert.**\nSolange die Abscheuliche Horde mindestens Vitalität 3 hat, erhält sie **Hinterhalt** <symbol>twilight1</symbol>.\nSolange die Abscheuliche Horde mindestens Vitalität 4 hat, erhält sie **schaden +1.**"
       },
       "it": {
         "title": "Orda Infida",
-        "gameText": "**Cavalcalupi.** Mentre Orda Infida non è esausto, è **Feroce.** Mentre Orda Infida ha almeno Vitalità 3, ha Imboscata <symbol>twilight1</symbol>.**** Mentre Orda Infida ha almeno Vitalità 4, ha **Danno +1.**"
+        "gameText": "**Cavalcalupi.** Mentre Orda Infida non è esausto, è **Feroce.** Mentre Orda Infida ha almeno Vitalità 3, ha Imboscata <symbol>twilight1</symbol>. Mentre Orda Infida ha almeno Vitalità 4, ha **Danno +1.**"
       },
       "es": {
         "title": "Horda Inmunda",
@@ -60606,7 +61122,7 @@
       },
       "fr": {
         "title": "Pisteur du Désert",
-        "gameText": "**Suderon** **Embuscade** <symbol>twilight2</symbol>.**** \n**Manœuvre :** Affaiblissez ce séide et désignez 4 cultures des Peuples Libres pour affaiblir tous les compagnons.",
+        "gameText": "**Suderon** **Embuscade** <symbol>twilight2</symbol>. \n**Manœuvre :** Affaiblissez ce séide et désignez 4 cultures des Peuples Libres pour affaiblir tous les compagnons.",
         "loreText": "Ils ne frappent que lorsque leur proie est hagarde et fatiguée."
       },
       "de": {
@@ -60695,12 +61211,12 @@
     "i18n": {
       "en": {
         "title": "Southron Marcher",
-        "gameText": "**Southron.****Ambush** <symbol>twilight2</symbol>. While you can spot a Southron, this minion’s twilight cost is -2.",
+        "gameText": "**Southron.** **Ambush** <symbol>twilight2</symbol>. While you can spot a Southron, this minion’s twilight cost is -2.",
         "loreText": "Hardy desert warriors needed little rest."
       },
       "fr": {
         "title": "Marcheur Suderon",
-        "gameText": "**Suderon** **Embuscade** <symbol>twilight2</symbol>.**** \nTant que vous pouvez désigner un Suderon, le coût crépusculaire de ce séide est de -2.",
+        "gameText": "**Suderon** **Embuscade** <symbol>twilight2</symbol>. \nTant que vous pouvez désigner un Suderon, le coût crépusculaire de ce séide est de -2.",
         "loreText": "Les guerriers du désert, endurcis, ne requéraient que peu de repos."
       },
       "de": {
@@ -60746,7 +61262,7 @@
       },
       "fr": {
         "title": "Coureur Suderon",
-        "gameText": "**Suderon** **Embuscade** <symbol>twilight2</symbol>.**** \nTant que vous pouvez désigner un Suderon, le coût crépusculaire de ce séide est de -2.",
+        "gameText": "**Suderon** **Embuscade** <symbol>twilight2</symbol>. \nTant que vous pouvez désigner un Suderon, le coût crépusculaire de ce séide est de -2.",
         "loreText": "Des éclaireurs vigoureux suivent les mouvements des ennemis afin d'organiser des attaques surprises."
       },
       "de": {
@@ -60802,7 +61318,8 @@
           }
         ],
         "source": "SELF",
-        "text": "RESPONSE: If a Southron is about to take a wound, remove twilight3 to prevent that wound"
+        "text": "RESPONSE: If a Southron is about to take a wound, remove twilight3 to prevent that wound",
+        "textFr": "**Réponse :** Si un Suderon est sur le point d’être blessé, retirez <symbol>twilight3</symbol> pour empêcher cette blessure."
       }
     ],
     "culture": "RAIDER",
@@ -60815,12 +61332,12 @@
     "i18n": {
       "en": {
         "title": "Southron Traveler",
-        "gameText": "**Southron.** **Ambush** <symbol>twilight2</symbol>.****\n**Response:** If a Southron is about to take a wound, remove <symbol>twilight3</symbol> to prevent that wound.",
+        "gameText": "**Southron.** **Ambush** <symbol>twilight2</symbol>.\n**Response:** If a Southron is about to take a wound, remove <symbol>twilight3</symbol> to prevent that wound.",
         "loreText": "Men of Harad were used to long journeys."
       },
       "fr": {
         "title": "Voyageur Suderon",
-        "gameText": "**Suderon** **Embuscade** <symbol>twilight2</symbol>.**** \n**Réponse :** Si un Suderon est sur le point d’être blessé, retirez <symbol>twilight3</symbol> pour empêcher cette blessure.",
+        "gameText": "**Suderon** **Embuscade** <symbol>twilight2</symbol>. \n**Réponse :** Si un Suderon est sur le point d’être blessé, retirez <symbol>twilight3</symbol> pour empêcher cette blessure.",
         "loreText": "Les hommes de Harad avaient l'habitude des longs voyages."
       },
       "de": {
@@ -61365,7 +61882,7 @@
     "i18n": {
       "en": {
         "title": "Parapet",
-        "gameText": "**Fortification.****Archery:** Spot 2 <symbol>rohan</symbol> Men to remove 2 tokens from a machine or to make the minion archery total -3. Discard this condition.",
+        "gameText": "**Fortification.** **Archery:** Spot 2 <symbol>rohan</symbol> Men to remove 2 tokens from a machine or to make the minion archery total -3. Discard this condition.",
         "loreText": "Upon the spur of rock from the cliff stood high walls of ancient stone."
       },
       "fr": {
@@ -62928,7 +63445,7 @@
       },
       "it": {
         "title": "Orda Infida",
-        "gameText": "**Cavalcalupi.** Mentre Orda Infida non è esausto, è **Feroce.** Mentre Orda Infida ha almeno Vitalità 3, ha Imboscata <symbol>twilight1</symbol>.**** Mentre Orda Infida ha almeno Vitalità 4, ha **Danno +1.**"
+        "gameText": "**Cavalcalupi.** Mentre Orda Infida non è esausto, è **Feroce.** Mentre Orda Infida ha almeno Vitalità 3, ha Imboscata <symbol>twilight1</symbol>. Mentre Orda Infida ha almeno Vitalità 4, ha **Danno +1.**"
       },
       "es": {
         "title": "Horda Inmunda",
@@ -67296,7 +67813,7 @@
     "i18n": {
       "en": {
         "title": "Southron Invaders",
-        "gameText": "**Southron.** **Ambush** <symbol>twilight1</symbol>.**** When you play this minion, you may spot another Southron to play a minion with ambush from your discard pile.",
+        "gameText": "**Southron.** **Ambush** <symbol>twilight1</symbol>. When you play this minion, you may spot another Southron to play a minion with ambush from your discard pile.",
         "loreText": "So when you said Men out of the South, all in red and gold, I said were there any oliphaunts? For if there was, I was going to take a look...."
       },
       "fr": {
@@ -67306,7 +67823,7 @@
       },
       "de": {
         "title": "Invasoren aus dem Südland",
-        "gameText": "**Südländer.** **Hinterhalt**<symbol> ¤</symbol>.**** Du darfst einen anderen Südländer entdecken, wenn du diesen Diener spielst, um einen Diener mit Hinterhalt aus deinem Ablagestapel zu spielen.",
+        "gameText": "**Südländer.** **Hinterhalt**<symbol> ¤</symbol>. Du darfst einen anderen Südländer entdecken, wenn du diesen Diener spielst, um einen Diener mit Hinterhalt aus deinem Ablagestapel zu spielen.",
         "loreText": "Als du sagtest: ‘Menschen aus dem Süden, alle in Rot und Gold', da sagte ich: ‘Waren da irgendwelche Olifanten?' Denn wenn da welche wären, dann wollte ich sie mir ansehen..."
       },
       "it": {
@@ -68207,7 +68724,8 @@
     "kind": "SHADOW",
     "type": "MINION",
     "keywords": [
-      "TWILIGHT"
+      "TWILIGHT",
+      "DAMAGE +1"
     ],
     "culture": "SAURON",
     "race": "WRAITH",
@@ -68219,7 +68737,7 @@
     "i18n": {
       "en": {
         "title": "Dead Ones",
-        "gameText": "**Twilight.** **Damage +1. ** \nTo play this minion, remove a burden or spot a twilight minion.",
+        "gameText": "**Twilight.** **Damage +1.** \nTo play this minion, remove a burden or spot a twilight minion.",
         "loreText": "The Dead can't really be there! Is it some devilry hatched in the Dark Land?"
       },
       "fr": {
@@ -75776,7 +76294,7 @@
       },
       "fr": {
         "title": "Coureur du Désert",
-        "gameText": "**Suderon.** **Embuscade** <symbol>twilight1</symbol>.****\nQuand le joueur des Peuples Libres affecte ce séide à un personnage et que vous avez l'initiative, blessez ce personnage."
+        "gameText": "**Suderon.** **Embuscade** <symbol>twilight1</symbol>.\nQuand le joueur des Peuples Libres affecte ce séide à un personnage et que vous avez l'initiative, blessez ce personnage."
       },
       "de": {
         "title": "Wüstenläufer",
@@ -75818,7 +76336,7 @@
       },
       "fr": {
         "title": "Éclaireur du Désert",
-        "gameText": "**Suderon.** **Embuscade** <symbol>twilight1</symbol>.****\nQuand le joueur des Peuples Libres affecte ce séide à un personnage et que vous avez l'initiative, blessez ce personnage."
+        "gameText": "**Suderon.** **Embuscade** <symbol>twilight1</symbol>.\nQuand le joueur des Peuples Libres affecte ce séide à un personnage et que vous avez l'initiative, blessez ce personnage."
       },
       "de": {
         "title": "Wüstenspäher",
@@ -75860,7 +76378,7 @@
       },
       "fr": {
         "title": "Mouchard du Désert",
-        "gameText": "**Suderon.** **Embuscade** <symbol>twilight1</symbol>.****\nQuand le joueur des Peuples Libres affecte ce séide à un personnage et que vous avez l'initiative, blessez ce personnage."
+        "gameText": "**Suderon.** **Embuscade** <symbol>twilight1</symbol>.\nQuand le joueur des Peuples Libres affecte ce séide à un personnage et que vous avez l'initiative, blessez ce personnage."
       },
       "de": {
         "title": "Wüstenspion",
@@ -97452,6 +97970,45 @@
     "isUnique": false,
     "kind": "SHADOW",
     "type": "MINION",
+    "abilities": [
+      {
+        "id": "10C76:0",
+        "phases": [
+          "SKIRMISH"
+        ],
+        "cost": [
+          {
+            "exert": [
+              {
+                "count": 1,
+                "target": "SELF"
+              }
+            ]
+          }
+        ],
+        "effects": [
+          {
+            "type": "ADD_TEMP_STAT",
+            "stat": "STRENGTH",
+            "value": 3,
+            "target": [
+              [
+                "SAURON",
+                "ROAMING",
+                "MINION"
+              ]
+            ],
+            "expiresAtPhase": "SKIRMISH"
+          }
+        ],
+        "source": "SELF",
+        "text": "SKIRMISH: Exert this minion to make a roaming sauron minion strength +3.",
+        "textFr": "**Combat :** Affaiblissez ce séide pour donner +3 en force à un séide <symbol>sauron</symbol> errant."
+      }
+    ],
+    "actionPhases": [
+      "SKIRMISH"
+    ],
     "culture": "SAURON",
     "race": "ORC",
     "twilightCost": 3,
@@ -103311,7 +103868,7 @@
       },
       "fr": {
         "title": "Dun Redoutable",
-        "gameText": "**Embuscade** <symbol>twilight1</symbol>.****\nQuand vous jouez ce séide à un site de plaines, vous pouvez désigner un compagnon dissocié pour donner –1 en résistance à ce compagnon jusqu'à la fin du tour.",
+        "gameText": "**Embuscade** <symbol>twilight1</symbol>.\nQuand vous jouez ce séide à un site de plaines, vous pouvez désigner un compagnon dissocié pour donner –1 en résistance à ce compagnon jusqu'à la fin du tour.",
         "loreText": "Accustomed as they are to traveling afoot, Dunlending mobs can strike quickly, without warning."
       },
       "de": {
@@ -104491,7 +105048,7 @@
       },
       "fr": {
         "title": "Guerrier du Pays de Dun",
-        "gameText": "**Embuscade** <symbol>twilight1</symbol>.****\nTant que ce séide est à un site de plaines, il acquiert une **embuscade** <symbol>twilight1</symbol> supplémentaire.",
+        "gameText": "**Embuscade** <symbol>twilight1</symbol>.\nTant que ce séide est à un site de plaines, il acquiert une **embuscade** <symbol>twilight1</symbol> supplémentaire.",
         "loreText": "The open plain affords no shelter, no defense against the Dunlendings."
       },
       "de": {
@@ -113875,7 +114432,7 @@
       },
       "fr": {
         "title": "Suderon Enragé",
-        "gameText": "**Embuscade** <symbol>twilight3</symbol>.****\nLa limite de déplacement est de +1 pour ce tour.",
+        "gameText": "**Embuscade** <symbol>twilight3</symbol>.\nLa limite de déplacement est de +1 pour ce tour.",
         "loreText": "As with wild animals, fleeing prey seems only to incite the warriors of Harad."
       },
       "de": {
@@ -115303,7 +115860,7 @@
       },
       "de": {
         "title": "Orkstratege",
-        "gameText": "**Schleicher. **<i>(Kämpfe mit Schleichern dürfen erst nach allen anderen abgehandelt werden.)</i>\n**Manöver:** Ein <symbol>orc</symbol> Schleicherdiener verliert bis zur Sammelphase seine Schleicher-Fähigkeit.",
+        "gameText": "**Schleicher.**<i>(Kämpfe mit Schleichern dürfen erst nach allen anderen abgehandelt werden.)</i>\n**Manöver:** Ein <symbol>orc</symbol> Schleicherdiener verliert bis zur Sammelphase seine Schleicher-Fähigkeit.",
         "loreText": "Es braucht einen wahrlich starken Willen, einen Haufen undisziplinierte Orks zu befehligen."
       },
       "it": {
@@ -121441,7 +121998,7 @@
       },
       "fr": {
         "title": "Il Reprit l'Arc",
-        "gameText": "**Éreintement 2.**<keyword><i>(Pour chaque personnage <symbol>elven</symbol> que vous affaiblissez en jouant cette carte, son coût crépusculaire est de –2.)</i>\nArcherie :</keyword> Défaussez cette carte du jeu et désignez 3 archers Elfes pour défausser un séide du jeu. Chacun de ces archers perd **archer** et ne peut pas acquérir archer.",
+        "gameText": "**Éreintement 2.** <keyword><i>(Pour chaque personnage <symbol>elven</symbol> que vous affaiblissez en jouant cette carte, son coût crépusculaire est de –2.)</i>\nArcherie :</keyword> Défaussez cette carte du jeu et désignez 3 archers Elfes pour défausser un séide du jeu. Chacun de ces archers perd **archer** et ne peut pas acquérir archer.",
         "loreText": "Stringing the bow and fitting an arrow...."
       },
       "de": {
@@ -127260,7 +127817,7 @@
       "de": {
         "title": "Väterchen Zwiefuß",
         "subtitle": "Nachbar von nebenan",
-        "gameText": "**Hilfe – **Lege 1 Lastmarke auf den Ringträger.\n Du darfst jedes Mal, wenn du diese Karte auf einen Gefährten verschiebst, ein <symbol>shire</symbol> Ereignis aus deinem Ablagestapel auf die Hand nehmen.",
+        "gameText": "**Hilfe –**Lege 1 Lastmarke auf den Ringträger.\n Du darfst jedes Mal, wenn du diese Karte auf einen Gefährten verschiebst, ein <symbol>shire</symbol> Ereignis aus deinem Ablagestapel auf die Hand nehmen.",
         "loreText": "Das ist ein dunkler, böser Ort, wenn nur die Hälfte der Erzählungen wahr ist."
       },
       "it": {
@@ -133752,6 +134309,42 @@
         "MAN"
       ]
     ],
+    "abilities": [
+      {
+        "id": "15C62:0",
+        "phases": [
+          "MANEUVER"
+        ],
+        "cost": [
+          {
+            "exert": [
+              {
+                "count": 2,
+                "target": "BEARER"
+              }
+            ]
+          }
+        ],
+        "effects": [
+          {
+            "type": "DISCARD",
+            "count": 1,
+            "target": [
+              [
+                "ROAMING",
+                "MINION"
+              ]
+            ]
+          }
+        ],
+        "source": "ATTACHMENT",
+        "text": "MANEUVER: Exert bearer twice to discard a roaming minion.",
+        "textFr": "**Manœuvre :** Affaiblissez le détenteur deux fois pour défausser un séide errant."
+      }
+    ],
+    "actionPhases": [
+      "MANEUVER"
+    ],
     "culture": "GONDOR",
     "twilightCost": 1,
     "strength": 2,
@@ -133794,6 +134387,43 @@
     "keywords": [
       "RANGER",
       "HUNTER 1"
+    ],
+    "abilities": [
+      {
+        "id": "15U63:0",
+        "phases": [
+          "SKIRMISH"
+        ],
+        "cost": [
+          {
+            "exert": [
+              {
+                "count": 1,
+                "target": "SELF"
+              }
+            ]
+          }
+        ],
+        "effects": [
+          {
+            "type": "WOUND",
+            "count": 1,
+            "target": "SKIRMISHING",
+            "match": [
+              [
+                "ROAMING",
+                "MINION"
+              ]
+            ]
+          }
+        ],
+        "source": "SELF",
+        "text": "SKIRMISH: Exert Mablung to wound a roaming minion he is skirmishing.",
+        "textFr": "**Combat :** Affaiblissez Mablung pour blesser un séide errant qu'il combat."
+      }
+    ],
+    "actionPhases": [
+      "SKIRMISH"
     ],
     "culture": "GONDOR",
     "race": "MAN",
@@ -134177,6 +134807,34 @@
     "keywords": [
       "RANGER",
       "HUNTER 1"
+    ],
+    "abilities": [
+      {
+        "id": "15C71:0",
+        "phases": [],
+        "trigger": {
+          "type": "WHILE"
+        },
+        "cost": [],
+        "effects": [
+          {
+            "type": "MODIFY_STAT",
+            "stat": "STRENGTH",
+            "value": 1,
+            "target": "SELF",
+            "perSpot": {
+              "target": [
+                [
+                  "ROAMING",
+                  "MINION"
+                ]
+              ]
+            }
+          }
+        ],
+        "source": "SELF",
+        "text": ". This companion is strength +1 for each roaming minion you can spot."
+      }
     ],
     "culture": "GONDOR",
     "race": "MAN",

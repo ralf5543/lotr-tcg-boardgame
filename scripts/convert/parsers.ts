@@ -1086,6 +1086,7 @@ function isKnownFilterToken(token: string): boolean {
         token === 'EXHAUSTED' ||
         token === 'NOT_EXHAUSTED' ||
         token === 'UNWOUNDED' ||
+        token === 'ROAMING' ||
         // Phase d’événement (Bilbo : « shire skirmish event »)
         token === 'FELLOWSHIP' ||
         token === 'SHADOW' ||
@@ -1822,18 +1823,15 @@ function isCharacterishHealTarget(
     return tokens.length > 0;
 }
 
+/**
+ * Anciennement : bloquait coût désigné ≠ effet désigné (double halo non géré).
+ * Le plateau enchaîne désormais coût → effet : plus de conflit structurel.
+ */
 function effectTargetConflictsWithCost(
-    costTarget: 'SELF' | 'BEARER' | string[][],
-    effectTarget: 'SELF' | 'BEARER' | 'SKIRMISHING' | 'WINNER' | string[][]
+    _costTarget: 'SELF' | 'BEARER' | string[][],
+    _effectTarget: 'SELF' | 'BEARER' | 'SKIRMISHING' | 'WINNER' | string[][]
 ): boolean {
-    if (costTarget === 'SELF' || costTarget === 'BEARER') return false;
-    if (!Array.isArray(costTarget)) return false;
-    if (effectTarget === 'SELF' || effectTarget === 'BEARER') return false;
-    if (effectTarget === costTarget) return false;
-    if (Array.isArray(effectTarget)) {
-        return JSON.stringify(effectTarget) !== JSON.stringify(costTarget);
-    }
-    return true;
+    return false;
 }
 
 /** Cible d’un soin / d’une défausse : him, bearer, that CLASS, a CLASS. */

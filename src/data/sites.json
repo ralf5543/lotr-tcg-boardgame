@@ -1870,15 +1870,15 @@
       },
       "fr": {
         "title": "Bois de Hobbitebourg",
-        "gameText": "**Forêt.****Compagnie :** Affaiblissez un Hobbit pour jouer votre site 2 (en remplaçant le site d’un adversaire si nécessaire)."
+        "gameText": "**Forêt.** **Compagnie :** Affaiblissez un Hobbit pour jouer votre site 2 (en remplaçant le site d’un adversaire si nécessaire)."
       },
       "de": {
         "title": "Hobbinger Wald",
-        "gameText": "**Wald.****Gemeinschaft.** Strenge einen Hobbit an, um deinen Ort 2 zu spielen (und nötigenfalls eine vorhandene Ortskarte zu ersetzen)."
+        "gameText": "**Wald.** **Gemeinschaft.** Strenge einen Hobbit an, um deinen Ort 2 zu spielen (und nötigenfalls eine vorhandene Ortskarte zu ersetzen)."
       },
       "it": {
         "title": "Boschi di Hobbiville",
-        "gameText": "**Foresta.****Compagnia:** Sforza un Hobbit per giocare il tuo sito 2 (rimpiazzando il sito dell’avversario, se necessario)."
+        "gameText": "**Foresta.** **Compagnia:** Sforza un Hobbit per giocare il tuo sito 2 (rimpiazzando il sito dell’avversario, se necessario)."
       },
       "es": {
         "title": "Bosques de Hobbiton",
@@ -2016,7 +2016,7 @@
       },
       "fr": {
         "title": "Vallée du Cours d'Argent",
-        "gameText": "**Rivière.****Sanctuaire.**Lorsque la Compagnie se déplace vers la Vallée du Cours d’Argent, chaque compagnon Hobbit peut guérir."
+        "gameText": "**Rivière.** **Sanctuaire.**Lorsque la Compagnie se déplace vers la Vallée du Cours d’Argent, chaque compagnon Hobbit peut guérir."
       },
       "de": {
         "title": "Tal des Silberlauf",
@@ -2024,11 +2024,11 @@
       },
       "it": {
         "title": "Valle dell'Argentaroggia",
-        "gameText": "**Fiume.****Rifugio.** Quando la Compagnia si sposta su Valle dell’Argentaroggia, ogni compagno Hobbit può curarsi."
+        "gameText": "**Fiume.** **Rifugio.** Quando la Compagnia si sposta su Valle dell’Argentaroggia, ogni compagno Hobbit può curarsi."
       },
       "es": {
         "title": "Valle del Cauce de Plata",
-        "gameText": "**Río.****Santuario.** Cuando la comunidad se mueve al Valle del Cauce de Plata, cada compañero Hobbit puede curarse."
+        "gameText": "**Río.** **Santuario.** Cuando la comunidad se mueve al Valle del Cauce de Plata, cada compañero Hobbit puede curarse."
       }
     }
   },
@@ -2072,15 +2072,15 @@
       },
       "fr": {
         "title": "Caras Galadhon",
-        "gameText": "**Forêt.****Sanctuaire.**Tant que la compagnie se trouve à Caras Galadhon, un maximum d’un séide peut être affecté à chaque combat."
+        "gameText": "**Forêt.** **Sanctuaire.**Tant que la compagnie se trouve à Caras Galadhon, un maximum d’un séide peut être affecté à chaque combat."
       },
       "de": {
         "title": "Caras Galadhon",
-        "gameText": "**Wald.****Zuflucht.**Solange sich die Gemeinschaft hier befindet, darf nicht mehr als ein Diener jedem Kampf zugewiesen werden."
+        "gameText": "**Wald.** **Zuflucht.**Solange sich die Gemeinschaft hier befindet, darf nicht mehr als ein Diener jedem Kampf zugewiesen werden."
       },
       "it": {
         "title": "Caras Galadhon",
-        "gameText": "**Foresta.****Rifugio.** Mentre la compagnia è a Caras Galadhon, non più di un servitore può essere assegnato a ogni schermaglia."
+        "gameText": "**Foresta.** **Rifugio.** Mentre la compagnia è a Caras Galadhon, non più di un servitore può essere assegnato a ogni schermaglia."
       },
       "es": {
         "title": "Caras Galadon",
@@ -8131,7 +8131,7 @@
     "i18n": {
       "en": {
         "title": "Watch-tower of Cirith Ungol",
-        "gameText": "**Mountain.****Maneuver:** Exert your <symbol>orc</symbol> minion to discard a card at random from the Free Peoples player's hand."
+        "gameText": "**Mountain.** **Maneuver:** Exert your <symbol>orc</symbol> minion to discard a card at random from the Free Peoples player's hand."
       },
       "fr": {
         "title": "La Tour de Garde de Cirith Ungol",
@@ -8143,11 +8143,11 @@
       },
       "it": {
         "title": "Watch-tower of Cirith Ungol",
-        "gameText": "**Mountain.****Maneuver:** Exert your <symbol>orc</symbol> minion to discard a card at random from the Free Peoples player's hand."
+        "gameText": "**Mountain.** **Maneuver:** Exert your <symbol>orc</symbol> minion to discard a card at random from the Free Peoples player's hand."
       },
       "es": {
         "title": "Watch-tower of Cirith Ungol",
-        "gameText": "**Mountain.****Maneuver:** Exert your <symbol>orc</symbol> minion to discard a card at random from the Free Peoples player's hand."
+        "gameText": "**Mountain.** **Maneuver:** Exert your <symbol>orc</symbol> minion to discard a card at random from the Free Peoples player's hand."
       }
     }
   },
@@ -8306,7 +8306,7 @@
     "i18n": {
       "en": {
         "title": "Window on the West",
-        "gameText": "**Underground.** Each unwounded <symbol>gondor</symbol> Man is **defender +1. **"
+        "gameText": "**Underground.** Each unwounded <symbol>gondor</symbol> Man is **defender +1.**"
       },
       "fr": {
         "title": "La Fenêtre sur l'Ouest",
@@ -8318,11 +8318,11 @@
       },
       "it": {
         "title": "Window on the West",
-        "gameText": "**Underground.** Each unwounded <symbol>gondor</symbol> Man is **defender +1. **"
+        "gameText": "**Underground.** Each unwounded <symbol>gondor</symbol> Man is **defender +1.**"
       },
       "es": {
         "title": "Window on the West",
-        "gameText": "**Underground.** Each unwounded <symbol>gondor</symbol> Man is **defender +1. **"
+        "gameText": "**Underground.** Each unwounded <symbol>gondor</symbol> Man is **defender +1.**"
       }
     }
   },
@@ -8373,7 +8373,7 @@
     "i18n": {
       "en": {
         "title": "Woody-End",
-        "gameText": "**Forest.****Shadow:** Remove a burden to play a Nazgûl from your discard pile."
+        "gameText": "**Forest.** **Shadow:** Remove a burden to play a Nazgûl from your discard pile."
       },
       "fr": {
         "title": "Bout-des-Bois",
@@ -8385,11 +8385,11 @@
       },
       "it": {
         "title": "Woody-End",
-        "gameText": "**Forest.****Shadow:** Remove a burden to play a Nazgûl from your discard pile."
+        "gameText": "**Forest.** **Shadow:** Remove a burden to play a Nazgûl from your discard pile."
       },
       "es": {
         "title": "Woody-End",
-        "gameText": "**Forest.****Shadow:** Remove a burden to play a Nazgûl from your discard pile."
+        "gameText": "**Forest.** **Shadow:** Remove a burden to play a Nazgûl from your discard pile."
       }
     }
   },

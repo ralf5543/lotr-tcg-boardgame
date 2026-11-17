@@ -7,6 +7,7 @@ import type {
     GameState,
 } from '../../types';
 import { findTargetCard } from '../../../utils/cardUtils';
+import { isMinionRoaming } from '../../../utils/roamingDetection';
 import { cardMatchesTarget } from '../validations/matchers';
 
 const matchCard = (c: CardState | undefined | null, targetId: string) =>
@@ -117,10 +118,38 @@ export function resolveSkirmishingOpponents(
     return minions;
 }
 
+function getFpSiteIndex(G: GameState): number {
+    const fpId = G.fpPlayerId || '0';
+    return G.players[fpId]?.currentSiteIndex ?? G.currentSiteIndex ?? 0;
+}
+
+/** Groupe ET : critères carte + états dépendant du plateau (errance…). */
+function cardMatchesGroupInPlay(
+    G: GameState,
+    card: CardState,
+    group: string[]
+): boolean {
+    if (!group || group.length === 0) return false;
+    const needsRoaming = group.some(
+        (token) => String(token).toUpperCase() === 'ROAMING'
+    );
+    const rest = group.filter(
+        (token) => String(token).toUpperCase() !== 'ROAMING'
+    );
+    if (rest.length > 0 && !cardMatchesTarget(card, [rest])) return false;
+    if (rest.length === 0 && !needsRoaming) return false;
+    if (needsRoaming && !isMinionRoaming(card, getFpSiteIndex(G))) {
+        return false;
+    }
+    return true;
+}
+
 function resolveDnfTargets(G: GameState, target: string[][]): CardState[] {
     const matches: CardState[] = [];
     forEachInPlayCard(G, (card) => {
-        if (cardMatchesTarget(card, target)) matches.push(card);
+        if (target.some((group) => cardMatchesGroupInPlay(G, card, group))) {
+            matches.push(card);
+        }
     });
     return matches;
 }

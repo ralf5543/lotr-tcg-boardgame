@@ -349,12 +349,12 @@ export const DevPanel: React.FC<DevPanelProps> = ({
                             <S.ActionButton
                                 onClick={() =>
                                     moves.devLoadPreset?.(
-                                        'RANGERS_HALBARAD_HEAL'
+                                        'RANGERS_WHAT_ARE_THEY'
                                     )
                                 }
-                                title="Halbarad : début manœuvre, défausse Gondor → soin"
+                                title="Que Sont-Ils ? : spot rôdeur → défausse séide errant"
                             >
-                                Halbarad soin
+                                Que Sont-Ils ?
                             </S.ActionButton>
                         </S.ButtonGroup>
                     </S.Section>

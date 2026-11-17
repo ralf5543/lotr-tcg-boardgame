@@ -141,32 +141,32 @@ export const applyDevPreset = (
     if (!fpPlayer) return { startPhase: 'startOfFellowship' };
 
     switch (presetType) {
-        case 'RANGERS_HALBARAD_HEAL': {
-            // Début de manœuvre : défausse Gondor → soigne un compagnon Gondor.
+        case 'RANGERS_WHAT_ARE_THEY': {
+            // Manœuvre : spot rôdeur → défausser un séide errant (pas le non-errant).
             resetBoardForPreset(G);
             setupDevPath(G, 0, RANGERS_PATH);
             fpPlayer.burdens = 0;
             const frodo = {
-                ...clonePresetCard('11S164', 'dev-hh-frodo'),
-                attachments: [clonePresetCard('4R1', 'dev-hh-ring')],
+                ...clonePresetCard('11S164', 'dev-wat-frodo'),
+                attachments: [clonePresetCard('4R1', 'dev-wat-ring')],
             };
-            const ranger = {
-                ...clonePresetCard('7C116', 'dev-hh-ranger'),
-                wounds: 1,
-            };
-            const halbarad = {
-                ...clonePresetCard('14R9', 'dev-hh-halbarad'),
-                wounds: 1,
-            };
-            fpPlayer.fellowshipArea = [frodo, ranger, halbarad];
-            // 1 Gondor en main (à défausser) + 1 non-Gondor (ne doit pas être cible).
-            fpPlayer.hand = [
-                clonePresetCard('1C106', 'dev-hh-gondor-hand'),
-                clonePresetCard('11C168', 'dev-hh-merry-hand'),
+            const ranger = clonePresetCard('7C116', 'dev-wat-ranger');
+            fpPlayer.fellowshipArea = [frodo, ranger];
+            fpPlayer.hand = [clonePresetCard('1C119', 'dev-wat-event')];
+            // Site 1 : home 4 = errant, home 1 = non-errant.
+            G.battlefield = [
+                {
+                    ...clonePresetCard('4C252', 'dev-wat-roaming'),
+                    minionSiteNumber: 4,
+                },
+                {
+                    ...clonePresetCard('5C74', 'dev-wat-home'),
+                    minionSiteNumber: 1,
+                },
             ];
             G.statusMessage =
-                '[DEV] Halbarad soin · Début de manœuvre : Activer sur Halbarad → défausser la carte Gondor en main (pas Merry) → désigner un compagnon Gondor blessé (Rôdeur / Halbarad). Relancer le preset.';
-            return { startPhase: 'startOfManeuver' };
+                '[DEV] Que Sont-Ils ? · Manœuvre : jouer l’événement → seul le séide errant (home 4) est ciblable, pas le home 1. Relancer le preset.';
+            return { startPhase: 'maneuver' };
         }
 
         default:
