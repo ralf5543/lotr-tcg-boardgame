@@ -127,6 +127,12 @@ export function abilityMatchesTrigger(
 
     if (event.type === 'WINS_SKIRMISH') {
         if (ability.trigger.type !== 'WINS_SKIRMISH') return false;
+        if (
+            ability.trigger.byOverwhelm &&
+            !event.byOverwhelm
+        ) {
+            return false;
+        }
         if (resolveWinnerTargets(G, source, ability).length === 0) {
             return false;
         }
@@ -972,6 +978,7 @@ export function tryOpenWinsSkirmish(G: GameState): 'APPLIED' | 'WAITING' {
         type: 'WINS_SKIRMISH',
         winnerIds: pending.winnerIds,
         skirmishId: pending.skirmishId,
+        ...(pending.byOverwhelm ? { byOverwhelm: true } : {}),
     };
 
     autoResolveMandatoryResponses(G);

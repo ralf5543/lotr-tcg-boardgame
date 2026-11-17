@@ -176,6 +176,9 @@ export const resolveSkirmish = (G: GameState, _ctx?: Ctx) => {
             minionsStrength > 0
                 ? companionStrength >= 2 * minionsStrength
                 : companionStrength > 0;
+        if (G.pendingWinsSkirmish) {
+            G.pendingWinsSkirmish.byOverwhelm = isMinionsOverwhelmed;
+        }
 
         const woundsToApply = 1 + getDamageBonus(companion, G);
 
@@ -216,6 +219,9 @@ export const resolveSkirmish = (G: GameState, _ctx?: Ctx) => {
                 ? minionsStrength >=
                   companionOverwhelmFactor * companionStrength
                 : minionsStrength > 0;
+        if (G.pendingWinsSkirmish) {
+            G.pendingWinsSkirmish.byOverwhelm = isCompanionOverwhelmed;
+        }
 
         if (isCompanionOverwhelmed) {
             applyOverwhelmAndCheckDeath(G, companion);

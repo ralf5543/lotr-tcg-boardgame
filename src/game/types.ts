@@ -1377,6 +1377,8 @@ export type AbilityTrigger =
           type: 'WINS_SKIRMISH';
           winner: AbilityTargetRef;
           yours?: boolean;
+          /** « … overwhelms a character » — victoire par submersion seulement. */
+          byOverwhelm?: boolean;
       }
     | {
           type: 'LOSES_SKIRMISH';
@@ -1895,6 +1897,8 @@ export interface PendingTakesWoundEvent {
 export interface PendingWinsSkirmish {
     winnerIds: string[];
     skirmishId: string;
+    /** Au moins un perdant a été submergé dans cette résolution. */
+    byOverwhelm?: boolean;
 }
 
 export interface PendingWinsSkirmishEvent extends PendingWinsSkirmish {

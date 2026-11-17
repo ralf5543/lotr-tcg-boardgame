@@ -61853,6 +61853,29 @@
         "SOUTHRON"
       ]
     ],
+    "abilities": [
+      {
+        "id": "5R78:0",
+        "phases": [
+          "RESPONSE"
+        ],
+        "trigger": {
+          "type": "WINS_SKIRMISH",
+          "winner": "BEARER",
+          "byOverwhelm": true
+        },
+        "optional": true,
+        "cost": [],
+        "effects": [
+          {
+            "type": "ADD_TWILIGHT",
+            "count": 5
+          }
+        ],
+        "source": "ATTACHMENT",
+        "text": "Each time bearer overwhelms a character, you may add twilight5."
+      }
+    ],
     "culture": "RAIDER",
     "twilightCost": 3,
     "strength": 4,

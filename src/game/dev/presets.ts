@@ -141,35 +141,34 @@ export const applyDevPreset = (
     if (!fpPlayer) return { startPhase: 'startOfFellowship' };
 
     switch (presetType) {
-        case 'RANGERS_MUMAK': {
-            // Escarmouche Ombre : Mûmak sur Suderon vs rôdeur (pas le Porteur —
-            // sinon submersion = fin de partie avant la réponse).
+        case 'RANGERS_WAR_MUMAK': {
+            // Submersion vs rôdeur (pas le Porteur) → réponse +5 crépuscule.
             resetBoardForPreset(G);
             setupDevPath(G, 0, RANGERS_PATH);
             G.twilightPool = 1;
             fpPlayer.burdens = 0;
             const frodo = {
-                ...clonePresetCard('11S164', 'dev-mm-frodo'),
-                attachments: [clonePresetCard('4R1', 'dev-mm-ring')],
+                ...clonePresetCard('11S164', 'dev-wm-frodo'),
+                attachments: [clonePresetCard('4R1', 'dev-wm-ring')],
             };
-            const ranger = clonePresetCard('7C116', 'dev-mm-ranger');
+            const ranger = clonePresetCard('7C116', 'dev-wm-ranger');
             fpPlayer.fellowshipArea = [frodo, ranger];
             const raider = {
-                ...clonePresetCard('4U249', 'dev-mm-raider'),
+                ...clonePresetCard('4U249', 'dev-wm-raider'),
                 minionSiteNumber: 4,
-                attachments: [clonePresetCard('5C73', 'dev-mm-mumak')],
+                attachments: [clonePresetCard('5R78', 'dev-wm-mumak')],
             };
             G.battlefield = [raider];
             G.skirmishes = [
                 {
-                    id: 'dev-mm-sk',
-                    companionId: 'dev-mm-ranger',
-                    minionIds: ['dev-mm-raider'],
+                    id: 'dev-wm-sk',
+                    companionId: 'dev-wm-ranger',
+                    minionIds: ['dev-wm-raider'],
                 },
             ];
-            G.activeSkirmishId = 'dev-mm-sk';
+            G.activeSkirmishId = 'dev-wm-sk';
             G.statusMessage =
-                '[DEV] Mûmak · Escarmouche : passer les actions → résoudre (Suderon gagne vs rôdeur) → activer la réponse Mûmak pour +2 crépuscule (ou passer). Relancer le preset.';
+                '[DEV] Mûmak de Guerre · Escarmouche : passer → résoudre (submersion du rôdeur) → activer la réponse pour +5 crépuscule (ou passer). Relancer le preset.';
             return { startPhase: 'skirmish' };
         }
 
