@@ -5573,6 +5573,51 @@ function parseWhileSpotMinStrengthAbilities(
 }
 
 /**
+ * While you can spot [classe], this minion/companion’s twilight cost is –N.
+ * (Southron Traveler…) — passif SELF lu aussi depuis la main.
+ */
+function parseWhileSpotTwilightCostAbilities(
+    text: string,
+    cardTitle?: string,
+    cardId?: string
+): Record<string, unknown>[] {
+    const found: Record<string, unknown>[] = [];
+    const re =
+        /While you can spot ((?:a|an|\d+) [^,.]+),\s*([^,]+?)[\u2019']s twilight cost is\s*[\u2013\-\u2212](\d+)\.?/gi;
+    let match: RegExpExecArray | null;
+    while ((match = re.exec(text)) !== null) {
+        if (/twilight tokens?/i.test(match[1])) continue;
+        const spot = parseWhileSpotSubject(match[1]);
+        if (!spot) continue;
+        const who = parseWhileStrengthWho(match[2], cardTitle);
+        if (!who || who === 'BEARER') continue;
+        const amount = parseInt(match[3], 10);
+        if (!Number.isFinite(amount) || amount <= 0) continue;
+
+        found.push({
+            id: `${cardId || 'ability'}:${found.length}:while-spot-twilight-cost`,
+            phases: [],
+            trigger: {
+                type: 'WHILE',
+                spot: [{ count: spot.count, target: spot.target }],
+            },
+            cost: [],
+            effects: [
+                {
+                    type: 'MODIFY_STAT',
+                    stat: 'TWILIGHT_COST',
+                    value: -amount,
+                    target: 'SELF',
+                },
+            ],
+            source: 'SELF',
+            text: stripAbilityMarkup(match[0]),
+        });
+    }
+    return found;
+}
+
+/**
  * While you can spot [classe|crépuscule], [self/bearer] is strength ±N.
  * Passif uniquement — refuse each / and fierce / for each / etc.
  */
@@ -18760,6 +18805,15 @@ export function parseAbilities(
     });
 
     parseWhileSpotWoundLimitAbilities(text, cardTitle, cardId).forEach(
+        (ability) => {
+            abilities.push({
+                ...ability,
+                id: `${cardId || 'ability'}:${abilities.length}`,
+            });
+        }
+    );
+
+    parseWhileSpotTwilightCostAbilities(text, cardTitle, cardId).forEach(
         (ability) => {
             abilities.push({
                 ...ability,

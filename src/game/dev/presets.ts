@@ -141,35 +141,31 @@ export const applyDevPreset = (
     if (!fpPlayer) return { startPhase: 'startOfFellowship' };
 
     switch (presetType) {
-        case 'RANGERS_WAR_MUMAK': {
-            // Submersion vs rôdeur (pas le Porteur) → réponse +5 crépuscule.
+        case 'RANGERS_SOUTHRON_WALKER': {
+            // Ombre au site 4 (hors errance) : Éclaireur en jeu → Marcheur à 2 (pas 4).
             resetBoardForPreset(G);
-            setupDevPath(G, 0, RANGERS_PATH);
-            G.twilightPool = 1;
+            setupDevPath(G, 3, RANGERS_PATH);
+            G.twilightPool = 2;
             fpPlayer.burdens = 0;
             const frodo = {
-                ...clonePresetCard('11S164', 'dev-wm-frodo'),
-                attachments: [clonePresetCard('4R1', 'dev-wm-ring')],
+                ...clonePresetCard('11S164', 'dev-sw-frodo'),
+                attachments: [clonePresetCard('4R1', 'dev-sw-ring')],
             };
-            const ranger = clonePresetCard('7C116', 'dev-wm-ranger');
-            fpPlayer.fellowshipArea = [frodo, ranger];
-            const raider = {
-                ...clonePresetCard('4U249', 'dev-wm-raider'),
+            fpPlayer.fellowshipArea = [frodo];
+            const scout = {
+                ...clonePresetCard('4C252', 'dev-sw-scout'),
                 minionSiteNumber: 4,
-                attachments: [clonePresetCard('5R78', 'dev-wm-mumak')],
             };
-            G.battlefield = [raider];
-            G.skirmishes = [
-                {
-                    id: 'dev-wm-sk',
-                    companionId: 'dev-wm-ranger',
-                    minionIds: ['dev-wm-raider'],
-                },
-            ];
-            G.activeSkirmishId = 'dev-wm-sk';
+            const walker = clonePresetCard('5C74', 'dev-sw-walker');
+            const shadowId = fpId === '0' ? '1' : '0';
+            const shadow = G.players[shadowId];
+            if (shadow) {
+                shadow.hand = [walker];
+            }
+            G.battlefield = [scout];
             G.statusMessage =
-                '[DEV] Mûmak de Guerre · Escarmouche : passer → résoudre (submersion du rôdeur) → activer la réponse pour +5 crépuscule (ou passer). Relancer le preset.';
-            return { startPhase: 'skirmish' };
+                '[DEV] Marcheur Suderon · Ombre (site 4) : avec l’Éclaireur en jeu, jouer le Marcheur pour 2 crépuscule (base 4 − 2). Relancer le preset.';
+            return { startPhase: 'shadow' };
         }
 
         default:

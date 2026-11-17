@@ -2479,6 +2479,37 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
+    "abilities": [
+      {
+        "id": "0P45:0",
+        "phases": [],
+        "trigger": {
+          "type": "WHILE",
+          "spot": [
+            {
+              "count": 1,
+              "target": [
+                [
+                  "ROHAN",
+                  "MAN"
+                ]
+              ]
+            }
+          ]
+        },
+        "cost": [],
+        "effects": [
+          {
+            "type": "MODIFY_STAT",
+            "stat": "TWILIGHT_COST",
+            "value": -1,
+            "target": "SELF"
+          }
+        ],
+        "source": "SELF",
+        "text": "While you can spot a rohan Man, Éomer’s twilight cost is -1."
+      }
+    ],
     "culture": "ROHAN",
     "race": "MAN",
     "signet": "THEODEN",
@@ -8329,6 +8360,37 @@
     "type": "COMPANION",
     "keywords": [
       "VALIANT"
+    ],
+    "abilities": [
+      {
+        "id": "7R227:0",
+        "phases": [],
+        "trigger": {
+          "type": "WHILE",
+          "spot": [
+            {
+              "count": 1,
+              "target": [
+                [
+                  "ROHAN",
+                  "MAN"
+                ]
+              ]
+            }
+          ]
+        },
+        "cost": [],
+        "effects": [
+          {
+            "type": "MODIFY_STAT",
+            "stat": "TWILIGHT_COST",
+            "value": -1,
+            "target": "SELF"
+          }
+        ],
+        "source": "SELF",
+        "text": "While you can spot a rohan Man, Éomer’s twilight cost is –1."
+      }
     ],
     "culture": "ROHAN",
     "race": "MAN",
@@ -55143,6 +55205,37 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
+    "abilities": [
+      {
+        "id": "4C266:0",
+        "phases": [],
+        "trigger": {
+          "type": "WHILE",
+          "spot": [
+            {
+              "count": 1,
+              "target": [
+                [
+                  "ROHAN",
+                  "MAN"
+                ]
+              ]
+            }
+          ]
+        },
+        "cost": [],
+        "effects": [
+          {
+            "type": "MODIFY_STAT",
+            "stat": "TWILIGHT_COST",
+            "value": -1,
+            "target": "SELF"
+          }
+        ],
+        "source": "SELF",
+        "text": "While you can spot a rohan Man, Éomer’s twilight cost is -1."
+      }
+    ],
     "culture": "ROHAN",
     "race": "MAN",
     "signet": "ARAGORN",
@@ -55190,6 +55283,37 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
+    "abilities": [
+      {
+        "id": "4R267:0",
+        "phases": [],
+        "trigger": {
+          "type": "WHILE",
+          "spot": [
+            {
+              "count": 1,
+              "target": [
+                [
+                  "ROHAN",
+                  "MAN"
+                ]
+              ]
+            }
+          ]
+        },
+        "cost": [],
+        "effects": [
+          {
+            "type": "MODIFY_STAT",
+            "stat": "TWILIGHT_COST",
+            "value": -1,
+            "target": "SELF"
+          }
+        ],
+        "source": "SELF",
+        "text": "While you can spot a rohan Man, Éomer’s twilight cost is -1."
+      }
+    ],
     "culture": "ROHAN",
     "race": "MAN",
     "signet": "THEODEN",
@@ -61628,6 +61752,36 @@
       "AMBUSH 2",
       "SOUTHRON"
     ],
+    "abilities": [
+      {
+        "id": "5C74:0",
+        "phases": [],
+        "trigger": {
+          "type": "WHILE",
+          "spot": [
+            {
+              "count": 1,
+              "target": [
+                [
+                  "SOUTHRON"
+                ]
+              ]
+            }
+          ]
+        },
+        "cost": [],
+        "effects": [
+          {
+            "type": "MODIFY_STAT",
+            "stat": "TWILIGHT_COST",
+            "value": -2,
+            "target": "SELF"
+          }
+        ],
+        "source": "SELF",
+        "text": "While you can spot a Southron, this minion’s twilight cost is -2."
+      }
+    ],
     "culture": "RAIDER",
     "race": "MAN",
     "twilightCost": 4,
@@ -61673,6 +61827,36 @@
     "keywords": [
       "AMBUSH 2",
       "SOUTHRON"
+    ],
+    "abilities": [
+      {
+        "id": "5C75:0",
+        "phases": [],
+        "trigger": {
+          "type": "WHILE",
+          "spot": [
+            {
+              "count": 1,
+              "target": [
+                [
+                  "SOUTHRON"
+                ]
+              ]
+            }
+          ]
+        },
+        "cost": [],
+        "effects": [
+          {
+            "type": "MODIFY_STAT",
+            "stat": "TWILIGHT_COST",
+            "value": -2,
+            "target": "SELF"
+          }
+        ],
+        "source": "SELF",
+        "text": "While you can spot a Southron, this minion’s twilight cost is -2."
+      }
     ],
     "culture": "RAIDER",
     "race": "MAN",
@@ -68790,6 +68974,37 @@
     "keywords": [
       "VALIANT"
     ],
+    "abilities": [
+      {
+        "id": "6R92:0",
+        "phases": [],
+        "trigger": {
+          "type": "WHILE",
+          "spot": [
+            {
+              "count": 1,
+              "target": [
+                [
+                  "ROHAN",
+                  "MAN"
+                ]
+              ]
+            }
+          ]
+        },
+        "cost": [],
+        "effects": [
+          {
+            "type": "MODIFY_STAT",
+            "stat": "TWILIGHT_COST",
+            "value": -1,
+            "target": "SELF"
+          }
+        ],
+        "source": "SELF",
+        "text": "While you can spot a rohan Man, Éomer’s twilight cost is –1."
+      }
+    ],
     "culture": "ROHAN",
     "race": "MAN",
     "signet": "GANDALF",
@@ -69384,6 +69599,34 @@
         ],
         "source": "SELF",
         "text": ". For each other sauron minion you can spot, this minion is strength +1."
+      },
+      {
+        "id": "6R103:1",
+        "phases": [],
+        "trigger": {
+          "type": "WHILE",
+          "spot": [
+            {
+              "count": 1,
+              "target": [
+                [
+                  "TROLL"
+                ]
+              ]
+            }
+          ]
+        },
+        "cost": [],
+        "effects": [
+          {
+            "type": "MODIFY_STAT",
+            "stat": "TWILIGHT_COST",
+            "value": -4,
+            "target": "SELF"
+          }
+        ],
+        "source": "SELF",
+        "text": "While you can spot a Troll, Gate Troll’s twilight cost is –4."
       }
     ],
     "culture": "SAURON",
@@ -69511,6 +69754,36 @@
     "type": "MINION",
     "keywords": [
       "FIERCE"
+    ],
+    "abilities": [
+      {
+        "id": "6R106:0",
+        "phases": [],
+        "trigger": {
+          "type": "WHILE",
+          "spot": [
+            {
+              "count": 1,
+              "target": [
+                [
+                  "TROLL"
+                ]
+              ]
+            }
+          ]
+        },
+        "cost": [],
+        "effects": [
+          {
+            "type": "MODIFY_STAT",
+            "stat": "TWILIGHT_COST",
+            "value": -4,
+            "target": "SELF"
+          }
+        ],
+        "source": "SELF",
+        "text": "While you can spot a Troll, this minion’s twilight cost is –4."
+      }
     ],
     "culture": "SAURON",
     "race": "TROLL",
@@ -70405,6 +70678,34 @@
         ],
         "source": "SELF",
         "text": ". For each other sauron minion you can spot, this minion is strength +1."
+      },
+      {
+        "id": "6R128:1",
+        "phases": [],
+        "trigger": {
+          "type": "WHILE",
+          "spot": [
+            {
+              "count": 1,
+              "target": [
+                [
+                  "TROLL"
+                ]
+              ]
+            }
+          ]
+        },
+        "cost": [],
+        "effects": [
+          {
+            "type": "MODIFY_STAT",
+            "stat": "TWILIGHT_COST",
+            "value": -4,
+            "target": "SELF"
+          }
+        ],
+        "source": "SELF",
+        "text": "While you can spot a Troll, Gate Troll’s twilight cost is –4."
       }
     ],
     "culture": "SAURON",
@@ -82532,6 +82833,37 @@
     "keywords": [
       "VALIANT"
     ],
+    "abilities": [
+      {
+        "id": "7U254:0",
+        "phases": [],
+        "trigger": {
+          "type": "WHILE",
+          "spot": [
+            {
+              "count": 1,
+              "target": [
+                [
+                  "ROHAN",
+                  "MAN"
+                ]
+              ]
+            }
+          ]
+        },
+        "cost": [],
+        "effects": [
+          {
+            "type": "MODIFY_STAT",
+            "stat": "TWILIGHT_COST",
+            "value": -1,
+            "target": "SELF"
+          }
+        ],
+        "source": "SELF",
+        "text": "While you can spot a rohan Man, Théoden’s twilight cost is –1."
+      }
+    ],
     "culture": "ROHAN",
     "race": "MAN",
     "signet": "THEODEN",
@@ -82575,6 +82907,37 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
+    "abilities": [
+      {
+        "id": "7R255:0",
+        "phases": [],
+        "trigger": {
+          "type": "WHILE",
+          "spot": [
+            {
+              "count": 1,
+              "target": [
+                [
+                  "ROHAN",
+                  "MAN"
+                ]
+              ]
+            }
+          ]
+        },
+        "cost": [],
+        "effects": [
+          {
+            "type": "MODIFY_STAT",
+            "stat": "TWILIGHT_COST",
+            "value": -1,
+            "target": "SELF"
+          }
+        ],
+        "source": "SELF",
+        "text": "While you can spot a rohan Man, Théoden’s twilight cost is –1."
+      }
+    ],
     "culture": "ROHAN",
     "race": "MAN",
     "signet": "GANDALF",
@@ -86325,6 +86688,37 @@
     "type": "COMPANION",
     "keywords": [
       "VALIANT"
+    ],
+    "abilities": [
+      {
+        "id": "7P365:0",
+        "phases": [],
+        "trigger": {
+          "type": "WHILE",
+          "spot": [
+            {
+              "count": 1,
+              "target": [
+                [
+                  "ROHAN",
+                  "MAN"
+                ]
+              ]
+            }
+          ]
+        },
+        "cost": [],
+        "effects": [
+          {
+            "type": "MODIFY_STAT",
+            "stat": "TWILIGHT_COST",
+            "value": -1,
+            "target": "SELF"
+          }
+        ],
+        "source": "SELF",
+        "text": "While you can spot a rohan Man, Éomer’s twilight cost is –1."
+      }
     ],
     "culture": "ROHAN",
     "race": "MAN",
@@ -90376,6 +90770,37 @@
     "type": "COMPANION",
     "keywords": [
       "VALIANT"
+    ],
+    "abilities": [
+      {
+        "id": "8R92:0",
+        "phases": [],
+        "trigger": {
+          "type": "WHILE",
+          "spot": [
+            {
+              "count": 1,
+              "target": [
+                [
+                  "ROHAN",
+                  "MAN"
+                ]
+              ]
+            }
+          ]
+        },
+        "cost": [],
+        "effects": [
+          {
+            "type": "MODIFY_STAT",
+            "stat": "TWILIGHT_COST",
+            "value": -1,
+            "target": "SELF"
+          }
+        ],
+        "source": "SELF",
+        "text": "While you can spot a rohan Man, Théoden’s twilight cost is –1."
+      }
     ],
     "culture": "ROHAN",
     "race": "MAN",
@@ -107783,6 +108208,37 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
+    "abilities": [
+      {
+        "id": "11U145:0",
+        "phases": [],
+        "trigger": {
+          "type": "WHILE",
+          "spot": [
+            {
+              "count": 1,
+              "target": [
+                [
+                  "ROHAN",
+                  "MAN"
+                ]
+              ]
+            }
+          ]
+        },
+        "cost": [],
+        "effects": [
+          {
+            "type": "MODIFY_STAT",
+            "stat": "TWILIGHT_COST",
+            "value": -1,
+            "target": "SELF"
+          }
+        ],
+        "source": "SELF",
+        "text": "While you can spot a rohan Man, Éomer's twilight cost is –1."
+      }
+    ],
     "culture": "ROHAN",
     "race": "MAN",
     "twilightCost": 3,
@@ -117239,6 +117695,37 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
+    "abilities": [
+      {
+        "id": "12U112:0",
+        "phases": [],
+        "trigger": {
+          "type": "WHILE",
+          "spot": [
+            {
+              "count": 1,
+              "target": [
+                [
+                  "ROHAN",
+                  "MAN"
+                ]
+              ]
+            }
+          ]
+        },
+        "cost": [],
+        "effects": [
+          {
+            "type": "MODIFY_STAT",
+            "stat": "TWILIGHT_COST",
+            "value": -1,
+            "target": "SELF"
+          }
+        ],
+        "source": "SELF",
+        "text": "While you can spot a rohan Man, Éomer’s twilight cost is –1."
+      }
+    ],
     "culture": "ROHAN",
     "race": "MAN",
     "twilightCost": 3,
@@ -138376,6 +138863,37 @@
       "VALIANT",
       "HUNTER 2"
     ],
+    "abilities": [
+      {
+        "id": "15R123:0",
+        "phases": [],
+        "trigger": {
+          "type": "WHILE",
+          "spot": [
+            {
+              "count": 1,
+              "target": [
+                [
+                  "ROHAN",
+                  "MAN"
+                ]
+              ]
+            }
+          ]
+        },
+        "cost": [],
+        "effects": [
+          {
+            "type": "MODIFY_STAT",
+            "stat": "TWILIGHT_COST",
+            "value": -1,
+            "target": "SELF"
+          }
+        ],
+        "source": "SELF",
+        "text": "While you can spot a rohan Man, Éomer’s twilight cost is -1."
+      }
+    ],
     "culture": "ROHAN",
     "race": "MAN",
     "twilightCost": 3,
@@ -138836,6 +139354,37 @@
     "isUnique": false,
     "kind": "FREE_PEOPLE",
     "type": "COMPANION",
+    "abilities": [
+      {
+        "id": "15C130:0",
+        "phases": [],
+        "trigger": {
+          "type": "WHILE",
+          "spot": [
+            {
+              "count": 1,
+              "target": [
+                [
+                  "VALIANT",
+                  "MAN"
+                ]
+              ]
+            }
+          ]
+        },
+        "cost": [],
+        "effects": [
+          {
+            "type": "MODIFY_STAT",
+            "stat": "TWILIGHT_COST",
+            "value": -1,
+            "target": "SELF"
+          }
+        ],
+        "source": "SELF",
+        "text": "While you can spot a valiant Man, this companion’s twilight cost is -1."
+      }
+    ],
     "culture": "ROHAN",
     "race": "MAN",
     "twilightCost": 3,
@@ -139267,6 +139816,35 @@
         ],
         "source": "SELF",
         "text": ". This companion is strength +1 for each hunter minion you can spot."
+      },
+      {
+        "id": "15S138:1",
+        "phases": [],
+        "trigger": {
+          "type": "WHILE",
+          "spot": [
+            {
+              "count": 1,
+              "target": [
+                [
+                  "ROHAN",
+                  "MAN"
+                ]
+              ]
+            }
+          ]
+        },
+        "cost": [],
+        "effects": [
+          {
+            "type": "MODIFY_STAT",
+            "stat": "TWILIGHT_COST",
+            "value": -1,
+            "target": "SELF"
+          }
+        ],
+        "source": "SELF",
+        "text": "While you can spot a rohan Man, this companion’s twilight cost is -1."
       }
     ],
     "culture": "ROHAN",
@@ -142172,6 +142750,37 @@
     "keywords": [
       "VALIANT",
       "HUNTER 2"
+    ],
+    "abilities": [
+      {
+        "id": "15O200:0",
+        "phases": [],
+        "trigger": {
+          "type": "WHILE",
+          "spot": [
+            {
+              "count": 1,
+              "target": [
+                [
+                  "ROHAN",
+                  "MAN"
+                ]
+              ]
+            }
+          ]
+        },
+        "cost": [],
+        "effects": [
+          {
+            "type": "MODIFY_STAT",
+            "stat": "TWILIGHT_COST",
+            "value": -1,
+            "target": "SELF"
+          }
+        ],
+        "source": "SELF",
+        "text": "While you can spot a rohan Man, Éomer’s twilight cost is -1."
+      }
     ],
     "culture": "ROHAN",
     "race": "MAN",

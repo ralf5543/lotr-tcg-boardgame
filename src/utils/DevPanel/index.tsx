@@ -349,12 +349,12 @@ export const DevPanel: React.FC<DevPanelProps> = ({
                             <S.ActionButton
                                 onClick={() =>
                                     moves.devLoadPreset?.(
-                                        'RANGERS_WAR_MUMAK'
+                                        'RANGERS_SOUTHRON_WALKER'
                                     )
                                 }
-                                title="Mûmak de Guerre : submersion → option +5 crépuscule"
+                                title="Marcheur Suderon : spot Suderon → coût –2"
                             >
-                                Mûmak de Guerre
+                                Marcheur Suderon
                             </S.ActionButton>
                         </S.ButtonGroup>
                     </S.Section>
