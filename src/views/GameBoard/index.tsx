@@ -3000,6 +3000,64 @@ export const GameBoard: React.FC<GameBoardProps> = ({
                         card,
                         eventAbility
                     );
+                    // Coût à désigner + effet (Vengeance de Gondor…) : halo coût
+                    // puis effet — avant le raccourci « 1 cible d’effet seule ».
+                    if (
+                        abilityNeedsCostDesignation(G, card, eventAbility) &&
+                        abilityNeedsEffectDesignation(G, card, eventAbility) &&
+                        !costAndEffectShareHandDesignation(eventAbility)
+                    ) {
+                        if (
+                            requestDesignation(
+                                card,
+                                eventAbility,
+                                (costId) => {
+                                    if (effectNeed > 1) {
+                                        if (
+                                            !requestMultiEffectDesignation(
+                                                card,
+                                                eventAbility,
+                                                effectNeed,
+                                                (effectIds) => {
+                                                    finishEventPlay(
+                                                        [costId, ...effectIds],
+                                                        toilIds
+                                                    );
+                                                }
+                                            )
+                                        ) {
+                                            console.warn(
+                                                `❌ Impossible de désigner ${effectNeed} cibles.`
+                                            );
+                                        }
+                                        return;
+                                    }
+                                    requestDesignation(
+                                        card,
+                                        eventAbility,
+                                        (effectId) => {
+                                            finishEventPlay(
+                                                [costId, effectId],
+                                                toilIds
+                                            );
+                                        },
+                                        index,
+                                        'effect',
+                                        // Défausse / soin : pas de flèche
+                                        abilityEffectWantsTargetingArrow(
+                                            eventAbility
+                                        )
+                                            ? costId
+                                            : undefined
+                                    );
+                                },
+                                index,
+                                'cost'
+                            )
+                        ) {
+                            return;
+                        }
+                    }
                     // Défausse ×N : autant que possible (min(N, dispo)).
                     // 0 dispo → jouer sans cible ; 1 → désignation simple ;
                     // 2+ jusqu’au plafond → multi.
@@ -3050,34 +3108,6 @@ export const GameBoard: React.FC<GameBoardProps> = ({
                         )
                     ) {
                         finishEventPlay(undefined, toilIds);
-                        return;
-                    }
-                    if (
-                        abilityNeedsCostDesignation(G, card, eventAbility) &&
-                        abilityNeedsEffectDesignation(G, card, eventAbility) &&
-                        !costAndEffectShareHandDesignation(eventAbility) &&
-                        requestDesignation(
-                            card,
-                            eventAbility,
-                            (costId) => {
-                                requestDesignation(
-                                    card,
-                                    eventAbility,
-                                    (effectId) => {
-                                        finishEventPlay(
-                                            [costId, effectId],
-                                            toilIds
-                                        );
-                                    },
-                                    index,
-                                    'effect',
-                                    costId
-                                );
-                            },
-                            index,
-                            'cost'
-                        )
-                    ) {
                         return;
                     }
                     if (
