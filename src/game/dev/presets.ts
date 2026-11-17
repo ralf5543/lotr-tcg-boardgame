@@ -141,31 +141,31 @@ export const applyDevPreset = (
     if (!fpPlayer) return { startPhase: 'startOfFellowship' };
 
     switch (presetType) {
-        case 'RANGERS_GONDORS_VENGEANCE': {
-            // Ralliement : affaiblir un rôdeur → défausser un séide (double halo).
+        case 'RANGERS_PURSUIT_JUST_BEHIND': {
+            // Ralliement : affaiblir un rôdeur → blesser tous les séides (pas de 2ᵉ halo).
             resetBoardForPreset(G);
             setupDevPath(G, 0, RANGERS_PATH);
             fpPlayer.burdens = 0;
             const frodo = {
-                ...clonePresetCard('11S164', 'dev-gv-frodo'),
-                attachments: [clonePresetCard('4R1', 'dev-gv-ring')],
+                ...clonePresetCard('11S164', 'dev-pjb-frodo'),
+                attachments: [clonePresetCard('4R1', 'dev-pjb-ring')],
             };
-            const ranger = clonePresetCard('7C116', 'dev-gv-ranger');
-            const halbarad = clonePresetCard('14R9', 'dev-gv-halbarad');
+            const ranger = clonePresetCard('7C116', 'dev-pjb-ranger');
+            const halbarad = clonePresetCard('14R9', 'dev-pjb-halbarad');
             fpPlayer.fellowshipArea = [frodo, ranger, halbarad];
-            fpPlayer.hand = [clonePresetCard('1C106', 'dev-gv-event')];
+            fpPlayer.hand = [clonePresetCard('1R111', 'dev-pjb-event')];
             G.battlefield = [
                 {
-                    ...clonePresetCard('4C252', 'dev-gv-minion-a'),
+                    ...clonePresetCard('4C252', 'dev-pjb-minion-a'),
                     minionSiteNumber: 4,
                 },
                 {
-                    ...clonePresetCard('5C74', 'dev-gv-minion-b'),
+                    ...clonePresetCard('5C74', 'dev-pjb-minion-b'),
                     minionSiteNumber: 4,
                 },
             ];
             G.statusMessage =
-                '[DEV] Vengeance de Gondor · Ralliement : jouer l’événement → halo rôdeur (coût) → halo séide (défausse). Relancer le preset.';
+                '[DEV] À leurs Trousses · Ralliement : jouer l’événement → halo rôdeur (coût) → les 2 séides prennent 1 blessure chacun (pas de 2ᵉ halo). Relancer le preset.';
             return { startPhase: 'regroup' };
         }
 

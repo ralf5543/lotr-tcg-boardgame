@@ -2995,6 +2995,16 @@ export const GameBoard: React.FC<GameBoardProps> = ({
                         finishEventPlay(undefined, toilIds);
                         return;
                     }
+                    const needsCost = abilityNeedsCostDesignation(
+                        G,
+                        card,
+                        eventAbility
+                    );
+                    const needsEffect = abilityNeedsEffectDesignation(
+                        G,
+                        card,
+                        eventAbility
+                    );
                     const effectNeed = getEffectDesignationCount(
                         G,
                         card,
@@ -3003,8 +3013,8 @@ export const GameBoard: React.FC<GameBoardProps> = ({
                     // Coût à désigner + effet (Vengeance de Gondor…) : halo coût
                     // puis effet — avant le raccourci « 1 cible d’effet seule ».
                     if (
-                        abilityNeedsCostDesignation(G, card, eventAbility) &&
-                        abilityNeedsEffectDesignation(G, card, eventAbility) &&
+                        needsCost &&
+                        needsEffect &&
                         !costAndEffectShareHandDesignation(eventAbility)
                     ) {
                         if (
@@ -3058,10 +3068,28 @@ export const GameBoard: React.FC<GameBoardProps> = ({
                             return;
                         }
                     }
+                    // Coût seul (À leurs Trousses : WOUND all…) : halo coût,
+                    // pas le raccourci « 1 cible d’effet » (effectNeed défaut).
+                    if (needsCost && !needsEffect) {
+                        if (
+                            requestDesignation(
+                                card,
+                                eventAbility,
+                                (costId) =>
+                                    finishEventPlay(costId, toilIds),
+                                index,
+                                'cost'
+                            )
+                        ) {
+                            return;
+                        }
+                        finishEventPlay(undefined, toilIds);
+                        return;
+                    }
                     // Défausse ×N : autant que possible (min(N, dispo)).
                     // 0 dispo → jouer sans cible ; 1 → désignation simple ;
                     // 2+ jusqu’au plafond → multi.
-                    if (effectNeed > 1) {
+                    if (needsEffect && effectNeed > 1) {
                         if (
                             !requestMultiEffectDesignation(
                                 card,
@@ -3081,7 +3109,7 @@ export const GameBoard: React.FC<GameBoardProps> = ({
                         }
                         return;
                     }
-                    if (effectNeed === 1) {
+                    if (needsEffect && effectNeed === 1) {
                         if (
                             requestDesignation(
                                 card,

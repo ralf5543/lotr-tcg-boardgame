@@ -18049,7 +18049,48 @@
     "isUnique": false,
     "kind": "FREE_PEOPLE",
     "type": "EVENT",
+    "abilities": [
+      {
+        "id": "1R111:0",
+        "phases": [
+          "REGROUP"
+        ],
+        "cost": [
+          {
+            "exert": [
+              {
+                "count": 1,
+                "target": [
+                  [
+                    "RANGER",
+                    "COMPANION"
+                  ]
+                ],
+                "mode": "DESIGNATION"
+              }
+            ]
+          }
+        ],
+        "effects": [
+          {
+            "type": "WOUND",
+            "count": 1,
+            "target": [
+              [
+                "MINION"
+              ]
+            ],
+            "all": true
+          }
+        ],
+        "source": "SELF",
+        "text": "REGROUP: Exert a ranger companion to wound every minion."
+      }
+    ],
     "phases": [
+      "REGROUP"
+    ],
+    "actionPhases": [
       "REGROUP"
     ],
     "culture": "GONDOR",
@@ -24052,7 +24093,49 @@
     "isUnique": false,
     "kind": "SHADOW",
     "type": "EVENT",
+    "abilities": [
+      {
+        "id": "1U223:0",
+        "phases": [
+          "MANEUVER"
+        ],
+        "cost": [
+          {
+            "exert": [
+              {
+                "count": 1,
+                "target": [
+                  [
+                    "NAZGÛL"
+                  ]
+                ],
+                "mode": "DESIGNATION"
+              }
+            ]
+          }
+        ],
+        "effects": [
+          {
+            "type": "WOUND",
+            "count": 1,
+            "target": [
+              [
+                "ARCHER",
+                "COMPANION"
+              ]
+            ],
+            "all": true
+          }
+        ],
+        "source": "SELF",
+        "text": "MANEUVER: Exert a Nazgûl to wound every archer companion.",
+        "textFr": "**Manœuvre :** Affaiblissez un Nazgûl pour blesser tous les compagnons archers."
+      }
+    ],
     "phases": [
+      "MANEUVER"
+    ],
+    "actionPhases": [
       "MANEUVER"
     ],
     "culture": "WRAITH",
@@ -24182,7 +24265,48 @@
     "isUnique": false,
     "kind": "SHADOW",
     "type": "EVENT",
+    "abilities": [
+      {
+        "id": "1U226:0",
+        "phases": [
+          "MANEUVER"
+        ],
+        "cost": [
+          {
+            "exert": [
+              {
+                "count": 1,
+                "target": [
+                  [
+                    "NAZGÛL"
+                  ]
+                ],
+                "mode": "DESIGNATION"
+              }
+            ]
+          }
+        ],
+        "effects": [
+          {
+            "type": "WOUND",
+            "count": 1,
+            "target": [
+              [
+                "ALLY"
+              ]
+            ],
+            "all": true
+          }
+        ],
+        "source": "SELF",
+        "text": "MANEUVER: Exert a Nazgûl to wound every ally.",
+        "textFr": "**Manœuvre :** Affaiblissez un Nazgûl pour blesser tous les alliés."
+      }
+    ],
     "phases": [
+      "MANEUVER"
+    ],
+    "actionPhases": [
       "MANEUVER"
     ],
     "culture": "WRAITH",
@@ -46964,7 +47088,51 @@
     "isUnique": false,
     "kind": "FREE_PEOPLE",
     "type": "EVENT",
+    "abilities": [
+      {
+        "id": "4U110:0",
+        "phases": [
+          "ARCHERY",
+          "SKIRMISH"
+        ],
+        "cost": [
+          {
+            "exert": [
+              {
+                "count": 2,
+                "target": [
+                  [
+                    "RING-BOUND",
+                    "MAN"
+                  ]
+                ],
+                "mode": "DESIGNATION"
+              }
+            ]
+          }
+        ],
+        "effects": [
+          {
+            "type": "WOUND",
+            "count": 1,
+            "target": [
+              [
+                "ROAMING",
+                "MINION"
+              ]
+            ],
+            "all": true
+          }
+        ],
+        "source": "SELF",
+        "text": "SKIRMISH: Exert 2 Ring-bound Men to wound each roaming minion."
+      }
+    ],
     "phases": [
+      "ARCHERY",
+      "SKIRMISH"
+    ],
+    "actionPhases": [
       "ARCHERY",
       "SKIRMISH"
     ],

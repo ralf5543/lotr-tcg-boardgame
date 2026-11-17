@@ -349,12 +349,12 @@ export const DevPanel: React.FC<DevPanelProps> = ({
                             <S.ActionButton
                                 onClick={() =>
                                     moves.devLoadPreset?.(
-                                        'RANGERS_GONDORS_VENGEANCE'
+                                        'RANGERS_PURSUIT_JUST_BEHIND'
                                     )
                                 }
-                                title="Vengeance de Gondor : affaiblir rôdeur → défausser séide"
+                                title="À leurs Trousses : affaiblir rôdeur → blesser tous les séides"
                             >
-                                Vengeance Gondor
+                                À leurs Trousses
                             </S.ActionButton>
                         </S.ButtonGroup>
                     </S.Section>

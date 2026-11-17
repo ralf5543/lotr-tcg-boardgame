@@ -755,7 +755,8 @@ export function getEffectDesignationCandidates(
         return opponents.filter((c) => canCardTakeWound(G, c));
     }
 
-    // DISCARD_ALL / EXERT all / HEAL all : pas de désignation — on applique tout d’un coup.
+    // DISCARD_ALL / EXERT all / HEAL all / WOUND all : pas de désignation —
+    // on applique tout d’un coup.
     // HEAL onePerCulture : désignation (1 compagnon blessé par culture).
     // DISCARD chooser FREE_PEOPLE : pending dédié (pas de halo Ombre).
     const effect = (ability.effects || []).find(
@@ -767,6 +768,7 @@ export function getEffectDesignationCandidates(
             item.type !== 'REVEAL_OPPONENT_TOP' &&
             !(item.type === 'EXERT' && item.all) &&
             !(item.type === 'HEAL' && item.all && !item.onePerCulture) &&
+            !(item.type === 'WOUND' && item.all) &&
             !(item.type === 'ADD_TEMP_STAT' && item.all) &&
             !(item.type === 'DISCARD' && item.chooser === 'FREE_PEOPLE') &&
             'target' in item &&
@@ -945,6 +947,19 @@ export function getEffectDesignationCount(
     source: CardState,
     ability: Ability
 ): number {
+    // Masse (WOUND/HEAL/EXERT all…) : pas de désignation d’effet.
+    if (
+        (ability.effects || []).some(
+            (item) =>
+                (item.type === 'WOUND' && item.all) ||
+                (item.type === 'HEAL' && item.all && !item.onePerCulture) ||
+                (item.type === 'EXERT' && item.all) ||
+                (item.type === 'ADD_TEMP_STAT' && item.all) ||
+                item.type === 'DISCARD_ALL'
+        )
+    ) {
+        return 0;
+    }
     const onePerCulture = (ability.effects || []).find(
         (item) => item.type === 'HEAL' && item.onePerCulture
     );
@@ -1492,6 +1507,9 @@ export function abilityHasLegalEffectTarget(
             continue;
         }
         if (effect.type === 'HEAL' && effect.all) {
+            continue;
+        }
+        if (effect.type === 'WOUND' && effect.all) {
             continue;
         }
         if (effect.type === 'ADD_TEMP_STAT' && effect.all) {

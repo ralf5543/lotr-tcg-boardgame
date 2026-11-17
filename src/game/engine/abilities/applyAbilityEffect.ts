@@ -544,6 +544,30 @@ export function applyAbilityEffect(
         }
 
         if (
+            effect.type === 'WOUND' &&
+            effect.all &&
+            Array.isArray(effect.target)
+        ) {
+            // À leurs Trousses / sites : blesser tous les matchs, pas de
+            // désignation. Aucun match = succès inerte.
+            const matches = resolveCostTarget(G, source, effect.target).filter(
+                (card) =>
+                    Boolean(card) &&
+                    !card.isDead &&
+                    canCardTakeWound(G, card) &&
+                    (!effect.excludeKeywords ||
+                        !effect.excludeKeywords.some((kw) =>
+                            (card.keywords || []).includes(kw)
+                        ))
+            );
+            const woundCount = effect.count || 1;
+            for (const card of matches) {
+                requestWounds(G, card, woundCount);
+            }
+            continue;
+        }
+
+        if (
             effect.type === 'HEAL' &&
             effect.onePerCulture &&
             Array.isArray(effect.target)

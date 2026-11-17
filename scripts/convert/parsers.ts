@@ -17737,6 +17737,7 @@ export function parseAbilities(
         let woundTarget: 'SELF' | 'BEARER' | 'SKIRMISHING' | string[][] | null =
             null;
         let skirmishMatch: string[][] | undefined;
+        let woundAll = false;
         if (skirmishingWound) {
             woundTarget = 'SKIRMISHING';
         } else if (skirmishingClassMatch) {
@@ -17767,11 +17768,22 @@ export function parseAbilities(
             woundTarget = 'SKIRMISHING';
             skirmishMatch = dnf;
         } else {
-            const woundArticle = woundClause.match(/^(a|an|the)\s+(.+)$/i);
-            if (!woundArticle) return;
-            const woundFilters = parseClassFilters(woundArticle[2]);
-            if (woundFilters.length === 0) return;
-            woundTarget = [woundFilters];
+            // « every / all / each minion » (À leurs Trousses…).
+            const woundEvery = woundClause.match(
+                /^(every|all|each)\s+(.+)$/i
+            );
+            if (woundEvery) {
+                const woundFilters = parseClassFilters(woundEvery[2]);
+                if (woundFilters.length === 0) return;
+                woundTarget = [woundFilters];
+                woundAll = true;
+            } else {
+                const woundArticle = woundClause.match(/^(a|an|the)\s+(.+)$/i);
+                if (!woundArticle) return;
+                const woundFilters = parseClassFilters(woundArticle[2]);
+                if (woundFilters.length === 0) return;
+                woundTarget = [woundFilters];
+            }
         }
 
         const omitFromArcheryTotal =
@@ -17805,6 +17817,7 @@ export function parseAbilities(
                     type: 'WOUND',
                     count: 1,
                     target: woundTarget,
+                    ...(woundAll ? { all: true } : {}),
                     ...(skirmishMatch ? { match: skirmishMatch } : {}),
                 },
             ],
