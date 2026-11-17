@@ -3442,6 +3442,47 @@ function parseEachTimeWinsAddThreatAbilities(
     return found;
 }
 
+/**
+ * Each time [winner] wins a skirmish, you may add twilightN.
+ * (Mûmak…)
+ */
+function parseEachTimeWinsAddTwilightAbilities(
+    text: string,
+    cardTitle?: string,
+    cardId?: string
+): Record<string, unknown>[] {
+    const found: Record<string, unknown>[] = [];
+    const re =
+        /Each time ([\s\S]+?) wins a skirmish,\s*(you may )?add\s*<symbol>twilight(\d+)<\/symbol>\.?/gi;
+    let match: RegExpExecArray | null;
+    while ((match = re.exec(text)) !== null) {
+        const winnerParsed = parseWinsSkirmishWinner(
+            match[1].trim(),
+            cardTitle
+        );
+        if (!winnerParsed) continue;
+        const twilight = parseInt(match[3], 10);
+        if (!Number.isFinite(twilight) || twilight <= 0) continue;
+        const optional = Boolean(match[2]);
+
+        found.push({
+            id: `${cardId || 'ability'}:${found.length}:each-time-win-add-twilight`,
+            phases: ['RESPONSE'],
+            trigger: {
+                type: 'WINS_SKIRMISH',
+                winner: winnerParsed.winner,
+                ...(winnerParsed.yours ? { yours: true } : {}),
+            },
+            ...(optional ? { optional: true } : {}),
+            cost: [],
+            effects: [{ type: 'ADD_TWILIGHT', count: twilight }],
+            source: winnerParsed.winner === 'BEARER' ? 'ATTACHMENT' : 'SELF',
+            text: stripAbilityMarkup(match[0]),
+        });
+    }
+    return found;
+}
+
 function parseEachTimeWinsDiscardSkirmishingAbilities(
     text: string,
     cardTitle?: string,
@@ -18490,6 +18531,15 @@ export function parseAbilities(
     );
 
     parseEachTimeWinsAddThreatAbilities(text, cardTitle, cardId).forEach(
+        (ability) => {
+            abilities.push({
+                ...ability,
+                id: `${cardId || 'ability'}:${abilities.length}`,
+            });
+        }
+    );
+
+    parseEachTimeWinsAddTwilightAbilities(text, cardTitle, cardId).forEach(
         (ability) => {
             abilities.push({
                 ...ability,

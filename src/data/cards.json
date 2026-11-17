@@ -61563,6 +61563,28 @@
         "SOUTHRON"
       ]
     ],
+    "abilities": [
+      {
+        "id": "5C73:0",
+        "phases": [
+          "RESPONSE"
+        ],
+        "trigger": {
+          "type": "WINS_SKIRMISH",
+          "winner": "BEARER"
+        },
+        "optional": true,
+        "cost": [],
+        "effects": [
+          {
+            "type": "ADD_TWILIGHT",
+            "count": 2
+          }
+        ],
+        "source": "ATTACHMENT",
+        "text": "Each time bearer wins a skirmish, you may add twilight2."
+      }
+    ],
     "culture": "RAIDER",
     "twilightCost": 2,
     "strength": 3,
@@ -61575,7 +61597,7 @@
       },
       "fr": {
         "title": "Mûmak",
-        "gameText": "Le détenteur doit être un Suderon. Le détenteur est **acharné.** \nChaque fois que le détenteur gagne un combat, vous pouvez ajouter <symbol><symbol>orc</symbol></symbol.",
+        "gameText": "Le détenteur doit être un Suderon. Le détenteur est **acharné.** \nChaque fois que le détenteur gagne un combat, vous pouvez ajouter <symbol>twilight2</symbol>.",
         "loreText": "... Sam vit une vaste forme sortir des arbres fracassés et se précipiter sur la pente."
       },
       "de": {
@@ -69072,6 +69094,28 @@
         "SAURON",
         "ORC"
       ]
+    ],
+    "abilities": [
+      {
+        "id": "6C98:0",
+        "phases": [
+          "RESPONSE"
+        ],
+        "trigger": {
+          "type": "WINS_SKIRMISH",
+          "winner": "BEARER"
+        },
+        "optional": true,
+        "cost": [],
+        "effects": [
+          {
+            "type": "ADD_TWILIGHT",
+            "count": 1
+          }
+        ],
+        "source": "ATTACHMENT",
+        "text": "Each time bearer wins a skirmish, you may add twilight1"
+      }
     ],
     "culture": "SAURON",
     "twilightCost": 0,
@@ -77327,6 +77371,28 @@
     "keywords": [
       "EASTERLING",
       "FIERCE"
+    ],
+    "abilities": [
+      {
+        "id": "7R145:0",
+        "phases": [
+          "RESPONSE"
+        ],
+        "trigger": {
+          "type": "WINS_SKIRMISH",
+          "winner": "SELF"
+        },
+        "optional": true,
+        "cost": [],
+        "effects": [
+          {
+            "type": "ADD_TWILIGHT",
+            "count": 1
+          }
+        ],
+        "source": "SELF",
+        "text": "Each time Easterling Regiment wins a skirmish, you may add twilight1"
+      }
     ],
     "culture": "RAIDER",
     "race": "MAN",

@@ -349,12 +349,12 @@ export const DevPanel: React.FC<DevPanelProps> = ({
                             <S.ActionButton
                                 onClick={() =>
                                     moves.devLoadPreset?.(
-                                        'RANGERS_RAIDER_SPEAR'
+                                        'RANGERS_MUMAK'
                                     )
                                 }
-                                title="Pertuisane de Pillard : affaiblir détenteur → +2 crépuscule"
+                                title="Mûmak : vainqueur → option +2 crépuscule"
                             >
-                                Pertuisane de Pillard
+                                Mûmak
                             </S.ActionButton>
                         </S.ButtonGroup>
                     </S.Section>
