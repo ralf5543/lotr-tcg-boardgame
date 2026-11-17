@@ -17334,6 +17334,42 @@ export function parseAbilities(
             return;
         }
 
+        // « Discard N cards from hand to exhaust a minion. » (Ranger of Osgiliath)
+        const discardHandExhaust = bodyPlain.match(
+            /^Discard\s+(\d+|a|one|two|three)\s+cards?\s+from hand\s+to exhaust\s+((?:a|an)\s+.+)$/i
+        );
+        if (discardHandExhaust) {
+            const discardCount = parseBurdenWord(discardHandExhaust[1]);
+            const exhaustRaw = discardHandExhaust[2]
+                .replace(/\.$/, '')
+                .trim();
+            const exhaustTarget = parseNounTarget(
+                exhaustRaw,
+                [['']],
+                cardTitle
+            );
+            if (discardCount && Array.isArray(exhaustTarget)) {
+                abilities.push({
+                    id: `${cardId || 'ability'}:${abilities.length}`,
+                    phases,
+                    cost: [{ discardFromHand: discardCount }],
+                    effects: [
+                        {
+                            type: 'EXHAUST',
+                            target: exhaustTarget,
+                        },
+                    ],
+                    source: 'SELF',
+                    text: `${marker.phase}: Discard ${discardCount} card${discardCount > 1 ? 's' : ''} from hand to exhaust ${exhaustRaw}`
+                        .replace(/<[^>]+>/g, '')
+                        .replace(/\s+/g, ' ')
+                        .replace(/\s+\./g, '.')
+                        .trim(),
+                });
+                return;
+            }
+        }
+
         // « Discard N cards from hand to make a Nazgûl strength +3. »
         const discardHandMake = bodyPlain.match(
             /^Discard\s+(\d+|a|one|two|three)\s+cards?\s+from hand\s+to make\s+((?:a|an)\s+.+)$/i

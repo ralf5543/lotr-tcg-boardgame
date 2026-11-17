@@ -75733,6 +75733,34 @@
     "keywords": [
       "RANGER"
     ],
+    "abilities": [
+      {
+        "id": "7C116:0",
+        "phases": [
+          "REGROUP"
+        ],
+        "cost": [
+          {
+            "discardFromHand": 2
+          }
+        ],
+        "effects": [
+          {
+            "type": "EXHAUST",
+            "target": [
+              [
+                "MINION"
+              ]
+            ]
+          }
+        ],
+        "source": "SELF",
+        "text": "REGROUP: Discard 2 cards from hand to exhaust a minion"
+      }
+    ],
+    "actionPhases": [
+      "REGROUP"
+    ],
     "culture": "GONDOR",
     "race": "MAN",
     "twilightCost": 2,

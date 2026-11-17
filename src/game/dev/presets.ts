@@ -141,31 +141,36 @@ export const applyDevPreset = (
     if (!fpPlayer) return { startPhase: 'startOfFellowship' };
 
     switch (presetType) {
-        case 'RANGERS_PURSUIT_JUST_BEHIND': {
-            // Ralliement : affaiblir un rôdeur → blesser tous les séides (pas de 2ᵉ halo).
+        case 'RANGERS_OSGILIATH_RANGER': {
+            // Ralliement : défausser 2 cartes → épuiser un séide (halo).
             resetBoardForPreset(G);
             setupDevPath(G, 0, RANGERS_PATH);
             fpPlayer.burdens = 0;
             const frodo = {
-                ...clonePresetCard('11S164', 'dev-pjb-frodo'),
-                attachments: [clonePresetCard('4R1', 'dev-pjb-ring')],
+                ...clonePresetCard('11S164', 'dev-osg-frodo'),
+                attachments: [clonePresetCard('4R1', 'dev-osg-ring')],
             };
-            const ranger = clonePresetCard('7C116', 'dev-pjb-ranger');
-            const halbarad = clonePresetCard('14R9', 'dev-pjb-halbarad');
+            const ranger = clonePresetCard('7C116', 'dev-osg-ranger');
+            const halbarad = clonePresetCard('14R9', 'dev-osg-halbarad');
             fpPlayer.fellowshipArea = [frodo, ranger, halbarad];
-            fpPlayer.hand = [clonePresetCard('1R111', 'dev-pjb-event')];
+            fpPlayer.hand = [
+                clonePresetCard('1C119', 'dev-osg-hand-a'),
+                clonePresetCard('1C106', 'dev-osg-hand-b'),
+                clonePresetCard('1R111', 'dev-osg-hand-c'),
+            ];
             G.battlefield = [
                 {
-                    ...clonePresetCard('4C252', 'dev-pjb-minion-a'),
+                    // Vitalité 3 — épuisable (les séides à 1 PV sont exclus).
+                    ...clonePresetCard('4U249', 'dev-osg-minion-a'),
                     minionSiteNumber: 4,
                 },
                 {
-                    ...clonePresetCard('5C74', 'dev-pjb-minion-b'),
+                    ...clonePresetCard('7R152', 'dev-osg-minion-b'),
                     minionSiteNumber: 4,
                 },
             ];
             G.statusMessage =
-                '[DEV] À leurs Trousses · Ralliement : jouer l’événement → halo rôdeur (coût) → les 2 séides prennent 1 blessure chacun (pas de 2ᵉ halo). Relancer le preset.';
+                '[DEV] Rôdeur d’Osgiliath · Ralliement : bulle sur le rôdeur → défausser 2 cartes de la main → halo séide (épuisement / flèche ; séides vit. ≥ 2). Relancer le preset.';
             return { startPhase: 'regroup' };
         }
 

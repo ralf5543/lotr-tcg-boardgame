@@ -349,12 +349,12 @@ export const DevPanel: React.FC<DevPanelProps> = ({
                             <S.ActionButton
                                 onClick={() =>
                                     moves.devLoadPreset?.(
-                                        'RANGERS_PURSUIT_JUST_BEHIND'
+                                        'RANGERS_OSGILIATH_RANGER'
                                     )
                                 }
-                                title="À leurs Trousses : affaiblir rôdeur → blesser tous les séides"
+                                title="Rôdeur d’Osgiliath : défausser 2 → épuiser un séide"
                             >
-                                À leurs Trousses
+                                Rôdeur Osgiliath
                             </S.ActionButton>
                         </S.ButtonGroup>
                     </S.Section>
