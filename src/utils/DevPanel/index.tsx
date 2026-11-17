@@ -349,12 +349,12 @@ export const DevPanel: React.FC<DevPanelProps> = ({
                             <S.ActionButton
                                 onClick={() =>
                                     moves.devLoadPreset?.(
-                                        'RANGERS_FIERCE_IN_DESPAIR'
+                                        'RANGERS_ARMY_HARADRIM'
                                     )
                                 }
-                                title="Acharné Face au Désespoir : spot 2 → défausse compagnon"
+                                title="Armée des Haradrim : −3 crépuscule → monture depuis défausse"
                             >
-                                Acharné Face au Désespoir
+                                Armée des Haradrim
                             </S.ActionButton>
                         </S.ButtonGroup>
                     </S.Section>

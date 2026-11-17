@@ -4294,14 +4294,9 @@ export const GameBoard: React.FC<GameBoardProps> = ({
                                             ctx.phase || 'fellowship'
                                         );
                                         if (hosts.length === 0) return;
-                                        if (hosts.length === 1) {
-                                            const host = hosts[0]!;
-                                            finishActivate([
-                                                cardId,
-                                                host.instanceId || host.id,
-                                            ]);
-                                            return;
-                                        }
+                                        // Monture / possession : toujours désigner
+                                        // le porteur (même 1 Suderon) — le texte
+                                        // ne force pas « sur lui ».
                                         startTargeting({
                                             kind: 'DESIGNATION',
                                             targetableCardIds:

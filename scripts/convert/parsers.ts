@@ -7378,6 +7378,48 @@ function parseToAssignFpMustMakeStrengthAbilities(
 }
 
 /**
+ * Phase: Remove twilightN to play a CLASS from your discard pile.
+ * (Army of Haradrim…) — sans exert (variante Uruk Captain ci-dessous).
+ */
+function parseRemoveTwilightPlayFromDiscardAbilities(
+    text: string,
+    cardId?: string
+): Record<string, unknown>[] {
+    const found: Record<string, unknown>[] = [];
+    const phaseTok =
+        '(?:\\*\\*|<(?:keyword)>)(Fellowship|Shadow|Maneuver|Archery|Assignment|Skirmish|Regroup):?(?:\\s*</(?:keyword)>)?(?:\\*\\*)?';
+    const re = new RegExp(
+        `${phaseTok}\\s*Remove\\s+<symbol>twilight(\\d+)<\\/symbol>\\s+to play\\s+(?:a|an)\\s+(.+?)\\s+from your discard pile\\.`,
+        'gi'
+    );
+    let match: RegExpExecArray | null;
+    while ((match = re.exec(text)) !== null) {
+        const phase = match[1]?.toUpperCase();
+        const twilight = parseInt(match[2] || '', 10);
+        if (!phase || !Number.isFinite(twilight) || twilight <= 0) continue;
+        // « and exert » → autre fragment.
+        if (/\band\s+exert\b/i.test(match[0])) continue;
+        const filters = parseClassFilters(match[3].trim());
+        if (filters.length === 0) continue;
+        found.push({
+            id: `${cardId || 'ability'}:${found.length}:twilight-play-discard`,
+            phases: [phase],
+            cost: [{ removeTwilight: twilight }],
+            effects: [
+                {
+                    type: 'PLAY_FROM_DECK_OR_DISCARD',
+                    from: 'DISCARD',
+                    target: [filters],
+                },
+            ],
+            source: 'SELF',
+            text: stripAbilityMarkup(match[0]),
+        });
+    }
+    return found;
+}
+
+/**
  * Phase: Remove twilightN and exert X to play a CLASS from your discard pile.
  * (Uruk Captain…)
  */
@@ -18430,6 +18472,15 @@ export function parseAbilities(
     );
 
     parsePutsOnRingDiscardPerIsengardResponses(text, cardId).forEach(
+        (ability) => {
+            abilities.push({
+                ...ability,
+                id: `${cardId || 'ability'}:${abilities.length}`,
+            });
+        }
+    );
+
+    parseRemoveTwilightPlayFromDiscardAbilities(text, cardId).forEach(
         (ability) => {
             abilities.push({
                 ...ability,

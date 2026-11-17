@@ -22743,6 +22743,36 @@
     "kind": "SHADOW",
     "type": "CONDITION",
     "subtype": "SUPPORT-AREA",
+    "abilities": [
+      {
+        "id": "1R195:0",
+        "phases": [
+          "SHADOW"
+        ],
+        "cost": [
+          {
+            "removeTwilight": 2
+          }
+        ],
+        "effects": [
+          {
+            "type": "PLAY_FROM_DECK_OR_DISCARD",
+            "from": "DISCARD",
+            "target": [
+              [
+                "MORIA",
+                "POSSESSION"
+              ]
+            ]
+          }
+        ],
+        "source": "SELF",
+        "text": "Shadow: Remove twilight2 to play a moria possession from your discard pile."
+      }
+    ],
+    "actionPhases": [
+      "SHADOW"
+    ],
     "culture": "MORIA",
     "twilightCost": 1,
     "imageUrl": "/cards_visuals/o_01_195.jpg",
@@ -61545,6 +61575,37 @@
     "keywords": [
       "SOUTHRON"
     ],
+    "abilities": [
+      {
+        "id": "5R70:0",
+        "phases": [
+          "SKIRMISH"
+        ],
+        "cost": [
+          {
+            "removeTwilight": 3
+          }
+        ],
+        "effects": [
+          {
+            "type": "PLAY_FROM_DECK_OR_DISCARD",
+            "from": "DISCARD",
+            "target": [
+              [
+                "RAIDER",
+                "MOUNT"
+              ]
+            ]
+          }
+        ],
+        "source": "SELF",
+        "text": "Skirmish: Remove twilight3 to play a raider mount from your discard pile.",
+        "textFr": "**Combat :** Retirez <symbol>twilight3</symbol> pour jouer une monture <symbol>raider</symbol> de votre pile de défausse."
+      }
+    ],
+    "actionPhases": [
+      "SKIRMISH"
+    ],
     "culture": "RAIDER",
     "race": "MAN",
     "twilightCost": 7,
@@ -64096,6 +64157,37 @@
     "type": "MINION",
     "keywords": [
       "SOUTHRON"
+    ],
+    "abilities": [
+      {
+        "id": "5R126:0",
+        "phases": [
+          "SKIRMISH"
+        ],
+        "cost": [
+          {
+            "removeTwilight": 3
+          }
+        ],
+        "effects": [
+          {
+            "type": "PLAY_FROM_DECK_OR_DISCARD",
+            "from": "DISCARD",
+            "target": [
+              [
+                "RAIDER",
+                "MOUNT"
+              ]
+            ]
+          }
+        ],
+        "source": "SELF",
+        "text": "Skirmish: Remove twilight3 to play a raider mount from your discard pile.",
+        "textFr": "**Combat :** Retirez <symbol>twilight3</symbol> pour jouer une monture <symbol>raider</symbol> de votre pile de défausse."
+      }
+    ],
+    "actionPhases": [
+      "SKIRMISH"
     ],
     "culture": "RAIDER",
     "race": "MAN",
@@ -154868,6 +154960,36 @@
     "isUnique": true,
     "kind": "SHADOW",
     "type": "MINION",
+    "abilities": [
+      {
+        "id": "18R85:0",
+        "phases": [
+          "REGROUP"
+        ],
+        "cost": [
+          {
+            "removeTwilight": 2
+          }
+        ],
+        "effects": [
+          {
+            "type": "PLAY_FROM_DECK_OR_DISCARD",
+            "from": "DISCARD",
+            "target": [
+              [
+                "ORC",
+                "MINION"
+              ]
+            ]
+          }
+        ],
+        "source": "SELF",
+        "text": "Regroup: Remove twilight2 to play an orc minion from your discard pile."
+      }
+    ],
+    "actionPhases": [
+      "REGROUP"
+    ],
     "culture": "ORC",
     "race": "ORC",
     "twilightCost": 6,

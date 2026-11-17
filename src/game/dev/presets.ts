@@ -141,36 +141,45 @@ export const applyDevPreset = (
     if (!fpPlayer) return { startPhase: 'startOfFellowship' };
 
     switch (presetType) {
-        case 'RANGERS_FIERCE_IN_DESPAIR': {
-            // Regroupement Ombre : 2 Suderons + événement → défausse un compagnon (pas Frodon).
+        case 'RANGERS_ARMY_HARADRIM': {
+            // Escarmouche : Armée −3 → Mûmak en défausse → choisir le Suderon porteur.
             resetBoardForPreset(G);
             setupDevPath(G, 3, RANGERS_PATH);
-            G.twilightPool = 7;
+            // 3 (coût capacité) + 2 (Mûmak) = 5.
+            G.twilightPool = 5;
             fpPlayer.burdens = 0;
             const frodo = {
-                ...clonePresetCard('11S164', 'dev-fid-frodo'),
-                attachments: [clonePresetCard('4R1', 'dev-fid-ring')],
+                ...clonePresetCard('11S164', 'dev-ah-frodo'),
+                attachments: [clonePresetCard('4R1', 'dev-ah-ring')],
             };
-            const ranger = clonePresetCard('7C116', 'dev-fid-ranger');
+            const ranger = clonePresetCard('7C116', 'dev-ah-ranger');
             fpPlayer.fellowshipArea = [frodo, ranger];
-            const raiderA = {
-                ...clonePresetCard('4C252', 'dev-fid-raider-a'),
+            const army = {
+                ...clonePresetCard('5R70', 'dev-ah-army'),
                 minionSiteNumber: 4,
             };
-            const raiderB = {
-                ...clonePresetCard('4U249', 'dev-fid-raider-b'),
+            const commander = {
+                ...clonePresetCard('4U249', 'dev-ah-commander'),
                 minionSiteNumber: 4,
             };
-            const event = clonePresetCard('7R148', 'dev-fid-event');
+            const mount = clonePresetCard('5C73', 'dev-ah-mumak');
             const shadowId = fpId === '0' ? '1' : '0';
             const shadow = G.players[shadowId];
             if (shadow) {
-                shadow.hand = [event];
+                shadow.discard = [mount];
             }
-            G.battlefield = [raiderA, raiderB];
+            G.battlefield = [army, commander];
+            G.skirmishes = [
+                {
+                    id: 'dev-ah-sk',
+                    companionId: 'dev-ah-ranger',
+                    minionIds: ['dev-ah-army'],
+                },
+            ];
+            G.activeSkirmishId = 'dev-ah-sk';
             G.statusMessage =
-                '[DEV] Acharné Face au Désespoir · Regroupement : jouer l’événement (7 crép.) → désigner le rôdeur à défausser (Frodon exclu). Relancer le preset.';
-            return { startPhase: 'regroup' };
+                '[DEV] Armée des Haradrim · Escarmouche : activer l’Armée (−3) → choisir le Mûmak en défausse (−2) → cliquer le Suderon porteur (Armée ou Commandant). Relancer le preset.';
+            return { startPhase: 'skirmish' };
         }
 
         default:
