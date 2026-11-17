@@ -179,5 +179,25 @@ export function applyEventAbility(
     }
 
     if (!payAbilityCost(G, card, ability.cost, costTargetId)) return false;
+    // Effet ancré sur le coût (Courroux Sanguinaire…) : l’id sert de
+    // COST_TARGET, pas de cible de blessure — sinon on cherche le séide
+    // affaibli parmi les compagnons et l’événement revient en main.
+    const effectUsesCostTarget = (ability.effects || []).some(
+        (item) =>
+            ('involving' in item && item.involving === 'COST_TARGET') ||
+            ('target' in item && item.target === 'COST_TARGET') ||
+            ('host' in item && item.host === 'COST_TARGET') ||
+            ('minion' in item && item.minion === 'COST_TARGET')
+    );
+    if ((needsCost && !needsEffect) || (effectUsesCostTarget && costTargetId)) {
+        return applyAbilityEffect(
+            G,
+            card,
+            ability,
+            undefined,
+            undefined,
+            costTargetId
+        );
+    }
     return applyAbilityEffect(G, card, ability, chosenTargetId);
 }

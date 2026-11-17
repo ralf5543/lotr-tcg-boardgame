@@ -1124,10 +1124,10 @@ export type AbilityEffect =
            */
           perAlly?: boolean;
           /**
-           * Adversaires d’escarmouche d’un personnage nommé (They Stole It :
-           * companion Gollum is skirmishing).
+           * Adversaires d’escarmouche d’un personnage (They Stole It : Gollum ;
+           * Courroux Sanguinaire : `COST_TARGET` = Homme pillard affaibli).
            */
-          involving?: string[][];
+          involving?: string[][] | 'COST_TARGET';
           /** Blessures ×N si la cible a cette culture. */
           countIfCulture?: { culture: CardCulture; count: number };
       }

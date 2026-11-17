@@ -349,12 +349,12 @@ export const DevPanel: React.FC<DevPanelProps> = ({
                             <S.ActionButton
                                 onClick={() =>
                                     moves.devLoadPreset?.(
-                                        'RANGERS_NORTHERN_BLADE'
+                                        'RANGERS_RED_WRATH'
                                     )
                                 }
-                                title="Fine Lame : rôdeur force +2 (+4 vs errant)"
+                                title="Courroux Sanguinaire : affaiblir pillard → blesser ×2"
                             >
-                                Fine Lame
+                                Courroux Sanguinaire
                             </S.ActionButton>
                         </S.ButtonGroup>
                     </S.Section>

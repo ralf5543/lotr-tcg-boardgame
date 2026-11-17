@@ -1473,10 +1473,28 @@ export function applyAbilityEffect(
         }
 
         if (effect.type === 'WOUND' && effect.involving) {
-            const fighters = resolveCostTarget(G, source, effect.involving);
+            let fighters: CardState[] = [];
+            if (effect.involving === 'COST_TARGET') {
+                const costPick = costIds[0] || chosenIds[0];
+                if (!costPick) return false;
+                const costCard = findTargetCard(
+                    G,
+                    costPick
+                ) as CardState | null;
+                if (!costCard) return false;
+                fighters = [costCard];
+            } else {
+                fighters = resolveCostTarget(G, source, effect.involving);
+            }
             const opponents: CardState[] = [];
             for (const fighter of fighters) {
                 for (const opp of resolveSkirmishingOpponents(G, fighter)) {
+                    if (
+                        effect.match &&
+                        !cardMatchesTarget(opp, effect.match)
+                    ) {
+                        continue;
+                    }
                     if (
                         !opponents.some(
                             (o) =>
@@ -1488,10 +1506,19 @@ export function applyAbilityEffect(
                     }
                 }
             }
-            const pick = chosenIds[0];
-            const target = pick
+            // COST_TARGET : l’id affaibli n’est jamais la cible de blessure.
+            // - costIds renseigné → effet = autre id (s’il y en a).
+            // - sinon chosenIds[0] EST le coût (playCard(index, costId)) →
+            //   pas une cible d’effet ; adversaire unique auto.
+            const effectPick =
+                effect.involving === 'COST_TARGET'
+                    ? costIds.length > 0
+                        ? chosenIds.find((id) => !costIds.includes(id))
+                        : undefined
+                    : chosenIds[0];
+            const target = effectPick
                 ? opponents.find(
-                      (c) => c.instanceId === pick || c.id === pick
+                      (c) => c.instanceId === effectPick || c.id === effectPick
                   ) || null
                 : opponents.length === 1
                   ? opponents[0]

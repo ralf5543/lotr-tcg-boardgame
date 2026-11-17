@@ -3068,9 +3068,23 @@ export const GameBoard: React.FC<GameBoardProps> = ({
                             return;
                         }
                     }
-                    // Coût seul (À leurs Trousses : WOUND all…) : halo coût,
-                    // pas le raccourci « 1 cible d’effet » (effectNeed défaut).
+                    // Coût seul (À leurs Trousses / Courroux Sanguinaire…) :
+                    // halo coût — pas le raccourci « 1 cible d’effet ».
                     if (needsCost && !needsEffect) {
+                        const costCandidateIds = getCostDesignationCandidates(
+                            G,
+                            card,
+                            eventAbility,
+                            myId
+                        ).flatMap(cardTargetIds);
+                        // Drop déjà sur le coût → jouer tout de suite.
+                        if (
+                            targetId &&
+                            isDesignationTargetId(costCandidateIds, targetId)
+                        ) {
+                            finishEventPlay(targetId, toilIds);
+                            return;
+                        }
                         if (
                             requestDesignation(
                                 card,
@@ -3083,7 +3097,10 @@ export const GameBoard: React.FC<GameBoardProps> = ({
                         ) {
                             return;
                         }
-                        finishEventPlay(undefined, toilIds);
+                        // Jamais jouer sans avoir payé le coût désigné.
+                        console.warn(
+                            '❌ Impossible de désigner le coût de cet événement.'
+                        );
                         return;
                     }
                     // Défausse ×N : autant que possible (min(N, dispo)).

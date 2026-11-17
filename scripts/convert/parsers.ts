@@ -13246,6 +13246,28 @@ function parseStandaloneDiscardCountMakePerSpotAbilities(
 
 /**
  * Événements sans balise de phase (phase = colonne Class) :
+ * « Exert a raider Man to wound a companion he is skirmishing twice. »
+ * (Red Wrath / Courroux Sanguinaire…)
+ */
+function parseStandaloneExertWoundSkirmishingAbilities(
+    text: string,
+    cardTitle?: string,
+    cardId?: string
+): Record<string, unknown>[] {
+    const plain = stripAbilityMarkup(text).replace(/\s+/g, ' ').trim();
+    if (
+        !/^Exert\s+.+\s+to wound\s+.+\bis skirmishing\b/i.test(plain)
+    ) {
+        return [];
+    }
+    // Réutilise le fragment phase via un marqueur Skirmish synthétique
+    // (la colonne Class porte déjà SKIRMISH pour ces événements).
+    const wrapped = `<keyword>Skirmish:</keyword> ${String(text || '').trim()}`;
+    return parseAbilities(wrapped, cardTitle, cardId) || [];
+}
+
+/**
+ * Événements sans balise de phase (phase = colonne Class) :
  * « Make a raider Man strength +3 (or +6 if you have initiative). »
  * (New Strength Came Now…) — refuse and / Damage / named-only complex.
  */
@@ -17817,13 +17839,34 @@ export function parseAbilities(
             .replace(/\s+/g, ' ')
             .trim();
 
+        const woundTimesMatch = woundClause.match(
+            /\s+(once|twice|(?:\d+)\s+times?)$/i
+        );
+        const woundClauseBase = woundTimesMatch
+            ? woundClause.slice(0, woundTimesMatch.index).trim()
+            : woundClause;
+        const woundClauseRawBase = woundTimesMatch
+            ? woundClauseRaw.replace(/\s+(once|twice|(?:\d+)\s+times?)$/i, '')
+            : woundClauseRaw;
+        let woundCount = 1;
+        if (woundTimesMatch) {
+            const timesRaw = woundTimesMatch[1].toLowerCase();
+            if (timesRaw === 'once') woundCount = 1;
+            else if (timesRaw === 'twice') woundCount = 2;
+            else {
+                const n = parseInt(timesRaw, 10);
+                if (!Number.isFinite(n) || n < 1) return;
+                woundCount = n;
+            }
+        }
+
         const skirmishingWound =
             /^(?:a|an) character(?: that)? (?:he or she|he|she|it|this \w+|bearer) is skirmishing$/i.test(
-                woundClause
+                woundClauseBase
             );
 
         // « an Orc or Uruk-hai he is skirmishing » / « an Orc he or she is… »
-        const skirmishingClassMatch = woundClauseRaw.match(
+        const skirmishingClassMatch = woundClauseRawBase.match(
             /^(?:a|an)\s+([\s\S]+?)\s+(?:he or she|he|she|it|this \w+|bearer) is skirmishing$/i
         );
 
@@ -17831,6 +17874,7 @@ export function parseAbilities(
             null;
         let skirmishMatch: string[][] | undefined;
         let woundAll = false;
+        let woundInvolvingCostTarget = false;
         if (skirmishingWound) {
             woundTarget = 'SKIRMISHING';
         } else if (skirmishingClassMatch) {
@@ -17839,7 +17883,7 @@ export function parseAbilities(
                 .replace(/<[^>]+>/g, ' ')
                 .replace(/\s+/g, ' ')
                 .trim();
-            // « character » déjà couvert ; refuse conditions / twice / bearing…
+            // « character » déjà couvert ; refuse conditions / bearing…
             if (
                 /^character$/i.test(classPlain) ||
                 /\b(if|that|who|whose|bearing|with|from|except)\b/i.test(
@@ -17862,7 +17906,7 @@ export function parseAbilities(
             skirmishMatch = dnf;
         } else {
             // « every / all / each minion » (À leurs Trousses…).
-            const woundEvery = woundClause.match(
+            const woundEvery = woundClauseBase.match(
                 /^(every|all|each)\s+(.+)$/i
             );
             if (woundEvery) {
@@ -17871,12 +17915,25 @@ export function parseAbilities(
                 woundTarget = [woundFilters];
                 woundAll = true;
             } else {
-                const woundArticle = woundClause.match(/^(a|an|the)\s+(.+)$/i);
+                const woundArticle = woundClauseBase.match(
+                    /^(a|an|the)\s+(.+)$/i
+                );
                 if (!woundArticle) return;
                 const woundFilters = parseClassFilters(woundArticle[2]);
                 if (woundFilters.length === 0) return;
                 woundTarget = [woundFilters];
             }
+        }
+
+        // Événement / capacité : « affaiblir un X pour blesser … qu’il combat »
+        // → adversaires de la cible du coût, pas de la source.
+        if (
+            woundTarget === 'SKIRMISHING' &&
+            (woundSubject.mode === 'DESIGNATION' ||
+                Array.isArray(woundSubject.target))
+        ) {
+            woundInvolvingCostTarget = true;
+            woundTarget = [['CHARACTER']];
         }
 
         const omitFromArcheryTotal =
@@ -17906,13 +17963,21 @@ export function parseAbilities(
                 },
             ],
             effects: [
-                {
-                    type: 'WOUND',
-                    count: 1,
-                    target: woundTarget,
-                    ...(woundAll ? { all: true } : {}),
-                    ...(skirmishMatch ? { match: skirmishMatch } : {}),
-                },
+                woundInvolvingCostTarget
+                    ? {
+                          type: 'WOUND',
+                          count: woundCount,
+                          target: woundTarget,
+                          involving: 'COST_TARGET',
+                          ...(skirmishMatch ? { match: skirmishMatch } : {}),
+                      }
+                    : {
+                          type: 'WOUND',
+                          count: woundCount,
+                          target: woundTarget,
+                          ...(woundAll ? { all: true } : {}),
+                          ...(skirmishMatch ? { match: skirmishMatch } : {}),
+                      },
             ],
             source: woundSource,
             text: woundText,
@@ -18953,6 +19018,16 @@ export function parseAbilities(
     );
 
     if (markers.length === 0) {
+        parseStandaloneExertWoundSkirmishingAbilities(
+            text,
+            cardTitle,
+            cardId
+        ).forEach((ability) => {
+            abilities.push({
+                ...ability,
+                id: `${cardId || 'ability'}:${abilities.length}`,
+            });
+        });
         parseStandaloneSpotDiscardAbilities(text, cardTitle, cardId).forEach(
             (ability) => {
                 abilities.push({

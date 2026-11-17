@@ -732,7 +732,16 @@ export function getEffectDesignationCandidates(
     const woundInvolving = (ability.effects || []).find(
         (item) => item.type === 'WOUND' && item.involving
     );
-    if (woundInvolving && woundInvolving.type === 'WOUND' && woundInvolving.involving) {
+    if (
+        woundInvolving &&
+        woundInvolving.type === 'WOUND' &&
+        woundInvolving.involving
+    ) {
+        // COST_TARGET : la cible d’effet dépend du coût — désignation après
+        // (ou auto si 1 adversaire). Pas de halo d’effet avant le coût.
+        if (woundInvolving.involving === 'COST_TARGET') {
+            return [];
+        }
         const fighters = resolveCostTarget(
             G,
             source,
@@ -741,6 +750,12 @@ export function getEffectDesignationCandidates(
         const opponents: CardState[] = [];
         for (const fighter of fighters) {
             for (const opp of resolveSkirmishingOpponents(G, fighter)) {
+                if (
+                    woundInvolving.match &&
+                    !cardMatchesTarget(opp, woundInvolving.match)
+                ) {
+                    continue;
+                }
                 if (
                     !opponents.some(
                         (o) =>
@@ -956,6 +971,18 @@ export function getEffectDesignationCount(
                 (item.type === 'EXERT' && item.all) ||
                 (item.type === 'ADD_TEMP_STAT' && item.all) ||
                 item.type === 'DISCARD_ALL'
+        )
+    ) {
+        return 0;
+    }
+    // Effet porté par le coût (Courroux Sanguinaire…) : pas de 2ᵉ halo.
+    if (
+        (ability.effects || []).some(
+            (item) =>
+                (item.type === 'WOUND' && item.involving === 'COST_TARGET') ||
+                ('target' in item && item.target === 'COST_TARGET') ||
+                ('host' in item && item.host === 'COST_TARGET') ||
+                ('minion' in item && item.minion === 'COST_TARGET')
         )
     ) {
         return 0;
@@ -1453,6 +1480,25 @@ export function abilityHasLegalEffectTarget(
             ) {
                 return false;
             }
+            continue;
+        }
+        if (effect.type === 'WOUND' && effect.involving === 'COST_TARGET') {
+            // Au moins un candidat de coût avec un adversaire blessable.
+            const costCards = getCostDesignationCandidates(
+                G,
+                source,
+                ability,
+                actingPlayerId
+            );
+            const anyOpp = costCards.some((fighter) =>
+                resolveSkirmishingOpponents(G, fighter).some(
+                    (opp) =>
+                        canCardTakeWound(G, opp) &&
+                        (!effect.match ||
+                            cardMatchesTarget(opp, effect.match))
+                )
+            );
+            if (!anyOpp) return false;
             continue;
         }
         if (effect.type === 'CANCEL_SKIRMISH') {

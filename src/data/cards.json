@@ -25814,7 +25814,12 @@
           {
             "type": "WOUND",
             "count": 1,
-            "target": "SKIRMISHING"
+            "target": [
+              [
+                "CHARACTER"
+              ]
+            ],
+            "involving": "COST_TARGET"
           }
         ],
         "source": "SELF",
@@ -77663,7 +77668,53 @@
     "isUnique": false,
     "kind": "SHADOW",
     "type": "EVENT",
+    "abilities": [
+      {
+        "id": "7U157:0",
+        "phases": [
+          "SKIRMISH"
+        ],
+        "cost": [
+          {
+            "exert": [
+              {
+                "count": 1,
+                "target": [
+                  [
+                    "RAIDER",
+                    "MAN"
+                  ]
+                ],
+                "mode": "DESIGNATION"
+              }
+            ]
+          }
+        ],
+        "effects": [
+          {
+            "type": "WOUND",
+            "count": 2,
+            "target": [
+              [
+                "CHARACTER"
+              ]
+            ],
+            "involving": "COST_TARGET",
+            "match": [
+              [
+                "COMPANION"
+              ]
+            ]
+          }
+        ],
+        "source": "SELF",
+        "text": "SKIRMISH: Exert a raider Man to wound a companion he is skirmishing twice."
+      }
+    ],
     "phases": [
+      "SKIRMISH"
+    ],
+    "actionPhases": [
       "SKIRMISH"
     ],
     "culture": "RAIDER",
