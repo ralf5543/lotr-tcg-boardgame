@@ -1579,6 +1579,35 @@ function parseOrInitiativeBonus(effectText: string): {
     return { base: match[1].trim(), value };
 }
 
+/** « … strength +N (or +M when skirmishing a roaming minion) » */
+function parseOrSkirmishingBonus(effectText: string): {
+    base: string;
+    value: number;
+    match: string[][];
+} | null {
+    const match = effectText
+        .replace(/<\/?keyword>/gi, '')
+        .replace(/\*\*/g, ' ')
+        .replace(/\s+/g, ' ')
+        .trim()
+        .match(
+            /^([\s\S]+?)\s*\(\s*or\s+\+(\d+)\s+when skirmishing\s+((?:a|an)\s+.+?)\s*\)\s*\.?$/i
+        );
+    if (!match) return null;
+    if (
+        /\b(and|damage|discard|wound|fierce|initiative|hand)\b/i.test(
+            match[0]
+        )
+    ) {
+        return null;
+    }
+    const value = parseInt(match[2], 10);
+    if (!Number.isFinite(value) || value === 0) return null;
+    const filters = parseClassFilters(match[3]);
+    if (filters.length === 0) return null;
+    return { base: match[1].trim(), value, match: [filters] };
+}
+
 /** « … strength +N (or +M if you have fewer than K cards in hand) » */
 function parseOrFewerCardsInHandBonus(effectText: string): {
     base: string;
@@ -1622,14 +1651,21 @@ function parseMakeTargetAndEffects(
     | undefined {
     const bearing = parseOrBearingBonus(effectText);
     const initiative = bearing ? null : parseOrInitiativeBonus(effectText);
+    const skirmishing =
+        bearing || initiative ? null : parseOrSkirmishingBonus(effectText);
     const fewerHand =
-        bearing || initiative
+        bearing || initiative || skirmishing
             ? null
             : parseOrFewerCardsInHandBonus(effectText);
     const textToParse =
-        bearing?.base ?? initiative?.base ?? fewerHand?.base ?? effectText;
+        bearing?.base ??
+        initiative?.base ??
+        skirmishing?.base ??
+        fewerHand?.base ??
+        effectText;
     if (bearing && bearing.value <= 0) return undefined;
     if (initiative && initiative.value <= 0) return undefined;
+    if (skirmishing && skirmishing.value <= 0) return undefined;
     if (fewerHand && fewerHand.value <= 0) return undefined;
 
     const effectPlain = textToParse
@@ -1752,6 +1788,27 @@ function parseMakeTargetAndEffects(
             return undefined;
         }
         statEffect.valueIfInitiative = initiative.value;
+    }
+
+    if (skirmishing) {
+        const statEffects = parsed.effects.filter(
+            (effect) => effect.type === 'ADD_TEMP_STAT'
+        );
+        if (statEffects.length !== 1 || parsed.effects.length !== 1) {
+            return undefined;
+        }
+        const statEffect = statEffects[0];
+        if (
+            !statEffect ||
+            statEffect.type !== 'ADD_TEMP_STAT' ||
+            skirmishing.value <= statEffect.value
+        ) {
+            return undefined;
+        }
+        statEffect.valueIfSkirmishing = {
+            value: skirmishing.value,
+            match: skirmishing.match,
+        };
     }
 
     if (fewerHand) {

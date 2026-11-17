@@ -327,6 +327,14 @@ export type AbilityEffect =
           /** Si tu as l’initiative, utiliser cette valeur à la place de `value`. */
           valueIfInitiative?: number;
           /**
+           * Si la cible escarmouche un adversaire matchant `match`,
+           * utiliser `value` à la place (Fine Lame… : +4 vs séide errant).
+           */
+          valueIfSkirmishing?: {
+              value: number;
+              match: string[][];
+          };
+          /**
            * Si le propriétaire a moins de `fewerThan` cartes en main,
            * utiliser `value` à la place.
            */

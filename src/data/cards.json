@@ -18303,7 +18303,44 @@
     "isUnique": false,
     "kind": "FREE_PEOPLE",
     "type": "EVENT",
+    "abilities": [
+      {
+        "id": "1C117:0",
+        "phases": [
+          "SKIRMISH"
+        ],
+        "cost": [],
+        "effects": [
+          {
+            "type": "ADD_TEMP_STAT",
+            "stat": "STRENGTH",
+            "value": 2,
+            "target": [
+              [
+                "RANGER"
+              ]
+            ],
+            "expiresAtPhase": "SKIRMISH",
+            "valueIfSkirmishing": {
+              "value": 4,
+              "match": [
+                [
+                  "ROAMING",
+                  "MINION"
+                ]
+              ]
+            }
+          }
+        ],
+        "source": "SELF",
+        "text": "SKIRMISH: Make a ranger strength +2 (or +4 when skirmishing a roaming minion).",
+        "textFr": "**Combat :** Donnez à un rôdeur +2 en force (ou +4 quand il combat un séide errant)."
+      }
+    ],
     "phases": [
+      "SKIRMISH"
+    ],
+    "actionPhases": [
       "SKIRMISH"
     ],
     "culture": "GONDOR",

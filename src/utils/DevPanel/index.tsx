@@ -349,12 +349,12 @@ export const DevPanel: React.FC<DevPanelProps> = ({
                             <S.ActionButton
                                 onClick={() =>
                                     moves.devLoadPreset?.(
-                                        'RANGERS_OSGILIATH_RANGER'
+                                        'RANGERS_NORTHERN_BLADE'
                                     )
                                 }
-                                title="Rôdeur d’Osgiliath : défausser 2 → épuiser un séide"
+                                title="Fine Lame : rôdeur force +2 (+4 vs errant)"
                             >
-                                Rôdeur Osgiliath
+                                Fine Lame
                             </S.ActionButton>
                         </S.ButtonGroup>
                     </S.Section>

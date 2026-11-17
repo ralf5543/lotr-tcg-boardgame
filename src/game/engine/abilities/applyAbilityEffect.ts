@@ -2053,6 +2053,24 @@ function applyOneEffect(
         ) {
             value = effect.valueIfInitiative;
         }
+        if (effect.valueIfSkirmishing) {
+            const opponents = resolveSkirmishingOpponents(G, target);
+            const pool = resolveCostTarget(
+                G,
+                source,
+                effect.valueIfSkirmishing.match
+            );
+            const hits = opponents.some((opp) =>
+                pool.some(
+                    (card) =>
+                        (card.instanceId || card.id) ===
+                        (opp.instanceId || opp.id)
+                )
+            );
+            if (hits) {
+                value = effect.valueIfSkirmishing.value;
+            }
+        }
         if (effect.valueIfFewerCardsInHand) {
             const ownerId = abilityOwnerPlayerId(G, source);
             const handSize = ownerId
