@@ -87,6 +87,7 @@ export const Hand: React.FC<HandProps> = ({
         selectCard,
         upTo,
         selectedCardIds,
+        discardedHandIds,
         onConfirm,
         confirmNonce,
     } = useTargeting();
@@ -97,6 +98,8 @@ export const Hand: React.FC<HandProps> = ({
     /** Empiler depuis la main (Narsil…) : même geste que défausse — clic, pas drag. */
     const isHandPick = targetingKind === 'HAND_PICK';
     const isHandClickPick = isHandDiscard || isHandPick;
+    /** Défausse déjà choisie, paiement pas encore acté (Halbarad → halo soin…). */
+    const pendingDiscardSet = new Set(discardedHandIds || []);
     const enginePendingKey =
         G.pendingPlay?.playerId === effectivePlayerId
             ? G.pendingPlay.card.instanceId || G.pendingPlay.card.id
@@ -239,6 +242,8 @@ export const Hand: React.FC<HandProps> = ({
                           );
                           const isPendingPlay = pendingCardKey === cardKey;
                           const isHidden = isBeingDragged || isPendingPlay;
+                          const isPendingDiscard =
+                              pendingDiscardSet.has(cardKey);
                           const isDiscarding =
                               discardingIndex === idx ||
                               discardingIds.has(cardKey);
@@ -345,13 +350,21 @@ export const Hand: React.FC<HandProps> = ({
                                           : undefined
                                   }
                                   style={{
-                                      visibility: isHidden
-                                          ? 'hidden'
-                                          : 'visible',
-                                      width: isHidden ? '0px' : '',
-                                      opacity: isHidden ? 0 : undefined,
+                                      visibility:
+                                          isHidden || isPendingDiscard
+                                              ? 'hidden'
+                                              : 'visible',
+                                      width:
+                                          isHidden || isPendingDiscard
+                                              ? '0px'
+                                              : '',
+                                      opacity:
+                                          isHidden || isPendingDiscard
+                                              ? 0
+                                              : undefined,
                                       pointerEvents:
                                           isHidden ||
+                                          isPendingDiscard ||
                                           discardingIndex !== null ||
                                           (isDesignating &&
                                               !isDesignationTarget) ||

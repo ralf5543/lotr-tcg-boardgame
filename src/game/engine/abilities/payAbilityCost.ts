@@ -125,11 +125,38 @@ export function abilityNeedsHandDiscard(ability: Ability): boolean {
     return abilityDiscardFromHandCount(ability) > 0;
 }
 
+/**
+ * Nombre de cartes à défausser dépend de la cible d’effet
+ * (Officer / Sapper : 1 si assiégeant, sinon 2) → désigner l’effet avant.
+ * Sinon la défausse est un coût fixe → avant la désignation d’effet.
+ */
+export function abilityHandDiscardDependsOnEffect(
+    ability: Ability
+): boolean {
+    return Boolean(ability.cost?.[0]?.discardFromHandIfEffectHasKeyword);
+}
+
 /** Filtre optionnel : défausser seulement des cartes FP / Ombre. */
 export function abilityDiscardFromHandKind(
     ability: Ability
 ): 'FREE_PEOPLE' | 'SHADOW' | undefined {
     return ability.cost?.[0]?.discardFromHandKind;
+}
+
+/** Filtre culture / type sur les cartes défaussées (Halbarad…). */
+export function abilityDiscardFromHandFilters(
+    ability: Ability
+): string[][] | undefined {
+    const filters = ability.cost?.[0]?.discardFromHandFilters;
+    return filters && filters.length > 0 ? filters : undefined;
+}
+
+function handCardMatchesDiscardFilters(
+    card: CardState,
+    filters?: string[][]
+): boolean {
+    if (!filters || filters.length === 0) return true;
+    return cardMatchesTarget(card, filters);
 }
 
 export function abilityDiscardFromHandEffect(
@@ -394,9 +421,13 @@ function canPayOption(
         if (!ownerId) return false;
         const hand = G.players[ownerId]?.hand || [];
         const kind = option.discardFromHandKind;
-        const eligible = kind
-            ? hand.filter((card) => card && card.kind === kind)
-            : hand;
+        const filters = option.discardFromHandFilters;
+        const eligible = hand.filter((card) => {
+            if (!card) return false;
+            if (kind && card.kind !== kind) return false;
+            if (!handCardMatchesDiscardFilters(card, filters)) return false;
+            return true;
+        });
         const rule = option.discardFromHandIfEffectHasKeyword;
         // Sans cible : assez pour le minimum possible (réduction si mot-clé).
         const need = rule
@@ -563,13 +594,16 @@ function payOption(
             return false;
         }
         const kind = option.discardFromHandKind;
-        if (kind) {
+        const filters = option.discardFromHandFilters;
+        if (kind || (filters && filters.length > 0)) {
             const hand = G.players[ownerId]?.hand || [];
             for (const id of discardedHandIds) {
                 const card = hand.find(
                     (c) => c && (c.instanceId === id || c.id === id)
                 );
-                if (!card || card.kind !== kind) return false;
+                if (!card) return false;
+                if (kind && card.kind !== kind) return false;
+                if (!handCardMatchesDiscardFilters(card, filters)) return false;
             }
         }
         if (!discardCardsFromHand(G, ownerId, discardedHandIds)) return false;

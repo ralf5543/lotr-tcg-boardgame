@@ -6337,7 +6337,7 @@ describe('Hobbits / Isengard vague 1 — passifs', () => {
         });
     });
 
-    it('Halbarad : Ring-bearer resistance 9+ → twilight cost –1', () => {
+    it('Halbarad : coût –1 + début manœuvre défausse Gondor → soin', () => {
         const abs =
             parseAbilities(
                 '**Ranger.**\nWhile the Ring-bearer has resistance 9 or more, Halbarad’s twilight cost is –1.\nAt the start of the maneuver phase, you may discard a <symbol>gondor</symbol> card from hand to heal a <symbol>gondor</symbol> companion.',
@@ -6358,6 +6358,23 @@ describe('Hobbits / Isengard vague 1 — passifs', () => {
                             value: -1,
                             target: 'SELF',
                         }),
+                    ],
+                }),
+                expect.objectContaining({
+                    phases: ['START_OF_MANEUVER'],
+                    optional: true,
+                    cost: [
+                        {
+                            discardFromHand: 1,
+                            discardFromHandFilters: [['GONDOR']],
+                        },
+                    ],
+                    effects: [
+                        {
+                            type: 'HEAL',
+                            count: 1,
+                            target: [['GONDOR', 'COMPANION']],
+                        },
                     ],
                 }),
             ])

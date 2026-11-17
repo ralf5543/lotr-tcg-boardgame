@@ -214,6 +214,11 @@ export interface CostOption {
      */
     discardFromHandKind?: 'FREE_PEOPLE' | 'SHADOW';
     /**
+     * Filtre culture / type sur les cartes défaussées
+     * (Halbarad : a gondor card from hand).
+     */
+    discardFromHandFilters?: string[][];
+    /**
      * Si la cible d’effet a ce mot-clé, défausser `count` au lieu de
      * `discardFromHand` (Garrison / Sapper : 1 si assiégeant).
      */

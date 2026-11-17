@@ -348,11 +348,13 @@ export const DevPanel: React.FC<DevPanelProps> = ({
                         <S.ButtonGroup>
                             <S.ActionButton
                                 onClick={() =>
-                                    moves.devLoadPreset?.('RANGERS_HALBARAD')
+                                    moves.devLoadPreset?.(
+                                        'RANGERS_HALBARAD_HEAL'
+                                    )
                                 }
-                                title="Halbarad : coût –1 si Porteur résist. ≥ 9"
+                                title="Halbarad : début manœuvre, défausse Gondor → soin"
                             >
-                                Halbarad coût
+                                Halbarad soin
                             </S.ActionButton>
                         </S.ButtonGroup>
                     </S.Section>

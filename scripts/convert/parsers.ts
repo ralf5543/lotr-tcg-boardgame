@@ -9733,6 +9733,50 @@ function parseSiteMoveAbilities(
 }
 
 /**
+ * At the start of the [phase] phase, you may discard a [culture] card from hand
+ * to heal a [culture] companion. (Halbarad…)
+ */
+function parseStartOfPhaseDiscardCultureHealAbilities(
+    text: string,
+    cardId?: string
+): Record<string, unknown>[] {
+    const found: Record<string, unknown>[] = [];
+    const re =
+        /At the start of the (\w+) phase,\s*you may discard (?:a|an)\s+((?:<symbol>[^<]+<\/symbol>\s*)+)cards? from hand to heal (?:a|an)\s+((?:<symbol>[^<]+<\/symbol>\s*)+)companions?\.?/gi;
+    let match: RegExpExecArray | null;
+    while ((match = re.exec(text)) !== null) {
+        const phaseName = match[1].toUpperCase();
+        const startPhase = `START_OF_${phaseName}`;
+        const discardFilters = parseClassFilters(`${match[2]} card`);
+        const healFilters = parseClassFilters(`${match[3]} companion`);
+        if (discardFilters.length === 0 || healFilters.length === 0) continue;
+        if (!healFilters.includes('COMPANION')) continue;
+
+        found.push({
+            id: `${cardId || 'ability'}:${found.length}:start-discard-heal`,
+            phases: [startPhase],
+            optional: true,
+            cost: [
+                {
+                    discardFromHand: 1,
+                    discardFromHandFilters: [discardFilters],
+                },
+            ],
+            effects: [
+                {
+                    type: 'HEAL',
+                    count: 1,
+                    target: [healFilters],
+                },
+            ],
+            source: 'SELF',
+            text: stripAbilityMarkup(match[0]),
+        });
+    }
+    return found;
+}
+
+/**
  * At the start of the [phase] phase, if you have N or more cards in hand,
  * you may spot X and discard your hand to add twilightY.
  * (Oath Sworn 11R91 — fragment sûr.)
@@ -18787,6 +18831,15 @@ export function parseAbilities(
     );
 
     parseStartOfPhaseDiscardHandTwilightAbilities(text, cardId).forEach(
+        (ability) => {
+            abilities.push({
+                ...ability,
+                id: `${cardId || 'ability'}:${abilities.length}`,
+            });
+        }
+    );
+
+    parseStartOfPhaseDiscardCultureHealAbilities(text, cardId).forEach(
         (ability) => {
             abilities.push({
                 ...ability,

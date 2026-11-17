@@ -141,23 +141,32 @@ export const applyDevPreset = (
     if (!fpPlayer) return { startPhase: 'startOfFellowship' };
 
     switch (presetType) {
-        case 'RANGERS_HALBARAD': {
-            // Comme la compagnie de départ du deck : Frodon + Rôdeur + Halbarad
-            // déjà en jeu ; 2ᵉ Halbarad en main pour retester le coût à la pose.
+        case 'RANGERS_HALBARAD_HEAL': {
+            // Début de manœuvre : défausse Gondor → soigne un compagnon Gondor.
             resetBoardForPreset(G);
             setupDevPath(G, 0, RANGERS_PATH);
             fpPlayer.burdens = 0;
             const frodo = {
-                ...clonePresetCard('11S164', 'dev-hal-frodo'),
-                attachments: [clonePresetCard('4R1', 'dev-hal-ring')],
+                ...clonePresetCard('11S164', 'dev-hh-frodo'),
+                attachments: [clonePresetCard('4R1', 'dev-hh-ring')],
             };
-            const ranger = clonePresetCard('7C116', 'dev-hal-ranger');
-            // Unique : un seul Halbarad en jeu ; l’autre en main pour le coût.
-            fpPlayer.fellowshipArea = [frodo, ranger];
-            fpPlayer.hand = [clonePresetCard('14R9', 'dev-hal-halbarad')];
+            const ranger = {
+                ...clonePresetCard('7C116', 'dev-hh-ranger'),
+                wounds: 1,
+            };
+            const halbarad = {
+                ...clonePresetCard('14R9', 'dev-hh-halbarad'),
+                wounds: 1,
+            };
+            fpPlayer.fellowshipArea = [frodo, ranger, halbarad];
+            // 1 Gondor en main (à défausser) + 1 non-Gondor (ne doit pas être cible).
+            fpPlayer.hand = [
+                clonePresetCard('1C106', 'dev-hh-gondor-hand'),
+                clonePresetCard('11C168', 'dev-hh-merry-hand'),
+            ];
             G.statusMessage =
-                '[DEV] Halbarad · Frodon résist. 10 → jouer Halbarad depuis la main doit coûter 2 (pas 3). Compagnie de départ du deck = 2+2 = 4. Fardeaux à 2 → coût 3. Relancer le preset.';
-            return { startPhase: 'fellowship' };
+                '[DEV] Halbarad soin · Début de manœuvre : Activer sur Halbarad → défausser la carte Gondor en main (pas Merry) → désigner un compagnon Gondor blessé (Rôdeur / Halbarad). Relancer le preset.';
+            return { startPhase: 'startOfManeuver' };
         }
 
         default:

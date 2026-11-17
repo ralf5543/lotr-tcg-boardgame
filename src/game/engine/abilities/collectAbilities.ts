@@ -1229,8 +1229,15 @@ function formatCostLabel(ability: Ability, source: CardState): string {
     }
     if (option?.discardFromHand && option.discardFromHand > 0) {
         const n = option.discardFromHand;
+        const filters = option.discardFromHandFilters;
+        const who =
+            filters && filters.length > 0
+                ? formatCostWho(filters, source, true)
+                : `carte${n > 1 ? 's' : ''}`;
         parts.push(
-            `Défausser ${n} carte${n > 1 ? 's' : ''} de la main`
+            filters && filters.length > 0
+                ? `Défausser ${who} de la main`
+                : `Défausser ${n} carte${n > 1 ? 's' : ''} de la main`
         );
     }
     if (option?.discardEntireHand) {

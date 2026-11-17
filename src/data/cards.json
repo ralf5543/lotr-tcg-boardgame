@@ -130161,7 +130161,41 @@
         ],
         "source": "SELF",
         "text": "While the Ring-bearer has resistance 9 or more, Halbarad’s twilight cost is –1."
+      },
+      {
+        "id": "14R9:1",
+        "phases": [
+          "START_OF_MANEUVER"
+        ],
+        "optional": true,
+        "cost": [
+          {
+            "discardFromHand": 1,
+            "discardFromHandFilters": [
+              [
+                "GONDOR"
+              ]
+            ]
+          }
+        ],
+        "effects": [
+          {
+            "type": "HEAL",
+            "count": 1,
+            "target": [
+              [
+                "GONDOR",
+                "COMPANION"
+              ]
+            ]
+          }
+        ],
+        "source": "SELF",
+        "text": "At the start of the maneuver phase, you may discard a gondor card from hand to heal a gondor companion."
       }
+    ],
+    "actionPhases": [
+      "START_OF_MANEUVER"
     ],
     "culture": "GONDOR",
     "race": "MAN",

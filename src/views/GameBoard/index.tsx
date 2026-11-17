@@ -61,7 +61,9 @@ import {
 import {
     abilityDiscardFromHandCount,
     abilityDiscardFromHandEffect,
+    abilityDiscardFromHandFilters,
     abilityDiscardFromHandKind,
+    abilityHandDiscardDependsOnEffect,
     abilityNeedsHandDiscard,
     abilityOwnerPlayerId,
 } from '../../game/engine/abilities/payAbilityCost';
@@ -311,7 +313,9 @@ export const GameBoard: React.FC<GameBoardProps> = ({
             handIndex?: number,
             which: 'cost' | 'effect' | 'auto' = 'auto',
             /** Origine de flèche forcée (ex. rôdeur après coût → séide). */
-            arrowFromOverride?: string
+            arrowFromOverride?: string,
+            /** Défausse main déjà choisie (Halbarad…) — rester hors main pendant le halo. */
+            discardedHandIdsPrefill?: string[]
         ): boolean => {
             const candidates =
                 which === 'cost'
@@ -385,6 +389,7 @@ export const GameBoard: React.FC<GameBoardProps> = ({
                 targetableCardIds: candidates.flatMap(cardTargetIds),
                 message: prompt,
                 pendingCard: source.type === 'EVENT' ? source : undefined,
+                discardedHandIds: discardedHandIdsPrefill,
                 arrowFromCardId: isHandStackPick
                     ? undefined
                     : arrowFromCardId,
@@ -698,19 +703,28 @@ export const GameBoard: React.FC<GameBoardProps> = ({
                       : fpId;
 
             const kindFilter = abilityDiscardFromHandKind(ability);
+            const cultureFilters = abilityDiscardFromHandFilters(ability);
             const collect = (picked: string[]) => {
                 const remaining = need - picked.length;
                 const hand = G.players[ownerId]?.hand || [];
                 const targetableCardIds = hand
                     .filter((card) => {
                         if (kindFilter && card.kind !== kindFilter) return false;
+                        if (
+                            cultureFilters &&
+                            !cardMatchesTarget(card, cultureFilters)
+                        ) {
+                            return false;
+                        }
                         const id = card.instanceId || card.id;
                         return Boolean(id && !picked.includes(id));
                     })
                     .flatMap((card) => cardTargetIds(card));
                 const commit = () => {
-                    onChosen(picked);
+                    // Stop avant onChosen : sinon un enchaînement (halo soin…)
+                    // est immédiatement annulé.
                     stopTargeting();
+                    onChosen(picked);
                 };
                 startTargeting({
                     kind: 'HAND_DISCARD',
@@ -739,8 +753,8 @@ export const GameBoard: React.FC<GameBoardProps> = ({
                         // « up to » : on sélectionne jusqu’au max, validation (anim) à part.
                         // Coût exact : la dernière carte commit (l’anim a déjà joué dans Hand).
                         if (!upTo && next.length >= need) {
-                            onChosen(next);
                             stopTargeting();
+                            onChosen(next);
                             return;
                         }
                         collect(next);
@@ -1120,7 +1134,7 @@ export const GameBoard: React.FC<GameBoardProps> = ({
             return finish();
         };
 
-        const requestEffect = (costId?: string) => {
+        const requestEffect = (costId?: string, handIdsPrefill?: string[]) => {
             if (effectNeed > 1) {
                 return requestMultiEffectDesignation(
                     source,
@@ -1130,7 +1144,7 @@ export const GameBoard: React.FC<GameBoardProps> = ({
                         // Sans coût : les cibles doivent être en 3ᵉ arg
                         // (chosenTargetId), pas en 5ᵉ — sinon INVALID_MOVE
                         // et le toaster site recommence.
-                        commitAbility(costId, effectIds);
+                        commitAbility(costId, effectIds, handIdsPrefill);
                     }
                 );
             }
@@ -1158,8 +1172,13 @@ export const GameBoard: React.FC<GameBoardProps> = ({
                             costId ? effectId : undefined
                         );
                     };
-                    // They Stole It : défausse main après cible d’effet.
-                    if (abilityNeedsHandDiscard(ability)) {
+                    // Coût variable selon la cible (Officer / Sapper) : défausse après.
+                    // Coût fixe (Halbarad, They Stole It…) : déjà réglé avant.
+                    if (
+                        abilityNeedsHandDiscard(ability) &&
+                        abilityHandDiscardDependsOnEffect(ability) &&
+                        !handIdsPrefill?.length
+                    ) {
                         const effectCard = findTargetCard(
                             G,
                             effectId
@@ -1175,14 +1194,15 @@ export const GameBoard: React.FC<GameBoardProps> = ({
                             need
                         );
                     }
-                    finishEffect();
+                    finishEffect(handIdsPrefill);
                 },
                 undefined,
                 needsCost ? 'effect' : 'auto',
                 // Trajectoire depuis l’agent désigné au coût (sinon source via défaut)
                 costId && abilityEffectWantsTargetingArrow(ability)
                     ? costId
-                    : undefined
+                    : undefined,
+                handIdsPrefill
             );
         };
 
@@ -1254,7 +1274,22 @@ export const GameBoard: React.FC<GameBoardProps> = ({
             });
             return;
         }
-        if (needsEffect && requestEffect()) {
+        // Coût défausse main fixe + effet à désigner (Halbarad…) : défausse d’abord.
+        if (
+            needsEffect &&
+            abilityNeedsHandDiscard(ability) &&
+            !abilityHandDiscardDependsOnEffect(ability) &&
+            !discardedHandIds?.length
+        ) {
+            if (
+                requestHandDiscard(source, ability, (cardIds) => {
+                    requestEffect(undefined, cardIds);
+                })
+            ) {
+                return;
+            }
+        }
+        if (needsEffect && requestEffect(undefined, discardedHandIds)) {
             return;
         }
         // Site (Mere…) avant la désignation générique : sinon on active avec
