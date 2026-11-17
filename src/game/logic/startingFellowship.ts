@@ -1,4 +1,5 @@
 import type { CardState, GameState } from '../types';
+import { startingCompanionTwilightCost } from '../../decks/validateDeck';
 import { isRingBearerCard } from '../../utils/cardUtils';
 import { afterCardPlayed } from '../engine/abilities/eachTimeYouPlay';
 import { applyAutomaticToPlayCosts } from './applyToPlayCosts';
@@ -6,13 +7,15 @@ import { appendCardPlayedJournal } from './journal';
 
 /**
  * Coût crépuscule compté pour la **limite de construction** (max 4).
- * Les réductions « when in your starting fellowship » s’appliquent ici.
+ * Les réductions « when in your starting fellowship » et Halbarad-like
+ * (résistance Porteur) s’appliquent ici.
  * Ce coût n’est **pas** ajouté au pool à la révélation.
  */
-export function getStartingFellowshipTwilightCost(card: CardState): number {
-    const printed = Number(card.twilightCost) || 0;
-    const reduce = Number(card.startingFellowshipTwilightReduce) || 0;
-    return Math.max(0, printed - reduce);
+export function getStartingFellowshipTwilightCost(
+    card: CardState,
+    ringBearer?: CardState | null
+): number {
+    return startingCompanionTwilightCost(card, ringBearer);
 }
 
 /**

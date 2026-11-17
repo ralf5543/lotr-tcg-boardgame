@@ -48,10 +48,52 @@ export function isOneRing(card: CardState | undefined): boolean {
     return Boolean(card && card.type === 'RING');
 }
 
-export function startingCompanionTwilightCost(card: CardState): number {
+/**
+ * Réductions WHILE évaluables hors plateau (Halbarad : Porteur résist. ≥ N).
+ * Les passifs « spot » en jeu ne s’appliquent pas à la construction.
+ */
+/** Résistance imprimée du Porteur (défaut 6, comme en jeu). */
+function ringBearerPrintedResistance(
+    ringBearer?: CardState | null
+): number {
+    if (!ringBearer) return 0;
+    const raw = Number(ringBearer.resistance);
+    return Number.isFinite(raw) && raw > 0 ? raw : 6;
+}
+
+function deckBuildTwilightCostModifier(
+    card: CardState,
+    ringBearer?: CardState | null
+): number {
+    let mod = 0;
+    const rbRes = ringBearerPrintedResistance(ringBearer);
+    for (const ability of card.abilities || []) {
+        if (ability.trigger?.type !== 'WHILE') continue;
+        const minRes = ability.trigger.ringBearerMinResistance;
+        if (typeof minRes !== 'number' || minRes <= 0) continue;
+        if (rbRes < minRes) continue;
+        for (const effect of ability.effects || []) {
+            if (effect.type !== 'MODIFY_STAT') continue;
+            if (effect.stat !== 'TWILIGHT_COST') continue;
+            if (effect.target !== 'SELF') continue;
+            mod += Number(effect.value) || 0;
+        }
+    }
+    return mod;
+}
+
+/**
+ * Coût crépuscule pour le plafond de compagnie de départ (max 4).
+ * `ringBearer` : pour les réductions liées à sa résistance (Halbarad…).
+ */
+export function startingCompanionTwilightCost(
+    card: CardState,
+    ringBearer?: CardState | null
+): number {
     const printed = Number(card.twilightCost) || 0;
     const reduce = Number(card.startingFellowshipTwilightReduce) || 0;
-    return Math.max(0, printed - reduce);
+    const whileMod = deckBuildTwilightCostModifier(card, ringBearer);
+    return Math.max(0, printed - reduce + whileMod);
 }
 
 function pushForbiddenCard(
@@ -126,7 +168,7 @@ export function validateDeck(config: DeckConfig): DeckValidationResult {
         if (rb && cardTitle(card).toLowerCase() === cardTitle(rb).toLowerCase()) {
             // Même titre que le Porteur en départ : inhabituel mais possible (autre version).
         }
-        startingCost += startingCompanionTwilightCost(card);
+        startingCost += startingCompanionTwilightCost(card, rb);
     }
     if (startingCost > STARTING_FELLOWSHIP_TWILIGHT_CAP) {
         errors.push(

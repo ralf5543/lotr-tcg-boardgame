@@ -130142,6 +130142,27 @@
     "keywords": [
       "RANGER"
     ],
+    "abilities": [
+      {
+        "id": "14R9:0",
+        "phases": [],
+        "trigger": {
+          "type": "WHILE",
+          "ringBearerMinResistance": 9
+        },
+        "cost": [],
+        "effects": [
+          {
+            "type": "MODIFY_STAT",
+            "stat": "TWILIGHT_COST",
+            "value": -1,
+            "target": "SELF"
+          }
+        ],
+        "source": "SELF",
+        "text": "While the Ring-bearer has resistance 9 or more, Halbarad’s twilight cost is –1."
+      }
+    ],
     "culture": "GONDOR",
     "race": "MAN",
     "twilightCost": 3,

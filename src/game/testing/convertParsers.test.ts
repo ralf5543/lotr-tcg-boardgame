@@ -6336,4 +6336,31 @@ describe('Hobbits / Isengard vague 1 — passifs', () => {
             target: 'SELF',
         });
     });
+
+    it('Halbarad : Ring-bearer resistance 9+ → twilight cost –1', () => {
+        const abs =
+            parseAbilities(
+                '**Ranger.**\nWhile the Ring-bearer has resistance 9 or more, Halbarad’s twilight cost is –1.\nAt the start of the maneuver phase, you may discard a <symbol>gondor</symbol> card from hand to heal a <symbol>gondor</symbol> companion.',
+                'Halbarad',
+                '14R9'
+            ) || [];
+        expect(abs).toEqual(
+            expect.arrayContaining([
+                expect.objectContaining({
+                    trigger: {
+                        type: 'WHILE',
+                        ringBearerMinResistance: 9,
+                    },
+                    effects: [
+                        expect.objectContaining({
+                            type: 'MODIFY_STAT',
+                            stat: 'TWILIGHT_COST',
+                            value: -1,
+                            target: 'SELF',
+                        }),
+                    ],
+                }),
+            ])
+        );
+    });
 });

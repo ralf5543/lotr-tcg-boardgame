@@ -386,18 +386,23 @@ export const DeckBuilder: React.FC = () => {
         return collectFilterOptions(filterDim);
     }, [filterDim]);
 
-    const validation = useMemo(
-        () => (draft ? validateDeck(draft) : null),
-        [draft]
-    );
-
-    const startingCost = useMemo(() => {
-        if (!draft) return 0;
-        return draft.startingCompanionIds.reduce((sum, id) => {
-            const c = cardOrThrow(id);
-            return sum + (c ? startingCompanionTwilightCost(c) : 0);
-        }, 0);
-    }, [draft]);
+    // Pas de useMemo sur `draft` entier : le Porteur change le coût Halbarad
+    // et la validité ; on recalcule à chaque rendu sur les champs utiles.
+    const validation = draft ? validateDeck(draft) : null;
+    const draftRingBearer = draft
+        ? cardOrThrow(draft.ringBearerId)
+        : undefined;
+    const startingCost = draft
+        ? draft.startingCompanionIds.reduce((sum, id) => {
+              const c = cardOrThrow(id);
+              return (
+                  sum +
+                  (c
+                      ? startingCompanionTwilightCost(c, draftRingBearer)
+                      : 0)
+              );
+          }, 0)
+        : 0;
 
     const catalog = useMemo(
         () => catalogCards({ query, filters }),
@@ -673,7 +678,7 @@ export const DeckBuilder: React.FC = () => {
                     Supprimer
                 </S.Button>
                 <S.Button type="button" disabled={busy} onClick={handleSave}>
-                    Sauver
+                    Sauvegarder
                 </S.Button>
                 <S.Button
                     type="button"
@@ -741,7 +746,10 @@ export const DeckBuilder: React.FC = () => {
                 </S.SeatSummary>
                 <S.DeckList>
                     {decks.map((d) => {
-                        const v = validateDeck(d);
+                        // Deck sélectionné : valider le brouillon live (Porteur…).
+                        const source =
+                            d.id === selectedId && draft ? draft : d;
+                        const v = validateDeck(source);
                         const roles = [
                             d.id === seatDecks['0'] ? 'toi' : null,
                             d.id === seatDecks['1'] ? 'BOT' : null,
@@ -755,10 +763,10 @@ export const DeckBuilder: React.FC = () => {
                                 <S.DeckName>{d.name}</S.DeckName>
                                 <S.DeckMeta>
                                     {v.ok ? 'Jouable' : 'Incomplet'} ·{' '}
-                                    {d.freePeople.length +
-                                        d.startingCompanionIds.length}
-                                    /{d.shadow.length} · {d.siteIds.length}{' '}
-                                    sites
+                                    {source.freePeople.length +
+                                        source.startingCompanionIds.length}
+                                    /{source.shadow.length} ·{' '}
+                                    {source.siteIds.length} sites
                                     {roles.length > 0
                                         ? ` · ${roles.join(' · ')}`
                                         : ''}
@@ -871,11 +879,21 @@ export const DeckBuilder: React.FC = () => {
                             {[...startCounts.entries()].map(([id, n]) => {
                                 const c = cardOrThrow(id);
                                 if (!c) return null;
+                                const unitCost = startingCompanionTwilightCost(
+                                    c,
+                                    rb
+                                );
+                                const printed = Number(c.twilightCost) || 0;
+                                const costHint =
+                                    unitCost !== printed
+                                        ? `${unitCost} (impr. ${printed})`
+                                        : String(unitCost);
                                 return (
                                     <CardLine
                                         key={id}
                                         card={c}
                                         count={n}
+                                        suffix={`· coût ${costHint}`}
                                         canAddCopy={n < 4}
                                         onAddCopy={() =>
                                             addCopyToList(

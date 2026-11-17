@@ -342,6 +342,21 @@ export const DevPanel: React.FC<DevPanelProps> = ({
                         </S.ButtonGroup>
                     </S.Section>
 
+                    {/* Presets playtest (vague en cours) */}
+                    <S.Section>
+                        <S.Label>Preset playtest :</S.Label>
+                        <S.ButtonGroup>
+                            <S.ActionButton
+                                onClick={() =>
+                                    moves.devLoadPreset?.('RANGERS_HALBARAD')
+                                }
+                                title="Halbarad : coût –1 si Porteur résist. ≥ 9"
+                            >
+                                Halbarad coût
+                            </S.ActionButton>
+                        </S.ButtonGroup>
+                    </S.Section>
+
                     {/* Session / debug UI */}
                     <S.Section>
                         <S.Label>Session :</S.Label>

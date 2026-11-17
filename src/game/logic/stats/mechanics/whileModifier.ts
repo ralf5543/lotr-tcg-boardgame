@@ -577,6 +577,23 @@ export function whileConditionHolds(
         }
     }
 
+    if (
+        typeof trigger.ringBearerMinResistance === 'number' &&
+        trigger.ringBearerMinResistance > 0
+    ) {
+        const need = trigger.ringBearerMinResistance;
+        const fpId = G.fpPlayerId || '0';
+        const burdens = G.players[fpId]?.burdens || 0;
+        let ok = false;
+        forEachInPlayCard(G, (card) => {
+            if (ok || card.isDead || !isRingBearerCard(card)) return;
+            // Sans G : éviter la récursion getWhileResistanceBonus → WHILE.
+            // (même pattern que resistanceAtMost en escarmouche).
+            if (getEffectiveResistance(card, burdens) >= need) ok = true;
+        });
+        if (!ok) return false;
+    }
+
     if (trigger.hasInitiative) {
         const ownerId = findInPlayCardOwnerId(G, source);
         if (!ownerId || !playerHasInitiative(G, ownerId)) return false;

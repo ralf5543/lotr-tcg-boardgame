@@ -1,5 +1,6 @@
 import type { DeckConfig } from '../decks/types';
 import { loadSeedDeckForPlayer } from '../decks/deckStorage';
+import { startingCompanionTwilightCost } from '../decks/validateDeck';
 import { getCardById } from '../game/cardsData';
 
 export type { DeckConfig } from '../decks/types';
@@ -12,12 +13,11 @@ export const loadAndValidateDeck = (playerId: string): DeckConfig => {
     const config = loadSeedDeckForPlayer(playerId);
 
     // Vérification coût départ (max 4) — log soft, la vraie UX est dans le builder.
+    const ringBearer = getCardById(config.ringBearerId);
     const totalStartingCost = config.startingCompanionIds.reduce((sum, id) => {
         const card = getCardById(id);
         if (!card) return sum;
-        const printed = Number(card.twilightCost) || 0;
-        const reduce = Number(card.startingFellowshipTwilightReduce) || 0;
-        return sum + Math.max(0, printed - reduce);
+        return sum + startingCompanionTwilightCost(card, ringBearer);
     }, 0);
 
     if (totalStartingCost > 4 && import.meta.env.DEV) {

@@ -1483,6 +1483,11 @@ export type AbilityTrigger =
            * (Voix du Traître…).
            */
           ringBearerExhaustedOrSpotBurdens?: number;
+          /**
+           * « While the Ring-bearer has resistance N or more… »
+           * (Halbarad…) — résistance effective du Porteur.
+           */
+          ringBearerMinResistance?: number;
           /** « While you have initiative… » — propriétaire de la source. */
           hasInitiative?: boolean;
           /**

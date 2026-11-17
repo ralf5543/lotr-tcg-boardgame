@@ -49,6 +49,61 @@ describe('validateDeck', () => {
         );
     });
 
+    it('Halbarad : –1 si Porteur résist. ≥ 9 (compagnie de départ)', () => {
+        const frodo = getCardById('11S164')!;
+        const frodoLow = getCardById('13R149')!; // résist. 8
+        const galadriel = getCardById('9R+14')!; // résist. 3
+        const halbarad = getCardById('14R9')!;
+        expect(frodo.resistance).toBe(10);
+        expect(frodoLow.resistance).toBe(8);
+        expect(startingCompanionTwilightCost(halbarad, frodo)).toBe(2);
+        expect(startingCompanionTwilightCost(halbarad, frodoLow)).toBe(3);
+        expect(startingCompanionTwilightCost(halbarad, galadriel)).toBe(3);
+        expect(startingCompanionTwilightCost(halbarad)).toBe(3);
+
+        const base = {
+            id: 'rangers-test',
+            name: 'Rôdeurs',
+            oneRingId: '4R1',
+            startingCompanionIds: ['7C116', '14R9'], // 2+2 ou 2+3
+            freePeople: Array(30).fill('1C106'),
+            shadow: Array(30).fill('4C252'),
+            siteIds: [
+                '15U187',
+                '13U193',
+                '15S189',
+                '11S237',
+                '18U135',
+                '11S240',
+                '12U194',
+                '11S256',
+                '13U187',
+            ],
+        };
+
+        expect(
+            validateDeck({
+                ...base,
+                ringBearerId: '11S164',
+            } as DeckConfig).errors.filter((e) => e.code === 'STARTING_COST')
+        ).toEqual([]);
+
+        expect(
+            validateDeck({
+                ...base,
+                ringBearerId: '9R+14',
+            } as DeckConfig).errors.some((e) => e.code === 'STARTING_COST')
+        ).toBe(true);
+
+        // Remettre Frodon résist. 10 → plus d’erreur de coût.
+        expect(
+            validateDeck({
+                ...base,
+                ringBearerId: '11S164',
+            } as DeckConfig).errors.filter((e) => e.code === 'STARTING_COST')
+        ).toEqual([]);
+    });
+
     it('sites : set et crépuscule', () => {
         const deck: DeckConfig = {
             ...(gondor as DeckConfig),

@@ -3055,6 +3055,64 @@ function parseEachTimeTakeControlSiteAbilities(
 }
 
 /**
+ * While the Ring-bearer has resistance N or more, Name’s twilight cost is –M.
+ * (Halbarad…) — passif SELF lu aussi depuis la main.
+ */
+function parseWhileRingBearerResistanceTwilightCostAbilities(
+    text: string,
+    cardTitle?: string,
+    cardId?: string
+): Record<string, unknown>[] {
+    const found: Record<string, unknown>[] = [];
+    // Apostrophe possessive hors du nom (sinon « Halbarad’ » avale le ’s).
+    // \u2019 = ’ ; tirets –/-/− en escapes Unicode.
+    const re =
+        /While the Ring-bearer has resistance (\d+) or more,\s*([\p{L}\-]+(?:\s+[\p{L}\-]+)?)\s*[\u2019']s twilight cost is\s*[\u2013\-\u2212](\d+)\.?/giu
+    let match: RegExpExecArray | null;
+    while ((match = re.exec(text)) !== null) {
+        const minRes = parseInt(match[1], 10);
+        const amount = parseInt(match[3], 10);
+        const who = match[2].trim();
+        if (
+            !Number.isFinite(minRes) ||
+            minRes <= 0 ||
+            !Number.isFinite(amount) ||
+            amount <= 0
+        ) {
+            continue;
+        }
+        if (
+            cardTitle &&
+            who.toLowerCase() !== cardTitle.toLowerCase() &&
+            who.toLowerCase() !==
+                cardTitle.replace(/^The\s+/i, '').toLowerCase()
+        ) {
+            continue;
+        }
+        found.push({
+            id: `${cardId || 'ability'}:${found.length}:while-rb-res-twilight`,
+            phases: [],
+            trigger: {
+                type: 'WHILE',
+                ringBearerMinResistance: minRes,
+            },
+            cost: [],
+            effects: [
+                {
+                    type: 'MODIFY_STAT',
+                    stat: 'TWILIGHT_COST',
+                    value: -amount,
+                    target: 'SELF',
+                },
+            ],
+            source: 'SELF',
+            text: stripAbilityMarkup(match[0]),
+        });
+    }
+    return found;
+}
+
+/**
  * While the Ring-bearer is exhausted or you can spot N burdens,
  * the move limit for this turn is -X (to a minimum of Y). (Traitor's Voice…)
  */
@@ -18070,6 +18128,17 @@ export function parseAbilities(
 
     parseWhileRingBearerExhaustedOrBurdensMoveLimitAbilities(
         text,
+        cardId
+    ).forEach((ability) => {
+        abilities.push({
+            ...ability,
+            id: `${cardId || 'ability'}:${abilities.length}`,
+        });
+    });
+
+    parseWhileRingBearerResistanceTwilightCostAbilities(
+        text,
+        cardTitle,
         cardId
     ).forEach((ability) => {
         abilities.push({

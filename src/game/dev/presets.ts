@@ -111,6 +111,19 @@ export const setupDevPath = (
     G.currentSiteIndex = startIndex;
 };
 
+/** Chemin du deck Rôdeurs divers / Mumaks. */
+const RANGERS_PATH = [
+    '15U187',
+    '13U193',
+    '15S189',
+    '11S237',
+    '18U135',
+    '11S240',
+    '12U194',
+    '11S256',
+    '13U187',
+] as const;
+
 /** Phase boardgame.io où atterrir après le load (défaut : Compagnie). */
 export type DevPresetLoad = {
     startPhase: string;
@@ -118,15 +131,37 @@ export type DevPresetLoad = {
 
 /**
  * Presets DEV playtest. Renvoie la phase d’atterrissage pour `devLoadPreset`.
- * Aucun preset actif pour l’instant.
  */
 export const applyDevPreset = (
     G: GameState,
     presetType: DevPresetType
 ): DevPresetLoad => {
     const fpId = G.fpPlayerId || '0';
-    if (!G.players[fpId]) return { startPhase: 'startOfFellowship' };
+    const fpPlayer = G.players[fpId];
+    if (!fpPlayer) return { startPhase: 'startOfFellowship' };
 
-    G.statusMessage = `[DEV] Aucun preset actif (« ${presetType} »).`;
-    return { startPhase: 'startOfFellowship' };
+    switch (presetType) {
+        case 'RANGERS_HALBARAD': {
+            // Comme la compagnie de départ du deck : Frodon + Rôdeur + Halbarad
+            // déjà en jeu ; 2ᵉ Halbarad en main pour retester le coût à la pose.
+            resetBoardForPreset(G);
+            setupDevPath(G, 0, RANGERS_PATH);
+            fpPlayer.burdens = 0;
+            const frodo = {
+                ...clonePresetCard('11S164', 'dev-hal-frodo'),
+                attachments: [clonePresetCard('4R1', 'dev-hal-ring')],
+            };
+            const ranger = clonePresetCard('7C116', 'dev-hal-ranger');
+            // Unique : un seul Halbarad en jeu ; l’autre en main pour le coût.
+            fpPlayer.fellowshipArea = [frodo, ranger];
+            fpPlayer.hand = [clonePresetCard('14R9', 'dev-hal-halbarad')];
+            G.statusMessage =
+                '[DEV] Halbarad · Frodon résist. 10 → jouer Halbarad depuis la main doit coûter 2 (pas 3). Compagnie de départ du deck = 2+2 = 4. Fardeaux à 2 → coût 3. Relancer le preset.';
+            return { startPhase: 'fellowship' };
+        }
+
+        default:
+            G.statusMessage = `[DEV] Aucun preset actif (« ${presetType} »).`;
+            return { startPhase: 'startOfFellowship' };
+    }
 };
