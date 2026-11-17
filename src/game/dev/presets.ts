@@ -141,38 +141,34 @@ export const applyDevPreset = (
     if (!fpPlayer) return { startPhase: 'startOfFellowship' };
 
     switch (presetType) {
-        case 'RANGERS_WHIRLING_STRIKE': {
-            // Escarmouche Ombre : blesser le compagnon qui combat un Homme pillard.
+        case 'RANGERS_RAIDER_SPEAR': {
+            // Escarmouche Ombre : pertuisane sur Homme pillard → affaiblir → +2 crépuscule.
             resetBoardForPreset(G);
             setupDevPath(G, 0, RANGERS_PATH);
-            G.twilightPool = 5;
+            G.twilightPool = 1;
             fpPlayer.burdens = 0;
             const frodo = {
-                ...clonePresetCard('11S164', 'dev-ws-frodo'),
-                attachments: [clonePresetCard('4R1', 'dev-ws-ring')],
+                ...clonePresetCard('11S164', 'dev-rs-frodo'),
+                attachments: [clonePresetCard('4R1', 'dev-rs-ring')],
             };
-            const ranger = clonePresetCard('7C116', 'dev-ws-ranger');
+            const ranger = clonePresetCard('7C116', 'dev-rs-ranger');
             fpPlayer.fellowshipArea = [frodo, ranger];
-            const shadowId = fpId === '0' ? '1' : '0';
-            const shadow = G.players[shadowId];
             const raider = {
-                ...clonePresetCard('4U249', 'dev-ws-raider'),
+                ...clonePresetCard('4U249', 'dev-rs-raider'),
                 minionSiteNumber: 4,
+                attachments: [clonePresetCard('7C156', 'dev-rs-spear')],
             };
             G.battlefield = [raider];
-            if (shadow) {
-                shadow.hand = [clonePresetCard('4C260', 'dev-ws-event')];
-            }
             G.skirmishes = [
                 {
-                    id: 'dev-ws-sk',
-                    companionId: 'dev-ws-ranger',
-                    minionIds: ['dev-ws-raider'],
+                    id: 'dev-rs-sk',
+                    companionId: 'dev-rs-ranger',
+                    minionIds: ['dev-rs-raider'],
                 },
             ];
-            G.activeSkirmishId = 'dev-ws-sk';
+            G.activeSkirmishId = 'dev-rs-sk';
             G.statusMessage =
-                '[DEV] Coup Tourbillonnant · Escarmouche Ombre (priorité Ombre) : jouer l’événement → flèche / clic sur le rôdeur → 1 blessure. Relancer le preset.';
+                '[DEV] Pertuisane de Pillard · Escarmouche Ombre (priorité Ombre) : bulle sur le séide (libellé pertuisane) → +2 crépuscule et 1 affaiblissement. Relancer le preset.';
             return { startPhase: 'skirmish' };
         }
 

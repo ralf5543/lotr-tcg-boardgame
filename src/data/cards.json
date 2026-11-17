@@ -25750,6 +25750,36 @@
         "MINION"
       ]
     ],
+    "abilities": [
+      {
+        "id": "1R254:0",
+        "phases": [
+          "SHADOW"
+        ],
+        "cost": [
+          {
+            "exert": [
+              {
+                "count": 1,
+                "target": "BEARER"
+              }
+            ]
+          }
+        ],
+        "effects": [
+          {
+            "type": "ADD_TWILIGHT",
+            "count": 1
+          }
+        ],
+        "source": "ATTACHMENT",
+        "text": "Shadow: Exert bearer to add twilight1",
+        "textFr": "**Ombre :** Affaiblissez le détenteur pour ajouter <symbol>twilight1</symbol> pour chaque compagnon **Archer.**"
+      }
+    ],
+    "actionPhases": [
+      "SHADOW"
+    ],
     "culture": "SAURON",
     "twilightCost": 0,
     "imageUrl": "/cards_visuals/o_01_254.jpg",
@@ -34128,6 +34158,36 @@
     "isUnique": false,
     "kind": "SHADOW",
     "type": "MINION",
+    "abilities": [
+      {
+        "id": "2C90:0",
+        "phases": [
+          "SHADOW"
+        ],
+        "cost": [
+          {
+            "exert": [
+              {
+                "count": 1,
+                "target": "SELF"
+              }
+            ]
+          }
+        ],
+        "effects": [
+          {
+            "type": "ADD_TWILIGHT",
+            "count": 1
+          }
+        ],
+        "source": "SELF",
+        "text": "Shadow: Exert this minion to add twilight1.",
+        "textFr": "**Ombre :** Affaiblissez ce séide pour ajouter <symbol>twilight1</symbol>."
+      }
+    ],
+    "actionPhases": [
+      "SHADOW"
+    ],
     "culture": "SAURON",
     "race": "ORC",
     "twilightCost": 3,
@@ -38580,6 +38640,36 @@
     "isUnique": false,
     "kind": "SHADOW",
     "type": "MINION",
+    "abilities": [
+      {
+        "id": "3C56:0",
+        "phases": [
+          "SHADOW"
+        ],
+        "cost": [
+          {
+            "exert": [
+              {
+                "count": 1,
+                "target": "SELF"
+              }
+            ]
+          }
+        ],
+        "effects": [
+          {
+            "type": "ADD_TWILIGHT",
+            "count": 1
+          }
+        ],
+        "source": "SELF",
+        "text": "Shadow: Exert this minion to add twilight1.",
+        "textFr": "**Ombre :** Affaiblissez ce séide pour ajouter <symbol>twilight1</symbol>."
+      }
+    ],
+    "actionPhases": [
+      "SHADOW"
+    ],
     "culture": "ISENGARD",
     "race": "ORC",
     "twilightCost": 2,
@@ -53390,8 +53480,43 @@
     "isUnique": false,
     "kind": "SHADOW",
     "type": "EVENT",
+    "abilities": [
+      {
+        "id": "4U234:0",
+        "phases": [
+          "SKIRMISH"
+        ],
+        "cost": [
+          {
+            "exert": [
+              {
+                "count": 1,
+                "target": [
+                  [
+                    "SOUTHRON"
+                  ]
+                ],
+                "mode": "DESIGNATION"
+              }
+            ]
+          }
+        ],
+        "effects": [
+          {
+            "type": "ADD_TWILIGHT",
+            "count": 3
+          }
+        ],
+        "source": "SELF",
+        "text": "Skirmish: Exert a Southron to add twilight3.",
+        "textFr": "**Combat :** Affaiblissez un Suderon pour ajouter <symbol>twilight3</symbol>."
+      }
+    ],
     "phases": [
       "MANEUVER",
+      "SKIRMISH"
+    ],
+    "actionPhases": [
       "SKIRMISH"
     ],
     "culture": "RAIDER",
@@ -54284,6 +54409,36 @@
     "type": "MINION",
     "keywords": [
       "SOUTHRON"
+    ],
+    "abilities": [
+      {
+        "id": "4U253:0",
+        "phases": [
+          "MANEUVER"
+        ],
+        "cost": [
+          {
+            "exert": [
+              {
+                "count": 1,
+                "target": "SELF"
+              }
+            ]
+          }
+        ],
+        "effects": [
+          {
+            "type": "ADD_TWILIGHT",
+            "count": 2
+          }
+        ],
+        "source": "SELF",
+        "text": "Maneuver: Exert this minion to add twilight2",
+        "textFr": "**Manœuvre :** Affaiblissez ce séide pour ajouter <symbol>twilight2</symbol> pour chaque site que vous contrôlez."
+      }
+    ],
+    "actionPhases": [
+      "MANEUVER"
     ],
     "culture": "RAIDER",
     "race": "MAN",
@@ -67701,6 +67856,35 @@
     "isUnique": true,
     "kind": "SHADOW",
     "type": "MINION",
+    "abilities": [
+      {
+        "id": "6R74:0",
+        "phases": [
+          "REGROUP"
+        ],
+        "cost": [
+          {
+            "exert": [
+              {
+                "count": 1,
+                "target": "SELF"
+              }
+            ]
+          }
+        ],
+        "effects": [
+          {
+            "type": "ADD_TWILIGHT",
+            "count": 1
+          }
+        ],
+        "source": "SELF",
+        "text": "Regroup: Exert Sharku to add twilight1."
+      }
+    ],
+    "actionPhases": [
+      "REGROUP"
+    ],
     "culture": "ISENGARD",
     "race": "ORC",
     "twilightCost": 2,
@@ -77673,6 +77857,36 @@
         "MAN"
       ]
     ],
+    "abilities": [
+      {
+        "id": "7C156:0",
+        "phases": [
+          "SKIRMISH"
+        ],
+        "cost": [
+          {
+            "exert": [
+              {
+                "count": 1,
+                "target": "BEARER"
+              }
+            ]
+          }
+        ],
+        "effects": [
+          {
+            "type": "ADD_TWILIGHT",
+            "count": 2
+          }
+        ],
+        "source": "ATTACHMENT",
+        "text": "Skirmish: Exert bearer to add twilight2.",
+        "textFr": "**Combat :** Affaiblissez le détenteur pour ajouter <symbol>twilight2</symbol>."
+      }
+    ],
+    "actionPhases": [
+      "SKIRMISH"
+    ],
     "culture": "RAIDER",
     "twilightCost": 0,
     "strength": 2,
@@ -77919,6 +78133,36 @@
     "type": "MINION",
     "keywords": [
       "SOUTHRON"
+    ],
+    "abilities": [
+      {
+        "id": "7U160:0",
+        "phases": [
+          "MANEUVER"
+        ],
+        "cost": [
+          {
+            "exert": [
+              {
+                "count": 1,
+                "target": "SELF"
+              }
+            ]
+          }
+        ],
+        "effects": [
+          {
+            "type": "ADD_TWILIGHT",
+            "count": 5
+          }
+        ],
+        "source": "SELF",
+        "text": "Maneuver: Exert this minion to add twilight5.",
+        "textFr": "**Manœuvre :** Affaiblissez ce séide pour ajouter <symbol>twilight5</symbol>. Le joueur des Peuples Libres peut ajouter une menace pour empêcher ceci."
+      }
+    ],
+    "actionPhases": [
+      "MANEUVER"
     ],
     "culture": "RAIDER",
     "race": "MAN",
@@ -92942,10 +93186,39 @@
         ],
         "source": "SELF",
         "text": "REGROUP: Exert Gollum twice to wound the Ring-bearer."
+      },
+      {
+        "id": "9R+28:1",
+        "phases": [
+          "SHADOW"
+        ],
+        "cost": [
+          {
+            "exert": [
+              {
+                "count": 1,
+                "target": [
+                  [
+                    "Gollum twice to exert the Ring-bearer. Shadow: Remove a burden"
+                  ]
+                ]
+              }
+            ]
+          }
+        ],
+        "effects": [
+          {
+            "type": "ADD_TWILIGHT",
+            "count": 1
+          }
+        ],
+        "source": "SELF",
+        "text": "Shadow: Exert Gollum twice to exert the Ring-bearer. Shadow: Remove a burden to add twilight1."
       }
     ],
     "actionPhases": [
-      "REGROUP"
+      "REGROUP",
+      "SHADOW"
     ],
     "culture": "GOLLUM",
     "twilightCost": 2,
@@ -103899,6 +104172,36 @@
     "isUnique": false,
     "kind": "SHADOW",
     "type": "MINION",
+    "abilities": [
+      {
+        "id": "11U74:0",
+        "phases": [
+          "MANEUVER"
+        ],
+        "cost": [
+          {
+            "exert": [
+              {
+                "count": 1,
+                "target": "SELF"
+              }
+            ]
+          }
+        ],
+        "effects": [
+          {
+            "type": "ADD_TWILIGHT",
+            "count": 1
+          }
+        ],
+        "source": "SELF",
+        "text": "Maneuver: Exert this minion to add twilight1",
+        "textFr": "**Manœuvre :** Affaiblissez ce séide pour ajouter <symbol>twilight1</symbol> pour chaque compagnon de résistance 5 ou moins."
+      }
+    ],
+    "actionPhases": [
+      "MANEUVER"
+    ],
     "culture": "MEN",
     "race": "MAN",
     "twilightCost": 5,
@@ -152977,6 +153280,35 @@
     "isUnique": true,
     "kind": "SHADOW",
     "type": "MINION",
+    "abilities": [
+      {
+        "id": "18R67:0",
+        "phases": [
+          "REGROUP"
+        ],
+        "cost": [
+          {
+            "exert": [
+              {
+                "count": 1,
+                "target": "SELF"
+              }
+            ]
+          }
+        ],
+        "effects": [
+          {
+            "type": "ADD_TWILIGHT",
+            "count": 2
+          }
+        ],
+        "source": "SELF",
+        "text": "Regroup: Exert Gríma to add twilight2."
+      }
+    ],
+    "actionPhases": [
+      "REGROUP"
+    ],
     "culture": "MEN",
     "race": "MAN",
     "twilightCost": 2,

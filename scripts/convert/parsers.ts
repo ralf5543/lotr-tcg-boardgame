@@ -13245,6 +13245,48 @@ function parseStandaloneDiscardCountMakePerSpotAbilities(
 }
 
 /**
+ * Skirmish: Exert bearer to add twilightN.
+ * (Raider Spear / Pertuisane de Pillard…)
+ */
+function parseExertToAddTwilightAbilities(
+    text: string,
+    cardTitle?: string,
+    cardId?: string
+): Record<string, unknown>[] {
+    const found: Record<string, unknown>[] = [];
+    const re =
+        /(?:\*\*|<(?:keyword)>)?(Fellowship|Shadow|Maneuver|Archery|Assignment|Skirmish|Regroup):?\s*(?:<\/(?:keyword)>)?(?:\*\*)?\s*Exert\s+([\s\S]+?)\s+to add\s*<symbol>twilight(\d+)<\/symbol>\.?/gi;
+    let match: RegExpExecArray | null;
+    while ((match = re.exec(text)) !== null) {
+        const phase = match[1].toUpperCase();
+        if (/\b(and|or)\b/i.test(match[2])) continue;
+        const subject = parseExertSubject(match[2].trim(), cardTitle, text);
+        if (!subject) continue;
+        const twilight = parseInt(match[3], 10);
+        if (!Number.isFinite(twilight) || twilight <= 0) continue;
+        found.push({
+            id: `${cardId || 'ability'}:${found.length}:exert-add-twilight`,
+            phases: [phase],
+            cost: [
+                {
+                    exert: [
+                        {
+                            count: subject.count,
+                            target: subject.target,
+                            ...(subject.mode ? { mode: subject.mode } : {}),
+                        },
+                    ],
+                },
+            ],
+            effects: [{ type: 'ADD_TWILIGHT', count: twilight }],
+            source: subject.target === 'BEARER' ? 'ATTACHMENT' : 'SELF',
+            text: stripAbilityMarkup(match[0]),
+        });
+    }
+    return found;
+}
+
+/**
  * Skirmish: Wound a companion or ally skirmishing a raider Man.
  * (Whirling Strike / Coup Tourbillonnant…) — pas de coût, involving = classe.
  */
@@ -18903,6 +18945,15 @@ export function parseAbilities(
     );
 
     parseWoundTargetSkirmishingClassAbilities(text, cardId).forEach(
+        (ability) => {
+            abilities.push({
+                ...ability,
+                id: `${cardId || 'ability'}:${abilities.length}`,
+            });
+        }
+    );
+
+    parseExertToAddTwilightAbilities(text, cardTitle, cardId).forEach(
         (ability) => {
             abilities.push({
                 ...ability,

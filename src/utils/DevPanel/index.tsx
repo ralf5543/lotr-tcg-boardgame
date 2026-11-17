@@ -349,12 +349,12 @@ export const DevPanel: React.FC<DevPanelProps> = ({
                             <S.ActionButton
                                 onClick={() =>
                                     moves.devLoadPreset?.(
-                                        'RANGERS_WHIRLING_STRIKE'
+                                        'RANGERS_RAIDER_SPEAR'
                                     )
                                 }
-                                title="Coup Tourbillonnant : blesser compagnon/allié vs Homme pillard"
+                                title="Pertuisane de Pillard : affaiblir détenteur → +2 crépuscule"
                             >
-                                Coup Tourbillonnant
+                                Pertuisane de Pillard
                             </S.ActionButton>
                         </S.ButtonGroup>
                     </S.Section>

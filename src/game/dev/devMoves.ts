@@ -234,11 +234,8 @@ export const devMoves = {
         }
         if (startPhase === 'skirmish' && G.activeSkirmishId) {
             openSkirmishActionWindow(G);
-            // Événements Ombre de playtest : priorité Ombre tout de suite.
-            if (
-                presetType === 'RANGERS_WHIRLING_STRIKE' &&
-                G.actionWindow
-            ) {
+            // Capacités / événements Ombre de playtest : priorité Ombre.
+            if (presetType === 'RANGERS_RAIDER_SPEAR' && G.actionWindow) {
                 const fpId = G.fpPlayerId || '0';
                 G.actionWindow.activePlayerId = fpId === '0' ? '1' : '0';
             }
