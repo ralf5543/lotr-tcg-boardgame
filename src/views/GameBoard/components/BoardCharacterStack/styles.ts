@@ -1,7 +1,7 @@
 import styled, { css } from 'styled-components';
 import type { Faction } from '../../../../contexts/FactionContext';
 
-/** Halo de ciblage. Sans scale en combat : sinon l’overlay séides boucle (Promise Keeping…). */
+/** Halo de flèche / viseur (couleur selon la faction qui vise). */
 const targetedHover = (
     faction: Faction = 'FREE_PEOPLE',
     opts?: { scale?: boolean }
@@ -29,6 +29,13 @@ const targetedHover = (
     `}
     z-index: 10;
 `;
+
+/**
+ * Halo de désignation (halo + clic, pas flèche) : toujours or,
+ * y compris au survol Ombre — sinon jaune au repos / rouge au hover.
+ */
+const designationHover = (opts?: { scale?: boolean }) =>
+    targetedHover('FREE_PEOPLE', opts);
 
 export const CharacterStack = styled.div<{ $isBeingDragged?: boolean }>`
     position: relative;
@@ -88,7 +95,6 @@ export const CardDragTarget = styled.div<{
     ${({
         $isDesignationTarget,
         $isTargeted,
-        $aimFaction,
         $suppressHoverScale,
     }) =>
         $isDesignationTarget &&
@@ -100,7 +106,7 @@ export const CardDragTarget = styled.div<{
             outline: 2px solid rgba(226, 192, 68, 0.9);
             border-radius: 8px;
             &:hover {
-                ${targetedHover($aimFaction || 'FREE_PEOPLE', {
+                ${designationHover({
                     scale: !$suppressHoverScale,
                 })}
             }
@@ -130,7 +136,6 @@ export const AttachmentsContainer = styled.div`
 export const AttachmentWrapper = styled.div<{
     $index?: number;
     $isDesignationTarget?: boolean;
-    $aimFaction?: Faction;
 }>`
     flex: 1;
     pointer-events: auto; /* Permet d'interagir avec les cartes attachées si besoin (hover, inspection) */
@@ -146,12 +151,8 @@ export const AttachmentWrapper = styled.div<{
                 drop-shadow(0px -3px 3px black);
             outline: 2px solid rgba(226, 192, 68, 0.9);
             z-index: 4;
-        `}
-    ${({ $isDesignationTarget, $aimFaction }) =>
-        $isDesignationTarget &&
-        css`
             &:hover {
-                ${targetedHover($aimFaction || 'FREE_PEOPLE')}
+                ${designationHover()}
             }
         `}
 `;
@@ -392,7 +393,6 @@ export const MinionWrapper = styled.div<{
     ${({
         $isDesignationTarget,
         $isTargeted,
-        $aimFaction,
         $suppressHoverScale,
     }) =>
         $isDesignationTarget &&
@@ -404,7 +404,7 @@ export const MinionWrapper = styled.div<{
             outline: 2px solid rgba(226, 192, 68, 0.9);
             border-radius: 8px;
             &:hover {
-                ${targetedHover($aimFaction || 'FREE_PEOPLE', {
+                ${designationHover({
                     scale: !$suppressHoverScale,
                 })}
             }

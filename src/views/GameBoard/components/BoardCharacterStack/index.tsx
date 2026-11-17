@@ -513,9 +513,6 @@ export const BoardCharacterStack: React.FC<BoardCharacterStackProps> = ({
                                                                 $isDesignationTarget={
                                                                     attDesignation
                                                                 }
-                                                                $aimFaction={
-                                                                    myFaction
-                                                                }
                                                                 ref={(el) => {
                                                                     registerTarget(
                                                                         attKey,
@@ -756,7 +753,6 @@ export const BoardCharacterStack: React.FC<BoardCharacterStackProps> = ({
                                     key={attKey}
                                     $index={attachIdx}
                                     $isDesignationTarget={attDesignation}
-                                    $aimFaction={myFaction}
                                     data-draggable={
                                         canDragAttachment ? 'true' : undefined
                                     }

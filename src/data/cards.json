@@ -77842,6 +77842,41 @@
     "isUnique": false,
     "kind": "SHADOW",
     "type": "EVENT",
+    "abilities": [
+      {
+        "id": "7R148:0",
+        "phases": [],
+        "cost": [
+          {
+            "spot": [
+              {
+                "count": 2,
+                "target": [
+                  [
+                    "RAIDER",
+                    "MAN"
+                  ]
+                ]
+              }
+            ]
+          }
+        ],
+        "effects": [
+          {
+            "type": "DISCARD",
+            "count": 1,
+            "target": [
+              [
+                "COMPANION"
+              ]
+            ],
+            "excludeRingBearer": true
+          }
+        ],
+        "source": "SELF",
+        "text": "Spot 2 raider Men to discard a companion (except the Ring-bearer)"
+      }
+    ],
     "phases": [
       "REGROUP"
     ],

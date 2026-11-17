@@ -141,31 +141,36 @@ export const applyDevPreset = (
     if (!fpPlayer) return { startPhase: 'startOfFellowship' };
 
     switch (presetType) {
-        case 'RANGERS_SOUTHRON_WALKER': {
-            // Ombre au site 4 (hors errance) : Éclaireur en jeu → Marcheur à 2 (pas 4).
+        case 'RANGERS_FIERCE_IN_DESPAIR': {
+            // Regroupement Ombre : 2 Suderons + événement → défausse un compagnon (pas Frodon).
             resetBoardForPreset(G);
             setupDevPath(G, 3, RANGERS_PATH);
-            G.twilightPool = 2;
+            G.twilightPool = 7;
             fpPlayer.burdens = 0;
             const frodo = {
-                ...clonePresetCard('11S164', 'dev-sw-frodo'),
-                attachments: [clonePresetCard('4R1', 'dev-sw-ring')],
+                ...clonePresetCard('11S164', 'dev-fid-frodo'),
+                attachments: [clonePresetCard('4R1', 'dev-fid-ring')],
             };
-            fpPlayer.fellowshipArea = [frodo];
-            const scout = {
-                ...clonePresetCard('4C252', 'dev-sw-scout'),
+            const ranger = clonePresetCard('7C116', 'dev-fid-ranger');
+            fpPlayer.fellowshipArea = [frodo, ranger];
+            const raiderA = {
+                ...clonePresetCard('4C252', 'dev-fid-raider-a'),
                 minionSiteNumber: 4,
             };
-            const walker = clonePresetCard('5C74', 'dev-sw-walker');
+            const raiderB = {
+                ...clonePresetCard('4U249', 'dev-fid-raider-b'),
+                minionSiteNumber: 4,
+            };
+            const event = clonePresetCard('7R148', 'dev-fid-event');
             const shadowId = fpId === '0' ? '1' : '0';
             const shadow = G.players[shadowId];
             if (shadow) {
-                shadow.hand = [walker];
+                shadow.hand = [event];
             }
-            G.battlefield = [scout];
+            G.battlefield = [raiderA, raiderB];
             G.statusMessage =
-                '[DEV] Marcheur Suderon · Ombre (site 4) : avec l’Éclaireur en jeu, jouer le Marcheur pour 2 crépuscule (base 4 − 2). Relancer le preset.';
-            return { startPhase: 'shadow' };
+                '[DEV] Acharné Face au Désespoir · Regroupement : jouer l’événement (7 crép.) → désigner le rôdeur à défausser (Frodon exclu). Relancer le preset.';
+            return { startPhase: 'regroup' };
         }
 
         default:

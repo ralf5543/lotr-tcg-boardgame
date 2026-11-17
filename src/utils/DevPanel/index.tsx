@@ -349,12 +349,12 @@ export const DevPanel: React.FC<DevPanelProps> = ({
                             <S.ActionButton
                                 onClick={() =>
                                     moves.devLoadPreset?.(
-                                        'RANGERS_SOUTHRON_WALKER'
+                                        'RANGERS_FIERCE_IN_DESPAIR'
                                     )
                                 }
-                                title="Marcheur Suderon : spot Suderon → coût –2"
+                                title="Acharné Face au Désespoir : spot 2 → défausse compagnon"
                             >
-                                Marcheur Suderon
+                                Acharné Face au Désespoir
                             </S.ActionButton>
                         </S.ButtonGroup>
                     </S.Section>

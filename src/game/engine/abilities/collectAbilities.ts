@@ -771,11 +771,18 @@ function formatEffectBit(
                 ? `défausser ${n} situations`
                 : 'défausser une situation';
         }
+        const except = effect.excludeRingBearer
+            ? ' (sauf le Porteur de l’Anneau)'
+            : '';
         const who = formatTargetPhrase(effect.target);
         if (who) {
-            return many ? `défausser ${n}× ${who}` : `défausser ${who}`;
+            return many
+                ? `défausser ${n}× ${who}${except}`
+                : `défausser ${who}${except}`;
         }
-        return many ? `défausser ${n} cartes` : 'défausser';
+        return many
+            ? `défausser ${n} cartes${except}`
+            : `défausser${except}`;
     }
     if (effect.type === 'DISCARD_ALL') {
         if (effect.skirmishingWith) {

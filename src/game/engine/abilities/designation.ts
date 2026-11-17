@@ -262,6 +262,9 @@ function candidatesForEffect(
     if (effect.type === 'WOUND' && effect.excludeRingBearer) {
         matches = matches.filter((card) => !isRingBearerCard(card));
     }
+    if (effect.type === 'DISCARD' && effect.excludeRingBearer) {
+        matches = matches.filter((card) => !isRingBearerCard(card));
+    }
     if (effect.type === 'WOUND' && effect.match) {
         matches = matches.filter((card) =>
             cardMatchesTarget(card, effect.match!)

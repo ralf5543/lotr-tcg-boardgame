@@ -2675,7 +2675,11 @@ function parseBurdenWord(raw: string): number | null {
 function parseCountedDiscardTarget(
     raw: string,
     cardTitle?: string
-): { count: number; target: string[][] } | null {
+): {
+    count: number;
+    target: string[][];
+    excludeRingBearer?: boolean;
+} | null {
     if (isDiscardEveryAll(raw)) return null;
     const cleaned = raw
         .replace(/<br\s*\/?>/gi, ' ')
@@ -2686,6 +2690,18 @@ function parseCountedDiscardTarget(
         .trim();
     const plain = cleaned.replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim();
     if (!plain) return null;
+
+    // « a companion (except the Ring-bearer) » (Acharné Face au Désespoir…)
+    const exceptRb = plain.match(
+        /^(a|an|one)\s+companion\s*\(\s*except the Ring[\u2013\u2014\-]?bearer\s*\)$/i
+    );
+    if (exceptRb) {
+        return {
+            count: 1,
+            target: [['COMPANION']],
+            excludeRingBearer: true,
+        };
+    }
 
     const numbered = plain.match(/^(a|an|one|two|three|\d+)\s+(.+)$/i);
     if (!numbered) {
@@ -12991,6 +13007,9 @@ function parseStandaloneSpotDiscardAbilities(
                     type: 'DISCARD',
                     count: discardParsed.count,
                     target: discardParsed.target,
+                    ...(discardParsed.excludeRingBearer
+                        ? { excludeRingBearer: true }
+                        : {}),
                 },
             ],
             source: 'SELF',
@@ -17406,6 +17425,9 @@ export function parseAbilities(
                         type: 'DISCARD',
                         count: discardParsed.count,
                         target: discardParsed.target,
+                        ...(discardParsed.excludeRingBearer
+                            ? { excludeRingBearer: true }
+                            : {}),
                     },
                 ],
                 source: 'SELF',

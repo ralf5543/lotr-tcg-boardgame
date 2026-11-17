@@ -896,6 +896,8 @@ export type AbilityEffect =
            * escarmouche (filtre sur l’hôte, pas sur la zone).
            */
           borneBy?: 'SKIRMISHING';
+          /** « … (except the Ring-bearer) » */
+          excludeRingBearer?: boolean;
           /**
            * Enquëa : si tu peux spotter `min` cartes matchant `target`,
            * défausse `count` au lieu du compte de base.
