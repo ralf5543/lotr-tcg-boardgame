@@ -45,7 +45,7 @@ export const BannerTitle = styled.h1`
     font-weight: 100;
     font-family: DecipherTitle, serif;
     font-variant: small-caps;
-    text-shadow: 0 4px 12px rgba(0, 0, 0, 0.9);
+    text-shadow: 2px 4px 12px rgba(0, 0, 0, 0.9);
     margin: 0;
 `;
 

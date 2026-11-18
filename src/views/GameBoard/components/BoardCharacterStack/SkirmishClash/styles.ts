@@ -94,13 +94,13 @@ export const BaseElement = styled.img`
 
 export const Shield = styled(BaseElement)`
     z-index: 1;
-    filter: drop-shadow(0px 4px 10px rgba(0, 0, 0, 0.6));
+    filter: drop-shadow(2px 4px 10px rgba(0, 0, 0, 0.6));
     animation: ${shieldPop} 0.4s ease-out forwards;
 `;
 
 export const SwordLeft = styled(BaseElement)`
     z-index: 2;
-    filter: drop-shadow(-2px 4px 6px rgba(0, 0, 0, 0.5));
+    filter: drop-shadow(2px 4px 6px rgba(0, 0, 0, 0.5));
     animation: ${swordLeftSlash} 0.35s cubic-bezier(0.12, 0, 0.39, 0) forwards;
 `;
 

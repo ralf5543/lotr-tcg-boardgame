@@ -42,7 +42,8 @@ export interface DragContextType {
     stopDrag: () => void;
     registerTarget: (id: string, element: HTMLElement | null) => void;
     registerArrowAnchor: (id: string, element: HTMLElement | null) => void;
-    rotation: number;
+    /** Penchant drag : rotateX / rotateY / rotateZ (deg), lissé. */
+    tilt: { x: number; y: number; z: number };
     isOverHandCancel: boolean;
     arrowOrigin: { x: number; y: number } | null;
     getHitTargetId: (

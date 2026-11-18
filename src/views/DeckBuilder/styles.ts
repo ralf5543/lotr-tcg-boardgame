@@ -201,7 +201,7 @@ export const HoveredCardsZone = styled.div<{
         p.$orientation === 'landscape' ? '1.39 / 1' : '1 / 1.39'};
 
     animation: ${fadeIn} 0.15s ease-out;
-    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.8);
+    box-shadow: 5px 10px 25px rgba(0, 0, 0, 0.8);
     border-radius: 8px;
 `;
 
@@ -423,7 +423,7 @@ export const CardMenu = styled.div<{ $left: number; $top: number }>`
     border-radius: 6px;
     border: 1px solid rgba(212, 184, 134, 0.4);
     background: rgba(18, 20, 26, 0.97);
-    box-shadow: 0 10px 28px rgba(0, 0, 0, 0.55);
+    box-shadow: 5px 10px 28px rgba(0, 0, 0, 0.55);
     animation: ${fadeIn} 0.12s ease-out;
 `;
 
@@ -661,7 +661,7 @@ export const IssuesFab = styled.button<{ $error?: boolean }>`
     font-size: 1.15rem;
     font-weight: 700;
     cursor: pointer;
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.45);
+    box-shadow: 4px 8px 24px rgba(0, 0, 0, 0.45);
 
     &:hover {
         filter: brightness(1.08);
@@ -680,7 +680,7 @@ export const IssuesToaster = styled.div`
     border-radius: 6px;
     border: 1px solid rgba(212, 184, 134, 0.35);
     background: rgba(18, 20, 26, 0.97);
-    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.55);
+    box-shadow: 6px 12px 32px rgba(0, 0, 0, 0.55);
     ${niceScrollbar}
     font-size: 1.15rem;
 `;

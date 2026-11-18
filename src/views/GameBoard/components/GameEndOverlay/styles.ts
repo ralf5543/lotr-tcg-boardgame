@@ -22,7 +22,7 @@ export const Panel = styled.div`
         rgba(36, 28, 18, 0.96) 0%,
         rgba(18, 14, 10, 0.98) 100%
     );
-    box-shadow: 0 18px 48px rgba(0, 0, 0, 0.55);
+    box-shadow: 9px 18px 48px rgba(0, 0, 0, 0.55);
     text-align: center;
     color: #f3ead7;
 `;

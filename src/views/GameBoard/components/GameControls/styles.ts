@@ -28,7 +28,7 @@ export const PhaseBanner = styled.div`
     display: flex;
     align-items: center;
     gap: 20px;
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.6);
+    box-shadow: 4px 8px 24px rgba(0, 0, 0, 0.6);
     backdrop-filter: blur(8px);
     font-size: 18px;
 `;
@@ -124,16 +124,16 @@ export const ActionButton = styled.button<{
         ${(props) =>
             props.$variant === 'secondary'
                 ? css`
-                      box-shadow: 0 4px 12px rgba(239, 68, 68, 0.28);
+                      box-shadow: 2px 4px 12px rgba(239, 68, 68, 0.28);
                   `
                 : props.$variant === 'choice'
                   ? css`
                         background: rgba(193, 160, 84, 0.34);
                         border-color: #e2c044;
-                        box-shadow: 0 4px 12px rgba(193, 160, 84, 0.3);
+                        box-shadow: 2px 4px 12px rgba(193, 160, 84, 0.3);
                     `
                   : css`
-                        box-shadow: 0 4px 12px rgba(193, 160, 84, 0.3);
+                        box-shadow: 2px 4px 12px rgba(193, 160, 84, 0.3);
                     `}
     }
 
@@ -153,7 +153,7 @@ export const ToastWidget = styled.div`
     border-right: 4px solid #e2c044;
     border-radius: 8px;
     padding: 12px 16px;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.7);
+    box-shadow: 5px 10px 30px rgba(0, 0, 0, 0.7);
     z-index: 9999;
     cursor: pointer;
     backdrop-filter: blur(6px);

@@ -71,7 +71,7 @@ export const CardWrapper = styled.div<{
     transform: rotate(var(--angle)) translateY(var(--translateY));
     transform-origin: bottom center;
     z-index: ${(props) => props.$zIndex};
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 1);
+    box-shadow: 2px 4px 6px rgba(0, 0, 0, 1);
     cursor: ${(props) =>
         props.$isDiscardPhase || props.$isClickPick ? 'pointer' : 'grab'};
     height: fit-content;
@@ -170,7 +170,7 @@ export const OpponentCardWrapper = styled.div<{
     transform: rotate(var(--angle)) translateY(var(--translateY));
     transform-origin: top center;
     z-index: ${(props) => props.$zIndex};
-    box-shadow: 0 3px 5px rgba(0, 0, 0, 0.85);
+    box-shadow: 2px 3px 5px rgba(0, 0, 0, 0.85);
     height: fit-content;
     overflow: hidden;
     border-radius: 2px;

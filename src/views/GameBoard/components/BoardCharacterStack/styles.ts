@@ -90,7 +90,7 @@ export const AttachmentWrapper = styled.div<{
     pointer-events: auto; /* Permet d'interagir avec les cartes attachées si besoin (hover, inspection) */
     border: 1px solid black;
     border-radius: 6px;
-    filter: drop-shadow(0px -3px 3px black);
+    filter: drop-shadow(2px 3px 3px black);
     ${({ $haloTone }) =>
         $haloTone &&
         css`
@@ -144,7 +144,7 @@ export const StackedOnCardSlot = styled.div<{
         inset-block-start: 50%;
         transform: translateY(-50%) rotate(90deg) scale(0.38);
         transform-origin: center right;
-        filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.75));
+        filter: drop-shadow(1px 2px 2px rgba(0, 0, 0, 0.75));
     }
 
     ${({ $targetable }) =>
@@ -153,7 +153,7 @@ export const StackedOnCardSlot = styled.div<{
             cursor: pointer;
             & > * {
                 filter: drop-shadow(0 0 6px #e2c044)
-                    drop-shadow(0 1px 2px rgba(0, 0, 0, 0.75));
+                    drop-shadow(1px 2px 2px rgba(0, 0, 0, 0.75));
                 transition: transform 0.15s ease;
             }
             &:hover > * {
@@ -188,7 +188,7 @@ export const StackedCountBadge = styled.button`
     text-align: center;
     pointer-events: auto;
     cursor: pointer;
-    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.6);
+    box-shadow: 1px 2px 4px rgba(0, 0, 0, 0.6);
 
     &:hover {
         background: rgba(28, 24, 12, 0.96);

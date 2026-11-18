@@ -2216,13 +2216,19 @@ export const GameBoard: React.FC<GameBoardProps> = ({
         ctx.phase === 'setup'
     );
 
+    // Camps connus dès le choix du gagnant d’enchère (pas besoin d’attendre le mulligan).
+    const setupStep = G.setupState?.step;
+    const sidesAssigned =
+        !isSetupPhase ||
+        (setupStep !== 'BIDDING' && setupStep !== 'CHOOSING_FIRST');
+
     // 🟢 2. Identification des rôles (TOUJOURS définie)
     const fpPlayerId = G.fpPlayerId || '0';
     const isLocalFP = myId === fpPlayerId;
     const isLocalShadow = !isLocalFP; // 👈 Rétabli pour G.awaitingSiteSelection et les rôles
 
-    // 🟢 3. Thème visuel du plateau uniquement
-    const currentFaction: 'FREE_PEOPLE' | 'SHADOW' | 'NEUTRAL' = isSetupPhase
+    // 🟢 3. Thème visuel du plateau (neutre jusqu’à l’assignation des camps)
+    const currentFaction: 'FREE_PEOPLE' | 'SHADOW' | 'NEUTRAL' = !sidesAssigned
         ? 'NEUTRAL'
         : isLocalFP
           ? 'FREE_PEOPLE'
@@ -3930,7 +3936,7 @@ export const GameBoard: React.FC<GameBoardProps> = ({
         <FactionProvider
             myPlayerId={myId}
             fpPlayerId={fpPlayerId}
-            isSetupPhase={isSetupPhase}
+            isSetupPhase={!sidesAssigned}
         >
             <TargetingArrowSyncProvider
                 myId={myId}

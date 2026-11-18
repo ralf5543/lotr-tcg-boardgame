@@ -20,7 +20,7 @@ export const ToggleButton = styled.button`
     border: 1px solid #991b1b;
     cursor: pointer;
     font-weight: bold;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+    box-shadow: 2px 4px 6px rgba(0, 0, 0, 0.3);
 
     &:hover {
         background-color: #991b1b;
@@ -39,7 +39,7 @@ export const PanelContent = styled.div`
     color: #f8fafc;
     padding: 16px;
     border-radius: 8px;
-    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+    box-shadow: 5px 10px 25px rgba(0, 0, 0, 0.5);
     border: 1px solid #334155;
     display: flex;
     flex-direction: column;

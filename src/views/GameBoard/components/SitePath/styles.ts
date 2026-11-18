@@ -314,6 +314,6 @@ export const StackedMinionSlot = styled.div<{
         transform: translate(-50%, -50%) scale(0.25);
         transform-origin: center center;
         pointer-events: none;
-        filter: drop-shadow(black 12px 5px 11px);
+        filter: drop-shadow(black 5px 10px 11px);
     }
 `;

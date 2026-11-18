@@ -49,18 +49,49 @@ const getVirtualPoint = (
 const isInHandCancelZone = (virtualY: number): boolean =>
     virtualY >= HAND_CANCEL_VIRTUAL_Y;
 
+/**
+ * Réglages penchant (drag main + sites landscape).
+ * - DECAY : frein vitesse/frame (↑ = retombe plus lent, ex. 0.97)
+ * - FOLLOW : poursuite du penchant vers la cible (↑ = plus nerveux, ↓ = plus soft)
+ * - IMPULSE : force ajoutée par pixel de souris (↑ = démarre plus fort)
+ * - *_GAIN : amplification axe (Z = plat, Y = gauche/droite 3D, X = haut/bas 3D)
+ * - *_MAX : angle max en degrés / plafond de vitesse
+ */
+const TILT_VEL_DECAY = 0.955;
+const TILT_FOLLOW = 0.1;
+const TILT_IMPULSE = 0.1;
+const TILT_Z_GAIN = 0.55;
+const TILT_Y_GAIN = 1.35;
+const TILT_X_GAIN = 1.15;
+const TILT_Z_MAX = 14;
+const TILT_Y_MAX = 32;
+const TILT_X_MAX = 26;
+const TILT_VEL_MAX = 48;
+
+const clamp = (value: number, min: number, max: number) =>
+    Math.max(min, Math.min(max, value));
+
+const ZERO_TILT = { x: 0, y: 0, z: 0 };
+
+/** Main, ou site (picker → origin BOARD + landscape). */
+const shouldApplyDragTilt = (dragged: DraggedCardData) =>
+    dragged.origin === 'HAND' || dragged.orientation === 'landscape';
+
 export const DragProvider: React.FC<{ children: React.ReactNode }> = ({
     children,
 }) => {
     const [dragged, setDragged] = useState<DraggedCardData | null>(null);
     const [position, setPosition] = useState({ x: 0, y: 0 });
     const [activeTargetId, setActiveTargetId] = useState<string | null>(null);
-    const [rotation, setRotation] = useState(0);
+    const [tilt, setTilt] = useState(ZERO_TILT);
     const [isOverHandCancel, setIsOverHandCancel] = useState(false);
     const [arrowOrigin, setArrowOrigin] = useState<{ x: number; y: number } | null>(
         null
     );
-    const lastX = useRef(0);
+    const lastPointer = useRef({ x: 0, y: 0 });
+    const velRef = useRef({ x: 0, y: 0 });
+    const tiltRef = useRef({ ...ZERO_TILT });
+    const tiltRafRef = useRef<number | null>(null);
 
     const targetsRef = useRef<Map<string, HTMLElement>>(new Map());
     const arrowAnchorsRef = useRef<Map<string, HTMLElement>>(new Map());
@@ -196,7 +227,10 @@ export const DragProvider: React.FC<{ children: React.ReactNode }> = ({
         };
 
         //(e.currentTarget as HTMLElement).setPointerCapture(e.pointerId);
-        lastX.current = e.clientX;
+        lastPointer.current = { x: e.clientX, y: e.clientY };
+        velRef.current = { x: 0, y: 0 };
+        tiltRef.current = { ...ZERO_TILT };
+        setTilt(ZERO_TILT);
 
         setDragged({
             card,
@@ -229,9 +263,15 @@ export const DragProvider: React.FC<{ children: React.ReactNode }> = ({
     };
 
     const stopDrag = () => {
+        if (tiltRafRef.current != null) {
+            cancelAnimationFrame(tiltRafRef.current);
+            tiltRafRef.current = null;
+        }
+        velRef.current = { x: 0, y: 0 };
+        tiltRef.current = { ...ZERO_TILT };
         setDragged(null);
         setActiveTargetId(null);
-        setRotation(0);
+        setTilt(ZERO_TILT);
         setIsOverHandCancel(false);
         setArrowOrigin(null);
     };
@@ -258,10 +298,20 @@ export const DragProvider: React.FC<{ children: React.ReactNode }> = ({
                 setArrowOrigin(null);
             }
 
-            const deltaX = e.clientX - lastX.current;
-            lastX.current = e.clientX;
-            const targetRotation = Math.max(-8, Math.min(8, deltaX * 0.4));
-            setRotation((prev) => prev + (targetRotation - prev) * 0.15);
+            const deltaX = e.clientX - lastPointer.current.x;
+            const deltaY = e.clientY - lastPointer.current.y;
+            lastPointer.current = { x: e.clientX, y: e.clientY };
+            // Impulsion → inertie (le rAF lisse et retombe lentement).
+            velRef.current.x = clamp(
+                velRef.current.x + deltaX * TILT_IMPULSE,
+                -TILT_VEL_MAX,
+                TILT_VEL_MAX
+            );
+            velRef.current.y = clamp(
+                velRef.current.y + deltaY * TILT_IMPULSE,
+                -TILT_VEL_MAX,
+                TILT_VEL_MAX
+            );
 
             const detectedTargetId = getHitTargetId(
                 e.clientX,
@@ -330,12 +380,64 @@ export const DragProvider: React.FC<{ children: React.ReactNode }> = ({
         };
     }, [dragged]);
 
+    // Penchant continu : attaque sur la vitesse, relâchement lent (anti-saccades).
+    useEffect(() => {
+        if (!dragged || !shouldApplyDragTilt(dragged)) {
+            if (tiltRafRef.current != null) {
+                cancelAnimationFrame(tiltRafRef.current);
+                tiltRafRef.current = null;
+            }
+            return;
+        }
+
+        const tick = () => {
+            velRef.current.x *= TILT_VEL_DECAY;
+            velRef.current.y *= TILT_VEL_DECAY;
+
+            // Même signe que le geste : la carte penche du côté où elle va.
+            // rotateY : bord d’attaque vers la caméra ; rotateX : idem en vertical.
+            const targetZ = clamp(
+                velRef.current.x * TILT_Z_GAIN,
+                -TILT_Z_MAX,
+                TILT_Z_MAX
+            );
+            const targetY = clamp(
+                velRef.current.x * TILT_Y_GAIN,
+                -TILT_Y_MAX,
+                TILT_Y_MAX
+            );
+            const targetX = clamp(
+                -velRef.current.y * TILT_X_GAIN,
+                -TILT_X_MAX,
+                TILT_X_MAX
+            );
+
+            const prev = tiltRef.current;
+            const next = {
+                x: prev.x + (targetX - prev.x) * TILT_FOLLOW,
+                y: prev.y + (targetY - prev.y) * TILT_FOLLOW,
+                z: prev.z + (targetZ - prev.z) * TILT_FOLLOW,
+            };
+            tiltRef.current = next;
+            setTilt(next);
+            tiltRafRef.current = requestAnimationFrame(tick);
+        };
+
+        tiltRafRef.current = requestAnimationFrame(tick);
+        return () => {
+            if (tiltRafRef.current != null) {
+                cancelAnimationFrame(tiltRafRef.current);
+                tiltRafRef.current = null;
+            }
+        };
+    }, [dragged]);
+
     return (
         <DragContext.Provider
             value={{
                 dragged,
                 position,
-                rotation,
+                tilt,
                 activeTargetId,
                 startDrag,
                 stopDrag,
@@ -360,8 +462,35 @@ const DragHalo = styled.div<{ $playable?: boolean }>`
     ${({ $playable }) => $playable && playableEventHalo}
 `;
 
+/** Silhouette au sol : clone noir flouté, pas un box-shadow. */
+const DragTableShadow = styled.div`
+    position: absolute;
+    left: 0;
+    top: 0;
+    z-index: 0;
+    pointer-events: none;
+    opacity: 0.42;
+    filter: brightness(0) blur(9px);
+    transform-origin: center center;
+    will-change: transform;
+`;
+
+const DragLiftedCard = styled.div`
+    position: absolute;
+    left: 0;
+    top: 0;
+    z-index: 1;
+    pointer-events: none;
+    opacity: 0.98;
+    transform-origin: center center;
+    will-change: transform;
+`;
+
+const dragCardAnchorTranslate = (isLandscape: boolean) =>
+    isLandscape ? 'translate(-90px, -55px)' : 'translate(-65px, -90px)';
+
 const DragPortal: React.FC = () => {
-    const { dragged, position, rotation, isOverHandCancel } = useDrag();
+    const { dragged, position, tilt, isOverHandCancel } = useDrag();
     if (!dragged) return null;
 
     const isLandscape = dragged.orientation === 'landscape';
@@ -372,38 +501,60 @@ const DragPortal: React.FC = () => {
     const showPlayHalo =
         dragged.origin === 'HAND' && dragged.isPlayableEvent && !isLandscape;
 
+    // Perspective écran : le site garde son rotate(90°) interne ; on penche
+    // le wrapper (axes écran, pas locaux à la carte).
+    const useTilt = shouldApplyDragTilt(dragged);
+    const tiltTransform = useTilt
+        ? `perspective(920px) rotateX(${tilt.x}deg) rotateY(${tilt.y}deg) rotateZ(${tilt.z}deg)`
+        : `rotate(${tilt.z}deg)`;
+    // Ombre « au plateau » : lumière globale haut-gauche → bas-droite
+    // (même orientation, un peu moins penchée 3D + enfoncée en Z).
+    const shadowTransform = useTilt
+        ? `perspective(920px) translate3d(22px, 68px, -200px) rotateX(${tilt.x * 0.75}deg) rotateY(${tilt.y * 0.75}deg) rotateZ(${tilt.z}deg)`
+        : `translate(18px, 40px) rotate(${tilt.z}deg)`;
+
+    const anchorStyle = {
+        transform: dragCardAnchorTranslate(isLandscape),
+    } as const;
+
+    const renderCardFace = () =>
+        isLandscape ? (
+            <SiteCard site={dragged.card as SiteCardState} size="md" />
+        ) : (
+            <Card
+                card={dragged.card as CardState}
+                size="md"
+                isFaceDown={false}
+            />
+        );
+
     return (
         <div
             style={{
                 position: 'absolute',
                 left: position.x,
                 top: position.y,
-                transform: `rotate(${rotation}deg) scale(1)`,
                 pointerEvents: 'none',
                 zIndex: 9999,
-                opacity: 0.95,
-                filter: 'drop-shadow(4px 4px 4px rgba(0, 0, 0, 0.5)) drop-shadow(0 15px 25px rgba(0, 0, 0, 0.3))',
+                transformStyle: useTilt ? 'preserve-3d' : undefined,
             }}
         >
-            <div
-                style={{
-                    transform: isLandscape
-                        ? 'translate(-90px, -55px)'
-                        : 'translate(-65px, -90px)',
-                }}
-            >
-                {isLandscape ? (
-                    <SiteCard site={dragged.card as SiteCardState} size="md" />
-                ) : (
-                    <DragHalo $playable={showPlayHalo}>
-                        <Card
-                            card={dragged.card as CardState}
-                            size="md"
-                            isFaceDown={false}
-                        />
-                    </DragHalo>
-                )}
-            </div>
+            {useTilt && (
+                <DragTableShadow style={{ transform: shadowTransform }}>
+                    <div style={anchorStyle}>{renderCardFace()}</div>
+                </DragTableShadow>
+            )}
+            <DragLiftedCard style={{ transform: tiltTransform }}>
+                <div style={anchorStyle}>
+                    {isLandscape ? (
+                        renderCardFace()
+                    ) : (
+                        <DragHalo $playable={showPlayHalo}>
+                            {renderCardFace()}
+                        </DragHalo>
+                    )}
+                </div>
+            </DragLiftedCard>
         </div>
     );
 };

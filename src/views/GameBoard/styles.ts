@@ -69,7 +69,7 @@ export const PhaseBanner = styled.div`
     margin-bottom: 12px;
     color: #f8fafc;
     font-size: 0.9rem;
-    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.3);
+    box-shadow: 2px 4px 6px -1px rgba(0, 0, 0, 0.3);
 
     span {
         display: flex;
@@ -112,7 +112,7 @@ export const TokenReserve = styled.div`
     border-radius: 6px;
     padding: 8px;
     font-size: 11px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+    box-shadow: 2px 4px 6px rgba(0, 0, 0, 0.3);
 `;
 
 export const TokenGrid = styled.div`
@@ -175,7 +175,7 @@ export const HoveredCardsZone = styled.div<{ $orientation?: 'portrait' | 'landsc
     aspect-ratio: ${props => (props.$orientation === 'landscape' ? '1.39 / 1' : '1 / 1.39')};
 
     animation: fadeIn 0.15s ease-out;
-    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.8);
+    box-shadow: 5px 10px 25px rgba(0, 0, 0, 0.8);
     border-radius: 8px;
 `;
 
@@ -194,7 +194,7 @@ export const DesignationOverlay = styled.div`
 export const DesignationPendingCard = styled.div`
     pointer-events: auto;
     transform-origin: top center;
-    filter: drop-shadow(0 8px 18px rgba(0, 0, 0, 0.75));
+    filter: drop-shadow(4px 8px 18px rgba(0, 0, 0, 0.75));
     overflow: hidden;
     border-radius: 4px;
 

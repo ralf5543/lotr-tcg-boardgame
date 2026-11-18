@@ -160,7 +160,7 @@ export const ThreatDot = styled.img`
     height: 20px;
     object-fit: contain;
     margin: -3px;
-    filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.7));
+    filter: drop-shadow(1px 2px 2px rgba(0, 0, 0, 0.7));
     ${appearPulseCss}
 `;
 

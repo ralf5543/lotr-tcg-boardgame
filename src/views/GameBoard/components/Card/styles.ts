@@ -55,7 +55,7 @@ const isForSupportArea = (
 const woundImpactAnimation = (recoilY: number) => keyframes`
   0% {
     transform: translate(0, 0) rotate(0deg) scale(1);
-    filter: drop-shadow(0 3px 4px rgba(0, 0, 0, 1)) brightness(1);
+    filter: drop-shadow(2px 3px 4px rgba(0, 0, 0, 1)) brightness(1);
   }
   20% {
     /* Impact & Recul vertical exact selon la direction calculée */
@@ -67,7 +67,7 @@ const woundImpactAnimation = (recoilY: number) => keyframes`
   }
   100% {
     transform: translate(0, 0) rotate(0deg) scale(1);
-    filter: drop-shadow(0 3px 4px rgba(0, 0, 0, 1)) brightness(1);
+    filter: drop-shadow(2px 3px 4px rgba(0, 0, 0, 1)) brightness(1);
   }
 `;
 
@@ -76,15 +76,15 @@ const exertFatigueAnimation = (sagY: number, gen = 0) => keyframes`
   /* ${gen} */
   0% {
     transform: translate(0, 0) rotate(0deg) scale(1);
-    filter: drop-shadow(0 3px 4px rgba(0, 0, 0, 1)) brightness(1);
+    filter: drop-shadow(2px 3px 4px rgba(0, 0, 0, 1)) brightness(1);
   }
   32% {
     transform: translate(0, ${sagY}px) rotate(${sagY > 0 ? 1 : -1}deg) scale(0.985, 0.96);
-    filter: drop-shadow(0 3px 4px rgba(0, 0, 0, 1)) brightness(0.86) saturate(0.8);
+    filter: drop-shadow(2px 3px 4px rgba(0, 0, 0, 1)) brightness(0.86) saturate(0.8);
   }
   100% {
     transform: translate(0, 0) rotate(0deg) scale(1);
-    filter: drop-shadow(0 3px 4px rgba(0, 0, 0, 1)) brightness(1);
+    filter: drop-shadow(2px 3px 4px rgba(0, 0, 0, 1)) brightness(1);
   }
 `;
 
@@ -158,7 +158,7 @@ export const CardContainer = styled.div<CardContainerProps>`
             background-image: ${`url(interface/cultures_backgrounds/background_${props.$culture}.webp)`};
             background-size: auto;
             background-repeat: repeat;
-            filter: drop-shadow(0 3px 4px rgba(0, 0, 0, 1));
+            filter: drop-shadow(2px 3px 4px rgba(0, 0, 0, 1));
 
             &::before {
                 position: absolute;
@@ -1149,8 +1149,8 @@ export const CultureTokenPip = styled.span<{ $culture: string }>`
     box-shadow:
         inset 1px 1.5px 2px rgba(255, 255, 255, 0.45),
         inset -1.5px -2px 3px rgba(0, 0, 0, 0.55),
-        0 1px 1px rgba(0, 0, 0, 0.35),
-        0 2px 3px rgba(0, 0, 0, 0.28);
+        1px 2px 1px rgba(0, 0, 0, 0.35),
+        2px 3px 3px rgba(0, 0, 0, 0.28);
     ${appearPulseCss}
 
     /* Symbole incrusté : ombre interne (pas de halo externe) */
@@ -1399,13 +1399,13 @@ export const AbilityButton = styled.button<{
     background-size: contain;
     background-repeat: no-repeat;
     background-position: center;
-    box-shadow: rgb(0, 0, 0) 0px 2px 2px;
+    box-shadow: rgb(0, 0, 0) 1px 2px 2px;
 
     ${(props) =>
         props.$abilityPhaseMatch &&
         css`
             box-shadow:
-                rgb(0, 0, 0) 0px 2px 2px,
+                rgb(0, 0, 0) 1px 2px 2px,
                 rgb(226, 192, 68) 0px 0px 10px 7px;
             &:active {
                 box-shadow:
@@ -1459,7 +1459,7 @@ export const AbilityBubble = styled.div<{ $top: number; $left: number }>`
     background-color: rgba(18, 18, 20, 0.95);
     border: 1px solid #e2c044;
     border-radius: 6px;
-    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.8);
+    box-shadow: 2px 4px 16px rgba(0, 0, 0, 0.8);
     animation: ${fadeIn} 0.15s ease-out forwards;
 
     &::after {

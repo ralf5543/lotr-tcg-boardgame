@@ -15,5 +15,5 @@ export const StackedMinionCard = styled.div<{ $index: number }>`
     top: ${props => props.$index * 35}px;  /* Décalage vertical léger par séide supplémentaire */
     left: ${props => props.$index * 25}px; /* Décalage horizontal léger pour l'effet quinconce */
     transform: scale(0.9);
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.7);
+    box-shadow: 2px 4px 10px rgba(0, 0, 0, 0.7);
 `;

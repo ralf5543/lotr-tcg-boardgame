@@ -154,7 +154,7 @@ export const CountBadge = styled.span`
     font-weight: 700;
     text-align: center;
     pointer-events: none;
-    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.55);
+    box-shadow: 1px 2px 6px rgba(0, 0, 0, 0.55);
 `;
 
 export const EmptyState = styled.p`

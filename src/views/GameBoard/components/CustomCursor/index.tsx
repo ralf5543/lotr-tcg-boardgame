@@ -127,10 +127,10 @@ const CursorImageWrapper = styled.div<WrapperProps>`
     ${(props) =>
         props.$playerFaction === 'FREE_PEOPLE'
             ? css`
-                filter: drop-shadow(-2px 4px 2px rgba(0, 0, 0, 1));
+                filter: drop-shadow(2px 4px 2px rgba(0, 0, 0, 1));
               `
             : css`
-                filter: drop-shadow(-2px 4px 2px rgba(0, 0, 0, 1));
+                filter: drop-shadow(2px 4px 2px rgba(0, 0, 0, 1));
               `}
 
     /* 🟢 EFFET DE LUMIÈRE / SURBRILLANCE AU SURVOL INTERACTIF */
@@ -139,12 +139,12 @@ const CursorImageWrapper = styled.div<WrapperProps>`
         (props.$playerFaction === 'FREE_PEOPLE'
             ? css`
                 filter: drop-shadow(0px 0px 6px rgba(226, 192, 68, 0.9))
-                        drop-shadow(-2px 4px 2px rgba(0, 0, 0, 1))
+                        drop-shadow(2px 4px 2px rgba(0, 0, 0, 1))
                         brightness(1.15);
               `
             : css`
                 filter: drop-shadow(0px 0px 4px rgba(255, 0, 0, 0.8))
-                        drop-shadow(-2px 4px 2px rgba(0, 0, 0, 1))
+                        drop-shadow(2px 4px 2px rgba(0, 0, 0, 1))
                         brightness(1.2);
               `)}
 

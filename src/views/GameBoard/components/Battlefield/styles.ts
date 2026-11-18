@@ -65,7 +65,7 @@ export const TokenReserve = styled.div`
     border-radius: 6px;
     padding: 8px;
     font-size: 11px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+    box-shadow: 2px 4px 6px rgba(0, 0, 0, 0.3);
 `;
 
 export const TokenGrid = styled.div`

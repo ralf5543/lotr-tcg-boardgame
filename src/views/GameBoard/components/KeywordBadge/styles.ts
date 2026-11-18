@@ -38,7 +38,7 @@ export const BadgeValue = styled.span`
     line-height: 1.1;
     text-shadow:
         0 0 2px #000,
-        0 1px 1px #000;
+        1px 1px 1px #000;
     pointer-events: none;
 `;
 
@@ -66,7 +66,7 @@ export const TooltipPortalContainer = styled.div<{ $top: number; $left: number }
     background-color: rgba(18, 18, 20, 0.95);
     border: 1px solid #e2c044;
     border-radius: 6px;
-    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.8);
+    box-shadow: 2px 4px 16px rgba(0, 0, 0, 0.8);
     
     pointer-events: none;
     animation: ${fadeIn} 0.15s ease-out forwards;

@@ -74,7 +74,8 @@ export const PlayerArea: React.FC<PlayerAreaProps> = ({
     const [cardScrollerEl, setCardScrollerEl] =
         useState<HTMLDivElement | null>(null);
 
-    // En setup, on force isFP à true pour afficher la zone normalement
+    // Avant l’assignation des camps (enchère / choix de commencer), les deux
+    // zones restent « compagnie » ; ensuite on respecte le vrai camp.
     const isFP = isSetupPhase ? true : _playerId === fpPlayerId;
     const isFellowshipDormant = !isFP;
     const playerBurdens = isFP ? (G?.players?.[_playerId]?.burdens ?? 0) : 0;

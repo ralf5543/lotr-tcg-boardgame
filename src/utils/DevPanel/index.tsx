@@ -342,31 +342,6 @@ export const DevPanel: React.FC<DevPanelProps> = ({
                         </S.ButtonGroup>
                     </S.Section>
 
-                    {/* Presets playtest (vague en cours) */}
-                    <S.Section>
-                        <S.Label>Preset playtest :</S.Label>
-                        <S.ButtonGroup>
-                            <S.ActionButton
-                                onClick={() =>
-                                    moves.devLoadPreset?.(
-                                        'RANGERS_ARMY_HARADRIM'
-                                    )
-                                }
-                                title="Armée des Haradrim : −3 crépuscule → monture depuis défausse"
-                            >
-                                Armée des Haradrim
-                            </S.ActionButton>
-                            <S.ActionButton
-                                onClick={() =>
-                                    moves.devLoadPreset?.('HALO_UX')
-                                }
-                                title="Pot-pourri : or / rouge / bleu, flèches, zooms (voir message de statut)"
-                            >
-                                Halos / flèches / zooms
-                            </S.ActionButton>
-                        </S.ButtonGroup>
-                    </S.Section>
-
                     {/* Session / debug UI */}
                     <S.Section>
                         <S.Label>Session :</S.Label>
