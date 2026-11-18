@@ -349,12 +349,12 @@ export const DevPanel: React.FC<DevPanelProps> = ({
                             <S.ActionButton
                                 onClick={() =>
                                     moves.devLoadPreset?.(
-                                        'RANGERS_SEASONED_LEADER'
+                                        'RANGERS_I_WILL_GO'
                                     )
                                 }
-                                title="Meneur Chevronné : −1 menace → situation Pillard depuis défausse"
+                                title="J’Irai : initiative → DEFENDER +1 sur le détenteur"
                             >
-                                Meneur Chevronné
+                                J’Irai
                             </S.ActionButton>
                         </S.ButtonGroup>
                     </S.Section>

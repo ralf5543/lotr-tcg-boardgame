@@ -140,44 +140,46 @@ export const applyDevPreset = (
     if (!fpPlayer) return { startPhase: 'startOfFellowship' };
 
     switch (presetType) {
-        case 'RANGERS_SEASONED_LEADER': {
-            // Escarmouche : Meneur sur Suderon → −1 menace → situation Pillard en défausse.
+        case 'RANGERS_I_WILL_GO': {
+            // Affectation : J'Irai sur rôdeur + initiative → DEFENDER +1 (2 séides OK).
             resetBoardForPreset(G);
             setupDevPath(G, 3, RANGERS_PATH);
-            // Champ des Vaincus = 1 crépuscule.
-            G.twilightPool = 1;
+            G.twilightPool = 0;
             fpPlayer.burdens = 0;
-            fpPlayer.threats = 2;
             const frodo = {
-                ...clonePresetCard('11S164', 'dev-sl-frodo'),
-                attachments: [clonePresetCard('4R1', 'dev-sl-ring')],
+                ...clonePresetCard('11S164', 'dev-iwg-frodo'),
+                attachments: [clonePresetCard('4R1', 'dev-iwg-ring')],
             };
-            const ranger = clonePresetCard('7C116', 'dev-sl-ranger');
+            const iWillGo = clonePresetCard('7C105', 'dev-iwg-cond');
+            const ranger = {
+                ...clonePresetCard('7C116', 'dev-iwg-ranger'),
+                attachments: [iWillGo],
+            };
+            // Initiative FP = ≥ 4 cartes en main.
+            fpPlayer.hand = [
+                clonePresetCard('1C119', 'dev-iwg-h1'),
+                clonePresetCard('1C119', 'dev-iwg-h2'),
+                clonePresetCard('1C106', 'dev-iwg-h3'),
+                clonePresetCard('1C117', 'dev-iwg-h4'),
+            ];
             fpPlayer.fellowshipArea = [frodo, ranger];
-            const leader = clonePresetCard('10R48', 'dev-sl-leader');
-            const southron = {
-                ...clonePresetCard('4U249', 'dev-sl-southron'),
+            const m1 = {
+                ...clonePresetCard('4U249', 'dev-iwg-m1'),
                 minionSiteNumber: 4,
-                attachments: [leader],
             };
-            const condition = clonePresetCard('10U43', 'dev-sl-field');
+            const m2 = {
+                ...clonePresetCard('5C76', 'dev-iwg-m2'),
+                minionSiteNumber: 4,
+            };
             const shadowId = fpId === '0' ? '1' : '0';
             const shadow = G.players[shadowId];
             if (shadow) {
-                shadow.discard = [condition];
+                shadow.hand = [];
             }
-            G.battlefield = [southron];
-            G.skirmishes = [
-                {
-                    id: 'dev-sl-sk',
-                    companionId: 'dev-sl-ranger',
-                    minionIds: ['dev-sl-southron'],
-                },
-            ];
-            G.activeSkirmishId = 'dev-sl-sk';
+            G.battlefield = [m1, m2];
             G.statusMessage =
-                '[DEV] Meneur Chevronné · Escarmouche (onglet joueur 1) : bulle sur le Suderon (Meneur…) → −1 menace (2→1) → Champ des Vaincus en défausse (−1 crépuscule). Relancer le preset.';
-            return { startPhase: 'skirmish' };
+                '[DEV] J’Irai · Affectation : rôdeur avec J’Irai + initiative → DEFENDER +1 (les 2 séides peuvent l’attaquer). Relancer le preset.';
+            return { startPhase: 'assignment' };
         }
 
         default:

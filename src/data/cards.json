@@ -75800,6 +75800,26 @@
         "MAN"
       ]
     ],
+    "abilities": [
+      {
+        "id": "7C105:0",
+        "phases": [],
+        "trigger": {
+          "type": "WHILE",
+          "hasInitiative": true
+        },
+        "cost": [],
+        "effects": [
+          {
+            "type": "MODIFY_KEYWORD",
+            "keyword": "DEFENDER +1",
+            "target": "BEARER"
+          }
+        ],
+        "source": "ATTACHMENT",
+        "text": "If you have initiative, bearer is defender +1."
+      }
+    ],
     "culture": "GONDOR",
     "twilightCost": 3,
     "imageUrl": "/cards_visuals/o_07_105.jpg",
@@ -83535,6 +83555,27 @@
         "SAURON",
         "ORC"
       ]
+    ],
+    "abilities": [
+      {
+        "id": "7C265:0",
+        "phases": [],
+        "trigger": {
+          "type": "WHILE",
+          "hasInitiative": true
+        },
+        "cost": [],
+        "effects": [
+          {
+            "type": "MODIFY_STAT",
+            "stat": "STRENGTH",
+            "value": 3,
+            "target": "BEARER"
+          }
+        ],
+        "source": "ATTACHMENT",
+        "text": "If you have initiative, bearer is strength +3."
+      }
     ],
     "culture": "SAURON",
     "twilightCost": 0,

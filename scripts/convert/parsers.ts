@@ -6077,6 +6077,75 @@ function parseWhileHaveInitiativeEachKeywordAbilities(
 }
 
 /**
+ * If you have initiative, bearer is defender +N | strength ±N | Damage +N | fierce.
+ * (I Will Go / Besieging Pike…) — « If » = passif WHILE initiative.
+ */
+function parseIfHaveInitiativeBearerAbilities(
+    text: string,
+    cardId?: string
+): Record<string, unknown>[] {
+    const found: Record<string, unknown>[] = [];
+    const kwTail =
+        '((?:<keyword>[^<]*</keyword>|\\*\\*[^*]+\\*\\*|defender\\s*\\+\\s*\\d+|damage\\s*\\+\\s*\\d+|fierce)\\.?)';
+    const keywordRe = new RegExp(
+        `If you have initiative,\\s*bearer is ${kwTail}`,
+        'gi'
+    );
+    let match: RegExpExecArray | null;
+    while ((match = keywordRe.exec(text)) !== null) {
+        const grant = parseWhileKeywordGrant(match[1]);
+        if (!grant) continue;
+        const after = stripAbilityMarkup(
+            text.slice(match.index + match[0].length)
+        ).trim();
+        if (/^and\b/i.test(after)) continue;
+        found.push({
+            id: `${cardId || 'ability'}:${found.length}:if-init-bearer-kw`,
+            phases: [],
+            trigger: { type: 'WHILE', hasInitiative: true },
+            cost: [],
+            effects: [
+                {
+                    type: 'MODIFY_KEYWORD',
+                    keyword: grant.keyword,
+                    target: 'BEARER',
+                },
+            ],
+            source: 'ATTACHMENT',
+            text: stripAbilityMarkup(match[0]),
+        });
+    }
+
+    const strengthRe =
+        /If you have initiative,\s*bearer is strength\s*([+-]\d+)\.?/gi;
+    while ((match = strengthRe.exec(text)) !== null) {
+        const value = parseInt(match[1], 10);
+        if (!Number.isFinite(value) || value === 0) continue;
+        const after = stripAbilityMarkup(
+            text.slice(match.index + match[0].length)
+        ).trim();
+        if (/^and\b/i.test(after)) continue;
+        found.push({
+            id: `${cardId || 'ability'}:${found.length}:if-init-bearer-str`,
+            phases: [],
+            trigger: { type: 'WHILE', hasInitiative: true },
+            cost: [],
+            effects: [
+                {
+                    type: 'MODIFY_STAT',
+                    stat: 'STRENGTH',
+                    value,
+                    target: 'BEARER',
+                },
+            ],
+            source: 'ATTACHMENT',
+            text: stripAbilityMarkup(match[0]),
+        });
+    }
+    return found;
+}
+
+/**
  * « While bearer is in region N, bearer gains muster. »
  * « While bearer is in region N, each of your shire companions gains muster. »
  * « While bearer is in region N, each character gains muster. »
@@ -19049,6 +19118,12 @@ export function parseAbilities(
             });
         }
     );
+    parseIfHaveInitiativeBearerAbilities(text, cardId).forEach((ability) => {
+        abilities.push({
+            ...ability,
+            id: `${cardId || 'ability'}:${abilities.length}`,
+        });
+    });
     parseWhileInRegionStrengthAbilities(text, cardTitle, cardId).forEach(
         (ability) => {
             abilities.push({
