@@ -37,3 +37,18 @@ export const playableEventHalo = css`
         rgba(226, 192, 68, 0.4) 0px 0px 40px;
 `;
 
+/**
+ * Halo rouge main : défausse (coût / ralliement / muster).
+ * Même discrétion que l’or jouable ; pas d’intensification au survol.
+ */
+export const handDiscardHalo = css`
+    overflow: visible;
+    outline: 1px solid rgba(226, 59, 59, 0.95);
+    box-shadow:
+        rgb(0, 0, 0) 2px 4px 6px,
+        rgb(226, 59, 59) 0px 0px 10px,
+        rgb(192, 57, 43) 0px 0px 0px,
+        rgba(226, 59, 59, 0.8) 0px 0px 12px,
+        rgba(226, 59, 59, 0.4) 0px 0px 40px;
+`;
+

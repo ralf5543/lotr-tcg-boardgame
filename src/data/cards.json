@@ -75449,6 +75449,38 @@
     "isUnique": true,
     "kind": "FREE_PEOPLE",
     "type": "ALLY",
+    "abilities": [
+      {
+        "id": "7R97:0",
+        "phases": [
+          "MANEUVER"
+        ],
+        "requiresInitiative": true,
+        "cost": [
+          {
+            "discardFromHand": 2
+          }
+        ],
+        "effects": [
+          {
+            "type": "ADD_TEMP_SITE_NUMBER",
+            "target": [
+              [
+                "MINION"
+              ]
+            ],
+            "value": 2,
+            "expiresAtPhase": "REGROUP"
+          }
+        ],
+        "source": "SELF",
+        "text": "MANEUVER: If you have initiative, discard 2 cards from hand to make the site number of a minion +2 until the regroup phase.",
+        "textFr": "**Manœuvre :** Si vous avez l'initiative, défaussez 2 cartes de votre main pour donner +2 au numéro de site d'un séide jusqu'à la phase de ralliement."
+      }
+    ],
+    "actionPhases": [
+      "MANEUVER"
+    ],
     "culture": "GONDOR",
     "race": "MAN",
     "twilightCost": 1,

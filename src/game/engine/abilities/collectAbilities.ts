@@ -897,6 +897,12 @@ function formatEffectBit(
         const who = source.i18n?.fr?.title || source.title || 'ce personnage';
         return `permettre à ${who} de combattre`;
     }
+    if (effect.type === 'ADD_TEMP_SITE_NUMBER') {
+        const who = formatTargetPhrase(effect.target);
+        const sign = effect.value > 0 ? '+' : '';
+        const bit = `numéro de site ${sign}${effect.value} jusqu’au ralliement`;
+        return who ? `${bit} à ${who}` : bit;
+    }
     if (effect.type === 'ADD_TEMP_STAT') {
         const statLabels: Record<string, string> = {
             STRENGTH: 'force',

@@ -305,6 +305,11 @@ export const Hand: React.FC<HandProps> = ({
                               isHandDiscard &&
                               isCardTargetable(cardKey) &&
                               !discardingIds.has(cardKey);
+                          /** Ralliement / muster : toute la main est défaussable. */
+                          const isRegroupDiscardEligible =
+                              isDiscardPhase && !isDiscarding;
+                          const isDiscardEligible =
+                              isHandDiscardTarget || isRegroupDiscardEligible;
                           const isHandPickTarget =
                               isHandPick && isCardTargetable(cardKey);
 
@@ -333,15 +338,17 @@ export const Hand: React.FC<HandProps> = ({
                                   $isClickPick={isClickPickTarget}
                                   $isDiscarding={isDiscarding}
                                   $isSelected={isHandDiscardSelected}
+                                  $isDiscardEligible={isDiscardEligible}
                                   $hasSpot={hasSpot}
                                   $isSpotMet={isSpotMet}
                                   $isPlayableEvent={
-                                      // HAND_PICK : pas de halo or (choix clic)
-                                      isPlayableEvent ||
-                                      isPlayableOther ||
-                                      isHandDiscardTarget ||
-                                      isDesignationTarget ||
-                                      usesArrowDesignation
+                                      // HAND_PICK / défausse : pas d’or jouable
+                                      // (défausse = halo rouge dédié).
+                                      !isDiscardEligible &&
+                                      (isPlayableEvent ||
+                                          isPlayableOther ||
+                                          isDesignationTarget ||
+                                          usesArrowDesignation)
                                   }
                                   data-cursor={
                                       isClickPickTarget ? 'arrow' : undefined

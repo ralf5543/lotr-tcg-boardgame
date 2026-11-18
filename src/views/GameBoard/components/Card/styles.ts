@@ -311,8 +311,9 @@ export const CardContainer = styled.div<CardContainerProps>`
             ${RoamingNumber} {
                 width: 39px;
                 inset-block-start: 116px;
-                inset-inline-start: 50%;
-                transform: translateX(-50%);
+                /* Centrage sans transform : le pulse valueChange utilise
+                   scale et écraserait un translateX(-50%). */
+                inset-inline-start: calc(50% - 19.5px);
                 font-size: 20px;
                 background-position: 1px 0px;
             }

@@ -140,40 +140,37 @@ export const applyDevPreset = (
     if (!fpPlayer) return { startPhase: 'startOfFellowship' };
 
     switch (presetType) {
-        case 'RANGERS_BOROMIR': {
-            // Escarmouche : Boromir force 7 vs séide force 14 → ×2 submergerait, ×3 non.
+        case 'RANGERS_MERCHANT': {
+            // Manœuvre : initiative + défausse 2 → numéro de site d’un séide +2
+            // jusqu’au ralliement (ici 4 → 6 → errant au site 4).
             resetBoardForPreset(G);
             setupDevPath(G, 3, RANGERS_PATH);
             G.twilightPool = 0;
             fpPlayer.burdens = 0;
             const frodo = {
-                ...clonePresetCard('11S164', 'dev-bor-frodo'),
-                attachments: [clonePresetCard('4R1', 'dev-bor-ring')],
+                ...clonePresetCard('11S164', 'dev-mer-frodo'),
+                attachments: [clonePresetCard('4R1', 'dev-mer-ring')],
             };
-            const boromir = clonePresetCard('1R96', 'dev-bor-boromir');
-            fpPlayer.fellowshipArea = [frodo, boromir];
-            // Voyageur Suderon : force 8 — on en met deux assignés = 16.
-            // Boromir 7 : ×2 = 14 (submergé) ; ×3 = 21 (tient).
-            const m1 = {
-                ...clonePresetCard('5C76', 'dev-bor-m1'),
-                minionSiteNumber: 4,
-            };
-            const m2 = {
-                ...clonePresetCard('5C76', 'dev-bor-m2'),
-                minionSiteNumber: 4,
-            };
-            G.battlefield = [m1, m2];
-            G.skirmishes = [
-                {
-                    id: 'dev-bor-sk',
-                    companionId: 'dev-bor-boromir',
-                    minionIds: ['dev-bor-m1', 'dev-bor-m2'],
-                },
+            const merchant = clonePresetCard('7R97', 'dev-mer-merchant');
+            // Allié (pas compagnon) — même aire de compagnie côté plateau.
+            const ranger = clonePresetCard('7C116', 'dev-mer-ranger');
+            fpPlayer.fellowshipArea = [frodo, ranger, merchant];
+            fpPlayer.hand = [
+                clonePresetCard('1C119', 'dev-mer-h1'),
+                clonePresetCard('1C106', 'dev-mer-h2'),
+                clonePresetCard('1C117', 'dev-mer-h3'),
+                clonePresetCard('1C119', 'dev-mer-h4'),
+                clonePresetCard('1C106', 'dev-mer-h5'),
+                clonePresetCard('1C117', 'dev-mer-h6'),
             ];
-            G.activeSkirmishId = 'dev-bor-sk';
+            const minion = {
+                ...clonePresetCard('5C76', 'dev-mer-minion'),
+                minionSiteNumber: 4,
+            };
+            G.battlefield = [minion];
             G.statusMessage =
-                '[DEV] Boromir · Escarmouche : Boromir (7) vs 2× Voyageur (8+8=16). Sans ×3 → submergé ; avec ×3 → blessures normales. Passer les actions → résoudre. Relancer le preset.';
-            return { startPhase: 'skirmish' };
+                '[DEV] Marchand gondorien (allié) · Manœuvre, initiative OK (≥4 en main). Activer le Marchand → défausser 2 → choisir le séide (site 4 → 6, devient errant). Relancer le preset.';
+            return { startPhase: 'maneuver' };
         }
 
         default:

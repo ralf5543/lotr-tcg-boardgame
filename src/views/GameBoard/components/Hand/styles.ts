@@ -1,5 +1,5 @@
 import styled, { css, keyframes } from 'styled-components';
-import { playableEventHalo } from '../../cardHalo';
+import { handDiscardHalo, playableEventHalo } from '../../cardHalo';
 
 export const FixedHandContainer = styled.div<{ $isDragging?: boolean }>`
     position: fixed;
@@ -52,6 +52,8 @@ export const CardWrapper = styled.div<{
     $hasSpot?: boolean;
     $isSpotMet?: boolean;
     $isPlayableEvent?: boolean;
+    /** Défausse main (coût / ralliement / muster) : halo rouge permanent. */
+    $isDiscardEligible?: boolean;
     /** Désignation / défausse : flèche — grab réservé au drag. */
     $isClickPick?: boolean;
 }>`
@@ -86,22 +88,22 @@ export const CardWrapper = styled.div<{
             animation-delay: ${(props.$staggerIndex ?? 0) * 0.08}s;
         `}
 
+    /* Survol = zoom seul (pas de 2ᵉ halo) — cf. halo-colors. */
     &:hover {
         transform: rotate(var(--angle)) translateY(var(--translateY)) scale(1.1);
         z-index: 100;
-
-        ${(props) =>
-            props.$isDiscardPhase &&
-            !props.$isDiscarding &&
-            css`
-                box-shadow: 0 0 15px 4px rgba(231, 76, 60, 0.85);
-            `}
     }
 
     ${(props) =>
         props.$isSelected &&
         css`
-            box-shadow: 0 0 0 2px #f1c40f, 0 0 14px 4px rgba(241, 196, 15, 0.7);
+            outline: 2px solid #e23b3b;
+            box-shadow:
+                rgb(0, 0, 0) 2px 4px 6px,
+                rgb(226, 59, 59) 0px 0px 12px,
+                rgb(192, 57, 43) 0px 0px 4px,
+                rgba(226, 59, 59, 0.9) 0px 0px 18px,
+                rgba(226, 59, 59, 0.5) 0px 0px 48px;
             z-index: 80;
         `}
 
@@ -113,13 +115,19 @@ export const CardWrapper = styled.div<{
             pointer-events: none !important;
             z-index: 150 !important;
         `}
+    /* Défausse main → rouge (éligibles seulement). Prioritaire sur l’or jouable. */
+    ${(props) =>
+        props.$isDiscardEligible &&
+        !props.$isDiscarding &&
+        !props.$isSelected &&
+        handDiscardHalo}
     /* Jouable → or ; spot KO (condition non réunie) → rien. */
     ${(props) =>
         props.$isPlayableEvent &&
+        !props.$isDiscardEligible &&
         !(props.$hasSpot && !props.$isSpotMet) &&
         playableEventHalo}
 `;
-
 export const CardRow = styled.div`
     flex: 1;
     display: flex;

@@ -17964,6 +17964,53 @@ export function parseAbilities(
             return;
         }
 
+        // « If you have initiative, discard N cards from hand to make the
+        // site number of a minion +2 until the regroup phase. »
+        // (Gondorian Merchant…)
+        const initiativeDiscardSiteNumber = bodyPlain.match(
+            /^If you have initiative,\s*discard\s+(\d+|a|one|two|three)\s+cards?\s+from hand\s+to make the site number of\s+((?:a|an)\s+[\s\S]+?)\s*([+\-–−]\d+)\s+until the regroup phase\.?/i
+        );
+        if (initiativeDiscardSiteNumber) {
+            const discardCount = parseBurdenWord(
+                initiativeDiscardSiteNumber[1]
+            );
+            const filters = parseClassFilters(
+                initiativeDiscardSiteNumber[2]
+            );
+            const value = parseInt(
+                initiativeDiscardSiteNumber[3].replace(/[–−]/g, '-'),
+                10
+            );
+            if (
+                discardCount &&
+                filters.length > 0 &&
+                Number.isFinite(value) &&
+                value !== 0
+            ) {
+                abilities.push({
+                    id: `${cardId || 'ability'}:${abilities.length}`,
+                    phases,
+                    requiresInitiative: true,
+                    cost: [{ discardFromHand: discardCount }],
+                    effects: [
+                        {
+                            type: 'ADD_TEMP_SITE_NUMBER',
+                            target: [filters],
+                            value,
+                            expiresAtPhase: 'REGROUP',
+                        },
+                    ],
+                    source: 'SELF',
+                    text: `${marker.phase}: If you have initiative, discard ${discardCount} card${discardCount > 1 ? 's' : ''} from hand to make the site number of ${stripAbilityMarkup(initiativeDiscardSiteNumber[2]).trim()} ${value > 0 ? '+' : ''}${value} until the regroup phase.`
+                        .replace(/<[^>]+>/g, '')
+                        .replace(/\s+/g, ' ')
+                        .replace(/\s+\./g, '.')
+                        .trim(),
+                });
+                return;
+            }
+        }
+
         // « Discard N cards from hand to exhaust a minion. » (Ranger of Osgiliath)
         const discardHandExhaust = bodyPlain.match(
             /^Discard\s+(\d+|a|one|two|three)\s+cards?\s+from hand\s+to exhaust\s+((?:a|an)\s+.+)$/i

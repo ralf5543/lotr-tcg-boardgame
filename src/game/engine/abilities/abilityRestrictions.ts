@@ -4,6 +4,7 @@ import {
     getCurrentSiteIndex,
     isCardStackedOnControlledSite,
 } from '../../logic/sites';
+import { playerHasInitiative } from '../../logic/initiative';
 import { abilityOwnerPlayerId } from './payAbilityCost';
 import { findBearer } from './resolveCostTarget';
 import { cardMatchesTarget } from '../validations/matchers';
@@ -52,6 +53,12 @@ export function abilityMeetsPlayRestrictions(
 ): boolean {
     if (ability.requiresUnassigned && isAssignedToSkirmish(G, source)) {
         return false;
+    }
+    if (ability.requiresInitiative) {
+        const ownerId = abilityOwnerPlayerId(G, source);
+        if (!ownerId || !playerHasInitiative(G, ownerId)) {
+            return false;
+        }
     }
     if (ability.requiresBearerTitles && ability.requiresBearerTitles.length > 0) {
         const bearer = findBearer(G, source) || source;

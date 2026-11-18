@@ -348,11 +348,13 @@ export const DevPanel: React.FC<DevPanelProps> = ({
                         <S.ButtonGroup>
                             <S.ActionButton
                                 onClick={() =>
-                                    moves.devLoadPreset?.('RANGERS_BOROMIR')
+                                    moves.devLoadPreset?.(
+                                        'RANGERS_MERCHANT'
+                                    )
                                 }
-                                title="Boromir : non submergé sauf force ×3"
+                                title="Marchand gondorien : initiative + défausse 2 → site séide +2"
                             >
-                                Boromir
+                                Marchand
                             </S.ActionButton>
                         </S.ButtonGroup>
                     </S.Section>

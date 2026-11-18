@@ -2027,6 +2027,24 @@ function applyOneEffect(
         return true;
     }
 
+    if (effect.type === 'ADD_TEMP_SITE_NUMBER') {
+        if (
+            target.type !== 'MINION' ||
+            typeof target.minionSiteNumber !== 'number' ||
+            !effect.value ||
+            !effect.expiresAtPhase
+        ) {
+            return false;
+        }
+        if (!target.tempSiteNumberMods) target.tempSiteNumberMods = [];
+        target.tempSiteNumberMods.push({
+            id: `${ability.id}:site-number:${target.tempSiteNumberMods.length}`,
+            value: effect.value,
+            expiresAtPhase: effect.expiresAtPhase,
+        });
+        return true;
+    }
+
     if (effect.type === 'ADD_TEMP_STAT') {
         if (!G.tempModifiers) G.tempModifiers = [];
         const targetCardId = target.instanceId || target.id;
@@ -2814,6 +2832,14 @@ export function clearExpiredTempKeywords(
         }
         if (card.tempOverwhelmFactor?.expiresAtPhase === phase) {
             delete card.tempOverwhelmFactor;
+        }
+        if (card.tempSiteNumberMods && card.tempSiteNumberMods.length > 0) {
+            card.tempSiteNumberMods = card.tempSiteNumberMods.filter(
+                (mod) => mod.expiresAtPhase !== phase
+            );
+            if (card.tempSiteNumberMods.length === 0) {
+                delete card.tempSiteNumberMods;
+            }
         }
     });
 

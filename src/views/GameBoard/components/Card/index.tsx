@@ -24,6 +24,10 @@ import {
     getEffectiveStrength,
     getEffectiveResistance,
 } from '../../../../utils/cardStats';
+import {
+    getEffectiveMinionSiteNumber,
+    isMinionRoaming,
+} from '../../../../utils/roamingDetection';
 import { getCardText } from '../../../../utils/i18n';
 import {
     getCollectorNumber,
@@ -549,16 +553,15 @@ export const Card: React.FC<CardProps> = ({
             ? getEffectiveResistance(card, burdens, G)
             : undefined
     );
+    const effectiveSiteForPulse =
+        card != null ? getEffectiveMinionSiteNumber(card) : undefined;
     const isRoamingForPulse =
         Boolean(card) &&
         typeof currentSiteIndex === 'number' &&
-        card!.kind === 'SHADOW' &&
-        card!.type === 'MINION' &&
-        typeof card!.minionSiteNumber === 'number' &&
-        card!.minionSiteNumber > currentSiteIndex + 1;
+        isMinionRoaming(card!, currentSiteIndex);
     const roamingPulse = usePulseOnChange(
         pulseOnBoard && card
-            ? `${card.minionSiteNumber ?? ''}:${isRoamingForPulse ? 1 : 0}`
+            ? `${effectiveSiteForPulse ?? ''}:${isRoamingForPulse ? 1 : 0}`
             : undefined
     );
     const twilightPulse = usePulseOnChange(
@@ -674,12 +677,10 @@ export const Card: React.FC<CardProps> = ({
     const isCharacter = ['COMPANION', 'ALLY', 'MINION'].includes(card.type);
     const isFreepeopleCharacter = ['COMPANION', 'ALLY'].includes(card.type);
 
+    const effectiveMinionSiteNumber = getEffectiveMinionSiteNumber(card);
     const isRoaming =
         typeof currentSiteIndex === 'number' &&
-        card.kind === 'SHADOW' &&
-        card.type === 'MINION' &&
-        typeof card.minionSiteNumber === 'number' &&
-        card.minionSiteNumber > currentSiteIndex + 1;
+        isMinionRoaming(card, currentSiteIndex);
 
     const effectiveVitality = getEffectiveVitality(card, G);
     const effectiveStrength = getEffectiveStrength(card, G);
@@ -990,12 +991,12 @@ export const Card: React.FC<CardProps> = ({
                     </S.VitalityBadge>
                 )}
 
-                {card.minionSiteNumber !== undefined && (
+                {effectiveMinionSiteNumber !== undefined && (
                     <S.RoamingNumber
                         $isRoaming={isRoaming}
                         $pulseGen={roamingPulse}
                     >
-                        {card.minionSiteNumber}
+                        {effectiveMinionSiteNumber}
 
                         {isRoaming && size === 'md' && (
                             <S.RoamingBadge title="Pénalité d'errance (+2 Crépuscule)">

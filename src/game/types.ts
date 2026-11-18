@@ -1098,6 +1098,16 @@ export type AbilityEffect =
           expiresAtPhase?: AbilityEffectExpiry;
       }
     | {
+          /**
+           * Numéro de site temporaire d’un séide
+           * (Marchand gondorien : +2 jusqu’au ralliement).
+           */
+          type: 'ADD_TEMP_SITE_NUMBER';
+          target: AbilityTargetRef;
+          value: number;
+          expiresAtPhase: AbilityEffectExpiry;
+      }
+    | {
           type: 'WOUND';
           count: number;
           /** Aragorn 4P364 : N = Hobbits unbound spotés. */
@@ -1658,6 +1668,11 @@ export interface Ability {
         count: number;
         target: string[][];
     };
+    /**
+     * « If you have initiative… » en tête d’une capacité de phase
+     * (Marchand gondorien…).
+     */
+    requiresInitiative?: boolean;
 }
 
 export interface CardState {
@@ -1718,6 +1733,15 @@ export interface CardState {
     vitality?: number;
     resistance?: number;
     minionSiteNumber?: number;
+    /**
+     * Mods temporaires du numéro de site (Marchand gondorien…).
+     * Lu via `getEffectiveMinionSiteNumber`.
+     */
+    tempSiteNumberMods?: {
+        id: string;
+        value: number;
+        expiresAtPhase: AbilityEffectExpiry;
+    }[];
     /**
      * Demeure(s) d’allié (CSV « Ally Home Sites ») — ex. `["1"]`, `["4T"]`,
      * `["2T","8T"]` (CSV « 2T & 8T »). Affichage carte ; règles film à part.
