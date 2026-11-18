@@ -1091,7 +1091,11 @@ export type AbilityEffect =
           target: AbilityTargetRef;
           /** Force adverse ≥ factor × force pour submerger (défaut règles = 2). */
           factor: number;
-          expiresAtPhase: AbilityEffectExpiry;
+          /**
+           * Absent = passif WHILE (Boromir…). Présent = seuil temporaire
+           * (Everyone Knows…).
+           */
+          expiresAtPhase?: AbilityEffectExpiry;
       }
     | {
           type: 'WOUND';

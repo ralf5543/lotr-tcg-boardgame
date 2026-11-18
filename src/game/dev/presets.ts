@@ -140,35 +140,40 @@ export const applyDevPreset = (
     if (!fpPlayer) return { startPhase: 'startOfFellowship' };
 
     switch (presetType) {
-        case 'RANGERS_ANDURIL': {
-            // Affectation : Andúril sur Aragorn, 0 menace → DEFENDER +1.
+        case 'RANGERS_BOROMIR': {
+            // Escarmouche : Boromir force 7 vs séide force 14 → ×2 submergerait, ×3 non.
             resetBoardForPreset(G);
             setupDevPath(G, 3, RANGERS_PATH);
             G.twilightPool = 0;
             fpPlayer.burdens = 0;
-            fpPlayer.threats = 0;
             const frodo = {
-                ...clonePresetCard('11S164', 'dev-and-frodo'),
-                attachments: [clonePresetCard('4R1', 'dev-and-ring')],
+                ...clonePresetCard('11S164', 'dev-bor-frodo'),
+                attachments: [clonePresetCard('4R1', 'dev-bor-ring')],
             };
-            const anduril = clonePresetCard('7R80', 'dev-and-blade');
-            const aragorn = {
-                ...clonePresetCard('1P365', 'dev-and-aragorn'),
-                attachments: [anduril],
-            };
-            fpPlayer.fellowshipArea = [frodo, aragorn];
+            const boromir = clonePresetCard('1R96', 'dev-bor-boromir');
+            fpPlayer.fellowshipArea = [frodo, boromir];
+            // Voyageur Suderon : force 8 — on en met deux assignés = 16.
+            // Boromir 7 : ×2 = 14 (submergé) ; ×3 = 21 (tient).
             const m1 = {
-                ...clonePresetCard('4U249', 'dev-and-m1'),
+                ...clonePresetCard('5C76', 'dev-bor-m1'),
                 minionSiteNumber: 4,
             };
             const m2 = {
-                ...clonePresetCard('5C76', 'dev-and-m2'),
+                ...clonePresetCard('5C76', 'dev-bor-m2'),
                 minionSiteNumber: 4,
             };
             G.battlefield = [m1, m2];
+            G.skirmishes = [
+                {
+                    id: 'dev-bor-sk',
+                    companionId: 'dev-bor-boromir',
+                    minionIds: ['dev-bor-m1', 'dev-bor-m2'],
+                },
+            ];
+            G.activeSkirmishId = 'dev-bor-sk';
             G.statusMessage =
-                '[DEV] Andúril · Affectation : Aragorn + Andúril, 0 menace → DEFENDER +1 (2 séides OK). Tester aussi menaces +1 (DevPanel) → plus de bonus. Relancer le preset.';
-            return { startPhase: 'assignment' };
+                '[DEV] Boromir · Escarmouche : Boromir (7) vs 2× Voyageur (8+8=16). Sans ×3 → submergé ; avec ×3 → blessures normales. Passer les actions → résoudre. Relancer le preset.';
+            return { startPhase: 'skirmish' };
         }
 
         default:

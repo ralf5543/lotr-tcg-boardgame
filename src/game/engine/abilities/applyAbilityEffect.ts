@@ -2018,6 +2018,8 @@ function applyOneEffect(
 
     if (effect.type === 'SET_OVERWHELM_FACTOR') {
         if (!effect.factor || effect.factor < 2) return false;
+        // Passif WHILE : pas d’expiry — lu via getWhileOverwhelmFactor.
+        if (!effect.expiresAtPhase) return true;
         target.tempOverwhelmFactor = {
             factor: effect.factor,
             expiresAtPhase: effect.expiresAtPhase,

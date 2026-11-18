@@ -958,6 +958,33 @@ export function getWhileStrengthBonus(
  * Mots-clés bruts des passifs While (Damage / Fierce) sur la carte (ou attachements),
  * plus les « each [classe] » portés par n’importe quelle carte en jeu.
  */
+/**
+ * Seuil de submersion depuis les passifs WHILE (Boromir ×3…).
+ * Retourne le max des facteurs applicables (≥ 2), ou null si aucun.
+ */
+export function getWhileOverwhelmFactor(
+    G: GameState,
+    card: CardState
+): number | null {
+    const cardId = card.instanceId || card.id;
+    let best: number | null = null;
+    forEachWhileOnCard(G, card, (source, ability) => {
+        for (const effect of ability.effects || []) {
+            if (effect.type !== 'SET_OVERWHELM_FACTOR') continue;
+            if (effect.target !== 'SELF' && effect.target !== 'BEARER') {
+                continue;
+            }
+            if (!localBeneficiaryMatches(G, source, effect.target, cardId)) {
+                continue;
+            }
+            const factor = effect.factor || 0;
+            if (factor < 2) continue;
+            best = best == null ? factor : Math.max(best, factor);
+        }
+    });
+    return best;
+}
+
 export function getWhileKeywordRaws(
     G: GameState,
     card: CardState

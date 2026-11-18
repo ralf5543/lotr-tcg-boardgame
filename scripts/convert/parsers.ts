@@ -6146,6 +6146,54 @@ function parseIfHaveInitiativeBearerAbilities(
 }
 
 /**
+ * Name is not overwhelmed unless his/her strength is tripled.
+ * (Boromir…) — passif WHILE, facteur 3.
+ */
+function parseNamedNotOverwhelmedUnlessTripledAbilities(
+    text: string,
+    cardTitle?: string,
+    cardId?: string
+): Record<string, unknown>[] {
+    const found: Record<string, unknown>[] = [];
+    const plain = stripAbilityMarkup(text)
+        .replace(/\*+/g, ' ')
+        .replace(/\s+/g, ' ')
+        .trim();
+    const re =
+        /([\p{L}’'\-]+(?:\s+[\p{L}’'\-]+)?)\s+is not overwhelmed unless (?:his or her|his|her|its|their)\s+strength is tripled\.?/giu;
+    let match: RegExpExecArray | null;
+    while ((match = re.exec(plain)) !== null) {
+        const name = match[1].trim();
+        if (
+            cardTitle &&
+            name.toLowerCase() !== cardTitle.toLowerCase() &&
+            name.toLowerCase() !==
+                cardTitle.replace(/^The\s+/i, '').toLowerCase()
+        ) {
+            continue;
+        }
+        const after = plain.slice(match.index + match[0].length).trim();
+        if (/^and\b/i.test(after)) continue;
+        found.push({
+            id: `${cardId || 'ability'}:${found.length}:overwhelm-x3`,
+            phases: [],
+            trigger: { type: 'WHILE' },
+            cost: [],
+            effects: [
+                {
+                    type: 'SET_OVERWHELM_FACTOR',
+                    factor: 3,
+                    target: 'SELF',
+                },
+            ],
+            source: 'SELF',
+            text: stripAbilityMarkup(match[0]),
+        });
+    }
+    return found;
+}
+
+/**
  * If you cannot spot a/N threat(s), Name|bearer is defender +N.
  * (Andúril King’s Blade…) — Name = Bearer must be …
  */
@@ -19197,6 +19245,16 @@ export function parseAbilities(
             });
         }
     );
+    parseNamedNotOverwhelmedUnlessTripledAbilities(
+        text,
+        cardTitle,
+        cardId
+    ).forEach((ability) => {
+        abilities.push({
+            ...ability,
+            id: `${cardId || 'ability'}:${abilities.length}`,
+        });
+    });
     parseWhileInRegionStrengthAbilities(text, cardTitle, cardId).forEach(
         (ability) => {
             abilities.push({

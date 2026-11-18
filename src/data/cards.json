@@ -6171,6 +6171,25 @@
     "keywords": [
       "RANGER"
     ],
+    "abilities": [
+      {
+        "id": "1R96:0",
+        "phases": [],
+        "trigger": {
+          "type": "WHILE"
+        },
+        "cost": [],
+        "effects": [
+          {
+            "type": "SET_OVERWHELM_FACTOR",
+            "factor": 3,
+            "target": "SELF"
+          }
+        ],
+        "source": "SELF",
+        "text": "Boromir is not overwhelmed unless his strength is tripled."
+      }
+    ],
     "culture": "GONDOR",
     "race": "MAN",
     "signet": "ARAGORN",

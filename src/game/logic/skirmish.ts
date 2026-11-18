@@ -14,6 +14,7 @@ import {
     getEffectiveKeywords,
 } from '../engine/keywords/keywordUtils';
 import { getCalculatedStrength } from './stats/statCalculator';
+import { getWhileOverwhelmFactor } from './stats/mechanics/whileModifier';
 import {
     requestWounds,
     tryOpenCharacterDies,
@@ -26,6 +27,18 @@ import {
     formatBlessuresCount,
     formatPointsFardeau,
 } from './journal';
+
+/** Seuil de submersion : temp (Everyone Knows) > WHILE (Boromir) > ×2. */
+function companionOverwhelmFactor(
+    G: GameState,
+    companion: CardState
+): number {
+    const temp = companion.tempOverwhelmFactor?.factor;
+    if (temp && temp > 0) return temp;
+    const whileFactor = getWhileOverwhelmFactor(G, companion);
+    if (whileFactor && whileFactor > 0) return whileFactor;
+    return 2;
+}
 
 /** Titre seul (pas de sous-titre) pour le journal de combat. */
 const getCardName = (card: CardState | null | undefined, fallback: string): string =>
@@ -208,16 +221,11 @@ export const resolveSkirmish = (G: GameState, _ctx?: Ctx) => {
                 : `${minionsLabel} a vaincu ${companionName}.`
         );
 
-        // Everyone Knows etc. : seuil temporaire (×3) sur le compagnon.
-        const companionOverwhelmFactor =
-            companion.tempOverwhelmFactor?.factor &&
-            companion.tempOverwhelmFactor.factor > 0
-                ? companion.tempOverwhelmFactor.factor
-                : 2;
+        // Everyone Knows (temp) / Boromir (WHILE) : seuil ×3 sur le compagnon.
+        const overwhelmFactor = companionOverwhelmFactor(G, companion);
         const isCompanionOverwhelmed =
             companionStrength > 0
-                ? minionsStrength >=
-                  companionOverwhelmFactor * companionStrength
+                ? minionsStrength >= overwhelmFactor * companionStrength
                 : minionsStrength > 0;
         if (G.pendingWinsSkirmish) {
             G.pendingWinsSkirmish.byOverwhelm = isCompanionOverwhelmed;
