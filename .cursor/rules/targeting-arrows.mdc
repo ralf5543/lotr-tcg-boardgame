@@ -7,9 +7,11 @@ alwaysApply: true
 
 **Format : Standard (règles modernes).** Voir `.cursor/rules/format-standard.mdc`.
 
+Couleurs or / rouge / bleu : [`halo-colors.mdc`](halo-colors.mdc).
+
 ## Principe
 
-La **flèche jaune** matérialise une **attaque directe d’un personnage vers un autre** : **blessure**, **exhaust**, **exert en effet**. Rien d’autre.
+La **flèche rouge** matérialise une **attaque directe d’un personnage vers un autre** : **blessure**, **exhaust**, **exert en effet**. Rien d’autre. Toujours rouge (les deux camps).
 
 Elle **n’est pas** pour : soin, buff de force, reinforce / place de jetons, **défausse d’une carte en jeu**, désignation de site, choix de carte en main, etc. Ces cas = **halo + clic** (éventuellement après le drag hors de la main), **sans** flèche qui suit le curseur.
 
@@ -17,12 +19,12 @@ Elle ne matérialise **pas** non plus une étape de **coût** intermédiaire (af
 
 ## Sortie de main
 
-| Situation | Après le drag hors de la main | Flèche jaune |
+| Situation | Après le drag hors de la main | Flèche rouge |
 | --- | --- | --- |
-| **Coût à désigner** (retirer des jetons, exert un personnage, etc.) | Halo sur les cartes éligibles → **clic** pour payer le coût | Ensuite : si l’effet est une **attaque** (blessure / exhaust / exert), flèche **depuis la carte cliquée** (agent) **vers** la cible. **Pas** de flèche main → carte de coût. |
+| **Coût à désigner** (retirer des jetons, exert un personnage, etc.) | Halo or sur les cartes éligibles → **clic** pour payer le coût | Ensuite : si l’effet est une **attaque** (blessure / exhaust / exert), flèche **depuis la carte cliquée** (agent) **vers** la cible. **Pas** de flèche main → carte de coût. |
 | **Coût automatique** + attaque (add 2 burdens pour blesser, etc.) | Pas d’étape intermédiaire | Flèche **depuis** la carte sortie de la main (`pendingPlay`) **vers** la cible. |
 | **Pas de coût / attaque** (blesser, exhaust…) | — | Flèche **depuis** la carte sortie de la main **vers** la cible. |
-| **Effet non-attaque à désigner** (reinforce, soin, buff, défausse, jouer depuis la main…) | Halo sur les cartes éligibles (après drop hors main) | **Pas** de flèche. |
+| **Effet non-attaque à désigner** (reinforce, soin, buff, défausse, jouer depuis la main…) | Halo or sur les cartes éligibles (dès le drag / après drop) | **Pas** de flèche. |
 
 Exemples :
 - **Exert un personnage pour en blesser un autre** : halo sur le coût → clic → **puis** flèche **depuis** le personnage exerté **vers** la cible blessée.
@@ -60,5 +62,6 @@ Même pattern pour capacités en jeu et événements. Ne **pas** faire partir la
 ## Curseur pendant le drag (main)
 
 - Tant que la carte « ramassée » est visible sous le pointeur : curseur **poing fermé** (grabbing).
-- Dès que le curseur est assez loin pour **faire disparaître** la carte ramassée et afficher la **flèche jaune** de ciblage : le curseur reprend la forme **flèche** (pointeur), pas le poing fermé.
-- Si l’effet n’est **pas** une attaque : pas de flèche → pas de bascule « flèche jaune » pendant le drag.
+- Dès que le curseur est assez loin pour **faire disparaître** la carte ramassée et afficher la **flèche rouge** de ciblage : le curseur reprend la forme **flèche** (pointeur), pas le poing fermé.
+- Si l’effet n’est **pas** une attaque : pas de flèche → pas de bascule « flèche rouge » pendant le drag.
+- Dès le ramassage : la carte perd son halo main ; les cibles éligibles prennent le leur (voir [`halo-colors.mdc`](halo-colors.mdc)).

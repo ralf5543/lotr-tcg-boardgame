@@ -1,11 +1,10 @@
 import React, { useState, useEffect, useRef } from 'react';
-import styled, { css } from 'styled-components';
+import styled from 'styled-components';
 import type { CardState, SiteCardState } from '../game/types';
 import { Card } from '../views/GameBoard/components/Card';
 import { SiteCard } from '../views/GameBoard/components/SiteCard';
 import { TargetingArrow } from '../views/GameBoard/components/TargetingArrow';
-import { useLocalFaction } from './FactionContext';
-import { playableEventHalo, spotMetHalo } from '../views/GameBoard/cardHalo';
+import { playableEventHalo } from '../views/GameBoard/cardHalo';
 import { isDesignationTargetId } from '../game/engine/abilities/designation';
 import { PENDING_PLAY_ORIGIN_ID } from '../views/GameBoard/components/TargetingArrow/sync';
 import { usePublishTargetingArrow } from '../views/GameBoard/components/TargetingArrow/TargetingArrowSync';
@@ -356,15 +355,9 @@ export const DragProvider: React.FC<{ children: React.ReactNode }> = ({
     );
 };
 
-const DragHalo = styled.div<{ $mode?: 'playable' | 'ready' }>`
+const DragHalo = styled.div<{ $playable?: boolean }>`
     border-radius: 4px;
-    ${({ $mode }) => $mode === 'playable' && playableEventHalo}
-    ${({ $mode }) =>
-        $mode === 'ready' &&
-        css`
-            ${spotMetHalo}
-            outline: none;
-        `}
+    ${({ $playable }) => $playable && playableEventHalo}
 `;
 
 const DragPortal: React.FC = () => {
@@ -378,11 +371,6 @@ const DragPortal: React.FC = () => {
 
     const showPlayHalo =
         dragged.origin === 'HAND' && dragged.isPlayableEvent && !isLandscape;
-    const haloMode = showPlayHalo
-        ? isOverHandCancel
-            ? 'playable'
-            : 'ready'
-        : undefined;
 
     return (
         <div
@@ -407,7 +395,7 @@ const DragPortal: React.FC = () => {
                 {isLandscape ? (
                     <SiteCard site={dragged.card as SiteCardState} size="md" />
                 ) : (
-                    <DragHalo $mode={haloMode}>
+                    <DragHalo $playable={showPlayHalo}>
                         <Card
                             card={dragged.card as CardState}
                             size="md"
@@ -442,7 +430,6 @@ const DragTargetingArrow: React.FC = () => {
         dragged?.designationTargetIds,
         activeTargetId
     );
-    const faction = useLocalFaction();
     usePublishTargetingArrow(
         isActive,
         fromCardId,
@@ -462,7 +449,6 @@ const DragTargetingArrow: React.FC = () => {
             from={from}
             to={targetCenter ?? position}
             isValidTarget={isValid}
-            faction={faction}
         />
     );
 };

@@ -5,7 +5,6 @@ import { Card } from '../Card';
 import * as S from './styles';
 import { useDrag } from '../../../../contexts/DragContext';
 import { useHoverCard } from '../../../../contexts/HoverCardContext';
-import { useLocalFaction } from '../../../../contexts/FactionContext';
 import { useTargeting } from '../../../../contexts/TargetingContext';
 import { useTargetingArrowSync } from '../TargetingArrow/TargetingArrowSync';
 import { canPlayCard, canAttachToCharacter } from '../../../../game/engine/canPlayCard';
@@ -88,11 +87,15 @@ export const BoardCharacterStack: React.FC<BoardCharacterStackProps> = ({
     const { registerTarget, registerArrowAnchor, activeTargetId, dragged, startDrag, isOverHandCancel } =
         useDrag();
     const { setHoveredCard } = useHoverCard();
-    const { isCardTargetable, selectCard, targetingKind, hoveredTargetId } =
-        useTargeting();
+    const {
+        isCardTargetable,
+        selectCard,
+        targetingKind,
+        hoveredTargetId,
+        arrowFromCardId,
+    } = useTargeting();
     const arrowSync = useTargetingArrowSync();
     const remoteTargetId = arrowSync?.remote?.toCardId;
-    const myFaction = useLocalFaction();
 
     const stackedCards = character.stacked || [];
     const stackTruncated = stackedCards.length > MAX_STACK_PEEKS;
@@ -136,7 +139,6 @@ export const BoardCharacterStack: React.FC<BoardCharacterStackProps> = ({
         isCardTargetable(cardKey) ||
         isCardTargetable(character.id) ||
         (duplicateInstanceIds || []).some((id) => isCardTargetable(id));
-    const isInCombat = assignedMinions.length > 0;
     const dragDesignationIds = dragged?.designationTargetIds;
     const isDragDesignating =
         Boolean(dragDesignationIds?.length) && !isOverHandCancel;
@@ -151,6 +153,29 @@ export const BoardCharacterStack: React.FC<BoardCharacterStackProps> = ({
             (targetingKind === 'DESIGNATION' ||
                 targetingKind === 'SANCTUARY_HEAL')) ||
         isDragDesignationCandidate(cardKey, character.id);
+
+    /**
+     * Rouge = attaque / blessure (archerie, menaces, désignation avec flèche,
+     * drag d’event d’attaque). Or = choix neutre (soin, attache, escarmouche…).
+     */
+    const isHostileTargeting =
+        targetingKind === 'ARCHERY' ||
+        targetingKind === 'THREAT_WOUND' ||
+        targetingKind === 'SITE_CHARACTER_WOUND' ||
+        (targetingKind === 'DESIGNATION' && Boolean(arrowFromCardId)) ||
+        isDragDesignating;
+
+    /** Halo plateau : or = choix ; rouge = blessure / attaque. */
+    const resolveHaloTone = (
+        targetable: boolean,
+        designation: boolean,
+        choiceHost = false
+    ): 'choice' | 'hostile' | null => {
+        if (choiceHost) return 'choice';
+        if (!targetable && !designation) return null;
+        if (isHostileTargeting) return 'hostile';
+        return 'choice';
+    };
 
     // 🟢 Extraction distincte du TYPE et du SUBTYPE
     const draggedType = (dragged?.card as CardState)?.type as
@@ -223,29 +248,13 @@ export const BoardCharacterStack: React.FC<BoardCharacterStackProps> = ({
         );
     };
 
-    const factionForAim = (id: string, altId?: string) => {
-        const isLocal =
-            hoveredTargetId === id ||
-            hoveredTargetId === altId ||
-            (isDragDesignating &&
-                (activeTargetId === id || activeTargetId === altId));
-        if (isLocal) return myFaction;
-        if (remoteTargetId === id || remoteTargetId === altId) {
-            return arrowSync?.remote?.faction === 'SHADOW'
-                ? 'SHADOW'
-                : 'FREE_PEOPLE';
-        }
-        return myFaction;
-    };
-
     // 🎯 Matching avec instanceId prioritaire, sinon id
     const currentId = character.instanceId || character.id;
     const isAimedByArrow = matchesAimedCard(currentId, character.id);
-    const aimFaction = factionForAim(currentId, character.id);
-    const isTargeted =
-        ((activeTargetId === currentId || activeTargetId === character.id) &&
-            ((!isOpponent && canAttach) || canReceiveAssignment)) ||
-        isAimedByArrow;
+    /** Rouge viseur / flèche seulement — pas le survol d’attache (reste or). */
+    const isTargeted = isAimedByArrow;
+    const isChoiceHost =
+        !isOverHandCancel && (canAttach || canReceiveAssignment);
 
     // Règle de sélection d'escarmouche
     const canSelectThisSkirmish =
@@ -254,6 +263,10 @@ export const BoardCharacterStack: React.FC<BoardCharacterStackProps> = ({
         assignedMinions.length > 0 &&
         isSelectionAllowed;
 
+    const characterHaloTone = canSelectThisSkirmish
+        ? null
+        : resolveHaloTone(isTargetable, isDesignationTarget, isChoiceHost);
+
     const handleStackClick = (e: React.MouseEvent) => {
         e.stopPropagation();
 
@@ -261,6 +274,7 @@ export const BoardCharacterStack: React.FC<BoardCharacterStackProps> = ({
         if (
             targetingKind === 'THREAT_WOUND' ||
             targetingKind === 'ARCHERY' ||
+            targetingKind === 'SITE_CHARACTER_WOUND' ||
             targetingKind === 'DESIGNATION' ||
             targetingKind === 'SANCTUARY_HEAL'
         ) {
@@ -406,6 +420,10 @@ export const BoardCharacterStack: React.FC<BoardCharacterStackProps> = ({
                                     minionKey,
                                     minion.id
                                 );
+                            const minionHaloTone = resolveHaloTone(
+                                isMinionTargetable,
+                                isMinionDesignationTarget
+                            );
                             const isMinionWounded = Boolean(
                                 minion.wounds && minion.wounds > 0
                             );
@@ -427,7 +445,11 @@ export const BoardCharacterStack: React.FC<BoardCharacterStackProps> = ({
                                         ) {
                                             registerArrowAnchor(minion.id, el);
                                         }
-                                        if (isMinionDesignationTarget && el) {
+                                        if (
+                                            (isMinionDesignationTarget ||
+                                                isMinionTargetable) &&
+                                            el
+                                        ) {
                                             registerTarget(minionKey, el);
                                             if (
                                                 minion.id &&
@@ -445,16 +467,12 @@ export const BoardCharacterStack: React.FC<BoardCharacterStackProps> = ({
                                             }
                                         }
                                     }}
-                                    $isTargetable={isMinionTargetable}
-                                    $isDesignationTarget={
-                                        isMinionDesignationTarget
-                                    }
+                                    $haloTone={minionHaloTone}
                                     $isTargeted={isMinionAimed}
-                                    $aimFaction={factionForAim(
-                                        minionKey,
-                                        minion.id
-                                    )}
-                                    $suppressHoverScale
+                                    /* Zoom OK en désignation ; off seulement si le groupe escarmouche gère le survol. */
+                                    $suppressHoverScale={
+                                        canSelectThisSkirmish && !minionHaloTone
+                                    }
                                     onClick={(e) => {
                                         if (isMinionTargetable) {
                                             e.stopPropagation();
@@ -510,9 +528,10 @@ export const BoardCharacterStack: React.FC<BoardCharacterStackProps> = ({
                                                                 $index={
                                                                     attachIdx
                                                                 }
-                                                                $isDesignationTarget={
+                                                                $haloTone={resolveHaloTone(
+                                                                    attTargetable,
                                                                     attDesignation
-                                                                }
+                                                                )}
                                                                 ref={(el) => {
                                                                     registerTarget(
                                                                         attKey,
@@ -622,13 +641,11 @@ export const BoardCharacterStack: React.FC<BoardCharacterStackProps> = ({
                     <S.CardDragTarget
                         $isOpponent={isOpponent}
                         $isTargeted={isTargeted}
-                        $aimFaction={aimFaction}
-                        $isTargetable={isTargetable}
-                        $isDesignationTarget={isDesignationTarget}
-                        $suppressHoverScale={isInCombat}
-                        $suppressHoverHalo={canSelectThisSkirmish}
+                        $haloTone={characterHaloTone}
+                        $suppressHoverScale={
+                            canSelectThisSkirmish && !characterHaloTone
+                        }
                         $isDead={isDead}
-                        $isDisabled={isDisabled}
                         style={
                             duplicateCount > 1
                                 ? { zIndex: duplicateCount + 1 }
@@ -752,7 +769,10 @@ export const BoardCharacterStack: React.FC<BoardCharacterStackProps> = ({
                                 <S.AttachmentWrapper
                                     key={attKey}
                                     $index={attachIdx}
-                                    $isDesignationTarget={attDesignation}
+                                    $haloTone={resolveHaloTone(
+                                        attTargetable,
+                                        attDesignation
+                                    )}
                                     data-draggable={
                                         canDragAttachment ? 'true' : undefined
                                     }

@@ -3556,9 +3556,16 @@ export const GameBoard: React.FC<GameBoardProps> = ({
         }
 
         const { step } = G.archeryState;
+        const fpId = G.fpPlayerId || '0';
+        const shadowId = fpId === '0' ? '1' : '0';
 
+        // Halo / zoom seulement pour le joueur qui assigne (pas l’adversaire).
         if (step === 'FP_ASSIGN') {
-            const fpPlayer = G.players[G.fpPlayerId || '0'];
+            if (String(myId) !== String(fpId)) {
+                if (targetingKind === 'ARCHERY') stopTargeting();
+                return;
+            }
+            const fpPlayer = G.players[fpId];
             const validTargets = (fpPlayer?.fellowshipArea || [])
                 .filter((c) => c && !c.isDead)
                 .flatMap((c) =>
@@ -3580,6 +3587,10 @@ export const GameBoard: React.FC<GameBoardProps> = ({
                 },
             });
         } else if (step === 'SHADOW_ASSIGN') {
+            if (String(myId) !== String(shadowId)) {
+                if (targetingKind === 'ARCHERY') stopTargeting();
+                return;
+            }
             // Uplands etc. : pas de halo sur les séides immunisés (toutes blessures d’archerie).
             const validTargets = (G.battlefield || [])
                 .filter(
@@ -3620,6 +3631,7 @@ export const GameBoard: React.FC<GameBoardProps> = ({
         G.responseWindow,
         G.pendingEvent,
         G.threatWoundsToAssign,
+        myId,
         moves,
         startTargeting,
         stopTargeting,
@@ -3644,6 +3656,12 @@ export const GameBoard: React.FC<GameBoardProps> = ({
             G.responseWindow?.isOpen ||
             G.pendingEvent
         ) {
+            if (targetingKind === 'THREAT_WOUND') stopTargeting();
+            return;
+        }
+
+        // Menaces = FP uniquement — pas de halo / zoom côté Ombre.
+        if (!isLocalFP) {
             if (targetingKind === 'THREAT_WOUND') stopTargeting();
             return;
         }
@@ -3675,6 +3693,7 @@ export const GameBoard: React.FC<GameBoardProps> = ({
         G.players,
         G.responseWindow,
         G.pendingEvent,
+        isLocalFP,
         moves,
         startTargeting,
         stopTargeting,

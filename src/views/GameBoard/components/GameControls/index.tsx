@@ -1184,39 +1184,13 @@ export const GameControls: React.FC<GameControlsProps> = ({
         G.statusMessage || statusMessage || 'Partie en cours';
     const instructionText = getInstructionText();
 
-    // Consigne locale (par joueur) prioritaire dès qu’une fenêtre / étape
-    // “à toi / en attente” est active — le statusMessage moteur reste partagé.
-    const preferLocalInstruction =
-        Boolean(instructionText) &&
-        (isResponseWindowActive ||
-            isActionWindowActive ||
-            isWhenPlayedChoiceActive ||
-            isSiteMoveAbilityActive ||
-            isSitePhaseAbilityActive ||
-            isAwaitingSiteActive ||
-            Boolean(G.pendingPlay) ||
-            Boolean(G.sanctuaryHeal) ||
-            (G.threatWoundsToAssign ?? 0) > 0 ||
-            Boolean(G.pendingSiteCharacterWounds) ||
-            ctx.phase === 'archery' ||
-            ctx.phase === 'assignment' ||
-            isTargetingActive);
-
-    // Toaster ouvert = source live (décision / attente). Le bandeau
-    // garde seulement phase + joueur actif — pas de double récit.
+    // Toaster ouvert = source live. Sinon : une seule ligne dans le bandeau.
+    // Consigne locale (par joueur) prioritaire — le statusMessage moteur est
+    // partagé (« Vous pouvez… ») et s’affiche mal chez l’adversaire.
     const showBannerNarrative = !toastConfig.show;
     const bannerMessage = showBannerNarrative
-        ? preferLocalInstruction
-            ? instructionText!
-            : currentNarrativeLog
+        ? instructionText || currentNarrativeLog
         : null;
-    const bannerSubMessage =
-        showBannerNarrative &&
-        instructionText &&
-        instructionText !== bannerMessage &&
-        !preferLocalInstruction
-            ? instructionText
-            : null;
 
     const phaseLabelKey = canonicalPhaseName(ctx.phase).toUpperCase();
     const phaseLabel =
@@ -1266,18 +1240,6 @@ export const GameControls: React.FC<GameControlsProps> = ({
                     >
                         {bannerMessage && (
                             <S.MessageText>{bannerMessage}</S.MessageText>
-                        )}
-                        {bannerSubMessage && (
-                            <div
-                                style={{
-                                    fontSize: '0.85rem',
-                                    opacity: 0.8,
-                                    marginTop: '2px',
-                                    fontStyle: 'italic',
-                                }}
-                            >
-                                {bannerSubMessage}
-                            </div>
                         )}
                     </div>
 

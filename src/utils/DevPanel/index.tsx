@@ -356,6 +356,14 @@ export const DevPanel: React.FC<DevPanelProps> = ({
                             >
                                 Armée des Haradrim
                             </S.ActionButton>
+                            <S.ActionButton
+                                onClick={() =>
+                                    moves.devLoadPreset?.('HALO_UX')
+                                }
+                                title="Pot-pourri : or / rouge / bleu, flèches, zooms (voir message de statut)"
+                            >
+                                Halos / flèches / zooms
+                            </S.ActionButton>
                         </S.ButtonGroup>
                     </S.Section>
 

@@ -1,41 +1,36 @@
 import styled, { css } from 'styled-components';
-import type { Faction } from '../../../../contexts/FactionContext';
+import { boardHaloLook } from '../../cardHalo';
 
-/** Halo de flèche / viseur (couleur selon la faction qui vise). */
-const targetedHover = (
-    faction: Faction = 'FREE_PEOPLE',
-    opts?: { scale?: boolean }
+/**
+ * Halos plateau — voir `.cursor/rules/halo-colors.mdc`.
+ * Même rendu que la main (`boardHaloLook`) ; fixe au survol (zoom seul).
+ */
+const haloToneCss = (
+    tone: 'choice' | 'hostile',
+    opts?: { scaleOnHover?: boolean }
 ) => css`
-    ${faction === 'SHADOW'
-        ? css`
-              border-color: #e23b3b !important;
-              box-shadow:
-                  0 0 10px #e23b3b,
-                  0 0 25px #c0392b,
-                  0 0 45px rgba(255, 0, 0, 0.7),
-                  0 0 70px rgba(255, 0, 0, 0.35);
-          `
-        : css`
-              border-color: #e2c044 !important;
-              box-shadow:
-                  0 0 10px #e2c044,
-                  0 0 25px #c9a227,
-                  0 0 45px rgba(226, 192, 68, 0.8),
-                  0 0 70px rgba(226, 192, 68, 0.4);
-          `}
+    cursor: pointer !important;
+    border-radius: 8px;
+    ${boardHaloLook(tone)}
+    &:hover {
+        ${opts?.scaleOnHover !== false &&
+        css`
+            transform: scale(1.08);
+        `}
+        z-index: 10;
+    }
+`;
+
+/** Flèche / viseur posé — même halo rouge fixe (+ zoom). */
+const hostileAimedCss = (opts?: { scale?: boolean }) => css`
+    border-radius: 8px;
+    ${boardHaloLook('hostile')}
     ${opts?.scale !== false &&
     css`
         transform: scale(1.08);
     `}
     z-index: 10;
 `;
-
-/**
- * Halo de désignation (halo + clic, pas flèche) : toujours or,
- * y compris au survol Ombre — sinon jaune au repos / rouge au hover.
- */
-const designationHover = (opts?: { scale?: boolean }) =>
-    targetedHover('FREE_PEOPLE', opts);
 
 export const CharacterStack = styled.div<{ $isBeingDragged?: boolean }>`
     position: relative;
@@ -52,69 +47,23 @@ export const CharacterStack = styled.div<{ $isBeingDragged?: boolean }>`
 export const CardDragTarget = styled.div<{
     $isOpponent?: boolean;
     $isTargeted?: boolean;
-    $aimFaction?: Faction;
-    $isTargetable?: boolean;
-    $isDesignationTarget?: boolean;
+    $haloTone?: 'choice' | 'hostile' | null;
     $suppressHoverScale?: boolean;
-    /** Halo rouge individuel : off quand le groupe d’escarmouche gère déjà le survol. */
-    $suppressHoverHalo?: boolean;
     $isDead?: boolean;
 }>`
     position: relative;
     z-index: 2;
-    transition: transform 0.2s ease-in-out, filter 0.2s ease-in-out;
+    transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out,
+        outline-color 0.2s ease-in-out;
 
-    ${({ $isTargetable }) =>
-        $isTargetable &&
-        css`
-            cursor: pointer !important;
-        `}
-
-    ${({
-        $isTargetable,
-        $isDesignationTarget,
-        $suppressHoverScale,
-        $suppressHoverHalo,
-    }) =>
-        $isTargetable &&
-        !$isDesignationTarget &&
-        css`
-            &:hover {
-                ${!$suppressHoverScale &&
-                css`
-                    transform: scale(1.05);
-                `}
-                ${!$suppressHoverHalo &&
-                css`
-                    filter: drop-shadow(0 0 12px #e74c3c)
-                        drop-shadow(0 0 20px rgba(231, 76, 60, 0.8));
-                `}
-            }
-        `}
-
-    ${({
-        $isDesignationTarget,
-        $isTargeted,
-        $suppressHoverScale,
-    }) =>
-        $isDesignationTarget &&
+    ${({ $haloTone, $isTargeted, $suppressHoverScale }) =>
+        $haloTone &&
         !$isTargeted &&
-        css`
-            /* Cible valide : halo permanent (pas seulement :hover) */
-            filter: drop-shadow(0 0 8px rgba(226, 192, 68, 0.85))
-                drop-shadow(0 0 16px rgba(226, 192, 68, 0.45));
-            outline: 2px solid rgba(226, 192, 68, 0.9);
-            border-radius: 8px;
-            &:hover {
-                ${designationHover({
-                    scale: !$suppressHoverScale,
-                })}
-            }
-        `}
+        haloToneCss($haloTone, { scaleOnHover: !$suppressHoverScale })}
 
-    ${({ $isTargeted, $aimFaction, $suppressHoverScale }) =>
+    ${({ $isTargeted, $suppressHoverScale }) =>
         $isTargeted &&
-        targetedHover($aimFaction, { scale: !$suppressHoverScale })}
+        hostileAimedCss({ scale: !$suppressHoverScale })}
 `;
 
 /* =========================================================
@@ -135,25 +84,18 @@ export const AttachmentsContainer = styled.div`
 
 export const AttachmentWrapper = styled.div<{
     $index?: number;
-    $isDesignationTarget?: boolean;
+    $haloTone?: 'choice' | 'hostile' | null;
 }>`
     flex: 1;
     pointer-events: auto; /* Permet d'interagir avec les cartes attachées si besoin (hover, inspection) */
     border: 1px solid black;
     border-radius: 6px;
     filter: drop-shadow(0px -3px 3px black);
-    ${({ $isDesignationTarget }) =>
-        $isDesignationTarget &&
+    ${({ $haloTone }) =>
+        $haloTone &&
         css`
-            cursor: pointer !important;
-            filter: drop-shadow(0 0 8px rgba(226, 192, 68, 0.85))
-                drop-shadow(0 0 16px rgba(226, 192, 68, 0.45))
-                drop-shadow(0px -3px 3px black);
-            outline: 2px solid rgba(226, 192, 68, 0.9);
+            ${haloToneCss($haloTone)}
             z-index: 4;
-            &:hover {
-                ${designationHover()}
-            }
         `}
 `;
 
@@ -208,9 +150,14 @@ export const StackedOnCardSlot = styled.div<{
     ${({ $targetable }) =>
         $targetable &&
         css`
+            cursor: pointer;
             & > * {
                 filter: drop-shadow(0 0 6px #e2c044)
                     drop-shadow(0 1px 2px rgba(0, 0, 0, 0.75));
+                transition: transform 0.15s ease;
+            }
+            &:hover > * {
+                transform: scale(1.08);
             }
         `}
 
@@ -312,7 +259,8 @@ export const AssignedMinionsContainer = styled.div<{
     ${({ $isPairHovered }) =>
         $isPairHovered &&
         css`
-            filter: drop-shadow(red 0px 0px 25px) drop-shadow(red 0px 0px 25px);
+            filter: drop-shadow(0 0 18px rgba(226, 192, 68, 0.95))
+                drop-shadow(0 0 28px rgba(226, 192, 68, 0.55));
         `}
 `;
 
@@ -359,60 +307,23 @@ export const MinionsPyramid = styled.div<{ $isOpponent?: boolean }>`
 `;
 
 export const MinionWrapper = styled.div<{
-    $isTargetable?: boolean;
-    $isDesignationTarget?: boolean;
+    $haloTone?: 'choice' | 'hostile' | null;
     $isTargeted?: boolean;
-    $aimFaction?: Faction;
     $suppressHoverScale?: boolean;
 }>`
     position: relative;
     flex: 0 0 auto;
-    transition: transform 0.2s ease-in-out, filter 0.2s ease-in-out;
+    transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out,
+        outline-color 0.2s ease-in-out;
 
-    ${({ $isTargetable }) =>
-        $isTargetable &&
-        css`
-            cursor: pointer !important;
-        `}
-
-    ${({ $isTargetable, $isDesignationTarget, $suppressHoverScale }) =>
-        $isTargetable &&
-        !$isDesignationTarget &&
-        css`
-            &:hover {
-                ${!$suppressHoverScale &&
-                css`
-                    transform: scale(1.05);
-                `}
-                filter: drop-shadow(0 0 12px #e74c3c);
-                outline: 2px solid #e74c3c;
-                border-radius: 8px;
-            }
-        `}
-
-    ${({
-        $isDesignationTarget,
-        $isTargeted,
-        $suppressHoverScale,
-    }) =>
-        $isDesignationTarget &&
+    ${({ $haloTone, $isTargeted, $suppressHoverScale }) =>
+        $haloTone &&
         !$isTargeted &&
-        css`
-            /* Cible valide : halo permanent (pas seulement :hover) */
-            filter: drop-shadow(0 0 8px rgba(226, 192, 68, 0.85))
-                drop-shadow(0 0 16px rgba(226, 192, 68, 0.45));
-            outline: 2px solid rgba(226, 192, 68, 0.9);
-            border-radius: 8px;
-            &:hover {
-                ${designationHover({
-                    scale: !$suppressHoverScale,
-                })}
-            }
-        `}
+        haloToneCss($haloTone, { scaleOnHover: !$suppressHoverScale })}
 
-    ${({ $isTargeted, $aimFaction, $suppressHoverScale }) =>
+    ${({ $isTargeted, $suppressHoverScale }) =>
         $isTargeted &&
-        targetedHover($aimFaction, { scale: !$suppressHoverScale })}
+        hostileAimedCss({ scale: !$suppressHoverScale })}
 `;
 
 /* =========================================================
@@ -459,8 +370,9 @@ export const SkirmishGroup = styled.div<{
                les séides sont portailés, sinon le compagnon s’allume avant eux. */
             ${$isPairHovered &&
             css`
-                filter: drop-shadow(red 0px 0px 25px)
-                    drop-shadow(red 0px 0px 25px);
+                filter: drop-shadow(0 0 18px rgba(226, 192, 68, 0.95))
+                    drop-shadow(0 0 28px rgba(226, 192, 68, 0.55));
+                outline: 2px solid rgba(226, 192, 68, 0.85);
             `}
         `}/*${({ $isSelected }) =>
         $isSelected &&

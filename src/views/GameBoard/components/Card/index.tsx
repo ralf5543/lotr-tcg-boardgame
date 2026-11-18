@@ -292,6 +292,11 @@ export const Card: React.FC<CardProps> = ({
         Boolean(cardPickId) &&
         targeting?.targetingKind === 'DESIGNATION' &&
         targeting.isCardTargetable(cardPickId!);
+    /** Halo de ciblage plateau déjà posé → couper les autres glows carte. */
+    const isTargetingHaloPick =
+        Boolean(cardPickId) &&
+        Boolean(targeting?.isTargetingActive) &&
+        targeting!.isCardTargetable(cardPickId!);
 
     const [isTakingDamage, setIsTakingDamage] = useState(false);
     const [isExerting, setIsExerting] = useState(false);
@@ -718,8 +723,12 @@ export const Card: React.FC<CardProps> = ({
     const effectiveKeywords = getEffectiveKeywords(card, G);
 
     const rawActionable = isActionable ?? card?.isActionable ?? false;
+    /** Pendant un ciblage plateau, un seul halo (or/rouge) — pas le jaune « jouable ». */
     const effectiveIsActionable =
-        (rawActionable && !isOpponent && !showAbilityButton) ||
+        (rawActionable &&
+            !isOpponent &&
+            !showAbilityButton &&
+            !isTargetingHaloPick) ||
         Boolean(stackedDirectPlay);
 
     const activateListedAbility = (source: CardState, ability: Ability) => {
@@ -1074,7 +1083,9 @@ export const Card: React.FC<CardProps> = ({
                     ref={abilityButtonRef}
                     type="button"
                     data-cursor="arrow"
-                    $abilityPhaseMatch={abilityPhaseMatch}
+                    $abilityPhaseMatch={
+                        abilityPhaseMatch && !isTargetingHaloPick
+                    }
                     $culture={card.culture}
                     onPointerDown={(e) => {
                         e.stopPropagation();

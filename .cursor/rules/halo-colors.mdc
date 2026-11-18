@@ -1,0 +1,40 @@
+---
+description: Langage UX des halos (or / rouge) et zoom sur cibles éligibles
+alwaysApply: true
+---
+
+# Halos & couleurs de ciblage
+
+**Format : Standard (règles modernes).** Voir `.cursor/rules/format-standard.mdc`.
+
+Langage UX du plateau / de la main. **Ne pas** appliquer ces couleurs au chrome UI (boutons, onglets, rail…).
+
+## Grille
+
+| Couleur | Sens | Où |
+| --- | --- | --- |
+| **Or** `#e2c044` | « Cliquez pour choisir » / jouable | Plateau : désignation (soin, défausse, coût, porteur, site…), choix d’escarmouche. Main : event / carte **jouable** (halo plus discret que le plateau). |
+| **Rouge** `#e23b3b` | « Attaque / blessure » | Flèche de ciblage (**toujours** rouge, les deux camps), assignation archerie / menaces / blessures site, désignation d’effet d’attaque |
+| **Rien** | Indispo / spot KO | Carte du bon camp dont la condition n’est pas réunie — **pas** d’atténuation (déjà réservée au camp adverse) |
+
+## Timing (anti sapin de Noël)
+
+1. **Rien d’engagé** → pas de halo plateau (la main peut encore montrer l’or « jouable »).
+2. **Carte ramassée** (début du drag) **ou** capacité / ciblage engagé → halo sur **toutes** les cibles éligibles ; la carte ramassée **perd** immédiatement son halo main.
+3. **Survol d’une éligible** → **zoom** léger uniquement (le halo ne change pas d’intensité), pour tout type de ciblage.
+
+Attache depuis la main : dès le drag, halo or sur les hôtes légaux ; zoom au survol.
+
+## Flèche vs halo
+
+Voir aussi [`targeting-arrows.mdc`](targeting-arrows.mdc).
+
+- Flèche = **uniquement** attaque (blessure / exhaust / exert en effet) → **rouge**.
+- Halo or = choix / désignation (y compris défausse d’une carte en jeu, sans flèche).
+- Halo rouge = blessures à assigner (archerie, menaces…) ou cibles d’une attaque désignée, permanent sur les éligibles.
+
+## Hors scope
+
+- Accents or du chrome (boutons, onglets, toasters…) : **ne pas** « corriger » en rouge.
+- Sync flèche adversaire : toujours rouge aussi ; le bandeau / toaster indique qui joue.
+- Pas de halo bleu « spot OK » : une carte jouable est déjà en or.

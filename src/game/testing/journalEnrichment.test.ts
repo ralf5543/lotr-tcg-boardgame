@@ -120,4 +120,28 @@ describe('journal défausse / phase / capacité', () => {
         expect(entry.playedCard?.showThumb).toBe(false);
         expect(entry.playedCard?.label).toBeTruthy();
     });
+
+    it('capacité non-perso (soutien) : a été utilisé, sans nom de phase', () => {
+        const G = createGameState();
+        const pipe = {
+            ...getCardById('17U21')!,
+            instanceId: 'pipe-1',
+        };
+        G.players['0']!.supportArea = [pipe];
+
+        const ability: Ability = {
+            id: '17U21:0',
+            phases: ['REGROUP'],
+            cost: [{ discardFromPlay: [{ count: 1, target: 'SELF' }] }],
+            effects: [{ type: 'HEAL', count: 1, target: [['COMPANION']] }],
+            source: 'SELF',
+        };
+
+        appendAbilityUsedJournal(G, pipe, ability);
+        const entry = G.journalLog![G.journalLog!.length - 1];
+        expect(entry.named).toBe(
+            `${displayTitle(pipe)} a été utilisé.`
+        );
+        expect(entry.named).not.toMatch(/ralliement|compétence/i);
+    });
 });

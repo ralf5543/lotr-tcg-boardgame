@@ -1,5 +1,5 @@
 import styled, { css, keyframes } from 'styled-components';
-import { playableEventHalo, spotMetHalo } from '../../cardHalo';
+import { playableEventHalo } from '../../cardHalo';
 
 export const FixedHandContainer = styled.div<{ $isDragging?: boolean }>`
     position: fixed;
@@ -113,24 +113,11 @@ export const CardWrapper = styled.div<{
             pointer-events: none !important;
             z-index: 150 !important;
         `}
-    /* 1. Carte classique sans condition 'spot' : Style par défaut */
-
-  /* 2. Condition SPOT REQUIS ET VALIDÉE (halo bleu turquoise) */
-  ${(props) =>
-        props.$hasSpot &&
-        props.$isSpotMet &&
-        spotMetHalo}
-
-  /* 3. Condition SPOT REQUIS MAIS NON MET */
-  ${(props) =>
-        props.$hasSpot &&
-        !props.$isSpotMet &&
-        `
-    border: 1px solid #ff4b4b;
-    box-shadow: 0 0 10px rgba(255, 75, 75, 0.6);
-  `}
-
-  ${(props) => props.$isPlayableEvent && playableEventHalo}
+    /* Jouable → or ; spot KO (condition non réunie) → rien. */
+    ${(props) =>
+        props.$isPlayableEvent &&
+        !(props.$hasSpot && !props.$isSpotMet) &&
+        playableEventHalo}
 `;
 
 export const CardRow = styled.div`

@@ -170,7 +170,15 @@ export const devMoves = {
     devSetArchery: ({ G }: LotrMoveContext, amount: number) => {
         const newAmount = Math.max(0, amount);
 
-        if (G.archeryState) {
+        if (!G.archeryState) {
+            G.archeryState = {
+                step: newAmount > 0 ? 'FP_ASSIGN' : 'COMPLETE',
+                fpTotal: newAmount,
+                shadowTotal: 0,
+                fpRemainingWounds: newAmount,
+                shadowRemainingWounds: 0,
+            };
+        } else {
             G.archeryState.fpTotal = newAmount;
             G.archeryState.fpRemainingWounds = newAmount;
             G.archeryState.step =

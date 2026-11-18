@@ -266,15 +266,22 @@ export const Hand: React.FC<HandProps> = ({
                                 })
                               : false;
 
+                          const playCheck = canPlayCard(card, {
+                              G,
+                              ctx: { phase },
+                              playerID: effectivePlayerId,
+                          });
                           const isPlayableEvent =
                               !isDiscardPhase &&
                               card.type === 'EVENT' &&
                               isMatchingPlayerRole &&
-                              canPlayCard(card, {
-                                  G,
-                                  ctx: { phase },
-                                  playerID: effectivePlayerId,
-                              }).valid;
+                              playCheck.valid;
+                          /** Compagnon / situation / etc. jouable → or (cf. halo-colors). */
+                          const isPlayableOther =
+                              !isDiscardPhase &&
+                              card.type !== 'EVENT' &&
+                              isMatchingPlayerRole &&
+                              playCheck.valid;
 
                           // Flèche pendant le drag = attaque seulement
                           // (blessure / exhaust / exert en effet). Coût toPlay,
@@ -329,8 +336,9 @@ export const Hand: React.FC<HandProps> = ({
                                   $hasSpot={hasSpot}
                                   $isSpotMet={isSpotMet}
                                   $isPlayableEvent={
-                                      // HAND_PICK : pas de halo (or / rouge défausse)
+                                      // HAND_PICK : pas de halo or (choix clic)
                                       isPlayableEvent ||
+                                      isPlayableOther ||
                                       isHandDiscardTarget ||
                                       isDesignationTarget ||
                                       usesArrowDesignation

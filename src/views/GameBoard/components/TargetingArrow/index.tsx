@@ -1,28 +1,16 @@
 import React, { useEffect, useState } from 'react';
 import { useDrag } from '../../../../contexts/DragContext';
-import { useLocalFaction, type Faction } from '../../../../contexts/FactionContext';
 import { useTargeting } from '../../../../contexts/TargetingContext';
 import { usePublishTargetingArrow, useTargetingArrowSync } from './TargetingArrowSync';
 import { ArrowSvg } from './styles';
 
-const PALETTES: Record<
-    Faction,
-    { main: string; pale: string; glow: string; dim: string; paleDim: string }
-> = {
-    FREE_PEOPLE: {
-        main: '#e2c044',
-        pale: '#f6e7a6',
-        glow: 'rgba(226, 192, 68, 0.9)',
-        dim: 'rgba(226, 192, 68, 0.7)',
-        paleDim: 'rgba(246, 231, 166, 0.55)',
-    },
-    SHADOW: {
-        main: '#e23b3b',
-        pale: '#ff8f6b',
-        glow: 'rgba(255, 0, 0, 0.8)',
-        dim: 'rgba(226, 59, 59, 0.7)',
-        paleDim: 'rgba(255, 143, 107, 0.55)',
-    },
+/** Flèche d’attaque — toujours rouge (les deux camps). Voir halo-colors.mdc. */
+const ARROW_PALETTE = {
+    main: '#e23b3b',
+    pale: '#ff8f6b',
+    glow: 'rgba(255, 0, 0, 0.8)',
+    dim: 'rgba(226, 59, 59, 0.7)',
+    paleDim: 'rgba(255, 143, 107, 0.55)',
 };
 
 const point = (
@@ -42,14 +30,12 @@ interface TargetingArrowProps {
     from: { x: number; y: number };
     to: { x: number; y: number };
     isValidTarget: boolean;
-    faction?: Faction;
 }
 
 export const TargetingArrow: React.FC<TargetingArrowProps> = ({
     from,
     to,
     isValidTarget,
-    faction = 'FREE_PEOPLE',
 }) => {
     const dx = to.x - from.x;
     const dy = to.y - from.y;
@@ -65,28 +51,18 @@ export const TargetingArrow: React.FC<TargetingArrowProps> = ({
     const ty = to.y - controlY;
     const angle = Math.atan2(ty, tx);
 
-    const isShadow = faction === 'SHADOW';
-    const headLen = isShadow ? 24 : 22;
-    const headW = isShadow ? 9 : 8;
+    const headLen = 24;
+    const headW = 9;
     const shaftEnd = point(to, angle, -headLen * 0.55, 0);
     const path = `M ${from.x} ${from.y} Q ${controlX} ${controlY} ${shaftEnd.x} ${shaftEnd.y}`;
-    const leaf = toPoints(
-        isShadow
-            ? [
-                  point(to, angle, 0, 0),
-                  point(to, angle, -headLen * 0.4, -headW),
-                  point(to, angle, -headLen * 0.55, -headW * 0.35),
-                  point(to, angle, -headLen, 0),
-                  point(to, angle, -headLen * 0.55, headW * 0.35),
-                  point(to, angle, -headLen * 0.4, headW),
-              ]
-            : [
-                  point(to, angle, 0, 0),
-                  point(to, angle, -headLen * 0.55, -headW),
-                  point(to, angle, -headLen, 0),
-                  point(to, angle, -headLen * 0.55, headW),
-              ]
-    );
+    const leaf = toPoints([
+        point(to, angle, 0, 0),
+        point(to, angle, -headLen * 0.4, -headW),
+        point(to, angle, -headLen * 0.55, -headW * 0.35),
+        point(to, angle, -headLen, 0),
+        point(to, angle, -headLen * 0.55, headW * 0.35),
+        point(to, angle, -headLen * 0.4, headW),
+    ]);
     const leafCore = toPoints([
         point(to, angle, -1, 0),
         point(to, angle, -headLen * 0.5, -headW * 0.32),
@@ -94,7 +70,7 @@ export const TargetingArrow: React.FC<TargetingArrowProps> = ({
         point(to, angle, -headLen * 0.5, headW * 0.32),
     ]);
 
-    const palette = PALETTES[faction];
+    const palette = ARROW_PALETTE;
     const ink = isValidTarget ? palette.main : palette.dim;
     const pale = isValidTarget ? palette.pale : palette.paleDim;
     const width = isValidTarget ? 4.5 : 3;
@@ -146,7 +122,6 @@ export const BoardTargetingArrow: React.FC = () => {
         stopTargeting,
         setHoveredTargetId,
     } = useTargeting();
-    const faction = useLocalFaction();
     const { getTargetVirtualCenter, getHitTargetId, getVirtualCursor } =
         useDrag();
     const [cursor, setCursor] = useState<{ x: number; y: number } | null>(
@@ -238,7 +213,6 @@ export const BoardTargetingArrow: React.FC = () => {
             from={from}
             to={targetCenter ?? activeCursor}
             isValidTarget={Boolean(activeHoverId)}
-            faction={faction}
         />
     );
 };
@@ -271,13 +245,6 @@ export const RemoteTargetingArrow: React.FC = () => {
     if (!from || !to) return null;
 
     return (
-        <TargetingArrow
-            from={from}
-            to={to}
-            isValidTarget
-            faction={
-                sync?.remote?.faction === 'SHADOW' ? 'SHADOW' : 'FREE_PEOPLE'
-            }
-        />
+        <TargetingArrow from={from} to={to} isValidTarget />
     );
 };

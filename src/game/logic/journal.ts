@@ -233,17 +233,6 @@ const STAT_FR: Record<string, string> = {
     TWILIGHT_COST: 'crépuscule',
 };
 
-const PHASE_ABILITY_FR: Record<string, string> = {
-    FELLOWSHIP: 'compagnie',
-    SHADOW: 'ombre',
-    MANEUVER: 'manœuvre',
-    ARCHERY: 'archerie',
-    ASSIGNMENT: 'affectation',
-    SKIRMISH: 'combat',
-    REGROUP: 'ralliement',
-    RESPONSE: 'réponse',
-};
-
 function firstChosenId(
     chosen?: string | string[] | null
 ): string | undefined {
@@ -320,11 +309,15 @@ export function appendAbilityUsedJournal(
         }
     }
 
-    const phaseKey = (ability.phases?.[0] || '').toUpperCase();
-    const phaseBit = PHASE_ABILITY_FR[phaseKey]
-        ? ` de ${PHASE_ABILITY_FR[phaseKey]}`
-        : '';
-    appendJournal(G, `${sourceName} a utilisé une compétence${phaseBit}.`);
+    const isCharacter = ['COMPANION', 'ALLY', 'MINION'].includes(
+        source.type || ''
+    );
+    appendJournal(
+        G,
+        isCharacter
+            ? `${sourceName} a utilisé une compétence.`
+            : `${sourceName} a été utilisé.`
+    );
 }
 
 /** « une / deux / N blessure(s) ». */
