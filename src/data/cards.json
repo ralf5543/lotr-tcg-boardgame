@@ -74517,6 +74517,26 @@
         "Aragorn"
       ]
     ],
+    "abilities": [
+      {
+        "id": "7R80:0",
+        "phases": [],
+        "trigger": {
+          "type": "WHILE",
+          "cannotSpotThreats": 1
+        },
+        "cost": [],
+        "effects": [
+          {
+            "type": "MODIFY_KEYWORD",
+            "keyword": "DEFENDER +1",
+            "target": "BEARER"
+          }
+        ],
+        "source": "ATTACHMENT",
+        "text": "If you cannot spot a threat, Aragorn is defender +1."
+      }
+    ],
     "culture": "GONDOR",
     "twilightCost": 3,
     "strength": 2,
@@ -74530,7 +74550,7 @@
       "fr": {
         "title": "Andúril",
         "subtitle": "Lame de Roi",
-        "gameText": "Bearer must be Aragorn. Discard other weapons he bears. He is **Damage +1.** and cannot bear other weapons. \n**Fellowship** or **Regroup:** If the fellowship is at any site 2 or any site 5, play the fellowship’s next site (replacing opponent’s site if necessary)."
+        "gameText": "Le détenteur doit être Aragorn. \nSi vous ne pouvez pas désigner une menace, Aragorn est **défenseur +1.**"
       },
       "de": {
         "title": "Andúril",

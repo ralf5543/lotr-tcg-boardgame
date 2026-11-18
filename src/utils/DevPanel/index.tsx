@@ -348,13 +348,11 @@ export const DevPanel: React.FC<DevPanelProps> = ({
                         <S.ButtonGroup>
                             <S.ActionButton
                                 onClick={() =>
-                                    moves.devLoadPreset?.(
-                                        'RANGERS_I_WILL_GO'
-                                    )
+                                    moves.devLoadPreset?.('RANGERS_ANDURIL')
                                 }
-                                title="J’Irai : initiative → DEFENDER +1 sur le détenteur"
+                                title="Andúril : 0 menace → DEFENDER +1 sur Aragorn"
                             >
-                                J’Irai
+                                Andúril
                             </S.ActionButton>
                         </S.ButtonGroup>
                     </S.Section>

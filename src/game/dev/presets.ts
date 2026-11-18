@@ -140,45 +140,34 @@ export const applyDevPreset = (
     if (!fpPlayer) return { startPhase: 'startOfFellowship' };
 
     switch (presetType) {
-        case 'RANGERS_I_WILL_GO': {
-            // Affectation : J'Irai sur rôdeur + initiative → DEFENDER +1 (2 séides OK).
+        case 'RANGERS_ANDURIL': {
+            // Affectation : Andúril sur Aragorn, 0 menace → DEFENDER +1.
             resetBoardForPreset(G);
             setupDevPath(G, 3, RANGERS_PATH);
             G.twilightPool = 0;
             fpPlayer.burdens = 0;
+            fpPlayer.threats = 0;
             const frodo = {
-                ...clonePresetCard('11S164', 'dev-iwg-frodo'),
-                attachments: [clonePresetCard('4R1', 'dev-iwg-ring')],
+                ...clonePresetCard('11S164', 'dev-and-frodo'),
+                attachments: [clonePresetCard('4R1', 'dev-and-ring')],
             };
-            const iWillGo = clonePresetCard('7C105', 'dev-iwg-cond');
-            const ranger = {
-                ...clonePresetCard('7C116', 'dev-iwg-ranger'),
-                attachments: [iWillGo],
+            const anduril = clonePresetCard('7R80', 'dev-and-blade');
+            const aragorn = {
+                ...clonePresetCard('1P365', 'dev-and-aragorn'),
+                attachments: [anduril],
             };
-            // Initiative FP = ≥ 4 cartes en main.
-            fpPlayer.hand = [
-                clonePresetCard('1C119', 'dev-iwg-h1'),
-                clonePresetCard('1C119', 'dev-iwg-h2'),
-                clonePresetCard('1C106', 'dev-iwg-h3'),
-                clonePresetCard('1C117', 'dev-iwg-h4'),
-            ];
-            fpPlayer.fellowshipArea = [frodo, ranger];
+            fpPlayer.fellowshipArea = [frodo, aragorn];
             const m1 = {
-                ...clonePresetCard('4U249', 'dev-iwg-m1'),
+                ...clonePresetCard('4U249', 'dev-and-m1'),
                 minionSiteNumber: 4,
             };
             const m2 = {
-                ...clonePresetCard('5C76', 'dev-iwg-m2'),
+                ...clonePresetCard('5C76', 'dev-and-m2'),
                 minionSiteNumber: 4,
             };
-            const shadowId = fpId === '0' ? '1' : '0';
-            const shadow = G.players[shadowId];
-            if (shadow) {
-                shadow.hand = [];
-            }
             G.battlefield = [m1, m2];
             G.statusMessage =
-                '[DEV] J’Irai · Affectation : rôdeur avec J’Irai + initiative → DEFENDER +1 (les 2 séides peuvent l’attaquer). Relancer le preset.';
+                '[DEV] Andúril · Affectation : Aragorn + Andúril, 0 menace → DEFENDER +1 (2 séides OK). Tester aussi menaces +1 (DevPanel) → plus de bonus. Relancer le preset.';
             return { startPhase: 'assignment' };
         }
 

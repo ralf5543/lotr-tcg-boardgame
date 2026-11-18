@@ -6146,6 +6146,71 @@ function parseIfHaveInitiativeBearerAbilities(
 }
 
 /**
+ * If you cannot spot a/N threat(s), Name|bearer is defender +N.
+ * (Andúril King’s Blade…) — Name = Bearer must be …
+ */
+function parseIfCannotSpotThreatKeywordAbilities(
+    text: string,
+    cardTitle?: string,
+    cardId?: string
+): Record<string, unknown>[] {
+    const found: Record<string, unknown>[] = [];
+    const kwTail =
+        '((?:<keyword>[^<]*</keyword>|\\*\\*[^*]+\\*\\*|defender\\s*\\+\\s*\\d+|damage\\s*\\+\\s*\\d+|fierce)\\.?)';
+    const re = new RegExp(
+        `If you cannot spot\\s+(a|an|one|\\d+)\\s+threats?,\\s*([\\p{L}’'\\-]+(?:\\s+[\\p{L}’'\\-]+)?|bearer) is ${kwTail}`,
+        'giu'
+    );
+    let match: RegExpExecArray | null;
+    while ((match = re.exec(text)) !== null) {
+        const rawCount = (match[1] || '').toLowerCase();
+        const cannotSpot =
+            rawCount === 'a' || rawCount === 'an' || rawCount === 'one'
+                ? 1
+                : parseInt(rawCount, 10);
+        if (!Number.isFinite(cannotSpot) || cannotSpot <= 0) continue;
+        const whoRaw = match[2].trim();
+        let target: 'BEARER' | 'SELF' | null = null;
+        if (/^bearer$/i.test(whoRaw)) {
+            target = 'BEARER';
+        } else {
+            const bearerName = parseBearerMustBeName(text);
+            if (
+                bearerName &&
+                whoRaw.toLowerCase() === bearerName.toLowerCase()
+            ) {
+                target = 'BEARER';
+            } else {
+                target = parseWhileStrengthWho(whoRaw, cardTitle);
+            }
+        }
+        if (!target) continue;
+        const grant = parseWhileKeywordGrant(match[3]);
+        if (!grant) continue;
+        const after = stripAbilityMarkup(
+            text.slice(match.index + match[0].length)
+        ).trim();
+        if (/^and\b/i.test(after)) continue;
+        found.push({
+            id: `${cardId || 'ability'}:${found.length}:if-no-threat-kw`,
+            phases: [],
+            trigger: { type: 'WHILE', cannotSpotThreats: cannotSpot },
+            cost: [],
+            effects: [
+                {
+                    type: 'MODIFY_KEYWORD',
+                    keyword: grant.keyword,
+                    target,
+                },
+            ],
+            source: target === 'BEARER' ? 'ATTACHMENT' : 'SELF',
+            text: stripAbilityMarkup(match[0]),
+        });
+    }
+    return found;
+}
+
+/**
  * « While bearer is in region N, bearer gains muster. »
  * « While bearer is in region N, each of your shire companions gains muster. »
  * « While bearer is in region N, each character gains muster. »
@@ -19124,6 +19189,14 @@ export function parseAbilities(
             id: `${cardId || 'ability'}:${abilities.length}`,
         });
     });
+    parseIfCannotSpotThreatKeywordAbilities(text, cardTitle, cardId).forEach(
+        (ability) => {
+            abilities.push({
+                ...ability,
+                id: `${cardId || 'ability'}:${abilities.length}`,
+            });
+        }
+    );
     parseWhileInRegionStrengthAbilities(text, cardTitle, cardId).forEach(
         (ability) => {
             abilities.push({
