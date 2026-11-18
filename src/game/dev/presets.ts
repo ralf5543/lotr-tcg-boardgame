@@ -140,30 +140,44 @@ export const applyDevPreset = (
     if (!fpPlayer) return { startPhase: 'startOfFellowship' };
 
     switch (presetType) {
-        case 'RANGERS_MUMAK_CHIEFTAIN': {
-            // Ombre : jouer le Chef → toaster → Mûmak en défausse (−2) attaché sur lui.
+        case 'RANGERS_SEASONED_LEADER': {
+            // Escarmouche : Meneur sur Suderon → −1 menace → situation Pillard en défausse.
             resetBoardForPreset(G);
             setupDevPath(G, 3, RANGERS_PATH);
-            // Coût Chef 5 −2 (monture) = 3 ; on laisse de la marge.
-            G.twilightPool = 8;
+            // Champ des Vaincus = 1 crépuscule.
+            G.twilightPool = 1;
             fpPlayer.burdens = 0;
+            fpPlayer.threats = 2;
             const frodo = {
-                ...clonePresetCard('11S164', 'dev-mc-frodo'),
-                attachments: [clonePresetCard('4R1', 'dev-mc-ring')],
+                ...clonePresetCard('11S164', 'dev-sl-frodo'),
+                attachments: [clonePresetCard('4R1', 'dev-sl-ring')],
             };
-            const ranger = clonePresetCard('7C116', 'dev-mc-ranger');
+            const ranger = clonePresetCard('7C116', 'dev-sl-ranger');
             fpPlayer.fellowshipArea = [frodo, ranger];
-            const chieftain = clonePresetCard('10R45', 'dev-mc-chieftain');
-            const mount = clonePresetCard('5C73', 'dev-mc-mumak');
+            const leader = clonePresetCard('10R48', 'dev-sl-leader');
+            const southron = {
+                ...clonePresetCard('4U249', 'dev-sl-southron'),
+                minionSiteNumber: 4,
+                attachments: [leader],
+            };
+            const condition = clonePresetCard('10U43', 'dev-sl-field');
             const shadowId = fpId === '0' ? '1' : '0';
             const shadow = G.players[shadowId];
             if (shadow) {
-                shadow.hand = [chieftain];
-                shadow.discard = [mount];
+                shadow.discard = [condition];
             }
+            G.battlefield = [southron];
+            G.skirmishes = [
+                {
+                    id: 'dev-sl-sk',
+                    companionId: 'dev-sl-ranger',
+                    minionIds: ['dev-sl-southron'],
+                },
+            ];
+            G.activeSkirmishId = 'dev-sl-sk';
             G.statusMessage =
-                '[DEV] Mûmak Chieftain · Ombre (onglet joueur 1) : jouer le Chef (5) → Activer → choisir le Mûmak en défausse (−2 → 0). Relancer le preset.';
-            return { startPhase: 'shadow' };
+                '[DEV] Meneur Chevronné · Escarmouche (onglet joueur 1) : bulle sur le Suderon (Meneur…) → −1 menace (2→1) → Champ des Vaincus en défausse (−1 crépuscule). Relancer le preset.';
+            return { startPhase: 'skirmish' };
         }
 
         default:

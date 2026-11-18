@@ -349,12 +349,12 @@ export const DevPanel: React.FC<DevPanelProps> = ({
                             <S.ActionButton
                                 onClick={() =>
                                     moves.devLoadPreset?.(
-                                        'RANGERS_MUMAK_CHIEFTAIN'
+                                        'RANGERS_SEASONED_LEADER'
                                     )
                                 }
-                                title="Mûmak Chieftain : when-played → monture depuis défausse (−2)"
+                                title="Meneur Chevronné : −1 menace → situation Pillard depuis défausse"
                             >
-                                Mûmak Chieftain
+                                Meneur Chevronné
                             </S.ActionButton>
                         </S.ButtonGroup>
                     </S.Section>

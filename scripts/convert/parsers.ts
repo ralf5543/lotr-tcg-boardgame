@@ -7452,6 +7452,58 @@ function parseRemoveTwilightPlayFromDiscardAbilities(
 }
 
 /**
+ * Phase: Remove a/N threat(s) to play a CLASS from your discard pile.
+ * (Seasoned Leader / Gorgoroth Agitator…) — sans stacked / roaming penalty.
+ */
+function parseRemoveThreatPlayFromDiscardAbilities(
+    text: string,
+    cardId?: string
+): Record<string, unknown>[] {
+    const found: Record<string, unknown>[] = [];
+    const phaseTok =
+        '(?:\\*\\*|<(?:keyword)>)(Fellowship|Shadow|Maneuver|Archery|Assignment|Skirmish|Regroup):?(?:\\s*</(?:keyword)>)?(?:\\*\\*)?';
+    const re = new RegExp(
+        `${phaseTok}\\s*Remove\\s+(a|an|one|\\d+)\\s+threats?\\s+to play\\s+(?:a|an)\\s+(.+?)\\s+from your discard pile\\.`,
+        'gi'
+    );
+    let match: RegExpExecArray | null;
+    while ((match = re.exec(text)) !== null) {
+        const phase = match[1]?.toUpperCase();
+        if (!phase) continue;
+        // Variantes hors scope (stacked, roaming, and…).
+        if (/\b(stacked|roaming|and\s+exert|without)\b/i.test(match[0])) {
+            continue;
+        }
+        const rawCount = (match[2] || '').toLowerCase();
+        const threats =
+            rawCount === 'a' || rawCount === 'an' || rawCount === 'one'
+                ? 1
+                : parseInt(rawCount, 10);
+        if (!Number.isFinite(threats) || threats <= 0) continue;
+        const filters = parseClassFilters(match[3].trim());
+        if (filters.length === 0) continue;
+        if (/\b(and|or|each|may)\b/i.test(stripAbilityMarkup(match[3]))) {
+            continue;
+        }
+        found.push({
+            id: `${cardId || 'ability'}:${found.length}:threat-play-discard`,
+            phases: [phase],
+            cost: [{ removeThreats: threats }],
+            effects: [
+                {
+                    type: 'PLAY_FROM_DECK_OR_DISCARD',
+                    from: 'DISCARD',
+                    target: [filters],
+                },
+            ],
+            source: 'SELF',
+            text: stripAbilityMarkup(match[0]),
+        });
+    }
+    return found;
+}
+
+/**
  * Phase: Remove twilightN and exert X to play a CLASS from your discard pile.
  * (Uruk Captain…)
  */
@@ -18513,6 +18565,15 @@ export function parseAbilities(
     );
 
     parseRemoveTwilightPlayFromDiscardAbilities(text, cardId).forEach(
+        (ability) => {
+            abilities.push({
+                ...ability,
+                id: `${cardId || 'ability'}:${abilities.length}`,
+            });
+        }
+    );
+
+    parseRemoveThreatPlayFromDiscardAbilities(text, cardId).forEach(
         (ability) => {
             abilities.push({
                 ...ability,

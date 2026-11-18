@@ -91033,6 +91033,37 @@
         ]
       }
     ],
+    "abilities": [
+      {
+        "id": "8U94:0",
+        "phases": [
+          "SHADOW"
+        ],
+        "cost": [
+          {
+            "removeThreats": 1
+          }
+        ],
+        "effects": [
+          {
+            "type": "PLAY_FROM_DECK_OR_DISCARD",
+            "from": "DISCARD",
+            "target": [
+              [
+                "SAURON",
+                "ENGINE"
+              ]
+            ]
+          }
+        ],
+        "source": "SELF",
+        "text": "Shadow: Remove a threat to play a sauron engine from your discard pile.",
+        "textFr": "**Ombre :** Retirez une menace pour jouer un engin <symbol>sauron</symbol> de votre pile de défausse."
+      }
+    ],
+    "actionPhases": [
+      "SHADOW"
+    ],
     "culture": "SAURON",
     "race": "ORC",
     "twilightCost": 3,
@@ -97925,6 +97956,37 @@
       [
         "SOUTHRON"
       ]
+    ],
+    "abilities": [
+      {
+        "id": "10R48:0",
+        "phases": [
+          "SKIRMISH"
+        ],
+        "cost": [
+          {
+            "removeThreats": 1
+          }
+        ],
+        "effects": [
+          {
+            "type": "PLAY_FROM_DECK_OR_DISCARD",
+            "from": "DISCARD",
+            "target": [
+              [
+                "RAIDER",
+                "CONDITION"
+              ]
+            ]
+          }
+        ],
+        "source": "SELF",
+        "text": "Skirmish: Remove a threat to play a raider condition from your discard pile.",
+        "textFr": "**Combat :** Retirez une menace pour jouer une situation <symbol>raider</symbol> de votre pile de défausse."
+      }
+    ],
+    "actionPhases": [
+      "SKIRMISH"
     ],
     "culture": "RAIDER",
     "twilightCost": 1,
