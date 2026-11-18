@@ -97755,6 +97755,32 @@
     "keywords": [
       "SOUTHRON"
     ],
+    "abilities": [
+      {
+        "id": "10R45:0",
+        "phases": [],
+        "trigger": {
+          "type": "WHEN_PLAYED"
+        },
+        "optional": true,
+        "cost": [],
+        "effects": [
+          {
+            "type": "PLAY_FROM_DECK_OR_DISCARD",
+            "from": "DISCARD",
+            "target": [
+              [
+                "MOUNT"
+              ]
+            ],
+            "attachTo": "SELF",
+            "twilightReduce": 2
+          }
+        ],
+        "source": "SELF",
+        "text": "When you play this minion, you may play a mount on him from your discard pile. Its twilight cost is –2."
+      }
+    ],
     "culture": "RAIDER",
     "race": "MAN",
     "twilightCost": 5,
@@ -97769,9 +97795,9 @@
         "loreText": "The commander of a mûmak never imagines he is in complete control of the beast."
       },
       "fr": {
-        "title": "Mûmak Chieftan",
-        "gameText": "**Southron.** \nWhen you play this minion, you may play a mount on him from your discard pile. Its twilight cost is –2.",
-        "loreText": "The commander of a mûmak never imagines he is in complete control of the beast."
+        "title": "Grand Chef des Mûmak",
+        "gameText": "**Suderon.** \nQuand vous jouez ce séide, vous pouvez jouer une monture sur lui de votre pile de défausse. Le coût crépusculaire de cette monture est de -2.",
+        "loreText": "Le commandant d'un mûmak ne se laisse jamais croire qu'il a véritablement le contrôle de sa bête."
       },
       "de": {
         "title": "Häuptling der Mûmakführer",

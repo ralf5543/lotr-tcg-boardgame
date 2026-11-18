@@ -111,6 +111,18 @@ export const setupDevPath = (
     G.currentSiteIndex = startIndex;
 };
 
+const RANGERS_PATH = [
+    '15U187',
+    '13U193',
+    '15S189',
+    '11S237',
+    '18U135',
+    '11S240',
+    '12U194',
+    '11S256',
+    '13U187',
+] as const;
+
 /** Phase boardgame.io où atterrir après le load (défaut : Compagnie). */
 export type DevPresetLoad = {
     startPhase: string;
@@ -118,7 +130,6 @@ export type DevPresetLoad = {
 
 /**
  * Presets DEV playtest. Renvoie la phase d’atterrissage pour `devLoadPreset`.
- * Vide tant qu’aucune vague n’en a besoin.
  */
 export const applyDevPreset = (
     G: GameState,
@@ -129,6 +140,32 @@ export const applyDevPreset = (
     if (!fpPlayer) return { startPhase: 'startOfFellowship' };
 
     switch (presetType) {
+        case 'RANGERS_MUMAK_CHIEFTAIN': {
+            // Ombre : jouer le Chef → toaster → Mûmak en défausse (−2) attaché sur lui.
+            resetBoardForPreset(G);
+            setupDevPath(G, 3, RANGERS_PATH);
+            // Coût Chef 5 −2 (monture) = 3 ; on laisse de la marge.
+            G.twilightPool = 8;
+            fpPlayer.burdens = 0;
+            const frodo = {
+                ...clonePresetCard('11S164', 'dev-mc-frodo'),
+                attachments: [clonePresetCard('4R1', 'dev-mc-ring')],
+            };
+            const ranger = clonePresetCard('7C116', 'dev-mc-ranger');
+            fpPlayer.fellowshipArea = [frodo, ranger];
+            const chieftain = clonePresetCard('10R45', 'dev-mc-chieftain');
+            const mount = clonePresetCard('5C73', 'dev-mc-mumak');
+            const shadowId = fpId === '0' ? '1' : '0';
+            const shadow = G.players[shadowId];
+            if (shadow) {
+                shadow.hand = [chieftain];
+                shadow.discard = [mount];
+            }
+            G.statusMessage =
+                '[DEV] Mûmak Chieftain · Ombre (onglet joueur 1) : jouer le Chef (5) → Activer → choisir le Mûmak en défausse (−2 → 0). Relancer le preset.';
+            return { startPhase: 'shadow' };
+        }
+
         default:
             G.statusMessage = `[DEV] Aucun preset actif (« ${presetType} »).`;
             return { startPhase: 'startOfFellowship' };

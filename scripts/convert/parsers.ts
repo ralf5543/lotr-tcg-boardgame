@@ -4247,6 +4247,38 @@ function parseWhenPlayedPlayPossessionFromDeckAbilities(
             text: stripAbilityMarkup(match[0]),
         });
     }
+
+    // Mûmak Chieftain : When you play this minion, you may play a mount on him
+    // from your discard pile. Its twilight cost is –N.
+    const mountOnSelfRe =
+        /When you play this minion,\s*you may play (?:a|an)\s+(.+?)\s+on (?:him|her|it)\s+from your discard pile\.(?:\s*Its twilight cost is\s*[–\-−](\d+)\.?)?/gi;
+    while ((match = mountOnSelfRe.exec(text)) !== null) {
+        const filters = parseClassFilters(match[1].trim());
+        if (filters.length === 0) continue;
+        if (/\b(and|or|each|may)\b/i.test(stripAbilityMarkup(match[1]))) {
+            continue;
+        }
+        const reduce = match[2] ? parseInt(match[2], 10) : 0;
+        if (match[2] && (!Number.isFinite(reduce) || reduce <= 0)) continue;
+        found.push({
+            id: `${cardId || 'ability'}:${found.length}:when-played-play-mount-discard`,
+            phases: [],
+            trigger: { type: 'WHEN_PLAYED' },
+            optional: true,
+            cost: [],
+            effects: [
+                {
+                    type: 'PLAY_FROM_DECK_OR_DISCARD',
+                    from: 'DISCARD',
+                    target: [filters],
+                    attachTo: 'SELF',
+                    ...(reduce > 0 ? { twilightReduce: reduce } : {}),
+                },
+            ],
+            source: 'SELF',
+            text: stripAbilityMarkup(match[0]),
+        });
+    }
     return found;
 }
 
