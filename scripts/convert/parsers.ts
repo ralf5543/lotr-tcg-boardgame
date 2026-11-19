@@ -7448,6 +7448,67 @@ function parseWhileSkirmishingResistanceKeywordAbilities(
 }
 
 /**
+ * While you can spot a mounted [classe], [classe] cannot take wounds
+ * (except during skirmishes). (Line of Defense…)
+ */
+function parseWhileSpotMountedForbidWoundsAbilities(
+    text: string,
+    cardId?: string
+): Record<string, unknown>[] {
+    const found: Record<string, unknown>[] = [];
+    const re =
+        /While you can spot (?:a|an) mounted\s+([\s\S]+?),\s*([\s\S]+?)\s+cannot take wounds\s*\(\s*except during skirmishes?\s*\)\.?/gi;
+    let match: RegExpExecArray | null;
+    while ((match = re.exec(text)) !== null) {
+        const spotPlain = stripAbilityMarkup(match[1])
+            .replace(/\s+/g, ' ')
+            .trim();
+        const whoPlain = stripAbilityMarkup(match[2])
+            .replace(/\s+/g, ' ')
+            .trim();
+        if (
+            /\b(and|or|each|other|whose|bearing|except|from|to|may)\b/i.test(
+                spotPlain
+            ) ||
+            /\b(and|or|each|other|whose|bearing|except|from|to|may)\b/i.test(
+                whoPlain
+            )
+        ) {
+            continue;
+        }
+        const spotFilters = parseClassFilters(match[1]);
+        const whoFilters = parseClassFilters(match[2]);
+        if (spotFilters.length === 0 || whoFilters.length === 0) continue;
+
+        found.push({
+            id: `${cardId || 'ability'}:${found.length}:while-mounted-forbid-wounds`,
+            phases: [],
+            trigger: {
+                type: 'WHILE',
+                spot: [
+                    {
+                        count: 1,
+                        target: [spotFilters],
+                        bearing: [['MOUNT']],
+                    },
+                ],
+            },
+            cost: [],
+            effects: [
+                {
+                    type: 'FORBID_WOUNDS',
+                    target: [whoFilters],
+                    exceptDuringSkirmishes: true,
+                },
+            ],
+            source: 'SELF',
+            text: stripAbilityMarkup(match[0]),
+        });
+    }
+    return found;
+}
+
+/**
  * While this minion is skirmishing a (Free Peoples) character who has
  * resistance N or less, this minion cannot take wounds. (Patrol of Uruk-hai…)
  */
@@ -20103,6 +20164,15 @@ export function parseAbilities(
     });
 
     parseWhileSkirmishingStrengthAbilities(text, cardTitle, cardId).forEach(
+        (ability) => {
+            abilities.push({
+                ...ability,
+                id: `${cardId || 'ability'}:${abilities.length}`,
+            });
+        }
+    );
+
+    parseWhileSpotMountedForbidWoundsAbilities(text, cardId).forEach(
         (ability) => {
             abilities.push({
                 ...ability,

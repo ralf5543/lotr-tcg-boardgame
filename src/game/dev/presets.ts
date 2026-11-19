@@ -140,31 +140,6 @@ export const applyDevPreset = (
     if (!fpPlayer) return { startPhase: 'startOfFellowship' };
 
     switch (presetType) {
-        case 'RANGERS_SECOND_LEVEL': {
-            // Manœuvre : spot rôdeur (ou affaiblir Homme Gondor) → transfert sur séide.
-            resetBoardForPreset(G);
-            setupDevPath(G, 3, RANGERS_PATH);
-            G.twilightPool = 0;
-            fpPlayer.burdens = 0;
-            const frodo = {
-                ...clonePresetCard('11S164', 'dev-sl2-frodo'),
-                attachments: [clonePresetCard('4R1', 'dev-sl2-ring')],
-            };
-            const ranger = clonePresetCard('7C116', 'dev-sl2-ranger');
-            const second = clonePresetCard('7C118', 'dev-sl2-second');
-            fpPlayer.fellowshipArea = [frodo, ranger];
-            fpPlayer.supportArea = [second];
-            fpPlayer.hand = [];
-            const minion = {
-                ...clonePresetCard('5C76', 'dev-sl2-minion'),
-                minionSiteNumber: 4,
-            };
-            G.battlefield = [minion];
-            G.statusMessage =
-                '[DEV] Second niveau · Manœuvre. Bulle « spot rôdeur » (ou affaiblir) → cliquez le séide : la fortification se transfère dessus.';
-            return { startPhase: 'maneuver' };
-        }
-
         default:
             G.statusMessage = `[DEV] Aucun preset actif (« ${presetType} »).`;
             return { startPhase: 'startOfFellowship' };

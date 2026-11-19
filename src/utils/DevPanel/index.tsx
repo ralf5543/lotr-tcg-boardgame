@@ -342,23 +342,7 @@ export const DevPanel: React.FC<DevPanelProps> = ({
                         </S.ButtonGroup>
                     </S.Section>
 
-                    {/* Presets playtest (vague en cours) */}
-                    <S.Section>
-                        <S.Label>Preset playtest :</S.Label>
-                        <S.ButtonGroup>
-                            <S.ActionButton
-                                onClick={() =>
-                                    moves.devLoadPreset?.(
-                                        'RANGERS_SECOND_LEVEL'
-                                    )
-                                }
-                                title="Second niveau : transfert fortification sur un séide"
-                            >
-                                2ᵉ niveau
-                            </S.ActionButton>
-                        </S.ButtonGroup>
-                    </S.Section>
-
+                    {/* Presets playtest (vague en cours) — bouton remis avec la prochaine carte */}
                     {/* Session / debug UI */}
                     <S.Section>
                         <S.Label>Session :</S.Label>

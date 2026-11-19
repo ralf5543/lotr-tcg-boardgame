@@ -90331,6 +90331,46 @@
     "kind": "SHADOW",
     "type": "CONDITION",
     "subtype": "SUPPORT-AREA",
+    "abilities": [
+      {
+        "id": "8C63:0",
+        "phases": [],
+        "trigger": {
+          "type": "WHILE",
+          "spot": [
+            {
+              "count": 1,
+              "target": [
+                [
+                  "RAIDER",
+                  "MAN"
+                ]
+              ],
+              "bearing": [
+                [
+                  "MOUNT"
+                ]
+              ]
+            }
+          ]
+        },
+        "cost": [],
+        "effects": [
+          {
+            "type": "FORBID_WOUNDS",
+            "target": [
+              [
+                "RAIDER",
+                "MAN"
+              ]
+            ],
+            "exceptDuringSkirmishes": true
+          }
+        ],
+        "source": "SELF",
+        "text": "While you can spot a mounted raider Man, raider Men cannot take wounds (except during skirmishes)."
+      }
+    ],
     "culture": "RAIDER",
     "twilightCost": 3,
     "imageUrl": "/cards_visuals/o_08_063.jpg",

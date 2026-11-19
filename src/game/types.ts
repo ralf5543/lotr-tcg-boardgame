@@ -595,10 +595,13 @@ export type AbilityEffect =
            * Immunité aux blessures :
            * - passif While (Patrol of Uruk-hai, Easterling Polearm…) ;
            * - capacité activée jusqu’à une phase (Faramir : prevent all wounds).
+           * - `exceptDuringSkirmishes` : Ligne de Défense — blessures OK si
+           *   la carte est affectée à un combat.
            */
           type: 'FORBID_WOUNDS';
           target: AbilityTargetRef;
           expiresAtPhase?: AbilityEffectExpiry;
+          exceptDuringSkirmishes?: boolean;
       }
     | {
           /**

@@ -1365,6 +1365,17 @@ export function shouldSkipPhase(
     return skip;
 }
 
+/** True si la carte est affectée à un combat (escarmouche). */
+function isCardAssignedToSkirmish(G: GameState, card: CardState): boolean {
+    const id = card.instanceId || card.id;
+    if (!id) return false;
+    return (G.skirmishes || []).some(
+        (sk) =>
+            sk.companionId === id ||
+            (sk.minionIds || []).includes(id)
+    );
+}
+
 function forbidWoundsCoversCard(
     G: GameState,
     source: CardState,
@@ -1372,6 +1383,13 @@ function forbidWoundsCoversCard(
     card: CardState
 ): boolean {
     if (effect.type !== 'FORBID_WOUNDS') return false;
+    // Ligne de Défense : immunité hors combat uniquement.
+    if (
+        effect.exceptDuringSkirmishes &&
+        isCardAssignedToSkirmish(G, card)
+    ) {
+        return false;
+    }
     if (effect.target === 'SELF') {
         return (source.instanceId || source.id) === (card.instanceId || card.id);
     }
@@ -1449,7 +1467,7 @@ export { isWeaponAttachment };
 
 /**
  * True si un passif While actif interdit les blessures sur cette carte
- * (Patrol of Uruk-hai, etc.).
+ * (Patrol of Uruk-hai, Line of Defense en soutien, Polearm…).
  */
 export function cardCannotTakeWoundsWhile(
     G: GameState,
@@ -1477,10 +1495,7 @@ export function cardCannotTakeWoundsWhile(
             }
         }
     };
-    // Source = la carte elle-même + ses attachements (Polearm…).
-    visit(card);
-    for (const att of card.attachments || []) {
-        if (att) visit(att);
-    }
+    // Toutes les cartes en jeu (soutien inclus) + attachements.
+    forEachInPlayCard(G, visit);
     return forbidden;
 }
